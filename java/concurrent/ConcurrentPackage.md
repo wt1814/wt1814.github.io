@@ -1,5 +1,5 @@
 #并发API
-&emsp; java.util.concurrent包是Java并发编程包。包括5部分：
+&emsp; java.util.concurrent包是Java并发编程包。包括5部分：  
 * locks：显式锁相关；  
 * atomic：原子变量类相关，是构建非阻塞算法的基础；  
 * collections：并发容器相关；  
@@ -86,3 +86,39 @@ public class ConditionObject implements Condition, java.io.Serializable {
     //...
 }
 ```
+&emsp; CLH同步队列是一个FIFO双向队列，AQS依赖它来完成同步状态state的管理，当前线程如果获取同步状态失败时，AQS则会将当前线程已经等待状态等信息构造成一个节点（Node）并将其加入到CLH同步队列，同时会阻塞当前线程，当同步状态释放时，会把首节点唤醒（公平锁），使其再次尝试获取同步状态。
+####成员方法：
+&emsp; AQS定义两种资源共享方式：Exclusive独占和Share。独占模式和共享模式下在什么情况下会往CLH同步队列里添加节点，什么情况下会从CLH同步队列里移除节点，以及线程阻塞和恢复的实现细节？
+#####独占模式
+
+
+#####共享模式
+
+#####AQS的模板方法设计模式
+
+#####自定义同步器
+不同的自定义同步器争用共享资源的方式也不同。自定义同步器在实现时只需要实现共享资源state的获取与释放方式即可，至于具体线程等待队列的维护（如获取资源失败入队/唤醒出队等），AQS已经在顶层实现好了。自定义同步器实现时主要实现以下几种方法：
+```java
+
+
+```
+
+----
+##1. 锁
+###java.util.concurrent.locks包
+![avatar](../../images/java/concurrent/concurrent-3.png)
+####ReentrantLock，重入锁
+&emsp; ReentrantLock，可重入锁，也叫做递归锁，指的是同一线程外层函数获得锁之后，内层递归函数仍然有获取该锁的代码，但不受影响。在JAVA环境下 ReentrantLock和synchronized都是可重入锁。  
+#####ReentrantLock的API：
+######构造函数：
+```java
+//创建 ReentrantLock实例
+public ReentrantLock() {
+    sync = new NonfairSync();
+}
+//创建具有给定的公平政策ReentrantLock实例。true，公平锁；false，非公平锁。
+public ReentrantLock(boolean fair) {
+    sync = fair ? new FairSync() : new NonfairSync();
+}
+```
+######成员方法：
