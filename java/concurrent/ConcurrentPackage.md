@@ -50,7 +50,7 @@
 &emsp; 怎么通过state控制同步状态？
 &emsp; 通过修改state字段代表的同步状态来实现多线程的独占模式或者共享模式。例如：当state=0时，则说明没有任何线程占有共享资源的锁，当state=1时，则说明有线程目前正在使用共享变量，其他线程必须加入同步队列进行等待。
 &emsp; 在独占模式下，可以把state的初始值设置成0，每当某个线程要进行某项独占操作前，都需要判断state的值是不是0，如果不是0的话意味着别的线程已经进入该操作，则本线程需要阻塞等待；如果是0的话就把state的值设置成1，自己进入该操作。这个先判断再设置的过程我们可以通过CAS操作保证原子性，把这个过程称为尝试获取同步状态。如果一个线程获取同步状态成功了，那么在另一个线程尝试获取同步状态的时候发现state的值已经是1了就一直阻塞等待，直到获取同步状态成功的线程执行完了需要同步的操作后释放同步状态，也就是把state的值设置为0，并通知后续等待的线程。
-&emsp; 在共享模式下的道理也差不多，比如说某项操作允许10个线程同时进行，超过这个数量的线程就需要阻塞等待。那么就可以把state的初始值设置为10，一个线程尝试获取同步状态的意思就是先判断state的值是否大于0，如果不大于0的话意味着当前已经有10个线程在同时执行该操作，本线程需要阻塞等待；如果state的值大于0，那么可以把state的值减1后进入该操作，每当一个线程完成操作的时候需要释放同步状态，也就是把state的值加1，并通知后续等待的线程。
+&emsp; 在共享模式下的道理也差不多，比如说某项操作允许10个线程同时进行，超过这个数量的线程就需要阻塞等待。那么就可以把state的初始值设置为10，一个线程尝试获取同步状态的意思就是先判断state的值是否大于0，如果不大于0的话意味着当前已经有10个线程在同时执行该操作，本线程需要阻塞等待；如果state的值大于0，那么可以把state的值减1后进入该操作，每当一个线程完成操作的时候需要释放同步状态，也就是把state的值加1，并通知后续等待的线程。  
 #####FIFO，先进先出队列
 ```java
 static final class Node {
@@ -104,13 +104,13 @@ public class ConditionObject implements Condition, java.io.Serializable {
 ```
 
 ----
-##1. 锁
-###java.util.concurrent.locks包
+##1. 锁  
+###java.util.concurrent.locks包  
 ![avatar](../../images/java/concurrent/concurrent-3.png)
-####ReentrantLock，重入锁
+####ReentrantLock，重入锁  
 &emsp; ReentrantLock，可重入锁，也叫做递归锁，指的是同一线程外层函数获得锁之后，内层递归函数仍然有获取该锁的代码，但不受影响。在JAVA环境下 ReentrantLock和synchronized都是可重入锁。  
-#####ReentrantLock的API：
-######构造函数：
+#####ReentrantLock的API：  
+######构造函数：  
 ```java
 //创建 ReentrantLock实例
 public ReentrantLock() {
@@ -121,4 +121,4 @@ public ReentrantLock(boolean fair) {
     sync = fair ? new FairSync() : new NonfairSync();
 }
 ```
-######成员方法：
+######成员方法：  
