@@ -122,3 +122,140 @@ public ReentrantLock(boolean fair) {
 }
 ```
 ######成员方法：  
+```java
+*获取锁，有以下三种情况：
+    锁空闲：直接获取锁并返回，同时设置锁持有者数量为1；
+    当前线程持有锁：直接获取锁并返回，同时锁持有者数量递增1；
+    其他线程持有锁：当前线程会休眠等待，直至获取锁为止；*/
+public void lock() {
+    sync.lock();
+}
+/*一个获取可中断锁的尝试。
+        获取锁，逻辑和lock()方法一样，但这个方法在获取锁过程中能响应中断。*/
+public void lockInterruptibly() throws InterruptedException {
+    sync.acquireInterruptibly(1);
+}
+/*一个非块结构的获取锁尝试，获取成功返回：true，获取失败返回：false, 这个方法不会等待，有以下三种情况：
+        锁空闲：直接获取锁并返回：true，同时设置锁持有者数量为：1；
+        当前线程持有锁：直接获取锁并返回：true，同时锁持有者数量递增1；
+        其他线程持有锁：获取锁失败，返回：false；*/
+public boolean tryLock() {
+    return sync.nonfairTryAcquire(1);
+}
+/*一个获取超时失效锁的尝试。
+        逻辑和tryLock()差不多，只是这个方法是带时间的。*/
+public boolean tryLock(long timeout, TimeUnit unit)
+        throws InterruptedException {
+    return sync.tryAcquireNanos(1, unit.toNanos(timeout));
+}
+/*释放锁，每次锁持有者数量递减1，直到0为止。*/
+public void unlock() {
+    sync.release(1);
+}
+/*返回一个这个锁的Condition实例，可以实现 synchronized关键字类似wait/ notify实现多线程通信的功能。*/
+public Condition newCondition() {
+    return sync.newCondition();
+}
+```
+#####ReentrantLock与synchronized比较： 
+&emsp; Java提供了两种锁机制来控制多个线程对共享资源的互斥访问，第一个是 JVM实现的synchronized，而另一个是JDK实现的ReentrantLock。  
+&emsp; ReentrantLock与synchronized的联系：  
+Lock接口提供了与synchronized关键字类似的同步功能，但需要在使用时手动获取锁和释放锁。ReentrantLock和synchronized都是可重入的互斥锁。  
+&emsp; Lock接口与synchronized关键字的区别（Lock的优势全部体现在构造函数、方法中）：  
+1)（构造函数）.ReenTrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁。所谓的公平锁就是先等待的线程先获得锁。  
+2).Lock接口可以尝试非阻塞地获取锁，当前线程尝试获取锁。如果这一时刻锁没有被其他线程获取到，则成功获取并持有锁。  
+3)（地点）.Lock接口能被中断地获取锁，与synchronized不同，获取到锁的线程能够响应中断，当获取到的锁的线程被中断时，中断异常将会被抛出，同时锁会被释放。 可以使线程在等待锁的时候响应中断；  
+4)（时间）.Lock接口可以在指定的截止时间之前获取锁，如果截止时间到了依旧无法获取锁，则返回。可以让线程尝试获取锁，并在无法获取锁的时候立即返回或者等待一段时间；  
+5).ReenTrantLock提供了一个Condition（条件）类，用来实现分组唤醒需要唤醒的一些线程，而不是像synchronized要么随机唤醒一个线程要么唤醒全部线程。  
+  
+&emsp; 什么时候选择用ReentrantLock代替synchronized？  
+&emsp; 在确实需要一些synchronized所没有的特性的时候，比如时间锁等候、可中断锁等候、无块结构锁、多个条件变量或者锁投票。ReentrantLock还具有可伸缩性的好处，应当在高度争用的情况下使用它，但是请记住，大多数synchronized块几乎从来没有出现过争用，所以可以把高度争用放在一边。建议用synchronized开发，直到确实证明synchronized不合适，而不要仅仅是假设如果使用ReentrantLock“性能会更好”。  
+#####ReentrantLock实现的原理，ReentrantLock和AQS的关系：  
+
+#####使用示例：  
+&emsp; 在使用重入锁时，一定要在程序最后释放锁。一般释放锁的代码要写在finally里。否则，如果程序出现异常，Loack就永远无法释放了。(synchronized的锁是JVM最后自动释放的。)  
+```java
+private final ReentrantLock lock = new ReentrantLock();
+
+try {
+if (lock.tryLock(5, TimeUnit.SECONDS)) { //如果已经被lock，尝试等待5s，看是否可以获得锁，如果5s后仍然无法获得锁则返回false继续执行
+    // lock.lockInterruptibly();可以响应中断事件
+    try {
+        //操作
+    } finally {
+        lock.unlock();
+    }
+}
+} catch (InterruptedException e) {
+    e.printStackTrace(); //当前线程被中断时(interrupt)，会抛InterruptedException
+}
+```  
+#####2. Condition，等待/通知机制  
+&emsp; 关键字synchronized与wait()和notify()/notifyAll()方法相结合可以实现等待/通知机制。ReentrantLock结合Condition也可以实现等待/通知机制。  
+&emsp; Condition又称等待条件，它实现了对锁更精确的控制。Condition中的await()方法相当于Object的wait()方法，Condition中的signal()方法相当于Object的notify()方法，Condition中的signalAll()相当于Object的notifyAll()方法。  
+&emsp; 在使用notify()/notifyAll()方法进行通知时，被通知的线程是由JVM随机选择的。但使用ReentrantLock结合Condition类是可以实现“选择性通知”。  
+&emsp; Condition与Object监视器（wait()和notify()/notifyAll() 的比较： 
+
+| 对比项 | Condition | Object监视器 |  
+| ---- | ---- | ---- |  
+使用条件|获取锁|获取锁，创建Condition对象
+等待队列的个数|一个|多个
+是否支持通知指定等待队列|支持|不支持
+是否支持当前线程释放锁进入等待状态|支持|支持
+是否支持当前线程释放锁并进入超时等待状态|支持|支持
+是否支持当前线程释放锁并进入等待状态直到指定最后期限|支持|不支持
+是否支持唤醒等待队列中的一个任务|支持|支持
+是否支持唤醒等待队列中的全部任务|支持|支持  
+
+
+#####3. ReentrantReadWriteLock，读写锁
+&emsp; ReentrantReadWriteLock是一种共享锁。ReentrantReadWriteLock维护了两个锁，读锁和写锁，所以一般称其为读写锁。写锁是独占的（写操作只能由一个线程来操作）。读锁是共享的，如果没有写锁，读锁可以由多个线程共享。  
+&emsp; 与互斥锁相比，虽然一次只能有一个写线程可以修改共享数据，但大量读线程可以同时读取共享数据，所以，读写锁适用于共享数据很大，且读操作远多于写操作的情况。  
+&emsp; ReentrantReadWriteLock具有以下特性：公平性、重入性、锁降级、锁获取中断、支持Condition、检测系统状态。  
+&emsp; 优点：与互斥锁相比，虽然一次只能有一个写线程可以修改共享数据，但大量读线程可以同时读取共享数据，所以，读写锁适用于共享数据很大，且读操作远多于写操作的情况。  
+&emsp; 缺点：只有当前没有线程持有读锁或者写锁时才能获取到写锁，这可能会导致写线程发生饥饿现象，即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题，解决方法是如果在读的过程中发生了写操作，应该重新读而不是直接阻塞写线程。  
+######示例： 
+```java
+private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+private Lock readLock = readWriteLock.readLock();
+private Lock writeLock = readWriteLock.writeLock();
+public Object handleRead() throws InterruptedException {
+    try {
+        readLock.lock();
+        Thread.sleep(1000);
+        return value;
+    }finally{
+        readLock.unlock();
+    }
+}
+public Object handleRead() throws InterruptedException {
+    try {
+        writeLock.lock();
+        Thread.sleep(1000);
+        return value;
+    }finally{
+        writeLock.unlock();
+    }
+}
+```
+
+#####4. StampedLock，读写锁的升级
+&emsp; StampedLock是JDK1.8新增的一个锁，是对读写锁ReentrantReadWriteLock的改进。使用ReentrantReadWriteLock可能会导致写线程发生饥饿现象，即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock可以解决这个问题，解决方法是如果在读的过程中发生了写操作，应该重新读而不是直接阻塞写线程。  
+&emsp; 读/写模式：  
+&emsp; 写。独占锁，只有当前没有线程持有读锁或者写锁时才能获取到该锁。方法writeLock()返回一个可用于unlockWrite(long)释放锁的方法的戳记。tryWriteLock()提供不计时和定时的版本。  
+&emsp; 读。共享锁，如果当前没有线程持有写锁即可获取该锁，可以由多个线程获取到该锁。方法readLock()返回可用于unlockRead(long)释放锁的方法的戳记。tryReadLock()也提供不计时和定时的版本。  
+&emsp; 乐观读。方法tryOptimisticRead()仅当锁定当前未处于写入模式时，方法才会返回非零戳记。返回戳记后，需要调用validate(long stamp)方法验证戳记是否可用。也就是看当调用tryOptimisticRead返回戳记后到到当前时间是否有其他线程持有了写锁，如果有，返回false，否则返回true，这时就可以使用该锁了。  
+----
+###2. 15种锁锁分类：  
+![avatar](../../images/java/concurrent/concurrent-4.png)  
+* 从线程是否需要对资源加锁可以分为 悲观锁 和 乐观锁  
+* 从资源已被锁定，线程是否阻塞可以分为 自旋锁  
+* 从多个线程并发访问资源，也就是 Synchronized 可以分为 无锁、偏向锁、 轻量级锁 和 重量级锁  
+* 从锁的公平性进行区分，可以分为公平锁 和 非公平锁  
+* 从根据锁是否重复获取可以分为 可重入锁 和 不可重入锁  
+* 从那个多个线程能否获取同一把锁分为 共享锁 和 排他锁  
+ 
+---
+##2. Atomic，原子类  
+
+
