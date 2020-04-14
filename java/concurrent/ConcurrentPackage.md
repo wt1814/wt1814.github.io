@@ -18,7 +18,7 @@
 &emsp; 2). 只能保证一个共享变量的原子操作。当对一个共享变量执行操作时，可以使用循环CAS的方式来保证原子操作，但是对多个共享变量操作时，循环CAS就无法保证操作的原子性，这个时候就可以用锁，或者有一个取巧的办法，就是把多个共享变量合并成一个共享变量来操作。比如有两个共享变量i＝2,j=a，合并一下ij=2a，然后用CAS来操作ij。从Java1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个对象里来进行CAS操作。    
 &emsp; 3). ABA问题（A修改为B，再修改为A）：  
 &emsp; 因为CAS需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是A，变成了B，又变成了A，那么使用CAS进行检查时会发现它的值没有发生变化，但是实际上却变化了。ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。  
-&emsp; Java中使用原子更新引用类型解决线程并发中导致的ABA问题，有Java类：AtomicReference、AtomicStampedRerence、AtomicMarkableReference。
+&emsp; 从Java1.5开始JDK的atomic包里提供了一个类AtomicStampedReference来解决ABA问题。
 ###0.2. AQS，抽象队列同步器，基础组件
 &emsp;AQS，AbstractQueuedSynchronizer.java类，抽象队列同步器。它是JUC并发包中的核心基础组件。它是构建锁或者其他同步组件（如ReentrantLock、ReentrantReadWriteLock、Semaphore等）的基础框架。  
 &emsp;1). 内部实现的关键是：先进先出的队列、state状态  
@@ -46,10 +46,10 @@
        return unsafe.compareAndSwapInt(this, stateOffset, expect, update);
    }
 ```
-&emsp; 内部通过一个int类型的成员变量state来控制同步状态，是由volatile修饰的。并且提供了几个访问这个字段的方法：getState()、setState、compareAndSetState。这几个方法都是final修饰的，说明子类中无法重写它们。另外它们都是protected修饰的，说明只能在子类中使用这些方法。
+&emsp; 内部通过一个int类型的成员变量state来控制同步状态，是由volatile修饰的。并且提供了几个访问这个字段的方法：getState()、setState、compareAndSetState。这几个方法都是final修饰的，说明子类中无法重写它们。另外它们都是protected修饰的，说明只能在子类中使用这些方法。  
 &emsp; 怎么通过state控制同步状态？
 &emsp; 通过修改state字段代表的同步状态来实现多线程的独占模式或者共享模式。例如：当state=0时，则说明没有任何线程占有共享资源的锁，当state=1时，则说明有线程目前正在使用共享变量，其他线程必须加入同步队列进行等待。
-&emsp; 在独占模式下，可以把state的初始值设置成0，每当某个线程要进行某项独占操作前，都需要判断state的值是不是0，如果不是0的话意味着别的线程已经进入该操作，则本线程需要阻塞等待；如果是0的话就把state的值设置成1，自己进入该操作。这个先判断再设置的过程我们可以通过CAS操作保证原子性，把这个过程称为尝试获取同步状态。如果一个线程获取同步状态成功了，那么在另一个线程尝试获取同步状态的时候发现state的值已经是1了就一直阻塞等待，直到获取同步状态成功的线程执行完了需要同步的操作后释放同步状态，也就是把state的值设置为0，并通知后续等待的线程。
+&emsp; 在独占模式下，可以把state的初始值设置成0，每当某个线程要进行某项独占操作前，都需要判断state的值是不是0，如果不是0的话意味着别的线程已经进入该操作，则本线程需要阻塞等待；如果是0的话就把state的值设置成1，自己进入该操作。这个先判断再设置的过程我们可以通过CAS操作保证原子性，把这个过程称为尝试获取同步状态。如果一个线程获取同步状态成功了，那么在另一个线程尝试获取同步状态的时候发现state的值已经是1了就一直阻塞等待，直到获取同步状态成功的线程执行完了需要同步的操作后释放同步状态，也就是把state的值设置为0，并通知后续等待的线程。  
 &emsp; 在共享模式下的道理也差不多，比如说某项操作允许10个线程同时进行，超过这个数量的线程就需要阻塞等待。那么就可以把state的初始值设置为10，一个线程尝试获取同步状态的意思就是先判断state的值是否大于0，如果不大于0的话意味着当前已经有10个线程在同时执行该操作，本线程需要阻塞等待；如果state的值大于0，那么可以把state的值减1后进入该操作，每当一个线程完成操作的时候需要释放同步状态，也就是把state的值加1，并通知后续等待的线程。  
 #####FIFO，先进先出队列
 ```java
@@ -257,5 +257,237 @@ public Object handleRead() throws InterruptedException {
  
 ---
 ##2. Atomic，原子类  
+###atomic类简介：  
+&emsp; 原子操作定义：原子操作是指不会被线程调度机制打断的操作，这种操作一旦开始，就一直运行到结束，中间不会有任何线程上下文切换。原子操作是在多线程环境下避免数据不一致必须的手段。  
+&emsp; 原子操作可以是一个步骤，也可以是多个操作步骤，但是其顺序不可以被打乱，也不可以被切割而只执行其中的一部分，将整个操作视作一个整体是原子性的核心特征。  
+&emsp; int++并不是一个原子操作，所以当一个线程读取它的值并加1时，另外一个线程有可能会读到之前的值，这就会引发错误。为了解决这个问题，必须保证增加操作是原子的，在JDK1.5之前可以使用同步技术来做到这一点。到JDK1.5，java.util.concurrent.atomic包提供了int和long类型的包装类，它们可以自动的保证对于它们的操作是原子的并且不需要使用同步。  
+
+&emsp; 原子类原理：原子类是基于CAS实现的。  
+&emsp; 原子类与锁：原子类不是锁的常规替换方法。仅当对象的重要更新限定于单个变量时才应用它。  
+&emsp; 原子类和java.lang.Integer等类的区别：原子类不提供诸如hashCode和compareTo之类的方法。因为原子变量是可变的。  
+###atomic使用：  
+####1.原子更新基本类型或引用类型：
+原子更新基本类型：AtomicBoolean、AtomicInteger、AtomicLong。  
+原子更新引用类型：AtomicReference、AtomicStampedRerence、AtomicMarkableReference。
+这几个类的操作基本类似，底层都是调用Unsafe的compareAndSwapXxx()来实现，基本用法如下：  
+```java
+private static void testAtomicReference() {
+
+    AtomicInteger atomicInteger = new AtomicInteger(1);
+    atomicInteger.incrementAndGet();
+    atomicInteger.getAndIncrement();
+    atomicInteger.compareAndSet(3, 666);
+    System.out.println(atomicInteger.get());
+
+    AtomicStampedReference<Integer> atomicStampedReference = new AtomicStampedReference<>(1, 1);
+    atomicStampedReference.compareAndSet(1, 2, 1, 3);
+    atomicStampedReference.compareAndSet(2, 666, 3, 5);
+    System.out.println(atomicStampedReference.getReference());
+    System.out.println(atomicStampedReference.getStamp());
+}
+```  
+####2.原子更新数组中的元素：  
+原子更新数组：AtomicIntegerArray、AtomicLongArray、AtomicReferenceArray。
+这几个类的操作基本类似，更新元素时都要指定在数组中的索引位置，基本用法如下：  
+```java
+private static void testAtomicReferenceArray() {
+
+    AtomicIntegerArray atomicIntegerArray = new AtomicIntegerArray(10);
+    atomicIntegerArray.getAndIncrement(0);
+    atomicIntegerArray.getAndAdd(1, 666);
+    atomicIntegerArray.incrementAndGet(2);
+    atomicIntegerArray.addAndGet(3, 666);
+    atomicIntegerArray.compareAndSet(4, 0, 666);
+
+    System.out.println(atomicIntegerArray.get(0));
+    System.out.println(atomicIntegerArray.get(1));
+    System.out.println(atomicIntegerArray.get(2));
+}
+```  
+####3.原子更新对象中的字段：  
+原子更新对象的属性：AtomicIntegerFieldUpdater、AtomicLongFieldUpdater、AtomicReferenceFieldUpdater。这几个类的操作基本类似，都需要传入要更新的字段名称，基本用法如下：
+```java
+private static void testAtomicReferenceField() {
+
+    AtomicReferenceFieldUpdater<User, String> updateName = AtomicReferenceFieldUpdater.newUpdater(User.class, String.class,"name");
+    AtomicIntegerFieldUpdater<User> updateAge = AtomicIntegerFieldUpdater.newUpdater(User.class, "age");
+    User user = new User("tong ge", 21);
+    updateName.compareAndSet(user, "tong ge", "read source code");
+    updateAge.compareAndSet(user, 21, 25);
+    updateAge.incrementAndGet(user);
+    System.out.println(user);
+}
+```  
+####4.高性能原子类：  
+高性能原子类，是java8中增加的原子类，它们使用分段的思想，把不同的线程hash到不同的段上去更新，最后再把这些段的值相加得到最终的值，这些类主要有：  
+（1）Striped64下面四个类的父类。  
+（2）LongAccumulator，long类型的聚合器，需要传入一个long类型的二元操作，可以用来计算各种聚合操作，包括加乘等。  
+（3）LongAdder，long类型的累加器，LongAccumulator的特例，只能用来计算加法，且从0开始计算。  
+（4）DoubleAccumulator，double类型的聚合器，需要传入一个double类型的二元操作，可以用来计算各种聚合操作，包括加乘等。  
+（5）DoubleAdder，double类型的累加器，DoubleAccumulator的特例，只能用来计算加法，且从0开始计算。  
+这几个类的操作基本类似，其中DoubleAccumulator和DoubleAdder底层其实也是用long来实现的，基本用法如下：  
+```java
+private static void testNewAtomic() {
+
+    LongAdder longAdder = new LongAdder();
+    longAdder.increment();
+    longAdder.add(666);
+    System.out.println(longAdder.sum());
+
+    LongAccumulator longAccumulator = new LongAccumulator((left, right)->left + right * 2, 666);
+    longAccumulator.accumulate(1);
+    longAccumulator.accumulate(3);
+    longAccumulator.accumulate(-4);
+    System.out.println(longAccumulator.get());
+}
+```  
+###AtomicStampedReference类详解  
+&emsp; Java1.5中提供了AtomicStampedReference这个类，解决ABA问题。这个类的compareAndSet方法作用是首先检查当前引用是否等于预期引用，并且当前标志是否等于预期标志，如果全部相等，则以原子方式将该引用和该标志的值设置为给定的更新值。  
+####源码分析：  
+内部类
+```java
+private static class Pair<T> {
+    final T reference;
+    final int stamp;
+    private Pair(T reference, int stamp) {
+        this.reference = reference;
+        this.stamp = stamp;
+    }
+    static <T> Pair<T> of(T reference, int stamp) {
+        return new Pair<T>(reference, stamp);
+    }
+}
+```  
+&emsp; 将元素值和版本号绑定在一起，存储在Pair的reference和stamp（邮票、戳的意思）中。  
+属性  
+```java
+private volatile Pair<V> pair;
+private static final sun.misc.Unsafe UNSAFE = sun.misc.Unsafe.getUnsafe();
+private static final long pairOffset = objectFieldOffset(UNSAFE, "pair", AtomicStampedReference.class);
+```  
+&emsp; 声明一个Pair类型的变量并使用Unsfae获取其偏移量，存储到pairOffset中。  
+&emsp; CAS算法核心类，sun.misc.Unsafe提供了访问底层的机制（native()方法也有访问底层的功能），这种机制仅供java核心类库使用。  
+***构造方法***  
+```java
+/**
+ * @param initialRef 初始值
+ * @param initialStamp 初始版本号
+ */
+public AtomicStampedReference(V initialRef, int initialStamp) {
+    pair = Pair.of(initialRef, initialStamp);
+}
+```  
+compareAndSet()方法  
+```java
+public boolean compareAndSet(V expectedReference, V newReference, int expectedStamp, int newStamp) {
+    // 获取当前的（元素值，版本号）对
+    Pair<V> current = pair;
+    return
+        // 引用没变
+        expectedReference == current.reference &&
+                // 版本号没变
+                expectedStamp == current.stamp &&
+                // 新引用等于旧引用
+                ((newReference == current.reference &&
+                        // 新版本号等于旧版本号
+                        newStamp == current.stamp) ||
+                        // 构造新的Pair对象并CAS更新
+                        casPair(current, Pair.of(newReference, newStamp)));
+}
+
+private boolean casPair(Pair<V> cmp, Pair<V> val) {
+    // 调用Unsafe的compareAndSwapObject()方法CAS更新pair的引用为新引用
+    return UNSAFE.compareAndSwapObject(this, pairOffset, cmp, val);
+}
+```  
+（1）如果元素值和版本号都没有变化，并且和新的也相同，返回true；  
+（2）如果元素值和版本号都没有变化，并且和新的不完全相同，就构造一个新的Pair对象并执行CAS更新pair。  
+####示例：  
+示例代码分别用AtomicInteger和AtomicStampedReference来对初始值为100的原子整型变量进行更新，AtomicInteger会成功执行CAS操作，而加上版本戳的AtomicStampedReference对于ABA问题会执行CAS失败：  
+```java
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicStampedReference;
+
+public class ABA {
+    private static AtomicInteger atomicInt = new AtomicInteger(100);
+    private static AtomicStampedReference atomicStampedRef = new AtomicStampedReference(100, 0);
+
+    public static void main(String[] args) throws InterruptedException {
+        Thread intT1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                atomicInt.compareAndSet(100, 101);
+                atomicInt.compareAndSet(101, 100);
+            }
+        });
+
+        Thread intT2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                }
+                boolean c3 = atomicInt.compareAndSet(100, 101);
+                System.out.println(c3); // true
+            }
+        });
+
+        intT1.start();
+        intT2.start();
+        intT1.join();
+        intT2.join();
+
+        Thread refT1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                }
+                atomicStampedRef.compareAndSet(100, 101, atomicStampedRef.getStamp(), atomicStampedRef.getStamp() + 1);
+                atomicStampedRef.compareAndSet(101, 100, atomicStampedRef.getStamp(), atomicStampedRef.getStamp() + 1);
+            }
+        });
+
+        Thread refT2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int stamp = atomicStampedRef.getStamp();
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException e) {
+                }
+                boolean c3 = atomicStampedRef.compareAndSet(100, 101, stamp, stamp + 1);
+                System.out.println(c3); // false
+            }
+        });
+
+        refT1.start();
+        refT2.start();
+    }
+}
+```  
+---  
+##3. ***Collections，14个并发容器  
+![avatar](../../images/java/concurrent/concurrent-5.png)  
+按照线程安全模型分类：copy-on-write、CAS（JDK1.8 ConcurrentHashMap）、
+读写分离（LinkedBlockingQueue）。  
+###0. CopyOnWrite简介：  
+&emsp; CopyOnWrite，简称COW。所谓写时复制，即读操作时不加锁以保证性能不受影响；写操作时加锁，复制资源的一份副本，在副本上执行写操作，写操作完成后将资源的引用指向副本。  
+&emsp; 使用场景：CopyOnWrite并发容器用于读多写少的并发场景。比如白名单，黑名单，商品类目的访问和更新场景，假如有一个搜索网站，用户在这个网站的搜索框中，输入关键字搜索内容，但是某些关键字不允许被搜索。这些不能被搜索的关键字会被放在一个黑名单当中，黑名单每天晚上更新一次。当用户搜索时，会检查当前关键字在不在黑名单当中，如果在，则提示不能搜索。  
+ 
+&emsp; 优点：可以对CopyOnWrite容器进行并发的读，而不需要加锁，因为当前容器不会添加任何元素。所以CopyOnWrite容器也是一种读写分离的思想，读和写不同的容器。  
+&emsp; 缺点：1).占内存（写时复制new两个对象）；2).不能保证数据实时一致性。  
+* 内存占用问题:  
+因为CopyOnWrite的写时复制机制，所以在进行写操作的时候，内存里会同时驻扎两个对象的内存，旧的对象和新写入的对象（注意:在复制的时候只是复制容器里的引用，只是在写的时候会创建新对象添加到新容器里，而旧容器的对象还在使用，所以有两份对象内存）。如果这些对象占用的内存比较大，比如说200M左右，那么再写入100M数据进去，内存就会占用300M，那么这个时候很有可能造成频繁的Yong GC和Full GC。之前系统中使用了一个服务由于每晚使用CopyOnWrite机制更新大对象，造成了每晚15秒的Full GC，应用响应时间也随之变长。  
+针对内存占用问题，可以通过压缩容器中的元素的方法来减少大对象的内存消耗，比如，如果元素全是10进制的数字，可以考虑把它压缩成36进制或64进制。或者不使用CopyOnWrite容器，而使用其他的并发容器，如ConcurrentHashMap。  
+* 数据一致性问题:  
+CopyOnWrite容器只能保证数据的最终一致性，不能保证数据的实时一致性。所以如果希望写入的的数据，马上能读到，不要使用CopyOnWrite容器。  
+
+
+
+
 
 
