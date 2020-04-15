@@ -355,33 +355,29 @@ final void runWorker(Worker w) {
 &emsp; 解决方案：  
 1、在提交的任务中将异常捕获并处理，不抛给线程池。  
 2、异常抛给线程池，但是要及时处理抛出的异常。  
-####1. 直接catch
-提交的任务，将所有可能的异常都Catch住，并且自行处理。
-####2. 线程池实现
-有以下四种实现方式。
-#####自定义线程池
-自定义线程池，继承ThreadPoolExecutor并复写其afterExecute(Runnable r, Throwable t)方法。
-
-#####实现Thread.UncaughtExceptionHandler接口
-实现Thread.UncaughtExceptionHandler接口，
-实现void uncaughtException(Thread t, Throwable e);方法，
-并将该handler传递给线程池的ThreadFactory
-
-#####继承ThreadGroup
-覆盖uncaughtException方法。（与实现Thread.UncaughtExceptionHandler接口类似，因为ThreadGroup类本身就实现了Thread.UncaughtExceptionHandler接口)
-
-注意：上面三种方式针对的都是通过execute(xx)的方式提交任务，如果提交任务用的是submit()方法，那么上面的三种方式都将不起作用，而应该使用下面的方式。
-#####采用Future模式
-如果提交任务的时候使用的方法是submit，那么该方法将返回一个Future对象，所有的异常以及处理结果都可以通过future对象获取。
-采用Future模式，将返回结果以及异常放到Future中，在Future中处理
-
-
-###线程池关闭：
-
-线程池总共存在 5 种状态，分别为：RUNNING、SHUTDOWN、STOP、TIDYING、TERMINATED。  
-当执行ThreadPoolExecutor#shutdown方法将会使线程池状态从 RUNNING 转变为 SHUTDOWN。而调用 ThreadPoolExecutor#shutdownNow 之后线程池状态将会从 RUNNING 转变为 STOP。从上面的图上还可以看到，当线程池处于 SHUTDOWN，还是可以继续调用 ThreadPoolExecutor#shutdownNow 方法，将其状态转变为 STOP 。  
+####1. 直接catch  
+&emsp; 提交的任务，将所有可能的异常都Catch住，并且自行处理。  
+####2. 线程池实现  
+&emsp; 有以下四种实现方式。  
+#####自定义线程池  
+&emsp; 自定义线程池，继承ThreadPoolExecutor并复写其afterExecute(Runnable r, Throwable t)方法。  
+![avatar](../../images/java/concurrent/threadPool-7.png)  
+#####实现Thread.UncaughtExceptionHandler接口  
+&emsp; 实现Thread.UncaughtExceptionHandler接口，实现void uncaughtException(Thread t, Throwable e)方法，并将该handler传递给线程池的ThreadFactory。  
+![avatar](../../images/java/concurrent/threadPool-8.png)  
+#####继承ThreadGroup  
+&emsp; 覆盖uncaughtException方法。（与实现Thread.UncaughtExceptionHandler接口类似，因为ThreadGroup类本身就实现了Thread.UncaughtExceptionHandler接口)  
+![avatar](../../images/java/concurrent/threadPool-9.png)  
+&emsp; 注意：上面三种方式针对的都是通过execute(xx)的方式提交任务，如果提交任务用的是submit()方法，那么上面的三种方式都将不起作用，而应该使用下面的方式。  
+#####采用Future模式  
+&emsp; 如果提交任务的时候使用的方法是submit，那么该方法将返回一个Future对象，所有的异常以及处理结果都可以通过future对象获取。  
+&emsp; 采用Future模式，将返回结果以及异常放到Future中，在Future中处理  
+![avatar](../../images/java/concurrent/threadPool-11.png)  
+###线程池关闭：  
+&emsp; 线程池总共存在 5 种状态，分别为：RUNNING、SHUTDOWN、STOP、TIDYING、TERMINATED。    
+&emsp; 当执行ThreadPoolExecutor#shutdown方法将会使线程池状态从 RUNNING 转变为 SHUTDOWN。而调用 ThreadPoolExecutor#shutdownNow 之后线程池状态将会从 RUNNING 转变为 STOP。从上面的图上还可以看到，当线程池处于 SHUTDOWN，还是可以继续调用 ThreadPoolExecutor#shutdownNow 方法，将其状态转变为 STOP 。    
 ####ThreadPoolExecutor的shutdown()与shutdownNow()源码
-ThreadPoolExecutor#shutdown()方法源码：  
+&emsp; ThreadPoolExecutor#shutdown()方法源码：  
 ```java
 public void shutdown() {
     final ReentrantLock mainLock = this.mainLock;
@@ -401,10 +397,10 @@ public void shutdown() {
     tryTerminate();
 }
 ```
-shutdown 方法首先加锁，其次先检查系统安装状态。接着就会将线程池状态变为 SHUTDOWN，在这之后线程池不再接受提交的新任务。此时如果还继续往线程池提交任务，将会使用线程池拒绝策略响应，默认情况下将会使用 ThreadPoolExecutor.AbortPolicy，抛出 RejectedExecutionException 异常。
-interruptIdleWorkers 方法只会中断空闲的线程，不会中断正在执行任务的的线程。空闲的线程将会阻塞在线程池的阻塞队列上。  
+&emsp; shutdown 方法首先加锁，其次先检查系统安装状态。接着就会将线程池状态变为 SHUTDOWN，在这之后线程池不再接受提交的新任务。此时如果还继续往线程池提交任务，将会使用线程池拒绝策略响应，默认情况下将会使用 ThreadPoolExecutor.AbortPolicy，抛出 RejectedExecutionException 异常。
+&emsp; interruptIdleWorkers 方法只会中断空闲的线程，不会中断正在执行任务的的线程。空闲的线程将会阻塞在线程池的阻塞队列上。  
 
-ThreadPoolExecutor#shutdownNow()源码如下：  
+&emsp; ThreadPoolExecutor#shutdownNow()源码如下：  
 ```
 public List<Runnable> shutdownNow() {
     List<Runnable> tasks;
@@ -426,11 +422,11 @@ public List<Runnable> shutdownNow() {
     return tasks;
 }
 ```
-shutdownNow 方法将会把线程池状态设置为 STOP，然后中断所有线程，最后取出工作队列中所有未完成的任务返回给调用者。
-对比 shutdown 方法，shutdownNow 方法比较粗暴，直接中断工作线程。不过这里需要注意，中断线程并不代表线程立刻结束。这里需要线程主动配合线程中断响应。
-####ThreadPoolExecutor#awaitTermination. 
-线程池 shutdown 与 shutdownNow 方法都不会主动等待执行任务的结束，如果需要等到线程池任务执行结束，需要调用 awaitTermination 主动等待任务调用结束。  
-调用方法如下：  
+&emsp; shutdownNow 方法将会把线程池状态设置为 STOP，然后中断所有线程，最后取出工作队列中所有未完成的任务返回给调用者。  
+&emsp; 对比 shutdown 方法，shutdownNow 方法比较粗暴，直接中断工作线程。不过这里需要注意，中断线程并不代表线程立刻结束。这里需要线程主动配合线程中断响应。  
+####ThreadPoolExecutor#awaitTermination   
+&emsp; 线程池 shutdown 与 shutdownNow 方法都不会主动等待执行任务的结束，如果需要等到线程池任务执行结束，需要调用 awaitTermination 主动等待任务调用结束。  
+&emsp; 调用方法如下：  
 ```java
 threadPool.shutdown();
 try {
@@ -441,10 +437,10 @@ try {
         e.printStackTrace();
 }
 ```
-如果线程池任务执行结束，awaitTermination方法将会返回true，否则当等待时间超过指定时间后将会返回false。  
-如果需要使用这种进制，建议在上面的基础上增加一定重试次数。这个真的很重要！！！  
-####总结：优雅关闭线程池
-处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合 shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
+&emsp; 如果线程池任务执行结束，awaitTermination方法将会返回true，否则当等待时间超过指定时间后将会返回false。  
+&emsp; 如果需要使用这种进制，建议在上面的基础上增加一定重试次数。这个真的很重要！！！  
+####总结：优雅关闭线程池  
+&emsp; 处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合 shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
 ```java
 threadPool.shutdown(); // Disable new tasks from being submitted
 // 设定最大重试次数
@@ -463,7 +459,7 @@ try {
 }
 ```
 ###SpringBoot整合线程池
-springboot框架提供了@Async注解使用ThreadPoolExecutor。可以重写spring默认的线程池或自定义线程池。  
+&emsp; springboot框架提供了@Async注解使用ThreadPoolExecutor。可以重写spring默认的线程池或自定义线程池。  
 ####1. 重写spring默认线程池
 ```java
 @Slf4j
@@ -505,10 +501,9 @@ public class NativeAsyncTaskExecutePool implements AsyncConfigurer{
     }
 }
 ```
-
-重写spring默认线程池的方式，使用时只需要加@Async注解。
+&emsp; 重写spring默认线程池的方式，使用时只需要加@Async注解。  
 ####2. 自定义线程池
-创建线程池配置类TaskExecutePool.java。使用@Configuration和@EnableAsync这两个注解，表示这是个配置类，并且是线程池的配置类。  
+&emsp; 创建线程池配置类TaskExecutePool.java。使用@Configuration和@EnableAsync这两个注解，表示这是个配置类，并且是线程池的配置类。  
 ```java
  @Configuration
  @EnableAsync
@@ -532,20 +527,17 @@ public class NativeAsyncTaskExecutePool implements AsyncConfigurer{
      }
  }
  ```
-
-
-修改启动类，给启动类添加注解。  
+&emsp; 修改启动类，给启动类添加注解。    
 ```
 @EnableAsync
 @EnableConfigurationProperties({TaskThreadPoolConfig.class} ) // 开启配置属性支持
 ```
-
-使用：  
+&emsp; 使用：    
 ```
 @Async("myTaskAsyncPool")  //myTaskAsynPool即配置线程池的方法名，此处如果不写自定义线程池的方法名，会使用默认的线程池`
 ```
 ```
-`//通过注解引入配置
+//通过注解引入配置
 @Resource(name = "defaultThreadPool")  
 private ThreadPoolTaskExecutor executor;
 ```
