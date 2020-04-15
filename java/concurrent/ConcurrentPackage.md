@@ -98,10 +98,7 @@ public class ConditionObject implements Condition, java.io.Serializable {
 
 #####自定义同步器
 不同的自定义同步器争用共享资源的方式也不同。自定义同步器在实现时只需要实现共享资源state的获取与释放方式即可，至于具体线程等待队列的维护（如获取资源失败入队/唤醒出队等），AQS已经在顶层实现好了。自定义同步器实现时主要实现以下几种方法：
-```java
 
-
-```
 
 ----
 ##1. 锁  
@@ -174,6 +171,7 @@ Lock接口提供了与synchronized关键字类似的同步功能，但需要在�
 
 #####使用示例：  
 &emsp; 在使用重入锁时，一定要在程序最后释放锁。一般释放锁的代码要写在finally里。否则，如果程序出现异常，Loack就永远无法释放了。(synchronized的锁是JVM最后自动释放的。)  
+
 ```java
 private final ReentrantLock lock = new ReentrantLock();
 
@@ -245,6 +243,7 @@ public Object handleRead() throws InterruptedException {
 &emsp; 写。独占锁，只有当前没有线程持有读锁或者写锁时才能获取到该锁。方法writeLock()返回一个可用于unlockWrite(long)释放锁的方法的戳记。tryWriteLock()提供不计时和定时的版本。  
 &emsp; 读。共享锁，如果当前没有线程持有写锁即可获取该锁，可以由多个线程获取到该锁。方法readLock()返回可用于unlockRead(long)释放锁的方法的戳记。tryReadLock()也提供不计时和定时的版本。  
 &emsp; 乐观读。方法tryOptimisticRead()仅当锁定当前未处于写入模式时，方法才会返回非零戳记。返回戳记后，需要调用validate(long stamp)方法验证戳记是否可用。也就是看当调用tryOptimisticRead返回戳记后到到当前时间是否有其他线程持有了写锁，如果有，返回false，否则返回true，这时就可以使用该锁了。  
+
 ----
 ###2. 15种锁锁分类：  
 ![avatar](../../images/java/concurrent/concurrent-4.png)  
@@ -270,6 +269,7 @@ public Object handleRead() throws InterruptedException {
 原子更新基本类型：AtomicBoolean、AtomicInteger、AtomicLong。  
 原子更新引用类型：AtomicReference、AtomicStampedRerence、AtomicMarkableReference。
 这几个类的操作基本类似，底层都是调用Unsafe的compareAndSwapXxx()来实现，基本用法如下：  
+
 ```java
 private static void testAtomicReference() {
 
@@ -289,6 +289,7 @@ private static void testAtomicReference() {
 ####2.原子更新数组中的元素：  
 原子更新数组：AtomicIntegerArray、AtomicLongArray、AtomicReferenceArray。
 这几个类的操作基本类似，更新元素时都要指定在数组中的索引位置，基本用法如下：  
+
 ```java
 private static void testAtomicReferenceArray() {
 
@@ -305,7 +306,8 @@ private static void testAtomicReferenceArray() {
 }
 ```  
 ####3.原子更新对象中的字段：  
-原子更新对象的属性：AtomicIntegerFieldUpdater、AtomicLongFieldUpdater、AtomicReferenceFieldUpdater。这几个类的操作基本类似，都需要传入要更新的字段名称，基本用法如下：
+原子更新对象的属性：AtomicIntegerFieldUpdater、AtomicLongFieldUpdater、AtomicReferenceFieldUpdater。这几个类的操作基本类似，都需要传入要更新的字段名称，基本用法如下：  
+
 ```java
 private static void testAtomicReferenceField() {
 
@@ -326,6 +328,7 @@ private static void testAtomicReferenceField() {
 （4）DoubleAccumulator，double类型的聚合器，需要传入一个double类型的二元操作，可以用来计算各种聚合操作，包括加乘等。  
 （5）DoubleAdder，double类型的累加器，DoubleAccumulator的特例，只能用来计算加法，且从0开始计算。  
 这几个类的操作基本类似，其中DoubleAccumulator和DoubleAdder底层其实也是用long来实现的，基本用法如下：  
+
 ```java
 private static void testNewAtomic() {
 
@@ -344,7 +347,8 @@ private static void testNewAtomic() {
 ###AtomicStampedReference类详解  
 &emsp; Java1.5中提供了AtomicStampedReference这个类，解决ABA问题。这个类的compareAndSet方法作用是首先检查当前引用是否等于预期引用，并且当前标志是否等于预期标志，如果全部相等，则以原子方式将该引用和该标志的值设置为给定的更新值。  
 ####源码分析：  
-内部类
+内部类  
+
 ```java
 private static class Pair<T> {
     final T reference;
@@ -360,6 +364,7 @@ private static class Pair<T> {
 ```  
 &emsp; 将元素值和版本号绑定在一起，存储在Pair的reference和stamp（邮票、戳的意思）中。  
 属性  
+
 ```java
 private volatile Pair<V> pair;
 private static final sun.misc.Unsafe UNSAFE = sun.misc.Unsafe.getUnsafe();
@@ -367,7 +372,8 @@ private static final long pairOffset = objectFieldOffset(UNSAFE, "pair", AtomicS
 ```  
 &emsp; 声明一个Pair类型的变量并使用Unsfae获取其偏移量，存储到pairOffset中。  
 &emsp; CAS算法核心类，sun.misc.Unsafe提供了访问底层的机制（native()方法也有访问底层的功能），这种机制仅供java核心类库使用。  
-***构造方法***  
+&emsp; ***构造方法*** &emsp;  
+
 ```java
 /**
  * @param initialRef 初始值
@@ -377,7 +383,8 @@ public AtomicStampedReference(V initialRef, int initialStamp) {
     pair = Pair.of(initialRef, initialStamp);
 }
 ```  
-compareAndSet()方法  
+&emsp; ***compareAndSet()方法***  
+
 ```java
 public boolean compareAndSet(V expectedReference, V newReference, int expectedStamp, int newStamp) {
     // 获取当前的（元素值，版本号）对
@@ -403,7 +410,8 @@ private boolean casPair(Pair<V> cmp, Pair<V> val) {
 （1）如果元素值和版本号都没有变化，并且和新的也相同，返回true；  
 （2）如果元素值和版本号都没有变化，并且和新的不完全相同，就构造一个新的Pair对象并执行CAS更新pair。  
 ####示例：  
-示例代码分别用AtomicInteger和AtomicStampedReference来对初始值为100的原子整型变量进行更新，AtomicInteger会成功执行CAS操作，而加上版本戳的AtomicStampedReference对于ABA问题会执行CAS失败：  
+&emsp; 示例代码分别用AtomicInteger和AtomicStampedReference来对初始值为100的原子整型变量进行更新，AtomicInteger会成功执行CAS操作，而加上版本戳的AtomicStampedReference对于ABA问题会执行CAS失败：  
+
 ```java
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -469,11 +477,10 @@ public class ABA {
     }
 }
 ```  
----  
-##3. ***Collections，14个并发容器  
+----  
+##3. Collections，14个并发容器  
 ![avatar](../../images/java/concurrent/concurrent-5.png)  
-按照线程安全模型分类：copy-on-write、CAS（JDK1.8 ConcurrentHashMap）、
-读写分离（LinkedBlockingQueue）。  
+&emsp; 按照线程安全模型分类：copy-on-write、CAS（JDK1.8 ConcurrentHashMap）、读写分离（LinkedBlockingQueue）。    
 ###0. CopyOnWrite简介：  
 &emsp; CopyOnWrite，简称COW。所谓写时复制，即读操作时不加锁以保证性能不受影响；写操作时加锁，复制资源的一份副本，在副本上执行写操作，写操作完成后将资源的引用指向副本。  
 &emsp; 使用场景：CopyOnWrite并发容器用于读多写少的并发场景。比如白名单，黑名单，商品类目的访问和更新场景，假如有一个搜索网站，用户在这个网站的搜索框中，输入关键字搜索内容，但是某些关键字不允许被搜索。这些不能被搜索的关键字会被放在一个黑名单当中，黑名单每天晚上更新一次。当用户搜索时，会检查当前关键字在不在黑名单当中，如果在，则提示不能搜索。  
@@ -597,7 +604,7 @@ public class BlackListServiceImpl {
 #####Java7 ConcurrentHashMap  
 
 #####Java8 ConcurrentHashMap  
-    JDK8的ConcurrentHashMap的数据结构和JDK1.8的HashMap基本上一样，了解Hashmap的结构，就基本了解了Concurrenthashmap了，只是增加了同步的操作来控制并发。JDK8采用CAS(读)+Synchronized(写)保证线程安全。  
+&emsp; JDK8的ConcurrentHashMap的数据结构和JDK1.8的HashMap基本上一样，了解Hashmap的结构，就基本了解了Concurrenthashmap了，只是增加了同步的操作来控制并发。JDK8采用CAS(读)+Synchronized(写)保证线程安全。  
     
 ####2.2. ConcurrentSkipListMap
 &emsp; ConcurrentSkipListMap与TreeMap都是有序的哈希表。  
@@ -605,9 +612,272 @@ public class BlackListServiceImpl {
 &emsp; ConcurrentSkipListMap是通过跳表（skip list）实现的，而TreeMap是通过红黑树实现的。
 
 ####3. Set，CopyOnWriteArraySet、ConcurrentSkipListSet  
+&emsp; JUC容器Set的实现有CopyOnWriteArraySet与ConcurrentSkipListSet。CopyOnWriteArraySet相当于线程安全的HashSet，CopyOnWriteArraySet的实现依赖于CopyOnWriteArrayList；ConcurrentSkipListSet相当于线程安全的TreeSet，ConcurrentSkipListSet的实现依赖于ConcurrentSkipListMap。  
+&emsp; CopyOnWriteArraySet适用于读多写少的高并发场合，在需要并发写的场合，则可以使用 Set s = Collections.synchronizedSet(Set<T> s)得到一个线程安全的Set。 
+
+####4. Queue  
+![avatar](../../images/java/concurrent/concurrent-6.png)  
+&emsp; 在并发队列上，JDK提供了两套实现，一个是以ConcurrentLinkedQueue为代表的高性能队列，一个是以BlockingQueue接口为代表的阻塞队列。  
+&emsp; ConcurrentLinkedQueue是一个适用于高并发场景下的队列。它通过无锁的方式，实现了高并发状态下的高性能。通常，ConcurrentLinkedQueue的性能要好于BlockingQueue 。  
+&emsp; 与 ConcurrentLinkedQueue 的使用场景不同，BlockingQueue 的主要功能并不是在于提升高并发时的队列性能，而在于简化多线程间的数据共享。  
+
+&emsp; JDK7提供了6个阻塞队列实现类。分别是：  
+* ArrayBlockingQueue：一个由数组结构组成的有界阻塞队列。  
+* LinkedBlockingQueue：一个由链表结构组成的有界阻塞队列。  
+* PriorityBlockingQueue：一个支持优先级排序的无界阻塞队列。  
+* DelayQueue：一个使用优先级队列实现的无界阻塞队列。  
+* SynchronousQueue：一个不存储元素的阻塞队列。  
+* LinkedTransferQueue：一个由链表结构组成的无界阻塞队列。  
+
+----
+##4. Tools，工具类  
+&emsp; Java提供了三个同步工具类：CountDownLatch(计数器)、CyclicBarrier(栅栏)、Semaphore(信号量)。这几个工具类是为了能够更好控制线程之间的通讯问题。  
+###CountDownLatch，线程计数器    
+&emsp; java.util.concurrent.CountDownLatch类，允许一个或多个线程等待直到在其他线程中执行的一组操作完成的同步辅助。利用它可以实现类似计数器的功能。比如有一个任务A，它要等待其他4个任务执行完毕之后才能执行，此时就可以利用CountDownLatch来实现这种功能了。  
+
+***注意：***  
+&emsp; CountDownLatch对象不能被重复利用，也就是不能修改计数器的值。  
+&emsp; CountDownLatch代表的计数器的大小可以为0，意味着在一个线程调用await方法时会立即返回。  
+&emsp; 如果某些线程中有阻塞操作的话，最好使用带有超时时间的await方法，以免该线程调用await方法之后永远得不到执行。  
+
+&emsp; CountDownLatch与Thread的join()方法方法对比：  
+&emsp; Thread的join方法，这个方法表示一个线程将等待另一个线程执行完才能继续执行。  
+&emsp; CountDownLatch代表的是一个计数器，不论是否在同一线程中，不论线程是否执行完成，都可以随时随地调用CountDownLatch的countDown方法，而Thread的成员方法join只能在一个线程中对另一个线程对象调用，而且方法返回的前提是线程已经执行完成。  
+&emsp; 所以使用CountDownLatch会比join方法更灵活。  
+####API：  
+![avatar](../../images/java/concurrent/concurrent-8.png)  
+&emsp; ***构造函数：***  
+
+```java
+/创建对象时，指定计数器大小
+public CountDownLatch(int count) {
+    if (count < 0) throw new IllegalArgumentException("count < 0");
+    this.sync = new Sync(count);
+}
+```  
+&emsp; ***成员方法：***  
+
+```java
+//创建对象时，指定计数器大小
+public CountDownLatch(int count) {
+    if (count < 0) throw new IllegalArgumentException("count < 0");
+    this.sync = new Sync(count);
+}
+//返回当前计数
+public long getCount() {
+    return sync.getCount();
+}
+//计数减1，如果计数达到零，则释放所有等待的线程
+public void countDown() {
+    sync.releaseShared(1);
+}
+//使当前线程在计数至0之前一直等待，计数为0时返回
+public void await() throws InterruptedException {
+    sync.acquireSharedInterruptibly(1);
+}
+//使当前线程在指定时间内等待计数器为0，超时或计数为0的时候则返回
+public boolean await(long timeout, TimeUnit unit)
+        throws InterruptedException {
+    return sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));
+}
+```  
+&emsp; CountDownLatch内部通过共享锁实现。在创建CountDownLatch实例时，需要传递一个int型的参数：count，该参数为计数器的初始值，也可以理解为该共享锁可以获取的总次数。当某个线程调用await()方法，程序首先判断count的值是否为0，如果不会0的话则会一直等待直到为0为止。当其他线程调用countDown()方法时，则执行释放共享锁状态，使count值- 1。当在创建CountDownLatch时初始化的count参数，必须要有count线程调用countDown方法才会使计数器count等于0，锁才会释放，前面等待的线程才会继续运行。注意CountDownLatch不能回滚重置。  
+####示例：  
+
+```java
+public class CountdownLatchExample {
+
+    public static void main(String[] args) throws InterruptedException {
+        final int totalThread = 10;
+        CountDownLatch countDownLatch = new CountDownLatch(totalThread);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        for (int i = 0; i < totalThread; i++) {
+            executorService.execute(() -> {
+                System.out.print("run..");
+                //每次执行完一个任务的时候都调用一下这个CountDownLatch对象的countDown方法，每调用一下countDown方法计数就会减1
+                countDownLatch.countDown();
+            });
+        }
+        //在CountDownLatch对象的计数减为0之前，这个方法会一只等待，直到totalThread个线程都调用了countDown方法，计数减为0，await方法返回，其他线程继续执行
+        countDownLatch.await();
+        System.out.println("end");
+        executorService.shutdown();
+    }
+
+}
+//打印结果：run..run..run..run..run..run..run..run..run..run..end
+```  
+###CyclicBarrier，回环栅栏  
+&emsp; 字面意思是回环栅栏，它允许一组线程互相等待，直到到达某个公共屏障点 (common barrier point)之后，再全部同时执行。叫做回环是因为当所有等待线程都被释放以后， CyclicBarrier可以被重用。  
+&emsp; 应用场景：CyclicBarrier适用于多线程结果合并的操作，用于多线程计算数据，最后合并计算结果的应用场景。比如需要统计多个Excel中的数据，然后等到一个总结果。可以通过多线程处理每一个Excel，执行完成后得到相应的结果，最后通过barrierAction来计算这些线程的计算结果，得到所有Excel的总和。  
+####API：  
+&emsp; ***构造函数：***  
+
+```java
+//创建对象的时候指定计算器大小
+public CyclicBarrier(int parties) {
+    this(parties, null);
+}
+//创建对象的时候指定计算器大小，在所有线程都运行到栅栏的时候，barrierAction会在其他线程恢复执行之前优先执行
+public CyclicBarrier(int parties, Runnable barrierAction) {
+    if (parties <= 0) throw new IllegalArgumentException();
+    this.parties = parties;
+    this.count = parties;
+    this.barrierCommand = barrierAction;
+}
+```  
+
+&emsp; ***成员方法：***  
+
+```java
+//返回计数器数值
+public int getParties() {
+    
+}
+//返回当前在栅栏处等待的线程数目
+public int getNumberWaiting() {
+
+}
+//线程在调用处等待，直到与计数器数值相同数量的线程都到调用此方法，所有线程恢复执行
+//用来挂起当前线程，直至所有线程都到达 barrier 状态再同时执行后续任务
+public int await() throws InterruptedException, BrokenBarrierException {
+
+}
+//让这些线程等待至一定的时间，如果还有线程没有到达 barrier 状态就直接让到达barrier的线程执行后续任务。
+public int await(long timeout, TimeUnit unit)
+
+}
+//移除栅栏。执行本操作后可以继续在其他线程中使用await操作
+public void reset() {
+
+}
+//
+public boolean isBroken() {
+
+}
+```  
+####示例：  
+
+```java
+public class CyclicBarrierExample {
 
 
+    public static void main(String[] args) {
+        final int totalThread = 10;
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(totalThread);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        for (int i = 0; i < totalThread; i++) {
+            executorService.execute(() -> {
+                System.out.print("before..");
+                try {
+                    cyclicBarrier.await();
+                } catch (InterruptedException | BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
+                System.out.print("after..");
+            });
+        }
+        executorService.shutdown();
+    }
+}
+//    before..before..before..before..before..before..before..before..before..before..after..after..after..after..after..after..after..after..after..after..
+```  
+####CycliBarriar和CountdownLatch有什么区别？  
+* CountDownLatch的作用是允许1或N个线程等待其他线程完成执行；而CyclicBarrier则是允许N个线程相互等待。  
+* CountDownLatch的计数器无法被重置；CyclicBarrier的计数器可以被重置后使用，因此它被称为是循环的barrier  
 
+###Semaphore，信号量-控制同时访问的线程个数  
+&emsp; Semaphore类，一个计数信号量。从概念上讲，信号量维护了一个许可集合。如有必要，在许可可用前会阻塞每一个acquire()，然后再获取该许可。每个 release()添加一个许可，从而可能释放一个正在阻塞的获取者。但是，不使用实际的许可对象，Semaphore只对可用许可的号码进行计数，并采取相应的行动。  
+&emsp; Semaphore通常用于限制可以访问某些资源（物理或逻辑的）的线程数目。  
 
+&emsp; Semaphore与ReentrantLock：  
+&emsp; 信号量为多线程协作提供了更为强大的控制方法。信号量是对锁的扩展。无论是内部锁synchronized还是重入锁ReentrantLock，一次都允许一个线程访问一个资源，而信号量却可以指定多个线程同时访问某一个资源。  
+&emsp; Semaphore 基本能完成ReentrantLock的所有工作，使用方法也与之类似，通过 acquire()与release()方法来获得和释放临界资源。经实测，Semaphone.acquire()方法默认为可响应中断锁，与ReentrantLock.lockInterruptibly()作用效果一致，也就是说在等待临界资源的过程中可以被Thread.interrupt()方法中断。  
+&emsp; 此外，Semaphore 也实现了可轮询的锁请求与定时锁的功能，除了方法名 tryAcquire与tryLock不同，其使用方法与ReentrantLock几乎一致。Semaphore也提供了公平与非公平锁的机制，也可在构造函数中进行设定。  
+&emsp; Semaphore的锁释放操作也由手动进行，因此与ReentrantLock一样，为避免线程因抛出异常而无法正常释放锁的情况发生，释放锁的操作也必须在finally 代码块中完成。  
 
+&emsp; 使用场景：Semaphore可以用来构建一些对象池，资源池之类的， 比如数据库连接池。  
+####API：  
+&emsp; ***构造函数：***  
 
+```java
+//创建具有给定的许可数和非公平的公平设置的Semaphore。
+public Semaphore(int permits) {
+    sync = new NonfairSync(permits);
+}
+//创建具有给定的许可数和给定的公平设置的Semaphore
+public Semaphore(int permits, boolean fair) {
+    sync = fair ? new FairSync(permits) : new NonfairSync(permits);
+}
+```  
+&emsp; ***成员方法：***  
+
+```java
+//用来获取一个许可，若无许可能够获得，则会一直等待，直到获得许可。
+public void acquire() throws InterruptedException
+//获取 permits 个许可
+public void acquire(int permits)
+// 类似于acquire()，但是不会响应中断。
+public void acquireUninterruptibly()
+// 尝试获取，如果成功则为true，否则false。这个方法不会等待，立即返回。
+public boolean tryAcquire()
+//尝试获取permits个许可，若在指定的时间内获取成功，则立即返回true，否则则立即返回false
+public boolean tryAcquire(int permits, long timeout, TimeUnit unit)
+//尝试获取一个许可，若在指定的时间内获取成功，则立即返回 true，否则则立即返回 false
+public boolean tryAcquire(long timeout, TimeUnit unit) throws InterruptedException
+//用于在现场访问资源结束后，释放一个许可，以使其他等待许可的线程可以进行资源访问。
+public void release()
+```  
+####示例：  
+&emsp; JDK文档中提供使用信号量的实例。这个实例很好的解释了如何通过信号量控制资源访问。  
+
+```java
+public class Pool {
+    private static final int MAX_AVAILABLE = 100;
+    private final Semaphore available = new Semaphore(MAX_AVAILABLE, true);
+    public Object getItem() throws InterruptedException {
+        available.acquire();
+        // 申请一个许可
+        // 同时只能有100个线程进入取得可用项，
+        // 超过100个则需要等待
+        return getNextAvailableItem();
+    }
+
+    public void putItem(Object x) {
+        // 将给定项放回池内，标记为未被使用
+        if (markAsUnused(x)) {
+            available.release();
+            // 新增了一个可用项，释放一个许可，请求资源的线程被激活一个
+        }
+    }
+
+    // 仅作示例参考，非真实数据
+    protected Object[] items = new Object[MAX_AVAILABLE]; // 用于对象池复用对象
+    protected boolean[] used = new boolean[MAX_AVAILABLE]; // 标记作用
+
+    protected synchronized Object getNextAvailableItem() {
+        for (int i = 0; i < MAX_AVAILABLE; ++i) {
+            if (!used[i]) {
+                used[i] = true;
+                return items[i];
+            }
+        }
+        return null;
+    }
+
+    protected synchronized boolean markAsUnused(Object item) {
+        for (int i = 0; i < MAX_AVAILABLE; ++i) {
+            if (item == items[i]) {
+                if (used[i]) {
+                    used[i] = false;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+}
+```  
+&emsp; 此实例简单实现了一个对象池，对象池最大容量为100。因此，当同时有100个对象请求时，对象池就会出现资源短缺，未能获得资源的线程就需要等待。当某个线程使用对象完毕后，就需要将对象返回给对象池。此时，由于可用资源增加，因此，可以激活一个等待该资源的线程。  
