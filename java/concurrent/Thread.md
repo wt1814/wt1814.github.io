@@ -1,0 +1,311 @@
+
+
+#线程基本  
+##1. 线程简介  
+###线程、进程  
+&emsp; 进程是一个“执行中的程序”，是系统进行资源分配和调度的一个独立单位；  
+&emsp; 线程是进程的一个实体，一个进程中拥有多个线程，线程之间共享地址空间和其它资源（所以通信和同步等操作线程比进程更加容易）；  
+
+&emsp; 线程上下文的切换比进程上下文切换要快很多。  
+（1）进程切换时，涉及到当前进程的CPU环境的保存和新被调度运行进程的CPU环境的设置。  
+（2）线程切换仅需要保存和设置少量的寄存器内容，不涉及存储管理方面的操作。  
+
+&emsp; 进程间如何通讯？线程间如何通讯？  
+&emsp; 进程间通讯依靠IPC资源，例如管道（pipes）、套接字（sockets）等；  
+&emsp; 线程间通讯依靠JVM提供的API，例如wait()、notify()、notifyAll()等方法，线程间还可以通过共享的主内存来进行值的传递。  
+###线程的分类  
+&emsp; 线程分为用户线程、守护线程。线程初始化默认为用户线程。  
+&emsp; 使用setDaemon()方法将一个线程设置为守护线程。main()属于非守护线程。  
+
+```java
+Thread thread = new Thread(new MyRunnable());
+thread.setDaemon(true);
+```  
+&emsp; 守护线程唯一的用途就是为其他线程提供服务。当所有非守护线程结束时，程序也就终止，同时会杀死所有守护线程。计时线程、JVM的垃圾回收、内存管理等线程都是守护线程。  
+###线程状态  
+![avatar](../../images/java/concurrent/thread-2.png)  
+&emsp; Java线程状态均来自Thread类下的State这一内部枚举类中所定义的状态：  
+* 新建状态（NEW）：一个尚未启动的线程处于这一状态。用new语句创建的线程处于新建状态，此时它和其他Java对象一样，仅仅在堆区中被分配了内存，并初始化其成员变量的值。  
+* 就绪状态（Runnable）：当一个线程对象创建后，其他线程调用它的start()方法，该线程就进入就绪状态，Java虚拟机会为它创建方法调用栈和程序计数器。处于这个状态的线程位于可运行池中，等待获得CPU的使用权。  
+* 阻塞状态（BLOCKED）：阻塞状态是指线程因为某些原因放弃CPU，暂时停止运行。当线程处于阻塞状态时，Java虚拟机不会给线程分配CPU。直到线程重新进入就绪状态（获取监视器锁），它才有机会转到运行状态。可分为以下3种：  
+  * 等待阻塞（o.wait->等待对列）：运行的线程执行wait()方法，JVM会把该线程放入等待池中。(wait会释放持有的锁)  
+  * 同步阻塞(lock->锁池)：运行的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则JVM会把该线程放入锁池(lock pool)中。  
+  * 其他阻塞状态（Otherwise Blocked）(sleep/join)：当前线程执行了sleep()方法，或者调用了其他线程的join()方法，或者发出了I/O请求时，就会进入这个状态。  
+* WAITING (等待)：一个正在无限期等待另一个线程执行一个特别的动作的线程处于这一状态。  
+* TIMED_WAITING (计时等待)：一个正在限时等待另一个线程执行一个动作的线程处于这一状态。  
+* TERMINATED (终止)：一个已经退出的线程处于这一状态。线程会以下面三种方式结束，结束后就是死亡状态。  
+  * 正常结束：run()或 call()方法执行完成，线程正常结束。  
+  * 异常结束：线程抛出一个未捕获的Exception或Error。  
+  * 调用stop：直接调用该线程的stop()方法来结束该线程—该方法通常容易导致死锁，不推荐使用。  
+
+&emsp; 线程状态切换：  
+![avatar](../../images/java/concurrent/thread-1.png)  
+###线程优先级  
+&emsp; 线程的最小优先级：线程的最大优先级，10；线程的默认优先级，5。  
+&emsp; 通过调用getPriority()和setPriority(int newPriority)方法来获得和设置线程的优先级。  
+&emsp; 线程优先级特性：  
+* 继承性：比如A线程启动B线程，则B线程的优先级与A是一样的。  
+* 规则性：高优先级的线程总是大部分先执行完，但不代表高优先级线程全部先执行完。  
+* 随机性：优先级较高的线程不一定每一次都先执行完。  
+###线程调度：  
+&emsp; 线程调度：CPU在某一个时刻只能执行一条指令，线程只有得到CPU时间片，也就是使用权，才可以执行指令。线程的两种调度模型（Java使用的是抢占式调度模型）：  
+1. 分时调度模型，所有线程轮流使用CPU的使用权，平均分配每个线程占用CPU的时间片。  
+2. 抢占式调度模型，优先让优先级高的线程使用CPU，如果线程的优先级相同，那么会随机选择一个，优先级高的线程获取的CPU时间片相对多一些。   
+
+----  
+##2. 线程的使用  
+###2.1. 创建并运行java线程  
+&emsp; Java使用Thread类代表线程，所有的线程对象都必须是Thread类或其子类的实例。  
+&emsp; Java创建线程方式：1.继承Thread类；2.实现Runnable接口；3.使用Callable和Future；4.使用线程池；  
+####继承Thread父类  
+&emsp; 1.定义Thread类的子类，并重写该类的run()方法(线程执行体，线程需要完成的任务)；  
+&emsp; 2.创建Thread子类的实例；  
+&emsp; 3.启动线程，即调用线程的start()方法；  
+***匿名类实现：创建一个Thread的匿名子类：***  
+
+```java
+Thread thread = new Thread(){
+    public void run(){
+        System.out.println("Thread Running");
+    }
+};
+thread.start();
+```  
+
+####实现Runnable接口  
+&emsp; 1.定义Runnable接口的实现类，重写run()方法；  
+&emsp; 2.创建Runnable实现类的实例，并用这个实例作为Thread的target来创建Thread对象，这个Thread对象才是真正的线程对象；  
+&emsp; 3.调用线程对象的start()方法来启动线程；  
+***匿名类实现：创建一个实现Runnable接口的匿名类，如下所示：*** 
+ 
+```java
+Runnable myRunnable = new Runnable(){
+    public void run(){
+        System.out.println("Runnable running");
+    }
+}
+Thread thread = new Thread(myRunnable);
+thread.start();
+```
+####实现Callable和Future接口  
+&emsp; Callable接口提供了一个call()方法作为线程执行体，call()方法比run()方法功能要强大。1.call()方法可以有返回值；2.call()方法可以声明抛出异常。
+&emsp; Java5提供了Future接口来代表Callable接口里call()方法的返回值，并且为Future接口提供了一个实现类FutureTask，表示一个可以取消的异步运算。它有启动和取消运算、查询运算是否完成和取回运算结果等方法。只有当运算完成的时候结果才能取回，如果运算尚未完成get方法将会阻塞。FutureTask既实现了Future接口，还实现了Runnable接口，因此可以作为Thread类的target。
+
+&emsp; 在Future接口里定义了几个公共方法来控制它关联的Callable任务。  
+
+```java
+boolean cancel(boolean mayInterruptIfRunning)：视图取消该Future里面关联的Callable任务；
+V get()：返回Callable里call（）方法的返回值，调用这个方法会导致程序阻塞，必须等到子线程结束后才会得到返回值；
+V get(long timeout,TimeUnit unit)：返回Callable里call（）方法的返回值，最多阻塞timeout时间，经过指定时间没有返回，抛出TimeoutException
+boolean isDone()：若Callable任务完成，返回True；
+boolean isCancelled()：如果在Callable任务正常完成前被取消，返回True；
+```
+&emsp; 使用步骤：  
+1.创建Callable接口的实现类，并实现call()方法，该call()方法将作为线程执行体，并且有返回值。  
+2.创建Callable实现类的实例，使用FutureTask类来包装Callable对象，该FutureTask对象封装了该Callable对象的call()方法的返回值（从java8开始可以直接使用Lambda表达式创建Callable对象）。  
+3.使用FutureTask对象作为Thread对象的target创建并启动新线程。  
+4.调用FutureTask对象的get()方法来获得子线程执行结束后的返回值。  
+
+&emsp; 匿名类实现：  
+
+```java
+FutureTask<String> ft = new FutureTask<String>(new Callable<String>() {
+@Override
+public String call() throws Exception {
+    System.out.println("new Thread 3");
+    return "aaaa";
+}
+});
+
+Thread t3 = new Thread(ft);
+t3.start();
+String result = ft.get();
+System.out.println(result);//输出:aaaa
+```  
+####三种创建线程的不同：  
+&emsp; 实现Runnable和Callable接口的类只能当做一个可以在线程中运行的任务，不是真正意义上的线程，因此最后还需要通过Thread来调用。可以说任务是通过线程驱动从而执行的。实际上所有的多线程代码都是通过运行Thread的start()方法来运行的。  
+&emsp; 实现接口和继承Thread的不同：实现Runnable接口、Callable接口避免了单继承的局限性。Callable支持返回多种类型的数据。  
+###2.2. 线程操作：  
+####2.2.1. Thread的API  
+#####Thread.java的构造函数：  
+
+```java
+//
+public Thread()
+//
+public Thread(Runnable target)
+//
+public Thread(Runnable target, AccessControlContext acc)
+//
+public Thread(ThreadGroup group, Runnable target)
+//
+public Thread(String name)
+//
+public Thread(ThreadGroup group, String name)
+//
+public Thread(Runnable target, String name)
+//
+public Thread(ThreadGroup group, Runnable target, String name)
+//
+public Thread(ThreadGroup group, Runnable target, String name, long stackSize)
+```  
+&emsp; 线程名：创建一个线程，给线程起一个名字。有助于区分不同的线程。  
+
+```java
+MyRunnable runnable = new MyRunnable();
+Thread thread = new Thread(runnable, "New Thread");
+thread.start();
+System.out.println(thread.getName());
+```  
+&emsp; 注：MyRunnable并非Thread的子类，所以MyRunnable类并没有getName()方法。可以通过以下方式得到当前线程的引用：Thread.currentThread()。因此，通过如下代码可以得到当前线程的名字，此方法可以获取任意方法所在的线程名称。String threadName = Thread.currentThread().getName();  
+
+&emsp; 线程组：ThreadGroup并不能提供对线程的管理，其主要功能是对线程进行组织。在构造Thread时，可以显示地指定线程的Group（ThreadGroup）。如果没有显示指定，子线程会被加入父线程所在的线程组（无论如何线程都会被加入某个Thread Group之中）。  
+#####Thread.java的方法：  
+
+| 名称 | 作用 |
+| ---- | ---- | 
+|currentThread()|返回对当前正在执行的线程对象的引用。静态方法。|
+|getId()|返回此Thread的标识符。|
+|getName()|返回此线程的名称。|
+|getPriority()|返回此线程的优先级。|
+|getState()|返回此线程的状态。|
+|getThreadGroup()|返回此线程所属的线程组。|
+|interrupt()|中断此线程。|
+|join()|等待这个线程死亡。|
+|setDaemon(boolean on)|将此线程标记为守护程序线程或用户线程。|
+|setName(String name)|将此线程的名称更改为等于参数name。|
+|setPriority(int newPriority)|更改此线程的优先级。|
+
+
+######sleep()方法、与Object.wait（）方法的区别  
+&emsp; Thead.sleep()和Object.wait()都可以让线程阻塞，也都可以指定超时时间，甚至还都会抛出中断异常InterruptedException。  
+  
+&emsp; Thead.sleep()和Object.wait()的区别：锁是否还占用。  
+&emsp; Object.wait()，线程在wait等待时会释放锁，wait通常被用于线程间交互。当调用wait()方法的时候，线程会放弃对象锁（其它线程有机会进入该同步方法），进入等待此对象的等待锁定池，只有针对此对象调用notify()方法后本线程才进入对象锁定池准备获取对象锁进入运行状态。  
+&emsp; Thead.sleep()，线程在等待时sleep一直持有锁（其他线程无法进入当前同步方法），sleep通常被用于暂停执行。  
+
+&emsp; 注意：  
+&emsp; wait()方法会释放CPU执行权 和 占有的锁。  
+&emsp; sleep(long)方法仅释放CPU使用权，锁仍然占用；线程被放入超时等待队列，与yield相比，它会使线程较长时间得不到运行。  
+&emsp; yield()方法仅释放CPU执行权，锁仍然占用，线程会被放入就绪队列，会在短时间内再次执行。  
+######yield()方法，线程让步  
+&emsp; yield会使当前线程让出CPU执行时间片，与其他线程一起重新竞争 CPU 时间片。一般情况下，优先级高的线程有更大的可能性成功竞争得到CPU时间片， 但这又不是绝对的，有的操作系统对线程优先级并不敏感。  
+
+```java
+/**
+ * 提示当前线程可以让处理器忽略当前线程，去处理其他线程
+ * 它是一种启发式尝试，用于改善线程之间的相对进展，否则会过度利用CPU。它的使用应与详细的分析和基准测试相结合，以确保它实际上具有所需的效果。
+ * 使用这种方法很少是合适的。它可能对调试或测试目的很有用，它可能有助于重现因竞争条件而产生的错误。在设计并发控制结构（如中的那些）时，它也可能很有用
+ */
+public static native void yield();
+```
+&emsp; yield() 这个方法从以上注释可以看出，也是一个休眠自身线程的方法，同样不会释放自身锁的标识，区别在于它是没有参数的，即yield()方法只是使当前线程重新回到可执行状态，  
+&emsp; 所以执行yield()的线程有可能在进入到可执行状态后马上又被执行，另外yield()方法只能使同优先级或者高优先级的线程得到执行机会，这也和sleep()方法不同。  
+######Join()方法
+
+######interrupt()与stop()，中断线程  
+&emsp; stop()方法，这个方法已经标记为过时了，强制停止线程，相当于kill -9。  
+&emsp; interrupt() 方法，优雅的停止线程。告诉线程可以停止了，至于线程什么时候停止，取决于线程自身。  
+&emsp; 中断线程示例：  
+
+```java
+public class InterruptDemo {
+    private static int i ;
+    public static void main(String[] args) throws InterruptedException {
+        Thread thread = new Thread(() -> {
+            //默认情况下isInterrupted 返回 false、通过 thread.interrupt 变成了 true
+            while (!Thread.currentThread().isInterrupted()) {
+                i++;
+            }
+            System.out.println("Num:" + i);
+        }, "interruptDemo");
+        thread.start();
+        TimeUnit.SECONDS.sleep(1);
+        thread.interrupt(); //不加这句,thread线程不会停止
+    }
+}
+```
+&emsp; 看上面这段代码，主线程 main方法调用thread线程的 interrupt() 方法，就是告诉thread线程，你可以停止了（其实是将thread线程的一个属性设置为了 true ），然后thread线程通过isInterrupted() 方法获取这个属性来判断是否设置为了true。  
+
+&emsp; 总结一下：当其他线程通过调用当前线程的interrupt方法，表示向当前线程打个招呼，告诉它可以中断线程的执行了，并不会立即中断线程，至于什么时候中断，取决于当前线程自己。  
+&emsp; 线程通过检查自身是否被中断来进行相应，可以通过isInterrupted()来判断是否被中断。  
+&emsp; 这种通过标识符来实现中断操作的方式能够使线程在终止时有机会去清理资源，而不是武断地将线程停止，因此这种终止线程的做法显得更加安全和优雅。  
+####2.2.2. 线程传参  
+&emsp; 在多线程的异步开发模式下，数据的传递和返回和同步开发模式有很大的区别。由于线程的运行和结束是不可预料的，因此，在传递和返回数据时就无法像函数一样通过函数参数和return语句来返回数据。  
+#####1.构造方法  
+&emsp; 在创建线程时，必须要建立一个Thread类的或其子类的实例。因此可以在调用start方法之前通过线程类的构造方法将数据传入线程。并将传入的数据使用类变量保存起来，以便线程使用。  
+
+```java
+public class MyThread extends Thread{
+    private String name;
+    public MyThread(String name){
+        this.name = name;
+    }
+    public void run() {
+        System.out.println("hello "+name);
+    }
+    public static void main(String[] args){
+        Thread thread = new MyThread("world");
+        thread.start();
+    }
+}
+```  
+&emsp; 由于这种方法是在创建线程对象的同时传递数据的，因此，在线程运行之前这些数据就就已经到位了，这样就不会造成数据在线程运行后才传入的现象。如果要传递更复杂的数据，可以使用集合、类等数据结构。使用构造方法来传递数据虽然比较安全，但如果要传递的数据比较多时，就会造成很多不便。由于Java没有默认参数，要想实现类似默认参数的效果，就得使用重载，这样不但使构造方法本身过于复杂，又会使构造方法在数量上大增。因此，要想避免这种情况，就得通过类方法或类变量来传递数据。
+
+#####2.变量和方法
+&emsp; 向对象中传入数据一般有两次机会，第一次机会是在建立对象时通过构造方法将数据传入，另外一次机会就是在类中定义一系列的public的方法或变量。然后在建立完对象后，通过对象实例逐个赋值。  
+
+```java
+public class MyThread2 {
+    private String name;
+    public void setName(String name){
+        this.name = name;
+    }
+    public void run(){
+        System.out.println("hello"+name);
+    }
+    public static void main(String[] args){
+        MyThread2 myThread = new MyThread2();
+        myThread.setName("world");
+        Thread thread = new Thread(myThread);
+        thread.start();
+    }
+}
+```
+#####3.回调函数 
+&emsp; 上面讨论的两种向线程中传递数据的方法是最常用的。但这两种方法都是main方法中主动将数据传入线程类的。这对于线程来说，是被动接收这些数据的。然而，在有些应用中需要在线程运行的过程中动态地获取数据，如在下面代码的run方法中产生了3个随机数，然后通过Work类的process方法求这三个随机数的和，并通过Data类的value将结果返回。从这个例子可以看出，在返回value之前，必须要得到三个随机数。也就是说，这个value是无法事先就传入线程类的。  
+
+```java
+class Data{   
+    public int value = 0;   
+}
+
+class Work{
+    public void process(Data data, Integer numbers){   
+        for (int n : numbers){
+            data.value += n;
+        }
+    }
+}
+
+public class MyThread3 extends Thread{
+    private Work work;
+    public MyThread3(Work work){
+        this.work = work;
+    }
+    public void run(){
+        java.util.Random random = new java.util.Random();
+        Data data = new Data();   
+        int n1 = random.nextInt(1000);   
+        int n2 = random.nextInt(2000);   
+        int n3 = random.nextInt(3000);   
+        work.process(data, n1, n2, n3); // 使用回调函数   
+     System.out.println(String.valueOf(n1)+"+"+String.valueOf(n2)+
+        "+"+String.valueOf(n3) + "=" + data.value);   
+    }   
+    public static void main(String[] args){
+    Thread thread = new MyThread3(new Work());
+    thread.start();
+    }
+}
+```

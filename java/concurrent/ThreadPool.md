@@ -33,6 +33,7 @@
 ![avatar](../../images/java/concurrent/threadPool-4.png)  
 #####构造函数：  
 &emsp; 在ThreadPoolExecutor类中提供了四个构造方法：  
+
 ```
 public class ThreadPoolExecutor extends AbstractExecutorService {
      //...  
@@ -83,6 +84,7 @@ concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空
 &emsp; ForkJoinPool的计算方式：大任务拆中任务，中任务拆小任务，最后再汇总。  
 ######工作窃取(Work Stealing)算法：  
 &emsp; ForkJoinPool会把大任务拆分成多个子任务，但是ForkJoinPool并不会为每个子任务创建单独的线程。  
+
 ```
 public class ForkJoinWorkerThread extends Thread {
     final ForkJoinPool pool;// 工作线程所在的线程池
@@ -190,6 +192,7 @@ executorService.execute(()->{
 ####1. execute()，提交不需要返回值的任务  
 &emsp; void execute(Runnable command);
 &emsp; execute()的参数是一个Runnable，也没有返回值。因此提交后无法判断该任务是否被线程池执行成功。  
+
 ```java
 ExecutorService executor = Executors.newCachedThreadPool();
 executor.execute(new Runnable() {
@@ -206,7 +209,6 @@ executor.execute(new Runnable() {
 Future<?> smit(Runnable task);
 ```
 &emsp; submit()有三种重载，参数可以是Callable也可以是Runnable。同时它会返回一个Funture对象，通过它可以判断任务是否执行成功。获得执行结果调用Future.get()方法，这个方法会阻塞当前线程直到任务完成。  
- 
 
 ```java
 //提交一个Callable任务时，需要使用FutureTask包一层
@@ -232,13 +234,14 @@ try{
 
 ###确定线程池的大小
 &emsp; 项目中一般设置20。一般服务器的CPU核数为16位或者32位。  
-&emsp; 一般做法：（N表示CPU数量，可以根据Runtime.availableProcessors方法获取）.   
+&emsp; 一般做法：（N表示CPU数量，可以根据Runtime.availableProcessors方法获取）.  
+
 ```java
 private static int corePoolSize = Runtime.getRuntime().availableProcessors();
-```
-* 如果是CPU密集型应用（多线程处理复杂算法），则线程池大小设置为N+1。
-* 如果是IO密集型应用（多线程用于数据库数据交互、文件上传下载、网络数据传输等），则线程池大小设置为2N。
-* 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。  
+```  
+* 如果是CPU密集型应用（多线程处理复杂算法），则线程池大小设置为N+1。  
+* 如果是IO密集型应用（多线程用于数据库数据交互、文件上传下载、网络数据传输等），则线程池大小设置为2N。  
+* 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。    
 
 &emsp; Little's Law（利特尔法则）：一个系统请求数等于请求的到达率与平均每个单独请求花费的时间之乘积。使用利特尔法则（Little’s law）来判定线程池大小。只需计算请求到达率和请求处理的平均时间。估算公式如下  
 &emsp; 线程池大小=（（线程等待IO时间+ 线程CPU时间）/线程CPU时间 ）* CPU数目. 
@@ -248,6 +251,7 @@ private static int corePoolSize = Runtime.getRuntime().availableProcessors();
 3. CPU数目. 
 
 &emsp; 请求消耗时间：Web服务容器中，可以通过Filter来拦截获取该请求前后消耗的时间  
+
 ```java
 public class MoniterFilter implements Filter {
 
@@ -287,7 +291,7 @@ public class MoniterFilter implements Filter {
         }
     }
 }
-```
+```  
 &emsp; CPU计算时间：CPU计算时间 = 请求总耗时 - CPU IO time。假设该请求有一个查询 DB 的操作，只要知道这个查询 DB 的耗时（CPU IO time），计算的时间不就出来了嘛，看一下怎么才能简洁，明了的记录 DB 查询的耗时。通过（JDK 动态代理/ CGLIB）的方式添加 AOP 切面，来获取线程 IO 耗时。代码如下，请参考.  
 ```java
 public class DaoInterceptor implements MethodInterceptor {
@@ -323,6 +327,7 @@ public class DaoInterceptor implements MethodInterceptor {
 
 ####异常处理问题：  
 &emsp; java线程池ThreadPoolExecutor，真正执行代码的部分是runWorker()方法。  
+
 ```java
 final void runWorker(Worker w) {
     //...
@@ -378,6 +383,7 @@ final void runWorker(Worker w) {
 &emsp; 当执行ThreadPoolExecutor#shutdown方法将会使线程池状态从 RUNNING 转变为 SHUTDOWN。而调用 ThreadPoolExecutor#shutdownNow 之后线程池状态将会从 RUNNING 转变为 STOP。从上面的图上还可以看到，当线程池处于 SHUTDOWN，还是可以继续调用 ThreadPoolExecutor#shutdownNow 方法，将其状态转变为 STOP 。    
 ####ThreadPoolExecutor的shutdown()与shutdownNow()源码
 &emsp; ThreadPoolExecutor#shutdown()方法源码：  
+
 ```java
 public void shutdown() {
     final ReentrantLock mainLock = this.mainLock;
@@ -401,6 +407,7 @@ public void shutdown() {
 &emsp; interruptIdleWorkers 方法只会中断空闲的线程，不会中断正在执行任务的的线程。空闲的线程将会阻塞在线程池的阻塞队列上。  
 
 &emsp; ThreadPoolExecutor#shutdownNow()源码如下：  
+
 ```
 public List<Runnable> shutdownNow() {
     List<Runnable> tasks;
@@ -427,6 +434,7 @@ public List<Runnable> shutdownNow() {
 ####ThreadPoolExecutor#awaitTermination   
 &emsp; 线程池 shutdown 与 shutdownNow 方法都不会主动等待执行任务的结束，如果需要等到线程池任务执行结束，需要调用 awaitTermination 主动等待任务调用结束。  
 &emsp; 调用方法如下：  
+
 ```java
 threadPool.shutdown();
 try {
@@ -441,6 +449,7 @@ try {
 &emsp; 如果需要使用这种进制，建议在上面的基础上增加一定重试次数。这个真的很重要！！！  
 ####总结：优雅关闭线程池  
 &emsp; 处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合 shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
+
 ```java
 threadPool.shutdown(); // Disable new tasks from being submitted
 // 设定最大重试次数
@@ -504,6 +513,7 @@ public class NativeAsyncTaskExecutePool implements AsyncConfigurer{
 &emsp; 重写spring默认线程池的方式，使用时只需要加@Async注解。  
 ####2. 自定义线程池
 &emsp; 创建线程池配置类TaskExecutePool.java。使用@Configuration和@EnableAsync这两个注解，表示这是个配置类，并且是线程池的配置类。  
+
 ```java
  @Configuration
  @EnableAsync
@@ -526,20 +536,20 @@ public class NativeAsyncTaskExecutePool implements AsyncConfigurer{
          return executor;
      }
  }
- ```
+```  
 &emsp; 修改启动类，给启动类添加注解。    
+
 ```
 @EnableAsync
 @EnableConfigurationProperties({TaskThreadPoolConfig.class} ) // 开启配置属性支持
 ```
-&emsp; 使用：    
+&emsp; 使用：  
 ```
-@Async("myTaskAsyncPool")  //myTaskAsynPool即配置线程池的方法名，此处如果不写自定义线程池的方法名，会使用默认的线程池`
+@Async("myTaskAsyncPool")  //myTaskAsynPool即配置线程池的方法名，此处如果不写自定义线程池的方法名，会使用默认的线程池
 ```
+
 ```
 //通过注解引入配置
 @Resource(name = "defaultThreadPool")  
 private ThreadPoolTaskExecutor executor;
 ```
-
-
