@@ -1,52 +1,38 @@
-
-
 #线程池：  
-
+![avatar](../../images/java/concurrent/threadPool-1.png)  
 ##1. 线程池简介：
-线程池的定义：管理一组工作线程。  
-线程池共享：一些业务代码做了Utils类型在整个项目中的各种操作共享使用一个线程池，一些业务代码大量Java 8使用parallel stream特性做一些耗时操作但是没有使用自定义的线程池或是没有设置更大的线程数（没有意识到parallel stream的共享ForkJoinPool问题）。共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。建议根据异步业务类型，合理设置隔离的线程池。  
-
-通过线程池复用线程有以下几点优点：  
-*减少资源创建 => 减少内存开销，创建线程占用内存   
-*降低系统开销 => 创建线程需要时间，会延迟处理的请求    
-*提高稳定稳定性 => 避免无限创建线程引起的OutOfMemoryError【简称OOM】  
+&emsp; 线程池的定义：管理一组工作线程。  
+&emsp; 线程池共享：一些业务代码做了Utils类型在整个项目中的各种操作共享使用一个线程池，一些业务代码大量Java 8使用parallel stream特性做一些耗时操作但是没有使用自定义的线程池或是没有设置更大的线程数（没有意识到parallel stream的共享ForkJoinPool问题）。共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。建议根据异步业务类型，合理设置隔离的线程池。  
+&emsp; 通过线程池复用线程有以下几点优点：  
+* 减少资源创建 => 减少内存开销，创建线程占用内存   
+* 降低系统开销 => 创建线程需要时间，会延迟处理的请求    
+* 提高稳定稳定性 => 避免无限创建线程引起的OutOfMemoryError【简称OOM】  
 
 ##2. 线程池框架Executor
-
-Executor：所有线程池的接口。  
-	ThreadPoolExecutor（创建线程池方式一）：线程池的具体实现类。  
-	Executors（创建线程池方式二）：提供了一系列静态的工厂方法用于创建线程池，返回的线程池都实现了ExecutorService 接口。  
-	ExecutorService：扩展了Executor接口。添加了一些用来管理执行器生命周期和任务生命周期的方法。  
-###2.1. 线程池实现：
-根据返回的对象类型创建线程池可以分为三类：  
+![avatar](../../images/java/concurrent/threadPool-2.png)   
+&emsp; Executor：所有线程池的接口。  
+&emsp; ThreadPoolExecutor（创建线程池方式一）：线程池的具体实现类。  
+&emsp; Executors（创建线程池方式二）：提供了一系列静态的工厂方法用于创建线程池，返回的线程池都实现了ExecutorService 接口。  
+&emsp; ExecutorService：扩展了Executor接口。添加了一些用来管理执行器生命周期和任务生命周期的方法。  
+###2.1. 线程池实现：  
+&emsp; 根据返回的对象类型创建线程池可以分为三类：  
 1). 创建返回ThreadPoolExecutor对象；  
 2). 创建返回ScheduleThreadPoolExecutor对象；  
 3). 创建返回ForkJoinPool对象；  
-####1. ThreadPoolExecutor：
-#####属性：
+####1. ThreadPoolExecutor：  
+#####属性：  
+![avatar](../../images/java/concurrent/threadPool-3.png)  
+&emsp; 线程池存在5种状态：  
+* RUNNING：在这个状态的线程池能判断接收新提交的任务，并且也能处理阻塞队列中的任务。  
+* SHUTDOWN：处于关闭的状态，该线程池不能接收新提交的任务，但是可以处理阻塞队列中已经保存的任务，在线程处于RUNNING状态，调用shutdown()方法能切换为该状态。  
+* STOP：线程池处于该状态时既不能接收新的任务也不能处理阻塞队列中的任务，并且能中断现在线程中的任务。当线程处于RUNNING和SHUTDOWN状态，调用shutdownNow()方法就可以使线程变为该状态。  
+* TIDYING：在SHUTDOWN状态下阻塞队列为空，且线程中的工作线程数量为0就会进入该状态，当在STOP状态下时，只要线程中的工作线程数量为0就会进入该状态。  
+* TERMINATED：在TIDYING状态下调用terminated()方法就会进入该状态。可以认为该状态是最终的终止状态。  
 
-
-线程池各个状态切换图：    
-
-线程池总共存在 5 种状态，分别为：  
-* RUNNING：  
-该状态的线程池会接收新任务，并处理阻塞队列中的任务;  
-调用线程池的shutdown()方法，可以切换到SHUTDOWN状态;
-调用线程池的shutdownNow()方法，可以切换到STOP状态;
-*SHUTDOWN：  
-该状态的线程池不会接收新任务，但会处理阻塞队列中的任务；
-队列为空，并且线程池中执行的任务也为空,进入TIDYING状态;
-* STOP：  
-该状态的线程不会接收新任务，也不会处理阻塞队列中的任务，而且会中断正在运行的任务；  
-线程池中执行的任务为空,进入TIDYING状态;  
-* TIDYING：  
-该状态表明所有的任务已经运行终止，记录的任务数量为0。
-terminated()执行完毕，进入TERMINATED状态
-* TERMINATED：
-该状态表示线程池彻底终止
-
-#####构造函数：
-在ThreadPoolExecutor类中提供了四个构造方法：  
+&emsp; 线程池状态切换图：  
+![avatar](../../images/java/concurrent/threadPool-4.png)  
+#####构造函数：  
+&emsp; 在ThreadPoolExecutor类中提供了四个构造方法：  
 ```
 public class ThreadPoolExecutor extends AbstractExecutorService {
      //...  
@@ -57,7 +43,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      //...
   }
 ```  
-ThreadPoolExecutor继承了AbstractExecutorService类，并提供了四个构造器。前面三个构造器都是调用的第四个构造器进行的初始化工作。下面解释一下构造器中各个参数的含义：  
+&emsp; ThreadPoolExecutor继承了AbstractExecutorService类，并提供了四个构造器。前面三个构造器都是调用的第四个构造器进行的初始化工作。下面解释一下构造器中各个参数的含义：  
 1. int  corePoolSize：线程池的核心线程数大小。默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中。默认情况下可以一直存活。可以通过设置allowCoreThreadTimeOut为True，此时核心线程数就是0，此时keepAliveTime控制所有线程的超时时间。  
 2. int  maximumPoolSize：线程池允许的最大线程数大小。当workQueue满了，不能添加任务的时候，这个参数才会生效。  
 3. long  keepAliveTime：空闲线程（超出corePoolSize的线程）的生存时间。这些线程如果长时间没有执行任务，并且超过了keepAliveTime设定的时间，就会消亡。  
@@ -68,72 +54,68 @@ concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空
 7. RejectedExecutionHandler  handler：当提交任务数超过maxmumPoolSize
 +workQueue之和时，任务会交给RejectedExecutionHandler来处理，执行拒绝策略。有四种策略，默认是AbortPolicy。内置拒绝策略均实现了RejectedExecutionHandler接口，若以下策略仍无法满足实际需要，可以扩展RejectedExecutionHandler接口。  
 
-
+| 名称 | Condition |  
+| ---- | ---- |  
+|AbortPolicy (默认)|丢弃任务并抛出RejectedExecutionException异常。|  
+|CallerRunsPolicy|在线程池当前正在运行的Thread线程池中处理被拒绝的任务。主线程会被阻塞，其余任务只能在被拒绝的任务执行完之后才会继续被提交到线程池执行。|
+|DiscardOldestPolicy|丢弃队列最前面的任务，将被拒绝的任务添加到等待队列中。|
+|DiscardPolicy|丢弃任务，但是不抛出异常。|
 #####线程池工作流程（execute成员方法的源码）：
 1. 线程池刚创建时，里面没有一个线程。任务队列是作为参数传进来的。不过，就算队列里面有任务，线程池也不会马上执行它们，而是创建线程。当一个线程完成任务时，它会从队列中取下一个任务来执行。  
 2. 当调用execute()方法添加一个任务时，线程池会做如下判断：  
-
+![avatar](../../images/java/concurrent/threadPool-5.png)  
 	1). 如果线程池中的线程数量少于corePoolSize(核心线程数量)，那么会直接开启一个新的核心线程来执行任务，即使此时有空闲线程存在。   
-		2). 如果线程池中线程数量大于等于corePoolSize(核心线程数量)，那么任务会被插入到任务队列中排队，等待被执行。此时并不添加新的线程。如果是无界队列，则线程大小一直会是核心线程池的大小。   
-		3). 如果在步骤2中由于任务队列已满导致无法将新任务进行排队，这个时候有两种情况：  
-线程数量[未]达到maximumPoolSize(线程池最大线程数)，立刻启动一个非核心线程来执行任务。  
-线程数量[已]达到maximumPoolSize(线程池最大线程数)，将会执行拒绝策略。  
+	2). 如果线程池中线程数量大于等于corePoolSize(核心线程数量)，那么任务会被插入到任务队列中排队，等待被执行。此时并不添加新的线程。如果是无界队列，则线程大小一直会是核心线程池的大小。   
+	3). 如果在步骤2中由于任务队列已满导致无法将新任务进行排队，这个时候有两种情况：  
+        &emsp; 线程数量[未]达到maximumPoolSize(线程池最大线程数)，立刻启动一个非核心线程来执行任务。  
+        &emsp; 线程数量[已]达到maximumPoolSize(线程池最大线程数)，将会执行拒绝策略。  
 3. 当一个线程空闲，超过一定的时间（keepAliveTime）时，线程池会判断，如果当前运行的线程数大于corePoolSize，那么这个线程就被停掉。所以线程池的所有任务完成后，它最终会收缩到corePoolSize的大小。
 ####2. ScheduledThreadPoolExecutor，任务调度线程池
   
-####3. ForkJoinPool（JDK1.7新增）
-ForkJoinPool是java 7中新增的线程池类。  
-为什么使用ForkJoinPool？  
-ThreadPoolExecutor中每个任务都是由单个线程独立处理的，如果出现一个非常耗时的大任务(比如大数组排序)，就可能出现线程池中只有一个线程在处理这个大任务，而其他线程却空闲着，这会导致CPU负载不均衡：空闲的处理器无法帮助工作繁忙的处理器。  
-ForkJoinPool就是用来解决这种问题的：将一个大任务拆分成多个小任务后，使用fork可以将小任务分发给其他线程同时处理，使用join可以将多个线程处理的结果进行汇总；这实际上就是分治思想的并行版本。
+####3. ForkJoinPool（JDK1.7新增）  
+&emsp; ForkJoinPool是java 7中新增的线程池类。  
+&emsp; 为什么使用ForkJoinPool？  
+&emsp; ThreadPoolExecutor中每个任务都是由单个线程独立处理的，如果出现一个非常耗时的大任务(比如大数组排序)，就可能出现线程池中只有一个线程在处理这个大任务，而其他线程却空闲着，这会导致CPU负载不均衡：空闲的处理器无法帮助工作繁忙的处理器。  
+&emsp; ForkJoinPool就是用来解决这种问题的：将一个大任务拆分成多个小任务后，使用fork可以将小任务分发给其他线程同时处理，使用join可以将多个线程处理的结果进行汇总；这实际上就是分治思想的并行版本。
 #####ForkJoinPool内部原理，工作窃取算法
-ForkJoinPool的两大核心是分而治之(Divide and conquer)和工作窃取(Work Stealing)算法。
+&emsp; ForkJoinPool的两大核心是分而治之(Divide and conquer)和工作窃取(Work Stealing)算法。  
 ######分而治之：  
-ForkJoinPool的计算方式：大任务拆中任务，中任务拆小任务，最后再汇总。
-
+&emsp; ForkJoinPool的计算方式：大任务拆中任务，中任务拆小任务，最后再汇总。  
 ######工作窃取(Work Stealing)算法：  
- 
-ForkJoinPool会把大任务拆分成多个子任务，但是ForkJoinPool并不会为每个子任务创建单独的线程。  
+&emsp; ForkJoinPool会把大任务拆分成多个子任务，但是ForkJoinPool并不会为每个子任务创建单独的线程。  
 ```
 public class ForkJoinWorkerThread extends Thread {
     final ForkJoinPool pool;// 工作线程所在的线程池
     final ForkJoinPool.WorkQueue workQueue; // 线程的工作队列
 }
 ```
-每个工作线程都有自己的工作队列WorkQueue。这是一个双端队列，它是线程私有的。双端队列的操作：push、pop、poll。push/pop只能被队列的所有者线程调用，而poll是由其它线程窃取任务时调用的。
-ForkJoinTask中fork的子任务，将放入运行该任务的工作线程的队头，工作线程将以LIFO的顺序来处理工作队列中的任务；  
-为了最大化地利用CPU，空闲的线程将随机从其它线程的队列中“窃取”任务来执行。从工作队列的尾部窃取任务，以减少竞争；  
-当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；  
+&emsp; 每个工作线程都有自己的工作队列WorkQueue。这是一个双端队列，它是线程私有的。双端队列的操作：push、pop、poll。push/pop只能被队列的所有者线程调用，而poll是由其它线程窃取任务时调用的。  
+&emsp; ForkJoinTask中fork的子任务，将放入运行该任务的工作线程的队头，工作线程将以LIFO的顺序来处理工作队列中的任务；  
+&emsp; 为了最大化地利用CPU，空闲的线程将随机从其它线程的队列中“窃取”任务来执行。从工作队列的尾部窃取任务，以减少竞争；  
+&emsp; 当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；  
 #####API 描述
-ForkJoinPool继承体系
+&emsp; ForkJoinPool继承体系  
+![avatar](../../images/java/concurrent/threadPool-6.png)  
+&emsp; ForkJoinPool和ThreadPoolExecutor都是继承AbstractExecutorService抽象类，所以它和ThreadPoolExecutor的使用几乎没有多少区别，除了任务变成了ForkJoinTask以外。 
+&emsp; 注意：这里运用到了一种很重要的设计原则——开闭原则——对修改关闭，对扩展开放。可见整个线程池体系一开始的接口设计就很好，新增一个线程池类，不会对原有的代码造成干扰，还能利用原有的特性。  
+######创建ForkJoinPool:  
+&emsp; ForkJoinPool是ExecutorService的实现类，是一种特殊的线程池。  
 
-ForkJoinPool和ThreadPoolExecutor都是继承AbstractExecutorService抽象类，所以它和ThreadPoolExecutor的使用几乎没有多少区别，除了任务变成了ForkJoinTask以外。 
-注意：这里运用到了一种很重要的设计原则——开闭原则——对修改关闭，对扩展开放。可见整个线程池体系一开始的接口设计就很好，新增一个线程池类，不会对原有的代码造成干扰，还能利用原有的特性。  
-######创建ForkJoinPool:
-ForkJoinPool是ExecutorService的实现类，是一种特殊的线程池。  
-
-java 8进一步扩展了ForkJoinPool的功能，为ForkJoinPool增加了通用池功能。
+&emsp; java 8进一步扩展了ForkJoinPool的功能，为ForkJoinPool增加了通用池功能。
 
 
-创建了ForkJoinPool实例，就可以调用ForkJoinPool的submit(ForkJoinTask task) 或者invoke(ForkJoinTask task) 方法来执行指定的任务。   
+&emsp; 创建了ForkJoinPool实例，就可以调用ForkJoinPool的submit(ForkJoinTask task) 或者invoke(ForkJoinTask task) 方法来执行指定的任务。   
 ######ForkJoinTask详解：
-ForkJoinTask代表一个可以并行、合并的任务。ForkJoinTask是一个抽象类，三个抽象子类：RecursiveAction无返回值任务、RecursiveTask有返回值任务、CountedCompleter无返回值任务，完成任务后可以触发回调。 
-
-两个主要方法：  
-* fork()：fork()方法类似于线程的Thread.start()方法，但是它不是真的启动一个线程，而是将任务放入到工作队列中。
-* join()：join()方法类似于线程的Thread.join()方法，但是它不是简单地阻塞线程，而是利用工作线程运行其它任务。当一个工作线程中调用了join()方法，它将处理其它任务，直到注意到目标子任务已经完成了。
-
-
-######相关使用：
-在JDK8中lamdba有个stream操作parallelStream,底层也是使用ForkJoinPool实现的;
-可以通过Executors.newWorkStealingPool(int parallelism)快速创建ForkJoinPool线程池,无参默认使用CPU数量的线程数执行任务;
-
-
-
+&emsp; ForkJoinTask代表一个可以并行、合并的任务。ForkJoinTask是一个抽象类，三个抽象子类：RecursiveAction无返回值任务、RecursiveTask有返回值任务、CountedCompleter无返回值任务，完成任务后可以触发回调。  
+&emsp; 两个主要方法：  
+    * fork()：fork()方法类似于线程的Thread.start()方法，但是它不是真的启动一个线程，而是将任务放入到工作队列中。  
+    * join()：join()方法类似于线程的Thread.join()方法，但是它不是简单地阻塞线程，而是利用工作线程运行其它任务。当一个工作线程中调用了join()方法，它将处理其它任务，直到注意到目标子任务已经完成了。  
+######相关使用：  
+&emsp; 在JDK8中lamdba有个stream操作parallelStream,底层也是使用ForkJoinPool实现的;  
+&emsp; 可以通过Executors.newWorkStealingPool(int parallelism)快速创建ForkJoinPool线程池,无参默认使用CPU数量的线程数执行任务;  
 ####4. Executors的静态方法：
-Java通过Executors提供四种线程池。Executors将ThreadPoolExecutor的属性已经声明定义好了。  
-#####1).SingleThreadExecutor：  
-单个后台线程 (其缓冲队列是无界的)。  
+&emsp; Java通过Executors提供四种线程池。Executors将ThreadPoolExecutor的属性已经声明定义好了。  
+#####1).SingleThreadExecutor：   
 ```
 public static ExecutorService newSingleThreadExecutor() {        
     return new FinalizableDelegatedExecutorService (
@@ -142,11 +124,10 @@ public static ExecutorService newSingleThreadExecutor() {
         new LinkedBlockingQueue<Runnable>()));   
 }
 ```
-创建一个单线程的线程池。这个线程池只有一个核心线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。  
-线程池特点：核心线程数为1、最大线程数也为1、阻塞队列是LinkedBlockingQueue、keepAliveTime为0。  
-使用场景：适用于串行执行任务的场景，一个任务一个任务地执行。  
+&emsp; 单线程的线程池。这个线程池只有一个核心线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。  
+&emsp; 线程池特点：核心线程数为1、最大线程数也为1、阻塞队列是LinkedBlockingQueue、keepAliveTime为0。  
+&emsp; 使用场景：适用于串行执行任务的场景，一个任务一个任务地执行。  
 #####2).FixedThreadPool：  
-只有核心线程的线程池,大小固定 (其缓冲队列是无界的) 。  
 ```
 public static ExecutorService newFixedThreadPool(int nThreads) {         
         return new ThreadPoolExecutor(nThreads, nThreads,                                       
@@ -154,13 +135,11 @@ public static ExecutorService newFixedThreadPool(int nThreads) {
             new LinkedBlockingQueue<Runnable>());     
 }
 ```  
-创建一个定长线程池，可控制线程最大并发数，超出的线程会在队列中等待。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。  
-定长线程池的大小最好根据系统资源进行设置。如Runtime.getRuntime().availableProcessors()。  
-
-线程池特点：核心线程数和最大线程数大小一样、没有所谓的非空闲时间，即keepAliveTime为0、阻塞队列为无界队列LinkedBlockingQueue。  
-使用场景：FixedThreadPool适用于处理CPU密集型的任务，确保CPU在长期被工作线程使用的情况下，尽可能的少的分配线程，即适用执行长期的任务。  
+&emsp; 定长线程池，可控制线程最大并发数，超出的线程会在队列中等待。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。  
+&emsp; 定长线程池的大小最好根据系统资源进行设置。如Runtime.getRuntime().availableProcessors()。  
+&emsp; 线程池特点：核心线程数和最大线程数大小一样、没有所谓的非空闲时间，即keepAliveTime为0、阻塞队列为无界队列LinkedBlockingQueue。  
+&emsp; 使用场景：FixedThreadPool适用于处理CPU密集型的任务，确保CPU在长期被工作线程使用的情况下，尽可能的少的分配线程，即适用执行长期的任务。  
 #####3).CachedThreadPool：  
-无界线程池，可以进行自动线程回收。  
 ```
 public static ExecutorService newCachedThreadPool() {         
     return new ThreadPoolExecutor(0,Integer.MAX_VALUE,                                           
@@ -168,14 +147,11 @@ public static ExecutorService newCachedThreadPool() {
            new SynchronousQueue<Runnable>());     
 }
 ```
-如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。线程池为无限大，当执行第二个任务时第一个任务已经完成，会复用执行第一个任务的线程，而不用每次新建线程。  
-此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。阻塞队列SynchronousQueue是一个是缓冲区为1的阻塞队列。  
-
-线程池特点：核心线程数为0、最大线程数为Integer.MAX_VALUE、阻塞队列是SynchronousQueue、非核心线程空闲存活时间为60秒。  
-
-当提交任务的速度大于处理任务的速度时，每次提交一个任务，就必然会创建一个线程。极端情况下会创建过多的线程，耗尽 CPU 和内存资源。由于空闲 60 秒的线程会被终止，长时间保持空闲的 CachedThreadPool 不会占用任何资源。  
+&emsp; 无界线程池，可以进行自动线程回收。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。线程池为无限大，当执行第二个任务时第一个任务已经完成，会复用执行第一个任务的线程，而不用每次新建线程。  
+&emsp; 此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。阻塞队列SynchronousQueue是一个是缓冲区为1的阻塞队列。  
+&emsp; 线程池特点：核心线程数为0、最大线程数为Integer.MAX_VALUE、阻塞队列是SynchronousQueue、非核心线程空闲存活时间为60秒。  
+&emsp; 当提交任务的速度大于处理任务的速度时，每次提交一个任务，就必然会创建一个线程。极端情况下会创建过多的线程，耗尽 CPU 和内存资源。由于空闲 60 秒的线程会被终止，长时间保持空闲的 CachedThreadPool 不会占用任何资源。  
 #####4).ScheduledThreadPool：
-核心线程池固定，大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。  
 ```
 public static ExecutorService newScheduledThreadPool(int corePoolSize) {         
     return new ScheduledThreadPool(corePoolSize, 
@@ -184,20 +160,18 @@ public static ExecutorService newScheduledThreadPool(int corePoolSize) {
               new DelayedWorkQueue());    
 }
 ```
-创建一个定长线程池，支持定时及周期性任务执行。  
-
-工作机制  
+&emsp; 核心线程池固定，大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。  
+&emsp; 工作机制：  
 1). 添加一个任务  
 2). 线程池中的线程从DelayQueue中取任务  
 3). 线程从DelayQueue中获取time大于等于当前时间的task  
 4). 执行完后修改这个task的time为下次被执行的时间  
 5). 这个 task 放回DelayQueue队列中  
-
-线程池特点：最大线程数为Integer.MAX_VALUE、阻塞队列是DelayedWorkQueue、keepAliveTime为0、scheduleAtFixedRate() ：按某种速率周期执行、scheduleWithFixedDelay()：在某个延迟后执行  
-使用场景：周期性执行任务的场景，需要限制线程数量的场景  
+&emsp; 线程池特点：最大线程数为Integer.MAX_VALUE、阻塞队列是DelayedWorkQueue、keepAliveTime为0、scheduleAtFixedRate() ：按某种速率周期执行、scheduleWithFixedDelay()：在某个延迟后执行  
+&emsp; 使用场景：周期性执行任务的场景，需要限制线程数量的场景  
 #####阿里巴巴禁用Executors创建线程池
-使用无界队列的线程池会导致内存飙升吗？  
-答案 ：会的，newFixedThreadPool使用了无界的阻塞队列LinkedBlockingQueue，如果线程获取一个任务后，任务的执行时间比较长(比如，上面demo设置了10秒)，会导致队列的任务越积越多，导致机器内存使用不停飙升，最终导致OOM。  
+&emsp; 使用无界队列的线程池会导致内存飙升吗？  
+&emsp; 答案 ：会的，newFixedThreadPool使用了无界的阻塞队列LinkedBlockingQueue，如果线程获取一个任务后，任务的执行时间比较长(比如，上面demo设置了10秒)，会导致队列的任务越积越多，导致机器内存使用不停飙升，最终导致OOM。  
 ####5. Java8使用lamda表达式创建线程池方式
 ```
 ExecutorService executorService = Executors.newCachedThreadPool();
@@ -211,14 +185,12 @@ executorService.execute(()->{
     }
 });
 ```
+###2.2. 线程池执行，ExecutorService的API：  
 
-
-###2.2. 线程池执行，ExecutorService的API：
-shutdown()和shutdownNow()是用来关闭线程池的。  
-####1. execute()，提交不需要返回值的任务。
-void execute(Runnable command);
-execute()的参数是一个Runnable，也没有返回值。因此提交后无法判断该任务是否被线程池执行成功。  
-```
+####1. execute()，提交不需要返回值的任务  
+&emsp; void execute(Runnable command);
+&emsp; execute()的参数是一个Runnable，也没有返回值。因此提交后无法判断该任务是否被线程池执行成功。  
+```java
 ExecutorService executor = Executors.newCachedThreadPool();
 executor.execute(new Runnable() {
     @Override
@@ -227,15 +199,17 @@ executor.execute(new Runnable() {
     }
 });
 ```
-
-####2. submit()：提交需要返回值的任务。
+####2. submit()：提交需要返回值的任务  
+```java
 <T> Future<T> submit(Callable<T> task);  
 <T> Future<T> submit(Runnable task, T result);  
-Future<?> smit(Runnable task);  
-submit()有三种重载，参数可以是Callable也可以是Runnable。同时它会返回一个Funture对象，通过它可以判断任务是否执行成功。获得执行结果调用Future.get()方法，这个方法会阻塞当前线程直到任务完成。  
-提交一个Callable任务时，需要使用FutureTask包一层：  
+Future<?> smit(Runnable task);
+```
+&emsp; submit()有三种重载，参数可以是Callable也可以是Runnable。同时它会返回一个Funture对象，通过它可以判断任务是否执行成功。获得执行结果调用Future.get()方法，这个方法会阻塞当前线程直到任务完成。  
+ 
 
 ```java
+//提交一个Callable任务时，需要使用FutureTask包一层
 FutureTask futureTask = new FutureTask(new Callable<String>(){ //创建Callable任务
     @Override
     public String call() throws Exception {
@@ -257,22 +231,23 @@ try{
 ##3. 线程池正确用法：
 
 ###确定线程池的大小
-项目中一般设置20。一般服务器的CPU核数为16位或者32位。  
-一般做法：（N表示CPU数量，可以根据Runtime.availableProcessors方法获取）. 
-private static int corePoolSize = Runtime.getRuntime().availableProcessors();    
+&emsp; 项目中一般设置20。一般服务器的CPU核数为16位或者32位。  
+&emsp; 一般做法：（N表示CPU数量，可以根据Runtime.availableProcessors方法获取）.   
+```java
+private static int corePoolSize = Runtime.getRuntime().availableProcessors();
+```
 * 如果是CPU密集型应用（多线程处理复杂算法），则线程池大小设置为N+1。
 * 如果是IO密集型应用（多线程用于数据库数据交互、文件上传下载、网络数据传输等），则线程池大小设置为2N。
 * 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。  
 
-Little's Law（利特尔法则）：一个系统请求数等于请求的到达率与平均每个单独请求花费的时间之乘积。使用利特尔法则（Little’s law）来判定线程池大小。只需计算请求到达率和请求处理的平均时间。估算公式如下  
-线程池大小=（（线程等待IO时间+ 线程CPU时间）/线程CPU时间 ）* CPU数目. 
-通过公式，了解到需要3个具体数值：  
+&emsp; Little's Law（利特尔法则）：一个系统请求数等于请求的到达率与平均每个单独请求花费的时间之乘积。使用利特尔法则（Little’s law）来判定线程池大小。只需计算请求到达率和请求处理的平均时间。估算公式如下  
+&emsp; 线程池大小=（（线程等待IO时间+ 线程CPU时间）/线程CPU时间 ）* CPU数目. 
+&emsp; 通过公式，了解到需要3个具体数值：  
 1. 一个请求所消耗的时间 (线程 IO time + 线程 CPU time). 
 2. 该请求计算时间 （线程 CPU time） 
 3. CPU数目. 
 
-请求消耗时间：  
-Web服务容器中，可以通过Filter来拦截获取该请求前后消耗的时间  
+&emsp; 请求消耗时间：Web服务容器中，可以通过Filter来拦截获取该请求前后消耗的时间  
 ```java
 public class MoniterFilter implements Filter {
 
@@ -313,9 +288,7 @@ public class MoniterFilter implements Filter {
     }
 }
 ```
-CPU计算时间：  
-CPU计算时间 = 请求总耗时 - CPU IO time. 
-假设该请求有一个查询 DB 的操作，只要知道这个查询 DB 的耗时（CPU IO time），计算的时间不就出来了嘛，看一下怎么才能简洁，明了的记录 DB 查询的耗时。通过（JDK 动态代理/ CGLIB）的方式添加 AOP 切面，来获取线程 IO 耗时。代码如下，请参考. 
+&emsp; CPU计算时间：CPU计算时间 = 请求总耗时 - CPU IO time。假设该请求有一个查询 DB 的操作，只要知道这个查询 DB 的耗时（CPU IO time），计算的时间不就出来了嘛，看一下怎么才能简洁，明了的记录 DB 查询的耗时。通过（JDK 动态代理/ CGLIB）的方式添加 AOP 切面，来获取线程 IO 耗时。代码如下，请参考.  
 ```java
 public class DaoInterceptor implements MethodInterceptor {
 
@@ -343,15 +316,13 @@ public class DaoInterceptor implements MethodInterceptor {
 
 }
 ```
-CPU数目：  
-逻辑 CPU 个数 ，设置线程池大小的时候参考的 CPU 个数. 
-cat /proc/cpuinfo| grep "processor"| wc -l. 
+&emsp; CPU数目：逻辑 CPU 个数。  
 
-总结：合适的配置线程池大小其实很不容易，但是通过上述的公式和具体代码，就能快速、落地的算出这个线程池该设置的多大。不过还是需要通过压力测试来进行微调，只有经过压测测试的检验，才能最终保证的配置大小是准确的。  
+&emsp; 总结：合适的配置线程池大小其实很不容易，但是通过上述的公式和具体代码，就能快速、落地的算出这个线程池该设置的多大。不过还是需要通过压力测试来进行微调，只有经过压测测试的检验，才能最终保证的配置大小是准确的。  
 ###线程池异常处理
 
 ####异常处理问题：  
-java线程池ThreadPoolExecutor，真正执行代码的部分是runWorker()方法。  
+&emsp; java线程池ThreadPoolExecutor，真正执行代码的部分是runWorker()方法。  
 ```java
 final void runWorker(Worker w) {
     //...
@@ -377,15 +348,13 @@ final void runWorker(Worker w) {
     //...
 }
 ```
-程序会捕获包括Error在内的所有异常，并且在程序最后，将出现过的异常和当前任务传递给afterExecute方法。而ThreadPoolExecutor中的afterExecute方法是没有任何实现的。  
+&emsp; 程序会捕获包括Error在内的所有异常，并且在程序最后，将出现过的异常和当前任务传递给afterExecute方法。而ThreadPoolExecutor中的afterExecute方法是没有任何实现的。  
 
-ThreadPoolExecutor这种处理方式会有什么问题？  
-这样做能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。  
-然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。 即使感知到了，也无法查看异常信息。  
-解决方案：  
+&emsp; ThreadPoolExecutor这种处理方式会有什么问题？  
+&emsp; 这样做能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。 即使感知到了，也无法查看异常信息。  
+&emsp; 解决方案：  
 1、在提交的任务中将异常捕获并处理，不抛给线程池。  
 2、异常抛给线程池，但是要及时处理抛出的异常。  
-
 ####1. 直接catch
 提交的任务，将所有可能的异常都Catch住，并且自行处理。
 ####2. 线程池实现

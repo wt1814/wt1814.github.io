@@ -5,30 +5,30 @@
 * collections：并发容器相关；  
 * executor：线程池相关；  
 * tools：同步工具相关，如信号量、闭锁、栅栏等功能；  
-![avatar](../../images/java/concurrent/concurrent-1.png)
-##0. 基础算法、组件
-###0.1. CAS算法：
+![avatar](../../images/java/concurrent/concurrent-1.png)  
+##0. 基础算法、组件  
+###0.1. CAS算法：  
 &emsp; CAS，Compare And Swap，即比较并交换。一种无锁原子算法，CAS是一种乐观锁。
-####CAS算法思想：
+####CAS算法思想：  
 &emsp; 在函数CAS(V,E,N)中有3个参数，V表示要更新的变量，E预期值，N新值。CAS操作需要提供一个期望值，当期望值与当前线程的变量值相同时，说明还没线程修改该值，当前线程可以进行修改，也就是执行CAS操作，但如果期望值与当前线程不符，则说明该值已被其他线程修改，此时不执行更新操作，但可以选择重新读取该变量再尝试再次修改该变量，也可以放弃操作。
 当多个线程同时使用CAS操作一个变量时，只有一个会胜出，并成功更新，其余均会失败。**失败的线程不会挂起，仅是被告知失败，并且允许再次尝试，当然也允许实现的线程放弃操作（一般情况下，这是一个自旋操作，即不断的重试）**。基于这样的原理，CAS操作即使没有锁，也可以发现其他线程对当前线程的干扰。
-####CAS缺点：
+####CAS缺点：  
 &emsp; CAS虽然很高效的解决原子操作，但是CAS仍然存在三大问题：ABA问题，循环时间长开销大、只能保证一个共享变量的原子操作。  
 &emsp; 1). 循环时间长开销大。自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。如果JVM能支持处理器提供的pause指令那么效率会有一定的提升，pause指令有两个作用，第一它可以延迟流水线执行指令（de-pipeline）,使CPU不会消耗过多的执行资源，延迟的时间取决于具体实现的版本，在一些处理器上延迟时间是零。第二它可以避免在退出循环的时候因内存顺序冲突（memory order violation）而引起CPU流水线被清空（CPU pipeline flush），从而提高CPU的执行效率。  
 &emsp; 2). 只能保证一个共享变量的原子操作。当对一个共享变量执行操作时，可以使用循环CAS的方式来保证原子操作，但是对多个共享变量操作时，循环CAS就无法保证操作的原子性，这个时候就可以用锁，或者有一个取巧的办法，就是把多个共享变量合并成一个共享变量来操作。比如有两个共享变量i＝2,j=a，合并一下ij=2a，然后用CAS来操作ij。从Java1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个对象里来进行CAS操作。    
 &emsp; 3). ABA问题（A修改为B，再修改为A）：  
 &emsp; 因为CAS需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是A，变成了B，又变成了A，那么使用CAS进行检查时会发现它的值没有发生变化，但是实际上却变化了。ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。  
 &emsp; 从Java1.5开始JDK的atomic包里提供了一个类AtomicStampedReference来解决ABA问题。
-###0.2. AQS，抽象队列同步器，基础组件
+###0.2. AQS，抽象队列同步器，基础组件  
 &emsp;AQS，AbstractQueuedSynchronizer.java类，抽象队列同步器。它是JUC并发包中的核心基础组件。它是构建锁或者其他同步组件（如ReentrantLock、ReentrantReadWriteLock、Semaphore等）的基础框架。  
 &emsp;1). 内部实现的关键是：先进先出的队列、state状态  
 &emsp;2). 拥有两种线程模式：独占模式、共享模式  
 &emsp;  独占式：有且只有一个线程能获取到锁，如：ReentrantLock。  
 &emsp;  共享式：可以多个线程同时获取到锁，如：Semaphore/CountDownLatch。  
-####属性：
+####属性：  
 &emsp; AQS维护了一个volatile int state（代表共享资源）和一个FIFO线程等待队列（多线程争用资源被阻塞时会进入此队列）。
-![avatar](../../images/java/concurrent/concurrent-2.png)
-#####state，同步状态
+![avatar](../../images/java/concurrent/concurrent-2.png)  
+#####state，同步状态  
 ```java
    //AQS使用一个int类型的成员变量state来表示同步状态，是由volatile修饰的。当state>0时表示已经获取了锁，当state = 0时表示释放了锁。
    private volatile int state;
@@ -47,11 +47,11 @@
    }
 ```
 &emsp; 内部通过一个int类型的成员变量state来控制同步状态，是由volatile修饰的。并且提供了几个访问这个字段的方法：getState()、setState、compareAndSetState。这几个方法都是final修饰的，说明子类中无法重写它们。另外它们都是protected修饰的，说明只能在子类中使用这些方法。  
-&emsp; 怎么通过state控制同步状态？
-&emsp; 通过修改state字段代表的同步状态来实现多线程的独占模式或者共享模式。例如：当state=0时，则说明没有任何线程占有共享资源的锁，当state=1时，则说明有线程目前正在使用共享变量，其他线程必须加入同步队列进行等待。
+&emsp; 怎么通过state控制同步状态？  
+&emsp; 通过修改state字段代表的同步状态来实现多线程的独占模式或者共享模式。例如：当state=0时，则说明没有任何线程占有共享资源的锁，当state=1时，则说明有线程目前正在使用共享变量，其他线程必须加入同步队列进行等待。  
 &emsp; 在独占模式下，可以把state的初始值设置成0，每当某个线程要进行某项独占操作前，都需要判断state的值是不是0，如果不是0的话意味着别的线程已经进入该操作，则本线程需要阻塞等待；如果是0的话就把state的值设置成1，自己进入该操作。这个先判断再设置的过程我们可以通过CAS操作保证原子性，把这个过程称为尝试获取同步状态。如果一个线程获取同步状态成功了，那么在另一个线程尝试获取同步状态的时候发现state的值已经是1了就一直阻塞等待，直到获取同步状态成功的线程执行完了需要同步的操作后释放同步状态，也就是把state的值设置为0，并通知后续等待的线程。  
 &emsp; 在共享模式下的道理也差不多，比如说某项操作允许10个线程同时进行，超过这个数量的线程就需要阻塞等待。那么就可以把state的初始值设置为10，一个线程尝试获取同步状态的意思就是先判断state的值是否大于0，如果不大于0的话意味着当前已经有10个线程在同时执行该操作，本线程需要阻塞等待；如果state的值大于0，那么可以把state的值减1后进入该操作，每当一个线程完成操作的时候需要释放同步状态，也就是把state的值加1，并通知后续等待的线程。  
-#####FIFO，先进先出队列
+#####FIFO，先进先出队列  
 ```java
 static final class Node {
     //共享模式
@@ -86,9 +86,9 @@ public class ConditionObject implements Condition, java.io.Serializable {
     //...
 }
 ```
-&emsp; CLH同步队列是一个FIFO双向队列，AQS依赖它来完成同步状态state的管理，当前线程如果获取同步状态失败时，AQS则会将当前线程已经等待状态等信息构造成一个节点（Node）并将其加入到CLH同步队列，同时会阻塞当前线程，当同步状态释放时，会把首节点唤醒（公平锁），使其再次尝试获取同步状态。
-####成员方法：
-&emsp; AQS定义两种资源共享方式：Exclusive独占和Share。独占模式和共享模式下在什么情况下会往CLH同步队列里添加节点，什么情况下会从CLH同步队列里移除节点，以及线程阻塞和恢复的实现细节？
+&emsp; CLH同步队列是一个FIFO双向队列，AQS依赖它来完成同步状态state的管理，当前线程如果获取同步状态失败时，AQS则会将当前线程已经等待状态等信息构造成一个节点（Node）并将其加入到CLH同步队列，同时会阻塞当前线程，当同步状态释放时，会把首节点唤醒（公平锁），使其再次尝试获取同步状态。  
+####成员方法：  
+&emsp; AQS定义两种资源共享方式：Exclusive独占和Share。独占模式和共享模式下在什么情况下会往CLH同步队列里添加节点，什么情况下会从CLH同步队列里移除节点，以及线程阻塞和恢复的实现细节？  
 #####独占模式
 
 
@@ -485,6 +485,126 @@ public class ABA {
 针对内存占用问题，可以通过压缩容器中的元素的方法来减少大对象的内存消耗，比如，如果元素全是10进制的数字，可以考虑把它压缩成36进制或64进制。或者不使用CopyOnWrite容器，而使用其他的并发容器，如ConcurrentHashMap。  
 * 数据一致性问题:  
 CopyOnWrite容器只能保证数据的最终一致性，不能保证数据的实时一致性。所以如果希望写入的的数据，马上能读到，不要使用CopyOnWrite容器。  
+###1. List，CopyOnWriteArrayList  
+&emsp; 并发版ArrayList，底层结构也是数组，和ArrayList不同之处在于：当新增和删除元素时会创建一个新的数组，在新的数组中增加或者排除指定对象，最后用新增数组替换原来的数组。  
+&emsp; 适用场景：由于读操作不加锁，写（增、删、改）操作加锁，因此适用于读多写少的场景。  
+&emsp; 局限：由于读的时候不会加锁（读的效率高，就和普通ArrayList一样），读取的当前副本，因此可能读取到脏数据。每次对集合结构进行修改时，都需要拷贝数据，占用内存较大；  
+&emsp; 总结：CopyOnWriteArrayList基于ReentrantLock保证了增加元素和删除元素动作的互斥。在读上没有做任何锁操作，这样就保证了读的性能，带来的副作用是有些时候可能会读取到脏数据。  
+&emsp; 在读多写少的高并发环境中，使用CopyOnWriteArrayList可以提高系统的性能，但是，在写多读少的场合，CopyOnWriteArrayList的性能可能不如Vector。  
+####源码解析：  
+```java
+public class CopyOnWriteArrayList<E>
+        implements List<E>, RandomAccess, Cloneable, java.io.Serializable {
+
+    final transient ReentrantLock lock = new ReentrantLock();
+    private transient volatile Object[] array;
+
+    //创建一个大小为0的数组
+    public CopyOnWriteArrayList() {
+        setArray(new Object[0]);
+    }
+
+    // 添加元素，有锁
+    /*    add方法并没有加上synchronized关键字，它通过使用ReentrantLock来保证线程安全。*/
+    public boolean add(E e) {
+        final ReentrantLock lock = this.lock;
+        lock.lock(); // 修改时加锁，保证并发安全
+        try {
+            Object[] elements = getArray(); // 当前数组
+            int len = elements.length;
+            Object[] newElements = Arrays.copyOf(elements, len + 1); // 创建一个新数组，比老的大一个空间
+            newElements[len] = e; // 要添加的元素放进新数组
+            setArray(newElements); // 用新数组替换原来的数组
+            return true;
+        } finally {
+            lock.unlock(); // 解锁
+        }
+    }
+
+    //
+    public E remove(int index) {
+        final ReentrantLock lock = this.lock;
+        lock.lock();
+        try {
+            Object[] elements = getArray();
+            int len = elements.length;
+            E oldValue = get(elements, index);
+            int numMoved = len - index - 1;
+            if (numMoved == 0)
+                setArray(Arrays.copyOf(elements, len - 1));
+            else {
+                Object[] newElements = new Object[len - 1];
+                System.arraycopy(elements, 0, newElements, 0, index);
+                System.arraycopy(elements, index + 1, newElements, index,
+                        numMoved);
+                setArray(newElements);
+            }
+            return oldValue;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    // 读元素，不加锁，因此可能读取到旧数据
+    public E get(int index) {
+        return get(getArray(), index);
+    }
+
+    //创建一个新的COWIterator对象实例，并保存了一个当前数组的快照，
+    // 在调用 next遍历时则仅对此快照数组进行遍历，
+    // 因此遍历CopyOnWriteArrayList时不会抛出Concurrent- Modi ficatiedException
+    public Iterator<E> iterator() {
+        return new COWIterator<E>(getArray(), 0);
+    }
+}
+```  
+####示例代码：  
+```java
+import java.util.Map;
+import com.ifeve.book.forkjoin.CopyOnWriteMap;
+
+/**
+ * 黑名单服务
+ * @author fangtengfei
+ */
+public class BlackListServiceImpl {
+
+    private static CopyOnWriteMap<String, Boolean> blackListMap = new CopyOnWriteMap<String, Boolean>(1000);
+
+    public static boolean isBlackList(String id) {
+        return blackListMap.get(id) == null ? false : true;
+    }
+
+    public static void addBlackList(String id) {
+        blackListMap.put(id, Boolean.TRUE);
+    }
+
+    /**
+     * 批量添加黑名单
+     * @param ids
+     */
+    public static void addBlackList(Map<String,Boolean> ids) {
+        blackListMap.putAll(ids);
+    }
+
+}
+```  
+###2. Map，ConcurrentHashMap、ConcurrentSkipListMap  
+&emsp; JDK中并没有提供CopyOnWriteMap。JUC容器Map的实现有ConcurrentHashMap，线程安全的哈希表，相当于线程安全的HashMap；ConcurrentSkipListMap，线程安全的有序的哈希表，相当于线程安全的TreeMap。  
+####2.1. ConcurrentHashMap  
+&emsp; HashMap是非线程安全的，在多线程环境下，put操作是有可能产生死循环的，导致CPU利用率接近100%。为了解决该问题，提供了Hashtable和Collections.synchronizedMap(hashMap)两种解决方案，但是这两种方案都是对读写加锁，独占式，一个线程在读时其他线程必须等待，吞吐量较低，性能较为低下。高性能的线程安全HashMap：ConcurrentHashMap。  
+&emsp; ConcurrentHashMap在jdk1.7中是采用Segment(段) + HashEntry(哈希条目) + ReentrantLock的方式进行实现的，而jdk1.8中采用Node + CAS + Synchronized来保证并发安全进行实现。  
+#####Java7 ConcurrentHashMap  
+
+#####Java8 ConcurrentHashMap  
+    JDK8的ConcurrentHashMap的数据结构和JDK1.8的HashMap基本上一样，了解Hashmap的结构，就基本了解了Concurrenthashmap了，只是增加了同步的操作来控制并发。JDK8采用CAS(读)+Synchronized(写)保证线程安全。  
+    
+####2.2. ConcurrentSkipListMap
+&emsp; ConcurrentSkipListMap与TreeMap都是有序的哈希表。  
+&emsp; ConcurrentSkipListMap线程安全，TreeMap非线程安全；  
+&emsp; ConcurrentSkipListMap是通过跳表（skip list）实现的，而TreeMap是通过红黑树实现的。
+
+####3. Set，CopyOnWriteArraySet、ConcurrentSkipListSet  
 
 
 
