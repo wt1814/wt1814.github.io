@@ -4,7 +4,7 @@
 ### 并发编程  
 [线程基本概念](java/concurrent/1.Thread.md)  
 
-[线程池](java/concurrent/3.Thread.md)  
+[线程池](java/concurrent/3.ThreadPool.md)  
 
 ## 源码  
 ### Spring  
