@@ -11,7 +11,7 @@
 
 ### Spring  
 [SpringIOC](sourceCode/Spring/1.SpringIOC.md)  
-[SpringDI]  
+[SpringDI](sourceCode/Spring/2.SpringDI.md)  
 [SpringMVC]  
 
 ### SpringBoot  
