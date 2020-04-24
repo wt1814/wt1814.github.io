@@ -4,10 +4,10 @@
 ## JVM  
 [JDK、JRE、JVM三者间的关系](java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
 [JVM类的加载](java/JVM/2.JVM类的加载.md)  
-[JVM类的运行机制](java/JVM/3.JVM类的运行机制.md)  
-[JVM内存结构](java/JVM/4.JVM内存结构.md)  
-[GC垃圾回收](java/JVM/5.GC垃圾回收.md)  
-[JVM调优](java/JVM/6.JVM调优.md)  
+[JVM类的运行机制]  
+[JVM内存结构]  
+[GC垃圾回收]  
+[JVM调优]  
 
 ### 并发编程  
 [线程基本概念](java/concurrent/1.Thread.md)  
