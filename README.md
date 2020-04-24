@@ -5,7 +5,7 @@
 [线程基本概念](java/concurrent/1.Thread.md)  
 [多线程编程]  
 [线程池](java/concurrent/3.ThreadPool.md)  
-[并发包]  
+[JUC包]  
 
 ## 源码  
 
