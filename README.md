@@ -21,8 +21,8 @@
 ### Spring Cloud Netflix  
 [Spring Cloud Eureka](microService/SpringCloudNetflix/1.Eureka.md)  
 [Spring Cloud Ribbon](microService/SpringCloudNetflix/2.Ribbon.md)  
-[Spring Cloud Hytrix]  
-[Spring Cloud Feign]  
+[Spring Cloud Hytrix](microService/SpringCloudNetflix/3.Hytrix.md)  
+[Spring Cloud Feign](microService/SpringCloudNetflix/4.Feign.md)  
 [Spring Cloud Zuul]  
 [Spring Cloud Sleuth]  
 
