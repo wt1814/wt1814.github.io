@@ -28,6 +28,13 @@
 [Spring Cloud Sleuth](microService/SpringCloudNetflix/6.Sleuth.md)  
 [Spring Boot Admin](microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
 
+### 分布式理论  
+[一致性哈希算法](microService/分布式算法-consistent.md)  
+[分布式事务](microService/分布式事务.md)  
+[分布式锁](microService/分布式锁.md)  
+[分布式缓存](microService/分布式缓存.md)  
+[分布式ID](microService/分布式ID.md)  
+
 ## 源码  
 
 ### Spring  
