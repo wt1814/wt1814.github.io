@@ -97,5 +97,16 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 ```
 &emsp; 由于多业务端可能同时操作，所以采用版本号version乐观锁方式更新，这种分布式ID生成方式不强依赖于数据库，不会频繁的访问数据库，对数据库的压力小很多  
 
+### 3. 利用中间件生成  
+&emsp; 可以使用Redis / MongoDB / zookeeper 生成分布式ID。  
+#### 基于Redis实现  
+&emsp; redis单机使用incr函数生成自增ID；redis集群使用lua脚本生成，或使用org.springframework.data.redis.support.atomic.RedisAtomicLong生成。  
+&emsp; ***优点：*** 有序递增，可读性强。
+&emsp; ***缺点：*** 占用带宽，每次要向redis进行请求。
+
+### 4. 雪花SnowFlake算法  
+
+
+
 
 
