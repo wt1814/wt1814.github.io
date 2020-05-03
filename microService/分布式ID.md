@@ -61,3 +61,41 @@ tags:
 * 存在单点问题，如果mysql挂了，就没法生成ID；  
 * 数据库压力大，高并发抗不住。  
 
+#### MySQL多实例主键自增  
+&emsp; 这个方案就是解决mysql的单点问题，在auto_increment基本上面，设置step步长。  
+![](../images/microService/problems/problem-18.png)  
+&emsp; 每台的初始值分别为1,2,3...N，步长为N（这个案例步长为4）。  
+&emsp; ***优点：*** 解决了单点问题。  
+&emsp; ***缺点：*** 一旦把步长定好后，就无法扩容；而且单个数据库的压力大，数据库自身性能无法满足高并发。  
+&emsp; ***应用场景：*** 数据不需要扩容的场景。  
+
+#### 基于数据库的号段模式  
+&emsp; 号段模式是当下分布式ID生成器的主流实现方式之一，号段模式可以理解为从数据库批量的获取自增ID，每次从数据库取出一个号段范围，例如 (1,1000] 代表1000个ID，具体的业务服务将本号段，生成1~1000的自增ID并加载到内存。表结构如下：  
+
+```sql
+CREATE TABLE id_generator (
+  id int(10) NOT NULL,
+  max_id bigint(20) NOT NULL COMMENT '当前最大id',
+  step int(20) NOT NULL COMMENT '号段的布长',
+  biz_type    int(20) NOT NULL COMMENT '业务类型',
+  version int(20) NOT NULL COMMENT '版本号',
+  PRIMARY KEY (`id`)
+) 
+```
+&emsp; biz_type ：代表不同业务类型  
+&emsp; max_id ：当前最大的可用id  
+&emsp; step ：代表号段的长度  
+&emsp; version ：是一个乐观锁，每次都更新version，保证并发时数据的正确性  
+
+|id	|biz_type	|max_id	|step	|version|
+|---|---|---|---|
+|1	|101	|1000	|2000	|0|    
+&emsp; 等这批号段ID用完，再次向数据库申请新号段，对max_id字段做一次update操作，update max_id= max_id + step，update成功则说明新号段获取成功，新的号段范围是(max_id ,max_id +step]。
+
+```sql
+update id_generator set max_id = #{max_id+step}, version = version + 1 where version = # {version} and biz_type = XXX
+```
+&emsp; 由于多业务端可能同时操作，所以采用版本号version乐观锁方式更新，这种分布式ID生成方式不强依赖于数据库，不会频繁的访问数据库，对数据库的压力小很多  
+
+
+
