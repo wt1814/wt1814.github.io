@@ -24,9 +24,9 @@ tags:
 * 号段模式
 * Redis
 * 雪花算法(SnowFlake)
-* 滴滴出品(TinyID)
 * 百度(Uidgenerator)
-* 美团(Leaf)  
+* 美团(Leaf)
+* 滴滴出品(TinyID)  
 
 ### UUID  
 &emsp; ***生产随机数的方式：***  
