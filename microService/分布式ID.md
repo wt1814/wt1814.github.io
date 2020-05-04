@@ -87,9 +87,9 @@ CREATE TABLE id_generator (
 &emsp; step ：代表号段的长度  
 &emsp; version ：是一个乐观锁，每次都更新version，保证并发时数据的正确性  
 
-|id	|biz_type	|max_id	|step	|version|
-|---|---|---|---|
-|1	|101	|1000	|2000	|0|    
+|id|biz_type|max_id|step|version|
+|----|----|----|---|---|
+|1|101|1000|2000|0|   
 &emsp; 等这批号段ID用完，再次向数据库申请新号段，对max_id字段做一次update操作，update max_id= max_id + step，update成功则说明新号段获取成功，新的号段范围是(max_id ,max_id +step]。
 
 ```sql
@@ -113,6 +113,7 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 * 41位时间戳(毫秒级)：41位时间截不是存储当前时间的时间截，而是存储时间截的差值（当前时间截 - 开始时间截 )得到的值，这里的的开始时间截，一般是id生成器开始使用的时间，由程序来指定。  
 * 10位机器标识码：可以部署在1024个节点，如果机器分机房（IDC）部署，这10位可以由5位机房ID (datacenterId)和5位机器ID(workerId)组成。  
 * 12位序列：毫秒内的计数，12位的计数顺序号支持每个节点每毫秒(同一机器，同一时间截)产生4096个ID序号。  
+
 &emsp; ***snowflake算法优点：***  
 1. 生成ID时不依赖于DB，完全在内存生成，高性能高可用。
 2. ID呈趋势递增，后续插入索引树的时候性能较好。
