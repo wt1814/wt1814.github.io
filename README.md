@@ -32,7 +32,6 @@
 ### Dubbo  
 [Dubbo]  
 [Zookeeper](microService/Dubbo/Zookeeper.md)  
-[Dubbo]  
 ### 分布式理论  
 [一致性哈希算法](microService/分布式算法-consistent.md)  
 [分布式事务](microService/分布式事务.md)  
