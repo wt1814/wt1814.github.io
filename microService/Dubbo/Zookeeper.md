@@ -86,27 +86,26 @@ tags:
 &emsp; 当整个集群在启动时，或者当 leader 节点出现网络中断、崩溃等情况时， ZAB 协议就会进入恢复模式并选举产生新的 Leader，当 leader 服务器选举出来后，并且集群中有过半的机器和该 leader 节点完成数据同步后（同步指的是数据同步，用来保证集群中过半的机器能够和 leader 服务器的数据状态保持一致）， ZAB 协议就会退出恢复模式。  
 
 &emsp; ***选举流程中几个重要参数：***  
-&emsp; 服务器ID：即配置的myId。id越大，选举时权重越高。
-&emsp; 数据id：服务器在运行时产生的数据id，即zkid, 这里指本地最新snapshot的id。id越大说明数据越新，选举时权重越高。
-&emsp; 选举轮数：Epoch，即逻辑时钟。随着选举的轮数++。
-&emsp; 选举状态：4种状态。LOOKING，竞选状态；FOLLOWING，随从状态，同步leader状态，参与投票；OBSERVING，观察状态，同步leader状态，不参与投票；LEADING，领导者状态。
+&emsp; 服务器ID：即配置的myId。id越大，选举时权重越高。  
+&emsp; 数据id：服务器在运行时产生的数据id，即zkid, 这里指本地最新snapshot的id。id越大说明数据越新，选举时权重越高。  
+&emsp; 选举轮数：Epoch，即逻辑时钟。随着选举的轮数++。  
+&emsp; 选举状态：4种状态。LOOKING，竞选状态；FOLLOWING，随从状态，同步leader状态，参与投票；OBSERVING，观察状态，同步leader状态，不参与投票；LEADING，领导者状态。  
 
 &emsp; ***服务器启动时的leader选举：***  
 &emsp; 每个节点启动的时候状态都是LOOKING，处于观望状态，接下来就开始进行选主流程。  
 &emsp; 若进行 Leader 选举，则至少需要两台机器，这里选取 3 台机器组成的服务器集群为例。在集群初始化阶段，当有一台服务器 Server1 启动时，其单独无法进行和完成 Leader 选举，当第二台服务器 Server2 启动时，此时两台机器可以相互通信，每台机器都试图找到 Leader，于是进入 Leader选举过程。选举过程如下：  
 1. 每个 Server 发出一个投票。由于是初始情况， Server1 和 Server2 都会将自己作为 Leader 服务器来进行投票，每次投票会包含所推举的服务器的 myid 和 ZXID、 epoch，使用(myid, ZXID,epoch)来表示，此时 Server1 的投票为(1, 0)， Server2 的投票为(2, 0)，然后各自将这个投票发给集群中其他机器。  
 2. 接受来自各个服务器的投票。集群的每个服务器收到投票后，首先判断该投票的有效性，如检查是否是本轮投票（ epoch）、是否来自LOOKING 状态的服务器。  
-3. 处理投票。针对每一个投票，服务器都需要将别人的投票和自己的投票进行 PK， PK 规则如下  
-i. 优先比较 epoch  
-ii. 其次检查 ZXID。 ZXID 比较大的服务器优先作为 Leader  
-iii. 如果 ZXID 相同，那么就比较 myid。 myid 较大的服务器作为Leader 服务器。  
+3. 处理投票。针对每一个投票，服务器都需要将别人的投票和自己的投票进行 PK， PK 规则如下：  
+&emsp; i. 优先比较 epoch  
+&emsp; ii. 其次检查 ZXID。 ZXID 比较大的服务器优先作为 Leader  
+&emsp; iii. 如果 ZXID 相同，那么就比较 myid。 myid 较大的服务器作为Leader 服务器。  
 &emsp; 对于 Server1 而言，它的投票是(1, 0)，接收 Server2 的投票为(2, 0)，首先会比较两者的 ZXID，均为 0，再比较 myid，此时 Server2 的myid 最大，于是更新自己的投票为(2, 0)，然后重新投票，对于Server2 而言，其无须更新自己的投票，只是再次向集群中所有机器发出上一次投票信息即可。  
 4. 统计投票。每次投票后，服务器都会统计投票信息，判断是否已经有过半机器接受到相同的投票信息，对于 Server1、 Server2 而言，都统计出集群中已经有两台机器接受了(2, 0)的投票信息，此时便认为已经选出了 Leader。  
 5. 改变服务器状态。一旦确定了 Leader，每个服务器就会更新自己的状态，如果是 Follower，那么就变更为 FOLLOWING，如果是 Leader，就变更为 LEADING。  
 
 &emsp; ***运行过程中的leader选举：***  
-&emsp; 当集群中的 leader 服务器出现宕机或者不可用的情况时，那么整个集群  
-&emsp; 将无法对外提供服务，而是进入新一轮的 Leader 选举，服务器运行期间的 Leader 选举和启动时期的 Leader 选举基本过程是一致的。  
+&emsp; 当集群中的 leader 服务器出现宕机或者不可用的情况时，那么整个集群将无法对外提供服务，而是进入新一轮的 Leader 选举，服务器运行期间的 Leader 选举和启动时期的 Leader 选举基本过程是一致的。  
 1. 变更状态。 Leader 挂后，余下的非 Observer 服务器都会将自己的服务器状态变更为 LOOKING，然后开始进入 Leader 选举过程。  
 2. 每个 Server 会发出一个投票。在运行期间，每个服务器上的 ZXID 可能不同，此时假定 Server1 的 ZXID 为 123，Server3 的 ZXID 为 122；在第一轮投票中，Server1 和 Server3 都会投自己，产生投票(1, 123)，(3, 122)，然后各自将投票发送给集群中所有机器。接收来自各个服务器的投票。与启动时过程相同。  
 3. 处理投票。与启动时过程相同，此时， Server1 将会成为 Leader。  
@@ -127,6 +126,7 @@ iii. 如果 ZXID 相同，那么就比较 myid。 myid 较大的服务器作为L
 4. 当 leader 接收到合法数量（超过半数节点）的 ACK 后，leader 就会向这些 follower 发送 commit 命令，同时会在本地执行该消息。  
 5. 当 follower 收到消息的 commit 命令以后，会提交该消息。  
 ![](../../images/microService/Dubbo/dubbo-4.png)  
+
 &emsp; ps: 和完整的 2pc 事务不一样的地方在于，zab 协议不能终止事务， follower 节点要么 ACK 给 leader，要么抛弃leader，只需要保证过半数的节点响应这个消息并提交了即可，虽然在某一个时刻 follower 节点和 leader 节点的状态会不一致，但是也是这个特性提升了集群的整体性能。 当然这种数据不一致的问题， zab 协议提供了一种恢复模式来进行数据恢复。  
 &emsp; 这里需要注意的是leader 的投票过程，不需要 Observer 的 ack，也就是Observer 不需要参与投票过程，但是 Observer 必须要同步 Leader 的数据从而在处理请求的时候保证数据的一致性。  
 
@@ -157,7 +157,7 @@ iii. 如果 ZXID 相同，那么就比较 myid。 myid 较大的服务器作为L
 &emsp; 对于第二类，/distribute_lock已经预先存在，所有客户端在它下面创建临时顺序编号目录节点，和选master一样，编号最小的获得锁，用完删除，依次方便。  
 
 #### 队列管理
-&emsp; 两种类型的队列：
+&emsp; 两种类型的队列：  
 &emsp; 1）同步队列，当一个队列的成员都聚齐时，这个队列才可用，否则一直等待所有成员到达。  
 &emsp; 2）队列按照FIFO方式进行入队和出队操作。  
 &emsp; 第一类，在约定目录下创建临时目录节点，监听节点数目是否是要求的数目。  
