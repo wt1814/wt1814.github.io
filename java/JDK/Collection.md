@@ -112,7 +112,7 @@ tags:
            不知道，就使用ArrayList  
 
 ### 集合常见问题：  
-
+https://www.cnblogs.com/iwenwen/p/11052689.html  
 
 
 ### 集合使用注意事项：  
