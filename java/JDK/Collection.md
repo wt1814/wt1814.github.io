@@ -1,5 +1,5 @@
 ---
-title: 集合框架
+title: 集合框架Collection
 date: 2020-02-17 00:00:00
 tags:
     - JDK
@@ -112,8 +112,43 @@ tags:
            不知道，就使用ArrayList  
 
 ### 集合常见问题：  
-https://www.cnblogs.com/iwenwen/p/11052689.html  
+1. List,Set,Map三者的区别？  
+&emsp; List：有序,可重复。Set：无序,唯一。Map存储键值对。  
+2. ArrayList 与 Vector的区别？  
+    1. Vector的方法都是同步的(Synchronized),是线程安全的（thread-safe），而ArrayList的方法不是，由于线程的同步必然要 影响性能，因此,ArrayList的性能比Vector好。  
+    2. 当Vector或ArrayList中的元素超过它的初始大小时,Vector会将它的容量翻倍,而ArrayList只增加大 约1.5的大小，这样ArrayList就有利于节约内存空间。  
+    3. Vector可以设置capacityIncrement（容量增长的参数），而ArrayList不可以。  
+3. ArrayList与LinkedList的区别？  
+    1. 是否保证线程安全： ArrayList 和 LinkedList 都是不同步的，也就是不保证线程安全；  
+    2. 底层数据结构： Arraylist 底层使用的是 Object 数组；LinkedList 底层使用的是 双向链表 数据结构（JDK1.6之前为循环链表，JDK1.7取消了循环。注意双向链表和双向循环链表的区别，下面有介绍到！）  
+    3. 插入和删除是否受元素位置的影响： ① ArrayList 采用数组存储，所以插入和删除元素的时间复杂度受元素位置的影响。 ② LinkedList 采用链表存储，所以插入，删除元素时间复杂度不受元素位置的影响，都是近似 O（1）而数组为近似 O（n）。  
+    4. 是否支持快速随机访问： LinkedList 不支持高效的随机元素访问，而 ArrayList 支持。快速随机访问就是通过元素的序号快速获取元素对象(对应于get(int index) 方法)。  
+    5. 内存空间占用： ArrayList的空 间浪费主要体现在在list列表的结尾会预留一定的容量空间，而LinkedList的空间花费则体现在它的每一个元素都需要消耗比ArrayList更多的空间（因为要存放直接后继和直接前驱以及数据）。  
+4. ArrayList的扩容机制？  
+    1. 在JKD1.6中，如果通过无参构造的话，初始数组容量为10。每次通过copeOf的方式扩容后容量为原来的1.5倍加1。  
+    2. 在JDK1.7中，如果通过无参构造的话，初始数组容量为0，当真正对数组进行添加时，才真正分配容量，每次按照大约1.5倍（位运算）的比率通过copeOf的方式扩容。  
+    3. 在JKD1.8中，arraylist这个类中，扩容 调用的是grow（）方法，通过grow（）方法中调用的Arrays.copyof（）方法进行对原数组的复制，在通过调用System.arraycopy()方法进行复制，达到扩容的目的。  
+5. HashMap与HashTable的区别？  
+    1. 线程是否安全： HashMap 是非线程安全的，HashTable 是线程安全的；HashTable 内部的方法基本都经过synchronized 修饰。（如果你要保证线程安全的话就使用 ConcurrentHashMap 吧！）；  
+    2. 效率： 因为线程安全的问题，HashMap 要比 HashTable 效率高一点。另外，HashTable 基本被淘汰，不要在代码中使用它；  
+    3. 对Null key 和Null value的支持： HashMap 中，null 可以作为键，这样的键只有一个，可以有一个或多个键所对应的值为 null。。但是在 HashTable 中 put 进的键值只要有一个 null，直接抛出 NullPointerException。  
+    4. 初始容量大小和每次扩充容量大小的不同 ： ①创建时如果不指定容量初始值，Hashtable 默认的初始大小为11，之后每次扩充，容量变为原来的2n+1。HashMap 默认的初始化大小为16。之后每次扩充，容量变为原来的2倍。②创建时如果给定了容量初始值，那么 Hashtable 会直接使用你给定的大小，而 HashMap 会将其扩充为2的幂次方大小。也就是说 HashMap 总是使用2的幂作为哈希表的大小,后面会介绍到为什么是2的幂次方。  
+    5. 底层数据结构： JDK1.8 以后的 HashMap 在解决哈希冲突时有了较大的变化，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间。Hashtable 没有这样的机制。  
+6. HashMap的底层实现？  
 
+7. HashMap的扩容机制？  
+
+8. HashMap的线程安全？  
+
+9. HashSet如何检查重复?  
+&emsp; HashSet使用HashMap实现。HashSet是实现了Set接口并且把数据作为HshMap的K值，而HshMap的V值一直使用一个相同的虚值来保存。  
+
+```java
+public boolean add(E e) {
+    return map.put(e, PRESENT)==null;// 调用HashMap的put方法,PRESENT是一个至始至终都相同的虚值
+}
+```
+&emsp; 由于HashMap的K值本身就不允许重复，并且在HashMap中如果K/V相同时，会用新的V覆盖掉旧的V，然后返回旧的V，那么在HashSet中执行这一句话始终会返回一个false，导致插入失败，这样就保证了数据的不可重复性。
 
 ### 集合使用注意事项：  
 #### Arrays.asList()不能使用其修改集合相关的方法  
