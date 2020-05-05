@@ -1,8 +1,9 @@
 # wt1814.github.io  
 
 ## Java  
-[集合框架](java/JDK/Collection.md)  
-[集合框架源码](sourceCode/JDK/Collection.md)  
+[集合框架](java/JDK/1.集合框架.md)  
+[Map](java/JDK/2.Map.md)  
+[Collection](java/JDK/3.Collection.md)  
 
 ### JVM  
 [JDK、JRE、JVM三者间的关系](java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
