@@ -327,9 +327,9 @@ public class ListIteratorDemo {
 ......
 
 ### ConcurrentModificationException异常  
-单线程：
-  集合循环遍历时所使用的迭代器Iterator有一个要求：在迭代的过程中，除了使用迭代器（如:Iterator.remove()方法）对集合增删元素外，是不允许直接对集合进行增删操作。否则将会抛出ConcurrentModificationException异常。所以，由于集合的for-Each循环本质上使用的还是Iterator来迭代，因此也要注意这个陷阱。for-Each循环很隐蔽地使用了Iterator，导致程序员很容易忽略掉这个细节，所以一定要注意。看下面的例子，for-Each循环中修改了集合。  
+1. 在单线程中，集合循环遍历时所使用的迭代器Iterator有一个要求：在迭代的过程中，除了使用迭代器（如:Iterator.remove()方法）对集合增删元素外，是不允许直接对集合进行增删操作。否则将会抛出ConcurrentModificationException异常。所以，由于集合的for-Each循环本质上使用的还是Iterator来迭代，因此也要注意这个陷阱。for-Each循环很隐蔽地使用了Iterator，导致程序员很容易忽略掉这个细节，所以一定要注意。看下面的例子，for-Each循环中修改了集合。  
 
+```java
 List<String> list = new LinkedList<String>();
 list.add("aa");
 list.add("bb");
@@ -338,15 +338,28 @@ for (String item : list) {//for-Each
         list.add("cc"); //直接操作list
     }
 }
-运行抛出异常:ConcurrentModificationException。
-抛出上述异常的主要原因是当调用容器的iterator()方法返回Iterator对象时，把容器中包含对象的个数赋值给了一个变量expectedModCount，在调用next()方法时会比较变量expectedModCount与容器中实际对象的个数modCount的值是否相等，若二者不相等，则会抛出ConcurrentModificationException异常，因此在使用Iterator遍历容器的过程中，如果对容器进行增加或删除操作，就会改变容器中对象的数量，从而导致抛出异常。解决办法如下：在遍历的过程中把需要删除的对象保存到一个集合中，等遍历结束后再调用removeAll()方法来删除，或者使用iterator.remove()方法。
+```  
+&emsp; 运行抛出异常:ConcurrentModificationException。  
+&emsp; 抛出上述异常的主要原因是当调用容器的iterator()方法返回Iterator对象时，把容器中包含对象的个数赋值给了一个变量expectedModCount，在调用next()方法时会比较变量expectedModCount与容器中实际对象的个数modCount的值是否相等，若二者不相等，则会抛出ConcurrentModificationException异常，因此在使用Iterator遍历容器的过程中，如果对容器进行增加或删除操作，就会改变容器中对象的数量，从而导致抛出异常。解决办法如下：在遍历的过程中把需要删除的对象保存到一个集合中，等遍历结束后再调用removeAll()方法来删除，或者使用iterator.remove()方法。  
+2. 在多线程的环境中，线程是交替运行的（时间片轮转调度）。这就意味着，如果有两个线程A、B，线程A对集合使用Iterator迭代遍历，线程B则对集合进行增删操作。线程A、B一旦交替运行，就会出现在迭代的同时对集合增删的效果，也会抛出异常。解决办法就是加锁变成原子操作。  
+以上主要介绍了单线程的解决方案，那么多线程访问容器的过程中抛出ConcurrentModificationException异常了又该怎么解决呢？  
+* 在JDK1.5版本引入了线程安全的容器，比如ConcurrentHashMap和CopyOnWriteArrayList等。可以使用这些线程安全的容器来代替非线程安全的容器。  
+* 在使用迭代器遍历容器时对容器的操作放到synchronized代码块中，但是当引用程序并发程度比较高时，这会严重影响程序的性能。  
 
-并发编程：
-在多线程的环境中，线程是交替运行的（时间片轮转调度）。这就意味着，如果有两个线程A、B，线程A对集合使用Iterator迭代遍历，线程B则对集合进行增删操作。线程A、B一旦交替运行，就会出现在迭代的同时对集合增删的效果，也会抛出异常。解决办法就是加锁变成原子操作。
-以上主要介绍了单线程的解决方案，那么多线程访问容器的过程中抛出ConcurrentModificationException异常了又该怎么解决呢？
-1.在JDK1.5版本引入了线程安全的容器，比如ConcurrentHashMap和CopyOnWriteArrayList等。可以使用这些线程安全的容器来代替非线程安全的容器。
-2.在使用迭代器遍历容器时对容器的操作放到synchronized代码块中，但是当引用程序并发程度比较高时，这会严重影响程序的性能。
+### 快速失败（fail-fast）VS安全失败（fail-safe）  
+......
 
+----
+## 集合工具类  
+### 集合工具类Collections  
+&emsp; API描述：http://tool.oschina.net/uploads/apidocs/jdk-zh/java/util/Collections.html  
+&emsp; Collections提供了一些常用的集合框架操作。掌握API中部分常用的方法。  
 
+### 数组工具类Arrays  
+&emsp; java.util.Arrays类能方便地操作数组,它提供的所有方法都是静态的。  
 
+### Comparable、Comparator接口  
+&emsp; 一般是用于对象的比较来实现排序，两者略有区别：  
+&emsp; Comparable用作默认的比较方式，实现了该接口的类之间可以相互进行比较，这个对象组成的集合就可以直接通过sort()进行排序了。  
+&emsp; Comparator是设计模式中策略模式的一种应用。将算法的实现和数据进行了分离。  
 
