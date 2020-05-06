@@ -13,7 +13,12 @@ public class test {
 
 
 
-
+    static final int hash(Object key) {
+        int h;
+        //1. 允许key为null，hash = 0
+        //2. ^，异或运算
+        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+    }
 
 }
 
