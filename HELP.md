@@ -18,3 +18,6 @@ hexo官网：https://hexo.io/zh-cn/
 ../images/network/DNS-1.png
 https://raw.githubusercontent.com/wt1814/wt1814.github.io/master/images/network/DNS-1.png
   
+
+
+https://gitee.com/wt1814/pic-host/raw/master/images  
