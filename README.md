@@ -3,7 +3,8 @@
 ***联系我：wangtao1814@163.com***  
 
 ## Java  
-
+[java基础]  
+[JDK1.8]  
 ### 集合框架  
 [集合框架](java/JDK/1.集合框架.md)  
 [Map](java/JDK/2.Map.md)  
@@ -24,6 +25,14 @@
 [线程池](java/concurrent/3.ThreadPool.md)  
 [JUC包]  
 
+### 设计模式  
+
+
+### 算法  
+[数据结构]  
+[排序查找]  
+
+
 ## 数据库  
 [SQL语句](DataSource/1.SQL语句.md)  
 [SQL优化](DataSource/2.SQL优化.md)  
@@ -31,7 +40,7 @@
 [分布式数据库](DataSource/4.分布式数据库.md)  
 
 ## 微服务  
-
+[redis]  
 ### Spring Cloud Netflix  
 [Spring Cloud Netflix](microService/SpringCloudNetflix/0.Netflix.md)  
 [Spring Cloud Eureka](microService/SpringCloudNetflix/1.Eureka.md)  
@@ -62,6 +71,9 @@
 [自动配置原理](sourceCode/SpringBoot/1.自动配置原理.md)  
 [Spring Boot 2.2.0启动全过程解析](sourceCode/SpringBoot/2.SpringBoot2.2.0启动全过程源码分析.md)  
 [自定义strater]
+
+## linux服务器  
+[nginx]
 
 ## 计算机网络  
 [HTTP](/network/1.HTTP.md)  
