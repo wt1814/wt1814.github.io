@@ -26,9 +26,13 @@
 [JUC包]  
 
 ### 设计模式  
-
+[Java设计模式]  
+[创建型设计模式]  
+[结构型设计模式]  
+[行为型设计模式]  
 
 ### 算法  
+[算法基本概念]  
 [数据结构]  
 [排序查找]  
 
@@ -37,7 +41,8 @@
 [SQL语句](DataSource/1.SQL语句.md)  
 [SQL优化](DataSource/2.SQL优化.md)  
 [MySql深入](DataSource/3.MySql深入.md)  
-[分布式数据库](DataSource/4.分布式数据库.md)  
+[～～分布式数据库～～](DataSource/4.分布式数据库.md)  
+[MyCat中间件](DataSource/5.MyCat中间件.md)
 
 ## 微服务  
 [redis]  
