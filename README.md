@@ -36,12 +36,11 @@
 [数据结构]  
 [排序查找]  
 
-
 ## 数据库  
 [SQL语句](DataSource/1.SQL语句.md)  
 [SQL优化](DataSource/2.SQL优化.md)  
 [MySql深入](DataSource/3.MySql深入.md)  
-[～～分布式数据库～～](DataSource/4.分布式数据库.md)  
+[~~分布式数据库~~](DataSource/4.分布式数据库.md)  
 [MyCat中间件](DataSource/5.MyCat中间件.md)
 
 ## 微服务  
