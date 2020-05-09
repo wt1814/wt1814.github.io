@@ -3,12 +3,14 @@
 ***联系我：wangtao1814@163.com***  
 
 ## Java  
-[java基础]  
+[Java基础-1]  
+[Java基础-2]  
 [JDK1.8]  
+[Java基础类型]  
 ### 集合框架  
-[集合框架](java/JDK/1.集合框架.md)  
-[Map](java/JDK/2.Map.md)  
-[Collection](java/JDK/3.Collection.md)  
+[集合框架](java/Collection/1.集合框架.md)  
+[Map](java/Collection/2.Map.md)  
+[Collection](java/Collection/3.Collection.md)  
 
 ### JVM  
 [JDK、JRE、JVM三者间的关系](java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
@@ -37,11 +39,11 @@
 [排序查找]  
 
 ## 数据库  
-[SQL语句](DataSource/1.SQL语句.md)  
-[SQL优化](DataSource/2.SQL优化.md)  
-[MySql深入](DataSource/3.MySql深入.md)  
-[~~分布式数据库~~](DataSource/4.分布式数据库.md)  
-[MyCat中间件](DataSource/5.MyCat中间件.md)
+[SQL语句](SQL/1.SQL语句.md)  
+[SQL优化](SQL/2.SQL优化.md)  
+[MySql深入](SQL/3.MySql深入.md)  
+[~~分布式数据库~~](SQL/4.分布式数据库.md)  
+[MyCat中间件](SQL/5.MyCat中间件.md)
 
 ## 微服务  
 [redis]  
