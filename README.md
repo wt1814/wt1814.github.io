@@ -43,7 +43,7 @@
 [SQL优化](SQL/2.SQL优化.md)  
 [MySql深入](SQL/3.MySql深入.md)  
 [~~分布式数据库~~](SQL/4.分布式数据库.md)  
-[MyCat中间件](SQL/5.MyCat中间件.md)
+[~~MyCat中间件~~](SQL/5.MyCat中间件.md)
 
 ## 微服务  
 [redis]  
