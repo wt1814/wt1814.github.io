@@ -101,13 +101,13 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 &emsp; 可以使用Redis / MongoDB / zookeeper 生成分布式ID。  
 #### 基于Redis实现  
 &emsp; redis单机使用incr函数生成自增ID；redis集群使用lua脚本生成，或使用org.springframework.data.redis.support.atomic.RedisAtomicLong生成。  
-&emsp; ***优点：*** 有序递增，可读性强。
+&emsp; ***优点：*** 有序递增，可读性强。  
 &emsp; ***缺点：*** 占用带宽，每次要向redis进行请求。
 
 ### 4. 雪花SnowFlake算法  
 &emsp; snowflake是Twitter开源的分布式ID生成算法。可以本地生成，并且生成的long类型的ID递增。  
 &emsp; snowflake算法所生成的ID结构：正数位（占1比特）+ 时间戳（占41比特）+ 机器ID（占5比特）+ 数据中心（占5比特）+ 自增值（占12比特），总共64比特组成的一个Long类型。  
-![](../images/microService/problems/problem-19.png)  
+![](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-19.png)  
 &emsp; 整个结构是64位，所以在Java中可以使用long来进行存储。该算法实现基本就是二进制操作,单机每秒内理论上最多可以生成1024*(2^12)，也就是409.6万个ID(1024 X 4096 = 4194304)  
 * 1位标识符：由于long基本类型在Java中是带符号的，最高位是符号位，正数是0，负数是1，所以id一般是正数，最高位是0。  
 * 41位时间戳(毫秒级)：41位时间截不是存储当前时间的时间截，而是存储时间截的差值（当前时间截 - 开始时间截 )得到的值，这里的的开始时间截，一般是id生成器开始使用的时间，由程序来指定。  
