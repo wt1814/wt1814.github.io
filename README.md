@@ -82,6 +82,7 @@
 [自定义strater]
 
 ## linux服务器  
+[Linux命令]  
 [nginx]
 
 ## 计算机网络  
