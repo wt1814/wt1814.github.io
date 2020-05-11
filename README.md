@@ -65,6 +65,7 @@
 [分布式锁](microService/分布式锁.md)  
 [分布式缓存](microService/分布式缓存.md)  
 [分布式ID](microService/分布式ID.md)  
+[分布式限流]  
 
 ## 框架  
 [ElasticSearch]  

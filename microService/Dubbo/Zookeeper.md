@@ -9,16 +9,11 @@ tags:
 - [3. Zookeeper的运行原理](#3-zookeeper%e7%9a%84%e8%bf%90%e8%a1%8c%e5%8e%9f%e7%90%86)
   - [3.1. Watcher机制](#31-watcher%e6%9c%ba%e5%88%b6)
   - [3.2. ZAB协议](#32-zab%e5%8d%8f%e8%ae%ae)
-    - [3.2.1. Zookeeper集群3种角色](#321-zookeeper%e9%9b%86%e7%be%a43%e7%a7%8d%e8%a7%92%e8%89%b2)
-      - [3.2.1.1. 领导者Leader](#3211-%e9%a2%86%e5%af%bc%e8%80%85leader)
-      - [3.2.1.2. 跟随者Follower](#3212-%e8%b7%9f%e9%9a%8f%e8%80%85follower)
-      - [3.2.1.3. 观察者Observer](#3213-%e8%a7%82%e5%af%9f%e8%80%85observer)
-    - [3.2.2. 原子广播协议](#322-%e5%8e%9f%e5%ad%90%e5%b9%bf%e6%92%ad%e5%8d%8f%e8%ae%ae)
-      - [3.2.2.1. 选举流程，恢复模式](#3221-%e9%80%89%e4%b8%be%e6%b5%81%e7%a8%8b%e6%81%a2%e5%a4%8d%e6%a8%a1%e5%bc%8f)
-      - [3.2.2.2. 数据同步，广播模式](#3222-%e6%95%b0%e6%8d%ae%e5%90%8c%e6%ad%a5%e5%b9%bf%e6%92%ad%e6%a8%a1%e5%bc%8f)
+    - [3.2.1. 选举流程，恢复模式](#321-%e9%80%89%e4%b8%be%e6%b5%81%e7%a8%8b%e6%81%a2%e5%a4%8d%e6%a8%a1%e5%bc%8f)
+    - [3.2.2. 数据同步，广播模式](#322-%e6%95%b0%e6%8d%ae%e5%90%8c%e6%ad%a5%e5%b9%bf%e6%92%ad%e6%a8%a1%e5%bc%8f)
 - [4. Zookeeper应用](#4-zookeeper%e5%ba%94%e7%94%a8)
   - [4.1. 应用场景：](#41-%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af)
-      - [4.1.0.3. 分布式协调](#4103-%e5%88%86%e5%b8%83%e5%bc%8f%e5%8d%8f%e8%b0%83)
+      - [4.1.0.1. 分布式协调](#4101-%e5%88%86%e5%b8%83%e5%bc%8f%e5%8d%8f%e8%b0%83)
     - [4.1.1. 统一命名服务](#411-%e7%bb%9f%e4%b8%80%e5%91%bd%e5%90%8d%e6%9c%8d%e5%8a%a1)
     - [4.1.2. 元数据/配置信息管理](#412-%e5%85%83%e6%95%b0%e6%8d%ae%e9%85%8d%e7%bd%ae%e4%bf%a1%e6%81%af%e7%ae%a1%e7%90%86)
     - [4.1.3. 集群管理，HA高可用性](#413-%e9%9b%86%e7%be%a4%e7%ae%a1%e7%90%86ha%e9%ab%98%e5%8f%af%e7%94%a8%e6%80%a7)
@@ -77,41 +72,12 @@ tags:
 ## 3.2. ZAB协议  
 &emsp; ZAB协议全称：Zookeeper Atomic Broadcast（Zookeeper原子广播协议），崩溃可恢复的的原子消息广播算法。ZAB协议包括两种基本模式：崩溃恢复（选主）和消息广播（同步）。整个Zookeeper集群就是在这两个模式之间切换。  
 
-### 3.2.1. Zookeeper集群3种角色  
+&emsp; Zookeeper集群中服务器分为3种角色：领导者Leader、学习者Learner(包括跟随者Follower和观察者Observer)。   
+* 领导者Leader：领导者Leader负责客户端的Writer类型的请求（增删改的操作请求其他节点都会发给Leader节点来做，然后由Leader节点同步给其他节点）。负责进行投票的发起和决议，更新系统状态。  
+* 跟随者Follower：Follower负责客户端reader请求。参与leader的选举，与leader同步。  
+* 观察者Observer：Observer可以接受客户端连接，负责客户端reader请求，将write请求转发给leader。不参与投票和选举，与leader同步。observer的目的是为了扩展系统，提高读取速度。  
 
-&emsp; 领导者Leader、学习者Learner(包括跟随者Follower和观察者Observer)。  
-
-#### 3.2.1.1. 领导者Leader  
-&emsp; 领导者Leader负责客户端的Writer类型的请求（增删改的操作请求其他节点都会发给Leader节点来做，然后由Leader节点同步给其他节点）。负责进行投票的发起和决议，更新系统状态。  
-&emsp; Leader主要的功能  
-1. 恢复数据。
-2. 维持与Learner的心跳，接收Learner请求并判断Learner的请求消息类型。Learner的消息类型主要有PING消息、REQUEST消息、ACK消息、REVALIDATE消息，根据不同的消息类型，进行不同的处理。  
-* PING消息是指Learner的心跳信息；
-* REQUEST消息是Follower发送的提议信息，包括写请求及同步请求；
-* ACK消息是Follower的对提议的回复，超过半数的Follower通过，则commit该提议；
-* REVALIDATE消息是用来延长SESSION有效时间。
-
-#### 3.2.1.2. 跟随者Follower  
-&emsp; Follower负责客户端reader请求。参与leader的选举，与leader同步。  
-&emsp; Follower主要功能：  
-1. 接收Client的请求，如果为写请求，发送给Leader进行投票。返回Client结果。
-2. 向Leader发送请求（PING消息、REQUEST消息、ACK消息、REVALIDATE消息）。接收Leader消息并进行处理。
-
-&emsp; Follower的消息循环处理如下几种来自Leader的消息：  
-* PING消息：心跳消息；  
-* PROPOSAL消息：Leader发起的提案，要求Follower投票；  
-* COMMIT消息：服务器端最新一次提案的信息；  
-* UPTODATE消息：表明同步完成；  
-* REVALIDATE消息：根据Leader的REVALIDATE结果，关闭待revalidate的session还是允许其接受消息；   
-* SYNC消息：返回SYNC结果到客户端，这个消息最初由客户端发起，用来强制得到最新的更新。  
-
-#### 3.2.1.3. 观察者Observer  
-&emsp; Observer可以接受客户端连接，负责客户端reader请求，将write请求转发给leader。不参与投票和选举，与leader同步。observer的目的是为了扩展系统，提高读取速度。  
-
-&emsp; 对于Observer的流程不再叙述，Observer流程和Follower的唯一不同的地方就是Observer不会参加Leader发起的投票。  
-
-### 3.2.2. 原子广播协议  
-#### 3.2.2.1. 选举流程，恢复模式  
+### 3.2.1. 选举流程，恢复模式  
 &emsp; 当整个集群在启动时，或者当 leader 节点出现网络中断、崩溃等情况时， ZAB 协议就会进入恢复模式并选举产生新的 Leader，当 leader 服务器选举出来后，并且集群中有过半的机器和该 leader 节点完成数据同步后（同步指的是数据同步，用来保证集群中过半的机器能够和 leader 服务器的数据状态保持一致）， ZAB 协议就会退出恢复模式。  
 
 &emsp; ***选举流程中几个重要参数：***  
@@ -120,7 +86,7 @@ tags:
 &emsp; 选举轮数：Epoch，即逻辑时钟。随着选举的轮数++。  
 &emsp; 选举状态：4种状态。LOOKING，竞选状态；FOLLOWING，随从状态，同步leader状态，参与投票；OBSERVING，观察状态，同步leader状态，不参与投票；LEADING，领导者状态。  
 
-&emsp; ***服务器启动时的leader选举：***  
+* ***服务器启动时的leader选举：***  
 &emsp; 每个节点启动的时候状态都是LOOKING，处于观望状态，接下来就开始进行选主流程。  
 &emsp; 若进行 Leader 选举，则至少需要两台机器，这里选取 3 台机器组成的服务器集群为例。在集群初始化阶段，当有一台服务器 Server1 启动时，其单独无法进行和完成 Leader 选举，当第二台服务器 Server2 启动时，此时两台机器可以相互通信，每台机器都试图找到 Leader，于是进入 Leader选举过程。选举过程如下：  
 1. 每个 Server 发出一个投票。由于是初始情况， Server1 和 Server2 都会将自己作为 Leader 服务器来进行投票，每次投票会包含所推举的服务器的 myid 和 ZXID、 epoch，使用(myid, ZXID,epoch)来表示，此时 Server1 的投票为(1, 0)， Server2 的投票为(2, 0)，然后各自将这个投票发给集群中其他机器。  
@@ -133,7 +99,7 @@ tags:
 4. 统计投票。每次投票后，服务器都会统计投票信息，判断是否已经有过半机器接受到相同的投票信息，对于 Server1、 Server2 而言，都统计出集群中已经有两台机器接受了(2, 0)的投票信息，此时便认为已经选出了 Leader。  
 5. 改变服务器状态。一旦确定了 Leader，每个服务器就会更新自己的状态，如果是 Follower，那么就变更为 FOLLOWING，如果是 Leader，就变更为 LEADING。  
 
-&emsp; ***运行过程中的leader选举：***  
+* ***运行过程中的leader选举：***  
 &emsp; 当集群中的 leader 服务器出现宕机或者不可用的情况时，那么整个集群将无法对外提供服务，而是进入新一轮的 Leader 选举，服务器运行期间的 Leader 选举和启动时期的 Leader 选举基本过程是一致的。  
 1. 变更状态。 Leader 挂后，余下的非 Observer 服务器都会将自己的服务器状态变更为 LOOKING，然后开始进入 Leader 选举过程。  
 2. 每个 Server 会发出一个投票。在运行期间，每个服务器上的 ZXID 可能不同，此时假定 Server1 的 ZXID 为 123，Server3 的 ZXID 为 122；在第一轮投票中，Server1 和 Server3 都会投自己，产生投票(1, 123)，(3, 122)，然后各自将投票发送给集群中所有机器。接收来自各个服务器的投票。与启动时过程相同。  
@@ -142,7 +108,7 @@ tags:
 5. 改变服务器的状态。与启动时过程相同。  
 ![](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-3.png)  
 
-#### 3.2.2.2. 数据同步，广播模式  
+### 3.2.2. 数据同步，广播模式  
 &emsp; 当集群中已经有过半的 Follower 节点完成了和 Leader 状态同步以后，那么整个集群就进入了消息广播模式。这个时候，在 Leader 节点正常工作时，启动一台新的服务器加入到集群，那这个服务器会直接进入数据恢复模式，和leader 节点进行数据同步。同步完成后即可正常对外提供非事务请求的处理。  
 &emsp; 注：leader节点可以处理事务请求和非事务请求， follower 节点只能处理非事务请求，如果 follower 节点接收到非事务请求，会把这个请求转发给 Leader 服务器。  
 
@@ -156,12 +122,12 @@ tags:
 5. 当 follower 收到消息的 commit 命令以后，会提交该消息。  
 ![](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-4.png)  
 
-&emsp; ps: 和完整的 2pc 事务不一样的地方在于，zab 协议不能终止事务， follower 节点要么 ACK 给 leader，要么抛弃leader，只需要保证过半数的节点响应这个消息并提交了即可，虽然在某一个时刻 follower 节点和 leader 节点的状态会不一致，但是也是这个特性提升了集群的整体性能。 当然这种数据不一致的问题， zab 协议提供了一种恢复模式来进行数据恢复。  
+&emsp; 注: 和完整的2pc事务不一样的地方在于，zab 协议不能终止事务， follower 节点要么 ACK 给 leader，要么抛弃leader，只需要保证过半数的节点响应这个消息并提交了即可，虽然在某一个时刻 follower 节点和 leader 节点的状态会不一致，但是也是这个特性提升了集群的整体性能。 当然这种数据不一致的问题， zab 协议提供了一种恢复模式来进行数据恢复。  
 &emsp; 这里需要注意的是leader 的投票过程，不需要 Observer 的 ack，也就是Observer 不需要参与投票过程，但是 Observer 必须要同步 Leader 的数据从而在处理请求的时候保证数据的一致性。  
 
 # 4. Zookeeper应用  
 ## 4.1. 应用场景：  
-#### 4.1.0.3. 分布式协调  
+#### 4.1.0.1. 分布式协调  
 &emsp; 这个其实是zookeeper很经典的一个用法，简单来说，就好比，A系统发送个请求到mq，然后B系统消息消费之后处理了。那A系统如何知道B系统的处理结果？用zookeeper就可以实现分布式系统之间的协调工作。A系统发送请求之后可以在zookeeper上对某个节点的值注册个监听器，一旦B系统处理完了就修改zookeeper那个节点的值，A系统立马就可以收到通知，完美解决。  
 
 ### 4.1.1. 统一命名服务  
