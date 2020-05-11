@@ -6,58 +6,24 @@ tags:
 ---
 
 # Redis简介  
-Redis是一个开源（BSD许可），内存存储的数据结构服务器，可用作数据库，高速缓存和消息队列代理。
-它支持字符串、哈希表、列表、集合、有序集合，位图，hyperloglogs等丰富的数据类型。
-内置复制、Lua脚本、LRU收回、事务以及不同级别磁盘持久化功能。
-同时通过Redis Sentinel提供高可用，通过Redis Cluster提供自动分区。
+&emsp; Redis是一个开源，内存存储的数据结构服务器，可用作数据库，高速缓存和消息队列代理。  
+&emsp; 它支持字符串、哈希表、列表、集合、有序集合，位图，hyperloglogs等丰富的数据类型。  
+&emsp; 提供Lua脚本、LRU收回、事务以及不同级别磁盘持久化功能。  
+&emsp; 同时通过Redis Sentinel提供高可用，通过Redis Cluster提供自动分区。  
 
 # Redis的基本数据类型：  
-Redis支持五种数据类型（数据类型是针对redis的value值）：string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。
-数据类型	可以存储的值	操作	使用场景
-String	字符串、整数或者浮点数	对整个字符串或者字符串的其中一部分执行操作；
-对整数和浮点数执行自增或者自减操作；	1.缓存功能，如存放序列化后的用户信息
-2.计数
-3.共享session
-4.限速，如限制用户每分钟获取验证码的速率
-Hash	键值对
-(无序散列表)	添加、获取、移除单个键值对；
-获取所有键值对；
-检查某个键是否存在；	1.缓存功能，如存放用户信息，相较String可减少内存空间使用
-List	链表
-多个有序的字符串	从两端压入或者弹出元素；
-读取单个或者多个元素；
-进行修剪，只保留一个范围内对元素；	1.消息队列，lpush+brpop实现阻塞队列
-2.文章列表
-3.栈：lpush+lpop = Stack
-4.队列：lpush+lpop = Queue
-Set	无序集合
-多个无序、不重的字符串	添加、获取、移除单个元素；
-检查一个元素是否存在于集合中；
-计算交集、并集、差集；
-从集合里面随机获取元素；	1.标签(Tag)
-2.社交
-Zset	有序集合
-多个有序、不重的字符串	添加、获取、删除元素；
-根据分值范围或者成员来获取元素；
-计算一个键对排名；	1.排行榜系统，比如点赞排名
-2.社交
+&emsp; Redis属于\<key,value\>形式的数据结构。  
+&emsp; Redis的key是字符串类型，但是key中不能包括边界字符，由于key不是binary safe的字符串，所以key不能空格和换行。  
+&emsp; Redis的value支持五种数据类型：String（字符串），Hash（哈希），List（列表），Set（集合）及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
+&emsp; 注：Zset每个元素都会关联一个double类型的分数score。redis通过分数score来为Zset的成员进行从小到大的排序。Zset用来保存需要排序的数据。
 
-List
-Redis中的List在内存中按照一个name对应一个List来存储。List类型是按照插入顺序排序的字符串链表。
-
-List使用场景：使用List的数据结构，可以做简单的消息队列的功能，LPUSH链表头作为生产者插入消息，RPOP作为消费者取得消息。例如限时抢购、秒杀等记录商品数量变化功能；还可以利用lrange命令，做基于redis的分页功能。
-用户排队（push，pop）、有序消息（push，pop）、实现生产者和消费者模型（阻塞式访问BRPOP和BLPOP命令）
-微博关注人时间轴列表、简单队列
-列表，按照String元素插入顺序排序。其顺序为后进先出。由于其具有栈的特性，所以可以实现如“最新消息排行榜”这类的功能。
-Set
-Set是集合，是String类型的无序集合。Set是通过hashtable实现的，添加、删除和查找的复杂度都是O(1)。
-Set使用场景：set堆放的是一堆不重复值的集合。对集合可以取并集、交集、差集。可以计算共同喜好，全部的喜好，自己独有的喜好，可以实现好友推荐和blog的tag等功能。
-去重列表、标签（用户标签，商家标签）、交集（用户A，用户B都完成的任务）、并集（用户A，用户B任一完成的任务）、差集（用户A还没有完成的任务）、获取随机元素（）
-赞、踩、标签、好友关系
-zset
-zset和set一样也是String类型元素的集合,且不允许重复的成员。有序集合的排序默认按照字典序排列。
-ZSet使用场景：与set不同的是每个元素都会关联一个double类型的分数score。redis通过分数score来为集合中的成员进行从小到大的排序。zset用来保存需要排序的数据。zset的成员是唯一的,但分数(score)却可以重复。Zset可以做排行榜应用，取TOP N操作；sorted set还可以用来做延时任务、范围查找。
-排行榜
+|数据类型	|可以存储的值	|操作	|使用场景|
+|---|---|---|---|
+|String	|字符串、整数或者浮点数	|对整个字符串或者字符串的其中一部分执行操作；对整数和浮点数执行自增或者自减操作；	|1.缓存功能，如存放序列化后的用户信息 2.计数 3.共享session 4.限速，如限制用户每分钟获取验证码的速率|
+|Hash	|键值对(无序散列表)	|添加、获取、移除单个键值对；获取所有键值对；检查某个键是否存在；|	1.缓存功能，如存放用户信息，相较String可减少内存空间使用|
+|List	|链表 |从两端压入或者弹出元素；读取单个或者多个元素；进行修剪，只保留一个范围内对元素；	|1.消息队列，lpush+brpop实现阻塞队列 2.文章列表 3.栈：lpush+lpop = Stack 4.队列：lpush+lpop = Queue|
+|Set	|无序集合|添加、获取、移除单个元素； 检查一个元素是否存在于集合中； 计算交集、并集、差集；从集合里面随机获取元素；|	1.标签(Tag) 2.社交|
+|Zset	|有序集合 | 添加、获取、删除元素；根据分值范围或者成员来获取元素； 计算一个键对排名；|1.排行榜系统，比如点赞排名 2.社交|
 
 ------------------------------------------
 # Redis的其他数据类型  
@@ -135,7 +101,6 @@ geohash：获取某个地理位置的geohash值。
 最后介绍Redis的键空间和过期键( expire )实现。
 
 ## 六种基础数据结构  
-https://mp.weixin.qq.com/s?__biz=MzIyMDI5MzA3NQ==&mid=2247485466&idx=1&sn=a27986a6540f4a9cc2f71548c132bf45&chksm=97cf7aa6a0b8f3b01356fff42644951fdfec93e44efecd1dd048cc4ba23c95bd54c5a24e1603&mpshare=1&scene=1&srcid=&sharer_sharetime=1575266467663&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=9ad84b8c73b256abd7ecf0cca314f4d4386372342f8b2b4b265bdf90cd76bf2ddf5601c5b6c2b5050dfb48b3f890fed5f13f13232e7b4320267739a3293bcf7137397320b13050a214212b8e436d402e&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&pass_ticket=XhI9M9nIhrTxHIclQ8uxyPd2unJlQ4N%2BES6NrkpAI67hgwA8jaM03%2BH7QSdXE73Z
 
 ### SDS动态字符串  
 https://redis.io/topics/internals-sds
@@ -166,7 +131,7 @@ SDS的结构可以减少修改字符串时带来的内存重分配的次数，�
 如果修改后，SDS的长度将大于1MB，那么Redis会分配1MB的未使用空间。
 比如说，进行修改后SDS的len长度为20字节，小于1MB，那么Redis会预先再分配20字节的空间， SDS的buf数组的实际长度(除去最后一字节)变为20 + 20 = 40字节。当SDS的len长度大于1MB时，则只会再多分配1MB的空间。
 类似的，当SDS缩短其保存的字符串长度时，并不会立即释放多出来的字节，而是等待之后使用。
-2. linkedlist双端链表
+### linkedlist双端链表  
     Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
 
 从图中可以看出Redis的linkedlist双端链表有以下特性：节点带有prev、next指针、head指针和tail指针，获取前置节点、后置节点、表头节点和表尾节点的复杂度都是O（1）。len属性获取节点数量也为O（1）。
@@ -202,7 +167,7 @@ typedef struct list{
     int (*match) (void *ptr,void *key);
 }list;
 
-3. Hash字典
+### Hash字典  
 Hash结构图如下：
 
 Redis的Hash，是在数组+链表的基础上，进行了一些rehash优化等。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，被分配到同一个索引的多个键值对会连接成一个单向链表。
@@ -247,7 +212,7 @@ typedef struct dict {
     int rehashidx; /* rehashing not in progress if rehashidx == -1 */
 } dict;
 
-4. skipList跳跃表
+### skipList跳跃表  
 Redis使用跳跃表作为有序集合对象的底层实现之一。它以有序的方式在层次化的链表中保存元素，效率和平衡树媲美 —— 查找、删除、添加等操作都可以在对数期望时间下完成，并且比起平衡树来说，跳跃表的实现要简单直观得多。
 
 如示意图所示，zskiplistNode是跳跃表的节点，其ele是保持的元素值，score 是分值，节点按照其score值进行有序排列，而level数组就是其所谓的层次化链表的体现。
@@ -301,7 +266,8 @@ typedef struct zskiplist {
 用于记录两个节点之间的距离
 4.2.4 后退指针(backward)
 用于从表尾向表头方向访问。
-5. intset整数集合
+
+### intset整数集合  
 整数集合intset是集合对象的底层实现之一，当一个集合只包含整数值元素，并且这个集合的元素数量不多时，Redis就会使用整数集合作为集合对象的底层实现。
 
 如上图所示，整数集合的encoding表示它的类型，有int16t，int32t或者int64_t。其每个元素都是contents数组的一个数组项，各个项在数组中按值的大小从小到大有序的排列，并且数组中不包含任何重复项。length属性就是整数集合包含的元素数量。
@@ -322,7 +288,7 @@ typedef struct intset {
 字段encoding：
 https://mp.weixin.qq.com/s/gRtiSNDCuS0c8nF_Q8Tv9A
 
-6. ziplist压缩列表
+### ziplist压缩列表  
 压缩队列ziplist是列表对象和哈希对象的底层实现之一。当满足一定条件时，列表对象和哈希对象都会以压缩队列为底层实现。
 
 压缩队列是Redis为了节约内存而开发的，是由一系列特殊编码的连续内存块组成的顺序型数据结构。它的属性值有：
@@ -338,9 +304,9 @@ https://mp.weixin.qq.com/s/gRtiSNDCuS0c8nF_Q8Tv9A
 
 当一个列表键只包含少量列表项，且是小整数值或长度比较短的字符串时，那么redis就使用ziplist（压缩列表）来做列表键的底层实现。
 ziplist是Redis为了节约内存而开发的，是由一系列特殊编码的连续内存块(而不是像双端链表一样每个节点是指针)组成的顺序型数据结构；
-2. ***对象系统，redisObject及5种基本类型
+## 对象系统，redisObject及5种基本类型  
 
-redisObject
+### redisObject  
 当执行set hello world命令时，会有以下数据模型：
 
 dictEntry：Redis给每个key-value键值对分配一个dictEntry，里面有着key和val的指针，next指向下一个dictEntry形成链表，这个指针可以将多个哈希值相同的键值对链接在一起，由此来解决哈希冲突问题(链地址法)。
@@ -375,7 +341,7 @@ List	quicklist（快速列表，是ziplist压缩列表和linkedlist双端链表�
 Set	intset（整数集合）或者hashtable（字典或者也叫哈希表）
 ZSet	ziplist（压缩列表）或者skiplist（跳跃表）
 
-String
+### String  
 字符串对象的底层实现可以是int、raw、embstr（即SDS）。embstr编码是通过调用一次内存分配函数来分配一块连续的空间，而raw需要调用两次。
 int编码字符串对象和embstr编码字符串对象在一定条件下会转化为raw编码字符串对象。
 embstr：<=39字节的字符串。int：8个字节的长整型。raw：大于39个字节的字符串。
@@ -409,15 +375,15 @@ typedef struct list {
 quickList是zipList和linkedList的混合体。它将linkedList按段切分，每一段使用zipList来紧凑存储，多个zipList之间使用双向指针串接起来。因为链表的附加空间相对太高，prev和next指针就要占去16个字节 (64bit系统的指针是8个字节)，另外每个节点的内存都是单独分配，会加剧内存的碎片化，影响内存管理效率。
 
 quicklist默认的压缩深度是0，也就是不压缩。为了支持快速的push/pop操作，quicklist的首尾两个ziplist不压缩，此时深度就是1。为了进一步节约空间，Redis还会对ziplist进行压缩存储，使用LZF算法压缩。
-Hash
+### Hash  
 Hash对象的底层实现可以是ziplist（压缩列表）或者hashtable（字典或者也叫哈希表）。
 
 Hash对象只有同时满足下面两个条件时，才会使用ziplist（压缩列表）：1.哈希中元素数量小于512个；2.哈希中所有键值对的键和值字符串长度都小于64字节。
-Set
+### Set  
 Set集合对象的底层实现可以是intset（整数集合）或者hashtable（字典或者也叫哈希表）。
 
 intset（整数集合）当一个集合只含有整数，并且元素不多时会使用intset（整数集合）作为Set集合对象的底层实现。
-ZSet
+### ZSet  
 ZSet有序集合对象底层实现可以是ziplist（压缩列表）或者skiplist（跳跃表）。
 
 当一个有序集合的元素数量比较多或者成员是比较长的字符串时，Redis就使用skiplist（跳跃表）作为ZSet对象的底层实现。
@@ -430,11 +396,4 @@ ZSet有序集合对象底层实现可以是ziplist（压缩列表）或者skipli
 
 ***5.3. redis客户端：
 Spring Boot 2.x中默认使用lettuce作为默认redis客户端。当然也可以引入redisson客户端。这两种是非阻塞反应式高级redis客户端。建议放弃阻塞客户端jedis。
-6. Redis开发规范：
-
-https://mp.weixin.qq.com/s?__biz=MzU3MDc3OTI1NA==&mid=2247484190&idx=1&sn=24a8d6e78d35654642d454a3f68652da&chksm=fceb7007cb9cf911d781dd3933270bc8fe29e38fd59b8800a0a0d4c0f23a92f8f772227a61ba&mpshare=1&scene=1&srcid=&key=798968cdb5a0aac4295ab440c1fdc58e9f86430859f024f6a51a42b9a94c37ec6f95a875f582d8d0921aa527fb5a489615a80149c72941f5238bc951d7ba3823fae921a98a84f793c36c26a4aa08f7ca&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060739&lang=zh_CN&pass_ticket=4Vr2NPMzYFb0jcHQfjPJlqV6VAL47D8qjfq9i0H0%2FBhGCNXdtMKfRIpi9qbYRB6f
-
-https://yq.aliyun.com/articles/531067
-阿里云 Redis 的开发规范
-https://mp.weixin.qq.com/s/kDUFaLbWBKf_hS403e19Rg
 
