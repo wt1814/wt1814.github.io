@@ -4,7 +4,24 @@ date: 2020-05-10 00:00:00
 tags:
     - 分布式
 ---
-## 分布式ID  
+- [1. 分布式ID](#1-%e5%88%86%e5%b8%83%e5%bc%8fid)
+- [2. 分布式ID常见生成方案](#2-%e5%88%86%e5%b8%83%e5%bc%8fid%e5%b8%b8%e8%a7%81%e7%94%9f%e6%88%90%e6%96%b9%e6%a1%88)
+  - [2.1. UUID](#21-uuid)
+  - [2.2. 利用数据库生成](#22-%e5%88%a9%e7%94%a8%e6%95%b0%e6%8d%ae%e5%ba%93%e7%94%9f%e6%88%90)
+    - [2.2.1. MySql主键自增：](#221-mysql%e4%b8%bb%e9%94%ae%e8%87%aa%e5%a2%9e)
+    - [2.2.2. MySQL多实例主键自增](#222-mysql%e5%a4%9a%e5%ae%9e%e4%be%8b%e4%b8%bb%e9%94%ae%e8%87%aa%e5%a2%9e)
+    - [2.2.3. 基于数据库的号段模式](#223-%e5%9f%ba%e4%ba%8e%e6%95%b0%e6%8d%ae%e5%ba%93%e7%9a%84%e5%8f%b7%e6%ae%b5%e6%a8%a1%e5%bc%8f)
+  - [2.3. 利用中间件生成](#23-%e5%88%a9%e7%94%a8%e4%b8%ad%e9%97%b4%e4%bb%b6%e7%94%9f%e6%88%90)
+    - [2.3.1. 基于Redis实现](#231-%e5%9f%ba%e4%ba%8eredis%e5%ae%9e%e7%8e%b0)
+  - [2.4. 雪花SnowFlake算法](#24-%e9%9b%aa%e8%8a%b1snowflake%e7%ae%97%e6%b3%95)
+    - [2.4.1. snowflake算法实现：](#241-snowflake%e7%ae%97%e6%b3%95%e5%ae%9e%e7%8e%b0)
+  - [2.5. 开源分布式ID算法：](#25-%e5%bc%80%e6%ba%90%e5%88%86%e5%b8%83%e5%bc%8fid%e7%ae%97%e6%b3%95)
+    - [2.5.1. 百度uid-generator](#251-%e7%99%be%e5%ba%a6uid-generator)
+      - [2.5.1.1. uid-generator使用教程](#2511-uid-generator%e4%bd%bf%e7%94%a8%e6%95%99%e7%a8%8b)
+    - [2.5.2. 美团Leaf：](#252-%e7%be%8e%e5%9b%a2leaf)
+    - [2.5.3. 滴滴Tinyid](#253-%e6%bb%b4%e6%bb%b4tinyid)
+
+# 1. 分布式ID  
 &emsp; 在业务开发中需要使用一些id。分布式系统的全局唯一ID称为分布式ID。  
 
 &emsp; 分布式ID需要满足那些条件？  
@@ -15,7 +32,7 @@ tags:
 * 趋势递增：最好趋势递增，这个要求就得看具体业务场景了，一般不严格要求。  
 * 可反解：一个ID生成之后，就会伴随着信息终身，排错分析的时候，需要查验。这时候一个可反解的ID可以帮上很多忙，从哪里来的，什么时候出生的。  
 
-## 分布式ID常见生成方案  
+# 2. 分布式ID常见生成方案  
 
 &emsp; 分布式ID常见生成方案有以下几种：  
 * UUID
@@ -28,7 +45,7 @@ tags:
 * 美团(Leaf)
 * 滴滴出品(TinyID)  
 
-### UUID  
+## 2.1. UUID  
 &emsp; ***生产随机数的方式：***  
 1). Math.random()0到1之间随机数；  
 2). java.util.Random伪随机数（线性同余法生成）；  
@@ -50,18 +67,19 @@ tags:
 * 适用于类似生成token令牌的场景；  
 * 不适用一些要求有趋势递增的ID场景。  
 
-### 2. 利用数据库生成  
-#### MySql主键自增：  
+## 2.2. 利用数据库生成  
+### 2.2.1. MySql主键自增：  
 &emsp; 这个方案利用了MySQL的主键自增auto_increment，默认每次ID加1。  
 &emsp; ***优点：***  
 * 数字化，id递增；  
 * 查询效率高；  
 * 具有一定的业务可读。  
+
 &emsp; ***缺点：***  
 * 存在单点问题，如果mysql挂了，就没法生成ID；  
 * 数据库压力大，高并发抗不住。  
 
-#### MySQL多实例主键自增  
+### 2.2.2. MySQL多实例主键自增  
 &emsp; 这个方案就是解决mysql的单点问题，在auto_increment基本上面，设置step步长。  
 ![](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-18.png)  
 &emsp; 每台的初始值分别为1,2,3...N，步长为N（这个案例步长为4）。  
@@ -69,7 +87,7 @@ tags:
 &emsp; ***缺点：*** 一旦把步长定好后，就无法扩容；而且单个数据库的压力大，数据库自身性能无法满足高并发。  
 &emsp; ***应用场景：*** 数据不需要扩容的场景。  
 
-#### 基于数据库的号段模式  
+### 2.2.3. 基于数据库的号段模式  
 &emsp; 号段模式是当下分布式ID生成器的主流实现方式之一，号段模式可以理解为从数据库批量的获取自增ID，每次从数据库取出一个号段范围，例如 (1,1000] 代表1000个ID，具体的业务服务将本号段，生成1~1000的自增ID并加载到内存。表结构如下：  
 
 ```sql
@@ -97,14 +115,15 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 ```
 &emsp; 由于多业务端可能同时操作，所以采用版本号version乐观锁方式更新，这种分布式ID生成方式不强依赖于数据库，不会频繁的访问数据库，对数据库的压力小很多  
 
-### 3. 利用中间件生成  
+## 2.3. 利用中间件生成  
 &emsp; 可以使用Redis / MongoDB / zookeeper 生成分布式ID。  
-#### 基于Redis实现  
+
+### 2.3.1. 基于Redis实现  
 &emsp; redis单机使用incr函数生成自增ID；redis集群使用lua脚本生成，或使用org.springframework.data.redis.support.atomic.RedisAtomicLong生成。  
 &emsp; ***优点：*** 有序递增，可读性强。  
 &emsp; ***缺点：*** 占用带宽，每次要向redis进行请求。
 
-### 4. 雪花SnowFlake算法  
+## 2.4. 雪花SnowFlake算法  
 &emsp; snowflake是Twitter开源的分布式ID生成算法。可以本地生成，并且生成的long类型的ID递增。  
 &emsp; snowflake算法所生成的ID结构：正数位（占1比特）+ 时间戳（占41比特）+ 机器ID（占5比特）+ 数据中心（占5比特）+ 自增值（占12比特），总共64比特组成的一个Long类型。  
 ![](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-19.png)  
@@ -117,10 +136,11 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 &emsp; ***snowflake算法优点：***  
 1. 生成ID时不依赖于DB，完全在内存生成，高性能高可用。
 2. ID呈趋势递增，后续插入索引树的时候性能较好。
-3. 可以根据自身业务特性分配bit位，非常灵活。
+3. 可以根据自身业务特性分配bit位，非常灵活。  
+
 &emsp; ***snowflake算法缺点：*** 依赖于系统时钟的一致性。如果某台机器的系统时钟回拨，有可能造成ID冲突，或者ID乱序。
 
-#### snowflake算法实现：  
+### 2.4.1. snowflake算法实现：  
 &emsp; 算法代码：  
 
 ```java
@@ -281,17 +301,21 @@ public class SnowflakeIdWorker {
     <version>${hutool.version}</version>
 </dependency>
 ```
-### 开源分布式ID算法：  
-#### 百度uid-generator  
+
+## 2.5. 开源分布式ID算法：  
+### 2.5.1. 百度uid-generator  
 &emsp; uid-generato是由百度技术部开发，项目GitHub地址 https://github.com/baidu/uid-generator。  
 1. uid-generator是基于Snowflake算法实现的，与原始的snowflake算法不同在于，uid-generator支持自定义时间戳、工作机器ID和序列号等各部分的位数，而且uid-generator中采用用户自定义workId的生成策略。  
 2. 通过消费未来时间克服了雪花算法的并发限制。  
 3. UidGenerator提前生成ID并缓存在RingBuffer中。  
 
-#### 美团Leaf：  
+#### 2.5.1.1. uid-generator使用教程  
+
+
+### 2.5.2. 美团Leaf：  
 ......
 
-#### 滴滴Tinyid  
+### 2.5.3. 滴滴Tinyid  
 ......
 
 
