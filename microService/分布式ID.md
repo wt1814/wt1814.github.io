@@ -63,7 +63,7 @@ tags:
 
 #### MySQL多实例主键自增  
 &emsp; 这个方案就是解决mysql的单点问题，在auto_increment基本上面，设置step步长。  
-![](../images/microService/problems/problem-18.png)  
+![](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-18.png)  
 &emsp; 每台的初始值分别为1,2,3...N，步长为N（这个案例步长为4）。  
 &emsp; ***优点：*** 解决了单点问题。  
 &emsp; ***缺点：*** 一旦把步长定好后，就无法扩容；而且单个数据库的压力大，数据库自身性能无法满足高并发。  

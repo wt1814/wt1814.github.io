@@ -4,7 +4,9 @@ date: 2020-05-18 00:00:00
 tags:
     - Dubbo
 ---
-![](../../images/microService/Dubbo/dubbo-2.png)  
+
+
+![](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-2.png)  
 ## Zookeeper是什么  
 &emsp; Zookeeper 是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题，例如怎样避免同时操作同一数据造成脏读的问题。  
 &emsp; ZooKeeper提供类似于分布式文件存储系统的目录树方式的数据存储，并且可以对树中的节点进行有效管理。从而用来维护和监控存储的数据的状态变化。通过监控这些数据状态的变化，从而可以达到基于数据的集群管理。诸如：统一命名服务、分布式配置管理、分布式消息队列、分布式锁、分布式协调等功能。  
@@ -17,7 +19,7 @@ tags:
 
 ## ZooKeeper分层命名空间  
 &emsp; Zookeeper提供一个多层级的节点命名空间（节点称为znode）。与文件系统不同的是，这些节点都可以设置关联的数据，而文件系统中只有文件节点可以存放数据而目录节点不行。Zookeeper为了保证高吞吐和低延迟，在内存中维护了这个树状的目录结构，这种特性使得Zookeeper不能用于存放大量的数据，每个节点的存放数据上限为1M。  
-![](../../images/microService/Dubbo/dubbo-1.png)  
+![](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-1.png)  
 &emsp; znode的类型在创建时确定，并且之后不能再修改。  
 * 临时非顺序节点：客户端与zookeeper断开连接后，该节点被删除。  
 * 临时顺序节点：客户端与zookeeper断开连接后，该节点被删除，节点名称会追加一个单调递增的数字。  
@@ -111,7 +113,7 @@ tags:
 3. 处理投票。与启动时过程相同，此时， Server1 将会成为 Leader。  
 4. 统计投票。与启动时过程相同。  
 5. 改变服务器的状态。与启动时过程相同。  
-![](../../images/microService/Dubbo/dubbo-3.png)  
+![](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-3.png)  
 
 ### 数据同步，广播模式  
 &emsp; 当集群中已经有过半的 Follower 节点完成了和 Leader 状态同步以后，那么整个集群就进入了消息广播模式。这个时候，在 Leader 节点正常工作时，启动一台新的服务器加入到集群，那这个服务器会直接进入数据恢复模式，和leader 节点进行数据同步。同步完成后即可正常对外提供非事务请求的处理。  
@@ -125,7 +127,7 @@ tags:
 3. 当 follower 接收到 proposal，先把 proposal 写到磁盘，写入成功以后再向 leader 回复一个 ack。  
 4. 当 leader 接收到合法数量（超过半数节点）的 ACK 后，leader 就会向这些 follower 发送 commit 命令，同时会在本地执行该消息。  
 5. 当 follower 收到消息的 commit 命令以后，会提交该消息。  
-![](../../images/microService/Dubbo/dubbo-4.png)  
+![](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-4.png)  
 
 &emsp; ps: 和完整的 2pc 事务不一样的地方在于，zab 协议不能终止事务， follower 节点要么 ACK 给 leader，要么抛弃leader，只需要保证过半数的节点响应这个消息并提交了即可，虽然在某一个时刻 follower 节点和 leader 节点的状态会不一致，但是也是这个特性提升了集群的整体性能。 当然这种数据不一致的问题， zab 协议提供了一种恢复模式来进行数据恢复。  
 &emsp; 这里需要注意的是leader 的投票过程，不需要 Observer 的 ack，也就是Observer 不需要参与投票过程，但是 Observer 必须要同步 Leader 的数据从而在处理请求的时候保证数据的一致性。  

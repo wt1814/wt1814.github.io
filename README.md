@@ -25,7 +25,7 @@
 [线程基本概念](java/concurrent/1.Thread.md)  
 [多线程编程]  
 [线程池](java/concurrent/3.ThreadPool.md)  
-[JUC包]  
+[~~JUC包~~](java/concurrent/4.ConcurrentPackage.md)  
 
 ### 设计模式  
 [Java设计模式]  
