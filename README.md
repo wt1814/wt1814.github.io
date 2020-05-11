@@ -46,7 +46,8 @@
 [~~MyCat中间件~~](SQL/5.MyCat中间件.md)
 
 ## 微服务  
-[redis]  
+[redis数据结构及API](microService/Redis数据结构及API.md)  
+[redis进阶](microService/Redis进阶.md)   
 ### Spring Cloud Netflix  
 [Spring Cloud Netflix](microService/SpringCloudNetflix/0.Netflix.md)  
 [Spring Cloud Eureka](microService/SpringCloudNetflix/1.Eureka.md)  
