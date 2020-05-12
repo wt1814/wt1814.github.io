@@ -62,8 +62,9 @@
 [Zookeeper](microService/Dubbo/Zookeeper.md)  
 
 ### Redis
-[redis数据结构及API](microService/Redis数据结构及API.md)  
-[redis原理](microService/Redis原理.md)  
+[redis数据结构及API](microService/Redis/Redis数据结构及API.md)  
+[redis原理](microService/Redis/Redis原理.md)  
+[redis集群](microService/Redis/Redis集群.md)  
 
 ### 分布式理论  
 [一致性哈希算法](microService/分布式算法-consistent.md)  
