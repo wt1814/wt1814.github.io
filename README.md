@@ -74,6 +74,15 @@
 [分布式ID](microService/分布式ID.md)  
 [分布式限流]  
 
+
+<div style='display: none'>
+## 分布式通信  
+### NIO  
+
+### Netty  
+
+</div>
+
 ## 框架  
 [ElasticSearch]  
 
@@ -90,8 +99,12 @@
 [自定义strater]
 
 ## linux服务器  
+### Linux  
 [Linux命令]  
-[nginx]
+
+### Nginx  
+[Nginx原理]  
+[Nginx配置]  
 
 ## 计算机网络  
 
