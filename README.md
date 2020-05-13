@@ -5,7 +5,7 @@
 ## Java  
 [Java基础-1]  
 [Java基础-2]  
-[JDK1.8]  
+[JDK1.8](java/Java/JDK8.md)  
 [Java基础类型]  
 ### 集合框架  
 [集合框架](java/Collection/1.集合框架.md)  
@@ -72,7 +72,7 @@
 [分布式锁](microService/分布式锁.md)  
 [分布式缓存](microService/分布式缓存.md)  
 [分布式ID](microService/分布式ID.md)  
-[分布式限流]  
+[分布式限流](microService/分布式限流.md)  
 
 
 <div style='display: none'>
