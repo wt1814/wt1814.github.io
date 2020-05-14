@@ -344,14 +344,13 @@ reduce("", String::concat);
 * 方法一：
 
     <R, A> R collect(Collector<? super T, A, R> collector);  
-&emsp; 主要使用Collectors（java.util.stream.Collectors）来进行各种reduction 操作。  
-&emsp; Collections是java.util包的一个工具类，内涵各种处理集合的静态方法。  
-* 将流中的数据转成集合类型: toList、toSet、toMap、toCollection  
-* 将流中的数据(字符串)使用分隔符拼接在一起：joining  
-* 对流中的数据求最大值maxBy、最小值minBy、求和summingInt、求平均值averagingDouble  
-* 对流中的数据进行映射处理 mapping  
-* 对流中的数据分组：groupingBy、partitioningBy  
-* 对流中的数据累计计算：reducing  
+&emsp; 主要使用Collectors（java.util.stream.Collectors）来进行各种reduction 操作。  Collections是java.util包的一个工具类，内涵各种处理集合的静态方法：  
+    * 将流中的数据转成集合类型: toList、toSet、toMap、toCollection  
+    * 将流中的数据(字符串)使用分隔符拼接在一起：joining  
+    * 对流中的数据求最大值maxBy、最小值minBy、求和summingInt、求平均值averagingDouble  
+    * 对流中的数据进行映射处理 mapping  
+    * 对流中的数据分组：groupingBy、partitioningBy  
+    * 对流中的数据累计计算：reducing  
 
 * 方法二：  
 
@@ -511,9 +510,9 @@ maybeUSB.filter(usb -> "3.0".equals(usb.getVersion()).ifPresent(() -> System.out
 -----
 # Date/Time API  
 &emsp; 旧版的Java中，日期时间API存在诸多问题：  
-&emsp; 非线程安全：java.util.Date是非线程安全的，所有的日期类都是可变的，这是Java日期类最大的问题之一。  
-&emsp; 设计很差：Java的日期/时间类的定义并不一致，在java.util和java.sql的包中都有日期类，此外用于格式化和解析的类在java.text包中定义。java.util.Date同时包含日期和时间，而java.sql.Date仅包含日期，将其纳入java.sql包并不合理。另外这两个类都有相同的名字，这本身就是一个非常糟糕的设计。  
-&emsp; 时区处理麻烦：日期类并不提供国际化，没有时区支持，因此Java引入了java.util.Calendar和java.util.TimeZone类，但他们同样存在上述所有的问题。  
+* 非线程安全：java.util.Date是非线程安全的，所有的日期类都是可变的，这是Java日期类最大的问题之一。  
+* 设计很差：Java的日期/时间类的定义并不一致，在java.util和java.sql的包中都有日期类，此外用于格式化和解析的类在java.text包中定义。java.util.Date同时包含日期和时间，而java.sql.Date仅包含日期，将其纳入java.sql包并不合理。另外这两个类都有相同的名字，这本身就是一个非常糟糕的设计。  
+* 时区处理麻烦：日期类并不提供国际化，没有时区支持，因此Java引入了java.util.Calendar和java.util.TimeZone类，但他们同样存在上述所有的问题。  
 
 &emsp; 新的日期API是JSR-310规范的实现，Joda-Time框架的作者正是JSR-310的规范的倡导者，所以能从Java 8的日期API中看到很多Joda-Time的特性。  
 
@@ -590,10 +589,11 @@ public class Java8Tester {
 ```
 
 ### Instant  
-当计算程序的运行时间时，应当使用时间戳Instant。  
-Instant用于表示一个时间戳，它与我们常使用的System.currentTimeMillis()有些类似，不过Instant可以精确到纳秒（Nano-Second），System.currentTimeMillis()方法只精确到毫秒（Milli-Second）。如果查看Instant源码，发现它的内部使用了两个常量，seconds表示从1970-01-01 00:00:00开始到现在的秒数，nanos表示纳秒部分（nanos的值不会超过999,999,999）。Instant除了使用now()方法创建外，还可以通过ofEpochSecond方法创建：  
-Instant instant = Instant.ofEpochSecond(120, 100000);
-ofEpochSecond()方法的第一个参数为秒，第二个参数为纳秒，上面的代码表示从1970-01-01 00:00:00开始后两分钟的10万纳秒的时刻，控制台上的输出为：
+&emsp; 当计算程序的运行时间时，应当使用时间戳Instant。  
+&emsp; Instant用于表示一个时间戳，它与我们常使用的System.currentTimeMillis()有些类似，不过Instant可以精确到纳秒（Nano-Second），System.currentTimeMillis()方法只精确到毫秒（Milli-Second）。如果查看Instant源码，发现它的内部使用了两个常量，seconds表示从1970-01-01 00:00:00开始到现在的秒数，nanos表示纳秒部分（nanos的值不会超过999,999,999）。Instant除了使用now()方法创建外，还可以通过ofEpochSecond方法创建：  
+
+    Instant instant = Instant.ofEpochSecond(120, 100000);
+&emsp; ofEpochSecond()方法的第一个参数为秒，第二个参数为纳秒，上面的代码表示从1970-01-01 00:00:00开始后两分钟的10万纳秒的时刻，控制台上的输出为：
 
 
 ## 与日期和日历（旧的时间API）的兼容性  
@@ -728,9 +728,10 @@ finally{
 
 # Base64  
 &emsp; Java8内置了Base64编码的编码器和解码器。Base64类同时还提供了对URL、MIME友好的编码器与解码器。  
-&emsp; 基本：输出被映射到一组字符A-Za-z0-9+/，编码不添加任何行标，输出的解码仅支持A-Za-z0-9+/。  
-&emsp; URL：输出映射到一组字符A-Za-z0-9+_，输出是URL和文件。  
-&emsp; MIME：输出隐射到MIME友好格式。输出每行不超过76字符，并且使用'\r'并跟随'\n'作为分割。编码输出最后没有行分割。  
+* 基本：输出被映射到一组字符A-Za-z0-9+/，编码不添加任何行标，输出的解码仅支持A-Za-z0-9+/。  
+* URL：输出映射到一组字符A-Za-z0-9+_，输出是URL和文件。  
+* MIME：输出隐射到MIME友好格式。输出每行不超过76字符，并且使用'\r'并跟随'\n'作为分割。编码输出最后没有行分割。  
+
 &emsp; 内嵌类：  
 
     static class Base64.Decoder	该类实现一个解码器用于，使用Base64编码来解码字节数据。
