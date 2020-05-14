@@ -85,7 +85,7 @@
 [分布式锁](microService/分布式锁.md)  
 [分布式缓存](microService/分布式缓存.md)  
 [分布式ID](microService/分布式ID.md)  
-[分布式限流]  
+[分布式限流](microService/分布式限流.md)   
 
 <div style='display: none'>
 ## 分布式通信  
