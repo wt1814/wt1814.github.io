@@ -5,8 +5,8 @@
 ## Java  
 [Java基础-1]  
 [Java基础-2]  
-[JDK1.8](java/Java/JDK8.md)  
-[Java基础类型]  
+[JDK1.8](java/JDK8.md)  
+[Java基本类型](java/数据类型.md)    
 ### 集合框架  
 [集合框架](java/Collection/1.集合框架.md)  
 [Map](java/Collection/2.Map.md)  
