@@ -3,10 +3,11 @@
 ***联系我：wangtao1814@163.com***  
 
 ## Java  
+[Java数据类型](java/数据类型.md)    
 [Java基础-1]  
 [Java基础-2]  
 [JDK1.8](java/JDK8.md)  
-[Java基本类型](java/数据类型.md)    
+
 ### 集合框架  
 [集合框架](java/Collection/1.集合框架.md)  
 [Map](java/Collection/2.Map.md)  
@@ -43,10 +44,22 @@
 [SQL优化](SQL/2.SQL优化.md)  
 [MySql深入](SQL/3.MySql深入.md)  
 [~~分布式数据库~~](SQL/4.分布式数据库.md)  
-[~~MyCat中间件~~](SQL/5.MyCat中间件.md)
+[~~MyCat中间件~~](SQL/5.MyCat中间件.md)  
+
+## SSM  
+### Spring  
+[Spring]  
+[SpringIOC解析](sourceCode/Spring/1.SpringIOC.md)  
+[SpringDI解析](sourceCode/Spring/2.SpringDI.md)  
+[SpringMVC]  
+
 
 ## 微服务  
- 
+### SpringBoot  
+[自动配置原理](sourceCode/SpringBoot/1.自动配置原理.md)  
+[Spring Boot 2.2.0启动全过程解析](sourceCode/SpringBoot/2.SpringBoot2.2.0启动全过程源码分析.md)  
+[自定义strater]
+
 ### Spring Cloud Netflix  
 [Spring Cloud Netflix](microService/SpringCloudNetflix/0.Netflix.md)  
 [Spring Cloud Eureka](microService/SpringCloudNetflix/1.Eureka.md)  
@@ -74,7 +87,6 @@
 [分布式ID](microService/分布式ID.md)  
 [分布式限流]  
 
-
 <div style='display: none'>
 ## 分布式通信  
 ### NIO  
@@ -86,17 +98,7 @@
 ## 框架  
 [ElasticSearch]  
 
-## 源码  
 
-### Spring  
-[SpringIOC](sourceCode/Spring/1.SpringIOC.md)  
-[SpringDI](sourceCode/Spring/2.SpringDI.md)  
-[SpringMVC]  
-
-### SpringBoot  
-[自动配置原理](sourceCode/SpringBoot/1.自动配置原理.md)  
-[Spring Boot 2.2.0启动全过程解析](sourceCode/SpringBoot/2.SpringBoot2.2.0启动全过程源码分析.md)  
-[自定义strater]
 
 ## linux服务器  
 ### Linux  
@@ -113,3 +115,5 @@
 [HTTPS](/network/2.HTTPS.md)  
 [DNS](network/3.DNS.md)  
 [TCP](/network/4.TCP.md)  
+
+
