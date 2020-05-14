@@ -103,8 +103,8 @@
 [Linux命令]  
 
 ### Nginx  
-[Nginx原理]  
-[Nginx配置]  
+[Nginx原理](Linux/Nginx/1.nginx原理.md)  
+[Nginx配置](Linux/Nginx/2.nginx配置.md)   
 
 ## 计算机网络  
 
