@@ -674,6 +674,34 @@ public class Test {
     LocalDateTime oldDate = LocalDateTime.of(2017, Month.AUGUST, 31, 10, 20, 55);
     LocalDateTime newDate = LocalDateTime.of(2018, Month.NOVEMBER, 9, 10, 21, 56);
 
+## SpringBoot中应用LocalDateTime  
+&emsp; 将LocalDateTime字段以时间戳的方式返回给前端  
+&emsp; 添加日期转化类  
+
+```
+public class LocalDateTimeConverter extends JsonSerializer<LocalDateTime> {
+
+    @Override
+    public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    gen.writeNumber(value.toInstant(ZoneOffset.of("+8")).toEpochMilli());
+    }
+}
+```
+&emsp; 并在LocalDateTime字段上添加@JsonSerialize(using = LocalDateTimeConverter.class)注解，如下：  
+
+    @JsonSerialize(using = LocalDateTimeConverter.class)
+    protected LocalDateTime gmtModified;
+
+&emsp; 将LocalDateTime字段以指定格式化日期的方式返回给前端 在LocalDateTime字段上添加@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")注解即可，如下：  
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    protected LocalDateTime gmtModified;
+
+&emsp; 对前端传入的日期进行格式化在LocalDateTime字段上添加@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")注解即可，如下：  
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    protected LocalDateTime gmtModified;
+
 
 
 -----
