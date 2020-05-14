@@ -379,8 +379,353 @@ reduce("", String::concat);
 
 -----
 # Optional类  
+&emsp; Java8引入Optional类，是一个可以为null的容器对象，是一个包含有可选值的包装类，可以保存类型T的值，或者保存null。Optional类的引入解决空指针异常。防止编写不必要的null检查。快速定位NullPointException。  
+&emsp; public final class Optional<T>，构造函数私有化；不能new实例；不能被继承；  
+
+## 常用API  
+
+|方法	|描述|
+|---|---|
+|empty()	|返回空的Optional实例|
+|of(T value)	|返回一个指定非null值的Optional|
+|ofNullable(T value)	|如果为非空，返回 Optional 描述的指定值，否则返回空的 Optional|
+|   |    |	
+|equals(Object obj)	|判断其他对象是否等于Optional|
+|filter(Predicate<? super <T> predicate)	|如果值存在，并且这个值匹配给定的 predicate，返回一个Optional用以描述这个值，否则返回一个空的Optional|
+|flatMap(Function<? super T,Optional<U>> mapper)	|如果值存在，返回基于Optional包含的映射方法的值，否则返回一个空的Optional|
+|get()	|如果在这个Optional中包含这个值，返回值，否则抛出异常：NoSuchElementException|
+|hashCode()	|返回存在值的哈希码，如果值不存在 返回0|
+|ifPresent(Consumer<? super T> consumer)	|如果值存在则使用该值调用consumer, 否则不做任何事情|
+|isPresent()	|如果值存在则方法会返回true，否则返回 false|
+|map(Function<? super T,? extends U> mapper)	|如果存在该值，提供的映射方法，如果返回非null，返回一个Optional描述结果|
+|orElse(T other)	|如果存在该值，返回值，否则返回 other|
+|orElseGet(Supplier<? extends T> other)	|如果存在该值，返回值，否则触发 other，并返回other调用的结果|
+|orElseThrow(Supplier<? extends X> exceptionSupplier)	|如果存在该值，返回包含的值，否则抛出由Supplier继承的异常|
+|toString()	|返回一个Optional的非空字符串，用来调试|
+
+
+## 正确使用Optional类  
+### 错误使用：  
+
+&emsp; 先看看错误的姿势：  
+
+```
+User user;
+Optional<User> optional = Optional.of(user);
+if (optional.isPresent()) {
+    return optional.get().getOrders();
+} else {
+    return Collections.emptyList();;
+}
+```
+
+&emsp; 和之前的写法没有任何区别。  
+
+```
+if (user != null) {
+    return user.getOrders();
+} else {
+    return Collections.emptyList();;
+}
+```
+&emsp; 慎重使用Optional类的以下方法：isPresent()方法、get()方法、Optional类型作为类/实例属性、Optional类型作为方法参数。isPresent()与obj!= null无任何分别。而没有isPresent()作铺垫的get()调用，在IntelliJ IDEA中会收到告警。把Optional类型用作属性或是方法参数在IntelliJ IDEA中更是强力不推荐的。所以Optional中真正可依赖的是除了isPresent()和get()的其他方法。  
+
+### 正确使用：  
+&emsp; 创建Optional对象：  
+
+```
+Optional<Soundcard> sc = Optional.empty();
+SoundCard soundcard = new Soundcard();
+Optional<Soundcard> sc = Optional.of(soundcard);
+Optional<Soundcard> sc = Optional.ofNullable(soundcard);
+```
+&emsp; 存在即返回, 无则提供默认值：  
+
+```
+return user.orElse(null);  //而不是 return user.isPresent() ? user.get() : null;
+return user.orElse(UNKNOWN_USER);
+```
+&emsp; 存在即返回, 无则由函数来产生：  
+
+```
+return user.orElseGet(() -> fetchAUserFromDatabase()); //而不要 return user.isPresent() ? user: fetchAUserFromDatabase();
+```
+&emsp; 存在才对它做点什么：  
+
+```
+user.ifPresent(System.out::println);
+/*
+而不要下边那样
+if (user.isPresent()) {
+    System.out.println(user.get());
+}*/
+```
+&emsp; 使用map抽取特定的值或者做值的转换：  
+
+```
+return user.map(u -> u.getOrders()).orElse(Collections.emptyList())
+//上面避免了我们类似 Java 8 之前的做法
+if(user.isPresent()) {
+    return user.get().getOrders();
+} else {
+    return Collections.emptyList();
+}
+```
+&emsp; 级联使用map，避免了连续的空值判断:  
+
+```
+return user.map(u -> u.getUsername()).map(name -> name.toUpperCase()).orElse(null);
+/*User user = .....
+if(user != null) {
+    String name = user.getUsername();
+    if(name != null) {
+        return name.toUpperCase();
+    } else {
+        return null;
+    }
+} else {
+    return null;
+}*/
+```
+
+&emsp; 级联的Optional对象使用flatMap：  
+
+```
+String version = computer.flatMap(Computer::getSoundcard)
+        .flatMap(Soundcard::getUSB)
+        .map(USB::getVersion)
+        .orElse("UNKNOWN");
+```
+
+&emsp; 使用filter拒绝特定的值:  
+
+```
+Optional<USB> maybeUSB = ...;
+maybeUSB.filter(usb -> "3.0".equals(usb.getVersion()).ifPresent(() -> System.out.println("ok"));
+```
+&emsp; 使用isPresent()处理NullPointerException不叫优雅；使用orElse, orElseGet等, 特别是map方法才叫优雅。其他几个，filter()把不符合条件的值变为empty()，flatMap()总是与map()方法成对的，orElseThrow()在有值时直接返回，无值时抛出想要的异常。
+&emsp; 小结：使用Optional时尽量不直接调用Optional.get()方法, Optional.isPresent()更应该被视为一个私有方法，应依赖于其他像Optional.orElse()，Optional.orElseGet()，Optional.map()等这样的方法。
 
 
 
+-----
+# Date/Time API  
+&emsp; 旧版的Java中，日期时间API存在诸多问题：  
+&emsp; 非线程安全：java.util.Date是非线程安全的，所有的日期类都是可变的，这是Java日期类最大的问题之一。  
+&emsp; 设计很差：Java的日期/时间类的定义并不一致，在java.util和java.sql的包中都有日期类，此外用于格式化和解析的类在java.text包中定义。java.util.Date同时包含日期和时间，而java.sql.Date仅包含日期，将其纳入java.sql包并不合理。另外这两个类都有相同的名字，这本身就是一个非常糟糕的设计。  
+&emsp; 时区处理麻烦：日期类并不提供国际化，没有时区支持，因此Java引入了java.util.Calendar和java.util.TimeZone类，但他们同样存在上述所有的问题。  
 
+&emsp; 新的日期API是JSR-310规范的实现，Joda-Time框架的作者正是JSR-310的规范的倡导者，所以能从Java 8的日期API中看到很多Joda-Time的特性。  
+
+&emsp; Java日期/时间API包含以下相应的包。  
+1. java.time包：这是新的Java日期/时间API的基础包，所有的主要基础类都是这个包的一部分，如：LocalDate，LocalTime，LocalDateTime，Instant, Period，Duration等等。所有这些类都是不可变的和线程安全的，在绝大多数情况下，这些类能够有效地处理一些公共的需求。  
+
+    LocalTime、LocalDate、LocalDateTime；
+    ZoneId、ZoneOffset、ZonedDateTime；
+    MonthDay、YearMonth、Year；
+    OffsetDateTime、OffsetTime；
+    Clock，时钟，比如获取目前美国纽约的时间；
+    Instant，时间戳瞬时时间；
+    Period，时间段；   Duration，持续时间，时间差；
+2. java.time.chrono包：这个包为非ISO的日历系统定义了一些泛化的API，可以扩展AbstractChronology类来创建自己的日历系统。  
+3. java.time.format包：这个包包含能够格式化和解析日期时间对象的类，在绝大多数情况下，不应该直接使用它们。因为java.time包中相应的类已经提供了格式化和解析的方法。DateTimeFomatter：格式化类，解析日期对象的类。  
+4. java.time.temporal包：这个包包含一些时态对象，可以用其找出关于日期/时间对象的某个特定日期或时间，比如说，可以找到某月的第一天或最后一天。可以非常容易地认出这些方法，因为它们都具有“withXXX”的格式。  
+5. java.time.zone包：这个包包含支持不同时区以及相关规则的类。  
+
+## 接口API  
+### 本地化日期时间API  
+&emsp; LocalDate/LocalTime和LocalDateTime类处理时区不是必须的情况。    
+
+```
+public class Java8Tester {
+    public static void main(String args[]) {
+        Java8Tester java8tester = new Java8Tester();
+        java8tester.testLocalDateTime();
+    }
+
+    public void testLocalDateTime() {
+        // 获取当前的日期时间
+        LocalDateTime currentTime = LocalDateTime.now();
+        System.out.println("当前时间: " + currentTime);
+        LocalDate date1 = currentTime.toLocalDate();
+        System.out.println("date1: " + date1);
+        Month month = currentTime.getMonth();
+        int day = currentTime.getDayOfMonth();
+        int seconds = currentTime.getSecond();
+        System.out.println("月: " + month + ", 日: " + day + ", 秒: " + seconds);
+        LocalDateTime date2 = currentTime.withDayOfMonth(10).withYear(2012);
+        System.out.println("date2: " + date2);
+        // 12 december 2014
+        LocalDate date3 = LocalDate.of(2014, Month.DECEMBER, 12);
+        System.out.println("date3: " + date3);
+        // 22小时15分钟
+        LocalTime date4 = LocalTime.of(22, 15);
+        System.out.println("date4: " + date4);
+        // 解析字符串
+        LocalTime date5 = LocalTime.parse("20:15:30");
+        System.out.println("date5: " + date5);
+    }
+}
+```
+
+### 时区的日期时间API  
+
+```
+public class Java8Tester {
+    public static void main(String args[]) {
+        Java8Tester java8tester = new Java8Tester();
+        java8tester.testZonedDateTime();
+    }
+
+    public void testZonedDateTime() {
+        // 获取当前时间日期
+        ZonedDateTime date1 = ZonedDateTime.parse("2015-12-03T10:15:30+05:30[Asia/Shanghai]");
+        System.out.println("date1: " + date1);
+        ZoneId id = ZoneId.of("Europe/Paris");
+        System.out.println("ZoneId: " + id);
+        ZoneId currentZone = ZoneId.systemDefault();
+        System.out.println("当期时区: " + currentZone);
+    }
+}
+```
+
+### Instant  
+当计算程序的运行时间时，应当使用时间戳Instant。  
+Instant用于表示一个时间戳，它与我们常使用的System.currentTimeMillis()有些类似，不过Instant可以精确到纳秒（Nano-Second），System.currentTimeMillis()方法只精确到毫秒（Milli-Second）。如果查看Instant源码，发现它的内部使用了两个常量，seconds表示从1970-01-01 00:00:00开始到现在的秒数，nanos表示纳秒部分（nanos的值不会超过999,999,999）。Instant除了使用now()方法创建外，还可以通过ofEpochSecond方法创建：  
+Instant instant = Instant.ofEpochSecond(120, 100000);
+ofEpochSecond()方法的第一个参数为秒，第二个参数为纳秒，上面的代码表示从1970-01-01 00:00:00开始后两分钟的10万纳秒的时刻，控制台上的输出为：
+
+
+## 与日期和日历（旧的时间API）的兼容性  
+
+## 日期格式化  
+
+```
+LocalDateTime dateTime = LocalDateTime.now();
+String strDate1 = dateTime.format(DateTimeFormatter.BASIC_ISO_DATE);   // 20170105
+String strDate2 = dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE);    // 2017-01-05
+String strDate3 = dateTime.format(DateTimeFormatter.ISO_LOCAL_TIME);    // 14:20:16.998
+String strDate4 = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")); // 2017-01-05
+String strDate5 = dateTime.format(DateTimeFormatter.ofPattern("今天是：YYYY年 MMMM DD日 E", Locale.CHINESE)); // 今天是：2017年 一月 05日 星期四
+```
+
+## 计算时间差  
+&emsp; Java8中使用以下类来计算日期时间差异：1.Period；2.Duration；3.ChronoUnit。  
+
+### Period类  
+&emsp; Period类方法getYears()、getMonths()和getDays()，3者连用得到today与oldDate两个日期相差的年、月、日信息。  
+
+```
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Period;
+
+public class Test {
+
+    public static void main(String[] args) {
+        LocalDate today = LocalDate.now();
+        LocalDate birthDate = LocalDate.of(1993, Month.OCTOBER, 19);
+        Period p = Period.between(birthDate, today);
+        System.out.printf("年龄 : %d 年 %d 月 %d 日", p.getYears(), p.getMonths(), p.getDays());
+    }
+}
+```
+&emsp; 结果：  
+
+    Today : 2017-06-16
+    BirthDate : 1993-10-19
+    年龄 : 23 年 7 月 28 日  
+
+### Duration类  
+&emsp; 计算两个时间点的时间差。between()计算两个时间的间隔，默认的单位是秒。方法toNanos()、toMillis()、toMinutes()、toHours()、toDays()等将两时间相差的秒数转化成纳秒数、毫秒数等。  
+
+```
+import java.time.Duration;
+import java.time.Instant;
+
+public class Test {
+
+    public static void main(String[] args) {
+        Instant inst1 = Instant.now();
+        System.out.println("Inst1 : " + inst1);
+        Instant inst2 = inst1.plus(Duration.ofSeconds(10));
+        System.out.println("Inst2 : " + inst2);
+        System.out.println("Difference in milliseconds : " + Duration.between(inst1, inst2).toMillis());
+        System.out.println("Difference in seconds : " + Duration.between(inst1, inst2).getSeconds());
+    }
+}
+```  
+
+&emsp; 结果:  
+
+    Inst1 : 2017-06-16T07:46:45.085Z
+    Inst2 : 2017-06-16T07:46:55.085Z
+    Difference in milliseconds : 10000
+    Difference in seconds : 10
+    ChronoUnit类，java.time.temporal包
+    ChronoUnit类枚举类型，实现功能类型Period和Duration，在单个时间单位（秒、分、时）内测量一段时间。
+    LocalDateTime oldDate = LocalDateTime.of(2017, Month.AUGUST, 31, 10, 20, 55);
+    LocalDateTime newDate = LocalDateTime.of(2018, Month.NOVEMBER, 9, 10, 21, 56);
+
+
+### ChronoUnit类，java.time.temporal包  
+&emsp; ChronoUnit类枚举类型，实现功能类型Period和Duration，在单个时间单位（秒、分、时）内测量一段时间。  
+
+    LocalDateTime oldDate = LocalDateTime.of(2017, Month.AUGUST, 31, 10, 20, 55);
+    LocalDateTime newDate = LocalDateTime.of(2018, Month.NOVEMBER, 9, 10, 21, 56);
+
+
+
+-----
+# 异常捕获的改变   
+&emsp; 新的try…cache可以自动关闭在try表达式中打开的对象，而无需开发者手动关闭。  
+&emsp; 多个流对象打开语句，用分号分隔，不是逗号。  
+
+```
+try(ObjectInputStream in=new ObjectInputStream(new FileInputStream("p1.obj"))){
+    System.out.println(Person.class.hashCode());
+    Person person=(Person)in.readObject();
+    System.out.println(person.staticString);
+} catch (Exception e) {
+    e.printStackTrace();
+}
+```
+&emsp; 不再需要：  
+
+```
+finally{
+    in.close();
+}
+```
+
+# Base64  
+&emsp; Java8内置了Base64编码的编码器和解码器。Base64类同时还提供了对URL、MIME友好的编码器与解码器。  
+&emsp; 基本：输出被映射到一组字符A-Za-z0-9+/，编码不添加任何行标，输出的解码仅支持A-Za-z0-9+/。  
+&emsp; URL：输出映射到一组字符A-Za-z0-9+_，输出是URL和文件。  
+&emsp; MIME：输出隐射到MIME友好格式。输出每行不超过76字符，并且使用'\r'并跟随'\n'作为分割。编码输出最后没有行分割。  
+&emsp; 内嵌类：  
+
+    static class Base64.Decoder	该类实现一个解码器用于，使用Base64编码来解码字节数据。
+    static class Base64.Encoder	该类实现一个编码器，使用Base64编码来编码字节数据。 
+
+|方法 |描述|
+|---|---|
+|Decoder| |
+|getDecoder()	|返回Base64.Decoder，解码使用基本型base64编码方案|
+|getMimeDecoder()	|返回Base64.Decoder，解码使用MIME型base64 编码方案。|
+|getUrlDecoder()	|返回Base64.Decoder，解码使用URL和文件名安全型 base64编码方案。|
+|Encoder| | 
+|getEncoder()	|返回Base64.Encoder，编码使用基本型base64编码方案。|
+|getMimeEncoder()	|返回Base64.Encoder，编码使用MIME型base64编码方案。|
+|getMimeEncoder(int lineLength, byte[] lineSeparator)	|返回Base64.Encoder，编码使用MIME型base64编码方案，可以通过参数指定每行的长度及行的分隔符。|
+|getUrlEncoder()	|返回Base64.Encoder，编码使用URL和文件名安全型 base64 编码方案。|
+
+```
+// 使用基本编码
+String base64encodedString = Base64.getEncoder().encodeToString("runoob?java8".getBytes("utf-8"));
+System.out.println("Base64 编码字符串 (基本) :" + base64encodedString);
+// 解码
+byte[] base64decodedBytes = Base64.getDecoder().decode(base64encodedString);
+System.out.println("原始字符串: " + new String(base64decodedBytes, "utf-8"));
+```
 
