@@ -313,8 +313,9 @@ class lambdasAsArgumentsDemo {
     * mapToDouble(T -> double) : return DoubleStream  
     * mapToLong(T -> long) : return LongStream  
 
+```
     IntStream intStream = list.stream().mapToInt(Person::getAge);
-
+```
 * 数值流转换为流：boxed  
     * Stream<Integer> stream = intStream.boxed();  
 
@@ -394,7 +395,9 @@ reduce("", String::concat);
 
 * 方法一：
 
+```
     <R, A> R collect(Collector<? super T, A, R> collector);  
+```
 &emsp; 主要使用Collectors（java.util.stream.Collectors）来进行各种reduction 操作。  Collections是java.util包的一个工具类，内涵各种处理集合的静态方法：  
     * 将流中的数据转成集合类型: toList、toSet、toMap、toCollection  
     * 将流中的数据(字符串)使用分隔符拼接在一起：joining  
@@ -405,7 +408,9 @@ reduce("", String::concat);
 
 * 方法二：  
 
-    <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner);  
+```
+<R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner);
+```  
 &emsp; 参数supplier是一个生成目标类型实例的方法，代表着目标容器是什么；accumulator是将操作的目标数据填充到supplier 生成的目标类型实例中去的方法，代表着如何将元素添加到容器中；而combiner是将多个supplier生成的实例整合到一起的方法，代表着规约操作，将多个结果合并。  
 
 
@@ -553,7 +558,7 @@ String version = computer.flatMap(Computer::getSoundcard)
 Optional<USB> maybeUSB = ...;
 maybeUSB.filter(usb -> "3.0".equals(usb.getVersion()).ifPresent(() -> System.out.println("ok"));
 ```
-&emsp; 使用isPresent()处理NullPointerException不叫优雅；使用orElse, orElseGet等, 特别是map方法才叫优雅。其他几个，filter()把不符合条件的值变为empty()，flatMap()总是与map()方法成对的，orElseThrow()在有值时直接返回，无值时抛出想要的异常。
+&emsp; 使用isPresent()处理NullPointerException不叫优雅；使用orElse, orElseGet等, 特别是map方法才叫优雅。其他几个，filter()把不符合条件的值变为empty()，flatMap()总是与map()方法成对的，orElseThrow()在有值时直接返回，无值时抛出想要的异常。   
 &emsp; 小结：使用Optional时尽量不直接调用Optional.get()方法, Optional.isPresent()更应该被视为一个私有方法，应依赖于其他像Optional.orElse()，Optional.orElseGet()，Optional.map()等这样的方法。
 
 
