@@ -19,6 +19,8 @@ tags:
     - [3.2. 方法重写](#32-方法重写)
     - [3.3. 可变参数](#33-可变参数)
     - [3.4. 值传递还是引用传递？](#34-值传递还是引用传递)
+        - [基本类型：](#基本类型)
+        - [引用类型](#引用类型)
 - [4. Java类、接口、抽象类](#4-java类接口抽象类)
     - [4.1. 抽象类和接口的区别？](#41-抽象类和接口的区别)
     - [4.2. 抽象类作为方法参数与返回值](#42-抽象类作为方法参数与返回值)
@@ -202,7 +204,94 @@ public <T> T underwrite(String platformCode, String uuid, Object... objects) {
 ```
 
 ## 3.4. 值传递还是引用传递？  
-......
+
+&emsp; 基本概念：  
+&emsp; 实参：实际参数，是提前准备好并赋值完成的变量。分配到栈上。如果是基本类型直接分配到栈上，如果是引用类型，栈上分配引用空间存储指向堆上分配的对象本身的指针。String等基本类型的封装类型比较特殊，后续讨论。  
+&emsp; 形参：形式参数，方法调用时在栈上分配的实参的拷贝。  
+&emsp; 按值传递：方法调用时，实际参数把它的值传递给对应的形式参数，形参接收的是原始值的一个拷贝，此时内存中存在两个相等的变量。  
+&emsp; 按引用传递：方法调用时将实参的地址传递给对应的形参，实参和形参指向相同的内容。  
+
+&emsp; ***Java没有引用传递，只有值传递。***基本类型和引用类型传递的都是参数的副本。
+
+### 基本类型：  
+
+```
+public class Test {
+    public static void main(String[] args) {
+        int value = 100;
+        change(value);
+        System.out.println("outer: " +  value);
+    }
+
+    static void change(int value) {
+        value = 200;
+        System.out.println("inner: " +  value + "\n");
+    }
+
+}
+```
+&emsp; 结果输出：  
+
+```
+inner: 200
+outer: 100
+```
+&emsp; 方法修改的只是形式参数，对实际参数没有作用。方法调用结束后形式参数随着栈帧回收。  
+
+### 引用类型  
+
+```
+public class TestDemo {
+    public static void main(String[] args) {
+        TestDemo2 testDemo2 = new TestDemo2();
+        System.out.println("调用前:" + testDemo2.hashCode());
+        testValue(testDemo2);
+        System.out.println("调用后:" + testDemo2.hashCode());
+    }
+    
+    public static void testValue(TestDemo2 testDemo) {
+        testDemo = new TestDemo2();
+    }
+}
+
+class TestDemo2 {
+    int age = 1;
+}
+```
+&emsp; 打印结果：  
+
+    调用前:366712642
+    调用后:366712642  
+
+&emsp; 这里可以看到testDemo2 的值依然没有变化，调用前后所指向的内存地址值是一样的。对传入地址值的改变并不会影响原来的参数。  
+
+&emsp; ***既然是值传递，为什么参数是引用类型的时候，方法内对对象进行操作会影响原来对象，这真的是值传递么？***  
+
+```
+public class TestDemo {
+    public static void main(String[] args) {
+        TestDemo2 testDemo2 = new TestDemo2();
+        System.out.println("调用前:" + testDemo2.age);
+        testValue(testDemo2);
+        System.out.println("调用后:" + testDemo2.age);
+    }
+    
+    public static void testValue(TestDemo2 testDemo) {
+        testDemo.age = 9;
+    }
+}
+
+class TestDemo2 {
+    int age = 1;
+}
+```  
+&emsp; 打印结果  
+
+    调用前:1
+    调用后:9  
+&emsp; 传入的参数是testDemo2 对象地址值的一个拷贝，但是形参和实参的值都是一样的，都指向同一个对象，所以对象内容的改变会影响到实参。  
+
+&emsp; 结论：***JAVA的参数传递确实是值传递，不管是基本参数类型还是引用类型，形参值的改变都不会影响实参的值。如果是引用类型，形参值所对应的对象内部值的改变会影响到实参。***  
 
 # 4. Java类、接口、抽象类  
 ## 4.1. 抽象类和接口的区别？  
