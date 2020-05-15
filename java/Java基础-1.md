@@ -6,5 +6,365 @@ tags:
 ---
 
 
+# Java关键字：  
+## Java访问控制符  
+&emsp; JAVA语言中有公共的（public），私有的（private），保护的（protacted）和默认的（default）四种访问控制符。　  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/java-2.png)  
+&emsp; 访问属性：在外部类中访问public和default的属性，可以通过类的对象名.属性名直接访问。在外部类中访问private的属性，必须通过对象的get、set方法（get、set方法声明为public）。  
+&emsp; 访问方法：在外部类中访问private的方法，必须通过反射。  
+
+## static  
+&emsp; Java中static块执行时机：  
+&emsp; 类被加载了不一定就会执行静态代码块，只有一个类被主动使用的时候，静态代码才会被执行！ （static块的执行发生在“初始化”的阶段）  
+
+## final  
+......
+
+# Java变量  
+## 声明、初始化、实例化  
+
+```
+A a;         //声明
+a = null;    //初始化
+a = new A(); //实例化
+```
+
+## 全局变量、成员变量、局部变量  
+1. &emsp; 全局（静态）变量：在java中可以理解为用static final修饰的变量。  
+&emsp; 生命周期：当类加载的时候，就开始被创建，在类中只有一份；会跟着类的消失而消失，生存时间叫长。  
+
+2. &emsp; 成员变量：写在类声明的大括号中的变量, 称之为成员变量(属性, 实例变量)。      
+&emsp; 初始化：成员变量可以不显式初始化，它们可以由系统设定默认值；（成员变量如果没有实例化那么变量是放在栈中；实例化了对象放在堆中，栈中放的是指向堆中对象的引用地址。）  
+&emsp; 作用域：作用在整个类中(除静态方法不能使用，静态方法没有隐式的this)，被对象调用。  
+&emsp; 生命周期：在对象被创建时而存在，当对象被GC回收的同时，也会消失，生存时间适中。  
+
+3. &emsp; 局部变量：写在函数或者代码块中的变量, 称之为局部变量。局部变量放在栈中，new的对象放在堆中，8种基本数据类型变量放在栈中，变量所对应的值是放在栈帧中。  
+&emsp; 作用域：函数体或代码块中。  
+&emsp; 初始化：局部变量可以先定义再初始化, 也可以定义的同时初始化。局部变量没有默认值，所以必须设定初始赋值。   
+&emsp; 修饰符：局部变量不能加static，包括protected, private, public这些也不能加。局部变量保存在栈中。  
+&emsp; 生命周期：当方法被调用时而存在，当方法调用结束而消失，生存时间短。  
+
+## Java类创建对象时初始化顺序  
+&emsp; Java类new初始化顺序：父类静态变量——父类静态代码块——子类静态代码块——父类非静态变量——父类非静态代码块——父类构造函数——子类非静态变量——子类非静态代码块——子类构造函数。如果实际类中没有定义则跳过。  
+
+```
+// 主类，用来创建子类对象，验证结果
+public class Main {
+    public static void main(String[] args) {
+        new Son();
+    }
+}
+```
+
+```
+// 书类，用于测试对象成员变量
+class Book{
+    public Book(String user){
+        System.out.println(user + "成员变量");
+    }
+}
+```
+
+```
+// 子类
+class Son extends Fa{
+    static Book book= new Book("子类静态");
+    static{
+        System.out.println("子类静态代码块");
+    }
+
+    Book sBook = new Book("子类");
+    {
+        System.out.println("子类非静态代码块");
+    }
+
+    public Son(){
+        System.out.println("子类构造方法");
+    }
+}
+```
+
+```
+// 父类
+class Fa{
+    static Book book= new Book("父类静态");
+    static{
+        System.out.println("父类静态代码块");
+    }
+
+    Book fBook = new Book("父类");
+    {
+        System.out.println("父类非静态代码块");
+    }
+    public Fa(){
+        System.out.println("父类构造方法");
+    }
+}
+```
+
+&emsp; 输出结果：  
+
+```
+父类静态成员变量
+父类静态代码块
+子类静态成员变量
+子类静态代码块
+父类成员变量
+父类非静态代码块
+父类构造方法
+子类成员变量
+子类非静态代码块
+子类构造方法
+```
+
+# Java方法：  
+## 方法重载  
+&emsp; 类中有多个方法,有着相同的方法名,但是方法的参数各不相同,这种情况被称为方法的重载。方法的重载可以提供方法调用的灵活性。  
+&emsp; 方法重载必须满足一下条件:  
+&emsp; 1)方法名相同；  
+&emsp; 2)参数列表不同(参数的类型、个数、顺序的不同)；   
+
+```       
+public void test(Strig str){}
+public void test(int a){}
+public void test(Strig str,double d){}
+```
+&emsp; 3)方法的返回值可以不同，也可以相同。  
+&emsp; 注:在java中,判断一个类中的两个个方法是否重载,主要参考两个方面：方法名字和参数列表。
+
+## 方法重写  
+&emsp; 子类继承父类，继承了父类中的方法,但是父类中的方法并不一定能满足子类中的功能需要,所以子类中需要把方法进行重写。  
+&emsp; 重写的语法：  
+1）方法名必须相同  
+2）参数列表必须相同  
+3）访问控制修饰符可以被扩大,但是不能被缩小，public >protected >default >private  
+4）抛出异常类型的范围可以被缩小,但是不能被扩大，ClassNotFoundException ---> Exception   
+5）返回类型可以相同,也可以不同,如果不同的话,子类重写后的方法返回类型必须是父类方法返回类型的子类型  
+
+## 可变参数  
+&emsp; 在不确定参数的个数时，可以使用可变的参数列表。  
+1. 语法：参数类型…（三个点）。例如：void printArray（Object...）。  
+&emsp; 注意：每个方法最多只有一个可变参数，因为：可变参数必须是方法的最后一个参数。  
+2. 可变参数的类型：可变参数可以设置为任意类型：引用类型，基本类型。  
+3. 参数的个数：0个参数；1个参数：如果是数组，那么就直接将这个数组作为参数传进方法里面，不再填充新的数组；多个参数：参数可以是数组，也可以是单个变量、常量；但是这时候会，将这些参数填充进新的数组里面，再将这个数组，传进方法里面；  
+4. 可变参数的使用：可变参数完全可以当作一个数组来使用，或者说本质上可变参数就是一个数组。所以，数组拥有的方法、属性，可变参数一样拥有。  
+
+```
+public void varArgMethod(int b,int... arr) {
+    //和数组一样，拥有属性length
+    int lenth = arr.length;
+    //索引遍历
+    for(int i=0;i<arr.length;i++) {
+        System.out.println(arr[i]);
+    }
+    //forEach循环遍历
+    for(int ele:arr) {
+        System.out.println(ele);
+    }
+}
+```
+&emsp; 上面的例子中，可变参数的使用跟数组的使用是完全一样，也就是说，可变参数是可以等价成数组的。  
+&emsp; 从反编译的结果可以看出，编译器不仅将可变参数处理成数组varArgMethod(int b, int arr[])，还处理了调用可变参数方法处的参数列表，把参数列表封装进一个数组varArgMethod(5, new int[]{7, 8, 9, 10, a})。  
+
+```
+public <T> T underwrite(String platformCode, String uuid, Object... objects) {
+    LOG.info("退保核批校验，退保时间");
+    UnderWrite underWrite = (UnderWrite) objects[0];
+    CancelInfo cancelInfo = (CancelInfo) objects[1];
+    Policybasic policybasic = (Policybasic) objects[2];
+}
+```
+
+## 值传递还是引用传递？  
+
+
+# Java类、接口、抽象类  
+## 抽象类和接口的区别？  
+&emsp; 抽象类中可以定义一些子类的公共方法，子类只需要增加新的功能，不需要重复写已经存在的方法；而接口中只是对方法的申明和常量的定义。  
+1. 变量：抽象类中的成员变量可以是各种类型的，而接口中的成员变量只能是public static final类型的；  
+2. 普通方法：抽象类可以提供成员方法的实现细节，而接口中只能存在public abstract方法。JDK1.8以上，接口允许有默认方法。  
+3. 静态：抽象类可以有静态代码块和静态方法。JDK1.8以上，接口允许有静态方法。  
+4. 一个类只能继承一个抽象类，而一个类却可以实现多个接口。  
+ 
+&emsp; 二者的选用:  
+1. 优先选用接口，尽量少用抽象类；  
+2. 需要定义子类的行为，又要为子类提供共性功能时才选用抽象类；  
+  
+
+## 抽象类作为方法参数与返回值   
+* 抽象类作为方法参数  
+&emsp; 抽象类作为方法参数的情况也很多见。当遇到方法参数为抽象类类型时，要传入一个实现抽象类所有抽象方法的子类对象。如下代码演示：  
+
+```
+//抽象类
+abstract class Person{
+	public abstract void show();
+}
+```
+
+```
+class Student extends Person{
+	@Override
+	public void show() {
+		System.out.println("重写了show方法");
+	}
+}
+```
+
+```
+//测试类
+public class Test {
+	public static void main(String[] args) {
+		//通过多态的方式，创建一个Person类型的变量，而这个对象实际是Student
+		Person p = new Student();
+		//调用method方法
+		method(p);
+	}
+	
+	//定义一个方法method，用来接收一个Person类型对象，在方法中调用Person对象的show方法
+	public static void method(Person p){//抽象类作为参数
+		//通过p变量调用show方法,这时实际调用的是Student对象中的show方法
+		p.show();	
+    }
+}
+```
+
+* 抽象类作为方法返回值  
+&emsp; 抽象类作为方法返回值的情况，也是有的，这时需要返回一个实现抽象类所有抽象方法的子类对象。如下代码演示：  
+
+```
+//抽象类
+abstract class Person{
+	public abstract void show();
+}
+```
+
+```
+class Student extends Person{
+	@Override
+	public void show() {
+		System.out.println("重写了show方法");
+	}
+}
+```
+
+```
+//测试类
+public class Test {
+	public static void main(String[] args) {
+		//调用method方法，获取返回的Person对象
+		Person p = method();
+		//通过p变量调用show方法,这时实际调用的是Student对象中的show方法
+		p.show();
+	}
+	
+	//定义一个方法method，用来获取一个Person对象，在方法中完成Person对象的创建
+	public static Person method(){
+		Person p = new Student();
+		return p;
+	}
+}
+```
+
+
+## 接口作为方法参数与返回值
+* 接口作为方法参数  
+&emsp; 接口作为方法参数的情况是很常见的，经常会碰到。当遇到方法参数为接口类型时，那么该方法要传入一个接口实现类对象。如下代码演示。  
+
+```
+//接口
+interface Smoke{
+	public abstract void smoking();
+}
+```
+
+```
+class Student implements Smoke{
+	@Override
+	public void smoking() {
+		System.out.println("课下吸口烟，赛过活神仙");
+	}
+}
+```
+
+```
+//测试类
+public class Test {
+	public static void main(String[] args) {
+		//调用method方法，获取返回的会吸烟的对象
+		Smoke s = method();
+		//通过s变量调用smoking方法,这时实际调用的是Student对象中的smoking方法
+		s.smoking();
+	}
+	
+	//定义一个方法method，用来获取一个具备吸烟功能的对象，并在方法中完成吸烟者的创建
+	public static Smoke method(){
+		Smoke sm = new Student();
+		return sm;
+	}
+}
+```
+
+* 接口作为方法返回值  
+&emsp; 接口作为方法返回值的情况，在后面的学习中会碰到。当遇到方法返回值是接口类型时，那么该方法需要返回一个接口实现类对象。如下代码演示。  
+
+```
+//接口
+interface Smoke{
+	public abstract void smoking();
+}
+```
+
+```
+class Student implements Smoke{
+	@Override
+	public void smoking() {
+		System.out.println("课下吸口烟，赛过活神仙");
+	}
+}
+```
+
+```
+//测试类
+public class Test {
+	public static void main(String[] args) {
+		//通过多态的方式，创建一个Smoke类型的变量，而这个对象实际是Student
+		Smoke s = new Student();
+		//调用method方法
+		method(s);
+	}
+	
+	//定义一个方法method，用来接收一个Smoke类型对象，在方法中调用Smoke对象的show方法
+	public static void method(Smoke sm){//接口作为参数
+		//通过sm变量调用smoking方法，这时实际调用的是Student对象中的smoking方法
+		sm.smoking();
+	}
+}
+```
+
+# Java面向对象的三大特性：  
+## 封装  
+&emsp; 在定义一个对象的特性的时候，有必要决定这些特性的可见性，即哪些特性对外部是可见的，哪些特性用于表示内部状态。通常，应禁止直接访问一个对象中数据的实际表示，而应通过操作接口来访问，这称为信息隐藏。
+封装的步骤：使用访问控制符private，提供get、set方法。  
+
+## 继承  
+&emsp; 继承的特性：
+* 子类拥有父类非 private 的属性、方法。  
+* 子类可以拥有自己的属性和方法，即子类可以对父类进行扩展。  
+* 子类可以用自己的方式实现父类的方法。  
+* Java 的继承是单继承，但是可以多重继承，单继承就是一个子类只能继承一个父类，多重继承就是，例如 A 类继承 B 类，B 类继承 C 类，所以按照关系就是 C 类是 B 类的父类，B 类是 A 类的父类，这是 Java 继承区别于 C++ 继承的一个特性。  
+* 提高了类之间的耦合性（继承的缺点，耦合度高就会造成代码之间的联系越紧密，代码独立性越差）。  
+
+### super 与 this 关键字  
+&emsp; super关键字：引用当前对象的父类；this关键字：指向自己的引用。  
+super主要有两种用法：
+1. super.成员变量/super.成员方法，主要用来在子类中调用父类的同名成员变量或者方法。
+2. super(parameter1,parameter2....)，主要用在（父类中没有无参构造函数）子类的构造器中显示地调用父类的构造器，且必须是子类构造器的第一个语句。  
+
+
+## 多态：  
+
+
+
 
 
