@@ -4,8 +4,8 @@
 
 ## Java  
 [Java数据类型](java/数据类型.md)    
-[Java基础-1]  
-[Java基础-2]  
+[Java基础](java/Java基础-1.md)    
+[Java基础-2](java/Java基础-2.md)    
 [JDK1.8](java/JDK8.md)  
 
 ### 集合框架  
