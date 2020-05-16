@@ -30,10 +30,11 @@
 [~~JUC包~~](java/concurrent/4.ConcurrentPackage.md)  
 
 ### 设计模式  
-[Java设计模式](java/Design/1.design.md)    
-[创建型设计模式](java/Design/2.establish.md)    
-[结构型设计模式](java/Design/3.structure.md)  
-[行为型设计模式](java/Design/4.behavior.md)  
+[6大设计原则]java/Design/1.principles.md)  
+[Java设计模式](java/Design/2.design.md)    
+[创建型设计模式](java/Design/3.establish.md)    
+[结构型设计模式](java/Design/4.structure.md)  
+[行为型设计模式](java/Design/5.behavior.md)  
 
 ### 算法  
 [算法基本概念]  
