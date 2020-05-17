@@ -32,7 +32,7 @@
 ### 设计模式  
 [七大设计原则](java/Design/1.principles.md)  
 [Java设计模式](java/Design/2.design.md)    
-[创建型设计模式](java/Design/3.establish.md)    
+[创建型设计模式](java/Design/3.establish.md)  
 [结构型设计模式](java/Design/4.structure.md)  
 [行为型设计模式](java/Design/5.behavior.md)  
 
@@ -41,12 +41,16 @@
 [数据结构]  
 [排序查找]  
 
+
+
 ## 数据库  
 [SQL语句](SQL/1.SQL语句.md)  
 [SQL优化](SQL/2.SQL优化.md)  
 [MySql深入](SQL/3.MySql深入.md)  
 [~~分布式数据库~~](SQL/4.分布式数据库.md)  
 [~~MyCat中间件~~](SQL/5.MyCat中间件.md)  
+
+
 
 ## SSM  
 ### Spring  
@@ -104,8 +108,6 @@
 
 
 
-
-
 ## linux服务器  
 ### Linux  
 [Linux命令]  
@@ -114,6 +116,8 @@
 [Nginx](Linux/Nginx/1.nginx.md)  
 [Nginx使用场景](Linux/Nginx/2.nginx使用场景.md)   
 [Nginx配置参数](Linux/Nginx/3.nginx配置参数.md)     
+
+
 
 ## 计算机网络  
 
