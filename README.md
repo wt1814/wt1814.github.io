@@ -37,8 +37,8 @@
 [行为型设计模式](java/Design/5.behavior.md)  
 
 ### 算法  
-[算法基本概念]  
-[数据结构]  
+[算法基本概念](java/function/1.notion.md)  
+[数据结构](java/function/2.structure.md)  
 [排序查找]  
 
 
@@ -54,7 +54,7 @@
 
 ## SSM  
 ### Spring  
-[Spring](SSM/Spring/1.Spring.md)  
+[Spring]  
 [SpringIOC解析](SSM/Spring/2.SpringIOC.md)  
 [SpringDI解析](SSM/Spring/3.SpringDI.md)  
 [SpringAOP解析]  
