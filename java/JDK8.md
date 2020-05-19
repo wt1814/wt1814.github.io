@@ -196,7 +196,8 @@ class GenericFunctionalInterfaceDemo {
 结果：  
 
     lambda reserved is adbmal
-    The factorial of 3 is 6
+    The factorial of 3 is 6  
+
 &emsp; 分析：T指定了func()函数的返回类型和参数类型。这意味着它与任何只接收一个参数，并返回一个相同类型的值的lambda表达式兼容。  
 &emsp; SomeFunc接口用于提供对两种不同类型的lambda表达式的引用。第一种表达式使用String类型，第二种表达式使用Integer类型。因此，同一个函数式接口可以用于reserve lambda表达式和factorial lambda表达式。区别仅在于传递给SomeFunc的参数类型。  
 
@@ -221,7 +222,7 @@ class lambdasAsArgumentsDemo {
         String outStr;
         System.out.println("Here is input string: " + inStr);
         
-//Lambda表达式作为方法参数使用
+        //Lambda表达式作为方法参数使用
         //第一种方式
         outStr = stringOp((str) -> str.toUpperCase(), inStr);
         System.out.println("The string in uppercase: " + outStr);
@@ -356,10 +357,12 @@ public static void main(String[] args) {
 &emsp; reduce()根据一定的规则将Stream中的元素进行计算后返回一个唯一的值。它提供一个起始值（种子），然后依照运算规则（BinaryOperator），和前面Stream的第一个、第二个、第n个元素组合。在没有起始值时，会将Stream的前面两个元素组合，返回的是Optional。字符串拼接、数值的sum、min、max、average都是特殊的reduce。  
 &emsp; reduce()方法有三种形式：  
 
-        1. Optional<T> reduce(BinaryOperator<T> accumulator);  对Stream中的数据通过累加器accumulator迭代计算，最终得到一个Optional对象。  
-        函数接口BinaryOperator<T>继承于BiFunction<T, T, T>，接收两个参数，返回一个结果。  
-        2. T reduce(T identity, BinaryOperator<T> accumulator);  给定一个初始值identity，通过累加器accumulator迭代计算，得到一个同Stream中数据同类型的结果。  
-        3. <U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner);  给定一个初始值identity，通过累加器accumulator迭代计算，得到一个identity类型的结果，第三个参数用于使用并行流时合并结果。  
+    1. Optional<T> reduce(BinaryOperator<T> accumulator);  对Stream中的数据通过累加器accumulator迭代计算，最终得到一个Optional对象。  
+    函数接口BinaryOperator<T>继承于BiFunction<T, T, T>，接收两个参数，返回一个结果。  
+    
+    2. T reduce(T identity, BinaryOperator<T> accumulator);  给定一个初始值identity，通过累加器accumulator迭代计算，得到一个同Stream中数据同类型的结果。  
+    
+    3. <U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner);  给定一个初始值identity，通过累加器accumulator迭代计算，得到一个identity类型的结果，第三个参数用于使用并行流时合并结果。  
 
 三个参数：  
 * identity: 初始化值。  
@@ -501,14 +504,14 @@ return user.orElse(UNKNOWN_USER);
 &emsp; 存在即返回, 无则由函数来产生：  
 
 ```
-return user.orElseGet(() -> fetchAUserFromDatabase()); //而不要 return user.isPresent() ? user: fetchAUserFromDatabase();
+return user.orElseGet(() -> fetchAUserFromDatabase()); 
+//而不要 return user.isPresent() ? user: fetchAUserFromDatabase();
 ```
 &emsp; 存在才对它做点什么：  
 
 ```
 user.ifPresent(System.out::println);
-/*
-而不要下边那样
+/*而不要下边那样
 if (user.isPresent()) {
     System.out.println(user.get());
 }*/
@@ -646,7 +649,8 @@ public class Java8Tester {
 &emsp; 当计算程序的运行时间时，应当使用时间戳Instant。  
 &emsp; Instant用于表示一个时间戳，它与我们常使用的System.currentTimeMillis()有些类似，不过Instant可以精确到纳秒（Nano-Second），System.currentTimeMillis()方法只精确到毫秒（Milli-Second）。如果查看Instant源码，发现它的内部使用了两个常量，seconds表示从1970-01-01 00:00:00开始到现在的秒数，nanos表示纳秒部分（nanos的值不会超过999,999,999）。Instant除了使用now()方法创建外，还可以通过ofEpochSecond方法创建：  
 
-    Instant instant = Instant.ofEpochSecond(120, 100000);
+    Instant instant = Instant.ofEpochSecond(120, 100000);  
+
 &emsp; ofEpochSecond()方法的第一个参数为秒，第二个参数为纳秒，上面的代码表示从1970-01-01 00:00:00开始后两分钟的10万纳秒的时刻，控制台上的输出为：
 
 
