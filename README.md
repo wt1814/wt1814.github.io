@@ -41,8 +41,8 @@
 [基本数据结构](java/function/2.structure.md)  
 [其他数据结构](java/function/3.otherStructure.md)  
 [排序算法](java/function/4.sort.md)  
-[查找算法]  
-[算法思想题型]  
+[查找算法](java/function/5.search.md)  
+[算法思想题型](java/function/6.algorithmicIdea.md)  
 
 
 ## 数据库  
