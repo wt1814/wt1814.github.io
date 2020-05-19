@@ -39,7 +39,7 @@
 ### 算法  
 [算法基本概念](java/function/1.notion.md)  
 [基本数据结构](java/function/2.structure.md)  
-[其他数据结构]  
+[其他数据结构](java/function/3.otherStructure.md)  
 [排序算法]  
 [查找算法]  
 [算法思想题型]  
