@@ -214,7 +214,7 @@ public class MappedFileReader {
 ```
 &emsp; 采用内存文件映射的方法去处理大文件，不能读取超过2GB的文件，明明 FileChannel.map() 方法传递的文件长度是 long 类型的，怎么和 Integer.MAX_VALUE 有关系？  
 
-&emsp; ***采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。 *** 
+&emsp; ***采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。***  
 
 ```
 Exception in thread "main" java.lang.IllegalArgumentException: Size exceeds Integer.MAX_VALUE at sun.nio.ch.FileChannelImpl.map(FileChannelImpl.java:868)

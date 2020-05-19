@@ -356,13 +356,10 @@ public static void main(String[] args) {
 &emsp; reduce()根据一定的规则将Stream中的元素进行计算后返回一个唯一的值。它提供一个起始值（种子），然后依照运算规则（BinaryOperator），和前面Stream的第一个、第二个、第n个元素组合。在没有起始值时，会将Stream的前面两个元素组合，返回的是Optional。字符串拼接、数值的sum、min、max、average都是特殊的reduce。  
 &emsp; reduce()方法有三种形式：  
 
-    Optional<T> reduce(BinaryOperator<T> accumulator);  
-    对Stream中的数据通过累加器accumulator迭代计算，最终得到一个Optional对象。  
-    函数接口BinaryOperator<T>继承于BiFunction<T, T, T>，接收两个参数，返回一个结果。  
-    T reduce(T identity, BinaryOperator<T> accumulator);  
-    给定一个初始值identity，通过累加器accumulator迭代计算，得到一个同Stream中数据同类型的结果。  
-    <U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner);  
-    给定一个初始值identity，通过累加器accumulator迭代计算，得到一个identity类型的结果，第三个参数用于使用并行流时合并结果。  
+        1. Optional<T> reduce(BinaryOperator<T> accumulator);  对Stream中的数据通过累加器accumulator迭代计算，最终得到一个Optional对象。  
+        函数接口BinaryOperator<T>继承于BiFunction<T, T, T>，接收两个参数，返回一个结果。  
+        2. T reduce(T identity, BinaryOperator<T> accumulator);  给定一个初始值identity，通过累加器accumulator迭代计算，得到一个同Stream中数据同类型的结果。  
+        3. <U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner);  给定一个初始值identity，通过累加器accumulator迭代计算，得到一个identity类型的结果，第三个参数用于使用并行流时合并结果。  
 
 三个参数：  
 * identity: 初始化值。  
@@ -398,13 +395,14 @@ reduce("", String::concat);
 ```
     <R, A> R collect(Collector<? super T, A, R> collector);  
 ```
-&emsp; 主要使用Collectors（java.util.stream.Collectors）来进行各种reduction 操作。  Collections是java.util包的一个工具类，内涵各种处理集合的静态方法：  
-    * 将流中的数据转成集合类型: toList、toSet、toMap、toCollection  
-    * 将流中的数据(字符串)使用分隔符拼接在一起：joining  
-    * 对流中的数据求最大值maxBy、最小值minBy、求和summingInt、求平均值averagingDouble  
-    * 对流中的数据进行映射处理 mapping  
-    * 对流中的数据分组：groupingBy、partitioningBy  
-    * 对流中的数据累计计算：reducing  
+&emsp; 主要使用Collectors（java.util.stream.Collectors）来进行各种reduction 操作。  Collections是java.util包的一个工具类，内涵各种处理集合的静态方法： 
+
+    1. 将流中的数据转成集合类型: toList、toSet、toMap、toCollection   
+    2. 将流中的数据(字符串)使用分隔符拼接在一起：joining  
+    3. 对流中的数据求最大值maxBy、最小值minBy、求和summingInt、求平均值averagingDouble  
+    4. 对流中的数据进行映射处理 mapping  
+    5. 对流中的数据分组：groupingBy、partitioningBy  
+    6. 对流中的数据累计计算：reducing  
 
 * 方法二：  
 
