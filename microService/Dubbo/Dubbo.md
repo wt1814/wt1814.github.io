@@ -5,9 +5,23 @@ tags:
     - Dubbo
 ---
 
+<!-- TOC -->
 
+- [1. Dubbo工作流程：](#1-dubbo工作流程)
+    - [1.1. Dubbo需要Web容器吗？内置了哪几种服务容器？](#11-dubbo需要web容器吗内置了哪几种服务容器)
+    - [1.2. Dubbo有些哪些注册中心？](#12-dubbo有些哪些注册中心)
+    - [1.3. Dubbo支持哪些序列化方式？](#13-dubbo支持哪些序列化方式)
+    - [1.4. 通信协议](#14-通信协议)
+    - [1.5. 服务提供者能实现失效踢出是什么原理？](#15-服务提供者能实现失效踢出是什么原理)
+    - [1.6. Dubbo服务之间的调用是阻塞的吗？](#16-dubbo服务之间的调用是阻塞的吗)
+    - [1.7. 负载均衡](#17-负载均衡)
+    - [1.8. 服务降级](#18-服务降级)
+    - [1.9. 集群容错策略](#19-集群容错策略)
+- [2. Dubbo和Spring Cloud](#2-dubbo和spring-cloud)
 
-# Dubbo工作流程： 
+<!-- /TOC -->
+
+# 1. Dubbo工作流程： 
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-11.png)   
 &emsp; Dubbo中5个角色：Provider、Consumer、Registry、Monitor、Container。  
@@ -25,22 +39,22 @@ tags:
 4. (invoke)服务消费者Consumer，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。  
 5. (count)服务消费者Consumer和提供者Provider，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。  
 
-## Dubbo需要Web容器吗？内置了哪几种服务容器？  
+## 1.1. Dubbo需要Web容器吗？内置了哪几种服务容器？  
 &emsp; 不需要，如果强制使用Web容器，只会增加复杂性，也浪费资源。  
 &emsp; 内置了Spring Container、Jetty Container、Log4j Container。   
 &emsp; Dubbo 的服务容器只是一个简单的 Main 方法，并加载一个简单的 Spring 容器，用于暴露服务。  
 
-## Dubbo有些哪些注册中心？  
+## 1.2. Dubbo有些哪些注册中心？  
 &emsp; Multicast注册中心：Multicast注册中心不需要任何中心节点，只要广播地址，就能进行服务注册和发现。基于网络中组播传输实现；  
 &emsp; Zookeeper注册中心：基于分布式协调系统Zookeeper实现，采用Zookeeper的watch机制实现数据变更；  
 &emsp; redis注册中心：基于redis实现，采用key/Map存储，住key存储服务名和类型，Map中key存储服务URL，value服务过期时间。基于redis的发布/订阅模式通知数据变更；  
 &emsp; Simple注册中心。  
 
-## Dubbo支持哪些序列化方式？  
+## 1.3. Dubbo支持哪些序列化方式？  
 默认使用Hessian序列化，还有Duddo、FastJson、Java自带序列化。   
 
 
-## 通信协议  
+## 1.4. 通信协议  
 &emsp; 不同服务在性能上适用不同协议进行传输，比如大数据用短连接协议，小数据大并发用长连接协议。  
 &emsp; 入参和出参均需实现序列化Serializable接口。  
 
@@ -54,16 +68,16 @@ tags:
 |thrift	|与thrift RPC实现集成，并在基础上修改了报文头 |长连接、NIO异步传输 |||	
 |Redis|||||  	
 
-## 服务提供者能实现失效踢出是什么原理？  
+## 1.5. 服务提供者能实现失效踢出是什么原理？  
 &emsp; 服务失效踢出基于zookeeper的临时节点原理。  
 
-## Dubbo服务之间的调用是阻塞的吗？  
+## 1.6. Dubbo服务之间的调用是阻塞的吗？  
 &emsp; 默认是同步等待结果阻塞的，支持异步调用。  
 &emsp; 异步调用：Dubbo是基于NIO的非阻塞实现并行调用，客户端不需要启动多线程即可完成并行调用多个远程服务，相对多线程开销较小，异步调用会返回一个 Future 对象。  
 &emsp; 异步调用流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-12.png)   
 
-## 负载均衡  
+## 1.7. 负载均衡  
 * Random（缺省）
 &emsp; 随机，按权重设置随机概率。  
 &emsp; 在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。  
@@ -79,10 +93,10 @@ tags:
 &emsp; 缺省只对第一个参数Hash，如果要修改，请配置<dubbo:parameter key="hash.arguments" value="0,1" />  
 &emsp; 缺省用160份虚拟节点，如果要修改，请配置<dubbo:parameter key="hash.nodes" value="320" />  
 
-## 服务降级  
+## 1.8. 服务降级  
 &emsp; 当服务器压力过大时，可以通过服务降级来使某些非关键服务的调用变得简单，可以对其直接进行屏蔽，即客户端不发送请求直接返回null，也可以正常发送请求当请求超时或不可达时再返回null；服务降级的相关配置可以直接在dubbo-admin的监控页面进行配置；通常是基于消费者来配置的,在dubbo-admin找到对应的消费者想要降级的服务，点击其后面的屏蔽或容错按钮即可生效；其中,屏蔽按钮点击表示放弃远程调用直接返回空，而容错按钮点击表示继续尝试进行远程调用当调用失败时再返回空。  
 
-## 集群容错策略  
+## 1.9. 集群容错策略  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-13.png)   
 
 &emsp; 在集群调用失败时，Dubbo 提供了多种容错方案，缺省为 failover 重试。下面列举dubbo支持的容错策略：  
@@ -95,7 +109,7 @@ tags:
 
 
 
-# Dubbo和Spring Cloud  
+# 2. Dubbo和Spring Cloud  
 &emsp; Dubbo是SOA时代的产物，它的关注点主要在于服务的调用，流量分发、流量监控和熔断。  
 &emsp; Spring Cloud诞生于微服务架构时代，考虑的是微服务治理的方方面面，另外由于依托了 Spirng、Spirng Boot的优势之上，两个框架在开始目标就不一致，Dubbo 定位服务治理、Spirng Cloud 是一个生态。  
 
