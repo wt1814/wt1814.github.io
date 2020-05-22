@@ -41,6 +41,7 @@ tags:
 
 ## 延迟暴露  
 &emsp; 如果服务需要预热时间，比如初始化缓存，等待相关资源就位等，可以使用 delay进行延迟暴露。  
+
 * 延迟5秒暴露服务，<dubbo:service delay="5000" />。  
 * 延迟到Spring初始化完成后，再暴露服务<dubbo:service delay="-1" />。  
 
@@ -73,7 +74,9 @@ tags:
 ## 连接控制  
 &emsp; 限制服务器端接受的连接不能超过10个。    
 
-    <dubbo:provider protocol="dubbo" accepts="10" />或
+    <dubbo:provider protocol="dubbo" accepts="10" />
+&emsp; 或
+
     <dubbo:protocol name="dubbo" accepts="10" />
 &emsp; 限制客户端服务使用连接不能超过10个。  
 
@@ -131,6 +134,7 @@ tags:
 &emsp; Dubbo允许配置多协议。有以下2种方式：  
 1. 不同服务使用不同协议。不同的服务在性能上使用不同协议进行传输，比如大数据采用短连接协议，小数据大并发使用长连接协议。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-5.png)  
+
 2. 同一服务上同时支持多种协议，需要与客户端互操作。  
 
             <!-- 服务提供方 -->
@@ -205,10 +209,10 @@ tags:
 2. “只订阅”需要结合“直连提供者”配置来进行调用测试。  
 &emsp; 禁用注册配置：  
 
-    <dubbo:registry address="10.20.153.10:9090" register="false" />
-&emsp; 或  
+        <dubbo:registry address="10.20.153.10:9090" register="false" />  
+&emsp; &emsp; 或  
 
-    <dubbo:registry address="10.20.153.10:9090?register=false" />  
+        <dubbo:registry address="10.20.153.10:9090?register=false" />  
 
 ## 只注册  
 &emsp; 如果有两个镜像环境，两个注册中心，有一个服务只在其中一个注册中心有部署，另一个注册中心还没来得及部署，而两个注册中心的其它应用都需要依赖此服务。这个时候，可以让服务提供者方只注册服务到另一注册中心，而不从另一注册中心订阅服务。  
