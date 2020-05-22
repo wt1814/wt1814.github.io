@@ -18,8 +18,11 @@ tags:
     - [1.8. 服务降级](#18-服务降级)
     - [1.9. 集群容错策略](#19-集群容错策略)
 - [2. Dubbo和Spring Cloud](#2-dubbo和spring-cloud)
+- [3. Dubbo中的SPI](#3-dubbo中的spi)
+- [4. Dubbo对SPring的扩展](#4-dubbo对spring的扩展)
 
 <!-- /TOC -->
+
 
 # 1. Dubbo工作流程： 
 
@@ -108,10 +111,21 @@ tags:
 * Broadcast - 广播调用所有提供者，逐个调用，任意一台报错则报错。通常用于通知所有提供者更新缓存或日志等本地资源信息。  
 
 
-
 # 2. Dubbo和Spring Cloud  
 &emsp; Dubbo是SOA时代的产物，它的关注点主要在于服务的调用，流量分发、流量监控和熔断。  
 &emsp; Spring Cloud诞生于微服务架构时代，考虑的是微服务治理的方方面面，另外由于依托了 Spirng、Spirng Boot的优势之上，两个框架在开始目标就不一致，Dubbo 定位服务治理、Spirng Cloud 是一个生态。  
 
 &emsp; Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-14.png)   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-14.png)  
+
+
+# 3. Dubbo中的SPI  
+&emsp; SPI，Serviceproviderinterface，服务提供发现接口。  
+&emsp; dubbo在JDK的spi基础上主要有以下的改变,①配置文件采用键值对配置的方式，使用起来更加灵活和简单 ② 增强了原本SPI的功能，使得SPI具备ioc和aop的功能，这在原本的java中spi是不支持的。dubbo的spi是通过ExtensionLoader来解析的，通过ExtensionLoader来加载指定的实现类，配置文件的路径在META-INF/dubbo路径下。  
+
+
+
+# 4. Dubbo对SPring的扩展  
+......
+
+
