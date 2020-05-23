@@ -93,12 +93,9 @@ tags:
 * ConsistentHash  
 &emsp; 一致性 Hash，相同参数的请求总是发到同一提供者。  
 &emsp; 当某一台提供者挂时，原本发往该提供者的请求，基于虚拟节点，平摊到其它提供者，不会引起剧烈变动。  
-&emsp; 缺省只对第一个参数Hash，如果要修改，请配置  
-
-    <dubbo:parameter key="hash.arguments" value="0,1" />  
+&emsp; 缺省只对第一个参数Hash，如果要修改，请配置  \<dubbo:parameter key="hash.arguments" value="0,1" /\>  
 &emsp; 缺省用160份虚拟节点，如果要修改，请配置  
-    
-    <dubbo:parameter key="hash.nodes" value="320" />  
+\<dubbo:parameter key="hash.nodes" value="320" /\>  
 
 ## 1.8. 服务降级  
 &emsp; 当服务器压力过大时，可以通过服务降级来使某些非关键服务的调用变得简单，可以对其直接进行屏蔽，即客户端不发送请求直接返回null，也可以正常发送请求当请求超时或不可达时再返回null；服务降级的相关配置可以直接在dubbo-admin的监控页面进行配置；通常是基于消费者来配置的,在dubbo-admin找到对应的消费者想要降级的服务，点击其后面的屏蔽或容错按钮即可生效；其中,屏蔽按钮点击表示放弃远程调用直接返回空，而容错按钮点击表示继续尝试进行远程调用当调用失败时再返回空。  
@@ -107,6 +104,7 @@ tags:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-13.png)   
 
 &emsp; 在集群调用失败时，Dubbo 提供了多种容错方案，缺省为 failover 重试。下面列举dubbo支持的容错策略：  
+
 * Failover（默认） - 失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过 retries="2" 来设置重试次数(不含第一次)  
 * Failfast - 快速失败，只发起一次调用，失败立即报错。通常用于非幂等性的写操作，比如新增记录。
 * Failsafe - 失败安全，出现异常时，直接忽略。通常用于写入审计日志等操作。  

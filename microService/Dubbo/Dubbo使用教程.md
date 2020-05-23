@@ -42,8 +42,8 @@ tags:
 ## 延迟暴露  
 &emsp; 如果服务需要预热时间，比如初始化缓存，等待相关资源就位等，可以使用 delay进行延迟暴露。  
 
-* 延迟5秒暴露服务，<dubbo:service delay="5000" />。  
-* 延迟到Spring初始化完成后，再暴露服务<dubbo:service delay="-1" />。  
+* 延迟5秒暴露服务，\<dubbo:service delay="5000" /\>。  
+* 延迟到Spring初始化完成后，再暴露服务\<dubbo:service delay="-1" /\>。  
 
 ## 并发控制  
 &emsp; 限制com.foo.BarService的每个方法，服务器端并发执行（或占用线程池线程数）不能超过10个。  
@@ -92,18 +92,21 @@ tags:
 
 ## 令牌验证
 &emsp; 防止消费者绕过注册中心访问提供者，在注册中心控制权限，以决定要不要下发令牌给消费者，注册中心可灵活改变授权方式，而不需修改或升级提供者。  
+
 1. 全局设置开启令牌验证：
 
         <!--随机token令牌，使用UUID生成-->
         <dubbo:provider interface="com.foo.BarService" token="true" />
         <!--固定token令牌，相当于密码-->
-        <dubbo:provider interface="com.foo.BarService" token="123456" />
+        <dubbo:provider interface="com.foo.BarService" token="123456" />  
+
 2. 服务级别设置开启令牌验证：  
 
         <!--随机token令牌，使用UUID生成-->
         <dubbo:service interface="com.foo.BarService" token="true" />
         <!--固定token令牌，相当于密码-->
-        <dubbo:service interface="com.foo.BarService" token="123456" />
+        <dubbo:service interface="com.foo.BarService" token="123456" />  
+
 3. 协议级别设置开启令牌验证：  
 
         <!--随机token令牌，使用UUID生成-->
@@ -453,6 +456,7 @@ public class BarServiceMock implements BarService {
     <dubbo:service interface="com.foo.BarService" mock="return  null" />
 ## 超时时间设置：  
 &emsp; 有两种方式：  
+
 * 服务提供者端设置超时时间，在Dubbo的用户文档中，推荐如果能在服务端多配置就尽量多配置，因为服务提供者比消费者更清楚提供的服务特性。  
 * 服务消费者端设置超时时间，如果在消费者端设置了超时时间，以消费者端为主，即优先级更高。因为服务调用方设置超时时间控制性更灵活。如果消费方超时，服务端线程不会定制，会产生警告。  
 

@@ -91,7 +91,7 @@
 [容器相关特性](SSM/Spring/4.SpringFeature.md)  
 [SpringAOP教程]  
 [SpringAOP解析]
-[Spring事务]
+[Spring事务](SSM/Spring/7.SpringTransaction.md)
 [Spring涉及的涉及模式]      
 [SpringMVC]  
 
