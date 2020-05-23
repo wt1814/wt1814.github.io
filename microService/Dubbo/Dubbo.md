@@ -87,14 +87,18 @@ tags:
 * RoundRobin  
 &emsp; 轮循，按公约后的权重设置轮循比率。  
 &emsp; 存在慢的提供者累积请求的问题，比如：第二台机器很慢，但没挂，当请求调到第二台时就卡在那，久而久之，所有请求都卡在调到第二台上。  
-* LeastActive
+* LeastActive  
 &emsp; 最少活跃调用数，相同活跃数的随机，活跃数指调用前后计数差。  
 &emsp; 使慢的提供者收到更少请求，因为越慢的提供者的调用前后计数差会越大。  
 * ConsistentHash  
 &emsp; 一致性 Hash，相同参数的请求总是发到同一提供者。  
 &emsp; 当某一台提供者挂时，原本发往该提供者的请求，基于虚拟节点，平摊到其它提供者，不会引起剧烈变动。  
-&emsp; 缺省只对第一个参数Hash，如果要修改，请配置<dubbo:parameter key="hash.arguments" value="0,1" />  
-&emsp; 缺省用160份虚拟节点，如果要修改，请配置<dubbo:parameter key="hash.nodes" value="320" />  
+&emsp; 缺省只对第一个参数Hash，如果要修改，请配置  
+
+    <dubbo:parameter key="hash.arguments" value="0,1" />  
+&emsp; 缺省用160份虚拟节点，如果要修改，请配置  
+    
+    <dubbo:parameter key="hash.nodes" value="320" />  
 
 ## 1.8. 服务降级  
 &emsp; 当服务器压力过大时，可以通过服务降级来使某些非关键服务的调用变得简单，可以对其直接进行屏蔽，即客户端不发送请求直接返回null，也可以正常发送请求当请求超时或不可达时再返回null；服务降级的相关配置可以直接在dubbo-admin的监控页面进行配置；通常是基于消费者来配置的,在dubbo-admin找到对应的消费者想要降级的服务，点击其后面的屏蔽或容错按钮即可生效；其中,屏蔽按钮点击表示放弃远程调用直接返回空，而容错按钮点击表示继续尝试进行远程调用当调用失败时再返回空。  
