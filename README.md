@@ -1,4 +1,5 @@
 
+
 <!-- TOC -->
 
 - [1. 目录](#1-目录)
@@ -11,23 +12,22 @@
     - [1.2. 数据库](#12-数据库)
     - [1.3. SSM](#13-ssm)
         - [1.3.1. Spring](#131-spring)
-    - [1.4. MyBatis](#14-mybatis)
-    - [1.5. 微服务](#15-微服务)
-        - [1.5.1. SpringBoot](#151-springboot)
-        - [1.5.2. Spring Cloud Netflix](#152-spring-cloud-netflix)
-        - [1.5.3. Dubbo](#153-dubbo)
-        - [1.5.4. Redis](#154-redis)
-        - [1.5.5. 分布式理论](#155-分布式理论)
-        - [1.5.6. 分布式通信](#156-分布式通信)
-    - [1.6. web](#16-web)
-    - [1.7. 框架](#17-框架)
-    - [1.8. linux服务器](#18-linux服务器)
-        - [1.8.1. Linux](#181-linux)
-        - [1.8.2. Nginx](#182-nginx)
-    - [1.9. 计算机网络](#19-计算机网络)
+        - [1.3.2. MyBatis](#132-mybatis)
+    - [1.4. 微服务](#14-微服务)
+        - [1.4.1. SpringBoot](#141-springboot)
+        - [1.4.2. Spring Cloud Netflix](#142-spring-cloud-netflix)
+        - [1.4.3. Dubbo](#143-dubbo)
+        - [1.4.4. Redis](#144-redis)
+        - [1.4.5. 分布式理论](#145-分布式理论)
+        - [1.4.6. 分布式通信](#146-分布式通信)
+    - [1.5. web](#15-web)
+    - [1.6. 框架](#16-框架)
+    - [1.7. linux服务器](#17-linux服务器)
+        - [1.7.1. Linux](#171-linux)
+        - [1.7.2. Nginx](#172-nginx)
+    - [1.8. 计算机网络](#18-计算机网络)
 
 <!-- /TOC -->
-
 
 
 # 1. 目录  
@@ -100,18 +100,18 @@
 [SpringMVC使用教程](SSM/Spring/9.SpringMVCUse.md)  
 [SpringMVC解析](SSM/Spring/10.SpringMVCAnalysis.md)    
 
-## 1.4. MyBatis  
+### 1.3.2. MyBatis  
 [MyBatis教程]  
 [Mybatis原理]  
 
 
-## 1.5. 微服务  
-### 1.5.1. SpringBoot  
+## 1.4. 微服务  
+### 1.4.1. SpringBoot  
 [自动配置原理](microService/SpringBoot/1.自动配置原理.md)  
 [Spring Boot 2.2.0启动全过程解析](microService/SpringBoot/2.SpringBoot2.2.0启动全过程源码分析.md)  
 [自定义strater]
 
-### 1.5.2. Spring Cloud Netflix  
+### 1.4.2. Spring Cloud Netflix  
 [Spring Cloud Netflix](microService/SpringCloudNetflix/0.Netflix.md)  
 [Spring Cloud Eureka](microService/SpringCloudNetflix/1.Eureka.md)  
 [Spring Cloud Ribbon](microService/SpringCloudNetflix/2.Ribbon.md)  
@@ -121,17 +121,17 @@
 [Spring Cloud Sleuth](microService/SpringCloudNetflix/6.Sleuth.md)  
 [Spring Boot Admin](microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
 
-### 1.5.3. Dubbo  
+### 1.4.3. Dubbo  
 [Dubbo](microService/Dubbo/Dubbo.md)   
 [Dubbo使用教程](microService/Dubbo/Dubbo使用教程.md)  
 [Zookeeper](microService/Dubbo/Zookeeper.md)  
 
-### 1.5.4. Redis
+### 1.4.4. Redis
 [redis数据结构及API](microService/Redis/Redis数据结构及API.md)  
 [redis原理](microService/Redis/Redis原理.md)  
 [redis集群](microService/Redis/Redis集群.md)  
 
-### 1.5.5. 分布式理论  
+### 1.4.5. 分布式理论  
 [一致性哈希算法](microService/分布式算法-consistent.md)  
 [分布式事务](microService/分布式事务.md)  
 [分布式锁](microService/分布式锁.md)  
@@ -139,32 +139,32 @@
 [分布式ID](microService/分布式ID.md)  
 [分布式限流](microService/分布式限流.md)   
 
-### 1.5.6. 分布式通信  
+### 1.4.6. 分布式通信  
 
 
 
-## 1.6. web  
+## 1.5. web  
 [过滤器、拦截器、监听器](web/subassembly.md)   
 
 
 
-## 1.7. 框架  
+## 1.6. 框架  
 [ElasticSearch]  
 
 
 
-## 1.8. linux服务器  
-### 1.8.1. Linux  
+## 1.7. linux服务器  
+### 1.7.1. Linux  
 [Linux命令]  
 
-### 1.8.2. Nginx  
+### 1.7.2. Nginx  
 [Nginx](Linux/Nginx/1.nginx.md)  
 [Nginx使用场景](Linux/Nginx/2.nginx使用场景.md)   
 [Nginx配置参数](Linux/Nginx/3.nginx配置参数.md)     
 
 
 
-## 1.9. 计算机网络  
+## 1.8. 计算机网络  
 
 [HTTP](/network/1.HTTP.md)  
 [HTTPS](/network/2.HTTPS.md)  
