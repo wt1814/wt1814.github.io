@@ -9,8 +9,8 @@ tags:
 - [1. Zookeeper是什么](#1-zookeeper是什么)
 - [2. ZooKeeper分层命名空间](#2-zookeeper分层命名空间)
 - [3. Zookeeper的运行原理](#3-zookeeper的运行原理)
-    - [3.1. Watcher机制](#31-watcher机制)
-    - [3.2. ZAB协议](#32-zab协议)
+    - [3.1. ※※※Watcher机制](#31-※※※watcher机制)
+    - [3.2. ※※※ZAB协议](#32-※※※zab协议)
         - [3.2.1. 选举流程，恢复模式](#321-选举流程恢复模式)
         - [3.2.2. 数据同步，广播模式](#322-数据同步广播模式)
 - [4. Zookeeper应用](#4-zookeeper应用)
@@ -66,7 +66,7 @@ tags:
 * 在分布式系统中，顺序号可以被用于为所有的事件进行全局排序，这样客户端可以通过顺序号推断事件的顺序。  
 
 # 3. Zookeeper的运行原理  
-## 3.1. Watcher机制  
+## 3.1. ※※※Watcher机制  
 &emsp; 在ZooKeeper中，引入Watcher机制来实现分布式数据的发布/订阅功能。Zookeeper客户端向服务端的某个Znode 注册一个 Watcher 监听，当服务端的一些指定事件触发了这个 Watcher，服务端会向指定客户端发送一个事件通知来实现分布式的通知功能，然后客户端根据 Watcher 通知状态和事件类型做出业务上的改变。  
 &emsp; 触发watch事件种类很多，如：节点创建，节点删除，节点改变，子节点改变等。  
 
@@ -78,7 +78,7 @@ tags:
 * 有序性：  
 &emsp; 客户端先得到watch通知才可查看节点变化结果。  
 
-## 3.2. ZAB协议  
+## 3.2. ※※※ZAB协议  
 &emsp; ZAB协议全称：Zookeeper Atomic Broadcast（Zookeeper原子广播协议），崩溃可恢复的的原子消息广播算法。ZAB协议包括两种基本模式：崩溃恢复（选主）和消息广播（同步）。整个Zookeeper集群就是在这两个模式之间切换。  
 
 &emsp; Zookeeper集群中服务器分为3种角色：领导者Leader、学习者Learner(包括跟随者Follower和观察者Observer)。  
