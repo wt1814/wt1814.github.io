@@ -123,8 +123,9 @@ tags:
 
 # 3. Dubbo中的SPI  
 &emsp; SPI，Serviceproviderinterface，服务提供发现接口。  
-&emsp; dubbo在JDK的spi基础上主要有以下的改变,①配置文件采用键值对配置的方式，使用起来更加灵活和简单 ② 增强了原本SPI的功能，使得SPI具备ioc和aop的功能，这在原本的java中spi是不支持的。dubbo的spi是通过ExtensionLoader来解析的，通过ExtensionLoader来加载指定的实现类，配置文件的路径在META-INF/dubbo路径下。  
-
+&emsp; dubbo在JDK的spi基础上主要有以下的改变：
+1. 配置文件采用键值对配置的方式，使用起来更加灵活和简单 
+2. 增强了原本SPI的功能，使得SPI具备ioc和aop的功能，这在原本的java中spi是不支持的。dubbo的spi是通过ExtensionLoader来解析的，通过ExtensionLoader来加载指定的实现类，配置文件的路径在META-INF/dubbo路径下。  
 
 
 # 4. Dubbo对SPring的扩展  

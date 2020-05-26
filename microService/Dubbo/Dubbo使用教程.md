@@ -315,8 +315,8 @@ assert(status.equals("OK"));
 
 &emsp; 因此需要通过不同的派发策略和不同的线程池配置的组合来应对不同场景。  
 
-    <dubbo:protocol name="dubbo" dispatcher="all" threadpool="fixed" threads="100" />
-
+    <dubbo:protocol name="dubbo" dispatcher="all" threadpool="fixed" threads="100" />  
+    
 ## 上下文信息  
 &emsp; 上下文中存放的是当前调用过程中所需的环境信息，所有配置信息都将转换为URL的参数。  
 &emsp; 服务消费方  
@@ -333,7 +333,7 @@ assert(status.equals("OK"));
     yyyService.yyy();  
 &emsp; 服务提供方  
 
-```
+```java
 public class XxxServiceImpl implements XxxService {
     public void xxx() {
         // 本端是否为提供端，这里会返回true                               
@@ -348,7 +348,7 @@ public class XxxServiceImpl implements XxxService {
         boolean isProviderSide = RpcContext.getContext().isProviderSide();
     }
 }
-```  
+```
 
 ## 异步调用  
 &emsp; 基于NIO的非阻塞实现并行调用，客户端不需要启动多线程即可完成并行调用多个远程服务，相对多线程开销较小。  
@@ -364,7 +364,7 @@ public class XxxServiceImpl implements XxxService {
     </dubbo:reference>
 &emsp; 调用代码  
 
-```
+```java
 // 此调用会立即返回null
 fooService.findFoo(fooId);
 // 拿到调用的Future引用，当结果返回后，会被通知和设置到此Future
@@ -379,7 +379,7 @@ Foo foo = fooFuture.get();
 // 同理等待bar返回
 Bar bar = barFuture.get();
 // 如果foo需要5秒返回，bar需要6秒返回，实际只需等6秒，即可获取到foo和bar，进行接下来的处理
-```  
+```
 &emsp; 可以设置是否等待消息发出：  
 &emsp; sent=”true”等待消息发出，消息发送失败将抛出异常。  
 &emsp; sent=”false”不等待消息发出，将消息放入 IO 队列，即刻返回。  
@@ -454,6 +454,7 @@ public class BarServiceMock implements BarService {
 &emsp; 如果服务的消费方经常需要try-catch捕获异常，可以考虑改为Mock（只有出现RpcException时才执行）实现，并在Mock实现中return null，如果只是想简单的忽略异常，在2.0.11以上版本可用。  
 
     <dubbo:service interface="com.foo.BarService" mock="return  null" />
+
 ## 超时时间设置：  
 &emsp; 有两种方式：  
 

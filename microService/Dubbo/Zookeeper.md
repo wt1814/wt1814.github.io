@@ -73,9 +73,9 @@ tags:
 &emsp; ZAB协议全称：Zookeeper Atomic Broadcast（Zookeeper原子广播协议），崩溃可恢复的的原子消息广播算法。ZAB协议包括两种基本模式：崩溃恢复（选主）和消息广播（同步）。整个Zookeeper集群就是在这两个模式之间切换。  
 
 &emsp; Zookeeper集群中服务器分为3种角色：领导者Leader、学习者Learner(包括跟随者Follower和观察者Observer)。   
-* 领导者Leader：领导者Leader负责客户端的Writer类型的请求（增删改的操作请求其他节点都会发给Leader节点来做，然后由Leader节点同步给其他节点）。负责进行投票的发起和决议，更新系统状态。  
-* 跟随者Follower：Follower负责客户端reader请求。参与leader的选举，与leader同步。  
-* 观察者Observer：Observer可以接受客户端连接，负责客户端reader请求，将write请求转发给leader。不参与投票和选举，与leader同步。observer的目的是为了扩展系统，提高读取速度。  
+* 领导者Leader负责客户端的Writer类型的请求（增删改的操作请求其他节点都会发给Leader节点来做，然后由Leader节点同步给其他节点）。负责进行投票的发起和决议，更新系统状态。  
+* 跟随者Follower负责客户端reader请求。参与leader的选举，与leader同步。  
+* 观察者Observer可以接受客户端连接，负责客户端reader请求，将write请求转发给leader。不参与投票和选举，与leader同步。observer的目的是为了扩展系统，提高读取速度。  
 
 ### 3.2.1. 选举流程，恢复模式  
 &emsp; 当整个集群在启动时，或者当 leader 节点出现网络中断、崩溃等情况时， ZAB 协议就会进入恢复模式并选举产生新的 Leader，当 leader 服务器选举出来后，并且集群中有过半的机器和该 leader 节点完成数据同步后（同步指的是数据同步，用来保证集群中过半的机器能够和 leader 服务器的数据状态保持一致）， ZAB 协议就会退出恢复模式。  
