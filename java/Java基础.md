@@ -150,13 +150,13 @@ class Fa{
 &emsp; 类中有多个方法,有着相同的方法名,但是方法的参数各不相同,这种情况被称为方法的重载。方法的重载可以提供方法调用的灵活性。  
 &emsp; 方法重载必须满足一下条件:  
 &emsp; 1)方法名相同；  
-&emsp; 2)参数列表不同(参数的类型、个数、顺序的不同)；   
+&emsp; 2)参数列表不同(参数的类型、个数、顺序的不同)；  
 
-```
+```java
 public void test(Strig str){}
 public void test(int a){}
 public void test(Strig str,double d){}
-```  
+```
 
 &emsp; 3)方法的返回值可以不同，也可以相同。  
 &emsp; 注：在java中,判断一个类中的两个个方法是否重载,主要参考两个方面：方法名字和参数列表。
@@ -178,7 +178,7 @@ public void test(Strig str,double d){}
 3. 参数的个数：0个参数；1个参数：如果是数组，那么就直接将这个数组作为参数传进方法里面，不再填充新的数组；多个参数：参数可以是数组，也可以是单个变量、常量；但是这时候会，将这些参数填充进新的数组里面，再将这个数组，传进方法里面；  
 4. 可变参数的使用：可变参数完全可以当作一个数组来使用，或者说本质上可变参数就是一个数组。所以，数组拥有的方法、属性，可变参数一样拥有。  
 
-```
+```java
 public void varArgMethod(int b,int... arr) {
     //和数组一样，拥有属性length
     int lenth = arr.length;
@@ -191,18 +191,19 @@ public void varArgMethod(int b,int... arr) {
         System.out.println(ele);
     }
 }
-```  
+```
+
 &emsp; 上面的例子中，可变参数的使用跟数组的使用是完全一样，也就是说，可变参数是可以等价成数组的。  
 &emsp; 从反编译的结果可以看出，编译器不仅将可变参数处理成数组varArgMethod(int b, int arr[])，还处理了调用可变参数方法处的参数列表，把参数列表封装进一个数组varArgMethod(5, new int[]{7, 8, 9, 10, a})。  
 
-```
+```java
 public <T> T underwrite(String platformCode, String uuid, Object... objects) {
     LOG.info("退保核批校验，退保时间");
     UnderWrite underWrite = (UnderWrite) objects[0];
     CancelInfo cancelInfo = (CancelInfo) objects[1];
     Policybasic policybasic = (Policybasic) objects[2];
 }
-```  
+```
 
 ## 3.4. 值传递还是引用传递？  
 
@@ -268,7 +269,7 @@ class TestDemo2 {
 
 &emsp; ***既然是值传递，为什么参数是引用类型的时候，方法内对对象进行操作会影响原来对象，这真的是值传递么？***  
 
-```
+```java
 public class TestDemo {
     public static void main(String[] args) {
         TestDemo2 testDemo2 = new TestDemo2();
@@ -285,7 +286,8 @@ public class TestDemo {
 class TestDemo2 {
     int age = 1;
 }
-```  
+```
+
 &emsp; 打印结果  
 
     调用前:1
