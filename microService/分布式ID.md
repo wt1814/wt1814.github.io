@@ -85,7 +85,7 @@ tags:
 
 ### 2.2.2. MySQL多实例主键自增  
 &emsp; 这个方案就是解决mysql的单点问题，在auto_increment基本上面，设置step步长。  
-![](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-18.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-18.png)  
 &emsp; 每台的初始值分别为1,2,3...N，步长为N（这个案例步长为4）。  
 &emsp; ***优点：*** 解决了单点问题。  
 &emsp; ***缺点：*** 一旦把步长定好后，就无法扩容；而且单个数据库的压力大，数据库自身性能无法满足高并发。  
@@ -130,7 +130,7 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 ## 2.4. 雪花SnowFlake算法  
 &emsp; snowflake是Twitter开源的分布式ID生成算法。可以本地生成，并且生成的long类型的ID递增。  
 &emsp; snowflake算法所生成的ID结构：正数位（占1比特）+ 时间戳（占41比特）+ 机器ID（占5比特）+ 数据中心（占5比特）+ 自增值（占12比特），总共64比特组成的一个Long类型。  
-![](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-19.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-19.png)  
 &emsp; 整个结构是64位，所以在Java中可以使用long来进行存储。该算法实现基本就是二进制操作,单机每秒内理论上最多可以生成1024*(2^12)，也就是409.6万个ID(1024 X 4096 = 4194304)  
 * 1位标识符：由于long基本类型在Java中是带符号的，最高位是符号位，正数是0，负数是1，所以id一般是正数，最高位是0。  
 * 41位时间戳(毫秒级)：41位时间截不是存储当前时间的时间截，而是存储时间截的差值（当前时间截 - 开始时间截 )得到的值，这里的的开始时间截，一般是id生成器开始使用的时间，由程序来指定。  

@@ -17,26 +17,26 @@ tags:
 ## 1.1. 一致性哈希函数：  
 1. 首先，把全量的缓存空间当做一个环形存储结构。环形空间总共分成2^32个缓存区，在Redis中则是把缓存key分配到16384个slot。  
 2. 每一个缓存key都可以通过Hash算法转化为一个32位的二进制数，也就对应着环形空间的某一个缓存区。把所有的缓存key映射到环形空间的不同位置。  
-![](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-1.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-1.png)  
 3. 每一个缓存节点（Shard）也遵循同样的Hash算法，比如利用IP做Hash，映射到环形空间当中。  
-![](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-2.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-2.png)  
 4. 让key和节点相对应：每一个key的顺时针方向最近节点，就是key所归属的存储节点。所以图中key1存储于node1，key2，key3存储于node2，key4存储于node3。  
-![](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-3.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-3.png)  
 
 ## 1.2. 优点：  
 &emsp; 增加和删除节点，只会影响部分数据。  
 1. 增加节点  
 &emsp; 当缓存集群的节点有所增加的时候，整个环形空间的映射仍然会保持一致性哈希的顺时针规则，所以有一小部分key的归属会受到影响。  
-![](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-4.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-4.png)  
 &emsp; 有哪些key会受到影响呢？图中加入了新节点node4，处于node1和node2之间，按照顺时针规则，从node1到node4之间的缓存不再归属于node2，而是归属于新节点node4。因此受影响的key只有key2。  
-![](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-5.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-5.png)  
 &emsp; 最终把key2的缓存数据从node2迁移到node4，就形成了新的符合一致性哈希规则的缓存结构。  
 
 2. 删除节点  
 &emsp; 当缓存集群的节点需要删除的时候（比如节点挂掉），整个环形空间的映射同样会保持一致性哈希的顺时针规则，同样有一小部分key的归属会受到影响。  
-![](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-7.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-7.png)  
 &emsp; 有哪些key会受到影响呢？图中删除了原节点node3，按照顺时针规则，原本node3所拥有的缓存数据就需要“托付”给node3的顺时针后继节点node1。因此受影响的key只有key4。  
-![](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-8.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-8.png)  
 &emsp; 最终把key4的缓存数据从node3迁移到node1，就形成了新的符合一致性哈希规则的缓存结构。  
 
 &emsp; 问题：既然节点node3已经挂掉了，它怎么迁移数据到节点node1？  
@@ -44,10 +44,10 @@ tags:
 
 ## 1.3. 缺点：  
 &emsp; 如像下图这样，按顺时针规则，所有的key都归属于同一个节点，会造成数据倾斜。如果节点太少或分布不均匀的时候，都会造成数据倾斜。  
-![](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-9.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-9.png)  
 &emsp; 为了优化这种节点太少而产生的不均衡情况，一致性哈希算法引入了“虚拟节点”的概念。  
 &emsp; 所谓虚拟节点，就是基于原来的物理节点映射出N个子节点，最好把所有的子节点映射到环形空间上。  
-![](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-10.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-10.png)  
 &emsp; 如上图所示，假如node1的ip是192.168.1.109，那么原node1节点在环形空间的位置就是hash（“192.168.1.109”）。  
 &emsp; 基于node1构建两个虚拟节点，node1-1和node1-2，虚拟节点在环形空间的位置可以利用（IP+后缀）计算，例如：hash(“192.168.1.109#1”)，hash(“192.168.1.109#2”)。  
 &emsp; 此时，环形空间中不再有物理节点node1，node2，只有虚拟节点node1-1，node1-2，node2-1，node2-2。由于虚拟节点数量较多，缓存key与虚拟节点的映射关系也变得相对均衡了。  
@@ -227,4 +227,4 @@ public class TestHashCircle {
 }
 ```
 &emsp; 运行结果如下：  
-![](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-11.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-11.png)  
