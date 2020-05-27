@@ -126,7 +126,7 @@ tags:
 7. 若没有足够数量的 Sentinel（哨兵）进程同意 Master主服务器下线， Master主服务器的客观下线状态就会被移除。若 Master主服务器重新向 Sentinel（哨兵）进程发送 PING 命令返回有效回复，Master主服务器的主观下线状态就会被移除。  
 
 ## 3.3. Sentinel部署架构  
-R&emsp; edis Sentinel部署架构主要包括两部分：Redis Sentinel集群和Redis数据集群。  
+&emsp; Redis Sentinel部署架构主要包括两部分：Redis Sentinel集群和Redis数据集群。  
 &emsp; 其中Redis Sentinel集群是由若干Sentinel节点组成的分布式集群，可以实现故障发现、故障自动转移、配置中心和客户端通知。Redis Sentinel的节点数量要满足2n+1（n>=1）的奇数个。   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-28.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-29.png)  

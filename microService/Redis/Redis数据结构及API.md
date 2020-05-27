@@ -138,7 +138,7 @@ tags:
 * alloc: 表示字符串的最大容量（不包含最后多余的那个字节）。  
 * flags: 总是占用一个字节。其中的最低3个bit用来表示header的类型。  
 * buf: 字符数组。  
-
+ 
 ```
 //结构源码
 struct sdshdr{
@@ -150,8 +150,9 @@ struct sdshdr{
     //字节数组，用于保存字符串
     char buf[];
 }
-```  
-&emsp; 它的优点：
+```
+
+&emsp; 它的优点：  
 * 开发者不用担心字符串变更造成的内存溢出问题。  
 * 常数时间复杂度获取字符串长度len字段。  
 * 空间预分配free字段，会默认留够一定的空间防止多次重分配内存。  
@@ -204,6 +205,7 @@ typedef struct list{
     int (*match) (void *ptr,void *key);
 }list;
 ```
+
 ### 4.1.3. Hash字典  
 &emsp; Hash结构图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-4.png)  
@@ -223,7 +225,7 @@ typedef struct dictht {
     unsigned long sizemask;
     // 该哈希表已有节点的数量
     unsigned long used;
-} dictht;  
+} dictht; 
 ```
 &emsp; Hash表节点：  
 
