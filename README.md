@@ -60,7 +60,7 @@
 [线程基本概念](java/concurrent/1.Thread.md)  
 [多线程编程](java/concurrent/2.Multithread.md)  
 [线程池](java/concurrent/3.ThreadPool.md)  
-[~~JUC包~~](java/concurrent/4.ConcurrentPackage.md)  
+[J.U.C.包](java/concurrent/4.ConcurrentPackage.md)  
 
 ### 1.1.4. 设计模式  
 [七大设计原则](java/Design/1.principles.md)  
