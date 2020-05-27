@@ -157,6 +157,7 @@ public void test(Strig str){}
 public void test(int a){}
 public void test(Strig str,double d){}
 ```  
+
 &emsp; 3)方法的返回值可以不同，也可以相同。  
 &emsp; 注：在java中,判断一个类中的两个个方法是否重载,主要参考两个方面：方法名字和参数列表。
 
@@ -190,7 +191,7 @@ public void varArgMethod(int b,int... arr) {
         System.out.println(ele);
     }
 }
-```
+```  
 &emsp; 上面的例子中，可变参数的使用跟数组的使用是完全一样，也就是说，可变参数是可以等价成数组的。  
 &emsp; 从反编译的结果可以看出，编译器不仅将可变参数处理成数组varArgMethod(int b, int arr[])，还处理了调用可变参数方法处的参数列表，把参数列表封装进一个数组varArgMethod(5, new int[]{7, 8, 9, 10, a})。  
 
@@ -201,7 +202,7 @@ public <T> T underwrite(String platformCode, String uuid, Object... objects) {
     CancelInfo cancelInfo = (CancelInfo) objects[1];
     Policybasic policybasic = (Policybasic) objects[2];
 }
-```
+```  
 
 ## 3.4. 值传递还是引用传递？  
 
