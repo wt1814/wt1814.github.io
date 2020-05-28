@@ -61,6 +61,7 @@ tags:
 1. ServletContext事件监听器：用于监听应用程序环境对象。  
 2. HttpSession事件监听器：用于监听用户会话对象。  
 3. ServletRequest事件监听器：用于监听请求消息对象。  
+
 &emsp; 这3种监听器共包含了8个监听接口、6个监听事件类。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/web-2.png)  
 
