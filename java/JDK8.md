@@ -130,6 +130,7 @@ interface Converter<F, T> {
 1. 如果执行语句只有1句，无返回值，{}可以省略；若有返回值，则若想省去{}，则必须同时省略return，且执行语句也保证只有1句。  
 2. 如果Lambda表达式的主体包含一条以上语句，则表达式必须包含在花括号{}中（形成代码块）。且需要一个return返回值，但若函数式接口里面方法返回值是void，则无需返回值。语句块中，return语句会把控制权交给匿名方法的调用者；break和continue只能在循环中使用；如果函数体有返回值，那么函数体内部的每一条路径都必须返回值。  
 
+
         可选类型声明：不需要声明参数类型，编译器可以统一识别参数值。
         可选的参数圆括号：一个参数无需定义圆括号，但多个参数需要定义圆括号。
         可选的大括号：如果主体包含了一个语句，就不需要使用大括号。
@@ -315,7 +316,7 @@ class lambdasAsArgumentsDemo {
     * mapToLong(T -> long) : return LongStream  
 
 ```
-    IntStream intStream = list.stream().mapToInt(Person::getAge);
+IntStream intStream = list.stream().mapToInt(Person::getAge);
 ```
 * 数值流转换为流：boxed  
     * Stream<Integer> stream = intStream.boxed();  
@@ -396,7 +397,7 @@ reduce("", String::concat);
 * 方法一：
 
 ```
-    <R, A> R collect(Collector<? super T, A, R> collector);  
+<R, A> R collect(Collector<? super T, A, R> collector);  
 ```
 &emsp; 主要使用Collectors（java.util.stream.Collectors）来进行各种reduction 操作。  Collections是java.util包的一个工具类，内涵各种处理集合的静态方法： 
 
