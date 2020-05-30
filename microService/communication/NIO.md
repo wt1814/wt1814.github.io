@@ -4,52 +4,54 @@ date: 2020-05-30 00:00:00
 tags:
     - 分布式通信
 ---
+
 <!-- TOC -->
 
-- [IO模型](#io模型)
-    - [同步、异步](#同步异步)
-    - [阻塞、非阻塞](#阻塞非阻塞)
-    - [IO模型，BIO、NIO、AIO](#io模型bionioaio)
-- [NIO](#nio)
-    - [NIO基本组件：](#nio基本组件)
-- [NIO缓冲区](#nio缓冲区)
-    - [缓冲区属性：](#缓冲区属性)
-    - [缓冲区API成员方法：](#缓冲区api成员方法)
-        - [缓冲区基本使用（注意模式切换）](#缓冲区基本使用注意模式切换)
-        - [其他方法：](#其他方法)
-    - [字节缓冲区详解：](#字节缓冲区详解)
-- [NIO通道](#nio通道)
-    - [通道分类及创建通道](#通道分类及创建通道)
-    - [分散Scatter/聚集Gather](#分散scatter聚集gather)
-        - [分散读取](#分散读取)
-        - [聚集写入](#聚集写入)
-        - [基本散点/聚集示例](#基本散点聚集示例)
-        - [通道之间的数据传输](#通道之间的数据传输)
-            - [FileChannel.transferFrom()方法](#filechanneltransferfrom方法)
-            - [FileChannel.transferTo()方法](#filechanneltransferto方法)
-            - [基本通道到通道数据传输示例](#基本通道到通道数据传输示例)
-    - [内存映射文件](#内存映射文件)
-        - [MappedByteBuffer API：](#mappedbytebuffer-api)
-        - [示例：](#示例)
-        - [通道工具类](#通道工具类)
-- [NIO选择器](#nio选择器)
-    - [选择器基础：选择器、可选择通道、选择键类](#选择器基础选择器可选择通道选择键类)
-    - [选择器教程](#选择器教程)
-        - [建立选择器（选择器、通道、选择键建立连接）](#建立选择器选择器通道选择键建立连接)
-        - [选择键的使用，SelectionKey类的API](#选择键的使用selectionkey类的api)
-        - [选择器的使用，selector类的API](#选择器的使用selector类的api)
-        - [Selector完整实例](#selector完整实例)
+- [1. IO模型](#1-io模型)
+    - [1.1. 同步、异步](#11-同步异步)
+    - [1.2. 阻塞、非阻塞](#12-阻塞非阻塞)
+    - [1.3. IO模型，BIO、NIO、AIO](#13-io模型bionioaio)
+- [2. NIO](#2-nio)
+    - [2.1. NIO基本组件：](#21-nio基本组件)
+- [3. NIO缓冲区](#3-nio缓冲区)
+    - [3.1. 缓冲区属性：](#31-缓冲区属性)
+    - [3.2. 缓冲区API成员方法：](#32-缓冲区api成员方法)
+        - [3.2.1. 缓冲区基本使用（注意模式切换）](#321-缓冲区基本使用注意模式切换)
+        - [3.2.2. 其他方法：](#322-其他方法)
+    - [3.3. 字节缓冲区详解：](#33-字节缓冲区详解)
+- [4. NIO通道](#4-nio通道)
+    - [4.1. 通道分类及创建通道](#41-通道分类及创建通道)
+    - [4.2. 分散Scatter/聚集Gather](#42-分散scatter聚集gather)
+        - [4.2.1. 分散读取](#421-分散读取)
+        - [4.2.2. 聚集写入](#422-聚集写入)
+        - [4.2.3. 基本散点/聚集示例](#423-基本散点聚集示例)
+        - [4.2.4. 通道之间的数据传输](#424-通道之间的数据传输)
+            - [4.2.4.1. FileChannel.transferFrom()方法](#4241-filechanneltransferfrom方法)
+            - [4.2.4.2. FileChannel.transferTo()方法](#4242-filechanneltransferto方法)
+            - [4.2.4.3. 基本通道到通道数据传输示例](#4243-基本通道到通道数据传输示例)
+    - [4.3. 内存映射文件](#43-内存映射文件)
+        - [4.3.1. MappedByteBuffer API：](#431-mappedbytebuffer-api)
+        - [4.3.2. 示例：](#432-示例)
+    - [4.4. 通道工具类](#44-通道工具类)
+- [5. NIO选择器](#5-nio选择器)
+    - [5.1. 选择器基础：选择器、可选择通道、选择键类](#51-选择器基础选择器可选择通道选择键类)
+    - [5.2. 选择器教程](#52-选择器教程)
+        - [5.2.1. 建立选择器（选择器、通道、选择键建立连接）](#521-建立选择器选择器通道选择键建立连接)
+        - [5.2.2. 选择键的使用，SelectionKey类的API](#522-选择键的使用selectionkey类的api)
+        - [5.2.3. 选择器的使用，selector类的API](#523-选择器的使用selector类的api)
+        - [5.2.4. Selector完整实例](#524-selector完整实例)
 
 <!-- /TOC -->
 
-# IO模型  
 
-## 同步、异步  
+# 1. IO模型  
+
+## 1.1. 同步、异步  
 &emsp; 同步请求，A调用B，B的处理是同步的，在处理完之前不会通知A，只有处理完之后才会明确的通知A。  
 &emsp; 异步请求，A调用B，B的处理是异步的，B在接到请求后先告诉A已经接到请求了，然后异步去处理，处理完之后通过回调等方式再通知A。  
 &emsp; 所以说，同步和异步最大的区别就是被调用方的执行方式和返回时机。同步指的是被调用方做完事情之后再返回，异步指的是被调用方先返回，然后再做事情，做完之后再想办法通知调用方。  
 
-## 阻塞、非阻塞  
+## 1.2. 阻塞、非阻塞  
 &emsp; 阻塞请求，A调用B，A一直等着B的返回，别的事情什么也不干。  
 &emsp; 非阻塞请求，A调用B，A不用一直等着B的返回，先去处理其他事情。  
 &emsp; 所以说，阻塞非阻塞最大的区别就是在被调用方返回结果之前的这段时间内，调用方是否一直等待。阻塞指的是调用方一直等待别的事情什么都不做。非阻塞指的是调用方先去忙别的事情。  
@@ -58,7 +60,7 @@ tags:
 &emsp; 阻塞、非阻塞和同步、异步其实针对的对象是不一样的。阻塞、非阻塞说的是调用者，同步、异步说的是被调用者。  
 
 
-## IO模型，BIO、NIO、AIO  
+## 1.3. IO模型，BIO、NIO、AIO  
 &emsp; 同步阻塞IO（BIO，Block-IO）：用户进程在发起一个IO操作以后，必须等待IO操作的完成。只有当真正完成了IO操作以后，用户进程才能运行。Java传统的IO模型属于此种方式！  
 &emsp; 同步非阻塞IO（NIO，Non-Block IO）：在此种方式下，用户进程发起一个IO操作以后便可返回做其它事情，但是用户进程需要时不时的询问IO操作是否就绪，这就要求用户进程不停的去询问，从而引入不必要的CPU资源浪费。其中目前Java的NIO就属于同步非阻塞IO。  
 &emsp; 异步阻塞IO：此种方式下是指应用发起一个IO操作以后，不等待内核IO操作的完成，等内核完成IO操作以后会通知应用程序，这其实就是同步和异步最关键的区别，同步必须等待或者主动的去询问IO是否完成，那么为什么说是阻塞的呢？因为此时是通过select系统调用来完成的，而select函数本身的实现方式是阻塞的，而采用select函数有个好处就是它可以同时监听多个文件句柄，从而提高系统的并发性！  
@@ -70,8 +72,8 @@ tags:
 &emsp; AIO方式适用于连接数目多且连接比较长（重操作）的架构，比如相册服务器，充分调用OS参与并发操作，编程比较复杂，JDK1.7开始支持。  
 
 
-# NIO  
-## NIO基本组件：  
+# 2. NIO  
+## 2.1. NIO基本组件：  
 &emsp; NIO支持面向缓冲的，基于通道的I/O操作方法。NIO读写是I/O的基本过程。读写操作中使用的核心部件有：Channels、Buffers、Selectors。  
 
 &emsp; 通道和缓冲区：在标准I/O中，使用字符流和字节流。在NIO中使用通道和缓冲区。  
@@ -93,11 +95,11 @@ N&emsp; IO中的所有I/O都是通过一个通道开始的。数据总是从缓�
 * Selectors（选择器）  
 &emsp; Selector(IO复用器/选择器)：多路复用的重要组成部分，检查一个或多个Channel(通道)是否是可读、写状态，实现单线程管理多Channel(通道)，优于使用多线程或线程池产生的系统资源开销。如果应用程序有多个通道(连接)打开，但每个连接的流量都很低，则可考虑使用Selectors。
 
-# NIO缓冲区  
+# 3. NIO缓冲区  
 &emsp; 缓冲区实际上是一个容器对象，其实就是一个数组，是一块可以写入数据，然后可以从中读取数据的内存。这块内存被包装成NIO Buffer对象，并提供了一组方法，用来方便的访问该块内存。   
 &emsp; 在NIO库中，所有数据都是用缓冲区处理的。在读取数据时，它是直接读到缓冲区中的；在写入数据时，它也是写入到缓冲区中的；任何时候访问NIO中的数据，都是将它放到缓冲区中。而在面向流I/O系统中，所有数据都是直接写入或者直接将数据读取到Stream对象中。  
 
-## 缓冲区属性：  
+## 3.1. 缓冲区属性：  
 &emsp; 缓冲区4个属性：  
 
 ```
@@ -127,7 +129,7 @@ private int capacity;
 5. 最后需要调用 clear() 方法来清空缓冲区，此时position和limit都被设置为最初位置。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-6.png)  
 
-## 缓冲区API成员方法：  
+## 3.2. 缓冲区API成员方法：  
 &emsp; 缓冲区API： 
 
 |名称| 作用|
@@ -174,7 +176,7 @@ public abstract class CharBuffer extends Buffer implements CharSequence, Compara
 &emsp; 创建建了一个position值为12, limit值为54,容量为myArray.length的缓冲区。  
 &emsp; 通过allocate()或者wrap()函数创建的缓冲区通常都是间接的。    
 
-### 缓冲区基本使用（注意模式切换）  
+### 3.2.1. 缓冲区基本使用（注意模式切换）  
 &emsp; 使用Buffer读写数据一般遵循以下四个步骤：  
 1. 写入数据到Buffer；  
 2. 调用flip()方法；  
@@ -238,7 +240,7 @@ int bytesWritten = inChannel.write(buf);
 byte aByte = buf.get(); 
 ```
 
-### 其他方法：
+### 3.2.2. 其他方法：
 &emsp; ***rewind()方法***  
 &emsp; Buffer.rewind()将position设回0，所以可以重读Buffer中的所有数据。limit保持不变，仍然表示能从Buffer中读取多少个元素（byte、char等）。  
 
@@ -271,7 +273,7 @@ buffer.reset();  //set position back to mark.
 &emsp; 所有元素都相等，但第一个Buffer比另一个先耗尽(第一个Buffer的元素个数比另一个少)。  
 &emsp; （译注：剩余元素是从 position到limit之间的元素） 
 
-## 字节缓冲区详解：  
+## 3.3. 字节缓冲区详解：  
 &emsp; 所有的基本数据类型都有相应的缓冲区类 (布尔型除外），但字节缓冲区有自己的独特之处。字节是操作系统及其I/O设备使用的基本数据类型。
 为什么Buffer能更方便的操作？Buffer记录了每个操作点。同时ByteBuffer为了提高性能，提供了两种实现：堆内存和直接内存。  
 &emsp; 使用直接内存的优势：  
@@ -302,13 +304,13 @@ private static class Deallocator implements Runnable {
 &emsp; 虽然堆外内存好处很多，但还是建议在网络传输，文件读取等大数据量的IO密集操作时才使用，分配一些大文件大数据读取时才使用。同时设置MaxDirectMemorySize避免耗尽整个机器内存。
 
 
-# NIO通道  
+# 4. NIO通道  
 &emsp; 实体--->通道--->缓冲区。Channel用于在字节缓冲区和位于通道另一侧的实体（通常是一个文件或套接字）之间有效地传输数据。它从一个实体读取数据，并将其放在缓冲区块中以供消费。  
 &emsp; 通道与操作系统文件描述符具有一对一关系，用于提供平台独立操作功能。  
 &emsp; Channel(通道)与Stream(流)的不同之处在于通道是双向的，流只能在一个方向上操作(一个流必须是InputStream或者OutputStream的子类)，而通道可以用于读，写或者二者同时进行，最关键的是可以和多路复用器结合起来，提供状态位，多路复用器可识别Channel所处的状态。  
 &emsp; 通道可以以阻塞（Wocfcwg)或非阻塞（wowWochwg)模式运行。非阻塞模式的通道永远不会让调用的线程休眠。请求的操作要么立即完成，要么返回一个结果表明未进行任何操作。只有面向流的（stream-oriented)的通道，如sockets和pipes才能使用非阻塞模式。  
 
-## 通道分类及创建通道  
+## 4.1. 通道分类及创建通道  
 &emsp; I/O可以分为广义的两大类别：File I/O和Stream I/O。那么相应地有两种类型的通道，它们是文件(file)通道和套接字(socket)通道。包含一个FileChannel类和三个socket通道类：SocketChannel、ServerSocketChannel和DatagramChannel。  
 &emsp; Channel接口的完整源码：  
 
@@ -406,14 +408,14 @@ ServerSocketChannel ch = ServerSocketChannel.close();
 ch.socket().bind (new InetSocketAddress (somelocalport));
 ```
 
-## 分散Scatter/聚集Gather  
+## 4.2. 分散Scatter/聚集Gather  
 &emsp; 在Java NIO中，通道提供了称为分散/聚集（或向量I/O）的重要功能。使用单个write()函数将字节从一组缓冲区写入流，并且可以使用单个read()函数将字节从流读取到一组缓冲区中。  
 &emsp; 对于一个write操作而言，数据是从几个缓冲区按顺序抽取（称为gather)并沿着通道发送的。对于read操作而言，从通道读取的数据会按顺序被散布（称为scatter)到多个缓冲区，将每个缓冲区填满直至通道中的数据或者缓冲区的最大空间被消耗完。  
 &emsp; 分散（scatter）从Channel中读取是指在读操作时将读取的数据写入多个buffer中。因此，Channel将从Channel中读取的数据“分散（scatter）”到多个Buffer中。  
 &emsp; 聚集（gather）写入Channel是指在写操作时将多个buffer的数据写入同一个Channel，因此，Channel将多个Buffer中的数据“聚集（gather）”后发送到Channel。  
 &emsp; 分散scatter/聚集gather经常用于需要将传输的数据分开处理的场合。例如传输一个由消息头和消息体组成的消息，可能会将消息体和消息头分散到不同的buffer中，这样就可以方便的处理消息头和消息体。   
 
-### 分散读取   
+### 4.2.1. 分散读取   
 &emsp; “分散读取”用于将数据从单个通道读取多个缓冲区中的数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-8.png)  
 &emsp; Rread()的API：  
@@ -436,7 +438,7 @@ channel.read(bufferArray);
 &emsp; 注意buffer首先被插入到数组，然后再将数组作为channel.read() 的输入参数。read()方法按照buffer在数组中的顺序将从channel中读取的数据写入到buffer，当一个buffer被写满后，channel紧接着向另一个buffer中写。  
 &emsp; Scattering Reads在移动下一个buffer前，必须填满当前的buffer，这也意味着它不适用于动态消息(消息大小不固定)。换句话说，如果存在消息头和消息体，消息头必须完成填充（例如 128byte），Scattering Reads才能正常工作。   
 
-### 聚集写入  
+### 4.2.2. 聚集写入  
 &emsp; “聚集写入”用于将数据从多个缓冲区写入单个通道。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-9.png)  
 &emsp; write()的API：  
@@ -459,7 +461,7 @@ channel.write(bufferArray);
 ```
 &emsp; buffers数组是write()方法的入参，write()方法会按照buffer在数组中的顺序，将数据写入到channel，注意只有position和limit之间的数据才会被写入。因此，如果一个buffer的容量为128byte，但是仅仅包含58byte的数据，那么这58byte的数据将被写入到channel中。因此与Scattering Reads相反，Gathering Writes能较好的处理动态消息。  
 
-### 基本散点/聚集示例  
+### 4.2.3. 基本散点/聚集示例  
 &emsp; 下面来看看两个缓冲区的简单例子。第一个缓冲区保存随机数，第二个缓冲区使用分散/聚集机制保存写入的数据：  
 ```
 package com.yiibai;
@@ -547,10 +549,10 @@ public class ScatterGatherIO {
     420
     Scattering and Gathering example shown in yiibai.com  
 
-### 通道之间的数据传输  
+### 4.2.4. 通道之间的数据传输  
 &emsp; 在Java NIO中，如果两个通道中有一个是FileChannel，那可以直接将数据从一个channel传输到另外一个channel。 通道之间的数据传输在FileChannel类中的两种方法是：FileChannel.transferTo()方法、FileChannel.transferFrom()方法。  
 
-#### FileChannel.transferFrom()方法  
+#### 4.2.4.1. FileChannel.transferFrom()方法  
 &emsp; transferFrom()的API：  
 
 ```
@@ -574,7 +576,7 @@ long count = fromChannel.size();
 toChannel.transferFrom(position, count, fromChannel); 
 ```
 
-#### FileChannel.transferTo()方法  
+#### 4.2.4.2. FileChannel.transferTo()方法  
 &emsp; transferTo()方法的API：  
 
 ```
@@ -598,7 +600,7 @@ long count = fromChannel.size();
 fromChannel.transferTo(position, count, toChannel);  
 ```
 
-#### 基本通道到通道数据传输示例  
+#### 4.2.4.3. 基本通道到通道数据传输示例  
 &emsp; 下面来看看从4个不同文件读取文件内容的简单示例，并将它们的组合输出写入第五个文件：  
 
 ```
@@ -646,13 +648,13 @@ this is content from input3.txt
 this is content from input4.txt
 ```
 
-## 内存映射文件  
+## 4.3. 内存映射文件  
 &emsp; 通道映射技术：一种快速读写技术。  
 &emsp; 1).用户进程将文件数据视为内存，不需要发出read()或write()系统调用。  
 &emsp; 2).可以映射非常大的文件（文件可能无法全部读入内存），而不消耗大量内存来复制数据。  
 &emsp; java nio提供的FileChannel提供了map()方法，该方法可以在一个打开的文件和MappedByteBuffer之间建立一个虚拟内存映射，MappedByteBuffer继承于ByteBuffer，类似于一个基于内存的缓冲区，只不过该对象的数据元素存储在磁盘的一个文件中；  
 
-### MappedByteBuffer API：  
+### 4.3.1. MappedByteBuffer API：  
 &emsp; NIO中内存映射主要用到以下两个类：java.nio.MappedByteBuffer、java.nio.channels.FileChannel。  
 1. 通过FileChannel.map()获取MappedByteBuffer  
 
@@ -671,7 +673,7 @@ public abstract MappedByteBuffer map(MapMode mode, long position, long size) thr
 &emsp; load()：将缓冲区的内容载入内存，并返回该缓冲区的引用；  
 &emsp; isLoaded()：如果缓冲区的内容在物理内存中，则返回真，否则返回假；  
 
-### 示例：  
+### 4.3.2. 示例：  
 &emsp; 下面通过一个例子来看一下内存映射读取文件和普通的IO流读取一个150M大文件的速度对比：  
 ```
 public class MemMap {
@@ -774,7 +776,7 @@ public class MemMapReadWrite {
 
 
 
-### 通道工具类  
+## 4.4. 通道工具类  
 &emsp; NIO通道提供了一个全新的类似流的I/O隐喻，但是字节流以及字符读写器仍然存在并被广泛使用。一个工具类java.nio.channels.Channels定义了几种静态的工厂方法以使通道可以更加容易地同流和读写器互联。  
 &emsp; java.nio.channels.Channels工具方法汇总：  
 
@@ -795,11 +797,11 @@ public class MemMapReadWrite {
 
 
 
-# NIO选择器  
+# 5. NIO选择器  
 
 &emsp; Selector是NIO多路复用的重要组成部分。它负责检查一个或多个Channel(通道)是否是可读、写状态，实现单线程管理多Channel(通道)，优于使用多线程或线程池产生的系统资源开销。 
 
-## 选择器基础：选择器、可选择通道、选择键类   
+## 5.1. 选择器基础：选择器、可选择通道、选择键类   
 &emsp; 选择器(Selector)使用单个线程处理多个通道。 流程结构如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-12.png)  
 * 选择器(Selector)：在Java NIO中，选择器(Selector)是可选择通道的多路复用器。选择器类管理着一个被注册的通道集合的信息和它们的就绪状态。通道是和选择器一起被注册的，并且使用选择器来更新通道的就绪状态。当这样使用的时候，可以选择将被激发的线程挂起，直到有就绪的的通道。  
@@ -807,8 +809,8 @@ public class MemMapReadWrite {
 * 可选择通道(SelectableChannel)：这个抽象类提供了实现通道的可选择性所需要的公共方法。它是所有支持就绪检查的通道类的父类。FileChannel对象不是可选择的，因为它们没有继承SelectableChannel。所有socket通道都是可选择的，包括从管道(Pipe)对象中获得的通道。SelectableChannel可以被注册到Selector对象上，同时可以指定对那个选择器而言，那种操作是感兴趣的。一个通道可以被注册到多个选择器上，但对每个选择器而言只能被注册一次。  
 * 选择键(SelectionKey)：选择键封装了特定的通道与特定的选择器的注册关系。选择键对象被SelectableChannel.register()返回并提供一个表示这种注册关系的标记。选择键包含了两个比特集（以整数的形式进行编码），指示了该注册关系所关心的通道操作，以及通道己经准备好的操作。每个channel对应一个 SelectionKey。  
 
-## 选择器教程  
-### 建立选择器（选择器、通道、选择键建立连接）  
+## 5.2. 选择器教程  
+### 5.2.1. 建立选择器（选择器、通道、选择键建立连接）  
 &emsp; selector的API：  
 
 |方法	|描述|
@@ -852,7 +854,7 @@ SelectionKey.OP_WRITE
 int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
 ```
 
-### 选择键的使用，SelectionKey类的API  
+### 5.2.2. 选择键的使用，SelectionKey类的API  
 &emsp; SelectionKey类的API：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-13.png)  
 &emsp; 请注意对register()的调用的返回值是一个SelectionKey。SelectionKey代表这个通道在此Selector上的这个注册。当某个Selector通知某个传入事件时，它是通过提供对应于该事件的SelectionKey来进行的。SelectionKey还可以用于取消通道的注册。   
@@ -865,7 +867,7 @@ int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
     Attach：附加对象，向SelectionKey中添加更多的信息，方便之后的数据操作判断或获取
 &emsp; SelectionKey还有几个重要的方法，用于检测Channel中什么事件或操作已经就绪，它们都会返回一个布尔类型：selectionKey.isAcceptable();selectionKey.isConnectable();selectionKey.isReadable();selectionKey.isWritable();   
 
-### 选择器的使用，selector类的API  
+### 5.2.3. 选择器的使用，selector类的API  
 &emsp; selector的API：  
 
 |方法	|描述|
@@ -894,7 +896,7 @@ int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
         * 根据需要更改selected key的监听事件。
         * 将已经处理过的key从selected keys 集合中删除。
 
-### Selector完整实例  
+### 5.2.4. Selector完整实例  
 ```
 import java.io.IOException;
 import java.net.InetSocketAddress;
