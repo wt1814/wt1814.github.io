@@ -84,7 +84,8 @@
 [MySql深入](SQL/3.MySql深入.md)  
 [~~分布式数据库~~](SQL/4.分布式数据库.md)  
 [~~MyCat中间件~~](SQL/5.MyCat中间件.md)  
-
+[AOP多数据源动态切换](SQL/6.multiDataSource.md)  
+[MyBatis插件实现读写分离]  
 
 
 ## SSM  
@@ -94,7 +95,7 @@
 [SpringDI解析](SSM/Spring/3.SpringDI.md)  
 [~~容器相关特性~~](SSM/Spring/4.SpringFeature.md)  
 [SpringAOP教程](SSM/Spring/5.SpringAOP.md)  
-[SpringAOP解析](SSM/Spring/6.SpringAOP解析.md)    
+[SpringAOP解析](SSM/Spring/6.SpringAOP解析.md)  
 [Spring事务](SSM/Spring/7.SpringTransaction.md)  
 [SpringMVC使用教程](SSM/Spring/9.SpringMVCUse.md)  
 [SpringMVC解析](SSM/Spring/10.SpringMVCAnalysis.md)    
