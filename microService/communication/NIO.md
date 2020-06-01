@@ -391,7 +391,9 @@ ch.connect(new InetSocketAddress("somehost", someport));
 &emsp; 下面是打开DatagramChannel的语法：  
 ```
 DatagramChannel ch = DatagramChannel.open();
-用于关闭DatagramChannel的语法：
+```
+&emsp; 用于关闭DatagramChannel的语法：  
+```
 DatagramChannel ch = DatagramChannel.close();
 ```
 4. ServerSocketChannel：ServerSocketChannel允许用户监听传入的TCP连接，与Web服务器相同。对于每个传入连接，都会为连接创建一个SocketChannel。  

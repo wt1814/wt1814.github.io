@@ -85,7 +85,6 @@
 [分布式数据库](SQL/4.分布式数据库.md)  
 [MyCat中间件](SQL/5.MyCat中间件.md)  
 [AOP多数据源动态切换](SQL/6.multiDataSource.md)  
-[~~MyBatis插件实现读写分离~~]  
 
 
 ## SSM  
