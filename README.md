@@ -51,7 +51,7 @@
 [JDK、JRE、JVM三者间的关系](java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
 [JVM类的加载](java/JVM/2.JVM类的加载.md)  
 [JVM内存结构](java/JVM/3.JVM内存结构.md)  
-[JVM类的运行机制](java/JVM/4.JVM类的运行机制.md)  
+
 [GC垃圾回收](java/JVM/5.GC垃圾回收.md)  
 [JVM调优-基础](java/JVM/6.JVM调优-基础.md)  
 [JVM调优](java/JVM/7.JVM调优.md)  
@@ -80,7 +80,7 @@
 
 ## 数据库  
 [SQL语句](SQL/1.SQL语句.md)  
-[SQL优化](SQL/2.SQL优化.md)  
+[SQL优化-1](SQL/2.SQL优化.md)  
 [MySql深入](SQL/3.MySql深入.md)  
 [分布式数据库](SQL/4.分布式数据库.md)  
 [MyCat中间件](SQL/5.MyCat中间件.md)  
