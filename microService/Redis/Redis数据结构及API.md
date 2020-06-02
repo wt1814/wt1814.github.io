@@ -76,6 +76,7 @@ tags:
 
         SETBIT key offset value  
         GETBIT key offset  
+
 &emsp; 使用实例：  
 
     127.0.0.1:6380> setbit dupcheck 10 1  
