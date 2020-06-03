@@ -68,9 +68,10 @@ tags:
 3. 自动触发RDB持久化：
 修改redis.conf文件，默认配置如下所示：  
 
-    save 900 1 # 表示900 秒内如果至少有 1 个 key 的值变化，则触发RDB
-    save 300 10 # 表示300 秒内如果至少有 10 个 key 的值变化，则触发RDB
-    save 60 10000 # 表示60 秒内如果至少有 10000 个 key 的值变化，则触发RDB
+        save 900 1 # 表示900 秒内如果至少有 1 个 key 的值变化，则触发RDB
+        save 300 10 # 表示300 秒内如果至少有 10 个 key 的值变化，则触发RDB
+        save 60 10000 # 表示60 秒内如果至少有 10000 个 key 的值变化，则触发RDB
+    
 &emsp; 如果不需要Redis进行持久化，可以注释掉所有的save行来停用保存功能，也可以直接一个空字符串来停用持久化：save ""。  
 &emsp; Redis服务器周期操作函数serverCron默认每个100毫秒就会执行一次，该函数用于正在运行的服务器进行维护，它的一项工作就是检查save选项所设置的条件是否有一项被满足，如果满足的话，就执行bgsave指令。  
 
@@ -87,6 +88,7 @@ Redis默认是如下配置：
     save 900 1      // 900 秒内，对数据库至少修改 1 次。下面同理    
     save 300 10     
     save 60 10000
+    
 &emsp; 只要满足其中一种情况，服务器就会执行BGSAVE命令。  
 
 ## 1.2. AOF（Append-only file）方式，命令  
@@ -126,6 +128,7 @@ Redis默认是如下配置：
     appendfsync always
     # appendfsync everysec
     # appendfsync no
+
 * always：客户端的每一个写操作都保存到 AOF 文件当中，这种策略很安全，但是每个写操作都有 IO 操作，所以也很慢。  
 * everysec：appendfsync 的默认写入策略，每秒写入一次AOF文件，因此，最多可能会丢失1s的数据。  
 * no：Redis 服务器不负责写入 AOF，而是交由操作系统来处理什么时候写入 AOF文件。更快，但也是最不安全的选择，不推荐使用。  
@@ -255,7 +258,8 @@ Redis默认是如下配置：
 &emsp; 通过在Redis安装目录下面的redis.conf配置文件中添加以下配置设置内存大小  
 
         //设置Redis最大占用内存大小为100M
-        maxmemory 100mb  
+        maxmemory 100mb
+    
 &emsp; redis的配置文件不一定使用的是安装目录下面的redis.conf文件，启动redis服务的时候是可以传一个参数指定redis的配置文件的  
 
 2. 通过命令修改  
@@ -264,7 +268,8 @@ Redis默认是如下配置：
         //设置Redis最大占用内存大小为100M  
         127.0.0.1:6379> config set maxmemory 100mb  
         //获取设置的Redis能使用的最大内存大小  
-        127.0.0.1:6379> config get maxmemory  
+        127.0.0.1:6379> config get maxmemory
+
 &emsp; 如果不设置最大内存大小或者设置最大内存大小为0，在64位操作系统下不限制内存大小，在32位操作系统下最多使用3GB内存。  
 
 ## 3.2. 内存淘汰：  
@@ -290,9 +295,11 @@ Redis默认是如下配置：
 &emsp; 获取当前内存淘汰策略：  
 
     127.0.0.1:6379> config get maxmemory-policy
+
 &emsp; 通过配置文件设置淘汰策略（修改redis.conf文件）：  
 
     maxmemory-policy allkeys-lru
+    
 &emsp; 通过命令修改淘汰策略：  
 
     127.0.0.1:6379> config set maxmemory-policy allkeys-lru

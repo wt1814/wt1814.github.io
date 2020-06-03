@@ -92,7 +92,7 @@
 [Spring](SSM/Spring/1.Spring.md)  
 [SpringIOC解析](SSM/Spring/2.SpringIOC.md)  
 [SpringDI解析](SSM/Spring/3.SpringDI.md)  
-[~~容器相关特性~~](SSM/Spring/4.SpringFeature.md)  
+[容器相关特性](SSM/Spring/4.SpringFeature.md)  
 [SpringAOP教程](SSM/Spring/5.SpringAOP.md)  
 [SpringAOP解析](SSM/Spring/6.SpringAOP解析.md)  
 [Spring事务](SSM/Spring/7.SpringTransaction.md)  

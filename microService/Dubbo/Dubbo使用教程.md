@@ -57,6 +57,7 @@ tags:
     <dubbo:consumer/>	消费方缺省配置，当ReferenceConfig某属性没有配置时，采用此缺省值，可选。
     <dubbo:method/>	方法配置，用于ServiceConfig和ReferenceConfig指定方法级的配置信息。
     <dubbo:argument/>	参数配置，用于指定方法参数配置。
+
 &emsp; 方法级 > 接口级 > 全局配置；  
 &emsp; 级别相同，则消费方优先；  
 &emsp; 服务提供方配置，通过URL经由注册中心传递给消费方；  
@@ -69,9 +70,11 @@ tags:
 &emsp; 关闭某个服务的启动时检查(没有提供者时报错)：  
 
     <dubbo:reference interface="com.foo.BarService" check="false" />
+    
 &emsp; 关闭所有服务的启动时检查(没有提供者时报错)：  
 
     <dubbo:consumer check="false" />
+    
 &emsp; 关闭注册中心启动时检查(注册订阅失败时报错)：  
 
     <dubbo:registry check="false" />
@@ -117,12 +120,15 @@ tags:
 &emsp; 限制服务器端接受的连接不能超过10个。    
 
     <dubbo:provider protocol="dubbo" accepts="10" />
+    
 &emsp; 或
 
     <dubbo:protocol name="dubbo" accepts="10" />
+
 &emsp; 限制客户端服务使用连接不能超过10个。  
 
     <dubbo:reference interface="com.foo.BarService" connections="10" />
+
 &emsp; 或
 
     <dubbo:service interface="com.foo.BarService" connections="10" />  
@@ -230,13 +236,15 @@ tags:
         <dubbo:registry id="qingdaoRegistry" address="10.20.141.151:9010" default="false" />
         <!--  向多个注册中心注册  -->
         <dubbo:service interface="com.alibaba.hello.api.HelloService" version="1.0.0" ref="helloService" registry="hangzhouRegistry,qingdaoRegistry" />
+
 * 多注册中心引用  
 
         <!--  多注册中心配置 -->
         <dubbo:registry id="chinaRegistry" address="10.20.141.150:9090" />
         <dubbo:registry id="intlRegistry" address="10.20.154.177:9010" default="false" />
         <!--  引用中文站服务 -->
-        <dubbo:reference id="chinaHelloService" interface="com.alibaba.hello.api.HelloServ ice" version="1.0.0" registry="chinaRegistry" />           <!--   引用国际站站服务    -->
+        <dubbo:reference id="chinaHelloService" interface="com.alibaba.hello.api.HelloServ ice" version="1.0.0" registry="chinaRegistry" />           
+        <!--   引用国际站站服务    -->
         <dubbo:reference id="intlHelloService" interface="com.alibaba.hello.api.HelloServi ce" version="1.0.0" registry="intlRegistry" />
         <!--    多注册中心配置，竖号分隔表示同时连接多个不同注册中心，同一注册中心的多个集群地址用逗号分隔   -->
         <dubbo:registry address="10.20.141.150:9090|10.20.154.177:9010" />
@@ -255,7 +263,8 @@ tags:
 2. “只订阅”需要结合“直连提供者”配置来进行调用测试。  
 &emsp; 禁用注册配置：  
 
-        <dubbo:registry address="10.20.153.10:9090" register="false" />  
+        <dubbo:registry address="10.20.153.10:9090" register="false" />
+
 &emsp; &emsp; 或  
 
         <dubbo:registry address="10.20.153.10:9090?register=false" />  
@@ -268,6 +277,7 @@ tags:
 
     <dubbo:registry id="hzRegistry" address="10.20.153.10:9090" />
     <dubbo:registry id="qdRegistry" address="10.20.141.150:9090" subscribe="false" />
+
 &emsp; 或  
 
     <dubbo:registry id="hzRegistry" address="10.20.153.10:9090" />
@@ -293,9 +303,10 @@ assert(status.equals("OK"));
 &emsp; 人工管理服务提供者的上线和下线，将注册中心标识为非动态管理模式。  
 
     <dubbo:registry address="10.20.141.150:9090" dynamic="false" />
+    
 &emsp; 或  
 
-    <dubbo:registry address="10.20.141.150:9090?dynamic=false" />
+    <dubbo:registry address="10.20.141.150:9090?dynamic=false" />  
 &emsp; 服务提供者初次注册时为禁用状态，需人工启用。断线时，将不会被自动删除，需人工禁用。  
 
 ## 1.17. 服务分组  
@@ -304,6 +315,7 @@ assert(status.equals("OK"));
 
     <dubbo:service group="feedback" interface="com.xxx.IndexService" />
     <dubbo:service group="member" interface="com.xxx.IndexService" />
+    
 &emsp; 引用  
 
     <dubbo:reference id="feedbackIndexService" group="feedback" interface="com.xxx.IndexService" />
@@ -325,24 +337,29 @@ assert(status.equals("OK"));
 &emsp; 搜索所有分组：  
 
     <dubbo:reference interface="com.xxx.MenuService"    group="*" merger="true" />
+    
 &emsp; 合并指定分组：  
 
     <dubbo:reference interface="com.xxx.MenuService" group="aaa,bbb" merger="true" />
+    
 &emsp; 指定方法合并结果，其它未指定的方法，将只调用一个Group。  
 
     <dubbo:reference interface="com.xxx.MenuService" group="*">
         <dubbo:method name="getMenuItems" merger="true" />
     </dubbo:service>
+    
 &emsp; 某个方法不合并结果，其它都合并结果。  
 
     <dubbo:reference interface="com.xxx.MenuService" group="*" merger="true">
         <dubbo:method name="getMenuItems" merger="false" />
     </dubbo:service>
+    
 &emsp; 指定合并策略，缺省根据返回值类型自动匹配，如果同一类型有两个合并器时，需指定合并器的名称。  
 
     <dubbo:reference interface="com.xxx.MenuService" group="*">
         <dubbo:method name="getMenuItems" merger="mymerge" />
     </dubbo:service>
+    
 &emsp; 指定合并方法，将调用返回结果的指定方法进行合并，合并方法的参数类型必须是返回结果类型本身。  
 
     <dubbo:reference interface="com.xxx.MenuService" group="*">
@@ -374,6 +391,7 @@ assert(status.equals("OK"));
     String application = RpcContext.getContext().getUrl().getParameter("application");
     // 注意：每发起RPC调用，上下文状态会变化
     yyyService.yyy();  
+
 &emsp; 服务提供方  
 
 ```java
@@ -405,6 +423,7 @@ public class XxxServiceImpl implements XxxService {
     <dubbo:reference id="barService" interface="com.alibaba.bar.BarService">
         <dubbo:method name="findBar" async="true" />
     </dubbo:reference>
+
 &emsp; 调用代码  
 
 ```java
@@ -428,6 +447,7 @@ Bar bar = barFuture.get();
 &emsp; sent=”false”不等待消息发出，将消息放入 IO 队列，即刻返回。  
 
     <dubbo:method name="findFoo" async="true" sent="true"/>
+    
 &emsp; 如果只是异步调用，完全忽略返回值，可以配置return=”false”，以减少Future对象的创建和管理成本。    
 
     <dubbo:method name="findFoo" async="true" return="false" />
@@ -441,7 +461,8 @@ Bar bar = barFuture.get();
     <bean id ="demoCallback" class = "com.alibaba.dubbo.callback.implicit.NofifyImpl" />
     <dubbo:reference id="demoService" interface="com.alibaba.dubbo.callback.implicit.IDemoService" version="1.0.0" group="cn" >
         <dubbo:method name="get" async="true" onreturn = "demoCallback.onreturn" onthrow="demoCallback.onthrow" />
-    </dubbo:reference>  
+    </dubbo:reference>
+
 &emsp; callback与async功能正交分解：async=true，表示结果是否马上返回；onreturn表示是否需要回调。   
 &emsp; 组合情况：(async=false 默认)  
 &emsp; 异步回调模式：async=true  onreturn="xxx"；  
@@ -454,9 +475,11 @@ Bar bar = barFuture.get();
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-9.png)   
 
     <dubbo:service interface="com.foo.BarService" stub="true" />
+    
 &emsp; 或  
 
     <dubbo:service interface="com.foo.BarService" stub="com.foo.BarServiceStub" />
+    
 &emsp; 提供Stub的实现：  
 
 ```
@@ -482,8 +505,12 @@ public class BarServiceStub implements BarService {
 ## 1.26. 本地伪装  
 &emsp; 本地伪装通常用于服务降级，比如某验权服务，当服务提供方全部挂掉后，客户端不抛出异常，而是通过Mock数据返回授权失败。  
 
-    <dubbo:service interface="com.foo.BarService" mock="true" />或
+    <dubbo:service interface="com.foo.BarService" mock="true" />
+    
+&emsp; 或
+    
     <dubbo:service interface="com.foo.BarService" mock="com.foo.BarServiceMock" />
+    
 &emsp; 在工程中提供Mock实现：  
 
 ```
@@ -509,10 +536,12 @@ public class BarServiceMock implements BarService {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-10.png)   
 &emsp; Failover Cluster：失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过retries=”2”来设置重试次数(不含第一次)。  
 
-    <dubbo:service retries="2" /> 
+    <dubbo:service retries="2" />
+    
 &emsp; 或  
 
-    <dubbo:reference retries="2" /> 
+    <dubbo:reference retries="2" />
+    
 &emsp; 或  
 
     <dubbo:reference>
@@ -522,9 +551,11 @@ public class BarServiceMock implements BarService {
 * Failsafe Cluster：失败安全，出现异常时，直接忽略。通常用于写入审计日志等操作。 
 
         <dubbo:service cluster="failsafe" />
+    
 &emsp; 或  
 
         <dubbo:reference cluster="failsafe" />
+    
 &emsp; Failback Cluster：失败自动恢复，后台记录失败请求，定时重发。通常用于消息通知操作。  
 &emsp; Forking Cluster：并行调用多个服务器，只要一个成功即返回。通常用于实时性要求较高的读操作，但需要浪费更多服务资源。可通过 forks=”2”来设置最大并行数。  
 &emsp; Broadcast Cluster：广播调用所有提供者，逐个调用，任意一台报错则报错。通常用于通知所有提供者更新缓存或日志等本地资源信息。  
@@ -544,6 +575,7 @@ public class BarServiceMock implements BarService {
     <dubbo:reference interface="...">
         <dubbo:method name="..." loadbalance="roundrobin" />
     </dubbo:reference>
+
 * Random LoadBalance:随机选取提供者策略，有利于动态调整提供者权重。截面碰撞率高，调用次数越多，分布越均匀；  
 * RoundRobin LoadBalance:轮循选取提供者策略，平均分布，但是存在请求累积的问题；  
 * LeastActive LoadBalance:最少活跃调用策略，解决慢提供者接收更少的请求；  
