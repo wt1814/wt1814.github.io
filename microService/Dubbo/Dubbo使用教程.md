@@ -168,6 +168,7 @@ tags:
 &emsp; 将访问日志输出到当前应用的log4j日志：  
 
     <dubbo:protocol accesslog="true" />
+    
 &emsp; 将访问日志输出到指定文件：  
 
     <dubbo:protocol accesslog="http://10.20.160.198/wiki/display/dubbo/foo/bar.log" />
@@ -225,6 +226,7 @@ tags:
     * 方式二：
 
             <dubbo:registry protocol="zookeeper" address="10.20.153.10:2181,10.20.153.11:2181,10.20.153.12/>
+            
 &emsp; 其中集群配置方式一特别适用于dubbo-admin和dubbo-monitor。  
 
 ### 1.11.2. 多注册中心
@@ -307,6 +309,7 @@ assert(status.equals("OK"));
 &emsp; 或  
 
     <dubbo:registry address="10.20.141.150:9090?dynamic=false" />  
+
 &emsp; 服务提供者初次注册时为禁用状态，需人工启用。断线时，将不会被自动删除，需人工禁用。  
 
 ## 1.17. 服务分组  
@@ -547,6 +550,7 @@ public class BarServiceMock implements BarService {
     <dubbo:reference>
         <dubbo:method name="findFoo" retries="2" />
     </dubbo:reference>
+
 * Failfast Cluster：快速失败，只发起一次调用，失败立即报错。通常用于非幂等性的写操作，比如新增记录。  
 * Failsafe Cluster：失败安全，出现异常时，直接忽略。通常用于写入审计日志等操作。 
 
