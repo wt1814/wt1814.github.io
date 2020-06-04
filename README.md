@@ -100,8 +100,8 @@
 [SpringMVC解析](SSM/Spring/10.SpringMVCAnalysis.md)    
 
 ### MyBatis  
-[MyBatis教程]  
-[Mybatis原理]  
+[MyBatis教程](SSM/MyBatis/Mybatis.md)    
+[Mybatis原理](SSM/MyBatis/Mybatis解析.md)     
 
 
 ## 微服务  
