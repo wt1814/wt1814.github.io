@@ -252,6 +252,7 @@ tags:
         <dubbo:registry address="10.20.141.150:9090|10.20.154.177:9010" />
         <!--    引用服务  -->
         <dubbo:reference id="helloService" interface="com.alibaba.hello.api.HelloService" version="1.0.0" /> 
+
 ---------
 
 ## 1.12. 直连提供者
@@ -294,7 +295,8 @@ tags:
 ```
 // 远程服务引用 MemberService 
 memberService = ctx.getBean("memberService");
-EchoService echoService = (EchoService) memberService; // 强制转型为EchoService
+// 强制转型为EchoService
+EchoService echoService = (EchoService) memberService; 
 // 回声测试可用性 
 String status = echoService.$echo("OK");
 assert(status.equals("OK"));

@@ -276,7 +276,7 @@ typedef struct dict {
 * 在做范围查找的时候，平衡树比skiplist操作要复杂。  
 * skiplist和各种平衡树（如AVL、红黑树等）的元素是有序排列的。  
 
-&emsp; 可以看到，skipList中的元素是有序的，所以跳跃表在redis中用在有序集合键、集群节点内部数据结构。
+&emsp; 可以看到，skipList中的元素是有序的，所以跳跃表在redis中用在有序集合键、集群节点内部数据结构。  
 &emsp; 源码：  
 &emsp; 跳跃表节点：  
 

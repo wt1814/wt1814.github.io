@@ -101,8 +101,6 @@
 
 ### MyBatis  
 [MyBatis教程](SSM/MyBatis/Mybatis.md)    
-[Mybatis原理](SSM/MyBatis/Mybatis解析.md)     
-
 
 ## 微服务  
 ### SpringBoot  

@@ -39,6 +39,7 @@ tags:
     - [3.4. Sql标签](#34-sql标签)
     - [3.5. Bind标签](#35-bind标签)
     - [3.6. selectKey标签，自动生成主键](#36-selectkey标签自动生成主键)
+- [Spring整合Mybatis](#spring整合mybatis)
 - [4. Intellij IDEA中Mybatis Mapper自动注入警告的解决方案](#4-intellij-idea中mybatis-mapper自动注入警告的解决方案)
 - [5. MyBatis之generator](#5-mybatis之generator)
 - [6. MyBatis之分页插件](#6-mybatis之分页插件)
@@ -513,6 +514,30 @@ entity.setPlaceId("70000001");
 this.dynamicSqlMapper.createStudentAutoKey(entity);
 System.out.println("新增学生ID: " + entity.getStudentId());
 ```
+
+----
+# Spring整合Mybatis  
+&emsp; Spring的 classpath 通配符加载Mybatis配置文件(支持指定多个文件写法)  
+
+    classpath:app-Beans.xml
+    说明：无通配符，必须完全匹配
+    
+    classpath:App?-Beans.xml
+    说明：匹配一个字符，例如 App1-Beans.xml 、 App2-Beans.xml
+    
+    classpath:user/*/Base-Beans.xml
+    说明：匹配零个或多个字符串（只针对名称，不匹配目录分隔符等），例如：user/a/Base-Beans.xml 、 user/b/Base-Beans.xml ，但是不匹配 user/Base-Beans.xml
+    
+    classpath:user/**/Base-Beans.xml
+    说明：匹配路径中的零个或多个目录，例如：user/a/ab/abc/Base-Beans.xml，同时也能匹配 user/Base-Beans.xml
+    
+    classpath:**/*-Beans.xml
+    说明：表示在所有的类路径中查找和加载文件名以“-Beans.xml”结尾的配置文件，但重复的文件名只加载其中一个，视加载顺序决定
+    
+    classpath*:user/**/*-Beans.xml
+    classpath*:**/*-Beans.xml
+    说明：“classpath*:”表示加载多个资源文件，即使重名也会被加载，比如app1.jar中有一个config-Beans.xml，app2.jar中也有一个config-Beans.xml，这个时候，两个都会加载。
+
 
 ----
 
