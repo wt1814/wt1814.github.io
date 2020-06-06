@@ -3,6 +3,7 @@
 <!-- TOC -->
 
 - [目录](#目录)
+    - [杂记](#杂记)
     - [Java](#java)
         - [集合框架](#集合框架)
         - [JVM](#jvm)
@@ -21,7 +22,7 @@
         - [分布式理论](#分布式理论)
         - [分布式通信](#分布式通信)
     - [web](#web)
-    - [框架](#框架)
+    - [Elaticsearch](#elaticsearch)
     - [linux服务器](#linux服务器)
         - [Linux](#linux)
         - [Nginx](#nginx)
@@ -34,6 +35,8 @@
 
 ***联系我：wangtao1814@163.com***  
 
+## 杂记  
+[我自己的学习之路]  
 
 ## Java  
 [Java数据类型](java/数据类型.md)  
@@ -145,9 +148,14 @@
 
 
 
-## 框架  
+## Elaticsearch  
 [ES基本概念](ES/1.basicConcepts.md)  
 [ES使用教程](ES/2.useTutorials.md)  
+[ES集群](ES/3.colony.md)  
+[ES原理](ES/4.principle.md)  
+[ES优化](ES/5.optimization.md)    
+
+
 
 
 
