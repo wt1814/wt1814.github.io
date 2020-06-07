@@ -23,7 +23,7 @@
         - [分布式通信](#分布式通信)
     - [web](#web)
     - [Elaticsearch](#elaticsearch)
-    - [linux服务器](#linux服务器)
+    - [服务器](#服务器)
         - [Linux](#linux)
         - [Nginx](#nginx)
     - [计算机网络](#计算机网络)
@@ -159,7 +159,7 @@
 
 
 
-## linux服务器  
+## 服务器  
 ### Linux  
 [Linux命令]  
 
