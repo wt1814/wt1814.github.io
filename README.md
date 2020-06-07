@@ -153,9 +153,8 @@
 [ES使用教程](ES/2.useTutorials.md)  
 [ES集群](ES/3.colony.md)  
 [ES原理](ES/4.principle.md)  
-[ES优化-1](ES/5.optimization.md)    
-
-
+[ES优化-1](ES/5.optimization.md)  
+[ELK](ES/6.ELK.md)    
 
 
 
