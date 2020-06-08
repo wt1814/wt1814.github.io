@@ -36,11 +36,12 @@
 ***联系我：wangtao1814@163.com***  
 
 ## 杂记  
-[我自己的学习之路]  
+[我自己的学习之路](notes/TheRoadToLearning.md)  
 
 ## Java  
 [Java数据类型](java/数据类型.md)  
 [Java基础](java/Java基础.md)  
+[Java异常](java/JavaException.md)  
 [Java反射](java/Java反射.md)  
 [IO](java/JavaIO.md)  
 [JDK1.8](java/JDK8.md)  
