@@ -42,6 +42,7 @@
 [Java数据类型](java/数据类型.md)  
 [Java基础](java/Java基础.md)  
 [Java异常](java/JavaException.md)  
+[Java范型](java/JavaParadigm.md)  
 [Java反射](java/Java反射.md)  
 [IO](java/JavaIO.md)  
 [JDK1.8](java/JDK8.md)  
