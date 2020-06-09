@@ -167,7 +167,6 @@
 ### Nginx  
 [Nginx](Linux/Nginx/1.nginx.md)  
 [Nginx使用场景](Linux/Nginx/2.nginx使用场景.md)   
-[Nginx配置参数](Linux/Nginx/3.nginx配置参数.md)     
 
 
 
