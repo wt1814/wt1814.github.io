@@ -36,7 +36,7 @@
 ***联系我：wangtao1814@163.com***  
 
 ## 杂记  
-[我自己的学习之路](notes/TheRoadToLearning.md)  
+[我自己的学习之路]  
 
 ## Java  
 [Java数据类型](java/数据类型.md)  
@@ -135,11 +135,12 @@
 
 ### 分布式理论  
 [一致性哈希算法](microService/分布式算法-consistent.md)  
+[分布式ID](microService/分布式ID.md)  
 [分布式事务](microService/分布式事务.md)  
 [分布式锁](microService/分布式锁.md)  
 [分布式缓存](microService/分布式缓存.md)  
-[分布式ID](microService/分布式ID.md)  
 [分布式限流](microService/分布式限流.md)   
+[~~服务降级~~](microService/服务降级.md)  
 
 ### 分布式通信  
 [NIO](microService/communication/NIO.md)  

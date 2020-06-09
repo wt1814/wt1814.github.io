@@ -4,45 +4,47 @@ date: 2020-05-10 00:00:00
 tags:
     - 分布式
 ---
+
 <!-- TOC -->
 
 - [1. 分布式ID](#1-分布式id)
 - [2. 分布式ID常见生成方案](#2-分布式id常见生成方案)
     - [2.1. UUID](#21-uuid)
     - [2.2. 利用数据库生成](#22-利用数据库生成)
-        - [2.2.1. MySql主键自增：](#221-mysql主键自增)
+        - [2.2.1. MySql主键自增](#221-mysql主键自增)
         - [2.2.2. MySQL多实例主键自增](#222-mysql多实例主键自增)
         - [2.2.3. 基于数据库的号段模式](#223-基于数据库的号段模式)
     - [2.3. 利用中间件生成](#23-利用中间件生成)
         - [2.3.1. 基于Redis实现](#231-基于redis实现)
     - [2.4. 雪花SnowFlake算法](#24-雪花snowflake算法)
-        - [2.4.1. snowflake算法实现：](#241-snowflake算法实现)
-    - [2.5. 开源分布式ID算法：](#25-开源分布式id算法)
+        - [2.4.1. snowflake算法实现](#241-snowflake算法实现)
+    - [2.5. 开源分布式ID算法](#25-开源分布式id算法)
         - [2.5.1. 百度uid-generator](#251-百度uid-generator)
             - [2.5.1.1. uid-generator使用教程](#2511-uid-generator使用教程)
-        - [2.5.2. 美团Leaf：](#252-美团leaf)
+        - [2.5.2. 美团Leaf](#252-美团leaf)
         - [2.5.3. 滴滴Tinyid](#253-滴滴tinyid)
 
 <!-- /TOC -->
 
 # 1. 分布式ID  
 &emsp; 在业务开发中需要使用一些id。分布式系统的全局唯一ID称为分布式ID。  
+&emsp; 分布式ID需要满足的条件：  
 
-&emsp; 分布式ID需要满足那些条件？  
 * 全局唯一：必须保证ID是全局性唯一的，基本要求。  
-* 高性能：高可用低延时，ID生成响应要块，否则反倒会成为业务瓶颈。  
-* 高可用：100%的可用性是骗人的，但是也要无限接近于100%的可用性。  
+* 高性能：高可用低延时，ID生成响应要块，否则反而会成为业务瓶颈。  
+* 高可用。  
 * 好接入：要秉着拿来即用的设计原则，在系统设计和实现上要尽可能的简单。  
-* 趋势递增：最好趋势递增，这个要求就得看具体业务场景了，一般不严格要求。  
-* 可反解：一个ID生成之后，就会伴随着信息终身，排错分析的时候，需要查验。这时候一个可反解的ID可以帮上很多忙，从哪里来的，什么时候出生的。  
+* 趋势递增：根据具体业务场景，一般不严格要求。  
+* 可反解：一个ID生成之后，就会伴随着信息终身。排错分析的时候，需要查验，这时候一个可反解的ID可以帮上很多忙。  
 
 # 2. 分布式ID常见生成方案  
 
 &emsp; 分布式ID常见生成方案有以下几种：  
+
 * UUID
 * 数据库自增ID
 * 数据库多主模式
-* 号段模式
+* 数据库号段模式
 * Redis
 * 雪花算法(SnowFlake)
 * 百度(Uidgenerator)
@@ -57,34 +59,40 @@ tags:
 4). java.util.concurrent.ThreadLocalRandom每一个线程有一个独立的随机数生成器。  
 
 &emsp; ***优点：***  
-* 不需要第三方组件（也就没有单点的风险），代码实现简单；  
+
+* 不需要第三方组件，无单点的风险，代码实现简单；  
 * 本机生成，没有网络消耗；  
 * 因为是全球唯一的ID，所以迁移数据容易。  
 
 &emsp; ***缺点：***  
+
 * 每次生成的ID是无序的，相对来说还会影响性能（比如 MySQL 的 InnoDB 引擎，如果UUID作为数据库主键，其无序性会导致数据位置频繁变动）；  
 * UUID的字符串存储，查询效率慢；  
 * 长度长，存储空间大；  
 * ID本事无业务含义，不可读。  
 
 &emsp; ***应用场景：***  
+
 * 适用于类似生成token令牌的场景；  
 * 不适用一些要求有趋势递增的ID场景。  
 
+---
 ## 2.2. 利用数据库生成  
-### 2.2.1. MySql主键自增：  
+### 2.2.1. MySql主键自增  
 &emsp; 这个方案利用了MySQL的主键自增auto_increment，默认每次ID加1。  
 &emsp; ***优点：***  
+
 * 数字化，id递增；  
 * 查询效率高；  
 * 具有一定的业务可读。  
 
 &emsp; ***缺点：***  
-* 存在单点问题，如果mysql挂了，就没法生成ID；  
+
+* 存在单点问题，如果mysql挂了，就无法生成ID；  
 * 数据库压力大，高并发抗不住。  
 
 ### 2.2.2. MySQL多实例主键自增  
-&emsp; 这个方案就是解决mysql的单点问题，在auto_increment基本上面，设置step步长。  
+&emsp; 这个方案解决了mysql的单点问题，在auto_increment基本上，设置step步长。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-18.png)  
 &emsp; 每台的初始值分别为1,2,3...N，步长为N（这个案例步长为4）。  
 &emsp; ***优点：*** 解决了单点问题。  
@@ -110,15 +118,16 @@ CREATE TABLE id_generator (
 &emsp; version ：是一个乐观锁，每次都更新version，保证并发时数据的正确性  
 
 |id|biz_type|max_id|step|version|
-|----|----|----|---|---|
-|1|101|1000|2000|0|   
+|----|----|---|---|---|
+|1|101|1000|2000|0| 
 &emsp; 等这批号段ID用完，再次向数据库申请新号段，对max_id字段做一次update操作，update max_id= max_id + step，update成功则说明新号段获取成功，新的号段范围是(max_id ,max_id +step]。
 
 ```sql
 update id_generator set max_id = #{max_id+step}, version = version + 1 where version = # {version} and biz_type = XXX
 ```
-&emsp; 由于多业务端可能同时操作，所以采用版本号version乐观锁方式更新，这种分布式ID生成方式不强依赖于数据库，不会频繁的访问数据库，对数据库的压力小很多  
+&emsp; 由于多业务端可能同时操作，所以采用版本号version乐观锁方式更新，这种分布式ID生成方式不强依赖于数据库，不会频繁的访问数据库，对数据库的压力小很多。  
 
+---
 ## 2.3. 利用中间件生成  
 &emsp; 可以使用Redis / MongoDB / zookeeper 生成分布式ID。  
 
@@ -127,11 +136,13 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 &emsp; ***优点：*** 有序递增，可读性强。  
 &emsp; ***缺点：*** 占用带宽，每次要向redis进行请求。
 
+---
 ## 2.4. 雪花SnowFlake算法  
-&emsp; snowflake是Twitter开源的分布式ID生成算法。可以本地生成，并且生成的long类型的ID递增。  
+&emsp; snowflake是Twitter开源的分布式ID生成算法。可以本地生成，并且生成的long类型ID递增。  
 &emsp; snowflake算法所生成的ID结构：正数位（占1比特）+ 时间戳（占41比特）+ 机器ID（占5比特）+ 数据中心（占5比特）+ 自增值（占12比特），总共64比特组成的一个Long类型。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-19.png)  
 &emsp; 整个结构是64位，所以在Java中可以使用long来进行存储。该算法实现基本就是二进制操作,单机每秒内理论上最多可以生成1024*(2^12)，也就是409.6万个ID(1024 X 4096 = 4194304)  
+
 * 1位标识符：由于long基本类型在Java中是带符号的，最高位是符号位，正数是0，负数是1，所以id一般是正数，最高位是0。  
 * 41位时间戳(毫秒级)：41位时间截不是存储当前时间的时间截，而是存储时间截的差值（当前时间截 - 开始时间截 )得到的值，这里的的开始时间截，一般是id生成器开始使用的时间，由程序来指定。  
 * 10位机器标识码：可以部署在1024个节点，如果机器分机房（IDC）部署，这10位可以由5位机房ID (datacenterId)和5位机器ID(workerId)组成。  
@@ -142,9 +153,9 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 2. ID呈趋势递增，后续插入索引树的时候性能较好。
 3. 可以根据自身业务特性分配bit位，非常灵活。  
 
-&emsp; ***snowflake算法缺点：*** 依赖于系统时钟的一致性。如果某台机器的系统时钟回拨，有可能造成ID冲突，或者ID乱序。
+&emsp; ***snowflake算法缺点：*** `依赖于系统时钟的一致性。如果某台机器的系统时钟回拨，有可能造成ID冲突，或者ID乱序。`  
 
-### 2.4.1. snowflake算法实现：  
+### 2.4.1. snowflake算法实现  
 &emsp; 算法代码：  
 
 ```java
@@ -306,17 +317,48 @@ public class SnowflakeIdWorker {
 </dependency>
 ```
 
-## 2.5. 开源分布式ID算法：  
+---
+## 2.5. 开源分布式ID算法  
 ### 2.5.1. 百度uid-generator  
-&emsp; uid-generato是由百度技术部开发，项目GitHub地址 https://github.com/baidu/uid-generator。  
+&emsp; uid-generator是由百度技术部开发，解决了时钟回拨问题。项目GitHub地址 https://github.com/baidu/uid-generator。  
 1. uid-generator是基于Snowflake算法实现的，与原始的snowflake算法不同在于，uid-generator支持自定义时间戳、工作机器ID和序列号等各部分的位数，而且uid-generator中采用用户自定义workId的生成策略。  
 2. 通过消费未来时间克服了雪花算法的并发限制。  
 3. UidGenerator提前生成ID并缓存在RingBuffer中。  
+4. 适合虚拟环境，比如：Docker。  
 
 #### 2.5.1.1. uid-generator使用教程  
 
+1. 引入依赖：  
 
-### 2.5.2. 美团Leaf：  
+```
+<dependency>
+    <groupId>cn.codesheep</groupId>
+    <artifactId>uid-generator</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
+2. 创建表WORKER_NODE；  
+3. 修改Spring配置；  
+4. 运行示例单测：  
+
+```
+@Resource
+private UidGenerator uidGenerator;
+
+@Test
+public void testSerialGenerate() {
+    // Generate UID
+    long uid = uidGenerator.getUID();
+
+    // Parse UID into [Timestamp, WorkerId, Sequence]
+    // {"UID":"180363646902239241","parsed":{    "timestamp":"2017-01-19 12:15:46",    "workerId":"4",    "sequence":"9"        }}
+    System.out.println(uidGenerator.parseUID(uid));
+
+}
+```
+
+### 2.5.2. 美团Leaf  
 ......
 
 ### 2.5.3. 滴滴Tinyid  
