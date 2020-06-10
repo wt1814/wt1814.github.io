@@ -21,12 +21,12 @@
         - [Redis](#redis)
         - [分布式理论](#分布式理论)
         - [分布式通信](#分布式通信)
-    - [web](#web)
     - [Elaticsearch](#elaticsearch)
     - [服务器](#服务器)
         - [Linux](#linux)
         - [Nginx](#nginx)
     - [计算机网络](#计算机网络)
+    - [项目构建基础](#项目构建基础)
 
 <!-- /TOC -->
 
@@ -148,11 +148,6 @@
 [NIO](microService/communication/NIO.md)  
 
 
-## web  
-[过滤器、拦截器、监听器](web/subassembly.md)   
-
-
-
 ## Elaticsearch  
 [ES基本概念](ES/1.basicConcepts.md)  
 [ES使用教程](ES/2.useTutorials.md)  
@@ -181,4 +176,10 @@
 
 
 -----
+
+## 项目构建基础    
+[过滤器、拦截器、监听器](web/subassembly.md)  
+[接口幂等]  
+
+
 

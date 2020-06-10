@@ -118,8 +118,9 @@ CREATE TABLE id_generator (
 &emsp; version ：是一个乐观锁，每次都更新version，保证并发时数据的正确性  
 
 |id|biz_type|max_id|step|version|
-|----|----|---|---|---|
+|---|---|---|---|---|
 |1|101|1000|2000|0|
+
 &emsp; 等这批号段ID用完，再次向数据库申请新号段，对max_id字段做一次update操作，update max_id= max_id + step，update成功则说明新号段获取成功，新的号段范围是(max_id ,max_id +step]。
 
 ```sql
