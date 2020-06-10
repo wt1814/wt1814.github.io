@@ -179,7 +179,8 @@
 
 ## 项目构建基础    
 [过滤器、拦截器、监听器](web/subassembly.md)  
-[接口幂等]  
+[～～接口幂等～～](web/idempotent.md)   
+[～～接口安全～～](web/security.md)  
 
 
 
