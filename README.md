@@ -42,7 +42,7 @@
 [Java数据类型](java/数据类型.md)  
 [Java基础](java/Java基础.md)  
 [Java异常](java/JavaException.md)  
-[Java范型](java/JavaParadigm.md)  
+[~~Java范型](java/JavaParadigm.md)  
 [Java反射](java/Java反射.md)  
 [IO](java/JavaIO.md)  
 [JDK1.8](java/JDK8.md)  
@@ -142,7 +142,7 @@
 --------- 
 [分布式缓存](microService/分布式缓存.md)  
 [分布式限流](microService/分布式限流.md)   
-[~~服务降级~~](microService/服务降级.md)  
+[~~服务降级](microService/服务降级.md)  
 
 ### 分布式通信  
 [NIO](microService/communication/NIO.md)  
@@ -179,8 +179,8 @@
 
 ## 项目构建基础    
 [过滤器、拦截器、监听器](web/subassembly.md)  
-[～～接口幂等～～](web/idempotent.md)   
-[～～接口安全～～](web/security.md)  
+[～～接口幂等](web/idempotent.md)   
+[～～接口安全](web/security.md)  
 
 
 
