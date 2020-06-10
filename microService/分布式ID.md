@@ -53,10 +53,10 @@ tags:
 
 ## 2.1. UUID  
 &emsp; ***生产随机数的方式：***  
-1). Math.random()0到1之间随机数；  
-2). java.util.Random伪随机数（线性同余法生成）；  
-3). java.security.SecureRandom真随机数；  
-4). java.util.concurrent.ThreadLocalRandom每一个线程有一个独立的随机数生成器。  
+* Math.random()0到1之间随机数；  
+* java.util.Random伪随机数（线性同余法生成）；  
+* java.security.SecureRandom真随机数；  
+* java.util.concurrent.ThreadLocalRandom每一个线程有一个独立的随机数生成器。  
 
 &emsp; ***优点：***  
 
@@ -69,7 +69,7 @@ tags:
 * 每次生成的ID是无序的，相对来说还会影响性能（比如 MySQL 的 InnoDB 引擎，如果UUID作为数据库主键，其无序性会导致数据位置频繁变动）；  
 * UUID的字符串存储，查询效率慢；  
 * 长度长，存储空间大；  
-* ID本事无业务含义，不可读。  
+* ID本身无业务含义，不可读。  
 
 &emsp; ***应用场景：***  
 
@@ -92,7 +92,7 @@ tags:
 * 数据库压力大，高并发抗不住。  
 
 ### 2.2.2. MySQL多实例主键自增  
-&emsp; 这个方案解决了mysql的单点问题，在auto_increment基本上，设置step步长。  
+&emsp; 这个方案解决了mysql的单点问题，在auto_increment基础上，设置step步长。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-18.png)  
 &emsp; 每台的初始值分别为1,2,3...N，步长为N（这个案例步长为4）。  
 &emsp; ***优点：*** 解决了单点问题。  
@@ -119,7 +119,7 @@ CREATE TABLE id_generator (
 
 |id|biz_type|max_id|step|version|
 |----|----|---|---|---|
-|1|101|1000|2000|0| 
+|1|101|1000|2000|0|
 &emsp; 等这批号段ID用完，再次向数据库申请新号段，对max_id字段做一次update操作，update max_id= max_id + step，update成功则说明新号段获取成功，新的号段范围是(max_id ,max_id +step]。
 
 ```sql
