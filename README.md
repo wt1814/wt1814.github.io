@@ -143,7 +143,7 @@
 --------- 
 [分布式缓存](microService/分布式缓存.md)  
 [分布式限流](microService/分布式限流.md)   
-[~~服务降级](microService/服务降级.md)  
+[服务降级](microService/服务降级.md)  
 
 ### 分布式通信  
 [NIO](microService/communication/NIO.md)  
