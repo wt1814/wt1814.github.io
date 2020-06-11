@@ -53,6 +53,7 @@ tags:
 
 ## 2.1. UUID  
 &emsp; ***生产随机数的方式：***  
+
 * Math.random()0到1之间随机数；  
 * java.util.Random伪随机数（线性同余法生成）；  
 * java.security.SecureRandom真随机数；  
@@ -130,7 +131,7 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 
 ---
 ## 2.3. 利用中间件生成  
-&emsp; 可以使用Redis / MongoDB / zookeeper 生成分布式ID。  
+&emsp; 可以使用Redis、MongoDB、zookeeper生成分布式ID。  
 
 ### 2.3.1. 基于Redis实现  
 &emsp; redis单机使用incr函数生成自增ID；redis集群使用lua脚本生成，或使用org.springframework.data.redis.support.atomic.RedisAtomicLong生成。  
@@ -150,11 +151,11 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 * 12位序列：毫秒内的计数，12位的计数顺序号支持每个节点每毫秒(同一机器，同一时间截)产生4096个ID序号。  
 
 &emsp; ***snowflake算法优点：***  
-1. 生成ID时不依赖于DB，完全在内存生成，高性能高可用。
-2. ID呈趋势递增，后续插入索引树的时候性能较好。
+1. 生成ID时不依赖于DB，完全在内存生成，高性能高可用。  
+2. ID呈趋势递增，后续插入索引树的时候性能较好。  
 3. 可以根据自身业务特性分配bit位，非常灵活。  
 
-&emsp; ***snowflake算法缺点：*** `依赖于系统时钟的一致性。如果某台机器的系统时钟回拨，有可能造成ID冲突，或者ID乱序。`  
+&emsp; ***snowflake算法缺点：*** <font color="red">依赖于系统时钟的一致性。如果某台机器的系统时钟回拨，有可能造成ID冲突，或者ID乱序。</font>  
 
 ### 2.4.1. snowflake算法实现  
 &emsp; 算法代码：  
@@ -320,6 +321,8 @@ public class SnowflakeIdWorker {
 
 ---
 ## 2.5. 开源分布式ID算法  
+&emsp; 百度uid-generator、美团Leaf、滴滴Tinyid......
+  
 ### 2.5.1. 百度uid-generator  
 &emsp; uid-generator是由百度技术部开发，解决了时钟回拨问题。项目GitHub地址 https://github.com/baidu/uid-generator。  
 1. uid-generator是基于Snowflake算法实现的，与原始的snowflake算法不同在于，uid-generator支持自定义时间戳、工作机器ID和序列号等各部分的位数，而且uid-generator中采用用户自定义workId的生成策略。  
