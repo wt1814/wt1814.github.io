@@ -171,7 +171,7 @@
 
 
 ## 计算机网络  
-
+[OSI七层网络模型](/network/0.OSI.md)  
 [HTTP](/network/1.HTTP.md)  
 [HTTPS](/network/2.HTTPS.md)  
 [DNS](network/3.DNS.md)  
@@ -182,6 +182,5 @@
 
 ## 项目构建基础    
 [接口幂等](web/idempotent.md)   
-[～～接口安全](web/security.md)  
 
 
