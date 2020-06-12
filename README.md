@@ -37,7 +37,7 @@
 
 
 ## 杂记  
-<font color="red">多问几个为什么、怎么样。</font>  
+<font color="red">多问几个为什么，怎么办，怎么做。</font>  
 [我自己的学习之路]  
 
 ## Java  
@@ -181,7 +181,7 @@
 -----
 
 ## 项目构建基础    
-[～～接口幂等](web/idempotent.md)   
+[接口幂等](web/idempotent.md)   
 [～～接口安全](web/security.md)  
 
 
