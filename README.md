@@ -5,7 +5,6 @@
 - [目录](#目录)
     - [杂记](#杂记)
     - [Java](#java)
-        - [集合框架](#集合框架)
         - [JVM](#jvm)
         - [并发编程](#并发编程)
         - [设计模式](#设计模式)
@@ -41,18 +40,18 @@
 [我自己的学习之路]  
 
 ## Java  
-[Java数据类型](java/数据类型.md)  
-[Java基础](java/Java基础.md)  
+[Java基础](java/Java基础.md)   
+[Java基础数据类型](java/数据类型.md)  
+
+[集合框架](java/Collection/1.集合框架.md)  
+[Map](java/Collection/2.Map.md)  
+[Collection](java/Collection/3.Collection.md) 
+
 [Java异常](java/JavaException.md)  
-[~~Java范型](java/JavaParadigm.md)  
+[Java范型](java/JavaParadigm.md)  
 [Java反射](java/Java反射.md)  
 [IO](java/JavaIO.md)  
 [JDK1.8](java/JDK8.md)  
-
-### 集合框架  
-[集合框架](java/Collection/1.集合框架.md)  
-[Map](java/Collection/2.Map.md)  
-[Collection](java/Collection/3.Collection.md)  
 
 ### JVM  
 [JDK、JRE、JVM三者间的关系](java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
@@ -182,5 +181,4 @@
 
 ## 项目构建基础    
 [接口幂等](web/idempotent.md)   
-
 
