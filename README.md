@@ -5,8 +5,8 @@
 - [目录](#目录)
     - [杂记](#杂记)
     - [Java](#java)
-        - [JVM](#jvm)
         - [并发编程](#并发编程)
+        - [JVM](#jvm)
         - [设计模式](#设计模式)
         - [算法](#算法)
     - [数据库](#数据库)
@@ -52,6 +52,12 @@ Java集合
 [IO](java/JavaIO.md)  
 [JDK1.8](java/JDK8.md)  
 
+### 并发编程  
+[线程基本概念](java/concurrent/1.Thread.md)  
+[多线程编程](java/concurrent/2.Multithread.md)  
+[线程池](java/concurrent/3.ThreadPool.md)  
+[J.U.C.包](java/concurrent/4.ConcurrentPackage.md)  
+
 ### JVM  
 [JDK、JRE、JVM三者间的关系](java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
 [JVM类的加载](java/JVM/2.JVM类的加载.md)  
@@ -60,12 +66,6 @@ Java集合
 [GC垃圾回收](java/JVM/5.GC垃圾回收.md)  
 [JVM调优-基础](java/JVM/6.JVM调优-基础.md)  
 [JVM调优](java/JVM/7.JVM调优.md)  
-
-### 并发编程  
-[线程基本概念](java/concurrent/1.Thread.md)  
-[多线程编程](java/concurrent/2.Multithread.md)  
-[线程池](java/concurrent/3.ThreadPool.md)  
-[J.U.C.包](java/concurrent/4.ConcurrentPackage.md)  
 
 ### 设计模式  
 [七大设计原则](java/Design/1.principles.md)  
@@ -106,11 +106,12 @@ Java集合
 [过滤器、拦截器、监听器](web/subassembly.md)  
 
 ### MyBatis  
-[MyBatis教程](SSM/MyBatis/Mybatis.md)    
+[MyBatis教程](SSM/MyBatis/Mybatis.md)  
+
 [MyBatis SQL执行解析](SSM/MyBatis/MybatisExecutor.md)  
 [MyBatis缓存](SSM/MyBatis/MybatisCache.md)  
 [MyBatis插件](SSM/MyBatis/MybatisPlugins.md)  
-
+[Spring和MyBatis整合](SSM/MyBatis/SpringMybatis.md)  
 
 
 ## 微服务  
@@ -161,7 +162,6 @@ Java集合
 [ES原理](ES/4.principle.md)  
 [ES优化-1](ES/5.optimization.md)  
 [ELK](ES/6.ELK.md)    
-
 
 
 ## 服务器  
