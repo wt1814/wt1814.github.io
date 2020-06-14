@@ -47,7 +47,7 @@ Java集合
 &emsp; [Map](java/Collection/2.Map.md)  
 &emsp; [Collection](java/Collection/3.Collection.md)  
 [Java异常](java/JavaException.md)  
-[Java范型](java/JavaParadigm.md)  
+[~~Java范型](java/JavaParadigm.md)  
 [Java反射](java/Java反射.md)  
 [IO](java/JavaIO.md)  
 [JDK1.8](java/JDK8.md)  
@@ -153,8 +153,8 @@ Java集合
 [服务降级](microService/服务降级.md)  
 
 ### 分布式通信  
+[~~序列化](microService/communication/serializbale.md)    
 [NIO](microService/communication/NIO.md)  
-
 
 ## Elaticsearch  
 [ES基本概念](ES/1.basicConcepts.md)  
