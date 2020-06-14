@@ -111,7 +111,7 @@ Java集合
 [MyBatis SQL执行解析](SSM/MyBatis/MybatisExecutor.md)  
 [MyBatis缓存](SSM/MyBatis/MybatisCache.md)  
 [MyBatis插件解析-1](SSM/MyBatis/MybatisPlugins.md)  
-[Spring和MyBatis整合](SSM/MyBatis/SpringMybatis.md)  
+[Spring和MyBatis整合-1](SSM/MyBatis/SpringMybatis.md)  
 [MyBatis中的设计模式](SSM/MyBatis/MybatisDesign.md)  
 
 
