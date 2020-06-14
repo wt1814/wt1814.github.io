@@ -93,7 +93,7 @@ sqlSession = factory.openSession();
 ## 2.2. 核心处理层  
 &emsp; 核心处理层功能如下：  
 
-* 配置解析
+* 配置解析  
 &emsp; 在 Mybatis 初始化过程中，会加载 mybatis-config.xml 配置文件、映射配置文件以及 Mapper 接口中的注解信息，解析后的配置信息会形成相应的对象并保存到 Configration 对象中。之后，根据该对象创建SqlSessionFactory 对象。待 Mybatis 初始化完成后，可以通过 SqlSessionFactory 创建 SqlSession 对象并开始数据库操作。  
 * SQL 解析与 scripting 模块  
 &emsp; Mybatis 实现的动态 SQL 语句，几乎可以编写出所有满足需要的 SQL。  
@@ -135,7 +135,7 @@ Configuration:  MyBatis 所有的配置信息都维持在 Configuration 对象�
 
 * 反射模块  
 &emsp; Mybatis 中的反射模块，对 Java 反射进行了很好的封装，提供了简易的 API，方便上层调用，并且对反射操作进行了一系列的优化，比如，缓存了类的 元数据（MetaClass）和对象的元数据（MetaObject），提高了反射操作的性能。  
-* 类型转换模块
+* 类型转换模块  
 &emsp; Mybatis 的别名机制，能够简化配置文件，该机制是类型转换模块的主要功能之一。类型转换模块的另一个功能是实现 JDBC 类型与 Java 类型的转换。在 SQL 语句绑定参数时，会将数据由 Java 类型转换成 JDBC 类型；在映射结果集时，会将数据由 JDBC 类型转换成 Java 类型。  
 * 日志模块  
 &emsp; 在 Java 中，有很多优秀的日志框架，如 Log4j、Log4j2、slf4j 等。Mybatis 除了提供了详细的日志输出信息，还能够集成多种日志框架，其日志模块的主要功能就是集成第三方日志框架。  
