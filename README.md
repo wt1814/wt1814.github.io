@@ -26,6 +26,8 @@
         - [Nginx](#nginx)
     - [计算机网络](#计算机网络)
     - [项目构建基础](#项目构建基础)
+    - [项目管理](#项目管理)
+        - [Git](#git)
 
 <!-- /TOC -->
 
@@ -186,4 +188,8 @@ Java集合
 
 ## 项目构建基础    
 [接口幂等](web/idempotent.md)   
+
+## 项目管理  
+### Git  
+[git命令](projectManage/git/command.md)   
 
