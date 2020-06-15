@@ -28,6 +28,7 @@
     - [项目构建基础](#项目构建基础)
     - [项目管理](#项目管理)
         - [Git](#git)
+    - [Error](#error)
 
 <!-- /TOC -->
 
@@ -193,3 +194,6 @@ Java集合
 ### Git  
 [git命令](/projectManage/git/command.md)   
 
+
+## Error  
+[邪门]()  
