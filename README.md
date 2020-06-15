@@ -191,5 +191,5 @@ Java集合
 
 ## 项目管理  
 ### Git  
-[git命令](projectManage/git/command.md)   
+[git命令](/projectManage/git/command.md)   
 
