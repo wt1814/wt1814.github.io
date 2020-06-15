@@ -485,6 +485,21 @@ https://mp.weixin.qq.com/s/OdvVn5pBG3Qlz9x6jttMXQ
 * 高可扩展  
     * 可支持多达1000个服务节点。随时可以向 Cluster 中添加新节点，或者删除现有节点。Cluster中每个节点都与其它节点建立了相互连接。  
 
+
+&emsp; 优势：  
+1. 无中心架构。 
+2. 数据按照 slot 存储分布在多个节点，节点间数据共享，可动态调整数据分布。 
+3. 可扩展性，可线性扩展到 1000 个节点（官方推荐不超过 1000 个），节点可动 态添加或删除。 
+4. 高可用性，部分节点不可用时，集群仍可用。通过增加 Slave 做 standby 数据副 本，能够实现故障自动 failover，节点之间通过 gossip 协议交换状态信息，用投票机制 完成 Slave 到 Master 的角色提升。 
+5. 降低运维成本，提高系统的扩展性和可用性。
+
+
+&emsp; 不足：  
+1. Client 实现复杂，驱动要求实现 Smart Client，缓存 slots mapping 信息并及时 更新，提高了开发难度，客户端的不成熟影响业务的稳定性。 
+2. 节点会因为某些原因发生阻塞（阻塞时间大于 clutser-node-timeout），被判断 下线，这种 failover 是没有必要的。 
+3. 数据通过异步复制，不保证数据的强一致性。
+4. 多个业务使用同一套集群时，无法根据统计区分冷热数据，资源隔离性较差，容易出现相互影响的情况。
+
 ### 4.3.1. 架构  
 &emsp; 服务器节点：3主3从，最少6个节点。其 Redis Cluster架构图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-30.png)  
