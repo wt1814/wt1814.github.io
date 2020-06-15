@@ -9,16 +9,16 @@ tags:
 - [1. Redis持久化](#1-redis持久化)
     - [1.1. RDB（Redis DataBase），快照](#11-rdbredis-database快照)
         - [1.1.1. RDB的触发](#111-rdb的触发)
-        - [RDB的流程](#rdb的流程)
-        - [RDB的优势和劣势](#rdb的优势和劣势)
+        - [1.1.2. RDB的流程](#112-rdb的流程)
+        - [1.1.3. RDB的优势和劣势](#113-rdb的优势和劣势)
     - [1.2. AOF（Append-only file）](#12-aofappend-only-file)
-        - [1.2.1.1. 开启AOF](#1211-开启aof)
-        - [1.2.1. AOF持久化流程](#121-aof持久化流程)
-            - [重启加载](#重启加载)
+        - [1.2.1. 开启AOF](#121-开启aof)
+        - [1.2.2. AOF持久化流程](#122-aof持久化流程)
+            - [1.2.2.1. 重启加载](#1221-重启加载)
         - [1.2.3. AOF文件损坏](#123-aof文件损坏)
-        - [AOF的优势和劣势](#aof的优势和劣势)
-    - [1.4. 混合持久化](#14-混合持久化)
-    - [1.5. Redis集群持久化策略：](#15-redis集群持久化策略)
+        - [1.2.4. AOF的优势和劣势](#124-aof的优势和劣势)
+    - [1.3. 混合持久化](#13-混合持久化)
+    - [1.4. Redis集群持久化策略](#14-redis集群持久化策略)
 - [2. Redis过期键删除策略](#2-redis过期键删除策略)
     - [2.1. Key生存期：](#21-key生存期)
     - [2.2. 常见的删除策略](#22-常见的删除策略)
@@ -29,19 +29,22 @@ tags:
 - [3. Redis内存](#3-redis内存)
     - [3.1. 内存设置](#31-内存设置)
     - [3.2. 内存淘汰策略](#32-内存淘汰策略)
-        - [redis内存淘汰使用的算法](#redis内存淘汰使用的算法)
-            - [3.3. LRU算法](#33-lru算法)
-                - [Redis中的LRU算法](#redis中的lru算法)
-                - [手写LRU算法](#手写lru算法)
-            - [3.4. LFU算法：](#34-lfu算法)
-        - [内存淘汰策略](#内存淘汰策略)
+        - [3.2.1. redis内存淘汰使用的算法](#321-redis内存淘汰使用的算法)
+            - [3.2.1.1. LRU算法](#3211-lru算法)
+                - [3.2.1.1.1. Redis中的LRU算法](#32111-redis中的lru算法)
+                - [3.2.1.1.2. 手写LRU算法](#32112-手写lru算法)
+            - [3.2.1.2. LFU算法：](#3212-lfu算法)
+        - [3.2.2. 内存淘汰策略](#322-内存淘汰策略)
 - [4. Redis事务](#4-redis事务)
     - [4.1. Redis事务的使用](#41-redis事务的使用)
-        - [4.1.1. Redis事务中的错误](#411-redis事务中的错误)
-    - [4.2. Redis的乐观锁Watch](#42-redis的乐观锁watch)
-- [Redis为什么这么快？](#redis为什么这么快)
+    - [4.2. Redis事务中的错误](#42-redis事务中的错误)
+    - [4.3. Redis的乐观锁Watch](#43-redis的乐观锁watch)
+- [5. Redis为什么这么快？](#5-redis为什么这么快)
 
 <!-- /TOC -->
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-55.png)  
+
 
 # 1. Redis持久化  
 &emsp; Redis是一种内存数据库。一旦进程退出，Redis的数据就会丢失。Redis持久化拥有以下三种方式：  
@@ -91,7 +94,7 @@ tags:
     
 &emsp; 只要满足其中一种情况，服务器就会执行BGSAVE命令。  
 
-### RDB的流程  
+### 1.1.2. RDB的流程  
 &emsp; bgsave是主流的触发RDB持久化方式。它的运行流程如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-53.png)  
 1. 执行bgsave命令，Redis父进程判断当前是否存在正在执行的子进 程，如RDB/AOF子进程，如果存在bgsave命令直接返回。  
@@ -100,7 +103,7 @@ tags:
 4. 子进程创建RDB文件，根据父进程内存生成临时快照文件，完成后 对原有文件进行原子替换。执行lastsave命令可以获取最后一次生成RDB的 时间，对应info统计的rdb_last_save_time选项。  
 5. 进程发送信号给父进程表示完成，父进程更新统计信息，具体见 info Persistence下的rdb_*相关选项。  
 
-### RDB的优势和劣势  
+### 1.1.3. RDB的优势和劣势  
 * 优势 
 1. RDB 是一个非常紧凑(compact)的文件，它保存了 redis 在某个时间点上的数据 集。这种文件非常适合用于进行备份和灾难恢复。  
 2. 生成 RDB 文件的时候，redis 主进程会 fork()一个子进程来处理所有保存工作，主 进程不需要进行任何磁盘 IO 操作。  
@@ -119,7 +122,7 @@ tags:
 &emsp; AOF持久化方式会记录客户端对服务器的每一次写操作命令，并将这些写操作以Redis协议追加保存到后缀为AOF文件末尾。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-33.png)  
 
-### 1.2.1.1. 开启AOF
+### 1.2.1. 开启AOF
 &emsp; Redis默认不开启AOF持久化方式，可以在配置文件中开启并进行更加详细的配置，如下面的redis.conf文件：  
 
     # 开启aof机制
@@ -143,7 +146,7 @@ tags:
 * everysec：appendfsync 的默认写入策略，每秒写入一次AOF文件，因此，最多可能会丢失1s的数据。  
 * no：Redis 服务器不负责写入 AOF，而是交由操作系统来处理什么时候写入 AOF文件。更快，但也是最不安全的选择，不推荐使用。 
 
-### 1.2.1. AOF持久化流程  
+### 1.2.2. AOF持久化流程  
 &emsp; AOF的工作流程操作：命令写入 （append）、文件同步（sync）、文件重写（rewrite）、重启加载 （load）。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-52.png)  
 &emsp; 流程如下：  
@@ -162,7 +165,7 @@ tags:
 &emsp; 文件写入、文件同步需要根据一定的条件来执行，而这些条件由Redis配置文件中的appendfsync选项来决定。  
 -->
 
-#### 重启加载  
+#### 1.2.2.1. 重启加载  
 &emsp; AOF和RDB文件都可以用于服务器重启时的数据恢复。如下图所示， 表示Redis持久化文件加载流程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-54.png)  
 &emsp; 流程说明： 
@@ -182,7 +185,7 @@ tags:
         $ redis-check-aof -fix file.aof
 * 重启 Redis 服务器，加载已经修复的AOF文件，恢复数据。  
 
-### AOF的优势和劣势  
+### 1.2.4. AOF的优势和劣势  
 * 优势  
 1. AOF 持久化的方法提供了多种的同步频率，即使使用默认的同步频率每秒同步 一次，Redis 最多也就丢失 1 秒的数据而已。  
 
@@ -211,7 +214,7 @@ tags:
 * AOF方式生成的日志文件太大，即使通过AOF重写，文件体积仍然很大。  
 * 恢复数据的速度比RDB慢。  
 -->
-## 1.4. 混合持久化  
+## 1.3. 混合持久化  
 &emsp; 在redis4.0后混合持久化（RDB+AOF）对重写的优化，4.0版本的混合持久化默认是关闭的，可以通过以下的配置开启混合持久化：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-34.png)  
 &emsp; 混合持久化也是通过bgre write aof来完成的，不同的是当开启混合持久化时，fork出的子进程先将共享内存的数据以RDB方式写入aof文件中，然后再将重写缓冲区的增量命令以AOF方式写入文件中。  
@@ -219,7 +222,7 @@ tags:
 
 &emsp; 优点：混合持久化结合RDB持久化和AOF持久化的优点，由于绝大部分的格式是RDB格式，加载速度快，增量数据以AOF方式保存，数据更少的丢失。  
 
-## 1.5. Redis集群持久化策略：  
+## 1.4. Redis集群持久化策略  
 &emsp; 官方建议：如果要想提供很高的数据保障性，那么建议同时使用两种持久化方式。如果可以接受灾难带来的几分钟的数据丢失，那么可以仅使用RDB。  
 
 &emsp; 一般在生产上采用的持久化策略为：1).master关闭持久化；2).slave开RDB即可，必要的时候AOF和RDB都开启。  
@@ -317,15 +320,15 @@ tags:
 &emsp; https://redis.io/topics/lru-cache  
 &emsp; redis内存数据集大小上升到一定大小的时候，就会实行数据淘汰策略。  
 
-### redis内存淘汰使用的算法  
+### 3.2.1. redis内存淘汰使用的算法  
 &emsp; redis内存淘汰使用的算法有：  
 
 * LRU，Least Recently Used：最近最少使用。判断最近被使用的时间，目前最远的 数据优先被淘汰。  
 * LFU，Least Frequently Used，最不常用，4.0 版本新增。  
 * random，随机删除。  
 
-#### 3.3. LRU算法  
-##### Redis中的LRU算法  
+#### 3.2.1.1. LRU算法  
+##### 3.2.1.1.1. Redis中的LRU算法  
 &emsp; 如果基于传统 LRU 算法实现 Redis LRU 会有什么问题？  
 &emsp; 需要额外的数据结构存储，消耗内存。  
 &emsp; Redis LRU 对传统的 LRU 算法进行了改良，通过随机采样来调整算法的精度。 如果淘汰策略是 LRU，则根据配置的采样值 maxmemory_samples（默认是 5 个）, 随机从数据库中选择 m 个 key, 淘汰其中热度最低的 key 对应的缓存数据。所以采样参数m配置的数值越大, 就越能精确的查找到待淘汰的缓存数据,但是也消耗更多的CPU计 算,执行效率降低。  
@@ -333,7 +336,7 @@ tags:
 &emsp; 如何找出热度最低的数据？  
 &emsp; Redis 中所有对象结构都有一个 lru 字段, 且使用了 unsigned 的低 24 位，这个字段 用来记录对象的热度。对象被创建时会记录 lru 值。在被访问的时候也会更新 lru 的值。 但是不是获取系统当前的时间戳，而是设置为全局变量 server.lruclock 的值。  
 
-##### 手写LRU算法  
+##### 3.2.1.1.2. 手写LRU算法  
 &emsp;基于LinkedHashMap实现一个简单版本的LRU算法。  
 
 ```java
@@ -461,7 +464,7 @@ public class LRUCache<k, v> {
 }
 ```
 
-#### 3.4. LFU算法：  
+#### 3.2.1.2. LFU算法：  
 &emsp; LFU算法是Redis4.0里面新加的一种淘汰策略。它的全称是Least Frequently Used。它的核心思想是根据key的最近被访问的频率进行淘汰，很少被访问的优先被淘汰，被访问的多的则被留下来。  
 &emsp; LFU算法能更好的表示一个key被访问的热度。假如使用的是LRU算法，一个key很久没有被访问到，只刚刚是偶尔被访问了一次，那么它就被认为是热点数据，不会被淘汰，而有些key将来是很有可能被访问到的则被淘汰了。  
 &emsp; 如果使用LFU算法则不会出现这种情况，因为使用一次并不会使一个key成为热点数据。  
@@ -471,7 +474,7 @@ public class LRUCache<k, v> {
 * allkeys-lfu：在所有的key中使用LFU算法淘汰数据  
 
 
-### 内存淘汰策略 
+### 3.2.2. 内存淘汰策略 
 &emsp; redis提供6种数据淘汰策略：  
 * volatile-lru：从已设置过期时间的数据集（server.db[i].expires）中挑选最近最少使用的数据淘汰。  
 * volatile-ttl：从已设置过期时间的数据集（server.db[i].expires）中挑选将要过期的数据淘汰。  
@@ -529,7 +532,7 @@ public class LRUCache<k, v> {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-37.png)  
 &emsp; 3).输入exec命令后会依次执行加入到队列中的命令。  
 
-### 4.1.1. Redis事务中的错误  
+## 4.2. Redis事务中的错误  
 
 1.  在Redis的事务中，命令在加入队列的时候如果出错，那么此次事务是会被取消执行的。这种错误在执行exec命令前Redis服务就可以探测到。  
 2.  在 Redis 事务中还有一种错误，那就是所有命令都加入队列成功了，但是在执行exec命令的过程中出现了错误，这种错误 Redis 是无法提前探测到的，那么这种情况下 Redis 的事务是怎么处理的呢？  
@@ -540,13 +543,17 @@ public class LRUCache<k, v> {
 &emsp; Redis为什么不支持事务回滚？  
 &emsp; 第一点意思是说在开发环境中就能避免掉语法错误或者类型不匹配的情况，在生产上是不会出现的；第二点是说Redis的内部是简单的快速的，所以不需要支持回滚的能力。  
 
-## 4.2. Redis的乐观锁Watch  
-&emsp; 在Redis的事务中使用Watch实现，Watch会在事务开始之前盯住1个或多个关键变量。  
+## 4.3. Redis的乐观锁Watch  
+&emsp; 在 Redis 中提供了一个 watch 命令，它可以为 Redis 事务提供 CAS 乐观锁行为（Check and Set / Compare and Swap），也就是多个线程更新变量的时候，会跟原值做比较，只有它没有被其他线程修 改的情况下，才更新成新的值。  
+
+&emsp; Watch会在事务开始之前盯住1个或多个关键变量。  
 &emsp; 当事务执行时，也就是服务器收到了exec指令要顺序执行缓存的事务队列时，Redis会检查关键变量自Watch 之后，是否被修改了。  
+&emsp; 如果开启事务之后，至少有一个被监视 key 键在 exec 执行之前被修改了， 那么整个事务都会被取消（key 提前过期除外）。  
+&emsp; 可以用 unwatch 取消。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-39.png)  
 
 
-# Redis为什么这么快？  
+# 5. Redis为什么这么快？  
 &emsp; 1）纯内存结构、2）单线程、3）多路复用  
 
 1. 内存  
