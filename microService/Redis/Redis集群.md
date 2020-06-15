@@ -7,21 +7,22 @@ tags:
 
 <!-- TOC -->
 
-- [1. 单机](#1-单机)
-- [2. 主从复制模式：](#2-主从复制模式)
-    - [2.1. 主从复制的作用](#21-主从复制的作用)
-    - [2.2. 主从复制启用：](#22-主从复制启用)
-    - [2.3. 复制流程](#23-复制流程)
-        - [2.3.1. 数据同步阶段两种复制方式](#231-数据同步阶段两种复制方式)
-            - [2.3.1.1. 全量复制](#2311-全量复制)
-            - [2.3.1.2. 部分复制](#2312-部分复制)
-                - [2.3.1.2.1. 基本概念](#23121-基本概念)
-                    - [2.3.1.2.1.1. 复制偏移量](#231211-复制偏移量)
-                    - [2.3.1.2.1.2. 复制积压缓冲区](#231212-复制积压缓冲区)
-                    - [2.3.1.2.1.3. 运行 ID（runid）](#231213-运行-idrunid)
-                - [2.3.1.2.2. 部分复制流程](#23122-部分复制流程)
-            - [2.3.1.3. psync 命令的执行过程详解](#2313-psync-命令的执行过程详解)
-    - [2.4. 主从复制应用与问题](#24-主从复制应用与问题)
+- [单机](#单机)
+- [主从复制模式：](#主从复制模式)
+    - [主从复制的作用](#主从复制的作用)
+    - [主从复制启用：](#主从复制启用)
+    - [复制流程](#复制流程)
+        - [复制流程概述](#复制流程概述)
+        - [数据同步阶段两种复制方式](#数据同步阶段两种复制方式)
+            - [全量复制](#全量复制)
+            - [部分复制](#部分复制)
+                - [基本概念](#基本概念)
+                    - [复制偏移量](#复制偏移量)
+                    - [复制积压缓冲区](#复制积压缓冲区)
+                    - [运行 ID（runid）](#运行-idrunid)
+                - [部分复制流程](#部分复制流程)
+            - [psync 命令的执行过程详解](#psync-命令的执行过程详解)
+    - [主从复制应用与问题](#主从复制应用与问题)
         - [读写分离](#读写分离)
             - [数据延迟](#数据延迟)
             - [读到过期数据](#读到过期数据)
@@ -33,19 +34,19 @@ tags:
         - [规避复制风暴](#规避复制风暴)
             - [单一主节点](#单一主节点)
             - [单一机器](#单一机器)
-- [3. 哨兵模式](#3-哨兵模式)
-    - [3.1. Sentinel（哨兵）进程的作用：](#31-sentinel哨兵进程的作用)
-    - [3.2. Sentinel（哨兵）进程的工作方式：](#32-sentinel哨兵进程的工作方式)
-    - [3.3. Sentinel部署架构](#33-sentinel部署架构)
-- [4. 分片模式](#4-分片模式)
-    - [4.1. 基于客户端分片](#41-基于客户端分片)
-    - [4.2. 基于代理服务器分片](#42-基于代理服务器分片)
-    - [4.3. Redis Cluster集群](#43-redis-cluster集群)
-        - [4.3.1. 结构设计](#431-结构设计)
-        - [4.3.2. 集群主节点分配](#432-集群主节点分配)
-        - [4.3.3. 请求路由](#433-请求路由)
-        - [4.3.4. 故障转移](#434-故障转移)
-- [5. 集群优雅扩容](#5-集群优雅扩容)
+- [哨兵模式](#哨兵模式)
+    - [Sentinel（哨兵）进程的作用：](#sentinel哨兵进程的作用)
+    - [Sentinel（哨兵）进程的工作方式：](#sentinel哨兵进程的工作方式)
+    - [Sentinel部署架构](#sentinel部署架构)
+- [分片模式](#分片模式)
+    - [基于客户端分片](#基于客户端分片)
+    - [基于代理服务器分片](#基于代理服务器分片)
+    - [Redis Cluster集群](#redis-cluster集群)
+        - [结构设计](#结构设计)
+        - [集群主节点分配](#集群主节点分配)
+        - [请求路由](#请求路由)
+        - [故障转移](#故障转移)
+- [集群优雅扩容](#集群优雅扩容)
 
 <!-- /TOC -->
 
@@ -53,7 +54,7 @@ tags:
 
 &emsp; Redis部署方式：单机、主从复制模式、哨兵模式、分片模式（包含客户端分片、代理分片、服务器分片即Redis Cluster）。    
 
-# 1. 单机  
+# 单机  
 &emsp; Redis 单机部署一般存在如下几个问题：  
 
 * 机器故障，导致 Redis 不可用，数据丢失  
@@ -62,8 +63,8 @@ tags:
 
 
 
-# 2. 主从复制模式：  
-## 2.1. 主从复制的作用  
+# 主从复制模式：  
+## 主从复制的作用  
 
 * 数据冗余：主从复制实现了数据的热备份，是持久化之外的一种数据冗余方式。  
 * 故障恢复：当主节点出现问题时，可以由从节点提供服务，实现快速的故障恢复；实际上是一种服务的冗余。  
@@ -71,16 +72,19 @@ tags:
 * 读写分离：可以用于实现读写分离，主库写、从库读，读写分离不仅可以提高服务器的负载能力，同时可根据需求的变化，改变从库的数量；  
 * 高可用基石：除了上述作用以外，主从复制还是哨兵和集群能够实施的基础，因此说主从复制是Redis高可用的基础。  
 
-## 2.2. 主从复制启用：  
+## 主从复制启用：  
 &emsp; 临时配置：redis-cli进入redis从节点后，使用 --slaveof [masterIP] [masterPort]  
 &emsp; 永久配置：进入从节点的配置文件redis.conf，增加slaveof [masterIP] [masterPort]  
 
-## 2.3. 复制流程  
+## 复制流程  
+
+### 复制流程概述  
 &emsp; 主从复制过程大体可以分为3个阶段：连接建立阶段（即准备阶段）、数据同步阶段、命令传播阶段。  
 &emsp; 在从节点执行 slaveof 命令后，复制过程便开始运作，从下图中可以看出复制过程大致分为6个过程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-20.png)  
 
     连接建立阶段  
+
 &emsp; 1）保存主节点（master）信息。  
 &emsp; 执行 slaveof 后 Redis 会打印如下日志：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-21.png)  
@@ -110,13 +114,15 @@ tags:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-25.png)  
 &emsp; 4）权限验证。如果主节点设置了 requirepass 参数，则需要密码验证，从节点必须配置 masterauth 参数保证与主节点相同的密码才能通过验证；如果验证失败复制将终止，从节点重新发起复制流程。  
 
-    数据同步阶段
+    数据同步阶段  
+
 &emsp; 5）同步数据集。主从复制连接正常通信后，对于首次建立复制的场景，主节点会把持有的数据全部发送给从节点，这部分操作是耗时最长的步骤。  
 
-    命令传播阶段
+    命令传播阶段  
+    
 &emsp; 6）命令持续复制。当主节点把当前的数据同步给从节点后，便完成了复制的建立流程。接下来主节点会持续地把写命令发送给从节点，保证主从数据一致性。  
 
-### 2.3.1. 数据同步阶段两种复制方式
+### 数据同步阶段两种复制方式
 
 &emsp; 主从节点在数据同步阶段，主节点会根据当前状态的不同执行不同复制操作，包括：全量复制和部分复制。  
 &emsp; redis 2.8之前使用sync [runId] [offset]同步命令，redis2.8之后使用psync [runId] [offset]命令。两者不同在于，sync命令仅支持全量复制过程，psync支持全量和部分复制。  
@@ -124,7 +130,7 @@ tags:
 * 全量复制：用于首次复制或者其他不能进行部分复制的情况。全量复制是一个非常重的操作，一般都要规避它。  
 * 部分复制：用于从节点短暂中断的情况（网络中断、短暂的服务宕机）。部分复制是一个非常轻量级的操作，因为它只需要将中断期间的命令同步给从节点即可，相比于全量复制，它显得更加高效。  
 
-#### 2.3.1.1. 全量复制  
+#### 全量复制  
 &emsp; 全量复制的流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-40.png)  
 
@@ -135,7 +141,7 @@ tags:
     62760:S 16 May 2019 21:24:36.818 * Trying a partial resynchronization (request cf2836e6d8f3628c81b3ebb36fea4410f21f05b0:1).
     62760:S 16 May 2019 21:24:36.820 * Full resync from master: a7113788690a86b166cf978b874b3c6056167b54:0
 
-&emsp; 从节点尝试部分复制，请求节点的runid 为 cf2836e6d8f3628c81b3ebb36fea4410f21f05b0，offset：1，但是主节点告知从节点是全量复制，runid：a7113788690a86b166cf978b874b3c6056167b54，offset：1。
+&emsp; 从节点尝试部分复制，请求节点的runid 为 cf2836e6d8f3628c81b3ebb36fea4410f21f05b0，offset：1，但是主节点告知从节点是全量复制，runid：a7113788690a86b166cf978b874b3c6056167b54，offset：1。  
 &emsp; 4. 主节点响应从节点命令后，会执行 bgsave，将生成的 RDB 文件保存在本地。打印日志如下：  
 
     62743:M 16 May 2019 21:24:36.819 * Partial resynchronization not accepted: Replication ID mismatch (Replica asked for 'cf2836e6d8f3628c81b3ebb36fea4410f21f05b0', my replication IDs are '0156844c881cf978fa35de7deeb9f85ef7cd1b0e' and '0000000000000000000000000000000000000000')
@@ -144,7 +150,7 @@ tags:
     62770:C 16 May 2019 21:24:36.821 * DB saved on disk
     62743:M 16 May 2019 21:24:36.884 * Background saving terminated with success
 
-&emsp; 主节点接受从节点的部分请求，但是 runid 不一致，进行全量复制，返回 +FULLRESYNC，并将自身的 runid 和 offset 返回给从节点。
+&emsp; 主节点接受从节点的部分请求，但是 runid 不一致，进行全量复制，返回 +FULLRESYNC，并将自身的 runid 和 offset 返回给从节点。  
 &emsp; 5. 主节点将生成的 RDB 文件发送给从节点，从节点接收后保存在本地直接将其作为数据文件，如果从节点本地有 RDB 文件，则从节点会先清空 RDB 文件。从节点打印日志如下：
 
     62760:S 16 May 2019 21:24:36.885 * MASTER <-> REPLICA sync: receiving 234 bytes from master
@@ -176,16 +182,16 @@ tags:
 * 从节点发送 psync {runid} {offset} 时，runid 与当前主节点的 runid 不匹配则进行全量复制
 * 从节点所需要同步数据的偏移量 offset 不在复制积压缓冲区中，也会进行全量复制。 
 
-#### 2.3.1.2. 部分复制
+#### 部分复制
 * 部分重同步是用于处理断线后重复制情况：  
 &emsp; 当从服务器在断线后重新连接主服务器时，主服务可以将主从服务器连接断开期间执行的写命令发送给从服务器，从服务器只要接收并执行这些写命令，就可以将数据库更新至主服务器当前所处的状态。  
 
 &emsp; 在 Redis 2.8 开始提供了部分复制，用于处理网络中断的数据同步。  
 
-##### 2.3.1.2.1. 基本概念  
+##### 基本概念  
 &emsp; 部分复制中设计的几个基本概念：复制偏移量、复制积压缓冲区、运行 ID（runid）。  
 
-###### 2.3.1.2.1.1. 复制偏移量  
+###### 复制偏移量  
 &emsp; 主从节点都维护这一个复制偏移量（offset），它代表着当前节点接受数据的字节数，主节点表示接收客户端的字节数，从节点表示接收主节点的字节数，比如从节点接收主节点传来的 N 个字节数据时，从节点的 offset 会增加 N。  
 &emsp; 偏移量的作用非常大，它是用来衡量主从节点数据是否一直的唯一标准，如果主从节点的 offset 相等，表明数据一直，否则表明数据不一致。在不一致的情况下，可以根据两个节点的 offset 找出从节点的缺少的那部分数据。比如，主节点的 offset 是 500，从节点的 offset 是 400，那么主节点在进行数据传输时只需要将 401 ~ 500 传递给从节点即可，这就是部分复制。  
 &emsp; 从节点通过心跳每秒都会将自身的偏移量告知主节点，所以主节点会保存从节点的偏移量。同时，主节点处理完命令后，会将命令的字节长度累加到自身的偏移量中，如下图：  
@@ -193,7 +199,7 @@ tags:
 &emsp; 从节点每次接受到主节点发送的命令后，也会累加到自身的偏移量中，主节点，如下图  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-42.png)  
 
-###### 2.3.1.2.1.2. 复制积压缓冲区
+###### 复制积压缓冲区
 &emsp; 复制积压缓冲区是一个由主节点维护的缓存队列，它具有如下几个特点：  
 
 * 由主节点维护  
@@ -202,7 +208,7 @@ tags:
 
 &emsp; 在命令传播节点，主节点除了将写命令传递给从节点，也会将写命令写入到复制积压缓冲区中，当做一个备份，用于在部分复制流程中。由于它是先进先出的队列，且大小固定，所以他只能保存主节点最近执行的写命令，当主从节点的 offset 相差较大时，超出了复制积压缓冲区的范围，则无法进行部分复制，只能进行全量复制了，所以为了能够提高网络中断引起的全量复制，需要认真评估复制积压缓冲区的大小，将其适当调大，比如网络中断时间是 60s,主节点每秒接收的写命令为 100KB，则复制积压缓冲区的平均大小应该为 6MB，所以我们可以将其大小设置为 6MB，甚至是 10MB，来保证绝大多数中断情况下都可以使用部分复制。  
 
-###### 2.3.1.2.1.3. 运行 ID（runid）  
+###### 运行 ID（runid）  
 &emsp; 每个 Redis 节点在启动时都会生成一个运行 ID，即 runid，该 ID 用于唯一标识 Redis 节点，它是一个由 40 位随机的十六进制的字符组成的字符串，通过 info server 命令可以查看节点的 runid，如下：  
 
     127.0.0.1:6379> info server
@@ -215,7 +221,7 @@ tags:
 * 如果从节点发送的 runid 与当前主节点的 runid 一致时，主节点则尝试进行部分复制，当然能不能进行部分复制还要看偏移量是否在复制积压缓冲区  
 * 如果从节点发送的 runid 与当前主节点的 runid 不一致时，则进行全量复制  
 
-##### 2.3.1.2.2. 部分复制流程  
+##### 部分复制流程  
 &emsp; 当主从节点在命令传播节点发生了网络中断，出现数据丢失情况，则从节点会向主节点请求发送丢失的数据，如果请求的偏移量在复制积压缓冲区中，则主节点就将剩余的数据补发给从节点，保持主从节点数据一致，由于补发的数据一般都会比较小，所以开销相当于全量复制而言也会很小，流程如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-43.png)  
 &emsp; 1. 当主从节点出现网络闪退时，如果超过了 repl-timeout 时间，主节点会认为从节点出现故障不可达，打印日志如下：  
@@ -236,7 +242,7 @@ tags:
     2655:S 19 May 2019 10:22:00.528 * Non blocking connect for SYNC fired the event.
     2655:S 19 May 2019 10:22:00.528 * Master replied to PING, replication can continue...
 
-这里一定要注意：不要关闭从节点然后启动，这样是模拟不出来的，一定是要执行 slaveof no one 命令，因为重启从节点，它的 master_replid 会丢失，在请求的时候因为 runid 不一致而导致全量复制，当然也选择将 slaveof 写入到配置文件中再重启，这样也可以进行部分复制。
+&emsp; 这里一定要注意：不要关闭从节点然后启动，这样是模拟不出来的，一定是要执行 slaveof no one 命令，因为重启从节点，它的 master_replid 会丢失，在请求的时候因为 runid 不一致而导致全量复制，当然也选择将 slaveof 写入到配置文件中再重启，这样也可以进行部分复制。
 
 &emsp; 3. 当主从建立连接后，由于从节点保存了主节点的 runid 和 offset ，所以只需要发送命令 psync{runid}{offset}即可，从节点打印日志如下：  
 
@@ -256,7 +262,7 @@ tags:
 
 &emsp; 从日志中，可以看出主节点发送了 183 个字节数据给从节点。  
 
-#### 2.3.1.3. psync 命令的执行过程详解  
+#### psync 命令的执行过程详解  
 &emsp; 在 Redis 2.8 以前一直都是通过命令 sync 进行全量复制，但是 Redis 2.8 以后都是通过命令 psync 进行全量复制和部分复制了，所以有必要了解下 psync 命令的执行过程，如下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-44.png)  
 1. 首先从节点根据当前状态来决定如何调用 psync 命令
@@ -268,7 +274,7 @@ tags:
     * 如果主节点比对命令请求的 runid 和自身的 runid 不一致或者一致，但是请求的 offset 不在复制积压缓冲区中，则响应 +FULLRESYNC<runid><offset> 进行全量复制  
     * 如果主节点比对命令请求的 runid 和自身的 runid 一致，且 offset 也在复制积压缓冲区，则响应 +CONTINUE 进行部分复制  
 
-## 2.4. 主从复制应用与问题  
+## 主从复制应用与问题  
 ### 读写分离  
 &emsp; 对于Redis的主从模式，可以利用主节点提供写服务，一个或者多个从节点提供读服务，这样就最大化 Redis 的读负载能力。主从架构下的读写分离中的问题：  
 
@@ -332,18 +338,18 @@ tags:
 https://mp.weixin.qq.com/s/OdvVn5pBG3Qlz9x6jttMXQ
 -->
 
-# 3. 哨兵模式  
+# 哨兵模式  
 &emsp; 主从模式弊端：当Master宕机后，Redis集群将不能对外提供写入操作，需要手动将一个从节点晋升为主节点，同时需要修改应用方的主节点地址， 还需要命令其他从节点去复制新的主节点， 整个过程都需要人工干预。Redis Sentinel可解决这一问题。    
 &emsp; Redis Sentinel中的概念：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-27.png)  
 
-## 3.1. Sentinel（哨兵）进程的作用：  
+## Sentinel（哨兵）进程的作用：  
 * 自动故障迁移：主从切换（在Master宕机后，将其中一个Slave转为Master，其他的Slave从该节点同步数据）。
 当一个Master不能正常工作时，哨兵(sentinel) 会开始一次自动故障迁移操作，它会将失效Master的其中一个Slave升级为新的Master, 并让失效Master的其他Slave改为复制新的Master；当客户端试图连接失效的Master时，集群也会向客户端返回新Master的地址，使得集群可以使用现在的Master替换失效Master。Master和Slave服务器切换后，Master的redis.conf、Slave的redis.conf和sentinel.conf的配置文件的内容都会发生相应的改变，即，Master主服务器的redis.conf配置文件中会多一行slaveof的配置，sentinel.conf的监控目标会随之调换。  
 * 监控：检查主从服务器是否运行正常；  
 * 提醒：通过API向管理员或者其它应用程序发送故障通知；  
 
-## 3.2. Sentinel（哨兵）进程的工作方式：  
+## Sentinel（哨兵）进程的工作方式：  
 1. 每个Sentinel（哨兵）进程以每秒钟一次的频率向整个集群中的Master主服务器，Slave从服务器以及其他Sentinel（哨兵）进程发送一个 PING 命令。  
 2. 如果一个实例（instance）距离最后一次有效回复 PING 命令的时间超过 down-after-milliseconds 选项所指定的值， 则这个实例会被 Sentinel（哨兵）进程标记为主观下线（SDOWN）。  
 3. 如果一个Master主服务器被标记为主观下线（SDOWN），则正在监视这个Master主服务器的所有 Sentinel（哨兵）进程要以每秒一次的频率确认Master主服务器的确进入了主观下线状态。  
@@ -352,14 +358,14 @@ https://mp.weixin.qq.com/s/OdvVn5pBG3Qlz9x6jttMXQ
 6. 当Master主服务器被 Sentinel（哨兵）进程标记为客观下线（ODOWN）时，Sentinel（哨兵）进程向下线的 Master主服务器的所有 Slave从服务器发送 INFO 命令的频率会从 10 秒一次改为每秒一次。  
 7. 若没有足够数量的 Sentinel（哨兵）进程同意 Master主服务器下线， Master主服务器的客观下线状态就会被移除。若 Master主服务器重新向 Sentinel（哨兵）进程发送 PING 命令返回有效回复，Master主服务器的主观下线状态就会被移除。  
 
-## 3.3. Sentinel部署架构  
+## Sentinel部署架构  
 &emsp; Redis Sentinel部署架构主要包括两部分：Redis Sentinel集群和Redis数据集群。  
 &emsp; 其中Redis Sentinel集群是由若干Sentinel节点组成的分布式集群，可以实现故障发现、故障自动转移、配置中心和客户端通知。Redis Sentinel的节点数量要满足2n+1（n>=1）的奇数个。   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-28.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-29.png)  
 
 
-# 4. 分片模式  
+# 分片模式  
 &emsp; 分片(sharding)是将数据拆分到多个Redis实例的过程，这样每个实例将只包含所有键的子集，这种方法在解决某些问题时可以获得线性级别的性能提升。  
 &emsp; 假设有4个Redis实例R0, R1, R2, R3, 还有很多表示用户的键user:1, user:2, … , 有不同的方式来选择一个指定的键存储在哪个实例中。  
 &emsp; 最简单的是范围分片，例如用户id从0 ~ 1000的存储到实例R0中，用户id从1001 ~ 2000的存储到实例R1中，等等。但是这样需要维护一张映射范围表，维护操作代价高。  
@@ -369,22 +375,22 @@ https://mp.weixin.qq.com/s/OdvVn5pBG3Qlz9x6jttMXQ
 * 代理分片：将客户端的请求发送到代理上，由代理转发到正确的节点上。
 * 服务器分片：Redis Cluster。
 
-## 4.1. 基于客户端分片  
+## 基于客户端分片  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-18.png)  
 &emsp; Redis Sharding是Redis Cluster出来之前，业界普遍使用的多Redis实例集群方法。其主要思想是基于哈希算法，根据Redis数据的key的哈希值对数据进行分片，将数据映射到各自节点上。  
 &emsp; 优点在于实现简单，缺点在于当Redis集群调整，每个客户端都需要更新调整。  
 &emsp; ***在redis3.0版本之前的版本，可以通过redis客户端做sharding分片，比如jedis实现的ShardedJedisPool。***  
 
-## 4.2. 基于代理服务器分片
+## 基于代理服务器分片
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-19.png)  
 &emsp; 客户端发送请求到独立部署代理组件，代理组件解析客户端的数据，并将请求转发至正确的节点，最后将结果回复给客户端。  
 &emsp; 优点在于透明接入，容易集群扩展，缺点在于多了一层代理转发，性能有所损耗。  
 
 
-## 4.3. Redis Cluster集群  
+## Redis Cluster集群  
 &emsp; Redis Cluster是在3.0版本正式推出的高可用集群方案，相比Redis Sentinel，Redis Cluster方案不需要额外部署Sentinel集群，而是通过集群内部通信实现集群监控，故障时主从切换；同时，支持内部基于哈希实现数据分片，支持动态水平扩容。  
 
-### 4.3.1. 结构设计  
+### 结构设计  
 &emsp; Redis Cluster采用无中心结构，每个节点保存数据和整个集群状态，每个节点都和其他所有节点连接。服务器节点：3主3从，最少6个节点。其 Redis Cluster架构图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-30.png)  
 *  高性能  
@@ -397,7 +403,7 @@ https://mp.weixin.qq.com/s/OdvVn5pBG3Qlz9x6jttMXQ
 * 高可扩展  
     * 可支持多达1000个服务节点。随时可以向 Cluster 中添加新节点，或者删除现有节点。Cluster中每个节点都与其它节点建立了相互连接  
 
-### 4.3.2. 集群主节点分配  
+### 集群主节点分配  
 &emsp; Redis集群并没有使用传统的一致性哈希来分配数据，而是采用哈希槽(hash slot)的方式来分配数据。Redis Cluster默认分配了16384（2∧14）个slot，set一个key时，redis采用CRC16算法进行键-槽（key->slot）之间的映射。  
 &emsp; HASH_SLOT（key）= CRC16(key) % 16384  
 &emsp; 其中 CRC16(key) 语句用于计算键key的CRC16校验和。key经过公式计算后得到所对应的哈希槽，而哈希槽被某个主节点管理，从而确定key在哪个主节点上存取。  
@@ -408,15 +414,15 @@ https://mp.weixin.qq.com/s/OdvVn5pBG3Qlz9x6jttMXQ
 &emsp; 同样删除一个节点也是类似，移动完成后就可以删除这个节点了。  
 
 
-### 4.3.3. 请求路由  
+### 请求路由  
 &emsp; 参考《Redis开发与运维》  
 
-### 4.3.4. 故障转移  
+### 故障转移  
 &emsp; 参考《Redis开发与运维》  
 
 
 -----
-# 5. 集群优雅扩容  
+# 集群优雅扩容  
 &emsp; 程序如果能够知道Redis集群地址产生了变化，重新设置一下jedis客户端的连接配置。现在的问题就是如何知道Redis集群地址发生了改变？
 可以采用把Redis的集群地址配置在zookeeper中，应用在启动的时候，获取zk上的集群地址的值，进行初始化。如果想要改变集群地址，要在zk上面进行设置。  
 &emsp; zk重要的特性就是监听特性，节点发生变化，就会立刻把变化发送给应用，从而应用获取到值，重新设置jedis客户端连接。  
