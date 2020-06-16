@@ -59,6 +59,9 @@ tags:
 &emsp; Redis属于<key,value\>形式的数据结构。key和value的最大长度限制是512M。  
 1. Redis的key是字符串类型，但是key中不能包括边界字符，不能空格和换行。  
 2. Redis的value支持五种基本数据类型<font color = "red">（注意是数据类型不是数据结构）</font>：String（字符串），Hash（哈希），List（列表），Set（集合）及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
+3. Redis还有几种高级数据类型：bitmaps、HyperLogLog、geo、Streams（5.0最新版本数据结构）。  
+4. Redis内部采用对象系统RedisObject构建数据类型。  
+5. RedisObject对象系统内部采用多种数据结构构建数据类型。数据结构有：int、raw、embstr（SDS）、linkedlist、ziplist、skiplist、hashtable、inset。  
 
 |数据类型	|可以存储的值	|操作	|使用场景|
 |---|---|---|---|
@@ -67,10 +70,6 @@ tags:
 |List	|链表 |从两端压入或者弹出元素；读取单个或者多个元素；进行修剪，只保留一个范围内对元素；	|1.消息队列，lpush+brpop实现阻塞队列<br/> 2.文章列表 <br/>3.栈：lpush+lpop = Stack <br/>4.队列：lpush+lpop = Queue|
 |Set	|无序集合|添加、获取、移除单个元素； 检查一个元素是否存在于集合中； 计算交集、并集、差集；从集合里面随机获取元素；|	1.标签(Tag) <br/>2.社交|
 |Zset	|有序集合 | 添加、获取、删除元素；根据分值范围或者成员来获取元素； 计算一个键对排名；|1.排行榜系统，比如点赞排名 <br/>2.社交|
-
-3. Redis还有几种高级数据类型：bitmaps、HyperLogLog、geo、Streams（5.0最新版本数据结构）。  
-4. Redis内部采用对象系统RedisObject构建数据类型。  
-5. RedisObject对象系统内部采用多种数据结构构建数据类型。数据结构有：int、raw、embstr（SDS）、linkedlist、ziplist、skiplist、hashtable、inset。  
 
 ## 对象系统RedisObject  
 &emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。<font color = "red">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>  
@@ -130,6 +129,8 @@ typedef struct redisObject {
 
 ### 使用场景  
 
+
+
 ### 存储（实现）原理  
 &emsp; 字符串类型的内部编码有三种：  
 
@@ -165,29 +166,26 @@ typedef struct redisObject {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-58.png)  
 &emsp; 存储键值对的无序散列表。  
 &emsp; 同样是存储字符串，Hash 与 String 的主要区别？  
-1、把所有相关的值聚集到一个 key 中，节省内存空间 
-2、只使用一个 key，减少 key 冲突 
-3、当需要批量获取值的时候，只需要使用一个命令，减少内存/IO/CPU 的消耗 Hash 
+1. 把所有相关的值聚集到一个 key 中，节省内存空间  
+2. 只使用一个 key，减少 key 冲突  
+3. 当需要批量获取值的时候，只需要使用一个命令，减少内存/IO/CPU 的消耗 Hash 
 
 &emsp; 不适合的场景： 
-1、Field 不能单独设置过期时间  
-2、没有 bit 操作  
-3、需要考虑数据量分布的问题（value 值非常大的时候，无法分布到多个节点）  
-
-&emsp; 应用场景：  
-* 存储对象类型的数据  
-&emsp; 比如对象或者一张表的数据，比 String 节省了更多 key 的空间，也更加便于集中管 理。  
-* 购物车  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-60.png)  
-&emsp; key：用户 id；field：商品 id；value：商品数量。  
-&emsp; +1：hincr。-1：hdecr。删除：hdel。全选：hgetall。商品数：hlen。  
+1. Field 不能单独设置过期时间  
+2. 没有 bit 操作  
+3. 需要考虑数据量分布的问题（value 值非常大的时候，无法分布到多个节点）  
 
 ### 操作命令  
 ......
 
 ### 使用场景  
 
-
+* 存储对象类型的数据  
+&emsp; 比如对象或者一张表的数据，比 String 节省了更多 key 的空间，也更加便于集中管 理。  
+* 购物车  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-60.png)  
+&emsp; key：用户 id；field：商品 id；value：商品数量。  
+&emsp; +1：hincr。-1：hdecr。删除：hdel。全选：hgetall。商品数：hlen。  
 
 ### 存储（实现）原理  
 &emsp; Redis 的 Hash 本身也是一个 KV 的结构，类似于 Java 中的 HashMap。外层的哈希（Redis KV 的实现）只用到了 hashtable。当存储 hash 数据类型时，把它叫做内层的哈希。内层的哈希底层可以使用两种数据结构实现： ziplist：OBJ_ENCODING_ZIPLIST（压缩列表） hashtable：OBJ_ENCODING_HT（哈希表）。  
@@ -268,7 +266,8 @@ typedef struct redisObject {
 ## Zset  
 &emsp; sorted set，有序的 set，每个元素有个 score。 score 相同时，按照 key 的 ASCII 码排序。  
 
-&emsp; 数据结构对比：  
+&emsp; 数据结构对比： 
+
 |数据结构 |是否允许重复元素 |是否有序 |有序实现方式| 
 |---|---|---|---|
 |列表 |list| 是 |是 |索引下标| 
