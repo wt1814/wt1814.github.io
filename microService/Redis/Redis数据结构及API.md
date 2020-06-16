@@ -133,7 +133,7 @@ typedef struct redisObject {
 
 ### 使用场景  
 
-&emsp; 参考《Redis开发与运维》,，书中有使用案例。  
+&emsp; 参考《Redis开发与运维》，书中有使用案例。  
 
 * 缓存功能
 * 共享Session
@@ -239,8 +239,8 @@ typedef struct redisObject {
     * BLPOP：BLPOP key1 timeout 移出并获取列表的第一个元素， 如果列表没有元素 会阻塞列表直到等待超时或发现可弹出元素为止。  
     * BRPOP：BRPOP key1 timeout 移出并获取列表的最后一个元素， 如果列表没有元 素会阻塞列表直到等待超时或发现可弹出元素为止。  
 
-&emsp; 队列：先进先出：rpush blpop，左头右尾，右边进入队列，左边出队列。  
-&emsp; 栈：先进后出：rpush brpop   
+    &emsp; 队列：先进先出：rpush blpop，左头右尾，右边进入队列，左边出队列。  
+    &emsp; 栈：先进后出：rpush brpop   
 
 * 文章列表  
 &emsp; 每个用户有属于自己的文章列表，现需要分页展示文章列表。此时可以 考虑使用列表，因为列表不但是有序的，同时支持按照索引范围获取元素。  
@@ -249,7 +249,7 @@ typedef struct redisObject {
 
 ### 存储（实现）原理  
 &emsp; 在早期的版本中，数据量较小时用 ziplist 存储，达到临界值时转换为 linkedlist 进 行存储，分别对应 OBJ_ENCODING_ZIPLIST 和 OBJ_ENCODING_LINKEDLIST 。   
-&emsp; 3.2 版本之后，统一用 quicklist 来存储。quicklist 存储了一个双向链表，每个节点 都是一个 ziplist。  
+&emsp; Redis3.2 版本之后，统一用 quicklist 来存储。quicklist 存储了一个双向链表，每个节点 都是一个 ziplist。  
 
 #### linkedlist  
 &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
@@ -403,10 +403,10 @@ typedef struct redisObject {
         127.0.0.1:6380> PFCOUNT hll
         (integer) 5
 
-&emsp; ***应用场景：*** 
+&emsp; ***应用场景：***  
 &emsp; 适于做大规模数据的去重统计，例如统计 UV。  
 
-    网页流量统计里的UV，pv：
+    网页流量统计里的PV、UV：
     PV（Page View）访问量, 即页面浏览量或点击量，衡量网站用户访问的网页数量；在一定统计周期内用户每打开或刷新一个页面就记录1次，多次打开或刷新同一页面则浏览量累计。
     UV（Unique Visitor）独立访客，统计1天内访问某站点的用户数(以cookie为依据);访问网站的一台电脑客户端为一个访客。可以理解成访问某网站的电脑的数量。网站判断来访电脑的身份是通过来访电脑的cookies实现的。如果更换了IP后但不清除cookies，再访问相同网站，该网站的统计中UV数是不变的。如果用户不保存cookies访问、清除了cookies或者更换设备访问，计数会加1。00:00-24:00内相同的客户端多次访问只计为1个访客。  
 
@@ -420,7 +420,7 @@ typedef struct redisObject {
 &emsp; 可以用来保存地理位置，并作位置距离计算或者根据半径计算位置等。  
 
 ## Streams  
-&emsp; 5.0 推出的数据类型。支持多播的可持久化的消息队列，用于实现发布订阅功能，借 鉴了 kafka 的设计。  
+&emsp; Redis5.0 推出的数据类型。支持多播的可持久化的消息队列，用于实现发布订阅功能，借 鉴了 kafka 的设计。  
 
 
 # Redis的API
