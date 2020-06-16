@@ -69,25 +69,6 @@ tags:
 &emsp; 例如，记录访问网站的用户的最长连续时间。开始计算从0开始的天数，就是网站公开的那天，每次用户访问网站时通过SETBIT命令设置bit为1，可以简单的用当前时间减去初始时间并除以3600*24（结果就是网站公开的第几天）当做这个bit的位置。  
 &emsp; 这种方法对于每个用户，都有存储每天的访问信息的一个很小的string字符串。通过BITCOUN就能轻易统计某个用户历史访问网站的天数。另外通过调用BITPOS命令，或者客户端获取并分析这个bitmap，就能计算出最长停留时间。  
 
-&emsp; Bits命令：Bits设置和获取通过SETBIT和GETBIT命令。用法如下：  
-
-        SETBIT key offset value  
-        GETBIT key offset  
-
-&emsp; 使用实例：  
-
-    127.0.0.1:6380> setbit dupcheck 10 1  
-    (integer) 0  
-    127.0.0.1:6380> getbit dupcheck 10   
-    (integer) 1  
-
-* SETBIT命令第一个参数是位编号，第二个参数是这个位的值，只能是0或者1。如果bit地址超过当前string长度，会自动增大string。  
-
-* GETBIT命令指示返回指定位置bit的值。超过范围（寻址地址在目标key的string长度以外的位）的GETBIT总是返回0。三个操作bits组的命令如下：  
-    * BITOP执行两个不同string的位操作.，包括AND，OR，XOR和NOT。
-    * BITCOUNT统计位的值为1的数量。
-    * BITPOS寻址第一个为0或者1的bit的位置（寻址第一个为1的bit的位置：bitpos dupcheck 1；寻址第一个为0的bit的位置：bitpos dupcheck 0）。  
-
 ## 3.2. HyperLogLog  
 &emsp; Hyper指的是超级。Hyperloglog供不精确的去重计数功能，适于做大规模数据的去重统计，例如统计 UV。  
 
