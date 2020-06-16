@@ -281,6 +281,24 @@ typedef struct redisObject {
 &emsp; 点赞数：scard like:t1001   
 &emsp; 比关系型数据库简单许多。  
 * 商品标签  
+&emsp; 用 tags:i5001 来维护商品所有的标签。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-67.png)  
+&emsp; sadd tags:i5001 画面清晰细腻  
+&emsp; sadd tags:i5001 真彩清晰显示屏  
+&emsp; sadd tags:i5001 流畅至极  
+* 商品筛选  
+&emsp; 获取差集 sdiff set1 set2   
+&emsp; 获取交集（intersection ） sinter set1 set2  
+&emsp; 获取并集 sunion set1 set2  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-68.png)  
+&emsp; iPhone11 上市了。 sadd brand:apple iPhone11  
+&emsp; sadd brand:ios iPhone11  
+&emsp; sad screensize:6.0-6.24 iPhone11  
+&emsp; sad screentype:lcd iPhone11  
+
+&emsp; 筛选商品，苹果的，iOS 的，屏幕在 6.0-6.24 之间的，屏幕材质是 LCD 屏幕  
+&emsp; sinter brand:apple brand:ios screensize:6.0-6.24 screentype:lcd  
+* 用户关注、推荐模型  
 
 ### 存储（实现）原理  
 &emsp; Redis 用 intset 或 hashtable 存储 set。如果元素都是整数类型，就用 inset 存储。 如果不是整数类型，就用 hashtable（数组+链表的存来储结构）。  
@@ -296,7 +314,8 @@ typedef struct redisObject {
 
 
 ## Zset  
-&emsp; sorted set，有序的 set，每个元素有个 score。 score 相同时，按照 key 的 ASCII 码排序。  
+&emsp; sorted set，有序的 set，每个元素有个 score。 有序集合中的元素不能重复，但是score可以重复。score 相同时，按照 key 的 ASCII 码排序。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-70.png)  
 
 &emsp; 数据结构对比： 
 
@@ -307,10 +326,12 @@ typedef struct redisObject {
 |有序集合 |zset |否 |是 |分值 score|
 
 ### 操作命令  
-......
+&emsp; 可以分为集合内操作、集合间操作。  
 
 ### 使用场景  
 
+* 排行榜  
+&emsp; 排行榜榜单的维度可能是多个方面的：按照时间、按照播 放数量、按照获得的赞数。  
 
 ### 存储（实现）原理  
 &emsp; 同时满足以下条件时使用 ziplist 编码：  
