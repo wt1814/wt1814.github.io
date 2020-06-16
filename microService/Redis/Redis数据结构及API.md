@@ -4,45 +4,61 @@ date: 2020-05-15 00:00:00
 tags:
     - Redis
 ---
+
 <!-- TOC -->
 
-- [1. Redis简介](#1-redis简介)
-- [2. Redis的基本数据类型：](#2-redis的基本数据类型)
-- [3. Redis的其他数据类型](#3-redis的其他数据类型)
-    - [3.1. bitmaps位图，SETBIT命令](#31-bitmaps位图setbit命令)
-    - [3.2. HyperLogLog](#32-hyperloglog)
-    - [3.3. Geospatial，地理](#33-geospatial地理)
-- [4. Redis的基础数据结构和对象系统](#4-redis的基础数据结构和对象系统)
-    - [4.1. 六种基础数据结构](#41-六种基础数据结构)
-        - [4.1.1. SDS动态字符串](#411-sds动态字符串)
-        - [4.1.2. linkedlist双端链表](#412-linkedlist双端链表)
-        - [4.1.3. Hash字典](#413-hash字典)
-        - [4.1.4. skipList跳跃表](#414-skiplist跳跃表)
-        - [4.1.5. intset整数集合](#415-intset整数集合)
-        - [4.1.6. ziplist压缩列表](#416-ziplist压缩列表)
-    - [4.2. 对象系统，redisObject及5种基本类型](#42-对象系统redisobject及5种基本类型)
-        - [4.2.1. redisObject](#421-redisobject)
-        - [4.2.2. String](#422-string)
-        - [4.2.3. List](#423-list)
-        - [4.2.4. Hash](#424-hash)
-        - [4.2.5. Set](#425-set)
-        - [4.2.6. ZSet](#426-zset)
-- [5. Redis的API](#5-redis的api)
-- [6. Redis命令参考](#6-redis命令参考)
+- [Redis简介](#redis简介)
+- [Redis的数据类型](#redis的数据类型)
+    - [数据类型介绍](#数据类型介绍)
+    - [对象系统RedisObject](#对象系统redisobject)
+    - [String](#string)
+        - [操作命令](#操作命令)
+        - [使用场景](#使用场景)
+        - [存储（实现）原理](#存储实现原理)
+    - [Hash](#hash)
+        - [操作命令](#操作命令-1)
+        - [使用场景](#使用场景-1)
+        - [存储（实现）原理](#存储实现原理-1)
+            - [ziplist 压缩列表](#ziplist-压缩列表)
+            - [hashtable（dict）](#hashtabledict)
+    - [List](#list)
+        - [操作命令](#操作命令-2)
+        - [使用场景](#使用场景-2)
+        - [存储（实现）原理](#存储实现原理-2)
+            - [linkedlist](#linkedlist)
+            - [quicklist](#quicklist)
+    - [Set](#set)
+        - [操作命令](#操作命令-3)
+        - [使用场景](#使用场景-3)
+        - [存储（实现）原理](#存储实现原理-3)
+            - [inset](#inset)
+    - [Zset](#zset)
+        - [操作命令](#操作命令-4)
+        - [使用场景](#使用场景-4)
+        - [存储（实现）原理](#存储实现原理-4)
+    - [bitmaps位图](#bitmaps位图)
+    - [HyperLogLog](#hyperloglog)
+    - [Geospatial](#geospatial)
+    - [Streams](#streams)
+- [Redis的API](#redis的api)
 
 <!-- /TOC -->
 
-# 1. Redis简介  
+
+&emsp; <font color="red">整体参考《Redis开发与运维》，数据结构参考《Redis深度历险：核心原理和应用实践》</font>  
+
+# Redis简介  
 &emsp; Redis是一个开源，内存存储的数据结构服务器，可用作数据库，高速缓存和消息队列代理。  
 &emsp; 它支持字符串、哈希表、列表、集合、有序集合，位图，hyperloglogs等丰富的数据类型。  
 &emsp; 提供Lua脚本、LRU收回、事务以及不同级别磁盘持久化功能。  
 &emsp; 同时通过Redis Sentinel提供高可用，通过Redis Cluster提供自动分区。  
 
-# 2. Redis的基本数据类型：  
-&emsp; Redis属于\<key,value\>形式的数据结构。  
-&emsp; Redis的key是字符串类型，但是key中不能包括边界字符，由于key不是binary safe的字符串，所以key不能空格和换行。  
-&emsp; Redis的value支持五种数据类型：String（字符串），Hash（哈希），List（列表），Set（集合）及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
-&emsp; 注：Zset每个元素都会关联一个double类型的分数score。redis通过分数score来为Zset的成员进行从小到大的排序。Zset用来保存需要排序的数据。
+# Redis的数据类型  
+## 数据类型介绍  
+
+&emsp; Redis属于<key,value\>形式的数据结构。key和value的最大长度限制是512M。  
+1. Redis的key是字符串类型，但是key中不能包括边界字符，不能空格和换行。  
+2. Redis的value支持五种基本数据类型<font color = "red">（注意是数据类型不是数据结构）</font>：String（字符串），Hash（哈希），List（列表），Set（集合）及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
 
 |数据类型	|可以存储的值	|操作	|使用场景|
 |---|---|---|---|
@@ -52,324 +68,14 @@ tags:
 |Set	|无序集合|添加、获取、移除单个元素； 检查一个元素是否存在于集合中； 计算交集、并集、差集；从集合里面随机获取元素；|	1.标签(Tag) <br/>2.社交|
 |Zset	|有序集合 | 添加、获取、删除元素；根据分值范围或者成员来获取元素； 计算一个键对排名；|1.排行榜系统，比如点赞排名 <br/>2.社交|
 
-------------------------------------------
-# 3. Redis的其他数据类型  
-&emsp; bitmaps、HyperLogLog、geo  
+3. Redis还有几种高级数据类型：bitmaps、HyperLogLog、geo、Streams（5.0最新版本数据结构）。  
+4. Redis内部采用对象系统RedisObject构建数据类型。  
+5. RedisObject对象系统内部采用多种数据结构构建数据类型。数据结构有：int、raw、embstr（SDS）、linkedlist、ziplist、skiplist、hashtable、inset。  
 
-## 3.1. bitmaps位图，SETBIT命令
-&emsp; bitmaps位图为一个以位为单位的数组，数组的每个单元只能存储0和1。  
-&emsp; bit操作被分为两组：  
-* 恒定时间的单个bit操作，例如把某个bit设置为0或者1。或者获取某bit的值。  
-* 对一组bit的操作。例如给定范围内bit统计（例如人口统计）。  
+## 对象系统RedisObject  
+&emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。<font color = "red">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>  
 
-&emsp; Bitmaps的最大优点就是存储信息时可以节省大量的空间。例如在一个系统中，不同的用户被一个增长的用户ID表示。40亿（2^32=4*1024*1024*1024≈40亿）用户只需要512M内存就能记住某种信息，例如用户是否登录过。  
-&emsp; 使用场景：  
-* 各种实时分析；  
-*  存储与对象ID关联的布尔信息。用来实现布隆过滤器（BloomFilter）；  
-&emsp; 例如，记录访问网站的用户的最长连续时间。开始计算从0开始的天数，就是网站公开的那天，每次用户访问网站时通过SETBIT命令设置bit为1，可以简单的用当前时间减去初始时间并除以3600*24（结果就是网站公开的第几天）当做这个bit的位置。  
-&emsp; 这种方法对于每个用户，都有存储每天的访问信息的一个很小的string字符串。通过BITCOUN就能轻易统计某个用户历史访问网站的天数。另外通过调用BITPOS命令，或者客户端获取并分析这个bitmap，就能计算出最长停留时间。  
-
-&emsp; Bits命令：Bits设置和获取通过SETBIT和GETBIT命令。用法如下：  
-
-        SETBIT key offset value  
-        GETBIT key offset  
-
-&emsp; 使用实例：  
-
-    127.0.0.1:6380> setbit dupcheck 10 1  
-    (integer) 0  
-    127.0.0.1:6380> getbit dupcheck 10   
-    (integer) 1  
-
-* SETBIT命令第一个参数是位编号，第二个参数是这个位的值，只能是0或者1。如果bit地址超过当前string长度，会自动增大string。  
-
-* GETBIT命令指示返回指定位置bit的值。超过范围（寻址地址在目标key的string长度以外的位）的GETBIT总是返回0。三个操作bits组的命令如下：  
-    * BITOP执行两个不同string的位操作.，包括AND，OR，XOR和NOT。
-    * BITCOUNT统计位的值为1的数量。
-    * BITPOS寻址第一个为0或者1的bit的位置（寻址第一个为1的bit的位置：bitpos dupcheck 1；寻址第一个为0的bit的位置：bitpos dupcheck 0）。  
-
-## 3.2. HyperLogLog  
-&emsp; Hyper指的是超级。Hyperloglog供不精确的去重计数功能，适于做大规模数据的去重统计，例如统计 UV。  
-
-    网页流量统计里的UV，pv：
-    UV指的是独立访客。
-    pv是page view的缩写，即页面浏览量。
-
-&emsp; 优点：占用内存极小，对于一个key，只需要12kb。  
-&emsp; 缺点：查询指定用户的时候，可能会出错，毕竟存的不是具体的数据。总数也存在一定的误差。  
-&emsp; Redis Hyperloglog的三个命令：PFADD、PFCOUNT、PFMERGE。  
-* PFADD命令用于添加一个新元素到统计中。  
-* PFCOUNT命令用于获取到目前为止通过PFADD命令添加的唯一元素个数近似值。  
-* PFMERGE命令执行多个HLL之间的联合操作。  
-
-        127.0.0.1:6380> PFADD hll a b c d d c
-        (integer) 1
-        127.0.0.1:6380> PFCOUNT hll
-        (integer) 4
-        127.0.0.1:6380> PFADD hll e
-        (integer) 1
-        127.0.0.1:6380> PFCOUNT hll
-        (integer) 5
-
-## 3.3. Geospatial，地理
-&emsp; 可以用来保存地理位置，并作位置距离计算或者根据半径计算位置等。主要有以下六组命令：  
-* geoadd：增加某个地理位置的坐标。  
-* geopos：获取某个地理位置的坐标。  
-* geodist：获取两个地理位置的距离。  
-* georadius：根据给定地理位置坐标获取指定范围内的地理位置集合。  
-* georadiusbymember：根据给定地理位置获取指定范围内的地理位置集合。  
-* geohash：获取某个地理位置的geohash值。  
-
---------------
-# 4. Redis的基础数据结构和对象系统  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-1.png)  
-* 首先介绍六种基础数据结构：动态字符串，链表，字典，跳跃表，整数集合和压缩列表。  
-* 其次介绍Redis的对象系统中的字符串对象（String）、列表对象（List）、哈希对象（Hash）、集合对象（Set）和有序集合对象（ZSet）。  
-* 最后介绍Redis的键空间和过期键( expire )实现。  
-
-## 4.1. 六种基础数据结构  
-
-### 4.1.1. SDS动态字符串  
-&emsp; Redis使用动态字符串SDS来表示字符串值。 SDS结构：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-2.png)  
-* len: 表示字符串的真正长度（不包含NULL结束符在内）。  
-* alloc: 表示字符串的最大容量（不包含最后多余的那个字节）。  
-* flags: 总是占用一个字节。其中的最低3个bit用来表示header的类型。  
-* buf: 字符数组。  
- 
-```
-//结构源码
-struct sdshdr{
-    //记录buf数组中已使用字节的数量
-    //等于 SDS 保存字符串的长度
-    int len;
-    //记录 buf 数组中未使用字节的数量
-    int free;
-    //字节数组，用于保存字符串
-    char buf[];
-}
-```
-
-&emsp; 它的优点：  
-* 开发者不用担心字符串变更造成的内存溢出问题。  
-* 常数时间复杂度获取字符串长度len字段。  
-* 空间预分配free字段，会默认留够一定的空间防止多次重分配内存。  
-
-&emsp; SDS的结构可以减少修改字符串时带来的内存重分配的次数，这依赖于内存预分配和惰性空间释放两大机制。  
-&emsp; 当SDS需要被修改，并且要对SDS进行空间扩展时，Redis不仅会为SDS分配修改所必须要的空间，还会为SDS分配额外的未使用的空间。  
-* 如果修改后，SDS的长度(也就是len属性的值)将小于1MB，那么Redis预分配和len属性相同大小的未使用空间。  
-* 如果修改后，SDS的长度将大于1MB，那么Redis会分配1MB的未使用空间。  
-&emsp; 比如说，进行修改后SDS的len长度为20字节，小于1MB，那么Redis会预先再分配20字节的空间， SDS的buf数组的实际长度(除去最后一字节)变为20 + 20 = 40字节。当SDS的len长度大于1MB时，则只会再多分配1MB的空间。  
-&emsp; 类似的，当SDS缩短其保存的字符串长度时，并不会立即释放多出来的字节，而是等待之后使用。  
-
-### 4.1.2. linkedlist双端链表  
-&emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-3.png)  
-&emsp; 从图中可以看出Redis的linkedlist双端链表有以下特性：节点带有prev、next指针、head指针和tail指针，获取前置节点、后置节点、表头节点和表尾节点的复杂度都是O（1）。len属性获取节点数量也为O（1）。  
-&emsp; 与双端链表相比，压缩列表可以节省内存空间，但是进行修改或增删操作时，复杂度较高；因此当节点数量较少时，可以使用压缩列表；但是节点数量多时，还是使用双端链表划算。  
-
-&emsp; Redis的链表结构的dup、free和match成员属性是用于实现多态链表所需的类型特定函数：  
-* dup函数用于复制链表节点所保存的值，用于深度拷贝。  
-* free函数用于释放链表节点所保存的值。  
-* match函数则用于对比链表节点所保存的值和另一个输入值是否相等。  
-
-&emsp; ListNode节点数据结构：  
-
-```
-typedef  struct listNode{
-    //前置节点
-    struct listNode *prev;
-    //后置节点
-    struct listNode *next;
-    //节点的值
-    void *value;
-}listNode
-```
-&emsp; 链表数据结构：  
-
-```
-typedef struct list{
-    //表头节点
-    listNode *head;
-    //表尾节点
-    listNode *tail;
-    //链表所包含的节点数量
-    unsigned long len;
-    //节点值复制函数
-    void (*free) (void *ptr);
-    //节点值释放函数
-    void (*free) (void *ptr);
-    //节点值对比函数
-    int (*match) (void *ptr,void *key);
-}list;
-```
-
-### 4.1.3. Hash字典  
-&emsp; Hash结构图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-4.png)  
-&emsp; Redis的Hash，是在数组+链表的基础上，进行了一些rehash优化等。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，被分配到同一个索引的多个键值对会连接成一个单向链表。  
-
-&emsp; 数据结构源码：  
-&emsp; 哈希表：  
-
-```
-typedef struct dictht {
-    // 哈希表数组
-    dictEntry **table;
-    // 哈希表大小
-    unsigned long size;
-    // 哈希表大小掩码，用于计算索引值
-    // 总是等于 size - 1
-    unsigned long sizemask;
-    // 该哈希表已有节点的数量
-    unsigned long used;
-} dictht; 
-```
-&emsp; Hash表节点：  
-
-```
-typedef struct dictEntry {
-    // 键
-    void *key;
-    // 值
-    union {
-    void *val;
-    uint64_t u64;
-    int64_t s64;
-    } v;
-    // 指向下个哈希表节点，形成链表
-    struct dictEntry *next;  // 单链表结构
-} dictEntry;
-```
-字典：  
-```
-typedef struct dict {
-    // 类型特定函数
-    dictType *type;
-    // 私有数据
-    void *privdata;
-    // 哈希表
-    dictht ht[2];
-    // rehash 索引
-    // 当 rehash 不在进行时，值为 -1
-    int rehashidx; /* rehashing not in progress if rehashidx == -1 */
-} dict;
-```
-
-### 4.1.4. skipList跳跃表  
-&emsp; Redis使用跳跃表作为有序集合对象的底层实现之一。它以有序的方式在层次化的链表中保存元素，效率和平衡树媲美 —— 查找、删除、添加等操作都可以在对数期望时间下完成，并且比起平衡树来说，跳跃表的实现要简单直观得多。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-5.png)  
-&emsp; 如示意图所示，zskiplistNode是跳跃表的节点，其ele是保持的元素值，score 是分值，节点按照其score值进行有序排列，而level数组就是其所谓的层次化链表的体现。  
-&emsp; 每个node的level数组大小都不同，level数组中的值是指向下一个node的指针和跨度值 (span)，跨度值是两个节点的score的差值。越高层的level数组值的跨度值就越大，底层的level数组值的跨度值越小。    
-&emsp; level数组就像是不同刻度的尺子。度量长度时，先用大刻度估计范围，再不断地用缩小刻度，进行精确逼近。  
-&emsp; 当在跳跃表中查询一个元素值时，都先从第一个节点的最顶层的level开始。比如说，在上图的跳表中查询o2元素时，先从o1的节点开始，因为zskiplist的header指针指向它。  
-
-&emsp; 先从其level[3]开始查询，发现其跨度是2，o1节点的score是1.0，所以加起来为3.0，大于o2的score值2.0。所以，可以知道o2节点在o1和o3节点之间。这时，就改用小刻度的尺子了。就用level[1]的指针，顺利找到o2节点。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-6.png)  
-&emsp; 它和平衡树性能很相似，但为什么不用平衡树而用skipList呢? skipList & AVL之间的选择：  
-* 从算法实现难度上来比较，skiplist比平衡树要简单得多。  
-* 平衡树的插入和删除操作可能引发子树的调整，逻辑复杂，而skiplist的插入和删除只需要修改相邻节点的指针，操作简单又快速。  
-* 查找单个key，skiplist和平衡树的时间复杂度都为O(log n)，大体相当。  
-* 在做范围查找的时候，平衡树比skiplist操作要复杂。  
-* skiplist和各种平衡树（如AVL、红黑树等）的元素是有序排列的。  
-
-&emsp; 可以看到，skipList中的元素是有序的，所以跳跃表在redis中用在有序集合键、集群节点内部数据结构。  
-&emsp; 源码：  
-&emsp; 跳跃表节点：  
-
-```
-typedef struct zskiplistNode {
-    // 后退指针
-    struct zskiplistNode *backward;
-    // 分值
-    double score;
-    // 成员对象
-    robj *obj;
-    // 层
-    struct zskiplistLevel {
-    // 前进指针
-    struct zskiplistNode *forward;
-    // 跨度
-    unsigned int span;
-    } level[];
-} zskiplistNode;  
-```
-
-&emsp; 跳跃表：  
-
-```
-typedef struct zskiplist {
-    // 表头节点和表尾节点
-    struct zskiplistNode *header, *tail;
-    // 表中节点的数量
-    unsigned long length;
-    // 表中层数最大的节点的层数
-    int level;
-} zskiplist;
-```
-&emsp; 它有几个概念：
-* 层(level[])  
-&emsp; 层，也就是level[]字段，层的数量越多，访问节点速度越快。(因为它相当于是索引，层数越多，它索引就越细，就能很快找到索引值)  
-* 前进指针(forward)  
-&emsp; 层中有一个forward字段，用于从表头向表尾方向访问。  
-* 跨度(span)  
-&emsp; 用于记录两个节点之间的距离  
-* 后退指针(backward)  
-&emsp; 用于从表尾向表头方向访问。  
-
-### 4.1.5. intset整数集合  
-&emsp; 整数集合intset是集合对象的底层实现之一，当一个集合只包含整数值元素，并且这个集合的元素数量不多时，Redis就会使用整数集合作为集合对象的底层实现。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-7.png)  
-&emsp; 如上图所示，整数集合的encoding表示它的类型，有int16t，int32t或者int64_t。其每个元素都是contents数组的一个数组项，各个项在数组中按值的大小从小到大有序的排列，并且数组中不包含任何重复项。length属性就是整数集合包含的元素数量。  
-
-&emsp; Reids对整数存储专门作了优化，intset就是redis用于保存整数值的集合数据结构。当一个结合中只包含整数元素，redis就会用这个来存储。  
-
-
-&emsp; 源码：  
-&emsp; intset数据结构：  
-
-```
-typedef struct intset {
-    // 编码方式
-    uint32_t encoding;
-    // 集合包含的元素数量
-    uint32_t length;
-    // 保存元素的数组
-    int8_t contents[];
-} intset;
-```
-
-### 4.1.6. ziplist压缩列表  
-&emsp; 压缩队列ziplist是列表对象和哈希对象的底层实现之一。当满足一定条件时，列表对象和哈希对象都会以压缩队列为底层实现。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-8.png)  
-&emsp; 压缩队列是Redis为了节约内存而开发的，是由一系列特殊编码的连续内存块组成的顺序型数据结构。它的属性值有：  
-* zlbytes : 长度为4字节，记录整个压缩数组的内存字节数。  
-* zltail : 长度为4字节，记录压缩队列表尾节点距离压缩队列的起始地址有多少字节，通过该属性可以直接确定尾节点的地址。  
-* zllen : 长度为2字节，包含的节点数。当属性值小于 INT16_MAX时，该值就是节点总数，否则需要遍历整个队列才能确定总数。  
-* zlend : 长度为1字节，特殊值，用于标记压缩队列的末端。  
-
-&emsp; 中间每个节点entry由三部分组成：  
-* previous_entry_length : 压缩列表中前一个节点的长度，和当前的地址进行指针运算，计算出前一个节点的起始地址。
-* encoding：节点保存数据的类型和长度
-* content：节点值，可以为一个字节数组或者整数。
-
-&emsp; 当一个列表键只包含少量列表项，且是小整数值或长度比较短的字符串时，那么redis就使用ziplist（压缩列表）来做列表键的底层实现。  
-&emsp; ziplist是Redis为了节约内存而开发的，是由一系列特殊编码的连续内存块(而不是像双端链表一样每个节点是指针)组成的顺序型数据结构；  
-
-## 4.2. 对象系统，redisObject及5种基本类型  
-### 4.2.1. redisObject  
-&emsp; 当执行set hello world命令时，会有以下数据模型：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-9.png)  
-* dictEntry：Redis给每个key-value键值对分配一个dictEntry，里面有着key和val的指针，next指向下一个dictEntry形成链表，这个指针可以将多个哈希值相同的键值对链接在一起，由此来解决哈希冲突问题(链地址法)。  
-* sds：键key“hello”是以SDS（简单动态字符串）存储。  
-* redisObject：值val“world”存储在redisObject中。实际上，redis常用5种类型都是以redisObject来存储的；而redisObject中的type字段指明了Value对象的类型，ptr字段则指向对象所在的地址。  
-
-&emsp; redisObject对象非常重要，Redis对象的类型、内部编码、内存回收、共享对象等功能，都需要redisObject支持。这样设计的好处是，可以针对不同的使用场景，对5种常用类型设置多种不同的数据结构实现，从而优化对象在不同场景下的使用效率。  
-
-&emsp; Redis内部使用一个redisObject对象来表示所有的key和value。  
-&emsp;   上面介绍了6种底层数据结构，Redis并没有直接使用这些数据结构来实现键值数据库，而是基于这些数据结构创建了一个对象系统，这个系统包含字符串对象、列表对象、哈希对象、集合对象和有序集合这五种类型的对象，每个对象都使用到了至少一种前边讲的底层数据结构。  
-&emsp; Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。  
-&emsp; Redis的redisObject结构的定义如下所示。  
+&emsp; Redis的redisObject结构的定义如下所示：  
 
 ```
 typedef struct redisObject {
@@ -380,13 +86,11 @@ typedef struct redisObject {
     void *ptr;
 } robj;
 ```
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-9.png)  
-&emsp; Type：是对象类型，代表一个value对象具体是何种数据类型，包括REDISSTRING, REDISLIST, REDISHASH, REDISSET和REDIS_ZSET。  
-&emsp; encoding是指对象使用的数据结构，是不同数据类型在redis内部的存储方式，比如：type=string代表value存储的是一个普通字符串，那么对应的encoding可以是raw或者是int，如果是 int 则代表实际redis内部是按数值型类存储和表示这个字符串的，当然前提是这个字符串本身可以用数值表示，比如："123" "456"这样的字符串。全集如下。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-10.png)  
-redis所有的数据结构类型如下（重要，后面会用）：
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-11.png)  
-&emsp; Redis数据结构底层实现：  
+&emsp; Type：是对象类型，代表一个value对象具体是何种数据类型，包括REDISSTRING, REDISLIST, REDISHASH, REDISSET和REDIS_ZSET。  
+&emsp; encoding是指对象使用的数据结构，是不同数据类型在redis内部的存储方式。  
+
+&emsp; Redis数据类型的底层实现：  
 
 |Redis数据结构	|底层数据结构|
 |---|---|
@@ -396,63 +100,209 @@ redis所有的数据结构类型如下（重要，后面会用）：
 |Set	|intset（整数集合）或者hashtable（字典或者也叫哈希表）|
 |ZSet	|ziplist（压缩列表）或者skiplist（跳跃表）|
 
-### 4.2.2. String  
-&emsp; 字符串对象的底层实现可以是int、raw、embstr（即SDS）。embstr编码是通过调用一次内存分配函数来分配一块连续的空间，而raw需要调用两次。  
-&emsp; int编码字符串对象和embstr编码字符串对象在一定条件下会转化为raw编码字符串对象。  
-&emsp; embstr：<=39字节的字符串。int：8个字节的长整型。raw：大于39个字节的字符串。
+## String  
+&emsp; 可以用来存储字符串、整数、浮点数。   
 
-### 4.2.3. List  
-&emsp; List对象的底层实现是quicklist（快速列表，是ziplist压缩列表和linkedlist双端链表的组合）。  
-&emsp; Redis中的列表支持两端插入和弹出，并可以获得指定位置（或范围）的元素，可以充当数组、队列、栈等。  
+### 操作命令  
 
-```
-typedef struct listNode {
-    // 前置节点
-    struct listNode *prev;
-    // 后置节点
-    struct listNode *next;
-    // 节点的值
-    void *value;
-} listNode;
-```
+|命令|描述|
+|---|---|
+|SET key value    |设置指定key的值|
+|GET key |   获取指定key的值|
+|GETRANGE key start end |   返回key中字符串值的子字符|
+|GETSET key value   |将给定key的值设为value，并返回key的旧值(old value)。设新值，取旧值|
+|GETBIT key offset  | 对key所储存的字符串值，获取指定偏移量上的位(bit)。|
+|MGET key1 [key2..]   |获取所有(一个或多个)给定key的值。|
+|SETBIT key offset value   |对key所储存的字符串值，设置或清除指定偏移量上的位(bit)。|
+|SETEX key seconds value   |将值value关联到key，并将key的过期时间设为seconds(以秒为单位)。|
+|SETNX key value   |只有在key不存在时设置key的值。|
+|SETRANGE key offset value   |用value参数覆写给定 key 所储存的字符串值，从偏移量offset开始。|
+|STRLEN key   |返回key所储存的字符串值的长度。|
+|MSET key value [key value ...]   |同时设置一个或多个key-value对。  MSET key1 "Hello" key2 "World"|
+|MSETNX key value [key value ...] |同时设置一个或多个key-value对，当且仅当所有给定key都不存在。|
+|PSETEX key milliseconds value   |这个命令和SETEX命令相似，但它以毫秒为单位设置key的生存时间，而不是像 SETEX 命令那样，以秒为单位。|
+|INCR key   |将key中储存的数字值增一。|
+|INCRBY key increment |将key所储存的值加上给定的增量值（increment）。|
+|INCRBYFLOAT key increment |将key所储存的值加上给定的浮点增量值（increment）。|
+|DECR key   |将key中储存的数字值减一。|
+|DECRBY key decrement |key所储存的值减去给定的减量值（decrement）。|
+|APPEND key value   |如果key已经存在并且是一个字符串， APPEND命令将指定value 追加到改key原来的值（value）的末尾。|
 
-```
-typedef struct list {
-    // 表头节点
-    listNode *head;
-    // 表尾节点
-    listNode *tail;
-    // 节点值复制函数
-    void *(*dup)(void *ptr);
-    // 节点值释放函数
-    void (*free)(void *ptr);
-    // 节点值对比函数
-    int (*match)(void *ptr, void *key);
-    // 链表所包含的节点数量
-    unsigned long len;
-} list;
-```
-&emsp; quickList是zipList和linkedList的混合体。它将linkedList按段切分，每一段使用zipList来紧凑存储，多个zipList之间使用双向指针串接起来。因为链表的附加空间相对太高，prev和next指针就要占去16个字节 (64bit系统的指针是8个字节)，另外每个节点的内存都是单独分配，会加剧内存的碎片化，影响内存管理效率。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-13.png)  
-&emsp; quicklist默认的压缩深度是0，也就是不压缩。为了支持快速的push/pop操作，quicklist的首尾两个ziplist不压缩，此时深度就是1。为了进一步节约空间，Redis还会对ziplist进行压缩存储，使用LZF算法压缩。  
+### 使用场景  
 
-### 4.2.4. Hash  
-&emsp; Hash对象的底层实现可以是ziplist（压缩列表）或者hashtable（字典或者也叫哈希表）。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-14.png)  
-&emsp; Hash对象只有同时满足下面两个条件时，才会使用ziplist（压缩列表）：1.哈希中元素数量小于512个；2.哈希中所有键值对的键和值字符串长度都小于64字节。  
+### 存储（实现）原理  
+&emsp; 字符串类型的内部编码有三种：  
 
-### 4.2.5. Set  
-&emsp; Set集合对象的底层实现可以是intset（整数集合）或者hashtable（字典或者也叫哈希表）。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-15.png)  
-&emsp; intset（整数集合）当一个集合只含有整数，并且元素不多时会使用intset（整数集合）作为Set集合对象的底层实现。  
+*  int，存储 8 个字节的长整型（long，2^63-1）。   
+*  embstr, 代表 embstr 格式的 SDS（Simple Dynamic String 简单动态字符串）， 存储小于 44 个字节的字符串。   
+*  raw，存储大于 44 个字节的字符串（3.2 版本之前是 39 字节）。  
 
-### 4.2.6. ZSet  
-ZSet有序集合对象底层实现可以是ziplist（压缩列表）或者skiplist（跳跃表）。
-&emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-16.png)    
-&emsp; 当一个有序集合的元素数量比较多或者成员是比较长的字符串时，Redis就使用skiplist（跳跃表）作为ZSet对象的底层实现。  
+1. 什么是 SDS？ Redis中字符串的实现。  
+&emsp; 在 3.2 以后的版本中，SDS 又有多种结构（sds.h）：sdshdr5、sdshdr8、sdshdr16、sdshdr32、sdshdr64，用于存储不同的长度的字符串，分别代表 2^5=32byte， 2^8=256byte，2^16=65536byte=64KB，2^32byte=4GB。  
 
------------
-# 5. Redis的API
+2. 为什么 Redis 要用 SDS 实现字符串？  
+&emsp; C 语言本身没有字符串类型（只能用字符数组 char[]实现）。 1、使用字符数组必须先给目标变量分配足够的空间，否则可能会溢出。 2、如果要获取字符长度，必须遍历字符数组，时间复杂度是 O(n)。 3、C 字符串长度的变更会对字符数组做内存重分配。 4、通过从字符串开始到结尾碰到的第一个'\0'来标记字符串的结束，因此不能保 存图片、音频、视频、压缩文件等二进制(bytes)保存的内容，二进制不安全。  
+
+    &emsp; SDS的特点： 
+    1. 不用担心内存溢出问题，如果需要会对 SDS 进行扩容。  
+    2. 获取字符串长度时间复杂度为 O(1)，因为定义了 len 属性。  
+    3. 通过“空间预分配”（ sdsMakeRoomFor）和“惰性空间释放”，防止多 次重分配内存。  
+    4. 判断是否结束的标志是 len 属性（它同样以'\0'结尾是因为这样就可以使用 C语言中函数库操作字符串的函数了），可以包含'\0'。  
+
+3. embstr 和 raw 的区别？  
+&emsp; embstr 的使用只分配一次内存空间（因为 RedisObject 和 SDS 是连续的），而 raw 需要分配两次内存空间（分别为 RedisObject 和 SDS 分配空间）。 因此与 raw 相比，embstr 的好处在于创建时少分配一次空间，删除时少释放一次 空间，以及对象的所有数据连在一起，寻找方便。 而 embstr 的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个 RedisObject 和 SDS 都需要重新分配空间，因此 Redis 中的 embstr 实现为只读。  
+
+4. int 和 embstr 什么时候转化为 raw?  
+&emsp; 当 int 数 据 不 再 是 整 数 ， 或 大 小 超 过 了 long 的 范 围 （2^63-1=9223372036854775807）时，自动转化为 embstr。  
+
+5. embstr没有超过阈值，为什么变成 raw 了？  
+&emsp; 对于 embstr，由于其实现是只读的，因此在对 embstr 对象进行修改时，都会先 转化为 raw 再进行修改。 因此，只要是修改 embstr 对象，修改后的对象一定是 raw 的，无论是否达到了 44 个字节。  
+
+6. 当长度小于阈值时，会还原吗？  
+&emsp; 关于 Redis 内部编码的转换，都符合以下规律：编码转换在 Redis 写入数据时完 成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
+
+## Hash  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-58.png)  
+&emsp; 存储键值对的无序散列表。  
+&emsp; 同样是存储字符串，Hash 与 String 的主要区别？  
+1、把所有相关的值聚集到一个 key 中，节省内存空间 
+2、只使用一个 key，减少 key 冲突 
+3、当需要批量获取值的时候，只需要使用一个命令，减少内存/IO/CPU 的消耗 Hash 
+
+&emsp; 不适合的场景： 
+1、Field 不能单独设置过期时间  
+2、没有 bit 操作  
+3、需要考虑数据量分布的问题（value 值非常大的时候，无法分布到多个节点）  
+
+&emsp; 应用场景：  
+* 存储对象类型的数据  
+&emsp; 比如对象或者一张表的数据，比 String 节省了更多 key 的空间，也更加便于集中管 理。  
+* 购物车  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-60.png)  
+&emsp; key：用户 id；field：商品 id；value：商品数量。  
+&emsp; +1：hincr。-1：hdecr。删除：hdel。全选：hgetall。商品数：hlen。  
+
+### 操作命令  
+......
+
+### 使用场景  
+
+
+
+### 存储（实现）原理  
+&emsp; Redis 的 Hash 本身也是一个 KV 的结构，类似于 Java 中的 HashMap。外层的哈希（Redis KV 的实现）只用到了 hashtable。当存储 hash 数据类型时，把它叫做内层的哈希。内层的哈希底层可以使用两种数据结构实现： ziplist：OBJ_ENCODING_ZIPLIST（压缩列表） hashtable：OBJ_ENCODING_HT（哈希表）。  
+
+#### ziplist 压缩列表  
+&emsp; ziplist 是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能， 来换取高效的内存空间利用率，是一种时间换空间的思想。只用在字段个数少，字段值 小的场景里面。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-59.png)  
+
+&emsp; 什么时候使用 ziplist 存储？  
+&emsp; 当 hash 对象同时满足以下两个条件的时候，使用 ziplist 编码：  
+1）所有的键值对的健和值的字符串长度都小于等于 64byte（一个英文字母 一个字节）；  
+2）哈希对象保存的键值对数量小于 512 个。  
+
+&emsp; 一个哈希对象超过配置的阈值（键和值的长度有>64byte，键值对个数>512 个）时， 会转换成哈希表（hashtable）。  
+
+
+#### hashtable（dict）  
+&emsp; 在 Redis 中，hashtable 被称为字典（dictionary），它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。结构如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-4.png)  
+
+
+
+## List  
+&emsp; 存储有序的字符串（从左到右），元素可以重复。可以充当队列和栈的角色。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-61.png)  
+
+
+### 操作命令  
+操作命令：  
+* lpush
+* rpush
+* lpop
+* rpop
+* blpop
+* brpop
+
+### 使用场景  
+
+
+### 存储（实现）原理  
+&emsp; 在早期的版本中，数据量较小时用 ziplist 存储，达到临界值时转换为 linkedlist 进 行存储，分别对应 OBJ_ENCODING_ZIPLIST 和 OBJ_ENCODING_LINKEDLIST 。   
+&emsp; 3.2 版本之后，统一用 quicklist 来存储。quicklist 存储了一个双向链表，每个节点 都是一个 ziplist。  
+
+#### linkedlist  
+&emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-62.png)  
+
+&emsp; 从图中可以看出Redis的linkedlist双端链表有以下特性：节点带有prev、next指针、head指针和tail指针，获取前置节点、后置节点、表头节点和表尾节点的复杂度都是O（1）。len属性获取节点数量也为O（1）。
+
+#### quicklist
+&emsp; quicklist（快速列表）是 ziplist 和 linkedlist 的结合体。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-63.png)  
+
+
+## Set  
+&emsp; 存储String 类型的无序集合，最大存储数量 2^32-1（40 亿左右）。  
+
+### 操作命令  
+...
+
+
+### 使用场景  
+
+
+### 存储（实现）原理  
+&emsp; Redis 用 intset 或 hashtable 存储 set。如果元素都是整数类型，就用 inset 存储。 如果不是整数类型，就用 hashtable（数组+链表的存来储结构）。  
+
+&emsp; KV 怎么存储 set 的元素？
+&emsp; key 就是元素的值，value 为 null。  
+&emsp; 如果元素个数超过 512 个，也会用 hashtable 存储。  
+
+#### inset  
+&emsp; inset的数据结构：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-7.png)  
+&emsp; 整数集合的encoding表示它的类型，有int16t，int32t或者int64_t。其每个元素都是contents数组的一个数组项，各个项在数组中按值的大小从小到大有序的排列，并且数组中不包含任何重复项。length属性就是整数集合包含的元素数量。  
+
+
+## Zset  
+&emsp; sorted set，有序的 set，每个元素有个 score。 score 相同时，按照 key 的 ASCII 码排序。  
+
+&emsp; 数据结构对比：  
+|数据结构 |是否允许重复元素 |是否有序 |有序实现方式| 
+|---|---|---|---|
+|列表 |list| 是 |是 |索引下标| 
+|集合 |set |否 |否| 无 |
+|有序集合 |zset |否 |是 |分值 score|
+
+### 操作命令  
+......
+
+### 使用场景  
+
+
+### 存储（实现）原理  
+&emsp; 同时满足以下条件时使用 ziplist 编码：  
+* 元素数量小于 128 个  
+* 所有 member 的长度都小于 64 字节  
+
+&emsp; 在 ziplist 的内部，按照 score 排序递增来存储。插入的时候要移动之后的数据。  
+&emsp; 超过阈值之后，使用 skiplist[]()+dict 存储。  
+
+
+## bitmaps位图  
+
+
+## HyperLogLog  
+
+
+## Geospatial
+
+## Streams  
+&emsp; 5.0 推出的数据类型。支持多播的可持久化的消息队列，用于实现发布订阅功能，借 鉴了 kafka 的设计。  
+
+
+# Redis的API
 &emsp; 官网推荐的 Java 客户端有 3 个 Jedis，Redisson 和 Luttuce。  
 
 * Jedis，轻量，简洁，便于集成和改造。  
@@ -471,8 +321,5 @@ ZSet有序集合对象底层实现可以是ziplist（压缩列表）或者skipli
     * 支持异步请求。  
     * 支持连接池、pipeline、LUA Scripting、Redis Sentinel、Redis Cluster。  
     * 不支持事务，官方建议以 LUA Scripting 代替事务。  
-    * 主从、哨兵、集群都支持。Spring 也可以配置和注入 RedissonClient。 
-
-# 6. Redis命令参考  
-http://doc.redisfans.com/ 
+    * 主从、哨兵、集群都支持。Spring 也可以配置和注入 RedissonClient。  
 
