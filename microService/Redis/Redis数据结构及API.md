@@ -7,55 +7,57 @@ tags:
 
 <!-- TOC -->
 
-- [Redis简介](#redis简介)
-- [Redis的数据类型](#redis的数据类型)
-    - [数据类型介绍](#数据类型介绍)
-    - [键管理](#键管理)
-    - [对象系统RedisObject](#对象系统redisobject)
-    - [String](#string)
-        - [操作命令](#操作命令)
-        - [使用场景](#使用场景)
-        - [存储（实现）原理](#存储实现原理)
-    - [Hash](#hash)
-        - [操作命令](#操作命令-1)
-        - [使用场景](#使用场景-1)
-        - [存储（实现）原理](#存储实现原理-1)
-            - [ziplist 压缩列表](#ziplist-压缩列表)
-            - [hashtable（dict）](#hashtabledict)
-    - [List](#list)
-        - [操作命令](#操作命令-2)
-        - [使用场景](#使用场景-2)
-        - [存储（实现）原理](#存储实现原理-2)
-            - [linkedlist](#linkedlist)
-            - [quicklist](#quicklist)
-    - [Set](#set)
-        - [操作命令](#操作命令-3)
-        - [使用场景](#使用场景-3)
-        - [存储（实现）原理](#存储实现原理-3)
-            - [inset](#inset)
-    - [Zset](#zset)
-        - [操作命令](#操作命令-4)
-        - [使用场景](#使用场景-4)
-        - [存储（实现）原理](#存储实现原理-4)
-    - [bitmaps位图](#bitmaps位图)
-    - [HyperLogLog](#hyperloglog)
-    - [Geospatial](#geospatial)
-    - [Streams](#streams)
-- [Redis的API](#redis的api)
+- [1. Redis简介](#1-redis简介)
+- [2. Redis的数据类型](#2-redis的数据类型)
+    - [2.1. 数据类型介绍](#21-数据类型介绍)
+    - [2.2. 键管理](#22-键管理)
+    - [2.3. 对象系统RedisObject](#23-对象系统redisobject)
+    - [2.4. String](#24-string)
+        - [2.4.1. 操作命令](#241-操作命令)
+        - [2.4.2. 使用场景](#242-使用场景)
+        - [2.4.3. 内部编码](#243-内部编码)
+    - [2.5. Hash](#25-hash)
+        - [2.5.1. 操作命令](#251-操作命令)
+        - [2.5.2. 使用场景](#252-使用场景)
+        - [2.5.3. 内部编码](#253-内部编码)
+            - [2.5.3.1. ziplist 压缩列表](#2531-ziplist-压缩列表)
+            - [2.5.3.2. hashtable（dict），字典](#2532-hashtabledict字典)
+    - [2.6. List](#26-list)
+        - [2.6.1. 操作命令](#261-操作命令)
+        - [2.6.2. 使用场景](#262-使用场景)
+        - [2.6.3. 内部编码](#263-内部编码)
+            - [2.6.3.1. linkedlist](#2631-linkedlist)
+            - [2.6.3.2. quicklist](#2632-quicklist)
+    - [2.7. Set](#27-set)
+        - [2.7.1. 操作命令](#271-操作命令)
+        - [2.7.2. 使用场景](#272-使用场景)
+        - [2.7.3. 内部编码](#273-内部编码)
+            - [2.7.3.1. inset](#2731-inset)
+    - [2.8. Zset](#28-zset)
+        - [2.8.1. 操作命令](#281-操作命令)
+        - [2.8.2. 使用场景](#282-使用场景)
+        - [2.8.3. 内部编码](#283-内部编码)
+    - [2.9. Bitmaps，位图](#29-bitmaps位图)
+    - [2.10. HyperLogLog](#210-hyperloglog)
+    - [2.11. Geospatial](#211-geospatial)
+    - [2.12. Streams](#212-streams)
+    - [2.13. Redis中的布隆过滤器](#213-redis中的布隆过滤器)
+- [3. Redis的API](#3-redis的api)
 
 <!-- /TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-71.png)  
 
 &emsp; <font color="red">整体参考《Redis开发与运维》，数据结构参考《Redis深度历险：核心原理和应用实践》</font>  
 
-# Redis简介  
+# 1. Redis简介  
 &emsp; Redis是一个开源，内存存储的数据结构服务器，可用作数据库，高速缓存和消息队列代理。  
 1. 支持字符串、哈希表、列表、集合、有序集合，位图，hyperloglogs等丰富的数据类型。  
 2. 提供Lua脚本、LRU收回、事务以及不同级别磁盘持久化功能。  
 3. 同时通过Redis Sentinel提供高可用，通过Redis Cluster提供自动分区。  
 
-# Redis的数据类型  
-## 数据类型介绍  
+# 2. Redis的数据类型  
+## 2.1. 数据类型介绍  
 &emsp; Redis属于<key,value\>形式的数据结构。key和value的最大长度限制是512M。  
 1. Redis的key是字符串类型，但是key中不能包括边界字符，不能空格和换行。  
 2. Redis的value支持五种基本数据类型<font color = "red">（注意是数据类型不是数据结构）</font>：String（字符串），Hash（哈希），List（列表），Set（集合）及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
@@ -72,10 +74,10 @@ tags:
 |Set	|无序集合|添加、获取、移除单个元素； 检查一个元素是否存在于集合中； 计算交集、并集、差集；从集合里面随机获取元素；|	1.标签(Tag) <br/>2.社交|
 |Zset	|有序集合 | 添加、获取、删除元素；根据分值范围或者成员来获取元素； 计算一个键对排名；|1.排行榜系统，比如点赞排名 <br/>2.社交|
 -->
-## 键管理  
+## 2.2. 键管理  
+......
 
-
-## 对象系统RedisObject  
+## 2.3. 对象系统RedisObject  
 &emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。<font color = "red">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>  
 
 &emsp; Redis的redisObject结构的定义如下所示：  
@@ -90,8 +92,8 @@ typedef struct redisObject {
 } robj;
 ```
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-10.png)  
-&emsp; Type：是对象类型，代表一个value对象具体是何种数据类型，包括REDISSTRING, REDISLIST, REDISHASH, REDISSET和REDIS_ZSET。  
-&emsp; encoding是指对象使用的数据结构，是不同数据类型在redis内部的存储方式。  
+* Type：是对象类型，代表一个value对象具体是何种数据类型，包括REDISSTRING, REDISLIST, REDISHASH, REDISSET和REDIS_ZSET。  
+* encoding是指对象使用的数据结构，是不同数据类型在redis内部的存储方式。  
 
 &emsp; Redis数据类型的底层实现：  
 
@@ -103,10 +105,10 @@ typedef struct redisObject {
 |Set	|intset（整数集合）或者hashtable（字典或者也叫哈希表）|
 |ZSet	|ziplist（压缩列表）或者skiplist（跳跃表）|
 
-## String  
+## 2.4. String  
 &emsp; 可以用来存储字符串、整数、浮点数。   
 
-### 操作命令  
+### 2.4.1. 操作命令  
 
 |命令|描述|
 |---|---|
@@ -131,7 +133,7 @@ typedef struct redisObject {
 |DECRBY key decrement |key所储存的值减去给定的减量值（decrement）。|
 |APPEND key value   |如果key已经存在并且是一个字符串， APPEND命令将指定value 追加到改key原来的值（value）的末尾。|
 
-### 使用场景  
+### 2.4.2. 使用场景  
 
 &emsp; 参考《Redis开发与运维》，书中有使用案例。  
 
@@ -141,7 +143,7 @@ typedef struct redisObject {
 * 计数  
 * 限速  
 
-### 存储（实现）原理  
+### 2.4.3. 内部编码  
 &emsp; 字符串类型的内部编码有三种：  
 
 *  int，存储 8 个字节的长整型（long，2^63-1）。   
@@ -178,7 +180,7 @@ typedef struct redisObject {
 6. 当长度小于阈值时，会还原吗？  
 &emsp; 关于 Redis 内部编码的转换，都符合以下规律：编码转换在 Redis 写入数据时完 成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
 
-## Hash  
+## 2.5. Hash  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-58.png)  
 &emsp; 存储键值对的无序散列表。  
 &emsp; 同样是存储字符串，Hash 与 String 的主要区别？  
@@ -191,47 +193,45 @@ typedef struct redisObject {
 2. 没有 bit 操作  
 3. 需要考虑数据量分布的问题（value 值非常大的时候，无法分布到多个节点）  
 
-### 操作命令  
+### 2.5.1. 操作命令  
 ......
 
-### 使用场景  
+### 2.5.2. 使用场景  
 
 * 存储对象类型的数据  
 &emsp; 比如对象或者一张表的数据，比 String 节省了更多 key 的空间，也更加便于集中管 理。  
-* 购物车  
+* 购物车功能  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-60.png)  
 &emsp; key：用户 id；field：商品 id；value：商品数量。  
 &emsp; +1：hincr。-1：hdecr。删除：hdel。全选：hgetall。商品数：hlen。  
 
-### 存储（实现）原理  
-&emsp; Redis 的 Hash 本身也是一个 KV 的结构，类似于 Java 中的 HashMap。外层的哈希（Redis KV 的实现）只用到了 hashtable。当存储 hash 数据类型时，把它叫做内层的哈希。内层的哈希底层可以使用两种数据结构实现： ziplist：OBJ_ENCODING_ZIPLIST（压缩列表） hashtable：OBJ_ENCODING_HT（哈希表）。  
+### 2.5.3. 内部编码  
+&emsp; Redis 的 Hash 本身也是一个 KV 的结构，类似于 Java 中的 HashMap。外层的哈希（Redis KV 的实现）只用到了 hashtable。当存储 hash 数据类型时，把它叫做内层的哈希。内层的哈希底层可以使用两种数据结构实现：ziplist、hashtable。  
 
-#### ziplist 压缩列表  
-&emsp; ziplist 是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能， 来换取高效的内存空间利用率，是一种时间换空间的思想。只用在字段个数少，字段值 小的场景里面。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-59.png)  
+#### 2.5.3.1. ziplist 压缩列表  
+&emsp; ziplist是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，是一种时间换空间的思想。只用在字段个数少，字段值小的场景面。  
 
 &emsp; 什么时候使用 ziplist 存储？  
 &emsp; 当 hash 对象同时满足以下两个条件的时候，使用 ziplist 编码：  
 1. 所有的键值对的健和值的字符串长度都小于等于 64byte（一个英文字母 一个字节）；  
 2. 哈希对象保存的键值对数量小于 512 个。  
 
-&emsp; 一个哈希对象超过配置的阈值（键和值的长度有>64byte，键值对个数>512 个）时， 会转换成哈希表（hashtable）。  
+&emsp; 一个哈希对象超过配置的阈值（键和值的长度有>64byte，键值对个数>512 个）时， 会转换成哈希表hashtable。  
 
-#### hashtable（dict）  
+#### 2.5.3.2. hashtable（dict），字典  
 &emsp; 在 Redis 中，hashtable 被称为字典（dictionary），它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。结构如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-4.png)  
 
 
-## List  
+## 2.6. List  
 &emsp; 存储有序的字符串（从左到右），元素可以重复。可以充当队列和栈的角色。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-61.png)  
 
-
-### 操作命令  
+### 2.6.1. 操作命令  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-64.png)  
 
 
-### 使用场景  
+### 2.6.2. 使用场景  
 
 * 消息队列  
 &emsp; List 提供了两个阻塞的弹出操作：BLPOP/BRPOP，可以设置超时时间。  
@@ -247,30 +247,29 @@ typedef struct redisObject {
 &emsp; 使用列表类型保存和获取文章列表会存在两个问题。第一，如果每次分 页获取的文章个数较多，需要执行多次hgetall操作，此时可以考虑使用 Pipeline批量获取，或者考虑将文章数据序列化为字符串类 型，使用mget批量获取。第二，分页获取文章列表时，lrange命令在列表两 端性能较好，但是如果列表较大，获取列表中间范围的元素性能会变差，此 时可以考虑将列表做二级拆分，或者使用Redis3.2的quicklist内部编码实现， 它结合ziplist和linkedlist的特点，获取列表中间范围的元素时也可以高效完成。  
 
 
-### 存储（实现）原理  
-&emsp; 在早期的版本中，数据量较小时用 ziplist 存储，达到临界值时转换为 linkedlist 进 行存储，分别对应 OBJ_ENCODING_ZIPLIST 和 OBJ_ENCODING_LINKEDLIST 。   
-&emsp; Redis3.2 版本之后，统一用 quicklist 来存储。quicklist 存储了一个双向链表，每个节点 都是一个 ziplist。  
+### 2.6.3. 内部编码   
+&emsp; 在早期的版本中，数据量较小时用 ziplist 存储，达到临界值时转换为 linkedlist 进行存储。   
+&emsp; Redis3.2 版本之后，统一用 quicklist 来存储。  
 
-#### linkedlist  
+#### 2.6.3.1. linkedlist  
 &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-62.png)  
 
 &emsp; 从图中可以看出Redis的linkedlist双端链表有以下特性：节点带有prev、next指针、head指针和tail指针，获取前置节点、后置节点、表头节点和表尾节点的复杂度都是O（1）。len属性获取节点数量也为O（1）。
 
-#### quicklist
-&emsp; quicklist（快速列表）是 ziplist 和 linkedlist 的结合体。  
+#### 2.6.3.2. quicklist
+&emsp; quicklist（快速列表）是ziplist和linkedlist的结合体。quicklist 存储了一个双向链表，每个节点 都是一个ziplist。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-63.png)  
 
 
-## Set  
+## 2.7. Set  
 &emsp; 存储String 类型的无序集合，最大存储数量 2^32-1（40 亿左右）。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-65.png)  
 
-
-### 操作命令  
+### 2.7.1. 操作命令  
 &emsp; 可以分为集合内操作、集合间操作。  
 
-### 使用场景  
+### 2.7.2. 使用场景  
 
 * 抽奖  
 &emsp; 随机获取元素，spop myset  
@@ -304,20 +303,19 @@ typedef struct redisObject {
 &emsp; sinter brand:apple brand:ios screensize:6.0-6.24 screentype:lcd  
 * 用户关注、推荐模型  
 
-### 存储（实现）原理  
-&emsp; Redis 用 intset 或 hashtable 存储 set。如果元素都是整数类型，就用 inset 存储。 如果不是整数类型，就用 hashtable（数组+链表的存来储结构）。  
+### 2.7.3. 内部编码   
+&emsp; Redis 用intset或hashtable存储set。<font color = "red">如果元素都是整数类型，就用 inset 存储。 如果不是整数类型，就用 hashtable（数组+链表的存来储结构）。</font>  
 
 &emsp; KV 怎么存储 set 的元素？  
 &emsp; key 就是元素的值，value 为 null。  
 &emsp; 如果元素个数超过 512 个，也会用 hashtable 存储。  
 
-#### inset  
+#### 2.7.3.1. inset  
 &emsp; inset的数据结构：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-7.png)  
 &emsp; 整数集合的encoding表示它的类型，有int16t，int32t或者int64_t。其每个元素都是contents数组的一个数组项，各个项在数组中按值的大小从小到大有序的排列，并且数组中不包含任何重复项。length属性就是整数集合包含的元素数量。  
 
-
-## Zset  
+## 2.8. Zset  
 &emsp; sorted set，有序的 set，每个元素有个 score。 有序集合中的元素不能重复，但是score可以重复。score 相同时，按照 key 的 ASCII 码排序。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-70.png)  
 
@@ -329,24 +327,23 @@ typedef struct redisObject {
 |集合 set |否 |否| 无 |
 |有序集合 zset |否 |是 |分值 score|
 
-### 操作命令  
+### 2.8.1. 操作命令  
 &emsp; 可以分为集合内操作、集合间操作。  
 
-### 使用场景  
+### 2.8.2. 使用场景  
 
 * 排行榜  
 &emsp; 排行榜榜单的维度可能是多个方面的：按照时间、按照播 放数量、按照获得的赞数。  
 
-### 存储（实现）原理  
+### 2.8.3. 内部编码   
 &emsp; 同时满足以下条件时使用 ziplist 编码：  
+
 * 元素数量小于 128 个  
 * 所有 member 的长度都小于 64 字节  
 
-&emsp; 在 ziplist 的内部，按照 score 排序递增来存储。插入的时候要移动之后的数据。  
-&emsp; 超过阈值之后，使用 skiplist[]()+dict 存储。  
+&emsp; 超过阈值之后，使用 skiplist和hashtable存储。  
 
-
-## bitmaps位图  
+## 2.9. Bitmaps，位图  
 &emsp; Bitmaps 是在字符串类型上面定义的位操作。一个字节由 8 个二进制位组成。每个二进制位只能存储0或1。   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-71.png)  
 &emsp; ***操作命令：***  
@@ -375,18 +372,18 @@ typedef struct redisObject {
 
 &emsp; ***应用场景：*** 
 
-* 在线用户统计。做各种实时分析。
+* 各种实时分析，例如在线用户统计。
 * 用户访问统计。
 <!-- 
-存储与对象ID关联的布尔信息。用来实现布隆过滤器（BloomFilter）；  
+存储与对象ID关联的布尔信息。  
 &emsp; 例如，记录访问网站的用户的最长连续时间。开始计算从0开始的天数，就是网站公开的那天，每次用户访问网站时通过SETBIT命令设置bit为1，可以简单的用当前时间减去初始时间并除以3600*24（结果就是网站公开的第几天）当做这个bit的位置。  
 &emsp; 这种方法对于每个用户，都有存储每天的访问信息的一个很小的string字符串。通过BITCOUN就能轻易统计某个用户历史访问网站的天数。另外通过调用BITPOS命令，或者客户端获取并分析这个bitmap，就能计算出最长停留时间。  
 -->
 
 &emsp; ***优点与缺点：***  
-&emsp; Bitmaps的最大优点就是存储信息时可以节省大量的空间。例如在一个系统中，不同的用户被一个增长的用户ID表示。40亿（2^32=4*1024*1024*1024≈40亿）用户只需要512M内存就能记住某种信息，例如用户是否登录过。  
+&emsp; Bitmaps的最大优点就是存储信息时可以节省大量的空间。例如在一个系统中，不同的用户被一个增长的用户ID表示。40亿（2^32≈40亿）用户只需要512M内存就能记住某种信息，例如用户是否登录过。  
 
-## HyperLogLog  
+## 2.10. HyperLogLog  
 &emsp; Hyper指的是超级。Hyperloglog提供不精确的去重计数功能。  
 &emsp; ***操作命令：***  
 &emsp; Redis Hyperloglog的三个命令：PFADD、PFCOUNT、PFMERGE。  
@@ -414,16 +411,24 @@ typedef struct redisObject {
 
 * 优点：占用内存极小，对于一个key，只需要12kb。  
 * 缺点：查询指定用户的时候，可能会出错，毕竟存的不是具体的数据。总数也存在一定的误差。  
-
         
-## Geospatial
+## 2.11. Geospatial
 &emsp; 可以用来保存地理位置，并作位置距离计算或者根据半径计算位置等。  
 
-## Streams  
+## 2.12. Streams  
 &emsp; Redis5.0 推出的数据类型。支持多播的可持久化的消息队列，用于实现发布订阅功能，借 鉴了 kafka 的设计。  
 
+## 2.13. Redis中的布隆过滤器  
+&emsp; 之前的布隆过滤器可以使用Redis中的位图操作实现，直到Redis4.0版本提供了插件功能，Redis官方提供的布隆过滤器才正式登场。布隆过滤器作为一个插件加载到Redis Server中，就会给Redis提供了强大的布隆去重功能。  
 
-# Redis的API
+<!-- 
+详细解析Redis中的布隆过滤器及其应用
+https://mp.weixin.qq.com/s/h7K7w9XBYRk7NApRV9evYA
+Redis亿级数据过滤和布隆过滤器
+https://mp.weixin.qq.com/s/3TcNbNNobn2QEJFat-f90A
+-->
+
+# 3. Redis的API
 &emsp; 官网推荐的 Java 客户端有 3 个 Jedis，Redisson 和 Luttuce。  
 
 * Jedis，轻量，简洁，便于集成和改造。  
