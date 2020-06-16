@@ -129,7 +129,13 @@ typedef struct redisObject {
 
 ### 使用场景  
 
+&emsp; 参考《Redis开发与运维》,，书中有使用案例。  
 
+* 缓存功能
+* 共享Session
+* 全局ID
+* 计数  
+* 限速  
 
 ### 存储（实现）原理  
 &emsp; 字符串类型的内部编码有三种：  
@@ -138,13 +144,19 @@ typedef struct redisObject {
 *  embstr, 代表 embstr 格式的 SDS（Simple Dynamic String 简单动态字符串）， 存储小于 44 个字节的字符串。   
 *  raw，存储大于 44 个字节的字符串（3.2 版本之前是 39 字节）。  
 
+&emsp; Redis会根据当前值的类型和长度决定使用哪种内部编码实现。  
+
 1. 什么是 SDS？ Redis中字符串的实现。  
 &emsp; 在 3.2 以后的版本中，SDS 又有多种结构（sds.h）：sdshdr5、sdshdr8、sdshdr16、sdshdr32、sdshdr64，用于存储不同的长度的字符串，分别代表 2^5=32byte， 2^8=256byte，2^16=65536byte=64KB，2^32byte=4GB。  
 
 2. 为什么 Redis 要用 SDS 实现字符串？  
-&emsp; C 语言本身没有字符串类型（只能用字符数组 char[]实现）。 1、使用字符数组必须先给目标变量分配足够的空间，否则可能会溢出。 2、如果要获取字符长度，必须遍历字符数组，时间复杂度是 O(n)。 3、C 字符串长度的变更会对字符数组做内存重分配。 4、通过从字符串开始到结尾碰到的第一个'\0'来标记字符串的结束，因此不能保 存图片、音频、视频、压缩文件等二进制(bytes)保存的内容，二进制不安全。  
+&emsp; C 语言本身没有字符串类型（只能用字符数组 char[]实现）。 
+    1. 使用字符数组必须先给目标变量分配足够的空间，否则可能会溢出。  
+    2. 如果要获取字符长度，必须遍历字符数组，时间复杂度是 O(n)。  
+    3. C 字符串长度的变更会对字符数组做内存重分配。  
+    4. 通过从字符串开始到结尾碰到的第一个'\0'来标记字符串的结束，因此不能保 存图片、音频、视频、压缩文件等二进制(bytes)保存的内容，二进制不安全。  
 
-    &emsp; SDS的特点： 
+    &emsp; SDS的特点：  
     1. 不用担心内存溢出问题，如果需要会对 SDS 进行扩容。  
     2. 获取字符串长度时间复杂度为 O(1)，因为定义了 len 属性。  
     3. 通过“空间预分配”（ sdsMakeRoomFor）和“惰性空间释放”，防止多 次重分配内存。  
@@ -196,16 +208,14 @@ typedef struct redisObject {
 
 &emsp; 什么时候使用 ziplist 存储？  
 &emsp; 当 hash 对象同时满足以下两个条件的时候，使用 ziplist 编码：  
-1）所有的键值对的健和值的字符串长度都小于等于 64byte（一个英文字母 一个字节）；  
-2）哈希对象保存的键值对数量小于 512 个。  
+1. 所有的键值对的健和值的字符串长度都小于等于 64byte（一个英文字母 一个字节）；  
+2. 哈希对象保存的键值对数量小于 512 个。  
 
 &emsp; 一个哈希对象超过配置的阈值（键和值的长度有>64byte，键值对个数>512 个）时， 会转换成哈希表（hashtable）。  
-
 
 #### hashtable（dict）  
 &emsp; 在 Redis 中，hashtable 被称为字典（dictionary），它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。结构如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-4.png)  
-
 
 
 ## List  
@@ -214,15 +224,23 @@ typedef struct redisObject {
 
 
 ### 操作命令  
-操作命令：  
-* lpush
-* rpush
-* lpop
-* rpop
-* blpop
-* brpop
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-64.png)  
+
 
 ### 使用场景  
+
+* 消息队列  
+&emsp; List 提供了两个阻塞的弹出操作：BLPOP/BRPOP，可以设置超时时间。  
+
+    * BLPOP：BLPOP key1 timeout 移出并获取列表的第一个元素， 如果列表没有元素 会阻塞列表直到等待超时或发现可弹出元素为止。  
+    * BRPOP：BRPOP key1 timeout 移出并获取列表的最后一个元素， 如果列表没有元 素会阻塞列表直到等待超时或发现可弹出元素为止。  
+
+&emsp; 队列：先进先出：rpush blpop，左头右尾，右边进入队列，左边出队列。  
+&emsp; 栈：先进后出：rpush brpop   
+
+* 文章列表  
+&emsp; 每个用户有属于自己的文章列表，现需要分页展示文章列表。此时可以 考虑使用列表，因为列表不但是有序的，同时支持按照索引范围获取元素。  
+&emsp; 使用列表类型保存和获取文章列表会存在两个问题。第一，如果每次分 页获取的文章个数较多，需要执行多次hgetall操作，此时可以考虑使用 Pipeline批量获取，或者考虑将文章数据序列化为字符串类 型，使用mget批量获取。第二，分页获取文章列表时，lrange命令在列表两 端性能较好，但是如果列表较大，获取列表中间范围的元素性能会变差，此 时可以考虑将列表做二级拆分，或者使用Redis3.2的quicklist内部编码实现， 它结合ziplist和linkedlist的特点，获取列表中间范围的元素时也可以高效完成。  
 
 
 ### 存储（实现）原理  
@@ -242,13 +260,27 @@ typedef struct redisObject {
 
 ## Set  
 &emsp; 存储String 类型的无序集合，最大存储数量 2^32-1（40 亿左右）。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-65.png)  
+
 
 ### 操作命令  
-...
-
+&emsp; 可以分为集合内操作、集合间操作。  
 
 ### 使用场景  
 
+* 抽奖  
+&emsp; 随机获取元素，spop myset  
+* 点赞、签到、打卡  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-66.png)  
+&emsp; 这条微博的 ID 是 t1001，用户 ID 是 u3001。  
+&emsp; 用 like:t1001 来维护 t1001 这条微博的所有点赞用户。   
+&emsp; 点赞了这条微博：sadd like:t1001 u3001  
+&emsp; 取消点赞：srem like:t1001 u3001  
+&emsp; 是否点赞：sismember like:t1001 u3001  
+&emsp; 点赞的所有用户：smembers like:t1001  
+&emsp; 点赞数：scard like:t1001   
+&emsp; 比关系型数据库简单许多。  
+* 商品标签  
 
 ### 存储（实现）原理  
 &emsp; Redis 用 intset 或 hashtable 存储 set。如果元素都是整数类型，就用 inset 存储。 如果不是整数类型，就用 hashtable（数组+链表的存来储结构）。  
