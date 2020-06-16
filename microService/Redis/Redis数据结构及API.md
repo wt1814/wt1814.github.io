@@ -49,13 +49,12 @@ tags:
 
 # Redis简介  
 &emsp; Redis是一个开源，内存存储的数据结构服务器，可用作数据库，高速缓存和消息队列代理。  
-&emsp; 它支持字符串、哈希表、列表、集合、有序集合，位图，hyperloglogs等丰富的数据类型。  
-&emsp; 提供Lua脚本、LRU收回、事务以及不同级别磁盘持久化功能。  
-&emsp; 同时通过Redis Sentinel提供高可用，通过Redis Cluster提供自动分区。  
+1. 支持字符串、哈希表、列表、集合、有序集合，位图，hyperloglogs等丰富的数据类型。  
+2. 提供Lua脚本、LRU收回、事务以及不同级别磁盘持久化功能。  
+3. 同时通过Redis Sentinel提供高可用，通过Redis Cluster提供自动分区。  
 
 # Redis的数据类型  
 ## 数据类型介绍  
-
 &emsp; Redis属于<key,value\>形式的数据结构。key和value的最大长度限制是512M。  
 1. Redis的key是字符串类型，但是key中不能包括边界字符，不能空格和换行。  
 2. Redis的value支持五种基本数据类型<font color = "red">（注意是数据类型不是数据结构）</font>：String（字符串），Hash（哈希），List（列表），Set（集合）及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
@@ -63,6 +62,7 @@ tags:
 4. Redis内部采用对象系统RedisObject构建数据类型。  
 5. RedisObject对象系统内部采用多种数据结构构建数据类型。数据结构有：int、raw、embstr（SDS）、linkedlist、ziplist、skiplist、hashtable、inset。  
 
+<!-- 
 |数据类型	|可以存储的值	|操作	|使用场景|
 |---|---|---|---|
 |String	|字符串、整数或者浮点数	|对整个字符串或者字符串的其中一部分执行操作；对整数和浮点数执行自增或者自减操作；	|1.缓存功能，如存放序列化后的用户信息 <br/>2.计数 <br/>3.共享session <br/>4.限速，如限制用户每分钟获取验证码的速率|
@@ -70,7 +70,7 @@ tags:
 |List	|链表 |从两端压入或者弹出元素；读取单个或者多个元素；进行修剪，只保留一个范围内对元素；	|1.消息队列，lpush+brpop实现阻塞队列<br/> 2.文章列表 <br/>3.栈：lpush+lpop = Stack <br/>4.队列：lpush+lpop = Queue|
 |Set	|无序集合|添加、获取、移除单个元素； 检查一个元素是否存在于集合中； 计算交集、并集、差集；从集合里面随机获取元素；|	1.标签(Tag) <br/>2.社交|
 |Zset	|有序集合 | 添加、获取、删除元素；根据分值范围或者成员来获取元素； 计算一个键对排名；|1.排行榜系统，比如点赞排名 <br/>2.社交|
-
+-->
 ## 对象系统RedisObject  
 &emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。<font color = "red">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>  
 
