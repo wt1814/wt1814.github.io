@@ -62,8 +62,9 @@ tags:
 1. Redis的key是字符串类型，但是key中不能包括边界字符，不能空格和换行。  
 2. Redis的value支持五种基本数据类型<font color = "red">（注意是数据类型不是数据结构）</font>：String（字符串），Hash（哈希），List（列表），Set（集合）及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
 3. Redis还有几种高级数据类型：bitmaps、HyperLogLog、geo、Streams（5.0最新版本数据结构）。  
-4. Redis内部采用对象系统RedisObject构建数据类型。  
-5. RedisObject对象系统内部采用多种数据结构构建数据类型。数据结构有：int、raw、embstr（SDS）、linkedlist、ziplist、skiplist、hashtable、inset。  
+4. Redis提供插件功能使用布隆过滤器。  
+5. Redis内部采用对象系统RedisObject构建数据类型。  
+6. RedisObject对象系统内部采用多种数据结构构建数据类型。数据结构有：int、raw、embstr（SDS）、linkedlist、ziplist、skiplist、hashtable、inset。  
 
 <!-- 
 |数据类型	|可以存储的值	|操作	|使用场景|
