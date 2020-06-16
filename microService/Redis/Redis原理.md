@@ -522,8 +522,8 @@ public class LRUCache<k, v> {
 
 ## 4.1. Redis事务的使用  
 &emsp; Redis 的事务涉及到四个命令：multi（开启事务），exec（执行事务），discard （取消事务），watch（监视）。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-36.png)  
 1. 使用Multi命令表示开启一个事务；  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-36.png)  
 2. 开启一个事务过后中间输入的所有命令都不会被立即执行，而是被加入到队列中缓存起来，当收到Exec命令的时候Redis服务会按入队顺序依次执行命令。  
 &emsp; 在multi命令后输入的命令不会被立即执行，而是被加入的队列中，并且加入成功redis会返回QUEUED，表示加入队列成功，如果这里的命令输入错误了，或者命令参数不对，Redis会返回ERR 如下图，并且此次事务无法继续执行了。这里需要注意的是在 Redis 2.6.5 版本后是会取消事务的执行，但是在 2.6.5 之前Redis是会执行所有成功加入队列的命令。详细信息可以看官方文档。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-37.png)  
