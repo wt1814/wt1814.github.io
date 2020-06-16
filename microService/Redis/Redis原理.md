@@ -4,6 +4,7 @@ date: 2020-05-16 00:00:00
 tags:
     - Redis
 ---
+
 <!-- TOC -->
 
 - [1. Redis持久化](#1-redis持久化)
@@ -14,7 +15,7 @@ tags:
     - [1.2. AOF（Append-only file）](#12-aofappend-only-file)
         - [1.2.1. 开启AOF](#121-开启aof)
         - [1.2.2. AOF持久化流程](#122-aof持久化流程)
-            - [1.2.2.1. 重启加载](#1221-重启加载)
+            - [1.2.2.1. 重启加载（数据恢复流程）](#1221-重启加载数据恢复流程)
         - [1.2.3. AOF文件损坏](#123-aof文件损坏)
         - [1.2.4. AOF的优势和劣势](#124-aof的优势和劣势)
     - [1.3. 混合持久化](#13-混合持久化)
@@ -39,16 +40,15 @@ tags:
     - [4.1. Redis事务的使用](#41-redis事务的使用)
     - [4.2. Redis事务中的错误](#42-redis事务中的错误)
     - [4.3. Redis的乐观锁Watch](#43-redis的乐观锁watch)
-- [Redis的事件](#redis的事件)
-    - [文件事件](#文件事件)
-    - [时间事件](#时间事件)
-    - [事件的调度与执行](#事件的调度与执行)
-- [5. Redis为什么这么快？](#5-redis为什么这么快)
+- [5. Redis的事件](#5-redis的事件)
+    - [5.1. 文件事件](#51-文件事件)
+    - [5.2. 时间事件](#52-时间事件)
+    - [5.3. 事件的调度与执行](#53-事件的调度与执行)
+- [6. Redis为什么这么快？](#6-redis为什么这么快)
 
 <!-- /TOC -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-55.png)  
-
 
 # 1. Redis持久化  
 &emsp; Redis是一种内存数据库。一旦进程退出，Redis的数据就会丢失。Redis持久化拥有以下三种方式：  
@@ -73,7 +73,6 @@ tags:
         
     &emsp; 如果不需要Redis进行持久化，可以注释掉所有的save行来停用保存功能，也可以直接一个空字符串来停用持久化：save ""。  
     &emsp; Redis服务器周期操作函数serverCron默认每个100毫秒就会执行一次，该函数用于正在运行的服务器进行维护，它的一项工作就是检查save选项所设置的条件是否有一项被满足，如果满足的话，就执行bgsave指令。 
-
     2. shutdown 触发，保证服务器正常关闭。 
 
 * 手动触发RDB持久化：客户端通过向Redis服务器发送Save或Bgsave命令让服务器生成RDB文件。  
@@ -82,19 +81,19 @@ tags:
     &emsp; 当客户端向服务器发送Save命令请求进行持久化时，服务器会阻塞Save命令之后的其他客户端的请求，直到数据同步完成。  
     &emsp; 如果数据量太大，同步数据会执行很久，而这期间Redis服务器也无法接收其他请求，所以，最好不要在生产环境使用Save命令。  
         
-    2. Bgsave命令：
+    2. Bgsave命令：  
     &emsp; 与Save命令不同，Bgsave命令是一个异步操作。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-32.png)  
     &emsp; bgsave，执行该命令时，Redis会在后台异步执行快照操作，此时Redis仍然可以相应客户端请求。具体操作是当客户端发服务发出Bgsave命令时，Redis服务器主进程会Forks操作创建一个子进程来数据同步问题，在将数据保存到RDB 文件之后，子进程会退出。新RDB文件就会原子地替换旧的RDB文件。所以，与Save命令相比，Redis服务器在处理Bgsave采用子线程进行IO写入。而主进程仍然可以接收其他请求，但Forks子进程是同步的，所以Forks子进程时，一样不能接收其他请求。这意味着，如果Forks一个子进程花费的时间太久（一般是很快的），而且占用内存会加倍，Bgsave命令仍然有阻塞其他客户的请求的情况发生。  
 
     <font color = "red">&emsp; 自动间隔性保存</font>   
-&emsp; 对于RDB持久化而言，一般都会使用BGSAVE来持久化，因为不会阻塞服务器进程。  
-&emsp; 在Redis的配置文件，有提供设置服务器每隔多久时间来执行BGSAVE命令。  
-&emsp; Redis默认是如下配置：  
+        &emsp; 对于RDB持久化而言，一般都会使用BGSAVE来持久化，因为不会阻塞服务器进程。  
+        &emsp; 在Redis的配置文件，有提供设置服务器每隔多久时间来执行BGSAVE命令。  
+        &emsp; Redis默认是如下配置：  
 
-    save 900 1      // 900 秒内，对数据库至少修改 1 次。下面同理    
-    save 300 10     
-    save 60 10000
+        save 900 1      // 900 秒内，对数据库至少修改 1 次。下面同理    
+        save 300 10     
+        save 60 10000
     
 &emsp; 只要满足其中一种情况，服务器就会执行BGSAVE命令。  
 
@@ -169,7 +168,7 @@ tags:
 &emsp; 文件写入、文件同步需要根据一定的条件来执行，而这些条件由Redis配置文件中的appendfsync选项来决定。  
 -->
 
-#### 1.2.2.1. 重启加载  
+#### 1.2.2.1. 重启加载（数据恢复流程）  
 &emsp; AOF和RDB文件都可以用于服务器重启时的数据恢复。如下图所示， 表示Redis持久化文件加载流程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-54.png)  
 &emsp; 流程说明： 
@@ -233,19 +232,13 @@ tags:
 &emsp; 其实，如果想要数据足够安全，可以两种方式都开启，但两种持久化方式同时进行IO操作，会严重影响服务器性能，因此有时候不得不做出选择。  
 
 &emsp; 该策略能够适应绝大部分场景，绝大部分集群架构。  
-1). 为什么是绝大部分场景？  
+1. 为什么是绝大部分场景？  
 &emsp; 因为这套策略存在部分的数据丢失可能性。redis的主从复制是异步的，master执行完客户端请求的命令后会立即返回结果给客户端，然后异步的方式把命令同步给slave。因此master可能还未来得及将命令传输给slave，就宕机了，此时slave变为master，数据就丢了。  
 &emsp; 幸运的是，绝大部分业务场景，都能容忍数据的部分丢失。假设，真的遇到缓存雪崩的情况，代码中也有熔断器来进行资源保护，不至于所有的请求都转发到数据库上，导致服务崩溃！  
 &emsp; 注：这里的缓存雪崩是指同一时间来了一堆请求，请求的key在redis中不存在，导致请求全部转发到数据库上。  
-
-&emsp; 2). 为什么是绝大部分集群架构？  
+2. 为什么是绝大部分集群架构？  
 &emsp; 因为在集群中存在redis读写分离的情况，就不适合这套方案了。  
 &emsp; 幸运的是，由于采用redis读写分离架构，就必须要考虑主从同步的延迟性问题，徒增系统复杂度。目前业内采用redis读写分离架构的项目，比较少。  
-
-&emsp; Redis数据的恢复：  
-&emsp; RDB和AOF文件共存情况下的恢复流程如下图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-35.png)  
-&emsp; 从图可知，Redis启动时会先检查AOF是否存在，如果AOF存在则直接加载 AOF，如果不存在AOF，则直接加载RDB文件。  
 
 ----
 # 2. Redis过期键删除策略
@@ -322,7 +315,6 @@ tags:
 
 ## 3.2. 内存淘汰策略  
 &emsp; https://redis.io/topics/lru-cache  
-&emsp; redis内存数据集大小上升到一定大小的时候，就会实行数据淘汰策略。  
 
 ### 3.2.1. redis内存淘汰使用的算法  
 &emsp; redis内存淘汰使用的算法有：  
@@ -490,7 +482,7 @@ public class LRUCache<k, v> {
 
 |策略 |含义|
 |---|---|
-|volatile-lru |根据 LRU 算法删除设置了超时属性（expire）的键，直到腾出足够内存为止。如果没有可删除的键对象，回退到 noeviction 策略。| ||allkeys-lru |根据 LRU 算法删除键，不管数据有没有设置超时属性，直到腾出足够内存为止。 |
+|volatile-lru |根据 LRU 算法删除设置了超时属性（expire）的键，直到腾出足够内存为止。如果没有可删除的键对象，回退到 noeviction 策略。| |allkeys-lru |根据 LRU 算法删除键，不管数据有没有设置超时属性，直到腾出足够内存为止。|
 |volatile-lfu |在带有过期时间的键中选择最不常用的。| 
 |allkeys-lfu |在所有的键中选择最不常用的，不管数据有没有设置超时属性。| 
 |volatile-random |在带有过期时间的键中随机选择。 allkeys-random 随机删除所有键，直到腾出足够内存为止。| 
@@ -502,12 +494,14 @@ public class LRUCache<k, v> {
 &emsp; 注：volatile和allkeys规定了是对已设置过期时间的数据集淘汰数据还是从全部数据集淘汰数据。
 
 &emsp; ***使用策略规则：***  
-1).如果数据呈现幂律分布，也就是一部分数据访问频率高，一部分数据访问频率低，则使用allkeys-lru。  
-2).如果数据呈现平等分布，也就是所有的数据访问频率都相同，则使用allkeys-random。  
 
+* 如果数据呈现幂律分布，也就是一部分数据访问频率高，一部分数据访问频率低，则使用allkeys-lru。  
+* 如果数据呈现平等分布，也就是所有的数据访问频率都相同，则使用allkeys-random。  
+
+<!-- 
 &emsp; ***Redis中设置置换策略：***  
 &emsp; 在redis.conf配置文件中或通过CONFIG SET动态修改最大缓存maxmemory、置换策略maxmemory-policy。  
-
+-->
 &emsp; ***如何获取及设置内存淘汰策略***  
 &emsp; 获取当前内存淘汰策略：  
 
@@ -521,7 +515,6 @@ public class LRUCache<k, v> {
 
     127.0.0.1:6379> config set maxmemory-policy allkeys-lru
 
-
 # 4. Redis事务  
 &emsp; Redis 的事务有两个特点：  
 1. 按进入队列的顺序执行。  
@@ -530,22 +523,23 @@ public class LRUCache<k, v> {
 ## 4.1. Redis事务的使用  
 &emsp; Redis 的事务涉及到四个命令：multi（开启事务），exec（执行事务），discard （取消事务），watch（监视）。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-36.png)  
-&emsp; 1).使用Multi命令表示开启一个事务；  
-&emsp; 2).开启一个事务过后中间输入的所有命令都不会被立即执行，而是被加入到队列中缓存起来，当收到Exec命令的时候Redis服务会按入队顺序依次执行命令。  
+1. 使用Multi命令表示开启一个事务；  
+2. 开启一个事务过后中间输入的所有命令都不会被立即执行，而是被加入到队列中缓存起来，当收到Exec命令的时候Redis服务会按入队顺序依次执行命令。  
 &emsp; 在multi命令后输入的命令不会被立即执行，而是被加入的队列中，并且加入成功redis会返回QUEUED，表示加入队列成功，如果这里的命令输入错误了，或者命令参数不对，Redis会返回ERR 如下图，并且此次事务无法继续执行了。这里需要注意的是在 Redis 2.6.5 版本后是会取消事务的执行，但是在 2.6.5 之前Redis是会执行所有成功加入队列的命令。详细信息可以看官方文档。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-37.png)  
-&emsp; 3).输入exec命令后会依次执行加入到队列中的命令。  
+3. 输入exec命令后会依次执行加入到队列中的命令。  
 
 ## 4.2. Redis事务中的错误  
 
-1.  在Redis的事务中，命令在加入队列的时候如果出错，那么此次事务是会被取消执行的。这种错误在执行exec命令前Redis服务就可以探测到。  
-2.  在 Redis 事务中还有一种错误，那就是所有命令都加入队列成功了，但是在执行exec命令的过程中出现了错误，这种错误 Redis 是无法提前探测到的，那么这种情况下 Redis 的事务是怎么处理的呢？  
+1. 在Redis的事务中，命令在加入队列的时候如果出错，那么此次事务是会被取消执行的。这种错误在执行exec命令前Redis服务就可以探测到。  
+2. 在 Redis 事务中还有一种错误，那就是所有命令都加入队列成功了，但是在执行exec命令的过程中出现了错误，这种错误 Redis 是无法提前探测到的，那么这种情况下 Redis 的事务是怎么处理的呢？  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-38.png)  
 &emsp; 上面测试的过程是先通过命令get a获取a的值为 5，然后开启一个事务，在事务中执行两个动作，第一个是自增a的值，另一个是通过命令hset a b 3来设置a中b的值，可以看到这里a的类型是字符串，但是第二个命令也成功的加入到了队列，Redis并没有报错。但是最后在执行exec命令的时候，第一条命令执行成功了，看到返回结果是6，第二条命令执行失败了，提示的错误信息表示类型不对。  
 &emsp; 然后再通过get a命令发现a的值已经被改变了，不再是之前的5了，说明虽然事务失败了但是命令执行的结果并没有回滚！  
 
 &emsp; Redis为什么不支持事务回滚？  
-&emsp; 第一点意思是说在开发环境中就能避免掉语法错误或者类型不匹配的情况，在生产上是不会出现的；第二点是说Redis的内部是简单的快速的，所以不需要支持回滚的能力。  
+1. 在开发环境中就能避免掉语法错误或者类型不匹配的情况，在生产上是不会出现的；  
+2. Redis的内部是简单的快速的，所以不需要支持回滚的能力。  
 
 ## 4.3. Redis的乐观锁Watch  
 &emsp; 在 Redis 中提供了一个 watch 命令，它可以为 Redis 事务提供 CAS 乐观锁行为（Check and Set / Compare and Swap），也就是多个线程更新变量的时候，会跟原值做比较，只有它没有被其他线程修 改的情况下，才更新成新的值。  
@@ -556,22 +550,22 @@ public class LRUCache<k, v> {
 &emsp; 可以用 unwatch 取消。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-39.png)  
 
-# Redis的事件  
+# 5. Redis的事件  
 &emsp; Redis 服务器是一个事件驱动程序。  
 
-## 文件事件
+## 5.1. 文件事件
 &emsp; 服务器通过套接字与客户端或者其它服务器进行通信，文件事件就是对套接字操作的抽象。  
 &emsp; Redis 基于 Reactor 模式开发了自己的网络事件处理器，使用 I/O 多路复用程序来同时监听多个套接字，并将到达的事件传送给文件事件分派器，分派器会根据套接字产生的事件类型调用相应的事件处理器。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-56.png)  
 
-## 时间事件
+## 5.2. 时间事件
 &emsp; 服务器有一些操作需要在给定的时间点执行，时间事件是对这类定时操作的抽象。  
 &emsp; 时间事件又分为：  
 
 * 定时事件：是让一段程序在指定的时间之内执行一次；  
 * 周期性事件：是让一段程序每隔指定时间就执行一次。Redis 将所有时间事件都放在一个无序链表中，通过遍历整个链表查找出已到达的时间事件，并调用相应的事件处理器。  
 
-## 事件的调度与执行
+## 5.3. 事件的调度与执行
 &emsp; 服务器需要不断监听文件事件的套接字才能得到待处理的文件事件，但是不能一直监听，否则时间事件无法在规定的时间内执行，因此监听时间应该根据距离现在最近的时间事件来决定。  
 &emsp; 事件调度与执行由 aeProcessEvents 函数负责，伪代码如下：  
 
@@ -608,7 +602,7 @@ def main():
 &emsp; 从事件处理的角度来看，服务器运行流程如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-57.png)  
 
-# 5. Redis为什么这么快？  
+# 6. Redis为什么这么快？  
 &emsp; 1）纯内存结构、2）单线程、3）多路复用  
 
 1. 内存  

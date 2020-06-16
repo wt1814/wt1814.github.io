@@ -493,7 +493,6 @@ https://mp.weixin.qq.com/s/OdvVn5pBG3Qlz9x6jttMXQ
 4. 高可用性，部分节点不可用时，集群仍可用。通过增加 Slave 做 standby 数据副 本，能够实现故障自动 failover，节点之间通过 gossip 协议交换状态信息，用投票机制 完成 Slave 到 Master 的角色提升。 
 5. 降低运维成本，提高系统的扩展性和可用性。
 
-
 &emsp; 不足：  
 1. Client 实现复杂，驱动要求实现 Smart Client，缓存 slots mapping 信息并及时 更新，提高了开发难度，客户端的不成熟影响业务的稳定性。 
 2. 节点会因为某些原因发生阻塞（阻塞时间大于 clutser-node-timeout），被判断 下线，这种 failover 是没有必要的。 
