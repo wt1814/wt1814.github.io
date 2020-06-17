@@ -55,7 +55,7 @@ tags:
     <dubbo:module/>	        模块配置，用于配置当前模块信息，可选。
     <dubbo:provider/> 	提供方的缺省值，当ProtocolConfig和ServiceConfig某属性没有配置时，采用此缺省值，可选。
     <dubbo:consumer/>	消费方缺省配置，当ReferenceConfig某属性没有配置时，采用此缺省值，可选。
-    <dubbo:method/>	    方法配置，用于ServiceConfig和ReferenceConfig指定方法级的配置信息。
+    <dubbo:method/>	        方法配置，用于ServiceConfig和ReferenceConfig指定方法级的配置信息。
     <dubbo:argument/>	参数配置，用于指定方法参数配置。
 
 &emsp; 方法级 > 接口级 > 全局配置，级别相同，则消费方优先；   
@@ -406,7 +406,7 @@ public class XxxServiceImpl implements XxxService {
         // 获取调用方IP地址                    
         String clientIP = RpcContext.getContext().getRemoteHost();
         // 获取当前服务配置信息，所有配置信息都将转换为URL的参数                 
-        String application = RpcContext.getContext().getUrl().getParameter("applicatio n");
+        String application = RpcContext.getContext().getUrl().getParameter("application");
         // 注意：每发起RPC调用，上下文状态会变化                             
         yyyService.yyy();
         // 此时本端变成消费端，这里会返回false 
@@ -560,7 +560,7 @@ public class BarServiceMock implements BarService {
     
     &emsp; 或  
 
-            <dubbo:reference cluster="failsafe" />
+        <dubbo:reference cluster="failsafe" />
         
 &emsp; Failback Cluster：失败自动恢复，后台记录失败请求，定时重发。通常用于消息通知操作。  
 &emsp; Forking Cluster：并行调用多个服务器，只要一个成功即返回。通常用于实时性要求较高的读操作，但需要浪费更多服务资源。可通过 forks=”2”来设置最大并行数。  
