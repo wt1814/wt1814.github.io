@@ -52,7 +52,7 @@ tags:
     <dubbo:monitor/>	监控中心配置，用于配置连接监控中心相关信息，可选。
     <dubbo:service/>	服务配置，用于暴露一个服务，定义服务的元信息，一个服务可以用多个协议暴露，一个服务也可以注册到多个注册中心。
     <dubbo:reference/>	引用配置，用于创建一个远程服务代理，一个引用可以指向多个注册中心。（check值默认为true，启动时会检查引用的服务是否已存在，不存在时报错）
-    <dubbo:module/>	    模块配置，用于配置当前模块信息，可选。
+    <dubbo:module/>	        模块配置，用于配置当前模块信息，可选。
     <dubbo:provider/> 	提供方的缺省值，当ProtocolConfig和ServiceConfig某属性没有配置时，采用此缺省值，可选。
     <dubbo:consumer/>	消费方缺省配置，当ReferenceConfig某属性没有配置时，采用此缺省值，可选。
     <dubbo:method/>	    方法配置，用于ServiceConfig和ReferenceConfig指定方法级的配置信息。
@@ -82,10 +82,10 @@ tags:
 
 * 延迟5秒暴露服务
 
-        <dubbo:service delay="5000" /\>。  
+        <dubbo:service delay="5000" />  
 * 延迟到Spring初始化完成后，再暴露服务
 
-        <dubbo:service delay="-1" /\>。  
+        <dubbo:service delay="-1" />  
 
 ## 1.4. 并发控制  
 
@@ -100,6 +100,7 @@ tags:
 * 限制com.foo.BarService 的每个方法，每客户端并发执行（或占用连接的请求数）不能超过10个。  
 
         <dubbo:service interface="com.foo.BarService" actives="10" />  
+
     &emsp; 或  
     
         <dubbo:reference interface="com.foo.BarService" actives="10" />
@@ -108,6 +109,7 @@ tags:
         <dubbo:service interface="com.foo.BarService">
             <dubbo:method name="sayHello" actives="10" />
         </dubbo:service>    
+
     &emsp; 或  
     
         <dubbo:reference interface="com.foo.BarService">
@@ -118,12 +120,14 @@ tags:
 * 限制服务器端接受的连接不能超过10个。    
 
         <dubbo:provider protocol="dubbo" accepts="10" />    
+
     &emsp; 或  
 
         <dubbo:protocol name="dubbo" accepts="10" />
 * 限制客户端服务使用连接不能超过10个。  
 
-        <dubbo:reference interface="com.foo.BarService" connections="10" />  
+        <dubbo:reference interface="com.foo.BarService" connections="10" />    
+
     &emsp; 或  
 
         <dubbo:service interface="com.foo.BarService" connections="10" />  
