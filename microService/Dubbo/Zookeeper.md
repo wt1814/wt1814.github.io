@@ -29,23 +29,26 @@ tags:
         - [4.3.1. Zookeeper的四字命令](#431-zookeeper的四字命令)
         - [4.3.2. IDEA zookeeper插件的使用](#432-idea-zookeeper插件的使用)
         - [4.3.3. JMX](#433-jmx)
+    - [部署](#部署)
 
 <!-- /TOC -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-2.png)  
 # 1. Zookeeper是什么  
 &emsp; Zookeeper 是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题，例如怎样避免同时操作同一数据造成脏读的问题。  
-&emsp; ZooKeeper提供类似于分布式文件存储系统的目录树方式的数据存储，并且可以对树中的节点进行有效管理。从而用来维护和监控存储的数据的状态变化。通过监控这些数据状态的变化，从而可以达到基于数据的集群管理。诸如：统一命名服务、分布式配置管理、分布式消息队列、分布式锁、分布式协调等功能。  
 &emsp; ***Zookeeper特性：***  
 
 * 全局数据一致：每个 server 保存一份相同的数据副本，client 无论连 接到哪个server，展示的数据都是一致的，这是最重要的特征。  
 * 可靠性：如果消息被其中一台服务器接受，那么将被所有的服务器接受。  
 * 顺序性：包括全局有序和偏序两种：全局有序是指如果在一台服务器上消息 a 在消息b前发布，则在所有Server上消息a都将在消息b前被发布；偏序是指如果一个消息b在消息a后被同一个发送者发布，a必将排在b前面。  
+
+        如何保证事务的顺序一致性的？  
+        zookeeper采用了递增的事务Id来标识，所有的proposal（提议）都在被提出的时候加上了zxid。zxid实际上是一个64位的数字，高32位是epoch（时期; 纪元; 世; 新时代）用来标识leader是否发生改变，如果有新的leader产生出来，epoch会自增；低32位用来递增计数。当新产生proposal的时候，会依据数据库的两阶段过程，首先会向其他的server发出事务执行请求，如果超过半数的机器都能执行并且能够成功，那么就会开始执行。  
 * 数据更新原子性：一次数据更新要么成功（半数以上节点成功），要么失败，不存在中间状态。  
 * 实时性：Zookeeper 保证客户端将在一个时间间隔范围内获得服务器的更新信息，或者服务器失效的信息。  
 
 # 2. ZooKeeper分层命名空间  
-&emsp; Zookeeper提供一个多层级的节点命名空间（节点称为znode）。与文件系统不同的是，这些节点都可以设置关联的数据，而文件系统中只有文件节点可以存放数据而目录节点不行。Zookeeper为了保证高吞吐和低延迟，在内存中维护了这个树状的目录结构，这种特性使得Zookeeper不能用于存放大量的数据，每个节点的存放数据上限为1M。  
+&emsp; Zookeeper提供一个多层级的节点命名空间（节点称为znode），这些节点都可以设置关联的数据。Zookeeper为了保证高吞吐和低延迟，在内存中维护了这个树状的目录结构，这种特性使得Zookeeper不能用于存放大量的数据，每个节点的存放数据上限为1M。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-1.png)  
 &emsp; znode的类型在创建时确定，并且之后不能再修改。  
 
@@ -70,6 +73,8 @@ tags:
 &emsp; 在ZooKeeper中，引入Watcher机制来实现分布式数据的发布/订阅功能。Zookeeper客户端向服务端的某个Znode 注册一个 Watcher 监听，当服务端的一些指定事件触发了这个 Watcher，服务端会向指定客户端发送一个事件通知来实现分布式的通知功能，然后客户端根据 Watcher 通知状态和事件类型做出业务上的改变。  
 &emsp; 触发watch事件种类很多，如：节点创建，节点删除，节点改变，子节点改变等。  
 
+&emsp; <font color = "red">一句话概述，三个过程：客户端注册 Watcher、服务器处理 Watcher 和客户端回调 Watcher。</font>  
+
 &emsp; ***watch的重要特性：***  
 
 * 一次性触发：  
@@ -79,20 +84,32 @@ tags:
 &emsp; 客户端先得到watch通知才可查看节点变化结果。  
 
 ## 3.2. ※※※ZAB协议  
-&emsp; ZAB协议全称：Zookeeper Atomic Broadcast（Zookeeper原子广播协议），崩溃可恢复的的原子消息广播算法。ZAB协议包括两种基本模式：崩溃恢复（选主）和消息广播（同步）。整个Zookeeper集群就是在这两个模式之间切换。  
+&emsp; ZAB（Zookeeper Atomic Broadcast），崩溃可恢复的的原子消息广播协议。ZAB协议包括两种基本模式：崩溃恢复（选主）和消息广播（同步）。整个Zookeeper集群就是在这两个模式之间切换。  
 
-&emsp; Zookeeper集群中服务器分为3种角色：领导者Leader、学习者Learner(包括跟随者Follower和观察者Observer)。  
+* 集群角色：  
+    * 领导者Leader：同一时间集群总只允许有一个Leader，提供对客户端的读写功能，负责将数据同步至各个节点；  
+    * 跟随者Follower：提供对客户端读功能，写请求则转发给Leader处理，当Leader崩溃失联之后参与Leader选举；  
+    * 观察者Observer：与Follower不同的是但不参与Leader选举。  
 
-* 领导者Leader负责客户端的Writer类型的请求（增删改的操作请求其他节点都会发给Leader节点来做，然后由Leader节点同步给其他节点）。负责进行投票的发起和决议，更新系统状态。  
-* 跟随者Follower负责客户端reader请求。参与leader的选举，与leader同步。  
-* 观察者Observer可以接受客户端连接，负责客户端reader请求，将write请求转发给leader。不参与投票和选举，与leader同步。observer的目的是为了扩展系统，提高读取速度。  
+<!-- 
+* 服务状态
+
+    * LOOKING：当节点认为群集中没有Leader，服务器会进入LOOKING状态，目的是为了查找或者选举Leader；  
+    * FOLLOWING：follower角色；  
+    * LEADING：leader角色；  
+    * OBSERVING：observer角色；  
+-->
 
 ### 3.2.1. 选举流程，恢复模式  
 &emsp; 当整个集群在启动时，或者当 leader 节点出现网络中断、崩溃等情况时， ZAB 协议就会进入恢复模式并选举产生新的 Leader，当 leader 服务器选举出来后，并且集群中有过半的机器和该 leader 节点完成数据同步后（同步指的是数据同步，用来保证集群中过半的机器能够和 leader 服务器的数据状态保持一致）， ZAB 协议就会退出恢复模式。  
 
 &emsp; ***选举流程中几个重要参数：***  
 &emsp; 服务器ID：即配置的myId。id越大，选举时权重越高。  
-&emsp; 数据id：服务器在运行时产生的数据id，即zkid, 这里指本地最新snapshot的id。id越大说明数据越新，选举时权重越高。  
+&emsp; <font color = "red">事务ID，zkid(Zookeeper Transaction Id)：服务器在运行时产生的数据id，即zkid, 这里指本地最新snapshot的id。id越大说明数据越新，选举时权重越高。</font>  
+<!-- 
+ZooKeeper状态的每次变化都接收一个ZXID（ZooKeeper事务id）形式的标记。ZXID是一个64位的数字，由Leader统一分配，全局唯一，不断递增。
+ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一的zxid，如果zxid1小于zxid2说明zxid1在zxid2之前发生。
+-->
 &emsp; 选举轮数：Epoch，即逻辑时钟。随着选举的轮数++。  
 &emsp; 选举状态：4种状态。LOOKING，竞选状态；FOLLOWING，随从状态，同步leader状态，参与投票；OBSERVING，观察状态，同步leader状态，不参与投票；LEADING，领导者状态。  
 
@@ -109,14 +126,16 @@ tags:
 4. 统计投票。每次投票后，服务器都会统计投票信息，判断是否已经有过半机器接受到相同的投票信息，对于 Server1、 Server2 而言，都统计出集群中已经有两台机器接受了(2, 0)的投票信息，此时便认为已经选出了 Leader。  
 5. 改变服务器状态。一旦确定了 Leader，每个服务器就会更新自己的状态，如果是 Follower，那么就变更为 FOLLOWING，如果是 Leader，就变更为 LEADING。  
 
+&emsp; <font color = "red">一句话概述：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票（epoch>ZXID>myid）；统计投票；改变服务器状态。</font>
+
 * ***运行过程中的leader选举：***  
 &emsp; 当集群中的 leader 服务器出现宕机或者不可用的情况时，那么整个集群将无法对外提供服务，而是进入新一轮的 Leader 选举，服务器运行期间的 Leader 选举和启动时期的 Leader 选举基本过程是一致的。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-3.png)  
 1. 变更状态。 Leader 挂后，余下的非 Observer 服务器都会将自己的服务器状态变更为 LOOKING，然后开始进入 Leader 选举过程。  
 2. 每个 Server 会发出一个投票。在运行期间，每个服务器上的 ZXID 可能不同，此时假定 Server1 的 ZXID 为 123，Server3 的 ZXID 为 122；在第一轮投票中，Server1 和 Server3 都会投自己，产生投票(1, 123)，(3, 122)，然后各自将投票发送给集群中所有机器。接收来自各个服务器的投票。与启动时过程相同。  
 3. 处理投票。与启动时过程相同，此时， Server1 将会成为 Leader。  
 4. 统计投票。与启动时过程相同。  
 5. 改变服务器的状态。与启动时过程相同。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-3.png)  
 
 ### 3.2.2. 数据同步，广播模式  
 &emsp; 当集群中已经有过半的 Follower 节点完成了和 Leader 状态同步以后，那么整个集群就进入了消息广播模式。这个时候，在 Leader 节点正常工作时，启动一台新的服务器加入到集群，那这个服务器会直接进入数据恢复模式，和leader 节点进行数据同步。同步完成后即可正常对外提供非事务请求的处理。  
@@ -188,6 +207,13 @@ tags:
 ### 4.3.3. JMX  
 ......
 
+
+## 部署
+&emsp; ZooKeeper 的三种部署方式：  
+
+* 单机模式，即部署在单台机器上的一个 ZK 服务，适用于学习、了解 ZK 基础功能；
+* 伪分布模式，即部署在一台机器上的多个（原则上大于3个）ZK 服务，伪集群，适用于学习、开发和测试；
+* 全分布式模式（复制模式），即在多台机器上部署服务，真正的集群模式，生产环境中使用。
 
 
 
