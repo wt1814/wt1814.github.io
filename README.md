@@ -156,7 +156,7 @@ Java集合
 [服务降级](microService/服务降级.md)  
 
 ### 分布式通信  
-[~~序列化](microService/communication/serializbale.md)    
+[序列化](microService/communication/serializbale.md)    
 [NIO](microService/communication/NIO.md)  
 
 ## Elaticsearch  

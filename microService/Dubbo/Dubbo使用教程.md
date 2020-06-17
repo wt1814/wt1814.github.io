@@ -52,86 +52,81 @@ tags:
     <dubbo:monitor/>	监控中心配置，用于配置连接监控中心相关信息，可选。
     <dubbo:service/>	服务配置，用于暴露一个服务，定义服务的元信息，一个服务可以用多个协议暴露，一个服务也可以注册到多个注册中心。
     <dubbo:reference/>	引用配置，用于创建一个远程服务代理，一个引用可以指向多个注册中心。（check值默认为true，启动时会检查引用的服务是否已存在，不存在时报错）
-    <dubbo:module/>	模块配置，用于配置当前模块信息，可选。
+    <dubbo:module/>	    模块配置，用于配置当前模块信息，可选。
     <dubbo:provider/> 	提供方的缺省值，当ProtocolConfig和ServiceConfig某属性没有配置时，采用此缺省值，可选。
     <dubbo:consumer/>	消费方缺省配置，当ReferenceConfig某属性没有配置时，采用此缺省值，可选。
-    <dubbo:method/>	方法配置，用于ServiceConfig和ReferenceConfig指定方法级的配置信息。
+    <dubbo:method/>	    方法配置，用于ServiceConfig和ReferenceConfig指定方法级的配置信息。
     <dubbo:argument/>	参数配置，用于指定方法参数配置。
 
-&emsp; 方法级 > 接口级 > 全局配置；  
-&emsp; 级别相同，则消费方优先；  
-&emsp; 服务提供方配置，通过URL经由注册中心传递给消费方；  
-&emsp; dubbo.properties通常用于共享公共配置，比如应用名，优先级低于XML配置；  
+&emsp; 方法级 > 接口级 > 全局配置，级别相同，则消费方优先；   
 
 -----------
 
 ## 1.2. 启动时检查  
 &emsp; Dubbo缺省会在启动时检查依赖的服务是否可用，不可用时会抛出异常，阻止Spring初始化完成，默认check=”true”，懒加载或通过API编程延迟引用服务时可check。  
-&emsp; 关闭某个服务的启动时检查(没有提供者时报错)：  
 
-    <dubbo:reference interface="com.foo.BarService" check="false" />
+* 关闭某个服务的启动时检查(没有提供者时报错)：  
+
+        <dubbo:reference interface="com.foo.BarService" check="false" />
     
-&emsp; 关闭所有服务的启动时检查(没有提供者时报错)：  
+* 关闭所有服务的启动时检查(没有提供者时报错)：  
 
-    <dubbo:consumer check="false" />
+        <dubbo:consumer check="false" />
     
-&emsp; 关闭注册中心启动时检查(注册订阅失败时报错)：  
+* 关闭注册中心启动时检查(注册订阅失败时报错)：  
 
-    <dubbo:registry check="false" />
+        <dubbo:registry check="false" />
 
 ## 1.3. 延迟暴露  
 &emsp; 如果服务需要预热时间，比如初始化缓存，等待相关资源就位等，可以使用 delay进行延迟暴露。  
 
-* 延迟5秒暴露服务，\<dubbo:service delay="5000" /\>。  
-* 延迟到Spring初始化完成后，再暴露服务\<dubbo:service delay="-1" /\>。  
+* 延迟5秒暴露服务
+
+        <dubbo:service delay="5000" /\>。  
+* 延迟到Spring初始化完成后，再暴露服务
+
+        <dubbo:service delay="-1" /\>。  
 
 ## 1.4. 并发控制  
-&emsp; 限制com.foo.BarService的每个方法，服务器端并发执行（或占用线程池线程数）不能超过10个。  
+
+* 限制com.foo.BarService的每个方法，服务器端并发执行（或占用线程池线程数）不能超过10个。  
+
+        <dubbo:service interface="com.foo.BarService" executes="10" />
+* 限制com.foo.BarService的sayHello方法，服务器端并发执行（或占用线程池线程数）不能超过10个。  
+
+        <dubbo:service interface="com.foo.BarService">
+            <dubbo:method name="sayHello" executes="10" />
+        </dubbo:service>
+* 限制com.foo.BarService 的每个方法，每客户端并发执行（或占用连接的请求数）不能超过10个。  
+
+        <dubbo:service interface="com.foo.BarService" actives="10" />  
+    &emsp; 或  
     
-    <dubbo:service interface="com.foo.BarService" executes="10" />
+        <dubbo:reference interface="com.foo.BarService" actives="10" />
+*  限制com.foo.BarService的sayHello方法，每客户端并发执行（或占用连接的请求数）不能超过10个。  
 
-&emsp; 限制com.foo.BarService的sayHello方法，服务器端并发执行（或占用线程池线程数）不能超过10个。  
-
-    <dubbo:service interface="com.foo.BarService">
-        <dubbo:method name="sayHello" executes="10" />
-    </dubbo:service>
-
-&emsp; 限制com.foo.BarService 的每个方法，每客户端并发执行（或占用连接的请求数）不能超过10个。  
-
-    <dubbo:service interface="com.foo.BarService" actives="10" />
-
-&emsp; 或 
-
-    <dubbo:reference interface="com.foo.BarService" actives="10" />
-
-&emsp; 限制com.foo.BarService的sayHello方法，每客户端并发执行（或占用连接的请求数）不能超过10个。  
-
-    <dubbo:service interface="com.foo.BarService">
-        <dubbo:method name="sayHello" actives="10" />
-    </dubbo:service> 
-
-&emsp; 或  
-
-    <dubbo:reference interface="com.foo.BarService">
-        <dubbo:method name="sayHello" actives="10" />
-    </dubbo:service>  
+        <dubbo:service interface="com.foo.BarService">
+            <dubbo:method name="sayHello" actives="10" />
+        </dubbo:service>    
+    &emsp; 或  
+    
+        <dubbo:reference interface="com.foo.BarService">
+            <dubbo:method name="sayHello" actives="10" />
+        </dubbo:service>  
 
 ## 1.5. 连接控制  
-&emsp; 限制服务器端接受的连接不能超过10个。    
+* 限制服务器端接受的连接不能超过10个。    
 
-    <dubbo:provider protocol="dubbo" accepts="10" />
-    
-&emsp; 或
+        <dubbo:provider protocol="dubbo" accepts="10" />    
+    &emsp; 或  
 
-    <dubbo:protocol name="dubbo" accepts="10" />
+        <dubbo:protocol name="dubbo" accepts="10" />
+* 限制客户端服务使用连接不能超过10个。  
 
-&emsp; 限制客户端服务使用连接不能超过10个。  
+        <dubbo:reference interface="com.foo.BarService" connections="10" />  
+    &emsp; 或  
 
-    <dubbo:reference interface="com.foo.BarService" connections="10" />
-
-&emsp; 或
-
-    <dubbo:service interface="com.foo.BarService" connections="10" />  
+        <dubbo:service interface="com.foo.BarService" connections="10" />  
 
 ## 1.6. 延迟连接
 &emsp; 延迟连接用于减少长连接数。当有调用发起时，再创建长连接。  
@@ -190,7 +185,7 @@ tags:
 
 2. 同一服务上同时支持多种协议，需要与客户端互操作。  
 
-            <!-- 服务提供方 -->
+        <!-- 服务提供方 -->
         <!--多协议配置-->
         <dubbo:protocol name="dubbo" port="20880"/>
         <dubbo:protocol name="rmi" port="1099"/>
@@ -198,7 +193,7 @@ tags:
         <dubbo:service interface="com.xxx.HelloService" ref="helloService" portocol="dubbo"/>
         <dubbo:service interface="com.xxx.DemoService" ref="demoService" portocol="rmi"/>
 
-            <!-- 服务消费方 -->
+        <!-- 服务消费方 -->
         <!--多协议配置-->
         <dubbo:protocol name="dubbo" port="20880"/>
         <dubbo:protocol name="rmi" port="1099"/>
@@ -227,7 +222,7 @@ tags:
 
             <dubbo:registry protocol="zookeeper" address="10.20.153.10:2181,10.20.153.11:2181,10.20.153.12/>
             
-&emsp; 其中集群配置方式一特别适用于dubbo-admin和dubbo-monitor。  
+    &emsp; 其中集群配置方式一特别适用于dubbo-admin和dubbo-monitor。  
 
 ### 1.11.2. 多注册中心
 &emsp; Dubbo支持同一服务向多注册中心同时注册，或者不同服务分别注册到不同的注册中心上去，甚至可以同时引用注册在不同注册中心上的同名服务。另外，注册中心是支持自定义扩展的。  
@@ -268,7 +263,7 @@ tags:
 
         <dubbo:registry address="10.20.153.10:9090" register="false" />
 
-&emsp; &emsp; 或  
+    &emsp; 或  
 
         <dubbo:registry address="10.20.153.10:9090?register=false" />  
 
@@ -538,30 +533,31 @@ public class BarServiceMock implements BarService {
 
 ## 1.28. 集群容错
 &emsp; 在集群调用失败时，Dubbo提供了多种容错方案，缺省为failover重试。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-10.png)   
-&emsp; Failover Cluster：失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过retries=”2”来设置重试次数(不含第一次)。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-10.png)  
 
-    <dubbo:service retries="2" />
+* Failover Cluster：失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过retries=”2”来设置重试次数(不含第一次)。  
+
+        <dubbo:service retries="2" />
     
-&emsp; 或  
+    &emsp; 或  
 
-    <dubbo:reference retries="2" />
-    
-&emsp; 或  
+        <dubbo:reference retries="2" />
+        
+    &emsp; 或  
 
-    <dubbo:reference>
-        <dubbo:method name="findFoo" retries="2" />
-    </dubbo:reference>
+        <dubbo:reference>
+            <dubbo:method name="findFoo" retries="2" />
+        </dubbo:reference>
 
 * Failfast Cluster：快速失败，只发起一次调用，失败立即报错。通常用于非幂等性的写操作，比如新增记录。  
 * Failsafe Cluster：失败安全，出现异常时，直接忽略。通常用于写入审计日志等操作。 
 
         <dubbo:service cluster="failsafe" />
     
-&emsp; 或  
+    &emsp; 或  
 
-        <dubbo:reference cluster="failsafe" />
-    
+            <dubbo:reference cluster="failsafe" />
+        
 &emsp; Failback Cluster：失败自动恢复，后台记录失败请求，定时重发。通常用于消息通知操作。  
 &emsp; Forking Cluster：并行调用多个服务器，只要一个成功即返回。通常用于实时性要求较高的读操作，但需要浪费更多服务资源。可通过 forks=”2”来设置最大并行数。  
 &emsp; Broadcast Cluster：广播调用所有提供者，逐个调用，任意一台报错则报错。通常用于通知所有提供者更新缓存或日志等本地资源信息。  
