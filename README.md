@@ -45,8 +45,7 @@
 ## Java  
 [Java基础](java/Java基础.md)   
 [Java基础数据类型](java/数据类型.md)  
-Java集合  
-&emsp; [集合框架](java/Collection/1.集合框架.md)  
+[Java集合框架](java/Collection/1.集合框架.md)  
 &emsp; [Map](java/Collection/2.Map.md)  
 &emsp; [Collection](java/Collection/3.Collection.md)  
 [Java异常](java/JavaException.md)  
@@ -122,8 +121,7 @@ Java集合
 ### SpringBoot  
 [自动配置原理](microService/SpringBoot/1.自动配置原理.md)  
 [Spring Boot启动全过程解析](microService/SpringBoot/2.SpringBoot2.2.0启动全过程源码分析.md)  
-[SpringBoot事件监听机制](microService/SpringBoot/SpringBootEvent.md)  
-[SpringBoot内置生命周期事件]()  
+[SpringBoot事件监听机制](microService/SpringBoot/3.SpringBootEvent.md)  
 <!--[自定义strater] -->
 
 ### Spring Cloud Netflix  
