@@ -10,7 +10,7 @@ tags:
 
 - [1. Mybatis工作流程概述](#1-mybatis工作流程概述)
 - [2. MyBatis架构分层与模块划分](#2-mybatis架构分层与模块划分)
-    - [2.1. 接口层](#21-接口层)
+    - [2.1. API接口层](#21-api接口层)
     - [2.2. 核心处理层](#22-核心处理层)
     - [2.3. 基础支持层](#23-基础支持层)
 - [3. Mybaits源码解析](#3-mybaits源码解析)
@@ -30,6 +30,7 @@ tags:
 
 <!-- /TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-30.png)  
 
 # 1. Mybatis工作流程概述  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-13.png)  
@@ -78,7 +79,7 @@ tags:
 * 核心处理层：负责具体的SQL查找、SQL解析、SQL执行和执行结果映射处理等。它主要的目的是根据调用的请求完成一次数据库操作。  
 * 基础支持层：负责最基础的功能支撑，包括连接管理、事务管理、配置加载和缓存处理，这些都是共用的东西，将它们抽取出来作为最基础的组件。为上层的数据处理层提供最基础的支撑。  
 
-## 2.1. 接口层  
+## 2.1. API接口层  
 &emsp; 在不与Spring 集成的情况下，使用 MyBatis 执行数据库的操作主要如下：  
 
 ```
@@ -104,7 +105,7 @@ sqlSession = factory.openSession();
 
     |名称 |意义 |
     |---|---|
-    |Configuration |管理 mysql-config.xml 全局配置关系类 |
+    |Configuration |管理 mybatis-config.xml 全局配置关系类 |
     |SqlSessionFactory |Session 管理工厂接口 |
     |Session |SqlSession 是一个面向用户（程序员）的接口。SqlSession 中提供了很多操作数据库的方法 |
     |Executor |执行器是一个接口（基本执行器、缓存执行器）。作用：SqlSession 内部通过执行器操作数据库 |
@@ -261,7 +262,7 @@ public SqlSessionFactory build(InputStream inputStream, String environment, Prop
 ```
 &emsp; 通过Document对象来解析配置文件，然后返回InputStream对象，然后交给XMLConfigBuilder构造成org.apache.ibatis.session.Configuration对象，然后交给build()方法构造程SqlSessionFactory。  
 
-&emsp; #parse()方法解析：  
+&emsp; <font color = "red">#parse()方法，解析mybatis-config.xml。</font> 源码：  
 ```
 public Configuration parse() {
     //查看该文件是否已经解析过
@@ -312,7 +313,7 @@ private void parseConfiguration(XNode root) {
 }
 ```
 
-&emsp; 注：mapperElement(root.evalNode("mappers"))，mapperElemet()方法是解析mapper映射文件的。mapper标签配置方式：  
+&emsp; <font color = "red">mapperElement(root.evalNode("mappers"))，mapperElemet()方法是解析mapper映射文件的。</font> mapper标签配置方式：  
 
 ```xml
 <mappers>
@@ -666,7 +667,7 @@ public interface DemoMapper {
 }
 ```
 
-&emsp; 实际上它是一个接口，而且并没有实现类，而开发人员却可以直接对它进行调用，如下：  
+&emsp; 这个接口开发人员没有编写实现类，而开发人员却可以直接对它进行调用，如下：  
 
 ```
 DemoMapper mapper = sqlSession.getMapper(DemoMapper.class);
@@ -674,8 +675,8 @@ Map<String,Object> map = new HashMap();
 map.put("id","123");
 mapper.selectAll(map);
 ```
+&emsp; <font color = "red">MyBatis底层使用了动态代理，来对这个接口进行代理。</font>  
 
-&emsp; MyBatis底层使用了动态代理，来对这个接口进行代理，实际上调用的是MyBatis生成的代理对象。  
 
 &emsp; 入口：在获取Mapper的时候，需要调用SqlSession的getMapper()方法。    
 
@@ -683,7 +684,7 @@ mapper.selectAll(map);
 //getMapper方法最终会调用到这里，这个是MapperRegistry的getMapper方法
 @SuppressWarnings("unchecked")
 public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
-    //MapperProxyFactory  在解析的时候会生成一个map  map中会有我们的DemoMapper的Class
+    //MapperProxyFactory在解析的时候会生成一个map，map中会有编写的DemoMapper的Class
     final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
     if (mapperProxyFactory == null) {
         throw new BindingException("Type " + type + " is not known to the MapperRegistry.");
@@ -695,63 +696,66 @@ public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     }
 }
 ```
+&emsp; 可以看到这里mapperProxyFactory对象会从一个叫做knownMappers的对象中以type为key取出值，这个knownMappers是一个HashMap，存放了DemoMapper对象，而这里的type，就是上面写的Mapper接口。  
 
-&emsp; 可以看到这里mapperProxyFactory对象会从一个叫做knownMappers的对象中以type为key取出值，这个knownMappers是一个HashMap，存放了DemoMapper对象，而这里的type，就是上面写的Mapper接口。那么就有人会问了，这个knownMappers是在什么时候生成的呢？在解析的时候，会调用parse()方法，这个方法内部有一个bindMapperForNamespace方法，而就是这个方法完成了knownMappers的生成，并且将Mapper接口put进去。  
+    knownMappers是在什么时候生成的？
+    在解析的时候，会调用parse()方法，这个方法内部有一个bindMapperForNamespace方法，而就是这个方法完成了knownMappers的生成，并且将Mapper接口put进去。  
 
-```
-public void parse() {
-    //判断文件是否之前解析过
-    if (!configuration.isResourceLoaded(resource)) {
-        //解析mapper文件
-        configurationElement(parser.evalNode("/mapper"));
-        configuration.addLoadedResource(resource);
-        //这里：绑定Namespace里面的Class对象*
-        bindMapperForNamespace();
-    }
 
-    //重新解析之前解析不了的节点
-    parsePendingResultMaps();
-    parsePendingCacheRefs();
-    parsePendingStatements();
-}
-private void bindMapperForNamespace() {
-    String namespace = builderAssistant.getCurrentNamespace();
-    if (namespace != null) {
-        Class<?> boundType = null;
-        try {
-            boundType = Resources.classForName(namespace);
-        } catch (ClassNotFoundException e) {
+    public void parse() {
+        //判断文件是否之前解析过
+        if (!configuration.isResourceLoaded(resource)) {
+            //解析mapper文件
+            configurationElement(parser.evalNode("/mapper"));
+            configuration.addLoadedResource(resource);
+            //这里：绑定Namespace里面的Class对象*
+            bindMapperForNamespace();
         }
-        if (boundType != null) {
-            if (!configuration.hasMapper(boundType)) {
-                configuration.addLoadedResource("namespace:" + namespace);
-                //这里将接口class传入
-                configuration.addMapper(boundType);
+
+        //重新解析之前解析不了的节点
+        parsePendingResultMaps();
+        parsePendingCacheRefs();
+        parsePendingStatements();
+    }
+    private void bindMapperForNamespace() {
+        String namespace = builderAssistant.getCurrentNamespace();
+        if (namespace != null) {
+            Class<?> boundType = null;
+            try {
+                boundType = Resources.classForName(namespace);
+            } catch (ClassNotFoundException e) {
+            }
+            if (boundType != null) {
+                if (!configuration.hasMapper(boundType)) {
+                    configuration.addLoadedResource("namespace:" + namespace);
+                    //这里将接口class传入
+                    configuration.addMapper(boundType);
+                }
             }
         }
     }
-}
-public <T> void addMapper(Class<T> type) {
-    if (type.isInterface()) {
-        if (hasMapper(type)) {
-            throw new BindingException("Type " + type + " is already known to the MapperRegistry.");
-        }
-        boolean loadCompleted = false;
-        try {
-            //这里将接口信息put进konwMappers。
-            knownMappers.put(type, new MapperProxyFactory<>(type));
-            MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
-            parser.parse();
-            loadCompleted = true;
-        } finally {
-            if (!loadCompleted) {
-                knownMappers.remove(type);
+    public <T> void addMapper(Class<T> type) {
+        if (type.isInterface()) {
+            if (hasMapper(type)) {
+                throw new BindingException("Type " + type + " is already known to the MapperRegistry.");
+            }
+            boolean loadCompleted = false;
+            try {
+                //这里将接口信息put进konwMappers。
+                knownMappers.put(type, new MapperProxyFactory<>(type));
+                MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
+                parser.parse();
+                loadCompleted = true;
+            } finally {
+                if (!loadCompleted) {
+                    knownMappers.remove(type);
+                }
             }
         }
     }
-}
-```
-&emsp; 所以在getMapper之后，获取到的是一个Class，之后的代码就简单了，就是生成标准的代理类了，调用newInstance()方法。  
+
+
+&emsp; 在getMapper之后，获取一个Class。之后的代码就是生成标准的代理类，调用newInstance()方法。  
 
 ```
 public T newInstance(SqlSession sqlSession) {
@@ -771,7 +775,6 @@ protected T newInstance(MapperProxy<T> mapperProxy) {
 
 ```
 /**
- * @author Clinton Begin
  * @author Eduardo Macarron
  */
 public class MapperProxy<T> implements InvocationHandler, Serializable {
@@ -791,7 +794,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
             if (Object.class.equals(method.getDeclaringClass())) {
                 //判断方法所属的类
                 //是不是调用的Object默认的方法
-                //如果是  则不代理，不改变原先方法的行为
+                //如果是，则不代理，不改变原先方法的行为
                 return method.invoke(this, args);
             } else if (method.isDefault()) {
                 //对于默认方法的处理
