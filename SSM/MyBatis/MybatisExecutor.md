@@ -8,7 +8,7 @@ tags:
 
 <!-- TOC -->
 
-- [1. Mybatis工作流程](#1-mybatis工作流程)
+- [1. Mybatis工作流程概述](#1-mybatis工作流程概述)
 - [2. MyBatis架构分层与模块划分](#2-mybatis架构分层与模块划分)
     - [2.1. 接口层](#21-接口层)
     - [2.2. 核心处理层](#22-核心处理层)
@@ -31,7 +31,7 @@ tags:
 <!-- /TOC -->
 
 
-# 1. Mybatis工作流程  
+# 1. Mybatis工作流程概述  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-13.png)  
 1. 读取核心配置文件并返回InputStream流对象。
 2. 根据InputStream流对象解析出Configuration对象，然后创建SqlSessionFactory工厂对象。
@@ -42,7 +42,7 @@ tags:
 
 # 2. MyBatis架构分层与模块划分  
 &emsp; 在 MyBatis 的主要工作流程里面，不同的功能是由很多不同的类协作完成的，它们 分布在 MyBatis jar 包的不同的 package 里面。  
-&emsp; MyBatis(基于3.5.1)jar 包结构是这样的（21 个包）：  
+&emsp; MyBatis(基于3.5.1)jar 包结构（21 个包）：  
 
     └── org  
         └── apache   
@@ -70,13 +70,13 @@ tags:
                 ├── transaction 
                 └── type   
 
-&emsp; 跟 Spring 一样，MyBatis 按照功能职责的不同，所有的 package 可以分成不同的 工作层次。  
+&emsp; MyBatis按照功能职责的不同，所有的package可以分成不同的工作层次。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-14.png)  
 &emsp; Mybatis的功能架构分为三层：  
 
-* API接口层：提供给外部使用的接口API，开发人员通过这些本地API来操纵数据库。接口层一接收到调用请求就会调用数据处理层来完成具体的数据处理。  
+* API接口层：提供给外部使用的接口API，开发人员通过这些本地API来操纵数据库。接口层一接收到调用请求就会调用核心处理层来完成具体的数据处理。  
 * 核心处理层：负责具体的SQL查找、SQL解析、SQL执行和执行结果映射处理等。它主要的目的是根据调用的请求完成一次数据库操作。  
-* 基础支持层：负责最基础的功能支撑，包括连接管理、事务管理、配置加载和缓存处理，这些都是共用的东西，将他们抽取出来作为最基础的组件。为上层的数据处理层提供最基础的支撑。  
+* 基础支持层：负责最基础的功能支撑，包括连接管理、事务管理、配置加载和缓存处理，这些都是共用的东西，将它们抽取出来作为最基础的组件。为上层的数据处理层提供最基础的支撑。  
 
 ## 2.1. 接口层  
 &emsp; 在不与Spring 集成的情况下，使用 MyBatis 执行数据库的操作主要如下：  
@@ -100,18 +100,17 @@ sqlSession = factory.openSession();
 &emsp; Mybatis 中 scripting 模块会根据用户传入的参数，解析映射文件中定义的动态 SQL 节点，形成数据库能执行的SQL 语句。  
 * SQL 执行  
 &emsp; 执行 SQL 语句；处理结果集，并映射成 Java 对象。  
-&emsp; SQL 语句的执行涉及多个组件Configuration 、 SqlSessionFactory 、 Session 、 Executor 、 MappedStatement 、 
-StatementHandler、ResultSetHandler。包括 MyBatis 的四大核心，它们是: Executor、StatementHandler、ParameterHandler、ResultSetHandler。  
+&emsp; <font color = "red">SQL语句的执行涉及多个组件Configuration 、 SqlSessionFactory 、 Session 、 Executor 、 MappedStatement 、StatementHandler、ResultSetHandler。</font> ***包括 MyBatis 的四大核心，它们是: Executor、StatementHandler、ParameterHandler、ResultSetHandler。***  
 
-|名称 |意义 |
-|---|---|
-|Configuration |管理 mysql-config.xml 全局配置关系类 |
-|SqlSessionFactory |Session 管理工厂接口 |
-|Session |SqlSession 是一个面向用户（程序员）的接口。SqlSession 中提供了很多操作数据库的方法 |
-|Executor |执行器是一个接口（基本执行器、缓存执行器）。作用：SqlSession 内部通过执行器操作数据库 |
-|MappedStatement |底层封装对象。作用：对操作数据库存储封装，包括 sql 语句、输入输出参数 
-|StatementHandler |具体操作数据库相关的 handler 接口| 
-|ResultSetHandler |具体操作数据库返回结果的 handler 接口|
+    |名称 |意义 |
+    |---|---|
+    |Configuration |管理 mysql-config.xml 全局配置关系类 |
+    |SqlSessionFactory |Session 管理工厂接口 |
+    |Session |SqlSession 是一个面向用户（程序员）的接口。SqlSession 中提供了很多操作数据库的方法 |
+    |Executor |执行器是一个接口（基本执行器、缓存执行器）。作用：SqlSession 内部通过执行器操作数据库 |
+    |MappedStatement |底层封装对象。作用：对操作数据库存储封装，包括 sql 语句、输入输出参数 
+    |StatementHandler |具体操作数据库相关的 handler 接口| 
+    |ResultSetHandler |具体操作数据库返回结果的 handler 接口|
 
 <!-- 
 MyBatis 层级结构各个组件的介绍(这里只是简单介绍，具体介绍在后面)：
@@ -128,10 +127,10 @@ Configuration:  MyBatis 所有的配置信息都维持在 Configuration 对象�
 -->
 
 
-&emsp; `插件也属于核心层，这是由它的工作方式和拦截的对象决定的。`    
+&emsp; <font color= "red">插件也属于核心层，这是由它的工作方式和拦截的对象决定的。</font>   
 
 ## 2.3. 基础支持层  
-&emsp; 最后一个就是基础支持层。基础支持层主要是一些抽取出来的通用的功能（实现复 用），用来支持核心处理层的功能。比如数据源、缓存、日志、xml 解析、反射、IO、 事务等等这些功能。  
+&emsp; 最后一个就是基础支持层。基础支持层主要是一些抽取出来的通用的功能（实现复用），用来支持核心处理层的功能。比如数据源、缓存、日志、xml 解析、反射、IO、 事务等等这些功能。  
 
 * 反射模块  
 &emsp; Mybatis 中的反射模块，对 Java 反射进行了很好的封装，提供了简易的 API，方便上层调用，并且对反射操作进行了一系列的优化，比如，缓存了类的 元数据（MetaClass）和对象的元数据（MetaObject），提高了反射操作的性能。  
@@ -158,8 +157,10 @@ Configuration:  MyBatis 所有的配置信息都维持在 Configuration 对象�
 
 ## 3.1. Mybatis初始化  
 &emsp; MyBatis的初始化可以有两种方式：  
-&emsp; 基于XML配置文件：基于XML配置文件的方式是将MyBatis的所有配置信息放在XML文件中，MyBatis通过加载并XML配置文件，将配置文信息组装成内部的Configuration对象。  
-&emsp; 基于Java API：这种方式不使用XML配置文件，需要MyBatis使用者在Java代码中，手动创建Configuration对象，然后将配置参数set 进入Configuration对象中。  
+
+* 基于XML配置文件：基于XML配置文件的方式是将MyBatis的所有配置信息放在XML文件中，MyBatis通过加载并XML配置文件，将配置文信息组装成内部的Configuration对象。  
+* 基于Java API：这种方式不使用XML配置文件，需要MyBatis使用者在Java代码中，手动创建Configuration对象，然后将配置参数set 进入Configuration对象中。  
+
 &emsp; 本文基于XML配置文件方式的MyBatis初始化。示例如下：  
 
 ```
@@ -185,7 +186,7 @@ public static void main(String[] args) throws Exception {
 ```
 
 ## 3.2. 配置文件加载  
-&emsp; Resources.getResourceAsStream(resource);源码分析：  
+&emsp; `Resources.getResourceAsStream(resource)`解读：  
 &emsp; Resources是mybatis提供的一个加载资源文件的工具类。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-16.png)  
 &emsp; #getResourceAsStream方法:  
@@ -228,7 +229,7 @@ InputStream getResourceAsStream(String resource, ClassLoader[] classLoader) {
 ```
 
 ## 3.3. 创建SqlSessionFactory  
-&emsp; SqlSessionFactory对象生成使用了建造者模式。  
+&emsp; <font color = "red">SqlSessionFactory对象的生成使用了建造者模式。</font>  
 
 ```
 public SqlSessionFactory build(InputStream inputStream) {
@@ -311,8 +312,8 @@ private void parseConfiguration(XNode root) {
 }
 ```
 
-&emsp; 注：mapperElement(root.evalNode("mappers"))，mapperElemet()方法是解析mapper映射文件的。  
-&emsp; mapper标签配置方式：  
+&emsp; 注：mapperElement(root.evalNode("mappers"))，mapperElemet()方法是解析mapper映射文件的。mapper标签配置方式：  
+
 ```xml
 <mappers>
     <!-- 通过配置文件路径 -->
@@ -665,7 +666,7 @@ public interface DemoMapper {
 }
 ```
 
-&emsp; 实际上它是一个接口，而且并没有实现类，而我们却可以直接对它进行调用，如下：  
+&emsp; 实际上它是一个接口，而且并没有实现类，而开发人员却可以直接对它进行调用，如下：  
 
 ```
 DemoMapper mapper = sqlSession.getMapper(DemoMapper.class);

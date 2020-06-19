@@ -28,6 +28,7 @@
     - [项目构建基础](#项目构建基础)
     - [项目管理](#项目管理)
         - [Git](#git)
+    - [开发软件](#开发软件)
     - [Error](#error)
 
 <!-- /TOC -->
@@ -46,8 +47,9 @@
 [Java基础](java/Java基础.md)   
 [Java基础数据类型](java/数据类型.md)  
 [Java集合框架](java/Collection/1.集合框架.md)  
-&emsp; [Map](java/Collection/2.Map.md)  
-&emsp; [Collection](java/Collection/3.Collection.md)  
+* [Map](java/Collection/2.Map.md)  
+* [Collection](java/Collection/3.Collection.md)  
+
 [Java异常](java/JavaException.md)  
 [~~Java范型](java/JavaParadigm.md)  
 [Java反射](java/Java反射.md)  
@@ -193,6 +195,9 @@
 ## 项目管理  
 ### Git  
 [git命令](/projectManage/git/command.md)   
+
+## 开发软件  
+[idea](software/idea/idea.md)  
 
 
 ## Error  
