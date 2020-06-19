@@ -11,6 +11,7 @@ tags:
     - [1.1. 缓存体系结构](#11-缓存体系结构)
     - [1.2. 一级缓存](#12-一级缓存)
         - [1.2.1. 一级缓存不足](#121-一级缓存不足)
+        - [Spring整合MyBatis一条语句创建几个SqlSession 会话](#spring整合mybatis一条语句创建几个sqlsession-会话)
     - [1.3. 二级缓存](#13-二级缓存)
         - [1.3.1. 开启二级缓存](#131-开启二级缓存)
         - [1.3.2. 什么时候开启二级缓存？](#132-什么时候开启二级缓存)
@@ -20,25 +21,23 @@ tags:
             - [1.3.4.2. 二级缓存有可能存在脏读的问题（可避免）](#1342-二级缓存有可能存在脏读的问题可避免)
     - [1.4. MyBatis缓存的执行流程](#14-mybatis缓存的执行流程)
     - [1.5. Spring整合MyBatis缓存失效问题](#15-spring整合mybatis缓存失效问题)
-    - [1.6. Spring整合MyBatis一条语句创建几个SqlSession 会话](#16-spring整合mybatis一条语句创建几个sqlsession-会话)
 
 <!-- /TOC -->
 
 
+
 # 1. MyBatis缓存  
-&emsp; MyBatis支持声明式数据缓存（declarative data caching）。当一条SQL语句被标记为“可缓存”后，首次执行它时从数据库获取的所有数据会被存储在一段高速缓存中，今后执行这条语句时就会从高速缓存中读取结果，而不是再次命中数据库。MyBatis提供了默认下基于Java HashMap的缓存实现，以及用于与OSCache、Ehcache、Hazelcast和Memcached连接的默认连接器。MyBatis还提供API供其他缓存实现使用。  
+&emsp; MyBatis支持声明式数据缓存（declarative data caching）。MyBatis提供了默认基于Java HashMap的缓存实现，以及用于与OSCache、Ehcache、Hazelcast和Memcached连接的默认连接器。MyBatis还提供API供其他缓存实现使用。  
 
 ## 1.1. 缓存体系结构  
-&emsp; MyBatis 跟缓存相关的类都在 cache 包里面，其中有一个 Cache 接口，只有一个默 认的实现类 PerpetualCache，它是用 HashMap 实现的。  
-&emsp; 除此之外，还有很多的装饰器，通过这些装饰器可以额外实现很多的功能：回收策 略、日志记录、定时刷新等等。  
+&emsp; MyBatis跟缓存相关的类都在cache包里面，其中有一个 Cache 接口，只有一个默认的实现类PerpetualCache，它是用HashMap实现的。除此之外，还有很多的装饰器，通过这些装饰器可以额外实现很多的功能：回收策略、日志记录、定时刷新等等。但是无论怎么装饰，经过多少层装饰，最后使用的还是基本的实现类（默认 PerpetualCache）。 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-18.png)  
-&emsp; 但是无论怎么装饰，经过多少层装饰，最后使用的还是基本的实现类（默认 PerpetualCache）。   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-19.png)  
+<!-- ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-19.png) --> 
 &emsp; 所有的缓存实现类总体上可分为三类：基本缓存、淘汰算法缓存、装饰器缓存。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-20.png)  
 
 ## 1.2. 一级缓存  
-&emsp; 一级缓存也叫本地缓存，MyBatis 的一级缓存是在会话（SqlSession）层面进行缓 存的。MyBatis中的一级缓存，是默认开启且无法关闭的，一级缓存默认的作用域是一个SqlSession。  
+&emsp; 一级缓存也叫本地缓存，MyBatis 的一级缓存是在会话（SqlSession）层面进行缓存的。MyBatis中的一级缓存，是默认开启且无法关闭的，一级缓存默认的作用域是一个SqlSession。  
 
 &emsp; 一级缓存的生命周期：  
 1. 如果SqlSession调用了close()方法，会释放掉一级缓存PerpetualCache对象，一级缓存将不可用。
@@ -58,10 +57,61 @@ session2.commit();
 System.out.println(mapper1.selectBlog(1));
 ```
 &emsp; 一级缓存的不足：    
-&emsp; 使用一级缓存的时候，因为缓存不能跨会话共享，不同的会话之间对于相同的数据 可能有不一样的缓存。在有多个会话或者分布式环境下，会存在脏数据的问题。如果要 解决这个问题，就要用到二级缓存。   
+&emsp; <font color = "red">使用一级缓存的时候，因为缓存不能跨会话共享，不同的会话之间对于相同的数据可能有不一样的缓存。在有多个会话或者分布式环境下，会存在脏数据的问题。如果要解决这个问题，就要用到二级缓存。</font>   
+
+### Spring整合MyBatis一条语句创建几个SqlSession 会话  
+&emsp; 同一个方法，Mybatis 多次请求数据库，是否要创建多个 SqlSession 会话？  
+&emsp; 先从两个 demo 说起，再切入 Mybatis 的源码。  
+```
+public void testSqlSession() throws Exception{
+    System.out.println(this.xttblogMapper.findByName("业余草"));
+    System.out.println(this.xttblogMapper.findByName("涛哥"));
+}
+```
+&emsp; 运行一下代码。查看控制台，有一下输出。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-21.png)  
+&emsp; 这说明在同一个方法，Mybatis 多次请求数据库且没有事务的情况下，创建了多个 SqlSession 会话！  
+
+&emsp; 然后，在 testSqlSession 方法上加上 @Transactional 注解看看效果。  
+```
+@Transactional
+public void testSqlSession(){
+    System.out.println(jmbRollbackRecordMapper.findByName("业余草"));
+    System.out.println(jmbRollbackRecordMapper.findByName("涛哥"));
+}
+```
+&emsp; 运行效果截图如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-22.png)  
+&emsp; 这说明，在有事务的情况下，同一个方法，Mybatis 多次请求数据库，只创建了一个 SqlSession 会话！  
+
+&emsp; 如果有事务，并且方法内存在多个线程的情况下，代码如下：  
+```
+@Transactional
+public void testSqlSession(){
+    new Thread(){
+        @Override
+        public void run() {
+            System.out.println(jmbRollbackRecordMapper.findByName("业余草"));
+        }
+    }.start();
+    new Thread(){
+        @Override
+        public void run() {
+            System.out.println(jmbRollbackRecordMapper.findByName("涛哥"));
+        }
+    }.start();
+}
+```
+&emsp; 运行结果如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-23.png)  
+&emsp; 在有事务的情况下，同一个方法内，有多个线程 Mybatis 多次请求数据库的情况下，创建了多个 SqlSession 会话！  
+
+&emsp; 为什么在同一个事务下，又开启两个SqlSession了呢？  
+&emsp; 这就需要查看源码了，通过源码会发现，在启用的这两个线程中，在事务管理器 TransactionSynchronizationManager 中获取 SqlSessionHolder，再从 SqlSessionHolder 中获取 SqlSession。而这两个线程的 ThreadLocal 绑定的线程不一样，所以就重新 openSession 了一个 SqlSession。  
+
 
 ## 1.3. 二级缓存  
-&emsp; 二级缓存是用来解决一级缓存不能跨会话共享的问题的，范围是 namespace 级别 的，可以被多个 SqlSession 共享（只要是同一个接口里面的相同方法，都可以共享）， 生命周期和应用同步。    
+&emsp; 二级缓存是用来解决一级缓存不能跨会话共享的问题的，范围是namespace级别的，可以被多个SqlSession共享<font color = "red">（只要是同一个接口里面的同一方法，都可以共享）</font>， 生命周期和应用同步。    
 
 ### 1.3.1. 开启二级缓存  
 &emsp; MyBatis的二级缓存是默认关闭的，如果要开启有两种方式：  
@@ -75,7 +125,6 @@ System.out.println(mapper1.selectBlog(1));
 
 </settings>
 ```
-
 2. 在mapper.xml中开启  
 
 ```
@@ -119,12 +168,12 @@ System.out.println(mapper1.selectBlog(1));
 ```
 
 ### 1.3.2. 什么时候开启二级缓存？  
-&emsp; 一级缓存默认是打开的，二级缓存需要配置才可以开启。那么我们必须思考一个问 题，在什么情况下才有必要去开启二级缓存？   
-1. 因为所有的增删改都会刷新二级缓存，导致二级缓存失效，所以适合在查询为主 的应用中使用，比如历史交易、历史订单的查询。否则缓存就失去了意义。
-2. 如果多个 namespace 中有针对于同一个表的操作，比如 Blog 表，如果在一个 namespace 中刷新了缓存，另一个 namespace 中没有刷新，就会出现读到脏数据的情 况。所以，推荐在一个 Mapper 里面只操作单表的情况使用。  
+&emsp; 一级缓存默认是打开的，二级缓存需要配置才可以开启。<font color = "red">在什么情况下才有必要去开启二级缓存？</font>   
+1. 因为所有的增删改都会刷新二级缓存，导致二级缓存失效，所以适合在查询为主的应用中使用，比如历史交易、历史订单的查询。否则缓存就失去了意义。
+2. 如果多个namespace中有针对于同一个表的操作，比如Blog表，如果在一个namespace中刷新了缓存，另一个 namespace 中没有刷新，就会出现读到脏数据的情 况。所以，推荐在一个Mapper里面只操作单表的情况使用。  
 
-&emsp; 如果要让多个 namespace 共享一个二级缓存，应该怎么做？   
-&emsp; 跨 namespace 的缓存共享的问题，可以使用<cache-ref\>来解决：  
+&emsp; 如果要让多个namespace共享一个二级缓存，应该怎么做？   
+&emsp; 跨namespace的缓存共享的问题，可以使用<cache-ref\>来解决：  
 
 ```
 <cache-ref namespace="com.gupaoedu.crud.dao.DepartmentMapper" /> 
@@ -132,14 +181,13 @@ System.out.println(mapper1.selectBlog(1));
 &emsp; cache-ref 代表引用别的命名空间的 Cache 配置，两个命名空间的操作使用的是同 一个 Cache。在关联的表比较少，或者按照业务可以对表进行分组的时候可以使用。  
 &emsp; 注意：在这种情况下，多个 Mapper 的操作都会引起缓存刷新，缓存的意义已经不大了。  
 
-
 ### 1.3.3. 第三方缓存做二级缓存  
-&emsp; 除了 MyBatis 自带的二级缓存之外，也可以通过实现 Cache 接口来自定义二级 缓存。  
+&emsp; 除了MyBatis自带的二级缓存之外，也可以通过实现Cache接口来自定义二级缓存。  
 &emsp; MyBatis 官方提供了一些第三方缓存集成方式，比如 ehcache 和 redis：https://github.com/mybatis/redis-cache  
 
 ### 1.3.4. 二级缓存不足  
 #### 1.3.4.1. 二级缓存不能存在一直增多的数据  
-&emsp; 由于二级缓存的影响范围不是SqlSession而是namespace，所以二级缓存会在你的应用启动时一直存在直到应用关闭，所以二级缓存中不能存在随着时间数据量越来越大的数据，这样有可能会造成内存空间被占满。  
+&emsp; 由于二级缓存的影响范围不是SqlSession而是namespace，所以二级缓存会在应用启动时一直存在直到应用关闭，所以二级缓存中不能存在随着时间数据量越来越大的数据，这样有可能会造成内存空间被占满。  
 
 #### 1.3.4.2. 二级缓存有可能存在脏读的问题（可避免）  
 &emsp; 由于二级缓存的作用域为namespace，那么就可以假设这么一个场景，有两个namespace操作一张表，第一个namespace查询该表并回写到内存中，第二个namespace往表中插一条数据，那么第一个namespace的二级缓存是不会清空这个缓存的内容的，在下一次查询中，还会通过缓存去查询，这样会造成数据的不一致。  
@@ -259,70 +307,11 @@ public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBoun
 }
 ```
 
-
 ## 1.5. Spring整合MyBatis缓存失效问题  
-&emsp; 一级缓存的作用域是SqlSession，而使用者可以自定义SqlSession什么时候出现什么时候销毁，在这段期间一级缓存都是存在的。  
-当使用者调用close()方法之后，就会销毁一级缓存。  
+&emsp; 一级缓存的作用域是SqlSession，而使用者可以自定义SqlSession什么时候出现什么时候销毁，在这段期间一级缓存都是存在的。当使用者调用close()方法之后，就会销毁一级缓存。  
 &emsp; 但是，MyBatis和Spring整合之后，Spring跳过了SqlSessionFactory这一步，可以直接调用Mapper，导致在操作完数据库之后，Spring就将SqlSession就销毁了，一级缓存就随之销毁了，所以一级缓存就失效了。  
 
 &emsp; 那么怎么能让缓存生效呢？  
+
 * 开启事务，因为一旦开启事务，Spring就不会在执行完SQL之后就销毁SqlSession，因为SqlSession一旦关闭，事务就没了，一旦我们开启事务，在事务期间内，缓存会一直存在。  
 * 使用二级缓存。  
-
-## 1.6. Spring整合MyBatis一条语句创建几个SqlSession 会话  
-&emsp; 同一个方法，Mybatis 多次请求数据库，是否要创建多个 SqlSession 会话？  
-&emsp; 先从两个 demo 说起，再切入 Mybatis 的源码。  
-```
-public void testSqlSession() throws Exception{
-    System.out.println(this.xttblogMapper.findByName("业余草"));
-    System.out.println(this.xttblogMapper.findByName("涛哥"));
-}
-```
-&emsp; 运行一下代码。查看控制台，有一下输出。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-21.png)  
-&emsp; 这说明在同一个方法，Mybatis 多次请求数据库且没有事务的情况下，创建了多个 SqlSession 会话！  
-
-&emsp; 然后，在 testSqlSession 方法上加上 @Transactional 注解看看效果。  
-```
-@Transactional
-public void testSqlSession(){
-    System.out.println(jmbRollbackRecordMapper.findByName("业余草"));
-    System.out.println(jmbRollbackRecordMapper.findByName("涛哥"));
-}
-```
-&emsp; 运行效果截图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-22.png)  
-&emsp; 这说明，在有事务的情况下，同一个方法，Mybatis 多次请求数据库，只创建了一个 SqlSession 会话！  
-
-&emsp; 如果有事务，并且方法内存在多个线程的情况下，代码如下：  
-```
-@Transactional
-public void testSqlSession(){
-    new Thread(){
-        @Override
-        public void run() {
-            System.out.println(jmbRollbackRecordMapper.findByName("业余草"));
-        }
-    }.start();
-    new Thread(){
-        @Override
-        public void run() {
-            System.out.println(jmbRollbackRecordMapper.findByName("涛哥"));
-        }
-    }.start();
-}
-```
-&emsp; 运行结果如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-23.png)  
-&emsp; 在有事务的情况下，同一个方法内，有多个线程 Mybatis 多次请求数据库的情况下，创建了多个 SqlSession 会话！  
-
-&emsp; 为什么在同一个事务下，又开启两个 SqlSession 了呢？  
-&emsp; 这就需要查看源码了，通过源码你会发现，在启用的这两个线程中，在事务管理器 TransactionSynchronizationManager 中获取 SqlSessionHolder，再从 SqlSessionHolder 中获取 SqlSession。而这两个线程的 ThreadLocal 绑定的线程不一样，所以就重新 openSession 了一个 SqlSession。  
-
-
-
-
-
-
-
-
