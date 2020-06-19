@@ -16,7 +16,7 @@ tags:
         - [1.3.1. #{} 和 ${} 均适用场景](#131--和--均适用场景)
         - [1.3.2. 只能使用${}的场景](#132-只能使用的场景)
 - [2. 参数映射](#2-参数映射)
-    - [2.1. parameterType与映射器注解](#21-parametertype与映射器注解)
+    - [2.1. parameterType与@Param](#21-parametertype与param)
         - [2.1.1. 占位符](#211-占位符)
         - [2.1.2. Map传参](#212-map传参)
         - [2.1.3. 映射器注解@Param](#213-映射器注解param)
@@ -49,20 +49,20 @@ tags:
 # 1. #和$的区别  
 ## 1.1. 取值引用  
 ### 1.1.1. #{}方式  
-&emsp; #{}: 解析为SQL时，会将形参变量的值取出，并自动给其添加引号。例如：当实参username="Amy"时，传入下Mapper映射文件后  
+&emsp; <font color = "red">#{}: 解析为SQL时，会将形参变量的值取出，并自动给其添加引号。</font>  
+&emsp; 例如：当实参username="Amy"时，传入下Mapper映射文件后  
 
 ```
 <select id="findByName" parameterType="String" resultMap="studentResultMap">
     SELECT * FROM user WHERE username=#{value}
 </select>
 ```
-
 &emsp; SQL将解析为：  
 
     SELECT * FROM user WHERE username="Amy"  
 
 ### 1.1.2. ${}方式  
-&emsp; ${}: 解析为SQL时，将形参变量的值直接取出，直接拼接显示在SQL中  
+&emsp; <font color = "red">${}: 解析为SQL时，将形参变量的值直接取出，直接拼接显示在SQL中。</font>    
 &emsp; 例如：当实参username="Amy"时，传入下Mapper映射文件后  
 
 ```
@@ -103,11 +103,11 @@ tags:
 
 &emsp; 显而易见，上述语句将把整个数据库内容直接暴露出来了。  
 
-&emsp; #{}方式则是先用占位符代替参数将SQL语句先进行预编译，然后再将参数中的内容替换进来。由于SQL语句已经被预编译过，其SQL意图将无法通过非法的参数内容实现更改，其参数中的内容，无法变为SQL命令的一部分。故，***#{}可以防止SQL注入而${}却不行***。  
+&emsp; <font color = "color">#{}方式则是先用占位符代替参数将SQL语句先进行预编译，然后再将参数中的内容替换进来。由于SQL语句已经被预编译过，其SQL意图将无法通过非法的参数内容实现更改，其参数中的内容，无法变为SQL命令的一部分。故，***#{}可以防止SQL注入而${}却不行*** 。</font>  
 
 ## 1.3. 适用场景  
 ### 1.3.1. #{} 和 ${} 均适用场景  
-&emsp; 由于SQL注入的原因，${}和#{}在都可以使用的场景下，很明显推荐使用#{}。这里除了上文的WHERE语句例子，再介绍一个LIKE模糊查询的场景(username = "Amy"):  
+&emsp; 由于SQL注入的原因，${}和#{}在都可以使用的场景下，推荐使用#{}。这里除了上文的WHERE语句例子，再介绍一个LIKE模糊查询的场景(username = "Amy"):  
 
 ```
 <select id="findAddByName" parameterType="String" resultMap="studentResultMap">
@@ -132,8 +132,7 @@ tags:
     SELECT * FROM USER WHERE username LIKE CONCAT('%', 'Amy','%');  
 
 ### 1.3.2. 只能使用${}的场景  
-&emsp; 由于#{}会给参数内容自动加上引号，会在有些需要表示字段名、表名的场景下，SQL将无法正常执行。现举一例说明：  
-&emsp; 期望查询结果按sex字段升序排列，参数String orderCol = "sex",mapper映射文件使用#{}：  
+&emsp; <font color = "red">由于#{}会给参数内容自动加上引号，会在有些需要表示字段名、表名的场景下，SQL将无法正常执行。例如：期望查询结果按sex字段升序排列。</font>参数String orderCol = "sex",mapper映射文件使用#{}：  
 
 ```
 <select id="findAddByName3" parameterType="String" resultMap="studentResultMap">
@@ -144,6 +143,7 @@ tags:
 &emsp; 则SQL解析及执行结果如下所示，很明显 ORDER 子句的字段名错误的被加上了引号，致使查询结果没有按期排序输出  
 
     SELECT * FROM USER WHERE username LIKE '%Am%' ORDER BY 'sex' ASC;
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-1.png)  
 
 &emsp; 这时，现改为${}测试效果：  
@@ -161,10 +161,9 @@ tags:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-2.png)  
 
 # 2. 参数映射  
-## 2.1. parameterType与映射器注解  
-&emsp; parameterType属性用于对应的mapper.java接口方法接收的参数类型。有多个入参时，可以省略不写。  
-&emsp; mapper接口方法可以接收一个参数，可以通过使用@Param注释将多个参数绑定到一个map作为输入参数。  
-&emsp; 总结：parameterType适用于JavaBean及List<JavaBean\>。@param适用于基本类型。  
+## 2.1. parameterType与@Param  
+&emsp; parameterType属性用于对应的mapper.java接口方法接收的参数类型。有多个入参时，可以省略不写；mapper接口方法可以接收一个参数，可以通过使用@Param注释将多个参数绑定到一个map作为输入参数。  
+&emsp; <font color = "red">parameterType适用于JavaBean及List<JavaBean\>。@param适用于基本类型。</font>  
 
 ### 2.1.1. 占位符  
 &emsp; DAO层的函数方法  
