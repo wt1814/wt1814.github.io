@@ -16,10 +16,10 @@ tags:
 
 <!-- /TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-32.png)  
 
 
 # 1. Mybatis插件  
-
 ## 1.1. Mybatis插件简介   
 &emsp; <font color="red">编写Mybatis插件前，需要对Mybatis的运行原理、Mybatis插件原理有一定的了解。</font>  
 

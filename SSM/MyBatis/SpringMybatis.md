@@ -5,11 +5,23 @@ tags:
     - Mybatis
 ---
 
+<!-- TOC -->
+
+- [1. 整合MyBatis](#1-整合mybatis)
+    - [1.1. Spring整合MhyBatis](#11-spring整合mhybatis)
+    - [1.2. SpringBoot整合MyBatis](#12-springboot整合mybatis)
+- [2. Spring整合MyBatis原理](#2-spring整合mybatis原理)
+    - [2.1. 创建SqlSessionFacory](#21-创建sqlsessionfacory)
+    - [2.2. 创建SqlSession](#22-创建sqlsession)
+    - [2.3. 接口的扫描注册](#23-接口的扫描注册)
+    - [2.4. 接口注入使用](#24-接口注入使用)
+
+<!-- /TOC -->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-33.png)  
 
 
-# 整合MyBatis  
-
-## Spring整合MhyBatis  
+# 1. 整合MyBatis  
+## 1.1. Spring整合MhyBatis  
 
 &emsp; 添加配置文件  
 
@@ -25,14 +37,12 @@ tags:
 </bean>
 ```
 
-
-## SpringBoot整合MyBatis  
+## 1.2. SpringBoot整合MyBatis  
 1. 引入jar包
 2. 使用硬编码的方式配置bean。比如SqlSessionFactory，SqlSessionTemplate, PlatformTransactionManager。
 3. 扫描接口包。
 
-
-# Spring整合MyBatis原理  
+# 2. Spring整合MyBatis原理  
 &emsp; Spring整合MyBatis并不会对MyBatis内部进行改造，只会进行集成，对其实现进行了包装。  
 &emsp; MyBatis运行原理：  
 
@@ -41,15 +51,15 @@ tags:
     3. 获取Mapper；
     4. 执行操作；
 
-## 创建SqlSessionFacory  
-&emsp; MyBatis-Spring中创建SqlSessionFacory是由SqlSessionFactoryBean完成的。  
+## 2.1. 创建SqlSessionFacory  
+&emsp; <font color = "red">MyBatis-Spring中创建SqlSessionFacory是由SqlSessionFactoryBean完成的。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-24.png)  
 
-* InitializingBean接口：实现了这个接口，那么当bean初始化的时候，spring就会调用该接口的实现类的afterPropertiesSet方法，去实现当spring初始化该Bean 的时候所需要的逻辑。afterPropertiesSet()会在 bean 的属性值设置完的时候被调用。  
+* InitializingBean接口：实现了这个接口，那么当bean初始化的时候，spring就会调用该接口的实现类的afterPropertiesSet方法，去实现当spring初始化该Bean的时候所需要的逻辑。afterPropertiesSet()会在 bean 的属性值设置完的时候被调用。  
 * FactoryBean接口：实现了该接口的类，在调用getBean进行实例化的时候会返回该工厂返回的实例对象。实际上调用的是getObject()方法，getObject() 方法里面调用的也是 afterPropertiesSet()方法。  
 * ApplicationListener接口：实现了该接口，如果注册了该监听的话，那么就可以了监听到Spring的一些事件，然后做相应的处理。  
 
-&emsp; SqlSessionFactoryBean#afterPropertiesSet()  
+&emsp; SqlSessionFactoryBean#afterPropertiesSet()方法：  
 
 ```
 @Override
@@ -63,27 +73,27 @@ public void afterPropertiesSet() throws Exception {
     this.sqlSessionFactory = buildSqlSessionFactory();
 }
 ```
-&emsp; buildSqlSessionFactory（）方法会对sqlSessionFactory做定制的初始化，初始化sqlSessionFactory有两种方式，一种是直接通过property直接注入到该实例中，另一种是通过解析xml的方式，就是在configuration.xml里面的配置，根据这些配置做了相应的初始化操作，里面也是一些标签的解析属性的获取，操作，和Spring的默认标签解析有点类似。  
+&emsp; buildSqlSessionFactory()方法会对sqlSessionFactory做定制的初始化，初始化sqlSessionFactory有两种方式，一种是直接通过property直接注入到该实例中，另一种是通过解析xml的方式，就是在configuration.xml里面的配置，根据这些配置做了相应的初始化操作，里面也是一些标签的解析属性的获取，操作，和Spring的默认标签解析有点类似。  
 
-## 创建 SqlSession  
+## 2.2. 创建SqlSession  
 &emsp; 在Spring中并没有直接使用DefaultSqlSession。DefaultSqlSession是线程不安全的，注意看类上的注解：  
 
     Note that this class is not Thread-Safe. 
 
-&emsp; Spring对SqlSession 进行了一个封装，这个 SqlSession 的实现类就是 SqlSessionTemplate。SqlSessionTemplate是线程安全的。  
+&emsp; Spring对SqlSession 进行了一个封装，这个SqlSession的实现类就是SqlSessionTemplate。SqlSessionTemplate是线程安全的。SqlSessionTemplate的获取是在mapper接口注入流程中。 
 
 &emsp; 在编程式的开发中，SqlSession会在每次请求的时候创建一个，但是 Spring 里面只有一个 SqlSessionTemplate（默认是单例的），多个线程同时调用的时候怎么保证线程安全？  
-&emsp; SqlSessionTemplate通过动态代理的方式来保证DefaultSqlSession操作的线程安全性。SqlSessionTemplate 里面有 DefaultSqlSession 的所有的方法：selectOne()、 selectList()、insert()、update()、delete()，不过它都是通过一个代理对象实现的。这个代理对象在构造方法里面通过一个代理类创建：    
+&emsp; <font color = "red">SqlSessionTemplate通过动态代理的方式来保证DefaultSqlSession操作的线程安全性。</font> SqlSessionTemplate 里面有 DefaultSqlSession 的所有的方法：selectOne()、 selectList()、insert()、update()、delete()，不过它都是通过一个代理对象实现的。这个代理对象在构造方法里面通过一个代理类创建：    
 
 ```
 this.sqlSessionProxy = (SqlSession) newProxyInstance( SqlSessionFactory.class.getClassLoader(), new Class[] { SqlSession.class }, new SqlSessionInterceptor());
 ```
 
-## 接口的扫描注册  
-&emsp; 获取Mapper接口。在 Service 层可以使用@Autowired 自动注入的 Mapper 接口，需要保存在 BeanFactory（比如 XmlWebApplicationContext）中。也就是说接口是在 Spring 启动的时候被扫描了，注册过的。     
+## 2.3. 接口的扫描注册  
+&emsp; 获取Mapper接口。在Service层可以使用@Autowired自动注入的Mapper接口，需要保存在 BeanFactory（比如 XmlWebApplicationContext）中。也就是说接口是在 Spring 启动的时候，会被扫描，注册。     
 &emsp; 扫描注册Mapper接口是在 applicationContext.xml里面配置了MapperScannerConfigurer或者使用注解@MapperScan完成的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-25.png)  
-&emsp; MapperScannerConfigurer 实现了 BeanDefinitionRegistryPostProcessor 接口， BeanDefinitionRegistryPostProcessor 是 BeanFactoryPostProcessor 的子类。  
+&emsp; <font color = "red">MapperScannerConfigurer 实现了BeanDefinitionRegistryPostProcessor接口， BeanDefinitionRegistryPostProcessor 是 BeanFactoryPostProcessor的子类。</font>  
 
 &emsp; MapperScannerConfigurer#postProcessBeanDefinitionRegistry()方法：  
 
@@ -134,7 +144,7 @@ sbd.getPropertyValues().add("sqlSessionFactory", this.sqlSessionFactory);
 
 &emsp; 以上就是实例化MapperScannerConfigurer类的主要工作，总结起来就是扫描basePackage包下所有的mapper接口类，并将mapper接口类封装成为BeanDefinition对象，注册到spring的BeanFactory容器中。  
 
-## 接口注入使用  
+## 2.4. 接口注入使用  
 &emsp; 使用 Mapper 的时候，只需要在加了 Service 注解的类里面使用@Autowired 注入 Mapper 接口就可以了。  
 
 ```
@@ -147,10 +157,9 @@ public class EmployeeService {
     } 
 }
 ```
-&emsp; Spring 在启动的时候需要去实例化 EmployeeService。  
-&emsp; EmployeeService 依赖了 EmployeeMapper 接口（是 EmployeeService 的一个属 性）。  
-&emsp; Spring 会根据Mapper的名字从BeanFactory中获取它的 BeanDefination，再从 BeanDefination 中 获 取 BeanClass ， EmployeeMapper 对 应 的 BeanClass 是 MapperFactoryBean。   
-&emsp; 接下来就是创建 MapperFactoryBean，因为实现了 FactoryBean 接口，同样是调 用 getObject()方法。  
+&emsp; Spring 在启动的时候需要去实例化 EmployeeService。EmployeeService 依赖了 EmployeeMapper 接口（是 EmployeeService 的一个属 性）。  
+&emsp; Spring 会根据Mapper的名字从BeanFactory中获取它的BeanDefination，再从BeanDefination中获取BeanClass， EmployeeMapper对应的BeanClass是MapperFactoryBean。   
+&emsp; 接下来就是创建 MapperFactoryBean，因为实现了 FactoryBean 接口，同样是调用getObject()方法。  
 
 ```
 // MapperFactoryBean.java 
@@ -158,7 +167,7 @@ public T getObject() throws Exception {
     return getSqlSession().getMapper(this.mapperInterface); 
 }
 ```
-&emsp; 因 为 MapperFactoryBean 继 承 了 SqlSessionDaoSupport ， 所 以 这 个 getSqlSession()就是调用父类的方法，返回 SqlSessionTemplate。  
+&emsp; 因为MapperFactoryBean继承了SqlSessionDaoSupport ，所以这个getSqlSession()就是调用父类的方法，返回SqlSessionTemplate。  
 
 ```
 // SqlSessionDaoSupport.java 
