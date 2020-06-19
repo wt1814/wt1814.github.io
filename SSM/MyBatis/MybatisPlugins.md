@@ -21,17 +21,18 @@ tags:
 # 1. Mybatis插件  
 
 ## 1.1. Mybatis插件简介   
-&emsp; <font color="red">编写Mybatis插件前需要对Mybatis的运行原理、Mybatis插件原理有一定的了解。</font>  
+&emsp; <font color="red">编写Mybatis插件前，需要对Mybatis的运行原理、Mybatis插件原理有一定的了解。</font>  
 
 &emsp; ***Mybatis插件典型适用场景：***  
+
 * 分页功能  
-&emsp; Mybatis的分页默认是基于内存分页的（查出所有，再截取），数据量大的情况下效率较低，不过使用mybatis插件可以改变该行为，只需要拦截StatementHandler类的prepare方法，改变要执行的SQL语句为分页语句即可；  
+&emsp; Mybatis的分页默认是基于内存分页的（查出所有，再截取），数据量大的情况下效率较低，使用mybatis插件可以改变该行为，只需要拦截StatementHandler类的prepare方法，改变要执行的SQL语句为分页语句即可；  
 * 公共字段统一赋值  
 &emsp; 一般业务系统都会有创建者，创建时间，修改者，修改时间四个字段，对于这四个字段的赋值，实际上可以在DAO层统一拦截处理，可以用mybatis插件拦截Executor类的update方法，对相关参数进行统一赋值即可；  
 * 性能监控  
 &emsp; 对于SQL语句执行的性能监控，可以通过拦截Executor类的update, query等方法，用日志记录每个方法执行的时间；  
-* 其它  
-&emsp; 其实mybatis扩展性还是很强的，基于插件机制，基本上可以控制SQL执行的各个阶段，如执行阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。  
+
+&emsp; 其实mybatis扩展性很强，基于插件机制，基本上可以控制SQL执行的各个阶段，如执行阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。  
 
 ## 1.2. Mybatis插件编码示例  
 &emsp; 1. 写一个打印SQL执行时间的插件  
@@ -86,8 +87,7 @@ public class SqlCostTimeInterceptor implements Interceptor {
 ## 1.3. Mybatis插件运行机制  
 &emsp; <font color="red">Mybaits插件的实现主要用了责任链模式和动态代理。</font>动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
 
-&emsp; 有哪些对象允许被代理？有哪些方法可以被拦截？  
-&emsp; 在 MyBatis 官网有参考，www.mybatis.org/mybatis-3/zh/configuration.html#plugins。  
+&emsp; 有哪些对象允许被代理？有哪些方法可以被拦截？在 MyBatis官网有参考，www.mybatis.org/mybatis-3/zh/configuration.html#plugins。  
 &emsp; 支持拦截的方法：  
 
 * 执行器Executor（update、query、commit、rollback等方法）；  
@@ -95,12 +95,14 @@ public class SqlCostTimeInterceptor implements Interceptor {
 * 结果集处理器ResultSetHandler（handleResultSets、handleOutputParameters等方法）；  
 * SQL语法构建器StatementHandler（prepare、parameterize、batch、update、query等方法）；    
 
-
 ### 1.3.1. 插件的加载  
 &emsp; Mybatis初始化中，会解析mybatis配置文件。Mybatis配置文件的解析在XMLConfigBuilder的parseConfiguration方法中，里面有插件的解析过程。  
 
 ```
 pluginElement(root.evalNode("plugins"));
+```
+
+```
 private void pluginElement(XNode parent) throws Exception {
     if (parent != null) {
         for (XNode child : parent.getChildren()) {
@@ -186,7 +188,7 @@ public interface Interceptor {
 }
 ```
 
-&emsp; 其中plugin方法就是生成代理对象的，通常直接调用Plugin.wrap(target, this);方法来生成代理对象。  
+&emsp; 其中plugin方法生成代理对象，通常直接调用Plugin.wrap(target, this);方法来生成代理对象。  
 &emsp; Plugin类源码：  
 
 ```
@@ -241,7 +243,7 @@ public class Plugin implements InvocationHandler {
 }
 ```
 
-&emsp; 实现代理类和拦截特定方法使用Plugin.wrap()方法就可以实现。
+&emsp; 实现代理类和拦截特定方法使用Plugin.wrap()方法就可以实现。  
 &emsp; 在Plugin.invoke()方法中，最终调用了Interceptor接口的intercept方法，并把目标类，目标方法，参数封装成一个Invocation对象
 
     return interceptor.intercept(new Invocation(target, method, args));  
