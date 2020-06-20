@@ -166,7 +166,7 @@ tags:
 # 2. 参数映射  
 ## 2.1. parameterType与@Param  
 &emsp; parameterType属性用于对应的mapper.java接口方法接收的参数类型。有多个入参时，可以省略不写；mapper接口方法可以接收一个参数，可以通过使用@Param注释将多个参数绑定到一个map作为输入参数。  
-&emsp; <font color = "red">parameterType适用于JavaBean及List<JavaBean>。@param适用于基本类型。</font>  
+&emsp; <font color = "red">parameterType适用于JavaBean及List<JavaBean\>。@param适用于基本类型。</font>  
 
 ### 2.1.1. 占位符  
 &emsp; DAO层的函数方法  

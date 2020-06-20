@@ -98,7 +98,7 @@
 
 ## SSM  
 ### Spring  
-[Spring](SSM/Spring/1.Spring.md)  
+[Spring-1](SSM/Spring/1.Spring.md)  
 [SpringIOC解析](SSM/Spring/2.SpringIOC.md)  
 [SpringDI解析](SSM/Spring/3.SpringDI.md)  
 [容器相关特性](SSM/Spring/4.SpringFeature.md)  
