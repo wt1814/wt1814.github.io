@@ -36,9 +36,8 @@
 
 # 目录  
 
-***欢迎关注个人博客：<font color = "red">王猴卖瓜</font> ***  
-***联系我：wangtao1814@163.com***  
-
+欢迎关注个人博客：***<font color = "red">王猴卖瓜</font>***  
+联系我：***wangtao1814@163.com***  
 
 ## 杂记  
 <font color="red">多问几个为什么，怎么办，怎么做。</font>  
@@ -64,7 +63,7 @@
 [J.U.C包](java/concurrent/4.ConcurrentPackage.md)  
 
 ### JVM  
-[JDK、JRE、JVM三者间的关系](java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
+[JDK、JRE、JVM](java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
 [JVM类的加载](java/JVM/2.JVM类的加载.md)  
 [JVM内存结构](java/JVM/3.JVM内存结构.md)  
 
