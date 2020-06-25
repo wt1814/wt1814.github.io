@@ -92,7 +92,7 @@ tags:
     &emsp; <font color = "red">每次调用实例方法，都会重新初始化，VelocityContext上下文作为类变量，没有做线程安全的措施（@ThreadSafe只是表示VelocityUtil类是线程安全的）。</font>
 
 6. 问题解决：  
-&emsp; <font color = "red">VelocityContext作为上下文，当然是放在Spring容器里里，也能保证是单例。</font>  
+&emsp; <font color = "red">将VelocityContext的声明、初始化放在方法内部，这样就不涉及线程安全问题了。</font>  
 
     ```
     @Service
