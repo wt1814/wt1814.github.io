@@ -62,8 +62,9 @@
 [线程池](java/concurrent/3.ThreadPool.md)  
 [J.U.C包](java/concurrent/4.ConcurrentPackage.md)  
 * [AtomicStampedReference](java/concurrent/6.AtomicStampedReference.md)  
+* [Lock](java/concurrent/8.Lock.md)
 * [ConcurrentHashMap](java/concurrent/5.ConcurrentHashMap.md)  
-
+* [tools](java/concurrent/7.tools.md)
 
 ### JVM  
 [JDK、JRE、JVM](java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
