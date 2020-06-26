@@ -97,7 +97,11 @@
 ## 数据库  
 [SQL语句](SQL/1.SQL语句.md)  
 [SQL优化-1](SQL/2.SQL优化.md)  
-[MySql深入](SQL/3.MySql深入.md)  
+&emsp; [索引优化](SQL/7.index.md)  
+
+[MySql原理](SQL/3.MySql深入.md)  
+[MySql架构](SQL/8.MySql架构.md)  
+
 [分布式数据库](SQL/4.分布式数据库.md)  
 [MyCat中间件](SQL/5.MyCat中间件.md)  
 [AOP多数据源动态切换](SQL/6.multiDataSource.md)  
