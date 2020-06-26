@@ -61,7 +61,9 @@
 [多线程编程](java/concurrent/2.Multithread.md)  
 [线程池](java/concurrent/3.ThreadPool.md)  
 [J.U.C包](java/concurrent/4.ConcurrentPackage.md)  
-[J.U.C-ConcurrentHashMap](java/concurrent/5.ConcurrentHashMap.md)  
+* [AtomicStampedReference](java/concurrent/6.AtomicStampedReference.md)  
+* [ConcurrentHashMap](java/concurrent/5.ConcurrentHashMap.md)  
+
 
 ### JVM  
 [JDK、JRE、JVM](java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
