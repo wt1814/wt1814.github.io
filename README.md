@@ -96,6 +96,10 @@
 
 ## 数据库  
 [SQL语句](SQL/1.SQL语句.md)  
+* [基本查询语句](9.basicSelect.md)  
+* [连接查询](10.joinSelect.md)  
+* [行列转换](11.trans.md)  
+
 [SQL优化-1](SQL/2.SQL优化.md)  
 &emsp; [索引优化](SQL/7.index.md)  
 
