@@ -102,6 +102,7 @@
 
 [SQL优化-1](SQL/2.SQL优化.md)  
 &emsp; [索引优化](SQL/7.index.md)  
+&emsp; [优化案例](SQL/12.case.md)  
 
 [MySql原理](SQL/3.MySql深入.md)  
 [MySql架构](SQL/8.MySql架构.md)  
