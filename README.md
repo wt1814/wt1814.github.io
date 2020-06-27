@@ -96,7 +96,7 @@
 
 ## 数据库  
 [SQL语句](/SQL/1.SQL语句.md)  
-* [基本查询语句](/SQL/9.basicSelect.md)  
+* [基本查询语句](/SQL/9.bxasicSelect.md)  
 * [连接查询](/SQL/10.joinSelect.md)  
 * [行列转换](/SQL/11.trans.md)  
 
@@ -112,6 +112,10 @@
 [MySql架构](/SQL/8.MySql架构.md)  
 
 [分布式数据库](/SQL/4.分布式数据库.md)  
+* [主从复制](/SQL/16.replication.md)  
+* [分区](/SQL/17.partition.md)  
+* [分库分表](/SQL/18.sub.md)  
+
 [MyCat中间件](/SQL/5.MyCat中间件.md)  
 [AOP多数据源动态切换](/SQL/6.multiDataSource.md)  
 
