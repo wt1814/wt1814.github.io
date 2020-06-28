@@ -114,7 +114,7 @@
 [分布式数据库](/SQL/4.分布式数据库.md)  
 * [主从复制](/SQL/16.replication.md)  
 * [分区](/SQL/17.partition.md)  
-* [分库分表](/SQL/18.sub.md)  
+* [分库分表-1](/SQL/18.sub.md)  
 
 [MyCat中间件](/SQL/5.MyCat中间件.md)  
 [AOP多数据源动态切换](/SQL/6.multiDataSource.md)  
@@ -229,4 +229,5 @@
 
 ## Error  
 [※※※多线程串线了](/Error/ThreadCrossed.md)  
+[CodeCC]  
 
