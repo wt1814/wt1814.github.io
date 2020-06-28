@@ -147,47 +147,47 @@
 
 ## 微服务  
 ### SpringBoot  
-[自动配置原理](microService/SpringBoot/1.自动配置原理.md)  
-[SpringBoot启动过程解析](microService/SpringBoot/2.SpringBoot2.2.0启动全过程源码分析.md)  
-[SpringBoot事件监听机制](microService/SpringBoot/3.SpringBootEvent.md)  
+[自动配置原理](/microService/SpringBoot/1.自动配置原理.md)  
+[SpringBoot启动过程解析](/microService/SpringBoot/2.SpringBoot2.2.0启动全过程源码分析.md)  
+[SpringBoot事件监听机制](/microService/SpringBoot/3.SpringBootEvent.md)  
 <!--[自定义strater] -->
 
 ### Spring Cloud Netflix  
 参考《SpringCloud微服务实战》  
-[Spring Cloud Netflix](microService/SpringCloudNetflix/0.Netflix.md)  
-[Spring Cloud Eureka](microService/SpringCloudNetflix/1.Eureka.md)  
-[Spring Cloud Ribbon](microService/SpringCloudNetflix/2.Ribbon.md)  
-[Spring Cloud Hytrix-1](microService/SpringCloudNetflix/3.Hytrix.md)  
-[Spring Cloud Feign](microService/SpringCloudNetflix/4.Feign.md)  
-[Spring Cloud Zuul](microService/SpringCloudNetflix/5.Zuul.md)  
-[Spring Cloud Sleuth](microService/SpringCloudNetflix/6.Sleuth.md)  
-[Spring Boot Admin](microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
+[Spring Cloud Netflix](/microService/SpringCloudNetflix/0.Netflix.md)  
+[Spring Cloud Eureka](/microService/SpringCloudNetflix/1.Eureka.md)  
+[Spring Cloud Ribbon](/microService/SpringCloudNetflix/2.Ribbon.md)  
+[Spring Cloud Hytrix-1](/microService/SpringCloudNetflix/3.Hytrix.md)  
+[Spring Cloud Feign](/microService/SpringCloudNetflix/4.Feign.md)  
+[Spring Cloud Zuul](/microService/SpringCloudNetflix/5.Zuul.md)  
+[Spring Cloud Sleuth](/microService/SpringCloudNetflix/6.Sleuth.md)  
+[Spring Boot Admin](/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
 
 ### Dubbo  
-[Dubbo](microService/Dubbo/Dubbo.md)   
-[Dubbo使用教程](microService/Dubbo/Dubbo使用教程.md)  
-[Zookeeper](microService/Dubbo/Zookeeper.md)  
+[Dubbo](/microService/Dubbo/Dubbo.md)   
+[Dubbo使用教程](/microService/Dubbo/Dubbo使用教程.md)  
+[Zookeeper](/microService/Dubbo/Zookeeper.md)  
 
 ### Redis
-[Redis数据结构及API](microService/Redis/Redis数据结构及API.md)  
-[Redis原理](microService/Redis/Redis原理.md)  
-[Redis集群](microService/Redis/Redis集群.md)  
+[Redis数据结构及API](/microService/Redis/Redis数据结构及API.md)  
+[Redis原理](/microService/Redis/Redis原理.md)  
+[Redis集群](/microService/Redis/Redis集群.md)  
 
 ### 分布式理论  
-[一致性哈希算法](microService/分布式算法-consistent.md)  
-[分布式ID](microService/分布式ID.md)  
-[分布式事务](microService/分布式事务.md)  
-[分布式锁](microService/分布式锁.md)  
-* [Redis分布式锁]()  
-* [ZK分布式锁]()  
+[一致性哈希算法](/microService/thinking/分布式算法-consistent.md)  
+[分布式ID](/microService/thinking/分布式ID.md)  
+[分布式事务](/microService/thinking/分布式事务.md)  
+[分布式锁](/microService/thinking/分布式锁.md)  
+* [Redis分布式锁](/microService/thinking/redis分布式锁.md)  
+* [ZK分布式锁](/microService/thinking/ZK分布式锁.md)  
 
-[分布式缓存](microService/分布式缓存.md)  
-[分布式限流](microService/分布式限流.md)   
-[服务降级](microService/服务降级.md)  
+[分布式缓存](/microService/thinking/分布式缓存.md)  
+[分布式限流](/microService/thinking/分布式限流.md)   
+[服务降级](/microService/thinking/服务降级.md)  
 
 ### 分布式通信  
-[序列化](microService/communication/serializbale.md)    
-[NIO](microService/communication/NIO.md)  
+[序列化](/microService/communication/serializbale.md)    
+[NIO](/microService/communication/NIO.md)  
 
 ## Elaticsearch  
 [ES基本概念](ES/1.basicConcepts.md)  
