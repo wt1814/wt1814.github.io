@@ -178,6 +178,8 @@
 [分布式ID](microService/分布式ID.md)  
 [分布式事务](microService/分布式事务.md)  
 [分布式锁](microService/分布式锁.md)  
+* [Redis分布式锁]()  
+* [ZK分布式锁]()  
 
 [分布式缓存](microService/分布式缓存.md)  
 [分布式限流](microService/分布式限流.md)   
