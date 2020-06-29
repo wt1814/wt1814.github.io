@@ -9,14 +9,20 @@ tags:
 
 - [1. Java 读写大文本文件](#1-java-读写大文本文件)
     - [1.1. java读取大文件的困难](#11-java读取大文件的困难)
-    - [1.2. 解决方案：](#12-解决方案)
+    - [1.2. 解决方案](#12-解决方案)
         - [1.2.1. 使用BufferedInputStream进行包装](#121-使用bufferedinputstream进行包装)
-        - [1.2.2. 使用FileChannel](#122-使用filechannel)
-        - [1.2.3. 内存文件映射](#123-内存文件映射)
+        - [1.2.2. 逐行读取](#122-逐行读取)
+        - [1.2.3. 并发读取](#123-并发读取)
+            - [1.2.3.1. 逐行批次打包](#1231-逐行批次打包)
+            - [1.2.3.2. 大文件拆分成小文件](#1232-大文件拆分成小文件)
+        - [1.2.4. 使用FileChannel](#124-使用filechannel)
+        - [1.2.5. 内存文件映射](#125-内存文件映射)
 
 <!-- /TOC -->
 
 # 1. Java 读写大文本文件  
+&emsp; <font color = "red">将大文件数据全部读取到内存中，会发生OOM异常。</font>  
+
 ## 1.1. java读取大文件的困难  
 &emsp; java 读取文件的一般操作是将文件数据全部读取到内存中，然后再对数据进行操作。例如：  
 
@@ -24,7 +30,7 @@ tags:
 Path path = Paths.get("file path");
 byte[] data = Files.readAllBytes(path);
  ```
-&emsp; 这对于小文件是没有问题的，但是对于稍大一些的文件就会抛出异常。 
+&emsp; 这对于小文件是没有问题的，但是对于稍大一些的文件就会抛出OOM异常。 
 
 ```
 Exception in thread "main" java.lang.OutOfMemoryError: Required array size too large
@@ -32,7 +38,9 @@ Exception in thread "main" java.lang.OutOfMemoryError: Required array size too l
 ```
 &emsp; 从错误定位看出，Files.readAllBytes 方法最大支持 Integer.MAX_VALUE - 8 大小的文件，也即最大2GB的文件。一旦超过了这个限度，java 原生的方法就不能直接使用了。  
 
-## 1.2. 解决方案： 
+
+
+## 1.2. 解决方案 
 ### 1.2.1. 使用BufferedInputStream进行包装  
 &emsp; 文件流边读边用，使用文件流的 BufferedInputStream#read() 方法每次读取指定长度的数据到内存中。这种方法可行但是效率不高。示例代码如下：  
 
@@ -88,7 +96,20 @@ public class StreamFileReader {
 }
 ```
 
-### 1.2.2. 使用FileChannel
+### 1.2.2. 逐行读取  
+<!-- https://mp.weixin.qq.com/s/K7oGTdN1UI3oXiFYYZ51pA -->
+
+### 1.2.3. 并发读取  
+
+<!-- https://mp.weixin.qq.com/s/K7oGTdN1UI3oXiFYYZ51pA -->
+
+#### 1.2.3.1. 逐行批次打包  
+
+
+#### 1.2.3.2. 大文件拆分成小文件  
+
+
+### 1.2.4. 使用FileChannel
 &emsp; 对大文件建立 NIO 的 FileChannel，每次调用 read() 方法时会先将文件数据读取到已分配固定长度的 java.nio.ByteBuffer 中，接着从中获取读取的数据。这种用 NIO 通道的方法比传统文件流读取理论上要快一点。示例代码如下：  
 
 ```
@@ -148,7 +169,7 @@ public class ChannelFileReader {
 }
 ```
 
-### 1.2.3. 内存文件映射  
+### 1.2.5. 内存文件映射  
 &emsp; 把文件内容映射到虚拟内存的一块区域中，从而可以直接操作内存当中的数据而无需每次都通过 I/O  去物理硬盘读取文件，这种方式可以提高速度。示例代码如下：  
 
 ```
