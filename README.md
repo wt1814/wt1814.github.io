@@ -43,16 +43,17 @@
 [我自己的学习之路]  
 
 ## Java  
-[Java基础](java/Java基础.md)   
-[Java基础数据类型](java/数据类型.md)  
+[Java基础](java/basis/Java基础.md)  
+&emsp; [符号](java/basis/mark.md)  
+[Java基础数据类型](java/basis/数据类型.md)  
 [Java集合框架](java/Collection/1.集合框架.md)  
 * [Map](java/Collection/2.Map.md)  
 * [Collection](java/Collection/3.Collection.md)  
 
-[Java异常](java/JavaException.md)  
-[~~Java范型](java/JavaParadigm.md)  
-[Java反射](java/Java反射.md)  
-[IO](java/JavaIO.md)  
+[Java异常](java/basis/JavaException.md)  
+[~~Java范型](java/basis/JavaParadigm.md)  
+[Java反射](java/basis/Java反射.md)  
+[IO](java/basis/JavaIO.md)  
 [JDK1.8](java/JDK8/JDK8.md)  
 * [Lambda](java/JDK8/Lambda.md)  
 * [Stream](java/JDK8/Stream.md)  
