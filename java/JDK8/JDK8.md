@@ -14,17 +14,6 @@ tags:
 - [3. StreamAPI](#3-streamapi)
 - [4. Optional类](#4-optional类)
 - [5. Date/Time API](#5-datetime-api)
-    - [5.1. 接口API](#51-接口api)
-        - [5.1.1. 本地化日期时间API](#511-本地化日期时间api)
-        - [5.1.2. 时区的日期时间API](#512-时区的日期时间api)
-        - [5.1.3. Instant](#513-instant)
-    - [5.2. 与日期和日历（旧的时间API）的兼容性](#52-与日期和日历旧的时间api的兼容性)
-    - [5.3. 日期格式化](#53-日期格式化)
-    - [5.4. 计算时间差](#54-计算时间差)
-        - [5.4.1. Period类](#541-period类)
-        - [5.4.2. Duration类](#542-duration类)
-        - [5.4.3. ChronoUnit类，java.time.temporal包](#543-chronounit类javatimetemporal包)
-    - [5.5. SpringBoot中应用LocalDateTime](#55-springboot中应用localdatetime)
 - [6. 异常捕获的改变](#6-异常捕获的改变)
 - [7. Base64](#7-base64)
 
@@ -61,16 +50,20 @@ public interface StaticFunctionInterface {
 &emsp; 接口中的static方法不能被继承，也不能被实现类调用，只能被自身调用。但是静态变量会被继承。  
 
 # 2. Lambda表达式  
+[Lambda](java/JDK8/Lambda.md)  
 
 ------
 
 # 3. StreamAPI  
+[Stream](java/JDK8/Stream.md)  
 
 -----
 # 4. Optional类  
+[Optional](java/JDK8/Optional.md)  
 
 -----
 # 5. Date/Time API  
+[DateTime](java/JDK8/DateTime.md)  
 
 -----
 # 6. 异常捕获的改变   
