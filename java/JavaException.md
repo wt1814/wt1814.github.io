@@ -7,22 +7,22 @@ tags:
 <!-- TOC -->
 
 - [1. Java异常](#1-java异常)
-    - [1.1. Java异常的概念、分类](#11-java异常的概念分类)
-        - [1.1.1. 常见异常](#111-常见异常)
-            - [1.1.1.1. NullPointerException](#1111-nullpointerexception)
-    - [1.2. 异常处理](#12-异常处理)
-        - [1.2.1. try、catch、finally](#121-trycatchfinally)
-            - [1.2.1.1. 使用 try...with...resources 优雅关闭资源](#1211-使用-trywithresources-优雅关闭资源)
-        - [1.2.2. throws和throw](#122-throws和throw)
-        - [1.2.3. 异常处理原则](#123-异常处理原则)
-    - [1.3. Exception的API](#13-exception的api)
-    - [1.4. 自定义异常](#14-自定义异常)
-    - [1.5. 统一异常处理](#15-统一异常处理)
+    - [1.1. Java异常基本概念](#11-java异常基本概念)
+    - [1.2. 常见异常](#12-常见异常)
+        - [1.2.1. NullPointerException](#121-nullpointerexception)
+    - [1.3. 异常处理](#13-异常处理)
+        - [1.3.1. try、catch、finally](#131-trycatchfinally)
+            - [1.3.1.1. 使用 try...with...resources 优雅关闭资源](#1311-使用-trywithresources-优雅关闭资源)
+        - [1.3.2. throws和throw](#132-throws和throw)
+        - [1.3.3. 异常处理原则](#133-异常处理原则)
+    - [1.4. Exception的API](#14-exception的api)
+    - [1.5. 自定义异常](#15-自定义异常)
+    - [1.6. 统一异常处理](#16-统一异常处理)
 
 <!-- /TOC -->
 
 # 1. Java异常  
-## 1.1. Java异常的概念、分类  
+## 1.1. Java异常基本概念  
 &emsp; Throwable是所有异常的超类，下一级可以分为Error和 Exception。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/exception/exception-1.png)  
 * Error：Java虚拟机无法解决的严重问题。如：JVM系统内部错误、资源耗尽等严重情况。比如：StackOverflowError和OOM。一般不编写针对性的代码进行处理。
@@ -48,8 +48,8 @@ tags:
         |IllegalStateException	|非法状态异常|
         |ClassCastException	|类型转换异常|
 
-### 1.1.1. 常见异常  
-#### 1.1.1.1. NullPointerException  
+## 1.2. 常见异常  
+### 1.2.1. NullPointerException  
 &emsp; 发生空指针异常NullPointerException的情况（对null 进行操作）：  
 1. 调用null对象的实例方法。  
 2. 访问或修改null对象的字段。  
@@ -58,13 +58,13 @@ tags:
 5. 在需要抛出一个异常对象，而该对象为null时。  
 
 
-## 1.2. 异常处理  
-### 1.2.1. try、catch、finally  
+## 1.3. 异常处理  
+### 1.3.1. try、catch、finally  
 
-#### 1.2.1.1. 使用 try...with...resources 优雅关闭资源  
+#### 1.3.1.1. 使用 try...with...resources 优雅关闭资源  
 
 
-### 1.2.2. throws和throw  
+### 1.3.2. throws和throw  
 &emsp; Throw和throws的区别：  
 &emsp; 位置不同：  
 
@@ -76,10 +76,10 @@ tags:
         3. throws 表示出现异常的一种可能性，并不一定会发生这些异常；throw 则是抛出了异常，执行 throw 则一定抛出了某种异常对象。  
         4. 两者都是消极处理异常的方式，只是抛出或者可能抛出异常，但是不会由函数去处理异常，真正的处理异常由函数的上层调用处理。  
 
-### 1.2.3. 异常处理原则  
+### 1.3.3. 异常处理原则  
 ......
 
-## 1.3. Exception的API  
+## 1.4. Exception的API  
 
 ```
 Exception e; 
@@ -87,12 +87,12 @@ e.toString();       //获取的信息包括异常类型和异常详细消息
 e.getMessage();     //只是获取了异常的详细消息字符串。
 e.printStackTrace();//void类型，在命令行打印异常信息在程序中出错的位置及原因，可以输出整个调用流程。便于调试用。
 ```
-&emsp; `e.printStackTrace();只在控制台打印信息，不会将异常堆栈输出到日志文件中。`  
+&emsp; ***<font color = "red">e.printStackTrace();只在控制台打印信息，不会将异常堆栈输出到日志文件中。</font>***  
 
-## 1.4. 自定义异常 
+## 1.5. 自定义异常 
+......
 
-
-## 1.5. 统一异常处理  
+## 1.6. 统一异常处理  
 &emsp; 异常处理器注解@ExceptionHandler：若在某个Controller类定义一个异常处理方法，并在方法上添加该注解，那么当出现指定的异常时，会执行该处理异常的方法，其可以使用springmvc提供的数据绑定，比如注入HttpServletRequest等，还可以接受一个当前抛出的Throwable对象。  
 &emsp; @ExceptionHandler结合@ControllerAdvice，可以提供全局的统一异常处理器。  
 &emsp; 实现HandlerExceptionResolver接口或继承其抽象实现 AbstractHandlerExceptionResolver，也可以实现统一异常处理。  
