@@ -79,9 +79,10 @@
 
 ### 设计模式  
 [七大设计原则](java/Design/1.principles.md)  
-[Java设计模式](java/Design/2.design.md)    
+[Java设计模式](java/Design/2.design.md)  
 [创建型设计模式](java/Design/3.establish.md)  
 [结构型设计模式](java/Design/4.structure.md)  
+&emsp; [动态代理](java/Design/6.proxy.md)   
 [行为型设计模式](java/Design/5.behavior.md)  
 
 ### 算法  
