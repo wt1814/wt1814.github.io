@@ -98,10 +98,10 @@ public static void main(String[] args) {
 
 # 3. 基数排序  
 &emsp; 基数排序不但能处理整数排序，也能对字母、汉字进行排序。它把排序工作拆分成多个阶段，每一个阶段只根据一个字符进行计数排序，一共排序k轮（k是元素长度）。  
-&emsp; 简单示例：  
-&emsp; 数组中有若干个字符串元素，每个字符串元素都是由三个英文字母组成：  
+&emsp; 简单示例：数组中有若干个字符串元素，每个字符串元素都是由三个英文字母组成：  
 
-    bda，cfd，qwe，yui，abc，rrr，uee  
+    bda，cfd，qwe，yui，abc，rrr，uee
+  
 &emsp; 由于每个字符串的长度是3个字符，可以把排序工作拆分成3轮：  
 &emsp; 第一轮：按照最低位字符排序。排序过程使用计数排序，把字母的ascii码对应到数组下标，第一轮排序结果如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-8.png)  
@@ -184,7 +184,4 @@ public static void main(String[] args) {
 
 }
 ```
-
-
-
 

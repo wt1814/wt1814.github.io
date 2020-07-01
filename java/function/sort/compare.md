@@ -473,7 +473,7 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
 ```
 
 # 7. 归并排序
-&emsp; 归并排序是分治算法的典型应用。
+&emsp; 归并排序是分治算法的典型应用。  
 &emsp; 归并排序先将一个无序的N长数组切成N个有序子序列（只有一个数据的序列认为是有序序列），然后两两合并，再将合并后的N/2（或者N/2 + 1）个子序列继续进行两两合并，以此类推得到一个完整的有序数组。过程如下图所示：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-3.png)  
 
