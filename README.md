@@ -7,7 +7,7 @@
         - [并发编程](#并发编程)
         - [JVM](#jvm)
         - [设计模式](#设计模式)
-        - [算法](#算法)
+    - [算法](#算法)
     - [数据库](#数据库)
     - [SSM](#ssm)
         - [Spring](#spring)
@@ -90,7 +90,7 @@
 &emsp; [动态代理](java/Design/6.proxy.md)   
 [行为型设计模式](java/Design/5.behavior.md)  
 
-### 算法  
+## 算法  
 [算法基本概念](java/function/1.notion.md)  
 [基本数据结构-1](java/function/2.structure.md)  
 [其他数据结构](java/function/3.otherStructure.md)  
