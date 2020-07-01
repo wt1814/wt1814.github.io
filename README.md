@@ -7,7 +7,6 @@
         - [并发编程](#并发编程)
         - [JVM](#jvm)
         - [设计模式](#设计模式)
-    - [算法](#算法)
     - [数据库](#数据库)
     - [SSM](#ssm)
         - [Spring](#spring)
@@ -29,6 +28,7 @@
         - [Git](#git)
     - [开发软件](#开发软件)
     - [Error](#error)
+    - [算法](#算法)
 
 <!-- /TOC -->
 
@@ -90,13 +90,6 @@
 &emsp; [动态代理](java/Design/6.proxy.md)   
 [行为型设计模式](java/Design/5.behavior.md)  
 
-## 算法  
-[算法基本概念](java/function/1.notion.md)  
-[基本数据结构-1](java/function/2.structure.md)  
-[其他数据结构](java/function/3.otherStructure.md)  
-[排序算法](java/function/4.sort.md)  
-[查找算法](java/function/5.search.md)  
-[算法思想题型](java/function/6.algorithmicIdea.md)  
 
 
 ## 数据库  
@@ -222,8 +215,7 @@
 [TCP](/network/4.TCP.md)  
 
 
------
-
+---
 ## 项目构建基础    
 [接口幂等](web/idempotent.md)   
 
@@ -238,4 +230,16 @@
 ## Error  
 [※※※多线程串线了](/Error/ThreadCrossed.md)  
 [CodeCC]  
+
+---
+## 算法  
+[算法基本概念](java/function/1.notion.md)  
+[基本数据结构-1](java/function/2.structure.md)  
+&emsp; [动态代理](java/function/6.proxy.md)   
+[其他数据结构](java/function/3.otherStructure.md)  
+[排序算法](java/function/4.sort.md)  
+[查找算法](java/function/5.search.md)  
+[算法思想题型](java/function/6.algorithmicIdea.md)  
+
+
 
