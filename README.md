@@ -51,7 +51,7 @@
 * [Collection](java/Collection/3.Collection.md)  
 
 [Java异常](java/basis/JavaException.md)  
-[~~Java范型](java/basis/JavaParadigm.md)  
+[Java范型](java/basis/JavaParadigm.md)  
 [Java反射](java/basis/Java反射.md)  
 [IO](java/basis/JavaIO.md)  
 [JDK1.8](java/JDK8/JDK8.md)  
