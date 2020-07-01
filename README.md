@@ -241,6 +241,8 @@
 &emsp; [树](java/function/structure/tree.md)  
 [其他数据结构](java/function/3.otherStructure.md)  
 [排序算法](java/function/4.sort.md)  
+&emsp; [比较排序](java/function/sort/compare.md)  
+&emsp; [非比较排序](java/function/sort/noCompare.md)  
 [查找算法](java/function/5.search.md)  
 [算法思想题型](java/function/6.algorithmicIdea.md)  
 
