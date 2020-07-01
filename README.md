@@ -234,8 +234,11 @@
 ---
 ## 算法  
 [算法基本概念](java/function/1.notion.md)  
-[基本数据结构-1](java/function/2.structure.md)  
-&emsp; [动态代理](java/function/6.proxy.md)   
+[基本数据结构-1]  
+&emsp; [链表](java/function/structure/array.md)  
+&emsp; [栈](java/function/structure/stack.md)  
+&emsp; [哈希](java/function/structure/hash.md)  
+&emsp; [树](java/function/structure/tree.md)  
 [其他数据结构](java/function/3.otherStructure.md)  
 [排序算法](java/function/4.sort.md)  
 [查找算法](java/function/5.search.md)  
