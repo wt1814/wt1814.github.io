@@ -18,7 +18,7 @@
         - [Redis](#redis)
         - [分布式理论](#分布式理论)
         - [分布式通信](#分布式通信)
-    - [Elaticsearch](#elaticsearch)
+    - [Elaticsearch-1](#elaticsearch-1)
     - [服务器](#服务器)
         - [Linux](#linux)
         - [Nginx](#nginx)
@@ -189,7 +189,7 @@
 [序列化](/microService/communication/serializbale.md)    
 [NIO](/microService/communication/NIO.md)  
 
-## Elaticsearch  
+## Elaticsearch-1  
 [ES基本概念](ES/1.basicConcepts.md)  
 [ES使用教程](ES/2.useTutorials.md)  
 [ES集群](ES/3.colony.md)  
