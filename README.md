@@ -47,18 +47,18 @@
 &emsp; [符号](java/basis/mark.md)  
 [Java基础数据类型](java/basis/数据类型.md)  
 [Java集合框架](java/Collection/1.集合框架.md)  
-* [Map](java/Collection/2.Map.md)  
-* [Collection](java/Collection/3.Collection.md)  
+&emsp; [Map](java/Collection/2.Map.md)  
+&emsp; [Collection](java/Collection/3.Collection.md)  
 
 [Java异常](java/basis/JavaException.md)  
 [Java范型](java/basis/JavaParadigm.md)  
 [Java反射](java/basis/Java反射.md)  
 [IO](java/basis/JavaIO.md)  
 [JDK1.8](java/JDK8/JDK8.md)  
-* [Lambda](java/JDK8/Lambda.md)  
-* [Stream](java/JDK8/Stream.md)  
-* [Optional](java/JDK8/Optional.md)  
-* [DateTime](java/JDK8/DateTime.md)  
+&emsp; [Lambda](java/JDK8/Lambda.md)  
+&emsp; [Stream](java/JDK8/Stream.md)  
+&emsp; [Optional](java/JDK8/Optional.md)  
+&emsp; [DateTime](java/JDK8/DateTime.md)  
 
 ### 并发编程  
 [线程基本概念](java/concurrent/1.Thread.md)  
@@ -94,25 +94,25 @@
 
 ## 数据库  
 [SQL语句](/SQL/1.SQL语句.md)  
-* [基本查询语句](/SQL/9.bxasicSelect.md)  
-* [连接查询](/SQL/10.joinSelect.md)  
-* [行列转换](/SQL/11.trans.md)  
+&emsp; [基本查询语句](/SQL/9.bxasicSelect.md)  
+&emsp; [连接查询](/SQL/10.joinSelect.md)  
+&emsp; [行列转换](/SQL/11.trans.md)  
 
 [SQL优化-1](/SQL/2.SQL优化.md)  
 &emsp; [索引优化](/SQL/7.index.md)  
 &emsp; [优化案例](/SQL/12.case.md)  
 
 [MySql原理]  
-* [MySql存储引擎](/SQL/13.MySqlStorage.md)  
-* [MySql事务](/SQL/14.transaction.md)  
-* [MySql锁](/SQL/7.index.md)  
+&emsp; [MySql存储引擎](/SQL/13.MySqlStorage.md)  
+&emsp; [MySql事务](/SQL/14.transaction.md)  
+&emsp; [MySql锁](/SQL/7.index.md)  
 
 [MySql架构](/SQL/8.MySql架构.md)  
 
 [分布式数据库](/SQL/4.分布式数据库.md)  
-* [主从复制](/SQL/16.replication.md)  
-* [分区](/SQL/17.partition.md)  
-* [分库分表-1](/SQL/18.sub.md)  
+&emsp; [主从复制](/SQL/16.replication.md)  
+&emsp; [分区](/SQL/17.partition.md)  
+&emsp; [分库分表-1](/SQL/18.sub.md)  
 
 [MyCat中间件](/SQL/5.MyCat中间件.md)  
 [AOP多数据源动态切换](/SQL/6.multiDataSource.md)  
@@ -175,6 +175,7 @@
 ### 分布式理论  
 [一致性哈希算法](/microService/thinking/分布式算法-consistent.md)  
 [分布式ID](/microService/thinking/分布式ID.md)  
+
 [分布式事务](/microService/thinking/分布式事务.md)  
 &emsp; [DTP](/microService/thinking/分布式事务-1.md)    
 &emsp; [消息、事件模式](/microService/thinking/分布式事务-2.md)   
@@ -182,6 +183,7 @@
 [分布式锁](/microService/thinking/分布式锁.md)  
 &emsp; [Redis分布式锁](/microService/thinking/redis分布式锁.md)  
 &emsp; [ZK分布式锁](/microService/thinking/ZK分布式锁.md)  
+
 [分布式缓存](/microService/thinking/分布式缓存.md)  
 [分布式限流](/microService/thinking/分布式限流.md)   
 [服务降级](/microService/thinking/服务降级.md)  
