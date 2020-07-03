@@ -433,7 +433,7 @@ https://mp.weixin.qq.com/s/3TcNbNNobn2QEJFat-f90A
 &emsp; 官网推荐的 Java 客户端有 3 个 Jedis，Redisson 和 Luttuce。  
 
 * Jedis，轻量，简洁，便于集成和改造。  
-* Redisson  
+* Lettuce 
 &emsp; 与 Jedis 相比，Lettuce 则完全克服了其线程不安全的缺点：Lettuce 是一个可伸缩 的线程安全的 Redis 客户端，支持同步、异步和响应式模式（Reactive）。多个线程可 以共享一个连接实例，而不必担心多线程并发问题。  
 &emsp; 同步调用：com.gupaoedu.lettuce.LettuceSyncTest。  
 &emsp; 异步的结果使用 RedisFuture 包装，提供了大量回调的方法。  
