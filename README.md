@@ -177,10 +177,8 @@
 [分布式ID](/microService/thinking/分布式ID.md)  
 [分布式事务](/microService/thinking/分布式事务.md)  
 [分布式锁](/microService/thinking/分布式锁.md)  
-* [Redis分布式锁](/microService/thinking/redis分布式锁.md)  
-* [ZK分布式锁](/microService/thinking/ZK分布式锁.md)  
-
-
+&emsp; [Redis分布式锁](/microService/thinking/redis分布式锁.md)  
+&emsp; [ZK分布式锁](/microService/thinking/ZK分布式锁.md)  
 [分布式缓存](/microService/thinking/分布式缓存.md)  
 [分布式限流](/microService/thinking/分布式限流.md)   
 [服务降级](/microService/thinking/服务降级.md)  
