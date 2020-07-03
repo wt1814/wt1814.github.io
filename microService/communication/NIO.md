@@ -62,7 +62,7 @@ tags:
     &emsp; 缓冲列表：  
     &emsp; 在NIO中使用的核心缓冲区如下：CharBuffer、DoubleBuffer、IntBuffer、LongBuffer、ByteBuffer、ShortBuffer、FloatBuffer。上述缓冲区覆盖了通过I/O发送的基本数据类型：characters，double，int，long，byte，short和float。
 * Selectors（选择器）  
-&emsp; Selector(IO复用器/选择器)：多路复用的重要组成部分，检查一个或多个Channel(通道)是否是可读、写状态，实现单线程管理多Channel(通道)，优于使用多线程或线程池产生的系统资源开销。如果应用程序有多个通道(连接)打开，但每个连接的流量都很低，则可考虑使用Selectors。
+    &emsp; Selector(IO复用器/选择器)：多路复用的重要组成部分，检查一个或多个Channel(通道)是否是可读、写状态，实现单线程管理多Channel(通道)，优于使用多线程或线程池产生的系统资源开销。如果应用程序有多个通道(连接)打开，但每个连接的流量都很低，则可考虑使用Selectors。
 
 
 
