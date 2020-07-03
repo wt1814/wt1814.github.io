@@ -188,6 +188,9 @@
 ### 分布式通信  
 [序列化](/microService/communication/serializbale.md)    
 [NIO](/microService/communication/NIO.md)  
+&emsp; [NIO Channel](/microService/communication/NIO/Channel.md)  
+&emsp; [NIO Buffer](/microService/communication/NIO/Buffer.md)  
+&emsp; [NIO Selector](/microService/communication/NIO/Selector.md)  
 
 ## Elaticsearch-1  
 [ES基本概念](ES/1.basicConcepts.md)  
