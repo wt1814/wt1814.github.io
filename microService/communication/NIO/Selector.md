@@ -17,13 +17,16 @@ tags:
 
 <!-- /TOC -->
 
-# 1. NIO选择器  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-14.png)  
 
-&emsp; Selector是NIO多路复用的重要组成部分。它负责检查一个或多个Channel(通道)是否是可读、写状态，实现单线程管理多Channel(通道)，优于使用多线程或线程池产生的系统资源开销。 
+
+# 1. NIO选择器  
+&emsp; Selector是NIO多路复用的重要组成部分。它负责检查一个或多个Channel(通道)是否是可读、写状态，实现单线程管理多通道，优于使用多线程或线程池产生的系统资源开销。 
 
 ## 1.1. 选择器基础：选择器、可选择通道、选择键类   
 &emsp; 选择器(Selector)使用单个线程处理多个通道。 流程结构如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-12.png)  
+
 * 选择器(Selector)：在Java NIO中，选择器(Selector)是可选择通道的多路复用器。选择器类管理着一个被注册的通道集合的信息和它们的就绪状态。通道是和选择器一起被注册的，并且使用选择器来更新通道的就绪状态。当这样使用的时候，可以选择将被激发的线程挂起，直到有就绪的的通道。  
 当Channel(通道)注册至Selector内后，便会产生一个对应的SelectionKey，存储与此Channel相关的数据。
 * 可选择通道(SelectableChannel)：这个抽象类提供了实现通道的可选择性所需要的公共方法。它是所有支持就绪检查的通道类的父类。FileChannel对象不是可选择的，因为它们没有继承SelectableChannel。所有socket通道都是可选择的，包括从管道(Pipe)对象中获得的通道。SelectableChannel可以被注册到Selector对象上，同时可以指定对那个选择器而言，那种操作是感兴趣的。一个通道可以被注册到多个选择器上，但对每个选择器而言只能被注册一次。  
@@ -57,27 +60,27 @@ Selector selector = Selector.open();
 ```
 2. 将Channel注册到选择器中。为了使用选择器管理Channel，需要将Channel注册到选择器中:  
 
-```
-channel.configureBlocking(false);
-SelectionKey key =channel.register(selector,SelectionKey.OP_READ);
-```
-&emsp; 注意，注册的Channel必须设置成异步模式才可以，否则异步IO就无法工作。这就意味着不能把一个FileChannel注册到Selector，因为FileChannel没有异步模式，但是网络编程中的SocketChannel可以。  
-&emsp; 1). register()方法的第二个参数，它是一个“interest set”，意思是注册的Selector对Channel中的哪些事件感兴趣，事件类型有四种，这四种事件用SelectionKey的四个常量来表示：  
+    ```
+    channel.configureBlocking(false);
+    SelectionKey key =channel.register(selector,SelectionKey.OP_READ);
+    ```
+    &emsp; 注意，注册的Channel必须设置成异步模式才可以，否则异步IO就无法工作。这就意味着不能把一个FileChannel注册到Selector，因为FileChannel没有异步模式，但是网络编程中的SocketChannel可以。  
+    &emsp; 1). register()方法的第二个参数，它是一个“interest set”，意思是注册的Selector对Channel中的哪些事件感兴趣，事件类型有四种，这四种事件用SelectionKey的四个常量来表示：  
 
-```
-SelectionKey.OP_CONNECT
-SelectionKey.OP_ACCEPT
-SelectionKey.OP_READ
-SelectionKey.OP_WRITE
-```
-&emsp; 通道触发了一个事件是指该事件已经Ready(就绪）。所以某个Channel成功连接到另一个服务器称为“连接就绪”Connect Ready。一个ServerSocketChannel  
-&emsp; 准备好接收新连接称为“接收就绪”Accept Ready，一个有数据可读的通道可以说是Read Ready，等待写数据的通道可以说是Write Ready。  
+    ```
+    SelectionKey.OP_CONNECT
+    SelectionKey.OP_ACCEPT
+    SelectionKey.OP_READ
+    SelectionKey.OP_WRITE
+    ```
+    &emsp; 通道触发了一个事件是指该事件已经Ready(就绪）。所以某个Channel成功连接到另一个服务器称为“连接就绪”Connect Ready。一个ServerSocketChannel  
+    &emsp; 准备好接收新连接称为“接收就绪”Accept Ready，一个有数据可读的通道可以说是Read Ready，等待写数据的通道可以说是Write Ready。  
 
-&emsp; 2). 如果对多个事件感兴趣，可以通过or操作符来连接这些常量：  
+    &emsp; 2). 如果对多个事件感兴趣，可以通过or操作符来连接这些常量：  
 
-```
-int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
-```
+    ```
+    int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
+    ```
 
 ### 1.2.2. 选择键的使用，SelectionKey类的API  
 &emsp; SelectionKey类的API：  

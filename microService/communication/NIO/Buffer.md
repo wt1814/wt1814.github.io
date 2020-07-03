@@ -36,11 +36,12 @@ private int capacity;
 * 位置（Position)：下一个要被读或写的元素的索引。位置会自动由相应的和函数更新。记录当前读取或者写入的位置。写模式下等于当前写入的单位数据数量。从写模式切换到读模式时，置为0。在读的过程中等于当前读取单位数据的数量。  
 * 标记（Mark)：一个备忘位置。调用来设定mark = postion。调用设定position = mark。标记在设定前是未定义的(undefined)。  
 
-&emsp; 这四个属性之间遵循以下关系：0 <=mark <=position <=limit <=capacity。  
-&emsp; 在写模式和读模式（先写后读）下，position和limit的位置有所不同，见下图：  
+&emsp; 这四个属性之间遵循以下关系：0 <=mark <=position <=limit <=capacity。在写模式和读模式（先写后读）下，position和limit的位置有所不同。  
+<!-- 
+见下图：  
 &emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-1.png)  
-
 &emsp; ***图解：***  
+-->
 1. 新建一个大小为8个字节的缓冲区，此时position为 0，而limit = capacity = 8。capacity变量不会改变。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-2.png)  
 2. 从输入通道中读取 5 个字节数据写入缓冲区中，此时position为5，limit保持不变。  
@@ -53,7 +54,6 @@ private int capacity;
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-6.png)  
 
 ## 1.2. 缓冲区API成员方法  
-&emsp; 缓冲区API： 
 
 |名称| 作用|
 |---|---|
@@ -137,6 +137,7 @@ aFile.close();
 
 * 从Channel写到Buffer。
 * 通过Buffer的put()方法写到Buffer里。  
+
 &emsp; 从Channel写到Buffer的例子  
 
 ```
