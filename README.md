@@ -176,7 +176,9 @@
 [一致性哈希算法](/microService/thinking/分布式算法-consistent.md)  
 [分布式ID](/microService/thinking/分布式ID.md)  
 [分布式事务](/microService/thinking/分布式事务.md)  
-
+&emsp; [DTP](/microService/thinking/分布式事务-1.md)    
+&emsp; [消息、事件模式](/microService/thinking/分布式事务-2.md)   
+&emsp; [TCC模式](/microService/thinking/分布式事务-3.md)   
 [分布式锁](/microService/thinking/分布式锁.md)  
 &emsp; [Redis分布式锁](/microService/thinking/redis分布式锁.md)  
 &emsp; [ZK分布式锁](/microService/thinking/ZK分布式锁.md)  
