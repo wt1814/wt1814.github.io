@@ -134,7 +134,7 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 &emsp; 可以使用Redis、MongoDB、zookeeper生成分布式ID。  
 
 ### 2.3.1. 基于Redis实现  
-&emsp; redis单机使用incr函数生成自增ID；redis集群使用lua脚本生成，或使用org.springframework.data.redis.support.atomic.RedisAtomicLong生成。  
+&emsp; redis单机使用incr函数生成自增ID；<font color = "red">redis集群使用lua脚本生成，或使用org.springframework.data.redis.support.atomic.RedisAtomicLong生成。</font>  
 &emsp; ***优点：*** 有序递增，可读性强。  
 &emsp; ***缺点：*** 占用带宽，每次要向redis进行请求。
 
