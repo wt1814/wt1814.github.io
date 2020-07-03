@@ -12,13 +12,14 @@ tags:
     - [1.2. 阻塞、非阻塞](#12-阻塞非阻塞)
     - [1.3. IO模型，BIO、NIO、AIO](#13-io模型bionioaio)
 - [2. NIO](#2-nio)
-    - [2.1. NIO基本组件：](#21-nio基本组件)
+    - [2.1. NIO基本组件](#21-nio基本组件)
 - [3. NIO缓冲区](#3-nio缓冲区)
-    - [3.1. 缓冲区属性：](#31-缓冲区属性)
-    - [3.2. 缓冲区API成员方法：](#32-缓冲区api成员方法)
-        - [3.2.1. 缓冲区基本使用（注意模式切换）](#321-缓冲区基本使用注意模式切换)
-        - [3.2.2. 其他方法：](#322-其他方法)
-    - [3.3. 字节缓冲区详解：](#33-字节缓冲区详解)
+    - [3.1. 缓冲区属性](#31-缓冲区属性)
+    - [3.2. 缓冲区API成员方法](#32-缓冲区api成员方法)
+        - [3.2.1. 创建缓冲区](#321-创建缓冲区)
+        - [3.2.2. 缓冲区基本使用（注意模式切换）](#322-缓冲区基本使用注意模式切换)
+        - [3.2.3. 其他方法](#323-其他方法)
+    - [3.3. 字节缓冲区详解](#33-字节缓冲区详解)
 - [4. NIO通道](#4-nio通道)
     - [4.1. 通道分类及创建通道](#41-通道分类及创建通道)
     - [4.2. 分散Scatter/聚集Gather](#42-分散scatter聚集gather)
@@ -30,8 +31,8 @@ tags:
             - [4.2.4.2. FileChannel.transferTo()方法](#4242-filechanneltransferto方法)
             - [4.2.4.3. 基本通道到通道数据传输示例](#4243-基本通道到通道数据传输示例)
     - [4.3. 内存映射文件](#43-内存映射文件)
-        - [4.3.1. MappedByteBuffer API：](#431-mappedbytebuffer-api)
-        - [4.3.2. 示例：](#432-示例)
+        - [4.3.1. MappedByteBuffer API](#431-mappedbytebuffer-api)
+        - [4.3.2. 示例](#432-示例)
     - [4.4. 通道工具类](#44-通道工具类)
 - [5. NIO选择器](#5-nio选择器)
     - [5.1. 选择器基础：选择器、可选择通道、选择键类](#51-选择器基础选择器可选择通道选择键类)
@@ -59,7 +60,6 @@ tags:
 &emsp; ***阻塞、非阻塞和同步、异步的区别：***  
 &emsp; 阻塞、非阻塞和同步、异步其实针对的对象是不一样的。阻塞、非阻塞说的是调用者，同步、异步说的是被调用者。  
 
-
 ## 1.3. IO模型，BIO、NIO、AIO  
 &emsp; 同步阻塞IO（BIO，Block-IO）：用户进程在发起一个IO操作以后，必须等待IO操作的完成。只有当真正完成了IO操作以后，用户进程才能运行。Java传统的IO模型属于此种方式！  
 &emsp; 同步非阻塞IO（NIO，Non-Block IO）：在此种方式下，用户进程发起一个IO操作以后便可返回做其它事情，但是用户进程需要时不时的询问IO操作是否就绪，这就要求用户进程不停的去询问，从而引入不必要的CPU资源浪费。其中目前Java的NIO就属于同步非阻塞IO。  
@@ -67,31 +67,29 @@ tags:
 &emsp; 异步非阻塞IO（AIO，Asynchronous IO）：在此种模式下，用户进程只需要发起一个IO操作然后立即返回，等IO操作真正的完成以后，应用程序会得到IO操作完成的通知，此时用户进程只需要对数据进行处理就好了，不需要进行实际的IO读写操作，因为真正的IO读取或者写入操作已经由内核完成了。  
 
 &emsp; 适用场景：  
-&emsp; BIO方式适用于连接数目比较小且固定的架构，这种方式对服务器资源要求比较高，并发局限于应用中，JDK1.4以前的唯一选择，但程序直观简单易理解。  
-&emsp; NIO方式适用于连接数目多且连接比较短（轻操作）的架构，比如聊天服务器，并发局限于应用中，编程比较复杂，JDK1.4开始支持。  
-&emsp; AIO方式适用于连接数目多且连接比较长（重操作）的架构，比如相册服务器，充分调用OS参与并发操作，编程比较复杂，JDK1.7开始支持。  
 
+* BIO方式适用于连接数目比较小且固定的架构，这种方式对服务器资源要求比较高，并发局限于应用中，JDK1.4以前的唯一选择，但程序直观简单易理解。  
+* NIO方式适用于连接数目多且连接比较短（轻操作）的架构，比如聊天服务器，并发局限于应用中，编程比较复杂，JDK1.4开始支持。  
+* AIO方式适用于连接数目多且连接比较长（重操作）的架构，比如相册服务器，充分调用OS参与并发操作，编程比较复杂，JDK1.7开始支持。  
 
 # 2. NIO  
-## 2.1. NIO基本组件：  
+## 2.1. NIO基本组件  
 &emsp; NIO支持面向缓冲的，基于通道的I/O操作方法。NIO读写是I/O的基本过程。读写操作中使用的核心部件有：Channels、Buffers、Selectors。  
 
 &emsp; 通道和缓冲区：在标准I/O中，使用字符流和字节流。在NIO中使用通道和缓冲区。  
 * Channel(通道)：在缓冲区和位于通道另一侧的服务之间进行数据传输，支持单向或双向传输，支持阻塞或非阻塞模式。  
+    &emsp; 通道列表：  
+
+    |通道类型 |作用|
+    |---|---|
+    |FileChannel	|从文件中读写数据|
+    |SocketChannel	|能通过TCP读写网络中的数据|
+    |DatagramChannel	|能通过UDP读写网络中的数据|
+    |ServerSocketChannel	|可以监听新进来的TCP连接，对每一个新进来的连接都会创建一个SocketChannel|
 * Buffer(缓冲区)：高效数据容器。本质上是一块内存区，用于数据的读写，NIO Buffer将其包裹并提供开发时常用的接口，便于数据操作。  
-N&emsp; IO中的所有I/O都是通过一个通道开始的。数据总是从缓冲区写入通道，并从通道读取到缓冲区。从通道读取：创建一个缓冲区，然后请求通道读取数据。通道写入：创建一个缓冲区，填充数据，并要求通道写入数据。  
-&emsp; 通道列表：  
-
-|通道类型 |作用|
-|---|---|
-|FileChannel	|从文件中读写数据|
-|SocketChannel	|能通过TCP读写网络中的数据|
-|DatagramChannel	|能通过UDP读写网络中的数据|
-|ServerSocketChannel	|可以监听新进来的TCP连接，对每一个新进来的连接都会创建一个SocketChannel|
-
-&emsp; 缓冲列表：  
-&emsp; 在NIO中使用的核心缓冲区如下：CharBuffer、DoubleBuffer、IntBuffer、LongBuffer、ByteBuffer、ShortBuffer、FloatBuffer。上述缓冲区覆盖了通过I/O发送的基本数据类型：characters，double，int，long，byte，short和float。
-
+    &emsp; NIO中的所有I/O都是通过一个通道开始的。数据总是从缓冲区写入通道，并从通道读取到缓冲区。从通道读取：创建一个缓冲区，然后请求通道读取数据。通道写入：创建一个缓冲区，填充数据，并要求通道写入数据。  
+    &emsp; 缓冲列表：  
+    &emsp; 在NIO中使用的核心缓冲区如下：CharBuffer、DoubleBuffer、IntBuffer、LongBuffer、ByteBuffer、ShortBuffer、FloatBuffer。上述缓冲区覆盖了通过I/O发送的基本数据类型：characters，double，int，long，byte，short和float。
 * Selectors（选择器）  
 &emsp; Selector(IO复用器/选择器)：多路复用的重要组成部分，检查一个或多个Channel(通道)是否是可读、写状态，实现单线程管理多Channel(通道)，优于使用多线程或线程池产生的系统资源开销。如果应用程序有多个通道(连接)打开，但每个连接的流量都很低，则可考虑使用Selectors。
 
@@ -99,7 +97,7 @@ N&emsp; IO中的所有I/O都是通过一个通道开始的。数据总是从缓�
 &emsp; 缓冲区实际上是一个容器对象，其实就是一个数组，是一块可以写入数据，然后可以从中读取数据的内存。这块内存被包装成NIO Buffer对象，并提供了一组方法，用来方便的访问该块内存。   
 &emsp; 在NIO库中，所有数据都是用缓冲区处理的。在读取数据时，它是直接读到缓冲区中的；在写入数据时，它也是写入到缓冲区中的；任何时候访问NIO中的数据，都是将它放到缓冲区中。而在面向流I/O系统中，所有数据都是直接写入或者直接将数据读取到Stream对象中。  
 
-## 3.1. 缓冲区属性：  
+## 3.1. 缓冲区属性  
 &emsp; 缓冲区4个属性：  
 
 ```
@@ -109,13 +107,14 @@ private int position = 0;
 private int limit;
 private int capacity;
 ```
+* 容量（Capacity)：缓冲区能够容纳的数据元素的最大数量。这一容量在缓冲区创建时被设定，并且不能被改变。Buffer满了，需要将其清空（通过读数据或者清除数据）才能继续写数据。  
+* 上界（Limit)：缓冲区中现存元素的计数。代表最多能写入或者读取多少单位的数据。写模式下等于最大容量capacity。从写模式切换到读模式时，等于position，然后再将position置为0。所以，读模式下，limit表示最大可读取的数据量，这个值与实际写入的数量相等。读模式下：最多能往Buffer里读多少数据，写模式下：最多能往Buffer里写多少数据，limit大小跟数量大小和capacity有关。  
+* 位置（Position)：下一个要被读或写的元素的索引。位置会自动由相应的和函数更新。记录当前读取或者写入的位置。写模式下等于当前写入的单位数据数量。从写模式切换到读模式时，置为0。在读的过程中等于当前读取单位数据的数量。  
+* 标记（Mark)：一个备忘位置。调用来设定mark = postion。调用设定position = mark。标记在设定前是未定义的(undefined)。  
+
+&emsp; 这四个属性之间遵循以下关系：0 <=mark <=position <=limit <=capacity。  
 &emsp; 在写模式和读模式（先写后读）下，position和limit的位置有所不同，见下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-1.png)  
-&emsp; 容量（Capacity)：缓冲区能够容纳的数据元素的最大数量。这一容量在缓冲区创建时被设定，并且不能被改变。Buffer满了，需要将其清空（通过读数据或者清除数据）才能继续写数据。  
-&emsp; 上界（Limit)：缓冲区中现存元素的计数。代表最多能写入或者读取多少单位的数据。写模式下等于最大容量capacity。从写模式切换到读模式时，等于position，然后再将position置为0。所以，读模式下，limit表示最大可读取的数据量，这个值与实际写入的数量相等。读模式下：最多能往Buffer里读多少数据，写模式下：最多能往Buffer里写多少数据，limit大小跟数量大小和capacity有关。  
-&emsp; 位置（Position)：下一个要被读或写的元素的索引。位置会自动由相应的和函数更新。记录当前读取或者写入的位置。写模式下等于当前写入的单位数据数量。从写模式切换到读模式时，置为0。在读的过程中等于当前读取单位数据的数量。  
-&emsp; 标记（Mark)：一个备忘位置。调用来设定mark = postion。调用设定position = mark。标记在设定前是未定义的(undefined)。
-这四个属性之间遵循以下关系：0 <=mark <=position <=limit <=capacity。  
 
 &emsp; ***图解：***  
 1. 新建一个大小为8个字节的缓冲区，此时position为 0，而limit = capacity = 8。capacity变量不会改变。  
@@ -129,7 +128,7 @@ private int capacity;
 5. 最后需要调用 clear() 方法来清空缓冲区，此时position和limit都被设置为最初位置。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-6.png)  
 
-## 3.2. 缓冲区API成员方法：  
+## 3.2. 缓冲区API成员方法  
 &emsp; 缓冲区API： 
 
 |名称| 作用|
@@ -142,9 +141,8 @@ private int capacity;
 |compact()	|从读数据切换到写模式，数据不会被清空，会将所有未读的数据copy到缓冲区头部，后续写数据不会覆盖，而是在这些数据之后写数据|
 |mark() 	|对position做出标记，配合reset使用|
 |reset()	|将position置为标记值|  
- 
 
- ### 创建缓冲区：  
+### 3.2.1. 创建缓冲区  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-7.png)  
 &emsp; 有七种主要的缓冲区类，每一种都具有一种Java语言中的非布尔类型的原始类型数据。（第8种也在图中显示出来，MappedByteBuffer是ByteBuffer专门用于内存映射文件的一种特例。）  
 &emsp; 创建缓冲区的关键函数（对所有的缓冲区类通用，按照需要替换类名）：  
@@ -160,23 +158,27 @@ public abstract class CharBuffer extends Buffer implements CharSequence, Compara
     public final int arrayOffset( );
 }
 ```
+
 &emsp; 创建缓冲区详解：  
 &emsp; 新的缓冲区是由分配或包装操作创建的。分配操作创建一个缓冲区对象并分配一个私有的空间来储存容量大小的数据元素。包装操作创建一个缓冲区对象但是不分配任何空间来储存数 据元素。它使用提供的数组作为存储空间来储存缓冲区中的数据元素。  
 &emsp; 要分配一个容量为100个char变量的Charbuffer:  
 
-    CharBuffer charBuffer = CharBuffer.allocate (100);  
+    CharBuffer charBuffer = CharBuffer.allocate (100);
+
 这&emsp; 段代码隐含地从堆空间中分配了一个char型数组作为备份存储器来储存100个char变量。  
 &emsp; 如果想提供自己的数组用做缓冲区的备份存储器，调用wrap()函数:  
 
     char [] myArray = new char [100];  
-    CharBuffer charbuffer = CharBuffer.wrap (myArray);  
+    CharBuffer charbuffer = CharBuffer.wrap (myArray);
+
 &emsp; 这段代码构造了一个新的缓冲区对象，但数据元素会存在于数组中。这意味着通过调用put()函数造成的对缓冲区的改动会直接影响这个数组，而且对这个数组的任何改动也会对这 个缓冲区对象可见。带有offset和length作为参数的wrap()函数版本则会构造一个按照提供的offset和length参数值初始化位置和上界的缓冲区。这样做：  
 
     CharBuffer charbuffer = CharBuffer.wrap (myArray, 12, 42);
+
 &emsp; 创建建了一个position值为12, limit值为54,容量为myArray.length的缓冲区。  
 &emsp; 通过allocate()或者wrap()函数创建的缓冲区通常都是间接的。    
 
-### 3.2.1. 缓冲区基本使用（注意模式切换）  
+### 3.2.2. 缓冲区基本使用（注意模式切换）  
 &emsp; 使用Buffer读写数据一般遵循以下四个步骤：  
 1. 写入数据到Buffer；  
 2. 调用flip()方法；  
@@ -208,6 +210,7 @@ aFile.close();
 ```
 
 &emsp; ***向Buffer中写数据：*** 写数据到Buffer有两种方式：  
+
 * 从Channel写到Buffer。
 * 通过Buffer的put()方法写到Buffer里。  
 &emsp; 从Channel写到Buffer的例子  
@@ -226,6 +229,7 @@ buf.put(127);
 换句话说，position现在用于标记读的位置，limit表示之前写进了多少个byte、char等 —— 现在能读取多少个byte、char等。   
 
 &emsp; ***从Buffer中读取数据：*** 从Buffer中读取数据有两种方式：  
+
 * 从Buffer读取数据到Channel。
 * 使用get()方法从Buffer中读取数据。
 从Buffer读取数据到Channel的例子： 
@@ -234,13 +238,13 @@ buf.put(127);
 //read from buffer into channel.  
 int bytesWritten = inChannel.write(buf); 
 ```
-&emsp; 使用get()方法从Buffer中读取数据的例子  
+&emsp; 使用get()方法从Buffer中读取数据的例子：  
 
 ```
 byte aByte = buf.get(); 
 ```
 
-### 3.2.2. 其他方法：
+### 3.2.3. 其他方法
 &emsp; ***rewind()方法***  
 &emsp; Buffer.rewind()将position设回0，所以可以重读Buffer中的所有数据。limit保持不变，仍然表示能从Buffer中读取多少个元素（byte、char等）。  
 
@@ -273,35 +277,35 @@ buffer.reset();  //set position back to mark.
 &emsp; 所有元素都相等，但第一个Buffer比另一个先耗尽(第一个Buffer的元素个数比另一个少)。  
 &emsp; （译注：剩余元素是从 position到limit之间的元素） 
 
-## 3.3. 字节缓冲区详解：  
+## 3.3. 字节缓冲区详解  
 &emsp; 所有的基本数据类型都有相应的缓冲区类 (布尔型除外），但字节缓冲区有自己的独特之处。字节是操作系统及其I/O设备使用的基本数据类型。
 为什么Buffer能更方便的操作？Buffer记录了每个操作点。同时ByteBuffer为了提高性能，提供了两种实现：堆内存和直接内存。  
 &emsp; 使用直接内存的优势：  
-&emsp; 1).少一次内存拷贝：在常规文件IO或者网络IO的情况下，需要调用操作系统的API，会先把堆内存的数据复制到堆外，至于为什么要复制一份数据到堆外，JVM有GC机制，在GC过程中，会移动对象的位置，这样操作系统在读取或写入数据就找不到数据了。但这样一来，显然增加了一次内存拷贝的过程，如果直接通过直接内存的方式，省略掉这次非必须的内存拷贝，可以达到优化性能的目的。创建直接内存的API：  
+1. 少一次内存拷贝：在常规文件IO或者网络IO的情况下，需要调用操作系统的API，会先把堆内存的数据复制到堆外，至于为什么要复制一份数据到堆外，JVM有GC机制，在GC过程中，会移动对象的位置，这样操作系统在读取或写入数据就找不到数据了。但这样一来，显然增加了一次内存拷贝的过程，如果直接通过直接内存的方式，省略掉这次非必须的内存拷贝，可以达到优化性能的目的。创建直接内存的API：  
 
-```
-public static ByteBuffer allocateDirect(int capacity) {
-    return new DirectByteBuffer(capacity);
-}
-```
-&emsp; 2).降低GC压力：如果直接使用直接内存（堆外内存）呢？首先申请一块不受GC管理的堆外内存，但需要手动回收堆外内存。在java.nio.DirectByteBuffer中，有一个虚引用的Cleaner对象，执行GC时会触发Deallocator回收内存。  
-
-```
-private static class Deallocator implements Runnable {
- 
-    public void run() {
-        if (address == 0) {
-            // Paranoia
-            return;
-        }
-        unsafe.freeMemory(address);
-        address = 0;
-        Bits.unreserveMemory(size, capacity);
+    ```
+    public static ByteBuffer allocateDirect(int capacity) {
+        return new DirectByteBuffer(capacity);
     }
+    ```
+2. 降低GC压力：如果直接使用直接内存（堆外内存）呢？首先申请一块不受GC管理的堆外内存，但需要手动回收堆外内存。在java.nio.DirectByteBuffer中，有一个虚引用的Cleaner对象，执行GC时会触发Deallocator回收内存。  
 
-}
-```
-&emsp; 虽然堆外内存好处很多，但还是建议在网络传输，文件读取等大数据量的IO密集操作时才使用，分配一些大文件大数据读取时才使用。同时设置MaxDirectMemorySize避免耗尽整个机器内存。
+    ```
+    private static class Deallocator implements Runnable {
+    
+        public void run() {
+            if (address == 0) {
+                // Paranoia
+                return;
+            }
+            unsafe.freeMemory(address);
+            address = 0;
+            Bits.unreserveMemory(size, capacity);
+        }
+
+    }
+    ```
+    &emsp; 虽然堆外内存好处很多，但还是建议在网络传输，文件读取等大数据量的IO密集操作时才使用，分配一些大文件大数据读取时才使用。同时设置MaxDirectMemorySize避免耗尽整个机器内存。
 
 
 # 4. NIO通道  
@@ -656,7 +660,7 @@ this is content from input4.txt
 &emsp; 2).可以映射非常大的文件（文件可能无法全部读入内存），而不消耗大量内存来复制数据。  
 &emsp; java nio提供的FileChannel提供了map()方法，该方法可以在一个打开的文件和MappedByteBuffer之间建立一个虚拟内存映射，MappedByteBuffer继承于ByteBuffer，类似于一个基于内存的缓冲区，只不过该对象的数据元素存储在磁盘的一个文件中；  
 
-### 4.3.1. MappedByteBuffer API：  
+### 4.3.1. MappedByteBuffer API  
 &emsp; NIO中内存映射主要用到以下两个类：java.nio.MappedByteBuffer、java.nio.channels.FileChannel。  
 1. 通过FileChannel.map()获取MappedByteBuffer  
 
@@ -675,7 +679,7 @@ public abstract MappedByteBuffer map(MapMode mode, long position, long size) thr
 &emsp; load()：将缓冲区的内容载入内存，并返回该缓冲区的引用；  
 &emsp; isLoaded()：如果缓冲区的内容在物理内存中，则返回真，否则返回假；  
 
-### 4.3.2. 示例：  
+### 4.3.2. 示例  
 &emsp; 下面通过一个例子来看一下内存映射读取文件和普通的IO流读取一个150M大文件的速度对比：  
 ```
 public class MemMap {
@@ -815,11 +819,13 @@ public class MemMapReadWrite {
 ### 5.2.1. 建立选择器（选择器、通道、选择键建立连接）  
 &emsp; selector的API：  
 
-|方法	|描述|
+|方法|描述|
 |---|---|
-|Selector open()	|打开一个选择器|
-|void close()	|关闭此选择器|
+|Selector open()|打开一个选择器|
+|void close()|关闭此选择器|
+
 &emsp; 建立监控三个Socket通道的选择器：  
+
 ```
 Selector selector = Selector.open( );
 channel1.register (selector, SelectionKey.OP_READ);
@@ -836,12 +842,14 @@ readyCount = selector.select (10000);
 Selector selector = Selector.open();
 ```
 2. 将Channel注册到选择器中。为了使用选择器管理Channel，需要将Channel注册到选择器中:  
+
 ```
 channel.configureBlocking(false);
 SelectionKey key =channel.register(selector,SelectionKey.OP_READ);
 ```
 &emsp; 注意，注册的Channel必须设置成异步模式才可以，否则异步IO就无法工作。这就意味着不能把一个FileChannel注册到Selector，因为FileChannel没有异步模式，但是网络编程中的SocketChannel可以。  
 &emsp; 1). register()方法的第二个参数，它是一个“interest set”，意思是注册的Selector对Channel中的哪些事件感兴趣，事件类型有四种，这四种事件用SelectionKey的四个常量来表示：  
+
 ```
 SelectionKey.OP_CONNECT
 SelectionKey.OP_ACCEPT
@@ -852,6 +860,7 @@ SelectionKey.OP_WRITE
 &emsp; 准备好接收新连接称为“接收就绪”Accept Ready，一个有数据可读的通道可以说是Read Ready，等待写数据的通道可以说是Write Ready。  
 
 &emsp; 2). 如果对多个事件感兴趣，可以通过or操作符来连接这些常量：  
+
 ```
 int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
 ```
@@ -867,6 +876,7 @@ int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
     Channel：通道，获取此 SelectionKey 对应的 channel
     Selector：选择器，管理此 channel 的 Selector
     Attach：附加对象，向SelectionKey中添加更多的信息，方便之后的数据操作判断或获取
+
 &emsp; SelectionKey还有几个重要的方法，用于检测Channel中什么事件或操作已经就绪，它们都会返回一个布尔类型：selectionKey.isAcceptable();selectionKey.isConnectable();selectionKey.isReadable();selectionKey.isWritable();   
 
 ### 5.2.3. 选择器的使用，selector类的API  
@@ -899,6 +909,7 @@ int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
         * 将已经处理过的key从selected keys 集合中删除。
 
 ### 5.2.4. Selector完整实例  
+
 ```
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -966,7 +977,9 @@ public class TCPServer{
 }
 ```
 
-特别说明：例子中selector只注册了一个Channel，注册多个Channel操作类似。如下：
+&emsp; 特别说明：例子中selector只注册了一个Channel，注册多个Channel操作类似。如下：  
+
+```
 for (int i=0; i<3; i++){
     // 打开监听信道
     ServerSocketChannel listenerChannel = ServerSocketChannel.open();
@@ -977,6 +990,7 @@ for (int i=0; i<3; i++){
     // 注册到selector中
     listenerChannel.register(selector, SelectionKey.OP_ACCEPT);
 }
+```
 
 &emsp; 在上面的例子中，对于通道IO事件的处理并没有给出具体方法，在此，举一个更详细的例子：  
 
