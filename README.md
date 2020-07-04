@@ -176,6 +176,10 @@
 &emsp; [Redis淘汰策略](/microService/Redis/Redis淘汰.md)  
 &emsp; [Redis事务](/microService/Redis/Redis事务.md)  
 [Redis集群](/microService/Redis/Redis集群.md)  
+&emsp; [Redis主从复制](/microService/Redis/Redis主从复制.md)  
+&emsp; [Redis哨兵模式](/microService/Redis/Redis哨兵模式.md)  
+&emsp; [Redis分片模式](/microService/Redis/Redis分片模式.md)  
+
 
 ### 分布式理论  
 [一致性哈希算法](/microService/thinking/分布式算法-consistent.md)  
