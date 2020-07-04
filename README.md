@@ -97,23 +97,18 @@
 &emsp; [基本查询语句](/SQL/9.bxasicSelect.md)  
 &emsp; [连接查询](/SQL/10.joinSelect.md)  
 &emsp; [行列转换](/SQL/11.trans.md)  
-
 [SQL优化-1](/SQL/2.SQL优化.md)  
 &emsp; [索引优化](/SQL/7.index.md)  
 &emsp; [优化案例](/SQL/12.case.md)  
-
 [MySql原理]  
 &emsp; [MySql存储引擎](/SQL/13.MySqlStorage.md)  
 &emsp; [MySql事务](/SQL/14.transaction.md)  
 &emsp; [MySql锁](/SQL/7.index.md)  
-
 [MySql架构](/SQL/8.MySql架构.md)  
-
 [分布式数据库](/SQL/4.分布式数据库.md)  
 &emsp; [主从复制](/SQL/16.replication.md)  
 &emsp; [分区](/SQL/17.partition.md)  
 &emsp; [分库分表-1](/SQL/18.sub.md)  
-
 [MyCat中间件](/SQL/5.MyCat中间件.md)  
 [AOP多数据源动态切换](/SQL/6.multiDataSource.md)  
 
