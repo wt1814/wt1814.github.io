@@ -73,7 +73,7 @@ tags:
 &emsp; 在ZooKeeper中，引入Watcher机制来实现分布式数据的发布/订阅功能。Zookeeper客户端向服务端的某个Znode 注册一个 Watcher 监听，当服务端的一些指定事件触发了这个 Watcher，服务端会向指定客户端发送一个事件通知来实现分布式的通知功能，然后客户端根据 Watcher 通知状态和事件类型做出业务上的改变。  
 &emsp; 触发watch事件种类很多，如：节点创建，节点删除，节点改变，子节点改变等。  
 
-&emsp; <font color = "red">一句话概述，三个过程：客户端注册 Watcher、服务器处理 Watcher 和客户端回调 Watcher。</font>  
+&emsp; <font color = "red">Watcher机制运行流程：客户端注册 Watcher、服务器处理 Watcher 和客户端回调 Watcher。</font>  
 
 &emsp; ***watch的重要特性：***  
 
@@ -86,10 +86,11 @@ tags:
 ## 3.2. ※※※ZAB协议  
 &emsp; ZAB（Zookeeper Atomic Broadcast），崩溃可恢复的的原子消息广播协议。ZAB协议包括两种基本模式：崩溃恢复（选主）和消息广播（同步）。整个Zookeeper集群就是在这两个模式之间切换。  
 
-* 集群角色：  
-    * 领导者Leader：同一时间集群总只允许有一个Leader，提供对客户端的读写功能，负责将数据同步至各个节点；  
-    * 跟随者Follower：提供对客户端读功能，写请求则转发给Leader处理，当Leader崩溃失联之后参与Leader选举；  
-    * 观察者Observer：与Follower不同的是但不参与Leader选举。  
+&emsp; Zookeeper集群角色：  
+
+* 领导者Leader：同一时间集群总只允许有一个Leader，提供对客户端的读写功能，负责将数据同步至各个节点；  
+* 跟随者Follower：提供对客户端读功能，写请求则转发给Leader处理，当Leader崩溃失联之后参与Leader选举；  
+* 观察者Observer：与Follower不同的是但不参与Leader选举。  
 
 <!-- 
 * 服务状态
@@ -106,13 +107,12 @@ tags:
 &emsp; ***选举流程中几个重要参数：***  
 &emsp; 服务器ID：即配置的myId。id越大，选举时权重越高。  
 &emsp; <font color = "red">事务ID，zkid(Zookeeper Transaction Id)：服务器在运行时产生的数据id，即zkid, 这里指本地最新snapshot的id。id越大说明数据越新，选举时权重越高。</font>  
+&emsp; 选举轮数：Epoch，即逻辑时钟。随着选举的轮数++。  
+&emsp; 选举状态：4种状态。LOOKING，竞选状态；FOLLOWING，随从状态，同步leader状态，参与投票；OBSERVING，观察状态，同步leader状态，不参与投票；LEADING，领导者状态。  
 <!-- 
 ZooKeeper状态的每次变化都接收一个ZXID（ZooKeeper事务id）形式的标记。ZXID是一个64位的数字，由Leader统一分配，全局唯一，不断递增。
 ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一的zxid，如果zxid1小于zxid2说明zxid1在zxid2之前发生。
 -->
-&emsp; 选举轮数：Epoch，即逻辑时钟。随着选举的轮数++。  
-&emsp; 选举状态：4种状态。LOOKING，竞选状态；FOLLOWING，随从状态，同步leader状态，参与投票；OBSERVING，观察状态，同步leader状态，不参与投票；LEADING，领导者状态。  
-
 * ***服务器启动时的leader选举：***  
 &emsp; 每个节点启动的时候状态都是LOOKING，处于观望状态，接下来就开始进行选主流程。  
 &emsp; 若进行 Leader 选举，则至少需要两台机器，这里选取 3 台机器组成的服务器集群为例。在集群初始化阶段，当有一台服务器 Server1 启动时，其单独无法进行和完成 Leader 选举，当第二台服务器 Server2 启动时，此时两台机器可以相互通信，每台机器都试图找到 Leader，于是进入 Leader选举过程。选举过程如下：  
@@ -126,12 +126,12 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 4. 统计投票。每次投票后，服务器都会统计投票信息，判断是否已经有过半机器接受到相同的投票信息，对于 Server1、 Server2 而言，都统计出集群中已经有两台机器接受了(2, 0)的投票信息，此时便认为已经选出了 Leader。  
 5. 改变服务器状态。一旦确定了 Leader，每个服务器就会更新自己的状态，如果是 Follower，那么就变更为 FOLLOWING，如果是 Leader，就变更为 LEADING。  
 
-&emsp; <font color = "red">一句话概述：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票（epoch>ZXID>myid）；统计投票；改变服务器状态。</font>
+&emsp; ***<font color = "red">一句话概述：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票（epoch>ZXID>myid）；统计投票；改变服务器状态。</font>***
 
 * ***运行过程中的leader选举：***  
 &emsp; 当集群中的 leader 服务器出现宕机或者不可用的情况时，那么整个集群将无法对外提供服务，而是进入新一轮的 Leader 选举，服务器运行期间的 Leader 选举和启动时期的 Leader 选举基本过程是一致的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-3.png)  
-1. 变更状态。 Leader 挂后，余下的非 Observer 服务器都会将自己的服务器状态变更为 LOOKING，然后开始进入 Leader 选举过程。  
+1. 变更状态。 Leader挂后，余下的非Observer服务器都会将自己的服务器状态变更为LOOKING，然后开始进入Leader选举过程。  
 2. 每个 Server 会发出一个投票。在运行期间，每个服务器上的 ZXID 可能不同，此时假定 Server1 的 ZXID 为 123，Server3 的 ZXID 为 122；在第一轮投票中，Server1 和 Server3 都会投自己，产生投票(1, 123)，(3, 122)，然后各自将投票发送给集群中所有机器。接收来自各个服务器的投票。与启动时过程相同。  
 3. 处理投票。与启动时过程相同，此时， Server1 将会成为 Leader。  
 4. 统计投票。与启动时过程相同。  
@@ -144,7 +144,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 &emsp; 在 zookeeper 中，客户端会随机连接到 zookeeper 集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，然后 leader 会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交（类2PC事务）。  
 
 &emsp; ***消息广播流程：***  
-1. leader 接收到消息请求后，将消息赋予一个全局唯一的64 位自增 id，叫： zxid，通过 zxid 的大小比较既可以实现因果有序这个特征。  
+1. leader接收到消息请求后，将消息赋予一个全局唯一的64 位自增 id，叫：zxid，通过 zxid 的大小比较既可以实现因果有序这个特征。  
 2. leader 为每个 follower 准备了一个 FIFO 队列（通过 TCP协议来实现，以实现了全局有序这一个特点）将带有 zxid的消息作为一个提案（ proposal）分发给所有的 follower。  
 3. 当 follower 接收到 proposal，先把 proposal 写到磁盘，写入成功以后再向 leader 回复一个 ack。  
 4. 当 leader 接收到合法数量（超过半数节点）的 ACK 后，leader 就会向这些 follower 发送 commit 命令，同时会在本地执行该消息。  
@@ -182,8 +182,9 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 
 ### 4.1.6. 队列管理
 &emsp; 两种类型的队列：  
-&emsp; 1）同步队列，当一个队列的成员都聚齐时，这个队列才可用，否则一直等待所有成员到达。  
-&emsp; 2）队列按照FIFO方式进行入队和出队操作。  
+1. 同步队列，当一个队列的成员都聚齐时，这个队列才可用，否则一直等待所有成员到达。  
+2. 队列按照FIFO方式进行入队和出队操作。 
+ 
 &emsp; 第一类，在约定目录下创建临时目录节点，监听节点数目是否是要求的数目。  
 &emsp; 第二类，和分布式锁服务中的控制时序场景基本原理一致，入列有编号，出列按编号。  
 
