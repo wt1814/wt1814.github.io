@@ -8,7 +8,7 @@ tags:
 <!-- TOC -->
 
 - [1. 哨兵模式](#1-哨兵模式)
-    - [1.1. 架构](#11-架构)
+    - [1.1. 架构-1](#11-架构-1)
     - [1.2. 部署及故障转移演示](#12-部署及故障转移演示)
     - [1.3. 哨兵原理](#13-哨兵原理)
         - [1.3.1. 心跳检查](#131-心跳检查)
@@ -31,19 +31,17 @@ tags:
 
 &emsp; <font color="red">监控和自动故障转移使得 Sentinel 能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
 
-## 1.1. 架构  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-45.png)  
-&emsp; 典型的哨兵架构图如上图所示，它主要包括两个部分：哨兵节点和数据节点。  
+## 1.1. 架构-1  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-28.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-29.png)  
+&emsp; <font color = "red">Redis哨兵架构中主要包括两个部分：Redis Sentinel集群和Redis数据集群。</font>  
 
-* 哨兵节点：哨兵系统由若干个哨兵节点组成。其实哨兵节点是一个特殊的 Redis 节点，<font color="red">哨兵节点不存储数据的和仅支持部分命令。配置哨兵时配置为单数。</font>  
+* 哨兵节点：哨兵系统由若干个哨兵节点组成。其实哨兵节点是一个特殊的 Redis 节点，<font color="red">哨兵节点不存储数据的和仅支持部分命令。配节点数量要满足2n+1（n>=1）的奇数个。</font>  
 * 数据节点：由主节点和从节点组成的数据节点。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-27.png)  
+  
 
-&emsp; Redis Sentinel部署架构主要包括两部分：Redis Sentinel集群和Redis数据集群。  
-&emsp; 其中Redis Sentinel集群是由若干Sentinel节点组成的分布式集群，可以实现故障发现、故障自动转移、配置中心和客户端通知。Redis Sentinel的节点数量要满足2n+1（n>=1）的奇数个。   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-28.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-29.png)  
 
 ## 1.2. 部署及故障转移演示    
 ......
@@ -89,7 +87,7 @@ tags:
 
 ### 1.3.4. 故障转移  
 &emsp; 当某个 Sentinel 节点通过选举成为了领导者，则他就要承担起故障转移的工作，其具体步骤如下：  
-1. 从从节点列表中选择一个节点作为新的主节点，选择的策略如下： 
+1. 在从节点列表中选择一个节点作为新的主节点，选择的策略如下： 
     * 过滤掉不健康的节点（主观下线、断线），5 秒内没有回复过 Sentinel 节点 ping 响应、与主节点失联超过 down-after-milliseconds*10秒  
     * 选择优先级最高级别的节点，如果不存在则继续  
     * 选择复制偏移量最大的节点（数据最完整），存在则返回，不存在则继续  
