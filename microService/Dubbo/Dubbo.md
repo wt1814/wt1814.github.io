@@ -7,9 +7,9 @@ tags:
 
 <!-- TOC -->
 
-- [1. Dubbo工作流程：](#1-dubbo工作流程)
+- [1. Dubbo工作流程](#1-dubbo工作流程)
     - [1.1. Dubbo需要Web容器吗？内置了哪几种服务容器？](#11-dubbo需要web容器吗内置了哪几种服务容器)
-    - [1.2. Dubbo有些哪些注册中心？](#12-dubbo有些哪些注册中心)
+    - [1.2. Dubbo有哪些注册中心？](#12-dubbo有哪些注册中心)
     - [1.3. Dubbo支持哪些序列化方式？](#13-dubbo支持哪些序列化方式)
     - [1.4. 通信协议](#14-通信协议)
     - [1.5. 服务提供者能实现失效踢出是什么原理？](#15-服务提供者能实现失效踢出是什么原理)
@@ -23,11 +23,9 @@ tags:
 
 <!-- /TOC -->
 
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo.png)   
 
-# 1. Dubbo工作流程： 
-
+# 1. Dubbo工作流程 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-11.png)   
 &emsp; Dubbo中5个角色：Provider、Consumer、Registry、Monitor、Container。  
 
@@ -47,10 +45,10 @@ tags:
 
 ## 1.1. Dubbo需要Web容器吗？内置了哪几种服务容器？  
 &emsp; 不需要，如果强制使用Web容器，只会增加复杂性，也浪费资源。  
-&emsp; 内置了Spring Container、Jetty Container、Log4j Container。   
+&emsp; Dubbo内置了Spring Container、Jetty Container、Log4j Container。   
 &emsp; Dubbo 的服务容器只是一个简单的 Main 方法，并加载一个简单的 Spring 容器，用于暴露服务。  
 
-## 1.2. Dubbo有些哪些注册中心？  
+## 1.2. Dubbo有哪些注册中心？  
 
 * Multicast注册中心：Multicast注册中心不需要任何中心节点，只要广播地址，就能进行服务注册和发现。基于网络中组播传输实现；  
 * Zookeeper注册中心：基于分布式协调系统Zookeeper实现，采用Zookeeper的watch机制实现数据变更；  
@@ -65,10 +63,10 @@ tags:
 
 |协议名称	|实现描述	|连接	|适用范围	|使用场景|
 |---|---|---|---|---|
-|dubbo	|传输：mina、netty、grizzy <br/>序列化：dubbo、hessian2、java、json|dubbo缺省，采用单一长连接和NIO异步通讯，传输协议TCP|1.传入传出参数数据包较小<br/>2.消费者比提供者多<br/>3.常规远程服务方法调用<br/>4.不适合传送大数据量的服务，比如文件、传视频|	常规远程服务方法调用|
-|rmi	|传输：java  rmi<br/>序列化：java 标准序列化（实现ser接口）	|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：TCP/IP<br/>4.传输方式：BIO	|1.常规RPC调用<br/>2.与原RMI客户端互操作<br/>3.可传文件<br/>4.不支持防火墙穿|	常规远程服务方法调用，与原生RMI服务互操作|
-|hessian	|传输：Serverlet容器<br/>序列化：hessian二进制序列化|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|	1.提供者比消费者多<br/>2.可传文件<br/>3.跨语言传输|	需同时给应用程序和浏览器JS使用的服务。|
-|http	|传输：Servlet容器<br/>序列化：表单序列化|	1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|	1.提供者多余消费者<br/>2.数据包混合	|需同时给应用程序和浏览器JS使用的服务。|
+|dubbo	|传输：mina、netty、grizzy <br/>序列化：dubbo、hessian2、java、json|dubbo缺省，采用单一长连接和NIO异步通讯，传输协议TCP|1.传入传出参数数据包较小<br/>2.消费者比提供者多<br/>3.常规远程服务方法调用<br/>4.不适合传送大数据量的服务，比如文件、传视频|常规远程服务方法调用|
+|rmi|传输：java  rmi<br/>序列化：java 标准序列化（实现ser接口）	|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：TCP/IP<br/>4.传输方式：BIO	|1.常规RPC调用<br/>2.与原RMI客户端互操作<br/>3.可传文件<br/>4.不支持防火墙穿|常规远程服务方法调用，与原生RMI服务互操作|
+|hessian|传输：Serverlet容器<br/>序列化：hessian二进制序列化|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|	1.提供者比消费者多<br/>2.可传文件<br/>3.跨语言传输|	需同时给应用程序和浏览器JS使用的服务。|
+|http|传输：Servlet容器<br/>序列化：表单序列化|	1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|	1.提供者多余消费者<br/>2.数据包混合	|需同时给应用程序和浏览器JS使用的服务。|
 |webservice	|传输：HTTP<br/>序列化：SOAP文件序列化	|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|	1.系统集成<br/>2.跨语言调用	|系统集成，跨语言调用|
 |thrift	|与thrift RPC实现集成，并在基础上修改了报文头 |长连接、NIO异步传输 |||	
 |Redis|||||  	
@@ -77,7 +75,7 @@ tags:
 &emsp; 服务失效踢出基于zookeeper的临时节点原理。  
 
 ## 1.6. Dubbo服务之间的调用是阻塞的吗？  
-&emsp; 默认是同步等待结果阻塞的，支持异步调用。Dubbo的异步调用是基于NIO的非阻塞实现并行调用，客户端不需要启动多线程即可完成并行调用多个远程服务，相对多线程开销较小，异步调用会返回一个 Future 对象。  
+&emsp; 默认是同步等待结果，阻塞的，支持异步调用。Dubbo的异步调用是基于NIO的非阻塞实现并行调用，客户端不需要启动多线程即可完成并行调用多个远程服务，相对多线程开销较小，异步调用会返回一个 Future 对象。  
 &emsp; 异步调用流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-12.png)   
 
@@ -120,13 +118,11 @@ tags:
 * Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-14.png)  
 
-
 # 3. Dubbo中的SPI  
 &emsp; SPI，Serviceproviderinterface，服务提供发现接口。  
 &emsp; dubbo在JDK的spi基础上主要有以下的改变：
 1. 配置文件采用键值对配置的方式，使用起来更加灵活和简单 
 2. 增强了原本SPI的功能，使得SPI具备ioc和aop的功能，这在原本的java中spi是不支持的。dubbo的spi是通过ExtensionLoader来解析的，通过ExtensionLoader来加载指定的实现类，配置文件的路径在META-INF/dubbo路径下。  
-
 
 # 4. Dubbo对Spring的扩展  
 ......
