@@ -35,6 +35,8 @@ tags:
 
 <!-- /TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-76.png)  
+
 # 1. 主从复制模式  
 ## 1.1. 主从复制的作用  
 
