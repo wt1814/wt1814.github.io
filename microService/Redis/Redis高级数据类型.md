@@ -15,6 +15,8 @@ tags:
 
 <!-- /TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-73.png)  
+
 # 1. Bitmaps，位图  
 &emsp; Bitmaps 是在字符串类型上面定义的位操作。一个字节由 8 个二进制位组成。每个二进制位只能存储0或1。   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-71.png)  

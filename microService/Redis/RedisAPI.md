@@ -21,6 +21,7 @@ tags:
 * Redisson  
 &emsp; Redisson 是一个在 Redis 的基础上实现的 Java 驻内存数据网格（In-Memory Data Grid），提供了分布式和可扩展的 Java 数据结构。  
 &emsp; 特点：  
+
     * 基于 Netty 实现，采用非阻塞 IO，性能高。  
     * 支持异步请求。  
     * 支持连接池、pipeline、LUA Scripting、Redis Sentinel、Redis Cluster。  
