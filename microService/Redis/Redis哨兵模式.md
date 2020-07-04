@@ -40,8 +40,6 @@ tags:
 * 数据节点：由主节点和从节点组成的数据节点。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-27.png)  
-  
-
 
 ## 1.2. 部署及故障转移演示    
 ......
