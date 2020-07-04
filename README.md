@@ -169,6 +169,8 @@
 
 ### Redis
 [Redis数据结构及API](/microService/Redis/Redis数据结构及API.md)  
+&emsp; [Redis高级数据类型](/microService/Redis/Redis高级数据类型.md)  
+&emsp; [Redis的API](/microService/Redis/RedisAPI.md)  
 [Redis原理](/microService/Redis/Redis原理.md)  
 [Redis集群](/microService/Redis/Redis集群.md)  
 
