@@ -8,7 +8,7 @@ tags:
 <!-- TOC -->
 
 - [1. 整合MyBatis](#1-整合mybatis)
-    - [1.1. Spring整合MhyBatis](#11-spring整合mhybatis)
+    - [1.1. Spring整合MyBatis](#11-spring整合mybatis)
     - [1.2. SpringBoot整合MyBatis](#12-springboot整合mybatis)
 - [2. Spring整合MyBatis原理](#2-spring整合mybatis原理)
     - [2.1. 创建SqlSessionFacory](#21-创建sqlsessionfacory)
@@ -21,7 +21,7 @@ tags:
 
 
 # 1. 整合MyBatis  
-## 1.1. Spring整合MhyBatis  
+## 1.1. Spring整合MyBatis  
 
 &emsp; 添加配置文件  
 

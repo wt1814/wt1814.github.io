@@ -37,52 +37,54 @@ tags:
 ## 1.2. Mybatis插件编码示例  
 &emsp; 1. 写一个打印SQL执行时间的插件  
 
-```
-@Intercepts({@Signature(type = StatementHandler.class, method = "query", args = { Statement.class, ResultHandler.class }),
-        @Signature(type = StatementHandler.class, method = "update", args = { Statement.class }),
-        @Signature(type = StatementHandler.class, method = "batch", args = { Statement.class })})
-public class SqlCostTimeInterceptor implements Interceptor {
+    ```
+    @Intercepts({@Signature(type = StatementHandler.class, method = "query", args = { Statement.class, ResultHandler.class }),
+            @Signature(type = StatementHandler.class, method = "update", args = { Statement.class }),
+            @Signature(type = StatementHandler.class, method = "batch", args = { Statement.class })})
+    public class SqlCostTimeInterceptor implements Interceptor {
 
-    public static final Logger logger = LoggerFactory.getLogger(SqlCostTimeInterceptor.class);
+        public static final Logger logger = LoggerFactory.getLogger(SqlCostTimeInterceptor.class);
 
-    public Object intercept(Invocation invocation) throws Throwable {
-        StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
-        long start = System.currentTimeMillis();
-        try {
-            // 执行被拦截的方法
-            return invocation.proceed();
-        } finally {
-            BoundSql boundSql = statementHandler.getBoundSql();
-            String sql = boundSql.getSql();
-            long end = System.currentTimeMillis();
-            long cost = end - start;
-            logger.info("{}, cost is {}", sql, cost);
+        public Object intercept(Invocation invocation) throws Throwable {
+            StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
+            long start = System.currentTimeMillis();
+            try {
+                // 执行被拦截的方法
+                return invocation.proceed();
+            } finally {
+                BoundSql boundSql = statementHandler.getBoundSql();
+                String sql = boundSql.getSql();
+                long end = System.currentTimeMillis();
+                long cost = end - start;
+                logger.info("{}, cost is {}", sql, cost);
+            }
+        }
+
+        public Object plugin(Object target) {
+            return Plugin.wrap(target, this);
+        }
+
+        public void setProperties(Properties properties) {
+
         }
     }
-
-    public Object plugin(Object target) {
-        return Plugin.wrap(target, this);
-    }
-
-    public void setProperties(Properties properties) {
-
-    }
-}
-```
-&emsp; 插件必须实现org.apache.ibatis.plugin.Interceptor接口。Mybatis规定插件必须编写@Intercepts注解注解，是必须，而不是可选。  
+    ```
+&emsp; 插件必须实现org.apache.ibatis.plugin.Interceptor接口。Mybatis规定插件必须编写@Intercepts注解，是必须，而不是可选。  
 
 &emsp; 2. 在mybatis配置文件中配置插件：  
 &emsp; Mybatis的插件配置在configuration内部，初始化时，会读取这些插件，保存于Configuration对象的InterceptorChain中。  
 
-```xml
-<plugins>
-    <plugin interceptor="com.javashitang.part1.plugins.SqlCostTimeInterceptor"></plugin>
-</plugins>
-```
+    ```xml
+    <plugins>
+        <plugin interceptor="com.javashitang.part1.plugins.SqlCostTimeInterceptor"></plugin>
+    </plugins>
+    ```
 
 &emsp; 此时就可以打印出执行的SQL和耗费的时间，效果如下：  
 
+    ```sql
     select id, role_name as roleName, note from role where id = ?, cost is 35  
+    ```
 
 ## 1.3. Mybatis插件运行机制  
 &emsp; <font color="red">Mybaits插件的实现主要用了责任链模式和动态代理。</font>动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
