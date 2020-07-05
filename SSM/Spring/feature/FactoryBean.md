@@ -28,14 +28,15 @@ public interface FactoryBean<T> {
 }
 ```
 
-&emsp; 在该接口中还定义了以下3个方法：  
+&emsp; 在该接口中定义了以下3个方法：  
+
 * getObject()：返回由FactoryBean创建的Bean实例，如果isSingleton()返回true，则该实例会放到Spring容器中单实例缓存池中；  
 * Singleton()：返回由FactoryBean创建的Bean实例的作用域是singleton还是prototype；  
 * getObjectType()：返回FactoryBean创建的Bean类型。  
 
-&emsp; 如果一个IOC容器中的Bean实现了FacgoryBean接口，通过getBean(String BeanName)获取到的Bean对象并不是FactoryBean的实现类对象，而是这个实现类中的getObject()方法返回的对象。如果要想获取FactoryBean的实现类，就要getBean(&BeanName)，在BeanName之前加上&。  
+&emsp; <font color = "red">如果一个IOC容器中的Bean实现了FacgoryBean接口，通过getBean(String BeanName)获取到的Bean对象并不是FactoryBean的实现类对象，而是这个实现类中的getObject()方法返回的对象。</font>如果要想获取FactoryBean的实现类，就要getBean(&BeanName)，在BeanName之前加上&。  
 
-&emsp; 作用：***<font color = "red">FactoryBean接口生产一些工厂bean（工厂模式中的工厂类），如Spring自身提供的ProxyFactoryBean、JndiObjectFactoryBean还有Mybatis中的SqlSessionFactory。这些Bean实例过程比较复杂。</font>***  
+&emsp; 作用：***<font color = "red">FactoryBean接口生产一些工厂bean（工厂模式中的工厂类），如Spring自身提供的ProxyFactoryBean、JndiObjectFactoryBean，还有Mybatis中的SqlSessionFactory。这些Bean实例过程比较复杂。</font>***  
 &emsp; SqlSessionFactory部分源码：  
 
 ```

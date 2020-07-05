@@ -5,15 +5,11 @@ tags:
     - Spring
 ---
 
-<!-- TOC -->
-
-- [1. lazy-init属性和预实例化](#1-lazy-init属性和预实例化)
-
-<!-- /TOC -->
 
 # 1. lazy-init属性和预实例化  
 &emsp; 在IOC容器的初始化过程中，主要的工作是对BeanDefinition的定位、载入、解析和注册。此时依赖注入并没有发生，依赖注入发生在应用第一次向容器索要Bean时。 向容器索要Bean是通过getBean的调用来完成的，该getBean是容器提供Bean服务的最基本的接口。  
-&emsp; 对于容器的初始化，也有一种例外情况，就是用户可以通过设置Bean的lazy-init属性来控制预实例化的过程。这个预实例化在初始化容器时完成Bean的 依赖注入。毫无疑问，这种容器的使用方式会对容器初始化的性能有一些影响，但却能够提 高应用第一次取得Bean的性能。因为应用在第一次取得Bean时，依赖注入已经结束了，应用 可以取得已有的Bean。  
+&emsp; 对于容器的初始化，也有一种例外情况，就是用户<font color = "red">可以通过设置Bean的lazy-init属性来控制预实例化的过程。这个预实例化在初始化容器时完成Bean的依赖注入。</font>  
+&emsp; <font color = "red">这种容器的使用方式会对容器初始化的性能有一些影响，但却能够提高应用第一次取得Bean的性能。因为应用在第一次取得Bean时，依赖注入已经结束了，应用可以取得已有的Bean。</font>  
 
 &emsp; 对lazy-init这个属性的处理是容器refresh的一部分。在finishBeanFactoryInitialization的方法中，封装了对lazy-init属性的处理，实际的处理是在DefaultListableBeanFactory这个基本容器的prelnstantiateSingletons方法中完成的。 该方法对单件Bean完成预实例化，这个预实例化的完成巧妙地委托给容器来实现。如果需要预实例化，那么就直接在这里采用getBean去触发依赖注入，与正常依赖注入的触发相比，只有触发的时间和场合不同。在这里，依赖注入发生在容器执行refresh的过程中，也就是发生在IOC容器初始化的过程中，而不像一般的依赖注入一样发生在loC容器初始化完成以后, 第一次向容器执行getBean时。源码如下：  
 
