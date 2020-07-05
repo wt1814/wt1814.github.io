@@ -144,6 +144,7 @@
 [自动配置原理](/microService/SpringBoot/1.自动配置原理.md)  
 [SpringBoot启动过程解析](/microService/SpringBoot/2.SpringBoot2.2.0启动全过程源码分析.md)  
 [SpringBoot事件监听机制](/microService/SpringBoot/3.SpringBootEvent.md)  
+[SpringBoot内置生命周期事件详解](/microService/SpringBoot/4.SpringBootEvent.md)  
 <!--[自定义strater] -->
 
 ### Spring Cloud Netflix  
