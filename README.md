@@ -91,7 +91,6 @@
 [行为型设计模式](java/Design/5.behavior.md)  
 
 
-
 ## 数据库  
 [SQL语句](/SQL/1.SQL语句.md)  
 &emsp; [基本查询语句](/SQL/9.bxasicSelect.md)  
@@ -125,7 +124,6 @@
 &emsp; [循环依赖](SSM/Spring/feature/循环依赖.md)  
 &emsp; [可二次开发常用接口](SSM/Spring/feature/可二次开发常用接口.md)  
 &emsp; [lazy-init](SSM/Spring/feature/lazy-init.md)  
-
 
 [SpringAOP教程](SSM/Spring/5.SpringAOP.md)  
 [SpringAOP解析](SSM/Spring/6.SpringAOP解析.md)  
