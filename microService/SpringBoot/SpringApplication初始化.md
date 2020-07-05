@@ -187,6 +187,35 @@ this.setInitializers(this.getSpringFactoriesInstances(ApplicationContextInitiali
 1. 参数ApplicationContextInitializer.class用来初始化指定的 Spring 应用上下文，如注册属性资源、激活 Profiles 等。  
 2. this.getSpringFactoriesInstances()方法和相关的源码：  
 
+
+```java
+// SpringApplication.java
+private <T> Collection<T> getSpringFactoriesInstances(Class<T> type) {
+    return this.getSpringFactoriesInstances(type, new Class[0]);
+}
+
+private <T> Collection<T> getSpringFactoriesInstances(Class<T> type,
+		Class<?>[] parameterTypes, Object... args) {
+	// 【1】获取当前线程上下文类加载器
+	ClassLoader classLoader = getClassLoader();
+	// 【2】将接口类型和类加载器作为参数传入loadFactoryNames方法，从spring.factories配置文件中进行加载接口实现类
+			//根据类路径下的 META-INF/spring.factories 文件解析并获取 ApplicationContextInitializer 的实例名称集合并去重
+	Set<String> names = new LinkedHashSet<>(
+			SpringFactoriesLoader.loadFactoryNames(type, classLoader));
+	// 【3】实例化从spring.factories中加载的接口实现类
+	List<T> instances = createSpringFactoriesInstances(type, parameterTypes,
+			classLoader, args, names);
+	// 【4】初始化器实例列表进行排序
+	AnnotationAwareOrderComparator.sort(instances);
+	// 【5】返回加载并实例化好的接口实现类
+	return instances;
+}
+```
+&emsp; SpringBoot自定义实现的SPI机制代码中最重要的是上面代码的【1】,【2】,【3】步。  
+<!-- https://mp.weixin.qq.com/s/szt8l6IbmjKnyRItQTjJCA -->  
+
+
+<!--
 ```java
 private <T> Collection<T> getSpringFactoriesInstances(Class<T> type) {
     return this.getSpringFactoriesInstances(type, new Class[0]);
@@ -195,8 +224,7 @@ private <T> Collection<T> getSpringFactoriesInstances(Class<T> type) {
 private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] parameterTypes, Object... args) {
     //获取当前线程上下文类加载器
     ClassLoader classLoader = this.getClassLoader();
-    //获取 ApplicationContextInitializer 的实例名称集合并去重
-      //根据类路径下的 META-INF/spring.factories 文件解析并获取 ApplicationContextInitializer 接口的所有配置的类路径名称
+	//根据类路径下的 META-INF/spring.factories 文件解析并获取 ApplicationContextInitializer 的实例名称集合并去重
     Set<String> names = new LinkedHashSet(SpringFactoriesLoader.loadFactoryNames(type, classLoader));
     //根据以上类路径创建初始化器实例列表
     List<T> instances = this.createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names);
@@ -206,31 +234,7 @@ private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] 
     return instances;
 }
 ```
-<!--
-```java
-// SpringApplication.java
-
-private <T> Collection<T> getSpringFactoriesInstances(Class<T> type,
-		Class<?>[] parameterTypes, Object... args) {
-	// 【1】获得类加载器
-	ClassLoader classLoader = getClassLoader();
-	// Use names and ensure unique to protect against duplicates
-	// 【2】将接口类型和类加载器作为参数传入loadFactoryNames方法，从spring.factories配置文件中进行加载接口实现类
-	Set<String> names = new LinkedHashSet<>(
-			SpringFactoriesLoader.loadFactoryNames(type, classLoader));
-	// 【3】实例化从spring.factories中加载的接口实现类
-	List<T> instances = createSpringFactoriesInstances(type, parameterTypes,
-			classLoader, args, names);
-	// 【4】进行排序
-	AnnotationAwareOrderComparator.sort(instances);
-	// 【5】返回加载并实例化好的接口实现类
-	return instances;
-}
-```
- -->
-
-&emsp; SpringBoot自定义实现的SPI机制代码中最重要的是上面代码的【1】,【2】,【3】步。  
-<!-- https://mp.weixin.qq.com/s/szt8l6IbmjKnyRItQTjJCA -->  
+-->
 
 #### 2.1.2.1. 获得类加载器  
 &emsp; Java的SPI机制默认是利用线程上下文类加载器去加载扩展类的。那么，SpringBoot实现的SPI机制是利用哪种类加载器去加载spring.factories配置文件中的扩展实现类的？  
