@@ -15,7 +15,7 @@ tags:
         - [1.3.2. Servlet监听器](#132-servlet监听器)
 - [2. SpringMVC拦截器](#2-springmvc拦截器)
     - [2.1. ※※※过滤器和拦截器的区别](#21-※※※过滤器和拦截器的区别)
-    - [2.2. 组件执行顺序：](#22-组件执行顺序)
+    - [2.2. 组件执行顺序](#22-组件执行顺序)
 
 <!-- /TOC -->
 
@@ -58,9 +58,9 @@ tags:
 ### 1.3.2. Servlet监听器  
 &emsp; 常用使用场景：常用于统计网站在线人数、系统加载时进行信息初始化、统计网站的访问量等等。  
 &emsp; servlet监听器要用到javax.servlet.jar中的一组监听接口和事件类，根据监听对象的不同，监听器可被划分为3种：  
-1. `ServletContext事件监听器：用于监听应用程序环境对象。`  
-2. `HttpSession事件监听器：用于监听用户会话对象。`  
-3. `ServletRequest事件监听器：用于监听请求消息对象。`  
+1. <font color = "red">ServletContext事件监听器：用于监听应用程序环境对象。</font>  
+2. <font color = "red">HttpSession事件监听器：用于监听用户会话对象。</font>   
+3. <font color = "red">ServletRequest事件监听器：用于监听请求消息对象。</font>   
 
 &emsp; 这3种监听器共包含了8个监听接口、6个监听事件类。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/web-2.png)  
@@ -68,7 +68,7 @@ tags:
 -----
 # 2. SpringMVC拦截器  
 &emsp; 拦截器 Interceptor 不依赖Servlet容器，依赖 Spring 等 Web 框架，在 SpringMVC 框架中是配置在SpringMVC 的配置文件中，在 SpringBoot 项目中也可以采用注解的形式实现。  
-&emsp; 拦截器是 AOP 的一种应用，底层采用 Java 的反射机制来实现的。在AOP（Aspect-Oriented Programming）中用于在某个方法或字段被访问之前，进行拦截然后在之前或之后加入某些操作。比如日志，安全等。  
+&emsp; 拦截器是AOP的一种应用，底层采用 Java 的反射机制来实现的。在AOP（Aspect-Oriented Programming）中用于在某个方法或字段被访问之前，进行拦截然后在之前或之后加入某些操作。比如日志，安全等。  
 &emsp; 拦截器作用：权限验证，或者判断用户是否登陆，或者是像12306判断当前时间是否是购票时间。  
 &emsp; 拦截器链：将拦截器按一定的顺序联结成一条链。在访问被拦截的方法或字段时，拦截器链中的拦截器就会按其之前定义的顺序被调用。一般拦截器方法都是通过动态代理的方式实现。  
 
@@ -77,11 +77,11 @@ tags:
 1. 原理不同：拦截器是基于java的反射机制的，而过滤器是基于函数回调。  
 2. 使用范围不同：Filter是Servlet规范规定的，只能用于Web程序中。而拦截器既可以用于Web程序，也可以用于Application、Swing程序中。  
 3. 规范不同：Filter是在Servlet规范中定义的，是Servlet容器支持的。而拦截器是在Spring容器内的，是Spring框架支持的。  
-4. 使用的资源不同：同其他的代码块一样，`拦截器也是一个Spring的组件，归Spring管理，配置在Spring文件中，因此能使用Spring里的任何资源、对象`，例如Service对象、数据源、事物管理等，通过IOC注入到拦截器即可；而Filter则不能。  
-5. 深度不同：`拦截器可以在方法前后，异常前后等调用，而过滤器只能在请求前和请求后各调用一次。`拦截器的使用有更大的弹性。所以在Spring架构的程序中，要优先使用拦截器。  
-6. 生命周期不同：`在action的生命周期中，拦截器可以多次被调用，而过滤器只能在容器初始化时被调用一次。`  
+4. 使用的资源不同：同其他的代码块一样，<font color = "red">拦截器也是一个Spring的组件，归Spring管理，配置在Spring文件中，因此能使用Spring里的任何资源、对象</font>，例如Service对象、数据源、事物管理等，通过IOC注入到拦截器即可；而Filter则不能。  
+5. 深度不同：<font color = "red">拦截器可以在方法前后，异常前后等调用，而过滤器只能在请求前和请求后各调用一次。</font>拦截器的使用有更大的弹性。所以在Spring架构的程序中，要优先使用拦截器。  
+6. 生命周期不同：<font color = "red">在action的生命周期中，拦截器可以多次被调用，而过滤器只能在容器初始化时被调用一次。</font>  
 
-## 2.2. 组件执行顺序：  
+## 2.2. 组件执行顺序  
 &emsp; 过滤前-拦截前-action执行-拦截后-过滤后  
 
 
