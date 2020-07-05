@@ -107,7 +107,7 @@ public void testSqlSession(){
 
 ### 1.2.1. 开启二级缓存  
 &emsp; MyBatis的二级缓存是默认关闭的，如果要开启有两种方式：  
-1. 在mybatis-config.xml中加入如下配置片段    
+&emsp; 方式一：在mybatis-config.xml中加入如下配置片段    
 
 ```
 <!-- 全局配置参数，需要时再设置 -->
@@ -117,7 +117,7 @@ public void testSqlSession(){
 
 </settings>
 ```
-2. 在mapper.xml中开启  
+&emsp; 方式二：在mapper.xml中开启  
 
 ```
  <!--开启本mapper的namespace下的二级缓存-->
@@ -160,8 +160,8 @@ public void testSqlSession(){
 ```
 
 ### 1.2.2. 开启二级缓存的时机  
-&emsp; 一级缓存默认是打开的，二级缓存需要配置才可以开启。<font color = "red">在什么情况下才有必要去开启二级缓存？</font>   
-1. 因为所有的增删改都会刷新二级缓存，导致二级缓存失效，所以适合在查询为主的应用中使用，比如历史交易、历史订单的查询。否则缓存就失去了意义。
+&emsp; 一级缓存默认是打开的，二级缓存需要配置才可以开启。***<font color = "red">在什么情况下才有必要去开启二级缓存？</font>***   
+1. <font color = "red">因为所有的增删改都会刷新二级缓存，导致二级缓存失效，所以适合在查询为主的应用中使用，比如历史交易、历史订单的查询。</font>否则缓存就失去了意义。
 2. 如果多个namespace中有针对于同一个表的操作，比如Blog表，如果在一个namespace中刷新了缓存，另一个 namespace 中没有刷新，就会出现读到脏数据的情 况。所以，推荐在一个Mapper里面只操作单表的情况使用。  
 
 &emsp; 如果要让多个namespace共享一个二级缓存，应该怎么做？   
@@ -248,7 +248,7 @@ public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds r
     return delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
 }
 ```
-&emsp; 可以看到首先MyBatis在查询数据时会先看看这个mapper是否开启了二级缓存，如果开启了，会先查询二级缓存，如果缓存中存在我们需要的数据，那么直接就从缓存返回数据，如果不存在，则继续往下走查询逻辑。  
+&emsp; 可以看到首先MyBatis在查询数据时会先看看这个mapper是否开启了二级缓存，如果开启了，会先查询二级缓存，如果缓存中存在需要的数据，那么直接就从缓存返回数据，如果不存在，则继续往下走查询逻辑。  
 &emsp; 接着往下走，如果二级缓存不存在，那么就直接查询数据了吗？答案是否定的，二级缓存如果不存在，MyBatis会再查询一次一级缓存，接着往下看。  
 
 ```
@@ -311,5 +311,5 @@ public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBoun
 
 &emsp; 那么怎么能让缓存生效呢？  
 
-* 开启事务，因为一旦开启事务，Spring就不会在执行完SQL之后就销毁SqlSession，因为SqlSession一旦关闭，事务就没了，一旦我们开启事务，在事务期间内，缓存会一直存在。  
+* 开启事务，因为一旦开启事务，Spring就不会在执行完SQL之后就销毁SqlSession，因为SqlSession一旦关闭，事务就没了，一旦开启事务，在事务期间内，缓存会一直存在。  
 * 使用二级缓存。  
