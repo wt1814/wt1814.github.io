@@ -187,7 +187,7 @@ public static void main(String[] args) throws Exception {
 ```
 
 ## 3.2. 配置文件加载  
-&emsp; `Resources.getResourceAsStream(resource)`解读：  
+&emsp; Resources.getResourceAsStream(resource)解读：  
 &emsp; Resources是mybatis提供的一个加载资源文件的工具类。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-16.png)  
 &emsp; #getResourceAsStream方法:  
@@ -230,7 +230,7 @@ InputStream getResourceAsStream(String resource, ClassLoader[] classLoader) {
 ```
 
 ## 3.3. 创建SqlSessionFactory  
-&emsp; <font color = "red">SqlSessionFactory对象的生成使用了建造者模式。</font>  
+&emsp; ***<font color = "red">SqlSessionFactory对象的生成使用了建造者模式。</font>***  
 
 ```
 public SqlSessionFactory build(InputStream inputStream) {
@@ -614,7 +614,7 @@ public MappedStatement addMappedStatement(
 <!-- 还有没看的 -->
 
 ## 3.4. 创建SqlSession  
-&emsp; openSession中实际上对SqlSession做了进一步的加工封装，包括增加了事务、执行器等。  
+&emsp; openSession中实际上对SqlSession做了进一步的加工封装，增加了事务、执行器等。  
 
 ```
 public SqlSession openSession() {
@@ -675,7 +675,7 @@ Map<String,Object> map = new HashMap();
 map.put("id","123");
 mapper.selectAll(map);
 ```
-&emsp; <font color = "red">MyBatis底层使用了动态代理，来对这个接口进行代理。</font>  
+&emsp; ***<font color = "red">MyBatis底层使用了动态代理，来对这个接口进行代理。</font>***  
 
 
 &emsp; 入口：在获取Mapper的时候，需要调用SqlSession的getMapper()方法。    
@@ -701,59 +701,59 @@ public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     knownMappers是在什么时候生成的？
     在解析的时候，会调用parse()方法，这个方法内部有一个bindMapperForNamespace方法，而就是这个方法完成了knownMappers的生成，并且将Mapper接口put进去。  
 
-
-    public void parse() {
-        //判断文件是否之前解析过
-        if (!configuration.isResourceLoaded(resource)) {
-            //解析mapper文件
-            configurationElement(parser.evalNode("/mapper"));
-            configuration.addLoadedResource(resource);
-            //这里：绑定Namespace里面的Class对象*
-            bindMapperForNamespace();
-        }
-
-        //重新解析之前解析不了的节点
-        parsePendingResultMaps();
-        parsePendingCacheRefs();
-        parsePendingStatements();
+```
+public void parse() {
+    //判断文件是否之前解析过
+    if (!configuration.isResourceLoaded(resource)) {
+        //解析mapper文件
+        configurationElement(parser.evalNode("/mapper"));
+        configuration.addLoadedResource(resource);
+        //这里：绑定Namespace里面的Class对象*
+        bindMapperForNamespace();
     }
-    private void bindMapperForNamespace() {
-        String namespace = builderAssistant.getCurrentNamespace();
-        if (namespace != null) {
-            Class<?> boundType = null;
-            try {
-                boundType = Resources.classForName(namespace);
-            } catch (ClassNotFoundException e) {
-            }
-            if (boundType != null) {
-                if (!configuration.hasMapper(boundType)) {
-                    configuration.addLoadedResource("namespace:" + namespace);
-                    //这里将接口class传入
-                    configuration.addMapper(boundType);
-                }
-            }
+
+    //重新解析之前解析不了的节点
+    parsePendingResultMaps();
+    parsePendingCacheRefs();
+    parsePendingStatements();
+}
+private void bindMapperForNamespace() {
+    String namespace = builderAssistant.getCurrentNamespace();
+    if (namespace != null) {
+        Class<?> boundType = null;
+        try {
+            boundType = Resources.classForName(namespace);
+        } catch (ClassNotFoundException e) {
         }
-    }
-    public <T> void addMapper(Class<T> type) {
-        if (type.isInterface()) {
-            if (hasMapper(type)) {
-                throw new BindingException("Type " + type + " is already known to the MapperRegistry.");
-            }
-            boolean loadCompleted = false;
-            try {
-                //这里将接口信息put进konwMappers。
-                knownMappers.put(type, new MapperProxyFactory<>(type));
-                MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
-                parser.parse();
-                loadCompleted = true;
-            } finally {
-                if (!loadCompleted) {
-                    knownMappers.remove(type);
-                }
+        if (boundType != null) {
+            if (!configuration.hasMapper(boundType)) {
+                configuration.addLoadedResource("namespace:" + namespace);
+                //这里将接口class传入
+                configuration.addMapper(boundType);
             }
         }
     }
-
+}
+public <T> void addMapper(Class<T> type) {
+    if (type.isInterface()) {
+        if (hasMapper(type)) {
+            throw new BindingException("Type " + type + " is already known to the MapperRegistry.");
+        }
+        boolean loadCompleted = false;
+        try {
+            //这里将接口信息put进konwMappers。
+            knownMappers.put(type, new MapperProxyFactory<>(type));
+            MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
+            parser.parse();
+            loadCompleted = true;
+        } finally {
+            if (!loadCompleted) {
+                knownMappers.remove(type);
+            }
+        }
+    }
+}
+```
 
 &emsp; 在getMapper之后，获取一个Class。之后的代码就是生成标准的代理类，调用newInstance()方法。  
 
@@ -830,7 +830,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
 &emsp; 执行方法需要一个MapperMethod对象，这个对象是MyBatis执行方法逻辑使用的，MyBatis这里获取MapperMethod对象的方式是，首先去方法缓存中看看是否已经存在了，如果不存在则new一个然后存入缓存中，因为创建代理对象是十分消耗资源的操作。总而言之，这里会得到一个MapperMethod对象，然后通过MapperMethod的excute()方法，来真正地执行逻辑。  
 
 ### 3.5.1. 查询语句执行逻辑  
-&emsp; 这里首先会判断SQL的类型：SELECT|DELETE|UPDATE|INSERT，示例中是SELECT，其它的其实都差不多。判断SQL类型为SELECT之后，就开始判断返回值类型，根据不同的情况做不同的操作。然后开始获取参数--》执行SQL。  
+&emsp; 这里首先会判断SQL的类型：SELECT|DELETE|UPDATE|INSERT，示例中是SELECT，其它的其实都差不多。判断SQL类型为SELECT之后，就开始判断返回值类型，根据不同的情况做不同的操作。然后开始获取参数，执行SQL。  
 
 ```
 //execute() 这里是真正执行SQL的地方
