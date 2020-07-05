@@ -65,12 +65,12 @@
 [多线程编程](java/concurrent/2.Multithread.md)  
 [线程池](java/concurrent/3.ThreadPool.md)  
 [J.U.C包](java/concurrent/4.ConcurrentPackage.md)  
-* [Lock](java/concurrent/8.Lock.md)  
-* [Atmoic](java/concurrent/9.Atmoic.md)  
-    * [AtomicStampedReference](java/concurrent/6.AtomicStampedReference.md)  
-* [Collections](java/concurrent/10.Collections.md)  
-    * [ConcurrentHashMap](java/concurrent/5.ConcurrentHashMap.md)  
-* [tools](java/concurrent/7.tools.md)
+&emsp; [Lock](java/concurrent/8.Lock.md)  
+&emsp; [Atmoic](java/concurrent/9.Atmoic.md)  
+&emsp; &emsp; [AtomicStampedReference](java/concurrent/6.AtomicStampedReference.md)  
+&emsp; [Collections](java/concurrent/10.Collections.md)  
+&emsp; &emsp; [ConcurrentHashMap](java/concurrent/5.ConcurrentHashMap.md)  
+&emsp; [tools](java/concurrent/7.tools.md)
 
 ### JVM  
 [JDK、JRE、JVM](java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
@@ -120,7 +120,12 @@
 &emsp; [基于Annotation的IOC初始化](SSM/Spring/基于Annotation的IOC初始化.md)  
 [SpringDI解析](SSM/Spring/3.SpringDI.md)  
 [SpringBean生命周期](SSM/Spring/SpringBean.md)  
-[容器相关特性](SSM/Spring/4.SpringFeature.md)  
+[容器相关特性]  
+&emsp; [FactoryBean](SSM/Spring/feature/FactoryBean.md)  
+&emsp; [循环依赖](SSM/Spring/feature/循环依赖.md)  
+&emsp; [可二次开发常用接口](SSM/Spring/feature/可二次开发常用接口.md)  
+&emsp; [lazy-init](SSM/Spring/feature/lazy-init.md)  
+
 
 [SpringAOP教程](SSM/Spring/5.SpringAOP.md)  
 [SpringAOP解析](SSM/Spring/6.SpringAOP解析.md)  
