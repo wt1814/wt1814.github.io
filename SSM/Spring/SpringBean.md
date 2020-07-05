@@ -15,7 +15,8 @@ tags:
 <!-- /TOC -->
 
 # 1. SpringBean生命周期的概要流程  
-&emsp; SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。  
+&emsp; ***<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>  
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-11.png)  
 1. Bean容器在配置文件中找到Spring Bean的定义。
 2. Bean容器使用Java Reflection API创建Bean的实例。
