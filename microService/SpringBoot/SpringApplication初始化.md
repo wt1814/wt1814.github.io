@@ -75,8 +75,7 @@ private List<ApplicationContextInitializer<?>> initializers;
  */
 private List<ApplicationListener<?>> listeners;
 ```
-&emsp; 构建SpringApplication对象时主要是给上面代码中的六个成员属性赋值。  
-
+<!-- &emsp; 构建SpringApplication对象时主要是给上面代码中的六个成员属性赋值。-->  
 
 &emsp; SpringApplication的构造函数：  
 
@@ -113,7 +112,7 @@ public SpringApplication(ResourceLoader resourceLoader, Class... primarySources)
     this.mainApplicationClass = this.deduceMainApplicationClass();
 }
 ```
-&emsp; 可以看到构建SpringApplication对象时其实就是给前面讲的6个SpringApplication类的成员属性赋值而已，做一些初始化工作：  
+&emsp; 可以看到</font color = "red">构建SpringApplication对象时其实就是给前面讲的6个SpringApplication类的成员属性赋值，做一些初始化工作。</font>  
 1. 给resourceLoader属性赋值，resourceLoader属性，资源加载器，此时传入的resourceLoader参数为null；  
 2. 给primarySources属性赋值，primarySources属性即SpringApplication.run(MainApplication.class,args);中传入的MainApplication.class，该类为SpringBoot项目的启动类，主要通过该类来扫描Configuration类加载bean；
 3. 给webApplicationType属性赋值，webApplicationType属性，代表应用类型，根据classpath存在的相应Application类来判断。因为后面要根据webApplicationType来确定创建哪种Environment对象和创建哪种ApplicationContext；
@@ -171,9 +170,9 @@ public enum WebApplicationType {
 &emsp; 这个就是根据类路径下是否有对应项目类型的类推断出不同的应用类型。  
 
 ### 2.1.2. 设置应用上下文初始化器（SpringBoot的SPI机制原理）  
-&emsp; SpringApplication初始化中第【4】步和第【5】步都是利用SpringBoot的SPI机制来加载扩展实现类。  
+&emsp; <font color = "red">SpringApplication初始化中第【4】步和第【5】步都是利用SpringBoot的SPI机制来加载扩展实现类。</font>  
 
-&emsp; SpringBoot通过以下步骤实现自己的SPI机制：  
+&emsp; ***<font color = "red">SpringBoot通过以下步骤实现自己的SPI机制：</font>***  
 1. 首先获取线程上下文类加载器;  
 2. 然后利用上下文类加载器从spring.factories配置文件中加载所有的SPI扩展实现类并放入缓存中;  
 3. 根据SPI接口从缓存中取出相应的SPI扩展实现类;  
