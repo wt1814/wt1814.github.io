@@ -8,11 +8,10 @@ tags:
 <!-- TOC -->
 
 - [1. SpringApplication实例run()方法运行过程](#1-springapplication实例run方法运行过程)
-    - [1.1. 流程解析](#11-流程解析)
+    - [1.1. 关键流程解析](#11-关键流程解析)
         - [1.1.1. 步骤3：设置系统属性java.awt.headless的值](#111-步骤3设置系统属性javaawtheadless的值)
         - [1.1.2. 步骤6：根据运行监听器和应用参数来准备 Spring 环境](#112-步骤6根据运行监听器和应用参数来准备-spring-环境)
         - [1.1.3. 步骤8：准备应用上下文](#113-步骤8准备应用上下文)
-    - [1.2. 总结：](#12-总结)
 
 <!-- /TOC -->
 
@@ -198,15 +197,13 @@ public ConfigurableApplicationContext run(String... args) {
 4. 根据不同类型环境创建不同类型的applicationcontext容器，因为这里是servlet环境，所以创建的是AnnotationConfigServletWebServerApplicationContext容器对象；  
 5. 从spring.factories配置文件中加载FailureAnalyzers对象,用来报告SpringBoot启动过程中的异常；  
 6. 为刚创建的容器对象做一些初始化工作，准备一些容器属性值等，对ApplicationContext应用一些相关的后置处理和调用各个ApplicationContextInitializer的初始化方法来执行一些初始化逻辑等；  
-7. 刷新容器，这一步至关重要。比如调用bean factory的后置处理器，注册BeanPostProcessor后置处理器，初始化事件广播器且广播事件，初始化剩下的单例bean和SpringBoot创建内嵌的Tomcat服务器等等重要且复杂的逻辑都在这里实现，主要步骤可见代码的注释，关于这里的逻辑会在以后的spring源码分析专题详细分析；
+7. 刷新容器，重要的一步。<font color = "red">比如调用bean factory的后置处理器，注册BeanPostProcessor后置处理器，初始化事件广播器且广播事件，初始化剩下的单例bean和SpringBoot创建内嵌的Tomcat服务器等等重要且复杂的逻辑都在这里实现；</font>  
 8. 执行刷新容器后的后置处理逻辑，注意这里为空方法；  
 9. 调用ApplicationRunner和CommandLineRunner的run方法，我们实现这两个接口可以在spring容器启动后需要的一些东西比如加载一些业务数据等;  
 10. 报告启动异常，即若启动过程中抛出异常，此时用FailureAnalyzers来报告异常;  
 11. 最终返回容器对象，这里调用方法没有声明对象来接收。  
 
-&emsp; 在SpringBoot启动过程中，每个不同的启动阶段会分别发射不同的内置生命周期事件，比如在准备environment前会发射ApplicationStartingEvent事件，在environment准备好后会发射ApplicationEnvironmentPreparedEvent事件，在刷新容器前会发射ApplicationPreparedEvent事件等，总之SpringBoot总共内置了7个生命周期事件，除了标志SpringBoot的不同启动阶段外，同时一些监听器也会监听相应的生命周期事件从而执行一些启动初始化逻辑。  
-
-&emsp; 将关键步骤再浓缩总结下：  
+&emsp; ***将关键步骤再浓缩总结下：***  
 1. 构建SpringApplication对象，用于启动SpringBoot；  
 2. 从spring.factories配置文件中加载EventPublishingRunListener对象用于在不同的启动阶段发射不同的生命周期事件；  
 3. 准备环境变量，包括系统变量，环境变量，命令行参数及配置文件（比如application.properties）等；  
@@ -215,10 +212,13 @@ public ConfigurableApplicationContext run(String... args) {
 6. 刷新容器，这一步至关重要，是重点中的重点，太多复杂逻辑在这里实现；  
 7. 调用ApplicationRunner和CommandLineRunner的run方法，可以实现这两个接口在容器启动后来加载一些业务数据等;  
 
+&emsp; 在SpringBoot启动过程中，每个不同的启动阶段会分别发射不同的内置生命周期事件，比如在准备environment前会发射ApplicationStartingEvent事件，在environment准备好后会发射ApplicationEnvironmentPreparedEvent事件，在刷新容器前会发射ApplicationPreparedEvent事件等，总之SpringBoot总共内置了7个生命周期事件，除了标志SpringBoot的不同启动阶段外，同时一些监听器也会监听相应的生命周期事件从而执行一些启动初始化逻辑。
+
 &emsp; 在SpringBoot启动过程中，每个不同的启动阶段会分别发射不同的内置生命周期事件，然后相应的监听器会监听这些事件来执行一些初始化逻辑工作比如ConfigFileApplicationListener会监听onApplicationEnvironmentPreparedEvent事件来加载环境变量等。  
 
+    run() 阶段主要是回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到 IOC 容器中，而所有需要回调的监听器都是从类路径下的 META/INF/Spring.factories 中获取，从而达到启动前后的各种定制操作。  
 
-## 1.1. 流程解析  
+## 1.1. 关键流程解析  
 &emsp; 从上述流程中，挑以下几个进行分析。
 
 ### 1.1.1. 步骤3：设置系统属性java.awt.headless的值  
@@ -304,8 +304,7 @@ private void prepareContext(ConfigurableApplicationContext context, Configurable
 }
 ```
 
-## 1.2. 总结：  
-&emsp; run() 阶段主要是回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到 IOC 容器中，而所有需要回调的监听器都是从类路径下的 META/INF/Spring.factories 中获取，从而达到启动前后的各种定制操作。  
+ 
 
 
 
