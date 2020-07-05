@@ -117,6 +117,7 @@
 ### Spring  
 [Spring-1](SSM/Spring/1.Spring.md)  
 [SpringIOC解析](SSM/Spring/2.SpringIOC.md)  
+&emsp; [基于Annotation的IOC初始化](SSM/Spring/基于Annotation的IOC初始化.md)  
 [SpringDI解析](SSM/Spring/3.SpringDI.md)  
 [SpringBean生命周期](SSM/Spring/SpringBean.md)  
 [容器相关特性](SSM/Spring/4.SpringFeature.md)  
