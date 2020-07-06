@@ -77,6 +77,7 @@
 
 [JVM类的加载](java/JVM/2.JVM类的加载.md)  
 [JVM内存结构](java/JVM/3.JVM内存结构.md)  
+[内存中对象](java/JVM/4.memoryObject.md)  
 
 [GC垃圾回收](java/JVM/5.GC垃圾回收.md)  
 [JVM调优-基础](java/JVM/6.JVM调优-基础.md)  
