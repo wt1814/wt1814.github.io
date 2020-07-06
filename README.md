@@ -93,7 +93,7 @@
 
 ## 数据库  
 [SQL语句](/SQL/1.SQL语句.md)  
-&emsp; [基本查询语句](/SQL/9.bxasicSelect.md)  
+&emsp; [基本查询语句](/SQL/9.basicSelect.md)  
 &emsp; [连接查询](/SQL/10.joinSelect.md)  
 &emsp; [行列转换](/SQL/11.trans.md)  
 [SQL优化-1](/SQL/2.SQL优化.md)  
