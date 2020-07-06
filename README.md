@@ -102,7 +102,7 @@
 [MySql原理]  
 &emsp; [MySql存储引擎](/SQL/13.MySqlStorage.md)  
 &emsp; [MySql事务](/SQL/14.transaction.md)  
-&emsp; [MySql锁](/SQL/7.index.md)  
+&emsp; [MySql锁](/SQL/15.lock.md)  
 [MySql架构](/SQL/8.MySql架构.md)  
 [分布式数据库](/SQL/4.分布式数据库.md)  
 &emsp; [主从复制](/SQL/16.replication.md)  
