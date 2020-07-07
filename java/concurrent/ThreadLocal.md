@@ -28,9 +28,6 @@ tags:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-26.png)   
 
 # 1. ThreadLocal  
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-26.png)   
-
 &emsp; 首先说明，ThreadLocal与线程同步无关。ThreadLocal虽然提供了一种解决多线程环境下成员变量的问题，但是它并不是解决多线程共享变量的问题。  
 &emsp; ThreadLocal，很多地方叫做线程本地变量，也有些地方叫做线程本地存储。每一个线程都会保存一份变量副本，每个线程都可以独立地修改自己的变量副本，而不会影响到其他线程，是一种线程隔离的思想。  
 

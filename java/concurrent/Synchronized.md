@@ -34,8 +34,6 @@ tags:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-16.png)  
 
 # 1. Synchronized  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-16.png)  
-
 &emsp; ***<font color = "red">synchronized能够保证在同一时刻最多只有一个线程执行该段代码。</font>***  
 
 &emsp; ***synchronized的特性：***  
