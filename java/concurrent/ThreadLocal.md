@@ -19,7 +19,7 @@ tags:
     - [1.3. ThreadLocal的内存泄漏](#13-threadlocal的内存泄漏)
     - [1.4. ThreadLocal局限性（变量不具有传递性）](#14-threadlocal局限性变量不具有传递性)
         - [1.4.1. 类InheritableThreadLocal的使用](#141-类inheritablethreadlocal的使用)
-        - [1.4.2. 类TransmittableThreadLocal的使用](#142-类transmittablethreadlocal的使用)
+        - [1.4.2. 类TransmittableThreadLocal(alibaba)的使用](#142-类transmittablethreadlocalalibaba的使用)
     - [1.5. ThreadLocal的优化](#15-threadlocal的优化)
 
 <!-- /TOC -->
@@ -57,7 +57,7 @@ ThreadLocalMap inheritableThreadLocals = null;
 
 &emsp; ThradLocal中内部类ThreadLocalMap：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-23.png)   
-&emsp; ThreadLocal.ThreadLocalMap，Map结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。Key是一个ThreadLocal实例，Value是一个线程特有对象。Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程特有对象之间的对应关系。  
+&emsp; ***<font color = "lime">ThreadLocal.ThreadLocalMap</font>***，Map结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。***<font color = "lime">Key是一个ThreadLocal实例，Value是一个线程特有对象。</font>***Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程特有对象之间的对应关系。  
 &emsp; 具体的ThreadLocalMap实例并不是ThreadLocal保持，而是每个Thread持有，且不同的Thread持有不同的ThreadLocalMap实例, 因此它们是不存在线程竞争的(不是一个全局的map)， 另一个好处是每次线程死亡，所有map中引用到的对象都会随着这个Thread的死亡而被垃圾收集器一起收集。  
 
     如何解决 Hash 冲突？
@@ -204,7 +204,7 @@ public class Foo{
 &emsp; final确保ThreadLocal 的实例不可更改，防止被意外改变，导致放入的值和取出来的不一致，另外还能防止ThreadLocal的内存泄漏。  
 
 ## 1.3. ThreadLocal的内存泄漏  
-&emsp; ThreadLocalMap的key为ThreadLocal实例，是一个弱引用，弱引用有利于GC的回收，当key == null时，GC就会回收这部分空间，但value不一定能被回收，因为它和Current Thread之间还存在一个强引用的关系。  
+&emsp; <font color = "red">ThreadLocalMap的key为ThreadLocal实例，是一个弱引用，弱引用有利于GC的回收，当key == null时，GC就会回收这部分空间，但value不一定能被回收，因为它和Current Thread之间还存在一个强引用的关系。</font>  
 &emsp; 由于这个强引用的关系，会导致value无法回收，如果线程对象不消除这个强引用的关系，就可能会出现OOM。调用ThreadLocalMap的remove()方法进行显式处理。  
 
 ## 1.4. ThreadLocal局限性（变量不具有传递性）  
@@ -244,7 +244,7 @@ public class Service {
 &emsp; InheritableThreadLocal主要用于子线程创建时，需要自动继承父线程的ThreadLocal变量，实现子线程访问父线程的threadlocal变量。  
 &emsp; InheritableThreadLocal继承了ThreadLocal，并重写了childValue、getMap、createMap三个方法。  
 
-### 1.4.2. 类TransmittableThreadLocal的使用  
+### 1.4.2. 类TransmittableThreadLocal(alibaba)的使用  
 &emsp; InheritableThreadLocal支持子线程访问在父线程中设置的线程上下文环境的实现原理是在创建子线程时将父线程中的本地变量值复制到子线程，即复制的时机为创建子线程时。  
 &emsp; 但并发、多线程就离不开线程池的使用，因为线程池能够复用线程，减少线程的频繁创建与销毁，如果使用InheritableThreadLocal，那么线程池中的线程拷贝的数据来自于第一个提交任务的外部线程，即后面的外部线程向线程池中提交任务时，子线程访问的本地变量都来源于第一个外部线程，造成线程本地变量混乱。  
 &emsp; TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
