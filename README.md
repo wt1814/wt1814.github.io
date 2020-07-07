@@ -63,6 +63,13 @@
 ### 并发编程  
 [线程基本概念](java/concurrent/1.Thread.md)  
 [多线程编程](java/concurrent/2.Multithread.md)  
+&emsp; [JMM](java/concurrent/JMM.md)  
+&emsp; [线程安全](java/concurrent/线程安全.md)  
+&emsp; &emsp; [Synchronized](java/concurrent/Synchronized.md)  
+&emsp; &emsp; [Volatile](java/concurrent/Volatile.md)  
+&emsp; &emsp; [ThreadLocal](java/concurrent/ThreadLocal.md)  
+&emsp; [线程通信](java/concurrent/线程通信.md)  
+
 [线程池](java/concurrent/3.ThreadPool.md)  
 [J.U.C包](java/concurrent/4.ConcurrentPackage.md)  
 &emsp; [Lock](java/concurrent/8.Lock.md)  
