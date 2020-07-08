@@ -5,13 +5,21 @@ tags:
     - JDK
 ---
 
+<!-- TOC -->
 
+- [1. Optional类](#1-optional类)
+    - [1.1. 常用API](#11-常用api)
+    - [1.2. 正确使用Optional类](#12-正确使用optional类)
+        - [1.2.1. 错误使用：](#121-错误使用)
+        - [1.2.2. 正确使用：](#122-正确使用)
 
-# 4. Optional类  
+<!-- /TOC -->
+
+# 1. Optional类  
 &emsp; Java8引入Optional类，是一个可以为null的容器对象，是一个包含有可选值的包装类，可以保存类型T的值，或者保存null。Optional类的引入解决空指针异常。防止编写不必要的null检查。快速定位NullPointException。  
 &emsp; public final class Optional<T\>，构造函数私有化；不能new实例；不能被继承；  
 
-## 4.1. 常用API  
+## 1.1. 常用API  
 
 |方法	|描述|
 |---|---|
@@ -33,12 +41,12 @@ tags:
 |toString()	|返回一个Optional的非空字符串，用来调试|
 
 
-## 4.2. 正确使用Optional类  
-### 4.2.1. 错误使用：  
+## 1.2. 正确使用Optional类  
+### 1.2.1. 错误使用：  
 
 &emsp; 先看看错误的姿势：  
 
-```
+```java
 User user;
 Optional<User> optional = Optional.of(user);
 if (optional.isPresent()) {
@@ -50,48 +58,48 @@ if (optional.isPresent()) {
 
 &emsp; 和之前的写法没有任何区别。  
 
-```
+```java
 if (user != null) {
     return user.getOrders();
 } else {
     return Collections.emptyList();;
 }
 ```
-&emsp; 慎重使用Optional类的以下方法：isPresent()方法、get()方法、Optional类型作为类/实例属性、Optional类型作为方法参数。isPresent()与obj!= null无任何分别。而没有isPresent()作铺垫的get()调用，在IntelliJ IDEA中会收到告警。把Optional类型用作属性或是方法参数在IntelliJ IDEA中更是强力不推荐的。所以Optional中真正可依赖的是除了isPresent()和get()的其他方法。  
+&emsp; <font color = "red">慎重使用Optional类的以下方法：isPresent()方法、get()方法、Optional类型作为类/实例属性、Optional类型作为方法参数。</font>isPresent()与obj!= null无任何分别。而没有isPresent()作铺垫的get()调用，在IntelliJ IDEA中会收到告警。把Optional类型用作属性或是方法参数在IntelliJ IDEA中更是强力不推荐的。所以Optional中真正可依赖的是除了isPresent()和get()的其他方法。  
 
-### 4.2.2. 正确使用：  
+### 1.2.2. 正确使用：  
 &emsp; 创建Optional对象：  
 
-```
+```java
 Optional<Soundcard> sc = Optional.empty();
 SoundCard soundcard = new Soundcard();
 Optional<Soundcard> sc = Optional.of(soundcard);
 Optional<Soundcard> sc = Optional.ofNullable(soundcard);
 ```
-&emsp; <font color = "red">存在即返回, 无则提供默认值</font>：  
+&emsp; ***<font color = "red">存在即返回, 无则提供默认值</font>***：  
 
-```
+```java
 return user.orElse(null);  //而不是 return user.isPresent() ? user.get() : null;
 return user.orElse(UNKNOWN_USER);
 ```
-&emsp; <font color = "red">存在即返回, 无则由函数来产生</font>：  
+&emsp; ***<font color = "red">存在即返回, 无则由函数来产生</font>***：  
 
-```
+```java
 return user.orElseGet(() -> fetchAUserFromDatabase()); 
 //而不要 return user.isPresent() ? user: fetchAUserFromDatabase();
 ```
-&emsp; <font color = "red">存在才对它操作：</font>：  
+&emsp; ***<font color = "red">存在才对它操作</font>***：  
 
-```
+```java
 user.ifPresent(System.out::println);
 /*而不要下边那样
 if (user.isPresent()) {
     System.out.println(user.get());
 }*/
 ```
-&emsp; <font color = "red">使用map抽取特定的值或者做值的转换</font>：  
+&emsp; ***<font color = "red">使用map抽取特定的值或者做值的转换</font>***：  
 
-```
+```java
 return user.map(u -> u.getOrders()).orElse(Collections.emptyList())
 //上面避免了我们类似 Java 8 之前的做法
 if(user.isPresent()) {
@@ -100,9 +108,9 @@ if(user.isPresent()) {
     return Collections.emptyList();
 }
 ```
-&emsp; <font color = "red">级联使用map，避免了连续的空值判断</font>:  
+&emsp; ***<font color = "red">级联使用map，避免了连续的空值判断</font>***:  
 
-```
+```java
 return user.map(u -> u.getUsername()).map(name -> name.toUpperCase()).orElse(null);
 /*User user = .....
 if(user != null) {
@@ -117,18 +125,18 @@ if(user != null) {
 }*/
 ```
 
-&emsp; <font color = "red">级联的Optional对象使用flatMap</font>：  
+&emsp; ***<font color = "red">级联的Optional对象使用flatMap</font>***：  
 
-```
+```java
 String version = computer.flatMap(Computer::getSoundcard)
         .flatMap(Soundcard::getUSB)
         .map(USB::getVersion)
         .orElse("UNKNOWN");
 ```
 
-&emsp; <font color = "red">使用filter拒绝特定的值</font>:  
+&emsp; ***<font color = "red">使用filter拒绝特定的值</font>***:  
 
-```
+```java
 Optional<USB> maybeUSB = ...;
 maybeUSB.filter(usb -> "3.0".equals(usb.getVersion()).ifPresent(() -> System.out.println("ok"));
 ```

@@ -50,20 +50,20 @@ public interface StaticFunctionInterface {
 &emsp; 接口中的static方法不能被继承，也不能被实现类调用，只能被自身调用。但是静态变量会被继承。  
 
 # 2. Lambda表达式  
-[Lambda](java/JDK8/Lambda.md)  
+[Lambda](Lambda.md)  
 
 ------
 
 # 3. StreamAPI  
-[Stream](java/JDK8/Stream.md)  
+[Stream](Stream.md)  
 
 -----
 # 4. Optional类  
-[Optional](java/JDK8/Optional.md)  
+[Optional](Optional.md)  
 
 -----
 # 5. Date/Time API  
-[DateTime](java/JDK8/DateTime.md)  
+[DateTime](DateTime.md)  
 
 -----
 # 6. 异常捕获的改变   

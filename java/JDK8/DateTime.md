@@ -7,22 +7,23 @@ tags:
 
 <!-- TOC -->
 
-- [Date/Time API](#datetime-api)
-    - [接口API](#接口api)
-        - [本地化日期时间API](#本地化日期时间api)
-        - [时区的日期时间API](#时区的日期时间api)
-        - [Instant](#instant)
-    - [与日期和日历（旧的时间API）的兼容性](#与日期和日历旧的时间api的兼容性)
-    - [日期格式化](#日期格式化)
-    - [计算时间差](#计算时间差)
-        - [Period类](#period类)
-        - [Duration类](#duration类)
-        - [ChronoUnit类，java.time.temporal包](#chronounit类javatimetemporal包)
-    - [※※※SpringBoot中应用LocalDateTime](#※※※springboot中应用localdatetime)
+- [1. Date/Time API](#1-datetime-api)
+    - [1.1. 接口API](#11-接口api)
+        - [1.1.1. 本地化日期时间API](#111-本地化日期时间api)
+        - [1.1.2. 时区的日期时间API](#112-时区的日期时间api)
+        - [1.1.3. Instant](#113-instant)
+    - [1.2. 与日期和日历（旧的时间API）的兼容性](#12-与日期和日历旧的时间api的兼容性)
+    - [1.3. 日期格式化](#13-日期格式化)
+    - [1.4. 计算时间差](#14-计算时间差)
+        - [1.4.1. Period类](#141-period类)
+        - [1.4.2. Duration类](#142-duration类)
+        - [1.4.3. ChronoUnit类，java.time.temporal包](#143-chronounit类javatimetemporal包)
+    - [1.5. ※※※SpringBoot中应用LocalDateTime](#15-※※※springboot中应用localdatetime)
 
 <!-- /TOC -->
-# Date/Time API  
+# 1. Date/Time API  
 &emsp; 旧版的Java中，日期时间API存在诸多问题：  
+
 * 非线程安全：java.util.Date是非线程安全的，所有的日期类都是可变的，这是Java日期类最大的问题之一。  
 * 设计很差：Java的日期/时间类的定义并不一致，在java.util和java.sql的包中都有日期类，此外用于格式化和解析的类在java.text包中定义。java.util.Date同时包含日期和时间，而java.sql.Date仅包含日期，将其纳入java.sql包并不合理。另外这两个类都有相同的名字，这本身就是一个非常糟糕的设计。  
 * 时区处理麻烦：日期类并不提供国际化，没有时区支持，因此Java引入了java.util.Calendar和java.util.TimeZone类，但他们同样存在上述所有的问题。  
@@ -44,11 +45,11 @@ tags:
 4. java.time.temporal包：这个包包含一些时态对象，可以用其找出关于日期/时间对象的某个特定日期或时间，比如说，可以找到某月的第一天或最后一天。可以非常容易地认出这些方法，因为它们都具有“withXXX”的格式。  
 5. java.time.zone包：这个包包含支持不同时区以及相关规则的类。  
 
-## 接口API  
-### 本地化日期时间API  
+## 1.1. 接口API  
+### 1.1.1. 本地化日期时间API  
 &emsp; LocalDate/LocalTime和LocalDateTime类处理时区不是必须的情况。    
 
-```
+```java
 public class Java8Tester {
     public static void main(String args[]) {
         Java8Tester java8tester = new Java8Tester();
@@ -80,9 +81,9 @@ public class Java8Tester {
 }
 ```
 
-### 时区的日期时间API  
+### 1.1.2. 时区的日期时间API  
 
-```
+```java
 public class Java8Tester {
     public static void main(String args[]) {
         Java8Tester java8tester = new Java8Tester();
@@ -101,20 +102,21 @@ public class Java8Tester {
 }
 ```
 
-### Instant  
+### 1.1.3. Instant  
 &emsp; 当计算程序的运行时间时，应当使用时间戳Instant。  
 &emsp; Instant用于表示一个时间戳，它与我们常使用的System.currentTimeMillis()有些类似，不过Instant可以精确到纳秒（Nano-Second），System.currentTimeMillis()方法只精确到毫秒（Milli-Second）。如果查看Instant源码，发现它的内部使用了两个常量，seconds表示从1970-01-01 00:00:00开始到现在的秒数，nanos表示纳秒部分（nanos的值不会超过999,999,999）。Instant除了使用now()方法创建外，还可以通过ofEpochSecond方法创建：  
 
-    Instant instant = Instant.ofEpochSecond(120, 100000);  
-
+```java
+Instant instant = Instant.ofEpochSecond(120, 100000);  
+```
 &emsp; ofEpochSecond()方法的第一个参数为秒，第二个参数为纳秒，上面的代码表示从1970-01-01 00:00:00开始后两分钟的10万纳秒的时刻，控制台上的输出为：
 
 
-## 与日期和日历（旧的时间API）的兼容性  
+## 1.2. 与日期和日历（旧的时间API）的兼容性  
 
-## 日期格式化  
+## 1.3. 日期格式化  
 
-```
+```java
 LocalDateTime dateTime = LocalDateTime.now();
 String strDate1 = dateTime.format(DateTimeFormatter.BASIC_ISO_DATE);   // 20170105
 String strDate2 = dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE);    // 2017-01-05
@@ -123,13 +125,13 @@ String strDate4 = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")); /
 String strDate5 = dateTime.format(DateTimeFormatter.ofPattern("今天是：YYYY年 MMMM DD日 E", Locale.CHINESE)); // 今天是：2017年 一月 05日 星期四
 ```
 
-## 计算时间差  
+## 1.4. 计算时间差  
 &emsp; Java8中使用以下类来计算日期时间差异：1.Period；2.Duration；3.ChronoUnit。  
 
-### Period类  
+### 1.4.1. Period类  
 &emsp; Period类方法getYears()、getMonths()和getDays()，3者连用得到today与oldDate两个日期相差的年、月、日信息。  
 
-```
+```java
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
@@ -150,10 +152,10 @@ public class Test {
     BirthDate : 1993-10-19
     年龄 : 23 年 7 月 28 日  
 
-### Duration类  
+### 1.4.2. Duration类  
 &emsp; 计算两个时间点的时间差。between()计算两个时间的间隔，默认的单位是秒。方法toNanos()、toMillis()、toMinutes()、toHours()、toDays()等将两时间相差的秒数转化成纳秒数、毫秒数等。  
 
-```
+```java
 import java.time.Duration;
 import java.time.Instant;
 
@@ -182,17 +184,19 @@ public class Test {
     LocalDateTime newDate = LocalDateTime.of(2018, Month.NOVEMBER, 9, 10, 21, 56);
 
 
-### ChronoUnit类，java.time.temporal包  
+### 1.4.3. ChronoUnit类，java.time.temporal包  
 &emsp; ChronoUnit类枚举类型，实现功能类型Period和Duration，在单个时间单位（秒、分、时）内测量一段时间。  
 
-    LocalDateTime oldDate = LocalDateTime.of(2017, Month.AUGUST, 31, 10, 20, 55);
-    LocalDateTime newDate = LocalDateTime.of(2018, Month.NOVEMBER, 9, 10, 21, 56);
+```java
+LocalDateTime oldDate = LocalDateTime.of(2017, Month.AUGUST, 31, 10, 20, 55);
+LocalDateTime newDate = LocalDateTime.of(2018, Month.NOVEMBER, 9, 10, 21, 56);
+```
 
-## ※※※SpringBoot中应用LocalDateTime  
+## 1.5. ※※※SpringBoot中应用LocalDateTime  
 &emsp; 将LocalDateTime字段以时间戳的方式返回给前端  
 &emsp; 添加日期转化类  
 
-```
+```java
 public class LocalDateTimeConverter extends JsonSerializer<LocalDateTime> {
 
     @Override
@@ -203,18 +207,24 @@ public class LocalDateTimeConverter extends JsonSerializer<LocalDateTime> {
 ```
 &emsp; 并在LocalDateTime字段上添加@JsonSerialize(using = LocalDateTimeConverter.class)注解，如下：  
 
-    @JsonSerialize(using = LocalDateTimeConverter.class)
-    protected LocalDateTime gmtModified;
+```java
+@JsonSerialize(using = LocalDateTimeConverter.class)
+protected LocalDateTime gmtModified;
+```
 
 &emsp; 将LocalDateTime字段以指定格式化日期的方式返回给前端 在LocalDateTime字段上添加@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")注解即可，如下：  
 
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
-    protected LocalDateTime gmtModified;
+```java
+@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+protected LocalDateTime gmtModified;
+```
 
 &emsp; 对前端传入的日期进行格式化在LocalDateTime字段上添加@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")注解即可，如下：  
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    protected LocalDateTime gmtModified;
+```java
+@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+protected LocalDateTime gmtModified;
+```
 
 
 
