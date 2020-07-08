@@ -21,7 +21,7 @@ tags:
 <!-- /TOC -->
 
 # 1. Java 读写大文本文件  
-&emsp; <font color = "red">将大文件数据全部读取到内存中，会发生OOM异常。</font>  
+&emsp; ***<font color = "lime">将大文件数据全部读取到内存中，会发生OOM异常。</font>***  
 
 ## 1.1. java读取大文件的困难  
 &emsp; java 读取文件的一般操作是将文件数据全部读取到内存中，然后再对数据进行操作。例如：  
@@ -235,7 +235,7 @@ public class MappedFileReader {
 ```
 &emsp; 采用内存文件映射的方法去处理大文件，不能读取超过2GB的文件，明明 FileChannel.map() 方法传递的文件长度是 long 类型的，怎么和 Integer.MAX_VALUE 有关系？  
 
-&emsp; ***采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。***  
+&emsp; ***<font color = "lime">采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。</font>***  
 
 ```
 Exception in thread "main" java.lang.IllegalArgumentException: Size exceeds Integer.MAX_VALUE at sun.nio.ch.FileChannelImpl.map(FileChannelImpl.java:868)
