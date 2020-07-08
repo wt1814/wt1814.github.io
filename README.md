@@ -48,6 +48,8 @@
 [Java基础数据类型](java/basis/数据类型.md)  
 [Java集合框架](java/Collection/1.集合框架.md)  
 &emsp; [Map](java/Collection/2.Map.md)  
+&emsp; &emsp; [HashMap](java/Collection/HashMap.md)  
+&emsp; &emsp; [LikedHashMap](java/Collection/LikedHashMap.md)  
 &emsp; [Collection](java/Collection/3.Collection.md)  
 [Java异常](java/basis/JavaException.md)  
 [Java范型](java/basis/JavaParadigm.md)  
