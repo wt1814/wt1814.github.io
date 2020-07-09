@@ -20,16 +20,16 @@
         - [分布式理论](#分布式理论)
         - [分布式通信](#分布式通信)
     - [Elaticsearch-1](#elaticsearch-1)
+    - [项目构建基础](#项目构建基础)
+    - [Error](#error)
     - [服务器](#服务器)
         - [Linux](#linux)
         - [Nginx](#nginx)
     - [计算机网络](#计算机网络)
-    - [项目构建基础](#项目构建基础)
+    - [算法](#算法)
     - [项目管理](#项目管理)
         - [Git](#git)
     - [开发软件](#开发软件)
-    - [Error](#error)
-    - [算法](#算法)
 
 <!-- /TOC -->
 
@@ -226,7 +226,16 @@
 [ES优化-1](ES/5.optimization.md)  
 [ELK](ES/6.ELK.md)    
 
+---
+## 项目构建基础    
+[接口幂等](web/idempotent.md)   
 
+---
+## Error  
+[※※※多线程串线了](/Error/ThreadCrossed.md)  
+[CodeCC]  
+
+---
 ## 服务器  
 ### Linux  
 [Linux命令]  
@@ -244,21 +253,6 @@
 [TCP](/network/4.TCP.md)  
 
 
----
-## 项目构建基础    
-[接口幂等](web/idempotent.md)   
-
-## 项目管理  
-### Git  
-[git命令](/projectManage/git/command.md)   
-
-## 开发软件  
-[idea](software/idea/idea.md)  
-
-
-## Error  
-[※※※多线程串线了](/Error/ThreadCrossed.md)  
-[CodeCC]  
 
 ---
 ## 算法  
@@ -277,3 +271,9 @@
 
 
 
+## 项目管理  
+### Git  
+[git命令](/projectManage/git/command.md)   
+
+## 开发软件  
+[idea](software/idea/idea.md)  
