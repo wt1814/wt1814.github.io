@@ -228,7 +228,8 @@
 
 ---
 ## 项目构建基础    
-[接口幂等](web/idempotent.md)   
+[接口幂等](/web/idempotent.md)   
+[Http重试](/web/httpRetry.md)     
 
 ---
 ## Error  
@@ -277,3 +278,5 @@
 
 ## 开发软件  
 [idea](software/idea/idea.md)  
+
+
