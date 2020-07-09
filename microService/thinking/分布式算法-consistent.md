@@ -33,6 +33,7 @@ tags:
 
 ## 1.2. 优点  
 &emsp; 增加和删除节点，只会影响部分数据。  
+
 1. 增加节点  
 &emsp; 当缓存集群的节点有所增加的时候，整个环形空间的映射仍然会保持一致性哈希的顺时针规则，所以有一小部分key的归属会受到影响。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-4.png)  
@@ -53,8 +54,7 @@ tags:
 ## 1.3. 缺点  
 &emsp; 如像下图这样，按顺时针规则，所有的key都归属于同一个节点，会造成数据倾斜。如果节点太少或分布不均匀的时候，都会造成数据倾斜。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-9.png)  
-&emsp; 为了优化这种节点太少而产生的不均衡情况，一致性哈希算法引入了“虚拟节点”的概念。  
-&emsp; 所谓虚拟节点，就是基于原来的物理节点映射出N个子节点，最好把所有的子节点映射到环形空间上。  
+&emsp; <font color = "red">为了优化这种节点太少而产生的不均衡情况，一致性哈希算法引入了“虚拟节点”的概念。</font>所谓虚拟节点，就是<font color = "red">基于原来的物理节点映射出N个子节点</font>，最好把所有的子节点映射到环形空间上。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-10.png)  
 &emsp; 如上图所示，假如node1的ip是192.168.1.109，那么原node1节点在环形空间的位置就是hash（“192.168.1.109”）。  
 &emsp; 基于node1构建两个虚拟节点，node1-1和node1-2，虚拟节点在环形空间的位置可以利用（IP+后缀）计算，例如： hash(“192.168.1.109#1”)，hash(“192.168.1.109#2”)。  
