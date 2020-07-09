@@ -8,3 +8,7 @@ tags:
 <!-- 
 https://www.hangge.com/blog/cache/detail_2522.html
 -->
+
+# RestTemplate自动重试  
+
+
