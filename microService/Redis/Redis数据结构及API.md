@@ -75,7 +75,7 @@ tags:
 ## 2.3. 对象系统RedisObject  
 &emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。***<font color = "red">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>***  
 
-&emsp; Redis的redisObject结构的定义如下所示：  
+&emsp; redisObject的源代码在redis.h中，使用c语言编写。redisObject结构的定义如下所示：  
 
 ```
 typedef struct redisObject {
@@ -145,20 +145,7 @@ typedef struct redisObject {
 
 &emsp; <font color = "red">Redis会根据当前值的类型和长度决定使用哪种内部编码实现。</font>  
 
-1. 什么是 SDS？ Redis中字符串的实现。在 3.2 以后的版本中，SDS 又有多种结构（sds.h）：sdshdr5、sdshdr8、sdshdr16、sdshdr32、sdshdr64，用于存储不同的长度的字符串，分别代表 2^5=32byte， 2^8=256byte，2^16=65536byte=64KB，2^32byte=4GB。  
-
-2. 为什么 Redis 要用 SDS 实现字符串？  
-&emsp; C 语言本身没有字符串类型（只能用字符数组 char[]实现）。 
-    1. 使用字符数组必须先给目标变量分配足够的空间，否则可能会溢出。  
-    2. 如果要获取字符长度，必须遍历字符数组，时间复杂度是 O(n)。  
-    3. C 字符串长度的变更会对字符数组做内存重分配。  
-    4. 通过从字符串开始到结尾碰到的第一个'\0'来标记字符串的结束，因此不能保 存图片、音频、视频、压缩文件等二进制(bytes)保存的内容，二进制不安全。  
-
-    &emsp; SDS的特点：  
-    1. 不用担心内存溢出问题，如果需要会对 SDS 进行扩容。  
-    2. 获取字符串长度时间复杂度为 O(1)，因为定义了 len 属性。  
-    3. 通过“空间预分配”（ sdsMakeRoomFor）和“惰性空间释放”，防止多 次重分配内存。  
-    4. 判断是否结束的标志是 len 属性（它同样以'\0'结尾是因为这样就可以使用 C语言中函数库操作字符串的函数了），可以包含'\0'。  
+1. [SDS](SDS.md)  
 
 3. embstr 和 raw 的区别？  
 &emsp; embstr 的使用只分配一次内存空间（因为 RedisObject 和 SDS 是连续的），而 raw 需要分配两次内存空间（分别为 RedisObject 和 SDS 分配空间）。 因此与 raw 相比，embstr 的好处在于创建时少分配一次空间，删除时少释放一次 空间，以及对象的所有数据连在一起，寻找方便。 而 embstr 的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个 RedisObject 和 SDS 都需要重新分配空间，因此 Redis 中的 embstr 实现为只读。  
