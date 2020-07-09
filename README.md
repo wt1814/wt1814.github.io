@@ -270,7 +270,7 @@
 [算法思想题型](java/function/6.algorithmicIdea.md)  
 
 
-
+---
 ## 项目管理  
 ### Git  
 [git命令](/projectManage/git/command.md)   
