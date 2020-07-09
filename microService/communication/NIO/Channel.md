@@ -31,7 +31,7 @@ tags:
 &emsp; 通道可以以阻塞（Wocfcwg)或非阻塞（wowWochwg)模式运行。非阻塞模式的通道永远不会让调用的线程休眠。请求的操作要么立即完成，要么返回一个结果表明未进行任何操作。只有面向流的（stream-oriented)的通道，如sockets和pipes才能使用非阻塞模式。  
 
 ## 1.1. 通道分类及创建通道  
-&emsp; I/O可以分为广义的两大类别：File I/O和Stream I/O。相应地有两种类型的通道，它们是文件(file)通道和套接字(socket)通道。包含一个FileChannel类和三个socket通道类：SocketChannel、ServerSocketChannel和DatagramChannel。  
+&emsp; <font color = "red">I/O可以分为广义的两大类别：File I/O和Stream I/O。相应地有两种类型的通道，它们是文件(file)通道和套接字(socket)通道。包含一个FileChannel类和三个socket通道类：SocketChannel、ServerSocketChannel和DatagramChannel。</font>  
 &emsp; Channel接口的完整源码：  
 
 ```
@@ -41,7 +41,7 @@ public interface Channel{
     public void Open() throws IOException;
 }
 ```
-&emsp; <font color = "red">所有通道只有两个常用操作：检查通道是否关闭(isclose())、打开关闭通道(close())。</font>  
+&emsp; <font color = "lime">所有通道只有两个常用操作：检查通道是否关闭(isclose())、打开关闭通道(close())。</font>  
 
 1. FileChannel：文件通道用于从文件读取数据。  
     &emsp; jdk1.7通过使用一个InputStream、OutputStream或RandomAccessFile来获取一个FileChannel实例。  

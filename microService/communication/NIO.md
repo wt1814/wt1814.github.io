@@ -45,6 +45,8 @@ tags:
 * AIO方式适用于连接数目多且连接比较长（重操作）的架构，比如相册服务器，充分调用OS参与并发操作，编程比较复杂，JDK1.7开始支持。  
 
 # 2. NIO简介  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-14.png)  
+
 &emsp; ***<font color = "red">NIO基本组件</font>***  
 &emsp; NIO读写是I/O的基本过程。读写操作中使用的核心部件有：Channels、Buffers、Selectors。在标准I/O中，使用字符流和字节流；在NIO中使用通道和缓冲区。  
 

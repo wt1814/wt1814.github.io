@@ -22,9 +22,9 @@ tags:
 &emsp; 在NIO库中，所有数据都是用缓冲区处理的。在读取数据时，它是直接读到缓冲区中的；在写入数据时，它也是写入到缓冲区中的；任何时候访问NIO中的数据，都是将它放到缓冲区中。而在面向流I/O系统中，所有数据都是直接写入或者直接将数据读取到Stream对象中。  
 
 ## 1.1. 缓冲区属性  
-&emsp; 缓冲区4个属性：  
+&emsp; <font color = "red">缓冲区4个属性：</font>  
 
-```
+```java
 // Invariants: mark <= position <= limit <= capacity
 private int mark = -1;
 private int position = 0;
@@ -36,7 +36,7 @@ private int capacity;
 * 位置（Position)：下一个要被读或写的元素的索引。位置会自动由相应的和函数更新。记录当前读取或者写入的位置。写模式下等于当前写入的单位数据数量。从写模式切换到读模式时，置为0。在读的过程中等于当前读取单位数据的数量。  
 * 标记（Mark)：一个备忘位置。调用来设定mark = postion。调用设定position = mark。标记在设定前是未定义的(undefined)。  
 
-&emsp; 这四个属性之间遵循以下关系：0 <=mark <=position <=limit <=capacity。在写模式和读模式（先写后读）下，position和limit的位置有所不同。  
+&emsp; 这四个属性之间遵循以下关系：0 <=mark <=position <=limit <=capacity。<font color = "red">在写模式和读模式（先写后读）下，position和limit的位置有所不同。</font>  
 <!-- 
 见下图：  
 &emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-1.png)  
@@ -46,7 +46,7 @@ private int capacity;
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-2.png)  
 2. 从输入通道中读取 5 个字节数据写入缓冲区中，此时position为5，limit保持不变。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-3.png)  
-3. 在将缓冲区的数据写到输出通道之前，需要先调用 flip() 方法，这个方法将 limit 设置为当前 position，并将 position 设置为 0。
+3. 在将缓冲区的数据写到输出通道之前，需要先调用 flip() 方法，这个方法将 limit 设置为当前 position，并将 position 设置为 0。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-4.png)  
 4. 从缓冲区中取 4 个字节到输出缓冲中，此时 position 设为 4。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-5.png)  
@@ -71,7 +71,7 @@ private int capacity;
 &emsp; 有七种主要的缓冲区类，每一种都具有一种Java语言中的非布尔类型的原始类型数据。（第8种也在图中显示出来，MappedByteBuffer是ByteBuffer专门用于内存映射文件的一种特例。）  
 &emsp; 创建缓冲区的关键函数（对所有的缓冲区类通用，按照需要替换类名）：  
 
-```
+```java
 public abstract class CharBuffer extends Buffer implements CharSequence, Comparable {
     // This is a partial API listing 
     public static CharBuffer allocate (int capacity);
@@ -87,18 +87,21 @@ public abstract class CharBuffer extends Buffer implements CharSequence, Compara
 &emsp; 新的缓冲区是由分配或包装操作创建的。分配操作创建一个缓冲区对象并分配一个私有的空间来储存容量大小的数据元素。包装操作创建一个缓冲区对象但是不分配任何空间来储存数 据元素。它使用提供的数组作为存储空间来储存缓冲区中的数据元素。  
 &emsp; 要分配一个容量为100个char变量的Charbuffer:  
 
-    CharBuffer charBuffer = CharBuffer.allocate (100);
-
+```java
+CharBuffer charBuffer = CharBuffer.allocate (100);
+```
 &emsp; 这段代码隐含地从堆空间中分配了一个char型数组作为备份存储器来储存100个char变量。  
 &emsp; 如果想提供自己的数组用做缓冲区的备份存储器，调用wrap()函数:   
 
-    char [] myArray = new char [100];  
-    CharBuffer charbuffer = CharBuffer.wrap (myArray);
-
+```java
+char [] myArray = new char [100];  
+CharBuffer charbuffer = CharBuffer.wrap (myArray);
+```
 &emsp; 这段代码构造了一个新的缓冲区对象，但数据元素会存在于数组中。这意味着通过调用put()函数造成的对缓冲区的改动会直接影响这个数组，而且对这个数组的任何改动也会对这 个缓冲区对象可见。带有offset和length作为参数的wrap()函数版本则会构造一个按照提供的offset和length参数值初始化位置和上界的缓冲区。这样做：  
 
-    CharBuffer charbuffer = CharBuffer.wrap (myArray, 12, 42);
-
+```java
+CharBuffer charbuffer = CharBuffer.wrap (myArray, 12, 42);
+```
 &emsp; 创建建了一个position值为12, limit值为54,容量为myArray.length的缓冲区。  
 &emsp; 通过allocate()或者wrap()函数创建的缓冲区通常都是间接的。    
 
@@ -113,7 +116,7 @@ public abstract class CharBuffer extends Buffer implements CharSequence, Compara
 &emsp; 一旦读完了所有的数据，就需要清空缓冲区，让它可以再次被写入。有两种方式能清空缓冲区：调用clear()或compact()方法。clear()方法会清空整个缓冲区。compact()方法只会清除已经读过的数据。任何未读的数据都被移到缓冲区的起始处，新写入的数据将放到缓冲区未读数据的后面。  
 &emsp; 总结：Client向Buffer写入数据后，调用flip()将Buffer由写模式更改为读模式，此时Channel可以读取Buffer内数据，读取完成后可调用clear()或compact()重置缓冲区并允许数据写入。  
 
-```
+```java
 RandomAccessFile aFile = new RandomAccessFile("data/nio-data.txt", "rw");
 FileChannel inChannel = aFile.getChannel();
 
@@ -140,12 +143,12 @@ aFile.close();
 
 &emsp; 从Channel写到Buffer的例子  
 
-```
+```java
 int bytesRead = inChannel.read(buf); //read into buffer.  
 ```
 &emsp; 通过put方法写Buffer的例子： 
 
-```
+```java
 buf.put(127); 
 ```
 
@@ -160,13 +163,13 @@ buf.put(127);
 
 &emsp; 从Buffer读取数据到Channel的例子： 
 
-```
+```java
 //read from buffer into channel.  
 int bytesWritten = inChannel.write(buf); 
 ```
 &emsp; 使用get()方法从Buffer中读取数据的例子：  
 
-```
+```java
 byte aByte = buf.get(); 
 ```
 
@@ -184,7 +187,7 @@ byte aByte = buf.get();
 &emsp; ***mark()与reset()方法***  
 &emsp; 通过调用Buffer.mark()方法，可以标记Buffer中的一个特定position。之后可以通过调用Buffer.reset()方法恢复到这个position。例如： 
 
-```
+```java
 buffer.mark();  
 //call buffer.get() a couple of times, e.g. during parsing.  
 buffer.reset();  //set position back to mark. 
@@ -192,9 +195,9 @@ buffer.reset();  //set position back to mark.
 
 &emsp; ***equals()***  
 &emsp; 当满足下列条件时，表示两个Buffer相等：  
-&emsp; 1). 有相同的类型（byte、char、int等）。  
-&emsp; 2). Buffer中剩余的byte、char等的个数相等。  
-&emsp; 3). Buffer中所有剩余的byte、char等都相同。  
+&emsp; 1. 有相同的类型（byte、char、int等）。  
+&emsp; 2. Buffer中剩余的byte、char等的个数相等。  
+&emsp; 3. Buffer中所有剩余的byte、char等都相同。  
 &emsp; equals只是比较Buffer的一部分，不是每一个在它里面的元素都比较。实际上，它只比较Buffer中的剩余元素。  
 
 &emsp; ***compareTo()方法***  
@@ -209,14 +212,14 @@ buffer.reset();  //set position back to mark.
 &emsp; 使用直接内存的优势：  
 1. 少一次内存拷贝：在常规文件IO或者网络IO的情况下，需要调用操作系统的API，会先把堆内存的数据复制到堆外，至于为什么要复制一份数据到堆外，JVM有GC机制，在GC过程中，会移动对象的位置，这样操作系统在读取或写入数据就找不到数据了。但这样一来，显然增加了一次内存拷贝的过程，如果直接通过直接内存的方式，省略掉这次非必须的内存拷贝，可以达到优化性能的目的。创建直接内存的API：  
 
-    ```
+    ```java
     public static ByteBuffer allocateDirect(int capacity) {
         return new DirectByteBuffer(capacity);
     }
     ```
 2. 降低GC压力：如果直接使用直接内存（堆外内存）呢？首先申请一块不受GC管理的堆外内存，但需要手动回收堆外内存。在java.nio.DirectByteBuffer中，有一个虚引用的Cleaner对象，执行GC时会触发Deallocator回收内存。  
 
-    ```
+    ```java
     private static class Deallocator implements Runnable {
     
         public void run() {
@@ -231,4 +234,5 @@ buffer.reset();  //set position back to mark.
 
     }
     ```
+
     &emsp; 虽然堆外内存好处很多，但还是建议在网络传输，文件读取等大数据量的IO密集操作时才使用，分配一些大文件大数据读取时才使用。同时设置MaxDirectMemorySize避免耗尽整个机器内存。

@@ -17,7 +17,6 @@ tags:
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-14.png)  
 
 
 # 1. NIO选择器  
@@ -55,9 +54,9 @@ readyCount = selector.select (10000);
 &emsp; 这些代码创建了一个新的选择器，然后将这三个(己经存在的)socket通道注册到选择器上，而且感兴趣的操作各不相同。方法在将线程置于睡眠状态，直到这些刚兴趣的事情中的操作中的一个发生或者10秒钟的时间过去。  
 
 1. 创建Selector对象  
-```
-Selector selector = Selector.open();
-```
+    ```
+    Selector selector = Selector.open();
+    ```
 2. 将Channel注册到选择器中。为了使用选择器管理Channel，需要将Channel注册到选择器中:  
 
     ```
@@ -112,9 +111,8 @@ Selector selector = Selector.open();
 |Selector wakeup()	|使尚未返回的第一个选择操作立即返回|
 |void close()	|关闭此选择器|
 
-&emsp; Selector的基本使用流程：  
-
-1. 通过Selector.open() 打开一个 Selector.
+&emsp; ***<font color = "lime">Selector的基本使用流程：</font>***  
+1. 通过Selector.open() 打开一个 Selector。
 2. 将Channel注册到Selector中, 并设置需要监听的事件(interest set)
 3. 不断重复:
     1. 调用select()方法
@@ -127,7 +125,7 @@ Selector selector = Selector.open();
 
 ### 1.2.4. Selector完整实例  
 
-```
+```java
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
