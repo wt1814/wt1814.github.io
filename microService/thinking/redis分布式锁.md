@@ -15,7 +15,7 @@
                 - [1.2.1.1.1. 加锁](#12111-加锁)
                 - [1.2.1.1.2. 解锁](#12112-解锁)
             - [1.2.1.2. ※※※集群redlock算法实现分布式锁](#1212-※※※集群redlock算法实现分布式锁)
-        - [1.2.2. Redisson实现redis分布式锁](#122-redisson实现redis分布式锁)
+        - [1.2.2. Redisson实现redis分布式锁-1](#122-redisson实现redis分布式锁-1)
             - [RedissonLock解析](#redissonlock解析)
                 - [获取锁tryLock](#获取锁trylock)
                 - [解锁unlock](#解锁unlock)
@@ -64,11 +64,11 @@ public class RedisTool {
 
 * key，使用key来当锁，因为key是唯一的。  
 * value，传参requestId，代表执行的具体线程。  
-* ***nxxx，传参NX，意思是SET IF NOT EXIST，即当key不存在时，进行set操作；若key已经存在，则不做任何操作。***  
-* ***expx，传参PX，即给这个key加一个过期的设置，具体时间由第五个参数决定。***  
-* ***time，与第四个参数相呼应，代表key的过期时间。***  
+* ***<font color = "red">nxxx，传参NX，意思是SET IF NOT EXIST，即当key不存在时，进行set操作；若key已经存在，则不做任何操作。</font>***  
+* ***<font color = "red">expx，传参PX，即给这个key加一个过期的设置，具体时间由第五个参数决定。</font>***  
+* time，与第四个参数相呼应，代表key的过期时间。  
 
-&emsp; 执行上面的set()方法就只会导致两种结果：1).锁不存在，进行加锁操作，并对锁设置个有效期，同时value表示加锁的客户端；2).锁存在，不做任何操作。  
+&emsp; 执行上面的set()方法就只会导致两种结果：1. 锁不存在，进行加锁操作，并对锁设置个有效期，同时value表示加锁的客户端； 2. 锁存在，不做任何操作。  
 
 &emsp; 加锁中使用了redis的set命令。加锁涉及获取锁、加锁两步操作***最初分布式锁借助于setnx和expire命令***，但是这两个命令不是原子操作，如果执行setnx之后获取锁，但是此时客户端挂掉，这样无法执行expire设置过期时间就导致锁一直无法被释放，因此***在2.8版本中Antirez为setnx增加了参数扩展，使得setnx和expire具备原子操作性***。  
 
@@ -107,7 +107,7 @@ public class RedisTool {
 ```
 
 #### 1.2.1.2. ※※※集群redlock算法实现分布式锁  
-&emsp; Redis分布式锁官网中文地址：http://redis.cn/topics/distlock.html。 
+&emsp; Redis分布式锁官网中文地址：http://redis.cn/topics/distlock.html 。 
 
 &emsp; RedLock算法描述：假设Redis的部署模式是Redis Cluster，总共有5个Master节点。客户端通过以下步骤获取一把锁。  
 1. 获取当前时间戳，单位是毫秒。  
@@ -119,8 +119,8 @@ public class RedisTool {
 
 &emsp; <font color="red">一句话概述：当前线程尝试给每个Master节点加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。</font>  
 
-### 1.2.2. Redisson实现redis分布式锁  
-&emsp; 基于redis的分布式锁实现客户端Redisson，官方网址：https://redisson.org/。Redisson支持redis单实例、redis哨兵、redis cluster、redis master-slave等各种部署架构，都可以完美实现。  
+### 1.2.2. Redisson实现redis分布式锁-1  
+&emsp; 基于redis的分布式锁实现客户端Redisson，官方网址：https://redisson.org/ 。Redisson支持redis单实例、redis哨兵、redis cluster、redis master-slave等各种部署架构，都可以完美实现。  
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MzI5OTIyMjQxMA==&mid=2247485439&idx=1&sn=5eba3992109fadf245d7b56ff4a45635&chksm=ec98931adbef1a0c0ad4a4c309bfc3000bc6271e1739f3ecb79361ecbe18d399adb3ca628c56&scene=21#wechat_redirect
 
@@ -131,9 +131,9 @@ https://mp.weixin.qq.com/s/fuaUXuJbskqcFgsrwnPhZQ
 
 #### RedissonLock解析
 ##### 获取锁tryLock  
-&emsp; RedissonLock锁互斥机制、锁时间自动延迟机制、可重入加锁机制。  
+&emsp; ***<font color = "lime">RedissonLock锁互斥、锁时间自动延迟、可重入加锁。</font>***  
 
-```
+```java
 Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {
     internalLockLeaseTime = unit.toMillis(leaseTime);
     return commandExecutor.evalWriteAsync(getName(), LongCodec.INSTANCE, RedisCommands.EVAL_LONG,
@@ -191,6 +191,8 @@ return redis.call('pttl', KEYS[1]);
 &emsp; 锁存在, 但不是当前线程加的锁，则返回锁的过期时间。  
 
 ##### 解锁unlock  
+......
 
-##### 强制解锁forceUnlock  
+##### 强制解锁forceUnlock 
+...... 
 
