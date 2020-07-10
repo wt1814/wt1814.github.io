@@ -54,7 +54,7 @@ tags:
 ## 2.1. 数据类型介绍  
 &emsp; Redis属于<key,value\>形式的数据结构。key和value的最大长度限制是512M。  
 1. Redis的key是字符串类型，但是key中不能包括边界字符，不能空格和换行。  
-2. Redis的value支持五种基本数据类型<font color = "red">（注意是数据类型不是数据结构）</font>：String（字符串），Hash（哈希），List（列表），Set（集合）及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
+2. Redis的value支持五种基本数据类型<font color = "lime">（注意是数据类型不是数据结构）</font>：String（字符串），Hash（哈希），List（列表），Set（集合）及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
 3. Redis还有几种高级数据类型：bitmaps、HyperLogLog、geo、Streams（5.0最新版本数据结构）。  
 4. Redis提供插件功能使用布隆过滤器。  
 5. Redis内部采用对象系统RedisObject构建数据类型。  
@@ -88,15 +88,16 @@ typedef struct redisObject {
 ```
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-10.png)  
 * Type：是对象类型，代表一个value对象具体是何种数据类型，包括REDISSTRING, REDISLIST, REDISHASH, REDISSET和REDIS_ZSET。  
-* encoding是指对象使用的数据结构，是不同数据类型在redis内部的存储方式。Redis数据类型的底层实现如下：  
+* encoding是指对象使用的数据结构，是不同数据类型在redis内部的存储方式。<font color = "red">目前有8种数据结构：int、raw、embstr、、ziplist、hashtable、quicklist、intset、skiplist。</font>  
 
-    |Redis数据结构	|底层数据结构|
-    |---|---|
-    |String	|int、raw、embstr（即SDS）|
-    |Hash	|ziplist（压缩列表）或者hashtable（字典或者也叫哈希表）|
-    |List	|quicklist（快速列表，是ziplist压缩列表和linkedlist双端链表的组合）|
-    |Set	|intset（整数集合）或者hashtable（字典或者也叫哈希表）|
-    |ZSet	|ziplist（压缩列表）或者skiplist（跳跃表）|
+&emsp; <font color = "lime">Redis数据类型的底层实现如下：</font>  
+|Redis数据结构	|底层数据结构|
+|---|---|
+|String	|int、raw、embstr（即SDS）|
+|Hash	|ziplist（压缩列表）或者hashtable（字典或者也叫哈希表）|
+|List	|quicklist（快速列表，是ziplist压缩列表和linkedlist双端链表的组合）|
+|Set	|intset（整数集合）或者hashtable（字典或者也叫哈希表）|
+|ZSet	|ziplist（压缩列表）或者skiplist（跳跃表）|
 
 ## 2.4. String  
 &emsp; 可以用来存储字符串、整数、浮点数。   
@@ -161,7 +162,7 @@ typedef struct redisObject {
 
 ## 2.5. Hash  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-58.png)  
-&emsp; 存储键值对的无序散列表。  
+&emsp; Hash存储键值对的无序散列表。  
 
 &emsp; Hash 与 String同样是存储字符串，它们的主要区别：  
 1. 把所有相关的值聚集到一个 key 中，节省内存空间  
@@ -224,8 +225,7 @@ typedef struct redisObject {
 
 * 文章列表  
 &emsp; 每个用户有属于自己的文章列表，现需要分页展示文章列表。此时可以 考虑使用列表，因为列表不但是有序的，同时支持按照索引范围获取元素。  
-&emsp; 使用列表类型保存和获取文章列表会存在两个问题。第一，如果每次分 页获取的文章个数较多，需要执行多次hgetall操作，此时可以考虑使用 Pipeline批量获取，或者考虑将文章数据序列化为字符串类 型，使用mget批量获取。第二，分页获取文章列表时，lrange命令在列表两 端性能较好，但是如果列表较大，获取列表中间范围的元素性能会变差，此 时可以考虑将列表做二级拆分，或者使用Redis3.2的quicklist内部编码实现， 它结合ziplist和linkedlist的特点，获取列表中间范围的元素时也可以高效完成。  
-
+&emsp; 使用列表类型保存和获取文章列表会存在两个问题。第一，如果每次分页获取的文章个数较多，需要执行多次hgetall操作，此时可以考虑使用Pipeline批量获取，或者考虑将文章数据序列化为字符串类 型，使用mget批量获取。第二，分页获取文章列表时，lrange命令在列表两 端性能较好，但是如果列表较大，获取列表中间范围的元素性能会变差，此时可以考虑将列表做二级拆分，或者使用Redis3.2的quicklist内部编码实现，它结合ziplist和linkedlist的特点，获取列表中间范围的元素时也可以高效完成。  
 
 ### 2.6.3. 内部编码   
 &emsp; 在早期的版本中，数据量较小时用ziplist存储，达到临界值时转换为linkedlist进行存储。Redis3.2 版本之后，统一用 quicklist 来存储。  
