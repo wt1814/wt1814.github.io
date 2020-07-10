@@ -7,12 +7,12 @@ tags:
 
 <!-- TOC -->
 
-- [1. 前沿：网页流量统计里的PV、UV](#1-前沿网页流量统计里的pvuv)
+- [1. 前言：网页流量统计里的PV、UV](#1-前言网页流量统计里的pvuv)
 - [2. Bitmaps，位图](#2-bitmaps位图)
     - [2.1. 应用场景](#21-应用场景)
     - [2.2. 操作命令](#22-操作命令)
 - [3. HyperLogLog](#3-hyperloglog)
-    - [3.1. 基数统计](#31-基数统计)
+    - [3.1. HyperLogLog用作基数统计](#31-hyperloglog用作基数统计)
     - [3.2. HyperLogLog原理](#32-hyperloglog原理)
     - [3.3. HyperLogLog的使用](#33-hyperloglog的使用)
 - [4. Geospatial](#4-geospatial)
@@ -24,10 +24,12 @@ tags:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-73.png)  
 
 
-# 1. 前沿：网页流量统计里的PV、UV
+# 1. 前言：网页流量统计里的PV、UV
 &emsp; PV（Page View）访问量, 即页面浏览量或点击量，衡量网站用户访问的网页数量；在一定统计周期内用户每打开或刷新一个页面就记录1次，多次打开或刷新同一页面则浏览量累计。  
-&emsp; UV（Unique Visitor）独立访客，统计1天内访问某站点的用户数(以cookie为依据);访问网站的一台电脑客户端为一个访客。可以理解成访问某网站的电脑的数量。网站判断来访电脑的身份是通过来访电脑的cookies实现的。如果更换了IP后但不清除cookies，再访问相同网站，该网站的统计中UV数是不变的。如果用户不保存cookies访问、清除了cookies或者更换设备访问，计数会加1。00:00-24:00内相同的客户端多次访问只计为1个访客。 
+&emsp; UV（Unique Visitor）独立访客，统计1天内访问某站点的用户数(以cookie为依据)；访问网站的一台电脑客户端为一个访客。可以理解成访问某网站的电脑的数量。网站判断来访电脑的身份是通过来访电脑的cookies实现的。如果更换了IP后但不清除cookies，再访问相同网站，该网站的统计中UV数是不变的。如果用户不保存cookies访问、清除了cookies或者更换设备访问，计数会加1。00:00-24:00内相同的客户端多次访问只计为1个访客。 
     
+  
+ 
 --------------
 # 2. Bitmaps，位图  
 &emsp; Bitmaps 是在字符串类型上面定义的位操作。一个字节由 8 个二进制位组成。每个二进制位只能存储0或1。   
@@ -37,6 +39,10 @@ tags:
 
 * <font color = "red">各种实时分析，例如在线用户统计。</font>
 * <font color = "red">用户访问统计。</font>
+
+<!-- 
+如果统计 PV(浏览量，用户每点一次记录一次)，那非常好办，给每个页面配置一个独立的 Redis 计数器就可以了，把这个计数器的 key 后缀加上当天的日期。这样每来一个请求，就执行 INCRBY 指令一次，最终就可以统计出所有的 PV 数据了。
+-->
 <!-- 
 存储与对象ID关联的布尔信息。  
 &emsp; 例如，记录访问网站的用户的最长连续时间。开始计算从0开始的天数，就是网站公开的那天，每次用户访问网站时通过SETBIT命令设置bit为1，可以简单的用当前时间减去初始时间并除以3600*24（结果就是网站公开的第几天）当做这个bit的位置。  
@@ -77,16 +83,9 @@ tags:
 https://mp.weixin.qq.com/s/EF1cgBlJB3U37oZm3KgQvQ
 -->
 
- 
-
-## 3.1. 基数统计  
-&emsp; 基数统计(Cardinality Counting) 通常是用来统计一个集合中不重复的元素个数。  
-&emsp; 统计每个网页的 UV(独立访客，每个用户每天只记录一次) 。  
-
-    如果统计 PV(浏览量，用户没点一次记录一次)，那非常好办，给每个页面配置一个独立的 Redis 计数器就可以了，把这个计数器的 key 后缀加上当天的日期。这样每来一个请求，就执行 INCRBY 指令一次，最终就可以统计出所有的 PV 数据了。  
-    但是 UV 不同，它要去重，同一个用户一天之内的多次访问请求只能计数一次。这就要求了每一个网页请求都需要带上用户的 ID，无论是登录用户还是未登录的用户，都需要一个唯一 ID 来标识。  
-
-&emsp; HyperLogLog可用于基数统计。Hyper指的是超级。***<font color = "red">Hyperloglog提供不精确的去重计数功能。HyperLogLog适于做大规模数据的去重统计，例如统计 UV。</font>***     
+## 3.1. HyperLogLog用作基数统计  
+&emsp; 基数统计(Cardinality Counting) 通常是用来统计一个集合中不重复的元素个数。例如：***<font color = "red">统计每个网页的 UV(独立访客，每个用户每天只记录一次，需要对每天对浏览去重) 。</font>***  
+&emsp; HyperLogLog可用于基数统计。Hyper指的是超级。***<font color = "red">Hyperloglog提供不精确的去重计数功能，HyperLogLog适于做大规模数据的去重统计。</font>***     
 
 &emsp; ***HyperLogLog优点与缺点：***  
 
