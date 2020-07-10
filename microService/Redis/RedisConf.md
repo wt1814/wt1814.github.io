@@ -374,95 +374,57 @@ slowlog-max-len 128
 #  注意如果你不指定至少 K 或 E 之一，不会发送任何事件。
 notify-keyspace-events “”
 ##############################  高级配置  ###############################
-
 #  当 hash 中包含超过指定元素个数并且最大的元素没有超过临界时，
-
 # hash 将以一种特殊的编码方式（大大减少内存使用）来存储，这里可以设置这两个临界值
-
 # Redis Hash 对应 Value 内部实际就是一个 HashMap ，实际这里会有 2 种不同实现，
-
 #  这个 Hash 的成员比较少时 Redis 为了节省内存会采用类似一维数组的方式来紧凑存储，而不会采用真正的 HashMap 结构，对应的 valueredisObject 的 encoding 为 zipmap,
-
 #  当成员数量增大时会自动转成真正的 HashMap, 此时 encoding 为 ht 。
-
 hash-max-zipmap-entries 512
-
 hash-max-zipmap-value 64  
 
 #  和 Hash 一样，多个小的 list 以特定的方式编码来节省空间。
-
 # list 数据类型节点值大小小于多少字节会采用紧凑存储格式。
-
 list-max-ziplist-entries 512
-
 list-max-ziplist-value 64
 
 # set 数据类型内部数据如果全部是数值型，且包含多少节点以下会采用紧凑格式存储。
-
 set-max-intset-entries 512
 
 #  和 hashe 和 list 一样 , 排序的 set 在指定的长度内以指定编码方式存储以节省空间
-
 # zsort 数据类型节点值大小小于多少字节会采用紧凑存储格式。
-
 zset-max-ziplist-entries 128
-
 zset-max-ziplist-value 64
 
 # Redis 将在每 100 毫秒时使用 1 毫秒的 CPU 时间来对 redis 的 hash 表进行重新 hash ，可以降低内存的使用
-
 #  当你的使用场景中，有非常严格的实时性需要，不能够接受 Redis 时不时的对请求有 2 毫秒的延迟的话，把这项配置为 no 。
-
 #  如果没有这么严格的实时性要求，可以设置为 yes ，以便能够尽可能快的释放内存
-
 activerehashing yes
 
 # 客户端的输出缓冲区的限制，因为某种原因客户端从服务器读取数据的速度不够快，
-
 # 可用于强制断开连接（一个常见的原因是一个发布 / 订阅客户端消费消息的速度无法赶上生产它们的速度）。
-
 #  可以三种不同客户端的方式进行设置：
-
 # normal ->  正常客户端
-
 # slave  -> slave 和 MONITOR 客户端
-
 # pubsub ->  至少订阅了一个 pubsub channel 或 pattern 的客户端
-
 #  每个 client-output-buffer-limit 语法 :
-
 # client-output-buffer-limit   
 
 #  一旦达到硬限制客户端会立即断开，或者达到软限制并保持达成的指定秒数（连续）。
-
 #  例如，如果硬限制为 32 兆字节和软限制为 16 兆字节 /10 秒，客户端将会立即断开
-
 #  如果输出缓冲区的大小达到 32 兆字节，客户端达到 16 兆字节和连续超过了限制 10 秒，也将断开连接。
-
 #  默认 normal 客户端不做限制，因为他们在一个请求后未要求时（以推的方式）不接收数据，
-
 #  只有异步客户端可能会出现请求数据的速度比它可以读取的速度快的场景。
-
 #  把硬限制和软限制都设置为 0 来禁用该特性
-
 client-output-buffer-limit normal 0 0 0
-
 client-output-buffer-limit slave 256mb 64mb60
-
 client-output-buffer-limit pubsub 32mb 8mb60
 
-# Redis 调用内部函数来执行许多后台任务，如关闭客户端超时的连接，清除过期的 Key ，等等。
-
+#  Redis调用内部函数来执行许多后台任务，如关闭客户端超时的连接，清除过期的 Key ，等等。
 #  不是所有的任务都以相同的频率执行，但 Redis 依照指定的“ Hz ”值来执行检查任务。
-
 #  默认情况下，“ Hz ”的被设定为 10 。
-
 #  提高该值将在 Redis 空闲时使用更多的 CPU 时，但同时当有多个 key 同时到期会使 Redis 的反应更灵敏，以及超时可以更精确地处理。
-
 #  范围是 1 到 500 之间，但是值超过 100 通常不是一个好主意。
-
 #  大多数用户应该使用 10 这个预设值，只有在非常低的延迟的情况下有必要提高最大到 100 。
-
 hz 10  
 
 #  当一个子节点重写 AOF 文件时，如果启用下面的选项，则文件每生成 32M 数据进行同步。
