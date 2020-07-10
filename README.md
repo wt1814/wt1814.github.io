@@ -185,6 +185,8 @@
 [Redis基本数据类型](/microService/Redis/Redis数据结构及API.md)  
 &emsp; [Redis高级数据类型](/microService/Redis/Redis高级数据类型.md)  
 &emsp; [Redis的API](/microService/Redis/RedisAPI.md)  
+[Redis配置文件](/microService/Redis/RedisConf.md)  
+[Redis开发规范](/microService/Redis/RedisStandard.md)  
 [Redis原理](/microService/Redis/Redis原理.md)  
 &emsp; [Redis持久化](/microService/Redis/Redis持久化.md)  
 &emsp; [Redis淘汰策略](/microService/Redis/Redis淘汰.md)  
