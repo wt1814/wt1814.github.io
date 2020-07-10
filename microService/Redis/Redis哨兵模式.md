@@ -42,8 +42,6 @@ tags:
 * 哨兵节点：哨兵系统由若干个哨兵节点组成。其实哨兵节点是一个特殊的 Redis 节点，<font color="red">哨兵节点不存储数据的和仅支持部分命令。配节点数量要满足2n+1（n>=1）的奇数个。</font>  
 * 数据节点：由主节点和从节点组成的数据节点。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-27.png)  
-
 ## 1.2. 部署及故障转移演示    
 ......
 
@@ -53,7 +51,7 @@ tags:
 1. 每隔 10 秒，每个 Sentinel 节点会向已知的主从节点发送 info 命令获取最新的主从架构。下图是 info 命令的响应。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-46.png)  
 &emsp; Sentinel 节点通过解析响应信息，就可以知道当前 Redis 数据节点的最新拓扑结构。如果是新增的节点，Sentinel 就会与其建立连接。  
-2. 每隔 2 秒，Sentinel 节点都会向主从节点的 _sentinel_:hello 频道发送自己的信息。目的有两个：  
+2. 每隔 2 秒，Sentinel 节点都会向主从节点的 \_sentinel_:hello 频道发送自己的信息。目的有两个：  
 
     * 发现新的 Sentinel 节点  
     * Sentinel 节点之间交换主节点的状态，作为后面客观下线以及领导者选择的依据。  
@@ -87,7 +85,7 @@ tags:
 &emsp; 所以 A 会成为领导者，进行故障转移工作。一般来说，哨兵选择的过程很快，谁先完成客观下线，一般就能成为领导者。  
 
 ### 1.3.4. 故障转移  
-&emsp; 当某个 Sentinel 节点通过选举成为了领导者，则他就要承担起故障转移的工作，其具体步骤如下：  
+&emsp; 当某个 Sentinel 节点通过选举成为了领导者，则它要承担起故障转移的工作，其具体步骤如下：  
 1. 在从节点列表中选择一个节点作为新的主节点，选择的策略如下： 
     * 过滤掉不健康的节点（主观下线、断线），5 秒内没有回复过 Sentinel 节点 ping 响应、与主节点失联超过 down-after-milliseconds*10秒  
     * 选择优先级最高级别的节点，如果不存在则继续  
