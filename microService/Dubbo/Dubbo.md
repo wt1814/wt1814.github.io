@@ -39,7 +39,7 @@ tags:
 0. (start)服务容器Container负责启动，加载，运行服务提供者。  
 1. (register)服务提供者Provider在启动时，向注册中心注册服务。  
 2. (subscribe)服务消费者Consumer在启动时，向注册中心订阅服务。  
-3. <font color = "red">(notify)注册中心Registry返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。</font>  
+3. <font color = "red">(notify)注册中心Registry返回服务提供者地址列表给消费者，</font><font color = "lime">如果有变更，注册中心将基于长连接推送变更数据给消费者。</font>  
 4. <font color = "red">(invoke)服务消费者Consumer，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。</font>  
 5. (count)服务消费者Consumer和提供者Provider，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。  
 
@@ -80,16 +80,11 @@ tags:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-12.png)   
 
 ## 1.7. ※※※负载均衡  
-* Random（缺省）  
-&emsp; 随机，按权重设置随机概率。  
-&emsp; 在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。  
-* RoundRobin  
-&emsp; 轮循，按公约后的权重设置轮循比率。  
+* <font color = "red">Random（缺省），随机，按权重设置随机概率。</font>在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。  
+* <font color = "red">RoundRobin，轮循，按公约后的权重设置轮循比率。</font>  
 &emsp; 轮询负载均衡算法的不足：存在慢的提供者累积请求的问题，比如：第二台机器很慢，但没挂，当请求调到第二台时就卡在那，久而久之，所有请求都卡在调到第二台上。  
-* LeastActive  
-&emsp; 最少活跃调用数，相同活跃数的随机，活跃数指调用前后计数差。使慢的提供者收到更少请求，因为越慢的提供者的调用前后计数差会越大。  
-* ConsistentHash  
-&emsp; 分布式一致性 Hash算法。相同参数的请求总是发到同一提供者；当某一台提供者崩溃时，原本发往该提供者的请求，基于虚拟节点，平摊到其它提供者，不会引起剧烈变动。  
+* <font color = "red">LeastActive，最少活跃调用数，活跃数指调用前后计数差。</font>相同活跃数的随机。使慢的提供者收到更少请求，因为越慢的提供者的调用前后计数差会越大。  
+* <font color = "lime">ConsistentHash，分布式一致性Hash算法。</font>相同参数的请求总是发到同一提供者；当某一台提供者崩溃时，原本发往该提供者的请求，基于虚拟节点，平摊到其它提供者，不会引起剧烈变动。  
 
     * 缺省只对第一个参数Hash，如果要修改，请配置<dubbo:parameter key="hash.arguments" value="0,1" /\>  
     * 缺省用160份虚拟节点，如果要修改，请配置<dubbo:parameter key="hash.nodes" value="320" /\>  
@@ -97,7 +92,7 @@ tags:
 ## 1.8. ※※※集群容错策略  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-13.png)   
 
-&emsp; 在集群调用失败时，Dubbo 提供了多种容错方案，缺省为 failover 重试。下面列举dubbo支持的容错策略：  
+&emsp; <font color = "red">在集群调用失败时，Dubbo 提供了多种容错方案，缺省为 failover 重试。</font>下面列举dubbo支持的容错策略：  
 
 * Failover（默认） - 失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过 retries="2" 来设置重试次数(不含第一次)  
 * Failfast - 快速失败，只发起一次调用，失败立即报错。通常用于非幂等性的写操作，比如新增记录。
