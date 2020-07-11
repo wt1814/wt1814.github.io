@@ -174,6 +174,11 @@
 [Spring Cloud Feign](/microService/SpringCloudNetflix/4.Feign.md)  
 [Spring Cloud Zuul](/microService/SpringCloudNetflix/5.Zuul.md)  
 [Spring Cloud Sleuth](/microService/SpringCloudNetflix/6.Sleuth.md)  
+<!-- 
+[Spring Cloud Config]  
+[Spring Cloud Bus]  
+[Spring Cloud Security]  
+-->
 [Spring Boot Admin](/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
 
 ### Dubbo  
