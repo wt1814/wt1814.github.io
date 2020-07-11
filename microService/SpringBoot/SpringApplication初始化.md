@@ -193,7 +193,7 @@ public enum WebApplicationType {
 &emsp; 这个就是根据类路径下是否有对应项目类型的类推断出不同的应用类型。  
 
 ### 2.1.2. 设置应用上下文初始化器（SpringBoot的SPI机制原理）  
-&emsp; <font color = "red">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制]()来加载扩展实现类。</font>  
+&emsp; <font color = "red">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](../../java/basis/SPI.md)来加载扩展实现类。</font>  
 
 &emsp; ***<font color = "lime">SpringBoot通过以下步骤实现自己的SPI机制：</font>***  
 1. 首先获取线程上下文类加载器;  
