@@ -1,5 +1,5 @@
 ---
-title: SpringBoot自动配置原理
+title: SpringBoot自动配置原理-@SpringBootApplication
 date: 2020-04-13 00:00:00
 tags:
     - SpringBoot
