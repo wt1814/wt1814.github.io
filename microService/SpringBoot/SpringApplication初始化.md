@@ -10,7 +10,7 @@ tags:
 - [1. Spring Boot启动全过程源码分析](#1-spring-boot启动全过程源码分析)
 - [2. SpringApplication初始化](#2-springapplication初始化)
     - [2.1. 主要流程解析](#21-主要流程解析)
-        - [2.1.1. 推断当前 WEB 应用类型](#211-推断当前-web-应用类型)
+        - [2.1.1. 推断当前WEB应用类型](#211-推断当前web应用类型)
         - [2.1.2. 设置应用上下文初始化器（SpringBoot的SPI机制原理）](#212-设置应用上下文初始化器springboot的spi机制原理)
             - [2.1.2.1. 获得类加载器](#2121-获得类加载器)
             - [2.1.2.2. 加载spring.factories配置文件中的SPI扩展类](#2122-加载springfactories配置文件中的spi扩展类)
@@ -19,17 +19,28 @@ tags:
 
 <!-- /TOC -->
 
-<!-- 
+<!--
+SpringBoot2.1源码分析大纲
 https://mp.weixin.qq.com/s/lpWB9kWgN_QKkLaBmsAhkA
+如何搭建自己的SpringBoot源码调试环境？--SpringBoot源码（一）
 https://mp.weixin.qq.com/s/Cu8MSQ0Ap47qoseY09gTMw
+如何分析SpringBoot源码模块及结构？--SpringBoot源码（二）
 https://mp.weixin.qq.com/s/VJ_9y02kbkeGvkscbKTRdQ
+助力SpringBoot自动配置的条件注解ConditionalOnXXX分析--SpringBoot源码（三）
 https://mp.weixin.qq.com/s/tRKfC4HNMwPUI7Qg9Zb5Dw
+SpringBoot是如何实现自动配置的？--SpringBoot源码（四）
 https://mp.weixin.qq.com/s/HMJEWSq4Uq3LGRtnvmxtiQ
+外部配置属性值是如何被绑定到XxxProperties类属性上的？--SpringBoot源码（五）
 https://mp.weixin.qq.com/s/SPLG9maFJXRQjfWkI-YqTw
+SpringBoot内置的各种Starter是怎样构建的？--SpringBoot源码（六）
 https://mp.weixin.qq.com/s/GonzSloR3QQQygMzDypMZQ
+SpringBoot的启动流程是怎样的？SpringBoot源码（七）
 https://mp.weixin.qq.com/s/_4ioaqAJBtPhuHVa98shBQ
+SpringApplication对象是如何构建的？ SpringBoot源码（八）
 https://mp.weixin.qq.com/s/szt8l6IbmjKnyRItQTjJCA
+SpringBoot事件监听机制源码分析(上) SpringBoot源码(九)
 https://mp.weixin.qq.com/s/220rJiWAZg5Z3iY7VpmkUw
+SpringBoot内置生命周期事件详解 SpringBoot源码(十)
 https://mp.weixin.qq.com/s/bLqWb6bc2ki3mKbfFqm0vg
 -->
 
@@ -51,17 +62,17 @@ public static ConfigurableApplicationContext run(Class<?>[] primarySources, Stri
     return (new SpringApplication(primarySources)).run(args);
 }
 ```
-&emsp; SpringApplication.run()中首先new SpringApplication对象，然后调用该对象的run方法。即run()方法主要包括两大步骤：  
+&emsp; SpringApplication.run()中首先new SpringApplication对象，然后调用该对象的run方法。<font color = "red">即run()方法主要包括两大步骤：</font>  
 1. 创建SpringApplication 对象；  
 2. 运行run()方法。  
 
 # 2. SpringApplication初始化  
 <!-- https://mp.weixin.qq.com/s/JcMRo6xuDEimKk-KZDKJ1g-->
 
-&emsp; 构造过程一般是对构造函数一些成员属性赋值。  
+&emsp; ***<font color = "red">构造过程一般是对构造函数的一些成员属性赋值。</font>***  
 &emsp; 构造SpringApplication对象时需要用到的一些成员属性：  
 
-```
+```java
 // SpringApplication.java
 
 /**
@@ -105,24 +116,22 @@ public SpringApplication(ResourceLoader resourceLoader, Class... primarySources)
     this.registerShutdownHook = true;
     this.additionalProfiles = new HashSet();
     this.isCustomEnvironment = false;
-    //1. 给resourceLoader属性赋值，注意传入的resourceLoader参数为null
+    //【1】 给resourceLoader属性赋值，注意传入的resourceLoader参数为null
     this.resourceLoader = resourceLoader;
     //断言主要加载资源类不能为 null，否则报错
     Assert.notNull(primarySources, "PrimarySources must not be null");
-    //2. 初始化主要加载资源类集合并去重
-    	// 【2】给primarySources属性赋值，传入的primarySources其实就是SpringApplication.run(MainApplication.class, args);中的MainApplication.class
+    //【2】初始化主要加载资源类集合并去重
+    	// 给primarySources属性赋值，传入的primarySources其实就是SpringApplication.run(MainApplication.class, args);中的MainApplication.class
     this.primarySources = new LinkedHashSet(Arrays.asList(primarySources));
-    //3. 判断当前是否是一个 Web 应用
+    //【3】判断当前是否是一个 Web 应用
     this.webApplicationType = WebApplicationType.deduceFromClasspath();
-    //4. 设置应用上下文初始化器
-    // 从类路径下找到 META/INF/Spring.factories 配置的所有 ApplicationContextInitializer，然后保存起来
-    	// 【4】给initializers属性赋值，利用SpringBoot自定义的SPI从spring.factories中加载ApplicationContextInitializer接口的实现类并赋值给initializers属性
+    //【4】设置应用上下文初始化器
+    	//给initializers属性赋值，利用SpringBoot自定义的SPI从spring.factories中加载ApplicationContextInitializer接口的实现类并赋值给initializers属性
     this.setInitializers(this.getSpringFactoriesInstances(ApplicationContextInitializer.class));
-    //5. 设置监听器
-    // 从类路径下找到 META/INF/Spring.factories 配置的所有 ApplicationListener，然后保存起来
-    	// 【5】给listeners属性赋值，利用SpringBoot自定义的SPI从spring.factories中加载ApplicationListener接口的实现类并赋值给listeners属性
+    //【5】设置监听器
+    	// 给listeners属性赋值，利用SpringBoot自定义的SPI从spring.factories中加载ApplicationListener接口的实现类并赋值给listeners属性
     this.setListeners(this.getSpringFactoriesInstances(ApplicationListener.class));
-    //6. 推断主入口应用类。从多个配置类中找到有 main 方法的主配置类（只有一个）
+    //【6】推断主入口应用类。从多个配置类中找到有 main 方法的主配置类（只有一个）
     this.mainApplicationClass = this.deduceMainApplicationClass();
 }
 ```
@@ -137,7 +146,7 @@ public SpringApplication(ResourceLoader resourceLoader, Class... primarySources)
 ## 2.1. 主要流程解析  
 &emsp; 从上述流程中，挑以下几个进行分析。  
 
-### 2.1.1. 推断当前 WEB 应用类型  
+### 2.1.1. 推断当前WEB应用类型  
 
 ```java
 this.webApplicationType = deduceWebApplicationType();
@@ -184,14 +193,13 @@ public enum WebApplicationType {
 &emsp; 这个就是根据类路径下是否有对应项目类型的类推断出不同的应用类型。  
 
 ### 2.1.2. 设置应用上下文初始化器（SpringBoot的SPI机制原理）  
-&emsp; <font color = "red">SpringApplication初始化中第【4】步和第【5】步都是利用SpringBoot的SPI机制来加载扩展实现类。</font>  
+&emsp; <font color = "red">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制]()来加载扩展实现类。</font>  
 
-&emsp; ***<font color = "red">SpringBoot通过以下步骤实现自己的SPI机制：</font>***  
+&emsp; ***<font color = "lime">SpringBoot通过以下步骤实现自己的SPI机制：</font>***  
 1. 首先获取线程上下文类加载器;  
 2. 然后利用上下文类加载器从spring.factories配置文件中加载所有的SPI扩展实现类并放入缓存中;  
 3. 根据SPI接口从缓存中取出相应的SPI扩展实现类;  
 4. 实例化从缓存中取出的SPI扩展实现类并返回。  
-
 
 &emsp; ***设置应用上下文初始化器源码解读：***  
 
@@ -201,32 +209,31 @@ this.setInitializers(this.getSpringFactoriesInstances(ApplicationContextInitiali
 1. 参数ApplicationContextInitializer.class用来初始化指定的 Spring 应用上下文，如注册属性资源、激活 Profiles 等。  
 2. this.getSpringFactoriesInstances()方法和相关的源码：  
 
+	```java
+	// SpringApplication.java
+	private <T> Collection<T> getSpringFactoriesInstances(Class<T> type) {
+		return this.getSpringFactoriesInstances(type, new Class[0]);
+	}
 
-```java
-// SpringApplication.java
-private <T> Collection<T> getSpringFactoriesInstances(Class<T> type) {
-    return this.getSpringFactoriesInstances(type, new Class[0]);
-}
-
-private <T> Collection<T> getSpringFactoriesInstances(Class<T> type,
-		Class<?>[] parameterTypes, Object... args) {
-	// 【1】获取当前线程上下文类加载器
-	ClassLoader classLoader = getClassLoader();
-	// 【2】将接口类型和类加载器作为参数传入loadFactoryNames方法，从spring.factories配置文件中进行加载接口实现类
-			//根据类路径下的 META-INF/spring.factories 文件解析并获取 ApplicationContextInitializer 的实例名称集合并去重
-	Set<String> names = new LinkedHashSet<>(
-			SpringFactoriesLoader.loadFactoryNames(type, classLoader));
-	// 【3】实例化从spring.factories中加载的接口实现类
-	List<T> instances = createSpringFactoriesInstances(type, parameterTypes,
-			classLoader, args, names);
-	// 【4】初始化器实例列表进行排序
-	AnnotationAwareOrderComparator.sort(instances);
-	// 【5】返回加载并实例化好的接口实现类
-	return instances;
-}
-```
-&emsp; SpringBoot自定义实现的SPI机制代码中最重要的是上面代码的【1】,【2】,【3】步。  
-<!-- https://mp.weixin.qq.com/s/szt8l6IbmjKnyRItQTjJCA -->  
+	private <T> Collection<T> getSpringFactoriesInstances(Class<T> type,
+			Class<?>[] parameterTypes, Object... args) {
+		// 【1】获取当前线程上下文类加载器
+		ClassLoader classLoader = getClassLoader();
+		// 【2】将接口类型和类加载器作为参数传入loadFactoryNames方法，从spring.factories配置文件中进行加载接口实现类
+				//根据类路径下的 META-INF/spring.factories 文件解析并获取 ApplicationContextInitializer 的实例名称集合并去重
+		Set<String> names = new LinkedHashSet<>(
+				SpringFactoriesLoader.loadFactoryNames(type, classLoader));
+		// 【3】实例化从spring.factories中加载的接口实现类
+		List<T> instances = createSpringFactoriesInstances(type, parameterTypes,
+				classLoader, args, names);
+		// 【4】初始化器实例列表进行排序
+		AnnotationAwareOrderComparator.sort(instances);
+		// 【5】返回加载并实例化好的接口实现类
+		return instances;
+	}
+	```
+	&emsp; SpringBoot自定义实现的SPI机制代码中最重要的是上面代码的【1】,【2】,【3】步。  
+	<!-- https://mp.weixin.qq.com/s/szt8l6IbmjKnyRItQTjJCA -->  
 
 
 <!--
@@ -254,7 +261,7 @@ private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] 
 &emsp; Java的SPI机制默认是利用线程上下文类加载器去加载扩展类的。那么，SpringBoot实现的SPI机制是利用哪种类加载器去加载spring.factories配置文件中的扩展实现类的？  
 &emsp; ClassLoader classLoader = getClassLoader()解读：  
 
-```
+```java
 // SpringApplication.java
 
 public ClassLoader getClassLoader() {
@@ -267,7 +274,7 @@ public ClassLoader getClassLoader() {
 }
 ```
 
-```
+```java
 // ClassUtils.java
 
 public static ClassLoader getDefaultClassLoader() {
@@ -300,7 +307,7 @@ public static ClassLoader getDefaultClassLoader() {
 &emsp; SpringBoot的SPI机制中也是用线程上下文类加载器去加载spring.factories文件中的扩展实现类的！  
 
 #### 2.1.2.2. 加载spring.factories配置文件中的SPI扩展类  
-&emsp; SpringFactoriesLoader.loadFactoryNames(type, classLoader)是如何加载spring.factories配置文件中的SPI扩展类的？   
+&emsp; ***<font color = "lime">SpringFactoriesLoader.loadFactoryNames(type, classLoader)是如何加载spring.factories配置文件中的SPI扩展类的？</font>***   
 
 ```java
 / SpringFactoriesLoader.java
@@ -365,7 +372,7 @@ private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoad
 	}
 }
 ```
-&emsp; loadSpringFactories方法主要做的事情就是利用之前获取的线程上下文类加载器将classpath中的所有spring.factories配置文件中所有SPI接口的所有扩展实现类给加载出来，然后放入缓存中。注意，这里是一次性加载所有的SPI扩展实现类哈，所以之后根据SPI接口就直接从缓存中获取SPI扩展类了，就不用再次去spring.factories配置文件中获取SPI接口对应的扩展实现类了。比如之后的获取ApplicationListener,FailureAnalyzer和EnableAutoConfiguration接口的扩展实现类都直接从缓存中获取即可。  
+&emsp; loadSpringFactories方法主要做的事情就是利用之前获取的线程上下文类加载器将classpath中的所有spring.factories配置文件中所有SPI接口的所有扩展实现类给加载出来，然后放入缓存中。注意，这里是一次性加载所有的SPI扩展实现类，所以之后根据SPI接口就直接从缓存中获取SPI扩展类了，就不用再次去spring.factories配置文件中获取SPI接口对应的扩展实现类了。比如之后的获取ApplicationListener,FailureAnalyzer和EnableAutoConfiguration接口的扩展实现类都直接从缓存中获取即可。  
 
 &emsp; 将所有的SPI扩展实现类加载出来后，此时再调用getOrDefault(factoryClassName, Collections.emptyList())方法根据SPI接口名去筛选当前对应的扩展实现类，比如这里传入的factoryClassName参数名为ApplicationContextInitializer接口，那么这个接口将会作为key从刚才缓存数据中取出ApplicationContextInitializer接口对应的SPI扩展实现类。其中从spring.factories中获取的ApplicationContextInitializer接口对应的所有SPI扩展实现类如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-5.png)  
@@ -374,7 +381,7 @@ private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoad
 &emsp; 从spring.factories中获取到ApplicationContextInitializer接口对应的所有SPI扩展实现类后，此时会将这些SPI扩展类进行实例化。  
 &emsp; List<T\> instances = createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names)实例化SPI扩展类，代码解读：  
 
-```
+```java
 // SpringApplication.java
 
 private <T> List<T> createSpringFactoriesInstances(Class<T> type,

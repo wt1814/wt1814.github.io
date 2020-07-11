@@ -10,8 +10,8 @@ tags:
 - [2. @ComponentScan](#2-componentscan)
 - [3. @SpringBootConfiguration](#3-springbootconfiguration)
 - [4. @EnableAutoConfiguration](#4-enableautoconfiguration)
-    - [4.1. AutoConfigurationImportSelector.getCandidateConfigurations()方法](#41-autoconfigurationimportselectorgetcandidateconfigurations方法)
-        - [4.1.1. loadSpringFactories()方法](#411-loadspringfactories方法)
+    - [4.1. AutoConfigurationImportSelector.getCandidateConfigurations()方法-1](#41-autoconfigurationimportselectorgetcandidateconfigurations方法-1)
+        - [4.1.1. loadSpringFactories()方法-1](#411-loadspringfactories方法-1)
             - [4.1.1.1. spring.factories、@ConditionOnxxx注解和spring.provides](#4111-springfactoriesconditiononxxx注解和springprovides)
 
 <!-- /TOC -->
@@ -69,7 +69,7 @@ public @interface ComponentScan {
 public @interface SpringBootConfiguration {
 }
 ```
-&emsp; <font color = "red">SpringBootConfiguration其实就携带了一个@Configuration注解，代表自己是一个Spring的配置类。</font>即@SpringBootConfiguration = @Configuration。  
+&emsp; <font color = "red">SpringBootConfiguration其实就携带了一个@Configuration注解，代表类是一个Spring的配置类。</font>  
 
 # 4. @EnableAutoConfiguration  
 &emsp; <font color = "red">@EnableAutoConfiguration使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。</font>  
@@ -87,7 +87,7 @@ public @interface EnableAutoConfiguration {
 }
 ```
 &emsp; <font color = "red">@AutoConfigurationPackage注解将主配置类（@SpringBootConfiguration标注的类）的所在包及下面所有子包里面的所有组件扫描到Spring容器中。</font>  
-&emsp; <font color = "red">@Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。AutoConfigurationImportSelector类中存在一个方法可以获取所有的配置。</font>源码如下：  
+&emsp; <font color = "lime">@Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。AutoConfigurationImportSelector类中存在一个方法可以获取所有的配置。</font>源码如下：  
 
 ```java
 /*
@@ -98,7 +98,7 @@ public @interface EnableAutoConfiguration {
 List<String> configurations = getCandidateConfigurations(annotationMetadata, attributes);
 ```
 
-## 4.1. AutoConfigurationImportSelector.getCandidateConfigurations()方法  
+## 4.1. AutoConfigurationImportSelector.getCandidateConfigurations()方法-1  
 &emsp; <font color = "red">AutoConfigurationImportSelector#getCandidateConfigurations()方法获取所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude掉的配置，才得到最终的配置类名集合。</font>源码如下：  
 
 ```java
@@ -111,7 +111,7 @@ protected List<String> getCandidateConfigurations(AnnotationMetadata metadata, A
 ```
 &emsp; SpringFactoriesLoader.loadFactoryNames()方法，调用了本类中loadSpringFactories()方法来获取配置信息。  
 
-### 4.1.1. loadSpringFactories()方法  
+### 4.1.1. loadSpringFactories()方法-1  
 
 ```java
 private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoader classLoader) {
@@ -160,7 +160,7 @@ private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoad
 &emsp; 里面包含了很多自动配置属性。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-2.png)  
 
-&emsp; <font color = "red">spring.factories中的配置，不是全量加载。例如：***查看WebMvcAutoConfiguration源码，是否加载是通过@ConditionalOnClass注解进行判断条件是否成立来判断。*** </font>  
+&emsp; <font color = "red">spring.factories中的配置，不是全量加载。例如：查看WebMvcAutoConfiguration源码，</font> <font color = "lime">是否加载是通过@ConditionalOnClass注解进行判断条件是否成立来判断。</font>  
 
 ```java
 @Configuration(

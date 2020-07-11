@@ -8,10 +8,6 @@ tags:
 <!-- TOC -->
 
 - [1. SpringApplication实例run()方法运行过程](#1-springapplication实例run方法运行过程)
-    - [1.1. 关键流程解析](#11-关键流程解析)
-        - [1.1.1. 步骤3：设置系统属性java.awt.headless的值](#111-步骤3设置系统属性javaawtheadless的值)
-        - [1.1.2. 步骤6：根据运行监听器和应用参数来准备 Spring 环境](#112-步骤6根据运行监听器和应用参数来准备-spring-环境)
-        - [1.1.3. 步骤8：准备应用上下文](#113-步骤8准备应用上下文)
 
 <!-- /TOC -->
 
@@ -89,7 +85,7 @@ public ConfigurableApplicationContext run(String... args) {
 ```
 -->
 
-```
+```java
 // SpringApplication.java
 
 public ConfigurableApplicationContext run(String... args) {
@@ -104,10 +100,10 @@ public ConfigurableApplicationContext run(String... args) {
 	// 其实是想设置该应用程序,即使没有检测到显示器,也允许其启动.对于服务器来说,是不需要显示器的,所以要这样设置.
 	configureHeadlessProperty();
 	// 【1】从spring.factories配置文件中加载到EventPublishingRunListener对象并赋值给SpringApplicationRunListeners
-	// EventPublishingRunListener对象主要用来发射SpringBoot启动过程中内置的一些生命周期事件，标志每个不同启动阶段
+	// EventPublishingRunListener对象主要用来发布SpringBoot启动过程中内置的一些生命周期事件，标志每个不同启动阶段
 	SpringApplicationRunListeners listeners = getRunListeners(args);
 	// 启动SpringApplicationRunListener的监听，表示SpringApplication开始启动。
-	// 》》》》》发射【ApplicationStartingEvent】事件
+	// 》》》》》发布【ApplicationStartingEvent】事件
 	listeners.starting();
 	try {
 		// 创建ApplicationArguments对象，封装了args参数
@@ -115,7 +111,7 @@ public ConfigurableApplicationContext run(String... args) {
 				args);
 		// 【2】准备环境变量，包括系统变量，环境变量，命令行参数，默认变量，servlet相关配置变量，随机值，
 		// JNDI属性值，以及配置文件（比如application.properties）等，注意这些环境变量是有优先级的
-		// 》》》》》发射【ApplicationEnvironmentPreparedEvent】事件
+		// 》》》》》发布【ApplicationEnvironmentPreparedEvent】事件
 		ConfigurableEnvironment environment = prepareEnvironment(listeners,
 				applicationArguments);
 		// 配置spring.beaninfo.ignore属性，默认为true，即跳过搜索BeanInfo classes.
@@ -134,10 +130,10 @@ public ConfigurableApplicationContext run(String... args) {
 		// 1）为AnnotationConfigServletWebServerApplicationContext的属性AnnotatedBeanDefinitionReader和ClassPathBeanDefinitionScanner设置environgment属性
 		// 2）根据情况对ApplicationContext应用一些相关的后置处理，比如设置resourceLoader属性等
 		// 3）在容器刷新前调用各个ApplicationContextInitializer的初始化方法，ApplicationContextInitializer是在构建SpringApplication对象时从spring.factories中加载的
-		// 4）》》》》》发射【ApplicationContextInitializedEvent】事件，标志context容器被创建且已准备好
+		// 4）》》》》》发布【ApplicationContextInitializedEvent】事件，标志context容器被创建且已准备好
 		// 5）从context容器中获取beanFactory，并向beanFactory中注册一些单例bean，比如applicationArguments，printedBanner
 		// 6）TODO 加载bean到application context，注意这里只是加载了部分bean比如mainApplication这个bean，大部分bean应该是在AbstractApplicationContext.refresh方法中被加载？这里留个疑问先
-		// 7）》》》》》发射【ApplicationPreparedEvent】事件，标志Context容器已经准备完成
+		// 7）》》》》》发布【ApplicationPreparedEvent】事件，标志Context容器已经准备完成
 		prepareContext(context, environment, listeners, applicationArguments,
 				printedBanner);
 		// 【7】刷新容器，这一步至关重要，以后会在分析Spring源码时详细分析，主要做了以下工作：
@@ -165,23 +161,23 @@ public ConfigurableApplicationContext run(String... args) {
 			new StartupInfoLogger(this.mainApplicationClass)
 					.logStarted(getApplicationLog(), stopWatch);
 		}
-		// 》》》》》发射【ApplicationStartedEvent】事件，标志spring容器已经刷新，此时所有的bean实例都已经加载完毕
+		// 》》》》》发布【ApplicationStartedEvent】事件，标志spring容器已经刷新，此时所有的bean实例都已经加载完毕
 		listeners.started(context);
 		// 【9】调用ApplicationRunner和CommandLineRunner的run方法，实现spring容器启动后需要做的一些东西比如加载一些业务数据等
 		callRunners(context, applicationArguments);
 	}
 	// 【10】若启动过程中抛出异常，此时用FailureAnalyzers来报告异常
-	// 并》》》》》发射【ApplicationFailedEvent】事件，标志SpringBoot启动失败
+	// 并》》》》》发布【ApplicationFailedEvent】事件，标志SpringBoot启动失败
 	catch (Throwable ex) {
 		handleRunFailure(context, ex, exceptionReporters, listeners);
 		throw new IllegalStateException(ex);
 	}
 
 	try {
-		// 》》》》》发射【ApplicationReadyEvent】事件，标志SpringApplication已经正在运行即已经成功启动，可以接收服务请求了。
+		// 》》》》》发布【ApplicationReadyEvent】事件，标志SpringApplication已经正在运行即已经成功启动，可以接收服务请求了。
 		listeners.running(context);
 	}
-	// 若出现异常，此时仅仅报告异常，而不会发射任何事件
+	// 若出现异常，此时仅仅报告异常，而不会发布任何事件
 	catch (Throwable ex) {
 		handleRunFailure(context, ex, exceptionReporters, null);
 		throw new IllegalStateException(ex);
@@ -190,48 +186,52 @@ public ConfigurableApplicationContext run(String... args) {
 	return context;
 }
 ```
-&emsp; 主要步骤总结如下：  
-1. 从spring.factories配置文件中加载EventPublishingRunListener对象，该对象拥有SimpleApplicationEventMulticaster属性，即在SpringBoot启动过程的不同阶段用来发射内置的生命周期事件;  
+&emsp; ***<font color = "red">主要步骤总结如下：</font>***  
+1. 从spring.factories配置文件中加载EventPublishingRunListener对象，该对象拥有SimpleApplicationEventMulticaster属性，即在SpringBoot启动过程的不同阶段用来发布内置的生命周期事件;  
 2. 准备环境变量，包括系统变量，环境变量，命令行参数，默认变量，servlet相关配置变量，随机值以及配置文件（比如application.properties）等;
 3. 控制台打印SpringBoot的bannner标志；  
 4. 根据不同类型环境创建不同类型的applicationcontext容器，因为这里是servlet环境，所以创建的是AnnotationConfigServletWebServerApplicationContext容器对象；  
 5. 从spring.factories配置文件中加载FailureAnalyzers对象,用来报告SpringBoot启动过程中的异常；  
-6. 为刚创建的容器对象做一些初始化工作，准备一些容器属性值等，对ApplicationContext应用一些相关的后置处理和调用各个ApplicationContextInitializer的初始化方法来执行一些初始化逻辑等；  
+6. <font color = "red">为刚创建的容器对象做一些初始化工作，准备一些容器属性值等，对ApplicationContext应用一些相关的后置处理和调用各个ApplicationContextInitializer的初始化方法来执行一些初始化逻辑等；</font>  
 7. 刷新容器，重要的一步。<font color = "red">比如调用bean factory的后置处理器，注册BeanPostProcessor后置处理器，初始化事件广播器且广播事件，初始化剩下的单例bean和SpringBoot创建内嵌的Tomcat服务器等等重要且复杂的逻辑都在这里实现；</font>  
-8. 执行刷新容器后的后置处理逻辑，注意这里为空方法；  
-9. 调用ApplicationRunner和CommandLineRunner的run方法，我们实现这两个接口可以在spring容器启动后需要的一些东西比如加载一些业务数据等;  
+8. <font color = "red">执行刷新容器后的后置处理逻辑，注意这里为空方法；</font>  
+9. <font color = "red">调用ApplicationRunner和CommandLineRunner的run方法，实现这两个接口可以在spring容器启动后需要的一些东西，比如加载一些业务数据等; </font> 
 10. 报告启动异常，即若启动过程中抛出异常，此时用FailureAnalyzers来报告异常;  
 11. 最终返回容器对象，这里调用方法没有声明对象来接收。  
 
-        将关键步骤再浓缩总结下：  
-        1. 构建SpringApplication对象，用于启动SpringBoot；  
-        2. 从spring.factories配置文件中加载EventPublishingRunListener对象用于在不同的启动阶段发射不同的生命周期事件；  
-        3. 准备环境变量，包括系统变量，环境变量，命令行参数及配置文件（比如application.properties）等；  
-        4. 创建容器ApplicationContext;  
-        5. 为第4步创建的容器对象做一些初始化工作，准备一些容器属性值等，同时调用各个ApplicationContextInitializer的初始化方法来执行一些初始化逻辑等；  
-        6. 刷新容器，这一步至关重要，是重点中的重点，太多复杂逻辑在这里实现；  
-        7. 调用ApplicationRunner和CommandLineRunner的run方法，可以实现这两个接口在容器启动后来加载一些业务数据等;  
+&emsp; ***<font color = "lime">将关键步骤再浓缩总结下：</font>***  
+1. 构建SpringApplication对象，用于启动SpringBoot；  
+2. 从spring.factories配置文件中加载EventPublishingRunListener对象用于在不同的启动阶段发布不同的生命周期事件；  
+3. 准备环境变量，包括系统变量，环境变量，命令行参数及配置文件（比如application.properties）等；  
+4. 创建容器ApplicationContext;  
+5. 为第4步创建的容器对象做一些初始化工作，准备一些容器属性值等，同时调用各个ApplicationContextInitializer的初始化方法来执行一些初始化逻辑等；  
+6. 刷新容器，这一步至关重要，是重点中的重点，太多复杂逻辑在这里实现；  
+7. 调用ApplicationRunner和CommandLineRunner的run方法，可以实现这两个接口在容器启动后来加载一些业务数据等;  
 
 
-&emsp; <font color = "red">在SpringBoot启动过程中，每个不同的启动阶段会分别发射不同的内置生命周期事件。</font>比如在准备environment前会发射ApplicationStartingEvent事件，在environment准备好后会发射ApplicationEnvironmentPreparedEvent事件，在刷新容器前会发射ApplicationPreparedEvent事件等，总之SpringBoot总共内置了7个生命周期事件，除了标志SpringBoot的不同启动阶段外。<font color = "red">同时一些监听器也会监听相应的生命周期事件从而执行一些启动初始化逻辑。</font>比如ConfigFileApplicationListener会监听onApplicationEnvironmentPreparedEvent事件来加载环境变量等。  
+&emsp; <font color = "red">在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件。</font>比如在准备environment前会发布ApplicationStartingEvent事件，在environment准备好后会发布ApplicationEnvironmentPreparedEvent事件，在刷新容器前会发布ApplicationPreparedEvent事件等，总之SpringBoot总共内置了7个生命周期事件，除了标志SpringBoot的不同启动阶段外。<font color = "red">同时一些监听器也会监听相应的生命周期事件从而执行一些启动初始化逻辑。</font>比如ConfigFileApplicationListener会监听onApplicationEnvironmentPreparedEvent事件来加载环境变量等。  
 <!-- 
-&emsp; 在SpringBoot启动过程中，每个不同的启动阶段会分别发射不同的内置生命周期事件，然后相应的监听器会监听这些事件来执行一些初始化逻辑工作比如ConfigFileApplicationListener会监听onApplicationEnvironmentPreparedEvent事件来加载环境变量等。  
+&emsp; 在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件，然后相应的监听器会监听这些事件来执行一些初始化逻辑工作比如ConfigFileApplicationListener会监听onApplicationEnvironmentPreparedEvent事件来加载环境变量等。  
 -->
-    run() 阶段主要是回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到 IOC 容器中，而所有需要回调的监听器都是从类路径下的 META/INF/Spring.factories 中获取，从而达到启动前后的各种定制操作。  
 
-## 1.1. 关键流程解析  
+~~run() 阶段主要是回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到 IOC 容器中，而所有需要回调的监听器都是从类路径下的 META/INF/Spring.factories 中获取，从而达到启动前后的各种定制操作。~~  
+
+
+<!-- 
+
+1.1. 关键流程解析  
 &emsp; 从上述流程中，挑以下几个进行分析。
 
-### 1.1.1. 步骤3：设置系统属性java.awt.headless的值  
+1.1.1. 步骤3：设置系统属性java.awt.headless的值  
 
 ```java
 this.configureHeadlessProperty();
 ```
 &emsp; 设置该默认值为：true，Java.awt.headless = true 有什么作用？  
-&emsp; 对于一个Java服务器来说经常要处理一些图形元素，例如地图的创建或者图形和图表等。这些API基本上总是需要运行一个X-server以便能使用AWT（Abstract Window Toolkit，抽象窗口工具集）。然而运行一个不必要的 X-server 并不是一种好的管理方式。有时你甚至不能运行 X-server,因此最好的方案是运行 headless 服务器，来进行简单的图像处理。  
+&emsp; 对于一个Java服务器来说经常要处理一些图形元素，例如地图的创建或者图形和图表等。这些API基本上总是需要运行一个X-server以便能使用AWT（Abstract Window Toolkit，抽象窗口工具集）。然而运行一个不必要的 X-server 并不是一种好的管理方式。有时甚至不能运行 X-server,因此最好的方案是运行 headless 服务器，来进行简单的图像处理。  
 &emsp; 参考：www.cnblogs.com/princessd8251/p/4000016.html  
 
-### 1.1.2. 步骤6：根据运行监听器和应用参数来准备 Spring 环境  
+1.1.2. 步骤6：根据运行监听器和应用参数来准备 Spring 环境  
 
 ```java
 ConfigurableEnvironment environment = this.prepareEnvironment(listeners, applicationArguments);
@@ -260,7 +260,7 @@ private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners
 }
 ```
 
-### 1.1.3. 步骤8：准备应用上下文  
+1.1.3. 步骤8：准备应用上下文  
 
 ```java
 this.prepareContext(context, environment, listeners, applicationArguments, printedBanner);
@@ -304,7 +304,7 @@ private void prepareContext(ConfigurableApplicationContext context, Configurable
     listeners.contextLoaded(context);
 }
 ```
-
+-->
  
 
 
