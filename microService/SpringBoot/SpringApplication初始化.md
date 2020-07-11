@@ -19,8 +19,22 @@ tags:
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-4.png)  
+<!-- 
+https://mp.weixin.qq.com/s/lpWB9kWgN_QKkLaBmsAhkA
+https://mp.weixin.qq.com/s/Cu8MSQ0Ap47qoseY09gTMw
+https://mp.weixin.qq.com/s/VJ_9y02kbkeGvkscbKTRdQ
+https://mp.weixin.qq.com/s/tRKfC4HNMwPUI7Qg9Zb5Dw
+https://mp.weixin.qq.com/s/HMJEWSq4Uq3LGRtnvmxtiQ
+https://mp.weixin.qq.com/s/SPLG9maFJXRQjfWkI-YqTw
+https://mp.weixin.qq.com/s/GonzSloR3QQQygMzDypMZQ
+https://mp.weixin.qq.com/s/_4ioaqAJBtPhuHVa98shBQ
+https://mp.weixin.qq.com/s/szt8l6IbmjKnyRItQTjJCA
+https://mp.weixin.qq.com/s/220rJiWAZg5Z3iY7VpmkUw
+https://mp.weixin.qq.com/s/bLqWb6bc2ki3mKbfFqm0vg
+-->
 
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-4.png)  
 
 # 1. Spring Boot启动全过程源码分析
 &emsp; SpringBoot启动类代码如下：  
