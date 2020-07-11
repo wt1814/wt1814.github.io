@@ -34,6 +34,7 @@ tags:
 
 # 1. Mybatis工作流程概述  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-13.png)  
+&emsp; Mybatis工作流程概述：  
 1. 读取核心配置文件并返回InputStream流对象。
 2. 根据InputStream流对象解析出Configuration对象，然后创建SqlSessionFactory工厂对象。
 3. 根据一系列属性从SqlSessionFactory工厂中创建SqlSession。
@@ -42,7 +43,7 @@ tags:
 6. 提交与事务。
 
 # 2. MyBatis架构分层与模块划分  
-&emsp; 在 MyBatis 的主要工作流程里面，不同的功能是由很多不同的类协作完成的，它们 分布在 MyBatis jar 包的不同的 package 里面。  
+&emsp; 在 MyBatis 的主要工作流程里，不同的功能是由很多不同的类协作完成的，它们分布在MyBatis jar包的不同的 package里面。  
 &emsp; MyBatis(基于3.5.1)jar 包结构（21 个包）：  
 
     └── org  
@@ -82,14 +83,14 @@ tags:
 ## 2.1. API接口层  
 &emsp; 在不与Spring 集成的情况下，使用 MyBatis 执行数据库的操作主要如下：  
 
-```
+```java
 InputStream is = Resources.getResourceAsStream("myBatis-config.xml");
 SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
 SqlSessionFactory factory = builder.build(is);
 sqlSession = factory.openSession();
 ```
 &emsp; 其中的SqlSessionFactory，SqlSession是 MyBatis 接口的核心类。SqlSession是上层应用和 MyBatis 打交道的桥梁，SqlSession 上定义了非常多的对数据库的操作方法。  
-&emsp; 接口层在接收到调 用请求的时候，会调用核心处理层的相应模块来完成具体的数据库操作。  
+&emsp; 接口层在接收到调用请求的时候，会调用核心处理层的相应模块来完成具体的数据库操作。  
 
 ## 2.2. 核心处理层  
 &emsp; 核心处理层功能如下：  
@@ -101,7 +102,7 @@ sqlSession = factory.openSession();
 &emsp; Mybatis 中 scripting 模块会根据用户传入的参数，解析映射文件中定义的动态 SQL 节点，形成数据库能执行的SQL 语句。  
 * SQL 执行  
 &emsp; 执行 SQL 语句；处理结果集，并映射成 Java 对象。  
-&emsp; <font color = "red">SQL语句的执行涉及多个组件Configuration 、 SqlSessionFactory 、 Session 、 Executor 、 MappedStatement 、StatementHandler、ResultSetHandler。</font> ***包括 MyBatis 的四大核心，它们是: Executor、StatementHandler、ParameterHandler、ResultSetHandler。***  
+&emsp; <font color = "red">SQL语句的执行涉及多个组件Configuration 、 SqlSessionFactory 、 Session 、 Executor 、 MappedStatement 、StatementHandler、ResultSetHandler。</font> ***<font color = "lime">包括 MyBatis 的四大核心，它们是: Executor、StatementHandler、ParameterHandler、ResultSetHandler。</font>***  
 
     |名称 |意义 |
     |---|---|
@@ -131,10 +132,10 @@ Configuration:  MyBatis 所有的配置信息都维持在 Configuration 对象�
 &emsp; <font color= "red">插件也属于核心层，这是由它的工作方式和拦截的对象决定的。</font>   
 
 ## 2.3. 基础支持层  
-&emsp; 最后一个就是基础支持层。基础支持层主要是一些抽取出来的通用的功能（实现复用），用来支持核心处理层的功能。比如数据源、缓存、日志、xml 解析、反射、IO、 事务等等这些功能。  
+&emsp; 最后一个就是基础支持层。基础支持层主要是一些抽取出来的通用的功能（实现复用），用来支持核心处理层的功能。比如数据源、缓存、日志、xml 解析、反射、IO、事务等等这些功能。  
 
 * 反射模块  
-&emsp; Mybatis 中的反射模块，对 Java 反射进行了很好的封装，提供了简易的 API，方便上层调用，并且对反射操作进行了一系列的优化，比如，缓存了类的 元数据（MetaClass）和对象的元数据（MetaObject），提高了反射操作的性能。  
+&emsp; Mybatis 中的反射模块，对 Java 反射进行了很好的封装，提供了简易的 API，方便上层调用，并且对反射操作进行了一系列的优化，比如，缓存了类的元数据（MetaClass）和对象的元数据（MetaObject），提高了反射操作的性能。  
 * 类型转换模块  
 &emsp; Mybatis 的别名机制，能够简化配置文件，该机制是类型转换模块的主要功能之一。类型转换模块的另一个功能是实现 JDBC 类型与 Java 类型的转换。在 SQL 语句绑定参数时，会将数据由 Java 类型转换成 JDBC 类型；在映射结果集时，会将数据由 JDBC 类型转换成 Java 类型。  
 * 日志模块  
@@ -164,7 +165,7 @@ Configuration:  MyBatis 所有的配置信息都维持在 Configuration 对象�
 
 &emsp; 本文基于XML配置文件方式的MyBatis初始化。示例如下：  
 
-```
+```java
 public static void main(String[] args) throws Exception {
     // 加载配置文件
     String resource = "mybatis-config.xml";
@@ -192,7 +193,7 @@ public static void main(String[] args) throws Exception {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-16.png)  
 &emsp; #getResourceAsStream方法:  
 
-```
+```java
 public static InputStream getResourceAsStream(String resource) throws IOException {
     return getResourceAsStream((ClassLoader)null, resource);
 }
@@ -206,9 +207,9 @@ public static InputStream getResourceAsStream(ClassLoader loader, String resourc
     }
 }
 ```
-
 &emsp; 获取到自身的ClassLoader对象，然后交给ClassLoader(lang包下的)来加载：  
-```
+
+```java
 InputStream getResourceAsStream(String resource, ClassLoader[] classLoader) {
     ClassLoader[] arr$ = classLoader;
     int len$ = classLoader.length;
@@ -230,9 +231,9 @@ InputStream getResourceAsStream(String resource, ClassLoader[] classLoader) {
 ```
 
 ## 3.3. 创建SqlSessionFactory  
-&emsp; ***<font color = "red">SqlSessionFactory对象的生成使用了建造者模式。</font>***  
+&emsp; ***<font color = "lime">SqlSessionFactory对象的生成使用了建造者模式。</font>***  
 
-```
+```java
 public SqlSessionFactory build(InputStream inputStream) {
     return this.build((InputStream)inputStream, (String)null, (Properties)null);
 }
@@ -263,7 +264,8 @@ public SqlSessionFactory build(InputStream inputStream, String environment, Prop
 &emsp; 通过Document对象来解析配置文件，然后返回InputStream对象，然后交给XMLConfigBuilder构造成org.apache.ibatis.session.Configuration对象，然后交给build()方法构造程SqlSessionFactory。  
 
 &emsp; <font color = "red">#parse()方法，解析mybatis-config.xml。</font> 源码：  
-```
+
+```java
 public Configuration parse() {
     //查看该文件是否已经解析过
     if (parsed) {
@@ -277,7 +279,7 @@ public Configuration parse() {
 }
 ```
 
-```
+```java
 private void parseConfiguration(XNode root) {
     try {
         //解析<Configuration>下的节点
@@ -329,7 +331,7 @@ private void parseConfiguration(XNode root) {
 </mappers>
 ```
 
-```
+```java
 private void mapperElement(XNode parent) throws Exception {
     if (parent != null) {
         //遍历解析mappers下的节点
@@ -378,7 +380,7 @@ private void mapperElement(XNode parent) throws Exception {
 &emsp; 根据以上代码可以分析，在写mapper映射文件的地址时不仅可以写成resource，还可以写成url和mapperClass的形式。如果配置文件中写的是通过resource来加载mapper.xml的，会通过XMLMapperBuilder来进行解析。  
 &emsp; XMLMapperBuilder#parse()方法  
 
-```
+```java
 public void parse() {
     //判断文件是否之前解析过
     if (!configuration.isResourceLoaded(resource)) {
@@ -427,7 +429,7 @@ private void configurationElement(XNode context) {
 &emsp; 在这个parse()方法中，调用了一个configuationElement代码，用于解析XXXMapper.xml文件中的各种节点，包括<cache\>、<cache-ref\>、<paramaterMap\>（已过时）、<resultMap\>、<sql\>、还有增删改查节点。  
 &emsp; 其中具体解析每一个sql语句节点的是buildStatementFromContext(context.evalNodes("select|insert|update|delete"));   
 
-```
+```java
 private void buildStatementFromContext(List<XNode> list) {
     if (configuration.getDatabaseId() != null) {
         buildStatementFromContext(list, configuration.getDatabaseId());
@@ -616,13 +618,13 @@ public MappedStatement addMappedStatement(
 ## 3.4. 创建SqlSession  
 &emsp; openSession中实际上对SqlSession做了进一步的加工封装，增加了事务、执行器等。  
 
-```
+```java
 public SqlSession openSession() {
     return this.openSessionFromDataSource(this.configuration.getDefaultExecutorType(), (TransactionIsolationLevel)null, false);
 }
 ```
 
-```
+```java
 private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
     Transaction tx = null;
 
@@ -647,7 +649,7 @@ private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionI
 }
 ```
 
-```
+```java
 //返回一个SqlSession，默认使用DefaultSqlSession 
 public DefaultSqlSession(Configuration configuration, Executor executor, boolean autoCommit) {
     this.configuration = configuration;
@@ -661,7 +663,7 @@ public DefaultSqlSession(Configuration configuration, Executor executor, boolean
 ## 3.5. 执行具体的sql请求  
 &emsp; 平时使用MyBatis的时候，DAO层编码：  
 
-```
+```java
 public interface DemoMapper {
     public List<Map<String,Object>>  selectAll(Map<String,Object> map);
 }
@@ -669,18 +671,18 @@ public interface DemoMapper {
 
 &emsp; 这个接口开发人员没有编写实现类，而开发人员却可以直接对它进行调用，如下：  
 
-```
+```java
 DemoMapper mapper = sqlSession.getMapper(DemoMapper.class);
 Map<String,Object> map = new HashMap();
 map.put("id","123");
 mapper.selectAll(map);
 ```
-&emsp; ***<font color = "red">MyBatis底层使用了动态代理，来对这个接口进行代理。</font>***  
+&emsp; ***<font color = "lime">MyBatis底层使用了动态代理，来对这个接口进行代理。</font>***  
 
 
 &emsp; 入口：在获取Mapper的时候，需要调用SqlSession的getMapper()方法。    
 
-```
+```java
 //getMapper方法最终会调用到这里，这个是MapperRegistry的getMapper方法
 @SuppressWarnings("unchecked")
 public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
@@ -701,7 +703,7 @@ public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     knownMappers是在什么时候生成的？
     在解析的时候，会调用parse()方法，这个方法内部有一个bindMapperForNamespace方法，而就是这个方法完成了knownMappers的生成，并且将Mapper接口put进去。  
 
-```
+```java
 public void parse() {
     //判断文件是否之前解析过
     if (!configuration.isResourceLoaded(resource)) {
@@ -757,7 +759,7 @@ public <T> void addMapper(Class<T> type) {
 
 &emsp; 在getMapper之后，获取一个Class。之后的代码就是生成标准的代理类，调用newInstance()方法。  
 
-```
+```java
 public T newInstance(SqlSession sqlSession) {
     //首先会调用这个newInstance方法
     //动态代理逻辑在MapperProxy里面
@@ -773,7 +775,7 @@ protected T newInstance(MapperProxy<T> mapperProxy) {
 ```
 &emsp; 代理模式的执行逻辑在MapperProxy类中。  
 
-```
+```java
 /**
  * @author Eduardo Macarron
  */
@@ -832,7 +834,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
 ### 3.5.1. 查询语句执行逻辑  
 &emsp; 这里首先会判断SQL的类型：SELECT|DELETE|UPDATE|INSERT，示例中是SELECT，其它的其实都差不多。判断SQL类型为SELECT之后，就开始判断返回值类型，根据不同的情况做不同的操作。然后开始获取参数，执行SQL。  
 
-```
+```java
 //execute() 这里是真正执行SQL的地方
 public Object execute(SqlSession sqlSession, Object[] args) {
     //判断是哪一种SQL语句
@@ -956,7 +958,7 @@ public Object getNamedParams(Object[] args) {
 ### 3.5.2. SQL执行（二级缓存）  
 &emsp; 执行SQL的核心方法就是selectList，即使是selectOne，底层实际上也是调用了selectList方法，然后取第一个而已。  
 
-```
+```java
 @Override
 public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
     try {
@@ -973,7 +975,7 @@ public <E> List<E> selectList(String statement, Object parameter, RowBounds rowB
 ```
 &emsp; MappedStatement对象，这个对象是解析Mapper.xml配置而产生的，用于存储SQL信息，执行SQL需要这个对象中保存的关于SQL的信息，而selectList内部调用了Executor对象执行SQL语句，这个对象作为MyBatis四大对象之一。  
 
-```
+```java
 public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
     //获取sql语句
     BoundSql boundSql = ms.getBoundSql(parameterObject);
@@ -1018,7 +1020,7 @@ public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds r
 
 ### 3.5.3. SQL查询（一级缓存）  
 
-```
+```java
 //一级缓存查询
 @Override
 public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
@@ -1065,7 +1067,7 @@ public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBoun
 
 ### 3.5.4. SQL执行（数据库查询）  
 
-```
+```java
 //数据库查询
 private <E> List<E> queryFromDatabase(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
     List<E> list;
@@ -1106,7 +1108,7 @@ public <E> List<E> doQuery(MappedStatement ms, Object parameter, RowBounds rowBo
 ### 3.5.5. 参数赋值  
 &emsp; 因为MyBatis底层封装的就是java最基本的jdbc，所以赋值一定也是调用jdbc的putString()方法。  
 
-```
+```java
 /********************************参数赋值部分*******************************/
 //由于是#{}，所以使用的是prepareStatement，预编译SQL
 private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException {
@@ -1173,7 +1175,7 @@ public void setNonNullParameter(PreparedStatement ps, int i, String parameter, J
 ### 3.5.6. 正式执行  
 &emsp; 当参数赋值完毕后，SQL就可以执行了，在上文中的代码可以看到当参数赋值完毕后，直接通过hanler.query()方法进行数据库查询。  
 
-```
+```java
 @Override
 public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
     //通过jdbc进行数据库查询。
@@ -1186,7 +1188,7 @@ public <E> List<E> query(Statement statement, ResultHandler resultHandler) throw
 
 ### 3.5.7. 结果集处理
 
-```
+```java
 @Override
 public List<Object> handleResultSets(Statement stmt) throws SQLException {
     ErrorContext.instance().activity("handling results").object(mappedStatement.getId());

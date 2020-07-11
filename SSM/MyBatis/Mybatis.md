@@ -39,10 +39,10 @@ tags:
     - [3.4. Sql标签](#34-sql标签)
     - [3.5. Bind标签](#35-bind标签)
     - [3.6. selectKey标签，自动生成主键](#36-selectkey标签自动生成主键)
-- [Spring整合Mybatis](#spring整合mybatis)
-- [4. Intellij IDEA中Mybatis Mapper自动注入警告的解决方案](#4-intellij-idea中mybatis-mapper自动注入警告的解决方案)
-- [5. mybatis-generator](#5-mybatis-generator)
-- [6. MyBatis之分页插件](#6-mybatis之分页插件)
+- [4. Spring整合Mybatis](#4-spring整合mybatis)
+- [5. Intellij IDEA中Mybatis Mapper自动注入警告的解决方案](#5-intellij-idea中mybatis-mapper自动注入警告的解决方案)
+- [6. mybatis-generator](#6-mybatis-generator)
+- [7. MyBatis之分页插件](#7-mybatis之分页插件)
 
 <!-- /TOC -->
 
@@ -102,11 +102,11 @@ tags:
 
 &emsp; 当username = "' OR 1=1 OR '" 传入后，${}将变量内容直接和SQL语句进行拼接，结果如下:  
 
-        SELECT * FROM user WHERE username='' OR 1=1 OR '';
+    SELECT * FROM user WHERE username='' OR 1=1 OR '';
 
 &emsp; 显而易见，上述语句将把整个数据库内容直接暴露出来了。  
 
-&emsp; <font color = "color">#{}方式则是先用占位符代替参数将SQL语句先进行预编译，然后再将参数中的内容替换进来。由于SQL语句已经被预编译过，其SQL意图将无法通过非法的参数内容实现更改，其参数中的内容，无法变为SQL命令的一部分。故，***#{}可以防止SQL注入而${}却不行*** 。</font>  
+&emsp; <font color = "color">#{}方式则是先用占位符代替参数将SQL语句先进行预编译，然后再将参数中的内容替换进来。由于SQL语句已经被预编译过，其SQL意图将无法通过非法的参数内容实现更改，其参数中的内容，无法变为SQL命令的一部分。故，</font><font color = "lime">***#{}可以防止SQL注入而${}却不行*** 。</font>  
 
 ## 1.3. 适用场景  
 ### 1.3.1. #{} 和 ${} 均适用场景  
@@ -137,7 +137,7 @@ tags:
 ### 1.3.2. 只能使用${}的场景  
 &emsp; <font color = "red">由于#{}会给参数内容自动加上引号，会在有些需要表示字段名、表名的场景下，SQL将无法正常执行。例如：期望查询结果按sex字段升序排列。</font>参数String orderCol = "sex",mapper映射文件使用#{}：  
 
-```
+```sql
 <select id="findAddByName3" parameterType="String" resultMap="studentResultMap">
     SELECT * FROM USER WHERE username LIKE '%Am%' ORDER BY #{value} ASC
 </select>
@@ -518,7 +518,7 @@ System.out.println("新增学生ID: " + entity.getStudentId());
 ```
 
 ----
-# Spring整合Mybatis  
+# 4. Spring整合Mybatis  
 &emsp; Spring的 classpath 通配符加载Mybatis配置文件(支持指定多个文件写法)  
 
     classpath:app-Beans.xml
@@ -543,13 +543,13 @@ System.out.println("新增学生ID: " + entity.getStudentId());
 
 ----
 
-# 4. Intellij IDEA中Mybatis Mapper自动注入警告的解决方案   
+# 5. Intellij IDEA中Mybatis Mapper自动注入警告的解决方案   
 ...
 
-# 5. mybatis-generator  
+# 6. mybatis-generator  
 &emsp; mybatis-generator，能够生成PO类，能生成mapper映射文件（其中包括基本的增删改查功能）、能生成mapper接口。  
 
-# 6. MyBatis之分页插件  
+# 7. MyBatis之分页插件  
 ...
 
 

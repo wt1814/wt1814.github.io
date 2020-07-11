@@ -26,7 +26,7 @@ tags:
 &emsp; ***Mybatis插件典型适用场景：***  
 
 * 分页功能  
-&emsp; Mybatis的分页默认是基于内存分页的（查出所有，再截取），数据量大的情况下效率较低，使用mybatis插件可以改变该行为，只需要拦截StatementHandler类的prepare方法，改变要执行的SQL语句为分页语句即可；  
+&emsp; <font color = "red">Mybatis的分页默认是基于内存分页的（查出所有，再截取）</font>，数据量大的情况下效率较低，使用mybatis插件可以改变该行为，只需要拦截StatementHandler类的prepare方法，改变要执行的SQL语句为分页语句即可；  
 * 公共字段统一赋值  
 &emsp; 一般业务系统都会有创建者，创建时间，修改者，修改时间四个字段，对于这四个字段的赋值，实际上可以在DAO层统一拦截处理，可以用mybatis插件拦截Executor类的update方法，对相关参数进行统一赋值即可；  
 * 性能监控  
@@ -37,59 +37,59 @@ tags:
 ## 1.2. Mybatis插件编码示例  
 &emsp; 1. 写一个打印SQL执行时间的插件  
 
-    ```
-    @Intercepts({@Signature(type = StatementHandler.class, method = "query", args = { Statement.class, ResultHandler.class }),
-            @Signature(type = StatementHandler.class, method = "update", args = { Statement.class }),
-            @Signature(type = StatementHandler.class, method = "batch", args = { Statement.class })})
-    public class SqlCostTimeInterceptor implements Interceptor {
+```java
+@Intercepts({@Signature(type = StatementHandler.class, method = "query", args = { Statement.class, ResultHandler.class }),
+        @Signature(type = StatementHandler.class, method = "update", args = { Statement.class }),
+        @Signature(type = StatementHandler.class, method = "batch", args = { Statement.class })})
+public class SqlCostTimeInterceptor implements Interceptor {
 
-        public static final Logger logger = LoggerFactory.getLogger(SqlCostTimeInterceptor.class);
+    public static final Logger logger = LoggerFactory.getLogger(SqlCostTimeInterceptor.class);
 
-        public Object intercept(Invocation invocation) throws Throwable {
-            StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
-            long start = System.currentTimeMillis();
-            try {
-                // 执行被拦截的方法
-                return invocation.proceed();
-            } finally {
-                BoundSql boundSql = statementHandler.getBoundSql();
-                String sql = boundSql.getSql();
-                long end = System.currentTimeMillis();
-                long cost = end - start;
-                logger.info("{}, cost is {}", sql, cost);
-            }
-        }
-
-        public Object plugin(Object target) {
-            return Plugin.wrap(target, this);
-        }
-
-        public void setProperties(Properties properties) {
-
+    public Object intercept(Invocation invocation) throws Throwable {
+        StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
+        long start = System.currentTimeMillis();
+        try {
+            // 执行被拦截的方法
+            return invocation.proceed();
+        } finally {
+            BoundSql boundSql = statementHandler.getBoundSql();
+            String sql = boundSql.getSql();
+            long end = System.currentTimeMillis();
+            long cost = end - start;
+            logger.info("{}, cost is {}", sql, cost);
         }
     }
-    ```
+
+    public Object plugin(Object target) {
+        return Plugin.wrap(target, this);
+    }
+
+    public void setProperties(Properties properties) {
+
+    }
+}
+```
 &emsp; 插件必须实现org.apache.ibatis.plugin.Interceptor接口。Mybatis规定插件必须编写@Intercepts注解，是必须，而不是可选。  
 
 &emsp; 2. 在mybatis配置文件中配置插件：  
 &emsp; Mybatis的插件配置在configuration内部，初始化时，会读取这些插件，保存于Configuration对象的InterceptorChain中。  
 
-    ```xml
-    <plugins>
-        <plugin interceptor="com.javashitang.part1.plugins.SqlCostTimeInterceptor"></plugin>
-    </plugins>
-    ```
+```xml
+<plugins>
+    <plugin interceptor="com.javashitang.part1.plugins.SqlCostTimeInterceptor"></plugin>
+</plugins>
+```
 
 &emsp; 此时就可以打印出执行的SQL和耗费的时间，效果如下：  
 
-    ```sql
-    select id, role_name as roleName, note from role where id = ?, cost is 35  
-    ```
+```sql
+select id, role_name as roleName, note from role where id = ?, cost is 35  
+```
 
 ## 1.3. Mybatis插件运行机制  
-&emsp; <font color="red">Mybaits插件的实现主要用了责任链模式和动态代理。</font>动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
+&emsp; ***<font color="lime">Mybaits插件的实现主要用了责任链模式和动态代理。</font>*** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
 
-&emsp; 有哪些对象允许被代理？有哪些方法可以被拦截？在 MyBatis官网有参考，www.mybatis.org/mybatis-3/zh/configuration.html#plugins。  
+&emsp; 有哪些对象允许被代理？有哪些方法可以被拦截？在 MyBatis官网有参考，www.mybatis.org/mybatis-3/zh/configuration.html#plugins 。  
 &emsp; 支持拦截的方法：  
 
 * 执行器Executor（update、query、commit、rollback等方法）；  
@@ -100,11 +100,11 @@ tags:
 ### 1.3.1. 插件的加载  
 &emsp; Mybatis初始化中，会解析mybatis配置文件。Mybatis配置文件的解析在XMLConfigBuilder的parseConfiguration方法中，里面有插件的解析过程。  
 
-```
+```java
 pluginElement(root.evalNode("plugins"));
 ```
 
-```
+```java
 private void pluginElement(XNode parent) throws Exception {
     if (parent != null) {
         for (XNode child : parent.getChildren()) {
@@ -121,7 +121,7 @@ private void pluginElement(XNode parent) throws Exception {
 }
 ```
 
-```
+```java
 public class Configuration {
     //...
     public void addInterceptor(Interceptor interceptor) {
@@ -133,7 +133,7 @@ public class Configuration {
 
 ### 1.3.2. 拦截链  
 
-```
+```java
 public class InterceptorChain {
 
     private final List<Interceptor> interceptors = new ArrayList<Interceptor>();
@@ -159,7 +159,7 @@ public class InterceptorChain {
 &emsp; 上面的for循环代表了只要是插件，都会以责任链的方式逐一执行。  
 &emsp; InterceptorChain对象的pluginAll方法就是用来生成代理对象的。在以下地方调用  
 
-```
+```java
 parameterHandler = (ParameterHandler) interceptorChain.pluginAll(parameterHandler);
 resultSetHandler = (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
 statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
@@ -172,7 +172,7 @@ executor = (Executor) interceptorChain.pluginAll(executor);
 &emsp; 拦截器编码中@Intercepts注解里面主要放多个@Signature注解，而@Signature注解则定义了要拦截的类和方法，并且提供了Interceptor接口和Plugin类方便实现动态代理。  
 &emsp; Interceptor接口分析：  
 
-```
+```java
 public interface Interceptor {
 
     /** 执行拦截逻辑的方法,Invocation只是将动态代理中获取到的一些参数封装成一个对象 */
@@ -193,7 +193,7 @@ public interface Interceptor {
 &emsp; 其中plugin方法生成代理对象，通常直接调用Plugin.wrap(target, this);方法来生成代理对象。  
 &emsp; Plugin类源码：  
 
-```
+```java
 public class Plugin implements InvocationHandler {
 
     /** 目标对象 */
@@ -248,11 +248,12 @@ public class Plugin implements InvocationHandler {
 &emsp; 实现代理类和拦截特定方法使用Plugin.wrap()方法就可以实现。  
 &emsp; 在Plugin.invoke()方法中，最终调用了Interceptor接口的intercept方法，并把目标类，目标方法，参数封装成一个Invocation对象
 
-    return interceptor.intercept(new Invocation(target, method, args));  
-
+```java
+return interceptor.intercept(new Invocation(target, method, args));  
+```
 &emsp; Invocation类源码：  
 
-```
+```java
 /**
  * 将要调用的类，方法，参数封装成一个对象，方便传递给拦截器
  */

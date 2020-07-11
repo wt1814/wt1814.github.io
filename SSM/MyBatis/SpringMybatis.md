@@ -25,7 +25,7 @@ tags:
 
 &emsp; 添加配置文件  
 
-```
+```xml
 <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
     <property name="dataSource" ref="dataSource" />
     <!-- 自动扫描entity目录, 省掉Configuration.xml里的手工配置 -->
@@ -61,7 +61,7 @@ tags:
 
 &emsp; SqlSessionFactoryBean#afterPropertiesSet()方法：  
 
-```
+```java
 @Override
 //在spring容器中创建全局唯一的sqlSessionFactory
 public void afterPropertiesSet() throws Exception {
@@ -80,12 +80,12 @@ public void afterPropertiesSet() throws Exception {
 
     Note that this class is not Thread-Safe. 
 
-&emsp; Spring对SqlSession 进行了一个封装，这个SqlSession的实现类就是SqlSessionTemplate。SqlSessionTemplate是线程安全的。SqlSessionTemplate的获取是在mapper接口注入流程中。 
+&emsp; <font color = "red">Spring对SqlSession 进行了一个封装，这个SqlSession的实现类就是SqlSessionTemplate。</font>SqlSessionTemplate是线程安全的。SqlSessionTemplate的获取是在mapper接口注入流程中。 
 
 &emsp; 在编程式的开发中，SqlSession会在每次请求的时候创建一个，但是 Spring 里面只有一个 SqlSessionTemplate（默认是单例的），多个线程同时调用的时候怎么保证线程安全？  
 &emsp; <font color = "red">SqlSessionTemplate通过动态代理的方式来保证DefaultSqlSession操作的线程安全性。</font> SqlSessionTemplate 里面有 DefaultSqlSession 的所有的方法：selectOne()、 selectList()、insert()、update()、delete()，不过它都是通过一个代理对象实现的。这个代理对象在构造方法里面通过一个代理类创建：    
 
-```
+```java
 this.sqlSessionProxy = (SqlSession) newProxyInstance( SqlSessionFactory.class.getClassLoader(), new Class[] { SqlSession.class }, new SqlSessionInterceptor());
 ```
 
@@ -97,7 +97,7 @@ this.sqlSessionProxy = (SqlSession) newProxyInstance( SqlSessionFactory.class.ge
 
 &emsp; MapperScannerConfigurer#postProcessBeanDefinitionRegistry()方法：  
 
-```
+```java
 @Override
 public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
     if (this.processPropertyPlaceHolders) {//占位符处理
@@ -128,14 +128,14 @@ public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-28.png)  
 &emsp; 第三过滤sbd对象，只接受接口类，从下面的代码中可以看出。  
 
-```
+```java
 protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
     return beanDefinition.getMetadata().isInterface() && beanDefinition.getMetadata().isIndependent();
 }
 ```
 &emsp; 第四完成sbd对象属性的设置，比如设置sqlSessionFactory、BeanClass等。  
 
-```
+```java
 sbd.getPropertyValues().add("mapperInterface", definition.getBeanClassName());
 sbd.setBeanClass(MapperFactoryBean.class);
 sbd.getPropertyValues().add("sqlSessionFactory", this.sqlSessionFactory);
@@ -147,7 +147,7 @@ sbd.getPropertyValues().add("sqlSessionFactory", this.sqlSessionFactory);
 ## 2.4. 接口注入使用  
 &emsp; 使用 Mapper 的时候，只需要在加了 Service 注解的类里面使用@Autowired 注入 Mapper 接口就可以了。  
 
-```
+```java
 @Service 
 public class EmployeeService { 
     @Autowired EmployeeMapper employeeMapper; 
@@ -161,7 +161,7 @@ public class EmployeeService {
 &emsp; Spring 会根据Mapper的名字从BeanFactory中获取它的BeanDefination，再从BeanDefination中获取BeanClass， EmployeeMapper对应的BeanClass是MapperFactoryBean。   
 &emsp; 接下来就是创建 MapperFactoryBean，因为实现了 FactoryBean 接口，同样是调用getObject()方法。  
 
-```
+```java
 // MapperFactoryBean.java 
 public T getObject() throws Exception { 
     return getSqlSession().getMapper(this.mapperInterface); 
@@ -169,17 +169,16 @@ public T getObject() throws Exception {
 ```
 &emsp; 因为MapperFactoryBean继承了SqlSessionDaoSupport ，所以这个getSqlSession()就是调用父类的方法，返回SqlSessionTemplate。  
 
-```
+```java
 // SqlSessionDaoSupport.java 
 public SqlSession getSqlSession() { 
     return this.sqlSessionTemplate; 
 }
 ```
 
-
 &emsp; SqlSessionTemplate 的 getMapper()方法，里面又有两个方法：  
 
-```
+```java
 // SqlSessionTemplate.java 
 public <T> T getMapper(Class<T> type) { 
     return getConfiguration().getMapper(type, this); 
@@ -187,7 +186,7 @@ public <T> T getMapper(Class<T> type) {
 ```
 &emsp; 第一步：SqlSessionTemplate 的 getConfiguration()方法：  
 
-```
+```java
 // SqlSessionTemplate.java 
 public Configuration getConfiguration() { 
     return this.sqlSessionFactory.getConfiguration(); 
@@ -195,7 +194,7 @@ public Configuration getConfiguration() {
 ```
 &emsp; 进入方法，通过 DefaultSqlSessionFactory，返回全部配置 Configuration：  
 
-```
+```java
 // DefaultSqlSessionFactory.java 
 public Configuration getConfiguration() { 
     return configuration; 
@@ -203,7 +202,7 @@ public Configuration getConfiguration() {
 ```
 &emsp; 第二步：Configuration 的 getMapper()方法：  
 
-```
+```java
 // Configuration.java 
 public <T> T getMapper(Class<T> type, SqlSession sqlSession) { 
     return mapperRegistry.getMapper(type, sqlSession); 
@@ -212,7 +211,3 @@ public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
 &emsp; 这 一 步 跟 编 程 式 使 用 里 面 的 getMapper 一 样 ， 通 过 工 厂 类 MapperProxyFactory 获得一个 MapperProxy 代理对象。  
 
 &emsp; 也就是说，注入到 Service 层的接口，实际上还是一个 MapperProxy 代理对象。 所以最后调用Mapper接口的方法，也是执行 MapperProxy 的 invoke()方法，后面的 流程就跟编程式的工程里面一模一样了。  
-
-
-
-

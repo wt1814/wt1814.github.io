@@ -30,7 +30,7 @@ tags:
 &emsp; MyBatis支持声明式数据缓存（declarative data caching）。MyBatis提供了默认基于Java HashMap的缓存实现，以及用于与OSCache、Ehcache、Hazelcast和Memcached连接的默认连接器。MyBatis还提供API供其他缓存实现使用。  
 
 ## 1.1. 一级缓存  
-&emsp; 一级缓存也叫本地缓存，<font color = "red">MyBatis 的一级缓存是在会话（SqlSession）层面进行缓存的。</font>MyBatis中的一级缓存，是默认开启且无法关闭的。  
+&emsp; <font color = "red">一级缓存也叫本地缓存，MyBatis 的一级缓存是在会话（SqlSession）层面进行缓存的。</font>MyBatis中的一级缓存，是默认开启且无法关闭的。  
 
 &emsp; 一级缓存的生命周期：  
 1. 如果SqlSession调用了close()方法，会释放掉一级缓存PerpetualCache对象，一级缓存将不可用。
@@ -41,7 +41,7 @@ tags:
 &emsp; 如果跨会话，会出现什么问题？   
 &emsp; 其他会话更新了数据，导致读取到脏数据（一级缓存不能跨会话共享）  
 
-```
+```java
 // 会话 2 更新了数据，会话 2 的一级缓存更新 
 BlogMapper mapper2 = session2.getMapper(BlogMapper.class); 
 mapper2.updateByPrimaryKey(blog); 
@@ -54,18 +54,20 @@ System.out.println(mapper1.selectBlog(1));
 ### 1.1.2. Spring整合MyBatis一条语句创建几个SqlSession会话  
 &emsp; 同一个方法，Mybatis 多次请求数据库，是否要创建多个 SqlSession会话？  
 &emsp; 先从两个 demo 说起，再切入 Mybatis 的源码。  
+
 ```
 public void testSqlSession() throws Exception{
     System.out.println(this.xttblogMapper.findByName("aaa"));
     System.out.println(this.xttblogMapper.findByName("bbb"));
 }
-```
+```java
 &emsp; 运行一下代码。查看控制台，有一下输出。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-21.png)  
 &emsp; 这说明<font color = "red">在同一个方法，Mybatis 多次请求数据库且没有事务的情况下，创建了多个 SqlSession 会话！</font>  
 
 &emsp; 然后，在 testSqlSession 方法上加上 @Transactional 注解看看效果。  
-```
+
+```java
 @Transactional
 public void testSqlSession(){
     System.out.println(jmbRollbackRecordMapper.findByName("aaa"));
@@ -77,7 +79,7 @@ public void testSqlSession(){
 &emsp; 这说明，<font color = "red">在有事务的情况下，同一个方法，Mybatis多次请求数据库，只创建了一个SqlSession会话！</font>  
 
 &emsp; 如果有事务，并且方法内存在多个线程的情况下，代码如下：  
-```
+```java
 @Transactional
 public void testSqlSession(){
     new Thread(){
@@ -109,7 +111,7 @@ public void testSqlSession(){
 &emsp; MyBatis的二级缓存是默认关闭的，如果要开启有两种方式：  
 &emsp; 方式一：在mybatis-config.xml中加入如下配置片段    
 
-```
+```xml
 <!-- 全局配置参数，需要时再设置 -->
 <settings>
     <!-- 开启二级缓存  默认值为true -->
@@ -119,7 +121,7 @@ public void testSqlSession(){
 ```
 &emsp; 方式二：在mapper.xml中开启  
 
-```
+```xml
  <!--开启本mapper的namespace下的二级缓存-->
      <!--
              eviction:代表的是缓存回收策略，目前MyBatis提供以下策略。
@@ -155,19 +157,19 @@ public void testSqlSession(){
 &emsp; 如果某些查询方法对数据的实时性要求很高，不需要二级缓存，怎么办？   
 &emsp; 可以在单个 Statement ID 上显式关闭二级缓存（默认是 true）：   
 
-```
+```xml
 <select id="selectBlog" resultMap="BaseResultMap" useCache="false">
 ```
 
 ### 1.2.2. 开启二级缓存的时机  
 &emsp; 一级缓存默认是打开的，二级缓存需要配置才可以开启。***<font color = "red">在什么情况下才有必要去开启二级缓存？</font>***   
-1. <font color = "red">因为所有的增删改都会刷新二级缓存，导致二级缓存失效，所以适合在查询为主的应用中使用，比如历史交易、历史订单的查询。</font>否则缓存就失去了意义。
+1. <font color = "lime">因为所有的增删改都会刷新二级缓存，导致二级缓存失效，所以适合在查询为主的应用中使用，比如历史交易、历史订单的查询。</font>否则缓存就失去了意义。
 2. 如果多个namespace中有针对于同一个表的操作，比如Blog表，如果在一个namespace中刷新了缓存，另一个 namespace 中没有刷新，就会出现读到脏数据的情 况。所以，推荐在一个Mapper里面只操作单表的情况使用。  
 
 &emsp; 如果要让多个namespace共享一个二级缓存，应该怎么做？   
 &emsp; 跨namespace的缓存共享的问题，可以使用<cache-ref\>来解决：  
 
-```
+```xml
 <cache-ref namespace="com.gupaoedu.crud.dao.DepartmentMapper" /> 
 ```
 &emsp; cache-ref 代表引用别的命名空间的 Cache 配置，两个命名空间的操作使用的是同 一个 Cache。在关联的表比较少，或者按照业务可以对表进行分组的时候可以使用。  
@@ -194,7 +196,7 @@ public void testSqlSession(){
 ## 1.3. MyBatis缓存的执行流程  
 &emsp; Demo：  
 
-```
+```java
 public static void main(String[] args) throws Exception {
     // 加载配置文件
     String resource = "mybatis-config.xml";
@@ -218,7 +220,7 @@ public static void main(String[] args) throws Exception {
 
 &emsp; 这里会执行到query()方法：  
 
-```
+```java
 public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)
         throws SQLException {
     //二级缓存的Cache,通过MappedStatement获取
@@ -251,7 +253,7 @@ public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds r
 &emsp; 可以看到首先MyBatis在查询数据时会先看看这个mapper是否开启了二级缓存，如果开启了，会先查询二级缓存，如果缓存中存在需要的数据，那么直接就从缓存返回数据，如果不存在，则继续往下走查询逻辑。  
 &emsp; 接着往下走，如果二级缓存不存在，那么就直接查询数据了吗？答案是否定的，二级缓存如果不存在，MyBatis会再查询一次一级缓存，接着往下看。  
 
-```
+```java
 public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
     ErrorContext.instance().resource(ms.getResource()).activity("executing a query").object(ms.getId());
     if (closed) {
