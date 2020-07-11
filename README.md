@@ -158,7 +158,7 @@
 ### SpringBoot  
 [SpringBoot](/microService/SpringBoot/SpringBoot.md)  
 
-[SpringBoot自动配置原理](/microService/SpringBoot/1.自动配置原理.md)  
+[SpringBoot自动配置原理-1](/microService/SpringBoot/1.自动配置原理.md)  
 [SpringBoot启动过程-SpringApplication初始化](/microService/SpringBoot/SpringApplication初始化.md)  
 [SpringBoot启动过程-run()方法运行过程](/microService/SpringBoot/run方法运行过程.md)  
 [SpringBoot事件监听机制](/microService/SpringBoot/3.SpringBootEvent.md)  
