@@ -127,7 +127,6 @@
 ### Spring  
 [Spring-1](SSM/Spring/1.Spring.md)  
 [SpringIOC解析](SSM/Spring/2.SpringIOC.md)  
-&emsp; [SpringIOC解析](SSM/Spring/2.SpringIOC.md)  
 &emsp; [容器初始化详解](SSM/Spring/容器初始化详解.md)  
 [SpringDI解析](SSM/Spring/3.SpringDI.md)  
 [SpringBean生命周期](SSM/Spring/SpringBean.md)  
