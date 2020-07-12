@@ -15,7 +15,7 @@ tags:
 <!-- /TOC -->
 
 # 1. SpringBean生命周期的概要流程  
-&emsp; ***<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>  
+&emsp; ***<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>***  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-11.png)  
 1. Bean容器在配置文件中找到Spring Bean的定义。
@@ -49,7 +49,7 @@ tags:
 
 &emsp; 在doCreateBean()方法中能看到依次执行了这 4 个阶段：  
 
-```
+```java
 // AbstractAutowireCapableBeanFactory.java
 protected Object doCreateBean(final String beanName, final RootBeanDefinition mbd, final @Nullable Object[] args)
         throws BeanCreationException {
@@ -77,7 +77,7 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
 ```
 &emsp; 初始化包含了第 3~7步，较复杂，所以进到 initializeBean() 方法里具体看下其过程（注释的序号对应图中序号）：  
 
-```
+```java
 // AbstractAutowireCapableBeanFactory.java
 protected Object initializeBean(final String beanName, final Object bean, @Nullable RootBeanDefinition mbd) {
     // 3. 检查 Aware 相关接口并设置相关依赖
@@ -118,7 +118,7 @@ protected Object initializeBean(final String beanName, final Object bean, @Nulla
 ```
 &emsp; 在 invokInitMethods() 方法中会检查 InitializingBean 接口和 init-method 方法，销毁的过程也与其类似：  
 
-```
+```java
 // DisposableBeanAdapter.java
 public void destroy() {
 
