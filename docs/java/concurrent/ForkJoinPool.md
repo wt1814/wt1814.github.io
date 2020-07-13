@@ -1,6 +1,5 @@
 ---
-title: ForkJoinPool
-date: 2020-01-08 00:00:00
+title: ForkJoinPool  
 tags:
     - 并发编程
 ---
@@ -36,7 +35,7 @@ tags:
 &emsp; ForkJoinPool会把大任务拆分成多个子任务，但是ForkJoinPool并不会为每个子任务创建单独的线程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-13.png)   
 
-```
+```java
 public class ForkJoinWorkerThread extends Thread {
     final ForkJoinPool pool;// 工作线程所在的线程池
     final ForkJoinPool.WorkQueue workQueue; // 线程的工作队列

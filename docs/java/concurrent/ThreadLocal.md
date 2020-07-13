@@ -1,6 +1,5 @@
 ---
-title: Volatile
-date: 2020-01-07 00:00:00
+title: Volatile  
 tags:
     - 并发编程
 ---
@@ -14,13 +13,13 @@ tags:
             - [1.1.2.1. set()](#1121-set)
             - [1.1.2.2. get()](#1122-get)
     - [1.2. ThreadLocal使用](#12-threadlocal使用)
-        - [1.2.1. 使用示例](#121-使用示例)
-        - [1.2.2. SimpleDateFormat非线程安全问题](#122-simpledateformat非线程安全问题)
-    - [1.3. ThreadLocal的内存泄漏](#13-threadlocal的内存泄漏)
-    - [1.4. ThreadLocal局限性（变量不具有传递性）](#14-threadlocal局限性变量不具有传递性)
-        - [1.4.1. 类InheritableThreadLocal的使用](#141-类inheritablethreadlocal的使用)
-        - [1.4.2. 类TransmittableThreadLocal(alibaba)的使用](#142-类transmittablethreadlocalalibaba的使用)
-    - [1.5. ThreadLocal的优化](#15-threadlocal的优化)
+        - [1.2.1. ※※※正确使用](#121-※※※正确使用)
+        - [1.2.2. ThreadLocal的内存泄漏](#122-threadlocal的内存泄漏)
+        - [1.2.3. SimpleDateFormat非线程安全问题](#123-simpledateformat非线程安全问题)
+    - [1.3. ThreadLocal局限性（变量不具有传递性）](#13-threadlocal局限性变量不具有传递性)
+        - [1.3.1. 类InheritableThreadLocal的使用](#131-类inheritablethreadlocal的使用)
+        - [1.3.2. 类TransmittableThreadLocal(alibaba)的使用](#132-类transmittablethreadlocalalibaba的使用)
+    - [1.4. ThreadLocal的优化](#14-threadlocal的优化)
 
 <!-- /TOC -->
 
@@ -47,7 +46,7 @@ tags:
 ### 1.1.1. ThreadLocal存储结构  
 &emsp; 首先看下Thread.java类代码：  
 
-```
+```java
 //与此线程有关的ThreadLocal值。由ThreadLocal类维护
 ThreadLocalMap threadLocals = null;
 //与此线程有关的InheritableThreadLocal值。由InheritableThreadLocal类维护
@@ -69,7 +68,7 @@ ThreadLocalMap inheritableThreadLocals = null;
 ### 1.1.2. ThreadLocal成员方法  
 &emsp; ThreadLocal接口方法有4个。这些方法为每一个使用这个变量的线程都存有一份独立的副本，因此get总是返回由当前线程在调用set时设置的最新值。  
 
-```
+```java
 public T get() { }  //取数据
 public void set(T value) { }  //存数据
 public void remove() { }  //删除数据。将当前线程局部变量的值删除，目的是为了减少内存的占用，该方法是JDK5.0新增的方法。需要指出的是，当线程结束后，对应该线程的局部变量将自动被垃圾回收，所以显式调用该方法清除线程的局部变量并不是必须的操作，但它可以加快内存的回收速度。
@@ -80,7 +79,7 @@ protected T initialValue() { } // 初始化的数据，用于子类自定义初�
 #### 1.1.2.1. set()  
 &emsp; 当线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，而是存储在Thread对象的threadLocals属性中。  
 
-```
+```java
 public void set(T value) {
     Thread t = Thread.currentThread();
     ThreadLocalMap map = getMap(t);
@@ -126,11 +125,9 @@ private void set(ThreadLocal<?> key, Object value) {
 }
 ```
 
-
-
 #### 1.1.2.2. get()  
 
-```
+```java
 public T get() {
     //获取当前线程。
     Thread t = Thread.currentThread();
@@ -166,7 +163,6 @@ private T setInitialValue() {
 }
 ```
 
-
 ## 1.2. ThreadLocal使用  
 &emsp; 常见的ThreadLocal用法主要有两种：
 1. 在线程级别传递变量。  
@@ -178,15 +174,19 @@ private T setInitialValue() {
 &emsp; 每个线程往ThreadLocal中读写数据是线程隔离，互相之间不会影响的，所以ThreadLocal无法解决共享对象的更新问题！  
 &emsp; 由于不需要共享信息，自然就不存在竞争问题了，从而保证了某些情况下线程的安全，以及避免了某些情况需要考虑线程安全必须同步带来的性能损失！  
 
-### 1.2.1. 使用示例  
+### 1.2.1. ※※※正确使用  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-20.png)   
 
-1. 使用static定义threadLocal变量，是为了确保全局只有一个保存 Integer 对象的 ThreadLocal 实例。  
-2. finally语句里调用threadLocal.remove()。
+1. **<font color = "red">使用static定义threadLocal变量，是为了确保全局只有一个保存 Integer 对象的 ThreadLocal 实例。</font>**  
+2. **<font color = "lime">finally语句里调用threadLocal.remove()。</font>**
 
-### 1.2.2. SimpleDateFormat非线程安全问题  
+### 1.2.2. ThreadLocal的内存泄漏  
+&emsp; <font color = "red">ThreadLocalMap的key为ThreadLocal实例，是一个弱引用，弱引用有利于GC的回收，当key == null时，GC就会回收这部分空间，但value不一定能被回收，因为它和Current Thread之间还存在一个强引用的关系。</font>  
+&emsp; 由于这个强引用的关系，会导致value无法回收，如果线程对象不消除这个强引用的关系，就可能会出现OOM。调用ThreadLocal的remove()方法进行显式处理。 
 
-```
+### 1.2.3. SimpleDateFormat非线程安全问题  
+
+```java
 public class Foo{
     // SimpleDateFormat is not thread-safe, so give one to each thread
     private static final ThreadLocal<SimpleDateFormat> formatter = newThreadLocal<SimpleDateFormat>(){
@@ -201,16 +201,14 @@ public class Foo{
     }
 }
 ```
-&emsp; final确保ThreadLocal 的实例不可更改，防止被意外改变，导致放入的值和取出来的不一致，另外还能防止ThreadLocal的内存泄漏。  
+&emsp; final确保ThreadLocal的实例不可更改，防止被意外改变，导致放入的值和取出来的不一致，另外还能防止ThreadLocal的内存泄漏。  
 
-## 1.3. ThreadLocal的内存泄漏  
-&emsp; <font color = "red">ThreadLocalMap的key为ThreadLocal实例，是一个弱引用，弱引用有利于GC的回收，当key == null时，GC就会回收这部分空间，但value不一定能被回收，因为它和Current Thread之间还存在一个强引用的关系。</font>  
-&emsp; 由于这个强引用的关系，会导致value无法回收，如果线程对象不消除这个强引用的关系，就可能会出现OOM。调用ThreadLocalMap的remove()方法进行显式处理。  
+ 
 
-## 1.4. ThreadLocal局限性（变量不具有传递性）  
+## 1.3. ThreadLocal局限性（变量不具有传递性）  
 &emsp; ThreadLocal无法在父子线程之间传递，示例代码如下：  
 
-```
+```java
 public class Service {
     private static ThreadLocal<Integer> requestIdThreadLocal = new ThreadLocal<>();
     public static void main(String[] args) {
@@ -239,17 +237,17 @@ public class Service {
 &emsp; 运行结果如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-25.png)   
 
-### 1.4.1. 类InheritableThreadLocal的使用  
+### 1.3.1. 类InheritableThreadLocal的使用  
 &emsp; 使用类InheritableThreadLocal可以在子线程中取得父线程继承下来的值。  
 &emsp; InheritableThreadLocal主要用于子线程创建时，需要自动继承父线程的ThreadLocal变量，实现子线程访问父线程的threadlocal变量。  
 &emsp; InheritableThreadLocal继承了ThreadLocal，并重写了childValue、getMap、createMap三个方法。  
 
-### 1.4.2. 类TransmittableThreadLocal(alibaba)的使用  
+### 1.3.2. 类TransmittableThreadLocal(alibaba)的使用  
 &emsp; InheritableThreadLocal支持子线程访问在父线程中设置的线程上下文环境的实现原理是在创建子线程时将父线程中的本地变量值复制到子线程，即复制的时机为创建子线程时。  
 &emsp; 但并发、多线程就离不开线程池的使用，因为线程池能够复用线程，减少线程的频繁创建与销毁，如果使用InheritableThreadLocal，那么线程池中的线程拷贝的数据来自于第一个提交任务的外部线程，即后面的外部线程向线程池中提交任务时，子线程访问的本地变量都来源于第一个外部线程，造成线程本地变量混乱。  
 &emsp; TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
 
-## 1.5. ThreadLocal的优化  
+## 1.4. ThreadLocal的优化  
 &emsp; Netty对ThreadLocal进行了优化，优化方式是继承了Thread类，实现了自己的FastThreadLocal。FastThreadLocal的吞吐量是jdk的ThreadLocal的3倍左右。  
 
 

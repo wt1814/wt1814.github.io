@@ -1,6 +1,5 @@
 ---
-title: ThreadPoolExecutor
-date: 2020-01-08 00:00:00
+title: ThreadPoolExecutor  
 tags:
     - 并发编程
 ---
@@ -39,59 +38,29 @@ https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
 &emsp; 在ThreadPoolExecutor类中提供了四个构造方法：   
 
 ```java
-public class ThreadPoolExecutor extends AbstractExecutorService {
-    //...  
-    public ThreadPoolExecutor(int corePoolSize,
-                            int maximumPoolSize,
-                            long keepAliveTime,
-                            TimeUnit unit,
-                            BlockingQueue<Runnable> workQueue) {
-        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
-                Executors.defaultThreadFactory(), defaultHandler);
-    }
-    public ThreadPoolExecutor(int corePoolSize,
-                            int maximumPoolSize,
-                            long keepAliveTime,
-                            TimeUnit unit,
-                            BlockingQueue<Runnable> workQueue,
-                            ThreadFactory threadFactory) {
-        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
-                threadFactory, defaultHandler);
-    }
-    public ThreadPoolExecutor(int corePoolSize,
-                            int maximumPoolSize,
-                            long keepAliveTime,
-                            TimeUnit unit,
-                            BlockingQueue<Runnable> workQueue,
-                            RejectedExecutionHandler handler) {
-        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
-                Executors.defaultThreadFactory(), handler);
-    }
-    public ThreadPoolExecutor(int corePoolSize,
-                            int maximumPoolSize,
-                            long keepAliveTime,
-                            TimeUnit unit,
-                            BlockingQueue<Runnable> workQueue,
-                            ThreadFactory threadFactory,
-                            RejectedExecutionHandler handler) {
-        if (corePoolSize < 0 ||
-                maximumPoolSize <= 0 ||
-                maximumPoolSize < corePoolSize ||
-                keepAliveTime < 0)
-            throw new IllegalArgumentException();
-        if (workQueue == null || threadFactory == null || handler == null)
-            throw new NullPointerException();
-        this.acc = System.getSecurityManager() == null ?
-                null :
-                AccessController.getContext();
-        this.corePoolSize = corePoolSize;
-        this.maximumPoolSize = maximumPoolSize;
-        this.workQueue = workQueue;
-        this.keepAliveTime = unit.toNanos(keepAliveTime);
-        this.threadFactory = threadFactory;
-        this.handler = handler;
-    }
-    //...
+public ThreadPoolExecutor(int corePoolSize,
+                        int maximumPoolSize,
+                        long keepAliveTime,
+                        TimeUnit unit,
+                        BlockingQueue<Runnable> workQueue,
+                        ThreadFactory threadFactory,
+                        RejectedExecutionHandler handler) {
+    if (corePoolSize < 0 ||
+            maximumPoolSize <= 0 ||
+            maximumPoolSize < corePoolSize ||
+            keepAliveTime < 0)
+        throw new IllegalArgumentException();
+    if (workQueue == null || threadFactory == null || handler == null)
+        throw new NullPointerException();
+    this.acc = System.getSecurityManager() == null ?
+            null :
+            AccessController.getContext();
+    this.corePoolSize = corePoolSize;
+    this.maximumPoolSize = maximumPoolSize;
+    this.workQueue = workQueue;
+    this.keepAliveTime = unit.toNanos(keepAliveTime);
+    this.threadFactory = threadFactory;
+    this.handler = handler;
 }
 ```
 &emsp; ThreadPoolExecutor继承了AbstractExecutorService类，并提供了四个构造器。前面三个构造器都是调用的第四个构造器进行的初始化工作。下面解释一下构造器中各个参数的含义：  
@@ -102,7 +71,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 * TimeUnit  unit：参数keepAliveTime的单位。有7种取值，在TimeUnit类中有7种静态属性：TimeUnit.DAYS；TimeUnit.HOURS；  
 * BlockingQueue<Runnable\>  workQueue：任务阻塞队列，是java.util.concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样,如果BlockingQueue是满的,任何试图往里存东西的操作也会被阻断进入等待状态,直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue,ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition(显示锁Lock及Condition的学习与使用)来实现阻塞和唤醒。  
 * ThreadFactory threadFactory：创建线程的工厂。  
-* RejectedExecutionHandler  handler：当提交任务数超过maxmumPoolSize+workQueue之和时，任务会交给RejectedExecutionHandler来处理，执行拒绝策略。有四种策略，默认是AbortPolicy。内置拒绝策略均实现了RejectedExecutionHandler接口，若以下策略仍无法满足实际需要，可以扩展RejectedExecutionHandler接口。  
+* RejectedExecutionHandler  handler：<font color = "red">当提交任务数超过maxmumPoolSize+workQueue之和时，任务会交给RejectedExecutionHandler来处理，执行拒绝策略。</font>有四种策略，默认是AbortPolicy。内置拒绝策略均实现了RejectedExecutionHandler接口，若以下策略仍无法满足实际需要，可以扩展RejectedExecutionHandler接口。  
 
     | 名称 | Condition |  
     |----|----|  
