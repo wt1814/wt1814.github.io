@@ -43,63 +43,63 @@
 [我自己的学习之路]  
 
 ## Java  
-[Java基础](java/basis/Java基础.md)  
-&emsp; [符号](java/basis/mark.md)  
-[Java基础数据类型](java/basis/数据类型.md)  
-[Java集合框架](java/Collection/1.集合框架.md)  
-&emsp; [Map](java/Collection/2.Map.md)  
-&emsp; &emsp; [HashMap](java/Collection/HashMap.md)  
-&emsp; &emsp; [LikedHashMap](java/Collection/LikedHashMap.md)  
-&emsp; [Collection](java/Collection/3.Collection.md)  
-[JDK1.8](java/JDK8/JDK8.md)  
-&emsp; [Lambda](java/JDK8/Lambda.md)  
-&emsp; [Stream](java/JDK8/Stream.md)  
-&emsp; [Optional](java/JDK8/Optional.md)  
-&emsp; [DateTime](java/JDK8/DateTime.md)  
-[Java异常](java/basis/JavaException.md)  
-[Java范型](java/basis/JavaParadigm.md)  
-[Java反射](java/basis/Java反射.md)  
-[IO](java/basis/JavaIO.md)  
-[SPI](java/basis/SPI.md)  
+[Java基础](/java/basis/Java基础.md)  
+&emsp; [符号](/java/basis/mark.md)  
+[Java基础数据类型](/java/basis/数据类型.md)  
+[Java集合框架](/java/Collection/1.集合框架.md)  
+&emsp; [Map](/java/Collection/2.Map.md)  
+&emsp; &emsp; [HashMap](/java/Collection/HashMap.md)  
+&emsp; &emsp; [LikedHashMap](/java/Collection/LikedHashMap.md)  
+&emsp; [Collection](/java/Collection/3.Collection.md)  
+[JDK1.8](/java/JDK8/JDK8.md)  
+&emsp; [Lambda](/java/JDK8/Lambda.md)  
+&emsp; [Stream](/java/JDK8/Stream.md)  
+&emsp; [Optional](/java/JDK8/Optional.md)  
+&emsp; [DateTime](/java/JDK8/DateTime.md)  
+[Java异常](/java/basis/JavaException.md)  
+[Java范型](/java/basis/JavaParadigm.md)  
+[Java反射](/java/basis/Java反射.md)  
+[IO](/java/basis/JavaIO.md)  
+[SPI](/java/basis/SPI.md)  
 
 ### 并发编程  
-[线程基本概念](java/concurrent/1.Thread.md)  
-[多线程编程](java/concurrent/2.Multithread.md)  
-&emsp; [JMM](java/concurrent/JMM.md)  
-&emsp; [线程安全](java/concurrent/线程安全.md)  
-&emsp; &emsp; [Synchronized](java/concurrent/Synchronized.md)  
-&emsp; &emsp; [Volatile](java/concurrent/Volatile.md)  
-&emsp; &emsp; [ThreadLocal](java/concurrent/ThreadLocal.md)  
-&emsp; [线程通信](java/concurrent/线程通信.md)  
-[线程池](java/concurrent/3.ThreadPool.md)  
-&emsp; [ThreadPoolExecutor](java/concurrent/ThreadPoolExecutor.md)  
-&emsp; [ForkJoinPool](java/concurrent/ForkJoinPool.md)  
-[J.U.C包](java/concurrent/4.ConcurrentPackage.md)  
-&emsp; [Lock](java/concurrent/8.Lock.md)  
-&emsp; [Atmoic](java/concurrent/9.Atmoic.md)  
-&emsp; &emsp; [AtomicStampedReference](java/concurrent/6.AtomicStampedReference.md)  
-&emsp; [Collections](java/concurrent/10.Collections.md)  
-&emsp; &emsp; [ConcurrentHashMap](java/concurrent/5.ConcurrentHashMap.md)  
-&emsp; [tools](java/concurrent/7.tools.md)
+[线程基本概念](/java/concurrent/1.Thread.md)  
+[多线程编程](/java/concurrent/2.Multithread.md)  
+&emsp; [JMM](/java/concurrent/JMM.md)  
+&emsp; [线程安全](/java/concurrent/线程安全.md)  
+&emsp; &emsp; [Synchronized](/java/concurrent/Synchronized.md)  
+&emsp; &emsp; [Volatile](/java/concurrent/Volatile.md)  
+&emsp; &emsp; [ThreadLocal](/java/concurrent/ThreadLocal.md)  
+&emsp; [线程通信](/java/concurrent/线程通信.md)  
+[线程池](/java/concurrent/3.ThreadPool.md)  
+&emsp; [ThreadPoolExecutor](/java/concurrent/ThreadPoolExecutor.md)  
+&emsp; [ForkJoinPool](/java/concurrent/ForkJoinPool.md)  
+[J.U.C包](/java/concurrent/4.ConcurrentPackage.md)  
+&emsp; [Lock](/java/concurrent/8.Lock.md)  
+&emsp; [Atmoic](/java/concurrent/9.Atmoic.md)  
+&emsp; &emsp; [AtomicStampedReference](/java/concurrent/6.AtomicStampedReference.md)  
+&emsp; [Collections](/java/concurrent/10.Collections.md)  
+&emsp; &emsp; [ConcurrentHashMap](/java/concurrent/5.ConcurrentHashMap.md)  
+&emsp; [tools](/java/concurrent/7.tools.md)
 
 ### JVM  
-[JDK、JRE、JVM](java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
+[JDK、JRE、JVM](/java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
 
-[JVM类的加载](java/JVM/2.JVM类的加载.md)  
-[JVM内存结构](java/JVM/3.JVM内存结构.md)  
-[内存中对象](java/JVM/4.memoryObject.md)  
+[JVM类的加载](/java/JVM/2.JVM类的加载.md)  
+[JVM内存结构](/java/JVM/3.JVM内存结构.md)  
+[内存中对象](/java/JVM/4.memoryObject.md)  
 
-[GC垃圾回收](java/JVM/5.GC垃圾回收.md)  
-[JVM调优-基础](java/JVM/6.JVM调优-基础.md)  
-[JVM调优](java/JVM/7.JVM调优.md)  
+[GC垃圾回收](/java/JVM/5.GC垃圾回收.md)  
+[JVM调优-基础](/java/JVM/6.JVM调优-基础.md)  
+[JVM调优](/java/JVM/7.JVM调优.md)  
 
 ### 设计模式  
-[七大设计原则](java/Design/1.principles.md)  
-[Java设计模式](java/Design/2.design.md)  
-[创建型设计模式](java/Design/3.establish.md)  
-[结构型设计模式](java/Design/4.structure.md)  
-&emsp; [动态代理](java/Design/6.proxy.md)   
-[行为型设计模式](java/Design/5.behavior.md)  
+[七大设计原则](/java/Design/1.principles.md)  
+[Java设计模式](/java/Design/2.design.md)  
+[创建型设计模式](/java/Design/3.establish.md)  
+[结构型设计模式](/java/Design/4.structure.md)  
+&emsp; [动态代理](/java/Design/6.proxy.md)   
+[行为型设计模式](/java/Design/5.behavior.md)  
 
 
 ## 数据库  
@@ -125,33 +125,33 @@
 
 ## SSM  
 ### Spring  
-[Spring-1](SSM/Spring/1.Spring.md)  
-[SpringIOC解析](SSM/Spring/2.SpringIOC.md)  
-&emsp; [容器初始化详解](SSM/Spring/容器初始化详解.md)  
-[SpringDI解析](SSM/Spring/3.SpringDI.md)  
-[SpringBean生命周期](SSM/Spring/SpringBean.md)  
+[Spring-1](/SSM/Spring/1.Spring.md)  
+[SpringIOC解析](/SSM/Spring/2.SpringIOC.md)  
+&emsp; [容器初始化详解](/SSM/Spring/容器初始化详解.md)  
+[SpringDI解析](/SSM/Spring/3.SpringDI.md)  
+[SpringBean生命周期](/SSM/Spring/SpringBean.md)  
 [容器相关特性]  
-&emsp; [FactoryBean](SSM/Spring/feature/FactoryBean.md)  
-&emsp; [循环依赖](SSM/Spring/feature/循环依赖.md)  
-&emsp; [可二次开发常用接口](SSM/Spring/feature/可二次开发常用接口.md)  
-&emsp; [lazy-init](SSM/Spring/feature/lazy-init.md)  
+&emsp; [FactoryBean](/SSM/Spring/feature/FactoryBean.md)  
+&emsp; [循环依赖](/SSM/Spring/feature/循环依赖.md)  
+&emsp; [可二次开发常用接口](/SSM/Spring/feature/可二次开发常用接口.md)  
+&emsp; [lazy-init](/SSM/Spring/feature/lazy-init.md)  
 
-[SpringAOP教程](SSM/Spring/5.SpringAOP.md)  
-[SpringAOP解析](SSM/Spring/6.SpringAOP解析.md)  
-[Spring事务](SSM/Spring/7.SpringTransaction.md)  
+[SpringAOP教程](/SSM/Spring/5.SpringAOP.md)  
+[SpringAOP解析](/SSM/Spring/6.SpringAOP解析.md)  
+[Spring事务](/SSM/Spring/7.SpringTransaction.md)  
 
-[SpringMVC使用教程](SSM/Spring/9.SpringMVCUse.md)  
-[SpringMVC解析](SSM/Spring/10.SpringMVCAnalysis.md)    
+[SpringMVC使用教程](/SSM/Spring/9.SpringMVCUse.md)  
+[SpringMVC解析](/SSM/Spring/10.SpringMVCAnalysis.md)    
 [过滤器、拦截器、监听器](web/subassembly.md)  
 
 ### MyBatis  
-[MyBatis教程](SSM/MyBatis/Mybatis.md)  
+[MyBatis教程](/SSM/MyBatis/Mybatis.md)  
 
-[MyBatis SQL执行解析](SSM/MyBatis/MybatisExecutor.md)  
-[MyBatis缓存](SSM/MyBatis/MybatisCache.md)  
-[MyBatis插件解析-1](SSM/MyBatis/MybatisPlugins.md)  
-[Spring和MyBatis整合-1](SSM/MyBatis/SpringMybatis.md)  
-[MyBatis中的设计模式](SSM/MyBatis/MybatisDesign.md)  
+[MyBatis SQL执行解析](/SSM/MyBatis/MybatisExecutor.md)  
+[MyBatis缓存](/SSM/MyBatis/MybatisCache.md)  
+[MyBatis插件解析-1](/SSM/MyBatis/MybatisPlugins.md)  
+[Spring和MyBatis整合-1](/SSM/MyBatis/SpringMybatis.md)  
+[MyBatis中的设计模式](/SSM/MyBatis/MybatisDesign.md)  
 
 
 ## 微服务  
@@ -227,12 +227,12 @@
 &emsp; [NIO Selector](/microService/communication/NIO/Selector.md)  
 
 ## Elaticsearch-1  
-[ES基本概念](ES/1.basicConcepts.md)  
-[ES使用教程](ES/2.useTutorials.md)  
-[ES集群](ES/3.colony.md)  
-[ES原理](ES/4.principle.md)  
-[ES优化-1](ES/5.optimization.md)  
-[ELK](ES/6.ELK.md)    
+[ES基本概念](/ES/1.basicConcepts.md)  
+[ES使用教程](/ES/2.useTutorials.md)  
+[ES集群](/ES/3.colony.md)  
+[ES原理](/ES/4.principle.md)  
+[ES优化-1](/ES/5.optimization.md)  
+[ELK](/ES/6.ELK.md)    
 
 ---
 ## 项目构建基础    
@@ -250,8 +250,8 @@
 [Linux命令]  
 
 ### Nginx  
-[Nginx](Linux/Nginx/1.nginx.md)  
-[Nginx使用场景](Linux/Nginx/2.nginx使用场景.md)   
+[Nginx](/Linux/Nginx/1.nginx.md)  
+[Nginx使用场景](/Linux/Nginx/2.nginx使用场景.md)   
 
 
 ## 计算机网络  
@@ -265,18 +265,18 @@
 
 ---
 ## 算法  
-[算法基本概念](java/function/1.notion.md)  
+[算法基本概念](/java/function/1.notion.md)  
 [基本数据结构-1]  
-&emsp; [链表](java/function/structure/array.md)  
-&emsp; [栈](java/function/structure/stack.md)  
-&emsp; [哈希](java/function/structure/hash.md)  
-&emsp; [树](java/function/structure/tree.md)  
-[其他数据结构](java/function/3.otherStructure.md)  
-[排序算法](java/function/4.sort.md)  
-&emsp; [比较排序](java/function/sort/compare.md)  
-&emsp; [非比较排序](java/function/sort/noCompare.md)  
-[查找算法](java/function/5.search.md)  
-[算法思想题型](java/function/6.algorithmicIdea.md)  
+&emsp; [链表](/java/function/structure/array.md)  
+&emsp; [栈](/java/function/structure/stack.md)  
+&emsp; [哈希](/java/function/structure/hash.md)  
+&emsp; [树](/java/function/structure/tree.md)  
+[其他数据结构](/java/function/3.otherStructure.md)  
+[排序算法](/java/function/4.sort.md)  
+&emsp; [比较排序](/java/function/sort/compare.md)  
+&emsp; [非比较排序](/java/function/sort/noCompare.md)  
+[查找算法](/java/function/5.search.md)  
+[算法思想题型](/java/function/6.algorithmicIdea.md)  
 
 
 ---
@@ -285,6 +285,6 @@
 [git命令](/projectManage/git/command.md)   
 
 ## 开发软件  
-[idea](software/idea/idea.md)  
+[idea](/software/idea/idea.md)  
 
 
