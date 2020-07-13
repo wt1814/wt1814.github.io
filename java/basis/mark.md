@@ -18,7 +18,7 @@ tags:
 &emsp; 两种java中的占位符的使用：  
 &emsp; 第一种：使用%s占位，使用String.format转换  
 
-```
+```java
 public class Test {
     public static void main(String[] args) {
         String url = "我叫%s,今年%s岁。";
@@ -35,7 +35,7 @@ public class Test {
  
 &emsp; 第二种：使用{1}占位，使用MessageFormat.format转换  
 
-```
+```java
 public class Test {
     public static void main(String[] args) {
         String url02 = "我叫{0},今年{1}岁。";

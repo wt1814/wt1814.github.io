@@ -38,7 +38,7 @@ tags:
 # 1. Java关键字  
 ## 1.1. Java访问控制符  
 &emsp; JAVA语言中有公共的（public），私有的（private），保护的（protacted）和默认的（default）四种访问控制符。　  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/java-2.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/basics/java-2.png)  
 &emsp; 访问属性：在外部类中访问public和default的属性，可以通过类的对象名.属性名直接访问。在外部类中访问private的属性，必须通过对象的get、set方法（get、set方法声明为public）。  
 &emsp; 访问方法：在外部类中访问private的方法，必须通过反射。  
 
@@ -91,7 +91,7 @@ a = new A(); //实例化
 ## 2.3. Java类创建对象时初始化顺序  
 &emsp; <font color = "red">Java类new初始化顺序：父类静态变量——父类静态代码块——子类静态代码块——父类非静态变量——父类非静态代码块——父类构造函数——子类非静态变量——子类非静态代码块——子类构造函数。如果实际类中没有定义则跳过。</font>  
 
-```
+```java
 // 主类，用来创建子类对象，验证结果
 public class Main {
     public static void main(String[] args) {
@@ -100,7 +100,7 @@ public class Main {
 }
 ```
 
-```
+```java
 // 书类，用于测试对象成员变量
 class Book{
     public Book(String user){
@@ -109,7 +109,7 @@ class Book{
 }
 ```
 
-```
+```java
 // 子类
 class Son extends Fa{
     static Book book= new Book("子类静态");
@@ -128,7 +128,7 @@ class Son extends Fa{
 }
 ```
 
-```
+```java
 // 父类
 class Fa{
     static Book book= new Book("父类静态");
@@ -148,7 +148,7 @@ class Fa{
 
 &emsp; 输出结果：  
 
-```
+```java
 父类静态成员变量
 父类静态代码块
 子类静态成员变量
@@ -233,7 +233,7 @@ public <T> T underwrite(String platformCode, String uuid, Object... objects) {
 
 ### 3.4.1. 基本类型  
 
-```
+```java
 public class Test {
     public static void main(String[] args) {
         int value = 100;
@@ -250,7 +250,7 @@ public class Test {
 ```
 &emsp; 结果输出：  
 
-```
+```java
 inner: 200
 outer: 100
 ```
@@ -258,7 +258,7 @@ outer: 100
 
 ### 3.4.2. 引用类型  
 
-```
+```java
 public class TestDemo {
     public static void main(String[] args) {
         TestDemo2 testDemo2 = new TestDemo2();
@@ -327,14 +327,14 @@ class TestDemo2 {
 * 抽象类作为方法参数  
 &emsp; 当遇到方法参数为抽象类类型时，要传入一个实现抽象类所有抽象方法的子类对象。如下代码演示：  
 
-    ```
+    ```java
     //抽象类
     abstract class Person{
         public abstract void show();
     }
     ```
 
-    ```
+    ```java
     class Student extends Person{
         @Override
         public void show() {
@@ -343,7 +343,7 @@ class TestDemo2 {
     }
     ```
 
-    ```
+    ```java
     //测试类
     public class Test {
         public static void main(String[] args) {
@@ -364,14 +364,14 @@ class TestDemo2 {
 * 抽象类作为方法返回值  
 &emsp; 抽象类作为方法返回值，需要返回一个实现抽象类所有抽象方法的子类对象。如下代码演示：  
 
-    ```
+    ```java
     //抽象类
     abstract class Person{
         public abstract void show();
     }
     ```
 
-    ```
+    ```java
     class Student extends Person{
         @Override
         public void show() {
@@ -380,7 +380,7 @@ class TestDemo2 {
     }
     ```
 
-    ```
+    ```java
     //测试类
     public class Test {
         public static void main(String[] args) {
@@ -403,17 +403,18 @@ class TestDemo2 {
 &emsp; 允许一个类遵循多个特定的接口。<font color = "red">如果一个非抽象类遵循了某个接口，就必须实现该接口中的所有方法。对于遵循某个接口的抽象类，可以不实现该接口中的抽象方法。</font>  
 
 ### 4.2.1. 接口作为方法参数与返回值
+
 * 接口作为方法参数  
 &emsp; 当遇到方法参数为接口类型时，那么该方法要传入一个接口实现类对象。如下代码演示。  
 
-```
+```java
 //接口
 interface Smoke{
 	public abstract void smoking();
 }
 ```
 
-```
+```java
 class Student implements Smoke{
 	@Override
 	public void smoking() {
@@ -422,7 +423,7 @@ class Student implements Smoke{
 }
 ```
 
-```
+```java
 //测试类
 public class Test {
 	public static void main(String[] args) {
@@ -443,14 +444,14 @@ public class Test {
 * 接口作为方法返回值  
 &emsp; 当遇到方法返回值是接口类型时，那么该方法需要返回一个接口实现类对象。如下代码演示。  
 
-```
+```java
 //接口
 interface Smoke{
 	public abstract void smoking();
 }
 ```
 
-```
+```java
 class Student implements Smoke{
 	@Override
 	public void smoking() {
@@ -459,7 +460,7 @@ class Student implements Smoke{
 }
 ```
 
-```
+```java
 //测试类
 public class Test {
 	public static void main(String[] args) {
@@ -525,7 +526,7 @@ https://mp.weixin.qq.com/s/a3gS8-rhINeMORRczwKhrg
 
 &emsp; 多态的定义格式：父类的引用变量指向子类对象  
 
-```
+```java
 父类类型  变量名 = new 子类类型();
 变量名.方法名();  
 ```
