@@ -29,7 +29,7 @@ tags:
 &emsp; 非阻塞请求，A调用B，A不用一直等着B的返回，先去处理其他事情。  
 &emsp; 所以说，阻塞非阻塞最大的区别就是在被调用方返回结果之前的这段时间内，调用方是否一直等待。阻塞指的是调用方一直等待别的事情什么都不做。非阻塞指的是调用方先去忙别的事情。  
 
-&emsp; ***阻塞、非阻塞和同步、异步的区别：***  
+&emsp; **阻塞、非阻塞和同步、异步的区别：**  
 &emsp; 阻塞、非阻塞和同步、异步其实针对的对象是不一样的。阻塞、非阻塞说的是调用者，同步、异步说的是被调用者。  
 
 ## 1.3. IO模型，BIO、NIO、AIO  
@@ -47,7 +47,7 @@ tags:
 # 2. NIO简介  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-14.png)  
 
-&emsp; ***<font color = "red">NIO基本组件</font>***  
+&emsp; **<font color = "red">NIO基本组件</font>**  
 &emsp; NIO读写是I/O的基本过程。读写操作中使用的核心部件有：Channels、Buffers、Selectors。在标准I/O中，使用字符流和字节流；在NIO中使用通道和缓冲区。  
 
 * Channel(通道)：在缓冲区和位于通道另一侧的服务之间进行数据传输，支持单向或双向传输，支持阻塞或非阻塞模式。  

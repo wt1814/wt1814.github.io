@@ -31,7 +31,7 @@ tags:
 &emsp; 首先说明，ThreadLocal与线程同步无关。ThreadLocal虽然提供了一种解决多线程环境下成员变量的问题，但是它并不是解决多线程共享变量的问题。  
 &emsp; ThreadLocal，很多地方叫做线程本地变量，也有些地方叫做线程本地存储。每一个线程都会保存一份变量副本，每个线程都可以独立地修改自己的变量副本，而不会影响到其他线程，是一种线程隔离的思想。  
 
-&emsp; ***ThreadLocal和Synchonized关系：***  
+&emsp; **ThreadLocal和Synchonized关系：**  
 &emsp; ThreadLocal，用于线程间的数据隔离，主要解决多线程中数据因并发产生不一致问题；Synchonized，多个线程间通信时能够获得数据共享。它们都用于解决多线程并发访问。  
 &emsp; 但是ThreadLocal与synchronized有本质的区别：  
 * 资源共享：  
@@ -40,7 +40,7 @@ tags:
 * 性能开销：lock是通过时间换空间的做法；ThreadLocal是典型的通过空间换时间的做法。  
 * 当然它们的使用场景也是不同的，关键看资源是需要多线程之间共享的还是单线程内部共享的。  
 
-&emsp; ***ThreadLocal和线程池一起使用？***  
+&emsp; **ThreadLocal和线程池一起使用？**  
 &emsp; ThreadLocal对象的生命周期跟线程的生命周期一样长，那么如果将ThreadLocal对象和线程池一起使用，就可能会遇到这种情况：一个线程的ThreadLocal对象会和其他线程的ThreadLocal对象串掉，一般不建议将两者一起使用。  
 
 ## 1.1. ThreadLocal源码  
@@ -57,7 +57,7 @@ ThreadLocalMap inheritableThreadLocals = null;
 
 &emsp; ThradLocal中内部类ThreadLocalMap：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-23.png)   
-&emsp; ***<font color = "lime">ThreadLocal.ThreadLocalMap</font>***，Map结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。***<font color = "lime">Key是一个ThreadLocal实例，Value是一个线程特有对象。</font>***Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程特有对象之间的对应关系。  
+&emsp; **<font color = "lime">ThreadLocal.ThreadLocalMap</font>**，Map结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。**<font color = "lime">Key是一个ThreadLocal实例，Value是一个线程特有对象。</font>**Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程特有对象之间的对应关系。  
 &emsp; 具体的ThreadLocalMap实例并不是ThreadLocal保持，而是每个Thread持有，且不同的Thread持有不同的ThreadLocalMap实例, 因此它们是不存在线程竞争的(不是一个全局的map)， 另一个好处是每次线程死亡，所有map中引用到的对象都会随着这个Thread的死亡而被垃圾收集器一起收集。  
 
     如何解决 Hash 冲突？
@@ -75,7 +75,7 @@ public void set(T value) { }  //存数据
 public void remove() { }  //删除数据。将当前线程局部变量的值删除，目的是为了减少内存的占用，该方法是JDK5.0新增的方法。需要指出的是，当线程结束后，对应该线程的局部变量将自动被垃圾回收，所以显式调用该方法清除线程的局部变量并不是必须的操作，但它可以加快内存的回收速度。
 protected T initialValue() { } // 初始化的数据，用于子类自定义初始化值。返回该线程局部变量的初始值，该方法是一个protected的方法，显然是为了让子类覆盖而设计的。这个方法是一个延迟调用方法，在线程第1次调用get()或set(Object)时才执行，并且仅执行1次。ThreadLocal中的缺省实现直接返回一个null。
 ```
-&emsp; ***ThreadLocal.set()、get()、remove()方法都是对Thread对象的threadLocals属性进行操作。***
+&emsp; **ThreadLocal.set()、get()、remove()方法都是对Thread对象的threadLocals属性进行操作。**
   
 #### 1.1.2.1. set()  
 &emsp; 当线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，而是存储在Thread对象的threadLocals属性中。  

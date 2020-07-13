@@ -36,7 +36,7 @@
 #### 1.2.1.1. 单实例redis实现分布式锁  
 
 ##### 1.2.1.1.1. 加锁  
-&emsp; ***加锁代码：***  
+&emsp; **加锁代码：**  
 
 ```java
 public class RedisTool {
@@ -64,13 +64,13 @@ public class RedisTool {
 
 * key，使用key来当锁，因为key是唯一的。  
 * value，传参requestId，代表执行的具体线程。  
-* ***<font color = "red">nxxx，传参NX，意思是SET IF NOT EXIST，即当key不存在时，进行set操作；若key已经存在，则不做任何操作。</font>***  
-* ***<font color = "red">expx，传参PX，即给这个key加一个过期的设置，具体时间由第五个参数决定。</font>***  
+* **<font color = "red">nxxx，传参NX，意思是SET IF NOT EXIST，即当key不存在时，进行set操作；若key已经存在，则不做任何操作。</font>**  
+* **<font color = "red">expx，传参PX，即给这个key加一个过期的设置，具体时间由第五个参数决定。</font>**  
 * time，与第四个参数相呼应，代表key的过期时间。  
 
 &emsp; 执行上面的set()方法就只会导致两种结果：1. 锁不存在，进行加锁操作，并对锁设置个有效期，同时value表示加锁的客户端； 2. 锁存在，不做任何操作。  
 
-&emsp; 加锁中使用了redis的set命令。加锁涉及获取锁、加锁两步操作***最初分布式锁借助于setnx和expire命令***，但是这两个命令不是原子操作，如果执行setnx之后获取锁，但是此时客户端挂掉，这样无法执行expire设置过期时间就导致锁一直无法被释放，因此***在2.8版本中Antirez为setnx增加了参数扩展，使得setnx和expire具备原子操作性***。  
+&emsp; 加锁中使用了redis的set命令。加锁涉及获取锁、加锁两步操作**最初分布式锁借助于setnx和expire命令**，但是这两个命令不是原子操作，如果执行setnx之后获取锁，但是此时客户端挂掉，这样无法执行expire设置过期时间就导致锁一直无法被释放，因此**在2.8版本中Antirez为setnx增加了参数扩展，使得setnx和expire具备原子操作性**。  
 
 ```
 SET KEY value [EX seconds] [PX milliseconds] [NX|XX]
@@ -82,7 +82,7 @@ SET KEY value [EX seconds] [PX milliseconds] [NX|XX]
 
 ##### 1.2.1.1.2. 解锁  
 &emsp; 解锁也涉及获取锁、删除锁两步操作，采用redis和lua脚本实现。lua脚本执行命令具有原子性。  
-&emsp; ***解锁代码：***  
+&emsp; **解锁代码：**  
 
 ```java
 public class RedisTool {
@@ -131,7 +131,7 @@ https://mp.weixin.qq.com/s/fuaUXuJbskqcFgsrwnPhZQ
 
 #### RedissonLock解析
 ##### 获取锁tryLock  
-&emsp; ***<font color = "lime">RedissonLock锁互斥、锁时间自动延迟、可重入加锁。</font>***  
+&emsp; **<font color = "lime">RedissonLock锁互斥、锁时间自动延迟、可重入加锁。</font>**  
 
 ```java
 Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {

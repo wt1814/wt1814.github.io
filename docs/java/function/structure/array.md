@@ -179,7 +179,7 @@ public class SingleLinkedList {
 ```
 
 ## 2.2. 链表解题思路  
-&emsp; ***<font color = "red">链表常见解题思路有翻转和快慢指针。</font>***  
+&emsp; **<font color = "red">链表常见解题思路有翻转和快慢指针。</font>**  
 
 ### 2.2.1. 链表翻转  
 &emsp; 翻转链表可以用非递归和递归这两种方式来解题。  
@@ -193,7 +193,7 @@ public class SingleLinkedList {
 
 
 ### 2.2.2. 快慢指针  
-&emsp; ***<font color = "red">可以用快慢指针解决以下两大类问题：</font>***  
+&emsp; **<font color = "red">可以用快慢指针解决以下两大类问题：</font>**  
 1. 寻找/删除第K个结点  
 2. 有关链表环问题的相关解法    
 

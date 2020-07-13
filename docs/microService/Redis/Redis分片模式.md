@@ -36,8 +36,8 @@ tags:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-74.png)  
 
 # 1. 分片模式  
-&emsp; ***<font color = "lime">分片(sharding)是将数据拆分到多个Redis实例的过程，这样每个实例将只包含所有键的子集</font>***，这种方法在解决某些问题时可以获得线性级别的性能提升。  
-&emsp; ***<font color = "red">根据执行分片的位置，可以分为三种分片方式：</font>***  
+&emsp; **<font color = "lime">分片(sharding)是将数据拆分到多个Redis实例的过程，这样每个实例将只包含所有键的子集</font>**，这种方法在解决某些问题时可以获得线性级别的性能提升。  
+&emsp; **<font color = "red">根据执行分片的位置，可以分为三种分片方式：</font>**  
 
 * 客户端分片：在客户端实现相关的逻辑，例如用取模或者一致性哈希对 key 进行分片，查询和修改都先判断 key 的路由。  
 * 代理分片：把做分片处理的逻辑抽取出来，运行一个独立的代理服务，客户端连接到 这个代理服务，代理服务做请求的转发。  
@@ -47,7 +47,7 @@ tags:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-18.png)  
 &emsp; Redis Sharding是Redis Cluster出来之前，业界普遍使用的多Redis实例集群方法。其主要思想是基于哈希算法，根据Redis数据的key的哈希值对数据进行分片，将数据映射到各自节点上。  
 &emsp; 优点在于实现简单，缺点在于当Redis集群调整，每个客户端都需要更新调整。  
-&emsp; ***在redis3.0版本之前的版本，可以通过redis客户端做sharding分片，比如jedis实现的ShardedJedisPool。***  
+&emsp; **在redis3.0版本之前的版本，可以通过redis客户端做sharding分片，比如jedis实现的ShardedJedisPool。**  
 
 ## 1.2. 基于代理服务器分片
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-19.png)  
@@ -102,7 +102,7 @@ tags:
 &emsp; 同样删除一个节点也是类似，移动完成后就可以删除这个节点了。  
 
 ##### 1.3.3.1.2. 集群功能限制  
-&emsp; ***<font color = "red">Redis集群相对单机在功能上存在一些限制</font>***，需要开发人员提前了解， 在使用时做好规避。限制如下：  
+&emsp; **<font color = "red">Redis集群相对单机在功能上存在一些限制</font>**，需要开发人员提前了解， 在使用时做好规避。限制如下：  
 1. <font color = "red">key批量操作支持有限。</font>如mset、mget，目前只支持具有相同slot值的 key执行批量操作。对于映射为不同slot值的key由于执行mget、mget等操作可 能存在于多个节点上因此不被支持。  
 2. key事务操作支持有限。同理只支持多key在同一节点上的事务操 作，当多个key分布在不同的节点上时无法使用事务功能。   
 3. key作为数据分区的最小粒度，因此不能将一个大的键值对象如 hash、list等映射到不同的节点。   

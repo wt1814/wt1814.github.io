@@ -36,7 +36,7 @@ tags:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-2.png)  
 # 1. Zookeeper是什么  
 &emsp; Zookeeper 是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题，例如怎样避免同时操作同一数据造成脏读的问题。  
-&emsp; ***Zookeeper特性：***  
+&emsp; **Zookeeper特性：**  
 
 * 全局数据一致：每个 server 保存一份相同的数据副本，client 无论连 接到哪个server，展示的数据都是一致的，这是最重要的特征。  
 * 可靠性：如果消息被其中一台服务器接受，那么将被所有的服务器接受。  
@@ -57,12 +57,12 @@ tags:
 * 持久非顺序节点：客户端与zookeeper断开连接后，该节点依旧存在，直到有删除操作主动清除该节点。  
 * 持久顺序节点：客户端与zookeeper断开连接后，该节点依旧存在，直到有删除操作主动清除该节点，节点名称会追加一个单调递增的数字。   
 
-&emsp; ***Zookeeper节点的持久性：***  
+&emsp; **Zookeeper节点的持久性：**  
 
 * 临时节点并不会在客户端断开的瞬间就被删除，而是等到会话结束时，zookeeper会将该短暂znode删除，短暂znode不可以有子节点。  
 * 持久节点不依赖于客户端会话，只有当客户端明确要删除该持久znode时才会被删除。  
 
-&emsp; ***Zookeeper节点的顺序性：***  
+&emsp; **Zookeeper节点的顺序性：**  
 
 * 创建带自增序列znode时设置顺序标识，znode名称后会附加一个值。  
 * 顺序号是一个单调递增的计数器，由父节点维护。  
@@ -75,7 +75,7 @@ tags:
 
 &emsp; <font color = "red">Watcher机制运行流程：客户端注册 Watcher、服务器处理 Watcher 和客户端回调 Watcher。</font>  
 
-&emsp; ***watch的重要特性：***  
+&emsp; **watch的重要特性：**  
 
 * 一次性触发：  
 &emsp; Watcher通知是一次性的，即一旦触发一次通知后，该 Watcher 就失效了，因此客户端需要反复注册Watcher。但是在获取watch事件和设置新的watch事件之间有延迟。延迟为毫秒级别，理论上会出现不能观察到节点的每一次变化。  
@@ -104,7 +104,7 @@ tags:
 ### 3.2.1. 选举流程，恢复模式  
 &emsp; 当整个集群在启动时，或者当 leader 节点出现网络中断、崩溃等情况时， ZAB 协议就会进入恢复模式并选举产生新的 Leader，当 leader 服务器选举出来后，并且集群中有过半的机器和该 leader 节点完成数据同步后（同步指的是数据同步，用来保证集群中过半的机器能够和 leader 服务器的数据状态保持一致）， ZAB 协议就会退出恢复模式。  
 
-&emsp; ***选举流程中几个重要参数：***  
+&emsp; **选举流程中几个重要参数：**  
 &emsp; 服务器ID：即配置的myId。id越大，选举时权重越高。  
 &emsp; <font color = "red">事务ID，zkid(Zookeeper Transaction Id)：服务器在运行时产生的数据id，即zkid, 这里指本地最新snapshot的id。id越大说明数据越新，选举时权重越高。</font>  
 &emsp; 选举轮数：Epoch，即逻辑时钟。随着选举的轮数++。  
@@ -113,7 +113,7 @@ tags:
 ZooKeeper状态的每次变化都接收一个ZXID（ZooKeeper事务id）形式的标记。ZXID是一个64位的数字，由Leader统一分配，全局唯一，不断递增。
 ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一的zxid，如果zxid1小于zxid2说明zxid1在zxid2之前发生。
 -->
-* ***服务器启动时的leader选举：***  
+* **服务器启动时的leader选举：**  
 &emsp; 每个节点启动的时候状态都是LOOKING，处于观望状态，接下来就开始进行选主流程。  
 &emsp; 若进行 Leader 选举，则至少需要两台机器，这里选取 3 台机器组成的服务器集群为例。在集群初始化阶段，当有一台服务器 Server1 启动时，其单独无法进行和完成 Leader 选举，当第二台服务器 Server2 启动时，此时两台机器可以相互通信，每台机器都试图找到 Leader，于是进入 Leader选举过程。选举过程如下：  
 1. 每个 Server 发出一个投票。由于是初始情况， Server1 和 Server2 都会将自己作为 Leader 服务器来进行投票，每次投票会包含所推举的服务器的 myid 和 ZXID、 epoch，使用(myid, ZXID,epoch)来表示，此时 Server1 的投票为(1, 0)， Server2 的投票为(2, 0)，然后各自将这个投票发给集群中其他机器。  
@@ -126,9 +126,9 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 4. 统计投票。每次投票后，服务器都会统计投票信息，判断是否已经有过半机器接受到相同的投票信息，对于 Server1、 Server2 而言，都统计出集群中已经有两台机器接受了(2, 0)的投票信息，此时便认为已经选出了 Leader。  
 5. 改变服务器状态。一旦确定了 Leader，每个服务器就会更新自己的状态，如果是 Follower，那么就变更为 FOLLOWING，如果是 Leader，就变更为 LEADING。  
 
-&emsp; ***<font color = "red">一句话概述：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票（epoch>ZXID>myid）；统计投票；改变服务器状态。</font>***
+&emsp; **<font color = "red">一句话概述：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票（epoch>ZXID>myid）；统计投票；改变服务器状态。</font>**
 
-* ***运行过程中的leader选举：***  
+* **运行过程中的leader选举：**  
 &emsp; 当集群中的 leader 服务器出现宕机或者不可用的情况时，那么整个集群将无法对外提供服务，而是进入新一轮的 Leader 选举，服务器运行期间的 Leader 选举和启动时期的 Leader 选举基本过程是一致的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-3.png)  
 1. 变更状态。 Leader挂后，余下的非Observer服务器都会将自己的服务器状态变更为LOOKING，然后开始进入Leader选举过程。  
@@ -143,7 +143,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 
 &emsp; 在 zookeeper 中，客户端会随机连接到 zookeeper 集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，然后 leader 会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交（类2PC事务）。  
 
-&emsp; ***消息广播流程：***  
+&emsp; **消息广播流程：**  
 1. leader接收到消息请求后，将消息赋予一个全局唯一的64 位自增 id，叫：zxid，通过 zxid 的大小比较既可以实现因果有序这个特征。  
 2. leader 为每个 follower 准备了一个 FIFO 队列（通过 TCP协议来实现，以实现了全局有序这一个特点）将带有 zxid的消息作为一个提案（ proposal）分发给所有的 follower。  
 3. 当 follower 接收到 proposal，先把 proposal 写到磁盘，写入成功以后再向 leader 回复一个 ack。  

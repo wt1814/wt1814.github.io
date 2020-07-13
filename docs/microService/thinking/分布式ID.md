@@ -52,27 +52,27 @@ tags:
 * 滴滴出品(TinyID)  
 
 ## 2.1. UUID  
-&emsp; ***生产随机数的方式：***  
+&emsp; **生产随机数的方式：**  
 
 * Math.random()，0到1之间随机数；  
 * java.util.Random，伪随机数（线性同余法生成）；  
 * java.security.SecureRandom，真随机数；  
 * java.util.concurrent.ThreadLocalRandom，每一个线程有一个独立的随机数生成器。  
 
-&emsp; ***优点：***  
+&emsp; **优点：**  
 
 * 不需要第三方组件，无单点的风险，代码实现简单；  
 * 本机生成，没有网络消耗；  
 * 因为是全球唯一的ID，所以迁移数据容易。  
 
-&emsp; ***缺点：***  
+&emsp; **缺点：**  
 
 * 每次生成的ID是无序的，相对来说还会影响性能（比如 MySQL 的 InnoDB 引擎，如果UUID作为数据库主键，其无序性会导致数据位置频繁变动）；  
 * UUID的字符串存储，查询效率慢；  
 * 长度长，存储空间大；  
 * ID本身无业务含义，不可读。  
 
-&emsp; ***应用场景：***  
+&emsp; **应用场景：**  
 
 * 适用于类似生成token令牌的场景；  
 * 不适用一些要求有趋势递增的ID场景。  
@@ -81,13 +81,13 @@ tags:
 ## 2.2. 利用数据库生成  
 ### 2.2.1. MySql主键自增  
 &emsp; 这个方案利用了MySQL的主键自增auto_increment，默认每次ID加1。  
-&emsp; ***优点：***  
+&emsp; **优点：**  
 
 * 数字化，id递增；  
 * 查询效率高；  
 * 具有一定的业务可读。  
 
-&emsp; ***缺点：***  
+&emsp; **缺点：**  
 
 * 存在单点问题，如果mysql挂了，就无法生成ID；  
 * 数据库压力大，高并发抗不住。  
@@ -96,9 +96,9 @@ tags:
 &emsp; 这个方案解决了mysql的单点问题，在auto_increment基础上，设置step步长。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-18.png)  
 &emsp; 每台的初始值分别为1,2,3...N，步长为N（这个案例步长为4）。  
-&emsp; ***优点：*** 解决了单点问题。  
-&emsp; ***缺点：*** 一旦把步长定好后，就无法扩容；而且单个数据库的压力大，数据库自身性能无法满足高并发。  
-&emsp; ***应用场景：*** 数据不需要扩容的场景。  
+&emsp; **优点：** 解决了单点问题。  
+&emsp; **缺点：** 一旦把步长定好后，就无法扩容；而且单个数据库的压力大，数据库自身性能无法满足高并发。  
+&emsp; **应用场景：** 数据不需要扩容的场景。  
 
 ### 2.2.3. 基于数据库的号段模式  
 &emsp; 号段模式是当下分布式ID生成器的主流实现方式之一，号段模式可以理解为从数据库批量的获取自增ID，每次从数据库取出一个号段范围，例如 (1,1000] 代表1000个ID，具体的业务服务将本号段，生成1~1000的自增ID并加载到内存。表结构如下：  
@@ -135,8 +135,8 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 
 ### 2.3.1. 基于Redis实现  
 &emsp; redis单机使用incr函数生成自增ID；<font color = "red">redis集群使用lua脚本生成，或使用org.springframework.data.redis.support.atomic.RedisAtomicLong生成。</font>  
-&emsp; ***优点：*** 有序递增，可读性强。  
-&emsp; ***缺点：*** 占用带宽，每次要向redis进行请求。
+&emsp; **优点：** 有序递增，可读性强。  
+&emsp; **缺点：** 占用带宽，每次要向redis进行请求。
 
 ---
 ## 2.4. 雪花SnowFlake算法  
@@ -150,12 +150,12 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 * 10位机器标识码：可以部署在1024个节点，如果机器分机房（IDC）部署，这10位可以由5位机房ID (datacenterId)和5位机器ID(workerId)组成。  
 * 12位序列：毫秒内的计数，12位的计数顺序号支持每个节点每毫秒(同一机器，同一时间截)产生4096个ID序号。  
 
-&emsp; ***snowflake算法优点：***  
+&emsp; **snowflake算法优点：**  
 1. 生成ID时不依赖于DB，完全在内存生成，高性能高可用。  
 2. ID呈趋势递增，后续插入索引树的时候性能较好。  
 3. 可以根据自身业务特性分配bit位，非常灵活。  
 
-&emsp; ***snowflake算法缺点：*** <font color="red">依赖于系统时钟的一致性。如果某台机器的系统时钟回拨，有可能造成ID冲突，或者ID乱序。</font>  
+&emsp; **snowflake算法缺点：** <font color="red">依赖于系统时钟的一致性。如果某台机器的系统时钟回拨，有可能造成ID冲突，或者ID乱序。</font>  
 
 ### 2.4.1. snowflake算法实现  
 &emsp; 算法代码：  

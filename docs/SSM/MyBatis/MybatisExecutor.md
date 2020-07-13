@@ -102,7 +102,7 @@ sqlSession = factory.openSession();
 &emsp; Mybatis 中 scripting 模块会根据用户传入的参数，解析映射文件中定义的动态 SQL 节点，形成数据库能执行的SQL 语句。  
 * SQL 执行  
 &emsp; 执行 SQL 语句；处理结果集，并映射成 Java 对象。  
-&emsp; <font color = "red">SQL语句的执行涉及多个组件Configuration 、 SqlSessionFactory 、 Session 、 Executor 、 MappedStatement 、StatementHandler、ResultSetHandler。</font> ***<font color = "lime">包括 MyBatis 的四大核心，它们是: Executor、StatementHandler、ParameterHandler、ResultSetHandler。</font>***  
+&emsp; <font color = "red">SQL语句的执行涉及多个组件Configuration 、 SqlSessionFactory 、 Session 、 Executor 、 MappedStatement 、StatementHandler、ResultSetHandler。</font> **<font color = "lime">包括 MyBatis 的四大核心，它们是: Executor、StatementHandler、ParameterHandler、ResultSetHandler。</font>**  
 
     |名称 |意义 |
     |---|---|
@@ -231,7 +231,7 @@ InputStream getResourceAsStream(String resource, ClassLoader[] classLoader) {
 ```
 
 ## 3.3. 创建SqlSessionFactory  
-&emsp; ***<font color = "lime">SqlSessionFactory对象的生成使用了建造者模式。</font>***  
+&emsp; **<font color = "lime">SqlSessionFactory对象的生成使用了建造者模式。</font>**  
 
 ```java
 public SqlSessionFactory build(InputStream inputStream) {
@@ -506,7 +506,7 @@ public void parseStatementNode() {
                 configuration.isUseGeneratedKeys() && SqlCommandType.INSERT.equals(sqlCommandType))
                 ? Jdbc3KeyGenerator.INSTANCE : NoKeyGenerator.INSTANCE;
     }
-/************************************************************************************/
+/********************************************************/
     //解析Sql（重要）  根据sql文本来判断是否需要动态解析 如果没有动态sql语句且 只有#{}的时候 直接静态解析使用?占位 当有 ${} 不解析
     SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
     //获取StatementType，可以理解为Statement和PreparedStatement
@@ -677,7 +677,7 @@ Map<String,Object> map = new HashMap();
 map.put("id","123");
 mapper.selectAll(map);
 ```
-&emsp; ***<font color = "lime">MyBatis底层使用了动态代理，来对这个接口进行代理。</font>***  
+&emsp; **<font color = "lime">MyBatis底层使用了动态代理，来对这个接口进行代理。</font>**  
 
 
 &emsp; 入口：在获取Mapper的时候，需要调用SqlSession的getMapper()方法。    
@@ -1109,7 +1109,7 @@ public <E> List<E> doQuery(MappedStatement ms, Object parameter, RowBounds rowBo
 &emsp; 因为MyBatis底层封装的就是java最基本的jdbc，所以赋值一定也是调用jdbc的putString()方法。  
 
 ```java
-/********************************参数赋值部分*******************************/
+/**********************参数赋值部分*********************/
 //由于是#{}，所以使用的是prepareStatement，预编译SQL
 private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException {
     Statement stmt;
@@ -1169,7 +1169,7 @@ public void setNonNullParameter(PreparedStatement ps, int i, String parameter, J
     //这里就是最最原生的jdbc的赋值了
     ps.setString(i, parameter);
 }
-/********************************参数赋值部分*******************************/
+/**********************参数赋值部分*********************/
 ```
 
 ### 3.5.6. 正式执行  

@@ -23,7 +23,7 @@ tags:
 ## 1.1. Mybatis插件简介   
 &emsp; <font color="red">编写Mybatis插件前，需要对Mybatis的运行原理、Mybatis插件原理有一定的了解。</font>  
 
-&emsp; ***Mybatis插件典型适用场景：***  
+&emsp; **Mybatis插件典型适用场景：**  
 
 * 分页功能  
 &emsp; <font color = "red">Mybatis的分页默认是基于内存分页的（查出所有，再截取）</font>，数据量大的情况下效率较低，使用mybatis插件可以改变该行为，只需要拦截StatementHandler类的prepare方法，改变要执行的SQL语句为分页语句即可；  
@@ -87,7 +87,7 @@ select id, role_name as roleName, note from role where id = ?, cost is 35
 ```
 
 ## 1.3. Mybatis插件运行机制  
-&emsp; ***<font color="lime">Mybaits插件的实现主要用了责任链模式和动态代理。</font>*** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
+&emsp; **<font color="lime">Mybaits插件的实现主要用了责任链模式和动态代理。</font>** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
 
 &emsp; 有哪些对象允许被代理？有哪些方法可以被拦截？在 MyBatis官网有参考，www.mybatis.org/mybatis-3/zh/configuration.html#plugins 。  
 &emsp; 支持拦截的方法：  

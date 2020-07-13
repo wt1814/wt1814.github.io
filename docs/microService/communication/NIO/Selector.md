@@ -111,7 +111,7 @@ readyCount = selector.select (10000);
 |Selector wakeup()	|使尚未返回的第一个选择操作立即返回|
 |void close()	|关闭此选择器|
 
-&emsp; ***<font color = "lime">Selector的基本使用流程：</font>***  
+&emsp; **<font color = "lime">Selector的基本使用流程：</font>**  
 1. 通过Selector.open() 打开一个 Selector。
 2. 将Channel注册到Selector中, 并设置需要监听的事件(interest set)
 3. 不断重复:

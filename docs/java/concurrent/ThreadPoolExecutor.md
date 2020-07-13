@@ -24,7 +24,7 @@ https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
 ## 1.1. 属性  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-3.png) 
  
-&emsp; ***<font color = "red">线程池存在5种状态：</font>***  
+&emsp; **<font color = "red">线程池存在5种状态：</font>**  
 
 * RUNNING：在这个状态的线程池能判断接收新提交的任务，并且也能处理阻塞队列中的任务。  
 * SHUTDOWN：处于关闭的状态，该线程池不能接收新提交的任务，但是可以处理阻塞队列中已经保存的任务，在线程处于RUNNING状态，调用shutdown()方法能切换为该状态。  

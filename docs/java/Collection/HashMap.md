@@ -27,7 +27,7 @@ tags:
 
 # 1. HashMap  
 
-&emsp; ***HashMap的底层：Hash表数据结构！！！***
+&emsp; **HashMap的底层：Hash表数据结构！！！**
 
 1. 基于JDK1.8的HashMap是由数组+链表+红黑树组成，当链表长度超过8时，链表会自动转换成红黑树，当红黑树节点个数小于6时，又会转化成链表。相对于早期版本的JDK HashMap实现，新增了红黑树作为底层数据结构，在数据量较大且哈希碰撞较多时，能够极大的增加检索的效率。
 2. 允许key和value都为null。key重复会被覆盖，value允许重复。HashMap最多只允许一条记录的键为null，允许多条记录的值为null。  
@@ -50,8 +50,8 @@ public class HashMap<K,V> extends AbstractMap<K,V> implements Map<K,V>, Cloneabl
 
 ### 1.1.2. HashMap数据结构  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-5.png)  
-&emsp; ***<font color = "red">HashMap的底层：Hash表数据结构！！！</font>***  
-&emsp; ***HashMap中hash函数设计？***  
+&emsp; **<font color = "red">HashMap的底层：Hash表数据结构！！！</font>**  
+&emsp; **HashMap中hash函数设计？**  
 
 ```java
 static final int hash(Object key) {
@@ -64,10 +64,10 @@ static final int hash(Object key) {
 &emsp; hash函数是先得到key 的hashcode（32位的int值），然后让hashcode的高16位和低16位进行异或操作。  
 &emsp; hash函数称为“扰动函数”。尽可能降低了hash碰撞；采用位运算，比较高效。  
 
-&emsp; ***HashMap在发生hash冲突的时候用的是链地址法。***  
+&emsp; **HashMap在发生hash冲突的时候用的是链地址法。**  
 
 &emsp; 在JDK1.8中，HashMap是由数组+链表+红黑树构成，新增了红黑树作为底层数据结构。链表长度大于8的时候，链表会转成红黑树；当红黑树的节点数小于6时，会转化成链表。  
-&emsp; ***<font color = "lime">为什么使用红黑树？</font>***  
+&emsp; **<font color = "lime">为什么使用红黑树？</font>**  
 &emsp; JDK 1.7 中，如果哈希碰撞过多，拉链过长，极端情况下，所有值都落入了同一个桶内，这就退化成了一个链表。通过 key 值查找要遍历链表，效率较低。JDK1.8在解决哈希冲突时，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间。  
 
 ### 1.1.3. 属性  
@@ -148,7 +148,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
     }
 }
 ```
-&emsp; ***<font color = "red">HashMap的Hash表结构：</font>***  
+&emsp; **<font color = "red">HashMap的Hash表结构：</font>**  
 &emsp; 在HashMap的数据结构中，有两个参数可以影响HashMap的性能：初始容量（inital capacity）和负载因子（load factor）。初始容量和负载因子也可以修改，具体实现方式，可以在对象初始化的时候，指定参数。  
 
 * initialCapacity数组的初始容量为16。可以在构造方法中指定。必须是2的幂次方。(16 → 32 → 64 ...)。需要注意的是，传入的initialCapacity并不是实际的初始容量，<font color= "red">HashMap通过tableSize函数将initialCapacity调整为大于等于该值的最小2次幂。</font>  
@@ -165,12 +165,12 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
         如果loadFactor太小，那么map中的table需要不断的扩容，扩容是个耗时的过程
         如果loadFactor太大，那么map中table放满了也不不会扩容，导致冲突越来越多，解决冲突而起的链表越来越长，效率越来越低
         而 0.75 这是一个折中的值，是一个比较理想的值
-* threshold数组扩容阈值。即：HashMap数组总容量 * 加载因子。***<font color = "red">记录当前数组的最大容量。当前容量大于或等于该值时会执行扩容 resize()。</font>*** 扩容的容量为当前HashMap总容量的两倍。比如，当前HashMap的总容量为16 ，那么扩容之后为32。  
+* threshold数组扩容阈值。即：HashMap数组总容量 * 加载因子。**<font color = "red">记录当前数组的最大容量。当前容量大于或等于该值时会执行扩容 resize()。</font>** 扩容的容量为当前HashMap总容量的两倍。比如，当前HashMap的总容量为16 ，那么扩容之后为32。  
     
         threshold 除了用于存放扩容阈值还有其他作用吗？
         在新建 HashMap 对象时， threshold 还会被用来存初始化时的容量。HashMap 直到第一次插入节点时，才会对 table 进行初始化，避免不必要的空间浪费。
 
-&emsp; ***<font color = "red">HashMap的树形化结构：</font>***  
+&emsp; **<font color = "red">HashMap的树形化结构：</font>**  
 * TREEIFY_THRESHOLD树形化阈值。当链表的节点个数大于等于这个值时，会将链表转化为红黑树。
 * UNTREEIFY_THRESHOLD解除树形化阈值。当链表的节点个数小于等于这个值时，会将红黑树转换成普通的链表。
 
@@ -178,14 +178,14 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 
         为什么在少于 6 的时候而不是 8 的时候才将红黑树转换为链表呢？假设设计成大于 8 时链表转换为红黑树，小于 8 的时候又转换为链表。如果一个 hashmap 不停的插入、删除。hashmap 中的个数不停地在 8 徘徊，那么就会频繁的发生链表和红黑树之间转换，效率非常低。因此，6 和 8 之间来一个过渡值可以减缓这种情况造成的影响。
 
-* ***<font color = "lime">MIN_TREEIFY_CAPACITY树形化阈值的第二条件。当数组的长度小于这个值时，就算树形化阈不达标，链表也不会转化为红黑树，而是优先扩容数组resize()。</font>***  
+* **<font color = "lime">MIN_TREEIFY_CAPACITY树形化阈值的第二条件。当数组的长度小于这个值时，就算树形化阈不达标，链表也不会转化为红黑树，而是优先扩容数组resize()。</font>**  
 
     &emsp; 把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于 8；table 数组长度大于等于 64。
 
-    ***<font color = "red">为什么 table 数组容量大于等于 64 才树化？</font>***  
+    **<font color = "red">为什么 table 数组容量大于等于 64 才树化？</font>**  
     &emsp;因为当 table 数组容量比较小时，键值对节点 hash 的碰撞率可能会比较高，进而导致链表长度较长。这个时候应该优先扩容，而不是立马树化。
 
-&emsp; ***<font color = "red">HashMap的内部类：</font>***  
+&emsp; **<font color = "red">HashMap的内部类：</font>**  
 &emsp; HashMap 内部有很多内部类，扩展了 HashMap 的一些功能，EntrySet 类就是其中一种，该类较为简单，无内部属性，可以理解为一个工具类，对 HashMap 进行了简单的封装，提供了方便的遍历、删除等操作。  
 &emsp; 调用 HashMap 的 entrySet() 方法就可以返回 EntrySet 实例对象，为了不至于每次调用该方法都返回新的 EntrySet 对象，所以设置该属性，缓存 EntrySet 实例。  
 
@@ -290,13 +290,13 @@ public V put(K key, V value) {
     table 的初始化时机是什么时候
     一般情况下，在第一次 put 的时候，调用 resize 方法进行 table 的初始化（懒初始化，懒加载思想在很多框架中都有应用！）
 
-&emsp; ***<font color = "lime">插入元素方法：</font>***  
+&emsp; **<font color = "lime">插入元素方法：</font>**  
 1. 判断键值对数组table[i]是否为空或为null，否则执行resize()进行扩容；  
 2. 根据键值key计算hash值得到插入的数组索引i，如果table[i]==null，直接新建节点添加；  
 3. 当table[i]不为空，判断table[i]的首个元素是否和传入的key一样，如果相同直接覆盖value；  
 4. 判断table[i]是否为treeNode，即table[i]是否是红黑树，如果是红黑树，则直接在树中插入键值对；  
 5. 遍历table[i]，判断链表长度是否大于8，大于8的话把链表转换为红黑树，在红黑树中执行插入操作，否则进行链表的插入操作；遍历过程中若发现 key 已经存在直接覆盖 value 即可；  
-6. ***<font color = "red">插入成功后，判断实际存在的键值对数量size是否超多了最大容量 threshold，如果超过，进行扩容操作；</font>***    
+6. **<font color = "red">插入成功后，判断实际存在的键值对数量size是否超多了最大容量 threshold，如果超过，进行扩容操作；</font>**    
 
 ```java
 /**
@@ -436,7 +436,7 @@ void addEntry(int hash, K key, V value, int bucketIndex) {
     createEntry(hash, key, value, bucketIndex);
 }
 ```
-&emsp; ***<font color = "lime">JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时</font>***，源码中的体现如下所示：  
+&emsp; **<font color = "lime">JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时</font>**，源码中的体现如下所示：  
 
 ```java
 //数组长度大于阈值，就扩容
@@ -448,7 +448,7 @@ if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY)
 resize();
 ```
 
-&emsp; ***扩容机制详解：***  
+&emsp; **扩容机制详解：**  
 &emsp; JDK1.8融入了红黑树的机制，比较复杂，这里先介绍JDK1.7的扩容源码，便于理解，然后再介绍JDK1.8的源码。  
 &emsp; jdk1.7的扩容实现源码部分  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-9.png)  

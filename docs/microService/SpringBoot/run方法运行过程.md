@@ -186,7 +186,7 @@ public ConfigurableApplicationContext run(String... args) {
 	return context;
 }
 ```
-&emsp; ***<font color = "red">主要步骤总结如下：</font>***  
+&emsp; **<font color = "red">主要步骤总结如下：</font>**  
 1. 从spring.factories配置文件中加载EventPublishingRunListener对象，该对象拥有SimpleApplicationEventMulticaster属性，即在SpringBoot启动过程的不同阶段用来发布内置的生命周期事件;  
 2. 准备环境变量，包括系统变量，环境变量，命令行参数，默认变量，servlet相关配置变量，随机值以及配置文件（比如application.properties）等;
 3. 控制台打印SpringBoot的bannner标志；  
@@ -199,7 +199,7 @@ public ConfigurableApplicationContext run(String... args) {
 10. 报告启动异常，即若启动过程中抛出异常，此时用FailureAnalyzers来报告异常;  
 11. 最终返回容器对象，这里调用方法没有声明对象来接收。  
 
-&emsp; ***<font color = "lime">将关键步骤再浓缩总结下：</font>***  
+&emsp; **<font color = "lime">将关键步骤再浓缩总结下：</font>**  
 1. 构建SpringApplication对象，用于启动SpringBoot；  
 2. 从spring.factories配置文件中加载EventPublishingRunListener对象用于在不同的启动阶段发布不同的生命周期事件；  
 3. 准备环境变量，包括系统变量，环境变量，命令行参数及配置文件（比如application.properties）等；  

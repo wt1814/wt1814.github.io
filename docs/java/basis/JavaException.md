@@ -87,7 +87,7 @@ e.toString();       //获取的信息包括异常类型和异常详细消息
 e.getMessage();     //只是获取了异常的详细消息字符串。
 e.printStackTrace();//void类型，在命令行打印异常信息在程序中出错的位置及原因，可以输出整个调用流程。便于调试用。
 ```
-&emsp; ***<font color = "red">e.printStackTrace();只在控制台打印信息，不会将异常堆栈输出到日志文件中。</font>***  
+&emsp; **<font color = "red">e.printStackTrace();只在控制台打印信息，不会将异常堆栈输出到日志文件中。</font>**  
 
 ## 1.5. 自定义异常 
 ......

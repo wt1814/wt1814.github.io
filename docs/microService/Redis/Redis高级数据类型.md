@@ -49,7 +49,7 @@ tags:
 &emsp; 这种方法对于每个用户，都有存储每天的访问信息的一个很小的string字符串。通过BITCOUN就能轻易统计某个用户历史访问网站的天数。另外通过调用BITPOS命令，或者客户端获取并分析这个bitmap，就能计算出最长停留时间。  
 -->
 
-&emsp; ***优点与缺点：***  
+&emsp; **优点与缺点：**  
 &emsp; Bitmaps的最大优点就是存储信息时可以节省大量的空间。例如在一个系统中，不同的用户被一个增长的用户ID表示。40亿（2^32≈40亿）用户只需要512M内存就能记住某种信息，例如用户是否登录过。  
 
 ## 2.2. 操作命令
@@ -84,10 +84,10 @@ https://mp.weixin.qq.com/s/EF1cgBlJB3U37oZm3KgQvQ
 -->
 
 ## 3.1. HyperLogLog用作基数统计  
-&emsp; 基数统计(Cardinality Counting) 通常是用来统计一个集合中不重复的元素个数。例如：***<font color = "red">统计每个网页的 UV(独立访客，每个用户每天只记录一次，需要对每天对浏览去重) 。</font>***  
-&emsp; HyperLogLog可用于基数统计。Hyper指的是超级。***<font color = "red">Hyperloglog提供不精确的去重计数功能，HyperLogLog适于做大规模数据的去重统计。</font>***     
+&emsp; 基数统计(Cardinality Counting) 通常是用来统计一个集合中不重复的元素个数。例如：**<font color = "red">统计每个网页的 UV(独立访客，每个用户每天只记录一次，需要对每天对浏览去重) 。</font>**  
+&emsp; HyperLogLog可用于基数统计。Hyper指的是超级。**<font color = "red">Hyperloglog提供不精确的去重计数功能，HyperLogLog适于做大规模数据的去重统计。</font>**     
 
-&emsp; ***HyperLogLog优点与缺点：***  
+&emsp; **HyperLogLog优点与缺点：**  
 
 * 优点：占用内存极小，对于一个key，只需要12kb。  
 * 缺点：查询指定用户的时候，可能会出错，毕竟存的不是具体的数据。总数也存在一定的误差。 
@@ -97,7 +97,7 @@ https://mp.weixin.qq.com/s/EF1cgBlJB3U37oZm3KgQvQ
 &emsp; Redis 中的 HyperLogLog 实现  
 
 ## 3.3. HyperLogLog的使用  
-&emsp; ***操作命令：***  
+&emsp; **操作命令：**  
 &emsp; Redis Hyperloglog的三个命令：PFADD、PFCOUNT、PFMERGE。  
 
 * PFADD命令用于添加一个新元素到统计中。  

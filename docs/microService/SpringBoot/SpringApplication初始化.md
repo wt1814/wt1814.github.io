@@ -69,7 +69,7 @@ public static ConfigurableApplicationContext run(Class<?>[] primarySources, Stri
 # 2. SpringApplication初始化  
 <!-- https://mp.weixin.qq.com/s/JcMRo6xuDEimKk-KZDKJ1g-->
 
-&emsp; ***<font color = "red">构造过程一般是对构造函数的一些成员属性赋值。</font>***  
+&emsp; **<font color = "red">构造过程一般是对构造函数的一些成员属性赋值。</font>**  
 &emsp; 构造SpringApplication对象时需要用到的一些成员属性：  
 
 ```java
@@ -195,13 +195,13 @@ public enum WebApplicationType {
 ### 2.1.2. 设置应用上下文初始化器（SpringBoot的SPI机制原理）  
 &emsp; <font color = "red">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](../../java/basis/SPI.md)来加载扩展实现类。</font>  
 
-&emsp; ***<font color = "lime">SpringBoot通过以下步骤实现自己的SPI机制：</font>***  
+&emsp; **<font color = "lime">SpringBoot通过以下步骤实现自己的SPI机制：</font>**  
 1. 首先获取线程上下文类加载器;  
 2. 然后利用上下文类加载器从spring.factories配置文件中加载所有的SPI扩展实现类并放入缓存中;  
 3. 根据SPI接口从缓存中取出相应的SPI扩展实现类;  
 4. 实例化从缓存中取出的SPI扩展实现类并返回。  
 
-&emsp; ***设置应用上下文初始化器源码解读：***  
+&emsp; **设置应用上下文初始化器源码解读：**  
 
 ```java
 this.setInitializers(this.getSpringFactoriesInstances(ApplicationContextInitializer.class));
@@ -307,7 +307,7 @@ public static ClassLoader getDefaultClassLoader() {
 &emsp; SpringBoot的SPI机制中也是用线程上下文类加载器去加载spring.factories文件中的扩展实现类的！  
 
 #### 2.1.2.2. 加载spring.factories配置文件中的SPI扩展类  
-&emsp; ***<font color = "lime">SpringFactoriesLoader.loadFactoryNames(type, classLoader)是如何加载spring.factories配置文件中的SPI扩展类的？</font>***   
+&emsp; **<font color = "lime">SpringFactoriesLoader.loadFactoryNames(type, classLoader)是如何加载spring.factories配置文件中的SPI扩展类的？</font>**   
 
 ```java
 / SpringFactoriesLoader.java
