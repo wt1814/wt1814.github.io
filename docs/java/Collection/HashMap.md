@@ -4,11 +4,10 @@
 - [1. HashMap](#1-hashmap)
     - [1.1. HashMap源码](#11-hashmap源码)
         - [1.1.1. HashMap类定义](#111-hashmap类定义)
-        - [1.1.2. HashMap数据结构](#112-hashmap数据结构)
-        - [1.1.3. 属性](#113-属性)
+        - [1.1.3. 属性（数据结构）](#113-属性数据结构)
         - [1.1.4. 构造函数](#114-构造函数)
         - [1.1.5. 成员方法](#115-成员方法)
-            - [1.1.5.1. 通过K获取数组下标](#1151-通过k获取数组下标)
+            - [1.1.5.1. 通过K获取数组下标/hash函数的设计](#1151-通过k获取数组下标hash函数的设计)
             - [1.1.5.2. put()，插入](#1152-put插入)
             - [1.1.5.3. resize()，扩容机制](#1153-resize扩容机制)
             - [1.1.5.4. remove()，删除](#1154-remove删除)
@@ -42,29 +41,7 @@ public class HashMap<K,V> extends AbstractMap<K,V> implements Map<K,V>, Cloneabl
 ```
 &emsp; Cloneable空接口，表示可以克隆； Serializable序列化； AbstractMap，提供Map实现接口。  
 
-### 1.1.2. HashMap数据结构  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-5.png)  
-&emsp; **<font color = "red">HashMap的底层：Hash表数据结构！！！</font>**  
-&emsp; **HashMap中hash函数设计？**  
-
-```java
-static final int hash(Object key) {
-    int h;
-    //1. 允许key为null，hash = 0
-    //2. ^，异或运算
-    return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
-}
-```
-&emsp; hash函数是先得到key 的hashcode（32位的int值），然后让hashcode的高16位和低16位进行异或操作。  
-&emsp; hash函数称为“扰动函数”。尽可能降低了hash碰撞；采用位运算，比较高效。  
-
-&emsp; **HashMap在发生hash冲突的时候用的是链地址法。**  
-
-&emsp; 在JDK1.8中，HashMap是由数组+链表+红黑树构成，新增了红黑树作为底层数据结构。链表长度大于8的时候，链表会转成红黑树；当红黑树的节点数小于6时，会转化成链表。  
-&emsp; **<font color = "lime">为什么使用红黑树？</font>**  
-&emsp; JDK 1.7 中，如果哈希碰撞过多，拉链过长，极端情况下，所有值都落入了同一个桶内，这就退化成了一个链表。通过 key 值查找要遍历链表，效率较低。JDK1.8在解决哈希冲突时，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间。  
-
-### 1.1.3. 属性  
+### 1.1.3. 属性（数据结构）  
 
 ```java
 //默认的初始化容量为16，必须是2的n次幂
@@ -79,7 +56,7 @@ static final int MAXIMUM_CAPACITY = 1 << 30;
 //若大于0.75如0.8，则会增大hash冲突的概率，影响查询效率。
 static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
-//刚才提到了当链表长度过长时，会有一个阈值，超过这个阈值8就会转化为红黑树
+//当链表长度过长时，会有一个阈值，超过这个阈值8就会转化为红黑树
 static final int TREEIFY_THRESHOLD = 8;
 
 //当红黑树上的元素个数，减少到6个时，就退化为链表
@@ -142,7 +119,24 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
     }
 }
 ```
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-5.png)  
 &emsp; **<font color = "red">HashMap的Hash表结构：</font>**  
+&emsp; **<font color = "red">HashMap的底层：Hash表数据结构！！！</font>**  
+&emsp; **HashMap中hash函数设计？**  
+
+```java
+static final int hash(Object key) {
+    int h;
+    //1. 允许key为null，hash = 0
+    //2. ^，异或运算
+    return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+}
+```
+&emsp; hash函数是先得到key 的hashcode（32位的int值），然后让hashcode的高16位和低16位进行异或操作。  
+&emsp; hash函数称为“扰动函数”。尽可能降低了hash碰撞；采用位运算，比较高效。  
+
+&emsp; **HashMap在发生hash冲突的时候用的是链地址法。**  
+
 &emsp; 在HashMap的数据结构中，有两个参数可以影响HashMap的性能：初始容量（inital capacity）和负载因子（load factor）。初始容量和负载因子也可以修改，具体实现方式，可以在对象初始化的时候，指定参数。  
 
 * initialCapacity数组的初始容量为16。可以在构造方法中指定。必须是2的幂次方。(16 → 32 → 64 ...)。需要注意的是，传入的initialCapacity并不是实际的初始容量，<font color= "red">HashMap通过tableSize函数将initialCapacity调整为大于等于该值的最小2次幂。</font>  
@@ -165,6 +159,11 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
         在新建 HashMap 对象时， threshold 还会被用来存初始化时的容量。HashMap 直到第一次插入节点时，才会对 table 进行初始化，避免不必要的空间浪费。
 
 &emsp; **<font color = "red">HashMap的树形化结构：</font>**  
+
+&emsp; 在JDK1.8中，HashMap是由数组+链表+红黑树构成，新增了红黑树作为底层数据结构。链表长度大于8的时候，链表会转成红黑树；当红黑树的节点数小于6时，会转化成链表。  
+&emsp; **<font color = "lime">为什么使用红黑树？</font>**  
+&emsp; JDK 1.7 中，如果哈希碰撞过多，拉链过长，极端情况下，所有值都落入了同一个桶内，这就退化成了一个链表。通过 key 值查找要遍历链表，效率较低。JDK1.8在解决哈希冲突时，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间。  
+
 * TREEIFY_THRESHOLD树形化阈值。当链表的节点个数大于等于这个值时，会将链表转化为红黑树。
 * UNTREEIFY_THRESHOLD解除树形化阈值。当链表的节点个数小于等于这个值时，会将红黑树转换成普通的链表。
 
@@ -216,6 +215,9 @@ public HashMap(int initialCapacity, float loadFactor) {
     this.loadFactor = loadFactor;
     this.threshold = tableSizeFor(initialCapacity);
 }
+```
+
+```java
 // 返回大于等于initialCapacity的最小的二次幂数值。
 // >>> 操作符表示无符号右移，高位取0。
 // | 按位或运算
@@ -231,7 +233,7 @@ static final int tableSizeFor(int cap) {
 ```
 
 ### 1.1.5. 成员方法  
-#### 1.1.5.1. 通过K获取数组下标  
+#### 1.1.5.1. 通过K获取数组下标/hash函数的设计  
 &emsp; 不管增加、删除还是查找键值对，定位到数组的位置都是很关键的第一步，打开hashMap的任意一个增加、删除、查找方法，从源码可以看出，通过key获取数组下标，主要做了3步操作，其中length指的是容器数组的大小。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-8.png)  
 
@@ -634,7 +636,7 @@ final Node<K,V> removeNode(int hash, Object key, Object value,boolean matchValue
 
 ## 1.3. ※※※HashMap的线程安全问题  
 &emsp; HashMap在数组的元素过多时会进行扩容操作，扩容之后会把原数组中的元素拿到新的数组中，这时候在多线程情况下就有可能出现多个线程搬运一个元素。或者说一个线程正在进行扩容，但是另一个线程还想进来存或者读元素，这也可会出现线程安全问题。   
-1. 在jdk1.7中，在多线程环境下，扩容时会造成环形链或数据丢失。  
+1. **<font color = "red">在jdk1.7中，在多线程环境下，扩容时会造成环形链或数据丢失。</font>**  
 &emsp; 多线程场景下使用 HashMap 造成死循环问题（基于 JDK1.7），出现问题的位置在 rehash 处，也就是  
 
     ```java
@@ -647,7 +649,7 @@ final Node<K,V> removeNode(int hash, Object key, Object value,boolean matchValue
     } while (e != null);
     ```
     &emsp; 这是 JDK1.7 的 rehash 代码片段，在并发的场景下会形成环。  
-2. 在jdk1.8中，在多线程环境下，会发生数据覆盖的情况。  
+2. **<font color = "red">在jdk1.8中，在多线程环境下，会发生数据覆盖的情况。</font>**  
 &emsp; 在jdk1.8中对HashMap进行了优化，在发生hash碰撞，不再采用头插法方式，而是直接插入链表尾部，因此不会出现环形链表的情况。  
 
 &emsp; 在多线程下安全的操作map，主要有以下解决方法：  
