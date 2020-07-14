@@ -27,7 +27,7 @@ tags:
 &emsp; JDK1.8引入了接口默认方法，其目的是为了解决接口的修改与已有的实现不兼容的问题，接口默认方法可以作为库、框架向前兼容的一种手段。  
 &emsp; 在接口中定义默认方法，使用default关键字，并提供默认的实现。  
 
-```
+```java
 public interface DefaultFunctionInterface {
     default String defaultFunction() {
         return "default function";
@@ -40,7 +40,7 @@ public interface DefaultFunctionInterface {
 ## 1.2. 接口中静态方法  
 &emsp; 在接口中定义静态方法。  
 
-```
+```java
 public interface StaticFunctionInterface {
     static String staticFunction() {
         return "static function";
@@ -50,27 +50,27 @@ public interface StaticFunctionInterface {
 &emsp; 接口中的static方法不能被继承，也不能被实现类调用，只能被自身调用。但是静态变量会被继承。  
 
 # 2. Lambda表达式  
-[Lambda](Lambda.md)  
+[Lambda](/docs/java/JDK8/Lambda.md)  
 
 ------
 
 # 3. StreamAPI  
-[Stream](Stream.md)  
+[Stream](/docs/java/JDK8/Stream.md)  
 
 -----
 # 4. Optional类  
-[Optional](Optional.md)  
+[Optional](/docs/java/JDK8/Optional.md)  
 
 -----
 # 5. Date/Time API  
-[DateTime](DateTime.md)  
+[DateTime](/docs/java/JDK8/DateTime.md)  
 
 -----
 # 6. 异常捕获的改变   
 &emsp; 新的try…cache可以自动关闭在try表达式中打开的对象，而无需开发者手动关闭。  
 &emsp; 多个流对象打开语句，用分号分隔，不是逗号。  
 
-```
+```java
 try(ObjectInputStream in=new ObjectInputStream(new FileInputStream("p1.obj"))){
     System.out.println(Person.class.hashCode());
     Person person=(Person)in.readObject();
@@ -81,7 +81,7 @@ try(ObjectInputStream in=new ObjectInputStream(new FileInputStream("p1.obj"))){
 ```
 &emsp; 不再需要：  
 
-```
+```java
 finally{
     in.close();
 }
@@ -110,7 +110,7 @@ finally{
 |getMimeEncoder(int lineLength, byte[] lineSeparator)	|返回Base64.Encoder，编码使用MIME型base64编码方案，可以通过参数指定每行的长度及行的分隔符。|
 |getUrlEncoder()	|返回Base64.Encoder，编码使用URL和文件名安全型 base64 编码方案。|
 
-```
+```java
 // 使用基本编码
 String base64encodedString = Base64.getEncoder().encodeToString("runoob?java8".getBytes("utf-8"));
 System.out.println("Base64 编码字符串 (基本) :" + base64encodedString);

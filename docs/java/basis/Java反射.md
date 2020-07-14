@@ -37,7 +37,7 @@ tags:
 
 &emsp; 一种是使用switch判断：  
 
-```
+```java
 //首先获得配置文件里的renderType
 switch(renderType){
     case "low":renderHandler=new LowRenderHandler();
@@ -52,7 +52,7 @@ renderHandler.render();
 ```
 &emsp; 另一种是使用反射：  
 
-```
+```java
 //首先从配置文件里获得renderType
 RendeHandler renderHandler=(RendeHandler)Class.forName(rederType).newInstance();
 renderHandler.render();
@@ -64,7 +64,7 @@ renderHandler.render();
 2. 然后实例化对象，获得类的属性、方法或者构造函数；  
 3. 最后访问属性、调用方法、调用构造函数创建对象。  
 
-```
+```java
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

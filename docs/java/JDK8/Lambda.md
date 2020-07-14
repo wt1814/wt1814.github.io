@@ -10,10 +10,10 @@ tags:
 - [1. Lambda表达式](#1-lambda表达式)
     - [1.1. 函数式接口](#11-函数式接口)
     - [1.2. Lambda表达式](#12-lambda表达式)
-        - [1.2.1. 简介:](#121-简介)
-        - [1.2.2. 语法：](#122-语法)
+        - [1.2.1. 简介](#121-简介)
+        - [1.2.2. 语法-1](#122-语法-1)
         - [1.2.3. 使用教程](#123-使用教程)
-            - [1.2.3.1. 变量作用域（调用Lambda表达式外部参数）：](#1231-变量作用域调用lambda表达式外部参数)
+            - [1.2.3.1. 变量作用域（调用Lambda表达式外部参数）](#1231-变量作用域调用lambda表达式外部参数)
             - [1.2.3.2. 泛型函数式接口](#1232-泛型函数式接口)
             - [1.2.3.3. Lambda表达式作为参数传递](#1233-lambda表达式作为参数传递)
             - [1.2.3.4. Lambda表达式作为返回值](#1234-lambda表达式作为返回值)
@@ -25,30 +25,30 @@ tags:
 # 1. Lambda表达式  
 ## 1.1. 函数式接口  
 &emsp; 函数式接口：接口中只有一个抽象方法。可以有默认方法、静态方法，可以覆写Object类中的public方法。  
-&emsp; 标记注解@FunctionalInterface用于声明接口是函数式接口，此接口中多于一个抽象方法，编译器会报错。但是创建函数式接口并不需@FunctionalInterface，此注解只是用来提供信息，也就是更显示的说明此接口是函数式接口。根据java8的定义，任何只有一个抽像方法的接口都是函数式接口（可以包括其它变量成员和方法，只要抽像方法是一个就可以），没有@FunctionalInterface注解，也是函数式接口。  
+&emsp; 标记注解@FunctionalInterface用于声明接口是函数式接口，此接口中多于一个抽象方法，编译器会报错。但是创建函数式接口并不需要@FunctionalInterface，此注解只是用来提供信息，也就是更显示的说明此接口是函数式接口。根据java8的定义，任何只有一个抽像方法的接口都是函数式接口（可以包括其它变量成员和方法，只要抽像方法是一个就可以），没有@FunctionalInterface注解，也是函数式接口。  
 
-```
+```java
 @FunctionalInterface
 interface Converter<F, T> {
     T convert(F from);
 }
 ```
-&emsp; **<font color = "red">函数式接口的实例创建三种方式：lambda表达式；方法引用；构造方法引用。</font>**   
+&emsp; **<font color = "lime">函数式接口的实例创建三种方式：lambda表达式；方法引用；构造方法引用。</font>**   
 
 ## 1.2. Lambda表达式  
-### 1.2.1. 简介:  
+### 1.2.1. 简介  
 &emsp; Lambda表达式是一个匿名函数，即没有函数名的函数。用于创建一个函数式接口的实例。  
 <!--
 Lambda表达式会被匹配到函数式接口的抽象方法上（Lambda表达式是函数式接口中唯一抽象方法的方法体）。Lambda表达式的参数的类型和数量必须与函数式接口内的抽象方法的参数兼容；返回类型必须兼容；并且lambda表达式可能抛出的异常必须能被该方法接受。 
  --> 
 &emsp; <font color = "red">Lambda表达式只是对函数式接口中抽象方法的引用，并不执行，将其赋值给了一个变量。若要执行，使用（变量.方法名称）。</font>  
   
-### 1.2.2. 语法：    
+### 1.2.2. 语法-1    
 &emsp; Lambda表达式语法：一个Lambda表达式由用逗号分隔的参数列表、–>符号与{}函数体三部分表示。函数体既可以是一个表达式，也可以是一个语句块。  
 1. 方法体为表达式，该表达式的值作为返回值返回。  (parameters) -> expression  
 2. 方法体为代码块，必须用{}来包裹起来。  
 
-```
+```java
 (parameters参数列表) -> { statements; }
 <函数式接口>  <变量名> = (参数1，参数2...) -> {
     //方法体
@@ -73,12 +73,13 @@ Lambda表达式会被匹配到函数式接口的抽象方法上（Lambda表达�
         可选的返回关键字：如果主体只有一个表达式返回值则编译器会自动返回值，大括号需要指定明表达式返回了一个数值
 
 ### 1.2.3. 使用教程  
-#### 1.2.3.1. 变量作用域（调用Lambda表达式外部参数）：  
+#### 1.2.3.1. 变量作用域（调用Lambda表达式外部参数）  
 &emsp; 访问外层作用域定义的局部变量、类的属性：  
+
 * 访问局部变量：lambda表达式若访问了局部变量，则局部变量必须是final的。若局部变量没有加final关键字，系统会自动添加，此后在修改该局部变量，会编译错误。  
 * 访问类的属性：lambda内部使用this关键字（或不使用）访问或修改全局变量、实例方法。  
 
-```
+```java
 public class Test2 {
     public static void main(String[] args) {
         Test2 test = new Test2();
@@ -100,13 +101,13 @@ public class Test2 {
 #### 1.2.3.2. 泛型函数式接口  
 &emsp; Lambda表达式自身不能指定类型参数。因此Lambda表达式不能是泛型。但是与Lambda表达式关联的函数式接口可以泛型。此时，Lambda表达式的目标类型部分由声明函数式接口引用时指定的参数类型决定。  
 
-```
+```java
 interface SomeFunc<T> {
     T func(T t);
 }
 ```
 
-```
+```java
 class GenericFunctionalInterfaceDemo {
     public static void main(String[] args) {
         SomeFunc<String> reverse = (str) -> {
@@ -142,14 +143,14 @@ class GenericFunctionalInterfaceDemo {
 &emsp; 为了将lambda表达式作为参数传递，接收lambda表达式的参数的类型必须是与该lambda表达式兼容的函数式接口的类型。  
 &emsp; 注：Lambda表达式作为方法参数使用。  
 
-```
+```java
 //Use lambda expressions as an argument to method
 interface StringFunc {
     String func(String n);
 }
 ```
 
-```
+```java
 class lambdasAsArgumentsDemo {
     static String stringOp(StringFunc sf, String s) {
         return sf.func(s);

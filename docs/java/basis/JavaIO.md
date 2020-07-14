@@ -25,10 +25,10 @@ tags:
 ## 1.1. java读取大文件的困难  
 &emsp; java 读取文件的一般操作是将文件数据全部读取到内存中，然后再对数据进行操作。例如：  
 
- ```
+```java
 Path path = Paths.get("file path");
 byte[] data = Files.readAllBytes(path);
- ```
+```
 &emsp; 这对于小文件是没有问题的，但是对于稍大一些的文件就会抛出OOM异常。 
 
 ```
@@ -43,7 +43,7 @@ Exception in thread "main" java.lang.OutOfMemoryError: Required array size too l
 ### 1.2.1. 使用BufferedInputStream进行包装  
 &emsp; 文件流边读边用，使用文件流的 BufferedInputStream#read() 方法每次读取指定长度的数据到内存中。这种方法可行但是效率不高。示例代码如下：  
 
-```
+```java
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -111,7 +111,7 @@ public class StreamFileReader {
 ### 1.2.4. 使用FileChannel
 &emsp; 对大文件建立 NIO 的 FileChannel，每次调用 read() 方法时会先将文件数据读取到已分配固定长度的 java.nio.ByteBuffer 中，接着从中获取读取的数据。这种用 NIO 通道的方法比传统文件流读取理论上要快一点。示例代码如下：  
 
-```
+```java
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -171,7 +171,7 @@ public class ChannelFileReader {
 ### 1.2.5. 内存文件映射  
 &emsp; 把文件内容映射到虚拟内存的一块区域中，从而可以直接操作内存当中的数据而无需每次都通过 I/O  去物理硬盘读取文件，这种方式可以提高速度。示例代码如下：  
 
-```
+```java
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
@@ -236,14 +236,14 @@ public class MappedFileReader {
 
 &emsp; **<font color = "lime">采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。</font>**  
 
-```
+```java
 Exception in thread "main" java.lang.IllegalArgumentException: Size exceeds Integer.MAX_VALUE at sun.nio.ch.FileChannelImpl.map(FileChannelImpl.java:868)
 ```
 &emsp; 这可以归结到一些历史原因，还有 int 类型在 java 中的深入程度，但是本质上由于 java.nio.MappedByteBuffer 是直接继承自 java.nio.ByteBuffer 的，而后者的索引变量是 int 类型的，所以前者也只能最大索引到 Integer.MAX_VALUE 的位置。  
 
 &emsp; **解决方案：多次内存映射。**  
 
-```
+```java
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;

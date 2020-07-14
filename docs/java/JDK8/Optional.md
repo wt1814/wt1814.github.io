@@ -10,14 +10,14 @@ tags:
 - [1. Optional类](#1-optional类)
     - [1.1. 常用API](#11-常用api)
     - [1.2. 正确使用Optional类](#12-正确使用optional类)
-        - [1.2.1. 错误使用：](#121-错误使用)
-        - [1.2.2. 正确使用：](#122-正确使用)
+        - [1.2.1. 错误使用](#121-错误使用)
+        - [1.2.2. 正确使用](#122-正确使用)
 
 <!-- /TOC -->
 
 # 1. Optional类  
 &emsp; Java8引入Optional类，是一个可以为null的容器对象，是一个包含有可选值的包装类，可以保存类型T的值，或者保存null。Optional类的引入解决空指针异常。防止编写不必要的null检查。快速定位NullPointException。  
-&emsp; public final class Optional<T\>，构造函数私有化；不能new实例；不能被继承；  
+&emsp; public final class Optional<T\>，<font color = "lime">构造函数私有化；不能new实例；不能被继承。</font>  
 
 ## 1.1. 常用API  
 
@@ -42,7 +42,7 @@ tags:
 
 
 ## 1.2. 正确使用Optional类  
-### 1.2.1. 错误使用：  
+### 1.2.1. 错误使用  
 
 &emsp; 先看看错误的姿势：  
 
@@ -67,7 +67,7 @@ if (user != null) {
 ```
 &emsp; <font color = "red">慎重使用Optional类的以下方法：isPresent()方法、get()方法、Optional类型作为类/实例属性、Optional类型作为方法参数。</font>isPresent()与obj!= null无任何分别。而没有isPresent()作铺垫的get()调用，在IntelliJ IDEA中会收到告警。把Optional类型用作属性或是方法参数在IntelliJ IDEA中更是强力不推荐的。所以Optional中真正可依赖的是除了isPresent()和get()的其他方法。  
 
-### 1.2.2. 正确使用：  
+### 1.2.2. 正确使用  
 &emsp; 创建Optional对象：  
 
 ```java
