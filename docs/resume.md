@@ -3,9 +3,9 @@
 <center><font size = "6">应聘职位：Java工程师</font></center>
 
 # 个人信息  
-* 个人博客：http://wt1814.com/ &emsp; 个人公众号：王猴卖瓜  
+* 个人博客：http://wt1814.com/ &emsp;  个人公众号：王猴卖瓜  
 * 性别：男 &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;出生年月：1992.06.29 &emsp; &emsp; &emsp; &emsp; &emsp;籍贯：山西省运城市
-* 联系电话：17813261813 &emsp; &emsp; &emsp; E-mail: wangtao1814@163.com
+* 联系电话：17813261813 &emsp; &emsp; &emsp;   E-mail: wangtao1814@163.com
 
 # 教育经历  
 &emsp; &emsp; 2012.9－2016.7&emsp; &emsp; &emsp; 大连东软信息学院&emsp; &emsp; &emsp; 软件工程&emsp; &emsp; &emsp; 本科  
@@ -19,7 +19,6 @@
     * 掌握设计模式；
 * 数据库  
     * 熟练使用数据库MySql，Oracle，PostgreSQL；
-    * 掌握sql调优；
     * 掌握数据库复制，分区，分库分表技术；
     * 掌握myCat中间件；
 * 熟练使用ssm框架、SpringBoot框架
@@ -59,7 +58,7 @@
 
 * 2017.04---2018.02 &emsp; &emsp; 北京天源迪科信息技术有限公司 &emsp; &emsp; CMS内容管理系统
     * 核心技术：SpringMVC+Spring+MyBatis+Lucene+Shiro  
-    * 项目概述: 采用开源项目jspxcms内容管理系统,将cms集成到互联网项目中。  
+    * 项目概述: 采用开源项目jspxcms内容管理系统，将cms集成到互联网项目中。  
     * 个人职责：独自二次开发cms内容管理系统。先后使用到了国能e购商城，航空工业电子采购平台，交建商城。将项目中帮助中心、公告以及首页展示由cms系统完成。
 
 * 2016.04---2017.04 &emsp; &emsp; 北京天源迪科信息技术有限公司 &emsp; &emsp; 国能e购商城项目
