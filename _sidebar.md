@@ -228,5 +228,4 @@
 * 开发软件  
     * [idea](/docs/software/idea/idea.md)  
 
-* [个人简历](/docs/resume.md)  
 
