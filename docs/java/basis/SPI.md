@@ -16,6 +16,9 @@ tags:
 <!-- /TOC -->
 
 <!--
+
+https://mp.weixin.qq.com/s/6BhHBtoBlSqHlXduhzg7Pw
+
 深入理解ServiceLoader类与SPI机制
 https://blog.csdn.net/li_xunhuan/article/details/103017286?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-15.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-15.nonecase
 -->

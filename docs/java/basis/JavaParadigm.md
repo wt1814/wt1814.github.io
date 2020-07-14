@@ -23,6 +23,9 @@ tags:
 
 <!-- /TOC -->
 
+<!-- 
+https://mp.weixin.qq.com/s/ilqFpf5kE0XzJnOv9SsX7Q
+-->
 
 # 1. 泛型
 &emsp; 泛型：把类型明确的工作推迟到创建对象或调用方法的时候才去明确的特殊的类型  

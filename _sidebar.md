@@ -183,7 +183,7 @@
 
 * 项目构建基础    
     * [接口幂等](/docs/web/idempotent.md)   
-    * [Http重试](/docs/web/httpRetry.md)     
+    * [Http重试](/docs/web/httpRetry.md)   
 
 * Error  
     * [※※※多线程串线了](/docs/Error/ThreadCrossed.md)  

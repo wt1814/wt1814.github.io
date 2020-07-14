@@ -30,12 +30,13 @@
     - [项目管理](#项目管理)
         - [Git](#git)
     - [开发软件](#开发软件)
+    - [其他工具](#其他工具)
 
 <!-- /TOC -->
 
 # 目录  
 
-欢迎关注个人博客：**<font color = "red">王猴卖瓜</font>**  
+欢迎关注个人公众号：**<font color = "red">王猴卖瓜</font>**  
 联系我：**wangtao1814@163.com**  
 
 ## 杂记  
@@ -237,7 +238,9 @@
 ---
 ## 项目构建基础    
 [接口幂等](/docs/web/idempotent.md)   
-[Http重试](/docs/web/httpRetry.md)     
+[Http重试](/docs/web/httpRetry.md)   
+[生成二维码](/docs/web/QRCode.md)  
+[反爬虫](/docs/web/reptile.md)
 
 ---
 ## Error  
@@ -287,6 +290,7 @@
 ## 开发软件  
 [idea](/docs/software/idea/idea.md)  
 
-
+## 其他工具  
+[tools](/docs/software/tools/tools.md)  
 
 

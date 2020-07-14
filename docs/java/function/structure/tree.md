@@ -14,6 +14,12 @@ tags:
 
 <!-- /TOC -->
 
+<!--
+AVL树
+https://mp.weixin.qq.com/s/7MJWagl_L-ZFlLtKdJwbFQ
+
+-->
+
 # 1. 树  
 ## 1.1. 二叉树  
 &emsp; 二叉树有两种特殊形式，一个叫满二叉树，一个叫完全二叉树。  
