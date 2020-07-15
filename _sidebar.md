@@ -50,12 +50,12 @@
     * [JVM调优](/docs/java/JVM/7.JVM调优.md)  
 
 * 设计模式  
-    * [七大设计原则](/docs/java/D/docs/ESign/1.principl/docs/ES.md)  
-    * [Java设计模式](/docs/java/D/docs/ESign/2.d/docs/ESign.md)  
-    * [创建型设计模式](/docs/java/D/docs/ESign/3./docs/EStablish.md)  
-    * [结构型设计模式](/docs/java/D/docs/ESign/4.structure.md)  
-        * [动态代理](/docs/java/D/docs/ESign/6.proxy.md)   
-    * [行为型设计模式](/docs/java/D/docs/ESign/5.behavior.md)  
+    * [七大设计原则](/docs/java/Design/1.principles.md)  
+    * [Java设计模式](/docs/java/Design/2.design.md)  
+    * [创建型设计模式](/docs/java/Design/3.establish.md)  
+    * [结构型设计模式](/docs/java/Design/4.structure.md)  
+        * [动态代理](/docs/java/Design/6.proxy.md)  
+    * [行为型设计模式](/docs/java/Design/5.behavior.md)  
 
 
 * 数据库  

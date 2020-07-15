@@ -70,9 +70,9 @@ tags:
 ### 1.2.2. 状态标志
 &emsp; 也许实现volatile变量的规范使用仅仅是使用一个布尔状态标志，用于指示发生了一个重要的一次性事件，例如完成初始化或请求停机。  
 
-```
+```java
 volatile boolean shutdownRequested;  
-...
+//...
 public void shutdown() {
     shutdownRequested = true;
 }
@@ -90,7 +90,7 @@ public void doWork() {
 ### 1.2.3. 单例模式的实现  
 &emsp; 单例模式的实现，典型的双重检查锁定（DCL）  
 
-```
+```java
 class Singleton{
     private volatile static Singleton instance = null;
 
