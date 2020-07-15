@@ -16,6 +16,9 @@ tags:
 <!-- 
 https://mp.weixin.qq.com/s/pGNIEOGvOYDM5yiyMM8bRQ
 -->
+
+&emsp; LinkedHashMap 是 HashMap 的一个子类，保存了记录的插入顺序，在用 Iterator 遍历LinkedHashMap 时，先得到的记录肯定是先插入的，也可以在构造时带参数，按照访问次序排序。  
+
 &emsp; LinkedHashMap怎么实现有序的？  
 &emsp; LinkedHashMap内部维护了一个单链表，有头尾节点，同时LinkedHashMap节点Entry内部除了继承HashMap的Node属性，还有before 和 after用于标识前置节点和后置节点。可以实现按插入的顺序或访问顺序排序。  
 

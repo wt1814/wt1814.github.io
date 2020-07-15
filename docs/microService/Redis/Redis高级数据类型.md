@@ -76,8 +76,6 @@ tags:
     * BITCOUNT统计位的值为1的数量。
     * BITPOS寻址第一个为0或者1的bit的位置（寻址第一个为1的bit的位置：bitpos dupcheck 1；寻址第一个为0的bit的位置：bitpos dupcheck 0）。  
 
-
-
 # 3. HyperLogLog  
 <!-- 
 https://mp.weixin.qq.com/s/EF1cgBlJB3U37oZm3KgQvQ
