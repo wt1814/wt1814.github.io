@@ -8,7 +8,7 @@ tags:
 # GIT本地库操作基本原理  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/git/git-4.png)  
-&emsp; GIT作为分布式版本库软件，每个机器上都是一个版本库。
+&emsp; GIT作为分布式版本库软件，每个机器上都是一个版本库。  
 &emsp; git初始化后，有三个区，分别是 工作区，暂存区，本地库；  
 
 * 工作区是编辑代码的区别，包括新增，修改，删除代码操作，编辑代码后，添加到暂存区；

@@ -17,7 +17,7 @@ tags:
 # 1. FactoryBean  
 ## 1.1. FactoryBean的作用   
 
-&emsp; **<font color = "red">FactoryBean接口生产一些工厂bean，如Spring自身提供的ProxyFactoryBean、JndiObjectFactoryBean，还有Mybatis中的SqlSessionFactory。这些Bean实例过程比较复杂。</font>**  
+&emsp; **<font color = "red">FactoryBean接口生产一些特殊的bean，如Spring自身提供的ProxyFactoryBean、JndiObjectFactoryBean，还有Mybatis中的SqlSessionFactory。这些Bean实例过程比较复杂。</font>**  
 &emsp; SqlSessionFactory部分源码：  
 
 ```java
