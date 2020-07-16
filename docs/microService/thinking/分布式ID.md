@@ -324,7 +324,7 @@ public class SnowflakeIdWorker {
 &emsp; 百度uid-generator、美团Leaf、滴滴Tinyid......
   
 ### 2.5.1. 百度uid-generator  
-&emsp; uid-generator是由百度技术部开发，解决了时钟回拨问题。项目GitHub地址 https://github.com/baidu/uid-generator。  
+&emsp; uid-generator是由百度技术部开发，解决了时钟回拨问题。项目GitHub地址 https://github.com/baidu/uid-generator 。  
 1. uid-generator是基于Snowflake算法实现的，与原始的snowflake算法不同在于，uid-generator支持自定义时间戳、工作机器ID和序列号等各部分的位数，而且uid-generator中采用用户自定义workId的生成策略。  
 2. 通过消费未来时间克服了雪花算法的并发限制。  
 3. UidGenerator提前生成ID并缓存在RingBuffer中。  
