@@ -334,7 +334,7 @@ public class SnowflakeIdWorker {
 
 1. 引入依赖：  
 
-```
+```xml
 <dependency>
     <groupId>cn.codesheep</groupId>
     <artifactId>uid-generator</artifactId>
@@ -346,7 +346,7 @@ public class SnowflakeIdWorker {
 3. 修改Spring配置；  
 4. 运行示例单测：  
 
-```
+```java
 @Resource
 private UidGenerator uidGenerator;
 
