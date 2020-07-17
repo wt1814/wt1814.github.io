@@ -28,7 +28,6 @@
     - [计算机网络](#计算机网络)
     - [算法](#算法)
     - [项目管理](#项目管理)
-        - [Git](#git)
     - [开发软件](#开发软件)
     - [其他工具](#其他工具)
 
@@ -287,8 +286,7 @@
 
 ---
 ## 项目管理  
-### Git  
-[git命令](/docs/projectManage/git/command.md)   
+[git](/docs/projectManage/git/command.md)   
 
 ## 开发软件  
 [idea](/docs/software/idea/idea.md)  

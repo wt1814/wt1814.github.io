@@ -222,8 +222,7 @@
 
 
 * 项目管理  
-    * Git  
-        * [git命令](/docs/projectManage/git/command.md)   
+    * [git](/docs/projectManage/git/command.md)   
 
 * 开发软件  
     * [idea](/docs/software/idea/idea.md)  
