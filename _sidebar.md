@@ -62,6 +62,8 @@
         * [基本查询语句](/docs/SQL/9.basicSelect.md)  
         * [连接查询](/docs/SQL/10.joinSelect.md)  
         * [行列转换](/docs/SQL/11.trans.md)  
+    * [MySql函数](/docs/SQL/MySQLFunction.md)  
+    * [数据库对象](/docs/SQL/DatabaseObject.md)  
     * [SQL优化-1](/docs/SQL/2.SQL优化.md)  
         * [索引优化](/docs/SQL/7.index.md)  
         * [优化案例](/docs/SQL/12.case.md)  
