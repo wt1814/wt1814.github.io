@@ -18,7 +18,10 @@
 
 <!-- /TOC -->
 
-<!-- https://mp.weixin.qq.com/s/9whV1nuwfu2hWt8newteTA -->
+<!-- 
+https://mp.weixin.qq.com/s/9whV1nuwfu2hWt8newteTA 
+https://www.cnblogs.com/wang-meng/default.html?page=2
+-->
 &emsp; **<font color = "red">参考《ZooKeeper 分布式过程协同技术详解》和《从Paxos到Zookeeper 分布式一致性原理与实践》</font>**  
 
 # 1. 基于ZK实现分布式锁
