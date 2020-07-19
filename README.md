@@ -222,7 +222,7 @@
 [服务降级](/docs/microService/thinking/服务降级.md)  
 
 ### 分布式通信  
-[序列化](/docs/microService/communication/serializbale.md)    
+[序列化](/docs/microService/communication/serializbale.md)  
 [NIO](/docs/microService/communication/NIO.md)  
 &emsp; [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
 &emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
@@ -233,9 +233,10 @@
 [ES基本概念](/docs/ES/1.basicConcepts.md)  
 [ES使用教程](/docs/ES/2.useTutorials.md)  
 [ES集群](/docs/ES/3.colony.md)  
+[ES搭建](/docs/ES/7.build.md)  
 [ES原理](/docs/ES/4.principle.md)  
 [ES优化-1](/docs/ES/5.optimization.md)  
-[ELK](/docs/ES/6.ELK.md)    
+[ELK与EFK](/docs/ES/6.ELK与EFK.md)    
 
 ---
 ## 项目构建基础    
