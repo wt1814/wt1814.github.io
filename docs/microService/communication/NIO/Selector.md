@@ -8,32 +8,42 @@ tags:
 <!-- TOC -->
 
 - [1. NIO选择器](#1-nio选择器)
-    - [多路复用 IO 模型](#多路复用-io-模型)
-    - [1.1. 选择器基础：选择器、可选择通道、选择键类](#11-选择器基础选择器可选择通道选择键类)
-    - [1.2. 选择器教程](#12-选择器教程)
-        - [1.2.1. 建立选择器（选择器、通道、选择键建立连接）](#121-建立选择器选择器通道选择键建立连接)
-        - [1.2.2. 选择键的使用，SelectionKey类的API](#122-选择键的使用selectionkey类的api)
-        - [1.2.3. 选择器的使用，selector类的API](#123-选择器的使用selector类的api)
-        - [1.2.4. Selector完整实例](#124-selector完整实例)
+    - [1.1. 多路复用](#11-多路复用)
+        - [1.1.1. 多路复用 IO 模型](#111-多路复用-io-模型)
+        - [1.1.2. 操作系统中的多路复用select、poll、epoll-1](#112-操作系统中的多路复用selectpollepoll-1)
+    - [1.2. 选择器基础：选择器、可选择通道、选择键类](#12-选择器基础选择器可选择通道选择键类)
+    - [1.3. 选择器教程](#13-选择器教程)
+        - [1.3.1. 建立选择器（选择器、通道、选择键建立连接）](#131-建立选择器选择器通道选择键建立连接)
+        - [1.3.2. 选择键的使用，SelectionKey类的API](#132-选择键的使用selectionkey类的api)
+        - [1.3.3. 选择器的使用，selector类的API](#133-选择器的使用selector类的api)
+        - [1.3.4. Selector完整实例](#134-selector完整实例)
 
 <!-- /TOC -->
-
 
 
 # 1. NIO选择器  
 &emsp; Selector是NIO多路复用的重要组成部分。它负责检查一个或多个Channel(通道)是否是可读、写状态，实现单线程管理多通道，优于使用多线程或线程池产生的系统资源开销。 
 
-## 多路复用 IO 模型  
-多路复用 IO 模型是目前使用得比较多的模型。Java NIO 实际上就是多路复用 IO。在多路复用 IO模型中，会有一个线程不断去轮询多个 socket 的状态，只有当 socket 真正有读写事件时，才真正调用实际的 IO 读写操作。因为在多路复用 IO 模型中，只需要使用一个线程就可以管理多个socket，系统不需要建立新的进程或者线程，也不必维护这些线程和进程，并且只有在真正有socket 读写事件进行时，才会使用 IO 资源，所以它大大减少了资源占用。在 Java NIO 中，是通
-过 selector.select()去查询每个通道是否有到达事件，如果没有事件，则一直阻塞在那里，因此这种方式会导致用户线程的阻塞。多路复用 IO 模式，通过一个线程就可以管理多个 socket，只有当socket 真正有读写事件发生才会占用资源来进行实际的读写操作。因此，多路复用 IO 比较适合连接数比较多的情况。  
+## 1.1. 多路复用  
+### 1.1.1. 多路复用 IO 模型  
+&emsp; Java NIO是多路复用 IO。在多路复用 IO模型中，会有一个线程不断去轮询多个 socket 的状态，只有当 socket 真正有读写事件时，才真正调用实际的 IO 读写操作。因为在多路复用 IO 模型中，只需要使用一个线程就可以管理多个socket，系统不需要建立新的进程或者线程，也不必维护这些线程和进程，并且只有在真正有socket 读写事件进行时，才会使用 IO 资源，所以它大大减少了资源占用。在 Java NIO 中，是通过 selector.select()去查询每个通道是否有到达事件，如果没有事件，则一直阻塞在那里，因此这种方式会导致用户线程的阻塞。多路复用 IO 模式，通过一个线程就可以管理多个 socket，只有当socket 真正有读写事件发生才会占用资源来进行实际的读写操作。因此，多路复用 IO 比较适合连接数比较多的情况。  
 
-另外多路复用 IO 为何比非阻塞 IO 模型的效率高是因为在非阻塞 IO 中，不断地询问 socket 状态时通过用户线程去进行的，而在多路复用 IO 中，轮询每个 socket 状态是内核在进行的，这个效率要比用户线程要高的多。  
+&emsp; 另外多路复用 IO 为何比非阻塞 IO 模型的效率高是因为在非阻塞 IO 中，不断地询问 socket 状态时通过用户线程去进行的，而在多路复用 IO 中，轮询每个 socket 状态是内核在进行的，这个效率要比用户线程要高的多。  
+
+&emsp; 不过要注意的是，多路复用 IO 模型是通过轮询的方式来检测是否有事件到达，并且对到达的事件逐一进行响应。因此对于多路复用 IO 模型来说，一旦事件响应体很大，那么就会导致后续的事件迟迟得不到处理，并且会影响新的事件轮询。  
+
+### 1.1.2. 操作系统中的多路复用select、poll、epoll-1
+<!-- 
+IO多路复用
+https://mp.weixin.qq.com/s/yCOnNp_1-0_Q1srSO_3Kog
+https://mp.weixin.qq.com/s/i3He95cfzyLF_I4v-X3tCw
+-->
+
+&emsp; <font color = "lime">NIO底层调用的是poll系统调用。</font>  
 
 
-不过要注意的是，多路复用 IO 模型是通过轮询的方式来检测是否有事件到达，并且对到达的事件逐一进行响应。因此对于多路复用 IO 模型来说，一旦事件响应体很大，那么就会导致后续的事件迟迟得不到处理，并且会影响新的事件轮询。  
-
-
-## 1.1. 选择器基础：选择器、可选择通道、选择键类   
+------
+## 1.2. 选择器基础：选择器、可选择通道、选择键类   
 &emsp; 选择器(Selector)使用单个线程处理多个通道。 流程结构如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-12.png)  
 
@@ -42,8 +52,8 @@ tags:
 * 可选择通道(SelectableChannel)：这个抽象类提供了实现通道的可选择性所需要的公共方法。它是所有支持就绪检查的通道类的父类。FileChannel对象不是可选择的，因为它们没有继承SelectableChannel。所有socket通道都是可选择的，包括从管道(Pipe)对象中获得的通道。SelectableChannel可以被注册到Selector对象上，同时可以指定对那个选择器而言，那种操作是感兴趣的。一个通道可以被注册到多个选择器上，但对每个选择器而言只能被注册一次。  
 * 选择键(SelectionKey)：选择键封装了特定的通道与特定的选择器的注册关系。选择键对象被SelectableChannel.register()返回并提供一个表示这种注册关系的标记。选择键包含了两个比特集（以整数的形式进行编码），指示了该注册关系所关心的通道操作，以及通道己经准备好的操作。每个channel对应一个 SelectionKey。  
 
-## 1.2. 选择器教程  
-### 1.2.1. 建立选择器（选择器、通道、选择键建立连接）  
+## 1.3. 选择器教程  
+### 1.3.1. 建立选择器（选择器、通道、选择键建立连接）  
 &emsp; selector的API：  
 
 |方法|描述|
@@ -53,7 +63,7 @@ tags:
 
 &emsp; 建立监控三个Socket通道的选择器：  
 
-```
+```java
 Selector selector = Selector.open( );
 channel1.register (selector, SelectionKey.OP_READ);
 channel2.register (selector, SelectionKey.OP_WRITE);
@@ -65,19 +75,19 @@ readyCount = selector.select (10000);
 &emsp; 这些代码创建了一个新的选择器，然后将这三个(己经存在的)socket通道注册到选择器上，而且感兴趣的操作各不相同。方法在将线程置于睡眠状态，直到这些刚兴趣的事情中的操作中的一个发生或者10秒钟的时间过去。  
 
 1. 创建Selector对象  
-    ```
+    ```java
     Selector selector = Selector.open();
     ```
 2. 将Channel注册到选择器中。为了使用选择器管理Channel，需要将Channel注册到选择器中:  
 
-    ```
+    ```java
     channel.configureBlocking(false);
     SelectionKey key =channel.register(selector,SelectionKey.OP_READ);
     ```
     &emsp; 注意，注册的Channel必须设置成异步模式才可以，否则异步IO就无法工作。这就意味着不能把一个FileChannel注册到Selector，因为FileChannel没有异步模式，但是网络编程中的SocketChannel可以。  
     &emsp; 1). register()方法的第二个参数，它是一个“interest set”，意思是注册的Selector对Channel中的哪些事件感兴趣，事件类型有四种，这四种事件用SelectionKey的四个常量来表示：  
 
-    ```
+    ```java
     SelectionKey.OP_CONNECT
     SelectionKey.OP_ACCEPT
     SelectionKey.OP_READ
@@ -88,11 +98,11 @@ readyCount = selector.select (10000);
 
     &emsp; 2). 如果对多个事件感兴趣，可以通过or操作符来连接这些常量：  
 
-    ```
+    ```java
     int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
     ```
 
-### 1.2.2. 选择键的使用，SelectionKey类的API  
+### 1.3.2. 选择键的使用，SelectionKey类的API  
 &emsp; SelectionKey类的API：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-13.png)  
 &emsp; 请注意对register()的调用的返回值是一个SelectionKey。SelectionKey代表这个通道在此Selector上的这个注册。当某个Selector通知某个传入事件时，它是通过提供对应于该事件的SelectionKey来进行的。SelectionKey还可以用于取消通道的注册。   
@@ -106,7 +116,7 @@ readyCount = selector.select (10000);
 
 &emsp; SelectionKey还有几个重要的方法，用于检测Channel中什么事件或操作已经就绪，它们都会返回一个布尔类型：selectionKey.isAcceptable();selectionKey.isConnectable();selectionKey.isReadable();selectionKey.isWritable();   
 
-### 1.2.3. 选择器的使用，selector类的API  
+### 1.3.3. 选择器的使用，selector类的API  
 &emsp; selector的API：  
 
 |方法	|描述|
@@ -134,7 +144,7 @@ readyCount = selector.select (10000);
         * 根据需要更改selected key的监听事件。
         * 将已经处理过的key从selected keys 集合中删除。
 
-### 1.2.4. Selector完整实例  
+### 1.3.4. Selector完整实例  
 
 ```java
 import java.io.IOException;
@@ -205,7 +215,7 @@ public class TCPServer{
 
 &emsp; 特别说明：例子中selector只注册了一个Channel，注册多个Channel操作类似。如下：  
 
-```
+```java
 for (int i=0; i<3; i++){
     // 打开监听信道
     ServerSocketChannel listenerChannel = ServerSocketChannel.open();
@@ -220,7 +230,7 @@ for (int i=0; i<3; i++){
 
 &emsp; 在上面的例子中，对于通道IO事件的处理并没有给出具体方法，在此，举一个更详细的例子：  
 
-```
+```java
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;

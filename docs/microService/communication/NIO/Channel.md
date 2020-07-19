@@ -25,8 +25,7 @@ tags:
 <!-- /TOC -->
 
 # 1. NIO通道  
-&emsp; 实体--->通道--->缓冲区。Channel用于在字节缓冲区和位于通道另一侧的实体（通常是一个文件或套接字）之间有效地传输数据。它从一个实体读取数据，并将其放在缓冲区块中以供消费。  
-&emsp; 通道与操作系统文件描述符具有一对一关系，用于提供平台独立操作功能。  
+&emsp; 实体--->通道--->缓冲区。Channel用于在缓冲区和位于通道另一侧的实体（通常是一个文件或套接字）之间有效地传输数据。它从一个实体读取数据，并将其放在缓冲区块中以供消费。  
 &emsp; Channel(通道)与Stream(流)的不同之处在于通道是双向的，流只能在一个方向上操作(一个流必须是InputStream或者OutputStream的子类)，而通道可以用于读，写或者二者同时进行，最关键的是可以和多路复用器结合起来，提供状态位，多路复用器可识别Channel所处的状态。  
 &emsp; 通道可以以阻塞（Wocfcwg)或非阻塞（wowWochwg)模式运行。非阻塞模式的通道永远不会让调用的线程休眠。请求的操作要么立即完成，要么返回一个结果表明未进行任何操作。只有面向流的（stream-oriented)的通道，如sockets和pipes才能使用非阻塞模式。  
 
@@ -34,7 +33,7 @@ tags:
 &emsp; <font color = "red">I/O可以分为广义的两大类别：File I/O和Stream I/O。相应地有两种类型的通道，它们是文件(file)通道和套接字(socket)通道。包含一个FileChannel类和三个socket通道类：SocketChannel、ServerSocketChannel和DatagramChannel。</font>  
 &emsp; Channel接口的完整源码：  
 
-```
+```java
 package java.nio.channels;
 public interface Channel{
     public boolean isclose();
@@ -46,7 +45,7 @@ public interface Channel{
 1. FileChannel：文件通道用于从文件读取数据。  
     &emsp; jdk1.7通过使用一个InputStream、OutputStream或RandomAccessFile来获取一个FileChannel实例。  
 
-    ```
+    ```java
     //通过RandomAccessFile打开FileChannel的示例
     RandomAccessFile aFile = new RandomAccessFile("data/nio-data.txt", "rw");
     FileChannel inChannel = aFile.getChannel(); 
@@ -60,7 +59,7 @@ public interface Channel{
     ```
     &emsp; JDK1.7以后：直接通过Open方法获得到channel。  
 
-    ```
+    ```java
     @Test
     public void test2() {
         long start = System.currentTimeMillis();
@@ -95,37 +94,37 @@ public interface Channel{
 2. SocketChannel：数据报通道可以通过TCP(传输控制协议)通过网络读取和写入数据。它还使用工厂方法来创建新对象。  
     &emsp; 用于打开SocketChannel的语法：  
 
-    ```
+    ```java
     SocketChannel ch = SocketChannel.open();
     ch.connect(new InetSocketAddress("somehost", someport));
     ```
     &emsp; 用于关闭SocketChannel的语法：  
 
-    ```
+    ```java
     SocketChannel ch = SocketChannel.close();
     ch.connect(new InetSocketAddress("somehost", someport));
     ```
 3. DatagramChannel：数据报通道可以通过UDP(用户数据报协议)通过网络读取和写入数据。它使用工厂方法来创建新对象。  
     &emsp; 下面是打开DatagramChannel的语法：  
     
-    ```
+    ```java
     DatagramChannel ch = DatagramChannel.open();
     ```
     &emsp; 用于关闭DatagramChannel的语法：  
 
-    ```
+    ```java
     DatagramChannel ch = DatagramChannel.close();
     ```
 4. ServerSocketChannel：ServerSocketChannel允许用户监听传入的TCP连接，与Web服务器相同。对于每个传入连接，都会为连接创建一个SocketChannel。  
     &emsp; 下面是打开ServerSocketChannel的语法：  
 
-    ```
+    ```java
     ServerSocketChannel ch = ServerSocketChannel.open();
     ch.socket().bind (new InetSocketAddress (somelocalport));
     ```
     &emsp; 下面是关闭ServerSocketChannel的语法：  
 
-    ```
+    ```java
     ServerSocketChannel ch = ServerSocketChannel.close();
     ch.socket().bind (new InetSocketAddress (somelocalport));
     ```
@@ -138,7 +137,7 @@ public interface Channel{
 &emsp; NIO中内存映射主要用到以下两个类：java.nio.MappedByteBuffer、java.nio.channels.FileChannel。  
 1. 通过FileChannel.map()获取MappedByteBuffer  
 
-```
+```java
 public abstract MappedByteBuffer map(MapMode mode, long position, long size) throws IOException;  
 ```
 
@@ -157,7 +156,8 @@ public abstract MappedByteBuffer map(MapMode mode, long position, long size) thr
 
 ### 1.2.2. 示例  
 &emsp; 下面通过一个例子来看一下内存映射读取文件和普通的IO流读取一个150M大文件的速度对比：  
-```
+
+```java
 public class MemMap {
     public static void main(String[] args) {
         try {
@@ -199,7 +199,8 @@ public class MemMap {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-10.png)  
 
 &emsp; 复制文件的例子：  
-```
+
+```java
 public class MemMapReadWrite {
 
     private static int len;
@@ -256,7 +257,6 @@ public class MemMapReadWrite {
 &emsp; 结果为：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-11.png)  
 
-
 ## 1.3. 分散Scatter/聚集Gather  
 &emsp; 在Java NIO中，通道提供了称为分散/聚集（或向量I/O）的重要功能。使用单个write()函数将字节从一组缓冲区写入流，并且可以使用单个read()函数将字节从流读取到一组缓冲区中。  
 &emsp; 对于一个write操作而言，数据是从几个缓冲区按顺序抽取（称为gather)并沿着通道发送的。对于read操作而言，从通道读取的数据会按顺序被散布（称为scatter)到多个缓冲区，将每个缓冲区填满直至通道中的数据或者缓冲区的最大空间被消耗完。  
@@ -269,7 +269,7 @@ public class MemMapReadWrite {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-8.png)  
 &emsp; Rread()的API：  
 
-```
+```java
 public interface ScatteringByteChannel extends ReadableByteChannel{
     public long read (ByteBuffer [] argv) throws IOException;
     public long read (ByteBuffer [] argv, int length, int offset) throws IOException;
@@ -277,7 +277,7 @@ public interface ScatteringByteChannel extends ReadableByteChannel{
 ```
 &emsp; 执行分射读取操作的代码示例：  
 
-```
+```java
 ByteBuffer header = ByteBuffer.allocate(128);
 ByteBuffer body   = ByteBuffer.allocate(1024);
 ByteBuffer[] bufferArray = { header, body };  
@@ -292,7 +292,7 @@ channel.read(bufferArray);
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-9.png)  
 &emsp; write()的API：  
 
-```
+```java
 public interface GatheringByteChannel extends WritableByteChannel{
     public long write(ByteBuffer[] argv) throws IOException;
     public long write(ByteBuffer[] argv, int length, int offset) throws IOException;
@@ -300,7 +300,7 @@ public interface GatheringByteChannel extends WritableByteChannel{
 ```
 &emsp; 执行聚集写入操作的代码示例：  
 
-```
+```java
 ByteBuffer header = ByteBuffer.allocate(128);
 ByteBuffer body   = ByteBuffer.allocate(1024);
 
@@ -311,10 +311,9 @@ channel.write(bufferArray);
 &emsp; buffers数组是write()方法的入参，write()方法会按照buffer在数组中的顺序，将数据写入到channel，注意只有position和limit之间的数据才会被写入。因此，如果一个buffer的容量为128byte，但是仅仅包含58byte的数据，那么这58byte的数据将被写入到channel中。因此与Scattering Reads相反，Gathering Writes能较好的处理动态消息。  
 
 ### 1.3.3. 基本散点/聚集示例  
-&emsp; 下面来看看两个缓冲区的简单例子。第一个缓冲区保存随机数，第二个缓冲区使用分散/聚集机制保存写入的数据：  
-```
-package com.yiibai;
+&emsp; 下面来看看两个缓冲区的简单例子。第一个缓冲区保存随机数，第二个缓冲区使用分散/聚集机制保存写入的数据： 
 
+```java
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
@@ -324,7 +323,7 @@ import java.nio.channels.GatheringByteChannel;
 
 public class ScatterGatherIO {
     public static void main(String params[]) {
-        String data = "Scattering and Gathering example shown in yiibai.com";
+        String data = "Scattering and Gathering example shown";
         gatherBytes(data);
         scatterBytes();
     }
@@ -393,10 +392,10 @@ public class ScatterGatherIO {
     }
 }
 ```
-&emsp; 在上述程序中，第一个缓冲区在控制台上打印随机输出，第二个缓冲区在控制台上打印“Scattering and Gathering example shown in yiibai.com”。它还用“Scattering and Gathering example shown in yiibai.com”替换testout.txt文件的内容。  
+&emsp; 在上述程序中，第一个缓冲区在控制台上打印随机输出，第二个缓冲区在控制台上打印“Scattering and Gathering example shown”。它还用“Scattering and Gathering example shown”替换testout.txt文件的内容。  
 
     420
-    Scattering and Gathering example shown in yiibai.com  
+    Scattering and Gathering example shown  
 
 ## 1.4. 通道之间的数据传输  
 &emsp; 在Java NIO中，<font color = "red">如果两个通道中有一个是FileChannel，那可以直接将数据从一个channel传输到另外一个channel。</font>通道之间的数据传输在FileChannel类中的两种方法是：FileChannel.transferTo()方法、FileChannel.transferFrom()方法。  
@@ -404,7 +403,7 @@ public class ScatterGatherIO {
 ### 1.4.1. FileChannel.transferFrom()方法  
 &emsp; transferFrom()的API：  
 
-```
+```java
 public abstract class Channel extends AbstractChannel{
     public abstract long transferFrom (ReadableByteChannel src, long position, long count);
 }
@@ -412,7 +411,8 @@ public abstract class Channel extends AbstractChannel{
 &emsp; 方法的输入参数position表示从position处开始向目标文件写入数据，count表示最多传输的字节数。如果源通道的剩余空间小于count个字节，则所传输的字节数要小于请求的字节数。此外要注意，在SoketChannel的实现中，SocketChannel只会传输此刻准备好的数据（可能不足count字节）。因此，SocketChannel可能不会将请求的所有数据(count个字节)全部传输到FileChannel中。  
 
 &emsp; transferFrom()方法可以将数据从源通道传输到FileChannel中。transferFrom()方法的示例：  
-```
+
+```java
 RandomAccessFile fromFile = new RandomAccessFile("fromFile.txt", "rw");
 FileChannel  fromChannel = fromFile.getChannel();
 
@@ -428,7 +428,7 @@ toChannel.transferFrom(position, count, fromChannel);
 ### 1.4.2. FileChannel.transferTo()方法  
 &emsp; transferTo()方法的API：  
 
-```
+```java
 public abstract class Channel extends AbstractChannel{
     public abstract long transferTo (long position, long count, WritableByteChannel target);
 }
@@ -436,7 +436,8 @@ public abstract class Channel extends AbstractChannel{
 &emsp; 上面所说的关于SocketChannel的问题在transferTo()方法中同样存在。SocketChannel会一直传输数据直到目标buffer被填满。  
 
 &emsp; transferTo()方法将数据从FileChannel传输到其他的channel中。用来从FileChannel到其他通道的数据传输。transferTo()方法的示例：  
-```
+
+```java
 RandomAccessFile fromFile = new RandomAccessFile("fromFile.txt", "rw");
 FileChannel fromChannel = fromFile.getChannel();
 
@@ -452,9 +453,7 @@ fromChannel.transferTo(position, count, toChannel);
 ### 1.4.3. 基本通道到通道数据传输示例  
 &emsp; 下面来看看从4个不同文件读取文件内容的简单示例，并将它们的组合输出写入第五个文件：  
 
-```
-package com.yiibai;
-
+```java
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
@@ -490,7 +489,8 @@ public class TransferDemo {
 }
 ```
 &emsp; 在上述程序中，将4个不同的文件(即input1.txt，input2.txt，input3.txt和input4.txt)的内容读取并将其组合的输出写入第五个文件，即：combine_output.txt文件的中。combine_output.txt文件的内容如下  
-```
+
+```java
 this is content from input1.txt
 this is content from input2.txt
 this is content from input3.txt

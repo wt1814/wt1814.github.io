@@ -94,7 +94,7 @@ public abstract class CharBuffer extends Buffer implements CharSequence, Compara
 CharBuffer charBuffer = CharBuffer.allocate (100);
 ```
 &emsp; 这段代码隐含地从堆空间中分配了一个char型数组作为备份存储器来储存100个char变量。  
-&emsp; 如果想提供自己的数组用做缓冲区的备份存储器，调用wrap()函数:   
+&emsp; 如果想提供数组用做缓冲区的备份存储器，调用wrap()函数:   
 
 ```java
 char [] myArray = new char [100];  
