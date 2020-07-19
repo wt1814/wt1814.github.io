@@ -255,7 +255,8 @@
 
 ### Nginx  
 [Nginx](/docs/Linux/Nginx/1.nginx.md)  
-[Nginx使用场景](/docs/Linux/Nginx/2.nginx使用场景.md)   
+[Nginx使用](/docs/Linux/Nginx/2.nginx使用场景.md)   
+[Nginx运维](/docs/Linux/Nginx/3.nginx运维.md)  
 
 
 ## 计算机网络  
