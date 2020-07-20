@@ -1,9 +1,3 @@
----
-title: Redis的API
-date: 2020-05-15 00:00:00
-tags:
-    - Redis
----
 
 
 # 1. Redis的API

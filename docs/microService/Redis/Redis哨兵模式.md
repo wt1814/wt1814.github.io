@@ -1,9 +1,3 @@
----
-title: Redis哨兵
-date: 2020-05-17 00:00:00
-tags:
-    - Redis
----
 
 <!-- TOC -->
 
@@ -77,7 +71,7 @@ tags:
 &emsp; Sentinel 选举的主要流程：
 1. 每一个做主观下线的 Sentinel 节点都有成为领导者的可能，他们会想其他 Sentinel 节点发送 sentinelis-master-down-by-addr ，要求将它设置为领导者。    
 2. 收到命令的 Sentinel 节点如果没有同意其他 Sentinel 节点发送的命令，则会同意该请求，否则拒绝。     
-3. 如果该 Sentinel 节点发现自己得到的票数已经超过半数且超过 <quorum\>，那么他将成为领导者。     
+3. 如果该 Sentinel 节点发现自己得到的票数已经超过半数且超过 <quorum\>，那么它将成为领导者。     
 4. 如果该过程有多个 Sentinel 成为领导者，那么将等待一段时间重新进行选择，直到有且只有一个 Sentinel 节点成为领导者为止。    
 
 &emsp; 加入有 A、B、C、D 四个节点构成 Sentinel 集群。加入 A 率先完成客观下线，则 A 会向 B、C、D 发出成为领导者的申请，由于 B、C、D 没有同意过其他 Sentinel 节点，所以会将投票给 A，A 得到三票。B 则向 A、C、D 发起申请，由于 C、D 已经同意了 A，所以会拒绝，但是他会得到 A 的同意，所以 B 得到一票，同理 C、D 得到零票，如下图：  

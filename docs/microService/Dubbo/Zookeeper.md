@@ -1,9 +1,4 @@
----
-title: ZooKeeper
-date: 2020-05-18 00:00:00
-tags:
-    - Dubbo
----
+
 <!-- TOC -->
 
 - [1. Zookeeper是什么](#1-zookeeper是什么)
@@ -144,8 +139,8 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 &emsp; 在 zookeeper 中，客户端会随机连接到 zookeeper 集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，然后 leader 会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交（类2PC事务）。  
 
 &emsp; **消息广播流程：**  
-1. leader接收到消息请求后，将消息赋予一个全局唯一的64 位自增 id，叫：zxid，通过 zxid 的大小比较既可以实现因果有序这个特征。  
-2. leader 为每个 follower 准备了一个 FIFO 队列（通过 TCP协议来实现，以实现了全局有序这一个特点）将带有 zxid的消息作为一个提案（ proposal）分发给所有的 follower。  
+1. leader接收到消息请求后，将消息赋予一个全局唯一的64 位自增 id，zxid，通过 zxid 的大小比较既可以实现因果有序这个特征。  
+2. <font color = "red">leader 为每个 follower 准备了一个 FIFO 队列（通过 TCP协议来实现，以实现了全局有序这一个特点）将带有 zxid的消息作为一个提案（ proposal）分发给所有的 follower。</font>  
 3. 当 follower 接收到 proposal，先把 proposal 写到磁盘，写入成功以后再向 leader 回复一个 ack。  
 4. 当 leader 接收到合法数量（超过半数节点）的 ACK 后，leader 就会向这些 follower 发送 commit 命令，同时会在本地执行该消息。  
 5. 当 follower 收到消息的 commit 命令以后，会提交该消息。  

@@ -1,9 +1,3 @@
----
-title: Redis持久化
-date: 2020-05-16 00:00:00
-tags:
-    - Redis
----
 
 
 <!-- TOC -->
@@ -28,7 +22,7 @@ tags:
 &emsp; Redis是一种内存数据库。一旦进程退出，Redis的数据就会丢失。Redis持久化拥有以下三种方式：  
 1. 快照方式（RDB, Redis DataBase）将某一个时刻的内存数据，以二进制的方式写入磁盘，RDB方式是redis默认的持久化方式；  
 2. 文件追加方式（AOF, Append Only File），记录所有的操作命令，并以文本的形式追加到文件中；  
-3. 混合持久化方式，Redis 4.0之后新增的方式，混合持久化是结合了RDB和 AOF的优点，在写入的时候，先把当前的数据以RDB的形式写入文件的开头，再将后续的操作命令以AOF的格式存入文件，这样既能保证Redis重启时的速度，又能简单数据丢失的风险。  
+3. 混合持久化方式，Redis 4.0之后新增的方式，<font color = "red">混合持久化是结合了RDB和 AOF的优点，在写入的时候，先把当前的数据以RDB的形式写入文件的开头，再将后续的操作命令以AOF的格式存入文件</font>，这样<font color = "lime">既能保证Redis重启时的速度，又能简单数据丢失的风险。</font>  
 
 ## 1.1. RDB（Redis DataBase），快照
 &emsp; <font color = "red">RDB持久化是Redis默认的持久化方式。RDB是一种快照存储持久化方式，</font><font color = "lime">将Redis某一时刻的所有内存数据保存到硬盘的文件当中</font>，默认保存的文件名为dump.rdb，dump.rdb文件默认生成在%REDIS_HOME%etc目录下（如/usr/local/redis/etc/），可以修改redis.conf文件中的dir指定dump.rdb的保存路径。也可以将快照复制到其他服务器从而创建具有相同数据的服务器副本。  
@@ -93,7 +87,7 @@ tags:
     2. <font color = "red">在一定间隔时间做一次备份，所以如果redis意外down掉的话，就会丢失最后一次快照之后的所有修改（数据有丢失）。</font>如果数据相对来说比较重要，希望将损失降到最小，则可以使用AOF方式进行持久化。  
 
 ## 1.2. AOF（Append-only file）  
-&emsp; AOF持久化机制是以日志的形式记录Redis中的每一次的写操作，不会记录查询操作，以文本的形式记录，打开记录的日志文件就可以查看操作记录。  
+&emsp; AOF持久化机制是<font color = "red">以日志的形式记录Redis中的每一次的写操作</font>，不会记录查询操作，以文本的形式记录，打开记录的日志文件就可以查看操作记录。  
 &emsp; AOF是默认不开启的。  
 
 &emsp; AOF总体流程和RDB持久化一样。都是创建一个xxx文件、在服务器下次启动时就载入这个文件来还原数据。  

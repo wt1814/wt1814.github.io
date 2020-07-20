@@ -1,9 +1,3 @@
----
-title: Redis数据结构
-date: 2020-05-15 00:00:00
-tags:
-    - Redis
----
 
 <!-- TOC -->
 
@@ -138,7 +132,7 @@ typedef struct redisObject {
 * 限速  
 
 ### 2.4.3. 内部编码  
-&emsp; 字符串类型的内部编码有三种：  
+&emsp; **<font color = "red">字符串类型的内部编码有三种：</font>**  
 
 *  int，存储 8 个字节的长整型（long，2^63-1）。   
 *  embstr, 代表 embstr 格式的 SDS（Simple Dynamic String 简单动态字符串）， 存储小于 44 个字节的字符串。   
@@ -164,7 +158,7 @@ typedef struct redisObject {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-58.png)  
 &emsp; Hash存储键值对的无序散列表。  
 
-&emsp; Hash 与 String同样是存储字符串，它们的主要区别：  
+&emsp; <font color = "lime">Hash 与 String同样是存储字符串(存储单个字符串时使用String；存储对象时使用Hash，勿将对象序列化后存String类型)，它们的主要区别：</font>  
 1. 把所有相关的值聚集到一个 key 中，节省内存空间  
 2. 只使用一个 key，减少 key 冲突  
 3. 当需要批量获取值的时候，只需要使用一个命令，减少内存/IO/CPU 的消耗 Hash 

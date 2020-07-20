@@ -3,16 +3,17 @@
 <center><font size = "6">应聘职位：Java工程师</font></center>
 
 # 个人信息  
-&emsp; 性别：男 &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;出生年月：1992.06.29 &emsp; &emsp; &emsp; &emsp; &emsp;籍贯：山西省运城市  
-&emsp; 联系电话：17813261813 &emsp; &emsp; &emsp;  E-mail: wangtao1814@163.com
+<font size = "4.5">&emsp; 性别：男 &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;出生年月：1992.06.29 &emsp; &emsp; &emsp;  &emsp;籍贯：山西省运城市</font>  
+<font size = "4.5">&emsp; 联系电话：17813261813  &emsp; &emsp;  E-mail: wangtao1814@163.com</font>
 
 # 个人博客  
-&emsp; 个人博客：http://wt1814.com/ ，个人公众号：王猴卖瓜。  
+<font size = "4.5">&emsp; 个人博客：http://wt1814.com/ ，个人公众号：王猴卖瓜。  
 
 # 教育经历  
-&emsp; 2012.9－2016.7&emsp; &emsp; &emsp; 大连东软信息学院&emsp; &emsp; &emsp; 软件工程&emsp; &emsp; &emsp; 本科  
+<font size = "4.5">&emsp; 2012.9－2016.7&emsp; &emsp; &emsp; 大连东软信息学院&emsp; &emsp; &emsp; 软件工程&emsp; &emsp; &emsp; 本科  
 
 # 职业技能  
+<font size = "4.5">
 
 * Java  
     * 熟练使用JDK1.8，IO，NIO，泛型，反射等；
@@ -34,16 +35,30 @@
 * 熟练使用Svn，Git，Maven等版本控制工具及项目搭建工具，会使用devops工具
 * 掌握Linux基本命令
 
+</font>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
 # 工作经历  
+<font size = "4.5">
 
 * 2018.03---至今  &emsp; &emsp; &emsp;  中科软科技股份有限公司  
 工作内容：中国人保财险对外合作项目组Java服务开发  
 * 2016.04---2018.02  &emsp; &emsp;北京天源迪科信息技术有限公司  
 工作内容：Java服务开发，研发CMS系统  
+</font>
+
 
 <br/>
 
 # 工作经验  
+<font size = "4.5">
+
 * 2019.03---至今 &emsp; &emsp; 中科软股份有限公司 &emsp; &emsp; 中国人保对外合作组系统架构改造  
     * 核心技术：腾讯云TSF（SpringCloud的封装）+TBase（PostgreSQL的封装）+MyBatis+CMQ+redis+COS+xxl-job+velocity  
     * 项目概述：采用腾讯云对对外合作项目组进行中台项目改造。改造各个项目的投保、退保、理赔等功能。
@@ -70,12 +85,27 @@
     * 核心技术：SpringMVC+Spring+MyBatis+阿里云产品  
     * 项目概述：采用阿里的企业级分布式应用服务EDAS进行分布式开发，采用前后端分离技术，开发电商项目。
     * 个人职责：在国电项目组商品中心开发小组进行服务开发工作，参与商品协议，商品铺货等功能。
+ 
+</font>
+ 
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 
 # 自我评价  
+<font size = "4.5">
 
 * 我对自己的定位：主攻Java后端，同时在其他方面打打辅助。  
 * 我对工作的态度：第一，要高效完成自己的本职工作。第二，要在完成的基础上寻找完美。第三，要在完美的基础上，与其他同事互相交流学习，互相提升。 
 * 我怎样克服困难：在遇到技术问题时往往会去Google、百度上寻找答案。有时会点到源码里，进行一些基础分析。   
 * 怎样保持自己的视野：上班路上刷一刷微信公众号。业余时间到掘金等技术博客上刷一刷。  
 * 我的优势：热爱技术、自学能力强，有良好的自我认知。全面的技能树与开阔的视野，良好的心态、情商与沟通能力。
+
+</font>
  
