@@ -160,7 +160,7 @@ Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {
 
 &emsp; 逐句分析：
 
-```
+```java
 if (redis.call('exists', KEYS[1]) == 0) then 
          redis.call('hset', KEYS[1], ARGV[2], 1); 
          redis.call('pexpire', KEYS[1], ARGV[1]); 
@@ -171,26 +171,26 @@ if (redis.call('exists', KEYS[1]) == 0) then
          return nil;
          end;
 ```
-&emsp; if (redis.call(‘exists’, KEYS[1]) == 0) 如果锁名称不存在  
+&emsp; if (redis.call(‘exists’, KEYS[1]) == 0) <font color = "red">如果锁名称不存在</font>  
 &emsp; then redis.call(‘hset’, KEYS[1], ARGV[2],1) 则向redis中添加一个key为test_lock的set，并且向set中添加一个field为线程id，值=1的键值对，表示此线程的重入次数为1  
 &emsp; redis.call(‘pexpire’, KEYS[1], ARGV[1]) 设置set的过期时间，防止当前服务器出问题后导致死锁，return nil; end;返回nil 结束  
 
-```
+```java
 if (redis.call('hexists', KEYS[1], ARGV[2]) == 1) then 
          redis.call('hincrby', KEYS[1], ARGV[2], 1); 
          redis.call('pexpire', KEYS[1], ARGV[1]);
          return nil; 
          end;
 ```
-&emsp; if (redis.call(‘hexists’, KEYS[1], ARGV[2]) == 1) 如果锁是存在的，检测是否是当前线程持有锁，如果是当前线程持有锁  
+&emsp; if (redis.call(‘hexists’, KEYS[1], ARGV[2]) == 1) <font color = "red">如果锁是存在的，检测是否是当前线程持有锁，如果是当前线程持有锁</font>  
 &emsp; then redis.call(‘hincrby’, KEYS[1], ARGV[2], 1)则将该线程重入的次数++  
 &emsp; redis.call(‘pexpire’, KEYS[1], ARGV[1]) 并且重新设置该锁的有效时间  
 &emsp; return nil; end;返回nil，结束  
 
-```
+```java
 return redis.call('pttl', KEYS[1]);
 ```
-&emsp; 锁存在, 但不是当前线程加的锁，则返回锁的过期时间。  
+&emsp; <font color = "red">锁存在, 但不是当前线程加的锁，则返回锁的过期时间。</font>  
 
 ##### 解锁unlock  
 ......

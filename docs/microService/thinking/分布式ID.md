@@ -45,6 +45,7 @@ tags:
 * UUID
 * 数据库自增ID
 * 数据库多主模式
+* 数据库序列号
 * 数据库号段模式
 * Redis
 * 雪花算法(SnowFlake)
