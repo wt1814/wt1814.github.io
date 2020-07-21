@@ -11,9 +11,9 @@
 
 &emsp; **<font color = "red">主要步骤总结如下：</font>**  
 1. 创建所有 Spring 运行监听器并发布应用启动事件。从spring.factories配置文件中加载EventPublishingRunListener对象，该对象拥有SimpleApplicationEventMulticaster属性，即在SpringBoot启动过程的不同阶段用来发布内置的生命周期事件;  
-2. 准备环境变量，包括系统变量，环境变量，命令行参数，默认变量，servlet相关配置变量，随机值以及配置文件（比如application.properties）等;
+2. <font color = "red">准备环境变量，</font>包括系统变量，环境变量，命令行参数，默认变量，servlet相关配置变量，随机值以及配置文件（比如application.properties）等;
 3. 控制台打印SpringBoot的bannner标志；  
-4. 根据不同类型环境创建不同类型的applicationcontext容器，因为这里是servlet环境，所以创建的是AnnotationConfigServletWebServerApplicationContext容器对象；  
+4. <font color = "red">创建容器。</font>根据不同类型环境创建不同类型的applicationcontext容器，因为这里是servlet环境，所以创建的是AnnotationConfigServletWebServerApplicationContext容器对象；  
 5. 准备异常报告器。从spring.factories配置文件中加载FailureAnalyzers对象,用来报告SpringBoot启动过程中的异常；  
 6. <font color = "red">准备容器。</font>为刚创建的容器对象做一些初始化工作，准备一些容器属性值等，对ApplicationContext应用一些相关的后置处理和调用各个ApplicationContextInitializer的初始化方法来执行一些初始化逻辑等；  
 7. <font color = "red">刷新容器。</font>比如调用bean factory的后置处理器，注册BeanPostProcessor后置处理器，初始化事件广播器且广播事件，初始化剩下的单例bean和SpringBoot创建内嵌的Tomcat服务器等等重要且复杂的逻辑都在这里实现；  
@@ -74,7 +74,8 @@ public ConfigurableApplicationContext run(String... args) {
 		configureIgnoreBeanInfo(environment);
 		// 【3】控制台打印SpringBoot的bannner标志
 		Banner printedBanner = printBanner(environment);
-		// 【4】根据不同类型创建不同类型的spring applicationcontext容器
+		// 【4】创建容器
+        // 根据不同类型创建不同类型的spring applicationcontext容器
 		// 因为这里是servlet环境，所以创建的是AnnotationConfigServletWebServerApplicationContext容器对象
 		context = createApplicationContext();
 		// 【5】准备异常报告器

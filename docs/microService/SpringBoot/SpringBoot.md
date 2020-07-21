@@ -1,6 +1,7 @@
 
 
 
+# SpringBoot  
 Spring Boot、Spring MVC 和 Spring 有什么区别？  
 1、Spring  
 Spring最重要的特征是依赖注入。所有 SpringModules 不是依赖注入就是 IOC 控制反转。当我们恰当的使用 DI 或者是 IOC 的时候，我们可以开发松耦合应用。松耦合应用的单元测试可以很容易的进行。  
@@ -50,4 +51,55 @@ Spring Boot能根据当前类路径下的类、jar包来自动配置bean，如�
 Spring Boot配置过程中无代码生成，也无需XML配置文件就能完成所有配置工作，这一切都是借助于条件注解完成的，这也是Spring4.x的核心功能之一。  
 五、应用监控  
 Spring Boot提供一系列端点可以监控服务及应用，做健康检测。  
+
+
+
+-----
+
+## 配置文件  
+### bootstrap和application两种配置文件
+&emsp; SpringBoot的核心配置文件是bootstrap和application配置文件。  
+
+* bootstrap配置文件是系统级别的，用来加载外部配置，如配置中心的配置信息，也可以用来定义系统不会变化的属性。bootstatp文件的加载先于application文件。  
+* application配置文件是应用级别的，是当前应用的配置文件。  
+
+在Spring Boot中有两种上下文，一种是 bootstrap，另外一种是application。bootstrap是应用程序的父上下文，boostrap由父ApplicationContext加载。bootstrap加载优先于applicaton。boostrap里面的属性不能被覆盖。  
+
+bootstrap/ application的应用场景：  
+1.application主要用于SpringBoot项目的自动化配置。  
+
+2.bootstrap配置文件有以下几个应用场景：  
+1).使用Spring Cloud Config配置中心时，这时需要在bootstrap配置文件中添加连接到配置中心的配置属性来加载外部配置中心的配置信息；  
+2).一些固定的不能被覆盖的属性；  
+3).一些加密/解密的场景；  
+
+Application.properties中key在SpringBoot官网文档给出了详尽的配置以及说明。http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#common-application-properties 。
+
+### application.yaml自定义属性  
+&emsp; Application自定义属性，获取配置文件属性值方式：@Value注解，注入Environment属性。  
+
+### 自定义配置文件  
+#### 加载自定义yml文件  
+......
+<!-- 
+
+https://blog.csdn.net/wangzhihao1994/article/details/96721708
+https://www.cnblogs.com/huahua035/p/11272464.html
+
+-->
+
+#### 让yml,properties配置文件有提示
+<!--
+超实用，Spring Boot 让yml,properties配置文件有提示 
+https://mp.weixin.qq.com/s?__biz=MzA4NjgxMjQ5Mg==&mid=2665762955&idx=1&sn=95c84bb2bd98b2a7ad1ddf674bd51959&chksm=84d202a8b3a58bbed74fd75ebcacd0306dc903a7737833f022fa69ce5b7c381753a7ebd7f6f0&mpshare=1&scene=1&srcid=&sharer_sharetime=1573691098077&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2459be73db906624e0949067f9260b7dff7fc16439cfbba9bed0142b226a920e566c156662dadf2b9695e0da6ac283e4bf4df8bdb6c156c8f21b2df31ecf98b28126c08f0a024633087f0a70cc074936&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=9PZBgG0W8u5aIQH8JwuoebfJbcWXVv%2F8Jwpab0URWoWCafXeDrv6e7zaSa2n%2B7Oa
+-->
+
+......
+
+### 多环境的属性配置  
+......
+
+### 配置信息加密  
+......
+
 
