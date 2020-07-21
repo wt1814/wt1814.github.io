@@ -1,9 +1,4 @@
----
-title: SpringBoot自动配置原理-@SpringBootApplication
-date: 2020-04-13 00:00:00
-tags:
-    - SpringBoot
----
+
 <!-- TOC -->
 
 - [1. @SpringBootApplication](#1-springbootapplication)

@@ -1,9 +1,4 @@
----
-title: Spring Boot启动全过程源码分析
-date: 2020-04-14 00:00:00
-tags:
-    - SpringBoot
----
+
 
 <!-- TOC -->
 
@@ -103,6 +98,13 @@ private List<ApplicationListener<?>> listeners;
 <!-- &emsp; 构建SpringApplication对象时主要是给上面代码中的六个成员属性赋值。-->  
 
 &emsp; SpringApplication的构造函数：  
+&emsp; <font color = "red">构建SpringApplication对象时其实就是给前面讲的6个SpringApplication类的成员属性赋值，做一些初始化工作。</font>  
+1. 给resourceLoader属性赋值，resourceLoader属性，资源加载器，此时传入的resourceLoader参数为null；  
+2. **<font color = "lime">初始化主要加载资源类集合并去重。</font>** 给primarySources属性赋值，primarySources属性即SpringApplication.run(MainApplication.class,args);中传入的MainApplication.class，该类为SpringBoot项目的启动类，主要通过该类来扫描Configuration类加载bean；
+3. **<font color = "lime">判断当前是否是一个 Web 应用。</font>** 给webApplicationType属性赋值，webApplicationType属性，代表应用类型，根据classpath存在的相应Application类来判断。因为后面要根据webApplicationType来确定创建哪种Environment对象和创建哪种ApplicationContext；
+4. **<font color = "lime">设置应用上下文初始化器。</font>** 给initializers属性赋值，initializers属性为List<ApplicationContextInitializer<?\>>集合，利用SpringBoot的SPI机制从spring.factories配置文件中加载，后面在初始化容器的时候会应用这些初始化器来执行一些初始化工作。因为SpringBoot自己实现的SPI机制比较重要；  
+5. **<font color = "lime">设置监听器。</font>** 给listeners属性赋值，listeners属性为List<ApplicationListener<?\>>集合，同样利用利用SpringBoot的SPI机制从spring.factories配置文件中加载。因为SpringBoot启动过程中会在不同的阶段发射一些事件，所以这些加载的监听器们就是来监听SpringBoot启动过程中的一些生命周期事件的；
+6. **<font color = "lime">推断主入口应用类。</font>** 给mainApplicationClass属性赋值，mainApplicationClass属性表示包含main函数的类，即这里要推断哪个类调用了main函数，然后把这个类的全限定名赋值给mainApplicationClass属性，用于后面启动流程中打印一些日志。
 
 ```java
 public SpringApplication(ResourceLoader resourceLoader, Class... primarySources) {
@@ -135,13 +137,6 @@ public SpringApplication(ResourceLoader resourceLoader, Class... primarySources)
     this.mainApplicationClass = this.deduceMainApplicationClass();
 }
 ```
-&emsp; 可以看到<font color = "red">构建SpringApplication对象时其实就是给前面讲的6个SpringApplication类的成员属性赋值，做一些初始化工作。</font>  
-1. 给resourceLoader属性赋值，resourceLoader属性，资源加载器，此时传入的resourceLoader参数为null；  
-2. **<font color = "lime">初始化主要加载资源类集合并去重。</font>** 给primarySources属性赋值，primarySources属性即SpringApplication.run(MainApplication.class,args);中传入的MainApplication.class，该类为SpringBoot项目的启动类，主要通过该类来扫描Configuration类加载bean；
-3. **<font color = "lime">判断当前是否是一个 Web 应用。</font>** 给webApplicationType属性赋值，webApplicationType属性，代表应用类型，根据classpath存在的相应Application类来判断。因为后面要根据webApplicationType来确定创建哪种Environment对象和创建哪种ApplicationContext；
-4. **<font color = "lime">设置应用上下文初始化器。</font>** 给initializers属性赋值，initializers属性为List<ApplicationContextInitializer<?\>>集合，利用SpringBoot的SPI机制从spring.factories配置文件中加载，后面在初始化容器的时候会应用这些初始化器来执行一些初始化工作。因为SpringBoot自己实现的SPI机制比较重要；  
-5. **<font color = "lime">设置监听器。</font>** 给listeners属性赋值，listeners属性为List<ApplicationListener<?\>>集合，同样利用利用SpringBoot的SPI机制从spring.factories配置文件中加载。因为SpringBoot启动过程中会在不同的阶段发射一些事件，所以这些加载的监听器们就是来监听SpringBoot启动过程中的一些生命周期事件的；
-6. **<font color = "lime">推断主入口应用类。</font>** 给mainApplicationClass属性赋值，mainApplicationClass属性表示包含main函数的类，即这里要推断哪个类调用了main函数，然后把这个类的全限定名赋值给mainApplicationClass属性，用于后面启动流程中打印一些日志，详细分析见后面的第3.2小节。
 
 ## 2.1. 主要流程解析  
 &emsp; 从上述流程中，挑以下几个进行分析。  
