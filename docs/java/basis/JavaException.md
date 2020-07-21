@@ -1,8 +1,4 @@
----
-title: 异常  
-tags:
-    - Java
----
+
 <!-- TOC -->
 
 - [1. Java异常](#1-java异常)
@@ -19,6 +15,13 @@ tags:
     - [1.6. 统一异常处理](#16-统一异常处理)
 
 <!-- /TOC -->
+
+
+<!-- 
+异常处理、请求失败处理
+https://www.hangge.com/blog/cache/detail_2519.html
+
+-->
 
 # 1. Java异常  
 ## 1.1. Java异常基本概念  
