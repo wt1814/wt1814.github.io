@@ -1,8 +1,4 @@
----
-title: ThreadPoolExecutor  
-tags:
-    - 并发编程
----
+
 <!-- TOC -->
 
 - [1. ThreadPoolExecutor-1](#1-threadpoolexecutor-1)

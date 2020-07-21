@@ -1,9 +1,4 @@
----
-title: Java基础
-date: 2020-01-27 00:00:00
-tags:
-    - Java
----
+
 <!-- TOC -->
 
 - [1. Java关键字](#1-java关键字)

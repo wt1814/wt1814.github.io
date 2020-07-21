@@ -1,9 +1,4 @@
----
-title: Stream
-date: 2020-01-29 00:00:00
-tags:
-    - JDK
----
+
 <!-- TOC -->
 
 - [1. StreamAPI](#1-streamapi)
