@@ -1,9 +1,4 @@
----
-title: idea
-date: 2020-04-16 00:00:00
-tags:
-    - idea
----
+
 
 # iml文件  
 

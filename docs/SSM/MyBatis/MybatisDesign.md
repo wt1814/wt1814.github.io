@@ -1,9 +1,3 @@
----
-title: Mybatis中的设计模式
-date: 2020-04-20 00:00:00
-tags:
-    - Mybatis
----
 
 
 # Mybatis中的设计模式  

@@ -1,9 +1,3 @@
----
-title: Mybatis缓存解析
-date: 2020-04-17 00:00:00
-tags:
-    - Mybatis
----
 
 <!-- TOC -->
 
@@ -38,8 +32,8 @@ tags:
 3. SqlSession中执行了任何一个update操作(update()、delete()、insert()) ，都会清空PerpetualCache对象的数据，但是该对象可以继续使用。
 
 ### 1.1.1. 一级缓存不足  
-&emsp; 如果跨会话，会出现什么问题？   
-&emsp; 其他会话更新了数据，导致读取到脏数据（一级缓存不能跨会话共享）  
+&emsp; 如果跨session会话，会出现什么问题？   
+&emsp; 其他session会话更新了数据，导致读取到脏数据（一级缓存不能跨会话共享）  
 
 ```java
 // 会话 2 更新了数据，会话 2 的一级缓存更新 
@@ -55,12 +49,12 @@ System.out.println(mapper1.selectBlog(1));
 &emsp; 同一个方法，Mybatis 多次请求数据库，是否要创建多个 SqlSession会话？  
 &emsp; 先从两个 demo 说起，再切入 Mybatis 的源码。  
 
-```
+```java
 public void testSqlSession() throws Exception{
     System.out.println(this.xttblogMapper.findByName("aaa"));
     System.out.println(this.xttblogMapper.findByName("bbb"));
 }
-```java
+```
 &emsp; 运行一下代码。查看控制台，有一下输出。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-21.png)  
 &emsp; 这说明<font color = "red">在同一个方法，Mybatis 多次请求数据库且没有事务的情况下，创建了多个 SqlSession 会话！</font>  
@@ -79,6 +73,7 @@ public void testSqlSession(){
 &emsp; 这说明，<font color = "red">在有事务的情况下，同一个方法，Mybatis多次请求数据库，只创建了一个SqlSession会话！</font>  
 
 &emsp; 如果有事务，并且方法内存在多个线程的情况下，代码如下：  
+
 ```java
 @Transactional
 public void testSqlSession(){
@@ -105,7 +100,7 @@ public void testSqlSession(){
 
 
 ## 1.2. 二级缓存  
-&emsp; 二级缓存是用来解决一级缓存不能跨会话共享的问题的，范围是namespace级别的，可以被多个SqlSession共享<font color = "red">（只要是同一个接口的同一方法，都可以共享）</font>， 生命周期和应用同步。    
+&emsp; 二级缓存是用来解决一级缓存不能跨会话共享的问题的，范围是namespace级别的，可以被多个SqlSession共享， 生命周期和应用同步。    
 
 ### 1.2.1. 开启二级缓存  
 &emsp; MyBatis的二级缓存是默认关闭的，如果要开启有两种方式：  

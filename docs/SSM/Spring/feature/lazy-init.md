@@ -1,10 +1,3 @@
----
-title: lazy-init
-date: 2020-04-08 00:00:00
-tags:
-    - Spring
----
-
 
 # 1. lazy-init属性和预实例化  
 &emsp; 在IOC容器的初始化过程中，主要的工作是对BeanDefinition的定位、载入、解析和注册。此时依赖注入并没有发生，依赖注入发生在应用第一次向容器索要Bean时。 向容器索要Bean是通过getBean的调用来完成的，该getBean是容器提供Bean服务的最基本的接口。  
