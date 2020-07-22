@@ -152,8 +152,8 @@ public class EmployeeService {
     } 
 }
 ```
-&emsp; Spring 在启动的时候需要去实例化 EmployeeService。EmployeeService 依赖了 EmployeeMapper 接口（是 EmployeeService 的一个属 性）。  
-&emsp; Spring 会根据Mapper的名字从BeanFactory中获取它的BeanDefination，再从BeanDefination中获取BeanClass， EmployeeMapper对应的BeanClass是MapperFactoryBean。   
+&emsp; Spring在启动的时候需要去实例化EmployeeService。EmployeeService依赖了EmployeeMapper接口（是EmployeeService的一个属性）。  
+&emsp; Spring会根据Mapper的名字从BeanFactory中获取它的BeanDefination，再从BeanDefination中获取BeanClass， EmployeeMapper对应的BeanClass是MapperFactoryBean。   
 &emsp; 接下来就是创建 MapperFactoryBean，因为实现了 FactoryBean 接口，同样是调用getObject()方法。  
 
 ```java

@@ -241,7 +241,7 @@ public class Plugin implements InvocationHandler {
 ```
 
 &emsp; 实现代理类和拦截特定方法使用Plugin.wrap()方法就可以实现。  
-&emsp; 在Plugin.invoke()方法中，最终调用了Interceptor接口的intercept方法，并把目标类，目标方法，参数封装成一个Invocation对象
+&emsp; 在Plugin.invoke()方法中，最终调用了Interceptor接口的intercept方法，并把目标类，目标方法，参数封装成一个Invocation对象。
 
 ```java
 return interceptor.intercept(new Invocation(target, method, args));  
