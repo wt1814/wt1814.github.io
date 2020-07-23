@@ -13,21 +13,48 @@
 &emsp; **<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-11.png)  
-1. Bean容器在配置文件中找到Spring Bean的定义。
-2. Bean容器使用Java Reflection API创建Bean的实例。
-3. 如果声明了任何属性，声明的属性会被设置。如果属性本身是Bean，则将对其进行解析和设置。
-4. 如果Bean类实现BeanNameAware接口，则将通过传递Bean的名称来调用setBeanName()方法。
-5. 如果Bean类实现BeanClassLoaderAware接口，则将通过传递加载此Bean的ClassLoader对象的实例来调用setBeanClassLoader()方法。
-6. 如果Bean类实现BeanFactoryAware接口，则将通过传递BeanFactory对象的实例来调用setBeanFactory()方法。
-7. 如果有任何与BeanFactory关联的BeanPostProcessors对象已加载Bean，则将在设置Bean属性之前调用postProcessBeforeInitialization()方法。
-8. 如果Bean类实现了InitializingBean接口，则在设置了配置文件中定义的所有Bean属性后，将调用afterPropertiesSet()方法。
-9. 如果配置文件中的Bean定义包含init-method属性，则该属性的值将解析为Bean类中的方法名称，并将调用该方法。
-10. 如果为Bean Factory对象附加了任何Bean 后置处理器，则将调用postProcessAfterInitialization()方法。
-11. 如果Bean类实现DisposableBean接口，则当Application不再需要Bean引用时，将调用destroy()方法。
-12. 如果配置文件中的Bean定义包含destroy-method属性，那么将调用Bean类中的相应方法定义。
+
+&emsp; spring bean的生命周期：  
+1. 实例化Bean：  
+&emsp; 对于BeanFactory容器，当客户向容器请求一个尚未初始化的bean时，或初始化bean的时候需要注入另一个尚未初始化的依赖时，容器就会调用createBean进行实例化。对于ApplicationContext容器，当容器启动结束后，通过获取eanDefinition对象中的信息，实例化所有的bean。   
+2. 设置对象属性（依赖注入）：  
+&emsp; 实例化后的对象被封装在BeanWrapper对象中，紧接着，Spring根据BeanDefinition中的信息 以及 通 过BeanWrapper提供的设置属性的接口完成依赖注入。  
+3. 处理Aware接口：  
+&emsp; 接着，Spring会检测该对象是否实现了xxxAware接口，并将相关的xxxAware实例注入给Bean：  
+&emsp; &emsp; ①如果这个Bean已经实现了BeanNameAware接口，会调用它实现的setBeanName(String beanId)方法，此处传递的就是Spring配置文件中Bean的id值；  
+&emsp; &emsp; ②如果这个Bean已经实现了BeanFactoryAware接口，会调用它实现的setBeanFactory()方法，传递的是Spring工厂自身。  
+&emsp; &emsp; ③如果这个Bean已经实现了ApplicationContextAware接口，会调用setApplicationContext(ApplicationContext)方法，传入Spring上下文；  
+4. BeanPostProcessor：
+&emsp; 如果想对Bean进行一些自定义的处理，那么可以让Bean实现了BeanPostProcessor接口，那将会调用postProcessBeforeInitialization(Object obj, String s)方法。  
+5. InitializingBean 与 init-method：  
+&emsp; 如果Bean在Spring配置文件中配置了 init-method 属性，则会自动调用其配置的初始化方法。  
+7. 如果这个Bean实现了BeanPostProcessor接口，将会调用postProcessAfterInitialization(Object
+obj, String s)方法；由于这个方法是在Bean初始化结束时调用的，所以可以被应用于内存或缓存技术；  
+8. 注册Destruction  
+
+    以上几个步骤完成后，Bean就已经被正确创建了，之后就可以使用这个Bean了。  
+
+9. DisposableBean： 
+&emsp; 当Bean不再需要时，会经过清理阶段，如果Bean实现了DisposableBean这个接口，会调用其实现的destroy()方法；  
+10. destroy-method：  
+&emsp; 最后，如果这个Bean的Spring配置中配置了destroy-method属性，会自动调用其配置的销毁方法。  
+
+        1. Bean容器在配置文件中找到Spring Bean的定义。
+        2. Bean容器使用Java Reflection API创建Bean的实例。
+        3. 如果声明了任何属性，声明的属性会被设置。如果属性本身是Bean，则将对其进行解析和设置。
+        4. 如果Bean类实现BeanNameAware接口，则将通过传递Bean的名称来调用setBeanName()方法。
+        5. 如果Bean类实现BeanClassLoaderAware接口，则将通过传递加载此Bean的ClassLoader对象的实例来调用setBeanClassLoader()方法。
+        6. 如果Bean类实现BeanFactoryAware接口，则将通过传递BeanFactory对象的实例来调用setBeanFactory()方法。
+        7. 如果有任何与BeanFactory关联的BeanPostProcessors对象已加载Bean，则将在设置Bean属性之前调用postProcessBeforeInitialization()方法。
+        8. 如果Bean类实现了InitializingBean接口，则在设置了配置文件中定义的所有Bean属性后，将调用afterPropertiesSet()方法。
+        9. 如果配置文件中的Bean定义包含init-method属性，则该属性的值将解析为Bean类中的方法名称，并将调用该方法。
+        10. 如果为Bean Factory对象附加了任何Bean 后置处理器，则将调用postProcessAfterInitialization()方法。
+        11. 如果Bean类实现DisposableBean接口，则当Application不再需要Bean引用时，将调用destroy()方法。
+        12. 如果配置文件中的Bean定义包含destroy-method属性，那么将调用Bean类中的相应方法定义。
 
 # 2. 实例演示  
 <!-- https://mp.weixin.qq.com/s/feokfxcB1WCMRAqVRm9HOQ -->
+......
 
 # 3. 源码解析  
 &emsp; Bean的生命周期概括起来就是4个阶段：  
@@ -152,33 +179,5 @@ public void destroy() {
 * 首先是实例化、属性赋值、初始化、销毁这 4 个大阶段；
 * 再是初始化的具体操作，有 Aware 接口的依赖注入、BeanPostProcessor 在初始化前后的处理以及 InitializingBean 和 init-method 的初始化操作；
 * 销毁的具体操作，有注册相关销毁回调接口，最后通过DisposableBean 和 destory-method 进行销毁。
-
-
----------
-
-
-spring bean的生命周期  
-
-（1）实例化Bean：  
-对于BeanFactory容器，当客户向容器请求一个尚未初始化的bean时，或初始化bean的时候需要注入另一个尚未初始化的依赖时，容器就会调用createBean进行实例化。对于ApplicationContext容器，当容器启动结束后，通过获取eanDefinition对象中的信息，实例化所有的bean。   
-（2）设置对象属性（依赖注入）：  
-实例化后的对象被封装在BeanWrapper对象中，紧接着，Spring根据BeanDefinition中的信息 以及 通 过BeanWrapper提供的设置属性的接口完成依赖注入。  
-（3）处理Aware接口：  
-接着，Spring会检测该对象是否实现了xxxAware接口，并将相关的xxxAware实例注入给Bean：  
-①如果这个Bean已经实现了BeanNameAware接口，会调用它实现的setBeanName(String beanId)方法，此处传递的就是Spring配置文件中Bean的id值；  
-②如果这个Bean已经实现了BeanFactoryAware接口，会调用它实现的setBeanFactory()方法，传递的是Spring工厂自身。  
-③如果这个Bean已经实现了ApplicationContextAware接口，会调用setApplicationContext(ApplicationContext)方法，传入Spring上下文；  
-（4）BeanPostProcessor：
-如果想对Bean进行一些自定义的处理，那么可以让Bean实现了BeanPostProcessor接口，那将会调用postProcessBeforeInitialization(Object obj, String s)方法。  
-（5）InitializingBean 与 init-method：  
-如果Bean在Spring配置文件中配置了 init-method 属性，则会自动调用其配置的初始化方法。  
-（6）如果这个Bean实现了BeanPostProcessor接口，将会调用postProcessAfterInitialization(Object
-obj, String s)方法；由于这个方法是在Bean初始化结束时调用的，所以可以被应用于内存或缓存技术；  
-
-以上几个步骤完成后，Bean就已经被正确创建了，之后就可以使用这个Bean了。  
-（7）DisposableBean： 当Bean不再需要时，会经过清理阶段，如果Bean实现了DisposableBean这个接口，会调用其实现的destroy()方法；  
-（8）destroy-method：  
-最后，如果这个Bean的Spring配置中配置了destroy-method属性，会自动调用其配置的销毁方法。  
-
 
 
