@@ -19,7 +19,7 @@
 
 * ApplicationEvent：是个抽象类，里面只有一个构造函数和一个长整型的timestamp。  
 * ApplicationListener：是一个接口，里面只有一个onApplicationEvent方法。所以自己的类在实现该接口的时候，要实装该方法。  
-* ApplicationContext：如果在上下文中部署一个实现了ApplicationListener接口的bean，那么每当在一个ApplicationEvent发布到 ApplicationContext时，这个bean得到通知。  
+* ApplicationContext：如果在上下文中部署一个实现了ApplicationListener接口的bean，那么每当在一个ApplicationEvent发布到ApplicationContext时，这个bean得到通知。  
 
 ```java
 public class EmailEvent extends ApplicationEvent {
@@ -84,10 +84,10 @@ public class Test {
 
 |事件	|描述|
 |---|---|
-|ContextRefreshedEvent	|事件发布在ApplicationContext初始化或刷新时(例如,通过在ConfigurableApplicationContext接口使用refresh()方法)。这里,“初始化”意味着所有bean加载,post-processor bean被检测到并且激活,单例预先实例化,ApplicationContext对象可以使用了。只要上下文没有关闭,可以触发多次刷新,ApplicationContext提供了一种可选择的支持这种“热”刷新。例如,XmlWebApplicationContext支持热刷新,但GenericApplicationContext并非如此。具体是在AbstractApplicationContext的finishRefresh()方法中。|
-|ContextStartedEvent	|事件发布在ApplicationContext开始使用ConfigurableApplicationContext接口start()方法。这里,“开始”意味着所有生命周期bean接收到一个明确的起始信号。通常,这个信号用于明确停止后重新启动,但它也可以用于启动组件没有被配置为自动运行(例如,组件还没有开始初始化)。|
-|ContextStoppedEvent	|事件发布在ApplicationContext停止时通过使用ConfigurableApplicationContext接口上的stop()方法。在这里,“停止”意味着所有生命周期bean接收一个显式的停止信号。停止上下文可以通过重新调用start()方法。|
-|ContextClosedEvent	|事件发布在ApplicationContext关闭时通过关闭ConfigurableApplicationContext接口方法。这里,“封闭”意味着所有单例bean被摧毁。一个封闭的环境达到生命的终结。它不能刷新或重启。|
+|ContextRefreshedEvent	|事件发布在ApplicationContext初始化或刷新时(例如,通过在ConfigurableApplicationContext接口使用refresh()方法)。这里，“初始化”意味着所有bean加载,post-processor bean被检测到并且激活,单例预先实例化，ApplicationContext对象可以使用了。只要上下文没有关闭,可以触发多次刷新，ApplicationContext提供了一种可选择的支持这种“热”刷新。例如，XmlWebApplicationContext支持热刷新,但GenericApplicationContext并非如此。具体是在AbstractApplicationContext的finishRefresh()方法中。|
+|ContextStartedEvent	|事件发布在ApplicationContext开始使用ConfigurableApplicationContext接口start()方法。这里，“开始”意味着所有生命周期bean接收到一个明确的起始信号。通常,这个信号用于明确停止后重新启动,但它也可以用于启动组件没有被配置为自动运行(例如,组件还没有开始初始化)。|
+|ContextStoppedEvent	|事件发布在ApplicationContext停止时通过使用ConfigurableApplicationContext接口上的stop()方法。在这里，“停止”意味着所有生命周期bean接收一个显式的停止信号。停止上下文可以通过重新调用start()方法。|
+|ContextClosedEvent	|事件发布在ApplicationContext关闭时通过关闭ConfigurableApplicationContext接口方法。这里，“封闭”意味着所有单例bean被摧毁。一个封闭的环境达到生命的终结。它不能刷新或重启。|
 |RequestHandledEvent	|一个特定的web事件告诉所有能处理HTTP请求的bean 。这个事件是在请求完成后发布的。这个事件只适用于使用Spring的DispatcherServlet的web应用程序。|
 
 &emsp; ApplicationEvent代码如下：  
@@ -115,7 +115,7 @@ public interface ApplicationListener<E extends ApplicationEvent> extends EventLi
     void onApplicationEvent(E event);
 }
 ```
-&emsp; 当事件监听器接收到它可以处理的事件，会调用onApplicationEvent()方法。注意到ApplicationListener是泛型参数，这样可以实现所有继承了ApplicationEvent的监听。可以尽可能多的注册想要的事件侦听器,但是默认情况下事件监听器同步接收事件。这意味着publishEvent()方法会阻塞直到所有的事件监听器成处理完事件。这种单线程同步方法的一个特点是,当一个监听器接收到一个事件时,它运行在事务上下文的发布者线程上(如果事务上下文可用)。如果事件的发布需要另一种策略（譬如多线程）需要实现ApplicationEventMulticaster接口类。  
+&emsp; 当事件监听器接收到它可以处理的事件，会调用onApplicationEvent()方法。注意到ApplicationListener是泛型参数，这样可以实现所有继承了ApplicationEvent的监听。可以尽可能多的注册想要的事件侦听器，但是默认情况下事件监听器同步接收事件。这意味着publishEvent()方法会阻塞直到所有的事件监听器成处理完事件。这种单线程同步方法的一个特点是,当一个监听器接收到一个事件时，它运行在事务上下文的发布者线程上(如果事务上下文可用)。如果事件的发布需要另一种策略（譬如多线程）需要实现ApplicationEventMulticaster接口类。  
 
 ### 1.2.3. ApplicationEventMulticaster，事件管理者  
 &emsp; ApplicationEventMulticaster接口方法分为三类，注册事件监听器、移除事件监听器、发布事件。  

@@ -78,7 +78,6 @@
         * [分库分表-1](/docs/SQL/18.sub.md)  
     * [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
     * [AOP多数据源动态切换](/docs/SQL/6.multiDataSource.md)  
-
   
 * Spring  
     * [Spring-1](/docs/SSM/Spring/1.Spring.md)  
@@ -90,6 +89,10 @@
         * [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
         * [循环依赖](/docs/SSM/Spring/feature/循环依赖.md)  
         * [可二次开发常用接口](/docs/SSM/Spring/feature/可二次开发常用接口.md)  
+            * [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
+            * [事件](/docs/SSM/Spring/feature/Event.md)  
+            * [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
+            * [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
         * [lazy-init](/docs/SSM/Spring/feature/lazy-init.md)  
 
     * [SpringAOP教程](/docs/SSM/Spring/5.SpringAOP.md)  
