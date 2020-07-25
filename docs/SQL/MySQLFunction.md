@@ -5,7 +5,7 @@
 
 ## 控制流程函数  
 ### CASE WHEN THEN 函数  
-&emsp; Case具有两种格式。简单Case函数和Case搜索函数。
+&emsp; Case具有两种格式。简单Case函数和Case搜索函数。  
 &emsp; 第一种格式：简单Case函数，格式说明：  
 
     case 列名

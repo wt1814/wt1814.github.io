@@ -107,7 +107,7 @@
 &emsp; [连接查询](/docs/SQL/10.joinSelect.md)  
 &emsp; [行列转换](/docs/SQL/11.trans.md)  
 [MySql函数](/docs/SQL/MySQLFunction.md)  
-[数据库对象](/docs/SQL/DatabaseObject.md)  
+[数据库对象](/docs/SQL/DatabaseObxject.md)  
 
 [SQL优化-1](/docs/SQL/2.SQL优化.md)  
 &emsp; [索引优化](/docs/SQL/7.index.md)  

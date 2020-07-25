@@ -17,7 +17,8 @@
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-69.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-70.png)  
-&emsp; Sql编程语言。数据库对象有表格、索引、视图、图表、缺省值、规则、触发器、语法、存储过程、用户、序列、函数等。  
+
+&emsp; 数据库对象有表格、索引、视图、图表、缺省值、规则、触发器、语法、存储过程、用户、序列、函数等。  
 
 ## 1.1. Sql序列  
 &emsp; 序列是一种数据库对象，用来自动产生一组唯一的序号；序列是一种共享式的对象，多个用户可以共同使用序列中的序号。经典应用，替换id。  
