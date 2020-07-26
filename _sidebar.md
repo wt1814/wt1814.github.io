@@ -189,7 +189,11 @@
 
 * 项目构建基础    
     * [接口幂等](/docs/web/idempotent.md)   
+    * [日志系统](/docs/web/log.md)   
     * [Http重试](/docs/web/httpRetry.md)   
+    * [生成二维码](/docs/web/QRCode.md)  
+    * [反爬虫](/docs/web/reptile.md)  
+    
 
 * Error  
     * [※※※多线程串线了](/docs/Error/ThreadCrossed.md)  
