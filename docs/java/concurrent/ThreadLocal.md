@@ -52,12 +52,12 @@ ThreadLocalMap inheritableThreadLocals = null;
 
 &emsp; ThradLocal中内部类ThreadLocalMap：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-23.png)   
-&emsp; **<font color = "lime">ThreadLocal.ThreadLocalMap</font>**，Map结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。**<font color = "lime">Key是一个ThreadLocal实例，Value是一个线程特有对象。</font>**Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程特有对象之间的对应关系。  
+&emsp; **<font color = "lime">ThreadLocal.ThreadLocalMap</font>**，Map结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。**<font color = "lime">Key是一个ThreadLocal实例，Value是一个线程持有对象。</font>** Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。  
 &emsp; 具体的ThreadLocalMap实例并不是ThreadLocal保持，而是每个Thread持有，且不同的Thread持有不同的ThreadLocalMap实例, 因此它们是不存在线程竞争的(不是一个全局的map)， 另一个好处是每次线程死亡，所有map中引用到的对象都会随着这个Thread的死亡而被垃圾收集器一起收集。  
 
-    如何解决 Hash 冲突？
-    ThreadLocalMap 虽然是类似 Map 结构的数据结构，但它并没有实现 Map 接口。它不支持 Map 接口中的 next 方法，这意味着 ThreadLocalMap 中解决 Hash 冲突的方式并非 拉链表 方式。
-    实际上，ThreadLocalMap 采用线性探测的方式来解决 Hash 冲突。所谓线性探测，就是根据初始 key 的 hashcode 值确定元素在 table 数组中的位置，如果发现这个位置上已经被其他的 key 值占用，则利用固定的算法寻找一定步长的下个位置，依次判断，直至找到能够存放的位置。
+        ThreadLocalMap 如何解决 Hash 冲突？
+        ThreadLocalMap 虽然是类似 Map 结构的数据结构，但它并没有实现 Map 接口。它不支持 Map 接口中的 next 方法，这意味着 ThreadLocalMap 中解决 Hash 冲突的方式并非 拉链表 方式。
+        实际上，ThreadLocalMap 采用线性探测的方式来解决 Hash 冲突。所谓线性探测，就是根据初始 key 的 hashcode 值确定元素在 table 数组中的位置，如果发现这个位置上已经被其他的 key 值占用，则利用固定的算法寻找一定步长的下个位置，依次判断，直至找到能够存放的位置。
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-24.png)   
 

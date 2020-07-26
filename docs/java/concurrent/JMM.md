@@ -74,7 +74,7 @@
 ### 1.2.4. 重排序对多线程的影响  
 &emsp; 示例代码：  
 
-```
+```java
 class Demo {
     int a = 0;
     boolean flag = false;
