@@ -286,7 +286,7 @@
 
     <dubbo:reference id="memberService" interface="com.xxx.MemberService" />
 
-```
+```java
 // 远程服务引用 MemberService 
 memberService = ctx.getBean("memberService");
 // 强制转型为EchoService
@@ -380,16 +380,18 @@ assert(status.equals("OK"));
 &emsp; 上下文中存放的是当前调用过程中所需的环境信息，所有配置信息都将转换为URL的参数。  
 &emsp; 服务消费方  
 
-    // 远程调用 
-    xxxService.xxx();
-    // 本端是否为消费端，这里会返回true 
-    boolean isConsumerSide = RpcContext.getContext().isConsumerSide();
-    // 获取最后一次调用的提供方IP地址 
-    String serverIP = RpcContext.getContext().getRemoteHost();
-    // 获取当前服务配置信息，所有配置信息都将转换为URL的参数 
-    String application = RpcContext.getContext().getUrl().getParameter("application");
-    // 注意：每发起RPC调用，上下文状态会变化
-    yyyService.yyy();  
+```java
+// 远程调用 
+xxxService.xxx();
+// 本端是否为消费端，这里会返回true 
+boolean isConsumerSide = RpcContext.getContext().isConsumerSide();
+// 获取最后一次调用的提供方IP地址 
+String serverIP = RpcContext.getContext().getRemoteHost();
+// 获取当前服务配置信息，所有配置信息都将转换为URL的参数 
+String application = RpcContext.getContext().getUrl().getParameter("application");
+// 注意：每发起RPC调用，上下文状态会变化
+yyyService.yyy();  
+```
 
 &emsp; 服务提供方  
 
@@ -481,7 +483,7 @@ Bar bar = barFuture.get();
     
 &emsp; 提供Stub的实现：  
 
-```
+```java
 public class BarServiceStub implements BarService {
     private final BarService barService;
     // 构造函数传入真正的远程代理对象              
@@ -512,7 +514,7 @@ public class BarServiceStub implements BarService {
     
 &emsp; 在工程中提供Mock实现：  
 
-```
+```java
 public class BarServiceMock implements BarService {
     public String sayHello(String name) {
         // 可以伪造容错数据，此方法只在出现RpcException时被执行                             
