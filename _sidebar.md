@@ -194,7 +194,7 @@
 * Error  
     * [※※※多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [接口响应时间](/docs/Error/responseTime.md)  
-    * [CodeCC]  
+    * [熔断降级处理](/docs/Error/hystrix.md)  
 
 * 服务器  
     * Linux  
