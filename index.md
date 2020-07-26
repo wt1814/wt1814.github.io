@@ -24,7 +24,7 @@
 
 ### 并发编程  
 [线程基本概念](/docs/java/concurrent/1.Thread.md)  
-[多线程编程](/docs/java/concurrent/2.Multithread.md)  
+[JMM](/docs/java/concurrent/2.Multithread.md)  
 &emsp; [JMM](/docs/java/concurrent/JMM.md)  
 &emsp; [线程安全](/docs/java/concurrent/线程安全.md)  
 &emsp; &emsp; [Synchronized](/docs/java/concurrent/Synchronized.md)  
