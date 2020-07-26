@@ -7,7 +7,7 @@
         - [1.1.1. 分而治之](#111-分而治之)
         - [1.1.2. 工作窃取(Work Stealing)算法](#112-工作窃取work-stealing算法)
     - [1.2. API 描述](#12-api-描述)
-        - [1.2.1. 创建ForkJoinPool:](#121-创建forkjoinpool)
+        - [1.2.1. 创建ForkJoinPool](#121-创建forkjoinpool)
         - [1.2.2. ForkJoinTask详解](#122-forkjointask详解)
         - [1.2.3. 相关使用](#123-相关使用)
 
@@ -48,7 +48,7 @@ public class ForkJoinWorkerThread extends Thread {
 &emsp; ForkJoinPool和ThreadPoolExecutor都是继承AbstractExecutorService抽象类，所以它和ThreadPoolExecutor的使用几乎没有多少区别，除了任务变成了ForkJoinTask以外。   
 &emsp; 注意：这里运用到了一种很重要的设计原则——开闭原则——对修改关闭，对扩展开放。可见整个线程池体系一开始的接口设计就很好，新增一个线程池类，不会对原有的代码造成干扰，还能利用原有的特性。  
 
-### 1.2.1. 创建ForkJoinPool: 
+### 1.2.1. 创建ForkJoinPool
 &emsp; ForkJoinPool是ExecutorService的实现类，是一种特殊的线程池。  
 
 &emsp; java 8进一步扩展了ForkJoinPool的功能，为ForkJoinPool增加了通用池功能。
