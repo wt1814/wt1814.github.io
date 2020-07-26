@@ -1,9 +1,4 @@
----
-title: Redis数据结构及API
-date: 2020-05-15 00:00:00
-tags:
-    - Redis
----
+
 <!-- TOC -->
 
 - [1. Redis简介](#1-redis简介)
