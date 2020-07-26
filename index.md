@@ -190,7 +190,7 @@
 &emsp; [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
 &emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
-[Netty]()  
+[Netty]  
 
 ## Elaticsearch-1  
 [ES基本概念](/docs/ES/1.basicConcepts.md)  
@@ -212,7 +212,7 @@
 
 ---
 ## Error  
-[※※※多线程串线了](/docs/Error/ThreadCrossed.md)  
+[多线程串线了](/docs/Error/ThreadCrossed.md)  
 [接口响应时间](/docs/Error/responseTime.md)  
 [熔断降级处理](/docs/Error/hystrix.md)  
 
