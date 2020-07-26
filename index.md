@@ -133,7 +133,6 @@
 <!--[自定义strater] -->
 
 ### Spring Cloud Netflix  
-参考《SpringCloud微服务实战》  
 [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/0.Netflix.md)  
 [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/1.Eureka.md)  
 [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/2.Ribbon.md)  
