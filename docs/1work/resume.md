@@ -28,12 +28,11 @@
 * 分布式技术
     * 掌握SpringCloud、Dubbo框架；
     * 熟练使用redis、mq、zookeeper等中间件；
-    * 掌握限流，熔断容错隔离；
+    * 掌握限流，熔断，降级；
     * 掌握分布式事务、分布式锁、分布式ID、分布式缓存问题的解决；
-    * 掌握单点登录；
-* 掌握Tomcat，Ngingx等服务器
-* 熟练使用Svn，Git，Maven等版本控制工具及项目搭建工具，会使用devops工具
-* 掌握Linux基本命令
+* 掌握Tomcat，Ngingx等服务器；
+* 熟练使用Svn，Git，Maven等版本控制工具及项目搭建工具，会使用devops工具；
+* 掌握Linux基本命令；
 
 </font>
 <br/>
@@ -60,7 +59,7 @@
 <font size = "4.5">
 
 * 2019.03---至今 &emsp; &emsp; 中科软股份有限公司 &emsp; &emsp; 中国人保对外合作组系统架构改造  
-    * 核心技术：腾讯云TSF（SpringCloud的封装）+TBase（PostgreSQL的封装）+MyBatis+CMQ+redis+COS+velocity  
+    * 核心技术：腾讯云TSF（SpringCloud的封装）+MySql+MyBatis+CMQ+redis+COS+velocity  
     * 项目概述：采用腾讯云对对外合作项目组进行中台项目改造。改造各个项目的投保、退保、理赔等功能。
     * 个人职责：
         1. 参与系统架构改造，配置文件yaml格式化并加密重要参数，maven pom文件dependencies依赖整理，logback框架日志规范等。掌握腾讯云的使用，进行项目部署。  

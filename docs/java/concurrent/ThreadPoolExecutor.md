@@ -14,6 +14,8 @@
 https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
 https://mp.weixin.qq.com/s/why85dCrH8ej2wPA08e3nA
 https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
+ 深入分析线程池的实现原理 
+https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
 -->
 
 ## 1.1. 属性  
