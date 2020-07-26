@@ -84,7 +84,7 @@
 
 ### JVM  
 [JDK、JRE、JVM](/docs/java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
-[Class文件](/docs/java/JVM/Class.md)   
+[Class文件]   
 [JVM类的加载](/docs/java/JVM/2.JVM类的加载.md)  
 [JVM内存结构](/docs/java/JVM/3.JVM内存结构.md)  
 
