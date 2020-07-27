@@ -2,46 +2,103 @@
 <!-- TOC -->
 
 - [1. HashMap](#1-hashmap)
-    - [1.1. HashMap源码](#11-hashmap源码)
-        - [1.1.1. HashMap类定义](#111-hashmap类定义)
-        - [1.1.2. 属性（数据结构）](#112-属性数据结构)
-        - [1.1.3. 构造函数](#113-构造函数)
-        - [1.1.4. 成员方法](#114-成员方法)
-            - [1.1.4.1. 通过K获取数组下标/hash函数的设计](#1141-通过k获取数组下标hash函数的设计)
-            - [1.1.4.2. put()，插入](#1142-put插入)
-            - [1.1.4.3. resize()，扩容机制](#1143-resize扩容机制)
-            - [1.1.4.4. remove()，删除](#1144-remove删除)
-    - [1.2. HashMap在JDK1.7和JDK1.8中的区别总结](#12-hashmap在jdk17和jdk18中的区别总结)
-    - [1.3. ※※※HashMap的线程安全问题](#13-※※※hashmap的线程安全问题)
-    - [1.4. 如何实现一个自定义的class作为HashMap的key？](#14-如何实现一个自定义的class作为hashmap的key)
+    - [1.1. Map集合遍历](#11-map集合遍历)
+    - [1.2. HashMap源码](#12-hashmap源码)
+        - [1.2.1. HashMap类定义](#121-hashmap类定义)
+        - [1.2.2. 属性（数据结构）](#122-属性数据结构)
+        - [1.2.3. 构造函数](#123-构造函数)
+        - [1.2.4. 成员方法](#124-成员方法)
+            - [1.2.4.1. 通过K获取数组下标/hash函数的设计](#1241-通过k获取数组下标hash函数的设计)
+            - [1.2.4.2. put()，插入](#1242-put插入)
+            - [1.2.4.3. resize()，扩容机制](#1243-resize扩容机制)
+            - [1.2.4.4. remove()，删除](#1244-remove删除)
+    - [1.3. HashMap在JDK1.7和JDK1.8中的区别总结](#13-hashmap在jdk17和jdk18中的区别总结)
+    - [1.4. HashMap的线程安全问题](#14-hashmap的线程安全问题)
+    - [1.5. 如何实现一个自定义的class作为HashMap的key？](#15-如何实现一个自定义的class作为hashmap的key)
 
 <!-- /TOC -->
 
 
 # 1. HashMap  
 
+<!-- 
 &emsp; **HashMap的底层：Hash表数据结构！！！**
 
 1. 基于JDK1.8的HashMap是由数组+链表+红黑树组成，当链表长度超过8时，链表会自动转换成红黑树，当红黑树节点个数小于6时，又会转化成链表。相对于早期版本的JDK HashMap实现，新增了红黑树作为底层数据结构，在数据量较大且哈希碰撞较多时，能够极大的增加检索的效率。
 2. 允许key和value都为null。key重复会被覆盖，value允许重复。HashMap最多只允许一条记录的键为null，允许多条记录的值为null。  
-&emsp; HashTable有Null会产生NullPointerException异常  
-&emsp; ConcurrentHashMap不允许有Null  
+&emsp; HashTable有Null会产生NullPointerException异常；  
+&emsp; ConcurrentHashMap不允许有Null。  
 3. 非线程安全。  
 4. 自定义HashMap重写hashCode()和equals()方法。如果往HashMap集合中存放自定义的对象，那么保证其唯一，就必须复写hashCode和equals方法，建立属于当前对象的比较方式。  
     1. 进行键值对存储时，先通过hashCode()计算出键（K）的哈希值，然后在数组中查询，如果没有则保存。  
     2. 但是如果找到相同的哈希值，那么接着调用equals方法判断它们的值是否相同。只有满足以上两种条件才能认定为相同的数据，因此对于Java中的包装类里面都重写了hashCode()和equals()方法。  
+-->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-4.png)  
 
-## 1.1. HashMap源码  
-### 1.1.1. HashMap类定义  
+## 1.1. Map集合遍历  
+
+1. map.keySet()  
+2. map.values()  
+3. map.entrySet()  
+4. map.entrySet().iterator()  
+5. JDK1.8中map.forEach((key, value) -> { })    
+
+
+```java
+public void testHashMap() {
+    Map<String, String> map = new HashMap<>(4);
+    map.put("1", "a");
+    map.put("2", "b");
+    map.put("3", "c");
+    map.put("4", "d");
+
+    System.out.println("----- map.keySet() -----");
+    //获取所有的 key，根据 key 取出对应的value
+    for (String key : map.keySet()) {
+        System.out.println("key:" + key + ",value:" + map.get(key));
+    }
+    System.out.println("----- 获取map种所有的value：map.values() -----");
+    //遍历所有的value
+    for (String value : map.values()) {
+        System.out.println("value:" + value);
+    }
+    System.out.println("----- 获取键值对：map.entrySet() -----");
+    //取出对应的 key，value 键值对,容量大时推荐使用
+    for (Map.Entry<String, String> entry : map.entrySet()) {
+        System.out.println("键值对:" + entry);
+        //获取 键值对的 key
+        System.out.println("key:" + entry.getKey());
+        //获取 键值对的 value
+        System.out.println("value:" + entry.getValue());
+    }
+
+    System.out.println("----- 通过 Map.entrySet使用iterator遍历 key 和 value -----");
+    Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
+    while (iterator.hasNext()) {
+        Map.Entry<String, String> entry = iterator.next();
+        System.out.println("key:" + entry.getKey() + ",value:" + entry.getValue());
+    }
+
+    System.out.println("----- map.forEach JDK1.8 新特性 -----");
+    map.forEach((key, value) -> {
+        System.out.println("key=" + key + ",value=" + value);
+    });
+}
+```
+&emsp; 推荐：<font color = "lime">使用 entrySet 遍历 Map 类集合 KV，而不是 keySet 方式进行遍历。</font>  
+&emsp; 说明：keySet 其实是遍历了 2 次，一次是转为 Iterator 对象，另一次是从 hashMap 中取出key 所对应的 value。而 entrySet 只是遍历了一次就把 key 和 value 都放到了 entry 中，效率更高。  
+&emsp; <font color = "red">如果是 JDK8，使用 Map.foreach 方法。</font>  
+
+## 1.2. HashMap源码  
+### 1.2.1. HashMap类定义  
 
 ```java
 public class HashMap<K,V> extends AbstractMap<K,V> implements Map<K,V>, Cloneable, Serializable
 ```
 &emsp; Cloneable空接口，表示可以克隆； Serializable序列化； AbstractMap，提供Map实现接口。  
 
-### 1.1.2. 属性（数据结构）  
+### 1.2.2. 属性（数据结构）  
 
 ```java
 //默认的初始化容量为16，必须是2的n次幂
@@ -120,9 +177,9 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 }
 ```
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-5.png)  
-&emsp; **<font color = "red">HashMap的Hash表结构：</font>**  
-&emsp; **<font color = "red">HashMap的底层：Hash表数据结构！！！</font>**  
-&emsp; **HashMap中hash函数设计？**  
+
+&emsp; **<font color = "red">1. HashMap的底层：Hash表数据结构！！！</font>**  
+&emsp; **HashMap中hash函数设计：**  
 
 ```java
 static final int hash(Object key) {
@@ -158,7 +215,7 @@ static final int hash(Object key) {
         threshold 除了用于存放扩容阈值还有其他作用吗？
         在新建 HashMap 对象时， threshold 还会被用来存初始化时的容量。HashMap 直到第一次插入节点时，才会对 table 进行初始化，避免不必要的空间浪费。
 
-&emsp; **<font color = "red">HashMap的树形化结构：</font>**  
+&emsp; **<font color = "red">2. HashMap的树形化结构：</font>**  
 
 &emsp; 在JDK1.8中，HashMap是由数组+链表+红黑树构成，新增了红黑树作为底层数据结构。链表长度大于8的时候，链表会转成红黑树；当红黑树的节点数小于6时，会转化成链表。  
 &emsp; **<font color = "lime">为什么使用红黑树？</font>**  
@@ -167,23 +224,21 @@ static final int hash(Object key) {
 * TREEIFY_THRESHOLD树形化阈值。当链表的节点个数大于等于这个值时，会将链表转化为红黑树。
 * UNTREEIFY_THRESHOLD解除树形化阈值。当链表的节点个数小于等于这个值时，会将红黑树转换成普通的链表。
 
-        为什么要将链表中转红黑树的阈值设为8？  
-
         为什么在少于 6 的时候而不是 8 的时候才将红黑树转换为链表呢？假设设计成大于 8 时链表转换为红黑树，小于 8 的时候又转换为链表。如果一个 hashmap 不停的插入、删除。hashmap 中的个数不停地在 8 徘徊，那么就会频繁的发生链表和红黑树之间转换，效率非常低。因此，6 和 8 之间来一个过渡值可以减缓这种情况造成的影响。
 
-* **<font color = "lime">MIN_TREEIFY_CAPACITY树形化阈值的第二条件。当数组的长度小于这个值时，就算树形化阈不达标，链表也不会转化为红黑树，而是优先扩容数组resize()。</font>**  
-
-    &emsp; 把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于 8；table 数组长度大于等于 64。
+* **<font color = "lime">MIN_TREEIFY_CAPACITY树形化阈值的第二条件。当数组的长度小于这个值时，当树形化阈值达标时，链表也不会转化为红黑树，而是优先扩容数组resize()。</font>**  
 
     **<font color = "red">为什么 table 数组容量大于等于 64 才树化？</font>**  
     &emsp;因为当 table 数组容量比较小时，键值对节点 hash 的碰撞率可能会比较高，进而导致链表长度较长。这个时候应该优先扩容，而不是立马树化。
 
-&emsp; **<font color = "red">HashMap的内部类：</font>**  
+&emsp; 总结：<font color = "lime">把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于 8；table 数组长度大于等于 64。</font>  
+
+&emsp; **<font color = "red">3. HashMap的内部类：</font>**  
 &emsp; HashMap 内部有很多内部类，扩展了 HashMap 的一些功能，EntrySet 类就是其中一种，该类较为简单，无内部属性，可以理解为一个工具类，对 HashMap 进行了简单的封装，提供了方便的遍历、删除等操作。  
 &emsp; 调用 HashMap 的 entrySet() 方法就可以返回 EntrySet 实例对象，为了不至于每次调用该方法都返回新的 EntrySet 对象，所以设置该属性，缓存 EntrySet 实例。  
 
 
-### 1.1.3. 构造函数  
+### 1.2.3. 构造函数  
 
 ```java
 //默认构造函数，初始化加载因子loadFactor = 0.75
@@ -232,8 +287,8 @@ static final int tableSizeFor(int cap) {
 }
 ```
 
-### 1.1.4. 成员方法  
-#### 1.1.4.1. 通过K获取数组下标/hash函数的设计  
+### 1.2.4. 成员方法  
+#### 1.2.4.1. 通过K获取数组下标/hash函数的设计  
 &emsp; 不管增加、删除还是查找键值对，定位到数组的位置都是很关键的第一步，打开hashMap的任意一个增加、删除、查找方法，从源码可以看出，通过key获取数组下标，主要做了3步操作，其中length指的是容器数组的大小。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-8.png)  
 
@@ -271,7 +326,7 @@ int index = hash(key) & (capacity - 1)
 &emsp; 那么在计算 index 的时候，为什么不使用 hash(key) % capacity 呢？这是因为移位运算相比取余运算会更快。那么为什么 hash(key) & (capacity - 1) 也可以呢？这是因为在 B 是 2 的幂情况下：A % B = A & (B - 1)。如果 A 和 B 进行取余，其实相当于把 A 那些不能被 B 整除的部分保留下来。从二进制的方式来看，其实就是把 A 的低位给保留了下来。B-1 相当于一个“低位掩码”，而与的操作结果就是散列值的高位全部置为 0 ，只保留低位，而低位正好是取余之后的值。我们取个例子，A = 24，B =16，那么 A%B=8，从二进制角度来看 A =11000 ，B = 10000。A 中不能被 B 整除的部分其实就是 1000 这个部分。接下去，我们需要将这部分保留下来的话，其实就是使用 01111 这个掩码并跟 A 进行与操作，即可将1000 保留下来，作为 index 的值。而 01111 这个值又等于 B-1。所以 A &（B-1）= A%B。但是这个前提是 B 的容量是 2 的幂，那么如何保证呢？我们可以看到，在设置初始大小的时候，无论你设置了多少，都会被转换为 2 的幂的一个数。之外，扩容的时候也是按照 2 倍进行扩容的。所以 B 的值是 2 的幂是没问题的。  
 
 
-#### 1.1.4.2. put()，插入  
+#### 1.2.4.2. put()，插入  
 &emsp; put 方法源码部分  
 
 ```java
@@ -283,12 +338,12 @@ public V put(K key, V value) {
 }
 ```
 
-    table 的初始化时机是什么时候
-    一般情况下，在第一次 put 的时候，调用 resize 方法进行 table 的初始化（懒初始化，懒加载思想在很多框架中都有应用！）
+        table 的初始化时机是什么时候
+        一般情况下，在第一次 put 的时候，调用 resize 方法进行 table 的初始化（懒初始化，懒加载思想在很多框架中都有应用！）
 
 &emsp; **<font color = "lime">插入元素方法：</font>**  
 1. 判断键值对数组table[i]是否为空或为null，否则执行resize()进行扩容；  
-2. 根据键值key计算hash值得到插入的数组索引i，如果table[i]==null，直接新建节点添加；  
+2. <font color = "red">根据键值key计算hash值得到插入的数组索引i，如果table[i]==null，直接新建节点添加；</font>  
 3. 当table[i]不为空，判断table[i]的首个元素是否和传入的key一样，如果相同直接覆盖value；  
 4. 判断table[i]是否为treeNode，即table[i]是否是红黑树，如果是红黑树，则直接在树中插入键值对；  
 5. 遍历table[i]，判断链表长度是否大于8，大于8的话把链表转换为红黑树，在红黑树中执行插入操作，否则进行链表的插入操作；遍历过程中若发现 key 已经存在直接覆盖 value 即可；  
@@ -417,7 +472,7 @@ final TreeNode<K,V> putTreeVal(HashMap<K,V> map, Node<K,V>[] tab,
         1. JDK1.7使用头插法，JDK1.8使用尾插法。  
         2. HashMap在发生hash冲突的时候用的是链地址法。  
 
-#### 1.1.4.3. resize()，扩容机制  
+#### 1.2.4.3. resize()，扩容机制  
 &emsp; HashMap在什么条件下扩容？  
 &emsp; JDK 1.7的扩容条件是数组长度大于阈值且存在哈希冲突。在JDK 7中的扩容的源码如下：   
 
@@ -570,7 +625,7 @@ final Node<K,V>[] resize() {
 &emsp; 相比于JDK1.7，1.8使用的是2次幂的扩展(指长度扩为原来2倍)，所以，元素的位置要么是在原位置，要么是在原位置再移动2次幂的位置。在扩充HashMap的时候，不需要像JDK1.7的实现那样重新计算hash，只需要看看原来的hash值新增的那个bit是1还是0就好了，是0的话索引没变，是1的话索引变成“原索引+oldCap”。  
 
 
-#### 1.1.4.4. remove()，删除  
+#### 1.2.4.4. remove()，删除  
 &emsp; HashMap的删除操作仅需三个步骤即可完成。  
 1. 定位桶位置  
 2. 遍历链表找到相等的节点  
@@ -627,14 +682,14 @@ final Node<K,V> removeNode(int hash, Object key, Object value,boolean matchValue
 }
 ```
 
-## 1.2. HashMap在JDK1.7和JDK1.8中的区别总结  
+## 1.3. HashMap在JDK1.7和JDK1.8中的区别总结  
 
 * 数组+链表改成了数组+链表或红黑树；  
 * 链表的插入方式从头插法改成了尾插法，简单说就是插入时，如果数组位置上已经有元素，1.7将新元素放到数组中，原始节点作为新节点的后继节点，1.8遍历链表，将元素放置到链表的最后；  
 * 扩容的时候1.7需要对原数组中的元素进行重新hash定位在新数组的位置，1.8采用更简单的判断逻辑，位置不变或索引+旧容量大小；  
 * 在插入时，1.7先判断是否需要扩容，再插入，1.8先进行插入，插入完成再判断是否需要扩容；  
 
-## 1.3. ※※※HashMap的线程安全问题  
+## 1.4. HashMap的线程安全问题  
 &emsp; HashMap在数组的元素过多时会进行扩容操作，扩容之后会把原数组中的元素拿到新的数组中，这时候在多线程情况下就有可能出现多个线程搬运一个元素。或者说一个线程正在进行扩容，但是另一个线程还想进来存或者读元素，这也可会出现线程安全问题。   
 1. **<font color = "red">在jdk1.7中，在多线程环境下，扩容时会造成环形链或数据丢失。</font>**  
 &emsp; 多线程场景下使用 HashMap 造成死循环问题（基于 JDK1.7），出现问题的位置在 rehash 处，也就是  
@@ -658,7 +713,7 @@ final Node<K,V> removeNode(int hash, Object key, Object value,boolean matchValue
 * 使用Collections 包下的线程安全的容器比如Collections.synchronizedMap方法，对方法进行加同步锁；  
 * 使用并发包中的ConcurrentHashMap类；  
 
-## 1.4. 如何实现一个自定义的class作为HashMap的key？  
+## 1.5. 如何实现一个自定义的class作为HashMap的key？  
 ......
 
 

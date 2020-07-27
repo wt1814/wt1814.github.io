@@ -56,13 +56,13 @@
 * 修饰变量，final 修饰的变量不能被改写，不能被改写的意思有两种，对于基本数据类型来说，final 修饰的变量，其值不能被改变，final 修饰的对象，对象的引用不能被改变，但是对象内部的属性可以被修改。final 修饰的变量在某种程度上起到了不可变的效果，所以，可以用来保护只读数据，尤其是在并发编程中，因为明确的不能再为 final 变量进行赋值，有利于减少额外的同步开销。
 * 修饰方法，final 修饰的方法不能被重写。  
 
-&emsp; final 修饰符和 Java 程序性能优化没有必然联系
+&emsp; final 修饰符和 Java 程序性能优化没有必然联系。
 
 
 # 2. Java变量  
 ## 2.1. 声明、初始化、实例化  
 
-```
+```java
 A a;         //声明
 a = null;    //初始化
 a = new A(); //实例化
@@ -158,12 +158,13 @@ class Fa{
 
 # 3. Java方法  
 ## 3.1. 方法重载  
-&emsp; 类中有多个方法,有着相同的方法名,但是方法的参数各不相同,这种情况被称为方法的重载。方法的重载可以提供方法调用的灵活性。  
+&emsp; 类中有多个方法，有着相同的方法名，但是方法的参数各不相同，这种情况被称为方法的重载。方法的重载可以提供方法调用的灵活性。  
 &emsp; 方法重载必须满足一下条件:  
 1. 方法名相同；  
 2. 参数列表不同(参数的类型、个数、顺序的不同)；  
 3. 方法的返回值可以不同，也可以相同。  
-&emsp; 注：在java中,判断一个类中的两个个方法是否重载,主要参考两个方面：方法名字和参数列表。  
+
+&emsp; 注：在java中，判断一个类中的两个个方法是否重载，主要参考两个方面：方法名字和参数列表。  
 
 ```java
 public void test(Strig str){}
@@ -402,76 +403,76 @@ class TestDemo2 {
 * 接口作为方法参数  
 &emsp; 当遇到方法参数为接口类型时，那么该方法要传入一个接口实现类对象。如下代码演示。  
 
-```java
-//接口
-interface Smoke{
-	public abstract void smoking();
-}
-```
+    ```java
+    //接口
+    interface Smoke{
+        public abstract void smoking();
+    }
+    ```
 
-```java
-class Student implements Smoke{
-	@Override
-	public void smoking() {
-		System.out.println("课下吸口烟，赛过活神仙");
-	}
-}
-```
+    ```java
+    class Student implements Smoke{
+        @Override
+        public void smoking() {
+            System.out.println("课下吸口烟，赛过活神仙");
+        }
+    }
+    ```
 
-```java
-//测试类
-public class Test {
-	public static void main(String[] args) {
-		//调用method方法，获取返回的会吸烟的对象
-		Smoke s = method();
-		//通过s变量调用smoking方法,这时实际调用的是Student对象中的smoking方法
-		s.smoking();
-	}
-	
-	//定义一个方法method，用来获取一个具备吸烟功能的对象，并在方法中完成吸烟者的创建
-	public static Smoke method(){
-		Smoke sm = new Student();
-		return sm;
-	}
-}
-```
+    ```java
+    //测试类
+    public class Test {
+        public static void main(String[] args) {
+            //调用method方法，获取返回的会吸烟的对象
+            Smoke s = method();
+            //通过s变量调用smoking方法,这时实际调用的是Student对象中的smoking方法
+            s.smoking();
+        }
+        
+        //定义一个方法method，用来获取一个具备吸烟功能的对象，并在方法中完成吸烟者的创建
+        public static Smoke method(){
+            Smoke sm = new Student();
+            return sm;
+        }
+    }
+    ```
 
 * 接口作为方法返回值  
 &emsp; 当遇到方法返回值是接口类型时，那么该方法需要返回一个接口实现类对象。如下代码演示。  
 
-```java
-//接口
-interface Smoke{
-	public abstract void smoking();
-}
-```
+    ```java
+    //接口
+    interface Smoke{
+        public abstract void smoking();
+    }
+    ```
 
-```java
-class Student implements Smoke{
-	@Override
-	public void smoking() {
-		System.out.println("课下吸口烟，赛过活神仙");
-	}
-}
-```
+    ```java
+    class Student implements Smoke{
+        @Override
+        public void smoking() {
+            System.out.println("课下吸口烟，赛过活神仙");
+        }
+    }
+    ```
 
-```java
-//测试类
-public class Test {
-	public static void main(String[] args) {
-		//通过多态的方式，创建一个Smoke类型的变量，而这个对象实际是Student
-		Smoke s = new Student();
-		//调用method方法
-		method(s);
-	}
-	
-	//定义一个方法method，用来接收一个Smoke类型对象，在方法中调用Smoke对象的show方法
-	public static void method(Smoke sm){//接口作为参数
-		//通过sm变量调用smoking方法，这时实际调用的是Student对象中的smoking方法
-		sm.smoking();
-	}
-}
-```
+    ```java
+    //测试类
+    public class Test {
+        public static void main(String[] args) {
+            //通过多态的方式，创建一个Smoke类型的变量，而这个对象实际是Student
+            Smoke s = new Student();
+            //调用method方法
+            method(s);
+        }
+        
+        //定义一个方法method，用来接收一个Smoke类型对象，在方法中调用Smoke对象的show方法
+        public static void method(Smoke sm){//接口作为参数
+            //通过sm变量调用smoking方法，这时实际调用的是Student对象中的smoking方法
+            sm.smoking();
+        }
+    }
+    ```
 
 ## 4.3. ※※※抽象类和接口的应用  
 <!-- https://m.nowcoder.com/questionTerminal?uuid=16194802568b45d3ada8e57cc10b5d51 -->
