@@ -17,12 +17,15 @@ https://mp.weixin.qq.com/s/6BhHBtoBlSqHlXduhzg7Pw
 深入理解ServiceLoader类与SPI机制
 https://blog.csdn.net/li_xunhuan/article/details/103017286?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-15.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-15.nonecase
 
+ 你应该了解的 Java SPI 机制 
+ https://mp.weixin.qq.com/s/CixQ4fglnonfFoC3A7Mn5g
+
 -->
 
 # 1. Java SPI机制详解
 ## 1.1. 什么是SPI？
 
-&emsp; SPI 全称为 (Service Provider Interface) ，是JDK内置的一种服务提供发现机制。SPI是一种动态替换发现的机制， 比如有个接口，想运行时动态的给它添加实现，只需要添加一个实现。经常遇到的就是java.sql.Driver接口，其他不同厂商可以针对同一接口做出不同的实现，mysql和postgresql都有不同的实现提供给用户，而Java的SPI机制可以为某个接口寻找服务实现。
+&emsp; SPI 全称为 (Service Provider Interface，服务提供发现接口) ，是JDK内置的一种服务提供发现机制。SPI是一种动态替换发现的机制， 比如有个接口，想运行时动态的给它添加实现，只需要添加一个实现。经常遇到的就是java.sql.Driver接口，其他不同厂商可以针对同一接口做出不同的实现，mysql和postgresql都有不同的实现提供给用户，而Java的SPI机制可以为某个接口寻找服务实现。
 
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/basics/java-5.png)  

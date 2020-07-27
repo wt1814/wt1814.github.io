@@ -15,6 +15,11 @@
 
 <!-- /TOC -->
 
+<!-- 
+ [MyBatis] 缓存模块实现原理剖析 
+ https://mp.weixin.qq.com/s/_V8d37Oo3PMubLu429K2Lw
+-->
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-31.png)  
 
 
