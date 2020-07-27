@@ -13,7 +13,7 @@
         - [1.4.1. Period类](#141-period类)
         - [1.4.2. Duration类](#142-duration类)
         - [1.4.3. ChronoUnit类，java.time.temporal包](#143-chronounit类javatimetemporal包)
-    - [1.5. ※※※SpringBoot中应用LocalDateTime-1](#15-※※※springboot中应用localdatetime-1)
+    - [1.5. SpringBoot中应用LocalDateTime-1](#15-springboot中应用localdatetime-1)
 
 <!-- /TOC -->
 # 1. Date/Time API  
@@ -187,7 +187,7 @@ LocalDateTime oldDate = LocalDateTime.of(2017, Month.AUGUST, 31, 10, 20, 55);
 LocalDateTime newDate = LocalDateTime.of(2018, Month.NOVEMBER, 9, 10, 21, 56);
 ```
 
-## 1.5. ※※※SpringBoot中应用LocalDateTime-1  
+## 1.5. SpringBoot中应用LocalDateTime-1  
 &emsp; 将LocalDateTime字段以时间戳的方式返回给前端，添加日期转化类  
 
 ```java

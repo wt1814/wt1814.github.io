@@ -6,7 +6,7 @@
     - [1.2. Stream流的使用详解](#12-stream流的使用详解)
         - [1.2.1. 流的构造与转换](#121-流的构造与转换)
         - [1.2.2. 流的操作-1](#122-流的操作-1)
-            - [1.2.2.1. 数值流](#1221-数值流)
+            - [1.2.2.1. 基本数值流](#1221-基本数值流)
                 - [1.2.2.1.1. 流与数值流的转换](#12211-流与数值流的转换)
                 - [1.2.2.1.2. 数值流方法](#12212-数值流方法)
             - [1.2.2.2. 集合Stream](#1222-集合stream)
@@ -20,7 +20,7 @@
 
 # 1. StreamAPI  
 ## 1.1. 简介  
-&emsp; java8中的Stream是对集合（Collection）对象功能的增强，它专注于对集合对象进行各种聚合操作，或者大批量数据操作。Stream API通过Lambda表达式，极大的提高编程效率和程序可读性。同时它提供串行和并行两种模式进行汇聚操作，并发模式能够充分利用多核处理器的优势，使用fork/join并行方式来拆分任务和加速处理过程。  
+&emsp; java8中的Stream是对集合对象功能的增强，它专注于对集合对象进行各种聚合操作，或者大批量数据操作。Stream API通过Lambda表达式，极大的提高编程效率和程序可读性。同时它提供串行和并行两种模式进行汇聚操作，并发模式能够充分利用多核处理器的优势，使用fork/join并行方式来拆分任务和加速处理过程。  
 &emsp; Stream和Iterator区别：Stream如同一个迭代器（Iterator），单向，不可往复，数据只能遍历一次。而和迭代器又不同的是，Stream可以并行化操作，迭代器只能命令式地、串行化操作。Stream的并行操作依赖于Java7中引入的Fork/Join框架（JSR166y）来拆分任务和加速处理过程。  
 &emsp; lambda表达式是函数式接口的实现，参数行为化；stream流的参数是函数式接口，即lambda表达式的实例。  
 
@@ -49,7 +49,7 @@
 &emsp; 在对于一个Stream进行多次转换操作(Intermediate操作)，每次都对 Stream的每个元素进行转换，而且是执行多次，这样时间复杂度就是N（转换次数）个for循环里把所有操作的总和吗？  
 &emsp; 其实不是这样的，转换操作都是lazy的，多个转换操作只会在Terminal操作的时候融合起来，一次循环完成。即Stream里有个操作函数的集合，每次转换操作就是把转换函数放入这个集合中，在Terminal操作的时候循环Stream对应的集合，然后对每个元素执行所有的函数。  
 
-#### 1.2.2.1. 数值流  
+#### 1.2.2.1. 基本数值流  
 &emsp; 数值流IntStream, DoubleStream, LongStream，这种流中的元素都是原始数据类型，分别是int，double，long。  
 
 ##### 1.2.2.1.1. 流与数值流的转换  
@@ -144,24 +144,24 @@ reduce("", String::concat);
 
 * 方法一：
 
-```java
-<R, A> R collect(Collector<? super T, A, R> collector);  
-```
-&emsp; 主要使用Collectors（java.util.stream.Collectors）来进行各种reduction 操作。  Collections是java.util包的一个工具类，内涵各种处理集合的静态方法： 
+    ```java
+    <R, A> R collect(Collector<? super T, A, R> collector);  
+    ```
+    &emsp; 主要使用Collectors（java.util.stream.Collectors）来进行各种reduction 操作。  Collections是java.util包的一个工具类，内涵各种处理集合的静态方法： 
 
-    1. 将流中的数据转成集合类型: toList、toSet、toMap、toCollection   
-    2. 将流中的数据(字符串)使用分隔符拼接在一起：joining  
-    3. 对流中的数据求最大值maxBy、最小值minBy、求和summingInt、求平均值averagingDouble  
-    4. 对流中的数据进行映射处理 mapping  
-    5. 对流中的数据分组：groupingBy、partitioningBy  
-    6. 对流中的数据累计计算：reducing  
+        1. 将流中的数据转成集合类型: toList、toSet、toMap、toCollection   
+        2. 将流中的数据(字符串)使用分隔符拼接在一起：joining  
+        3. 对流中的数据求最大值maxBy、最小值minBy、求和summingInt、求平均值averagingDouble  
+        4. 对流中的数据进行映射处理 mapping  
+        5. 对流中的数据分组：groupingBy、partitioningBy  
+        6. 对流中的数据累计计算：reducing  
 
 * 方法二：  
 
-```java
-<R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner);
-```  
-&emsp; 参数supplier是一个生成目标类型实例的方法，代表着目标容器是什么；accumulator是将操作的目标数据填充到supplier 生成的目标类型实例中去的方法，代表着如何将元素添加到容器中；而combiner是将多个supplier生成的实例整合到一起的方法，代表着规约操作，将多个结果合并。  
+    ```java
+    <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner);
+    ```  
+    &emsp; 参数supplier是一个生成目标类型实例的方法，代表着目标容器是什么；accumulator是将操作的目标数据填充到supplier 生成的目标类型实例中去的方法，代表着如何将元素添加到容器中；而combiner是将多个supplier生成的实例整合到一起的方法，代表着规约操作，将多个结果合并。  
 
 
 #### 1.2.2.3. ParallelStream   

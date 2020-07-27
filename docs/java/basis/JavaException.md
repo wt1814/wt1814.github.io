@@ -79,11 +79,11 @@ https://www.hangge.com/blog/cache/detail_2519.html
         4. 两者都是消极处理异常的方式，只是抛出或者可能抛出异常，但是不会由函数去处理异常，真正的处理异常由函数的上层调用处理。  
 
 ### 1.3.3. 异常处理原则  
-......
+&emsp; ......
 
 ## 1.4. Exception的API  
 
-```
+```java
 Exception e; 
 e.toString();       //获取的信息包括异常类型和异常详细消息
 e.getMessage();     //只是获取了异常的详细消息字符串。

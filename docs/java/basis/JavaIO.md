@@ -28,8 +28,7 @@ byte[] data = Files.readAllBytes(path);
 &emsp; 这对于小文件是没有问题的，但是对于稍大一些的文件就会抛出OOM异常。 
 
 ```
-Exception in thread "main" java.lang.OutOfMemoryError: Required array size too large
-    at java.nio.file.Files.readAllBytes(Files.java:3156)
+Exception in thread "main" java.lang.OutOfMemoryError: Required array size too large at java.nio.file.Files.readAllBytes(Files.java:3156)
 ```
 &emsp; 从错误定位看出，Files.readAllBytes 方法最大支持 Integer.MAX_VALUE - 8 大小的文件，也即最大2GB的文件。一旦超过了这个限度，java 原生的方法就不能直接使用了。  
 
