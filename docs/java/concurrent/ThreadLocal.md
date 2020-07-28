@@ -39,6 +39,10 @@
 &emsp; ThreadLocal对象的生命周期跟线程的生命周期一样长，那么如果将ThreadLocal对象和线程池一起使用，就可能会遇到这种情况：一个线程的ThreadLocal对象会和其他线程的ThreadLocal对象串掉，一般不建议将两者一起使用。  
 
 ## 1.1. ThreadLocal源码  
+<!-- 
+https://mp.weixin.qq.com/s/WxjKr2Ti_kySbGh_A67VLA
+-->
+
 ### 1.1.1. ThreadLocal存储结构  
 &emsp; 首先看下Thread.java类代码：  
 

@@ -249,6 +249,7 @@
 [Http重试](/docs/web/httpRetry.md)   
 [生成二维码](/docs/web/QRCode.md)  
 [反爬虫](/docs/web/reptile.md)  
+[POJO](/docs/web/POJO.md)  
  
 
 ---
