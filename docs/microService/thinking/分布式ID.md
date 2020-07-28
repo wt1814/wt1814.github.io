@@ -23,11 +23,11 @@
 <!-- /TOC -->
 
 # 1. 分布式ID  
-&emsp; 在业务开发中需要使用一些id。分布式系统的全局唯一ID称为分布式ID。  
+&emsp; 在业务开发中需要使用一些id，主要使用于数据库主键ID。分布式系统的全局唯一ID称为分布式ID。  
 &emsp; 分布式ID需要满足的条件：  
 
 * <font color = "lime">全局唯一：</font>必须保证ID是全局性唯一的，基本要求。  
-* <font color = "lime">趋势递增：</font>根据具体业务场景，一般不严格要求。<font color = "red">部分方案，单机系统递增，分布式部署后，就不能递增了，例如雪花算法生成的id。</font> 
+* <font color = "lime">趋势递增：</font>根据具体业务场景，一般不严格要求。<!-- <font color = "red">部分方案，单机系统递增，分布式部署后，就不能递增了，例如雪花算法生成的id。</font>--> 
 * 可反解：一个ID生成之后，就会伴随着信息终身。排错分析的时候，需要查验，这时候一个可反解的ID可以帮上很多忙。  
 * 高性能：高可用低延时，ID生成响应要块，否则反而会成为业务瓶颈。  
 * 高可用。  
@@ -325,11 +325,19 @@ public class SnowflakeIdWorker {
 &emsp; 百度uid-generator、美团Leaf、滴滴Tinyid......
   
 ### 2.5.1. 百度uid-generator  
+<!-- 
+UidGenerator：百度开源的分布式ID服务（解决了时钟回拨问题） 
+https://mp.weixin.qq.com/s/8NsTXexf03wrT0tsW24EHA
+-->
 &emsp; uid-generator是由百度技术部开发，解决了时钟回拨问题。项目GitHub地址 https://github.com/baidu/uid-generator 。  
 1. uid-generator是基于Snowflake算法实现的，与原始的snowflake算法不同在于，uid-generator支持自定义时间戳、工作机器ID和序列号等各部分的位数，而且uid-generator中采用用户自定义workId的生成策略。  
 2. 通过消费未来时间克服了雪花算法的并发限制。  
 3. UidGenerator提前生成ID并缓存在RingBuffer中。  
 4. 适合虚拟环境，比如：Docker。  
+
+<!-- 
+*** 特点：全局唯一、趋势递增、可分解出时间和机器ID
+-->
 
 #### 2.5.1.1. uid-generator使用教程  
 
@@ -364,9 +372,18 @@ public void testSerialGenerate() {
 ```
 
 ### 2.5.2. 美团Leaf  
+<!-- 
+leaf：美团开源的分布式ID生成系统剖析 
+https://mp.weixin.qq.com/s/A56iqJh-04vyVI7k22uvAA
+9种分布式ID生成之美团（Leaf）实战
+https://mp.weixin.qq.com/s/F1m877H-GbI-YMT-hF-w8w
+-->
 ......
 
 ### 2.5.3. 滴滴Tinyid  
+<!-- 
+
+-->
 ......
 
 

@@ -20,7 +20,7 @@
 
 
 # 1. 数组  
-&emsp; 这里稍微讲解下二维数组。二维数组是一个元素为一维数组的数组。  
+&emsp; 这里讲解下二维数组。二维数组是一个元素为一维数组的数组。  
 
 &emsp; 二维数组定义：
 
@@ -32,23 +32,25 @@
 
 &emsp; 二维数组基本操作：遍历一个行列变化的二维数组。  
 
-    /*
-    * 遍历一个行列变化的数组
-    */
-    public class bianlishuzu2 {
-        public static void main(String[] args) {
-            int [][] arr = { {1,2,3},{4,5},{6} };
-            printArray(arr);
-        }
-        public static void printArray(int[][] arr){
-            for(int x=0;x<arr.length;x++){
-                for(int y=0;y<arr[x].length;y++){
-                    System.out.print(arr[x][y]);
-                }
-                System.out.println();
+```java
+/*
+* 遍历一个行列变化的数组
+*/
+public class bianlishuzu2 {
+    public static void main(String[] args) {
+        int [][] arr = { {1,2,3},{4,5},{6} };
+        printArray(arr);
+    }
+    public static void printArray(int[][] arr){
+        for(int x=0;x<arr.length;x++){
+            for(int y=0;y<arr[x].length;y++){
+                System.out.print(arr[x][y]);
             }
+            System.out.println();
         }
     }
+}
+```
 
 
 # 2. 链表  
@@ -57,7 +59,7 @@
 ## 2.1. 单向链表  
 &emsp; 链节点可以是一个单独的类，也可以是内部类。  
 
-```
+```java
 public class SingleLinkedList {
     private int size;//链表节点的个数
     private Node head;//头节点

@@ -38,7 +38,7 @@
 
 ## 2.2. 编码
 
-```
+```java
 public static double[] bucketSort(double[] array){
     //1.得到数列的最大值和最小值，并算出差值d
     double max = array[0];
@@ -121,7 +121,7 @@ public static void main(String[] args) {
 
 ## 3.2. 编码  
 
-```
+```java
 //ascii码的取值范围
 public static final int ASCII_RANGE = 128;
 

@@ -24,9 +24,14 @@
     - [6.2. 编码](#62-编码)
 - [7. 归并排序](#7-归并排序)
     - [7.1. 算法描述](#71-算法描述)
-    - [7.2. 编码：](#72-编码)
+    - [7.2. 编码](#72-编码)
 
 <!-- /TOC -->
+
+<!-- 
+
+https://mp.weixin.qq.com/mp/appmsgalbum?__biz=Mzg2OTAwNDI2NQ==&action=getalbum&album_id=1384553997595688961&subscene=159&subscene=&scenenote=https%3A%2F%2Fmp.weixin.qq.com%2Fs%2FejIchGyB-Q3AXXyYA5_Q5g#wechat_redirect
+-->
 
 # 1. 冒泡排序  
 &emsp; 冒泡排序是一种简单的排序算法。它重复地走访过要排序的数列，一次比较两个元素，如果它们的顺序错误就把它们交换过来。走访数列的工作是重复地进行直到没有再需要交换，也就是说该数列已经排序完成。这个算法的名字由来是因为越小的元素会经由交换慢慢“浮”到数列的顶端。   
@@ -45,13 +50,13 @@
 利用一个标志位，记录一下当前第 i 趟所交换的最后一个位置的下标，在进行第 i+1 趟的时候，只需要内循环到这个下标的位置就可以了，因为后面位置上的元素在上一趟中没有换位，这一次也不可能会换位置了。  
 
 ## 1.2. 编码  
-```
+
+```java
 /**
  * 冒泡排序优化版
  * @param array
  */
-public static void sort(int array[])
-{
+public static void sort(int array[]){
     int tmp  = 0;
     //记录最后一次交换的位置
     int lastExchangeIndex = 0;
@@ -110,85 +115,85 @@ public static void main(String[] args){
 ## 2.2. 编码  
 &emsp; **递归实现（包含单边循环、双边循环）：**  
 
-```
+```java
 public static void quickSort(int[] arr, int startIndex, int endIndex) {
-        // 递归结束条件：startIndex大等于endIndex的时候
-        if (startIndex >= endIndex) {
-            return;
+    // 递归结束条件：startIndex大等于endIndex的时候
+    if (startIndex >= endIndex) {
+        return;
+    }
+    // 得到基准元素位置
+    int pivotIndex = partition(arr, startIndex, endIndex);
+    // 根据基准元素，分成两部分递归排序
+    quickSort(arr, startIndex, pivotIndex - 1);
+    quickSort(arr, pivotIndex + 1, endIndex);
+}
+
+/**
+    * 分治（双边循环法）
+    * @param arr     待交换的数组
+    * @param startIndex    起始下标
+    * @param endIndex    结束下标
+    */
+private static int partition(int[] arr, int startIndex, int endIndex) {
+    // 取第一个位置的元素作为基准元素（也可以选择随机位置）
+    int pivot = arr[startIndex];
+    int left = startIndex;
+    int right = endIndex;
+
+    while( left != right) {
+        //控制right指针比较并左移
+        while(left<right && arr[right] > pivot){
+            right--;
         }
-        // 得到基准元素位置
-        int pivotIndex = partition(arr, startIndex, endIndex);
-        // 根据基准元素，分成两部分递归排序
-        quickSort(arr, startIndex, pivotIndex - 1);
-        quickSort(arr, pivotIndex + 1, endIndex);
-    }
-
-    /**
-     * 分治（双边循环法）
-     * @param arr     待交换的数组
-     * @param startIndex    起始下标
-     * @param endIndex    结束下标
-     */
-    private static int partition(int[] arr, int startIndex, int endIndex) {
-        // 取第一个位置的元素作为基准元素（也可以选择随机位置）
-        int pivot = arr[startIndex];
-        int left = startIndex;
-        int right = endIndex;
-
-        while( left != right) {
-            //控制right指针比较并左移
-            while(left<right && arr[right] > pivot){
-                right--;
-            }
-            //控制left指针比较并右移
-            while( left<right && arr[left] <= pivot) {
-                left++;
-            }
-            //交换left和right指向的元素
-            if(left<right) {
-                int p = arr[left];
-                arr[left] = arr[right];
-                arr[right] = p;
-            }
+        //控制left指针比较并右移
+        while( left<right && arr[left] <= pivot) {
+            left++;
         }
-
-        //pivot和指针重合点交换
-        arr[startIndex] = arr[left];
-        arr[left] = pivot;
-
-        return left;
-    }
-
-    /**
-     * 分治（单边循环法）
-     * @param arr     待交换的数组
-     * @param startIndex    起始下标
-     * @param endIndex    结束下标
-     */
-    private static int partitionV2(int[] arr, int startIndex, int endIndex) {
-        // 取第一个位置的元素作为基准元素（也可以选择随机位置）
-        int pivot = arr[startIndex];
-        int mark = startIndex;
-
-        for(int i=startIndex+1; i<=endIndex; i++){
-            if(arr[i]<pivot){
-                mark ++;
-                int p = arr[mark];
-                arr[mark] = arr[i];
-                arr[i] = p;
-            }
+        //交换left和right指向的元素
+        if(left<right) {
+            int p = arr[left];
+            arr[left] = arr[right];
+            arr[right] = p;
         }
-
-        arr[startIndex] = arr[mark];
-        arr[mark] = pivot;
-        return mark;
     }
 
-    public static void main(String[] args) {
-        int[] arr = new int[] {4,4,6,5,3,2,8,1};
-        quickSort(arr, 0, arr.length-1);
-        System.out.println(Arrays.toString(arr));
+    //pivot和指针重合点交换
+    arr[startIndex] = arr[left];
+    arr[left] = pivot;
+
+    return left;
+}
+
+/**
+    * 分治（单边循环法）
+    * @param arr     待交换的数组
+    * @param startIndex    起始下标
+    * @param endIndex    结束下标
+    */
+private static int partitionV2(int[] arr, int startIndex, int endIndex) {
+    // 取第一个位置的元素作为基准元素（也可以选择随机位置）
+    int pivot = arr[startIndex];
+    int mark = startIndex;
+
+    for(int i=startIndex+1; i<=endIndex; i++){
+        if(arr[i]<pivot){
+            mark ++;
+            int p = arr[mark];
+            arr[mark] = arr[i];
+            arr[i] = p;
+        }
     }
+
+    arr[startIndex] = arr[mark];
+    arr[mark] = pivot;
+    return mark;
+}
+
+public static void main(String[] args) {
+    int[] arr = new int[] {4,4,6,5,3,2,8,1};
+    quickSort(arr, 0, arr.length-1);
+    System.out.println(Arrays.toString(arr));
+}
 ```
 
 # 3. 直接选择排序  
@@ -205,82 +210,82 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
 
 ## 3.2. 编码  
 
-```
- /**
-     * 选择排序
-     * @param array
-     * @return
-     */
-    public static int[] selectionSort(int[] array) {
-        if (array.length == 0)
-            return array;
-        for (int i = 0; i < array.length; i++) {
-            int minIndex = i;
-            for (int j = i; j < array.length; j++) {
-                if (array[j] < array[minIndex]) //找到最小的数
-                    minIndex = j; //将最小数的索引保存
-            }
-            int temp = array[minIndex];
-            array[minIndex] = array[i];
-            array[i] = temp;
-        }
+```java
+/**
+    * 选择排序
+    * @param array
+    * @return
+    */
+public static int[] selectionSort(int[] array) {
+    if (array.length == 0)
         return array;
-    }
-
-
-    /**
-     * 选择排序改进版
-     * @param array
-     */
-    public static void selectionSort_improvement(int[] array){
-        int minPoint;  //存储最小元素的小标
-        int maxPoint;  //存储最大元素的小标
-        int len = array.length;
-        int temp;
-        int counter = 1;
-
-        for(int i=0;i<len/2;i++){
-            minPoint= i;
-            maxPoint= i;
-            for(int j=i+1;j<=len-1-i;j++){  //每完成一轮排序，就确定了两个最值，下一轮排序时比较范围减少两个元素
-                if(array[j]<array[minPoint]){  //如果待排数组中的某个元素比当前元素小，minPoint指向该元素的下标
-                    minPoint= j;
-                    continue;
-                }else if(array[j]>array[maxPoint]){  //如果待排数组中的某个元素比当前元素大，maxPoint指向该元素的下标
-                    maxPoint= j;
-                }
-            }
-
-            if(minPoint!=i){  //如果发现了更小的元素，与第一个元素交换位置
-                temp= array[i];
-                array[i]= array[minPoint];
-                array[minPoint]= temp;
-
-                //原来的第一个元素已经与下标为minPoint的元素交换了位置
-                //如果之前maxPoint指向的是第一个元素，那么需要将maxPoint重新指向array[minPoint]
-                //因为现在array[minPoint]存放的才是之前第一个元素中的数据
-                if(maxPoint== i){
-                    maxPoint= minPoint;
-                }
-
-            }
-
-            if(maxPoint!=len-1-i){  //如果发现了更大的元素，与最后一个元素交换位置
-                temp= array[len-1-i];
-                array[len-1-i]= array[maxPoint];
-                array[maxPoint]= temp;
-            }
-            System.out.print("第"+counter+"轮排序结果：");
-            System.out.println(Arrays.toString(array));
-            counter++;
+    for (int i = 0; i < array.length; i++) {
+        int minIndex = i;
+        for (int j = i; j < array.length; j++) {
+            if (array[j] < array[minIndex]) //找到最小的数
+                minIndex = j; //将最小数的索引保存
         }
+        int temp = array[minIndex];
+        array[minIndex] = array[i];
+        array[i] = temp;
     }
+    return array;
+}
 
 
-    public static void main(String[] args) {
-        int[] arr = new int[] {4,7,6,5,3,2,8,1};
-        selectionSort_improvement(arr);
+/**
+    * 选择排序改进版
+    * @param array
+    */
+public static void selectionSort_improvement(int[] array){
+    int minPoint;  //存储最小元素的小标
+    int maxPoint;  //存储最大元素的小标
+    int len = array.length;
+    int temp;
+    int counter = 1;
+
+    for(int i=0;i<len/2;i++){
+        minPoint= i;
+        maxPoint= i;
+        for(int j=i+1;j<=len-1-i;j++){  //每完成一轮排序，就确定了两个最值，下一轮排序时比较范围减少两个元素
+            if(array[j]<array[minPoint]){  //如果待排数组中的某个元素比当前元素小，minPoint指向该元素的下标
+                minPoint= j;
+                continue;
+            }else if(array[j]>array[maxPoint]){  //如果待排数组中的某个元素比当前元素大，maxPoint指向该元素的下标
+                maxPoint= j;
+            }
+        }
+
+        if(minPoint!=i){  //如果发现了更小的元素，与第一个元素交换位置
+            temp= array[i];
+            array[i]= array[minPoint];
+            array[minPoint]= temp;
+
+            //原来的第一个元素已经与下标为minPoint的元素交换了位置
+            //如果之前maxPoint指向的是第一个元素，那么需要将maxPoint重新指向array[minPoint]
+            //因为现在array[minPoint]存放的才是之前第一个元素中的数据
+            if(maxPoint== i){
+                maxPoint= minPoint;
+            }
+
+        }
+
+        if(maxPoint!=len-1-i){  //如果发现了更大的元素，与最后一个元素交换位置
+            temp= array[len-1-i];
+            array[len-1-i]= array[maxPoint];
+            array[maxPoint]= temp;
+        }
+        System.out.print("第"+counter+"轮排序结果：");
+        System.out.println(Arrays.toString(array));
+        counter++;
     }
+}
+
+
+public static void main(String[] args) {
+    int[] arr = new int[] {4,7,6,5,3,2,8,1};
+    selectionSort_improvement(arr);
+}
 ```
 
 
@@ -295,59 +300,59 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
 ## 4.2. 编码  
 &emsp; 最大堆排序  
 
-```
+```java
 /**
-     * 下沉调整
-     * @param array     待调整的堆
-     * @param parentIndex    要下沉的父节点
-     * @param length    堆的有效大小
-     */
-    public static void downAdjust(int[] array, int parentIndex, int length) {
-        // temp保存父节点值，用于最后的赋值
-        int temp = array[parentIndex];
-        int childIndex = 2 * parentIndex + 1;
-        while (childIndex < length) {
-            // 如果有右孩子，且右孩子大于左孩子的值，则定位到右孩子
-            if (childIndex + 1 < length && array[childIndex + 1] > array[childIndex]) {
-                childIndex++;
-            }
-            // 如果父节点大于等于任何一个孩子的值，直接跳出
-            if (temp >= array[childIndex])
-                break;
-            //无需真正交换，单向赋值即可
-            array[parentIndex] = array[childIndex];
-            parentIndex = childIndex;
-            childIndex = 2 * childIndex + 1;
+    * 下沉调整
+    * @param array     待调整的堆
+    * @param parentIndex    要下沉的父节点
+    * @param length    堆的有效大小
+    */
+public static void downAdjust(int[] array, int parentIndex, int length) {
+    // temp保存父节点值，用于最后的赋值
+    int temp = array[parentIndex];
+    int childIndex = 2 * parentIndex + 1;
+    while (childIndex < length) {
+        // 如果有右孩子，且右孩子大于左孩子的值，则定位到右孩子
+        if (childIndex + 1 < length && array[childIndex + 1] > array[childIndex]) {
+            childIndex++;
         }
-        array[parentIndex] = temp;
+        // 如果父节点大于等于任何一个孩子的值，直接跳出
+        if (temp >= array[childIndex])
+            break;
+        //无需真正交换，单向赋值即可
+        array[parentIndex] = array[childIndex];
+        parentIndex = childIndex;
+        childIndex = 2 * childIndex + 1;
     }
+    array[parentIndex] = temp;
+}
 
-    /**
-     * 堆排序(升序)
-     * @param array     待调整的堆
-     */
-    public static void heapSort(int[] array) {
-        // 1.把无序数组构建成最大堆。
-        for (int i = (array.length-2)/2; i >= 0; i--) {
-            downAdjust(array, i, array.length);
-        }
-        System.out.println(Arrays.toString(array));
-        // 2.循环交换集合尾部元素到堆顶，并调节堆产生新的堆顶。
-        for (int i = array.length - 1; i > 0; i--) {
-            // 最后一个元素和第一元素进行交换
-            int temp = array[i];
-            array[i] = array[0];
-            array[0] = temp;
-            // 下沉调整最大堆
-            downAdjust(array, 0, i);
-        }
+/**
+    * 堆排序(升序)
+    * @param array     待调整的堆
+    */
+public static void heapSort(int[] array) {
+    // 1.把无序数组构建成最大堆。
+    for (int i = (array.length-2)/2; i >= 0; i--) {
+        downAdjust(array, i, array.length);
     }
+    System.out.println(Arrays.toString(array));
+    // 2.循环交换集合尾部元素到堆顶，并调节堆产生新的堆顶。
+    for (int i = array.length - 1; i > 0; i--) {
+        // 最后一个元素和第一元素进行交换
+        int temp = array[i];
+        array[i] = array[0];
+        array[0] = temp;
+        // 下沉调整最大堆
+        downAdjust(array, 0, i);
+    }
+}
 
-    public static void main(String[] args) {
-        int[] arr = new int[] {1,3,2,6,5,7,8,9,10,0};
-        heapSort(arr);
-        System.out.println(Arrays.toString(arr));
-    }
+public static void main(String[] args) {
+    int[] arr = new int[] {1,3,2,6,5,7,8,9,10,0};
+    heapSort(arr);
+    System.out.println(Arrays.toString(arr));
+}
 ```
 
 # 5. 直接插入排序  
@@ -363,74 +368,74 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
 
 ## 5.2. 编码  
 
-```
-    public static void insertSort(int[] array) {
-        if (array.length == 0)
-            return;
+```java
+public static void insertSort(int[] array) {
+    if (array.length == 0)
+        return;
 
-        for (int i = 1; i < array.length; ++i) {
-            int value = array[i];
-            int j = i - 1;
-            // 查找插入的位置
-            for (; j >= 0; --j) {
-                if (array[j] > value) {
-                    array[j + 1] = array[j];  // 数据移动
-                } else {
-                    break;
-                }
+    for (int i = 1; i < array.length; ++i) {
+        int value = array[i];
+        int j = i - 1;
+        // 查找插入的位置
+        for (; j >= 0; --j) {
+            if (array[j] > value) {
+                array[j + 1] = array[j];  // 数据移动
+            } else {
+                break;
             }
-            array[j + 1] = value; // 插入数据
         }
+        array[j + 1] = value; // 插入数据
     }
+}
 ```
 
 
 ## 5.3. 二分插入排序   
 &emsp; 二分插入排序：在插入某个元素之前需要先确定该元素在有序数组中的位置，上例的做法是对有序数组中的元素逐个扫描，当数据量比较大的时候，这是一个很耗时间的过程，可以采用二分查找法改进，这种排序也被称为二分插入排序。 
 
-```
-    /**
-     * 二分插入排序
-     * @param array
-     */
-    public static void binaryInsertionSort(int[] array){
+```java
+/**
+    * 二分插入排序
+    * @param array
+    */
+public static void binaryInsertionSort(int[] array){
 
-        int counter = 1;
+    int counter = 1;
 
-        for(int i=1;i<array.length;i++){
-            int temp = array[i];  //存储待排序的元素值
-            if(array[i-1]>temp){  //比有序数组的最后一个元素要小
-                int intinsertIndex = binarySearch(array,0, i-1, temp); //获取应插入位置的下标
-                for(int j=i;j>intinsertIndex;j--){  //将有序数组中，插入点之后的元素后移一位
-                    array[j]= array[j-1];
-                }
-                array[intinsertIndex]= temp;  //插入待排序元素到正确的位置
+    for(int i=1;i<array.length;i++){
+        int temp = array[i];  //存储待排序的元素值
+        if(array[i-1]>temp){  //比有序数组的最后一个元素要小
+            int intinsertIndex = binarySearch(array,0, i-1, temp); //获取应插入位置的下标
+            for(int j=i;j>intinsertIndex;j--){  //将有序数组中，插入点之后的元素后移一位
+                array[j]= array[j-1];
             }
-            System.out.print("第"+counter+"轮排序结果：");
-            System.out.println(Arrays.toString(array));
-            counter++;
+            array[intinsertIndex]= temp;  //插入待排序元素到正确的位置
+        }
+        System.out.print("第"+counter+"轮排序结果：");
+        System.out.println(Arrays.toString(array));
+        counter++;
+    }
+}
+
+/**
+    * 二分查找法
+    * @param lowerBound 查找段的最小下标
+    * @param upperBound 查找段的最大下标
+    * @param target 目标元素
+    * @return 目标元素应该插入位置的下标
+    */
+public static int binarySearch(int[] array,int lowerBound,int upperBound,int target){
+    int curIndex;
+    while(lowerBound<upperBound){
+        curIndex= (lowerBound+upperBound)/2;
+        if(array[curIndex]>target){
+            upperBound= curIndex - 1;
+        }else{
+            lowerBound= curIndex + 1;
         }
     }
-
-    /**
-     * 二分查找法
-     * @param lowerBound 查找段的最小下标
-     * @param upperBound 查找段的最大下标
-     * @param target 目标元素
-     * @return 目标元素应该插入位置的下标
-     */
-    public static int binarySearch(int[] array,int lowerBound,int upperBound,int target){
-        int curIndex;
-        while(lowerBound<upperBound){
-            curIndex= (lowerBound+upperBound)/2;
-            if(array[curIndex]>target){
-                upperBound= curIndex - 1;
-            }else{
-                lowerBound= curIndex + 1;
-            }
-        }
-        return lowerBound;
-    }
+    return lowerBound;
+}
 ```
 
 ## 5.4. 二路插入排序  
@@ -446,25 +451,25 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
 
 ## 6.2. 编码  
 
-```
-    public static void sheelSort(int[] array){
-        //增量每次都/2
-        for (int step = array.length/2; step>0; step /=2){
-            //从增量那组开始进行插入排序，直至完毕
-            for (int i = step; i<array.length;i++){
-                int j = i;
-                int temp = array[i];
+```java
+public static void sheelSort(int[] array){
+    //增量每次都/2
+    for (int step = array.length/2; step>0; step /=2){
+        //从增量那组开始进行插入排序，直至完毕
+        for (int i = step; i<array.length;i++){
+            int j = i;
+            int temp = array[i];
 
-                //j-step 就是代表与它同组隔壁的元素
-                while (j -step >=0 && array[j-step]>temp){
+            //j-step 就是代表与它同组隔壁的元素
+            while (j -step >=0 && array[j-step]>temp){
 
-                    array[j] = array[j-step];
-                    j = j-step;
-                }
-                array[j] = temp;
+                array[j] = array[j-step];
+                j = j-step;
             }
+            array[j] = temp;
         }
     }
+}
 ```
 
 # 7. 归并排序
@@ -473,6 +478,7 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-3.png)  
 
 &emsp; 归并排序其实要做两件事：  
+
 * “分解”——将序列每次折半划分。  
 * “合并”——将划分后的序列段两两合并后排序。  
 
@@ -482,48 +488,48 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
 2. 让这2个数组有序，可以将A，B组各自再分成2个数组。依次类推，当分出来的数组只有1个数据时，可以认为数组已经达到了有序。  
 3. 然后再合并相邻的2个数组。这样通过先递归的分解数组，再合并数组就完成了归并排序。   
 
-## 7.2. 编码：
+## 7.2. 编码
 
-```
+```java
 public static void mergeSort(int[] array, int start, int end){
-        if(start < end){
-            //折半成两个小集合，分别进行递归
-            int mid=(start+end)/2;
-            mergeSort(array, start, mid);
-            mergeSort(array, mid+1, end);
-            //把两个有序小集合，归并成一个大集合
-            merge(array, start, mid, end);
-        }
+    if(start < end){
+        //折半成两个小集合，分别进行递归
+        int mid=(start+end)/2;
+        mergeSort(array, start, mid);
+        mergeSort(array, mid+1, end);
+        //把两个有序小集合，归并成一个大集合
+        merge(array, start, mid, end);
     }
+}
 
-    private static void merge(int[] array, int start, int mid, int end){
+private static void merge(int[] array, int start, int mid, int end){
 
-        //开辟额外大集合，设置指针
-        int[] tempArray = new int[end-start+1];
-        int p1=start, p2=mid+1, p=0;
-        //比较两个小集合的元素，依次放入大集合
-        while(p1<=mid && p2<=end){
-            if(array[p1]<=array[p2])
-                tempArray[p++]=array[p1++];
-            else
-                tempArray[p++]=array[p2++];
-        }
-        //左侧小集合还有剩余，依次放入大集合尾部
-        while(p1<=mid)
+    //开辟额外大集合，设置指针
+    int[] tempArray = new int[end-start+1];
+    int p1=start, p2=mid+1, p=0;
+    //比较两个小集合的元素，依次放入大集合
+    while(p1<=mid && p2<=end){
+        if(array[p1]<=array[p2])
             tempArray[p++]=array[p1++];
-        //右侧小集合还有剩余，依次放入大集合尾部
-        while(p2<=end)
+        else
             tempArray[p++]=array[p2++];
-
-        //把大集合的元素复制回原数组
-        for (int i=0; i<tempArray.length; i++)
-            array[i+start]=tempArray[i];
     }
+    //左侧小集合还有剩余，依次放入大集合尾部
+    while(p1<=mid)
+        tempArray[p++]=array[p1++];
+    //右侧小集合还有剩余，依次放入大集合尾部
+    while(p2<=end)
+        tempArray[p++]=array[p2++];
+
+    //把大集合的元素复制回原数组
+    for (int i=0; i<tempArray.length; i++)
+        array[i+start]=tempArray[i];
+}
 
 
-    public static void main(String[] args) {
-        int[] arr = new int[] {1,3,2,6,5,7,8,9,10,0};
-        mergeSort(arr,0,arr.length-1);
-        System.out.println(Arrays.toString(arr));
-    }
+public static void main(String[] args) {
+    int[] arr = new int[] {1,3,2,6,5,7,8,9,10,0};
+    mergeSort(arr,0,arr.length-1);
+    System.out.println(Arrays.toString(arr));
+}
 ```

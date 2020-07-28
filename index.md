@@ -240,7 +240,7 @@
 ---
 ## 算法  
 [算法基本概念](/docs/java/function/1.notion.md)  
-[基本数据结构-1]  
+[基本数据结构]  
 &emsp; [链表](/docs/java/function/structure/array.md)  
 &emsp; [栈](/docs/java/function/structure/stack.md)  
 &emsp; [哈希](/docs/java/function/structure/hash.md)  
