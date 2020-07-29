@@ -56,7 +56,6 @@
         * [动态代理](/docs/java/Design/6.proxy.md)  
     * [行为型设计模式](/docs/java/Design/5.behavior.md)  
 
-
 * 数据库  
     * [SQL语句](/docs/SQL/1.SQL语句.md)  
         * [基本查询语句](/docs/SQL/9.basicSelect.md)  
@@ -71,7 +70,9 @@
         * [MySql存储引擎](/docs/SQL/13.MySqlStorage.md)  
         * [MySql事务](/docs/SQL/14.transaction.md)  
         * [MySql锁](/docs/SQL/15.lock.md)  
+        * [MySqlMVCC](/docs/SQL/MVCC.md)  
     * [MySql架构](/docs/SQL/8.MySql架构.md)  
+    * [MySql日志](/docs/SQL/log.md)  
     * [分布式数据库](/docs/SQL/4.分布式数据库.md)  
         * [主从复制](/docs/SQL/16.replication.md)  
         * [分区](/docs/SQL/17.partition.md)  
@@ -113,7 +114,6 @@
     * [Spring和MyBatis整合-1](/docs/SSM/MyBatis/SpringMybatis.md)  
     * [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisD/docs/ESign.md)  
 
-
 * SpringBoot  
     * [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
 
@@ -128,7 +128,7 @@
     * [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/0.Netflix.md)  
     * [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/1.Eureka.md)  
     * [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/2.Ribbon.md)  
-    * [Spring Cloud Hytrix-1](/docs/microService/SpringCloudNetflix/3.Hytrix.md)  
+    * [Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/3.Hytrix.md)  
     * [Spring Cloud Feign](/docs/microService/SpringCloudNetflix/4.Feign.md)  
     * [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/5.Zuul.md)  
     * [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/6.Sleuth.md)  
@@ -217,7 +217,6 @@
     * [DNS](/docs/network/3.DNS.md)  
     * [TCP](/docs/network/4.TCP.md)  
 
-
 * 算法  
     * [算法基本概念](/docs/java/function/1.notion.md)  
     * [基本数据结构]  
@@ -231,7 +230,6 @@
         * [非比较排序](/docs/java/function/sort/noCompare.md)  
     * [查找算法](/docs/java/function/5.search.md)  
     * [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
-
 
 * 项目管理  
     * [git](/docs/projectManage/git/command.md)   
