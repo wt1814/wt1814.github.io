@@ -167,6 +167,13 @@ public class ChannelFileReader {
 ```
 
 #### 1.1.2.5. 内存文件映射  
+<!-- 
+Java逐行读取文件
+https://cloud.tencent.com/developer/article/1578606
+https://blog.csdn.net/chunshaihuo5061/article/details/101030196
+
+-->
+
 &emsp; 把文件内容映射到虚拟内存的一块区域中，从而可以直接操作内存当中的数据而无需每次都通过 I/O  去物理硬盘读取文件，这种方式可以提高速度。示例代码如下：  
 
 ```java
