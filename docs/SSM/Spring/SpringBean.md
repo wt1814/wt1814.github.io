@@ -9,6 +9,11 @@
 
 <!-- /TOC -->
 
+<!-- 
+
+https://mp.weixin.qq.com/s/DC_PH_PXpbNgDQuGslTTTg
+-->
+
 # 1. SpringBean生命周期的概要流程  
 &emsp; **<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>**  
 

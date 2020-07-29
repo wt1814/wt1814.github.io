@@ -297,7 +297,7 @@ public com.zzw.juc.sync.SyncDemo();
 &emsp; synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被synchronized修饰的方法，而是在Class文件的方法表中将该方法的access_flags字段中的synchronized标志位置1，表示该方法是同步方法并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
 
 ## 1.5. synchronized的锁优化
-&emsp; **<font color = "lime">锁升级过程是对锁升级的两幅图的理解。</font>**    
+&emsp; **<font color = "lime">锁升级过程是主要是理解偏向锁、轻量级锁的升级过程。</font>**    
 &emsp; **<font color = "lime">一句话概述：起初一个线程获取偏向锁，当另一个线程竞争锁，偏向锁撤销并升级成轻量级锁；轻量级锁加锁过程中会使用自旋锁；新线程自旋获取轻量级锁失败（锁对象不是当前线程），会升级成重量级锁。并且已经获取轻量级锁的线程在释放锁时，也会升级成重量级锁。</font>**  
 
 &emsp; 为了进一步改进高效并发，HotSpot虚拟机开发团队在JDK 5升级到JDK 6版本上花费了大量精力实现各种锁优化。如适应性自旋、锁消除、锁粗化、偏向锁和轻量级锁等，这些技术都是为了在线程之间更高效地共享数据及解决竞争问题，从而提高程序的执行效率。  
@@ -368,11 +368,11 @@ public com.zzw.juc.sync.SyncDemo();
 ### 1.5.5. 偏向锁  
 &emsp; <font color = "red">偏向锁定义：</font>偏向锁是指偏向于让第一个获取锁对象的线程，这个线程在之后获取该锁就不再需要进行同步操作，甚至连 CAS 操作也不再需要。 
 
-&emsp; **<font color = "lime">偏向锁流程：</font>**
+&emsp; **<font color = "lime">1. 偏向锁整体流程：</font>**
 1. <font color = "red">当锁对象第一次被线程获得的时候，进入偏向状态</font>，标记为 |1|01|（前面对象内存布局图中说明了，这属于偏向锁状态）。同时使用CAS操作将线程ID （ThreadID）记录到 Mark Word 中，如果 CAS 操作成功，这个线程以后每次进入这个锁相关的同步块就不需要再进行任何同步操作。  
 2. <font color = "red">一旦出现另外一个线程去尝试获取这个锁的情况，偏向模式就马上宣告结束。</font>根据锁对象目前是否处于被锁定的状态决定是否撤销偏向（偏向模式设置为“0”），<font color = "red">撤销后标志位恢复到未锁定（标志位为“01”）或轻量级锁定（标志位为“00”）的状态。</font>  
 
-&emsp; **<font color = "lime">偏向锁的获取和撤销逻辑：</font>**  
+&emsp; **<font color = "lime">2. 新线程获取偏向锁和撤销逻辑：</font>**  
 1. 首先获取锁对象的Markword，判断是否处于可偏向状态。（biased_lock=1、且 ThreadId 为空）  
 2. 如果是可偏向状态，则通过 CAS 操作，把当前线程的 ID写入到 MarkWord  
     * 如果 cas 成功，那么 markword 就会变成这样。表示已经获得了锁对象的偏向锁，接着执行同步代码块  
@@ -381,7 +381,7 @@ public com.zzw.juc.sync.SyncDemo();
     * 如果相等，不需要再次获得锁，可直接执行同步代码块
     * 如果不相等，说明当前锁偏向于其他线程，需要<font color = "red">撤销偏向锁并升级到轻量级锁</font>
 
-&emsp; **<font color = "lime">偏向锁的撤销：</font>**  
+&emsp; **<font color = "lime">3. 偏向锁的撤销：</font>**  
 &emsp; 偏向锁的撤销并不是把对象恢复到无锁可偏向状态（因为偏向锁并不存在锁释放的概念），而是在获取偏向锁的过程中，发现 cas 失败也就是存在线程竞争时，直接把被偏向的锁对象升级到被加了轻量级锁的状态。  
 &emsp; 对原持有偏向锁的线程进行撤销时，原获得偏向锁的线程有两种情况：  
 1. 原获得偏向锁的线程如果已经退出了临界区，也就是同步代码块执行完了，那么这个时候会把对象头设置成无锁状态并且争抢锁的线程可以基于 CAS 重新偏向但前线程。
@@ -407,7 +407,7 @@ public com.zzw.juc.sync.SyncDemo();
 * 可重偏向(Rebiasable)。在此状态下，偏向锁的epoch字段是无效的（与锁对象对应的class的mark_prototype的epoch值不匹配）。下一个试图获取锁对象的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程**。在批量重偏向的操作中，未被持有的锁对象都被至于这个状态，以便允许被快速重偏向**。
 * 已偏向(Biased)。这种状态下，thread pointer非空，且epoch为有效值——意味着其他线程正在持有这个锁对象。
  
-&emsp; **<font color = "red">偏向锁的性能：</font>**  
+&emsp; **<font color = "red">4. 偏向锁的性能：</font>**  
 &emsp; 偏向锁可以提高带有同步但无竞争的程序性能，但它同样是一个带有效益权衡（Trade Off）性质的优化，也就是说它并非总是对程序运行有利。<font color = "red">如果程序中大多数的锁都总是被多个不同的线程访问，那偏向模式就是多余的。</font>在具体问题具体分析的前提下，有时候使用参数-XX：-
 UseBiasedLocking来禁止偏向锁优化反而可以提升性能。 
 
@@ -419,8 +419,8 @@ UseBiasedLocking来禁止偏向锁优化反而可以提升性能。
     2. 将锁对象的对象头中的MarkWord复制到线程的刚刚创建的锁记录中。  
     3. 将锁记录中的 Owner 指针指向锁对象。  
     4. 将锁对象的对象头的 MarkWord替换为指向锁记录的指针。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-71.png)  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-72.png)  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-32.png)  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-33.png)  
 2. <font color = "red">自旋锁</font>  
 &emsp; 轻量级锁在加锁过程中，用到了自旋锁。  
 

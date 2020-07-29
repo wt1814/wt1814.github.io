@@ -16,6 +16,12 @@
     - [1.5. SpringBoot中应用LocalDateTime-1](#15-springboot中应用localdatetime-1)
 
 <!-- /TOC -->
+
+<!-- 
+ Springboot 关于日期时间格式化处理方式总结 
+ https://mp.weixin.qq.com/s/-jy0zEpeWXnvQELGv6PsgA
+-->
+
 # 1. Date/Time API  
 &emsp; 旧版的Java中，日期时间API存在诸多问题：  
 

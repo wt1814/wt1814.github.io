@@ -250,6 +250,7 @@
 [生成二维码](/docs/web/QRCode.md)  
 [反爬虫](/docs/web/reptile.md)  
 [POJO](/docs/web/POJO.md)  
+[加密算法](/docs/web/encryption.md)  
  
 
 ---
