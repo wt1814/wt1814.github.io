@@ -5,4 +5,4 @@
 3. 并行（ForkJoinPool、CyclicBarrier）  
 4. 干掉锁（空间换时间）  
 
-&emsp; 总结一句话：xxxxx，删代码，删到只有Controller，然后拼个返回值。一步搞定响应时间问题。  
+&emsp; 一句话总结：xxxxx，删代码，删到只有Controller，然后拼个返回值。一步搞定响应时间问题。  

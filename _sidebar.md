@@ -140,7 +140,8 @@
     * [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
 
 * Redis
-    * [Redis基本数据类型](/docs/microService/Redis/Redis数据结构及API.md)  
+    * [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
+        * [SDS](/docs/microService/Redis/SDS.md)  
         * [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
         * [Redis的API](/docs/microService/Redis/RedisAPI.md)  
     * [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
