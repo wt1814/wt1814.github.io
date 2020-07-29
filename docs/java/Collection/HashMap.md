@@ -719,7 +719,7 @@ final Node<K,V> removeNode(int hash, Object key, Object value,boolean matchValue
 * 使用并发包中的ConcurrentHashMap类；  
 
 ## 1.5. 如何实现一个自定义的class作为HashMap的key？  
-......
+&emsp; ......
 
 
 
