@@ -1,5 +1,6 @@
 
-# 1. lazy-init属性和预实例化  
+# 懒加载
+## lazy-init属性和预实例化  
 &emsp; 在IOC容器的初始化过程中，主要的工作是对BeanDefinition的定位、载入、解析和注册。此时依赖注入并没有发生，依赖注入发生在应用第一次向容器索要Bean时。 向容器索要Bean是通过getBean的调用来完成的，该getBean是容器提供Bean服务的最基本的接口。  
 &emsp; 对于容器的初始化，也有一种例外情况，就是用户<font color = "red">可以通过设置Bean的lazy-init属性来控制预实例化的过程。</font><font color = "lime">这个预实例化在初始化容器时完成Bean的依赖注入。</font>  
 &emsp; <font color = "red">这种容器的使用方式会对容器初始化的性能有一些影响，但却能够提高应用第一次取得Bean的性能。因为应用在第一次取得Bean时，依赖注入已经结束了，应用可以取得已有的Bean。</font>  
@@ -144,4 +145,10 @@ public void preInstantiateSingletons() throws BeansException {
 ```
 &emsp; 根据上面的分析得知，可以通过lazy-init属性来对整个IoC容器的初始化和依赖注入过程进行一些简单的控制。这些控制是可以由容器的使用者来决定的，具体来说，可以通过在 BeanDefinition中设置lazy-init属性来进行控制。  
 
+## @Lazy
+......
+<!--
+Spring中的 @Lazy注解简析
+https://blog.csdn.net/weixin_41888813/article/details/102947633
+-->
 
