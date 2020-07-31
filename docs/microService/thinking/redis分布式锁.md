@@ -11,12 +11,12 @@
                 - [1.2.1.1.2. 解锁](#12112-解锁)
             - [1.2.1.2. ※※※集群redlock算法实现分布式锁](#1212-※※※集群redlock算法实现分布式锁)
         - [1.2.2. Redisson实现redis分布式锁-1](#122-redisson实现redis分布式锁-1)
-            - [RedissonLock解析](#redissonlock解析)
-                - [获取锁tryLock](#获取锁trylock)
-                - [解锁unlock](#解锁unlock)
-                - [强制解锁forceUnlock](#强制解锁forceunlock)
+            - [1.2.2.1. RedissonLock解析](#1221-redissonlock解析)
+                - [1.2.2.1.1. 获取锁tryLock](#12211-获取锁trylock)
+                - [1.2.2.1.2. 解锁unlock](#12212-解锁unlock)
 
 <!-- /TOC -->
+
 
 
 # 1. Redis分布式锁  
@@ -24,7 +24,13 @@
 1. 超时问题。  
 2. 部署问题：除了要考虑客户端要怎么实现分布式锁之外，还需要考虑Redis的部署问题。Redis有多种部署方式：单机模式；Master-Slave+Sentinel选举模式；Redis Cluster模式。  
     * 如果采用单机部署模式，会存在单点问题。只要 Redis 故障了，加锁就不行了。  
-    * 采用Master-Slave 模式，加锁的时候只对一个节点加锁，即使通过 Sentinel做了高可用，但是<font color="red">如果Master节点故障了，发生主从切换，此时就会有可能出现锁丢失的问题</font>。  
+    * 采用Master-Slave 模式，加锁的时候只对一个节点加锁，即使通过 Sentinel做了高可用，但是<font color="red">如果Master节点故障了，发生主从切换，此时就会有可能出现锁丢失的问题，可能导致多个客户端同时完成加锁</font>。  
+
+<!-- 
+如果对某个redis-master实例写入了myLock这个key的锁的value，此时会异步复制数据到redis-slave实例上。
+但是在这个过程中发生了redis-master宕机了，主备切换，redis-slave变成了redis-master。
+紧接着，客户端2就来尝试加锁，在新的redis-master上加了锁，而此时客户端1也认为自己加了锁，这就导致多个客户端对同一个分布式锁完成了加锁。
+-->
 
 ## 1.2. Redis 分布式锁实现  
 ### 1.2.1. Redis Client原生API  
@@ -116,80 +122,102 @@ public class RedisTool {
 
 ### 1.2.2. Redisson实现redis分布式锁-1  
 &emsp; 基于redis的分布式锁实现客户端Redisson，官方网址：https://redisson.org/ 。Redisson支持redis单实例、redis哨兵、redis cluster、redis master-slave等各种部署架构，都可以完美实现。  
-<!-- 
-https://mp.weixin.qq.com/s?__biz=MzI5OTIyMjQxMA==&mid=2247485439&idx=1&sn=5eba3992109fadf245d7b56ff4a45635&chksm=ec98931adbef1a0c0ad4a4c309bfc3000bc6271e1739f3ecb79361ecbe18d399adb3ca628c56&scene=21#wechat_redirect
 
-https://mp.weixin.qq.com/s/LLi_7DedZfSsZyDr2OdOrg
+&emsp; 使用示例： 
+ 
+```java
+RLock lock = redisson.getLock("test_lock");
+try{
+    boolean isLock=lock.tryLock();
+    if(isLock){
+        doBusiness();
+    }
+}catch(exception e){
+}finally{
+    lock.unlock();
+}
+```
 
-https://mp.weixin.qq.com/s/fuaUXuJbskqcFgsrwnPhZQ
+#### 1.2.2.1. RedissonLock解析
+##### 1.2.2.1.1. 获取锁tryLock  
+&emsp; **<font color = "lime">RedissonLock锁互斥、自动延期机制、可重入加锁。</font>**  
 
-https://mp.weixin.qq.com/s/J6sYbLa_BMFHHVwgFEbQ4Q
--->
+* 客户端1加锁的锁key默认生存时间才30秒，如果超过了30秒，客户端1还想一直持有这把锁，怎么办呢？  
+    &emsp; 只要客户端1一旦加锁成功，就会启动一个后台线程，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。  
 
-#### RedissonLock解析
-##### 获取锁tryLock  
-&emsp; **<font color = "lime">RedissonLock锁互斥、锁时间自动延迟、可重入加锁。</font>**  
+&emsp; 执行lock.lock()代码时，如果该客户端面对的是一个redis cluster集群，他首先会根据hash节点选择一台机器。  
+&emsp; 首先选择一台机器，然后发送一段lua脚本，带有三个参数：一个是锁的名字（在代码里指定的）、一个是锁的时常（默认30秒）、一个是加锁的客户端id（每个客户端对应一个id）。然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-41.png)  
 
 ```java
 Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {
     internalLockLeaseTime = unit.toMillis(leaseTime);
     return commandExecutor.evalWriteAsync(getName(), LongCodec.INSTANCE, RedisCommands.EVAL_LONG,
-                "if (redis.call('exists', KEYS[1]) == 0) then " +
-                    "redis.call('hset', KEYS[1], ARGV[2], 1); " +
-                    "redis.call('pexpire', KEYS[1], ARGV[1]); " +
-                    "return nil; " +
-                "end; " +
-                "if (redis.call('hexists', KEYS[1], ARGV[2]) == 1) then " +
-                    "redis.call('hincrby', KEYS[1], ARGV[2], 1); " +
-                    "redis.call('pexpire', KEYS[1], ARGV[1]); " +
-                    "return nil; " +
-                "end; " +
-                "return redis.call('pttl', KEYS[1]);",
-                Collections.<Object>singletonList(getName()), internalLockLeaseTime, getLockName(threadId));
+            /**
+             * KEYS[1] 表示的是 getName() ，代表的是加锁的那个key，即上面代码中的test_lock
+             * ARGV[1] 表示的是 internalLockLeaseTime ，代表的就是锁key的生存时间，默认30秒
+             * ARGV[2] 表示的是 getLockName(threadId)， 代表的是 id:threadId 用加锁的客户端的id+线程id， 表示当前访问线程，用于区分不同服务器上的线程。
+             */
+            "if (redis.call('exists', KEYS[1]) == 0) then " + //如果锁名称不存在
+                    "redis.call('hset', KEYS[1], ARGV[2], 1); " + //则向redis中添加一个key为test_lock的set，并且向set中添加一个field为线程id，值=1的键值对，表示此线程的重入次数为1
+                    "redis.call('pexpire', KEYS[1], ARGV[1]); " + //设置set的过期时间，防止当前服务器出问题后导致死锁，return nil;
+                    "return nil; " + //end;返回nil 结束。返回值中nil与false同一个意思。
+                    "end; " +
+                    "if (redis.call('hexists', KEYS[1], ARGV[2]) == 1) then " + //如果锁是存在的，检测是否是当前线程持有锁，如果是当前线程持有锁
+                    "redis.call('hincrby', KEYS[1], ARGV[2], 1); " + //则将该线程重入的次数++
+                    "redis.call('pexpire', KEYS[1], ARGV[1]); " + //并且重新设置该锁的有效时间
+                    "return nil; " + // 返回nil，结束
+                    "end; " +
+                    "return redis.call('pttl', KEYS[1]);", //锁存在, 但不是当前线程加的锁，则返回锁的过期时间。
+            Collections.<Object>singletonList(getName()), internalLockLeaseTime, getLockName(threadId));
 }
 ```
 
-* KEYS[1] 表示的是 getName() ，代表的是锁名 test_lock  
-* ARGV[1] 表示的是 internalLockLeaseTime 默认值是30s  
-* ARGV[2] 表示的是 getLockName(threadId) 代表的是 id:threadId 用锁对象id+线程id， 表示当前访问线程，用于区分不同服务器上的线程。  
+&emsp; 缺点：  
+&emsp; 其实上面那种方案最大的问题，就是如果你对某个redis master实例，写入了myLock这种锁key的value，此时会异步复制给对应的master slave实例。  
+&emsp; 但是这个过程中一旦发生redis master宕机，主备切换，redis slave变为了redis master。接着就会导致，客户端2来尝试加锁的时候，在新的redis master上完成了加锁，而客户端1也以为自己成功加了锁。此时就会导致多个客户端对一个分布式锁完成了加锁。  
+&emsp; 这时系统在业务语义上一定会出现问题，导致各种脏数据的产生。  
+&emsp; 所以这个就是redis cluster，或者是redis master-slave架构的主从异步复制导致的redis分布式锁的最大缺陷：在redis master实例宕机的时候，可能导致多个客户端同时完成加锁。  
 
-&emsp; 逐句分析：
-
-```java
-if (redis.call('exists', KEYS[1]) == 0) then 
-         redis.call('hset', KEYS[1], ARGV[2], 1); 
-         redis.call('pexpire', KEYS[1], ARGV[1]); 
-         return nil;
-         end;if (redis.call('exists', KEYS[1]) == 0) then 
-         redis.call('hset', KEYS[1], ARGV[2], 1); 
-         redis.call('pexpire', KEYS[1], ARGV[1]); 
-         return nil;
-         end;
-```
-&emsp; if (redis.call(‘exists’, KEYS[1]) == 0) <font color = "red">如果锁名称不存在</font>  
-&emsp; then redis.call(‘hset’, KEYS[1], ARGV[2],1) 则向redis中添加一个key为test_lock的set，并且向set中添加一个field为线程id，值=1的键值对，表示此线程的重入次数为1  
-&emsp; redis.call(‘pexpire’, KEYS[1], ARGV[1]) 设置set的过期时间，防止当前服务器出问题后导致死锁，return nil; end;返回nil 结束  
+##### 1.2.2.1.2. 解锁unlock  
 
 ```java
-if (redis.call('hexists', KEYS[1], ARGV[2]) == 1) then 
-         redis.call('hincrby', KEYS[1], ARGV[2], 1); 
-         redis.call('pexpire', KEYS[1], ARGV[1]);
-         return nil; 
-         end;
+public void unlock() {
+    Boolean opStatus = commandExecutor.evalWrite(getName(), LongCodec.INSTANCE, RedisCommands.EVAL_BOOLEAN,
+            /**
+             * KEYS[1] 表示的是getName() 代表锁名test_lock
+             * KEYS[2] 表示getChanelName() 表示的是发布订阅过程中使用的Chanel
+             * ARGV[1] 表示的是LockPubSub.unLockMessage 是解锁消息，实际代表的是数字 0，代表解锁消息
+             * ARGV[2] 表示的是internalLockLeaseTime 默认的有效时间 30s
+             * ARGV[3] 表示的是getLockName(thread.currentThread().getId())，是当前加锁的客户端的id+线程id
+             */
+            "if (redis.call('exists', KEYS[1]) == 0) then " + //如果锁已经不存在(可能是因为过期导致不存在，也可能是因为已经解锁)
+                    "redis.call('publish', KEYS[2], ARGV[1]); " + //则发布锁解除的消息
+                    "return 1; " + //返回1结束
+                    "end;" +
+                    "if (redis.call('hexists', KEYS[1], ARGV[3]) == 0) then " + //如果锁存在，但是若果当前线程不是加锁的线
+                    "return nil;" + //则直接返回nil 结束
+                    "end; " +
+                    "local counter = redis.call('hincrby', KEYS[1], ARGV[3], -1); " + //如果是锁是当前线程所添加，定义变量counter，表示当前线程的重入次数-1,即直接将重入次数-1
+                    "if (counter > 0) then " + //如果重入次数大于0，表示该线程还有其他任务需要执行
+                    "redis.call('pexpire', KEYS[1], ARGV[2]); " + //则重新设置该锁的有效时间
+                    "return 0; " + //返回0结束
+                    "else " +
+                    "redis.call('del', KEYS[1]); " + //否则表示该线程执行结束，删除该锁
+                    "redis.call('publish', KEYS[2], ARGV[1]); " + //并且发布该锁解除的消息
+                    "return 1; "+ //返回1结束
+                    "end; " +
+                    "return nil;",
+            Arrays.<Object>asList(getName(), getChannelName()), LockPubSub.unlockMessage, internalLockLeaseTime, getLockName(Thread.currentThread().getId()));
+    if (opStatus == null) { //脚本执行结束之后，如果返回值不是0或1，即当前线程去解锁其他线程的加锁时，抛出异常。
+        throw new IllegalMonitorStateException("attempt to unlock lock, not locked by current thread by node id: "
+                + id + " thread-id: " + Thread.currentThread().getId());
+    }
+    if (opStatus) {
+        cancelExpirationRenewal();
+    }
+}
 ```
-&emsp; if (redis.call(‘hexists’, KEYS[1], ARGV[2]) == 1) <font color = "red">如果锁是存在的，检测是否是当前线程持有锁，如果是当前线程持有锁</font>  
-&emsp; then redis.call(‘hincrby’, KEYS[1], ARGV[2], 1)则将该线程重入的次数++  
-&emsp; redis.call(‘pexpire’, KEYS[1], ARGV[1]) 并且重新设置该锁的有效时间  
-&emsp; return nil; end;返回nil，结束  
 
-```java
-return redis.call('pttl', KEYS[1]);
-```
-&emsp; <font color = "red">锁存在, 但不是当前线程加的锁，则返回锁的过期时间。</font>  
-
-##### 解锁unlock  
-......
-
-##### 强制解锁forceUnlock 
-...... 
 
