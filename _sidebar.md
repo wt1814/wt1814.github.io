@@ -172,13 +172,6 @@
     * [分布式限流](/docs/microService/thinking/分布式限流.md)   
     * [服务降级](/docs/microService/thinking/服务降级.md)  
 
-* 分布式通信  
-    * [序列化](/docs/microService/communication/serializbale.md)    
-    * [NIO](/docs/microService/communication/NIO.md)  
-        * [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
-        * [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
-        * [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
-    * [Netty]  
 
 * Elaticsearch-1  
     * [ES基本概念](/docs/ES/1.basicConcepts.md)  

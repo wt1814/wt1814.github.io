@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="//unpkg.com/docsify/themes/vue.css">
+  <title>wt1814-note</title>
+  <script>
+      window.$docsify = {
+        themeable: {
+          readyTransition : true, // default
+          responsiveTables: true  // default
+        },
+        loadSidebar: true,
+        maxLevel: 4,//最大支持渲染的标题层级
+        subMaxLevel: 3,
+        homepage: 'index.md',
+        name: 'wt1814-note',
+        search: { 
+            noData: {
+                '/': 'No results!'
+            },
+            paths: 'auto',
+            placeholder: {
+                '/': 'Search'
+            }
+        }
+      }
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+</body>
+<script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+<script src="//unpkg.com/prismjs/components/prism-java.js"></script>
+<script src="//unpkg.com/prismjs/components/prism-sql.min.js"></script>
+<script src="//unpkg.com/docsify/lib/plugins/search.js"></script>
+</html>

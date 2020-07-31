@@ -7,7 +7,7 @@
 <font size = "4.5">&emsp; 联系电话：17813261813  &emsp; &emsp;  E-mail: wangtao1814@163.com</font>
 
 # 个人博客  
-<font size = "4.5">&emsp; 个人博客：http://wt1814.com/ ，个人公众号：王猴卖瓜。  
+<font size = "4.5">&emsp; 个人公众号：王猴卖瓜。  
 
 # 教育经历  
 <font size = "4.5">&emsp; 2012.9－2016.7&emsp; &emsp; &emsp; 大连东软信息学院&emsp; &emsp; &emsp; 软件工程&emsp; &emsp; &emsp; 本科  
@@ -16,10 +16,10 @@
 <font size = "4.5">
 
 * Java  
-    * 熟练使用JDK1.8，IO，NIO，泛型，反射等；
+    * 熟练使用JDK1.8，泛型，反射等；
     * 掌握JVM基础知识，掌握JVM调优；
     * 掌握多线程编程技术；
-    * 掌握设计模式；
+    * 熟悉设计模式；
 * 数据库  
     * 熟练使用数据库MySql，Oracle，PostgreSQL；
     * 掌握数据库复制，分区，分库分表技术；
