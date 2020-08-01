@@ -4,7 +4,7 @@
 - [1. Redis的API](#1-redis的api)
     - [1.1. Redis客户端](#11-redis客户端)
     - [1.2. Key操作命令](#12-key操作命令)
-        - [1.2.1. scan访问Redis中的海量数据](#121-scan访问redis中的海量数据)
+        - [1.2.1. 使用scan代替keys指令](#121-使用scan代替keys指令)
         - [1.2.2. Redis中的批量删除数据库中的Key](#122-redis中的批量删除数据库中的key)
     - [1.3. String操作命令](#13-string操作命令)
     - [1.4. Hash操作命令](#14-hash操作命令)
@@ -42,8 +42,12 @@
 ## 1.2. Key操作命令  
 ......
 
-### 1.2.1. scan访问Redis中的海量数据
+### 1.2.1. 使用scan代替keys指令  
 ......
+<!-- 
+在RedisTemplate中使用scan代替keys指令 
+https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
+-->
 
 ### 1.2.2. Redis中的批量删除数据库中的Key  
 &emsp; Redis中有删除单个Key的指令 DEL，但似乎没有批量删除 Key 的指令，不过可以借助 Linux 的 xargs 指令来完成这个动作。  

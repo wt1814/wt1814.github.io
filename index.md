@@ -158,7 +158,6 @@
 
 ### Redis
 [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
-&emsp; [SDS](/docs/microService/Redis/SDS.md)  
 &emsp; [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
 &emsp; [Redis的API](/docs/microService/Redis/RedisAPI.md)  
 [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
@@ -171,6 +170,7 @@
 &emsp; [Redis主从复制](/docs/microService/Redis/Redis主从复制.md)  
 &emsp; [Redis哨兵模式](/docs/microService/Redis/Redis哨兵模式.md)  
 &emsp; [Redis分片模式](/docs/microService/Redis/Redis分片模式.md)  
+[Redis运维](/docs/microService/Redis/Redis运维.md)  
 [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 
 ### 分布式理论  

@@ -164,7 +164,7 @@
 
 # 3. Redis底层实现  
 ## 3.1. 对象系统RedisObject  
-&emsp; **<font color = "lime">很重要的思想：redis设计比较复杂的对象系统，一切都是为了缩减内存占有！！！</font>**  
+&emsp; **<font color = "lime">很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！</font>**  
 &emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。**<font color = "lime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**  
 
 &emsp; redisObject的源代码在redis.h中，使用c语言编写。redisObject结构的定义如下所示：  
@@ -232,13 +232,13 @@ typedef struct redisObject {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-4.png)  
 
 ## 3.4. List内部编码   
-&emsp; 在早期的版本中，数据量较小时用ziplist存储，达到临界值时转换为linkedlist进行存储。Redis3.2 版本之后，统一用 quicklist 来存储。  
+&emsp; 在早期的版本中，<font color = "red">数据量较小时用ziplist存储，达到临界值时转换为linkedlist进行存储，</font><font color = "lime">双向链表占用的内存比压缩列表的要多。</font>Redis3.2 版本之后，统一用quicklist来存储。   
 
 ### 3.4.1. linkedlist  
 &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-62.png)  
 
-&emsp; 从图中可以看出Redis的linkedlist双端链表有以下特性：节点带有prev、next指针、head指针和tail指针，获取前置节点、后置节点、表头节点和表尾节点的复杂度都是O（1）。len属性获取节点数量也为O（1）。
+&emsp; 从图中可以看出Redis的linkedlist双端链表有以下特性：节点带有prev、next指针、head指针和tail指针，获取前置节点、后置节点、表头节点和表尾节点的复杂度都是O(1)。len属性获取节点数量也为O(1)。  
 
 ### 3.4.2. quicklist
 &emsp; quicklist（快速列表）是ziplist和linkedlist的结合体。quicklist 存储了一个双向链表，每个节点 都是一个ziplist。  
