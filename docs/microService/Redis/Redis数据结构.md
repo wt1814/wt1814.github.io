@@ -131,7 +131,7 @@
 
     |数据结构 |是否允许重复元素 |是否有序 |有序实现方式| 
     |---|---|---|---|
-    |列表 list| 是 |是 |索引下标| 
+    |列表 list| 是 |是 |<font color = "red">索引下标</font>| 
     |集合 set |否 |否| 无 |
     |有序集合 zset |否 |是 |分值 score|
     
@@ -140,6 +140,10 @@
 
     * 排行榜  
     &emsp; 排行榜榜单的维度可能是多个方面的：按照时间、按照播 放数量、按照获得的赞数。 
+
+    &emsp; **<font color = "lime">如何借助ZSet实现多维排序? </font>**  
+    &emsp; ZSet默认情况下只能根据一个因子score进行排序。如此一来，局限性就很大，举个例子：热门排行榜需要按照下载量&最近更新时间排序，即类似数据库中的ORDER BY download_count, update_time DESC。那这样的需求如果用Redis的ZSet实现呢？  
+    &emsp; 事实上很简单，思路就是<font color = "red">将涉及排序的多个维度的列通过一定的方式转换成一个特殊的列</font>，即result = function(x, y, z)，即x，y，z是三个排序因子，例如下载量、时间等，通过自定义函数function()计算得到result，将result作为ZSet中的score的值，就能实现任意维度的排序需求了。  
 
 <!-- 
 |数据类型	|可以存储的值	|操作	|使用场景|
