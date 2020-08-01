@@ -2,30 +2,42 @@
 <!-- TOC -->
 
 - [1. Redis底层实现](#1-redis底层实现)
-    - [1.1. 对象系统RedisObject](#11-对象系统redisobject)
-    - [1.2. String内部编码](#12-string内部编码)
-    - [1.3. Hash内部编码](#13-hash内部编码)
-        - [1.3.1. hashtable（dict），字典](#131-hashtabledict字典)
-        - [1.3.2. ziplist，压缩列表](#132-ziplist压缩列表)
-    - [1.4. List内部编码](#14-list内部编码)
-        - [1.4.1. linkedlist，双向链表](#141-linkedlist双向链表)
-        - [1.4.2. quicklist，快速列表](#142-quicklist快速列表)
-    - [1.5. Set内部编码](#15-set内部编码)
-        - [1.5.1. inset](#151-inset)
-    - [1.6. Zset内部编码](#16-zset内部编码)
-        - [1.6.1. skiplist，跳跃表](#161-skiplist跳跃表)
+    - [1.1. Redis源码阅读之环境搭建及准备](#11-redis源码阅读之环境搭建及准备)
+    - [1.2. 对象系统RedisObject](#12-对象系统redisobject)
+    - [1.3. String内部编码](#13-string内部编码)
+    - [1.4. Hash内部编码](#14-hash内部编码)
+        - [1.4.1. dictEntry，字典](#141-dictentry字典)
+        - [1.4.2. ziplist，压缩列表](#142-ziplist压缩列表)
+    - [1.5. List内部编码](#15-list内部编码)
+        - [1.5.1. linkedlist，双向链表](#151-linkedlist双向链表)
+        - [1.5.2. quicklist，快速列表](#152-quicklist快速列表)
+    - [1.6. Set内部编码](#16-set内部编码)
+        - [1.6.1. inset](#161-inset)
+    - [1.7. Zset内部编码](#17-zset内部编码)
+        - [1.7.1. 采用 ZipList 的实现原理](#171-采用-ziplist-的实现原理)
+        - [1.7.2. 采用 SkipList跳跃表 的实现原理](#172-采用-skiplist跳跃表-的实现原理)
+    - [1.8. 查看redis内部存储的操作](#18-查看redis内部存储的操作)
 
 <!-- /TOC -->
 
 # 1. Redis底层实现  
-<!-- 
+<!--
+连集合底层实现原理都不知道，你敢说Redis用的很溜？ 
+https://mp.weixin.qq.com/s/K7Si5bl7K_pjQPHsLrPh5A
 万字长文的Redis五种数据结构详解（理论+实战），建议收藏。 
 https://mp.weixin.qq.com/s/ipP35Zho9STAgu_lFT79rQ
 
 https://mp.weixin.qq.com/s/zcWvzZTwUAm2NfAQhxMqeQ
 -->
 
-## 1.1. 对象系统RedisObject  
+## 1.1. Redis源码阅读之环境搭建及准备  
+......
+<!-- 
+Redis源码阅读之: 环境搭建及准备
+https://blog.csdn.net/u014563989/article/details/81066074?utm_medium=distribute.pc_relevant_download.none-task-blog-baidujs-2.nonecase&depth_1-utm_source=distribute.pc_relevant_download.none-task-blog-baidujs-2.nonecase
+-->
+
+## 1.2. 对象系统RedisObject  
 &emsp; **<font color = "lime">很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！</font>**  
 &emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。**<font color = "lime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**  
 
@@ -59,7 +71,7 @@ typedef struct redisObject {
 |Set	|intset（整数集合）或者hashtable（字典或者也叫哈希表）|
 |ZSet	|ziplist（压缩列表）或者skiplist（跳跃表）|
 
-## 1.2. String内部编码  
+## 1.3. String内部编码  
 &emsp; **<font color = "red">字符串类型的内部编码有三种：</font>**  
 
 *  int，存储 8 个字节的长整型（long，2^63-1）。   
@@ -70,7 +82,7 @@ typedef struct redisObject {
 
 1. [SDS](/docs/microService/Redis/SDS.md)  
 
-2. embstr 和 raw 的区别？  
+2. embstr和raw的区别？  
 &emsp; embstr 的使用只分配一次内存空间（因为 RedisObject 和 SDS 是连续的），而 raw 需要分配两次内存空间（分别为 RedisObject 和 SDS 分配空间）。 因此与 raw 相比，embstr 的好处在于创建时少分配一次空间，删除时少释放一次 空间，以及对象的所有数据连在一起，寻找方便。 而 embstr 的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个 RedisObject 和 SDS 都需要重新分配空间，因此 Redis 中的 embstr 实现为只读。  
 
 3. int 和 embstr 什么时候转化为 raw?  
@@ -82,18 +94,20 @@ typedef struct redisObject {
 5. 当长度小于阈值时，会还原吗？  
 &emsp; 关于 Redis 内部编码的转换，都符合以下规律：编码转换在 Redis 写入数据时完 成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
 
-## 1.3. Hash内部编码  
-&emsp; Redis 的 Hash 本身也是一个 KV 的结构，类似于 Java 中的 HashMap。外层的哈希（Redis KV 的实现）只用到了 hashtable。当存储 hash 数据类型时，把它叫做内层的哈希。内层的哈希底层可以使用两种数据结构实现：ziplist、hashtable，会由ziplist转换为hashtable。  
+## 1.4. Hash内部编码  
+&emsp; Redis 的 Hash 本身也是一个 KV 的结构，类似于 Java 中的 HashMap。外层的哈希（Redis KV 的实现）只用到了 hashtable。当存储 hash 数据类型时，把它叫做内层的哈希。内层的哈希底层可以使用两种数据结构实现：ziplist、hashtable，会由ziplist转换为hashtable。Hash 结构当同时满足如下两个条件时底层采用了 ZipList 实现，一旦有一个条件不满足时，就会被转码为 HashTable 进行存储。  
 
+* Hash 中存储的所有元素的 key 和 value 的长度都小于 64byte。（通过修改 hash-max-ziplist-value 配置调节大小）
+* Hash 中存储的元素个数小于 512。（通过修改 hash-max-ziplist-entries 配置调节大小）  
 
-### 1.3.1. hashtable（dict），字典  
+### 1.4.1. dictEntry，字典  
 &emsp; 在 Redis 中，hashtable 被称为字典（dictionary），它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。结构如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-4.png)  
 
 
-&emsp; 字典类型的底层就是hashtable实现的，明白了字典的底层实现原理也就是明白了hashtable的实现原理，hashtable的实现原理可以与HashMap的是底层原理相类比。  
+&emsp; 字典类型的底层是hashtable实现的，明白了字典的底层实现原理也就是明白了hashtable的实现原理，hashtable的实现原理可以与HashMap的是底层原理相类比。它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。  
 &emsp; 两者在新增时都会通过key计算出数组下标，不同的是计算法方式不同，HashMap中是以hash函数的方式，而hashtable中计算出hash值后，还要通过sizemask 属性和哈希值再次得到数组下标。  
-hash表最大的问题就是hash冲突，为了解决hash冲突，假如hashtable中不同的key通过计算得到同一个index，就会形成单向链表（「链地址法」），如下图所示：  
+&emsp; hash表最大的问题就是hash冲突，为了解决hash冲突，假如hashtable中不同的key通过计算得到同一个index，就会形成单向链表（「链地址法」），如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-81.png)  
 
 **rehash：**  
@@ -110,7 +124,7 @@ hash表最大的问题就是hash冲突，为了解决hash冲突，假如hashtabl
 &emsp; 当rehash操作开始时会将该值改成0，在渐进式rehash的过程「更新、删除、查询会在ht[0]和ht[1]中都进行」，比如更新一个值先更新ht[0]，然后再更新ht[1]。  
 &emsp; 而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，这样保证「ht[0]只减不增，直到最后的某一个时刻变成空表」，这样rehash操作完成。  
 
-### 1.3.2. ziplist，压缩列表  
+### 1.4.2. ziplist，压缩列表  
 &emsp; ziplist是一组连续内存块组成的顺序的数据结构，是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。只用在字段个数少，字段值小的场景面。  
 
 &emsp; 什么时候使用 ziplist 存储？  
@@ -122,6 +136,7 @@ hash表最大的问题就是hash冲突，为了解决hash冲突，假如hashtabl
 
 &emsp; 压缩列表的内存结构图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-79.png)  
+&emsp; ZipList 是由一块连续的存储空间组成，从图中可以看出 ZipList 没有前后指针。  
 &emsp; 压缩列表中每一个节点表示的含义如下所示：
 1. zlbytes：4个字节的大小，记录压缩列表占用内存的字节数。
 2. zltail：4个字节大小，记录表尾节点距离起始地址的偏移量，用于快速定位到尾节点的地址。
@@ -130,18 +145,34 @@ hash表最大的问题就是hash冲突，为了解决hash冲突，假如hashtabl
 5. zlend：表示压缩列表的特殊结束符号'0xFF'。
 
 &emsp; 在压缩列表中每一个entry节点又有三部分组成，包括previous_entry_ength、encoding、content。  
-1. previous_entry_ength表示前一个节点entry的长度，可用于计算前一个节点的其实地址，因为他们的地址是连续的。
-2. encoding：这里保存的是content的内容类型和长度。
-3. content：content保存的是每一个节点的内容。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-80.png)  
+1. previous_entry_ength表示前一个节点entry的长度，可用于计算前一个节点的其实地址，因为他们的地址是连续的。  
+2. encoding：这里保存的是content的内容类型和长度。  
+3. content：content保存的是每一个节点的内容。  
+
+&emsp; ZipList 的优缺点比较：  
+优点：内存地址连续，省去了每个元素的头尾节点指针占用的内存。  
+缺点：对于删除和插入操作比较可能会触发连锁更新反应，比如在 list 中间插入删除一个元素时，在插入或删除位置后面的元素可能都需要发生相应的移动操作。  
 
 
-## 1.4. List内部编码   
-&emsp; Redis中的列表在3.2之前的版本是使用ziplist和linkedlist进行实现的，<font color = "red">数据量较小时用ziplist存储，达到临界值时转换为linkedlist进行存储，</font><font color = "lime">双向链表占用的内存比压缩列表的要多。</font>Redis3.2 版本之后，统一用quicklist来存储。   
+## 1.5. List内部编码   
+&emsp; 在 Redis3.2 之前，List 底层采用了 ZipList 和 LinkedList 实现的，在 3.2 之后，List 底层采用了 QuickList。  
+&emsp; Redis3.2 之前，初始化的 List 使用的 ZipList，List 满足以下两个条件时则一直使用 ZipList 作为底层实现，当以下两个条件任一一个不满足时，则会被转换成 LinkedList。
 
-### 1.4.1. linkedlist，双向链表  
+* List 中存储的每个元素的长度小于64byte  
+* 元素个数小于512 
+
+### 1.5.1. linkedlist，双向链表  
 &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-62.png)  
+
+&emsp; 各部分作用说明：  
+
+* head：表示 List 的头结点；通过其可以找到 List 的头节点。  
+* tail：表示 List 的尾节点；通过其可以找到 List 的尾节点。  
+* len：表示 List 存储的元素个数。  
+* dup：表示用于复制元素的函数。  
+* free：表示用于释放元素的函数。  
+* match：表示用于对比元素的函数。  
 
 &emsp; Redis中链表的特性：  
 1. 每一个节点都有指向前一个节点和后一个节点的指针。  
@@ -153,20 +184,24 @@ hash表最大的问题就是hash冲突，为了解决hash冲突，假如hashtabl
 -->
  
 
-### 1.4.2. quicklist，快速列表
-&emsp; quicklist（快速列表）是ziplist和linkedlist的结合体。quicklist 存储了一个双向链表，每个节点 都是一个ziplist。  
+### 1.5.2. quicklist，快速列表
+&emsp; 在 Redis3.2 版本之后，Redis 集合采用了 QuickList 作为 List 的底层实现，QuickList 其实就是结合了 ZipList 和 LinkedList 的优点设计出来的。quicklist 存储了一个双向链表，每个节点 都是一个ziplist。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-63.png)  
 
-## 1.5. Set内部编码   
+&emsp; 各部分作用说明：  
+
+* 每个listNode 存储一个指向 ZipList 的指针，ZipList 用来真正存储元素的数据。
+* ZipList 中存储的元素数据总大小超过 8kb（默认大小，通过 list-max-ziplist-size 参数可以进行配置）的时候，就会重新创建出来一个 ListNode 和 ZipList，然后将其通过指针关联起来。
+
+## 1.6. Set内部编码   
 &emsp; Redis中列表和集合都可以用来存储字符串，但是「Set是不可重复的集合，而List列表可以存储相同的字符串」，「Set是一个特殊的value为空的Hash」，Set集合是无序的这个和后面讲的ZSet有序集合相对。  
 
-&emsp; Redis 用intset或hashtable存储set。<font color = "red">如果元素都是整数类型，就用 inset 存储；如果不是整数类型，就用 hashtable。</font>  
+&emsp; Redis 用intset或dictEntry存储set。当满足如下两个条件的时候，采用整数集合实现；一旦有一个条件不满足时则采用字典来实现。  
 
-&emsp; KV 怎么存储 set 的元素？  
-&emsp; key 就是元素的值，value 为 null。  
-&emsp; 如果元素个数超过 512 个，也会用 hashtable 存储。  
+* Set 集合中的所有元素都为整数
+* Set 集合中的元素个数不大于 512（默认 512，可以通过修改 set-max-intset-entries 配置调整集合大小） 
 
-### 1.5.1. inset  
+### 1.6.1. inset  
 &emsp; inset的数据结构：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-7.png)  
 &emsp; inset也叫做整数集合，用于保存整数值的数据结构类型，它可以保存int16_t、int32_t 或者int64_t 的整数值。  
@@ -178,10 +213,22 @@ hash表最大的问题就是hash冲突，为了解决hash冲突，假如hashtabl
 3. 整数集合升级后就不会再降级，编码会一直保持升级后的状态。  
 
 
-## 1.6. Zset内部编码   
-&emsp; ZSet的底层实现是ziplist和skiplist实现的。同时满足以下条件时使用 ziplist 编码：1. 元素数量小于 128 个；2. 所有 member 的长度都小于 64 字节。超过阈值之后，使用 skiplist和hashtable存储。  
+## 1.7. Zset内部编码   
+&emsp; ZSet的底层实现是ziplist和skiplist实现的，由ziplist转换为skiplist。当同时满足以下两个条件时，采用 ZipList 实现；反之采用 SkipList 实现。
 
-### 1.6.1. skiplist，跳跃表  
+* Zset 中保存的元素个数小于 128。（通过修改 zset-max-ziplist-entries 配置来修改）  
+* Zset 中保存的所有元素长度小于 64byte。（通过修改 zset-max-ziplist-values 配置来修改）  
+
+### 1.7.1. 采用 ZipList 的实现原理  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-84.png)  
+&emsp; 和List的底层实现有些相似，对于 Zset 不同的是，其存储是以键值对的方式依次排列，键存储的是实际 value，值存储的是 value 对应的分值。  
+
+### 1.7.2. 采用 SkipList跳跃表 的实现原理  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-85.png)  
+SkipList 分为两部分，dict 部分是由字典实现，Zset 部分使用跳跃表实现，从图中可以看出，dict 和跳跃表都存储的数据，实际上 dict 和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
+
+
 &emsp; skiplist也叫做「跳跃表」，跳跃表是一种有序的数据结构，它通过每一个节点维持多个指向其它节点的指针，从而达到快速访问的目的。  
 
 &emsp; skiplist有如下几个特点：  
@@ -201,9 +248,10 @@ hash表最大的问题就是hash冲突，为了解决hash冲突，假如hashtabl
 &emsp; 如下图所示，红线是查找10的过程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-83.png)  
 
-&emsp; **<font color = "red">如何借助Sorted set实现多维排序? </font>** 
+&emsp; **<font color = "red">如何借助Sorted set实现多维排序? </font>**  
 &emsp; Sorted Set默认情况下只能根据一个因子score进行排序。如此一来，局限性就很大，举个栗子：热门排行榜需要按照下载量&最近更新时间排序，即类似数据库中的ORDER BY download_count, update_time DESC。那这样的需求如果用Redis的Sorted Set实现呢？  
 &emsp; 事实上很简单，思路就是<font color = "red">将涉及排序的多个维度的列通过一定的方式转换成一个特殊的列</font>，即result = function(x, y, z)，即x，y，z是三个排序因子，例如下载量、时间等，通过自定义函数function()计算得到result，将result作为Sorted Set中的score的值，就能实现任意维度的排序需求了。  
 
-
+## 1.8. 查看redis内部存储的操作  
+&emsp; ......
 
