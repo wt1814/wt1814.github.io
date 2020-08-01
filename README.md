@@ -200,8 +200,9 @@ Gitee： https://gitee.com/wt1814/
 ### Redis
 [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
 &emsp; [SDS](/docs/microService/Redis/SDS.md)  
-&emsp; [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
 &emsp; [Redis的API](/docs/microService/Redis/RedisAPI.md)  
+&emsp; [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
+
 [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
 [Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
 [Redis原理](/docs/microService/Redis/Redis原理.md)  

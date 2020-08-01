@@ -7,8 +7,8 @@
     - [3.1. 对象系统RedisObject](#31-对象系统redisobject)
     - [3.2. String内部编码](#32-string内部编码)
     - [3.3. Hash内部编码](#33-hash内部编码)
-        - [3.3.1. ziplist 压缩列表](#331-ziplist-压缩列表)
         - [3.3.2. hashtable（dict），字典](#332-hashtabledict字典)
+        - [3.3.1. ziplist，压缩列表](#331-ziplist压缩列表)
     - [3.4. List内部编码](#34-list内部编码)
         - [3.4.1. linkedlist](#341-linkedlist)
         - [3.4.2. quicklist](#342-quicklist)
@@ -19,7 +19,6 @@
 <!-- /TOC -->
 
 <!-- 
-
 
 -->
 
@@ -163,6 +162,11 @@
 -->
 
 # 3. Redis底层实现  
+<!-- 
+万字长文的Redis五种数据结构详解（理论+实战），建议收藏。 
+https://mp.weixin.qq.com/s/ipP35Zho9STAgu_lFT79rQ
+-->
+
 ## 3.1. 对象系统RedisObject  
 &emsp; **<font color = "lime">很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！</font>**  
 &emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。**<font color = "lime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**  
@@ -215,10 +219,35 @@ typedef struct redisObject {
 &emsp; 关于 Redis 内部编码的转换，都符合以下规律：编码转换在 Redis 写入数据时完 成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
 
 ## 3.3. Hash内部编码  
-&emsp; Redis 的 Hash 本身也是一个 KV 的结构，类似于 Java 中的 HashMap。外层的哈希（Redis KV 的实现）只用到了 hashtable。当存储 hash 数据类型时，把它叫做内层的哈希。内层的哈希底层可以使用两种数据结构实现：ziplist、hashtable。  
+&emsp; Redis 的 Hash 本身也是一个 KV 的结构，类似于 Java 中的 HashMap。外层的哈希（Redis KV 的实现）只用到了 hashtable。当存储 hash 数据类型时，把它叫做内层的哈希。内层的哈希底层可以使用两种数据结构实现：ziplist、hashtable，会由ziplist转换为hashtable。  
 
-### 3.3.1. ziplist 压缩列表  
-&emsp; ziplist是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，是一种时间换空间的思想。只用在字段个数少，字段值小的场景面。  
+
+### 3.3.2. hashtable（dict），字典  
+&emsp; 在 Redis 中，hashtable 被称为字典（dictionary），它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。结构如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-4.png)  
+
+
+&emsp; 字典类型的底层就是hashtable实现的，明白了字典的底层实现原理也就是明白了hashtable的实现原理，hashtable的实现原理可以与HashMap的是底层原理相类比。  
+&emsp; 两者在新增时都会通过key计算出数组下标，不同的是计算法方式不同，HashMap中是以hash函数的方式，而hashtable中计算出hash值后，还要通过sizemask 属性和哈希值再次得到数组下标。  
+hash表最大的问题就是hash冲突，为了解决hash冲突，假如hashtable中不同的key通过计算得到同一个index，就会形成单向链表（「链地址法」），如下图所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-81.png)  
+
+**rehash：**  
+&emsp; 在字典的底层实现中，value对象以每一个dictEntry的对象进行存储，当hash表中的存放的键值对不断的增加或者减少时，需要对hash表进行一个扩展或者收缩。  
+&emsp; 这里就会和HashMap一样也会就进行rehash操作，进行重新散列排布。从上图中可以看到有ht[0]和ht[1]两个对象，先来看看对象中的属性是干嘛用的。  
+&emsp; 在hash表结构定义中有四个属性分别是dictEntry **table、unsigned long size、unsigned long sizemask、unsigned long used，分别表示的含义就是「哈希表数组、hash表大小、用于计算索引值，总是等于size-1、hash表中已有的节点数」。  
+&emsp; ht[0]是用来最开始存储数据的，当要进行扩展或者收缩时，ht[0]的大小就决定了ht[1]的大小，ht[0]中的所有的键值对就会重新散列到ht[1]中。  
+&emsp; 扩展操作：ht[1]扩展的大小是比当前 ht[0].used 值的二倍大的第一个 2 的整数幂；收缩操作：ht[0].used 的第一个大于等于的 2 的整数幂。  
+&emsp; 当ht[0]上的所有的键值对都rehash到ht[1]中，会重新计算所有的数组下标值，当数据迁移完后ht[0]就会被释放，然后将ht[1]改为ht[0]，并新创建ht[1]，为下一次的扩展和收缩做准备。  
+
+**渐进式rehash：**  
+&emsp; 假如在rehash的过程中数据量非常大，Redis不是一次性把全部数据rehash成功，这样会导致Redis对外服务停止，Redis内部为了处理这种情况采用「渐进式的rehash」。  
+&emsp; Redis将所有的rehash的操作分成多步进行，直到都rehash完成，具体的实现与对象中的rehashindex属性相关，「若是rehashindex 表示为-1表示没有rehash操作」。  
+&emsp; 当rehash操作开始时会将该值改成0，在渐进式rehash的过程「更新、删除、查询会在ht[0]和ht[1]中都进行」，比如更新一个值先更新ht[0]，然后再更新ht[1]。  
+&emsp; 而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，这样保证「ht[0]只减不增，直到最后的某一个时刻变成空表」，这样rehash操作完成。  
+
+### 3.3.1. ziplist，压缩列表  
+&emsp; ziplist是一组连续内存块组成的顺序的数据结构，是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。只用在字段个数少，字段值小的场景面。  
 
 &emsp; 什么时候使用 ziplist 存储？  
 &emsp; 当 hash 对象同时满足以下两个条件的时候，使用 ziplist 编码：  
@@ -227,9 +256,23 @@ typedef struct redisObject {
 
 &emsp; 一个哈希对象超过配置的阈值（键和值的长度有>64byte，键值对个数>512 个）时， 会转换成哈希表hashtable。  
 
-### 3.3.2. hashtable（dict），字典  
-&emsp; 在 Redis 中，hashtable 被称为字典（dictionary），它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。结构如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-4.png)  
+&emsp; 压缩列表的内存结构图如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-79.png)  
+&emsp; 压缩列表中每一个节点表示的含义如下所示：
+1. zlbytes：4个字节的大小，记录压缩列表占用内存的字节数。
+2. zltail：4个字节大小，记录表尾节点距离起始地址的偏移量，用于快速定位到尾节点的地址。
+3. zllen：2个字节的大小，记录压缩列表中的节点数。
+4. entry：表示列表中的每一个节点。
+5. zlend：表示压缩列表的特殊结束符号'0xFF'。
+
+&emsp; 在压缩列表中每一个entry节点又有三部分组成，包括previous_entry_ength、encoding、content。  
+1. previous_entry_ength表示前一个节点entry的长度，可用于计算前一个节点的其实地址，因为他们的地址是连续的。
+2. encoding：这里保存的是content的内容类型和长度。
+3. content：content保存的是每一个节点的内容。
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-80.png)  
+
+
+
 
 ## 3.4. List内部编码   
 &emsp; 在早期的版本中，<font color = "red">数据量较小时用ziplist存储，达到临界值时转换为linkedlist进行存储，</font><font color = "lime">双向链表占用的内存比压缩列表的要多。</font>Redis3.2 版本之后，统一用quicklist来存储。   

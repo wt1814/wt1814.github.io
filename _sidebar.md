@@ -143,8 +143,8 @@
 * Redis
     * [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
         * [SDS](/docs/microService/Redis/SDS.md)  
-        * [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
         * [Redis的API](/docs/microService/Redis/RedisAPI.md)  
+        * [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
     * [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
     * [Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
     * [Redis原理](/docs/microService/Redis/Redis原理.md)  

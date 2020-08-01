@@ -1,4 +1,5 @@
 欢迎关注个人公众号：**<font color = "red">王猴卖瓜</font>**  
+Gitee： https://gitee.com/wt1814/  
 联系我：***wangtao1814@163.com***  
  
 # 目录  
@@ -158,8 +159,9 @@
 
 ### Redis
 [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
-&emsp; [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
 &emsp; [Redis的API](/docs/microService/Redis/RedisAPI.md)  
+&emsp; [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
+
 [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
 [Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
 [Redis原理](/docs/microService/Redis/Redis原理.md)  
