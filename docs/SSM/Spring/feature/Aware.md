@@ -9,14 +9,14 @@
 <!-- /TOC -->
 
 # 1. Aware接口，Bean对容器对感知  
-&emsp; **<font color = "red">容器管理的Bean一般不需要了解容器的状态和直接使用容器，但在某些情况下，是需要在Bean中直接对IOC容器进行操作的，这时候，就需要在Bean中设定对容器的感知。Spring IOC容器也提供了该功能，它是通过特定的aware接口来完成的。</font>** aware接口有以下这些：
+&emsp; **<font color = "lime">容器管理的Bean一般不需要了解容器的状态和直接使用容器，但在某些情况下，是需要在Bean中直接对IOC容器进行操作的，这时候，就需要在Bean中设定对容器的感知。Spring IOC容器也提供了该功能，它是通过特定的aware接口来完成的。</font>** <font color = "red">aware接口有以下这些：
 
 * BeanNameAware ，可以在Bean中得到它在IOC容器中的Bean实例名称。  
 * BeanFactoryAware，可以在Bean中得到Bean所在的IOC容器，从而直接在Bean中使用IOC容器的服务。  
 * ApplicationContextAware，可以在Bean中得到Bean所在的应用上下文，从而直接在 Bean中使用应用上下文的服务。  
 * MessageSourceAware，在Bean中可以得到消息源。  
 * ApplicationEventPublisherAware，在Bean中可以得到应用上下文的事件发布器，从而可以在Bean中发布应用上下文的事件。  
-* ResourceLoaderAware，在Bean中可以得到ResourceLoader，从而在Bean中使用 ResourceLoader加载外部对应的Resource资源。  
+* ResourceLoaderAware，在Bean中可以得到ResourceLoader，从而在Bean中使用ResourceLoader加载外部对应的Resource资源。</font>  
 
 &emsp; 在设置Bean的属性之后，调用初始化回调方法之前，Spring会调用aware接口中的setter方法。  
 
@@ -56,7 +56,7 @@ public interface ApplicationContextAware {
     void setApplicationContext(ApplicationContext applicationcontext) throws BeansException;
 }
 ```
-&emsp; 这里只有一个方法setApplicationContext(ApplicationContext applicationcontext),它是一 个回调函数，在Bean中通过实现这个函数，可以在容器回调该aware接口方法时使注入的 applicationcontext引用在Bean中保存下来，供Bean需要使用Applicationcontext的基本服务时 使用。这个对setApplicationContext方法的回调是由容器自动完成的。  
+&emsp; 这里只有一个方法setApplicationContext(ApplicationContext applicationcontext),它是一个回调函数，在Bean中通过实现这个函数，可以在容器回调该aware接口方法时使注入的applicationcontext引用在Bean中保存下来，供Bean需要使用Applicationcontext的基本服务时使用。这个对setApplicationContext方法的回调是由容器自动完成的。  
 
 &emsp; 在初始化的时候，从入口类ClassPathXmlApplicationContext->AbstractApplicationContext类的的refresh方法 ->prepareBeanFactory方法：  
 
@@ -178,7 +178,8 @@ public interface BeanNameAware extends Aware {
     void setBeanName(String var1);
 }
 ```
-```
+
+```java
 public class BeanTest implements BeanNameAware{
 
     private String beanName;

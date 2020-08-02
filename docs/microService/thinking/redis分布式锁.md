@@ -14,6 +14,7 @@
             - [1.2.2.1. RedissonLock解析](#1221-redissonlock解析)
                 - [1.2.2.1.1. 获取锁tryLock](#12211-获取锁trylock)
                 - [1.2.2.1.2. 解锁unlock](#12212-解锁unlock)
+    - [使用redis分布式锁后的思考](#使用redis分布式锁后的思考)
 
 <!-- /TOC -->
 
@@ -220,4 +221,13 @@ public void unlock() {
 }
 ```
 
+## 使用redis分布式锁后的思考  
+&emsp; ......
+
+<!-- 
+ Redis——由分布式锁造成的重大事故 
+ https://mp.weixin.qq.com/s/38YlgZnxRNX54esQmQoZ0w
+记一次由Redis分布式锁造成的重大事故，避免以后踩坑！ 
+https://mp.weixin.qq.com/s/70mS50S2hdN_qd-RD4rk2Q
+-->
 

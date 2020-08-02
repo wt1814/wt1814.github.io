@@ -25,6 +25,7 @@ public interface BeanFactoryPostProcessor {
 &emsp; 注意：BeanFactoryPostProcessor是在spring容器加载了bean的定义文件之后，在bean实例化之前执行的。接口方法的入参是ConfigurrableListableBeanFactory，使用该参数，可以获取到相关bean的定义信息。  
 
 &emsp; <font color = "red">Spring中有内置的一些BeanFactoryPostProcessor实现类</font>，常用的有：  
+
 * org.springframework.beans.factory.config.PropertyPlaceholderConfigurer  
 * org.springframework.beans.factory.config.PropertyOverrideConfigurer  
 * org.springframework.beans.factory.config.CustomEditorConfigurer：用来注册自定义的属性编辑器  
@@ -53,7 +54,6 @@ public interface BeanPostProcessor {
 
 * bean实现了InitializingBean接口，对应的方法为afterPropertiesSet
 * 在bean定义的时候，通过init-method设置的方法
-
 
         实例化和初始化的区别
         1. 实例化----实例化的过程是一个创建Bean的过程，即调用Bean的构造函数，单例的Bean放入单例池中。

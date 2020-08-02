@@ -63,7 +63,7 @@
         * [行列转换](/docs/SQL/11.trans.md)  
     * [MySql函数](/docs/SQL/MySQLFunction.md)  
     * [数据库对象](/docs/SQL/DatabaseObject.md)  
-    * [SQL优化-1](/docs/SQL/2.SQL优化.md)  
+    * [SQL优化](/docs/SQL/2.SQL优化.md)  
         * [索引优化](/docs/SQL/7.index.md)  
         * [优化案例](/docs/SQL/12.case.md)  
     * [MySql原理]  
@@ -76,26 +76,26 @@
     * [分布式数据库](/docs/SQL/4.分布式数据库.md)  
         * [主从复制](/docs/SQL/16.replication.md)  
         * [分区](/docs/SQL/17.partition.md)  
-        * [分库分表-1](/docs/SQL/18.sub.md)  
+        * [分库分表](/docs/SQL/18.sub.md)  
         * [数据迁移](/docs/projectImplement/implementation.md)   
     * [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
     * [AOP多数据源动态切换](/docs/SQL/6.multiDataSource.md)  
   
 * Spring  
     * [对于学习Spring源码的感悟](/docs/SSM/Spring/Perception.md)  
-    * [Spring-1](/docs/SSM/Spring/1.Spring.md)  
+    * [Spring](/docs/SSM/Spring/1.Spring.md)  
     * [SpringIOC解析](/docs/SSM/Spring/2.SpringIOC.md)  
         * [容器初始化详解](/docs/SSM/Spring/容器初始化详解.md)  
     * [SpringDI解析](/docs/SSM/Spring/3.SpringDI.md)  
     * [SpringBean生命周期](/docs/SSM/Spring/SpringBean.md)  
     * [容器相关特性]  
+        * [可二次开发常用接口](/docs/SSM/Spring/feature/可二次开发常用接口.md)  
+            * [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
+            * [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
+            * [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
+            * [事件](/docs/SSM/Spring/feature/Event.md)  
         * [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
         * [循环依赖](/docs/SSM/Spring/feature/循环依赖.md)  
-        * [可二次开发常用接口](/docs/SSM/Spring/feature/可二次开发常用接口.md)  
-            * [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
-            * [事件](/docs/SSM/Spring/feature/Event.md)  
-            * [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
-            * [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
         * [lazy-init](/docs/SSM/Spring/feature/lazy-init.md)  
 
     * [SpringAOP教程](/docs/SSM/Spring/5.SpringAOP.md)  
@@ -111,8 +111,8 @@
 
     * [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
     * [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
-    * [MyBatis插件解析-1](/docs/SSM/MyBatis/MybatisPlugins.md)  
-    * [Spring和MyBatis整合-1](/docs/SSM/MyBatis/SpringMybatis.md)  
+    * [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
+    * [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
     * [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisD/docs/ESign.md)  
 
 * SpringBoot  
@@ -176,13 +176,13 @@
     * [服务降级](/docs/microService/thinking/服务降级.md)  
 
 
-* Elaticsearch-1  
+* Elaticsearch  
     * [ES基本概念](/docs/ES/1.basicConcepts.md)  
     * [ES集群](/docs/ES/3.colony.md)  
     * [ES使用教程](/docs/ES/2.useTutorials.md)  
     * [ES搭建](/docs/ES/7.build.md)     
     * [ES原理](/docs/ES/4.principle.md)  
-    * [ES优化-1](/docs/ES/5.optimization.md)  
+    * [ES优化](/docs/ES/5.optimization.md)  
     * [ELK](/docs/ES/6.ELK与EFK.md)    
 
 * 项目构建基础    

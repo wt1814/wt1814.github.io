@@ -2,74 +2,27 @@
 
 <!-- TOC -->
 
-- [1. ApplicationEvent抽象类、ApplicationListener接口](#1-applicationevent抽象类applicationlistener接口)
-    - [1.1. 使用测试](#11-使用测试)
+- [1. Spring的事件机制](#1-spring的事件机制)
+    - [1.1. 前言](#11-前言)
     - [1.2. Spring事件机制解析](#12-spring事件机制解析)
         - [1.2.1. ApplicationEvent，事件](#121-applicationevent事件)
         - [1.2.2. ApplicationListener，事件监听器](#122-applicationlistener事件监听器)
         - [1.2.3. ApplicationEventMulticaster，事件管理者](#123-applicationeventmulticaster事件管理者)
         - [1.2.4. ApplicationEventPublisher，事件发布者](#124-applicationeventpublisher事件发布者)
+    - [1.3. 使用测试](#13-使用测试)
 
 <!-- /TOC -->
 
-# 1. ApplicationEvent抽象类、ApplicationListener接口  
-## 1.1. 使用测试  
+# 1. Spring的事件机制  
+## 1.1. 前言  
+&emsp; 事件监听是一种发布订阅者模式。做完某一件事情以后，需要广播一些消息或者通知，告诉其他的模块进行一些事件处理。相比发送请求，事件监听可以实现接口解耦。   
+&emsp; <font color = "lime">Spring事件机制的流程：</font>   
+1. 事件机制的核心是事件，Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件（继承ApplicationEvent）。  
+2. 确定事件后，要把事件发布出去。在事件发布类的业务中调用ApplicationContext#publishEvent方法。  
+3. 发布完成之后，启动监听器，自动监听。在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
+4. 最后，就是实际场景中触发事件发布，完成一系列任务。  
 
-&emsp; ApplicationEvent抽象类、ApplicationListener接口是常常搭配使用的：  
-
-* ApplicationEvent：是个抽象类，里面只有一个构造函数和一个长整型的timestamp。  
-* ApplicationListener：是一个接口，里面只有一个onApplicationEvent方法。所以自己的类在实现该接口的时候，要实装该方法。  
-* ApplicationContext：如果在上下文中部署一个实现了ApplicationListener接口的bean，那么每当在一个ApplicationEvent发布到ApplicationContext时，这个bean得到通知。  
-
-```java
-public class EmailEvent extends ApplicationEvent {
-
-    private static final long serialVersionUID = 1L;
-    public String address;
-    public String text;
-
-    public EmailEvent(Object source) {
-        super(source);
-    }
-
-    public EmailEvent(Object source, String address, String text) {
-        super(source);
-        this.address = address;
-        this.text = text;
-    }
-
-    public void print(){
-        System.out.println("hello spring event!");
-    }
-}
-
-public class EmailListener implements ApplicationListener {
-
-    public void onApplicationEvent(ApplicationEvent  event) {
-        if(event instanceof EmailEvent){
-            EmailEvent emailEvent = (EmailEvent)event;
-            emailEvent.print();
-            System.out.println("the source is:"+emailEvent.getSource());
-            System.out.println("the address is:"+emailEvent.address);
-            System.out.println("the email's context is:"+emailEvent.text);
-        }
-    }
-}
-
-public class Test {
-    public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-        EmailEvent event = new EmailEvent("hello","boylmx@163.com","this is a email text!");
-        context.publishEvent(event);
-    }
-}
-```
-&emsp; 测试结果如下：  
-
-    hello spring event!  
-    the source is:hello  
-    the address is:boylmx@163.com  
-    the email's context is:this is a email text! 
+&emsp; 注：事件监听是循环往复的，如果确定事件只会发布一次，应该移除事件监听器。  
 
 ## 1.2. Spring事件机制解析  
 &emsp; **<font color = "red">实现Spring事件机制主要有4个类：</font>**  
@@ -80,15 +33,15 @@ public class Test {
 * ApplicationEventPublisher：事件发布者，委托ApplicationEventMulticaster完成事件发布。
 
 ### 1.2.1. ApplicationEvent，事件  
-&emsp; ApplicationEvent表示事件，每个实现类表示一类事件，可携带数据。<font color = "red">下面是一些Spring提供的标准事件，都继承了ApplicationEvent。</font>  
+&emsp; ApplicationEvent表示事件，每个实现类表示一类事件，可携带数据。<font color = "lime">下面是一些Spring提供的标准事件，都继承了ApplicationEvent。</font>  
 
 |事件	|描述|
 |---|---|
-|ContextRefreshedEvent	|事件发布在ApplicationContext初始化或刷新时(例如,通过在ConfigurableApplicationContext接口使用refresh()方法)。这里，“初始化”意味着所有bean加载,post-processor bean被检测到并且激活,单例预先实例化，ApplicationContext对象可以使用了。只要上下文没有关闭,可以触发多次刷新，ApplicationContext提供了一种可选择的支持这种“热”刷新。例如，XmlWebApplicationContext支持热刷新,但GenericApplicationContext并非如此。具体是在AbstractApplicationContext的finishRefresh()方法中。|
-|ContextStartedEvent	|事件发布在ApplicationContext开始使用ConfigurableApplicationContext接口start()方法。这里，“开始”意味着所有生命周期bean接收到一个明确的起始信号。通常,这个信号用于明确停止后重新启动,但它也可以用于启动组件没有被配置为自动运行(例如,组件还没有开始初始化)。|
-|ContextStoppedEvent	|事件发布在ApplicationContext停止时通过使用ConfigurableApplicationContext接口上的stop()方法。在这里，“停止”意味着所有生命周期bean接收一个显式的停止信号。停止上下文可以通过重新调用start()方法。|
-|ContextClosedEvent	|事件发布在ApplicationContext关闭时通过关闭ConfigurableApplicationContext接口方法。这里，“封闭”意味着所有单例bean被摧毁。一个封闭的环境达到生命的终结。它不能刷新或重启。|
-|RequestHandledEvent	|一个特定的web事件告诉所有能处理HTTP请求的bean 。这个事件是在请求完成后发布的。这个事件只适用于使用Spring的DispatcherServlet的web应用程序。|
+|ContextRefreshedEvent<br/>上下文更新事件|<font color = "red">事件发布在ApplicationContext初始化或刷新时(例如,通过在ConfigurableApplicationContext接口使用refresh()方法)。这里，“初始化”意味着所有bean加载,post-processor bean被检测到并且激活,单例预先实例化，ApplicationContext对象可以使用了。</font>只要上下文没有关闭,可以触发多次刷新，ApplicationContext提供了一种可选择的支持这种“热”刷新。例如，XmlWebApplicationContext支持热刷新,但GenericApplicationContext并非如此。具体是在AbstractApplicationContext的finishRefresh()方法中。|
+|ContextStartedEvent<br/>上下文开始事件|事件发布在ApplicationContext开始使用ConfigurableApplicationContext接口start()方法。这里，“开始”意味着所有生命周期bean接收到一个明确的起始信号。通常,这个信号用于明确停止后重新启动,但它也可以用于启动组件没有被配置为自动运行(例如,组件还没有开始初始化)。|
+|ContextStoppedEvent<br/>上下文停止事件|事件发布在ApplicationContext停止时通过使用ConfigurableApplicationContext接口上的stop()方法。在这里，“停止”意味着所有生命周期bean接收一个显式的停止信号。停止上下文可以通过重新调用start()方法。|
+|ContextClosedEvent<br/>上下文关闭事件|事件发布在ApplicationContext关闭时通过关闭ConfigurableApplicationContext接口方法。这里，“封闭”意味着所有单例bean被摧毁。一个封闭的环境达到生命的终结。它不能刷新或重启。|
+|RequestHandledEvent<br/>请求处理事件|一个特定的web事件告诉所有能处理HTTP请求的bean 。这个事件是在请求完成后发布的。这个事件只适用于使用Spring的DispatcherServlet的web应用程序。|
 
 &emsp; ApplicationEvent代码如下：  
 
@@ -115,7 +68,7 @@ public interface ApplicationListener<E extends ApplicationEvent> extends EventLi
     void onApplicationEvent(E event);
 }
 ```
-&emsp; 当事件监听器接收到它可以处理的事件，会调用onApplicationEvent()方法。注意到ApplicationListener是泛型参数，这样可以实现所有继承了ApplicationEvent的监听。可以尽可能多的注册想要的事件侦听器，但是默认情况下事件监听器同步接收事件。这意味着publishEvent()方法会阻塞直到所有的事件监听器成处理完事件。这种单线程同步方法的一个特点是,当一个监听器接收到一个事件时，它运行在事务上下文的发布者线程上(如果事务上下文可用)。如果事件的发布需要另一种策略（譬如多线程）需要实现ApplicationEventMulticaster接口类。  
+&emsp; 当事件监听器接收到它可以处理的事件，会调用onApplicationEvent()方法。注意到<font color = "red">ApplicationListener是泛型参数，这样可以实现所有继承了ApplicationEvent的监听。可以尽可能多的注册想要的事件侦听器，但是默认情况下事件监听器同步接收事件。这意味着publishEvent()方法会阻塞直到所有的事件监听器成处理完事件。这种单线程同步方法的一个特点是,当一个监听器接收到一个事件时，它运行在事务上下文的发布者线程上(如果事务上下文可用)。</font>如果事件的发布需要另一种策略（譬如多线程）需要实现ApplicationEventMulticaster接口类。  
 
 ### 1.2.3. ApplicationEventMulticaster，事件管理者  
 &emsp; ApplicationEventMulticaster接口方法分为三类，注册事件监听器、移除事件监听器、发布事件。  
@@ -342,6 +295,63 @@ public class AnnotationRegisterListener {
     }
 }
 ```
+
+## 1.3. 使用测试  
+&emsp; ApplicationEvent抽象类、ApplicationListener接口是常常搭配使用的：  
+
+* ApplicationEvent：是个抽象类，里面只有一个构造函数和一个长整型的timestamp。  
+* ApplicationListener：是一个接口，里面只有一个onApplicationEvent方法。所以自己的类在实现该接口的时候，要实装该方法。  
+* ApplicationContext：如果在上下文中部署一个实现了ApplicationListener接口的bean，那么每当在一个ApplicationEvent发布到ApplicationContext时，这个bean得到通知。  
+
+```java
+public class EmailEvent extends ApplicationEvent {
+
+    private static final long serialVersionUID = 1L;
+    public String address;
+    public String text;
+
+    public EmailEvent(Object source) {
+        super(source);
+    }
+
+    public EmailEvent(Object source, String address, String text) {
+        super(source);
+        this.address = address;
+        this.text = text;
+    }
+
+    public void print(){
+        System.out.println("hello spring event!");
+    }
+}
+
+public class EmailListener implements ApplicationListener {
+
+    public void onApplicationEvent(ApplicationEvent  event) {
+        if(event instanceof EmailEvent){
+            EmailEvent emailEvent = (EmailEvent)event;
+            emailEvent.print();
+            System.out.println("the source is:"+emailEvent.getSource());
+            System.out.println("the address is:"+emailEvent.address);
+            System.out.println("the email's context is:"+emailEvent.text);
+        }
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
+        EmailEvent event = new EmailEvent("hello","boylmx@163.com","this is a email text!");
+        context.publishEvent(event);
+    }
+}
+```
+&emsp; 测试结果如下：  
+
+    hello spring event!  
+    the source is:hello  
+    the address is:boylmx@163.com  
+    the email's context is:this is a email text! 
 
 
 

@@ -70,7 +70,7 @@ Gitee： https://gitee.com/wt1814/
 [MySql函数](/docs/SQL/MySQLFunction.md)  
 [数据库对象](/docs/SQL/DatabaseObject.md)  
 
-[SQL优化-1](/docs/SQL/2.SQL优化.md)  
+[SQL优化](/docs/SQL/2.SQL优化.md)  
 &emsp; [索引优化](/docs/SQL/7.index.md)  
 &emsp; [优化案例](/docs/SQL/12.case.md)  
 [MySql原理]  
@@ -83,7 +83,7 @@ Gitee： https://gitee.com/wt1814/
 [分布式数据库](/docs/SQL/4.分布式数据库.md)  
 &emsp; [主从复制](/docs/SQL/16.replication.md)  
 &emsp; [分区](/docs/SQL/17.partition.md)  
-&emsp; [分库分表-1](/docs/SQL/18.sub.md)  
+&emsp; [分库分表](/docs/SQL/18.sub.md)  
 &emsp; [数据迁移](/docs/projectImplement/implementation.md)   
 [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
 [AOP多数据源动态切换](/docs/SQL/6.multiDataSource.md)  
@@ -91,19 +91,20 @@ Gitee： https://gitee.com/wt1814/
 
 ## SSM  
 ### Spring  
-[Spring-1](/docs/SSM/Spring/1.Spring.md)  
+[Spring](/docs/SSM/Spring/1.Spring.md)  
 [SpringIOC解析](/docs/SSM/Spring/2.SpringIOC.md)  
 &emsp; [容器初始化详解](/docs/SSM/Spring/容器初始化详解.md)  
 [SpringDI解析](/docs/SSM/Spring/3.SpringDI.md)  
 [SpringBean生命周期](/docs/SSM/Spring/SpringBean.md)  
 [容器相关特性]  
+&emsp; [可二次开发常用接口](/docs/SSM/Spring/feature/可二次开发常用接口.md)  
+&emsp; &emsp; [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
+&emsp; &emsp; [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
+&emsp; &emsp; [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
+&emsp; &emsp; [事件](/docs/SSM/Spring/feature/Event.md)  
 &emsp; [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
 &emsp; [循环依赖](/docs/SSM/Spring/feature/循环依赖.md)  
-&emsp; [可二次开发常用接口](/docs/SSM/Spring/feature/可二次开发常用接口.md)  
-&emsp; &emsp; [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
-&emsp; &emsp; [事件](/docs/SSM/Spring/feature/Event.md)  
-&emsp; &emsp; [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
-&emsp; &emsp; [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
+
 &emsp; [lazy-init](/docs/SSM/Spring/feature/lazy-init.md)  
 
 [SpringAOP教程](/docs/SSM/Spring/5.SpringAOP.md)  
@@ -119,8 +120,8 @@ Gitee： https://gitee.com/wt1814/
 
 [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
 [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
-[MyBatis插件解析-1](/docs/SSM/MyBatis/MybatisPlugins.md)  
-[Spring和MyBatis整合-1](/docs/SSM/MyBatis/SpringMybatis.md)  
+[MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
+[Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
 [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
 
 
@@ -192,13 +193,13 @@ Gitee： https://gitee.com/wt1814/
 [服务降级](/docs/microService/thinking/服务降级.md)  
 
 
-## Elaticsearch-1  
+## Elaticsearch  
 [ES基本概念](/docs/ES/1.basicConcepts.md)  
 [ES集群](/docs/ES/3.colony.md)  
 [ES使用教程](/docs/ES/2.useTutorials.md)  
 [ES搭建](/docs/ES/7.build.md)  
 [ES原理](/docs/ES/4.principle.md)  
-[ES优化-1](/docs/ES/5.optimization.md)  
+[ES优化](/docs/ES/5.optimization.md)  
 [ELK与EFK](/docs/ES/6.ELK与EFK.md)    
 
 ---

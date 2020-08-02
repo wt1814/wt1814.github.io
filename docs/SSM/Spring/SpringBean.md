@@ -29,21 +29,28 @@ https://mp.weixin.qq.com/s/DC_PH_PXpbNgDQuGslTTTg
 &emsp; &emsp; ①如果这个Bean已经实现了BeanNameAware接口，会调用它实现的setBeanName(String beanId)方法，此处传递的就是Spring配置文件中Bean的id值；  
 &emsp; &emsp; ②如果这个Bean已经实现了BeanFactoryAware接口，会调用它实现的setBeanFactory()方法，传递的是Spring工厂自身。  
 &emsp; &emsp; ③如果这个Bean已经实现了ApplicationContextAware接口，会调用setApplicationContext(ApplicationContext)方法，传入Spring上下文；  
-4. BeanPostProcessor：
+4. BeanPostProcessor前置处理：  
 &emsp; 如果想对Bean进行一些自定义的处理，那么可以让Bean实现了BeanPostProcessor接口，那将会调用postProcessBeforeInitialization(Object obj, String s)方法。  
-5. InitializingBean 与 init-method：  
+5. @PostConstruct、InitializingBean 与 init-method：  
 &emsp; 如果Bean在Spring配置文件中配置了 init-method 属性，则会自动调用其配置的初始化方法。  
-7. 如果这个Bean实现了BeanPostProcessor接口，将会调用postProcessAfterInitialization(Object
+
+        这三个方法的执行顺序为：
+        1. @PostConstruct注解标注的方法
+        2.实现了InitializingBean接口后复写的afterPropertiesSet方法
+        3. XML中自定义的初始化方法
+7. BeanPostProcessor后置处理：  
+&emsp; 如果这个Bean实现了BeanPostProcessor接口，将会调用postProcessAfterInitialization(Object
 obj, String s)方法；由于这个方法是在Bean初始化结束时调用的，所以可以被应用于内存或缓存技术；  
 8. 注册Destruction  
 
     以上几个步骤完成后，Bean就已经被正确创建了，之后就可以使用这个Bean了。  
 
-9. DisposableBean： 
+9. DisposableBean：   
 &emsp; 当Bean不再需要时，会经过清理阶段，如果Bean实现了DisposableBean这个接口，会调用其实现的destroy()方法；  
 10. destroy-method：  
 &emsp; 最后，如果这个Bean的Spring配置中配置了destroy-method属性，会自动调用其配置的销毁方法。  
 
+<!-- 
         1. Bean容器在配置文件中找到Spring Bean的定义。
         2. Bean容器使用Java Reflection API创建Bean的实例。
         3. 如果声明了任何属性，声明的属性会被设置。如果属性本身是Bean，则将对其进行解析和设置。
@@ -56,6 +63,7 @@ obj, String s)方法；由于这个方法是在Bean初始化结束时调用的�
         10. 如果为Bean Factory对象附加了任何Bean 后置处理器，则将调用postProcessAfterInitialization()方法。
         11. 如果Bean类实现DisposableBean接口，则当Application不再需要Bean引用时，将调用destroy()方法。
         12. 如果配置文件中的Bean定义包含destroy-method属性，那么将调用Bean类中的相应方法定义。
+-->
 
 # 2. 实例演示  
 <!-- https://mp.weixin.qq.com/s/feokfxcB1WCMRAqVRm9HOQ -->
@@ -179,7 +187,7 @@ public void destroy() {
 &emsp; 从Spring的源码可以直观的看到其执行过程，而记忆其过程便可以从这 4 个阶段出发，实例化、属性赋值、初始化、销毁。其中细节较多的便是初始化，涉及了Aware、BeanPostProcessor、InitializingBean、init-method 的概念。这些都是Spring提供的扩展点。    
 
 # 4. 总结
-&emsp; 最后总结下如何记忆 Spring Bean 的生命周期：  
+&emsp; **<font color = "lime">最后总结下如何记忆 Spring Bean 的生命周期：</font>**  
 
 * 首先是实例化、属性赋值、初始化、销毁这 4 个大阶段；
 * 再是初始化的具体操作，有 Aware 接口的依赖注入、BeanPostProcessor 在初始化前后的处理以及 InitializingBean 和 init-method 的初始化操作；
