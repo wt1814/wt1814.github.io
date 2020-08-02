@@ -11,9 +11,10 @@
             - [1.2.4.1. hash()函数](#1241-hash函数)
             - [1.2.4.2. put()，插入](#1242-put插入)
             - [1.2.4.3. resize()，扩容机制](#1243-resize扩容机制)
-            - [1.2.4.4. remove()，删除](#1244-remove删除)
     - [1.3. HashMap在JDK1.7和JDK1.8中的区别总结](#13-hashmap在jdk17和jdk18中的区别总结)
     - [1.4. HashMap的线程安全问题](#14-hashmap的线程安全问题)
+        - [1.4.1. JDK1.8](#141-jdk18)
+        - [1.4.2. 线程安全的map](#142-线程安全的map)
     - [1.5. 如何实现一个自定义的class作为HashMap的key？](#15-如何实现一个自定义的class作为hashmap的key)
 
 <!-- /TOC -->
@@ -21,7 +22,10 @@
 
 <!--- 
 
-
+https://mp.weixin.qq.com/s/3yT4YkRtxXeu9Hv0EOtkpQ
+https://mp.weixin.qq.com/s/qfm-Xq1ZNJFJdSZ58qSLLA
+https://mp.weixin.qq.com/s/zKrpKLo1S2e0LuPJRDSiiQ
+https://mp.weixin.qq.com/s/wIjAj4rAAZccAl-yhmj_TA
 -->
 
 # 1. HashMap  
@@ -289,7 +293,6 @@ static final int tableSizeFor(int cap) {
 &emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-12.png)  
 &emsp; 上面采用了一个比较大的数字进行扩容，由上图可知 2^29 次方的数组经过一系列的或操作后，会算出来结果是 2^30 次方。所以扩容后的数组长度是原来的 2 倍。  
 
-
 ### 1.2.4. 成员方法  
 #### 1.2.4.1. hash()函数  
 &emsp; 无论增加、删除还是查找键值对，定位到数组的位置都是很关键的第一步。在 HashMap 中并不是直接通过 key 的 hashcode 方法获取哈希值，而是通过内部自定义的 hash 方法计算哈希值。
@@ -327,10 +330,26 @@ static final int hash(Object key) {
 &emsp; (h = key.hashCode()) ^ (h >>> 16) 是为了让高位数据与低位数据进行异或，变相的让高位数据参与到计算中，int 有 32 位，右移 16 位就能让低 16 位和高 16 位进行异或，也是为了增加 hash 值的随机性。  
 -->
 
-#### 1.2.4.2. put()，插入  
-&emsp; table 的初始化时机是什么时候？  
-&emsp; 一般情况下，在第一次 put 的时候，调用 resize 方法进行 table 的初始化（懒初始化，懒加载思想在很多框架中都有应用！）。  
-&emsp; JDK1.8put 方法源码部分  
+#### 1.2.4.2. put()，插入 
+&emsp; **<font color = "lime">插入元素方法：</font>**  
+
+1. 计算 key 的 hash 值。  
+&emsp; 计算方式是 (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);  
+2. 检查当前数组是否为空，为空需要进行初始化，初始化容量是 16 ，负载因子默认 0.75。  
+3. 计算 key 在数组中的坐标。计算方式：(容量 - 1) & hash。 
+4. 如果计算出的坐标元素为空，创建节点加入，put 结束。  
+    1. 如果当前数组容量大于负载因子设置的容量，进行扩容。  
+5. 如果计算出的坐标元素有值。  
+    1. 如果准备插入节点和要插入节点的hash和参数key相等，记录插入位置，后面会覆盖value。  
+    2. 如果要插入的节点是红黑树节点，则调用红黑树的插入操作。
+    3. 否则插入的节点是链表节点。循环遍历：
+        1. 如果 next 节点为空，把要加入的值和 key 加入 next 节点。插入节点超过8层，转换红黑树。  
+        2. 可能还会出现准备插入节点和要插入节点的hash和参数key相等，直接返回。
+6. 判断是否需要扩容。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-18.png)  
+
+&emsp; JDK1.8put()方法源码部分：  
 
 ```java
 /**
@@ -340,42 +359,6 @@ public V put(K key, V value) {
     return putVal(hash(key), key, value, false, true);
 }
 ```
-
-&emsp; **<font color = "lime">插入元素方法：</font>**  
-1. 判断键值对数组table[i]是否为空或为null，否则执行resize()进行扩容；  
-2. <font color = "red">根据键值key计算hash值得到插入的数组索引i，如果table[i]==null，直接新建节点添加；</font>  
-3. 当table[i]不为空，判断table[i]的首个元素是否和传入的key一样，如果相同直接覆盖value；  
-4. 判断table[i]是否为treeNode，即table[i]是否是红黑树，如果是红黑树，则直接在树中插入键值对；  
-5. 遍历table[i]，判断链表长度是否大于8，大于8的话把链表转换为红黑树，在红黑树中执行插入操作，否则进行链表的插入操作；遍历过程中若发现 key 已经存在直接覆盖 value 即可；  
-6. **<font color = "red">插入成功后，判断实际存在的键值对数量size是否超多了最大容量 threshold，如果超过，进行扩容操作；</font>**    
-
-    当桶数组 table 为空时，通过扩容的方式初始化 table  
-
-    查找要插入的键值对是否已经存在，存在的话根据条件判断是否用新值替换旧值  
-
-    如果不存在，则将键值对链入链表中，并根据链表长度决定是否将链表转为红黑树  
-
-    判断键值对数量是否大于阈值，大于的话则进行扩容操作  
-
-1. 计算 key 的 hash 值。
-计算方式是 (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
-2. 检查当前数组是否为空，为空需要进行初始化，初始化容量是 16 ，负载因子默认 0.75。
-3. 计算 key 在数组中的坐标。
-计算方式：(容量 - 1) & hash.
-因为容量总是2的次方，所以-1的值的二进制总是全1。方便与 hash 值进行与运算。
-4. 如果计算出的坐标元素为空，创建节点加入，put 结束。
-    1. 如果当前数组容量大于负载因子设置的容量，进行扩容。
-2. 如果计算出的坐标元素有值。
-    1. 如果 next 节点为空，把要加入的值和 key 加入 next 节点。
-    2. 如果 next 节点不为空，循环查看 next 节点。
-    3. 如果发现有 next 节点的 key 和要加入的 key 一样，对应的值替换为新值。
-    4. 如果循环 next 节点查找超过8层还不为空，把这个位置元素转换为红黑树。
-    5. 如果坐标上的元素值和要加入的值 key 完全一样，覆盖原有值。
-    6. 如果坐标上的元素是红黑树，把要加入的值和 key 加入到红黑树。
-    7. 如果坐标上的元素和要加入的元素不同（尾插法增加）。
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-14.png)  
-
 ```java
 /**
  * 插入元素方法
@@ -439,7 +422,7 @@ https://mp.weixin.qq.com/s/wIjAj4rAAZccAl-yhmj_TA
 -->
 
 
-&emsp; 其中，与jdk1.7有区别的地方，第4步新增了红黑树插入方法，源码部分：  
+&emsp; 红黑树插入方法，源码部分：  
 
 ```java
 /**
@@ -503,12 +486,11 @@ final TreeNode<K,V> putTreeVal(HashMap<K,V> map, Node<K,V>[] tab,
     }
 }
 ```
-    
 
 #### 1.2.4.3. resize()，扩容机制  
 &emsp; HashMap在什么条件下扩容？  
+&emsp; **<font color = "lime">JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。</font>**  
 
-&emsp; **<font color = "lime">JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时</font>**。  
 ```java
 //数组长度大于阈值，就扩容
 if (++size > threshold)
@@ -518,22 +500,31 @@ resize();
 if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY)
 resize();
 ```
-&emsp; HashMap 每次扩容都是建立一个新的 table 数组，长度和容量阈值都变为原来的两倍，然后把原数组元素重新映射到新数组上，具体步骤如下：  
+
+&emsp; <font color = "red">HashMap 每次扩容都是建立一个新的 table 数组，长度和容量阈值都变为原来的两倍，然后把原数组元素重新映射到新数组上。</font>
+&emsp; 具体步骤如下：  
 1. 首先会判断 table 数组长度，如果大于 0 说明已被初始化过，那么按当前 table 数组长度的 2 倍进行扩容，阈值也变为原来的 2 倍。  
 2. 若 table 数组未被初始化过，且 threshold(阈值)大于 0 说明调用了 HashMap(initialCapacity, loadFactor) 构造方法，那么就把数组大小设为 threshold。  
 3. 若 table 数组未被初始化，且 threshold 为 0 说明调用 HashMap() 构造方法，那么就把数组大小设为 16，threshold 设为 16*0.75。  
-4. 接着需要判断如果不是第一次初始化，那么扩容之后，要重新计算键值对的位置，并把它们移动到合适的位置上去，如果节点是红黑树类型的话则需要进行红黑树的拆分。  
+4. 接着需要判断如果不是第一次初始化，那么<font color = "red">扩容之后，要重新计算键值对的位置，并把它们移动到合适的位置上去。</font>  
+    1. 如果是单个节点，直接重新计算下标值，移动。  
+    2. 如果节点是红黑树类型的话则需要进行红黑树的拆分。  
+    3. <font color = "red">对链表进行迁移。会对链表中的节点，进行分组，进行迁移后，一类的节点位置在愿索引，一类在原索引+旧数组长度。</font>
 
-&emsp; 这里有一个需要注意的点就是在 JDK1.8 HashMap 扩容阶段重新映射元素时不需要像 1.7 版本那样重新去一个个计算元素的 hash 值，而是通过 hash & oldCap 的值来判断，若为 0 则索引位置不变，不为 0 则新索引=原索引+旧数组长度，为什么呢？具体原因如下：  
-&emsp; 因为我们使用的是 2 次幂的扩展(指长度扩为原来 2 倍)，所以，元素的位置要么是在原位置，要么是在原位置再移动 2 次幂的位置。因此，我们在扩充 HashMap 的时候，不需要像 JDK1.7 的实现那样重新计算 hash，只需要看看原来的 hash 值新增的那个 bit 是 1 还是 0 就好了，是 0 的话索引没变，是 1 的话索引变成“原索引 +oldCap  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-13.png)  
-这点其实也可以看做长度为 2 的幂次方的一个好处，也是 HashMap 1.7 和 1.8 之间的一个区别。具体源码如下：  
+    &emsp; <font color = "lime">对链表进行迁移的注意点：</font>JDK1.8 HashMap 扩容阶段重新映射元素时不需要像 1.7 版本那样重新去一个个计算元素的 hash 值，而是通过 hash & oldCap(原数组大小) 的值来判断，若为 0 则索引位置不变，不为 0 则新索引=原索引+旧数组长度，为什么呢？具体原因如下：  
+    &emsp; 因为使用的是2次幂的扩展(指长度扩为原来2倍)，所以，元素的位置要么是在原位置，要么是在原位置再移动2次幂的位置。因此，在扩充 HashMap 的时候，不需要像 JDK1.7 的实现那样重新计算 hash，只需要看看原来的 hash 值新增的那个 bit 是 1 还是 0 就好了，是 0 的话索引没变，是 1 的话索引变成“原索引 +oldCap。  
+    &emsp; 这点其实也可以看做长度为 2 的幂次方的一个好处，也是 HashMap 1.7 和 1.8 之间的一个区别。
+    &emsp; 示例：  
+    &emsp; 扩容前 table 的容量为16，a 节点和 b 节点在扩容前处于同一索引位置。  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-19.png)  
+    &emsp; 扩容后，table 长度为32，新表的 n - 1 只比老表的 n - 1 在高位多了一个1（图中标红）。
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-20.png)  
+    &emsp; 因为 2 个节点在老表是同一个索引位置，因此计算新表的索引位置时，只取决于新表在高位多出来的这一位（图中标红），而这一位的值刚好等于 oldCap。  
+    &emsp; 因为只取决于这一位，所以只会存在两种情况：1）  (e.hash & oldCap) == 0 ，则新表索引位置为“原索引位置” ；2）(e.hash & oldCap) == 1，则新表索引位置为“原索引 + oldCap 位置”。  
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-15.png)  
 
-<!-- 
-红黑树和链表都是通过 e.hash & oldCap == 0 来定位在新表的索引位置，这是为什么？
-https://mp.weixin.qq.com/s/wIjAj4rAAZccAl-yhmj_TA
--->
+&emsp; 具体源码如下： 
 
 ```java
 final Node<K,V>[] resize() {
@@ -617,119 +608,6 @@ final Node<K,V>[] resize() {
     return newTab;
 }
 ```
-&emsp; 该方法分为两部分，首先是计算新桶数组的容量newCap和新阈值newThr，然后将原集合的元素重新映射到新集合中。  
-
-&emsp; 相比于JDK1.7，1.8使用的是2次幂的扩展(指长度扩为原来2倍)，所以，元素的位置要么是在原位置，要么是在原位置再移动2次幂的位置。在扩充HashMap的时候，不需要像JDK1.7的实现那样重新计算hash，只需要看看原来的hash值新增的那个bit是1还是0就好了，是0的话索引没变，是1的话索引变成“原索引+oldCap”。  
-
-
-----
-&emsp; JDK 1.7的扩容条件是数组长度大于阈值且存在哈希冲突。在JDK 7中的扩容的源码如下：   
-
-```java
-void addEntry(int hash, K key, V value, int bucketIndex) {
-    //数组长度大于阈值且存在哈希冲突（即当前数组下标有元素），就将数组扩容至2倍
-    if ((size >= threshold) && (null != table[bucketIndex])) {
-        resize(2 * table.length);
-        hash = (null != key) ? hash(key) : 0;
-        bucketIndex = indexFor(hash, table.length);
-    }
-    createEntry(hash, key, value, bucketIndex);
-}
-```
-&emsp; jdk1.7的扩容实现源码部分  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-9.png)  
-```java
-//参数 newCapacity 为新数组的大小
-void resize(int newCapacity) {
-    Entry[] oldTable = table;//引用扩容前的 Entry 数组
-    int oldCapacity = oldTable.length;
-    if (oldCapacity == MAXIMUM_CAPACITY) {//扩容前的数组大小如果已经达到最大(2^30)了
-        threshold = Integer.MAX_VALUE;///修改阈值为int的最大值(2^31-1)，这样以后就不会扩容了
-        return;
-    }
-
-    Entry[] newTable = new Entry[newCapacity];//初始化一个新的Entry数组
-    transfer(newTable, initHashSeedAsNeeded(newCapacity));//将数组元素转移到新数组里面
-    table = newTable;
-    threshold = (int)Math.min(newCapacity * loadFactor, MAXIMUM_CAPACITY + 1);//修改阈值
-}
-void transfer(Entry[] newTable, boolean rehash) {
-    int newCapacity = newTable.length;
-    for (Entry<K,V> e : table) {//遍历数组
-        while(null != e) {
-            Entry<K,V> next = e.next;
-            if (rehash) {
-                e.hash = null == e.key ? 0 : hash(e.key);
-            }
-            int i = indexFor(e.hash, newCapacity);//重新计算每个元素在数组中的索引位置
-            e.next = newTable[i];//标记下一个元素，添加是链表头添加
-            newTable[i] = e;//将元素放在链上
-            e = next;//访问下一个 Entry 链上的元素
-        }
-    }
-}
-```
-&emsp; 通过方法可以看到，JDK1.7中首先是创建一个新的大容量数组，然后依次重新计算原集合所有元素的索引，然后重新赋值。如果数组某个位置发生了hash冲突，使用的是单链表的头插入方法，同一位置的新元素总是放在链表的头部，这样与原集合链表对比，扩容之后的可能就是倒序的链表了。  
-
-
-
-
-#### 1.2.4.4. remove()，删除  
-&emsp; HashMap的删除操作仅需三个步骤即可完成。  
-1. 定位桶位置  
-2. 遍历链表找到相等的节点  
-3. 第三步删除节点  
-
-```java
-public V remove(Object key) {
-    Node<K,V> e;
-    return (e = removeNode(hash(key), key, null, false, true)) == null ? null : e.value;
-}
-
-final Node<K,V> removeNode(int hash, Object key, Object value,boolean matchValue, boolean movable) {
-    Node<K,V>[] tab;
-    Node<K,V> p;
-    int n, index;
-    //1、定位元素桶位置  
-    if ((tab = table) != null && (n = tab.length) > 0 && (p = tab[index = (n - 1) & hash]) != null) {
-        Node<K,V> node = null, e;
-        K k;
-        V v;
-        // 如果键的值与链表第一个节点相等，则将 node 指向该节点  
-        if (p.hash == hash && ((k = p.key) == key || (key != null && key.equals(k))))
-            node = p;
-        else if ((e = p.next) != null) {
-            // 如果是 TreeNode 类型，调用红黑树的查找逻辑定位待删除节点  
-            if (p instanceof TreeNode)
-                node = ((TreeNode<K,V>)p).getTreeNode(hash, key);
-            else {
-                // 2、遍历链表，找到待删除节点  
-                do {
-                    if (e.hash == hash && ((k = e.key) == key || (key != null && key.equals(k)))) {
-                        node = e;
-                        break;
-                    }
-                    p = e;
-                } while ((e = e.next) != null);
-            }
-        }
-        // 3、删除节点，并修复链表或红黑树  
-        if (node != null && (!matchValue || (v = node.value) == value || (value != null && value.equals(v)))) {
-            if (node instanceof TreeNode)
-                ((TreeNode<K,V>)node).removeTreeNode(this, tab, movable);
-            else if (node == p)
-                tab[index] = node.next;
-            else
-                p.next = node.next;
-            ++modCount;
-            --size;
-            afterNodeRemoval(node);
-            return node;
-        }
-    }
-    return null;
-}
-```
 
 ## 1.3. HashMap在JDK1.7和JDK1.8中的区别总结  
 
@@ -740,26 +618,53 @@ final Node<K,V> removeNode(int hash, Object key, Object value,boolean matchValue
 
 ## 1.4. HashMap的线程安全问题  
 <!-- 
-https://mp.weixin.qq.com/s/wIjAj4rAAZccAl-yhmj_TA
+
+https://blog.csdn.net/swpu_ocean/article/details/88917958
 -->
 
 &emsp; HashMap在数组的元素过多时会进行扩容操作，扩容之后会把原数组中的元素拿到新的数组中，这时候在多线程情况下就有可能出现多个线程搬运一个元素。或者说一个线程正在进行扩容，但是另一个线程还想进来存或者读元素，这也可会出现线程安全问题。   
-1. **<font color = "red">在jdk1.7中，在多线程环境下，扩容时会造成环形链或数据丢失。</font>**  
+
+
+
+### 1.4.1. JDK1.8
+<!-- 
+https://blog.csdn.net/swpu_ocean/article/details/88917958
+-->
+
+&emsp;  **<font color = "red">在jdk1.8中，在多线程环境下，会发生数据覆盖的情况。</font>**  
+&emsp; 在jdk1.8中对HashMap进行了优化，在发生hash碰撞，不再采用头插法方式，而是直接插入链表尾部，因此不会出现JDK1.7环形链表的情况。  
+
+&emsp; <font color = "red">其中第六行代码（if ((p = tab[i = (n - 1) & hash]) == null) // 如果没有hash碰撞则直接插入元素）是判断是否出现hash碰撞，</font>假设两个线程A、B都在进行put操作，并且hash函数计算出的插入下标是相同的，<font color = "red">当线程A执行完第六行代码后由于时间片耗尽导致被挂起，而线程B得到时间片后在该下标处插入了元素，完成了正常的插入，</font>然后线程A获得时间片，由于之前已经进行了hash碰撞的判断，所有此时不会再进行判断，而是直接进行插入，这就导致了线程B插入的数据被线程A覆盖了，从而线程不安全。  
+
+&emsp; 除此之前，还有就是代码的第38行处有个++size，还是线程A、B，这两个线程同时进行put操作时，假设当前HashMap的zise大小为10，当线程A执行到第38行代码时，从主内存中获得size的值为10后准备进行+1操作，但是由于时间片耗尽只好让出CPU，线程B拿到CPU还是从主内存中拿到size的值10进行+1操作，完成了put操作并将size=11写回主内存，然后线程A再次拿到CPU并继续执行(此时size的值仍为10)，当执行完put操作后，还是将size=11写回内存，此时，线程A、B都执行了一次put操作，但是size的值只增加了1，所有说还是由于数据覆盖又导致了线程不安全。  
+
+
+<!--
+https://mp.weixin.qq.com/s/wIjAj4rAAZccAl-yhmj_TA
+https://mp.weixin.qq.com/s/X6p1XNAV2hRJs1__pvkAeg
+https://mp.weixin.qq.com/s/ZL2tgDZ5RAZvqrHo2qHPiQ
+https://blog.csdn.net/swpu_ocean/article/details/88917958
+-->
+
+<!-- 
+JDK1.7
+&emsp;  **<font color = "red">在jdk1.7中，在多线程环境下，扩容时会造成环形链或数据丢失。</font>**  
+
 &emsp; 多线程场景下使用 HashMap 造成死循环问题（基于 JDK1.7），出现问题的位置在 rehash 处，也就是  
 
-    ```java
-    do {
-        Entry<K,V> next = e.next; // <--假设线程一执行到这里就被调度挂起了
-        int i = indexFor(e.hash, newCapacity);
-        e.next = newTable[i];
-        newTable[i] = e;
-        e = next;
-    } while (e != null);
-    ```
-    &emsp; 这是 JDK1.7 的 rehash 代码片段，在并发的场景下会形成环。  
-2. **<font color = "red">在jdk1.8中，在多线程环境下，会发生数据覆盖的情况。</font>**  
-&emsp; 在jdk1.8中对HashMap进行了优化，在发生hash碰撞，不再采用头插法方式，而是直接插入链表尾部，因此不会出现环形链表的情况。  
+```java
+do {
+    Entry<K,V> next = e.next; // <--假设线程一执行到这里就被调度挂起了
+    int i = indexFor(e.hash, newCapacity);
+    e.next = newTable[i];
+    newTable[i] = e;
+    e = next;
+} while (e != null);
+```
+&emsp; 这是 JDK1.7 的 rehash 代码片段，在并发的场景下会形成环。  
+-->
 
+### 1.4.2. 线程安全的map
 &emsp; 在多线程下安全的操作map，主要有以下解决方法：  
 
 * 使用Hashtable线程安全类；  
