@@ -18,7 +18,7 @@
 &emsp; 事件监听是一种发布订阅者模式。做完某一件事情以后，需要广播一些消息或者通知，告诉其他的模块进行一些事件处理。相比发送请求，事件监听可以实现接口解耦。   
 &emsp; <font color = "lime">Spring事件机制的流程：</font>   
 1. 事件机制的核心是事件，Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件（继承ApplicationEvent）。  
-2. 确定事件后，要把事件发布出去。在事件发布类的业务代码中调用ApplicationContext#publishEvent方法。  
+2. 确定事件后，要把事件发布出去。在事件发布类的业务代码中调用ApplicationEventPublisher#publishEvent方法（或调用ApplicationEventPublisher的子类，例如调用ApplicationContext#publishEvent）。  
 3. 发布完成之后，启动监听器，自动监听。在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
 4. 最后，就是实际场景中触发事件发布，完成一系列任务。  
 

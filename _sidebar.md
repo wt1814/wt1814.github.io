@@ -161,6 +161,7 @@
 
 * 分布式理论  
     * [一致性哈希算法](/docs/microService/thinking/分布式算法-consistent.md)  
+    * [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
     * [分布式ID](/docs/microService/thinking/分布式ID.md)  
 
     * [分布式事务](/docs/microService/thinking/分布式事务.md)  
