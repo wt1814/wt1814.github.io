@@ -8,7 +8,7 @@
         - [1.2.2. 属性（数据结构）](#122-属性数据结构)
         - [1.2.3. 构造函数](#123-构造函数)
         - [1.2.4. 成员方法](#124-成员方法)
-            - [1.2.4.1. hash()，通过K获取数组下标](#1241-hash通过k获取数组下标)
+            - [1.2.4.1. hash()函数](#1241-hash函数)
             - [1.2.4.2. put()，插入](#1242-put插入)
             - [1.2.4.3. resize()，扩容机制](#1243-resize扩容机制)
             - [1.2.4.4. remove()，删除](#1244-remove删除)
@@ -25,19 +25,6 @@
 -->
 
 # 1. HashMap  
-
-<!-- 
-&emsp; **HashMap的底层：Hash表数据结构！！！**
-
-1. 基于JDK1.8的HashMap是由数组+链表+红黑树组成，当链表长度超过8时，链表会自动转换成红黑树，当红黑树节点个数小于6时，又会转化成链表。相对于早期版本的JDK HashMap实现，新增了红黑树作为底层数据结构，在数据量较大且哈希碰撞较多时，能够极大的增加检索的效率。
-2. 允许key和value都为null。key重复会被覆盖，value允许重复。HashMap最多只允许一条记录的键为null，允许多条记录的值为null。  
-&emsp; HashTable有Null会产生NullPointerException异常；  
-&emsp; ConcurrentHashMap不允许有Null。  
-3. 非线程安全。  
-4. 自定义HashMap重写hashCode()和equals()方法。如果往HashMap集合中存放自定义的对象，那么保证其唯一，就必须复写hashCode和equals方法，建立属于当前对象的比较方式。  
-    1. 进行键值对存储时，先通过hashCode()计算出键（K）的哈希值，然后在数组中查询，如果没有则保存。  
-    2. 但是如果找到相同的哈希值，那么接着调用equals方法判断它们的值是否相同。只有满足以上两种条件才能认定为相同的数据，因此对于Java中的包装类里面都重写了hashCode()和equals()方法。  
--->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-4.png)  
 
@@ -185,25 +172,28 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-5.png)  
 
 &emsp; **<font color = "red">1. HashMap的底层：Hash表数据结构！！！</font>**  
-&emsp; **HashMap中hash函数设计：**参考下文成员方法hash()章节。    
-&emsp; **HashMap在发生hash冲突的时候用的是链地址法。**JDK1.7中使用头插法，JDK1.8使用尾插法。    
+&emsp; **HashMap中hash函数设计：** 参考下文成员方法hash()章节。    
+&emsp; **HashMap在发生hash冲突的时候用的是链地址法。** JDK1.7中使用头插法，JDK1.8使用尾插法。    
 &emsp; 在HashMap的数据结构中，有两个参数可以影响HashMap的性能：初始容量（inital capacity）和负载因子（load factor）。初始容量和负载因子也可以修改，具体实现方式，可以在对象初始化的时候，指定参数。  
 
 * initialCapacity数组的初始容量为16。可以在构造方法中指定。
-        static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;HashMap 的默认初始容量是 1 << 4 = 16， << 是一个左移操作，它相当于是  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-11.png)  
-        HashMap的数组长度为什么一定是2的幂次方？
-        HashMap 是通过一个名为 tableSizeFor 的方法来确保 HashMap 数组长度永远为2的幂次方的。源码查看构造函数部分。
-        为什么要把数组长度设计为 2 的幂次方呢？
-        当数组长度为 2 的幂次方时，可以使用位运算来计算元素在数组中的下标。
-* loadFactor加载因子0.75f。所谓的加载因子就是HashMap的容量达到0.75时的时候会自动扩容并重新哈希resize(), 扩容后的HashMap容量是之前容量的两倍，所以数组的长度总是2的n次方。(例：假设有一个HashMap的初始容量为16，那么扩容的阀值就是0.75 * 16 = 12。也就是说，在打算存入第13个值的时候，HashMap 会先执行扩容)。  
-        
-        哈希因子为什么默认为0.75？  
-        加载因子也能通过构造方法中指定，默认的负载因子是0.75f，这是一个在时间和空间上的一个折中；较高的值减少了空间开销，但增加了查找成本(主要表现在HaspMap的get和put操作)。如果指定大于1，则数组不会扩容，牺牲了性能不过提升了内存。  
 
-        如果loadFactor太小，那么map中的table需要不断的扩容，扩容是个耗时的过程
-        如果loadFactor太大，那么map中table放满了也不不会扩容，导致冲突越来越多，解决冲突而起的链表越来越长，效率越来越低
-        而 0.75 这是一个折中的值，是一个比较理想的值
+    &emsp; static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;HashMap 的默认初始容量是 1 << 4 = 16， << 是一个左移操作，它相当于是   
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-11.png)  
+    &emsp; HashMap的数组长度为什么一定是2的幂次方？  
+    &emsp; HashMap 是通过一个名为 tableSizeFor 的方法来确保 HashMap 数组长度永远为2的幂次方的。源码查看构造函数部分。  
+    &emsp; 为什么要把数组长度设计为 2 的幂次方呢？  
+    &emsp; 当数组长度为 2 的幂次方时，可以使用位运算来计算元素在数组中的下标。  
+* loadFactor加载因子0.75f。所谓的加载因子就是HashMap的容量达到0.75时的时候会自动扩容并重新哈希resize(), 扩容后的HashMap容量是之前容量的两倍，所以数组的长度总是2的n次方。(例：假设有一个HashMap的初始容量为16，那么扩容的阀值就是0.75 * 16 = 12。也就是说，在打算存入第13个值的时候，HashMap 会先执行扩容)。  
+
+        哈希因子为什么默认为0.75？  
+        如果loadFactor太小，那么map中的table需要不断的扩容，扩容是个耗时的过程。  
+        如果loadFactor太大，那么map中table放满了也不不会扩容，导致冲突越来越多，解决冲突而起的链表越来越长，效率越来越低。  
+        而 0.75 这是一个折中的值，是一个比较理想的值，这是一个在时间和空间上的一个折中。
+
+    <!-- 
+    &emsp; 加载因子也能通过构造方法中指定，默认的负载因子是0.75f，这是一个在时间和空间上的一个折中；较高的值减少了空间开销，但增加了查找成本(主要表现在HaspMap的get和put操作)。如果指定大于1，则数组不会扩容，牺牲了性能不过提升了内存。
+    -->  
 * threshold数组扩容阈值。即：HashMap数组总容量 * 加载因子。**<font color = "red">记录当前数组的最大容量。当前容量大于或等于该值时会执行扩容 resize()。</font>** 扩容的容量为当前HashMap总容量的两倍。比如，当前HashMap的总容量为16 ，那么扩容之后为32。  
     
         threshold 除了用于存放扩容阈值还有其他作用吗？
@@ -213,15 +203,16 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 
 &emsp; 在JDK1.8中，HashMap是由数组+链表+红黑树构成，新增了红黑树作为底层数据结构。链表长度大于8的时候，链表会转成红黑树；当红黑树的节点数小于6时，会转化成链表。  
 &emsp; **<font color = "lime">为什么使用红黑树？</font>**  
-&emsp; JDK 1.7 中，如果哈希碰撞过多，拉链过长，极端情况下，所有值都落入了同一个桶内，这就退化成了一个链表。通过 key 值查找要遍历链表，效率较低。JDK1.8在解决哈希冲突时，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间。  
+&emsp; JDK 1.7 中，<font color = "red">如果哈希碰撞过多，拉链过长，</font>极端情况下，所有值都落入了同一个桶内，这就退化成了一个链表。<font color = "red">通过 key 值查找要遍历链表，效率较低。</font>JDK1.8在解决哈希冲突时，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间。  
 
 * TREEIFY_THRESHOLD树形化阈值。当链表的节点个数大于等于这个值时，会将链表转化为红黑树。  
-    &emsp; 理想情况下，使用随机的哈希码，节点分布在 hash 桶中的频率遵循泊松分布，按照泊松分布的公式计算，链表中节点个数为8时的概率为 0.00000006，这个概率足够低了，并且到8个节点时，红黑树的性能优势也会开始展现出来，因此8是一个较合理的数字。
+
+        理想情况下，使用随机的哈希码，节点分布在 hash 桶中的频率遵循泊松分布，按照泊松分布的公式计算，链表中节点个数为8时的概率为 0.00000006，这个概率足够低了，并且到8个节点时，红黑树的性能优势也会开始展现出来，因此8是一个较合理的数字。
 
 * UNTREEIFY_THRESHOLD解除树形化阈值。当链表的节点个数小于等于这个值时，会将红黑树转换成普通的链表。
 
     &emsp; 为什么在少于 6 的时候而不是 8 的时候才将红黑树转换为链表呢？  
-    &emsp; 假设设计成大于 8 时链表转换为红黑树，小于 8 的时候又转换为链表。如果一个 hashmap 不停的插入、删除。**hashmap 中的个数不停地在 8 徘徊，那么就会频繁的发生链表和红黑树之间转换，效率非常低。** 因此，6 和 8 之间来一个过渡值可以减缓这种情况造成的影响。
+    &emsp; 假设设计成大于 8 时链表转换为红黑树，小于 8 的时候又转换为链表。如果一个 hashmap 不停的插入、删除。**<font color = "red">hashmap 中的个数不停地在 8 徘徊，那么就会频繁的发生链表和红黑树之间转换，效率非常低。</font>** 因此，6 和 8 之间来一个过渡值可以减缓这种情况造成的影响。
 
 * **<font color = "lime">MIN_TREEIFY_CAPACITY树形化阈值的第二条件，数组扩容临界值。当数组的长度小于这个值时，当树形化阈值达标时，链表也不会转化为红黑树，而是优先扩容数组resize()。</font>**  
 
@@ -283,104 +274,62 @@ static final int tableSizeFor(int cap) {
     return (n < 0) ? 1 : (n >= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;
 }
 ```
-<!-- 
-https://mp.weixin.qq.com/s/wIjAj4rAAZccAl-yhmj_TA
-https://mp.weixin.qq.com/s/z67aglf11bsjqVDbqVhCtw
-
--->
 
 &emsp; 需要注意的是，传入的initialCapacity并不是实际的初始容量，<font color= "red">HashMap通过tableSizeFor()将initialCapacity调整为大于等于该值的最小2次幂。</font>  
-&emsp; <font color = "lime">tableSizeFor()中涉及一个运算符 |= ，它表示的是按位或，双方都转换为二进制，来进行与操作。</font>（「a+=b 的意思是 a=a+b」，那么同理：a |= b 就是 a = a | b。）  
+&emsp; <font color = "red">该算法让最高位的 1 后面的位全变为 1。最后再让结果 n+1，即得到了 2 的整数次幂的值了。</font>  
+1. cap - 1 是为了处理 cap 本身就是 2 的N次方的情况。让cap-1再赋值给n的目的是使得找到的目标值大于或等于原值。例如二进制 1000，十进制数值为 8。如果不对它减1而直接操作，将得到答案 10000，即 16。显然不是结果。减 1 后二进制为 111，再进行操作则会得到原来的数值 1000，即 8。通过一系列位运算大大提高效率。  
+<!-- 
+让 cap-1 再赋值给 n 的目的是另找到的目标值大于或等于原值。例如二进制 1000，十进制数值为 8。如果不对它减1而直接操作，将得到答案 10000，即 16。显然不是结果。减 1 后二进制为 111，再进行操作则会得到原来的数值 1000，即 8。通过一系列位运算大大提高效率。
+-->
+2. \>>>（无符号右移）：例如 a >>> b 指的是将 a 向右移动 b 指定的位数，右移后左边空出的位用零来填充，移出右边的位被丢弃。  
+&emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-17.png)  
+3. <font color = "lime">运算符 |= ，它表示的是按位或，双方都转换为二进制，来进行与操作。</font>（「a+=b 的意思是 a=a+b」，那么同理：a |= b 就是 a = a | b。）  
+
+&emsp; 完整示例：  
 &emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-12.png)  
 &emsp; 上面采用了一个比较大的数字进行扩容，由上图可知 2^29 次方的数组经过一系列的或操作后，会算出来结果是 2^30 次方。所以扩容后的数组长度是原来的 2 倍。  
 
 
-<!-- 
-该算法让最高位的 1 后面的位全变为 1。最后再让结果 n+1，即得到了 2 的整数次幂的值了。
-
-让 cap-1 再赋值给 n 的目的是另找到的目标值大于或等于原值。例如二进制 1000，十进制数值为 8。如果不对它减1而直接操作，将得到答案 10000，即 16。显然不是结果。减 1 后二进制为 111，再进行操作则会得到原来的数值 1000，即 8。通过一系列位运算大大提高效率。
--->
-
 ### 1.2.4. 成员方法  
-
-#### 1.2.4.1. hash()，通过K获取数组下标  
-
-HashMap 的 Hash 规则
-
-1. 计算 hash 值 int hash = key.hashCode()。
-2. 与或上 hash 值无符号右移16 位。hash = hash ^ (hash >>> 16)。
-3. 位置计算公式 index = (n - 1) & hash ，其中 n 是容量。
-
-hash 函数会根据你传递的 key 值进行计算，首先计算 key 的 hashCode 值，然后再对 hashcode 进行无符号右移操作，最后再和 hashCode 进行异或 ^ 操作。  
-
-    >>>: 无符号右移操作，它指的是 「无符号右移，也叫逻辑右移，即若该数为正，则高位补0，而若该数为负数，则右移后高位同样补0」 ，也就是不管是正数还是负数，右移都会在空缺位补 0 。
-
-
+#### 1.2.4.1. hash()函数  
+&emsp; 无论增加、删除还是查找键值对，定位到数组的位置都是很关键的第一步。在 HashMap 中并不是直接通过 key 的 hashcode 方法获取哈希值，而是通过内部自定义的 hash 方法计算哈希值。
 ```java
 static final int hash(Object key) {
     int h;
-    //1. 允许key为null，hash = 0
-    //2. ^，异或运算
+    //允许key为null，hash = 0
+    //h = key.hashCode()，取hashCode值
+    //(h >>> 16)，高位参与运算
+    //h ^ (h >>> 16)，高位与低位异或运算
     return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
 }
 ```
-&emsp; 在 HashMap 中并不是直接通过 key 的 hashcode 方法获取哈希值，而是通过内部自定义的 hash 方法计算哈希值。  
-&emsp; hash函数是先得到key 的hashcode（32位的int值），然后让hashcode的高16位和低16位进行异或操作。  
-&emsp; hash函数称为“扰动函数”。尽可能降低了hash碰撞；采用位运算，比较高效。  
 
-&emsp; (h = key.hashCode()) ^ (h >>> 16) 是为了让高位数据与低位数据进行异或，变相的让高位数据参与到计算中，int 有 32 位，右移 16 位就能让低 16 位和高 16 位进行异或，也是为了增加 hash 值的随机性。  
+1. \>>>: 无符号右移操作，它指的是 「无符号右移，也叫逻辑右移，即若该数为正，则高位补0，而若该数为负数，则右移后高位同样补0」 ，也就是不管是正数还是负数，右移都会在空缺位补 0 。  
+2. ^：布尔运算符，异或运算。
 
-&emsp; 不管增加、删除还是查找键值对，定位到数组的位置都是很关键的第一步，打开hashMap的任意一个增加、删除、查找方法，从源码可以看出，通过key获取数组下标，主要做了3步操作，其中length指的是容器数组的大小。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-8.png)  
+&emsp; HashMap 的 Hash 规则：
+1. 计算 hash 值 ，得到一个 int 类型的值（32 位），int hash = key.hashCode()。
+2. 异或上 hash值无符号右移16位后的值（让hashcode的高16位和低16位进行异或操作）。hash = hash ^ (hash >>> 16)。
 
-```java
-/**获取hash值方法*/
-static final int hash(Object key) {
-    int h;
-    // h = key.hashCode() 为第一步 取hashCode值（jdk1.7）
-    // h ^ (h >>> 16)  为第二步 高位参与运算（jdk1.7）
-    return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);//jdk1.8
-}
-/**获取数组下标方法*/
-static int indexFor(int h, int length) {
-    //jdk1.7的源码，jdk1.8没有这个方法，但是实现原理一样的
-    return h & (length-1);  //第三步 取模运算
-}
-```
+        hash 函数会根据你传递的 key 值进行计算，首先计算 key 的 hashCode 值，然后再对 hashcode 进行无符号右移操作，最后再和 hashCode 进行异或 ^ 操作。  
+3. 注：如果是计算数组下标（插入/查找的时候，计算 key 应该被映射到散列表的什么位置），还需位置计算公式 index = (n - 1) & hash ，其中 n 是容量。
 
+&emsp; **<font color = "red">hash函数称为“扰动函数”。目的是为了减少哈希碰撞，使 table 里的数据分布的更均匀。并且采用位运算，比较高效。</font>**  
 
------
+&emsp; 为什么获取hashcode() ，还需要将自己右移 16 位与自己进行异或呢？  
+&emsp; <font color = "red">因为容量较小的时候，在计算 index 时，真正用到的其实就只有低几位，假如不融合高低位，那么假设 hashcode() 返回的值都是高位的变动的话，那么很容易造成散列的值都是同一个。</font>但是，假如将高位和低位融合之后，高位的数据变动会最终影响到 index 的变换，所以依然可以保持散列的随机性。  
 
-&emsp; 散列值的获取分两步走：  
+&emsp; 在计算 index 的时候，为什么不使用 hash(key) % capacity ，而使用index = (n - 1) & hash ？  
+&emsp; 这是因为移位运算相比取余运算会更快。那么为什么 hash(key) & (capacity - 1) 也可以呢？这是因为在 B 是 2 的幂情况下：A % B = A & (B - 1)。如果 A 和 B 进行取余，其实相当于把 A 那些不能被 B 整除的部分保留下来。从二进制的方式来看，其实就是把 A 的低位给保留了下来。B-1 相当于一个“低位掩码”，而与的操作结果就是散列值的高位全部置为 0 ，只保留低位，而低位正好是取余之后的值。取个例子，A = 24，B =16，那么 A%B=8，从二进制角度来看 A =11000 ，B = 10000。A 中不能被 B 整除的部分其实就是 1000 这个部分。接下去，需要将这部分保留下来的话，其实就是使用 01111 这个掩码并跟 A 进行与操作，即可将1000 保留下来，作为 index 的值。而 01111 这个值又等于 B-1。所以 A &（B-1）= A%B。但是这个前提是 B 的容量是 2 的幂，那么如何保证呢？可以看到，在设置初始大小的时候，无论你设置了多少，都会被转换为 2 的幂的一个数。之外，扩容的时候也是按照 2 倍进行扩容的。所以 B 的值是 2 的幂是没问题的。  
 
-```java
-// 1. hash 值的计算
-static final int hash(Object key) {
-    int hash;
-    return key == null ? 0 : (hash = key.hashCode()) ^ hash >>> 16;
-}
-
-// 2. 插入/查找的时候，计算 key 应该被映射到散列表的什么位置
-int index = hash(key) & (capacity - 1)
-```
-&emsp; 其中方法 hashcode() 返回的是 Java 对象的 hash_code，这是一个 int 类型的值（32 位）。那么为什么在拿到这个值之后，还需要将自己右移 16 位与自己进行异或呢？因为容量较小的时候，在计算 index 那边，真正用到的其实就只有低几位，假如不融合高低位，那么假设 hashcode() 返回的值都是高位的变动的话，那么很容易造成散列的值都是同一个。但是，假如将高位和低位融合之后，高位的数据变动会最终影响到 index 的变换，所以依然可以保持散列的随机性。  
-
-&emsp; 那么在计算 index 的时候，为什么不使用 hash(key) % capacity 呢？这是因为移位运算相比取余运算会更快。那么为什么 hash(key) & (capacity - 1) 也可以呢？这是因为在 B 是 2 的幂情况下：A % B = A & (B - 1)。如果 A 和 B 进行取余，其实相当于把 A 那些不能被 B 整除的部分保留下来。从二进制的方式来看，其实就是把 A 的低位给保留了下来。B-1 相当于一个“低位掩码”，而与的操作结果就是散列值的高位全部置为 0 ，只保留低位，而低位正好是取余之后的值。我们取个例子，A = 24，B =16，那么 A%B=8，从二进制角度来看 A =11000 ，B = 10000。A 中不能被 B 整除的部分其实就是 1000 这个部分。接下去，我们需要将这部分保留下来的话，其实就是使用 01111 这个掩码并跟 A 进行与操作，即可将1000 保留下来，作为 index 的值。而 01111 这个值又等于 B-1。所以 A &（B-1）= A%B。但是这个前提是 B 的容量是 2 的幂，那么如何保证呢？我们可以看到，在设置初始大小的时候，无论你设置了多少，都会被转换为 2 的幂的一个数。之外，扩容的时候也是按照 2 倍进行扩容的。所以 B 的值是 2 的幂是没问题的。  
-
-----
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-16.png)  
 <!-- 
-
-https://mp.weixin.qq.com/s?__biz=MzIyNDI3MjY0NQ==&mid=2247483920&idx=1&sn=6ea75de92bbcf50e64b5bb6fed9b9b23&source=41#wechat_redirect
+&emsp; hash函数是先得到key 的hashcode（32位的int值），然后让hashcode的高16位和低16位进行异或操作。  
+&emsp; (h = key.hashCode()) ^ (h >>> 16) 是为了让高位数据与低位数据进行异或，变相的让高位数据参与到计算中，int 有 32 位，右移 16 位就能让低 16 位和高 16 位进行异或，也是为了增加 hash 值的随机性。  
 -->
-目的当然是为了减少哈希碰撞，使 table 里的数据分布的更均匀。
-
-
------
-
-
 
 #### 1.2.4.2. put()，插入  
+&emsp; table 的初始化时机是什么时候？  
+&emsp; 一般情况下，在第一次 put 的时候，调用 resize 方法进行 table 的初始化（懒初始化，懒加载思想在很多框架中都有应用！）。  
 &emsp; JDK1.8put 方法源码部分  
 
 ```java
@@ -391,9 +340,6 @@ public V put(K key, V value) {
     return putVal(hash(key), key, value, false, true);
 }
 ```
-
-    &emsp; table 的初始化时机是什么时候
-    &emsp; 一般情况下，在第一次 put 的时候，调用 resize 方法进行 table 的初始化（懒初始化，懒加载思想在很多框架中都有应用！）
 
 &emsp; **<font color = "lime">插入元素方法：</font>**  
 1. 判断键值对数组table[i]是否为空或为null，否则执行resize()进行扩容；  
