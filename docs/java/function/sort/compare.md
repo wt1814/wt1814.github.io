@@ -109,90 +109,102 @@ public static void main(String[] args){
 &emsp; 最简单的方式是选择数列的第一个元素。但是当它为最大值或最小值时，快速排序的效率会严重降低。折中的方法是找到数组中的第一个、最后一个以及处于中间位置的元素，选出三者的中值作为枢纽，既避免了枢纽是最值的情况，也不会像在全部元素中寻找中值那样费时间。这种方法被称为“三项取中法”
 (median-of-three)。  
 * 元素的移动：  
-&emsp; 选定了基准元素以后，把其他元素当中小于基准元素的都移动到基准元素一边，大于基准元素的都移动到基准元素另一边。
+&emsp; 选定了基准元素以后，把其他元素当中小于基准元素的都移动到基准元素一边，大于基准元素的都移动到基准元素另一边。  
 &emsp; 具体如何实现呢？有两种方法：双边循环法、单边循环法。  
 
 ## 2.2. 编码  
 &emsp; **递归实现（包含单边循环、双边循环）：**  
 
 ```java
-public static void quickSort(int[] arr, int startIndex, int endIndex) {
-    // 递归结束条件：startIndex大等于endIndex的时候
-    if (startIndex >= endIndex) {
-        return;
-    }
-    // 得到基准元素位置
-    int pivotIndex = partition(arr, startIndex, endIndex);
-    // 根据基准元素，分成两部分递归排序
-    quickSort(arr, startIndex, pivotIndex - 1);
-    quickSort(arr, pivotIndex + 1, endIndex);
-}
+public class quickSort {
 
-/**
-    * 分治（双边循环法）
-    * @param arr     待交换的数组
-    * @param startIndex    起始下标
-    * @param endIndex    结束下标
-    */
-private static int partition(int[] arr, int startIndex, int endIndex) {
-    // 取第一个位置的元素作为基准元素（也可以选择随机位置）
-    int pivot = arr[startIndex];
-    int left = startIndex;
-    int right = endIndex;
-
-    while( left != right) {
-        //控制right指针比较并左移
-        while(left<right && arr[right] > pivot){
-            right--;
-        }
-        //控制left指针比较并右移
-        while( left<right && arr[left] <= pivot) {
-            left++;
-        }
-        //交换left和right指向的元素
-        if(left<right) {
-            int p = arr[left];
-            arr[left] = arr[right];
-            arr[right] = p;
-        }
+    public static void main(String[] args) {
+        int[] arr = new int[] {4,4,6,5,3,2,8,1};
+        quickSort(arr, 0, arr.length-1);
+        System.out.println(Arrays.toString(arr));
     }
 
-    //pivot和指针重合点交换
-    arr[startIndex] = arr[left];
-    arr[left] = pivot;
-
-    return left;
-}
-
-/**
-    * 分治（单边循环法）
-    * @param arr     待交换的数组
-    * @param startIndex    起始下标
-    * @param endIndex    结束下标
-    */
-private static int partitionV2(int[] arr, int startIndex, int endIndex) {
-    // 取第一个位置的元素作为基准元素（也可以选择随机位置）
-    int pivot = arr[startIndex];
-    int mark = startIndex;
-
-    for(int i=startIndex+1; i<=endIndex; i++){
-        if(arr[i]<pivot){
-            mark ++;
-            int p = arr[mark];
-            arr[mark] = arr[i];
-            arr[i] = p;
+    /**
+     * 快速排序(递归实现) 
+     * @param arr
+     * @param startIndex
+     * @param endIndex
+     */
+    public static void quickSort(int[] arr, int startIndex, int endIndex) {
+        // 递归结束条件：startIndex大等于endIndex的时候
+        if (startIndex >= endIndex) {
+            return;
         }
+        // 得到基准元素位置
+        //TODO 可以替换两种循环法
+        int pivotIndex = partitionV2(arr, startIndex, endIndex);
+        // 根据基准元素，分成两部分递归排序
+        quickSort(arr, startIndex, pivotIndex - 1);
+        quickSort(arr, pivotIndex + 1, endIndex);
     }
 
-    arr[startIndex] = arr[mark];
-    arr[mark] = pivot;
-    return mark;
-}
 
-public static void main(String[] args) {
-    int[] arr = new int[] {4,4,6,5,3,2,8,1};
-    quickSort(arr, 0, arr.length-1);
-    System.out.println(Arrays.toString(arr));
+    /**
+     * 分治（单边循环法）
+     * @param arr     待交换的数组
+     * @param startIndex    起始下标
+     * @param endIndex    结束下标
+     */
+    private static int partitionV2(int[] arr, int startIndex, int endIndex) {
+        // 取第一个位置的元素作为基准元素（也可以选择随机位置）
+        int pivot = arr[startIndex];
+        int mark = startIndex;
+
+        for(int i=startIndex+1; i<=endIndex; i++){
+            if(arr[i]<pivot){
+                mark ++;
+                int p = arr[mark];
+                arr[mark] = arr[i];
+                arr[i] = p;
+            }
+        }
+
+        arr[startIndex] = arr[mark];
+        arr[mark] = pivot;
+        return mark;
+    }
+
+    /**
+     * 分治（双边循环法）
+     * @param arr     待交换的数组
+     * @param startIndex    起始下标
+     * @param endIndex    结束下标
+     */
+    private static int partition(int[] arr, int startIndex, int endIndex) {
+        // 取第一个位置的元素作为基准元素（也可以选择随机位置）
+        int pivot = arr[startIndex];
+        int left = startIndex;
+        int right = endIndex;
+
+        while( left != right) {
+            //控制right指针比较并左移
+            while(left<right && arr[right] > pivot){
+                right--;
+            }
+            //控制left指针比较并右移
+            while( left<right && arr[left] <= pivot) {
+                left++;
+            }
+            //交换left和right指向的元素
+            if(left<right) {
+                int p = arr[left];
+                arr[left] = arr[right];
+                arr[right] = p;
+            }
+        }
+
+        //pivot和指针重合点交换
+        arr[startIndex] = arr[left];
+        arr[left] = pivot;
+
+        return left;
+    }
+
 }
 ```
 
