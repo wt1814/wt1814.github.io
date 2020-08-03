@@ -7,7 +7,7 @@
     - [1.2. MVCC的实现](#12-mvcc的实现)
     - [1.3. 版本链的生成](#13-版本链的生成)
     - [1.4. Read View](#14-read-view)
-    - [1.5. 不同隔离级别下的MVCC流程](#15-不同隔离级别下的mvcc流程)
+    - [1.5. 不同隔离级别下的MVCC](#15-不同隔离级别下的mvcc)
         - [1.5.1. READ UNCOMMITTED](#151-read-uncommitted)
         - [1.5.2. READ COMMITTED](#152-read-committed)
         - [1.5.3. REPEATABLE READ，可重复读](#153-repeatable-read可重复读)
@@ -19,7 +19,7 @@
 
 
 # 1. MVCC
-&emsp; **一句话概述：MVCC使用无锁并发控制，解决数据库读写问题。数据库会根据事务ID，形成版本链；MVCC会根据Read View来决定读取版本链中的哪条记录。**
+&emsp; **<font color = "lime">一句话概述：MVCC使用无锁并发控制，解决数据库读写问题。数据库会根据事务ID，形成版本链；MVCC会根据Read View来决定读取版本链中的哪条记录。</font>**
 
 ## 1.1. MVCC定义
 &emsp; Multi-Version Concurrency Control，多版本并发控制。<font color = "red">MVCC 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问。MVCC是无锁操作的一种实现方式。</font>  
@@ -43,7 +43,7 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 -->
 
 * DB_TRX_ID：该列表示此记录的事务 ID。  
-* DB_ROLL_PTR：该列表示一个指向回滚段的指针，实际就是指向该记录的一个版本链。  
+* DB_ROLL_PTR：该列表示一个<font color = "red">指向回滚段的指针，实际就是指向该记录的一个版本链。</font>  
 * DB_ROW_ID：记录的 ID，如果有指定主键，那么该值就是主键。如果没有主键，那么就会使用定义的第一个唯一索引。如果没有唯一索引，那么就会默认生成一个值。  
 
 &emsp; 执行sql：  
@@ -73,10 +73,9 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 &emsp; <font color = "red">MySQL会根据以下规则来判断版本链中的哪个版本（记录）是在事务中可见的：</font>  
 
 * trx_id < min_trx_id，那么该记录则在当前事务可见，因为修改该版本记录的事务在当前事务生成 Read View 之前就已经提交。
+* trx_id = curr_trx_id，那么该记录在当前事务可见，因为修改该版本记录的事务就是当前事务。
 * trx_id in (rw_trx_ids)，那么该记录在当前事务不可见，因为需改该版本记录的事务在当前事务生成 Read View 之前还未提交。
 * trx_id > max_trx_id，那么该记录在当前事务不可见，因为修改该版本记录的事务在当前事务生成 Read View 之前还未开启。
-* trx_id = curr_trx_id，那么该记录在当前事务可见，因为修改该版本记录的事务就是当前事务。
-
 
 <!--
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-76.png)  
@@ -92,7 +91,7 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 对于删除的情况可以认为是update的特色情况，会将版本链上最新的数据复制一份，然后将trx_id修改成删除操作的trx_id，同时在该条记录的头信息(record header)里的(deleted_flag)标记位写上true，来表示当前记录已经被删除，在查询时按照上面的规则查到对应的记录，如果delete_flag标记为true，意味着记录已经被删除，则不返回数据。   
 -->
 
-## 1.5. 不同隔离级别下的MVCC流程  
+## 1.5. 不同隔离级别下的MVCC  
 ### 1.5.1. READ UNCOMMITTED
 &emsp; 该隔离级别不会使用 MVCC。它只要执行 select，那么就会获取 B+ 树上最新的记录。而不管该记录的事务是否已经提交。  
 
@@ -108,7 +107,7 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 &emsp; 在该隔离级别下，读写操作变为了串行操作。  
 
 ### 1.5.5. 总结
-&emsp; 通过上面的文章，可以知道在 READ COMMITTED 和 REPEATABLE READ 隔离等级之下才会使用 MVCC。  
+&emsp; 在 READ COMMITTED 和 REPEATABLE READ 隔离等级之下才会使用 MVCC。  
 &emsp; 但是 READ COMMITTED 和 REPEATABLE READ 使用MVCC的方式各不相同：  
 
 * READ COMMITTED 是在每次执行 select 操作时都会生成一次 Read View。
