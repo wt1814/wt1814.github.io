@@ -177,7 +177,7 @@ private T setInitialValue() {
 ### 1.2.1. ※※※正确使用  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-20.png)   
 
-1. **<font color = "red">使用static定义threadLocal变量，是为了确保全局只有一个保存 Integer 对象的 ThreadLocal 实例。</font>**  
+1. **<font color = "red">使用static定义threadLocal变量，是为了确保全局只有一个保存 Integer 对象的ThreadLocal实例。</font>**  
 2. **<font color = "lime">finally语句里调用threadLocal.remove()。</font>**
 
 ### 1.2.2. ThreadLocal的内存泄漏  
