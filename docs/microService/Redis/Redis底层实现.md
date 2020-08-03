@@ -14,7 +14,7 @@
     - [1.6. Set内部编码](#16-set内部编码)
         - [1.6.1. 采用inset实现](#161-采用inset实现)
     - [1.7. Zset内部编码](#17-zset内部编码)
-        - [1.7.1. 采用ZipList实现](#171-采用ziplist实现)
+        - [1.7.1. 采用ZipList压缩列表实现](#171-采用ziplist压缩列表实现)
         - [1.7.2. 采用SkipList跳跃表实现](#172-采用skiplist跳跃表实现)
     - [1.8. 查看redis内部存储的操作](#18-查看redis内部存储的操作)
 
@@ -72,6 +72,11 @@ typedef struct redisObject {
 |List	|quicklist（快速列表，是ziplist压缩列表和linkedlist双端链表的组合）|
 |Set	|intset（整数集合）或者dictht（字典）|
 |ZSet	|ziplist（压缩列表）或者skiplist（跳跃表）|
+
+1. <font color = "red">字典dictht用于实现Hash、Set；</font>  
+2. <font color = "red">压缩列表ziplist用于实现Hsh、List、Zset；</font>  
+
+
 
 ## 1.3. String内部编码  
 &emsp; **<font color = "red">字符串类型的内部编码有三种：</font>**  
@@ -208,7 +213,7 @@ typedef struct redisObject {
 * Zset 中保存的元素个数小于 128。（通过修改 zset-max-ziplist-entries 配置来修改）  
 * Zset 中保存的所有元素长度小于 64byte。（通过修改 zset-max-ziplist-values 配置来修改）  
 
-### 1.7.1. 采用ZipList实现  
+### 1.7.1. 采用ZipList压缩列表实现  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-84.png)  
 &emsp; 和List的底层实现有些相似，对于 Zset 不同的是，其存储是以键值对的方式依次排列，键存储的是实际 value，值存储的是 value 对应的分值。  
 

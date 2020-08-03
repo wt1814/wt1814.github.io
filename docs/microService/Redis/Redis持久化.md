@@ -19,6 +19,13 @@
 <!-- /TOC -->
 
 # 1. Redis持久化  
+
+**<font color = "lime">&emsp; 一句话概述：  
+&emsp; RDB，快照；保存某一时刻的全部数据；缺点是间隔长（配置文件中默认最少60s）。  
+&emsp; AOF，文件追加；记录所有操作命令；优点是默认间隔1s，丢失数据少；缺点是文件比较大。  
+&emsp; Redis4.0混合持久化，先RDB，后AOF。  
+</font>**   
+
 &emsp; Redis是一种内存数据库。一旦进程退出，Redis的数据就会丢失。Redis持久化拥有以下三种方式：  
 1. 快照方式（RDB, Redis DataBase）将某一个时刻的内存数据，以二进制的方式写入磁盘，RDB方式是redis默认的持久化方式；  
 2. 文件追加方式（AOF, Append Only File），记录所有的操作命令，并以文本的形式追加到文件中；  
@@ -64,8 +71,6 @@
     &emsp; 与Save命令不同，Bgsave命令是一个异步操作。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-32.png)  
     &emsp; bgsave，执行该命令时，Redis会在后台异步执行快照操作，此时Redis仍然可以相应客户端请求。具体操作是当客户端发服务发出Bgsave命令时，Redis服务器主进程会Forks操作创建一个子进程来数据同步问题，在将数据保存到RDB 文件之后，子进程会退出。新RDB文件就会原子地替换旧的RDB文件。所以，与Save命令相比，Redis服务器在处理Bgsave采用子线程进行IO写入。而主进程仍然可以接收其他请求，但Forks子进程是同步的，所以Forks子进程时，一样不能接收其他请求。这意味着，如果Forks一个子进程花费的时间太久（一般是很快的），而且占用内存会加倍，Bgsave命令仍然有阻塞其他客户的请求的情况发生。  
-
-
 
 ### 1.1.2. RDB的流程  
 &emsp; bgsave是主流的触发RDB持久化方式。它的运行流程如下：  
@@ -114,7 +119,7 @@
     # appendfsync no
 
 * always：客户端的每一个写操作都保存到 AOF 文件当中，这种策略很安全，但是每个写操作都有 IO 操作，所以也很慢。  
-* everysec：appendfsync 的默认写入策略，每秒写入一次AOF文件，因此，最多可能会丢失1s的数据。  
+* everysec：<font color = "red">appendfsync 的默认写入策略，每秒写入一次AOF文件，因此，最多可能会丢失1s的数据。</font>  
 * no：Redis 服务器不负责写入 AOF，而是交由操作系统来处理什么时候写入 AOF文件。更快，但也是最不安全的选择，不推荐使用。 
 
 ### 1.2.2. AOF持久化流程  
