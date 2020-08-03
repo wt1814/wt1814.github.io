@@ -221,8 +221,6 @@ Gitee： https://gitee.com/wt1814/
 
 ---
 ## 服务器  
-### Linux  
-[Linux命令]  
 
 ### Nginx  
 [Nginx](/docs/Linux/Nginx/1.nginx.md)  

@@ -200,8 +200,6 @@
     * [熔断降级处理](/docs/Error/hystrix.md)  
 
 * 服务器  
-    * Linux  
-        * [Linux命令]  
 
     * Nginx  
         * [Nginx](/docs/Linux/Nginx/1.nginx.md)  
