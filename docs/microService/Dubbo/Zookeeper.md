@@ -35,19 +35,26 @@
 
 # 1. Zookeeper
 ## 1.1. Zookeeper的CP模型  
-1. Zookeeper的CP模型：  
-<!-- 
-https://blog.csdn.net/paincupid/article/details/80610441
--->
-&emsp; 很多文章和博客里提到，zookeeper是一种提供强一致性的服务，在分区容错性和可用性上做了一定折中，这和CAP理论是吻合的。但实际上zookeeper提供的只是单调一致性。  
 
+1. 为什么不满足AP模型？  
 
+        高可用方案：  
+            两台机器：  
+                    主从复制主备复制主主复制主从切换主备切换  
+            两台以上机器：
+                集中式集群
+                    一主多备一主多从
+                分散式集群
+                    数据分片到多节点
 
-2. 为什么不满足AP模型？  
-<!-- 
-https://blog.csdn.net/zhouzhenyong/article/details/107591150
--->
+    &emsp; zookeeper采用的是集中式集群中的一主多从方案，为的是提升性能和可用性。zookeeper实现了高可用，为什么不是AP系统？  
 
+    &emsp; <font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务，</font>这个时候就说明了服务不可用，但是在选举成功之后，因为一主多从的结构，zookeeper在这时还是一个高可用注册中心，只是在优先保证一致性的前提下，zookeeper才会顾及到可用性
+
+2. Zookeeper的CP模型：  
+&emsp; 很多文章和博客里提到，zookeeper是一种提供强一致性的服务，在分区容错性和可用性上做了一定折中，这和CAP理论是吻合的。但实际上<font color = "red">zookeeper提供的只是单调一致性。</font>  
+    1. 假设有2n+1个server，在同步流程中，leader向follower同步数据，当同步完成的follower数量大于 n+1时同步流程结束，系统可接受client的连接请求。如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。  
+    2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数（n+1）的server认同后，将对整个集群进行同步，超过半数（n+1）的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
 
 ----
 
