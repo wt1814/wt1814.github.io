@@ -95,6 +95,12 @@ e.printStackTrace();//void类型，在命令行打印异常信息在程序中出
 ......
 
 ## 1.6. 统一异常处理  
+<!-- 
+
+SpringBoot优雅的全局异常处理 
+https://mp.weixin.qq.com/s/r_HjHi92owNwh5VULiaKcQ
+-->
+
 &emsp; 异常处理器注解@ExceptionHandler：若在某个Controller类定义一个异常处理方法，并在方法上添加该注解，那么当出现指定的异常时，会执行该处理异常的方法，其可以使用springmvc提供的数据绑定，比如注入HttpServletRequest等，还可以接受一个当前抛出的Throwable对象。  
 &emsp; @ExceptionHandler结合@ControllerAdvice，可以提供全局的统一异常处理器。  
 &emsp; 实现HandlerExceptionResolver接口或继承其抽象实现 AbstractHandlerExceptionResolver，也可以实现统一异常处理。  

@@ -14,6 +14,7 @@
             - [1.1.2.4. 使用FileChannel](#1124-使用filechannel)
             - [1.1.2.5. 内存文件映射](#1125-内存文件映射)
     - [1.2. 大批量数据导入Excel](#12-大批量数据导入excel)
+    - [多线程断点续传](#多线程断点续传)
 
 <!-- /TOC -->
 
@@ -338,7 +339,11 @@ public class MappedBiggerFileReader {
 * 逐行查询数据库校验的时间成本主要在来回的网络IO中，优化方法也很简单。将参加校验的数据全部缓存到 HashMap 中。直接到 HashMap 去命中。    
 
 
+## 多线程断点续传  
 
+<!-- 
+https://mp.weixin.qq.com/s/JYOa7iFhBLeG8vqIOr5tjA
+-->
 
 
   

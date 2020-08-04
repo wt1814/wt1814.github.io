@@ -28,7 +28,17 @@
 &emsp; 不过要注意的是，多路复用 IO 模型是通过轮询的方式来检测是否有事件到达，并且对到达的事件逐一进行响应。因此对于多路复用 IO 模型来说，一旦事件响应体很大，那么就会导致后续的事件迟迟得不到处理，并且会影响新的事件轮询。  
 
 ### 1.1.2. 操作系统中的多路复用
-<!-- 
+<!--
+IO多路复用的三种机制Select，Poll，Epoll
+https://www.jianshu.com/p/397449cadc9a
+https://www.cnblogs.com/aspirant/p/9166944.html
+https://www.bilibili.com/read/cv6134546?share_medium=android&share_plat=android&share_source=WEIXIN&share_tag=s_i&timestamp=1596386488&unique_k=aZsmwN
+
+
+https://blog.csdn.net/define_us/article/details/81568247
+https://blog.csdn.net/weixin_34111790/article/details/89601839?utm_medium=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase&depth_1-utm_source=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase
+
+
 IO多路复用
 https://mp.weixin.qq.com/s/yCOnNp_1-0_Q1srSO_3Kog
 https://mp.weixin.qq.com/s/i3He95cfzyLF_I4v-X3tCw
