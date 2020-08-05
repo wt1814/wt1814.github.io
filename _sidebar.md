@@ -171,6 +171,7 @@
     * [分布式锁](/docs/microService/thinking/分布式锁.md)  
         * [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
         * [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
+        * [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
 
     * [分布式缓存](/docs/microService/thinking/分布式缓存.md)  
     * [分布式限流](/docs/microService/thinking/分布式限流.md)   
