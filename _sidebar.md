@@ -36,6 +36,7 @@
             * [AtomicStampedReference](/docs/java/concurrent/6.AtomicStampedReference.md)  
         * [Collections](/docs/java/concurrent/10.Collections.md)  
             * [ConcurrentHashMap](/docs/java/concurrent/5.ConcurrentHashMap.md)  
+            * [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
         * [tools](/docs/java/concurrent/7.tools.md)
 
 * JVM  

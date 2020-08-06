@@ -41,6 +41,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; &emsp; [AtomicStampedReference](/docs/java/concurrent/6.AtomicStampedReference.md)  
 &emsp; [Collections](/docs/java/concurrent/10.Collections.md)  
 &emsp; &emsp; [ConcurrentHashMap](/docs/java/concurrent/5.ConcurrentHashMap.md)  
+&emsp; &emsp; [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
 &emsp; [tools](/docs/java/concurrent/7.tools.md)
 
 ### JVM  
