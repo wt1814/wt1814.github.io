@@ -8,7 +8,7 @@
         - [1.3.2. addWorker()，创建新的线程](#132-addworker创建新的线程)
         - [1.3.3. 内部类work()，工作线程的实现](#133-内部类work工作线程的实现)
         - [1.3.4. runWorker()，线程复用机制](#134-runworker线程复用机制)
-            - [1.3.4.1. getTask()](#1341-gettask)
+            - [1.3.4.1. getTask() ，线程池如何保证核心线程不被销毁？](#1341-gettask-线程池如何保证核心线程不被销毁)
             - [1.3.4.2. processWorkerExit()](#1342-processworkerexit)
                 - [1.3.4.2.1. tryTerminate()](#13421-tryterminate)
 
@@ -28,13 +28,10 @@ https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
 # 1. ThreadPoolExecutor
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-15.png)  
 
-**<font color = "lime">
-1. 线程运行流程：查看execute方法。理解构造函数中参数，包括具体有哪些阻塞队列。理解线程池状态标志位的设计。    
+**<font color = "lime">1. 线程运行流程：查看execute方法。理解构造函数中参数，包括具体有哪些阻塞队列。理解线程池状态标志位的设计。   
 2. 线程复用机制（runWorker()方法）：有任务时，while循环获取；没有任务时，清除空闲线程。  
 3. 线程池保证核心线程不被销毁？获取任务getTask()方法里allowCoreThreadTimeOut值默认为true，线程take()会一直阻塞，等待任务的添加。   
 </font>**
-
-
 
 ## 1.1. 属性
 
@@ -562,7 +559,7 @@ final void runWorker(Worker w) {
 }
 ```
 
-#### 1.3.4.1. getTask()  
+#### 1.3.4.1. getTask() ，线程池如何保证核心线程不被销毁？ 
 &emsp; getTask()方法是工作线程在while死循环中获取任务队列中的任务对象的方法：  
 
 &emsp; 线程池如何保证核心线程不被销毁的？设置allowCoreThreadTimeOut(true) 可以使核心线程销毁。    
