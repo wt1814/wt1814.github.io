@@ -77,7 +77,7 @@
 &emsp; <font color = "lime">之所以说重做日志是在事务开始之后逐步写入重做日志文件，而不一定是事务提交才写入重做日志缓存，原因就是，重做日志有一个缓存区Innodb_log_buffer，Innodb存储引擎先将重做日志写入innodb_log_buffer中。</font>Innodb_log_buffer的默认大小为8M(这里设置的16M)。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-80.png)  
 
-&emsp; 然后会通过以下三种方式将innodb日志缓冲区的日志刷新到磁盘
+&emsp; <font color = "lime">然后会通过以下三种方式将innodb日志缓冲区的日志刷新到磁盘。</font>  
 
 * Master Thread 每秒一次执行刷新Innodb_log_buffer到重做日志文件。  
 * 每个事务提交时会将重做日志刷新到重做日志文件。  
@@ -99,7 +99,7 @@
 
 **作用：**   
 &emsp; <font color = "red">实现了原子性。</font>   
-&emsp; 保存了事务发生之前的数据的一个版本，可以用于回滚，同时可以提供多版本并发控制下的读（MVCC），也即非锁定读。  
+&emsp; <font color = "lime">保存了事务发生之前的数据的一个版本，可以用于回滚，同时可以提供多版本并发控制下的读（MVCC），也即非锁定读。</font>  
 
 **内容：**  
 &emsp; 逻辑格式的日志，在执行undo的时候，仅仅是将数据从逻辑上恢复至事务之前的状态，而不是从物理页面上操作实现的，这一点是不同于redo log的。  
@@ -136,7 +136,7 @@
 
 
 ## 1.3. binlog，二进制日志  
-&emsp; 二进制日志记录了对数据库执行更改的所有操作。但是不包括select和show这类操作，因为这类操作对数据本身并没有修改。  
+&emsp; <font color = "lime">二进制日志记录了对数据库执行更改的所有操作。</font>但是不包括select和show这类操作，因为这类操作对数据本身并没有修改。  
 
 **<font color = "red">作用：</font>**  
 
@@ -160,16 +160,14 @@
 
 **什么时候释放：**
 
-* binlog的默认是保持时间由参数expire_logs_days配置，也就是说对于非活动的日志文件，在生成时间超过expire_logs_days配置的天数之后，会被自动删除。
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-82.png)  
+* binlog的默认是保持时间由参数expire_logs_days配置，也就是说对于非活动的日志文件，在生成时间超过expire_logs_days配置的天数之后，会被自动删除。  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-82.png)  
 
 
 **对应的物理文件：**
 
 * 配置文件的路径为log_bin_basename，binlog日志文件按照指定大小，当日志文件达到指定的最大的大小之后，进行滚动更新，生成新的日志文件。
 * 对于每个binlog日志文件，通过一个统一的index文件来组织。
-
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-83.png)  
 
 **其他：**  
