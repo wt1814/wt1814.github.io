@@ -9,7 +9,9 @@
 
 <!-- /TOC -->
 
+
 # 1. MySql日志文件  
+**《MySQL技术内幕：InnoDB存储引擎》**  
 
 * 错误日志（errorlog）：记录出错信息，也记录一些警告信息或者正确的信息。
 * 一般查询日志（general log）：记录所有对数据库请求的信息，不论这些请求是否得到了正确的执行。
@@ -37,10 +39,6 @@
 &emsp; 目前来说，大多数存储引擎都是这样实现的，通常称之为预写式日志（Write-Ahead Logging），修改数据需要写两次磁盘。  
 -->
 
-<!-- 
-https://mp.weixin.qq.com/s/6IjtwsZvlBmH3yRkskbYPQ
--->
-
 ## 1.1. redolog，重做日志
 <!--
 * redo log（重做日志） 实现持久化  
@@ -50,14 +48,14 @@ https://mp.weixin.qq.com/s/6IjtwsZvlBmH3yRkskbYPQ
 
 **作用：**  
 
-* 确保事务的持久性。  
+* <font color = "red">确保事务的持久性。</font>  
 * 防止在发生故障的时间点，尚有脏页未写入磁盘，在重启mysql服务的时候，根据redo log进行重做，从而达到事务的持久性这一特性。  
 
 **内容：**  
 &emsp; 物理格式的日志，记录的是物理数据页面的修改的信息，其redo log是顺序写入redo log file的物理文件中去的。  
 
 **什么时候产生：**  
-&emsp; 事务开始之后就产生redo log，redo log的落盘并不是随着事务的提交才写入的，而是在事务的执行过程中，便开始写入redo log文件中。  
+&emsp; <font color = "lime">事务开始之后就产生redo log，redo log的落盘并不是随着事务的提交才写入的，而是在事务的执行过程中，便开始写入redo log文件中。</font>  
 
 **什么时候释放：**  
 &emsp; 当对应事务的脏页写入到磁盘之后，redo log的使命也就完成了，重做日志占用的空间就可以重用（被覆盖）。  
@@ -75,15 +73,15 @@ https://mp.weixin.qq.com/s/6IjtwsZvlBmH3yRkskbYPQ
 
 **其他：**  
 
-* 很重要一点，redo log是什么时候写盘的？前面说了是在事物开始之后逐步写盘的。
-* 之所以说重做日志是在事务开始之后逐步写入重做日志文件，而不一定是事务提交才写入重做日志缓存，原因就是，重做日志有一个缓存区Innodb_log_buffer，Innodb_log_buffer的默认大小为8M(这里设置的16M),Innodb存储引擎先将重做日志写入innodb_log_buffer中。  
+&emsp; 很重要一点，redo log是什么时候写盘的？前面说了是在事物开始之后逐步写盘的。  
+&emsp; <font color = "lime">之所以说重做日志是在事务开始之后逐步写入重做日志文件，而不一定是事务提交才写入重做日志缓存，原因就是，重做日志有一个缓存区Innodb_log_buffer，Innodb存储引擎先将重做日志写入innodb_log_buffer中。</font>Innodb_log_buffer的默认大小为8M(这里设置的16M)。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-80.png)  
 
 &emsp; 然后会通过以下三种方式将innodb日志缓冲区的日志刷新到磁盘
 
-&emsp; Master Thread 每秒一次执行刷新Innodb_log_buffer到重做日志文件。  
-&emsp; 每个事务提交时会将重做日志刷新到重做日志文件。  
-&emsp; 当重做日志缓存可用空间 少于一半时，重做日志缓存被刷新到重做日志文件  
+* Master Thread 每秒一次执行刷新Innodb_log_buffer到重做日志文件。  
+* 每个事务提交时会将重做日志刷新到重做日志文件。  
+* 当重做日志缓存可用空间 少于一半时，重做日志缓存被刷新到重做日志文件  
 
 &emsp; 由此可以看出，重做日志通过不止一种方式写入到磁盘，尤其是对于第一种方式，Innodb_log_buffer到重做日志文件是Master Thread线程的定时任务。  
 &emsp; 因此重做日志的写盘，并不一定是随着事务的提交才写入重做日志文件的，而是随着事务的开始，逐步开始的。  
@@ -99,23 +97,21 @@ https://mp.weixin.qq.com/s/6IjtwsZvlBmH3yRkskbYPQ
 &emsp; 二种日志均可以视为一种恢复操作，redo_log是恢复提交事务修改的页操作，而undo_log是回滚行记录到特定版本。二者记录的内容也不同，redo_log是物理日志，记录页的物理修改操作，而undo_log是逻辑日志，根据每行记录进行记录。  
 -->
 
-**作用：**    
-
-    保存了事务发生之前的数据的一个版本，可以用于回滚，同时可以提供多版本并发控制下的读（MVCC），也即非锁定读  
+**作用：**   
+&emsp; <font color = "red">实现了原子性。</font>   
+&emsp; 保存了事务发生之前的数据的一个版本，可以用于回滚，同时可以提供多版本并发控制下的读（MVCC），也即非锁定读。  
 
 **内容：**  
-
-    逻辑格式的日志，在执行undo的时候，仅仅是将数据从逻辑上恢复至事务之前的状态，而不是从物理页面上操作实现的，这一点是不同于redo log的。  
+&emsp; 逻辑格式的日志，在执行undo的时候，仅仅是将数据从逻辑上恢复至事务之前的状态，而不是从物理页面上操作实现的，这一点是不同于redo log的。  
 
 **什么时候产生：**  
-
-    事务开始之前，将当前是的版本生成undo log，undo 也会产生 redo 来保证undo log的可靠性  
+&emsp; 事务开始之前，将当前是的版本生成undo log，undo 也会产生 redo 来保证undo log的可靠性。  
 
 **什么时候释放：**  
+&emsp; 当事务提交之后，undo log并不能立马被删除，而是放入待清理的链表，由purge线程判断是否由其他事务在使用undo段中表的上一个事务之前的版本信息，决定是否可以清理undo log的日志空间。  
 
-    当事务提交之后，undo log并不能立马被删除，而是放入待清理的链表，由purge线程判断是否由其他事务在使用undo段中表的上一个事务之前的版本信息，决定是否可以清理undo log的日志空间。  
-
-&emsp; 对应的物理文件：MySQL5.6之前，undo表空间位于共享表空间的回滚段中，共享表空间的默认的名称是ibdata，位于数据文件目录中。  
+**对应的物理文件：**  
+&emsp; MySQL5.6之前，undo表空间位于共享表空间的回滚段中，共享表空间的默认的名称是ibdata，位于数据文件目录中。  
 
 &emsp; MySQL5.6之后，undo表空间可以配置成独立的文件，但是提前需要在配置文件中配置，完成数据库初始化后生效且不可改变undo log文件的个数，如果初始化数据库之前没有进行相关配置，那么就无法配置成独立的表空间了。  
 
@@ -140,7 +136,9 @@ https://mp.weixin.qq.com/s/6IjtwsZvlBmH3yRkskbYPQ
 
 
 ## 1.3. binlog，二进制日志  
-**作用：**  
+&emsp; 二进制日志记录了对数据库执行更改的所有操作。但是不包括select和show这类操作，因为这类操作对数据本身并没有修改。  
+
+**<font color = "red">作用：</font>**  
 
 * 用于复制，在主从复制中，从库利用主库上的binlog进行重播，实现主从同步。
 * 用于数据库的基于时间点的还原。
@@ -175,7 +173,7 @@ https://mp.weixin.qq.com/s/6IjtwsZvlBmH3yRkskbYPQ
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-83.png)  
 
 **其他：**  
-&emsp; 二进制日志的作用之一是还原数据库的，这与redo log很类似，很多人混淆过，但是两者有本质的不同  
+&emsp; <font color = "red">二进制日志的作用之一是还原数据库的，这与redo log很类似，</font>很多人混淆过，但是两者有本质的不同  
 
 * 作用不同：redo log是保证事务的持久性的，是事务层面的，binlog作为还原的功能，是数据库层面的（当然也可以精确到事务层面的），虽然都有还原的意思，但是其保护数据的层次是不一样的。
 * 内容不同：redo log是物理日志，是数据页面的修改之后的物理记录，binlog是逻辑日志，可以简单认为记录的就是sql语句

@@ -17,6 +17,11 @@
 
 <!-- /TOC -->
 
+<!-- 
+
+https://blog.csdn.net/SnailMann/article/details/94724197
+https://blog.csdn.net/heroqiang/article/details/79024333
+-->
 
 # 1. MVCC
 &emsp; **<font color = "lime">一句话概述：MVCC使用无锁并发控制，解决数据库读写问题。数据库会根据事务ID，形成版本链；MVCC会根据Read View来决定读取版本链中的哪条记录。</font>**
@@ -25,7 +30,7 @@
 &emsp; Multi-Version Concurrency Control，多版本并发控制。<font color = "red">MVCC 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问。MVCC是无锁操作的一种实现方式。</font>  
 
 ## 1.2. MVCC的实现
-&emsp; InnoDB有两个非常重要的模块来实现MVCC，一个是undo log，用于记录数据的变化轨迹，用于数据回滚，另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。  
+&emsp; InnoDB有两个非常重要的模块来实现MVCC，<font color = "lime">一个是undo log，用于记录数据的变化轨迹，用于数据回滚，另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-72.png)  
 
 &emsp; MVCC的基本原理如下：  
@@ -63,19 +68,41 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 
 &emsp; Read View的结构如下：  
 
-* rw_trx_ids：表示在生成 Read View 时，当前活跃的读写事务数组。
-* min_trx_id：表示在生成 Read View 时，当前已提交的事务号 + 1，也就是在 rw_trx_ids 中的最小事务号。
-* max_trx_id：表示在生成 Read View 时，当前已分配的事务号 + 1，也就是将要分配给下一个事务的事务号。
+* rw_trx_ids：表示在生成 Read View 时，<font color = "red">当前活跃的读写事务数组。</font>
+* up_limit_id：表示在生成 Read View 时，当前已提交的事务号 + 1，也就是在 rw_trx_ids 中的最小事务号。
+* low_limit_id：表示在生成 Read View 时，当前已分配的事务号 + 1，也就是将要分配给下一个事务的事务号。
 * curr_trx_id：创建 Read View 的当前事务id。
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-75.png)  
 
 &emsp; <font color = "red">MySQL会根据以下规则来判断版本链中的哪个版本（记录）是在事务中可见的：</font>  
 
+    Read View遵循一个可见性算法，主要是将要被修改的数据的最新记录中的DB_TRX_ID（即当前事务ID）取出来，与系统当前其他活跃事务的ID去对比（由Read View维护），如果DB_TRX_ID跟Read View的属性做了某些比较，不符合可见性，那就通过DB_ROLL_PTR回滚指针去取出Undo Log中的DB_TRX_ID再比较，即遍历链表的DB_TRX_ID（从链首到链尾，即从最近的一次修改查起），直到找到满足特定条件的DB_TRX_ID, 那么这个DB_TRX_ID所在的旧记录就是当前事务能看见的最新老版本。
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-85.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-86.png)  
+
+1. MySQL事务开始的时候，会根据当前活跃的事务构造出一个事务列表（Read View）。
+2. 当读取一行记录时会根据行记录上的TRX_ID与Read View中的最大TRX_ID和最小TRX_ID比较来判断是否可见。
+3. 首先会比较TRX_ID是否小于Read View列表中最小的TRX_ID，如果小于，则说明此事务早于Read View中的所有事务结束，则可以直接返回。
+4. 如果TRX_ID大于Read View列表中最小的TRX_ID，则判断TRX_ID是否大于Read View列表中最大的TRX_ID，如果是，则根据行上的回滚指针找到回滚段中的对应undo log记录取出TRX_ID赋值给当前的TRX_ID重新进行比较（递归）。
+5. 如果TRX_ID在Read View列表中最小TRX_ID和最大TRX_ID之间，判断TRX_ID是否在Read View中，如果在，则根据行上的回滚指针找到回滚段中的对应undo log记录返回，否则直接返回。
+
+<!-- 
+
+首先比较DB_TRX_ID < up_limit_id, 如果小于，则当前事务能看到DB_TRX_ID 所在的记录，如果大于等于进入下一个判断
+接下来判断 DB_TRX_ID 大于等于 low_limit_id , 如果大于等于则代表DB_TRX_ID 所在的记录在Read View生成后才出现的，那对当前事务肯定不可见，如果小于则进入下一个判断
+判断DB_TRX_ID 是否在活跃事务之中，trx_list.contains(DB_TRX_ID)，如果在，则代表我Read View生成时刻，你这个事务还在活跃，还没有Commit，你修改的数据，我当前事务也是看不见的；如果不在，则说明，你这个事务在Read View生成之前就已经Commit了，你修改的结果，我当前事务是能看见的
+
+-->
+
+<!--
+
 * trx_id < min_trx_id，那么该记录则在当前事务可见，因为修改该版本记录的事务在当前事务生成 Read View 之前就已经提交。
 * trx_id = curr_trx_id，那么该记录在当前事务可见，因为修改该版本记录的事务就是当前事务。
 * trx_id in (rw_trx_ids)，那么该记录在当前事务不可见，因为需改该版本记录的事务在当前事务生成 Read View 之前还未提交。
 * trx_id > max_trx_id，那么该记录在当前事务不可见，因为修改该版本记录的事务在当前事务生成 Read View 之前还未开启。
+-->
 
 <!--
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-76.png)  
@@ -100,7 +127,7 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 
 ### 1.5.3. REPEATABLE READ，可重复读  
 &emsp; 实际上，REPEATABLE READ 与 READ COMMITTED 的区别只有在生成 Read View 的时机上。  
-&emsp; READ COMMITTED 是在每次执行 select 操作时，都会生成一个新的 Read View。而 REPEATABLE READ 只会在第一次执行 select 操作时生成一个 Read View，直到该事务提交之前，所有的 select 操作都是使用第一次生成的 Read View。  
+&emsp; READ COMMITTED（读已提交） 是在每次执行 select 操作时，都会生成一个新的 Read View。而 REPEATABLE READ （可重复读）只会在第一次执行 select 操作时生成一个 Read View，直到该事务提交之前，所有的 select 操作都是使用第一次生成的 Read View。  
 
 ### 1.5.4. SERIALIZABLE
 &emsp; 该隔离级别不会使用 MVCC。如果使用的是普通的 select 语句，它会在该语句后面加上 lock in share mode，变为一致性锁定读。假设一个事务读取一条记录，其他事务对该记录的更改都会被阻塞。假设一个事务在更改一条记录，其他事务对该记录的读取都会被阻塞。  
@@ -136,7 +163,7 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 
 ---
 &emsp; 参考：  
-https://www.bilibili.com/read/cv6580973
+https://www.bilibili.com/read/cv6580973  
 https://www.jianshu.com/p/cfe3c269ad19  
 bilibili视频理解  
 
