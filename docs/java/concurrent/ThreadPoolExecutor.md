@@ -28,7 +28,7 @@ https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
 # 1. ThreadPoolExecutor
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-15.png)  
 
-**<font color = "lime">1. 线程运行流程：查看execute方法。理解构造函数中参数，包括具体有哪些阻塞队列。理解线程池状态标志位的设计。   
+**<font color = "lime">1. 线程运行流程：查看execute方法。理解构造函数中参数，包括具体有哪些[阻塞队列](/docs/java/concurrent/BlockingQueue.md)。理解线程池状态标志位的设计。   
 2. 线程复用机制（runWorker()方法）：有任务时，while循环获取；没有任务时，清除空闲线程。  
 3. 线程池保证核心线程不被销毁？获取任务getTask()方法里allowCoreThreadTimeOut值默认为true，线程take()会一直阻塞，等待任务的添加。   
 </font>**
