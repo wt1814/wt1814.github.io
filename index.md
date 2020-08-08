@@ -184,6 +184,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [DTP](/docs/microService/thinking/分布式事务-1.md)    
 &emsp; [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
 &emsp; [TCC模式](/docs/microService/thinking/分布式事务-3.md)   
+&emsp; [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
 [分布式锁](/docs/microService/thinking/分布式锁.md)  
 &emsp; [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  

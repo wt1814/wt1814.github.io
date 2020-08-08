@@ -171,6 +171,7 @@
         * [DTP](/docs/microService/thinking/分布式事务-1.md)    
         * [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
         * [TCC模式](/docs/microService/thinking/分布式事务-3.md)   
+        * [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
     * [分布式锁](/docs/microService/thinking/分布式锁.md)  
         * [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
         * [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
