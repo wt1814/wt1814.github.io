@@ -22,6 +22,10 @@
 
 <!-- /TOC -->
 
+<!-- 
+https://blog.csdn.net/hl_java/article/details/78462283
+-->
+
 **<font color = "red">&emsp; 一句话概述：分布式ID的基本生成方式有：UUID、数据库（（分布式）主键自增、序列、</font><font color = "lime">号段模式</font><font color = "red">）、redis等中间件、雪花算法。</font>**
 
 # 1. 分布式ID  
