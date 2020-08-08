@@ -7,9 +7,8 @@
     - [2.1. UUID](#21-uuid)
     - [2.2. 利用数据库生成](#22-利用数据库生成)
         - [2.2.1. MySql主键自增](#221-mysql主键自增)
-        - [2.2.2. MySQL多实例主键自增](#222-mysql多实例主键自增)
-        - [2.2.3. 数据库序列号](#223-数据库序列号)
-        - [2.2.4. 基于数据库的号段模式](#224-基于数据库的号段模式)
+        - [2.2.2. Flink方案（基于主键自增）](#222-flink方案基于主键自增)
+        - [2.2.3. 基于数据库的号段模式](#223-基于数据库的号段模式)
     - [2.3. 利用中间件生成](#23-利用中间件生成)
         - [2.3.1. 基于Redis实现](#231-基于redis实现)
     - [2.4. 雪花SnowFlake算法](#24-雪花snowflake算法)
@@ -26,8 +25,7 @@
 https://blog.csdn.net/hl_java/article/details/78462283
 -->
 
-**<font color = "red">&emsp; 一句话概述：分布式ID的基本生成方式有：UUID、数据库（（分布式）主键自增、序列、</font><font color = "lime">号段模式</font><font color = "red">）、redis等中间件、雪花算法。</font>**
-
+**<font color = "red">&emsp; 一句话概述：分布式ID的基本生成方式有：UUID、数据库（（分布式）主键自增、Flink(基于自增主键，似序列)、</font><font color = "lime">号段模式</font><font color = "red">）、redis等中间件、雪花算法。</font>**
 # 1. 分布式ID  
 &emsp; 分布式系统的全局唯一ID称为分布式ID。全局唯一ID的主要场景是：  
   
@@ -49,8 +47,7 @@ https://blog.csdn.net/hl_java/article/details/78462283
 &emsp; 分布式ID常见生成方案有以下几种：  
 
 * UUID
-* 数据库自增ID
-* 数据库多主模式
+* (分布式)数据库自增ID
 * 数据库序列
 * <font color = "lime">数据库号段模式</font>
 * Redis
@@ -88,27 +85,74 @@ https://blog.csdn.net/hl_java/article/details/78462283
 ---
 ## 2.2. 利用数据库生成  
 ### 2.2.1. MySql主键自增  
-&emsp; 这个方案利用了<font color = "red">MySQL的主键自增auto_increment</font>，默认每次ID加1。  
-&emsp; **优点：**  
+1. MySQL单节点主键自增   
+    &emsp; 这个方案利用了<font color = "red">MySQL的主键自增auto_increment</font>，默认每次ID加1。  
+    &emsp; **优点：**  
 
-* 数字化，id递增；  
-* 查询效率高；  
-* 具有一定的业务可读。  
+    * 数字化，id递增；  
+    * 查询效率高；  
+    * 具有一定的业务可读。  
 
-&emsp; **缺点：**  
+    &emsp; **缺点：**  
 
-* 存在单点问题，如果mysql挂了，就无法生成ID；  
-* 数据库压力大，高并发抗不住。  
+    * 存在单点问题，如果mysql挂了，就无法生成ID；  
+    * 数据库压力大，高并发抗不住。  
 
-### 2.2.2. MySQL多实例主键自增  
-&emsp; 这个方案解决了mysql的单点问题，在auto_increment基础上，设置step步长。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-18.png)  
-&emsp; 每台的初始值分别为1,2,3...N，步长为N（这个案例步长为4）。  
-&emsp; **优点：** 解决了单点问题。  
-&emsp; **缺点：** 一旦把步长定好后，就无法扩容；而且单个数据库的压力大，数据库自身性能无法满足高并发。  
-&emsp; **应用场景：** 数据不需要扩容的场景。  
+2. MySQL多实例主键自增   
+    &emsp; 这个方案解决了mysql的单点问题，在auto_increment基础上，设置step步长。  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-18.png)  
+    &emsp; 每台的初始值分别为1,2,3...N，步长为N（这个案例步长为4）。  
+    &emsp; **优点：** 解决了单点问题。  
+    &emsp; **缺点：** 一旦把步长定好后，就无法扩容；而且单个数据库的压力大，数据库自身性能无法满足高并发。  
+    &emsp; **应用场景：** 数据不需要扩容的场景。  
 
-### 2.2.3. 数据库序列号  
+### 2.2.2. Flink方案（基于主键自增）  
+&emsp; 这个方案是由Flickr团队提出，主要思路采用了MySQL自增长ID的机制(auto_increment + replace into) 。  
+
+    个人理解：伪序列  
+ 
+
+```sql
+#数据表
+
+CREATE TABLE Tickets64 (
+id bigint(20) unsigned NOT NULL auto_increment,
+stub char(1) NOT NULL default '',
+PRIMARY KEY (id),
+UNIQUE KEY stub (stub)
+)ENGINE=MyISAM;
+```
+
+```sql
+#每次业务使用下列SQL读写MySQL得到ID号
+
+REPLACE INTO Tickets64 (stub) VALUES ('a');
+SELECT LAST_INSERT_ID();
+```
+
+&emsp; replace into 跟 insert 功能类似，不同点在于：replace into 首先尝试插入数据到表中，如果发现表中已经有此行数据(根据主键或者唯-索引判断)则先删除此行数据，然后插入新的数据， 否则直接插入新数据。  
+
+&emsp; 为了避免单点故障，最少需要两个数据库实例，通过区分auto_increment的起始值和步长来生成奇偶数的ID。  
+
+```sql
+Server1：
+auto-increment-increment = 2
+auto-increment-offset = 1
+
+Server2：
+auto-increment-increment = 2
+auto-increment-offset = 2
+```
+
+* 优点：  
+    * 充分借助数据库的自增ID机制，可靠性高，生成有序的ID。  
+* 缺点：  
+    * ID生成性能依赖单台数据库读写性能。  
+    * 依赖数据库，当数据库异常时整个系统不可用。  
+
+
+<!--
+2.2.3. 数据库序列号  
 &emsp; Oracle中有序列SEQUENCE。在Mysql中可以建一张伪序列号表。  
 
 ```sql
@@ -123,12 +167,12 @@ commit;
 ```
 
         注：replace into 跟 insert 功能类似，不同点在于：replace into 首先尝试插入数据到表中， 1. 如果发现表中已经有此行数据（根据主键或者唯一索引判断）则先删除此行数据，然后插入新的数据。 2. 否则，直接插入新数据。  
-
+ -->
 <!-- 
 https://www.cnblogs.com/c-961900940/p/6197878.html
 -->
 
-### 2.2.4. 基于数据库的号段模式  
+### 2.2.3. 基于数据库的号段模式  
 &emsp; 号段模式是当下分布式ID生成器的主流实现方式之一，<font color = "lime">号段模式可以理解为从数据库批量的获取自增ID，每次从数据库取出一个号段范围，</font>例如 (1,1000] 代表1000个ID，具体的业务服务将本号段，生成1~1000的自增ID并加载到内存。表结构如下：  
 
 ```sql
