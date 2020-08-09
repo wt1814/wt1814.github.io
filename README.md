@@ -19,7 +19,7 @@
         - [Redis](#redis)
         - [分布式理论](#分布式理论)
         - [分布式通信](#分布式通信)
-    - [Elaticsearch-1](#elaticsearch-1)
+    - [Elaticsearch](#elaticsearch)
     - [项目构建基础](#项目构建基础)
     - [Error](#error)
     - [服务器](#服务器)
@@ -248,7 +248,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 [Netty]  
 
-## Elaticsearch-1  
+## Elaticsearch  
 [ES基本概念](/docs/ES/1.basicConcepts.md)  
 [ES集群](/docs/ES/3.colony.md)  
 [ES使用教程](/docs/ES/2.useTutorials.md)  
