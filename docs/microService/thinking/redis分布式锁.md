@@ -10,7 +10,7 @@
                 - [1.2.1.1.1. 加锁](#12111-加锁)
                 - [1.2.1.1.2. 解锁](#12112-解锁)
             - [1.2.1.2. ※※※集群redlock算法实现分布式锁](#1212-※※※集群redlock算法实现分布式锁)
-        - [1.2.2. Redisson实现redis分布式锁-1](#122-redisson实现redis分布式锁-1)
+        - [1.2.2. Redisson实现redis分布式锁](#122-redisson实现redis分布式锁)
             - [1.2.2.1. RedissonLock解析](#1221-redissonlock解析)
                 - [1.2.2.1.1. 获取锁tryLock](#12211-获取锁trylock)
                 - [1.2.2.1.2. 解锁unlock](#12212-解锁unlock)
@@ -107,7 +107,7 @@ public class RedisTool {
 }
 ```
 
-#### 1.2.1.2. ※※※集群redlock算法实现分布式锁  
+#### 1.2.1.2. 集群redlock算法实现分布式锁  
 &emsp; Redis分布式锁官网中文地址：http://redis.cn/topics/distlock.html 。 
 
 &emsp; RedLock算法描述：假设Redis的部署模式是Redis Cluster，总共有5个Master节点。客户端通过以下步骤获取一把锁。  
@@ -120,7 +120,7 @@ public class RedisTool {
 
 &emsp; <font color="red">一句话概述：当前线程尝试给每个Master节点加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。</font>  
 
-### 1.2.2. Redisson实现redis分布式锁-1  
+### 1.2.2. Redisson实现redis分布式锁  
 &emsp; 基于redis的分布式锁实现客户端Redisson，官方网址：https://redisson.org/ 。Redisson支持redis单实例、redis哨兵、redis cluster、redis master-slave等各种部署架构，都可以完美实现。  
 
 &emsp; 使用示例： 
@@ -141,12 +141,12 @@ try{
 #### 1.2.2.1. RedissonLock解析
 ##### 1.2.2.1.1. 获取锁tryLock  
 &emsp; **<font color = "lime">RedissonLock锁互斥、自动延期机制、可重入加锁。</font>**  
-
 * 客户端1加锁的锁key默认生存时间才30秒，如果超过了30秒，客户端1还想一直持有这把锁，怎么办呢？  
     &emsp; 只要客户端1一旦加锁成功，就会启动一个后台线程，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。  
 
-&emsp; 执行lock.lock()代码时，如果该客户端面对的是一个redis cluster集群，他首先会根据hash节点选择一台机器。  
-&emsp; 首先选择一台机器，然后发送一段lua脚本，带有三个参数：一个是锁的名字（在代码里指定的）、一个是锁的时常（默认30秒）、一个是加锁的客户端id（每个客户端对应一个id）。然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。  
+&emsp; RedissonLock加锁流程：  
+1. 执行lock.lock()代码时，如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。  
+2. 然后发送一段lua脚本，带有三个参数：一个是锁的名字（在代码里指定的）、一个是锁的时常（默认30秒）、一个是加锁的客户端id（每个客户端对应一个id）。然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-41.png)  
 
@@ -175,7 +175,7 @@ Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {
 ```
 
 &emsp; 缺点：  
-&emsp; 其实上面那种方案最大的问题，就是如果你对某个redis master实例，写入了myLock这种锁key的value，此时会异步复制给对应的master slave实例。  
+&emsp; 其实上面那种方案最大的问题，就是如果对某个redis master实例，写入了myLock这种锁key的value，此时会异步复制给对应的master slave实例。  
 &emsp; 但是这个过程中一旦发生redis master宕机，主备切换，redis slave变为了redis master。接着就会导致，客户端2来尝试加锁的时候，在新的redis master上完成了加锁，而客户端1也以为自己成功加了锁。此时就会导致多个客户端对一个分布式锁完成了加锁。  
 &emsp; 这时系统在业务语义上一定会出现问题，导致各种脏数据的产生。  
 &emsp; 所以这个就是redis cluster，或者是redis master-slave架构的主从异步复制导致的redis分布式锁的最大缺陷：在redis master实例宕机的时候，可能导致多个客户端同时完成加锁。  

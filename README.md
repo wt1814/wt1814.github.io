@@ -222,22 +222,23 @@ Gitee： https://gitee.com/wt1814/
 ### 分布式理论  
 [分布式算法](/docs/microService/thinking/分布式算法-consistent.md)  
 [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
-[分布式ID](/docs/microService/thinking/分布式ID.md)  
-
 [分布式事务](/docs/microService/thinking/分布式事务.md)  
 &emsp; [DTP](/docs/microService/thinking/分布式事务-1.md)    
 &emsp; [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
 &emsp; [TCC模式](/docs/microService/thinking/分布式事务-3.md)   
 &emsp; [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
-
 [分布式锁](/docs/microService/thinking/分布式锁.md)  
 &emsp; [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
 &emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
-
 [分布式缓存](/docs/microService/thinking/分布式缓存.md)  
 [分布式限流](/docs/microService/thinking/分布式限流.md)   
 [服务降级](/docs/microService/thinking/服务降级.md)  
+[分布式ID](/docs/microService/thinking/分布式ID.md)  
+
+<!-- 
+[分布式Session](/docs/microService/thinking/分布式Session.md)  
+-->
 
 ### 分布式通信  
 [序列化](/docs/microService/communication/serializbale.md)  
@@ -263,7 +264,7 @@ Gitee： https://gitee.com/wt1814/
 [Http重试](/docs/web/httpRetry.md)   
 [生成二维码](/docs/web/QRCode.md)  
 [反爬虫](/docs/web/reptile.md)  
-[POJO](/docs/web/POJO.md)  
+[JavaBean](/docs/web/JavaBean.md)  
 [加密算法](/docs/web/encryption.md)  
 [参数校验](/docs/web/Validation.md)
 [源码安全](/docs/web/codeSecurity.md)  
