@@ -164,7 +164,7 @@
     * [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 
 * 分布式理论  
-    * [一致性哈希算法](/docs/microService/thinking/分布式算法-consistent.md)  
+    * [分布式算法](/docs/microService/thinking/分布式算法-consistent.md)  
     * [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
     * [分布式ID](/docs/microService/thinking/分布式ID.md)  
 
@@ -198,6 +198,10 @@
     * [Http重试](/docs/web/httpRetry.md)   
     * [生成二维码](/docs/web/QRCode.md)  
     * [反爬虫](/docs/web/reptile.md)  
+    * [POJO](/docs/web/POJO.md)  
+    * [加密算法](/docs/web/encryption.md)  
+    * [参数校验](/docs/web/Validation.md)
+    * [源码安全](/docs/web/codeSecurity.md)  
     
 
 * Error  

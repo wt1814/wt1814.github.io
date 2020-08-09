@@ -25,7 +25,7 @@
 https://blog.csdn.net/hl_java/article/details/78462283
 -->
 
-**<font color = "red">&emsp; 一句话概述：分布式ID的基本生成方式有：UUID、数据库（（分布式）主键自增、Flink(基于自增主键，似序列)、</font><font color = "lime">号段模式</font><font color = "red">）、redis等中间件、雪花算法。</font>**
+**<font color = "red">&emsp; 一句话概述：分布式ID的基本生成方式有：UUID、数据库（主键自增、Flink(基于自增主键，似序列)、</font><font color = "lime">号段模式</font><font color = "red">）、redis等中间件、雪花算法。</font>**
 # 1. 分布式ID  
 &emsp; 分布式系统的全局唯一ID称为分布式ID。全局唯一ID的主要场景是：  
   
@@ -47,8 +47,8 @@ https://blog.csdn.net/hl_java/article/details/78462283
 &emsp; 分布式ID常见生成方案有以下几种：  
 
 * UUID
-* (分布式)数据库自增ID
-* 数据库序列
+* 数据库自增ID
+* Flink方案
 * <font color = "lime">数据库号段模式</font>
 * Redis
 * 雪花算法(SnowFlake)
@@ -65,13 +65,11 @@ https://blog.csdn.net/hl_java/article/details/78462283
 * java.util.concurrent.ThreadLocalRandom，每一个线程有一个独立的随机数生成器。  
 
 &emsp; **优点：**  
-
 * 不需要第三方组件，无单点的风险，代码实现简单；  
 * 本机生成，没有网络消耗；  
 * 因为是全球唯一的ID，所以迁移数据容易。  
 
 &emsp; **缺点：**  
-
 * 每次生成的ID是无序的，相对来说还会影响性能（比如 MySQL 的 InnoDB 引擎，如果UUID作为数据库主键，其无序性会导致数据位置频繁变动）；  
 * UUID的字符串存储，查询效率慢；  
 * 长度长，存储空间大；  
@@ -88,13 +86,11 @@ https://blog.csdn.net/hl_java/article/details/78462283
 1. MySQL单节点主键自增   
     &emsp; 这个方案利用了<font color = "red">MySQL的主键自增auto_increment</font>，默认每次ID加1。  
     &emsp; **优点：**  
-
     * 数字化，id递增；  
     * 查询效率高；  
     * 具有一定的业务可读。  
 
     &emsp; **缺点：**  
-
     * 存在单点问题，如果mysql挂了，就无法生成ID；  
     * 数据库压力大，高并发抗不住。  
 

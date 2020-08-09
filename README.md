@@ -220,7 +220,7 @@ Gitee： https://gitee.com/wt1814/
 [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 
 ### 分布式理论  
-[一致性哈希算法](/docs/microService/thinking/分布式算法-consistent.md)  
+[分布式算法](/docs/microService/thinking/分布式算法-consistent.md)  
 [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
 [分布式ID](/docs/microService/thinking/分布式ID.md)  
 
