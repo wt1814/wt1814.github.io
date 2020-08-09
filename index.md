@@ -135,7 +135,7 @@ Gitee： https://gitee.com/wt1814/
 [SpringBoot自动配置原理-运行流程解析](/docs/microService/SpringBoot/自动配置运行流程解析.md)  
 [SpringBoot事件监听机制](/docs/microService/SpringBoot/3.SpringBootEvent.md)  
 [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/4.SpringBootEvent.md)  
-<!--[自定义strater] -->
+[自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
 ### Spring Cloud Netflix  
 [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/0.Netflix.md)  

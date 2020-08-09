@@ -87,7 +87,7 @@ https://mp.weixin.qq.com/s/xG8WCmmm0aIqy2Kmrxn2sg
 &emsp; 外部应用加载自定义的starter有两种方式：主动加载、被动加载。  
 
 1. 被动加载  
-&emsp; 在resource资源包下新建META-INF/spring.factories写入自动配置类全限定名。  
+&emsp; 使用的SpringBoot的SPI机制。在resource资源包下新建META-INF/spring.factories写入自动配置类全限定名。  
 
     ```properties
     org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
