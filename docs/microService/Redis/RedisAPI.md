@@ -11,7 +11,6 @@
     - [1.5. List操作命令](#15-list操作命令)
     - [1.6. Set操作命令](#16-set操作命令)
     - [1.7. Zset操作命令](#17-zset操作命令)
-        - [1.7.1. redis多维度排序实现](#171-redis多维度排序实现)
 
 <!-- /TOC -->
 
@@ -56,6 +55,8 @@ https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
 &emsp; Redis中有删除单个Key的指令 DEL，但似乎没有批量删除 Key 的指令，不过可以借助 Linux 的 xargs 指令来完成这个动作。  
 <!-- 
 https://www.cnblogs.com/DreamDrive/p/5772198.html
+ 熬了一个通宵终于把Key删完了 
+ https://mp.weixin.qq.com/s/xb6USb3FLIDDloUPoqBnMw
 -->
 
 ## 1.3. String操作命令  
@@ -100,9 +101,6 @@ https://www.cnblogs.com/DreamDrive/p/5772198.html
 ## 1.7. Zset操作命令  
 &emsp; 可以分为集合内操作、集合间操作。  
 
-### 1.7.1. redis多维度排序实现  
 
-<!-- 
-https://blog.csdn.net/honger_hua/article/details/106196898
--->
+
 

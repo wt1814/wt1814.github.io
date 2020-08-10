@@ -39,12 +39,12 @@
 * Container服务运行容器。 
 
 &emsp; **调用关系：**  
-0. (start)服务容器Container负责启动，加载，运行服务提供者。  
-1. (register)服务提供者Provider在启动时，向注册中心注册服务。  
-2. (subscribe)服务消费者Consumer在启动时，向注册中心订阅服务。  
-3. <font color = "red">(notify)注册中心Registry返回服务提供者地址列表给消费者，</font><font color = "lime">如果有变更，注册中心将基于长连接推送变更数据给消费者。</font>  
-4. <font color = "red">(invoke)服务消费者Consumer，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。</font>  
-5. (count)服务消费者Consumer和提供者Provider，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。  
+1. (start)服务容器Container负责启动，加载，运行服务提供者。  
+2. (register)服务提供者Provider在启动时，向注册中心注册服务。  
+3. (subscribe)服务消费者Consumer在启动时，向注册中心订阅服务。  
+4. <font color = "red">(notify)注册中心Registry返回服务提供者地址列表给消费者，</font><font color = "lime">如果有变更，注册中心将基于长连接推送变更数据给消费者。</font>  
+5. <font color = "red">(invoke)服务消费者Consumer，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。</font>  
+6. (count)服务消费者Consumer和提供者Provider，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。  
 
 ### 1.1.1. Dubbo需要Web容器吗？内置了哪几种服务容器？  
 &emsp; 不需要，如果强制使用Web容器，只会增加复杂性，也浪费资源。  

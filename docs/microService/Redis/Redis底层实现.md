@@ -5,11 +5,15 @@
     - [1.1. Redis源码阅读之环境搭建及准备](#11-redis源码阅读之环境搭建及准备)
     - [1.2. 对象系统RedisObject](#12-对象系统redisobject)
     - [1.3. String内部编码](#13-string内部编码)
+        - [1.3.1. 采用SDS实现](#131-采用sds实现)
+            - [1.3.1.1. SDS代码结构](#1311-sds代码结构)
+            - [1.3.1.2. SDS动态扩展特点](#1312-sds动态扩展特点)
+            - [1.3.1.3. Redis字符串的性能优势](#1313-redis字符串的性能优势)
     - [1.4. Hash内部编码](#14-hash内部编码)
-        - [1.4.1. 采用dictht字典实现](#141-采用dictht字典实现)
-        - [1.4.2. 采用ziplist压缩列表实现](#142-采用ziplist压缩列表实现)
+        - [1.4.1. 采用ziplist压缩列表实现](#141-采用ziplist压缩列表实现)
+        - [1.4.2. 采用dictht字典实现](#142-采用dictht字典实现)
     - [1.5. List内部编码](#15-list内部编码)
-        - [1.5.1. 采用linkedlist双向链表实现](#151-采用linkedlist双向链表实现)
+        - [1.5.1. 采用LinkedList双向链表实现](#151-采用linkedlist双向链表实现)
         - [1.5.2. 采用quicklist快速列表实现](#152-采用quicklist快速列表实现)
     - [1.6. Set内部编码](#16-set内部编码)
         - [1.6.1. 采用inset实现](#161-采用inset实现)
@@ -40,7 +44,7 @@ https://blog.csdn.net/u014563989/article/details/81066074?utm_medium=distribute.
 -->
 
 ## 1.2. 对象系统RedisObject  
-&emsp; **<font color = "lime">很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！</font>**  
+&emsp; **<font color = "lime">（很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！）</font>**  
 &emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。**<font color = "lime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**  
 
 <!-- 
@@ -65,6 +69,7 @@ typedef struct redisObject {
 * encoding是指对象使用的数据结构，是不同数据类型在redis内部的存储方式。<font color = "red">目前有8种数据结构：int、raw、embstr、ziplist、hashtable、quicklist、intset、skiplist。</font>  
 
 &emsp; <font color = "lime">Redis数据类型的底层实现如下：</font>  
+
 |Redis数据结构	|底层数据结构|
 |---|---|
 |String	|int、embstr（即SDS）、raw|
@@ -75,8 +80,6 @@ typedef struct redisObject {
 
 1. <font color = "red">字典dictht用于实现Hash、Set；</font>  
 2. <font color = "red">压缩列表ziplist用于实现Hsh、List、Zset；</font>  
-
-
 
 ## 1.3. String内部编码  
 &emsp; **<font color = "red">字符串类型的内部编码有三种：</font>**  
@@ -99,7 +102,104 @@ typedef struct redisObject {
 &emsp; 对于 embstr，由于其实现是只读的，因此在对 embstr 对象进行修改时，都会先 转化为 raw 再进行修改。 因此，只要是修改 embstr 对象，修改后的对象一定是 raw 的，无论是否达到了 44 个字节。  
 
 5. 当长度小于阈值时，会还原吗？  
-&emsp; 关于 Redis 内部编码的转换，都符合以下规律：编码转换在 Redis 写入数据时完 成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
+&emsp; 关于 Redis 内部编码的转换，都符合以下规律：编码转换在 Redis 写入数据时完成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
+
+### 1.3.1. 采用SDS实现  
+<!-- 
+https://mp.weixin.qq.com/s/VY31lBOSggOHvVf54GzvYw
+https://mp.weixin.qq.com/s/f71rakde6KBJ_ilRf1M8xQ
+
+-->
+<!-- 
+1. 什么是 SDS？ Redis中字符串的实现。在 3.2 以后的版本中，SDS 又有多种结构（sds.h）：sdshdr5、sdshdr8、sdshdr16、sdshdr32、sdshdr64，用于存储不同的长度的字符串，分别代表 2^5=32byte， 2^8=256byte，2^16=65536byte=64KB，2^32byte=4GB。  
+
+2. 为什么 Redis 要用 SDS 实现字符串？  
+&emsp; C 语言本身没有字符串类型（只能用字符数组 char[]实现）。 
+    1. 使用字符数组必须先给目标变量分配足够的空间，否则可能会溢出。  
+    2. 如果要获取字符长度，必须遍历字符数组，时间复杂度是 O(n)。  
+    3. C 字符串长度的变更会对字符数组做内存重分配。  
+    4. 通过从字符串开始到结尾碰到的第一个'\0'来标记字符串的结束，因此不能保 存图片、音频、视频、压缩文件等二进制(bytes)保存的内容，二进制不安全。  
+
+    &emsp; SDS的特点：  
+    1. <font color = "red">不用担心内存溢出问题，如果需要，会对SDS进行扩容。</font>  
+    2. <font color = "red">获取字符串长度时间复杂度为 O(1)，因为定义了 len 属性。</font>  
+    3. 通过“空间预分配”（ sdsMakeRoomFor）和“惰性空间释放”，防止多次重分配内存。  
+    4. 判断是否结束的标志是 len 属性（它同样以'\0'结尾是因为这样就可以使用 C语言中函数库操作字符串的函数了），可以包含'\0'。 
+-->
+
+
+&emsp; Redis是C语言开发的，C语言有字符类型，但是Redis却没直接采用C语言的字符串类型，而是自己构建了动态字符串（SDS）的抽象类型。  
+ 
+#### 1.3.1.1. SDS代码结构  
+
+```c
+struct sdshdr{
+    //  记录已使用长度
+    int len;
+    // 记录空闲未使用的长度
+    int free;
+    // 字符数组
+    char[] buf;
+};
+```
+&emsp; 对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。  
+&emsp; <font color = "red">len保存了字符串的长度，free表示buf数组中未使用的字节数量，buf数组则是保存字符串的每一个字符元素。</font>  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-77.png)  
+&emsp; Redis的字符串也会遵守C语言的字符串的实现规则，即最后一个字符为空字符。然而这个空字符不会被计算在len里头。  
+
+#### 1.3.1.2. SDS动态扩展特点
+&emsp; SDS的最厉害最奇妙之处在于它的Dynamic，动态变化长度。举个例子：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-78.png)  
+
+&emsp; 如上图所示刚开始s1 只有5个空闲位子，后面需要追加' world' 6个字符，很明显是不够的。 
+
+&emsp; Redis会做一下三个操作：  
+1. 计算出大小是否足够  
+2. 开辟空间至满足所需大小  
+3. 开辟与已使用大小len相同长度的空闲free空间（如果len < 1M）；开辟1M长度的空闲free空间（如果len >= 1M）。  
+
+#### 1.3.1.3. Redis字符串的性能优势  
+
+* 动态扩展
+* 快速获取字符串长度  
+* 避免缓冲区溢出  
+* 降低空间分配次数提升内存使用效率  
+* 二进制安全
+
+1. 快速获取字符串长度  
+
+        c语言中的字符串并不会记录自己的长度，因此「每次获取字符串的长度都会遍历得到，时间的复杂度是O(n)」，而Redis中获取字符串只要读取len的值就可，时间复杂度变为O(1)。
+
+2. 避免缓冲区溢出  
+&emsp; 对于Redis而言由于每次追加字符串时，<font color = "red">「SDS」会先根据len属性判断空间是否满足要求，若是空间不够，就会进行相应的空间扩展，所以「不会出现缓冲区溢出的情况」。</font>每次追加操作前都会做如下操作：  
+    1. 计算出大小是否足够  
+    2. 开辟空间至满足所需大小  
+    3. 降低空间分配次数提升内存使用效率  
+
+            「c语言」中两个字符串拼接，若是没有分配足够长度的内存空间就「会出现缓冲区溢出的情况」。
+
+3. 降低空间分配次数，提升内存使用效率  
+    &emsp; 字符串的追加、缩减操作会涉及到内存分配问题，然而内存分配问题会牵扯内存划分算法以及系统调用，所以如果频繁发生的话影响性能。所以采取了一下两种优化措施空间预分配、惰性空间回收。  
+
+    1. 空间预分配   
+        &emsp; 对于追加操作来说，Redis不仅会开辟空间至够用，<font color = "red">而且还会预分配未使用的空间(free)来用于下一次操作。</font>至于未使用的空间(free)的大小则由修改后的字符串长度决定。
+        
+        * 当修改后的字符串长度len < 1M，则会分配与len相同长度的未使用的空间(free)
+        * 当修改后的字符串长度len >= 1M，则会分配1M长度的未使用的空间(free)
+
+        &emsp; 有了这个预分配策略之后会减少内存分配次数，因为分配之前会检查已有的free空间是否够，如果够则不开辟了。
+    2. 惰性空间回收  
+        &emsp; 与上面情况相反，<font color = "red">惰性空间回收适用于字符串缩减操作。</font>比如有个字符串s1="hello world"，对s1进行sdstrim(s1," world")操作，<font color = "red">执行完该操作之后Redis不会立即回收减少的部分，而是会分配给下一个需要内存的程序。</font>
+
+<!-- 
+            SDS还提供「空间预分配」和「惰性空间释放」两种策略。在为字符串分配空间时，分配的空间比实际要多，这样就能「减少连续的执行字符串增长带来内存重新分配的次数」。
+            当字符串被缩短的时候，SDS也不会立即回收不适用的空间，而是通过free属性将不使用的空间记录下来，等后面使用的时候再释放。
+            具体的空间预分配原则是：「当修改字符串后的长度len小于1MB，就会预分配和len一样长度的空间，即len=free；若是len大于1MB，free分配的空间大小就为1MB」。
+-->
+
+4. 二进制安全  
+&emsp; SDS是二进制安全的，除了可以储存字符串以外还可以储存二进制文件（如图片、音频，视频等文件的二进制数据）；而c语言中的字符串是以空字符串作为结束符，一些图片中含有结束符，因此不是二进制安全的。  
+
 
 ## 1.4. Hash内部编码  
 &emsp; Redis的Hash可以使用两种数据结构实现：ziplist、dictht。Hash 结构当同时满足如下两个条件时底层采用了 ZipList 实现，一旦有一个条件不满足时，就会被转码为dictht进行存储。  
@@ -107,26 +207,7 @@ typedef struct redisObject {
 * Hash 中存储的所有元素的 key 和 value 的长度都小于 64byte。（通过修改 hash-max-ziplist-value 配置调节大小）
 * Hash 中存储的元素个数小于 512。（通过修改 hash-max-ziplist-entries 配置调节大小）  
 
-### 1.4.1. 采用dictht字典实现  
-&emsp; 字典类型的底层是hashtable实现的，明白了字典的底层实现原理也就是明白了hashtable的实现原理，hashtable的实现原理可以与HashMap的是底层原理相类比。它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。  
-&emsp; dictEntry与HashMap两者在新增时都会通过key计算出数组下标，不同的是计算法方式不同，HashMap中是以hash函数的方式，而hashtable中计算出hash值后，还要通过sizemask 属性和哈希值再次得到数组下标。结构如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-81.png)  
-
-**rehash：**  
-&emsp; 在字典的底层实现中，value对象以每一个dictEntry的对象进行存储，当hash表中的存放的键值对不断的增加或者减少时，需要对hash表进行一个扩展或者收缩。  
-&emsp; 这里就会和HashMap一样也会就进行rehash操作，进行重新散列排布。从上图中可以看到有ht[0]和ht[1]两个对象，先来看看对象中的属性是干嘛用的。  
-&emsp; 在hash表结构定义中有四个属性分别是table、unsigned long size、unsigned long sizemask、unsigned long used，分别表示的含义就是「哈希表数组、hash表大小、用于计算索引值，总是等于size-1、hash表中已有的节点数」。  
-&emsp; ht[0]是用来最开始存储数据的，当要进行扩展或者收缩时，ht[0]的大小就决定了ht[1]的大小，ht[0]中的所有的键值对就会重新散列到ht[1]中。  
-&emsp; 扩展操作：ht[1]扩展的大小是比当前 ht[0].used 值的二倍大的第一个 2 的整数幂；收缩操作：ht[0].used 的第一个大于等于的 2 的整数幂。  
-&emsp; 当ht[0]上的所有的键值对都rehash到ht[1]中，会重新计算所有的数组下标值，当数据迁移完后ht[0]就会被释放，然后将ht[1]改为ht[0]，并新创建ht[1]，为下一次的扩展和收缩做准备。  
-
-**渐进式rehash：**  
-&emsp; 假如在rehash的过程中数据量非常大，Redis不是一次性把全部数据rehash成功，这样会导致Redis对外服务停止，Redis内部为了处理这种情况采用「渐进式的rehash」。  
-&emsp; Redis将所有的rehash的操作分成多步进行，直到都rehash完成，具体的实现与对象中的rehashindex属性相关，「若是rehashindex 表示为-1表示没有rehash操作」。  
-&emsp; 当rehash操作开始时会将该值改成0，在渐进式rehash的过程「更新、删除、查询会在ht[0]和ht[1]中都进行」，比如更新一个值先更新ht[0]，然后再更新ht[1]。  
-&emsp; 而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，这样保证「ht[0]只减不增，直到最后的某一个时刻变成空表」，这样rehash操作完成。  
-
-### 1.4.2. 采用ziplist压缩列表实现  
+### 1.4.1. 采用ziplist压缩列表实现  
 &emsp; ziplist是一组连续内存块组成的顺序的数据结构，是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。只用在字段个数少，字段值小的场景面。  
 
 &emsp; 压缩列表的内存结构图如下：  
@@ -146,7 +227,26 @@ typedef struct redisObject {
 &emsp; ZipList 的优缺点比较：  
 
 * 优点：内存地址连续，省去了每个元素的头尾节点指针占用的内存。  
-* 缺点：对于删除和插入操作比较可能会触发连锁更新反应，比如在 list 中间插入删除一个元素时，在插入或删除位置后面的元素可能都需要发生相应的移动操作。  
+* 缺点：对于删除和插入操作比较可能会触发连锁更新反应，比如在 list 中间插入删除一个元素时，在插入或删除位置后面的元素可能都需要发生相应的移动操作。 
+
+### 1.4.2. 采用dictht字典实现  
+&emsp; 字典类型的底层是hashtable实现的，明白了字典的底层实现原理也就是明白了hashtable的实现原理，hashtable的实现原理可以与HashMap的是底层原理相类比。它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。  
+&emsp; dictEntry与HashMap两者在新增时都会通过key计算出数组下标，不同的是计算法方式不同，HashMap中是以hash函数的方式，而hashtable中计算出hash值后，还要通过sizemask 属性和哈希值再次得到数组下标。结构如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-81.png)  
+
+**rehash：**  
+&emsp; 在字典的底层实现中，value对象以每一个dictEntry的对象进行存储，当hash表中的存放的键值对不断的增加或者减少时，需要对hash表进行一个扩展或者收缩。  
+&emsp; 这里就会和HashMap一样，也会就进行rehash操作，进行重新散列排布。从上图中可以看到有ht[0]和ht[1]两个对象，先来看看对象中的属性是干嘛用的。  
+&emsp; 在hash表结构定义中有四个属性分别是table、unsigned long size、unsigned long sizemask、unsigned long used，分别表示的含义就是「哈希表数组、hash表大小、用于计算索引值，总是等于size-1、hash表中已有的节点数」。  
+&emsp; ht[0]是用来最开始存储数据的，当要进行扩展或者收缩时，ht[0]的大小就决定了ht[1]的大小，ht[0]中的所有的键值对就会重新散列到ht[1]中。  
+&emsp; 扩展操作：ht[1]扩展的大小是比当前 ht[0].used 值的二倍大的第一个 2 的整数幂；收缩操作：ht[0].used 的第一个大于等于的 2 的整数幂。  
+&emsp; 当ht[0]上的所有的键值对都rehash到ht[1]中，会重新计算所有的数组下标值，当数据迁移完后ht[0]就会被释放，然后将ht[1]改为ht[0]，并新创建ht[1]，为下一次的扩展和收缩做准备。  
+
+**渐进式rehash：**  
+&emsp; 假如在rehash的过程中数据量非常大，Redis不是一次性把全部数据rehash成功，这样会导致Redis对外服务停止，Redis内部为了处理这种情况采用「渐进式的rehash」。  
+&emsp; Redis将所有的rehash的操作分成多步进行，直到都rehash完成，具体的实现与对象中的rehashindex属性相关，「若是rehashindex 表示为-1表示没有rehash操作」。  
+&emsp; 当rehash操作开始时会将该值改成0，在渐进式rehash的过程「更新、删除、查询会在ht[0]和ht[1]中都进行」，比如更新一个值先更新ht[0]，然后再更新ht[1]。  
+&emsp; 而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，这样保证「ht[0]只减不增，直到最后的某一个时刻变成空表」，这样rehash操作完成。  
 
 ## 1.5. List内部编码   
 &emsp; 在 Redis3.2 之前，List 底层采用了 ZipList 和 LinkedList 实现的，在 3.2 之后，List 底层采用了 QuickList。  
@@ -155,7 +255,7 @@ typedef struct redisObject {
 * List 中存储的每个元素的长度小于64byte  
 * 元素个数小于512 
 
-### 1.5.1. 采用linkedlist双向链表实现  
+### 1.5.1. 采用LinkedList双向链表实现  
 &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-62.png)  
 

@@ -43,7 +43,7 @@
     * 计数  
     * 限速  
 
-2. **Hash：**
+2. **Hash：**  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-58.png)  
     &emsp; Hash存储键值对的无序散列表。  
 
@@ -52,13 +52,12 @@
     2. 只使用一个 key，减少 key 冲突  
     3. 当需要批量获取值的时候，只需要使用一个命令，减少内存/IO/CPU 的消耗 Hash 
 
-    &emsp; 不适合的场景： 
+    &emsp; **不适合的场景：** 
     1. Field 不能单独设置过期时间  
-    2. 没有 bit 操作  
+    2. 没有bit操作  
     3. 需要考虑数据量分布的问题（value 值非常大的时候，无法分布到多个节点）  
 
-    &emsp; 使用场景：  
-
+    &emsp; **使用场景：**  
     * 存储对象类型的数据  
     &emsp; 比如对象或者一张表的数据，比String节省了更多key的空间，也更加便于集中管理。  
     * 购物车功能  
@@ -134,10 +133,8 @@
     |列表 list| 是 |是 |<font color = "red">索引下标</font>| 
     |集合 set |否 |否| 无 |
     |有序集合 zset |否 |是 |分值 score|
-    
 
     &emsp; 使用场景  
-
     * 排行榜  
     &emsp; 排行榜榜单的维度可能是多个方面的：按照时间、按照播 放数量、按照获得的赞数。 
 
@@ -145,6 +142,9 @@
     &emsp; ZSet默认情况下只能根据一个因子score进行排序。如此一来，局限性就很大，举个例子：热门排行榜需要按照下载量&最近更新时间排序，即类似数据库中的ORDER BY download_count, update_time DESC。那这样的需求如果用Redis的ZSet实现呢？  
     &emsp; 事实上很简单，思路就是<font color = "red">将涉及排序的多个维度的列通过一定的方式转换成一个特殊的列</font>，即result = function(x, y, z)，即x，y，z是三个排序因子，例如下载量、时间等，通过自定义函数function()计算得到result，将result作为ZSet中的score的值，就能实现任意维度的排序需求了。  
 
+<!-- 
+https://blog.csdn.net/honger_hua/article/details/106196898
+-->
 <!-- 
 |数据类型	|可以存储的值	|操作	|使用场景|
 |---|---|---|---|

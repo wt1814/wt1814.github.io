@@ -13,10 +13,8 @@
     - [2.1. 内存设置](#21-内存设置)
     - [2.2. 内存淘汰策略](#22-内存淘汰策略)
         - [2.2.1. redis内存淘汰使用的算法](#221-redis内存淘汰使用的算法)
-            - [2.2.1.1. LRU算法](#2211-lru算法)
-                - [2.2.1.1.1. Redis中的LRU算法](#22111-redis中的lru算法)
-                - [2.2.1.1.2. 手写LRU算法](#22112-手写lru算法)
-            - [2.2.1.2. LFU算法](#2212-lfu算法)
+            - [2.2.1.1. Redis中的LRU算法](#2211-redis中的lru算法)
+            - [2.2.1.2. Redis中的LFU算法](#2212-redis中的lfu算法)
         - [2.2.2. 内存淘汰策略](#222-内存淘汰策略)
 
 <!-- /TOC -->
@@ -92,7 +90,7 @@
     &emsp; 如果不设置最大内存大小或者设置最大内存大小为0，在64位操作系统下不限制内存大小，在32位操作系统下最多使用3GB内存。  
 
 ## 2.2. 内存淘汰策略  
-&emsp; https://redis.io/topics/lru-cache  
+&emsp; 官网描述：https://redis.io/topics/lru-cache  
 
 ### 2.2.1. redis内存淘汰使用的算法  
 &emsp; redis内存淘汰使用的算法有：  
@@ -101,143 +99,15 @@
 * LFU，Least Frequently Used，最不常用，4.0 版本新增。  
 * random，随机删除。  
 
-#### 2.2.1.1. LRU算法  
-##### 2.2.1.1.1. Redis中的LRU算法  
+#### 2.2.1.1. Redis中的LRU算法  
 &emsp; 如果基于传统 LRU 算法实现，Redis LRU 会有什么问题？需要额外的数据结构存储，消耗内存。  
 &emsp; <font color = "red">Redis LRU对传统的LRU算法进行了改良，通过随机采样来调整算法的精度。</font>如果淘汰策略是LRU，则根据配置的采样值maxmemory_samples（默认是 5 个）, 随机从数据库中选择m个key, 淘汰其中热度最低的key对应的缓存数据。所以采样参数m配置的数值越大, 就越能精确的查找到待淘汰的缓存数据,但是也消耗更多的CPU计 算,执行效率降低。  
 
 &emsp; 如何找出热度最低的数据？  
 &emsp; Redis 中所有对象结构都有一个 lru 字段, 且使用了 unsigned 的低 24 位，这个字段 用来记录对象的热度。对象被创建时会记录 lru 值。在被访问的时候也会更新 lru 的值。 但是不是获取系统当前的时间戳，而是设置为全局变量 server.lruclock 的值。  
 
-##### 2.2.1.1.2. 手写LRU算法  
-&emsp;基于LinkedHashMap实现一个简单版本的LRU算法。  
 
-```java
-class LRUCache<K, V> extends LinkedHashMap<K, V> {
-    private final int CACHE_SIZE;
-    /**
-     * @param cacheSize 缓存大小
-     */
-    // true表示让linkedHashMap按照访问顺序来进行排序，最近访问的放在头部，最老访问的放在尾部。
-    public LRUCache(int cacheSize) {
-        super((int) Math.ceil(cacheSize / 0.75) + 1, 0.75f, true);
-        CACHE_SIZE = cacheSize;
-    }
-
-    @Override
-    // 当map中的数据量大于指定的缓存个数的时候，就自动删除最老的数据。
-    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-        return size() > CACHE_SIZE;
-    }
-}
-```
-
-```java
-public class LRUCache<k, v> {
-    //容量
-    private int capacity;
-    //当前有多少节点的统计
-    private int count;
-    //缓存节点
-    private Map<k, node> nodeMap;
-    private Node head;
-    private Node tail;
-
-    public LRUCache(int capacity) {
-        if (capacity < 1) {
-            throw new IllegalArgumentException(String.valueOf(capacity));
-        }
-        this.capacity = capacity;
-        this.nodeMap = new HashMap<>();
-        //初始化头节点和尾节点，利用哨兵模式减少判断头结点和尾节点为空的代码
-        Node headNode = new Node(null, null);
-        Node tailNode = new Node(null, null);
-        headNode.next = tailNode;
-        tailNode.pre = headNode;
-        this.head = headNode;
-        this.tail = tailNode;
-    }
-
-    public void put(k key, v value) {
-        Node node = nodeMap.get(key);
-        if (node == null) {
-            if (count >= capacity) {
-                //先移除一个节点
-                removeNode();
-            }
-            node = new Node<>(key, value);
-            //添加节点
-            addNode(node);
-        } else {
-            //移动节点到头节点
-            moveNodeToHead(node);
-        }
-    }
-
-    public Node get(k key) {
-        Node node = nodeMap.get(key);
-        if (node != null) {
-            moveNodeToHead(node);
-        }
-        return node;
-    }
-
-    private void removeNode() {
-        Node node = tail.pre;
-        //从链表里面移除
-        removeFromList(node);
-        nodeMap.remove(node.key);
-        count--;
-    }
-
-    private void removeFromList(Node node) {
-        Node pre = node.pre;
-        Node next = node.next;
-
-        pre.next = next;
-        next.pre = pre;
-
-        node.next = null;
-        node.pre = null;
-    }
-
-    private void addNode(Node node) {
-        //添加节点到头部
-        addToHead(node);
-        nodeMap.put(node.key, node);
-        count++
-    }
-
-    private void addToHead(Node node) {
-        Node next = head.next;
-        next.pre = node;
-        node.next = next;
-        node.pre = head;
-        head.next = node;
-    }
-
-    public void moveNodeToHead(Node node) {
-        //从链表里面移除
-        removeFromList(node);
-        //添加节点到头部
-        addToHead(node);
-    }
-
-    class Node<k, v> {
-        k key;
-        v value;
-        Node pre;
-        Node next;
-
-        public Node(k key, v value) {
-            this.key = key;
-            this.value = value;
-        }
-    }
-}
-```
-
-#### 2.2.1.2. LFU算法  
+#### 2.2.1.2. Redis中的LFU算法  
 &emsp; LFU算法是Redis4.0里面新加的一种淘汰策略。它的全称是Least Frequently Used最不长用。它的核心思想是根据key的最近被访问的频率进行淘汰，很少被访问的优先被淘汰，被访问的多的则被留下来。  
 &emsp; LFU算法能更好的表示一个key被访问的热度。假如使用的是LRU算法，一个key很久没有被访问到，只刚刚是偶尔被访问了一次，那么它就被认为是热点数据，不会被淘汰，而有些key将来是很有可能被访问到的则被淘汰了。  
 &emsp; 如果使用LFU算法则不会出现这种情况，因为使用一次并不会使一个key成为热点数据。  
