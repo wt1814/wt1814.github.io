@@ -9,15 +9,16 @@
 
 <!-- /TOC -->
 
+**<font color = "red">参考《MySQL技术内幕：InnoDB存储引擎》</font>** 
 
 # 1. MySql日志文件  
-**《MySQL技术内幕：InnoDB存储引擎》**  
+ 
 
 * 错误日志（errorlog）：记录出错信息，也记录一些警告信息或者正确的信息。
 * 一般查询日志（general log）：记录所有对数据库请求的信息，不论这些请求是否得到了正确的执行。
 * 慢查询日志（slow query log）：设置一个阈值，将运行时间超过该值的所有SQL语句都记录到慢查询的日志文件中。
 * 二进制日志（binlog）：记录对数据库执行更改的所有操作。
-* 中继日志（relay log）：中继日志也是二进制日志，用来给slave 库恢复
+* 中继日志（relay log）：中继日志也是二进制日志，用来给slave库恢复。
 * 重做日志（redo log）。
 * 回滚日志（undo log）。
 
@@ -73,7 +74,7 @@
 
 **其他：**  
 
-&emsp; 很重要一点，redo log是什么时候写盘的？前面说了是在事物开始之后逐步写盘的。  
+&emsp; **<font color = "red">很重要一点，redo log是什么时候写盘的？前面说了是在事物开始之后逐步写盘的。</font>**  
 &emsp; <font color = "lime">之所以说重做日志是在事务开始之后逐步写入重做日志文件，而不一定是事务提交才写入重做日志缓存，原因就是，重做日志有一个缓存区Innodb_log_buffer，Innodb存储引擎先将重做日志写入innodb_log_buffer中。</font>Innodb_log_buffer的默认大小为8M(这里设置的16M)。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-80.png)  
 

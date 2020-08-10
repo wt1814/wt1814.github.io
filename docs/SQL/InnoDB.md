@@ -35,11 +35,11 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-84.png)  
 &emsp; seg size显示了当前插入缓冲的大小为2*16KB，free list len代表了空闲列表的长度，size代表了已经合并记录页的数量。  
 
-&emsp; 下面一行可能是我们真正关心的，因为它显示了提高性能了。inserts代表插入的记录数，merged recs代表合并的页的数量，merges代表合并的次数。  
+&emsp; 下面一行可能是真正要关心的，因为它显示了提高性能了。inserts代表插入的记录数，merged recs代表合并的页的数量，merges代表合并的次数。  
 &emsp; merged recs:merges大约为3:1，代表插入缓冲将对于非聚集索引页的IO请求大约降低了3倍。  
 
 &emsp; **问题：**  
-&emsp; 目前插入缓冲存在一个问题是，在写密集的情况下，插入缓冲会占用过多的缓冲池内存，默认情况下最大可以占用1/2的缓冲池内存。Percona已发布一些patch来修正插入缓冲占用太多缓冲池内存的问题，具体的可以到http：//www.percona.com/percona-lab.html 查找。简单来说，修改IBUF_POOL_SIZE_PER_MAX_SIZE就可以对插入缓冲的大小进行控制，例如，将IBUF_POOL_SIZE_PER_MAX_SIZE改为3，则最大只能使用1/3的缓冲池内存。  
+&emsp; 目前插入缓冲存在一个问题是，在写密集的情况下，插入缓冲会占用过多的缓冲池内存，默认情况下最大可以占用1/2的缓冲池内存。Percona已发布一些patch来修正插入缓冲占用太多缓冲池内存的问题，具体的可以到http//www.percona.com/percona-lab.html 查找。简单来说，修改IBUF_POOL_SIZE_PER_MAX_SIZE就可以对插入缓冲的大小进行控制，例如，将IBUF_POOL_SIZE_PER_MAX_SIZE改为3，则最大只能使用1/3的缓冲池内存。  
 
 ### 1.1.2. 两次写  
 &emsp; <font color = "lime">如果说插入缓冲带给InnoDB存储引擎的是性能，那么两次写带给InnoDB存储引擎的是数据的可靠性。</font><font color = "red">当数据库宕机时，可能发生数据库正在写一个页面，而这个页只写了一部分（比如16K的页，只写前4K的页）的情况，称之为部分写失效（partial page write）。</font>在InnoDB存储引擎未使用double write技术前，曾出现过因为部分写失效而导致数据丢失的情况。  

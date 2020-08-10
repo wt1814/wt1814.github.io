@@ -62,7 +62,7 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-74.png)  
 
 ## 1.4. Read View  
-&emsp; Read View 是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在在读取之前，都会生成一个 Read View。然后根据生成的Read View再去读取记录。
+&emsp; **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
     
     在事务中，只有执行插入、更新、删除操作时才会分配到一个事务 id。如果事务只是一个单纯的读取事务，那么它的事务 id 就是默认的 0。
 
@@ -77,10 +77,10 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 
 &emsp; <font color = "red">MySQL会根据以下规则来判断版本链中的哪个版本（记录）是在事务中可见的：</font>  
 
-    Read View遵循一个可见性算法，主要是将要被修改的数据的最新记录中的DB_TRX_ID（即当前事务ID）取出来，与系统当前其他活跃事务的ID去对比（由Read View维护），如果DB_TRX_ID跟Read View的属性做了某些比较，不符合可见性，那就通过DB_ROLL_PTR回滚指针去取出Undo Log中的DB_TRX_ID再比较，即遍历链表的DB_TRX_ID（从链首到链尾，即从最近的一次修改查起），直到找到满足特定条件的DB_TRX_ID, 那么这个DB_TRX_ID所在的旧记录就是当前事务能看见的最新老版本。
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-85.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-86.png)  
+
+&emsp; Read View遵循一个可见性算法，主要是将要被修改的数据的最新记录中的DB_TRX_ID（即当前事务ID）取出来，与系统当前其他活跃事务的ID去对比（由Read View维护），如果DB_TRX_ID跟Read View的属性做了某些比较，不符合可见性，那就通过DB_ROLL_PTR回滚指针去取出Undo Log中的DB_TRX_ID再比较，即遍历链表的DB_TRX_ID（从链首到链尾，即从最近的一次修改查起），直到找到满足特定条件的DB_TRX_ID, 那么这个DB_TRX_ID所在的旧记录就是当前事务能看见的最新老版本。 
 
 1. MySQL事务开始的时候，会根据当前活跃的事务构造出一个事务列表（Read View）。
 2. 当读取一行记录时会根据行记录上的TRX_ID与Read View中的最大TRX_ID和最小TRX_ID比较来判断是否可见。
@@ -88,6 +88,7 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 4. 如果TRX_ID大于Read View列表中最小的TRX_ID，则判断TRX_ID是否大于Read View列表中最大的TRX_ID，如果是，则根据行上的回滚指针找到回滚段中的对应undo log记录取出TRX_ID赋值给当前的TRX_ID重新进行比较（递归）。
 5. 如果TRX_ID在Read View列表中最小TRX_ID和最大TRX_ID之间，判断TRX_ID是否在Read View中，如果在，则根据行上的回滚指针找到回滚段中的对应undo log记录返回，否则直接返回。
 
+ 
 <!-- 
 
 首先比较DB_TRX_ID < up_limit_id, 如果小于，则当前事务能看到DB_TRX_ID 所在的记录，如果大于等于进入下一个判断
@@ -140,8 +141,7 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 * READ COMMITTED 是在每次执行 select 操作时都会生成一次 Read View。
 * REPEATABLE READ 只有在第一次执行 select 操作时才会生成 Read View，后续的 select 操作都将使用第一次生成的 Read View。
 
-&emsp; 而 READ UNCOMMITTED 和 SERIALIZABLE 隔离级别不会使用 MVCC。  
-&emsp; 它们的读取操作也不相同：  
+&emsp; 而 READ UNCOMMITTED 和 SERIALIZABLE 隔离级别不会使用 MVCC。它们的读取操作也不相同：  
 
 * READ UNCOMMITTED 每次执行 select 都会去读最新的记录。  
 * SERIALIZABLE 每次执行 select 操作都会在该语句后面加上 lock in share mode，使 select 变为一致性锁定读，将读写进行串行化。  
