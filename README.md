@@ -325,7 +325,7 @@ Gitee： https://gitee.com/wt1814/
 
 ----
 
-
+[部署](/docs/DevOps/deploy.md)  
 [监控](/docs/DevOps/monitor.md)  
 
  

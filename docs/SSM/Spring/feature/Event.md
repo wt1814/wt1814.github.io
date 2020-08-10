@@ -24,6 +24,13 @@
 
 &emsp; <font color = "red">注：事件监听是循环往复的，如果确定事件只会发布一次，应该移除事件监听器。</font>  
 
+<!-- 
+Spring事件机制使用
+https://blog.csdn.net/weixin_39035120/article/details/86225377
+-->
+
+
+
 ## 1.2. Spring事件机制解析  
 &emsp; **<font color = "red">实现Spring事件机制主要有4个类：</font>**  
 
