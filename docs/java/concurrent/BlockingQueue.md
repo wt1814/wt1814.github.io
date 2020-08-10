@@ -400,7 +400,7 @@ public boolean offer(E e, long timeout, TimeUnit unit)
 &emsp; 该方法只是对offer方法进行了阻塞超时处理，使用了Condition的awaitNanos来进行超时等待，这里为什么要用while循环？因为awaitNanos方法是可中断的，为了防止在等待过程中线程被中断，这里使用while循环进行等待过程中中断的处理，继续等待剩下需等待的时间。  
 
 #### 1.2.2.3. 出队  
-&emsp; 入队列的方法说完后，我们来说说出队列的方法。LinkedBlockingQueue提供了多种出队操作的实现来满足不同情况下的需求，如下：  
+&emsp; LinkedBlockingQueue提供了多种出队操作的实现来满足不同情况下的需求，如下：  
 
 * E take();
 * E poll();
@@ -455,9 +455,6 @@ private E dequeue() {
     return x;
 }
 ```
-
-
-
 
 
 ## 1.3. 生产者-消费者  
