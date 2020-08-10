@@ -1,21 +1,23 @@
 
 <!-- TOC -->
 
-- [1. @SpringBootApplication](#1-springbootapplication)
-- [2. @ComponentScan](#2-componentscan)
-- [3. @SpringBootConfiguration](#3-springbootconfiguration)
-- [4. @EnableAutoConfiguration](#4-enableautoconfiguration)
-    - [4.1. AutoConfigurationImportSelector.getCandidateConfigurations()方法-1](#41-autoconfigurationimportselectorgetcandidateconfigurations方法-1)
-        - [4.1.1. loadSpringFactories()方法-1](#411-loadspringfactories方法-1)
-            - [4.1.1.1. spring.factories、@ConditionOnxxx注解和spring.provides](#4111-springfactoriesconditiononxxx注解和springprovides)
+- [1. SpringBoot自动配置-@SpringBootApplication注解](#1-springboot自动配置-springbootapplication注解)
+    - [1.1. @SpringBootApplication](#11-springbootapplication)
+    - [1.2. @ComponentScan](#12-componentscan)
+    - [1.3. @SpringBootConfiguration](#13-springbootconfiguration)
+    - [1.4. @EnableAutoConfiguration](#14-enableautoconfiguration)
+        - [1.4.1. getCandidateConfigurations()方法](#141-getcandidateconfigurations方法)
+            - [1.4.1.1. loadSpringFactories()方法](#1411-loadspringfactories方法)
+                - [1.4.1.1.1. spring.factories、@ConditionOnxxx注解和spring.provides](#14111-springfactoriesconditiononxxx注解和springprovides)
 
 <!-- /TOC -->
 
+# 1. SpringBoot自动配置-@SpringBootApplication注解
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-3.png) 
 
 &emsp; SpringBoot的自动配置，指的是只需要引用功能的包，相关的配置完全不用管，SpringBoot会自动将一些配置类的bean注册进ioc容器，在需要的地方使用@autowired或者@resource等注解来使用它。  
 
-# 1. @SpringBootApplication
+## 1.1. @SpringBootApplication
 &emsp; @SpringBootApplication注解是Spring Boot的核心注解，它是一个组合注解：  
 
 ```java
@@ -34,7 +36,7 @@ public @interface SpringBootApplication {
 ```
 &emsp; 重要的有三个Annotation：@SpringBootConfiguration、@EnableAutoConfiguration、@ComponentScan。 
 
-# 2. @ComponentScan  
+## 1.2. @ComponentScan  
 &emsp; @ComponentScan，开启组件扫描，用于指定当前应用所要扫描的包，默认扫描SpringApplication的run方法里的Booter.class所在的包路径下文件，所以最好将该启动类放到根包路径下。  
 &emsp; 注意，<font color = "red">@ComponentScan其仅仅是指定包，而并没有扫描这些包，更没有装配其中的类，这个真正扫描并装配这些类是@EnableAutoConfiguration完成的。</font>  
 &emsp; 源码：  
@@ -54,7 +56,7 @@ public @interface ComponentScan {
 * includeFilters 属性：用于进一步缩小要扫描的基本包中的类，通过指定过滤器的方式进行缩小范围。  
 * excludeFilters 属于：用于过滤掉那些不适合做组件的类。  
 
-# 3. @SpringBootConfiguration  
+## 1.3. @SpringBootConfiguration  
 
 ```java
 @Target({ElementType.TYPE})
@@ -66,7 +68,7 @@ public @interface SpringBootConfiguration {
 ```
 &emsp; <font color = "red">SpringBootConfiguration其实就携带了一个@Configuration注解，代表类是一个Spring的配置类。</font>  
 
-# 4. @EnableAutoConfiguration  
+## 1.4. @EnableAutoConfiguration  
 &emsp; <font color = "red">@EnableAutoConfiguration使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。</font>  
 
 ```java
@@ -78,7 +80,7 @@ public @interface SpringBootConfiguration {
 @AutoConfigurationPackage//自动配置包
 @Import(EnableAutoConfigurationImportSelector.class)//自动配置导入选择
 public @interface EnableAutoConfiguration {
-    ...
+    //...
 }
 ```
 &emsp; <font color = "red">@AutoConfigurationPackage注解将主配置类（@SpringBootConfiguration标注的类）的所在包及下面所有子包里面的所有组件扫描到Spring容器中。</font>  
@@ -93,7 +95,7 @@ public @interface EnableAutoConfiguration {
 List<String> configurations = getCandidateConfigurations(annotationMetadata, attributes);
 ```
 
-## 4.1. AutoConfigurationImportSelector.getCandidateConfigurations()方法-1  
+### 1.4.1. getCandidateConfigurations()方法  
 &emsp; <font color = "red">AutoConfigurationImportSelector#getCandidateConfigurations()方法获取所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude掉的配置，才得到最终的配置类名集合。</font>源码如下：  
 
 ```java
@@ -106,7 +108,7 @@ protected List<String> getCandidateConfigurations(AnnotationMetadata metadata, A
 ```
 &emsp; SpringFactoriesLoader.loadFactoryNames()方法，调用了本类中loadSpringFactories()方法来获取配置信息。  
 
-### 4.1.1. loadSpringFactories()方法-1  
+#### 1.4.1.1. loadSpringFactories()方法  
 
 ```java
 private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoader classLoader) {
@@ -149,7 +151,8 @@ private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoad
     }
 }
 ```
-#### 4.1.1.1. spring.factories、@ConditionOnxxx注解和spring.provides  
+
+##### 1.4.1.1.1. spring.factories、@ConditionOnxxx注解和spring.provides  
 &emsp; SpringBoot本身的自动配置都在spring-boot-autoconfigure.jar包中。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-1.png)  
 &emsp; 里面包含了很多自动配置属性。  

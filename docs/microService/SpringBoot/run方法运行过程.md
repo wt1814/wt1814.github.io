@@ -34,10 +34,9 @@
 &emsp; <font color = "red">在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件。</font>比如在准备environment前会发布ApplicationStartingEvent事件，在environment准备好后会发布ApplicationEnvironmentPreparedEvent事件，在刷新容器前会发布ApplicationPreparedEvent事件等，总之SpringBoot总共内置了7个生命周期事件，除了标志SpringBoot的不同启动阶段外。<font color = "red">同时一些监听器也会监听相应的生命周期事件从而执行一些启动初始化逻辑。</font>比如ConfigFileApplicationListener会监听onApplicationEnvironmentPreparedEvent事件来加载环境变量等。  
 <!-- 
 &emsp; 在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件，然后相应的监听器会监听这些事件来执行一些初始化逻辑工作比如ConfigFileApplicationListener会监听onApplicationEnvironmentPreparedEvent事件来加载环境变量等。  
--->
 
 ~~run() 阶段主要是回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到 IOC 容器中，而所有需要回调的监听器都是从类路径下的 META/INF/Spring.factories 中获取，从而达到启动前后的各种定制操作。~~  
-
+-->
 
 ```java
 // SpringApplication.java
@@ -63,13 +62,11 @@ public ConfigurableApplicationContext run(String... args) {
 	try {
         // 初始化默认应用参数类，封装命令行参数
 		// 创建ApplicationArguments对象，封装了args参数
-		ApplicationArguments applicationArguments = new DefaultApplicationArguments(
-				args);
+		ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
 		// 【2】准备环境变量，包括系统变量，环境变量，命令行参数，默认变量，servlet相关配置变量，随机值，
 		// JNDI属性值，以及配置文件（比如application.properties）等，注意这些环境变量是有优先级的
 		// 》》》》》发布【ApplicationEnvironmentPreparedEvent】事件
-		ConfigurableEnvironment environment = prepareEnvironment(listeners,
-				applicationArguments);
+		ConfigurableEnvironment environment = prepareEnvironment(listeners,applicationArguments);
 		// 配置spring.beaninfo.ignore属性，默认为true，即跳过搜索BeanInfo classes.
 		configureIgnoreBeanInfo(environment);
 		// 【3】控制台打印SpringBoot的bannner标志
@@ -93,8 +90,7 @@ public ConfigurableApplicationContext run(String... args) {
 		// 5）从context容器中获取beanFactory，并向beanFactory中注册一些单例bean，比如applicationArguments，printedBanner
 		// 6）TODO 加载bean到application context，注意这里只是加载了部分bean比如mainApplication这个bean，大部分bean应该是在AbstractApplicationContext.refresh方法中被加载？这里留个疑问先
 		// 7）》》》》》发布【ApplicationPreparedEvent】事件，标志Context容器已经准备完成
-		prepareContext(context, environment, listeners, applicationArguments,
-				printedBanner);
+		prepareContext(context, environment, listeners, applicationArguments,printedBanner);
 		// 【7】刷新容器，IOC 容器初始化（如果是 Web 应用还会创建嵌入式的 Tomcat），扫描、创建、加载所有组件
 		// 1）在context刷新前做一些准备工作，比如初始化一些属性设置，属性合法性校验和保存容器中的一些早期事件等；
 		// 2）让子类刷新其内部bean factory,注意SpringBoot和Spring启动的情况执行逻辑不一样
@@ -117,8 +113,7 @@ public ConfigurableApplicationContext run(String... args) {
 		stopWatch.stop();
 		// 输出日志记录执行主类名、时间信息
 		if (this.logStartupInfo) {
-			new StartupInfoLogger(this.mainApplicationClass)
-					.logStarted(getApplicationLog(), stopWatch);
+			new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), stopWatch);
 		}
 		// 》》》》》发布【ApplicationStartedEvent】事件，标志spring容器已经刷新，此时所有的bean实例都已经加载完毕
 		listeners.started(context);

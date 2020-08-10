@@ -18,7 +18,7 @@
 <!-- 
 https://www.jianshu.com/p/2fd2b5a51227
 -->
-&emsp; 自定义starter对于我们项目组件化、模块化是有很大帮助的。  
+&emsp; 自定义starter我们项目组件化、模块化是有很大帮助的。  
 
 ## 1.2. 开发  
 
@@ -52,27 +52,11 @@ https://mp.weixin.qq.com/s/xG8WCmmm0aIqy2Kmrxn2sg
     &emsp; 写starter时，在pom中配置spring-boot-autoconfigure-processor，在编译时会自动收集配置类的条件，写到META-INF/spring-autoconfigure-metadata.properties中。
 
 ### 1.2.2. 第二步，写自动配置逻辑  
-&emsp; 各种condition  
-
-|类型	|注解	|说明|
-|---|---|---|
-|Class| Conditions类条件注解	|@ConditionalOnClass	当前classpath下有指定类才加载|
-|@ConditionalOnMissingClass	|当前classpath下无指定类才加载	|  |
-|Bean ConditionsBean条件注解	|@ConditionalOnBean|	当期容器内有指定bean才加载|
-|@ConditionalOnMissingBean	|当期容器内无指定bean才加载|  |
-|Property Conditions环境变量条件注解（含配置文件）|	@ConditionalOnProperty|	prefix 前缀name 名称havingValue 用于匹配配置项值matchIfMissing 没找指定配置项时的默认值|
-|ResourceConditions 资源条件注解	|@ConditionalOnResource	|有指定资源才加载|
-|Web Application Conditionsweb条件注解|	@ConditionalOnWebApplication|	是web才加载|
-|@ConditionalOnNotWebApplication	|不是web才加载	| |
-|SpEL Expression Conditions	|@ConditionalOnExpression	|符合SpEL 表达式才加载|
-
-
 1. 编写业务逻辑  
 2. 定义配置文件对应类  
     * @ConfigurationProperties 配置属性文件，需要指定前缀 prefix
     * @EnableConfigurationProperties 启用配置，需要指定启用的配置类
     * @NestedConfigurationProperty 当一个类中引用了外部类，需要在该属性上加该注解
-
 3. 定义自动配置类  
 &emsp; 自动配置类自动暴露功能接口。  
 
@@ -81,6 +65,20 @@ https://mp.weixin.qq.com/s/xG8WCmmm0aIqy2Kmrxn2sg
     ```
 
     &emsp; matchIfMissing：在matchIfMissing为false时，如果name值为空，则返回false；如果name不为空，则将该值与havingValue指定的值进行比较，如果一样则返回true，否则返回false。返回false也就意味着自动配置不会生效。  
+
+    &emsp; 各种condition注解：  
+
+    |类型	|注解	|说明|
+    |---|---|---|
+    |Class| Conditions类条件注解	|@ConditionalOnClass	当前classpath下有指定类才加载|
+    |@ConditionalOnMissingClass	|当前classpath下无指定类才加载	|  |
+    |Bean ConditionsBean条件注解	|@ConditionalOnBean|	当期容器内有指定bean才加载|
+    |@ConditionalOnMissingBean	|当期容器内无指定bean才加载|  |
+    |Property Conditions环境变量条件注解（含配置文件）|	@ConditionalOnProperty|	prefix 前缀name 名称havingValue 用于匹配配置项值matchIfMissing 没找指定配置项时的默认值|
+    |ResourceConditions 资源条件注解	|@ConditionalOnResource	|有指定资源才加载|
+    |Web Application Conditionsweb条件注解|	@ConditionalOnWebApplication|	是web才加载|
+    |@ConditionalOnNotWebApplication	|不是web才加载	| |
+    |SpEL Expression Conditions	|@ConditionalOnExpression	|符合SpEL 表达式才加载|
 
 ### 1.2.3. 第三步，应用加载starter的配置  
 

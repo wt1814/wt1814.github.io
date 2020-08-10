@@ -86,7 +86,7 @@
   
 * Spring  
     * [Spring](/docs/SSM/Spring/1.Spring.md)  
-    * [对于学习Spring源码的感悟](/docs/SSM/Spring/Perception.md)  
+    * [对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
     * [SpringIOC解析](/docs/SSM/Spring/2.SpringIOC.md)  
         * [容器初始化详解](/docs/SSM/Spring/容器初始化详解.md)  
     * [SpringDI解析](/docs/SSM/Spring/3.SpringDI.md)  
@@ -107,7 +107,7 @@
 
     * [SpringMVC使用教程](/docs/SSM/Spring/9.SpringMVCUse.md)  
     * [SpringMVC解析](/docs/SSM/Spring/10.SpringMVCAnalysis.md)    
-    * [过滤器、拦截器、监听器](web/subassembly.md)  
+    * [过滤器、拦截器、监听器](docs/web/subassembly.md)  
 
 * MyBatis  
     * [MyBatis教程](/docs/SSM/MyBatis/Mybatis.md)  
@@ -116,7 +116,7 @@
     * [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
     * [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
     * [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
-    * [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisD/docs/ESign.md)  
+    * [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
 
 * SpringBoot  
     * [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  

@@ -2,19 +2,22 @@
 
 <!-- TOC -->
 
-- [1. SpringBean生命周期的概要流程](#1-springbean生命周期的概要流程)
-- [2. 实例演示](#2-实例演示)
-- [3. 源码解析](#3-源码解析)
-- [4. 总结](#4-总结)
+- [1. SpringBean生命周期](#1-springbean生命周期)
+    - [1.1. SpringBean生命周期的概要流程](#11-springbean生命周期的概要流程)
+    - [1.2. 实例演示](#12-实例演示)
+    - [1.3. 源码解析](#13-源码解析)
+    - [1.4. 总结](#14-总结)
 
 <!-- /TOC -->
 
-<!-- 
 
+
+# 1. SpringBean生命周期
+<!-- 
 https://mp.weixin.qq.com/s/DC_PH_PXpbNgDQuGslTTTg
 -->
 
-# 1. SpringBean生命周期的概要流程  
+## 1.1. SpringBean生命周期的概要流程  
 &emsp; **<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-11.png)  
@@ -65,11 +68,11 @@ obj, String s)方法；由于这个方法是在Bean初始化结束时调用的�
         12. 如果配置文件中的Bean定义包含destroy-method属性，那么将调用Bean类中的相应方法定义。
 -->
 
-# 2. 实例演示  
+## 1.2. 实例演示  
 <!-- https://mp.weixin.qq.com/s/feokfxcB1WCMRAqVRm9HOQ -->
 ......
 
-# 3. 源码解析  
+## 1.3. 源码解析  
 &emsp; Bean的生命周期概括起来就是4个阶段：  
 1. 实例化（Instantiation）；
 2. 属性赋值（Populate）；
@@ -186,7 +189,7 @@ public void destroy() {
 ```
 &emsp; 从Spring的源码可以直观的看到其执行过程，而记忆其过程便可以从这 4 个阶段出发，实例化、属性赋值、初始化、销毁。其中细节较多的便是初始化，涉及了Aware、BeanPostProcessor、InitializingBean、init-method 的概念。这些都是Spring提供的扩展点。    
 
-# 4. 总结
+## 1.4. 总结
 &emsp; **<font color = "lime">最后总结下如何记忆 Spring Bean 的生命周期：</font>**  
 
 * 首先是实例化、属性赋值、初始化、销毁这 4 个大阶段；

@@ -56,7 +56,7 @@ public interface ApplicationContextAware {
     void setApplicationContext(ApplicationContext applicationcontext) throws BeansException;
 }
 ```
-&emsp; 这里只有一个方法setApplicationContext(ApplicationContext applicationcontext),它是一个回调函数，在Bean中通过实现这个函数，可以在容器回调该aware接口方法时使注入的applicationcontext引用在Bean中保存下来，供Bean需要使用Applicationcontext的基本服务时使用。这个对setApplicationContext方法的回调是由容器自动完成的。  
+&emsp; 这里只有一个方法setApplicationContext(ApplicationContext applicationcontext)，它是一个回调函数，在Bean中通过实现这个函数，可以在容器回调该aware接口方法时使注入的applicationcontext引用在Bean中保存下来，供Bean需要使用Applicationcontext的基本服务时使用。这个对setApplicationContext方法的回调是由容器自动完成的。  
 
 &emsp; 在初始化的时候，从入口类ClassPathXmlApplicationContext->AbstractApplicationContext类的的refresh方法 ->prepareBeanFactory方法：  
 

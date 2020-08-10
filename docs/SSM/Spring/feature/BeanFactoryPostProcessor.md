@@ -21,7 +21,7 @@ public interface BeanFactoryPostProcessor {
 
 }
 ```
-&emsp; <font color = "red">实现BeanFactoryPostProcessor接口，可以在spring的bean创建之前，修改bean的定义属性。</font>也就是说，Spring允许BeanFactoryPostProcessor在容器实例化任何其它bean之前读取配置元数据，并可以根据需要进行修改，例如可以把bean的scope从singleton改为prototype，也可以把property的值给修改掉。可以同时配置多个BeanFactoryPostProcessor，并通过设置'order'属性来控制各个BeanFactoryPostProcessor的执行次序。  
+&emsp; <font color = "lime">实现BeanFactoryPostProcessor接口，可以在spring的bean创建之前，修改bean的定义属性。</font>也就是说，Spring允许BeanFactoryPostProcessor在容器实例化任何其它bean之前读取配置元数据，并可以根据需要进行修改，例如可以把bean的scope从singleton改为prototype，也可以把property的值给修改掉。可以同时配置多个BeanFactoryPostProcessor，并通过设置'order'属性来控制各个BeanFactoryPostProcessor的执行次序。  
 &emsp; 注意：BeanFactoryPostProcessor是在spring容器加载了bean的定义文件之后，在bean实例化之前执行的。接口方法的入参是ConfigurrableListableBeanFactory，使用该参数，可以获取到相关bean的定义信息。  
 
 &emsp; <font color = "red">Spring中有内置的一些BeanFactoryPostProcessor实现类</font>，常用的有：  

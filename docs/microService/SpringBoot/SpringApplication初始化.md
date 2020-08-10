@@ -3,14 +3,15 @@
 <!-- TOC -->
 
 - [1. Spring Boot启动全过程源码分析](#1-spring-boot启动全过程源码分析)
-- [2. SpringApplication初始化](#2-springapplication初始化)
-    - [2.1. 主要流程解析](#21-主要流程解析)
-        - [2.1.1. 推断当前WEB应用类型](#211-推断当前web应用类型)
-        - [2.1.2. 设置应用上下文初始化器（SpringBoot的SPI机制原理）](#212-设置应用上下文初始化器springboot的spi机制原理)
-            - [2.1.2.1. 获得类加载器](#2121-获得类加载器)
-            - [2.1.2.2. 加载spring.factories配置文件中的SPI扩展类](#2122-加载springfactories配置文件中的spi扩展类)
-            - [2.1.2.3. 实例化从spring.factories中加载的SPI扩展类](#2123-实例化从springfactories中加载的spi扩展类)
-        - [2.1.3. 设置监听器](#213-设置监听器)
+    - [1.1. SpringBoot启动类](#11-springboot启动类)
+    - [1.2. SpringApplication初始化](#12-springapplication初始化)
+        - [1.2.1. 主要流程解析](#121-主要流程解析)
+            - [1.2.1.1. 推断当前WEB应用类型](#1211-推断当前web应用类型)
+            - [1.2.1.2. 设置应用上下文初始化器（SpringBoot的SPI机制原理）](#1212-设置应用上下文初始化器springboot的spi机制原理)
+                - [1.2.1.2.1. 获得类加载器](#12121-获得类加载器)
+                - [1.2.1.2.2. 加载spring.factories配置文件中的SPI扩展类](#12122-加载springfactories配置文件中的spi扩展类)
+                - [1.2.1.2.3. 实例化从spring.factories中加载的SPI扩展类](#12123-实例化从springfactories中加载的spi扩展类)
+            - [1.2.1.3. 设置监听器](#1213-设置监听器)
 
 <!-- /TOC -->
 
@@ -43,6 +44,7 @@ https://mp.weixin.qq.com/s/bLqWb6bc2ki3mKbfFqm0vg
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-4.png)  
 
 # 1. Spring Boot启动全过程源码分析
+## 1.1. SpringBoot启动类
 &emsp; SpringBoot启动类代码如下：  
 
 ```java
@@ -61,7 +63,7 @@ public static ConfigurableApplicationContext run(Class<?>[] primarySources, Stri
 1. 创建SpringApplication 对象；  
 2. 运行run()方法。  
 
-# 2. SpringApplication初始化  
+## 1.2. SpringApplication初始化  
 <!-- https://mp.weixin.qq.com/s/JcMRo6xuDEimKk-KZDKJ1g-->
 
 &emsp; **<font color = "red">构造过程一般是对构造函数的一些成员属性赋值。</font>**  
@@ -138,10 +140,10 @@ public SpringApplication(ResourceLoader resourceLoader, Class... primarySources)
 }
 ```
 
-## 2.1. 主要流程解析  
+### 1.2.1. 主要流程解析  
 &emsp; 从上述流程中，挑以下几个进行分析。  
 
-### 2.1.1. 推断当前WEB应用类型  
+#### 1.2.1.1. 推断当前WEB应用类型  
 
 ```java
 this.webApplicationType = deduceWebApplicationType();
@@ -187,7 +189,7 @@ public enum WebApplicationType {
 ```
 &emsp; 这个就是根据类路径下是否有对应项目类型的类推断出不同的应用类型。  
 
-### 2.1.2. 设置应用上下文初始化器（SpringBoot的SPI机制原理）  
+#### 1.2.1.2. 设置应用上下文初始化器（SpringBoot的SPI机制原理）  
 &emsp; <font color = "red">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。</font>  
 
 &emsp; **<font color = "lime">SpringBoot通过以下步骤实现自己的SPI机制：</font>**  
@@ -252,7 +254,7 @@ private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] 
 ```
 -->
 
-#### 2.1.2.1. 获得类加载器  
+##### 1.2.1.2.1. 获得类加载器  
 &emsp; Java的SPI机制默认是利用线程上下文类加载器去加载扩展类的。那么，SpringBoot实现的SPI机制是利用哪种类加载器去加载spring.factories配置文件中的扩展实现类的？  
 &emsp; ClassLoader classLoader = getClassLoader()解读：  
 
@@ -301,7 +303,7 @@ public static ClassLoader getDefaultClassLoader() {
 ```
 &emsp; SpringBoot的SPI机制中也是用线程上下文类加载器去加载spring.factories文件中的扩展实现类的！  
 
-#### 2.1.2.2. 加载spring.factories配置文件中的SPI扩展类  
+##### 1.2.1.2.2. 加载spring.factories配置文件中的SPI扩展类  
 &emsp; **<font color = "lime">SpringFactoriesLoader.loadFactoryNames(type, classLoader)是如何加载spring.factories配置文件中的SPI扩展类的？</font>**   
 
 ```java
@@ -372,7 +374,7 @@ private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoad
 &emsp; 将所有的SPI扩展实现类加载出来后，此时再调用getOrDefault(factoryClassName, Collections.emptyList())方法根据SPI接口名去筛选当前对应的扩展实现类，比如这里传入的factoryClassName参数名为ApplicationContextInitializer接口，那么这个接口将会作为key从刚才缓存数据中取出ApplicationContextInitializer接口对应的SPI扩展实现类。其中从spring.factories中获取的ApplicationContextInitializer接口对应的所有SPI扩展实现类如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-5.png)  
 
-#### 2.1.2.3. 实例化从spring.factories中加载的SPI扩展类  
+##### 1.2.1.2.3. 实例化从spring.factories中加载的SPI扩展类  
 &emsp; 从spring.factories中获取到ApplicationContextInitializer接口对应的所有SPI扩展实现类后，此时会将这些SPI扩展类进行实例化。  
 &emsp; List<T\> instances = createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names)实例化SPI扩展类，代码解读：  
 
@@ -409,7 +411,7 @@ private <T> List<T> createSpringFactoriesInstances(Class<T> type,
 }
 ```
 
-### 2.1.3. 设置监听器  
+#### 1.2.1.3. 设置监听器  
 
 ```java
 this.setListeners(this.getSpringFactoriesInstances(ApplicationListener.class));
