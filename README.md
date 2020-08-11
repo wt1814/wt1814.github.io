@@ -124,7 +124,6 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [MySql事务](/docs/SQL/14.transaction.md)  
 &emsp; [MySql锁](/docs/SQL/15.lock.md)  
 &emsp; [MySqlMVCC](/docs/SQL/MVCC.md)  
-&emsp; [崩溃恢复](/docs/SQL/崩溃恢复.md)  
 [分布式数据库](/docs/SQL/4.分布式数据库.md)  
 &emsp; [主从复制](/docs/SQL/16.replication.md)  
 &emsp; [分区](/docs/SQL/17.partition.md)  
