@@ -101,6 +101,10 @@ InnoDB：buffer……
 
 ## 1.3. 表
 ### 1.3.1. InnoDB的逻辑存储结构  
+<!-- 
+https://zhuanlan.zhihu.com/p/111958646
+-->
+
 &emsp; 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间（tablespace）。表空间又由段（segment），区（extent），页（page）组成。页在一些文档中有时候也称为块（block）。InnoDb逻辑存储结构图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-41.png)  
 
