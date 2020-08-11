@@ -138,7 +138,7 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-48.png)  
 
 ##### 1.3.3.4.2. Smart客户端  
-&emsp; 大多数开发语言的Redis客户端都采用Smart客户端支持集群协议，客户端如何选择见：http://redis.io/clients ，从中找出符合自己要求的客户端类 库。Smart客户端通过在内部维护slot→node的映射关系，本地就可实现键到 节点的查找，从而保证IO效率的最大化，而MOVED重定向负责协助Smart客 户端更新slot→node映射。  
+&emsp; 大多数开发语言的Redis客户端都采用Smart客户端支持集群协议，客户端如何选择见：http://redis.io/clients ，从中找出符合自己要求的客户端类 库。Smart客户端通过在内部维护slot→node的映射关系，本地就可实现键到 节点的查找，从而保证IO效率的最大化，而MOVED重定向负责协助Smart客户端更新slot→node映射。  
 &emsp; Jedis为Redis Cluster提供了Smart客户端，对应的类是JedisCluster。  
 
 ##### 1.3.3.4.3. ASK重定向  
@@ -147,9 +147,9 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-49.png)   
 1. 客户端根据本地slots缓存发送命令到源节点，如果存在键对象则直 接执行并返回结果给客户端。  
 2. 如果键对象不存在，则可能存在于目标节点，这时源节点会回复ASK重定向异常。格式如下：（error）ASK{slot}{targetIP}：{targetPort}。   
-3. 客户端从ASK重定向异常提取出目标节点信息，发送asking命令到目 标节点打开客户端连接标识，再执行键命令。如果存在则执行，不存在则返 回不存在信息。   
+3. 客户端从ASK重定向异常提取出目标节点信息，发送asking命令到目 标节点打开客户端连接标识，再执行键命令。如果存在则执行，不存在则返回不存在信息。   
 
-&emsp; ASK与MOVED虽然都是对客户端的重定向控制，但是有着本质区别。 ASK重定向说明集群正在进行slot数据迁移，客户端无法知道什么时候迁移 完成，因此只能是临时性的重定向，客户端不会更新slots缓存。但是 MOVED重定向说明键对应的槽已经明确指定到新的节点，因此需要更新 slots缓存。  
+&emsp; ASK与MOVED虽然都是对客户端的重定向控制，但是有着本质区别。ASK重定向说明集群正在进行slot数据迁移，客户端无法知道什么时候迁移完成，因此只能是临时性的重定向，客户端不会更新slots缓存。但是MOVED重定向说明键对应的槽已经明确指定到新的节点，因此需要更新slots缓存。  
 
 #### 1.3.3.5. 故障转移  
 ##### 1.3.3.5.1. 故障发现  

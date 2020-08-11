@@ -268,6 +268,7 @@ Gitee： https://gitee.com/wt1814/
 [加密算法](/docs/web/encryption.md)  
 [参数校验](/docs/web/Validation.md)
 [源码安全](/docs/web/codeSecurity.md)  
+[其他](/docs/web/other.md)
 
 ---
 ## Error  

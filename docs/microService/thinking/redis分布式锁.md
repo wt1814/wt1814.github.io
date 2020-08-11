@@ -9,7 +9,7 @@
             - [1.2.1.1. 单实例redis实现分布式锁](#1211-单实例redis实现分布式锁)
                 - [1.2.1.1.1. 加锁](#12111-加锁)
                 - [1.2.1.1.2. 解锁](#12112-解锁)
-            - [1.2.1.2. ※※※集群redlock算法实现分布式锁](#1212-※※※集群redlock算法实现分布式锁)
+            - [1.2.1.2. 集群redlock算法实现分布式锁](#1212-集群redlock算法实现分布式锁)
         - [1.2.2. Redisson实现redis分布式锁](#122-redisson实现redis分布式锁)
             - [1.2.2.1. RedissonLock解析](#1221-redissonlock解析)
                 - [1.2.2.1.1. 获取锁tryLock](#12211-获取锁trylock)
@@ -145,8 +145,8 @@ try{
     &emsp; 只要客户端1一旦加锁成功，就会启动一个后台线程，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。  
 
 &emsp; RedissonLock加锁流程：  
-1. 执行lock.lock()代码时，如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。  
-2. 然后发送一段lua脚本，带有三个参数：一个是锁的名字（在代码里指定的）、一个是锁的时常（默认30秒）、一个是加锁的客户端id（每个客户端对应一个id）。然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。  
+1. 执行lock.lock()代码时，<font color = "red">如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。</font>  
+2. 然后发送一段lua脚本，带有三个参数：一个是锁的名字（在代码里指定的）、一个是锁的时常（默认30秒）、一个是加锁的客户端id（每个客户端对应一个id）。<font color = "red">然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。</font>  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-41.png)  
 
@@ -157,7 +157,7 @@ Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {
             /**
              * KEYS[1] 表示的是 getName() ，代表的是加锁的那个key，即上面代码中的test_lock
              * ARGV[1] 表示的是 internalLockLeaseTime ，代表的就是锁key的生存时间，默认30秒
-             * ARGV[2] 表示的是 getLockName(threadId)， 代表的是 id:threadId 用加锁的客户端的id+线程id， 表示当前访问线程，用于区分不同服务器上的线程。
+             * ARGV[2] 表示的是 getLockName(threadId)， 代表的是 id:threadId用加锁的客户端的id+线程id，表示当前访问线程，用于区分不同服务器上的线程。
              */
             "if (redis.call('exists', KEYS[1]) == 0) then " + //如果锁名称不存在
                     "redis.call('hset', KEYS[1], ARGV[2], 1); " + //则向redis中添加一个key为test_lock的set，并且向set中添加一个field为线程id，值=1的键值对，表示此线程的重入次数为1
