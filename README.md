@@ -111,7 +111,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [连接查询](/docs/SQL/10.joinSelect.md)  
 &emsp; [行列转换](/docs/SQL/11.trans.md)  
 [MySql函数](/docs/SQL/MySQLFunction.md)  
-[数据库对象](/docs/SQL/DatabaseObxject.md)  
+[数据库对象](/docs/SQL/DatabaseObject.md)  
 [SQL优化](/docs/SQL/2.SQL优化.md)  
 &emsp; [索引优化](/docs/SQL/7.index.md)  
 &emsp; [SQL语句优化](/docs/SQL/SQL语句优化.md)  
