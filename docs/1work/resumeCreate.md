@@ -1,14 +1,6 @@
 
 
-
-# 简历制作 
-制作内容
-https://www.zhihu.com/question/25002833
-
-制作模版  
-https://mp.weixin.qq.com/s/z0k922U6jwXe5VYlz33gaA
-
-# 自我介绍  
+# 面试点  
 
 
 # 项目介绍  
@@ -30,10 +22,15 @@ https://mp.weixin.qq.com/s/z0k922U6jwXe5VYlz33gaA
 
 
 
-----
+# 自我介绍  
 
-一封感谢信：
-感谢我的领导，
-感谢求职过程中的大佬，亚朵生活的技术总监、优信的大佬、水滴的大佬。
-其他👋👋。
+# 简历制作 
+制作内容
+https://www.zhihu.com/question/25002833
+
+制作模版  
+https://mp.weixin.qq.com/s/z0k922U6jwXe5VYlz33gaA
+
+
+
 
