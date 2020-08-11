@@ -13,6 +13,12 @@
 
 <!-- /TOC -->
 
+<!-- 
+
+ Spring 与 Spring Boot 中的事件机制 
+ https://mp.weixin.qq.com/s/_0QZu5f8XYSsqAzhAcGl2Q
+-->
+
 # 1. Spring的事件机制  
 ## 1.1. 前言  
 &emsp; 事件监听是一种发布订阅者模式。做完某一件事情以后，需要广播一些消息或者通知，告诉其他的模块进行一些事件处理。相比发送请求，事件监听可以实现接口解耦。   

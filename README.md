@@ -212,7 +212,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [Redis持久化](/docs/microService/Redis/Redis持久化.md)  
 &emsp; [Redis淘汰策略](/docs/microService/Redis/Redis淘汰.md)  
 &emsp; [Redis事务](/docs/microService/Redis/Redis事务.md)  
-[Redis集群](/docs/microService/Redis/Redis集群.md)  
+[Redis部署](/docs/microService/Redis/Redis集群.md)  
 &emsp; [Redis主从复制](/docs/microService/Redis/Redis主从复制.md)  
 &emsp; [Redis哨兵模式](/docs/microService/Redis/Redis哨兵模式.md)  
 &emsp; [Redis分片模式](/docs/microService/Redis/Redis分片模式.md)  

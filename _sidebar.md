@@ -151,7 +151,7 @@
         * [Redis底层实现](/docs/microService/Redis/Redis底层实现.md)  
     * [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
     * [Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
-    * [Redis原理](/docs/microService/Redis/Redis原理.md)  
+    * [Redis部署](/docs/microService/Redis/Redis原理.md)  
         * [Redis持久化](/docs/microService/Redis/Redis持久化.md)  
         * [Redis淘汰策略](/docs/microService/Redis/Redis淘汰.md)  
         * [Redis事务](/docs/microService/Redis/Redis事务.md)  

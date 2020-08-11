@@ -22,6 +22,11 @@ https://www.cnblogs.com/wang-meng/p/5645405.html
 
 ##  BeanUtils  
 ...
+<!-- 
+MapStruct
+https://juejin.im/post/6859213877474033672
+-->
+
 
 ## validator  
 ...

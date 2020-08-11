@@ -21,6 +21,7 @@
 
 https://blog.csdn.net/SnailMann/article/details/94724197
 https://blog.csdn.net/heroqiang/article/details/79024333
+https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
 -->
 
 # 1. MVCC

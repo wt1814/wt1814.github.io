@@ -27,6 +27,11 @@
 
 <!-- /TOC -->
 
+<!-- 
+ 死磕Synchronized底层实现 
+ https://mp.weixin.qq.com/s/ca_7lurrWVcA3bLCL7UJcQ
+-->
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-16.png)  
 
 # 1. Synchronized  

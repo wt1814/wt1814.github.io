@@ -444,6 +444,8 @@ leaf：美团开源的分布式ID生成系统剖析
 https://mp.weixin.qq.com/s/A56iqJh-04vyVI7k22uvAA
 9种分布式ID生成之美团（Leaf）实战
 https://mp.weixin.qq.com/s/F1m877H-GbI-YMT-hF-w8w
+ 美团（Leaf）分布式ID生成器，好用的一批！ 
+ https://mp.weixin.qq.com/s/s9pXbnMZvxwb3Lstxgb8WA
 -->
 ......
 

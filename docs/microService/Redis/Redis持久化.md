@@ -10,7 +10,8 @@
     - [1.2. AOF（Append-only file）](#12-aofappend-only-file)
         - [1.2.1. 开启AOF](#121-开启aof)
         - [1.2.2. AOF持久化流程](#122-aof持久化流程)
-            - [1.2.2.1. 重启加载（数据恢复流程）](#1221-重启加载数据恢复流程)
+            - [1.2.2.1. 重写机制](#1221-重写机制)
+            - [1.2.2.2. 重启加载步骤（数据恢复流程）](#1222-重启加载步骤数据恢复流程)
         - [1.2.3. AOF文件损坏](#123-aof文件损坏)
         - [1.2.4. AOF的优势和劣势](#124-aof的优势和劣势)
     - [1.3. 混合持久化](#13-混合持久化)
@@ -18,11 +19,13 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">部分参考《Redis开发与运维》</font>**
+
 # 1. Redis持久化  
 
 **<font color = "lime">&emsp; 一句话概述：  
 &emsp; RDB，快照；保存某一时刻的全部数据；缺点是间隔长（配置文件中默认最少60s）。  
-&emsp; AOF，文件追加；记录所有操作命令；优点是默认间隔1s，丢失数据少；缺点是文件比较大。  
+&emsp; AOF，文件追加；记录所有操作命令；优点是默认间隔1s，丢失数据少；缺点是文件比较大，通过重写机制来压缩文件体积。  
 &emsp; Redis4.0混合持久化，先RDB，后AOF。  
 </font>**   
 
@@ -122,7 +125,7 @@
 * no：Redis 服务器不负责写入 AOF，而是交由操作系统来处理什么时候写入 AOF文件。更快，但也是最不安全的选择，不推荐使用。 
 
 ### 1.2.2. AOF持久化流程  
-&emsp; AOF的工作流程操作：命令写入 （append）、文件同步（sync）、文件重写（rewrite）、重启加载 （load）。  
+&emsp; **<font color = "red">AOF的工作流程操作：命令写入 （append）、文件同步（sync）、文件重写（rewrite）、重启加载 （load）。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-52.png)  
 &emsp; 流程如下：  
 1. 所有的写入命令会追加到aof_buf（缓冲区）中。   
@@ -139,8 +142,30 @@
 
 &emsp; 文件写入、文件同步需要根据一定的条件来执行，而这些条件由Redis配置文件中的appendfsync选项来决定。  
 -->
+#### 1.2.2.1. 重写机制
+&emsp; 随着命令不断写入AOF，文件会越来越大，为了解决这个问题，Redis 引入AOF重写机制压缩文件体积。AOF文件重写是把Redis进程内的数据转 化为写命令同步到新AOF文件的过程。   
+&emsp; **<font color = "red">重写后的AOF文件为什么可以变小？有如下原因：</font>**  
 
-#### 1.2.2.1. 重启加载（数据恢复流程）  
+1. <font color = "red">进程内已经超时的数据不再写入文件。</font>   
+2. <font color = "red">旧的AOF文件含有无效命令，</font>如del key1、hdel key2、srem keys、set a111、set a222等。重写使用进程内数据直接生成，这样新的AOF文件只保留最终数据的写入命令。  
+3. <font color = "red">多条写命令可以合并为一个，</font>如：lpush list a、lpush list b、lpush list c可以转化为：lpush list a b c。为了防止单条命令过大造成客户端缓冲区溢出，对于list、set、hash、zset等类型操作，以64个元素为界拆分为多条。  
+
+&emsp; **<font color = "red">AOF重写降低了文件占用空间，除此之外，另一个目的是：更小的AOF 文件可以更快地被Redis加载。</font>**  
+
+&emsp; AOF重写过程可以手动触发和自动触发：  
+* 手动触发：直接调用bgrewriteaof命令。 
+* 自动触发：根据auto-aof-rewrite-min-size和auto-aof-rewrite-percentage参数确定自动触发时机。
+    * auto-aof-rewrite-min-size：表示运行AOF重写时文件最小体积，默认 为64MB。
+    * auto-aof-rewrite-percentage：代表当前AOF文件空间 （aof_current_size）和上一次重写后AOF文件空间（aof_base_size）的比值。  
+    
+    &emsp; 自动触发时机=aof_current_size>auto-aof-rewrite-min- size&&（aof_current_size-aof_base_size）/aof_base_size>=auto-aof-rewrite- percentage  
+    &emsp; 其中aof_current_size和aof_base_size可以在info Persistence统计信息中查看。  
+
+&emsp; 当触发AOF重写时，内部做了哪些事呢？下面结合图5-3介绍它的运行流程。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-86.png)  
+
+
+#### 1.2.2.2. 重启加载步骤（数据恢复流程）  
 &emsp; AOF和RDB文件都可以用于服务器重启时的数据恢复。如下图所示， 表示Redis持久化文件加载流程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-54.png)  
 &emsp; 流程说明： 

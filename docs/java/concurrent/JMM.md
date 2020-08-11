@@ -106,6 +106,8 @@ class Demo {
 ## 1.3. 了解计算机硬件内存模型  
 <!-- 
 https://blog.csdn.net/w1453114339/article/details/107563613
+https://mp.weixin.qq.com/s/lzLOwoQAVvi_3twuWF1DBQ
+https://blog.csdn.net/w1453114339/article/details/107563613
 -->
 ......
 
