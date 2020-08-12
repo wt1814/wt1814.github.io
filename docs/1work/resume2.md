@@ -7,7 +7,7 @@
 <font size = "4.5">&emsp; 联系电话：17813261813  &emsp; &emsp;  E-mail: wangtao1814@163.com</font>
 
 # 个人博客  
-<font size = "4.5">&emsp; 个人博客：http://wt1814.com/   &emsp; &emsp; 个人公众号：王猴卖瓜。</font>  
+<font size = "4.5">&emsp; 个人博客：http://wt1814.com/   &emsp; 个人公众号：王猴卖瓜</font>  
 
 # 教育经历  
 <font size = "4.5">&emsp; 2012.9－2016.7&emsp; &emsp; &emsp; 大连东软信息学院&emsp; &emsp; &emsp; 软件工程&emsp; &emsp; &emsp; 本科</font>  
@@ -17,14 +17,14 @@
 
 * Java  
     * 熟练使用JDK1.8，泛型，反射等；
-    * 熟悉JVM基础知识，掌握JVM调优；
+    * 熟悉JVM；
     * 熟悉多线程编程技术；
     * 熟悉设计模式；
 * 数据库  
     * 熟练使用数据库MySql，Oracle，PostgreSQL；
     * 熟悉数据库复制，分区，分库分表技术；
     * 掌握myCat中间件；
-* 熟练使用ssm框架、SpringBoot框架；熟悉Spring源码
+* 熟练使用ssm框架、SpringBoot框架；熟悉Spring源码  
 * 分布式技术
     * 掌握SpringCloud、Dubbo框架；
     * 熟悉使用redis、mq、zookeeper等中间件；
@@ -35,13 +35,6 @@
 * 熟悉Linux基本命令；
 
 </font>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
 
 # 工作经历  
 <font size = "4.5">
@@ -51,9 +44,6 @@
 * 2016.04---2018.02  &emsp; &emsp;北京天源迪科信息技术有限公司  
 工作内容：Java服务开发，研发CMS系统  
 </font>
-
-
-<br/>
 
 # 工作经验  
 <font size = "4.5">
@@ -84,18 +74,7 @@
     * 核心技术：SpringMVC+Spring+MyBatis+阿里云产品  
     * 项目概述：采用阿里的企业级分布式应用服务EDAS进行分布式开发，采用前后端分离技术，开发电商项目。
     * 个人职责：在国电项目组商品中心开发小组进行服务开发工作，参与商品协议，商品铺货等功能。
- 
 </font>
- 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
 
 # 自我评价  
 <font size = "4.5">
@@ -105,6 +84,4 @@
 * 我怎样克服困难：在遇到技术问题时往往会去Google、百度上寻找答案。有时会点到源码里，进行一些基础分析。   
 * 怎样保持自己的视野：平时刷一刷微信公众号。业余时间到掘金等技术博客上刷一刷。  
 * 我的优势：热爱技术、自学能力强，有良好的自我认知。全面的技能树与开阔的视野，良好的心态、情商与沟通能力。
-
 </font>
- 
