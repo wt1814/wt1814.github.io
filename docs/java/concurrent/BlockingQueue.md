@@ -18,7 +18,7 @@
 
 
 # 1. 阻塞队列  
-&emsp; <font color = "red">阻塞队列与普通队列的区别在于，当队列是空的时，从队列中获取元素的操作将会被阻塞，或者当队列是满时，往队列里添加元素的操作会被阻塞。</font>试图从空的阻塞队列中获取元素的线程将会被阻塞，直到其他的线程往空的队列插入新的元素。同样，试图往已满的阻塞队列中添加新元素的线程同样也会被阻塞，直到其他的线程使队列重新变得空闲起来，如从队列中移除一个或者多个元素，或者完全清空队列，下图展示了如何通过阻塞队列来合作：  
+&emsp; **<font color = "lime">阻塞队列与普通队列的区别在于，当队列是空的时，从队列中获取元素的操作将会被阻塞，或者当队列是满时，往队列里添加元素的操作会被阻塞。</font>**试图从空的阻塞队列中获取元素的线程将会被阻塞，直到其他的线程往空的队列插入新的元素。同样，试图往已满的阻塞队列中添加新元素的线程同样也会被阻塞，直到其他的线程使队列重新变得空闲起来，如从队列中移除一个或者多个元素，或者完全清空队列，下图展示了如何通过阻塞队列来合作：  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-34.png)  
 
@@ -28,7 +28,6 @@
 支持阻塞的插入方法：队列满时，队列会阻塞插入元素的线程，直到队列不满。  
 支持阻塞的移除方法：队列空时，获取元素的线程会等待队列变为非空。  
 -->
-
 &emsp; 阻塞队列常用于生产者和消费者的场景，生产者是向队列里添加元素的线程，消费者是从队列里取元素的线程。简而言之，阻塞队列是生产者用来存放元素、消费者获取元素的容器。  
 
 ## 1.1. BlockingQueue  
@@ -64,13 +63,11 @@
 * SynchronousQueue：一个不存储元素的阻塞队列。  
 * LinkedTransferQueue：一个由链表结构组成的无界阻塞队列。  
 
-&emsp; ArrayBlockingQueue预先分配好一段连续内存，更稳定。  
-&emsp; LinkedBlockingQueue 读写锁分离，吞吐量更大。  
-
-    1.队列大小有所不同，ArrayBlockingQueue是有界的初始化必须指定大小，而LinkedBlockingQueue可以是有界的也可以是无界的(Integer.MAX_VALUE)，对于后者而言，当添加速度大于移除速度时，在无界的情况下，可能会造成内存溢出等问题。
-    2.数据存储容器不同，ArrayBlockingQueue采用的是数组作为数据存储容器，而LinkedBlockingQueue采用的则是以Node节点作为连接对象的链表。
-    3.由于ArrayBlockingQueue采用的是数组的存储容器，因此在插入或删除元素时不会产生或销毁任何额外的对象实例，而LinkedBlockingQueue则会生成一个额外的Node对象。这可能在长时间内需要高效并发地处理大批量数据的时，对于GC可能存在较大影响。
-    4.两者的实现队列添加或移除的锁不一样，ArrayBlockingQueue实现的队列中的锁是没有分离的，即添加操作和移除操作采用的同一个ReenterLock锁，而LinkedBlockingQueue实现的队列中的锁是分离的，其添加采用的是putLock，移除采用的则是takeLock，这样能大大提高队列的吞吐量，也意味着在高并发的情况下生产者和消费者可以并行地操作队列中的数据，以此来提高整个队列的并发性能。
+&emsp; <font color = "red">ArrayBlockingQueue预先分配好一段连续内存，更稳定；LinkedBlockingQueue 读写锁分离，吞吐量更大。</font>  
+1. 队列大小有所不同，ArrayBlockingQueue是有界的初始化必须指定大小，而LinkedBlockingQueue可以是有界的也可以是无界的(Integer.MAX_VALUE)，对于LinkedBlockingQueue，当添加速度大于移除速度时，在无界的情况下，可能会造成内存溢出等问题。
+2. 数据存储容器不同，ArrayBlockingQueue采用的是数组作为数据存储容器，而LinkedBlockingQueue采用的则是以Node节点作为连接对象的链表。
+3. 由于ArrayBlockingQueue采用的是数组的存储容器，因此在插入或删除元素时不会产生或销毁任何额外的对象实例，而LinkedBlockingQueue则会生成一个额外的Node对象。这可能在长时间内需要高效并发地处理大批量数据的时，对于GC可能存在较大影响。
+4. 两者的实现队列添加或移除的锁不一样，ArrayBlockingQueue实现的队列中的锁是没有分离的，即添加操作和移除操作采用的同一个ReenterLock锁，而LinkedBlockingQueue实现的队列中的锁是分离的，其添加采用的是putLock，移除采用的则是takeLock，这样能大大提高队列的吞吐量，也意味着在高并发的情况下生产者和消费者可以并行地操作队列中的数据，以此来提高整个队列的并发性能。
 
 ### 1.2.1. ArrayBlockingQueue  
 
@@ -295,7 +292,7 @@ private final ReentrantLock putLock = new ReentrantLock();
 private final Condition notFull = putLock.newCondition();
 ```
 
-&emsp; 每个添加到LinkedBlockingQueue队列中的数据都将被封装成Node节点，添加到链表队列中，其中head和last分别指向队列的头结点和尾结点。与ArrayBlockingQueue不同的是，LinkedBlockingQueue内部分别使用了takeLock 和 putLock 对并发进行控制，也就是说，添加和删除操作并不是互斥操作，可以同时进行，这样也就可以大大提高吞吐量。  
+&emsp; 每个添加到LinkedBlockingQueue队列中的数据都将被封装成Node节点，添加到链表队列中，其中head和last分别指向队列的头结点和尾结点。与ArrayBlockingQueue不同的是，LinkedBlockingQueue内部分别使用了takeLock 和 putLock对并发进行控制，也就是说，添加和删除操作并不是互斥操作，可以同时进行，这样也就可以大大提高吞吐量。  
 &emsp; 这里如果不指定队列的容量大小，也就是使用默认的Integer.MAX_VALUE，如果存在添加速度大于删除速度时候，有可能会内存溢出。  
 
 #### 1.2.2.2. 入队  
@@ -337,7 +334,6 @@ public void put(E e) throws InterruptedException {
 
 * 队列已满，阻塞等待。
 * 队列未满，创建一个node节点放入队列中，如果放完以后队列还有剩余空间，继续唤醒下一个添加线程进行添加。如果放之前队列中没有元素，放完以后要唤醒消费线程进行消费。
-
 
 ```java
 public boolean offer(E e) {
@@ -455,7 +451,6 @@ private E dequeue() {
     return x;
 }
 ```
-
 
 ## 1.3. 生产者-消费者  
 <!-- 

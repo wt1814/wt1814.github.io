@@ -24,6 +24,15 @@ Gitee： https://gitee.com/wt1814/
 [IO](/docs/java/basis/JavaIO.md)  
 [SPI](/docs/java/basis/SPI.md)  
 
+### 设计模式  
+[七大设计原则](/docs/java/Design/1.principles.md)  
+[Java设计模式](/docs/java/Design/2.design.md)  
+[创建型设计模式](/docs/java/Design/3.establish.md)  
+[结构型设计模式](/docs/java/Design/4.structure.md)  
+&emsp; [动态代理](/docs/java/Design/6.proxy.md)   
+[行为型设计模式](/docs/java/Design/5.behavior.md)  
+[设计模式使用总结](/docs/java/Design/summary.md)  
+
 ### 并发编程  
 [线程基本概念](/docs/java/concurrent/1.Thread.md)  
 &emsp; [wait](/docs/java/concurrent/wait.md)  
@@ -53,15 +62,7 @@ Gitee： https://gitee.com/wt1814/
 [GC垃圾回收](/docs/java/JVM/5.GC垃圾回收.md)  
 [JVM调优-基础](/docs/java/JVM/6.JVM调优-基础.md)  
 [JVM调优](/docs/java/JVM/7.JVM调优.md)  
-
-### 设计模式  
-[七大设计原则](/docs/java/Design/1.principles.md)  
-[Java设计模式](/docs/java/Design/2.design.md)  
-[创建型设计模式](/docs/java/Design/3.establish.md)  
-[结构型设计模式](/docs/java/Design/4.structure.md)  
-&emsp; [动态代理](/docs/java/Design/6.proxy.md)   
-[行为型设计模式](/docs/java/Design/5.behavior.md)  
-
+[Linux系统问题排查](/docs/Linux/Linux/problem.md)   
 
 ## 数据库  
 [SQL语句](/docs/SQL/1.SQL语句.md)  

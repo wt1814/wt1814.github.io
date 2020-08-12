@@ -287,10 +287,25 @@ public com.zzw.juc.sync.SyncDemo();
 * **<font color = "red">代码块同步：使用monitorenter和monitorexit指令实现。</font>**  
 
 #### 1.4.1.1. 同步代码块  
-&emsp; 同步代码块：monitorenter指令插入到同步代码块的开始位置，monitorexit指令插入到同步代码块的结束位置，<font color = "red">JVM需要保证每一个monitorenter都有一个monitorexit与之相对应。</font>任何对象都有一个monitor与之相关联，当且一个monitor被持有之后，它将处于锁定状态。线程执行到monitorenter指令时，将会尝试获取对象所对应的monitor所有权，即尝试获取对象的锁。两条指令的作用：  
+&emsp; 同步代码块：monitorenter指令插入到同步代码块的开始位置，monitorexit指令插入到同步代码块的结束位置，<font color = "red">JVM需要保证每一个monitorenter都有一个monitorexit与之相对应。</font>任何对象都有一个monitor与之相关联，当且一个monitor被持有之后，它将处于锁定状态。线程执行到monitorenter指令时，将会尝试获取对象所对应的monitor所有权，即尝试获取对象的锁。
 
+&emsp; monitor对象：  
+&emsp; 每个对象有一个监视器锁（monitor），monitor本质是基于操作系统互斥（mutex）实现的，操作系统实现线程之间切换需要从用户态到内核态切换，成本非常高。一个monitor只能被一个线程拥有。
+
+```text
+    monitor对象重要属性说明：
+_owner：指向持有ObjectMonitor对象的线程；
+_WaitSet：存放处于wait状态的线程队列；
+_EntryList：存放处于等待锁block状态的线程队列；
+_recursions：锁的重入次数；
+_count：用来记录该线程获取锁的次数；
+
+    假如当前线程A、B、C同时访问同步块。假如A获取到锁，也就会将 monitor 对象中的 _owner 的值赋值为当前线程ID。B、C线程会进入EntryList中。count =1 ，recursions=1。假如A线程第二次进入同步快，count = 2, recursions=2，当前线程退出时，count和recursions会减一，直到count=0, recursions=0时，说明线程A释放了monitor锁，然后会唤醒EntryList中的线程，EntryList线程会竞争monitor，竞争到了，和线程A的操作一致。
+```
+
+&emsp; 两条指令的作用：  
 * monitorenter：  
-&emsp; 每个对象有一个监视器锁（monitor），monitor本质是基于操作系统互斥（mutex）实现的，操作系统实现线程之间切换需要从用户态到内核态切换，成本非常高。一个monitor只能被一个线程拥有。当monitor被占用时就会处于锁定状态，线程执行monitorenter指令时尝试获取monitor的所有权，过程如下：
+当monitor被占用时就会处于锁定状态，线程执行monitorenter指令时尝试获取monitor的所有权，过程如下：
     1. <font color = "red">如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。</font>  
     2. 如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1，所以synchronized关键字实现的锁是可重入的锁。  
     3. 如果其他线程已经占用了monitor，则该线程进入阻塞状态，直到monitor的进入数为0，再重新尝试获取monitor的所有权。  
@@ -301,13 +316,15 @@ public com.zzw.juc.sync.SyncDemo();
 
 &emsp; 总结：Synchronized的实现原理，Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。  
 
+
+
 &emsp; **<font color = "red">同步代码块中会出现两次的monitorexit。</font>** 这是因为一个线程对一个对象上锁了，后续就一定要解锁，第二个monitorexit是为了保证在线程异常时，也能正常解锁，避免造成死锁。  
 
 #### 1.4.1.2. 同步方法  
 &emsp; synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被synchronized修饰的方法，而是在Class文件的方法表中将该方法的access_flags字段中的synchronized标志位置1，表示该方法是同步方法并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
 
 ## 1.5. synchronized的锁优化
-&emsp; **<font color = "lime">锁升级过程是主要是理解偏向锁、轻量级锁的升级过程。</font>**    
+&emsp; **<font color = "lime">锁升级过程主要是理解偏向锁、轻量级锁的升级过程。</font>**    
 &emsp; **<font color = "lime">一句话概述：起初一个线程获取偏向锁，当另一个线程竞争锁，只cas一次，抢占到撤销原线程的偏向锁；抢占不到升级成轻量级锁；轻量级锁加锁过程中会使用自旋锁，新线程自旋多次获取轻量级锁失败（锁对象不是当前线程），会升级成重量级锁。并且已经获取轻量级锁的线程在释放锁时，也会升级成重量级锁。</font>**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-38.png)   
@@ -387,10 +404,10 @@ public com.zzw.juc.sync.SyncDemo();
 
 &emsp; **<font color = "lime">2. 新线程获取偏向锁：（根据偏向锁的状态以及cas是否成功，来决定是否撤销偏向锁、升级轻量级锁。）</font>**  
 1. 首先获取锁对象的Markword，判断是否处于可偏向状态。（biased_lock=1、且 ThreadId 为空）  
-2. 如果是可偏向状态，则通过 CAS 操作，把当前线程的 ID写入到 MarkWord  
-    * 如果 cas 成功，那么 markword 就会变成这样。表示已经获得了锁对象的偏向锁，接着执行同步代码块。  
+2. **<font color = "red">如果是可偏向状态，</font>** 则通过 CAS 操作，把当前线程的 ID写入到 MarkWord  
+    * 如果 cas 成功，表示已经获得了锁对象的偏向锁，接着执行同步代码块。  
     * 如果 cas 失败，说明有其他线程已经获得了偏向锁，这种情况说明当前锁存在竞争，需要撤销已获得偏向锁的线程，并且把它持有的锁升级为轻量级锁（这个操作需要等到全局安全点，也就是没有线程在执行字节码）才能执行。
-3. 如果是已偏向状态，需要检查 markword 中存储的ThreadID 是否等于当前线程的 ThreadID  
+3. **<font color = "red">如果是已偏向状态，</font>** 需要检查 markword 中存储的ThreadID 是否等于当前线程的 ThreadID  
     * 如果相等，不需要再次获得锁，可直接执行同步代码块。
     * 如果不相等，说明当前锁偏向于其他线程，需要<font color = "red">撤销偏向锁并升级到轻量级锁</font>。
 
@@ -420,7 +437,7 @@ public com.zzw.juc.sync.SyncDemo();
 * 已偏向(Biased)。这种状态下，thread pointer非空，且epoch为有效值——意味着其他线程正在持有这个锁对象。
 
 #### 1.5.4.1. 偏向锁的性能   
-&emsp; 偏向锁可以提高带有同步但无竞争的程序性能，但它同样是一个带有效益权衡（Trade Off）性质的优化，也就是说它并非总是对程序运行有利。<font color = "red">如果程序中大多数的锁都总是被多个不同的线程访问，那偏向模式就是多余的。</font>在具体问题具体分析的前提下，有时候使用参数-XX：-
+&emsp; 偏向锁可以提高带有同步但无竞争的程序性能，但它同样是一个带有效益权衡（Trade Off）性质的优化，也就是说它并非总是对程序运行有利。**<font color = "lime">如果程序中大多数的锁都总是被多个不同的线程访问，那偏向模式就是多余的。</font>** 在具体问题具体分析的前提下，有时候使用参数-XX：-
 UseBiasedLocking来禁止偏向锁优化反而可以提升性能。 
 
 #### 1.5.4.2. 偏向锁的失效  

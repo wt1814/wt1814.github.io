@@ -501,7 +501,7 @@ if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY)
 resize();
 ```
 
-&emsp; <font color = "red">HashMap 每次扩容都是建立一个新的 table 数组，长度和容量阈值都变为原来的两倍，然后把原数组元素重新映射到新数组上。</font>
+&emsp; <font color = "red">HashMap 每次扩容都是建立一个新的 table 数组，长度和容量阈值都变为原来的两倍，然后把原数组元素重新映射到新数组上。</font>  
 &emsp; 具体步骤如下：  
 1. 首先会判断 table 数组长度，如果大于 0 说明已被初始化过，那么按当前 table 数组长度的 2 倍进行扩容，阈值也变为原来的 2 倍。  
 2. 若 table 数组未被初始化过，且 threshold(阈值)大于 0 说明调用了 HashMap(initialCapacity, loadFactor) 构造方法，那么就把数组大小设为 threshold。  
