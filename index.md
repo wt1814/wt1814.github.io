@@ -83,14 +83,14 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [MySql事务](/docs/SQL/14.transaction.md)  
 &emsp; [MySql锁](/docs/SQL/15.lock.md)  
 &emsp; [MySqlMVCC](/docs/SQL/MVCC.md)  
-[分布式数据库](/docs/SQL/4.分布式数据库.md)  
+[数据库分布式](/docs/SQL/4.分布式数据库.md)  
 &emsp; [主从复制](/docs/SQL/16.replication.md)  
 &emsp; [分区](/docs/SQL/17.partition.md)  
 &emsp; [分库分表](/docs/SQL/18.sub.md)  
-&emsp; [数据迁移](/docs/projectImplement/implementation.md)   
-[MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
-[AOP多数据源动态切换](/docs/SQL/6.multiDataSource.md)  
-
+&emsp; [数据库分布式实现](/docs/SQL/subRealize.md)  
+&emsp; &emsp; [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
+&emsp; &emsp; [AOP多数据源动态切换](/docs/SQL/6.multiDataSource.md) 
+[数据迁移](/docs/projectImplement/implementation.md)  
 
 ## SSM  
 ### Spring  

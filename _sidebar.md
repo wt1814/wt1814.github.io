@@ -78,13 +78,14 @@
         * [MySql事务](/docs/SQL/14.transaction.md)  
         * [MySql锁](/docs/SQL/15.lock.md)  
         * [MySqlMVCC](/docs/SQL/MVCC.md)  
-    * [分布式数据库](/docs/SQL/4.分布式数据库.md)  
+    * [数据库分布式](/docs/SQL/4.分布式数据库.md)  
         * [主从复制](/docs/SQL/16.replication.md)  
         * [分区](/docs/SQL/17.partition.md)  
         * [分库分表](/docs/SQL/18.sub.md)  
-        * [数据迁移](/docs/projectImplement/implementation.md)   
-    * [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
-    * [AOP多数据源动态切换](/docs/SQL/6.multiDataSource.md)  
+        * [数据库分布式实现](/docs/SQL/subRealize.md)  
+            * [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
+            * [AOP多数据源动态切换](/docs/SQL/6.multiDataSource.md)  
+    * [数据迁移](/docs/projectImplement/implementation.md)   
   
 * Spring  
     * [Spring](/docs/SSM/Spring/1.Spring.md)  
