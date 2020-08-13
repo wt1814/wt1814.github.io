@@ -117,7 +117,6 @@ Gitee： https://gitee.com/wt1814/
 [数据库对象](/docs/SQL/DatabaseObject.md)  
 [SQL优化](/docs/SQL/2.SQL优化.md)  
 &emsp; [索引优化](/docs/SQL/7.index.md)  
-&emsp; [SQL语句优化](/docs/SQL/SQL语句优化.md)  
 &emsp; [优化案例](/docs/SQL/12.case.md)  
 [MySql架构](/docs/SQL/8.MySql架构.md)  
 [MySql日志](/docs/SQL/log.md)  
