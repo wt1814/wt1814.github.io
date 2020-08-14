@@ -211,7 +211,9 @@
     * [源码安全](/docs/web/codeSecurity.md)  
     
 * 架构设计  
-    * [系统三高](/docs/system/threeHigh.md)  
+    * [分布式和集群](/docs/system/distributed.md)  
+    * [并发系统三高](/docs/system/threeHigh.md)  
+    * [系统稳定性建设](/docs/system/stability.md)  
 
 * 服务器  
 
