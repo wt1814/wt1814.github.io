@@ -166,7 +166,7 @@ public void testSqlSession(){
 ```
 
 ### 1.2.3. 开启二级缓存的时机（优缺点）  
-&emsp; 一级缓存默认是打开的，二级缓存需要配置才可以开启。**<font color = "red">在什么情况下才有必要去开启二级缓存？</font>**   
+&emsp; 一级缓存默认是打开的，二级缓存需要配置才可以开启。**<font color = "lime">在什么情况下才有必要去开启二级缓存？</font>**   
 1. **<font color = "red">因为所有的增删改都会刷新二级缓存，导致二级缓存失效，</font><font color = "lime">所以适合在查询为主的应用中使用，比如历史交易、历史订单的查询。</font>** 否则缓存就失去了意义。
 2. 如果多个namespace中有针对于同一个表的操作，比如Blog表，如果在一个namespace中刷新了缓存，另一个 namespace 中没有刷新，就会出现读到脏数据的情况。所以，推荐在一个Mapper里面只操作单表的情况使用。  
     &emsp; <font color = "lime">如果要让多个namespace共享一个二级缓存，应该怎么做？</font>   

@@ -27,9 +27,9 @@ https://mp.weixin.qq.com/s/DC_PH_PXpbNgDQuGslTTTg
 
 &emsp; spring bean的生命周期：  
 1. 实例化Bean：  
-&emsp; 对于BeanFactory容器，当客户向容器请求一个尚未初始化的bean时，或初始化bean的时候需要注入另一个尚未初始化的依赖时，容器就会调用createBean进行实例化。对于ApplicationContext容器，当容器启动结束后，通过获取eanDefinition对象中的信息，实例化所有的bean。   
+&emsp; 对于BeanFactory容器，当客户向容器请求一个尚未初始化的bean时，或初始化bean的时候需要注入另一个尚未初始化的依赖时，容器就会调用createBean进行实例化。对于ApplicationContext容器，当容器启动结束后，通过获取BeanDefinition对象中的信息，实例化所有的bean。   
 2. 设置对象属性（依赖注入）：  
-&emsp; 实例化后的对象被封装在BeanWrapper对象中，紧接着，Spring根据BeanDefinition中的信息 以及 通 过BeanWrapper提供的设置属性的接口完成依赖注入。  
+&emsp; 实例化后的对象被封装在BeanWrapper对象中，紧接着，Spring根据BeanDefinition中的信息以及通过BeanWrapper提供的设置属性的接口完成依赖注入。  
 3. 处理Aware接口：  
 &emsp; 接着，Spring会检测该对象是否实现了xxxAware接口，并将相关的xxxAware实例注入给Bean：  
 &emsp; &emsp; ①如果这个Bean已经实现了BeanNameAware接口，会调用它实现的setBeanName(String beanId)方法，此处传递的就是Spring配置文件中Bean的id值；  

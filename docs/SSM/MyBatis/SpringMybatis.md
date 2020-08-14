@@ -3,20 +3,22 @@
 <!-- TOC -->
 
 - [1. 整合MyBatis](#1-整合mybatis)
-    - [1.1. Spring整合MyBatis](#11-spring整合mybatis)
-    - [1.2. SpringBoot整合MyBatis](#12-springboot整合mybatis)
-- [2. Spring整合MyBatis原理](#2-spring整合mybatis原理)
-    - [2.1. 创建SqlSessionFacory](#21-创建sqlsessionfacory)
-    - [2.2. 创建SqlSession](#22-创建sqlsession)
-    - [2.3. 接口的扫描注册](#23-接口的扫描注册)
-    - [2.4. 接口注入使用](#24-接口注入使用)
+    - [1.1. Spring、SpringBoot整合MyBatis](#11-springspringboot整合mybatis)
+        - [1.1.1. Spring整合MyBatis](#111-spring整合mybatis)
+        - [1.1.2. SpringBoot整合MyBatis](#112-springboot整合mybatis)
+    - [1.2. Spring整合MyBatis原理](#12-spring整合mybatis原理)
+        - [1.2.1. 创建SqlSessionFacory](#121-创建sqlsessionfacory)
+        - [1.2.2. 创建SqlSession](#122-创建sqlsession)
+        - [1.2.3. 接口的扫描注册](#123-接口的扫描注册)
+        - [1.2.4. 接口注入使用](#124-接口注入使用)
 
 <!-- /TOC -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-33.png)  
 
 
 # 1. 整合MyBatis  
-## 1.1. Spring整合MyBatis  
+## 1.1. Spring、SpringBoot整合MyBatis  
+### 1.1.1. Spring整合MyBatis  
 
 &emsp; 添加配置文件  
 
@@ -32,12 +34,12 @@
 </bean>
 ```
 
-## 1.2. SpringBoot整合MyBatis  
+### 1.1.2. SpringBoot整合MyBatis  
 1. 引入jar包
 2. 使用硬编码的方式配置bean。比如SqlSessionFactory，SqlSessionTemplate, PlatformTransactionManager。
 3. 扫描接口包。
 
-# 2. Spring整合MyBatis原理  
+## 1.2. Spring整合MyBatis原理  
 &emsp; Spring整合MyBatis并不会对MyBatis内部进行改造，只会进行集成，对其实现进行了包装。  
 &emsp; MyBatis运行原理：  
 
@@ -46,7 +48,7 @@
     3. 获取Mapper；
     4. 执行操作；
 
-## 2.1. 创建SqlSessionFacory  
+### 1.2.1. 创建SqlSessionFacory  
 &emsp; <font color = "red">MyBatis-Spring中创建SqlSessionFacory是由SqlSessionFactoryBean完成的。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-24.png)  
 
@@ -70,7 +72,7 @@ public void afterPropertiesSet() throws Exception {
 ```
 &emsp; buildSqlSessionFactory()方法会对sqlSessionFactory做定制的初始化，初始化sqlSessionFactory有两种方式，一种是直接通过property直接注入到该实例中，另一种是通过解析xml的方式，就是在configuration.xml里面的配置，根据这些配置做了相应的初始化操作，里面也是一些标签的解析属性的获取，操作，和Spring的默认标签解析有点类似。  
 
-## 2.2. 创建SqlSession  
+### 1.2.2. 创建SqlSession  
 &emsp; 在Spring中并没有直接使用DefaultSqlSession。DefaultSqlSession是线程不安全的，注意看类上的注解：  
 
     Note that this class is not Thread-Safe. 
@@ -84,7 +86,7 @@ public void afterPropertiesSet() throws Exception {
 this.sqlSessionProxy = (SqlSession) newProxyInstance( SqlSessionFactory.class.getClassLoader(), new Class[] { SqlSession.class }, new SqlSessionInterceptor());
 ```
 
-## 2.3. 接口的扫描注册  
+### 1.2.3. 接口的扫描注册  
 &emsp; 获取Mapper接口。在Service层可以使用@Autowired自动注入的Mapper接口，需要保存在 BeanFactory（比如 XmlWebApplicationContext）中。也就是说接口是在 Spring 启动的时候，会被扫描，注册。     
 &emsp; 扫描注册Mapper接口是在 applicationContext.xml里面配置了MapperScannerConfigurer或者使用注解@MapperScan完成的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-25.png)  
@@ -139,7 +141,7 @@ sbd.getPropertyValues().add("sqlSessionFactory", this.sqlSessionFactory);
 
 &emsp; 以上就是实例化MapperScannerConfigurer类的主要工作，总结起来就是扫描basePackage包下所有的mapper接口类，并将mapper接口类封装成为BeanDefinition对象，注册到spring的BeanFactory容器中。  
 
-## 2.4. 接口注入使用  
+### 1.2.4. 接口注入使用  
 &emsp; 使用 Mapper 的时候，只需要在加了 Service 注解的类里面使用@Autowired 注入 Mapper 接口就可以了。  
 
 ```java
