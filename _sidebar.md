@@ -80,6 +80,9 @@
         * [MySqlMVCC](/docs/SQL/MVCC.md)  
     * [数据库分布式](/docs/SQL/4.分布式数据库.md)  
         * [主从复制](/docs/SQL/16.replication.md)  
+            * [主从复制的高可用](/docs/SQL/replicationAvailability.md)   
+            * [主从复制的问题](/docs/SQL/replicationProblem.md)  
+            * [读写分离](/docs/SQL/SeparationReade.md)  
         * [分区](/docs/SQL/17.partition.md)  
         * [分库分表](/docs/SQL/18.sub.md)  
         * [数据库分布式实现](/docs/SQL/subRealize.md)  
@@ -126,10 +129,12 @@
 
     * [SpringBoot启动过程-SpringApplication初始化](/docs/microService/SpringBoot/SpringApplication初始化.md)  
     * [SpringBoot启动过程-run()方法运行过程](/docs/microService/SpringBoot/run方法运行过程.md)  
+        * [SpringBoot事件回调机制](/docs/microService/SpringBoot/eventCallback.md)
+        * [SpringBoot事件监听机制](/docs/microService/SpringBoot/3.SpringBootEvent.md)  
+        * [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/4.SpringBootEvent.md)  
     * [SpringBoot自动配置原理-@SpringBootApplication](/docs/microService/SpringBoot/自动配置@SpringBootApplication.md)  
     * [SpringBoot自动配置原理-运行流程解析](/docs/microService/SpringBoot/自动配置运行流程解析.md)  
-    * [SpringBoot事件监听机制](/docs/microService/SpringBoot/3.SpringBootEvent.md)  
-    * [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/4.SpringBootEvent.md)  
+
     * [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
 * Spring Cloud Netflix  
