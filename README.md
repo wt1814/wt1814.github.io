@@ -20,8 +20,9 @@
         - [分布式理论](#分布式理论)
         - [分布式通信](#分布式通信)
     - [Elaticsearch](#elaticsearch)
-    - [项目构建基础](#项目构建基础)
     - [Error](#error)
+    - [项目构建基础](#项目构建基础)
+    - [架构设计](#架构设计)
     - [服务器](#服务器)
         - [Linux](#linux)
         - [Nginx](#nginx)
@@ -262,6 +263,13 @@ Gitee： https://gitee.com/wt1814/
 [ELK与EFK](/docs/ES/6.ELK与EFK.md)    
 
 ---
+## Error  
+[多线程串线了](/docs/Error/ThreadCrossed.md)  
+[接口响应时间](/docs/Error/responseTime.md)  
+[熔断降级处理](/docs/Error/hystrix.md)  
+
+---
+
 ## 项目构建基础    
 [接口幂等](/docs/web/idempotent.md)   
 [日志系统](/docs/web/log.md)   
@@ -274,11 +282,10 @@ Gitee： https://gitee.com/wt1814/
 [源码安全](/docs/web/codeSecurity.md)  
 [其他](/docs/web/other.md)
 
----
-## Error  
-[多线程串线了](/docs/Error/ThreadCrossed.md)  
-[接口响应时间](/docs/Error/responseTime.md)  
-[熔断降级处理](/docs/Error/hystrix.md)  
+## 架构设计  
+[系统三高](/docs/system/threeHigh.md)  
+
+
 
 ---
 ## 服务器  

@@ -6,8 +6,7 @@
         - [1.1.1. 插入缓冲](#111-插入缓冲)
         - [1.1.2. 两次写](#112-两次写)
         - [1.1.3. 自适应哈希索引](#113-自适应哈希索引)
-        - [预读（read ahead）](#预读read-ahead)
-    - [两阶段提交](#两阶段提交)
+        - [1.1.4. 预读（read ahead）](#114-预读read-ahead)
     - [1.2. 数据恢复](#12-数据恢复)
     - [1.3. 表](#13-表)
         - [1.3.1. InnoDB的逻辑存储结构](#131-innodb的逻辑存储结构)
@@ -96,7 +95,7 @@ InnoDB：buffer……
 &emsp; 但某些时候，在负载高的情况下，自适应哈希索引中添加的read/write锁也会带来竞争，比如高并发的join操作。like操作和%的通配符操作也不适用于自适应哈希索引，可能要关闭自适应哈希索引。  
 -->
 
-### 预读（read ahead）  
+### 1.1.4. 预读（read ahead）  
 &emsp; InnoDB 在 I/O 的优化上有个比较重要的特性为预读，当 InnoDB 预计某些 page 可能很快就会需要用到时，它会异步地将这些 page 提前读取到缓冲池（buffer pool）中，这其实有点像空间局部性的概念。  
 &emsp; 空间局部性（spatial locality）：如果一个数据项被访问，那么与他地址相邻的数据项也可能很快被访问。  
 &emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）。  
@@ -104,17 +103,6 @@ InnoDB：buffer……
 &emsp; 线性预读（Linear read-ahead）：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64（一个 extend 上限就是64页）的任何值，默认值为56，值越高，访问模式检查越严格。  
 &emsp; 随机预读（Random read-ahead）: 随机预读方式则是表示当同一个 extent 中的一些 page 在 buffer pool 中发现时，Innodb 会将该 extent 中的剩余 page 一并读到 buffer pool中，由于随机预读方式给 Innodb code 带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。  
 
-
-## 两阶段提交  
-&emsp; MySQL 使用两阶段提交主要解决 binlog 和 redo log 的数据一致性的问题。  
-&emsp; redo log 和 binlog 都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。下图为 MySQL 二阶段提交简图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-96.png)  
-两阶段提交原理描述:  
-
-1. InnoDB redo log 写盘，InnoDB 事务进入 prepare 状态。  
-2. 如果前面 prepare 成功，binlog 写盘，那么再继续将事务日志持久化到 binlog，如果持久化成功，那么 InnoDB 事务则进入 commit 状态(在 redo log 里面写一个 commit 记录)  
-
-&emsp; 备注: 每个事务 binlog 的末尾，会记录一个 XID event，标志着事务是否提交成功，也就是说，recovery 过程中，binlog 最后一个 XID event 之后的内容都应该被 purge。
 
 ## 1.2. 数据恢复
 &emsp; 数据库关闭只有2种情况，正常关闭，非正常关闭（包括数据库实例crash及服务器crash）。正常关闭情况，所有buffer pool里边的脏页都会都会刷新一遍到磁盘，同时记录最新LSN到ibdata文件的第一个page中。而非正常关闭来不及做这些操作，也就是没及时把脏数据flush到磁盘，也没有记录最新LSN到ibdata file。  

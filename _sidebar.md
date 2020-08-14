@@ -194,6 +194,11 @@
     * [ES优化](/docs/ES/5.optimization.md)  
     * [ELK](/docs/ES/6.ELK与EFK.md)    
 
+* Error  
+    * [多线程串线了](/docs/Error/ThreadCrossed.md)  
+    * [接口响应时间](/docs/Error/responseTime.md)  
+    * [熔断降级处理](/docs/Error/hystrix.md)  
+
 * 项目构建基础    
     * [接口幂等](/docs/web/idempotent.md)   
     * [日志系统](/docs/web/log.md)   
@@ -205,11 +210,8 @@
     * [参数校验](/docs/web/Validation.md)
     * [源码安全](/docs/web/codeSecurity.md)  
     
-
-* Error  
-    * [多线程串线了](/docs/Error/ThreadCrossed.md)  
-    * [接口响应时间](/docs/Error/responseTime.md)  
-    * [熔断降级处理](/docs/Error/hystrix.md)  
+* 架构设计  
+    * [系统三高](/docs/system/threeHigh.md)  
 
 * 服务器  
 
