@@ -282,7 +282,8 @@ Gitee： https://gitee.com/wt1814/
 [源码安全](/docs/web/codeSecurity.md)  
 [其他](/docs/web/other.md)
 
-## 架构设计  
+## 架构设计 
+[分布式和集群](/docs/system/distributed.md)   
 [系统三高](/docs/system/threeHigh.md)  
 
 
