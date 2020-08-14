@@ -95,12 +95,12 @@
     * [SpringDI解析](/docs/SSM/Spring/3.SpringDI.md)  
     * [SpringBean生命周期](/docs/SSM/Spring/SpringBean.md)  
     * [容器相关特性]  
+        * [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
         * [可二次开发常用接口](/docs/SSM/Spring/feature/可二次开发常用接口.md)  
             * [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
             * [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
             * [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
             * [事件](/docs/SSM/Spring/feature/Event.md)  
-        * [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
         * [循环依赖](/docs/SSM/Spring/feature/循环依赖.md)  
         * [lazy-init](/docs/SSM/Spring/feature/lazy-init.md)  
 

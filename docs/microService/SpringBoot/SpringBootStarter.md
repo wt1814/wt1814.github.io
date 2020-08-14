@@ -18,7 +18,7 @@
 <!-- 
 https://www.jianshu.com/p/2fd2b5a51227
 -->
-&emsp; 自定义starter我们项目组件化、模块化是有很大帮助的。  
+&emsp; 自定义starter使项目组件化、模块化。  
 
 ## 1.2. 开发  
 

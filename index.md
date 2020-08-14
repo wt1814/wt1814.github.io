@@ -101,12 +101,12 @@ Gitee： https://gitee.com/wt1814/
 [SpringDI解析](/docs/SSM/Spring/3.SpringDI.md)  
 [SpringBean生命周期](/docs/SSM/Spring/SpringBean.md)  
 [容器相关特性]  
+&emsp; [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
 &emsp; [可二次开发常用接口](/docs/SSM/Spring/feature/可二次开发常用接口.md)  
 &emsp; &emsp; [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
 &emsp; &emsp; [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
 &emsp; &emsp; [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
 &emsp; &emsp; [事件](/docs/SSM/Spring/feature/Event.md)  
-&emsp; [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
 &emsp; [循环依赖](/docs/SSM/Spring/feature/循环依赖.md)  
 &emsp; [lazy-init](/docs/SSM/Spring/feature/lazy-init.md)  
 

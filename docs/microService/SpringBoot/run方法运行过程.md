@@ -35,8 +35,10 @@
 <!-- 
 &emsp; 在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件，然后相应的监听器会监听这些事件来执行一些初始化逻辑工作比如ConfigFileApplicationListener会监听onApplicationEnvironmentPreparedEvent事件来加载环境变量等。  
 
-~~run() 阶段主要是回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到 IOC 容器中，而所有需要回调的监听器都是从类路径下的 META/INF/Spring.factories 中获取，从而达到启动前后的各种定制操作。~~  
+ 
 -->
+
+&emsp; **<font color = "red">run() 阶段涉及了几个比较重要的[事件回调机制]()，回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到 IOC 容器中，而所有需要回调的监听器都是从类路径下的 META/INF/Spring.factories 中获取，从而达到启动前后的各种定制操作。</font>**  
 
 ```java
 // SpringApplication.java
