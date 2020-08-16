@@ -10,7 +10,7 @@
     - [3.1. HyperLogLog用作基数统计](#31-hyperloglog用作基数统计)
     - [3.2. HyperLogLog原理](#32-hyperloglog原理)
     - [3.3. HyperLogLog的使用](#33-hyperloglog的使用)
-- [4. Geospatial](#4-geospatial)
+- [4. Geospatial地图](#4-geospatial地图)
 - [5. Streams](#5-streams)
 - [6. Redis中的布隆过滤器](#6-redis中的布隆过滤器)
 
@@ -107,11 +107,14 @@ https://mp.weixin.qq.com/s/EF1cgBlJB3U37oZm3KgQvQ
         (integer) 5
 
         
-# 4. Geospatial
+# 4. Geospatial地图
 &emsp; 可以用来保存地理位置，并作位置距离计算或者根据半径计算位置等。  
 
 # 5. Streams  
-&emsp; Redis5.0 推出的数据类型。支持多播的可持久化的消息队列，用于实现发布订阅功能，借 鉴了 kafka 的设计。  
+&emsp; Redis5.0推出的数据类型。支持多播的可持久化的消息队列，用于实现发布订阅功能，借鉴了kafka的设计。  
+<!-- 
+https://www.cnblogs.com/williamjie/p/11201654.html
+-->
 
 # 6. Redis中的布隆过滤器  
 &emsp; 之前的布隆过滤器可以使用Redis中的位图操作实现，直到Redis4.0版本提供了插件功能，Redis官方提供的布隆过滤器才正式登场。布隆过滤器作为一个插件加载到Redis Server中，就会给Redis提供了强大的布隆去重功能。  

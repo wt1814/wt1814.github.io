@@ -85,7 +85,7 @@
     * 选择优先级最高级别的节点，如果不存在则继续  
     * 选择复制偏移量最大的节点（数据最完整），存在则返回，不存在则继续  
     * 选择 runid 最小的节点  
-2. <font color = "red">在新的主节点上执行 slaveofnoone，让其变成主节点</font>  
+2. <font color = "red">在新的主节点上执行slaveofnoone，让其变成主节点</font>  
 3. <font color = "red">向剩余的从节点发送命令，让它们成为新主节点的从节点</font>  
 
 <!-- 

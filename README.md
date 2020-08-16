@@ -215,6 +215,7 @@ Gitee： https://gitee.com/wt1814/
 [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
 
 ### Redis
+[学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
 [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
 &emsp; [Redis的API](/docs/microService/Redis/RedisAPI.md)  
 &emsp; [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
