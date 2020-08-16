@@ -6,12 +6,12 @@
 - [2. Bitmaps，位图](#2-bitmaps位图)
     - [2.1. 应用场景](#21-应用场景)
     - [2.2. 操作命令](#22-操作命令)
-- [3. HyperLogLog](#3-hyperloglog)
+- [3. HyperLogLog基数统计](#3-hyperloglog基数统计)
     - [3.1. HyperLogLog用作基数统计](#31-hyperloglog用作基数统计)
     - [3.2. HyperLogLog原理](#32-hyperloglog原理)
     - [3.3. HyperLogLog的使用](#33-hyperloglog的使用)
 - [4. Geospatial地图](#4-geospatial地图)
-- [5. Streams](#5-streams)
+- [5. Streams消息队列](#5-streams消息队列)
 - [6. Redis中的布隆过滤器](#6-redis中的布隆过滤器)
 
 <!-- /TOC -->
@@ -22,8 +22,6 @@
 # 1. 前言：网页流量统计里的PV、UV
 &emsp; PV（Page View）访问量, 即页面浏览量或点击量，衡量网站用户访问的网页数量；在一定统计周期内用户每打开或刷新一个页面就记录1次，多次打开或刷新同一页面则浏览量累计。  
 &emsp; UV（Unique Visitor）独立访客，统计1天内访问某站点的用户数(以cookie为依据)；访问网站的一台电脑客户端为一个访客。可以理解成访问某网站的电脑的数量。网站判断来访电脑的身份是通过来访电脑的cookies实现的。如果更换了IP后但不清除cookies，再访问相同网站，该网站的统计中UV数是不变的。如果用户不保存cookies访问、清除了cookies或者更换设备访问，计数会加1。00:00-24:00内相同的客户端多次访问只计为1个访客。 
-    
-  
  
 --------------
 # 2. Bitmaps，位图  
@@ -71,7 +69,7 @@
     * BITCOUNT统计位的值为1的数量。
     * BITPOS寻址第一个为0或者1的bit的位置（寻址第一个为1的bit的位置：bitpos dupcheck 1；寻址第一个为0的bit的位置：bitpos dupcheck 0）。  
 
-# 3. HyperLogLog  
+# 3. HyperLogLog基数统计  
 <!-- 
 https://mp.weixin.qq.com/s/EF1cgBlJB3U37oZm3KgQvQ
 -->
@@ -110,7 +108,7 @@ https://mp.weixin.qq.com/s/EF1cgBlJB3U37oZm3KgQvQ
 # 4. Geospatial地图
 &emsp; 可以用来保存地理位置，并作位置距离计算或者根据半径计算位置等。  
 
-# 5. Streams  
+# 5. Streams消息队列  
 &emsp; Redis5.0推出的数据类型。支持多播的可持久化的消息队列，用于实现发布订阅功能，借鉴了kafka的设计。  
 <!-- 
 https://www.cnblogs.com/williamjie/p/11201654.html
