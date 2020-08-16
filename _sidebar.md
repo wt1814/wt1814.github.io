@@ -218,6 +218,7 @@
     
 * 架构设计  
     * [分布式和集群](/docs/system/distributed.md)  
+    * [分布式和集中式](/docs/system/deploy.md)  
     * [并发系统三高](/docs/system/threeHigh.md)  
     * [系统稳定性建设](/docs/system/stability.md)  
 

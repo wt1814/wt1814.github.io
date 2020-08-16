@@ -7,15 +7,14 @@
     - [1.3. 哨兵原理](#13-哨兵原理)
         - [1.3.1. 心跳检查](#131-心跳检查)
         - [1.3.2. 主观下线、客观下线](#132-主观下线客观下线)
-            - [1.3.2.1. 主观下线](#1321-主观下线)
-            - [1.3.2.2. 客观下线](#1322-客观下线)
-        - [1.3.3. Sentinel选举](#133-sentinel选举)
-        - [1.3.4. 故障转移](#134-故障转移)
+        - [1.3.3. 故障转移](#133-故障转移)
+        - [1.3.4. Sentinel选举](#134-sentinel选举)
 
 <!-- /TOC -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-75.png)  
 
+&emsp; **<font color = "lime">参考《Redis开发与运维》</font>**
 
 # 1. 哨兵模式  
 &emsp; 主从模式弊端：当Master宕机后，Redis集群将不能对外提供写入操作，需要手动将一个从节点晋升为主节点，同时需要修改应用方的主节点地址， 还需要命令其他从节点去复制新的主节点， 整个过程都需要人工干预。在 Redis 2.8 提供比较完善的解决方案：Redis Sentinel。Redis Sentinel 是一个能够自动完成故障发现和故障转移并通知应用方，从而实现真正的高可用的分布式架构。下面是Redis官方文档对于哨兵功能的描述：  
@@ -27,6 +26,9 @@
 * 通知（Notification）：哨兵可以将故障转移的结果发送给客户端。  
 
 &emsp; <font color="lime">监控和自动故障转移使得 Sentinel 能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-89.png)  
+
 
 ## 1.1. 架构-1  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-28.png)  
@@ -40,8 +42,17 @@
 ......
 
 ## 1.3. 哨兵原理  
+&emsp; **<font color = "red">一句话概述：</font>**  
+
+* **<font color = "lime">心跳检查：Sentinel通过三个定时任务来完成对各个节点的发现和监控。</font>**
+* **<font color = "lime">主观下线和客观下线：首先单个Sentinel节点认为数据节点主观下线，询问其他Sentinel节点， Sentinel多数节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。</font>**
+* **<font color = "lime">故障转移。</font>**    
+* **<font color = "lime">Sentinel选举：Sentinel集群是集中式架构，基于raft算法。</font>**  
+
 ### 1.3.1. 心跳检查  
-&emsp; Sentinel 通过三个定时任务来完成对各个节点的发现和监控，这是保证 Redis 高可用的重要机制。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-90.png)  
+
+&emsp; **<font color = "red">Sentinel通过三个定时任务来完成对各个节点的发现和监控，这是保证Redis高可用的重要机制。</font>**  
 1. 每隔 10 秒，每个 Sentinel 节点会向已知的主从节点发送 info 命令获取最新的主从架构。下图是 info 命令的响应。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-46.png)  
 &emsp; Sentinel 节点通过解析响应信息，就可以知道当前 Redis 数据节点的最新拓扑结构。如果是新增的节点，Sentinel 就会与其建立连接。  
@@ -55,30 +66,18 @@
             <哨兵地址>,<哨兵端口>,<哨兵的运行ID>,<哨兵的配置版本>,
             <主数据库的名称>,<主数据库的地址>,<主数据库的端口>,<主数据库的配置版本>
 
-3. 每隔一秒，哨兵会每个主从节点、Sentinel 节点发送 PING 命令。该定时任务是哨兵心跳机制中的核心，它涉及到 Redis 数据节点的运行状态监控，哨兵领导者的选举等细节操作。当哨兵节点发送 PING 命令后，若超过 down-after-milliseconds 后，当前哨兵节点会认为该节点主观下线。  
+3. 每隔一秒，哨兵会每个主从节点、Sentinel 节点发送 PING 命令。该定时任务是哨兵心跳机制中的核心，它涉及到 Redis 数据节点的运行状态监控，哨兵领导者的选举等细节操作。当哨兵节点发送PING命令后，若超过down-after-milliseconds后，当前哨兵节点会认为该节点主观下线。  
 
 ### 1.3.2. 主观下线、客观下线  
-#### 1.3.2.1. 主观下线  
-&emsp; 在第三个定时任务中，每隔一秒Sentinel节点会向每个Redis数据节点发送PING命令，若超过down-after-milliseconds设定的时间没有收到响应，则会对该节点做失败判定，这种行为叫做 主观下线。因为该行为是当前节点的一家之言，所以会存在误判的可能。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-88.png)  
 
-#### 1.3.2.2. 客观下线  
+* 主观下线  
+&emsp; 在第三个定时任务(Sentinel通过三个定时任务来完成对各个节点的发现和监控)中，每隔一秒Sentinel节点会向每个Redis数据节点发送PING命令，若超过down-after-milliseconds设定的时间没有收到响应，则会对该节点做失败判定，这种行为叫做 主观下线。因为该行为是当前节点的一家之言，所以会存在误判的可能。  
+* 客观下线  
 &emsp; 当 Sentinel 节点判定一个主节点为主观下线后，则会通过 sentinelis-master-down-by-addr 命令询问其他 Sentinel 节点对该主节点的状态，当有超过 <quorunm\> 个 Sentinel 节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。  
 &emsp; 这里有一点需要注意的是，客观下线是针对主机节点，如果主观下线的是从节点或者其他 Sentinel 节点，则不会进行后面的客观下线和故障转移了。  
 
-### 1.3.3. Sentinel选举  
-&emsp; 假如一个 Sentinel 节点完成了主节点的客观下线，那么是不是就可以立刻进行故障转移呢？显然不是，因为**<font color = "red">Redis的故障转移工作只需要一个 Sentinel 节点来完成，所以会有一个选举的过程，选举出来一个领导者来完成故障转移工作。Redis 节点采用 Raft 算法来完成领导者写选举。</font>**    
-
-&emsp; Sentinel 选举的主要流程：
-1. 每一个做主观下线的Sentinel节点都有成为领导者的可能，它们会想其他Sentinel节点发送sentinelis-master-down-by-addr，要求将它设置为领导者。    
-2. 收到命令的 Sentinel 节点如果没有同意其他 Sentinel 节点发送的命令，则会同意该请求，否则拒绝。     
-3. 如果该 Sentinel 节点发现自己得到的票数已经超过半数且超过 <quorum\>，那么它将成为领导者。     
-4. 如果该过程有多个 Sentinel 成为领导者，那么将等待一段时间重新进行选择，直到有且只有一个 Sentinel 节点成为领导者为止。    
-
-&emsp; 假如有 A、B、C、D 四个节点构成 Sentinel 集群。如果 A 率先完成客观下线，则 A 会向 B、C、D 发出成为领导者的申请，由于 B、C、D 没有同意过其他 Sentinel 节点，所以会将投票给 A，A 得到三票。B 则向 A、C、D 发起申请，由于 C、D 已经同意了 A，所以会拒绝，但是他会得到 A 的同意，所以 B 得到一票，同理 C、D 得到零票，如下图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-47.png)  
-&emsp; 所以 A 会成为领导者，进行故障转移工作。一般来说，哨兵选择的过程很快，谁先完成客观下线，一般就能成为领导者。  
-
-### 1.3.4. 故障转移  
+### 1.3.3. 故障转移  
 &emsp; 当某个Sentinel节点通过选举成为了领导者，则它要承担起故障转移的工作，其具体步骤如下：  
 1. <font color = "red">在从节点列表中选择一个节点作为新的主节点，选择的策略如下：</font> 
     * 过滤掉不健康的节点（主观下线、断线），5 秒内没有回复过 Sentinel 节点 ping 响应、与主节点失联超过 down-after-milliseconds*10秒  
@@ -99,3 +98,16 @@
 7. 若没有足够数量的 Sentinel（哨兵）进程同意 Master主服务器下线， Master主服务器的客观下线状态就会被移除。若 Master主服务器重新向 Sentinel（哨兵）进程发送 PING 命令返回有效回复，Master主服务器的主观下线状态就会被移除。  
 -->
 
+
+### 1.3.4. Sentinel选举  
+&emsp; 假如一个 Sentinel 节点完成了主节点的客观下线，那么是不是就可以立刻进行故障转移呢？显然不是，因为**<font color = "red">Redis的故障转移工作只需要一个 Sentinel 节点来完成，所以会有一个选举的过程，选举出来一个领导者来完成故障转移工作。Redis节点采用[Raft算法]()来完成领导者写选举。</font>**    
+
+&emsp; Sentinel 选举的主要流程：
+1. 每一个做主观下线的Sentinel节点都有成为领导者的可能，它们会想其他Sentinel节点发送sentinelis-master-down-by-addr，要求将它设置为领导者。    
+2. 收到命令的 Sentinel 节点如果没有同意其他 Sentinel 节点发送的命令，则会同意该请求，否则拒绝。     
+3. 如果该 Sentinel 节点发现自己得到的票数已经超过半数且超过 <quorum\>，那么它将成为领导者。     
+4. 如果该过程有多个Sentinel成为领导者，那么将等待一段时间重新进行选择，直到有且只有一个 Sentinel 节点成为领导者为止。    
+
+&emsp; 假如有 A、B、C、D 四个节点构成 Sentinel 集群。如果 A 率先完成客观下线，则 A 会向 B、C、D 发出成为领导者的申请，由于 B、C、D 没有同意过其他 Sentinel 节点，所以会将投票给 A，A 得到三票。B 则向 A、C、D 发起申请，由于 C、D 已经同意了 A，所以会拒绝，但是他会得到 A 的同意，所以 B 得到一票，同理 C、D 得到零票，如下图：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-47.png)  
+&emsp; 所以A会成为领导者，进行故障转移工作。一般来说，哨兵选择的过程很快，谁先完成客观下线，一般就能成为领导者。  

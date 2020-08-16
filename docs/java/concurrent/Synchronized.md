@@ -4,12 +4,13 @@
 
 - [1. Synchronized](#1-synchronized)
     - [1.1. synchronized使用](#11-synchronized使用)
-        - [1.1.1. synchronized同步普通方法](#111-synchronized同步普通方法)
-        - [1.1.2. synchronized同步静态方法](#112-synchronized同步静态方法)
-        - [1.1.3. synchronized同步语句块](#113-synchronized同步语句块)
-            - [1.1.3.1. 同步类](#1131-同步类)
-            - [1.1.3.2. 同步this实例](#1132-同步this实例)
-            - [1.1.3.3. 同步对象实例](#1133-同步对象实例)
+        - [1.1.1. 类锁和对象锁](#111-类锁和对象锁)
+        - [1.1.2. synchronized同步普通方法](#112-synchronized同步普通方法)
+        - [1.1.3. synchronized同步静态方法](#113-synchronized同步静态方法)
+        - [1.1.4. synchronized同步语句块](#114-synchronized同步语句块)
+            - [1.1.4.1. 同步类](#1141-同步类)
+            - [1.1.4.2. 同步this实例](#1142-同步this实例)
+            - [1.1.4.3. 同步对象实例](#1143-同步对象实例)
     - [1.2. synchronized与ReentrantLock](#12-synchronized与reentrantlock)
     - [1.3. synchronized与Object#wait()](#13-synchronized与objectwait)
     - [1.4. synchronized原理](#14-synchronized原理)
@@ -58,17 +59,17 @@ https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 ## 1.1. synchronized使用  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-11.png)  
 
+### 1.1.1. 类锁和对象锁
 &emsp; **synchronized的范围：类锁和对象锁。** 
 1. 类锁：当synchronized修饰静态方法或synchronized修饰代码块传入某个class对象（synchronized (XXXX.class)）时被称为类锁。某个线程得到了一个类锁之后，其他所有被该类锁加锁方法或代码块是锁定的，其他线程是无法访问的，但是其他线程还是可以访问没有被该类锁加锁的任何代码。  
 2. 对象锁：当 synchronized 修饰非静态方法或synchronized修饰代码块时传入非class对象（synchronized this)）时被称为对象锁。某个线程得到了对象锁之后，该对象的其他被 synchronized修饰的方法（同步方法）是锁定的，其他线程是无法访问的。但是其他线程还是可以访问没有进行同步的方法或者代码；当获取到与对象关联的内置锁时，并不能阻止其他线程访问该对象，当某个线程获得对象的锁之后，只能阻止其他线程获得同一个锁。  
-3. 类锁和对象锁的关系： 如同每个类只有一个class对象，而类的实例可以有很多个一样，每个类只有一个类锁，每个实例都有自己的对象锁，所以不同对象实例的对象锁是互不干扰的。但是有一点必须注意的是，其实类锁只是一个概念上的东西，并不是真实存在的，它只是用来理解锁定实例方法和静态方法的区别的。<font color = "red">类锁和对象锁是不一样的锁，是互相独立的，两者不存在竞争关系</font>，线程获得对象锁的同时，也可以获得该类锁，即同时获得两个锁，这是允许的。  
+3. 类锁和对象锁的关系： 如同每个类只有一个class对象，而类的实例可以有很多个一样，每个类只有一个类锁，每个实例都有自己的对象锁，所以不同对象实例的对象锁是互不干扰的。但是有一点必须注意的是，其实类锁只是一个概念上的东西，并不是真实存在的，它只是用来理解锁定实例方法和静态方法的区别的。**<font color = "lime">类锁和对象锁是不一样的锁，是互相独立的，两者不存在竞争关系，不相互阻塞。</font>**  
 
-* 如果多线程同时访问同一类的 类锁（synchronized 修饰的静态方法）以及对象锁（synchronized 修饰的非静态方法）这两个方法执行是异步的，原因：类锁和对象锁是两种不同的锁。
+* **<font color = "red">类锁与对象锁不相互阻塞。</font>**如果多线程同时访问同一类的 类锁（synchronized 修饰的静态方法）以及对象锁（synchronized 修饰的非静态方法）这两个方法执行是异步的，原因：类锁和对象锁是两种不同的锁。**<font color = "red">线程获得对象锁的同时，也可以获得该类锁，即同时获得两个锁，这是允许的。</font>**  
+* 相同的类锁，相同的对象锁会相互阻塞。
 * 类锁对该类的所有对象都能起作用，而对象锁不能。
 
-&emsp; 类锁与对象锁不相互阻塞，但相同的类锁，相同的对象锁会相互阻塞。  
-
-### 1.1.1. synchronized同步普通方法  
+### 1.1.2. synchronized同步普通方法  
 &emsp; 这种方法使用虽然最简单，但是只能作用在单例上面，如果不是单例，同步方法锁将失效。  
 
 ```java
@@ -88,7 +89,7 @@ private synchronized void synchronizedMethod() {
 &emsp; 对于普通同步方法，锁是当前实例对象，进入同步代码前要获得当前实例的锁。  
 &emsp; 当两个线程同时对一个对象的一个方法进行操作，只有一个线程能够抢到锁。因为一个对象只有一把锁，一个线程获取了该对象的锁之后，其他线程无法获取该对象的锁，就不能访问该对象的其他synchronized实例方法。可是，两个线程实例化两个不同的对象，获得的锁是不同的锁，所以互相并不影响。  
 
-### 1.1.2. synchronized同步静态方法  
+### 1.1.3. synchronized同步静态方法  
 &emsp; 同步静态方法，不管有多少个类实例，同时只有一个线程能获取锁进入这个方法。  
 
 ```java
@@ -108,10 +109,10 @@ private synchronized static void synchronizedStaticMethod() {
 &emsp; 对于静态同步方法，锁是当前类的Class对象，进入同步代码前要获得当前类对象的锁。  
 &emsp; 注意：两个线程实例化两个不同的对象，但是访问的方法是静态的，此时获取的锁是同一个锁，两个线程发生了互斥（即一个线程访问，另一个线程只能等着），因为静态方法是依附于类而不是对象的，当synchronized修饰静态方法时，锁是class对象。  
 
-### 1.1.3. synchronized同步语句块  
+### 1.1.4. synchronized同步语句块  
 &emsp; 对于同步代码块，锁是synchronized括号里面配置的对象，对给定对象加锁，进入同步代码块前要获得给定对象的锁。  
 
-#### 1.1.3.1. 同步类
+#### 1.1.4.1. 同步类
 &emsp; 下面提供了两种同步类的方法，锁住效果和同步静态方法一样，都是类级别的锁，同时只有一个线程能访问带有同步类锁的方法。  
 
 ```java
@@ -145,7 +146,7 @@ private void synchronizedGetClass() {
 ```
 &emsp; 这里的两种用法是同步块的用法，这里表示只有获取到这个类锁才能进入这个代码块。  
 
-#### 1.1.3.2. 同步this实例  
+#### 1.1.4.2. 同步this实例  
 &emsp; 这也是同步块的用法，表示锁住整个当前对象实例，只有获取到这个实例的锁才能进入这个方法。  
 
 ```java
@@ -165,7 +166,7 @@ private void synchronizedThis() {
 ```
 &emsp; 用法和同步普通方法锁一样，都是锁住整个当前实例。  
 
-#### 1.1.3.3. 同步对象实例  
+#### 1.1.4.3. 同步对象实例  
 &emsp; 这也是同步块的用法，和上面的锁住当前实例一样，这里表示锁住整个LOCK 对象实例，只有获取到这个LOCK实例的锁才能进入这个方法。  
 
 ```java
@@ -230,6 +231,10 @@ public class SyncDemo {
 }
 ```
 &emsp; 利用javap工具查看生成的class文件信息分析Synchronized，下面是部分信息:  
+
+    查看字节码工具：  
+    Show Uytecode With jclasslib
+    Show Bytccodc
 
 ```java
 public com.zzw.juc.sync.SyncDemo();
@@ -374,7 +379,7 @@ _count：用来记录该线程获取锁的次数；
 ### 1.5.3. 了解HotSpot虚拟机对象的内存布局  
 
 &emsp; 下面讲解Synchroized的偏向锁、轻量级锁、重量级锁。**<font color = "red">需要先了解HotSpot虚拟机对象的内存布局：</font>**  
-&emsp; HotSpot虚拟机的对象头（Object Header）分为三部分：对象头(Header)、实例数据(Instance Data)、对齐填充(Padding)。  
+&emsp; HotSpot虚拟机的对象头（Object Header）分为三部分：对象头(Header)、实例数据(Instance Data)、对齐填充(Padding)。<font color = "red">用对象头中markword最低的三位代表锁状态，其中1位是偏向锁位，两位是普通锁位。</font>  
 
 * 对象头：
     * 第一部分用于存储对象自身的运行时数据，如哈希码、GC分代年龄、锁标识状态、线程持有的锁、偏向线程ID等。这部分数据的长度在32位和64位的Java虚拟机中分别会占用32个或64个比特，官方称它为“Mark Word”。这部分是实现轻量级锁和偏向锁的关键。  
@@ -383,8 +388,12 @@ _count：用来记录该线程获取锁的次数；
 * 实例数据：存储对象真正的有效信息（包括父类继承下来的和自己定义的）  
 * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐） 
 
-&emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构</font>**，以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。例如在32位的HotSpot虚拟机中，对象未被锁定的状态下， Mark Word的32个比特空间里的25个比特将用于存储对象哈希码，4个比特用于存储对象分代年龄，2 个比特用于存储锁标志位，还有1个比特固定为0（这表示未进入偏向模式）。对象除了未被锁定的正常状态外，还有轻量级锁定、重量级锁定、GC标记、可偏向等几种不同状态，这些状态下对象头的存储内容如下表所示。  
+&emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构</font>**，以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。在64位的HotSpot虚拟机中，不同状态下对象头的存储内容如下图所示。
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)  
+<!-- 
+例如在32位的HotSpot虚拟机中，对象未被锁定的状态下， Mark Word的32个比特空间里的25个比特将用于存储对象哈希码，4个比特用于存储对象分代年龄，2 个比特用于存储锁标志位，还有1个比特固定为0（这表示未进入偏向模式）。对象除了未被锁定的正常状态外，还有轻量级锁定、重量级锁定、GC标记、可偏向等几种不同状态，这些状态下对象头的存储内容如下表所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-28.png)   
+-->
 
         为什么锁信息存放在对象头里？
         因为在Java中任意对象都可以用作锁，因此必定要有一个映射关系，存储该对象以及其对应的锁信息（比如当前哪个线程持有锁，哪些线程在等待）。一种很直观的方法是，用一个全局map，来存储这个映射关系，但这样会有一些问题：需要对map做线程安全保障，不同的synchronized之间会相互影响，性能差；另外当同步对象较多时，该map可能会占用比较多的内存。
@@ -392,13 +401,13 @@ _count：用来记录该线程获取锁的次数；
         也就是说，如果用一个全局 map 来存对象的锁信息，还需要对该 map 做线程安全处理，不同的锁之间会有影响。所以直接存到对象头。
 
 ### 1.5.4. 偏向锁  
-&emsp; <font color = "red">偏向锁定义：</font>偏向锁是指偏向于让第一个获取锁对象的线程，这个线程在之后获取该锁就不再需要进行同步操作，甚至连 CAS 操作也不再需要。 
+&emsp; <font color = "red">偏向锁定义：</font>偏向锁是指偏向于让第一个获取锁对象的线程，这个线程在之后获取该锁就不再需要进行同步操作。 
 
 &emsp; 偏向锁的获得和撤销流程图解：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-31.png)   
 
 &emsp; **<font color = "lime">1. 偏向锁整体流程：</font>**
-1. <font color = "red">当锁对象第一次被线程获得的时候，进入偏向状态，标记为 |1|01|（前面对象内存布局图中说明了，这属于偏向锁状态）。</font>同时使用CAS操作将线程ID （ThreadID）记录到 Mark Word 中，如果 CAS 操作成功，这个线程以后每次进入这个锁相关的同步块就不需要再进行任何同步操作。  
+1. **<font color = "lime">当锁对象第一次被线程获得的时候，进入偏向状态，标记为 |1|01|（前面对象内存布局图中说明了，这属于偏向锁状态）。同时使用CAS操作将线程ID （ThreadID）记录到Mark Word 中，</font>**如果 CAS 操作成功，这个线程以后每次进入这个锁相关的同步块就不需要再进行任何同步操作。  
 2. <font color = "red">另外一个线程去尝试获取这个锁的情况，偏向模式就马上宣告结束。</font>根据锁对象目前是否处于被锁定的状态决定是否撤销偏向（偏向模式设置为“0”），<font color = "red">撤销后标志位恢复到未锁定（标志位为“01”）或轻量级锁定（标志位为“00”）的状态。</font>  
 &emsp; 另一个线程争抢锁成功，对原线程进行锁撤销；抢占失败，升级为轻量级锁。  
 
@@ -411,7 +420,7 @@ _count：用来记录该线程获取锁的次数；
     * 如果相等，不需要再次获得锁，可直接执行同步代码块。
     * 如果不相等，说明当前锁偏向于其他线程，需要<font color = "red">撤销偏向锁并升级到轻量级锁</font>。
 
-&emsp; **<font color = "lime">3. 偏向锁的撤销：</font>**  
+&emsp; **<font color = "lime">3. 偏向锁的撤销流程：</font>**  
 &emsp; 偏向锁的撤销并不是把对象恢复到无锁可偏向状态（因为偏向锁并不存在锁释放的概念），而是在获取偏向锁的过程中，发现 cas 失败也就是存在线程竞争时，直接把被偏向的锁对象升级到被加了轻量级锁的状态。  
 &emsp; 对原持有偏向锁的线程进行撤销时，原获得偏向锁的线程有两种情况：  
 1. 原获得偏向锁的线程如果已经退出了临界区，也就是同步代码块执行完了，那么这个时候会把对象头设置成无锁状态并且争抢锁的线程可以基于 CAS 重新偏向之前线程。
@@ -441,18 +450,31 @@ _count：用来记录该线程获取锁的次数；
 UseBiasedLocking来禁止偏向锁优化反而可以提升性能。 
 
 #### 1.5.4.2. 偏向锁的失效  
-&emsp; 如果计算一次hashcode()会导致锁失效。  
+&emsp; 如果计算过对象的hashcode()，则对象无法进入偏向状态。    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-39.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-40.png)  
 
+&emsp; 轻量级锁重量级锁的hashCode存在什么地方？
+&emsp; 存在线程栈中，轻量级锁的LR中，或是代表重量级锁的ObjectMonitor的成员中。  
+
+
 ### 1.5.5. 轻量级锁  
+&emsp; 轻量级锁在加锁过程中，用到了自旋锁。  
+&emsp; **为什么有了自旋锁还需要重量级锁？**  
+&emsp; 自旋是消耗CPU资源的，如果锁的时间长，或者自旋线程多，CPU会被大量消耗。  
+&emsp; 重量级锁有等待队列，所有拿不到锁的线程进入等待队列，不需要消耗CPU资源。  
+
+&emsp; **偏向锁是否一定比自旋锁效率高？**  
+&emsp; 不一定，在明确知道会有多线程竞争的情况下，偏向锁肯定会涉及锁撤销，这时候直接使用自旋锁。  
+&emsp; JVM启动过程，一般会有很多线程竞争，所以默认情况启动时不打开偏向锁，过一段时间再打开。  
+
 &emsp; 轻量级锁及锁膨胀流程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-30.png)  
 
 1. <font color = "red">偏向锁升级为轻量级锁之后，对象的Markword也会进行相应的的变化。</font>  
-    1. 线程在自己的栈桢中创建锁记录LockRecord。  
-    2. 将锁对象的对象头中的MarkWord复制到线程的刚刚创建的锁记录中。  
-    3. 将锁记录中的Owner指针指向锁对象。  
+    1. <font color = "lime">线程在自己的栈桢中创建锁记录LockRecord。</font>  
+    2. 将锁对象的对象头中的MarkWord复制到线程刚刚创建的锁记录中。  
+    3. <font color = "lime">将锁记录中的Owner指针指向锁对象。</font>  
     4. 将锁对象的对象头的MarkWord替换为指向锁记录的指针。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-32.png)  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-33.png)  
@@ -470,6 +492,8 @@ UseBiasedLocking来禁止偏向锁优化反而可以提升性能。
 5. 具体实现和升级为重量级锁过程：  
 &emsp; 线程A获取轻量级锁时会把对象头中的MarkWord复制一份到线程A的栈帧中创建用于存储锁记录的空间DisplacedMarkWord，然后使用CAS将对象头中的内容替换成线程A存储DisplacedMarkWord的地址。如果这时候出现线程B来获取锁，线程B也跟线程A同样复制对象头的MarkWord到自己的DisplacedMarkWord中，如果线程A锁还没释放，这时候那么线程B的CAS操作会失败，会继续自旋，当然不可能让线程B一直自旋下去，自旋到一定次数（固定次数/自适应）就会升级为重量级锁。 
 
+&emsp; 升级重量级锁--->向操作系统申请资源，linux mutex，CPU从3级-0级系统调用，线程刮起，进入等待队列，等待操作系统的调度，然后再映射回用户空间。  
+
 ### 1.5.6. 锁状态总结  
 &emsp; JDK 1.6 引入了偏向锁和轻量级锁，从而让锁拥有了四个状态：无锁状态（unlocked）、偏向锁状态（biasble）、轻量级锁状态（lightweight locked）和重量级锁状态（inflated）。  
 
@@ -481,6 +505,11 @@ UseBiasedLocking来禁止偏向锁优化反而可以提升性能。
 &emsp; **<font color = "lime">锁降级</font>**：<font color = "red">Hotspot 在 1.8 开始有了锁降级。在 STW 期间 JVM 进入安全点时如果发现有闲置的 monitor（重量级锁对象），会进行锁降级。</font>
 
 &emsp; **<font color = "lime">synchronized锁对比：</font>**  
+&emsp; 用户空间锁VS重量级锁：  
+
+* 偏向锁、自旋锁都是用户空间完成。  
+* 重量级锁是需要向内核申请。  
+
 
 |状态|标志位|描述|优点|缺点|应用场景|
 |---|---|---|---|---|---|
