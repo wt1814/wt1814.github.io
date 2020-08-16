@@ -66,7 +66,7 @@ typedef struct redisObject {
 ```
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-10.png)  
 * Type：是对象类型，代表一个value对象具体是何种数据类型，包括REDISSTRING，REDISLIST，REDISHASH，REDISSET和REDIS_ZSET。  
-* encoding是指对象使用的数据结构，是不同数据类型在redis内部的存储方式。<font color = "red">目前有8种数据结构：int、raw、embstr、ziplist、hashtable、quicklist、intset、skiplist。</font>  
+* encoding是指对象使用的数据结构，是不同数据类型在redis内部的存储方式。<font color = "red">目前有8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。</font>  
 
 &emsp; <font color = "lime">Redis数据类型的底层实现如下：</font>  
 
@@ -85,7 +85,7 @@ typedef struct redisObject {
 &emsp; **<font color = "red">字符串类型的内部编码有三种：</font>**  
 
 *  int，存储 8 个字节的长整型（long，2^63-1）。   
-*  embstr，代表 embstr 格式的 SDS（Simple Dynamic String 简单动态字符串）， 存储小于 44 个字节的字符串。   
+*  embstr，代表 embstr 格式的 SDS（Simple Dynamic String 简单动态字符串），存储小于44个字节的字符串。   
 *  raw，存储大于 44 个字节的字符串（3.2 版本之前是 39 字节）。  
 
 &emsp; <font color = "red">Redis会根据当前值的类型和长度决定使用哪种内部编码实现。</font>  
@@ -208,7 +208,7 @@ struct sdshdr{
 * Hash 中存储的元素个数小于 512。（通过修改 hash-max-ziplist-entries 配置调节大小）  
 
 ### 1.4.1. 采用ziplist压缩列表实现  
-&emsp; ziplist是一组连续内存块组成的顺序的数据结构，是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。只用在字段个数少，字段值小的场景面。  
+&emsp; ziplist是一组连续内存块组成的顺序的数据结构，**<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>**只用在字段个数少，字段值小的场景面。  
 
 &emsp; 压缩列表的内存结构图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-79.png)  
@@ -226,7 +226,7 @@ struct sdshdr{
 
 &emsp; ZipList 的优缺点比较：  
 
-* 优点：内存地址连续，省去了每个元素的头尾节点指针占用的内存。  
+* 优点：<font color = "red">内存地址连续，省去了每个元素的头尾节点指针占用的内存。</font>  
 * 缺点：对于删除和插入操作比较可能会触发连锁更新反应，比如在 list 中间插入删除一个元素时，在插入或删除位置后面的元素可能都需要发生相应的移动操作。 
 
 ### 1.4.2. 采用dictht字典实现  
@@ -288,7 +288,7 @@ struct sdshdr{
 * ZipList 中存储的元素数据总大小超过 8kb（默认大小，通过 list-max-ziplist-size 参数可以进行配置）的时候，就会重新创建出来一个 ListNode 和 ZipList，然后将其通过指针关联起来。
 
 ## 1.6. Set内部编码   
-&emsp; Redis中列表和集合都可以用来存储字符串，但是「Set是不可重复的集合，而List列表可以存储相同的字符串」，「Set是一个特殊的value为空的Hash」，Set集合是无序的这个和后面讲的ZSet有序集合相对。  
+&emsp; Redis中列表和集合都可以用来存储字符串，但是<font color = "red">「Set是不可重复的集合，而List列表可以存储相同的字符串」，</font>「Set是一个特殊的value为空的Hash」，Set集合是无序的这个和后面讲的ZSet有序集合相对。  
 
 &emsp; Redis 用intset或dictEntry存储set。当满足如下两个条件的时候，采用整数集合实现；一旦有一个条件不满足时则采用字典来实现。  
 

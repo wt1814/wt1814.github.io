@@ -149,6 +149,12 @@ try{
 2. 然后发送一段lua脚本，带有三个参数：一个是锁的名字（在代码里指定的）、一个是锁的时常（默认30秒）、一个是加锁的客户端id（每个客户端对应一个id）。<font color = "red">然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。</font>  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-41.png)  
+    
+&emsp; <font color = "lime">RedissonLock加锁流程：</font>  
+
+* 锁不存在，则加锁，并设置锁的过期时间；  
+* 锁存在，是当前线程的，线程重入；
+* 锁存在，但不是当前线程的，返回锁的过期时间。  
 
 ```java
 Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {
@@ -161,7 +167,7 @@ Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {
              */
             "if (redis.call('exists', KEYS[1]) == 0) then " + //如果锁名称不存在
                     "redis.call('hset', KEYS[1], ARGV[2], 1); " + //则向redis中添加一个key为test_lock的set，并且向set中添加一个field为线程id，值=1的键值对，表示此线程的重入次数为1
-                    "redis.call('pexpire', KEYS[1], ARGV[1]); " + //设置set的过期时间，防止当前服务器出问题后导致死锁，return nil;
+                    "redis.call('pexpire', KEYS[1], ARGV[1]); " + //设置set的过期时间，防止当前服务器出问题后导致死锁;
                     "return nil; " + //end;返回nil 结束。返回值中nil与false同一个意思。
                     "end; " +
                     "if (redis.call('hexists', KEYS[1], ARGV[2]) == 1) then " + //如果锁是存在的，检测是否是当前线程持有锁，如果是当前线程持有锁
