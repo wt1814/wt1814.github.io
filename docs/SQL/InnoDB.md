@@ -3,12 +3,17 @@
 
 - [1. InnoDB](#1-innodb)
     - [1.1. 关键特性](#11-关键特性)
-        - [缓冲池(buffer pool)](#缓冲池buffer-pool)
-            - [1.1.4. 预读（read ahead）](#114-预读read-ahead)
-        - [1.1.1. 写缓冲(change buffer)](#111-写缓冲change-buffer)
-        - [日志缓冲(log buffer)](#日志缓冲log-buffer)
-        - [1.1.2. 两次写](#112-两次写)
-        - [1.1.3. 自适应哈希索引](#113-自适应哈希索引)
+        - [1.1.1. 缓冲池(buffer pool)](#111-缓冲池buffer-pool)
+            - [1.1.1.1. 前言：预读](#1111-前言预读)
+            - [1.1.1.2. LRU算法](#1112-lru算法)
+                - [1.1.1.2.1. 预读失效](#11121-预读失效)
+                - [1.1.1.2.2. 缓冲池污染](#11122-缓冲池污染)
+            - [1.1.1.3. 相关参数](#1113-相关参数)
+            - [1.1.1.4. 总结](#1114-总结)
+        - [1.1.2. 写缓冲(change buffer)](#112-写缓冲change-buffer)
+        - [1.1.3. 日志缓冲(log buffer)](#113-日志缓冲log-buffer)
+        - [1.1.4. 两次写](#114-两次写)
+        - [1.1.5. 自适应哈希索引](#115-自适应哈希索引)
     - [1.2. 数据恢复](#12-数据恢复)
     - [1.3. 表](#13-表)
         - [1.3.1. InnoDB的逻辑存储结构](#131-innodb的逻辑存储结构)
@@ -21,7 +26,7 @@
 ## 1.1. 关键特性  
 &emsp; InnoDB存储引擎的关键特性包括写缓存、两次写（double write）、自适应哈希索引（adaptive hash index）。  
 
-### 缓冲池(buffer pool)  
+### 1.1.1. 缓冲池(buffer pool)  
 
 <!-- 
 https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
@@ -31,25 +36,149 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; InnoDB 在修改数据时，如果数据的页在 Buffer Pool 中，则会直接修改 Buffer Pool，此时称这个页为脏页，InnoDB 会以一定的频率将脏页刷新到磁盘，这样可以尽量减少磁盘I/O，提升性能。 
 -->
 
- 
-&emsp; 缓冲池提高了读能力。  
+&emsp; MySQL作为一个存储系统，具有缓冲池(buffer pool)机制，缓存表数据与索引数据，把磁盘上的数据加载到缓冲池，以避免每次查询数据都进行磁盘IO。缓冲池提高了读能力。  
 
-* MySQL数据存储包含内存与磁盘两个部分；
-* 内存缓冲池(buffer pool)以页为单位，缓存最热的数据页(data page)与索引页(index page)；
-* InnoDB以变种LRU算法管理缓冲池，并能够解决“预读失效”与“缓冲池污染”的问题；
+&emsp; 如何管理与淘汰缓冲池，使得性能最大化呢？在介绍具体细节之前，先介绍下“预读”的概念。  
 
-
-
-#### 1.1.4. 预读（read ahead）  
+#### 1.1.1.1. 前言：预读  
+<!-- 
+预读（read ahead）  
 &emsp; InnoDB 在 I/O 的优化上有个比较重要的特性为预读，<font color = "red">当 InnoDB 预计某些 page 可能很快就会需要用到时，它会异步地将这些 page 提前读取到缓冲池（buffer pool）中，</font>这其实有点像空间局部性的概念。  
 &emsp; 空间局部性（spatial locality）：如果一个数据项被访问，那么与它的址相邻的数据项也可能很快被访问。  
 &emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）。  
 &emsp; 其中，线性预读以 extent（块，1个 extent 等于64个 page）为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
 &emsp; 线性预读（Linear read-ahead）：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64（一个 extend 上限就是64页）的任何值，默认值为56，值越高，访问模式检查越严格。  
 &emsp; 随机预读（Random read-ahead）: 随机预读方式则是表示当同一个 extent 中的一些 page 在 buffer pool 中发现时，Innodb 会将该 extent 中的剩余 page 一并读到 buffer pool中，由于随机预读方式给 Innodb code 带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。  
+-->
 
 
-### 1.1.1. 写缓冲(change buffer)
+什么是预读？  
+
+磁盘读写，并不是按需读取，而是按页读取，一次至少读一页数据（一般是4K），如果未来要读取的数据就在页中，就能够省去后续的磁盘IO，提高效率。  
+
+ 
+
+预读为什么有效？  
+
+数据访问，通常都遵循“集中读写”的原则，使用一些数据，大概率会使用附近的数据，这就是所谓的“局部性原理”，它表明提前加载是有效的，确实能够减少磁盘IO。  
+
+ 
+
+按页(4K)读取，和InnoDB的缓冲池设计有啥关系？  
+
+（1）磁盘访问按页读取能够提高性能，所以缓冲池一般也是按页缓存数据；  
+
+（2）预读机制能把一些“可能要访问”的页提前加入缓冲池，避免未来的磁盘IO操作；  
+
+
+&emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）。  
+&emsp; 其中，线性预读以 extent（块，1个 extent 等于64个 page）为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
+&emsp; 线性预读（Linear read-ahead）：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64（一个 extend 上限就是64页）的任何值，默认值为56，值越高，访问模式检查越严格。  
+&emsp; 随机预读（Random read-ahead）: 随机预读方式则是表示当同一个extent中的一些page在buffer pool中发现时，Innodb 会将该 extent 中的剩余page一并读到 buffer pool中，由于随机预读方式给Innodb code带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。 
+
+#### 1.1.1.2. LRU算法  
+&emsp; InnoDB是以什么算法，来管理这些缓冲页呢？  
+&emsp; memcache，OS都会用LRU来进行页置换管理，但MySQL的玩法并不一样。  
+
+&emsp; 传统的LRU是如何进行缓冲页管理？  
+&emsp; 最常见的玩法是，把入缓冲池的页放到LRU的头部，作为最近访问的元素，从而最晚被淘汰。这里又分两种情况：  
+&emsp; （1）页已经在缓冲池里，那就只做“移至”LRU头部的动作，而没有页被淘汰；  
+&emsp; （2）页不在缓冲池里，除了做“放入”LRU头部的动作，还要做“淘汰”LRU尾部页的动作；  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-106.png)  
+&emsp; 如上图，假如管理缓冲池的LRU长度为10，缓冲了页号为1，3，5…，40，7的页。  
+&emsp; 假如，接下来要访问的数据在页号为4的页中：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-107.png)  
+&emsp; （1）页号为4的页，本来就在缓冲池里；  
+&emsp; （2）把页号为4的页，放到LRU的头部即可，没有页被淘汰；  
+&emsp; 画外音：为了减少数据移动，LRU一般用链表实现。  
+&emsp; 假如，再接下来要访问的数据在页号为50的页中：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-108.png)  
+&emsp; （1）页号为50的页，原来不在缓冲池里；  
+&emsp; （2）把页号为50的页，放到LRU头部，同时淘汰尾部页号为7的页；  
+&emsp; 传统的LRU缓冲池算法十分直观，OS，memcache等很多软件都在用，MySQL为啥这么矫情，不能直接用呢？  
+&emsp; 这里有两个问题：  
+&emsp; （1）预读失效；  
+&emsp; （2）缓冲池污染；  
+
+##### 1.1.1.2.1. 预读失效  
+&emsp; 什么是预读失效？  
+&emsp; 由于预读(Read-Ahead)，提前把页放入了缓冲池，但最终MySQL并没有从页中读取数据，称为预读失效。  
+
+&emsp; 如何对预读失效进行优化？  
+&emsp; 要优化预读失效，思路是：  
+&emsp; （1）让预读失败的页，停留在缓冲池LRU里的时间尽可能短；  
+&emsp; （2）让真正被读取的页，才挪到缓冲池LRU的头部；  
+&emsp; 以保证，真正被读取的热数据留在缓冲池里的时间尽可能长。  
+
+&emsp; 具体方法是：  
+&emsp; （1）将LRU分为两个部分：  
+* 新生代(new sublist)  
+* 老生代(old sublist)  
+&emsp; （2）新老生代收尾相连，即：新生代的尾(tail)连接着老生代的头(head)；
+&emsp; （3）新页（例如被预读的页）加入缓冲池时，只加入到老生代头部：  
+* 如果数据真正被读取（预读成功），才会加入到新生代的头部  
+* 如果数据没有被读取，则会比新生代里的“热数据页”更早被淘汰出缓冲池  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-109.png)  
+&emsp; 举个例子，整个缓冲池LRU如上图：  
+&emsp; （1）整个LRU长度是10；  
+&emsp; （2）前70%是新生代；  
+&emsp; （3）后30%是老生代；  
+&emsp; （4）新老生代首尾相连；  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-110.png)  
+&emsp; 假如有一个页号为50的新页被预读加入缓冲池：  
+&emsp; （1）50只会从老生代头部插入，老生代尾部（也是整体尾部）的页会被淘汰掉；  
+&emsp; （2）假设50这一页不会被真正读取，即预读失败，它将比新生代的数据更早淘汰出缓冲池；  
+&emsp; 改进版缓冲池LRU能够很好的解决“预读失败”的问题。  
+&emsp; 画外音：但也不要因噎废食，因为害怕预读失败而取消预读策略，大部分情况下，局部性原理是成立的，预读是有效的。  
+&emsp; 新老生代改进版LRU仍然解决不了缓冲池污染的问题。  
+
+##### 1.1.1.2.2. 缓冲池污染  
+&emsp; 当某一个SQL语句，要批量扫描大量数据时，可能导致把缓冲池的所有页都替换出去，导致大量热数据被换出，MySQL性能急剧下降，这种情况叫缓冲池污染。  
+&emsp; 例如，有一个数据量较大的用户表，当执行：  
+&emsp; select * from user where name like "%shenjian%";  
+&emsp; 虽然结果集可能只有少量数据，但这类like不能命中索引，必须全表扫描，就需要访问大量的页：  
+&emsp; （1）把页加到缓冲池（插入老生代头部）；  
+&emsp; （2）从页里读出相关的row（插入新生代头部）；  
+&emsp; （3）row里的name字段和字符串shenjian进行比较，如果符合条件，加入到结果集中；  
+&emsp; （4）…直到扫描完所有页中的所有row…  
+
+&emsp; 如此一来，所有的数据页都会被加载到新生代的头部，但只会访问一次，真正的热数据被大量换出。  
+&emsp; 怎么这类扫码大量数据导致的缓冲池污染问题呢？  
+&emsp; MySQL缓冲池加入了一个“老生代停留时间窗口”的机制：  
+（1）假设T=老生代停留时间窗口；  
+（2）插入老生代头部的页，即使立刻被访问，并不会立刻放入新生代头部；  
+（3）只有满足“被访问”并且“在老生代停留时间”大于T，才会被放入新生代头部；  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-111.png)  
+&emsp; 继续举例，假如批量数据扫描，有51，52，53，54，55等五个页面将要依次被访问。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-112.png)  
+&emsp; 如果没有“老生代停留时间窗口”的策略，这些批量被访问的页面，会换出大量热数据。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-113.png)  
+&emsp; 加入“老生代停留时间窗口”策略后，短时间内被大量加载的页，并不会立刻插入新生代头部，而是优先淘汰那些，短期内仅仅访问了一次的页。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-114.png)  
+&emsp; 而只有在老生代呆的时间足够久，停留时间大于T，才会被插入新生代头部。  
+
+#### 1.1.1.3. 相关参数  
+&emsp; 有三个比较重要的参数。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-105.png)  
+&emsp; 参数：innodb_buffer_pool_size  
+&emsp; 介绍：配置缓冲池的大小，在内存允许的情况下，DBA往往会建议调大这个参数，越多数据和索引放到内存里，数据库的性能会越好。  
+
+&emsp; 参数：innodb_old_blocks_pct  
+&emsp; 介绍：老生代占整个LRU链长度的比例，默认是37，即整个LRU中新生代与老生代长度比例是63:37。如果把这个参数设为100，就退化为普通LRU了。  
+
+&emsp; 参数：innodb_old_blocks_time  
+&emsp; 介绍：老生代停留时间窗口，单位是毫秒，默认是1000，即同时满足“被访问”与“在老生代停留时间超过1秒”两个条件，才会被插入到新生代头部。  
+
+#### 1.1.1.4. 总结  
+1. 缓冲池(buffer pool)是一种常见的降低磁盘访问的机制；  
+2. 缓冲池通常以页(page)为单位缓存数据；  
+3. 缓冲池的常见管理算法是LRU，memcache，OS，InnoDB都使用了这种算法；  
+4. InnoDB对普通LRU进行了优化：  
+    * 将缓冲池分为老生代和新生代，入缓冲池的页，优先进入老生代，页被访问，才进入新生代，以解决预读失效的问题  
+    * 页被访问，且在老生代停留时间超过配置阈值的，才进入新生代，以解决批量数据访问，大量热数据淘汰的问题  
+
+
+### 1.1.2. 写缓冲(change buffer)
 <!--
 https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
 
@@ -66,7 +195,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 
 &emsp; 在MySQL5.5之前，叫插入缓冲(insert buffer)，只针对insert做了优化；现在对delete和update也有效，叫做写缓冲(change buffer)。  
 
-    它是一种应用在非唯一普通索引页(non-unique secondary index page)不在缓冲池中，对页进行了写操作，并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更(buffer changes)，等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中的技术。写缓冲的目的是降低写操作的磁盘IO，提升数据库性能。  
+&emsp; <font color = "lime">change buffer是一种应用在非唯一普通索引页不在缓冲池中，对页进行了写操作，并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更，等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中的技术。</font>写缓冲的目的是降低写操作的磁盘IO，提升数据库性能。  
 
 &emsp; <font color = "lime">写缓冲的使用需要满足以下两个条件：</font>1. 索引是辅助索引。2. <font color = "lime">索引不是唯一的。</font>  
 
@@ -87,9 +216,8 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; （2）缓冲池LRU数据淘汰，会将“脏页”刷回磁盘；  
 &emsp; （3）数据库异常奔溃，能够从redo log中恢复数据；  
 
-&emsp; **<font color = "lime">什么时候缓冲池中的页，会刷到磁盘上呢？</font>**
+&emsp; **<font color = "lime">什么时候缓冲池中的页，会刷到磁盘上呢？</font>**  
 &emsp; 定期刷磁盘，而不是每次刷磁盘，能够降低磁盘IO，提升MySQL的性能。
-
 
 &emsp; 情况二  
 &emsp; 假如要修改页号为40的索引页，而这个页正好不在缓冲池内。
@@ -141,15 +269,15 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; 参数：innodb_change_buffering  
 &emsp; 介绍：配置哪些写操作启用写缓冲，可以设置成all/none/inserts/deletes等。  
 
-### 日志缓冲(log buffer)  
+### 1.1.3. 日志缓冲(log buffer)  
 ...
 <!-- 
 https://mp.weixin.qq.com/s/-Hx2KKYMEQCcTC-ADEuwVA
 -->
 
 
-### 1.1.2. 两次写  
-&emsp; <font color = "lime">如果说插入缓冲带给InnoDB存储引擎的是性能，那么两次写带给InnoDB存储引擎的是数据的可靠性。</font><font color = "red">当数据库宕机时，可能发生数据库正在写一个页面，而这个页只写了一部分（比如16K的页，只写前4K的页）的情况，称之为部分写失效（partial page write）。</font>在InnoDB存储引擎未使用double write技术前，曾出现过因为部分写失效而导致数据丢失的情况。  
+### 1.1.4. 两次写  
+&emsp; <font color = "lime">如果说写缓冲带给InnoDB存储引擎的是性能，那么两次写带给InnoDB存储引擎的是数据的可靠性。</font><font color = "red">当数据库宕机时，可能发生数据库正在写一个页面，而这个页只写了一部分（比如16K的页，只写前4K的页）的情况，称之为部分写失效（partial page write）。</font>在InnoDB存储引擎未使用double write技术前，曾出现过因为部分写失效而导致数据丢失的情况。  
 
 &emsp; 有人也许会想，如果发生写失效，可以通过重做日志进行恢复。这是一个办法。但是必须清楚的是，重做日志中记录的是对页的物理操作，如偏移量800，写'aaaa'记录。如果这个页本身已经损坏，再对其进行重做是没有意义的。这就是说，<font color = "red">在应用（apply）重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。</font>  
 &emsp; InnoDB存储引擎doublewrite的体系架构如下图所示  
@@ -184,7 +312,7 @@ InnoDB：buffer……
 &emsp; 参数skip_innodb_doublewrite可以禁止使用两次写功能，这时可能会发生前面提及的写失效问题。不过，如果有多台从服务器（slave server），需要提供较快的性能（如slave上做的是RAID0），也许启用这个参数是一个办法。不过，在需要提供数据高可靠性的主服务器（master server）上，任何时候我们都应确保开启两次写功能。  
 &emsp; 注意：有些文件系统本身就提供了部分写失效的防范机制，如ZFS文件系统。在这种情况下，就不要启用doublewrite了。  
 
-### 1.1.3. 自适应哈希索引
+### 1.1.5. 自适应哈希索引
 &emsp; 哈希（hash）是一种非常快的查找方法，一般情况下查找的时间复杂度为O(1)。常用于连接（join）操作，如SQL Server和Oracle中的哈希连接（hash join）。但是SQL Server和Oracle等常见的数据库并不支持哈希索引（hash index）。MySQL的Heap存储引擎默认的索引类型为哈希，而InnoDB存储引擎提出了另一种实现方法，自适应哈希索引（adaptive hash index）。  
 &emsp; <font color = "red">InnoDB存储引擎会监控对表上索引的查找，如果观察到建立哈希索引可以带来速度的提升，则建立哈希索引，所以称之为自适应（adaptive）的。</font>自适应哈希索引通过缓冲池的B+树构造而来，因此建立的速度很快。而且不需要将整个表都建哈希索引，InnoDB存储引擎会自动根据访问的频率和模式来为某些页建立哈希索引。  
 &emsp; 根据InnoDB的官方文档显示，启用自适应哈希索引后，读取和写入速度可以提高2倍；对于辅助索引的连接操作，性能可以提高5倍。自适应哈希索引是非常好的优化模式，其设计思想是数据库自优化（self-tuning），即无需DBA对数据库进行调整。  
@@ -210,11 +338,8 @@ InnoDB：buffer……
 
 <!-- 
 怎么进行数据恢复？
-
 binlog 会记录所有的逻辑操作，并且是采用追加写的形式。当需要恢复到指定的某一秒时，比如今天下午二点发现中午十二点有一次误删表，需要找回数据，那你可以这么做：
-
 •首先，找到最近的一次全量备份，从这个备份恢复到临时库•然后，从备份的时间点开始，将备份的 binlog 依次取出来，重放到中午误删表之前的那个时刻。
-
 这样你的临时库就跟误删之前的线上库一样了，然后你可以把表数据从临时库取出来，按需要恢复到线上库去。
 -->
 
