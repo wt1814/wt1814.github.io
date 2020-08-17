@@ -24,7 +24,7 @@
 **<font color = "red">《MySQL技术内幕：InnoDB存储引擎》</font>** 
 
 ## 1.1. 关键特性  
-&emsp; InnoDB存储引擎的关键特性包括写缓存、两次写（double write）、自适应哈希索引（adaptive hash index）。  
+&emsp; InnoDB存储引擎的关键特性包括缓冲池、写缓冲、两次写（double write）、自适应哈希索引（adaptive hash index）。  
 
 ### 1.1.1. 缓冲池(buffer pool)  
 
@@ -36,7 +36,7 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; InnoDB 在修改数据时，如果数据的页在 Buffer Pool 中，则会直接修改 Buffer Pool，此时称这个页为脏页，InnoDB 会以一定的频率将脏页刷新到磁盘，这样可以尽量减少磁盘I/O，提升性能。 
 -->
 
-&emsp; MySQL作为一个存储系统，具有缓冲池(buffer pool)机制，缓存表数据与索引数据，把磁盘上的数据加载到缓冲池，以避免每次查询数据都进行磁盘IO。缓冲池提高了读能力。  
+&emsp; MySQL作为一个存储系统，具有缓冲池(buffer pool)机制，<font color = "red">缓存表数据与索引数据，把磁盘上的数据加载到缓冲池，以避免每次查询数据都进行磁盘IO。缓冲池提高了读能力。</font>  
 
 &emsp; 如何管理与淘汰缓冲池，使得性能最大化呢？在介绍具体细节之前，先介绍下“预读”的概念。  
 
@@ -51,25 +51,15 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; 随机预读（Random read-ahead）: 随机预读方式则是表示当同一个 extent 中的一些 page 在 buffer pool 中发现时，Innodb 会将该 extent 中的剩余 page 一并读到 buffer pool中，由于随机预读方式给 Innodb code 带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。  
 -->
 
+&emsp; 什么是预读？  
+&emsp; 磁盘读写，并不是按需读取，而是按页读取，<font color = "red">一次至少读一页数据（一般是4K），如果未来要读取的数据就在页中，就能够省去后续的磁盘IO，提高效率。</font>  
 
-什么是预读？  
+&emsp; 预读为什么有效？  
+&emsp; 数据访问，通常都遵循“集中读写”的原则，使用一些数据，大概率会使用附近的数据，这就是所谓的“局部性原理”，它表明提前加载是有效的，确实能够减少磁盘IO。  
 
-磁盘读写，并不是按需读取，而是按页读取，一次至少读一页数据（一般是4K），如果未来要读取的数据就在页中，就能够省去后续的磁盘IO，提高效率。  
-
- 
-
-预读为什么有效？  
-
-数据访问，通常都遵循“集中读写”的原则，使用一些数据，大概率会使用附近的数据，这就是所谓的“局部性原理”，它表明提前加载是有效的，确实能够减少磁盘IO。  
-
- 
-
-按页(4K)读取，和InnoDB的缓冲池设计有啥关系？  
-
-（1）磁盘访问按页读取能够提高性能，所以缓冲池一般也是按页缓存数据；  
-
-（2）预读机制能把一些“可能要访问”的页提前加入缓冲池，避免未来的磁盘IO操作；  
-
+&emsp; 按页(4K)读取，和InnoDB的缓冲池设计有什么关系？  
+&emsp; （1）磁盘访问按页读取能够提高性能，所以缓冲池一般也是按页缓存数据；  
+&emsp; （2）<font color = "red">预读机制能把一些“可能要访问”的页提前加入缓冲池，避免未来的磁盘IO操作；</font>  
 
 &emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）。  
 &emsp; 其中，线性预读以 extent（块，1个 extent 等于64个 page）为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
@@ -78,10 +68,10 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 
 #### 1.1.1.2. LRU算法  
 &emsp; InnoDB是以什么算法，来管理这些缓冲页呢？  
-&emsp; memcache，OS都会用LRU来进行页置换管理，但MySQL的玩法并不一样。  
+&emsp; memcache，OS都会用LRU来进行页置换管理，但MySQL并没有直接使用LRU算法。  
 
 &emsp; 传统的LRU是如何进行缓冲页管理？  
-&emsp; 最常见的玩法是，把入缓冲池的页放到LRU的头部，作为最近访问的元素，从而最晚被淘汰。这里又分两种情况：  
+&emsp; 最常见的是，把入缓冲池的页放到LRU的头部，作为最近访问的元素，从而最晚被淘汰。这里又分两种情况：  
 &emsp; （1）页已经在缓冲池里，那就只做“移至”LRU头部的动作，而没有页被淘汰；  
 &emsp; （2）页不在缓冲池里，除了做“放入”LRU头部的动作，还要做“淘汰”LRU尾部页的动作；  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-106.png)  
@@ -90,19 +80,18 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-107.png)  
 &emsp; （1）页号为4的页，本来就在缓冲池里；  
 &emsp; （2）把页号为4的页，放到LRU的头部即可，没有页被淘汰；  
-&emsp; 画外音：为了减少数据移动，LRU一般用链表实现。  
 &emsp; 假如，再接下来要访问的数据在页号为50的页中：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-108.png)  
 &emsp; （1）页号为50的页，原来不在缓冲池里；  
 &emsp; （2）把页号为50的页，放到LRU头部，同时淘汰尾部页号为7的页；  
-&emsp; 传统的LRU缓冲池算法十分直观，OS，memcache等很多软件都在用，MySQL为啥这么矫情，不能直接用呢？  
+&emsp; 传统的LRU缓冲池算法十分直观，OS，memcache等很多软件都在用，MySQL为什么不能直接用呢？  
 &emsp; 这里有两个问题：  
 &emsp; （1）预读失效；  
 &emsp; （2）缓冲池污染；  
 
 ##### 1.1.1.2.1. 预读失效  
 &emsp; 什么是预读失效？  
-&emsp; 由于预读(Read-Ahead)，提前把页放入了缓冲池，但最终MySQL并没有从页中读取数据，称为预读失效。  
+&emsp; <font color = "red">由于预读(Read-Ahead)，提前把页放入了缓冲池，但最终MySQL并没有从页中读取数据，称为预读失效。</font>  
 
 &emsp; 如何对预读失效进行优化？  
 &emsp; 要优化预读失效，思路是：  
@@ -110,14 +99,13 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; （2）让真正被读取的页，才挪到缓冲池LRU的头部；  
 &emsp; 以保证，真正被读取的热数据留在缓冲池里的时间尽可能长。  
 
-&emsp; 具体方法是：  
-&emsp; （1）将LRU分为两个部分：  
-* 新生代(new sublist)  
-* 老生代(old sublist)  
-&emsp; （2）新老生代收尾相连，即：新生代的尾(tail)连接着老生代的头(head)；
-&emsp; （3）新页（例如被预读的页）加入缓冲池时，只加入到老生代头部：  
-* 如果数据真正被读取（预读成功），才会加入到新生代的头部  
-* 如果数据没有被读取，则会比新生代里的“热数据页”更早被淘汰出缓冲池  
+&emsp; **<font color = "lime">预读失效进行优化的具体方法是：</font>**  
+1. 将LRU分为两个部分：新生代(new sublist) 和 老生代(old sublist)。  
+2. 新老生首尾相连，即：新生代的尾(tail)连接着老生代的头(head)；  
+3. 新页（例如被预读的页）加入缓冲池时，只加入到老生代头部：  
+    * 如果数据真正被读取（预读成功），才会加入到新生代的头部  
+    * 如果数据没有被读取，则会比新生代里的“热数据页”更早被淘汰出缓冲池   
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-109.png)  
 &emsp; 举个例子，整个缓冲池LRU如上图：  
 &emsp; （1）整个LRU长度是10；  
@@ -128,12 +116,11 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; 假如有一个页号为50的新页被预读加入缓冲池：  
 &emsp; （1）50只会从老生代头部插入，老生代尾部（也是整体尾部）的页会被淘汰掉；  
 &emsp; （2）假设50这一页不会被真正读取，即预读失败，它将比新生代的数据更早淘汰出缓冲池；  
-&emsp; 改进版缓冲池LRU能够很好的解决“预读失败”的问题。  
-&emsp; 画外音：但也不要因噎废食，因为害怕预读失败而取消预读策略，大部分情况下，局部性原理是成立的，预读是有效的。  
+&emsp; 改进版缓冲池LRU能够很好的解决“预读失败”的问题。不要因为害怕预读失败而取消预读策略，大部分情况下，局部性原理是成立的，预读是有效的。  
 &emsp; 新老生代改进版LRU仍然解决不了缓冲池污染的问题。  
 
 ##### 1.1.1.2.2. 缓冲池污染  
-&emsp; 当某一个SQL语句，要批量扫描大量数据时，可能导致把缓冲池的所有页都替换出去，导致大量热数据被换出，MySQL性能急剧下降，这种情况叫缓冲池污染。  
+&emsp; <font color = "red">当某一个SQL语句，要批量扫描大量数据时(例如like语句)，可能导致把缓冲池的所有页都替换出去，导致大量热数据被换出，MySQL性能急剧下降，这种情况叫缓冲池污染。</font>  
 &emsp; 例如，有一个数据量较大的用户表，当执行：  
 &emsp; select * from user where name like "%shenjian%";  
 &emsp; 虽然结果集可能只有少量数据，但这类like不能命中索引，必须全表扫描，就需要访问大量的页：  
@@ -143,11 +130,12 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; （4）…直到扫描完所有页中的所有row…  
 
 &emsp; 如此一来，所有的数据页都会被加载到新生代的头部，但只会访问一次，真正的热数据被大量换出。  
-&emsp; 怎么这类扫码大量数据导致的缓冲池污染问题呢？  
-&emsp; MySQL缓冲池加入了一个“老生代停留时间窗口”的机制：  
-（1）假设T=老生代停留时间窗口；  
-（2）插入老生代头部的页，即使立刻被访问，并不会立刻放入新生代头部；  
-（3）只有满足“被访问”并且“在老生代停留时间”大于T，才会被放入新生代头部；  
+&emsp; 怎么解决这类扫码读取大量数据导致的缓冲池污染问题呢？  
+&emsp; **<font color = "lime">MySQL缓冲池加入了一个“老生代停留时间窗口”的机制：</font>**  
+1. 假设T=老生代停留时间窗口；  
+2. 插入老生代头部的页，即使立刻被访问，并不会立刻放入新生代头部；  
+3. 只有满足“被访问”并且“在老生代停留时间”大于T，才会被放入新生代头部；  
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-111.png)  
 &emsp; 继续举例，假如批量数据扫描，有51，52，53，54，55等五个页面将要依次被访问。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-112.png)  
@@ -181,7 +169,6 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 ### 1.1.2. 写缓冲(change buffer)
 <!--
 https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
-
 https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 -->
 
@@ -191,6 +178,16 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; 当更新数据时，如果记录要更新的目标页不在内存中。这时，InnoDB的处理流程如下：  
 1. 对于唯一索引来说，需要将数据页读入内存，判断到没有冲突，插入这个值，语句执行结束；
 2. 对于普通索引来说，则是将更新记录在[change buffer](/docs/SQL/InnoDB.md)，语句执行就结束了。  
+-->
+
+<!-- 
+
+索引是存储在磁盘上的，所以对于索引的操作需要涉及磁盘操作。如果我们使用自增主键，那么在插入主键索引（聚簇索引）时，只需不断追加即可，不需要磁盘的随机 I/O。但是如果我们使用的是普通索引，大概率是无序的，此时就涉及到磁盘的随机 I/O，而随机I/O的性能是比较差的（Kafka 官方数据：磁盘顺序I/O的性能是磁盘随机I/O的4000~5000倍）。
+
+因此，InnoDB 存储引擎设计了 Insert Buffer ，对于非聚集索引的插入或更新操作，不是每一次直接插入到索引页中，而是先判断插入的非聚集索引页是否在缓冲池（Buffer pool）中，若在，则直接插入；若不在，则先放入到一个 Insert Buffer 对象中，然后再以一定的频率和情况进行 Insert Buffer 和辅助索引页子节点的 merge（合并）操作，这时通常能将多个插入合并到一个操作中（因为在一个索引页中），这就大大提高了对于非聚集索引插入的性能。
+插入缓冲的使用需要满足以下两个条件：1）索引是辅助索引；2）索引不是唯一的。
+
+因为在插入缓冲时，数据库不会去查找索引页来判断插入的记录的唯一性。如果去查找肯定又会有随机读取的情况发生，从而导致 Insert Buffer 失去了意义。
 -->
 
 &emsp; 在MySQL5.5之前，叫插入缓冲(insert buffer)，只针对insert做了优化；现在对delete和update也有效，叫做写缓冲(change buffer)。  
@@ -277,6 +274,22 @@ https://mp.weixin.qq.com/s/-Hx2KKYMEQCcTC-ADEuwVA
 
 
 ### 1.1.4. 两次写  
+<!-- 
+
+脏页刷盘风险：InnoDB 的 page size一般是16KB，操作系统写文件是以4KB作为单位，那么每写一个 InnoDB 的 page 到磁盘上，操作系统需要写4个块。于是可能出现16K的数据，写入4K 时，发生了系统断电或系统崩溃，只有一部分写是成功的，这就是 partial page write（部分页写入）问题。这时会出现数据不完整的问题。
+这时是无法通过 redo log 恢复的，因为 redo log 记录的是对页的物理修改，如果页本身已经损坏，重做日志也无能为力。
+
+doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，一部分为内存中的 doublewrite buffer，其大小为2MB，另一部分是磁盘上共享表空间中连续的128个页，即2个区(extent)，大小也是2M。
+为了解决 partial page write 问题，当 MySQL 将脏数据刷新到磁盘的时候，会进行以下操作：
+1）先将脏数据复制到内存中的 doublewrite buffer
+2）之后通过 doublewrite buffer 再分2次，每次1MB写入到共享表空间的磁盘上（顺序写，性能很高）
+3）完成第二步之后，马上调用 fsync 函数，将doublewrite buffer中的脏页数据写入实际的各个表空间文件（离散写）。
+
+如果操作系统在将页写入磁盘的过程中发生崩溃，InnoDB 再次启动后，发现了一个 page 数据已经损坏，InnoDB 存储引擎可以从共享表空间的 doublewrite 中找到该页的一个最近的副本，用于进行数据恢复了。
+
+
+-->
+
 &emsp; <font color = "lime">如果说写缓冲带给InnoDB存储引擎的是性能，那么两次写带给InnoDB存储引擎的是数据的可靠性。</font><font color = "red">当数据库宕机时，可能发生数据库正在写一个页面，而这个页只写了一部分（比如16K的页，只写前4K的页）的情况，称之为部分写失效（partial page write）。</font>在InnoDB存储引擎未使用double write技术前，曾出现过因为部分写失效而导致数据丢失的情况。  
 
 &emsp; 有人也许会想，如果发生写失效，可以通过重做日志进行恢复。这是一个办法。但是必须清楚的是，重做日志中记录的是对页的物理操作，如偏移量800，写'aaaa'记录。如果这个页本身已经损坏，再对其进行重做是没有意义的。这就是说，<font color = "red">在应用（apply）重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。</font>  
