@@ -144,9 +144,8 @@ Gitee： https://gitee.com/wt1814/
 
 ## SSM  
 ### Spring  
-[Spring](/docs/SSM/Spring/1.Spring.md)  
-
 [学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
+[Spring](/docs/SSM/Spring/1.Spring.md)  
 [SpringIOC解析](/docs/SSM/Spring/2.SpringIOC.md)  
 &emsp; [容器初始化详解](/docs/SSM/Spring/容器初始化详解.md)  
 [SpringDI解析](/docs/SSM/Spring/3.SpringDI.md)  
@@ -171,7 +170,6 @@ Gitee： https://gitee.com/wt1814/
 
 ### MyBatis  
 [MyBatis教程](/docs/SSM/MyBatis/Mybatis.md)  
-
 [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
 [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
 [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
@@ -181,9 +179,8 @@ Gitee： https://gitee.com/wt1814/
 
 ## 微服务  
 ### SpringBoot  
+[学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
 [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
-
-[学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md) 
 [SpringBoot启动过程-SpringApplication初始化](/docs/microService/SpringBoot/SpringApplication初始化.md)  
 [SpringBoot启动过程-run()方法运行过程](/docs/microService/SpringBoot/run方法运行过程.md)  
 &emsp; [SpringBoot事件回调机制](/docs/microService/SpringBoot/eventCallback.md)  
@@ -215,7 +212,7 @@ Gitee： https://gitee.com/wt1814/
 [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
 
 ### Redis
-[学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
+[学习Redis的总结](/docs/microService/Redis/RedisSummary.md)    
 [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
 &emsp; [Redis的API](/docs/microService/Redis/RedisAPI.md)  
 &emsp; [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
@@ -234,6 +231,8 @@ Gitee： https://gitee.com/wt1814/
 [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 
 ### 分布式理论  
+[分布式和集群](/docs/system/distributed.md)   
+[分布式和集中式](/docs/system/deploy.md)  
 [分布式算法](/docs/microService/thinking/分布式算法-consistent.md)  
 [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
 [分布式事务](/docs/microService/thinking/分布式事务.md)  
@@ -292,8 +291,6 @@ Gitee： https://gitee.com/wt1814/
 [其他](/docs/web/other.md)
 
 ## 架构设计 
-[分布式和集群](/docs/system/distributed.md)   
-[分布式和集中式](/docs/system/deploy.md)  
 [并发系统三高](/docs/system/threeHigh.md)  
 [系统稳定性建设](/docs/system/stability.md)  
 

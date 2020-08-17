@@ -97,8 +97,8 @@ Gitee： https://gitee.com/wt1814/
 
 ## SSM  
 ### Spring  
-[Spring](/docs/SSM/Spring/1.Spring.md)  
 [对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
+[Spring](/docs/SSM/Spring/1.Spring.md)  
 [SpringIOC解析](/docs/SSM/Spring/2.SpringIOC.md)  
 &emsp; [容器初始化详解](/docs/SSM/Spring/容器初始化详解.md)  
 [SpringDI解析](/docs/SSM/Spring/3.SpringDI.md)  
@@ -132,9 +132,8 @@ Gitee： https://gitee.com/wt1814/
 
 ## 微服务  
 ### SpringBoot  
+[学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)   
 [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
-
-[学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md) 
 [SpringBoot启动过程-SpringApplication初始化](/docs/microService/SpringBoot/SpringApplication初始化.md)  
 [SpringBoot启动过程-run()方法运行过程](/docs/microService/SpringBoot/run方法运行过程.md)  
 &emsp; [SpringBoot事件回调机制](/docs/microService/SpringBoot/eventCallback.md)  
@@ -185,6 +184,9 @@ Gitee： https://gitee.com/wt1814/
 [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 
 ### 分布式理论  
+[分布式和集群](/docs/system/distributed.md)  
+[分布式和集中式](/docs/system/deploy.md)  
+
 [分布式算法](/docs/microService/thinking/分布式算法-consistent.md)  
 [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
 [分布式ID](/docs/microService/thinking/分布式ID.md)  
@@ -233,8 +235,7 @@ Gitee： https://gitee.com/wt1814/
 
 
 ## 架构设计  
-[分布式和集群](/docs/system/distributed.md)  
-[分布式和集中式](/docs/system/deploy.md)  
+
 [并发系统三高](/docs/system/threeHigh.md)  
 [系统稳定性建设](/docs/system/stability.md)  
 

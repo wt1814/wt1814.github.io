@@ -172,6 +172,8 @@
     * [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 
 * 分布式理论  
+    * [分布式和集群](/docs/system/distributed.md)  
+    * [分布式和集中式](/docs/system/deploy.md)  
     * [分布式算法](/docs/microService/thinking/分布式算法-consistent.md)  
     * [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
     * [分布式ID](/docs/microService/thinking/分布式ID.md)  
@@ -217,8 +219,6 @@
     * [源码安全](/docs/web/codeSecurity.md)  
     
 * 架构设计  
-    * [分布式和集群](/docs/system/distributed.md)  
-    * [分布式和集中式](/docs/system/deploy.md)  
     * [并发系统三高](/docs/system/threeHigh.md)  
     * [系统稳定性建设](/docs/system/stability.md)  
 

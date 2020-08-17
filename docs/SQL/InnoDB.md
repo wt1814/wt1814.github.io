@@ -3,10 +3,12 @@
 
 - [1. InnoDB](#1-innodb)
     - [1.1. 关键特性](#11-关键特性)
-        - [1.1.1. 插入缓冲(写缓存，change buffer)](#111-插入缓冲写缓存change-buffer)
+        - [缓冲池(buffer pool)](#缓冲池buffer-pool)
+            - [1.1.4. 预读（read ahead）](#114-预读read-ahead)
+        - [1.1.1. 写缓冲(change buffer)](#111-写缓冲change-buffer)
+        - [日志缓冲(log buffer)](#日志缓冲log-buffer)
         - [1.1.2. 两次写](#112-两次写)
         - [1.1.3. 自适应哈希索引](#113-自适应哈希索引)
-        - [1.1.4. 预读（read ahead）](#114-预读read-ahead)
     - [1.2. 数据恢复](#12-数据恢复)
     - [1.3. 表](#13-表)
         - [1.3.1. InnoDB的逻辑存储结构](#131-innodb的逻辑存储结构)
@@ -14,38 +16,137 @@
 <!-- /TOC -->
 
 # 1. InnoDB  
+**<font color = "red">《MySQL技术内幕：InnoDB存储引擎》</font>** 
+
 ## 1.1. 关键特性  
-**<font color = "red">《MySQL技术内幕：InnoDB存储引擎》</font>**  
+&emsp; InnoDB存储引擎的关键特性包括写缓存、两次写（double write）、自适应哈希索引（adaptive hash index）。  
 
-&emsp; InnoDB存储引擎的关键特性包括插入缓冲、两次写（double write）、自适应哈希索引（adaptive hash index）、预读。  
+### 缓冲池(buffer pool)  
 
-### 1.1.1. 插入缓冲(写缓存，change buffer)
 <!-- 
-https://www.cnblogs.com/geaozhang/p/7235953.html
-https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
+https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
+
+&emsp; Buffer Pool 是 InnoDB 维护的一个缓存区域，用来缓存数据和索引在内存中，主要用来加速数据的读写，如果 Buffer Pool 越大，那么 MySQL 就越像一个内存数据库，默认大小为 128M。  
+&emsp; InnoDB 会将那些热点数据和一些 InnoDB 认为即将访问到的数据存在 Buffer Pool 中，以提升数据的读取性能。  
+&emsp; InnoDB 在修改数据时，如果数据的页在 Buffer Pool 中，则会直接修改 Buffer Pool，此时称这个页为脏页，InnoDB 会以一定的频率将脏页刷新到磁盘，这样可以尽量减少磁盘I/O，提升性能。 
 -->
 
-&emsp; 唯一索引和普通索引的区别？
+ 
+&emsp; 缓冲池提高了读能力。  
+
+* MySQL数据存储包含内存与磁盘两个部分；
+* 内存缓冲池(buffer pool)以页为单位，缓存最热的数据页(data page)与索引页(index page)；
+* InnoDB以变种LRU算法管理缓冲池，并能够解决“预读失效”与“缓冲池污染”的问题；
+
+
+
+#### 1.1.4. 预读（read ahead）  
+&emsp; InnoDB 在 I/O 的优化上有个比较重要的特性为预读，<font color = "red">当 InnoDB 预计某些 page 可能很快就会需要用到时，它会异步地将这些 page 提前读取到缓冲池（buffer pool）中，</font>这其实有点像空间局部性的概念。  
+&emsp; 空间局部性（spatial locality）：如果一个数据项被访问，那么与它的址相邻的数据项也可能很快被访问。  
+&emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）。  
+&emsp; 其中，线性预读以 extent（块，1个 extent 等于64个 page）为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
+&emsp; 线性预读（Linear read-ahead）：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64（一个 extend 上限就是64页）的任何值，默认值为56，值越高，访问模式检查越严格。  
+&emsp; 随机预读（Random read-ahead）: 随机预读方式则是表示当同一个 extent 中的一些 page 在 buffer pool 中发现时，Innodb 会将该 extent 中的剩余 page 一并读到 buffer pool中，由于随机预读方式给 Innodb code 带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。  
+
+
+### 1.1.1. 写缓冲(change buffer)
+<!--
+https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
+
+https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
+-->
+
+<!-- 
 &emsp; <font color = "red">InnoDB存储引擎开创性地设计了插入缓冲，</font>对于非聚集索引的插入或更新操作，<font color = "red">不是每一次直接插入索引页中，而是先判断插入的非聚集索引页是否在缓冲池中。如果在，则直接插入；如果不在，则先放入一个插入缓冲区中，</font>好似欺骗数据库这个非聚集的索引已经插到叶子节点了，<font color = "red">然后再以一定的频率执行插入缓冲和非聚集索引页子节点的合并操作，</font>这时通常能将多个插入合并到一个操作中（因为在一个索引页中），这就大大提高了对非聚集索引执行插入和修改操作的性能。
 
-&emsp; <font color = "lime">插入缓冲的使用需要满足以下两个条件：</font>  
+&emsp; 当更新数据时，如果记录要更新的目标页不在内存中。这时，InnoDB的处理流程如下：  
+1. 对于唯一索引来说，需要将数据页读入内存，判断到没有冲突，插入这个值，语句执行结束；
+2. 对于普通索引来说，则是将更新记录在[change buffer](/docs/SQL/InnoDB.md)，语句执行就结束了。  
+-->
 
-1. 索引是辅助索引。
-2. <font color = "lime">索引不是唯一的。</font>  
+&emsp; 在MySQL5.5之前，叫插入缓冲(insert buffer)，只针对insert做了优化；现在对delete和update也有效，叫做写缓冲(change buffer)。  
 
-&emsp; 当满足以上两个条件时，InnoDB存储引擎会使用插入缓冲，这样就能提高性能了。不过考虑一种情况，应用程序执行大量的插入和更新操作，这些操作都涉及了不唯一的非聚集索引，如果在这个过程中数据库发生了宕机，这时候会有大量的插入缓冲并没有合并到实际的非聚集索引中。如果是这样，恢复可能需要很长的时间，极端情况下甚至需要几个小时来执行合并恢复操作。  
+    它是一种应用在非唯一普通索引页(non-unique secondary index page)不在缓冲池中，对页进行了写操作，并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更(buffer changes)，等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中的技术。写缓冲的目的是降低写操作的磁盘IO，提升数据库性能。  
 
-&emsp; 辅助索引不能是唯一的，因为在把它插入到插入缓冲时，并不去查找索引页的情况。如果去查找肯定又会出现离散读的情况，插入缓冲就失去了意义。  
+&emsp; <font color = "lime">写缓冲的使用需要满足以下两个条件：</font>1. 索引是辅助索引。2. <font color = "lime">索引不是唯一的。</font>  
 
-&emsp; 查看插入缓冲的信息：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-84.png)  
-&emsp; seg size显示了当前插入缓冲的大小为2*16KB，free list len代表了空闲列表的长度，size代表了已经合并记录页的数量。  
+    辅助索引不能是唯一的，因为在把它写到插入缓冲时，并不去查找索引页的情况。如果去查找肯定又会出现离散读的情况，写缓冲就失去了意义。  
+    
+&emsp; **写缓冲的使用：**  
+&emsp; 对于数据库的写请求。  
+&emsp; 情况一  
+&emsp; 假如要修改页号为4的索引页，而这个页正好在缓冲池内。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-101.png)  
+&emsp; 如上图序号1-2：  
+&emsp; （1）直接修改缓冲池中的页，一次内存操作；  
+&emsp; （2）写入redo log，一次磁盘顺序写操作；  
+&emsp; 这样的效率是最高的。  
+&emsp; 是否会出现一致性问题呢？  
+&emsp; 并不会。  
+&emsp; （1）读取，会命中缓冲池的页；  
+&emsp; （2）缓冲池LRU数据淘汰，会将“脏页”刷回磁盘；  
+&emsp; （3）数据库异常奔溃，能够从redo log中恢复数据；  
 
-&emsp; 下面一行可能是真正要关心的，因为它显示了提高性能了。inserts代表插入的记录数，merged recs代表合并的页的数量，merges代表合并的次数。  
-&emsp; merged recs:merges大约为3:1，代表插入缓冲将对于非聚集索引页的IO请求大约降低了3倍。  
+&emsp; **<font color = "lime">什么时候缓冲池中的页，会刷到磁盘上呢？</font>**
+&emsp; 定期刷磁盘，而不是每次刷磁盘，能够降低磁盘IO，提升MySQL的性能。
 
-&emsp; **问题：**  
-&emsp; 目前插入缓冲存在一个问题是，在写密集的情况下，插入缓冲会占用过多的缓冲池内存，默认情况下最大可以占用1/2的缓冲池内存。Percona已发布一些patch来修正插入缓冲占用太多缓冲池内存的问题，具体的可以到http//www.percona.com/percona-lab.html 查找。简单来说，修改IBUF_POOL_SIZE_PER_MAX_SIZE就可以对插入缓冲的大小进行控制，例如，将IBUF_POOL_SIZE_PER_MAX_SIZE改为3，则最大只能使用1/3的缓冲池内存。  
+
+&emsp; 情况二  
+&emsp; 假如要修改页号为40的索引页，而这个页正好不在缓冲池内。
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-102.png)  
+此时麻烦一点，如上图需要1-3：  
+&emsp; （1）先把需要为40的索引页，从磁盘加载到缓冲池，一次磁盘随机读操作；  
+&emsp; （2）修改缓冲池中的页，一次内存操作；  
+&emsp; （3）写入redo log，一次磁盘顺序写操作；  
+
+&emsp; **<font color = "red">没有命中缓冲池的时候，至少产生一次磁盘IO，</font>** 对于写多读少的业务场景，是否还有优化的空间呢？  
+针对此情况，InnoDB采用写缓冲。  
+
+&emsp; InnoDB加入写缓冲优化，上文“情况二”流程会有什么变化？  
+&emsp; 假如要修改页号为40的索引页，而这个页正好不在缓冲池内。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-103.png)  
+&emsp; <font color = "red">加入写缓冲优化后，流程优化为：</font>  
+&emsp; （1）在写缓冲中记录这个操作，一次内存操作；  
+&emsp; （2）写入redo log，一次磁盘顺序写操作；  
+&emsp; 其性能与，这个索引页在缓冲池中，相近。  
+
+&emsp; 是否会出现一致性问题呢？  
+&emsp; 也不会。  
+&emsp; （1）数据库异常奔溃，能够从redo log中恢复数据；  
+&emsp; （2）写缓冲不只是一个内存结构，它也会被定期刷盘到写缓冲系统表空间；  
+&emsp; （3）数据读取时，有另外的流程，将数据合并到缓冲池；  
+
+&emsp; 不妨设，稍后的一个时间，有请求查询索引页40的数据。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-104.png)  
+&emsp; 此时的流程如序号1-3：  
+&emsp; （1）载入索引页，缓冲池未命中，这次磁盘IO不可避免；  
+&emsp; （2）从写缓冲读取相关信息；  
+&emsp; （3）恢复索引页，放到缓冲池LRU里；  
+&emsp; 可以看到，40这一页，在真正被读取时，才会被加载到缓冲池中。  
+
+&emsp; **什么业务场景，适合开启InnoDB的写缓冲机制？**  
+* 不适合使用写缓冲  
+&emsp; （1）数据库都是唯一索引；  
+&emsp; （2）或者，写入一个数据后，会立刻读取它；  
+&emsp; 这两类场景，在写操作进行时（进行后），本来就要进行进行页读取，本来相应页面就要入缓冲池，此时写缓存反倒成了负担，增加了复杂度。
+* 适合使用写缓冲  
+&emsp; （1）数据库大部分是非唯一索引；  
+&emsp; （2）业务是写多读少，或者不是写后立刻读取；  
+&emsp; 可以使用写缓冲，将原本每次写入都需要进行磁盘IO的SQL，优化定期批量写磁盘。  
+
+&emsp; **有关写缓冲的参数：**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-100.png)  
+&emsp; 参数：innodb_change_buffer_max_size  
+&emsp; 介绍：配置写缓冲的大小，占整个缓冲池的比例，默认值是25%，最大值是50%。  
+&emsp; 参数：innodb_change_buffering  
+&emsp; 介绍：配置哪些写操作启用写缓冲，可以设置成all/none/inserts/deletes等。  
+
+### 日志缓冲(log buffer)  
+...
+<!-- 
+https://mp.weixin.qq.com/s/-Hx2KKYMEQCcTC-ADEuwVA
+-->
+
 
 ### 1.1.2. 两次写  
 &emsp; <font color = "lime">如果说插入缓冲带给InnoDB存储引擎的是性能，那么两次写带给InnoDB存储引擎的是数据的可靠性。</font><font color = "red">当数据库宕机时，可能发生数据库正在写一个页面，而这个页只写了一部分（比如16K的页，只写前4K的页）的情况，称之为部分写失效（partial page write）。</font>在InnoDB存储引擎未使用double write技术前，曾出现过因为部分写失效而导致数据丢失的情况。  
@@ -101,13 +202,6 @@ InnoDB：buffer……
 &emsp; 但某些时候，在负载高的情况下，自适应哈希索引中添加的read/write锁也会带来竞争，比如高并发的join操作。like操作和%的通配符操作也不适用于自适应哈希索引，可能要关闭自适应哈希索引。  
 -->
 
-### 1.1.4. 预读（read ahead）  
-&emsp; InnoDB 在 I/O 的优化上有个比较重要的特性为预读，<font color = "red">当 InnoDB 预计某些 page 可能很快就会需要用到时，它会异步地将这些 page 提前读取到缓冲池（buffer pool）中，</font>这其实有点像空间局部性的概念。  
-&emsp; 空间局部性（spatial locality）：如果一个数据项被访问，那么与它的址相邻的数据项也可能很快被访问。  
-&emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）。  
-&emsp; 其中，线性预读以 extent（块，1个 extent 等于64个 page）为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
-&emsp; 线性预读（Linear read-ahead）：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64（一个 extend 上限就是64页）的任何值，默认值为56，值越高，访问模式检查越严格。  
-&emsp; 随机预读（Random read-ahead）: 随机预读方式则是表示当同一个 extent 中的一些 page 在 buffer pool 中发现时，Innodb 会将该 extent 中的剩余 page 一并读到 buffer pool中，由于随机预读方式给 Innodb code 带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。  
 
 
 ## 1.2. 数据恢复
