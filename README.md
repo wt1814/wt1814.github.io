@@ -233,7 +233,8 @@ Gitee： https://gitee.com/wt1814/
 ### 分布式理论  
 [分布式和集群](/docs/system/distributed.md)   
 [分布式和集中式](/docs/system/deploy.md)  
-[分布式算法](/docs/microService/thinking/分布式算法-consistent.md)  
+[分布式算法](/docs/microService/thinking/分布式算法.md)  
+&emsp; [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
 [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
 [分布式事务](/docs/microService/thinking/分布式事务.md)  
 &emsp; [DTP](/docs/microService/thinking/分布式事务-1.md)    
