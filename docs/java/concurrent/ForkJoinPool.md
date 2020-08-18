@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. ForkJoinPool](#1-forkjoinpool)
+- [1. ForkJoinPool JDK 1.7](#1-forkjoinpool-jdk-17)
     - [1.1. ForkJoinPool内部原理，工作窃取算法](#11-forkjoinpool内部原理工作窃取算法)
         - [1.1.1. 分而治之](#111-分而治之)
         - [1.1.2. 工作窃取(Work Stealing)算法](#112-工作窃取work-stealing算法)
@@ -14,7 +14,11 @@
 <!-- /TOC -->
 
 
-# 1. ForkJoinPool  
+# 1. ForkJoinPool JDK 1.7  
+<!-- 
+http://ifeve.com/talk-concurrency-forkjoin/
+-->
+
 &emsp; ForkJoinPool是java 7中新增的线程池类。  
 &emsp; 为什么使用ForkJoinPool？  
 &emsp; ThreadPoolExecutor中每个任务都是由单个线程独立处理的，如果出现一个非常耗时的大任务(比如大数组排序)，就可能出现线程池中只有一个线程在处理这个大任务，而其他线程却空闲着，这会导致CPU负载不均衡：空闲的处理器无法帮助工作繁忙的处理器。  
@@ -50,9 +54,7 @@ public class ForkJoinWorkerThread extends Thread {
 
 ### 1.2.1. 创建ForkJoinPool
 &emsp; ForkJoinPool是ExecutorService的实现类，是一种特殊的线程池。  
-
 &emsp; java 8进一步扩展了ForkJoinPool的功能，为ForkJoinPool增加了通用池功能。
-
 &emsp; 创建了ForkJoinPool实例，就可以调用ForkJoinPool的submit(ForkJoinTask task) 或者invoke(ForkJoinTask task) 方法来执行指定的任务。   
 
 ### 1.2.2. ForkJoinTask详解
@@ -64,5 +66,5 @@ public class ForkJoinWorkerThread extends Thread {
   
 ### 1.2.3. 相关使用  
 &emsp; <font color = "red">在JDK8中lamdba有个stream操作parallelStream，底层是使用ForkJoinPool实现的；</font>  
-&emsp; 可以通过Executors.newWorkStealingPool(int parallelism)快速创建ForkJoinPool线程池，无参默认使用CPU数量的线程数执行任务；  
+&emsp; <font color = "red">可以通过Executors.newWorkStealingPool(int parallelism)快速创建ForkJoinPool线程池，无参默认使用CPU数量的线程数执行任务；</font>  
 

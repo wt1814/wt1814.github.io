@@ -40,6 +40,7 @@
     * [线程池](/docs/java/concurrent/3.ThreadPool.md)  
         * [ThreadPoolExecutor](/docs/java/concurrent/ThreadPoolExecutor.md)  
         * [ForkJoinPool](/docs/java/concurrent/ForkJoinPool.md)  
+        * [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
     * [J.U.C包](/docs/java/concurrent/4.ConcurrentPackage.md)  
         * [Lock](/docs/java/concurrent/8.Lock.md)  
         * [Atmoic](/docs/java/concurrent/9.Atmoic.md)  
