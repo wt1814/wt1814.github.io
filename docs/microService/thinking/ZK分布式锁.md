@@ -2,14 +2,12 @@
 <!-- TOC -->
 
 - [1. 基于ZK实现分布式锁](#1-基于zk实现分布式锁)
-    - [1.1. 实现原理](#11-实现原理)
+    - [1.1. ZK分布式锁实现原理](#11-zk分布式锁实现原理)
         - [1.1.1. 独占锁的实现](#111-独占锁的实现)
         - [1.1.2. 读写锁的实现](#112-读写锁的实现)
             - [1.1.2.1. 读写锁的第一种实现](#1121-读写锁的第一种实现)
             - [1.1.2.2. 读写锁的第二种实现](#1122-读写锁的第二种实现)
-    - [1.2. ZK实现分布式锁实现](#12-zk实现分布式锁实现)
-        - [1.2.1. Zookeeper API实现分布式锁](#121-zookeeper-api实现分布式锁)
-        - [1.2.2. Curator框架](#122-curator框架)
+    - [1.2. ZK分布式锁实现](#12-zk分布式锁实现)
 
 <!-- /TOC -->
 
@@ -17,11 +15,11 @@
 https://mp.weixin.qq.com/s/9whV1nuwfu2hWt8newteTA 
 https://www.cnblogs.com/wang-meng/default.html?page=2
 -->
-&emsp; **<font color = "red">参考《ZooKeeper 分布式过程协同技术详解》和《从Paxos到Zookeeper 分布式一致性原理与实践》</font>**  
 
 # 1. 基于ZK实现分布式锁
+&emsp; **<font color = "red">参考《ZooKeeper 分布式过程协同技术详解》和《从Paxos到Zookeeper 分布式一致性原理与实践》</font>**  
 
-## 1.1. 实现原理
+## 1.1. ZK分布式锁实现原理
 &emsp; **<font color = "lime">基于ZooKeeper可以实现分布式的独占锁和读写锁。</font>**  
 &emsp; **zookeeper分布式锁的缺点：**  
 
@@ -96,10 +94,5 @@ https://www.cnblogs.com/wang-meng/default.html?page=2
 &emsp; 上述步骤对于的流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-39.png)  
 
-## 1.2. ZK实现分布式锁实现
-### 1.2.1. Zookeeper API实现分布式锁  
-......
-
-### 1.2.2. Curator框架  
-......
-
+## 1.2. ZK分布式锁实现  
+&emsp; ZK分布式锁一般使用框架Curator实现。  

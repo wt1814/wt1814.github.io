@@ -236,6 +236,7 @@ Gitee： https://gitee.com/wt1814/
 [分布式算法](/docs/microService/thinking/分布式算法.md)  
 &emsp; [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
 [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
+[分布式ID](/docs/microService/thinking/分布式ID.md)  
 [分布式事务](/docs/microService/thinking/分布式事务.md)  
 &emsp; [DTP](/docs/microService/thinking/分布式事务-1.md)    
 &emsp; [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
@@ -248,7 +249,7 @@ Gitee： https://gitee.com/wt1814/
 [分布式缓存](/docs/microService/thinking/分布式缓存.md)  
 [分布式限流](/docs/microService/thinking/分布式限流.md)   
 [服务降级](/docs/microService/thinking/服务降级.md)  
-[分布式ID](/docs/microService/thinking/分布式ID.md)  
+
 
 <!-- 
 [分布式Session](/docs/microService/thinking/分布式Session.md)  

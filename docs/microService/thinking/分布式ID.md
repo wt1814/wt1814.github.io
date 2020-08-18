@@ -2,22 +2,22 @@
 
 <!-- TOC -->
 
-- [1. 分布式ID](#1-分布式id)
-- [2. 分布式ID常见生成方案](#2-分布式id常见生成方案)
-    - [2.1. UUID](#21-uuid)
-    - [2.2. 利用数据库生成](#22-利用数据库生成)
-        - [2.2.1. MySql主键自增](#221-mysql主键自增)
-        - [2.2.2. Flink方案（基于主键自增）](#222-flink方案基于主键自增)
-        - [2.2.3. 基于数据库的号段模式](#223-基于数据库的号段模式)
-    - [2.3. 利用中间件生成](#23-利用中间件生成)
-        - [2.3.1. 基于Redis实现](#231-基于redis实现)
-    - [2.4. 雪花SnowFlake算法](#24-雪花snowflake算法)
-        - [2.4.1. snowflake算法实现](#241-snowflake算法实现)
-    - [2.5. 开源分布式ID算法](#25-开源分布式id算法)
-        - [2.5.1. 百度uid-generator](#251-百度uid-generator)
-            - [2.5.1.1. uid-generator使用教程](#2511-uid-generator使用教程)
-        - [2.5.2. 美团Leaf](#252-美团leaf)
-        - [2.5.3. 滴滴Tinyid](#253-滴滴tinyid)
+- [1. 分布式ID常见生成方案](#1-分布式id常见生成方案)
+    - [1.1. 分布式ID简介](#11-分布式id简介)
+    - [1.2. UUID](#12-uuid)
+    - [1.3. 利用数据库生成](#13-利用数据库生成)
+        - [1.3.1. MySql主键自增](#131-mysql主键自增)
+        - [1.3.2. Flink方案（基于主键自增）](#132-flink方案基于主键自增)
+        - [1.3.3. 基于数据库的号段模式](#133-基于数据库的号段模式)
+    - [1.4. 利用中间件生成](#14-利用中间件生成)
+        - [1.4.1. 基于Redis实现](#141-基于redis实现)
+    - [1.5. 雪花SnowFlake算法](#15-雪花snowflake算法)
+        - [1.5.1. snowflake算法实现](#151-snowflake算法实现)
+    - [1.6. 开源分布式ID算法](#16-开源分布式id算法)
+        - [1.6.1. 百度uid-generator](#161-百度uid-generator)
+            - [1.6.1.1. uid-generator使用教程](#1611-uid-generator使用教程)
+        - [1.6.2. 美团Leaf](#162-美团leaf)
+        - [1.6.3. 滴滴Tinyid](#163-滴滴tinyid)
 
 <!-- /TOC -->
 
@@ -25,8 +25,13 @@
 https://blog.csdn.net/hl_java/article/details/78462283
 -->
 
+
+# 1. 分布式ID常见生成方案  
+
 **<font color = "red">&emsp; 一句话概述：分布式ID的基本生成方式有：UUID、数据库（主键自增、Flink(基于自增主键，似序列)、</font><font color = "lime">号段模式</font><font color = "red">）、redis等中间件、雪花算法。</font>**
-# 1. 分布式ID  
+
+## 1.1. 分布式ID简介  
+
 &emsp; 分布式系统的全局唯一ID称为分布式ID。全局唯一ID的主要场景是：  
   
 * 数据库的分库分表
@@ -40,9 +45,6 @@ https://blog.csdn.net/hl_java/article/details/78462283
 * 高性能：高可用低延时，ID生成响应要块，否则反而会成为业务瓶颈。  
 * 高可用。  
 * 好接入：要秉着拿来即用的设计原则，在系统设计和实现上要尽可能的简单。  
- 
-
-# 2. 分布式ID常见生成方案  
 
 &emsp; 分布式ID常见生成方案有以下几种：  
 
@@ -56,7 +58,7 @@ https://blog.csdn.net/hl_java/article/details/78462283
 * 美团(Leaf)
 * 滴滴出品(TinyID)  
 
-## 2.1. UUID  
+## 1.2. UUID  
 &emsp; **生产随机数的方式：**  
 
 * Math.random()，0到1之间随机数；  
@@ -81,8 +83,8 @@ https://blog.csdn.net/hl_java/article/details/78462283
 * 不适用一些要求有趋势递增的ID场景。  
 
 ---
-## 2.2. 利用数据库生成  
-### 2.2.1. MySql主键自增  
+## 1.3. 利用数据库生成  
+### 1.3.1. MySql主键自增  
 1. MySQL单节点主键自增   
     &emsp; 这个方案利用了<font color = "red">MySQL的主键自增auto_increment</font>，默认每次ID加1。  
     &emsp; **优点：**  
@@ -102,7 +104,7 @@ https://blog.csdn.net/hl_java/article/details/78462283
     &emsp; **缺点：** 一旦把步长定好后，就无法扩容；而且单个数据库的压力大，数据库自身性能无法满足高并发。  
     &emsp; **应用场景：** 数据不需要扩容的场景。  
 
-### 2.2.2. Flink方案（基于主键自增）  
+### 1.3.2. Flink方案（基于主键自增）  
 &emsp; 这个方案是由Flickr团队提出，主要思路采用了MySQL自增长ID的机制(auto_increment + replace into) 。  
 
     个人理解：伪序列  
@@ -110,7 +112,6 @@ https://blog.csdn.net/hl_java/article/details/78462283
 
 ```sql
 #数据表
-
 CREATE TABLE Tickets64 (
 id bigint(20) unsigned NOT NULL auto_increment,
 stub char(1) NOT NULL default '',
@@ -121,7 +122,6 @@ UNIQUE KEY stub (stub)
 
 ```sql
 #每次业务使用下列SQL读写MySQL得到ID号
-
 REPLACE INTO Tickets64 (stub) VALUES ('a');
 SELECT LAST_INSERT_ID();
 ```
@@ -168,7 +168,7 @@ commit;
 https://www.cnblogs.com/c-961900940/p/6197878.html
 -->
 
-### 2.2.3. 基于数据库的号段模式  
+### 1.3.3. 基于数据库的号段模式  
 &emsp; 号段模式是当下分布式ID生成器的主流实现方式之一，<font color = "lime">号段模式可以理解为从数据库批量的获取自增ID，每次从数据库取出一个号段范围，</font>例如 (1,1000] 代表1000个ID，具体的业务服务将本号段，生成1~1000的自增ID并加载到内存。表结构如下：  
 
 ```sql
@@ -198,16 +198,16 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 &emsp; 由于多业务端可能同时操作，所以采用版本号version乐观锁方式更新，这种分布式ID生成方式不强依赖于数据库，不会频繁的访问数据库，对数据库的压力小很多。  
 
 ---
-## 2.3. 利用中间件生成  
+## 1.4. 利用中间件生成  
 &emsp; 可以使用Redis、MongoDB、zookeeper生成分布式ID。  
 
-### 2.3.1. 基于Redis实现  
+### 1.4.1. 基于Redis实现  
 &emsp; redis单机使用incr函数生成自增ID；<font color = "red">redis集群使用lua脚本生成，或使用org.springframework.data.redis.support.atomic.RedisAtomicLong生成。</font>  
 &emsp; **优点：** 有序递增，可读性强。  
 &emsp; **缺点：** 占用带宽，每次要向redis进行请求。
 
 ---
-## 2.4. 雪花SnowFlake算法  
+## 1.5. 雪花SnowFlake算法  
 &emsp; snowflake是Twitter开源的分布式ID生成算法。可以本地生成，并且生成的long类型ID递增。  
 &emsp; snowflake算法所生成的ID结构：正数位（占1比特）+ 时间戳（占41比特）+ 机器ID（占5比特）+ 数据中心（占5比特）+ 自增值（占12比特），总共64比特组成的一个Long类型。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-19.png)  
@@ -225,7 +225,7 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 
 &emsp; **snowflake算法缺点：** <font color="red">依赖于系统时钟的一致性。如果某台机器的系统时钟回拨，有可能造成ID冲突，或者ID乱序。</font>  
 
-### 2.4.1. snowflake算法实现  
+### 1.5.1. snowflake算法实现  
 &emsp; 算法代码：  
 
 ```java
@@ -388,10 +388,10 @@ public class SnowflakeIdWorker {
 ```
 
 ---
-## 2.5. 开源分布式ID算法  
+## 1.6. 开源分布式ID算法  
 &emsp; 百度uid-generator、美团Leaf、滴滴Tinyid......
   
-### 2.5.1. 百度uid-generator  
+### 1.6.1. 百度uid-generator  
 <!-- 
 UidGenerator：百度开源的分布式ID服务（解决了时钟回拨问题） 
 https://mp.weixin.qq.com/s/8NsTXexf03wrT0tsW24EHA
@@ -406,7 +406,7 @@ https://mp.weixin.qq.com/s/8NsTXexf03wrT0tsW24EHA
 *** 特点：全局唯一、趋势递增、可分解出时间和机器ID
 -->
 
-#### 2.5.1.1. uid-generator使用教程  
+#### 1.6.1.1. uid-generator使用教程  
 
 1. 引入依赖：  
 
@@ -438,7 +438,7 @@ public void testSerialGenerate() {
 }
 ```
 
-### 2.5.2. 美团Leaf  
+### 1.6.2. 美团Leaf  
 <!-- 
 leaf：美团开源的分布式ID生成系统剖析 
 https://mp.weixin.qq.com/s/A56iqJh-04vyVI7k22uvAA
@@ -449,7 +449,7 @@ https://mp.weixin.qq.com/s/F1m877H-GbI-YMT-hF-w8w
 -->
 ......
 
-### 2.5.3. 滴滴Tinyid  
+### 1.6.3. 滴滴Tinyid  
 <!-- 
 
 -->
