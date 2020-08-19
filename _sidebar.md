@@ -90,6 +90,7 @@
             * [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
             * [AOP多数据源动态切换](/docs/SQL/6.multiDataSource.md)  
     * [数据迁移](/docs/projectImplement/implementation.md)   
+    * [数据库连接池](/docs/SQL/connectionPool.md)  
   
 * Spring  
     * [Spring](/docs/SSM/Spring/1.Spring.md)  

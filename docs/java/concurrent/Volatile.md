@@ -54,7 +54,10 @@
 * 在每个volatile读操作后插⼊⼀个LoadLoad屏障；  
 * 在每个volatile读操作后再插⼊⼀个LoadStore屏障。  
 
-&emsp; ⼤概示意图是这个样⼦：  
+&emsp; ⼤概示意图是这个样⼦：
+<!-- 
+https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
+-->  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-18.png)   
 
 ## 1.2. Volatile使用  

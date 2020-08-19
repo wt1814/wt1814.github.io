@@ -96,6 +96,8 @@ Gitee： https://gitee.com/wt1814/
 &emsp; &emsp; [AOP多数据源动态切换](/docs/SQL/6.multiDataSource.md)   
 [数据迁移](/docs/projectImplement/implementation.md)  
 
+[数据库连接池](/docs/SQL/connectionPool.md)  
+
 ## SSM  
 ### Spring  
 [对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
