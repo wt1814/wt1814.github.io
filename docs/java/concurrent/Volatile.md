@@ -40,7 +40,14 @@
 
 
 ## 1.1. Volatile原理  
-&emsp; volatile可以保证线程可见性且提供了一定的有序性，但是无法保证原子性。**<font color = "red">在JVM底层volatile是采用“内存屏障”来实现的。观察加入volatile关键字和没有加入volatile关键字时所生成的汇编代码发现，加入volatile关键字时，会多出一个lock前缀指令，lock前缀指令实际上相当于一个[内存屏障](/docs/java/concurrent/JMM.md)（也称内存栅栏）。</font>**  
+&emsp; volatile可以保证线程可见性且提供了一定的有序性，但是无法保证原子性。**<font color = "red">在JVM底层volatile是采用[内存屏障](/docs/java/concurrent/JMM.md)（也称内存栅栏）来实现的。</font>**  
+
+&emsp; **<font color = "lime">内存屏障的作用：</font>**  
+
+1. **<font color = "lime">（保障有序性）阻⽌屏障两侧的指令重排序。</font>** 它确保指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面；即在执行到内存屏障这句指令时，在它前面的操作已经全部完成；  
+2. **<font color = "lime">（保障可见性）它会强制将对缓存的修改操作立即写入主存；</font>** **<font color = "red">如果是写操作，会触发总线嗅探机制（MESI）,会导致其他CPU中对应的缓存行无效。</font>**  
+
+&emsp; 观察加入volatile关键字和没有加入volatile关键字时所生成的汇编代码发现，加入volatile关键字时，会多出一个lock前缀指令，lock前缀指令实际上相当于一个[内存屏障](/docs/java/concurrent/JMM.md)。 
 
 * 在每个volatile写操作前插⼊⼀个StoreStore屏障；  
 * 在每个volatile写操作后插⼊⼀个StoreLoad屏障；  
