@@ -97,6 +97,9 @@ Gitee： https://gitee.com/wt1814/
 [数据迁移](/docs/projectImplement/implementation.md)  
 
 [数据库连接池](/docs/SQL/connectionPool.md)  
+&emsp; [HikariCPConnectionPool]   
+&emsp; &emsp; [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
+&emsp; &emsp; [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
 
 ## SSM  
 ### Spring  

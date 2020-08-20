@@ -1,35 +1,35 @@
 
+
+
 <!-- TOC -->
 
-- [1. HikariCP](#1-hikaricp)
-    - [1.1. HikariCP原理](#11-hikaricp原理)
-        - [1.1.1. 类图和流程图](#111-类图和流程图)
-        - [1.1.2. 主流程1：获取连接流程](#112-主流程1获取连接流程)
-        - [1.1.3. 主流程2：初始化池对象](#113-主流程2初始化池对象)
-        - [1.1.4. 流程1.1：通过HikariPool获取连接对象](#114-流程11通过hikaripool获取连接对象)
-            - [1.1.4.1. 流程1.1.1：连接判活](#1141-流程111连接判活)
-            - [1.1.4.2. 流程1.1.2：关闭连接对象](#1142-流程112关闭连接对象)
-        - [1.1.5. 流程2.1：HikariCP监控设置](#115-流程21hikaricp监控设置)
-        - [1.1.6. 流程2.2：连接泄漏的检测与告警](#116-流程22连接泄漏的检测与告警)
-        - [1.1.7. 主流程3：生成连接对象](#117-主流程3生成连接对象)
-        - [1.1.8. 主流程4：连接池缩容](#118-主流程4连接池缩容)
-        - [1.1.9. 主流程5：扩充连接池](#119-主流程5扩充连接池)
-        - [1.1.10. 主流程6：连接回收](#1110-主流程6连接回收)
-        - [1.1.11. ConcurrentBag主流程](#1111-concurrentbag主流程)
-            - [1.1.11.1. ：borrow](#11111-borrow)
-            - [1.1.11.2. ：add](#11112-add)
-            - [1.1.11.3. ：requite](#11113-requite)
-            - [1.1.11.4. ：remove](#11114-remove)
-            - [1.1.11.5. ：values](#11115-values)
-            - [1.1.11.6. ：reserve](#11116-reserve)
-            - [1.1.11.7. ：getCount](#11117-getcount)
-        - [1.1.12. 十三、总结](#1112-十三总结)
+- [1. HikariCP原理](#1-hikaricp原理)
+    - [1.1. 类图和流程图](#11-类图和流程图)
+    - [1.2. 主流程1：获取连接流程](#12-主流程1获取连接流程)
+    - [1.3. 主流程2：初始化池对象](#13-主流程2初始化池对象)
+    - [1.4. 流程1.1：通过HikariPool获取连接对象](#14-流程11通过hikaripool获取连接对象)
+        - [1.4.1. 流程1.1.1：连接判活](#141-流程111连接判活)
+        - [1.4.2. 流程1.1.2：关闭连接对象](#142-流程112关闭连接对象)
+    - [1.5. 流程2.1：HikariCP监控设置](#15-流程21hikaricp监控设置)
+    - [1.6. 流程2.2：连接泄漏的检测与告警](#16-流程22连接泄漏的检测与告警)
+    - [1.7. 主流程3：生成连接对象](#17-主流程3生成连接对象)
+    - [1.8. 主流程4：连接池缩容](#18-主流程4连接池缩容)
+    - [1.9. 主流程5：扩充连接池](#19-主流程5扩充连接池)
+    - [1.10. 主流程6：连接回收](#110-主流程6连接回收)
+    - [1.11. ConcurrentBag主流程](#111-concurrentbag主流程)
+        - [1.11.1. ：borrow](#1111-borrow)
+        - [1.11.2. ：add](#1112-add)
+        - [1.11.3. ：requite](#1113-requite)
+        - [1.11.4. ：remove](#1114-remove)
+        - [1.11.5. ：values](#1115-values)
+        - [1.11.6. ：reserve](#1116-reserve)
+        - [1.11.7. ：getCount](#1117-getcount)
+    - [1.12. 十三、总结](#112-十三总结)
 
 <!-- /TOC -->
 
-# 1. HikariCP  
 
-## 1.1. HikariCP原理  
+# 1. HikariCP原理  
 <!-- 
 池化技术（二）HikariCP是如何管理数据库连接的？
 https://www.cnblogs.com/hama1993/p/11421579.html
@@ -41,18 +41,18 @@ https://www.cnblogs.com/hama1993/p/11421579.html
 LinkedBlockingQueue<Runnable> addConnectionQueue = new LinkedBlockingQueue(config.getMaximumPoolSize());
 ```
 
-### 1.1.1. 类图和流程图
+## 1.1. 类图和流程图
 &emsp; 开始前先来了解下HikariCP获取一个连接时类间的交互流程，方便下面详细流程的阅读。  
 &emsp; 获取连接时的类间交互：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-1.png)  
 
-### 1.1.2. 主流程1：获取连接流程  
+## 1.2. 主流程1：获取连接流程  
 &emsp; HikariCP获取连接时的入口是HikariDataSource里的getConnection方法，现在来看下该方法的具体流程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-2.png)   
 主流程1  
 &emsp; 上述为HikariCP获取连接时的流程图，由图1可知，每个datasource对象里都会持有一个HikariPool对象，记为pool，初始化后的datasource对象pool是空的，所以第一次getConnection的时候会进行实例化pool属性（参考主流程1），初始化的时候需要将当前datasource里的config属性传过去，用于pool的初始化，最终标记sealed，然后根据pool对象调用getConnection方法（参考流程1.1），获取成功后返回连接对象。  
 
-### 1.1.3. 主流程2：初始化池对象
+## 1.3. 主流程2：初始化池对象
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-3.png)   
 主流程2  
 该流程用于初始化整个连接池，这个流程会给连接池内所有的属性做初始化的工作，其中比较主要的几个流程上图已经指出，简单概括一下：  
@@ -64,14 +64,14 @@ LinkedBlockingQueue<Runnable> addConnectionQueue = new LinkedBlockingQueue(confi
 5. 初始化一个线程池对象addConnectionExecutor，用于后续扩充连接对象  
 6. 初始化一个线程池对象closeConnectionExecutor，用于关闭一些连接对象，怎么触发关闭任务呢？可以参考流程1.1.2  
 
-### 1.1.4. 流程1.1：通过HikariPool获取连接对象
+## 1.4. 流程1.1：通过HikariPool获取连接对象
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-4.png)   
 流程1.1  
 从最开始的结构图可知，每个HikariPool里都维护一个ConcurrentBag对象，用于存放连接对象，由上图可以看到，实际上HikariPool的getConnection就是从ConcurrentBag里获取连接的（调用其borrow方法获得，对应ConnectionBag主流程），在长连接检查这块，与之前说的Druid不同，这里的长连接判活检查在连接对象没有被标记为“已丢弃”时，只要距离上次使用超过500ms每次取出都会进行检查（500ms是默认值，可通过配置com.zaxxer.hikari.aliveBypassWindowMs的系统参数来控制），emmmm，也就是说HikariCP对长连接的活性检查很频繁，但是其并发性能依旧优于Druid，说明频繁的长连接检查并不是导致连接池性能高低的关键所在。  
 这个其实是由于HikariCP的无锁实现，在高并发时对CPU的负载没有其他连接池那么高而产生的并发性能差异，后面会说HikariCP的具体做法，即使是Druid，在获取连接、生成连接、归还连接时都进行了锁控制，因为通过上篇文章可以知道，Druid里的连接池资源是多线程共享的，不可避免的会有锁竞争，有锁竞争意味着线程状态的变化会很频繁，线程状态变化频繁意味着CPU上下文切换也将会很频繁。  
 回到流程1.1，如果拿到的连接为空，直接报错，不为空则进行相应的检查，如果检查通过，则包装成ConnectionProxy对象返回给业务方，不通过则调用closeConnection方法关闭连接（对应流程1.1.2，该流程会触发ConcurrentBag的remove方法丢弃该连接，然后把实际的驱动连接交给closeConnectionExecutor线程池，异步关闭驱动连接）。  
 
-#### 1.1.4.1. 流程1.1.1：连接判活
+### 1.4.1. 流程1.1.1：连接判活
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-5.png)   
 流程1.1.1  
 
@@ -85,12 +85,12 @@ this.isUseJdbc4Validation = config.getConnectionTestQuery() == null;
 jdbc:mysql://127.0.0.1:3306/xxx?socketTimeout=250
 这个值最终会被赋值给HikariCP的networkTimeout字段，这就是为什么最后那一步使用这个字段来还原驱动连接超时属性的原因；说到这里，最后那里为啥要再次还原呢？这就很容易理解了，因为验证结束了，连接对象还存活的情况下，它的networkTimeout的值这时仍然等于validationTimeout（不合预期），显然在拿出去用之前，需要恢复成本来的值，也就是HikariCP里的networkTimeout属性。  
 
-#### 1.1.4.2. 流程1.1.2：关闭连接对象
+### 1.4.2. 流程1.1.2：关闭连接对象
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-6.png)   
 流程1.1.2  
 这个流程简单来说就是把流程1.1.1中验证不通过的死连接，主动关闭的一个流程，首先会把这个连接对象从ConnectionBag里移除，然后把实际的物理连接交给一个线程池去异步执行，这个线程池就是在主流程2里初始化池的时候初始化的线程池closeConnectionExecutor，然后异步任务内开始实际的关连接操作，因为主动关闭了一个连接相当于少了一个连接，所以还会触发一次扩充连接池（参考主流程5）操作。   
 
-### 1.1.5. 流程2.1：HikariCP监控设置
+## 1.5. 流程2.1：HikariCP监控设置
 不同于Druid那样监控指标那么多，HikariCP会把我们非常关心的几项指标暴露给我们，比如当前连接池内闲置连接数、总连接数、一个连接被用了多久归还、创建一个物理连接花费多久等，HikariCP的连接池的监控我们这一节专门详细的分解一下，首先找到HikariCP下面的metrics文件夹，这下面放置了一些规范实现的监控接口等，还有一些现成的实现（比如HikariCP自带对prometheus、micrometer、dropwizard的支持，不太了解后面两个，prometheus下文直接称为普罗米修斯）：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-7.png)   
 下面，来着重看下接口的定义：
@@ -238,7 +238,7 @@ private HikariCPCollector getCollector() {
 
 这一节没有画图，纯代码，因为画图不太好解释这部分的东西，这部分内容与连接池整体流程关系也不大，充其量获取了连接池本身的一些属性，在连接池里的触发点也在上面代码段的注释里说清楚了，看代码定义可能更好理解一些。
 
-### 1.1.6. 流程2.2：连接泄漏的检测与告警  
+## 1.6. 流程2.2：连接泄漏的检测与告警  
 
 本节对应主流程2里的子流程2.2，在初始化池对象时，初始化了一个叫做leakTaskFactory的属性，本节来看下它具体是用来做什么的。  
 
@@ -265,7 +265,7 @@ ProxyConnection之所以要持有ProxyLeakTask对象，是因为它可以监听�
 
 与Druid一样，默认也是关闭这个流程的，因为实际开发中一般使用第三方框架，框架本身会保证及时的close连接，防止连接对象泄漏，开启与否还是取决于业务是否需要，如果一定要开启，如何设置leakDetectionThreshold的大小也是需要考虑的一件事。
 
-### 1.1.7. 主流程3：生成连接对象
+## 1.7. 主流程3：生成连接对象
 
 本节来讲下主流程2里的createEntry方法，这个方法利用PoolBase里的DriverDataSource对象生成一个实际的连接对象（如果忘记DriverDatasource是哪里初始化的了，可以看下主流程2里PoolBase的initializeDataSource方法的作用），然后用PoolEntry类包装成PoolEntry对象，现在来看下这个包装类有哪些主要属性：
 
@@ -339,7 +339,7 @@ addConnectionExecutor的call流程
 
 这个流程就是往连接池里加连接用的，跟createEntry结合起来说是因为这俩流程是紧密相关的，除此之外，主流程5（fillPool，扩充连接池）也会触发该任务。  
 
-### 1.1.8. 主流程4：连接池缩容
+## 1.8. 主流程4：连接池缩容
 
 HikariCP会按照minIdle定时清理闲置过久的连接，这个定时任务在主流程2初始化连接池对象时被启用，跟上面的流程一样，也是利用houseKeepingExecutorService这个线程池对象做该定时任务的执行器。  
 
@@ -384,7 +384,7 @@ fillPool(); //因为可能回收了一些连接，所以要再次触发连接池
 
 上面的代码就是流程图里对应的没有回拨系统时间时的流程逻辑。该流程在idleTimeout大于0（默认等于0）并且minIdle小于maxPoolSize的时候才会启用，默认是不启用的，若需要启用，可以按照条件来配置。
 
-### 1.1.9. 主流程5：扩充连接池
+## 1.9. 主流程5：扩充连接池
 
 这个流程主要依附HikariPool里的fillPool方法，这个方法已经在上面很多流程里出现过了，它的作用就是在触发连接废弃、连接池连接不够用时，发起扩充连接数的操作，这是个很简单的过程，下面看下源码（为了使代码结构更加清晰，对源码做了细微改动）：
 
@@ -416,7 +416,7 @@ Math.min(最大连接数 - 池内当前连接总数, 最小连接数 - 池内闲
 
 根据这个方式判断，可以保证池内的连接数永远不会超过maxPoolSize，也永远不会低于minIdle。在连接吃紧的时候，可以保证每次触发都以minIdle的数量扩容。因此如果在maxPoolSize跟minIdle配置的值一样的话，在池内连接吃紧的时候，就不会发生任何扩容了。
 
-### 1.1.10. 主流程6：连接回收
+## 1.10. 主流程6：连接回收
 
 最开始说过，最终真实的物理连接对象会被包装成PoolEntry对象，存放进ConcurrentBag，然后获取时，PoolEntry对象又会被再次包装成ProxyConnection对象暴露给使用方的，那么触发连接回收，实际上就是触发ProxyConnection里的close方法：
 
@@ -458,7 +458,7 @@ void recycle(final PoolEntry poolEntry) {
 ```
 以上就是连接回收部分的逻辑，相比其他流程，还是比较简洁的。
 
-### 1.1.11. ConcurrentBag主流程
+## 1.11. ConcurrentBag主流程
 
 这个类用来存放最终的PoolEntry类型的连接对象，提供了基本的增删查的功能，被HikariPool持有，上面那么多的操作，几乎都是在HikariPool中完成的，HikariPool用来管理实际的连接生产动作和回收动作，实际操作的却是ConcurrentBag类，梳理下上面所有流程的触发点：  
 
@@ -547,7 +547,7 @@ public class ConcurrentBag<T extends IConcurrentBagEntry> implements AutoCloseab
 ```
 从这个基本结构就可以稍微看出HikariCP是如何优化传统连接池实现的了，相比Druid来说，HikariCP更加偏向无锁实现，尽量避免锁竞争的发生。
 
-#### 1.1.11.1. ：borrow
+### 1.11.1. ：borrow
 这个方法用来获取一个可用的连接对象，触发点为流程1.1，HikariPool就是利用该方法获取连接的，下面来看下该方法做了什么：  
 
 ```java
@@ -606,7 +606,7 @@ public T borrow(long timeout, final TimeUnit timeUnit) throws InterruptedExcepti
 2. 获取不到再从sharedList里获取
 3. 都获取不到则触发添加连接逻辑，并尝试从队列里获取新生成的连接对象
 
-#### 1.1.11.2. ：add
+### 1.11.2. ：add
 
 这个流程会添加一个连接对象进入bag，通常由主流程3里的addBagItem方法通过addConnectionExecutor异步任务触发添加操作，该方法主流程如下：
 
@@ -624,7 +624,7 @@ public void add(final T bagEntry) {
 ```
 结合borrow来理解的话，这里在存在等待线程时会添加一个连接对象入队列，可以让borrow里发生等待的地方更容易poll到这个连接对象。  
 
-#### 1.1.11.3. ：requite
+### 1.11.3. ：requite
 
 这个流程会回收一个连接，该方法的触发点在主流程6，具体代码如下：
 
@@ -651,7 +651,7 @@ public void requite(final T bagEntry) {
 }
 ```
 
-#### 1.1.11.4. ：remove
+### 1.11.4. ：remove
 
 这个负责从池子里移除一个连接对象，触发点在流程1.1.2，代码如下：  
 
@@ -674,7 +674,7 @@ public boolean remove(final T bagEntry) {
 ```
 这里需要注意的是，移除时仅仅移除了sharedList里的对象，各个线程内缓存的那一份集合里对应的对象并没有被移除，这个时候会不会存在该连接再次从缓存里拿到呢？会的，但是不会返回出去，而是直接remove掉了，仔细看borrow的代码发现状态不是闲置状态的时候，取出来时就会remove掉，然后也拿不出去，自然也不会触发回收方法。  
 
-#### 1.1.11.5. ：values  
+### 1.11.5. ：values  
 
 该方法存在重载方法，用于返回当前池子内连接对象的集合，触发点在主流程4，代码如下：
 
@@ -692,7 +692,7 @@ public List values() {
 }
 ```
 
-#### 1.1.11.6. ：reserve
+### 1.11.6. ：reserve
 
 该方法单纯将连接对象的状态值由STATE_NOT_IN_USE修改为STATE_RESERVED，触发点仍然是主流程4，缩容时使用，代码如下：  
 
@@ -702,7 +702,7 @@ public boolean reserve(final T bagEntry){
 }
 ```
 
-#### 1.1.11.7. ：getCount
+### 1.11.7. ：getCount
 
 该方法用于返回池内符合某个状态值的连接的总数量，触发点为主流程5，扩充连接池时用于获取闲置连接总数，代码如下：
 
@@ -720,7 +720,7 @@ public int getCount(final int state){
 
 以上就是ConcurrentBag的主要方法和处理连接对象的主要流程。  
 
-### 1.1.12. 十三、总结
+## 1.12. 十三、总结
 
 到这里基本上一个连接的生产到获取到回收到废弃一整个生命周期在HikariCP内是如何管理的就说完了，相比之前的Druid的实现，有很大的不同，主要是HikariCP的无锁获取连接，本篇没有涉及FastList的说明，因为从连接管理这个角度确实很少用到该结构，用到FastList的地方主要在存储连接对象生成的statement对象以及用于存储线程内缓存起来的连接对象；  
 

@@ -91,6 +91,9 @@
             * [AOP多数据源动态切换](/docs/SQL/6.multiDataSource.md)  
     * [数据迁移](/docs/projectImplement/implementation.md)   
     * [数据库连接池](/docs/SQL/connectionPool.md)  
+        * [HikariCPConnectionPool]   
+            * [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
+            * [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
   
 * Spring  
     * [Spring](/docs/SSM/Spring/1.Spring.md)  
