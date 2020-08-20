@@ -1,9 +1,36 @@
 
+<!-- TOC -->
 
+- [1. HikariCP](#1-hikaricp)
+    - [1.1. HikariCP原理](#11-hikaricp原理)
+        - [1.1.1. 类图和流程图](#111-类图和流程图)
+        - [1.1.2. 主流程1：获取连接流程](#112-主流程1获取连接流程)
+        - [1.1.3. 主流程2：初始化池对象](#113-主流程2初始化池对象)
+        - [1.1.4. 流程1.1：通过HikariPool获取连接对象](#114-流程11通过hikaripool获取连接对象)
+            - [1.1.4.1. 流程1.1.1：连接判活](#1141-流程111连接判活)
+            - [1.1.4.2. 流程1.1.2：关闭连接对象](#1142-流程112关闭连接对象)
+        - [1.1.5. 流程2.1：HikariCP监控设置](#115-流程21hikaricp监控设置)
+        - [1.1.6. 流程2.2：连接泄漏的检测与告警](#116-流程22连接泄漏的检测与告警)
+        - [1.1.7. 主流程3：生成连接对象](#117-主流程3生成连接对象)
+        - [1.1.8. 主流程4：连接池缩容](#118-主流程4连接池缩容)
+        - [1.1.9. 主流程5：扩充连接池](#119-主流程5扩充连接池)
+        - [1.1.10. 主流程6：连接回收](#1110-主流程6连接回收)
+        - [1.1.11. ConcurrentBag主流程](#1111-concurrentbag主流程)
+            - [1.1.11.1. ：borrow](#11111-borrow)
+            - [1.1.11.2. ：add](#11112-add)
+            - [1.1.11.3. ：requite](#11113-requite)
+            - [1.1.11.4. ：remove](#11114-remove)
+            - [1.1.11.5. ：values](#11115-values)
+            - [1.1.11.6. ：reserve](#11116-reserve)
+            - [1.1.11.7. ：getCount](#11117-getcount)
+        - [1.1.12. 十三、总结](#1112-十三总结)
+    - [1.2. HikariCP常用监控指标与故障排查实战](#12-hikaricp常用监控指标与故障排查实战)
 
-# HikariCP  
+<!-- /TOC -->
 
-## HikariCP原理  
+# 1. HikariCP  
+
+## 1.1. HikariCP原理  
 <!-- 
 池化技术（二）HikariCP是如何管理数据库连接的？
 https://www.cnblogs.com/hama1993/p/11421579.html
@@ -15,83 +42,58 @@ https://www.cnblogs.com/hama1993/p/11421579.html
 LinkedBlockingQueue<Runnable> addConnectionQueue = new LinkedBlockingQueue(config.getMaximumPoolSize());
 ```
 
-### 类图和流程图
+### 1.1.1. 类图和流程图
 &emsp; 开始前先来了解下HikariCP获取一个连接时类间的交互流程，方便下面详细流程的阅读。  
 &emsp; 获取连接时的类间交互：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-1.png)  
 
-### 主流程1：获取连接流程  
+### 1.1.2. 主流程1：获取连接流程  
+&emsp; HikariCP获取连接时的入口是HikariDataSource里的getConnection方法，现在来看下该方法的具体流程：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-2.png)   
+主流程1  
+&emsp; 上述为HikariCP获取连接时的流程图，由图1可知，每个datasource对象里都会持有一个HikariPool对象，记为pool，初始化后的datasource对象pool是空的，所以第一次getConnection的时候会进行实例化pool属性（参考主流程1），初始化的时候需要将当前datasource里的config属性传过去，用于pool的初始化，最终标记sealed，然后根据pool对象调用getConnection方法（参考流程1.1），获取成功后返回连接对象。  
+
+### 1.1.3. 主流程2：初始化池对象
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-3.png)   
+主流程2  
+该流程用于初始化整个连接池，这个流程会给连接池内所有的属性做初始化的工作，其中比较主要的几个流程上图已经指出，简单概括一下：  
+
+1. 利用config初始化各种连接池属性，并且产生一个用于生产物理连接的数据源DriverDataSource  
+2. 初始化存放连接对象的核心类connectionBag  
+3. 初始化一个延时任务线程池类型的对象houseKeepingExecutorService，用于后续执行一些延时/定时类任务（比如连接泄漏检查延时任务，参考流程2.2以及主流程4，除此之外maxLifeTime后主动回收关闭连接也是交由该对象来执行的，参考主流程3）  
+4. 预热连接池，HikariCP会在该流程的checkFailFast里初始化好一个连接对象放进池子内，当然触发该流程得保证initializationTimeout > 0时（默认值1），这个配置属性表示留给预热操作的时间（默认值1在预热失败时不会发生重试）。与Druid通过initialSize控制预热连接对象数不一样的是，HikariCP仅预热进池一个连接对象。
+5. 初始化一个线程池对象addConnectionExecutor，用于后续扩充连接对象  
+6. 初始化一个线程池对象closeConnectionExecutor，用于关闭一些连接对象，怎么触发关闭任务呢？可以参考流程1.1.2  
+
+### 1.1.4. 流程1.1：通过HikariPool获取连接对象
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-4.png)   
+流程1.1  
+从最开始的结构图可知，每个HikariPool里都维护一个ConcurrentBag对象，用于存放连接对象，由上图可以看到，实际上HikariPool的getConnection就是从ConcurrentBag里获取连接的（调用其borrow方法获得，对应ConnectionBag主流程），在长连接检查这块，与之前说的Druid不同，这里的长连接判活检查在连接对象没有被标记为“已丢弃”时，只要距离上次使用超过500ms每次取出都会进行检查（500ms是默认值，可通过配置com.zaxxer.hikari.aliveBypassWindowMs的系统参数来控制），emmmm，也就是说HikariCP对长连接的活性检查很频繁，但是其并发性能依旧优于Druid，说明频繁的长连接检查并不是导致连接池性能高低的关键所在。  
+这个其实是由于HikariCP的无锁实现，在高并发时对CPU的负载没有其他连接池那么高而产生的并发性能差异，后面会说HikariCP的具体做法，即使是Druid，在获取连接、生成连接、归还连接时都进行了锁控制，因为通过上篇文章可以知道，Druid里的连接池资源是多线程共享的，不可避免的会有锁竞争，有锁竞争意味着线程状态的变化会很频繁，线程状态变化频繁意味着CPU上下文切换也将会很频繁。  
+回到流程1.1，如果拿到的连接为空，直接报错，不为空则进行相应的检查，如果检查通过，则包装成ConnectionProxy对象返回给业务方，不通过则调用closeConnection方法关闭连接（对应流程1.1.2，该流程会触发ConcurrentBag的remove方法丢弃该连接，然后把实际的驱动连接交给closeConnectionExecutor线程池，异步关闭驱动连接）。  
+
+#### 1.1.4.1. 流程1.1.1：连接判活
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-5.png)   
+流程1.1.1  
+
+承接上面的流程1.1里的判活流程，来看下判活是如何做的，首先说验证方法（注意这里该方法接受的这个connection对象不是poolEntry，而是poolEntry持有的实际驱动的连接对象），在之前介绍Druid的时候就知道，Druid是根据驱动程序里是否存在ping方法来判断是否启用ping的方式判断连接是否存活，但是到了HikariCP则更加简单粗暴，仅根据是否配置了connectionTestQuery觉定是否启用ping：  
 
 
-HikariCP获取连接时的入口是HikariDataSource里的getConnection方法，现在来看下该方法的具体流程：
+this.isUseJdbc4Validation = config.getConnectionTestQuery() == null;  
+所以一般驱动如果不是特别低的版本，不建议配置该项，否则便会走createStatement+excute的方式，相比ping简单发送心跳数据，这种方式显然更低效。  
 
-
-
-主流程1
-
-上述为HikariCP获取连接时的流程图，由图1可知，每个datasource对象里都会持有一个HikariPool对象，记为pool，初始化后的datasource对象pool是空的，所以第一次getConnection的时候会进行实例化pool属性（参考主流程1），初始化的时候需要将当前datasource里的config属性传过去，用于pool的初始化，最终标记sealed，然后根据pool对象调用getConnection方法（参考流程1.1），获取成功后返回连接对象。
-
-### 主流程2：初始化池对象
-
-
-
-主流程2
-
- 该流程用于初始化整个连接池，这个流程会给连接池内所有的属性做初始化的工作，其中比较主要的几个流程上图已经指出，简单概括一下：
-
-利用config初始化各种连接池属性，并且产生一个用于生产物理连接的数据源DriverDataSource
-初始化存放连接对象的核心类connectionBag
-初始化一个延时任务线程池类型的对象houseKeepingExecutorService，用于后续执行一些延时/定时类任务（比如连接泄漏检查延时任务，参考流程2.2以及主流程4，除此之外maxLifeTime后主动回收关闭连接也是交由该对象来执行的，参考主流程3）
-预热连接池，HikariCP会在该流程的checkFailFast里初始化好一个连接对象放进池子内，当然触发该流程得保证initializationTimeout > 0时（默认值1），这个配置属性表示留给预热操作的时间（默认值1在预热失败时不会发生重试）。与Druid通过initialSize控制预热连接对象数不一样的是，HikariCP仅预热进池一个连接对象。
-初始化一个线程池对象addConnectionExecutor，用于后续扩充连接对象
-初始化一个线程池对象closeConnectionExecutor，用于关闭一些连接对象，怎么触发关闭任务呢？可以参考流程1.1.2
-
-### 流程1.1：通过HikariPool获取连接对象
-
-
-
-流程1.1
-
-从最开始的结构图可知，每个HikariPool里都维护一个ConcurrentBag对象，用于存放连接对象，由上图可以看到，实际上HikariPool的getConnection就是从ConcurrentBag里获取连接的（调用其borrow方法获得，对应ConnectionBag主流程），在长连接检查这块，与之前说的Druid不同，这里的长连接判活检查在连接对象没有被标记为“已丢弃”时，只要距离上次使用超过500ms每次取出都会进行检查（500ms是默认值，可通过配置com.zaxxer.hikari.aliveBypassWindowMs的系统参数来控制），emmmm，也就是说HikariCP对长连接的活性检查很频繁，但是其并发性能依旧优于Druid，说明频繁的长连接检查并不是导致连接池性能高低的关键所在。
-
-这个其实是由于HikariCP的无锁实现，在高并发时对CPU的负载没有其他连接池那么高而产生的并发性能差异，后面会说HikariCP的具体做法，即使是Druid，在获取连接、生成连接、归还连接时都进行了锁控制，因为通过上篇文章可以知道，Druid里的连接池资源是多线程共享的，不可避免的会有锁竞争，有锁竞争意味着线程状态的变化会很频繁，线程状态变化频繁意味着CPU上下文切换也将会很频繁。
-
-回到流程1.1，如果拿到的连接为空，直接报错，不为空则进行相应的检查，如果检查通过，则包装成ConnectionProxy对象返回给业务方，不通过则调用closeConnection方法关闭连接（对应流程1.1.2，该流程会触发ConcurrentBag的remove方法丢弃该连接，然后把实际的驱动连接交给closeConnectionExecutor线程池，异步关闭驱动连接）。
-
-#### 流程1.1.1：连接判活
-
-
-
-流程1.1.1
-
-承接上面的流程1.1里的判活流程，来看下判活是如何做的，首先说验证方法（注意这里该方法接受的这个connection对象不是poolEntry，而是poolEntry持有的实际驱动的连接对象），在之前介绍Druid的时候就知道，Druid是根据驱动程序里是否存在ping方法来判断是否启用ping的方式判断连接是否存活，但是到了HikariCP则更加简单粗暴，仅根据是否配置了connectionTestQuery觉定是否启用ping：
-
-
-this.isUseJdbc4Validation = config.getConnectionTestQuery() == null;
-所以一般驱动如果不是特别低的版本，不建议配置该项，否则便会走createStatement+excute的方式，相比ping简单发送心跳数据，这种方式显然更低效。
-
-此外，这里在刚进来还会通过驱动的连接对象重新给它设置一遍networkTimeout的值，使之变成validationTimeout，表示一次验证的超时时间，为啥这里要重新设置这个属性呢？因为在使用ping方法校验时，是没办法通过类似statement那样可以setQueryTimeout的，所以只能由网络通信的超时时间来控制，这个时间可以通过jdbc的连接参数socketTimeout来控制：
-
-
+此外，这里在刚进来还会通过驱动的连接对象重新给它设置一遍networkTimeout的值，使之变成validationTimeout，表示一次验证的超时时间，为啥这里要重新设置这个属性呢？因为在使用ping方法校验时，是没办法通过类似statement那样可以setQueryTimeout的，所以只能由网络通信的超时时间来控制，这个时间可以通过jdbc的连接参数socketTimeout来控制：  
 jdbc:mysql://127.0.0.1:3306/xxx?socketTimeout=250
-这个值最终会被赋值给HikariCP的networkTimeout字段，这就是为什么最后那一步使用这个字段来还原驱动连接超时属性的原因；说到这里，最后那里为啥要再次还原呢？这就很容易理解了，因为验证结束了，连接对象还存活的情况下，它的networkTimeout的值这时仍然等于validationTimeout（不合预期），显然在拿出去用之前，需要恢复成本来的值，也就是HikariCP里的networkTimeout属性。
+这个值最终会被赋值给HikariCP的networkTimeout字段，这就是为什么最后那一步使用这个字段来还原驱动连接超时属性的原因；说到这里，最后那里为啥要再次还原呢？这就很容易理解了，因为验证结束了，连接对象还存活的情况下，它的networkTimeout的值这时仍然等于validationTimeout（不合预期），显然在拿出去用之前，需要恢复成本来的值，也就是HikariCP里的networkTimeout属性。  
 
-#### 流程1.1.2：关闭连接对象
+#### 1.1.4.2. 流程1.1.2：关闭连接对象
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-6.png)   
+流程1.1.2  
+这个流程简单来说就是把流程1.1.1中验证不通过的死连接，主动关闭的一个流程，首先会把这个连接对象从ConnectionBag里移除，然后把实际的物理连接交给一个线程池去异步执行，这个线程池就是在主流程2里初始化池的时候初始化的线程池closeConnectionExecutor，然后异步任务内开始实际的关连接操作，因为主动关闭了一个连接相当于少了一个连接，所以还会触发一次扩充连接池（参考主流程5）操作。   
 
-
-
-流程1.1.2
-
-这个流程简单来说就是把流程1.1.1中验证不通过的死连接，主动关闭的一个流程，首先会把这个连接对象从ConnectionBag里移除，然后把实际的物理连接交给一个线程池去异步执行，这个线程池就是在主流程2里初始化池的时候初始化的线程池closeConnectionExecutor，然后异步任务内开始实际的关连接操作，因为主动关闭了一个连接相当于少了一个连接，所以还会触发一次扩充连接池（参考主流程5）操作。 
-
-### 流程2.1：HikariCP监控设置
-
+### 1.1.5. 流程2.1：HikariCP监控设置
 不同于Druid那样监控指标那么多，HikariCP会把我们非常关心的几项指标暴露给我们，比如当前连接池内闲置连接数、总连接数、一个连接被用了多久归还、创建一个物理连接花费多久等，HikariCP的连接池的监控我们这一节专门详细的分解一下，首先找到HikariCP下面的metrics文件夹，这下面放置了一些规范实现的监控接口等，还有一些现成的实现（比如HikariCP自带对prometheus、micrometer、dropwizard的支持，不太了解后面两个，prometheus下文直接称为普罗米修斯）：
-
-
-
-图2
-
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-7.png)   
 下面，来着重看下接口的定义：
 
 ```java
@@ -117,16 +119,18 @@ public interface IMetricsTracker extends AutoCloseable
 
 触发点都了解清楚后，再来看看MetricsTrackerFactory的接口定义：
 
-
+```java
 //用于创建IMetricsTracker实例，并且按需记录PoolStats对象里的属性（这个对象里的属性就是类似连接池当前闲置连接数之类的线程池状态类指标）
 public interface MetricsTrackerFactory
 {
     //返回一个IMetricsTracker对象，并且把PoolStats传了过去
     IMetricsTracker create(String poolName, PoolStats poolStats);
 }
+```
+
 上面的接口用法见注释，针对新出现的PoolStats类，我们来看看它做了什么：
 
-
+```java
 public abstract class PoolStats {
     private final AtomicLong reloadAt; //触发下次刷新的时间（时间戳）
     private final long timeoutMs; //刷新下面的各项属性值的频率，默认1s，无法改变
@@ -172,10 +176,10 @@ public abstract class PoolStats {
         }
     }
 }
-
+```
 实际上这里就是这些属性获取和触发刷新的地方，那么这个对象是在哪里被生成并且丢给MetricsTrackerFactory的create方法的呢？这就是本节所需要讲述的要点：主流程2里的设置监控器的流程，来看看那里发生了什么事吧：
 
-
+```java
 //监控器设置方法（此方法在HikariPool中，metricsTracker属性就是HikariPool用来触发IMetricsTracker里方法调用的）
 public void setMetricsTrackerFactory(MetricsTrackerFactory metricsTrackerFactory) {
     if (metricsTrackerFactory != null) {
@@ -203,15 +207,16 @@ private PoolStats getPoolStats() {
         }
     };
 }
+```
+到这里HikariCP的监控器就算是注册进去了，所以要想实现自己的监控器拿到上面的指标，要经过如下步骤：  
 
-到这里HikariCP的监控器就算是注册进去了，所以要想实现自己的监控器拿到上面的指标，要经过如下步骤：
+1. 新建一个类实现IMetricsTracker接口，我们这里将该类记为IMetricsTrackerImpl
+2. 新建一个类实现MetricsTrackerFactory接口，我们这里将该类记为MetricsTrackerFactoryImpl，并且将上面的IMetricsTrackerImpl在其create方法内实例化
+3. 将MetricsTrackerFactoryImpl实例化后调用HikariPool的setMetricsTrackerFactory方法注册到Hikari连接池。  
 
-新建一个类实现IMetricsTracker接口，我们这里将该类记为IMetricsTrackerImpl
-新建一个类实现MetricsTrackerFactory接口，我们这里将该类记为MetricsTrackerFactoryImpl，并且将上面的IMetricsTrackerImpl在其create方法内实例化
-将MetricsTrackerFactoryImpl实例化后调用HikariPool的setMetricsTrackerFactory方法注册到Hikari连接池。
 上面没有提到PoolStats里的属性怎么监控，这里来说下，由于create方法是调用一次就没了，create方法只是接收了PoolStats对象的实例，如果不处理，那么随着create调用的结束，这个实例针对监控模块来说就失去持有了，所以这里如果想要拿到PoolStats里的属性，就需要开启一个守护线程，让其持有PoolStats对象实例，并且定时获取其内部属性值，然后push给监控系统，如果是普罗米修斯等使用pull方式获取监控数据的监控系统，可以效仿HikariCP原生普罗米修斯监控的实现，自定义一个Collector对象来接收PoolStats实例，这样普罗米修斯就可以定期拉取了，比如HikariCP根据普罗米修斯监控系统自己定义的MetricsTrackerFactory实现（对应图2里的PrometheusMetricsTrackerFactory类）：
 
-
+```java
 @Override
 public IMetricsTracker create(String poolName, PoolStats poolStats) {
     getCollector().add(poolName, poolStats); //将接收到的PoolStats对象直接交给Collector，这样普罗米修斯服务端每触发一次采集接口的调用，PoolStats都会跟着执行一遍内部属性获取流程
@@ -226,23 +231,26 @@ private HikariCPCollector getCollector() {
     }
     return collector;
 }
-通过上面的解释可以知道在HikariCP中如何自定义一个自己的监控器，以及相比Druid的监控，有什么区别。
+```
 
-工作中很多时候都是需要自定义的，我司虽然也是用的普罗米修斯监控，但是因为HikariCP原生的普罗米修斯收集器里面对监控指标的命名并不符合我司的规范，所以就自定义了一个，有类似问题的不妨也试一试。
+通过上面的解释可以知道在HikariCP中如何自定义一个自己的监控器，以及相比Druid的监控，有什么区别。  
+
+工作中很多时候都是需要自定义的。   
 
 这一节没有画图，纯代码，因为画图不太好解释这部分的东西，这部分内容与连接池整体流程关系也不大，充其量获取了连接池本身的一些属性，在连接池里的触发点也在上面代码段的注释里说清楚了，看代码定义可能更好理解一些。
 
-### 流程2.2：连接泄漏的检测与告警
+### 1.1.6. 流程2.2：连接泄漏的检测与告警  
 
-本节对应主流程2里的子流程2.2，在初始化池对象时，初始化了一个叫做leakTaskFactory的属性，本节来看下它具体是用来做什么的。
+本节对应主流程2里的子流程2.2，在初始化池对象时，初始化了一个叫做leakTaskFactory的属性，本节来看下它具体是用来做什么的。  
 
-7.1：它是做什么的？
+7.1：它是做什么的？  
 
-一个连接被拿出去使用时间超过leakDetectionThreshold（可配置，默认0）未归还的，会触发一个连接泄漏警告，通知业务方目前存在连接泄漏的问题。
+一个连接被拿出去使用时间超过leakDetectionThreshold（可配置，默认0）未归还的，会触发一个连接泄漏警告，通知业务方目前存在连接泄漏的问题。  
 
-7.2：过程详解
+7.2：过程详解  
 
 该属性是ProxyLeakTaskFactory类型对象，且它还会持有houseKeepingExecutorService这个线程池对象，用于生产ProxyLeakTask对象，然后利用上面的houseKeepingExecutorService延时运行该对象里的run方法。该流程的触发点在上面的流程1.1最后包装成ProxyConnection对象的那一步，来看看具体的流程图：
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-8.png)   
 
 
 
@@ -258,11 +266,11 @@ ProxyConnection之所以要持有ProxyLeakTask对象，是因为它可以监听�
 
 与Druid一样，默认也是关闭这个流程的，因为实际开发中一般使用第三方框架，框架本身会保证及时的close连接，防止连接对象泄漏，开启与否还是取决于业务是否需要，如果一定要开启，如何设置leakDetectionThreshold的大小也是需要考虑的一件事。
 
-### 主流程3：生成连接对象
+### 1.1.7. 主流程3：生成连接对象
 
 本节来讲下主流程2里的createEntry方法，这个方法利用PoolBase里的DriverDataSource对象生成一个实际的连接对象（如果忘记DriverDatasource是哪里初始化的了，可以看下主流程2里PoolBase的initializeDataSource方法的作用），然后用PoolEntry类包装成PoolEntry对象，现在来看下这个包装类有哪些主要属性：
 
-
+```java
 final class PoolEntry implements IConcurrentBagEntry {
     private static final Logger LOGGER = LoggerFactory.getLogger(PoolEntry.class);
     //通过cas来修改state属性
@@ -284,9 +292,10 @@ final class PoolEntry implements IConcurrentBagEntry {
     private final boolean isReadOnly; //是否为只读
     private final boolean isAutoCommit; //是否存在事务
 }
+```
 上面就是整个PoolEntry对象里所有的属性，这里再说下endOfLife对象，它是一个利用houseKeepingExecutorService这个线程池对象做的延时任务，这个延时任务一般在创建好连接对象后maxLifeTime左右的时间触发，具体来看下createEntry代码：
 
-
+```java
 private PoolEntry createPoolEntry() {
 
         final PoolEntry poolEntry = newPoolEntry(); //生成实际的连接对象
@@ -320,24 +329,29 @@ private PoolEntry createPoolEntry() {
             addConnectionExecutor.submit(poolEntryCreator);
         }
     }
-通过上面的流程，可以知道，HikariCP一般通过createEntry方法来新增一个连接入池，每个连接被包装成PoolEntry对象，在创建好对象时，同时会提交一个延时任务来关闭废弃该连接，这个时间就是我们配置的maxLifeTime，为了保证不在同一时间失效，HikariCP还会利用maxLifeTime减去一个随机数作为最终的延时任务延迟时间，然后在触发废弃任务时，还会触发addBagItem，进行连接添加任务（因为废弃了一个连接，需要往池子里补充一个），该任务则交给由主流程2里定义好的addConnectionExecutor线程池执行，那么，现在来看下这个异步添加连接对象的任务流程：
+}
+```
+通过上面的流程，可以知道，HikariCP一般通过createEntry方法来新增一个连接入池，每个连接被包装成PoolEntry对象，在创建好对象时，同时会提交一个延时任务来关闭废弃该连接，这个时间就是我们配置的maxLifeTime，为了保证不在同一时间失效，HikariCP还会利用maxLifeTime减去一个随机数作为最终的延时任务延迟时间，然后在触发废弃任务时，还会触发addBagItem，进行连接添加任务（因为废弃了一个连接，需要往池子里补充一个），该任务则交给由主流程2里定义好的addConnectionExecutor线程池执行，那么，现在来看下这个异步添加连接对象的任务流程：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-9.png)   
 
  
 
 addConnectionExecutor的call流程
 
-这个流程就是往连接池里加连接用的，跟createEntry结合起来说是因为这俩流程是紧密相关的，除此之外，主流程5（fillPool，扩充连接池）也会触发该任务。
+这个流程就是往连接池里加连接用的，跟createEntry结合起来说是因为这俩流程是紧密相关的，除此之外，主流程5（fillPool，扩充连接池）也会触发该任务。  
 
-### 主流程4：连接池缩容
+### 1.1.8. 主流程4：连接池缩容
 
-HikariCP会按照minIdle定时清理闲置过久的连接，这个定时任务在主流程2初始化连接池对象时被启用，跟上面的流程一样，也是利用houseKeepingExecutorService这个线程池对象做该定时任务的执行器。
+HikariCP会按照minIdle定时清理闲置过久的连接，这个定时任务在主流程2初始化连接池对象时被启用，跟上面的流程一样，也是利用houseKeepingExecutorService这个线程池对象做该定时任务的执行器。  
 
-来看下主流程2里是怎么启用该任务的：
+来看下主流程2里是怎么启用该任务的：  
 
-
+```java
 //housekeepingPeriodMs的默认值是30s，所以定时任务的间隔为30s
 this.houseKeeperTask = houseKeepingExecutorService.scheduleWithFixedDelay(new HouseKeeper(), 100L, housekeepingPeriodMs, MILLISECONDS);
-那么本节主要来说下HouseKeeper这个类，该类实现了Runnable接口，回收逻辑主要在其run方法内，来看看run方法的逻辑流程图：
+```
+那么本节主要来说下HouseKeeper这个类，该类实现了Runnable接口，回收逻辑主要在其run方法内，来看看run方法的逻辑流程图：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-10.png)   
 
 
 
@@ -345,15 +359,16 @@ this.houseKeeperTask = houseKeepingExecutorService.scheduleWithFixedDelay(new Ho
 
 上面的流程就是HouseKeeper的run方法里具体做的事情，由于系统时间回拨会导致该定时任务回收一些连接时产生误差，因此存在如下判断：
 
-
+```java
 //now就是当前系统时间，previous就是上次触发该任务时的时间，housekeepingPeriodMs就是隔多久触发该任务一次
 //也就是说plusMillis(previous, housekeepingPeriodMs)表示当前时间
 //如果系统时间没被回拨，那么plusMillis(now, 128)一定是大于当前时间的，如果被系统时间被回拨
 //回拨的时间超过128ms，那么下面的判断就成立，否则永远不会成立
 if (plusMillis(now, 128) < plusMillis(previous, housekeepingPeriodMs))
-这是hikariCP在解决系统时钟被回拨时做出的一种措施，通过流程图可以看到，它是直接把池子里所有的连接对象取出来挨个儿的标记成废弃，并且尝试把状态值修改为STATE_RESERVED（后面会说明这些状态，这里先不深究）。如果系统时钟没有发生改变（绝大多数情况会命中这一块的逻辑），由图知，会把当前池内所有处于闲置状态（STATE_NOT_IN_USE）的连接拿出来，然后计算需要检查的范围，然后循环着修改连接的状态：
+```
+这是hikariCP在解决系统时钟被回拨时做出的一种措施，通过流程图可以看到，它是直接把池子里所有的连接对象取出来挨个儿的标记成废弃，并且尝试把状态值修改为STATE_RESERVED（后面会说明这些状态，这里先不深究）。如果系统时钟没有发生改变（绝大多数情况会命中这一块的逻辑），由图知，会把当前池内所有处于闲置状态（STATE_NOT_IN_USE）的连接拿出来，然后计算需要检查的范围，然后循环着修改连接的状态：  
 
-
+```java
 //拿到所有处于闲置状态的连接
 final List notInUse = connectionBag.values(STATE_NOT_IN_USE);
 //计算出需要被检查闲置时间的数量，简单来说，池内需要保证最小minIdle个连接活着，所以需要计算出超出这个范围的闲置对象进行检查
@@ -366,14 +381,15 @@ for (PoolEntry entry : notInUse) {
   }
 }
 fillPool(); //因为可能回收了一些连接，所以要再次触发连接池扩充流程检查下是否需要新增连接。
+```
 
 上面的代码就是流程图里对应的没有回拨系统时间时的流程逻辑。该流程在idleTimeout大于0（默认等于0）并且minIdle小于maxPoolSize的时候才会启用，默认是不启用的，若需要启用，可以按照条件来配置。
 
-### 主流程5：扩充连接池
+### 1.1.9. 主流程5：扩充连接池
 
 这个流程主要依附HikariPool里的fillPool方法，这个方法已经在上面很多流程里出现过了，它的作用就是在触发连接废弃、连接池连接不够用时，发起扩充连接数的操作，这是个很简单的过程，下面看下源码（为了使代码结构更加清晰，对源码做了细微改动）：
 
-
+```java
 // PoolEntryCreator关于call方法的实现流程在主流程3里已经看过了，但是这里却有俩PoolEntryCreator对象，
 // 这是个较细节的地方，用于打日志用，不再说这部分，为了便于理解，只需要知道这俩对象执行的是同一块call方法即可
 private final PoolEntryCreator poolEntryCreator = new PoolEntryCreator(null);
@@ -392,6 +408,7 @@ private synchronized void fillPool() {
     addConnectionExecutor.submit((i < connectionsToAdd - 1) ? poolEntryCreator : postFillPoolEntryCreator);
   }
 }
+```
 由该过程可以知道，最终这个新增连接的任务也是交由addConnectionExecutor线程池来处理的，而任务的主题也是PoolEntryCreator，这个流程可以参考主流程3.
 
 然后needAdd的推算：
@@ -400,11 +417,11 @@ Math.min(最大连接数 - 池内当前连接总数, 最小连接数 - 池内闲
 
 根据这个方式判断，可以保证池内的连接数永远不会超过maxPoolSize，也永远不会低于minIdle。在连接吃紧的时候，可以保证每次触发都以minIdle的数量扩容。因此如果在maxPoolSize跟minIdle配置的值一样的话，在池内连接吃紧的时候，就不会发生任何扩容了。
 
-### 主流程6：连接回收
+### 1.1.10. 主流程6：连接回收
 
- 最开始说过，最终真实的物理连接对象会被包装成PoolEntry对象，存放进ConcurrentBag，然后获取时，PoolEntry对象又会被再次包装成ProxyConnection对象暴露给使用方的，那么触发连接回收，实际上就是触发ProxyConnection里的close方法：
+最开始说过，最终真实的物理连接对象会被包装成PoolEntry对象，存放进ConcurrentBag，然后获取时，PoolEntry对象又会被再次包装成ProxyConnection对象暴露给使用方的，那么触发连接回收，实际上就是触发ProxyConnection里的close方法：
 
-
+```java
 public final void close() throws SQLException {
   // 原注释：Closing statements can cause connection eviction, so this must run before the conditional below
   closeStatements(); //此连接对象在业务方使用过程中产生的所有statement对象，进行统一close，防止漏close的情况
@@ -421,37 +438,40 @@ public final void close() throws SQLException {
     }
   }
 }
+```
 这个就是ProxyConnection里的close方法，可以看到它最终会调用PoolEntry的recycle方法进行回收，除此之外，连接对象的最后一次使用时间也是在这个时候刷新的，该时间是个很重要的属性，可以用来判断一个连接对象的闲置时间，来看下PoolEntry的recycle方法：
 
-
+```java
 void recycle(final long lastAccessed) {
   if (connection != null) {
     this.lastAccessed = lastAccessed; //刷新最后使用时间
     hikariPool.recycle(this); //触发HikariPool的回收方法，把自己传过去
   }
 }
+```
 之前有说过，每个PoolEntry对象都持有HikariPool的对象，方便触发连接池的一些操作，由上述代码可以看到，最终还是会触发HikariPool里的recycle方法，再来看下HikariPool的recycle方法：
 
-
+```java
 void recycle(final PoolEntry poolEntry) {
   metricsTracker.recordConnectionUsage(poolEntry); //监控指标相关，忽略
   connectionBag.requite(poolEntry); //最终触发connectionBag的requite方法归还连接，该流程参考ConnectionBag主流程里的requite方法部分
 }
+```
 以上就是连接回收部分的逻辑，相比其他流程，还是比较简洁的。
 
-### ConcurrentBag主流程
+### 1.1.11. ConcurrentBag主流程
 
- 这个类用来存放最终的PoolEntry类型的连接对象，提供了基本的增删查的功能，被HikariPool持有，上面那么多的操作，几乎都是在HikariPool中完成的，HikariPool用来管理实际的连接生产动作和回收动作，实际操作的却是ConcurrentBag类，梳理下上面所有流程的触发点：
+这个类用来存放最终的PoolEntry类型的连接对象，提供了基本的增删查的功能，被HikariPool持有，上面那么多的操作，几乎都是在HikariPool中完成的，HikariPool用来管理实际的连接生产动作和回收动作，实际操作的却是ConcurrentBag类，梳理下上面所有流程的触发点：  
 
-主流程2：初始化HikariPool时初始化ConcurrentBag（构造方法），预热时通过createEntry拿到连接对象，调用ConcurrentBag.add添加连接到ConcurrentBag。
-流程1.1：通过HikariPool获取连接时，通过调用ConcurrentBag.borrow拿到一个连接对象。
-主流程6：通过ConcurrentBag.requite归还一个连接。
-流程1.1.2：触发关闭连接时，会通过ConcurrentBag.remove移除连接对象，由前面的流程可知关闭连接触发点为：连接超过最大生命周期maxLifeTime主动废弃、健康检查不通过主动废弃、连接池缩容。
-主流程3：通过异步添加连接时，通过调用ConcurrentBag.add添加连接到ConcurrentBag，由前面的流程可知添加连接触发点为：连接超过最大生命周期maxLifeTime主动废弃连接后、连接池扩容。
-主流程4：连接池缩容任务，通过调用ConcurrentBag.values筛选出需要的做操作的连接对象，然后再通过ConcurrentBag.reserve完成对连接对象状态的修改，然后会通过流程1.1.2触发关闭和移除连接操作。
-通过触发点整理，可以知道该结构里的主要方法，就是上面触发点里标记为橙色的部分，然后来具体看下该类的基本定义和主要方法：
+* 主流程2：初始化HikariPool时初始化ConcurrentBag（构造方法），预热时通过createEntry拿到连接对象，调用ConcurrentBag.add添加连接到ConcurrentBag。
+* 流程1.1：通过HikariPool获取连接时，通过调用ConcurrentBag.borrow拿到一个连接对象。
+* 主流程6：通过ConcurrentBag.requite归还一个连接。
+* 流程1.1.2：触发关闭连接时，会通过ConcurrentBag.remove移除连接对象，由前面的流程可知关闭连接触发点为：连接超过最大生命周期maxLifeTime主动废弃、健康检查不通过主动废弃、连接池缩容。
+* 主流程3：通过异步添加连接时，通过调用ConcurrentBag.add添加连接到ConcurrentBag，由前面的流程可知添加连接触发点为：连接超过最大生命周期maxLifeTime主动废弃连接后、连接池扩容。
+* 主流程4：连接池缩容任务，通过调用ConcurrentBag.values筛选出需要的做操作的连接对象，然后再通过ConcurrentBag.reserve完成对连接对象状态的修改，然后会通过流程1.1.2触发关闭和移除连接操作。
+* 通过触发点整理，可以知道该结构里的主要方法，就是上面触发点里标记为橙色的部分，然后来具体看下该类的基本定义和主要方法：
 
-
+```java
 public class ConcurrentBag<T extends IConcurrentBagEntry> implements AutoCloseable {
 
     private final CopyOnWriteArrayList<T> sharedList; //最终存放PoolEntry对象的地方，它是一个CopyOnWriteArrayList
@@ -525,184 +545,189 @@ public class ConcurrentBag<T extends IConcurrentBagEntry> implements AutoCloseab
         //省略...
     }
 }
+```
 从这个基本结构就可以稍微看出HikariCP是如何优化传统连接池实现的了，相比Druid来说，HikariCP更加偏向无锁实现，尽量避免锁竞争的发生。
 
-12.1：borrow
+#### 1.1.11.1. ：borrow
+这个方法用来获取一个可用的连接对象，触发点为流程1.1，HikariPool就是利用该方法获取连接的，下面来看下该方法做了什么：  
 
-这个方法用来获取一个可用的连接对象，触发点为流程1.1，HikariPool就是利用该方法获取连接的，下面来看下该方法做了什么：
-
-
-    public T borrow(long timeout, final TimeUnit timeUnit) throws InterruptedException {
-        // 源注释：Try the thread-local list first
-        final List<Object> list = threadList.get(); //首先从当前线程的缓存里拿到之前被缓存进来的连接对象集合
-        for (int i = list.size() - 1; i >= 0; i--) {
-            final Object entry = list.remove(i); //先移除，回收方法那里会再次add进来
-            final T bagEntry = weakThreadLocals ? ((WeakReference<T>) entry).get() : (T) entry; //默认不启用弱引用
-            // 获取到对象后，通过cas尝试把其状态从STATE_NOT_IN_USE 变为 STATE_IN_USE，注意，这里如果其他线程也在使用这个连接对象，
-            // 并且成功修改属性，那么当前线程的cas会失败，那么就会继续循环尝试获取下一个连接对象
-            if (bagEntry != null && bagEntry.compareAndSet(STATE_NOT_IN_USE, STATE_IN_USE)) {
-                return bagEntry; //cas设置成功后，表示当前线程绕过其他线程干扰，成功获取到该连接对象，直接返回
-            }
-        }
-
-        // 源注释：Otherwise, scan the shared list ... then poll the handoff queue
-        final int waiting = waiters.incrementAndGet(); //如果缓存内找不到一个可用的连接对象，则认为需要“回源”，waiters+1
-        try {
-            for (T bagEntry : sharedList) {
-                //循环sharedList，尝试把连接状态值从STATE_NOT_IN_USE 变为 STATE_IN_USE
-                if (bagEntry.compareAndSet(STATE_NOT_IN_USE, STATE_IN_USE)) {
-                    // 源注释：If we may have stolen another waiter's connection, request another bag add.
-                    if (waiting > 1) { //阻塞线程数大于1时，需要触发HikariPool的addBagItem方法来进行添加连接入池，这个方法的实现参考主流程3
-                        listener.addBagItem(waiting - 1);
-                    }
-                    return bagEntry; //cas设置成功，跟上面的逻辑一样，表示当前线程绕过其他线程干扰，成功获取到该连接对象，直接返回
-                }
-            }
-
-            //走到这里说明不光线程缓存里的列表竞争不到连接对象，连sharedList里也找不到可用的连接，这时则认为需要通知HikariPool，该触发添加连接操作了
-            listener.addBagItem(waiting);
-
-            timeout = timeUnit.toNanos(timeout); //这时候开始利用timeout控制获取时间
-            do {
-                final long start = currentTime();
-                //尝试从handoffQueue队列里获取最新被加进来的连接对象（一般新入的连接对象除了加进sharedList之外，还会被offer进该队列）
-                final T bagEntry = handoffQueue.poll(timeout, NANOSECONDS);
-                //如果超出指定时间后仍然没有获取到可用的连接对象，或者获取到对象后通过cas设置成功，这两种情况都不需要重试，直接返回对象
-                if (bagEntry == null || bagEntry.compareAndSet(STATE_NOT_IN_USE, STATE_IN_USE)) {
-                    return bagEntry;
-                }
-                //走到这里说明从队列内获取到了连接对象，但是cas设置失败，说明又该对象又被其他线程率先拿去用了，若时间还够，则再次尝试获取
-                timeout -= elapsedNanos(start); //timeout减去消耗的时间，表示下次循环可用时间
-            } while (timeout > 10_000); //剩余时间大于10s时才继续进行，一般情况下，这个循环只会走一次，因为timeout很少会配的比10s还大
-
-            return null; //超时，仍然返回null
-        } finally {
-            waiters.decrementAndGet(); //这一步出去后，HikariPool收到borrow的结果，算是走出阻塞，所以waiters-1
+```java
+public T borrow(long timeout, final TimeUnit timeUnit) throws InterruptedException {
+    // 源注释：Try the thread-local list first
+    final List<Object> list = threadList.get(); //首先从当前线程的缓存里拿到之前被缓存进来的连接对象集合
+    for (int i = list.size() - 1; i >= 0; i--) {
+        final Object entry = list.remove(i); //先移除，回收方法那里会再次add进来
+        final T bagEntry = weakThreadLocals ? ((WeakReference<T>) entry).get() : (T) entry; //默认不启用弱引用
+        // 获取到对象后，通过cas尝试把其状态从STATE_NOT_IN_USE 变为 STATE_IN_USE，注意，这里如果其他线程也在使用这个连接对象，
+        // 并且成功修改属性，那么当前线程的cas会失败，那么就会继续循环尝试获取下一个连接对象
+        if (bagEntry != null && bagEntry.compareAndSet(STATE_NOT_IN_USE, STATE_IN_USE)) {
+            return bagEntry; //cas设置成功后，表示当前线程绕过其他线程干扰，成功获取到该连接对象，直接返回
         }
     }
+
+    // 源注释：Otherwise, scan the shared list ... then poll the handoff queue
+    final int waiting = waiters.incrementAndGet(); //如果缓存内找不到一个可用的连接对象，则认为需要“回源”，waiters+1
+    try {
+        for (T bagEntry : sharedList) {
+            //循环sharedList，尝试把连接状态值从STATE_NOT_IN_USE 变为 STATE_IN_USE
+            if (bagEntry.compareAndSet(STATE_NOT_IN_USE, STATE_IN_USE)) {
+                // 源注释：If we may have stolen another waiter's connection, request another bag add.
+                if (waiting > 1) { //阻塞线程数大于1时，需要触发HikariPool的addBagItem方法来进行添加连接入池，这个方法的实现参考主流程3
+                    listener.addBagItem(waiting - 1);
+                }
+                return bagEntry; //cas设置成功，跟上面的逻辑一样，表示当前线程绕过其他线程干扰，成功获取到该连接对象，直接返回
+            }
+        }
+
+        //走到这里说明不光线程缓存里的列表竞争不到连接对象，连sharedList里也找不到可用的连接，这时则认为需要通知HikariPool，该触发添加连接操作了
+        listener.addBagItem(waiting);
+
+        timeout = timeUnit.toNanos(timeout); //这时候开始利用timeout控制获取时间
+        do {
+            final long start = currentTime();
+            //尝试从handoffQueue队列里获取最新被加进来的连接对象（一般新入的连接对象除了加进sharedList之外，还会被offer进该队列）
+            final T bagEntry = handoffQueue.poll(timeout, NANOSECONDS);
+            //如果超出指定时间后仍然没有获取到可用的连接对象，或者获取到对象后通过cas设置成功，这两种情况都不需要重试，直接返回对象
+            if (bagEntry == null || bagEntry.compareAndSet(STATE_NOT_IN_USE, STATE_IN_USE)) {
+                return bagEntry;
+            }
+            //走到这里说明从队列内获取到了连接对象，但是cas设置失败，说明又该对象又被其他线程率先拿去用了，若时间还够，则再次尝试获取
+            timeout -= elapsedNanos(start); //timeout减去消耗的时间，表示下次循环可用时间
+        } while (timeout > 10_000); //剩余时间大于10s时才继续进行，一般情况下，这个循环只会走一次，因为timeout很少会配的比10s还大
+
+        return null; //超时，仍然返回null
+    } finally {
+        waiters.decrementAndGet(); //这一步出去后，HikariPool收到borrow的结果，算是走出阻塞，所以waiters-1
+    }
+}
+```
 仔细看下注释，该过程大致分成三个主要步骤：
 
-从线程缓存获取连接
-获取不到再从sharedList里获取
-都获取不到则触发添加连接逻辑，并尝试从队列里获取新生成的连接对象
-12.2：add
+1. 从线程缓存获取连接
+2. 获取不到再从sharedList里获取
+3. 都获取不到则触发添加连接逻辑，并尝试从队列里获取新生成的连接对象
+
+#### 1.1.11.2. ：add
 
 这个流程会添加一个连接对象进入bag，通常由主流程3里的addBagItem方法通过addConnectionExecutor异步任务触发添加操作，该方法主流程如下：
 
+```java
+public void add(final T bagEntry) {
 
-    public void add(final T bagEntry) {
+    sharedList.add(bagEntry); //直接加到sharedList里去
 
-        sharedList.add(bagEntry); //直接加到sharedList里去
-
-        // 源注释：spin until a thread takes it or none are waiting
-        // 参考borrow流程，当存在线程等待获取可用连接，并且当前新入的这个连接状态仍然是闲置状态，且队列里无消费者等待获取时，发起一次线程调度
-        while (waiters.get() > 0 && bagEntry.getState() == STATE_NOT_IN_USE && !handoffQueue.offer(bagEntry)) { //注意这里会offer一个连接对象入队列
-            yield();
-        }
+    // 源注释：spin until a thread takes it or none are waiting
+    // 参考borrow流程，当存在线程等待获取可用连接，并且当前新入的这个连接状态仍然是闲置状态，且队列里无消费者等待获取时，发起一次线程调度
+    while (waiters.get() > 0 && bagEntry.getState() == STATE_NOT_IN_USE && !handoffQueue.offer(bagEntry)) { //注意这里会offer一个连接对象入队列
+        yield();
     }
-结合borrow来理解的话，这里在存在等待线程时会添加一个连接对象入队列，可以让borrow里发生等待的地方更容易poll到这个连接对象。
+}
+```
+结合borrow来理解的话，这里在存在等待线程时会添加一个连接对象入队列，可以让borrow里发生等待的地方更容易poll到这个连接对象。  
 
-12.3：requite
+#### 1.1.11.3. ：requite
 
 这个流程会回收一个连接，该方法的触发点在主流程6，具体代码如下：
 
+```java
+public void requite(final T bagEntry) {
+    bagEntry.setState(STATE_NOT_IN_USE); //回收意味着使用完毕，更改state为STATE_NOT_IN_USE状态
 
-    public void requite(final T bagEntry) {
-        bagEntry.setState(STATE_NOT_IN_USE); //回收意味着使用完毕，更改state为STATE_NOT_IN_USE状态
-
-        for (int i = 0; waiters.get() > 0; i++) { //如果存在等待线程的话，尝试传给队列，让borrow获取
-            if (bagEntry.getState() != STATE_NOT_IN_USE || handoffQueue.offer(bagEntry)) {
-                return;
-            }
-            else if ((i & 0xff) == 0xff) {
-                parkNanos(MICROSECONDS.toNanos(10));
-            }
-            else {
-                yield();
-            }
+    for (int i = 0; waiters.get() > 0; i++) { //如果存在等待线程的话，尝试传给队列，让borrow获取
+        if (bagEntry.getState() != STATE_NOT_IN_USE || handoffQueue.offer(bagEntry)) {
+            return;
         }
-
-        final List<Object> threadLocalList = threadList.get();
-        if (threadLocalList.size() < 50) { //线程内连接集合的缓存最多50个，这里回收连接时会再次加进当前线程的缓存里，方便下次borrow获取
-            threadLocalList.add(weakThreadLocals ? new WeakReference<>(bagEntry) : bagEntry); //默认不启用弱引用，若启用的话，则缓存集合里的连接对象没有内存泄露的风险
+        else if ((i & 0xff) == 0xff) {
+            parkNanos(MICROSECONDS.toNanos(10));
+        }
+        else {
+            yield();
         }
     }
 
-12.4：remove
-
-这个负责从池子里移除一个连接对象，触发点在流程1.1.2，代码如下：
-
-
-    public boolean remove(final T bagEntry) {
-        // 下面两个cas操作，都是从其他状态变为移除状态，任意一个成功，都不会走到下面的warn log
-        if (!bagEntry.compareAndSet(STATE_IN_USE, STATE_REMOVED) && !bagEntry.compareAndSet(STATE_RESERVED, STATE_REMOVED) && !closed) {
-            LOGGER.warn("Attempt to remove an object from the bag that was not borrowed or reserved: {}", bagEntry);
-            return false;
-        }
-
-        // 直接从sharedList移除掉
-        final boolean removed = sharedList.remove(bagEntry);
-        if (!removed && !closed) {
-            LOGGER.warn("Attempt to remove an object from the bag that does not exist: {}", bagEntry);
-        }
-
-        return removed;
+    final List<Object> threadLocalList = threadList.get();
+    if (threadLocalList.size() < 50) { //线程内连接集合的缓存最多50个，这里回收连接时会再次加进当前线程的缓存里，方便下次borrow获取
+        threadLocalList.add(weakThreadLocals ? new WeakReference<>(bagEntry) : bagEntry); //默认不启用弱引用，若启用的话，则缓存集合里的连接对象没有内存泄露的风险
     }
-这里需要注意的是，移除时仅仅移除了sharedList里的对象，各个线程内缓存的那一份集合里对应的对象并没有被移除，这个时候会不会存在该连接再次从缓存里拿到呢？会的，但是不会返回出去，而是直接remove掉了，仔细看borrow的代码发现状态不是闲置状态的时候，取出来时就会remove掉，然后也拿不出去，自然也不会触发回收方法。
+}
+```
 
-12.5：values
+#### 1.1.11.4. ：remove
+
+这个负责从池子里移除一个连接对象，触发点在流程1.1.2，代码如下：  
+
+```java
+public boolean remove(final T bagEntry) {
+    // 下面两个cas操作，都是从其他状态变为移除状态，任意一个成功，都不会走到下面的warn log
+    if (!bagEntry.compareAndSet(STATE_IN_USE, STATE_REMOVED) && !bagEntry.compareAndSet(STATE_RESERVED, STATE_REMOVED) && !closed) {
+        LOGGER.warn("Attempt to remove an object from the bag that was not borrowed or reserved: {}", bagEntry);
+        return false;
+    }
+
+    // 直接从sharedList移除掉
+    final boolean removed = sharedList.remove(bagEntry);
+    if (!removed && !closed) {
+        LOGGER.warn("Attempt to remove an object from the bag that does not exist: {}", bagEntry);
+    }
+
+    return removed;
+}
+```
+这里需要注意的是，移除时仅仅移除了sharedList里的对象，各个线程内缓存的那一份集合里对应的对象并没有被移除，这个时候会不会存在该连接再次从缓存里拿到呢？会的，但是不会返回出去，而是直接remove掉了，仔细看borrow的代码发现状态不是闲置状态的时候，取出来时就会remove掉，然后也拿不出去，自然也不会触发回收方法。  
+
+#### 1.1.11.5. ：values  
 
 该方法存在重载方法，用于返回当前池子内连接对象的集合，触发点在主流程4，代码如下：
 
+```java
+public List values(final int state) {
+    //过滤出来符合状态值的对象集合逆序后返回出去
+    final List list = sharedList.stream().filter(e -> e.getState() == state).collect(Collectors.toList());
+    Collections.reverse(list);
+    return list;
+}
 
-    public List values(final int state) {
-        //过滤出来符合状态值的对象集合逆序后返回出去
-        final List list = sharedList.stream().filter(e -> e.getState() == state).collect(Collectors.toList());
-        Collections.reverse(list);
-        return list;
-    }
+public List values() {
+    //返回全部连接对象（注意下方clone为浅拷贝）
+    return (List) sharedList.clone();
+}
+```
 
-    public List values() {
-        //返回全部连接对象（注意下方clone为浅拷贝）
-        return (List) sharedList.clone();
-    }
+#### 1.1.11.6. ：reserve
 
-12.6：reserve
+该方法单纯将连接对象的状态值由STATE_NOT_IN_USE修改为STATE_RESERVED，触发点仍然是主流程4，缩容时使用，代码如下：  
 
-该方法单纯将连接对象的状态值由STATE_NOT_IN_USE修改为STATE_RESERVED，触发点仍然是主流程4，缩容时使用，代码如下：
+```java
+public boolean reserve(final T bagEntry){
+    return bagEntry.compareAndSet(STATE_NOT_IN_USE, STATE_RESERVED);
+}
+```
 
-
-   public boolean reserve(final T bagEntry){
-      return bagEntry.compareAndSet(STATE_NOT_IN_USE, STATE_RESERVED);
-   }
-
-12.7：getCount
+#### 1.1.11.7. ：getCount
 
 该方法用于返回池内符合某个状态值的连接的总数量，触发点为主流程5，扩充连接池时用于获取闲置连接总数，代码如下：
 
+```java
+public int getCount(final int state){
+    int count = 0;
+    for (IConcurrentBagEntry e : sharedList) {
+        if (e.getState() == state) {
+        count++;
+        }
+    }
+    return count;
+}
+```
 
-   public int getCount(final int state){
-      int count = 0;
-      for (IConcurrentBagEntry e : sharedList) {
-         if (e.getState() == state) {
-            count++;
-         }
-      }
-      return count;
-   }
+以上就是ConcurrentBag的主要方法和处理连接对象的主要流程。  
 
-以上就是ConcurrentBag的主要方法和处理连接对象的主要流程。
+### 1.1.12. 十三、总结
 
-十三、总结
+到这里基本上一个连接的生产到获取到回收到废弃一整个生命周期在HikariCP内是如何管理的就说完了，相比之前的Druid的实现，有很大的不同，主要是HikariCP的无锁获取连接，本篇没有涉及FastList的说明，因为从连接管理这个角度确实很少用到该结构，用到FastList的地方主要在存储连接对象生成的statement对象以及用于存储线程内缓存起来的连接对象；  
 
-到这里基本上一个连接的生产到获取到回收到废弃一整个生命周期在HikariCP内是如何管理的就说完了，相比之前的Druid的实现，有很大的不同，主要是HikariCP的无锁获取连接，本篇没有涉及FastList的说明，因为从连接管理这个角度确实很少用到该结构，用到FastList的地方主要在存储连接对象生成的statement对象以及用于存储线程内缓存起来的连接对象；
+除此之外HikariCP还利用javassist技术编译期生成了ProxyConnection的初始化，这里也没有相关说明，网上有关HikariCP的优化有很多文章，大多数都提到了字节码优化、fastList、concurrentBag的实现，本篇主要通过深入解析HikariPool和ConcurrentBag的实现，来说明HikariCP相比Druid具体做了哪些不一样的操作。  
 
-除此之外HikariCP还利用javassist技术编译期生成了ProxyConnection的初始化，这里也没有相关说明，网上有关HikariCP的优化有很多文章，大多数都提到了字节码优化、fastList、concurrentBag的实现，本篇主要通过深入解析HikariPool和ConcurrentBag的实现，来说明HikariCP相比Druid具体做了哪些不一样的操作。
-
-
-
-
-##  HikariCP常用监控指标与故障排查实战 
+## 1.2. HikariCP常用监控指标与故障排查实战 
 ......
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MzI4NTA1MDEwNg==&mid=2650782637&idx=1&sn=4a0e769b80ceb393ab456717773cc8ee&chksm=f3f90e38c48e872e010a37e269e4d15c4fea90bba2b16ab2f2a5c89fba931c27050a327c56ba&mpshare=1&scene=1&srcid=&sharer_sharetime=1572797187831&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=f394366f6bc7d2c5925fc9be1714c68521356777fbed54568f1a4c8d94875e120004108b37de180f3b6b1f53ecb8e2297ca7cf84bf1c25102b0dcffaff1c0663d6616f88410ddf95105e99cba5d29825&ascene=1&uin=MTE1MTYxNzY2MQ==&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=Lu/LBuTxuGaOTLq0CL9dO0ss3p9k+NlDhrOCgfGfCUsKTPyuc12lccq3vmkXvxfb
