@@ -165,8 +165,9 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
     * 将缓冲池分为老生代和新生代，入缓冲池的页，优先进入老生代，页被访问，才进入新生代，以解决预读失效的问题  
     * 页被访问，且在老生代停留时间超过配置阈值的，才进入新生代，以解决批量数据访问，大量热数据淘汰的问题  
 
-
 ### 1.1.2. 写缓冲(change buffer)
+&emsp; **<font color = "lime">一句话概述：当使用普通索引，修改数据时，没有命中缓冲池时，会使用到写缓冲（写缓冲是缓冲池的一部分）。在写缓冲中记录这个操作，一次内存操作；写入redo log，一次磁盘顺序写操作。</font>**
+
 <!--
 https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
 https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
@@ -174,10 +175,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 
 <!-- 
 &emsp; <font color = "red">InnoDB存储引擎开创性地设计了插入缓冲，</font>对于非聚集索引的插入或更新操作，<font color = "red">不是每一次直接插入索引页中，而是先判断插入的非聚集索引页是否在缓冲池中。如果在，则直接插入；如果不在，则先放入一个插入缓冲区中，</font>好似欺骗数据库这个非聚集的索引已经插到叶子节点了，<font color = "red">然后再以一定的频率执行插入缓冲和非聚集索引页子节点的合并操作，</font>这时通常能将多个插入合并到一个操作中（因为在一个索引页中），这就大大提高了对非聚集索引执行插入和修改操作的性能。
-
-&emsp; 当更新数据时，如果记录要更新的目标页不在内存中。这时，InnoDB的处理流程如下：  
-1. 对于唯一索引来说，需要将数据页读入内存，判断到没有冲突，插入这个值，语句执行结束；
-2. 对于普通索引来说，则是将更新记录在[change buffer](/docs/SQL/InnoDB.md)，语句执行就结束了。  
+ 
 -->
 
 <!-- 
@@ -224,15 +222,15 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; （2）修改缓冲池中的页，一次内存操作；  
 &emsp; （3）写入redo log，一次磁盘顺序写操作；  
 
-&emsp; **<font color = "red">没有命中缓冲池的时候，至少产生一次磁盘IO，</font>** 对于写多读少的业务场景，是否还有优化的空间呢？  
+&emsp; **<font color = "lime">没有命中缓冲池的时候，至少产生一次磁盘IO，</font>** 对于写多读少的业务场景，是否还有优化的空间呢？  
 针对此情况，InnoDB采用写缓冲。  
 
-&emsp; InnoDB加入写缓冲优化，上文“情况二”流程会有什么变化？  
+&emsp; InnoDB加入写缓冲优化，上文“情况二，没有命中缓冲池时”流程会有什么变化？  
 &emsp; 假如要修改页号为40的索引页，而这个页正好不在缓冲池内。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-103.png)  
-&emsp; <font color = "red">加入写缓冲优化后，流程优化为：</font>  
-&emsp; （1）在写缓冲中记录这个操作，一次内存操作；  
-&emsp; （2）写入redo log，一次磁盘顺序写操作；  
+&emsp; **<font color = "lime">加入写缓冲优化后，流程优化为：</font>**  
+&emsp; **<font color = "lime">（1）在写缓冲中记录这个操作，一次内存操作；</font>**  
+&emsp; **<font color = "lime">（2）写入redo log，一次磁盘顺序写操作；</font>**  
 &emsp; 其性能与，这个索引页在缓冲池中，相近。  
 
 &emsp; 是否会出现一致性问题呢？  

@@ -363,11 +363,20 @@ _count：用来记录该线程获取锁的次数；
 -->
 
 
-
 ### 1.5.1. 锁消除  
 <!-- https://juejin.im/post/5d2303b5f265da1b8f1ae5b0 -->
 &emsp; 锁消除是指虚拟机即时编译器在运行时，对一些代码上要求同步，但是被检测到不可能存在共享数据竞争的锁进行清除。锁清除的主要判定依据来源于逃逸分析的数据支持，如果判断在一段代码中，堆上的所有数据都不会逃逸出去从而被其他线程访问到，那就可以把它们当做栈上数据对待，认为它们是线程私有的，同步枷锁自然就无需进行。  
 &emsp; 简单来说，Java中使用同步来保证数据的安全性，但是<font color = "red">对于一些明显不会产生竞争的情况下，Jvm会根据现实执行情况对代码进行锁消除以提高执行效率。</font>  
+
+&emsp; 示例：  
+
+```java
+public void add(String str1,String str2){
+         StringBuffer sb = new StringBuffer();
+         sb.append(str1).append(str2);
+}
+```
+ &emsp; StringBuffer是线程安全的，因为它的关键方法都是被synchronized修饰过的，但看上面这段代码，会发现，sb这个引用只会在add方法中使用，不可能被其它线程引用（因为是局部变量，栈私有），因此sb是不可能共享的资源，JVM会自动消除StringBuffer对象内部的锁。  
 
 ### 1.5.2. 锁粗化  
 &emsp; 原则上，在编写代码的时候，总是推荐将同步块的作用范围限制得尽量小，一直在共享数据的实际作用域才进行同步，这样是为了使得需要同步的操作数量尽可能变小，如果存在锁竞争，那等待线程也能尽快拿到锁。  
@@ -378,6 +387,22 @@ _count：用来记录该线程获取锁的次数；
 如果一系列的连续操作都对同一个对象反复加锁和解锁，频繁的加锁操作就会导致性能损耗。
 当多个彼此靠近的同步块可以合并到一起，形成一个同步块的时候，就会进行锁粗化。该方法还有一种变体，可以把多个同步方法合并为一个方法。如果所有方法都用一个锁对象，就可以尝试这种方法。
 -->
+
+&emsp; 示例：  
+
+```java
+public String test(String str){
+       
+       int i = 0;
+       StringBuffer sb = new StringBuffer():
+       while(i < 100){
+           sb.append(str);
+           i++;
+       }
+       return sb.toString():
+}
+```
+&emsp; JVM会检测到这样一连串的操作都对同一个对象加锁（while 循环内 100 次执行 append，没有锁粗化的就要进行 100 次加锁/解锁），此时 JVM 就会将加锁的范围粗化到这一连串的操作的外部（比如 while 虚幻体外），使得这一连串操作只需要加一次锁即可。  
 
 ### 1.5.3. 了解HotSpot虚拟机对象的内存布局  
 
@@ -403,8 +428,23 @@ _count：用来记录该线程获取锁的次数；
         所以最好的办法是将这个映射关系存储在对象头中，因为对象头本身也有一些hashcode、GC相关的数据，所以如果能将锁信息与这些信息共存在对象头中就好了。
         也就是说，如果用一个全局 map 来存对象的锁信息，还需要对该 map 做线程安全处理，不同的锁之间会有影响。所以直接存到对象头。
 
+<!--   
+工具：JOL = Java Object Layout   
+<dependencies>
+    <dependency>
+        <groupId>org.openjdk.jol</groupId>
+        <artifactId>jol-core</artifactId>
+        <version>0.9</version>
+    </dependency>
+</dependencies>
+-->
+
 ### 1.5.4. 偏向锁  
 &emsp; <font color = "red">偏向锁定义：</font>偏向锁是指偏向于让第一个获取锁对象的线程，这个线程在之后获取该锁就不再需要进行同步操作。 
+
+<!-- 
+偏向锁 - markword 上记录当前线程指针，下次同一个线程加锁的时候，不需要争用，只需要判断线程指针是否同一个，所以，偏向锁，偏向加锁的第一个线程 。hashCode备份在线程栈上 线程销毁，锁降级为无锁
+-->
 
 &emsp; 偏向锁的获得和撤销流程图解：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-31.png)   

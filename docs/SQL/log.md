@@ -14,6 +14,16 @@
 
 **<font color = "red">参考《MySQL技术内幕：InnoDB存储引擎》</font>** 
 
+<!-- 
+
+
+必须了解的mysql三大日志-binlog、redo log和undo log 
+https://mp.weixin.qq.com/s/mNfjT99qIbjKGraZLV8EIQ
+
+MySQL 的 Binlog 日志处理工具（Canal，Maxwell，Databus，DTS）对比 
+https://mp.weixin.qq.com/s/zuJyYOgJrfydTasIATuijA
+-->
+
 # 1. MySql日志文件  
 
 * 错误日志（errorlog）：记录出错信息，也记录一些警告信息或者正确的信息。

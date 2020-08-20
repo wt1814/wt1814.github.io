@@ -228,10 +228,10 @@ public class quickSort {
 
 ```java
 /**
-    * 选择排序
-    * @param array
-    * @return
-    */
+* 选择排序
+* @param array
+* @return
+*/
 public static int[] selectionSort(int[] array) {
     if (array.length == 0)
         return array;
@@ -250,9 +250,9 @@ public static int[] selectionSort(int[] array) {
 
 
 /**
-    * 选择排序改进版
-    * @param array
-    */
+* 选择排序改进版
+* @param array
+*/
 public static void selectionSort_improvement(int[] array){
     int minPoint;  //存储最小元素的小标
     int maxPoint;  //存储最大元素的小标
@@ -318,11 +318,11 @@ public static void main(String[] args) {
 
 ```java
 /**
-    * 下沉调整
-    * @param array     待调整的堆
-    * @param parentIndex    要下沉的父节点
-    * @param length    堆的有效大小
-    */
+* 下沉调整
+* @param array     待调整的堆
+* @param parentIndex    要下沉的父节点
+* @param length    堆的有效大小
+*/
 public static void downAdjust(int[] array, int parentIndex, int length) {
     // temp保存父节点值，用于最后的赋值
     int temp = array[parentIndex];
@@ -411,9 +411,9 @@ public static void insertSort(int[] array) {
 
 ```java
 /**
-    * 二分插入排序
-    * @param array
-    */
+* 二分插入排序
+* @param array
+*/
 public static void binaryInsertionSort(int[] array){
 
     int counter = 1;

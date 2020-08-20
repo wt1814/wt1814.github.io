@@ -24,6 +24,7 @@
             - [1.6.3.2. 重排序遵守as-if-serial语义](#1632-重排序遵守as-if-serial语义)
         - [1.6.4. 重排序对多线程的影响](#164-重排序对多线程的影响)
     - [1.7. 内存屏障](#17-内存屏障)
+        - [伪共享问题](#伪共享问题)
     - [1.8. java并发原语](#18-java并发原语)
 
 <!-- /TOC -->
@@ -281,12 +282,12 @@ class Demo {
 ## 1.7. 内存屏障  
 &emsp; **<font color = "red">Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。</font>**  
 
-&emsp; 什么是内存屏障？硬件层⾯，内存屏障分两种：读屏障（Load Barrier）和写屏障（Store Barrier）。  
+&emsp; 什么是内存屏障？硬件层⾯，<font color = "red">内存屏障分两种：读屏障（Load Barrier）和写屏障（Store Barrier）。</font>  
 
 &emsp; **<font color = "lime">内存屏障的作用：</font>**  
 
 * **<font color = "lime">（保障有序性）阻⽌屏障两侧的指令重排序。</font>** 它确保指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面；即在执行到内存屏障这句指令时，在它前面的操作已经全部完成；  
-* **<font color = "lime">（保障可见性）它会强制将对缓存的修改操作立即写入主存；</font>** **<font color = "red">如果是写操作，会触发总线嗅探机制（MESI）,会导致其他CPU中对应的缓存行无效。</font>**  
+* **<font color = "lime">（保障可见性）它会强制将对缓存的修改操作立即写入主存；</font>** **<font color = "red">如果是写操作，会触发总线嗅探机制（MESI）,会导致其他CPU中对应的缓存行无效，会引发伪共享问题。</font>**  
 
 <!-- 
 内存屏障有两个作⽤：  
@@ -307,14 +308,21 @@ class Demo {
 
 &emsp; 对于上面的一组CPU指令（Store表示写入指令，Load表示读取指令），StoreLoad 屏障之前的Store指令无法与StoreLoad 屏障之后的Load指令进行交换位置，即重排序。但是StoreLoad屏障之前和之后的指令是可以互换位置的，即Store1可以和Store2互换，Load2可以和Load3互换。  
 
-&emsp; <font color = "red">常见的4种屏障：</font>  
+&emsp; <font color = "red">常见的4种屏障：(load载入，store存储)</font>  
 
-* LoadLoad（LL）屏障：对于这样的语句 Load1; LoadLoad; Load2，在Load2及后续读取操作要读取的数据被访问前，保证Load1要读取的数据被读取完毕。  
+* LoadLoad（LL）屏障：对于这样的语句 Load1; LoadLoad; Load2，<font color = "red">在Load2及后续读取操作要读取的数据被访问前，保证Load1要读取的数据被读取完毕。</font>  
 * StoreStore（SS）屏障：对于这样的语句 Store1; StoreStore; Store2，在Store2及后续写入操作执行前，保证Store1的写入操作对其它处理器可见。  
 * LoadStore（LS）屏障：对于这样的语句Load1; LoadStore; Store2，在Store2及后续写入操作被执行前，保证Load1要读取的数据被读取完毕。  
 * StoreLoad （SL）屏障：对于这样的语句Store1; StoreLoad; Load2，在Load2及后续所有读取操作执行前，保证Store1的写入对所有处理器可见。它的开销是四种屏障中最大的（冲刷写缓冲器，清空无效化队列）。在大多数处理器的实现中，这个屏障也被称为全能屏障，兼具其它三种内存屏障的功能。  
 
 &emsp; **Java中对内存屏障的使用，常见的有volatile关键字修饰的代码块，还可以通过Unsafe这个类来使用内存屏障。**  
+
+### 伪共享问题
+
+<!-- 
+https://blog.csdn.net/qq_28119741/article/details/102815659
+-->
+
 
 ## 1.8. java并发原语
 &emsp; Java内存模型，除了定义了一套规范，还提供了一系列原语，封装了底层实现后，供开发者直接使用。  
