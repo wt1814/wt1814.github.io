@@ -140,7 +140,7 @@ Gitee： https://gitee.com/wt1814/
 [数据迁移](/docs/projectImplement/implementation.md)  
 
 [数据库连接池](/docs/SQL/connectionPool.md)  
-
+&emsp; [HikariCPConnectionPool](/docs/SQL/HikariCPConnectionPool.md)  
 
 ## SSM  
 ### Spring  
