@@ -52,14 +52,14 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 -->
 
 &emsp; 什么是预读？  
-&emsp; 磁盘读写，并不是按需读取，而是按页读取，<font color = "red">一次至少读一页数据（一般是4K），如果未来要读取的数据就在页中，就能够省去后续的磁盘IO，提高效率。</font>  
+&emsp; 磁盘读写，并不是按需读取，而是按页读取，**<font color = "lime">一次至少读一页数据（一般是4K），如果未来要读取的数据就在页中，就能够省去后续的磁盘IO，提高效率。</font>**  
 
 &emsp; 预读为什么有效？  
 &emsp; 数据访问，通常都遵循“集中读写”的原则，使用一些数据，大概率会使用附近的数据，这就是所谓的“局部性原理”，它表明提前加载是有效的，确实能够减少磁盘IO。  
 
 &emsp; 按页(4K)读取，和InnoDB的缓冲池设计有什么关系？  
 &emsp; （1）磁盘访问按页读取能够提高性能，所以缓冲池一般也是按页缓存数据；  
-&emsp; （2）<font color = "red">预读机制能把一些“可能要访问”的页提前加入缓冲池，避免未来的磁盘IO操作；</font>  
+&emsp; （2）**<font color = "lime">预读机制能把一些“可能要访问”的页提前加入缓冲池，避免未来的磁盘IO操作；</font>**  
 
 &emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）。  
 &emsp; 其中，线性预读以 extent（块，1个 extent 等于64个 page）为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
@@ -91,7 +91,7 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 
 ##### 1.1.1.2.1. 预读失效  
 &emsp; 什么是预读失效？  
-&emsp; <font color = "red">由于预读(Read-Ahead)，提前把页放入了缓冲池，但最终MySQL并没有从页中读取数据，称为预读失效。</font>  
+&emsp; <font color = "lime">由于预读(Read-Ahead)，提前把页放入了缓冲池，但最终MySQL并没有从页中读取数据，称为预读失效。</font>  
 
 &emsp; 如何对预读失效进行优化？  
 &emsp; 要优化预读失效，思路是：  
@@ -101,10 +101,10 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 
 &emsp; **<font color = "lime">预读失效进行优化的具体方法是：</font>**  
 1. 将LRU分为两个部分：新生代(new sublist) 和 老生代(old sublist)。  
-2. 新老生首尾相连，即：新生代的尾(tail)连接着老生代的头(head)；  
+2. **<font color = "red">新老生首尾相连，即：新生代的尾(tail)连接着老生代的头(head)；</font>**  
 3. 新页（例如被预读的页）加入缓冲池时，只加入到老生代头部：  
-    * 如果数据真正被读取（预读成功），才会加入到新生代的头部  
-    * 如果数据没有被读取，则会比新生代里的“热数据页”更早被淘汰出缓冲池   
+    * **<font color = "red">如果数据真正被读取（预读成功），才会加入到新生代的头部</font>**  
+    * **<font color = "red">如果数据没有被读取，则会比新生代里的“热数据页”更早被淘汰出缓冲池</font>**   
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-109.png)  
 &emsp; 举个例子，整个缓冲池LRU如上图：  
@@ -130,11 +130,11 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; （4）…直到扫描完所有页中的所有row…  
 
 &emsp; 如此一来，所有的数据页都会被加载到新生代的头部，但只会访问一次，真正的热数据被大量换出。  
-&emsp; 怎么解决这类扫码读取大量数据导致的缓冲池污染问题呢？  
+&emsp; <font color = "red">怎么解决这类扫码读取大量数据导致的缓冲池污染问题呢？</font>  
 &emsp; **<font color = "lime">MySQL缓冲池加入了一个“老生代停留时间窗口”的机制：</font>**  
 1. 假设T=老生代停留时间窗口；  
-2. 插入老生代头部的页，即使立刻被访问，并不会立刻放入新生代头部；  
-3. 只有满足“被访问”并且“在老生代停留时间”大于T，才会被放入新生代头部；  
+2. <font color = "red">插入老生代头部的页，即使立刻被访问，并不会立刻放入新生代头部；</font>  
+3. <font color = "red">只有满足“被访问”并且“在老生代停留时间”大于T，才会被放入新生代头部；</font>  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-111.png)  
 &emsp; 继续举例，假如批量数据扫描，有51，52，53，54，55等五个页面将要依次被访问。  
@@ -161,9 +161,9 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 1. 缓冲池(buffer pool)是一种常见的降低磁盘访问的机制；  
 2. 缓冲池通常以页(page)为单位缓存数据；  
 3. 缓冲池的常见管理算法是LRU，memcache，OS，InnoDB都使用了这种算法；  
-4. InnoDB对普通LRU进行了优化：  
-    * 将缓冲池分为老生代和新生代，入缓冲池的页，优先进入老生代，页被访问，才进入新生代，以解决预读失效的问题  
-    * 页被访问，且在老生代停留时间超过配置阈值的，才进入新生代，以解决批量数据访问，大量热数据淘汰的问题  
+4. **<font color = "lime">InnoDB对普通LRU进行了优化：</font>**  
+    * **<font color = "lime">将缓冲池分为老生代和新生代，入缓冲池的页，优先进入老生代，页被访问，才进入新生代，以解决预读失效的问题</font>**  
+    * **<font color = "lime">页被访问，且在老生代停留时间超过配置阈值的，才进入新生代，以解决批量数据访问，大量热数据淘汰的问题</font>**  
 
 ### 1.1.2. 写缓冲(change buffer)
 &emsp; **<font color = "lime">一句话概述：当使用普通索引，修改数据时，没有命中缓冲池时，会使用到写缓冲（写缓冲是缓冲池的一部分）。在写缓冲中记录这个操作，一次内存操作；写入redo log，一次磁盘顺序写操作。</font>**
@@ -212,7 +212,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; （3）数据库异常奔溃，能够从redo log中恢复数据；  
 
 &emsp; **<font color = "lime">什么时候缓冲池中的页，会刷到磁盘上呢？</font>**  
-&emsp; 定期刷磁盘，而不是每次刷磁盘，能够降低磁盘IO，提升MySQL的性能。
+&emsp; **<font color = "red">定期刷磁盘，而不是每次刷磁盘，能够降低磁盘IO，提升MySQL的性能。</font>**
 
 &emsp; 情况二  
 &emsp; 假如要修改页号为40的索引页，而这个页正好不在缓冲池内。
@@ -223,7 +223,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; （3）写入redo log，一次磁盘顺序写操作；  
 
 &emsp; **<font color = "lime">没有命中缓冲池的时候，至少产生一次磁盘IO，</font>** 对于写多读少的业务场景，是否还有优化的空间呢？  
-针对此情况，InnoDB采用写缓冲。  
+&emsp; 针对此情况，InnoDB采用写缓冲。  
 
 &emsp; InnoDB加入写缓冲优化，上文“情况二，没有命中缓冲池时”流程会有什么变化？  
 &emsp; 假如要修改页号为40的索引页，而这个页正好不在缓冲池内。  
