@@ -11,7 +11,6 @@
             - [1.1.1.3. 相关参数](#1113-相关参数)
             - [1.1.1.4. 总结](#1114-总结)
         - [1.1.2. 写缓冲(change buffer)](#112-写缓冲change-buffer)
-        - [1.1.3. 日志缓冲(log buffer)](#113-日志缓冲log-buffer)
         - [1.1.4. 两次写](#114-两次写)
         - [1.1.5. 自适应哈希索引](#115-自适应哈希索引)
     - [1.2. 数据恢复](#12-数据恢复)
@@ -264,11 +263,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; 参数：innodb_change_buffering  
 &emsp; 介绍：配置哪些写操作启用写缓冲，可以设置成all/none/inserts/deletes等。  
 
-### 1.1.3. 日志缓冲(log buffer)  
-...
-<!-- 
-https://mp.weixin.qq.com/s/-Hx2KKYMEQCcTC-ADEuwVA
--->
+
 
 
 ### 1.1.4. 两次写  
