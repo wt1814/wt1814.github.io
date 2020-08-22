@@ -100,6 +100,10 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-74.png)  
 
 ### 1.3.2. Read View  
+<!-- 
+https://mp.weixin.qq.com/s?__biz=MzU0MDEwMjgwNA==&mid=2247489840&idx=1&sn=77800cbea0eeaa61e1bd8334c8ad42c4&chksm=fb3f00cbcc4889dd6e8aed60812a7cd7d0c9e7fc6ec5a2aec2803ba05b26de34cd79ff109f06&scene=21#wechat_redirect
+-->
+
 &emsp; **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
     
     在事务中，只有执行插入、更新、删除操作时才会分配到一个事务 id。如果事务只是一个单纯的读取事务，那么它的事务 id 就是默认的 0。

@@ -9,7 +9,7 @@
         - [1.3.1. redo log与binlog的区别](#131-redo-log与binlog的区别)
     - [1.4. update 语句的执行流程再分析](#14-update-语句的执行流程再分析)
     - [1.5. 两阶段提交](#15-两阶段提交)
-    - [1.6. 崩溃恢复](#16-崩溃恢复)
+    - [1.6. 恢复](#16-恢复)
 
 <!-- /TOC -->
 
@@ -27,6 +27,8 @@ https://mp.weixin.qq.com/s/zuJyYOgJrfydTasIATuijA
 
 # 1. MySql日志文件  
 
+&emsp; MySql日志文件有：  
+
 * 错误日志（errorlog）：记录出错信息，也记录一些警告信息或者正确的信息。
 * 一般查询日志（general log）：记录所有对数据库请求的信息，不论这些请求是否得到了正确的执行。
 * 慢查询日志（slow query log）：设置一个阈值，将运行时间超过该值的所有SQL语句都记录到慢查询的日志文件中。
@@ -34,6 +36,12 @@ https://mp.weixin.qq.com/s/zuJyYOgJrfydTasIATuijA
 * 中继日志（relay log）：中继日志也是二进制日志，用来给slave库恢复。
 * 重做日志（redo log）。
 * 回滚日志（undo log）。
+
+&emsp; 此外日志可以分为<font color = "red">逻辑日志和物理日志</font>。  
+    
+* 逻辑日志：可以简单理解为记录的就是sql语句。
+* 物理日志：因为mysql数据最终是保存在数据页中的，物理日志记录的就是数据页变更。
+
 
 ## 1.1. undolog，回滚日志
 
@@ -87,6 +95,8 @@ https://mp.weixin.qq.com/s/zuJyYOgJrfydTasIATuijA
 <!-- 
 Log Buffer 
 https://mp.weixin.qq.com/s/-Hx2KKYMEQCcTC-ADEuwVA
+
+https://mp.weixin.qq.com/s/mNfjT99qIbjKGraZLV8EIQ
 -->
 
 <!--
@@ -150,6 +160,9 @@ https://mp.weixin.qq.com/s/-Hx2KKYMEQCcTC-ADEuwVA
 ## 1.3. binlog，二进制日志（归档日志）  
 &emsp; <font color = "lime">二进制日志记录了对数据库执行更改的所有操作。</font>但是不包括select和show这类操作，因为这类操作对数据本身并没有修改。  
 
+binlog用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。  
+binlog用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。  
+
 **<font color = "red">作用：</font>**  
 
 * 用于复制，在主从复制中，从库利用主库上的binlog进行重播，实现主从同步。
@@ -175,6 +188,15 @@ https://mp.weixin.qq.com/s/-Hx2KKYMEQCcTC-ADEuwVA
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-82.png)  
 
 
+**binlog刷盘时机**  
+对于InnoDB存储引擎而言，只有在事务提交时才会记录biglog，此时记录还在内存中，那么biglog是什么时候刷到磁盘中的呢？mysql通过sync_binlog参数控制biglog的刷盘时机，取值范围是0-N：  
+
+    0：不去强制要求，由系统自行判断何时写入磁盘；
+    1：每次commit的时候都要将binlog写入磁盘；
+    N：每N个事务，才会将binlog写入磁盘。
+
+从上面可以看出，sync_binlog最安全的是设置是1，这也是MySQL 5.7.7之后版本的默认值。但是设置一个大一些的值可以提升数据库性能，因此实际情况下也可以将值适当调大，牺牲一定的一致性来获取更好的性能。  
+
 **对应的物理文件：**
 
 * 配置文件的路径为log_bin_basename，binlog日志文件按照指定大小，当日志文件达到指定的最大的大小之后，进行滚动更新，生成新的日志文件。
@@ -182,8 +204,21 @@ https://mp.weixin.qq.com/s/-Hx2KKYMEQCcTC-ADEuwVA
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-83.png)  
 
 
+**binlog日志格式**  
+binlog日志有三种格式，分别为STATMENT、ROW和MIXED。  
+
+    在 MySQL 5.7.7之前，默认的格式是STATEMENT，MySQL 5.7.7之后，默认值是ROW。日志格式通过binlog-format指定。
+
+* STATMENT 基于SQL语句的复制(statement-based replication, SBR)，每一条会修改数据的sql语句会记录到binlog中。优点：不需要记录每一行的变化，减少了binlog日志量，节约了IO, 从而提高了性能；缺点：在某些情况下会导致主从数据不一致，比如执行sysdate()、slepp()等。  
+* ROW 基于行的复制(row-based replication, RBR)，不记录每条sql语句的上下文信息，仅需记录哪条数据被修改了。优点：不会出现某些特定情况下的存储过程、或function、或trigger的调用和触发无法被正确复制的问题；缺点：会产生大量的日志，尤其是alter table的时候会让日志暴涨  
+* MIXED 基于STATMENT和ROW两种模式的混合复制(mixed-based replication, MBR)，一般的复制使用STATEMENT模式保存binlog，对于STATEMENT模式无法复制的操作使用ROW模式保存binlog   
+
 
 ### 1.3.1. redo log与binlog的区别
+<!-- 
+https://mp.weixin.qq.com/s/mNfjT99qIbjKGraZLV8EIQ
+-->
+
 &emsp; <font color = "red">二进制日志的作用之一是还原数据库的，这与redo log很类似，</font>很多人混淆过，但是两者有本质的不同  
 
 * 作用不同：redo log是保证事务的持久性的，是事务层面的，binlog作为还原的功能，是数据库层面的（当然也可以精确到事务层面的），虽然都有还原的意思，但是其保护数据的层次是不一样的。
@@ -234,7 +269,7 @@ https://www.jianshu.com/p/d0e16db410e4
 &emsp; 备注: 每个事务 binlog 的末尾，会记录一个 XID event，标志着事务是否提交成功，也就是说，recovery 过程中，binlog 最后一个 XID event 之后的内容都应该被 purge。
 
 
-## 1.6. 崩溃恢复
+## 1.6. 恢复
 &emsp; 数据库关闭只有2种情况，正常关闭，非正常关闭（包括数据库实例crash及服务器crash）。正常关闭情况，所有buffer pool里边的脏页都会都会刷新一遍到磁盘，同时记录最新LSN到ibdata文件的第一个page中。而非正常关闭来不及做这些操作，也就是没及时把脏数据flush到磁盘，也没有记录最新LSN到ibdata file。  
 &emsp; 当重启数据库实例的时候，数据库做2个阶段性操作：redo log处理，undo log及binlog 处理。(在崩溃恢复中还需要回滚没有提交的事务，提交没有提交成功的事务。<font color = "red">由于回滚操作需要undo日志的支持，undo日志的完整性和可靠性需要redo日志来保证，所以崩溃恢复先做redo前滚，然后做undo回滚。</font>)
 
@@ -244,3 +279,7 @@ binlog 会记录所有的逻辑操作，并且是采用追加写的形式。当�
 •首先，找到最近的一次全量备份，从这个备份恢复到临时库•然后，从备份的时间点开始，将备份的 binlog 依次取出来，重放到中午误删表之前的那个时刻。
 这样你的临时库就跟误删之前的线上库一样了，然后你可以把表数据从临时库取出来，按需要恢复到线上库去。
 -->
+
+
+&emsp; 启动innodb的时候，不管上次是正常关闭还是异常关闭，总是会进行恢复操作。因为redo log记录的是数据页的物理变化，因此恢复的时候速度比逻辑日志(如binlog)要快很多。重启innodb时，首先会检查磁盘中数据页的LSN，如果数据页的LSN小于日志中的LSN，则会从checkpoint开始恢复。还有一种情况，在宕机前正处于checkpoint的刷盘过程，且数据页的刷盘进度超过了日志页的刷盘进度，此时会出现数据页中记录的LSN大于日志中的LSN，这时超出日志进度的部分将不会重做，因为这本身就表示已经做过的事情，无需再重做。  
+
