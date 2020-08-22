@@ -40,6 +40,11 @@
 
 
 ## 1.1. Volatile原理  
+<!-- 
+~~
+https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
+~~
+-->
 &emsp; volatile可以保证线程可见性且提供了一定的有序性，但是无法保证原子性。**<font color = "red">在JVM底层volatile是采用[内存屏障](/docs/java/concurrent/JMM.md)（也称内存栅栏）来实现的。</font>**  
 
 &emsp; **<font color = "lime">内存屏障的作用：</font>**  
@@ -47,18 +52,34 @@
 1. **<font color = "lime">（保障有序性）阻⽌屏障两侧的指令重排序。</font>** 它确保指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面；即在执行到内存屏障这句指令时，在它前面的操作已经全部完成；  
 2. **<font color = "lime">（保障可见性）它会强制将对缓存的修改操作立即写入主存；</font>** **<font color = "red">如果是写操作，会触发总线嗅探机制（MESI）,会导致其他CPU中对应的缓存行无效，会引发伪共享问题。</font>**  
 
+&emsp; 有如下四种内存屏障：  
+
+|屏障类型  |简称  |指令示例 |  说明|
+|---|---|---|---|
+|LoadLoad Barriers   |读-读 屏障 |Load1;LoadLoad;Load2 |(Load1代表加载数据，Store1表示刷新数据到内存)确保Load1数据的状态先于Load2及所有后续装载指令的装载。|
+|StoreStore Barriers |写-写 屏障 |Store1;StoreStore;Store2 |确保Store1数据对其他处理器可见（刷新到内存）先于Store2及所有后续存储指令的存储。|  
+|LoadSotre Barriers |读-写 屏障 |Load1;LoadStore;Store2 |确保Load1数据装载先于Store2及所有后续的存储指令刷新到内存。|  
+|StoreLoad Barriers |写-读 屏障 |Store1;StoreLoad;Load2 确保Store1数据对其他处理器变得可见（指刷新到内存）先于Load2及所有后续装载指令的装载。  <br/>StoreLoad Barriers会使屏障之前的所有内存访问指令（存储和装载指令）完成之后，才执行该屏障之后的内存访问指令。|  
+
 &emsp; 观察加入volatile关键字和没有加入volatile关键字时所生成的汇编代码发现，加入volatile关键字时，会多出一个lock前缀指令，lock前缀指令实际上相当于一个[内存屏障](/docs/java/concurrent/JMM.md)。 
 
-* 在每个volatile写操作前插⼊⼀个StoreStore屏障；  
-* 在每个volatile写操作后插⼊⼀个StoreLoad屏障；  
-* 在每个volatile读操作后插⼊⼀个LoadLoad屏障；  
-* 在每个volatile读操作后再插⼊⼀个LoadStore屏障。  
+&emsp; **volatile写的场景如何插入内存屏障：**  
 
-&emsp; ⼤概示意图是这个样⼦：
-<!-- 
-https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
--->  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-18.png)   
+* 在每个volatile写操作的前面插入一个StoreStore屏障（写-写 屏障）。  
+* 在每个volatile写操作的后面插入一个StoreLoad屏障（写-读 屏障）。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-48.png)  
+&emsp; StoreStore屏障可以保证在volatile写（flag赋值操作flag=true）之前，其前面的所有普通写（num的赋值操作num=1) 操作已经对任意处理器可见了，保障所有普通写在volatile写之前刷新到主内存。   
+
+&emsp; **volatile读场景如何插入内存屏障：**  
+
+* 在每个volatile读操作的后面插入一个LoadLoad屏障（读-读 屏障）。  
+* 在每个volatile读操作的后面插入一个LoadStore屏障（读-写 屏障）。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-49.png)  
+&emsp; LoadStore屏障可以保证其后面的所有普通写（num的赋值操作num=num+5) 操作必须在volatile读（if(flag)）之后执行。  
+
+  
 
 ## 1.2. Volatile使用  
 ### 1.2.1. 如何正确使用volatile变量  
@@ -95,21 +116,28 @@ public void doWork() {
 &emsp; 这种类型的状态标记的一个公共特性是：通常只有一种状态转换；shutdownRequested标志从false 转换为true，然后程序停止。这种模式可以扩展到来回转换的状态标志，但是只有在转换周期不被察觉的情况下才能扩展(从false到true，再转换到false)。此外，还需要某些原子状态转换机制，例如原子变量。  
 
 ### 1.2.3. 单例模式的实现  
+<!-- 
+https://www.cnblogs.com/jackson0714/p/java_volatile.html
+-->
 &emsp; 单例模式的实现，典型的双重检查锁定（DCL）  
 
 ```java
-class Singleton{
-    private volatile static Singleton instance = null;
+class VolatileSingleton {
+    private static volatile VolatileSingleton instance = null;
 
-    private Singleton() {
-
+    private VolatileSingleton() {
+        System.out.println(Thread.currentThread().getName() + "\t 我是构造方法SingletonDemo");
     }
-
-    public static Singleton getInstance() {
-        if(instance==null) {
-            synchronized (Singleton.class) {
-                if(instance==null)
-                    instance = new Singleton();
+    public static VolatileSingleton getInstance() {
+        // 第一重检测
+        if(instance == null) {
+            // 锁定代码块
+            synchronized (VolatileSingleton.class) {
+                // 第二重检测
+                if(instance == null) {
+                    // 实例化对象
+                    instance = new VolatileSingleton();
+                }
             }
         }
         return instance;
