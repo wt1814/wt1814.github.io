@@ -18,7 +18,6 @@
             - [1.1.3.4. 相关参数](#1134-相关参数)
             - [1.1.3.5. 总结](#1135-总结)
         - [1.1.4. 自适应哈希索引](#114-自适应哈希索引)
-    - [1.2. 数据恢复](#12-数据恢复)
     - [1.3. 表](#13-表)
         - [1.3.1. InnoDB的逻辑存储结构](#131-innodb的逻辑存储结构)
 
@@ -26,6 +25,9 @@
 
 # 1. InnoDB  
 **<font color = "red">《MySQL技术内幕：InnoDB存储引擎》</font>** 
+&emsp; https://dev.mysql.com/doc/refman/5.7/en/  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-125.png)  
+
 
 ## 1.1. 关键特性  
 &emsp; InnoDB存储引擎的关键特性包括缓冲池、写缓冲、两次写（double write）、自适应哈希索引（adaptive hash index）。  
@@ -56,14 +58,14 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 -->
 
 &emsp; 什么是预读？  
-&emsp; 磁盘读写，并不是按需读取，而是按页读取，**<font color = "lime">一次至少读一页数据（一般是4K），如果未来要读取的数据就在页中，就能够省去后续的磁盘IO，提高效率。</font>**  
+&emsp; 磁盘读写，并不是按需读取，而是按页读取， **<font color = "lime">一次至少读一页数据（一般是4K），如果未来要读取的数据就在页中，就能够省去后续的磁盘IO，提高效率。</font>**  
 
 &emsp; 预读为什么有效？  
 &emsp; 数据访问，通常都遵循“集中读写”的原则，使用一些数据，大概率会使用附近的数据，这就是所谓的“局部性原理”，它表明提前加载是有效的，确实能够减少磁盘IO。  
 
 &emsp; 按页(4K)读取，和InnoDB的缓冲池设计有什么关系？  
 &emsp; （1）磁盘访问按页读取能够提高性能，所以缓冲池一般也是按页缓存数据；  
-&emsp; （2）**<font color = "lime">预读机制能把一些“可能要访问”的页提前加入缓冲池，避免未来的磁盘IO操作；</font>**  
+&emsp; （2） **<font color = "lime">预读机制能把一些“可能要访问”的页提前加入缓冲池，避免未来的磁盘IO操作；</font>**  
 
 &emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）。  
 &emsp; 其中，线性预读以 extent（块，1个 extent 等于64个 page）为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
@@ -175,11 +177,6 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 <!--
 https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
 https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
--->
-
-<!-- 
-&emsp; <font color = "red">InnoDB存储引擎开创性地设计了插入缓冲，</font>对于非聚集索引的插入或更新操作，<font color = "red">不是每一次直接插入索引页中，而是先判断插入的非聚集索引页是否在缓冲池中。如果在，则直接插入；如果不在，则先放入一个插入缓冲区中，</font>好似欺骗数据库这个非聚集的索引已经插到叶子节点了，<font color = "red">然后再以一定的频率执行插入缓冲和非聚集索引页子节点的合并操作，</font>这时通常能将多个插入合并到一个操作中（因为在一个索引页中），这就大大提高了对非聚集索引执行插入和修改操作的性能。
- 
 -->
 
 <!-- 
@@ -303,7 +300,7 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-120.png)  
 &emsp; 如上图所示，MySQL内page=1的页准备刷入磁盘，才刷了3个文件系统里的页，掉电了，则会出现：重启后，page=1的页，物理上对应磁盘上的1+2+3+4四个格，数据完整性被破坏。  
 
-&emsp; 有人也许会想，如果发生写失效，可以通过重做日志进行恢复。这是一个办法。但是必须清楚的是，重做日志中记录的是对页的物理操作，如偏移量800，写'aaaa'记录。如果这个页本身已经损坏，再对其进行重做是没有意义的。这就是说，**<font color = "lime">在应用（apply）重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。</font>**  
+&emsp; 有人也许会想，如果发生写失效，可以通过重做日志进行恢复。这是一个办法。但是必须清楚的是，重做日志中记录的是对页的物理操作，如偏移量800，写'aaaa'记录。如果这个页本身已经损坏，再对其进行重做是没有意义的。**<font color = "lime">因此，在应用（apply）重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。</font>**  
 
 #### 1.1.3.2. doublewrite架构及流程
 **doublewrite：**  
@@ -313,14 +310,14 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 &emsp; <font color = "red">doublewrite分为内存和磁盘的两层架构：</font>一部分是内存中的doublewrite buffer，大小为2MB；另一部分是物理磁盘上共享表空间中连续的128个页，即两个区（extent），大小同样为2MB(页的副本)。    
 
 &emsp; 如上图所示，当有页数据要刷盘时：  
-1. 第一步：页数据先memcopy到DWB的内存里；  
-2. 第二步：DWB的内存里，会先刷到DWB的磁盘上；  
-3. 第三步：DWB的内存里，再刷到数据磁盘存储上；  
+1. 第一步：页数据先memcopy到doublewrite buffer的内存里；  
+2. 第二步：doublewrite buffe的内存里，会先刷到doublewrite buffe的磁盘上；  
+3. 第三步：doublewrite buffe的内存里，再刷到数据磁盘存储上；  
 
 &emsp; **DWB为什么能解决“页数据损坏”问题呢？**  
 &emsp; 假设步骤2掉电，磁盘里依然是1+2+3+4的完整数据。  
 &emsp; &emsp; 只要有页数据完整，就能通过redo还原数据。  
-&emsp; 假如步骤3掉电，DWB里存储着完整的数据。  
+&emsp; 假如步骤3掉电，doublewrite buffe里存储着完整的数据。  
 &emsp; 所以，一定不会出现“页数据损坏”问题。  
 &emsp; &emsp; 写了2次，总有一个地方的数据是OK的。  
 
@@ -338,7 +335,7 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 &emsp; 能够通过DWB保证页数据的完整性，但毕竟DWB要写两次磁盘，**<font color = "red">会不会导致数据库性能急剧降低呢？</font>**  
 &emsp; 在这个过程中，因为doublewrite页是连续的，因此这个过程是顺序写的，开销并不是很大。在完成doublewrite页的写入后，再将doublewrite buffer中的页写入各个表空间文件中，此时的写入则是离散的。  
 
-&emsp; 分析DWB执行的三个步骤：  
+&emsp; **<font color = "lime">分析DWB执行的三个步骤：</font>**  
 1. 第一步，页数据memcopy到DWB的内存，速度很快；  
 2. 第二步，DWB的内存fsync刷到DWB的磁盘，属于<font color = "red">顺序追加写，</font>速度也很快；  
 3. 第三步，刷磁盘，随机写，本来就需要进行，不属于额外操作；  
@@ -366,8 +363,8 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 #### 1.1.3.5. 总结
 &emsp; **总结：**  
 &emsp; MySQL有很强的数据安全性机制：  
-&emsp; （1）在异常崩溃时，如果不出现“页数据损坏”，能够通过redo恢复数据；  
-&emsp; （2）在出现“页数据损坏”时，能够通过double write buffer恢复页数据；  
+1. 在异常崩溃时，如果不出现“页数据损坏”，能够通过redo恢复数据；  
+2. <font color = "lime">在出现“页数据损坏”时，能够通过double write buffer恢复页数据；</font>  
  
 &emsp; double write buffer：  
 &emsp; （1）不是一个内存buffer，是一个内存/磁盘两层的结构，是InnoDB里On-Disk架构里很重要的一部分；  
@@ -398,16 +395,7 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 
 
 
-## 1.2. 数据恢复
-&emsp; 数据库关闭只有2种情况，正常关闭，非正常关闭（包括数据库实例crash及服务器crash）。正常关闭情况，所有buffer pool里边的脏页都会都会刷新一遍到磁盘，同时记录最新LSN到ibdata文件的第一个page中。而非正常关闭来不及做这些操作，也就是没及时把脏数据flush到磁盘，也没有记录最新LSN到ibdata file。  
-&emsp; 当重启数据库实例的时候，数据库做2个阶段性操作：redo log处理，undo log及binlog 处理。(在崩溃恢复中还需要回滚没有提交的事务，提交没有提交成功的事务。<font color = "red">由于回滚操作需要undo日志的支持，undo日志的完整性和可靠性需要redo日志来保证，所以崩溃恢复先做redo前滚，然后做undo回滚。</font>)
 
-<!-- 
-怎么进行数据恢复？
-binlog 会记录所有的逻辑操作，并且是采用追加写的形式。当需要恢复到指定的某一秒时，比如今天下午二点发现中午十二点有一次误删表，需要找回数据，那你可以这么做：
-•首先，找到最近的一次全量备份，从这个备份恢复到临时库•然后，从备份的时间点开始，将备份的 binlog 依次取出来，重放到中午误删表之前的那个时刻。
-这样你的临时库就跟误删之前的线上库一样了，然后你可以把表数据从临时库取出来，按需要恢复到线上库去。
--->
 
 ## 1.3. 表
 ### 1.3.1. InnoDB的逻辑存储结构  
