@@ -45,7 +45,12 @@
 https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 ~~
 -->
-&emsp; volatile可以保证线程可见性且提供了一定的有序性，但是无法保证原子性。**<font color = "red">在JVM底层volatile是采用[内存屏障](/docs/java/concurrent/JMM.md)（也称内存栅栏）来实现的。</font>**  
+<!-- 
+&emsp; volatile可以保证线程可见性且提供了一定的有序性，但是无法保证原子性。**<font color = "red">在JVM底层volatile是采用[内存屏障](/docs/java/concurrent/JMM.md)（也称内存栅栏）来实现的。</font>** 
+--> 
+&emsp; **<font color = "lime">一句话概述：在volatile写前插入写-写屏障，在volatile写后插入写-读屏障；在volatile读后插入读-读屏障、读-写屏障。</font>**
+
+&emsp; 观察加入volatile关键字和没有加入volatile关键字时所生成的汇编代码发现，加入volatile关键字时，会多出一个lock前缀指令，lock前缀指令实际上相当于一个[内存屏障](/docs/java/concurrent/JMM.md)。
 
 &emsp; **<font color = "lime">内存屏障的作用：</font>**  
 
@@ -56,12 +61,11 @@ https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 
 |屏障类型  |简称  |指令示例 |  说明|
 |---|---|---|---|
-|LoadLoad Barriers   |读-读 屏障 |Load1;LoadLoad;Load2 |(Load1代表加载数据，Store1表示刷新数据到内存)确保Load1数据的状态先于Load2及所有后续装载指令的装载。|
-|StoreStore Barriers |写-写 屏障 |Store1;StoreStore;Store2 |确保Store1数据对其他处理器可见（刷新到内存）先于Store2及所有后续存储指令的存储。|  
+|StoreStore Barriers |写-写 屏障 |Store1;StoreStore;Store2 |确保Store1数据对其他处理器可见（指刷新到内存）先于Store2及所有后续存储指令的存储。|
+|StoreLoad Barriers |写-读 屏障 |Store1;StoreLoad;Load2 |确保Store1数据对其他处理器变得可见（指刷新到内存）先于Load2及所有后续装载指令的装载。<br/>StoreLoad Barriers会使屏障之前的所有内存访问指令（存储和装载指令）完成之后，才执行该屏障之后的内存访问指令。|
+|LoadLoad Barriers|读-读 屏障 |Load1;LoadLoad;Load2 |(Load1代表加载数据，Store1表示刷新数据到内存)确保Load1数据的状态先于Load2及所有后续装载指令的装载。|
 |LoadSotre Barriers |读-写 屏障 |Load1;LoadStore;Store2 |确保Load1数据装载先于Store2及所有后续的存储指令刷新到内存。|  
-|StoreLoad Barriers |写-读 屏障 |Store1;StoreLoad;Load2 确保Store1数据对其他处理器变得可见（指刷新到内存）先于Load2及所有后续装载指令的装载。  <br/>StoreLoad Barriers会使屏障之前的所有内存访问指令（存储和装载指令）完成之后，才执行该屏障之后的内存访问指令。|  
-
-&emsp; 观察加入volatile关键字和没有加入volatile关键字时所生成的汇编代码发现，加入volatile关键字时，会多出一个lock前缀指令，lock前缀指令实际上相当于一个[内存屏障](/docs/java/concurrent/JMM.md)。 
+ 
 
 &emsp; **volatile写的场景如何插入内存屏障：**  
 
@@ -78,7 +82,6 @@ https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-49.png)  
 &emsp; LoadStore屏障可以保证其后面的所有普通写（num的赋值操作num=num+5) 操作必须在volatile读（if(flag)）之后执行。  
-
   
 
 ## 1.2. Volatile使用  
