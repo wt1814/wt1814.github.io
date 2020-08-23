@@ -21,11 +21,11 @@
 * 设计模式  
     * [七大设计原则](/docs/java/Design/1.principles.md)  
     * [Java设计模式](/docs/java/Design/2.design.md)  
-    * [创建型设计模式](/docs/java/Design/3.establish.md)  
-    * [结构型设计模式](/docs/java/Design/4.structure.md)  
-        * [动态代理](/docs/java/Design/6.proxy.md)  
-    * [行为型设计模式](/docs/java/Design/5.behavior.md)  
-    * [设计模式使用总结](/docs/java/Design/summary.md)  
+        * [创建型设计模式](/docs/java/Design/3.establish.md)  
+        * [结构型设计模式](/docs/java/Design/4.structure.md)  
+            * [动态代理](/docs/java/Design/6.proxy.md)  
+        * [行为型设计模式](/docs/java/Design/5.behavior.md)  
+    * [设计模式讨论](/docs/java/Design/discuss.md)  
 
 * 并发编程  
     * [线程基本概念](/docs/java/concurrent/1.Thread.md)  
