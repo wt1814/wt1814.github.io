@@ -51,8 +51,6 @@
 &emsp; <font color = "red">即然Synchronized无法禁止指令重排，为何可以保证有序性？</font>  
 &emsp; <font color = "red">Synchronized遵守as-if-serial语义（在java中，不管怎么排序，都不能影响单线程程序的执行结果）。</font><font color = "lime">某个线程执行到被synchronized修饰的代码之前，会先进行加锁。执行完代码后才进行解锁。在这个期间，其他线程无法获得锁。也就是在这段时间，被synchronized修饰的代码是单线程执行的。满足了as-if-serial语义的一个前提。</font>  
 
-&emsp; 为什么说Synchronized是可重入锁？  
-&emsp; 可重入锁，也叫做递归锁，指的是同一线程外层函数获得锁之后，内层递归函数仍然有获取该锁的代码，但不受影响。  
 <!-- 
 https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 -->
@@ -66,9 +64,9 @@ https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 &emsp; **synchronized的范围：类锁和对象锁。** 
 1. 类锁：当synchronized修饰静态方法或synchronized修饰代码块传入某个class对象（synchronized (XXXX.class)）时被称为类锁。某个线程得到了一个类锁之后，其他所有被该类锁加锁方法或代码块是锁定的，其他线程是无法访问的，但是其他线程还是可以访问没有被该类锁加锁的任何代码。  
 2. 对象锁：当synchronized修饰非静态方法或synchronized修饰代码块时传入非class对象（synchronized this)）时被称为对象锁。某个线程得到了对象锁之后，该对象的其他被 synchronized修饰的方法（同步方法）是锁定的，其他线程是无法访问的。但是其他线程还是可以访问没有进行同步的方法或者代码；当获取到与对象关联的内置锁时，并不能阻止其他线程访问该对象，当某个线程获得对象的锁之后，只能阻止其他线程获得同一个锁。  
-3. 类锁和对象锁的关系：如同每个类只有一个class对象，而类的实例可以有很多个一样，每个类只有一个类锁，每个实例都有自己的对象锁，所以不同对象实例的对象锁是互不干扰的。但是有一点必须注意的是，其实类锁只是一个概念上的东西，并不是真实存在的，它只是用来理解锁定实例方法和静态方法的区别的。**<font color = "lime">类锁和对象锁是不一样的锁，是互相独立的，两者不存在竞争关系，不相互阻塞。</font>**  
+3. 类锁和对象锁的关系：如同每个类只有一个class对象，而类的实例可以有很多个一样，每个类只有一个类锁，每个实例都有自己的对象锁，所以不同对象实例的对象锁是互不干扰的。但是有一点必须注意的是，其实类锁只是一个概念上的东西，并不是真实存在的，它只是用来理解锁定实例方法和静态方法的区别的。 **<font color = "lime">类锁和对象锁是不一样的锁，是互相独立的，两者不存在竞争关系，不相互阻塞。</font>**  
 
-    * **<font color = "red">类锁与对象锁不相互阻塞。</font>**如果多线程同时访问同一类的 类锁（synchronized 修饰的静态方法）以及对象锁（synchronized 修饰的非静态方法）这两个方法执行是异步的，原因：类锁和对象锁是两种不同的锁。**<font color = "red">线程获得对象锁的同时，也可以获得该类锁，即同时获得两个锁，这是允许的。</font>**  
+    * **<font color = "red">类锁与对象锁不相互阻塞。</font> **如果多线程同时访问同一类的 类锁（synchronized 修饰的静态方法）以及对象锁（synchronized 修饰的非静态方法）这两个方法执行是异步的，原因：类锁和对象锁是两种不同的锁。**<font color = "red">线程获得对象锁的同时，也可以获得该类锁，即同时获得两个锁，这是允许的。</font>**  
     * 相同的类锁，相同的对象锁会相互阻塞。
     * 类锁对该类的所有对象都能起作用，而对象锁不能。
 
@@ -319,7 +317,7 @@ _count：用来记录该线程获取锁的次数；
 
 &emsp; 两条指令的作用：  
 * monitorenter：  
-&emsp; 线程执行monitorenter指令时尝试获取monitor的所有权，当monitor被占用时就会处于锁定状态。过程如下：
+&emsp; <font color = "red">线程执行monitorenter指令时尝试获取monitor的所有权，当monitor被占用时就会处于锁定状态。</font>过程如下：
     1. <font color = "red">如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。</font>  
     2. 如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1，所以synchronized关键字实现的锁是可重入的锁。  
     3. 如果其他线程已经占用了monitor，则该线程进入阻塞状态，直到monitor的进入数为0，再重新尝试获取monitor的所有权。  
@@ -333,17 +331,17 @@ _count：用来记录该线程获取锁的次数；
 &emsp; 总结：Synchronized的实现原理，Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。  
 
 #### 1.4.1.2. 同步方法  
-&emsp; synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被synchronized修饰的方法，而是在Class文件的方法表中将该方法的access_flags字段中的synchronized标志位置1，表示该方法是同步方法并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
+&emsp; synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被synchronized修饰的方法，<font color= "lime">而是在Class文件的方法表中将该方法的access_flags字段中的synchronized标志位置1，表示该方法是同步方法，</font>并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
 
 ## 1.5. synchronized的锁优化
 &emsp; **<font color = "lime">锁升级过程主要是理解偏向锁、轻量级锁的升级过程。</font>**    
-&emsp; **<font color = "lime">一句话概述：新线程竞争锁时，获取锁对象的 Markword。起初只有一个线程，会获取到偏向锁，当另一个线程竞争锁，只cas一次，抢占到撤销原线程的偏向锁；抢占不到升级成轻量级锁；轻量级锁加锁过程中会使用自旋锁，新线程自旋多次获取轻量级锁失败（锁对象不是当前线程），会升级成重量级锁。并且已经获取轻量级锁的线程在释放锁时，也会升级成重量级锁。</font>**  
+&emsp; **<font color = "lime">~~一句话概述：新线程竞争锁时，获取锁对象的 Markword。起初只有一个线程，会获取到偏向锁，当另一个线程竞争锁，只cas一次，抢占到撤销原线程的偏向锁；抢占不到升级成轻量级锁；轻量级锁加锁过程中会使用自旋锁，新线程自旋多次获取轻量级锁失败（锁对象不是当前线程），会升级成重量级锁。并且已经获取轻量级锁的线程在释放锁时，也会升级成重量级锁。~~</font>**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-38.png)   
 
 &emsp; 为了进一步改进高效并发，HotSpot虚拟机开发团队在JDK 5升级到JDK 6版本上花费了大量精力实现各种锁优化。如适应性自旋、锁消除、锁粗化、偏向锁和轻量级锁等，这些技术都是为了在线程之间更高效地共享数据及解决竞争问题，从而提高程序的执行效率。  
-&emsp; 锁主要存在四种状态，依次是：无锁状态、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。**<font color = "red">偏向锁可以被重置为无锁状态，这种策略是为了提高获得锁和释放锁的效率。</font>**  
-&emsp; **<font color = "lime">锁降级</font>**：<font color = "red">Hotspot 在 1.8 开始有了锁降级。在 STW 期间 JVM 进入安全点时如果发现有闲置的 monitor（重量级锁对象），会进行锁降级。</font>  
+&emsp; 锁主要存在四种状态，依次是：无锁状态、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。 **<font color = "red">偏向锁可以被重置为无锁状态，这种策略是为了提高获得锁和释放锁的效率。</font>**   
+&emsp; **<font color = "lime">锁降级：</font>** <font color = "red">Hotspot 在 1.8 开始有了锁降级。在 STW 期间 JVM 进入安全点时如果发现有闲置的 monitor（重量级锁对象），会进行锁降级。</font>  
 <!-- 
  Monitor和Java对象头详解：  
 &emsp; Synchronized用的锁标记是存放在Java对象头的Mark Word中。  
@@ -409,7 +407,7 @@ public String test(String str){
 
 ### 1.5.3. 了解HotSpot虚拟机对象的内存布局  
 
-&emsp; 下面讲解Synchroized的偏向锁、轻量级锁、重量级锁。**<font color = "red">需要先了解HotSpot虚拟机对象的内存布局：</font>**  
+&emsp; 下面讲解Synchroized的偏向锁、轻量级锁、重量级锁。**<font color = "red">需要先了解HotSpot虚拟机对象的内存布局：</font>**   
 &emsp; HotSpot虚拟机的对象头（Object Header）分为三部分：对象头(Header)、实例数据(Instance Data)、对齐填充(Padding)。<font color = "red">用对象头中markword最低的三位代表锁状态，其中1位是偏向锁位，两位是普通锁位。</font>  
 
 * 对象头：
@@ -419,7 +417,7 @@ public String test(String str){
 * 实例数据：存储对象真正的有效信息（包括父类继承下来的和自己定义的）  
 * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐） 
 
-&emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构</font>**，以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。在64位的HotSpot虚拟机中，不同状态下对象头的存储内容如下图所示。
+&emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。在64位的HotSpot虚拟机中，不同状态下对象头的存储内容如下图所示。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)  
 <!-- 
 例如在32位的HotSpot虚拟机中，对象未被锁定的状态下， Mark Word的32个比特空间里的25个比特将用于存储对象哈希码，4个比特用于存储对象分代年龄，2 个比特用于存储锁标志位，还有1个比特固定为0（这表示未进入偏向模式）。对象除了未被锁定的正常状态外，还有轻量级锁定、重量级锁定、GC标记、可偏向等几种不同状态，这些状态下对象头的存储内容如下表所示。  
@@ -454,8 +452,8 @@ public String test(String str){
 
 1. **<font color = "red">偏向锁整体流程：</font>**
     1. **<font color = "lime">当锁对象第一次被线程获得的时候，进入偏向状态，标记为 |1|01|（前面对象内存布局图中说明了，这属于偏向锁状态）。同时使用CAS操作将线程ID （ThreadID）记录到Mark Word 中，</font>** 如果 CAS 操作成功，这个线程以后每次进入这个锁相关的同步块就不需要再进行任何同步操作。  
-    2. <font color = "red">另外一个线程去尝试获取这个锁的情况，偏向模式就马上宣告结束。</font>根据锁对象目前是否处于被锁定的状态决定是否撤销偏向（偏向模式设置为“0”），<font color = "red">撤销后标志位恢复到未锁定（标志位为“01”）或轻量级锁定（标志位为“00”）的状态。</font>  
-    &emsp; 另一个线程争抢锁成功，对原线程进行锁撤销；抢占失败，升级为轻量级锁。  
+    2. <font color = "red">新线程去尝试获取这个锁时，偏向模式就马上宣告结束。</font>根据锁对象目前是否处于被锁定的状态决定是否撤销偏向（偏向模式设置为“0”），<font color = "red">撤销后标志位恢复到未锁定（标志位为“01”）或轻量级锁定（标志位为“00”）的状态。</font>  
+    &emsp; 新线程争抢锁成功，对原线程进行锁撤销；抢占失败，升级为轻量级锁。  
 ----
 2. **<font color = "lime">新线程获取偏向锁：（根据偏向锁的状态以及cas是否成功，来决定是否撤销偏向锁、升级轻量级锁。）</font>**  
     1. **<font color = "lime">首先获取锁对象的Markword，判断是否处于可偏向状态。（biased_lock=1、且 ThreadId 为空）</font>**  
@@ -490,7 +488,7 @@ public String test(String str){
 * 已偏向(Biased)。这种状态下，thread pointer非空，且epoch为有效值——意味着其他线程正在持有这个锁对象。
 
 #### 1.5.4.1. 偏向锁的性能   
-&emsp; 偏向锁可以提高带有同步但无竞争的程序性能，但它同样是一个带有效益权衡（Trade Off）性质的优化，也就是说它并非总是对程序运行有利。**<font color = "lime">如果程序中大多数的锁都总是被多个不同的线程访问，那偏向模式就是多余的。</font>** 在具体问题具体分析的前提下，有时候使用参数-XX：-UseBiasedLocking来禁止偏向锁优化反而可以提升性能。 
+&emsp; 偏向锁可以提高带有同步但无竞争的程序性能，但它同样是一个带有效益权衡（Trade Off）性质的优化，也就是说它并非总是对程序运行有利。 **<font color = "lime">如果程序中大多数的锁都总是被多个不同的线程访问，那偏向模式就是多余的。</font>** 在具体问题具体分析的前提下，有时候使用参数-XX：-UseBiasedLocking来禁止偏向锁优化反而可以提升性能。 
 
 #### 1.5.4.2. 偏向锁的失效  
 &emsp; 如果计算过对象的hashcode()，则对象无法进入偏向状态。    
@@ -502,7 +500,7 @@ public String test(String str){
 
 ### 1.5.5. 轻量级锁  
 &emsp; 轻量级锁在加锁过程中，用到了自旋锁。  
-&emsp; **为什么有了自旋锁还需要重量级锁？**  
+&emsp; **<font color = "red">为什么有了自旋锁还需要重量级锁？</font>**  
 &emsp; 自旋是消耗CPU资源的，如果锁的时间长，或者自旋线程多，CPU会被大量消耗。  
 &emsp; 重量级锁有等待队列，所有拿不到锁的线程进入等待队列，不需要消耗CPU资源。  
 
@@ -521,17 +519,17 @@ public String test(String str){
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-32.png)  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-33.png)  
 2. <font color = "red">自旋锁</font>  
-&emsp; 轻量级锁在加锁过程中，用到了自旋锁。自旋锁分为固定次数自旋锁和自适应自旋锁。轻量级锁是针对竞争锁对象线程不多且线程持有锁时间不长的场景, 因为阻塞线程需要CPU从用户态转到内核态，代价很大，如果一个刚刚阻塞不久就被释放代价有大。  
+&emsp; 轻量级锁在加锁过程中，用到了自旋锁。自旋锁分为固定次数自旋锁和自适应自旋锁。轻量级锁是针对竞争锁对象线程不多且线程持有锁时间不长的场景，因为阻塞线程需要CPU从用户态转到内核态，代价很大，如果一个刚刚阻塞不久就被释放代价有大。  
 &emsp;  自旋锁与自适应自旋：    
 &emsp; <font color = "red">为了让线程等待，只需要让线程执行一个忙循环（自旋），这项技术就是所谓的自旋锁。</font>引入自旋锁的原因是互斥同步对性能最大的影响是阻塞的实现，管钱线程和恢复线程的操作都需要转入内核态中完成，给并发带来很大压力。自旋锁让物理机器有一个以上的处理器的时候，能让两个或以上的线程同时并行执行。就可以让后面请求锁的那个线程 “稍等一下” ，但不放弃处理器的执行时间，看看持有锁的线程是否很快就会释放锁。为了让线程等待，只需让线程执行一个忙循环（自旋），这项技术就是所谓的自旋锁。  
 &emsp; 自旋锁虽然能避免进入阻塞状态从而减少开销，但是它需要进行忙循环操作占用 CPU 时间，它只适用于共享数据的锁定状态很短的场景。  
 &emsp; 在 JDK 1.6之前，自旋次数默认是10次，用户可以使用参数-XX:PreBlockSpin来更改。  
-&emsp; JDK1.6引入了自适应的自旋锁。自适应意味着自旋的时间不再固定了，而是由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定。（这个应该属于试探性的算法）。  
+&emsp; **<font color = "red">JDK1.6引入了自适应的自旋锁。自适应意味着自旋的时间不再固定了，而是由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定。（这个应该属于试探性的算法）。</font>**  
 3. 已经获取轻量级锁的线程的解锁。   
 &emsp; 轻量级锁的锁释放逻辑其实就是获得锁的逆向逻辑，通过CAS操作把线程栈帧中的LockRecord替换回到锁对象的MarkWord中，如果成功表示没有竞争。如果失败，表示当前锁存在竞争，那么轻量级锁就会膨胀成为重量级锁。  
 4. 新线程获取轻量级锁：  
-&emsp; **<font color = "red">1. 获取轻量锁过程当中会当在前线程的虚拟机栈中创建一个Lock Record的内存区域去存储获取锁的记录，</font>  
-&emsp; <font color = "lime">2. 然后使用CAS操作将锁对象的Mark Word更新成指向刚刚创建的Lock Record的内存区域的指针，如果这个操作成功，就说明线程获取了该对象的锁，把对象的Mark Word 标记成 00，表示该对象处于轻量级锁状态。</font>** 失败时，会判断是否是该线程之前已经获取到锁对象了，如果是就进入同步块执行。如果不是，那就是有多个线程竞争这个锁对象，那轻量锁就不适用于这个情况了，要膨胀成重量级锁。  
+&emsp; **<font color = "red">1. 获取轻量锁过程当中会当在前线程的虚拟机栈中创建一个Lock Record的内存区域去存储获取锁的记录DisplacedMarkWord，</font>  
+&emsp; <font color = "lime">2. 然后使用CAS操作将锁对象的Mark Word更新成指向刚刚创建的Lock Record的内存区域DisplacedMarkWord的地址，</font>** 如果这个操作成功，就说明线程获取了该对象的锁，把对象的Mark Word 标记成 00，表示该对象处于轻量级锁状态。失败时，会判断是否是该线程之前已经获取到锁对象了，如果是就进入同步块执行。如果不是，那就是有多个线程竞争这个锁对象，那轻量锁就不适用于这个情况了，要膨胀成重量级锁。  
 
         线程A获取轻量级锁时会把对象头中的MarkWord复制一份到线程A的栈帧中创建用于存储锁记录的空间DisplacedMarkWord，然后使用CAS将对象头中的内容替换成线程A存储DisplacedMarkWord的地址。如果这时候出现线程B来获取锁，线程B也跟线程A同样复制对象头的MarkWord到自己的DisplacedMarkWord中，如果线程A锁还没释放，这时候那么线程B的CAS操作会失败，会继续自旋，当然不可能让线程B一直自旋下去，自旋到一定次数（固定次数/自适应）就会升级为重量级锁。 
 
@@ -542,14 +540,14 @@ public String test(String str){
 &emsp; 升级重量级锁--->向操作系统申请资源，linux mutex，CPU从3级-0级系统调用，线程挂起，进入等待队列，等待操作系统的调度，然后再映射回用户空间。  
 
 
-&emsp; <font color = "lime">为什么重量级线程开销很大的？</font>  
+&emsp; <font color = "lime">为什么说重量级线程开销很大？</font>  
 &emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，被阻塞的线程不会消耗cpu。但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。
 
 ### 1.5.7. 锁状态总结  
-&emsp; JDK 1.6 引入了偏向锁和轻量级锁，从而让锁拥有了四个状态：**无锁状态（unlocked）(MarkWord标志位01，没有线程执行同步方法/代码块时的状态)**、偏向锁状态（biasble）、轻量级锁状态（lightweight locked）和重量级锁状态（inflated）。  
+&emsp; JDK 1.6 引入了偏向锁和轻量级锁，从而让锁拥有了四个状态： **无锁状态（unlocked）(MarkWord标志位01，没有线程执行同步方法/代码块时的状态)**、偏向锁状态（biasble）、轻量级锁状态（lightweight locked）和重量级锁状态（inflated）。  
 
 &emsp; 重量级排序 ：无锁 > 轻量级锁 > 偏向锁 > 重量级锁    
-&emsp; **<font color = "lime">锁降级</font>**：<font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>
+&emsp; **<font color = "lime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>
 
 &emsp; **<font color = "lime">synchronized锁对比：</font>**  
 &emsp; 用户空间锁VS重量级锁：  
