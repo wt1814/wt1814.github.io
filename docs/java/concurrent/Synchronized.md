@@ -66,7 +66,7 @@ https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 2. 对象锁：当synchronized修饰非静态方法或synchronized修饰代码块时传入非class对象（synchronized this)）时被称为对象锁。某个线程得到了对象锁之后，该对象的其他被 synchronized修饰的方法（同步方法）是锁定的，其他线程是无法访问的。但是其他线程还是可以访问没有进行同步的方法或者代码；当获取到与对象关联的内置锁时，并不能阻止其他线程访问该对象，当某个线程获得对象的锁之后，只能阻止其他线程获得同一个锁。  
 3. 类锁和对象锁的关系：如同每个类只有一个class对象，而类的实例可以有很多个一样，每个类只有一个类锁，每个实例都有自己的对象锁，所以不同对象实例的对象锁是互不干扰的。但是有一点必须注意的是，其实类锁只是一个概念上的东西，并不是真实存在的，它只是用来理解锁定实例方法和静态方法的区别的。 **<font color = "lime">类锁和对象锁是不一样的锁，是互相独立的，两者不存在竞争关系，不相互阻塞。</font>**  
 
-    * **<font color = "red">类锁与对象锁不相互阻塞。</font> **如果多线程同时访问同一类的 类锁（synchronized 修饰的静态方法）以及对象锁（synchronized 修饰的非静态方法）这两个方法执行是异步的，原因：类锁和对象锁是两种不同的锁。**<font color = "red">线程获得对象锁的同时，也可以获得该类锁，即同时获得两个锁，这是允许的。</font>**  
+    * **<font color = "red">类锁与对象锁不相互阻塞。</font> 如果多线程同时访问同一类的 类锁（synchronized 修饰的静态方法）以及对象锁（synchronized 修饰的非静态方法）这两个方法执行是异步的，原因：类锁和对象锁是两种不同的锁。<font color = "red">线程获得对象锁的同时，也可以获得该类锁，即同时获得两个锁，这是允许的。</font>**  
     * 相同的类锁，相同的对象锁会相互阻塞。
     * 类锁对该类的所有对象都能起作用，而对象锁不能。
 
@@ -407,7 +407,7 @@ public String test(String str){
 
 ### 1.5.3. 了解HotSpot虚拟机对象的内存布局  
 
-&emsp; 下面讲解Synchroized的偏向锁、轻量级锁、重量级锁。**<font color = "red">需要先了解HotSpot虚拟机对象的内存布局：</font>**   
+&emsp; 下面讲解Synchroized的偏向锁、轻量级锁、重量级锁。 **<font color = "red">需要先了解HotSpot虚拟机对象的内存布局：</font>**   
 &emsp; HotSpot虚拟机的对象头（Object Header）分为三部分：对象头(Header)、实例数据(Instance Data)、对齐填充(Padding)。<font color = "red">用对象头中markword最低的三位代表锁状态，其中1位是偏向锁位，两位是普通锁位。</font>  
 
 * 对象头：
@@ -544,7 +544,7 @@ public String test(String str){
 &emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，被阻塞的线程不会消耗cpu。但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。
 
 ### 1.5.7. 锁状态总结  
-&emsp; JDK 1.6 引入了偏向锁和轻量级锁，从而让锁拥有了四个状态： **无锁状态（unlocked）(MarkWord标志位01，没有线程执行同步方法/代码块时的状态)**、偏向锁状态（biasble）、轻量级锁状态（lightweight locked）和重量级锁状态（inflated）。  
+&emsp; JDK 1.6 引入了偏向锁和轻量级锁，从而让锁拥有了四个状态： **无锁状态（unlocked）(MarkWord标志位01，没有线程执行同步方法/代码块时的状态)** 、偏向锁状态（biasble）、轻量级锁状态（lightweight locked）和重量级锁状态（inflated）。  
 
 &emsp; 重量级排序 ：无锁 > 轻量级锁 > 偏向锁 > 重量级锁    
 &emsp; **<font color = "lime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>
