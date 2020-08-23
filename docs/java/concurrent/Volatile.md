@@ -15,7 +15,7 @@
 &emsp; 一旦一个共享变量（类的成员变量、类的静态成员变量）被 volatile 修饰之后，那么就具备了两层语义： **<font color = "lime">保证内存的可见性和禁止指令重排序。</font>**  
 
 &emsp; Volatile的特性：  
-1. 不支持原子性。<font color = "red">它只对单个volatile变量的读/写具有原子性（只能保证对单次读/写的原子性）；但是对于类似i++这样的复合操作不能保证原子性。</font>  
+1. 不支持原子性。<font color = "red">它只对单个volatile变量的读/写具有原子性（只能保证对单次读/写的原子性）；</font><font color = "lime">但是对于类似i++这样的复合操作不能保证原子性。</font>  
 2. <font color = "red">实现了有序性，禁止进行指令重排序。</font>
 <!-- 在volatile变量的赋值操作后⾯会有⼀个内存屏障（⽣成的汇编代码上），读操作不会被重排序到内存屏障之前。 -->
 3. 实现了可见性。volatile提供happens-before的保证，使变量在多个线程间可见。变量被修改后，会立即保存在主存中，并清除工作内存中的值。这个变量不会在多个线程中存在复本，直接从内存读取。新值对其他线程来说是立即可见的。  
@@ -69,20 +69,19 @@ https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 
 &emsp; **volatile写的场景如何插入内存屏障：**  
 
-* 在每个volatile写操作的前面插入一个StoreStore屏障（写-写 屏障）。  
-* 在每个volatile写操作的后面插入一个StoreLoad屏障（写-读 屏障）。  
+* **<font color = "red">在每个volatile写操作的前面插入一个StoreStore屏障（写-写 屏障）。禁止上面的普通写与下面的volatile写重排序。</font>  
+* **<font color = "red">在每个volatile写操作的后面插入一个StoreLoad屏障（写-读 屏障）。禁止上面的volatile写与下面可能有的volatile读/写重排序。</font>  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-48.png)  
 &emsp; StoreStore屏障可以保证在volatile写（flag赋值操作flag=true）之前，其前面的所有普通写（num的赋值操作num=1) 操作已经对任意处理器可见了，保障所有普通写在volatile写之前刷新到主内存。   
 
 &emsp; **volatile读场景如何插入内存屏障：**  
 
-* 在每个volatile读操作的后面插入一个LoadLoad屏障（读-读 屏障）。  
-* 在每个volatile读操作的后面插入一个LoadStore屏障（读-写 屏障）。  
+* **<font color = "red">在每个volatile读操作的后面插入一个LoadLoad屏障（读-读 屏障）。禁止下面的普通读操作与上面的volatile读重排序。</font>  
+* **<font color = "red">在每个volatile读操作的后面插入一个LoadStore屏障（读-写 屏障）。禁止下面所有的普通写操作和上面volatile读重排序。</font>  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-49.png)  
 &emsp; LoadStore屏障可以保证其后面的所有普通写（num的赋值操作num=num+5) 操作必须在volatile读（if(flag)）之后执行。  
-  
 
 ## 1.2. Volatile使用  
 ### 1.2.1. 如何正确使用volatile变量  
