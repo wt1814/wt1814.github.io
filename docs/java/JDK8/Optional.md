@@ -71,19 +71,19 @@ SoundCard soundcard = new Soundcard();
 Optional<Soundcard> sc = Optional.of(soundcard);
 Optional<Soundcard> sc = Optional.ofNullable(soundcard);
 ```
-&emsp; **<font color = "red">存在即返回, 无则提供默认值</font>**：  
+&emsp; **<font color = "red">存在即返回, 无则提供默认值：</font>**  
 
 ```java
 return user.orElse(null);  //而不是 return user.isPresent() ? user.get() : null;
 return user.orElse(UNKNOWN_USER);
 ```
-&emsp; **<font color = "red">存在即返回, 无则由函数来产生</font>**：  
+&emsp; **<font color = "red">存在即返回, 无则由函数来产生：</font>**  
 
 ```java
 return user.orElseGet(() -> fetchAUserFromDatabase()); 
 //而不要 return user.isPresent() ? user: fetchAUserFromDatabase();
 ```
-&emsp; **<font color = "red">存在才对它操作</font>**：  
+&emsp; **<font color = "red">存在才对它操作：</font>**  
 
 ```java
 user.ifPresent(System.out::println);
@@ -92,7 +92,7 @@ if (user.isPresent()) {
     System.out.println(user.get());
 }*/
 ```
-&emsp; **<font color = "red">使用map抽取特定的值或者做值的转换</font>**：  
+&emsp; **<font color = "red">使用map抽取特定的值或者做值的转换：</font>**  
 
 ```java
 return user.map(u -> u.getOrders()).orElse(Collections.emptyList())
@@ -103,7 +103,7 @@ if(user.isPresent()) {
     return Collections.emptyList();
 }
 ```
-&emsp; **<font color = "red">级联使用map，避免了连续的空值判断</font>**:  
+&emsp; **<font color = "red">级联使用map，避免了连续的空值判断：</font>**  
 
 ```java
 return user.map(u -> u.getUsername()).map(name -> name.toUpperCase()).orElse(null);
@@ -120,7 +120,7 @@ if(user != null) {
 }*/
 ```
 
-&emsp; **<font color = "red">级联的Optional对象使用flatMap</font>**：  
+&emsp; **<font color = "red">级联的Optional对象使用flatMap：</font>**  
 
 ```java
 String version = computer.flatMap(Computer::getSoundcard)
@@ -129,7 +129,7 @@ String version = computer.flatMap(Computer::getSoundcard)
         .orElse("UNKNOWN");
 ```
 
-&emsp; **<font color = "red">使用filter拒绝特定的值</font>**:  
+&emsp; **<font color = "red">使用filter拒绝特定的值：</font>**  
 
 ```java
 Optional<USB> maybeUSB = ...;

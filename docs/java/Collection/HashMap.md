@@ -177,7 +177,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 
 &emsp; **<font color = "red">1. HashMap的底层：Hash表数据结构！！！</font>**  
 &emsp; **HashMap中hash函数设计：** 参考下文成员方法hash()章节。    
-&emsp; **HashMap在发生hash冲突的时候用的是链地址法。** JDK1.7中使用头插法，JDK1.8使用尾插法。    
+&emsp; **HashMap在发生hash冲突的时候用的是链地址法。** **<font color = "red">JDK1.7中使用头插法，JDK1.8使用尾插法。</font>**  
 &emsp; 在HashMap的数据结构中，有两个参数可以影响HashMap的性能：初始容量（inital capacity）和负载因子（load factor）。初始容量和负载因子也可以修改，具体实现方式，可以在对象初始化的时候，指定参数。  
 
 * initialCapacity数组的初始容量为16。可以在构造方法中指定。
@@ -198,7 +198,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
     <!-- 
     &emsp; 加载因子也能通过构造方法中指定，默认的负载因子是0.75f，这是一个在时间和空间上的一个折中；较高的值减少了空间开销，但增加了查找成本(主要表现在HaspMap的get和put操作)。如果指定大于1，则数组不会扩容，牺牲了性能不过提升了内存。
     -->  
-* threshold数组扩容阈值。即：HashMap数组总容量 * 加载因子。**<font color = "red">记录当前数组的最大容量。当前容量大于或等于该值时会执行扩容 resize()。</font>** 扩容的容量为当前HashMap总容量的两倍。比如，当前HashMap的总容量为16 ，那么扩容之后为32。  
+* threshold数组扩容阈值。即：HashMap数组总容量 * 加载因子。 **<font color = "red">记录当前数组的最大容量。当前容量大于或等于该值时会执行扩容 resize()。</font>** 扩容的容量为当前HashMap总容量的两倍。比如，当前HashMap的总容量为16 ，那么扩容之后为32。  
     
         threshold 除了用于存放扩容阈值还有其他作用吗？
         在新建 HashMap 对象时， threshold 还会被用来存初始化时的容量。HashMap 直到第一次插入节点时，才会对 table 进行初始化，避免不必要的空间浪费。
@@ -216,7 +216,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 * UNTREEIFY_THRESHOLD解除树形化阈值。当链表的节点个数小于等于这个值时，会将红黑树转换成普通的链表。
 
     &emsp; 为什么在少于 6 的时候而不是 8 的时候才将红黑树转换为链表呢？  
-    &emsp; 假设设计成大于 8 时链表转换为红黑树，小于 8 的时候又转换为链表。如果一个 hashmap 不停的插入、删除。**<font color = "red">hashmap 中的个数不停地在 8 徘徊，那么就会频繁的发生链表和红黑树之间转换，效率非常低。</font>** 因此，6 和 8 之间来一个过渡值可以减缓这种情况造成的影响。
+    &emsp; 假设设计成大于 8 时链表转换为红黑树，小于 8 的时候又转换为链表。如果一个 hashmap 不停的插入、删除。 **<font color = "red">hashmap中的个数不停地在8徘徊，那么就会频繁的发生链表和红黑树之间转换，效率非常低。</font>** 因此，6和8之间来一个过渡值可以减缓这种情况造成的影响。
 
 * **<font color = "lime">MIN_TREEIFY_CAPACITY树形化阈值的第二条件，数组扩容临界值。当数组的长度小于这个值时，当树形化阈值达标时，链表也不会转化为红黑树，而是优先扩容数组resize()。</font>**  
 
@@ -318,7 +318,6 @@ static final int hash(Object key) {
 3. 注：如果是计算数组下标（插入/查找的时候，计算 key 应该被映射到散列表的什么位置），还需位置计算公式 index = (n - 1) & hash ，其中 n 是容量。
 
 &emsp; **<font color = "red">hash函数称为“扰动函数”。目的是为了减少哈希碰撞，使table里的数据分布的更均匀。并且采用位运算，比较高效。</font>**  
-
 &emsp; 为什么获取hashcode() ，还需要将自己右移 16 位与自己进行异或呢？  
 &emsp; <font color = "red">因为容量较小的时候，在计算 index 时，真正用到的其实就只有低几位，假如不融合高低位，那么假设 hashcode() 返回的值都是高位的变动的话，那么很容易造成散列的值都是同一个。</font>但是，假如将高位和低位融合之后，高位的数据变动会最终影响到 index 的变换，所以依然可以保持散列的随机性。  
 

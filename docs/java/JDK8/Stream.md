@@ -13,7 +13,8 @@
                 - [1.2.2.2.1. Map](#12221-map)
                 - [1.2.2.2.2. Reduce聚合操作](#12222-reduce聚合操作)
                 - [1.2.2.2.3. Collect收集结果](#12223-collect收集结果)
-            - [1.2.2.3. ParallelStream](#1223-parallelstream)
+            - [1.2.2.3. ***ParallelStream](#1223-parallelstream)
+                - [1.2.2.3.1. ***parallelStream() 线程安全](#12231-parallelstream-线程安全)
     - [1.3. intellij debug 技巧:java 8 stream](#13-intellij-debug-技巧java-8-stream)
 
 <!-- /TOC -->
@@ -164,11 +165,23 @@ reduce("", String::concat);
     &emsp; 参数supplier是一个生成目标类型实例的方法，代表着目标容器是什么；accumulator是将操作的目标数据填充到supplier 生成的目标类型实例中去的方法，代表着如何将元素添加到容器中；而combiner是将多个supplier生成的实例整合到一起的方法，代表着规约操作，将多个结果合并。  
 
 
-#### 1.2.2.3. ParallelStream   
-&emsp; 数据并行处理，只需要在原来的基础上加一个parallel()就可以开启，这里parallel()开启的底层并行框架是fork/join，默认的并行数是Ncpu个。  
-&emsp; 并行线程数量：   
+#### 1.2.2.3. ***ParallelStream   
+&emsp; 数据并行处理，只需要在原来的基础上加一个parallel()就可以开启，**<font color = "lime">parallel()开启的底层并行框架是[fork/join](/docs/java/concurrent/ForkJoinPool.md)。</font>**  
+&emsp; parallelStream是什么，它是一个集合的并发处理流。其作用是把一个集合中的数据分片，进行一个多线程的处理，增快运行速度。  
+
+&emsp; 默认的并行数是Ncpu个。并行线程数量：   
 1. 并行流在启动线程上，默认会调用 Runtime.getRuntime().availableProcessors()，获取JVM底层最大设备线程数。  
 2. 如果想设置并行线程启动数量，则需要全局设置System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "12");  
+
+##### 1.2.2.3.1. ***parallelStream() 线程安全  
+&emsp; 使用parallelStream()会有线程安全问题。示例：  
+
+<!-- 
+https://www.jianshu.com/p/e9a36f2802ae?from=timeline&isappinstalled=0
+https://blog.csdn.net/Tianzijiang0306/article/details/85140319
+-->
+
+&emsp; 解决方案：使用锁Syschronize或Lock或其他方案保障线程安全。  
 
 
 ## 1.3. intellij debug 技巧:java 8 stream  
