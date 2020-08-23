@@ -17,17 +17,20 @@
 * 转化为并行流，利用map开展工作。  
 * 取出每一个元素，创建线程，在CompletableFuture内对其进行操作  
 
-&emsp; 后者提供了更多的灵活性，可以调整线程池的大小，而这能帮助我们确保整体的计算不会因为线程都在等待I/O而发生阻塞。  
+&emsp; 后者提供了更多的灵活性，可以调整线程池的大小，而这能使整体的计算不会因为线程都在等待I/O而发生阻塞。  
 &emsp; 那么如何选择呢，建议如下：  
 
 * 进行计算密集型的操作，并且没有I/O，那么推荐使用Stream接口，因为实现简单，同时效率也可能是最高的（如果所有的线程都是计算密集型的，那就没有必要创建比处理器核数更多的线程）。  
 * 如果并行操作设计等到I/O的操作（网络连接，请求等），那么使用CompletableFuture灵活性更好，通过控制线程数量来优化程序的运行。  
 
+
+<!-- 
 &emsp; CompletableFuture还提供了了一些非常有用的操作例如，thenApply(),thenCompose(),thenCombine()等。  
 
 * thenApply()是操作完成后将结果传入进行转换
 * thenCompose()是对两个异步操作进行串联，第一个操作完成时，对第一个CompletableFuture对象调用thenCompose，并向其传递一个函数。当第一个* CompletableFuture执行完毕后，它的结果将作为该函数的参数，这个函数的返回值是以第一个CompletableFuture的返回做输入计算出第二个CompletableFuture对象。
 * thenCombine()会异步执行两个CompletableFuture任务，然后等待它们计算出结果后再进行计算。
+-->
 
 ## 1.2. CompletableFuture使用  
 <!-- 

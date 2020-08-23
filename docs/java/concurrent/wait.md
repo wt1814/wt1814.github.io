@@ -13,6 +13,15 @@
 <!-- /TOC -->
 
 # 1. wait、notify/notifyAll
+
+&emsp; 生产者消费者问题，Java能实现的几种方法：  
+
+* wait() / notify()方法
+* await() / signal()方法
+* BlockingQueue阻塞队列方法
+* 信号量
+* 管道
+
 ## 1.1. 简介  
 1. wait()、notify/notifyAll() 方法是Object的本地final方法，无法被重写。  
 2. wait()使当前线程阻塞，前提是 必须先获得锁，一般配合synchronized 关键字使用，即，一般在synchronized 同步代码块里使用 wait()、notify/notifyAll() 方法。  

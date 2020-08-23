@@ -197,7 +197,7 @@ public ThreadPoolExecutor(int corePoolSize,
 * TimeUnit unit：参数keepAliveTime的单位。有7种取值，在TimeUnit类中有7种静态属性：TimeUnit.DAYS；TimeUnit.HOURS；  
 * BlockingQueue<Runnable\>  workQueue：任务阻塞队列，是java.util.concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样,如果BlockingQueue是满的,任何试图往里存东西的操作也会被阻断进入等待状态,直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition(显示锁Lock及Condition的学习与使用)来实现阻塞和唤醒。  
 * ThreadFactory threadFactory：创建线程的工厂。  
-* RejectedExecutionHandler  handler：<font color = "red">当提交任务数超过maxmumPoolSize+workQueue之和时，任务会交给RejectedExecutionHandler来处理，执行拒绝策略。</font>有四种策略，默认是AbortPolicy。内置拒绝策略均实现了RejectedExecutionHandler接口，若以下策略仍无法满足实际需要，可以扩展RejectedExecutionHandler接口。  
+* RejectedExecutionHandler  handler：<font color = "red">当提交任务数超过maxmumPoolSize+workQueue之和时，任务会交给RejectedExecutionHandler来处理，执行拒绝策略。</font>有四种策略，<font color = "lime">默认是AbortPolicy(丢弃任务并抛出RejectedExecutionException异常)</font>。内置拒绝策略均实现了RejectedExecutionHandler接口，若以下策略仍无法满足实际需要，可以扩展RejectedExecutionHandler接口。  
 
     | 名称 | Condition |  
     |----|----|  
@@ -228,7 +228,7 @@ public ThreadPoolExecutor(int corePoolSize,
 3. 当一个线程空闲，超过一定的时间（keepAliveTime）时，线程池会判断，如果当前运行的线程数大于corePoolSize，那么这个线程就被停掉。所以线程池的所有任务完成后，它最终会收缩到corePoolSize的大小。  
 -->
 &emsp; 整个流程：  
-&emsp; 线程池创建时没有设置成预启动加载，首发线程数为0。任务队列是作为参数传进来的。不过，就算队列里面有任务，线程池也不会马上执行它们，而是创建线程。当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
+&emsp; <font color = "lime">线程池创建时没有设置成预启动加载，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
 1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务（任务实例会传入直接用于构造工作线程实例）。  
 2. 如果当前工作线程总数大于等于corePoolSize，判断线程池是否处于运行中状态，同时尝试用非阻塞方法向任务队列放入任务，这里会二次检查线程池运行状态，如果当前工作线程数量为0，则创建一个非核心线程并且传入的任务对象为null。  
 3. 如果向任务队列投放任务失败（任务队列已经满了），则会尝试创建非核心线程传入任务实例执行。  
@@ -484,7 +484,7 @@ thread.start();
 
 &emsp; runWorker()方法的核心流程：  
 1. Worker先执行一次解锁操作，用于解除不可中断状态。  
-2. 通过while循环调用getTask()方法从任务队列中获取任务（当然，首轮循环也有可能是外部传入的firstTask任务实例）。  
+2. <font color = "red">通过while循环调用getTask()方法从任务队列中获取任务（当然，首轮循环也有可能是外部传入的firstTask任务实例）。</font>  
 3. 如果线程池更变为STOP状态，则需要确保工作线程是中断状态并且进行中断处理，否则要保证工作线程必须不是中断状态。  
 执行任务实例Runnale#run()方法，任务实例执行之前和之后（包括正常执行完毕和异常执行情况）分别会调用钩子方法beforeExecute()和afterExecute()。    
 4. while循环跳出意味着runWorker()方法结束和工作线程生命周期结束（Worker#run()生命周期完结），会调用processWorkerExit()处理工作线程退出的后续工作。  

@@ -487,6 +487,10 @@ final TreeNode<K,V> putTreeVal(HashMap<K,V> map, Node<K,V>[] tab,
 ```
 
 #### 1.2.4.3. resize()，扩容机制  
+<!-- 
+https://www.jianshu.com/p/87d2ef48e645
+-->
+
 &emsp; HashMap在什么条件下扩容？  
 &emsp; **<font color = "lime">JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。</font>**  
 

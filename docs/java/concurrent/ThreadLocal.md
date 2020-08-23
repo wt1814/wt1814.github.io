@@ -41,6 +41,7 @@
 ## 1.1. ThreadLocal源码-1  
 <!-- 
 https://mp.weixin.qq.com/s/WxjKr2Ti_kySbGh_A67VLA
+https://www.jianshu.com/p/1a5d288bdaee
 -->
 
 ### 1.1.1. ThreadLocal存储结构  
@@ -180,6 +181,18 @@ private T setInitialValue() {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-53.png)   
 * key 使用弱引用  
 &emsp; 当ThreadLocalMap的key为弱引用，回收ThreadLocal时，由于ThreadLocalMap持有ThreadLocal的弱引用，即使没有手动删除，ThreadLocal也会被回收。当key为null，在下一次ThreadLocalMap调用set(),get()，remove()方法的时候会被清除value值。  
+
+----
+&emsp; 由于ThreadLocalMap是以弱引用的方式引用着ThreadLocal，换句话说，就是ThreadLocal是被ThreadLocalMap以弱引用的方式关联着，因此如果ThreadLocal没有被ThreadLocalMap以外的对象引用，则在下一次GC的时候，ThreadLocal实例就会被回收，那么此时ThreadLocalMap里的一组KV的K就是null了，因此在没有额外操作的情况下，此处的V便不会被外部访问到，而且只要Thread实例一直存在，Thread实例就强引用着ThreadLocalMap，因此ThreadLocalMap就不会被回收，那么这里K为null的V就一直占用着内存。  
+
+&emsp; 综上，发生内存泄露的条件是  
+
+* ThreadLocal实例没有被外部强引用，比如我们假设在提交到线程池的task中实例化的ThreadLocal对象，当task结束时，ThreadLocal的强引用也就结束了
+* ThreadLocal实例被回收，但是在ThreadLocalMap中的V没有被任何清理机制有效清理
+* 当前Thread实例一直存在，则会一直强引用着ThreadLocalMap，也就是说ThreadLocalMap也不会被GC
+
+&emsp; 也就是说，如果Thread实例还在，但是ThreadLocal实例却不在了，则ThreadLocal实例作为key所关联的value无法被外部访问，却还被强引用着，因此出现了内存泄露。  
+
 
 ## 1.3. ThreadLocal使用  
 &emsp; 常见的ThreadLocal用法主要有两种：

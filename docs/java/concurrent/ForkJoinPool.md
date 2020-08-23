@@ -25,10 +25,10 @@ http://ifeve.com/talk-concurrency-forkjoin/
 &emsp; ForkJoinPool就是用来解决这种问题的：将一个大任务拆分成多个小任务后，使用fork可以将小任务分发给其他线程同时处理，使用join可以将多个线程处理的结果进行汇总；这实际上就是分治思想的并行版本。  
 
 ## 1.1. ForkJoinPool内部原理，工作窃取算法
-&emsp; ForkJoinPool的两大核心是分而治之(Divide and conquer)和工作窃取(Work Stealing)算法。  
+&emsp; <font color = "lime">ForkJoinPool的两大核心是分而治之(Divide and conquer)和工作窃取(Work Stealing)算法。</font>  
 
 ### 1.1.1. 分而治之  
-&emsp; ForkJoinPool的计算方式：大任务拆中任务，中任务拆小任务，最后再汇总。  
+&emsp; <font color = "red">ForkJoinPool的计算方式是大任务拆中任务，中任务拆小任务，最后再汇总。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-12.png)   
 
 ### 1.1.2. 工作窃取(Work Stealing)算法  
@@ -42,9 +42,9 @@ public class ForkJoinWorkerThread extends Thread {
 }
 ```
 &emsp; 每个工作线程都有自己的工作队列WorkQueue。这是一个双端队列，它是线程私有的。双端队列的操作：push、pop、poll。push/pop只能被队列的所有者线程调用，而poll是由其它线程窃取任务时调用的。  
-&emsp; ForkJoinTask中fork的子任务，将放入运行该任务的工作线程的队头，工作线程将以LIFO的顺序来处理工作队列中的任务；  
-&emsp; 为了最大化地利用CPU，空闲的线程将随机从其它线程的队列中“窃取”任务来执行。从工作队列的尾部窃取任务，以减少竞争；  
-&emsp; 当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；  
+1. ForkJoinTask中fork的子任务，将放入运行该任务的工作线程的队头，工作线程将以LIFO的顺序来处理工作队列中的任务；  
+2. **<font color = "lime">为了最大化地利用CPU，空闲的线程将随机从其它线程的队列中“窃取”任务来执行。从工作队列的尾部窃取任务，以减少竞争；</font>**  
+3. 当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；  
 
 ## 1.2. API 描述
 &emsp; ForkJoinPool继承体系  
