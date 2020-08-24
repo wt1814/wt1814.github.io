@@ -159,9 +159,8 @@ https://mp.weixin.qq.com/s/mNfjT99qIbjKGraZLV8EIQ
 
 ## 1.3. binlog，二进制日志（归档日志）  
 &emsp; <font color = "lime">二进制日志记录了对数据库执行更改的所有操作。</font>但是不包括select和show这类操作，因为这类操作对数据本身并没有修改。  
-
-binlog用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。  
-binlog用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。  
+&emsp; binlog用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。  
+&emsp; binlog用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。  
 
 **<font color = "red">作用：</font>**  
 

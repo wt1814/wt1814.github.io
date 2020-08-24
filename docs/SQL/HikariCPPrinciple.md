@@ -34,7 +34,7 @@
 池化技术（二）HikariCP是如何管理数据库连接的？
 https://www.cnblogs.com/hama1993/p/11421579.html
 -->
-&emsp; HikariCP中队列大小取的是MaximumPoolSize。  
+&emsp; <font color = "red">HikariCP中队列大小取的是MaximumPoolSize。</font>  
 
 ```java
 //HikariPool.class

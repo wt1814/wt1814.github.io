@@ -30,11 +30,11 @@
 
 &emsp; **优点：**  
 1. 多语言支持。不论使用的是php、java或是其他语言，都可以支持。以mysql数据库为例，如果proxy本身实现了mysql的通信协议，那么可以就将其看成一个mysql 服务器。mysql官方团队为不同语言提供了不同的客户端却动，如java语言的mysql-connector-java，python语言的mysql-connector-python等等。因此不同语言的开发者都可以使用mysql官方提供的对应的驱动来与这个代理服务器建通信。  
-2. 对业务开发同学透明。由于可以把proxy当成mysql服务器，理论上业务同学不需要进行太多代码改造，既可以完成接入。  
+2. 对业务开发人员透明。由于可以把proxy当成mysql服务器，理论上业务同学不需要进行太多代码改造，既可以完成接入。  
 
 &emsp; **缺点：**  
 1. 实现复杂。因为proxy需要实现被代理的数据库server端的通信协议，实现难度较大。通常看到一些proxy模式的数据库中间件，实际上只能代理某一种数据库，如mysql。几乎没有数据库中间件可以同时代理多种数据库(sqlserver、PostgreSQL、Oracle)。  
-2. proxy本身需要保证高可用。由于应用本来是直接访问数据库，现在改成了访问proxy，意味着proxy必须保证高可用。否则，数据库没有宕机，proxy挂了，导致数据库无法正常访问，就尴尬了。  
+2. proxy本身需要保证高可用。由于应用本来是直接访问数据库，现在改成了访问proxy，意味着proxy必须保证高可用。否则，数据库没有宕机，proxy挂了，会导致数据库无法正常访问。  
 3. 租户隔离。可能有多个应用访问proxy代理的底层数据库，必然会对proxy自身的内存、网络、cpu等产生资源竞争，proxy需要需要具备隔离的能力。  
 
 #### 1.1.1.2. 客户端分片模式  
@@ -75,7 +75,13 @@
 
 ---
 ## 1.2. SpringAOP实现分布式数据源   
-&emsp; [AOP多数据源动态切换](/docs/SQL/6.multiDataSource.md)  
+1. Spring整合多数据源：  
+    1. 静态配置。多个不同的数据源，不同的sessionFactory。不支持分布式事务。  
+    2. 建立动态数据源类（<font color = "red">类继承AbstractRoutingDataSource，且实现方法determineCurrentLookupKey</font>），一个数据源类管理多个数据库。支付分布式事务。  
+    &emsp; 可以使用SpringAOP拦截、自定义注解实现动态切换数据源。
+2. SpringAOP也可以实现读写分离。  
+    1. AOP和注解实现动态数据源切换配置  
+    2. AOP实现读写分离  
 
 ---
 ## 1.3. MyBatis插件实现分布式数据源   

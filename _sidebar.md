@@ -88,7 +88,6 @@
         * [分库分表](/docs/SQL/18.sub.md)  
         * [数据库分布式实现](/docs/SQL/subRealize.md)  
         * [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
-        * [AOP多数据源动态切换](/docs/SQL/6.multiDataSource.md)  
     * [数据迁移](/docs/projectImplement/implementation.md)   
     * [数据库连接池](/docs/SQL/connectionPool.md)  
         * [HikariCPConnectionPool]   
