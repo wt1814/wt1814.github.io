@@ -18,14 +18,6 @@
 
 
 # 1. 阻塞队列  
-&emsp; 生产者消费者问题，Java能实现的几种方法：  
-
-* wait() / notify()方法
-* await() / signal()方法
-* BlockingQueue阻塞队列方法
-* 信号量
-* 管道
-
 &emsp; **<font color = "lime">阻塞队列与普通队列的区别在于，当队列是空的时，从队列中获取元素的操作将会被阻塞，或者当队列是满时，往队列里添加元素的操作会被阻塞。</font>** 试图从空的阻塞队列中获取元素的线程将会被阻塞，直到其他的线程往空的队列插入新的元素。同样，试图往已满的阻塞队列中添加新元素的线程同样也会被阻塞，直到其他的线程使队列重新变得空闲起来，如从队列中移除一个或者多个元素，或者完全清空队列，下图展示了如何通过阻塞队列来合作：  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-34.png)  
@@ -36,30 +28,32 @@
 支持阻塞的插入方法：队列满时，队列会阻塞插入元素的线程，直到队列不满。  
 支持阻塞的移除方法：队列空时，获取元素的线程会等待队列变为非空。  
 -->
-&emsp; 阻塞队列常用于生产者和消费者的场景，生产者是向队列里添加元素的线程，消费者是从队列里取元素的线程。简而言之，阻塞队列是生产者用来存放元素、消费者获取元素的容器。  
+&emsp; <font color = "lime">阻塞队列常用于生产者和消费者的场景，生产者是向队列里添加元素的线程，消费者是从队列里取元素的线程。</font>简而言之，阻塞队列是生产者用来存放元素、消费者获取元素的容器。  
 
 ## 1.1. BlockingQueue  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-35.png)  
 
 &emsp; BlockingQueue是继承自Queue的接口，在Queue的基础上增加了阻塞操作。相比Queue接口有两种形式的api，BlockingQueue则有四种形式的api，阻塞队列定义如果调用了某个函数可能当时不能立即满足结果 ，但很有可能在未来的某个时刻会满足。四种api定义：  
-
-* 调用函数失败，抛出异常
-* 调用失败，返回null或者false
-* 调用失败，当前线程无限阻塞直到成功
-* 阻塞指定是一段时间，如果还不能满足，就放弃该次操作。  
-
-&emsp; 核心方法简介：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-36.png)  
 * 添加数据方法：  
-    * add(e)：将元素添加到队列末尾，成功则返回true；如果队列已满，则插入失败，抛出异常。  
-    * offer(e)：将元素添加到队列末尾，成功则返回true；如果队列已满，则插入失败，返回false。  
-    * put(e)：将元素添加到队列末尾，如果队列已满，队列会一直阻塞生产者线程。  
-    * offer(e,time,unit)：将元素添加到队列末尾，如果队列已满，则等待一定的时间，当时间期限达到时，如果还没有插入成功，则返回false；否则返回true。  
+    * add(e)：将元素添加到队列末尾，成功则返回true；<font color = "red">如果队列已满，则插入失败，抛出异常。</font>  
+    * offer(e)：将元素添加到队列末尾，成功则返回true；<font color = "red">如果队列已满，则插入失败，返回false。</font>  
+    * put(e)：将元素添加到队列末尾，<font color = "red">如果队列已满，队列会一直阻塞生产者线程直到成功。</font>  
+    * offer(e,time,unit)：将元素添加到队列末尾，<font color = "red">如果队列已满，则等待一定的时间，当时间期限达到时，如果还没有插入成功，则返回false；否则返回true。</font>  
 * 获取数据方法：  
     * remove()：删除队首元素，成功则返回true;如果队列为空，则删除失败，抛出异常。
     * poll()：删除队首元素，若成功则返回则返回队首元素，若队列为空，则返回null。
     * take()：从队首取元素，若队列为空，队列会一直阻塞消费者线程。
     * poll(time,unit)：从队首取元素，如果队列为空，则等待一定的时间，当时间期限达到时，如果还没有取出元素，则返回null；否则返回队首元素。
+
+&emsp; 核心方法简介：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-36.png)  
+
+<!-- 
+* 调用函数失败，抛出异常
+* 调用失败，返回null或者false
+* 调用失败，当前线程无限阻塞直到成功
+* 阻塞指定是一段时间，如果还不能满足，就放弃该次操作。  
+-->
 
 ## 1.2. 常见BlockingQueue  
 &emsp; JDK7提供了6个阻塞队列实现类。分别是：  
@@ -464,7 +458,13 @@ private E dequeue() {
 <!-- 
 https://blog.csdn.net/yanpenglei/article/details/79556591
 -->
+&emsp; 生产者消费者问题，Java能实现的几种方法：  
 
+* wait() / notify()方法
+* await() / signal()方法
+* BlockingQueue阻塞队列方法
+* 信号量
+* 管道
 
 
 
