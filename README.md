@@ -204,7 +204,7 @@ Gitee： https://gitee.com/wt1814/
 [Spring Cloud Bus]  
 [Spring Cloud Security]  
 -->
-[Spring Boot Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
+[Spring Cloud Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
 
 ### Dubbo  
 [Dubbo](/docs/microService/Dubbo/Dubbo.md)   

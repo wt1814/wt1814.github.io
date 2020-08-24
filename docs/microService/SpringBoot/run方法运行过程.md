@@ -38,7 +38,7 @@
  
 -->
 
-&emsp; **<font color = "red">run() 阶段涉及了几个比较重要的[事件回调机制]()，回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到 IOC 容器中，而所有需要回调的监听器都是从类路径下的 META/INF/Spring.factories 中获取，从而达到启动前后的各种定制操作。</font>**  
+&emsp; **<font color = "red">run()阶段涉及了比较重要的[事件回调机制](/docs/microService/SpringBoot/eventCallback.md)，回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到IOC容器中，而所有需要回调的监听器都是从类路径下的META/INF/Spring.factories中获取，从而达到启动前后的各种定制操作。</font>**  
 
 ```java
 // SpringApplication.java

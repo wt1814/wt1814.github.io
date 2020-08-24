@@ -149,7 +149,7 @@
     * [Spring Cloud Feign](/docs/microService/SpringCloudNetflix/4.Feign.md)  
     * [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/5.Zuul.md)  
     * [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/6.Sleuth.md)  
-    * [Spring Boot Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
+    * [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
 
 * Dubbo  
     * [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
