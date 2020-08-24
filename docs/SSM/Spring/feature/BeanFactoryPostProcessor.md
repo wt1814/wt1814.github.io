@@ -72,7 +72,7 @@ public interface BeanPostProcessor {
 
 &emsp; 另外，不要将BeanPostProcessor标记为延迟初始化。因为如果这样做，Spring容器将不会注册它们，自定义逻辑也就无法得到应用。假如在<beans/\>元素的定义中使用了'default-lazy-init'属性，请确信各个BeanPostProcessor标记为'lazy-init="false"'。  
 
-&emsp; **<font color = "red">Spring中有内置的一些BeanPostProcessor实现类</font>**，例如：  
+&emsp; **<font color = "red">Spring中有内置的一些BeanPostProcessor实现类，</font>**例如：  
 
 * org.springframework.context.annotation.CommonAnnotationBeanPostProcessor：支持@Resource注解的注入  
 * org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor：支持@Required注解的注入  

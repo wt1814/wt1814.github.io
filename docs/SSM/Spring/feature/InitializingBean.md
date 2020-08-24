@@ -9,7 +9,7 @@
 
 # 1. InitializingBean接口、DisposableBean接口  
 ## 1.1. InitializingBean接口  
-&emsp; 当需要在bean的全部属性设置成功后做些特殊的处理，可以让<font color = "red">该bean实现InitializingBean接口，效果等同于bean的init-method属性的使用或者@PostContsuct注解的使用，</font>它只包括afterPropertiesSet方法，凡是继承该接口的类，在初始化bean的时候都会执行该方法。  
+&emsp; <font color = "lime">当需要在bean的全部属性设置成功后做些特殊的处理，</font>可以让<font color = "red">该bean实现InitializingBean接口，效果等同于bean的init-method属性的使用或者@PostContsuct注解的使用，</font>它只包括afterPropertiesSet方法，凡是继承该接口的类，在初始化bean的时候都会执行该方法。  
 
     @PostConstruct、InitializingBean与init-method的执行顺序：  
     1. @PostConstruct注解标注的方法
