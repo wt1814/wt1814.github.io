@@ -24,13 +24,13 @@
 <!-- /TOC -->
 
 # 1. InnoDB  
-**<font color = "red">《MySQL技术内幕：InnoDB存储引擎》</font>** 
+**<font color = "red">《MySQL技术内幕：InnoDB存储引擎》</font>**  
 &emsp; https://dev.mysql.com/doc/refman/5.7/en/  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-125.png)  
 
 
 ## 1.1. 关键特性  
-&emsp; InnoDB存储引擎的关键特性包括缓冲池、写缓冲、两次写（double write）、自适应哈希索引（adaptive hash index）。  
+&emsp; InnoDB存储引擎的关键特性包括缓冲池、写缓冲、两次写（double write）、自适应哈希索引（adaptive hash index）......。  
 
 ### 1.1.1. 缓冲池(buffer pool)  
 
@@ -128,7 +128,10 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 ##### 1.1.1.2.2. 缓冲池污染  
 &emsp; <font color = "red">当某一个SQL语句，要批量扫描大量数据时(例如like语句)，可能导致把缓冲池的所有页都替换出去，导致大量热数据被换出，MySQL性能急剧下降，这种情况叫缓冲池污染。</font>  
 &emsp; 例如，有一个数据量较大的用户表，当执行：  
-&emsp; select * from user where name like "%shenjian%";  
+
+```sql
+select * from user where name like "%shenjian%";  
+```
 &emsp; 虽然结果集可能只有少量数据，但这类like不能命中索引，必须全表扫描，就需要访问大量的页：  
 &emsp; （1）把页加到缓冲池（插入老生代头部）；  
 &emsp; （2）从页里读出相关的row（插入新生代头部）；  
@@ -300,7 +303,7 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-120.png)  
 &emsp; 如上图所示，MySQL内page=1的页准备刷入磁盘，才刷了3个文件系统里的页，掉电了，则会出现：重启后，page=1的页，物理上对应磁盘上的1+2+3+4四个格，数据完整性被破坏。  
 
-&emsp; 有人也许会想，如果发生写失效，可以通过重做日志进行恢复。这是一个办法。但是必须清楚的是，重做日志中记录的是对页的物理操作，如偏移量800，写'aaaa'记录。如果这个页本身已经损坏，再对其进行重做是没有意义的。**<font color = "lime">因此，在应用（apply）重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。</font>**  
+&emsp; 有人也许会想，如果发生写失效，可以通过重做日志进行恢复。这是一个办法。但是必须清楚的是，重做日志中记录的是对页的物理操作，如偏移量800，写'aaaa'记录。如果这个页本身已经损坏，再对其进行重做是没有意义的。 **<font color = "lime">因此，在应用（apply）重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。</font>**  
 
 #### 1.1.3.2. doublewrite架构及流程
 **doublewrite：**  
@@ -332,7 +335,7 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 -->
 
 #### 1.1.3.3. 性能  
-&emsp; 能够通过DWB保证页数据的完整性，但毕竟DWB要写两次磁盘，**<font color = "red">会不会导致数据库性能急剧降低呢？</font>**  
+&emsp; 能够通过DWB保证页数据的完整性，但毕竟DWB要写两次磁盘， **<font color = "red">会不会导致数据库性能急剧降低呢？</font>**   
 &emsp; 在这个过程中，因为doublewrite页是连续的，因此这个过程是顺序写的，开销并不是很大。在完成doublewrite页的写入后，再将doublewrite buffer中的页写入各个表空间文件中，此时的写入则是离散的。  
 
 &emsp; **<font color = "lime">分析DWB执行的三个步骤：</font>**  
