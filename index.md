@@ -222,11 +222,7 @@ Gitee： https://gitee.com/wt1814/
 [ES优化](/docs/ES/5.optimization.md)  
 [ELK与EFK](/docs/ES/6.ELK与EFK.md)    
 
----
-## Error  
-[多线程串线了](/docs/Error/ThreadCrossed.md)  
-[接口响应时间](/docs/Error/responseTime.md)  
-[熔断降级处理](/docs/Error/hystrix.md)  
+
 
 ---
 ## 项目构建基础    
@@ -240,13 +236,25 @@ Gitee： https://gitee.com/wt1814/
 [参数校验](/docs/web/Validation.md)  
 [源码安全](/docs/web/codeSecurity.md)  
 
+## 框架  
+### 分布式调度
+[分布式调度](/docs/frame/taskSheduling.md)  
+&emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
+
+### Elaticsearch  
+[ES基本概念](/docs/ES/1.basicConcepts.md)  
+[ES集群](/docs/ES/3.colony.md)  
+[ES使用教程](/docs/ES/2.useTutorials.md)  
+[ES搭建](/docs/ES/7.build.md)  
+[ES原理](/docs/ES/4.principle.md)  
+[ES优化-1](/docs/ES/5.optimization.md)  
+[ELK与EFK](/docs/ES/6.ELK与EFK.md)  
 
 ## 架构设计  
 [并发系统三高](/docs/system/threeHigh.md)  
 [微服务拆分](/docs/system/serviceSplit.md)  
 [系统稳定性建设](/docs/system/stability.md)  
 [监控](/docs/DevOps/monitor.md)  
-
 
 ---
 ## 服务器  
@@ -272,5 +280,10 @@ Gitee： https://gitee.com/wt1814/
 ## 开发软件  
 [idea](/docs/software/idea/idea.md)  
 
+---
+## Error  
+[多线程串线了](/docs/Error/ThreadCrossed.md)  
+[接口响应时间](/docs/Error/responseTime.md)  
+[熔断降级处理](/docs/Error/hystrix.md)  
 
 
