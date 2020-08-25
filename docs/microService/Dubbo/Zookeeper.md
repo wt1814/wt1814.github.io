@@ -193,6 +193,9 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 #### 1.5.1.1. 分布式协调  
 &emsp; 这个其实是zookeeper很经典的一个用法，简单来说，就好比，A系统发送个请求到mq，然后B系统消息消费之后处理了。那A系统如何知道B系统的处理结果？用zookeeper就可以实现分布式系统之间的协调工作。A系统发送请求之后可以在zookeeper上对某个节点的值注册个监听器，一旦B系统处理完了就修改zookeeper那个节点的值，A系统立马就可以收到通知，完美解决。  
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-29.png)  
+
+
 #### 1.5.1.2. 统一命名服务  
 &emsp; 分布式应用中，通常需要一套完整的命名规则，即能保证唯一又便于人识别和记住，通常采用树形的名称结构。  
 &emsp; 在zookeeper的文件系统里创建一个目录，即有唯一的path，调用create接口即可建一个目录节点。  

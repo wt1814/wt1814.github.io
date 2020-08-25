@@ -171,7 +171,7 @@
     * [Redis部署](/docs/microService/Redis/Redis部署.md)  
         * [Redis主从复制](/docs/microService/Redis/Redis主从复制.md)  
         * [Redis哨兵模式](/docs/microService/Redis/Redis哨兵模式.md)  
-        * [Redis分片模式](/docs/microService/Redis/Redis分片模式.md)  
+        * [Redis集群模式](/docs/microService/Redis/Redis集群模式.md)  
     * [Redis运维](/docs/microService/Redis/Redis运维.md)  
     * [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 
