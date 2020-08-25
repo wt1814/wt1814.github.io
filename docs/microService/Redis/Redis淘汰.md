@@ -14,17 +14,17 @@
         - [1.2.1. 内存设置](#121-内存设置)
         - [1.2.2. 内存淘汰策略](#122-内存淘汰策略)
             - [1.2.2.1. redis内存淘汰使用的算法（淘汰机制）](#1221-redis内存淘汰使用的算法淘汰机制)
-                - [1.2.2.1.3. TTL](#12213-ttl)
-                - [1.2.2.1.1. Redis中的LRU算法](#12211-redis中的lru算法)
-                - [1.2.2.1.2. Redis中的LFU算法](#12212-redis中的lfu算法)
+                - [1.2.2.1.1. TTL](#12211-ttl)
+                - [1.2.2.1.2. Redis中的LRU算法](#12212-redis中的lru算法)
+                - [1.2.2.1.3. Redis中的LFU算法](#12213-redis中的lfu算法)
             - [1.2.2.2. 内存淘汰策略](#1222-内存淘汰策略)
-                - [内存淘汰策略选择](#内存淘汰策略选择)
+                - [1.2.2.2.1. ※※※内存淘汰策略选择](#12221-※※※内存淘汰策略选择)
 
 <!-- /TOC -->
 
 # 1. Redis内存淘汰  
-
-&emsp; **<font color = "lime">一句话概述：</font>**
+&emsp; **<font color = "lime">一句话概述：redis的key有3种删除策略；内存淘汰有4种算法、8种淘汰策略。注意内存淘汰策略的选择。</font>**  
+&emsp; **<font color = "lime">注：volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
 
 ## 1.1. Redis过期键删除策略
 ### 1.1.1. Key生存期  
@@ -113,26 +113,21 @@ https://stor.51cto.com/art/201904/594773.htm
 * LFU，Least Frequently Used，最不常用，4.0版本新增。  
 
 
-##### 1.2.2.1.3. TTL
+##### 1.2.2.1.1. TTL  
+&emsp; Redis数据集数据结构中保存了键值对过期时间的表。与LRU数据淘汰机制类似，TTL数据淘汰机制中会先从过期时间的表中随机挑选几个键值对，取出其中ttl ***的键值对淘汰。同样，TTL淘汰策略并不是面向所有过期时间的表中最快过期的键值对，而只是随机挑选的几个键值对。  
 
-
-##### 1.2.2.1.1. Redis中的LRU算法  
+##### 1.2.2.1.2. Redis中的LRU算法  
 &emsp; 如果基于传统LRU算法实现，Redis LRU会有什么问题？需要额外的数据结构存储，消耗内存。  
 &emsp; <font color = "red">Redis LRU对传统的LRU算法进行了改良，通过随机采样来调整算法的精度。</font>如果淘汰策略是LRU，则根据配置的采样值maxmemory_samples（默认是 5 个），随机从数据库中选择m个key，淘汰其中热度最低的key对应的缓存数据。所以采样参数m配置的数值越大，就越能精确的查找到待淘汰的缓存数据，但是也消耗更多的CPU计算，执行效率降低。  
 
 &emsp; 如何找出热度最低的数据？  
-&emsp; Redis 中所有对象结构都有一个lru字段, 且使用了unsigned的低24位，这个字段用来记录对象的热度。对象被创建时会记录lru值。在被访问的时候也会更新 lru的值。但是不是获取系统当前的时间戳，而是设置为全局变量server.lruclock的值。  
+&emsp; Redis中所有对象结构都有一个lru字段, 且使用了unsigned的低24位，这个字段用来记录对象的热度。对象被创建时会记录lru值。在被访问的时候也会更新lru的值。但是不是获取系统当前的时间戳，而是设置为全局变量server.lruclock的值。  
 
 
-##### 1.2.2.1.2. Redis中的LFU算法  
+##### 1.2.2.1.3. Redis中的LFU算法  
 &emsp; LFU算法是Redis4.0里面新加的一种淘汰策略。它的全称是Least Frequently Used最不长用。它的核心思想是根据key的最近被访问的频率进行淘汰，很少被访问的优先被淘汰，被访问的多的则被留下来。  
 &emsp; LFU算法能更好的表示一个key被访问的热度。假如使用的是LRU算法，一个key很久没有被访问到，只刚刚是偶尔被访问了一次，那么它就被认为是热点数据，不会被淘汰，而有些key将来是很有可能被访问到的则被淘汰了。  
 &emsp; 如果使用LFU算法则不会出现这种情况，因为使用一次并不会使一个key成为热点数据。  
-&emsp; LFU一共有两种策略：  
-
-* volatile-lfu：在设置了过期时间的key中使用LFU算法淘汰key  
-* allkeys-lfu：在所有的key中使用LFU算法淘汰数据  
-
 
 
 <!--- 
@@ -142,12 +137,14 @@ https://stor.51cto.com/art/201904/594773.htm
 #### 1.2.2.2. 内存淘汰策略 
 &emsp; Redis3.0版本支持的淘汰策略有6种。Redis4.0新增LFU算法支持的2种。    
 
-* volatile-lru：从已设置过期时间的数据集中挑选最近最少使用的数据淘汰。  
-* volatile-ttl：从已设置过期时间的数据集中挑选将要过期的数据淘汰。  
-* volatile-random：从已设置过期时间的数据集中任意选择数据淘汰。  
+* volatile-lru：从已设置过期时间的key中挑选最近最少使用的数据淘汰。  
+* volatile-ttl：从已设置过期时间的key中挑选将要过期的数据淘汰。  
+* volatile-random：从已设置过期时间的key中任意选择数据淘汰。  
+* volatile-lfu：在设置了过期时间的key中使用LFU算法淘汰key  
 
-* allkeys-lru：从数据集中挑选最近最少使用的数据淘汰。  
-* allkeys-random：从数据集中任意选择数据淘汰。  
+* allkeys-lru：在所有的key中挑选最近最少使用的数据淘汰。  
+* allkeys-random：在所有的key中任意选择数据淘汰。  
+* allkeys-lfu：在所有的key中挑选最不常用用的数据淘汰  
 
 * no-enviction（驱逐）：禁止驱逐数据，永不回收。redis默认不采用no-enviction，直接返回错误。  
 
@@ -161,26 +158,15 @@ https://stor.51cto.com/art/201904/594773.htm
 |volatile-ttl|根据键值对象的ttl属性，删除最近将要过期数据。如果没有，回退到 noeviction 策略。| 
 |noeviction |默认策略，不会删除任何数据，拒绝所有写入操作并返回客户端错误信息（error）OOM command not allowed when used memory，此时Redis只响应读操作。| 
  
-&emsp; **<font color = "lime">注：volatile和allkeys规定了是对已设置过期时间的数据集淘汰数据还是从全部数据集淘汰数据。</font>**  
+&emsp; **<font color = "lime">注：volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
 
-##### 内存淘汰策略选择  
+##### 1.2.2.2.1. ※※※内存淘汰策略选择  
 &emsp; **使用策略规则：**  
-
-&emsp; 建议使用volatile-lru，在保证正常服务的情况下，优先删除最近最少使用的key。 
-
-* 如果数据呈现幂律分布，也就是一部分数据访问频率高，一部分数据访问频率低，则使用allkeys-lru。  
-* 如果数据呈现平等分布，也就是所有的数据访问频率都相同，则使用allkeys-random。  
-
-1. 在Redis中，数据有一部分访问频率较高，其余部分访问频率较低，或者无法预测数据的使用频率时，设置allkeys-lru是比较合适的。
-
-2. 如果所有数据访问概率大致相等时，可以选择allkeys-random。
-
+1. 如果数据呈现幂律分布，也就是一部分数据访问频率高，一部分数据访问频率低，或者无法预测数据的使用频率时，则使用allkeys-lru/allkeys-lfu。  
+2. 如果数据呈现平等分布，也就是所有的数据访问频率都相同，则使用allkeys-random。
 3. 如果研发者需要通过设置不同的ttl来判断数据过期的先后顺序，此时可以选择volatile-ttl策略。
-
-4. 如果希望一些数据能长期被保存，而一些数据可以被淘汰掉时，选择volatile-lru或volatile-random都是比较不错的。
-
-5. 由于设置expire会消耗额外的内存，如果计划避免Redis内存在此项上的浪费，可以选用allkeys-lru 策略，这样就可以不再设置过期时间，高效利用内存了。  
-
+4. 如果希望一些数据能长期被保存，而一些数据可以被淘汰掉，选择volatile-lru/volatile-lfu或volatile-random都是比较不错的。
+5. 由于设置expire会消耗额外的内存，如果计划避免Redis内存在此项上的浪费，可以选用allkeys-lru/volatile-lfu策略，这样就可以不再设置过期时间，高效利用内存了。  
 
 <!-- 
 &emsp; **Redis中设置置换策略：**  
