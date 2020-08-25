@@ -47,7 +47,7 @@
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-58.png)  
     &emsp; Hash存储键值对的无序散列表。  
 
-    &emsp; <font color = "lime">Hash 与 String同样是存储字符串（存储单个字符串时使用String；存储对象时使用Hash，勿将对象序列化后存String类型），它们的主要区别：</font>  
+    &emsp; <font color = "lime">Hash与String同样是存储字符串（存储单个字符串时使用String；存储对象时使用Hash，勿将对象序列化后存String类型），它们的主要区别：</font>  
     1. 把所有相关的值聚集到一个 key 中，节省内存空间  
     2. 只使用一个 key，减少 key 冲突  
     3. 当需要批量获取值的时候，只需要使用一个命令，减少内存/IO/CPU 的消耗 Hash 
@@ -81,11 +81,11 @@
         &emsp; 栈：先进后出：rpush brpop   
 
     * 文章列表  
-    &emsp; 每个用户有属于自己的文章列表，现需要分页展示文章列表。此时可以 考虑使用列表，因为列表不但是有序的，同时支持按照索引范围获取元素。  
-    &emsp; 使用列表类型保存和获取文章列表会存在两个问题。第一，如果每次分页获取的文章个数较多，需要执行多次hgetall操作，此时可以考虑使用Pipeline批量获取，或者考虑将文章数据序列化为字符串类 型，使用mget批量获取。第二，分页获取文章列表时，lrange命令在列表两 端性能较好，但是如果列表较大，获取列表中间范围的元素性能会变差，此时可以考虑将列表做二级拆分，或者使用Redis3.2的quicklist内部编码实现，它结合ziplist和linkedlist的特点，获取列表中间范围的元素时也可以高效完成。  
+    &emsp; <font color = "lime">每个用户有属于自己的文章列表，现需要分页展示文章列表。此时可以考虑使用列表，因为列表不但是有序的，同时支持按照索引范围获取元素。</font>  
+    &emsp; 使用列表类型保存和获取文章列表会存在两个问题。第一，如果每次分页获取的文章个数较多，需要执行多次hgetall操作，此时可以考虑使用Pipeline批量获取，或者考虑将文章数据序列化为字符串类型，使用mget批量获取。第二，分页获取文章列表时，lrange命令在列表两端性能较好，但是如果列表较大，获取列表中间范围的元素性能会变差，此时可以考虑将列表做二级拆分，或者使用Redis3.2的quicklist内部编码实现，它结合ziplist和linkedlist的特点，获取列表中间范围的元素时也可以高效完成。  
 
 4. **Set：**  
-    &emsp; 存储String 类型的无序集合，最大存储数量 2^32-1（40 亿左右）。  
+    &emsp; 存储String类型的无序集合，最大存储数量2^32-1（40 亿左右）。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-65.png)  
 
     &emsp; 使用场景：  
@@ -118,7 +118,7 @@
     &emsp; sad screensize:6.0-6.24 iPhone11  
     &emsp; sad screentype:lcd iPhone11  
 
-        &emsp; 筛选商品，苹果的，iOS 的，屏幕在 6.0-6.24 之间的，屏幕材质是 LCD 屏幕  
+        &emsp; 筛选商品，苹果的，iOS的，屏幕在6.0-6.24之间的，屏幕材质是LCD屏幕  
         &emsp; sinter brand:apple brand:ios screensize:6.0-6.24 screentype:lcd  
     * 用户关注、推荐模型  
 

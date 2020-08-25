@@ -38,6 +38,11 @@
 
 # 1. Zookeeper
 
+&emsp; <font color = "lime">在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，</font>然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交（类2PC事务）。  
+
+&emsp; <font color = "lime">Zookeeper的CP模型：</font>  
+1. 为什么不满足AP模型？Zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。  
+2. Zookeeper的CP模型：Zookeeper提供的只是单调一致性。  
 
 ## 1.1. Zookeeper是什么  
 &emsp; Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题，例如怎样避免同时操作同一数据造成脏读的问题。  
@@ -146,7 +151,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 &emsp; 当集群中已经有过半的 Follower 节点完成了和 Leader 状态同步以后，那么整个集群就进入了消息广播模式。这个时候，在 Leader 节点正常工作时，启动一台新的服务器加入到集群，那这个服务器会直接进入数据恢复模式，和leader 节点进行数据同步。同步完成后即可正常对外提供非事务请求的处理。  
 &emsp; 注：leader节点可以处理事务请求和非事务请求， follower 节点只能处理非事务请求，如果 follower 节点接收到非事务请求，会把这个请求转发给 Leader 服务器。  
 
-&emsp; 在 zookeeper 中，客户端会随机连接到 zookeeper 集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，然后 leader 会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交（类2PC事务）。  
+&emsp; <font color = "lime">在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，</font>然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交（类2PC事务）。  
 
 &emsp; **消息广播流程：**  
 1. leader接收到消息请求后，将消息赋予一个全局唯一的64 位自增 id，zxid，通过 zxid 的大小比较既可以实现因果有序这个特征。  
@@ -156,9 +161,8 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 5. 当 follower 收到消息的 commit 命令以后，会提交该消息。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-4.png)  
 
-&emsp; 注: 和完整的2pc事务不一样的地方在于，zab 协议不能终止事务， follower 节点要么 ACK 给 leader，要么抛弃leader，只需要保证过半数的节点响应这个消息并提交了即可，虽然在某一个时刻 follower 节点和 leader 节点的状态会不一致，但是也是这个特性提升了集群的整体性能。 当然这种数据不一致的问题， zab 协议提供了一种恢复模式来进行数据恢复。  
-&emsp; 这里需要注意的是leader 的投票过程，不需要 Observer 的 ack，也就是Observer 不需要参与投票过程，但是 Observer 必须要同步 Leader 的数据从而在处理请求的时候保证数据的一致性。  
-
+&emsp; 注：和完整的2pc事务不一样的地方在于，zab协议不能终止事务，follower节点要么ACK给leader，要么抛弃leader，只需要保证过半数的节点响应这个消息并提交了即可，虽然在某一个时刻follower节点和leader节点的状态会不一致，但是也是这个特性提升了集群的整体性能。当然这种数据不一致的问题，zab协议提供了一种恢复模式来进行数据恢复。  
+&emsp; 这里需要注意的是leader的投票过程，不需要Observer的ack，也就是Observer不需要参与投票过程，但是Observer必须要同步Leader的数据从而在处理请求的时候保证数据的一致性。  
 
 ## 1.4. Zookeeper的CP模型  
 
@@ -217,6 +221,8 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
  
 &emsp; 第一类，在约定目录下创建临时目录节点，监听节点数目是否是要求的数目。  
 &emsp; 第二类，和分布式锁服务中的控制时序场景基本原理一致，入列有编号，出列按编号。  
+
+----
 
 ### 1.5.2. Zookeeper的API  
 #### 1.5.2.1. 原生API  

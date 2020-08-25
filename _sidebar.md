@@ -225,7 +225,9 @@
     
 * 架构设计  
     * [并发系统三高](/docs/system/threeHigh.md)  
+    * [微服务拆分](/docs/system/serviceSplit.md)  
     * [系统稳定性建设](/docs/system/stability.md)  
+    * [监控](/docs/DevOps/monitor.md)  
 
 * 服务器  
 
