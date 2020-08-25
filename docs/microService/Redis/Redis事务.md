@@ -10,6 +10,11 @@
 <!-- /TOC -->
 
 # 1. Redis事务  
+<!-- 
+https://www.cnblogs.com/DeepInThought/p/10720132.html
+https://www.cnblogs.com/dwlovelife/p/10946868.html
+-->
+
 &emsp; Redis 的事务有两个特点：  
 1. 按进入队列的顺序执行。  
 2. 不会受到其他客户端的请求影响。  

@@ -6,6 +6,8 @@
 <font size = "4.5">&emsp; 性别：男 &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;出生年月：1992.06.29 &emsp; &emsp; &emsp;  &emsp;籍贯：山西省运城市</font>  
 <font size = "4.5">&emsp; 联系电话：17813261813  &emsp; &emsp;  E-mail: wangtao1814@163.com</font>
 
+# 个人博客
+&emsp; 个人博客：http://wt1814.com/  &emsp; 个人公众号：王猴卖瓜    
 
 # 教育经历  
 <font size = "4.5">&emsp; 2012.9－2016.7&emsp; &emsp; &emsp; 大连东软信息学院&emsp; &emsp; &emsp; 软件工程&emsp; &emsp; &emsp; 本科</font>  

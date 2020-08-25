@@ -6,6 +6,9 @@
 <font size = "4.5">&emsp; 性别：男 &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;出生年月：1992.06.29 &emsp; &emsp; &emsp;  &emsp;籍贯：山西省运城市</font>  
 <font size = "4.5">&emsp; 联系电话：17813261813  &emsp; &emsp;  E-mail: wangtao1814@163.com</font>
 
+# 个人博客
+&emsp; 个人博客：http://wt1814.com/  &emsp; 个人公众号：王猴卖瓜  
+
 # 教育经历  
 <font size = "4.5">&emsp; 2012.9－2016.7&emsp; &emsp; &emsp; 大连东软信息学院&emsp; &emsp; &emsp; 软件工程&emsp; &emsp; &emsp; 本科</font>  
 
@@ -44,7 +47,7 @@
 <font size = "4.5">
 
 * 2018.03---至今  &emsp; &emsp; &emsp;  中科软科技股份有限公司  
-工作内容：中国人保财险对外合作项目组Java服务开发  
+工作内容：中国人保财险对外合作项目组统一对接平台建设  
 * 2016.04---2018.02  &emsp; &emsp;北京天源迪科信息技术有限公司  
 工作内容：Java服务开发，研发CMS系统  
 </font>
@@ -55,20 +58,16 @@
 # 工作经验  
 <font size = "4.5">
 
-* 2019.03---至今 &emsp; &emsp; 中科软股份有限公司 &emsp; &emsp; 中国人保对外合作组统一对接平台建设    
+* 2018.09---至今 &emsp; &emsp; 中科软股份有限公司 &emsp; &emsp; 中国人保对外合作组统一对接平台建设    
     * 核心技术：腾讯云TSF（SpringCloud的封装）+MySql+MyBatis+CMQ+redis+COS+velocity  
-    * 项目概述：采用腾讯云对对外合作项目组进行中台项目改造。改造各个项目的投保、退保、理赔等功能。
+    * 项目概述：采用腾讯云对对外合作项目组老系统进行中台项目改造。改造各个项目的投保、退保、理赔等功能。
     * 个人职责：
-        1. 参与系统架构改造，配置文件yaml格式化并加密重要参数，maven pom文件dependencies依赖整理，logback框架日志规范等。掌握腾讯云的使用，进行项目部署。  
-        2. 搭建财务对接微服务，重构收款支付业务逻辑。参与银保通农行项目开发。  
-
-* 2018.09---2019.03 &emsp; &emsp; 中科软股份有限公司 &emsp; &emsp; 中国人保对外合作组系统架构改造  
-    * 核心技术：Spring Cloud+MyBatis+MyCat+IBMMQ+redis  
-    * 项目概述：采用Spring Cloud技术将对外合作组系统进行架构改造。改造标准流程的投保、退保业务，短信、邮件等功能。  
-    * 个人职责：梳理需求，参与投保、退保标准接口的部分功能开发，以及短信邮件边缘服务接口的开发。搭建SpringBootAdmin服务。  
+        1. 参与梳理需求，微服务拆分，技术选型（分布式调度框架使用xxl-job、分布式锁选用Reddsion等）；完成架构基础搭建任务：配置文件yaml格式化并加密重要参数，maven pom文件dependencies依赖整理，logback日志规范等等；搭建SPring Cloud Admin服务；掌握腾讯云的使用，进行项目部署。  
+        2. 参与投保接口开发，并对其响应时间优化；自定义SpringBootStarter封装短信、邮件功能。 
+        2. 搭建财务对接微服务，重构财务对接业务逻辑。参与银保通农行项目开发。   
 
 * 2018.03---2018.09 &emsp; &emsp; 中科软股份有限公司 &emsp; &emsp; 中国人保对外合作组非车险业务开发  
-    * 核心技术：WebService+CXF+XStream+Dom4j+Dubbo+Zookeeper  
+    * 核心技术：WebService+CXF+XStream+Dom4j+Dubbo+Zookeeper+MyCat    
     * 项目概述：与合作方进行服务对接工作。  
     * 个人职责：先后开发了金阖科技货运险、意时网碎屏险、携程客运责任险等涵盖在线支付、保单汇总等多个普通业务。与多个渠道方以及中国民生银行进行车贷险业务的开发，参与预审、初审、终审、签约、放款、补传车辆信息整个流程的开发。
 

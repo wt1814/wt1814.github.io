@@ -167,6 +167,7 @@
     * [Redis原理](/docs/microService/Redis/Redis原理.md)  
         * [Redis持久化](/docs/microService/Redis/Redis持久化.md)  
         * [Redis淘汰策略](/docs/microService/Redis/Redis淘汰.md)  
+        * [Redis内存淘汰选择](/docs/microService/Redis/Redis淘汰选择.md)  
         * [Redis事务](/docs/microService/Redis/Redis事务.md)  
     * [Redis部署](/docs/microService/Redis/Redis部署.md)  
         * [Redis主从复制](/docs/microService/Redis/Redis主从复制.md)  
