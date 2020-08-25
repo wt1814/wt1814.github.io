@@ -317,7 +317,6 @@ Gitee： https://gitee.com/wt1814/
 [DNS](docs/network/3.DNS.md)  
 [TCP](/docs/network/4.TCP.md)  
 
-
 ---
 ## 算法  
 [算法基本概念](/docs/java/function/1.notion.md)  
@@ -333,11 +332,10 @@ Gitee： https://gitee.com/wt1814/
 [查找算法](/docs/java/function/5.search.md)  
 [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
 
-
 ---
 
 ## 项目管理  
-[git](/docs/projectManage/git/command.md)   
+[git](/docs/projectManage/git/command.md)  
 [docker]  
 
 
