@@ -10,6 +10,11 @@
 &emsp; 通配符包括星号“*”和问号“？”。星号表示匹配的数量不受限制，而后者的匹配字符数则受到限制。  
 
 # 占位符  
+<!-- 
+ String.format() 图文详解，写得非常好！ 
+ https://mp.weixin.qq.com/s/r5l93TERuT1hBDbU2WlDpg
+-->
+
 &emsp; 两种java中的占位符的使用：  
 &emsp; 第一种：使用%s占位，使用String.format转换  
 

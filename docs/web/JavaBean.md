@@ -14,6 +14,9 @@ https://mp.weixin.qq.com/s/ZjbjcxiFo3a0Z9jv1DRypg
 Java中 VO、 PO、DO、DTO、 BO、 QO、DAO、POJO的概念
 https://www.cnblogs.com/wang-meng/p/5645405.html
 
+ 优秀的 Java 项目，代码都是如何分层的？ 
+ https://mp.weixin.qq.com/s/CZrp4Olh9JZtIu8XZtsUkg
+
 -->
 
 # JavaBean  
@@ -25,7 +28,12 @@ https://www.cnblogs.com/wang-meng/p/5645405.html
 <!-- 
 MapStruct
 https://juejin.im/post/6859213877474033672
+ 七种对象复制工具类，阿粉该 Pick 谁？ 
+ https://mp.weixin.qq.com/s/RKeUEztGR-nAc_XemF2pOw
+
 -->
+
+&emsp; Cglib BeanCopier  
 
 
 ## validator  

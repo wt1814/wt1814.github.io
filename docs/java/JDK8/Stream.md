@@ -20,6 +20,13 @@
 <!-- /TOC -->
 
 # 1. StreamAPI  
+
+<!-- 
+ Java8 快速实现List转map 、分组、过滤等操作 
+ https://mp.weixin.qq.com/s/2idMa7lOzWFy2A8JyM2vtA
+
+-->
+
 ## 1.1. 简介  
 &emsp; java8中的Stream是对集合对象功能的增强，它专注于对集合对象进行各种聚合操作，或者大批量数据操作。Stream API通过Lambda表达式，极大的提高编程效率和程序可读性。同时它提供串行和并行两种模式进行汇聚操作，并发模式能够充分利用多核处理器的优势，使用fork/join并行方式来拆分任务和加速处理过程。  
 &emsp; Stream和Iterator区别：Stream如同一个迭代器（Iterator），单向，不可往复，数据只能遍历一次。而和迭代器又不同的是，Stream可以并行化操作，迭代器只能命令式地、串行化操作。Stream的并行操作依赖于Java7中引入的Fork/Join框架（JSR166y）来拆分任务和加速处理过程。  

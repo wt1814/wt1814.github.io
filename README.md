@@ -294,7 +294,8 @@ Gitee： https://gitee.com/wt1814/
 [ES优化-1](/docs/ES/5.optimization.md)  
 [ELK与EFK](/docs/ES/6.ELK与EFK.md)    
 
-## 架构设计 
+## 架构设计  
+[性能指标](/docs/system/performance.md)
 [并发系统三高](/docs/system/threeHigh.md)  
 [微服务拆分](/docs/system/serviceSplit.md)  
 [系统稳定性建设](/docs/system/stability.md)  
@@ -306,6 +307,9 @@ Gitee： https://gitee.com/wt1814/
 [Linux命令]  
 
 ### Nginx  
+<!--
+高并发高性能接入层中间件LVS、Keepalived、Nginx、Haproxy。  
+-->
 [Nginx](/docs/Linux/Nginx/1.nginx.md)  
 [Nginx使用](/docs/Linux/Nginx/2.nginx使用场景.md)   
 [Nginx运维](/docs/Linux/Nginx/3.nginx运维.md)  
@@ -353,3 +357,6 @@ Gitee： https://gitee.com/wt1814/
 [接口响应时间](/docs/Error/responseTime.md)  
 [熔断降级处理](/docs/Error/hystrix.md)  
  
+
+
+

@@ -43,7 +43,9 @@ https://blog.csdn.net/weixin_39035120/article/details/86225377
 * ApplicationEvent：事件，每个实现类表示一类事件，可携带数据。
 * ApplicationListener：事件监听器，用于接收事件处理时间。
 * ApplicationEventMulticaster：事件管理者，用于事件监听器的注册和事件的广播。
-* ApplicationEventPublisher：事件发布者，委托ApplicationEventMulticaster完成事件发布。
+* ApplicationEventPublisher：事件发布者，委托ApplicationEventMulticaster完成事件发布。  
+
+&emsp; <font color = "lime">Spring的事件默认是同步的，即调用publishEvent方法发布事件后，它会处于阻塞状态，直到onApplicationEvent接收到事件并处理返回之后才继续执行下去，这种单线程同步的好处是可以进行事务管理。</font>  
 
 ### 1.2.1. ApplicationEvent，事件  
 &emsp; ApplicationEvent表示事件，每个实现类表示一类事件，可携带数据。<font color = "lime">下面是一些Spring提供的标准事件，都继承了ApplicationEvent。</font>  

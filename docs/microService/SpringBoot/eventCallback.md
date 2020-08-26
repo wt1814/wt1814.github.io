@@ -6,10 +6,10 @@ https://blog.csdn.net/zzhuan_1/article/details/85312053
 
 &emsp; **<font color = "lime">SpringBoot事件回调：</font>**  
 
-* ApplicationContextInitializer，IOC容器初始化时被回调；  
-* SpringApplicationRunListener，SpringBoot启动过程中多次被回调；  
-* ApplicationRunner，容器启动完成后被回调；  
-* CommandLineRunner，ApplicationRunner之后被回调。  
+* **<font color = "red">ApplicationContextInitializer，IOC容器初始化时被回调；</font>**  
+* **<font color = "red">SpringApplicationRunListener，SpringBoot启动过程中多次被回调；</font>**  
+* **<font color = "red">ApplicationRunner，容器启动完成后被回调；</font>**  
+* **<font color = "red">CommandLineRunner，ApplicationRunner之后被回调。</font>**  
 
 
 ## 前言  

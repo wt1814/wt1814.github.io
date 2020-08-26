@@ -8,14 +8,18 @@
         - [1.2.1. 如何正确使用volatile变量](#121-如何正确使用volatile变量)
         - [1.2.2. 状态标志](#122-状态标志)
         - [1.2.3. 单例模式的实现](#123-单例模式的实现)
+    - [1.3. 推荐使用LongAdder](#13-推荐使用longadder)
 
 <!-- /TOC -->
+
 
 # 1. Volatile  
 &emsp; 一旦一个共享变量（类的成员变量、类的静态成员变量）被 volatile 修饰之后，那么就具备了两层语义： **<font color = "lime">保证内存的可见性和禁止指令重排序。</font>**  
 
 &emsp; Volatile的特性：  
 1. 不支持原子性。<font color = "red">它只对单个volatile变量的读/写具有原子性（只能保证对单次读/写的原子性）；</font><font color = "lime">但是对于类似i++这样的复合操作不能保证原子性。</font>  
+
+        i++在虚拟机内部至少有3条指令执行。  
 2. <font color = "red">实现了有序性，禁止进行指令重排序。</font>
 <!-- 在volatile变量的赋值操作后⾯会有⼀个内存屏障（⽣成的汇编代码上），读操作不会被重排序到内存屏障之前。 -->
 3. 实现了可见性。volatile提供happens-before的保证，使变量在多个线程间可见。变量被修改后，会立即保存在主存中，并清除工作内存中的值。这个变量不会在多个线程中存在复本，直接从内存读取。新值对其他线程来说是立即可见的。  
@@ -156,5 +160,18 @@ b. ctorInstanc(memory) //初始化对象
 c. instance = memory //设置instance指向刚分配的地址
 上面的代码在编译运行时，可能会出现重排序从a-b-c排序为a-c-b。在多线程的情况下会出现以下问题。当线程A在执行第5行代码时，B线程进来执行到第2行代码。假设此时A执行的过程中发生了指令重排序，即先执行了a和c，没有执行b。那么由于A线程执行了c导致instance指向了一段地址，所以B线程判断instance不为null，会直接跳到第6行并返回一个未初始化的对象。
 -->
+
+## 1.3. 推荐使用LongAdder  
+<!-- 
+阿里为什么推荐使用LongAdder，而不是volatile？ 
+https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
+-->
+&emsp; 阿里《Java开发手册》嵩山版：    
+&emsp; 【参考】volatile 解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，但是如果多写，同样无法解决线程安全问题。
+&emsp; 说明：如果是 count++ 操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是 JDK8，推荐使用 LongAdder 对象，比 AtomicLong 性能更好（减少乐观 锁的重试次数）。  
+
+&emsp; AtomicInteger 在高并发环境下会有多个线程去竞争一个原子变量，而始终只有一个线程能竞争成功，而其他线程会一直通过CAS自旋尝试获取此原子变量，因此会有一定的性能消耗；<font color = "lime">而LongAdder会将这个原子变量分离成一个 Cell 数组，每个线程通过 Hash 获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如 AtomicInteger。</font>  
+
+
 
 
