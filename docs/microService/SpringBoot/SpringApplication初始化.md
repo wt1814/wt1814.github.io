@@ -41,9 +41,10 @@ https://mp.weixin.qq.com/s/bLqWb6bc2ki3mKbfFqm0vg
 -->
 
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-4.png)  
-
 # 1. Spring Boot启动全过程源码分析
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-4.png)  
+&emsp; <font color = "lime">一句话概述：SpringApplication有6个属性：SpringBoot的启动类、包含main函数的主类、资源加载器、应用类型、初始化器、监听器。</font>  
+
 ## 1.1. SpringBoot启动类
 &emsp; SpringBoot启动类代码如下：  
 
@@ -194,8 +195,8 @@ public enum WebApplicationType {
 
 &emsp; **<font color = "lime">SpringBoot通过以下步骤实现自己的SPI机制：</font>**  
 1. 首先获取线程上下文类加载器;  
-2. 然后利用上下文类加载器从spring.factories配置文件中加载所有的SPI扩展实现类并放入缓存中;  
-3. 根据SPI接口从缓存中取出相应的SPI扩展实现类;  
+2. 然后利用上下文类加载器从spring.factories配置文件中加载所有的SPI扩展实现类并放入缓存中；  
+3. 根据SPI接口从缓存中取出相应的SPI扩展实现类；  
 4. 实例化从缓存中取出的SPI扩展实现类并返回。  
 
 &emsp; **设置应用上下文初始化器源码解读：**  
