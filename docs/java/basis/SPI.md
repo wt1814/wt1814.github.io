@@ -20,7 +20,7 @@ https://blog.csdn.net/sigangjun/article/details/79071850
 -->
 
 # 1. Java SPI机制详解
-&emsp; **<font color = "lime">JDK提供的SPI机制：提供一个接口；服务提供方实现接口，并在META-INF/services/中暴露实现类地址；服务调用方使用java.util.ServiceLoader类调用。</font>  
+&emsp; **<font color = "lime">JDK提供的SPI机制：提供一个接口；服务提供方实现接口，并在META-INF/services/中暴露实现类地址；服务调用方使用java.util.ServiceLoader类调用。</font>**  
 
 ## 1.1. 什么是SPI？
 

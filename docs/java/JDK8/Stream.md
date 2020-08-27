@@ -185,11 +185,46 @@ reduce("", String::concat);
 
 <!-- 
 https://www.jianshu.com/p/e9a36f2802ae?from=timeline&isappinstalled=0
-https://blog.csdn.net/Tianzijiang0306/article/details/85140319
 -->
 
 &emsp; 解决方案：使用锁Syschronize或Lock或其他方案保障线程安全。  
 
+&emsp; 示例：非安全代码  
+
+```java
+//创建集合大小为100
+List<Integer> integers = Lists.newArrayList();
+for (int i = 0; i < 100; i++){
+    integers.add(i);
+}
+//多管道遍历
+List<Integer> integerList = Lists.newArrayList();
+integers.parallelStream().forEach(e -> {
+        //添加list的方法
+        setInteger(integerList, e);
+        try {
+        //休眠100ms，假装执行某些任务
+            Thread.sleep(100);
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+});
+
+private static void setInteger(List<Integer> integerList, Integer e) {
+
+       integerList.add(e);
+
+   }
+```
+&emsp; 以上代码你会发现，执行完了integerList的大小和预期的不一样。、解决方案：在setInteger()方法上加个修饰synchronized。  
+
+```java
+// 加synchronized修饰的方法是线程安全的，某一线程在执行这个方法的时候，其他线程只能眼巴巴看着；
+ private static synchronized void setInteger(List<Integer> integerList, Integer e) {
+
+    integerList.add(e);
+}
+```
 
 ## 1.3. intellij debug 技巧:java 8 stream  
 &emsp; 使用插件Java Stream Debugger。  
