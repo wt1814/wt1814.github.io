@@ -1,5 +1,4 @@
 
-
 <!-- TOC -->
 
 - [1. Volatile](#1-volatile)
@@ -14,12 +13,10 @@
 
 
 # 1. Volatile  
-&emsp; 一旦一个共享变量（类的成员变量、类的静态成员变量）被 volatile 修饰之后，那么就具备了两层语义： **<font color = "lime">保证内存的可见性和禁止指令重排序。</font>**  
-
 &emsp; Volatile的特性：  
 1. 不支持原子性。<font color = "red">它只对单个volatile变量的读/写具有原子性（只能保证对单次读/写的原子性）；</font><font color = "lime">但是对于类似i++这样的复合操作不能保证原子性。</font>  
 
-        i++在虚拟机内部至少有3条指令执行。  
+        i++在虚拟机内部至少有3条指令（读取－修改－写入）执行。  
 2. <font color = "red">实现了有序性，禁止进行指令重排序。</font>
 <!-- 在volatile变量的赋值操作后⾯会有⼀个内存屏障（⽣成的汇编代码上），读操作不会被重排序到内存屏障之前。 -->
 3. 实现了可见性。volatile提供happens-before的保证，使变量在多个线程间可见。变量被修改后，会立即保存在主存中，并清除工作内存中的值。这个变量不会在多个线程中存在复本，直接从内存读取。新值对其他线程来说是立即可见的。  
@@ -69,27 +66,28 @@ https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 |StoreLoad Barriers |写-读 屏障 |Store1;StoreLoad;Load2 |确保Store1数据对其他处理器变得可见（指刷新到内存）先于Load2及所有后续装载指令的装载。<br/>StoreLoad Barriers会使屏障之前的所有内存访问指令（存储和装载指令）完成之后，才执行该屏障之后的内存访问指令。|
 |LoadLoad Barriers|读-读 屏障 |Load1;LoadLoad;Load2 |(Load1代表加载数据，Store1表示刷新数据到内存)确保Load1数据的状态先于Load2及所有后续装载指令的装载。|
 |LoadSotre Barriers |读-写 屏障 |Load1;LoadStore;Store2 |确保Load1数据装载先于Store2及所有后续的存储指令刷新到内存。|  
- 
+<!-- 
+&emsp; StoreStore屏障可以保证在volatile写（flag赋值操作flag=true）之前，其前面的所有普通写（num的赋值操作num=1) 操作已经对任意处理器可见了，保障所有普通写在volatile写之前刷新到主内存。  
+&emsp; LoadStore屏障可以保证其后面的所有普通写（num的赋值操作num=num+5) 操作必须在volatile读（if(flag)）之后执行。  
+--> 
 
 &emsp; **volatile写的场景如何插入内存屏障：**  
 
-* **<font color = "red">在每个volatile写操作的前面插入一个StoreStore屏障（写-写 屏障）。禁止上面的普通写与下面的volatile写重排序。</font>  
-* **<font color = "red">在每个volatile写操作的后面插入一个StoreLoad屏障（写-读 屏障）。禁止上面的volatile写与下面可能有的volatile读/写重排序。</font>  
+* **<font color = "red">在每个volatile写操作的前面插入一个StoreStore屏障（写-写 屏障）。禁止上面的普通写与下面的volatile写重排序。</font>**  
+* **<font color = "red">在每个volatile写操作的后面插入一个StoreLoad屏障（写-读 屏障）。禁止上面的volatile写与下面可能有的volatile读/写重排序。</font>**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-48.png)  
-&emsp; StoreStore屏障可以保证在volatile写（flag赋值操作flag=true）之前，其前面的所有普通写（num的赋值操作num=1) 操作已经对任意处理器可见了，保障所有普通写在volatile写之前刷新到主内存。   
 
 &emsp; **volatile读场景如何插入内存屏障：**  
 
-* **<font color = "red">在每个volatile读操作的后面插入一个LoadLoad屏障（读-读 屏障）。禁止下面的普通读操作与上面的volatile读重排序。</font>  
-* **<font color = "red">在每个volatile读操作的后面插入一个LoadStore屏障（读-写 屏障）。禁止下面所有的普通写操作和上面volatile读重排序。</font>  
+* **<font color = "red">在每个volatile读操作的后面插入一个LoadLoad屏障（读-读 屏障）。禁止下面的普通读操作与上面的volatile读重排序。</font>**  
+* **<font color = "red">在每个volatile读操作的后面插入一个LoadStore屏障（读-写 屏障）。禁止下面所有的普通写操作和上面volatile读重排序。</font>**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-49.png)  
-&emsp; LoadStore屏障可以保证其后面的所有普通写（num的赋值操作num=num+5) 操作必须在volatile读（if(flag)）之后执行。  
 
 ## 1.2. Volatile使用  
 ### 1.2.1. 如何正确使用volatile变量  
-
+<!-- 
 &emsp; **volatile的使用限制：**  
 &emsp; 只能在有限的一些情形下使用volatile变量替代锁。要使volatile变量提供理想的线程安全，必须同时满足下面两个条件：  
 1. 对变量的写操作不依赖于当前值。即变量不能有自增自减等操作，volatile不保证原子性。  
@@ -97,7 +95,7 @@ https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 
 &emsp; 实际上，这些条件表明，可以被写入volatile变量的这些有效值独立于任何程序的状态，包括变量的当前状态。  
 &emsp; 第一个条件的限制使volatile变量不能用作线程安全计数器。虽然增量操作（x++）看上去类似一个单独操作，实际上它是一个由（读取－修改－写入）操作序列组成的组合操作，必须以原子方式执行，而volatile不能提供必须的原子特性。实现正确的操作需要使x 的值在操作期间保持不变，而volatile变量无法实现这点。（然而，如果只从单个线程写入，那么可以忽略第一个条件。）  
-
+-->
 &emsp; **<font color = "red">volatile的使用场景：</font>**  
 &emsp; 关键字volatile用于多线程环境下的单次操作(单次读或者单次写)。即volatile主要使用的场合是在多个线程中可以感知实例变量被更改了，并且可以获得最新的值使用，也就是用多线程读取共享变量时可以获得最新值使用。  
 
@@ -167,8 +165,8 @@ c. instance = memory //设置instance指向刚分配的地址
 https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
 -->
 &emsp; 阿里《Java开发手册》嵩山版：    
-&emsp; 【参考】volatile 解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，但是如果多写，同样无法解决线程安全问题。
-&emsp; 说明：如果是 count++ 操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是 JDK8，推荐使用 LongAdder 对象，比 AtomicLong 性能更好（减少乐观 锁的重试次数）。  
+&emsp; 【参考】volatile解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，但是如果多写，同样无法解决线程安全问题。  
+&emsp; 说明：如果是count++ 操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是 JDK8，推荐使用 LongAdder 对象，比 AtomicLong 性能更好（减少乐观 锁的重试次数）。  
 
 &emsp; AtomicInteger 在高并发环境下会有多个线程去竞争一个原子变量，而始终只有一个线程能竞争成功，而其他线程会一直通过CAS自旋尝试获取此原子变量，因此会有一定的性能消耗；<font color = "lime">而LongAdder会将这个原子变量分离成一个 Cell 数组，每个线程通过 Hash 获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如 AtomicInteger。</font>  
 

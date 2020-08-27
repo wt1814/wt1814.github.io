@@ -407,7 +407,8 @@ public String test(String str){
 
 ### 1.5.3. 了解HotSpot虚拟机对象的内存布局  
 
-&emsp; 下面讲解Synchroized的偏向锁、轻量级锁、重量级锁。 **<font color = "red">需要先了解HotSpot虚拟机对象的内存布局：</font>**   
+&emsp; 下面讲解Synchroized的偏向锁、轻量级锁、重量级锁。 **<font color = "red">需要先了解HotSpot虚拟机对象的内存布局。</font>**在64位的HotSpot虚拟机中，不同状态下对象头的存储内容如下图所示。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)   
 &emsp; HotSpot虚拟机的对象头（Object Header）分为三部分：对象头(Header)、实例数据(Instance Data)、对齐填充(Padding)。<font color = "red">用对象头中markword最低的三位代表锁状态，其中1位是偏向锁位，两位是普通锁位。</font>  
 
 * 对象头：
@@ -417,12 +418,7 @@ public String test(String str){
 * 实例数据：存储对象真正的有效信息（包括父类继承下来的和自己定义的）  
 * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐） 
 
-&emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。在64位的HotSpot虚拟机中，不同状态下对象头的存储内容如下图所示。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)  
-<!-- 
-例如在32位的HotSpot虚拟机中，对象未被锁定的状态下， Mark Word的32个比特空间里的25个比特将用于存储对象哈希码，4个比特用于存储对象分代年龄，2 个比特用于存储锁标志位，还有1个比特固定为0（这表示未进入偏向模式）。对象除了未被锁定的正常状态外，还有轻量级锁定、重量级锁定、GC标记、可偏向等几种不同状态，这些状态下对象头的存储内容如下表所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-28.png)   
--->
+&emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
 
         为什么锁信息存放在对象头里？
         因为在Java中任意对象都可以用作锁，因此必定要有一个映射关系，存储该对象以及其对应的锁信息（比如当前哪个线程持有锁，哪些线程在等待）。一种很直观的方法是，用一个全局map，来存储这个映射关系，但这样会有一些问题：需要对map做线程安全保障，不同的synchronized之间会相互影响，性能差；另外当同步对象较多时，该map可能会占用比较多的内存。
