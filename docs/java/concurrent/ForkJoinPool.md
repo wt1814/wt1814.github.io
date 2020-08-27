@@ -41,7 +41,7 @@ public class ForkJoinWorkerThread extends Thread {
     final ForkJoinPool.WorkQueue workQueue; // 线程的工作队列
 }
 ```
-&emsp; 每个工作线程都有自己的工作队列WorkQueue。这是一个双端队列，它是线程私有的。双端队列的操作：push、pop、poll。push/pop只能被队列的所有者线程调用，而poll是由其它线程窃取任务时调用的。  
+&emsp; <font color = "lime">每个工作线程都有自己的工作队列WorkQueue。这是一个双端队列，它是线程私有的。</font>双端队列的操作：push、pop、poll。push/pop只能被队列的所有者线程调用，而poll是由其它线程窃取任务时调用的。  
 1. ForkJoinTask中fork的子任务，将放入运行该任务的工作线程的队头，工作线程将以LIFO的顺序来处理工作队列中的任务；  
 2. **<font color = "lime">为了最大化地利用CPU，空闲的线程将随机从其它线程的队列中“窃取”任务来执行。从工作队列的尾部窃取任务，以减少竞争；</font>**  
 3. 当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；  
@@ -54,8 +54,8 @@ public class ForkJoinWorkerThread extends Thread {
 
 ### 1.2.1. 创建ForkJoinPool
 &emsp; ForkJoinPool是ExecutorService的实现类，是一种特殊的线程池。  
-&emsp; java 8进一步扩展了ForkJoinPool的功能，为ForkJoinPool增加了通用池功能。
-&emsp; 创建了ForkJoinPool实例，就可以调用ForkJoinPool的submit(ForkJoinTask task) 或者invoke(ForkJoinTask task) 方法来执行指定的任务。   
+&emsp; java 8进一步扩展了ForkJoinPool的功能，为ForkJoinPool增加了通用池功能。  
+&emsp; 创建了ForkJoinPool实例，就可以调用ForkJoinPool的submit(ForkJoinTask task)或者invoke(ForkJoinTask task)方法来执行指定的任务。   
 
 ### 1.2.2. ForkJoinTask详解
 &emsp; ForkJoinTask代表一个可以并行、合并的任务。ForkJoinTask是一个抽象类，三个抽象子类：RecursiveAction无返回值任务、RecursiveTask有返回值任务、CountedCompleter无返回值任务，完成任务后可以触发回调。  

@@ -8,10 +8,10 @@
 
 
 # 1. CompletableFuture<T> JDK1.8  
-&emsp; CompletableFuture，异步回调。
+&emsp; CompletableFuture，组合式异步编程，异步回调。
 
 ## 1.1. ForkJoinPool与CompletableFuture  
-&emsp; parallelStream和CompletableFuture默认使用的都是 ForkJoinPool.commonPool()默认线程池；  
+&emsp; parallelStream和CompletableFuture默认使用的都是ForkJoinPool.commonPool()默认线程池；  
 &emsp; 对集合进行并行计算有两种方式：  
 
 * 转化为并行流，利用map开展工作。  
@@ -21,7 +21,7 @@
 &emsp; 那么如何选择呢，建议如下：  
 
 * 进行计算密集型的操作，并且没有I/O，那么推荐使用Stream接口，因为实现简单，同时效率也可能是最高的（如果所有的线程都是计算密集型的，那就没有必要创建比处理器核数更多的线程）。  
-* 如果并行操作设计等到I/O的操作（网络连接，请求等），那么使用CompletableFuture灵活性更好，通过控制线程数量来优化程序的运行。  
+* 如果并行操作涉及到I/O的操作（网络连接，请求等），那么使用CompletableFuture灵活性更好，通过控制线程数量来优化程序的运行。  
 
 
 <!-- 
@@ -41,7 +41,7 @@ https://www.cnblogs.com/happyliu/p/9462703.html
     &emsp; 四个静态方法用来为一段异步执行的代码创建CompletableFuture对象，方法的参数类型都是函数式接口，所以可以使用lambda表达式实现异步任务  
 
     * runAsync方法：它以Runnabel函数式接口类型为参数，所以CompletableFuture的计算结果为空。  
-    * supplyAsync方法以Supplier<U\>函数式接口类型为参数，CompletableFuture的计算结果类型为U。  
+    * <font color = "red">supplyAsync方法以Supplier<U\>函数式接口类型为参数，CompletableFuture的计算结果类型为U。</font>  
 
     ```java
     public static CompletableFuture<Void> runAsync(Runnable runnable)
