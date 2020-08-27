@@ -181,7 +181,8 @@ reduce("", String::concat);
 2. 如果想设置并行线程启动数量，则需要全局设置System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "12");  
 
 ##### 1.2.2.3.1. parallelStream() 线程安全  
-&emsp; 使用parallelStream()会有线程安全问题。示例：  
+&emsp; 使用parallelStream()有线程安全问题。例如：parallelStream().forEach()内部修改集合会有问题。  
+&emsp; 示例：  
 
 <!-- 
 https://www.jianshu.com/p/e9a36f2802ae?from=timeline&isappinstalled=0

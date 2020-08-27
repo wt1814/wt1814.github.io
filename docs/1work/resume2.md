@@ -23,10 +23,10 @@
 * 数据库  
     * 熟练使用数据库MySql，Oracle，PostgreSQL；
     * 熟悉数据库复制，分区，分库分表技术；
-    * 掌握myCat中间件；
+    * 熟悉myCat中间件；
 * 熟练使用ssm框架、SpringBoot框架；熟悉Spring源码、熟悉SpringBoot启动流程；  
 * 分布式技术
-    * 掌握SpringCloud、Dubbo框架；
+    * 掌握SpringCloud，熟悉Dubbo；
     * 熟悉使用redis、mq、zookeeper等中间件；
     * 熟悉限流，熔断，降级；
     * 熟悉分布式事务、分布式锁、分布式ID、分布式缓存问题的解决；
