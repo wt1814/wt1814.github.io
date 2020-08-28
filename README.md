@@ -351,6 +351,11 @@ Gitee： https://gitee.com/wt1814/
 ## 项目管理  
 [git](/docs/projectManage/git/command.md)  
 [docker]  
+&emsp; [docker总结](/docs/projectManage/docker/summary.md)  
+&emsp; [docker原理](/docs/projectManage/docker/principle.md)  
+&emsp; [docker使用及命令](/docs/projectManage/docker/command.md)  
+&emsp; [dockerFile](/docs/projectManage/docker/file.md)  
+&emsp; [docker工具](/docs/projectManage/docker/tools.md)   
 
 
 ## 开发软件  
