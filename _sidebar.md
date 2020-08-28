@@ -253,6 +253,12 @@
 
 * 项目管理  
     * [git](/docs/projectManage/git/command.md)   
+    * Docker
+    * [docker总结](/docs/projectManage/docker/summary.md)  
+    * [docker原理](/docs/projectManage/docker/principle.md)  
+    * [docker使用及命令](/docs/projectManage/docker/command.md)  
+    * [dockerFile](/docs/projectManage/docker/file.md)  
+    * [docker工具](/docs/projectManage/docker/tools.md)   
 
 * 开发软件  
     * [idea](/docs/software/idea/idea.md)  
