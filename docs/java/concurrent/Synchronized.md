@@ -341,7 +341,7 @@ _count：用来记录该线程获取锁的次数；
 
 &emsp; 为了进一步改进高效并发，HotSpot虚拟机开发团队在JDK 5升级到JDK 6版本上花费了大量精力实现各种锁优化。如适应性自旋、锁消除、锁粗化、偏向锁和轻量级锁等，这些技术都是为了在线程之间更高效地共享数据及解决竞争问题，从而提高程序的执行效率。  
 &emsp; 锁主要存在四种状态，依次是：无锁状态、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。 **<font color = "red">偏向锁可以被重置为无锁状态，这种策略是为了提高获得锁和释放锁的效率。</font>**   
-&emsp; **<font color = "lime">锁降级：</font>** <font color = "red">Hotspot 在 1.8 开始有了锁降级。在 STW 期间 JVM 进入安全点时如果发现有闲置的 monitor（重量级锁对象），会进行锁降级。</font>  
+&emsp; **<font color = "lime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>  
 <!-- 
  Monitor和Java对象头详解：  
 &emsp; Synchronized用的锁标记是存放在Java对象头的Mark Word中。  

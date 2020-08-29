@@ -45,7 +45,6 @@
     * take()：从队首取元素，若队列为空，队列会一直阻塞消费者线程。
     * poll(time,unit)：从队首取元素，如果队列为空，则等待一定的时间，当时间期限达到时，如果还没有取出元素，则返回null；否则返回队首元素。
 
-&emsp; 核心方法简介：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-36.png)  
 
 <!-- 
