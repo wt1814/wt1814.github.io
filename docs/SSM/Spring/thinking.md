@@ -7,7 +7,7 @@
 * Spring提供了一些扩展接口，可以满足部分需求，可以实现编码解耦。  
 
 ---
-&emsp;  Spring提供的扩展接口有aware接口、后置处理器、InitializingBean和DisposableBean、事件机制。这些可扩展的接口主要分两类，一类是针对单个Bean、另一类是针对容器。具体需求，具体分析吧。  
+&emsp;  Spring提供的扩展接口有aware接口、后置处理器、InitializingBean和DisposableBean、事件机制。这些可扩展的接口主要分两类，一类是针对单个Bean、另一类是针对容器。  
 
 * 针对单个Bean，BeanNameAware、BeanPostProcessor、InitializingBean和DisposableBean。
 * 针对容器，ApplicationContextAware、BeanFactoryPostProcessor、Spring提供的5种标准事件机制。  
@@ -35,4 +35,4 @@
 3. 激活自定义的 init 方法
 
 ---
-&emsp;  最最后，回看文章，发现还是缺了一些环节。各位大佬补脑吧。  
+

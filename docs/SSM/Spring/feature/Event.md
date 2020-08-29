@@ -50,13 +50,37 @@ https://blog.csdn.net/weixin_39035120/article/details/86225377
 ### 1.2.1. ApplicationEvent，事件  
 &emsp; ApplicationEvent表示事件，每个实现类表示一类事件，可携带数据。<font color = "lime">下面是一些Spring提供的标准事件，都继承了ApplicationEvent。</font>  
 
-|事件	|描述|
-|---|---|
-|ContextRefreshedEvent<br/>上下文更新事件|<font color = "red">事件发布在ApplicationContext初始化或刷新时(例如，通过在ConfigurableApplicationContext接口使用refresh()方法)。这里，“初始化”意味着所有bean加载，post-processor bean被检测到并且激活，单例预先实例化，ApplicationContext对象可以使用了。</font>只要上下文没有关闭，可以触发多次刷新，ApplicationContext提供了一种可选择的支持这种“热”刷新。例如，XmlWebApplicationContext支持热刷新，但GenericApplicationContext并非如此。具体是在AbstractApplicationContext的finishRefresh()方法中。|
-|ContextStartedEvent<br/>上下文开始事件|事件发布在ApplicationContext开始使用ConfigurableApplicationContext接口start()方法。这里，“开始”意味着所有生命周期bean接收到一个明确的起始信号。通常，这个信号用于明确停止后重新启动,但它也可以用于启动组件没有被配置为自动运行(例如，组件还没有开始初始化)。|
-|ContextStoppedEvent<br/>上下文停止事件|事件发布在ApplicationContext停止时通过使用ConfigurableApplicationContext接口上的stop()方法。在这里，“停止”意味着所有生命周期bean接收一个显式的停止信号。停止上下文可以通过重新调用start()方法。|
-|ContextClosedEvent<br/>上下文关闭事件|事件发布在ApplicationContext关闭时通过关闭ConfigurableApplicationContext接口方法。这里，“封闭”意味着所有单例bean被摧毁。一个封闭的环境达到生命的终结。它不能刷新或重启。|
-|RequestHandledEvent<br/>请求处理事件|一个特定的web事件告诉所有能处理HTTP请求的bean 。这个事件是在请求完成后发布的。这个事件只适用于使用Spring的DispatcherServlet的web应用程序。|
+* ContextRefreshedEvent，上下文更新事件  
+&emsp; **<font color = "lime">ContextRefreshedEvent上下文更新事件发生在刷新容器（refresh()方法）的“完成刷新容器时发布对应的事件”步骤中。</font>**  
+```java
+// AbstractApplicationContext.class
+public void refresh() throws BeansException, IllegalStateException {
+
+   //...
+   this.finishRefresh();
+}
+```
+
+```java
+protected void finishRefresh() {
+   this.clearResourceCaches();
+   this.initLifecycleProcessor();
+   this.getLifecycleProcessor().onRefresh();
+   //ContextRefreshedEvent上下文更新事件
+   this.publishEvent((ApplicationEvent)(new ContextRefreshedEvent(this)));
+   LiveBeansView.registerApplicationContext(this);
+}
+```
+
+&emsp; 事件发布在ApplicationContext初始化或刷新时(例如，通过在ConfigurableApplicationContext接口使用refresh()方法)。这里，“初始化”意味着所有bean加载，post-processor bean被检测到并且激活，单例预先实例化，ApplicationContext对象可以使用了。只要上下文没有关闭，可以触发多次刷新，ApplicationContext提供了一种可选择的支持这种“热”刷新。例如，XmlWebApplicationContext支持热刷新，但GenericApplicationContext并非如此。具体是在AbstractApplicationContext的finishRefresh()方法中。  
+* ContextStartedEvent，上下文开始事件  
+&emsp; 事件发布在ApplicationContext开始使用ConfigurableApplicationContext接口start()方法。这里，“开始”意味着所有生命周期bean接收到一个明确的起始信号。通常，这个信号用于明确停止后重新启动,但它也可以用于启动组件没有被配置为自动运行(例如，组件还没有开始初始化)。  
+* ContextStoppedEvent，上下文停止事件  
+&emsp; 事件发布在ApplicationContext停止时通过使用ConfigurableApplicationContext接口上的stop()方法。在这里，“停止”意味着所有生命周期bean接收一个显式的停止信号。停止上下文可以通过重新调用start()方法。  
+* ContextClosedEvent，上下文关闭事件  
+&emsp; 事件发布在ApplicationContext关闭时通过关闭ConfigurableApplicationContext接口方法。这里，“封闭”意味着所有单例bean被摧毁。一个封闭的环境达到生命的终结。它不能刷新或重启。  
+* RequestHandledEvent，请求处理事件  
+&emsp; 一个特定的web事件告诉所有能处理HTTP请求的bean 。这个事件是在请求完成后发布的。这个事件只适用于使用Spring的DispatcherServlet的web应用程序。  
 
 &emsp; ApplicationEvent代码如下：  
 
