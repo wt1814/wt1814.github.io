@@ -108,7 +108,7 @@ https://stor.51cto.com/art/201904/594773.htm
 --> 
 &emsp; redis内存淘汰使用的算法有：  
 * random，随机删除。  
-* TTL，
+* TTL
 * LRU，Least Recently Used：最近最少使用。判断最近被使用的时间，离目前最远的数据优先被淘汰。  
 * LFU，Least Frequently Used，最不常用，4.0版本新增。  
 

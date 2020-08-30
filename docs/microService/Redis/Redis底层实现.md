@@ -301,16 +301,15 @@ struct sdshdr{
 2. 然后将原来的数组中的元素转为新元素的类型，并放到扩展后数组对应的位置。  
 3. 整数集合升级后就不会再降级，编码会一直保持升级后的状态。  
 
-
 ## 1.7. Zset内部编码   
-&emsp; ZSet的底层实现是ziplist和skiplist实现的，由ziplist转换为skiplist。当同时满足以下两个条件时，采用 ZipList 实现；反之采用 SkipList 实现。
+&emsp; ZSet的底层实现是ziplist和skiplist实现的，由ziplist转换为skiplist。当同时满足以下两个条件时，采用ZipList实现；反之采用SkipList实现。
 
-* Zset 中保存的元素个数小于 128。（通过修改 zset-max-ziplist-entries 配置来修改）  
-* Zset 中保存的所有元素长度小于 64byte。（通过修改 zset-max-ziplist-values 配置来修改）  
+* Zset中保存的元素个数小于128。（通过修改zset-max-ziplist-entries配置来修改）  
+* Zset中保存的所有元素长度小于64byte。（通过修改zset-max-ziplist-values配置来修改）  
 
 ### 1.7.1. 采用ZipList压缩列表实现  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-84.png)  
-&emsp; 和List的底层实现有些相似，对于 Zset 不同的是，其存储是以键值对的方式依次排列，键存储的是实际 value，值存储的是 value 对应的分值。  
+&emsp; 和List的底层实现有些相似，对于Zset不同的是，其存储是以键值对的方式依次排列，键存储的是实际 value，值存储的是value对应的分值。  
 
 ### 1.7.2. 采用SkipList跳跃表实现  
 &emsp; skiplist也叫做「跳跃表」，跳跃表是一种有序的数据结构，它通过每一个节点维持多个指向其它节点的指针，从而达到快速访问的目的。  
@@ -319,7 +318,7 @@ struct sdshdr{
 &emsp; 具体实现的结构图如下所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-82.png)  
 -->
-&emsp; SkipList 分为两部分，dict 部分是由字典实现，Zset 部分使用跳跃表实现，从图中可以看出，dict 和跳跃表都存储了数据，实际上 dict 和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
+&emsp; SkipList分为两部分，dict部分是由字典实现，Zset部分使用跳跃表实现，从图中可以看出，dict和跳跃表都存储了数据，实际上dict和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
 
 &emsp; 在跳跃表的结构中有head和tail表示指向头节点和尾节点的指针，能快速的实现定位。level表示层数，len表示跳跃表的长度，BW表示后退指针，在从尾向前遍历的时候使用。BW下面还有两个值分别表示分值（score）和成员对象（各个节点保存的成员对象）。  
 

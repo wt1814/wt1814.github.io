@@ -144,7 +144,7 @@
 -->
 #### 1.2.2.1. 重写机制
 &emsp; 随着命令不断写入AOF，文件会越来越大，为了解决这个问题，Redis 引入AOF重写机制压缩文件体积。AOF文件重写是把Redis进程内的数据转化为写命令同步到新AOF文件的过程。   
-&emsp; **<font color = "red">重写后的AOF文件为什么可以变小？有如下原因：</font>**  
+&emsp; **<font color = "lime">重写后的AOF文件为什么可以变小？有如下原因：</font>**  
 
 1. <font color = "red">进程内已经超时的数据不再写入文件。</font>   
 2. <font color = "red">旧的AOF文件含有无效命令，</font>如del key1、hdel key2、srem keys、set a111、set a222等。重写使用进程内数据直接生成，这样新的AOF文件只保留最终数据的写入命令。  
