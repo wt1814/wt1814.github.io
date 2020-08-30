@@ -10,15 +10,27 @@
 <!-- /TOC -->
 
 # 1. Redis事务  
-<!-- 
-https://www.cnblogs.com/DeepInThought/p/10720132.html
-https://www.cnblogs.com/dwlovelife/p/10946868.html
+
+《Redis深度历险 核心原理与应用实践》  
+<!--
+
+
 -->
 
 ## 1.1. Redis事务简介
+
+<!-- 
+事务3特性
+
+    单独的隔离操作：事务中的所有命令都会序列化、按顺序地执行。事务在执行的过程中，不会被其他客户端发送来的命令请求所打断。
+    没有隔离级别的概念：队列中的命令没有提交之前都不会实际的被执行，因为事务提交前任何指令都不会被实际执行，也就不存在”事务内的查询要看到事务里的更新，在事务外查询不能看到”这个让人万分头痛的问题
+    不保证原子性：redis同一个事务中如果有一条命令执行失败，其后的命令仍然会被执行，没有回滚
+
+-->
+
 &emsp; **Redis事务的概念：**   
 &emsp; **<font color = "lime">Redis事务的本质是一组命令的集合。</font>** 事务支持一次执行多个命令，一个事务中所有命令都会被序列化。在事务执行过程，会按照顺序串行化执行队列中的命令，其他客户端提交的命令请求不会插入到事务执行命令序列中。   
-&emsp; 总结说：**<font color = "red">redis事务就是一次性、顺序性、排他性的执行一个队列中的一系列命令。</font>**　　
+&emsp; 总结说： **<font color = "red">redis事务就是一次性、顺序性、排他性的执行一个队列中的一系列命令。</font>**　　
 
 &emsp; **Redis事务没有隔离级别的概念：**  
 &emsp; 批量操作在发送EXEC命令前被放入队列缓存，并不会被实际执行，也就不存在事务内的查询要看到事务里的更新，事务外查询不能看到。  
@@ -26,11 +38,11 @@ https://www.cnblogs.com/dwlovelife/p/10946868.html
 &emsp; **Redis不保证原子性：**  
 &emsp; Redis中，单条命令是原子性执行的，但事务不保证原子性，且没有回滚。事务中任意命令执行失败，其余的命令仍会被执行。  
 
-&emsp; Redis事务的三个阶段：  
+&emsp; **Redis事务的三个阶段：**  
 
-* 开始事务  
-* 命令入队  
-* 执行事务  
+* 开始事务：以MULTI开启一个事务   
+* 命令入队：将多个命令入队到事务中，接到这些命令不会立即执行，而是放到等待执行的事务队列里面    
+* 执行事务：由EXEC命令触发事务  
 
 &emsp; **Redis事务相关命令：**  
 
@@ -45,20 +57,21 @@ https://www.cnblogs.com/dwlovelife/p/10946868.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-91.png)  
 &emsp; （2）放弃事务。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-92.png)  
-&emsp; （3）若在事务队列中存在命令性错误（类似于java编译性错误），则执行EXEC命令时，所有命令都不会执行。  
+&emsp; （3）<font color = "lime">若在事务队列中存在命令性错误（类似于java编译性错误），</font><font color = "red">则执行EXEC命令时，所有命令都不会执行。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-93.png)  
-&emsp; （4）<font color = "red">若在事务队列中存在语法性错误（类似于java的1/0的运行时异常），则执行EXEC命令时，其他正确命令会被执行，错误命令抛出异常。</font>  
+&emsp; （4）<font color = "lime">若在事务队列中存在语法性错误（类似于java的1/0的运行时异常），</font><font color = "red">则执行EXEC命令时，其他正确命令会被执行，错误命令抛出异常。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-94.png)  
 &emsp; （5）使用watch  
 &emsp; 案例一：使用watch检测balance，事务期间balance数据未变动，事务执行成功  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-95.png)  
 &emsp; 案例二：使用watch检测balance，在开启事务后（标注1处），在新窗口执行标注2中的操作，更改balance的值，模拟其他客户端在事务执行期间更改watch监控的数据，然后再执行标注1后命令，执行EXEC后，事务未成功执行。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-96.png)  
 &emsp; 一但执行EXEC开启事务的执行后，无论事务使用执行成功，WARCH对变量的监控都将被取消。  
 &emsp; 故当事务执行失败后，需重新执行WATCH命令对变量进行监控，并开启新的事务进行操作。  
 
 
 ## 1.3. Redis事务总结  
-&emsp; watch指令类似于乐观锁，在事务提交时，如果watch监控的多个KEY中任何KEY的值已经被其他客户端更改，则使用EXEC执行事务时，事务队列将不会被执行，同时返回Nullmulti-bulk应答以通知调用者事务执行失败。  
+&emsp; watch指令类似于乐观锁，在事务提交时，<font color = "red">如果watch监控的多个KEY中任何KEY的值已经被其他客户端更改，则使用EXEC执行事务时，</font>事务队列将不会被执行，同时返回Nullmulti-bulk应答以通知调用者事务执行失败。  
 
 
 <!-- 

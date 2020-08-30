@@ -4,16 +4,18 @@
 
 - [1. Redis高级数据类型](#1-redis高级数据类型)
     - [1.1. 前言：网页流量统计里的PV、UV](#11-前言网页流量统计里的pvuv)
-    - [1.2. Bitmaps，位图](#12-bitmaps位图)
-        - [1.2.1. 应用场景](#121-应用场景)
-        - [1.2.2. 操作命令](#122-操作命令)
+    - [1.2. Bitmap，位图](#12-bitmap位图)
+        - [1.2.1. 位图介绍](#121-位图介绍)
+        - [1.2.2. Redis Bitmap命令](#122-redis-bitmap命令)
+        - [1.2.3. 应用场景](#123-应用场景)
     - [1.3. HyperLogLog基数统计](#13-hyperloglog基数统计)
         - [1.3.1. 前言](#131-前言)
         - [1.3.2. 基数统计](#132-基数统计)
-        - [1.3.3. HyperLogLog用作基数统计](#133-hyperloglog用作基数统计)
-        - [1.3.4. redis中HyperLogLog的使用](#134-redis中hyperloglog的使用)
-            - [1.3.4.1. Redis中对HyperLogLog的应用](#1341-redis中对hyperloglog的应用)
-            - [1.3.4.2. Redis中的HyperLogLog原理](#1342-redis中的hyperloglog原理)
+        - [1.3.3. Redis中的基数统计方式](#133-redis中的基数统计方式)
+        - [1.3.4. HyperLogLog用作基数统计](#134-hyperloglog用作基数统计)
+        - [1.3.5. Redis中HyperLogLog的使用](#135-redis中hyperloglog的使用)
+            - [1.3.5.1. HyperLogLog操作命令](#1351-hyperloglog操作命令)
+            - [1.3.5.2. Redis中的HyperLogLog原理](#1352-redis中的hyperloglog原理)
     - [1.4. Geospatial地图](#14-geospatial地图)
     - [1.5. Streams消息队列](#15-streams消息队列)
     - [1.6. Redis中的布隆过滤器](#16-redis中的布隆过滤器)
@@ -29,50 +31,159 @@
 &emsp; UV（Unique Visitor）独立访客，统计1天内访问某站点的用户数(以cookie为依据)；访问网站的一台电脑客户端为一个访客。可以理解成访问某网站的电脑的数量。网站判断来访电脑的身份是通过来访电脑的cookies实现的。如果更换了IP后但不清除cookies，再访问相同网站，该网站的统计中UV数是不变的。如果用户不保存cookies访问、清除了cookies或者更换设备访问，计数会加1。00:00-24:00内相同的客户端多次访问只计为1个访客。 
  
 --------------
-## 1.2. Bitmaps，位图  
+## 1.2. Bitmap，位图
+### 1.2.1. 位图介绍    
 &emsp; Bitmaps是在字符串类型上面定义的位操作。一个字节由8个二进制位组成。每个二进制位只能存储0或1。   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-71.png)  
-
-### 1.2.1. 应用场景
-
-* <font color = "red">各种实时分析，例如在线用户统计。</font>
-* <font color = "red">用户访问统计。</font>
-
-<!-- 
-如果统计 PV(浏览量，用户每点一次记录一次)，那非常好办，给每个页面配置一个独立的 Redis 计数器就可以了，把这个计数器的 key 后缀加上当天的日期。这样每来一个请求，就执行 INCRBY 指令一次，最终就可以统计出所有的 PV 数据了。
--->
-<!-- 
-存储与对象ID关联的布尔信息。  
-&emsp; 例如，记录访问网站的用户的最长连续时间。开始计算从0开始的天数，就是网站公开的那天，每次用户访问网站时通过SETBIT命令设置bit为1，可以简单的用当前时间减去初始时间并除以3600*24（结果就是网站公开的第几天）当做这个bit的位置。  
-&emsp; 这种方法对于每个用户，都有存储每天的访问信息的一个很小的string字符串。通过BITCOUN就能轻易统计某个用户历史访问网站的天数。另外通过调用BITPOS命令，或者客户端获取并分析这个bitmap，就能计算出最长停留时间。  
--->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-97.png)  
 
 &emsp; **优点与缺点：**  
 &emsp; Bitmaps的最大优点就是存储信息时可以节省大量的空间。例如在一个系统中，不同的用户被一个增长的用户ID表示。40亿（2^32≈40亿）用户只需要512M内存就能记住某种信息，例如用户是否登录过。  
 
-### 1.2.2. 操作命令
+### 1.2.2. Redis Bitmap命令
+
 &emsp; bit操作被分为两组：  
 
 * 恒定时间的单个bit操作，例如把某个bit设置为0或者1。或者获取某bit的值。  
 * 对一组bit的操作。例如给定范围内bit统计（例如人口统计）。  
 
-&emsp; Bits命令：Bits设置和获取通过SETBIT和GETBIT命令。用法如下：  
+1. Bits命令：Bits设置和获取通过SETBIT和GETBIT命令。用法如下：  
 
-    SETBIT key offset value  
+    SETBIT key offset value #设置或者清空key的value(字符串)在offset处的bit值(只能只0或者1)  
     GETBIT key offset  
 
-&emsp; 使用实例：  
+    &emsp; 使用实例：  
 
-    127.0.0.1:6380> setbit dupcheck 10 1  
-    (integer) 0  
-    127.0.0.1:6380> getbit dupcheck 10   
-    (integer) 1  
+        127.0.0.1:6380> setbit dupcheck 10 1  
+        (integer) 0  
+        127.0.0.1:6380> getbit dupcheck 10   
+        (integer) 1  
 
-* SETBIT命令第一个参数是位编号，第二个参数是这个位的值，只能是0或者1。如果bit地址超过当前string长度，会自动增大string。  
-* GETBIT命令指示返回指定位置bit的值。超过范围（寻址地址在目标key的string长度以外的位）的GETBIT总是返回0。三个操作bits组的命令如下：  
+    * SETBIT命令第一个参数是位编号，第二个参数是这个位的值，只能是0或者1。如果bit地址超过当前string长度，会自动增大string。  
+    * GETBIT命令指示返回指定位置bit的值。超过范围（寻址地址在目标key的string长度以外的位）的GETBIT总是返回0。  
+
+2. 操作bits组的命令如下：  
     * BITOP执行两个不同string的位操作.，包括AND，OR，XOR和NOT。
     * BITCOUNT统计位的值为1的数量。
     * BITPOS寻址第一个为0或者1的bit的位置（寻址第一个为1的bit的位置：bitpos dupcheck 1；寻址第一个为0的bit的位置：bitpos dupcheck 0）。  
+
+### 1.2.3. 应用场景
+
+* <font color = "red">各种实时分析，例如在线用户统计。</font>
+* <font color = "red">用户访问统计。</font>
+
+1. 使用场景一：用户签到  
+&emsp; 很多网站都提供了签到功能(这里不考虑数据落地事宜)，并且需要展示最近一个月的签到情况，可以使用Bitmap。  
+
+    ```php
+    <?php
+    $redis = new Redis();
+    $redis->connect('127.0.0.1');
+
+
+    //用户uid
+    $uid = 1;
+
+    //记录有uid的key
+    $cacheKey = sprintf("sign_%d", $uid);
+
+    //开始有签到功能的日期
+    $startDate = '2017-01-01';
+
+    //今天的日期
+    $todayDate = '2017-01-21';
+
+    //计算offset
+    $startTime = strtotime($startDate);
+    $todayTime = strtotime($todayDate);
+    $offset = floor(($todayTime - $startTime) / 86400);
+
+    echo "今天是第{$offset}天" . PHP_EOL;
+
+    //签到
+    //一年一个用户会占用多少空间呢？大约365/8=45.625个字节，好小，有木有被惊呆？
+    $redis->setBit($cacheKey, $offset, 1);
+
+    //查询签到情况
+    $bitStatus = $redis->getBit($cacheKey, $offset);
+    echo 1 == $bitStatus ? '今天已经签到啦' : '还没有签到呢';
+    echo PHP_EOL;
+
+    //计算总签到次数
+    echo $redis->bitCount($cacheKey) . PHP_EOL;
+
+    /**
+    * 计算某段时间内的签到次数
+    * 很不幸啊,bitCount虽然提供了start和end参数，但是这个说的是字符串的位置，而不是对应"位"的位置
+    * 幸运的是我们可以通过get命令将value取出来，自己解析。并且这个value不会太大，上面计算过一年一个用户只需要45个字节
+    * 给我们的网站定一个小目标，运行30年，那么一共需要1.31KB(就问你屌不屌？)
+    */
+    //这是个错误的计算方式
+    echo $redis->bitCount($cacheKey, 0, 20) . PHP_EOL;
+    ```
+
+2. 使用场景二：统计活跃用户  
+&emsp; 使用时间作为cacheKey，然后用户ID为offset，如果当日活跃过就设置为1  
+&emsp; 那么如果计算某几天/月/年的活跃用户呢(暂且约定，统计时间内只有有一天在线就称为活跃)，使用redis的命令   
+&emsp; 命令 BITOP operation destkey key [key ...]  
+&emsp; 说明：对一个或多个保存二进制位的字符串 key 进行位元操作，并将结果保存到 destkey 上。  
+&emsp; 说明：BITOP 命令支持 AND 、 OR 、 NOT 、 XOR 这四种操作中的任意一种参数  
+
+    ```php
+    //日期对应的活跃用户
+    $data = array(
+    '2017-01-10' => array(1,2,3,4,5,6,7,8,9,10),
+    '2017-01-11' => array(1,2,3,4,5,6,7,8),
+    '2017-01-12' => array(1,2,3,4,5,6),
+    '2017-01-13' => array(1,2,3,4),
+    '2017-01-14' => array(1,2)
+    );
+
+    //批量设置活跃状态
+    foreach($data as $date=>$uids) {
+    $cacheKey = sprintf("stat_%s", $date);
+    foreach($uids as $uid) {
+    $redis->setBit($cacheKey, $uid, 1);
+    }
+    }
+
+    $redis->bitOp('AND', 'stat', 'stat_2017-01-10', 'stat_2017-01-11', 'stat_2017-01-12') . PHP_EOL;
+    //总活跃用户：6
+    echo "总活跃用户：" . $redis->bitCount('stat') . PHP_EOL;
+
+    $redis->bitOp('AND', 'stat1', 'stat_2017-01-10', 'stat_2017-01-11', 'stat_2017-01-14') . PHP_EOL;
+    //总活跃用户：2
+    echo "总活跃用户：" . $redis->bitCount('stat1') . PHP_EOL;
+
+    $redis->bitOp('AND', 'stat2', 'stat_2017-01-10', 'stat_2017-01-11') . PHP_EOL;
+    //总活跃用户：8
+    echo "总活跃用户：" . $redis->bitCount('stat2') . PHP_EOL;
+    ```
+
+3. 使用场景三：用户在线状态  
+&emsp; 前段时间开发一个项目，对方给我提供了一个查询当前用户是否在线的接口。不了解对方是怎么做的，自己考虑了一下，使用bitmap是一个节约空间效率又高的一种方法，只需要一个key，然后用户ID为offset，如果在线就设置为1，不在线就设置为0，和上面的场景一样，5000W用户只需要6MB的空间。  
+
+    ```php
+    //批量设置在线状态
+    $uids = range(1, 500000);
+    foreach($uids as $uid) {
+    $redis->setBit('online', $uid, $uid % 2);
+    }
+    //一个一个获取状态
+    $uids = range(1, 500000);
+    $startTime = microtime(true);
+    foreach($uids as $uid) {
+    echo $redis->getBit('online', $uid) . PHP_EOL;
+    }
+    $endTime = microtime(true);
+    //在我的电脑上，获取50W个用户的状态需要25秒
+    echo "total:" . ($endTime - $startTime) . "s";
+
+    /**
+    * 对于批量的获取，上面是一种效率低的办法，实际可以通过get获取到value，然后自己计算
+    * 具体计算方法改天再写吧，之前写的代码找不见了。。。
+    */
+    ```
+
 
 ## 1.3. HyperLogLog基数统计  
 <!-- 
@@ -88,7 +199,18 @@ https://mp.weixin.qq.com/s/EF1cgBlJB3U37oZm3KgQvQ
 
 &emsp; 基数统计(Cardinality Counting) 通常是用来统计一个集合中不重复的元素个数。例如： **<font color = "red">统计每个网页的UV(独立访客，每个用户每天只记录一次，需要对每天对浏览去重) 。</font>**   
 
-### 1.3.3. HyperLogLog用作基数统计  
+### 1.3.3. Redis中的基数统计方式  
+&emsp; HyperLogLog 是一种概率数据结构，用来估算数据的基数。数据集可以是网站访客的 IP 地址，E-mail 邮箱或者用户 ID。
+
+&emsp; 基数就是指一个集合中不同值的数目，比如 a, b, c, d 的基数就是 4，a, b, c, d, a 的基数还是 4。虽然 a 出现两次，只会被计算一次。
+
+&emsp; 精确的计算数据集的基数需要消耗大量的内存来存储数据集。在遍历数据集时，判断当前遍历值是否已经存在唯一方法就是将这个值与已经遍历过的值进行一一对比。当数据集的数量越来越大，内存消耗就无法忽视，甚至成了问题的关键。
+
+&emsp; 使用Redis统计集合的基数一般有三种方法，分别是使用 Redis 的 HashMap，BitMap 和 HyperLogLog。前两个数据结构在集合的数量级增长时，所消耗的内存会大大增加，但是 HyperLogLog 则不会。
+
+&emsp; Redis的HyperLogLog 通过牺牲准确率来减少内存空间的消耗，只需要12K内存，在标准误差0.81%的前提下，能够统计2^64个数据。所以 HyperLogLog 是否适合在比如统计日活月活此类的对精度要不不高的场景。
+
+### 1.3.4. HyperLogLog用作基数统计  
 &emsp; [HyperLogLog](/docs/java/function/3.otherStructure.md)可用于基数统计。Hyper指的是超级。 **<font color = "red">Hyperloglog提供不精确的去重计数功能，HyperLogLog适于做大规模数据的去重统计。</font>**   
 
 &emsp; **HyperLogLog优点与缺点：**  
@@ -96,23 +218,25 @@ https://mp.weixin.qq.com/s/EF1cgBlJB3U37oZm3KgQvQ
 * 优点：占用内存极小，对于一个key，只需要12kb。  
 * 缺点：查询指定用户的时候，可能会出错，毕竟存的不是具体的数据。总数也存在一定的误差。 
 * 能够使用极少的内存来统计巨量的数据，在 Redis 中实现的 HyperLogLog，只需要12K内存就能统计2^64个数据。
-* 计数存在一定的误差，误差率整体较低。标准误差为 0.81% 。
+* <font color = "red">计数存在一定的误差，误差率整体较低。标准误差为 0.81% 。</font>
 * 误差可以被设置辅助计算因子进行降低。  
 
+### 1.3.5. Redis中HyperLogLog的使用  
 
-### 1.3.4. redis中HyperLogLog的使用  
-#### 1.3.4.1. Redis中对HyperLogLog的应用
+
+#### 1.3.5.1. HyperLogLog操作命令
 
 &emsp; **操作命令：**  
 &emsp; Redis Hyperloglog的三个命令：PFADD、PFCOUNT、PFMERGE。  
 
-* PFADD命令用于添加一个新元素到统计中。pfadd key value，将 key 对应的一个 value 存入  
-* PFCOUNT命令用于获取到目前为止通过PFADD命令添加的唯一元素个数近似值。pfcount key，统计 key 的 value 有多少个  
+* PFADD命令用于添加一个新元素到统计中。pfadd key value，将key对应的一个value存入  
+* PFCOUNT命令用于获取到目前为止通过PFADD命令添加的唯一元素个数近似值。pfcount key，统计key的value有多少个  
 * PFMERGE命令执行多个HLL之间的联合操作。  
 
-#### 1.3.4.2. Redis中的HyperLogLog原理  
+#### 1.3.5.2. Redis中的HyperLogLog原理  
 
-<!-- 
+<!--
+https://www.jianshu.com/p/096b25cbc39c
 https://www.cnblogs.com/linguanh/p/10460421.html
 -->
 
