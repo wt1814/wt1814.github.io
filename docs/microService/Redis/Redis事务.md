@@ -16,11 +16,11 @@ https://www.cnblogs.com/dwlovelife/p/10946868.html
 -->
 
 ## 1.1. Redis事务简介
-&emsp; **Redis事务的概念：** 
-&emsp; Redis事务的本质是一组命令的集合。事务支持一次执行多个命令，一个事务中所有命令都会被序列化。在事务执行过程，会按照顺序串行化执行队列中的命令，其他客户端提交的命令请求不会插入到事务执行命令序列中。
+&emsp; **Redis事务的概念：**   
+&emsp; **<font color = "lime">Redis事务的本质是一组命令的集合。</font>** 事务支持一次执行多个命令，一个事务中所有命令都会被序列化。在事务执行过程，会按照顺序串行化执行队列中的命令，其他客户端提交的命令请求不会插入到事务执行命令序列中。   
 &emsp; 总结说：**<font color = "red">redis事务就是一次性、顺序性、排他性的执行一个队列中的一系列命令。</font>**　　
 
-&emsp; **Redis事务没有隔离级别的概念：**
+&emsp; **Redis事务没有隔离级别的概念：**  
 &emsp; 批量操作在发送EXEC命令前被放入队列缓存，并不会被实际执行，也就不存在事务内的查询要看到事务里的更新，事务外查询不能看到。  
 
 &emsp; **Redis不保证原子性：**  
@@ -47,7 +47,7 @@ https://www.cnblogs.com/dwlovelife/p/10946868.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-92.png)  
 &emsp; （3）若在事务队列中存在命令性错误（类似于java编译性错误），则执行EXEC命令时，所有命令都不会执行。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-93.png)  
-&emsp; （4）若在事务队列中存在语法性错误（类似于java的1/0的运行时异常），则执行EXEC命令时，其他正确命令会被执行，错误命令抛出异常。  
+&emsp; （4）<font color = "red">若在事务队列中存在语法性错误（类似于java的1/0的运行时异常），则执行EXEC命令时，其他正确命令会被执行，错误命令抛出异常。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-94.png)  
 &emsp; （5）使用watch  
 &emsp; 案例一：使用watch检测balance，事务期间balance数据未变动，事务执行成功  
