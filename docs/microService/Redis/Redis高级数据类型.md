@@ -24,6 +24,14 @@
 
 
 # 1. Redis高级数据类型  
+&emsp; **<font color = "lime">总结：</font>**  
+1. <font color = "lime">Bitmap、HyperLogLog都是作为Redis的Value值。</font>  
+2. <font color = "lime">Redis中的Bitmap：key可以为某一天、某一ID，Bitmap中bit可以存储用户的任意信息。所以Redis Bitmap可以用作统计信息。</font>  
+3. <font color = "lime">HyperLogLog用于基数统计。</font>  
+    * 基数统计是指找出集合中不重复元素，用于去重。  
+    * 使用Redis统计集合的基数一般有三种方法，分别是使用Redis的 HashMap，BitMap和HyperLogLog。  
+    * HyperLogLog内存空间消耗少，但存在误差0.81%。  
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-73.png)  
 
 ## 1.1. 前言：网页流量统计里的PV、UV

@@ -333,6 +333,7 @@ Gitee： https://gitee.com/wt1814/
 
 ---
 ## 算法  
+[总结](/docs/java/function/summary.md)  
 [算法基本概念](/docs/java/function/1.notion.md)  
 [基本数据结构]  
 &emsp; [链表](/docs/java/function/structure/array.md)  
