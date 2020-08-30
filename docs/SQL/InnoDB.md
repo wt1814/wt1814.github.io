@@ -42,7 +42,7 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; InnoDB 在修改数据时，如果数据的页在 Buffer Pool 中，则会直接修改 Buffer Pool，此时称这个页为脏页，InnoDB 会以一定的频率将脏页刷新到磁盘，这样可以尽量减少磁盘I/O，提升性能。 
 -->
 
-&emsp; MySQL作为一个存储系统，具有缓冲池(buffer pool)机制，<font color = "red">缓存表数据与索引数据，把磁盘上的数据加载到缓冲池，以避免每次查询数据都进行磁盘IO。缓冲池提高了读能力。</font>  
+&emsp; MySQL作为一个存储系统，具有缓冲池(buffer pool)机制，<font color = "red">缓存表数据与索引数据，把磁盘上的数据加载到缓冲池，</font><font color = "lime">以避免每次查询数据都进行磁盘IO。缓冲池提高了读能力。</font>  
 
 &emsp; 如何管理与淘汰缓冲池，使得性能最大化呢？在介绍具体细节之前，先介绍下“预读”的概念。  
 
@@ -175,8 +175,9 @@ select * from user where name like "%shenjian%";
     * **<font color = "lime">页被访问，且在老生代停留时间超过配置阈值的，才进入新生代，以解决批量数据访问，大量热数据淘汰的问题</font>**  
 
 ### 1.1.2. 写缓冲(change buffer)
-&emsp; **<font color = "lime">一句话概述：当使用普通索引，修改数据时，没有命中缓冲池时，会使用到写缓冲（写缓冲是缓冲池的一部分）。在写缓冲中记录这个操作，一次内存操作；写入redo log，一次磁盘顺序写操作。</font>**
-
+&emsp; **<font color = "lime">总结：当使用普通索引，修改数据时，没有命中缓冲池时，会使用到写缓冲（写缓冲是缓冲池的一部分）。在写缓冲中记录这个操作，一次内存操作；写入redo log，一次磁盘顺序写操作。</font>**  
+&emsp; <font color = "lime">change buffer是一种应用在非唯一普通索引页不在缓冲池中，对页进行了写操作，并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更，等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中的技术。</font>写缓冲的目的是降低写操作的磁盘IO，提升数据库性能。  
+&emsp; 什么时候缓冲池中的页，会刷到磁盘上呢？定期刷磁盘，而不是每次刷磁盘，能够降低磁盘IO，提升MySQL的性能。  
 <!--
 https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
 https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
@@ -249,7 +250,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; （1）载入索引页，缓冲池未命中，这次磁盘IO不可避免；  
 &emsp; （2）从写缓冲读取相关信息；  
 &emsp; （3）恢复索引页，放到缓冲池LRU里；  
-&emsp; 可以看到，40这一页，在真正被读取时，才会被加载到缓冲池中。  
+&emsp; <font color = "lime">可以看到，40这一页，在真正被读取时，才会被加载到缓冲池中。</font>  
 
 &emsp; **什么业务场景，适合开启InnoDB的写缓冲机制？**  
 * 不适合使用写缓冲  
@@ -270,6 +271,17 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 
 
 ### 1.1.3. 两次写  
+
+&emsp; **<font color = "lime">总结：</font>**  
+&emsp; MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
+&emsp; 在应用（apply）重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。  
+1. 在异常崩溃时，如果不出现“页数据损坏”，能够通过redo恢复数据；
+2. 在出现“页数据损坏”时，能够通过double write buffer恢复页数据； 
+
+&emsp; doublewrite分为内存和磁盘的两层架构。当有页数据要刷盘时：  
+1. 第一步：页数据先memcopy到doublewrite buffer的内存里；
+2. 第二步：doublewrite buffe的内存里，会先刷到doublewrite buffe的磁盘上；
+3. 第三步：doublewrite buffe的内存里，再刷到数据磁盘存储上； 
 <!-- 
  double write buffer，你居然没听过？ 
  https://mp.weixin.qq.com/s/bkoQ9g4cIcFFZBnpVh8ERQ
@@ -295,7 +307,7 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
  
 &emsp; <font color = "lime">如果说写缓冲带给InnoDB存储引擎的是性能，那么两次写带给InnoDB存储引擎的是数据的可靠性。</font><font color = "red">当数据库宕机时，可能发生数据库正在写一个页面，而这个页只写了一部分（比如16K的页，只写前4K的页）的情况，称之为部分写失效（partial page write）。</font>在InnoDB存储引擎未使用double write技术前，曾出现过因为部分写失效而导致数据丢失的情况。  
 
-&emsp; MySQL的buffer一页的大小是16K，文件系统一页的大小是4K，也就是说，MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
+&emsp; MySQL的buffer一页的大小是16K，文件系统一页的大小是4K，也就是说，<font color = "lime">MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-118.png)  
 &emsp; 如上图所示，MySQL里page=1的页，物理上对应磁盘上的1+2+3+4四个格。  
 &emsp; 那么，问题来了，这个操作并非原子，如果执行到一半断电，会不会出现问题呢？  

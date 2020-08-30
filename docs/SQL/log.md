@@ -120,10 +120,10 @@ https://mp.weixin.qq.com/s/mNfjT99qIbjKGraZLV8EIQ
 **什么时候释放：**  
 &emsp; 当对应事务的脏页写入到磁盘之后，redo log的使命也就完成了，重做日志占用的空间就可以重用（被覆盖）。  
 
-&emsp; redo log是循环写的，redo log不是记录数据页更新之后的状态，而是记录这个页做了什么改动。  
-&emsp; redo log 是固定大小的，比如可以配置为一组 4 个文件，每个文件的大小是 1GB，那么日志总共就可以记录 4GB 的操作。从头开始写，写到末尾就又回到开头循环写，如下图所示。  
+&emsp; <font color = "lime">redo log是循环写的，redo log不是记录数据页更新之后的状态，而是记录这个页做了什么改动。</font>  
+&emsp; redo log是固定大小的，比如可以配置为一组4个文件，每个文件的大小是1GB，那么日志总共就可以记录4GB的操作。从头开始写，写到末尾就又回到开头循环写，如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-94.png)  
-&emsp; 图中展示了一组 4 个文件的 redo log 日志，checkpoint 是当前要擦除的位置，擦除记录前需要先把对应的数据落盘（更新内存页，等待刷脏页）。write pos 到 checkpoint 之间的部分可以用来记录新的操作，如果 write pos 和 checkpoint 相遇，说明 redolog 已满，这个时候数据库停止进行数据库更新语句的执行，转而进行 redo log 日志同步到磁盘中。checkpoint 到 write pos 之间的部分等待落盘（先更新内存页，然后等待刷脏页）。  
+&emsp; 图中展示了一组4个文件的redo log日志，checkpoint是当前要擦除的位置，擦除记录前需要先把对应的数据落盘（更新内存页，等待刷脏页）。write pos 到 checkpoint之间的部分可以用来记录新的操作，如果 write pos和checkpoint 相遇，说明 redolog 已满，这个时候数据库停止进行数据库更新语句的执行，转而进行 redo log 日志同步到磁盘中。checkpoint 到 write pos 之间的部分等待落盘（先更新内存页，然后等待刷脏页）。  
 &emsp; 有了 redo log 日志，那么在数据库进行异常重启的时候，可以根据 redo log 日志进行恢复，也就达到了 crash-safe。  
 &emsp; redo log 用于保证 crash-safe 能力。innodb_flush_log_at_trx_commit 这个参数设置成 1 的时候，表示每次事务的 redo log 都直接持久化到磁盘。这个参数建议设置成 1，这样可以保证 MySQL 异常重启之后数据不丢失。  ∑
 
@@ -176,7 +176,7 @@ https://mp.weixin.qq.com/s/mNfjT99qIbjKGraZLV8EIQ
 
 **什么时候产生：**
 
-* 事务提交的时候，一次性将事务中的sql语句（一个事物可能对应多个sql语句）按照一定的格式记录到binlog中。
+* <font color = "lime">事务提交的时候，一次性将事务中的sql语句（一个事物可能对应多个sql语句）按照一定的格式记录到binlog中。</font>
 * 这里与redo log很明显的差异就是redo log并不一定是在事务提交的时候刷新到磁盘，redo log是在事务开始之后就开始逐步写入磁盘。
 * 因此对于事务的提交，即便是较大的事务，提交（commit）都是很快的，但是在开启了bin_log的情况下，对于较大事务的提交，可能会变得比较慢一些。
 * 这是因为binlog是在事务提交的时候一次性写入的造成的，这些可以通过测试验证。
@@ -221,7 +221,7 @@ https://mp.weixin.qq.com/s/mNfjT99qIbjKGraZLV8EIQ
 &emsp; <font color = "red">二进制日志的作用之一是还原数据库的，这与redo log很类似，</font>很多人混淆过，但是两者有本质的不同  
 
 * 作用不同：redo log是保证事务的持久性的，是事务层面的，binlog作为还原的功能，是数据库层面的（当然也可以精确到事务层面的），虽然都有还原的意思，但是其保护数据的层次是不一样的。
-* 内容不同：redo log是物理日志，是数据页面的修改之后的物理记录，binlog是逻辑日志，可以简单认为记录的就是sql语句。
+* 内容不同：<font color = "lime">redo log是物理日志，是数据页面的修改之后的物理记录，binlog是逻辑日志，可以简单认为记录的就是sql语句。</font>
 * 另外，两者日志产生的时间，可以释放的时间，在可释放的情况下清理机制，都是完全不同的。
 * 恢复数据时候的效率，基于物理日志的redo log恢复数据的效率要高于语句逻辑日志的binlog。
 
@@ -260,10 +260,10 @@ https://www.jianshu.com/p/d0e16db410e4
 &emsp; MySQL 使用两阶段提交主要解决 binlog 和 redo log 的数据一致性的问题。  
 &emsp; redo log 和 binlog 都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。下图为 MySQL 二阶段提交简图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-96.png)  
-&emsp; 两阶段提交原理描述:  
+&emsp; <font color = "lime">两阶段提交原理描述: </font> 
 
-1. InnoDB redo log 写盘，InnoDB 事务进入 prepare 状态。  
-2. 如果前面 prepare 成功，binlog 写盘，那么再继续将事务日志持久化到 binlog，如果持久化成功，那么 InnoDB 事务则进入 commit 状态(在 redo log 里面写一个 commit 记录)  
+1. InnoDB redo log写盘，InnoDB事务进入prepare状态。  
+2. 如果前面prepare成功，binlog写盘，那么再继续将事务日志持久化到binlog，如果持久化成功，那么InnoDB事务则进入commit状态(在redo log里面写一个commit记录)  
 
 &emsp; 备注: 每个事务 binlog 的末尾，会记录一个 XID event，标志着事务是否提交成功，也就是说，recovery 过程中，binlog 最后一个 XID event 之后的内容都应该被 purge。
 
