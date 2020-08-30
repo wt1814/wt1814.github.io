@@ -24,9 +24,10 @@
 
 <!-- /TOC -->
 
+# 1. Redis底层实现  
+
 **《Redis设计与实现》、《Redis深度历险：核心原理和应用实践》、《Redis开发与运维》**  
 
-# 1. Redis底层实现  
 <!--
 连集合底层实现原理都不知道，你敢说Redis用的很溜？ 
 https://mp.weixin.qq.com/s/K7Si5bl7K_pjQPHsLrPh5A
@@ -45,7 +46,7 @@ https://blog.csdn.net/u014563989/article/details/81066074?utm_medium=distribute.
 
 ## 1.2. 对象系统RedisObject  
 &emsp; **<font color = "lime">（很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！）</font>**  
-&emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。**<font color = "lime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**  
+&emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。 **<font color = "lime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
 
 <!-- 
 Redis这样设计有两个好处：
@@ -68,7 +69,7 @@ typedef struct redisObject {
 * Type：是对象类型，代表一个value对象具体是何种数据类型，包括REDISSTRING，REDISLIST，REDISHASH，REDISSET和REDIS_ZSET。  
 * encoding是指对象使用的数据结构，是不同数据类型在redis内部的存储方式。<font color = "red">目前有8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。</font>  
 
-&emsp; <font color = "lime">Redis数据类型的底层实现如下：</font>  
+&emsp; **<font color = "lime">Redis数据类型的底层实现如下：</font>**  
 
 |Redis数据结构	|底层数据结构|
 |---|---|
@@ -90,19 +91,14 @@ typedef struct redisObject {
 
 &emsp; <font color = "red">Redis会根据当前值的类型和长度决定使用哪种内部编码实现。</font>  
 
-1. [SDS](/docs/microService/Redis/SDS.md)  
-
-2. embstr和raw的区别？  
-&emsp; embstr 的使用只分配一次内存空间（因为 RedisObject 和 SDS 是连续的），而 raw 需要分配两次内存空间（分别为 RedisObject 和 SDS 分配空间）。 因此与 raw 相比，<font color = "red">embstr 的好处在于创建时少分配一次空间，删除时少释放一次 空间，以及对象的所有数据连在一起，寻找方便。 而 embstr 的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个 RedisObject 和 SDS 都需要重新分配空间，</font>因此 Redis 中的 embstr 实现为只读。  
-
-3. int 和 embstr 什么时候转化为 raw?  
-&emsp; 当 int 数 据 不 再 是 整 数 ， 或 大 小 超 过 了 long 的 范 围 （2^63-1=9223372036854775807）时，自动转化为 embstr。  
-
-4. embstr没有超过阈值，为什么变成 raw 了？  
-&emsp; 对于 embstr，由于其实现是只读的，因此在对 embstr 对象进行修改时，都会先 转化为 raw 再进行修改。 因此，只要是修改 embstr 对象，修改后的对象一定是 raw 的，无论是否达到了 44 个字节。  
-
-5. 当长度小于阈值时，会还原吗？  
-&emsp; 关于 Redis 内部编码的转换，都符合以下规律：编码转换在 Redis 写入数据时完成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
+1. embstr和raw的区别？  
+&emsp; embstr的使用只分配一次内存空间（因为RedisObject和SDS是连续的），而raw需要分配两次内存空间（分别为RedisObject和SDS分配空间）。 因此与raw相比，<font color = "red">embstr的好处在于创建时少分配一次空间，删除时少释放一次空间，以及对象的所有数据连在一起，寻找方便。而embstr的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个RedisObject和SDS都需要重新分配空间，</font>因此Redis中的embstr实现为只读。  
+2. int和embstr什么时候转化为 raw?  
+&emsp; 当int数据不再是整数， 或大小超过了long的范围（2^63-1=9223372036854775807）时，自动转化为embstr。  
+3. embstr没有超过阈值，为什么变成raw了？  
+&emsp; 对于embstr，由于其实现是只读的，因此在对embstr对象进行修改时，都会先转化为raw再进行修改。因此，只要是修改embstr对象，修改后的对象一定是raw的，无论是否达到了44个字节。  
+4. 当长度小于阈值时，会还原吗？  
+&emsp; 关于Redis内部编码的转换，都符合以下规律：编码转换在Redis写入数据时完成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
 
 ### 1.3.1. 采用SDS实现  
 <!-- 
@@ -134,7 +130,7 @@ https://mp.weixin.qq.com/s/f71rakde6KBJ_ilRf1M8xQ
 
 ```c
 struct sdshdr{
-    //  记录已使用长度
+    // 记录已使用长度
     int len;
     // 记录空闲未使用的长度
     int free;
@@ -166,11 +162,11 @@ struct sdshdr{
 * 降低空间分配次数提升内存使用效率  
 * 二进制安全
 
-1. 快速获取字符串长度  
+1. <font color = "lime">快速获取字符串长度</font>  
 
         c语言中的字符串并不会记录自己的长度，因此「每次获取字符串的长度都会遍历得到，时间的复杂度是O(n)」，而Redis中获取字符串只要读取len的值就可，时间复杂度变为O(1)。
 
-2. 避免缓冲区溢出  
+2. <font color = "lime">避免缓冲区溢出</font>  
 &emsp; 对于Redis而言由于每次追加字符串时，<font color = "red">「SDS」会先根据len属性判断空间是否满足要求，若是空间不够，就会进行相应的空间扩展，所以「不会出现缓冲区溢出的情况」。</font>每次追加操作前都会做如下操作：  
     1. 计算出大小是否足够  
     2. 开辟空间至满足所需大小  
@@ -178,17 +174,17 @@ struct sdshdr{
 
             「c语言」中两个字符串拼接，若是没有分配足够长度的内存空间就「会出现缓冲区溢出的情况」。
 
-3. 降低空间分配次数，提升内存使用效率  
+3. <font color = "lime">降低空间分配次数，提升内存使用效率</font>  
     &emsp; 字符串的追加、缩减操作会涉及到内存分配问题，然而内存分配问题会牵扯内存划分算法以及系统调用，所以如果频繁发生的话影响性能。所以采取了一下两种优化措施空间预分配、惰性空间回收。  
 
-    1. 空间预分配   
+    1. <font color = "lime">空间预分配</font>   
         &emsp; 对于追加操作来说，Redis不仅会开辟空间至够用，<font color = "red">而且还会预分配未使用的空间(free)来用于下一次操作。</font>至于未使用的空间(free)的大小则由修改后的字符串长度决定。
         
         * 当修改后的字符串长度len < 1M，则会分配与len相同长度的未使用的空间(free)
         * 当修改后的字符串长度len >= 1M，则会分配1M长度的未使用的空间(free)
 
         &emsp; 有了这个预分配策略之后会减少内存分配次数，因为分配之前会检查已有的free空间是否够，如果够则不开辟了。
-    2. 惰性空间回收  
+    2. <font color = "lime">惰性空间回收</font>  
         &emsp; 与上面情况相反，<font color = "red">惰性空间回收适用于字符串缩减操作。</font>比如有个字符串s1="hello world"，对s1进行sdstrim(s1," world")操作，<font color = "red">执行完该操作之后Redis不会立即回收减少的部分，而是会分配给下一个需要内存的程序。</font>
 
 <!-- 
@@ -197,18 +193,17 @@ struct sdshdr{
             具体的空间预分配原则是：「当修改字符串后的长度len小于1MB，就会预分配和len一样长度的空间，即len=free；若是len大于1MB，free分配的空间大小就为1MB」。
 -->
 
-4. 二进制安全  
+4. <font color = "lime">二进制安全  
 &emsp; SDS是二进制安全的，除了可以储存字符串以外还可以储存二进制文件（如图片、音频，视频等文件的二进制数据）；而c语言中的字符串是以空字符串作为结束符，一些图片中含有结束符，因此不是二进制安全的。  
 
-
 ## 1.4. Hash内部编码  
-&emsp; Redis的Hash可以使用两种数据结构实现：ziplist、dictht。Hash 结构当同时满足如下两个条件时底层采用了 ZipList 实现，一旦有一个条件不满足时，就会被转码为dictht进行存储。  
+&emsp; <font color = "lime">Redis的Hash可以使用两种数据结构实现：ziplist、dictht。</font>Hash结构当同时满足如下两个条件时底层采用了ZipList实现，一旦有一个条件不满足时，就会被转码为dictht进行存储。  
 
-* Hash 中存储的所有元素的 key 和 value 的长度都小于 64byte。（通过修改 hash-max-ziplist-value 配置调节大小）
-* Hash 中存储的元素个数小于 512。（通过修改 hash-max-ziplist-entries 配置调节大小）  
+* Hash中存储的所有元素的key和value的长度都小于64byte。（通过修改hash-max-ziplist-value配置调节大小）
+* Hash中存储的元素个数小于512。（通过修改hash-max-ziplist-entries配置调节大小）  
 
 ### 1.4.1. 采用ziplist压缩列表实现  
-&emsp; ziplist是一组连续内存块组成的顺序的数据结构，**<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>**只用在字段个数少，字段值小的场景面。  
+&emsp; ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>**只用在字段个数少，字段值小的场景面。  
 
 &emsp; 压缩列表的内存结构图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-79.png)  
