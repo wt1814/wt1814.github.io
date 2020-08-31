@@ -13,6 +13,11 @@
 <!-- /TOC -->
 
 # 1. Linux问题排查
+<!-- 
+面试官：生产服务器变慢了，你能谈谈诊断思路吗 
+https://mp.weixin.qq.com/s/wXeHrdoEAmLApeC497Sk3w
+-->
+
 &emsp; 针对Java应用，性能诊断工具主要分为两层：OS层面和Java应用层面（包括应用代码诊断和GC诊断）。  
 
 ## 1.1. OS诊断  

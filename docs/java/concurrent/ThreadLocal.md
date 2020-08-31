@@ -12,6 +12,7 @@
     - [1.3. ThreadLocal使用](#13-threadlocal使用)
         - [1.3.1. ※※※正确使用](#131-※※※正确使用)
         - [1.3.2. SimpleDateFormat非线程安全问题](#132-simpledateformat非线程安全问题)
+        - [ThreadLocal<DecimalFormat>](#threadlocaldecimalformat)
     - [1.4. ThreadLocal局限性（变量不具有传递性）](#14-threadlocal局限性变量不具有传递性)
         - [1.4.1. 类InheritableThreadLocal的使用](#141-类inheritablethreadlocal的使用)
         - [1.4.2. 类TransmittableThreadLocal(alibaba)的使用](#142-类transmittablethreadlocalalibaba的使用)
@@ -24,7 +25,7 @@
 
 # 1. ThreadLocal  
 &emsp; 首先说明，ThreadLocal与线程同步无关。ThreadLocal虽然提供了一种解决多线程环境下成员变量的问题，但是它并不是解决多线程共享变量的问题。  
-&emsp; ThreadLocal，很多地方叫做线程本地变量，也有些地方叫做线程本地存储。每一个线程都会保存一份变量副本，每个线程都可以独立地修改自己的变量副本，而不会影响到其他线程，是一种线程隔离的思想。  
+&emsp; <font color = "red">ThreadLocal，很多地方叫做线程本地变量，也有些地方叫做线程本地存储。</font>每一个线程都会保存一份变量副本，每个线程都可以独立地修改自己的变量副本，而不会影响到其他线程，<font color = "red">是一种线程隔离的思想。</font>  
 
 &emsp; **ThreadLocal和Synchonized关系：**  
 &emsp; ThreadLocal，用于线程间的数据隔离，主要解决多线程中数据因并发产生不一致问题；Synchonized，多个线程间通信时能够获得数据共享。它们都用于解决多线程并发访问。  
@@ -237,6 +238,22 @@ public class Foo{
 }
 ```
 &emsp; final确保ThreadLocal的实例不可更改，防止被意外改变，导致放入的值和取出来的不一致，另外还能防止ThreadLocal的内存泄漏。  
+
+### ThreadLocal<DecimalFormat>
+
+```java
+private static ThreadLocal<DecimalFormat> df = ThreadLocal.withInitial(()->new DecimalFormat("0.00"));
+
+public static String formatAsPerson(Long one){
+    if (null == one){
+        return null;
+    }
+    //亿
+    if (one >= 1_0000_0000L){
+        return String.format("%s亿",df.get().format(one * 1.00d / 1_0000_0000.00d));
+    }
+}
+```
 
 ## 1.4. ThreadLocal局限性（变量不具有传递性）  
 &emsp; <font color = "red">ThreadLocal无法在父子线程之间传递，</font>示例代码如下：  
