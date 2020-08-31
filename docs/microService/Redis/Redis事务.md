@@ -11,6 +11,11 @@
 
 # 1. Redis事务  
 
+<!-- 
+不支持原子性的 Redis 事务也敢叫事务？ 
+https://mp.weixin.qq.com/s/v2Ob6gZjmoJW1cEKb1Om0Q
+-->
+
 《Redis深度历险 核心原理与应用实践》  
 <!--
 

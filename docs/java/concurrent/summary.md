@@ -9,3 +9,16 @@
 
 2. tools：  
     1. CyclicBarrier，回环栅栏，多线程结果合并，例如操作多份文件然后合并。  
+
+
+<!-- 
+java多线程累加计数
+https://blog.csdn.net/wzmde007/article/details/79641084
+
+
+找出5亿个整数的文件中的重复数
+
+-->
+
+
+    

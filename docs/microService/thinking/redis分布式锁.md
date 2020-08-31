@@ -159,9 +159,9 @@ Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {
     internalLockLeaseTime = unit.toMillis(leaseTime);
     return commandExecutor.evalWriteAsync(getName(), LongCodec.INSTANCE, RedisCommands.EVAL_LONG,
             /**
-             * KEYS[1] 表示的是 getName() ，代表的是加锁的那个key，即上面代码中的test_lock
-             * ARGV[1] 表示的是 internalLockLeaseTime ，代表的就是锁key的生存时间，默认30秒
-             * ARGV[2] 表示的是 getLockName(threadId)， 代表的是 id:threadId用加锁的客户端的id+线程id，表示当前访问线程，用于区分不同服务器上的线程。
+             * KEYS[1]表示的是getName()，代表的是加锁的那个key，即上面代码中的test_lock
+             * ARGV[1]表示的是internalLockLeaseTime，代表的就是锁key的生存时间，默认30秒
+             * ARGV[2]表示的是getLockName(threadId)，代表的是id:threadId用加锁的客户端的id+线程id，表示当前访问线程，用于区分不同服务器上的线程。
              */
             "if (redis.call('exists', KEYS[1]) == 0) then " + //如果锁名称不存在
                     "redis.call('hset', KEYS[1], ARGV[2], 1); " + //则向redis中添加一个key为test_lock的set，并且向set中添加一个field为线程id，值=1的键值对，表示此线程的重入次数为1

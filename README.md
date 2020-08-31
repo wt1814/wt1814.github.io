@@ -235,6 +235,9 @@ Gitee： https://gitee.com/wt1814/
 [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 <!-- 
 消息订阅、pipeline
+https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486105&idx=2&sn=f4b4734951ec262ad67c865be940e5c5&chksm=ec505348db27da5ee9b956e40963b0abb52f739863a82c7d1838ca1a92928f50facc012ccd12&scene=21#wechat_redirect
+
+https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f8764d807692f5ae7221ac88d69b8&chksm=ec5053bbdb27daaddd7a5f9d4e3737d584c13cf1f861d5b82aec443390fcc327ff0f6fe8bdef&scene=21#wechat_redirect
 -->
 
 ### 分布式理论  
@@ -315,6 +318,7 @@ Gitee： https://gitee.com/wt1814/
 [Nginx运维](/docs/Linux/Nginx/3.nginx运维.md)  
 
 ### 系统设计
+
 [并发系统三高](/docs/system/threeHigh.md)  
 [微服务拆分](/docs/system/serviceSplit.md)  
 [系统稳定性建设](/docs/system/stability.md)  

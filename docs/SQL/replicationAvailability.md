@@ -12,6 +12,11 @@
 
 # 1. 高可用
 
+<!-- 
+ 跟大家聊聊mysql主从复制原理 
+https://mp.weixin.qq.com/s/HJYkDheKbCdANj91zRDx2g
+-->
+
 ## 1.1. 主从复制拓扑结构 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-11.png)  
 
