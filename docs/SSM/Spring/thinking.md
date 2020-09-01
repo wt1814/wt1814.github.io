@@ -14,6 +14,10 @@
     **<font color = "red">Spring bean容器刷新的核心 12+1个步骤完成IoC容器的创建及初始化工作：</font>**  
     1. 刷新前的准备工作。  
     2. **<font color = "red">创建IoC容器（DefaultListableBeanFactory），加载和注册BeanDefinition对象。</font>**  
+        &emsp; **<font color = "lime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
+        ```java
+        private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
+        ```
     3. 对IoC容器进行一些预处理。  
     4. 允许在上下文子类中对bean工厂进行后处理。  
     5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理。</font>**  
