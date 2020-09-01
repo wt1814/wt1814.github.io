@@ -27,7 +27,7 @@ https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
 -->
 
 # 1. ThreadPoolExecutor
-**<font color = "lime">1. 线程运行流程：查看execute方法。理解构造函数中参数，包括具体有哪些[阻塞队列](/docs/java/concurrent/BlockingQueue.md)。理解线程池状态标志位的设计。   
+**<font color = "lime">1. 线程运行流程：查看execute方法。理解构造函数中参数：[阻塞队列](/docs/java/concurrent/BlockingQueue.md)；拒绝策略默认AbortPolicy（拒绝任务，抛异常），可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。理解线程池状态标志位的设计。   
 2. 线程复用机制：runWorker()方法中，有任务时，while循环获取；没有任务时，清除空闲线程。  
 3. 线程池保证核心线程不被销毁？获取任务getTask()方法里allowCoreThreadTimeOut值默认为true，线程take()会一直阻塞，等待任务的添加。   
 </font>**
@@ -195,14 +195,14 @@ public ThreadPoolExecutor(int corePoolSize,
 * int  maximumPoolSize：线程池允许的最大线程数大小。当workQueue满了，不能添加任务的时候，这个参数才会生效。  
 * long  keepAliveTime：空闲线程（超出corePoolSize的线程）的生存时间。这些线程如果长时间没有执行任务，并且超过了keepAliveTime设定的时间，就会消亡。  
 * TimeUnit unit：参数keepAliveTime的单位。有7种取值，在TimeUnit类中有7种静态属性：TimeUnit.DAYS；TimeUnit.HOURS；  
-* BlockingQueue<Runnable\>  workQueue：任务阻塞队列，是java.util.concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样,如果BlockingQueue是满的,任何试图往里存东西的操作也会被阻断进入等待状态,直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition(显示锁Lock及Condition的学习与使用)来实现阻塞和唤醒。  
+* BlockingQueue<Runnable\>  workQueue：任务阻塞队列，是java.util.concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样,如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态,直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition(显示锁Lock及Condition的学习与使用)来实现阻塞和唤醒。  
 * ThreadFactory threadFactory：创建线程的工厂。  
 * RejectedExecutionHandler  handler：<font color = "red">当提交任务数超过maxmumPoolSize+workQueue之和时，任务会交给RejectedExecutionHandler来处理，执行拒绝策略。</font>有四种策略，<font color = "lime">默认是AbortPolicy(丢弃任务并抛出RejectedExecutionException异常)</font>。内置拒绝策略均实现了RejectedExecutionHandler接口，若以下策略仍无法满足实际需要，可以扩展RejectedExecutionHandler接口。  
 
     | 名称 | Condition |  
     |----|----|  
     |AbortPolicy (默认)|丢弃任务并抛出RejectedExecutionException异常。| 
-    |CallerRunsPolicy|在线程池当前正在运行的Thread线程池中处理被拒绝的任务。主线程会被阻塞，其余任务只能在被拒绝的任务执行完之后才会继续被提交到线程池执行。|
+    |<font color = "lime">CallerRunsPolicy</font>|<font color = "lime">在线程池当前正在运行的Thread线程池中处理被拒绝的任务。主线程会被阻塞，其余任务只能在被拒绝的任务执行完之后才会继续被提交到线程池执行。</font>|
     |DiscardOldestPolicy|丢弃队列最前面的任务，将被拒绝的任务添加到等待队列中。|
     |DiscardPolicy|丢弃任务，但是不抛出异常。|
 
