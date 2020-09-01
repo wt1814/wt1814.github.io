@@ -17,22 +17,8 @@ https://mp.weixin.qq.com/s/v2Ob6gZjmoJW1cEKb1Om0Q
 -->
 
 《Redis深度历险 核心原理与应用实践》  
-<!--
 
-
--->
-
-## 1.1. Redis事务简介
-
-<!-- 
-事务3特性
-
-    单独的隔离操作：事务中的所有命令都会序列化、按顺序地执行。事务在执行的过程中，不会被其他客户端发送来的命令请求所打断。
-    没有隔离级别的概念：队列中的命令没有提交之前都不会实际的被执行，因为事务提交前任何指令都不会被实际执行，也就不存在”事务内的查询要看到事务里的更新，在事务外查询不能看到”这个让人万分头痛的问题
-    不保证原子性：redis同一个事务中如果有一条命令执行失败，其后的命令仍然会被执行，没有回滚
-
--->
-
+## 1.1. Redis事务简介  
 &emsp; **Redis事务的概念：**   
 &emsp; **<font color = "lime">Redis事务的本质是一组命令的集合。</font>** 事务支持一次执行多个命令，一个事务中所有命令都会被序列化。在事务执行过程，会按照顺序串行化执行队列中的命令，其他客户端提交的命令请求不会插入到事务执行命令序列中。   
 &emsp; 总结说： **<font color = "red">redis事务就是一次性、顺序性、排他性的执行一个队列中的一系列命令。</font>**　　
@@ -43,7 +29,7 @@ https://mp.weixin.qq.com/s/v2Ob6gZjmoJW1cEKb1Om0Q
 &emsp; **Redis不保证原子性：**  
 &emsp; Redis中，单条命令是原子性执行的，但事务不保证原子性，且没有回滚。事务中任意命令执行失败，其余的命令仍会被执行。  
 
-&emsp; **Redis事务的三个阶段：**  
+&emsp; **<font color = "lime">Redis事务的三个阶段：</font>**  
 
 * 开始事务：以MULTI开启一个事务   
 * 命令入队：将多个命令入队到事务中，接到这些命令不会立即执行，而是放到等待执行的事务队列里面    
@@ -51,11 +37,13 @@ https://mp.weixin.qq.com/s/v2Ob6gZjmoJW1cEKb1Om0Q
 
 &emsp; **Redis事务相关命令：**  
 
-* watch key1 key2 ...: 监视一或多个key，如果在事务执行之前，被监视的key被其他命令改动，则事务被打断（类似乐观锁）
 * multi: 标记一个事务块的开始（queued）
 * exec: 执行所有事务块的命令（一旦执行exec后，之前加的监控锁都会被取消掉 ）　
 * discard: 取消事务，放弃事务块中的所有命令
+* watch key1 key2 ...: <font color = "red">监视一或多个key，如果在事务执行之前，被监视的key被其他命令改动，则事务被打断（类似乐观锁）</font>
 * unwatch: 取消watch对所有key的监控
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-98.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-99.png)  
 
 ## 1.2. Redis事务使用案例  
 &emsp; （1）正常执行。  

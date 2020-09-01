@@ -131,7 +131,6 @@
 
 * SpringBoot  
     * [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
-
     * [SpringBoot启动过程-SpringApplication初始化](/docs/microService/SpringBoot/SpringApplication初始化.md)  
     * [SpringBoot启动过程-run()方法运行过程](/docs/microService/SpringBoot/run方法运行过程.md)  
         * [SpringBoot事件回调机制](/docs/microService/SpringBoot/eventCallback.md)
@@ -139,7 +138,6 @@
         * [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/4.SpringBootEvent.md)  
     * [SpringBoot自动配置原理-@SpringBootApplication](/docs/microService/SpringBoot/自动配置@SpringBootApplication.md)  
     * [SpringBoot自动配置原理-运行流程解析](/docs/microService/SpringBoot/自动配置运行流程解析.md)  
-
     * [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
 * Spring Cloud Netflix  
@@ -183,7 +181,6 @@
         * [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
     * [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
     * [分布式ID](/docs/microService/thinking/分布式ID.md)  
-
     * [分布式事务](/docs/microService/thinking/分布式事务.md)  
         * [DTP](/docs/microService/thinking/分布式事务-1.md)    
         * [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
@@ -193,7 +190,6 @@
         * [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
         * [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
         * [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
-
     * [分布式缓存](/docs/microService/thinking/分布式缓存.md)  
     * [分布式限流](/docs/microService/thinking/分布式限流.md)   
     * [服务降级](/docs/microService/thinking/服务降级.md)  
