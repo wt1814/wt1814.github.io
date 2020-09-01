@@ -337,8 +337,7 @@ static final int hash(Object key) {
 -->
 
 #### 1.2.4.2. put()，插入 
-&emsp; **<font color = "lime">插入元素方法：</font>**  
-
+&emsp; **<font color = "lime">插入元素方法：</font>**   
 &emsp; **<font color = "lime">在put的时候，首先对key做hash运算，计算出该key所在的index。如果没碰撞，直接放到数组中，如果碰撞了，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。假设key是相同的，则替换到原来的值。最后判断哈希表是否满了(当前哈希表大小*负载因子），如果满了，则扩容。</font>**  
 
 1. 计算 key 的 hash 值。  

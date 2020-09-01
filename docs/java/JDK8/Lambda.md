@@ -18,6 +18,7 @@
 <!-- /TOC -->
 
 # 1. Lambda表达式  
+&emsp; **<font color = "lime">总结：</font>**  
 &emsp; **<font color = "lime">函数式接口的实例创建三种方式：lambda表达式；方法引用；构造方法引用。</font>**   
 
 &emsp; Lambda表达式作用域，访问外层作用域定义的局部变量、类的属性：  

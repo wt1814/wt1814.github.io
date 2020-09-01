@@ -20,6 +20,8 @@
 <!-- /TOC -->
 
 # 1. StreamAPI  
+&emsp; **<font color = "lime">总结：</font>**    
+&emsp; **<font color = "lime">paralleStream使用foreach直接修改变量是非线程安全的。解决方案：1.使用锁； 2.使用collect和reduce操作（Collections框架提供了同步的包装）。</font>**    
 
 <!-- 
  Java8 快速实现List转map 、分组、过滤等操作 
@@ -171,7 +173,6 @@ reduce("", String::concat);
     ```  
     &emsp; 参数supplier是一个生成目标类型实例的方法，代表着目标容器是什么；accumulator是将操作的目标数据填充到supplier 生成的目标类型实例中去的方法，代表着如何将元素添加到容器中；而combiner是将多个supplier生成的实例整合到一起的方法，代表着规约操作，将多个结果合并。  
 
-
 #### 1.2.2.3. ParallelStream   
 &emsp; 数据并行处理，只需要在原来的基础上加一个parallel()就可以开启， **<font color = "lime">parallel()开启的底层并行框架是[fork/join](/docs/java/concurrent/ForkJoinPool.md)。</font>**  
 &emsp; parallelStream是什么，它是一个集合的并发处理流。其作用是把一个集合中的数据分片，进行一个多线程的处理，增快运行速度。  
@@ -186,6 +187,7 @@ reduce("", String::concat);
 
 <!-- 
 https://www.jianshu.com/p/e9a36f2802ae?from=timeline&isappinstalled=0
+https://www.jianshu.com/p/32277e84dd1d
 -->
 
 &emsp; 解决方案：使用锁Syschronize或Lock或其他方案保障线程安全。  
