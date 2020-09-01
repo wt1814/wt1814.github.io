@@ -5,7 +5,7 @@
     1. 类加载器分类  
     2. 双亲委派模型（避免类的重复加载、防止核心API被随意篡改）  
 
-&emsp; **<font color = "lime">内存结构：</font>**    
+&emsp; **<font color = "lime">内存结构：</font>**   
 
 &emsp; **<font color = "lime">GC：</font>**    
 1. 堆中对象：  
@@ -26,5 +26,7 @@
     * Jhat：虚拟机堆转储快照分析工具  
     * Jstat：虚拟机统计信息监视工具  
     * Jinfo：java配置信息工具  
-2. 
+2. JVM调优：  
+    * CPU飚高  
+    * 内存溢出
 

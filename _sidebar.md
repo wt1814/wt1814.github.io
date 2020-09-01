@@ -28,6 +28,7 @@
     * [设计模式讨论](/docs/java/Design/discuss.md)  
 
 * 并发编程  
+    * [并发编程总结](/docs/java/concurrent/summary.md)  
     * [线程基本概念](/docs/java/concurrent/1.Thread.md)  
         * [wait](/docs/java/concurrent/wait.md)  
     * [JMM](/docs/java/concurrent/2.Multithread.md)  
