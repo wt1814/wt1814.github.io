@@ -17,9 +17,20 @@
 
 <!-- /TOC -->
 
-
-
 # 1. Redis分布式锁  
+&emsp; **<font color = "lime">总结：</font>**  
+&emsp; **<font color = "lime">RedissonLock锁互斥、自动延期机制、可重入加锁。</font>**  
+* 自动延期  
+&emsp; <font color = "lime">只要客户端一旦加锁成功，就会启动一个后台线程，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>  
+
+&emsp; RedissonLock加锁流程：  
+1. 执行lock.lock()代码时，<font color = "red">如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。</font>  
+2. 然后发送一段lua脚本，带有三个参数：一个是锁的名字（在代码里指定的）、一个是锁的时常（默认30秒）、一个是加锁的客户端id（每个客户端对应一个id）。<font color = "red">然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。</font>  
+
+    * 锁不存在（exists），则加锁（hset），并设置（pexpire）锁的过期时间；  
+    * 锁存在，检测（hexists）是当前线程持有锁，锁重入（hincrby），并且重新设置（pexpire）该锁的有效时间；
+    * 锁存在，但不是当前线程的，返回（pttl）锁的过期时间。 
+
 ## 1.1. 使用Redis分布式锁中的问题  
 1. 超时问题。  
 2. 部署问题：除了要考虑客户端要怎么实现分布式锁之外，还需要考虑Redis的部署问题。Redis有多种部署方式：单机模式；Master-Slave+Sentinel选举模式；Redis Cluster模式。  
@@ -148,9 +159,9 @@ try{
 1. 执行lock.lock()代码时，<font color = "red">如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。</font>  
 2. 然后发送一段lua脚本，带有三个参数：一个是锁的名字（在代码里指定的）、一个是锁的时常（默认30秒）、一个是加锁的客户端id（每个客户端对应一个id）。<font color = "red">然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。</font>  
 
-    * 锁不存在，则加锁，并设置锁的过期时间；  
-    * 锁存在，是当前线程的，线程重入；
-    * 锁存在，但不是当前线程的，返回锁的过期时间。 
+    * 锁不存在（exists），则加锁（hset），并设置（pexpire）锁的过期时间；  
+    * 锁存在，检测（hexists）是当前线程持有锁，锁重入（hincrby），并且重新设置（pexpire）该锁的有效时间；
+    * 锁存在，但不是当前线程的，返回（pttl）锁的过期时间。 
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-41.png)  
 

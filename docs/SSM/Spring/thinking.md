@@ -7,6 +7,26 @@
 * Spring提供了一些扩展接口，可以满足部分需求，可以实现编码解耦。  
 
 ---
+&emsp; Spring容器刷新：  
+1. BeanFactory与ApplicationContext
+2. BeanDefinition：BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。  
+3. Spring容器刷新：  
+    **<font color = "red">Spring bean容器刷新的核心 12+1个步骤完成IoC容器的创建及初始化工作：</font>**  
+    1. 刷新前的准备工作。  
+    2. **<font color = "red">创建IoC容器（DefaultListableBeanFactory），加载和注册BeanDefinition对象。</font>**  
+    3. 对IoC容器进行一些预处理。  
+    4. 允许在上下文子类中对bean工厂进行后处理。  
+    5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理。</font>**  
+    6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
+    7. 初始化一些消息源（比如处理国际化的i18n等消息源）。  
+    8. **<font color = "red">初始化应用事件多播器。</font>**  
+    9. **<font color = "red">初始化一些特殊的bean。</font>**  
+    10. **<font color = "red">注册一些监听器。</font>**  
+    11. **<font color = "red">实例化剩余的单例bean（非懒加载方式）。</font>**  
+    12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
+    13. 重置公共的一些缓存数据。  
+
+---
 &emsp;  Spring提供的扩展接口有aware接口、后置处理器、InitializingBean和DisposableBean、事件机制。这些可扩展的接口主要分两类，一类是针对单个Bean、另一类是针对容器。  
 
 * 针对单个Bean，BeanNameAware、BeanPostProcessor、InitializingBean和DisposableBean。
