@@ -3,7 +3,7 @@
 - [1. DockerFile](#1-dockerfile)
     - [1.1. 使用docker commit](#11-使用docker-commit)
     - [1.2. Dockerfile详解](#12-dockerfile详解)
-    - [1.3. 附录](#13-附录)
+    - [1.3. 附录：构建jdk的镜像](#13-附录构建jdk的镜像)
 
 <!-- /TOC -->
 
@@ -221,7 +221,7 @@ Dockerfile是一个文本文件，其内包含了一条条的指令，每一条�
         ONBUILD ADD . /application/src
         ONBUILD RUN /usr/local/bin/python-build --dir /app/src
 
-## 1.3. 附录 
+## 1.3. 附录：构建jdk的镜像 
 
 &emsp; 例：构建一个带有jdk的centos7镜像  
 
