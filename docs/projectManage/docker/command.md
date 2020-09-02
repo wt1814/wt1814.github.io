@@ -22,19 +22,19 @@
 &emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi</font>**  
 
 * 获取镜像：  
-&emsp; docker pull centos    (默认获取centos最新的镜像)
+&emsp; docker pull centos (默认获取centos最新的镜像)
 &emsp; docker pull centos:7 (获取指定标签镜像)
-* 查看本地镜像：
-&emsp; docker images
-* 查看镜像详细信息：
-&emsp; docker inspect centos:7 
-* 查看镜像历史：
-&emsp; docker history centos:7
-* 删除镜像：
-&emsp; A:使用标签删除：docker rmi centos
+* 查看本地镜像：  
+&emsp; docker images  
+* 查看镜像详细信息：  
+&emsp; docker inspect centos:7  
+* 查看镜像历史：  
+&emsp; docker history centos:7  
+* 删除镜像：  
+&emsp; A:使用标签删除：docker rmi centos  
 &emsp; B:使用ID删除：docker rimi
-* 构建镜像：  
-&emsp; A:使用docker commit命令
+* 构建镜像：    
+&emsp; A:使用docker commit命令  
 &emsp; B:使用Dockerfile构建
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-8.png)  
