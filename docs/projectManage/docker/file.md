@@ -1,22 +1,20 @@
-
 <!-- TOC -->
 
 - [1. DockerFile](#1-dockerfile)
     - [1.1. 使用docker commit](#11-使用docker-commit)
-    - [1.2. 使用Dockerfile构建](#12-使用dockerfile构建)
-        - [1.2.1. 组成部分](#121-组成部分)
-            - [1.2.1.1. FROM命令](#1211-from命令)
-            - [1.2.1.2. MAINTAINER指令](#1212-maintainer指令)
-            - [1.2.1.3. LABEL指令](#1213-label指令)
-            - [1.2.1.4. RUN命令](#1214-run命令)
-            - [1.2.1.5. ENV命令](#1215-env命令)
-            - [1.2.1.6. ARG指令](#1216-arg指令)
-            - [1.2.1.7. VOLUME指令](#1217-volume指令)
-            - [1.2.1.8. COPY命令](#1218-copy命令)
-            - [1.2.1.9. ADD命令](#1219-add命令)
-            - [1.2.1.10. EXPOSE命令](#12110-expose命令)
-            - [1.2.1.11. WORKDIR命令](#12111-workdir命令)
-            - [1.2.1.12. CMD命令](#12112-cmd命令)
+    - [1.2. Dockerfile详解](#12-dockerfile详解)
+        - [1.2.1. FROM命令](#121-from命令)
+        - [1.2.2. MAINTAINER指令](#122-maintainer指令)
+        - [1.2.3. LABEL指令](#123-label指令)
+        - [1.2.4. RUN命令](#124-run命令)
+        - [1.2.5. ENV命令](#125-env命令)
+        - [1.2.6. ARG指令](#126-arg指令)
+        - [1.2.7. VOLUME指令](#127-volume指令)
+        - [1.2.8. COPY命令](#128-copy命令)
+        - [1.2.9. ADD命令](#129-add命令)
+        - [1.2.10. EXPOSE命令](#1210-expose命令)
+        - [1.2.11. WORKDIR命令](#1211-workdir命令)
+        - [1.2.12. CMD命令](#1212-cmd命令)
 
 <!-- /TOC -->
 
@@ -32,10 +30,6 @@ https://mp.weixin.qq.com/s/gli_JAXRWMfZgUWZWXu8UQ
 http://www.imooc.com/article/277891
 -->
 
-<!-- 
-https://mp.weixin.qq.com/s/D8aH9e85ym034e4qZSLOBQ
-
--->
 
 ## 1.1. 使用docker commit
 
@@ -65,7 +59,7 @@ Unpacking JAR files...
 &emsp; 通过docker images命令可以看到新增了centos/jdk标签为2.0的镜像  
 
 
-## 1.2. 使用Dockerfile构建
+## 1.2. Dockerfile详解
 
 <!-- 
 镜像的定制实际上就是定制每一层所添加的配置、文件。我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，这个脚本就是Dockerfile。  
@@ -73,10 +67,10 @@ Unpacking JAR files...
 Dockerfile是一个文本文件，其内包含了一条条的指令，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。 
 -->
 &emsp; Dockerfile中文名叫镜像描述文件，是一个包含用于组合镜像的命令的文本文档，也可以叫“脚本”。通过读取Dockerfile中的指令安装步骤自动生成镜像。    
-&emsp; 通过docker build 命令用于从Dockerfile 文件构建镜像。docker build -t 机构/镜像名<:tags> Dockerfile目录。   
+&emsp; 通过docker build命令用于从Dockerfile文件构建镜像。docker build -t 机构/镜像名<:tags> Dockerfile目录。   
 
-### 1.2.1. 组成部分  
-&emsp; Dockerfile一般分为：基础镜像、镜像元信息、镜像操作指令和容器启动时执行指令，# 为 Dockerfile 中的注释。  
+&emsp; **<font color = "red">组成部分</font>**    
+&emsp; **<font color = "lime">Dockerfile一般分为：基础镜像、镜像元信息、镜像操作指令和容器启动时执行指令，# 为 Dockerfile中的注释。</font>**  
 
 |部分|命令|
 |---|---|
@@ -88,31 +82,33 @@ Dockerfile是一个文本文件，其内包含了一条条的指令，每一条�
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-9.png)  
 
 
-#### 1.2.1.1. FROM命令  
+### 1.2.1. FROM命令  
 &emsp; 定制的镜像都是基于FROM的镜像，所谓定制镜像，一定是以一个镜像为基础，在其上进行定制。基础镜像是必须指定的，而FROM就是指定基础镜像，因此一个Dockerfile中FROM是必备的指令，并且必须是第一条指令。在Docker Hub上有非常多的高质量的官方镜像，有可以直接拿来使用的服务类的镜像，如nginx、redis、mysql、tomcat等；可以在其中寻找一个最符合最终目标的镜像为基础镜像进行定制。    
 
-FROM是指定基础镜像，必须为第一个命令，格式：  
-FROM \<image>:\<tag>  
-其中tag或digest是可选的，如果不使用这两个值时，会使用latest版本的基础镜像。  
-示例： FROM mysql:5.6  
+&emsp; FROM格式： 
 
+    FROM \<image>:\<tag>  
 
-#### 1.2.1.2. MAINTAINER指令  
-MAINTAINER用来声明维护者信息,该命令已经过期，推荐使用 LABEL ，格式：  
-MAINTAINER \<name>  
+&emsp; 其中tag或digest是可选的，如果不使用这两个值时，会使用latest版本的基础镜像。  
+&emsp; 示例：FROM mysql:5.6  
 
-#### 1.2.1.3. LABEL指令  
-LABEL：用于为镜像添加元数据,多用于声明构建信息，作者、机构、组织等。格式：  
-LABEL <key>=<value> <key>=<value> <key>=<value> ...  
-示例： LABEL version="1.0" description="felord.cn" by="Felordcn"  
-使用LABEL 指定元数据时，一条LABEL指定可以指定一或多条元数据，指定多条元数据时不同元数据之间通过空格分隔。推荐将所有的元数据通过一条LABEL指令指定，以免生成过多的中间镜像。  
+### 1.2.2. MAINTAINER指令  
+&emsp; MAINTAINER用来声明维护者信息，该命令已经过期，推荐使用 LABEL ，格式：  
 
-#### 1.2.1.4. RUN命令
-在新镜像内部执行的命令，比如安装一些软件、配置一些基础环境。  
+    MAINTAINER \<name>  
 
-RUN指令是用来执行命令行命令的。由于命令行的强大能力，RUN指令在定制镜像时是最常用的指令之一。其格式有两种：
+### 1.2.3. LABEL指令  
+&emsp; LABEL：用于为镜像添加元数据,多用于声明构建信息，作者、机构、组织等。格式：  
 
-shell 格式：RUN <命令行命令>  
+    LABEL <key>=<value> <key>=<value> <key>=<value> ...  
+
+&emsp; 示例： LABEL version="1.0" description="felord.cn" by="Felordcn"  
+&emsp; 使用LABEL 指定元数据时，一条LABEL指定可以指定一或多条元数据，指定多条元数据时不同元数据之间通过空格分隔。推荐将所有的元数据通过一条LABEL指令指定，以免生成过多的中间镜像。  
+
+### 1.2.4. RUN命令
+&emsp; RUN命令是在新镜像内部执行的命令，比如安装一些软件、配置一些基础环境。其格式有两种：
+
+1. shell 格式：RUN <命令行命令>  
 
 ```text
 RUN echo helloworld
@@ -120,13 +116,13 @@ RUN yum install wget
 RUN tar -xvf xxx.tar.gz
 ```
 
-exec 格式：RUN ["可执行文件",“参数1”,“参数2”]  
+2. exec 格式：RUN ["可执行文件",“参数1”,“参数2”]  
 
 ```text
 RUN ["echo", "helloworld"]
 ```
 
-#### 1.2.1.5. ENV命令  
+### 1.2.5. ENV命令  
 ADD指令和COPY的格式和性质基本一致。但是在COPY基础上增加了一些功能。比如<源路径>可以是一个URL,这种情况下，Docker引擎会试图去下载这个链接的文件放到<目标路径>去。  
     
     在Docker官方的Dockerfile最佳实践文档中要求，尽可能的使用COPY，因此COPY的语义很明确，就是复制文件而已，没有必要使用ADD高级的命令  
@@ -141,7 +137,7 @@ ENV <key>=<value> ... #可以设置多个变量，每个变量为一个"="的键
 
 可以通过 ${key} 在其它指令中来引用变量，如 ${version} 。我们也可以通过 docker run 中的 -e <ENV> 来动态赋值  
 
-#### 1.2.1.6. ARG指令  
+### 1.2.6. ARG指令  
 构建参数和ENV的效果一样，都是设置环境变量。所不同的是，ARG所设置的构建环境的环境变量，在将来容器运行时是不会存在这些环境变量的。  
 
 格式：  
@@ -151,7 +147,7 @@ ENV <key>=<value> ... #可以设置多个变量，每个变量为一个"="的键
 构建命令 docker build 中可以用 --build-arg <参数名>=<值> 来覆盖。  
 
 
-#### 1.2.1.7. VOLUME指令  
+### 1.2.7. VOLUME指令  
 容器运行时应该尽量保持容器存储层不发生写操作，对于数据库需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中，为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在Dockerfile中,我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据：  
 
 ```text
@@ -164,7 +160,7 @@ VOLUME /data
 ```
 在这行命令中，就使用了mydata这个命名卷挂载到了/data这个位置，替代了Dockerfile中定义的匿名卷的挂载配置。  
 
-#### 1.2.1.8. COPY命令  
+### 1.2.8. COPY命令  
 COPY 的功能类似于 ADD，但是不会自动解压文件，也不能访问网络资源  
 复制指令，从上下文目录中复制文件或者目录到容器里指定路径：  
 
@@ -179,13 +175,13 @@ COPY 的功能类似于 ADD，但是不会自动解压文件，也不能访问�
     因为构建环境将会上传到Docker守护进程，而复制是在Docker守护进程中进行的。任何位于构建环境之外的东西都是不可用的。COPY指令的目的的位置则必须是容器内部的一个绝对路径。
     ---《THE DOCKER BOOK》
 
-#### 1.2.1.9. ADD命令  
+### 1.2.9. ADD命令  
 ADD指令和COPY的格式和性质基本一致。但是在COPY基础上增加了一些功能。比如<源路径>可以是一个URL,这种情况下，Docker引擎会试图去下载这个链接的文件放到<目标路径>去。  
 
     在Docker官方的Dockerfile最佳实践文档中要求，尽可能的使用COPY，因此COPY的语义很明确，就是复制文件而已，没有必要使用ADD高级的命令
 
 
-#### 1.2.1.10. EXPOSE命令  
+### 1.2.10. EXPOSE命令  
 EXPOSE指令是声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个声明应该就会开启这个端口的服务。  
 
 EXPOSE <端口1> [<端口2>...]
@@ -194,7 +190,7 @@ EXPOSE <端口1> [<端口2>...]
 * 运行时使用随机端口映射时，也就是 docker run -P 时，会自动随机映射 EXPOSE 的端口。  
 
 
-#### 1.2.1.11. WORKDIR命令  
+### 1.2.11. WORKDIR命令  
 在构建镜像时，指定镜像的工作目录，之后的命令都是基于此工作目录，如果不存在，则会创建目录。  
 
 WORKDIR 用来指定工作目录，类似于我们通常使用的cd 命令，格式：  
@@ -219,7 +215,7 @@ RUN echo "hello">world.txt 如果将这个Dockerfile进行构建镜像运行后�
 
 因此如果需要改变以后各层的工作目录的位置，那么应该使用WORKIDR指令。  
 
-#### 1.2.1.12. CMD命令  
+### 1.2.12. CMD命令  
 是容器运行时执行的命令，命令和run有本质的区别：  
 
     CMD 在docker run 时运行。RUN 是在 docker build。  
@@ -247,7 +243,8 @@ CMD 构建容器后执行的命令，也就是在容器启动时才执行的命�
 
 CMD 不同于 RUN，CMD 用于指定在容器启动时所要执行的命令，而RUN用于指定镜像构建时所要执行的命令。  
 
-#### ENTRYPOINT命令  
+
+### ENTRYPOINT命令  
 ENTRYPOINT的目的和CMD一样，都是在指定容器启动程序及参数。ENTRYPOINT在运行也可以替代，不过比CMD要略显繁琐，需要通过docker run的参数 --entrypoint来指定。  
 当指定了ENTRYPOINT后，CMD的含义就发生了改变*，不再是直接的运行*其命令，而是将CMD的内容作为参数传给ENTRYPOINT指令，换句话说实际执行时，将变为：  
 
@@ -275,7 +272,7 @@ ENTRYPOINT 用来配置容器，使其可执行化。配合 CMD可省去 applica
 
 ENTRYPOINT 与 CMD 非常类似，不同的是通过 docker run 执行的命令不会覆盖 ENTRYPOINT ，而 docker run 命令中指定的任何参数都会被当做参数再次传递给 ENTRYPOINT 指令。Dockerfile 中只有最后一个 ENTRYPOINT 命令起作用，也就是说如果你指定多个ENTRYPOINT,只执行最后的 ENTRYPOINT 指令。   
 
-#### ONBUILD指令   
+### ONBUILD指令   
 ONBUILD 作用是其当所构建的镜像被用做其它镜像的基础镜像，该镜像中的 ONBUILD 中的命令就会触发，格式：  
 
     ONBUILD [INSTRUCTION]  
@@ -285,7 +282,7 @@ ONBUILD 作用是其当所构建的镜像被用做其它镜像的基础镜像，
     ONBUILD ADD . /application/src
     ONBUILD RUN /usr/local/bin/python-build --dir /app/src
 
-### 附: Spring Boot Dockerfile  
+## 附: Spring Boot Dockerfile  
 
 
 

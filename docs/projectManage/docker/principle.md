@@ -48,6 +48,7 @@ https://mp.weixin.qq.com/s?__biz=MzU0MzQ5MDA0Mw==&mid=2247486479&idx=3&sn=c1fbb2
 宿主机：运行引擎的操作系统所在服务器。
 -->
 
+  
 
 * 引擎：创建和管理容器的工具，通过读取镜像来生成容器，并负责从仓库拉取镜像或提交镜像到仓库中；  
 * 镜像(Image)
@@ -98,13 +99,15 @@ https://mp.weixin.qq.com/s/PM6K3j8bqBbbwtt4S4uyEw
 ### 容器生命周期  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-4.png)  
 
+### 容器数据卷
+容器数据卷：持久化。docker运行产生的数据持久化
 
 ### 容器间通信  
-### 容器间Link单向通信  
+#### 容器间Link单向通信  
 
-### Bridge网桥双向通信  
+#### Bridge网桥双向通信  
 
-### Volume容器间共享数据  
+#### Volume容器间共享数据  
 
 
 ## Docker基础操作系统  
