@@ -18,7 +18,6 @@
 
 ## 1.2. Docker命令  
 
-
 ### 1.2.1. 镜像操作命令  
 &emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi</font>**  
 
