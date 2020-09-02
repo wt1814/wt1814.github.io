@@ -3,12 +3,6 @@
 - [1. DockerFile](#1-dockerfile)
     - [1.1. 使用docker commit](#11-使用docker-commit)
     - [1.2. Dockerfile详解](#12-dockerfile详解)
-        - [1.2.1. FROM命令](#121-from命令)
-        - [1.2.2. MAINTAINER指令](#122-maintainer指令)
-        - [1.2.3. LABEL指令](#123-label指令)
-        - [1.2.4. RUN命令](#124-run命令)
-        - [1.2.5. ENV命令](#125-env命令)
-        - [1.2.6. ARG指令](#126-arg指令)
         - [1.2.7. VOLUME指令](#127-volume指令)
         - [1.2.8. COPY命令](#128-copy命令)
         - [1.2.9. ADD命令](#129-add命令)
@@ -82,83 +76,80 @@ Dockerfile是一个文本文件，其内包含了一条条的指令，每一条�
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-9.png)  
 
 
-### 1.2.1. FROM命令  
-&emsp; 定制的镜像都是基于FROM的镜像，所谓定制镜像，一定是以一个镜像为基础，在其上进行定制。基础镜像是必须指定的，而FROM就是指定基础镜像，因此一个Dockerfile中FROM是必备的指令，并且必须是第一条指令。在Docker Hub上有非常多的高质量的官方镜像，有可以直接拿来使用的服务类的镜像，如nginx、redis、mysql、tomcat等；可以在其中寻找一个最符合最终目标的镜像为基础镜像进行定制。    
+1. FROM命令  
+    &emsp; 定制的镜像都是基于FROM的镜像，所谓定制镜像，一定是以一个镜像为基础，在其上进行定制。基础镜像是必须指定的，而FROM就是指定基础镜像，因此一个Dockerfile中FROM是必备的指令，并且必须是第一条指令。在Docker Hub上有非常多的高质量的官方镜像，有可以直接拿来使用的服务类的镜像，如nginx、redis、mysql、tomcat等；可以在其中寻找一个最符合最终目标的镜像为基础镜像进行定制。    
 
-&emsp; FROM格式： 
+    &emsp; FROM格式： 
 
-    FROM \<image>:\<tag>  
+        FROM \<image>:\<tag>  
 
-&emsp; 其中tag或digest是可选的，如果不使用这两个值时，会使用latest版本的基础镜像。  
-&emsp; 示例：FROM mysql:5.6  
+    &emsp; 其中tag或digest是可选的，如果不使用这两个值时，会使用latest版本的基础镜像。  
+    &emsp; 示例：FROM mysql:5.6  
 
-### 1.2.2. MAINTAINER指令  
-&emsp; MAINTAINER用来声明维护者信息，该命令已经过期，推荐使用 LABEL ，格式：  
+2. MAINTAINER指令  
+    &emsp; MAINTAINER用来声明维护者信息，该命令已经过期，推荐使用 LABEL ，格式：  
 
-    MAINTAINER \<name>  
+        MAINTAINER \<name>  
 
-### 1.2.3. LABEL指令  
-&emsp; LABEL：用于为镜像添加元数据,多用于声明构建信息，作者、机构、组织等。格式：  
+3. LABEL指令  
+    &emsp; LABEL：用于为镜像添加元数据,多用于声明构建信息，作者、机构、组织等。格式：  
 
-    LABEL <key>=<value> <key>=<value> <key>=<value> ...  
+        LABEL <key>=<value> <key>=<value> <key>=<value> ...  
 
-&emsp; 示例： LABEL version="1.0" description="felord.cn" by="Felordcn"  
-&emsp; 使用LABEL 指定元数据时，一条LABEL指定可以指定一或多条元数据，指定多条元数据时不同元数据之间通过空格分隔。推荐将所有的元数据通过一条LABEL指令指定，以免生成过多的中间镜像。  
+    &emsp; 示例： LABEL version="1.0" description="felord.cn" by="Felordcn"  
+    &emsp; 使用LABEL 指定元数据时，一条LABEL指定可以指定一或多条元数据，指定多条元数据时不同元数据之间通过空格分隔。推荐将所有的元数据通过一条LABEL指令指定，以免生成过多的中间镜像。  
 
-### 1.2.4. RUN命令
-&emsp; RUN命令是在新镜像内部执行的命令，比如安装一些软件、配置一些基础环境。其格式有两种：
+4. RUN命令
+    &emsp; RUN命令是在新镜像内部执行的命令，比如安装一些软件、配置一些基础环境。其格式有两种：
 
-1. shell 格式：RUN <命令行命令>  
+    1. shell 格式：RUN <命令行命令>  
 
-```text
-RUN echo helloworld
-RUN yum install wget
-RUN tar -xvf xxx.tar.gz
-```
+    ```text
+    RUN echo helloworld
+    RUN yum install wget
+    RUN tar -xvf xxx.tar.gz
+    ```
 
-2. exec 格式：RUN ["可执行文件",“参数1”,“参数2”]  
+    2. exec 格式：RUN ["可执行文件",“参数1”,“参数2”]  
 
-```text
-RUN ["echo", "helloworld"]
-```
+    ```text
+    RUN ["echo", "helloworld"]
+    ```
 
-### 1.2.5. ENV命令  
-ADD指令和COPY的格式和性质基本一致。但是在COPY基础上增加了一些功能。比如<源路径>可以是一个URL,这种情况下，Docker引擎会试图去下载这个链接的文件放到<目标路径>去。  
-    
-    在Docker官方的Dockerfile最佳实践文档中要求，尽可能的使用COPY，因此COPY的语义很明确，就是复制文件而已，没有必要使用ADD高级的命令  
+5. ENV命令  
+    &emsp; 设置环境变量，定义了环境变量，那么在后续的指令中，就可以使用这个环境变量：
 
-ENV 用来设置环境变量，格式：  
+        ENV <key> <value> # 之后的所有内容均会被视为其的组成部分，因此，一次只能设置一个变量  
+        ENV <key>=<value> ... #可以设置多个变量，每个变量为一个"="的键值对，如果中包含空格，可以使用\来进行转义，也可以通过""来进行标识；另外，\ 也可以用于续行  
 
-ENV <key> <value> # 之后的所有内容均会被视为其的组成部分，因此，一次只能设置一个变量  
+    &emsp; 示例： ENV version 1.0.0 或者 ENV version=1.0.0  
+    &emsp; 可以通过 ${key} 在其它指令中来引用变量，如 ${version} 。也可以通过 docker run 中的 -e \<ENV> 来动态赋值  
 
-ENV <key>=<value> ... #可以设置多个变量，每个变量为一个"="的键值对，如果中包含空格，可以使用\来进行转义，也可以通过""来进行标识；另外，\ 也可以用于续行  
+    <!-- 
+    这个指令很简单，就是设置环境变量而已，无论是后面的其它指令，如RUN，还是运行时的应用，都可以直接使用这里定义的环境变量。通过${key1}方式引用即可。  
+    -->
 
-示例： ENV version 1.0.0 或者 ENV version=1.0.0  
+6. ARG指令  
+    &emsp; 构建参数和ENV的效果一样，都是设置环境变量。所不同的是， **<font color = "red">ARG所设置的构建环境的环境变量，用于指定传递给构建运行时的变量，在将来容器运行时是不会存在这些环境变量的。</font>**  
 
-可以通过 ${key} 在其它指令中来引用变量，如 ${version} 。我们也可以通过 docker run 中的 -e <ENV> 来动态赋值  
+    &emsp; 格式：  
 
-### 1.2.6. ARG指令  
-构建参数和ENV的效果一样，都是设置环境变量。所不同的是，ARG所设置的构建环境的环境变量，在将来容器运行时是不会存在这些环境变量的。  
+        ARG <参数名>[=<默认值>]  
 
-格式：  
-
-    ARG <参数名>[=<默认值>]  
-
-构建命令 docker build 中可以用 --build-arg <参数名>=<值> 来覆盖。  
-
+    &emsp; 通过docker run中的 --build-arg \<key>=\<value> 来动态赋值，不指定将使用其默认值。    
 
 ### 1.2.7. VOLUME指令  
-容器运行时应该尽量保持容器存储层不发生写操作，对于数据库需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中，为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在Dockerfile中,我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据：  
+&emsp; 容器运行时应该尽量保持容器存储层不发生写操作，对于数据库需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中，为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在Dockerfile中，可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据：  
 
 ```text
 VOLUME /data
 ```
-这里的/data目录就会在运行时自动挂载为匿名卷，任何向/data中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行时可以覆盖这个挂载设置。  
+&emsp; 这里的/data目录就会在运行时自动挂载为匿名卷，任何向/data中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行时可以覆盖这个挂载设置。  
 
 ```text
 比如：docker run -d -v mydata:/data xxxx
 ```
-在这行命令中，就使用了mydata这个命名卷挂载到了/data这个位置，替代了Dockerfile中定义的匿名卷的挂载配置。  
+&emsp; 在这行命令中，就使用了mydata这个命名卷挂载到了/data这个位置，替代了Dockerfile中定义的匿名卷的挂载配置。  
 
 ### 1.2.8. COPY命令  
 COPY 的功能类似于 ADD，但是不会自动解压文件，也不能访问网络资源  
