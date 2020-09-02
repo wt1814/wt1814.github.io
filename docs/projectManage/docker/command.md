@@ -38,6 +38,8 @@
 &emsp; A:使用docker commit命令
 &emsp; B:使用Dockerfile构建
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-8.png)  
+
 <!-- 
 
 * docker pull 镜像名<:tags> - 从远程仓库抽取镜像   
@@ -106,6 +108,9 @@
         把导出的文件centos_test.tar通过docker import导入变成镜像
         [root@localhost ~]# docker import centos_test.tar test/centos
         通过docker images命令可以看到增加了个test/centos镜像
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-7.png)  
+
 
 ## 1.3. Docker部署  
 ......
