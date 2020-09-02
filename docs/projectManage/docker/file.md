@@ -3,18 +3,13 @@
 - [1. DockerFile](#1-dockerfile)
     - [1.1. 使用docker commit](#11-使用docker-commit)
     - [1.2. Dockerfile详解](#12-dockerfile详解)
+    - [1.3. 附录](#13-附录)
 
 <!-- /TOC -->
 
 # 1. DockerFile
 <!--
-https://mp.weixin.qq.com/s/2poLYm-MgAEJxCYiRZDnQw
-Dockerfile使用详解以及CMD、ENTRYPOINT的区别
-https://mp.weixin.qq.com/s/sVnO59GEMomZYBlBGUJJTQ
-面试官：你说你精通 Docker，那你来详细说说 Dockerfile 吧
-https://mp.weixin.qq.com/s/gli_JAXRWMfZgUWZWXu8UQ
-如何编写最佳的Dockerfile
-http://www.imooc.com/article/277891
+
 -->
 
 
@@ -89,7 +84,7 @@ Dockerfile是一个文本文件，其内包含了一条条的指令，每一条�
     &emsp; 示例： LABEL version="1.0" description="felord.cn" by="Felordcn"  
     &emsp; 使用LABEL 指定元数据时，一条LABEL指定可以指定一或多条元数据，指定多条元数据时不同元数据之间通过空格分隔。推荐将所有的元数据通过一条LABEL指令指定，以免生成过多的中间镜像。  
 
-4. RUN命令
+4. RUN命令  
     &emsp; RUN命令是在新镜像内部执行的命令，比如安装一些软件、配置一些基础环境。其格式有两种：
 
     1. shell 格式：RUN <命令行命令>  
@@ -159,7 +154,6 @@ Dockerfile是一个文本文件，其内包含了一条条的指令，每一条�
 
         在Docker官方的Dockerfile最佳实践文档中要求，尽可能的使用COPY，因为COPY的语义很明确，就是复制文件而已，没有必要使用ADD高级的命令。
 
-
 10. EXPOSE命令  
     &emsp; EXPOSE指令是声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个声明应该就会开启这个端口的服务。  
 
@@ -167,7 +161,6 @@ Dockerfile是一个文本文件，其内包含了一条条的指令，每一条�
 
     * 帮助镜像使用者理解这个镜像服务的守护端口，以方便配置映射。  
     * 运行时使用随机端口映射时，也就是docker run -P时，会自动随机映射EXPOSE的端口。  
-
 
 11. WORKDIR命令  
     &emsp; 在构建镜像时，WORKDIR指定镜像的工作目录(或者称为当前目录)，RUN、CMD、ENTRYPOINT、ADD、COPY等命令都会在该目录下执行。如果不存在，则会创建目录。类似于通常使用的cd 命令，格式：  
@@ -189,33 +182,24 @@ Dockerfile是一个文本文件，其内包含了一条条的指令，每一条�
     &emsp; 因此如果需要改变以后各层的工作目录的位置，那么应该使用WORKIDR指令。  
 
 12. CMD命令  
-是容器运行时执行的命令，命令和run有本质的区别：  
+    &emsp; 作用：为启动的容器指定默认要运行的程序。CMD指令指定的程序可被docker run命令行参数中指定要运行的程序所覆盖。 **<font color = "lime">注意：如果 Dockerfile 中如果存在多个 CMD 指令，仅最后一个生效。</font>    
 
-    CMD 在docker run 时运行。RUN 是在 docker build。  
+        CMD命令是容器运行时执行的命令，命令和run有本质的区别：CMD 用于指定在容器启动docker run时所要执行的命令，而RUN用于指定镜像构建docker build时所要执行的命令。     
 
-作用：为启动的容器指定默认要运行的程序，程序运行结束，容器也就结束。CMD指令指定的程序可被docker run命令行参数中指定要运行的程序所覆盖。  
+    格式：  
 
-    注意：如果 Dockerfile 中如果存在多个 CMD 指令，仅最后一个生效。    
-
-格式：  
-
-    CMD CMD ["<可执行文件或命令>","","",...] CMD ["","",...] # 写法是为 ENTRYPOINT指令指定的程序提供默认参数  
-
-CMD 构建容器后执行的命令，也就是在容器启动时才执行的命令。格式：  
-
-```
- \# 执行可执行文件，优先执行
- CMD ["executable","param1","param2"]
- \# 设置了 ENTRYPOINT，则直接调用ENTRYPOINT添加参数  参见 CMD 讲解
- CMD ["param1","param2"]
- \# 执行shell命令
- CMD command param1 param2
- ```
- 示例： CMD ["/usr/bin/bash","--help"]  
-
-CMD 不同于 RUN，CMD 用于指定在容器启动时所要执行的命令，而RUN用于指定镜像构建时所要执行的命令。  
-
-
+    <!-- 
+    CMD ["<可执行文件或命令>","","",...] CMD ["","",...] # 写法是为 ENTRYPOINT指令指定的程序提供默认参数  
+    -->
+    ```
+    \# 执行可执行文件，优先执行
+    CMD ["<可执行文件或命令>","param1","param2"]
+    \# 设置了 ENTRYPOINT，则直接调用ENTRYPOINT添加参数
+    CMD ["param1","param2"]
+    \# 执行shell命令
+    CMD command param1 param2
+    ```
+    示例： CMD ["/usr/bin/bash","--help"]  
 13. ENTRYPOINT命令  
     &emsp; ENTRYPOINT用来配置容器，使其可执行化。配合 CMD可省去 application，只使用参数。docker run 命令中指定的任何参数都会被当做参数再次传递给 ENTRYPOINT 指令。Dockerfile 中只有最后一个 ENTRYPOINT 命令起作用，也就是说如果指定多个ENTRYPOINT，只执行最后的 ENTRYPOINT 指令。  
     当指定了ENTRYPOINT后，CMD的含义就发生了改变*，不再是直接的运行*其命令，而是将CMD的内容作为参数传给ENTRYPOINT指令，换句话说实际执行时，将变为：  
@@ -227,7 +211,6 @@ CMD 不同于 RUN，CMD 用于指定在容器启动时所要执行的命令，�
         CMD ["","",...]
 
     &emsp; 就是把CMD的参数，当作参数传给ENTRYPOINT命令。  
-
 14. ONBUILD指令   
     &emsp; ONBUILD 作用是其当所构建的镜像被用做其它镜像的基础镜像，该镜像中的 ONBUILD 中的命令就会触发，格式：  
 
@@ -238,7 +221,7 @@ CMD 不同于 RUN，CMD 用于指定在容器启动时所要执行的命令，�
         ONBUILD ADD . /application/src
         ONBUILD RUN /usr/local/bin/python-build --dir /app/src
 
-## 附录 
+## 1.3. 附录 
 
 &emsp; 例：构建一个带有jdk的centos7镜像  
 
