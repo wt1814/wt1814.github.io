@@ -307,8 +307,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 [ELK与EFK](/docs/ES/6.ELK与EFK.md)    
 
 ## 架构设计  
-[性能指标](/docs/system/performance.md)  
-[系统架构]()  
+[性能指标](/docs/system/performance.md)   
 
 ### 系统接入层  
 [接入层]  
@@ -323,8 +322,8 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 [Nginx运维](/docs/Linux/Nginx/3.nginx运维.md)  
 
 ### 系统设计
-
 [并发系统三高](/docs/system/threeHigh.md)  
+[秒杀系统设计](/docs/system/seckill.md)  
 [微服务拆分](/docs/system/serviceSplit.md)  
 [系统稳定性建设](/docs/system/stability.md)  
 [监控](/docs/DevOps/monitor.md)  

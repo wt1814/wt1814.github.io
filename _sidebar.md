@@ -234,6 +234,7 @@
         * [Nginx运维](/docs/Linux/Nginx/3.nginx运维.md) 
     * 系统设计  
     * [并发系统三高](/docs/system/threeHigh.md)  
+    * [秒杀系统设计](/docs/system/seckill.md)  
     * [微服务拆分](/docs/system/serviceSplit.md)  
     * 系统维护  
     * [系统稳定性建设](/docs/system/stability.md)  
