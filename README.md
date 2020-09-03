@@ -112,7 +112,6 @@ Gitee： https://gitee.com/wt1814/
 [Linux系统问题排查](/docs/Linux/Linux/problem.md)    
 
 
-
 ## 数据库  
 [学习SQL的总结](/docs/SQL/学习SQL的总结.md)  
 [SQL语句](/docs/SQL/1.SQL语句.md)  
@@ -215,7 +214,9 @@ Gitee： https://gitee.com/wt1814/
 ### Dubbo  
 [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
 [Dubbo使用教程](/docs/microService/Dubbo/Dubbo使用教程.md)  
+
 [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
+
 
 ### Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)    
@@ -330,7 +331,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 
 
 ## Linux  
-[Linux命令]  
+[Linux命令](/docs/Linux/Linux/Linux命令.md)  
 
 
 ---
@@ -383,6 +384,3 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 [接口响应时间](/docs/Error/responseTime.md)  
 [熔断降级处理](/docs/Error/hystrix.md)  
  
-
-
-

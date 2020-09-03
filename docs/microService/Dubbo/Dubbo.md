@@ -20,7 +20,17 @@
 <!-- /TOC -->
 
 <!-- 
-
+Dubbo原理  
+Dubbo 路由机制的实现 
+https://mp.weixin.qq.com/s/D81M2PgyQTLEOif_Ex6c-A
+Dubbo 扩展点加载机制：从 Java SPI 到 Dubbo SPI 
+https://mp.weixin.qq.com/s/PMF2kqT-XnAVmrxoutE0eQ
+Dubbo之服务消费原理 
+https://mp.weixin.qq.com/s/9ibX-46VfTnBLWcSSLpXQg
+Dubbo之服务暴露 
+https://mp.weixin.qq.com/s/TK9ZU3Vm4IoTrrwmbvV-uQ
+Dubbo 负载均衡的实现 
+https://mp.weixin.qq.com/s/6Kn9uJ7n6W8BMm4OZmhxIQ
 -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo.png)   

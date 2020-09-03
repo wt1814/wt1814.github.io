@@ -32,12 +32,15 @@
 
 <!-- 
 
+ZooKeeper的十二连问，你顶得了嘛？ 
+https://mp.weixin.qq.com/s/dp8jFlTsxTvGuhSAnct1jA
+
 -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-2.png)  
+
 
 # 1. Zookeeper
-
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-2.png)  
 &emsp; <font color = "lime">在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，</font>然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交（类2PC事务）。  
 
 &emsp; <font color = "lime">Zookeeper的CP模型：</font>  
