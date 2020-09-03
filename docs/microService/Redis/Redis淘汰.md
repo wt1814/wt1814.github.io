@@ -108,13 +108,13 @@ https://stor.51cto.com/art/201904/594773.htm
 --> 
 &emsp; redis内存淘汰使用的算法有：  
 * random，随机删除。  
-* TTL
+* TTL，删除过期时间最少的键。  
 * <font color = "lime">LRU，Least Recently Used：最近最少使用。</font>判断最近被使用的时间，离目前最远的数据优先被淘汰。  
 * <font color = "lime">LFU，Least Frequently Used，最不常用，4.0版本新增。</font>  
 
 
 ##### 1.2.2.1.1. TTL  
-&emsp; Redis数据集数据结构中保存了键值对过期时间的表。与LRU数据淘汰机制类似，TTL数据淘汰机制中会先从过期时间的表中随机挑选几个键值对，取出其中ttl ***的键值对淘汰。同样，TTL淘汰策略并不是面向所有过期时间的表中最快过期的键值对，而只是随机挑选的几个键值对。  
+&emsp; Redis数据集数据结构中保存了键值对过期时间的表。与LRU数据淘汰机制类似，<font color = "red">TTL数据淘汰机制中会先从过期时间的表中随机挑选几个键值对，取出其中ttl ***的键值对淘汰。</font>同样，TTL淘汰策略并不是面向所有过期时间的表中最快过期的键值对，而只是随机挑选的几个键值对。  
 
 ##### 1.2.2.1.2. Redis中的LRU算法  
 &emsp; 如果基于传统LRU算法实现，Redis LRU会有什么问题？需要额外的数据结构存储，消耗内存。  

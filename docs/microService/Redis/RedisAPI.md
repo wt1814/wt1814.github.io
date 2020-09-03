@@ -4,6 +4,7 @@
 - [1. Redis的API](#1-redis的api)
     - [1.1. Redis客户端](#11-redis客户端)
     - [1.2. Key操作命令](#12-key操作命令)
+        - [expire命令和ttl命令](#expire命令和ttl命令)
         - [1.2.1. 使用scan代替keys指令](#121-使用scan代替keys指令)
         - [1.2.2. Redis中的批量删除数据库中的Key](#122-redis中的批量删除数据库中的key)
     - [1.3. String操作命令](#13-string操作命令)
@@ -42,7 +43,30 @@
 
 
 ## 1.2. Key操作命令  
-......
+
+### expire命令和ttl命令
+1. expire  
+**EXPIRE key seconds（单位/秒）**   
+&emsp; **<font color = "red">为给定key设置生存时间，当key过期时(生存时间为 0 )，它会被自动删除。</font>**  
+&emsp; 在Redis中，带有生存时间的 key 被称为『易失的』(volatile)。  
+&emsp; 生存时间可以通过使用DEL命令来删除整个key来移除，或者被SET和GETSET命令覆写(overwrite)，这意味着，如果一个命令只是修改(alter)一个带生存时间的 key的值而不是用一个新的key值来代替(replace)它的话，那么生存时间不会被改变。  
+&emsp; 比如说，对一个key执行INCR命令，对一个列表进行 LPUSH 命令，或者对一个哈希表执行 HSET 命令，这类操作都不会修改 key 本身的生存时间。  
+&emsp; 另一方面，如果使用 RENAME 对一个 key 进行改名，那么改名后的 key 的生存时间和改名前一样。  
+&emsp; RENAME 命令的另一种可能是，尝试将一个带生存时间的 key 改名成另一个带生存时间的 another_key ，这时旧的 another_key (以及它的生存时间)会被删除，然后旧的key会改名为another_key ，因此，新的another_key的生存时间也和原本的key一样。  
+&emsp; 使用 PERSIST命令可以在不删除key的情况下，移除 key 的生存时间，让 key 重新成为一个『持久的』(persistent) key 。  
+**更新生存时间**   
+&emsp; 可以对一个已经带有生存时间的 key 执行 EXPIRE 命令，新指定的生存时间会取代旧的生存时间。    
+**过期时间的精确度**   
+&emsp; 在 Redis 2.4 版本中，过期时间的延迟在 1 秒钟之内 —— 也即是，就算 key 已经过期，但它还是可能在过期之后一秒钟之内被访问到，而在新的 Redis 2.6 版本中，延迟被降低到 1 毫秒之内。   
+
+2. ttl  
+&emsp; **TTL key**  
+&emsp; **<font color = "red">以秒为单位，返回给定 key 的剩余生存时间(TTL, time to live)。</font>**  
+
+&emsp; **返回值：**  
+&emsp; 当 key 不存在时，返回 -2 。  
+&emsp; 当 key 存在但没有设置剩余生存时间时，返回 -1 。  
+&emsp; 否则，以秒为单位，返回 key 的剩余生存时间。  
 
 ### 1.2.1. 使用scan代替keys指令  
 ......
@@ -65,7 +89,7 @@ https://www.cnblogs.com/DreamDrive/p/5772198.html
 |---|---|
 |SET key value    |设置指定key的值|
 |GET key |   获取指定key的值|
-|GETRANGE key start end |   返回key中字符串值的子字符|
+|GETRANGE key start end| 返回key中字符串值的子字符|
 |GETSET key value   |将给定key的值设为value，并返回key的旧值(old value)。设新值，取旧值|
 |GETBIT key offset  | 对key所储存的字符串值，获取指定偏移量上的位(bit)。|
 |MGET key1 [key2..]   |获取所有(一个或多个)给定key的值。|

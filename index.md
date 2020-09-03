@@ -178,7 +178,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [Redis的API](/docs/microService/Redis/RedisAPI.md)  
 &emsp; [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
 &emsp; [Redis底层实现](/docs/microService/Redis/Redis底层实现.md)  
-[Redis其他功能]
+[Redis其他功能]  
 &emsp; [Redis发布订阅](/docs/microService/Redis/pub.md)  
 [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
 [Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
