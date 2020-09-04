@@ -312,5 +312,6 @@ Gitee： https://gitee.com/wt1814/
 [多线程串线了](/docs/Error/ThreadCrossed.md)  
 [接口响应时间](/docs/Error/responseTime.md)  
 [熔断降级处理](/docs/Error/hystrix.md)  
+[Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 
 

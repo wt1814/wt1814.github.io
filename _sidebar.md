@@ -200,6 +200,7 @@
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [接口响应时间](/docs/Error/responseTime.md)  
     * [熔断降级处理](/docs/Error/hystrix.md)  
+    * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 
 * 项目构建基础    
     * [接口幂等](/docs/web/idempotent.md)   
