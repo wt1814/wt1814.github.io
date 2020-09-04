@@ -17,6 +17,7 @@
         - [Spring Cloud Netflix](#spring-cloud-netflix)
         - [Dubbo](#dubbo)
         - [Redis](#redis)
+        - [MQ](#mq)
         - [分布式理论](#分布式理论)
         - [分布式通信](#分布式通信)
     - [项目构建基础](#项目构建基础)
@@ -246,6 +247,9 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486105&idx=2&sn=f4b473
 
 https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f8764d807692f5ae7221ac88d69b8&chksm=ec5053bbdb27daaddd7a5f9d4e3737d584c13cf1f861d5b82aec443390fcc327ff0f6fe8bdef&scene=21#wechat_redirect
 -->
+
+### MQ  
+[mq](/docs/microService/mq/mq.md)  
 
 ### 分布式理论  
 [分布式和集群](/docs/system/distributed.md)   
