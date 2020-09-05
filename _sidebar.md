@@ -206,7 +206,7 @@
 * [分布式调度](/docs/frame/taskSheduling.md)  
     * [XXL-JOB](/docs/frame/XXL-JOB.md)  
 
-* Elaticsearch  
+* 分布式搜索引擎  
     * [ES基本概念](/docs/ES/1.basicConcepts.md)  
     * [ES集群](/docs/ES/3.colony.md)  
     * [ES使用教程](/docs/ES/2.useTutorials.md)  

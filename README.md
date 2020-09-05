@@ -25,7 +25,7 @@
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
         - [限流降级](#限流降级)
-        - [Elaticsearch](#elaticsearch)
+        - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式调度](#分布式调度)
         - [分布式通信](#分布式通信)
     - [项目构建基础](#项目构建基础)
@@ -46,7 +46,7 @@
 
 # 目录  
 
-欢迎关注个人公众号：**<font color = "red">王猴卖瓜</font>**  
+欢迎关注个人公众号： **<font color = "red">王猴卖瓜</font>**   
 GitHub： https://github.com/wt1814/  
 Gitee： https://gitee.com/wt1814/  
 联系我：**wangtao1814@163.com**  
@@ -293,7 +293,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 [分布式Session](/docs/microService/thinking/分布式Session.md)  
 -->
 
-### Elaticsearch  
+### 分布式搜索引擎  
 [ES基本概念](/docs/ES/1.basicConcepts.md)  
 [ES集群](/docs/ES/3.colony.md)  
 [ES使用教程](/docs/ES/2.useTutorials.md)  
