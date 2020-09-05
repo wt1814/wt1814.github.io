@@ -4,9 +4,11 @@
 
 
 ## Redis服务器 can not get resource from pool
+&emsp; <font color = "lime">Redis连接池值比较小；也有可能是未释放连接数。</font>  
+
 &emsp; 1000个线程并发还能跑，5000个线程的时候出现这种问题，查后台debug日志，发现redis 线程池不够。刚开始设置的是：  
 
-&emsp; 等待时间  10s改为300s
+&emsp; 等待时间10s改为300s
 &emsp; maxTotal 资源池中最大连接数 默认值8 建议值  
 
 ```xml
