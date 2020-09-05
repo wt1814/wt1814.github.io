@@ -255,6 +255,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [Redis集群模式](/docs/microService/Redis/Redis集群模式.md)  
 [Redis运维](/docs/microService/Redis/Redis运维.md)  
 [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
+[Redis问题及排查](/docs/microService/Redis/problem.md)  
 <!-- 
 消息订阅、pipeline
 https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486105&idx=2&sn=f4b4734951ec262ad67c865be940e5c5&chksm=ec505348db27da5ee9b956e40963b0abb52f739863a82c7d1838ca1a92928f50facc012ccd12&scene=21#wechat_redirect

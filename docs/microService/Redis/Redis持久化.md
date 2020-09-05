@@ -21,6 +21,11 @@
 
 &emsp; **<font color = "red">部分参考《Redis开发与运维》</font>**
 
+<!-- 
+redis系列--redis4.0深入持久化
+https://www.cnblogs.com/wdliu/p/9377278.html
+-->
+
 # 1. Redis持久化  
 
 **<font color = "lime">&emsp; 一句话概述：  
