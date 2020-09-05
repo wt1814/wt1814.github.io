@@ -20,11 +20,11 @@
         - [分布式缓存](#分布式缓存)
             - [Redis](#redis)
             - [Ehcache](#ehcache)
+        - [限流降级](#限流降级)
         - [分布式消息队列](#分布式消息队列)
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
-        - [限流降级](#限流降级)
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式调度](#分布式调度)
         - [分布式通信](#分布式通信)
@@ -263,6 +263,9 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 
 #### Ehcache 
 
+### 限流降级
+[分布式限流](/docs/microService/thinking/分布式限流.md)   
+[服务降级](/docs/microService/thinking/服务降级.md)  
 
 ### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  
@@ -283,10 +286,6 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 &emsp; [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
 &emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
-
-### 限流降级
-[分布式限流](/docs/microService/thinking/分布式限流.md)   
-[服务降级](/docs/microService/thinking/服务降级.md)  
 
 <!-- 
 [分布式Session](/docs/microService/thinking/分布式Session.md)  

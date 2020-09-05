@@ -185,6 +185,9 @@
         * [Redis集群模式](/docs/microService/Redis/Redis集群模式.md)  
     * [Redis运维](/docs/microService/Redis/Redis运维.md)  
     * [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
+     
+* [分布式限流](/docs/microService/thinking/分布式限流.md)   
+* [服务降级](/docs/microService/thinking/服务降级.md)  
 
 * 分布式消息队列
     * [mq](/docs/microService/mq/mq.md)  
@@ -202,9 +205,6 @@
     * [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
     * [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
     * [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
-     
-* [分布式限流](/docs/microService/thinking/分布式限流.md)   
-* [服务降级](/docs/microService/thinking/服务降级.md)  
 
 * [分布式调度](/docs/frame/taskSheduling.md)  
     * [XXL-JOB](/docs/frame/XXL-JOB.md)  
