@@ -156,7 +156,16 @@
     * [Dubbo使用教程](/docs/microService/Dubbo/Dubbo使用教程.md)  
     * [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
 
-* Redis
+* 分布式理论  
+    * [分布式和集群](/docs/system/distributed.md)  
+    * [分布式和集中式](/docs/system/deploy.md)  
+    * [分布式算法](/docs/microService/thinking/分布式算法.md)  
+        * [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
+    * [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
+
+* 分布式缓存
+    * [分布式缓存](/docs/microService/thinking/分布式缓存.md) 
+    * Redis
     * [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
     * [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
         * [Redis的API](/docs/microService/Redis/RedisAPI.md)  
@@ -177,28 +186,34 @@
     * [Redis运维](/docs/microService/Redis/Redis运维.md)  
     * [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 
-* mq
+* 分布式消息队列
     * [mq](/docs/microService/mq/mq.md)  
 
-* 分布式理论  
-    * [分布式和集群](/docs/system/distributed.md)  
-    * [分布式和集中式](/docs/system/deploy.md)  
-    * [分布式算法](/docs/microService/thinking/分布式算法.md)  
-        * [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
-    * [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
-    * [分布式ID](/docs/microService/thinking/分布式ID.md)  
-    * [分布式事务](/docs/microService/thinking/分布式事务.md)  
-        * [DTP](/docs/microService/thinking/分布式事务-1.md)    
-        * [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
-        * [TCC模式](/docs/microService/thinking/分布式事务-3.md)   
-        * [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
-    * [分布式锁](/docs/microService/thinking/分布式锁.md)  
-        * [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
-        * [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
-        * [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
-    * [分布式缓存](/docs/microService/thinking/分布式缓存.md)  
-    * [分布式限流](/docs/microService/thinking/分布式限流.md)   
-    * [服务降级](/docs/microService/thinking/服务降级.md)  
+* [分布式ID](/docs/microService/thinking/分布式ID.md)  
+* [分布式事务](/docs/microService/thinking/分布式事务.md)  
+    * [DTP](/docs/microService/thinking/分布式事务-1.md)    
+    * [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
+    * [TCC模式](/docs/microService/thinking/分布式事务-3.md)   
+    * [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
+* [分布式锁](/docs/microService/thinking/分布式锁.md)  
+    * [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
+    * [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
+    * [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
+     
+* [分布式限流](/docs/microService/thinking/分布式限流.md)   
+* [服务降级](/docs/microService/thinking/服务降级.md)  
+
+* [分布式调度](/docs/frame/taskSheduling.md)  
+    * [XXL-JOB](/docs/frame/XXL-JOB.md)  
+
+* Elaticsearch  
+    * [ES基本概念](/docs/ES/1.basicConcepts.md)  
+    * [ES集群](/docs/ES/3.colony.md)  
+    * [ES使用教程](/docs/ES/2.useTutorials.md)  
+    * [ES搭建](/docs/ES/7.build.md)     
+    * [ES原理](/docs/ES/4.principle.md)  
+    * [ES优化](/docs/ES/5.optimization.md)  
+    * [ELK](/docs/ES/6.ELK与EFK.md)   
 
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
@@ -217,17 +232,7 @@
     * [参数校验](/docs/web/Validation.md)
     * [源码安全](/docs/web/codeSecurity.md)  
 
-* 中间件  
-    * [分布式调度](/docs/frame/taskSheduling.md)  
-        * [XXL-JOB](/docs/frame/XXL-JOB.md)  
-    * Elaticsearch  
-        * [ES基本概念](/docs/ES/1.basicConcepts.md)  
-        * [ES集群](/docs/ES/3.colony.md)  
-        * [ES使用教程](/docs/ES/2.useTutorials.md)  
-        * [ES搭建](/docs/ES/7.build.md)     
-        * [ES原理](/docs/ES/4.principle.md)  
-        * [ES优化](/docs/ES/5.optimization.md)  
-        * [ELK](/docs/ES/6.ELK与EFK.md)    
+ 
     
 * 架构设计  
     * [性能指标](/docs/system/performance.md)  

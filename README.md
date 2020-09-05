@@ -12,18 +12,23 @@
     - [SSM](#ssm)
         - [Spring](#spring)
         - [MyBatis](#mybatis)
-    - [微服务](#微服务)
+    - [分布式](#分布式)
         - [SpringBoot](#springboot)
         - [Spring Cloud Netflix](#spring-cloud-netflix)
         - [Dubbo](#dubbo)
-        - [Redis](#redis)
-        - [MQ](#mq)
         - [分布式理论](#分布式理论)
+        - [分布式缓存](#分布式缓存)
+            - [Redis](#redis)
+            - [Ehcache](#ehcache)
+        - [分布式消息队列](#分布式消息队列)
+        - [分布式ID](#分布式id)
+        - [分布式事务](#分布式事务)
+        - [分布式锁](#分布式锁)
+        - [限流降级](#限流降级)
+        - [Elaticsearch](#elaticsearch)
+        - [分布式调度](#分布式调度)
         - [分布式通信](#分布式通信)
     - [项目构建基础](#项目构建基础)
-    - [中间件](#中间件)
-        - [分布式调度](#分布式调度)
-        - [Elaticsearch](#elaticsearch)
     - [架构设计](#架构设计)
         - [系统接入层](#系统接入层)
             - [Nginx](#nginx)
@@ -185,8 +190,9 @@ Gitee： https://gitee.com/wt1814/
 [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
 [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
 
+----
 
-## 微服务  
+## 分布式  
 ### SpringBoot  
 [学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
 [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
@@ -220,16 +226,24 @@ Gitee： https://gitee.com/wt1814/
 
 [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
 
+### 分布式理论  
+[分布式和集群](/docs/system/distributed.md)   
+[分布式和集中式](/docs/system/deploy.md)  
+[分布式算法](/docs/microService/thinking/分布式算法.md)  
+&emsp; [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
+[分布式理论](/docs/microService/thinking/DistributedTheory.md)  
 
-### Redis
-[学习Redis的总结](/docs/microService/Redis/RedisSummary.md)    
+### 分布式缓存  
+[分布式缓存](/docs/microService/thinking/分布式缓存.md)  
+
+#### Redis
+[学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
 [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
 &emsp; [Redis的API](/docs/microService/Redis/RedisAPI.md)  
 &emsp; [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
-&emsp; [Redis底层实现](/docs/microService/Redis/Redis底层实现.md)   
+&emsp; [Redis底层实现](/docs/microService/Redis/Redis底层实现.md)  
 [Redis其他功能]  
 &emsp; [Redis发布订阅](/docs/microService/Redis/pub.md)  
-
 [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
 [Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
 [Redis原理](/docs/microService/Redis/Redis原理.md)  
@@ -249,33 +263,48 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486105&idx=2&sn=f4b473
 https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f8764d807692f5ae7221ac88d69b8&chksm=ec5053bbdb27daaddd7a5f9d4e3737d584c13cf1f861d5b82aec443390fcc327ff0f6fe8bdef&scene=21#wechat_redirect
 -->
 
-### MQ  
+#### Ehcache 
+
+
+### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  
 
-### 分布式理论  
-[分布式和集群](/docs/system/distributed.md)   
-[分布式和集中式](/docs/system/deploy.md)  
-[分布式算法](/docs/microService/thinking/分布式算法.md)  
-&emsp; [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
-[分布式理论](/docs/microService/thinking/DistributedTheory.md)  
+### 分布式ID
 [分布式ID](/docs/microService/thinking/分布式ID.md)  
+
+### 分布式事务
 [分布式事务](/docs/microService/thinking/分布式事务.md)  
 &emsp; [DTP](/docs/microService/thinking/分布式事务-1.md)    
 &emsp; [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
 &emsp; [TCC模式](/docs/microService/thinking/分布式事务-3.md)   
 &emsp; [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
+
+### 分布式锁
 [分布式锁](/docs/microService/thinking/分布式锁.md)  
 &emsp; [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
 &emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
-[分布式缓存](/docs/microService/thinking/分布式缓存.md)  
+
+### 限流降级
 [分布式限流](/docs/microService/thinking/分布式限流.md)   
 [服务降级](/docs/microService/thinking/服务降级.md)  
-
 
 <!-- 
 [分布式Session](/docs/microService/thinking/分布式Session.md)  
 -->
+
+### Elaticsearch  
+[ES基本概念](/docs/ES/1.basicConcepts.md)  
+[ES集群](/docs/ES/3.colony.md)  
+[ES使用教程](/docs/ES/2.useTutorials.md)  
+[ES搭建](/docs/ES/7.build.md)  
+[ES原理](/docs/ES/4.principle.md)  
+[ES优化-1](/docs/ES/5.optimization.md)  
+[ELK与EFK](/docs/ES/6.ELK与EFK.md)    
+
+### 分布式调度
+[分布式调度](/docs/frame/taskSheduling.md)  
+&emsp; [XXL-JOB](/docs/frame/XXL-JOB.md) 
 
 ### 分布式通信  
 [序列化](/docs/microService/communication/serializbale.md)  
@@ -298,20 +327,6 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 [参数校验](/docs/web/Validation.md)  
 [源码安全](/docs/web/codeSecurity.md)  
 [其他](/docs/web/other.md)
-
-## 中间件  
-### 分布式调度
-[分布式调度](/docs/frame/taskSheduling.md)  
-&emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
-
-### Elaticsearch  
-[ES基本概念](/docs/ES/1.basicConcepts.md)  
-[ES集群](/docs/ES/3.colony.md)  
-[ES使用教程](/docs/ES/2.useTutorials.md)  
-[ES搭建](/docs/ES/7.build.md)  
-[ES原理](/docs/ES/4.principle.md)  
-[ES优化-1](/docs/ES/5.optimization.md)  
-[ELK与EFK](/docs/ES/6.ELK与EFK.md)    
 
 ## 架构设计  
 [性能指标](/docs/system/performance.md)   

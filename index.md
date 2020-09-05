@@ -1,9 +1,60 @@
-欢迎关注个人公众号： **<font color = "red">王猴卖瓜</font>**  
+
+
+<!-- TOC -->
+
+- [目录](#目录)
+    - [杂记](#杂记)
+    - [Java](#java)
+        - [设计模式](#设计模式)
+        - [并发编程](#并发编程)
+        - [JVM](#jvm)
+    - [数据库](#数据库)
+    - [SSM](#ssm)
+        - [Spring](#spring)
+        - [MyBatis](#mybatis)
+    - [分布式](#分布式)
+        - [SpringBoot](#springboot)
+        - [Spring Cloud Netflix](#spring-cloud-netflix)
+        - [Dubbo](#dubbo)
+        - [分布式理论](#分布式理论)
+        - [分布式缓存](#分布式缓存)
+            - [Redis](#redis)
+            - [Ehcache](#ehcache)
+        - [分布式消息队列](#分布式消息队列)
+        - [分布式ID](#分布式id)
+        - [分布式事务](#分布式事务)
+        - [分布式锁](#分布式锁)
+        - [限流降级](#限流降级)
+        - [Elaticsearch](#elaticsearch)
+        - [分布式调度](#分布式调度)
+        - [分布式通信](#分布式通信)
+    - [项目构建基础](#项目构建基础)
+    - [架构设计](#架构设计)
+        - [系统接入层](#系统接入层)
+            - [Nginx](#nginx)
+        - [系统设计](#系统设计)
+        - [系统维护](#系统维护)
+    - [Linux](#linux)
+    - [计算机网络](#计算机网络)
+    - [算法](#算法)
+    - [项目管理](#项目管理)
+    - [开发软件](#开发软件)
+    - [其他工具](#其他工具)
+    - [Error](#error)
+
+<!-- /TOC -->
+
+# 目录  
+
+欢迎关注个人公众号：**<font color = "red">王猴卖瓜</font>**  
 GitHub： https://github.com/wt1814/  
 Gitee： https://gitee.com/wt1814/  
 联系我：**wangtao1814@163.com**  
- 
-# 目录  
+
+## 杂记  
+<font color="red">多问几个为什么，怎么办，怎么做。</font>  
+[我自己的学习之路]  
+
 ## Java  
 [Java基础](/docs/java/basis/Java基础.md)  
 &emsp; [符号](/docs/java/basis/mark.md)  
@@ -60,33 +111,34 @@ Gitee： https://gitee.com/wt1814/
 
 ### JVM  
 [JVM总结](/docs/java/JVM/summary.md)  
-[JDK、JRE、JVM](/docs/java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
+[JDK、JRE、JVM](/docs/java/JVM/1.JDK、JRE、JVM三者间的关系.md)   
 [JVM类的加载](/docs/java/JVM/2.JVM类的加载.md)  
 [JVM内存结构](/docs/java/JVM/3.JVM内存结构.md)  
 [GC垃圾回收](/docs/java/JVM/5.GC垃圾回收.md)  
 [JVM调优-基础](/docs/java/JVM/6.JVM调优-基础.md)  
 [JVM调优](/docs/java/JVM/7.JVM调优.md)  
-[Linux系统问题排查](/docs/Linux/Linux/problem.md)   
+[Linux系统问题排查](/docs/Linux/Linux/problem.md)    
+
 
 ## 数据库  
+[学习SQL的总结](/docs/SQL/学习SQL的总结.md)  
 [SQL语句](/docs/SQL/1.SQL语句.md)  
 &emsp; [基本查询语句](/docs/SQL/9.basicSelect.md)  
 &emsp; [连接查询](/docs/SQL/10.joinSelect.md)  
 &emsp; [行列转换](/docs/SQL/11.trans.md)  
 [MySql函数](/docs/SQL/MySQLFunction.md)  
 [数据库对象](/docs/SQL/DatabaseObject.md)  
-
 [SQL优化](/docs/SQL/2.SQL优化.md)  
 &emsp; [索引优化](/docs/SQL/7.index.md)  
 &emsp; [优化案例](/docs/SQL/12.case.md)  
 [MySql架构](/docs/SQL/8.MySql架构.md)  
-[MySql日志](/docs/SQL/log.md)  
 [MySql原理]  
 &emsp; [MySql存储引擎](/docs/SQL/13.MySqlStorage.md)  
 &emsp; &emsp; [InnoDB](/docs/SQL/InnoDB.md)  
 &emsp; [MySql事务](/docs/SQL/14.transaction.md)  
 &emsp; [MySql锁](/docs/SQL/15.lock.md)  
 &emsp; [MySqlMVCC](/docs/SQL/MVCC.md)  
+&emsp; [MySql事务日志](/docs/SQL/log.md)  
 [数据库分布式](/docs/SQL/4.分布式数据库.md)  
 &emsp; [主从复制](/docs/SQL/16.replication.md)  
 &emsp; &emsp; [主从复制的高可用](/docs/SQL/replicationAvailability.md)   
@@ -106,7 +158,7 @@ Gitee： https://gitee.com/wt1814/
 
 ## SSM  
 ### Spring  
-[对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
+[学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
 [Spring](/docs/SSM/Spring/1.Spring.md)  
 [SpringIOC解析](/docs/SSM/Spring/2.SpringIOC.md)  
 &emsp; [容器初始化详解](/docs/SSM/Spring/容器初始化详解.md)  
@@ -138,10 +190,11 @@ Gitee： https://gitee.com/wt1814/
 [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
 [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
 
+----
 
-## 微服务  
+## 分布式  
 ### SpringBoot  
-[学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)   
+[学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
 [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
 [SpringBoot启动过程-SpringApplication初始化](/docs/microService/SpringBoot/SpringApplication初始化.md)  
 [SpringBoot启动过程-run()方法运行过程](/docs/microService/SpringBoot/run方法运行过程.md)  
@@ -150,10 +203,9 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/4.SpringBootEvent.md)  
 [SpringBoot自动配置原理-@SpringBootApplication](/docs/microService/SpringBoot/自动配置@SpringBootApplication.md)  
 [SpringBoot自动配置原理-运行流程解析](/docs/microService/SpringBoot/自动配置运行流程解析.md)  
-
 [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
-### Spring Cloud Netflix  
+### Spring Cloud Netflix   
 [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/0.Netflix.md)  
 [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/1.Eureka.md)  
 [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/2.Ribbon.md)  
@@ -161,19 +213,29 @@ Gitee： https://gitee.com/wt1814/
 [Spring Cloud Feign](/docs/microService/SpringCloudNetflix/4.Feign.md)  
 [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/5.Zuul.md)  
 [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/6.Sleuth.md)  
-[Spring Cloud Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
 <!-- 
 [Spring Cloud Config]  
 [Spring Cloud Bus]  
 [Spring Cloud Security]  
 -->
+[Spring Cloud Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
 
 ### Dubbo  
 [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
 [Dubbo使用教程](/docs/microService/Dubbo/Dubbo使用教程.md)  
+
 [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
 
-### 缓存  
+### 分布式理论  
+[分布式和集群](/docs/system/distributed.md)   
+[分布式和集中式](/docs/system/deploy.md)  
+[分布式算法](/docs/microService/thinking/分布式算法.md)  
+&emsp; [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
+[分布式理论](/docs/microService/thinking/DistributedTheory.md)  
+
+### 分布式缓存  
+[分布式缓存](/docs/microService/thinking/分布式缓存.md)  
+
 #### Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
 [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
@@ -194,50 +256,66 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [Redis集群模式](/docs/microService/Redis/Redis集群模式.md)  
 [Redis运维](/docs/microService/Redis/Redis运维.md)  
 [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
+<!-- 
+消息订阅、pipeline
+https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486105&idx=2&sn=f4b4734951ec262ad67c865be940e5c5&chksm=ec505348db27da5ee9b956e40963b0abb52f739863a82c7d1838ca1a92928f50facc012ccd12&scene=21#wechat_redirect
 
-#### Ehcache
+https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f8764d807692f5ae7221ac88d69b8&chksm=ec5053bbdb27daaddd7a5f9d4e3737d584c13cf1f861d5b82aec443390fcc327ff0f6fe8bdef&scene=21#wechat_redirect
+-->
 
-### MQ  
+#### Ehcache 
+
+
+### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  
 
-
-### 分布式理论  
-[分布式和集群](/docs/system/distributed.md)  
-[分布式和集中式](/docs/system/deploy.md)  
-
-[分布式算法](/docs/microService/thinking/分布式算法.md)  
-&emsp; [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
-[分布式理论](/docs/microService/thinking/DistributedTheory.md)  
-
+### 分布式ID
 [分布式ID](/docs/microService/thinking/分布式ID.md)  
 
+### 分布式事务
 [分布式事务](/docs/microService/thinking/分布式事务.md)  
 &emsp; [DTP](/docs/microService/thinking/分布式事务-1.md)    
 &emsp; [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
 &emsp; [TCC模式](/docs/microService/thinking/分布式事务-3.md)   
 &emsp; [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
+
+### 分布式锁
 [分布式锁](/docs/microService/thinking/分布式锁.md)  
 &emsp; [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
 &emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
 
-[分布式缓存](/docs/microService/thinking/分布式缓存.md)  
+### 限流降级
 [分布式限流](/docs/microService/thinking/分布式限流.md)   
 [服务降级](/docs/microService/thinking/服务降级.md)  
 
+<!-- 
+[分布式Session](/docs/microService/thinking/分布式Session.md)  
+-->
 
-## Elaticsearch  
+### Elaticsearch  
 [ES基本概念](/docs/ES/1.basicConcepts.md)  
 [ES集群](/docs/ES/3.colony.md)  
 [ES使用教程](/docs/ES/2.useTutorials.md)  
 [ES搭建](/docs/ES/7.build.md)  
 [ES原理](/docs/ES/4.principle.md)  
-[ES优化](/docs/ES/5.optimization.md)  
+[ES优化-1](/docs/ES/5.optimization.md)  
 [ELK与EFK](/docs/ES/6.ELK与EFK.md)    
 
+### 分布式调度
+[分布式调度](/docs/frame/taskSheduling.md)  
+&emsp; [XXL-JOB](/docs/frame/XXL-JOB.md) 
 
+### 分布式通信  
+[序列化](/docs/microService/communication/serializbale.md)  
+[NIO](/docs/microService/communication/NIO.md)  
+&emsp; [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
+&emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
+&emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
+[Netty]  
 
 ---
+
 ## 项目构建基础    
 [接口幂等](/docs/web/idempotent.md)   
 [日志系统](/docs/web/log.md)   
@@ -248,32 +326,19 @@ Gitee： https://gitee.com/wt1814/
 [加密算法](/docs/web/encryption.md)  
 [参数校验](/docs/web/Validation.md)  
 [源码安全](/docs/web/codeSecurity.md)  
-
-## 中间件  
-### 分布式调度
-[分布式调度](/docs/frame/taskSheduling.md)  
-&emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
-
-### Elaticsearch  
-[ES基本概念](/docs/ES/1.basicConcepts.md)  
-[ES集群](/docs/ES/3.colony.md)  
-[ES使用教程](/docs/ES/2.useTutorials.md)  
-[ES搭建](/docs/ES/7.build.md)  
-[ES原理](/docs/ES/4.principle.md)  
-[ES优化-1](/docs/ES/5.optimization.md)  
-[ELK与EFK](/docs/ES/6.ELK与EFK.md)  
-
+[其他](/docs/web/other.md)
 
 ## 架构设计  
-[性能指标](/docs/system/performance.md)  
+[性能指标](/docs/system/performance.md)   
 
-### 系统接入层
+### 系统接入层  
 [接入层]  
 <!--
 高并发高性能接入层中间件LVS、Keepalived、Nginx、Haproxy。  
 -->
 
 #### Nginx  
+
 [Nginx](/docs/Linux/Nginx/1.nginx.md)  
 [Nginx使用](/docs/Linux/Nginx/2.nginx使用场景.md)   
 [Nginx运维](/docs/Linux/Nginx/3.nginx运维.md)  
@@ -289,11 +354,12 @@ Gitee： https://gitee.com/wt1814/
 [监控](/docs/DevOps/monitor.md)  
 
 
+
 ## Linux  
-[Linux命令]  
+[Linux命令](/docs/Linux/Linux/Linux命令.md)  
 
 
---- 
+---
 
 ## 计算机网络  
 [OSI七层网络模型](/docs/network/0.OSI.md)  
@@ -302,10 +368,26 @@ Gitee： https://gitee.com/wt1814/
 [DNS](docs/network/3.DNS.md)  
 [TCP](/docs/network/4.TCP.md)  
 
+---
+## 算法  
+[总结](/docs/java/function/summary.md)  
+[算法基本概念](/docs/java/function/1.notion.md)  
+[基本数据结构]  
+&emsp; [链表](/docs/java/function/structure/array.md)  
+&emsp; [栈](/docs/java/function/structure/stack.md)  
+&emsp; [哈希](/docs/java/function/structure/hash.md)  
+&emsp; [树](/docs/java/function/structure/tree.md)  
+[其他数据结构](/docs/java/function/3.otherStructure.md)  
+[排序算法](/docs/java/function/4.sort.md)  
+&emsp; [比较排序](/docs/java/function/sort/compare.md)  
+&emsp; [非比较排序](/docs/java/function/sort/noCompare.md)  
+[查找算法](/docs/java/function/5.search.md)  
+[算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
 
 ---
+
 ## 项目管理  
-[git](/docs/projectManage/git/command.md)   
+[git](/docs/projectManage/git/command.md)  
 [docker]  
 &emsp; [docker总结](/docs/projectManage/docker/summary.md)  
 &emsp; [docker原理](/docs/projectManage/docker/principle.md)  
@@ -313,8 +395,13 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [dockerFile](/docs/projectManage/docker/file.md)  
 &emsp; [docker工具](/docs/projectManage/docker/tools.md)   
 
+
 ## 开发软件  
 [idea](/docs/software/idea/idea.md)  
+
+## 其他工具  
+[tools](/docs/software/tools/tools.md)  
+
 
 ---
 ## Error  
@@ -322,5 +409,3 @@ Gitee： https://gitee.com/wt1814/
 [接口响应时间](/docs/Error/responseTime.md)  
 [熔断降级处理](/docs/Error/hystrix.md)  
 [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-
-
