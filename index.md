@@ -285,6 +285,7 @@ Gitee： https://gitee.com/wt1814/
 
 ### 系统维护  
 [系统稳定性建设](/docs/system/stability.md)  
+[灰度发布](/docs/system/grayscalePublishe.md)  
 [监控](/docs/DevOps/monitor.md)  
 
 

@@ -28,6 +28,7 @@
         - [系统接入层](#系统接入层)
             - [Nginx](#nginx)
         - [系统设计](#系统设计)
+        - [系统维护](#系统维护)
     - [Linux](#linux)
     - [计算机网络](#计算机网络)
     - [算法](#算法)
@@ -331,8 +332,12 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 [并发系统三高](/docs/system/threeHigh.md)  
 [秒杀系统设计](/docs/system/seckill.md)  
 [微服务拆分](/docs/system/serviceSplit.md)  
+
+### 系统维护  
 [系统稳定性建设](/docs/system/stability.md)  
+[灰度发布](/docs/system/grayscalePublishe.md)  
 [监控](/docs/DevOps/monitor.md)  
+
 
 
 ## Linux  
