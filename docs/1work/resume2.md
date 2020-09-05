@@ -6,8 +6,8 @@
 <font size = "4.5">&emsp; 性别：男 &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;出生年月：1992.06.29 &emsp; &emsp; &emsp;  &emsp;籍贯：山西省运城市</font>  
 <font size = "4.5">&emsp; 联系电话：17813261813  &emsp; &emsp;  E-mail: wangtao1814@163.com</font>
 
-# 个人博客
-&emsp; 个人博客：http://wt1814.com/  &emsp; 个人公众号：王猴卖瓜   
+# 个人优势
+&emsp; 热爱技术，个人博客：http://wt1814.com/ ，个人公众号：王猴卖瓜。有分布式项目经验，有多线程处理大数据量经验。    
 
 # 教育经历  
 <font size = "4.5">&emsp; 2012.9－2016.7&emsp; &emsp; &emsp; 大连东软信息学院&emsp; &emsp; &emsp; 软件工程&emsp; &emsp; &emsp; 本科</font>  
@@ -68,12 +68,12 @@
 * 2017.07---2018.02 &emsp; &emsp; 北京天源迪科信息技术有限公司 &emsp; &emsp; CMS内容管理系统
     * 核心技术：SpringMVC+Spring+MyBatis+Lucene+Shiro  
     * 项目概述: 采用开源项目jspxcms内容管理系统，将cms集成到互联网项目中。  
-    * 个人职责：独自二次开发cms内容管理系统。先后使用到了国能e购商城，航空工业电子采购平台，交建商城。将项目中帮助中心、公告以及首页展示由cms系统完成。
+    * 个人职责：独自二次开发cms内容管理系统。将商城项目中帮助中心、公告以及首页展示由cms系统完成。
 
-* 2016.04---2017.07 &emsp; &emsp; 北京天源迪科信息技术有限公司 &emsp; &emsp; 国能e购商城项目
+* 2016.04---2017.07 &emsp; &emsp; 北京天源迪科信息技术有限公司 &emsp; &emsp; 航空工业电子采购平台
     * 核心技术：SpringMVC+Spring+MyBatis+阿里云产品  
     * 项目概述：采用阿里的企业级分布式应用服务EDAS进行分布式开发，采用前后端分离技术，开发电商项目。
-    * 个人职责：在国电项目组商品中心开发小组进行服务开发工作，参与商品协议，商品铺货等功能。
+    * 个人职责：在商品中心开发小组进行服务开发工作，参与商品协议，商品铺货等功能。
 </font>
 
 # 自我评价  
