@@ -53,7 +53,6 @@ Gitee： https://gitee.com/wt1814/
 
 ## 杂记  
 <font color="red">多问几个为什么，怎么办，怎么做。</font>  
-[我自己的学习之路]  
 
 ## Java  
 [Java基础](/docs/java/basis/Java基础.md)  
@@ -271,6 +270,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 
 ### 分布式ID
 [分布式ID](/docs/microService/thinking/分布式ID.md)  
+[分库分表多维度查询](/docs/microService/thinking/分库分表多维度查询.md)  
 
 ### 分布式事务
 [分布式事务](/docs/microService/thinking/分布式事务.md)  

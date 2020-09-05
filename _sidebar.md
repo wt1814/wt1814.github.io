@@ -189,7 +189,10 @@
 * 分布式消息队列
     * [mq](/docs/microService/mq/mq.md)  
 
-* [分布式ID](/docs/microService/thinking/分布式ID.md)  
+* 分布式ID  
+    * [分布式ID](/docs/microService/thinking/分布式ID.md)  
+    * [分库分表多维度查询](/docs/microService/thinking/分库分表多维度查询.md)  
+
 * [分布式事务](/docs/microService/thinking/分布式事务.md)  
     * [DTP](/docs/microService/thinking/分布式事务-1.md)    
     * [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
