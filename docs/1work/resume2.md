@@ -7,7 +7,9 @@
 <font size = "4.5">&emsp; 联系电话：17813261813  &emsp; &emsp;  E-mail: wangtao1814@163.com</font>
 
 # 个人优势
-&emsp; 热爱技术，个人博客：http://wt1814.com/ ，个人公众号：王猴卖瓜。有分布式项目经验，有多线程处理大数据量经验。    
+* 热爱技术，个人博客：http://wt1814.com/ ，个人公众号：王猴卖瓜。
+* 有分布式项目经验。  
+* 有使用多线程处理过大数据量。    
 
 # 教育经历  
 <font size = "4.5">&emsp; 2012.9－2016.7&emsp; &emsp; &emsp; 大连东软信息学院&emsp; &emsp; &emsp; 软件工程&emsp; &emsp; &emsp; 本科</font>  
@@ -33,7 +35,6 @@
 * 熟悉Tomcat，Ngingx等服务器；
 * 熟练使用Svn，Git，Maven等版本控制工具及项目搭建工具，会使用devops工具；
 * 熟悉Linux基本命令；
-
 </font>
 
 # 工作经历  
