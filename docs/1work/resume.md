@@ -63,7 +63,7 @@
 
 * 2018.09---至今 &emsp; &emsp; 中科软股份有限公司 &emsp; &emsp; 中国人保对外合作组统一对接平台建设    
     * 核心技术：腾讯云TSF（SpringCloud的封装）+MySql+MyBatis+CMQ+redis+COS+velocity  
-    * 项目概述：采用腾讯云对对外合作项目组老系统进行中台项目改造。改造各个项目的投保、退保、理赔等功能。
+    * 项目概述：采用腾讯云对对外合作项目组老系统进行中台项目改造。改造各个项目的投保、退保等功能。
     * 个人职责：
         1. 参与梳理需求，微服务拆分，技术选型（分布式调度框架使用xxl-job、分布式锁选用Reddsion等）；完成架构基础搭建任务：配置文件yaml格式化并加密重要参数，maven pom文件dependencies依赖整理，logback日志规范等等；搭建SPring Cloud Admin服务；掌握腾讯云的使用，进行项目部署。  
         2. 参与投保接口开发，并对其响应时间优化；自定义SpringBootStarter封装短信、邮件功能。 
