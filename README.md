@@ -377,12 +377,14 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 &emsp; [栈](/docs/java/function/structure/stack.md)  
 &emsp; [哈希](/docs/java/function/structure/hash.md)  
 &emsp; [树](/docs/java/function/structure/tree.md)  
-[其他数据结构](/docs/java/function/3.otherStructure.md)  
 [排序算法](/docs/java/function/4.sort.md)  
 &emsp; [比较排序](/docs/java/function/sort/compare.md)  
 &emsp; [非比较排序](/docs/java/function/sort/noCompare.md)  
 [查找算法](/docs/java/function/5.search.md)  
 [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
+[海量数据结构]  
+&emsp; [海量数据结构](/docs/java/function/3.otherStructure.md)  
+&emsp; [海量数据应用](/docs/java/function/3.otherStructure.md)  
 
 ---
 

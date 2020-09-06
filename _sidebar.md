@@ -165,7 +165,7 @@
 
 * 分布式缓存
     * [分布式缓存](/docs/microService/thinking/分布式缓存.md) 
-    * Redis
+    * [Redis]
     * [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
     * [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
         * [Redis的API](/docs/microService/Redis/RedisAPI.md)  
@@ -265,6 +265,23 @@
     * [HTTPS](/docs/network/2.HTTPS.md)  
     * [DNS](/docs/network/3.DNS.md)  
     * [TCP](/docs/network/4.TCP.md)  
+
+* 算法
+    * [总结](/docs/java/function/summary.md)  
+    * [算法基本概念](/docs/java/function/1.notion.md)  
+    * [基本数据结构]  
+    * [链表](/docs/java/function/structure/array.md)  
+    * [栈](/docs/java/function/structure/stack.md)  
+    * [哈希](/docs/java/function/structure/hash.md)  
+    * [树](/docs/java/function/structure/tree.md)  
+    * [排序算法](/docs/java/function/4.sort.md)  
+    * [比较排序](/docs/java/function/sort/compare.md)  
+    * [非比较排序](/docs/java/function/sort/noCompare.md)  
+    * [查找算法](/docs/java/function/5.search.md)  
+    * [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
+    * [海量数据]
+    * [海量数据结构](/docs/java/function/3.otherStructure.md)  
+    * [海量数据应用](/docs/java/function/3.otherStructure.md)  
 
 * 项目管理  
     * [git](/docs/projectManage/git/command.md)   
