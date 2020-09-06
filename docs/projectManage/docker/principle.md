@@ -32,14 +32,14 @@ https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
 https://mp.weixin.qq.com/s/PM6K3j8bqBbbwtt4S4uyEw
 https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
 -->
-容器和虚拟机  
+&emsp; 容器和虚拟机  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-11.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-12.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-13.png)  
-传统虚拟化是在硬件层面实现虚拟化，需要有额外的虚拟机管理应用和虚拟机操作系统层，而Docker容器是在操作系统层面实现虚拟化，直接复用本地主机操作系统，更加轻量级。  
-虚拟机运行的是一个完成的操作系统，通过虚拟机管理程序对主机资源进行虚拟访问，相比之下需要的资源更多。  
+&emsp; 传统虚拟化是在硬件层面实现虚拟化，需要有额外的虚拟机管理应用和虚拟机操作系统层，而Docker容器是在操作系统层面实现虚拟化，直接复用本地主机操作系统，更加轻量级。  
+&emsp; 虚拟机运行的是一个完成的操作系统，通过虚拟机管理程序对主机资源进行虚拟访问，相比之下需要的资源更多。  
 
-容器时在linux上本机运行，并与其他容器共享主机的内核，它运行的一个独立的进程，不占用其他任何可执行文件的内存，非常轻量。  
+&emsp; 容器时在linux上本机运行，并与其他容器共享主机的内核，它运行的一个独立的进程，不占用其他任何可执行文件的内存，非常轻量。  
 
 
 ## 1.2. Docker简介  
@@ -128,12 +128,11 @@ CMD python /app/app.py
 &emsp; 以上就是Docker镜像分层的主要内容，至于这些层的交互、管理就需要存储驱动程序，也即联合文件系统（UnionFS）。Docker 可使用多种驱动，如目前已经合并入 Linux 内核、官方推荐的overlay， 曾在 Ubuntu、Debian等发行版中得到广泛使用的 AUFS，以及devicemapper、zfs等等，需要根据 Docker以及宿主机系统的版本，进行合适的选择。  
 
 ## 1.7. 容器详解
-
 ### 1.7.1. 容器生命周期  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-4.png)  
 
 ### 1.7.2. 容器数据卷
-&emsp; 容器数据卷：持久化。docker运行产生的数据持久化
+&emsp; 容器数据卷：持久化。docker运行产生的数据持久化.
 
 ### 1.7.3. 容器通信  
 
