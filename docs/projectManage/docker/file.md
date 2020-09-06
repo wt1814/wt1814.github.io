@@ -61,6 +61,11 @@ Dockerfile是一个文本文件，其内包含了一条条的指令，每一条�
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-9.png)  
 
+
+<!-- 
+https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
+-->
+
 1. FROM命令  
     &emsp; 定制的镜像都是基于FROM的镜像，所谓定制镜像，一定是以一个镜像为基础，在其上进行定制。基础镜像是必须指定的，而FROM就是指定基础镜像，因此一个Dockerfile中FROM是必备的指令，并且必须是第一条指令。在Docker Hub上有非常多的高质量的官方镜像，有可以直接拿来使用的服务类的镜像，如nginx、redis、mysql、tomcat等；可以在其中寻找一个最符合最终目标的镜像为基础镜像进行定制。    
 

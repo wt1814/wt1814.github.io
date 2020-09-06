@@ -3,11 +3,12 @@
 
 - [1. Docker使用教程](#1-docker使用教程)
     - [1.1. Docker安装及使用阿里云Doker镜像加速](#11-docker安装及使用阿里云doker镜像加速)
-    - [1.2. Docker命令](#12-docker命令)
-        - [1.2.1. 镜像操作命令](#121-镜像操作命令)
-        - [1.2.2. 容器操作指令](#122-容器操作指令)
-    - [1.3. Docker部署](#13-docker部署)
-    - [1.4. idea中docker插件](#14-idea中docker插件)
+    - [1.2. 私有仓库搭建](#12-私有仓库搭建)
+    - [1.3. Docker命令](#13-docker命令)
+        - [1.3.1. 镜像操作命令](#131-镜像操作命令)
+        - [1.3.2. 容器操作指令](#132-容器操作指令)
+    - [1.4. Docker部署](#14-docker部署)
+    - [1.5. idea中docker插件](#15-idea中docker插件)
 
 <!-- /TOC -->
 
@@ -16,9 +17,15 @@
 ## 1.1. Docker安装及使用阿里云Doker镜像加速  
 ......
 
-## 1.2. Docker命令  
+## 1.2. 私有仓库搭建  
+<!-- 
+ Dockerfile构建镜像、registry私服搭建和阿里云的私服仓库构建
+https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
+-->
 
-### 1.2.1. 镜像操作命令  
+## 1.3. Docker命令  
+
+### 1.3.1. 镜像操作命令  
 &emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi</font>**  
 
 * 获取镜像：  
@@ -52,7 +59,8 @@
 * docker rmi <-f> 镜像名:<tags\> - 删除镜像  
 -->
 
-### 1.2.2. 容器操作指令
+### 1.3.2. 容器操作指令
+
 &emsp; **<font color = "red">容器操作常用命令：run、start、stop、exec</font>**  
 
 * 创建启动容器：  
@@ -111,11 +119,16 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-7.png)  
 
 
-## 1.3. Docker部署  
+## 1.4. Docker部署  
+<!--
+ 提升10倍生产力：IDEA远程一键部署SpringBoot 
+ https://mp.weixin.qq.com/s?__biz=MzAxNDMwMTMwMw==&mid=2247492037&idx=1&sn=5568994f8c801f56170b14f2d21df31c&chksm=9b97c0ddace049cb57d4396eabc3965532eb128ab83a55d3c8d7dea3d8be675dc8c0c8ebfba3&mpshare=1&scene=1&srcid=&sharer_sharetime=1565841354339&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=a98b434d6faae616ed91d3ea273cb1b2030141b502c3589cff178a48e66b895a407b58f1d6b6ffafcf8c3ced4828833e6652a8869d6d35edddf1f192fe618738afaaa152a55d00024b42ce09a67b0b99&ascene=1&uin=MTE1MTYxNzY2MQ==&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=SNTjToR4G4GRQcv6vbTgQCeljdugS8QdOBuRNyGrRTrVOdRDMoEgnHo3VlytJ0fv
+-->
+
 ......
 
 
-## 1.4. idea中docker插件
+## 1.5. idea中docker插件
 ......
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MzAxNDMwMTMwMw==&mid=2247492037&idx=1&sn=5568994f8c801f56170b14f2d21df31c&chksm=9b97c0ddace049cb57d4396eabc3965532eb128ab83a55d3c8d7dea3d8be675dc8c0c8ebfba3&mpshare=1&scene=1&srcid=&sharer_sharetime=1565841354339&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=a98b434d6faae616ed91d3ea273cb1b2030141b502c3589cff178a48e66b895a407b58f1d6b6ffafcf8c3ced4828833e6652a8869d6d35edddf1f192fe618738afaaa152a55d00024b42ce09a67b0b99&ascene=1&uin=MTE1MTYxNzY2MQ==&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=SNTjToR4G4GRQcv6vbTgQCeljdugS8QdOBuRNyGrRTrVOdRDMoEgnHo3VlytJ0fv
