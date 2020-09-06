@@ -6,6 +6,7 @@
     - [杂记](#杂记)
     - [Java](#java)
         - [设计模式](#设计模式)
+        - [算法](#算法)
         - [并发编程](#并发编程)
         - [JVM](#jvm)
     - [数据库](#数据库)
@@ -36,7 +37,6 @@
         - [系统维护](#系统维护)
     - [Linux](#linux)
     - [计算机网络](#计算机网络)
-    - [算法](#算法)
     - [项目管理](#项目管理)
     - [开发软件](#开发软件)
     - [其他工具](#其他工具)
@@ -81,6 +81,25 @@ Gitee： https://gitee.com/wt1814/
 &emsp; &emsp; [动态代理](/docs/java/Design/6.proxy.md)   
 &emsp; [行为型设计模式](/docs/java/Design/5.behavior.md)  
 [设计模式讨论](/docs/java/Design/discuss.md)  
+
+
+### 算法  
+[总结](/docs/java/function/summary.md)  
+[算法基本概念](/docs/java/function/1.notion.md)  
+[基本数据结构]  
+&emsp; [链表](/docs/java/function/structure/array.md)  
+&emsp; [栈](/docs/java/function/structure/stack.md)  
+&emsp; [哈希](/docs/java/function/structure/hash.md)  
+&emsp; [树](/docs/java/function/structure/tree.md)  
+[排序算法](/docs/java/function/4.sort.md)  
+&emsp; [比较排序](/docs/java/function/sort/compare.md)  
+&emsp; [非比较排序](/docs/java/function/sort/noCompare.md)  
+[外部排序](/docs/java/function/sort/externalSort.md)  
+[查找算法](/docs/java/function/5.search.md)  
+[算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
+[海量数据]  
+&emsp; [海量数据结构](/docs/java/function/3.otherStructure.md)  
+&emsp; [海量数据应用](/docs/java/function/bigdata.md)  
 
 ### 并发编程  
 [并发编程总结](/docs/java/concurrent/summary.md)  
@@ -371,25 +390,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 [TCP](/docs/network/4.TCP.md)  
 
 ---
-## 算法  
-[总结](/docs/java/function/summary.md)  
-[算法基本概念](/docs/java/function/1.notion.md)  
-[基本数据结构]  
-&emsp; [链表](/docs/java/function/structure/array.md)  
-&emsp; [栈](/docs/java/function/structure/stack.md)  
-&emsp; [哈希](/docs/java/function/structure/hash.md)  
-&emsp; [树](/docs/java/function/structure/tree.md)  
-[排序算法](/docs/java/function/4.sort.md)  
-&emsp; [比较排序](/docs/java/function/sort/compare.md)  
-&emsp; [非比较排序](/docs/java/function/sort/noCompare.md)  
-[外部排序](/docs/java/function/sort/externalSort.md)  
-[查找算法](/docs/java/function/5.search.md)  
-[算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
-[海量数据]  
-&emsp; [海量数据结构](/docs/java/function/3.otherStructure.md)  
-&emsp; [海量数据应用](/docs/java/function/bigdata.md)  
 
----
 
 ## 项目管理  
 [git](/docs/projectManage/git/command.md)  

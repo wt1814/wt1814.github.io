@@ -27,6 +27,24 @@
         * [行为型设计模式](/docs/java/Design/5.behavior.md)  
     * [设计模式讨论](/docs/java/Design/discuss.md)  
 
+* 算法
+    * [总结](/docs/java/function/summary.md)  
+    * [算法基本概念](/docs/java/function/1.notion.md)  
+    * [基本数据结构]  
+    * [链表](/docs/java/function/structure/array.md)  
+    * [栈](/docs/java/function/structure/stack.md)  
+    * [哈希](/docs/java/function/structure/hash.md)  
+    * [树](/docs/java/function/structure/tree.md)  
+    * [排序算法](/docs/java/function/4.sort.md)  
+    * [比较排序](/docs/java/function/sort/compare.md)  
+    * [非比较排序](/docs/java/function/sort/noCompare.md)  
+    * [外部排序](/docs/java/function/sort/externalSort.md)  
+    * [查找算法](/docs/java/function/5.search.md)  
+    * [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
+    * [海量数据]
+    * [海量数据结构](/docs/java/function/3.otherStructure.md)  
+    * [海量数据应用](/docs/java/function/bigdata.md)  
+
 * 并发编程  
     * [并发编程总结](/docs/java/concurrent/summary.md)  
     * [线程基本概念](/docs/java/concurrent/1.Thread.md)  
@@ -236,8 +254,6 @@
     * [参数校验](/docs/web/Validation.md)
     * [源码安全](/docs/web/codeSecurity.md)  
 
- 
-    
 * 架构设计  
     * [性能指标](/docs/system/performance.md)  
     * [系统架构]()  
@@ -266,24 +282,6 @@
     * [DNS](/docs/network/3.DNS.md)  
     * [TCP](/docs/network/4.TCP.md)  
 
-* 算法
-    * [总结](/docs/java/function/summary.md)  
-    * [算法基本概念](/docs/java/function/1.notion.md)  
-    * [基本数据结构]  
-    * [链表](/docs/java/function/structure/array.md)  
-    * [栈](/docs/java/function/structure/stack.md)  
-    * [哈希](/docs/java/function/structure/hash.md)  
-    * [树](/docs/java/function/structure/tree.md)  
-    * [排序算法](/docs/java/function/4.sort.md)  
-    * [比较排序](/docs/java/function/sort/compare.md)  
-    * [非比较排序](/docs/java/function/sort/noCompare.md)  
-    * [外部排序](/docs/java/function/sort/externalSort.md)  
-    * [查找算法](/docs/java/function/5.search.md)  
-    * [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
-    * [海量数据]
-    * [海量数据结构](/docs/java/function/3.otherStructure.md)  
-    * [海量数据应用](/docs/java/function/bigdata.md)  
-
 * 项目管理  
     * [git](/docs/projectManage/git/command.md)   
     * Docker
@@ -295,5 +293,4 @@
 
 * 开发软件  
     * [idea](/docs/software/idea/idea.md)  
-
 
