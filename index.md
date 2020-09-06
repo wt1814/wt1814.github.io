@@ -37,7 +37,7 @@
         - [系统维护](#系统维护)
     - [Linux](#linux)
     - [计算机网络](#计算机网络)
-    - [项目管理](#项目管理)
+    - [DevOps](#devops)
     - [开发软件](#开发软件)
     - [其他工具](#其他工具)
     - [Error](#error)
@@ -392,7 +392,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 ---
 
 
-## 项目管理  
+## DevOps  
 [git](/docs/projectManage/git/command.md)  
 [docker]  
 &emsp; [docker总结](/docs/projectManage/docker/summary.md)  

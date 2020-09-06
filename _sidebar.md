@@ -282,7 +282,7 @@
     * [DNS](/docs/network/3.DNS.md)  
     * [TCP](/docs/network/4.TCP.md)  
 
-* 项目管理  
+* DevOps  
     * [git](/docs/projectManage/git/command.md)   
     * Docker
     * [docker总结](/docs/projectManage/docker/summary.md)  

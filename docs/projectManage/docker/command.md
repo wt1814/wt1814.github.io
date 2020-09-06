@@ -16,11 +16,16 @@
 
 ## 1.1. Docker安装及使用阿里云Doker镜像加速  
 ......
+<!-- 
+Docker配置阿里云镜像仓库
+https://mp.weixin.qq.com/s/qp3BX2oq5dULOEBFt5XTAQ
+-->
 
 ## 1.2. 私有仓库搭建  
 <!-- 
  Dockerfile构建镜像、registry私服搭建和阿里云的私服仓库构建
 https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
+
 -->
 
 ## 1.3. Docker命令  
