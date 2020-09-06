@@ -277,6 +277,7 @@
     * [排序算法](/docs/java/function/4.sort.md)  
     * [比较排序](/docs/java/function/sort/compare.md)  
     * [非比较排序](/docs/java/function/sort/noCompare.md)  
+    * [外部排序](/docs/java/function/sort/externalSort.md)  
     * [查找算法](/docs/java/function/5.search.md)  
     * [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
     * [海量数据]
