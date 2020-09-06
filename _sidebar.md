@@ -281,7 +281,7 @@
     * [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
     * [海量数据]
     * [海量数据结构](/docs/java/function/3.otherStructure.md)  
-    * [海量数据应用](/docs/java/function/3.otherStructure.md)  
+    * [海量数据应用](/docs/java/function/bigdata.md)  
 
 * 项目管理  
     * [git](/docs/projectManage/git/command.md)   

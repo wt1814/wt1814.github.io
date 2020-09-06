@@ -383,7 +383,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
 [海量数据结构]  
 &emsp; [海量数据结构](/docs/java/function/3.otherStructure.md)  
-&emsp; [海量数据应用](/docs/java/function/3.otherStructure.md)  
+&emsp; [海量数据应用](/docs/java/function/bigdata.md)  
 
 ---
 
