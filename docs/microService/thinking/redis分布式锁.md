@@ -140,7 +140,7 @@ public class RedisTool {
 &emsp; <font color="red">一句话概述：当前线程尝试给每个Master节点加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。</font>  
 
 ## 1.4. Redisson实现redis分布式锁  
-&emsp; 基于redis的分布式锁实现客户端Redisson，官方网址：https://redisson.org/ 。Redisson支持redis单实例、redis master-slave、redis哨兵、redis cluster等各种部署架构，都可以完美实现。  
+&emsp; 基于redis的分布式锁实现客户端[Redisson](/docs/microService/Redis/Redisson.md) ，官方网址：https://redisson.org/ 。Redisson支持redis单实例、redis master-slave、redis哨兵、redis cluster等各种部署架构，都可以完美实现。  
 
 &emsp; 使用示例： 
  
