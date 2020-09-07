@@ -160,6 +160,10 @@ try{
 ### 1.4.1. ※※※Redisson解决死锁问题(watch dog自动延期机制)  
 <!-- 
 https://www.cnblogs.com/jklixin/p/13212864.html
+
+* 自动延期  
+&emsp; <font color = "lime">只要客户端一旦加锁成功，就会启动一个守护线程，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>   
+&emsp; <font color = "lime">在一个分布式环境下，假如一个线程获得锁后，突然服务器宕机了，那么这个时候在一定时间后这个锁会自动释放，也可以设置锁的有效时间(不设置默认30秒），这样的目的主要是业务机器宕机，防止死锁的发生。</font>   
 -->
 
 &emsp; 普通利用Redis实现分布式锁的时候，可能会为某个锁指定某个key，当线程获取锁并执行完业务逻辑代码的时候，将该锁对应的key删除掉来释放锁。
@@ -169,12 +173,8 @@ lock->set(key)，成功->执行业务，业务执行完毕->unlock->del(key)。
 1. 业务机器宕机  
 &emsp; 因为业务不知道要执行多久才能结束，所以这个key一般不会设置过期时间。这样如果在执行业务的过程中，业务机器宕机，unlock操作不会执行，所以这个锁不会被释放，其他机器拿不到锁，从而形成了死锁。  
 &emsp; Redisson为了解决这种情况，设定了一个叫做lockWatchdogTimeout的参数，默认为30秒钟。这样当业务方调用加锁操作的时候，  
-
-
-<!--   
-2. redis宕机
-&emsp; Redisson内部提供了一个监控锁的看门狗，它的作用是在Redisson实例被关闭前，不断的延长锁的有效期。默认情况下，看门狗的检查锁的超时时间是30秒钟，也可以通过修改Config.lockWatchdogTimeout来另行指定。  
--->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-45.png)  
+&emsp; 默认的leaseTime是-1，这个时候会启动一个定时任务，在业务方释放锁之前，会一直不停的增加这个锁的生命周期时间，保证在业务执行完毕之前，这个锁一直不会因为redis的超时而被释放。  
 2. Redis宕机  
 &emsp; 如果Redis宕机，三种情况：
     1. Redis是单点模式
@@ -228,10 +228,8 @@ Future<Boolean> res = lock.tryLockAsync(100, 10, TimeUnit.SECONDS);
 
 #### 1.4.2.1. 重入锁解析
 ##### 1.4.2.1.1. 获取锁tryLock  
-&emsp; **<font color = "lime">RedissonLock锁互斥、自动延期机制、可重入加锁。</font>**  
-* 自动延期  
-&emsp; <font color = "lime">只要客户端一旦加锁成功，就会启动一个守护线程，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>   
-&emsp; <font color = "lime">在一个分布式环境下，假如一个线程获得锁后，突然服务器宕机了，那么这个时候在一定时间后这个锁会自动释放，也可以设置锁的有效时间(不设置默认30秒），这样的目的主要是业务机器宕机，防止死锁的发生。</font>   
+&emsp; **<font color = "lime">RedissonLock锁互斥、自动延期(watchdog看门狗)机制、可重入加锁。</font>**  
+
 
 &emsp; RedissonLock加锁流程：  
 1. 执行lock.lock()代码时，<font color = "red">如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。</font>  
@@ -319,9 +317,6 @@ public void unlock() {
 &emsp; 这时客户端2来尝试加锁的时候，在新的master节点上也能加锁，此时就会导致多个客户端对同一个分布式锁完成了加锁。  
 &emsp; 这时系统在业务语义上一定会出现问题，导致各种脏数据的产生。  
 &emsp; 缺陷在哨兵模式或者主从模式下，如果 master实例宕机的时候，可能导致多个客户端同时完成加锁。  
-
- 
-
 
 
 ### 1.4.3. 公平锁（Fair Lock）  
