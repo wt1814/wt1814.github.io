@@ -291,7 +291,10 @@
     * [docker使用及命令](/docs/projectManage/docker/command.md)  
     * [dockerFile](/docs/projectManage/docker/file.md)  
     * [docker工具](/docs/projectManage/docker/tools.md)   
-
+    * [k8s]  
+    * [k8s原理](/docs/projectManage/k8s/principle.md)  
+    * [k8s使用](/docs/projectManage/k8s/command.md)  
+    
 * 开发软件  
     * [idea](/docs/software/idea/idea.md)  
 

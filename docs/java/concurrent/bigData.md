@@ -2,8 +2,18 @@
 # 大数据量
 
 ## 读取大数据量  
+1. 分页查询  
+2. MyBatis中使用流式查询避免数据量过大导致OOM
+
+### 分页查询
 &emsp; 使用分页查询，一般<font color = "red">建立主键或唯一索引, 利用索引</font>  
 &emsp; 语句样式: MySQL中,可用如下方法: SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) LIMIT M  
+
+### MyBatis中使用流式查询避免数据量过大导致OOM  
+&emsp; mysql的jdbc还支持以流的形式访问结果集。每当调用ResultSet的next()方法时返回部分数据。不会导致oom。  
+<!-- 
+https://www.jianshu.com/p/0339c6fe8b61
+-->
 
 ## 多线程处理大数据量（修改）  
 

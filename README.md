@@ -399,6 +399,10 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 &emsp; [docker使用及命令](/docs/projectManage/docker/command.md)  
 &emsp; [dockerFile](/docs/projectManage/docker/file.md)  
 &emsp; [docker工具](/docs/projectManage/docker/tools.md)   
+[k8s]  
+&emsp; [k8s原理](/docs/projectManage/k8s/principle.md)  
+&emsp; [k8s使用](/docs/projectManage/k8s/command.md)  
+&emsp; [k8s工具](/docs/projectManage/k8s/tools.md)   
 
 
 ## 开发软件  
