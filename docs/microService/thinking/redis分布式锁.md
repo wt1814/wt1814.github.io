@@ -11,17 +11,17 @@
             - [1.3.1.2. 解锁](#1312-解锁)
         - [1.3.2. 集群redlock算法实现分布式锁](#132-集群redlock算法实现分布式锁)
     - [1.4. Redisson实现redis分布式锁](#14-redisson实现redis分布式锁)
-        - [1.4.1. 重入锁](#141-重入锁)
-            - [1.4.1.1. 重入锁解析](#1411-重入锁解析)
-                - [1.4.1.1.1. 获取锁tryLock](#14111-获取锁trylock)
-                - [1.4.1.1.2. 解锁unlock](#14112-解锁unlock)
-            - [重入锁缺点](#重入锁缺点)
-            - [Redisson解决死锁问题](#redisson解决死锁问题)
-        - [1.4.2. 公平锁（Fair Lock）](#142-公平锁fair-lock)
-        - [1.4.3. 联锁（MultiLock）](#143-联锁multilock)
-        - [1.4.4. 红锁（RedLock）](#144-红锁redlock)
-        - [1.4.5. 读写锁（ReadWriteLock）](#145-读写锁readwritelock)
-        - [1.4.6. 信号量（Semaphore）](#146-信号量semaphore)
+        - [1.4.1. ※※※Redisson解决死锁问题(watch dog自动延期机制)](#141-※※※redisson解决死锁问题watch-dog自动延期机制)
+        - [1.4.2. 重入锁](#142-重入锁)
+            - [1.4.2.1. 重入锁解析](#1421-重入锁解析)
+                - [1.4.2.1.1. 获取锁tryLock](#14211-获取锁trylock)
+                - [1.4.2.1.2. 解锁unlock](#14212-解锁unlock)
+            - [1.4.2.2. 重入锁缺点](#1422-重入锁缺点)
+        - [1.4.3. 公平锁（Fair Lock）](#143-公平锁fair-lock)
+        - [1.4.4. 联锁（MultiLock）](#144-联锁multilock)
+        - [1.4.5. 红锁（RedLock）](#145-红锁redlock)
+        - [1.4.6. 读写锁（ReadWriteLock）](#146-读写锁readwritelock)
+        - [1.4.7. 信号量（Semaphore）](#147-信号量semaphore)
 
 <!-- /TOC -->
 
@@ -157,7 +157,36 @@ try{
 }
 ```
 
-### 1.4.1. 重入锁  
+### 1.4.1. ※※※Redisson解决死锁问题(watch dog自动延期机制)  
+<!-- 
+https://www.cnblogs.com/jklixin/p/13212864.html
+-->
+
+&emsp; 普通利用Redis实现分布式锁的时候，可能会为某个锁指定某个key，当线程获取锁并执行完业务逻辑代码的时候，将该锁对应的key删除掉来释放锁。
+lock->set(key)，成功->执行业务，业务执行完毕->unlock->del(key)。  
+&emsp; 根据这种操作和实践方式，可以分为下面两个场景：  
+
+1. 业务机器宕机  
+&emsp; 因为业务不知道要执行多久才能结束，所以这个key一般不会设置过期时间。这样如果在执行业务的过程中，业务机器宕机，unlock操作不会执行，所以这个锁不会被释放，其他机器拿不到锁，从而形成了死锁。  
+&emsp; Redisson为了解决这种情况，设定了一个叫做lockWatchdogTimeout的参数，默认为30秒钟。这样当业务方调用加锁操作的时候，  
+
+
+<!--   
+2. redis宕机
+&emsp; Redisson内部提供了一个监控锁的看门狗，它的作用是在Redisson实例被关闭前，不断的延长锁的有效期。默认情况下，看门狗的检查锁的超时时间是30秒钟，也可以通过修改Config.lockWatchdogTimeout来另行指定。  
+-->
+2. Redis宕机  
+&emsp; 如果Redis宕机，三种情况：
+    1. Redis是单点模式
+    2. Redis是集群模式，master在获取到一把锁之后（写操作成功后），在没来得及把该锁同步到slave之前就宕掉，这个时候slave没有锁，这把锁失效了。
+    3. Redis是集群模式，而整个集群都宕机，那么就没救了。  
+
+&emsp; **<font color = "lime">redisson锁自动释放，看门狗线程未生效：</font>**  
+&emsp; lockWatchdogTimeout（监控锁的看门狗超时，单位：毫秒），默认值：30000
+&emsp; 监控锁的看门狗超时时间单位为毫秒。该参数只适用于分布式锁的加锁请求中未明确使用leaseTimeout参数的情况。如果该看门口未使用lockWatchdogTimeout去重新调整一个分布式锁的lockWatchdogTimeout超时，那么这个锁将变为失效状态。这个参数可以用来避免由Redisson客户端节点宕机或其他原因造成死锁的情况。
+&emsp; <font color = "lime">设置了失效时间，所以这个看门狗设置是无效的。</font>  
+      
+### 1.4.2. 重入锁  
 &emsp; Redisson的分布式可重入锁RLock，实现了java.util.concurrent.locks.Lock接口，以及支持自动过期解锁。同时还提供了异步（Async）、反射式（Reactive）和RxJava2标准的接口。  
 
 ```java
@@ -197,12 +226,12 @@ Future<Boolean> res = lock.tryLockAsync(100, 10, TimeUnit.SECONDS);
 &emsp; RLock对象完全符合Java的Lock规范。也就是说只有拥有锁的进程才能解锁，其他进程解锁则会抛出IllegalMonitorStateException错误。  
 
 
-#### 1.4.1.1. 重入锁解析
-##### 1.4.1.1.1. 获取锁tryLock  
+#### 1.4.2.1. 重入锁解析
+##### 1.4.2.1.1. 获取锁tryLock  
 &emsp; **<font color = "lime">RedissonLock锁互斥、自动延期机制、可重入加锁。</font>**  
 * 自动延期  
-&emsp; <font color = "lime">只要客户端一旦加锁成功，就会启动一个后台线程，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>   
-&emsp; <font color = "lime">在一个分布式环境下，假如一个线程获得锁后，突然服务器宕机了，那么这个时候在一定时间后这个锁会自动释放，你也可以设置锁的有效时间(不设置默认30秒），这样的目的主要是业务机器宕机，防止死锁的发生。</font>   
+&emsp; <font color = "lime">只要客户端一旦加锁成功，就会启动一个守护线程，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>   
+&emsp; <font color = "lime">在一个分布式环境下，假如一个线程获得锁后，突然服务器宕机了，那么这个时候在一定时间后这个锁会自动释放，也可以设置锁的有效时间(不设置默认30秒），这样的目的主要是业务机器宕机，防止死锁的发生。</font>   
 
 &emsp; RedissonLock加锁流程：  
 1. 执行lock.lock()代码时，<font color = "red">如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。</font>  
@@ -244,7 +273,7 @@ Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {
 &emsp; 这时系统在业务语义上一定会出现问题，导致各种脏数据的产生。  
 &emsp; 所以这个就是redis cluster，或者是redis master-slave架构的主从异步复制导致的redis分布式锁的最大缺陷：<font color = "lime">在redis master实例宕机的时候，可能导致多个客户端同时完成加锁。</font>  
 
-##### 1.4.1.1.2. 解锁unlock  
+##### 1.4.2.1.2. 解锁unlock  
 
 ```java
 public void unlock() {
@@ -284,32 +313,25 @@ public void unlock() {
 }
 ```
 
-#### 重入锁缺点  
+#### 1.4.2.2. 重入锁缺点  
 &emsp; Redis分布式锁会有个缺陷，就是在Redis哨兵模式下:  
 &emsp; 客户端1 对某个 master节点写入了redisson锁，此时会异步复制给对应的slave节点。但是这个过程中一旦发生master节点宕机，主备切换，slave节点从变为了 master节点。  
 &emsp; 这时客户端2来尝试加锁的时候，在新的master节点上也能加锁，此时就会导致多个客户端对同一个分布式锁完成了加锁。  
 &emsp; 这时系统在业务语义上一定会出现问题，导致各种脏数据的产生。  
 &emsp; 缺陷在哨兵模式或者主从模式下，如果 master实例宕机的时候，可能导致多个客户端同时完成加锁。  
 
-#### Redisson解决死锁问题  
-&emsp; 普通利用Redis实现分布式锁的时候，可能会为某个锁指定某个key，当线程获取锁并执行完业务逻辑代码的时候，将该锁对应的key删除掉来释放锁。
-lock->set(key)，成功->执行业务，业务执行完毕->unlock->del(key)。
-&emsp; 根据这种操作和实践方式，可以分为下面两个场景：
-
-1. 业务机器宕机
-&emsp; 因为业务不知道要执行多久才能结束，所以这个key一般不会设置过期时间。这样如果在执行业务的过程中，业务机器宕机，unlock操作不会执行，所以这个锁不会被释放，其他机器拿不到锁，从而形成了死锁。  
-&emsp; Redisson为了解决这种情况，设定了一个叫做lockWatchdogTimeout的参数，默认为30秒钟。  
+ 
 
 
 
-### 1.4.2. 公平锁（Fair Lock）  
+### 1.4.3. 公平锁（Fair Lock）  
 &emsp; 它保证了当多个Redisson客户端线程同时请求加锁时，优先分配给先发出请求的线程。所有请求线程会在一个队列中排队，当某个线程出现宕机时，Redisson会等待5秒后继续下一个线程，也就是说如果前面有5个线程都处于等待状态，那么后面的线程会等待至少25秒。使用方式同上，获取的时候使用如下方法：  
 
 ```java
 RLock fairLock = redisson.getFairLock("anyLock");
 ```
 
-### 1.4.3. 联锁（MultiLock）  
+### 1.4.4. 联锁（MultiLock）  
 &emsp; 基于Redis的Redisson分布式联锁RedissonMultiLock对象可以将多个RLock对象关联为一个联锁，每个RLock对象实例可以来自于不同的Redisson实例。  
 
 ```java
@@ -336,7 +358,7 @@ boolean res = lock.tryLock(100, 10, TimeUnit.SECONDS);
 lock.unlock();
 ```
 
-### 1.4.4. 红锁（RedLock）  
+### 1.4.5. 红锁（RedLock）  
 <!-- 
 https://blog.csdn.net/qq_35688140/article/details/103461115
 -->
@@ -520,7 +542,7 @@ public boolean tryLock(long waitTime, long leaseTime, TimeUnit unit) throws Inte
 ```
 
 
-### 1.4.5. 读写锁（ReadWriteLock）  
+### 1.4.6. 读写锁（ReadWriteLock）  
 &emsp; 基于Redis的Redisson分布式可重入读写锁RReadWriteLock Java对象实现了java.util.concurrent.locks.ReadWriteLock接口。其中读锁和写锁都继承了RLock接口。分布式可重入读写锁允许同时有多个读锁和一个写锁处于加锁状态。  
 
 ```java
@@ -546,7 +568,7 @@ boolean res = rwlock.writeLock().tryLock(100, 10, TimeUnit.SECONDS);
 lock.unlock();
 ```
 
-### 1.4.6. 信号量（Semaphore）  
+### 1.4.7. 信号量（Semaphore）  
 &emsp; 基于Redis的Redisson的分布式信号量（Semaphore）Java对象RSemaphore采用了与java.util.concurrent.Semaphore相似的接口和用法。同时还提供了异步（Async）、反射式（Reactive）和RxJava2标准的接口。  
 
 ```java
