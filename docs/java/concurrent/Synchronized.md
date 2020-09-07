@@ -407,7 +407,7 @@ public String test(String str){
 
 ### 1.5.3. 了解HotSpot虚拟机对象的内存布局  
 
-&emsp; 下面讲解Synchroized的偏向锁、轻量级锁、重量级锁。 **<font color = "red">需要先了解HotSpot虚拟机对象的内存布局。</font>**在64位的HotSpot虚拟机中，不同状态下对象头的存储内容如下图所示。  
+&emsp; 下面讲解Synchroized的偏向锁、轻量级锁、重量级锁。 **<font color = "red">需要先了解HotSpot虚拟机对象的内存布局。</font>** 在64位的HotSpot虚拟机中，不同状态下对象头的存储内容如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)   
 &emsp; HotSpot虚拟机的对象头（Object Header）分为三部分：对象头(Header)、实例数据(Instance Data)、对齐填充(Padding)。<font color = "red">用对象头中markword最低的三位代表锁状态，其中1位是偏向锁位，两位是普通锁位。</font>  
 
@@ -496,13 +496,14 @@ public String test(String str){
 
 ### 1.5.5. 轻量级锁  
 &emsp; 轻量级锁在加锁过程中，用到了自旋锁。  
-&emsp; **<font color = "red">为什么有了自旋锁还需要重量级锁？</font>**  
+&emsp; **<font color = "lime">为什么有了自旋锁还需要重量级锁？</font>**  
+&emsp; 偏向锁、自旋锁都是用户空间完成。重量级锁是需要向内核申请。  
 &emsp; 自旋是消耗CPU资源的，如果锁的时间长，或者自旋线程多，CPU会被大量消耗。  
 &emsp; 重量级锁有等待队列，所有拿不到锁的线程进入等待队列，不需要消耗CPU资源。  
 
-&emsp; **偏向锁是否一定比自旋锁效率高？**  
-&emsp; 不一定，在明确知道会有多线程竞争的情况下，偏向锁肯定会涉及锁撤销，这时候直接使用自旋锁。  
-&emsp; JVM启动过程，一般会有很多线程竞争，所以默认情况启动时不打开偏向锁，过一段时间再打开。  
+&emsp; **<font color = "lime">偏向锁是否一定比自旋锁效率高？</font>**  
+&emsp; <font color = "red">不一定，在明确知道会有多线程竞争的情况下，偏向锁肯定会涉及锁撤销，这时候直接使用自旋锁。</font>  
+&emsp; <font color = "red">JVM启动过程，一般会有很多线程竞争，所以默认情况启动时不打开偏向锁，过一段时间再打开。</font>  
 
 &emsp; 轻量级锁及锁膨胀流程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-30.png)  
@@ -531,13 +532,12 @@ public String test(String str){
 
 ### 1.5.6. 重量级锁
 &emsp; <font color = "lime">重量级锁是依赖对象内部的monitor锁来实现的，而monitor又依赖操作系统的MutexLock(互斥锁)来实现的，所以重量级锁也称为互斥锁。</font>  
+&emsp; <font color = "lime">为什么说重量级线程开销很大？</font>  
+&emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，被阻塞的线程不会消耗cpu。但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。  
+&emsp; 重量级锁是需要向内核申请。  
 
 &emsp; 升级为重量级锁过程：  
 &emsp; 升级重量级锁--->向操作系统申请资源，linux mutex，CPU从3级-0级系统调用，线程挂起，进入等待队列，等待操作系统的调度，然后再映射回用户空间。  
-
-
-&emsp; <font color = "lime">为什么说重量级线程开销很大？</font>  
-&emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，被阻塞的线程不会消耗cpu。但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。
 
 ### 1.5.7. 锁状态总结  
 &emsp; JDK 1.6 引入了偏向锁和轻量级锁，从而让锁拥有了四个状态： **无锁状态（unlocked）(MarkWord标志位01，没有线程执行同步方法/代码块时的状态)** 、偏向锁状态（biasble）、轻量级锁状态（lightweight locked）和重量级锁状态（inflated）。  
@@ -556,4 +556,3 @@ public String test(String str){
 |偏向锁	|010|<font color = "red">无实际竞争，让一个线程一直持有锁，在其他线程需要竞争锁（只cas一次）的时候，再释放锁</font>|加锁解锁不需要额外消耗	|如果线程间存在竞争，会有撤销锁的消耗	|只有一个线程进入临界区|
 |轻量级|00|<font color = "red">无实际竞争，多个线程交替使用锁；允许短时间的锁竞争</font>|竞争的线程不会阻塞|如果线程一直得不到锁，会一直自旋，消耗CPU|多个线程交替进入临界区|
 |重量级	|10|<font color = "lime">有实际竞争，且锁竞争时间长</font>|线程竞争不使用自旋，不消耗CPU|线程阻塞，响应时间长|多个线程同时进入临界区| 
-
