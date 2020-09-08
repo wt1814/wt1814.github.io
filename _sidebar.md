@@ -257,7 +257,6 @@
 
 * 架构设计  
     * [性能指标](/docs/system/performance.md)  
-    * [系统架构]()  
     * [接入层]()  
     * Nginx  
         * [Nginx](/docs/Linux/Nginx/1.nginx.md)  

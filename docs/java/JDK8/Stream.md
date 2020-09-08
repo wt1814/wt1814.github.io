@@ -80,6 +80,8 @@
 
 #### 1.2.2.2. 集合Stream  
 
+&emsp; Filter过滤操作、Map/flatMap变换操作、Limit/skip/concat、Sorted流的排序、Min/Max/Distinct、Match、ForEach  
+
 ##### 1.2.2.2.1. Map  
 &emsp; <font color = "red">Map把一种类型的Stream变为另一种类型的Stream。</font>map方法内需要一个Function接口，Function<? super String, ? extends String> mapper。  
 &emsp; 使用场景：从对象列表中提取出单个字段的列表。  
