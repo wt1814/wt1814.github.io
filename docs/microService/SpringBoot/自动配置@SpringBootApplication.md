@@ -13,7 +13,15 @@
 <!-- /TOC -->
 
 # 1. SpringBoot自动配置-@SpringBootApplication注解
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-3.png) 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-3.png)  
+
+* @SpringBootApplication注解  
+    * @ComponentScan  
+    * @SpringBootConfiguration  
+    * @EnableAutoConfiguration  
+        * EnableAutoConfigurationImportSelector.class
+            * getCandidateConfigurations()  
+                * loadSpringFactories()
 
 &emsp; SpringBoot的自动配置，指的是只需要引用功能的包，相关的配置完全不用管，SpringBoot会自动将一些配置类的bean注册进ioc容器，在需要的地方使用@autowired或者@resource等注解来使用它。  
 
