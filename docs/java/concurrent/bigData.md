@@ -1,23 +1,35 @@
 
-# 大数据量
+<!-- TOC -->
 
-## 读取大数据量  
+- [1. 大数据量](#1-大数据量)
+    - [1.1. 读取大数据量](#11-读取大数据量)
+        - [1.1.1. 分页查询](#111-分页查询)
+        - [1.1.2. MyBatis中使用流式查询避免数据量过大导致OOM](#112-mybatis中使用流式查询避免数据量过大导致oom)
+    - [1.2. 多线程处理大数据量（修改）](#12-多线程处理大数据量修改)
+        - [1.2.1. CountDownLatch](#121-countdownlatch)
+    - [1.3. 海量数据处理](#13-海量数据处理)
+
+<!-- /TOC -->
+
+# 1. 大数据量
+
+## 1.1. 读取大数据量  
 1. 分页查询  
 2. MyBatis中使用流式查询避免数据量过大导致OOM
 
-### 分页查询
+### 1.1.1. 分页查询
 &emsp; 使用分页查询，一般<font color = "red">建立主键或唯一索引, 利用索引</font>  
 &emsp; 语句样式: MySQL中,可用如下方法: SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) LIMIT M  
 
-### MyBatis中使用流式查询避免数据量过大导致OOM  
+### 1.1.2. MyBatis中使用流式查询避免数据量过大导致OOM  
 &emsp; mysql的jdbc还支持以流的形式访问结果集。每当调用ResultSet的next()方法时返回部分数据。不会导致oom。  
 <!-- 
 https://www.jianshu.com/p/0339c6fe8b61
 -->
 
-## 多线程处理大数据量（修改）  
+## 1.2. 多线程处理大数据量（修改）  
 
-### CountDownLatch  
+### 1.2.1. CountDownLatch  
 <!--
 Java多线程处理大数据量
 https://www.jianshu.com/p/e1adaae523ec
@@ -130,7 +142,7 @@ public class OperationHistoryData {
 }
 ```
 
-## 海量数据处理  
+## 1.3. 海量数据处理  
 &emsp; [海量数据](/docs/java/function/3.otherStructure.md)  
 
 
