@@ -22,7 +22,7 @@ https://gitee.com/shishan100/Java-Interview-Advanced/tree/master#%E5%88%86%E5%B8
 -->
 &emsp; **<font color = "lime">总结：</font>**  
 1. 为什么使用mq？
-    * 优点：解耦、异步、削锋  
+    * 优点：解耦(调用多个系统，非同步调用)、异步、削锋  
 2. 消息队列选型  
 3. 保障高可用  
 4. 重复消费
@@ -72,7 +72,7 @@ https://gitee.com/shishan100/Java-Interview-Advanced/tree/master#%E5%88%86%E5%B8
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/mq-6.png)  
     &emsp; A系统发送个数据到BCD三个系统，接口调用发送，那如果E系统也要这个数据呢？那如果C系统现在不需要了呢？现在A系统又要发送第二种数据了呢？A系统负责人濒临崩溃中。。。再来点更加崩溃的事儿，A系统要时时刻刻考虑BCDE四个系统如果挂了咋办？我要不要重发？我要不要把消息存起来？头发都白了啊。。。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/mq-7.png)  
-    &emsp; **<font color = "lime">你需要去考虑一下你负责的系统中是否有类似的场景，就是一个系统或者一个模块，调用了多个系统或者模块，互相之间的调用很复杂，维护起来很麻烦。但是其实这个调用是不需要直接同步调用接口的，如果用MQ给他异步化解耦，也是可以的，你就需要去考虑在你的项目里，是不是可以运用这个MQ去进行系统的解耦。在简历中体现出来这块东西，用MQ作解耦。</font>**  
+    &emsp; **<font color = "lime">你需要去考虑一下你负责的系统中是否有类似的场景，就是一个系统或者一个模块，调用了多个系统或者模块，互相之间的调用很复杂，维护起来很麻烦。但是其实这个调用是不需要直接同步调用接口的，如果用MQ给他异步化解耦，也是可以的，你就需要去考虑在你的项目里，是不是可以运用这个MQ去进行系统的解耦。</font>**  
 * 异步：现场画个图来说明一下，  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/mq-8.png)  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/mq-9.png)  
@@ -176,7 +176,7 @@ https://www.cnblogs.com/jack1995/p/10908814.html
 
 &emsp; 假设 1 万个订单积压在 mq 里面，没有处理，其中 1000 个订单都丢了，你只能手动写程序把那 1000 个订单给查出来，手动发到 mq 里去再补一次。  
 
-&emsp; **mq 都快写满了**
+&emsp; **mq 都快写满了**  
 &emsp; 如果消息积压在 mq 里，你很长时间都没有处理掉，此时导致 mq 都快写满了，咋办？这个还有别的办法吗？没有，谁让你第一个方案执行的太慢了，你临时写程序，接入数据来消费，**消费一个丢弃一个，都不要了**，快速消费掉所有的消息。然后走第二个方案，到了晚上再补数据吧。  
 
 
