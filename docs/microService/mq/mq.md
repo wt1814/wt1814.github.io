@@ -25,7 +25,7 @@ https://gitee.com/shishan100/Java-Interview-Advanced/tree/master#%E5%88%86%E5%B8
     * 优点：解耦(调用多个系统，非同步调用)、异步、削锋  
 2. 消息队列选型  
 3. 保障高可用  
-4. 重复消费
+4. 重复消费  
     消费接口幂等性。  
 5. 顺序消费  
     发送到单个queue或partition，单线程消费。  

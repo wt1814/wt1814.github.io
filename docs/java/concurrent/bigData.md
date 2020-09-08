@@ -143,7 +143,7 @@ public class OperationHistoryData {
 ```
 
 ## 1.3. 海量数据处理  
-&emsp; [海量数据](/docs/java/function/3.otherStructure.md)  
+&emsp; [海量数据应用](/docs/java/function/bigdata.md)  
 
 
 
