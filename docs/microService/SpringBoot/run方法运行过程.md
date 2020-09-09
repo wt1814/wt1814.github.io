@@ -7,6 +7,10 @@
 <!-- /TOC -->
 
 # 1. SpringApplication实例run()方法运行过程
+
+&emsp; **<font color = "lime">准备环境变量、创建容器、准备容器、刷新容器、执行刷新容器后的后置处理逻辑、调用ApplicationRunner和CommandLineRunner的run方法。</font>**    
+
+
 &emsp; 进入SpringApplication#run方法中，一路点击#run方法。  
 
 &emsp; **<font color = "red">主要步骤总结如下：</font>**  

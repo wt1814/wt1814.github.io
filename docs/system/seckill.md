@@ -1,8 +1,28 @@
 
 
 # 秒杀系统设计  
+
+
+## 什么是秒杀系统  
+
+
 <!-- 
 
+qps飘高  
+我是如何将系统QPS从300提升到6000的
+https://blog.csdn.net/u012562943/article/details/100879341
+
+
+高并发架构系列：什么是流量削峰？如何解决秒杀业务的削峰场景
+https://blog.csdn.net/m0_37125796/article/details/88833419
+
+-->
+
+
+## 秒杀系统设计  
+
+
+<!-- 
  
 秒杀系统的架构分析与实战
 https://mp.weixin.qq.com/s/CUTG32SaLST9nmhBP1PgkA
@@ -28,5 +48,6 @@ https://mp.weixin.qq.com/s/8TWZG0rkTuvBqw3abPDE2w
 https://mp.weixin.qq.com/s/CYa_YGVGCnozus2K9UTfNA
 
 -->
+
 
 
