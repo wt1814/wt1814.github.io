@@ -120,7 +120,7 @@ Gitee： https://gitee.com/wt1814/
 [JVM调优-基础](/docs/java/JVM/6.JVM调优-基础.md)  
 [JVM调优](/docs/java/JVM/7.JVM调优.md)  
 [Linux系统问题排查](/docs/Linux/Linux/problem.md)  
-[系统其他问题](docs/java/JVM/systemProblem.md)  
+
 
 ## 数据库  
 [学习SQL的总结](/docs/SQL/学习SQL的总结.md)  
