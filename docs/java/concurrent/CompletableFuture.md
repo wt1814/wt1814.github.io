@@ -8,6 +8,13 @@
 
 
 # 1. CompletableFuture<T> JDK1.8  
+
+<!-- 
+异步神器CompletableFuture 
+https://mp.weixin.qq.com/s/pQsWfME5QrHhp4xKS4WSrA
+
+-->
+
 &emsp; CompletableFuture，组合式异步编程，异步回调。
 
 ## 1.1. ForkJoinPool与CompletableFuture  

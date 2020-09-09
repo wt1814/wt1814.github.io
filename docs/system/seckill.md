@@ -16,6 +16,9 @@ https://blog.csdn.net/u012562943/article/details/100879341
 高并发架构系列：什么是流量削峰？如何解决秒杀业务的削峰场景
 https://blog.csdn.net/m0_37125796/article/details/88833419
 
+如何降低QPS(错峰、限流、削峰)
+https://www.pianshen.com/article/2449719440/
+
 -->
 
 

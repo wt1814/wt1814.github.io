@@ -315,6 +315,12 @@ _count：用来记录该线程获取锁的次数；
 ```
 -->
 
+<!-- 
+监视器monitor
+https://www.jianshu.com/p/c3313dcf2c23
+
+-->
+
 &emsp; 两条指令的作用：  
 * monitorenter：  
 &emsp; <font color = "red">线程执行monitorenter指令时尝试获取monitor的所有权，当monitor被占用时就会处于锁定状态。</font>过程如下：
@@ -332,6 +338,12 @@ _count：用来记录该线程获取锁的次数；
 
 #### 1.4.1.2. 同步方法  
 &emsp; synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被synchronized修饰的方法，<font color= "lime">而是在Class文件的方法表中将该方法的access_flags字段中的synchronized标志位置1，表示该方法是同步方法，</font>并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
+
+<!-- 
+
+当JVM执行引擎执行某一个方法时，其会从方法区中获取该方法的access_flags，检查其是否有ACC_SYNCRHONIZED标识符，若是有该标识符，则说明当前方法是同步方法，需要先获取当前对象的monitor，再来执行方法。
+
+-->
 
 ## 1.5. synchronized的锁优化
 &emsp; **<font color = "lime">锁升级过程主要是理解偏向锁、轻量级锁的升级过程。</font>**    

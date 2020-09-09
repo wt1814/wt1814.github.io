@@ -25,6 +25,13 @@
 &emsp; mysql的jdbc还支持以流的形式访问结果集。每当调用ResultSet的next()方法时返回部分数据。不会导致oom。  
 <!-- 
 https://www.jianshu.com/p/0339c6fe8b61
+
+MyBatis大数据量流式数据查询、数据导出
+https://my.oschina.net/qalong/blog/3123826
+
+mybatis大数据查询优化：fetchSize
+https://www.jianshu.com/p/2ba501063556
+
 -->
 
 ## 1.2. 多线程处理大数据量（修改）  
