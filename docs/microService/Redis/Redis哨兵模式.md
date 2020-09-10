@@ -42,6 +42,12 @@
 ......
 
 ## 1.3. 哨兵原理  
+<!--- 
+
+头条二面：宕机后，Redis如何实现快速恢复？ 
+https://mp.weixin.qq.com/s/MhH1M6lpEeUFoIw45dEsVQ
+-->
+
 &emsp; **<font color = "red">一句话概述：</font>**  
 
 * **<font color = "lime">心跳检查：Sentinel通过三个定时任务来完成对各个节点的发现和监控。</font>**

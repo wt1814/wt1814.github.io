@@ -27,6 +27,10 @@
  Java8 快速实现List转map 、分组、过滤等操作 
  https://mp.weixin.qq.com/s/2idMa7lOzWFy2A8JyM2vtA
 
+
+ 天天在用Stream，那你知道如此强大的Stream的实现原理吗？ 
+ https://mp.weixin.qq.com/s/QtWKAIRzNAza96MhfH526w
+
 -->
 
 ## 1.1. 简介  
@@ -54,6 +58,8 @@
 分类：anyMatch、allMatch、noneMatch、findFirst、findAny、limit；  
 * Terminal（最终方法）：一个流只能有一个terminal操作，当这个操作执行后，流就被使用“光”了，无法再被操作。所以这必定是流的最后一个操作。Terminal操作的执行，才会真正开始流的遍历，并且会生成一个结果，或者一个side effect。  
 分类：forEach、forEachOrdered、toArray、reduce、collect、min、max、count、 anyMatch、allMatch、noneMatch、findFirst、findAny、iterator；  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/java8/java-7.png)  
 
 &emsp; **Intermediate和Terminal联系：**  
 &emsp; 在对于一个Stream进行多次转换操作(Intermediate操作)，每次都对 Stream的每个元素进行转换，而且是执行多次，这样时间复杂度就是N（转换次数）个for循环里把所有操作的总和吗？  

@@ -22,6 +22,15 @@ redis.poolMaxIdle=500      最大空闲连接数  100改成500
 redis.poolMaxWait=300      
 ```
 
+## Redis连接超时
+<!-- 
+【95期】面试官：你遇到 Redis 线上连接超时一般如何处理？ 
+https://mp.weixin.qq.com/s/LqeeCviPW84ykfPhluTMlQ
+
+-->
+&emsp; redis响应变慢，查看日志，发现大量 TimeoutException。  
+
+
 ## Redis内存耗尽  
 <!-- 
 一次生产环境redis内存占用居高不下问题排查

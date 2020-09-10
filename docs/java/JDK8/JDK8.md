@@ -98,14 +98,14 @@ finally{
 |方法 |描述|
 |---|---|
 |Decoder| |
-|getDecoder()	|返回Base64.Decoder，解码使用基本型base64编码方案|
-|getMimeDecoder()	|返回Base64.Decoder，解码使用MIME型base64 编码方案。|
-|getUrlDecoder()	|返回Base64.Decoder，解码使用URL和文件名安全型 base64编码方案。|
+|getDecoder()|返回Base64.Decoder，解码使用基本型base64编码方案|
+|getMimeDecoder()|返回Base64.Decoder，解码使用MIME型base64 编码方案。|
+|getUrlDecoder()|返回Base64.Decoder，解码使用URL和文件名安全型 base64编码方案。|
 |Encoder| | 
-|getEncoder()	|返回Base64.Encoder，编码使用基本型base64编码方案。|
-|getMimeEncoder()	|返回Base64.Encoder，编码使用MIME型base64编码方案。|
+|getEncoder()|返回Base64.Encoder，编码使用基本型base64编码方案。|
+|getMimeEncoder()|返回Base64.Encoder，编码使用MIME型base64编码方案。|
 |getMimeEncoder(int lineLength, byte[] lineSeparator)	|返回Base64.Encoder，编码使用MIME型base64编码方案，可以通过参数指定每行的长度及行的分隔符。|
-|getUrlEncoder()	|返回Base64.Encoder，编码使用URL和文件名安全型 base64 编码方案。|
+|getUrlEncoder()|返回Base64.Encoder，编码使用URL和文件名安全型 base64 编码方案。|
 
 ```java
 // 使用基本编码
