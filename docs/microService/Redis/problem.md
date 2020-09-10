@@ -30,5 +30,9 @@ https://blog.csdn.net/eene894777/article/details/102820565?utm_medium=distribute
 https://blog.csdn.net/Zhenxue_Xu/article/details/90727983
 https://www.cnblogs.com/yinliang/p/7498529.html
 https://blog.csdn.net/weixin_41507324/article/details/90742075?utm_medium=distribute.pc_relevant.none-task-blog-title-5&spm=1001.2101.3001.4242
+
+
+记录一次生产环境中Redis内存增长异常排查全流程！ 
+https://mp.weixin.qq.com/s/1Rqzn4juKMqlNK9sBzlGig
 -->
 

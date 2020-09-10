@@ -308,6 +308,7 @@ public static void main(String[] args) {
 ## 1.4. 堆排序  
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MzA4NDE4MzY2MA==&mid=2647523648&idx=1&sn=a2c93982ccfe331d4db33b61acadc08d&chksm=87d1be43b0a637558f6b84cdb77de72bd6890a1fc072714083b004e96398f7d3926a808131f3&scene=178#rd
+https://mp.weixin.qq.com/s/D_RPGriu3xMGYA11TMzxeA
 -->
 
 &emsp; 首先了解二叉堆。堆（Heap）是一类基于完全二叉树的特殊数据结构。通常将堆分为两种类型：  

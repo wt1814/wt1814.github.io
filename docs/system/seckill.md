@@ -50,6 +50,10 @@ https://mp.weixin.qq.com/s/8TWZG0rkTuvBqw3abPDE2w
 还不知道【秒杀系统】如何设计？ 
 https://mp.weixin.qq.com/s/CYa_YGVGCnozus2K9UTfNA
 
+
+秒杀系统设计～亿级用户 
+https://mp.weixin.qq.com/s?__biz=MzU5MTIyODk1Mg==&mid=2247483999&idx=1&sn=8fc9b0a1f7b65b986f020c8c1807458b&chksm=fe337b28c944f23ea7b403875528a92a6a72a504a823cdb7b338e5dad11c5208feecfe03b010&scene=21#wechat_redirect
+
 -->
 
 

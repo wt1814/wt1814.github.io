@@ -44,4 +44,13 @@ https://mp.weixin.qq.com/s/bmVvqhzWmK2hA2gurYB4wg
 ...
 
 
+## BeanUtil
+
+<!-- 
+
+如何优雅的转换Bean对象? 
+https://mp.weixin.qq.com/s/ZLOLhPNwqNtO2gxOiZ5oNA
+-->
+
+
 
