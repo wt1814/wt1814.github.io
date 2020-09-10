@@ -159,7 +159,7 @@
     * [SpringBoot自动配置原理-运行流程解析](/docs/microService/SpringBoot/自动配置运行流程解析.md)  
     * [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
-* Spring Cloud Netflix  
+* Spring Cloud  
     * [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/0.Netflix.md)  
     * [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/1.Eureka.md)  
     * [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/2.Ribbon.md)  
