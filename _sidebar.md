@@ -41,15 +41,15 @@
     * [外部排序](/docs/java/function/sort/externalSort.md)  
     * [查找算法](/docs/java/function/5.search.md)  
     * [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
-    * [海量数据]
-    * [海量数据结构](/docs/java/function/3.otherStructure.md)  
+    * [其他数据结构]
+    * [其他数据结构](/docs/java/function/3.otherStructure.md)  
     * [海量数据应用](/docs/java/function/bigdata.md)  
 
 * 并发编程  
     * [并发编程总结](/docs/java/concurrent/summary.md)  
     * [线程基本概念](/docs/java/concurrent/1.Thread.md)  
         * [wait](/docs/java/concurrent/wait.md)  
-    * [JMM](/docs/java/concurrent/2.Multithread.md)  
+    * [并发问题](/docs/java/concurrent/2.Multithread.md)  
         * [JMM](/docs/java/concurrent/JMM.md)  
         * [线程安全](/docs/java/concurrent/线程安全.md)  
         * [Synchronized](/docs/java/concurrent/Synchronized.md)  

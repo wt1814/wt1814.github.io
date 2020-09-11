@@ -89,7 +89,7 @@ Gitee： https://gitee.com/wt1814/
 [并发编程总结](/docs/java/concurrent/summary.md)  
 [线程基本概念](/docs/java/concurrent/1.Thread.md)  
 &emsp; [wait](/docs/java/concurrent/wait.md)  
-[JMM](/docs/java/concurrent/2.Multithread.md)  
+[并发问题](/docs/java/concurrent/2.Multithread.md)  
 &emsp; [JMM](/docs/java/concurrent/JMM.md)  
 &emsp; [线程安全](/docs/java/concurrent/线程安全.md)  
 &emsp; &emsp; [Synchronized](/docs/java/concurrent/Synchronized.md)  
@@ -389,8 +389,8 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 [外部排序](/docs/java/function/sort/externalSort.md)  
 [查找算法](/docs/java/function/5.search.md)  
 [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
-[海量数据结构]  
-&emsp; [海量数据结构](/docs/java/function/3.otherStructure.md)  
+[其他数据结构]  
+&emsp; [其他数据结构](/docs/java/function/3.otherStructure.md)  
 &emsp; [海量数据应用](/docs/java/function/bigdata.md)  
 
 ----
