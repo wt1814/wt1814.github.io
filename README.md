@@ -87,7 +87,7 @@ Gitee： https://gitee.com/wt1814/
 
 ### 并发编程  
 [并发编程总结](/docs/java/concurrent/summary.md)  
-[线程基本概念](/docs/java/concurrent/1.Thread.md)  
+[线程基本概念](/docs/java/concurrent/1.GC.md)  
 &emsp; [wait](/docs/java/concurrent/wait.md)  
 [并发问题](/docs/java/concurrent/2.Multithread.md)  
 &emsp; [JMM](/docs/java/concurrent/JMM.md)  
@@ -118,7 +118,7 @@ Gitee： https://gitee.com/wt1814/
 [GC垃圾回收](/docs/java/JVM/5.GC垃圾回收.md)  
 [JVM调优-基础](/docs/java/JVM/6.JVM调优-基础.md)  
 [JVM调优](/docs/java/JVM/7.JVM调优.md)  
-[Linux系统问题排查](/docs/Linux/Linux/problem.md)  
+[JAVA线上故障排查](/docs/Linux/Linux/problem.md)  
 
 
 ## 数据库  

@@ -78,7 +78,7 @@
     * [GC垃圾回收](/docs/java/JVM/5.GC垃圾回收.md)  
     * [JVM调优-基础](/docs/java/JVM/6.JVM调优-基础.md)  
     * [JVM调优](/docs/java/JVM/7.JVM调优.md)  
-    * [Linux系统问题排查](/docs/Linux/Linux/problem.md)   
+    * [JAVA线上故障排查](/docs/Linux/Linux/problem.md)   
 
 * 数据库  
     * [SQL语句](/docs/SQL/1.SQL语句.md)  

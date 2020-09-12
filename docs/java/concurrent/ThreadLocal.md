@@ -24,6 +24,9 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-26.png)   
 
 # 1. ThreadLocal  
+
+
+
 &emsp; 首先说明，ThreadLocal与线程同步无关。ThreadLocal虽然提供了一种解决多线程环境下成员变量的问题，但是它并不是解决多线程共享变量的问题。  
 &emsp; <font color = "red">ThreadLocal，很多地方叫做线程本地变量，也有些地方叫做线程本地存储。</font>每一个线程都会保存一份变量副本，每个线程都可以独立地修改自己的变量副本，而不会影响到其他线程，<font color = "red">是一种线程隔离的思想。</font>  
 
@@ -177,6 +180,13 @@ private T setInitialValue() {
 ```
 
 ## 1.2. ThreadLocal的内存泄漏  
+
+<!-- 
+这4种ThreadLocal你都知道吗？ 
+https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig
+
+-->
+
 <!-- 
 &emsp; <font color = "red">ThreadLocalMap的key为ThreadLocal实例，是一个弱引用，弱引用有利于GC的回收，当key == null时，GC就会回收这部分空间，但value不一定能被回收，因为它和Current Thread之间还存在一个强引用的关系。</font>  
 &emsp; 由于这个强引用的关系，会导致value无法回收，如果线程对象不消除这个强引用的关系，就可能会出现OOM。调用ThreadLocal的remove()方法进行显式处理。 
