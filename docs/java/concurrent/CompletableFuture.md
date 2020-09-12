@@ -12,10 +12,14 @@
 <!-- 
 异步神器CompletableFuture 
 https://mp.weixin.qq.com/s/pQsWfME5QrHhp4xKS4WSrA
+除了串行执行外，多个CompletableFuture还可以并行执行。
+https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650
 
 -->
 
-&emsp; CompletableFuture，组合式异步编程，异步回调。
+&emsp; CompletableFuture，组合式异步编程，异步回调。  
+&emsp; 使用Future获得异步执行结果时，要么调用阻塞方法get()，要么轮询看isDone()是否为true，这两种方法都不是很好，因为主线程也会被迫等待。  
+&emsp; 从Java 8开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。  
 
 ## 1.1. ForkJoinPool与CompletableFuture  
 &emsp; parallelStream和CompletableFuture默认使用的都是ForkJoinPool.commonPool()默认线程池；  

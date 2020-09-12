@@ -3,58 +3,114 @@
 # 秒杀系统设计  
 
 
-## 什么是秒杀系统  
+## 什么是秒杀？ 
 
 
 <!-- 
-
 qps飘高  
 我是如何将系统QPS从300提升到6000的
 https://blog.csdn.net/u012562943/article/details/100879341
-
-
 高并发架构系列：什么是流量削峰？如何解决秒杀业务的削峰场景
 https://blog.csdn.net/m0_37125796/article/details/88833419
-
 如何降低QPS(错峰、限流、削峰)
 https://www.pianshen.com/article/2449719440/
 
 -->
 
+&emsp; 秒杀场景一般会在电商网站举行一些活动时遇到。  
+&emsp; 对于电商网站中一些稀缺或者特价商品，电商网站一般会在约定时间点对其进行限量销售，因为这些商品的特殊性，会吸引大量用户前来抢购，并且会在约定的时间点同时在秒杀页面进行抢购。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/web-3.png)  
+
+&emsp; 秒杀活动可以分为3个阶段：  
+
+* 秒杀前：用户不断刷新商品详情页，页面请求达到瞬时峰值。  
+* 秒杀开始：用户点击秒杀按钮，下单请求达到瞬时峰值。  
+* 秒杀后：一部分成功下单的用户不断刷新订单或者产生退单操作，大部分用户继续刷新商品详情页等待退单机会。  
+
+
+## 秒杀系统场景特点/问题    
+
+* 秒杀一般是访问请求数量远远大于库存数量，只有少部分用户能够秒杀成功  
+* 秒杀时大量用户会在同一时间同时进行抢购，网站瞬时访问流量激增  
+* 秒杀业务流程比较简单，一般就是下订单减库存  
+
+
+* 定时开始，秒杀时大量用户会在同一时间，抢购同一商品，网站瞬时流量激增。  
+* 库存有限，秒杀下单数量远远大于库存数量，只有少部分用户能够秒杀成功。  
+* 操作可靠，秒杀业务流程比较简单，一般就是下订单减库存。库存就是用户争夺的“资源”，实际被消费的“资源”不能超过计划要售出的“资源”，也就是不能被“超卖”。  
+
+<!-- 
+还不知道【秒杀系统】如何设计？ 
+https://mp.weixin.qq.com/s/CYa_YGVGCnozus2K9UTfNA
+秒杀系统的架构分析与实战
+https://mp.weixin.qq.com/s/CUTG32SaLST9nmhBP1PgkA
+秒杀架构模型设计，怎么搞？ 
+https://mp.weixin.qq.com/s/ZMoLa1dlgDEPG7kAqS79tg
+进阶：秒杀系统是如何设计的？ 
+https://mp.weixin.qq.com/s/4jYEvq7tIlbLOLGvXI4prg
+
+-->
 
 ## 秒杀系统设计  
 
+&emsp; 首先从高维度出发，整体思考问题。秒杀无外乎解决两个核心问题，一是并发读，一是并发写，对应到架构设计，就是高可用、一致性和高性能的要求。  
+
+* 高性能。秒杀涉及高读和高写的支持，如何支撑高并发，如何抵抗高IOPS？核心优化理念其实是类似的：高读就尽量"少读"或"读少"，高写就数据拆分。本文将从动静分离、热点优化以及服务端性能优化 3 个方面展开。  
+* 一致性。秒杀的核心关注是商品库存，有限的商品在同一时间被多个请求同时扣减，而且要保证准确性，显而易见是一个难题。如何做到既不多又不少？本文将从业界通用的几种减库存方案切入，讨论一致性设计的核心逻辑。  
+* 高可用。大型分布式系统在实际运行过程中面对的工况是非常复杂的，业务流量的突增、依赖服务的不稳定、应用自身的瓶颈、物理资源的损坏等方方面面都会对系统的运行带来大大小小的的冲击。如何保障应用在复杂工况环境下还能高效稳定运行，如何预防和面对突发问题，系统设计时应该从哪些方面着手？  
+
+
 
 <!-- 
- 
-秒杀系统的架构分析与实战
-https://mp.weixin.qq.com/s/CUTG32SaLST9nmhBP1PgkA
 经验：一个秒杀系统的设计思考
 https://mp.weixin.qq.com/s/cyR59SLxOqpC5my8vl8VnQ
-秒杀架构模型设计，怎么搞？ 
-https://mp.weixin.qq.com/s/ZMoLa1dlgDEPG7kAqS79tg
 这一次，彻底弄懂“秒杀系统” 
 https://mp.weixin.qq.com/s?__biz=MjM5ODI5Njc2MA==&mid=2655826732&idx=1&sn=2ff974a229fa8276646e4343990e8556&chksm=bd74fefb8a0377ed814522413f5a5a4cd98272f2e1a7f09dabe25d1797c5b406d12d91eecd87&mpshare=1&scene=1&srcid=&sharer_sharetime=1568201541445&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2a4ff15fdd84634657a339ecc4fdb0102ba0a10162fa7605c55832121ed738b7f126631b73f50506cd4b8837d56d64dcca233432973943b22a4658512020508fc3611c27ffb677dd0c1b272049e052d2&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=itx1gApiSjQ3hWB5NxczIuCswqlR4CHjqy8rNSbMiIlPrLAnYQ1%2BCdb6ALXoRgGH
-《吊打面试官》系列-秒杀系统设计
-https://juejin.im/post/5dd09f5af265da0be72aacbd
-实战 Spring Cloud 微服务架构下的“秒杀”（含代码） 
-https://mp.weixin.qq.com/s?__biz=MzI4ODQ3NjE2OA==&mid=2247485875&idx=1&sn=0ff0a0c4ea9c5a36334d80de83f1084c&chksm=ec3c94d4db4b1dc29283aae847140827bf8db0a8d4113a5a8f6f15d1f9daf2207ce8f36221c8&mpshare=1&scene=1&srcid=&sharer_sharetime=1574610504784&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=0414aa86a61cc65d5075224c9bbe07dc0ec18127df5a5dec0b896c957b5c02e89ace501c4a5805f1846578d33bb68bc07855abfe1d7425e5bf5ee862303da6da1ac182a521552200e8715143232cc369&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=NUAXVXOtx23t%2B2qP0pIU2igFgFZyp%2BSpoLm3b%2FFpPXb%2FFprtG9Q72sqp35P17oGU
-使用 Redis 搭建电商秒杀系统
-https://mp.weixin.qq.com/s/qgGS7ODqdQIHFtKnVlvIDQ
 秒杀系统设计～亿级用户
 https://mp.weixin.qq.com/s/tdpht9QeGZlqYOu2vidHLg
- 进阶：秒杀系统是如何设计的？ 
-https://mp.weixin.qq.com/s/4jYEvq7tIlbLOLGvXI4prg
-秒杀系统设计的 5 个要点：前端三板斧＋后端两条路！ 
-https://mp.weixin.qq.com/s/8TWZG0rkTuvBqw3abPDE2w
-还不知道【秒杀系统】如何设计？ 
-https://mp.weixin.qq.com/s/CYa_YGVGCnozus2K9UTfNA
-
-
-秒杀系统设计～亿级用户 
-https://mp.weixin.qq.com/s?__biz=MzU5MTIyODk1Mg==&mid=2247483999&idx=1&sn=8fc9b0a1f7b65b986f020c8c1807458b&chksm=fe337b28c944f23ea7b403875528a92a6a72a504a823cdb7b338e5dad11c5208feecfe03b010&scene=21#wechat_redirect
 
 -->
+
+
+<!-- 
+
+《吊打面试官》系列-秒杀系统设计
+https://juejin.im/post/5dd09f5af265da0be72aacbd
+使用 Redis 搭建电商秒杀系统
+https://mp.weixin.qq.com/s/qgGS7ODqdQIHFtKnVlvIDQ
+
+-->
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/web-4.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/web-5.png)  
+
+
+秒杀业务流程上的考虑：  
+由于参加秒杀的商品售卖价格非常低，基本都是“抢到即赚到”，成功下单后却不付款的情况非常少。所以我们采用下单减库存的方案，下单时扣减库存，然后再进行支付。假如真有个别订单不付款怎么办？没关系，秒杀好活动最主要的目的是吸引流量，个别订单不支付对秒杀活动本身影响不大。况且，没支付剩下的库存还可以做为普通商品继续售卖。不过要注意对机器人和自动脚本的防御。  
+
+
+秒杀架构原则  
+
+尽量将请求拦截在系统上游  
+
+传统秒杀系统之所以挂，请求都压倒了后端数据层，数据读写锁冲突严重，并发高响应慢，几乎所有请求都超时，流量虽大，下单成功的有效流量甚小【一趟火车其实只有2000张票，200w个人来买，基本没有人能买成功，请求有效率为0】。  
+
+读多写少的常用多使用缓存  
+这是一个典型的读多写少的应用场景【一趟火车其实只有2000张票，200w个人来买，最多2000个人下单成功，其他人都是查询库存，写比例只有0.1%，读比例占99.9%】，非常适合使用缓存。  
+
+
+### 系统隔离  
+
+
+### 客户端设计  
+
+### 代理层设计  
+
+
+### 应用层设计  
+
+### 数据库设计  
+
 
 
 
