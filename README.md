@@ -405,6 +405,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 ---
 
 ## DevOps  
+[DevOps](/docs/projectManage/devOps.md)  
 [git](/docs/projectManage/git/command.md)  
 [docker]  
 &emsp; [docker总结](/docs/projectManage/docker/summary.md)  
