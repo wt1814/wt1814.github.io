@@ -45,3 +45,10 @@ https://blog.csdn.net/weixin_41507324/article/details/90742075?utm_medium=distri
 https://mp.weixin.qq.com/s/1Rqzn4juKMqlNK9sBzlGig
 -->
 
+## Redis延迟
+
+<!-- 
+ Redis为什么变慢了？常见延迟问题定位与分析 
+ https://mp.weixin.qq.com/s/tmMlDy3ESq6-5sOnsGbAWQ
+-->
+
