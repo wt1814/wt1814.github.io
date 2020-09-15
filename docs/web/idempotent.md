@@ -34,6 +34,11 @@
 * insert非幂等操作，每次新增一条  
 
 ## 1.3. 解决方案  
+<!-- 
+SpringBoot + Redis + 注解 + 拦截器来实现接口幂等性校验 
+https://mp.weixin.qq.com/s/L5lOUB_cbi67eyCHmCHhbQ
+-->
+
 &emsp; 以下提供方案非唯一，例如redis+token整合。  
 
 * 前端：  
