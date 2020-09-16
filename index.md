@@ -71,6 +71,7 @@ Gitee： https://gitee.com/wt1814/
 [Java异常](/docs/java/basis/JavaException.md)  
 [Java范型](/docs/java/basis/JavaParadigm.md)  
 [Java反射](/docs/java/basis/Java反射.md)  
+[自定义注解](/docs/java/basis/annotation.md)  
 [IO](/docs/java/basis/JavaIO.md)  
 [SPI](/docs/java/basis/SPI.md)  
 

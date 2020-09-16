@@ -80,6 +80,9 @@ https://mp.weixin.qq.com/s?__biz=MjM5ODI5Njc2MA==&mid=2655826732&idx=1&sn=2ff974
 秒杀系统设计～亿级用户
 https://mp.weixin.qq.com/s/tdpht9QeGZlqYOu2vidHLg
 
+高并发场景下秒杀系统的设计思路 
+https://mp.weixin.qq.com/s/oVlsw6qx6GHjFGs5wyvKeA
+
 -->
 
 
