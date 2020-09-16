@@ -413,7 +413,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 [docker]  
 &emsp; [docker总结](/docs/projectManage/docker/summary.md)  
 &emsp; [docker原理](/docs/projectManage/docker/principle.md)  
-&emsp; [docker使用及命令](/docs/projectManage/docker/command.md)  
+&emsp; [docker使用](/docs/projectManage/docker/command.md)  
 &emsp; [dockerFile](/docs/projectManage/docker/file.md)  
 &emsp; [docker工具](/docs/projectManage/docker/tools.md)   
 [k8s]  
