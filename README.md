@@ -39,6 +39,7 @@
     - [算法](#算法)
     - [计算机网络](#计算机网络)
     - [DevOps](#devops)
+    - [软件设计](#软件设计)
     - [开发软件](#开发软件)
     - [其他工具](#其他工具)
     - [Error](#error)
@@ -421,6 +422,15 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 &emsp; [k8s使用](/docs/projectManage/k8s/command.md)  
 &emsp; [k8s工具](/docs/projectManage/k8s/tools.md)   
 
+
+----
+
+## 软件设计  
+[设计文档]()  
+[接口文档](/docs/system/document/API.md)  
+
+
+----
 
 ## 开发软件  
 [idea](/docs/software/idea/idea.md)  
