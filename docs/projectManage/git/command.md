@@ -1,6 +1,6 @@
+# git
 
-
-# GIT本地库操作基本原理  
+## GIT本地库操作基本原理  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/git/git-4.png)  
 &emsp; GIT作为分布式版本库软件，每个机器上都是一个版本库。  
@@ -10,7 +10,7 @@
 * 暂存区是临时存储代码的地方，方便批量提交数据到本地库；  
 * 本地库是最终的历史版本文件的存储地；  
 
-# 分支
+## 分支
 
 &emsp; Git删除在本地有但在远程库中已经不存在的分支，两种方式：  
 * 方式一：  
@@ -22,5 +22,6 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/git/git-3.png)  
 
 
-
+## git clone 文件大
+&emsp; git clone giturl --depth=1  
 
