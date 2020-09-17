@@ -14,7 +14,8 @@
 https://mp.weixin.qq.com/s/pQsWfME5QrHhp4xKS4WSrA
 除了串行执行外，多个CompletableFuture还可以并行执行。
 https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650
-
+异步编程
+https://mp.weixin.qq.com/s/gm9ps7YDqxkysCCNNUKFeA
 -->
 
 &emsp; CompletableFuture，组合式异步编程，异步回调。  
