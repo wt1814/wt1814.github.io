@@ -126,6 +126,7 @@ Gitee： https://gitee.com/wt1814/
 ## 数据库  
 
 [学习SQL的总结](/docs/SQL/学习SQL的总结.md)  
+[建模](/docs/SQL/modeling.md)    
 [SQL语句](/docs/SQL/1.SQL语句.md)  
 &emsp; [基本查询语句](/docs/SQL/9.basicSelect.md)  
 &emsp; [连接查询](/docs/SQL/10.joinSelect.md)  
@@ -259,6 +260,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [Redis底层实现](/docs/microService/Redis/Redis底层实现.md)  
 [Redis其他功能]  
 &emsp; [Redis发布订阅](/docs/microService/Redis/pub.md)  
+&emsp; [Redis和lua](/docs/microService/Redis/pub.md)  
 [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
 [Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
 [Redis原理](/docs/microService/Redis/Redis原理.md)  

@@ -82,6 +82,7 @@
     * [JAVA线上故障排查](/docs/Linux/Linux/problem.md)   
 
 * 数据库  
+    * [建模](/docs/SQL/modeling.md)   
     * [SQL语句](/docs/SQL/1.SQL语句.md)  
         * [基本查询语句](/docs/SQL/9.basicSelect.md)  
         * [连接查询](/docs/SQL/10.joinSelect.md)  
@@ -193,6 +194,7 @@
         * [Redis底层实现](/docs/microService/Redis/Redis底层实现.md)  
     * [Redis其他功能]  
         * [Redis发布订阅](/docs/microService/Redis/pub.md)  
+        * [Redis和lua](/docs/microService/Redis/pub.md)  
     * [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
     * [Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
     * [Redis原理](/docs/microService/Redis/Redis原理.md)  
