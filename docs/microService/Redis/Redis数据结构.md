@@ -98,6 +98,7 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-65.png)  
 
 &emsp; 使用场景：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-103.png)  
 
 * 抽奖  
 &emsp; 随机获取元素，spop myset  
@@ -132,6 +133,14 @@
 * 用户关注、推荐模型  
 
 ### 1.2.5. ZSet  
+
+<!-- 
+Redis 数据类型及应用场景——zset
+https://www.jianshu.com/p/0cccf031da00
+读懂才会用：Redis ZSet 的几种使用场景
+https://zhuanlan.zhihu.com/p/147912757
+-->
+
 &emsp; sorted set，有序的 set，每个元素有个 score。 有序集合中的元素不能重复，但是score可以重复。score 相同时，按照 key 的 ASCII 码排序。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-70.png)  
 
@@ -144,6 +153,8 @@
 |有序集合 zset |否 |是 |分值 score|
 
 &emsp; 使用场景  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-104.png)  
+
 * 排行榜  
 &emsp; 排行榜榜单的维度可能是多个方面的：按照时间、按照播 放数量、按照获得的赞数。 
 
