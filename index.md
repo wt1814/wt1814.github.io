@@ -362,7 +362,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 [系统稳定性建设](/docs/system/stability.md)  
 [灰度发布](/docs/system/grayscalePublishe.md)  
 &emsp; [网关灰度发布](/docs/system/gatewayGrayscale.md)  
-[监控](/docs/DevOps/monitor.md)  
+[监控](/docs/devOps/monitor.md)  
 
 
 
@@ -402,17 +402,17 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 
 
 ## DevOps  
-[DevOps](/docs/projectManage/devOps.md)  
-[git](/docs/projectManage/git/command.md)  
+[DevOps](/docs/devOps/devOps.md)  
+[git](/docs/devOps/git/command.md)  
 [docker]  
-&emsp; [docker总结](/docs/projectManage/docker/summary.md)  
-&emsp; [docker原理](/docs/projectManage/docker/principle.md)  
-&emsp; [docker使用及命令](/docs/projectManage/docker/command.md)  
-&emsp; [dockerFile](/docs/projectManage/docker/file.md)  
-&emsp; [docker工具](/docs/projectManage/docker/tools.md)   
+&emsp; [docker总结](/docs/devOps/docker/summary.md)  
+&emsp; [docker原理](/docs/devOps/docker/principle.md)  
+&emsp; [docker使用及命令](/docs/devOps/docker/command.md)  
+&emsp; [dockerFile](/docs/devOps/docker/file.md)  
+&emsp; [docker工具](/docs/devOps/docker/tools.md)   
 [k8s]  
-&emsp; [k8s原理](/docs/projectManage/k8s/principle.md)  
-&emsp; [k8s使用](/docs/projectManage/k8s/command.md)  
+&emsp; [k8s原理](/docs/devOps/k8s/principle.md)  
+&emsp; [k8s使用](/docs/devOps/k8s/command.md)  
 
 ## 开发软件  
 [idea](/docs/software/idea/idea.md)  

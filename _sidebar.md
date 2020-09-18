@@ -281,7 +281,7 @@
     * [系统稳定性建设](/docs/system/stability.md)  
     * [灰度发布](/docs/system/grayscalePublishe.md)  
     * [网关灰度发布](/docs/system/gatewayGrayscale.md)  
-    * [监控](/docs/DevOps/monitor.md)  
+    * [监控](/docs/devOps/monitor.md)  
 
 * Linux  
 
@@ -294,17 +294,17 @@
     * [TCP](/docs/network/4.TCP.md)  
 
 * DevOps  
-    * [DevOps](/docs/projectManage/devOps.md)  
-    * [git](/docs/projectManage/git/command.md)   
+    * [DevOps](/docs/devOps/devOps.md)  
+    * [git](/docs/devOps/git/command.md)   
     * Docker
-    * [docker总结](/docs/projectManage/docker/summary.md)  
-    * [docker原理](/docs/projectManage/docker/principle.md)  
-    * [docker使用及命令](/docs/projectManage/docker/command.md)  
-    * [dockerFile](/docs/projectManage/docker/file.md)  
-    * [docker工具](/docs/projectManage/docker/tools.md)   
+    * [docker总结](/docs/devOps/docker/summary.md)  
+    * [docker原理](/docs/devOps/docker/principle.md)  
+    * [docker使用及命令](/docs/devOps/docker/command.md)  
+    * [dockerFile](/docs/devOps/docker/file.md)  
+    * [docker工具](/docs/devOps/docker/tools.md)   
     * [k8s]  
-    * [k8s原理](/docs/projectManage/k8s/principle.md)  
-    * [k8s使用](/docs/projectManage/k8s/command.md)  
+    * [k8s原理](/docs/devOps/k8s/principle.md)  
+    * [k8s使用](/docs/devOps/k8s/command.md)  
     
 * 开发软件  
     * [idea](/docs/software/idea/idea.md)  
