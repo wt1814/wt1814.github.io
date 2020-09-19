@@ -35,9 +35,9 @@
         - [系统设计](#系统设计)
         - [系统维护](#系统维护)
     - [Linux](#linux)
+    - [DevOps](#devops)
     - [算法](#算法)
     - [计算机网络](#计算机网络)
-    - [DevOps](#devops)
     - [开发软件](#开发软件)
     - [其他工具](#其他工具)
     - [Error](#error)
@@ -371,6 +371,23 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 
 ---
 
+
+## DevOps  
+[DevOps](/docs/devOps/devOps.md)  
+[git](/docs/devOps/git/command.md)  
+[docker]  
+&emsp; [docker总结](/docs/devOps/docker/summary.md)  
+&emsp; [docker原理](/docs/devOps/docker/principle.md)  
+&emsp; [docker使用及命令](/docs/devOps/docker/command.md)  
+&emsp; [dockerFile](/docs/devOps/docker/file.md)  
+&emsp; [docker工具](/docs/devOps/docker/tools.md)   
+[Kubernetes]  
+&emsp; [k8s原理](/docs/devOps/k8s/principle.md)  
+&emsp; [k8s实践](/docs/devOps/k8s/command.md)  
+&emsp; [k8s运维](/docs/devOps/k8s/tools.md)  
+
+---
+
 ## 算法  
 [总结](/docs/java/function/summary.md)  
 [算法基本概念](/docs/java/function/1.notion.md)  
@@ -398,22 +415,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 [DNS](docs/network/3.DNS.md)  
 [TCP](/docs/network/4.TCP.md)  
 
----
 
-
-## DevOps  
-[DevOps](/docs/devOps/devOps.md)  
-[git](/docs/devOps/git/command.md)  
-[docker]  
-&emsp; [docker总结](/docs/devOps/docker/summary.md)  
-&emsp; [docker原理](/docs/devOps/docker/principle.md)  
-&emsp; [docker使用及命令](/docs/devOps/docker/command.md)  
-&emsp; [dockerFile](/docs/devOps/docker/file.md)  
-&emsp; [docker工具](/docs/devOps/docker/tools.md)   
-[Kubernetes]  
-&emsp; [k8s原理](/docs/devOps/k8s/principle.md)  
-&emsp; [k8s实践](/docs/devOps/k8s/command.md)  
-&emsp; [k8s运维](/docs/devOps/k8s/tools.md)  
 
 ## 开发软件  
 [idea](/docs/software/idea/idea.md)  

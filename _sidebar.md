@@ -285,14 +285,6 @@
 
 * Linux  
 
-
-* 计算机网络  
-    * [OSI七层网络模型](/docs/network/0.OSI.md)  
-    * [HTTP](/docs/network/1.HTTP.md)  
-    * [HTTPS](/docs/network/2.HTTPS.md)  
-    * [DNS](/docs/network/3.DNS.md)  
-    * [TCP](/docs/network/4.TCP.md)  
-
 * DevOps  
     * [DevOps](/docs/devOps/devOps.md)  
     * [git](/docs/devOps/git/command.md)   
@@ -306,6 +298,13 @@
     * [k8s原理](/docs/devOps/k8s/principle.md)  
     * [k8s实践](/docs/devOps/k8s/command.md)  
     * [k8s运维](/docs/devOps/k8s/tools.md)  
+
+* 计算机网络  
+    * [OSI七层网络模型](/docs/network/0.OSI.md)  
+    * [HTTP](/docs/network/1.HTTP.md)  
+    * [HTTPS](/docs/network/2.HTTPS.md)  
+    * [DNS](/docs/network/3.DNS.md)  
+    * [TCP](/docs/network/4.TCP.md)  
     
 * 开发软件  
     * [idea](/docs/software/idea/idea.md)  
