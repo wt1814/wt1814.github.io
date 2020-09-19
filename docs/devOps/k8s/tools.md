@@ -20,6 +20,7 @@
 
 # 1. Kubernetes运维指南  
 
+&emsp; <font color = "lime">整体参考《Kubernetes权威指南》</font>  
 
 ## 1.1. Kubernetes集群管理指南  
 &emsp; 本节将从Node的管理、Label的管理、Namespace资源共享、资源配额管理、集群Master高可用及集群监控等方面，对Kubernetes集群本身的运维管理进行详细说明。  
