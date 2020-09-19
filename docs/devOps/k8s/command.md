@@ -1,7 +1,7 @@
 
 
 
-# k8s使用  
+# k8s实践  
 
 ## 安装k8s
 
@@ -58,21 +58,6 @@ https://blog.csdn.net/qq_23348071/article/details/87185025
 ## 基于NFS文件集群共享  
 
 
-----
-
-## Web UI Dashboard  
-<!-- 
-Kubernetes的三种可视化UI界面
-https://blog.51cto.com/14157628/2473866
-
-kubernetes部署dashboard可视化插件
-https://blog.csdn.net/networken/article/details/85607593?utm_medium=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.wap_blog_relevant_pic&depth_1-utm_source=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.wap_blog_relevant_pic
-
-
-配置kubernetes UI图形化界面
-https://blog.csdn.net/iouczp/article/details/80299775
-
--->
 
 
 ## IDE插件  

@@ -302,9 +302,10 @@
     * [docker使用及命令](/docs/devOps/docker/command.md)  
     * [dockerFile](/docs/devOps/docker/file.md)  
     * [docker工具](/docs/devOps/docker/tools.md)   
-    * [k8s]  
+    * Kubernetes  
     * [k8s原理](/docs/devOps/k8s/principle.md)  
-    * [k8s使用](/docs/devOps/k8s/command.md)  
+    * [k8s实践](/docs/devOps/k8s/command.md)  
+    * [k8s运维](/docs/devOps/k8s/tools.md)  
     
 * 开发软件  
     * [idea](/docs/software/idea/idea.md)  

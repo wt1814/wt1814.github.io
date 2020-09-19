@@ -39,6 +39,7 @@
     - [算法](#算法)
     - [计算机网络](#计算机网络)
     - [DevOps](#devops)
+    - [项目经验](#项目经验)
     - [软件设计](#软件设计)
     - [开发软件](#开发软件)
     - [其他工具](#其他工具)
@@ -418,11 +419,10 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 &emsp; [docker使用](/docs/devOps/docker/command.md)  
 &emsp; [dockerFile](/docs/devOps/docker/file.md)  
 &emsp; [docker工具](/docs/devOps/docker/tools.md)   
-[k8s]  
-&emsp; [k8s总结](/docs/devOps/k8s/summary.md)  
+[Kubernetes]  
 &emsp; [k8s原理](/docs/devOps/k8s/principle.md)  
-&emsp; [k8s使用](/docs/devOps/k8s/command.md)  
-&emsp; [k8s工具](/docs/devOps/k8s/tools.md)   
+&emsp; [k8s实践](/docs/devOps/k8s/command.md)  
+&emsp; [k8s运维](/docs/devOps/k8s/tools.md)  
 
 
 ----
