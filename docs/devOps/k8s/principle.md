@@ -19,6 +19,9 @@
 k8s中文文档
 https://www.kubernetes.org.cn/k8s
 
+
+https://www.sohu.com/a/245424505_198222
+
 -->
 
 ## 1.1. 走进K8S

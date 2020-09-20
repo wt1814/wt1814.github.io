@@ -30,6 +30,11 @@
 <!-- /TOC -->
 
 # 1. Kubemetes实践  
+<!-- 
+k8s的快速使用手册
+https://www.cnblogs.com/linu/p/10955823.html
+-->
+
 
 &emsp; <font color = "lime">整体参考《Kubernetes权威指南》</font>  
 
