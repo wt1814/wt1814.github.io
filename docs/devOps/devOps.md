@@ -41,7 +41,7 @@
 
 &emsp; DevOps框架结构关系  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-2.png)  
-&emsp; 上图是指示性的。图中没有画出清晰的线条，但它向我们展示了其连贯性 以下是对上图的简要解释， 需要说明的是这种关系不是纯粹的一对一的关系。  
+&emsp; 上图是指示性的。图中没有画出清晰的线条，但它向我们展示了其连贯性 以下是对上图的简要解释，需要说明的是这种关系不是纯粹的一对一的关系。  
 
 * 规划
 &emsp; 规划包含所有DevOps活动，既包含最初的整个路线图，又包含服务最后的增量交付。
@@ -54,28 +54,32 @@
 * 发布
 &emsp; 持续交付不仅是一次发布 的推出，还包括部署流水线，这已经在敏捷开发可执行的测试用例中被定义了。  
 * 运维
-&emsp; 敏捷流程实际包括所有 Dev Ops 流程，而不仅仅是运维流程 整个 DevOps 流程就是敏捷流程。
+&emsp; 敏捷流程实际包括所有DevOps流程，而不仅仅是运维流程 整个 DevOps 流程就是敏捷流程。
 * 监控
 &emsp; 持续监控不仅包括产品阶段，还包括整个 DevOps 流程。
 
 ## 1.3. 工具集  
-
 <!-- 
-
-DevOps 工具链图 汇总
-https://blog.csdn.net/qq_21816375/article/details/79120669?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-4.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-4.channel_param
-
-DevOps 学习（二）-DevOps 的工具链工具链
-https://blog.csdn.net/HelloHoliday/article/details/77717060?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param
-
-
-从一张图看Devops全流程
-https://blog.csdn.net/wwd0501/article/details/104025005?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param
-
-https://www.jianshu.com/p/c5d002cf25b9
-
+https://blog.csdn.net/hualinux/article/details/106586601?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param
 -->
+
+&emsp; 对于DevOps架构，可以参照DevOps过程逐步核查。按过程中每步决定的所需功能，经测量去选择可用工具。下表给出了10个组织己识别出的功能。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-3.png)  
 
+&emsp; 以下是关于Devops的工具链  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-5.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-6.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-7.png)  
 
 
+&emsp; DevOps中包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等等。  
+
+* 版本控制&协作开发：GitHub、GitLab、BitBucket、SubVersion、Coding、Bazaar
+* 自动化构建和测试:Apache Ant、Maven 、Selenium、PyUnit、QUnit、JMeter、Gradle、PHPUnit、Nexus
+* 持续集成&交付:Jenkins、Capistrano、BuildBot、Fabric、Tinderbox、Travis CI、flow.ci Continuum、LuntBuild、CruiseControl、Integrity、Gump、Go
+* 容器平台: Docker、Rocket、Ubuntu（LXC）、第三方厂商如（AWS/阿里云）
+* 配置管理：Chef、Puppet、CFengine、Bash、Rudder、Powershell、RunDeck、Saltstack、Ansible
+* 微服务平台：OpenShift、Cloud Foundry、Kubernetes、Mesosphere
+* 服务开通：Puppet、Docker Swarm、Vagrant、Powershell、OpenStack Heat
+* 日志管理：Logstash、CollectD、StatsD
+* 监控，警告&分析：Nagios、Ganglia、Sensu、zabbix、ICINGA、Graphite、Kibana
