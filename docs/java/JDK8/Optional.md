@@ -11,28 +11,30 @@
 <!-- /TOC -->
 
 # 1. Optional类  
+&emsp; <font color = "lime">Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败")); </font> 
+
 &emsp; Java8引入Optional类，是一个可以为null的容器对象，是一个包含有可选值的包装类，可以保存类型T的值，或者保存null。Optional类的引入解决空指针异常。防止编写不必要的null检查。快速定位NullPointException。  
 &emsp; public final class Optional<T\>，<font color = "lime">构造函数私有化；不能new实例；不能被继承。</font>  
 
 ## 1.1. 常用API  
 
-|方法	|描述|
+|方法|描述|
 |---|---|
-|empty()	|返回空的Optional实例|
-|of(T value)	|返回一个指定非null值的Optional|
-|ofNullable(T value)	|如果为非空，返回 Optional 描述的指定值，否则返回空的 Optional|
+|empty()|返回空的Optional实例|
+|of(T value)|返回一个指定非null值的Optional|
+|ofNullable(T value)|如果为非空，返回 Optional 描述的指定值，否则返回空的 Optional|
 |   |    |	
 |equals(Object obj)	|判断其他对象是否等于Optional|
-|filter(Predicate<? super <T> predicate)	|如果值存在，并且这个值匹配给定的 predicate，返回一个Optional用以描述这个值，否则返回一个空的Optional|
-|flatMap(Function<? super T,Optional<U>> mapper)	|如果值存在，返回基于Optional包含的映射方法的值，否则返回一个空的Optional|
-|get()	|如果在这个Optional中包含这个值，返回值，否则抛出异常：NoSuchElementException|
+|filter(Predicate<? super <T> predicate)|如果值存在，并且这个值匹配给定的 predicate，返回一个Optional用以描述这个值，否则返回一个空的Optional|
+|flatMap(Function<? super T,Optional<U>> mapper)|如果值存在，返回基于Optional包含的映射方法的值，否则返回一个空的Optional|
+|get()|如果在这个Optional中包含这个值，返回值，否则抛出异常：NoSuchElementException|
 |hashCode()	|返回存在值的哈希码，如果值不存在 返回0|
-|ifPresent(Consumer<? super T> consumer)	|如果值存在则使用该值调用consumer, 否则不做任何事情|
-|isPresent()	|如果值存在则方法会返回true，否则返回 false|
-|map(Function<? super T,? extends U> mapper)	|如果存在该值，提供的映射方法，如果返回非null，返回一个Optional描述结果|
-|orElse(T other)	|如果存在该值，返回值，否则返回 other|
-|orElseGet(Supplier<? extends T> other)	|如果存在该值，返回值，否则触发 other，并返回other调用的结果|
-|orElseThrow(Supplier<? extends X> exceptionSupplier)	|如果存在该值，返回包含的值，否则抛出由Supplier继承的异常|
+|ifPresent(Consumer<? super T> consumer)|如果值存在则使用该值调用consumer, 否则不做任何事情|
+|isPresent()|如果值存在则方法会返回true，否则返回 false|
+|map(Function<? super T,? extends U> mapper)|如果存在该值，提供的映射方法，如果返回非null，返回一个Optional描述结果|
+|orElse(T other)|如果存在该值，返回值，否则返回 other|
+|orElseGet(Supplier<? extends T> other)	|如果存在该值，返回值，否则触发other，并返回other调用的结果|
+|orElseThrow(Supplier<? extends X> exceptionSupplier)|如果存在该值，返回包含的值，否则抛出由Supplier继承的异常|
 |toString()	|返回一个Optional的非空字符串，用来调试|
 
 

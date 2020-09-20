@@ -110,6 +110,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; &emsp; [ConcurrentHashMap](/docs/java/concurrent/5.ConcurrentHashMap.md)  
 &emsp; &emsp; [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
 &emsp; [tools](/docs/java/concurrent/7.tools.md)  
+[并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
 [多线程处理大数据量](/docs/java/concurrent/bigData.md)  
 
 ### JVM  
