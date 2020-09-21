@@ -289,6 +289,7 @@
 
 * DevOps  
     * [DevOps](/docs/devOps/devOps.md)  
+    * [DevOps落地](/docs/devOps/devOpsPractice.md)  
     * [git](/docs/devOps/git/command.md)   
     * Docker
     * [docker总结](/docs/devOps/docker/summary.md)  

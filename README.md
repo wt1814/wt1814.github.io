@@ -384,6 +384,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 
 ## DevOps  
 [DevOps](/docs/devOps/devOps.md)  
+[DevOps落地](/docs/devOps/devOpsPractice.md)  
 [git](/docs/devOps/git/command.md)  
 [docker]  
 &emsp; [docker总结](/docs/devOps/docker/summary.md)  
