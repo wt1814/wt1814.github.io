@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a94b59f8-0d74-4fdd-bfe8-6f634153610f" name="Default Changelist" comment="" />
+    <list default="true" id="a94b59f8-0d74-4fdd-bfe8-6f634153610f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/docs/java/concurrent/7.tools.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/java/concurrent/7.tools.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/microService/Redis/Redis淘汰.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/microService/Redis/Redis淘汰.md" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,12 +29,46 @@
     <option name="isMigrated" value="true" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="FIRST">
+              <first_editor relative-caret-position="298">
+                <caret line="112" column="44" selection-start-line="112" selection-start-column="44" selection-end-line="112" selection-end-column="44" />
+              </first_editor>
+              <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+        <entry file="file://$PROJECT_DIR$/docs/java/concurrent/7.tools.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="FIRST">
+              <first_editor relative-caret-position="146">
+                <caret line="34" column="46" selection-start-line="34" selection-start-column="46" selection-end-line="34" selection-end-column="46" />
+                <folding>
+                  <element signature="n#!!doc" expanded="true" />
+                  <element signature="n#!!doc" expanded="true" />
+                </folding>
+              </first_editor>
+              <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/docs/java/concurrent/10.Collections.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="FIRST">
+              <first_editor relative-caret-position="334">
+                <caret line="156" column="39" selection-start-line="156" selection-start-column="39" selection-end-line="156" selection-end-column="58" />
+                <folding>
+                  <element signature="imports" expanded="true" />
+                </folding>
+              </first_editor>
+              <second_editor />
             </state>
           </provider>
         </entry>
@@ -83,7 +120,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/docs/SQL/8.MySql架构.md" />
         <option value="$PROJECT_DIR$/docs/SQL/9.basicSelect.md" />
         <option value="$PROJECT_DIR$/docs/SQL/11.trans.md" />
         <option value="$PROJECT_DIR$/docs/SQL/12.case.md" />
@@ -123,7 +159,6 @@
         <option value="$PROJECT_DIR$/docs/SQL/3.MySql深入.md" />
         <option value="$PROJECT_DIR$/docs/microService/Redis/RedisStandard.md" />
         <option value="$PROJECT_DIR$/docs/microService/Redis/Redis数据结构及API2.md" />
-        <option value="$PROJECT_DIR$/docs/microService/Redis/Redis淘汰.md" />
         <option value="$PROJECT_DIR$/docs/microService/Redis/SDS.md" />
         <option value="$PROJECT_DIR$/docs/java/JVM/4.JVM类的运行机制.md" />
         <option value="$PROJECT_DIR$/docs/SSM/Spring/基于Annotation的IOC初始化.md" />
@@ -134,6 +169,8 @@
         <option value="$PROJECT_DIR$/docs/project/scene.md" />
         <option value="$PROJECT_DIR$/docs/microService/Redis/Redis数据结构.md" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/docs/microService/Redis/Redis淘汰.md" />
+        <option value="$PROJECT_DIR$/docs/java/concurrent/7.tools.md" />
       </list>
     </option>
   </component>
@@ -168,6 +205,11 @@
             <path>
               <item name="wt1814.github.io" type="b2602c69:ProjectViewProjectNode" />
               <item name="wt1814.github.io" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="wt1814.github.io" type="b2602c69:ProjectViewProjectNode" />
+              <item name="wt1814.github.io" type="462c0819:PsiDirectoryNode" />
+              <item name="docs" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -295,16 +337,18 @@
       <workItem from="1599233281141" duration="101000" />
       <workItem from="1600327706683" duration="1705000" />
       <workItem from="1600391635309" duration="5268000" />
+      <workItem from="1600662907824" duration="1010000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="211770000" />
+    <option name="totallyTimeSpent" value="212780000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="7" y="23" width="1392" height="810" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.45348838" visible="true" weight="0.27925926" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.45348838" visible="true" weight="0.28296295" />
       <window_info id="Structure" order="1" sideWeight="0.54651165" side_tool="true" weight="0.17333333" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -380,26 +424,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/docs/SSM/Spring/容器初始化详解.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="90">
-            <caret line="5" column="3" selection-start-line="5" selection-start-column="3" selection-end-line="5" selection-end-column="3" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/docs/web/httpRetry.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="144">
-            <caret line="8" selection-start-line="8" selection-end-line="8" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/docs/web/idempotent.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -620,14 +644,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/docs/microService/Redis/Redis淘汰.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor />
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/docs/microService/Redis/SDS.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -779,9 +795,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.nojekyll">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/.nojekyll" />
     <entry file="file://$PROJECT_DIR$/HELP.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -790,11 +804,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
+    <entry file="file://$PROJECT_DIR$/docs/microService/Redis/Redis淘汰.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="2792">
-            <caret line="432" selection-start-line="432" selection-end-line="432" />
+          <first_editor relative-caret-position="-870">
+            <caret line="28" column="37" selection-start-line="28" selection-start-column="37" selection-end-line="28" selection-end-column="37" />
           </first_editor>
           <second_editor />
         </state>
@@ -803,7 +817,44 @@
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="36">
-          <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+          <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/java/concurrent/10.Collections.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="334">
+            <caret line="156" column="39" selection-start-line="156" selection-start-column="39" selection-end-line="156" selection-end-column="58" />
+            <folding>
+              <element signature="imports" expanded="true" />
+            </folding>
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="298">
+            <caret line="112" column="44" selection-start-line="112" selection-start-column="44" selection-end-line="112" selection-end-column="44" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/java/concurrent/7.tools.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="146">
+            <caret line="34" column="46" selection-start-line="34" selection-start-column="46" selection-end-line="34" selection-end-column="46" />
+            <folding>
+              <element signature="n#!!doc" expanded="true" />
+              <element signature="n#!!doc" expanded="true" />
+            </folding>
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>

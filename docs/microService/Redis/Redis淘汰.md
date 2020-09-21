@@ -23,6 +23,13 @@
 <!-- /TOC -->
 
 # 1. Redis内存淘汰  
+
+<!-- 
+官方网址  
+http://redis.cn/topics/lru-cache.html
+
+-->
+
 &emsp; **<font color = "lime">一句话概述：redis的key有3种删除策略；内存淘汰有4种算法、8种淘汰策略。注意内存淘汰策略的选择。</font>**  
 &emsp; **<font color = "lime">注：volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
 
