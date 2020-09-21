@@ -369,6 +369,8 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 
 ## Linux  
 [Linux命令](/docs/Linux/Linux/Linux命令.md)  
+[shell](/docs/Linux/Linux/shell.md)  
+
 
 ---
 

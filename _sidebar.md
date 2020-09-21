@@ -285,6 +285,7 @@
     * [监控](/docs/devOps/monitor.md)  
 
 * Linux  
+    * [shell](/docs/Linux/Linux/shell.md)  
 
 * DevOps  
     * [DevOps](/docs/devOps/devOps.md)  
