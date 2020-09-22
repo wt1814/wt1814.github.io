@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a94b59f8-0d74-4fdd-bfe8-6f634153610f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/docs/Linux/Linux/shell.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_sidebar.md" beforeDir="false" afterPath="$PROJECT_DIR$/_sidebar.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/SSM/Spring/5.SpringAOP.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/SSM/Spring/5.SpringAOP.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/java/function/6.algorithmicIdea.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/java/function/6.algorithmicIdea.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/SSM/Spring/feature/循环依赖.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/SSM/Spring/feature/循环依赖.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/microService/communication/Netty/netty.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/microService/communication/Netty/netty.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/project/scene.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/project/scene.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,41 +30,7 @@
     <option name="isMigrated" value="true" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="345">
-                <caret line="413" column="35" lean-forward="true" selection-start-line="413" selection-start-column="35" selection-end-line="413" selection-end-column="35" />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/docs/java/function/6.algorithmicIdea.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="546">
-                <caret line="62" column="49" selection-start-line="62" selection-start-column="49" selection-end-line="62" selection-end-column="49" />
-                <folding>
-                  <element signature="imports" expanded="true" />
-                  <element signature="e#637#638#0" expanded="true" />
-                  <element signature="e#677#678#0" expanded="true" />
-                  <element signature="e#703#704#0" expanded="true" />
-                  <element signature="e#743#744#0" expanded="true" />
-                  <element signature="e#451#452#0" expanded="true" />
-                  <element signature="e#493#494#0" expanded="true" />
-                </folding>
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -97,6 +60,8 @@
       <find>edi</find>
       <find>edis</find>
       <find>AOP</find>
+      <find>循环</find>
+      <find>etty</find>
     </findStrings>
     <replaceStrings>
       <replace>https://gitee.com/wt1814/pic-host/raw/master/image</replace>
@@ -115,7 +80,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/docs/SQL/14.transaction.md" />
         <option value="$PROJECT_DIR$/docs/SQL/15.lock.md" />
         <option value="$PROJECT_DIR$/docs/SQL/16.replication.md" />
         <option value="$PROJECT_DIR$/docs/SQL/17.partition.md" />
@@ -126,7 +90,6 @@
         <option value="$PROJECT_DIR$/docs/SSM/MyBatis/MybatisPlugins.md" />
         <option value="$PROJECT_DIR$/docs/SSM/Spring/feature/FactoryBean.md" />
         <option value="$PROJECT_DIR$/docs/SSM/Spring/feature/可二次开发常用接口.md" />
-        <option value="$PROJECT_DIR$/docs/SSM/Spring/feature/循环依赖.md" />
         <option value="$PROJECT_DIR$/docs/SSM/Spring/1.Spring.md" />
         <option value="$PROJECT_DIR$/docs/SSM/Spring/2.SpringIOC.md" />
         <option value="$PROJECT_DIR$/docs/SSM/Spring/3.SpringDI.md" />
@@ -155,7 +118,6 @@
         <option value="$PROJECT_DIR$/docs/SSM/Spring/基于Annotation的IOC初始化.md" />
         <option value="$PROJECT_DIR$/docs/devOps/k8s/command.md" />
         <option value="$PROJECT_DIR$/docs/java/Design/3.establish.md" />
-        <option value="$PROJECT_DIR$/docs/project/scene.md" />
         <option value="$PROJECT_DIR$/docs/microService/Redis/Redis数据结构.md" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/docs/microService/Redis/Redis淘汰.md" />
@@ -166,6 +128,9 @@
         <option value="$PROJECT_DIR$/_sidebar.md" />
         <option value="$PROJECT_DIR$/docs/SSM/Spring/5.SpringAOP.md" />
         <option value="$PROJECT_DIR$/docs/java/function/6.algorithmicIdea.md" />
+        <option value="$PROJECT_DIR$/docs/SSM/Spring/feature/循环依赖.md" />
+        <option value="$PROJECT_DIR$/docs/microService/communication/Netty/netty.md" />
+        <option value="$PROJECT_DIR$/docs/project/scene.md" />
       </list>
     </option>
   </component>
@@ -194,6 +159,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -223,8 +190,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -346,17 +311,18 @@
       <workItem from="1600327706683" duration="1705000" />
       <workItem from="1600391635309" duration="5268000" />
       <workItem from="1600662907824" duration="2689000" />
+      <workItem from="1600738254771" duration="807000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="214459000" />
+    <option name="totallyTimeSpent" value="215266000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="7" y="23" width="1392" height="810" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.45348838" visible="true" weight="0.28296295" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.45348838" visible="true" weight="0.28666666" />
       <window_info id="Structure" order="1" sideWeight="0.54651165" side_tool="true" weight="0.17333333" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -432,26 +398,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/docs/ES/2.useTutorials.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="18">
-            <caret line="1" column="15" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="15" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/docs/ES/3.colony.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="18">
-            <caret line="1" column="13" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/docs/ES/4.principle.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="FIRST">
@@ -715,16 +661,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/docs/project/scene.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="FIRST">
-          <first_editor relative-caret-position="180">
-            <caret line="10" selection-start-line="10" selection-end-line="10" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/docs/microService/Redis/RedisAPI.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="FIRST">
@@ -852,16 +788,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="FIRST">
-          <first_editor relative-caret-position="345">
-            <caret line="413" column="35" lean-forward="true" selection-start-line="413" selection-start-column="35" selection-end-line="413" selection-end-column="35" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/docs/java/function/6.algorithmicIdea.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="FIRST">
@@ -869,13 +795,47 @@
             <caret line="62" column="49" selection-start-line="62" selection-start-column="49" selection-end-line="62" selection-end-column="49" />
             <folding>
               <element signature="imports" expanded="true" />
-              <element signature="e#637#638#0" expanded="true" />
-              <element signature="e#677#678#0" expanded="true" />
-              <element signature="e#703#704#0" expanded="true" />
-              <element signature="e#743#744#0" expanded="true" />
-              <element signature="e#451#452#0" expanded="true" />
-              <element signature="e#493#494#0" expanded="true" />
             </folding>
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/SSM/Spring/feature/循环依赖.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="332">
+            <caret line="21" column="50" selection-start-line="21" selection-start-column="50" selection-end-line="21" selection-end-column="50" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/microService/communication/Netty/netty.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="144">
+            <caret line="8" column="50" selection-start-line="8" selection-start-column="50" selection-end-line="8" selection-end-column="50" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/project/scene.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="126">
+            <caret line="7" column="49" lean-forward="true" selection-start-line="7" selection-start-column="49" selection-end-line="7" selection-end-column="49" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="202">
+            <caret line="434" column="26" selection-start-line="434" selection-start-column="26" selection-end-line="434" selection-end-column="26" />
           </first_editor>
           <second_editor />
         </state>
