@@ -12,6 +12,10 @@
 
 <!-- 
 https://mp.weixin.qq.com/s/ConI2dcD9F9crSx0qVa7GQ
+
+消息订阅、pipeline
+https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486105&idx=2&sn=f4b4734951ec262ad67c865be940e5c5&chksm=ec505348db27da5ee9b956e40963b0abb52f739863a82c7d1838ca1a92928f50facc012ccd12&scene=21#wechat_redirect
+https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f8764d807692f5ae7221ac88d69b8&chksm=ec5053bbdb27daaddd7a5f9d4e3737d584c13cf1f861d5b82aec443390fcc327ff0f6fe8bdef&scene=21#wechat_redirect
 -->
 
 ## 1.1. 发布订阅简介  

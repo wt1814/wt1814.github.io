@@ -229,7 +229,7 @@
     * [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
     * [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
     * [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
-
+* [分布式Session](/docs/microService/thinking/分布式Session.md)  
 * 分布式搜索引擎  
     * [ES基本概念](/docs/ES/1.basicConcepts.md)  
     * [ES集群](/docs/ES/3.colony.md)  

@@ -25,6 +25,7 @@
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
+        - [分布式Session](#分布式session)
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式调度](#分布式调度)
         - [分布式通信](#分布式通信)
@@ -298,11 +299,8 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
 &emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
 
-
-
-<!-- 
+### 分布式Session
 [分布式Session](/docs/microService/thinking/分布式Session.md)  
--->
 
 ### 分布式搜索引擎  
 [ES基本概念](/docs/ES/1.basicConcepts.md)  

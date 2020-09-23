@@ -26,6 +26,7 @@
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
+        - [分布式Session](#分布式session)
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式调度](#分布式调度)
         - [分布式通信](#分布式通信)
@@ -240,9 +241,6 @@ Gitee： https://gitee.com/wt1814/
 
 [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
 
-
-
-
 ### 分布式理论  
 [分布式和集群](/docs/system/distributed.md)   
 [分布式和集中式](/docs/system/deploy.md)  
@@ -276,11 +274,6 @@ Gitee： https://gitee.com/wt1814/
 [Redis运维](/docs/microService/Redis/Redis运维.md)  
 [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 [Redis问题及排查](/docs/microService/Redis/problem.md)  
-<!-- 
-消息订阅、pipeline
-https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486105&idx=2&sn=f4b4734951ec262ad67c865be940e5c5&chksm=ec505348db27da5ee9b956e40963b0abb52f739863a82c7d1838ca1a92928f50facc012ccd12&scene=21#wechat_redirect
-https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f8764d807692f5ae7221ac88d69b8&chksm=ec5053bbdb27daaddd7a5f9d4e3737d584c13cf1f861d5b82aec443390fcc327ff0f6fe8bdef&scene=21#wechat_redirect
--->
 
 #### Ehcache 
 
@@ -309,9 +302,9 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
 &emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
 
-<!-- 
+
+### 分布式Session
 [分布式Session](/docs/microService/thinking/分布式Session.md)  
--->
 
 ### 分布式搜索引擎  
 [ES基本概念](/docs/ES/1.basicConcepts.md)  
