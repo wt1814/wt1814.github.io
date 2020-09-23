@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a94b59f8-0d74-4fdd-bfe8-6f634153610f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_sidebar.md" beforeDir="false" afterPath="$PROJECT_DIR$/_sidebar.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/SQL/15.lock.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/SQL/15.lock.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/microService/Redis/pub.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/microService/Redis/pub.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Linux/Linux/shell.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Linux/Linux/shell.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,7 +33,7 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="189">
+              <first_editor relative-caret-position="6030">
                 <caret line="335" column="28" selection-start-line="335" selection-start-column="28" selection-end-line="335" selection-end-column="28" />
               </first_editor>
               <second_editor />
@@ -50,7 +46,7 @@
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
               <first_editor relative-caret-position="180">
-                <caret line="10" column="3" lean-forward="true" selection-start-line="10" selection-start-column="3" selection-end-line="10" selection-end-column="3" />
+                <caret line="10" column="3" selection-start-line="10" selection-start-column="3" selection-end-line="10" selection-end-column="3" />
               </first_editor>
               <second_editor />
             </state>
@@ -186,8 +182,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -223,6 +217,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -347,17 +343,18 @@
       <workItem from="1600738254771" duration="807000" />
       <workItem from="1600823591696" duration="945000" />
       <workItem from="1600839199232" duration="2658000" />
+      <workItem from="1600870589014" duration="205000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="218869000" />
+    <option name="totallyTimeSpent" value="219074000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="7" y="23" width="1392" height="810" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.45348838" visible="true" weight="0.29555556" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.45348838" visible="true" weight="0.3" />
       <window_info id="Structure" order="1" sideWeight="0.54651165" side_tool="true" weight="0.17333333" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -861,7 +858,7 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="189">
+          <first_editor relative-caret-position="6030">
             <caret line="335" column="28" selection-start-line="335" selection-start-column="28" selection-end-line="335" selection-end-column="28" />
           </first_editor>
           <second_editor />
@@ -872,7 +869,7 @@
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="180">
-            <caret line="10" column="3" lean-forward="true" selection-start-line="10" selection-start-column="3" selection-end-line="10" selection-end-column="3" />
+            <caret line="10" column="3" selection-start-line="10" selection-start-column="3" selection-end-line="10" selection-end-column="3" />
           </first_editor>
           <second_editor />
         </state>
