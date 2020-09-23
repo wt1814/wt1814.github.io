@@ -337,14 +337,15 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 ---
 
 ## 项目构建基础    
-[接口幂等](/docs/web/idempotent.md)   
+[接口幂等](/docs/web/idempotent.md)  
+[JavaBean](/docs/web/JavaBean.md)  
+[参数校验](/docs/web/Validation.md)  
+[SpringTest](/docs/web/test.md)  
 [日志系统](/docs/web/log.md)   
 [Http重试](/docs/web/httpRetry.md)   
 [生成二维码](/docs/web/QRCode.md)  
 [反爬虫](/docs/web/reptile.md)  
-[JavaBean](/docs/web/JavaBean.md)  
 [加密算法](/docs/web/encryption.md)  
-[参数校验](/docs/web/Validation.md)  
 [源码安全](/docs/web/codeSecurity.md)  
 [其他](/docs/web/other.md)
 
