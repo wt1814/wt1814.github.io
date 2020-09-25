@@ -39,6 +39,11 @@ https://www.cnblogs.com/linu/p/10955823.html
 &emsp; <font color = "lime">整体参考《Kubernetes权威指南》</font>  
 
 ## 1.1. Kubemetes的安装与配置
+<!-- 
+Centos7搭建k8s环境教程
+https://mp.weixin.qq.com/s/4zsGwYBLoiZx0l68NQPPMA
+-->
+
 &emsp; CentOS Linux 7默认启动了防火墙服务（firewalld），而Kubernetes的Master与工作Node之间会有大量的网络通信，安全的做法是在防火墙上配置各组件需要相互通信的端口号，具体要配置的端口号详见「内网中的Kubemetes相关配置」节中各服务监听的端口号说明。在一个安全的内部网络环境中可以关闭防火墙服务：  
 
 ```

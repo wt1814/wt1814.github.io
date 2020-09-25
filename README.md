@@ -236,6 +236,7 @@ Gitee： https://gitee.com/wt1814/
 
 
 ### Dubbo  
+[RPC](/docs/microService/RPC.md)  
 [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
 [Dubbo使用教程](/docs/microService/Dubbo/Dubbo使用教程.md)  
 
@@ -283,6 +284,8 @@ Gitee： https://gitee.com/wt1814/
 
 ### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  
+[kafka](/docs/microService/mq/kafka.md)  
+
 
 ### 分布式ID
 [分布式ID](/docs/microService/thinking/分布式ID.md)  
@@ -329,8 +332,9 @@ Gitee： https://gitee.com/wt1814/
 
 ---
 
-## 项目构建基础    
-[接口幂等](/docs/web/idempotent.md)  
+## 项目构建基础  
+[API接口设计](/docs/web/API.md)    
+&emsp; [接口幂等](/docs/web/idempotent.md)  
 [JavaBean](/docs/web/JavaBean.md)  
 [参数校验](/docs/web/Validation.md)  
 [SpringTest](/docs/web/test.md)  
