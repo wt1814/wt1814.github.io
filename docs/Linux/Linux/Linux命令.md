@@ -19,6 +19,10 @@
 <!-- 
 Shell文本处理三剑客：grep、sed、awk 
 https://mp.weixin.qq.com/s/2qLACYURVLEvWmobOG36fQ
+
+ 面试官问我Linux下常见网络命令 
+ https://mp.weixin.qq.com/s/uMK6QnJKK2MFERkfx6b-QA
+
 -->
 
 <!-- 
