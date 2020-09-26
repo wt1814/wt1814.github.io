@@ -10,6 +10,11 @@
 
 # 1. DevOps  
 
+<!-- 
+k8s中蓝绿部署、金丝雀发布、滚动更新汇总 
+https://mp.weixin.qq.com/s?__biz=MzU0NjEwMTg4Mg==&mid=2247484195&idx=1&sn=b841f2ea305acfa2996a667d4ff4d99e&chksm=fb638c36cc140520e6905db5923afe163d7babb5d9eb6c5e8045a795c37b33a2a2e5541e3efd&scene=21#wechat_redirect
+-->
+
 ## 1.1. 定义  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-4.png)   
 &emsp; DevOps: Development和Operations的组合。  

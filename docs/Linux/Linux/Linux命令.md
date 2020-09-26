@@ -21,7 +21,7 @@ P47
 &emsp; shell提供了特殊字符来帮助快速指定一组文件名。这些特殊字符叫做通配符。  
 
 ## 1.1. 文件管理
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Linux/linux-1.png)   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Linux/linux-1.png)  
 
 * df：显示磁盘使用情况。  
 * du：显示文件系统使用情况。
@@ -157,13 +157,6 @@ https://mp.weixin.qq.com/s?__biz=MzU3NTgyODQ1Nw==&mid=2247487056&idx=2&sn=d84364
 
 
 ## 1.7. 网络通讯  
-
-<!-- 
-面试官问我Linux下常见网络命令 
-https://mp.weixin.qq.com/s/uMK6QnJKK2MFERkfx6b-QA
-Linux网络流量监控工具 
-https://mp.weixin.qq.com/s?__biz=MzU0NjEwMTg4Mg==&mid=2247485997&idx=2&sn=ac694beaf60cbf18d133eb6ebbc7a345&chksm=fb638538cc140c2e581b8c673a9c529359042a2262ec112f8c3476c7408f25e04856f0b37bbd&scene=21#wechat_redirect
--->
   
 * 网络接口相关
 	* ifconfig，查看网络接口信息
@@ -187,5 +180,3 @@ https://mp.weixin.qq.com/s?__biz=MzU0NjEwMTg4Mg==&mid=2247485997&idx=2&sn=ac694b
 	* yum
 	* rpm
 	* wget
-
-
