@@ -127,7 +127,6 @@ Gitee： https://gitee.com/wt1814/
 
 
 ## 数据库  
-
 [学习SQL的总结](/docs/SQL/学习SQL的总结.md)  
 [建模](/docs/SQL/modeling.md)    
 [SQL语句](/docs/SQL/1.SQL语句.md)  
@@ -232,7 +231,6 @@ Gitee： https://gitee.com/wt1814/
 
 ### 微服务  
 [Gateway](/docs/microService/microservices/Gateway.md)  
-
 
 
 ### Dubbo  
@@ -376,7 +374,6 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [监控](/docs/devOps/monitor.md)  
 
 
-
 ## Linux  
 [Linux命令](/docs/Linux/Linux/Linux命令.md)  
 &emsp; [文本处理](/docs/Linux/Linux/文本处理.md)  
@@ -428,9 +425,6 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [HTTPS](/docs/network/2.HTTPS.md)  
 [DNS](docs/network/3.DNS.md)  
 [TCP](/docs/network/4.TCP.md)  
-
-
-
 
 ----
 
