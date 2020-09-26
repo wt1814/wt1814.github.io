@@ -288,6 +288,8 @@
     * [监控](/docs/devOps/monitor.md)  
 
 * Linux  
+    * [Linux命令](/docs/Linux/Linux/Linux命令.md)  
+    * [文本处理](/docs/Linux/Linux/文本处理.md)  
     * [shell](/docs/Linux/Linux/shell.md)  
 
 * DevOps  

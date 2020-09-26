@@ -369,6 +369,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 
 ## Linux  
 [Linux命令](/docs/Linux/Linux/Linux命令.md)  
+&emsp; [文本处理](/docs/Linux/Linux/文本处理.md)  
 [shell](/docs/Linux/Linux/shell.md)  
 
 

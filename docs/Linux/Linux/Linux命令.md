@@ -15,20 +15,10 @@
 
 # 1. Linux命令  
 
-
-<!-- 
-Shell文本处理三剑客：grep、sed、awk 
-https://mp.weixin.qq.com/s/2qLACYURVLEvWmobOG36fQ
-
- 面试官问我Linux下常见网络命令 
- https://mp.weixin.qq.com/s/uMK6QnJKK2MFERkfx6b-QA
-
--->
-
 <!-- 
 P47
 -->
-shell 提供了特殊字符来帮助你快速指定一组文件名。这些特殊字符叫做通配符。  
+&emsp; shell提供了特殊字符来帮助快速指定一组文件名。这些特殊字符叫做通配符。  
 
 ## 1.1. 文件管理
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Linux/linux-1.png)   
@@ -36,7 +26,7 @@ shell 提供了特殊字符来帮助你快速指定一组文件名。这些特�
 * df：显示磁盘使用情况。  
 * du：显示文件系统使用情况。
 
-文件和目录的操作
+&emsp; 文件和目录的操作
 
 * ls，显示文件和目录列表  
 * cd，切换目录  
@@ -53,7 +43,7 @@ shell 提供了特殊字符来帮助你快速指定一组文件名。这些特�
 * 管道命令 |，将前面的结果给后面的命令，例如：\`ls -la | wc `，将ls的结果加油wc命令来统计字数  
 * 重定向 > 是覆盖模式，>> 是追加模式，例如：\`echo "Java3y,zhen de hen xihuan ni" > qingshu.txt `把左边的输出放到右边的文件里去  
 
-查看文件  
+&emsp; 查看文件  
 
 * cat，查看文本文件内容  
 * more，可以分页看  
@@ -61,7 +51,7 @@ shell 提供了特殊字符来帮助你快速指定一组文件名。这些特�
 * tail -10，查看文件等尾部的10行  
 * head -20，查看文件的头部20行  
 
-权限管理  
+&emsp; 权限管理  
 
 * chmod，改变文件或目录的权限
 * chown，改变文件或目录的属主（所有者）
@@ -70,10 +60,6 @@ shell 提供了特殊字符来帮助你快速指定一组文件名。这些特�
 * 文件扩展属性
 	* 显示扩展属性：lsattr \[-adR] [文件|目录]
 	* 修改扩展属性：chattr \[-R] [[-+=][属性]] <文件|目录>
-
-
-
-
 
 ## 1.2. 文档编辑  
 * vim
@@ -171,6 +157,13 @@ https://mp.weixin.qq.com/s?__biz=MzU3NTgyODQ1Nw==&mid=2247487056&idx=2&sn=d84364
 
 
 ## 1.7. 网络通讯  
+
+<!-- 
+面试官问我Linux下常见网络命令 
+https://mp.weixin.qq.com/s/uMK6QnJKK2MFERkfx6b-QA
+Linux网络流量监控工具 
+https://mp.weixin.qq.com/s?__biz=MzU0NjEwMTg4Mg==&mid=2247485997&idx=2&sn=ac694beaf60cbf18d133eb6ebbc7a345&chksm=fb638538cc140c2e581b8c673a9c529359042a2262ec112f8c3476c7408f25e04856f0b37bbd&scene=21#wechat_redirect
+-->
   
 * 网络接口相关
 	* ifconfig，查看网络接口信息
