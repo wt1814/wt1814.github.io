@@ -15,9 +15,6 @@
 
 # 1. Linux命令  
 
-<!-- 
-P47
--->
 &emsp; shell提供了特殊字符来帮助快速指定一组文件名。这些特殊字符叫做通配符。  
 
 ## 1.1. 文件管理
@@ -76,13 +73,23 @@ Linux 上几种常用的文件传输方式
 https://mp.weixin.qq.com/s?__biz=MzU3NTgyODQ1Nw==&mid=2247486417&idx=1&sn=37be3b122f792b313d17cecce3c93291&chksm=fd1c7357ca6bfa415bb0a728986b1e9cc540194d60f95b4c537dd23c92086f4327082649760b&mpshare=1&scene=1&srcid=&sharer_sharetime=1564966405212&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=ecc4386bb884a7b15726e01906103213f69859b70aae98dd60e850fab62274c372e9f641e98e5b558225391ac3a71c7fe63e25bce0cac2c43166b704f6798cf5b611e8b9ff49a69a407482e74b53b4dc&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060834&lang=zh_CN&pass_ticket=hJ%2BSizr3tqhAq3hRq1pBmqb7SdoK%2FKh9k69UgvR0%2BAneIZhpFGHVYOqPaiRuo7Bc
 -->
 
-* ftp
-* rcp
-* scp
-* wget
-* curl
-* rsync
-
+* ftp  
+&emsp; ftp 命令使用文件传输协议（File Transfer Protocol, FTP）在本地主机和远程主机之间或者在两个远程主机之间进行文件传输。  
+* rcp  
+&emsp; rcp 意为“ remote file copy ”（远程文件拷贝）。该命令用于计算机之间进行文件拷贝。  
+* scp  
+&emsp; scp 命令在网络上的主机之间拷贝文件，它是安全拷贝（secure copy）的缩写。scp 命令使用 ssh 来传输数据，并使用与 ssh 相同的认证模式，提供同样的安全保障。scp 命令的用法和 rcp 命令非常类似，这里就不做过多介绍了。一般推荐使用 scp 命令，因为它比 rcp 更安全。  
+* wget  
+&emsp; wget 是一个经由 GPL 许可的可从网络上自动获取文件的自由软件包。它是一个非交互式的命令行工具。支持 HTTP，HTTPS 和 FTP 协议，支持代理服务器以及断点续传功能。wget 可实现递归下载，即可跟踪 HTML 页面上的链接依次下载来创建远程服务器的本地版本，完全重建原始站点的目录结构，实现远程网站的镜像。在递归下载时，wget 将页面中的超级链接转换成指向本地文件，方便离线浏览。由于非交互特性，wget 支持后台运行，用户在退出系统后，仍可继续运行。功能强大，设置方便简单。  
+* curl  
+&emsp; 另一个可以用来进行文件传输的工具是 curl，它是对 libcurl 库的一个命令行工具包装。libcurl 库中提供了相应功能的 API，可以在程序中调用。对于 libcurl 库的使用方法介绍超出了本文的讨论范围。curl 使用 URL 的语法来传输文件，它支持 FTP, FTPS, HTTP, HTTPS, TFTP, SFTP, TELNET 等多种协议。curl 功能强大，它提供了包括代理支持，用户认证，FTP 上载，HTTP post，SSL 连接，文件续传等许多特性。  
+* rsync  
+&emsp; rsync 是一款高效的远程数据备份和镜像工具，可快速地同步多台主机间的文件，其具有如下特性：  
+	* 支持链接、所有者、组信息以及权限信息的拷贝；
+	* 通过远程 shell（ssh, rsh）进行传输；
+	* 无须特殊权限即可安装使用；
+	* 流水线式文件传输模式，文件传输效率高；
+	* 支持匿名操作；
 
 ## 1.4. 备份压缩  
 
@@ -100,10 +107,7 @@ https://mp.weixin.qq.com/s?__biz=MzU3NTgyODQ1Nw==&mid=2247487056&idx=2&sn=d84364
 	* bzip2 -d filename.bz2
 	* tar -xzvf filename.tar.gz
 
-
-
 ## 1.5. 管理用户  
-
 
 * 切换用户
 	* su
@@ -154,7 +158,6 @@ https://mp.weixin.qq.com/s?__biz=MzU3NTgyODQ1Nw==&mid=2247487056&idx=2&sn=d84364
 	* chkconfig
 	* service 
 	* ntsysv  
-
 
 ## 1.7. 网络通讯  
   

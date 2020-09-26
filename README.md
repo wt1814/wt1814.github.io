@@ -381,7 +381,7 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [Linux命令](/docs/Linux/Linux/Linux命令.md)  
 &emsp; [文本处理](/docs/Linux/Linux/文本处理.md)  
 &emsp; [网络通讯](/docs/Linux/Linux/网络通讯.md)  
-[shell](/docs/Linux/Linux/shell.md)  
+[shell编程](/docs/Linux/Linux/shell.md)  
 
 ---
 
