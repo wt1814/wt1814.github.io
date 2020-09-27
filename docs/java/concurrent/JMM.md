@@ -132,6 +132,10 @@ https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 
 ----
 ## 1.3. 并发问题及含义  
+<!-- 
+https://mp.weixin.qq.com/s/DaCTrm8y9vWeaJyHfbRoTw
+-->
+
 &emsp; 并发编程存在原子性、可见性、有序性问题。  
 
 * 原子性，即一系列操作要么都执行，要么都不执行。
