@@ -43,6 +43,10 @@ https://www.jianshu.com/p/c6e9ddbea022
 <!-- 
 SpringBoot + Redis + 注解 + 拦截器来实现接口幂等性校验 
 https://mp.weixin.qq.com/s/L5lOUB_cbi67eyCHmCHhbQ
+
+ 写一个通用的幂等组件，艿艿觉得很有必要 
+ https://mp.weixin.qq.com/s/y6Ybk4TTlaTxL2rrjBdZlA
+
 -->
 
 &emsp; 以下提供方案非唯一，例如redis+token整合。  

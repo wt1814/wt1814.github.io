@@ -42,7 +42,7 @@ RESTful：面向资源，这里的资源可以是一段文字、一个文件、�
 
 # RPC  
 
-## RPC与
+## RPC与REST  
 <!-- 
  
 https://blog.csdn.net/u013952133/article/details/79256799
@@ -55,7 +55,7 @@ https://blog.csdn.net/u013952133/article/details/79256799
 https://mp.weixin.qq.com/s/gLxFvOo82xybsribOIXKYA
 -->
 
-## 同步调用与异步调用  
+### 同步调用与异步调用  
 
 
 ## 流行的RPC框架
