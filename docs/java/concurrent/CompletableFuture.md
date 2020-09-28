@@ -16,6 +16,9 @@ https://mp.weixin.qq.com/s/pQsWfME5QrHhp4xKS4WSrA
 https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650
 异步编程
 https://mp.weixin.qq.com/s/gm9ps7YDqxkysCCNNUKFeA
+
+异步编排 CompletableFuture
+https://mp.weixin.qq.com/s/cb10Lr1uljJAPXtpV0lrWw
 -->
 
 &emsp; CompletableFuture，组合式异步编程，异步回调。  

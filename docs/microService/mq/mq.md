@@ -19,6 +19,10 @@
 <!-- 
 分布式消息队列面试题  
 https://gitee.com/shishan100/Java-Interview-Advanced/tree/master#%E5%88%86%E5%B8%83%E5%BC%8F%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97
+
+消息队列常见问题总结和分析 
+https://mp.weixin.qq.com/s/pHyBTR_liNocLt1XHhNMlw
+
 -->
 &emsp; **<font color = "lime">总结：</font>**  
 1. 为什么使用mq？

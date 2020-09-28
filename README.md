@@ -346,7 +346,8 @@ Gitee： https://gitee.com/wt1814/
 [其他](/docs/web/other.md)
 
 ## 架构设计  
-[性能指标](/docs/system/performance.md)   
+[性能指标](/docs/system/performance.md)  
+[架构图](/docs/system/diagram.md)  
 
 ### 系统接入层  
 [接入层](/docs/system/access/access.md)    
