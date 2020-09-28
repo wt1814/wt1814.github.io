@@ -25,3 +25,16 @@
 ## git clone 文件大
 &emsp; git clone giturl --depth=1  
 
+
+## .gitignore规则不生效  
+&emsp; .gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的。所以一定要养成在项目开始就创建.gitignore文件的习惯。  
+&emsp; 解决方法就是先把本地缓存删除(改变成未track状态)，然后再提交：  
+
+```text
+git rm -r --cached .
+git add .
+git commit -m "msg"
+```
+
+
+
