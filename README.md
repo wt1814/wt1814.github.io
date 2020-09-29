@@ -10,7 +10,6 @@
         - [JVM](#jvm)
     - [数据库](#数据库)
     - [SSM](#ssm)
-        - [Spring](#spring)
         - [MyBatis](#mybatis)
     - [分布式](#分布式)
         - [SpringBoot](#springboot)
@@ -164,7 +163,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; &emsp; [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
 
 ## SSM  
-### Spring  
+x### Spring  
 [学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
 [Spring](/docs/SSM/Spring/1.Spring.md)  
 [SpringIOC解析](/docs/SSM/Spring/2.SpringIOC.md)  
