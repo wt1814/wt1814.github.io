@@ -272,6 +272,8 @@
 
 * 架构设计  
     * [性能指标](/docs/system/performance.md)  
+    * [架构图](/docs/system/diagram.md)  
+    * [领域驱动模型](/docs/system/DDD.md)  
     * [接入层]()  
     * Nginx  
         * [Nginx](/docs/Linux/Nginx/1.nginx.md)  

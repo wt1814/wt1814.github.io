@@ -342,6 +342,8 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 
 ## 架构设计  
 [性能指标](/docs/system/performance.md)   
+[架构图](/docs/system/diagram.md)  
+[领域驱动模型](/docs/system/DDD.md)  
 
 ### 系统接入层  
 [接入层]  

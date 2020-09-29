@@ -348,6 +348,7 @@ Gitee： https://gitee.com/wt1814/
 ## 架构设计  
 [性能指标](/docs/system/performance.md)  
 [架构图](/docs/system/diagram.md)  
+[领域驱动模型](/docs/system/DDD.md)  
 
 ### 系统接入层  
 [接入层](/docs/system/access/access.md)    

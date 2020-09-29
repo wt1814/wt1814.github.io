@@ -43,6 +43,12 @@
  
 --------------
 ## 1.2. Bitmap，位图
+<!-- 
+
+ 10亿数据量只需要100MB内存，redis的位存储为什么这么牛？ 
+ https://mp.weixin.qq.com/s/91LkFAuaOScuvPslFLSGPQ
+-->
+
 ### 1.2.1. 位图介绍    
 &emsp; Bitmaps是在字符串类型上面定义的位操作。一个字节由8个二进制位组成。每个二进制位只能存储0或1。   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-97.png)  
