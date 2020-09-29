@@ -229,7 +229,7 @@ x### Spring
 
 
 ### 微服务  
-[Gateway](/docs/microService/microservices/microservices.md)  
+[微服务架构设计](/docs/microService/microservices/microservices.md)  
 [Gateway](/docs/microService/microservices/Gateway.md)  
 
 
@@ -284,7 +284,6 @@ x### Spring
 [mq](/docs/microService/mq/mq.md)  
 [kafka](/docs/microService/mq/kafka.md)  
 
-
 ### 分布式ID
 [分布式ID](/docs/microService/thinking/分布式ID.md)  
 [分库分表多维度查询](/docs/microService/thinking/分库分表多维度查询.md)  
@@ -299,10 +298,8 @@ x### Spring
 ### 分布式锁
 [分布式锁](/docs/microService/thinking/分布式锁.md)  
 &emsp; [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
-
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
 &emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
-
 
 ### 分布式Session
 [分布式Session](/docs/microService/thinking/分布式Session.md)  
@@ -338,6 +335,7 @@ x### Spring
 [SpringTest](/docs/web/test.md)  
 [日志系统](/docs/web/log.md)   
 [Http重试](/docs/web/httpRetry.md)   
+[敏感词汇](/docs/web/sensitive.md)  
 [生成二维码](/docs/web/QRCode.md)  
 [反爬虫](/docs/web/reptile.md)  
 [加密算法](/docs/web/encryption.md)  
