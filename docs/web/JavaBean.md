@@ -30,6 +30,8 @@ MapStruct
 https://juejin.im/post/6859213877474033672
  七种对象复制工具类，阿粉该 Pick 谁？ 
  https://mp.weixin.qq.com/s/RKeUEztGR-nAc_XemF2pOw
+ 如何优雅的转换Bean对象? 
+https://mp.weixin.qq.com/s/ZLOLhPNwqNtO2gxOiZ5oNA
 
 -->
 
@@ -43,14 +45,6 @@ https://mp.weixin.qq.com/s/bmVvqhzWmK2hA2gurYB4wg
 -->
 ...
 
-
-## BeanUtil
-
-<!-- 
-
-如何优雅的转换Bean对象? 
-https://mp.weixin.qq.com/s/ZLOLhPNwqNtO2gxOiZ5oNA
--->
 
 
 
