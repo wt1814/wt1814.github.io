@@ -4,6 +4,12 @@
 # 1. 设计模式讨论
 &emsp; **<font color = "lime">参考《设计模式之蝉》</font>**  
 
+<!-- 
+
+ 设计模式在工作中的实践 
+ https://mp.weixin.qq.com/s/KOyqcPS2T-IR2kuManDPEw
+-->
+
 ## 1.1. 结构型模式的讨论
 
 ### 1.1.1. 代理模式VS装饰模式  
