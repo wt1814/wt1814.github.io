@@ -7,6 +7,10 @@
         - [3](#3)
     - [1.2. 容器详解](#12-容器详解)
         - [1.2.1. 容器生命周期](#121-容器生命周期)
+            - [创建和运行](#创建和运行)
+            - [休眠和销毁](#休眠和销毁)
+            - [重启策略](#重启策略)
+        - [容器的文件系统](#容器的文件系统)
         - [1.2.2. 容器数据卷](#122-容器数据卷)
         - [1.2.3. 容器通信](#123-容器通信)
             - [1.2.3.1. Docker宿主机与容器通信](#1231-docker宿主机与容器通信)
@@ -90,7 +94,45 @@ https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-4.png)  
 &emsp; 容器的生命周期大致可分为 4 个：创建、运行、休眠和销毁。  
 
+#### 创建和运行
 
+容器的创建和运行主要使用 docker container run 命名，比如下面的命令会从 Ubuntu:latest 这个镜像中启动 /bin/bash 这个程序。那么 /bin/bash 成为了容器中唯一运行的进程。  
+
+    docker container run -it ubuntu:latest /bin/bash
+
+当运行上述的命令之后，Docker 客户端会选择合适的 API 来调用 Docker daemon 接收到命令并搜索 Docker 本地缓存，观察是否有命令所请求的镜像。如果没有，就去查询 Docker Hub 是否存在相应镜像。找到镜像后，就将其拉取到本地，并存储在本地。一旦镜像拉取到本地之后，Docker daemon 就会创建容器并在其中运行指定应用。  
+
+ps -elf 命令可以看到会显示两个，那么其中一个是运行 ps -elf 产生的。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-22.png)  
+
+假如，此时输入 exit 退出 Bash Shell 之后，那么容器也会退出（休眠）。因为容器如果不运行任何进程则无法存在，上面将容器的唯一进程杀死之后，容器也就没了。其实，当把进程的 PID 为 1 的进程杀死就会杀死容器。  
+
+
+#### 休眠和销毁
+
+docker container stop 命令可以让容器进入休眠状态，使用 docker container rm 可以删除容器。删除容器的最佳方式就是先停止容器，然后再删除容器，这样可以给容器中运行的应用/进程一个停止运行并清理残留数据的机会。因为先 stop 的话，docker container stop 命令会像容器内的 PID 1 进程发送 SIGTERM 信号，这样会给进程预留一个清理并优雅停止的机会。如果进程在 10s 的时间内没有终止，那么会发送 SIGKILL 信号强制停止该容器。但是 docker container rm 命令不会友好地发送 SIGTERM ，而是直接发送 SIGKILL 信号。
+
+#### 重启策略
+
+容器还可以配置重启策略，这是容器的一种自我修复能力，可以在指定事件或者错误后重启来完成自我修复。配置重启策略有两种方式，一种是命令中直接传入参数，另一种是在 Compose 文件中声明。下面阐述命令中传入参数的方式，也就是在命令中加入 --restart 标志，该标志会检查容器的退出代码，并根据退出码已经重启策略来决定。Docker 支持的重启策略包括 always、unless-stopped 和 on-failed 四种。
+
+* always 策略会一直尝试重启处于停止状态的容器，除非通过 docker container stop 命令明确将容器停止。另外，当 daemon 重启的时候，被 docker container stop 停止的设置了 always 策略的容器也会被重启。
+
+        $ docker container run --it --restart always apline sh 
+        # 过几秒之后，在终端中输入 exit，过几秒之后再来看一下。照理来说应该会处于 stop 状态，但是你会发现又处于运行状态了。
+
+* unless-stopped 策略和 always 策略是差不多的，最大的区别是，docker container stop 停止的容器在 daemon 重启之后不会被重启。
+* on-failure 策略会在退出容器并且返回值不会 0 的时候，重启容器。如果容器处于 stopped 状态，那么 daemon 重启的时候也会被重启。另外，on-failure 还接受一个可选的重启次数参数，如--restart=on-failure:5 表示最多重启 5 次。
+
+### 容器的文件系统   
+容器会共享其所在主机的操作系统/内核（容器执行使用共享主机的内核代码），但是容器内运行的进程所使用的是容器自己的文件系统，也就是容器内部的进程访问数据时访问的是容器的文件系统。当从一个镜像启动容器的时候，除了把镜像当成容器的文件系统一部分之外，Docker 还会在该镜像的最顶层加载一个可读写文件系统，容器中运行的程序就是在这个读写层中执行的。  
+
+如图所示，图中的顶上两层，是 Docker 为 Docker 容器新建的内容，而这两层恰恰不属于镜像范畴。这两层分别为 Docker 容器的初始层（Init Layer）与可读写层（Read-Write Layer）：  
+
+* 初始层中大多是初始化容器环境时，与容器相关的环境信息，如容器主机名，主机 host 信息以及域名服务文件等。  
+* 再来看可读写层，这一层的作用非常大，Docker 的镜像层以及顶上的两层加起来，Docker 容器内的进程只对可读写层拥有写权限，其他层对进程而言都是只读的（Read-Only）。比如想修改一个文件，这个文件会从该读写层下面的只读层复制到该读写层，该文件的只读版本仍然存在，但是已经被读写层中的该文件副本所隐藏了。这种机制被称为写时复制（copy on write）（在 AUFS 等文件系统下，写下层镜像内容就会涉及 COW （Copy-on-Write）技术）。另外，关于 VOLUME 以及容器的 hosts、hostname 、resolv.conf 文件等都会挂载到这里。需要额外注意的是，虽然 Docker 容器有能力在可读写层看到 VOLUME 以及 hosts 文件等内容，但那都仅仅是挂载点，真实内容位于宿主机上。  
+在运行阶段时，容器产生的新文件、文件的修改都会在可读写层上，当停止容器（stop）运行之后并不会被损毁，但是删除容器会丢弃其中的数据。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-23.png)  
 
 ### 1.2.2. 容器数据卷
 &emsp; 容器数据卷：持久化。docker运行产生的数据持久化.
