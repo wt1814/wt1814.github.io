@@ -3,7 +3,9 @@
 - [1. Docker](#1-docker)
     - [1.1. 容器化技术](#11-容器化技术)
     - [1.2. Docker简介](#12-docker简介)
+    - [Docker的使用场景](#docker的使用场景)
     - [1.3. Dokcer底层原理](#13-dokcer底层原理)
+    - [容器在内核中支持2种重要技术](#容器在内核中支持2种重要技术)
     - [1.4. Docker体系结构](#14-docker体系结构)
     - [1.5. Docker基本概念](#15-docker基本概念)
     - [1.6. 镜像详解](#16-镜像详解)
@@ -29,9 +31,9 @@ https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
 
 ## 1.1. 容器化技术  
 &emsp; 容器和虚拟机  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-11.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-12.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-13.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-11.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-12.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-13.png)  
 &emsp; <font color = "red">传统虚拟化是在硬件层面实现虚拟化，需要有额外的虚拟机管理应用和虚拟机操作系统层；而Docker容器是在操作系统层面实现虚拟化，直接复用本地主机操作系统，更加轻量级。</font>  
 &emsp; 虚拟机运行的是一个完成的操作系统，通过虚拟机管理程序对主机资源进行虚拟访问，相比之下需要的资源更多。  
 &emsp; 容器是在本机运行，并与其他容器共享主机的内核，它运行的一个独立的进程，不占用其他任何可执行文件的内存，非常轻量。  
@@ -62,7 +64,24 @@ https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
 
 &emsp; 与虚拟机相比，容器更轻量且速度更快，因为它利用了 Linux 底层操作系统在隔离的环境中运行。虚拟机的 Hypervisor 创建了一个非常牢固的边界，以防止应用程序突破它，而容器的边界不那么强大。
 &emsp; 物理机部署不能充分利用资源，造成资源浪费。虚拟机方式部署，虚拟机本身会占用大量资源，导致资源浪费，另外虚拟机性能也很差。而容器化部署比较灵活，且轻量级，性能较好。
-&emsp; 虚拟机属于虚拟化技术，而 Docker 这样的容器技术，属于轻量级的虚拟化。
+&emsp; 虚拟机属于虚拟化技术，而 Docker 这样的容器技术，属于轻量级的虚拟化。  
+
+* 容器时在linux上本机运行，并与其他容器共享主机的内核，它运行的一个独立的进程，不占用其他任何可执行文件的内存，非常轻量。  
+* 虚拟机运行的是一个完成的操作系统，通过虚拟机管理程序对主机资源进行虚拟访问，相比之下需要的资源更多。  
+
+----
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-17.png)  
+&emsp; 传统的虚拟化技术在虚拟机（VM）和硬件之间加了一个软件层Hypervisor，或者叫做虚拟机管理程序。Hypervisor的运行方式分为两类：  
+
+* 直接运行在物理硬件之上。如基于内核的KVM虚拟机，这种虚拟化需要CPU支持虚拟化技术；
+* 运行在另一个操作系统。如VMWare和VitrualBox等虚拟机。
+
+&emsp; 因为运行在虚拟机上的操作系统是通过Hypervisor来最终分享硬件，所以虚拟机Guest OS发出的指令都需要被Hypervisor捕获，然后翻译为物理硬件或宿主机操作系统能够识别的指令。  
+&emsp; VMWare和VirtualBox等虚拟机在性能方面远不如裸机，但基于硬件虚拟机的KVM约能发挥裸机80%的性能。这种虚拟化的优点是不同虚拟机之间实现了完全隔离，安全性很高，并且能够在一台物理机上运行多种内核的操作系统（如Linux和Window），但每个虚拟机都很笨重，占用资源多而且启动很慢。  
+Docker引擎运行在操作系统上，是基于内核的LXC、Chroot等技术实现容器的环境隔离和资源控制，在容器启动后，容器里的进程直接与内核交互，无需经过Docker引擎中转，因此几乎没有性能损耗，能发挥出裸机的全部性能。  
+&emsp; 但由于Docker是基于Linux内核技术实现容器化的，因此使得容器内运行的应用只能运行在Linux内核的操作系统上。目前在Window上安装的docker引擎其实是利用了Window自带的Hyper-V虚拟化工具自动创建了一个Linux系统，容器内的操作实际上是间接使用这个虚拟系统实现的。  
+
 
 
 ## 1.2. Docker简介  
@@ -74,12 +93,38 @@ https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
 * Docker就是容器化技术的代名词	
 * Docker也具备一定虚拟化职能
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-1.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-1.png)  
 
 <!-- 
 https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
 https://mp.weixin.qq.com/s/PM6K3j8bqBbbwtt4S4uyEw
 -->
+
+
+## Docker的使用场景  
+&emsp; Docker作为一种轻量级的虚拟化方案，应用场景十分丰富，下面收集了一些常见的场景：
+
+* 作为轻量级虚拟机使用  
+&emsp; 可以使用Ubuntu等系统镜像创建容器，当作虚拟机来使用，相比于传统虚拟机，启动速度更快，资源占用更少，单机可以启动大量的操作系统容器，方便进行各种测试；  
+* 作为云主机使用  
+&emsp; 结合Kubernetes这样的容器管理系统，可以在大量服务器上动态分配和管理容器，在公司内部，甚至可以取代VMWare这样的虚拟机管理平台，使用Docker容器作为云主机使用；  
+* 应用服务打包  
+&emsp; 在Web应用服务开发场景，可以把Java运行环境、Tomcat服务器打包为一个基础镜像，在修改了代码包后加入到基础镜像来构建一个新的镜像，能很方便的升级服务和控制版本；  
+* 容器云平台CaaS  
+&emsp; Docker的出现，使得很多云平台供应商开始提供容器云的服务，简称容器即服务CaaS，以下对比一下IaaS、PaaS和SaaS：  
+    * IaaS（基础设施即服务）：提供虚拟机或者其他基础资源作为服务提供给用户。用户可以从供应商那里获得虚拟机或者存储等资源来装载相关的应用，同时这些基础设施的繁琐的管理工作将由IaaS供应商来处理。其主要的用户是企业的系统管理员和运维人员；
+    * PaaS（平台即服务）：把开发平台作为服务提供给用户。用户可以在一个包括SDK，文档和测试环境等在内的开发平台上非常方便地编写应用，而且不论是在部署，或者在运行的时候，用户都无需为服务器、操作系统、网络和存储等资源的管理操心，这些繁琐的工作都由PaaS供应商负责处理。其主要的用户是企业开发人员。
+    * SaaS（软件即服务）：将应用作为服务提供给客户。用户只要接上网络，并通过浏览器，就能直接使用在云端上运行的应用，而不需要顾虑类似安装等琐事，并且免去初期高昂的软硬件投入。SaaS主要面对的是普通的用户。
+    * CaaS（容器即服务）：完成IaaS和PaaS两个层级的功能。相对于传统的IaaS和PaaS服务，CaaS对底层的支持比PaaS更灵活，而对上层应用的操控又比IaaS更容易。同时因为Docker是比VM更细粒度的虚拟化服务，所以能够对计算资源做到更高效的利用。CaaS可以部署在任何物理机，虚拟机或IaaS云之上。
+* 持续集成和持续部署  
+&emsp; 互联网行业提倡敏捷开发，持续集成部署CI/CD便是最典型的开发模式。使用Docker容器云平台，就能实现从代码编写完成推送到Git/SVN后，自动触发后端CaaS平台将代码下载、编译并构建成测试Docker镜像，再替换测试环境容器服务，自动在Jenkins或者Hudson中运行单元/集成测试，测试通过后，马上就能自动将新版本镜像更新到线上，完成服务升级。整个过程全自动化，一气呵成，最大程度地简化了运维，而且保证线上、线下环境完全一致，而且线上服务版本与Git/SVN发布分支也实现统一。  
+* 解决微服务架构的实施难题  
+&emsp; 基于Spring Cloud这样的微服务框架，能够实现微服务的管理，但微服务本身还是需要运行在操作系统上。一个采用微服务架构开发的应用中，微服务的个数往往很多，这就导致了一台服务器上往往需要启动多个微服务来提高资源的利用率，而微服务本身可能就只能兼容部分操作系统。  
+这就导致了就算有大量的服务器资源（操作系统可能不一样），但由于微服务本身与操作系统可能相关，就不能做到让微服务在任意服务器上运行，这就带来了资源的浪费和运维的困难。利用Docker容器的环境隔离能力，让微服务运行在容器内，就能够解决以上所说的问题。  
+* 执行临时任务  
+&emsp; 有时候用户只是想执行一次性的任务，但如果用传统虚拟机的方式就要搭建环境，执行完任务后还要释放资源，比较麻烦。使用Docker容器就可以构建临时的运行环境，执行完任务后关闭容器即可，方便快捷。  
+* 多租户环境  
+&emsp; 利用Docker的环境隔离能力，可以为不同的租户提供独占的容器，实现简单而且成本较低。  
 
 ## 1.3. Dokcer底层原理  
 <!-- 
@@ -87,17 +132,36 @@ https://www.jianshu.com/p/e1f7b8d5184c
 http://dockone.io/article/2941
 -->
 
+## 容器在内核中支持2种重要技术  
+docker本质就是宿主机的一个进程，docker是通过namespace实现资源隔离，通过cgroup实现资源限制，通过写时复制技术（copy-on-write）实现了高效的文件操作（类似虚拟机的磁盘比如分配500g并不是实际占用物理磁盘500g）  
+1）namespaces 名称空间  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-18.png)  
+2）control Group 控制组  
+cgroup的特点是：  　　　
+
+* cgroup的api以一个伪文件系统的实现方式，用户的程序可以通过文件系统实现cgroup的组件管理
+* cgroup的组件管理操作单元可以细粒度到线程级别，另外用户可以创建和销毁cgroup，从而实现资源载分配和再利用
+* 所有资源管理的功能都以子系统的方式实现，接口统一子任务创建之初与其父任务处于同一个cgroup的控制组
+
+
+四大功能：  
+
+* 资源限制：可以对任务使用的资源总额进行限制
+* 优先级分配：通过分配的cpu时间片数量以及磁盘IO带宽大小，实际上相当于控制了任务运行优先级
+* 资源统计：可以统计系统的资源使用量，如cpu时长，内存用量等
+* 任务控制：cgroup可以对任务执行挂起、恢复等操作
 
 ## 1.4. Docker体系结构  
 <!-- 
 https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
 -->
 &emsp; 一个完整的Docker基本架构由如下几个部分构成：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-16.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-16.png)  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-2.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-2.png)  
 
 &emsp; Docker 是一个客户-服务器（C/S）架构的程序。Docker 客户端只需要向 Docker 服务器或守护进程发出请求，服务器或守护进程将完成所有工作并返回结果。Docker 提供了一个命令行工具和一整套 RESTful API。你可以在同一台宿主机上运行 Docker 守护进程和客户端，也可以从本地的 Docker 客户端连接到运行在另一台宿主机上的远程 Docker 守护进程。Docker 以 root 权限运行它的守护进程，来处理普通用户无法完成的操作（如挂载文件系统）。Docker 程序是 Docker 守护进程的客户端程序，同样也需要以 root 身份运行。  
+
 
 
 ## 1.5. Docker基本概念  
@@ -126,66 +190,5 @@ https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
 * 宿主机：运行引擎的操作系统所在服务器。  
 
 &emsp; 另外Docker采用的是客户端/服务器架构，客户端只需要向 Docker 服务器或守护进程发出请求即可完成各类操作。  
-
-
-## 1.6. 镜像详解
-
-<!-- 
-https://mp.weixin.qq.com/s/PM6K3j8bqBbbwtt4S4uyEw
--->
-&emsp; Docker镜像是分层构建的，Dockerfile 中每条指令都会新建一层。例如以下 Dockerfile：  
-
-```text
-FROM ubuntu:18.04
-COPY . /app
-RUN make /app
-CMD python /app/app.py
-```
-&emsp; 以上四条指令会创建四层，分别对应基础镜像、复制文件、编译文件以及入口文件，每层只记录本层所做的更改，而这些层都是只读层。当启动一个容器，Docker 会在最顶部添加读写层，在容器内做的所有更改，如写日志、修改、删除文件等，都保存到了读写层内，一般称该层为容器层，如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-15.png)  
-&emsp; 事实上，容器（container）和镜像（image）的最主要区别就是容器加上了顶层的读写层。所有对容器的修改都发生在此层，镜像并不会被修改，也即前面说的 COW(copy-on-write)技术。容器需要读取某个文件时，直接从底部只读层去读即可，而如果需要修改某文件，则将该文件拷贝到顶部读写层进行修改，只读层保持不变。  
-&emsp; 每个容器都有自己的读写层，因此多个容器可以使用同一个镜像，另外容器被删除时，其对应的读写层也会被删除（如果你希望多个容器共享或者持久化数据，可以使用 Docker volume）。  
-&emsp; 最后，执行命令 docker ps -s，可以看到最后有两列 size 和 virtual size。其中 size就是容器读写层占用的磁盘空间，而 virtual size 就是读写层加上对应只读层所占用的磁盘空间。如果两个容器是从同一个镜像创建，那么只读层就是 100%共享，即使不是从同一镜像创建，其镜像仍然可能共享部分只读层（如一个镜像是基于另一个创建）。因此，docker 实际占用的磁盘空间远远小于 virtual size 的总和。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-14.png)  
-
-&emsp; 以上就是Docker镜像分层的主要内容，至于这些层的交互、管理就需要存储驱动程序，也即联合文件系统（UnionFS）。Docker 可使用多种驱动，如目前已经合并入 Linux 内核、官方推荐的overlay， 曾在 Ubuntu、Debian等发行版中得到广泛使用的 AUFS，以及devicemapper、zfs等等，需要根据 Docker以及宿主机系统的版本，进行合适的选择。  
-
-## 1.7. 容器详解
-### 1.7.1. 容器生命周期  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-4.png)  
-
-### 1.7.2. 容器数据卷
-&emsp; 容器数据卷：持久化。docker运行产生的数据持久化.
-
-### 1.7.3. 容器通信  
-
-
-#### 1.7.3.1. Docker宿主机与容器通信  
-&emsp; 容器运行在宿主机上，如果外网能够访问容器，才能够使用它提供的服务。  
-
-&emsp; Docker容器与宿主机进行通信可以通过映射容器的端口到宿主机上。例如，使用如下命令启动一个容器  
-
-    docker run -p 8080:80 --name test nginx  
-
-&emsp; 使用 -p 参数将容器的 80 端口映射到宿主机的 8080 端口，这样就可以通过curl localhost:8080访问到容器上 80 端口的服务了。另外一个参数 -P 可以将容器的端口映射到宿主机的高位随机端口上，而不需要手动指定。  
-
-#### 1.7.3.2. Docker同宿主机容器和不同宿主机容器之间怎么通信？
-
-<!-- 
-docker同宿主机容器和不同宿主机容器之间怎么通信？
-https://blog.51cto.com/2367685/2349762
---> 
-
-##### 1.7.3.2.1. 同宿主机容器通信  
-......
-
-
-##### 1.7.3.2.2. 容器连接  
-......
-
-##### 1.7.3.2.3. 不同宿主机容器通信
-......
-
-
 
 
