@@ -1,9 +1,6 @@
 
 
-<!-- 
-DevOps | Jenkins pipeline在shell脚本运行docker权限报错
-https://blog.csdn.net/weixin_37417954/article/details/83176773
-
+<!--
 https://blog.csdn.net/zbbkeepgoing/category_7969146.html
 
 
@@ -15,4 +12,8 @@ https://mp.weixin.qq.com/s?__biz=MzU0NjEwMTg4Mg==&mid=2247483962&idx=1&sn=595eac
 
 
 -->
+
+
+# 构建devops平台  
+jenkins+kubernetes+harbor+gitlab构建企业级devops平台   
 
