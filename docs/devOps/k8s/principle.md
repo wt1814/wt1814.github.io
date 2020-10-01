@@ -4,6 +4,7 @@
 - [1. Kubernetes](#1-kubernetes)
     - [1.1. 走进K8S](#11-走进k8s)
     - [1.2. Kubernetes的设计架构](#12-kubernetes的设计架构)
+    - [Kubernetes架构](#kubernetes架构)
     - [1.3. Kubernetes的核心概念](#13-kubernetes的核心概念)
     - [1.4. Kubernetes的集群组件](#14-kubernetes的集群组件)
         - [1.4.1. Master组件](#141-master组件)
@@ -19,11 +20,8 @@
 k8s中文文档
 https://www.kubernetes.org.cn/k8s
 
-
-https://draveness.me/tags/docker
-https://www.sohu.com/a/245424505_198222
-
 -->
+在 Kubernetes 统治了容器编排这一领域之前，其实也有很多容器编排方案，例如 compose 和 Swarm，但是在运维大规模、复杂的集群时，这些方案基本已经都被 Kubernetes 替代了。  
 
 ## 1.1. 走进K8S    
 1. K8S是如何对容器编排？  
@@ -66,8 +64,7 @@ https://www.sohu.com/a/245424505_198222
 
 &emsp; 在创建好RC （系统将自动创建好Pod）后，Kubemetes会通过RC中定义的Label筛选出 对应的Pod实例并实时监控其状态和数量，如果实例数量少于定义的副本数量（Replicas）,则 会根据RC中定义的Pod模板来创建一个新的Pod,然后将此Pod调度到合适的Node上启动运 行，直到Pod实例的数量达到预定目标。这个过程完全是自动化的，无须人工干预。有了 RC, 服务的扩容就变成了一个纯粹的简单数字游戏了，只要修改RC中的副本数量即可。  
 
-## 1.2. Kubernetes的设计架构
-&emsp; 分层架构  
+## 1.2. Kubernetes的设计架构  
 &emsp; Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，如下图所示  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-15.png)  
 
@@ -81,12 +78,43 @@ https://www.sohu.com/a/245424505_198222
 * Kubernetes外部：日志、监控、配置管理、CI、CD、Workflow、FaaS、OTS应用、ChatOps等
 * Kubernetes内部：CRI、CNI、CVI、镜像仓库、Cloud Provider、集群自身的配置和管理等
 
-## 1.3. Kubernetes的核心概念
+## Kubernetes架构  
+Kubernetes 遵循非常传统的客户端服务端架构，客户端通过 RESTful 接口或者直接使用 kubectl 与 Kubernetes 集群进行通信，这两者在实际上并没有太多的区别，后者也只是对 Kubernetes 提供的 RESTful API 进行封装并提供出来。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-16.png)  
+每一个 Kubernetes 集群都由一组 Master 节点和一系列的 Worker 节点组成，其中 Master 节点主要负责存储集群的状态并为 Kubernetes 对象分配和调度资源。  
+
+* Master  
+作为管理集群状态的 Master 节点，它主要负责接收客户端的请求，安排容器的执行并且运行控制循环，将集群的状态向目标状态进行迁移，Master 节点内部由三个组件构成：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-17.png)  
+其中 API Server 负责处理来自用户的请求，其主要作用就是对外提供 RESTful 的接口，包括用于查看集群状态的读请求以及改变集群状态的写请求，也是唯一一个与 etcd 集群通信的组件。  
+而 Controller 管理器运行了一系列的控制器进程，这些进程会按照用户的期望状态在后台不断地调节整个集群中的对象，当服务的状态发生了改变，控制器就会发现这个改变并且开始向目标状态迁移。  
+最后的 Scheduler 调度器其实为 Kubernetes 中运行的 Pod 选择部署的 Worker 节点，它会根据用户的需要选择最能满足请求的节点来运行 Pod，它会在每次需要调度 Pod 时执行。  
+
+* Worker  
+其他的 Worker 节点实现就相对比较简单了，它主要由 kubelet 和 kube-proxy 两部分组成：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-18.png)  
+kubelet 是一个节点上的主要服务，它周期性地从 API Server 接受新的或者修改的 Pod 规范并且保证节点上的 Pod 和其中容器的正常运行，还会保证节点会向目标状态迁移，该节点仍然会向 Master 节点发送宿主机的健康状况。  
+
+另一个运行在各个节点上的代理服务 kube-proxy 负责宿主机的子网管理，同时也能将服务暴露给外部，其原理就是在多个隔离的网络中把请求转发给正确的 Pod 或者容器。  
+
+
+
+
+## 1.3. Kubernetes的核心概念  
+
+<!--
+ Kubernetes新手快速入门指南 
+ https://www.sohu.com/a/245424505_198222
+-->
 <!--
 ～～
 https://www.kubernetes.org.cn/kubernetes%e8%ae%be%e8%ae%a1%e7%90%86%e5%bf%b5
 ～～
 -->
+
+
+----
+
 &emsp; K8S运行流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-5.png)  
 
@@ -121,6 +149,9 @@ https://www.kubernetes.org.cn/kubernetes%e8%ae%be%e8%ae%a1%e7%90%86%e5%bf%b5
 **（5）服务资源（Service）**  
 &emsp; Service是建立在一组Pod对象之上的资源对象，在前面提过，它是通过标签选择器选择一组Pod对象，并为这组Pod对象定义一个统一的固定访问入口（通常是一个IP地址），如果K8S存在DNS附件（如coredns）它就会在Service创建时为它自动配置一个DNS名称，用于客户端进行服务发现。
 &emsp; 通常我们直接请求Service IP，该请求就会被负载均衡到后端的端点，即各个Pod对象，从这点上，是不是有点像负载均衡器呢，因此Service本质上是一个4层的代理服务，另外Service还可以将集群外部流量引入至集群，这就需要节点对Service的端口进行映射了。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-19.png)  
+&emsp; Kubernetes service背后是通过一个叫做kube-proxy的组件实现。kube-proxy实例运行在每个节点上，并提供了三种代理模式：userspace，iptables和IPVS。目前的默认值是iptables。   
 
 **任务（Job）**  
 Job是K8s用来控制批处理型任务的API对象。批处理业务与长期伺服业务的主要区别是批处理业务的运行有头有尾，而长期伺服业务在用户不停止的情况下永远运行。Job管理的Pod根据用户的设置把任务成功完成就自动退出了。成功完成的标志根据不同的spec.completions策略而不同：单Pod型任务有一个Pod成功就标志完成；定数成功型任务保证有N个任务全部成功；工作队列型任务根据应用确认的全局成功而标志成功。  
