@@ -16,10 +16,11 @@ https://mp.weixin.qq.com/s?__biz=MzU0NjEwMTg4Mg==&mid=2247484195&idx=1&sn=b841f2
 -->
 
 ## 1.1. 定义  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-4.png)   
 &emsp; DevOps: Development和Operations的组合。可以把DevOps看作开发（软件工程）、技术运营和质量保障（QA）三者的交集。  
 
 &emsp; **DevOps框架**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-4.png)   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-8.png)   
 &emsp; DevOps并没有被定义成一组最佳实践和流程。尽管如此，一些常用概念的内在关联性仍可被识别出来，如图所示。  
 &emsp; 这是其中的一个DevOps框架。这个框架只指出那些被认可的概念和它们在某种程度上的关系。以下是对每个概念的简要说明。  
 
@@ -39,7 +40,7 @@ https://mp.weixin.qq.com/s?__biz=MzU0NjEwMTg4Mg==&mid=2247484195&idx=1&sn=b841f2
 
 ## 1.2. 流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-1.png)  
-&emsp; 上图显示了一个 DevOps 流程。它不是 DevOps 流程的正式定义，而是表述了在大多数组织机构中，为了实现一个服务而会被循环执行的合乎逻辑顺序的一系列阶段。  
+&emsp; 上图显示了一个DevOps流程。它不是 DevOps 流程的正式定义，而是表述了在大多数组织机构中，为了实现一个服务而会被循环执行的合乎逻辑顺序的一系列阶段。  
 &emsp; 深色部分表示开发流程，浅色部分表示运维流程。这两个流程构成了 DevOps 方法的核心。    
 &emsp; 这两部分流程的每一部分又可以进一步细分为一系列阶段、过程，或被称作另一系列流程，它们都是由反复出现的步骤组成的。这些步骤都是为了达到同一个结果，实现相同的目的。  
 
@@ -56,17 +57,18 @@ https://mp.weixin.qq.com/s?__biz=MzU0NjEwMTg4Mg==&mid=2247484195&idx=1&sn=b841f2
 * 测试  
 &emsp; 持续测试在本文中比测试流程范围更大，因为它包括全生命周期中所有测试类型，如构建流程中的单元测试用例。  
 * 发布  
-&emsp; 持续交付不仅是一次发布 的推出，还包括部署流水线，这已经在敏捷开发可执行的测试用例中被定义了。  
+&emsp; 持续交付不仅是一次发布的推出，还包括部署流水线，这已经在敏捷开发可执行的测试用例中被定义了。  
 * 运维  
-&emsp; 敏捷流程实际包括所有DevOps流程，而不仅仅是运维流程 整个 DevOps 流程就是敏捷流程。
+&emsp; 敏捷流程实际包括所有DevOps流程，而不仅仅是运维流程整个DevOps流程就是敏捷流程。
 * 监控  
-&emsp; 持续监控不仅包括产品阶段，还包括整个 DevOps 流程。
+&emsp; 持续监控不仅包括产品阶段，还包括整个DevOps流程。
 
 ## 1.3. 工具集  
 <!-- 
 https://blog.csdn.net/hualinux/article/details/106586601?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param
 -->
-&emsp; DevOps中包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等等。  
+&emsp; 对于DevOps架构，可以参照DevOps过程逐步核查。按过程中每步决定的所需功能，经测量去选择可用工具。 DevOps中包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等等。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-3.png)  
 
 * 版本控制&协作开发：GitHub、GitLab、BitBucket、SubVersion、Coding、Bazaar
 * 自动化构建和测试:Apache Ant、Maven 、Selenium、PyUnit、QUnit、JMeter、Gradle、PHPUnit、Nexus
@@ -78,8 +80,7 @@ https://blog.csdn.net/hualinux/article/details/106586601?utm_medium=distribute.p
 * 日志管理：Logstash、CollectD、StatsD
 * 监控，警告&分析：Nagios、Ganglia、Sensu、zabbix、ICINGA、Graphite、Kibana
 
-&emsp; 对于DevOps架构，可以参照DevOps过程逐步核查。按过程中每步决定的所需功能，经测量去选择可用工具。下表给出了10个组织己识别出的功能。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-3.png)  
+
 
 &emsp; 以下是关于Devops的工具链  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-5.png)  
