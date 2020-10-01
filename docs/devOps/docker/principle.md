@@ -3,21 +3,10 @@
 - [1. Docker](#1-docker)
     - [1.1. 容器化技术](#11-容器化技术)
     - [1.2. Docker简介](#12-docker简介)
-    - [Docker的使用场景](#docker的使用场景)
-    - [1.3. Dokcer底层原理](#13-dokcer底层原理)
-    - [容器在内核中支持2种重要技术](#容器在内核中支持2种重要技术)
-    - [1.4. Docker体系结构](#14-docker体系结构)
-    - [1.5. Docker基本概念](#15-docker基本概念)
-    - [1.6. 镜像详解](#16-镜像详解)
-    - [1.7. 容器详解](#17-容器详解)
-        - [1.7.1. 容器生命周期](#171-容器生命周期)
-        - [1.7.2. 容器数据卷](#172-容器数据卷)
-        - [1.7.3. 容器通信](#173-容器通信)
-            - [1.7.3.1. Docker宿主机与容器通信](#1731-docker宿主机与容器通信)
-            - [1.7.3.2. Docker同宿主机容器和不同宿主机容器之间怎么通信？](#1732-docker同宿主机容器和不同宿主机容器之间怎么通信)
-                - [1.7.3.2.1. 同宿主机容器通信](#17321-同宿主机容器通信)
-                - [1.7.3.2.2. 容器连接](#17322-容器连接)
-                - [1.7.3.2.3. 不同宿主机容器通信](#17323-不同宿主机容器通信)
+    - [1.3. Docker的使用场景](#13-docker的使用场景)
+    - [1.4. Docker核心技术与实现原理](#14-docker核心技术与实现原理)
+    - [1.5. Docker基本架构](#15-docker基本架构)
+    - [1.6. Docker基本概念](#16-docker基本概念)
 
 <!-- /TOC -->
 
@@ -25,11 +14,11 @@
 
 # 1. Docker
 
+## 1.1. 容器化技术  
 <!-- 
-https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
+https://www.jianshu.com/p/e1f7b8d5184c
 -->
 
-## 1.1. 容器化技术  
 &emsp; 容器和虚拟机  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-11.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-12.png)  
@@ -95,13 +84,7 @@ Docker引擎运行在操作系统上，是基于内核的LXC、Chroot等技术�
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-1.png)  
 
-<!-- 
-https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
-https://mp.weixin.qq.com/s/PM6K3j8bqBbbwtt4S4uyEw
--->
-
-
-## Docker的使用场景  
+## 1.3. Docker的使用场景  
 &emsp; Docker作为一种轻量级的虚拟化方案，应用场景十分丰富，下面收集了一些常见的场景：
 
 * 作为轻量级虚拟机使用  
@@ -126,13 +109,13 @@ https://mp.weixin.qq.com/s/PM6K3j8bqBbbwtt4S4uyEw
 * 多租户环境  
 &emsp; 利用Docker的环境隔离能力，可以为不同的租户提供独占的容器，实现简单而且成本较低。  
 
-## 1.3. Dokcer底层原理  
+## 1.4. Docker核心技术与实现原理    
+
 <!-- 
 https://www.jianshu.com/p/e1f7b8d5184c
 http://dockone.io/article/2941
--->
 
-## 容器在内核中支持2种重要技术  
+-->
 docker本质就是宿主机的一个进程，docker是通过namespace实现资源隔离，通过cgroup实现资源限制，通过写时复制技术（copy-on-write）实现了高效的文件操作（类似虚拟机的磁盘比如分配500g并不是实际占用物理磁盘500g）  
 1）namespaces 名称空间  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-18.png)  
@@ -151,20 +134,47 @@ cgroup的特点是：  　　　
 * 资源统计：可以统计系统的资源使用量，如cpu时长，内存用量等
 * 任务控制：cgroup可以对任务执行挂起、恢复等操作
 
-## 1.4. Docker体系结构  
+## 1.5. Docker基本架构  
 <!-- 
 https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
 -->
+Docker 的核心组件有：
+
+* Docker 客户端和服务器  
+* Docker 容器  
+* Docker 镜像和 Registry（镜像仓库服务）  
+
 &emsp; 一个完整的Docker基本架构由如下几个部分构成：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-16.png)  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-2.png)  
-
+&emsp; Docker采用的是客户端/服务器架构，客户端只需要向 Docker 服务器或守护进程发出请求即可完成各类操作。  
 &emsp; Docker 是一个客户-服务器（C/S）架构的程序。Docker 客户端只需要向 Docker 服务器或守护进程发出请求，服务器或守护进程将完成所有工作并返回结果。Docker 提供了一个命令行工具和一整套 RESTful API。你可以在同一台宿主机上运行 Docker 守护进程和客户端，也可以从本地的 Docker 客户端连接到运行在另一台宿主机上的远程 Docker 守护进程。Docker 以 root 权限运行它的守护进程，来处理普通用户无法完成的操作（如挂载文件系统）。Docker 程序是 Docker 守护进程的客户端程序，同样也需要以 root 身份运行。  
 
+---
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-18.png)  
+
+* distribution 负责与docker registry交互，上传镜像以及v2 registry 有关的源数据
+* registry负责docker registry有关的身份认证、镜像查找、镜像验证以及管理registry mirror等交互操作
+* image 负责与镜像源数据有关的存储、查找，镜像层的索引、查找以及镜像tar包有关的导入、导出操作
+* reference负责存储本地所有镜像的repository和tag名，并维护与镜像id之间的映射关系
+* layer模块负责与镜像层和容器层源数据有关的增删改查，并负责将镜像层的增删改查映射到实际存储镜像层文件的graphdriver模块
+* graghdriver是所有与容器镜像相关操作的执行者
+
+---
+
+这个架构就简单清晰指明了server/client交互，容器和镜像、数据之间的一些联系。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-2.png)  
+docker daemon就是docker的守护进程即server端，可以是远程的，也可以是本地的，这个不是C/S架构吗，客户端Docker client 是通过rest api进行通信。  
+docker cli 用来管理容器和镜像，客户端提供一个只读镜像，然后通过镜像可以创建多个容器，这些容器可以只是一个RFS（Root file system根文件系统），也可以ishi一个包含了用户应用的RFS，容器再docker client中只是要给进程，两个进程之间互不可见。  
+用户不能与server直接交互，但可以通过与容器这个桥梁来交互，由于是操作系统级别的虚拟技术，中间的损耗几乎可以不计。  
 
 
-## 1.5. Docker基本概念  
+## 1.6. Docker基本概念  
+
+<!-- 
+https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
+-->
 
 * Docker客户端：也就是在窗口中执行的命令，都是客户端。    
 * Docker Daemon守护进程：用于去接受client的请求并处理请求。  
@@ -189,6 +199,5 @@ https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
     * Docker 仓库的概念跟 Git 类似，注册服务器可以理解为 GitHub 这样的托管服务
 * 宿主机：运行引擎的操作系统所在服务器。  
 
-&emsp; 另外Docker采用的是客户端/服务器架构，客户端只需要向 Docker 服务器或守护进程发出请求即可完成各类操作。  
 
 
