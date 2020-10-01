@@ -4,9 +4,9 @@
     - [1.1. 容器化技术](#11-容器化技术)
     - [1.2. Docker简介](#12-docker简介)
     - [1.3. Docker的使用场景](#13-docker的使用场景)
-    - [1.4. Docker核心技术与实现原理](#14-docker核心技术与实现原理)
-    - [1.5. Docker基本架构](#15-docker基本架构)
-    - [1.6. Docker基本概念](#16-docker基本概念)
+    - [1.4. Docker基本架构](#14-docker基本架构)
+    - [1.5. Docker基本概念](#15-docker基本概念)
+    - [1.6. Docker核心技术与实现原理](#16-docker核心技术与实现原理)
 
 <!-- /TOC -->
 
@@ -21,8 +21,7 @@ https://www.jianshu.com/p/e1f7b8d5184c
 
 &emsp; 容器和虚拟机  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-11.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-12.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-13.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-12.png)![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-13.png)  
 &emsp; <font color = "red">传统虚拟化是在硬件层面实现虚拟化，需要有额外的虚拟机管理应用和虚拟机操作系统层；而Docker容器是在操作系统层面实现虚拟化，直接复用本地主机操作系统，更加轻量级。</font>  
 &emsp; 虚拟机运行的是一个完成的操作系统，通过虚拟机管理程序对主机资源进行虚拟访问，相比之下需要的资源更多。  
 &emsp; 容器是在本机运行，并与其他容器共享主机的内核，它运行的一个独立的进程，不占用其他任何可执行文件的内存，非常轻量。  
@@ -109,32 +108,7 @@ Docker引擎运行在操作系统上，是基于内核的LXC、Chroot等技术�
 * 多租户环境  
 &emsp; 利用Docker的环境隔离能力，可以为不同的租户提供独占的容器，实现简单而且成本较低。  
 
-## 1.4. Docker核心技术与实现原理    
-
-<!-- 
-https://www.jianshu.com/p/e1f7b8d5184c
-http://dockone.io/article/2941
-
--->
-docker本质就是宿主机的一个进程，docker是通过namespace实现资源隔离，通过cgroup实现资源限制，通过写时复制技术（copy-on-write）实现了高效的文件操作（类似虚拟机的磁盘比如分配500g并不是实际占用物理磁盘500g）  
-1）namespaces 名称空间  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-18.png)  
-2）control Group 控制组  
-cgroup的特点是：  　　　
-
-* cgroup的api以一个伪文件系统的实现方式，用户的程序可以通过文件系统实现cgroup的组件管理
-* cgroup的组件管理操作单元可以细粒度到线程级别，另外用户可以创建和销毁cgroup，从而实现资源载分配和再利用
-* 所有资源管理的功能都以子系统的方式实现，接口统一子任务创建之初与其父任务处于同一个cgroup的控制组
-
-
-四大功能：  
-
-* 资源限制：可以对任务使用的资源总额进行限制
-* 优先级分配：通过分配的cpu时间片数量以及磁盘IO带宽大小，实际上相当于控制了任务运行优先级
-* 资源统计：可以统计系统的资源使用量，如cpu时长，内存用量等
-* 任务控制：cgroup可以对任务执行挂起、恢复等操作
-
-## 1.5. Docker基本架构  
+## 1.4. Docker基本架构  
 <!-- 
 https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
 -->
@@ -170,7 +144,7 @@ docker cli 用来管理容器和镜像，客户端提供一个只读镜像，然
 用户不能与server直接交互，但可以通过与容器这个桥梁来交互，由于是操作系统级别的虚拟技术，中间的损耗几乎可以不计。  
 
 
-## 1.6. Docker基本概念  
+## 1.5. Docker基本概念  
 
 <!-- 
 https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
@@ -199,5 +173,27 @@ https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
     * Docker 仓库的概念跟 Git 类似，注册服务器可以理解为 GitHub 这样的托管服务
 * 宿主机：运行引擎的操作系统所在服务器。  
 
+## 1.6. Docker核心技术与实现原理    
+
+<!-- 
+https://www.jianshu.com/p/e1f7b8d5184c
+http://dockone.io/article/2941
+
+-->
+docker本质就是宿主机的一个进程，docker是通过namespace实现资源隔离，通过cgroup实现资源限制，通过写时复制技术（copy-on-write）实现了高效的文件操作（类似虚拟机的磁盘比如分配500g并不是实际占用物理磁盘500g）  
+1）namespaces 名称空间  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-18.png)  
+2）control Group 控制组  
+cgroup的特点是：  　　　
+
+* cgroup的api以一个伪文件系统的实现方式，用户的程序可以通过文件系统实现cgroup的组件管理
+* cgroup的组件管理操作单元可以细粒度到线程级别，另外用户可以创建和销毁cgroup，从而实现资源载分配和再利用
+* 所有资源管理的功能都以子系统的方式实现，接口统一子任务创建之初与其父任务处于同一个cgroup的控制组
 
 
+四大功能：  
+
+* 资源限制：可以对任务使用的资源总额进行限制
+* 优先级分配：通过分配的cpu时间片数量以及磁盘IO带宽大小，实际上相当于控制了任务运行优先级
+* 资源统计：可以统计系统的资源使用量，如cpu时长，内存用量等
+* 任务控制：cgroup可以对任务执行挂起、恢复等操作
