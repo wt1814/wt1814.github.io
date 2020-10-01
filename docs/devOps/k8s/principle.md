@@ -19,6 +19,7 @@
 <!--
 k8s中文文档
 https://www.kubernetes.org.cn/k8s
+https://kuboard.cn/learning/
 
 -->
 在 Kubernetes 统治了容器编排这一领域之前，其实也有很多容器编排方案，例如 compose 和 Swarm，但是在运维大规模、复杂的集群时，这些方案基本已经都被 Kubernetes 替代了。  
@@ -130,6 +131,10 @@ https://www.kubernetes.org.cn/kubernetes%e8%ae%be%e8%ae%a1%e7%90%86%e5%bf%b5
 &emsp; 标签（Label）是将资源进行分类的标识符，就好像超市的商品分类一般。资源标签具体化的就是一个键值型（key/values)数据，相信了解redis的友友应该知道什么是键值数据。使用标签是为了对指定对象进行辨识，比如Pod对象。标签可以在对象创建时进行附加，也可以创建后进行添加或修改。要知道的是一个对象可以有多个标签，一个标签页可以附加到多个对象。如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-7.png)  
 **（3）标签选择器（Selector）**  
+<!--
+标签和选择器
+https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E6%A0%87%E7%AD%BE
+-->
 &emsp; **有标签，当然就有标签选择器，它是根据Label进行过滤符合条件的资源对象的一种机制。** 比如将含有标签role: backend的所有Pod对象挑选出来归并为一组。通常在使用过程中，会通过标签对资源对象进行分类，然后再通过标签选择器进行筛选，最常见的应用就是讲一组这样的Pod资源对象创建为某个Service的端点。如图：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-8.png)  
 **（4）Pod控制器（Controller）**  
