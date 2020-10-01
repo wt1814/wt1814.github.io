@@ -310,6 +310,7 @@
     * Kubernetes  
     * [k8s原理](/docs/devOps/k8s/principle.md)  
     * [k8s实践](/docs/devOps/k8s/command.md)  
+    * [滚动更新](/docs/devOps/k8s/rollingUpdate.md)  
     * [k8s运维](/docs/devOps/k8s/tools.md)  
 
 * 计算机网络  
