@@ -63,7 +63,7 @@ Dockerfile是一个文本文件，其内包含了一条条的指令，每一条�
 |镜像操作指令|RUN、COPY、ADD、EXPOSE、WORKDIR、ONBUILD、USER、VOLUME等|
 |容器启动时执行指令|CMD、ENTRYPOINT|
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-9.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-9.png)  
 
 
 <!-- 
@@ -256,6 +256,6 @@ RUN rpm -ivh /usr/local/jdk/jdk-8u171-linux-x64.rpm
 ```
 
 &emsp; 运行结果如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-6.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-6.png)  
 
 &emsp; docker images可以看到新生成的centos/jdk镜像。  

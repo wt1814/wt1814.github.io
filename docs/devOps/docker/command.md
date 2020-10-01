@@ -49,7 +49,7 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 &emsp; A:使用docker commit命令  
 &emsp; B:使用Dockerfile构建
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-8.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-8.png)  
 
 <!-- 
 
@@ -121,7 +121,7 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
         [root@localhost ~]# docker import centos_test.tar test/centos
         通过docker images命令可以看到增加了个test/centos镜像
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/docker/docker-7.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-7.png)  
 
 
 ## 1.4. Docker部署  
