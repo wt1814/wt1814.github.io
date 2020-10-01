@@ -22,6 +22,7 @@ https://mp.weixin.qq.com/s/qp3BX2oq5dULOEBFt5XTAQ
 -->
 
 ## 1.2. 私有仓库搭建  
+......
 <!-- 
  Dockerfile构建镜像、registry私服搭建和阿里云的私服仓库构建
 https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
@@ -34,7 +35,7 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 &emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi</font>**  
 
 * 获取镜像：  
-&emsp; docker pull centos (默认获取centos最新的镜像)
+&emsp; docker pull centos (默认获取centos最新的镜像)  
 &emsp; docker pull centos:7 (获取指定标签镜像)
 * 查看本地镜像：  
 &emsp; docker images  
