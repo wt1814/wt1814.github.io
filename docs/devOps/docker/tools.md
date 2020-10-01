@@ -2,10 +2,10 @@
 <!-- TOC -->
 
 - [1. Docker工具](#1-docker工具)
+    - [Docker容器故障排查工具](#docker容器故障排查工具)
     - [1.1. Docker环境管理UI](#11-docker环境管理ui)
     - [1.2. Docker Compose](#12-docker-compose)
     - [1.3. Docker容器的日志处理](#13-docker容器的日志处理)
-    - [1.4. Image、Container与Volume的迁移](#14-imagecontainer与volume的迁移)
 
 <!-- /TOC -->
 
@@ -13,13 +13,24 @@
 <!-- 
 推荐 5 款超好用的开源 Docker 工具！
 https://mp.weixin.qq.com/s/jxMuLZNsMacKDXoVmooS-A
+
+-->
+
+##  Docker容器故障排查工具  
+&emsp; Docker-debug  
+<!-- 
 Docker 容器故障排查工具
 https://mp.weixin.qq.com/s/8lOTyNogYRFsqLpE45217w
 -->
 
-## 1.1. Docker环境管理UI   
 
-<!-- 
+
+## 1.1. Docker环境管理UI   
+&emsp; docker图形页面管理工具常用的有三种：DockerUI、Portainer、Shipyard。  
+&emsp; DockerUI 是 Portainer 的前身，这三个工具通过docker api来获取管理的资源信息。平时常常对着shell对着这些命令行客户端，审美会很疲劳，如果有漂亮的图形化界面可以直观查看docker资源信息，也是非常方便的。今天我们就搭建单机版的三种常用图形页面管理工具。这三种图形化管理工具以Portainer最为受欢迎。 
+
+<!--
+～～
 https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247488015&idx=1&sn=f7640dc2aab0d95245ba8b521adc5eb3&chksm=eca42b4bdbd3a25d75ac2c30fdaa25a38a0db560b0e85f0794c56a07d537f75163dd42788c50&mpshare=1&scene=1&srcid=&sharer_sharetime=1569341646799&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2a4ff15fdd846346cca6724726c97c2197535a0af73ab946d789ddcb5bca832c59fc3b05e664926e093344c971b6894e335e858ff18a4493851dba74507020c7655f3aa9bb719e55759c5086086dea2f&ascene=1&uin=MTE1MTYxNzY2MQ==&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=+eyejsSYMk60ZUY/pK4YBKveSPIi8GUzrQvyveBksIipCvi8KhPkraBA4Eyx2jY/
 
 https://mp.weixin.qq.com/s/Z_1xX1q5CDhD46b4KeK0bg
@@ -38,17 +49,6 @@ https://mp.weixin.qq.com/s?__biz=MzI4Njc5NjM1NQ==&mid=2247490521&idx=1&sn=c5a1cd
 
 Docker容器的日志处理
 https://mp.weixin.qq.com/s/1CT1K9UPWN8k2G_JkK3EwA、
-1、避免使用本地存储。应用镜像启动后，文件系统是临时的，崩溃后即被销毁。持久化数据，文件等需要存储到SDS，FDS等后端存储服务中
 
-2、应用日志不能写到本地文件，需要写到标准输出或者标准错误，平台负责收集、汇总和后续的各种处理。
 -->
 
-
-
-
-## 1.4. Image、Container与Volume的迁移  
-
-<!-- 
-Docker中Image、Container与Volume的迁移 
-https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487574&idx=1&sn=c090e4519a6fffb28948163c8eda95db&chksm=eca42912dbd3a0047c4f276cd952e08d54b44ebd39a003330ebafb5bec2325afc20790017891&mpshare=1&scene=1&srcid=&sharer_sharetime=1564819199671&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=36a99a852770fa0330b037891b39d1d89469c92c642359ebdf838f10834d7dd3bc59eed05e1ccf7cc06fbbab965aa2ebfc56659a4988359f0ddb24c51635b335556f5eaa0d0d8a7620a5711ff706a22d&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060834&lang=zh_CN&pass_ticket=zhEeTRlUj2jOU%2BViRcFppZN6Of1GEVvjFC4LgWQHaWXOU%2BbrtjAa9zXMzxDyweUD
--->
