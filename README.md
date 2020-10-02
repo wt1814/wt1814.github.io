@@ -470,6 +470,7 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [多线程串线了](/docs/Error/ThreadCrossed.md)  
 [接口响应时间](/docs/Error/responseTime.md)  
 [熔断降级处理](/docs/Error/hystrix.md)  
+[Redis高并发](/docs/Error/redisConcurrent.md)  
 [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-[Redis scan命令](/docs/Error/redisScan.md)  
+[redis scan命令](/docs/Error/redisScan.md)  
 [雪花利用ZK生成workId]

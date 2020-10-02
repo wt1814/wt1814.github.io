@@ -2,7 +2,14 @@
 
 # Redis
 
-## Redis服务器 can not get resource from pool
+## 高并发，can not get resource from pool
+<!-- 
+线上Redis高并发性能调优实践  
+https://mp.weixin.qq.com/s/JFNqQWS5GrCW5Q2kmeNVrw
+-->
+
+&emsp; <font color = "lime">[Redis高并发](/docs/Error/redisConcurrent.md)</font>  
+
 &emsp; <font color = "lime">Redis连接池值比较小；也有可能是未释放连接数。</font>  
 
 &emsp; 1000个线程并发还能跑，5000个线程的时候出现这种问题，查后台debug日志，发现redis 线程池不够。刚开始设置的是：  
@@ -21,6 +28,8 @@ redis.poolMaxTotal=1000   连接数，刚开始最大连接数 设置为100.
 redis.poolMaxIdle=500      最大空闲连接数  100改成500
 redis.poolMaxWait=300      
 ```
+
+
 
 ## Redis连接超时
 <!-- 

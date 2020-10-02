@@ -18,7 +18,6 @@
 &emsp; shell提供了特殊字符来帮助快速指定一组文件名。这些特殊字符叫做通配符。  
 
 ## 1.1. 文件管理
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Linux/linux-1.png)  
 
 * df：显示磁盘使用情况。  
 * du：显示文件系统使用情况。
@@ -37,8 +36,8 @@
 * find，查找文件  
 * file/stat，查看文件类型或文件属性信息  
 * echo，把内容重定向到指定的文件中 ，有则打开，无则创建  
-* 管道命令 |，将前面的结果给后面的命令，例如：\`ls -la | wc `，将ls的结果加油wc命令来统计字数  
-* 重定向 > 是覆盖模式，>> 是追加模式，例如：\`echo "Java3y,zhen de hen xihuan ni" > qingshu.txt `把左边的输出放到右边的文件里去  
+* <font color = "lime">管道命令 |，将前面的结果给后面的命令，例如：\`ls -la | wc `，将ls的结果加油wc命令来统计字数</font>  
+* <font color = "lime">重定向， > 是覆盖模式，>> 是追加模式，例如：\`echo "Java3y,zhen de hen xihuan ni" > qingshu.txt `把左边的输出放到右边的文件里去</font>  
 
 &emsp; 查看文件  
 
