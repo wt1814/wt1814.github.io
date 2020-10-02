@@ -27,6 +27,9 @@ https://mp.weixin.qq.com/s/pHyBTR_liNocLt1XHhNMlw
 分布式常见的十大坑
 https://mp.weixin.qq.com/s/HJyQLLS0HdET_w2EBGyhHg
 
+MQ夺命连环11问
+https://juejin.im/post/6877741789680238600
+
 -->
 &emsp; **<font color = "lime">总结：</font>**  
 1. 为什么使用mq？

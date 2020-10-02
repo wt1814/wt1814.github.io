@@ -471,4 +471,5 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [接口响应时间](/docs/Error/responseTime.md)  
 [熔断降级处理](/docs/Error/hystrix.md)  
 [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
+[Redis scan命令](/docs/Error/redisScan.md)  
 [雪花利用ZK生成workId]
