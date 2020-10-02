@@ -47,7 +47,7 @@ https://mp.weixin.qq.com/s/LA1w7pZAyIpeP3sfQIWqpw
 
 &emsp; CentOS Linux 7默认启动了防火墙服务（firewalld），而Kubernetes的Master与工作Node之间会有大量的网络通信，安全的做法是在防火墙上配置各组件需要相互通信的端口号，具体要配置的端口号详见「内网中的Kubemetes相关配置」节中各服务监听的端口号说明。在一个安全的内部网络环境中可以关闭防火墙服务：  
 
-```
+```text
 #systemctl disable firewalld
 #systemctl stop firewalld
 ```
@@ -118,7 +118,7 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 
 
 ## 1.2. kubectl命令行工具  
-&emsp; kubectl作为客户端CLI工具，可以让用户通过命令行的方式对Kubernetes集群进行操作。  
+&emsp; <font color = "lime">kubectl作为客户端CLI工具，可以让用户通过命令行的方式对Kubernetes集群进行操作。</font>  
 &emsp; kubeadm/kubelet/kubectl区别？  
 
 * kubeadm是kubernetes集群快速构建工具
@@ -244,15 +244,14 @@ https://blog.csdn.net/weixin_45691464/article/details/106006125
 -->
 
 ### 1.3.2. Pod的升级和回滚  
-&emsp; 当集群中的某个服务需要升级时，我们需要停止目前与该服务相关的所有Pod,然后下载 新版本镜像并创建新的Pod。如果集群规模比较大，则这个工作就变成了一个挑战，而且先全 部停止然后逐步升级的方式会导致较长时间的服务不可用。Kubemetes提供了滚动升级功能来解决上述问题。  
-&emsp; 如果Pod是通过Deployment创建的，则用户可以在运行时修改Deployment的Pod定义 (spec.template)或镜像名称，并应用到D eployment对象上，系统即可完成D eployment的自 动更新操作。如果在更新过程中发生了错误，则还可以通过回滚(Rollback)操作恢复Pod 的版本。  
+&emsp; 当集群中的某个服务需要升级时，需要停止目前与该服务相关的所有Pod，然后下载新版本镜像并创建新的Pod。如果集群规模比较大，则这个工作就变成了一个挑战，而且先全部停止然后逐步升级的方式会导致较长时间的服务不可用。Kubemetes提供了滚动升级功能来解决上述问题。  
+&emsp; 如果Pod是通过Deployment创建的，则用户可以在运行时修改Deployment的Pod定义 (spec.template)或镜像名称，并应用到Deployment对象上，系统即可完成Deployment的自动更新操作。如果在更新过程中发生了错误，则还可以通过回滚(Rollback)操作恢复Pod的版本。  
 
 ### 1.3.3. Pod的扩容和缩容  
-&emsp; 在实际生产系统中，经常会遇到某个服务需要扩容的场景，也可能会遇到由于资源紧 张或者工作负载降低而需要减少服务实例数量的场景。此时我们可以利用Deployment/RC的 Scale机制来完成这些工作。  
-&emsp; Kubernetes对Pod的扩容和缩容操作提供了手动和自动两种模式，手动模式通过执行kubectl scale命令对一个Deployment/RC进行Pod副本数量的设置，即可一键完成。自动模式则需要用 户根据某个性能指标或者自定义业务指标，并指定Pod副本数量的范围，系统将自动在这个范 围内根据性能指标的变化进行调整。  
+&emsp; 在实际生产系统中，经常会遇到某个服务需要扩容的场景，也可能会遇到由于资源紧 张或者工作负载降低而需要减少服务实例数量的场景。此时可以利用Deployment/RC的Scale机制来完成这些工作。  
+&emsp; Kubernetes对Pod的扩容和缩容操作提供了手动和自动两种模式，手动模式通过执行kubectl scale命令对一个Deployment/RC进行Pod副本数量的设置，即可一键完成。自动模式则需要用户根据某个性能指标或者自定义业务指标，并指定Pod副本数量的范围，系统将自动在这个范围内根据性能指标的变化进行调整。  
 
 ## 1.4. 深入掌握Service  
-
 &emsp; Service是Kubernetes最核心的概念，通过创建Service，可以为一组具有相同功能的容器应用提供一个统一的入口地址，并且将请求负载分发到后端的各个容器应用上。本节对Service的使用进行详细说明，包括Service的负载均衡、外网访问、DNS服务的搭建、Ingress7层路由机制等。  
 
 ### 1.4.1. Service基本用法  
@@ -267,7 +266,7 @@ https://blog.csdn.net/weixin_45691464/article/details/106006125
 https://blog.csdn.net/qq_23348071/article/details/87185025
 
 -->
-&emsp; 由于Pod和Service是Kubernetes集群范围内的虚拟概念，所以集群外的客户端系统无法通过Pod的IP地址或者Service的虚拟IP地址和虚拟端口号访问到它们。为了让外部客户端可以访问这些服务，可以将Pod或Service的端口号映射到宿主机，以使得客户端应用能够通过物理机访问容器应用。  
+&emsp; <font color = "red">由于Pod和Service是Kubernetes集群范围内的虚拟概念，所以集群外的客户端系统无法通过Pod的IP地址或者Service的虚拟IP地址和虚拟端口号访问到它们。</font><font color = "lime">为了让外部客户端可以访问这些服务，可以将Pod或Service的端口号映射到宿主机，以使得客户端应用能够通过物理机访问容器应用。</font>  
 
 1. 将容器应用的端口号映射到物理机  
 2. 将Service的端口号映射到物理机  
@@ -276,20 +275,17 @@ https://blog.csdn.net/qq_23348071/article/details/87185025
 &emsp; 作为服务发现机制的基本功能，在集群内需要能够通过服务名对服务进行访问，这就需要一个集群范围的DNS服务来完成服务名到ClusterIP的解析。本节将对如何搭建DNS服务进行详细说明。  
 
 ### 1.4.4. 自定义DNS和上游DNS服务器  
-&emsp; 在实际环境中，很多用户都有自己的私有域名区域，并且希望能够集成到Kubernetes DNS 的命名空间中，例如混合云用户可能希望能在集群内解析其内部的".corp"域名；用户也可能己存在一个未被Kubernetes管理的服务发现系统（例如Consul）来完成域名解析。从Kubernetes vl.6版本开始，用户可以在Kubernetes集群内配置私有DNS区域（通常称为存根域Stub Domain） 和外部的上游域名服务了。  
+&emsp; 在实际环境中，很多用户都有自己的私有域名区域，并且希望能够集成到Kubernetes DNS 的命名空间中，例如混合云用户可能希望能在集群内解析其内部的".corp"域名；用户也可能己存在一个未被Kubernetes管理的服务发现系统（例如Consul）来完成域名解析。从Kubernetes vl.6版本开始，用户可以在Kubernetes集群内配置私有DNS区域（通常称为存根域Stub Domain）和外部的上游域名服务了。  
 
 
 ### 1.4.5. Ingress：HTTP 7层路由机制  
-&emsp; 根据前面对Service的使用说明，我们知道Service的表现形式为IP:Port,即工作在TCP/IP 层。而对于基于HTTP的服务来说，不同的URL地址经常对应到不同的后端服务或者虚拟服务 器（Virtual Host）,这些应用层的转发机制仅通过Kubernetes的Service机制是无法实现的。从 Kubernetes vl.l版本开始新增Ingress资源对象，用于将不同URL的访问请求转发到后端不同 的Service,以实现HTTP层的业务路由机制。Kubernetes使用一个Ingress策略定义和一个具体 的Ingress Controller,两者结合并实现了一个完整的Ingress负载均衡器。  
-&emsp; 使用Ingress进行负载分发时，Ingress Controller将基于Ingress规则将客户端请求直接转 发到Service对应的后端Endpoint（即Pod）上，这样会跳过kube-proxy的转发功能，kube-proxy 不再起作用。如果Ingress Controller提供的是对外服务，则实际上实现的是边缘路由器的功能。  
-
+&emsp; Service的表现形式为IP:Port，即工作在TCP/IP 层。而对于基于HTTP的服务来说，不同的URL地址经常对应到不同的后端服务或者虚拟服务 器（Virtual Host），这些应用层的转发机制仅通过Kubernetes的Service机制是无法实现的。从 Kubernetes vl.l版本开始新增Ingress资源对象，用于将不同URL的访问请求转发到后端不同 的Service，以实现HTTP层的业务路由机制。Kubernetes使用一个Ingress策略定义和一个具体的Ingress Controller，两者结合并实现了一个完整的Ingress负载均衡器。  
+&emsp; 使用Ingress进行负载分发时，Ingress Controller将基于Ingress规则将客户端请求直接转发到Service对应的后端Endpoint（即Pod）上，这样会跳过kube-proxy的转发功能，kube-proxy不再起作用。如果Ingress Controller提供的是对外服务，则实际上实现的是边缘路由器的功能。  
 
 
 ----
 
 ## 1.5. 基于NFS文件集群共享  
-
-
 
 
 ## 1.6. IDE插件  
@@ -306,7 +302,6 @@ https://mp.weixin.qq.com/s/KbcUxGJ3JK7ANtuDRvPzZQ
 k8s 上部署 Redis 三主三从 集群
 https://www.cnblogs.com/winstom/p/11881882.html
 
-
 在K8s上部署Redis 集群
 https://blog.csdn.net/zhutongcloud/article/details/90768390
 
@@ -316,5 +311,4 @@ https://blog.csdn.net/zhutongcloud/article/details/90768390
 <!-- 
 微服务交付至kubernetes流程
 https://www.cnblogs.com/jasonminghao/p/12617313.html
-
 -->
