@@ -10,6 +10,7 @@
     - [1.5. 管理用户](#15-管理用户)
     - [1.6. 进程管理](#16-进程管理)
     - [1.7. 网络通讯](#17-网络通讯)
+    - [1.8. 安装软件](#18-安装软件)
 
 <!-- /TOC -->
 
@@ -61,8 +62,6 @@
 * vim
 * grep
 * sed
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Linux/linux-2.png)   
 
 
 ## 1.3. 文件传输  
@@ -143,8 +142,8 @@ https://mp.weixin.qq.com/s?__biz=MzU3NTgyODQ1Nw==&mid=2247487056&idx=2&sn=d84364
 * ps，查找出进程的信息
 * nice和renice，调整进程的优先级
 * kill，杀死进程
-* free，查看内存使用状况
-* top，查看实时刷新的系统进程信息
+* <font color = "lime">free，查看内存使用状况</font>
+* <font color = "lime">top，查看实时刷新的系统进程信息</font>
 * 作业管理  
 	* jobs，列举作业号码和名称
 	* bg，在后台恢复运行
@@ -178,7 +177,9 @@ https://mp.weixin.qq.com/s?__biz=MzU3NTgyODQ1Nw==&mid=2247487056&idx=2&sn=d84364
 	* host/dig/nslookup，检测DNS解析
 	* traceroute，检测到目的主机所经过的路由器
 	* tcpdump，显示本机网络流量的状态
-* 安装软件
-	* yum
-	* rpm
-	* wget
+
+## 1.8. 安装软件
+
+* yum
+* rpm
+* wget

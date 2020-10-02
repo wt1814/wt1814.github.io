@@ -15,9 +15,9 @@
         - [1.3.7. Shell输入/输出重定向](#137-shell输入输出重定向)
         - [1.3.8. Shell文件包含](#138-shell文件包含)
         - [1.3.9. Shell中的一些命令](#139-shell中的一些命令)
-            - [1.3.9.1. Shell echo命令](#1391-shell-echo命令)
-            - [1.3.9.2. Shell printf命令](#1392-shell-printf命令)
-            - [1.3.9.3. Shell test命令](#1393-shell-test命令)
+            - [1.3.9.1. echo命令](#1391-echo命令)
+            - [1.3.9.2. printf命令](#1392-printf命令)
+            - [1.3.9.3. test命令](#1393-test命令)
 
 <!-- /TOC -->
 
@@ -53,20 +53,24 @@ https://www.runoob.com/linux/linux-shell.html
 &emsp; 运行Shell脚本有两种方法：  
 
 1. 作为可执行程序  
-&emsp; 将上面的代码保存为 test.sh，并 cd 到相应目录：  
+    &emsp; 将上面的代码保存为 test.sh，并 cd 到相应目录：  
 
+    ```text
     chmod +x ./test.sh  #使脚本具有执行权限
     ./test.sh  #执行脚本
+    ```
 
-&emsp; 注意，一定要写成 ./test.sh，而不是 test.sh，运行其它二进制的程序也一样，直接写 test.sh，linux 系统会去 PATH 里寻找有没有叫 test.sh 的，而只有 /bin, /sbin, /usr/bin，/usr/sbin 等在 PATH 里，你的当前目录通常不在 PATH 里，所以写成 test.sh 是会找不到命令的，要用 ./test.sh 告诉系统说，就在当前目录找。  
+    &emsp; 注意，一定要写成 ./test.sh，而不是 test.sh，运行其它二进制的程序也一样，直接写 test.sh，linux 系统会去 PATH 里寻找有没有叫 test.sh 的，而只有 /bin, /sbin, /usr/bin，/usr/sbin 等在 PATH 里，你的当前目录通常不在 PATH 里，所以写成 test.sh 是会找不到命令的，要用 ./test.sh 告诉系统说，就在当前目录找。  
 
 2. 作为解释器参数  
-&emsp; 这种运行方式是，直接运行解释器，其参数就是 shell 脚本的文件名，如：  
+    &emsp; 这种运行方式是，直接运行解释器，其参数就是 shell 脚本的文件名，如：  
 
+    ```text
     /bin/sh test.sh
     /bin/php test.php
+    ```
 
-&emsp; 这种方式运行的脚本，不需要在第一行指定解释器信息，写了也没用。   
+    &emsp; 这种方式运行的脚本，不需要在第一行指定解释器信息，写了也没用。   
 
 ## 1.3. Shell脚本语法  
 
@@ -84,10 +88,8 @@ https://www.runoob.com/linux/linux-shell.html
 
     unset variable_name
 
-&emsp; **变量类型**
-
+&emsp; **变量类型**  
 &emsp; 运行shell时，会同时存在三种变量：  
-
 &emsp; 1) 局部变量：局部变量在脚本或命令中定义，仅在当前shell实例中有效，其他shell启动的程序不能访问局部变量。  
 &emsp; 2) 环境变量：所有的程序，包括shell启动的程序，都能访问环境变量，有些程序需要环境变量来保证其正常运行。必要的时候shell脚本也可以定义环境变量。  
 &emsp; 3) shell变量：shell变量是由shell程序设置的特殊变量。shell变量中有一部分是环境变量，有一部分是局部变量，这些变量保证了shell的正常运行。
@@ -96,7 +98,8 @@ https://www.runoob.com/linux/linux-shell.html
 <!-- 
 https://www.runoob.com/linux/linux-shell-variable.html
 -->
-
+* 单行注释使用#
+* 多行注释使用:<\<EOF 注释内容 EOF
 
 ### 1.3.3. Shell传递参数  
 &emsp; 可以在执行 Shell 脚本时，向脚本传递参数，脚本内获取参数的格式为：$n。n 代表一个数字，1 为执行脚本的第一个参数，2 为执行脚本的第二个参数，以此类推……  
@@ -212,17 +215,22 @@ https://www.runoob.com/linux/linux-shell-passing-arguments.html
 &emsp; 和其他语言一样，Shell 也可以包含外部脚本。这样可以很方便的封装一些公用的代码作为一个独立的文件。  
 &emsp; Shell文件包含的语法格式如下：  
 
-    . filename   # 注意点号(.)和文件名中间有一空格
-    或
-    source filename
+```text
+. filename   # 注意点号(.)和文件名中间有一空格
+```
+&emsp; 或
+    
+```text
+source filename
+```
 
 ### 1.3.9. Shell中的一些命令  
-#### 1.3.9.1. Shell echo命令  
-&emsp; Shell 的 echo 指令用于字符串的输出。命令格式：
+#### 1.3.9.1. echo命令  
+&emsp; Shell的echo指令用于字符串的输出。命令格式：
 
     echo string
 
-#### 1.3.9.2. Shell printf命令  
+#### 1.3.9.2. printf命令  
 &emsp; Shell的另一个输出命令printf。  
 &emsp; printf使用引用文本或空格分隔的参数，外面可以在printf中使用格式化字符串，还可以制定字符串的宽度、左右对齐方式等。默认printf不会像echo自动添加换行符，可以手动添加 \n。  
 
@@ -236,7 +244,7 @@ https://www.runoob.com/linux/linux-shell-passing-arguments.html
     arguments: 为参数列表。
 
 
-#### 1.3.9.3. Shell test命令  
+#### 1.3.9.3. test命令  
 &emsp; Shell中的test命令用于检查某个条件是否成立，它可以进行数值、字符和文件三个方面的测试。  
 
 
