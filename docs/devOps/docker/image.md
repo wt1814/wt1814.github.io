@@ -47,7 +47,7 @@ CMD python /app/app.py
 &emsp; 下图形象的表现出了镜像和容器的关系：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-20.png)  
 &emsp; 上图中Apache应用基于emacs镜像构建，emacs基于Debian系统镜像构建，在启动为容器时，在Apache镜像层之上构造了一个可写层，对容器本身的修改操作都在可写层中进行。Debian是该镜像的基础镜像（Base Image），它提供了内核Kernel的更高级的封装。同时其他的镜像也是基于同一个内核来构建的。  
-&emsp; 事实上，容器（container）和镜像（image）的最主要区别就是容器加上了顶层的读写层。所有对容器的修改都发生在此层，镜像并不会被修改。容器需要读取某个文件时，直接从底部只读层去读即可，而如果需要修改某文件，则将该文件拷贝到顶部读写层进行修改，只读层保持不变。  
+&emsp; 事实上，<font color = "lime">容器（container）和镜像（image）的最主要区别就是容器加上了顶层的读写层。</font>所有对容器的修改都发生在此层，镜像并不会被修改。容器需要读取某个文件时，直接从底部只读层去读即可，而如果需要修改某文件，则将该文件拷贝到顶部读写层进行修改，只读层保持不变。  
 &emsp; 每个容器都有自己的读写层，因此多个容器可以使用同一个镜像，另外容器被删除时，其对应的读写层也会被删除（如果希望多个容器共享或者持久化数据，可以使用Docker volume）。  
 &emsp; 最后，执行命令 docker ps -s，可以看到最后有两列 size 和 virtual size。其中 size就是容器读写层占用的磁盘空间，而 virtual size 就是读写层加上对应只读层所占用的磁盘空间。如果两个容器是从同一个镜像创建，那么只读层就是100%共享，即使不是从同一镜像创建，其镜像仍然可能共享部分只读层（如一个镜像是基于另一个创建）。因此，docker 实际占用的磁盘空间远远小于virtual size 的总和。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-14.png)  
@@ -70,7 +70,7 @@ CMD python /app/app.py
 
 ### 1.2.1. 容器生命周期  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-4.png)  
-&emsp; 容器的生命周期大致可分为 4 个：创建、运行、休眠和销毁。  
+&emsp; <font color = "lime">容器的生命周期大致可分为 4 个：创建、运行、休眠和销毁。</font>  
 
 #### 1.2.1.1. 创建和运行
 &emsp; 容器的创建和运行主要使用 docker container run 命名，比如下面的命令会从 Ubuntu:latest 这个镜像中启动 /bin/bash 这个程序。那么 /bin/bash 成为了容器中唯一运行的进程。  
@@ -100,10 +100,10 @@ CMD python /app/app.py
 
 ### 1.2.2. 容器的文件系统   
 &emsp; 容器会共享其所在主机的操作系统/内核（容器执行使用共享主机的内核代码），<font color = "red">但是容器内运行的进程所使用的是容器自己的文件系统，也就是容器内部的进程访问数据时访问的是容器的文件系统。</font>当从一个镜像启动容器的时候，除了把镜像当成容器的文件系统一部分之外，Docker还会在该镜像的最顶层加载一个可读写文件系统，容器中运行的程序就是在这个读写层中执行的。  
-&emsp; 如图所示，图中的顶上两层，是 Docker 为 Docker 容器新建的内容，而这两层恰恰不属于镜像范畴。这两层分别为 Docker 容器的初始层（Init Layer）与可读写层（Read-Write Layer）：  
+&emsp; 使用Docker，启动容器，会新建两层内容。这两层分别为 Docker 容器的初始层（Init Layer）与可读写层（Read-Write Layer）：  
 
 * 初始层中大多是初始化容器环境时，与容器相关的环境信息，如容器主机名，主机 host 信息以及域名服务文件等。  
-* 再来看可读写层，这一层的作用非常大，Docker 的镜像层以及顶上的两层加起来，Docker 容器内的进程只对可读写层拥有写权限，其他层对进程而言都是只读的（Read-Only）。比如想修改一个文件，这个文件会从该读写层下面的只读层复制到该读写层，该文件的只读版本仍然存在，但是已经被读写层中的该文件副本所隐藏了。这种机制被称为写时复制（copy on write）（在 AUFS 等文件系统下，写下层镜像内容就会涉及 COW （Copy-on-Write）技术）。另外，关于 VOLUME 以及容器的 hosts、hostname 、resolv.conf 文件等都会挂载到这里。需要额外注意的是，虽然 Docker 容器有能力在可读写层看到 VOLUME 以及 hosts 文件等内容，但那都仅仅是挂载点，真实内容位于宿主机上。  
+* 再来看可读写层，这一层的作用非常大，Docker 的镜像层以及顶上的两层加起来，Docker 容器内的进程只对可读写层拥有写权限，其他层对进程而言都是只读的（Read-Only）。比如想修改一个文件，这个文件会从该读写层下面的只读层复制到该读写层，该文件的只读版本仍然存在，但是已经被读写层中的该文件副本所隐藏了。这种机制被称为写时复制（copy on write）（在 AUFS 等文件系统下，写下层镜像内容就会涉及 COW （Copy-on-Write）技术）。另外，关于 VOLUME 以及容器的 hosts、hostname 、resolv.conf 文件等都会挂载到这里。需要额外注意的是，虽然Docker容器有能力在可读写层看到 VOLUME 以及 hosts 文件等内容，但那都仅仅是挂载点，真实内容位于宿主机上。  
 &emsp; 在运行阶段时，容器产生的新文件、文件的修改都会在可读写层上，当停止容器（stop）运行之后并不会被损毁，但是删除容器会丢弃其中的数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-23.png)  
 
