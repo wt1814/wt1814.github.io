@@ -4,7 +4,6 @@
 - [1. Kubernetes](#1-kubernetes)
     - [1.1. 走进K8S](#11-走进k8s)
     - [1.2. Kubernetes的设计架构](#12-kubernetes的设计架构)
-    - [1.3. Kubernetes的运行流程](#13-kubernetes的运行流程)
     - [1.4. Kubernetes的集群组件](#14-kubernetes的集群组件)
         - [1.4.1. Master组件](#141-master组件)
         - [1.4.2. Node组件](#142-node组件)
@@ -42,28 +41,6 @@ https://kuboard.cn/learning/
     6. 选择主机：选择打分最高的主机，进行binding操作，结果存储到etcd中。  
     7. kubelet根据调度结果执行Pod创建操作： 绑定成功后，scheduler会调用APIServer的API在etcd中创建一个boundpod对象，描述在一个工作节点上绑定运行的所有pod信息。运行在每个工作节点上的kubelet也会定期与etcd同步boundpod信息，一旦发现应该在该工作节点上运行的boundpod对象没有更新，则调用Docker API创建并启动pod内的容器。  
 
------
-
-&emsp; Kubemetes的一些基本知识  
-&emsp; 在Kubemetes中，Service (服务)是分布式集群架构的核心，一个Service对象拥有如下关键特征。  
-
-* 拥有一个唯一指定的名字(比如mysql-server)。  
-* 拥有一个虚拟 IP (Cluster IP, Service IP 或 VIP)和端口号。  
-* 能够提供某种远程服务能力。  
-* 被映射到了提供这种服务能力的一组容器应用上。  
-
-&emsp; Service的服务进程目前都基于Socket通信方式对外提供服务，比如Redis、Memcache> MySQL、Web Server，或者是实现了某个具体业务的一个特定的TCP Server进程。虽然一个 Service通常由多个相关的服务进程来提供服务，每个服务进程都有一个独立的Endpoint (IP+Port)访问点，但Kubemetes能够通过Service (虚拟 Cluster IP +Service Port)连接 到指定的Service上。有了 Kubemetes内建的透明负载均衡和故障恢复机制，不管后端有多少服务进程，也不管某个服务进程是否会由于发生故障而重新部署到其他机器，都不会影响到对服务的正常调用。更重要的是这个Service本身一旦创建就不再变化，这意味着在Kubemetes集群中，不用为了服务的IP地址变来变去的问题而头疼了。  
-&emsp; 容器提供了强大的隔离功能，所以有必要把为Service提供服务的这组进程放入容器中进行 隔离。为此，Kubemetes设计了Pod对象，将每个服务进程包装到相应的Pod中，使其成为Pod 中运行的一个容器(Container)。为了建立Service和Pod间的关联关系，Kubemetes首先给每 个Pod贴上一个标签(Label)，给运行MySQL的Pod贴上name=mysql标签，给运行PHP的Pod贴上name=php标签，然后给相应的Service定义标签选择器（Label Selector），比如MySQL Service的标签选择器的选择条件为name=mysql，意为该Service要作用于所有包含name=mysql Label的Pod上。这样一来，就巧妙地解决了Service与Pod的关联问题。  
-&emsp; 说到Pod，我们这里先简单介绍其概念。首先，Pod运行在一个我们称之为节点（Node） 的环境中，这个节点既可以是物理机，也可以是私有云或者公有云中的一个虚拟机，通常在一 个节点上运行几百个Pod；其次，每个Pod里运行着一个特殊的被称之为Pause的容器，其他 容器则为业务容器，这些业务容器共享Pause容器的网络栈和volume挂载卷，因此它们之间的 通信和数据交换更为高效，在设计时我们可以充分利用这一特性将一组密切相关的服务进程放 入同一个Pod中；最后，需要注意的是，并不是每个Pod和它里面运行的容器都能''映射”到 一个Service上，只有那些提供服务（无论是对内还是对外）的一组Pod才会被"映射”成一个 服务。  
-&emsp; 在集群管理方面,Kubemetes将集群中的机器划分为一个Master节点和一群工作节点（Node ）。 其中，在Master节点上运行着集群管理相关的一组进程kube-apiserver、kube-controller-manager 和kube-scheduler,这些进程实现了整个集群的资源管理、Pod调度、弹性伸缩、安全控制、系 统监控和纠错等管理功能，并且都是全自动完成的。Node作为集群中的工作节点，运行真正的 应用程序，在Node上Kubemetes管理的最小运行单元是Pod。Node上运行着Kubemetes的 kubelet, kube-proxy服务进程，这些服务进程负责Pod的创建、启动、监控、重启、销毁，以 及实现软件模式的负载均衡器。  
-&emsp; 最后，我们再来看看传统的IT系统中服务扩容和服务升级这两个难题，以及Kubemetes 所提供的全新解决思路。服务的扩容涉及资源分配（选择哪个节点进行扩容）、实例部署和启动 等环节，在一个复杂的业务系统中，这两个问题基本上靠人工一步步操作才得以完成，费时费 力又难以保证实施质量。  
-在Kubemetes集群中，你只需为需要扩容的Service关联的Pod创建一个RC （Replication Controller）,则该Service的扩容以至于后来的Service升级等头疼问题都迎刃而解。在一个RC定义文件中包括以下3个关键信息。  
-
-* 目标Pod的定义。  
-* 目标Pod需要运行的副本数量（Replicas）。  
-* 要监控的目标Pod的标签（Label）。  
-
-&emsp; 在创建好RC （系统将自动创建好Pod）后，Kubemetes会通过RC中定义的Label筛选出 对应的Pod实例并实时监控其状态和数量，如果实例数量少于定义的副本数量（Replicas）,则 会根据RC中定义的Pod模板来创建一个新的Pod,然后将此Pod调度到合适的Node上启动运 行，直到Pod实例的数量达到预定目标。这个过程完全是自动化的，无须人工干预。有了 RC, 服务的扩容就变成了一个纯粹的简单数字游戏了，只要修改RC中的副本数量即可。  
 
 ## 1.2. Kubernetes的设计架构  
 &emsp; Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，如下图所示  
@@ -80,14 +57,14 @@ https://kuboard.cn/learning/
 * Kubernetes内部：CRI、CNI、CVI、镜像仓库、Cloud Provider、集群自身的配置和管理等
 
 
-## 1.3. Kubernetes的运行流程
+## 1.4. Kubernetes的集群组件
+
 &emsp; K8S运行流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-5.png)  
 
 &emsp; Kubernetes是利用共享网络将多个物理机或者虚拟机组成一个集群，在各个服务器之间进行通信，该集群是配置Kubernetes的所有功能和负载的物理平台。  
 
 
-## 1.4. Kubernetes的集群组件
 ​&emsp; 一个Kubernetes集群由master和node组成。如下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-6.png)  
 &emsp; Master：是集群的网关和中枢枢纽，主要作用：暴露API接口，跟踪其他服务器的健康状态、以最优方式调度负载，以及编排其他组件之间的通信。单个的Master节点可以完成所有的功能，但是考虑单点故障的痛点，生产环境中通常要部署多个Master节点，组成Cluster。  
@@ -240,6 +217,30 @@ K8s在1.3版本中发布了alpha版的基于角色的访问控制（Role-based A
 &emsp; Annotation是另一种附加在对象上的一种键值类型的数据，常用于将各种非标识型元数据（metadata）附加到对象上，但它并不能用于标识和选择对象。其作用是方便工具或用户阅读及查找。  
 **（9）Ingress**  
 &emsp; K8S将Pod对象和外部的网络环境进行了隔离，Pod和Service等对象之间的通信需要通过内部的专用地址进行，如果需要将某些Pod对象提供给外部用户访问，则需要给这些Pod对象打开一个端口进行引入外部流量，除了Service以外，Ingress也是实现提供外部访问的一种方式。  
+
+-----
+
+&emsp; Kubemetes的一些基本知识  
+&emsp; 在Kubemetes中，Service (服务)是分布式集群架构的核心，一个Service对象拥有如下关键特征。  
+
+* 拥有一个唯一指定的名字(比如mysql-server)。  
+* 拥有一个虚拟 IP (Cluster IP, Service IP 或 VIP)和端口号。  
+* 能够提供某种远程服务能力。  
+* 被映射到了提供这种服务能力的一组容器应用上。  
+
+&emsp; Service的服务进程目前都基于Socket通信方式对外提供服务，比如Redis、Memcache> MySQL、Web Server，或者是实现了某个具体业务的一个特定的TCP Server进程。虽然一个 Service通常由多个相关的服务进程来提供服务，每个服务进程都有一个独立的Endpoint (IP+Port)访问点，但Kubemetes能够通过Service (虚拟 Cluster IP +Service Port)连接 到指定的Service上。有了 Kubemetes内建的透明负载均衡和故障恢复机制，不管后端有多少服务进程，也不管某个服务进程是否会由于发生故障而重新部署到其他机器，都不会影响到对服务的正常调用。更重要的是这个Service本身一旦创建就不再变化，这意味着在Kubemetes集群中，不用为了服务的IP地址变来变去的问题而头疼了。  
+&emsp; 容器提供了强大的隔离功能，所以有必要把为Service提供服务的这组进程放入容器中进行 隔离。为此，Kubemetes设计了Pod对象，将每个服务进程包装到相应的Pod中，使其成为Pod 中运行的一个容器(Container)。为了建立Service和Pod间的关联关系，Kubemetes首先给每 个Pod贴上一个标签(Label)，给运行MySQL的Pod贴上name=mysql标签，给运行PHP的Pod贴上name=php标签，然后给相应的Service定义标签选择器（Label Selector），比如MySQL Service的标签选择器的选择条件为name=mysql，意为该Service要作用于所有包含name=mysql Label的Pod上。这样一来，就巧妙地解决了Service与Pod的关联问题。  
+&emsp; 说到Pod，我们这里先简单介绍其概念。首先，Pod运行在一个我们称之为节点（Node） 的环境中，这个节点既可以是物理机，也可以是私有云或者公有云中的一个虚拟机，通常在一 个节点上运行几百个Pod；其次，每个Pod里运行着一个特殊的被称之为Pause的容器，其他 容器则为业务容器，这些业务容器共享Pause容器的网络栈和volume挂载卷，因此它们之间的 通信和数据交换更为高效，在设计时我们可以充分利用这一特性将一组密切相关的服务进程放 入同一个Pod中；最后，需要注意的是，并不是每个Pod和它里面运行的容器都能''映射”到 一个Service上，只有那些提供服务（无论是对内还是对外）的一组Pod才会被"映射”成一个 服务。  
+&emsp; 在集群管理方面,Kubemetes将集群中的机器划分为一个Master节点和一群工作节点（Node ）。 其中，在Master节点上运行着集群管理相关的一组进程kube-apiserver、kube-controller-manager 和kube-scheduler,这些进程实现了整个集群的资源管理、Pod调度、弹性伸缩、安全控制、系 统监控和纠错等管理功能，并且都是全自动完成的。Node作为集群中的工作节点，运行真正的 应用程序，在Node上Kubemetes管理的最小运行单元是Pod。Node上运行着Kubemetes的 kubelet, kube-proxy服务进程，这些服务进程负责Pod的创建、启动、监控、重启、销毁，以 及实现软件模式的负载均衡器。  
+&emsp; 最后，我们再来看看传统的IT系统中服务扩容和服务升级这两个难题，以及Kubemetes 所提供的全新解决思路。服务的扩容涉及资源分配（选择哪个节点进行扩容）、实例部署和启动 等环节，在一个复杂的业务系统中，这两个问题基本上靠人工一步步操作才得以完成，费时费 力又难以保证实施质量。  
+在Kubemetes集群中，你只需为需要扩容的Service关联的Pod创建一个RC （Replication Controller）,则该Service的扩容以至于后来的Service升级等头疼问题都迎刃而解。在一个RC定义文件中包括以下3个关键信息。  
+
+* 目标Pod的定义。  
+* 目标Pod需要运行的副本数量（Replicas）。  
+* 要监控的目标Pod的标签（Label）。  
+
+&emsp; 在创建好RC （系统将自动创建好Pod）后，Kubemetes会通过RC中定义的Label筛选出 对应的Pod实例并实时监控其状态和数量，如果实例数量少于定义的副本数量（Replicas）,则 会根据RC中定义的Pod模板来创建一个新的Pod,然后将此Pod调度到合适的Node上启动运 行，直到Pod实例的数量达到预定目标。这个过程完全是自动化的，无须人工干预。有了 RC, 服务的扩容就变成了一个纯粹的简单数字游戏了，只要修改RC中的副本数量即可。  
+
 
 ## 1.6. Kubernetes的网络模型  
 &emsp; K8S的网络中主要存在4种类型的通信：  
