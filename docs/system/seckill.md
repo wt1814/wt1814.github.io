@@ -14,6 +14,13 @@
 
 # 1. 秒杀系统设计  
 
+<!-- 
+
+ 超级棒的秒杀系统架构分析与实战！ 
+ https://mp.weixin.qq.com/s/nA4XVjGd6COvYB7wlldV2A
+-->
+
+
 ## 1.1. 什么是秒杀？ 
 
 
