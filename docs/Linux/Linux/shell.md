@@ -60,7 +60,7 @@ https://www.runoob.com/linux/linux-shell.html
     ./test.sh  #执行脚本
     ```
 
-    &emsp; 注意，一定要写成 ./test.sh，而不是 test.sh，运行其它二进制的程序也一样，直接写 test.sh，linux 系统会去 PATH 里寻找有没有叫 test.sh 的，而只有 /bin, /sbin, /usr/bin，/usr/sbin 等在 PATH 里，你的当前目录通常不在 PATH 里，所以写成 test.sh 是会找不到命令的，要用 ./test.sh 告诉系统说，就在当前目录找。  
+    &emsp; 注意，一定要写成 ./test.sh，而不是 test.sh，运行其它二进制的程序也一样，直接写 test.sh，linux 系统会去 PATH 里寻找有没有叫 test.sh 的，而只有 /bin, /sbin, /usr/bin，/usr/sbin 等在 PATH 里，当前目录通常不在 PATH 里，所以写成 test.sh 是会找不到命令的，要用 ./test.sh 告诉系统说，就在当前目录找。  
 
 2. 作为解释器参数  
     &emsp; 这种运行方式是，直接运行解释器，其参数就是 shell 脚本的文件名，如：  
@@ -208,7 +208,7 @@ https://www.runoob.com/linux/linux-shell-passing-arguments.html
 &emsp; 注意，$10不能获取第十个参数，获取第十个参数需要${10}。当n>=10时，需要使用${n}来获取参数。  
 
 ### 1.3.7. Shell输入/输出重定向  
-&emsp; 大多数 UNIX 系统命令从终端接受输入并将所产生的输出发送回​​到您的终端。一个命令通常从一个叫标准输入的地方读取输入，默认情况下，这恰好是终端。同样，一个命令通常将其输出写入到标准输出，默认情况下，这也是终端。  
+&emsp; 大多数 UNIX 系统命令从终端接受输入并将所产生的输出发送回​​到终端。一个命令通常从一个叫标准输入的地方读取输入，默认情况下，这恰好是终端。同样，一个命令通常将其输出写入到标准输出，默认情况下，这也是终端。  
 
 
 ### 1.3.8. Shell文件包含  

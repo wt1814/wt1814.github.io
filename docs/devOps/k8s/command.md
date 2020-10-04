@@ -71,8 +71,8 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 
 ### 1.1.2. Kubernetes集群的安全设置
 
-1. 基于CA签名的双向数字证书认证万式
-2. 基于HTTP BASE TOKEN 的简单认证后式  
+1. 基于CA签名的双向数字证书认证方式
+2. 基于HTTP BASE TOKEN 的简单认证方式  
 
 ### 1.1.3. Kubernetes集群的网络配置
 &emsp; 在多个Node组成的Kubernetes集群内，跨主机的容器间网络互通是Kubernetes集群能够正常工作的前提条件。Kubernetes本身并不会对跨主机的容器网络进行设置，这需要额外的工 具来实现。除了谷歌公有云GCE平台提供的网络设置，一些开源的工具包括Flannel, Open vSwitch. Weave> Calico等都能够实现跨主机的容器间网络互通。随着CNI网络模型的逐渐成 熟，Kubernetes将优先使用CNI网络插件打通跨主机的容器网络。具体的网络原理和流行开源 网络工具配置详见第3章的说明。  
@@ -84,7 +84,7 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 2. kubelet配置  
     &emsp; 由于在Kubemetes中是以Pod而不是以Docker容器为管理单元的，在kubelet创建Pod时，还通过启动一个名为 ger.io/google_containers/pause 的镜像来实现Pod的概念。  
     &emsp; 该镜像存在于谷歌镜像库http://gcr.io 中，需要通过一台能够连上Internet的服务器将其下载，导出文件，再push到私有Docker Registry中。  
-    &emsp; 之后，可以给每台Node的kubelet服务加上启动参数-pod-infra-container-image,指定为私 有Docker Registry中pause镜像的地址。例如：  
+    &emsp; 之后，可以给每台Node的kubelet服务加上启动参数-pod-infra-container-image，指定为私有Docker Registry中pause镜像的地址。例如：  
 
     ```text
     #cat /etc/kubemetes/kubelet
@@ -115,7 +115,6 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 * 通过官网获取最新版本的二进制包kubemetes.tar.gz，解压缩后提取服务的二进制文件。  
 * 逐个隔离Node，等待在其上运行的全部容器工作完成后，更新kubelet和kube-proxy服务文件，然后重启这两个服务。  
 * 更新Master的kube-apiserver、kube-controller-manager、kube-scheduler服务文件并重启。  
-
 
 ## 1.2. kubectl命令行工具  
 &emsp; <font color = "lime">kubectl作为客户端CLI工具，可以让用户通过命令行的方式对Kubernetes集群进行操作。</font>  
@@ -151,7 +150,7 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     ```text
     $ kubectl create -f my-service.yaml -f my-rc.yaml 
     ``` 
-    &emsp; 根据\<directory>目录下所有.yaml、.yml、.json文件的定义进行创建操作: 
+    &emsp; 根据<directory>目录下所有.yaml、.yml、.json文件的定义进行创建操作: 
     ```text 
     $ kubectl create -f <directory>  
     ```
@@ -173,7 +172,7 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     &emsp; 显示Pod的详细信息：  
 
     ```text
-    $ kubectl describe pods/<pod-name> 
+    $ kubectl describe pods <pod-name> 
     ``` 
     &emsp; 显示由RC管理的Pod的信息：  
 
@@ -187,7 +186,7 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     $ kubectl delete -f pod.yaml  
     ```
     &emsp; 删除所有包含某个label的Pod和service：  
-    $ kubectl delete pods,services -1 name=\<label-name>  
+    $ kubectl delete pods,services -1 name=<label-name>  
     &emsp; 删除所有Pod:  
 
     ```text
@@ -272,7 +271,7 @@ https://blog.csdn.net/qq_23348071/article/details/87185025
 2. 将Service的端口号映射到物理机  
 
 ### 1.4.3. DNS服务搭建指南  
-&emsp; 作为服务发现机制的基本功能，在集群内需要能够通过服务名对服务进行访问，这就需要一个集群范围的DNS服务来完成服务名到ClusterIP的解析。本节将对如何搭建DNS服务进行详细说明。  
+&emsp; 作为服务发现机制的基本功能，在集群内需要能够通过服务名对服务进行访问，这就需要一个集群范围的DNS服务来完成服务名到ClusterIP的解析。  
 
 ### 1.4.4. 自定义DNS和上游DNS服务器  
 &emsp; 在实际环境中，很多用户都有自己的私有域名区域，并且希望能够集成到Kubernetes DNS 的命名空间中，例如混合云用户可能希望能在集群内解析其内部的".corp"域名；用户也可能己存在一个未被Kubernetes管理的服务发现系统（例如Consul）来完成域名解析。从Kubernetes vl.6版本开始，用户可以在Kubernetes集群内配置私有DNS区域（通常称为存根域Stub Domain）和外部的上游域名服务了。  
