@@ -8,7 +8,6 @@
         - [1.4.1. C/S架构](#141-cs架构)
         - [1.4.2. docker服务端](#142-docker服务端)
     - [1.5. Docker基本概念](#15-docker基本概念)
-    - [1.6. Docker核心技术与实现原理](#16-docker核心技术与实现原理)
 
 <!-- /TOC -->
 
@@ -17,24 +16,55 @@
 
 ## 1.1. 容器化技术  
 
-* 虚拟机结构介绍  
+&emsp; **虚拟机结构介绍**    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-31.png)  
 
+* 基础设施(Infrastructure)。它可以是个人电脑，数据中心的服务器，或者是云主机。
+* 主操作系统(Host Operating System)。个人电脑之上，运行的可能是MacOS，Windows或者某个Linux发行版。
+* 虚拟机管理系统(Hypervisor)。利用Hypervisor，可以在主操作系统之上运行多个不同的从操作系统。类型1的Hypervisor有支持MacOS的HyperKit，支持Windows的Hyper-V以及支持Linux的KVM。类型2的Hypervisor有VirtualBox和VMWare。
+* 从操作系统(Guest Operating System)。假设你需要运行3个相互隔离的应用，则需要使用Hypervisor启动3个从操作系统，也就是3个虚拟机。这些虚拟机都非常大，也许有700MB，这就意味着它们将占用2.1GB的磁盘空间。更糟糕的是，它们还会消耗很多CPU和内存。
+* 各种依赖。每一个从操作系统都需要安装许多依赖。如果你的的应用需要连接PostgreSQL的话，则需要安装libpq-dev；如果你使用Ruby的话，应该需要安装gems；如果使用其他编程语言，比如Python或者Node.js，都会需要安装对应的依赖库。
+* 应用。安装依赖之后，就可以在各个从操作系统分别运行应用了，这样各个应用就是相互隔离的。
 
+&emsp; 传统虚拟化是在硬件层面实现虚拟化，虚拟机Virtual Machine指通过软件模拟的具有完整硬件系统功能的、运行在一个完全隔离环境中的完整计算机系统。在实体计算机中能够完成的工作在虚拟机中都能够实现。虚拟机运行的是一个完成的操作系统，通过虚拟机管理程序对主机资源进行虚拟访问，相比之下需要的资源更多。  
 
-&emsp; 容器和虚拟机  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-11.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-12.png)![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-13.png)  
-&emsp; 虚拟机运行的是一个完成的操作系统，通过虚拟机管理程序对主机资源进行虚拟访问，相比之下需要的资源更多。传统虚拟化是在硬件层面实现虚拟化，需要有额外的虚拟机管理应用和虚拟机操作系统层；  
-&emsp; 容器是在本机运行，并与其他容器共享主机的内核，它运行的一个独立的进程，不占用其他任何可执行文件的内存，非常轻量。Docker容器是在操作系统层面实现虚拟化，直接复用本地主机操作系统，更加轻量级。  
+&emsp; 在虚拟机模型中，首先要启动物理机和 Hypervisor 引导程序（这边略过了 BIOS 和 Bootloader 等阶段）。一旦 Hypervisor 启动之后，就会占用机器上的全部物理资源，如 CPU、RAM、存储和 NIC。Hypervisor 接下来就会将这些物理资源划分为虚拟资源，并且看起来与真实物理资源完全一致。然后 Hypervison 将这些资源打包进一个叫做虚拟机（VM）的软件结构中。之后在 VM 中安装操作系统，并在操作系统上安装应用。假如要运行 4 个应用，那么一般来说需要创建 4 个虚拟机并安装 4 个操作系统，然后分别安装应用。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-24.png)  
 
-1. 虚拟机：虚拟化硬件，虚拟机Virtual Machine指通过软件模拟的具有完整硬件系统功能的、运行在一个完全隔离环境中的完整计算机系统。在实体计算机中能够完成的工作在虚拟机中都能够实现。  
-&emsp; 在计算机中创建虚拟机时，需要将实体机的部分硬盘和内存容量作为虚拟机的硬盘和内存容量。每个虚拟机都有独立的 CMOS、硬盘和操作系统，可以像使用实体机一样对虚拟机进行操作。在容器技术之前，业界的网红是虚拟机。  
-&emsp; 虚拟机技术的代表，是 VMWare 和 OpenStack。  
-2. 容器：将操作系统层虚拟化，是一个标准的软件单元  
+&emsp; **docker结构介绍**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-32.png)  
+
+* 基础设施(Infrastructure)。
+* 主操作系统(Host Operating System)。所有主流的Linux发行版都可以运行Docker。对于MacOS和Windows，也有一些办法”运行”Docker。
+* Docker守护进程(Docker Daemon)。Docker守护进程取代了Hypervisor，它是运行在操作系统之上的后台进程，负责管理Docker容器。
+* 各种依赖。对于Docker，应用的所有依赖都打包在Docker镜像中，Docker容器是基于Docker镜像创建的。
+* 应用。应用的源代码与它的依赖都打包在Docker镜像中，不同的应用需要不同的Docker镜像。不同的应用运行在不同的Docker容器中，它们是相互隔离的。
+
+&emsp; Docker容器是在操作系统层面实现虚拟化，是一个标准的软件单元 ，直接复用本地主机操作系统。容器是在本机运行，与其他容器共享主机的内核，它运行的一个独立的进程，不占用其他任何可执行文件的内存，更加轻量级。  
+
 &emsp; 随处运行：容器可以将代码与配置文件和相关依赖库进行打包，从而确保在任何环境下的运行都是一致的。  
 &emsp; 高资源利用率：容器提供进程级的隔离，因此可以更加精细地设置 CPU 和内存的使用率，进而更好地利用服务器的计算资源。  
-&emsp; 快速扩展：每个容器都可作为单独的进程予以运行，并且可以共享底层操作系统的系统资源，这样一来可以加快容器的启动和停止效率。  
-3. 区别与联系  
+&emsp; 快速扩展：每个容器都可作为单独的进程予以运行，并且可以共享底层操作系统的系统资源，这样一来可以加快容器的启动和停止效率。 
+
+&emsp; 在容器模型中。服务器启动之后，所选择的操作系统会启动。那么启动的操作系统会占用了全部硬件资源。在 OS 层之上，需要安装容器引擎，比如 docker。容器引擎会获取系统资源，然后将这些资源分割成安全的互相隔离的资源结构，称之为容器。此时，每个容器在其内部运行应用。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-25.png)  
+
+&emsp; **虚拟机和容器**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-12.png)![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-13.png)  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-11.png)  
+
+&emsp; 物理机部署不能充分利用资源，造成资源浪费。虚拟机方式部署，虚拟机本身会占用大量资源，导致资源浪费，另外虚拟机性能也很差。而容器化部署比较灵活，且轻量级，性能较好。  
+
+* 从高层面上来讲，Hypervisor是硬件虚拟化，Hepervisor将硬件物理资源划分为了虚拟资源，通过中间层将一层或多台独立的机器虚拟运行于物理硬件之上。而容器是操作系统虚拟化，将系统资源（软件和硬件资源）划分为了虚拟资源，是直接运行在操作系统内核之上的用户空间，使用的是操作系统的系统调用接口，不需要像传统的虚拟化和半虚拟化技术那样需要模拟层和管理层。除此之外，还可以让多个独立的用户空间运行在同一台宿主机上。
+* 使用虚拟机的话，每个虚拟机都有自己的操作系统。但是，操作系统本身就有其额外开销。每个操作系统本身就会消耗一点 CPU、一点 ARM、一点存储空间。每个操作系统都需要打补丁升级，也都面临着被攻击的风险。这种现象被称为 OS Tax 或者 VM Tax，即表示每个 OS 都会额外占用一定的资源。
+而容器模型则只需要一个操作系统，因为所有的容器共享同一个内核。那么意味着只有一个操作系统消耗 CPU、RAM 和存储资源。
+那么相比之下容器模型的资源利用率会更高。当需要运行成百上千应用的时候，两者之间的区别会更明显。
+* 另一个是启动时间的上的区别。
+虚拟机中需要启动内核，内核启动过程中需要对硬件进行遍历和初始化。
+而容器不是完整的操作系统，内部也不需要内核，因为是共享主机的内核，所以不需要上述遍历和初始化，所以启动要比虚拟机快。唯一对容器启动时间有影响的就是容器内应用启动所花费的时间。  
+
+&emsp; 区别与联系  
 &emsp; 虚拟机虽然可以隔离出很多「子电脑」，但占用空间更大，启动更慢。  
 &emsp; 容器技术不需要虚拟出整个操作系统，只需要虚拟一个小规模的环境，类似「沙箱」；  
 &emsp; 运行空间，虚拟机一般要几GB到几十GB的空间，而容器只需要MB级甚至KB级；  
@@ -52,53 +82,8 @@
 |高可用策略	|备份、容灾、迁移	|弹性、负载、动态|
 
 
- 
-
-
-<!-- 
-----
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-17.png)  
-&emsp; 传统的虚拟化技术在虚拟机（VM）和硬件之间加了一个软件层Hypervisor，或者叫做虚拟机管理程序。Hypervisor的运行方式分为两类：  
-
-* 直接运行在物理硬件之上。如基于内核的KVM虚拟机，这种虚拟化需要CPU支持虚拟化技术；
-* 运行在另一个操作系统。如VMWare和VitrualBox等虚拟机。
-
-&emsp; 因为运行在虚拟机上的操作系统是通过Hypervisor来最终分享硬件，所以虚拟机Guest OS发出的指令都需要被Hypervisor捕获，然后翻译为物理硬件或宿主机操作系统能够识别的指令。  
-&emsp; VMWare和VirtualBox等虚拟机在性能方面远不如裸机，但基于硬件虚拟机的KVM约能发挥裸机80%的性能。这种虚拟化的优点是不同虚拟机之间实现了完全隔离，安全性很高，并且能够在一台物理机上运行多种内核的操作系统（如Linux和Window），但每个虚拟机都很笨重，占用资源多而且启动很慢。  
-Docker引擎运行在操作系统上，是基于内核的LXC、Chroot等技术实现容器的环境隔离和资源控制，在容器启动后，容器里的进程直接与内核交互，无需经过Docker引擎中转，因此几乎没有性能损耗，能发挥出裸机的全部性能。  
-&emsp; 但由于Docker是基于Linux内核技术实现容器化的，因此使得容器内运行的应用只能运行在Linux内核的操作系统上。目前在Window上安装的docker引擎其实是利用了Window自带的Hyper-V虚拟化工具自动创建了一个Linux系统，容器内的操作实际上是间接使用这个虚拟系统实现的。  
--->
-
-----
-
-**容器和虚拟机的根本性区别**  
-
-在虚拟机模型中，首先要启动物理机和 Hypervisor 引导程序（这边略过了 BIOS 和 Bootloader 等阶段）。一旦 Hypervisor 启动之后，就会占用机器上的全部物理资源，如 CPU、RAM、存储和 NIC。Hypervisor 接下来就会将这些物理资源划分为虚拟资源，并且看起来与真实物理资源完全一致。然后 Hypervison 将这些资源打包进一个叫做虚拟机（VM）的软件结构中。之后在 VM 中安装操作系统，并在操作系统上安装应用。假如要运行 4 个应用，那么一般来说需要创建 4 个虚拟机并安装 4 个操作系统，然后分别安装应用。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-24.png)  
-虚拟机运行的是一个完成的操作系统，通过虚拟机管理程序对主机资源进行虚拟访问，相比之下需要的资源更多。  
-
-
-在容器模型中。服务器启动之后，所选择的操作系统会启动。那么启动的操作系统会占用了全部硬件资源。在 OS 层之上，需要安装容器引擎，比如 docker。容器引擎会获取系统资源，然后将这些资源分割成安全的互相隔离的资源结构，称之为容器。此时，每个容器在其内部运行应用。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-25.png)  
-容器时在linux上本机运行，并与其他容器共享主机的内核，它运行的一个独立的进程，不占用其他任何可执行文件的内存，非常轻量。  
-
-
-
-两者的区别，主要如下：  
-&emsp; 容器与虚拟机相比，容器更轻量且速度更快，因为它利用了 Linux 底层操作系统在隔离的环境中运行。虚拟机的 Hypervisor 创建了一个非常牢固的边界，以防止应用程序突破它，而容器的边界不那么强大。  
-&emsp; 物理机部署不能充分利用资源，造成资源浪费。虚拟机方式部署，虚拟机本身会占用大量资源，导致资源浪费，另外虚拟机性能也很差。而容器化部署比较灵活，且轻量级，性能较好。  
-
-* 从高层面上来讲，Hypervisor是硬件虚拟化，Hepervisor将硬件物理资源划分为了虚拟资源，通过中间层将一层或多台独立的机器虚拟运行于物理硬件之上。而容器是操作系统虚拟化，将系统资源（软件和硬件资源）划分为了虚拟资源，是直接运行在操作系统内核之上的用户空间，使用的是操作系统的系统调用接口，不需要像传统的虚拟化和半虚拟化技术那样需要模拟层和管理层。除此之外，还可以让多个独立的用户空间运行在同一台宿主机上。
-* 使用虚拟机的话，每个虚拟机都有自己的操作系统。但是，操作系统本身就有其额外开销。每个操作系统本身就会消耗一点 CPU、一点 ARM、一点存储空间。每个操作系统都需要打补丁升级，也都面临着被攻击的风险。这种现象被称为 OS Tax 或者 VM Tax，即表示每个 OS 都会额外占用一定的资源。
-而容器模型则只需要一个操作系统，因为所有的容器共享同一个内核。那么意味着只有一个操作系统消耗 CPU、RAM 和存储资源。
-那么相比之下容器模型的资源利用率会更高。当需要运行成百上千应用的时候，两者之间的区别会更明显。
-* 另一个是启动时间的上的区别。
-虚拟机中需要启动内核，内核启动过程中需要对硬件进行遍历和初始化。
-而容器不是完整的操作系统，内部也不需要内核，因为是共享主机的内核，所以不需要上述遍历和初始化，所以启动要比虚拟机快。唯一对容器启动时间有影响的就是容器内应用启动所花费的时间。
-
 ## 1.2. Docker简介  
-&emsp; Docker是提供应用打包部署与运行应用的容器化平台。 
+&emsp; Docker是提供应用打包部署与运行应用的容器化平台。Docker本身并不是容器，它是创建容器的工具，是应用容器引擎。 
 
 * 开源的应用容器引擎，基于Go语言开发  
 * 容器是完全使用沙箱机制，容器开销极低  
@@ -107,15 +92,17 @@ Docker引擎运行在操作系统上，是基于内核的LXC、Chroot等技术�
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-1.png)  
 
+&emsp; Docker的特点：  
+
+* Build, Ship and Run，即搭建、发送、运行。  
+* Build once、Run anywhere，搭建一次，到处能用。  
+
 &emsp; 容器带来的好处有哪些？  
 1. 秒级的交付和部署  
 2. 保证环境一致性  
 3. 高效的资源利用  
 4. 弹性的伸缩  
 5. 动态调度迁移成本低  
-
-Docker本身并不是容器，它是创建容器的工具，是应用容器引擎 。  
-一. 想要搞懂Docker，其实看它的两句口号就行 ：第一句，是“Build, Ship and Run”。 也就是搭建、发送、运行 三板斧。第二句口号就是：“Build once，Run anywhere **（搭建一次，到处能用）**”。
 
 ## 1.3. Docker的使用场景  
 &emsp; Docker作为一种轻量级的虚拟化方案，应用场景十分丰富，下面收集了一些常见的场景：
@@ -150,23 +137,12 @@ https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
 ### 1.4.1. C/S架构
 &emsp; 一个完整的Docker基本架构由如下几个部分构成：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-16.png)  
-&emsp; Docker 是一个客户-服务器（C/S）架构的程序。Docker 客户端只需要向 Docker 服务器或守护进程发出请求，服务器或守护进程将完成所有工作并返回结果。Docker 提供了一个命令行工具和一整套 RESTful API。可以在同一台宿主机上运行 Docker 守护进程和客户端，也可以从本地的 Docker 客户端连接到运行在另一台宿主机上的远程 Docker 守护进程。Docker 以 root 权限运行它的守护进程，来处理普通用户无法完成的操作（如挂载文件系统）。Docker 程序是 Docker 守护进程的客户端程序，同样也需要以 root 身份运行。  
-
-
----
-
-这个架构就简单清晰指明了server/client交互，容器和镜像、数据之间的一些联系。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-2.png)  
-docker daemon就是docker的守护进程即server端，可以是远程的，也可以是本地的，这个不是C/S架构吗，客户端Docker client 是通过rest api进行通信。  
-docker cli 用来管理容器和镜像，客户端提供一个只读镜像，然后通过镜像可以创建多个容器，这些容器可以只是一个RFS（Root file system根文件系统），也可以ishi一个包含了用户应用的RFS，容器再docker client中只是要给进程，两个进程之间互不可见。  
-用户不能与server直接交互，但可以通过与容器这个桥梁来交互，由于是操作系统级别的虚拟技术，中间的损耗几乎可以不计。  
-
----
+&emsp; Docker是一个客户-服务器（C/S）架构的程序。Docker 客户端只需要向 Docker 服务器或守护进程发出请求，服务器或守护进程将完成所有工作并返回结果。Docker 提供了一个命令行工具和一整套 RESTful API。可以在同一台宿主机上运行 Docker 守护进程和客户端，也可以从本地的 Docker 客户端连接到运行在另一台宿主机上的远程 Docker 守护进程。Docker 以 root 权限运行它的守护进程，来处理普通用户无法完成的操作（如挂载文件系统）。Docker 程序是 Docker 守护进程的客户端程序，同样也需要以 root 身份运行。  
 
 ### 1.4.2. docker服务端
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-18.png)  
 
-* distribution 负责与docker registry交互，上传镜像以及v2 registry 有关的源数据
+* distribution 负责与docker registry交互，上传镜像以及管理 registry 有关的源数据
 * registry负责docker registry有关的身份认证、镜像查找、镜像验证以及管理registry mirror等交互操作
 * image 负责与镜像源数据有关的存储、查找，镜像层的索引、查找以及镜像tar包有关的导入、导出操作
 * reference负责存储本地所有镜像的repository和tag名，并维护与镜像id之间的映射关系
@@ -190,7 +166,6 @@ https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
 * 容器(Container)
     * 容器是从镜像创建的运行实例，在启动的时候创建一层可写层作为最上层（因为镜像是只读的）
     * 可以被启动、开始、停止、删除。每个容器都是相互隔离的、保证安全的平台
-    * 可以把容器看做是一个简易版的 Linux 环境（包括root用户权限、进程空间、用户空间和网络空间等）和运行在其中的应用程序
 * 仓库(Registry)
     * 集中存放镜像文件的场所，可以是公有的，也可以是私有的
     * 最大的公开仓库是 Docker Hub
@@ -198,21 +173,4 @@ https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
     * 当用户创建了自己的镜像之后就可以使用 push 命令将它上传到公有或者私有仓库，这样下次在另外一台机器上使用这个镜像时候，只需要从仓库上 pull 下来就可以了
     * Docker 仓库的概念跟 Git 类似，注册服务器可以理解为 GitHub 这样的托管服务
 * 宿主机：运行引擎的操作系统所在服务器。  
-
-## 1.6. Docker核心技术与实现原理    
-
-<!-- 
-https://www.jianshu.com/p/e1f7b8d5184c
-http://dockone.io/article/2941
-
--->
-&emsp; docker本质就是宿主机的一个进程，docker是通过namespace实现资源隔离，通过cgroup实现资源限制，通过写时复制技术（copy-on-write）实现了高效的文件操作（类似虚拟机的磁盘比如分配500g并不是实际占用物理磁盘500g）  
-&emsp; 1）namespaces 名称空间  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-18.png)  
-&emsp; 2）control Group 控制组  
-cgroup的特点是：  　　　
-
-* cgroup的api以一个伪文件系统的实现方式，用户的程序可以通过文件系统实现cgroup的组件管理
-* cgroup的组件管理操作单元可以细粒度到线程级别，另外用户可以创建和销毁cgroup，从而实现资源载分配和再利用
-* 所有资源管理的功能都以子系统的方式实现，接口统一子任务创建之初与其父任务处于同一个cgroup的控制组
 
