@@ -39,22 +39,22 @@ cgroup的特点是：  　　　
 ## 1.2. CGroups  
 &emsp; Linux的命名空间为新创建的进程隔离了文件系统、网络并与宿主机器之间的进程相互隔离，但是命名空间并不能够提供物理资源上的隔离，比如 CPU 或者内存，如果在同一台机器上运行了多个对彼此以及宿主机器一无所知的『容器』，这些容器却共同占用了宿主机器的物理资源。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-35.png)  
-&emsp; 如果其中的某一个容器正在执行 CPU 密集型的任务，那么就会影响其他容器中任务的性能与执行效率，导致多个容器相互影响并且抢占资源。如何对多个容器的资源使用进行限制就成了解决进程虚拟资源隔离之后的主要问题，而 Control Groups（简称 CGroups）就是能够隔离宿主机器上的物理资源，例如 CPU、内存、磁盘 I/O 和网络带宽。  
-&emsp; 每一个 CGroup 都是一组被相同的标准和参数限制的进程，不同的 CGroup 之间是有层级关系的，也就是说它们之间可以从父类继承一些用于限制资源使用的标准和参数。  
+&emsp; 如果其中的某一个容器正在执行 CPU 密集型的任务，那么就会影响其他容器中任务的性能与执行效率，导致多个容器相互影响并且抢占资源。如何对多个容器的资源使用进行限制就成了解决进程虚拟资源隔离之后的主要问题，<font color = "red">而Control Groups（简称 CGroups）就是能够隔离宿主机器上的物理资源，例如 CPU、内存、磁盘 I/O 和网络带宽。</font>  
+&emsp; 每一个CGroup都是一组被相同的标准和参数限制的进程，不同的CGroup之间是有层级关系的，也就是说它们之间可以从父类继承一些用于限制资源使用的标准和参数。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-36.png)  
-&emsp; Linux 的 CGroup 能够为一组进程分配资源，也就是我们在上面提到的 CPU、内存、网络带宽等资源，通过对资源的分配，CGroup 能够提供以下的几种功能：  
+&emsp; Linux 的 CGroup 能够为一组进程分配资源，也就是在上面提到的 CPU、内存、网络带宽等资源，通过对资源的分配，CGroup 能够提供以下的几种功能：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-37.png)  
 
-    在 CGroup 中，所有的任务就是一个系统的一个进程，而 CGroup 就是一组按照某种标准划分的进程，在 CGroup 这种机制中，所有的资源控制都是以 CGroup 作为单位实现的，每一个进程都可以随时加入一个 CGroup 也可以随时退出一个 CGroup。  
+    在CGroup中，所有的任务就是一个系统的一个进程，而CGroup就是一组按照某种标准划分的进程，在CGroup这种机制中，所有的资源控制都是以CGroup作为单位实现的，每一个进程都可以随时加入一个CGroup也可以随时退出一个CGroup。  
 
 ## 1.3. UnionFS  
 &emsp; Linux 的命名空间和控制组分别解决了不同资源隔离的问题，前者解决了进程、网络以及文件系统的隔离，后者实现了 CPU、内存等资源的隔离，但是在 Docker 中还有另一个非常重要的问题需要解决 - 也就是镜像。  
-&emsp; 镜像到底是什么，它又是如何组成和组织的是作者使用 Docker 以来的一段时间内一直比较让作者感到困惑的问题，我们可以使用 docker run 非常轻松地从远程下载 Docker 的镜像并在本地运行。  
-&emsp; Docker 镜像其实本质就是一个压缩包，我们可以使用下面的命令将一个 Docker 镜像中的文件导出：  
+&emsp; 镜像到底是什么，它又是如何组成和组织的是作者使用Docker以来的一段时间内一直比较让作者感到困惑的问题，可以使用docker run非常轻松地从远程下载Docker的镜像并在本地运行。  
+&emsp; Docker 镜像其实本质就是一个压缩包，可以使用下面的命令将一个Docker镜像中的文件导出：  
 
 ```text
 $ docker export $(docker create busybox) | tar -C rootfs -xvf -
 $ ls
 bin  dev  etc  home proc root sys  tmp  usr  var
 ```
-&emsp; 可以看到这个 busybox 镜像中的目录结构与 Linux 操作系统的根目录中的内容并没有太多的区别，可以说 Docker 镜像就是一个文件。  
+&emsp; 可以看到这个busybox镜像中的目录结构与Linux操作系统的根目录中的内容并没有太多的区别，可以说Docker镜像就是一个文件。  

@@ -66,7 +66,7 @@ https://blog.csdn.net/hualinux/article/details/106586601?utm_medium=distribute.p
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-3.png)  
 
 * 版本控制&协作开发：GitHub、GitLab、BitBucket、SubVersion、Coding、Bazaar
-* 自动化构建和测试:Apache Ant、Maven 、Selenium、PyUnit、QUnit、JMeter、Gradle、PHPUnit、Nexus
+* 自动化构建和测试：Apache Ant、Maven 、Selenium、PyUnit、QUnit、JMeter、Gradle、PHPUnit、Nexus
 * 持续集成&交付:Jenkins、Capistrano、BuildBot、Fabric、Tinderbox、Travis CI、flow.ci Continuum、LuntBuild、CruiseControl、Integrity、Gump、Go
 * 容器平台: Docker、Rocket、Ubuntu（LXC）、第三方厂商如（AWS/阿里云）
 * 配置管理：Chef、Puppet、CFengine、Bash、Rudder、Powershell、RunDeck、Saltstack、Ansible

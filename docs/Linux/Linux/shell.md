@@ -24,14 +24,6 @@
 
 
 # 1. Shell编程  
-<!-- 
-
-https://www.jianshu.com/p/a8776b99c6d2
-https://www.cnblogs.com/dongying/p/6262935.html
-
-
-https://www.runoob.com/linux/linux-shell.html
--->
 
 ## 1.1. Shell环境  
 &emsp; Shell编程跟JavaScript、php 编程一样，只要有一个能编写代码的文本编辑器和一个能解释执行的脚本解释器就可以了。  
@@ -92,7 +84,22 @@ https://www.runoob.com/linux/linux-shell.html
 &emsp; 运行shell时，会同时存在三种变量：  
 &emsp; 1) 局部变量：局部变量在脚本或命令中定义，仅在当前shell实例中有效，其他shell启动的程序不能访问局部变量。  
 &emsp; 2) 环境变量：所有的程序，包括shell启动的程序，都能访问环境变量，有些程序需要环境变量来保证其正常运行。必要的时候shell脚本也可以定义环境变量。  
-&emsp; 3) shell变量：shell变量是由shell程序设置的特殊变量。shell变量中有一部分是环境变量，有一部分是局部变量，这些变量保证了shell的正常运行。
+&emsp; 3) shell变量：shell变量是由shell程序设置的特殊变量。shell变量中有一部分是环境变量，有一部分是局部变量，这些变量保证了shell的正常运行。  
+
+&emsp; **将linux命令执行结果赋值给变量**  
+
+```text
+#!/bin/bash
+path=$(pwd)
+files=`ls -al`
+echo current path: $path
+echo files: $files
+```
+&emsp; 以上2行和第3行分别演示了两种方式来将Linux命令执行结果保存到变量。  
+&emsp; 第2行将pwd执行结果（当前所在目录）赋值给path变量。  
+&emsp; 第3行将ls -al命令执行结果（列出当前目录下所有的文件及文件夹）赋值给变量。  
+
+    注意：第三行的符号不是单引号，是键盘上“～”这个按键
 
 ### 1.3.2. Shell注释  
 <!-- 
