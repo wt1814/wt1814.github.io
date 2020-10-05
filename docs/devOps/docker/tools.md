@@ -27,7 +27,7 @@ https://mp.weixin.qq.com/s/8lOTyNogYRFsqLpE45217w
 
 ## 1.1. Docker环境管理UI   
 &emsp; docker图形页面管理工具常用的有三种：DockerUI、Portainer、Shipyard。  
-&emsp; DockerUI 是 Portainer 的前身，这三个工具通过docker api来获取管理的资源信息。平时常常对着shell对着这些命令行客户端，审美会很疲劳，如果有漂亮的图形化界面可以直观查看docker资源信息，也是非常方便的。今天我们就搭建单机版的三种常用图形页面管理工具。这三种图形化管理工具以Portainer最为受欢迎。 
+&emsp; DockerUI 是 Portainer 的前身，这三个工具通过docker api来获取管理的资源信息。平时常常对着shell对着这些命令行客户端，审美会很疲劳，如果有漂亮的图形化界面可以直观查看docker资源信息，也是非常方便的。这三种图形化管理工具以Portainer最为受欢迎。 
 
 <!--
 ～～

@@ -75,7 +75,7 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 2. 基于HTTP BASE TOKEN 的简单认证方式  
 
 ### 1.1.3. Kubernetes集群的网络配置
-&emsp; 在多个Node组成的Kubernetes集群内，跨主机的容器间网络互通是Kubernetes集群能够正常工作的前提条件。Kubernetes本身并不会对跨主机的容器网络进行设置，这需要额外的工 具来实现。除了谷歌公有云GCE平台提供的网络设置，一些开源的工具包括Flannel, Open vSwitch. Weave> Calico等都能够实现跨主机的容器间网络互通。随着CNI网络模型的逐渐成 熟，Kubernetes将优先使用CNI网络插件打通跨主机的容器网络。具体的网络原理和流行开源 网络工具配置详见第3章的说明。  
+&emsp; 在多个Node组成的Kubernetes集群内，跨主机的容器间网络互通是Kubernetes集群能够正常工作的前提条件。Kubernetes本身并不会对跨主机的容器网络进行设置，这需要额外的工 具来实现。除了谷歌公有云GCE平台提供的网络设置，一些开源的工具包括Flannel, Open vSwitch. Weave> Calico等都能够实现跨主机的容器间网络互通。随着CNI网络模型的逐渐成熟，Kubernetes将优先使用CNI网络插件打通跨主机的容器网络。  
 
 ### 1.1.4. 内网中的Kubernetes相关配置  
 1. Docker Private Registry （私有 Docker 镜像库）  
