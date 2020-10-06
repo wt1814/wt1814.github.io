@@ -118,6 +118,7 @@ Gitee： https://gitee.com/wt1814/
 ### JVM  
 [JVM总结](/docs/java/JVM/summary.md)  
 [JDK、JRE、JVM](/docs/java/JVM/1.JDK、JRE、JVM三者间的关系.md)   
+[字节码文件](/docs/java/JVM/Class.md)  
 [JVM类的加载](/docs/java/JVM/2.JVM类的加载.md)  
 [JVM内存结构](/docs/java/JVM/3.JVM内存结构.md)  
 [GC垃圾回收](/docs/java/JVM/5.GC垃圾回收.md)  
@@ -233,6 +234,7 @@ Gitee： https://gitee.com/wt1814/
 [RPC](/docs/microService/RPC.md)  
 [微服务架构设计](/docs/microService/microservices/microservices.md)  
 [Gateway](/docs/microService/microservices/Gateway.md)  
+[领域驱动设计DDD]()  
 
 
 ### Dubbo  

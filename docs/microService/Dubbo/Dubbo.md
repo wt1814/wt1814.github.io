@@ -16,6 +16,7 @@
     - [1.2. Dubbo和Spring Cloud](#12-dubbo和spring-cloud)
     - [1.3. Dubbo中的SPI](#13-dubbo中的spi)
     - [1.4. Dubbo对Spring的扩展](#14-dubbo对spring的扩展)
+    - [Dubbo与分布式事务](#dubbo与分布式事务)
 
 <!-- /TOC -->
 
@@ -138,6 +139,19 @@ https://mp.weixin.qq.com/s/6Kn9uJ7n6W8BMm4OZmhxIQ
 1. 配置文件采用键值对配置的方式，使用起来更加灵活和简单 
 2. 增强了原本SPI的功能，使得SPI具备ioc和aop的功能，这在原本的java中spi是不支持的。dubbo的spi是通过ExtensionLoader来解析的，通过ExtensionLoader来加载指定的实现类，配置文件的路径在META-INF/dubbo路径下。  
 
+
+Dubbo SPI 和 Java SPI 区别？  
+JDK SPI  
+JDK 标准的 SPI 会一次性加载所有的扩展实现，如果有的扩展吃实话很耗时，但也没用 上， 很浪费资源。 所以只希望加载某个的实现， 就不现实了  
+
+DUBBO SPI   
+1， 对 Dubbo 进行扩展， 不需要改动 Dubbo 的源码  
+2， 延迟加载， 可以一次只加载自己想要加载的扩展实现。  
+3， 增加了对扩展点 IOC 和 AOP 的支持， 一个扩展点可以直接 setter 注入其它扩展 点。  
+3， Dubbo 的扩展机制能很好的支持第三方 IoC 容器， 默认支持 Spring Bean。  
+
+
+
 <!-- 
 
  三歪问我Dubbo的SPI机制是啥？ 
@@ -147,4 +161,12 @@ https://mp.weixin.qq.com/s/6Kn9uJ7n6W8BMm4OZmhxIQ
 ## 1.4. Dubbo对Spring的扩展  
 ......
 
+
+## Dubbo与分布式事务  
+
+Dubbo 支持分布式事务吗？   
+目前暂时不支持， 可与通过 tcc-transaction 框架实现   
+介绍： tcc-transaction 是开源的 TCC 补偿性分布式事务框架  
+Git 地址： https://github.com/changmingxie/tcc-transaction  
+TCC-Transaction 通过 Dubbo 隐式传参的功能， 避免自己对业务代码的入侵。 
 
