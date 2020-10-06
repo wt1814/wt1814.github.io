@@ -35,12 +35,10 @@
         - [系统接入层](#系统接入层)
             - [Nginx](#nginx)
         - [系统设计](#系统设计)
-        - [系统稳定性建设](#系统稳定性建设)
     - [Linux](#linux)
     - [DevOps](#devops)
     - [算法](#算法)
     - [计算机网络](#计算机网络)
-    - [项目经验](#项目经验)
     - [软件设计](#软件设计)
     - [开发软件](#开发软件)
     - [其他工具](#其他工具)
@@ -239,7 +237,6 @@ Gitee： https://gitee.com/wt1814/
 
 ### Dubbo  
 
-
 [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
 [Dubbo使用教程](/docs/microService/Dubbo/Dubbo使用教程.md)  
 
@@ -283,6 +280,7 @@ Gitee： https://gitee.com/wt1814/
 
 ### 限流降级
 [分布式限流](/docs/microService/thinking/分布式限流.md)   
+&emsp; [Sentinel](/docs/microService/thinking/Sentinel.md)  
 [服务降级](/docs/microService/thinking/服务降级.md)  
 
 ### 分布式消息队列  
@@ -329,6 +327,8 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 [Netty](/docs/microService/communication/Netty/netty.md)  
+
+
 
 ---
 
@@ -379,19 +379,7 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [微服务拆分](/docs/system/serviceSplit.md)  
 [秒杀系统设计](/docs/system/seckill.md)  
 [订单系统设计](/docs/system/order.md)  
-<!-- 
-
-
-  收款神器！解读聚合收款码背后的原理 
-  https://mp.weixin.qq.com/s/LS1ICf9We3ypf-NxfclIEQ
--->
-
-### 系统稳定性建设  
-[系统稳定性建设](/docs/system/stability.md)  
-[灰度发布](/docs/system/grayscalePublishe.md)  
-&emsp; [网关灰度发布](/docs/system/gatewayGrayscale.md)  
-[监控](/docs/devOps/monitor.md)  
-
+[个别场景](/docs/project/scene.md)  
 
 ## Linux  
 [Linux命令](/docs/Linux/Linux/Linux命令.md)  
@@ -405,6 +393,7 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [DevOps](/docs/devOps/devOps.md)  
 [DevOps搭建](/docs/devOps/devOpsPractice.md)  
 [git](/docs/devOps/git/command.md)  
+[CI/CD](/docs/devOps/CI.md)  
 [docker]  
 &emsp; [docker总结](/docs/devOps/docker/summary.md)  
 &emsp; [docker架构](/docs/devOps/docker/principle.md)  
@@ -419,6 +408,10 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 &emsp; &emsp; [滚动更新](/docs/devOps/k8s/rollingUpdate.md)  
 &emsp; [k8s运维](/docs/devOps/k8s/tools.md)  
 &emsp; [Kuboard介绍](/docs/devOps/k8s/kuboard.md)  
+
+[灰度发布](/docs/system/grayscalePublishe.md)  
+&emsp; [网关灰度发布](/docs/system/gatewayGrayscale.md)  
+[监控](/docs/devOps/monitor.md)  
 
 ---
 
@@ -449,10 +442,7 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [DNS](docs/network/3.DNS.md)  
 [TCP](/docs/network/4.TCP.md)  
 
-----
 
-## 项目经验
-[个别场景](/docs/project/scene.md)  
 
 
 
