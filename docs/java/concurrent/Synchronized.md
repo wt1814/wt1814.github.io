@@ -33,6 +33,19 @@
 <!-- 
  死磕Synchronized底层实现 
  https://mp.weixin.qq.com/s/ca_7lurrWVcA3bLCL7UJcQ
+
+关键字synchronized取得的锁都是对象锁，而不是把一段代码或方法（函数）当作锁， 所以在上面的示例中，哪个线程先执行带synchronized关键字的方法，哪个线程就持有该方 法所属对象的锁Lock,那么其他线程只能呈等待状态，前提是多个线程访问的是同一个 对象。
+但如果多个线程访问多个对象，则JVM会创建多个锁。
+
+关键字synchronized拥有锁重人的功能，也就是在使用synchronized时，当一个线程 得到一个对象锁后，再次请求此对象锁时是可以再次得到该对象的锁的。这也证明在一个 synchronized方法/块的内部调用本类的其他synchronized方法/块时，是永远可以得到锁的。
+
+“可重人锁”的概念是：自己可以再次获取自己的内部锁。 比如有1条线程获得了某个对象的锁，此时这个对象锁还没 有释放，当其再次想要获取这个对象的锁的时候还是可以获 取的，如果不可锁重人的话，就会造成死锁。
+
+
+
+锁非this对象具有一定的优点：如果在一个类中有很多个synchronized方法，这时虽然 能实现同步，但会受到阻塞，所以影响运行效率；但如果使用同步代码块锁非this对象，则synchronized(非this)代码块中的程序与同步方法是 异步的，不与其他锁this同步方法争抢this锁，则可 大大提高运行效率。
+
+在大多数的情况下，同步 synchronized代码块都不使用String作为锁对象，而改用其他，比如new Object()实例化一个 Object对象，但它并不放人缓存中。
 -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-16.png)  
