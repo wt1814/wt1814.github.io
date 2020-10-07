@@ -16,6 +16,8 @@
 <!-- 
  「网络IO套路」当时就靠它追到女友 
  https://mp.weixin.qq.com/s/x-AZQO5uiuu5svIvScotzA
+
+
 -->
 
 ## 1.1. 同步、异步  
@@ -32,6 +34,10 @@
 &emsp; 阻塞、非阻塞和同步、异步其实针对的对象是不一样的。阻塞、非阻塞说的是调用者，同步、异步说的是被调用者。  
 
 ## 1.3. IO模型，BIO、NIO、AIO  
+<!-- 
+ 图解BIO、NIO、AIO、多路复用IO的区别 
+ https://mp.weixin.qq.com/s/XFJX1sUYhTb8509FikgqGg
+-->
 
 * 同步阻塞IO（BIO，Block-IO）：用户进程在发起一个IO操作以后，必须等待IO操作的完成。只有当真正完成了IO操作以后，用户进程才能运行。Java传统的IO模型属于此种方式！  
 * 同步非阻塞IO（NIO，Non-Block IO）：在此种方式下，用户进程发起一个IO操作以后便可返回做其它事情，但是用户进程需要时不时的询问IO操作是否就绪，这就要求用户进程不停的去询问，从而引入不必要的CPU资源浪费。其中目前Java的NIO就属于同步非阻塞IO。  

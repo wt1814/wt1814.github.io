@@ -328,8 +328,6 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 [Netty](/docs/microService/communication/Netty/netty.md)  
 
-
-
 ---
 
 ## 项目构建基础  
@@ -356,8 +354,10 @@ Gitee： https://gitee.com/wt1814/
 [其他](/docs/web/other.md)
 
 ## 架构设计  
-[性能指标](/docs/system/performance.md)  
+[系统稳定性建设]()  
 [架构图](/docs/system/diagram.md)  
+[性能指标](/docs/system/performance.md)  
+
 [领域驱动模型](/docs/system/DDD.md)  
 
 ### 系统接入层  
@@ -375,11 +375,13 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [Nginx运维](/docs/Linux/Nginx/3.nginx运维.md)  
 
 ### 系统设计
-[并发系统三高](/docs/system/threeHigh.md)  
 [微服务拆分](/docs/system/serviceSplit.md)  
+[并发系统三高](/docs/system/threeHigh.md)  
 [秒杀系统设计](/docs/system/seckill.md)  
 [订单系统设计](/docs/system/order.md)  
 [个别场景](/docs/project/scene.md)  
+
+----
 
 ## Linux  
 [Linux命令](/docs/Linux/Linux/Linux命令.md)  
@@ -387,7 +389,6 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 &emsp; [网络通讯](/docs/Linux/Linux/网络通讯.md)  
 [shell编程](/docs/Linux/Linux/shell.md)  
 
----
 
 ## DevOps  
 [DevOps](/docs/devOps/devOps.md)  
@@ -441,9 +442,6 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [HTTPS](/docs/network/2.HTTPS.md)  
 [DNS](docs/network/3.DNS.md)  
 [TCP](/docs/network/4.TCP.md)  
-
-
-
 
 
 ----

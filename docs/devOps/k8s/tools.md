@@ -18,6 +18,8 @@
 
 <!-- /TOC -->
 
+
+
 # 1. Kubernetes运维指南  
 
 &emsp; <font color = "lime">整体参考《Kubernetes权威指南》</font>  
@@ -87,6 +89,11 @@ Kubernetes的可视化UI界面的产品有多种：
 &emsp; Kubemetes作为容器应用的管理平台，通过对Pod的运行状况进行监控，并且根据主机或容器失效的状态将新的Pod调度到其他Node上，实现了应用层的高可用性。针对Kubernetes集群，高可用性还应包含以下两个层面的考虑：etcd数据存储的高可用性和Kubernetes Master组件的高可用性。  
 
 ### 1.1.7. Kubemetes集群监控  
+<!-- 
+ 10个常用监控Kubernetes性能的Prometheus Operator指标 
+ https://mp.weixin.qq.com/s/idQgb0GC2yhaVYwgGj5gcA
+-->
+
 &emsp; 在大规模容器集群中，需要对所有Node和全部容器进行性能监控，Kubemetes建议使用一套工具来实现集群性能数据的釆集、存储和展HeapsterJnfluxDB和Grafanao。  
 
 * Heapster：对集群中各Node上cAdvisor的数据釆集汇聚的系统，通过访问每个Node 上kubelet的APL再通过kubelet调用cAdvisor的API来釆集该节点上所有容器的性 能数据。Heapster对性能数据进行聚合，并将结果保存到后端存储系统中。Heaspter 支持多种后端存储系统，包括memory（保存在内存中）、InfluxDB、BigQuery＞谷歌 云平台提供的 Google Cloud Monitoring （https://cloud.google.com/monitoring/ ）和 Google Cloud Logging （https://cloud.google.com/logging/ ）等。Heapster项目的主页为 https://github.com/kubemetes/heapstero   

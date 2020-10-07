@@ -282,8 +282,8 @@
         * [Nginx使用](/docs/Linux/Nginx/2.nginx使用场景.md)   
         * [Nginx运维](/docs/Linux/Nginx/3.nginx运维.md) 
     * 系统设计  
-    * [并发系统三高](/docs/system/threeHigh.md)  
     * [微服务拆分](/docs/system/serviceSplit.md)  
+    * [并发系统三高](/docs/system/threeHigh.md)  
     * [秒杀系统设计](/docs/system/seckill.md)  
     * [订单系统设计](/docs/system/order.md)  
     * 系统维护  
