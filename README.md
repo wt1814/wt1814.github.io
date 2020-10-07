@@ -32,14 +32,12 @@
         - [分布式通信](#分布式通信)
     - [项目构建基础](#项目构建基础)
     - [架构设计](#架构设计)
-        - [系统接入层](#系统接入层)
+    - [系统接入层](#系统接入层)
             - [Nginx](#nginx)
-        - [系统设计](#系统设计)
     - [Linux](#linux)
     - [DevOps](#devops)
     - [算法](#算法)
     - [计算机网络](#计算机网络)
-    - [软件设计](#软件设计)
     - [开发软件](#开发软件)
     - [其他工具](#其他工具)
     - [Error](#error)
@@ -355,12 +353,21 @@ Gitee： https://gitee.com/wt1814/
 
 ## 架构设计  
 [系统稳定性建设]()  
-[架构图](/docs/system/diagram.md)  
-[性能指标](/docs/system/performance.md)  
 
+[性能指标](/docs/system/performance.md)  
 [领域驱动模型](/docs/system/DDD.md)  
 
-### 系统接入层  
+[分布式和微服务](/docs/system/serviceSplit.md)  
+[并发系统三高](/docs/system/threeHigh.md)  
+[秒杀系统设计](/docs/system/seckill.md)  
+[订单系统设计](/docs/system/order.md)  
+[个别场景](/docs/project/scene.md)  
+
+[架构图](/docs/system/diagram.md)  
+[设计文档]()  
+[接口文档](/docs/system/document/API.md)  
+
+## 系统接入层  
 [接入层](/docs/system/access/access.md)    
 <!--
 高并发高性能接入层中间件LVS、Keepalived、Nginx、Haproxy。  
@@ -373,13 +380,6 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [Nginx](/docs/Linux/Nginx/1.nginx.md)  
 [Nginx使用](/docs/Linux/Nginx/2.nginx使用场景.md)   
 [Nginx运维](/docs/Linux/Nginx/3.nginx运维.md)  
-
-### 系统设计
-[微服务拆分](/docs/system/serviceSplit.md)  
-[并发系统三高](/docs/system/threeHigh.md)  
-[秒杀系统设计](/docs/system/seckill.md)  
-[订单系统设计](/docs/system/order.md)  
-[个别场景](/docs/project/scene.md)  
 
 ----
 
@@ -442,14 +442,6 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [HTTPS](/docs/network/2.HTTPS.md)  
 [DNS](docs/network/3.DNS.md)  
 [TCP](/docs/network/4.TCP.md)  
-
-
-----
-
-## 软件设计  
-[设计文档]()  
-[接口文档](/docs/system/document/API.md)  
-
 
 ----
 
