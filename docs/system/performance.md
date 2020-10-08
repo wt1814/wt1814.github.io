@@ -25,3 +25,11 @@ https://mp.weixin.qq.com/s/4NapJLLN6dgzIqsnHc2Dtg
 
 * PV：页面浏览量，通常是衡量一个网络新闻频道或网站甚至一条网络新闻的主要指标。用户每一次对网站中的每个页面访问均被记录 1 次。用户对同一页面的多次刷新，访问量累计。  
 * UV：访问数（Unique Visitor）指独立访客访问数，统计1天内访问某站点的用户数(以 cookie 为依据)，一台电脑终端为一个访客。  
+
+
+<!-- 
+ tomcat支持多少并发 
+ https://zhidao.baidu.com/question/1445941399668603020.html
+ mysql的并发量是多少？
+ https://ask.csdn.net/questions/1091683
+-->

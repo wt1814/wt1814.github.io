@@ -230,7 +230,6 @@ Gitee： https://gitee.com/wt1814/
 [RPC](/docs/microService/RPC.md)  
 [微服务架构设计](/docs/microService/microservices/microservices.md)  
 [Gateway](/docs/microService/microservices/Gateway.md)  
-[领域驱动设计DDD]()  
 
 
 ### Dubbo  
