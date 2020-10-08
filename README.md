@@ -96,6 +96,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; &emsp; [Volatile](/docs/java/concurrent/Volatile.md)  
 &emsp; &emsp; [ThreadLocal](/docs/java/concurrent/ThreadLocal.md)  
 &emsp; [线程通信](/docs/java/concurrent/线程通信.md)  
+&emsp; [线程活跃性](/docs/java/concurrent/Activity.md)  
 [线程池](/docs/java/concurrent/3.ThreadPool.md)  
 &emsp; [ThreadPoolExecutor](/docs/java/concurrent/ThreadPoolExecutor.md)  
 &emsp; [ForkJoinPool](/docs/java/concurrent/ForkJoinPool.md)  
