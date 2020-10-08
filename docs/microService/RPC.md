@@ -3,19 +3,18 @@
 
 - [1. RPC](#1-rpc)
     - [1.1. 本地调用和远程调用](#11-本地调用和远程调用)
-    - [1.2. RPC](#12-rpc)
-        - [1.2.1. RPC起源](#121-rpc起源)
-        - [1.2.2. RPC调用过程](#122-rpc调用过程)
-        - [1.2.3. RPC框架需要解决的问题？](#123-rpc框架需要解决的问题)
-        - [1.2.4. 使用了哪些技术？](#124-使用了哪些技术)
-            - [1.2.4.1. 远程代理对象(动态代理)](#1241-远程代理对象动态代理)
-            - [1.2.4.2. 序列化](#1242-序列化)
-            - [1.2.4.3. 通信](#1243-通信)
-        - [1.2.5. RPC中的通信协议](#125-rpc中的通信协议)
-            - [1.2.5.1. 服务暴露（服务注册中心）](#1251-服务暴露服务注册中心)
-    - [1.3. RPC结构拆解](#13-rpc结构拆解)
-    - [1.4. 流行的RPC框架](#14-流行的rpc框架)
-    - [1.5. RPC和消息队列的差异](#15-rpc和消息队列的差异)
+    - [1.2. RPC起源](#12-rpc起源)
+    - [1.3. RPC调用过程](#13-rpc调用过程)
+    - [1.4. RPC框架需要解决的问题？](#14-rpc框架需要解决的问题)
+    - [1.5. 使用了哪些技术？](#15-使用了哪些技术)
+        - [1.5.1. 远程代理对象(动态代理)](#151-远程代理对象动态代理)
+        - [1.5.2. 序列化](#152-序列化)
+        - [1.5.3. 通信](#153-通信)
+            - [1.5.3.1. RPC中的通信协议](#1531-rpc中的通信协议)
+        - [1.5.4. 服务暴露（服务注册中心）](#154-服务暴露服务注册中心)
+    - [1.6. RPC结构拆解](#16-rpc结构拆解)
+    - [1.7. 流行的RPC框架](#17-流行的rpc框架)
+    - [1.8. RPC和消息队列的差异](#18-rpc和消息队列的差异)
 
 <!-- /TOC -->
 
@@ -27,6 +26,8 @@
 <!-- 
 几张图帮你弄清楚什么是 RPC 
 https://mp.weixin.qq.com/s/9qeuTy6d4t5XI1svFlWcIA
+
+https://blog.csdn.net/u013952133/article/details/79256799
 -->
 
 &emsp; **本地调用：**  
@@ -41,8 +42,7 @@ https://mp.weixin.qq.com/s/9qeuTy6d4t5XI1svFlWcIA
 &emsp; 很多人都会想到 Server_B 封装一个接口，通过服务把这个方法暴露出去，比如通过 HTTP 请求，那么 Server_A 就可以调用 Server_B 中的 add 方法了。  
 &emsp; 通过这种方法实现起来没有问题，也是一个不错的解决方法，就是在每次调用的时候，都要发起 HTTP 请求，代码里面要写HttpClient.sendRequest 这样的代码，那么有没有可能像调用本地一样，去发起远程调用呢？让程序员不知道这是调用的远程方法呢？这时候就要提到RPC了。  
 
-## 1.2. RPC  
-### 1.2.1. RPC起源  
+## 1.2. RPC起源  
 &emsp; RPC这个概念术语在上世纪 80 年代由 Bruce Jay Nelson提出。这里追溯下当初开发 RPC 的原动机是什么？在 Nelson 的论文 "Implementing Remote Procedure Calls" 中他提到了几点：  
 
 * 简单：RPC 概念的语义十分清晰和简单，这样建立分布式计算就更容易。
@@ -51,7 +51,7 @@ https://mp.weixin.qq.com/s/9qeuTy6d4t5XI1svFlWcIA
 
 &emsp; 通俗一点说，就是一般程序员对于本地的过程调用很熟悉，那么把 RPC 作成和本地调用完全类似，那么就更容易被接受，使用起来毫无障碍。Nelson 的论文其观点今天看来确实高瞻远瞩，今天使用的 RPC 框架基本就是按这个目标来实现的。  
 
-### 1.2.2. RPC调用过程
+## 1.3. RPC调用过程
 <!-- 
 
 https://blog.csdn.net/u013474436/article/details/105059839
@@ -65,8 +65,8 @@ https://blog.csdn.net/u013474436/article/details/105059839
 -----
 &emsp; 一个基本的RPC架构里面应该至少包含以下4个组件：  
 1. 客户端（Client）:服务调用方（服务消费者）  
-2. 客户端存根（Client Stub）:存放服务端地址信息，将客户端的请求参数数据信息打包成网络消息，再通过网络传输发送给服务端  
-3. 服务端存根（Server Stub）:接收客户端发送过来的请求消息并进行解包，然后再调用本地服务进行处理  
+2. <font color = "red">客户端存根（Client Stub）:存放服务端地址信息，将客户端的请求参数数据信息打包成网络消息，再通过网络传输发送给服务端</font>  
+3. <font color = "red">服务端存根（Server Stub）:接收客户端发送过来的请求消息并进行解包，然后再调用本地服务进行处理</font>  
 4. 服务端（Server）:服务的真正提供者  
 
 &emsp; 具体的调用过程如下：  
@@ -86,7 +86,7 @@ https://blog.csdn.net/u013474436/article/details/105059839
 
 -----
 
-完整的RPC过程，如图：  
+&emsp; 完整的RPC过程，如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-10.png)  
 
 * 服务调用方（Client）调用以本地调用方式调用服务；
@@ -96,10 +96,9 @@ https://blog.csdn.net/u013474436/article/details/105059839
 * Server stub 将运行结果打包成消息序列化后，发送调用方；
 * Client stub接收到消息，并进行反序列化，调用方最终得到调用结果。
 
+&emsp; 总结来说，RPC用于服务之间的调用问题，特别是分布式环境；RPC 让远程调用时，像调用本地方法一样方便和无感知；RPC框架屏蔽了很多底层的细节，不需要开发人员关注这些细节，比如序列化和反序列化、网络传输协议的细节。  
 
-总结来说，RPC 用于服务之间的调用问题，特别是分布式环境；RPC 让远程调用时，像调用本地方法一样方便和无感知；RPC框架屏蔽了很多底层的细节，不需要开发人员关注这些细节，比如序列化和反序列化、网络传输协议的细节。  
-
-### 1.2.3. RPC框架需要解决的问题？  
+## 1.4. RPC框架需要解决的问题？  
 &emsp; RPC框架需要解决的问题？  
 1. 如何确定客户端和服务端之间的通信协议？  
 2. 如何更高效地进行网络通信？  
@@ -107,15 +106,14 @@ https://blog.csdn.net/u013474436/article/details/105059839
 4. 客户端如何发现这些暴露的服务？  
 5. 如何更高效地对请求对象和响应结果进行序列化和反序列化操作？  
 
-### 1.2.4. 使用了哪些技术？  
+## 1.5. 使用了哪些技术？  
 &emsp; 一个比较完善的RPC框架  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-7.png)  
 
-#### 1.2.4.1. 远程代理对象(动态代理)
-&emsp; 生成Client Stub（客户端存根）和Server Stub（服务端存根）的时候需要用到java动态代理技术，可以使用jdk提供的原生的动态代理机制，也可以使用开源的：Cglib代理，Javassist字节码生成技术。  
-&emsp; 服务调用者用的服务实际是远程服务的本地代理。说白了就是通过动态代理来实现。  
+### 1.5.1. 远程代理对象(动态代理)
+&emsp; 服务调用者用的服务实际是远程服务的本地代理。生成Client Stub（客户端存根）和Server Stub（服务端存根）的时候需要用到java动态代理技术，可以使用jdk提供的原生的动态代理机制，也可以使用开源的：Cglib代理，Javassist字节码生成技术。   
 
-#### 1.2.4.2. 序列化
+### 1.5.2. 序列化
 &emsp; 在网络中，所有的数据都将会被转化为字节进行传送，所以为了能够使参数对象在网络中进行传输，需要对这些参数进行序列化和反序列化操作。
 
 * 序列化：把对象转换为字节序列的过程称为对象的序列化，也就是编码的过程。
@@ -123,23 +121,15 @@ https://blog.csdn.net/u013474436/article/details/105059839
 
 &emsp; 目前比较高效的开源序列化框架：如Kryo、fastjson和Protobuf等。
 
-#### 1.2.4.3. 通信
+### 1.5.3. 通信
 &emsp; **通信方式：**  
-&emsp; 出于并发性能的考虑，传统的阻塞式IO显然不太合适，因此需要异步的IO，即 NIO。
+&emsp; 出于并发性能的考虑，传统的阻塞式IO显然不太合适，因此需要异步的IO，即 NIO。  
 &emsp; Java提供了NIO的解决方案，Java 7也提供了更优秀的NIO.2 支持。可以选择Netty或者mina来解决NIO数据传输的问题。
  
 &emsp; **通信协议：**  
-&emsp; <font color = "lime">RPC框架与具体的协议无关。RPC 可基于HTTP 或 TCP 协议。</font>Web Service 就是基于 HTTP 协议的 RPC，它具有良好的跨平台性，但其性能却不如基于 TCP 协议的 RPC。  
+&emsp; <font color = "lime">RPC框架与具体的协议无关。RPC 可基于HTTP或TCP协议。</font>Web Service 就是基于HTTP协议的RPC，它具有良好的跨平台性，但其性能却不如基于 TCP 协议的 RPC。  
 
-1. TCP/HTTP：众所周知，TCP 是传输层协议，HTTP 是应用层协议，而传输层较应用层更加底层，在数据传输方面，越底层越快，因此，在一般情况下，TCP 一定比 HTTP 快。  
-2. 消息ID：RPC 的应用场景实质是一种可靠的请求应答消息流，和 HTTP 类似。因此选择长连接方式的 TCP 协议会更高效，与 HTTP 不同的是在协议层面我们定义了每个消息的唯一 id，因此可以更容易的复用连接。  
-3. IO方式：为了支持高并发，传统的阻塞式 IO 显然不太合适，因此我们需要异步的 IO，即 NIO。Java 提供了 NIO 的解决方案，Java 7 也提供了更优秀的 NIO.2 支持。  
-4. 多连接：既然使用长连接，那么第一个问题是到底 client 和 server 之间需要多少根连接？实际上单连接和多连接在使用上没有区别，对于数据传输量较小的应用类型，单连接基本足够。单连接和多连接最大的区别在于，每根连接都有自己私有的发送和接收缓冲区，因此大数据量传输时分散在不同的连接缓冲区会得到更好的吞吐效率。所以，如果你的数据传输量不足以让单连接的缓冲区一直处于饱和状态的话，那么使用多连接并不会产生任何明显的提升，反而会增加连接管理的开销。  
-5. 心跳： 连接是由 client 端发起建立并维持。如果 client 和 server 之间是直连的，那么连接一般不会中断（当然物理链路故障除外）。如果 client 和 server 连接经过一些负载中转设备，有可能连接一段时间不活跃时会被这些中间设备中断。为了保持连接有必要定时为每个连接发送心跳数据以维持连接不中断。心跳消息 是 RPC 框架库使用的内部消息，在前文协议头结构中也有一个专门的心跳位，就是用来标记心跳消息的，它对业务应用透明。  
-
-
-
-### 1.2.5. RPC中的通信协议  
+#### 1.5.3.1. RPC中的通信协议  
 <!-- 
  
 https://blog.csdn.net/u013952133/article/details/79256799
@@ -155,53 +145,44 @@ https://blog.csdn.net/u013952133/article/details/79256799
 
 
 &emsp; **RESTFul和RPC形式url**  
-
 &emsp; RESTFul把所有网络上的实体作为资源，具体的资源通过不同的格式作为表现层，例如图片的表现层可能是jpg，也可能是png；然后通过http协议的常用操作方式(例如GET、POST等)来改变和转换资源状态，也就是表现层转换  
 &emsp; 而传统的RPC形式url会把操作类型、需要远程调用的服务接口名、参数都通过queryString携带到服务端，RESTFul则把操作类型放到了http请求方式中，使得url更加简洁，只留下一部分参数在url中  
 
+&emsp; 比如按照id 查找用户：  
+
+* 如果是RPC风格的url应该是这样的：GET /queryUser?userid=xxx；
+* 而RESTful风格通常是这样的：GET /user/{userid}
+
+
 <!-- 
-
-
 RPC：面向过程，也就是要做一件什么事情，只发送 GET 和 POST 请求；GET 用来查询信息，其他情况下一律用 POST；请求参数是动词。
-
 RESTful：面向资源，这里的资源可以是一段文字、一个文件、一张图片，总之是一个具体的存在，可以使用 GET、POST、DELETE、PUT 请求，对应了增删查改的操作；请求参数是名词。
-
-比如按照id 查找用户：
-
-    如果是 RPC 风格的 url 应该是这样的：GET /queryUser?userid=xxx；
-    而 RESTful 风格通常是这样的：GET /user/{userid}
 -->
 
-#### 1.2.5.1. 服务暴露（服务注册中心）
+### 1.5.4. 服务暴露（服务注册中心）
 
-&emsp; 可选：Redis、Zookeeper、Consul 、Etcd。
+&emsp; 可选：Redis、Zookeeper、Consul 、Etcd。  
 &emsp; 一般使用ZooKeeper提供服务注册与发现功能，解决单点故障以及分布式部署的问题(注册中心)。  
 
-## 1.3. RPC结构拆解
+## 1.6. RPC结构拆解
 &emsp; 如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-3.png)   
 &emsp; RPC 服务方通过 RpcServer 去导出（export）远程接口方法，而客户方通过 RpcClient 去引入（import）远程接口方法。客户方像调用本地方法一样去调用远程接口方法，RPC 框架提供接口的代理实现，实际的调用将委托给代理RpcProxy 。代理封装调用信息并将调用转交给RpcInvoker 去实际执行。在客户端的RpcInvoker 通过连接器RpcConnector 去维持与服务端的通道RpcChannel，并使用RpcProtocol 执行协议编码（encode）并将编码后的请求消息通过通道发送给服务方。  
-&emsp; RPC 服务端接收器 RpcAcceptor 接收客户端的调用请求，同样使用RpcProtocol 执行协议解码（decode）。解码后的调用信息传递给RpcProcessor 去控制处理调用过程，最后再委托调用给RpcInvoker 去实际执行并返回调用结果。如下是各个部分的详细职责：  
+&emsp; RPC 服务端接收器 RpcAcceptor 接收客户端的调用请求，同样使用RpcProtocol 执行协议解码（decode）。解码后的调用信息传递给RpcProcessor 去控制处理调用过程，最后再委托调用给RpcInvoker 去实际执行并返回调用结果。  
 
-1. RpcServer  
-负责导出（export）远程接口  
-2. RpcClient  
-负责导入（import）远程接口的代理实现  
-3. RpcProxy  
-远程接口的代理实现  
-4. RpcInvoker  
-客户方实现：负责编码调用信息和发送调用请求到服务方并等待调用结果返回  
-服务方实现：负责调用服务端接口的具体实现并返回调用结果  
-5. RpcProtocol  
-负责协议编/解码  
-6. RpcConnector  
-负责维持客户方和服务方的连接通道和发送数据到服务方  
-7. RpcAcceptor  
-负责接收客户方请求并返回请求结果  
-8. RpcProcessor  
-负责在服务方控制调用过程，包括管理调用线程池、超时时间等  
-9. RpcChannel  
-数据传输通道  
+&emsp; 如下是各个部分的详细职责：  
+
+1. RpcServer：负责导出（export）远程接口  
+2. RpcClient：负责导入（import）远程接口的代理实现  
+3. RpcProxy：远程接口的代理实现  
+4. RpcInvoker：  
+    * 客户方实现：负责编码调用信息和发送调用请求到服务方并等待调用结果返回  
+    * 服务方实现：负责调用服务端接口的具体实现并返回调用结果  
+5. RpcProtocol：负责协议编/解码  
+6. RpcConnector：负责维持客户方和服务方的连接通道和发送数据到服务方  
+7. RpcAcceptor：负责接收客户方请求并返回请求结果  
+8. RpcProcessor：负责在服务方控制调用过程，包括管理调用线程池、超时时间等  
+9. RpcChannel：数据传输通道  
 
 
 RPC的设计由Client，Client stub，Network ，Server stub，Server构成。 其中Client就是用来调用服务的，Cient stub是用来把调用的方法和参数序列化的（因为要在网络中传输，必须要把对象转变成字节），Network用来传输这些信息到Server stub， Server stub用来把这些信息反序列化的，Server就是服务的提供者，最终调用的就是Server提供的方法。  
@@ -217,7 +198,7 @@ RPC的设计由Client，Client stub，Network ，Server stub，Server构成。 �
 9. 客户端得到最终结果。
 
 
-## 1.4. 流行的RPC框架
+## 1.7. 流行的RPC框架
 
 <!-- 
 Dubbo  
@@ -226,15 +207,23 @@ Motan
 Motan是新浪微博开源的一个Java RPC框架。2016年5月开源。Motan 在微博平台中已经广泛应用，每天为数百个服务完成近千亿次的调用。  
 Thrift  
 Thrift是Apache的一个跨语言的高性能的服务框架，也得到了广泛的应用。  
+
+阿里巴巴 Dubbo：https://github.com/alibaba/dubbo
+新浪微博 Motan：https://github.com/weibocom/motan
+gRPC：https://github.com/grpc/grpc
+rpcx ：https://github.com/smallnest/rpcx
+Apache Thrift ：https://thrift.apache.org/
 -->
 
 &emsp; 目前常用的RPC框架如下：  
 1. Thrift：thrift 是一个软件框架，用来进行可扩展且跨语言的服务的开发。它结合了功能强大的软件堆栈和代码生成引擎，以构建在 C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, JavaScript, Node.js, Smalltalk, and OCaml 这些编程语言间无缝结合的、高效的服务。  
 2. Dubbo：Dubbo是一个分布式服务框架，以及SOA治理方案。其功能主要包括：高性能NIO通讯及多协议集成，服务动态寻址与路由，软负载均衡与容错，依赖分析与降级等。 Dubbo是阿里巴巴内部的SOA服务化治理方案的核心框架，Dubbo自2011年开源后，已被许多非阿里系公司使用。  
 3. gRPC是Google开发的高性能、通用的开源RPC框架，其由Google主要面向移动应用开发并基于HTTP/2协议标准而设计，基于ProtoBuf(Protocol Buffers)序列化协议开发，且支持众多开发语言。本身它不是分布式的，所以要实现上面的框架的功能需要进一步的开发。  
-4. Spring Cloud：Spring Cloud由众多子项目组成，如Spring Cloud Config、Spring Cloud Netflix、Spring Cloud Consul 等，提供了搭建分布式系统及微服务常用的工具，如配置管理、服务发现、断路器、智能路由、微代理、控制总线、一次性token、全局锁、选主、分布式会话 和集群状态等，满足了构建微服务所需的所有解决方案。Spring Cloud基于Spring Boot, 使得开发部署极其简单。  
+ 
+&emsp; SPringCloud与RPC：  
+&emsp; Spring Cloud 中 feign 的远程调用 和rpc调用非常契合。但spring cloud更是一个微服务全家桶框架。    
 
-## 1.5. RPC和消息队列的差异  
+## 1.8. RPC和消息队列的差异  
 1. 功能差异  
     在架构上，RPC和Message的差异点是，Message有一个中间结点Message Queue，可以把消息存储。  
     &emsp; 消息的特点：  
