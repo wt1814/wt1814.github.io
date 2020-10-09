@@ -121,6 +121,7 @@ Gitee： https://gitee.com/wt1814/
 [GC垃圾回收](/docs/java/JVM/5.GC垃圾回收.md)  
 [JVM调优-基础](/docs/java/JVM/6.JVM调优-基础.md)  
 [JVM调优](/docs/java/JVM/7.JVM调优.md)  
+&emsp; [JVM排查案例](/docs/java/JVM/case.md)  
 [JAVA线上故障排查](/docs/Linux/Linux/problem.md)  
 [Arthas]()  
 
