@@ -4,15 +4,15 @@
 
 - [1. Dubbo](#1-dubbo)
     - [1.1. Dubbo工作流程](#11-dubbo工作流程)
-        - [1.1.1. Dubbo需要Web容器吗？内置了哪几种服务容器？](#111-dubbo需要web容器吗内置了哪几种服务容器)
-        - [1.1.2. Dubbo有哪些注册中心？](#112-dubbo有哪些注册中心)
-        - [1.1.3. Dubbo支持哪些序列化方式？](#113-dubbo支持哪些序列化方式)
-        - [1.1.4. 通信协议](#114-通信协议)
-        - [1.1.5. 服务提供者能实现失效踢出是什么原理？](#115-服务提供者能实现失效踢出是什么原理)
-        - [1.1.6. Dubbo服务之间的调用是阻塞的吗？](#116-dubbo服务之间的调用是阻塞的吗)
-        - [1.1.7. ※※※负载均衡](#117-※※※负载均衡)
-        - [1.1.8. ※※※集群容错策略](#118-※※※集群容错策略)
-        - [1.1.9. 服务降级](#119-服务降级)
+    - [1.1.1. Dubbo需要Web容器吗？内置了哪几种服务容器？](#111-dubbo需要web容器吗内置了哪几种服务容器)
+    - [1.1.2. Dubbo有哪些注册中心？](#112-dubbo有哪些注册中心)
+    - [1.1.3. Dubbo支持哪些序列化方式？](#113-dubbo支持哪些序列化方式)
+    - [1.1.4. 通信协议](#114-通信协议)
+    - [1.1.5. 服务提供者能实现失效踢出是什么原理？](#115-服务提供者能实现失效踢出是什么原理)
+    - [1.1.6. Dubbo服务之间的调用是阻塞的吗？](#116-dubbo服务之间的调用是阻塞的吗)
+    - [1.1.7. ※※※负载均衡](#117-※※※负载均衡)
+    - [1.1.8. ※※※集群容错策略](#118-※※※集群容错策略)
+    - [1.1.9. 服务降级](#119-服务降级)
     - [1.2. Dubbo和Spring Cloud](#12-dubbo和spring-cloud)
     - [1.3. Dubbo中的SPI](#13-dubbo中的spi)
     - [1.4. Dubbo对Spring的扩展](#14-dubbo对spring的扩展)
@@ -21,15 +21,18 @@
 <!-- /TOC -->
 
 <!-- 
-Dubbo原理  
-Dubbo 路由机制的实现 
-https://mp.weixin.qq.com/s/D81M2PgyQTLEOif_Ex6c-A
-Dubbo 扩展点加载机制：从 Java SPI 到 Dubbo SPI 
-https://mp.weixin.qq.com/s/PMF2kqT-XnAVmrxoutE0eQ
-Dubbo之服务消费原理 
-https://mp.weixin.qq.com/s/9ibX-46VfTnBLWcSSLpXQg
+ 
+芋道源码
+http://www.iocoder.cn/Dubbo/good-collection/
+
 Dubbo之服务暴露 
 https://mp.weixin.qq.com/s/TK9ZU3Vm4IoTrrwmbvV-uQ
+Dubbo之服务消费原理 
+https://mp.weixin.qq.com/s/9ibX-46VfTnBLWcSSLpXQg
+Dubbo 扩展点加载机制：从 Java SPI 到 Dubbo SPI 
+https://mp.weixin.qq.com/s/PMF2kqT-XnAVmrxoutE0eQ
+Dubbo 路由机制的实现 
+https://mp.weixin.qq.com/s/D81M2PgyQTLEOif_Ex6c-A
 Dubbo 负载均衡的实现 
 https://mp.weixin.qq.com/s/6Kn9uJ7n6W8BMm4OZmhxIQ
 
@@ -63,43 +66,43 @@ https://mp.weixin.qq.com/s/6Kn9uJ7n6W8BMm4OZmhxIQ
 5. <font color = "red">(invoke)服务消费者Consumer，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。</font>  
 6. (count)服务消费者Consumer和提供者Provider，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。  
 
-### 1.1.1. Dubbo需要Web容器吗？内置了哪几种服务容器？  
+## 1.1.1. Dubbo需要Web容器吗？内置了哪几种服务容器？  
 &emsp; 不需要，如果强制使用Web容器，只会增加复杂性，也浪费资源。  
 &emsp; Dubbo内置了Spring Container、Jetty Container、Log4j Container。   
 &emsp; Dubbo 的服务容器只是一个简单的 Main 方法，并加载一个简单的 Spring 容器，用于暴露服务。  
 
-### 1.1.2. Dubbo有哪些注册中心？  
+## 1.1.2. Dubbo有哪些注册中心？  
 
 * Multicast注册中心：Multicast注册中心不需要任何中心节点，只要广播地址，就能进行服务注册和发现。基于网络中组播传输实现；  
 * Zookeeper注册中心：基于分布式协调系统Zookeeper实现，采用Zookeeper的watch机制实现数据变更；  
 *  redis注册中心：基于redis实现，采用key/Map存储，住key存储服务名和类型，Map中key存储服务URL，value服务过期时间。基于redis的发布/订阅模式通知数据变更；  
 * Simple注册中心。  
 
-### 1.1.3. Dubbo支持哪些序列化方式？  
+## 1.1.3. Dubbo支持哪些序列化方式？  
 &emsp; 默认使用Hessian序列化，还有Duddo、FastJson、Java自带序列化。   
 
-### 1.1.4. 通信协议  
+## 1.1.4. 通信协议  
 &emsp; 不同服务在性能上适用不同协议进行传输，比如大数据用短连接协议，小数据大并发用长连接协议。  
 
-|协议名称	|实现描述	|连接	|适用范围	|使用场景|
+|协议名称|实现描述|连接|适用范围|使用场景|
 |---|---|---|---|---|
 |dubbo	|传输：mina、netty、grizzy <br/>序列化：dubbo、hessian2、java、json|dubbo缺省，采用单一长连接和NIO异步通讯，传输协议TCP|1.传入传出参数数据包较小<br/>2.消费者比提供者多<br/>3.常规远程服务方法调用<br/>4.不适合传送大数据量的服务，比如文件、传视频|常规远程服务方法调用|
-|rmi|传输：java  rmi<br/>序列化：java 标准序列化（实现ser接口）	|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：TCP/IP<br/>4.传输方式：BIO	|1.常规RPC调用<br/>2.与原RMI客户端互操作<br/>3.可传文件<br/>4.不支持防火墙穿|常规远程服务方法调用，与原生RMI服务互操作|
+|rmi|传输：java  rmi<br/>序列化：java 标准序列化（实现ser接口）|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：TCP/IP<br/>4.传输方式：BIO	|1.常规RPC调用<br/>2.与原RMI客户端互操作<br/>3.可传文件<br/>4.不支持防火墙穿|常规远程服务方法调用，与原生RMI服务互操作|
 |hessian|传输：Serverlet容器<br/>序列化：hessian二进制序列化|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|	1.提供者比消费者多<br/>2.可传文件<br/>3.跨语言传输|	需同时给应用程序和浏览器JS使用的服务。|
-|http|传输：Servlet容器<br/>序列化：表单序列化|	1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|	1.提供者多余消费者<br/>2.数据包混合	|需同时给应用程序和浏览器JS使用的服务。|
-|webservice	|传输：HTTP<br/>序列化：SOAP文件序列化	|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|	1.系统集成<br/>2.跨语言调用	|系统集成，跨语言调用|
+|http|传输：Servlet容器<br/>序列化：表单序列化|	1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|1.提供者多余消费者<br/>2.数据包混合	|需同时给应用程序和浏览器JS使用的服务。|
+|webservice	|传输：HTTP<br/>序列化：SOAP文件序列化|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|	1.系统集成<br/>2.跨语言调用|系统集成，跨语言调用|
 |thrift	|与thrift RPC实现集成，并在基础上修改了报文头 |长连接、NIO异步传输 |||	
 |Redis|||||  	
 
-### 1.1.5. 服务提供者能实现失效踢出是什么原理？  
+## 1.1.5. 服务提供者能实现失效踢出是什么原理？  
 &emsp; 服务失效踢出基于zookeeper的临时节点原理。  
 
-### 1.1.6. Dubbo服务之间的调用是阻塞的吗？  
+## 1.1.6. Dubbo服务之间的调用是阻塞的吗？  
 &emsp; 默认是同步等待结果，阻塞的，支持异步调用。Dubbo的异步调用是基于NIO的非阻塞实现并行调用，客户端不需要启动多线程即可完成并行调用多个远程服务，相对多线程开销较小，异步调用会返回一个 Future 对象。  
 &emsp; 异步调用流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-12.png)   
 
-### 1.1.7. ※※※负载均衡  
+## 1.1.7. ※※※负载均衡  
 * <font color = "red">Random（缺省），随机，按权重设置随机概率。</font>在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。  
 * <font color = "red">RoundRobin，轮循，按公约后的权重设置轮循比率。</font>  
 &emsp; 轮询负载均衡算法的不足：存在慢的提供者累积请求的问题，比如：第二台机器很慢，但没挂，当请求调到第二台时就卡在那，久而久之，所有请求都卡在调到第二台上。  
@@ -109,7 +112,7 @@ https://mp.weixin.qq.com/s/6Kn9uJ7n6W8BMm4OZmhxIQ
     * 缺省只对第一个参数Hash，如果要修改，请配置<dubbo:parameter key="hash.arguments" value="0,1" /\>  
     * 缺省用160份虚拟节点，如果要修改，请配置<dubbo:parameter key="hash.nodes" value="320" /\>  
 
-### 1.1.8. ※※※集群容错策略  
+## 1.1.8. ※※※集群容错策略  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-13.png)   
 
 &emsp; <font color = "red">在集群调用失败时，Dubbo 提供了多种容错方案，缺省为 failover 重试。</font>下面列举dubbo支持的容错策略：  
@@ -121,9 +124,11 @@ https://mp.weixin.qq.com/s/6Kn9uJ7n6W8BMm4OZmhxIQ
 * Forking - 并行调用多个服务器，只要一个成功即返回。通常用于实时性要求较高的读操作，但需要浪费更多服务资源。可通过 forks="2" 来设置最大并行数。  
 * Broadcast - 广播调用所有提供者，逐个调用，任意一台报错则报错。通常用于通知所有提供者更新缓存或日志等本地资源信息。  
 
-### 1.1.9. 服务降级  
+## 1.1.9. 服务降级  
 &emsp; 当服务器压力过大时，可以通过服务降级来使某些非关键服务的调用变得简单；可以对其直接进行屏蔽，即客户端不发送请求直接返回null；也可以正常发送请求当请求超时或不可达时再返回null。  
 &emsp; 服务降级的相关配置可以直接在dubbo-admin的监控页面进行配置；通常是基于消费者来配置的，在dubbo-admin找到对应的消费者想要降级的服务，点击其后面的屏蔽或容错按钮即可生效；其中，屏蔽按钮点击表示放弃远程调用直接返回空，而容错按钮点击表示继续尝试进行远程调用当调用失败时再返回空。  
+
+------
 
 ## 1.2. Dubbo和Spring Cloud  
 &emsp; Dubbo是SOA时代的产物，它的关注点主要在于服务的调用，流量分发、流量监控和熔断。  
@@ -147,8 +152,8 @@ JDK 标准的 SPI 会一次性加载所有的扩展实现，如果有的扩展�
 DUBBO SPI   
 1， 对 Dubbo 进行扩展， 不需要改动 Dubbo 的源码  
 2， 延迟加载， 可以一次只加载自己想要加载的扩展实现。  
-3， 增加了对扩展点 IOC 和 AOP 的支持， 一个扩展点可以直接 setter 注入其它扩展 点。  
-3， Dubbo 的扩展机制能很好的支持第三方 IoC 容器， 默认支持 Spring Bean。  
+3， 增加了对扩展点 IOC 和 AOP 的支持，一个扩展点可以直接setter注入其它扩展 点。  
+3， Dubbo 的扩展机制能很好的支持第三方IoC容器， 默认支持Spring Bean。  
 
 
 
