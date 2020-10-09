@@ -242,6 +242,7 @@
     * [ES优化](/docs/ES/5.optimization.md)  
     * [ELK](/docs/ES/6.ELK与EFK.md)   
 
+* [延迟队列](/docs/frame/delayQueue.md)  
 * [分布式调度](/docs/frame/taskSheduling.md)  
     * [XXL-JOB](/docs/frame/XXL-JOB.md)  
 

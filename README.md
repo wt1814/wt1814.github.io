@@ -122,7 +122,7 @@ Gitee： https://gitee.com/wt1814/
 [JVM调优-基础](/docs/java/JVM/6.JVM调优-基础.md)  
 [JVM调优](/docs/java/JVM/7.JVM调优.md)  
 [JAVA线上故障排查](/docs/Linux/Linux/problem.md)  
-
+[Arthas]()  
 
 ## 数据库  
 [学习SQL的总结](/docs/SQL/学习SQL的总结.md)  
@@ -314,6 +314,8 @@ Gitee： https://gitee.com/wt1814/
 [ELK与EFK](/docs/ES/6.ELK与EFK.md)    
 
 ### 分布式调度
+[延迟队列](/docs/frame/delayQueue.md)  
+
 [分布式调度](/docs/frame/taskSheduling.md)  
 &emsp; [XXL-JOB](/docs/frame/XXL-JOB.md) 
 
@@ -333,7 +335,7 @@ Gitee： https://gitee.com/wt1814/
 [RESTful](/docs/microService/RESTful.md)  
 [API接口设计](/docs/web/API.md)    
 &emsp; [接口幂等](/docs/web/idempotent.md)  
-
+&emsp; [接口防刷]()  
 
 [JavaBean](/docs/web/JavaBean.md)  
 &emsp; [POJO](/docs/web/POJO.md)  
