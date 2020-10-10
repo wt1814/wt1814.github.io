@@ -34,7 +34,7 @@
     - [项目构建基础](#项目构建基础)
     - [架构设计](#架构设计)
     - [系统接入层](#系统接入层)
-            - [Nginx](#nginx)
+        - [Nginx](#nginx)
     - [Linux](#linux)
     - [DevOps](#devops)
     - [算法](#算法)
@@ -241,7 +241,7 @@ Gitee： https://gitee.com/wt1814/
 [Dubbo使用教程](/docs/microService/Dubbo/Dubbo使用教程.md)  
 [SpringCloudAlibaba](/docs/microService/Dubbo/SpringCloudAlibaba.md)  
 
-[Dubbo项目结构]()  
+[Dubbo项目结构](/docs/microService/Dubbo/architecture.md)  
 [Dubbo框架设计](/docs/microService/Dubbo/design.md)  
 
 
@@ -389,7 +389,7 @@ Keepalived服务详解
 https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 -->
 
-#### Nginx  
+### Nginx  
 [Nginx](/docs/Linux/Nginx/1.nginx.md)  
 [Nginx使用](/docs/Linux/Nginx/2.nginx使用场景.md)   
 [Nginx运维](/docs/Linux/Nginx/3.nginx运维.md)  
