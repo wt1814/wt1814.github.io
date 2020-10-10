@@ -1,11 +1,13 @@
-<!-- 
 
+
+# Dubbo框架设计  
+
+<!-- 
 官网
 http://dubbo.apache.org/zh-cn/docs/dev/design.html
 
 -->
 
-# Dubbo框架设计  
 ## 源码构建 
 git clone https://github.com/apache/dubbo.git ，将代码导入编辑器。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-15.png)   
