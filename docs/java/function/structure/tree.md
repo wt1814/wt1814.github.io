@@ -42,6 +42,13 @@ https://mp.weixin.qq.com/s?__biz=MzA4NDE4MzY2MA==&mid=2647523614&idx=1&sn=cf4ee3
 -->
 
 ### 1.1.3. 红黑树  
+
+<!-- 
+如果面试被问“红黑树”，可以这样回答 
+https://mp.weixin.qq.com/s/2_G9dKF033_suehS0Fer1w
+
+-->
+
 &emsp; <font color = "red">红黑树是一种近似平衡的二叉查找树。在每个节点增加一个存储位表示节点的颜色，可以是红或黑（非红即黑）。其主要的优点就是“平衡“，</font>即左右子树高度几乎一致，以此来防止树退化为链表，通过这种方式来保障查找的时间复杂度为 log(n)。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-6.png)  
 

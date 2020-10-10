@@ -178,7 +178,8 @@
     * [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
     * [Dubbo使用教程](/docs/microService/Dubbo/Dubbo使用教程.md)  
     * [SpringCloudAlibaba](/docs/microService/Dubbo/SpringCloudAlibaba.md)  
-    * [Dubbo原理](/docs/microService/Dubbo/Dubbo使用教程.md)  
+    * [Dubbo项目结构]()  
+    * [Dubbo框架设计](/docs/microService/Dubbo/design.md)  
 
 * Zookeeper
     * [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
