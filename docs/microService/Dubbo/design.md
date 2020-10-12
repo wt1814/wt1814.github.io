@@ -9,12 +9,12 @@ http://dubbo.apache.org/zh-cn/docs/dev/design.html
 -->
 
 ## 源码构建 
-git clone https://github.com/apache/dubbo.git ，将代码导入编辑器。  
+&emsp; git clone https://github.com/apache/dubbo.git ，将代码导入编辑器。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-15.png)   
 
 ## 整体设计  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-16.png)   
-图例说明：  
+&emsp; 图例说明：  
 
 * 图中左边淡蓝背景的为服务消费方使用的接口，右边淡绿色背景的为服务提供方使用的接口，位于中轴线上的为双方都用到的接口。  
 * 图中从下至上分为十层，各层均为单向依赖，右边的黑色箭头代表层之间的依赖关系，每一层都可以剥离上层被复用，其中，Service 和 Config 层为 API，其它各层均为 SPI。  
@@ -49,7 +49,7 @@ http://svip.iocoder.cn/Dubbo/intro/
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-17.png)   
 
-模块说明：
+&emsp; 模块说明：
 
 * dubbo-common 公共逻辑模块：包括 Util 类和通用模型。
 * dubbo-remoting 远程通讯模块：相当于 Dubbo 协议的实现，如果 RPC 用 RMI协议则不需要使用此包。
@@ -60,7 +60,7 @@ http://svip.iocoder.cn/Dubbo/intro/
 * dubbo-config 配置模块：是 Dubbo 对外的 API，用户通过 Config 使用Dubbo，隐藏 Dubbo 所有细节。
 * dubbo-container 容器模块：是一个 Standlone 的容器，以简单的 Main 加载 Spring 启动，因为服务通常不需要 Tomcat/JBoss 等 Web 容器的特性，没必要用 Web 容器去加载服务。
 
-整体上按照分层结构进行分包，与分层的不同点在于：  
+&emsp; 整体上按照分层结构进行分包，与分层的不同点在于：  
 
 * container 为服务容器，用于部署运行服务，没有在层中画出。
 * protocol 层和 proxy 层都放在 rpc 模块中，这两层是 rpc 的核心，在不需要集群也就是只有一个提供者时，可以只使用这两层完成 rpc 调用。
@@ -69,7 +69,7 @@ http://svip.iocoder.cn/Dubbo/intro/
 
 ## 依赖关系  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-18.png)   
-图例说明：  
+&emsp; 图例说明：  
 
 * 图中小方块 Protocol, Cluster, Proxy, Service, Container, Registry, Monitor 代表层或模块，蓝色的表示与业务有交互，绿色的表示只对 Dubbo 内部交互。
 * 图中背景方块 Consumer, Provider, Registry, Monitor 代表部署逻辑拓扑节点。
@@ -77,21 +77,20 @@ http://svip.iocoder.cn/Dubbo/intro/
 * 图中只包含 RPC 的层，不包含 Remoting 的层，Remoting 整体都隐含在 Protocol 中。
 
 ## 调用链  
-展开总设计图的红色调用链，如下：  
+&emsp; 展开总设计图的红色调用链，如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-19.png)   
 
 ## 暴露服务时序  
-展开总设计图左边服务提供方暴露服务的蓝色初始化链，时序图如下：  
+&emsp; 展开总设计图左边服务提供方暴露服务的蓝色初始化链，时序图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-20.png)   
 
 ## 引用服务时序
-展开总设计图右边服务消费方引用服务的蓝色初始化链，时序图如下：  
+&emsp; 展开总设计图右边服务消费方引用服务的蓝色初始化链，时序图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-21.png)   
 
 
 ## 领域模型
-
-在 Dubbo 的核心领域模型中：  
+&emsp; 在Dubbo 的核心领域模型中：  
 
 * Protocol 是服务域，它是 Invoker 暴露和引用的主功能入口，它负责 Invoker 的生命周期管理。
 * Invoker 是实体域，它是 Dubbo 的核心模型，其它模型都向它靠扰，或转换成它，它代表一个可执行体，可向它发起 invoke 调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。

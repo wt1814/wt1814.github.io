@@ -344,20 +344,23 @@ Gitee： https://gitee.com/wt1814/
 ---
 
 ## 项目构建基础  
-[日志系统](/docs/web/log.md)   
-
-[乱码]()  
-[统一日志记录]()  
-
 [RESTful](/docs/microService/RESTful.md)  
 [API接口设计](/docs/web/API.md)    
 &emsp; [接口幂等](/docs/web/idempotent.md)  
 &emsp; [接口防刷]()  
+&emsp; [接口异常处理]()  
 
 [JavaBean](/docs/web/JavaBean.md)  
 &emsp; [POJO](/docs/web/POJO.md)  
 &emsp; [BeanUtils](/docs/web/BeanUtils.md)  
 &emsp; [参数校验](/docs/web/Validation.md)  
+
+[日志系统](/docs/web/log.md)   
+
+[乱码]()  
+[统一日志记录]()  
+
+
 
 [SpringTest](/docs/web/test.md)  
 

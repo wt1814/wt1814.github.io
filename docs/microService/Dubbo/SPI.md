@@ -1,6 +1,17 @@
+<!-- TOC -->
 
+- [1. Dubbo SPI](#1-dubbo-spi)
+    - [1.1. SPI简介](#11-spi简介)
+    - [1.2. SPI示例](#12-spi示例)
+    - [1.3. 扩展点特性](#13-扩展点特性)
+        - [1.3.1. 扩展点自动包装](#131-扩展点自动包装)
+        - [1.3.2. 扩展点自动装配](#132-扩展点自动装配)
+        - [1.3.3. 扩展点自适应](#133-扩展点自适应)
+        - [1.3.4. 扩展点自动激活](#134-扩展点自动激活)
 
-# Dubbo SPI  
+<!-- /TOC -->
+
+# 1. Dubbo SPI  
 <!-- 
 
 Dubbo SPI  
@@ -16,7 +27,7 @@ http://dubbo.apache.org/zh-cn/docs/source_code_guide/adaptive-extension.html
 http://dubbo.apache.org/zh-cn/docs/dev/SPI.html
 -->
 
-## SPI简介  
+## 1.1. SPI简介  
 &emsp; SPI 全称为 Service Provider Interface，是一种服务发现机制。SPI 的本质是将接口实现类的全限定名配置在文件中，并由服务加载器读取配置文件，加载实现类。这样可以在运行时，动态为接口替换实现类。正因此特性，可以很容易的通过 SPI 机制为程序提供拓展功能。SPI 机制在第三方框架中也有所应用，比如 Dubbo 就是通过 SPI 机制加载所有的组件。不过，Dubbo 并未使用 Java 原生的 SPI 机制，而是对其进行了增强，使其能够更好的满足需求。在 Dubbo 中，SPI 是一个非常重要的模块。基于 SPI，可以很容易的对 Dubbo 进行拓展。如果大家想要学习 Dubbo 的源码，SPI 机制务必弄懂。  
 &emsp; Dubbo 改进了 JDK 标准的 SPI 的以下问题：  
 
@@ -26,7 +37,7 @@ http://dubbo.apache.org/zh-cn/docs/dev/SPI.html
 
 &emsp; 接下来，先来了解一下 Java SPI 与 Dubbo SPI 的用法。  
 
-## SPI示例  
+## 1.2. SPI示例  
 &emsp; Dubbo 并未使用 Java SPI，而是重新实现了一套功能更强的 SPI 机制。Dubbo SPI 的相关逻辑被封装在了 ExtensionLoader 类中，通过 ExtensionLoader，我们可以加载指定的实现类。Dubbo SPI 所需的配置文件需放置在 META-INF/dubbo 路径下，配置内容如下。  
 
 ```properties
@@ -52,8 +63,8 @@ public class DubboSPITest {
 &emsp; 测试结果如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-22.png)   
 
-## 扩展点特性  
-### 扩展点自动包装  
+## 1.3. 扩展点特性  
+### 1.3.1. 扩展点自动包装  
 &emsp; 自动包装扩展点的 Wrapper 类。ExtensionLoader 在加载扩展点时，如果加载到的扩展点有拷贝构造函数，则判定为扩展点 Wrapper 类。  
 &emsp; Wrapper类内容：  
 
@@ -77,11 +88,11 @@ public class XxxProtocolWrapper implements Protocol {
     // ...
 }
 ```
-&emsp; Wrapper 类同样实现了扩展点接口，但是 Wrapper 不是扩展点的真正实现。它的用途主要是用于从 ExtensionLoader 返回扩展点时，包装在真正的扩展点实现外。即从 ExtensionLoader 中返回的实际上是 Wrapper 类的实例，Wrapper 持有了实际的扩展点实现类。  
+&emsp; Wrapper类同样实现了扩展点接口，但是 Wrapper 不是扩展点的真正实现。它的用途主要是用于从 ExtensionLoader 返回扩展点时，包装在真正的扩展点实现外。即从 ExtensionLoader 中返回的实际上是 Wrapper 类的实例，Wrapper 持有了实际的扩展点实现类。  
 &emsp; 扩展点的 Wrapper 类可以有多个，也可以根据需要新增。  
 &emsp; 通过 Wrapper 类可以把所有扩展点公共逻辑移至 Wrapper 中。新加的 Wrapper 在所有的扩展点上添加了逻辑，有些类似 AOP，即 Wrapper 代理了扩展点。  
 
-### 扩展点自动装配  
+### 1.3.2. 扩展点自动装配  
 &emsp; 加载扩展点时，自动注入依赖的扩展点。加载扩展点时，扩展点实现类的成员如果为其它扩展点类型，ExtensionLoader 在会自动注入依赖的扩展点。ExtensionLoader 通过扫描扩展点实现类的所有 setter 方法来判定其成员。即 ExtensionLoader 会执行扩展点的拼装操作。  
 &emsp; 示例：有两个为扩展点 CarMaker（造车者）、WheelMaker (造轮者)  
 &emsp; 接口类如下：  
@@ -117,7 +128,7 @@ public class RaceCarMaker implements CarMaker {
 这里带来另一个问题，ExtensionLoader 要注入依赖扩展点时，如何决定要注入依赖扩展点的哪个实现。在这个示例中，即是在多个WheelMaker 的实现中要注入哪个。  
 这个问题在下面一点 扩展点自适应 中说明。  
 
-### 扩展点自适应  
+### 1.3.3. 扩展点自适应  
 &emsp; ExtensionLoader 注入的依赖扩展点是一个 Adaptive 实例，直到扩展点方法执行时才决定调用是哪一个扩展点实现。  
 &emsp; Dubbo 使用 URL 对象（包含了Key-Value）传递配置信息。  
 &emsp; 扩展点方法调用会有URL参数（或是参数有URL成员）  
@@ -175,7 +186,7 @@ public interface Transporter {
 ```
 &emsp; 对于 bind() 方法，Adaptive 实现先查找 server key，如果该 Key 没有值则找 transport key 值，来决定代理到哪个实际扩展点。  
 
-### 扩展点自动激活
+### 1.3.4. 扩展点自动激活
 &emsp; 对于集合类扩展点，比如：Filter, InvokerListener, ExportListener, TelnetHandler, StatusChecker 等，可以同时加载多个实现，此时，可以用自动激活来简化配置，如：  
 
 ```java
