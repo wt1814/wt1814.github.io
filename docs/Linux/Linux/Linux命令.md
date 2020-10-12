@@ -69,6 +69,9 @@
 <!--
 Linux 上几种常用的文件传输方式 
 https://mp.weixin.qq.com/s?__biz=MzU3NTgyODQ1Nw==&mid=2247486417&idx=1&sn=37be3b122f792b313d17cecce3c93291&chksm=fd1c7357ca6bfa415bb0a728986b1e9cc540194d60f95b4c537dd23c92086f4327082649760b&mpshare=1&scene=1&srcid=&sharer_sharetime=1564966405212&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=ecc4386bb884a7b15726e01906103213f69859b70aae98dd60e850fab62274c372e9f641e98e5b558225391ac3a71c7fe63e25bce0cac2c43166b704f6798cf5b611e8b9ff49a69a407482e74b53b4dc&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060834&lang=zh_CN&pass_ticket=hJ%2BSizr3tqhAq3hRq1pBmqb7SdoK%2FKh9k69UgvR0%2BAneIZhpFGHVYOqPaiRuo7Bc
+
+FTP、FTPS 与 SFTP 简介 
+https://mp.weixin.qq.com/s/Dhs44rAO2onroOIwcAEMWQ
 -->
 
 * ftp  

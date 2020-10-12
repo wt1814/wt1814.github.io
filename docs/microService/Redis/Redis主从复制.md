@@ -33,6 +33,11 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-76.png)  
 
 # 1. 主从复制模式  
+<!-- 
+Redis的主从复制是如何做的？复制过程中也会产生各种问题 
+ https://mp.weixin.qq.com/s/ee7Xdj4d1O-D-Yaa9G6U3w
+-->
+
 ## 1.1. 主从复制的作用  
 
 * 数据冗余：主从复制实现了数据的热备份，是持久化之外的一种数据冗余方式。  

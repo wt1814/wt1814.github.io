@@ -18,8 +18,11 @@
 <!-- /TOC -->
 
 <!-- 
- Springboot 关于日期时间格式化处理方式总结 
- https://mp.weixin.qq.com/s/-jy0zEpeWXnvQELGv6PsgA
+Springboot 关于日期时间格式化处理方式总结 
+https://mp.weixin.qq.com/s/-jy0zEpeWXnvQELGv6PsgA
+
+有关机器时间、UTC时间、本地时间的总结 
+https://mp.weixin.qq.com/s/eGgwu-qrtLA-NqrAwAqocg
 -->
 
 # 1. Date/Time API  

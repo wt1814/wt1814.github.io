@@ -33,8 +33,13 @@
 https://mp.weixin.qq.com/s/K7Si5bl7K_pjQPHsLrPh5A
 万字长文的Redis五种数据结构详解（理论+实战），建议收藏。 
 https://mp.weixin.qq.com/s/ipP35Zho9STAgu_lFT79rQ
-
+今天我才知道Redis有9种基本数据类型，据说只有5%的人知道，涨知识了
 https://mp.weixin.qq.com/s/zcWvzZTwUAm2NfAQhxMqeQ
+
+全面阐释Redis常见对象类型的底层数据结构 
+https://mp.weixin.qq.com/s/QVxwJb6F99E17ZaGQlhVTQ
+Redis面试题：Redis的字符串是怎么实现的？ 
+https://mp.weixin.qq.com/s/h9V2a-KMLB-eeYliUksYFw
 -->
 
 ## 1.1. Redis源码阅读之环境搭建及准备  

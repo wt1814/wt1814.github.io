@@ -651,6 +651,12 @@ https://www.jianshu.com/p/87d2ef48e645
 ## 1.5. HashMap的线程安全问题  
 <!-- 
 
+踩坑！JDK8中HashMap依然会死循环！ 
+https://mp.weixin.qq.com/s/BKPKvcENMEQSELPQ4C7ZvQ
+-->
+
+<!-- 
+
 https://blog.csdn.net/swpu_ocean/article/details/88917958
 -->
 
