@@ -181,6 +181,7 @@
     
     * [Dubbo框架设计](/docs/microService/Dubbo/design.md)  
     * [扩展点加载(SPI)](/docs/microService/Dubbo/SPI.md)  
+    * [SPI源码解析](/docs/microService/Dubbo/SPI解析.md)  
 
 * Zookeeper
     * [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  

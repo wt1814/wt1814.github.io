@@ -28,23 +28,23 @@ http://dubbo.apache.org/zh-cn/docs/dev/SPI.html
 -->
 
 ## 1.1. SPI简介  
-&emsp; SPI 全称为 Service Provider Interface，是一种服务发现机制。SPI 的本质是将接口实现类的全限定名配置在文件中，并由服务加载器读取配置文件，加载实现类。这样可以在运行时，动态为接口替换实现类。正因此特性，可以很容易的通过 SPI 机制为程序提供拓展功能。SPI 机制在第三方框架中也有所应用，比如 Dubbo 就是通过 SPI 机制加载所有的组件。不过，Dubbo 并未使用 Java 原生的 SPI 机制，而是对其进行了增强，使其能够更好的满足需求。在 Dubbo 中，SPI 是一个非常重要的模块。基于 SPI，可以很容易的对 Dubbo 进行拓展。如果大家想要学习 Dubbo 的源码，SPI 机制务必弄懂。  
-&emsp; Dubbo 改进了 JDK 标准的 SPI 的以下问题：  
+&emsp; SPI 全称为 Service Provider Interface，是一种服务发现机制。SPI 的本质是将接口实现类的全限定名配置在文件中，并由服务加载器读取配置文件，加载实现类。这样可以在运行时，动态为接口替换实现类。正因此特性，可以很容易的通过 SPI 机制为程序提供拓展功能。SPI 机制在第三方框架中也有所应用，比如 Dubbo 就是通过 SPI 机制加载所有的组件。不过，Dubbo 并未使用 Java 原生的 SPI 机制，而是对其进行了增强，使其能够更好的满足需求。  
+&emsp; Dubbo改进了 JDK 标准的 SPI 的以下问题：  
 
-* JDK 标准的 SPI 会一次性实例化扩展点所有实现，如果有扩展实现初始化很耗时，但如果没用上也加载，会很浪费资源。
+* <font color = "red">JDK 标准的 SPI 会一次性实例化扩展点所有实现，</font>如果有扩展实现初始化很耗时，但如果没用上也加载，会很浪费资源。
 * 如果扩展点加载失败，连扩展点的名称都拿不到了。比如：JDK 标准的 ScriptEngine，通过 getName() 获取脚本类型的名称，但如果 RubyScriptEngine 因为所依赖的 jruby.jar 不存在，导致 RubyScriptEngine 类加载失败，这个失败原因被吃掉了，和 ruby 对应不起来，当用户执行 ruby 脚本时，会报不支持 ruby，而不是真正失败的原因。
-* 增加了对扩展点 IoC 和 AOP 的支持，一个扩展点可以直接 setter 注入其它扩展点。
+* <font color = "red">增加了对扩展点 IoC 和 AOP 的支持，</font>一个扩展点可以直接 setter 注入其它扩展点。
 
 &emsp; 接下来，先来了解一下 Java SPI 与 Dubbo SPI 的用法。  
 
 ## 1.2. SPI示例  
-&emsp; Dubbo 并未使用 Java SPI，而是重新实现了一套功能更强的 SPI 机制。Dubbo SPI 的相关逻辑被封装在了 ExtensionLoader 类中，通过 ExtensionLoader，我们可以加载指定的实现类。Dubbo SPI 所需的配置文件需放置在 META-INF/dubbo 路径下，配置内容如下。  
+&emsp; <font color = "red">Dubbo SPI的相关逻辑被封装在了ExtensionLoader类中，通过ExtensionLoader，可以加载指定的实现类。Dubbo SPI所需的配置文件需放置在 META-INF/dubbo 路径下，</font>配置内容如下。  
 
 ```properties
 optimusPrime = org.apache.spi.OptimusPrime
 bumblebee = org.apache.spi.Bumblebee
 ```
-&emsp; 与 Java SPI 实现类配置不同，Dubbo SPI 是通过键值对的方式进行配置，这样我们可以按需加载指定的实现类。另外，在测试 Dubbo SPI 时，需要在 Robot 接口上标注 @SPI 注解。下面来演示 Dubbo SPI 的用法：  
+&emsp; 与Java SPI实现类配置不同，Dubbo SPI是通过键值对的方式进行配置，这样可以按需加载指定的实现类。另外，在测试Dubbo SPI时，需要在Robot接口上标注 @SPI注解。下面来演示Dubbo SPI的用法：  
 
 ```java
 public class DubboSPITest {
@@ -125,8 +125,7 @@ public class RaceCarMaker implements CarMaker {
 }
 ```
 &emsp; ExtensionLoader 加载 CarMaker 的扩展点实现 RaceCarMaker 时，setWheelMaker 方法的 WheelMaker 也是扩展点则会注入 WheelMaker 的实现。  
-这里带来另一个问题，ExtensionLoader 要注入依赖扩展点时，如何决定要注入依赖扩展点的哪个实现。在这个示例中，即是在多个WheelMaker 的实现中要注入哪个。  
-&emsp; 这个问题在下面一点 扩展点自适应 中说明。  
+&emsp; 这里带来另一个问题，ExtensionLoader 要注入依赖扩展点时，如何决定要注入依赖扩展点的哪个实现。在这个示例中，即是在多个WheelMaker 的实现中要注入哪个。这个问题在下面一点 扩展点自适应 中说明。  
 
 ### 1.3.3. 扩展点自适应  
 &emsp; ExtensionLoader 注入的依赖扩展点是一个 Adaptive 实例，直到扩展点方法执行时才决定调用是哪一个扩展点实现。  

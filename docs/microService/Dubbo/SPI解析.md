@@ -16,8 +16,9 @@
         - [1.2.4. 获得指定拓展对象](#124-获得指定拓展对象)
             - [1.2.4.1. getExtension](#1241-getextension)
             - [1.2.4.2. createExtension](#1242-createextension)
-            - [1.2.4.3. injectExtension](#1243-injectextension)
+            - [1.2.4.3. injectExtension，Dubbo IOC](#1243-injectextensiondubbo-ioc)
         - [1.2.5. 获得自适应的拓展对象](#125-获得自适应的拓展对象)
+            - [1.4. @Adaptive](#14-adaptive)
             - [1.2.5.1. getAdaptiveExtension](#1251-getadaptiveextension)
             - [1.2.5.2. createAdaptiveExtension](#1252-createadaptiveextension)
             - [1.2.5.3. getAdaptiveExtensionClass](#1253-getadaptiveextensionclass)
@@ -25,7 +26,6 @@
         - [1.2.6. 获得激活的拓展对象数组](#126-获得激活的拓展对象数组)
             - [1.2.6.1. getExtensionLoader](#1261-getextensionloader)
     - [1.3. @SPI](#13-spi)
-    - [1.4. @Adaptive](#14-adaptive)
     - [1.5. @Activate](#15-activate)
     - [1.6. ExtensionFactory](#16-extensionfactory)
         - [1.6.1. AdaptiveExtensionFactory](#161-adaptiveextensionfactory)
@@ -37,10 +37,8 @@
 # 1. SPI源码  
 
 <!-- 
-
 Dubbo SPI  
 http://dubbo.apache.org/zh-cn/docs/source_code_guide/dubbo-spi.html
-
 自适应拓展机制
 http://dubbo.apache.org/zh-cn/docs/source_code_guide/adaptive-extension.html
 
@@ -52,7 +50,7 @@ http://dubbo.apache.org/zh-cn/docs/source_code_guide/adaptive-extension.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-22.png)   
 
 ## 1.2. ExtensionLoader  
-&emsp; com.alibaba.dubbo.common.extension.ExtensionLoader ，拓展加载器。这是Dubbo SPI的核心。  
+&emsp; Dubbo SPI 的相关逻辑被封装在了 ExtensionLoader 类(拓展加载器)中，通过 ExtensionLoader，可以加载指定的实现类。  
 
 ### 1.2.1. 属性  
 
@@ -180,20 +178,19 @@ private Set<Class<?>> cachedWrapperClasses;
 private Map<String, IllegalStateException> exceptions = new ConcurrentHashMap<String, IllegalStateException>();
 ```
 * 第 1 至 5 行：在 META-INF/dubbo/internal/ 和 META-INF/dubbo/ 目录下，放置 接口全限定名 配置文件，每行内容为：拓展名=拓展实现类全限定名。
-
-    * META-INF/dubbo/internal/ 目录下，从名字上可以看出，用于 Dubbo 内部提供的拓展实现。下图是一个例子：
+    * META-INF/dubbo/internal/ 目录下，从名字上可以看出，用于 Dubbo 内部提供的拓展实现。下图是一个例子：  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-26.png)   
     * META-INF/dubbo/ 目录下，用于用户自定义的拓展实现。
     * META-INF/service/ 目录下，Java SPI 的配置目录。在 「加载拓展配置」 中，会看到 Dubbo SPI 对 Java SPI 做了兼容。  
-
 * 第 7 行：NAME_SEPARATOR ，拓展名分隔符，使用逗号。
-* 第 9 至 124 行，我们将属性分成了两类：1）静态属性；2）对象属性。这是为啥呢？
-
+* 第 9 至 124 行，将属性分成了两类：1）静态属性；2）对象属性。
     * 【静态属性】一方面，ExtensionLoader 是 ExtensionLoader 的管理容器。一个拓展( 拓展接口 )对应一个 ExtensionLoader 对象。例如，Protocol 和 Filter 分别对应一个 ExtensionLoader 对象。
     * 【对象属性】另一方面，一个拓展通过其 ExtensionLoader 对象，加载它的拓展实现们。我们会发现多个属性都是 “cached“ 开头。ExtensionLoader 考虑到性能和资源的优化，读取拓展配置后，会首先进行缓存。等到 Dubbo 代码真正用到对应的拓展实现时，进行拓展实现的对象的初始化。并且，初始化完成后，也会进行缓存。也就是说：
         * 缓存加载的拓展配置
         * 缓存创建的拓展实现对象 
 
 ### 1.2.2. 获得拓展配置  
+
 #### 1.2.2.1. getExtensionClasses  
 &emsp; getExtensionClasses() 方法，获得拓展实现类数组。  
 
@@ -692,8 +689,20 @@ private T createExtension(String name) {
 
 * 例如：ListenerExporterWrapper、ProtocolFilterWrapper 。  
 
-#### 1.2.4.3. injectExtension  
+
+createExtension 方法的逻辑稍复杂一下，包含了如下的步骤：
+
+* 通过 getExtensionClasses 获取所有的拓展类
+* 通过反射创建拓展对象
+* 向拓展对象中注入依赖
+* 将拓展对象包裹在相应的 Wrapper 对象中
+
+以上步骤中，第一个步骤是加载拓展类的关键，第三和第四个步骤是 Dubbo IOC 与 AOP 的具体实现。  
+
+#### 1.2.4.3. injectExtension，Dubbo IOC  
 &emsp; injectExtension(instance) 方法，注入依赖的属性。代码如下：  
+
+&emsp; Dubbo IOC 是通过 setter 方法注入依赖。Dubbo 首先会通过反射获取到实例的所有方法，然后再遍历方法列表，检测方法名是否具有 setter 方法特征。若有，则通过 ObjectFactory 获取依赖对象，最后通过反射调用 setter 方法将依赖设置到目标对象中。整个过程对应的代码如下：  
 
 ```java
 /**
@@ -742,11 +751,76 @@ private T injectExtension(T instance) {
 * 第 21 至 24 行：设置属性值。
 
 ### 1.2.5. 获得自适应的拓展对象  
+
+Dubbo SPI 的扩展点自适应机制。  
+在 Dubbo 中，很多拓展都是通过 SPI 机制进行加载的，比如 Protocol、Cluster、LoadBalance 等。有时，有些拓展并不想在框架启动阶段被加载，而是希望在拓展方法被调用时，根据运行时参数进行加载。这听起来有些矛盾。拓展未被加载，那么拓展方法就无法被调用（静态方法除外）。拓展方法未被调用，拓展就无法被加载。对于这个矛盾的问题，Dubbo 通过自适应拓展机制很好的解决了。自适应拓展机制的实现逻辑比较复杂，首先 Dubbo 会为拓展接口生成具有代理功能的代码。然后通过 javassist 或 jdk 编译这段代码，得到 Class 类。最后再通过反射创建代理类，整个过程比较复杂。  
+
 在 Dubbo 的代码里，常常能看到如下的代码：  
 
 ```java
 ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension()
 ```
+#### 1.4. @Adaptive  
+在对自适应拓展生成过程进行深入分析之前，我们先来看一下与自适应拓展息息相关的一个注解，即 Adaptive 注解。  
+com.alibaba.dubbo.common.extension.@Adaptive ，自适应拓展信息的标记。代码如下：  
+
+```java
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface Adaptive {
+
+    /**
+     * Decide which target extension to be injected. The name of the target extension is decided by the parameter passed
+     * in the URL, and the parameter names are given by this method.
+     * <p>
+     * If the specified parameters are not found from {@link URL}, then the default extension will be used for
+     * dependency injection (specified in its interface's {@link SPI}).
+     * <p>
+     * For examples, given <code>String[] {"key1", "key2"}</code>:
+     * <ol>
+     * <li>find parameter 'key1' in URL, use its value as the extension's name</li>
+     * <li>try 'key2' for extension's name if 'key1' is not found (or its value is empty) in URL</li>
+     * <li>use default extension if 'key2' doesn't appear either</li>
+     * <li>otherwise, throw {@link IllegalStateException}</li>
+     * </ol>
+     * If default extension's name is not give on interface's {@link SPI}, then a name is generated from interface's
+     * class name with the rule: divide classname from capital char into several parts, and separate the parts with
+     * dot '.', for example: for {@code com.alibaba.dubbo.xxx.YyyInvokerWrapper}, its default name is
+     * <code>String[] {"yyy.invoker.wrapper"}</code>. This name will be used to search for parameter from URL.
+     *
+     * @return parameter key names in URL
+     */
+    /**
+     * 从 {@link URL }的 Key 名，对应的 Value 作为要 Adapt 成的 Extension 名。
+     * <p>
+     * 如果 {@link URL} 这些 Key 都没有 Value ，使用 缺省的扩展（在接口的{@link SPI}中设定的值）。<br>
+     * 比如，<code>String[] {"key1", "key2"}</code>，表示
+     * <ol>
+     *      <li>先在URL上找key1的Value作为要Adapt成的Extension名；
+     *      <li>key1没有Value，则使用key2的Value作为要Adapt成的Extension名。
+     *      <li>key2没有Value，使用缺省的扩展。
+     *      <li>如果没有设定缺省扩展，则方法调用会抛出{@link IllegalStateException}。
+     * </ol>
+     * <p>
+     * 如果不设置则缺省使用Extension接口类名的点分隔小写字串。<br>
+     * 即对于Extension接口 {@code com.alibaba.dubbo.xxx.YyyInvokerWrapper} 的缺省值为 <code>String[] {"yyy.invoker.wrapper"}</code>
+     *
+     * @see SPI#value()
+     */
+    String[] value() default {};
+
+}
+```
+@Adaptive 注解，可添加类或方法上，分别代表了两种不同的使用方式。  
+
+* 第一种，标记在类上，代表手动实现它是一个拓展接口的 Adaptive 拓展实现类。目前 Dubbo 项目里，只有 ExtensionFactory 拓展的实现类 AdaptiveExtensionFactory 有这么用。详细解析见 「AdaptiveExtensionFactory」 。
+* 第二种，标记在拓展接口的方法上，代表自动生成代码实现该接口的 Adaptive 拓展实现类。
+    * value ，从 Dubbo URL 获取参数中，使用键名( Key )，获取键值。该值为真正的拓展名。
+        * 自适应拓展实现类，会获取拓展名对应的真正的拓展对象。通过该对象，执行真正的逻辑。
+        * 可以设置多个键名( Key )，顺序获取直到有值。若最终获取不到，使用默认拓展名。
+    * 在 「createAdaptiveExtensionClassCode」 详细解析。
+
 #### 1.2.5.1. getAdaptiveExtension  
 &emsp; getAdaptiveExtension() 方法，获得自适应拓展对象。  
 
@@ -827,6 +901,15 @@ private T createAdaptiveExtension() {
 * 调用 Class#newInstance() 方法，创建自适应拓展对象。
 * 调用 #injectExtension(instance) 方法，向创建的自适应拓展对象，注入依赖的属性。
 
+createAdaptiveExtension 方法的代码比较少，但却包含了三个逻辑，分别如下：  
+
+1. 调用 getAdaptiveExtensionClass 方法获取自适应拓展 Class 对象
+2. 通过反射进行实例化
+3. 调用 injectExtension 方法向拓展实例中注入依赖
+
+前两个逻辑比较好理解，第三个逻辑用于向自适应拓展对象中注入依赖。这个逻辑看似多余，但有存在的必要，这里简单说明一下。前面说过，Dubbo 中有两种类型的自适应拓展，一种是手工编码的，一种是自动生成的。手工编码的自适应拓展中可能存在着一些依赖，而自动生成的 Adaptive 拓展则不会依赖其他类。这里调用 injectExtension 方法的目的是为手工编码的自适应拓展注入依赖，这一点需要大家注意一下。  
+
+
 #### 1.2.5.3. getAdaptiveExtensionClass  
 &emsp; getAdaptiveExtensionClass() 方法，获得自适应拓展类。代码如下：  
 
@@ -845,6 +928,15 @@ private Class<?> getAdaptiveExtensionClass() {
 
 * 【@Adaptive 的第一种】第 6 至 8 行：若 cachedAdaptiveClass 已存在，直接返回。的第一种情况。
 * 【@Adaptive 的第二种】第 9 行：调用 #createAdaptiveExtensionClass() 方法，自动生成自适应拓展的代码实现，并编译后返回该类。
+
+
+getAdaptiveExtensionClass 方法同样包含了三个逻辑，如下：  
+
+1. 调用 getExtensionClasses 获取所有的拓展类
+2. 检查缓存，若缓存不为空，则返回缓存
+3. 若缓存为空，则调用 createAdaptiveExtensionClass 创建自适应拓展类
+
+这三个逻辑看起来平淡无奇，似乎没有多讲的必要。但是这些平淡无奇的代码中隐藏了着一些细节，需要说明一下。首先从第一个逻辑说起，getExtensionClasses 这个方法用于获取某个接口的所有实现类。比如该方法可以获取 Protocol 接口的 DubboProtocol、HttpProtocol、InjvmProtocol 等实现类。在获取实现类的过程中，如果某个实现类被 Adaptive 注解修饰了，那么该类就会被赋值给 cachedAdaptiveClass 变量。此时，上面步骤中的第二步条件成立（缓存不为空），直接返回 cachedAdaptiveClass 即可。如果所有的实现类均未被 Adaptive 注解修饰，那么执行第三步逻辑，创建自适应拓展类。相关代码如下：  
 
 #### 1.2.5.4. createAdaptiveExtensionClassCode  
 &emsp; createAdaptiveExtensionClassCode() 方法，自动生成自适应拓展的代码实现，并编译后返回该类。  
@@ -870,6 +962,8 @@ private Class<?> createAdaptiveExtensionClass() {
     * 如下是 ProxyFactory 的自适应拓展的代码实现的字符串生成例子
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-24.png)   
 * 第 9 至 12 行：使用 Dubbo SPI 加载 Compier 拓展接口对应的拓展实现对象，后调用 Compiler#compile(code, classLoader) 方法，进行编译。  
+
+createAdaptiveExtensionClass 方法用于生成自适应拓展类，该方法首先会生成自适应拓展类的源码，然后通过 Compiler 实例（Dubbo 默认使用 javassist 作为编译器）编译源码，得到代理类 Class 实例。  
 
 ### 1.2.6. 获得激活的拓展对象数组  
 在 Dubbo 的代码里，看到使用代码如下：  
@@ -1000,65 +1094,7 @@ public @interface SPI {
     ```
 * 其中 "dubbo" 指的是 DubboProtocol ，Protocol 默认的拓展实现类。
 
-## 1.4. @Adaptive  
-com.alibaba.dubbo.common.extension.@Adaptive ，自适应拓展信息的标记。代码如下：  
 
-```java
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-public @interface Adaptive {
-
-    /**
-     * Decide which target extension to be injected. The name of the target extension is decided by the parameter passed
-     * in the URL, and the parameter names are given by this method.
-     * <p>
-     * If the specified parameters are not found from {@link URL}, then the default extension will be used for
-     * dependency injection (specified in its interface's {@link SPI}).
-     * <p>
-     * For examples, given <code>String[] {"key1", "key2"}</code>:
-     * <ol>
-     * <li>find parameter 'key1' in URL, use its value as the extension's name</li>
-     * <li>try 'key2' for extension's name if 'key1' is not found (or its value is empty) in URL</li>
-     * <li>use default extension if 'key2' doesn't appear either</li>
-     * <li>otherwise, throw {@link IllegalStateException}</li>
-     * </ol>
-     * If default extension's name is not give on interface's {@link SPI}, then a name is generated from interface's
-     * class name with the rule: divide classname from capital char into several parts, and separate the parts with
-     * dot '.', for example: for {@code com.alibaba.dubbo.xxx.YyyInvokerWrapper}, its default name is
-     * <code>String[] {"yyy.invoker.wrapper"}</code>. This name will be used to search for parameter from URL.
-     *
-     * @return parameter key names in URL
-     */
-    /**
-     * 从 {@link URL }的 Key 名，对应的 Value 作为要 Adapt 成的 Extension 名。
-     * <p>
-     * 如果 {@link URL} 这些 Key 都没有 Value ，使用 缺省的扩展（在接口的{@link SPI}中设定的值）。<br>
-     * 比如，<code>String[] {"key1", "key2"}</code>，表示
-     * <ol>
-     *      <li>先在URL上找key1的Value作为要Adapt成的Extension名；
-     *      <li>key1没有Value，则使用key2的Value作为要Adapt成的Extension名。
-     *      <li>key2没有Value，使用缺省的扩展。
-     *      <li>如果没有设定缺省扩展，则方法调用会抛出{@link IllegalStateException}。
-     * </ol>
-     * <p>
-     * 如果不设置则缺省使用Extension接口类名的点分隔小写字串。<br>
-     * 即对于Extension接口 {@code com.alibaba.dubbo.xxx.YyyInvokerWrapper} 的缺省值为 <code>String[] {"yyy.invoker.wrapper"}</code>
-     *
-     * @see SPI#value()
-     */
-    String[] value() default {};
-
-}
-```
-@Adaptive 注解，可添加类或方法上，分别代表了两种不同的使用方式。  
-
-* 第一种，标记在类上，代表手动实现它是一个拓展接口的 Adaptive 拓展实现类。目前 Dubbo 项目里，只有 ExtensionFactory 拓展的实现类 AdaptiveExtensionFactory 有这么用。详细解析见 「AdaptiveExtensionFactory」 。
-* 第二种，标记在拓展接口的方法上，代表自动生成代码实现该接口的 Adaptive 拓展实现类。
-    * value ，从 Dubbo URL 获取参数中，使用键名( Key )，获取键值。该值为真正的拓展名。
-        * 自适应拓展实现类，会获取拓展名对应的真正的拓展对象。通过该对象，执行真正的逻辑。
-        * 可以设置多个键名( Key )，顺序获取直到有值。若最终获取不到，使用默认拓展名。
-    * 在 「createAdaptiveExtensionClassCode」 详细解析。
 
 ## 1.5. @Activate  
 com.alibaba.dubbo.common.extension.@Activate ，自动激活条件的标记。代码如下：  
@@ -1170,6 +1206,8 @@ public interface ExtensionFactory {
 * #getExtension(type, name) 方法，在 「injectExtension」 中，获得拓展对象，向创建的拓展对象注入依赖属性。在实际代码中，我们可以看到不仅仅获得的是拓展对象，也可以是 Spring 中的 Bean 对象。
 * ExtensionFactory 子类类图如下
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-25.png)  
+
+Dubbo 目前提供了两种 ExtensionFactory，分别是 SpiExtensionFactory 和 SpringExtensionFactory。前者用于创建自适应的拓展，后者是用于从 Spring 的 IOC 容器中获取所需的拓展。  
 
 ### 1.6.1. AdaptiveExtensionFactory  
 com.alibaba.dubbo.common.extension.factory.AdaptiveExtensionFactory ，自适应 ExtensionFactory 拓展实现类。代码如下：  
