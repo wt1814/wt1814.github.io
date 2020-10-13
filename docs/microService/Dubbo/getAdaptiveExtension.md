@@ -529,18 +529,19 @@ for (Method method : methods) {
 
 本段逻辑用于根据 SPI 和 Adaptive 注解值生成“获取拓展名逻辑”，同时生成逻辑也受 Invocation 类型参数影响，综合因素导致本段逻辑相对复杂。本段逻辑可能会生成但不限于下面的代码：
 
+```java
 String extName = (url.getProtocol() == null ? "dubbo" : url.getProtocol());
-
+```
 或
-
+```java
 String extName = url.getMethodParameter(methodName, "loadbalance", "random");
-
+```
 亦或是
-
+```java
 String extName = url.getParameter("client", url.getParameter("transporter", "netty"));
-
+```
 本段逻辑复杂之处在于条件分支比较多，大家在阅读源码时需要知道每个条件分支的意义是什么，否则不太容易看懂相关代码。下面开始分析本段逻辑。
-
+```java
 for (Method method : methods) {
     Class<?> rt = method.getReturnType();
     Class<?>[] pts = method.getParameterTypes();
@@ -633,9 +634,9 @@ for (Method method : methods) {
     
     // 省略无关逻辑
 }
-
+```
 上面代码比较复杂，不是很好理解。对于这段代码，建议大家写点测试用例，对 Protocol、LoadBalance 以及 Transporter 等接口的自适应拓展类代码生成过程进行调试。这里我以 Transporter 接口的自适应拓展类代码生成过程举例说明。首先看一下 Transporter 接口的定义，如下：
-
+```java
 @SPI("netty")
 public interface Transporter {
 	// @Adaptive({server, transporter})
@@ -646,35 +647,35 @@ public interface Transporter {
     @Adaptive({Constants.CLIENT_KEY, Constants.TRANSPORTER_KEY})
     Client connect(URL url, ChannelHandler handler) throws RemotingException;
 }
-
+```
 下面对 connect 方法代理逻辑生成的过程进行分析，此时生成代理逻辑所用到的变量如下：
-
+```java
 String defaultExtName = "netty";
 boolean hasInvocation = false;
 String getNameCode = null;
 String[] value = ["client", "transporter"];
-
+```
 下面对 value 数组进行遍历，此时 i = 1, value[i] = "transporter"，生成的代码如下：
-
+```java
 getNameCode = url.getParameter("transporter", "netty");
-
+```
 接下来，for 循环继续执行，此时 i = 0, value[i] = "client"，生成的代码如下：
-
+```java
 getNameCode = url.getParameter("client", url.getParameter("transporter", "netty"));
-
+```
 for 循环结束运行，现在为 extName 变量生成赋值和判空代码，如下：
-
+```java
 String extName = url.getParameter("client", url.getParameter("transporter", "netty"));
 if (extName == null) {
     throw new IllegalStateException(
         "Fail to get extension(com.alibaba.dubbo.remoting.Transporter) name from url(" + url.toString()
         + ") use keys([client, transporter])");
 }
-
+```
 ##### 生成拓展加载与目标方法调用逻辑
 
 本段代码逻辑用于根据拓展名加载拓展实例，并调用拓展实例的目标方法。相关逻辑如下：
-
+```java
 for (Method method : methods) {
     Class<?> rt = method.getReturnType();
     Class<?>[] pts = method.getParameterTypes();
@@ -722,16 +723,16 @@ for (Method method : methods) {
 }
 
 以 Protocol 接口举例说明，上面代码生成的内容如下：
-
+```java
 com.alibaba.dubbo.rpc.Protocol extension = (com.alibaba.dubbo.rpc.Protocol) ExtensionLoader
     .getExtensionLoader(com.alibaba.dubbo.rpc.Protocol.class).getExtension(extName);
 return extension.refer(arg0, arg1);
-
+```
 
 ##### 生成完整的方法
 
 本节进行代码生成的收尾工作，主要用于生成方法定义的代码。相关逻辑如下：
-
+```java
 for (Method method : methods) {
     Class<?> rt = method.getReturnType();
     Class<?>[] pts = method.getParameterTypes();
@@ -785,9 +786,10 @@ if (ets.length > 0) {
 codeBuilder.append(" {");
 codeBuilder.append(code.toString());
 codeBuilder.append("\n}");
-
+```
 以 Protocol 的 refer 方法为例，上面代码生成的内容如下：
-
+```java
 public com.alibaba.dubbo.rpc.Invoker refer(java.lang.Class arg0, com.alibaba.dubbo.common.URL arg1) {
     // 方法体
 }
+```
