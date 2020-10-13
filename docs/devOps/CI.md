@@ -3,8 +3,11 @@
 
 <!-- 
 
- 手把手教你深入了解 GitLab CI/CD 原理及流程 
- https://mp.weixin.qq.com/s/Mbd1d2FGE2-fZQfO3616xA
+手把手教你深入了解 GitLab CI/CD 原理及流程 
+https://mp.weixin.qq.com/s/Mbd1d2FGE2-fZQfO3616xA
+
+Jenkins vs GitLab CI：CI/CD工具之战 
+https://mp.weixin.qq.com/s/7fQXM2vvO-ufBGDqzQWmzg
 -->
 
 &emsp; 软件开发的持续方法基于自动执行脚本，以最大程度地减少在开发应用程序时引入错误的机会。从开发新代码到部署新代码，它们几乎不需要人工干预，甚至根本不需要干预。  

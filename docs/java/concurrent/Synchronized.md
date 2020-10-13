@@ -31,6 +31,10 @@
 <!-- /TOC -->
 
 <!-- 
+ 初始synchronized关键字的偏向锁、轻量锁、重量锁 
+ https://mp.weixin.qq.com/s/AloGilUSxjoNVDHTfq1ZGQ
+
+
  死磕Synchronized底层实现 
  https://mp.weixin.qq.com/s/ca_7lurrWVcA3bLCL7UJcQ
 
