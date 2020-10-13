@@ -345,24 +345,23 @@ Gitee： https://gitee.com/wt1814/
 
 ## 项目构建基础  
 [RESTful](/docs/microService/RESTful.md)  
+[日志系统](/docs/web/log.md)   
+[SpringTest](/docs/web/test.md)  
+[乱码]()  
+[统一日志记录]()  
+[统一格式返回]()  
+[统一异常处理](/docs/web/ExceptionHandler.md)  
+[Assert处理异常](/docs/web/Assert.md)  
+
 [API接口设计](/docs/web/API.md)    
 &emsp; [接口幂等](/docs/web/idempotent.md)  
 &emsp; [接口防刷]()  
-&emsp; [接口异常处理]()  
+&emsp; [接口安全]()  
 
 [JavaBean](/docs/web/JavaBean.md)  
 &emsp; [POJO](/docs/web/POJO.md)  
 &emsp; [BeanUtils](/docs/web/BeanUtils.md)  
 &emsp; [参数校验](/docs/web/Validation.md)  
-
-[日志系统](/docs/web/log.md)   
-
-[乱码]()  
-[统一日志记录]()  
-
-
-
-[SpringTest](/docs/web/test.md)  
 
 [Http重试](/docs/web/httpRetry.md)   
 [敏感词汇](/docs/web/sensitive.md)  
@@ -370,7 +369,7 @@ Gitee： https://gitee.com/wt1814/
 [反爬虫](/docs/web/reptile.md)  
 [加密算法](/docs/web/encryption.md)  
 [源码安全](/docs/web/codeSecurity.md)  
-[其他](/docs/web/other.md)
+[其他](/docs/web/other.md)  
 
 ## 架构设计  
 [系统稳定性建设]()  
