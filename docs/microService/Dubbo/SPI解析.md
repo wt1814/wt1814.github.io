@@ -47,7 +47,7 @@ http://dubbo.apache.org/zh-cn/docs/source_code_guide/adaptive-extension.html
 
 ## 1.1. 代码结构  
 &emsp; Dubbo SPI 在 dubbo-common 的 extension 包实现，如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-22.png)   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-28.png)   
 
 ## 1.2. ExtensionLoader  
 &emsp; Dubbo SPI 的相关逻辑被封装在了 ExtensionLoader 类(拓展加载器)中，通过 ExtensionLoader，可以加载指定的实现类。  

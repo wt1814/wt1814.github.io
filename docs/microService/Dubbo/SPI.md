@@ -3,6 +3,8 @@
 - [1. Dubbo SPI](#1-dubbo-spi)
     - [1.1. SPI简介](#11-spi简介)
     - [1.2. SPI示例](#12-spi示例)
+        - [Java SPI 示例](#java-spi-示例)
+        - [Dubbo SPI 示例](#dubbo-spi-示例)
     - [1.3. 扩展点特性](#13-扩展点特性)
         - [1.3.1. 扩展点自动包装](#131-扩展点自动包装)
         - [1.3.2. 扩展点自动装配](#132-扩展点自动装配)
@@ -38,6 +40,57 @@ http://dubbo.apache.org/zh-cn/docs/dev/SPI.html
 &emsp; 接下来，先来了解一下 Java SPI 与 Dubbo SPI 的用法。  
 
 ## 1.2. SPI示例  
+### Java SPI 示例  
+&emsp; 定义一个接口，名称为 Robot。  
+
+```java
+public interface Robot {
+    void sayHello();
+}
+```
+&emsp; 接下来定义两个实现类，分别为 OptimusPrime 和 Bumblebee。  
+
+```java
+public class OptimusPrime implements Robot {
+    
+    @Override
+    public void sayHello() {
+        System.out.println("Hello, I am Optimus Prime.");
+    }
+}
+
+public class Bumblebee implements Robot {
+
+    @Override
+    public void sayHello() {
+        System.out.println("Hello, I am Bumblebee.");
+    }
+}
+```
+&emsp; 接下来 META-INF/services 文件夹下创建一个文件，名称为 Robot 的全限定名 org.apache.spi.Robot。文件内容为实现类的全限定的类名，如下：  
+
+```text
+org.apache.spi.OptimusPrime
+org.apache.spi.Bumblebee
+```
+&emsp; 做好所需的准备工作，接下来编写代码进行测试。  
+
+```java
+public class JavaSPITest {
+
+    @Test
+    public void sayHello() throws Exception {
+        ServiceLoader<Robot> serviceLoader = ServiceLoader.load(Robot.class);
+        System.out.println("Java SPI");
+        serviceLoader.forEach(Robot::sayHello);
+    }
+}
+```
+&emsp; 最后来看一下测试结果，如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-27.png)   
+&emsp; 从测试结果可以看出，两个实现类被成功的加载，并输出了相应的内容。关于 Java SPI 的演示先到这里，接下来演示 Dubbo SPI。  
+
+### Dubbo SPI 示例  
 &emsp; <font color = "red">Dubbo SPI的相关逻辑被封装在了ExtensionLoader类中，通过ExtensionLoader，可以加载指定的实现类。Dubbo SPI所需的配置文件需放置在 META-INF/dubbo 路径下，</font>配置内容如下。  
 
 ```properties
@@ -69,8 +122,6 @@ public class DubboSPITest {
 &emsp; Wrapper类内容：  
 
 ```java
-package com.alibaba.xxx;
- 
 import org.apache.dubbo.rpc.Protocol;
  
 public class XxxProtocolWrapper implements Protocol {
@@ -88,13 +139,13 @@ public class XxxProtocolWrapper implements Protocol {
     // ...
 }
 ```
-&emsp; Wrapper类同样实现了扩展点接口，但是 Wrapper 不是扩展点的真正实现。它的用途主要是用于从 ExtensionLoader 返回扩展点时，包装在真正的扩展点实现外。即从 ExtensionLoader 中返回的实际上是 Wrapper 类的实例，Wrapper 持有了实际的扩展点实现类。  
+&emsp; <>Wrapper类同样实现了扩展点接口，但是 Wrapper 不是扩展点的真正实现。它的用途主要是用于从 ExtensionLoader 返回扩展点时，包装在真正的扩展点实现外。即从 ExtensionLoader 中返回的实际上是 Wrapper 类的实例，Wrapper 持有了实际的扩展点实现类。  
 &emsp; 扩展点的 Wrapper 类可以有多个，也可以根据需要新增。  
 &emsp; 通过 Wrapper 类可以把所有扩展点公共逻辑移至 Wrapper 中。新加的 Wrapper 在所有的扩展点上添加了逻辑，有些类似 AOP，即 Wrapper 代理了扩展点。  
 
 ### 1.3.2. 扩展点自动装配  
 &emsp; 加载扩展点时，自动注入依赖的扩展点。加载扩展点时，扩展点实现类的成员如果为其它扩展点类型，ExtensionLoader 在会自动注入依赖的扩展点。ExtensionLoader 通过扫描扩展点实现类的所有 setter 方法来判定其成员。即 ExtensionLoader 会执行扩展点的拼装操作。  
-&emsp; 示例：有两个为扩展点 CarMaker（造车者）、WheelMaker (造轮者)  
+&emsp; 示例：有两个为扩展点 CarMaker\（造车者）、WheelMaker \(造轮者)  
 &emsp; 接口类如下：  
 
 ```java
