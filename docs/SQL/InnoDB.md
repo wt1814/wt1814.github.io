@@ -24,6 +24,12 @@
 <!-- /TOC -->
 
 # 1. InnoDB  
+<!-- 
+
+ MySQL事务与MVCC如何实现的隔离级别 
+ https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
+-->
+
 **<font color = "red">《MySQL技术内幕：InnoDB存储引擎》</font>**  
 &emsp; https://dev.mysql.com/doc/refman/5.7/en/  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-125.png)  

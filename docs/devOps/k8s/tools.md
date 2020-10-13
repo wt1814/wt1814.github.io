@@ -86,6 +86,12 @@ Kubernetes的可视化UI界面的产品有多种：
 &emsp; 假设有两个工作组：开发组和生产运维组。开发组在Kubemetes集群中需要不断创建、修改、删除各种Pod、RC. Service等资源对象，以便实现敏捷开发的过程。而生产运维组则需要使用严格的权限设置来确保生产系统中的Pod、RC、Service处于正常运行状态且不会被误操作。  
 
 ### 1.1.6. Kubemetes集群的高可用部署方案  
+<!-- 
+ Kubernetes 高可用方案 
+ https://mp.weixin.qq.com/s/yUynU3hagPxuyPtP9N2jxA
+
+-->
+
 &emsp; Kubemetes作为容器应用的管理平台，通过对Pod的运行状况进行监控，并且根据主机或容器失效的状态将新的Pod调度到其他Node上，实现了应用层的高可用性。针对Kubernetes集群，高可用性还应包含以下两个层面的考虑：etcd数据存储的高可用性和Kubernetes Master组件的高可用性。  
 
 ### 1.1.7. Kubemetes集群监控  

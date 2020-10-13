@@ -126,7 +126,7 @@ public class RaceCarMaker implements CarMaker {
 ```
 &emsp; ExtensionLoader 加载 CarMaker 的扩展点实现 RaceCarMaker 时，setWheelMaker 方法的 WheelMaker 也是扩展点则会注入 WheelMaker 的实现。  
 这里带来另一个问题，ExtensionLoader 要注入依赖扩展点时，如何决定要注入依赖扩展点的哪个实现。在这个示例中，即是在多个WheelMaker 的实现中要注入哪个。  
-这个问题在下面一点 扩展点自适应 中说明。  
+&emsp; 这个问题在下面一点 扩展点自适应 中说明。  
 
 ### 1.3.3. 扩展点自适应  
 &emsp; ExtensionLoader 注入的依赖扩展点是一个 Adaptive 实例，直到扩展点方法执行时才决定调用是哪一个扩展点实现。  

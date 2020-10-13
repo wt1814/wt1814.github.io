@@ -1,5 +1,10 @@
 # git
 
+<!-- 
+
+https://mp.weixin.qq.com/s/bT7VXffqHuzUZUY5c4ce7A
+-->
+
 ## GIT本地库操作基本原理  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/git/git-4.png)  

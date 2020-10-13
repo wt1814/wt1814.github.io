@@ -7,4 +7,7 @@
 Kafka中的再均衡 
 https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 
+
+ 从面试角度来看一看 Kafka 
+ https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
 -->

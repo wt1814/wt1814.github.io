@@ -1,8 +1,40 @@
 
 
+<!-- TOC -->
 
+- [1. SPI源码](#1-spi源码)
+    - [1.1. 代码结构](#11-代码结构)
+    - [1.2. ExtensionLoader](#12-extensionloader)
+        - [1.2.1. 属性](#121-属性)
+        - [1.2.2. 获得拓展配置](#122-获得拓展配置)
+            - [1.2.2.1. getExtensionClasses](#1221-getextensionclasses)
+            - [1.2.2.2. loadExtensionClasses](#1222-loadextensionclasses)
+            - [1.2.2.3. loadFile](#1223-loadfile)
+        - [1.2.3. 获得拓展加载器](#123-获得拓展加载器)
+            - [1.2.3.1. getExtensionLoader](#1231-getextensionloader)
+            - [1.2.3.2. 构造方法](#1232-构造方法)
+        - [1.2.4. 获得指定拓展对象](#124-获得指定拓展对象)
+            - [1.2.4.1. getExtension](#1241-getextension)
+            - [1.2.4.2. createExtension](#1242-createextension)
+            - [1.2.4.3. injectExtension](#1243-injectextension)
+        - [1.2.5. 获得自适应的拓展对象](#125-获得自适应的拓展对象)
+            - [1.2.5.1. getAdaptiveExtension](#1251-getadaptiveextension)
+            - [1.2.5.2. createAdaptiveExtension](#1252-createadaptiveextension)
+            - [1.2.5.3. getAdaptiveExtensionClass](#1253-getadaptiveextensionclass)
+            - [1.2.5.4. createAdaptiveExtensionClassCode](#1254-createadaptiveextensionclasscode)
+        - [1.2.6. 获得激活的拓展对象数组](#126-获得激活的拓展对象数组)
+            - [1.2.6.1. getExtensionLoader](#1261-getextensionloader)
+    - [1.3. @SPI](#13-spi)
+    - [1.4. @Adaptive](#14-adaptive)
+    - [1.5. @Activate](#15-activate)
+    - [1.6. ExtensionFactory](#16-extensionfactory)
+        - [1.6.1. AdaptiveExtensionFactory](#161-adaptiveextensionfactory)
+        - [1.6.2. SpiExtensionFactory](#162-spiextensionfactory)
+        - [1.6.3. SpringExtensionFactory](#163-springextensionfactory)
 
-# SPI源码  
+<!-- /TOC -->
+
+# 1. SPI源码  
 
 <!-- 
 
@@ -15,14 +47,14 @@ http://dubbo.apache.org/zh-cn/docs/source_code_guide/adaptive-extension.html
 -->
 
 
-## 代码结构  
+## 1.1. 代码结构  
 &emsp; Dubbo SPI 在 dubbo-common 的 extension 包实现，如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-22.png)   
 
-## ExtensionLoader  
-com.alibaba.dubbo.common.extension.ExtensionLoader ，拓展加载器。这是Dubbo SPI的核心。  
+## 1.2. ExtensionLoader  
+&emsp; com.alibaba.dubbo.common.extension.ExtensionLoader ，拓展加载器。这是Dubbo SPI的核心。  
 
-### 属性  
+### 1.2.1. 属性  
 
 ```java
 private static final String SERVICES_DIRECTORY = "META-INF/services/";
@@ -161,9 +193,9 @@ private Map<String, IllegalStateException> exceptions = new ConcurrentHashMap<St
         * 缓存加载的拓展配置
         * 缓存创建的拓展实现对象 
 
-### 获得拓展配置  
-#### getExtensionClasses  
-#getExtensionClasses() 方法，获得拓展实现类数组。  
+### 1.2.2. 获得拓展配置  
+#### 1.2.2.1. getExtensionClasses  
+&emsp; getExtensionClasses() 方法，获得拓展实现类数组。  
 
 ```java
 private final Holder<Map<String, Class<?>>> cachedClasses = new Holder<Map<String, Class<?>>>();
@@ -203,8 +235,8 @@ private Map<String, Class<?>> getExtensionClasses() {
 * 第 12 至 14 行：当缓存不存在时，调用 #loadExtensionClasses() 方法，从配置文件中，加载拓展实现类数组。
 * 第 16 行：设置加载的实现类数组，到缓存中。
 
-#### loadExtensionClasses  
-#loadExtensionClasses() 方法，从多个配置文件中，加载拓展实现类数组。  
+#### 1.2.2.2. loadExtensionClasses  
+&emsp; loadExtensionClasses() 方法，从多个配置文件中，加载拓展实现类数组。  
 
 ```java
 /**
@@ -242,8 +274,8 @@ private Map<String, Class<?>> loadExtensionClasses() {
 * 第 10 至 22 行：通过 @SPI 注解，获得拓展接口对应的默认的拓展实现类名。在 「 @SPI」 详细解析。
 * 第 25 至 29 行：调用 #loadFile(extensionClasses, dir) 方法，从配置文件中，加载拓展实现类数组。注意，此处配置文件的加载顺序。
 
-#### loadFile  
-#loadFile(extensionClasses, dir) 方法，从一个配置文件中，加载拓展实现类数组。代码如下：  
+#### 1.2.2.3. loadFile  
+&emsp; loadFile(extensionClasses, dir) 方法，从一个配置文件中，加载拓展实现类数组。代码如下：  
 
 ```java
 /**
@@ -442,15 +474,15 @@ private void loadFile(Map<String, Class<?>> extensionClasses, String dir) {
 * 第 108 至 112 行：若发生异常，记录到异常集合 exceptions 属性。
 
 
-### 获得拓展加载器  
-在 Dubbo 的代码里，常常能看到如下的代码：  
+### 1.2.3. 获得拓展加载器  
+&emsp; 在 Dubbo 的代码里，常常能看到如下的代码：  
 
 ```java
 ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(name)
 ```
 
-#### getExtensionLoader  
-#getExtensionLoader(type) 静态方法，根据拓展点的接口，获得拓展加载器。代码如下：  
+#### 1.2.3.1. getExtensionLoader  
+&emsp; getExtensionLoader(type) 静态方法，根据拓展点的接口，获得拓展加载器。代码如下：  
 
 ```java
 /**
@@ -495,8 +527,8 @@ public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> type) {
 * 第 16 至 20 行：调用 #withExtensionAnnotation() 方法，校验必须使用 @SPI 注解标记。
 * 第 22 至 27 行：从 EXTENSION_LOADERS 静态中获取拓展接口对应的 ExtensionLoader 对象。若不存在，则创建 ExtensionLoader 对象，并添加到 EXTENSION_LOADERS。
 
-#### 构造方法  
-构造方法，代码如下：  
+#### 1.2.3.2. 构造方法  
+&emsp; 构造方法，代码如下：  
 
 ```java
 /**
@@ -525,15 +557,15 @@ private ExtensionLoader(Class<?> type) {
 
 -----
 
-### 获得指定拓展对象  
-在 Dubbo 的代码里，常常能看到如下的代码：  
+### 1.2.4. 获得指定拓展对象  
+&emsp; 在 Dubbo 的代码里，常常能看到如下的代码：  
 
 ```java
 ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(name)
 ```
 
-#### getExtension  
-#getExtension() 方法，返回指定名字的扩展对象。如果指定名字的扩展不存在，则抛异常 IllegalStateException 。代码如下：  
+#### 1.2.4.1. getExtension  
+&emsp; getExtension() 方法，返回指定名字的扩展对象。如果指定名字的扩展不存在，则抛异常 IllegalStateException 。代码如下：  
 
 ```java
 
@@ -596,8 +628,8 @@ public T getExtension(String name) {
 * 第 29 至 31 行：当缓存不存在时，调用 #createExtension(name) 方法，创建拓展对象。
 * 第 33 行：添加创建的拓展对象，到缓存中。
 
-#### createExtension  
-#createExtension(name) 方法，创建拓展名的拓展对象，并缓存。代码如下：  
+#### 1.2.4.2. createExtension  
+&emsp; createExtension(name) 方法，创建拓展名的拓展对象，并缓存。代码如下：  
 
 ```java
 /**
@@ -660,8 +692,8 @@ private T createExtension(String name) {
 
 * 例如：ListenerExporterWrapper、ProtocolFilterWrapper 。  
 
-#### injectExtension  
-#injectExtension(instance) 方法，注入依赖的属性。代码如下：  
+#### 1.2.4.3. injectExtension  
+&emsp; injectExtension(instance) 方法，注入依赖的属性。代码如下：  
 
 ```java
 /**
@@ -709,14 +741,14 @@ private T injectExtension(T instance) {
 * 第 20 行：获得属性值。注意，此处虽然调用的是 ExtensionFactory#getExtension(type, name) 方法，实际获取的不仅仅是拓展对象，也可以是 Spring Bean 对象。答案在 「ExtensionFactory」 揭晓。
 * 第 21 至 24 行：设置属性值。
 
-### 获得自适应的拓展对象  
+### 1.2.5. 获得自适应的拓展对象  
 在 Dubbo 的代码里，常常能看到如下的代码：  
 
 ```java
 ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension()
 ```
-#### getAdaptiveExtension  
-#getAdaptiveExtension() 方法，获得自适应拓展对象。  
+#### 1.2.5.1. getAdaptiveExtension  
+&emsp; getAdaptiveExtension() 方法，获得自适应拓展对象。  
 
 ```java
 /**
@@ -772,8 +804,8 @@ public T getAdaptiveExtension() {
 * 第 14 至 20 行：当缓存不存在时，调用 #createAdaptiveExtension() 方法，创建自适应拓展对象，并添加到 cachedAdaptiveInstance 中。
 * 第 22 至 24 行：若创建发生异常，记录异常到 createAdaptiveInstanceError ，并抛出异常 IllegalStateException 。
 
-#### createAdaptiveExtension  
-#createAdaptiveExtension() 方法，创建自适应拓展对象。代码如下：  
+#### 1.2.5.2. createAdaptiveExtension  
+&emsp; createAdaptiveExtension() 方法，创建自适应拓展对象。代码如下：  
 
 ```java
 /**
@@ -795,8 +827,8 @@ private T createAdaptiveExtension() {
 * 调用 Class#newInstance() 方法，创建自适应拓展对象。
 * 调用 #injectExtension(instance) 方法，向创建的自适应拓展对象，注入依赖的属性。
 
-#### getAdaptiveExtensionClass  
-#getAdaptiveExtensionClass() 方法，获得自适应拓展类。代码如下：  
+#### 1.2.5.3. getAdaptiveExtensionClass  
+&emsp; getAdaptiveExtensionClass() 方法，获得自适应拓展类。代码如下：  
 
 ```java
 /**
@@ -814,8 +846,8 @@ private Class<?> getAdaptiveExtensionClass() {
 * 【@Adaptive 的第一种】第 6 至 8 行：若 cachedAdaptiveClass 已存在，直接返回。的第一种情况。
 * 【@Adaptive 的第二种】第 9 行：调用 #createAdaptiveExtensionClass() 方法，自动生成自适应拓展的代码实现，并编译后返回该类。
 
-#### createAdaptiveExtensionClassCode  
-#createAdaptiveExtensionClassCode() 方法，自动生成自适应拓展的代码实现，并编译后返回该类。  
+#### 1.2.5.4. createAdaptiveExtensionClassCode  
+&emsp; createAdaptiveExtensionClassCode() 方法，自动生成自适应拓展的代码实现，并编译后返回该类。  
 
 ```java
 /**
@@ -839,15 +871,15 @@ private Class<?> createAdaptiveExtensionClass() {
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-24.png)   
 * 第 9 至 12 行：使用 Dubbo SPI 加载 Compier 拓展接口对应的拓展实现对象，后调用 Compiler#compile(code, classLoader) 方法，进行编译。  
 
-### 获得激活的拓展对象数组  
+### 1.2.6. 获得激活的拓展对象数组  
 在 Dubbo 的代码里，看到使用代码如下：  
 
 ```java
 List<Filter> filters = ExtensionLoader.getExtensionLoader(Filter.class).getActivateExtension(invoker.getUrl(), key, group);
 ```
 
-#### getExtensionLoader  
-#getExtensionLoader(url, key, group) 方法，获得符合自动激活条件的拓展对象数组。  
+#### 1.2.6.1. getExtensionLoader  
+&emsp; getExtensionLoader(url, key, group) 方法，获得符合自动激活条件的拓展对象数组。  
 
 ```java
 /**
@@ -941,7 +973,7 @@ public List<T> getActivateExtension(URL url, String[] values, String group) {
 * 第 57 至 74 行：处理自定义配置的拓展对象们。
 * 第 75 至 78 行：将 usrs 合并到 exts 尾部。
 
-## @SPI  
+## 1.3. @SPI  
 com.alibaba.dubbo.common.extension.@SPI ，扩展点接口的标识。代码如下：  
 
 ```java
@@ -968,7 +1000,7 @@ public @interface SPI {
     ```
 * 其中 "dubbo" 指的是 DubboProtocol ，Protocol 默认的拓展实现类。
 
-## @Adaptive  
+## 1.4. @Adaptive  
 com.alibaba.dubbo.common.extension.@Adaptive ，自适应拓展信息的标记。代码如下：  
 
 ```java
@@ -1028,7 +1060,7 @@ public @interface Adaptive {
         * 可以设置多个键名( Key )，顺序获取直到有值。若最终获取不到，使用默认拓展名。
     * 在 「createAdaptiveExtensionClassCode」 详细解析。
 
-## @Activate  
+## 1.5. @Activate  
 com.alibaba.dubbo.common.extension.@Activate ，自动激活条件的标记。代码如下：  
 
 ```java
@@ -1108,7 +1140,7 @@ public @interface Activate {
 * 对于可以被框架中自动激活加载扩展，@Activate 用于配置扩展被自动激活加载条件。比如，Filter 扩展，有多个实现，使用 @Activate 的扩展可以根据条件被自动加载。
     * 这块的例子，可以看下 《Dubbo 开发指南 —— 扩展点加载》「扩展点自动激活」 文档提供的。
 
-## ExtensionFactory  
+## 1.6. ExtensionFactory  
 com.alibaba.dubbo.common.extension.ExtensionFactory ，拓展工厂接口。代码如下：  
 
 ```java
@@ -1139,7 +1171,7 @@ public interface ExtensionFactory {
 * ExtensionFactory 子类类图如下
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-25.png)  
 
-### AdaptiveExtensionFactory  
+### 1.6.1. AdaptiveExtensionFactory  
 com.alibaba.dubbo.common.extension.factory.AdaptiveExtensionFactory ，自适应 ExtensionFactory 拓展实现类。代码如下：  
 
 ```java
@@ -1179,7 +1211,7 @@ public class AdaptiveExtensionFactory implements ExtensionFactory {
 * 构造方法，使用 ExtensionLoader 加载 ExtensionFactory 拓展对象的实现类。若胖友没自己实现 ExtensionFactory 的情况下，factories 为 SpiExtensionFactory 和 SpringExtensionFactory 。
 * #getExtension(type, name) 方法，遍历 factories ，调用其 #getExtension(type, name) 方法，直到获得到属性值。
 
-### SpiExtensionFactory  
+### 1.6.2. SpiExtensionFactory  
 com.alibaba.dubbo.common.extension.factory.SpiExtensionFactory ，SPI ExtensionFactory 拓展实现类。代码如下：  
 
 ```java
@@ -1208,7 +1240,7 @@ public class SpiExtensionFactory implements ExtensionFactory {
 }
 ```
 
-### SpringExtensionFactory  
+### 1.6.3. SpringExtensionFactory  
 com.alibaba.dubbo.config.spring.extension.SpringExtensionFactory ，Spring ExtensionFactory 拓展实现类。代码如下：  
 
 ```java
