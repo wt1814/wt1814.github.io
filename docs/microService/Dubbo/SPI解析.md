@@ -23,7 +23,6 @@
             - [1.2.5.2. createAdaptiveExtension](#1252-createadaptiveextension)
             - [1.2.5.3. getAdaptiveExtensionClass](#1253-getadaptiveextensionclass)
             - [1.2.5.4. createAdaptiveExtensionClassCode](#1254-createadaptiveextensionclasscode)
-        - [1.2.6. 获得激活的拓展对象数组](#126-获得激活的拓展对象数组)
             - [1.2.6.1. getExtensionLoader](#1261-getextensionloader)
     - [1.3. @SPI](#13-spi)
     - [1.5. @Activate](#15-activate)
@@ -185,7 +184,7 @@ private Map<String, IllegalStateException> exceptions = new ConcurrentHashMap<St
 * 第 7 行：NAME_SEPARATOR ，拓展名分隔符，使用逗号。
 * 第 9 至 124 行，将属性分成了两类：1）静态属性；2）对象属性。
     * 【静态属性】一方面，ExtensionLoader 是 ExtensionLoader 的管理容器。一个拓展( 拓展接口 )对应一个 ExtensionLoader 对象。例如，Protocol 和 Filter 分别对应一个 ExtensionLoader 对象。
-    * 【对象属性】另一方面，一个拓展通过其 ExtensionLoader 对象，加载它的拓展实现们。我们会发现多个属性都是 “cached“ 开头。ExtensionLoader 考虑到性能和资源的优化，读取拓展配置后，会首先进行缓存。等到 Dubbo 代码真正用到对应的拓展实现时，进行拓展实现的对象的初始化。并且，初始化完成后，也会进行缓存。也就是说：
+    * 【对象属性】另一方面，一个拓展通过其 ExtensionLoader 对象，加载它的拓展实现类。会发现多个属性都是 “cached“ 开头。ExtensionLoader 考虑到性能和资源的优化，读取拓展配置后，会首先进行缓存。等到 Dubbo 代码真正用到对应的拓展实现时，进行拓展实现的对象的初始化。并且，初始化完成后，也会进行缓存。也就是说：
         * 缓存加载的拓展配置
         * 缓存创建的拓展实现对象 
 
@@ -455,17 +454,17 @@ private void loadFile(Map<String, Class<?>> extensionClasses, String dir) {
 * 第 21 至 24 行：逐个文件 URL 遍历。
 * 第 27 行：逐行遍历。
 * 第 29 至 32 行：跳过当前被 "#" 注释掉的情况，例如 #spring=xxxxxxxxx 。
-* 第 34 至 40 行：按照 key=value 的配置拆分。其中 name 为拓展名，line 为拓展实现类名。注意，上文我们提到过 Dubbo SPI 会兼容 Java SPI 的配置格式，那么按照此处的解析方式，name 会为空。这种情况下，拓展名会自动生成，详细见第 71 至 82 行的代码。
+* 第 34 至 40 行：按照 key=value 的配置拆分。其中 name 为拓展名，line 为拓展实现类名。注意，上文提到过 Dubbo SPI 会兼容 Java SPI 的配置格式，那么按照此处的解析方式，name 会为空。这种情况下，拓展名会自动生成，详细见第 71 至 82 行的代码。
 * 第 42 至 48 行：判断拓展实现类，需要实现拓展接口。
-* 第 50 至 57 行：缓存自适应拓展对象的类到 cachedAdaptiveClass 属性。在 「6. @Adaptive」 详细解析。
+* 第 50 至 57 行：缓存自适应拓展对象的类到 cachedAdaptiveClass 属性。在 「 @Adaptive」 详细解析。
 * 第 59 至 67 行：缓存拓展 Wrapper 实现类到 cachedWrapperClasses 属性。
     * 第 61 行：调用 Class#getConstructor(Class<?>... parameterTypes) 方法，通过反射的方式，参数为拓展接口，判断当前配置的拓展实现类为拓展 Wrapper 实现类。若成功（未抛出异常），则代表符合条件。例如，ProtocolFilterWrapper(Protocol protocol) 这个构造方法。
 * 第 69 至 105 行：若获得构造方法失败，则代表是普通的拓展实现类，缓存到 extensionClasses 变量中。
     * 第 70 行：调用 Class#getConstructor(Class<?>... parameterTypes) 方法，获得参数为空的构造方法。
     * 第 72 至 82 行：未配置拓展名，自动生成。适用于 Java SPI 的配置方式。例如，xxx.yyy.DemoFilter 生成的拓展名为 demo 。
-        * 第 73 行：通过 @Extension 注解的方式设置拓展名的方式已经废弃，胖友可以无视该方法。
+        * 第 73 行：通过 @Extension 注解的方式设置拓展名的方式已经废弃。
 * 第 84 行：获得拓展名。使用逗号进行分割，即多个拓展名可以对应同一个拓展实现类。
-* 第 86 至 90 行：缓存 @Activate 到 cachedActivates 。在 「7. @Activate」 详细解析。
+* 第 86 至 90 行：缓存 @Activate 到 cachedActivates 。在 「@Activate」 详细解析。
 * 第 93 至 95 行：缓存到 cachedNames 属性。
 * 第 96 至 102 行：缓存拓展实现类到 extensionClasses 变量。注意，相同拓展名，不能对应多个不同的拓展实现。
 * 第 108 至 112 行：若发生异常，记录到异常集合 exceptions 属性。
@@ -677,6 +676,15 @@ private T createExtension(String name) {
     }
 }
 ```
+&emsp; createExtension 方法的逻辑稍复杂一下，包含了如下的步骤：
+
+1. 通过 getExtensionClasses 获取所有的拓展类
+2. 通过反射创建拓展对象
+3. 向拓展对象中注入依赖
+4. 将拓展对象包裹在相应的 Wrapper 对象中
+
+&emsp; 以上步骤中，第一个步骤是加载拓展类的关键，<font color = "lime">第三和第四个步骤是 Dubbo IOC 与 AOP 的具体实现。</font> 
+
 * 第 9 至 13 行：获得拓展名对应的拓展实现类。若不存在，调用 #findException(name) 方法，抛出异常。
 * 第 16 行：从缓存 EXTENSION_INSTANCES 静态属性中，获得拓展对象。
 * 第 17 至 21 行：当缓存不存在时，创建拓展对象，并添加到 EXTENSION_INSTANCES 中。因为 #getExtension(name) 方法中已经加 synchronized 修饰，所以此处不用同步。
@@ -689,20 +697,8 @@ private T createExtension(String name) {
 
 * 例如：ListenerExporterWrapper、ProtocolFilterWrapper 。  
 
-
-createExtension 方法的逻辑稍复杂一下，包含了如下的步骤：
-
-* 通过 getExtensionClasses 获取所有的拓展类
-* 通过反射创建拓展对象
-* 向拓展对象中注入依赖
-* 将拓展对象包裹在相应的 Wrapper 对象中
-
-以上步骤中，第一个步骤是加载拓展类的关键，第三和第四个步骤是 Dubbo IOC 与 AOP 的具体实现。  
-
 #### 1.2.4.3. injectExtension，Dubbo IOC  
-&emsp; injectExtension(instance) 方法，注入依赖的属性。代码如下：  
-
-&emsp; Dubbo IOC 是通过 setter 方法注入依赖。Dubbo 首先会通过反射获取到实例的所有方法，然后再遍历方法列表，检测方法名是否具有 setter 方法特征。若有，则通过 ObjectFactory 获取依赖对象，最后通过反射调用 setter 方法将依赖设置到目标对象中。整个过程对应的代码如下：  
+&emsp; injectExtension(instance) 方法，注入依赖的属性。<font color = "lime">Dubbo IOC 是通过 setter 方法注入依赖。</font>Dubbo 首先会通过反射获取到实例的所有方法，然后再遍历方法列表，检测方法名是否具有 setter 方法特征。若有，则通过 ObjectFactory 获取依赖对象，最后通过反射调用 setter 方法将依赖设置到目标对象中。整个过程对应的代码如下：  
 
 ```java
 /**
@@ -751,18 +747,16 @@ private T injectExtension(T instance) {
 * 第 21 至 24 行：设置属性值。
 
 ### 1.2.5. 获得自适应的拓展对象  
+&emsp; Dubbo SPI 的扩展点自适应机制：在 Dubbo 中，很多拓展都是通过 SPI 机制进行加载的，比如 Protocol、Cluster、LoadBalance 等。<font color = "lime">有时，有些拓展并不想在框架启动阶段被加载，而是希望在拓展方法被调用时，根据运行时参数进行加载。这听起来有些矛盾。</font>拓展未被加载，那么拓展方法就无法被调用（静态方法除外）。拓展方法未被调用，拓展就无法被加载。对于这个矛盾的问题，Dubbo 通过自适应拓展机制很好的解决了。自适应拓展机制的实现逻辑比较复杂，首先 Dubbo 会为拓展接口生成具有代理功能的代码。然后通过 javassist 或 jdk 编译这段代码，得到 Class 类。最后再通过反射创建代理类，整个过程比较复杂。  
 
-Dubbo SPI 的扩展点自适应机制。  
-在 Dubbo 中，很多拓展都是通过 SPI 机制进行加载的，比如 Protocol、Cluster、LoadBalance 等。有时，有些拓展并不想在框架启动阶段被加载，而是希望在拓展方法被调用时，根据运行时参数进行加载。这听起来有些矛盾。拓展未被加载，那么拓展方法就无法被调用（静态方法除外）。拓展方法未被调用，拓展就无法被加载。对于这个矛盾的问题，Dubbo 通过自适应拓展机制很好的解决了。自适应拓展机制的实现逻辑比较复杂，首先 Dubbo 会为拓展接口生成具有代理功能的代码。然后通过 javassist 或 jdk 编译这段代码，得到 Class 类。最后再通过反射创建代理类，整个过程比较复杂。  
-
-在 Dubbo 的代码里，常常能看到如下的代码：  
+&emsp; 获得自适应的拓展对象代码如下：  
 
 ```java
 ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension()
 ```
+
 #### 1.4. @Adaptive  
-在对自适应拓展生成过程进行深入分析之前，我们先来看一下与自适应拓展息息相关的一个注解，即 Adaptive 注解。  
-com.alibaba.dubbo.common.extension.@Adaptive ，自适应拓展信息的标记。代码如下：  
+&emsp; 在对自适应拓展生成过程进行深入分析之前，先来看一下与自适应拓展息息相关的一个注解，即 Adaptive 注解（自适应拓展信息的标记）。  
 
 ```java
 @Documented
@@ -896,18 +890,18 @@ private T createAdaptiveExtension() {
     }
 }
 ```
-
+<!-- 
 * 调用 #getAdaptiveExtensionClass() 方法，获得自适应拓展类。
 * 调用 Class#newInstance() 方法，创建自适应拓展对象。
 * 调用 #injectExtension(instance) 方法，向创建的自适应拓展对象，注入依赖的属性。
-
-createAdaptiveExtension 方法的代码比较少，但却包含了三个逻辑，分别如下：  
+-->
+&emsp; createAdaptiveExtension 方法的代码比较少，但却包含了三个逻辑，分别如下：  
 
 1. 调用 getAdaptiveExtensionClass 方法获取自适应拓展 Class 对象
 2. 通过反射进行实例化
 3. 调用 injectExtension 方法向拓展实例中注入依赖
 
-前两个逻辑比较好理解，第三个逻辑用于向自适应拓展对象中注入依赖。这个逻辑看似多余，但有存在的必要，这里简单说明一下。前面说过，Dubbo 中有两种类型的自适应拓展，一种是手工编码的，一种是自动生成的。手工编码的自适应拓展中可能存在着一些依赖，而自动生成的 Adaptive 拓展则不会依赖其他类。这里调用 injectExtension 方法的目的是为手工编码的自适应拓展注入依赖，这一点需要大家注意一下。  
+&emsp; 前两个逻辑比较好理解，第三个逻辑用于向自适应拓展对象中注入依赖。这个逻辑看似多余，但有存在的必要，这里简单说明一下。前面说过，Dubbo 中有两种类型的自适应拓展，一种是手工编码的，一种是自动生成的。手工编码的自适应拓展中可能存在着一些依赖，而自动生成的 Adaptive 拓展则不会依赖其他类。这里调用 injectExtension 方法的目的是为手工编码的自适应拓展注入依赖，这一点需要大家注意一下。  
 
 
 #### 1.2.5.3. getAdaptiveExtensionClass  
@@ -925,18 +919,17 @@ private Class<?> getAdaptiveExtensionClass() {
     return cachedAdaptiveClass = createAdaptiveExtensionClass();
 }
 ```
-
-* 【@Adaptive 的第一种】第 6 至 8 行：若 cachedAdaptiveClass 已存在，直接返回。的第一种情况。
-* 【@Adaptive 的第二种】第 9 行：调用 #createAdaptiveExtensionClass() 方法，自动生成自适应拓展的代码实现，并编译后返回该类。
-
-
-getAdaptiveExtensionClass 方法同样包含了三个逻辑，如下：  
+&emsp; getAdaptiveExtensionClass 方法同样包含了三个逻辑，如下：  
 
 1. 调用 getExtensionClasses 获取所有的拓展类
 2. 检查缓存，若缓存不为空，则返回缓存
 3. 若缓存为空，则调用 createAdaptiveExtensionClass 创建自适应拓展类
 
-这三个逻辑看起来平淡无奇，似乎没有多讲的必要。但是这些平淡无奇的代码中隐藏了着一些细节，需要说明一下。首先从第一个逻辑说起，getExtensionClasses 这个方法用于获取某个接口的所有实现类。比如该方法可以获取 Protocol 接口的 DubboProtocol、HttpProtocol、InjvmProtocol 等实现类。在获取实现类的过程中，如果某个实现类被 Adaptive 注解修饰了，那么该类就会被赋值给 cachedAdaptiveClass 变量。此时，上面步骤中的第二步条件成立（缓存不为空），直接返回 cachedAdaptiveClass 即可。如果所有的实现类均未被 Adaptive 注解修饰，那么执行第三步逻辑，创建自适应拓展类。相关代码如下：  
+&emsp; 这三个逻辑看起来平淡无奇，似乎没有多讲的必要。但是这些平淡无奇的代码中隐藏了着一些细节，需要说明一下。首先从第一个逻辑说起，getExtensionClasses 这个方法用于获取某个接口的所有实现类。比如该方法可以获取 Protocol 接口的 DubboProtocol、HttpProtocol、InjvmProtocol 等实现类。在获取实现类的过程中，如果某个实现类被 Adaptive 注解修饰了，那么该类就会被赋值给 cachedAdaptiveClass 变量。此时，上面步骤中的第二步条件成立（缓存不为空），直接返回 cachedAdaptiveClass 即可。如果所有的实现类均未被 Adaptive 注解修饰，那么执行第三步逻辑，创建自适应拓展类。  
+<!-- 
+* 【@Adaptive 的第一种】第 6 至 8 行：若 cachedAdaptiveClass 已存在，直接返回。的第一种情况。
+* 【@Adaptive 的第二种】第 9 行：调用 #createAdaptiveExtensionClass() 方法，自动生成自适应拓展的代码实现，并编译后返回该类。
+-->
 
 #### 1.2.5.4. createAdaptiveExtensionClassCode  
 &emsp; createAdaptiveExtensionClassCode() 方法，自动生成自适应拓展的代码实现，并编译后返回该类。  
@@ -956,6 +949,7 @@ private Class<?> createAdaptiveExtensionClass() {
     return compiler.compile(code, classLoader);
 }
 ```
+&emsp; createAdaptiveExtensionClass 方法用于生成自适应拓展类，该方法首先会生成自适应拓展类的源码，然后通过 Compiler 实例（Dubbo 默认使用 javassist 作为编译器）编译源码，得到代理类 Class 实例。 
 
 * 第 8 行：调用 #createAdaptiveExtensionClassCode 方法，自动生成自适应拓展的代码实现的字符串。
     * 代码比较简单，已经添加详细注释，胖友点击查看。
@@ -963,10 +957,10 @@ private Class<?> createAdaptiveExtensionClass() {
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-24.png)   
 * 第 9 至 12 行：使用 Dubbo SPI 加载 Compier 拓展接口对应的拓展实现对象，后调用 Compiler#compile(code, classLoader) 方法，进行编译。  
 
-createAdaptiveExtensionClass 方法用于生成自适应拓展类，该方法首先会生成自适应拓展类的源码，然后通过 Compiler 实例（Dubbo 默认使用 javassist 作为编译器）编译源码，得到代理类 Class 实例。  
-
-### 1.2.6. 获得激活的拓展对象数组  
-在 Dubbo 的代码里，看到使用代码如下：  
+ 
+<!-- 
+获得激活的拓展对象数组  
+&emsp; 在 Dubbo 的代码里，看到使用代码如下：  
 
 ```java
 List<Filter> filters = ExtensionLoader.getExtensionLoader(Filter.class).getActivateExtension(invoker.getUrl(), key, group);
@@ -1066,6 +1060,7 @@ public List<T> getActivateExtension(URL url, String[] values, String group) {
 
 * 第 57 至 74 行：处理自定义配置的拓展对象们。
 * 第 75 至 78 行：将 usrs 合并到 exts 尾部。
+-->
 
 ## 1.3. @SPI  
 com.alibaba.dubbo.common.extension.@SPI ，扩展点接口的标识。代码如下：  
