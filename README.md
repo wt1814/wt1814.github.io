@@ -250,7 +250,8 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [获得指定拓展对象](/docs/microService/Dubbo/getExtension.md)  
 &emsp; [获得自适应的拓展对象](/docs/microService/Dubbo/getAdaptiveExtension.md)  
 [Dubbo实现细节](/docs/microService/Dubbo/realization.md)  
-
+&emsp; [服务导出](/docs/microService/Dubbo/export.md)  
+&emsp; [服务引入](/docs/microService/Dubbo/introduce.md)  
 
 
 ### Zookeeper
