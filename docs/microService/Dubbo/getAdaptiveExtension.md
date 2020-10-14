@@ -26,7 +26,7 @@
 &emsp; Dubbo SPI 的扩展点自适应机制：在 Dubbo 中，很多拓展都是通过 SPI 机制进行加载的，比如 Protocol、Cluster、LoadBalance 等。<font color = "lime">有时，有些拓展并不想在框架启动阶段被加载，而是希望在拓展方法被调用时，根据运行时参数进行加载。这听起来有些矛盾。</font>拓展未被加载，那么拓展方法就无法被调用（静态方法除外）。拓展方法未被调用，拓展就无法被加载。对于这个矛盾的问题，Dubbo 通过自适应拓展机制很好的解决了。自适应拓展机制的实现逻辑比较复杂，首先 Dubbo 会为拓展接口生成具有代理功能的代码。然后通过 javassist 或 jdk 编译这段代码，得到 Class 类。最后再通过反射创建代理类，整个过程比较复杂。  
 
 ## 1.1. 自适应示例  
-为了让大家对自适应拓展有一个感性的认识，下面我们通过一个示例进行演示。这是一个与汽车相关的例子，我们有一个车轮制造厂接口 WheelMaker：  
+&emsp; 为了让大家对自适应拓展有一个感性的认识，下面我们通过一个示例进行演示。这是一个与汽车相关的例子，我们有一个车轮制造厂接口 WheelMaker：  
 
 ```java
 public interface WheelMaker {
@@ -34,7 +34,7 @@ public interface WheelMaker {
 }
 ```
 
-WheelMaker 接口的自适应实现类如下：  
+&emsp; WheelMaker 接口的自适应实现类如下：  
 
 ```java
 public class AdaptiveWheelMaker implements WheelMaker {
@@ -58,13 +58,13 @@ public class AdaptiveWheelMaker implements WheelMaker {
     }
 }
 ```
-AdaptiveWheelMaker 是一个代理类，与传统的代理逻辑不同，AdaptiveWheelMaker 所代理的对象是在 makeWheel 方法中通过 SPI 加载得到的。makeWheel 方法主要做了三件事情：
+&emsp; AdaptiveWheelMaker 是一个代理类，与传统的代理逻辑不同，AdaptiveWheelMaker 所代理的对象是在 makeWheel 方法中通过 SPI 加载得到的。makeWheel 方法主要做了三件事情：
 
 1. 从 URL 中获取 WheelMaker 名称
 2. 通过 SPI 加载具体的 WheelMaker 实现类
 3. 调用目标方法
 
-接下来，我们来看看汽车制造厂 CarMaker 接口与其实现类。  
+&emsp; 接下来，我们来看看汽车制造厂 CarMaker 接口与其实现类。  
 
 ```java
 public interface CarMaker {
@@ -85,14 +85,14 @@ public class RaceCarMaker implements CarMaker {
     }
 }
 ```
-RaceCarMaker 持有一个 WheelMaker 类型的成员变量，在程序启动时，我们可以将 AdaptiveWheelMaker 通过 setter 方法注入到 RaceCarMaker 中。在运行时，假设有这样一个 url 参数传入：  
+&emsp; RaceCarMaker 持有一个 WheelMaker 类型的成员变量，在程序启动时，我们可以将 AdaptiveWheelMaker 通过 setter 方法注入到 RaceCarMaker 中。在运行时，假设有这样一个 url 参数传入：  
 
 ```text
 dubbo://192.168.0.101:20880/XxxService?wheel.maker=MichelinWheelMaker
 ```
-RaceCarMaker 的 makeCar 方法将上面的 url 作为参数传给 AdaptiveWheelMaker 的 makeWheel 方法，makeWheel 方法从 url 中提取 wheel.maker 参数，得到 MichelinWheelMaker。之后再通过 SPI 加载配置名为 MichelinWheelMaker 的实现类，得到具体的 WheelMaker 实例。  
+&emsp; RaceCarMaker 的 makeCar 方法将上面的 url 作为参数传给 AdaptiveWheelMaker 的 makeWheel 方法，makeWheel 方法从 url 中提取 wheel.maker 参数，得到 MichelinWheelMaker。之后再通过 SPI 加载配置名为 MichelinWheelMaker 的实现类，得到具体的 WheelMaker 实例。  
 
-上面的示例展示了自适应拓展类的核心实现 ---- 在拓展接口的方法被调用时，通过 SPI 加载具体的拓展实现类，并调用拓展对象的同名方法。接下来，我们深入到源码中，探索自适应拓展类生成的过程。  
+&emsp; 上面的示例展示了自适应拓展类的核心实现 ---- 在拓展接口的方法被调用时，通过 SPI 加载具体的拓展实现类，并调用拓展对象的同名方法。接下来，我们深入到源码中，探索自适应拓展类生成的过程。  
 
 ## 1.2. 源码分析  
 ### 1.2.1. @Adaptive  
@@ -146,7 +146,7 @@ public @interface Adaptive {
 
 }
 ```
-@Adaptive 注解，可添加类或方法上，分别代表了两种不同的使用方式。  
+&emsp; @Adaptive 注解，可添加类或方法上，分别代表了两种不同的使用方式。  
 
 * 第一种，标记在类上，代表手动实现它是一个拓展接口的 Adaptive 拓展实现类。目前 Dubbo 项目里，只有 ExtensionFactory 拓展的实现类 AdaptiveExtensionFactory 有这么用。详细解析见 「AdaptiveExtensionFactory」 。
 * 第二种，标记在拓展接口的方法上，代表自动生成代码实现该接口的 Adaptive 拓展实现类。
@@ -156,7 +156,7 @@ public @interface Adaptive {
     * 在 「createAdaptiveExtensionClassCode」 详细解析。
  
 ### 1.2.2. getAdaptiveExtension
-getAdaptiveExtension 方法是获取自适应拓展的入口方法，因此下面我们从这个方法进行分析。相关代码如下：  
+&emsp; getAdaptiveExtension 方法是获取自适应拓展的入口方法，因此下面我们从这个方法进行分析。相关代码如下：  
 
 ```java
 public T getAdaptiveExtension() {
@@ -186,7 +186,7 @@ public T getAdaptiveExtension() {
     return (T) instance;
 }
 ```
-getAdaptiveExtension 方法首先会检查缓存，缓存未命中，则调用 createAdaptiveExtension 方法创建自适应拓展。下面，我们看一下 createAdaptiveExtension 方法的代码。  
+&emsp; getAdaptiveExtension 方法首先会检查缓存，缓存未命中，则调用 createAdaptiveExtension 方法创建自适应拓展。下面，我们看一下 createAdaptiveExtension 方法的代码。  
 
 ### 1.2.3. createAdaptiveExtension
 
@@ -200,13 +200,13 @@ private T createAdaptiveExtension() {
     }
 }
 ```
-createAdaptiveExtension 方法的代码比较少，但却包含了三个逻辑，分别如下：  
+&emsp; createAdaptiveExtension 方法的代码比较少，但却包含了三个逻辑，分别如下：  
 
 1. 调用 getAdaptiveExtensionClass 方法获取自适应拓展 Class 对象
 2. 通过反射进行实例化
 3. 调用 injectExtension 方法向拓展实例中注入依赖
 
-前两个逻辑比较好理解，第三个逻辑用于向自适应拓展对象中注入依赖。这个逻辑看似多余，但有存在的必要，这里简单说明一下。前面说过，Dubbo 中有两种类型的自适应拓展，一种是手工编码的，一种是自动生成的。手工编码的自适应拓展中可能存在着一些依赖，而自动生成的 Adaptive 拓展则不会依赖其他类。这里调用 injectExtension 方法的目的是为手工编码的自适应拓展注入依赖，这一点需要大家注意一下。关于 injectExtension 方法，前文已经分析过了，这里不再赘述。接下来，分析 getAdaptiveExtensionClass 方法的逻辑。  
+&emsp; 前两个逻辑比较好理解，第三个逻辑用于向自适应拓展对象中注入依赖。这个逻辑看似多余，但有存在的必要，这里简单说明一下。前面说过，Dubbo 中有两种类型的自适应拓展，一种是手工编码的，一种是自动生成的。手工编码的自适应拓展中可能存在着一些依赖，而自动生成的 Adaptive 拓展则不会依赖其他类。这里调用 injectExtension 方法的目的是为手工编码的自适应拓展注入依赖，这一点需要大家注意一下。关于 injectExtension 方法，前文已经分析过了，这里不再赘述。接下来，分析 getAdaptiveExtensionClass 方法的逻辑。  
 
 #### 1.2.3.1. getAdaptiveExtensionClass
 
@@ -222,13 +222,13 @@ private Class<?> getAdaptiveExtensionClass() {
     return cachedAdaptiveClass = createAdaptiveExtensionClass();
 }
 ```
-getAdaptiveExtensionClass 方法同样包含了三个逻辑，如下：  
+&emsp; getAdaptiveExtensionClass 方法同样包含了三个逻辑，如下：  
 
 1. 调用 getExtensionClasses 获取所有的拓展类
 2. 检查缓存，若缓存不为空，则返回缓存
 3. 若缓存为空，则调用 createAdaptiveExtensionClass 创建自适应拓展类
 
-这三个逻辑看起来平淡无奇，似乎没有多讲的必要。但是这些平淡无奇的代码中隐藏了着一些细节，需要说明一下。首先从第一个逻辑说起，getExtensionClasses 这个方法用于获取某个接口的所有实现类。比如该方法可以获取 Protocol 接口的 DubboProtocol、HttpProtocol、InjvmProtocol 等实现类。在获取实现类的过程中，如果某个实现类被 Adaptive 注解修饰了，那么该类就会被赋值给 cachedAdaptiveClass 变量。此时，上面步骤中的第二步条件成立（缓存不为空），直接返回 cachedAdaptiveClass 即可。如果所有的实现类均未被 Adaptive 注解修饰，那么执行第三步逻辑，创建自适应拓展类。相关代码如下：  
+&emsp; 这三个逻辑看起来平淡无奇，似乎没有多讲的必要。但是这些平淡无奇的代码中隐藏了着一些细节，需要说明一下。首先从第一个逻辑说起，getExtensionClasses 这个方法用于获取某个接口的所有实现类。比如该方法可以获取 Protocol 接口的 DubboProtocol、HttpProtocol、InjvmProtocol 等实现类。在获取实现类的过程中，如果某个实现类被 Adaptive 注解修饰了，那么该类就会被赋值给 cachedAdaptiveClass 变量。此时，上面步骤中的第二步条件成立（缓存不为空），直接返回 cachedAdaptiveClass 即可。如果所有的实现类均未被 Adaptive 注解修饰，那么执行第三步逻辑，创建自适应拓展类。相关代码如下：  
 
 ```java
 private Class<?> createAdaptiveExtensionClass() {
@@ -241,15 +241,14 @@ private Class<?> createAdaptiveExtensionClass() {
     return compiler.compile(code, classLoader);
 }
 ```
-createAdaptiveExtensionClass 方法用于生成自适应拓展类，该方法首先会生成自适应拓展类的源码，然后通过 Compiler 实例（Dubbo 默认使用 javassist 作为编译器）编译源码，得到代理类 Class 实例。接下来，我们把重点放在代理类代码生成的逻辑上，其他逻辑大家自行分析。  
+&emsp; createAdaptiveExtensionClass 方法用于生成自适应拓展类，该方法首先会生成自适应拓展类的源码，然后通过 Compiler 实例（Dubbo 默认使用 javassist 作为编译器）编译源码，得到代理类 Class 实例。接下来，我们把重点放在代理类代码生成的逻辑上，其他逻辑大家自行分析。  
 
 
 ### 1.2.4. 自适应拓展类代码生成
-createAdaptiveExtensionClassCode 方法代码略多，约有两百行代码。因此本节将会对该方法的代码进行拆分分析，以帮助大家更好的理解代码逻辑。  
+&emsp; createAdaptiveExtensionClassCode 方法代码略多，约有两百行代码。因此本节将会对该方法的代码进行拆分分析，以帮助大家更好的理解代码逻辑。  
 
 #### 1.2.4.1. Adaptive 注解检测
-
-在生成代理类源码之前，createAdaptiveExtensionClassCode 方法首先会通过反射检测接口方法是否包含 Adaptive 注解。对于要生成自适应拓展的接口，Dubbo 要求该接口至少有一个方法被 Adaptive 注解修饰。若不满足此条件，就会抛出运行时异常。相关代码如下：  
+&emsp; 在生成代理类源码之前，createAdaptiveExtensionClassCode 方法首先会通过反射检测接口方法是否包含 Adaptive 注解。对于要生成自适应拓展的接口，Dubbo 要求该接口至少有一个方法被 Adaptive 注解修饰。若不满足此条件，就会抛出运行时异常。相关代码如下：  
 
 ```java
 // 通过反射获取所有的方法
@@ -270,8 +269,7 @@ if (!hasAdaptiveAnnotation)
 ```
 
 #### 1.2.4.2. 生成类
-
-通过 Adaptive 注解检测后，即可开始生成代码。代码生成的顺序与 Java 文件内容顺序一致，首先会生成 package 语句，然后生成 import 语句，紧接着生成类名等代码。整个逻辑如下：
+&emsp; 通过 Adaptive 注解检测后，即可开始生成代码。代码生成的顺序与 Java 文件内容顺序一致，首先会生成 package 语句，然后生成 import 语句，紧接着生成类名等代码。整个逻辑如下：
 
 ```java
 // 生成 package 代码：package + type 所在包
@@ -290,7 +288,7 @@ codeBuilder.append("\npublic class ")
 
 codeBuilder.append("\n}");
 ```
-这里使用 ${...} 占位符代表其他代码的生成逻辑，该部分逻辑将在随后进行分析。上面代码不是很难理解，下面直接通过一个例子展示该段代码所生成的内容。以 Dubbo 的 Protocol 接口为例，生成的代码如下：  
+&emsp; 这里使用 ${...} 占位符代表其他代码的生成逻辑，该部分逻辑将在随后进行分析。上面代码不是很难理解，下面直接通过一个例子展示该段代码所生成的内容。以 Dubbo 的 Protocol 接口为例，生成的代码如下：  
 
 ```java
 package com.alibaba.dubbo.rpc;
@@ -301,11 +299,10 @@ public class Protocol$Adaptive implements com.alibaba.dubbo.rpc.Protocol {
 ```
 
 #### 1.2.4.3. 生成方法
-
-一个方法可以被 Adaptive 注解修饰，也可以不被修饰。这里将未被 Adaptive 注解修饰的方法称为“无 Adaptive 注解方法”，下面我们先来看看此种方法的代码生成逻辑是怎样的。  
+&emsp; 一个方法可以被 Adaptive 注解修饰，也可以不被修饰。这里将未被 Adaptive 注解修饰的方法称为“无 Adaptive 注解方法”，下面我们先来看看此种方法的代码生成逻辑是怎样的。  
 
 ##### 1.2.4.3.1. 无 Adaptive 注解方法代码生成逻辑
-对于接口方法，我们可以按照需求标注 Adaptive 注解。以 Protocol 接口为例，该接口的 destroy 和 getDefaultPort 未标注 Adaptive 注解，其他方法均标注了 Adaptive 注解。Dubbo 不会为没有标注 Adaptive 注解的方法生成代理逻辑，对于该种类型的方法，仅会生成一句抛出异常的代码。生成逻辑如下：  
+&emsp; 对于接口方法，我们可以按照需求标注 Adaptive 注解。以 Protocol 接口为例，该接口的 destroy 和 getDefaultPort 未标注 Adaptive 注解，其他方法均标注了 Adaptive 注解。Dubbo 不会为没有标注 Adaptive 注解的方法生成代理逻辑，对于该种类型的方法，仅会生成一句抛出异常的代码。生成逻辑如下：  
 
 ```java
 for (Method method : methods) {
@@ -329,7 +326,7 @@ for (Method method : methods) {
     // 省略无关逻辑
 }
 ```
-以 Protocol 接口的 destroy 方法为例，上面代码生成的内容如下：
+&emsp; 以 Protocol 接口的 destroy 方法为例，上面代码生成的内容如下：
 
 ```java
 throw new UnsupportedOperationException(
@@ -337,14 +334,13 @@ throw new UnsupportedOperationException(
 ```
 
 ##### 1.2.4.3.2. 获取 URL 数据
-
-前面说过方法代理逻辑会从 URL 中提取目标拓展的名称，因此代码生成逻辑的一个重要的任务是从方法的参数列表或者其他参数中获取 URL 数据。举例说明一下，我们要为 Protocol 接口的 refer 和 export 方法生成代理逻辑。在运行时，通过反射得到的方法定义大致如下：  
+&emsp; 前面说过方法代理逻辑会从 URL 中提取目标拓展的名称，因此代码生成逻辑的一个重要的任务是从方法的参数列表或者其他参数中获取 URL 数据。举例说明一下，我们要为 Protocol 接口的 refer 和 export 方法生成代理逻辑。在运行时，通过反射得到的方法定义大致如下：  
 
 ```java
 Invoker refer(Class<T> arg0, URL arg1) throws RpcException;
 Exporter export(Invoker<T> arg0) throws RpcException;
 ```
-对于 refer 方法，通过遍历 refer 的参数列表即可获取 URL 数据，这个还比较简单。对于 export 方法，获取 URL 数据则要麻烦一些。export 参数列表中没有 URL 参数，因此需要从 Invoker 参数中获取 URL 数据。获取方式是调用 Invoker 中可返回 URL 的 getter 方法，比如 getUrl。如果 Invoker 中无相关 getter 方法，此时则会抛出异常。整个逻辑如下：  
+&emsp; 对于 refer 方法，通过遍历 refer 的参数列表即可获取 URL 数据，这个还比较简单。对于 export 方法，获取 URL 数据则要麻烦一些。export 参数列表中没有 URL 参数，因此需要从 Invoker 参数中获取 URL 数据。获取方式是调用 Invoker 中可返回 URL 的 getter 方法，比如 getUrl。如果 Invoker 中无相关 getter 方法，此时则会抛出异常。整个逻辑如下：  
 
 ```java
 for (Method method : methods) {
@@ -441,7 +437,7 @@ for (Method method : methods) {
     // 省略无关代码
 }
 ```
-上面代码有点多，需要耐心看一下。这段代码主要目的是为了获取 URL 数据，并为之生成判空和赋值代码。以 Protocol 的 refer 和 export 方法为例，上面的代码为它们生成如下内容（代码已格式化）：
+&emsp; 上面代码有点多，需要耐心看一下。这段代码主要目的是为了获取 URL 数据，并为之生成判空和赋值代码。以 Protocol 的 refer 和 export 方法为例，上面的代码为它们生成如下内容（代码已格式化）：
 
 ```text
 refer:
@@ -458,7 +454,7 @@ com.alibaba.dubbo.common.URL url = arg0.getUrl();
 ```
 
 ##### 1.2.4.3.3. 获取 Adaptive 注解值
-Adaptive 注解值 value 类型为 String[]，可填写多个值，默认情况下为空数组。若 value 为非空数组，直接获取数组内容即可。若 value 为空数组，则需进行额外处理。处理过程是将类名转换为字符数组，然后遍历字符数组，并将字符放入 StringBuilder 中。若字符为大写字母，则向 StringBuilder 中添加点号，随后将字符变为小写存入 StringBuilder 中。比如 LoadBalance 经过处理后，得到 load.balance。  
+&emsp; Adaptive 注解值 value 类型为 String[]，可填写多个值，默认情况下为空数组。若 value 为非空数组，直接获取数组内容即可。若 value 为空数组，则需进行额外处理。处理过程是将类名转换为字符数组，然后遍历字符数组，并将字符放入 StringBuilder 中。若字符为大写字母，则向 StringBuilder 中添加点号，随后将字符变为小写存入 StringBuilder 中。比如 LoadBalance 经过处理后，得到 load.balance。  
 
 ```java
 for (Method method : methods) {
@@ -505,8 +501,7 @@ for (Method method : methods) {
 ```
 
 ##### 1.2.4.3.4. 检测 Invocation 参数
-
-此段逻辑是检测方法列表中是否存在 Invocation 类型的参数，若存在，则为其生成判空代码和其他一些代码。相应的逻辑如下：  
+&emsp; 此段逻辑是检测方法列表中是否存在 Invocation 类型的参数，若存在，则为其生成判空代码和其他一些代码。相应的逻辑如下：  
 
 ```java
 for (Method method : methods) {
@@ -548,8 +543,7 @@ for (Method method : methods) {
 ```
 
 ##### 1.2.4.3.5. 生成拓展名获取逻辑
-
-本段逻辑用于根据 SPI 和 Adaptive 注解值生成“获取拓展名逻辑”，同时生成逻辑也受 Invocation 类型参数影响，综合因素导致本段逻辑相对复杂。本段逻辑可能会生成但不限于下面的代码：
+&emsp; 本段逻辑用于根据 SPI 和 Adaptive 注解值生成“获取拓展名逻辑”，同时生成逻辑也受 Invocation 类型参数影响，综合因素导致本段逻辑相对复杂。本段逻辑可能会生成但不限于下面的代码：
 
 ```java
 String extName = (url.getProtocol() == null ? "dubbo" : url.getProtocol());
@@ -657,7 +651,8 @@ for (Method method : methods) {
     // 省略无关逻辑
 }
 ```
-上面代码比较复杂，不是很好理解。对于这段代码，建议大家写点测试用例，对 Protocol、LoadBalance 以及 Transporter 等接口的自适应拓展类代码生成过程进行调试。这里我以 Transporter 接口的自适应拓展类代码生成过程举例说明。首先看一下 Transporter 接口的定义，如下：
+&emsp; 上面代码比较复杂，不是很好理解。对于这段代码，建议大家写点测试用例，对 Protocol、LoadBalance 以及 Transporter 等接口的自适应拓展类代码生成过程进行调试。这里我以 Transporter 接口的自适应拓展类代码生成过程举例说明。首先看一下 Transporter 接口的定义，如下：  
+
 ```java
 @SPI("netty")
 public interface Transporter {
@@ -670,22 +665,29 @@ public interface Transporter {
     Client connect(URL url, ChannelHandler handler) throws RemotingException;
 }
 ```
-下面对 connect 方法代理逻辑生成的过程进行分析，此时生成代理逻辑所用到的变量如下：
+
+&emsp; 下面对 connect 方法代理逻辑生成的过程进行分析，此时生成代理逻辑所用到的变量如下：  
+
 ```java
 String defaultExtName = "netty";
 boolean hasInvocation = false;
 String getNameCode = null;
 String[] value = ["client", "transporter"];
 ```
-下面对 value 数组进行遍历，此时 i = 1, value[i] = "transporter"，生成的代码如下：
+
+&emsp; 下面对value 数组进行遍历，此时 i = 1, value[i] = "transporter"，生成的代码如下：  
+
 ```java
 getNameCode = url.getParameter("transporter", "netty");
 ```
-接下来，for 循环继续执行，此时 i = 0, value[i] = "client"，生成的代码如下：
+
+&emsp; 接下来，for 循环继续执行，此时 i = 0, value[i] = "client"，生成的代码如下：
+
 ```java
 getNameCode = url.getParameter("client", url.getParameter("transporter", "netty"));
 ```
-for 循环结束运行，现在为 extName 变量生成赋值和判空代码，如下：
+&emsp; for 循环结束运行，现在为 extName 变量生成赋值和判空代码，如下：  
+
 ```java
 String extName = url.getParameter("client", url.getParameter("transporter", "netty"));
 if (extName == null) {
@@ -695,8 +697,7 @@ if (extName == null) {
 }
 ```
 ##### 1.2.4.3.6. 生成拓展加载与目标方法调用逻辑
-
-本段代码逻辑用于根据拓展名加载拓展实例，并调用拓展实例的目标方法。相关逻辑如下：
+&emsp; 本段代码逻辑用于根据拓展名加载拓展实例，并调用拓展实例的目标方法。相关逻辑如下：
 ```java
 for (Method method : methods) {
     Class<?> rt = method.getReturnType();
@@ -744,7 +745,8 @@ for (Method method : methods) {
     // 省略无关逻辑
 }
 
-以 Protocol 接口举例说明，上面代码生成的内容如下：
+&emsp; 以 Protocol 接口举例说明，上面代码生成的内容如下：  
+
 ```java
 com.alibaba.dubbo.rpc.Protocol extension = (com.alibaba.dubbo.rpc.Protocol) ExtensionLoader
     .getExtensionLoader(com.alibaba.dubbo.rpc.Protocol.class).getExtension(extName);
@@ -752,8 +754,7 @@ return extension.refer(arg0, arg1);
 ```
 
 ##### 生成完整的方法
-
-本节进行代码生成的收尾工作，主要用于生成方法定义的代码。相关逻辑如下：
+&emsp; 本节进行代码生成的收尾工作，主要用于生成方法定义的代码。相关逻辑如下：
 ```java
 for (Method method : methods) {
     Class<?> rt = method.getReturnType();

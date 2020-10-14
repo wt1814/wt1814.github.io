@@ -147,7 +147,7 @@ public T getExtension(String name) {
     return (T) instance;
 }
 ```
-上面代码的逻辑比较简单，首先检查缓存，缓存未命中则创建拓展对象。下面我们来看一下创建拓展对象的过程是怎样的。  
+&emsp; 上面代码的逻辑比较简单，首先检查缓存，缓存未命中则创建拓展对象。下面我们来看一下创建拓展对象的过程是怎样的。  
 
 #### 1.2.2.2. createExtension
 
@@ -183,19 +183,19 @@ private T createExtension(String name) {
     }
 }
 ```
-createExtension 方法的逻辑稍复杂一下，包含了如下的步骤：  
+&emsp; createExtension 方法的逻辑稍复杂一下，包含了如下的步骤：  
 
 1. 通过 getExtensionClasses 获取所有的拓展类
 2. 通过反射创建拓展对象
 3. 向拓展对象中注入依赖
 4. 将拓展对象包裹在相应的 Wrapper 对象中
 
-以上步骤中，第一个步骤是加载拓展类的关键，第三和第四个步骤是 Dubbo IOC 与 AOP 的具体实现。在接下来的章节中，将会重点分析 getExtensionClasses 方法的逻辑，以及简单介绍 Dubbo IOC 的具体实现。  
+&emsp; 以上步骤中，第一个步骤是加载拓展类的关键，第三和第四个步骤是 Dubbo IOC 与 AOP 的具体实现。在接下来的章节中，将会重点分析 getExtensionClasses 方法的逻辑，以及简单介绍 Dubbo IOC 的具体实现。  
 
 ##### 1.2.2.2.1. 获取所有的拓展类  
 
 ###### 1.2.2.2.1.1. getExtensionClasses  
-在通过名称获取拓展类之前，首先需要根据配置文件解析出拓展项名称到拓展类的映射关系表（Map<名称, 拓展类>），之后再根据拓展项名称从映射关系表中取出相应的拓展类即可。相关过程的代码分析如下：  
+&emsp; 在通过名称获取拓展类之前，首先需要根据配置文件解析出拓展项名称到拓展类的映射关系表（Map<名称, 拓展类>），之后再根据拓展项名称从映射关系表中取出相应的拓展类即可。相关过程的代码分析如下：  
 
 ```java
 private Map<String, Class<?>> getExtensionClasses() {
@@ -216,7 +216,7 @@ private Map<String, Class<?>> getExtensionClasses() {
 }
 ```
 
-这里也是先检查缓存，若缓存未命中，则通过 synchronized 加锁。加锁后再次检查缓存，并判空。此时如果 classes 仍为 null，则通过 loadExtensionClasses 加载拓展类。下面分析 loadExtensionClasses 方法的逻辑。  
+&emsp; 这里也是先检查缓存，若缓存未命中，则通过 synchronized 加锁。加锁后再次检查缓存，并判空。此时如果 classes 仍为 null，则通过 loadExtensionClasses 加载拓展类。下面分析 loadExtensionClasses 方法的逻辑。  
 
 ###### 1.2.2.2.1.2. loadExtensionClasses
 
@@ -249,7 +249,7 @@ private Map<String, Class<?>> loadExtensionClasses() {
     return extensionClasses;
 }
 ```
-loadExtensionClasses 方法总共做了两件事情，一是对 SPI 注解进行解析，二是调用 loadDirectory 方法加载指定文件夹配置文件。SPI 注解解析过程比较简单，无需多说。下面我们来看一下 loadDirectory 做了哪些事情。  
+&emsp; loadExtensionClasses 方法总共做了两件事情，一是对 SPI 注解进行解析，二是调用 loadDirectory 方法加载指定文件夹配置文件。SPI 注解解析过程比较简单，无需多说。下面我们来看一下 loadDirectory 做了哪些事情。  
 
 ###### 1.2.2.2.1.3. loadDirectory
 
@@ -279,7 +279,7 @@ private void loadDirectory(Map<String, Class<?>> extensionClasses, String dir) {
 }
 ```
 
-loadDirectory 方法先通过 classLoader 获取所有资源链接，然后再通过 loadResource 方法加载资源。我们继续跟下去，看一下 loadResource 方法的实现。  
+&emsp; loadDirectory 方法先通过 classLoader 获取所有资源链接，然后再通过 loadResource 方法加载资源。我们继续跟下去，看一下 loadResource 方法的实现。  
 
 ###### 1.2.2.2.1.4. loadResource
 
@@ -327,7 +327,7 @@ private void loadResource(Map<String, Class<?>> extensionClasses,
     }
 }
 ```
-loadResource 方法用于读取和解析配置文件，并通过反射加载类，最后调用 loadClass 方法进行其他操作。  
+&emsp; loadResource 方法用于读取和解析配置文件，并通过反射加载类，最后调用 loadClass 方法进行其他操作。  
 
 ###### 1.2.2.2.1.5. loadClass
 loadClass 方法用于主要用于操作缓存，该方法的逻辑如下：  
@@ -396,12 +396,11 @@ private void loadClass(Map<String, Class<?>> extensionClasses, java.net.URL reso
     }
 }
 ```
-如上，loadClass 方法操作了不同的缓存，比如 cachedAdaptiveClass、cachedWrapperClasses 和 cachedNames 等等。除此之外，该方法没有其他什么逻辑了。  
-
-到此，关于缓存类加载的过程就分析完了。  
+&emsp; 如上，loadClass 方法操作了不同的缓存，比如 cachedAdaptiveClass、cachedWrapperClasses 和 cachedNames 等等。除此之外，该方法没有其他什么逻辑了。  
+&emsp; 到此，关于缓存类加载的过程就分析完了。  
 
 ### 1.2.3. injectExtension，Dubbo IOC
-Dubbo IOC 是通过 setter 方法注入依赖。Dubbo 首先会通过反射获取到实例的所有方法，然后再遍历方法列表，检测方法名是否具有 setter 方法特征。若有，则通过 ObjectFactory 获取依赖对象，最后通过反射调用 setter 方法将依赖设置到目标对象中。整个过程对应的代码如下：  
+&emsp; Dubbo IOC 是通过 setter 方法注入依赖。Dubbo 首先会通过反射获取到实例的所有方法，然后再遍历方法列表，检测方法名是否具有 setter 方法特征。若有，则通过 ObjectFactory 获取依赖对象，最后通过反射调用 setter 方法将依赖设置到目标对象中。整个过程对应的代码如下：  
 
 ```java
 private T injectExtension(T instance) {
@@ -438,8 +437,8 @@ private T injectExtension(T instance) {
     return instance;
 }
 ```
-在上面代码中，objectFactory 变量的类型为 AdaptiveExtensionFactory，AdaptiveExtensionFactory 内部维护了一个 ExtensionFactory 列表，用于存储其他类型的 ExtensionFactory。Dubbo 目前提供了两种 ExtensionFactory，分别是 SpiExtensionFactory 和 SpringExtensionFactory。前者用于创建自适应的拓展，后者是用于从 Spring 的 IOC 容器中获取所需的拓展。这两个类的类的代码不是很复杂，这里就不一一分析了。  
+&emsp; 在上面代码中，objectFactory 变量的类型为 AdaptiveExtensionFactory，AdaptiveExtensionFactory 内部维护了一个 ExtensionFactory 列表，用于存储其他类型的 ExtensionFactory。Dubbo 目前提供了两种 ExtensionFactory，分别是 SpiExtensionFactory 和 SpringExtensionFactory。前者用于创建自适应的拓展，后者是用于从 Spring 的 IOC 容器中获取所需的拓展。这两个类的类的代码不是很复杂，这里就不一一分析了。  
 
-Dubbo IOC 目前仅支持 setter 方式注入。  
+&emsp; Dubbo IOC 目前仅支持 setter 方式注入。  
 
 
