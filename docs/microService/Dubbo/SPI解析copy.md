@@ -23,6 +23,7 @@
             - [1.2.5.2. createAdaptiveExtension](#1252-createadaptiveextension)
             - [1.2.5.3. getAdaptiveExtensionClass](#1253-getadaptiveextensionclass)
             - [1.2.5.4. createAdaptiveExtensionClassCode](#1254-createadaptiveextensionclasscode)
+        - [1.2.6. 获得激活的拓展对象数组](#126-获得激活的拓展对象数组)
             - [1.2.6.1. getExtensionLoader](#1261-getextensionloader)
     - [1.3. @SPI](#13-spi)
     - [1.5. @Activate](#15-activate)
@@ -958,8 +959,8 @@ private Class<?> createAdaptiveExtensionClass() {
 * 第 9 至 12 行：使用 Dubbo SPI 加载 Compier 拓展接口对应的拓展实现对象，后调用 Compiler#compile(code, classLoader) 方法，进行编译。  
 
  
-<!-- 
-获得激活的拓展对象数组  
+
+### 1.2.6. 获得激活的拓展对象数组  
 &emsp; 在 Dubbo 的代码里，看到使用代码如下：  
 
 ```java
@@ -1060,7 +1061,6 @@ public List<T> getActivateExtension(URL url, String[] values, String group) {
 
 * 第 57 至 74 行：处理自定义配置的拓展对象们。
 * 第 75 至 78 行：将 usrs 合并到 exts 尾部。
--->
 
 ## 1.3. @SPI  
 com.alibaba.dubbo.common.extension.@SPI ，扩展点接口的标识。代码如下：  

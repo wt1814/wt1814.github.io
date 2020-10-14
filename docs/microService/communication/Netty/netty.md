@@ -17,4 +17,8 @@ https://mp.weixin.qq.com/s/P0IP6c_qFhuebwdwD8HM7w
 
 使用 Netty 定制自己的协议 
 https://mp.weixin.qq.com/s/JnooTfcH_tnQFoGpjjBNGQ
+
+Netty 应该这样使用，最佳实践！ 
+https://mp.weixin.qq.com/s/sZdKNTqf9LhJVkE_c7Mtlg
+
 -->
