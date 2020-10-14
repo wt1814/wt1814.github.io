@@ -18,8 +18,12 @@
                 - [1.2.4.3.3. 获取 Adaptive 注解值](#12433-获取-adaptive-注解值)
                 - [1.2.4.3.4. 检测 Invocation 参数](#12434-检测-invocation-参数)
                 - [1.2.4.3.5. 生成拓展名获取逻辑](#12435-生成拓展名获取逻辑)
-                - [1.2.4.3.6. 生成拓展加载与目标方法调用逻辑](#12436-生成拓展加载与目标方法调用逻辑)
-                - [1.2.4.3.7. 生成完整的方法](#12437-生成完整的方法)
+                - [无 Adaptive 注解方法代码生成逻辑](#无-adaptive-注解方法代码生成逻辑)
+                - [获取 URL 数据](#获取-url-数据)
+                - [获取 Adaptive 注解值](#获取-adaptive-注解值)
+                - [检测 Invocation 参数](#检测-invocation-参数)
+                - [生成拓展名获取逻辑](#生成拓展名获取逻辑)
+                - [生成拓展加载与目标方法调用逻辑](#生成拓展加载与目标方法调用逻辑)
 
 <!-- /TOC -->
 
@@ -677,7 +681,6 @@ public interface Transporter {
 
 &emsp; 下面对 connect 方法代理逻辑生成的过程进行分析，此时生成代理逻辑所用到的变量如下：  
 
-<<<<<<< HEAD
 ##### 无 Adaptive 注解方法代码生成逻辑
 对于接口方法，我们可以按照需求标注 Adaptive 注解。以 Protocol 接口为例，该接口的 destroy 和 getDefaultPort 未标注 Adaptive 注解，其他方法均标注了 Adaptive 注解。Dubbo 不会为没有标注 Adaptive 注解的方法生成代理逻辑，对于该种类型的方法，仅会生成一句抛出异常的代码。生成逻辑如下：  
 
@@ -1128,99 +1131,6 @@ return extension.refer(arg0, arg1);
 ##### 生成完整的方法
 
 本节进行代码生成的收尾工作，主要用于生成方法定义的代码。相关逻辑如下：
-=======
-```java
-String defaultExtName = "netty";
-boolean hasInvocation = false;
-String getNameCode = null;
-String[] value = ["client", "transporter"];
-```
-
-&emsp; 下面对value 数组进行遍历，此时 i = 1, value[i] = "transporter"，生成的代码如下：  
-
-```java
-getNameCode = url.getParameter("transporter", "netty");
-```
-
-&emsp; 接下来，for 循环继续执行，此时 i = 0, value[i] = "client"，生成的代码如下：
-
-```java
-getNameCode = url.getParameter("client", url.getParameter("transporter", "netty"));
-```
-&emsp; for 循环结束运行，现在为 extName 变量生成赋值和判空代码，如下：  
-
-```java
-String extName = url.getParameter("client", url.getParameter("transporter", "netty"));
-if (extName == null) {
-    throw new IllegalStateException(
-        "Fail to get extension(com.alibaba.dubbo.remoting.Transporter) name from url(" + url.toString()
-        + ") use keys([client, transporter])");
-}
-```
-
-##### 1.2.4.3.6. 生成拓展加载与目标方法调用逻辑
-&emsp; 本段代码逻辑用于根据拓展名加载拓展实例，并调用拓展实例的目标方法。相关逻辑如下：
-
-```java
-for (Method method : methods) {
-    Class<?> rt = method.getReturnType();
-    Class<?>[] pts = method.getParameterTypes();
-    Class<?>[] ets = method.getExceptionTypes();
-
-    Adaptive adaptiveAnnotation = method.getAnnotation(Adaptive.class);
-    StringBuilder code = new StringBuilder(512);
-    if (adaptiveAnnotation == null) {
-        // $无 Adaptive 注解方法代码生成逻辑}
-    } else {
-        // ${获取 URL 数据}
-        
-        // ${获取 Adaptive 注解值}
-        
-        // ${检测 Invocation 参数}
-        
-        // ${生成拓展名获取逻辑}
-        
-        // 生成拓展获取代码，格式如下：
-        // type全限定名 extension = (type全限定名)ExtensionLoader全限定名
-        //     .getExtensionLoader(type全限定名.class).getExtension(extName);
-        // Tips: 格式化字符串中的 %<s 表示使用前一个转换符所描述的参数，即 type 全限定名
-        s = String.format("\n%s extension = (%<s)%s.getExtensionLoader(%s.class).getExtension(extName);",
-                        type.getName(), ExtensionLoader.class.getSimpleName(), type.getName());
-        code.append(s);
-
-		// 如果方法返回值类型非 void，则生成 return 语句。
-        if (!rt.equals(void.class)) {
-            code.append("\nreturn ");
-        }
-
-        // 生成目标方法调用逻辑，格式为：
-        //     extension.方法名(arg0, arg2, ..., argN);
-        s = String.format("extension.%s(", method.getName());
-        code.append(s);
-        for (int i = 0; i < pts.length; i++) {
-            if (i != 0)
-                code.append(", ");
-            code.append("arg").append(i);
-        }
-        code.append(");");   
-    }
-    
-    // 省略无关逻辑
-}
-```
-
-&emsp; 以 Protocol 接口举例说明，上面代码生成的内容如下：  
-
-```java
-com.alibaba.dubbo.rpc.Protocol extension = (com.alibaba.dubbo.rpc.Protocol) ExtensionLoader
-    .getExtensionLoader(com.alibaba.dubbo.rpc.Protocol.class).getExtension(extName);
-return extension.refer(arg0, arg1);
-```
-
-##### 1.2.4.3.7. 生成完整的方法
-&emsp; 本节进行代码生成的收尾工作，主要用于生成方法定义的代码。相关逻辑如下：
-
->>>>>>> dc1c5e79f497e9ceb918b388501b3484529f51c2
 ```java
 for (Method method : methods) {
     Class<?> rt = method.getReturnType();
@@ -1276,12 +1186,7 @@ codeBuilder.append(" {");
 codeBuilder.append(code.toString());
 codeBuilder.append("\n}");
 ```
-<<<<<<< HEAD
 以 Protocol 的 refer 方法为例，上面代码生成的内容如下：
-=======
-&emsp; 以 Protocol 的 refer 方法为例，上面代码生成的内容如下：  
-
->>>>>>> dc1c5e79f497e9ceb918b388501b3484529f51c2
 ```java
 public com.alibaba.dubbo.rpc.Invoker refer(java.lang.Class arg0, com.alibaba.dubbo.common.URL arg1) {
     // 方法体
