@@ -249,6 +249,7 @@ Gitee： https://gitee.com/wt1814/
 [扩展点加载(SPI)](/docs/microService/Dubbo/SPI.md)  
 &emsp; [获得指定拓展对象](/docs/microService/Dubbo/getExtension.md)  
 &emsp; [获得自适应的拓展对象](/docs/microService/Dubbo/getAdaptiveExtension.md)  
+[Dubbo实现细节](/docs/microService/Dubbo/realization.md)  
 
 
 
