@@ -810,7 +810,8 @@ codeBuilder.append(" {");
 codeBuilder.append(code.toString());
 codeBuilder.append("\n}");
 ```
-以 Protocol 的 refer 方法为例，上面代码生成的内容如下：
+&emsp; 以 Protocol 的 refer 方法为例，上面代码生成的内容如下：  
+
 ```java
 public com.alibaba.dubbo.rpc.Invoker refer(java.lang.Class arg0, com.alibaba.dubbo.common.URL arg1) {
     // 方法体
