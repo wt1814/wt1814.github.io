@@ -77,10 +77,13 @@ public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> type) {
     }
 }
 ```
+&emsp; 从 EXTENSION_LOADERS 静态中获取拓展接口对应的 ExtensionLoader 对象。若不存在，则创建 ExtensionLoader 对象，并添加到 EXTENSION_LOADERS。  
 
+<!-- 
 * 第 12 至 15 行：必须是接口。
 * 第 16 至 20 行：调用 #withExtensionAnnotation() 方法，校验必须使用 @SPI 注解标记。
 * 第 22 至 27 行：从 EXTENSION_LOADERS 静态中获取拓展接口对应的 ExtensionLoader 对象。若不存在，则创建 ExtensionLoader 对象，并添加到 EXTENSION_LOADERS。
+-->
 
 #### 1.2.1.2. 构造方法  
 &emsp; 构造方法，代码如下：  
