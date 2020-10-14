@@ -376,11 +376,13 @@ Gitee： https://gitee.com/wt1814/
 [系统稳定性建设]()  
 
 [性能指标](/docs/system/performance.md)  
+[软件架构设计模式](/docs/system/designPattern.md)  
 [领域驱动模型](/docs/system/DDD.md)  
 
 [分布式和微服务](/docs/system/serviceSplit.md)  
 [并发系统三高](/docs/system/threeHigh.md)  
 [秒杀系统设计](/docs/system/seckill.md)  
+
 [订单系统设计](/docs/system/order.md)  
 [个别场景](/docs/project/scene.md)  
 

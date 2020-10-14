@@ -1,23 +1,42 @@
 
+<!-- TOC -->
 
+- [1. SPI解析](#1-spi解析)
+    - [1.1. 代码结构](#11-代码结构)
+    - [1.2. 获得指定拓展对象](#12-获得指定拓展对象)
+        - [1.2.1. 获得拓展加载器](#121-获得拓展加载器)
+            - [1.2.1.1. getExtensionLoader](#1211-getextensionloader)
+            - [1.2.1.2. 构造方法](#1212-构造方法)
+        - [1.2.2. 获得指定拓展对象](#122-获得指定拓展对象)
+            - [1.2.2.1. getExtension](#1221-getextension)
+            - [1.2.2.2. createExtension](#1222-createextension)
+                - [1.2.2.2.1. 获取所有的拓展类](#12221-获取所有的拓展类)
+                    - [1.2.2.2.1.1. getExtensionClasses](#122211-getextensionclasses)
+                    - [1.2.2.2.1.2. loadExtensionClasses](#122212-loadextensionclasses)
+                    - [1.2.2.2.1.3. loadDirectory](#122213-loaddirectory)
+                    - [1.2.2.2.1.4. loadResource](#122214-loadresource)
+                    - [1.2.2.2.1.5. loadClass](#122215-loadclass)
+        - [1.2.3. injectExtension，Dubbo IOC](#123-injectextensiondubbo-ioc)
 
-# SPI解析
+<!-- /TOC -->
+
+# 1. SPI解析
 ## 1.1. 代码结构  
 &emsp; Dubbo SPI 在 dubbo-common 的 extension 包实现，如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-28.png)   
 &emsp; Dubbo SPI 的相关逻辑被封装在了 ExtensionLoader 类(拓展加载器)中，通过 ExtensionLoader，可以加载指定的实现类。  
 
-## 获得指定拓展对象  
+## 1.2. 获得指定拓展对象  
 &emsp; Dubbo SPI 示例中，首先通过 ExtensionLoader 的 getExtensionLoader 方法获取一个 ExtensionLoader 实例，然后再通过 ExtensionLoader 的 getExtension 方法获取拓展类对象。  
 
-### 1.2.3. 获得拓展加载器  
+### 1.2.1. 获得拓展加载器  
 &emsp; 在Dubbo SPI示例代码中：  
 
 ```java
 ExtensionLoader<Robot> extensionLoader = ExtensionLoader.getExtensionLoader(Robot.class);
 ```
 
-#### 1.2.3.1. getExtensionLoader  
+#### 1.2.1.1. getExtensionLoader  
 &emsp; getExtensionLoader(type) 静态方法，根据拓展点的接口，获得拓展加载器。代码如下：  
 
 ```java
@@ -63,7 +82,7 @@ public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> type) {
 * 第 16 至 20 行：调用 #withExtensionAnnotation() 方法，校验必须使用 @SPI 注解标记。
 * 第 22 至 27 行：从 EXTENSION_LOADERS 静态中获取拓展接口对应的 ExtensionLoader 对象。若不存在，则创建 ExtensionLoader 对象，并添加到 EXTENSION_LOADERS。
 
-#### 1.2.3.2. 构造方法  
+#### 1.2.1.2. 构造方法  
 &emsp; 构造方法，代码如下：  
 
 ```java
@@ -91,12 +110,12 @@ private ExtensionLoader(Class<?> type) {
     * 用于调用 #injectExtension(instance) 方法时，向创建的拓展注入其依赖的属性。例如，CacheFilter.cacheFactory 属性。
     * 第 3 行：当拓展接口非 ExtensionFactory 时( 如果不加这个判断，会是一个死循环 )，调用 ExtensionLoader#getAdaptiveExtension() 方法，获得 ExtensionFactory 拓展接口的自适应拓展实现对象。为什么呢？在 「ExtensionFactory」 详细解析。
 
-### 1.2.4. 获得指定拓展对象  
+### 1.2.2. 获得指定拓展对象  
 
 ```java
 Robot optimusPrime = extensionLoader.getExtension("optimusPrime");
 ```
-#### getExtension 
+#### 1.2.2.1. getExtension 
 
 ```java
 public T getExtension(String name) {
@@ -130,7 +149,7 @@ public T getExtension(String name) {
 ```
 上面代码的逻辑比较简单，首先检查缓存，缓存未命中则创建拓展对象。下面我们来看一下创建拓展对象的过程是怎样的。  
 
-#### createExtension
+#### 1.2.2.2. createExtension
 
 ```java
 private T createExtension(String name) {
@@ -173,9 +192,9 @@ createExtension 方法的逻辑稍复杂一下，包含了如下的步骤：
 
 以上步骤中，第一个步骤是加载拓展类的关键，第三和第四个步骤是 Dubbo IOC 与 AOP 的具体实现。在接下来的章节中，将会重点分析 getExtensionClasses 方法的逻辑，以及简单介绍 Dubbo IOC 的具体实现。  
 
-##### 获取所有的拓展类  
+##### 1.2.2.2.1. 获取所有的拓展类  
 
-###### getExtensionClasses  
+###### 1.2.2.2.1.1. getExtensionClasses  
 在通过名称获取拓展类之前，首先需要根据配置文件解析出拓展项名称到拓展类的映射关系表（Map<名称, 拓展类>），之后再根据拓展项名称从映射关系表中取出相应的拓展类即可。相关过程的代码分析如下：  
 
 ```java
@@ -199,7 +218,7 @@ private Map<String, Class<?>> getExtensionClasses() {
 
 这里也是先检查缓存，若缓存未命中，则通过 synchronized 加锁。加锁后再次检查缓存，并判空。此时如果 classes 仍为 null，则通过 loadExtensionClasses 加载拓展类。下面分析 loadExtensionClasses 方法的逻辑。  
 
-###### loadExtensionClasses
+###### 1.2.2.2.1.2. loadExtensionClasses
 
 ```java
 private Map<String, Class<?>> loadExtensionClasses() {
@@ -232,7 +251,7 @@ private Map<String, Class<?>> loadExtensionClasses() {
 ```
 loadExtensionClasses 方法总共做了两件事情，一是对 SPI 注解进行解析，二是调用 loadDirectory 方法加载指定文件夹配置文件。SPI 注解解析过程比较简单，无需多说。下面我们来看一下 loadDirectory 做了哪些事情。  
 
-###### loadDirectory
+###### 1.2.2.2.1.3. loadDirectory
 
 ```java
 private void loadDirectory(Map<String, Class<?>> extensionClasses, String dir) {
@@ -262,7 +281,7 @@ private void loadDirectory(Map<String, Class<?>> extensionClasses, String dir) {
 
 loadDirectory 方法先通过 classLoader 获取所有资源链接，然后再通过 loadResource 方法加载资源。我们继续跟下去，看一下 loadResource 方法的实现。  
 
-###### loadResource
+###### 1.2.2.2.1.4. loadResource
 
 ```java
 private void loadResource(Map<String, Class<?>> extensionClasses, 
@@ -310,7 +329,7 @@ private void loadResource(Map<String, Class<?>> extensionClasses,
 ```
 loadResource 方法用于读取和解析配置文件，并通过反射加载类，最后调用 loadClass 方法进行其他操作。  
 
-###### loadClass
+###### 1.2.2.2.1.5. loadClass
 loadClass 方法用于主要用于操作缓存，该方法的逻辑如下：  
 
 ```java
@@ -381,7 +400,7 @@ private void loadClass(Map<String, Class<?>> extensionClasses, java.net.URL reso
 
 到此，关于缓存类加载的过程就分析完了。  
 
-### injectExtension，Dubbo IOC
+### 1.2.3. injectExtension，Dubbo IOC
 Dubbo IOC 是通过 setter 方法注入依赖。Dubbo 首先会通过反射获取到实例的所有方法，然后再遍历方法列表，检测方法名是否具有 setter 方法特征。若有，则通过 ObjectFactory 获取依赖对象，最后通过反射调用 setter 方法将依赖设置到目标对象中。整个过程对应的代码如下：  
 
 ```java
