@@ -184,8 +184,8 @@
         * [获得指定拓展对象](/docs/microService/Dubbo/getExtension.md)  
         * [获得自适应的拓展对象](/docs/microService/Dubbo/getAdaptiveExtension.md)  
     * [Dubbo实现细节](/docs/microService/Dubbo/realization.md)  
-        * [服务导出](/docs/microService/Dubbo/export.md)  
-        * [服务引入](/docs/microService/Dubbo/introduce.md)  
+        * [服务暴露](/docs/microService/Dubbo/export.md)  
+        * [服务引用](/docs/microService/Dubbo/introduce.md)  
 * Zookeeper
     * [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
 

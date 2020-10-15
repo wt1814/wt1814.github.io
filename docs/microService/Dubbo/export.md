@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [1. 服务导出](#1-服务导出)
+- [1. 服务暴露](#1-服务暴露)
     - [1.1. 前置工作](#11-前置工作)
         - [1.1.1. 检查配置](#111-检查配置)
         - [1.1.2. 多协议多注册中心导出服务](#112-多协议多注册中心导出服务)
@@ -15,8 +15,8 @@
 
 <!-- /TOC -->
 
-# 1. 服务导出  
-&emsp; 本篇文章，研究一下 Dubbo 导出服务的过程。Dubbo 服务导出过程始于 Spring 容器发布刷新事件，Dubbo 在接收到事件后，会立即执行服务导出逻辑。整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装 URL。第二部分是导出服务，包含导出服务到本地 (JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。本篇文章将会对这三个部分代码进行详细的分析。  
+# 1. 服务暴露  
+&emsp; 本篇文章，研究一下 Dubbo 暴露服务的过程。Dubbo 服务暴露过程始于 Spring 容器发布刷新事件，Dubbo 在接收到事件后，会立即执行服务导出逻辑。整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装 URL。第二部分是导出服务，包含导出服务到本地 (JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。本篇文章将会对这三个部分代码进行详细的分析。  
 &emsp; 服务导出的入口方法是 ServiceBean 的 onApplicationEvent。onApplicationEvent 是一个事件响应方法，该方法会在收到 Spring 上下文刷新事件后执行服务导出操作。方法代码如下：  
 
 ```java
@@ -387,7 +387,7 @@ private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> r
 }
 ```
 &emsp; 上面的代码首先是将一些信息，比如版本、时间戳、方法名以及各种配置对象的字段信息放入到 map 中，map 中的内容将作为 URL 的查询字符串。构建好 map 后，紧接着是获取上下文路径、主机名以及端口号等信息。最后将 map 和主机名等数据传给 URL 构造方法创建 URL 对象。需要注意的是，这里出现的 URL 并非 java.net.URL，而是 com.alibaba.dubbo.common.URL。  
-&emsp; 上面省略了一段代码，这里简单分析一下。这段代码用于检测 <dubbo:method> 标签中的配置信息，并将相关配置添加到 map 中。代码如下：  
+&emsp; 上面省略了一段代码，这里简单分析一下。这段代码用于检测 \<dubbo:method> 标签中的配置信息，并将相关配置添加到 map 中。代码如下：  
 
 ```java
 private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> registryURLs) {
