@@ -16,16 +16,20 @@
 <!-- /TOC -->
 
 # 1. 服务暴露  
-&emsp; 本篇文章，研究一下 Dubbo 暴露服务的过程。Dubbo 服务暴露过程始于 Spring 容器发布刷新事件，Dubbo 在接收到事件后，会立即执行服务导出逻辑。整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装 URL。第二部分是导出服务，包含导出服务到本地 (JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。本篇文章将会对这三个部分代码进行详细的分析。  
+&emsp; 本篇文章，研究一下 Dubbo 暴露服务的过程。<font color = "red">Dubbo 服务暴露过程始于 Spring 容器发布刷新事件，Dubbo 在接收到事件后，会立即执行服务暴露逻辑。</font><font color = "lime">整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装 URL。第二部分是导出服务，包含导出服务到本地 (JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。</font>本篇文章将会对这三个部分代码进行详细的分析。  
 &emsp; 服务导出的入口方法是 ServiceBean 的 onApplicationEvent。onApplicationEvent 是一个事件响应方法，该方法会在收到 Spring 上下文刷新事件后执行服务导出操作。方法代码如下：  
 
 ```java
-public void onApplicationEvent(ContextRefreshedEvent event) {
-    // 是否有延迟导出 && 是否已导出 && 是不是已被取消导出
-    if (isDelay() && !isExported() && !isUnexported()) {
-        // 导出服务
-        export();
+public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean, DisposableBean, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, BeanNameAware {
+
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        // 是否有延迟导出 && 是否已导出 && 是不是已被取消导出
+        if (isDelay() && !isExported() && !isUnexported()) {
+            // 导出服务
+            export();
+        }
     }
+    
 }
 ```
 &emsp; 这个方法首先会根据条件决定是否导出服务，比如有些服务设置了延时导出，那么此时就不应该在此处导出。还有一些服务已经被导出了，或者当前服务被取消导出了，此时也不能再次导出相关服务。注意这里的 isDelay 方法，这个方法字面意思是“是否延迟导出服务”，返回 true 表示延迟导出，false 表示不延迟导出。但是该方法真实意思却并非如此，当方法返回 true 时，表示无需延迟导出。返回 false 时，表示需要延迟导出。与字面意思恰恰相反，这个需要大家注意一下。下面来看一下这个方法的逻辑。  
@@ -44,7 +48,7 @@ private boolean isDelay() {
     return supportedApplicationListener && (delay == null || delay == -1);
 }
 ```
-&emsp; 暂时忽略 supportedApplicationListener 这个条件，当 delay 为空，或者等于-1时，该方法返回 true，而不是 false。这个方法的返回值让人有点困惑。该方法目前已被重构，详细请参考 dubbo #2686。  
+&emsp; 暂时忽略 supportedApplicationListener 这个条件，当 delay 为空，或者等于-1时，该方法返回 true，而不是 false。  
 &emsp; 现在解释一下 supportedApplicationListener 变量含义，该变量用于表示当前的 Spring 容器是否支持 ApplicationListener，这个值初始为 false。在 Spring 容器将自己设置到 ServiceBean 中时，ServiceBean 的 setApplicationContext 方法会检测 Spring 容器是否支持 ApplicationListener。若支持，则将 supportedApplicationListener 置为 true。ServiceBean 是 Dubbo 与 Spring 框架进行整合的关键，可以看做是两个框架之间的桥梁。具有同样作用的类还有 ReferenceBean。  
 &emsp; 现在知道了 Dubbo 服务导出过程的起点，接下来对服务导出的前置逻辑进行分析。  
 
@@ -849,9 +853,7 @@ private static Wrapper makeWrapper(Class<?> c) {
     }
 }
 ```
-&emsp; 上面代码很长，大家耐心看一下。在上面代码中做了大量的注释，并按功能对代码进行了分块，以帮助大家理解代码逻辑。下面对这段代码进行讲解。首先把目光移到分割线1之上的代码，这段代码主要用于进行一些初始化操作。比如创建 c1、c2、c3 以及 pts、ms、mns 等变量，以及向 c1、c2、c3 中添加方法定义和类型转换代码。接下来是分割线1到分割线2之间的代码，这段代码用于为 public 级别的字段生成条件判断取值与赋值代码。这段代码不是很难看懂，就不多说了。继续向下看，分割线2和分隔线3之间的代码用于为定义在当前类中的方法生成判断语句，和方法调用语句。因为需要对方法重载进行校验，因此到这这段代码看起来有点复杂。不过耐心看一下，也不是很难理解。接下来是分割线3和分隔线4之间的代码，这段代码用于处理 getter、setter 以及以 is/has/can 开头的方法。处理方式是通过正则表达式获取方法类型（get/set/is/...），以及属性名。之后为属性名生成判断语句，然后为方法生成调用语句。最后再来看一下分隔线4以下的代码，这段代码通过 ClassGenerator 为刚刚生成的代码构建 Class 类，并通过反射创建对象。ClassGenerator 是 Dubbo 自己封装的，该类的核心是 toClass() 的重载方法 toClass(ClassLoader, ProtectionDomain)，该方法通过 javassist 构建 Class。这里就不分析 toClass 方法了，大家请自行分析。  
-&emsp; 阅读 Wrapper 类代码需要对 javassist 框架有所了解。关于 javassist，大家如果不熟悉，请自行查阅资料，本节不打算介绍 javassist 相关内容。  
-&emsp; 好了，关于 Wrapper 类生成过程就分析到这。如果大家看的不是很明白，可以单独为 Wrapper 创建单元测试，然后单步调试。并将生成的代码拷贝出来，格式化后再进行观察和理解。   
+&emsp; 上面代码很长，大家耐心看一下。在上面代码中做了大量的注释，并按功能对代码进行了分块，以帮助大家理解代码逻辑。下面对这段代码进行讲解。首先把目光移到分割线1之上的代码，这段代码主要用于进行一些初始化操作。比如创建 c1、c2、c3 以及 pts、ms、mns 等变量，以及向 c1、c2、c3 中添加方法定义和类型转换代码。接下来是分割线1到分割线2之间的代码，这段代码用于为 public 级别的字段生成条件判断取值与赋值代码。这段代码不是很难看懂，就不多说了。继续向下看，分割线2和分隔线3之间的代码用于为定义在当前类中的方法生成判断语句，和方法调用语句。因为需要对方法重载进行校验，因此到这这段代码看起来有点复杂。不过耐心看一下，也不是很难理解。接下来是分割线3和分隔线4之间的代码，这段代码用于处理 getter、setter 以及以 is/has/can 开头的方法。处理方式是通过正则表达式获取方法类型（get/set/is/...），以及属性名。之后为属性名生成判断语句，然后为方法生成调用语句。最后再来看一下分隔线4以下的代码，这段代码通过 ClassGenerator 为刚刚生成的代码构建 Class 类，并通过反射创建对象。ClassGenerator 是 Dubbo 自己封装的，该类的核心是 toClass() 的重载方法 toClass(ClassLoader, ProtectionDomain)，该方法通过 javassist 构建 Class。   
 
 ### 1.2.2. 导出服务到本地
 &emsp; 本节来看一下服务导出相关的代码，按照代码执行顺序，本节先来分析导出服务到本地的过程。相关代码如下：  
@@ -883,7 +885,7 @@ public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
 &emsp; 如上，InjvmProtocol 的 export 方法仅创建了一个 InjvmExporter，无其他逻辑。到此导出服务到本地就分析完了，接下来，继续分析导出服务到远程的过程。  
 
 ### 1.2.3. 导出服务到远程
-&emsp; 与导出服务到本地相比，导出服务到远程的过程要复杂不少，其包含了服务导出与服务注册两个过程。这两个过程涉及到了大量的调用，比较复杂。按照代码执行顺序，本节先来分析服务导出逻辑，服务注册逻辑将在下一节进行分析。下面开始分析，把目光移动到 RegistryProtocol 的 export 方法上。  
+&emsp; <font color = "lime">与导出服务到本地相比，导出服务到远程的过程要复杂不少，其包含了服务导出与服务注册两个过程。</font>这两个过程涉及到了大量的调用，比较复杂。按照代码执行顺序，本节先来分析服务导出逻辑，服务注册逻辑将在下一节进行分析。下面开始分析，把目光移动到 RegistryProtocol 的 export 方法上。  
 
 ```java
 public <T> Exporter<T> export(final Invoker<T> originInvoker) throws RpcException {
@@ -1181,8 +1183,10 @@ protected void doOpen() throws Throwable {
 }
 ```
 &emsp; 以上就是 NettyServer 创建的过程，dubbo 默认使用的 NettyServer 是基于 netty 3.x 版本实现的，比较老了。因此 Dubbo 另外提供了 netty 4.x 版本的 NettyServer，大家可在使用 Dubbo 的过程中按需进行配置。  
+<!-- 
 &emsp; 到此，关于服务导出的过程就分析完了。整个过程比较复杂，大家在分析的过程中耐心一些。并且多写 Demo 进行调试，以便能够更好的理解代码逻辑。  
 &emsp; 本节内容先到这里，接下来分析服务导出的另一块逻辑 — 服务注册。  
+-->
 
 ## 1.3. 服务注册
 &emsp; 本节来分析服务注册过程，服务注册操作对于 Dubbo 来说不是必需的，通过服务直连的方式就可以绕过注册中心。但通常不会这么做，直连方式不利于服务治理，仅推荐在测试服务时使用。对于 Dubbo 来说，注册中心虽不是必需，但却是必要的。因此，关于注册中心以及服务注册相关逻辑，也需要搞懂。  
@@ -1221,7 +1225,7 @@ public void register(URL registryUrl, URL registedProviderUrl) {
     registry.register(registedProviderUrl);
 }
 ```
-&emsp; register 方法包含两步操作，第一步是获取注册中心实例，第二步是向注册中心注册服务。接下来分两节内容对这两步操作进行分析。  
+&emsp; <font color = "lime">register 方法包含两步操作，第一步是获取注册中心实例，第二步是向注册中心注册服务。</font>接下来分两节内容对这两步操作进行分析。  
 
 ### 1.3.1. 创建注册中心
 &emsp; 本节内容以 Zookeeper 注册中心为例进行分析。下面先来看一下 getRegistry 方法的源码，这个方法由 AbstractRegistryFactory 实现。如下：  
@@ -1361,7 +1365,7 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
 }
 ```
 &emsp; CuratorZookeeperClient 构造方法主要用于创建和启动 CuratorFramework 实例。以上基本上都是 Curator 框架的代码，大家如果对 Curator 框架不是很了解，可以参考 Curator 官方文档。  
-本节分析了 ZookeeperRegistry 实例的创建过程，整个过程并不是很复杂。大家在看完分析后，可以自行调试，以加深理解。现在注册中心实例创建好了，接下来要做的事情是向注册中心注册服务，继续往下看。  
+&emsp; 本节分析了 ZookeeperRegistry 实例的创建过程，整个过程并不是很复杂。大家在看完分析后，可以自行调试，以加深理解。现在注册中心实例创建好了，接下来要做的事情是向注册中心注册服务，继续往下看。  
 
 ### 1.3.2. 节点创建
 &emsp; 以 Zookeeper 为例，所谓的服务注册，本质上是将服务配置数据写入到 Zookeeper 的某个路径的节点下。为了让大家有一个直观的了解，下面将 Dubbo 的 demo 跑起来，然后通过 Zookeeper 可视化客户端 ZooInspector 查看节点数据。如下：   
