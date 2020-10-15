@@ -38,6 +38,9 @@
  死磕Synchronized底层实现 
  https://mp.weixin.qq.com/s/ca_7lurrWVcA3bLCL7UJcQ
 
+  【185期】面试官：你能说说 Synchronized实现对象锁的两种方式以及它的原理吗？
+ https://mp.weixin.qq.com/s/zMSMlnD9h1wwJTNt-3pIHg
+
 关键字synchronized取得的锁都是对象锁，而不是把一段代码或方法（函数）当作锁， 所以在上面的示例中，哪个线程先执行带synchronized关键字的方法，哪个线程就持有该方 法所属对象的锁Lock,那么其他线程只能呈等待状态，前提是多个线程访问的是同一个 对象。
 但如果多个线程访问多个对象，则JVM会创建多个锁。
 
