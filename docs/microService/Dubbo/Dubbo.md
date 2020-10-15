@@ -16,7 +16,8 @@
     - [1.2. Dubbo和Spring Cloud](#12-dubbo和spring-cloud)
     - [1.3. Dubbo中的SPI](#13-dubbo中的spi)
     - [1.4. Dubbo对Spring的扩展](#14-dubbo对spring的扩展)
-    - [Dubbo与分布式事务](#dubbo与分布式事务)
+    - [Dubbo生态](#dubbo生态)
+        - [Dubbo与分布式事务](#dubbo与分布式事务)
 
 <!-- /TOC -->
 
@@ -167,7 +168,12 @@ DUBBO SPI
 ......
 
 
-## Dubbo与分布式事务  
+## Dubbo生态
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo生态.png)   
+
+
+
+### Dubbo与分布式事务  
 
 Dubbo 支持分布式事务吗？   
 目前暂时不支持， 可与通过 tcc-transaction 框架实现   
