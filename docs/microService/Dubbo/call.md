@@ -21,14 +21,13 @@
 
 # 1. 服务调用  
 &emsp; Dubbo 服务调用过程比较复杂，包含众多步骤，比如发送请求、编解码、服务降级、过滤器链处理、序列化、线程派发以及响应请求等步骤。限于篇幅原因，本篇文章无法对所有的步骤一一进行分析。本篇文章将会重点分析请求的发送与接收、编解码、线程派发以及响应的发送与接收等过程。  
-
-&emsp; 在进行源码分析之前，我们先来通过一张图了解 Dubbo 服务调用过程。  
+&emsp; 在进行源码分析之前，先来通过一张图了解 Dubbo 服务调用过程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-33.png)   
 &emsp; 首先服务消费者通过代理对象 Proxy 发起远程调用，接着通过网络客户端 Client 将编码后的请求发送给服务提供方的网络层上，也就是 Server。Server 在收到请求后，首先要做的事情是对数据包进行解码。然后将解码后的请求发送至分发器 Dispatcher，再由分发器将请求派发到指定的线程池上，最后由线程池调用具体的服务。这就是一个远程调用请求的发送与接收过程。  
 
 ## 1.1. 服务调用方式  
 &emsp; Dubbo 支持同步和异步两种调用方式，其中异步调用还可细分为“有返回值”的异步调用和“无返回值”的异步调用。所谓“无返回值”异步调用是指服务消费方只管调用，但不关心调用结果，此时 Dubbo 会直接返回一个空的 RpcResult。若要使用异步特性，需要服务消费方手动进行配置。默认情况下，Dubbo 使用同步调用方式。  
-&emsp; 本节以及其他章节将会使用 Dubbo 官方提供的 Demo 分析整个调用过程，下面我们从 DemoService 接口的代理类开始进行分析。Dubbo 默认使用 Javassist 框架为服务接口生成动态代理类，因此我们需要先将代理类进行反编译才能看到源码。这里使用阿里开源 Java 应用诊断工具 Arthas 反编译代理类，结果如下：  
+&emsp; 本节以及其他章节将会使用 Dubbo 官方提供的 Demo 分析整个调用过程，下面从 DemoService 接口的代理类开始进行分析。Dubbo 默认使用 Javassist 框架为服务接口生成动态代理类，因此需要先将代理类进行反编译才能看到源码。这里使用阿里开源 Java 应用诊断工具 Arthas 反编译代理类，结果如下：  
 
 ```java
 /**
@@ -269,7 +268,7 @@ public class DubboInvoker<T> extends AbstractInvoker<T> {
     // 省略其他方法
 }
 ```
-&emsp; 上面的代码包含了 Dubbo 对同步和异步调用的处理逻辑，搞懂了上面的代码，会对 Dubbo 的同步和异步调用方式有更深入的了解。Dubbo 实现同步和异步调用比较关键的一点就在于由谁调用 ResponseFuture 的 get 方法。同步调用模式下，由框架自身调用 ResponseFuture 的 get 方法。异步调用模式下，则由用户调用该方法。ResponseFuture 是一个接口，下面我们来看一下它的默认实现类 DefaultFuture 的源码。  
+&emsp; 上面的代码包含了 Dubbo 对同步和异步调用的处理逻辑，搞懂了上面的代码，会对 Dubbo 的同步和异步调用方式有更深入的了解。Dubbo 实现同步和异步调用比较关键的一点就在于由谁调用 ResponseFuture 的 get 方法。同步调用模式下，由框架自身调用 ResponseFuture 的 get 方法。异步调用模式下，则由用户调用该方法。ResponseFuture 是一个接口，下面来看一下它的默认实现类 DefaultFuture 的源码。  
 
 ```java
 public class DefaultFuture implements ResponseFuture {
@@ -373,7 +372,7 @@ public class DefaultFuture implements ResponseFuture {
 
 ## 1.2. 服务消费方发送请求  
 ### 1.2.1. 发送请求  
-&emsp; 本节我们来看一下同步调用模式下，服务消费方是如何发送调用请求的。在深入分析源码前，我们先来看一张图。  
+&emsp; 本节来看一下同步调用模式下，服务消费方是如何发送调用请求的。在深入分析源码前，先来看一张图。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-34.png)   
 &emsp; 这张图展示了服务消费方发送请求过程的部分调用栈，略为复杂。从上图可以看出，经过多次调用后，才将请求数据送至 Netty NioClientSocketChannel。这样做的原因是通过 Exchange 层为框架引入 Request 和 Response 语义，这一点会在接下来的源码分析过程中会看到。其他的就不多说了，下面开始进行分析。首先分析 ReferenceCountExchangeClient 的源码。
 
@@ -599,7 +598,7 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
     // 省略其他方法
 }
 ```
-&emsp; 默认情况下，Dubbo 使用 Netty 作为底层的通信框架，因此下面我们到 NettyClient 类中看一下 getChannel 方法的实现逻辑。
+&emsp; 默认情况下，Dubbo 使用 Netty 作为底层的通信框架，因此下面到 NettyClient 类中看一下 getChannel 方法的实现逻辑。
 
 ```java
 public class NettyClient extends AbstractClient {
@@ -710,10 +709,10 @@ proxy0#sayHello(String)
                             —> NettyChannel#send(Object, boolean)
                               —> NioClientSocketChannel#write(Object)
 ```
-&emsp; 在 Netty 中，出站数据在发出之前还需要进行编码操作，接下来我们来分析一下请求数据的编码逻辑。  
+&emsp; 在 Netty 中，出站数据在发出之前还需要进行编码操作，接下来来分析一下请求数据的编码逻辑。  
 
 ### 1.2.2. 请求编码
-&emsp; 在分析请求编码逻辑之前，我们先来看一下 Dubbo 数据包结构。  
+&emsp; 在分析请求编码逻辑之前，先来看一下 Dubbo 数据包结构。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-35.png)   
 &emsp; Dubbo 数据包分为消息头和消息体，消息头用于存储一些元信息，比如魔数（Magic），数据包类型（Request/Response），消息体长度（Data Length）等。消息体中用于存储具体的调用消息，比如方法名称，参数列表等。下面简单列举一下消息头的内容。  
 
@@ -739,7 +738,7 @@ proxy0#sayHello(String)
 32 ~ 95 	请求编号 	共8字节，运行时生成
 96 ~ 127 	消息体长度 	运行时计算
 
-&emsp; 了解了 Dubbo 数据包格式，接下来我们就可以探索编码过程了。这次我们开门见山，直接分析编码逻辑所在类。如下：  
+&emsp; 了解了 Dubbo 数据包格式，接下来就可以探索编码过程了。这次开门见山，直接分析编码逻辑所在类。如下：  
 
 ```java
 public class ExchangeCodec extends TelnetCodec {
@@ -837,7 +836,7 @@ public class ExchangeCodec extends TelnetCodec {
     // 省略其他方法
 }
 ```
-&emsp; 以上就是请求对象的编码过程，该过程首先会通过位运算将消息头写入到 header 数组中。然后对 Request 对象的 data 字段执行序列化操作，序列化后的数据最终会存储到 ChannelBuffer 中。序列化操作执行完后，可得到数据序列化后的长度 len，紧接着将 len 写入到 header 指定位置处。最后再将消息头字节数组 header 写入到 ChannelBuffer 中，整个编码过程就结束了。本节的最后，我们再来看一下 Request 对象的 data 字段序列化过程，也就是 encodeRequestData 方法的逻辑，如下：  
+&emsp; 以上就是请求对象的编码过程，该过程首先会通过位运算将消息头写入到 header 数组中。然后对 Request 对象的 data 字段执行序列化操作，序列化后的数据最终会存储到 ChannelBuffer 中。序列化操作执行完后，可得到数据序列化后的长度 len，紧接着将 len 写入到 header 指定位置处。最后再将消息头字节数组 header 写入到 ChannelBuffer 中，整个编码过程就结束了。本节的最后，再来看一下 Request 对象的 data 字段序列化过程，也就是 encodeRequestData 方法的逻辑，如下：  
 
 ```java
 public class DubboCodec extends ExchangeCodec implements Codec2 {
@@ -866,10 +865,10 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
     }
 }
 ```
-&emsp; 至此，关于服务消费方发送请求的过程就分析完了，接下来我们来看一下服务提供方是如何接收请求的。  
+&emsp; 至此，关于服务消费方发送请求的过程就分析完了，接下来来看一下服务提供方是如何接收请求的。  
 
 ## 1.3. 服务提供方接收请求
-&emsp; 前面说过，默认情况下 Dubbo 使用 Netty 作为底层的通信框架。Netty 检测到有数据入站后，首先会通过解码器对数据进行解码，并将解码后的数据传递给下一个入站处理器的指定方法。所以在进行后续的分析之前，我们先来看一下数据解码过程。  
+&emsp; 前面说过，默认情况下 Dubbo 使用 Netty 作为底层的通信框架。Netty 检测到有数据入站后，首先会通过解码器对数据进行解码，并将解码后的数据传递给下一个入站处理器的指定方法。所以在进行后续的分析之前，先来看一下数据解码过程。  
 
 ### 1.3.1. 请求解码
 &emsp; 这里直接分析请求数据的解码逻辑，忽略中间过程，如下：  
@@ -943,7 +942,7 @@ public class ExchangeCodec extends TelnetCodec {
     }
 }
 ```
-&emsp; 上面方法通过检测消息头中的魔数是否与规定的魔数相等，提前拦截掉非常规数据包，比如通过 telnet 命令行发出的数据包。接着再对消息体长度，以及可读字节数进行检测。最后调用 decodeBody 方法进行后续的解码工作，ExchangeCodec 中实现了 decodeBody 方法，但因其子类 DubboCodec 覆写了该方法，所以在运行时 DubboCodec 中的 decodeBody 方法会被调用。下面我们来看一下该方法的代码。  
+&emsp; 上面方法通过检测消息头中的魔数是否与规定的魔数相等，提前拦截掉非常规数据包，比如通过 telnet 命令行发出的数据包。接着再对消息体长度，以及可读字节数进行检测。最后调用 decodeBody 方法进行后续的解码工作，ExchangeCodec 中实现了 decodeBody 方法，但因其子类 DubboCodec 覆写了该方法，所以在运行时 DubboCodec 中的 decodeBody 方法会被调用。下面来看一下该方法的代码。  
 
 ```java
 public class DubboCodec extends ExchangeCodec implements Codec2 {
@@ -1010,7 +1009,7 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
     }
 }
 ```
-&emsp; 如上，decodeBody 对部分字段进行了解码，并将解码得到的字段封装到 Request 中。随后会调用 DecodeableRpcInvocation 的 decode 方法进行后续的解码工作。此工作完成后，可将调用方法名、attachment、以及调用参数解析出来。下面我们来看一下 DecodeableRpcInvocation 的 decode 方法逻辑。  
+&emsp; 如上，decodeBody 对部分字段进行了解码，并将解码得到的字段封装到 Request 中。随后会调用 DecodeableRpcInvocation 的 decode 方法进行后续的解码工作。此工作完成后，可将调用方法名、attachment、以及调用参数解析出来。下面来看一下 DecodeableRpcInvocation 的 decode 方法逻辑。  
 
 ```java
 public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Decodeable {
@@ -1090,7 +1089,7 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 }
 ```
 &emsp; 上面的方法通过反序列化将诸如 path、version、调用方法名、参数列表等信息依次解析出来，并设置到相应的字段中，最终得到一个具有完整调用信息的 DecodeableRpcInvocation 对象。  
-&emsp; 到这里，请求数据解码的过程就分析完了。此时我们得到了一个 Request 对象，这个对象会被传送到下一个入站处理器中，我们继续往下看。  
+&emsp; 到这里，请求数据解码的过程就分析完了。此时得到了一个 Request 对象，这个对象会被传送到下一个入站处理器中，继续往下看。  
 
 ### 1.3.2. 调用服务
 &emsp; 解码器将数据包解析成 Request 对象后，NettyHandler 的 messageReceived 方法紧接着会收到这个对象，并将这个对象继续向下传递。这期间该对象会被依次传递给 NettyServer、MultiMessageHandler、HeartbeatHandler 以及 AllChannelHandler。最后由 AllChannelHandler 将该对象封装到 Runnable 实现类对象中，并将 Runnable 放入线程池中执行后续的调用逻辑。整个调用栈如下：  
@@ -1103,7 +1102,7 @@ NettyHandler#messageReceived(ChannelHandlerContext, MessageEvent)
         —> AllChannelHandler#received(Channel, Object)
           —> ExecutorService#execute(Runnable)    // 由线程池执行后续的调用逻辑
 ```
-&emsp; 考虑到篇幅，以及很多中间调用的逻辑并非十分重要，所以这里就不对调用栈中的每个方法都进行分析了。这里我们直接分析调用栈中的分析第一个和最后一个调用方法逻辑。如下：  
+&emsp; 考虑到篇幅，以及很多中间调用的逻辑并非十分重要，所以这里就不对调用栈中的每个方法都进行分析了。这里直接分析调用栈中的分析第一个和最后一个调用方法逻辑。如下：  
 
 ```java
 @Sharable
@@ -1140,11 +1139,11 @@ public class NettyHandler extends SimpleChannelHandler {
     }
 }
 ```
-&emsp; 如上，NettyHandler 中的 messageReceived 逻辑比较简单。首先根据一些信息获取 NettyChannel 实例，然后将 NettyChannel 实例以及 Request 对象向下传递。下面再来看看 AllChannelHandler 的逻辑，在详细分析代码之前，我们先来了解一下 Dubbo 中的线程派发模型。  
+&emsp; 如上，NettyHandler 中的 messageReceived 逻辑比较简单。首先根据一些信息获取 NettyChannel 实例，然后将 NettyChannel 实例以及 Request 对象向下传递。下面再来看看 AllChannelHandler 的逻辑，在详细分析代码之前，先来了解一下 Dubbo 中的线程派发模型。  
 
 #### 1.3.2.1. 线程派发模型
-&emsp; Dubbo 将底层通信框架中接收请求的线程称为 IO 线程。如果一些事件处理逻辑可以很快执行完，比如只在内存打一个标记，此时直接在 IO 线程上执行该段逻辑即可。但如果事件的处理逻辑比较耗时，比如该段逻辑会发起数据库查询或者 HTTP 请求。此时我们就不应该让事件处理逻辑在 IO 线程上执行，而是应该派发到线程池中去执行。原因也很简单，IO 线程主要用于接收请求，如果 IO 线程被占满，将导致它不能接收新的请求。  
-&emsp; 以上就是线程派发的背景，下面我们再来通过 Dubbo 调用图，看一下线程派发器所处的位置。  
+&emsp; Dubbo 将底层通信框架中接收请求的线程称为 IO 线程。如果一些事件处理逻辑可以很快执行完，比如只在内存打一个标记，此时直接在 IO 线程上执行该段逻辑即可。但如果事件的处理逻辑比较耗时，比如该段逻辑会发起数据库查询或者 HTTP 请求。此时就不应该让事件处理逻辑在 IO 线程上执行，而是应该派发到线程池中去执行。原因也很简单，IO 线程主要用于接收请求，如果 IO 线程被占满，将导致它不能接收新的请求。  
+&emsp; 以上就是线程派发的背景，下面再来通过 Dubbo 调用图，看一下线程派发器所处的位置。  
 
 &emsp; 如上图，红框中的 Dispatcher 就是线程派发器。需要说明的是，Dispatcher 真实的职责创建具有线程派发能力的 ChannelHandler，比如 AllChannelHandler、MessageOnlyChannelHandler 和 ExecutionChannelHandler 等，其本身并不具备线程派发能力。Dubbo 支持 5 种不同的线程派发策略，下面通过一个表格列举一下。  
 
@@ -1155,7 +1154,7 @@ message 	只有请求和响应消息派发到线程池，其它消息均在 IO �
 execution 	只有请求消息派发到线程池，不含响应。其它消息均在 IO 线程上执行
 connection 	在 IO 线程上，将连接断开事件放入队列，有序逐个执行，其它消息派发到线程池
 
-&emsp; 默认配置下，Dubbo 使用 all 派发策略，即将所有的消息都派发到线程池中。下面我们来分析一下 AllChannelHandler 的代码。  
+&emsp; 默认配置下，Dubbo 使用 all 派发策略，即将所有的消息都派发到线程池中。下面来分析一下 AllChannelHandler 的代码。  
 
 ```java
 public class AllChannelHandler extends WrappedChannelHandler {
@@ -1227,10 +1226,10 @@ public class AllChannelHandler extends WrappedChannelHandler {
     }
 }
 ```
-&emsp; 如上，请求对象会被封装 ChannelEventRunnable 中，ChannelEventRunnable 将会是服务调用过程的新起点。所以接下来我们以 ChannelEventRunnable 为起点向下探索。  
+&emsp; 如上，请求对象会被封装 ChannelEventRunnable 中，ChannelEventRunnable 将会是服务调用过程的新起点。所以接下来以 ChannelEventRunnable 为起点向下探索。  
 
 #### 1.3.2.2. 调用服务
-&emsp; 本小节，我们从 ChannelEventRunnable 开始分析，该类的主要代码如下：  
+&emsp; 本小节，从 ChannelEventRunnable 开始分析，该类的主要代码如下：  
 
 ```java
 public class ChannelEventRunnable implements Runnable {
@@ -1415,7 +1414,7 @@ public class HeaderExchangeHandler implements ChannelHandlerDelegate {
     }
 }
 ```
-&emsp; 到这里，我们看到了比较清晰的请求和响应逻辑。对于双向通信，HeaderExchangeHandler 首先向后进行调用，得到调用结果。然后将调用结果封装到 Response 对象中，最后再将该对象返回给服务消费方。如果请求不合法，或者调用失败，则将错误信息封装到 Response 对象中，并返回给服务消费方。接下来我们继续向后分析，把剩余的调用过程分析完。下面分析定义在 DubboProtocol 类中的匿名类对象逻辑，如下：  
+&emsp; 到这里，看到了比较清晰的请求和响应逻辑。对于双向通信，HeaderExchangeHandler 首先向后进行调用，得到调用结果。然后将调用结果封装到 Response 对象中，最后再将该对象返回给服务消费方。如果请求不合法，或者调用失败，则将错误信息封装到 Response 对象中，并返回给服务消费方。接下来继续向后分析，把剩余的调用过程分析完。下面分析定义在 DubboProtocol 类中的匿名类对象逻辑，如下：  
 
 ```java
 public class DubboProtocol extends AbstractProtocol {
@@ -1560,7 +1559,7 @@ ChannelEventRunnable#run()
 ```
 
 ## 1.4. 服务提供方返回调用结果
-&emsp; 服务提供方调用指定服务后，会将调用结果封装到 Response 对象中，并将该对象返回给服务消费方。服务提供方也是通过 NettyChannel 的 send 方法将 Response 对象返回，这个方法在 2.2.1 节分析过，这里就不在重复分析了。本节我们仅需关注 Response 对象的编码过程即可，这里仍然省略一些中间调用，直接分析具体的编码逻辑。  
+&emsp; 服务提供方调用指定服务后，会将调用结果封装到 Response 对象中，并将该对象返回给服务消费方。服务提供方也是通过 NettyChannel 的 send 方法将 Response 对象返回，这个方法在 2.2.1 节分析过，这里就不在重复分析了。本节仅需关注 Response 对象的编码过程即可，这里仍然省略一些中间调用，直接分析具体的编码逻辑。  
 
 ```java
 public class ExchangeCodec extends TelnetCodec {
@@ -1676,13 +1675,13 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
     }
 }
 ```
-&emsp; 以上就是 Response 对象编码的过程，和前面分析的 Request 对象编码过程很相似。如果大家能看 Request 对象的编码逻辑，那么这里的 Response 对象的编码逻辑也不难理解，就不多说了。接下来我们再来分析双向通信的最后一环 —— 服务消费方接收调用结果。  
+&emsp; 以上就是 Response 对象编码的过程，和前面分析的 Request 对象编码过程很相似。如果大家能看 Request 对象的编码逻辑，那么这里的 Response 对象的编码逻辑也不难理解，就不多说了。接下来再来分析双向通信的最后一环 —— 服务消费方接收调用结果。  
 
 ## 1.5. 服务消费方接收调用结果
-&emsp; 服务消费方在收到响应数据后，首先要做的事情是对响应数据进行解码，得到 Response 对象。然后再将该对象传递给下一个入站处理器，这个入站处理器就是 NettyHandler。接下来 NettyHandler 会将这个对象继续向下传递，最后 AllChannelHandler 的 received 方法会收到这个对象，并将这个对象派发到线程池中。这个过程和服务提供方接收请求的过程是一样的，因此这里就不重复分析了。本节我们重点分析两个方面的内容，一是响应数据的解码过程，二是 Dubbo 如何将调用结果传递给用户线程的。下面先来分析响应数据的解码过程。  
+&emsp; 服务消费方在收到响应数据后，首先要做的事情是对响应数据进行解码，得到 Response 对象。然后再将该对象传递给下一个入站处理器，这个入站处理器就是 NettyHandler。接下来 NettyHandler 会将这个对象继续向下传递，最后 AllChannelHandler 的 received 方法会收到这个对象，并将这个对象派发到线程池中。这个过程和服务提供方接收请求的过程是一样的，因此这里就不重复分析了。本节重点分析两个方面的内容，一是响应数据的解码过程，二是 Dubbo 如何将调用结果传递给用户线程的。下面先来分析响应数据的解码过程。  
 
 ### 1.5.1. 响应数据解码
-&emsp; 响应数据解码逻辑主要的逻辑封装在 DubboCodec 中，我们直接分析这个类的代码。如下：  
+&emsp; 响应数据解码逻辑主要的逻辑封装在 DubboCodec 中，直接分析这个类的代码。如下：  
 
 ```java
 public class DubboCodec extends ExchangeCodec implements Codec2 {
@@ -1757,7 +1756,7 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
     }
 }
 ```
-&emsp; 以上就是响应数据的解码过程，上面逻辑看起来是不是似曾相识。对的，我们在前面章节分析过 DubboCodec 的 decodeBody 方法中关于请求数据的解码过程，该过程和响应数据的解码过程很相似。下面，我们继续分析调用结果的反序列化过程，如下：  
+&emsp; 以上就是响应数据的解码过程，上面逻辑看起来是不是似曾相识。对的，在前面章节分析过 DubboCodec 的 decodeBody 方法中关于请求数据的解码过程，该过程和响应数据的解码过程很相似。下面，继续分析调用结果的反序列化过程，如下：  
 
 ```java
 public class DecodeableRpcResult extends RpcResult implements Codec, Decodeable {
@@ -1849,10 +1848,10 @@ public class DecodeableRpcResult extends RpcResult implements Codec, Decodeable 
     }
 }
 ```
-&emsp; 本篇文章所分析的源码版本为 2.6.4，该版本下的 Response 支持 attachments 集合，所以上面仅对部分 case 分支进行了注释。其他 case 分支的逻辑比被注释分支的逻辑更为简单，这里就忽略了。我们所使用的测试服务接口 DemoService 包含了一个具有返回值的方法，正常调用下，线程会进入 RESPONSE_VALUE_WITH_ATTACHMENTS 分支中。然后线程会从 invocation 变量（大家探索一下 invocation 变量的由来）中获取返回值类型，接着对调用结果进行反序列化，并将序列化后的结果存储起来。最后对 attachments 集合进行反序列化，并存到指定字段中。到此，关于响应数据的解码过程就分析完了。接下来，我们再来探索一下响应对象 Response 的去向。  
+&emsp; 本篇文章所分析的源码版本为 2.6.4，该版本下的 Response 支持 attachments 集合，所以上面仅对部分 case 分支进行了注释。其他 case 分支的逻辑比被注释分支的逻辑更为简单，这里就忽略了。所使用的测试服务接口 DemoService 包含了一个具有返回值的方法，正常调用下，线程会进入 RESPONSE_VALUE_WITH_ATTACHMENTS 分支中。然后线程会从 invocation 变量（大家探索一下 invocation 变量的由来）中获取返回值类型，接着对调用结果进行反序列化，并将序列化后的结果存储起来。最后对 attachments 集合进行反序列化，并存到指定字段中。到此，关于响应数据的解码过程就分析完了。接下来，再来探索一下响应对象 Response 的去向。  
 
 ### 1.5.2. 向用户线程传递调用结果
-&emsp; 响应数据解码完成后，Dubbo 会将响应对象派发到线程池上。要注意的是，线程池中的线程并非用户的调用线程，所以要想办法将响应对象从线程池线程传递到用户线程上。我们在 2.1 节分析过用户线程在发送完请求后的动作，即调用 DefaultFuture 的 get 方法等待响应对象的到来。当响应对象到来后，用户线程会被唤醒，并通过调用编号获取属于自己的响应对象。下面我们来看一下整个过程对应的代码。  
+&emsp; 响应数据解码完成后，Dubbo 会将响应对象派发到线程池上。要注意的是，线程池中的线程并非用户的调用线程，所以要想办法将响应对象从线程池线程传递到用户线程上。在 2.1 节分析过用户线程在发送完请求后的动作，即调用 DefaultFuture 的 get 方法等待响应对象的到来。当响应对象到来后，用户线程会被唤醒，并通过调用编号获取属于自己的响应对象。下面来看一下整个过程对应的代码。  
 
 ```java
 public class HeaderExchangeHandler implements ChannelHandlerDelegate {
