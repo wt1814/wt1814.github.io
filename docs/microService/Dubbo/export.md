@@ -1,10 +1,10 @@
 <!-- TOC -->
 
 - [1. 服务暴露](#1-服务暴露)
-    - [1.1. 服务暴露时序](#11-服务暴露时序)
-    - [1.2. dubbo-rpc模块简介](#12-dubbo-rpc模块简介)
-        - [1.2.1. dubbo-­rpc-­api模块](#121-dubbo-­rpc-­api模块)
-        - [1.2.2. dubbo­-rpc­-default模块](#122-dubbo­-rpc­-default模块)
+    - [1.1. dubbo-rpc模块简介](#11-dubbo-rpc模块简介)
+        - [1.1.1. dubbo-­rpc-­api模块](#111-dubbo-­rpc-­api模块)
+        - [1.1.2. dubbo­-rpc­-default模块](#112-dubbo­-rpc­-default模块)
+    - [1.2. 服务暴露时序](#12-服务暴露时序)
     - [1.3. 服务暴露总体流程](#13-服务暴露总体流程)
     - [1.4. 前置工作](#14-前置工作)
         - [1.4.1. 检查配置](#141-检查配置)
@@ -21,23 +21,10 @@
 <!-- /TOC -->
 
 # 1. 服务暴露  
-## 1.1. 服务暴露时序  
-&emsp; **整体设计**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-16.png)   
-&emsp; 图例说明：  
 
-* 图中左边淡蓝背景的为服务消费方使用的接口，右边淡绿色背景的为服务提供方使用的接口，位于中轴线上的为双方都用到的接口。  
-* 图中从下至上分为十层，各层均为单向依赖，右边的黑色箭头代表层之间的依赖关系，每一层都可以剥离上层被复用，其中，Service 和 Config 层为 API，其它各层均为 SPI。  
-* 图中绿色小块的为扩展接口，蓝色小块为实现类，图中只显示用于关联各层的实现类。  
-* 图中蓝色虚线为初始化过程，即启动时组装链，红色实线为方法调用过程，即运行时调时链，紫色三角箭头为继承，可以把子类看作父类的同一个节点，线上的文字为调用的方法。  
-
-&emsp; **暴露服务时序**  
-&emsp; 展开总设计图左边服务提供方暴露服务的蓝色初始化链，时序图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-20.png)   
-
-## 1.2. dubbo-rpc模块简介  
-### 1.2.1. dubbo-­rpc-­api模块  
-&emsp; dubbo­rpc­api模块是dubbo最为核心的一个模块，它定义了dubbo作为一个rpc框架最核心的一些接口和抽象实现。  
+## 1.1. dubbo-rpc模块简介  
+### 1.1.1. dubbo-­rpc-­api模块  
+&emsp; dubbo­-rpc-­api模块是dubbo最为核心的一个模块，它定义了dubbo作为一个rpc框架最核心的一些接口和抽象实现。  
 
 &emsp; **简化的类图**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-38.png)  
@@ -46,9 +33,9 @@
 **核心类说明**    
 * Protocol  
 &emsp; 服务协议。这是rpc模块中最核心的一个类，它定义了rpc的最主要的两个行为即：1、provider暴露远程服务，即将调用信息发布到服务器上的某个URL上去，可以供消费者连接调用，一般是将某个service类的全部方法整体发布到服务器上。2、consumer引用远程服务，即根据service的服务类和provider发布服务的URL转化为一个Invoker对象，消费者可以通过该对象调用provider发布的远程服务。这其实概括了rpc的最为核心的职责，提供了多级抽象的实现、包装器实现等。  
-* AbstractProtocol
+* AbstractProtocol  
 &emsp; Protocol的顶层抽象实现类，它定义了这些属性：1、exporterMap表示发布过的serviceKey和Exporter（远程服务发 布的引用）的映射表；2、invokers是一个Invoker对象的集合，表示层级暴露过远程服务的服务执行体对象集合。还提供了一个通用的服务发布销毁方法destroy，该方法是一个通用方法，它清空了两个集合属性，调用了所有invoker的destroy方法，也调用所有exporter对象的unexport方法。
-* AbstractProxyProtocol
+* AbstractProxyProtocol  
 &emsp; 继承自AbstractProtoco的一个抽象代理协议类。它聚合了代理工厂ProxyFactory对象来实现服务的暴露和引用。  
 * ProtocolFilterWrapper  
 &emsp; 是一个Protocol的支持过滤器的装饰器。通过该装饰器的对原始对象的包装使得Protocol支持可扩展的过滤器链，已 经支持的包括ExceptionFilter、ExecuteLimitFilter和TimeoutFilter等多种支持不同特性的过滤器。
@@ -59,30 +46,28 @@
 * Invoker  
 &emsp; 该接口是服务的执行体。它有获取服务发布的URL，服务的接口类等关键属性的行为；还有核心的服务执行方法invoke，执行该方法后返回执行结果Result，而传递的参数是调用信息Invocation。该接口有大量的抽象和具体实现 类。AbstractProxyInvoker是基于代理的执行器抽象实现，AbstractInvoker是通用的抽象实现。  
 
-**[服务暴露流程](/docs/microService/Dubbo/export.md)**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-40.png)  
-&emsp; 首先ServiceConfig类拿到对外提供服务的实际类ref(如：HelloWorldImpl),然后通过ProxyFactory类的getInvoker方法使用ref生成一个AbstractProxyInvoker实例，到这一步就完成具体服务到Invoker的转化。接下来就是Invoker转换  到Exporter的过程。  
-&emsp; Dubbo处理服务暴露的关键就在Invoker转换到Exporter的过程(如上图中的红色部分)。  
 
-**[服务引用流程](/docs/microService/Dubbo/introduce.md)**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-41.png)  
-上图是服务消费的主过程：  
-首先ReferenceConfig类的init方法调用Protocol的refer方法生成Invoker实例(如上图中的红色部分)，这是服务消费的  关键。接下来把Invoker转换为客户端需要的接口(如：HelloWorld)。  
-
-### 1.2.2. dubbo­-rpc­-default模块  
+### 1.1.2. dubbo­-rpc­-default模块  
 &emsp; dubbo-­rpc-­default模块是dubbo­-rpc-­api模块的默认实现，提供了默认的dubbo协议的实现，它是所有模块中最为复杂的一个模块，因为底层的协议都是它自己实现的。  
 &emsp; **简化类图**    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-39.png)  
 &emsp; 从图中可以看出该模块下的类主要是实现了dubbo­-rpc-­api和dubbo­-remoting-­api两个模块中定义的一些接口和抽象类。扩展了一种duubo框架自定义的dubbo协议，包括编解码和方法调用处理等。  
 &emsp; **核心类说明**    
 
-* DubboProtocol
+* DubboProtocol  
 &emsp; 该类是抽象协议实现类AbstractProtocol的具体的dubbo协议的实现。  
 * DubboInvoker  
 &emsp; 该类是消费者dubbo协议的执行器。它处理了dubbo协议在客户端调用远程接口的逻辑实现。  
 
-[发布服务方法export的实现](/docs/microService/Dubbo/export.md)  
-[引用服务方法refer的实现](/docs/microService/Dubbo/introduce.md)      
+## 1.2. 服务暴露时序  
+&emsp; **暴露服务时序图**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-20.png)   
+
+**[服务暴露流程](/docs/microService/Dubbo/export.md)**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-40.png)  
+&emsp; 首先ServiceConfig类拿到对外提供服务的实际类ref(如：HelloWorldImpl),然后通过ProxyFactory类的getInvoker方法使用ref生成一个AbstractProxyInvoker实例，到这一步就完成具体服务到Invoker的转化。接下来就是Invoker转换  到Exporter的过程。  
+&emsp; Dubbo处理服务暴露的关键就在Invoker转换到Exporter的过程(如上图中的红色部分)。  
+
 
 
 ## 1.3. 服务暴露总体流程
