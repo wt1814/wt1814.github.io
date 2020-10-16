@@ -1,23 +1,93 @@
 <!-- TOC -->
 
 - [1. 服务暴露](#1-服务暴露)
-    - [1.1. 前置工作](#11-前置工作)
-        - [1.1.1. 检查配置](#111-检查配置)
-        - [1.1.2. 多协议多注册中心导出服务](#112-多协议多注册中心导出服务)
-        - [1.1.3. 组装 URL](#113-组装-url)
-    - [1.2. 导出 Dubbo 服务](#12-导出-dubbo-服务)
-        - [1.2.1. Invoker 创建过程](#121-invoker-创建过程)
-        - [1.2.2. 导出服务到本地](#122-导出服务到本地)
-        - [1.2.3. 导出服务到远程](#123-导出服务到远程)
-    - [1.3. 服务注册](#13-服务注册)
-        - [1.3.1. 创建注册中心](#131-创建注册中心)
-        - [1.3.2. 节点创建](#132-节点创建)
+    - [1.1. 服务暴露时序](#11-服务暴露时序)
+    - [1.2. dubbo-rpc模块简介](#12-dubbo-rpc模块简介)
+        - [1.2.1. dubbo-­rpc-­api模块](#121-dubbo-­rpc-­api模块)
+        - [1.2.2. dubbo­-rpc­-default模块](#122-dubbo­-rpc­-default模块)
+    - [1.3. 服务暴露总体流程](#13-服务暴露总体流程)
+    - [1.4. 前置工作](#14-前置工作)
+        - [1.4.1. 检查配置](#141-检查配置)
+        - [1.4.2. 多协议多注册中心导出服务](#142-多协议多注册中心导出服务)
+        - [1.4.3. 组装 URL](#143-组装-url)
+    - [1.5. 导出 Dubbo 服务](#15-导出-dubbo-服务)
+        - [1.5.1. Invoker 创建过程](#151-invoker-创建过程)
+        - [1.5.2. 导出服务到本地](#152-导出服务到本地)
+        - [1.5.3. 导出服务到远程](#153-导出服务到远程)
+    - [1.6. 服务注册](#16-服务注册)
+        - [1.6.1. 创建注册中心](#161-创建注册中心)
+        - [1.6.2. 节点创建](#162-节点创建)
 
 <!-- /TOC -->
 
 # 1. 服务暴露  
-&emsp; 本篇文章，研究一下 Dubbo 暴露服务的过程。<font color = "red">Dubbo 服务暴露过程始于 Spring 容器发布刷新事件，Dubbo 在接收到事件后，会立即执行服务暴露逻辑。</font><font color = "lime">整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装 URL。第二部分是导出服务，包含导出服务到本地 (JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。</font>本篇文章将会对这三个部分代码进行详细的分析。  
-&emsp; 服务导出的入口方法是 ServiceBean 的 onApplicationEvent。onApplicationEvent 是一个事件响应方法，该方法会在收到 Spring 上下文刷新事件后执行服务导出操作。方法代码如下：  
+## 1.1. 服务暴露时序  
+&emsp; **整体设计**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-16.png)   
+&emsp; 图例说明：  
+
+* 图中左边淡蓝背景的为服务消费方使用的接口，右边淡绿色背景的为服务提供方使用的接口，位于中轴线上的为双方都用到的接口。  
+* 图中从下至上分为十层，各层均为单向依赖，右边的黑色箭头代表层之间的依赖关系，每一层都可以剥离上层被复用，其中，Service 和 Config 层为 API，其它各层均为 SPI。  
+* 图中绿色小块的为扩展接口，蓝色小块为实现类，图中只显示用于关联各层的实现类。  
+* 图中蓝色虚线为初始化过程，即启动时组装链，红色实线为方法调用过程，即运行时调时链，紫色三角箭头为继承，可以把子类看作父类的同一个节点，线上的文字为调用的方法。  
+
+&emsp; **暴露服务时序**  
+&emsp; 展开总设计图左边服务提供方暴露服务的蓝色初始化链，时序图如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-20.png)   
+
+## 1.2. dubbo-rpc模块简介  
+### 1.2.1. dubbo-­rpc-­api模块  
+&emsp; dubbo­rpc­api模块是dubbo最为核心的一个模块，它定义了dubbo作为一个rpc框架最核心的一些接口和抽象实现。  
+
+&emsp; **简化的类图**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-38.png)  
+&emsp; 该图是经过简化后的rpc-­api模块的类图，去除了一些非关键的属性和方法定义，也去除了一些非核心的类和接口， 只是一个简化了的的示意图。  
+
+**核心类说明**    
+* Protocol  
+&emsp; 服务协议。这是rpc模块中最核心的一个类，它定义了rpc的最主要的两个行为即：1、provider暴露远程服务，即将调用信息发布到服务器上的某个URL上去，可以供消费者连接调用，一般是将某个service类的全部方法整体发布到服务器上。2、consumer引用远程服务，即根据service的服务类和provider发布服务的URL转化为一个Invoker对象，消费者可以通过该对象调用provider发布的远程服务。这其实概括了rpc的最为核心的职责，提供了多级抽象的实现、包装器实现等。  
+* AbstractProtocol
+&emsp; Protocol的顶层抽象实现类，它定义了这些属性：1、exporterMap表示发布过的serviceKey和Exporter（远程服务发 布的引用）的映射表；2、invokers是一个Invoker对象的集合，表示层级暴露过远程服务的服务执行体对象集合。还提供了一个通用的服务发布销毁方法destroy，该方法是一个通用方法，它清空了两个集合属性，调用了所有invoker的destroy方法，也调用所有exporter对象的unexport方法。
+* AbstractProxyProtocol
+&emsp; 继承自AbstractProtoco的一个抽象代理协议类。它聚合了代理工厂ProxyFactory对象来实现服务的暴露和引用。  
+* ProtocolFilterWrapper  
+&emsp; 是一个Protocol的支持过滤器的装饰器。通过该装饰器的对原始对象的包装使得Protocol支持可扩展的过滤器链，已 经支持的包括ExceptionFilter、ExecuteLimitFilter和TimeoutFilter等多种支持不同特性的过滤器。
+* ProtocolListenerWrapper  
+&emsp; 一个支持监听器特性的Protocal的包装器。支持两种监听器的功能扩展，分别是：ExporterListener是远程服务发布 监听器，可以监听服务发布和取消发布两个事件点；InvokerListener是服务消费者引用调用器的监听器，可以监听 引用和销毁两个事件方法。支持可扩展的事件监听模型，目前只提供了一些适配器InvokerListenerAdapter、ExporterListenerAdapter以及简单的过期服务调用监听器DeprecatedInvokerListener。开发者可自行扩展自己的监 听器。  
+* ProxyFactory  
+&emsp; dubbo的代理工厂。定义了两个接口分别是：getProxy根据invoker目标接口的代理对象，一般是消费者获得代理对  象触发远程调用；getInvoker方法将代理对象proxy、接口类type和远程服务的URL获取执行对象Invoker，往往是提 供者获得目标执行对象执行目标实现调用。AbstractProxyFactory是其抽象实现，提供了getProxy的模版方法实现，使得可以支持多接口的映射。dubbo最终内置了两种动态代理的实现，分别是jdkproxy和javassist。默认的实现 使用javassist。  
+* Invoker  
+&emsp; 该接口是服务的执行体。它有获取服务发布的URL，服务的接口类等关键属性的行为；还有核心的服务执行方法invoke，执行该方法后返回执行结果Result，而传递的参数是调用信息Invocation。该接口有大量的抽象和具体实现 类。AbstractProxyInvoker是基于代理的执行器抽象实现，AbstractInvoker是通用的抽象实现。  
+
+**[服务暴露流程](/docs/microService/Dubbo/export.md)**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-40.png)  
+&emsp; 首先ServiceConfig类拿到对外提供服务的实际类ref(如：HelloWorldImpl),然后通过ProxyFactory类的getInvoker方法使用ref生成一个AbstractProxyInvoker实例，到这一步就完成具体服务到Invoker的转化。接下来就是Invoker转换  到Exporter的过程。  
+&emsp; Dubbo处理服务暴露的关键就在Invoker转换到Exporter的过程(如上图中的红色部分)。  
+
+**[服务引用流程](/docs/microService/Dubbo/introduce.md)**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-41.png)  
+上图是服务消费的主过程：  
+首先ReferenceConfig类的init方法调用Protocol的refer方法生成Invoker实例(如上图中的红色部分)，这是服务消费的  关键。接下来把Invoker转换为客户端需要的接口(如：HelloWorld)。  
+
+### 1.2.2. dubbo­-rpc­-default模块  
+&emsp; dubbo-­rpc-­default模块是dubbo­-rpc-­api模块的默认实现，提供了默认的dubbo协议的实现，它是所有模块中最为复杂的一个模块，因为底层的协议都是它自己实现的。  
+&emsp; **简化类图**    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-39.png)  
+&emsp; 从图中可以看出该模块下的类主要是实现了dubbo­-rpc-­api和dubbo­-remoting-­api两个模块中定义的一些接口和抽象类。扩展了一种duubo框架自定义的dubbo协议，包括编解码和方法调用处理等。  
+&emsp; **核心类说明**    
+
+* DubboProtocol
+&emsp; 该类是抽象协议实现类AbstractProtocol的具体的dubbo协议的实现。  
+* DubboInvoker  
+&emsp; 该类是消费者dubbo协议的执行器。它处理了dubbo协议在客户端调用远程接口的逻辑实现。  
+
+[发布服务方法export的实现](/docs/microService/Dubbo/export.md)  
+[引用服务方法refer的实现](/docs/microService/Dubbo/introduce.md)      
+
+
+## 1.3. 服务暴露总体流程
+&emsp; 本篇文章，研究一下 Dubbo 暴露服务的过程。**<font color = "red">Dubbo 服务暴露过程始于 Spring 容器发布刷新事件，Dubbo 在接收到事件后，会立即执行服务暴露逻辑。</font>**<font color = "lime">整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装 URL。第二部分是导出服务，包含导出服务到本地 (JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。</font>本篇文章将会对这三个部分代码进行详细的分析。  
+&emsp; **<font color = "red">服务导出的入口方法是 ServiceBean 的 onApplicationEvent。onApplicationEvent 是一个事件响应方法，该方法会在收到 Spring 上下文刷新事件后执行服务导出操作。</font>** 方法代码如下：  
 
 ```java
 public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean, DisposableBean, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, BeanNameAware {
@@ -52,14 +122,14 @@ private boolean isDelay() {
 &emsp; 现在解释一下 supportedApplicationListener 变量含义，该变量用于表示当前的 Spring 容器是否支持 ApplicationListener，这个值初始为 false。在 Spring 容器将自己设置到 ServiceBean 中时，ServiceBean 的 setApplicationContext 方法会检测 Spring 容器是否支持 ApplicationListener。若支持，则将 supportedApplicationListener 置为 true。ServiceBean 是 Dubbo 与 Spring 框架进行整合的关键，可以看做是两个框架之间的桥梁。具有同样作用的类还有 ReferenceBean。  
 &emsp; 现在知道了 Dubbo 服务导出过程的起点，接下来对服务导出的前置逻辑进行分析。  
 
-## 1.1. 前置工作  
-&emsp; 前置工作主要包含两个部分，分别是配置检查，以及 URL 装配。在导出服务之前，Dubbo 需要检查用户的配置是否合理，或者为用户补充缺省配置。配置检查完成后，接下来需要根据这些配置组装 URL。在 Dubbo 中，URL 的作用十分重要。Dubbo 使用 URL 作为配置载体，所有的拓展点都是通过 URL 获取配置。这一点，官方文档中有所说明。  
+## 1.4. 前置工作  
+&emsp; 前置工作主要包含两个部分，分别是配置检查，以及 URL 装配。在导出服务之前，Dubbo 需要检查用户的配置是否合理，或者为用户补充缺省配置。配置检查完成后，接下来需要根据这些配置组装 URL。**在 Dubbo 中，URL 的作用十分重要。Dubbo 使用 URL 作为配置载体，所有的拓展点都是通过 URL 获取配置。这一点，官方文档中有所说明。**  
 
     采用 URL 作为配置信息的统一格式，所有扩展点都通过传递 URL 携带配置信息。
 
 &emsp; 接下来，先来分析配置检查部分的源码，随后再来分析 URL 组装部分的源码。  
 
-### 1.1.1. 检查配置
+### 1.4.1. 检查配置
 &emsp; 本节接着前面的源码向下分析，前面说过 onApplicationEvent 方法在经过一些判断后，会决定是否调用 export 方法导出服务。那么下面从 export 方法开始进行分析，如下：  
 
 ```java
@@ -219,7 +289,7 @@ protected synchronized void doExport() {
 
 &emsp; 配置检查并非本文重点，因此这里不打算对 doExport 方法所调用的方法进行分析（doExportUrls 方法除外）。在这些方法中，除了 appendProperties 方法稍微复杂一些，其他方法逻辑不是很复杂。因此，大家可自行分析。  
 
-### 1.1.2. 多协议多注册中心导出服务
+### 1.4.2. 多协议多注册中心导出服务
 &emsp; Dubbo 允许使用不同的协议导出服务，也允许向多个注册中心注册服务。Dubbo 在 doExportUrls 方法中对多协议，多注册中心进行了支持。相关代码如下：  
 
 ```java
@@ -297,7 +367,7 @@ protected List<URL> loadRegistries(boolean provider) {
 }
 ```
 
-&emsp; loadRegistries 方法主要包含如下的逻辑：  
+&emsp; <font color = "red">loadRegistries 方法主要包含如下的逻辑：</font>  
 
 1. 检测是否存在注册中心配置类，不存在则抛出异常
 2. 构建参数映射集合，也就是 map
@@ -306,8 +376,8 @@ protected List<URL> loadRegistries(boolean provider) {
 
 &emsp; 关于多协议多注册中心导出服务就先分析到这，代码不是很多，接下来分析 URL 组装过程。    
 
-### 1.1.3. 组装 URL
-&emsp; 配置检查完毕后，紧接着要做的事情是根据配置，以及其他一些信息组装 URL。前面说过，URL 是 Dubbo 配置的载体，通过 URL 可让 Dubbo 的各种配置在各个模块之间传递。URL 之于 Dubbo，犹如水之于鱼，非常重要。大家在阅读 Dubbo 服务导出相关源码的过程中，要注意 URL 内容的变化。既然 URL 如此重要，那么下面来了解一下 URL 组装的过程。  
+### 1.4.3. 组装 URL
+&emsp; 配置检查完毕后，紧接着要做的事情是根据配置，以及其他一些信息组装 URL。前面说过，<font color = "red">URL 是 Dubbo 配置的载体，通过 URL 可让 Dubbo 的各种配置在各个模块之间传递。</font>大家在阅读 Dubbo 服务导出相关源码的过程中，要注意 URL 内容的变化。既然 URL 如此重要，那么下面来了解一下 URL 组装的过程。  
 
 ```java
 private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> registryURLs) {
@@ -495,7 +565,7 @@ for (遍历 ArgumentConfig 列表) {
 ```
 &emsp; 在本节分析的源码中，appendParameters 这个方法出现的次数比较多，该方法用于将对象字段信息添加到 map 中。实现上则是通过反射获取目标对象的 getter 方法，并调用该方法获取属性值。然后再通过 getter 方法名解析出属性名，比如从方法名 getName 中可解析出属性 name。如果用户传入了属性名前缀，此时需要将属性名加入前缀内容。最后将 <属性名，属性值> 键值对存入到 map 中就行了。限于篇幅原因，这里就不分析 appendParameters 方法的源码了，大家请自行分析。   
 
-## 1.2. 导出 Dubbo 服务
+## 1.5. 导出 Dubbo 服务
 &emsp; 前置工作做完，接下来就可以进行服务导出了。服务导出分为导出到本地 (JVM)，和导出到远程。在深入分析服务导出的源码前，先来从宏观层面上看一下服务导出逻辑。如下：  
 
 ```java
@@ -566,10 +636,10 @@ private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> r
 
 &emsp; 不管是导出到本地，还是远程。进行服务导出之前，均需要先创建 Invoker，这是一个很重要的步骤。因此下面先来分析 Invoker 的创建过程。  
 
-### 1.2.1. Invoker 创建过程
+### 1.5.1. Invoker 创建过程
 &emsp; 在 Dubbo 中，Invoker 是一个非常重要的模型。在服务提供端，以及服务引用端均会出现 Invoker。Dubbo 官方文档中对 Invoker 进行了说明，这里引用一下。  
 
-    Invoker 是实体域，它是 Dubbo 的核心模型，其它模型都向它靠扰，或转换成它，它代表一个可执行体，可向它发起 invoke 调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。
+    Invoker 是实体域，它是 Dubbo 的核心模型，其它模型都向它靠拢，或转换成它，它代表一个可执行体，可向它发起 invoke 调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。
 
 &emsp; 既然 Invoker 如此重要，那么很有必要搞清楚 Invoker 的用途。Invoker 是由 ProxyFactory 创建而来，Dubbo 默认的 ProxyFactory 实现类是 JavassistProxyFactory。下面到 JavassistProxyFactory 代码中，探索 Invoker 的创建过程。如下：  
 
@@ -855,7 +925,7 @@ private static Wrapper makeWrapper(Class<?> c) {
 ```
 &emsp; 上面代码很长，大家耐心看一下。在上面代码中做了大量的注释，并按功能对代码进行了分块，以帮助大家理解代码逻辑。下面对这段代码进行讲解。首先把目光移到分割线1之上的代码，这段代码主要用于进行一些初始化操作。比如创建 c1、c2、c3 以及 pts、ms、mns 等变量，以及向 c1、c2、c3 中添加方法定义和类型转换代码。接下来是分割线1到分割线2之间的代码，这段代码用于为 public 级别的字段生成条件判断取值与赋值代码。这段代码不是很难看懂，就不多说了。继续向下看，分割线2和分隔线3之间的代码用于为定义在当前类中的方法生成判断语句，和方法调用语句。因为需要对方法重载进行校验，因此到这这段代码看起来有点复杂。不过耐心看一下，也不是很难理解。接下来是分割线3和分隔线4之间的代码，这段代码用于处理 getter、setter 以及以 is/has/can 开头的方法。处理方式是通过正则表达式获取方法类型（get/set/is/...），以及属性名。之后为属性名生成判断语句，然后为方法生成调用语句。最后再来看一下分隔线4以下的代码，这段代码通过 ClassGenerator 为刚刚生成的代码构建 Class 类，并通过反射创建对象。ClassGenerator 是 Dubbo 自己封装的，该类的核心是 toClass() 的重载方法 toClass(ClassLoader, ProtectionDomain)，该方法通过 javassist 构建 Class。   
 
-### 1.2.2. 导出服务到本地
+### 1.5.2. 导出服务到本地
 &emsp; 本节来看一下服务导出相关的代码，按照代码执行顺序，本节先来分析导出服务到本地的过程。相关代码如下：  
 
 ```java
@@ -884,7 +954,7 @@ public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
 ```
 &emsp; 如上，InjvmProtocol 的 export 方法仅创建了一个 InjvmExporter，无其他逻辑。到此导出服务到本地就分析完了，接下来，继续分析导出服务到远程的过程。  
 
-### 1.2.3. 导出服务到远程
+### 1.5.3. 导出服务到远程
 &emsp; <font color = "lime">与导出服务到本地相比，导出服务到远程的过程要复杂不少，其包含了服务导出与服务注册两个过程。</font>这两个过程涉及到了大量的调用，比较复杂。按照代码执行顺序，本节先来分析服务导出逻辑，服务注册逻辑将在下一节进行分析。下面开始分析，把目光移动到 RegistryProtocol 的 export 方法上。  
 
 ```java
@@ -1188,7 +1258,7 @@ protected void doOpen() throws Throwable {
 &emsp; 本节内容先到这里，接下来分析服务导出的另一块逻辑 — 服务注册。  
 -->
 
-## 1.3. 服务注册
+## 1.6. 服务注册
 &emsp; 本节来分析服务注册过程，服务注册操作对于 Dubbo 来说不是必需的，通过服务直连的方式就可以绕过注册中心。但通常不会这么做，直连方式不利于服务治理，仅推荐在测试服务时使用。对于 Dubbo 来说，注册中心虽不是必需，但却是必要的。因此，关于注册中心以及服务注册相关逻辑，也需要搞懂。  
 &emsp; 本节内容以 Zookeeper 注册中心作为分析目标，其他类型注册中心大家可自行分析。下面从服务注册的入口方法开始分析，把目光再次移到 RegistryProtocol 的 export 方法上。如下：  
 
@@ -1227,7 +1297,7 @@ public void register(URL registryUrl, URL registedProviderUrl) {
 ```
 &emsp; <font color = "lime">register 方法包含两步操作，第一步是获取注册中心实例，第二步是向注册中心注册服务。</font>接下来分两节内容对这两步操作进行分析。  
 
-### 1.3.1. 创建注册中心
+### 1.6.1. 创建注册中心
 &emsp; 本节内容以 Zookeeper 注册中心为例进行分析。下面先来看一下 getRegistry 方法的源码，这个方法由 AbstractRegistryFactory 实现。如下：  
 
 ```java
@@ -1367,7 +1437,7 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
 &emsp; CuratorZookeeperClient 构造方法主要用于创建和启动 CuratorFramework 实例。以上基本上都是 Curator 框架的代码，大家如果对 Curator 框架不是很了解，可以参考 Curator 官方文档。  
 &emsp; 本节分析了 ZookeeperRegistry 实例的创建过程，整个过程并不是很复杂。大家在看完分析后，可以自行调试，以加深理解。现在注册中心实例创建好了，接下来要做的事情是向注册中心注册服务，继续往下看。  
 
-### 1.3.2. 节点创建
+### 1.6.2. 节点创建
 &emsp; 以 Zookeeper 为例，所谓的服务注册，本质上是将服务配置数据写入到 Zookeeper 的某个路径的节点下。为了让大家有一个直观的了解，下面将 Dubbo 的 demo 跑起来，然后通过 Zookeeper 可视化客户端 ZooInspector 查看节点数据。如下：   
 
 &emsp; 从上图中可以看到 com.alibaba.dubbo.demo.DemoService 这个服务对应的配置信息（存储在 URL 中）最终被注册到了 /dubbo/com.alibaba.dubbo.demo.DemoService/providers/ 节点下。搞懂了服务注册的本质，那么接下来就可以去阅读服务注册的代码了。服务注册的接口为 register(URL)，这个方法定义在 FailbackRegistry 抽象类中。代码如下：  
@@ -1457,5 +1527,6 @@ public void createEphemeral(String path) {
 }
 ```
 &emsp; 好了，到此关于服务注册的过程就分析完了。整个过程可简单总结为：先创建注册中心实例，之后再通过注册中心实例注册服务。本节先到这，接下来分析数据订阅过程。    
+
 
 

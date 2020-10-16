@@ -409,7 +409,7 @@ final class ReferenceCountExchangeClient implements ExchangeClient {
         referenceCount.incrementAndGet();
     }
     
-        @Override
+    @Override
     public void close(int timeout) {
         // referenceCount 自减
         if (referenceCount.decrementAndGet() <= 0) {
@@ -724,8 +724,7 @@ proxy0#sayHello(String)
 |17 	|调用方式 	|仅在第16位被设为1的情况下有效，0 - 单向调用，1 - 双向调用|
 |18 	|事件标识 |	0 - 当前数据包是请求或响应包，1 - 当前数据包是心跳包|
 |19 ~ 23 	|序列化器编号 	|2 - Hessian2Serialization</br>3 - JavaSerialization</br>4 - CompactedJavaSerialization</br>6 - FastJsonSerialization</br>7 - NativeJavaSerialization</br>8 - KryoSerialization</br>9 - FstSerialization|
-|24 ~ 31 	|状态 |	20 - OK</br>30 - CLIENT_TIMEOUT</br>31 - SERVER_TIMEOUT</br>40 - BAD_REQUEST</br>50 - BAD_RESPONSE</br>
-......|
+|24 ~ 31 |状态 |20 - OK</br>30 - CLIENT_TIMEOUT</br>31 - SERVER_TIMEOUT</br>40 - BAD_REQUEST</br>50 - BAD_RESPONSE</br>......|
 |32 ~ 95 	|请求编号 	|共8字节，运行时生成|
 |96 ~ 127 	|消息体长度 	|运行时计算|
 

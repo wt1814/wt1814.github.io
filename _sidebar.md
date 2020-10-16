@@ -184,6 +184,7 @@
         * [获得指定拓展对象](/docs/microService/Dubbo/getExtension.md)  
         * [获得自适应的拓展对象](/docs/microService/Dubbo/getAdaptiveExtension.md)  
     * [Dubbo实现细节](/docs/microService/Dubbo/realization.md)  
+        * [Dubbo中对Spring配置标签扩展](/docs/microService/Dubbo/dubboSpring.md)  
         * [服务暴露](/docs/microService/Dubbo/export.md)  
         * [服务引用](/docs/microService/Dubbo/introduce.md)  
         * [服务调用](/docs/microService/Dubbo/call.md)  
