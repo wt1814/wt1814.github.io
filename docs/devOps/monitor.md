@@ -16,4 +16,8 @@ https://mp.weixin.qq.com/s/hjSs8SApGzh8vXEDO7rdIw
 
  Linux 常用监控指标总结 
  https://mp.weixin.qq.com/s/QVIb1Erl4JRBLe8BrHqFSg
+
+
+  监控系统选型，这篇不可不读！ 
+  https://mp.weixin.qq.com/s/HEW8rSPhWk82NinQcEzPhQ
 -->

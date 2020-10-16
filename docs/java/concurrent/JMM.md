@@ -41,6 +41,8 @@
 <!-- 
 https://blog.csdn.net/w1453114339/article/details/107563613
 https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
+看懂这篇，才能说了解并发底层技术！ 
+https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 -->
 
 ## 1.1. JMM介绍

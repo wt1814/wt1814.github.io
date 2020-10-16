@@ -6,6 +6,9 @@
 BeanUtils 如何拷贝 List？
 https://juejin.im/post/6844904046956904456#heading-4
 
+MapStruct
+https://mp.weixin.qq.com/s/Ya3EZCWvyzUbH6NiLn2BKw
+
 -->
 
 拷贝一组UerDO.java，是一个集合的时候就不能这样直接赋值了。如果还按照这种逻辑，如下：  

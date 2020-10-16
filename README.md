@@ -472,6 +472,8 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 [DNS](docs/network/3.DNS.md)  
 [TCP](/docs/network/4.TCP.md)  
 [VPN](/docs/network/VPN.md)  
+[衡量计算机网络的主要标准](/docs/network/standard.md)  
+
 
 ----
 
