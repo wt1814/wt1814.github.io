@@ -416,8 +416,6 @@ https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
 &emsp; [文本处理](/docs/Linux/Linux/文本处理.md)  
 &emsp; [网络通讯](/docs/Linux/Linux/网络通讯.md)  
 [shell编程](/docs/Linux/Linux/shell.md)  
-[Linux监控](/docs/Linux/Linux/LinuxMonitor.md)  
-
 
 ## DevOps  
 [DevOps](/docs/devOps/devOps.md)  
