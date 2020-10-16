@@ -1138,12 +1138,13 @@ public class NettyHandler extends SimpleChannelHandler {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-36.png)   
 &emsp; 如上图，红框中的 Dispatcher 就是线程派发器。需要说明的是，Dispatcher 真实的职责创建具有线程派发能力的 ChannelHandler，比如 AllChannelHandler、MessageOnlyChannelHandler 和 ExecutionChannelHandler 等，其本身并不具备线程派发能力。Dubbo 支持 5 种不同的线程派发策略，下面通过一个表格列举一下。  
 
-策略 	用途
-all 	所有消息都派发到线程池，包括请求，响应，连接事件，断开事件等
-direct 	所有消息都不派发到线程池，全部在 IO 线程上直接执行
-message 	只有请求和响应消息派发到线程池，其它消息均在 IO 线程上执行
-execution 	只有请求消息派发到线程池，不含响应。其它消息均在 IO 线程上执行
-connection 	在 IO 线程上，将连接断开事件放入队列，有序逐个执行，其它消息派发到线程池
+|策略 |	用途|
+|---|---|
+|all 	|所有消息都派发到线程池，包括请求，响应，连接事件，断开事件等|
+|direct 	|所有消息都不派发到线程池，全部在 IO 线程上直接执行|
+|message |	只有请求和响应消息派发到线程池，其它消息均在 IO 线程上执行|
+|execution 	|只有请求消息派发到线程池，不含响应。其它消息均在 IO 线程上执行|
+|connection |	在 IO 线程上，将连接断开事件放入队列，有序逐个执行，其它消息派发到线程池|
 
 &emsp; 默认配置下，Dubbo 使用 all 派发策略，即将所有的消息都派发到线程池中。下面来分析一下 AllChannelHandler 的代码。  
 
