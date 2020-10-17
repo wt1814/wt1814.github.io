@@ -34,8 +34,9 @@ https://blog.csdn.net/weixin_33769207/article/details/86361060
 
 ## 1.2. 服务提供者初始化  
 <!-- 
-Dubbo-服务消费者初始化
-https://www.cnblogs.com/caoxb/p/13140244.html
+
+Dubbo-服务提供者初始化
+https://www.cnblogs.com/caoxb/p/13140261.html
 -->
 
 &emsp; 服务提供者初始化过程，即ServiceBean 初始化过程。   
@@ -79,14 +80,51 @@ public class DubboNamespaceHandler extends NamespaceHandlerSupport {
 
 ### 1.2.2. ServiceBean执行export  
 
+&emsp; 当Spring容器处理完<dubbo:service>标签后，会在Spring容器中生成一个ServiceBean ，服务的发布也会在ServiceBean中完成。ServiceBean的定义如下：  
+
+```java
+public class ServiceBean<T> extends ServiceConfig<T> 
+    implements InitializingBean, DisposableBean, ApplicationContextAware, ApplicationListener, BeanNameAware {
+
+}
+```
+ 
+&emsp; 而在Spring初始化完成Bean的组装，会调用InitializingBean的afterPropertiesSet方法，在Spring容器加载完成，会接收到事件ContextRefreshedEvent，调用ApplicationListener的onApplicationEvent方法。  
+
+```java
+public void afterPropertiesSet() throws Exception {
+    // 
+    if (!isDelay()) {
+        // 暴露服务
+        export();
+    }
+}
+```
+ 
+&emsp; ServiceBean 实现了ApplicationListener接口，实现onApplicationEvent方法，该方法在spring容器启动完成后“自动”执行
+
+```java	
+public void onApplicationEvent(ApplicationEvent event) {
+    if (ContextRefreshedEvent.class.getName().equals(event.getClass().getName())) {
+        if (isDelay() && !isExported() && !isUnexported()) {
+            if (logger.isInfoEnabled()) {
+                logger.info("The service ready on spring started. service: " + getInterface());
+            }
+            //
+            export();
+        }
+    }
+}　　
+```
+
 
 ## 1.3. 服务消费者初始化  
 <!-- 
 
-Dubbo-服务提供者初始化
-https://www.cnblogs.com/caoxb/p/13140261.html
+Dubbo-服务消费者初始化
+https://www.cnblogs.com/caoxb/p/13140244.html
 -->
-&emsp; 服务提供者初始化过程，即ServiceBean 初始化过程   
+&emsp; 服务消费者初始化过程，即生成RefrenceBean的过程    
 &emsp; 整体执行流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-44.png)   
 &emsp; 备注：Dubbo 默认使用 Javassist 框架为服务接口生成动态代理类，可以使用使用阿里开源 Java 应用诊断工具 Arthas 反编译代理类。  
@@ -319,7 +357,7 @@ private T createProxy(Map<String, String> map) {
 ```
 
 &emsp; proxyFactory是一个ProxyFactory$Adaptive  
-&emsp; invoker 是一个MockClusterInvoker对象  
+&emsp; invoker是一个MockClusterInvoker对象  
 
 ```java
 public class ProxyFactory$Adaptive implements ProxyFactory {
