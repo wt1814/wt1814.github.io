@@ -24,6 +24,7 @@
 &emsp; 以上就是服务引用的大致原理，下面深入到代码中，详细分析服务引用细节。  
 
 ## 1.2. 源码分析  
+&emsp; [服务消费者初始化流程](/docs/microService/Dubbo/dubboSpring.md)  
 &emsp; 服务引用的入口方法为 ReferenceBean 的 getObject 方法，该方法定义在 Spring 的 FactoryBean 接口中，ReferenceBean 实现了这个方法。实现代码如下：  
 
 ```java
