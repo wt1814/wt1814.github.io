@@ -254,7 +254,11 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [服务暴露](/docs/microService/Dubbo/export.md)  
 &emsp; [服务引用](/docs/microService/Dubbo/introduce.md)  
 &emsp; [服务调用](/docs/microService/Dubbo/call.md)  
+<!-- 
+Dubbo集群容错  
+https://www.cnblogs.com/caoxb/p/13140347.html
 
+-->
 
 
 ### Zookeeper

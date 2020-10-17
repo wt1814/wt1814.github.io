@@ -23,11 +23,11 @@
 &emsp; Dubbo 服务调用过程比较复杂，包含众多步骤，比如发送请求、编解码、服务降级、过滤器链处理、序列化、线程派发以及响应请求等步骤。限于篇幅原因，本篇文章无法对所有的步骤一一进行分析。本篇文章将会重点分析请求的发送与接收、编解码、线程派发以及响应的发送与接收等过程。  
 &emsp; 在进行源码分析之前，先来通过一张图了解 Dubbo 服务调用过程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-33.png)   
-&emsp; 首先服务消费者通过代理对象 Proxy 发起远程调用，接着通过网络客户端 Client 将编码后的请求发送给服务提供方的网络层上，也就是 Server。Server 在收到请求后，首先要做的事情是对数据包进行解码。然后将解码后的请求发送至分发器 Dispatcher，再由分发器将请求派发到指定的线程池上，最后由线程池调用具体的服务。这就是一个远程调用请求的发送与接收过程。  
+&emsp; <font color = "red">首先服务消费者通过代理对象 Proxy 发起远程调用，接着通过网络客户端 Client 将编码后的请求发送给服务提供方的网络层上，也就是 Server。Server 在收到请求后，首先要做的事情是对数据包进行解码。然后将解码后的请求发送至分发器 Dispatcher，再由分发器将请求派发到指定的线程池上，最后由线程池调用具体的服务。这就是一个远程调用请求的发送与接收过程。</font>  
 
 ## 1.1. 服务调用方式  
 &emsp; Dubbo 支持同步和异步两种调用方式，其中异步调用还可细分为“有返回值”的异步调用和“无返回值”的异步调用。所谓“无返回值”异步调用是指服务消费方只管调用，但不关心调用结果，此时 Dubbo 会直接返回一个空的 RpcResult。若要使用异步特性，需要服务消费方手动进行配置。默认情况下，Dubbo 使用同步调用方式。  
-&emsp; 本节以及其他章节将会使用 Dubbo 官方提供的 Demo 分析整个调用过程，下面从 DemoService 接口的代理类开始进行分析。Dubbo 默认使用 Javassist 框架为服务接口生成动态代理类，因此需要先将代理类进行反编译才能看到源码。这里使用阿里开源 Java 应用诊断工具 Arthas 反编译代理类，结果如下：  
+&emsp; 本节以及其他章节将会使用 Dubbo 官方提供的 Demo 分析整个调用过程，下面从 DemoService 接口的代理类开始进行分析。<font color = "lime">Dubbo 默认使用 Javassist 框架为服务接口生成动态代理类，因此需要先将代理类进行反编译才能看到源码。</font>这里使用阿里开源 Java 应用诊断工具 Arthas 反编译代理类，结果如下：  
 
 ```java
 /**
@@ -716,7 +716,7 @@ proxy0#sayHello(String)
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-35.png)   
 &emsp; Dubbo 数据包分为消息头和消息体，消息头用于存储一些元信息，比如魔数（Magic），数据包类型（Request/Response），消息体长度（Data Length）等。消息体中用于存储具体的调用消息，比如方法名称，参数列表等。下面简单列举一下消息头的内容。  
 
-|偏移量(Bit)| 	字段 	|取值|
+|偏移量(Bit)| 字段 |取值|
 |---|---|---|
 |0 ~ 7 	|魔数高位 	|0xda00|
 |8 ~ 15 	|魔数低位 	|0xbb|
@@ -1313,7 +1313,7 @@ public class DecodeHandler extends AbstractChannelHandlerDelegate {
     }
 }
 ```
-&emsp; DecodeHandler 主要是包含了一些解码逻辑。2.2.1 节分析请求解码时说过，请求解码可在 IO 线程上执行，也可在线程池中执行，这个取决于运行时配置。DecodeHandler 存在的意义就是保证请求或响应对象可在线程池中被解码。解码完毕后，完全解码后的 Request 对象会继续向后传递，下一站是 HeaderExchangeHandler。  
+&emsp; DecodeHandler 主要是包含了一些解码逻辑。分析请求解码时说过，请求解码可在 IO 线程上执行，也可在线程池中执行，这个取决于运行时配置。DecodeHandler 存在的意义就是保证请求或响应对象可在线程池中被解码。解码完毕后，完全解码后的 Request 对象会继续向后传递，下一站是 HeaderExchangeHandler。  
 
 ```java
 public class HeaderExchangeHandler implements ChannelHandlerDelegate {
@@ -1550,7 +1550,7 @@ ChannelEventRunnable#run()
 ```
 
 ## 1.4. 服务提供方返回调用结果
-&emsp; 服务提供方调用指定服务后，会将调用结果封装到 Response 对象中，并将该对象返回给服务消费方。服务提供方也是通过 NettyChannel 的 send 方法将 Response 对象返回，这个方法在 2.2.1 节分析过，这里就不在重复分析了。本节仅需关注 Response 对象的编码过程即可，这里仍然省略一些中间调用，直接分析具体的编码逻辑。  
+&emsp; 服务提供方调用指定服务后，会将调用结果封装到 Response 对象中，并将该对象返回给服务消费方。服务提供方也是通过 NettyChannel 的 send 方法将 Response 对象返回。本节需关注 Response 对象的编码过程即可，这里仍然省略一些中间调用，直接分析具体的编码逻辑。  
 
 ```java
 public class ExchangeCodec extends TelnetCodec {

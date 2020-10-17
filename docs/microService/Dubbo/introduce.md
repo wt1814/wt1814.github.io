@@ -12,17 +12,16 @@
 
 # 1. 服务引用  
 &emsp; **简介：**  
-&emsp; 本篇文章分析服务引用过程。在 Dubbo 中，可以通过两种方式引用远程服务。第一种是使用服务直连的方式引用服务，第二种方式是基于注册中心进行引用。服务直连的方式仅适合在调试或测试服务的场景下使用，不适合在线上环境使用。因此，本文我将重点分析通过注册中心引用服务的过程。从注册中心中获取服务配置只是服务引用过程中的一环，除此之外，服务消费者还需要经历 Invoker 创建、代理类创建等步骤。这些步骤，将在后续章节中一一进行分析。  
+&emsp; 本篇文章分析服务引用过程。在Dubbo中，可以通过两种方式引用远程服务。第一种是使用服务直连的方式引用服务，第二种方式是基于注册中心进行引用。服务直连的方式仅适合在调试或测试服务的场景下使用，不适合在线上环境使用。因此，本文将重点分析通过注册中心引用服务的过程。从注册中心中获取服务配置只是服务引用过程中的一环，除此之外，服务消费者还需要经历 Invoker 创建、代理类创建等步骤。这些步骤，将在后续章节中一一进行分析。  
 
-
-**[服务引用流程](/docs/microService/Dubbo/introduce.md)**  
+**服务引用流程**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-41.png)  
-&emsp; 上图是服务消费的主过程：  
-&emsp; 首先ReferenceConfig类的init方法调用Protocol的refer方法生成Invoker实例(如上图中的红色部分)，这是服务消费的  关键。接下来把Invoker转换为客户端需要的接口(如：HelloWorld)。 
+&emsp; 首先ReferenceConfig类的init方法调用Protocol的refer方法生成Invoker实例(如上图中的红色部分)，这是服务消费的关键。接下来把Invoker转换为客户端需要的接口。 
 
 ## 1.1. 服务引用原理  
-&emsp; Dubbo 服务引用的时机有两个，第一个是在 Spring 容器调用 ReferenceBean 的 afterPropertiesSet 方法时引用服务，第二个是在 ReferenceBean 对应的服务被注入到其他类中时引用。这两个引用服务的时机区别在于，第一个是饿汉式的，第二个是懒汉式的。默认情况下，Dubbo 使用懒汉式引用服务。如果需要使用饿汉式，可通过配置 <dubbo:reference> 的 init 属性开启。下面我们按照 Dubbo 默认配置进行分析，整个分析过程从 ReferenceBean 的 getObject 方法开始。当我们的服务被注入到其他类中时，Spring 会第一时间调用 getObject 方法，并由该方法执行服务引用逻辑。按照惯例，在进行具体工作之前，需先进行配置检查与收集工作。接着根据收集到的信息决定服务用的方式，有三种，第一种是引用本地 (JVM) 服务，第二是通过直连方式引用远程服务，第三是通过注册中心引用远程服务。不管是哪种引用方式，最后都会得到一个 Invoker 实例。如果有多个注册中心，多个服务提供者，这个时候会得到一组 Invoker 实例，此时需要通过集群管理类 Cluster 将多个 Invoker 合并成一个实例。合并后的 Invoker 实例已经具备调用本地或远程服务的能力了，但并不能将此实例暴露给用户使用，这会对用户业务代码造成侵入。此时框架还需要通过代理工厂类 (ProxyFactory) 为服务接口生成代理类，并让代理类去调用 Invoker 逻辑。避免了 Dubbo 框架代码对业务代码的侵入，同时也让框架更容易使用。  
-&emsp; 以上就是服务引用的大致原理，下面我们深入到代码中，详细分析服务引用细节。  
+&emsp; <font color = "lime">Dubbo 服务引用的时机有两个，第一个是在 Spring 容器调用 ReferenceBean 的 afterPropertiesSet 方法时引用服务，第二个是在 ReferenceBean 对应的服务被注入到其他类中时引用。这两个引用服务的时机区别在于，第一个是饿汉式的，第二个是懒汉式的。默认情况下，Dubbo 使用懒汉式引用服务。如果需要使用饿汉式，可通过配置 \<dubbo:reference> 的 init 属性开启。</font>  
+&emsp; 下面按照 Dubbo 默认配置进行分析，<font color = "red">整个服务引用过程从 ReferenceBean 的 getObject 方法开始。当服务被注入到其他类中时，Spring 会第一时间调用 getObject 方法，并由该方法执行服务引用逻辑。</font>按照惯例，在进行具体工作之前，需先进行配置检查与收集工作。接着根据收集到的信息决定服务用的方式，有三种，第一种是引用本地 (JVM) 服务，第二是通过直连方式引用远程服务，第三是通过注册中心引用远程服务。不管是哪种引用方式，最后都会得到一个 Invoker 实例。如果有多个注册中心，多个服务提供者，这个时候会得到一组 Invoker 实例，此时需要通过集群管理类 Cluster 将多个 Invoker 合并成一个实例。合并后的 Invoker 实例已经具备调用本地或远程服务的能力了，但并不能将此实例暴露给用户使用，这会对用户业务代码造成侵入。此时框架还需要通过代理工厂类 (ProxyFactory) 为服务接口生成代理类，并让代理类去调用 Invoker 逻辑。避免了 Dubbo 框架代码对业务代码的侵入，同时也让框架更容易使用。  
+&emsp; 以上就是服务引用的大致原理，下面深入到代码中，详细分析服务引用细节。  
 
 ## 1.2. 源码分析  
 &emsp; 服务引用的入口方法为 ReferenceBean 的 getObject 方法，该方法定义在 Spring 的 FactoryBean 接口中，ReferenceBean 实现了这个方法。实现代码如下：  
@@ -44,7 +43,7 @@ public synchronized T get() {
     return ref;
 }
 ```
-&emsp; 以上两个方法的代码比较简短，并不难理解。这里需要特别说明一下，如果你对 2.6.4 及以下版本的 getObject 方法进行调试时，会碰到比较奇怪的的问题。这里假设你使用 IDEA，且保持了 IDEA 的默认配置。当你面调试到 get 方法的if (ref == null)时，你会发现 ref 不为空，导致你无法进入到 init 方法中继续调试。导致这个现象的原因是 Dubbo 框架本身有一些小问题。该问题已经在 pull request #2754 修复了此问题，并跟随 2.6.5 版本发布了。如果你正在学习 2.6.4 及以下版本，可通过修改 IDEA 配置规避这个问题。首先 IDEA 配置弹窗中搜索 toString，然后取消Enable 'toString' object view勾选。具体如下：  
+&emsp; 以上两个方法的代码比较简短，并不难理解。这里需要特别说明一下，如果对 2.6.4 及以下版本的 getObject 方法进行调试时，会碰到比较奇怪的的问题。这里假设你使用 IDEA，且保持了 IDEA 的默认配置。当调试到 get 方法的if (ref == null)时，你会发现 ref 不为空，导致无法进入到 init 方法中继续调试。导致这个现象的原因是 Dubbo 框架本身有一些小问题。该问题已经在 pull request #2754 修复了此问题，并跟随 2.6.5 版本发布了。如果正在学习 2.6.4 及以下版本，可通过修改 IDEA 配置规避这个问题。首先 IDEA 配置弹窗中搜索 toString，然后取消Enable 'toString' object view勾选。具体如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-32.png)   
 
 ### 1.2.1. 处理配置
@@ -246,11 +245,11 @@ private void init() {
     ApplicationModel.initConsumerModel(getUniqueServiceName(), consumerModel);
 }
 ```
-&emsp; 上面的代码很长，做的事情比较多。这里根据代码逻辑，对代码进行了分块，下面我们一起来看一下。  
+&emsp; 上面的代码很长，做的事情比较多。这里根据代码逻辑，对代码进行了分块，下面一起来看一下。  
 &emsp; 首先是方法开始到分割线1之间的代码。这段代码主要用于检测 ConsumerConfig 实例是否存在，如不存在则创建一个新的实例，然后通过系统变量或 dubbo.properties 配置文件填充 ConsumerConfig 的字段。接着是检测泛化配置，并根据配置设置 interfaceClass 的值。接着来看分割线1到分割线2之间的逻辑。这段逻辑用于从系统属性或配置文件中加载与接口名相对应的配置，并将解析结果赋值给 url 字段。url 字段的作用一般是用于点对点调用。继续向下看，分割线2和分割线3之间的代码用于检测几个核心配置类是否为空，为空则尝试从其他配置类中获取。分割线3与分割线4之间的代码主要用于收集各种配置，并将配置存储到 map 中。分割线4和分割线5之间的代码用于处理 MethodConfig 实例。该实例包含了事件通知配置，比如 onreturn、onthrow、oninvoke 等。分割线5到方法结尾的代码主要用于解析服务消费者 ip，以及调用 createProxy 创建代理对象。关于该方法的详细分析，将会在接下来的章节中展开。  
 
 ### 1.2.2. 引用服务
-&emsp; 本节我们要从 createProxy 开始看起。从字面意思上来看，createProxy 似乎只是用于创建代理对象的。但实际上并非如此，该方法还会调用其他方法构建以及合并 Invoker 实例。具体细节如下。  
+&emsp; 本节要从 createProxy 开始看起。从字面意思上来看，createProxy 似乎只是用于创建代理对象的。但实际上并非如此，该方法还会调用其他方法构建以及合并 Invoker 实例。具体细节如下。  
 
 ```java
 private T createProxy(Map<String, String> map) {
@@ -375,7 +374,7 @@ private T createProxy(Map<String, String> map) {
 &emsp; 上面代码很多，不过逻辑比较清晰。首先根据配置检查是否为本地调用，若是，则调用 InjvmProtocol 的 refer 方法生成 InjvmInvoker 实例。若不是，则读取直连配置项，或注册中心 url，并将读取到的 url 存储到 urls 中。然后根据 urls 元素数量进行后续操作。若 urls 元素数量为1，则直接通过 Protocol 自适应拓展类构建 Invoker 实例接口。若 urls 元素数量大于1，即存在多个注册中心或服务直连 url，此时先根据 url 构建 Invoker。然后再通过 Cluster 合并多个 Invoker，最后调用 ProxyFactory 生成代理类。Invoker 的构建过程以及代理类的过程比较重要，因此接下来将分两小节对这两个过程进行分析。  
 
 #### 1.2.2.1. 创建 Invoker
-&emsp; Invoker 是 Dubbo 的核心模型，代表一个可执行体。在服务提供方，Invoker 用于调用服务提供类。在服务消费方，Invoker 用于执行远程调用。Invoker 是由 Protocol 实现类构建而来。Protocol 实现类有很多，本节会分析最常用的两个，分别是 RegistryProtocol 和 DubboProtocol，其他的大家自行分析。下面先来分析 DubboProtocol 的 refer 方法源码。如下：  
+&emsp; <font color = "lime">Invoker 是 Dubbo 的核心模型，代表一个可执行体。在服务提供方，Invoker 用于调用服务提供类。在服务消费方，Invoker 用于执行远程调用。Invoker 是由 Protocol 实现类构建而来。</font>Protocol 实现类有很多，本节会分析最常用的两个，分别是 RegistryProtocol 和 DubboProtocol，其他的大家自行分析。下面先来分析 DubboProtocol 的 refer 方法源码。如下：  
 
 ```java
 public <T> Invoker<T> refer(Class<T> serviceType, URL url) throws RpcException {
@@ -386,7 +385,7 @@ public <T> Invoker<T> refer(Class<T> serviceType, URL url) throws RpcException {
     return invoker;
 }
 ```
-&emsp; 上面方法看起来比较简单，不过这里有一个调用需要我们注意一下，即 getClients。这个方法用于获取客户端实例，实例类型为 ExchangeClient。ExchangeClient 实际上并不具备通信能力，它需要基于更底层的客户端实例进行通信。比如 NettyClient、MinaClient 等，默认情况下，Dubbo 使用 NettyClient 进行通信。接下来，我们简单看一下 getClients 方法的逻辑。  
+&emsp; 上面方法看起来比较简单，不过这里有一个调用需要注意一下，即 getClients。这个方法用于获取客户端实例，实例类型为 ExchangeClient。ExchangeClient 实际上并不具备通信能力，它需要基于更底层的客户端实例进行通信。比如 NettyClient、MinaClient 等，默认情况下，Dubbo 使用 NettyClient 进行通信。接下来，简单看一下 getClients 方法的逻辑。  
 
 ```java
 private ExchangeClient[] getClients(URL url) {
@@ -413,7 +412,7 @@ private ExchangeClient[] getClients(URL url) {
     return clients;
 }
 ```
-&emsp; 这里根据 connections 数量决定是获取共享客户端还是创建新的客户端实例，默认情况下，使用共享客户端实例。getSharedClient 方法中也会调用 initClient 方法，因此下面我们一起看一下这两个方法。  
+&emsp; 这里根据 connections 数量决定是获取共享客户端还是创建新的客户端实例，默认情况下，使用共享客户端实例。getSharedClient 方法中也会调用 initClient 方法，因此下面一起看一下这两个方法。  
 
 ```java
 private ExchangeClient getSharedClient(URL url) {
@@ -447,7 +446,7 @@ private ExchangeClient getSharedClient(URL url) {
     }
 }
 ```
-&emsp; 上面方法先访问缓存，若缓存未命中，则通过 initClient 方法创建新的 ExchangeClient 实例，并将该实例传给 ReferenceCountExchangeClient 构造方法创建一个带有引用计数功能的 ExchangeClient 实例。ReferenceCountExchangeClient 内部实现比较简单，就不分析了。下面我们再来看一下 initClient 方法的代码。  
+&emsp; 上面方法先访问缓存，若缓存未命中，则通过 initClient 方法创建新的 ExchangeClient 实例，并将该实例传给 ReferenceCountExchangeClient 构造方法创建一个带有引用计数功能的 ExchangeClient 实例。ReferenceCountExchangeClient 内部实现比较简单，就不分析了。下面再来看一下 initClient 方法的代码。  
 
 ```java
 private ExchangeClient initClient(URL url) {
@@ -480,7 +479,7 @@ private ExchangeClient initClient(URL url) {
     return client;
 }
 ```
-&emsp; initClient 方法首先获取用户配置的客户端类型，默认为 netty。然后检测用户配置的客户端类型是否存在，不存在则抛出异常。最后根据 lazy 配置决定创建什么类型的客户端。这里的 LazyConnectExchangeClient 代码并不是很复杂，该类会在 request 方法被调用时通过 Exchangers 的 connect 方法创建 ExchangeClient 客户端，该类的代码本节就不分析了。下面我们分析一下 Exchangers 的 connect 方法。  
+&emsp; initClient 方法首先获取用户配置的客户端类型，默认为 netty。然后检测用户配置的客户端类型是否存在，不存在则抛出异常。最后根据 lazy 配置决定创建什么类型的客户端。这里的 LazyConnectExchangeClient 代码并不是很复杂，该类会在 request 方法被调用时通过 Exchangers 的 connect 方法创建 ExchangeClient 客户端，该类的代码本节就不分析了。下面分析一下 Exchangers 的 connect 方法。  
 
 ```java
 public static ExchangeClient connect(URL url, ExchangeHandler handler) throws RemotingException {
@@ -507,7 +506,7 @@ public ExchangeClient connect(URL url, ExchangeHandler handler) throws RemotingE
     return new HeaderExchangeClient(Transporters.connect(url, new DecodeHandler(new HeaderExchangeHandler(handler))), true);
 }
 ```
-&emsp; 这里的调用比较多，我们这里重点看一下 Transporters 的 connect 方法。如下：  
+&emsp; 这里的调用比较多，这里重点看一下 Transporters 的 connect 方法。如下：  
 
 ```java
 public static Client connect(URL url, ChannelHandler... handlers) throws RemotingException {
@@ -646,7 +645,7 @@ public <T> T getProxy(Invoker<T> invoker, boolean generic) throws RpcException {
 
 public abstract <T> T getProxy(Invoker<T> invoker, Class<?>[] types);
 ```
-&emsp; 如上，上面大段代码都是用来获取 interfaces 数组的，我们继续往下看。getProxy(Invoker, Class<?>[]) 这个方法是一个抽象方法，下面我们到 JavassistProxyFactory 类中看一下该方法的实现代码。  
+&emsp; 如上，上面大段代码都是用来获取 interfaces 数组的，继续往下看。getProxy(Invoker, Class<?>[]) 这个方法是一个抽象方法，下面到 JavassistProxyFactory 类中看一下该方法的实现代码。  
 
 ```java
 public <T> T getProxy(Invoker<T> invoker, Class<?>[] interfaces) {
@@ -654,7 +653,7 @@ public <T> T getProxy(Invoker<T> invoker, Class<?>[] interfaces) {
     return (T) Proxy.getProxy(interfaces).newInstance(new InvokerInvocationHandler(invoker));
 }
 ```
-&emsp; 上面代码并不多，首先是通过 Proxy 的 getProxy 方法获取 Proxy 子类，然后创建 InvokerInvocationHandler 对象，并将该对象传给 newInstance 生成 Proxy 实例。InvokerInvocationHandler 实现 JDK 的 InvocationHandler 接口，具体的用途是拦截接口类调用。该类逻辑比较简单，这里就不分析了。下面我们重点关注一下 Proxy 的 getProxy 方法，如下。  
+&emsp; 上面代码并不多，首先是通过 Proxy 的 getProxy 方法获取 Proxy 子类，然后创建 InvokerInvocationHandler 对象，并将该对象传给 newInstance 生成 Proxy 实例。InvokerInvocationHandler 实现 JDK 的 InvocationHandler 接口，具体的用途是拦截接口类调用。该类逻辑比较简单，这里就不分析了。下面重点关注一下 Proxy 的 getProxy 方法，如下。  
 
 ```java
 public static Proxy getProxy(Class<?>... ics) {
@@ -852,7 +851,7 @@ public static Proxy getProxy(ClassLoader cl, Class<?>... ics) {
     return proxy;
 }
 ```
-&emsp; 上面代码比较复杂，我们写了大量的注释。大家在阅读这段代码时，要搞清楚 ccp 和 ccm 的用途，不然会被搞晕。ccp 用于为服务接口生成代理类，比如我们有一个 DemoService 接口，这个接口代理类就是由 ccp 生成的。ccm 则是用于为 org.apache.dubbo.common.bytecode.Proxy 抽象类生成子类，主要是实现 Proxy 类的抽象方法。下面以 org.apache.dubbo.demo.DemoService 这个接口为例，来看一下该接口代理类代码大致是怎样的（忽略 EchoService 接口）。  
+&emsp; 上面代码比较复杂，写了大量的注释。大家在阅读这段代码时，要搞清楚 ccp 和 ccm 的用途，不然会被搞晕。ccp 用于为服务接口生成代理类，比如有一个 DemoService 接口，这个接口代理类就是由 ccp 生成的。ccm 则是用于为 org.apache.dubbo.common.bytecode.Proxy 抽象类生成子类，主要是实现 Proxy 类的抽象方法。下面以 org.apache.dubbo.demo.DemoService 这个接口为例，来看一下该接口代理类代码大致是怎样的（忽略 EchoService 接口）。  
 
 ```java
 package org.apache.dubbo.common.bytecode;

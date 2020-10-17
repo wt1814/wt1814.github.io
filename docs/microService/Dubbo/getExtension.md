@@ -27,7 +27,7 @@
 &emsp; Dubbo SPI 的相关逻辑被封装在了 ExtensionLoader 类(拓展加载器)中，通过 ExtensionLoader，可以加载指定的实现类。  
 
 ## 1.2. 获得指定拓展对象  
-&emsp; Dubbo SPI 示例中，首先通过 ExtensionLoader 的 getExtensionLoader 方法获取一个 ExtensionLoader 实例，然后再通过 ExtensionLoader 的 getExtension 方法获取拓展类对象。  
+&emsp; <font color = "lime">Dubbo SPI 获得指定拓展对象，首先通过 ExtensionLoader 的 getExtensionLoader 方法获取一个 ExtensionLoader 实例，然后再通过 ExtensionLoader 的 getExtension 方法获取拓展类对象。</font>  
 
 ### 1.2.1. 获得拓展加载器  
 &emsp; 在Dubbo SPI示例代码中：  
@@ -193,7 +193,7 @@ private T createExtension(String name) {
 3. 向拓展对象中注入依赖
 4. 将拓展对象包裹在相应的 Wrapper 对象中
 
-&emsp; 以上步骤中，第一个步骤是加载拓展类的关键，第三和第四个步骤是 Dubbo IOC 与 AOP 的具体实现。在接下来的章节中，将会重点分析 getExtensionClasses 方法的逻辑，以及简单介绍 Dubbo IOC 的具体实现。  
+&emsp; 以上步骤中，第一个步骤是加载拓展类的关键，<font color = "lime">第三和第四个步骤是 Dubbo IOC 与 AOP 的具体实现。</font>在接下来的章节中，将会重点分析 getExtensionClasses 方法的逻辑，以及简单介绍 Dubbo IOC 的具体实现。  
 
 ##### 1.2.2.2.1. 获取所有的拓展类  
 
@@ -252,7 +252,7 @@ private Map<String, Class<?>> loadExtensionClasses() {
     return extensionClasses;
 }
 ```
-&emsp; <font color = "red">loadExtensionClasses 方法总共做了两件事情，一是对 SPI 注解进行解析，二是调用 loadDirectory 方法加载指定文件夹配置文件。</font>SPI 注解解析过程比较简单，无需多说。下面来看一下 loadDirectory 做了哪些事情。  
+&emsp; <font color = "red">loadExtensionClasses 方法总共做了两件事情，一是对 SPI 注解进行解析，二是调用 loadDirectory 方法加载指定文件夹配置文件。</font>  
 
 ###### 1.2.2.2.1.3. loadDirectory
 

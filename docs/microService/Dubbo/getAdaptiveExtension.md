@@ -18,12 +18,12 @@
                 - [1.2.4.3.3. 获取 Adaptive 注解值](#12433-获取-adaptive-注解值)
                 - [1.2.4.3.4. 检测 Invocation 参数](#12434-检测-invocation-参数)
                 - [1.2.4.3.5. 生成拓展名获取逻辑](#12435-生成拓展名获取逻辑)
-                - [无 Adaptive 注解方法代码生成逻辑](#无-adaptive-注解方法代码生成逻辑)
-                - [获取 URL 数据](#获取-url-数据)
-                - [获取 Adaptive 注解值](#获取-adaptive-注解值)
-                - [检测 Invocation 参数](#检测-invocation-参数)
-                - [生成拓展名获取逻辑](#生成拓展名获取逻辑)
-                - [生成拓展加载与目标方法调用逻辑](#生成拓展加载与目标方法调用逻辑)
+                - [1.2.4.3.6. 无 Adaptive 注解方法代码生成逻辑](#12436-无-adaptive-注解方法代码生成逻辑)
+                - [1.2.4.3.7. 获取 URL 数据](#12437-获取-url-数据)
+                - [1.2.4.3.8. 获取 Adaptive 注解值](#12438-获取-adaptive-注解值)
+                - [1.2.4.3.9. 检测 Invocation 参数](#12439-检测-invocation-参数)
+                - [1.2.4.3.10. 生成拓展名获取逻辑](#124310-生成拓展名获取逻辑)
+                - [1.2.4.3.11. 生成拓展加载与目标方法调用逻辑](#124311-生成拓展加载与目标方法调用逻辑)
 
 <!-- /TOC -->
 
@@ -309,7 +309,7 @@ public class Protocol$Adaptive implements com.alibaba.dubbo.rpc.Protocol {
 &emsp; 一个方法可以被 Adaptive 注解修饰，也可以不被修饰。这里将未被 Adaptive 注解修饰的方法称为“无 Adaptive 注解方法”，下面先来看看此种方法的代码生成逻辑是怎样的。  
 
 ##### 1.2.4.3.1. 无 Adaptive 注解方法代码生成逻辑
-&emsp; 对于接口方法，我们可以按照需求标注 Adaptive 注解。以 Protocol 接口为例，该接口的 destroy 和 getDefaultPort 未标注 Adaptive 注解，其他方法均标注了 Adaptive 注解。Dubbo 不会为没有标注 Adaptive 注解的方法生成代理逻辑，对于该种类型的方法，仅会生成一句抛出异常的代码。生成逻辑如下：  
+&emsp; 对于接口方法，可以按照需求标注 Adaptive 注解。以 Protocol 接口为例，该接口的 destroy 和 getDefaultPort 未标注 Adaptive 注解，其他方法均标注了 Adaptive 注解。Dubbo 不会为没有标注 Adaptive 注解的方法生成代理逻辑，对于该种类型的方法，仅会生成一句抛出异常的代码。生成逻辑如下：  
 
 ```java
 for (Method method : methods) {
@@ -592,7 +592,7 @@ for (Method method : methods) {
         String defaultExtName = cachedDefaultName;
         String getNameCode = null;
         
-        // 遍历 value，这里的 value 是 Adaptive 的注解值，2.2.3.3 节分析过 value 变量的获取过程。
+        // 遍历 value，这里的 value 是 Adaptive 的注解值。
         // 此处循环目的是生成从 URL 中获取拓展名的代码，生成的代码会赋值给 getNameCode 变量。注意这
         // 个循环的遍历顺序是由后向前遍历的。
         for (int i = value.length - 1; i >= 0; --i) {
@@ -681,8 +681,8 @@ public interface Transporter {
 
 &emsp; 下面对 connect 方法代理逻辑生成的过程进行分析，此时生成代理逻辑所用到的变量如下：  
 
-##### 无 Adaptive 注解方法代码生成逻辑
-对于接口方法，我们可以按照需求标注 Adaptive 注解。以 Protocol 接口为例，该接口的 destroy 和 getDefaultPort 未标注 Adaptive 注解，其他方法均标注了 Adaptive 注解。Dubbo 不会为没有标注 Adaptive 注解的方法生成代理逻辑，对于该种类型的方法，仅会生成一句抛出异常的代码。生成逻辑如下：  
+##### 1.2.4.3.6. 无 Adaptive 注解方法代码生成逻辑
+&emsp; 对于接口方法，可以按照需求标注 Adaptive 注解。以 Protocol 接口为例，该接口的 destroy 和 getDefaultPort 未标注 Adaptive 注解，其他方法均标注了 Adaptive 注解。Dubbo 不会为没有标注 Adaptive 注解的方法生成代理逻辑，对于该种类型的方法，仅会生成一句抛出异常的代码。生成逻辑如下：  
 
 ```java
 for (Method method : methods) {
@@ -706,22 +706,21 @@ for (Method method : methods) {
     // 省略无关逻辑
 }
 ```
-以 Protocol 接口的 destroy 方法为例，上面代码生成的内容如下：
+&emsp; 以 Protocol 接口的 destroy 方法为例，上面代码生成的内容如下：
 
 ```java
 throw new UnsupportedOperationException(
             "method public abstract void com.alibaba.dubbo.rpc.Protocol.destroy() of interface
 ```
 
-##### 获取 URL 数据
-
-前面说过方法代理逻辑会从 URL 中提取目标拓展的名称，因此代码生成逻辑的一个重要的任务是从方法的参数列表或者其他参数中获取 URL 数据。举例说明一下，我们要为 Protocol 接口的 refer 和 export 方法生成代理逻辑。在运行时，通过反射得到的方法定义大致如下：  
+##### 1.2.4.3.7. 获取 URL 数据
+&emsp; 前面说过方法代理逻辑会从 URL 中提取目标拓展的名称，因此代码生成逻辑的一个重要的任务是从方法的参数列表或者其他参数中获取 URL 数据。举例说明一下，我们要为 Protocol 接口的 refer 和 export 方法生成代理逻辑。在运行时，通过反射得到的方法定义大致如下：  
 
 ```java
 Invoker refer(Class<T> arg0, URL arg1) throws RpcException;
 Exporter export(Invoker<T> arg0) throws RpcException;
 ```
-对于 refer 方法，通过遍历 refer 的参数列表即可获取 URL 数据，这个还比较简单。对于 export 方法，获取 URL 数据则要麻烦一些。export 参数列表中没有 URL 参数，因此需要从 Invoker 参数中获取 URL 数据。获取方式是调用 Invoker 中可返回 URL 的 getter 方法，比如 getUrl。如果 Invoker 中无相关 getter 方法，此时则会抛出异常。整个逻辑如下：  
+&emsp; 对于 refer 方法，通过遍历 refer 的参数列表即可获取 URL 数据，这个还比较简单。对于 export 方法，获取 URL 数据则要麻烦一些。export 参数列表中没有 URL 参数，因此需要从 Invoker 参数中获取 URL 数据。获取方式是调用 Invoker 中可返回 URL 的 getter 方法，比如 getUrl。如果 Invoker 中无相关 getter 方法，此时则会抛出异常。整个逻辑如下：  
 
 ```java
 for (Method method : methods) {
@@ -818,7 +817,7 @@ for (Method method : methods) {
     // 省略无关代码
 }
 ```
-上面代码有点多，需要耐心看一下。这段代码主要目的是为了获取 URL 数据，并为之生成判空和赋值代码。以 Protocol 的 refer 和 export 方法为例，上面的代码为它们生成如下内容（代码已格式化）：
+&emsp; 上面代码有点多，需要耐心看一下。这段代码主要目的是为了获取 URL 数据，并为之生成判空和赋值代码。以 Protocol 的 refer 和 export 方法为例，上面的代码为它们生成如下内容（代码已格式化）：
 
 ```text
 refer:
@@ -834,8 +833,8 @@ if (arg0.getUrl() == null)
 com.alibaba.dubbo.common.URL url = arg0.getUrl();
 ```
 
-##### 获取 Adaptive 注解值
-Adaptive 注解值 value 类型为 String[]，可填写多个值，默认情况下为空数组。若 value 为非空数组，直接获取数组内容即可。若 value 为空数组，则需进行额外处理。处理过程是将类名转换为字符数组，然后遍历字符数组，并将字符放入 StringBuilder 中。若字符为大写字母，则向 StringBuilder 中添加点号，随后将字符变为小写存入 StringBuilder 中。比如 LoadBalance 经过处理后，得到 load.balance。  
+##### 1.2.4.3.8. 获取 Adaptive 注解值
+&emsp; Adaptive 注解值 value 类型为 String[]，可填写多个值，默认情况下为空数组。若 value 为非空数组，直接获取数组内容即可。若 value 为空数组，则需进行额外处理。处理过程是将类名转换为字符数组，然后遍历字符数组，并将字符放入 StringBuilder 中。若字符为大写字母，则向 StringBuilder 中添加点号，随后将字符变为小写存入 StringBuilder 中。比如 LoadBalance 经过处理后，得到 load.balance。  
 
 ```java
 for (Method method : methods) {
@@ -881,9 +880,8 @@ for (Method method : methods) {
 }
 ```
 
-##### 检测 Invocation 参数
-
-此段逻辑是检测方法列表中是否存在 Invocation 类型的参数，若存在，则为其生成判空代码和其他一些代码。相应的逻辑如下：  
+##### 1.2.4.3.9. 检测 Invocation 参数
+&emsp; 此段逻辑是检测方法列表中是否存在 Invocation 类型的参数，若存在，则为其生成判空代码和其他一些代码。相应的逻辑如下：  
 
 ```java
 for (Method method : methods) {
@@ -924,9 +922,8 @@ for (Method method : methods) {
 }
 ```
 
-##### 生成拓展名获取逻辑
-
-本段逻辑用于根据 SPI 和 Adaptive 注解值生成“获取拓展名逻辑”，同时生成逻辑也受 Invocation 类型参数影响，综合因素导致本段逻辑相对复杂。本段逻辑可能会生成但不限于下面的代码：
+##### 1.2.4.3.10. 生成拓展名获取逻辑
+&emsp; 本段逻辑用于根据 SPI 和 Adaptive 注解值生成“获取拓展名逻辑”，同时生成逻辑也受 Invocation 类型参数影响，综合因素导致本段逻辑相对复杂。本段逻辑可能会生成但不限于下面的代码：
 
 ```java
 String extName = (url.getProtocol() == null ? "dubbo" : url.getProtocol());
@@ -1034,7 +1031,8 @@ for (Method method : methods) {
     // 省略无关逻辑
 }
 ```
-上面代码比较复杂，不是很好理解。对于这段代码，建议大家写点测试用例，对 Protocol、LoadBalance 以及 Transporter 等接口的自适应拓展类代码生成过程进行调试。这里我以 Transporter 接口的自适应拓展类代码生成过程举例说明。首先看一下 Transporter 接口的定义，如下：
+&emsp; 上面代码比较复杂，不是很好理解。对于这段代码，建议大家写点测试用例，对 Protocol、LoadBalance 以及 Transporter 等接口的自适应拓展类代码生成过程进行调试。这里我以 Transporter 接口的自适应拓展类代码生成过程举例说明。首先看一下 Transporter 接口的定义，如下：  
+
 ```java
 @SPI("netty")
 public interface Transporter {
@@ -1047,22 +1045,27 @@ public interface Transporter {
     Client connect(URL url, ChannelHandler handler) throws RemotingException;
 }
 ```
-下面对 connect 方法代理逻辑生成的过程进行分析，此时生成代理逻辑所用到的变量如下：
+&emsp; 下面对 connect 方法代理逻辑生成的过程进行分析，此时生成代理逻辑所用到的变量如下：  
+
 ```java
 String defaultExtName = "netty";
 boolean hasInvocation = false;
 String getNameCode = null;
 String[] value = ["client", "transporter"];
 ```
-下面对 value 数组进行遍历，此时 i = 1, value[i] = "transporter"，生成的代码如下：
+&emsp; 下面对 value 数组进行遍历，此时 i = 1, value[i] = "transporter"，生成的代码如下：  
+
 ```java
 getNameCode = url.getParameter("transporter", "netty");
 ```
-接下来，for 循环继续执行，此时 i = 0, value[i] = "client"，生成的代码如下：
+
+&emsp; 接下来，for 循环继续执行，此时 i = 0, value[i] = "client"，生成的代码如下：  
+
 ```java
 getNameCode = url.getParameter("client", url.getParameter("transporter", "netty"));
 ```
-for 循环结束运行，现在为 extName 变量生成赋值和判空代码，如下：
+&emsp; for 循环结束运行，现在为 extName 变量生成赋值和判空代码，如下：  
+
 ```java
 String extName = url.getParameter("client", url.getParameter("transporter", "netty"));
 if (extName == null) {
@@ -1071,9 +1074,10 @@ if (extName == null) {
         + ") use keys([client, transporter])");
 }
 ```
-##### 生成拓展加载与目标方法调用逻辑
 
-本段代码逻辑用于根据拓展名加载拓展实例，并调用拓展实例的目标方法。相关逻辑如下：
+##### 1.2.4.3.11. 生成拓展加载与目标方法调用逻辑
+&emsp; 本段代码逻辑用于根据拓展名加载拓展实例，并调用拓展实例的目标方法。相关逻辑如下：  
+
 ```java
 for (Method method : methods) {
     Class<?> rt = method.getReturnType();
@@ -1121,7 +1125,7 @@ for (Method method : methods) {
     // 省略无关逻辑
 }
 
-以 Protocol 接口举例说明，上面代码生成的内容如下：
+&emsp; 以 Protocol 接口举例说明，上面代码生成的内容如下：
 ```java
 com.alibaba.dubbo.rpc.Protocol extension = (com.alibaba.dubbo.rpc.Protocol) ExtensionLoader
     .getExtensionLoader(com.alibaba.dubbo.rpc.Protocol.class).getExtension(extName);
@@ -1129,8 +1133,8 @@ return extension.refer(arg0, arg1);
 ```
 
 ##### 生成完整的方法
+&emsp; 本节进行代码生成的收尾工作，主要用于生成方法定义的代码。相关逻辑如下：
 
-本节进行代码生成的收尾工作，主要用于生成方法定义的代码。相关逻辑如下：
 ```java
 for (Method method : methods) {
     Class<?> rt = method.getReturnType();
@@ -1186,7 +1190,8 @@ codeBuilder.append(" {");
 codeBuilder.append(code.toString());
 codeBuilder.append("\n}");
 ```
-以 Protocol 的 refer 方法为例，上面代码生成的内容如下：
+&emsp; 以 Protocol 的 refer 方法为例，上面代码生成的内容如下：
+
 ```java
 public com.alibaba.dubbo.rpc.Invoker refer(java.lang.Class arg0, com.alibaba.dubbo.common.URL arg1) {
     // 方法体
