@@ -250,7 +250,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [获得指定拓展对象](/docs/microService/Dubbo/getExtension.md)  
 &emsp; [获得自适应的拓展对象](/docs/microService/Dubbo/getAdaptiveExtension.md)  
 [Dubbo实现细节](/docs/microService/Dubbo/realization.md)  
-&emsp; [Dubbo中对Spring配置标签扩展](/docs/microService/Dubbo/dubboSpring.md)  
+&emsp; [Dubbo初始化](/docs/microService/Dubbo/dubboSpring.md)  
 &emsp; [服务暴露](/docs/microService/Dubbo/export.md)  
 &emsp; [服务引用](/docs/microService/Dubbo/introduce.md)  
 &emsp; [服务调用](/docs/microService/Dubbo/call.md)  
