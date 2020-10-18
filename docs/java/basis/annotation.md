@@ -8,6 +8,9 @@
 java中自定义注解的作用和写法
 https://blog.csdn.net/didi7696/article/details/94553894
 
+基础篇：谈谈JAVA注解机制 
+https://mp.weixin.qq.com/s/U-4YO607bfmeyny0yoDDzg
+
 -->
 
 ## 作用  

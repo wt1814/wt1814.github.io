@@ -137,8 +137,18 @@ https://blog.csdn.net/hanjungua8144/article/details/86240261
 <!-- 
 04 我为什么在消息队列里消费到了重复的数据？
 https://blog.csdn.net/hanjungua8144/article/details/86239428
+
+MQ，究竟如何保证消息幂等？ 
+https://mp.weixin.qq.com/s/lh1yLcKHDLSCatdA9EY6wQ
 -->
 &emsp; **消费消息的接口幂等。**  
+1. 首先，上半场幂等。  
+&emsp; MQ-client生成inner-msg-id，保证上半场幂等。  
+&emsp; 这个ID全局唯一，业务无关，由MQ保证。  
+2. 然后，下半场幂等。  
+&emsp; 业务发送方带入biz-id，业务接收方去重保证幂等。  
+&emsp; 这个ID对单业务唯一，业务相关，对MQ透明。  
+
 
 ## 1.7. 顺序消费  
 <!-- 
