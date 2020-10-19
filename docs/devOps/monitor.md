@@ -22,4 +22,11 @@ https://mp.weixin.qq.com/s/HEW8rSPhWk82NinQcEzPhQ
 
 Linux中一个高效的资源监控器 – Bpytop 
 https://mp.weixin.qq.com/s/usrepOGS5V8cO4uwYgFDFw
+
+
+Sampler，命令行下的可视化展示工具
+https://www.oschina.net/p/sampler?hmsr=aladdin1e1
+https://mp.weixin.qq.com/s/l3fBjFhdvH-eE6RHYhy2Aw
+
+
 -->
