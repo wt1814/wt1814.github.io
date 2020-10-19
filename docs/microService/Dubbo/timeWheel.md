@@ -12,7 +12,6 @@
 
 <!-- /TOC -->
 
-
 # 1. Dubbo中的时间轮  
 
 ## 1.1. 定时任务功能  
@@ -49,30 +48,27 @@ Dubbo/Netty中时间轮算法的原理
 https://blog.csdn.net/dbqb007/article/details/90740839
 https://www.cnblogs.com/wuzhenzhao/p/13784469.html
 -->
-
-
 &emsp; 在Dubbo中，为增强系统的容错能力，在很多地方需要用到只需进行一次执行的任务调度。比如RPC调用的超时机制的实现，消费者需要各个RPC调用是否超时，如果超时会将超时结果返回给应用层。在Dubbo最开始的实现中，是采用将所有的返回结果（DefaultFuture）都放入一个集合中，并且通过一个定时任务，每隔一定时间间隔就扫描所有的future，逐个判断是否超时。  
 &emsp; 这样的实现方式实现起来比较简单，但是存在一个问题就是会有很多无意义的遍历操作。比如一个RPC调用的超时时间是10秒，而我的超时判定定时任务是2秒执行一次，那么可能会有4次左右无意义的轮询操作。  
 &emsp; 为了解决类似的场景中的问题，Dubbo借鉴Netty，引入了时间轮算法，用来对只需要执行一次的任务进行调度。  
 
-&emsp;**定时任务应用**  
+&emsp; **定时任务应用**  
 &emsp;并不直接用于周期性操作，而是只向时间轮提交执行单次的定时任务，在上一次任务执行完成的时候，调用 newTimeout() 方法再次提交当前任务，这样就会在下个周期执行该任务。即使在任务执行过程中出现了 GC、I/O 阻塞等情况，导致任务延迟或卡住，也不会有同样的任务源源不断地提交进来，导致任务堆积。  
 
-&emsp;**Dubbo 时间轮应用主要在如下方面：**   
+&emsp; **Dubbo 时间轮应用主要在如下方面：**   
 
 * 失败重试， 例如，Provider 向注册中心进行注册失败时的重试操作，或是 Consumer 向注册中心订阅时的失败重试等。  
 * 周期性定时任务， 例如，定期发送心跳请求，请求超时的处理，或是网络连接断开后的重连机制。  
 
 ### 1.3.1. 类图  
-dubbo里面涉及到定时任务调度的是HashedWheelTimer。位于org.apache.dubbo.common.timer。  
+&emsp; dubbo里面涉及到定时任务调度的是HashedWheelTimer。位于org.apache.dubbo.common.timer。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-48.png)   
-UML类图：  
+&emsp; UML类图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-49.png)   
 
 ### 1.3.2. HashedWheelTimer
-
-HashedWheelTimer的构造：  
-调用createWheel创建一个时间轮，时间轮数组一定是2的幂次方，比如传入的ticksPerWheel=6，那么初始化的wheel长度一定是8，这样是便于时间格的计算。tickDuration，表示时间轮的跨度，代表每个时间格的时间精度，以纳秒的方式来表现。把工作线程Worker封装成WorkerThread，从名字可以知道，它就是最终那个负责干活的线程。  
+&emsp; HashedWheelTimer的构造：    
+&emsp; 调用createWheel创建一个时间轮，时间轮数组一定是2的幂次方，比如传入的ticksPerWheel=6，那么初始化的wheel长度一定是8，这样是便于时间格的计算。tickDuration，表示时间轮的跨度，代表每个时间格的时间精度，以纳秒的方式来表现。把工作线程Worker封装成WorkerThread，从名字可以知道，它就是最终那个负责干活的线程。  
 
 
 ```java
@@ -450,7 +446,7 @@ public class HashedWheelTimerTest {
     }
 }
 ```
-运行结果  
+&emsp; 运行结果   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-50.png)   
 
 

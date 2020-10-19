@@ -305,7 +305,7 @@
     * [架构图](/docs/system/diagram.md)  
     * [性能指标](/docs/system/performance.md)  
     * [领域驱动模型](/docs/system/DDD.md)  
-    * [分布式和微服务](/docs/system/serviceSplit.md)  
+    * [分布式与微服务](/docs/system/serviceSplit.md)  
     * [并发系统三高](/docs/system/threeHigh.md)  
     * [秒杀系统设计](/docs/system/seckill.md)  
     * [订单系统设计](/docs/system/order.md)  
