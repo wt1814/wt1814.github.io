@@ -266,7 +266,7 @@
         * [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
         * [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
     * [Netty](/docs/microService/communication/Netty/netty.md)  
-        * [Netty基本概念](/docs/microService/communication/Netty/concepts.md)  
+        * [Netty核心概念](/docs/microService/communication/Netty/concepts.md)  
         * [Netty原理](/docs/microService/communication/Netty/principle.md)  
         * [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
 
