@@ -353,9 +353,8 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 [Netty](/docs/microService/communication/Netty/netty.md)  
 &emsp; [Netty基本概念](/docs/microService/communication/Netty/concepts.md)  
-&emsp; [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
 &emsp; [Netty原理](/docs/microService/communication/Netty/principle.md)  
-
+&emsp; [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
 
 
 ---
