@@ -1,24 +1,23 @@
 
 <!-- TOC -->
 
-- [1. netty核心](#1-netty核心)
-    - [1.1. 种I/O模型](#11-种io模型)
-    - [1.2. Netty核心篇](#12-netty核心篇)
-        - [1.2.1. Netty高性能](#121-netty高性能)
-            - [线程模型](#线程模型)
+- [1. netty核心概念](#1-netty核心概念)
             - [零拷贝](#零拷贝)
+            - [线程模型](#线程模型)
 
 <!-- /TOC -->
 
 
 
 # 1. netty核心概念  
-<!-- 
 
+<!-- 
+你要的Netty常见面试题总结，敖丙搞来了！
+https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 -->
 
 
-为什么要用 Netty？  
+&emsp; 为什么要用 Netty？  
 &emsp; Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。之前几篇文章介绍了Java NIO的一些基本的概念和API。但在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
 
 * 原生API使用单线程模型，不能很好利用多核优势；  
@@ -40,28 +39,9 @@
     ......
 -->
 
-## Socket  
 
 
-## 1.1. 五种I/O模型  
-
-<!-- 
-四图，读懂 BIO、NIO、AIO、多路复用 IO 的区别 
-https://mp.weixin.qq.com/s/CRd3-vRD7xwoexqv7xyHRw
-彤哥说netty系列之IO的五种模型
-https://mp.weixin.qq.com/s?__biz=Mzg2ODA0ODM0Nw==&mid=2247484080&idx=1&sn=54d451db27af1067365ed1fef94a0b2d&chksm=ceb30e04f9c48712bcc13ecb14014fd3b244385881d1aabd66e794b14429ce938b8296f54297&mpshare=1&scene=1&srcid=&sharer_sharetime=1573694075606&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=0fd7b4fa2fb2f076f6b32bb04fcdff32f38e3e711297c12c2ac01f3cda80a8dbf8e95fe381e01b6d0fb0124c2b23cde0c2d17b5f5363615e42acd8ef9d1dd60a86ac6cf94adacae356330adbe943613b&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=9PZBgG0W8u5aIQH8JwuoebfJbcWXVv%2F8Jwpab0URWoWCafXeDrv6e7zaSa2n%2B7Oa
--->
-
-
-
-## 1.2. Netty核心篇  
-
-<!-- 
-你要的Netty常见面试题总结，敖丙搞来了！
-https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
--->
-
-### 1.2.1. Netty高性能  
+&emsp; Netty高性能  
 
 * 异步非阻塞通信  
 * 零拷贝  

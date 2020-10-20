@@ -352,6 +352,7 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 &emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 [Netty](/docs/microService/communication/Netty/netty.md)  
+&emsp; [分布式通信基础](/docs/microService/communication/Netty/basics.md)    
 &emsp; [Netty核心概念](/docs/microService/communication/Netty/concepts.md)  
 &emsp; [Netty原理](/docs/microService/communication/Netty/principle.md)  
 &emsp; [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
