@@ -20,9 +20,11 @@
 
 必须了解的mysql三大日志-binlog、redo log和undo log 
 https://mp.weixin.qq.com/s/mNfjT99qIbjKGraZLV8EIQ
-
 MySQL 的 Binlog 日志处理工具（Canal，Maxwell，Databus，DTS）对比 
 https://mp.weixin.qq.com/s/zuJyYOgJrfydTasIATuijA
+必须了解的 MySQL 三大日志 
+https://mp.weixin.qq.com/s/4utIiy6p_LKXuH4HU36w4A
+
 -->
 
 # 1. MySql日志文件  

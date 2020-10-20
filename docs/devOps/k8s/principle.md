@@ -77,6 +77,10 @@ Master 节点主要负责存储集群的状态并为 Kubernetes 对象分配和�
 &emsp; 其中API Server负责处理来自用户的请求，其主要作用就是对外提供RESTful的接口，包括用于查看集群状态的读请求以及改变集群状态的写请求，也是唯一一个与 etcd集群通信的组件。  
 &emsp; 而 Controller 管理器运行了一系列的控制器进程，这些进程会按照用户的期望状态在后台不断地调节整个集群中的对象，当服务的状态发生了改变，控制器就会发现这个改变并且开始向目标状态迁移。  
 &emsp; 最后的Scheduler调度器其实为Kubernetes中运行的Pod选择部署的Worker节点，它会根据用户的需要选择最能满足请求的节点来运行Pod，它会在每次需要调度Pod时执行。  
+<!-- 
+Kubernetes Pod调度说明，Scheduler
+https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
+-->
 
 * Worker  
 &emsp; Node是Kubernetes的工作节点，负责接收来自Master的工作指令，并根据指令相应地创建和销毁Pod对象，以及调整网络规则进行合理路由和流量转发。生产环境中，Node节点可以有N个。<font color = "red">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>kubelet是K8S集群的工作与节点上的代理组件。  

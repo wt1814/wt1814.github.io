@@ -15,9 +15,6 @@
     - [1.1.9. 服务降级](#119-服务降级)
     - [1.2. Dubbo和Spring Cloud](#12-dubbo和spring-cloud)
     - [1.3. Dubbo中的SPI](#13-dubbo中的spi)
-    - [1.4. Dubbo对Spring的扩展](#14-dubbo对spring的扩展)
-    - [Dubbo生态](#dubbo生态)
-        - [Dubbo与分布式事务](#dubbo与分布式事务)
 
 <!-- /TOC -->
 
@@ -38,6 +35,14 @@ Dubbo 负载均衡的实现
 https://mp.weixin.qq.com/s/6Kn9uJ7n6W8BMm4OZmhxIQ
 
 
+-->
+
+
+<!-- 
+
+ Dubbo几个常见面试题 
+ https://mp.weixin.qq.com/s/xkwwAUV9ziabPNUMEr5DPQ
+ 
 -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo.png)   
@@ -163,8 +168,4 @@ DUBBO SPI
  三歪问我Dubbo的SPI机制是啥？ 
  https://mp.weixin.qq.com/s/gwWOsdQGEN0t2GJVMQQexw
 -->
-
-## 1.4. Dubbo对Spring的扩展  
-......
-
 
