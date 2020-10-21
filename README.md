@@ -413,12 +413,7 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 
 ## 系统接入层  
 [接入层](/docs/system/access/access.md)    
-<!--
-高并发高性能接入层中间件LVS、Keepalived、Nginx、Haproxy。  
 
-Keepalived服务详解 
-https://mp.weixin.qq.com/s/TfXjON0mwfJzO9gGXws1Lg
--->
 
 ### Nginx  
 [Nginx](/docs/Linux/Nginx/1.nginx.md)  

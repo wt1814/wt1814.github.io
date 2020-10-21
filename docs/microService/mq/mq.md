@@ -31,6 +31,9 @@ MQ夺命连环11问
 https://juejin.im/post/6877741789680238600
 
 
+ MQ，究竟如何做到削峰填谷？ 
+ https://mp.weixin.qq.com/s/2gqajSPgwF67hrl9alRLJg
+
 -->
 &emsp; **<font color = "lime">总结：</font>**  
 1. 为什么使用mq？

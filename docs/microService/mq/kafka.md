@@ -14,4 +14,7 @@ https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
 
 Kafka中副本机制的设计和原理 
 https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
+
+ 从面试角度学Kafka，是怎么样的体验 
+ https://mp.weixin.qq.com/s/G1y3m1WOmxR9tdh-MpQdwQ
 -->
