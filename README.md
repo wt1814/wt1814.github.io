@@ -342,7 +342,6 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 
 ### 分布式调度
 [延迟队列](/docs/frame/delayQueue.md)  
-
 [分布式调度](/docs/frame/taskSheduling.md)  
 &emsp; [XXL-JOB](/docs/frame/XXL-JOB.md) 
 
@@ -395,6 +394,9 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 [系统稳定性建设]()  
 10个有意思的架构问题！
 https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
+
+ 一个复杂系统的拆分改造实践！ 
+ https://mp.weixin.qq.com/s/OSAxKO6tddY4TucRADqOiQ
 -->
 
 [性能指标](/docs/system/performance.md)  

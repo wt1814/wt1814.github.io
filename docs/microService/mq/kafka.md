@@ -17,4 +17,8 @@ https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 
  从面试角度学Kafka，是怎么样的体验 
  https://mp.weixin.qq.com/s/G1y3m1WOmxR9tdh-MpQdwQ
+
+
+  Kafka 消费者的使用和原理 
+  https://mp.weixin.qq.com/s/cmDRWi2tmw0reHoUf5UriQ
 -->
