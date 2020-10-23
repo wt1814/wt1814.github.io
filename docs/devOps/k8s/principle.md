@@ -135,6 +135,9 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 <!--
  Kubernetes新手快速入门指南 
  https://www.sohu.com/a/245424505_198222
+
+  Kubernetes Pod调度说明2-污点和容忍及固定调度节点. 
+  https://mp.weixin.qq.com/s/ZF1V4Lftg_NFUINMYkYgPw
 -->
 <!--
 ～～

@@ -126,7 +126,8 @@ Gitee： https://gitee.com/wt1814/
 [JVM调优](/docs/java/JVM/7.JVM调优.md)  
 &emsp; [JVM排查案例](/docs/java/JVM/case.md)  
 [JAVA线上故障排查](/docs/Linux/Linux/problem.md)  
-[Arthas]()  
+[Arthas](/docs/java/JVM/Arthas.md)  
+[JMH](/docs/java/JVM/JMH.md)  
 
 ## 数据库  
 [学习SQL的总结](/docs/SQL/学习SQL的总结.md)  
