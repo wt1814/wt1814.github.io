@@ -120,6 +120,9 @@ https://mp.weixin.qq.com/s?__biz=MzAxNjM2MTk0Ng==&mid=2247488256&idx=3&sn=253eb6
 ### 1.2.2. Netty中的线程模型与Reactor的联系  
 <!-- 
 https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
+
+ Netty运用Reactor模式到极致 
+ https://mp.weixin.qq.com/s/rqzzHAhntBJpEHpzz1o5HA
 -->
 &emsp; Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。  
 
