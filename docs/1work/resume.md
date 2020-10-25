@@ -1,6 +1,6 @@
 <center><font size = "8">王涛</font></center>  
 <br/>
-<center><font size = "6">应聘职位：Java工程师</font></center>
+<center><font size = "6">应聘职位：Java高级开发工程师</font></center>
 
 # 个人信息  
 <font size = "4.5">&emsp; 性别：男 &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;出生年月：1992.06.29 &emsp; &emsp; &emsp;  &emsp;籍贯：山西省运城市</font>  
@@ -33,9 +33,10 @@
     * 熟悉使用redis、mq、zookeeper等中间件；
     * 熟悉限流，熔断，降级；
     * 熟悉分布式事务、分布式锁、分布式ID、分布式缓存问题的解决；
-* 熟悉Tomcat，Ngingx等服务器；
-* 熟练使用Svn，Git，Maven等版本控制工具及项目搭建工具，会使用devops工具；
-* 熟悉Linux基本命令；
+* 了解Ngingx；
+* 熟练使用Svn，Git，Maven等版本控制工具及项目搭建工具；
+* 了解DevOps、Docker、Kubernetes
+* 熟悉Linux基本命令；了解shell编程；
 
 </font>
 <br/>
@@ -50,20 +51,25 @@
 
 # 工作经历  
 <font size = "4.5">
-
-* 2018.03---至今  &emsp; &emsp; &emsp;  中科软科技股份有限公司  
+* 2018.03---2020.09  &emsp; &emsp; &emsp;  车易拍  
+工作内容：公共服务组，优惠券、店铺、支付等功能  
+* 2018.03---2020.09  &emsp; &emsp; &emsp;  中科软科技股份有限公司  
 工作内容：中国人保财险对外合作项目组统一对接平台建设  
 * 2016.04---2018.02  &emsp; &emsp;北京天源迪科信息技术有限公司  
 工作内容：Java服务开发，研发CMS系统  
 </font>
 
-
 <br/>
 
 # 工作经验  
-<font size = "4.5">
+<font size = "4.5">  
 
-* 2018.09---至今 &emsp; &emsp; 中科软股份有限公司 &emsp; &emsp; 中国人保对外合作组统一对接平台建设    
+* 2020.09---至今 &emsp; &emsp; 车易拍 &emsp; &emsp; 车易拍公共服务组    
+    * 核心技术：dubbo+MySql+MyBatis+rocketMq+redis  
+    * 项目概述：B2B电商系统公共服务组
+    * 个人职责：
+        1. 维护支付系统；参与优惠券、店铺系统的开发。    
+* 2018.09---2020.09 &emsp; &emsp; 中科软股份有限公司 &emsp; &emsp; 中国人保对外合作组统一对接平台建设    
     * 核心技术：腾讯云TSF（SpringCloud的封装）+MySql+MyBatis+CMQ+redis+COS+velocity  
     * 项目概述：采用腾讯云对对外合作项目组老系统进行中台项目改造。改造各个项目的投保、退保等功能。
     * 个人职责：
@@ -97,15 +103,12 @@
 <br/>
 <br/>
 <br/>
-<br/>
-<br/>
 
 # 自我评价  
 <font size = "4.5">
 
 * 我对自己的定位：主攻Java后端，同时在其他方面打打辅助。  
 * 我对工作的态度：第一，要高效完成自己的本职工作。第二，要在完成的基础上寻找完美。第三，要在完美的基础上，与其他同事互相交流学习，互相提升。 
-* 我怎样克服困难：在遇到技术问题时往往会去Google、百度上寻找答案。有时会点到源码里，进行一些基础分析。   
 * 怎样保持自己的视野：业余时间到掘金等技术博客上刷一刷。  
 * 我的优势：热爱技术、自学能力强，有良好的自我认知。全面的技能树与开阔的视野，良好的心态、情商与沟通能力。
 
