@@ -3,8 +3,10 @@
 
 # Netty实战  
 
-<!-- 
 
+
+<!-- 
+《Netty权威指南》 第3-5章
 使用 Netty 实现 IM 聊天贼简单，看不懂就锤爆艿艿的狗头~ 
 https://mp.weixin.qq.com/s/5X1znb_G61CV6NxJ_MvmZw
 实现分布式服务注册及简易的netty聊天 

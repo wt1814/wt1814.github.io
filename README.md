@@ -353,8 +353,12 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 [Netty](/docs/microService/communication/Netty/netty.md)  
 &emsp; [分布式通信基础](/docs/microService/communication/Netty/basics.md)    
-&emsp; [Netty核心概念](/docs/microService/communication/Netty/concepts.md)  
-&emsp; [Netty原理](/docs/microService/communication/Netty/principle.md)  
+&emsp; [Netty介绍及架构剖析](/docs/microService/communication/Netty/concepts.md)  
+&emsp; [启动器Bootstrap](/docs/microService/communication/Netty/principle.md)  
+&emsp; [Netty高性能](/docs/microService/communication/Netty/performance.md)  
+&emsp; &emsp; [零拷贝](/docs/microService/communication/Netty/DMA.md)  
+&emsp; &emsp; [Reactor与EventLoop](/docs/microService/communication/Netty/Reactor.md)  
+&emsp; [TCP拆包与Netty编解码](/docs/microService/communication/Netty/Decoder.md)  
 &emsp; [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
 
 
