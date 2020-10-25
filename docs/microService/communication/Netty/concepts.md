@@ -3,21 +3,22 @@
 
 - [1. netty核心概念](#1-netty核心概念)
     - [1.1. 零拷贝](#11-零拷贝)
-        - [为什么要有 DMA 技术?](#为什么要有-dma-技术)
-        - [传统的文件传输有多糟糕？](#传统的文件传输有多糟糕)
-        - [如何优化文件传输的性能？](#如何优化文件传输的性能)
-        - [如何实现零拷贝？](#如何实现零拷贝)
-            - [mmap + write](#mmap--write)
-            - [sendfile](#sendfile)
-    - [1.2. Reactor线程模型](#12-reactor线程模型)
-        - [1.2.1. Reactor线程模型](#121-reactor线程模型)
-            - [1.2.1.1. 单线程模型](#1211-单线程模型)
-            - [1.2.1.2. 多线程模型](#1212-多线程模型)
-            - [1.2.1.3. 主从多线程模型](#1213-主从多线程模型)
-        - [1.2.2. Netty中的线程模型与Reactor的联系](#122-netty中的线程模型与reactor的联系)
-            - [1.2.2.1. 单线程模型](#1221-单线程模型)
-            - [1.2.2.2. 多线程模型](#1222-多线程模型)
-            - [1.2.2.3. 主从多线程模型 (最常使用)](#1223-主从多线程模型-最常使用)
+        - [1.1.1. 为什么要有 DMA 技术?](#111-为什么要有-dma-技术)
+        - [1.1.2. 传统的文件传输有多糟糕？](#112-传统的文件传输有多糟糕)
+        - [1.1.3. 如何优化文件传输的性能？](#113-如何优化文件传输的性能)
+        - [1.1.4. 如何实现零拷贝？](#114-如何实现零拷贝)
+            - [1.1.4.1. mmap + write](#1141-mmap--write)
+            - [1.1.4.2. sendfile](#1142-sendfile)
+    - [1.2. Netty中的零拷贝](#12-netty中的零拷贝)
+    - [1.3. Reactor线程模型](#13-reactor线程模型)
+        - [1.3.1. Reactor线程模型](#131-reactor线程模型)
+            - [1.3.1.1. 单线程模型](#1311-单线程模型)
+            - [1.3.1.2. 多线程模型](#1312-多线程模型)
+            - [1.3.1.3. 主从多线程模型](#1313-主从多线程模型)
+        - [1.3.2. Netty中的线程模型与Reactor的联系](#132-netty中的线程模型与reactor的联系)
+            - [1.3.2.1. 单线程模型](#1321-单线程模型)
+            - [1.3.2.2. 多线程模型](#1322-多线程模型)
+            - [1.3.2.3. 主从多线程模型 (最常使用)](#1323-主从多线程模型-最常使用)
 
 <!-- /TOC -->
 
@@ -73,7 +74,7 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 https://mp.weixin.qq.com/s/P0IP6c_qFhuebwdwD8HM7w
 -->
 
-### 为什么要有 DMA 技术?  
+### 1.1.1. 为什么要有 DMA 技术?  
 &emsp; 在没有 DMA 技术前，I/O 的过程是这样的：  
 
 * CPU 发出对应的指令给磁盘控制器，然后返回；  
@@ -103,7 +104,7 @@ https://mp.weixin.qq.com/s/P0IP6c_qFhuebwdwD8HM7w
 &emsp; 可以看到， 整个数据传输的过程，CPU 不再参与数据搬运的工作，而是全程由 DMA 完成，但是 CPU 在这个过程中也是必不可少的，因为传输什么数据，从哪里传输到哪里，都需要 CPU 来告诉 DMA 控制器。  
 &emsp; 早期 DMA 只存在在主板上，如今由于 I/O 设备越来越多，数据传输的需求也不尽相同，所以每个 I/O 设备里面都有自己的 DMA 控制器。  
 
-### 传统的文件传输有多糟糕？  
+### 1.1.2. 传统的文件传输有多糟糕？  
 &emsp; 如果服务端要提供文件传输的功能，我们能想到的最简单的方式是：将磁盘上的文件读取出来，然后通过网络协议发送给客户端。  
 &emsp; 传统 I/O 的工作方式是，数据读取和写入是从用户空间到内核空间来回复制，而内核空间的数据是通过操作系统层面的 I/O 接口从磁盘读取或写入。  
 &emsp; 代码通常如下，一般会需要两个系统调用：  
@@ -130,7 +131,7 @@ write(socket, tmp_buf, len);
 &emsp; 这种简单又传统的文件传输方式，存在冗余的上文切换和数据拷贝，在高并发系统里是非常糟糕的，多了很多不必要的开销，会严重影响系统性能。  
 &emsp; 所以，要想提高文件传输的性能，就需要减少「用户态与内核态的上下文切换」和「内存拷贝」的次数。  
 
-### 如何优化文件传输的性能？  
+### 1.1.3. 如何优化文件传输的性能？  
 &emsp; **先来看看，如何减少「用户态与内核态的上下文切换」的次数呢？**  
 &emsp; 读取磁盘数据的时候，之所以要发生上下文切换，这是因为用户空间没有权限操作磁盘或网卡，内核的权限最高，这些操作设备的过程都需要交由操作系统内核来完成，所以一般要通过内核去完成某些任务的时候，就需要使用操作系统提供的系统调用函数。  
 &emsp; 而一次系统调用必然会发生 2 次上下文切换：首先从用户态切换到内核态，当内核执行完任务后，再切换回用户态交由进程代码执行。  
@@ -140,7 +141,7 @@ write(socket, tmp_buf, len);
 &emsp; 在前面已经知道了，传统的文件传输方式会历经 4 次数据拷贝，而且这里面，「从内核的读缓冲区拷贝到用户的缓冲区里，再从用户的缓冲区里拷贝到 socket 的缓冲区里」，这个过程是没有必要的。  
 &emsp; 因为文件传输的应用场景中，在用户空间我们并不会对数据「再加工」，所以数据实际上可以不用搬运到用户空间，因此用户的缓冲区是没有必要存在的。  
 
-### 如何实现零拷贝？  
+### 1.1.4. 如何实现零拷贝？  
 &emsp; 零拷贝技术实现的方式通常有 2 种：  
 
 * mmap + write
@@ -148,7 +149,7 @@ write(socket, tmp_buf, len);
 
 &emsp; 下面就谈一谈，它们是如何减少「上下文切换」和「数据拷贝」的次数。  
 
-#### mmap + write  
+#### 1.1.4.1. mmap + write  
 &emsp; 在前面已经知道，read() 系统调用的过程中会把内核缓冲区的数据拷贝到用户的缓冲区里，于是为了减少这一步开销，我们可以用 mmap() 替换 read() 系统调用函数。  
 
 ```text
@@ -166,7 +167,7 @@ write(sockfd, buf, len);
 &emsp; 我们可以得知，通过使用 mmap() 来代替 read()， 可以减少一次数据拷贝的过程。  
 &emsp; 但这还不是最理想的零拷贝，因为仍然需要通过 CPU 把内核缓冲区的数据拷贝到 socket 缓冲区里，而且仍然需要 4 次上下文切换，因为系统调用还是 2 次。  
 
-#### sendfile  
+#### 1.1.4.2. sendfile  
 &emsp; 在 Linux 内核版本 2.1 中，提供了一个专门发送文件的系统调用函数 sendfile()，函数形式如下：
 
 ```text
@@ -197,7 +198,13 @@ scatter-gather: on
 &emsp; 零拷贝技术的文件传输方式相比传统文件传输的方式，减少了 2 次上下文切换和数据拷贝次数，只需要 2 次上下文切换和数据拷贝次数，就可以完成文件的传输，而且 2 次的数据拷贝过程，都不需要通过 CPU，2 次都是由 DMA 来搬运。  
 &emsp; 所以，总体来看，零拷贝技术可以把文件传输的性能提高至少一倍以上。  
 
-## 1.2. Reactor线程模型  
+## 1.2. Netty中的零拷贝  
+&emsp; Netty的零拷贝主要体现在如下三个方面  
+&emsp; （1）Netty接收和发送ByteBuffer采用DirectBuffer，使用堆外直接内存进行Socket读写，不需要进行字节缓冲区的二次拷贝。如果使用传统的堆存（Heap Buffer）进行Socket读写，那么JVM会将堆存拷贝一份到直接内存中，然后才写入Socket。相比于堆外直接内存，消息在发送过程中多了一次缓冲区的内存拷贝。  
+&emsp; （2）Netty提供了组合Buffer对象，可以聚合多个ByteBuffer对象，用户可以像操作一个Buffer那样方便地对组合Buffer进行操作，避免了传统的通过内存拷贝的方式将几个小Buffer合并成一个大Buffer大烦琐操作。  
+&emsp; （3）Netty中文件传输采用了transferTo()方法，它可以直接将文件缓冲区的数据发送到目标Channel，避免了传统通过循环write()方式导致的内存拷贝问题。  
+
+## 1.3. Reactor线程模型  
 
 <!--
 说说Netty的线程模型 
@@ -207,14 +214,14 @@ https://mp.weixin.qq.com/s?__biz=MzAxNjM2MTk0Ng==&mid=2247488256&idx=3&sn=253eb6
 
 &emsp; 大部分网络框架都是基于 Reactor 模式设计开发的。  
 
-### 1.2.1. Reactor线程模型  
+### 1.3.1. Reactor线程模型  
 &emsp; Reactor模式是基于事件驱动开发的，核心组成部分包括Reactor和线程池，其中Reactor负责监听和分配事件，线程池负责处理事件，而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型:
 
 * 单线程模型 (单Reactor单线程)  
 * 多线程模型 (单Reactor多线程)  
 * 主从多线程模型 (多Reactor多线程)  
 
-#### 1.2.1.1. 单线程模型  
+#### 1.3.1.1. 单线程模型  
 &emsp; 一个线程需要执行处理所有的 accept、read、decode、process、encode、send 事件。对于高负载、高并发，并且对性能要求比较高的场景不适用。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-10.png)  
 
@@ -222,7 +229,7 @@ https://mp.weixin.qq.com/s?__biz=MzAxNjM2MTk0Ng==&mid=2247488256&idx=3&sn=253eb6
 * Handler完成read->(decode->compute->encode)->send的业务流程。  
 * 这种模型好处是简单，坏处却很明显，当某个Handler阻塞时，会导致其他客户端的handler和accpetor都得不到执行，无法做到高性能，只适用于业务处理非常快速的场景。  
 
-#### 1.2.1.2. 多线程模型
+#### 1.3.1.2. 多线程模型
 &emsp; 一个 Acceptor 线程只负责监听客户端的连接，一个 NIO 线程池负责具体处理：accept、read、decode、process、encode、send 事件。满足绝大部分应用场景，并发连接量不大的时候没啥问题，但是遇到并发连接大的时候就可能会出现问题，成为性能瓶颈。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-11.png)  
 
@@ -232,7 +239,7 @@ https://mp.weixin.qq.com/s?__biz=MzAxNjM2MTk0Ng==&mid=2247488256&idx=3&sn=253eb6
 
 &emsp; 单Reactor承当所有事件的监听和响应,而当我们的服务端遇到大量的客户端同时进行连接，或者在请求连接时执行一些耗时操作，比如身份认证，权限检查等，这种瞬时的高并发就容易成为性能瓶颈  
 
-#### 1.2.1.3. 主从多线程模型  
+#### 1.3.1.3. 主从多线程模型  
 &emsp; 从一个 主线程 NIO 线程池中选择一个线程作为 Acceptor 线程，绑定监听端口，接收客户端连接的连接，其他线程负责后续的接入认证等工作。连接建立完成后，Sub NIO 线程池负责具体处理 I/O 读写。如果多线程模型无法满足你的需求的时候，可以考虑使用主从多线程模型 。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-12.png)  
 
@@ -242,7 +249,7 @@ https://mp.weixin.qq.com/s?__biz=MzAxNjM2MTk0Ng==&mid=2247488256&idx=3&sn=253eb6
 * Handler完成read->业务处理->send的完整业务流程
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-14.png)  
 
-### 1.2.2. Netty中的线程模型与Reactor的联系  
+### 1.3.2. Netty中的线程模型与Reactor的联系  
 <!-- 
 https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 
@@ -251,7 +258,7 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 -->
 &emsp; Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。  
 
-#### 1.2.2.1. 单线程模型  
+#### 1.3.2.1. 单线程模型  
 &emsp; 单线程模型就是只指定一个线程执行客户端连接和读写操作，也就是在一个Reactor中完成，对应在Netty中的实现就是将NioEventLoopGroup线程数设置为1，核心代码是：  
 
 ```java
@@ -268,7 +275,7 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-15.png)  
 &emsp; 上述单线程模型就对应了Reactor的单线程模型  
 
-#### 1.2.2.2. 多线程模型  
+#### 1.3.2.2. 多线程模型  
 &emsp; 多线程模型就是在一个单Reactor中进行客户端连接处理，然后业务处理交给线程池，核心代码如下：  
 
 ```java
@@ -291,7 +298,7 @@ public ServerBootstrap group(EventLoopGroup group) {
 &emsp; 工作流程如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-16.png)  
 
-#### 1.2.2.3. 主从多线程模型 (最常使用)
+#### 1.3.2.3. 主从多线程模型 (最常使用)
 &emsp; 主从多线程模型是有多个Reactor，也就是存在多个selector，所以我们定义一个bossGroup和一个workGroup，核心代码如下：  
 
 ```java
