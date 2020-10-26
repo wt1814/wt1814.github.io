@@ -284,6 +284,10 @@ public <T> T underwrite(String platformCode, String uuid, Object... objects) {
 ```
 
 ### 1.4.4. ※※※值传递还是引用传递？  
+<!--
+Java为什么只有值传递？ 
+https://mp.weixin.qq.com/s/MwnhdVRSX-y45S2f-XMRoA
+-->
 
 &emsp; 基本概念：  
 &emsp; 实参：实际参数，是提前准备好并赋值完成的变量。分配到栈上。如果是基本类型直接分配到栈上，如果是引用类型，栈上分配引用空间存储指向堆上分配的对象本身的指针。String等基本类型的封装类型比较特殊，后续讨论。  
