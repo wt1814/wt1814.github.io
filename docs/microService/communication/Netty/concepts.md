@@ -72,6 +72,8 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 &emsp; 另外，它提供了一个子项目 handler-proxy ，实现对 HTTP、Socks 4、Socks 5 的代理转发。   
 * example 项目，该项目是提供各种 Netty 使用示例。  
 
+&emsp; **Netty中开发者最经常打交道的五个组件：ByteBuf，Channel，pipeline，ChannelHandler、EventLoop。**  
+
 ## 1.3. Netty逻辑架构  
 <!-- 
 
@@ -82,19 +84,24 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-27.png)  
 
 * Reactor通信调度层  
-&emsp; 它由一系列辅助类完成，包括Reactor线程NioEvenlLoop及其父类，NioSocketChannel/ NioServerSocketChannel 及其父类，ByteBuffer 以及由其衍生出来的各种 Buffer. Unsafe 以及其衍生出的*种内部类等。该层的主要职责就是监听网络的读写和连接操作，负责将 网络层的数据读取到内存缓冲区中，然后触发务种网络爭件，例如连接创建、连接激活、 读申件、写事件等，将这些少件触发到PipeLine ill PipeLine管理的职责链来进行后续 的处理。  
-* 职责ChannelPipeline  
-它负責事件在职责链中的冇序传播，同时负责动态地编排职责链。职责链可以选拝监 听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。不同应用的Handler W 点的功能也不同，通常情况下，往往会开发编解Pl Hanlder用于消息的编解码，它可以将 外部的协议消息转换成内部的POJO对象，这样上层业务则只需要关心处理业务逻辑即可， 小需要感知底层的协议差异和线程模型差异，实现了架构层面的分层隔离。  
+&emsp; 它由一系列辅助类完成，包括Reactor线程NioEvenlLoop及其父类，NioSocketChannel/ NioServerSocketChannel及其父类，ByteBuffer以及由其衍生出来的各种Buffer，Unsafe以及其衍生出的各种内部类等。该层的主要职责就是监听网络的读写和连接操作，负责将网络层的数据读取到内存缓冲区中，然后触发务种网络事件，例如连接创建、连接激活、 读申件、写事件等，将这些少件触发到PipeLine中，由PipeLine管理的职责链来进行后续的处理。  
+* 职责链ChannelPipeline  
+&emsp; 它负责事件在职责链中的有序传播，同时负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。不同应用的Handler用于消息的编解码，它可以将外部的协议消息转换成内部的POJO对象，这样上层业务则只需要关心处理业务逻辑即可，不需要感知底层的协议差异和线程模型差异，实现了架构层面的分层隔离。  
 * 业务逻辑编排层(Service ChannelHandler)  
-&emsp; 业务逻辑编排层通常有两类：一类是纯粹的业务逻辑编排，还有一类是其他的应用层 协议插件，用于特定协议相关的会话和链路管理。例如CMPP协议，用于管理和中国移动 短信系统的对接。  
-&emsp; 架构的不同层面，需要关心和处理的对象都不同，通常情况下，对于业务开发者，只 需要关心职责链的拦截和业务Handler的编排。因为应用层协议栈往往是开发一次，到处 运行，所以实际上对于业务开发者来说，只需要关心服务层的业务逻辑开发即可。各种应 用协议以插件的形式提供，只有协议开发人员需要关注协议插件，对于其他业务开发人员 来说，只需关心业务辺辑定制。这种分层的架构设计理念实现了 NIO框架各层之间的解耦， 便于上层业务协议栈的开发和业务逻辑的定制。  
+&emsp; 业务逻辑编排层通常有两类：一类是纯粹的业务逻辑编排，还有一类是其他的应用层协议插件，用于特定协议相关的会话和链路管理。例如CMPP协议，用于管理和中国移动短信系统的对接。  
+&emsp; 架构的不同层面，需要关心和处理的对象都不同，通常情况下，对于业务开发者，只需要关心职责链的拦截和业务Handler的编排。因为应用层协议栈往往是开发一次，到处运行，所以实际上对于业务开发者来说，只需要关心服务层的业务逻辑开发即可。各种应用协议以插件的形式提供，只有协议开发人员需要关注协议插件，对于其他业务开发人员来说，只需关心业务逻辑定制。这种分层的架构设计理念实现了NIO框架各层之间的解耦，便于上层业务协议栈的开发和业务逻辑的定制。  
 
 ## 1.4. Netty核心组件 
 <!-- 
 
 https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
+
+https://www.cnblogs.com/jmcui/p/9154842.html
+
 深入剖析 Netty 的核心组件
 https://mp.weixin.qq.com/s?__biz=MzA4Mzc0NjkwNA==&mid=2650789476&idx=1&sn=2e80b93d77d981545ec0675daadb6a19&chksm=87fabf53b08d3645b3360ebcbe76e3f4ed997c864207b9346a9f966dd87bd66fc5a25e7b93b6&mpshare=1&scene=1&srcid=&sharer_sharetime=1573692167895&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=19d3af0bf483adc6682923d492b7787944532c9ccc243b9542acda07d977289c60fd04548bf7f65ebbbfea992b3f7312e4e8a1be71ca9e2a2aa14344514466ae32bee79145286966d23d4da3a7badb6b&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=9PZBgG0W8u5aIQH8JwuoebfJbcWXVv%2F8Jwpab0URWoWCafXeDrv6e7zaSa2n%2B7Oa
 
 -->
+
+
 
