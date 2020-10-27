@@ -17,10 +17,17 @@
 
 # 1. 零拷贝  
 <!-- 
-
+～～
 原来 8 张图，就可以搞懂「零拷贝」了
 https://mp.weixin.qq.com/s/P0IP6c_qFhuebwdwD8HM7w
 -->
+
+<!-- 
+
+ 图解|零拷贝Zero-Copy技术大揭秘 
+ https://mp.weixin.qq.com/s/a_34tiJasmpZxtOpBt2scQ
+-->
+
 ## 1.1. DMA介绍
 ### 1.1.1. 为什么要有 DMA 技术?  
 &emsp; 在没有 DMA 技术前，I/O 的过程是这样的：  
