@@ -6,17 +6,15 @@
     - [1.2. Netty项目架构](#12-netty项目架构)
     - [1.3. Netty逻辑架构](#13-netty逻辑架构)
     - [1.4. Netty核心组件](#14-netty核心组件)
-        - [channel](#channel)
-        - [EventLoop](#eventloop)
-        - [ChannelFuture](#channelfuture)
-        - [EventLoop](#eventloop-1)
-        - [EventLoop](#eventloop-2)
-    - [简单示例](#简单示例)
+        - [1.4.1. channel](#141-channel)
+        - [1.4.2. EventLoop](#142-eventloop)
+        - [1.4.3. ChannelFuture](#143-channelfuture)
+        - [1.4.4. ChannelHandler 和 ChannelPipeline](#144-channelhandler-和-channelpipeline)
+    - [1.5. 简单示例](#15-简单示例)
 
 <!-- /TOC -->
 
 # 1. netty核心概念  
-
 <!-- 
 你要的Netty常见面试题总结，敖丙搞来了！
 https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
@@ -104,19 +102,266 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 
 -->
 
-### channel  
+### 1.4.1. channel  
+&emsp; Channel接口是Netty对网络操作抽象类，它除了包括基本的I/O 操作，如 bind()、connect()、read()、write()等。  
+&emsp; 比较常用的Channel接口实现类是NioServerSocketChannel（服务端）和NioSocketChannel（客户端），这两个 Channel 可以和 BIO 编程模型中的ServerSocket以及Socket两个概念对应上。Netty 的 Channel 接口所提供的 API，大大地降低了直接使用 Socket 类的复杂性。  
 
-### EventLoop  
+### 1.4.2. EventLoop  
+&emsp; EventLoop（事件循环）接口可以说是 Netty 中最核心的概念了！  
+&emsp; EventLoop 定义了 Netty 的核心抽象，用于处理连接的生命周期中所发生的事件。  
+&emsp; EventLoop 的主要作用实际就是负责监听网络事件并调用事件处理器进行相关 I/O 操作的处理。
 
-### ChannelFuture  
+&emsp; Channel和EventLoop之间的联系：  
+&emsp; Channel为Netty 网络操作(读写等操作)抽象类，EventLoop 负责处理注册到其上的Channel 处理 I/O 操作，两者配合参与 I/O 操作。
 
-### EventLoop  
+### 1.4.3. ChannelFuture  
+&emsp; Netty 是异步非阻塞的，所有的 I/O 操作都为异步的。  
+&emsp; 因此，不能立刻得到操作是否执行成功，但是，可以通过 ChannelFuture 接口的 addListener() 方法注册一个 ChannelFutureListener，当操作执行成功或者失败时，监听就会自动触发返回结果。  
+&emsp; 并且，还可以通过ChannelFuture 的 channel() 方法获取关联的Channel。  
 
-### EventLoop  
+```java
+public interface ChannelFuture extends Future<Void> {
+    Channel channel();
+
+    ChannelFuture addListener(GenericFutureListener<? extends Future<? super Void>> var1);
+     ......
+
+    ChannelFuture sync() throws InterruptedException;
+}
+```
+&emsp; 另外，还可以通过 ChannelFuture 接口的 sync()方法让异步的操作变成同步的。  
+
+### 1.4.4. ChannelHandler 和 ChannelPipeline  
+&emsp; 下面这段代码指定了序列化编解码器以及自定义的 ChannelHandler 处理消息。  
+
+```java
+b.group(eventLoopGroup)
+            .handler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                protected void initChannel(SocketChannel ch) {
+                    ch.pipeline().addLast(new NettyKryoDecoder(kryoSerializer, RpcResponse.class));
+                    ch.pipeline().addLast(new NettyKryoEncoder(kryoSerializer, RpcRequest.class));
+                    ch.pipeline().addLast(new KryoClientHandler());
+                }
+            });
+```
+&emsp; ChannelHandler 是消息的具体处理器。他负责处理读写操作、客户端连接等事情。  
+&emsp; ChannelPipeline 为 ChannelHandler 的链，提供了一个容器并定义了用于沿着链传播入站和出站事件流的 API 。当 Channel 被创建时，它会被自动地分配到它专属的 ChannelPipeline。  
+&emsp; 可以在 ChannelPipeline 上通过 addLast() 方法添加一个或者多个ChannelHandler ，因为一个数据或者事件可能会被多个 Handler 处理。当一个 ChannelHandler 处理完之后就将数据交给下一个 ChannelHandler 。  
 
 
-## 简单示例  
+## 1.5. 简单示例  
 
 <!-- 
 https://www.cnblogs.com/jmcui/p/9154842.html
 -->
+&emsp; 所有的Netty服务端/客户端都至少需要两个部分：  
+1. 至少一个ChannelHandler —— 该组件实现了对数据的处理。  
+2. 引导 —— 这是配置服务器的启动代码。  
+
+&emsp; 服务端：  
+
+```java
+public class EchoServer {
+
+    private final int port;
+
+    public EchoServer(int port) {
+        this.port = port;
+    }
+
+    public void start() throws InterruptedException {
+        final EchoServerHandler serverHandler = new EchoServerHandler();
+        //1、创建EventLoopGroup以进行事件的处理，如接受新连接以及读/写数据
+        EventLoopGroup group = new NioEventLoopGroup();
+        try {
+            //2、创建ServerBootstrap，引导和绑定服务器
+            ServerBootstrap bootstrap = new ServerBootstrap();
+            bootstrap.group(group, group)
+                    //3、指定所使用的NIO传输Channel
+                    .channel(NioServerSocketChannel.class)
+                    //4、使用指定的端口设置套接字地址
+                    .localAddress(new InetSocketAddress(port))
+                    //5、添加一个 EchoServerHandler 到子 Channel的 ChannelPipeline
+                    //当一个新的连接被接受时，一个新的子Channel将会被创建，而 ChannelInitializer 将会把一个你的EchoServerHandler 的实例添加到该 Channel 的 ChannelPipeline 中
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) {
+                            ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast(serverHandler);
+                        }
+                    });
+            //6、异步地绑定服务器，调用sync()方法阻塞等待直到绑定完成
+            ChannelFuture channelFuture = bootstrap.bind().sync();
+            System.out.println(EchoServer.class.getName() + "started and listening for connections on" + channelFuture.channel().localAddress());
+            //7、获取 Channel 的 CloseFuture，并且阻塞当前线程直到它完成
+            channelFuture.channel().closeFuture().sync();
+
+        } finally {
+            //8、关闭 EventLoopGroup 释放所有的资源
+            group.shutdownGracefully().sync();
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        new EchoServer(9999).start();
+    }
+}
+```
+
+&emsp; EchoServerHandler.java  
+```java
+@ChannelHandler.Sharable //标识一个Channel-Handler 可以被多个Channel安全的共享
+public class EchoServerHandler extends ChannelHandlerAdapter {
+
+
+    /**
+     * 对于每个传入的消息都要调用
+     *
+     * @param ctx
+     * @param msg
+     * @throws Exception
+     */
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        ByteBuf in = (ByteBuf) msg;
+        System.out.println("Server received：" + in.toString(CharsetUtil.UTF_8));
+        //将接收到的消息写给发送者，而不冲刷出站消息
+        //ChannelHandlerContext 发送消息。导致消息向下一个ChannelHandler流动
+        //Channel 发送消息将会导致消息从 ChannelPipeline的尾端开始流动
+        ctx.write(in);
+    }
+
+    /**
+     * 通知 ChannelHandlerAdapter 最后一次对channel-Read()的调用是当前批量读取中的最后一条消息
+     *
+     * @param ctx
+     * @throws Exception
+     */
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        //暂存于ChannelOutboundBuffer中的消息，在下一次调用flush()或者writeAndFlush()方法时将会尝试写出到套接字
+        //将这份暂存消息冲刷到远程节点，并且关闭该Channel
+        ctx.writeAndFlush(Unpooled.EMPTY_BUFFER)
+                .addListener(ChannelFutureListener.CLOSE);
+    }
+
+    /**
+     * 在读取操作期间，有异常抛出时会调用
+     *
+     * @param ctx
+     * @param cause
+     * @throws Exception
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        ctx.close();
+    }
+
+}
+```
+
+&emsp; 客户端：  
+
+```java
+public class EchoClient {
+
+    private final String host;
+    private final int port;
+
+    public EchoClient(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
+    public void start() throws InterruptedException {
+        EventLoopGroup group = new NioEventLoopGroup();
+        try {
+            //创建Bootstrap
+            Bootstrap bootstrap = new Bootstrap();
+            //指定 EventLoopGroup 以处理客户端事件；适应于NIO的实现
+            bootstrap.group(group)
+                    //适用于NIO传输的Channel类型
+                    .channel(NioSocketChannel.class)
+                    .remoteAddress(new InetSocketAddress(host, port))
+                    //在创建Channel时，向ChannelPipeline中添加一个EchoClientHandler实例
+                    .handler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            ch.pipeline().addLast(new EchoClientHandler());
+                        }
+                    });
+            //连接到远程节点，阻塞等待直到连接完成
+            ChannelFuture channelFuture = bootstrap.connect().sync();
+            //阻塞，直到Channel 关闭
+            channelFuture.channel().closeFuture().sync();
+        } finally {
+            //关闭线程池并且释放所有的资源
+            group.shutdownGracefully().sync();
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        new EchoClient("127.0.0.1", 9999).start();
+
+        System.out.println("------------------------------------");
+
+        new EchoClient("127.0.0.1", 9999).start();
+
+        System.out.println("------------------------------------");
+
+        new EchoClient("127.0.0.1", 9999).start();
+    }
+}
+```
+
+&emsp; EchoClientHandler.java  
+```java
+@ChannelHandler.Sharable //标记该类的实例可以被多个Channel共享
+public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
+
+    /**
+     * 当从服务器接收到一条消息时被调用
+     *
+     * @param ctx
+     * @param msg ByteBuf (Netty 的字节容器) 作为一个面向流的协议，TCP 保证了字节数组将会按照服务器发送它们的顺序接收
+     * @throws Exception
+     */
+    @Override
+    protected void messageReceived(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+        System.out.println("Client" + ctx.channel().remoteAddress() + "connected");
+        System.out.println(msg.toString(CharsetUtil.UTF_8));
+    }
+
+    /**
+     * 在到服务器的连接已经建立之后将被调用
+     *
+     * @param ctx
+     * @throws Exception
+     */
+    @Override
+    public void channelActive(ChannelHandlerContext ctx)  {
+        ctx.writeAndFlush(Unpooled.copiedBuffer("Netty rock!", CharsetUtil.UTF_8));
+    }
+
+
+    /**
+     * 在处理过程中引发异常时被调用
+     *
+     * @param ctx
+     * @param cause
+     * @throws Exception
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        ctx.close();
+    }
+
+}
+```
+
+
+
+
