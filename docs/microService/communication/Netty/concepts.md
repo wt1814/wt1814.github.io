@@ -361,7 +361,3 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
 }
 ```
-
-
-
-
