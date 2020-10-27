@@ -404,21 +404,21 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
  一个复杂系统的拆分改造实践！ 
  https://mp.weixin.qq.com/s/OSAxKO6tddY4TucRADqOiQ
 -->
-
+[架构图](/docs/system/diagram.md)  
+&emsp; [设计文档]()  
+&emsp; [接口文档](/docs/system/document/API.md)  
 [性能指标](/docs/system/performance.md)  
+[软件架构质量属性](/docs/system/qualityAttributes.md)  
 [软件架构设计模式](/docs/system/designPattern.md)  
 [领域驱动模型](/docs/system/DDD.md)  
 
 [分布式与微服务](/docs/system/serviceSplit.md)  
 [并发系统三高](/docs/system/threeHigh.md)  
+
 [秒杀系统设计](/docs/system/seckill.md)  
-
 [订单系统设计](/docs/system/order.md)  
-[个别场景](/docs/project/scene.md)  
 
-[架构图](/docs/system/diagram.md)  
-[设计文档]()  
-[接口文档](/docs/system/document/API.md)  
+[个别场景](/docs/project/scene.md)  
 
 ## 系统接入层  
 [接入层](/docs/system/access/access.md)    

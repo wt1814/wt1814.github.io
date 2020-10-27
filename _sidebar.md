@@ -308,7 +308,11 @@
 
 * 架构设计  
     * [架构图](/docs/system/diagram.md)  
+    * [设计文档]()  
+    * [接口文档](/docs/system/document/API.md) 
     * [性能指标](/docs/system/performance.md)  
+    * [软件架构质量属性](/docs/system/qualityAttributes.md)  
+    * [软件架构设计模式](/docs/system/designPattern.md)  
     * [领域驱动模型](/docs/system/DDD.md)  
     * [分布式与微服务](/docs/system/serviceSplit.md)  
     * [并发系统三高](/docs/system/threeHigh.md)  
