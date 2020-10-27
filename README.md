@@ -197,8 +197,10 @@ Gitee： https://gitee.com/wt1814/
 [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
 [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
 [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
+[PageHelper](/docs/SSM/MyBatis/PageHelper.md)  
 [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
 [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
+
 
 ----
 
