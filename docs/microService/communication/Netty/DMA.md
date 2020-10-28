@@ -11,22 +11,13 @@
         - [1.1.4. 如何实现零拷贝？](#114-如何实现零拷贝)
             - [1.1.4.1. mmap + write](#1141-mmap--write)
             - [1.1.4.2. sendfile](#1142-sendfile)
+        - [1.1.5. sendfile+DMA收集](#115-sendfiledma收集)
+        - [1.1.6. plice方式](#116-plice方式)
     - [1.2. Netty中的零拷贝](#12-netty中的零拷贝)
 
 <!-- /TOC -->
 
 # 1. 零拷贝  
-<!-- 
-～～
-原来 8 张图，就可以搞懂「零拷贝」了
-https://mp.weixin.qq.com/s/P0IP6c_qFhuebwdwD8HM7w
--->
-
-<!-- 
-
- 图解|零拷贝Zero-Copy技术大揭秘 
- https://mp.weixin.qq.com/s/a_34tiJasmpZxtOpBt2scQ
--->
 
 ## 1.1. DMA介绍
 ### 1.1.1. 为什么要有 DMA 技术?  
@@ -43,8 +34,10 @@ https://mp.weixin.qq.com/s/P0IP6c_qFhuebwdwD8HM7w
 &emsp; 计算机科学家们发现了事情的严重性后，于是就发明了 DMA 技术，也就是直接内存访问（Direct Memory Access） 技术。  
 &emsp; 什么是 DMA 技术？简单理解就是，在进行 I/O 设备和内存的数据传输的时候，数据搬运的工作全部交给 DMA 控制器，而 CPU 不再参与任何与数据搬运相关的事情，这样 CPU 就可以去处理别的事务。  
 
-使用 DMA 控制器进行数据传输的过程如下图：  
+&emsp; 使用 DMA 控制器进行数据传输的过程如下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-20.png)  
+
+    最主要的变化是，CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，之后的过程类似。  
 
 &emsp; 具体过程：
 
@@ -58,6 +51,8 @@ https://mp.weixin.qq.com/s/P0IP6c_qFhuebwdwD8HM7w
 
 &emsp; 可以看到， 整个数据传输的过程，CPU 不再参与数据搬运的工作，而是全程由 DMA 完成，但是 CPU 在这个过程中也是必不可少的，因为传输什么数据，从哪里传输到哪里，都需要 CPU 来告诉 DMA 控制器。  
 &emsp; 早期 DMA 只存在在主板上，如今由于 I/O 设备越来越多，数据传输的需求也不尽相同，所以每个 I/O 设备里面都有自己的 DMA 控制器。  
+
+    直接内存访问（Direct Memory Access），是一种硬件设备绕开CPU独立直接访问内存的机制。所以DMA在一定程度上解放了CPU，把之前CPU的杂活让硬件直接自己做了，提高了CPU效率。  
 
 ### 1.1.2. 传统的文件传输有多糟糕？  
 &emsp; 如果服务端要提供文件传输的功能，我们能想到的最简单的方式是：将磁盘上的文件读取出来，然后通过网络协议发送给客户端。  
@@ -97,6 +92,8 @@ write(socket, tmp_buf, len);
 &emsp; 因为文件传输的应用场景中，在用户空间我们并不会对数据「再加工」，所以数据实际上可以不用搬运到用户空间，因此用户的缓冲区是没有必要存在的。  
 
 ### 1.1.4. 如何实现零拷贝？  
+<!--零拷贝技术的几个实现手段包括：mmap+write、sendfile、sendfile+DMA收集、splice等。
+ -->
 &emsp; 零拷贝技术实现的方式通常有 2 种：  
 
 * mmap + write
@@ -121,6 +118,12 @@ write(sockfd, buf, len);
 
 &emsp; 我们可以得知，通过使用 mmap() 来代替 read()， 可以减少一次数据拷贝的过程。  
 &emsp; 但这还不是最理想的零拷贝，因为仍然需要通过 CPU 把内核缓冲区的数据拷贝到 socket 缓冲区里，而且仍然需要 4 次上下文切换，因为系统调用还是 2 次。  
+
+-----
+&emsp; mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享。  
+&emsp; 这样就减少了一次用户态和内核态的CPU拷贝，但是在内核空间内仍然有一次CPU拷贝。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-30.png)  
+&emsp; mmap对大文件传输有一定优势，但是小文件可能出现碎片，并且在多个进程同时操作文件时可能产生引发coredump的signal。  
 
 #### 1.1.4.2. sendfile  
 &emsp; 在 Linux 内核版本 2.1 中，提供了一个专门发送文件的系统调用函数 sendfile()，函数形式如下：
@@ -152,6 +155,29 @@ scatter-gather: on
 &emsp; 这就是所谓的零拷贝（Zero-copy）技术，因为我们没有在内存层面去拷贝数据，也就是说全程没有通过 CPU 来搬运数据，所有的数据都是通过 DMA 来进行传输的。  
 &emsp; 零拷贝技术的文件传输方式相比传统文件传输的方式，减少了 2 次上下文切换和数据拷贝次数，只需要 2 次上下文切换和数据拷贝次数，就可以完成文件的传输，而且 2 次的数据拷贝过程，都不需要通过 CPU，2 次都是由 DMA 来搬运。  
 &emsp; 所以，总体来看，零拷贝技术可以把文件传输的性能提高至少一倍以上。  
+
+-----
+&emsp; mmap+write方式有一定改进，但是由系统调用引起的状态切换并没有减少。  
+&emsp; sendfile系统调用是在 Linux 内核2.1版本中被引入，它建立了两个文件之间的传输通道。  
+&emsp; sendfile方式只使用一个函数就可以完成之前的read+write 和 mmap+write的功能，这样就少了2次状态切换，由于数据不经过用户缓冲区，因此该数据无法被修改。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-31.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-32.png)  
+&emsp; 从图中可以看到，应用程序只需要调用sendfile函数即可完成，只有2次状态切换、1次CPU拷贝、2次DMA拷贝。  
+&emsp; 但是sendfile在内核缓冲区和socket缓冲区仍然存在一次CPU拷贝，或许这个还可以优化。  
+
+### 1.1.5. sendfile+DMA收集  
+&emsp; Linux 2.4 内核对 sendfile 系统调用进行优化，但是需要硬件DMA控制器的配合。  
+&emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。  
+&emsp; DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩1次CPU拷贝。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-33.png)  
+&emsp; 这种方式有2次状态切换、0次CPU拷贝、2次DMA拷贝，但是仍然无法对数据进行修改，并且需要硬件层面DMA的支持，并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。  
+
+### 1.1.6. plice方式  
+&emsp; splice系统调用是Linux 在 2.6 版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-34.png)  
+&emsp; splice 系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的 CPU 拷贝操作。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-35.png)  
+&emsp; splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。  
 
 ## 1.2. Netty中的零拷贝  
 &emsp; Netty的零拷贝主要体现在如下三个方面  
