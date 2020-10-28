@@ -1,8 +1,20 @@
 
+<!-- TOC -->
+
+- [1. Reactor线程模型](#1-reactor线程模型)
+    - [1.1. Reactor线程模型](#11-reactor线程模型)
+        - [1.1.1. 单线程模型](#111-单线程模型)
+        - [1.1.2. 多线程模型](#112-多线程模型)
+        - [1.1.3. 主从多线程模型](#113-主从多线程模型)
+    - [1.2. Netty中的线程模型与Reactor的联系](#12-netty中的线程模型与reactor的联系)
+        - [1.2.1. 单线程模型](#121-单线程模型)
+        - [1.2.2. 多线程模型](#122-多线程模型)
+        - [1.2.3. 主从多线程模型 (最常使用)](#123-主从多线程模型-最常使用)
+
+<!-- /TOC -->
 
 
-
-## 1.3. Reactor线程模型  
+# 1. Reactor线程模型  
 
 <!--
 说说Netty的线程模型 
@@ -12,14 +24,14 @@ https://mp.weixin.qq.com/s?__biz=MzAxNjM2MTk0Ng==&mid=2247488256&idx=3&sn=253eb6
 
 &emsp; 大部分网络框架都是基于 Reactor 模式设计开发的。  
 
-### 1.3.1. Reactor线程模型  
+## 1.1. Reactor线程模型  
 &emsp; Reactor模式是基于事件驱动开发的，核心组成部分包括Reactor和线程池，其中Reactor负责监听和分配事件，线程池负责处理事件，而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型:
 
 * 单线程模型 (单Reactor单线程)  
 * 多线程模型 (单Reactor多线程)  
 * 主从多线程模型 (多Reactor多线程)  
 
-#### 1.3.1.1. 单线程模型  
+### 1.1.1. 单线程模型  
 &emsp; 一个线程需要执行处理所有的 accept、read、decode、process、encode、send 事件。对于高负载、高并发，并且对性能要求比较高的场景不适用。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-10.png)  
 
@@ -27,7 +39,7 @@ https://mp.weixin.qq.com/s?__biz=MzAxNjM2MTk0Ng==&mid=2247488256&idx=3&sn=253eb6
 * Handler完成read->(decode->compute->encode)->send的业务流程。  
 * 这种模型好处是简单，坏处却很明显，当某个Handler阻塞时，会导致其他客户端的handler和accpetor都得不到执行，无法做到高性能，只适用于业务处理非常快速的场景。  
 
-#### 1.3.1.2. 多线程模型
+### 1.1.2. 多线程模型
 &emsp; 一个 Acceptor 线程只负责监听客户端的连接，一个 NIO 线程池负责具体处理：accept、read、decode、process、encode、send 事件。满足绝大部分应用场景，并发连接量不大的时候没啥问题，但是遇到并发连接大的时候就可能会出现问题，成为性能瓶颈。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-11.png)  
 
@@ -37,7 +49,7 @@ https://mp.weixin.qq.com/s?__biz=MzAxNjM2MTk0Ng==&mid=2247488256&idx=3&sn=253eb6
 
 &emsp; 单Reactor承当所有事件的监听和响应,而当我们的服务端遇到大量的客户端同时进行连接，或者在请求连接时执行一些耗时操作，比如身份认证，权限检查等，这种瞬时的高并发就容易成为性能瓶颈  
 
-#### 1.3.1.3. 主从多线程模型  
+### 1.1.3. 主从多线程模型  
 &emsp; 从一个 主线程 NIO 线程池中选择一个线程作为 Acceptor 线程，绑定监听端口，接收客户端连接的连接，其他线程负责后续的接入认证等工作。连接建立完成后，Sub NIO 线程池负责具体处理 I/O 读写。如果多线程模型无法满足你的需求的时候，可以考虑使用主从多线程模型 。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-12.png)  
 
@@ -47,7 +59,7 @@ https://mp.weixin.qq.com/s?__biz=MzAxNjM2MTk0Ng==&mid=2247488256&idx=3&sn=253eb6
 * Handler完成read->业务处理->send的完整业务流程
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-14.png)  
 
-### 1.3.2. Netty中的线程模型与Reactor的联系  
+## 1.2. Netty中的线程模型与Reactor的联系  
 <!-- 
 https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 
@@ -60,7 +72,7 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 &emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。通过设置 不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多 线层模型。  
 &emsp; Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。  
 
-#### 1.3.2.1. 单线程模型  
+### 1.2.1. 单线程模型  
 &emsp; 单线程模型就是只指定一个线程执行客户端连接和读写操作，也就是在一个Reactor中完成，对应在Netty中的实现就是将NioEventLoopGroup线程数设置为1，核心代码是：  
 
 ```java
@@ -77,7 +89,7 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-15.png)  
 &emsp; 上述单线程模型就对应了Reactor的单线程模型  
 
-#### 1.3.2.2. 多线程模型  
+### 1.2.2. 多线程模型  
 &emsp; 多线程模型就是在一个单Reactor中进行客户端连接处理，然后业务处理交给线程池，核心代码如下：  
 
 ```java
@@ -100,7 +112,7 @@ public ServerBootstrap group(EventLoopGroup group) {
 &emsp; 工作流程如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-16.png)  
 
-#### 1.3.2.3. 主从多线程模型 (最常使用)
+### 1.2.3. 主从多线程模型 (最常使用)
 &emsp; 主从多线程模型是有多个Reactor，也就是存在多个selector，所以我们定义一个bossGroup和一个workGroup，核心代码如下：  
 
 ```java
