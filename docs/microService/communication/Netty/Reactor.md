@@ -67,7 +67,7 @@ https://www.jianshu.com/p/eef7ebe28673
 6. Initiation Dispatcher调用特定的Concrete Event Handler的回调方法来响应其关联的handle上发生的事件
 
 ## 1.2. Reactor线程模型详解  
-&emsp; 无论是C++ 还是 Java 编写的网络框架，大部分网络框架都是基于 Reactor模式设计开发的。Reactor模式是基于事件驱动开发的，核心组成部分包括Reactor和线程池，其中Reactor负责监听和分配事件，线程池负责处理事件，而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型:
+&emsp; 无论是C++ 还是 Java 编写的网络框架，大部分网络框架都是基于 Reactor模式设计开发的。Reactor模式核心组成部分包括Reactor和线程池，其中Reactor负责监听和分配事件，线程池负责处理事件，而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型:
 
 * 单线程模型 (单Reactor单线程)  
 * 多线程模型 (单Reactor多线程)  
@@ -110,9 +110,8 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 
 《Netty权威指南》第18章
 -->
-&emsp; Netty框架的主要线程就是I/O线程，线程 模型设计的好坏，决定了系统的吞吐量、并发性和安全性等架构质量属性。  
-&emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font>  
-&emsp; Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。  
+&emsp; Netty框架的主要线程就是I/O线程，线程模型设计的好坏，决定了系统的吞吐量、并发性和安全性等架构质量属性。  
+&emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "lime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
 
 ### 1.3.1. 单线程模型  
 &emsp; 单线程模型就是只指定一个线程执行客户端连接和读写操作，也就是在一个Reactor中完成，对应在Netty中的实现就是将NioEventLoopGroup线程数设置为1，核心代码是：  
@@ -129,7 +128,6 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 ```
 &emsp; 它的工作流程大致如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-15.png)  
-&emsp; 上述单线程模型就对应了Reactor的单线程模型  
 
 ### 1.3.2. 多线程模型  
 &emsp; 多线程模型就是在一个单Reactor中进行客户端连接处理，然后业务处理交给线程池，核心代码如下：  
@@ -143,7 +141,7 @@ bootstrap.group(eventGroup)
         .option(ChannelOption.SO_BACKLOG, 1024)
         .childHandler(new ServerHandlerInitializer());
 ```
-&emsp; 走进group方法可以发现我们平时设置的bossGroup和workerGroup就是使用了同一个group  
+&emsp; 走进group方法可以发现设置的bossGroup和workerGroup就是使用了同一个group  
 
 ```java
 @Override
@@ -155,7 +153,7 @@ public ServerBootstrap group(EventLoopGroup group) {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-16.png)  
 
 ### 1.3.3. 主从多线程模型 (最常使用)
-&emsp; 主从多线程模型是有多个Reactor，也就是存在多个selector，所以我们定义一个bossGroup和一个workGroup，核心代码如下：  
+&emsp; 主从多线程模型是有多个Reactor，也就是存在多个selector，所以定义一个bossGroup和一个workGroup，核心代码如下：  
 
 ```java
 // 1.bossGroup 用于接收连接，workerGroup 用于具体的处理
