@@ -519,3 +519,7 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 [redis scan命令](/docs/Error/redisScan.md)  
 [雪花利用ZK生成workId]()  
+
+---
+
+[个人笔录](/docs/note/record.md)  
