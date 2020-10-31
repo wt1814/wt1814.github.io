@@ -20,6 +20,10 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f87
 
  一网打尽Redis Lua脚本并发原子组合操作 
  https://mp.weixin.qq.com/s/k0T6M1_gUvnBmviM0GGFKg
+
+
+ 第三方jar没有封装的命令我们该怎么执行？ 
+ https://mp.weixin.qq.com/s/qC_tfPjaENmE5djcjP7MAw
 -->
 
 ## 1.1. 发布订阅简介  

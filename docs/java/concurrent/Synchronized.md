@@ -53,6 +53,10 @@
 锁非this对象具有一定的优点：如果在一个类中有很多个synchronized方法，这时虽然 能实现同步，但会受到阻塞，所以影响运行效率；但如果使用同步代码块锁非this对象，则synchronized(非this)代码块中的程序与同步方法是 异步的，不与其他锁this同步方法争抢this锁，则可 大大提高运行效率。
 
 在大多数的情况下，同步 synchronized代码块都不使用String作为锁对象，而改用其他，比如new Object()实例化一个 Object对象，但它并不放人缓存中。
+
+ 浅析synchronized底层实现与锁升级过程 
+ https://juejin.im/post/6888112467747176456
+
 -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-16.png)  

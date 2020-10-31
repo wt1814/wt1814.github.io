@@ -16,6 +16,8 @@
 
 <!-- 
 https://mp.weixin.qq.com/s/5Kdz3-Xx-tMPbhKMGundfw
+
+https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 -->
 
 Redis是单线程的，为什么采用单线程的Redis也会如此之快呢？  

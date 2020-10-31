@@ -31,6 +31,9 @@
  天天在用Stream，那你知道如此强大的Stream的实现原理吗？ 
  https://mp.weixin.qq.com/s/QtWKAIRzNAza96MhfH526w
 
+ Stream流的这些操作，你得知道，对你工作有很大帮助 
+ https://juejin.im/post/6888549645908181005
+
 -->
 
 ## 1.1. 简介  
