@@ -21,6 +21,9 @@ http://svip.iocoder.cn/Netty/bootstrap-2-client/
 <!-- 
 《Netty权威指南》第14章
 https://mp.weixin.qq.com/s?__biz=MzIxNTQzMDM0Ng==&mid=2247483815&idx=1&sn=df1ffcf0cdc5bdd6db25beb689cf6640&chksm=97992402a0eead1445a8cfcfd043818b3c37c5ed230a874c19d67604e3833ec60025aaf8ea84&scene=178&cur_album_id=1471431037254680580#rd
+
+Netty客户端启动源码分析
+https://mp.weixin.qq.com/s/54wmqi2Y3_E6o_hCLxsJKw
 -->
 
 &emsp; 相比于服务端，客户端考虑的东西更多：  
@@ -87,6 +90,14 @@ public final class EchoClient {
     }
 }
 ```
+
+&emsp; <font color = "lime">**Netty启动客户端**</font>  
+1. 创建Bootstrap客户端启动对象。  
+2. 配置workerGroup，负责处理连接的读写就绪事件。  
+3. 配置父Channel，一般为NioSocketChannel。  
+4. 给父Channel配置参数。  
+5. 配置父Channel与Handler之间的关系。  
+6. 连接服务器。
 
 ## 1.2. Netty客户端创建时序图  
 

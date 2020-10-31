@@ -17,11 +17,19 @@ http://svip.iocoder.cn/Netty/bootstrap-1-server/
 <!-- 
 《Netty权威指南》第13章
 高性能 Netty 源码解析之服务端创建 
- https://mp.weixin.qq.com/s/ZvLLSxA42aEWjXvRvot74A
+https://mp.weixin.qq.com/s/ZvLLSxA42aEWjXvRvot74A
+
+Netty服务端启动源码分析
+https://mp.weixin.qq.com/s/PKwt7cN1hRbqmEvAmSDcOA
 -->
 
 ## 1.1. ServerBootstrap 示例  
-&emsp; 在netty源码包中，执行 io.netty.example.echo.EchoServer 的 #main(args) 方法，启动服务端。EchoServer源码如下：  
+
+
+&emsp; 在netty源码包中，执行 io.netty.example.echo.EchoServer 的 #main(args) 方法，启动服务端。  
+
+
+&emsp; EchoServer源码如下：  
 
 ```java
 public final class EchoServer {
@@ -97,6 +105,15 @@ public final class EchoServer {
 * 第 44 行：先调用 #bind(int port) 方法，绑定端口，后调用 ChannelFuture#sync() 方法，阻塞等待成功。这个过程，就是“启动服务端”。
 * 第 48 行：先调用 #closeFuture() 方法，监听服务器关闭，后调用 ChannelFuture#sync() 方法，阻塞等待成功。😈 注意，此处不是关闭服务器，而是“监听”关闭。
 * 第 49 至 54 行：执行到此处，说明服务端已经关闭，所以调用 EventLoopGroup#shutdownGracefully() 方法，分别关闭两个 EventLoopGroup 对象。
+
+&emsp; **<font color = "lime">Netty启动服务端</font>  
+1. 创建ServerBootstrap服务端启动对象。  
+2. 配置bossGroup和workerGroup，其中bossGroup负责接收连接，workerGroup负责处理连接的读写就绪事件。
+3. 配置父Channel，一般为NioServerSocketChannel。  
+4. 配置子Channel与Handler之间的关系。
+5. 给父Channel配置参数。
+6. 给子Channel配置参数。
+7. 绑定端口，启动服务。
 
 ## 1.2. Netty服务端创建时序图  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-28.png)  

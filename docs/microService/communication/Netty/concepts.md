@@ -22,6 +22,20 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 
 ## 1.1. Netty简介  
 
+<!-- 
+为什么要使用Netty而不直接使用JAVA中的NIO
+
+1.Netty支持三种IO模型同时支持三种Reactor模式。
+
+2.Netty支持很多应用层的协议，提供了很多decoder和encoder。
+
+3.Netty能够解决TCP长连接所带来的缺陷（粘包、半包等）
+
+4.Netty支持应用层的KeepAlive。
+
+5.Netty规避了JAVA NIO中的很多BUG，性能更好。
+-->
+
 &emsp; 为什么要用 Netty？  
 &emsp; Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。之前几篇文章介绍了Java NIO的一些基本的概念和API。但在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
 
@@ -100,7 +114,12 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 
 https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 
+Netty之旅二：口口相传的高性能Netty到底是什么？ 
+https://mp.weixin.qq.com/s?__biz=Mzg5ODA5NDIyNQ==&mid=2247484812&idx=1&sn=52d38717da60683d671136f50009f4fd&chksm=c0668072f71109643fb4697d2ddcec1a1983544dc4e3497f2c2a6aff525c292d3d9f2bd30be0&scene=178&cur_album_id=1486063894363242498#rd
+
 -->
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-44.png)  
 
 ### 1.4.1. channel  
 &emsp; Channel接口是Netty对网络操作抽象类，它除了包括基本的I/O 操作，如 bind()、connect()、read()、write()等。  

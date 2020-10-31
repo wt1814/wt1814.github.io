@@ -276,7 +276,7 @@
     * [Netty高性能](/docs/microService/communication/Netty/performance.md)  
         * [零拷贝](/docs/microService/communication/Netty/DMA.md)  
         * [Reactor与EventLoop](/docs/microService/communication/Netty/Reactor.md)  
-    * [TCP拆包与Netty编解码](/docs/microService/communication/Netty/Decoder.md)  
+    * [TCP粘拆包与Netty编解码](/docs/microService/communication/Netty/Decoder.md)  
     * [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
 
 * Error  

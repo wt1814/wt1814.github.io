@@ -355,7 +355,7 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 &emsp; [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
 &emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
-[Netty](/docs/microService/communication/Netty/netty.md)  
+[Netty]  
 <!-- 马士兵课程 Netty内存管理 138章-->
 &emsp; [分布式通信基础](/docs/microService/communication/Netty/basics.md)    
 &emsp; [Netty介绍及架构剖析](/docs/microService/communication/Netty/concepts.md)  
@@ -365,7 +365,7 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 &emsp; [Netty高性能](/docs/microService/communication/Netty/performance.md)  
 &emsp; &emsp; [零拷贝](/docs/microService/communication/Netty/DMA.md)  
 &emsp; &emsp; [Reactor与EventLoop](/docs/microService/communication/Netty/Reactor.md)  
-&emsp; [TCP拆包与Netty编解码](/docs/microService/communication/Netty/Decoder.md)  
+&emsp; [TCP粘拆包与Netty编解码](/docs/microService/communication/Netty/Decoder.md)  
 &emsp; [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
 
 
