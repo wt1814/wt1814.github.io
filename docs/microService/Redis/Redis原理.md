@@ -15,6 +15,10 @@
 # 1. Redis为什么这么快？  
 
 <!-- 
+ 面试时说Redis是单线程的，被喷惨了！ 
+ https://mp.weixin.qq.com/s/ucJ8nVwnbWvMOg0hQIJlAg
+
+
 https://mp.weixin.qq.com/s/5Kdz3-Xx-tMPbhKMGundfw
 
 https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg

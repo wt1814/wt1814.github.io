@@ -21,6 +21,9 @@ https://mp.weixin.qq.com/s/_V8d37Oo3PMubLu429K2Lw
 Mybatis一级缓存和二级缓存总结
 https://www.cnblogs.com/jelly12345/p/11985647.html
 
+ 带你彻底掌握 MyBatis缓存工作原理 
+ https://mp.weixin.qq.com/s/nkoUjud9_-QhG5Tp40gFeA
+
 -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-31.png)  
