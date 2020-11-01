@@ -267,12 +267,14 @@
     * [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
     * [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
     * [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
-* [Netty](/docs/microService/communication/Netty/netty.md)  
+* [Netty]  
     * [分布式通信基础](/docs/microService/communication/Netty/basics.md)    
     * [Netty介绍及架构剖析](/docs/microService/communication/Netty/concepts.md)  
+    * [Netty核心组件](/docs/microService/communication/Netty/components.md)    
     * [启动器Bootstrap]  
         * [Netty服务端创建](/docs/microService/communication/Netty/principle.md)  
         * [Netty客户端创建](/docs/microService/communication/Netty/customer.md)  
+    * [内存分配byteBuf](/docs/microService/communication/Netty/byteBuf.md)    
     * [Netty高性能](/docs/microService/communication/Netty/performance.md)  
         * [零拷贝](/docs/microService/communication/Netty/DMA.md)  
         * [Reactor与EventLoop](/docs/microService/communication/Netty/Reactor.md)  
