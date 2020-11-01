@@ -468,6 +468,7 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 [灰度发布](/docs/system/grayscalePublishe.md)  
 &emsp; [网关灰度发布](/docs/system/gatewayGrayscale.md)  
 [监控](/docs/devOps/monitor.md)  
+[Maven](/docs/devOps/maven.md)  
 
 ---
 

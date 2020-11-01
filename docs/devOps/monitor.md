@@ -44,4 +44,8 @@ https://mp.weixin.qq.com/s/IrZiZVV9ZP3ANR-Es6S5lA
 高可用 Prometheus 的常见问题 
 https://mp.weixin.qq.com/s/cS8X7hBYpFwcZOWcpLt3OQ
 
+
+自从上线了 Prometheus 监控告警，真香！ 
+https://mp.weixin.qq.com/s/kBDB2wa2R_YczwRFFN4-Wg
+
 -->
