@@ -312,7 +312,14 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 
 ### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  
-[kafka](/docs/microService/mq/kafka.md)  
+[kafka基本概念](/docs/microService/mq/kafka.md)  
+[kafka生产者](/docs/microService/mq/kafkaProducer.md)  
+[kafka消费者](/docs/microService/mq/kafkaConsumer.md)  
+[kafkaBroker](/docs/microService/mq/kafkaBroker.md)  
+[kafka监控](/docs/microService/mq/kafkaMonitor.md)  
+[kafkaStreams](/docs/microService/mq/kafkaStreams.md)  
+[kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  
+
 
 ### 分布式ID
 [分布式ID](/docs/microService/thinking/分布式ID.md)  
