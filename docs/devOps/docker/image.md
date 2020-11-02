@@ -111,6 +111,12 @@ CMD python /app/app.py
 &emsp; 容器数据卷：持久化。docker运行产生的数据持久化。  
 
 ### 1.2.4. 容器通信  
+<!-- 
+
+ Docker知识进阶与容器编排技术 
+ https://mp.weixin.qq.com/s/CsnbPMjsa5kzcWh9FimJSg
+-->
+
 #### 1.2.4.1. Docker宿主机与容器通信  
 &emsp; 容器运行在宿主机上，如果外网能够访问容器，才能够使用它提供的服务。  
 &emsp; Docker容器与宿主机进行通信可以通过映射容器的端口到宿主机上。例如，使用如下命令启动一个容器  

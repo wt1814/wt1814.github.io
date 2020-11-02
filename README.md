@@ -322,7 +322,7 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 [分布式事务](/docs/microService/thinking/分布式事务.md)  
 &emsp; [DTP](/docs/microService/thinking/分布式事务-1.md)    
 &emsp; [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
-&emsp; [TCC模式](/docs/microService/thinking/分布式事务-3.md)   
+&emsp; [TCC模式、事务状态表](/docs/microService/thinking/分布式事务-3.md)   
 &emsp; [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
 
 ### 分布式锁
@@ -386,6 +386,7 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 &emsp; [接口幂等](/docs/web/idempotent.md)  
 &emsp; [接口防刷]()  
 &emsp; [接口安全]()  
+&emsp; [接口超时](/docs/web/timeout.md)  
 
 [JavaBean](/docs/web/JavaBean.md)  
 &emsp; [POJO](/docs/web/POJO.md)  
