@@ -28,6 +28,17 @@
 
  MySQL事务与MVCC如何实现的隔离级别 
  https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
+
+
+了解InnoDB的后台线程 
+https://mp.weixin.qq.com/s/2dUIAot8OKHiWar44qRi-A
+了解InnoDB存储引擎的内存池 
+https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
+了解InnoDB的Checkpoint技术
+https://mp.weixin.qq.com/s/rQX3AFivFDNIYXE7-r9U_w
+InnoDB的插入缓冲 
+https://mp.weixin.qq.com/s/6t0_XByG8-yuyB0YaLuuBA
+
 -->
 
 **<font color = "red">《MySQL技术内幕：InnoDB存储引擎》</font>**  
