@@ -364,7 +364,8 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 &emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 [Netty]  
-&emsp; [分布式通信基础](/docs/microService/communication/Netty/basics.md)    
+&emsp; [分布式通信基础](/docs/microService/communication/Netty/basics.md)   
+&emsp; &emsp; [多路复用详解（select poll epoll）](/docs/microService/communication/Netty/epoll.md)  
 &emsp; [Netty介绍及架构剖析](/docs/microService/communication/Netty/concepts.md)  
 &emsp; [Netty核心组件](/docs/microService/communication/Netty/components.md)    
 &emsp; [启动器Bootstrap]  
