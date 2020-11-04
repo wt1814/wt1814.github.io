@@ -16,7 +16,7 @@
     - [1.4. ThreadLocal局限性（变量不具有传递性）](#14-threadlocal局限性变量不具有传递性)
         - [1.4.1. 类InheritableThreadLocal的使用](#141-类inheritablethreadlocal的使用)
         - [1.4.2. 类TransmittableThreadLocal(alibaba)的使用](#142-类transmittablethreadlocalalibaba的使用)
-    - [1.5. ThreadLocal的优化](#15-threadlocal的优化)
+    - [1.5. FastThreadLocal](#15-fastthreadlocal)
 
 <!-- /TOC -->
 
@@ -307,8 +307,13 @@ public class Service {
 &emsp; 但并发、多线程就离不开线程池的使用，因为线程池能够复用线程，减少线程的频繁创建与销毁，如果使用InheritableThreadLocal，那么线程池中的线程拷贝的数据来自于第一个提交任务的外部线程，即后面的外部线程向线程池中提交任务时，子线程访问的本地变量都来源于第一个外部线程，造成线程本地变量混乱。  
 &emsp; TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
 
-## 1.5. ThreadLocal的优化  
-&emsp; Netty对ThreadLocal进行了优化，优化方式是继承了Thread类，实现了自己的FastThreadLocal。FastThreadLocal的吞吐量是jdk的ThreadLocal的3倍左右。  
+## 1.5. FastThreadLocal  
+&emsp; Netty对ThreadLocal进行了优化，优化方式是继承了Thread类，实现了自己的FastThreadLocal。FastThreadLocal的吞吐量是jdk的ThreadLocal的3倍左右。 
+
+<!-- 
+ FastThreadLocal 是什么鬼？吊打 ThreadLocal 的存在！！ 
+ https://mp.weixin.qq.com/s/aItosqUu1aMvWqJ2ZMqy5Q
+-->
 
 
 

@@ -382,16 +382,18 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 ---
 
 ## 项目构建基础  
-[RESTful](/docs/microService/RESTful.md)  
 [日志系统](/docs/web/log.md)   
 [SpringTest](/docs/web/test.md)  
 [乱码]()  
-[统一日志记录]()  
-[统一格式返回]()  
-[统一异常处理](/docs/web/ExceptionHandler.md)  
 [Assert处理异常](/docs/web/Assert.md)  
 
+[统一日志记录]()  
+[统一格式返回](/docs/web/UnifiedFormat.md)  
+[统一异常处理](/docs/web/ExceptionHandler.md)  
+
 [API接口设计](/docs/web/API.md)    
+&emsp; [RESTful](/docs/microService/RESTful.md)  
+
 &emsp; [接口幂等](/docs/web/idempotent.md)  
 &emsp; [接口防刷]()  
 &emsp; [接口安全]()  
