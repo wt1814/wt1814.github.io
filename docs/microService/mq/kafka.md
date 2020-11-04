@@ -1,43 +1,111 @@
+<!-- TOC -->
 
+- [1. kafka](#1-kafka)
+    - [kafka拓扑结构及相关概念](#kafka拓扑结构及相关概念)
+    - [kafka原理](#kafka原理)
+    - [1.2. kafka使用场景](#12-kafka使用场景)
+
+<!-- /TOC -->
+
+# 1. kafka
+&emsp; Apache Kafka是分布式发布-订阅消息系统。它最初由LinkedIn公司开发，之后成为Apache项目的一部分。Kafka是一种快速、可扩展的、设计内在就是分布式的，分区的和可复制的提交日志服务。  
+
+## kafka拓扑结构及相关概念  
+&emsp; **kafka拓扑结构**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-3.png)  
+<!-- 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-1.png)  
+-->
+&emsp; **kafka相关概念：**  
+1. producer：  
+&emsp; 消息生产者，发布消息到 kafka 集群的终端或服务。  
+2. broker：  
+&emsp; kafka 集群中包含的服务器。
+3. topic：  
+&emsp; 每条发布到 kafka 集群的消息属于的类别，即 kafka 是面向 topic 的。  
+4. partition：  
+&emsp; partition 是物理上的概念，每个 topic 包含一个或多个 partition。kafka 分配的单位是 partition。  
+5. consumer：  
+&emsp; 从 kafka 集群中消费消息的终端或服务。  
+6. Consumer group：  
+&emsp; high-level consumer API 中，每个 consumer 都属于一个 consumer group，每条消息只能被 consumer group 中的一个 Consumer 消费，但可以被多个 consumer group 消费。  
+7. replica：  
+&emsp; partition 的副本，保障 partition 的高可用。  
+8. leader：  
+&emsp; replica 中的一个角色， producer 和 consumer 只跟 leader 交互。  
+9. follower：  
+&emsp; replica 中的一个角色，从 leader 中复制数据。  
+10. controller：  
+&emsp; kafka 集群中的其中一个服务器，用来进行 leader election 以及 各种 failover。  
+11. zookeeper：  
+&emsp; kafka 通过 zookeeper 来存储集群的 meta 信息。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-4.png)  
+
+* Broker 注册：Broker 是分布式部署并且之间相互独立，Zookeeper 用来管理注册到集群的所有 Broker 节点。
+* Topic 注册：在 Kafka 中，同一个 Topic 的消息会被分成多个分区并将其分布在多个 Broker 上，这些分区信息及与 Broker 的对应关系也都是由 Zookeeper 在维护
+* 生产者负载均衡：由于同一个 Topic 消息会被分区并将其分布在多个 Broker 上，因此，生产者需要将消息合理地发送到这些分布式的 Broker 上。
+* 消费者负载均衡：与生产者类似，Kafka 中的消费者同样需要进行负载均衡来实现多个消费者合理地从对应的 Broker 服务器上接收消息，每个消费者分组包含若干消费者，每条消息都只会发送给分组中的一个消费者，不同的消费者分组消费自己特定的 Topic 下面的消息，互不干扰。
 
 <!-- 
-从面试角度来看一看 Kafka 
-https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
-Kafka 面试必问：聊聊 acks 参数对消息持久化的影响！ 
-https://mp.weixin.qq.com/s/PePsJzuKEIfQpCH1KbxrCg
+    Producer：生产者，也就是发送消息的一方。生产者负责创建消息，然后将其发送到 Kafka。
+    Consumer：消费者，也就是接受消息的一方。消费者连接到 Kafka 上并接收消息，进而进行相应的业务逻辑处理。
+    Consumer Group：一个消费者组可以包含一个或多个消费者。使用多分区 + 多消费者方式可以极大提高数据下游的处理速度，同一消费组中的消费者不会重复消费消息，同样的，不同消费组中的消费者消息消息时互不影响。Kafka 就是通过消费组的方式来实现消息 P2P 模式和广播模式。
+    Broker：服务代理节点。Broker 是 Kafka 的服务节点，即 Kafka 的服务器。
+    Topic：Kafka 中的消息以 Topic 为单位进行划分，生产者将消息发送到特定的 Topic，而消费者负责订阅 Topic 的消息并进行消费。
+    Partition：Topic 是一个逻辑的概念，它可以细分为多个分区，每个分区只属于单个主题。同一个主题下不同分区包含的消息是不同的，分区在存储层面可以看作一个可追加的日志（Log）文件，消息在被追加到分区日志文件的时候都会分配一个特定的偏移量（offset）。
+    Offset：offset 是消息在分区中的唯一标识，Kafka 通过它来保证消息在分区内的顺序性，不过 offset 并不跨越分区，也就是说，Kafka 保证的是分区有序性而不是主题有序性。
+    Replication：副本，是 Kafka 保证数据高可用的方式，Kafka 同一 Partition 的数据可以在多 Broker 上存在多个副本，通常只有主副本对外提供读写服务，当主副本所在 broker 崩溃或发生网络一场，Kafka 会在 Controller 的管理下会重新选择新的 Leader 副本对外提供读写服务。
+    Record：实际写入 Kafka 中并可以被读取的消息记录。每个 record 包含了 key、value 和 timestamp。
 
-http://blog.51cto.com/littledevil
-
-Kafka基本原理 
-https://mp.weixin.qq.com/s?__biz=MzI3MjUxNzkxMw==&mid=2247484070&idx=1&sn=640f99a7d918ba47baea8f0358503ade&chksm=eb301cd0dc4795c6756b0d825e579208a4a2018335ddb927aa28763ff6bb3a5740aaaa86aef5&mpshare=1&scene=1&srcid=&sharer_sharetime=1569341085780&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2a4ff15fdd84634661f14e77d0fed49aff1e1a252cc01c8b57354637cdb78093b41e57707bef951c7687776cda9d4ba2f25d2d80585a3877d0897dec4b6d3924126a672d8fa881f3f59dd6f03391d67a&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=%2BeyejsSYMk60ZUY%2FpK4YBKveSPIi8GUzrQvyveBksIipCvi8KhPkraBA4Eyx2jY%2F
-
+https://mp.weixin.qq.com/s/ITLN-DHxYc5w6qrlFD8HWQ
 
 https://mp.weixin.qq.com/s?__biz=MjM5ODI5Njc2MA==&mid=2655826006&idx=1&sn=40260eb24d57c7dc651e864e2c1bc522&chksm=bd74fd818a037497fc7630776314f7b3b7ae34d93ec3390ed94eabb691978175d56d2c2581b5&mpshare=1&scene=1&srcid=&sharer_sharetime=1565613484904&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=ecc4386bb884a7b11f67eb046d1cfb51287e0b646d7dd5b2a83d57aff04863855b0c470a00d68836a0037bb73afb0da3faead154742a453e19c3bc9f3761889c6a136ee40c2cd73673f9301952f69a42&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=ZNpwaCm7lig8GxObuYnsLOy5YLlTGrfL0TUgNX%2BGTylF4nuPDQtCUafUJSn7768P
 
- kafka概念扫盲
+Topic是一个逻辑上的概念，而partition是物理上的概念
+
+每个partition又有副本的概念
+
+每个partition对应于一个log文件，该log文件中存储的就是生产者生成的数据，生产者生成的数据会不断的追加到该log的文件末端，且每条数据都有自己的offset，消费者都会实时记录自己消费到了那个offset，以便出错的时候从上次的位置继续消费，这个offset就保存在index文件中
+
+kafka的offset是分区内有序的，但是在不同分区中是无顺序的，kafka不保证数据的全局有序
+-->
+
+&emsp; kafka 在 zookeeper 中的存储结构如下图所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-2.png)  
+
+## kafka原理  
+<!-- 
 https://mp.weixin.qq.com/s/nSa2CPjbMFdOsYB2Dt0kYg
- Kafka基本架构及原理
-https://mp.weixin.qq.com/s/OB-ZVy70vHClCtep43gr_A
+-->
+
+
+## 1.2. kafka使用场景  
+&emsp; **kafka常用使用场景：**  
+
+* 日志收集：一个公司可以用Kafka可以收集各种服务的log，通过kafka以统一接口服务的方式开放给各种consumer；  
+* 消息系统：解耦生产者和消费者、缓存消息等；  
+* 用户活动跟踪：kafka经常被用来记录web用户或者app用户的各种活动，如浏览网页、搜索、点击等活动，这些活动信息被各个服务器发布到kafka的topic中，然后消费者通过订阅这些topic来做实时的监控分析，亦可保存到数据库；  
+* 运营指标：kafka也经常用来记录运营监控数据。包括收集各种分布式应用的数据，生产各种操作的集中反馈，比如报警和报告；  
+* 流式处理：比如spark streaming和storm。  
+
+
+
+
+
+
+
+<!-- 
+
+http://blog.51cto.com/littledevil
 
  Java人应该知道的SpringBoot For Kafka (上) 
 https://mp.weixin.qq.com/s/2U2jSgA95-D0_N4HxwOnWA
  Java人应该知道的SpringBoot For Kafka (下) 
 https://mp.weixin.qq.com/s/JB660Pgypr-PvkkdGOlhag
 
-
- 一文讲清 Kafka 工作流程和存储机制 
-https://mp.weixin.qq.com/s/ITLN-DHxYc5w6qrlFD8HWQ
-
-
-
-
 全网最通俗易懂的 Kafka 入门
 https://mp.weixin.qq.com/s?__biz=Mzg2MjEwMjI1Mg==&mid=2247490770&idx=2&sn=1008bcdaed680ed1413e2ead6320bec0&chksm=ce0dab51f97a224771a468245ed4f99f338a51a97505f2e78790cc8a6360f4f22c5e4f07cca2&mpshare=1&scene=1&srcid=&sharer_sharetime=1575464964037&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=e2a6a5ccea4b8ce41e290743b191d123754ef664941f31b9abdbdf28c289f875664f750548bc9da8bbbbabbeaa6a6d5fbb9efc00d2f33e693de36420dd87f9348fb89d058eb4d5ccbcfd806790431b8e&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=AQTbt4i1KPDzS6vieYS4x5I%3D&pass_ticket=UIzvXMBOSWKDgIz4M7cQoxQ548Mbvo9Oik9jB6kaYK60loRzg3FsHZUpAHYbC4%2By
-
-
-
-Kafka 基本原理（8000 字小结） 
-https://mp.weixin.qq.com/s?__biz=MzI5MzYzMDAwNw==&mid=2247487577&idx=1&sn=606b2899af6a7dcee0b4f300d4b2d687&chksm=ec6e6901db19e0173de830526e65c1961021edde2796ec71a4df8fff572343fbed63abb3234b&mpshare=1&scene=1&srcid=&sharer_sharetime=1574207521875&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=0fd7b4fa2fb2f076f8be28496819994efb11697d02a5a8cfe02eb4e2e6de8c8e7a41ac7edaacfa6b76a5bb560aaf552eb9084e00190995da861de152d8a80b66145866dcce98ab54339a06974524e8bc&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=WfLUVSCdR759nVfSaPrEbDJ5pQBJLzYUdmc8DOJ9hHJHHUoxvw5vHgy0hzLZZoMW
 
 -->
 
@@ -46,49 +114,15 @@ https://mp.weixin.qq.com/s?__biz=MzI5MzYzMDAwNw==&mid=2247487577&idx=1&sn=606b28
 Kafka中副本机制的设计和原理 
 https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 Kafka 消费者的使用和原理 
-https://mp.weixin.qq.com/s/cmDRWi2tmw0reHoUf5UriQ
-
+https://mp.weixin.qq.com/s/cmDRWi2tmw0reHoUf5UriQs
 Kafka中的再均衡 
 https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 
 -->
 
-
 <!-- 
 
 小赵
-
- Kafka系列第7篇：你必须要知道集群内部工作原理的一些事！
+Kafka系列第7篇：你必须要知道集群内部工作原理的一些事！
 https://mp.weixin.qq.com/s/5uTiunLJZvNqly6xdMjbzw
-
--->
-
-
-
-## 基本概念
-
-<!-- 
-
-实战1.4章
-kafka源码解析 第2章
-https://mp.weixin.qq.com/s?__biz=MzUzMzQ2MDIyMA==&mid=2247484112&idx=2&sn=1d95e4c272a5624d3579a625c87a4df9&chksm=faa2e743cdd56e556b6efa4aa4f63ee715217feca0e93c712ebd465bef06e532278adbef4f3e&mpshare=1&scene=1&srcid=&sharer_sharetime=1569340211913&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=96490f73691e56d5c0353e13c3e42a73489ef38851702f058571bedb4bcec99278bdd2e860d2497ad5a18183c832e82d940e77646c56a89509966ce2799af708db94a174c28d9562bc1b56f425e21a12&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=%2BeyejsSYMk60ZUY%2FpK4YBKveSPIi8GUzrQvyveBksIipCvi8KhPkraBA4Eyx2jY%2F
-
-https://mp.weixin.qq.com/s/0lvmttozjIn9RL6eofQjww
--->
-
-
-
-
-## 使用场景  
-<!-- 
-1.4章
--->
-
-
-
-## 高性能
-
-<!-- 
- 师兄大厂面试遇到面试官的 Kafka 暴击三连问，快面哭了！ 
-https://mp.weixin.qq.com/s/ejZBAGI7qLE_QYSe-AqipA
 -->
