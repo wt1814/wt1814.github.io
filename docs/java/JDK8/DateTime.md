@@ -23,6 +23,11 @@ https://mp.weixin.qq.com/s/-jy0zEpeWXnvQELGv6PsgA
 
 有关机器时间、UTC时间、本地时间的总结 
 https://mp.weixin.qq.com/s/eGgwu-qrtLA-NqrAwAqocg
+
+
+JDK8中的新时间API:Duration Period和ChronoUnit介绍 
+https://mp.weixin.qq.com/s/9qk1-wO3x1fkQt-EcwX7SQ
+
 -->
 
 # 1. Date/Time API  
