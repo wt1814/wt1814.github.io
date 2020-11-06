@@ -61,6 +61,10 @@
 ## 1.3. 工具集  
 <!-- 
 https://blog.csdn.net/hualinux/article/details/106586601?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param
+
+
+构建工具链真的会让研发流程高效起来吗
+https://blog.gitee.com/2020/04/26/tool-chain/
 -->
 &emsp; 对于DevOps架构，可以参照DevOps过程逐步核查。按过程中每步决定的所需功能，经测量去选择可用工具。 DevOps中包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等等。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-3.png)  

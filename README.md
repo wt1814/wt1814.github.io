@@ -40,7 +40,7 @@
     - [DevOps](#devops)
     - [算法](#算法)
     - [计算机网络](#计算机网络)
-    - [开发软件](#开发软件)
+    - [开发常用工具](#开发常用工具)
     - [其他工具](#其他工具)
     - [Error](#error)
 
@@ -519,8 +519,9 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 
 ----
 
-## 开发软件  
+## 开发常用工具  
 [idea](/docs/software/idea/idea.md)  
+[抓包Charles](/docs/software/charles.md) 
 
 ## 其他工具  
 [tools](/docs/software/tools/tools.md)  
