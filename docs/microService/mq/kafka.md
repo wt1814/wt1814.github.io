@@ -1,8 +1,8 @@
 <!-- TOC -->
 
 - [1. kafka](#1-kafka)
-    - [kafka拓扑结构及相关概念](#kafka拓扑结构及相关概念)
-    - [kafka原理](#kafka原理)
+    - [1.1. kafka拓扑结构及相关概念](#11-kafka拓扑结构及相关概念)
+        - [1.1.1. 存储策略](#111-存储策略)
     - [1.2. kafka使用场景](#12-kafka使用场景)
 
 <!-- /TOC -->
@@ -10,7 +10,7 @@
 # 1. kafka
 &emsp; Apache Kafka是分布式发布-订阅消息系统。它最初由LinkedIn公司开发，之后成为Apache项目的一部分。Kafka是一种快速、可扩展的、设计内在就是分布式的，分区的和可复制的提交日志服务。  
 
-## kafka拓扑结构及相关概念  
+## 1.1. kafka拓扑结构及相关概念  
 &emsp; **kafka拓扑结构**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-3.png)  
 <!-- 
@@ -74,7 +74,22 @@ kafka的offset是分区内有序的，但是在不同分区中是无顺序的，
 &emsp; kafka 在 zookeeper 中的存储结构如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-2.png)  
 
-## kafka原理  
+### 1.1.1. 存储策略  
+&emsp; 1）kafka以topic来进行消息管理，每个topic包含多个partition，每个partition对应一个逻辑log，有多个segment组成。  
+&emsp; 2）每个segment中存储多条消息，消息id由其逻辑位置决定，即从消息id可直接定位到消息的存储位置，避免id到位置的额外映射。  
+&emsp; 3）每个part在内存中对应一个index，记录每个segment中的第一条消息偏移。  
+&emsp; 4）发布者发到某个topic的消息会被均匀的分布到多个partition上（或根据用户指定的路由规则进行分布），broker收到发布消息往对应partition的最后一个segment上添加该消息，当某个segment上的消息条数达到配置值或消息发布时间超过阈值时，segment上的消息会被flush到磁盘，只有flush到磁盘上的消息订阅者才能订阅到，segment达到一定的大小后将不会再往该segment写数据，broker会创建新的segment。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-5.png)  
+
+&emsp; Kafka 中消息是以 topic 进行分类的，生产者生产消息，消费者消费消息，都是面向 topic 的。  
+&emsp; 在 Kafka 中，一个 topic 可以分为多个 partition，一个 partition 分为多个 segment，每个 segment 对应两个文件：.index 和 .log 文件  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-6.png)  
+&emsp; topic 是逻辑上的概念，而 patition 是物理上的概念，每个 patition 对应一个 log 文件，而 log 文件中存储的就是 producer 生产的数据，patition 生产的数据会被不断的添加到 log 文件的末端，且每条数据都有自己的 offset。  
+
+&emsp; 消费组中的每个消费者，都是实时记录自己消费到哪个 offset，以便出错恢复，从上次的位置继续消费。  
+&emsp; **消息存储原理**  
+&emsp; 由于生产者生产的消息会不断追加到 log 文件末尾，为防止 log 文件过大导致数据定位效率低下，Kafka 采取了分片和索引机制，将每个 partition 分为多个 segment。每个 segment 对应两个文件——.index文件和 .log文件。这些文件位于一个文件夹下，该文件夹的命名规则为：topic名称+分区序号。  
+ 
 <!-- 
 https://mp.weixin.qq.com/s/nSa2CPjbMFdOsYB2Dt0kYg
 -->

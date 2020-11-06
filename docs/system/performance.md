@@ -7,6 +7,7 @@
 不了解 QPS、TPS、RT、并发数、吞吐量，劝你简历别写熟悉高并发 
 https://mp.weixin.qq.com/s/LFBK_3Mfo644mzXZXxsSTw
 https://mp.weixin.qq.com/s/4NapJLLN6dgzIqsnHc2Dtg
+https://mp.weixin.qq.com/s/srgr5nigSRWlync-K_r5cw
 -->
 
 * 并发数：指系统同时能处理的请求数量，同样反应了系统的负载能力。这个数值可以分析机器1s内的访问日志数量来得到。  
