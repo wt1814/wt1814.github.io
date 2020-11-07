@@ -18,4 +18,8 @@ https://mp.weixin.qq.com/s/trmQjxfshsnnIJqNY7szqQ
     * CPU规划
     * 带宽规划
 
+
+想看看我们万亿级数据的存储架构，是怎么设计的吗？ 
+https://mp.weixin.qq.com/s/f19qSsQS6Cn7--iAA1TYNA
+
 -->

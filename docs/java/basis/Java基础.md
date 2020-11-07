@@ -287,6 +287,9 @@ public <T> T underwrite(String platformCode, String uuid, Object... objects) {
 <!--
 Java为什么只有值传递？ 
 https://mp.weixin.qq.com/s/MwnhdVRSX-y45S2f-XMRoA
+ Java只有值传递！为什么？ 
+ https://mp.weixin.qq.com/s/0dIr7F4W6pw5QGKwPE0Jpw
+
 -->
 
 &emsp; 基本概念：  
