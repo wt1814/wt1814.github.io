@@ -883,20 +883,3 @@ private List<ProducerBatch> drainBatchesForOneNode(Cluster cluster, Node node, i
 代码@8：将当前批次加入到已准备集合中，并关闭该批次，即不在允许向该批次中追加消息。  
 
 关于消息发送就介绍到这里，NetworkClient 的 poll 方法内部会调用 Selector 执行就绪事件的选择，并将抽取的消息通过网络发送到 Broker 服务器，关于网络后面的具体实现，将在后续文章中单独介绍。  
-
-
-## 1.2. kafka如何保证数据可靠性呢？通过ack来保证  
-
-<!-- 
-https://mp.weixin.qq.com/s/nSa2CPjbMFdOsYB2Dt0kYg
-https://mp.weixin.qq.com/s/OB-ZVy70vHClCtep43gr_A
-
-https://mp.weixin.qq.com/s/ITLN-DHxYc5w6qrlFD8HWQ
--->
-
-
-
-
-
-
-

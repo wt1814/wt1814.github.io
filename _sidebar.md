@@ -236,6 +236,8 @@
     * [kafka生产者](/docs/microService/mq/kafkaProducer.md)  
     * [kafka消费者](/docs/microService/mq/kafkaConsumer.md)  
     * [kafkaBroker](/docs/microService/mq/kafkaBroker.md)  
+    * [kafka特性](/docs/microService/mq/kafka特性.md)  
+    * [kafka事务](/docs/microService/mq/kafkaTraction.md)  
     * [kafka监控](/docs/microService/mq/kafkaMonitor.md)  
     * [kafkaStreams](/docs/microService/mq/kafkaStreams.md)  
     * [kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  
