@@ -319,6 +319,9 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 ### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  
 [kafka基本概念](/docs/microService/mq/kafka.md)  
+<!-- 
+https://blog.csdn.net/lianggx3/category_10406229.html
+-->
 [kafka生产者](/docs/microService/mq/kafkaProducer.md)  
 [kafkaBroker](/docs/microService/mq/kafkaBroker.md)  
 [kafka消费者](/docs/microService/mq/kafkaConsumer.md)  

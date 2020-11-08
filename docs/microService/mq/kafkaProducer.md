@@ -3,21 +3,24 @@
 - [1. kafka生产者](#1-kafka生产者)
     - [1.1. 消息发送流程概述](#11-消息发送流程概述)
     - [1.2. 消息发送示例](#12-消息发送示例)
-    - [1.3. 源码分析Kafka消息发送流程](#13-源码分析kafka消息发送流程)
-        - [1.3.1. Kafka消息发送流程](#131-kafka消息发送流程)
-            - [1.3.1.1. doSend](#1311-dosend)
-            - [1.3.1.2. RecordAccumulator append 方法详解](#1312-recordaccumulator-append-方法详解)
-            - [1.3.1.3. ProducerBatch tryAppend方法详解](#1313-producerbatch-tryappend方法详解)
-            - [1.3.1.4. Kafka 消息追加流程图与总结](#1314-kafka-消息追加流程图与总结)
-        - [1.3.2. Sender 线程详解](#132-sender-线程详解)
-            - [1.3.2.1. Sender#run 方法详解](#1321-senderrun-方法详解)
-            - [1.3.2.2. runOnce 详解](#1322-runonce-详解)
-                - [1.3.2.2.1. sendProducerData](#13221-sendproducerdata)
-                - [1.3.2.2.2. NetworkClient 的 poll 方法](#13222-networkclient-的-poll-方法)
-            - [1.3.2.3. run 方法流程图](#1323-run-方法流程图)
-        - [1.3.3. RecordAccumulator 核心方法详解](#133-recordaccumulator-核心方法详解)
-            - [1.3.3.1. RecordAccumulator 的 ready 方法详解](#1331-recordaccumulator-的-ready-方法详解)
-            - [1.3.3.2. RecordAccumulator 的 drain方法详解](#1332-recordaccumulator-的-drain方法详解)
+    - [1.3.1. Kafka消息发送流程](#131-kafka消息发送流程)
+        - [1.3.1.1. doSend](#1311-dosend)
+            - [1.3.1.1.1. RecordAccumulator#append方法详解](#13111-recordaccumulatorappend方法详解)
+                - [1.3.1.1.1.1. ProducerBatch tryAppend方法详解](#131111-producerbatch-tryappend方法详解)
+        - [1.3.1.2. Kafka 消息追加流程图与总结](#1312-kafka-消息追加流程图与总结)
+    - [1.3.2. Sender 线程详解](#132-sender-线程详解)
+        - [1.3.2.1. 属性含义](#1321-属性含义)
+        - [1.3.2.2. Sender#run 方法详解](#1322-senderrun-方法详解)
+            - [1.3.2.2.1. runOnce 详解](#13221-runonce-详解)
+                - [1.3.2.2.1.1. sendProducerData](#132211-sendproducerdata)
+                    - [1.3.2.2.1.2. # RecordAccumulator#ready](#132212--recordaccumulatorready)
+                    - [RecordAccumulator#drain](#recordaccumulatordrain)
+                    - [Sender#sendProduceRequests](#sendersendproducerequests)
+                - [1.3.2.2.1.3. NetworkClient 的 poll 方法](#132213-networkclient-的-poll-方法)
+        - [1.3.2.3. run 方法流程图](#1323-run-方法流程图)
+    - [1.3.3. RecordAccumulator 核心方法详解](#133-recordaccumulator-核心方法详解)
+        - [1.3.3.1. RecordAccumulator 的 ready 方法详解](#1331-recordaccumulator-的-ready-方法详解)
+        - [1.3.3.2. RecordAccumulator 的 drain方法详解](#1332-recordaccumulator-的-drain方法详解)
 
 <!-- /TOC -->
 
@@ -140,8 +143,7 @@ public int partition(String topic, Object key, byte[] keyBytes, Object value, by
 }
 ```
 
-## 1.3. 源码分析Kafka消息发送流程  
-### 1.3.1. Kafka消息发送流程  
+## 1.3.1. Kafka消息发送流程  
 &emsp; 可以通过 KafkaProducer 的 send 方法发送消息，send 方法的声明如下：
 
 ```java
@@ -166,470 +168,664 @@ public Future<RecordMetadata> send(ProducerRecord<K, V> record, Callback callbac
 &emsp; 代码@1：首先执行消息发送拦截器，拦截器通过 interceptor.classes 指定，类型为 List< String >，每一个元素为拦截器的全类路径限定名。  
 &emsp; 代码@2：执行 doSend 方法，后续需要留意一下 Callback 的调用时机。  
 
-#### 1.3.1.1. doSend  
-&emsp; KafkaProducer#doSend  
-
-```java
-ClusterAndWaitTime clusterAndWaitTime;
-try {
-    clusterAndWaitTime = waitOnMetadata(record.topic(), record.partition(), maxBlockTimeMs);
-} catch (KafkaException e) {
-    if (metadata.isClosed())
-        throw new KafkaException("Producer closed while send in progress", e);
-	throw e;
-}
-long remainingWaitMs = Math.max(0, maxBlockTimeMs - clusterAndWaitTime.waitedOnMetadataMs);
-```
-&emsp; Step1：获取 topic 的分区列表，如果本地没有该topic的分区信息，则需要向远端 broker 获取，该方法会返回拉取元数据所耗费的时间。在消息发送时的最大等待时间时会扣除该部分损耗的时间。  
+### 1.3.1.1. doSend  
 
 &emsp; KafkaProducer#doSend  
 
 ```java
-byte[] serializedKey;
-try {
-    serializedKey = keySerializer.serialize(record.topic(), record.headers(), record.key());
-} catch (ClassCastException cce) {
-    throw new SerializationException("Can't convert key of class " + record.key().getClass().getName() +
-                        " to class " + producerConfig.getClass(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG).getName() +
-                        " specified in key.serializer", cce);
-}
-```
-&emsp; Step2：序列化 key。注意：序列化方法虽然有传入 topic、Headers 这两个属性，但参与序列化的只是 key 。
+/**
+ * Implementation of asynchronously send a record to a topic.
+ */
+private Future<RecordMetadata> doSend(ProducerRecord<K, V> record, Callback callback) {
+    TopicPartition tp = null;
+    try {
+        // first make sure the metadata for the topic is available
+        //Step1：获取 topic 的分区列表，如果本地没有该topic的分区信息，则需要向远端 broker 获取，该方法会返回拉取元数据所耗费的时间。在消息发送时的最大等待时间时会扣除该部分损耗的时间。
+        ClusterAndWaitTime clusterAndWaitTime = waitOnMetadata(record.topic(), record.partition(), maxBlockTimeMs);
+        long remainingWaitMs = Math.max(0, maxBlockTimeMs - clusterAndWaitTime.waitedOnMetadataMs);
+        Cluster cluster = clusterAndWaitTime.cluster;
+        byte[] serializedKey;
+        try {
+            //Step2：序列化 key。注意：序列化方法虽然有传入 topic、Headers 这两个属性，但参与序列化的只是 key 。
+            serializedKey = keySerializer.serialize(record.topic(), record.key());
+        } catch (ClassCastException cce) {
+            throw new SerializationException("Can't convert key of class " + record.key().getClass().getName() +
+                    " to class " + producerConfig.getClass(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG).getName() +
+                    " specified in key.serializer");
+        }
+        byte[] serializedValue;
+        try {
+            //Step3：对消息体内容进行序列化。
+            serializedValue = valueSerializer.serialize(record.topic(), record.value());
+        } catch (ClassCastException cce) {
+            throw new SerializationException("Can't convert value of class " + record.value().getClass().getName() +
+                    " to class " + producerConfig.getClass(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG).getName() +
+                    " specified in value.serializer");
+        }
+        //Step4：根据分区负载算法计算本次消息发送该发往的分区。其默认实现类为 DefaultPartitioner，路由算法如下：
+        //  如果指定了 key ，则使用 key 的 hashcode 与分区数取模。
+        //  如果未指定 key，则轮询所有的分区。
+        int partition = partition(record, serializedKey, serializedValue, cluster);
+        int serializedSize = Records.LOG_OVERHEAD + Record.recordSize(serializedKey, serializedValue);
+        ensureValidRecordSize(serializedSize);
+        tp = new TopicPartition(record.topic(), partition);
+        //Step5：根据使用的版本号，按照消息协议来计算消息的长度，并是否超过指定长度，如果超过则抛出异常。
+        long timestamp = record.timestamp() == null ? time.milliseconds() : record.timestamp();
+        log.trace("Sending record {} with callback {} to topic {} partition {}", record, callback, record.topic(), partition);
+        // producer callback will make sure to call both 'callback' and interceptor callback
+        //Step6：先初始化消息时间戳，并对传入的 Callable(回调函数) 加入到拦截器链中。
+        Callback interceptCallback = this.interceptors == null ? callback : new InterceptorCallback<>(callback, this.interceptors, tp);
 
-&emsp; KafkaProducer#doSend  
-
-```java
-byte[] serializedValue;
-try {
-    serializedValue = valueSerializer.serialize(record.topic(), record.headers(), record.value());
-} catch (ClassCastException cce) {
-    throw new SerializationException("Can't convert value of class " + record.value().getClass().getName() +
-                        " to class " + producerConfig.getClass(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG).getName() +
-                        " specified in value.serializer", cce);
-}
-```
-&emsp; Step3：对消息体内容进行序列化。
-
-&emsp; KafkaProducer#doSend
-
-```java
-int partition = partition(record, serializedKey, serializedValue, cluster);
-tp = new TopicPartition(record.topic(), partition);
-```
-
-&emsp; Step4：根据分区负载算法计算本次消息发送该发往的分区。其默认实现类为 DefaultPartitioner，路由算法如下：
-
-        如果指定了 key ，则使用 key 的 hashcode 与分区数取模。
-        如果未指定 key，则轮询所有的分区。
-
-&emsp; KafkaProducer#doSend  
-
-```java
-setReadOnly(record.headers());
-Header[] headers = record.headers().toArray();
-```
-&emsp; Step5：如果是消息头信息(RecordHeaders)，则设置为只读。
-
-KafkaProducer#doSend
-
-int serializedSize = AbstractRecords.estimateSizeInBytesUpperBound(apiVersions.maxUsableProduceMagic(),
-                    compressionType, serializedKey, serializedValue, headers);
-ensureValidRecordSize(serializedSize);
-
-
-
-Step5：根据使用的版本号，按照消息协议来计算消息的长度，并是否超过指定长度，如果超过则抛出异常。
-
-KafkaProducer#doSend
-
-long timestamp = record.timestamp() == null ? time.milliseconds() : record.timestamp();
-log.trace("Sending record {} with callback {} to topic {} partition {}", record, callback, record.topic(), partition);
-Callback interceptCallback = new InterceptorCallback<>(callback, this.interceptors, tp);
-
-
-Step6：先初始化消息时间戳，并对传入的 Callable(回调函数) 加入到拦截器链中。
-KafkaProducer#doSend
-
-if (transactionManager != null && transactionManager.isTransactional())
-    transactionManager.maybeAddPartitionToTransaction(tp);
-
-
-
-Step7：如果事务处理器不为空，执行事务管理相关的，本节不考虑事务消息相关的实现细节，后续估计会有对应的文章进行解析。
-
-KafkaProducer#doSend
-
-RecordAccumulator.RecordAppendResult result = accumulator.append(tp, timestamp, serializedKey, serializedValue, headers, interceptCallback, remainingWaitMs);
-if (result.batchIsFull || result.newBatchCreated) {
-    log.trace("Waking up the sender since topic {} partition {} is either full or getting a new batch", record.topic(), partition);
-                this.sender.wakeup();
-}
-return result.future;
-
-
-Step8：将消息追加到缓存区，这将是本文重点需要探讨的。如果当前缓存区已写满或创建了一个新的缓存区，则唤醒 Sender(消息发送线程)，将缓存区中的消息发送到 broker 服务器，最终返回 future。这里是经典的 Future 设计模式，从这里也能得知，doSend 方法执行完成后，此时消息还不一定成功发送到 broker。
-
-KafkaProducer#doSend  
-} catch (ApiException e) {
-    log.debug("Exception occurred during message send:", e);
-    if (callback != null)
-        callback.onCompletion(null, e);
-        
-	this.errors.record();
-    this.interceptors.onSendError(record, tp, e);
+        //Step7：如果事务处理器不为空，执行事务管理相关的，本节不考虑事务消息相关的实现细节，后续估计会有对应的文章进行解析。
+        if (transactionManager != null && transactionManager.isTransactional())
+            transactionManager.maybeAddPartitionToTransaction(tp);
+        //Step8：将消息追加到缓存区，这将是本文重点需要探讨的。如果当前缓存区已写满或创建了一个新的缓存区，则唤醒 Sender(消息发送线程)，将缓存区中的消息发送到 broker 服务器，最终返回 future。这里是经典的 Future 设计模式，从这里也能得知，doSend 方法执行完成后，此时消息还不一定成功发送到 broker。
+        RecordAccumulator.RecordAppendResult result = accumulator.append(tp, timestamp, serializedKey, serializedValue, interceptCallback, remainingWaitMs);
+        if (result.batchIsFull || result.newBatchCreated) {
+            log.trace("Waking up the sender since topic {} partition {} is either full or getting a new batch", record.topic(), partition);
+            this.sender.wakeup();
+        }
+        return result.future;
+        // handling exceptions and record the errors;
+        // for API exceptions return them in the future,
+        // for other exceptions throw directly
+    } catch (ApiException e) {
+        //Step9：针对各种异常，进行相关信息的收集。
+        log.debug("Exception occurred during message send:", e);
+        if (callback != null)
+            callback.onCompletion(null, e);
+        this.errors.record();
+        if (this.interceptors != null)
+            this.interceptors.onSendError(record, tp, e);
         return new FutureFailure(e);
-} catch (InterruptedException e) {
-    this.errors.record();
-    this.interceptors.onSendError(record, tp, e);
-    throw new InterruptException(e);
-} catch (BufferExhaustedException e) {
-    this.errors.record();
-    this.metrics.sensor("buffer-exhausted-records").record();
-    this.interceptors.onSendError(record, tp, e);
-    throw e;
-} catch (KafkaException e) {
-    this.errors.record();
-    this.interceptors.onSendError(record, tp, e);
-    throw e;
-} catch (Exception e) {
-    // we notify interceptor about all exceptions, since onSend is called before anything else in this method
-    this.interceptors.onSendError(record, tp, e);
-    throw e;
-}
-
-
-Step9：针对各种异常，进行相关信息的收集。
-
-接下来将重点介绍如何将消息追加到生产者的发送缓存区，其实现类为：RecordAccumulator。  
-
-#### 1.3.1.2. RecordAccumulator append 方法详解  
-RecordAccumulator#append  
-
-```java
-public RecordAppendResult append(TopicPartition tp,
-                                     long timestamp,
-                                     byte[] key,
-                                     byte[] value,
-                                     Header[] headers,
-                                     Callback callback,
-                                     long maxTimeToBlock) throws InterruptedException {
-```
-在介绍该方法之前，我们首先来看一下该方法的参数。
-
-* TopicPartition tp
-    topic 与分区信息，即发送到哪个 topic 的那个分区。
-* long timestamp
-    客户端发送时的时间戳。
-    byte[] key
-    消息的 key。
-    byte[] value
-    消息体。
-    Header[] headers
-    消息头，可以理解为额外消息属性。
-    Callback callback
-    回调方法。
-* long maxTimeToBlock
-    消息追加超时时间。
-
-RecordAccumulator#append
-
-```java
-Deque<ProducerBatch> dq = getOrCreateDeque(tp);
-synchronized (dq) {
-    if (closed)
-        throw new KafkaException("Producer closed while send in progress");
-    RecordAppendResult appendResult = tryAppend(timestamp, key, value, headers, callback, dq);
-    if (appendResult != null)
-        return appendResult;
-}
-```
-Step1：尝试根据 topic与分区在 kafka 中获取一个双端队列，如果不存在，则创建一个，然后调用 tryAppend 方法将消息追加到缓存中。Kafka 会为每一个 topic 的每一个分区创建一个消息缓存区，消息先追加到缓存中，然后消息发送 API 立即返回，然后由单独的线程 Sender 将缓存区中的消息定时发送到 broker 。这里的缓存区的实现使用的是 ArrayQeque。然后调用 tryAppend 方法尝试将消息追加到其缓存区，如果追加成功，则返回结果。
-
-在讲解下一个流程之前，我们先来看一下 Kafka 双端队列的存储结构：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-11.png)  
-RecordAccumulator#append  
-
-```java
-int size = Math.max(this.batchSize, AbstractRecords.estimateSizeInBytesUpperBound(maxUsableMagic, compression, key, value, headers));
-log.trace("Allocating a new {} byte message buffer for topic {} partition {}", size, tp.topic(), tp.partition());
-buffer = free.allocate(size, maxTimeToBlock);
-```
-Step2：如果第一步未追加成功，说明当前没有可用的 ProducerBatch，则需要创建一个 ProducerBatch，故先从 BufferPool 中申请 batch.size 的内存空间，为创建 ProducerBatch 做准备，如果由于 BufferPool 中未有剩余内存，则最多等待 maxTimeToBlock ，如果在指定时间内未申请到内存，则抛出异常。  
-
-RecordAccumulator#append  
-
-```java
-synchronized (dq) {
-    // Need to check if producer is closed again after grabbing the dequeue lock.
-    if (closed)
-        throw new KafkaException("Producer closed while send in progress");
-    // 省略部分代码
-    MemoryRecordsBuilder recordsBuilder = recordsBuilder(buffer, maxUsableMagic);
-    ProducerBatch batch = new ProducerBatch(tp, recordsBuilder, time.milliseconds());
-    FutureRecordMetadata future = Utils.notNull(batch.tryAppend(timestamp, key, value, headers, callback, time.milliseconds()));
-    dq.addLast(batch);
-    incomplete.add(batch);
-    // Don't deallocate this buffer in the finally block as it's being used in the record batch
-    buffer = null;
-    return new RecordAppendResult(future, dq.size() > 1 || batch.isFull(), true);
-}
-```
-Step3：创建一个新的批次 ProducerBatch，并将消息写入到该批次中，并返回追加结果，这里有如下几个关键点：
-
-* 创建 ProducerBatch ，其内部持有一个 MemoryRecordsBuilder对象，该对象负责将消息写入到内存中，即写入到 ProducerBatch 内部持有的内存，大小等于 batch.size。
-* 将消息追加到 ProducerBatch 中。
-* 将新创建的 ProducerBatch 添加到双端队列的末尾。
-* 将该批次加入到 incomplete 容器中，该容器存放未完成发送到 broker 服务器中的消息批次，当 Sender 线程将消息发送到 broker 服务端后，会将其移除并释放所占内存。
-返回追加结果。  
-
-纵观 RecordAccumulator append 的流程，基本上就是从双端队列获取一个未填充完毕的 ProducerBatch（消息批次），然后尝试将其写入到该批次中（缓存、内存中），如果追加失败，则尝试创建一个新的 ProducerBatch 然后继续追加。  
-
-接下来我们继续探究如何向 ProducerBatch 中写入消息。  
-
-#### 1.3.1.3. ProducerBatch tryAppend方法详解  
-ProducerBatch #tryAppend  
-
-```java
-public FutureRecordMetadata tryAppend(long timestamp, byte[] key, byte[] value, Header[] headers, Callback callback, long now) {
-    if (!recordsBuilder.hasRoomFor(timestamp, key, value, headers)) {    // @1
-        return null;
-    } else {
-        Long checksum = this.recordsBuilder.append(timestamp, key, value, headers);    // @2
-        this.maxRecordSize = Math.max(this.maxRecordSize, AbstractRecords.estimateSizeInBytesUpperBound(magic(),
-                    recordsBuilder.compressionType(), key, value, headers));     // @3
-        this.lastAppendTime = now;   //                                                     
-        FutureRecordMetadata future = new FutureRecordMetadata(this.produceFuture, this.recordCount,
-                                                                   timestamp, checksum,
-                                                                   key == null ? -1 : key.length,
-                                                                   value == null ? -1 : value.length,
-                                                                   Time.SYSTEM);   // @4
-        // we have to keep every future returned to the users in case the batch needs to be
-        // split to several new batches and resent.
-        thunks.add(new Thunk(callback, future));    // @5
-        this.recordCount++;
-        return future;                                                                            
+    } catch (InterruptedException e) {
+        this.errors.record();
+        if (this.interceptors != null)
+            this.interceptors.onSendError(record, tp, e);
+        throw new InterruptException(e);
+    } catch (BufferExhaustedException e) {
+        this.errors.record();
+        this.metrics.sensor("buffer-exhausted-records").record();
+        if (this.interceptors != null)
+            this.interceptors.onSendError(record, tp, e);
+        throw e;
+    } catch (KafkaException e) {
+        this.errors.record();
+        if (this.interceptors != null)
+            this.interceptors.onSendError(record, tp, e);
+        throw e;
+    } catch (Exception e) {
+        // we notify interceptor about all exceptions, since onSend is called before anything else in this method
+        if (this.interceptors != null)
+            this.interceptors.onSendError(record, tp, e);
+        throw e;
     }
 }
 ```
-代码@1：首先判断 ProducerBatch 是否还能容纳当前消息，如果剩余内存不足，将直接返回 null。如果返回 null ，会尝试再创建一个新的ProducerBatch。  
-代码@2：通过 MemoryRecordsBuilder 将消息写入按照 Kafka 消息格式写入到内存中，即写入到 在创建 ProducerBatch 时申请的 ByteBuffer 中。本文先不详细介绍 Kafka 各个版本的消息格式，后续会专门写一篇文章介绍 Kafka 各个版本的消息格式。  
-代码@3：更新 ProducerBatch 的 maxRecordSize、lastAppendTime 属性，分别表示该批次中最大的消息长度与最后一次追加消息的时间。  
-代码@4：构建 FutureRecordMetadata 对象，这里是典型的 Future模式，里面主要包含了该条消息对应的批次的 produceFuture、消息在该批消息的下标，key 的长度、消息体的长度以及当前的系统时间。  
-代码@5：将 callback 、本条消息的凭证(Future) 加入到该批次的 thunks 中，该集合存储了 一个批次中所有消息的发送回执。  
-流程执行到这里，KafkaProducer 的 send 方法就执行完毕了，返回给调用方的就是一个 FutureRecordMetadata 对象。  
-源码的阅读比较枯燥，接下来用一个流程图简单的阐述一下消息追加的关键要素，重点关注一下各个 Future。代码@1：首先判断 ProducerBatch 是否还能容纳当前消息，如果剩余内存不足，将直接返回 null。如果返回 null ，会尝试再创建一个新的ProducerBatch。  
-代码@2：通过 MemoryRecordsBuilder 将消息写入按照 Kafka 消息格式写入到内存中，即写入到 在创建 ProducerBatch 时申请的 ByteBuffer 中。本文先不详细介绍 Kafka 各个版本的消息格式，后续会专门写一篇文章介绍 Kafka 各个版本的消息格式。  
-代码@3：更新 ProducerBatch 的 maxRecordSize、lastAppendTime 属性，分别表示该批次中最大的消息长度与最后一次追加消息的时间。  
-代码@4：构建 FutureRecordMetadata 对象，这里是典型的 Future模式，里面主要包含了该条消息对应的批次的 produceFuture、消息在该批消息的下标，key 的长度、消息体的长度以及当前的系统时间。  
-代码@5：将 callback 、本条消息的凭证(Future) 加入到该批次的 thunks 中，该集合存储了 一个批次中所有消息的发送回执。  
-流程执行到这里，KafkaProducer 的 send 方法就执行完毕了，返回给调用方的就是一个 FutureRecordMetadata 对象。  
-源码的阅读比较枯燥，接下来用一个流程图简单的阐述一下消息追加的关键要素，重点关注一下各个 Future。  
 
-#### 1.3.1.4. Kafka 消息追加流程图与总结  
+
+#### 1.3.1.1.1. RecordAccumulator#append方法详解  
+&emsp; 接下来将重点介绍如何将消息追加到生产者的发送缓存区，其实现类为：RecordAccumulator。  
+
+&emsp; 在讲解下一个流程之前，我们先来看一下 Kafka 双端队列的存储结构：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-11.png)  
+
+&emsp; 纵观 RecordAccumulator append 的流程，基本上就是从双端队列获取一个未填充完毕的 ProducerBatch（消息批次），然后尝试将其写入到该批次中（缓存、内存中），如果追加失败，则尝试创建一个新的 ProducerBatch 然后继续追加。  
+
+&emsp; RecordAccumulator#append  
+
+```java
+/**
+ * Add a record to the accumulator, return the append result
+ * <p>
+ * The append result will contain the future metadata, and flag for whether the appended batch is full or a new batch is created
+ * <p>
+ *
+ * @param tp topic 与分区信息，即发送到哪个 topic 的那个分区
+ * @param timestamp 客户端发送时的时间戳
+ * @param key 消息的 key
+ * @param value 消息体
+ * @param callback 回调方法
+ * @param maxTimeToBlock 消息追加超时时间
+ */
+public RecordAppendResult append(TopicPartition tp,
+                                 long timestamp,
+                                 byte[] key,
+                                 byte[] value,
+                                 Callback callback,
+                                 long maxTimeToBlock) throws InterruptedException {
+    // Step1：尝试根据 topic与分区在 kafka 中获取一个双端队列，如果不存在，则创建一个，然后调用 tryAppend 方法将消息追加到缓存中。
+    // Kafka 会为每一个 topic 的每一个分区创建一个消息缓存区，消息先追加到缓存中，然后消息发送 API 立即返回，然后由单独的线程 Sender 将缓存区中的消息定时发送到 broker 。
+    // 这里的缓存区的实现使用的是 ArrayQeque。然后调用 tryAppend 方法尝试将消息追加到其缓存区，如果追加成功，则返回结果。
+    appendsInProgress.incrementAndGet();
+    try {
+        // check if we have an in-progress batch
+        Deque<RecordBatch> dq = getOrCreateDeque(tp);
+        synchronized (dq) {
+            if (closed)
+                throw new IllegalStateException("Cannot send after the producer is closed.");
+            RecordAppendResult appendResult = tryAppend(timestamp, key, value, callback, dq);
+            if (appendResult != null)
+                return appendResult;
+        }
+
+        //Step2：如果第一步未追加成功，说明当前没有可用的 ProducerBatch，则需要创建一个 ProducerBatch，故先从 BufferPool 中申请 batch.size 的内存空间，为创建 ProducerBatch 做准备，如果由于 BufferPool 中未有剩余内存，则最多等待 maxTimeToBlock ，如果在指定时间内未申请到内存，则抛出异常。
+        int size = Math.max(this.batchSize, Records.LOG_OVERHEAD + Record.recordSize(key, value));
+        log.trace("Allocating a new {} byte message buffer for topic {} partition {}", size, tp.topic(), tp.partition());
+        ByteBuffer buffer = free.allocate(size, maxTimeToBlock);
+        //Step3：创建一个新的批次 ProducerBatch，并将消息写入到该批次中，并返回追加结果，这里有如下几个关键点：
+        //
+        //* 创建 ProducerBatch ，其内部持有一个 MemoryRecordsBuilder对象，该对象负责将消息写入到内存中，即写入到 ProducerBatch 内部持有的内存，大小等于 batch.size。
+        //* 将消息追加到 ProducerBatch 中。
+        //* 将新创建的 ProducerBatch 添加到双端队列的末尾。
+        //* 将该批次加入到 incomplete 容器中，该容器存放未完成发送到 broker 服务器中的消息批次，当 Sender 线程将消息发送到 broker 服务端后，会将其移除并释放所占内存。
+        //返回追加结果。
+        synchronized (dq) {
+            // Need to check if producer is closed again after grabbing the dequeue lock.
+            if (closed)
+                throw new IllegalStateException("Cannot send after the producer is closed.");
+
+            RecordAppendResult appendResult = tryAppend(timestamp, key, value, callback, dq);
+            if (appendResult != null) {
+                // Somebody else found us a batch, return the one we waited for! Hopefully this doesn't happen often...
+                free.deallocate(buffer);
+                return appendResult;
+            }
+            MemoryRecords records = MemoryRecords.emptyRecords(buffer, compression, this.batchSize);
+            RecordBatch batch = new RecordBatch(tp, records, time.milliseconds());
+            FutureRecordMetadata future = Utils.notNull(batch.tryAppend(timestamp, key, value, callback, time.milliseconds()));
+
+            dq.addLast(batch);
+            incomplete.add(batch);
+            return new RecordAppendResult(future, dq.size() > 1 || batch.records.isFull(), true);
+        }
+    } finally {
+        appendsInProgress.decrementAndGet();
+    }
+}
+```
+
+  
+
+##### 1.3.1.1.1.1. ProducerBatch tryAppend方法详解  
+&emsp; 接下来继续探究如何向 ProducerBatch 中写入消息。  
+&emsp; ProducerBatch #tryAppend  
+
+```java
+public FutureRecordMetadata tryAppend(long timestamp, byte[] key, byte[] value, Header[] headers, Callback callback, long now) {
+    //首先判断 ProducerBatch 是否还能容纳当前消息，如果剩余内存不足，将直接返回 null。如果返回 null ，会尝试再创建一个新的ProducerBatch。
+    if (!recordsBuilder.hasRoomFor(timestamp, key, value, headers)) {    // @1
+        return null;
+    } else {
+        //通过 MemoryRecordsBuilder 将消息写入按照 Kafka 消息格式写入到内存中，即写入到 在创建 ProducerBatch 时申请的 ByteBuffer 中。本文先不详细介绍 Kafka 各个版本的消息格式，后续会专门写一篇文章介绍 Kafka 各个版本的消息格式。
+        Long checksum = this.recordsBuilder.append(timestamp, key, value, headers);    // @2
+        //更新 ProducerBatch 的 maxRecordSize、lastAppendTime 属性，分别表示该批次中最大的消息长度与最后一次追加消息的时间。
+        this.maxRecordSize = Math.max(this.maxRecordSize, AbstractRecords.estimateSizeInBytesUpperBound(magic(),
+                recordsBuilder.compressionType(), key, value, headers));     // @3
+        this.lastAppendTime = now;   //
+        //构建 FutureRecordMetadata 对象，这里是典型的 Future模式，里面主要包含了该条消息对应的批次的 produceFuture、消息在该批消息的下标，key 的长度、消息体的长度以及当前的系统时间。
+        FutureRecordMetadata future = new FutureRecordMetadata(this.produceFuture, this.recordCount,
+                timestamp, checksum,
+                key == null ? -1 : key.length,
+                value == null ? -1 : value.length,
+                Time.SYSTEM);   // @4
+        // we have to keep every future returned to the users in case the batch needs to be
+        // split to several new batches and resent.
+        //将 callback 、本条消息的凭证(Future) 加入到该批次的 thunks 中，该集合存储了 一个批次中所有消息的发送回执。
+        thunks.add(new Thunk(callback, future));    // @5
+        this.recordCount++;
+        return future;
+    }
+}
+```
+&emsp; 流程执行到这里，KafkaProducer 的 send 方法就执行完毕了，返回给调用方的就是一个 FutureRecordMetadata 对象。  
+&emsp; 源码的阅读比较枯燥，接下来用一个流程图简单的阐述一下消息追加的关键要素，重点关注一下各个 Future。  
+
+### 1.3.1.2. Kafka 消息追加流程图与总结  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-12.png)  
-上面的消息发送，其实用消息追加来表达更加贴切，因为 Kafka 的 send 方法，并不会直接向 broker 发送消息，而是首先先追加到生产者的内存缓存中，其内存存储结构如下：ConcurrentMap< TopicPartition, Deque< ProducerBatch>> batches，那我们自然而然的可以得知，Kafka 的生产者为会每一个 topic 的每一个 分区单独维护一个队列，即 ArrayDeque，内部存放的元素为 ProducerBatch，即代表一个批次，即 Kafka 消息发送是按批发送的。其缓存结果图如下：  
+&emsp; 上面的消息发送，其实用消息追加来表达更加贴切，因为 Kafka 的 send 方法，并不会直接向 broker 发送消息，而是首先先追加到生产者的内存缓存中，其内存存储结构如下：ConcurrentMap< TopicPartition, Deque< ProducerBatch>> batches，那我们自然而然的可以得知，Kafka 的生产者为会每一个 topic 的每一个 分区单独维护一个队列，即 ArrayDeque，内部存放的元素为 ProducerBatch，即代表一个批次，即 Kafka 消息发送是按批发送的。其缓存结果图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-13.png)  
-KafkaProducer 的 send 方法最终返回的 FutureRecordMetadata ，是 Future 的子类，即 Future 模式。那 kafka 的消息发送怎么实现异步发送、同步发送的呢？  
+&emsp; KafkaProducer 的 send 方法最终返回的 FutureRecordMetadata ，是 Future 的子类，即 Future 模式。那 kafka 的消息发送怎么实现异步发送、同步发送的呢？  
 其实答案也就蕴含在 send 方法的返回值，如果项目方需要使用同步发送的方式，只需要拿到 send 方法的返回结果后，调用其 get() 方法，此时如果消息还未发送到 Broker 上，该方法会被阻塞，等到 broker 返回消息发送结果后该方法会被唤醒并得到消息发送结果。如果需要异步发送，则建议使用 send(ProducerRecord< K, V > record, Callback callback),但不能调用 get 方法即可。Callback 会在收到 broker 的响应结果后被调用，并且支持拦截器。  
-消息追加流程就介绍到这里了，消息被追加到缓存区后，什么是会被发送到 broker 端呢？将在下一篇文章中详细介绍。  
+&emsp; 消息追加流程就介绍到这里了，消息被追加到缓存区后，什么是会被发送到 broker 端呢？将在下一篇文章中详细介绍。  
 
 
-### 1.3.2. Sender 线程详解  
+## 1.3.2. Sender 线程详解  
 KafkaProducer send 方法的流程，该方法只是将消息追加到 KafKaProducer 的缓存中，并未真正的向 broker 发送消息，本节将探讨 Kafka 的 Sender 线程。  
 
 在 KafkaProducer 中会启动一个单独的线程，其名称为 “kafka-producer-network-thread | clientID”，其中 clientID 为生产者的 id 。   
 
-#### 1.3.2.1. Sender#run 方法详解
+### 1.3.2.1. 属性含义  
+KafkaClient client
+kafka 网络通信客户端，主要封装与 broker 的网络通信。
+RecordAccumulator accumulator
+消息记录累积器，消息追加的入口(RecordAccumulator 的 append 方法)。
+Metadata metadata
+元数据管理器，即 topic 的路由分区信息。
+boolean guaranteeMessageOrder
+是否需要保证消息的顺序性。
+int maxRequestSize
+调用 send 方法发送的最大请求大小，包括 key、消息体序列化后的消息总大小不能超过该值。通过参数 max.request.size 来设置。
+short acks
+用来定义消息“已提交”的条件(标准)，就是 Broker 端向客户端承偌已提交的条件，可选值如下0、-1、1.
+int retries
+重试次数。
+Time time
+时间工具类。
+boolean running
+该线程状态，为 true 表示运行中。
+boolean forceClose
+是否强制关闭，此时会忽略正在发送中的消息。
+SenderMetrics sensors
+消息发送相关的统计指标收集器。
+int requestTimeoutMs
+请求的超时时间。
+long retryBackoffMs
+请求失败之在重试之前等待的时间。
+ApiVersions apiVersions
+API版本信息。
+TransactionManager transactionManager
+事务处理器。
+Map< TopicPartition, List< ProducerBatch>> inFlightBatches
+正在执行发送相关的消息批次。
+
+### 1.3.2.2. Sender#run 方法详解
 Sender#run  
 
 ```java
 public void run() {
     log.debug("Starting Kafka producer I/O thread.");
-    while (running) {   
+    while (running) {
         try {
-            runOnce();    // @1
+            runOnce();    // @1 Sender 线程在运行状态下主要的业务处理方法，将消息缓存区中的消息向 broker 发送。
         } catch (Exception e) {
             log.error("Uncaught error in kafka producer I/O thread: ", e);
         }
     }
     log.debug("Beginning shutdown of Kafka producer I/O thread, sending remaining records.");
-    while (!forceClose && (this.accumulator.hasUndrained() || this.client.inFlightRequestCount() > 0)) {    // @2
+    while (!forceClose && (this.accumulator.hasUndrained() || this.client.inFlightRequestCount() > 0)) {    // @2 如果主动关闭 Sender 线程，如果不是强制关闭，则如果缓存区还有消息待发送，再次调用 runOnce 方法将剩余的消息发送完毕后再退出。
         try {
             runOnce();
         } catch (Exception e) {
             log.error("Uncaught error in kafka producer I/O thread: ", e);
         }
     }
-    if (forceClose) {                                                                                                                                     // @3
+    if (forceClose) {  // @3 如果强制关闭 Sender 线程，则拒绝未完成提交的消息。
         log.debug("Aborting incomplete batches due to forced shutdown");
         this.accumulator.abortIncompleteBatches();
     }
     try {
-        this.client.close();                                                                                                                               // @4
+        this.client.close();  // @4 关闭 Kafka Client 即网络通信对象。
     } catch (Exception e) {
         log.error("Failed to close network client", e);
     }
     log.debug("Shutdown of Kafka producer I/O thread has completed.");
 }
 ```
-代码@1：Sender 线程在运行状态下主要的业务处理方法，将消息缓存区中的消息向 broker 发送。  
-代码@2：如果主动关闭 Sender 线程，如果不是强制关闭，则如果缓存区还有消息待发送，再次调用 runOnce 方法将剩余的消息发送完毕后再退出。  
-代码@3：如果强制关闭 Sender 线程，则拒绝未完成提交的消息。  
-代码@4：关闭 Kafka Client 即网络通信对象。  
 
-接下来将分别探讨其上述方法的实现细节。  
+&emsp; 接下来将分别探讨其上述方法的实现细节。  
 
-#### 1.3.2.2. runOnce 详解  
-Sender#runOnce  
+#### 1.3.2.2.1. runOnce 详解  
+&emsp; Sender#runOnce(本文不关注事务消息的实现原理，故省略了该部分的代码。)  
 
 ```java
 void runOnce() {
 	// 此处省略与事务消息相关的逻辑
     long currentTimeMs = time.milliseconds();
-    long pollTimeout = sendProducerData(currentTimeMs);   // @1
+    long pollTimeout = sendProducerData(currentTimeMs);   // @1 调用 sendProducerData 方法发送消息。  
     client.poll(pollTimeout, currentTimeMs);   // @2
 }
 ```
-本文不关注事务消息的实现原理，故省略了该部分的代码。  
-代码@1：调用 sendProducerData 方法发送消息。  
-代码@2：调用这个方法的作用？  
 
-接下来分别对上述两个方法进行深入探究。  
+&emsp; 接下来分别对上述两个方法进行深入探究。  
 
-##### 1.3.2.2.1. sendProducerData
-接下来将详细分析其实现步骤。  
-Sender#sendProducerData  
+##### 1.3.2.2.1.1. sendProducerData
+&emsp; sendProducerData把实际要发的消息封装好，放入KakfaNetworkClient中。  
 
 ```java
-Cluster cluster = metadata.fetch();
-// get the list of partitions with data ready to send
-RecordAccumulator.ReadyCheckResult result = this.accumulator.ready(cluster, now);
-```
-Step1：首先根据当前时间，根据缓存队列中的数据判断哪些 topic 的 哪些分区已经达到发送条件。达到可发送的条件将在 2.1.1.1 节详细分析。
-
-Sender#sendProducerData
-
-if (!result.unknownLeaderTopics.isEmpty()) {
-    for (String topic : result.unknownLeaderTopics)
-        this.metadata.add(topic);
-    
-    log.debug("Requesting metadata update due to unknown leader topics from the batched records: {}",
-                result.unknownLeaderTopics);
-    this.metadata.requestUpdate();
-}
-
-
-Step2：如果在待发送的消息未找到其路由信息，则需要首先去 broker 服务器拉取对应的路由信息(分区的 leader 节点信息)。
-Sender#sendProducerData
-
-long notReadyTimeout = Long.MAX_VALUE;
-while (iter.hasNext()) {
-    Node node = iter.next();
-    if (!this.client.ready(node, now)) {
-        iter.remove();
-        notReadyTimeout = Math.min(notReadyTimeout, this.client.pollDelayMs(node, now));
+ private long sendProducerData(long now) {
+    // 1. 计算需要以及可以向哪些节点发送请求
+    Cluster cluster = metadata.fetch();
+    // get the list of partitions with data ready to send
+    // 计算需要向哪些节点发送请求
+    RecordAccumulator.ReadyCheckResult result = this.accumulator.ready(cluster, now);
+ 
+    // if there are any partitions whose leaders are not known yet, force metadata update
+    // 2. 如果存在未知的 leader 副本对应的节点（对应的 topic 分区正在执行 leader 选举，或者对应的 topic 已经失效），
+    // 标记需要更新缓存的集群元数据信息
+    if (!result.unknownLeaderTopics.isEmpty()) {
+        // The set of topics with unknown leader contains topics with leader election pending as well as
+        // topics which may have expired. Add the topic again to metadata to ensure it is included
+        // and request metadata update, since there are messages to send to the topic.
+        for (String topic : result.unknownLeaderTopics)
+            this.metadata.add(topic);
+ 
+        log.debug("Requesting metadata update due to unknown leader topics from the batched records: {}",
+            result.unknownLeaderTopics);
+        this.metadata.requestUpdate();
     }
-}
-
-
-Step3：移除在网络层面没有准备好的分区，并且计算在接下来多久的时间间隔内，该分区都将处于未准备状态。
-1. 在网络环节没有准备好的标准如下：  
-    * 分区没有未完成的更新元素数据请求(metadata)。
-    * 当前生产者与对端 broker 已建立连接并完成了 TCP 的三次握手。
-    * 如果启用 SSL、ACL 等机制，相关状态都已就绪。
-    * 该分区对应的连接正在处理中的请求数时是否超过设定值，默认为 5，可通过属性 max.in.flight.requests.per.connection 来设置。
-2. client pollDelayMs 预估分区在接下来多久的时间间隔内都将处于未转变好状态(not ready)，其标准如下：
-    * 如果已与对端的 TCP 连接已创建好，并处于已连接状态，此时如果没有触发限流，则返回0，如果有触发限流，则返回限流等待时间。
-    * 如果还位于对端建立 TCP 连接，则返回 Long.MAX_VALUE，因为连接建立好后，会唤醒发送线程的。
-
-Sender#sendProducerData
-
-// create produce requests
-Map<Integer, List<ProducerBatch>> batches = this.accumulator.drain(cluster, result.readyNodes, this.maxRequestSize, now);
-
-
-Step4：根据已准备的分区，从缓存区中抽取待发送的消息批次(ProducerBatch)，并且按照 nodeId:List 组织，注意，抽取后的 ProducerBatch 将不能再追加消息了，就算还有剩余空间可用，具体抽取将在下文在详细介绍。
-
-Sender#sendProducerData
-
-addToInflightBatches(batches);
-public void addToInflightBatches(Map<Integer, List<ProducerBatch>> batches) {
-    for (List<ProducerBatch> batchList : batches.values()) {
-        addToInflightBatches(batchList);
-    }
-}
-private void addToInflightBatches(List<ProducerBatch> batches) {
-    for (ProducerBatch batch : batches) {
-        List<ProducerBatch> inflightBatchList = inFlightBatches.get(batch.topicPartition);
-        if (inflightBatchList == null) {
-            inflightBatchList = new ArrayList<>();
-            inFlightBatches.put(batch.topicPartition, inflightBatchList);
+ 
+    // remove any nodes we aren't ready to send to
+    // 3. 遍历处理待发送请求的目标节点，基于网络 IO 检查对应节点是否可用，对于不可用的节点则剔除
+    Iterator<Node> iter = result.readyNodes.iterator();
+    long notReadyTimeout = Long.MAX_VALUE;
+    while (iter.hasNext()) {
+        Node node = iter.next();
+        // 检查目标节点是否准备好接收请求，如果未准备好但目标节点允许创建连接，则创建到目标节点的连接
+        if (!this.client.ready(node, now)) {
+            // 对于未准备好的节点，则从 ready 集合中删除
+            iter.remove();
+            notReadyTimeout = Math.min(notReadyTimeout, this.client.pollDelayMs(node, now));
         }
-        inflightBatchList.add(batch);
     }
+ 
+    // create produce requests
+    // 4. 获取每个节点待发送消息集合，其中 key 是目标 leader 副本所在节点 ID
+    Map<Integer, List<ProducerBatch>> batches = this.accumulator.drain(cluster, result.readyNodes, this.maxRequestSize, now);
+    addToInflightBatches(batches);
+    if (guaranteeMessageOrder) {
+        // 5. 如果需要保证消息的强顺序性，则缓存对应 topic 分区对象，防止同一时间往同一个 topic 分区发送多条处于未完成状态的消息
+        // Mute all the partitions drained
+        // 将所有 RecordBatch 的 topic 分区对象加入到 muted 集合中
+        // 防止同一时间往同一个 topic 分区发送多条处于未完成状态的消息
+        for (List<ProducerBatch> batchList : batches.values()) {
+            for (ProducerBatch batch : batchList)
+                this.accumulator.mutePartition(batch.topicPartition);
+        }
+    }
+    // 6. 处理本地过期的消息，返回 TimeoutException，并释放空间
+    accumulator.resetNextBatchExpiryTime();
+    List<ProducerBatch> expiredInflightBatches = getExpiredInflightBatches(now);
+    List<ProducerBatch> expiredBatches = this.accumulator.expiredBatches(now);
+    expiredBatches.addAll(expiredInflightBatches);
+ 
+    // Reset the producer id if an expired batch has previously been sent to the broker. Also update the metrics
+    // for expired batches. see the documentation of @TransactionState.resetProducerId to understand why
+    // we need to reset the producer id here.
+    if (!expiredBatches.isEmpty())
+        log.trace("Expired {} batches in accumulator", expiredBatches.size());
+    for (ProducerBatch expiredBatch : expiredBatches) {
+        String errorMessage = "Expiring " + expiredBatch.recordCount + " record(s) for " + expiredBatch.topicPartition
+            + ":" + (now - expiredBatch.createdMs) + " ms has passed since batch creation";
+        failBatch(expiredBatch, -1, NO_TIMESTAMP, new TimeoutException(errorMessage), false);
+        if (transactionManager != null && expiredBatch.inRetry()) {
+            // This ensures that no new batches are drained until the current in flight batches are fully resolved.
+            transactionManager.markSequenceUnresolved(expiredBatch.topicPartition);
+        }
+    }
+    sensors.updateProduceRequestMetrics(batches);
+ 
+    // If we have any nodes that are ready to send + have sendable data, poll with 0 timeout so this can immediately
+    // loop and try sending more data. Otherwise, the timeout will be the smaller value between next batch expiry
+    // time, and the delay time for checking data availability. Note that the nodes may have data that isn't yet
+    // sendable due to lingering, backing off, etc. This specifically does not include nodes with sendable data
+    // that aren't ready to send since they would cause busy looping.
+    // 如果存在待发送的消息，则设置 pollTimeout 等于 0，这样可以立即发送请求，从而能够缩短剩余消息的缓存时间，避免堆积
+    long pollTimeout = Math.min(result.nextReadyCheckDelayMs, notReadyTimeout);
+    pollTimeout = Math.min(pollTimeout, this.accumulator.nextExpiryTimeMs() - now);
+    pollTimeout = Math.max(pollTimeout, 0);
+    if (!result.readyNodes.isEmpty()) {
+        log.trace("Nodes with data ready to send: {}", result.readyNodes);
+        // if some partitions are already ready to be sent, the select time would be 0;
+        // otherwise if some partition already has some data accumulated but not ready yet,
+        // the select time will be the time difference between now and its linger expiry time;
+        // otherwise the select time will be the time difference between now and the metadata expiry time;
+        pollTimeout = 0;
+    }
+    // 7. 发送请求到服务端，并处理服务端响应
+    sendProduceRequests(batches, now);
+    return pollTimeout;
 }
-
-Step5：将抽取的 ProducerBatch 加入到 inFlightBatches 数据结构，该属性的声明如下：Map<TopicPartition, List< ProducerBatch >> inFlightBatches，即按照 topic-分区 为键，存放已抽取的 ProducerBatch，这个属性的含义就是存储待发送的消息批次。可以根据该数据结构得知在消息发送时以分区为维度反馈 Sender 线程的“积压情况”，max.in.flight.requests.per.connection 就是来控制积压的最大数量，如果积压达到这个数值，针对该队列的消息发送会限流。
-
-Sender#sendProducerData
-```java
-accumulator.resetNextBatchExpiryTime();
-List<ProducerBatch> expiredInflightBatches = getExpiredInflightBatches(now);
-List<ProducerBatch> expiredBatches = this.accumulator.expiredBatches(now);
-expiredBatches.addAll(expiredInflightBatches);
 ```
 
-Step6：从 inflightBatches 与 batches 中查找已过期的消息批次(ProducerBatch)，判断是否过期的标准是系统当前时间与 ProducerBatch 创建时间之差是否超过120s，过期时间可以通过参数 delivery.timeout.ms 设置。
 
-Sender#sendProducerData
+  
 
-if (!expiredBatches.isEmpty())
-    log.trace("Expired {} batches in accumulator", expiredBatches.size());
-for (ProducerBatch expiredBatch : expiredBatches) {
-    String errorMessage = "Expiring " + expiredBatch.recordCount + " record(s) for " + expiredBatch.topicPartition
-                + ":" + (now - expiredBatch.createdMs) + " ms has passed since batch creation";
-    failBatch(expiredBatch, -1, NO_TIMESTAMP, new TimeoutException(errorMessage), false);
-    if (transactionManager != null && expiredBatch.inRetry()) {
-        // This ensures that no new batches are drained until the current in flight batches are fully resolved.
-        transactionManager.markSequenceUnresolved(expiredBatch.topicPartition);
-    }
-}
+###### 1.3.2.2.1.2. # RecordAccumulator#ready
+消息发送的过程（ 步骤 7 ），位于 Sender#sendProduceRequests 方法中：  
+这一步主要逻辑就是创建客户端请求 ClientRequest 对象，并通过 NetworkClient#send 方法将请求加入到网络 I/O 通道（KafkaChannel）中。同时将该对象缓存到 InFlightRequests 中，等接收到服务端响应时会通过缓存的 ClientRequest 对象调用对应的 callback 方法。最后调用 NetworkClient#poll 方法执行具体的网络请求和响应。  
 
-Step7：处理已超时的消息批次，通知该批消息发送失败，即通过设置 KafkaProducer#send 方法返回的凭证中的 FutureRecordMetadata 中的 ProduceRequestResult result，使之调用其 get 方法不会阻塞。  
-
-Sender#sendProducerData
-
-sensors.updateProduceRequestMetrics(batches);
-
-Step8：收集统计指标，本文不打算详细分析，但后续会专门对 Kafka 的 Metrics 设计进行一个深入的探讨与学习。
-
-Sender#sendProducerData
-
-long pollTimeout = Math.min(result.nextReadyCheckDelayMs, notReadyTimeout);
-pollTimeout = Math.min(pollTimeout, this.accumulator.nextExpiryTimeMs() - now);
-pollTimeout = Math.max(pollTimeout, 0);
-if (!result.readyNodes.isEmpty()) {
-    log.trace("Nodes with data ready to send: {}", result.readyNodes);
-    pollTimeout = 0;
-}
-
-
-Step9：设置下一次的发送延时，待补充详细分析。
-Sender#sendProducerData
-
-sendProduceRequests(batches, now);
+```java
 private void sendProduceRequests(Map<Integer, List<ProducerBatch>> collated, long now) {
+    // 遍历处理待发送消息集合，key 是目标节点 ID
     for (Map.Entry<Integer, List<ProducerBatch>> entry : collated.entrySet())
         sendProduceRequest(now, entry.getKey(), acks, requestTimeoutMs, entry.getValue());
 }
+```
 
-Step10：该步骤按照 brokerId 分别构建发送请求，即每一个 broker 会将多个 ProducerBatch 一起封装成一个请求进行发送，同一时间，每一个 与 broker 连接只会只能发送一个请求，注意，这里只是构建请求，并最终会通过 NetworkClient#send 方法，将该批数据设置到 NetworkClient 的待发送数据中，此时并没有触发真正的网络调用。
+```java
+private void sendProduceRequest(long now, int destination, short acks, int timeout, List<ProducerBatch> batches) {
+    if (batches.isEmpty())
+        return;
+ 
+    Map<TopicPartition, MemoryRecords> produceRecordsByPartition = new HashMap<>(batches.size());
+    final Map<TopicPartition, ProducerBatch> recordsByPartition = new HashMap<>(batches.size());
+ 
+    // find the minimum magic version used when creating the record sets
+    byte minUsedMagic = apiVersions.maxUsableProduceMagic();
+    for (ProducerBatch batch : batches) {
+        if (batch.magic() < minUsedMagic)
+            minUsedMagic = batch.magic();
+    }
+ 
+    // 遍历 RecordBatch 集合，整理成 produceRecordsByPartition 和 recordsByPartition
+    for (ProducerBatch batch : batches) {
+        TopicPartition tp = batch.topicPartition;
+        MemoryRecords records = batch.records();
+ 
+        // down convert if necessary to the minimum magic used. In general, there can be a delay between the time
+        // that the producer starts building the batch and the time that we send the request, and we may have
+        // chosen the message format based on out-dated metadata. In the worst case, we optimistically chose to use
+        // the new message format, but found that the broker didn't support it, so we need to down-convert on the
+        // client before sending. This is intended to handle edge cases around cluster upgrades where brokers may
+        // not all support the same message format version. For example, if a partition migrates from a broker
+        // which is supporting the new magic version to one which doesn't, then we will need to convert.
+        if (!records.hasMatchingMagic(minUsedMagic))
+            records = batch.records().downConvert(minUsedMagic, 0, time).records();
+        produceRecordsByPartition.put(tp, records);
+        recordsByPartition.put(tp, batch);
+    }
+ 
+    String transactionalId = null;
+    if (transactionManager != null && transactionManager.isTransactional()) {
+        transactionalId = transactionManager.transactionalId();
+    }
+    // 创建 ProduceRequest 请求构造器
+    ProduceRequest.Builder requestBuilder = ProduceRequest.Builder.forMagic(minUsedMagic, acks, timeout,
+            produceRecordsByPartition, transactionalId);
+    // 创建回调对象，用于处理响应
+    RequestCompletionHandler callback = new RequestCompletionHandler() {
+        public void onComplete(ClientResponse response) {
+            handleProduceResponse(response, recordsByPartition, time.milliseconds());
+        }
+    };
+ 
+    String nodeId = Integer.toString(destination);
+    // 创建 ClientRequest 请求对象，如果 acks 不等于 0 则表示期望获取服务端响应
+    ClientRequest clientRequest = client.newClientRequest(nodeId, requestBuilder, now, acks != 0,
+            requestTimeoutMs, callback);
+    // 将请求加入到网络 I/O 通道（KafkaChannel）中。同时将该对象缓存到 InFlightRequests 中
+    client.send(clientRequest, now);
+    log.trace("Sent produce request to {}: {}", nodeId, requestBuilder);
+}
+```
 
-sendProducerData 方法就介绍到这里了，既然这里还没有进行真正的网络请求，那在什么时候触发呢？
 
-我们继续回到 runOnce 方法。  
+###### RecordAccumulator#drain       
+知道了需要向哪些节点投递消息，接下来自然而然就需要获取发往每个节点的数据， 步骤 4 的实现位于 RecordAccumulator#drain 方法中：  
 
-##### 1.3.2.2.2. NetworkClient 的 poll 方法  
+```java
+public Map<Integer, List<ProducerBatch>> drain(Cluster cluster, Set<Node> nodes, int maxSize, long now) {
+    if (nodes.isEmpty())
+        return Collections.emptyMap();
+    // 记录转换后的结果，key 是目标节点 ID
+    Map<Integer, List<ProducerBatch>> batches = new HashMap<>();
+    for (Node node : nodes) {
+        List<ProducerBatch> ready = drainBatchesForOneNode(cluster, node, maxSize, now);
+        batches.put(node.id(), ready);
+    }
+    return batches;
+}
+```
+```java
+private List<ProducerBatch> drainBatchesForOneNode(Cluster cluster, Node node, int maxSize, long now) {
+    int size = 0;
+    // 获取当前节点上的分区信息
+    List<PartitionInfo> parts = cluster.partitionsForNode(node.id());
+    // 记录待发往当前节点的 RecordBatch 集合
+    List<ProducerBatch> ready = new ArrayList<>();
+    /* to make starvation less likely this loop doesn't start at 0 */
+    /*
+     * drainIndex 用于记录上次发送停止的位置，本次继续从当前位置开始发送，
+     * 如果每次都是从 0 位置开始，可能会导致排在后面的分区饿死，可以看做是一个简单的负载均衡策略
+     */
+    int start = drainIndex = drainIndex % parts.size();
+    do {
+        PartitionInfo part = parts.get(drainIndex);
+        TopicPartition tp = new TopicPartition(part.topic(), part.partition());
+ 
+        this.drainIndex = (this.drainIndex + 1) % parts.size();
+ 
+        // Only proceed if the partition has no in-flight batches.
+        // 如果需要保证消息强顺序性，则不应该同时存在多个发往目标分区的消息
+        if (isMuted(tp, now))
+            continue;
+ 
+        Deque<ProducerBatch> deque = getDeque(tp);
+        if (deque == null)
+            continue;
+ 
+        synchronized (deque) {
+            // invariant: !isMuted(tp,now) && deque != null
+            // 获取当前分区对应的 RecordBatch 集合
+            ProducerBatch first = deque.peekFirst();
+            if (first == null)
+                continue;
+ 
+            // first != null
+            // 重试 && 重试时间间隔未达到阈值时间
+            boolean backoff = first.attempts() > 0 && first.waitedTimeMs(now) < retryBackoffMs;
+            // Only drain the batch if it is not during backoff period.
+            if (backoff)
+                continue;
+ 
+            // 仅发送第一次发送，或重试等待时间较长的消息
+            if (size + first.estimatedSizeInBytes() > maxSize && !ready.isEmpty()) {
+                // there is a rare case that a single batch size is larger than the request size due to
+                // compression; in this case we will still eventually send this batch in a single request
+                // 单次消息数据量已达到上限，结束循环，一般对应一个请求的大小，防止请求消息过大
+                break;
+            } else {
+                if (shouldStopDrainBatchesForPartition(first, tp))
+                    break;
+ 
+                boolean isTransactional = transactionManager != null && transactionManager.isTransactional();
+                ProducerIdAndEpoch producerIdAndEpoch =
+                    transactionManager != null ? transactionManager.producerIdAndEpoch() : null;
+                // 每次仅获取第一个 RecordBatch，并放入 read 列表中，这样给每个分区一个机会，保证公平，防止饥饿
+                ProducerBatch batch = deque.pollFirst();
+                if (producerIdAndEpoch != null && !batch.hasSequence()) {
+                    // If the batch already has an assigned sequence, then we should not change the producer id and
+                    // sequence number, since this may introduce duplicates. In particular, the previous attempt
+                    // may actually have been accepted, and if we change the producer id and sequence here, this
+                    // attempt will also be accepted, causing a duplicate.
+                    //
+                    // Additionally, we update the next sequence number bound for the partition, and also have
+                    // the transaction manager track the batch so as to ensure that sequence ordering is maintained
+                    // even if we receive out of order responses.
+                    batch.setProducerState(producerIdAndEpoch, transactionManager.sequenceNumber(batch.topicPartition), isTransactional);
+                    transactionManager.incrementSequenceNumber(batch.topicPartition, batch.recordCount);
+                    log.debug("Assigned producerId {} and producerEpoch {} to batch with base sequence " +
+                            "{} being sent to partition {}", producerIdAndEpoch.producerId,
+                        producerIdAndEpoch.epoch, batch.baseSequence(), tp);
+ 
+                    transactionManager.addInFlightBatch(batch);
+                }
+                // 将当前 RecordBatch 设置为只读
+                batch.close();
+                size += batch.records().sizeInBytes();
+                ready.add(batch);
+                // 更新 drainedMs
+                batch.drained(now);
+            }
+        }
+    } while (start != drainIndex);
+    return ready;
+}
+```
+
+ 
+###### Sender#sendProduceRequests
+消息发送的过程（ 步骤 7 ），位于 Sender#sendProduceRequests 方法中：  
+这一步主要逻辑就是创建客户端请求 ClientRequest 对象，并通过 NetworkClient#send 方法将请求加入到网络 I/O 通道（KafkaChannel）中。同时将该对象缓存到 InFlightRequests 中，等接收到服务端响应时会通过缓存的 ClientRequest 对象调用对应的 callback 方法。最后调用 NetworkClient#poll 方法执行具体的网络请求和响应。  
+
+```java
+private void sendProduceRequests(Map<Integer, List<ProducerBatch>> collated, long now) {
+    // 遍历处理待发送消息集合，key 是目标节点 ID
+    for (Map.Entry<Integer, List<ProducerBatch>> entry : collated.entrySet())
+        sendProduceRequest(now, entry.getKey(), acks, requestTimeoutMs, entry.getValue());
+}
+```
+
+```java
+private void sendProduceRequest(long now, int destination, short acks, int timeout, List<ProducerBatch> batches) {
+    if (batches.isEmpty())
+        return;
+ 
+    Map<TopicPartition, MemoryRecords> produceRecordsByPartition = new HashMap<>(batches.size());
+    final Map<TopicPartition, ProducerBatch> recordsByPartition = new HashMap<>(batches.size());
+ 
+    // find the minimum magic version used when creating the record sets
+    byte minUsedMagic = apiVersions.maxUsableProduceMagic();
+    for (ProducerBatch batch : batches) {
+        if (batch.magic() < minUsedMagic)
+            minUsedMagic = batch.magic();
+    }
+ 
+    // 遍历 RecordBatch 集合，整理成 produceRecordsByPartition 和 recordsByPartition
+    for (ProducerBatch batch : batches) {
+        TopicPartition tp = batch.topicPartition;
+        MemoryRecords records = batch.records();
+ 
+        // down convert if necessary to the minimum magic used. In general, there can be a delay between the time
+        // that the producer starts building the batch and the time that we send the request, and we may have
+        // chosen the message format based on out-dated metadata. In the worst case, we optimistically chose to use
+        // the new message format, but found that the broker didn't support it, so we need to down-convert on the
+        // client before sending. This is intended to handle edge cases around cluster upgrades where brokers may
+        // not all support the same message format version. For example, if a partition migrates from a broker
+        // which is supporting the new magic version to one which doesn't, then we will need to convert.
+        if (!records.hasMatchingMagic(minUsedMagic))
+            records = batch.records().downConvert(minUsedMagic, 0, time).records();
+        produceRecordsByPartition.put(tp, records);
+        recordsByPartition.put(tp, batch);
+    }
+ 
+    String transactionalId = null;
+    if (transactionManager != null && transactionManager.isTransactional()) {
+        transactionalId = transactionManager.transactionalId();
+    }
+    // 创建 ProduceRequest 请求构造器
+    ProduceRequest.Builder requestBuilder = ProduceRequest.Builder.forMagic(minUsedMagic, acks, timeout,
+            produceRecordsByPartition, transactionalId);
+    // 创建回调对象，用于处理响应
+    RequestCompletionHandler callback = new RequestCompletionHandler() {
+        public void onComplete(ClientResponse response) {
+            handleProduceResponse(response, recordsByPartition, time.milliseconds());
+        }
+    };
+ 
+    String nodeId = Integer.toString(destination);
+    // 创建 ClientRequest 请求对象，如果 acks 不等于 0 则表示期望获取服务端响应
+    ClientRequest clientRequest = client.newClientRequest(nodeId, requestBuilder, now, acks != 0,
+            requestTimeoutMs, callback);
+    // 将请求加入到网络 I/O 通道（KafkaChannel）中。同时将该对象缓存到 InFlightRequests 中
+    client.send(clientRequest, now);
+    log.trace("Sent produce request to {}: {}", nodeId, requestBuilder);
+}
+```
+ 
+
+##### 1.3.2.2.1.3. NetworkClient 的 poll 方法  
 
 ```java
  public List<ClientResponse> poll(long timeout, long now) {
@@ -672,14 +868,19 @@ sendProducerData 方法就介绍到这里了，既然这里还没有进行真正
 
 Sender 发送线程的流程就介绍到这里了，接下来首先给出一张流程图，然后对上述流程中一些关键的方法再补充深入探讨一下。  
 
-#### 1.3.2.3. run 方法流程图  
+### 1.3.2.3. run 方法流程图  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-14.png)  
 根据上面的源码分析得出上述流程图，图中对重点步骤也详细标注了其关键点。下面我们对上述流程图中 Sender 线程依赖的相关类的核心方法进行解读，以便加深 Sender 线程的理解。  
 
 由于在讲解 Sender 发送流程中，大部分都是调用 RecordAccumulator 方法来实现其特定逻辑，故接下来重点对上述涉及到RecordAccumulator 的方法进行一个详细剖析，加强对 Sender 流程的理解。  
 
-### 1.3.3. RecordAccumulator 核心方法详解  
-#### 1.3.3.1. RecordAccumulator 的 ready 方法详解  
+
+
+
+-------
+
+## 1.3.3. RecordAccumulator 核心方法详解  
+### 1.3.3.1. RecordAccumulator 的 ready 方法详解  
 该方法主要就是根据缓存区中的消息，判断哪些分区已经达到发送条件。  
 RecordAccumulator#ready  
 
@@ -760,7 +961,7 @@ boolean sendable
     该发送者的 close 方法被调用(close = true)。
     该发送者的 flush 方法被调用。  
 
-#### 1.3.3.2. RecordAccumulator 的 drain方法详解  
+### 1.3.3.2. RecordAccumulator 的 drain方法详解  
 RecordAccumulator#drain  
 
 ```java
