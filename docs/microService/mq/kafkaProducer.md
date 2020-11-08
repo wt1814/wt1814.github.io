@@ -142,31 +142,32 @@ public int partition(String topic, Object key, byte[] keyBytes, Object value, by
 
 ## 1.3. 源码分析Kafka消息发送流程  
 ### 1.3.1. Kafka消息发送流程  
-可以通过 KafkaProducer 的 send 方法发送消息，send 方法的声明如下：
+&emsp; 可以通过 KafkaProducer 的 send 方法发送消息，send 方法的声明如下：
 
+```java
 Future<RecordMetadata> send(ProducerRecord<K, V> record)
 Future<RecordMetadata> send(ProducerRecord<K, V> record, Callback callback)
+```
+&emsp; 从上面的 API 可以得知，用户在使用 KafkaProducer 发送消息时，首先需要将待发送的消息封装成 ProducerRecord，返回的是一个 Future 对象，典型的 Future 设计模式。在发送时也可以指定一个 Callable 接口用来执行消息发送的回调。  
 
-从上面的 API 可以得知，用户在使用 KafkaProducer 发送消息时，首先需要将待发送的消息封装成 ProducerRecord，返回的是一个 Future 对象，典型的 Future 设计模式。在发送时也可以指定一个 Callable 接口用来执行消息发送的回调。  
+&emsp; **Kafka消息追加流程**  
+&emsp; KafkaProducer 的 send 方法，并不会直接向 broker 发送消息，kafka 将消息发送异步化，即分解成两个步骤，send 方法的职责是将消息追加到内存中(分区的缓存队列中)，然后会由专门的 Send 线程异步将缓存中的消息批量发送到 Kafka Broker 中。
 
-**Kafka消息追加流程**  
-KafkaProducer 的 send 方法，并不会直接向 broker 发送消息，kafka 将消息发送异步化，即分解成两个步骤，send 方法的职责是将消息追加到内存中(分区的缓存队列中)，然后会由专门的 Send 线程异步将缓存中的消息批量发送到 Kafka Broker 中。
+&emsp; 消息追加入口为 KafkaProducer#send
 
-消息追加入口为 KafkaProducer#send
-
+```java
 public Future<RecordMetadata> send(ProducerRecord<K, V> record, Callback callback) {  
     // intercept the record, which can be potentially modified; this method does not throw exceptions
     ProducerRecord<K, V> interceptedRecord = this.interceptors.onSend(record);   // @1
     return doSend(interceptedRecord, callback);    // @2
 }
+```
 
-代码@1：首先执行消息发送拦截器，拦截器通过 interceptor.classes 指定，类型为 List< String >，每一个元素为拦截器的全类路径限定名。
-代码@2：执行 doSend 方法，后续我们需要留意一下 Callback 的调用时机。
-
-接下来我们来看 doSend 方法。
+&emsp; 代码@1：首先执行消息发送拦截器，拦截器通过 interceptor.classes 指定，类型为 List< String >，每一个元素为拦截器的全类路径限定名。  
+&emsp; 代码@2：执行 doSend 方法，后续需要留意一下 Callback 的调用时机。  
 
 #### 1.3.1.1. doSend  
-KafkaProducer#doSend  
+&emsp; KafkaProducer#doSend  
 
 ```java
 ClusterAndWaitTime clusterAndWaitTime;
@@ -179,9 +180,9 @@ try {
 }
 long remainingWaitMs = Math.max(0, maxBlockTimeMs - clusterAndWaitTime.waitedOnMetadataMs);
 ```
-Step1：获取 topic 的分区列表，如果本地没有该topic的分区信息，则需要向远端 broker 获取，该方法会返回拉取元数据所耗费的时间。在消息发送时的最大等待时间时会扣除该部分损耗的时间。  
+&emsp; Step1：获取 topic 的分区列表，如果本地没有该topic的分区信息，则需要向远端 broker 获取，该方法会返回拉取元数据所耗费的时间。在消息发送时的最大等待时间时会扣除该部分损耗的时间。  
 
-KafkaProducer#doSend  
+&emsp; KafkaProducer#doSend  
 
 ```java
 byte[] serializedKey;
@@ -193,9 +194,9 @@ try {
                         " specified in key.serializer", cce);
 }
 ```
-Step2：序列化 key。注意：序列化方法虽然有传入 topic、Headers 这两个属性，但参与序列化的只是 key 。
+&emsp; Step2：序列化 key。注意：序列化方法虽然有传入 topic、Headers 这两个属性，但参与序列化的只是 key 。
 
-KafkaProducer#doSend  
+&emsp; KafkaProducer#doSend  
 
 ```java
 byte[] serializedValue;
@@ -207,25 +208,27 @@ try {
                         " specified in value.serializer", cce);
 }
 ```
-Step3：对消息体内容进行序列化。
+&emsp; Step3：对消息体内容进行序列化。
 
-KafkaProducer#doSend
+&emsp; KafkaProducer#doSend
 
+```java
 int partition = partition(record, serializedKey, serializedValue, cluster);
 tp = new TopicPartition(record.topic(), partition);
+```
 
+&emsp; Step4：根据分区负载算法计算本次消息发送该发往的分区。其默认实现类为 DefaultPartitioner，路由算法如下：
 
-Step4：根据分区负载算法计算本次消息发送该发往的分区。其默认实现类为 DefaultPartitioner，路由算法如下：
+        如果指定了 key ，则使用 key 的 hashcode 与分区数取模。
+        如果未指定 key，则轮询所有的分区。
 
-    如果指定了 key ，则使用 key 的 hashcode 与分区数取模。
-    如果未指定 key，则轮询所有的分区。
+&emsp; KafkaProducer#doSend  
 
-KafkaProducer#doSend
-
+```java
 setReadOnly(record.headers());
 Header[] headers = record.headers().toArray();
-
-Step5：如果是消息头信息(RecordHeaders)，则设置为只读。
+```
+&emsp; Step5：如果是消息头信息(RecordHeaders)，则设置为只读。
 
 KafkaProducer#doSend
 

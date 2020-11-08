@@ -294,6 +294,10 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
 [Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
 [Redis原理](/docs/microService/Redis/Redis原理.md)  
+<!-- 
+Redis的虚拟内存
+https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
+-->
 &emsp; [Redis持久化](/docs/microService/Redis/Redis持久化.md)  
 &emsp; [Redis淘汰策略](/docs/microService/Redis/Redis淘汰.md)  
 &emsp; [Redis事务](/docs/microService/Redis/Redis事务.md)  
@@ -323,6 +327,7 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 [kafka监控](/docs/microService/mq/kafkaMonitor.md)  
 [kafkaStreams](/docs/microService/mq/kafkaStreams.md)  
 [kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  
+[kafka配置文件](/docs/microService/mq/kafkaConfig.md)  
 
 
 ### 分布式ID
@@ -460,6 +465,7 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 &emsp; [文本处理](/docs/Linux/Linux/文本处理.md)  
 &emsp; [网络通讯](/docs/Linux/Linux/网络通讯.md)  
 [shell编程](/docs/Linux/Linux/shell.md)  
+[堡垒机](/docs/Linux/Linux/baolei.md)  
 
 ## DevOps  
 [DevOps](/docs/devOps/devOps.md)  
