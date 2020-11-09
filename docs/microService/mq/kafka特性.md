@@ -18,6 +18,10 @@ https://mp.weixin.qq.com/s/ejZBAGI7qLE_QYSe-AqipA
 
 Kafka 面试必问：聊聊 acks 参数对消息持久化的影响！ 
 https://mp.weixin.qq.com/s/PePsJzuKEIfQpCH1KbxrCg
+
+
+如何实现高吞吐量
+https://blog.csdn.net/BeiisBei/article/details/104360272
 -->
 
 <!-- 

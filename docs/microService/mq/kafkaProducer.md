@@ -67,7 +67,7 @@ public class KafkaProducerTest {
 
 * 发送并忘记（send and forget）：producer.send()，默认为异步发送，并不关心消息是否达到服务端，会存在消息丢失的问题。
 * 同步：producer.send()返回一个Future对象，调用get()方法变回进行同步等待，就知道消息是否发送成功。
-* 异步发送：如果消息都进行同步发送，要发送这次的消息需要等到上次的消息成功发送到服务端，这样整个消息发送的效率就很低了。kafka支持producer.send()传入一个回调函数，消息不管成功或者失败都会调用这个回调函数，这样就算是异步发送，我们也知道消息的发送情况，然后再回调函数中选择记录日志还是重试都取决于调用方。Future\<RecordMetadata> send(ProducerRecord\<K, V> record, Callback callback);  
+* 异步发送：如果消息都进行同步发送，要发送这次的消息需要等到上次的消息成功发送到服务端，这样整个消息发送的效率就很低了。kafka支持producer.send()传入一个回调函数，消息不管成功或者失败都会调用这个回调函数，这样就算是异步发送，也知道消息的发送情况，然后再回调函数中选择记录日志还是重试都取决于调用方。Future\<RecordMetadata> send(ProducerRecord\<K, V> record, Callback callback);  
 
 
 ## 1.2. 消息发送流程概述    

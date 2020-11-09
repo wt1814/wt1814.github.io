@@ -24,6 +24,7 @@
             - [Ehcache](#ehcache)
         - [限流降级](#限流降级)
         - [分布式消息队列](#分布式消息队列)
+            - [kafka](#kafka)
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
@@ -318,20 +319,25 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 
 ### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  
+
+#### kafka  
+[kafka原理]  
 [kafka基本概念](/docs/microService/mq/kafka.md)  
+[kafka特性](/docs/microService/mq/kafka特性.md)  
+[kafka事务](/docs/microService/mq/kafkaTraction.md) 
 <!-- 
 https://blog.csdn.net/lianggx3/category_10406229.html
 -->
-[kafka生产者](/docs/microService/mq/kafkaProducer.md)  
-[kafkaBroker](/docs/microService/mq/kafkaBroker.md)  
-[kafka消费者](/docs/microService/mq/kafkaConsumer.md)  
-[kafka特性](/docs/microService/mq/kafka特性.md)  
-[kafka事务](/docs/microService/mq/kafkaTraction.md)  
-[kafka监控](/docs/microService/mq/kafkaMonitor.md)  
-[kafkaStreams](/docs/microService/mq/kafkaStreams.md)  
-[kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  
+[kafka使用]  
 [kafka配置文件](/docs/microService/mq/kafkaConfig.md)  
+[kafka使用](/docs/microService/mq/kafkaUse.md)  
+[kafka监控](/docs/microService/mq/kafkaMonitor.md)  
+[kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  
+[kafkaStreams](/docs/microService/mq/kafkaStreams.md)  
 
+[kafka源码]  
+[kafka生产者](/docs/microService/mq/kafkaProducer.md)  
+[kafka消费者](/docs/microService/mq/kafkaConsumer.md) 
 
 ### 分布式ID
 [分布式ID](/docs/microService/thinking/分布式ID.md)  
