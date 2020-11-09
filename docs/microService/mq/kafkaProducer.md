@@ -3,7 +3,7 @@
 - [1. kafka生产者](#1-kafka生产者)
     - [1.1. 消息发送流程概述](#11-消息发送流程概述)
     - [1.2. 消息发送示例](#12-消息发送示例)
-    - [1.3. Kafka消息发送流程](#13-kafka消息发送流程)
+    - [1.3. main线程](#13-main线程)
         - [1.3.1. doSend](#131-dosend)
             - [1.3.1.1. RecordAccumulator#append方法详解](#1311-recordaccumulatorappend方法详解)
                 - [1.3.1.1.1. ProducerBatch tryAppend方法详解](#13111-producerbatch-tryappend方法详解)
@@ -13,14 +13,11 @@
         - [1.4.2. Sender#run 方法详解](#142-senderrun-方法详解)
             - [1.4.2.1. runOnce 详解](#1421-runonce-详解)
                 - [1.4.2.1.1. sendProducerData](#14211-sendproducerdata)
-                    - [1.4.2.1.1.1. # RecordAccumulator#ready](#142111--recordaccumulatorready)
+                    - [1.4.2.1.1.1. RecordAccumulator#ready](#142111-recordaccumulatorready)
                     - [1.4.2.1.1.2. RecordAccumulator#drain](#142112-recordaccumulatordrain)
                     - [1.4.2.1.1.3. Sender#sendProduceRequests](#142113-sendersendproducerequests)
                 - [1.4.2.1.2. NetworkClient 的 poll 方法](#14212-networkclient-的-poll-方法)
         - [1.4.3. run 方法流程图](#143-run-方法流程图)
-    - [1.5. RecordAccumulator 核心方法详解](#15-recordaccumulator-核心方法详解)
-        - [1.5.1. RecordAccumulator 的 ready 方法详解](#151-recordaccumulator-的-ready-方法详解)
-        - [1.5.2. RecordAccumulator 的 drain方法详解](#152-recordaccumulator-的-drain方法详解)
 
 <!-- /TOC -->
 
@@ -28,14 +25,12 @@
 # 1. kafka生产者
 ## 1.1. 消息发送流程概述    
 &emsp; 在消息发送的过程中，涉及到了两个线程—-main线程和Sender线程，以及一个线程共享变量——RecordAccumulator。 main 线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  
-
 &emsp; Producer 发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至 Broker。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-8.png)  
 
-## 1.2. 消息发送示例  
-&emsp; 消息发送示例：  
-
+## 1.2. 消息发送示例        
 ```java
 package persistent.prestige.demo.kafka;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -80,71 +75,8 @@ public class KafkaProducerTest {
 * 同步：producer.send()返回一个Future对象，调用get()方法变回进行同步等待，就知道消息是否发送成功。
 * 异步发送：如果消息都进行同步发送，要发送这次的消息需要等到上次的消息成功发送到服务端，这样整个消息发送的效率就很低了。kafka支持producer.send()传入一个回调函数，消息不管成功或者失败都会调用这个回调函数，这样就算是异步发送，我们也知道消息的发送情况，然后再回调函数中选择记录日志还是重试都取决于调用方。Future\<RecordMetadata> send(ProducerRecord\<K, V> record, Callback callback);
 
-&emsp; **分区策略**  
-<!-- https://mp.weixin.qq.com/s/OB-ZVy70vHClCtep43gr_A 
-&emsp; kafka会将一个topic划分成n个分区，那么在生产者发送消息的时候是怎么知道要发给哪个分区的呢。上面说过生产者会拿到整个集群的信息，所以生产者知道每个topic下面有一个分区，基于此可以有些常见的消息分区策略：  
-
-* 轮询：依次将消息发送该topic下的所有分区，如果在创建消息的时候key为null，kafka默认采用这种策略。  
-* key指定分区：在创建消息是key不为空，并且使用默认分区器，kafka会将key进行hash，然后根据hash值隐射到指定的分区上。这样的好处是key相同的消息会在一个分区下，kafka并不能保证全局有序，但是在每个分区下的消息是有序的，按照顺序存储，按照顺序消费。在保证同一个key的消息是有序的，这样基本能满足消息的顺序性的需求。  
-* 自定义策略：实现Partitioner接口就能自定义分区策略。  
--->
-&emsp; producer 发送消息到 broker 时，会根据分区算法选择将其存储到哪一个 partition。其路由机制为：  
-1. 指定了 patition，则直接使用；  
-2. 未指定 patition 但指定 key，通过对 key 的 value 进行hash 选出一个 patition；  
-3. patition 和 key 都未指定，使用轮询选出一个 patition。  
-
-&emsp; 附上 java 客户端分区源码，一目了然：  
-
-```java
-//创建消息实例
-public ProducerRecord(String topic, Integer partition, Long timestamp, K key, V value) {
-     if (topic == null)
-          throw new IllegalArgumentException("Topic cannot be null");
-     if (timestamp != null && timestamp < 0)
-          throw new IllegalArgumentException("Invalid timestamp " + timestamp);
-     this.topic = topic;
-     this.partition = partition;
-     this.key = key;
-     this.value = value;
-     this.timestamp = timestamp;
-}
-
-//计算 patition，如果指定了 patition 则直接使用，否则使用 key 计算
-private int partition(ProducerRecord<K, V> record, byte[] serializedKey , byte[] serializedValue, Cluster cluster) {
-     Integer partition = record.partition();
-     if (partition != null) {
-          List<PartitionInfo> partitions = cluster.partitionsForTopic(record.topic());
-          int lastPartition = partitions.size() - 1;
-          if (partition < 0 || partition > lastPartition) {
-               throw new IllegalArgumentException(String.format("Invalid partition given with record: %d is not in the range [0...%d].", partition, lastPartition));
-          }
-          return partition;
-     }
-     return this.partitioner.partition(record.topic(), record.key(), serializedKey, record.value(), serializedValue, cluster);
-}
-
-// 使用 key 选取 patition
-public int partition(String topic, Object key, byte[] keyBytes, Object value, byte[] valueBytes, Cluster cluster) {
-     List<PartitionInfo> partitions = cluster.partitionsForTopic(topic);
-     int numPartitions = partitions.size();
-     if (keyBytes == null) {
-          int nextValue = counter.getAndIncrement();
-          List<PartitionInfo> availablePartitions = cluster.availablePartitionsForTopic(topic);
-          if (availablePartitions.size() > 0) {
-               int part = DefaultPartitioner.toPositive(nextValue) % availablePartitions.size();
-               return availablePartitions.get(part).partition();
-          } else {
-               return DefaultPartitioner.toPositive(nextValue) % numPartitions;
-          }
-     } else {
-          //对 keyBytes 进行 hash 选出一个 patition
-          return DefaultPartitioner.toPositive(Utils.murmur2(keyBytes)) % numPartitions;
-     }
-}
-```
-
-## 1.3. Kafka消息发送流程  
-&emsp; 可以通过 KafkaProducer 的 send 方法发送消息，send 方法的声明如下：
+## 1.3. main线程   
+&emsp; 可以通过KafkaProducer的send方法发送消息，send 方法的声明如下：
 
 ```java
 Future<RecordMetadata> send(ProducerRecord<K, V> record)
@@ -153,23 +85,21 @@ Future<RecordMetadata> send(ProducerRecord<K, V> record, Callback callback)
 &emsp; 从上面的 API 可以得知，用户在使用 KafkaProducer 发送消息时，首先需要将待发送的消息封装成 ProducerRecord，返回的是一个 Future 对象，典型的 Future 设计模式。在发送时也可以指定一个 Callable 接口用来执行消息发送的回调。  
 
 &emsp; **Kafka消息追加流程**  
-&emsp; KafkaProducer 的 send 方法，并不会直接向 broker 发送消息，kafka 将消息发送异步化，即分解成两个步骤，send 方法的职责是将消息追加到内存中(分区的缓存队列中)，然后会由专门的 Send 线程异步将缓存中的消息批量发送到 Kafka Broker 中。
+&emsp; KafkaProducer 的 send 方法，并不会直接向 broker 发送消息，kafka 将消息发送异步化，即分解成两个步骤，send方法的职责是将消息追加到内存中(分区的缓存队列中)，然后会由专门的Send线程异步将缓存中的消息批量发送到 Kafka Broker 中。
 
 &emsp; 消息追加入口为 KafkaProducer#send
 
 ```java
 public Future<RecordMetadata> send(ProducerRecord<K, V> record, Callback callback) {  
     // intercept the record, which can be potentially modified; this method does not throw exceptions
-    ProducerRecord<K, V> interceptedRecord = this.interceptors.onSend(record);   // @1
-    return doSend(interceptedRecord, callback);    // @2
+    // @1 首先执行消息发送拦截器，拦截器通过 interceptor.classes 指定，类型为 List< String >，每一个元素为拦截器的全类路径限定名。
+    ProducerRecord<K, V> interceptedRecord = this.interceptors.onSend(record);   
+    // @2 执行 doSend 方法，后续需要留意一下 Callback 的调用时机。
+    return doSend(interceptedRecord, callback);    
 }
 ```
 
-&emsp; 代码@1：首先执行消息发送拦截器，拦截器通过 interceptor.classes 指定，类型为 List< String >，每一个元素为拦截器的全类路径限定名。  
-&emsp; 代码@2：执行 doSend 方法，后续需要留意一下 Callback 的调用时机。  
-
 ### 1.3.1. doSend  
-
 &emsp; KafkaProducer#doSend  
 
 ```java
@@ -265,12 +195,10 @@ private Future<RecordMetadata> doSend(ProducerRecord<K, V> record, Callback call
 
 
 #### 1.3.1.1. RecordAccumulator#append方法详解  
-&emsp; 接下来将重点介绍如何将消息追加到生产者的发送缓存区，其实现类为：RecordAccumulator。  
-
-&emsp; 在讲解下一个流程之前，我们先来看一下 Kafka 双端队列的存储结构：  
+&emsp; 接下来将重点介绍step8如何将消息追加到生产者的发送缓存区，其实现类为：RecordAccumulator。  
+&emsp; 纵观 RecordAccumulator append 的流程，基本上就是从双端队列获取一个未填充完毕的 ProducerBatch（消息批次），然后尝试将其写入到该批次中（缓存、内存中），如果追加失败，则尝试创建一个新的 ProducerBatch 然后继续追加。Kafka 双端队列的存储结构：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-11.png)  
 
-&emsp; 纵观 RecordAccumulator append 的流程，基本上就是从双端队列获取一个未填充完毕的 ProducerBatch（消息批次），然后尝试将其写入到该批次中（缓存、内存中），如果追加失败，则尝试创建一个新的 ProducerBatch 然后继续追加。  
 
 &emsp; RecordAccumulator#append  
 
@@ -345,8 +273,6 @@ public RecordAppendResult append(TopicPartition tp,
 }
 ```
 
-  
-
 ##### 1.3.1.1.1. ProducerBatch tryAppend方法详解  
 &emsp; 接下来继续探究如何向 ProducerBatch 中写入消息。  
 &emsp; ProducerBatch #tryAppend  
@@ -387,13 +313,11 @@ public FutureRecordMetadata tryAppend(long timestamp, byte[] key, byte[] value, 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-13.png)  
 &emsp; KafkaProducer 的 send 方法最终返回的 FutureRecordMetadata ，是 Future 的子类，即 Future 模式。那 kafka 的消息发送怎么实现异步发送、同步发送的呢？  
 其实答案也就蕴含在 send 方法的返回值，如果项目方需要使用同步发送的方式，只需要拿到 send 方法的返回结果后，调用其 get() 方法，此时如果消息还未发送到 Broker 上，该方法会被阻塞，等到 broker 返回消息发送结果后该方法会被唤醒并得到消息发送结果。如果需要异步发送，则建议使用 send(ProducerRecord< K, V > record, Callback callback),但不能调用 get 方法即可。Callback 会在收到 broker 的响应结果后被调用，并且支持拦截器。  
-&emsp; 消息追加流程就介绍到这里了，消息被追加到缓存区后，什么是会被发送到 broker 端呢？将在下一篇文章中详细介绍。  
-
+&emsp; 消息追加流程就介绍到这里了，消息被追加到缓存区后，什么是会被发送到 broker 端呢？将在下一节中详细介绍。  
 
 ## 1.4. Sender 线程详解  
-KafkaProducer send 方法的流程，该方法只是将消息追加到 KafKaProducer 的缓存中，并未真正的向 broker 发送消息，本节将探讨 Kafka 的 Sender 线程。  
-
-在 KafkaProducer 中会启动一个单独的线程，其名称为 “kafka-producer-network-thread | clientID”，其中 clientID 为生产者的 id 。   
+&emsp; KafkaProducer send 方法的流程，该方法只是将消息追加到 KafKaProducer 的缓存中，并未真正的向 broker 发送消息，本节将探讨 Kafka 的 Sender 线程。  
+&emsp; Sender 线程：在 KafkaProducer 中会启动一个单独的线程，其名称为 “kafka-producer-network-thread | clientID”，其中 clientID 为生产者的 id 。   
 
 ### 1.4.1. 属性含义  
 KafkaClient client
@@ -430,32 +354,36 @@ Map< TopicPartition, List< ProducerBatch>> inFlightBatches
 正在执行发送相关的消息批次。
 
 ### 1.4.2. Sender#run 方法详解
-Sender#run  
+&emsp; Sender#run  
 
 ```java
 public void run() {
     log.debug("Starting Kafka producer I/O thread.");
     while (running) {
         try {
-            runOnce();    // @1 Sender 线程在运行状态下主要的业务处理方法，将消息缓存区中的消息向 broker 发送。
+            // @1 Sender 线程在运行状态下主要的业务处理方法，将消息缓存区中的消息向 broker 发送。
+            runOnce();    
         } catch (Exception e) {
             log.error("Uncaught error in kafka producer I/O thread: ", e);
         }
     }
     log.debug("Beginning shutdown of Kafka producer I/O thread, sending remaining records.");
-    while (!forceClose && (this.accumulator.hasUndrained() || this.client.inFlightRequestCount() > 0)) {    // @2 如果主动关闭 Sender 线程，如果不是强制关闭，则如果缓存区还有消息待发送，再次调用 runOnce 方法将剩余的消息发送完毕后再退出。
+    // @2 如果主动关闭 Sender 线程，如果不是强制关闭，则如果缓存区还有消息待发送，再次调用 runOnce 方法将剩余的消息发送完毕后再退出。
+    while (!forceClose && (this.accumulator.hasUndrained() || this.client.inFlightRequestCount() > 0)) {    
         try {
             runOnce();
         } catch (Exception e) {
             log.error("Uncaught error in kafka producer I/O thread: ", e);
         }
     }
-    if (forceClose) {  // @3 如果强制关闭 Sender 线程，则拒绝未完成提交的消息。
+    // @3 如果强制关闭 Sender 线程，则拒绝未完成提交的消息。
+    if (forceClose) {  
         log.debug("Aborting incomplete batches due to forced shutdown");
         this.accumulator.abortIncompleteBatches();
     }
     try {
-        this.client.close();  // @4 关闭 Kafka Client 即网络通信对象。
+        // @4 关闭 Kafka Client 即网络通信对象。
+        this.client.close();  
     } catch (Exception e) {
         log.error("Failed to close network client", e);
     }
@@ -472,8 +400,10 @@ public void run() {
 void runOnce() {
 	// 此处省略与事务消息相关的逻辑
     long currentTimeMs = time.milliseconds();
-    long pollTimeout = sendProducerData(currentTimeMs);   // @1 调用 sendProducerData 方法发送消息。  
-    client.poll(pollTimeout, currentTimeMs);   // @2
+    // @1 调用 sendProducerData 方法发送消息。
+    long pollTimeout = sendProducerData(currentTimeMs);   
+    // @2  
+    client.poll(pollTimeout, currentTimeMs);   
 }
 ```
 
@@ -578,12 +508,9 @@ void runOnce() {
 }
 ```
 
-
-  
-
-###### 1.4.2.1.1.1. # RecordAccumulator#ready
-消息发送的过程（ 步骤 7 ），位于 Sender#sendProduceRequests 方法中：  
-这一步主要逻辑就是创建客户端请求 ClientRequest 对象，并通过 NetworkClient#send 方法将请求加入到网络 I/O 通道（KafkaChannel）中。同时将该对象缓存到 InFlightRequests 中，等接收到服务端响应时会通过缓存的 ClientRequest 对象调用对应的 callback 方法。最后调用 NetworkClient#poll 方法执行具体的网络请求和响应。  
+###### 1.4.2.1.1.1. RecordAccumulator#ready
+&emsp; 消息发送的过程（ 步骤 7 ），位于 Sender#sendProduceRequests 方法中：  
+&emsp; 这一步主要逻辑就是创建客户端请求 ClientRequest 对象，并通过 NetworkClient#send 方法将请求加入到网络 I/O 通道（KafkaChannel）中。同时将该对象缓存到 InFlightRequests 中，等接收到服务端响应时会通过缓存的 ClientRequest 对象调用对应的 callback 方法。最后调用 NetworkClient#poll 方法执行具体的网络请求和响应。  
 
 ```java
 private void sendProduceRequests(Map<Integer, List<ProducerBatch>> collated, long now) {
@@ -650,9 +577,8 @@ private void sendProduceRequest(long now, int destination, short acks, int timeo
 }
 ```
 
-
 ###### 1.4.2.1.1.2. RecordAccumulator#drain       
-知道了需要向哪些节点投递消息，接下来自然而然就需要获取发往每个节点的数据， 步骤 4 的实现位于 RecordAccumulator#drain 方法中：  
+&emsp; 知道了需要向哪些节点投递消息，接下来自然而然就需要获取发往每个节点的数据， 步骤 4 的实现位于 RecordAccumulator#drain 方法中：  
 
 ```java
 public Map<Integer, List<ProducerBatch>> drain(Cluster cluster, Set<Node> nodes, int maxSize, long now) {
@@ -667,6 +593,7 @@ public Map<Integer, List<ProducerBatch>> drain(Cluster cluster, Set<Node> nodes,
     return batches;
 }
 ```
+
 ```java
 private List<ProducerBatch> drainBatchesForOneNode(Cluster cluster, Node node, int maxSize, long now) {
     int size = 0;
@@ -754,10 +681,9 @@ private List<ProducerBatch> drainBatchesForOneNode(Cluster cluster, Node node, i
 }
 ```
 
- 
 ###### 1.4.2.1.1.3. Sender#sendProduceRequests
-消息发送的过程（ 步骤 7 ），位于 Sender#sendProduceRequests 方法中：  
-这一步主要逻辑就是创建客户端请求 ClientRequest 对象，并通过 NetworkClient#send 方法将请求加入到网络 I/O 通道（KafkaChannel）中。同时将该对象缓存到 InFlightRequests 中，等接收到服务端响应时会通过缓存的 ClientRequest 对象调用对应的 callback 方法。最后调用 NetworkClient#poll 方法执行具体的网络请求和响应。  
+&emsp; 消息发送的过程（ 步骤 7 ），位于 Sender#sendProduceRequests 方法中：  
+&emsp; 这一步主要逻辑就是创建客户端请求 ClientRequest 对象，并通过 NetworkClient#send 方法将请求加入到网络 I/O 通道（KafkaChannel）中。同时将该对象缓存到 InFlightRequests 中，等接收到服务端响应时会通过缓存的 ClientRequest 对象调用对应的 callback 方法。最后调用 NetworkClient#poll 方法执行具体的网络请求和响应。  
 
 ```java
 private void sendProduceRequests(Map<Integer, List<ProducerBatch>> collated, long now) {
@@ -823,7 +749,6 @@ private void sendProduceRequest(long now, int destination, short acks, int timeo
     log.trace("Sent produce request to {}: {}", nodeId, requestBuilder);
 }
 ```
- 
 
 ##### 1.4.2.1.2. NetworkClient 的 poll 方法  
 
@@ -870,17 +795,13 @@ Sender 发送线程的流程就介绍到这里了，接下来首先给出一张�
 
 ### 1.4.3. run 方法流程图  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-14.png)  
-根据上面的源码分析得出上述流程图，图中对重点步骤也详细标注了其关键点。下面我们对上述流程图中 Sender 线程依赖的相关类的核心方法进行解读，以便加深 Sender 线程的理解。  
-
-由于在讲解 Sender 发送流程中，大部分都是调用 RecordAccumulator 方法来实现其特定逻辑，故接下来重点对上述涉及到RecordAccumulator 的方法进行一个详细剖析，加强对 Sender 流程的理解。  
-
-
-
+&emsp; 根据上面的源码分析得出上述流程图，图中对重点步骤也详细标注了其关键点。  
 
 -------
 
-## 1.5. RecordAccumulator 核心方法详解  
-### 1.5.1. RecordAccumulator 的 ready 方法详解  
+<!-- 
+ RecordAccumulator 核心方法详解  
+ RecordAccumulator 的 ready 方法详解  
 该方法主要就是根据缓存区中的消息，判断哪些分区已经达到发送条件。  
 RecordAccumulator#ready  
 
@@ -961,7 +882,8 @@ boolean sendable
     该发送者的 close 方法被调用(close = true)。
     该发送者的 flush 方法被调用。  
 
-### 1.5.2. RecordAccumulator 的 drain方法详解  
+
+1.5.2. RecordAccumulator 的 drain方法详解  
 RecordAccumulator#drain  
 
 ```java
@@ -1055,3 +977,4 @@ private List<ProducerBatch> drainBatchesForOneNode(Cluster cluster, Node node, i
 代码@8：将当前批次加入到已准备集合中，并关闭该批次，即不在允许向该批次中追加消息。  
 
 关于消息发送就介绍到这里，NetworkClient 的 poll 方法内部会调用 Selector 执行就绪事件的选择，并将抽取的消息通过网络发送到 Broker 服务器，关于网络后面的具体实现，将在后续文章中单独介绍。  
+-->
