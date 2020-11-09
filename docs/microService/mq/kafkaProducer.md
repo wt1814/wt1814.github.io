@@ -1,8 +1,8 @@
 <!-- TOC -->
 
 - [1. kafka生产者](#1-kafka生产者)
-    - [1.1. 消息发送流程概述](#11-消息发送流程概述)
-    - [1.2. 消息发送示例](#12-消息发送示例)
+    - [1.1. 消息发送示例](#11-消息发送示例)
+    - [1.2. 消息发送流程概述](#12-消息发送流程概述)
     - [1.3. main线程](#13-main线程)
         - [1.3.1. doSend](#131-dosend)
             - [1.3.1.1. RecordAccumulator#append方法详解](#1311-recordaccumulatorappend方法详解)
@@ -23,14 +23,8 @@
 
 
 # 1. kafka生产者
-## 1.1. 消息发送流程概述    
-&emsp; 在消息发送的过程中，涉及到了两个线程—-main线程和Sender线程，以及一个线程共享变量——RecordAccumulator。 main 线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。  
-&emsp; Producer 发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至 Broker。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-8.png)  
-
-## 1.2. 消息发送示例        
+## 1.1. 消息发送示例        
 ```java
 package persistent.prestige.demo.kafka;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -73,7 +67,17 @@ public class KafkaProducerTest {
 
 * 发送并忘记（send and forget）：producer.send()，默认为异步发送，并不关心消息是否达到服务端，会存在消息丢失的问题。
 * 同步：producer.send()返回一个Future对象，调用get()方法变回进行同步等待，就知道消息是否发送成功。
-* 异步发送：如果消息都进行同步发送，要发送这次的消息需要等到上次的消息成功发送到服务端，这样整个消息发送的效率就很低了。kafka支持producer.send()传入一个回调函数，消息不管成功或者失败都会调用这个回调函数，这样就算是异步发送，我们也知道消息的发送情况，然后再回调函数中选择记录日志还是重试都取决于调用方。Future\<RecordMetadata> send(ProducerRecord\<K, V> record, Callback callback);
+* 异步发送：如果消息都进行同步发送，要发送这次的消息需要等到上次的消息成功发送到服务端，这样整个消息发送的效率就很低了。kafka支持producer.send()传入一个回调函数，消息不管成功或者失败都会调用这个回调函数，这样就算是异步发送，我们也知道消息的发送情况，然后再回调函数中选择记录日志还是重试都取决于调用方。Future\<RecordMetadata> send(ProducerRecord\<K, V> record, Callback callback);  
+
+
+## 1.2. 消息发送流程概述    
+&emsp; 在消息发送的过程中，涉及到了两个线程—-main线程和Sender线程，以及一个线程共享变量——RecordAccumulator。 main 线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。  
+&emsp; Producer 发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至 Broker。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-8.png)  
+
+
 
 ## 1.3. main线程   
 &emsp; 可以通过KafkaProducer的send方法发送消息，send 方法的声明如下：
