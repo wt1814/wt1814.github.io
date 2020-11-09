@@ -330,8 +330,10 @@ https://blog.csdn.net/lianggx3/category_10406229.html
 -->
 [kafka使用]  
 [kafka配置文件](/docs/microService/mq/kafkaConfig.md)  
-[kafka使用](/docs/microService/mq/kafkaUse.md)  
-[kafka监控](/docs/microService/mq/kafkaMonitor.md)  
+[kafka生产者](/docs/microService/mq/kafkaProducerUse.md)  
+[kafka消费者](/docs/microService/mq/kafkaConsumerUse.md)  
+[kafka集群管理](/docs/microService/mq/kafkaUse.md)  
+[kafka集群监控](/docs/microService/mq/kafkaMonitor.md)  
 [kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  
 [kafkaStreams](/docs/microService/mq/kafkaStreams.md)  
 
