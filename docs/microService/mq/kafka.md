@@ -129,8 +129,6 @@ Kafka Producer 向 Broker 发送消息使用 Push 模式，Consumer 消费采用
 5. leader 收到所有 ISR 中的 replication 的 ACK 后，增加 HW（high watermark，最后 commit 的 offset）并向 producer 发送 ACK ；
 
 ### 1.3.2. Broker保存消息  
-
-
 #### 1.2. 存储策略  
 &emsp; 1）kafka以topic来进行消息管理，每个topic包含多个partition，每个partition对应一个逻辑log，有多个segment组成。  
 &emsp; 2）每个segment中存储多条消息，消息id由其逻辑位置决定，即从消息id可直接定位到消息的存储位置，避免id到位置的额外映射。  
