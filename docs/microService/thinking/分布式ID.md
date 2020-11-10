@@ -23,6 +23,9 @@
 
 <!-- 
 https://blog.csdn.net/hl_java/article/details/78462283
+
+分库分表的 9种分布式主键ID 生成方案，挺全乎的 
+https://mp.weixin.qq.com/s/x1gVtnKh2OEAzSwv0sFDxg
 -->
 
 
