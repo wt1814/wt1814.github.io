@@ -17,6 +17,7 @@
 
 
 # 1. kafka生产者
+&emsp; **<font color = "lime">参考《kafka实战》</font>**  
 
 ## 1.1. kafka生产者概览  
 &emsp; Producer 发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至 Broker。  
