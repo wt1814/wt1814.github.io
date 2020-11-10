@@ -1,13 +1,22 @@
 <!-- TOC -->
 
-- [1. kafka配置文件](#1-kafka配置文件)
-    - [1.1. producer.properties](#11-producerproperties)
-    - [1.2. consumer.properties](#12-consumerproperties)
-    - [1.3. server.properties](#13-serverproperties)
+- [1. kafka安装](#1-kafka安装)
+    - [1.1. kafka安装](#11-kafka安装)
+    - [1.2. kafka配置文件](#12-kafka配置文件)
+        - [1.2.1. producer.properties](#121-producerproperties)
+        - [1.2.2. consumer.properties](#122-consumerproperties)
+        - [1.2.3. server.properties](#123-serverproperties)
+    - [1.3. kafka线上环境部署](#13-kafka线上环境部署)
 
 <!-- /TOC -->
 
-# 1. kafka配置文件  
+# 1. kafka安装  
+
+
+## 1.1. kafka安装  
+
+
+## 1.2. kafka配置文件  
 &emsp; 在kafka/config/目录下面有3个配置文件：  
 
 ```propertis
@@ -17,7 +26,7 @@ server.properties
 ```
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-15.png)  
 
-## 1.1. producer.properties  
+### 1.2.1. producer.properties  
 &emsp; producer.properties:生产端的配置文件  
 
 ```properties
@@ -109,7 +118,7 @@ message.send.max.retries=3
 topic.metadata.refresh.interval.ms=60000
 ```
 
-## 1.2. consumer.properties
+### 1.2.2. consumer.properties
 &emsp; consumer.properties:消费端的配置文件  
 
 ```properties
@@ -181,8 +190,7 @@ auto.offset.reset=smallest
 derializer.class=kafka.serializer.DefaultDecoder
 ```
 
-
-## 1.3. server.properties
+### 1.2.3. server.properties
 &emsp; server.properties:服务端的配置文件  
 
 ```properties
@@ -265,4 +273,7 @@ host.name=kafka01
  
 advertised.host.name=192.168.239.128
 ```
+
+## 1.3. kafka线上环境部署  
+&emsp; 参考《Apache kafka实战》第3章 Kafka线上环境部署
 

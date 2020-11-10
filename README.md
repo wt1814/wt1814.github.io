@@ -325,19 +325,15 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [kafka原理]  
 [kafka基本概念](/docs/microService/mq/kafka.md)  
 [kafka特性](/docs/microService/mq/kafka特性.md)  
-[kafka事务](/docs/microService/mq/kafkaTraction.md) 
-<!-- 
-https://blog.csdn.net/lianggx3/category_10406229.html
--->
+&emsp; [kafka事务](/docs/microService/mq/kafkaTraction.md) 
 [kafka使用]  
-[kafka配置文件](/docs/microService/mq/kafkaConfig.md)  
-[kafka生产者](/docs/microService/mq/kafkaProducerUse.md)  
-[kafka消费者](/docs/microService/mq/kafkaConsumerUse.md)  
+[kafka安装](/docs/microService/mq/kafkaInstall.md)  
+[kafka生产者开发](/docs/microService/mq/kafkaProducerUse.md)  
+[kafka消费者开发](/docs/microService/mq/kafkaConsumerUse.md)  
 [kafka集群管理](/docs/microService/mq/kafkaUse.md)  
 [kafka集群监控](/docs/microService/mq/kafkaMonitor.md)  
 [kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  
 [kafkaStreams](/docs/microService/mq/kafkaStreams.md)  
-
 [kafka源码]  
 [kafka生产者](/docs/microService/mq/kafkaProducer.md)  
 [kafka消费者](/docs/microService/mq/kafkaConsumer.md) 

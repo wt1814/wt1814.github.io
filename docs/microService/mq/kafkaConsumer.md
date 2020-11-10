@@ -5,6 +5,10 @@ https://mp.weixin.qq.com/s/OB-ZVy70vHClCtep43gr_A
 https://mp.weixin.qq.com/s/ITLN-DHxYc5w6qrlFD8HWQ
 -->
 
+<!-- 
+https://blog.csdn.net/lianggx3/category_10406229.html
+-->
+
 # kafka消费者  
 
 
