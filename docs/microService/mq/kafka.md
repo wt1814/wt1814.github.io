@@ -9,6 +9,7 @@
         - [1.1.5. replica，副本机制，高可用性](#115-replica副本机制高可用性)
         - [1.1.6. leader和follower](#116-leader和follower)
         - [1.1.7. ISR](#117-isr)
+        - [Zookeeper](#zookeeper)
     - [1.3. Kafka 工作流程分析](#13-kafka-工作流程分析)
         - [1.3.1. kafka生产过程](#131-kafka生产过程)
         - [1.3.2. Broker保存消息](#132-broker保存消息)
@@ -94,7 +95,17 @@
 
 ### 1.1.7. ISR  
 
+什么是 AR，ISR？  
 
+    AR：Assigned Replicas。AR 是主题被创建后，分区创建时被分配的副本集合，副本个 数由副本因子决定。ISR：In-Sync Replicas。Kafka 中特别重要的概念，指代的是 AR 中那些与 Leader 保 持同步的副本集合。在 AR 中的副本可能不在 ISR 中，但 Leader 副本天然就包含在 ISR 中。关于 ISR，还有一个常见的面试题目是如何判断副本是否应该属于 ISR。目前的判断 依据是：Follower 副本的 LEO 落后 Leader LEO 的时间，是否超过了 Broker 端参数 replica.lag.time.max.ms 值。如果超过了，副本就会被从 ISR 中移除。  
+
+### Zookeeper  
+&emsp; kafka中Zookeeper作用：集群管理，元数据管理。    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-4.png)  
+* Broker 注册：Broker 是分布式部署并且之间相互独立，Zookeeper 用来管理注册到集群的所有 Broker 节点。
+* Topic 注册：在 Kafka 中，同一个 Topic 的消息会被分成多个分区并将其分布在多个 Broker 上，这些分区信息及与 Broker 的对应关系也都是由 Zookeeper 在维护
+* 生产者负载均衡：由于同一个 Topic 消息会被分区并将其分布在多个 Broker 上，因此，生产者需要将消息合理地发送到这些分布式的 Broker 上。
+* 消费者负载均衡：与生产者类似，Kafka 中的消费者同样需要进行负载均衡来实现多个消费者合理地从对应的 Broker 服务器上接收消息，每个消费者分组包含若干消费者，每条消息都只会发送给分组中的一个消费者，不同的消费者分组消费自己特定的 Topic 下面的消息，互不干扰。
 
 ## 1.3. Kafka 工作流程分析  
 <!-- 
