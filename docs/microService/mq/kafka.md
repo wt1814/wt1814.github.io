@@ -82,13 +82,20 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-17.png)  
 
 ### 1.1.3. 主题（Topic）与分区（Partition）
+<!-- 
+Kafka学习笔记（四）分区机制
+https://blog.csdn.net/haogenmin/article/details/109449016
+-->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-18.png)  
 &emsp; 在 Kafka 中，消息以 主题（Topic）来分类，每一个主题都对应一个「消息队列」，这有点儿类似于数据库中的表。但是如果我们把所有同类的消息都塞入到一个“中心”队列中，势必缺少可伸缩性，无论是生产者/消费者数目的增加，还是消息数量的增加，都可能耗尽系统的性能或存储。  
 
 ### 1.1.4. offset
 
 ### 1.1.5. replica，副本机制，高可用性  
-
+<!-- 
+副本机制
+https://blog.csdn.net/haogenmin/article/details/109449944
+-->
 
 ### 1.1.6. leader和follower  
 

@@ -22,6 +22,10 @@
 &emsp; **<font color = "lime">参考《kafka实战》</font>**  
 <!-- 
 https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
+
+https://blog.csdn.net/haogenmin/article/details/109469803
+https://blog.csdn.net/haogenmin/article/details/109488571
+https://blog.csdn.net/haogenmin/article/details/109489704
 -->
 ## 1.1. consumer概览  
 
