@@ -4,18 +4,18 @@
 - [1. SpringBoot集成kafka](#1-springboot集成kafka)
     - [1.1. SpringBoot集成kafka](#11-springboot集成kafka)
     - [1.2. Hello Kafka](#12-hello-kafka)
-    - [生产者](#生产者)
-        - [带回调的生产者](#带回调的生产者)
-        - [自定义分区器](#自定义分区器)
-        - [kafka事务提交](#kafka事务提交)
-    - [消费者](#消费者)
-        - [指定topic、partition、offset消费](#指定topicpartitionoffset消费)
-        - [批量消费](#批量消费)
-        - [ConsumerAwareListenerErrorHandler 异常处理器](#consumerawarelistenererrorhandler-异常处理器)
-        - [消息过滤器](#消息过滤器)
-        - [消息转发](#消息转发)
-        - [定时启动、停止监听器](#定时启动停止监听器)
-    - [topic管理](#topic管理)
+    - [1.3. 生产者](#13-生产者)
+        - [1.3.1. 带回调的生产者](#131-带回调的生产者)
+        - [1.3.2. 自定义分区器](#132-自定义分区器)
+        - [1.3.3. kafka事务提交](#133-kafka事务提交)
+    - [1.4. 消费者](#14-消费者)
+        - [1.4.1. 指定topic、partition、offset消费](#141-指定topicpartitionoffset消费)
+        - [1.4.2. 批量消费](#142-批量消费)
+        - [1.4.3. ConsumerAwareListenerErrorHandler 异常处理器](#143-consumerawarelistenererrorhandler-异常处理器)
+        - [1.4.4. 消息过滤器](#144-消息过滤器)
+        - [1.4.5. 消息转发](#145-消息转发)
+        - [1.4.6. 定时启动、停止监听器](#146-定时启动停止监听器)
+    - [1.5. topic管理](#15-topic管理)
 
 <!-- /TOC -->
 
@@ -39,9 +39,8 @@ https://blog.csdn.net/yuanlong122716/article/details/105160545/
     * 消息转发
     * 定时启动/停止监听器
 
-
 ## 1.1. SpringBoot集成kafka  
-① 引入pom依赖  
+&emsp; ① 引入pom依赖  
 
 ```xml
 <dependency>
@@ -49,7 +48,7 @@ https://blog.csdn.net/yuanlong122716/article/details/105160545/
     <artifactId>spring-kafka</artifactId>
 </dependency>
 ```
-② application.propertise配置  
+&emsp; ② application.propertise配置  
 
 ```xml
 ###########【Kafka集群】###########
@@ -102,7 +101,7 @@ spring.kafka.listener.missing-topics-fatal=false
 ```
 
 ## 1.2. Hello Kafka  
-1、简单生产者  
+1. 简单生产者  
 
 ```java
 @RestController
@@ -118,7 +117,7 @@ public class KafkaProducer {
 }
 ```
 
-2、简单消费  
+2. 简单消费  
 
 ```java
 @Component
@@ -132,14 +131,14 @@ public class KafkaConsumer {
 }
 ```
 
-上面示例创建了一个生产者，发送消息到topic1，消费者监听topic1消费消息。监听器用@KafkaListener注解，topics表示监听的topic，支持同时监听多个，用英文逗号分隔。启动项目，postman调接口触发生产者发送消息，  
+&emsp; 上面示例创建了一个生产者，发送消息到topic1，消费者监听topic1消费消息。监听器用@KafkaListener注解，topics表示监听的topic，支持同时监听多个，用英文逗号分隔。启动项目，postman调接口触发生产者发送消息，  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-36.png)  
-可以看到监听器消费成功，
+&emsp; 可以看到监听器消费成功，
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-37.png)  
 
-## 生产者
-### 带回调的生产者  
-kafkaTemplate提供了一个回调方法addCallback，我们可以在回调方法中监控消息是否发送成功 或 失败时做补偿处理，有两种写法，  
+## 1.3. 生产者
+### 1.3.1. 带回调的生产者  
+&emsp; kafkaTemplate提供了一个回调方法addCallback，我们可以在回调方法中监控消息是否发送成功 或 失败时做补偿处理，有两种写法，  
 
 ```java
 @GetMapping("/kafka/callbackOne/{message}")
@@ -176,13 +175,13 @@ public void sendMessage3(@PathVariable("message") String callbackMessage) {
 }
 ```
 
-### 自定义分区器  
-kafka中每个topic被划分为多个分区，那么生产者将消息发送到topic时，具体追加到哪个分区呢？这就是所谓的分区策略，Kafka 为我们提供了默认的分区策略，同时它也支持自定义分区策略。其路由机制为：  
-① 若发送消息时指定了分区（即自定义分区策略），则直接将消息append到指定分区；  
-② 若发送消息时未指定 patition，但指定了 key（kafka允许为每条消息设置一个key），则对key值进行hash计算，根据计算结果路由到指定分区，这种情况下可以保证同一个 Key 的所有消息都进入到相同的分区；  
-③  patition 和 key 都未指定，则使用kafka默认的分区策略，轮询选出一个 patition；  
+### 1.3.2. 自定义分区器  
+&emsp; kafka中每个topic被划分为多个分区，那么生产者将消息发送到topic时，具体追加到哪个分区呢？这就是所谓的分区策略，Kafka 为我们提供了默认的分区策略，同时它也支持自定义分区策略。其路由机制为：  
+&emsp; ① 若发送消息时指定了分区（即自定义分区策略），则直接将消息append到指定分区；  
+&emsp; ② 若发送消息时未指定 patition，但指定了 key（kafka允许为每条消息设置一个key），则对key值进行hash计算，根据计算结果路由到指定分区，这种情况下可以保证同一个 Key 的所有消息都进入到相同的分区；  
+&emsp; ③  patition 和 key 都未指定，则使用kafka默认的分区策略，轮询选出一个 patition；  
 
-※ 我们来自定义一个分区策略，将消息发送到我们指定的partition，首先新建一个分区器类实现Partitioner接口，重写方法，其中partition方法的返回值就表示将消息发送到几号分区，  
+&emsp; ※ 来自定义一个分区策略，将消息发送到指定的partition，首先新建一个分区器类实现Partitioner接口，重写方法，其中partition方法的返回值就表示将消息发送到几号分区，  
 
 ```java
 public class CustomizePartitioner implements Partitioner {
@@ -205,15 +204,15 @@ public class CustomizePartitioner implements Partitioner {
 }
 ```
 
-在application.propertise中配置自定义分区器，配置的值就是分区器类的全路径名，  
+&emsp; 在application.propertise中配置自定义分区器，配置的值就是分区器类的全路径名，  
 
 ```properties
 # 自定义分区器
 spring.kafka.producer.properties.partitioner.class=com.felix.kafka.producer.CustomizePartitioner
 ```
 
-### kafka事务提交  
-如果在发送消息时需要创建事务，可以使用 KafkaTemplate 的 executeInTransaction 方法来声明事务，  
+### 1.3.3. kafka事务提交  
+&emsp; 如果在发送消息时需要创建事务，可以使用 KafkaTemplate 的 executeInTransaction 方法来声明事务，  
 
 ```java
 @GetMapping("/kafka/transaction")
@@ -230,9 +229,9 @@ public void sendMessage7(){
 }
 ```
 
-## 消费者  
-### 指定topic、partition、offset消费  
-前面我们在监听消费topic1的时候，监听的是topic1上所有的消息，如果我们想指定topic、指定partition、指定offset来消费呢？也很简单，@KafkaListener注解已全部为我们提供，  
+## 1.4. 消费者  
+### 1.4.1. 指定topic、partition、offset消费  
+&emsp; 前面在监听消费topic1的时候，监听的是topic1上所有的消息，如果我们想指定topic、指定partition、指定offset来消费呢？也很简单，@KafkaListener注解已全部提供，  
 
 ```java
 /**
@@ -250,19 +249,18 @@ public void onMessage2(ConsumerRecord<?, ?> record) {
 }
 ```
 
-属性解释：  
+&emsp; 属性解释：  
 ① id：消费者ID；  
 ② groupId：消费组ID；  
 ③ topics：监听的topic，可监听多个；   
 ④ topicPartitions：可配置更加详细的监听信息，可指定topic、parition、offset监听。  
 
-上面onMessage2监听的含义：监听topic1的0号分区，同时监听topic2的0号分区和topic2的1号分区里面offset从8开始的消息。  
-注意：topics和topicPartitions不能同时使用；  
+&emsp; 上面onMessage2监听的含义：监听topic1的0号分区，同时监听topic2的0号分区和topic2的1号分区里面offset从8开始的消息。  
+&emsp; 注意：topics和topicPartitions不能同时使用；  
 
 
-### 批量消费
-
-设置application.prpertise开启批量消费即可，  
+### 1.4.2. 批量消费
+&emsp; 设置application.prpertise开启批量消费即可，  
 
 ```properties
 # 设置批量消费
@@ -271,7 +269,7 @@ spring.kafka.listener.type=batch
 spring.kafka.consumer.max-poll-records=50
 ```
 
-接收消息时用List来接收，监听代码如下，  
+&emsp; 接收消息时用List来接收，监听代码如下，  
 
 ```java
 @KafkaListener(id = "consumer2",groupId = "felix-group", topics = "topic1")
@@ -283,9 +281,9 @@ public void onMessage3(List<ConsumerRecord<?, ?>> records) {
 }
 ```
 
-### ConsumerAwareListenerErrorHandler 异常处理器
-通过异常处理器，我们可以处理consumer在消费时发生的异常。  
-新建一个 ConsumerAwareListenerErrorHandler 类型的异常处理方法，用@Bean注入，BeanName默认就是方法名，然后我们将这个异常处理器的BeanName放到@KafkaListener注解的errorHandler属性里面，当监听抛出异常的时候，则会自动调用异常处理器，  
+### 1.4.3. ConsumerAwareListenerErrorHandler 异常处理器
+&emsp; 通过异常处理器，我们可以处理consumer在消费时发生的异常。  
+&emsp; 新建一个 ConsumerAwareListenerErrorHandler 类型的异常处理方法，用@Bean注入，BeanName默认就是方法名，然后我们将这个异常处理器的BeanName放到@KafkaListener注解的errorHandler属性里面，当监听抛出异常的时候，则会自动调用异常处理器，  
 
 ```java
 // 新建一个异常处理器，用@Bean注入
@@ -310,12 +308,12 @@ public void onMessage5(List<ConsumerRecord<?, ?>> records) throws Exception {
     throw new Exception("批量消费-模拟异常");
 }
 ```
-执行看一下效果，  
+&emsp; 执行看一下效果，  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-38.png)  
 
-### 消息过滤器
-消息过滤器可以在消息抵达consumer之前被拦截，在实际应用中，我们可以根据自己的业务逻辑，筛选出需要的信息再交由KafkaListener处理，不需要的消息则过滤掉。  
-配置消息过滤只需要为 监听器工厂 配置一个RecordFilterStrategy（消息过滤策略），返回true的时候消息将会被抛弃，返回false时，消息能正常抵达监听容器。  
+### 1.4.4. 消息过滤器
+&emsp; 消息过滤器可以在消息抵达consumer之前被拦截，在实际应用中，我们可以根据自己的业务逻辑，筛选出需要的信息再交由KafkaListener处理，不需要的消息则过滤掉。  
+&emsp; 配置消息过滤只需要为 监听器工厂 配置一个RecordFilterStrategy（消息过滤策略），返回true的时候消息将会被抛弃，返回false时，消息能正常抵达监听容器。  
 
 ```java
 @Component
@@ -349,12 +347,12 @@ public class KafkaConsumer {
 }
 ```
 
-上面实现了一个"过滤奇数、接收偶数"的过滤策略，我们向topic1发送0-99总共100条消息，看一下监听器的消费情况，可以看到监听器只消费了偶数，  
+&emsp; 上面实现了一个"过滤奇数、接收偶数"的过滤策略，向topic1发送0-99总共100条消息，看一下监听器的消费情况，可以看到监听器只消费了偶数，  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-39.png)  
 
-### 消息转发
-在实际开发中，我们可能有这样的需求，应用A从TopicA获取到消息，经过处理后转发到TopicB，再由应用B监听处理消息，即一个应用处理完成后将该消息转发至其他应用，完成消息的转发。  
-在SpringBoot集成Kafka实现消息的转发也很简单，只需要通过一个@SendTo注解，被注解方法的return值即转发的消息内容，如下，  
+### 1.4.5. 消息转发
+&emsp; 在实际开发中，我们可能有这样的需求，应用A从TopicA获取到消息，经过处理后转发到TopicB，再由应用B监听处理消息，即一个应用处理完成后将该消息转发至其他应用，完成消息的转发。  
+&emsp; 在SpringBoot集成Kafka实现消息的转发也很简单，只需要通过一个@SendTo注解，被注解方法的return值即转发的消息内容，如下，  
 
 ```java
 /**
@@ -370,11 +368,11 @@ public String onMessage7(ConsumerRecord<?, ?> record) {
 }
 ```
 
-### 定时启动、停止监听器
-默认情况下，当消费者项目启动的时候，监听器就开始工作，监听消费发送到指定topic的消息，那如果我们不想让监听器立即工作，想让它在我们指定的时间点开始工作，或者在我们指定的时间点停止工作，该怎么处理呢——使用KafkaListenerEndpointRegistry，下面我们就来实现：  
-① 禁止监听器自启动；   
-② 创建两个定时任务，一个用来在指定时间点启动定时器，另一个在指定时间点停止定时器；  
-新建一个定时任务类，用注解@EnableScheduling声明，KafkaListenerEndpointRegistry 在SpringIO中已经被注册为Bean，直接注入，设置禁止KafkaListener自启动，  
+### 1.4.6. 定时启动、停止监听器
+&emsp; 默认情况下，当消费者项目启动的时候，监听器就开始工作，监听消费发送到指定topic的消息，那如果我们不想让监听器立即工作，想让它在我们指定的时间点开始工作，或者在我们指定的时间点停止工作，该怎么处理呢——使用KafkaListenerEndpointRegistry，下面我们就来实现：  
+&emsp; ① 禁止监听器自启动；   
+&emsp; ② 创建两个定时任务，一个用来在指定时间点启动定时器，另一个在指定时间点停止定时器；  
+&emsp; 新建一个定时任务类，用注解@EnableScheduling声明，KafkaListenerEndpointRegistry 在SpringIO中已经被注册为Bean，直接注入，设置禁止KafkaListener自启动，  
 
 ```java
 @EnableScheduling
@@ -427,13 +425,13 @@ public class CronTimer {
     }
 }
 ```
-启动项目，触发生产者向topic1发送消息，可以看到consumer没有消费，因为这时监听器还没有开始工作，  
+&emsp; 启动项目，触发生产者向topic1发送消息，可以看到consumer没有消费，因为这时监听器还没有开始工作，  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-40.png)  
-11:42分监听器启动开始工作，消费消息，  
+&emsp; 11:42分监听器启动开始工作，消费消息，  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-41.png)  
 
 
-## topic管理  
+## 1.5. topic管理  
 <!-- 
 
 https://blog.csdn.net/yuanlong122716/article/details/105160545/

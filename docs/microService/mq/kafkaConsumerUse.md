@@ -20,6 +20,14 @@
 
 # 1. kafka消费者开发
 &emsp; **<font color = "lime">参考《kafka实战》</font>**  
+
+<!-- 
+Kafka读取数据 
+https://juejin.im/post/6844903859366821895
+提交和偏移量提交和偏移量
+https://juejin.im/post/6844903860767555597
+-->
+
 <!-- 
 https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
 
@@ -162,6 +170,7 @@ commitAsync：异步手动提交，就是异步非阻塞，consumer在后续poll
 commitSync和commitAsync都有带参数的重载方法，目的是实现更加细粒度化的位移提交策略，指定一个Map显示地告诉kafka为哪些分区提交位移，consumer.commitSync(Collections.singletonMap(partition,new OffsetAndMetadata(lastOffset + 1)))。  
 
 提交的位移一定是consumer下一条待读消息的位移。  
+
 ## 1.6. 重平衡(rebalance)
 
 什么时候 rebalance？
