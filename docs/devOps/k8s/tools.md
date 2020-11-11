@@ -37,6 +37,9 @@ kubernetes搭建EFK日志管理系统
 https://mp.weixin.qq.com/s/sXl4KkoweCkSYL7k5G0ycQ
  kubernetes集群中部署EFK日志管理系统
 https://mp.weixin.qq.com/s/oCOKYOgak3PjmHnFiAin7g
+
+ 2020年Kubernetes中7个最佳日志管理工具 
+ https://mp.weixin.qq.com/s/hHOoXhq1Xcj5QD0D5XekhA  
 -->
 
 &emsp; 在Kubemetes集群环境中，一个完整的应用或服务都会涉及为数众多的组件运行，各组件所在的Node及实例数量都是可变的。日志子系统如果不做集中化管理，则会给系统的运维支撑造成很大的困难，因此有必要在集群层面对日志进行统一的收集和检索等工作。  

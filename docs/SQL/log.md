@@ -28,6 +28,9 @@ https://mp.weixin.qq.com/s/4utIiy6p_LKXuH4HU36w4A
  面试官的灵魂一击：你懂 MySQL 事务日志吗？ 
  https://mp.weixin.qq.com/s/QevM6j-lh621MXlHlg0tQAs
 
+  你是不是 redo log 和 binlog 傻傻分不清楚？ 
+  https://mp.weixin.qq.com/s/Sbb-qVhYZU1rUc0w4k8AMA
+
 -->
 
 # 1. MySql日志文件  

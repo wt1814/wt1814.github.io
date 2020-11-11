@@ -30,6 +30,9 @@ https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
 https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
 深入分析线程池的实现原理 
 https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
+
+  【Java并发编程】从源码分析几道必问线程池的面试题？ 
+  https://mp.weixin.qq.com/s/cXNuepxoYbu4himXrwammA
 -->
 
 # 1. ThreadPoolExecutor
