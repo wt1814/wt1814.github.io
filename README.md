@@ -325,7 +325,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [kafka原理]  
 [kafka基本概念](/docs/microService/mq/kafka.md)  
 [kafka特性](/docs/microService/mq/kafka特性.md)  
-&emsp; [kafka事务](/docs/microService/mq/kafkaTraction.md) 
+&emsp; [kafka事务](/docs/microService/mq/kafkaTraction.md)   
 [kafka使用]  
 [kafka安装](/docs/microService/mq/kafkaInstall.md)  
 [kafka生产者开发](/docs/microService/mq/kafkaProducerUse.md)  
