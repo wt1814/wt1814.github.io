@@ -5,6 +5,7 @@
     - [1.1. 灰度发布简介](#11-灰度发布简介)
     - [1.2. 灰度发布设计的思考](#12-灰度发布设计的思考)
     - [1.3. 微服务网关实现灰度发布](#13-微服务网关实现灰度发布)
+        - [zuul实现灰度发布](#zuul实现灰度发布)
     - [1.4. Spring cloud ribbon实现灰度发布](#14-spring-cloud-ribbon实现灰度发布)
     - [1.5. dubbo实现灰度发布](#15-dubbo实现灰度发布)
 
@@ -72,9 +73,10 @@ https://segmentfault.com/a/1190000017894943
 3. 启服/停服
 4. 服务自检
 
+### zuul实现灰度发布  
+&emsp; [zuul实现灰度发布](/docs/system/gatewayGrayscale.md)  
 
 ## 1.4. Spring cloud ribbon实现灰度发布  
-
 
 
 ## 1.5. dubbo实现灰度发布  

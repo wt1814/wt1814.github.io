@@ -331,7 +331,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [kafka生产者开发](/docs/microService/mq/kafkaProducerUse.md)  
 [kafka消费者开发](/docs/microService/mq/kafkaConsumerUse.md)  
 [kafka集群管理](/docs/microService/mq/kafkaUse.md)  
-[kafka集群监控](/docs/microService/mq/kafkaMonitor.md)  
+[kafka集群监控与调优](/docs/microService/mq/kafkaMonitor.md)  
 [kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  
 [kafkaStreams](/docs/microService/mq/kafkaStreams.md)  
 [kafka源码]  
@@ -479,10 +479,9 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 [堡垒机](/docs/Linux/Linux/baolei.md)  
 
 ## DevOps  
-[DevOps](/docs/devOps/devOps.md)  
+[DevOps与CI/CD](/docs/devOps/devOps.md)  
 [DevOps搭建](/docs/devOps/devOpsPractice.md)  
-[git](/docs/devOps/git/command.md)  
-[CI/CD](/docs/devOps/CI.md)  
+
 [docker]  
 &emsp; [docker总结](/docs/devOps/docker/summary.md)  
 &emsp; [docker架构](/docs/devOps/docker/principle.md)  
@@ -498,10 +497,13 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 &emsp; [k8s运维](/docs/devOps/k8s/tools.md)  
 &emsp; [Kuboard介绍](/docs/devOps/k8s/kuboard.md)  
 
+[Jenkins](/docs/devOps/Jenkins.md)  
+[Maven](/docs/devOps/maven.md)  
+[git](/docs/devOps/git/command.md)  
+
 [灰度发布](/docs/system/grayscalePublishe.md)  
 &emsp; [网关灰度发布](/docs/system/gatewayGrayscale.md)  
 [监控](/docs/devOps/monitor.md)  
-[Maven](/docs/devOps/maven.md)  
 
 ---
 

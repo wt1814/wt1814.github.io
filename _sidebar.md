@@ -237,7 +237,7 @@
     * [kafka事务](/docs/microService/mq/kafkaTraction.md)  
     * [kafka配置文件](/docs/microService/mq/kafkaConfig.md)  
     * [kafka使用](/docs/microService/mq/kafkaUse.md)  
-    * [kafka监控](/docs/microService/mq/kafkaMonitor.md)  
+    * [kafka集群监控与调优](/docs/microService/mq/kafkaMonitor.md)  
     * [kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  
     * [kafkaStreams](/docs/microService/mq/kafkaStreams.md)  
     * [kafka生产者](/docs/microService/mq/kafkaProducer.md)  
@@ -350,8 +350,10 @@
     * [shell编程](/docs/Linux/Linux/shell.md)  
 
 * DevOps  
-    * [DevOps](/docs/devOps/devOps.md)  
-    * [DevOps落地](/docs/devOps/devOpsPractice.md)  
+    * [DevOps与CI/CD](/docs/devOps/devOps.md)  
+    * [DevOps搭建](/docs/devOps/devOpsPractice.md)   
+    * [Jenkins](/docs/devOps/Jenkins.md)  
+    * [Maven](/docs/devOps/maven.md)  
     * [git](/docs/devOps/git/command.md)   
     * Docker
     * [docker总结](/docs/devOps/docker/summary.md)  
@@ -367,6 +369,7 @@
     * [滚动更新](/docs/devOps/k8s/rollingUpdate.md)  
     * [k8s运维](/docs/devOps/k8s/tools.md)  
     * [Kuboard介绍](/docs/devOps/k8s/kuboard.md)  
+    * 其他
     * [灰度发布](/docs/system/grayscalePublishe.md)  
     * [网关灰度发布](/docs/system/gatewayGrayscale.md)  
     * [监控](/docs/devOps/monitor.md)  

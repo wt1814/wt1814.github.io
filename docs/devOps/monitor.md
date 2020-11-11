@@ -52,4 +52,7 @@ https://mp.weixin.qq.com/s/cS8X7hBYpFwcZOWcpLt3OQ
 自从上线了 Prometheus 监控告警，真香！ 
 https://mp.weixin.qq.com/s/kBDB2wa2R_YczwRFFN4-Wg
 
+    想监控主机性能的话，个人建议这本《SystemsPerformance》就足够了。
+
+
 -->
