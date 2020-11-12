@@ -1,35 +1,41 @@
 <!-- TOC -->
 
 - [1. kafka](#1-kafka)
-    - [1.1. kafka拓扑结构及相关概念](#11-kafka拓扑结构及相关概念)
-        - [1.1.1. 生产者（Producer）与消费者（Consumer）](#111-生产者producer与消费者consumer)
-        - [1.1.2. Broker 和集群（Cluster）](#112-broker-和集群cluster)
-        - [1.1.3. 主题（Topic）与分区（Partition）](#113-主题topic与分区partition)
-        - [1.1.4. offset](#114-offset)
-        - [1.1.5. replica，副本机制，高可用性](#115-replica副本机制高可用性)
-        - [1.1.6. leader和follower](#116-leader和follower)
-        - [1.1.7. ISR](#117-isr)
-        - [Zookeeper](#zookeeper)
+    - [1.1. kafka介绍](#11-kafka介绍)
+    - [1.2. kafka拓扑结构及相关概念](#12-kafka拓扑结构及相关概念)
+        - [1.2.1. 生产者（Producer）与消费者（Consumer）](#121-生产者producer与消费者consumer)
+        - [1.2.2. Broker 和集群（Cluster）](#122-broker-和集群cluster)
+        - [1.2.3. 主题（Topic）与分区（Partition）](#123-主题topic与分区partition)
+        - [1.2.4. offset](#124-offset)
+        - [1.2.5. replica，副本机制，高可用性](#125-replica副本机制高可用性)
+        - [1.2.6. leader和follower](#126-leader和follower)
+        - [1.2.7. ISR](#127-isr)
+        - [1.2.8. Zookeeper](#128-zookeeper)
     - [1.3. Kafka 工作流程分析](#13-kafka-工作流程分析)
         - [1.3.1. kafka生产过程](#131-kafka生产过程)
         - [1.3.2. Broker保存消息](#132-broker保存消息)
-            - [1.2. 存储策略](#12-存储策略)
-            - [1.3.2.1. 存储方式](#1321-存储方式)
-            - [1.3.2.2. 存储策略](#1322-存储策略)
-            - [1.3.2.3. Zookeeper 存储结构](#1323-zookeeper-存储结构)
+            - [1.3.2.1. 存储策略](#1321-存储策略)
+            - [1.3.2.2. 存储方式](#1322-存储方式)
+            - [1.3.2.3. 存储策略](#1323-存储策略)
         - [1.3.3. Kafka消费过程分析](#133-kafka消费过程分析)
-            - [1.3.3.1. 高级 API](#1331-高级-api)
-            - [1.3.3.2. 低级 API](#1332-低级-api)
-            - [1.3.3.3. 消费者组](#1333-消费者组)
-            - [1.3.3.4. 消费方式](#1334-消费方式)
+            - [1.3.3.1. 消费者组](#1331-消费者组)
+            - [1.3.3.2. 消费方式](#1332-消费方式)
+            - [1.3.3.3. 消息交付语义](#1333-消息交付语义)
     - [1.4. kafka使用场景](#14-kafka使用场景)
 
 <!-- /TOC -->
 
 # 1. kafka
-&emsp; Apache Kafka是分布式发布-订阅消息系统。它最初由LinkedIn公司开发，之后成为Apache项目的一部分。Kafka是一种快速、可扩展的、设计内在就是分布式的，分区的和可复制的提交日志服务。  
+&emsp; **kafka中文文档：** https://kafka.apachecn.org/  
 
-## 1.1. kafka拓扑结构及相关概念  
+## 1.1. kafka介绍  
+&emsp; Apache Kafka® 是 一个分布式流处理平台。流处理平台有以下三种特性:
+
+* 可以让你发布和订阅流式的记录。这一方面与消息队列或者企业消息系统类似。
+* 可以储存流式的记录，并且有较好的容错性。
+* 可以在流式记录产生时就进行处理。 
+
+## 1.2. kafka拓扑结构及相关概念  
 &emsp; 一个典型的 Kafka 包含若干Producer、若干 Broker、若干 Consumer 以及一个 Zookeeper 集群。Zookeeper 是 Kafka 用来负责集群元数据管理、控制器选举等操作的。Producer 是负责将消息发送到 Broker 的，Broker 负责将消息持久化到磁盘，而 Consumer 是负责从Broker 订阅并消费消息。Kafka体系结构如下所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-3.png)  
 <!-- 
@@ -69,19 +75,19 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-2.png)  
 --> 
     
-### 1.1.1. 生产者（Producer）与消费者（Consumer）  
+### 1.2.1. 生产者（Producer）与消费者（Consumer）  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-16.png)  
-&emsp; 对于 Kafka 来说客户端有两种基本类型：生产者（Producer）和 消费者（Consumer）。除此之外，还有用来做数据集成的 Kafka Connect API 和流式处理的 Kafka Streams 等高阶客户端，但这些高阶客户端底层仍然是生产者和消费者API，只不过是在上层做了封装。  
+&emsp; 对于Kafka客户端有两种基本类型：生产者（Producer）和 消费者（Consumer）。除此之外，还有用来做数据集成的 Kafka Connect API 和流式处理的 Kafka Streams 等高阶客户端，但这些高阶客户端底层仍然是生产者和消费者API，只不过是在上层做了封装。  
 
-* Producer ：消息生产者，就是向 Kafka broker 发消息的客户端；
+* Producer ：消息生产者，向 Kafka broker 发消息的客户端；
 * Consumer ：消息消费者，向 Kafka broker 取消息的客户端；
 
-### 1.1.2. Broker 和集群（Cluster）  
-&emsp; 一个 Kafka 服务器也称为 Broker，它接受生产者发送的消息并存入磁盘；Broker 同时服务消费者拉取分区消息的请求，返回目前已经提交的消息。使用特定的机器硬件，一个 Broker 每秒可以处理成千上万的分区和百万量级的消息。  
+### 1.2.2. Broker 和集群（Cluster）  
+&emsp; 一个 Kafka 服务器也称为 Broker，它接受生产者发送的消息并存入磁盘；Broker 同时接受服务消费者拉取分区消息的请求，返回目前已经提交的消息。使用特定的机器硬件，一个 Broker 每秒可以处理成千上万的分区和百万量级的消息。  
 &emsp; 若干个 Broker 组成一个 集群（Cluster），其中集群内某个 Broker 会成为集群控制器（Cluster Controller），它负责管理集群，包括分配分区到 Broker、监控 Broker 故障等。在集群内，一个分区由一个 Broker 负责，这个 Broker 也称为这个分区的 Leader；当然一个分区可以被复制到多个 Broker 上来实现冗余，这样当存在 Broker 故障时可以将其分区重新分配到其他 Broker 来负责。下图是一个样例：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-17.png)  
 
-### 1.1.3. 主题（Topic）与分区（Partition）
+### 1.2.3. 主题（Topic）与分区（Partition）
 <!-- 
 Kafka学习笔记（四）分区机制
 https://blog.csdn.net/haogenmin/article/details/109449016
@@ -89,30 +95,34 @@ https://blog.csdn.net/haogenmin/article/details/109449016
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-18.png)  
 &emsp; 在 Kafka 中，消息以 主题（Topic）来分类，每一个主题都对应一个「消息队列」，这有点儿类似于数据库中的表。但是如果我们把所有同类的消息都塞入到一个“中心”队列中，势必缺少可伸缩性，无论是生产者/消费者数目的增加，还是消息数量的增加，都可能耗尽系统的性能或存储。  
 
-### 1.1.4. offset
+### 1.2.4. offset
 
-### 1.1.5. replica，副本机制，高可用性  
+### 1.2.5. replica，副本机制，高可用性  
 <!-- 
 副本机制
 https://blog.csdn.net/haogenmin/article/details/109449944
 -->
 
-### 1.1.6. leader和follower  
+### 1.2.6. leader和follower  
 
 
-### 1.1.7. ISR  
+### 1.2.7. ISR  
 
 什么是 AR，ISR？  
 
     AR：Assigned Replicas。AR 是主题被创建后，分区创建时被分配的副本集合，副本个 数由副本因子决定。ISR：In-Sync Replicas。Kafka 中特别重要的概念，指代的是 AR 中那些与 Leader 保 持同步的副本集合。在 AR 中的副本可能不在 ISR 中，但 Leader 副本天然就包含在 ISR 中。关于 ISR，还有一个常见的面试题目是如何判断副本是否应该属于 ISR。目前的判断 依据是：Follower 副本的 LEO 落后 Leader LEO 的时间，是否超过了 Broker 端参数 replica.lag.time.max.ms 值。如果超过了，副本就会被从 ISR 中移除。  
 
-### Zookeeper  
+### 1.2.8. Zookeeper  
 &emsp; kafka中Zookeeper作用：集群管理，元数据管理。    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-4.png)  
 * Broker 注册：Broker 是分布式部署并且之间相互独立，Zookeeper 用来管理注册到集群的所有 Broker 节点。
 * Topic 注册：在 Kafka 中，同一个 Topic 的消息会被分成多个分区并将其分布在多个 Broker 上，这些分区信息及与 Broker 的对应关系也都是由 Zookeeper 在维护
 * 生产者负载均衡：由于同一个 Topic 消息会被分区并将其分布在多个 Broker 上，因此，生产者需要将消息合理地发送到这些分布式的 Broker 上。
 * 消费者负载均衡：与生产者类似，Kafka 中的消费者同样需要进行负载均衡来实现多个消费者合理地从对应的 Broker 服务器上接收消息，每个消费者分组包含若干消费者，每条消息都只会发送给分组中的一个消费者，不同的消费者分组消费自己特定的 Topic 下面的消息，互不干扰。
+
+---
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-21.png)  
+&emsp; 注意：producer 不在 zk 中注册，消费者在 zk 中注册。
 
 ## 1.3. Kafka 工作流程分析  
 <!-- 
@@ -136,7 +146,7 @@ Kafka Producer 向 Broker 发送消息使用 Push 模式，Consumer 消费采用
 5. leader 收到所有 ISR 中的 replication 的 ACK 后，增加 HW（high watermark，最后 commit 的 offset）并向 producer 发送 ACK ；
 
 ### 1.3.2. Broker保存消息  
-#### 1.2. 存储策略  
+#### 1.3.2.1. 存储策略  
 &emsp; 1）kafka以topic来进行消息管理，每个topic包含多个partition，每个partition对应一个逻辑log，有多个segment组成。  
 &emsp; 2）每个segment中存储多条消息，消息id由其逻辑位置决定，即从消息id可直接定位到消息的存储位置，避免id到位置的额外映射。  
 &emsp; 3）每个part在内存中对应一个index，记录每个segment中的第一条消息偏移。  
@@ -156,7 +166,7 @@ Kafka Producer 向 Broker 发送消息使用 Push 模式，Consumer 消费采用
 https://mp.weixin.qq.com/s/nSa2CPjbMFdOsYB2Dt0kYg
 -->
 
-#### 1.3.2.1. 存储方式  
+#### 1.3.2.2. 存储方式  
 &emsp; 物理上把 topic 分成一个或多个 patition（对应 server.properties 中的 num.partitions=3 配 置），每个 patition 物理上对应一个文件夹（该文件夹存储该 patition 的所有消息和索引文 件），如下：  
 
 ```text
@@ -173,7 +183,7 @@ drwxrwxr-x. 2 demo demo 4096 8 月 6 14:37 first-2
 -rw-rw-r--. 1 demo demo 8 8 月 6 14:37 leader-epoch-checkpoint
 ```
 
-#### 1.3.2.2. 存储策略  
+#### 1.3.2.3. 存储策略  
 &emsp; 无论消息是否被消费，kafka 都会保留所有消息。有两种策略可以删除旧数据：  
 
 * 基于时间：log.retention.hours=168
@@ -181,53 +191,33 @@ drwxrwxr-x. 2 demo demo 4096 8 月 6 14:37 first-2
 
 &emsp; 需要注意的是，因为 Kafka 读取特定消息的时间复杂度为 O(1)，即与文件大小无关， 所以这里删除过期文件与提高 Kafka 性能无关。  
 
-#### 1.3.2.3. Zookeeper 存储结构  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-21.png)  
-&emsp; 注意：producer 不在 zk 中注册，消费者在 zk 中注册。  
-
-
 ### 1.3.3. Kafka消费过程分析  
 <!-- 
 
 https://mp.weixin.qq.com/s/nSa2CPjbMFdOsYB2Dt0kYg
 
 -->
-&emsp; kafka 提供了两套 consumer API：高级 Consumer API 和低级 Consumer API。  
 
-#### 1.3.3.1. 高级 API  
-1）高级 API 优点  
-
-    高级 API 写起来简单   
-    不需要自行去管理 offset，系统通过 zookeeper 自行管理。  
-    不需要管理分区，副本等情况，系统自动管理。  
-    消费者断线会自动根据上一次记录在 zookeeper 中的 offset 去接着获取数据（默认设置 1 分钟更新一下 zookeeper 中存的 offset）  
-    可以使用 group 来区分对同一个 topic 的不同程序访问分离开来（不同的 group 记录不同的 offset，这样不同程序读取同一个 topic 才不会因为 offset 互相影响）  
-2）高级 API 缺点
-
-    不能自行控制 offset（对于某些特殊需求来说）  
-    不能细化控制如分区、副本、zk 等  
-
-#### 1.3.3.2. 低级 API
-1）低级 API 优点  
-
-    能够让开发者自己控制 offset，想从哪里读取就从哪里读取。
-    自行控制连接分区，对分区自定义进行负载均衡
-    对 zookeeper 的依赖性降低（如：offset 不一定非要靠 zk 存储，自行存储 offset 即可， 比如存在文件或者内存中）
-
-2）低级 API 缺点  
-
-    太过复杂，需要自行控制 offset，连接哪个分区，找到分区 leader 等。
-
-#### 1.3.3.3. 消费者组  
+#### 1.3.3.1. 消费者组  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-22.png)  
 &emsp; 消费者是以 consumer group 消费者组的方式工作，由一个或者多个消费者组成一个组， 共同消费一个 topic。每个分区在同一时间只能由 group 中的一个消费者读取，但是多个 group 可以同时消费这个 partition。在图中，有一个由三个消费者组成的 group，有一个消费者读取主题中的两个分区，另外两个分别读取一个分区。某个消费者读取某个分区，也可以叫做某个消费者是某个分区的拥有者。  
 &emsp; 在这种情况下，消费者可以通过水平扩展的方式同时读取大量的消息。另外，如果一个消费者失败了，那么其他的 group 成员会自动负载均衡读取之前失败的消费者读取的分区。  
 
-#### 1.3.3.4. 消费方式
+#### 1.3.3.2. 消费方式
 &emsp; consumer 采用 pull（拉）模式从 broker 中读取数据。  
 &emsp; push（推）模式很难适应消费速率不同的消费者，因为消息发送速率是由 broker 决定的。 它的目标是尽可能以最快速度传递消息，但是这样很容易造成 consumer 来不及处理消息，典型的表现就是拒绝服务以及网络拥塞。而 pull 模式则可以根据 consumer 的消费能力以适当的速率消费消息。  
 &emsp; 对于 Kafka 而言，pull 模式更合适，它可简化 broker 的设计，consumer 可自主控制消费 消息的速率，同时 consumer 可以自己控制消费方式——即可批量消费也可逐条消费，同时还能选择不同的提交方式从而实现不同的传输语义。  
-&emsp; pull 模式不足之处是，如果 kafka 没有数据，消费者可能会陷入循环中，一直等待数据 到达。为了避免这种情况，我们在我们的拉请求中有参数，允许消费者请求在等待数据到达 的“长轮询”中进行阻塞（并且可选地等待到给定的字节数，以确保大的传输大小）。  
+&emsp; pull 模式不足之处是，如果 kafka 没有数据，消费者可能会陷入循环中，一直等待数据 到达。为了避免这种情况，在拉取请求中有参数，允许消费者请求在等待数据到达 的“长轮询”中进行阻塞（并且可选地等待到给定的字节数，以确保大的传输大小）。  
+
+#### 1.3.3.3. 消息交付语义  
+&emsp; Kafka 在 producer 和 consumer 之间提供的语义保证。显然，Kafka可以提供的消息交付语义保证有多种：  
+
+* At most once——消息可能会丢失但绝不重传。
+* At least once——消息可以重传但绝不丢失。
+* Exactly once——这正是人们想要的, 每一条消息只被传递一次。
+
+&emsp; 值得注意的是，这个问题被分成了两部分：发布消息的持久性保证和消费消息的保证。  
+
 
 ## 1.4. kafka使用场景  
 &emsp; **kafka常用使用场景：**  
