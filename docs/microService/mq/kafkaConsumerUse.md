@@ -70,7 +70,7 @@
 ### 1.1.4. 消费方式  
 &emsp; consumer 采用 pull（拉）模式从 broker 中读取数据。  
 &emsp; push（推）模式很难适应消费速率不同的消费者，因为消息发送速率是由 broker 决定的。 它的目标是尽可能以最快速度传递消息，但是这样很容易造成 consumer 来不及处理消息，典型的表现就是拒绝服务以及网络拥塞。而 pull 模式则可以根据 consumer 的消费能力以适当的速率消费消息。  
-&emsp; 对于 Kafka 而言，pull 模式更合适，它可简化 broker 的设计，consumer 可自主控制消费 消息的速率，同时 consumer 可以自己控制消费方式——即可批量消费也可逐条消费，同时还能选择不同的提交方式从而实现不同的传输语义。  
+&emsp; 对于 Kafka 而言，pull 模式更合适，它可简化 broker 的设计，consumer 可自主控制消费消息的速率，同时consumer可以自己控制消费方式——即可批量消费也可逐条消费，同时还能选择不同的提交方式从而实现不同的传输语义。  
 &emsp; pull 模式不足之处是，如果 kafka 没有数据，消费者可能会陷入循环中，一直等待数据到达。为了避免这种情况，在拉取请求中有参数，允许消费者请求在等待数据到达 的“长轮询”中进行阻塞（并且可选地等待到给定的字节数，以确保大的传输大小）。  
 
 ## 1.2. 构建consumer
@@ -132,7 +132,7 @@ public class ConsumerDemo {
 * auto.offset.reset：该属性指定了消费者在读取一个没有偏移量后者偏移量无效（消费者长时间失效当前的偏移量已经过时并且被删除了）的分区的情况下，应该作何处理，默认值是 latest，也就是从最新记录读取数据（消费者启动之后生成的记录），另一个值是 earliest，意思是在偏移量无效的情况下，消费者从起始位置开始读取数据。
 * enable.auto.commit：否自动提交位移，如果为false，则需要在程序中手动提交位移。对于精确到一次的语义，最好手动提交位移
 * fetch.max.bytes：单次拉取数据的最大字节数量
-* max.poll.records：单次 poll 调用返回的最大消息数，如果处理逻辑很轻量，可以适当提高该值。但是max.poll.records条数据需要在在 session.timeout.ms 这个时间内处理完 。默认值为 500
+* max.poll.records：单次 poll 调用返回的最大消息数，如果处理逻辑很轻量，可以适当提高该值。但是max.poll.records条数据需要在在 session.timeout.ms 这个时间内处理完 。默认值为500
 * request.timeout.ms：一次请求响应的最长等待时间。如果在超时时间内未得到响应，kafka 要么重发这条消息，要么超过重试次数的情况下直接置为失败。
 
 ## 1.3. 订阅topic
@@ -194,21 +194,20 @@ kakfa消费位移
 https://blog.csdn.net/haogenmin/article/details/109488571
 -->
 
-&emsp; consumer会在kafka集群的所有broker中选择一个broker作为consumer group的coordinator，用于实现组成员管理、消费分配方案制定以及提交位移等。  
+&emsp; consumer会在kafka集群的所有broker中选择一个broker作为consumer group的coordinator（协调者），用于实现组成员管理、消费分配方案制定以及提交位移等。  
 &emsp; 当consumer运行了一段时间之后，它必须要提交自己的位移值。consumer提交位移的主要机制是通过向所属的coordinator发送位移提交请求来实现的。每个位移提交请求都会往内部topic（__consumer_offsets）对应分区上追加写入一条消息。  
 &emsp; 消息的key是group.id、topic和分区的元组，value就是位移值。  
 
+&emsp; 位移提交有两种方式：自动提交、手动提交。  
 * 自动提交  
     &emsp; 使用方法：默认不用配置，或者显示配置enable.auto.commit=true，用auto.commit.interval.ms参数控制自动提交的间隔。  
-    &emsp; 使用场景：对消息交付语义无需求，容忍一定的消息丢失。  
+    &emsp; 使用场景：对消息交付语义无需求，容忍一定的消息丢失。自动提交的问题是用户不能细粒度地处理位移的提交，特别是在有较强的精确一次的处理语义。  
 * 手动提交  
     &emsp; 使用方法：设置enable.auto.commmit=false;手动调用KafkaConsumer.commitSync或KafkaConsumer.commitAsync提交位移  
     &emsp; 使用场景：消息处理逻辑重，不允许消息丢失，至少要求“最少一次”处理语义  
     &emsp; commitSync：同步手动提交，用户程序会等待位移提交结束才执行下一条语句命令。  
-    &emsp; commitAsync：异步手动提交，就是异步非阻塞，consumer在后续poll调用时轮询该位移提交的结果。  
-    &emsp; commitSync和commitAsync都有带参数的重载方法，目的是实现更加细粒度化的位移提交策略，指定一个Map显示地告诉kafka为哪些分区提交位移，consumer.commitSync(Collections.singletonMap(partition,new OffsetAndMetadata(lastOffset + 1)))。  
-
-&emsp; 提交的位移一定是consumer下一条待读消息的位移。  
+    &emsp; commitAsync：异步手动提交，这里的异步不是开启一个线程提交，而是指不会阻塞，consumer在后续poll调用时轮询该位移提交的结果。  
+    &emsp; commitSync和commitAsync都有带参数的重载方法，目的是实现更加细粒度化的位移提交策略，指定一个Map显示地告诉kafka为哪些分区提交位移，consumer.commitSync(Collections.singletonMap(partition,new OffsetAndMetadata(lastOffset + 1)))。   
 
 ## 1.6. 重平衡(rebalance)
 <!-- 
@@ -263,39 +262,24 @@ rebalance监听器：最常见的用法是手动提交位移到第三方存储�
 使用rebalance监听器的前提是用户使用consumer group。如果使用的是独立consumer或是直接手动分配分区，那么rebalance监听器是无效的。
 
 ## 1.7. 多线程消费实例  
-多线程消费---两种实现方式
+<!-- 
+~~
+Kafka Consumer多线程实例
+https://blog.csdn.net/matrix_google/article/details/80035222?utm_source=blogxgwz8
+-->
 
- 	方法1.每个线程维护专属KafkaConsumer	
-    方法2.全局consumer+多worker线程
-offset提交方式	自动提交	手动提交
-优点	
-实现简单，速度快，因为没有线程间交互开销，
+&emsp; Kafka Consumer不是线程安全的，所以实现多线程时通常由两种实现方法：  
+1. 每个线程维护一个KafkaConsumer  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-59.png)  
+2. 维护一个或多个KafkaConsumer，同时维护多个事件处理线程(worker thread)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-60.png)  
 
-方便位移管理，易于维护
+&emsp; 两种方法的优缺点：   
 
-分区间的消息消费顺序
-
-消息获取与处理解耦，
-
-可独立扩展consumer数和worker数，
-
-伸缩性好
-
-缺点	
-socket连接开销大；
-
-consumer数受限于topic分区数，扩展性差；
-
-broker端处理负载高，因为发往broker的请求数多；
-
-rebalance可能性增大
-
-实现负载；
-
-难于维护分区内的消息顺序；
-
-处理链路变长，导致位移管理困难；
-
-worker线程异常可能导致消费数据丢失
-
+|  | 	优点| 	缺点| 
+|--- |--- |--- | 
+|方法1(每个线程维护一个KafkaConsumer)|	方便实现
+速度较快，因为不需要任何线程间交互
+易于维护分区内的消息顺序	|更多的TCP连接开销(每个线程都要维护若干个TCP连接)</br>consumer数受限于topic分区数，扩展性差</br>频繁请求导致吞吐量下降</br>线程自己处理消费到的消息可能会导致超时，从而造成rebalance|
+|方法2 (单个(或多个)consumer，多个worker线程)|可独立扩展consumer数和worker数，伸缩性好| 实现麻烦</br>通常难于维护分区内的消息顺序</br>处理链路变长，导致难以保证提交位移的语义正确性 |
 
