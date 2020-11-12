@@ -8,7 +8,7 @@
         - [1.1.3. 消费者组重平衡](#113-消费者组重平衡)
         - [1.1.4. 消费方式](#114-消费方式)
     - [1.2. 构建consumer](#12-构建consumer)
-        - [1.2.1. Consumer程序实例](#121-consumer程序实例)
+        - [1.2.1. consumer程序实例](#121-consumer程序实例)
         - [1.2.2. consumer参数](#122-consumer参数)
     - [1.3. 订阅topic](#13-订阅topic)
         - [1.3.1. 订阅topic列表](#131-订阅topic列表)
@@ -79,7 +79,7 @@
 
 ## 1.2. 构建consumer
 
-### 1.2.1. Consumer程序实例
+### 1.2.1. consumer程序实例
 ```java
 public class ConsumerDemo {
     public static void main(String[] args) {
