@@ -30,8 +30,6 @@ https://juejin.im/post/6844903860767555597
 -->
 
 <!-- 
-https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
-
 https://blog.csdn.net/haogenmin/article/details/109469803
 https://blog.csdn.net/haogenmin/article/details/109488571
 https://blog.csdn.net/haogenmin/article/details/109489704
@@ -59,7 +57,7 @@ kafka在为consumer group成员分配分区时可以做到公平的分配。
 
 ### 1.1.2. 位移(offset)  
 &emsp; 需要明确指出的是，这里的offset指代的是consumer端的offset，与分区日志中的offset是不同的含义。每个consumer实例都会为它消费的分区维护属于自己的位置信息来记录当前 消费了多少条消息。这在Kafka中有一个特有的术语：位移(offset)。  
-&emsp; consumer客户端需要定期地向Kafka集群汇报自己消费数据的进度，这一过程被称为位移提交(offset commit)。位移提交这件事情对于consumer而言非常重要，它不仅表征了 consumer端的消费进度，同时也直接决定了 consumer端的消费语义保证。  
+&emsp; consumer客户端需要定期地向Kafka集群汇报自己消费数据的进度，这一过程被称为位移提交(offset commit)。位移提交这件事情对于consumer而言非常重要，它不仅表征了 consumer端的消费进度，同时也直接决定了consumer端的消费语义保证。  
 
 &emsp; kafka consumer在内部使用一个map来保存其订阅topic所属分区的offset，key是group.id、topic和分区的元组，value就是位移值。  
 &emsp; consumer把位移提交到kafka的一个内部topic（__consumer_offsets）上，通常不能直接操作该topic，特别注意不要擅自删除或搬移该topic的日志文件。  
@@ -75,6 +73,38 @@ kafka在为consumer group成员分配分区时可以做到公平的分配。
 &emsp; pull 模式不足之处是，如果 kafka 没有数据，消费者可能会陷入循环中，一直等待数据到达。为了避免这种情况，在拉取请求中有参数，允许消费者请求在等待数据到达 的“长轮询”中进行阻塞（并且可选地等待到给定的字节数，以确保大的传输大小）。  
 
 ## 1.2. 构建consumer
+
+```java
+public void consume() {
+    Properties properties = PropertiesConfig.getConsumerProperties();
+    properties.put("group.id", "my_group");
+    properties.put("bootstrap.server","192.168.1.9:9092");     
+    properties.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer");   
+    properties.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer");
+ 
+    //先创建一个 KafkaConsumer 对象。
+    Consumer<String, String> consumer = new KafkaConsumer<>(properties);
+   //订阅主题列表 可以匹配正则表达式 如subscribe("test.*");
+    consumer.subscribe(Collections.singletonList("customerTopic"));
+ 
+    try {
+     //消费者是一个长期运行的应用程序，它通过轮询的方式向 Kafka 请求数据。
+        while (true) {
+            ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(KafkaConfig.pollTimeoutOfMinutes));
+            if (!consumerRecords.isEmpty()) {
+                for (ConsumerRecord<String, String> record : consumerRecords) {
+              // 省略业务逻辑处理
+             
+                }
+ 
+            }
+        }
+    } catch (Exception e) {
+        
+    }
+}
+```
+&emsp; 流程不复杂，首先是配置一些参数然后创建消费者实例，然后进行主题订阅。循环那一部分简单说下，消费者是如何知道生产者发送了数据呢？其实生产者产生的数据消费者是不知道的，所以KafkaConsumer 是采用轮询的方式定期去 Kafka Broker 中进行数据的检索，如果有数据就用来消费，如果没有就再继续轮询等待。  
 
 ### 1.2.1. Kafka consumer 参数
 
@@ -143,6 +173,11 @@ kafka在为consumer group成员分配分区时可以做到公平的分配。
 &emsp; KafkaConsumer不是线程安全的，但是有一个例外：用户可以安全地在另一个线程中调用consumer.wakeup()。注意，只有wakeup方法是特例，其他KafkaConsumer方法都不能同时在多线程中使用。  
 
 ## 1.5. 位移管理
+<!-- 
+kakfa消费位移
+https://blog.csdn.net/haogenmin/article/details/109488571
+-->
+
 &emsp; consumer会在kafka集群的所有broker中选择一个broker作为consumer group的coordinator，用于实现组成员管理、消费分配方案制定以及提交位移等。  
 &emsp; 当consumer运行了一段时间之后，它必须要提交自己的位移值。consumer提交位移的主要机制是通过向所属的coordinator发送位移提交请求来实现的。每个位移提交请求都会往内部topic（__consumer_offsets）对应分区上追加写入一条消息。  
 &emsp; 消息的key是group.id、topic和分区的元组，value就是位移值。  
@@ -160,7 +195,10 @@ kafka在为consumer group成员分配分区时可以做到公平的分配。
 &emsp; 提交的位移一定是consumer下一条待读消息的位移。  
 
 ## 1.6. 重平衡(rebalance)
-
+<!-- 
+kakfa消费组和重平衡
+https://blog.csdn.net/haogenmin/article/details/109489704
+-->
 什么时候 rebalance？
 
 这也是经常被提及的一个问题。rebalance 的触发条件有三种：
