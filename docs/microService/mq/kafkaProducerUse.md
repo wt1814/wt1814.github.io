@@ -20,7 +20,7 @@
 &emsp; **<font color = "lime">参考《kafka实战》</font>**  
 
 ## 1.1. kafka生产者概览  
-&emsp; Producer 发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至 Broker。  
+&emsp; Producer发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至 Broker。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-8.png)  
 
@@ -176,21 +176,16 @@ props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
 &emsp; 实际环境中只使用一个用户主线程通常无法满足所需的吞吐量目标，因此需要构造多个线程或多个进程来同时给Kafka集群发送消息。这样在使用过程中就存在着两种基本的使用方法。  
 
 * 多线程单KafkaProducer实例  
-
-        顾名思义，这种方法就是在全局构造一个KafkaProducer实例，然后在多个线程中共享使 用。由于KafkaProducer是线程安全的，所以这种使用方式也是线程安全的。
-
+&emsp; 顾名思义，这种方法就是在全局构造一个KafkaProducer实例，然后在多个线程中共享使 用。由于KafkaProducer是线程安全的，所以这种使用方式也是线程安全的。  
 * 多线程多KafkaProducer实例  
-
-        除了上面的用法，还可以在每个producer主线程中都构造一个KafkaProducer实例，并且 保证此实例在该线程中封闭（thread confinement,线程封闭是实现线程安全的重要手段之一）。 
+&emsp; 除了上面的用法，还可以在每个producer主线程中都构造一个KafkaProducer实例，并且 保证此实例在该线程中封闭（thread confinement,线程封闭是实现线程安全的重要手段之一）。   
     
 &emsp; 显然，这两种方式各有优劣，如下表所示。   
 
 ||说 明	|优 势	|劣 势|
 |---|---|---|---|
-|单 KafkaProducer 实例|	所有线程共享一个KafkaProducer 实例|	实现简单，性能好|①所有线程共享一个内存缓冲区，可 能需要较多内存；</br>②一旦producer某个线程崩溃导致 KafkaProducer实例被“破坏”,则所 有用户线程都无法工作|
+|单 KafkaProducer 实例|	所有线程共享一个KafkaProducer 实例|实现简单，性能好|①所有线程共享一个内存缓冲区，可 能需要较多内存；</br>②一旦producer某个线程崩溃导致 KafkaProducer实例被“破坏”,则所 有用户线程都无法工作|
 |多 KafkaProducer 实例|	每个线程维护自己专属的 KafkaProducer 实例|①每个用户线程拥有专属的 KafkaProducer 实例、缓冲 区空间及一组对应的配置参 数，可以进行细粒度的调 优；</br>②单个 KafkaProducer崩溃不会影响其他producer线程工作	|需要较大的内存分配开销|
 
 &emsp; 如果是对分区数不多的Kafka集群而言，比较推荐使用第一种方法，即在多个 producer用户线程中共享一个KafkaProducer实例。若是对那些拥有超多分区的集群而言，釆 用第二种方法具有较高的可控性，方便producer的后续管理。  
-
-
 
