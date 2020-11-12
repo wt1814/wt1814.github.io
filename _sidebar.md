@@ -233,13 +233,16 @@
 * 分布式消息队列
     * [mq](/docs/microService/mq/mq.md)  
     * [kafka基本概念](/docs/microService/mq/kafka.md)  
+    * [kafka安装](/docs/microService/mq/kafkaInstall.md)  
+    * [kafka生产者](/docs/microService/mq/kafkaProducerUse.md)  
+    * [kafka消费者](/docs/microService/mq/kafkaConsumerUse.md)  
     * [kafka特性](/docs/microService/mq/kafka特性.md)  
-    * [kafka事务](/docs/microService/mq/kafkaTraction.md)  
-    * [kafka配置文件](/docs/microService/mq/kafkaConfig.md)  
-    * [kafka使用](/docs/microService/mq/kafkaUse.md)  
+        * [kafka事务](/docs/microService/mq/kafkaTraction.md)   
+    * [kafka集群管理](/docs/microService/mq/kafkaUse.md)  
     * [kafka集群监控与调优](/docs/microService/mq/kafkaMonitor.md)  
     * [kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  
     * [kafkaStreams](/docs/microService/mq/kafkaStreams.md)  
+    * [kafka源码]  
     * [kafka生产者](/docs/microService/mq/kafkaProducer.md)  
     * [kafka消费者](/docs/microService/mq/kafkaConsumer.md)  
 

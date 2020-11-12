@@ -6,9 +6,9 @@
     - [1.2. 构造Producer](#12-构造producer)
         - [1.2.1. Producer程序实例](#121-producer程序实例)
         - [1.2.2. Producer主要参数](#122-producer主要参数)
-    - [1.3. 消息分区机制](#13-消息分区机制)
+    - [1.3. producer拦截器](#13-producer拦截器)
     - [1.4. 消息序列化](#14-消息序列化)
-    - [1.5. producer拦截器](#15-producer拦截器)
+    - [1.5. 消息分区机制](#15-消息分区机制)
     - [1.6. 无消息丢失配置](#16-无消息丢失配置)
     - [1.7. 消息压缩](#17-消息压缩)
     - [1.8. 多线程处理](#18-多线程处理)
@@ -124,15 +124,16 @@ public class KafkaProducerTest {
 
         默认值：-1，0 当 queue 满时丢掉，负值是 queue 满时 block, 正值是 queue 满时 block 相应的时间，仅仅 for asyc。
 
-## 1.3. 消息分区机制  
+## 1.3. producer拦截器  
+&emsp; 主要用于实现clients端的定制化控制逻辑。interceptor使得用户在消息发送前以及producer回调逻辑前有机会对消息做一些定制化需求，比如修改消息等。同时，producer允许用户指定多个interceptor按序作用于同一条消息从而形成一个拦截链interceptor chain。interceptor的实现接口是org.apahce.kafka.clients.producer.ProducerInterceptor，方法是onSend(ProducerRecord),onAcknowledgement(RecordMetadata,Exception),close。  
+&emsp; 若指定多个interceptor，则producer将按照指定顺序调用它们，同时把每个interceptor中捕获的异常记录到错误日志中而不是向上传递。  
 
 ## 1.4. 消息序列化  
 &emsp; 序列化器serializer：将消息转换成字节数组ByteArray。  
 &emsp; 可自定义序列化：1.定义数据对象格式；2.创建自定义序列化类，实现org.apache.kafka.common.serialization.Serializer接口，在serializer方法中实现序列化逻辑；3.在用于构建KafkaProducer的Properties对象中设置key.serializer或value.serializer，取决于是为消息key还是value做自定义序列化。  
 
-## 1.5. producer拦截器  
-&emsp; 主要用于实现clients端的定制化控制逻辑。interceptor使得用户在消息发送前以及producer回调逻辑前有机会对消息做一些定制化需求，比如修改消息等。同时，producer允许用户指定多个interceptor按序作用于同一条消息从而形成一个拦截链interceptor chain。interceptor的实现接口是org.apahce.kafka.clients.producer.ProducerInterceptor，方法是onSend(ProducerRecord),onAcknowledgement(RecordMetadata,Exception),close。  
-&emsp; 若指定多个interceptor，则producer将按照指定顺序调用它们，同时把每个interceptor中捕获的异常记录到错误日志中而不是向上传递。  
+## 1.5. 消息分区机制  
+......
 
 ## 1.6. 无消息丢失配置  
 1. 采用同步发送，但是性能会很差，并不推荐在实际场景中使用。因此最好能有一份配置，既使用异步方式还能有效地避免数据丢失, 即使出现producer崩溃的情况也不会有问题。 
