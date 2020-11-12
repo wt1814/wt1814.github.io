@@ -37,6 +37,10 @@ https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247484078&idx=1&sn=3b0e75
 
 Kafka 面试必问：聊聊 acks 参数对消息持久化的影响！ 
 https://mp.weixin.qq.com/s/PePsJzuKEIfQpCH1KbxrCg
+
+Kafka 副本机制
+https://juejin.im/post/6844903950009794567
+
 -->
 <!-- 
 https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg

@@ -33,6 +33,9 @@
 <!-- 
 k8s的快速使用手册
 https://www.cnblogs.com/linu/p/10955823.html
+
+ K8s自动扩缩容工具KEDA发布2.0版本，全面升级应用扩展能力 
+ https://mp.weixin.qq.com/s/KZlNqFRb6_N56oE-OKvFBA
 -->
 
 

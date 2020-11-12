@@ -5,6 +5,12 @@
 https://mp.weixin.qq.com/s/bT7VXffqHuzUZUY5c4ce7A
 -->
 
+## Git分支命名  
+<!-- 
+ 别乱提交代码了，你必须知道的 Git 分支开发规范！ 
+ https://mp.weixin.qq.com/s/w5gcDgQKYFmzel6Jnc0u4A
+-->
+
 ## GIT本地库操作基本原理  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/git/git-4.png)  
@@ -40,6 +46,3 @@ git rm -r --cached .
 git add .
 git commit -m "msg"
 ```
-
-
-

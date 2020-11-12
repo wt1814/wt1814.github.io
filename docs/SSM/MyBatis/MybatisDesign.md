@@ -5,6 +5,9 @@
 <!-- 
 MyBatis源码解读 9 种设计模式：
 https://mp.weixin.qq.com/s/oIFZWXMj2z9lV6tf-nF2jQ
+
+ 一石二鸟，从设计模式上剖析Mybatis源码 
+ https://mp.weixin.qq.com/s/LGqw38NBF_wq7O3w8PaPfQ
 -->
 
 |设计模式| 类|
