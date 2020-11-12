@@ -15,7 +15,7 @@
         - [1.3.2. 基于正则表达订阅topic](#132-基于正则表达订阅topic)
     - [1.4. 消息轮询](#14-消息轮询)
     - [1.5. 位移管理](#15-位移管理)
-    - [1.6. 重平衡(rebalance)](#16-重平衡rebalance)
+    - [1.6. 消费者组重平衡(rebalance)](#16-消费者组重平衡rebalance)
     - [1.7. 多线程消费实例](#17-多线程消费实例)
 
 <!-- /TOC -->
@@ -209,57 +209,38 @@ https://blog.csdn.net/haogenmin/article/details/109488571
     &emsp; commitAsync：异步手动提交，这里的异步不是开启一个线程提交，而是指不会阻塞，consumer在后续poll调用时轮询该位移提交的结果。  
     &emsp; commitSync和commitAsync都有带参数的重载方法，目的是实现更加细粒度化的位移提交策略，指定一个Map显示地告诉kafka为哪些分区提交位移，consumer.commitSync(Collections.singletonMap(partition,new OffsetAndMetadata(lastOffset + 1)))。   
 
-## 1.6. 重平衡(rebalance)
+## 1.6. 消费者组重平衡(rebalance)
 <!-- 
 kakfa消费组和重平衡
 https://blog.csdn.net/haogenmin/article/details/109489704
 -->
-什么时候 rebalance？
 
-这也是经常被提及的一个问题。rebalance 的触发条件有三种：
+&emsp; rebalance本质上是一组协议，它规定了一个consumer group是如何达成一致来分配订阅topic的所有分区的。coordinator负责对组执行rebalance操作。  
+&emsp; 消费者组rebalance触发的条件，满足其一即可：  
 
-    组成员发生变更（新 consumer 加入组、已有 consumer 主动离开组或已有 consumer 崩溃了——这两者的区别后面会谈到）
-    订阅主题数发生变更
-    订阅主题的分区数发生变更
+1. 组成员发生变更，比如新consumer加入组，或已有consumer主动离开组，再或是已有consumer崩溃时则触rebalance。（consumer崩溃的情况，有可能是consumer进程“挂掉”或consumer进程所在的机器宕机，也有可能是consumer无法在指定的时间内完成消息的处理。）
+2. 组订阅topic数发生变更，比如使用基于正则表达式的订阅，当匹配正则表达式的新topic被创建时则会触发rebalance。
+3. 组订阅topic的分区数发生变更，比如使用命令行脚本增加了订阅topic的分区数。
 
-如何进行组内分区分配？
+&emsp; 由于目前一次rebalance操作的开销很大，生产环境中用户一定要结合自身业务特点仔细调优consumer参数：request.timeout.ms、max.poll.records和max.poll.interval.ms，以避免不必要的rebalance出现。  
 
-Kafka 默认提供了两种分配策略：Range 和 Round-Robin。当然 Kafka 采用了可插拔式的分配策略，你可以创建自己的分配器以实现不同的分配策略。
+&emsp; **分配策略**  
+&emsp; kafka新版本consumer默认提供了3种分配策略，分别是range策略、round-robin策略和sticky策略。
 
----
-rebalance本质上是一组协议，它规定了一个consumer group是如何达成一致来分配订阅topic的所有分区的。coordinator负责对组执行rebalance操作。
+* range策略：基于范围的思想，将单个topic的所有分区按照顺序排列，然后把这些分区划分成固定大小的分区段并依次分配给每个consumer。
+* round-robin策略：把所有topic的所有分区顺序排开，然后轮询式地分配给各个consumer。
+* sticky策略：有效地避免了上述两种策略完全无视历史分配方案的缺陷，采用了“有黏性”的策略对所有consumer实例进行分配，可以规避极端情况下的数据倾斜而且在两次rebalance间最大限度地维持了之前的分配方案。
 
-组rebalance触发的条件，满足其一即可：
+&emsp; 如果group下所有consumer实例的订阅是相同的，那么使用round-robin会带来更公平的分配方案，否则使用range策略的效果更好。  
+&emsp; 新版本consumer默认的分配策略是range，用户根据consumer参数partition.assingment.strategy来进行配置。另外kafka支持自定义的分配策略，用户可以创建自己的consumer分配器assignor。  
 
-1.组成员发生变更，比如新consumer加入组，或已有consumer主动离开组，再或是已有consumer崩溃时则触rebalance。
+&emsp; **rebalance generation**  
+&emsp; rebalance generation：用于标识某次rebalance,每个consumer group进行rebalance后，generation就会加1，表示group进入一个新的版本，generation从0开始。
+&emsp; consumer group可以执行任意次rebalance，generation是为了防止无效offset提交，延迟的offset提交携带的是旧的generation信息，这次提交就会被consumer group拒绝。
 
-2.组订阅topic数发生变更，比如使用基于正则表达式的订阅，当匹配正则表达式的新topic被创建时则会触发rebalance。
-
-3.组订阅topic的分区数发生变更，比如使用命令行脚本增加了订阅topic的分区数。
-
-consumer崩溃的情况，有可能是consumer进程“挂掉”或consumer进程所在的机器宕机，也有可能是consumer无法在指定的时间内完成消息的处理。
-
-由于目前一次rebalance操作的开销很大，生产环境中用户一定要结合自身业务特点仔细调优consumer参数：request.timeout.ms、max.poll.records和max.poll.interval.ms，以避免不必要的rebalance出现。
-
-kafka新版本consumer默认提供了3种分配策略，分别是range策略、round-robin策略和sticky策略。
-
--range策略：基于范围的思想，将单个topic的所有分区按照顺序排列，然后把这些分区划分成固定大小的分区段并依次分配给每个consumer。
-
--round-robin策略：把所有topic的所有分区顺序排开，然后轮询式地分配给各个consumer。
-
--sticky策略：有效地避免了上述两种策略完全无视历史分配方案的缺陷，采用了“有黏性”的策略对所有consumer实例进行分配，可以规避极端情况下的数据倾斜而且在两次rebalance间最大限度地维持了之前的分配方案。
-
-如果group下所有consumer实例的订阅是相同的，那么使用round-robin会带来更公平的分配方案，否则使用range策略的效果更好。
-
-新版本consumer默认的分配策略是range，用户根据consumer参数partition.assingment.strategy来进行配置。另外kafka支持自定义的分配策略，用户可以创建自己的consumer分配器assignor。
-
-rebalance generation：用于标识某次rebalance,每个consumer group进行rebalance后，generation就会加1，表示group进入一个新的版本，generation从0开始。
-
-consumer group可以执行任意次rebalance，generation是为了防止无效offset提交，延迟的offset提交携带的是旧的generation信息，这次提交就会被consumer group拒绝。
-
-rebalance监听器：最常见的用法是手动提交位移到第三方存储（比如数据库中）以及在rebalance前后执行一些必要的审计操作。有一个主要的接口回调类ConsumerRebalanceListener，里面就两个方法onParitionsRevoked和onPartitionAssigned。在coordinator开启新一轮rebalance前onParitionsRevoked方法会被调用，而rebalance完成后会调用onPartitionAssigned方法。
-
-使用rebalance监听器的前提是用户使用consumer group。如果使用的是独立consumer或是直接手动分配分区，那么rebalance监听器是无效的。
+&emsp; **rebalance监听器**  
+&emsp; rebalance监听器：最常见的用法是手动提交位移到第三方存储（比如数据库中）以及在rebalance前后执行一些必要的审计操作。有一个主要的接口回调类ConsumerRebalanceListener，里面就两个方法onParitionsRevoked和onPartitionAssigned。在coordinator开启新一轮rebalance前onParitionsRevoked方法会被调用，而rebalance完成后会调用onPartitionAssigned方法。  
+&emsp; 使用rebalance监听器的前提是用户使用consumer group。如果使用的是独立consumer或是直接手动分配分区，那么rebalance监听器是无效的。  
 
 ## 1.7. 多线程消费实例  
 <!-- 
@@ -276,7 +257,7 @@ https://blog.csdn.net/matrix_google/article/details/80035222?utm_source=blogxgwz
 
 &emsp; 两种方法的优缺点：   
 
-|  | 	优点| 	缺点| 
+|  | 优点| 缺点| 
 |--- |--- |--- | 
 |方法1(每个线程维护一个KafkaConsumer)|方便实现</br>速度较快，因为不需要任何线程间交互</br>易于维护分区内的消息顺序	|更多的TCP连接开销(每个线程都要维护若干个TCP连接)</br>consumer数受限于topic分区数，扩展性差</br>频繁请求导致吞吐量下降</br>线程自己处理消费到的消息可能会导致超时，从而造成rebalance|
 |方法2 (单个(或多个)consumer，多个worker线程)|可独立扩展consumer数和worker数，伸缩性好| 实现麻烦</br>通常难于维护分区内的消息顺序</br>处理链路变长，导致难以保证提交位移的语义正确性 |
