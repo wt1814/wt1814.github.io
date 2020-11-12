@@ -30,6 +30,11 @@
 
 
 <!-- 
+
+https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247484048&idx=1&sn=2de06942948b02842fd042e7783cbc61&chksm=e8eb7b04df9cf2121a98984fae0207d422b9d643a2c3ff4d7c91cabfe2e8b4d530a62c376035&scene=178&cur_album_id=1338677566013800448#rd
+
+https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247484078&idx=1&sn=3b0e754674804d61bde1df498f0bd092&chksm=e8eb7b3adf9cf22c370346b0eb2aa516f517daf4d0fa5977f41412d64f22cfe86f8eec90c58c&scene=178&cur_album_id=1338677566013800448#rd
+
 Kafka 面试必问：聊聊 acks 参数对消息持久化的影响！ 
 https://mp.weixin.qq.com/s/PePsJzuKEIfQpCH1KbxrCg
 -->

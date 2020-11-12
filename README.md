@@ -321,15 +321,13 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 ### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  
 
-#### kafka  
-[kafka原理]  
-[kafka基本概念](/docs/microService/mq/kafka.md)  
-[kafka特性](/docs/microService/mq/kafka特性.md)  
-&emsp; [kafka事务](/docs/microService/mq/kafkaTraction.md)   
-[kafka使用]  
+#### kafka   
+[kafka基本概念](/docs/microService/mq/kafka.md) 
 [kafka安装](/docs/microService/mq/kafkaInstall.md)  
 [kafka生产者开发](/docs/microService/mq/kafkaProducerUse.md)  
 [kafka消费者开发](/docs/microService/mq/kafkaConsumerUse.md)  
+[kafka特性](/docs/microService/mq/kafka特性.md)  
+&emsp; [kafka事务](/docs/microService/mq/kafkaTraction.md)   
 [kafka集群管理](/docs/microService/mq/kafkaUse.md)  
 [kafka集群监控与调优](/docs/microService/mq/kafkaMonitor.md)  
 [kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  

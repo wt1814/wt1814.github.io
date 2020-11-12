@@ -6,6 +6,7 @@
         - [1.1.1. 消费者分组](#111-消费者分组)
         - [1.1.2. 位移(offset)](#112-位移offset)
         - [1.1.3. 消费者重平衡](#113-消费者重平衡)
+        - [消费方式](#消费方式)
     - [1.2. 构建consumer](#12-构建consumer)
         - [1.2.1. Kafka consumer 参数](#121-kafka-consumer-参数)
     - [1.3. 订阅topic](#13-订阅topic)
@@ -66,6 +67,16 @@ consumer把位移提交到kafka的一个内部topic（__consumer_offsets）上�
 ### 1.1.3. 消费者重平衡  
 &emsp; 标题中特意强调了 consumer group0如果用户使用的是standalone consumer,则压根就没 有 rebalance 的概念，即 rebalance 只对 consumer group有效。
 &emsp; 何为rebalance？它本质上是一种协议，规定了一个consumer group下所有consumer如何达成一致来分配订阅topic的所有分区。举个例子，假设有一个consumer group，它有20个consumer实例。该group订阅了一个具有100个分区的topic。那么正常情况下，consumer group平均会为每个consumer分配5个分区，即每个consumer负责读取5个分区的数据。这 个分配过程就被称作rebalance。  
+
+### 消费方式  
+
+&emsp; consumer 采用 pull（拉）模式从 broker 中读取数据。  
+&emsp; push（推）模式很难适应消费速率不同的消费者，因为消息发送速率是由 broker 决定的。 它的目标是尽可能以最快速度传递消息，但是这样很容易造成 consumer 来不及处理消息，典型的表现就是拒绝服务以及网络拥塞。而 pull 模式则可以根据 consumer 的消费能力以适当的速率消费消息。  
+&emsp; 对于 Kafka 而言，pull 模式更合适，它可简化 broker 的设计，consumer 可自主控制消费 消息的速率，同时 consumer 可以自己控制消费方式——即可批量消费也可逐条消费，同时还能选择不同的提交方式从而实现不同的传输语义。  
+&emsp; pull 模式不足之处是，如果 kafka 没有数据，消费者可能会陷入循环中，一直等待数据 到达。为了避免这种情况，在拉取请求中有参数，允许消费者请求在等待数据到达 的“长轮询”中进行阻塞（并且可选地等待到给定的字节数，以确保大的传输大小）。  
+
+
+
 
 ## 1.2. 构建consumer
 

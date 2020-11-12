@@ -23,6 +23,9 @@
 <!-- 
 SpringBoot集成kafka全面实战
 https://blog.csdn.net/yuanlong122716/article/details/105160545/
+
+ Java人应该知道的SpringBoot For Kafka (下) 
+https://mp.weixin.qq.com/s/JB660Pgypr-PvkkdGOlhag
 -->
 
 1. 生产者实践

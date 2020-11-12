@@ -12,6 +12,15 @@ https://www.cnblogs.com/middleware/p/9477133.html
 -->
 Apache Kafka 从 0.11.0 开始，支持了一个非常大的 feature，就是对事务性的支持，在 Kafka 中关于事务性，是有三种层面上的含义：一是幂等性的支持；二是事务性的支持；三是 Kafka Streams 的 exactly once 的实现。  
 
+&emsp; **消息交付语义**    
+&emsp; Kafka 在 producer 和 consumer 之间提供的语义保证。显然，Kafka可以提供的消息交付语义保证有多种：  
+
+* At most once——消息可能会丢失但绝不重传。
+* At least once——消息可以重传但绝不丢失。
+* Exactly once——这正是人们想要的, 每一条消息只被传递一次。
+
+&emsp; 值得注意的是，这个问题被分成了两部分：发布消息的持久性保证和消费消息的保证。  
+
 
 ## 幂等性，Exactly Once  
 <!-- 
