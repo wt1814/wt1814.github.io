@@ -8,7 +8,8 @@
         - [1.1.3. 消费者组重平衡](#113-消费者组重平衡)
         - [1.1.4. 消费方式](#114-消费方式)
     - [1.2. 构建consumer](#12-构建consumer)
-        - [1.2.1. Kafka consumer 参数](#121-kafka-consumer-参数)
+        - [1.2.1. Consumer程序实例](#121-consumer程序实例)
+        - [1.2.2. consumer参数](#122-consumer参数)
     - [1.3. 订阅topic](#13-订阅topic)
         - [1.3.1. 订阅topic列表](#131-订阅topic列表)
         - [1.3.2. 基于正则表达订阅topic](#132-基于正则表达订阅topic)
@@ -22,22 +23,6 @@
 # 1. kafka消费者开发
 &emsp; **<font color = "lime">参考《kafka实战》</font>**  
 
-<!-- 
-Kafka读取数据 
-https://juejin.im/post/6844903859366821895
-提交和偏移量提交和偏移量
-https://juejin.im/post/6844903860767555597
--->
-
-<!-- 
-https://blog.csdn.net/haogenmin/article/details/109469803
-https://blog.csdn.net/haogenmin/article/details/109488571
-https://blog.csdn.net/haogenmin/article/details/109489704
-
-&emsp; 消费者组好处：consumer group用于实现高伸缩性、高容错性的consumer机制。组内多个consumer实例可以同时读取kafka消息，而且一旦有某个consumer挂了，consumer group会立即将已崩溃consumer负责的分区转交给其他consumer来负责，从而保证整个group可以继续操作，不会丢失数据，这个过程被称为重平衡rebalance。  
-kafka在为consumer group成员分配分区时可以做到公平的分配。  
-由于目前kafka只提供单个分区内的消息顺序，而不会维护全局的消息顺序，因此如果用户要实现topic全局的消息读取顺序，就只能通过让每个consumer group下只包含一个consumer实例的方式来间接实现。  
--->
 ## 1.1. consumer概览  
 
 ### 1.1.1. 消费者分组  
@@ -46,7 +31,23 @@ kafka在为consumer group成员分配分区时可以做到公平的分配。
 * 消费者组(consumer group)：由多个消费者实例构成一个整体进行消费
 * 独立消费者(standalone consumer)：单独执行消费操作
 
+&emsp; **消费者组的特点：**
+
+* 对于同一个group而言，topic的每条消息只能发送到group下一个consumer实例上  
+* topic消息可以发送到多个group中  
+
+&emsp; Kafka可以通过消费者组实现Kafka的基于队列和基于发布/订阅的两种消息引擎
+
+* 实现基于队列的模型：所有consumer实例都属于相同的group，每条消息只会被一个consumer实例处理。  
+* 实现基于发布/订阅模型：consumer实例都属于不同group，这样kafka消息会被广播到所有consumer实例上。  
+
+&emsp; consumer group是用于高伸缩性、高容错性的consumer机制。组内多个consumer实例可以同时读取Kafka消息，而且一旦有某个consumer挂掉，consumer group会立即将已崩溃consumer负责的分区转交给其他consumer来负责，从而保证不丢数据，这也成为重平衡。  
+&emsp; Kafka目前只提供单个分区内的消息顺序，而不会维护全局的消息顺序，因此用户如果要实现topic全局的消息顺序读取，就只能通过让每个consumer group下只包含一个consumer实例的方式来实现。  
+
+
+<!-- 
 &emsp; 消费者使用一个消费者组名group.id来标记自己，topic的每条消息都只会被发送到每个订阅它的消费者组的一个消费者实例上。  
+
 &emsp; kafka同时支持基于队列和基于发布/订阅的两种消息引擎模型：
 
 * 实现基于队列的模型：所有consumer实例都属于相同的group，每条消息只会被一个consumer实例处理。  
@@ -54,17 +55,17 @@ kafka在为consumer group成员分配分区时可以做到公平的分配。
 
 &emsp; 每个消费者只能消费所分配到的分区的消息，每一个分区只能被一个消费组中的一个消费者所消费，所以同一个消费组中消费者的数量如果超过了分区的数量，将会出现有些消费者分配不到消费的分区。消费组与消费者关系如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-32.png)  
+-->
 
 ### 1.1.2. 位移(offset)  
-&emsp; 需要明确指出的是，这里的offset指代的是consumer端的offset，与分区日志中的offset是不同的含义。每个consumer实例都会为它消费的分区维护属于自己的位置信息来记录当前 消费了多少条消息。这在Kafka中有一个特有的术语：位移(offset)。  
-&emsp; consumer客户端需要定期地向Kafka集群汇报自己消费数据的进度，这一过程被称为位移提交(offset commit)。位移提交这件事情对于consumer而言非常重要，它不仅表征了 consumer端的消费进度，同时也直接决定了consumer端的消费语义保证。  
+&emsp; 需要明确指出的是，这里的offset指代的是consumer端的offset，与分区日志中的offset是不同的含义。每个consumer实例都会为它消费的分区维护属于自己的位置信息来记录当前 消费了多少条消息。这在Kafka中有一个特有的术语：位移(offset)。kafka consumer在内部使用一个map来保存其订阅topic所属分区的offset，key是group.id、topic和分区的元组，value就是位移值。  
+&emsp; Kafka同时还引入了检查点机制定期对位移进行持久化。  
 
-&emsp; kafka consumer在内部使用一个map来保存其订阅topic所属分区的offset，key是group.id、topic和分区的元组，value就是位移值。  
+&emsp; consumer客户端需要定期地向Kafka集群汇报自己消费数据的进度，这一过程被称为位移提交(offset commit)。位移提交这件事情对于consumer而言非常重要，它不仅表征了 consumer端的消费进度，同时也直接决定了consumer端的消费语义保证。    
 &emsp; consumer把位移提交到kafka的一个内部topic（__consumer_offsets）上，通常不能直接操作该topic，特别注意不要擅自删除或搬移该topic的日志文件。  
 
-### 1.1.3. 消费者组重平衡  
-&emsp; 标题中特意强调了 consumer group，如果用户使用的是standalone consumer，则没有 rebalance的概念，即rebalance只对consumer group有效。  
-&emsp; 何为rebalance？它本质上是一种协议，规定了一个consumer group下所有consumer如何达成一致来分配订阅topic的所有分区。举个例子，假设有一个consumer group，它有20个consumer实例。该group订阅了一个具有100个分区的topic。那么正常情况下，consumer group平均会为每个consumer分配5个分区，即每个consumer负责读取5个分区的数据。这 个分配过程就被称作rebalance。  
+### 1.1.3. 消费者组重平衡   
+&emsp; 重平衡只对消费者组有效，它本质上是一种协议，规定了一个consumer group下所有consumer如何达成一致来分配订阅topic的所有分区。举个例子，假设有一个consumer group，它有20个consumer实例。该group订阅了一个具有100个分区的topic。那么正常情况下，consumer group平均会为每个consumer分配5个分区，即每个consumer负责读取5个分区的数据。这个分配过程就被称作rebalance。  
 
 ### 1.1.4. 消费方式  
 &emsp; consumer 采用 pull（拉）模式从 broker 中读取数据。  
@@ -74,39 +75,54 @@ kafka在为consumer group成员分配分区时可以做到公平的分配。
 
 ## 1.2. 构建consumer
 
+### 1.2.1. Consumer程序实例
 ```java
-public void consume() {
-    Properties properties = PropertiesConfig.getConsumerProperties();
-    properties.put("group.id", "my_group");
-    properties.put("bootstrap.server","192.168.1.9:9092");     
-    properties.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer");   
-    properties.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer");
- 
-    //先创建一个 KafkaConsumer 对象。
-    Consumer<String, String> consumer = new KafkaConsumer<>(properties);
-   //订阅主题列表 可以匹配正则表达式 如subscribe("test.*");
-    consumer.subscribe(Collections.singletonList("customerTopic"));
- 
-    try {
-     //消费者是一个长期运行的应用程序，它通过轮询的方式向 Kafka 请求数据。
-        while (true) {
-            ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(KafkaConfig.pollTimeoutOfMinutes));
-            if (!consumerRecords.isEmpty()) {
-                for (ConsumerRecord<String, String> record : consumerRecords) {
-              // 省略业务逻辑处理
-             
+public class ConsumerDemo {
+    public static void main(String[] args) {
+        String topicName = "test-topic";
+        String groupId = "test-group";
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "locahost:9092");
+        //必须指定
+        props.put("group.id", groupId);
+        props.put("enable.auto.commit", "true");
+        props.put("auto.commit.interval.ms", "1000");
+        //从最早的消息开始读取
+        props.put("auto.offset.reset", "earliest");
+        //必须指定
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        //必须指定
+        props.put("value.seserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
+        KafkaConsumer<Object, Object> consumer = new KafkaConsumer<>(props);
+        //订阅不是增量式的，多次订阅会覆盖
+        consumer.subscribe(Collections.singleton(topicName));
+        try {
+
+            while (true) {
+                //使用了和selector类似的机制，需要用户轮询
+                //1000是超时时间，控制最大阻塞时间
+                ConsumerRecords<Object, Object> records = consumer.poll(1000);
+                for (ConsumerRecord record : records) {
+                    System.out.println(record.key() + ":" + record.value());
                 }
- 
             }
+        }finally {
+            //关闭并最多等待30s
+            consumer.close();
         }
-    } catch (Exception e) {
-        
     }
 }
 ```
-&emsp; 流程不复杂，首先是配置一些参数然后创建消费者实例，然后进行主题订阅。循环那一部分简单说下，消费者是如何知道生产者发送了数据呢？其实生产者产生的数据消费者是不知道的，所以KafkaConsumer 是采用轮询的方式定期去 Kafka Broker 中进行数据的检索，如果有数据就用来消费，如果没有就再继续轮询等待。  
+&emsp; 构造consumer需要下面6个步骤：  
+1. 构造一个 java.util.Properties 对象，至少指定 bootstrap.serversn、key.deserializer、value.deserializer和group.id的值，即上面代码中显示指明必须指定带注释的4个参数。
+2. 使用上一步创建的Properties实例构造KafkaConsumer对象。
+3. 调用KafkaConsumer.subscribe方法订阅consumer group感兴趣的topic列表。
+4. 循环调用KafkaConsumer.poll方法获取封装在ConsumerRecord的topic消息。
+5. 处理获取到的ConsumerRecord对象。
+6. 关闭 KafkaConsumer。 
 
-### 1.2.1. Kafka consumer 参数
+### 1.2.2. consumer参数
 
 * bootstrap.servers：连接 broker 地址，host：port 格式。
 * group.id：消费者隶属的消费组。
@@ -143,21 +159,21 @@ public void consume() {
 
 ### 1.3.2. 基于正则表达订阅topic
 &emsp; 基于正则表达式订阅topic
-    * enable.auto.commit=true
-        ```java
-        consumer.subscribe(Pattern.compile("kafka-.*"),new NoOpConsumerRebalanceListener())
-        ```
-    * enable.auto.commit=false
-        ```java
-        consumer.subscribe(Pattern.compile("kafka-.*"),new ConsumerRebalanceListener()..)
-        //ConsumerRebalanceListener是一个回调接口，用户需要通过实现这个接口来实现consumer分区分配方案发生变更时的逻辑。
-        ```
+* enable.auto.commit=true
+    ```java
+    consumer.subscribe(Pattern.compile("kafka-.*"),new NoOpConsumerRebalanceListener())
+    ```
+* enable.auto.commit=false
+    ```java
+    consumer.subscribe(Pattern.compile("kafka-.*"),new ConsumerRebalanceListener()..)
+    //ConsumerRebalanceListener是一个回调接口，用户需要通过实现这个接口来实现consumer分区分配方案发生变更时的逻辑。
+    ```
 
 ## 1.4. 消息轮询
-&emsp; kafka采用类似于Linux I/O模型的poll或select等，使用一个线程来同时管理多个socket连接，即同时与多个broker通信实现消息的并行读取。
-&emsp; 一旦consumer订阅了topic，所有的消费逻辑包括coordinator的协调、消费者组的rebalance以及数据的获取都会在主逻辑poll方法的一次调用中被执行。这样用户可以很容易使用一个线程来管理所有的consumer I/O操作。
-&emsp; 新版本Java consumer是一个双线程的Java进程：创建KafkaConsumer的线程被称为用户主线程，同时consumer在后台会创建一个心跳线程，该线程被称为后台心跳线程。KafkaConsumer的poll方法在用户主线程中运行。  
-&emsp; poll方法根据当前consumer的消费位移返回消息集合。poll方法中有个超时的参数，为了让consumer有机会在等待kafka消息的同时还能够定期执行其他任务。  
+&emsp; kafka采用类似于Linux I/O模型的poll或select等，使用一个线程来同时管理多个socket连接，即同时与多个broker通信实现消息的并行读取。  
+&emsp; 一旦consumer订阅了topic，所有的消费逻辑包括coordinator的协调、消费者组的rebalance以及数据的获取都会在主逻辑poll方法的一次调用中被执行。这样用户可以很容易使用一个线程来管理所有的consumer I/O操作。  
+&emsp; 新版本Java consumer是一个双线程的Java进程：创建KafkaConsumer的线程被称为用户主线程，同时consumer在后台会创建一个心跳线程，该线程被称为后台心跳线程。KafkaConsumer的poll方法在用户主线程中运行。    
+&emsp; poll方法根据当前consumer的消费位移返回消息集合。poll方法中有个超时的参数，为了让consumer有机会在等待kafka消息的同时还能够定期执行其他任务。   
 &emsp; poll方法返回满足以下任意一个条件即可返回：  
     
 * 要么获取了足够多的可用数据  
