@@ -5,8 +5,8 @@
     - [1.1. consumer概览](#11-consumer概览)
         - [1.1.1. 消费者分组](#111-消费者分组)
         - [1.1.2. 位移(offset)](#112-位移offset)
-        - [1.1.3. 消费者重平衡](#113-消费者重平衡)
-        - [消费方式](#消费方式)
+        - [1.1.3. 消费者组重平衡](#113-消费者组重平衡)
+        - [1.1.4. 消费方式](#114-消费方式)
     - [1.2. 构建consumer](#12-构建consumer)
         - [1.2.1. Kafka consumer 参数](#121-kafka-consumer-参数)
     - [1.3. 订阅topic](#13-订阅topic)
@@ -35,48 +35,44 @@ https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
 https://blog.csdn.net/haogenmin/article/details/109469803
 https://blog.csdn.net/haogenmin/article/details/109488571
 https://blog.csdn.net/haogenmin/article/details/109489704
+
+&emsp; 消费者组好处：consumer group用于实现高伸缩性、高容错性的consumer机制。组内多个consumer实例可以同时读取kafka消息，而且一旦有某个consumer挂了，consumer group会立即将已崩溃consumer负责的分区转交给其他consumer来负责，从而保证整个group可以继续操作，不会丢失数据，这个过程被称为重平衡rebalance。  
+kafka在为consumer group成员分配分区时可以做到公平的分配。  
+由于目前kafka只提供单个分区内的消息顺序，而不会维护全局的消息顺序，因此如果用户要实现topic全局的消息读取顺序，就只能通过让每个consumer group下只包含一个consumer实例的方式来间接实现。  
 -->
 ## 1.1. consumer概览  
 
 ### 1.1.1. 消费者分组  
 &emsp; kafka消费者分为两类：  
 
-* 消费者组(consumer group)：单独执行消费操作
-* 独立消费者(standalone consumer)：由多个消费者实例构成一个整体进行消费
+* 消费者组(consumer group)：由多个消费者实例构成一个整体进行消费
+* 独立消费者(standalone consumer)：单独执行消费操作
 
-消费者使用一个消费者组名group.id来标记自己，topic的每条消息都只会被发送到每个订阅它的消费者组的一个消费者实例上。  
+&emsp; 消费者使用一个消费者组名group.id来标记自己，topic的每条消息都只会被发送到每个订阅它的消费者组的一个消费者实例上。  
 &emsp; kafka同时支持基于队列和基于发布/订阅的两种消息引擎模型：
 
 * 实现基于队列的模型：所有consumer实例都属于相同的group，每条消息只会被一个consumer实例处理。  
 * 实现基于发布/订阅模型：consumer实例都属于不同group，这样kafka消息会被广播到所有consumer实例上。  
 
-消费者组好处：consumer group用于实现高伸缩性、高容错性的consumer机制。组内多个consumer实例可以同时读取kafka消息，而且一旦有某个consumer挂了，consumer group会立即将已崩溃consumer负责的分区转交给其他consumer来负责，从而保证整个group可以继续操作，不会丢失数据，这个过程被称为重平衡rebalance。  
-kafka在为consumer group成员分配分区时可以做到公平的分配。  
-由于目前kafka只提供单个分区内的消息顺序，而不会维护全局的消息顺序，因此如果用户要实现topic全局的消息读取顺序，就只能通过让每个consumer group下只包含一个consumer实例的方式来间接实现。  
 &emsp; 每个消费者只能消费所分配到的分区的消息，每一个分区只能被一个消费组中的一个消费者所消费，所以同一个消费组中消费者的数量如果超过了分区的数量，将会出现有些消费者分配不到消费的分区。消费组与消费者关系如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-32.png)  
 
 ### 1.1.2. 位移(offset)  
-&emsp; 需要明确指出的是，这里的offset指代的是consumer端的offset,与分区日志中的offset是不同的含义。每个consumer实例都会为它消费的分区维护属于自己的位置信息来记录当前 消费了多少条消息。这在Kafka中有一个特有的术语：位移(offset)。
+&emsp; 需要明确指出的是，这里的offset指代的是consumer端的offset，与分区日志中的offset是不同的含义。每个consumer实例都会为它消费的分区维护属于自己的位置信息来记录当前 消费了多少条消息。这在Kafka中有一个特有的术语：位移(offset)。  
 &emsp; consumer客户端需要定期地向Kafka集群汇报自己消费数据的进度，这一过程被称为位移提交(offset commit)。位移提交这件事情对于consumer而言非常重要，它不仅表征了 consumer端的消费进度，同时也直接决定了 consumer端的消费语义保证。  
 
-kafka让consumer group保存offset，保存成了一个长整型数据就行，同时kafka consumer还引入了检查点机制checkpointing定期对offset进行持久化，从而简化了应答机制的实现。  
-kafka consumer在内部使用一个map来保存其订阅topic所属分区的offset，key是group.id、topic和分区的元组，value就是位移值。  
-consumer把位移提交到kafka的一个内部topic（__consumer_offsets）上，通常不能直接操作该topic，特别注意不要擅自删除或搬移该topic的日志文件。  
+&emsp; kafka consumer在内部使用一个map来保存其订阅topic所属分区的offset，key是group.id、topic和分区的元组，value就是位移值。  
+&emsp; consumer把位移提交到kafka的一个内部topic（__consumer_offsets）上，通常不能直接操作该topic，特别注意不要擅自删除或搬移该topic的日志文件。  
 
-### 1.1.3. 消费者重平衡  
-&emsp; 标题中特意强调了 consumer group0如果用户使用的是standalone consumer,则压根就没 有 rebalance 的概念，即 rebalance 只对 consumer group有效。
+### 1.1.3. 消费者组重平衡  
+&emsp; 标题中特意强调了 consumer group，如果用户使用的是standalone consumer，则没有 rebalance的概念，即rebalance只对consumer group有效。  
 &emsp; 何为rebalance？它本质上是一种协议，规定了一个consumer group下所有consumer如何达成一致来分配订阅topic的所有分区。举个例子，假设有一个consumer group，它有20个consumer实例。该group订阅了一个具有100个分区的topic。那么正常情况下，consumer group平均会为每个consumer分配5个分区，即每个consumer负责读取5个分区的数据。这 个分配过程就被称作rebalance。  
 
-### 消费方式  
-
+### 1.1.4. 消费方式  
 &emsp; consumer 采用 pull（拉）模式从 broker 中读取数据。  
 &emsp; push（推）模式很难适应消费速率不同的消费者，因为消息发送速率是由 broker 决定的。 它的目标是尽可能以最快速度传递消息，但是这样很容易造成 consumer 来不及处理消息，典型的表现就是拒绝服务以及网络拥塞。而 pull 模式则可以根据 consumer 的消费能力以适当的速率消费消息。  
 &emsp; 对于 Kafka 而言，pull 模式更合适，它可简化 broker 的设计，consumer 可自主控制消费 消息的速率，同时 consumer 可以自己控制消费方式——即可批量消费也可逐条消费，同时还能选择不同的提交方式从而实现不同的传输语义。  
-&emsp; pull 模式不足之处是，如果 kafka 没有数据，消费者可能会陷入循环中，一直等待数据 到达。为了避免这种情况，在拉取请求中有参数，允许消费者请求在等待数据到达 的“长轮询”中进行阻塞（并且可选地等待到给定的字节数，以确保大的传输大小）。  
-
-
-
+&emsp; pull 模式不足之处是，如果 kafka 没有数据，消费者可能会陷入循环中，一直等待数据到达。为了避免这种情况，在拉取请求中有参数，允许消费者请求在等待数据到达 的“长轮询”中进行阻塞（并且可选地等待到给定的字节数，以确保大的传输大小）。  
 
 ## 1.2. 构建consumer
 
@@ -98,25 +94,25 @@ consumer把位移提交到kafka的一个内部topic（__consumer_offsets）上�
 ### 1.3.1. 订阅topic列表
 1. 消费者组订阅topic列表
 
-```java
-consumer.subscribe(Arrays.asList("topic1","topic2","topic3"))
-```
+    ```java
+    consumer.subscribe(Arrays.asList("topic1","topic2","topic3"))
+    ```
 2. 单独消费者订阅topic列表
 
-```java
-TopicPartition tp1= new TopicPartition("topic1",0)
-TopicPartition tp2= new TopicPartition("topic2",1)
-consumer.assign(Arrays.asList(tp1,tp2))
-```
+    ```java
+    TopicPartition tp1= new TopicPartition("topic1",0)
+    TopicPartition tp2= new TopicPartition("topic2",1)
+    consumer.assign(Arrays.asList(tp1,tp2))
+    ```
 
-* 如果发生多次assign调用，最后一次assign调用的分配生效，之前的都会被覆盖掉。  
-* assign和subscribe一定不要混用，即不能在一个consumer应用中同时使用consumer group和独立consumer。  
-* 独立consumer使用情况：  
-    * 进程自己维护分区的状态，它就可以固定消费某些分区而不用担心消费状态丢失的问题。
-    * 进程本身就是高可用且能够自动重启恢复错误（比如使用YARN和Mesos等容器调度框架），就不需要让kafka来帮它完成错误检测和状态恢复。
+    * 如果发生多次assign调用，最后一次assign调用的分配生效，之前的都会被覆盖掉。  
+    * assign和subscribe一定不要混用，即不能在一个consumer应用中同时使用consumer group和独立consumer。  
+    * 独立consumer使用情况：  
+        * 进程自己维护分区的状态，它就可以固定消费某些分区而不用担心消费状态丢失的问题。
+        * 进程本身就是高可用且能够自动重启恢复错误（比如使用YARN和Mesos等容器调度框架），就不需要让kafka来帮它完成错误检测和状态恢复。
 
 ### 1.3.2. 基于正则表达订阅topic
-3. 基于正则表达式订阅topic
+&emsp; 基于正则表达式订阅topic
     * enable.auto.commit=true
         ```java
         consumer.subscribe(Pattern.compile("kafka-.*"),new NoOpConsumerRebalanceListener())
@@ -128,59 +124,40 @@ consumer.assign(Arrays.asList(tp1,tp2))
         ```
 
 ## 1.4. 消息轮询
--kafka采用类似于Linux I/O模型的poll或select等，使用一个线程来同时管理多个socket连接，即同时与多个broker通信实现消息的并行读取。
+&emsp; kafka采用类似于Linux I/O模型的poll或select等，使用一个线程来同时管理多个socket连接，即同时与多个broker通信实现消息的并行读取。
+&emsp; 一旦consumer订阅了topic，所有的消费逻辑包括coordinator的协调、消费者组的rebalance以及数据的获取都会在主逻辑poll方法的一次调用中被执行。这样用户可以很容易使用一个线程来管理所有的consumer I/O操作。
+&emsp; 新版本Java consumer是一个双线程的Java进程：创建KafkaConsumer的线程被称为用户主线程，同时consumer在后台会创建一个心跳线程，该线程被称为后台心跳线程。KafkaConsumer的poll方法在用户主线程中运行。  
+&emsp; poll方法根据当前consumer的消费位移返回消息集合。poll方法中有个超时的参数，为了让consumer有机会在等待kafka消息的同时还能够定期执行其他任务。  
+&emsp; poll方法返回满足以下任意一个条件即可返回：  
+    
+* 要么获取了足够多的可用数据  
+* 要么等待时间超过了指定的超时设置  
 
--一旦consumer订阅了topic，所有的消费逻辑包括coordinator的协调、消费者组的rebalance以及数据的获取都会在主逻辑poll方法的一次调用中被执行。这样用户可以很容易使用一个线程来管理所有的consumer I/O操作。
+&emsp; poll的使用方法：  
 
--新版本Java consumer是一个双线程的Java进程：创建KafkaConsumer的线程被称为用户主线程，同时consumer在后台会创建一个心跳线程，该线程被称为后台心跳线程。KafkaConsumer的poll方法在用户主线程中运行。  
+* consumer需要定期执行其他子任务：推荐poll(较小超时时间) + 运行标识布尔变量while(true)的方式  
+* consumer不需要定期执行子任务：推荐poll(MAX_VALUE) + 捕获WakeupException的方式  
 
-poll方法根据当前consumer的消费位移返回消息集合。poll方法中有个超时的参数，为了让consumer有机会在等待kafka消息的同时还能够定期执行其他任务。  
-
-poll方法返回满足以下任意一个条件即可返回：  
-
--要么获取了足够多的可用数据  
-
--要么等待时间超过了指定的超时设置  
-
-poll的使用方法：  
-
--consumer需要定期执行其他子任务：推荐poll(较小超时时间) + 运行标识布尔变量while(true)的方式  
-
--consumer不需要定期执行子任务：推荐poll(MAX_VALUE) + 捕获WakeupException的方式  
-
-poll(MAX_VALUE)让consumer程序在未获取到足够多数据时无限等待，然后通过捕获WakeupException异常来判断consumer是否结束。  
-
-使用这种方式调用poll，那么需要在另一个线程中调用consumer.wakeup()方法来触发consumer的关闭。  
-
-KafkaConsumer不是线程安全的，但是有一个例外：用户可以安全地在另一个线程中调用consumer.wakeup()。注意，只有wakeup方法是特例，其他KafkaConsumer方法都不能同时在多线程中使用。  
-
+&emsp; poll(MAX_VALUE)让consumer程序在未获取到足够多数据时无限等待，然后通过捕获WakeupException异常来判断consumer是否结束。  
+&emsp; 使用这种方式调用poll，那么需要在另一个线程中调用consumer.wakeup()方法来触发consumer的关闭。  
+&emsp; KafkaConsumer不是线程安全的，但是有一个例外：用户可以安全地在另一个线程中调用consumer.wakeup()。注意，只有wakeup方法是特例，其他KafkaConsumer方法都不能同时在多线程中使用。  
 
 ## 1.5. 位移管理
-consumer会在kafka集群的所有broker中选择一个broker作为consumer group的coordinator，用于实现组成员管理、消费分配方案制定以及提交位移等。  
+&emsp; consumer会在kafka集群的所有broker中选择一个broker作为consumer group的coordinator，用于实现组成员管理、消费分配方案制定以及提交位移等。  
+&emsp; 当consumer运行了一段时间之后，它必须要提交自己的位移值。consumer提交位移的主要机制是通过向所属的coordinator发送位移提交请求来实现的。每个位移提交请求都会往内部topic（__consumer_offsets）对应分区上追加写入一条消息。  
+&emsp; 消息的key是group.id、topic和分区的元组，value就是位移值。  
 
-当consumer运行了一段时间之后，它必须要提交自己的位移值。consumer提交位移的主要机制是通过向所属的coordinator发送位移提交请求来实现的。每个位移提交请求都会往内部topic（__consumer_offsets）对应分区上追加写入一条消息。  
+* 自动提交  
+    &emsp; 使用方法：默认不用配置，或者显示配置enable.auto.commit=true，用auto.commit.interval.ms参数控制自动提交的间隔。  
+    &emsp; 使用场景：对消息交付语义无需求，容忍一定的消息丢失。  
+* 手动提交  
+    &emsp; 使用方法：设置enable.auto.commmit=false;手动调用KafkaConsumer.commitSync或KafkaConsumer.commitAsync提交位移  
+    &emsp; 使用场景：消息处理逻辑重，不允许消息丢失，至少要求“最少一次”处理语义  
+    &emsp; commitSync：同步手动提交，用户程序会等待位移提交结束才执行下一条语句命令。  
+    &emsp; commitAsync：异步手动提交，就是异步非阻塞，consumer在后续poll调用时轮询该位移提交的结果。  
+    &emsp; commitSync和commitAsync都有带参数的重载方法，目的是实现更加细粒度化的位移提交策略，指定一个Map显示地告诉kafka为哪些分区提交位移，consumer.commitSync(Collections.singletonMap(partition,new OffsetAndMetadata(lastOffset + 1)))。  
 
-消息的key是group.id、topic和分区的元组，value就是位移值。  
-
--自动提交  
-
-使用方法：默认不用配置，或者显示配置enable.auto.commit=true，用auto.commit.interval.ms参数控制自动提交的间隔。  
-
-使用场景：对消息交付语义无需求，容忍一定的消息丢失。  
-
--手动提交  
-
-使用方法：设置enable.auto.commmit=false;手动调用KafkaConsumer.commitSync或KafkaConsumer.commitAsync提交位移  
-
-使用场景：消息处理逻辑重，不允许消息丢失，至少要求“最少一次”处理语义  
-
-commitSync：同步手动提交，用户程序会等待位移提交结束才执行下一条语句命令。  
-
-commitAsync：异步手动提交，就是异步非阻塞，consumer在后续poll调用时轮询该位移提交的结果。  
-
-commitSync和commitAsync都有带参数的重载方法，目的是实现更加细粒度化的位移提交策略，指定一个Map显示地告诉kafka为哪些分区提交位移，consumer.commitSync(Collections.singletonMap(partition,new OffsetAndMetadata(lastOffset + 1)))。  
-
-提交的位移一定是consumer下一条待读消息的位移。  
+&emsp; 提交的位移一定是consumer下一条待读消息的位移。  
 
 ## 1.6. 重平衡(rebalance)
 
@@ -234,7 +211,8 @@ rebalance监听器：最常见的用法是手动提交位移到第三方存储�
 ## 1.7. 多线程消费实例  
 多线程消费---两种实现方式
 
- 	方法1.每个线程维护专属KafkaConsumer	方法2.全局consumer+多worker线程
+ 	方法1.每个线程维护专属KafkaConsumer	
+    方法2.全局consumer+多worker线程
 offset提交方式	自动提交	手动提交
 优点	
 实现简单，速度快，因为没有线程间交互开销，
