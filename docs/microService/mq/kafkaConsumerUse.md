@@ -65,8 +65,12 @@
 &emsp; consumer把位移提交到kafka的一个内部topic（__consumer_offsets）上，通常不能直接操作该topic，特别注意不要擅自删除或搬移该topic的日志文件。  
 
 ### 1.1.3. 消费者组重平衡   
-&emsp; 重平衡只对消费者组有效，它本质上是一种协议，规定了一个consumer group下所有consumer如何达成一致来分配订阅topic的所有分区。举个例子，假设有一个consumer group，它有20个consumer实例。该group订阅了一个具有100个分区的topic。那么正常情况下，consumer group平均会为每个consumer分配5个分区，即每个consumer负责读取5个分区的数据。这个分配过程就被称作rebalance。  
+&emsp; 假设组内某个实例挂掉了，Kafka 能够自动检测到，然后把这个 Failed 实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。这无疑是非常有用的一个东西，可以保障高可用性。除此之外，它协调着消费组中的消费者分配和订阅 topic 分区，比如某个 Group 下有 20 个 Consumer 实例，它订阅了一个具有 100 个分区的 Topic。正常情况下，Kafka 平均会为每个 Consumer 分配 5 个分区。这个分配的过程也叫 Rebalance。再比如此刻新增了消费者，得分一些分区给它吧，这样才可以负载均衡以及利用好资源，那么这个过程也是 Rebalance 来完成的。  
 
+&emsp; 重平衡只对消费者组有效，它本质上是一种协议，规定了一个consumer group下所有consumer如何达成一致来分配订阅topic的所有分区。  
+<!-- 
+举个例子，假设有一个consumer group，它有20个consumer实例。该group订阅了一个具有100个分区的topic。那么正常情况下，consumer group平均会为每个consumer分配5个分区，即每个consumer负责读取5个分区的数据。这个分配过程就被称作rebalance。  
+-->
 ### 1.1.4. 消费方式  
 &emsp; consumer 采用 pull（拉）模式从 broker 中读取数据。  
 &emsp; push（推）模式很难适应消费速率不同的消费者，因为消息发送速率是由 broker 决定的。 它的目标是尽可能以最快速度传递消息，但是这样很容易造成 consumer 来不及处理消息，典型的表现就是拒绝服务以及网络拥塞。而 pull 模式则可以根据 consumer 的消费能力以适当的速率消费消息。  
@@ -222,6 +226,7 @@ https://blog.csdn.net/haogenmin/article/details/109489704
 2. 组订阅topic数发生变更，比如使用基于正则表达式的订阅，当匹配正则表达式的新topic被创建时则会触发rebalance。
 3. 组订阅topic的分区数发生变更，比如使用命令行脚本增加了订阅topic的分区数。
 
+&emsp; **如何避免 Rebalances？**  
 &emsp; 由于目前一次rebalance操作的开销很大，生产环境中用户一定要结合自身业务特点仔细调优consumer参数：request.timeout.ms、max.poll.records和max.poll.interval.ms，以避免不必要的rebalance出现。  
 
 &emsp; **分配策略**  
@@ -236,7 +241,16 @@ https://blog.csdn.net/haogenmin/article/details/109489704
 
 &emsp; **rebalance generation**  
 &emsp; rebalance generation：用于标识某次rebalance,每个consumer group进行rebalance后，generation就会加1，表示group进入一个新的版本，generation从0开始。
-&emsp; consumer group可以执行任意次rebalance，generation是为了防止无效offset提交，延迟的offset提交携带的是旧的generation信息，这次提交就会被consumer group拒绝。
+&emsp; consumer group可以执行任意次rebalance，generation是为了防止无效offset提交，延迟的offset提交携带的是旧的generation信息，这次提交就会被consumer group拒绝。  
+
+&emsp; **rebalance流程**  
+1. 指定协调器：计算groupI的哈希值%分区数量(默认是50)的值，寻找__consumer_offsets分区为该值的leader副本所在的broker，该broker即为这个group的协调器  
+2. 成功连接协调器之后便可以执行rebalance操作， 目前rebalance主要分为两步：加入组和同步更新分配方案  
+
+        加入组：协调器group中选择一个consumer担任leader，并把所有成员信息以及它们的订阅信息发送给leader
+        同步更新分配方案：leader在这一步开始制定分配方案，即根据前面提到的分配策略决定每个consumer都负责那些topic的哪些分区，一旦分配完成，leader会把这个分配方案封装进SyncGroup请求并发送给协调器。注意组内所有成员都会发送SyncGroup请求，不过只有leader发送的SyncGroup请求中包含分配方案。协调器接收到分配方案后把属于每个consumer的方案单独抽取出来作为SyncGroup请求的response返还给给自的consumer
+
+3. consumer group分配方案是在consumer端执行的
 
 &emsp; **rebalance监听器**  
 &emsp; rebalance监听器：最常见的用法是手动提交位移到第三方存储（比如数据库中）以及在rebalance前后执行一些必要的审计操作。有一个主要的接口回调类ConsumerRebalanceListener，里面就两个方法onParitionsRevoked和onPartitionAssigned。在coordinator开启新一轮rebalance前onParitionsRevoked方法会被调用，而rebalance完成后会调用onPartitionAssigned方法。  
