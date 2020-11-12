@@ -12,9 +12,8 @@
 
 # 1. kafka安装  
 
-
 ## 1.1. kafka安装  
-
+...
 
 ## 1.2. kafka配置文件  
 &emsp; 在kafka/config/目录下面有3个配置文件：  
@@ -27,7 +26,7 @@ server.properties
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-15.png)  
 
 ### 1.2.1. producer.properties  
-&emsp; producer.properties:生产端的配置文件  
+&emsp; producer.properties（生产端的配置文件）  
 
 ```properties
 #指定kafka节点列表，用于获取metadata，不必全部指定
@@ -119,7 +118,7 @@ topic.metadata.refresh.interval.ms=60000
 ```
 
 ### 1.2.2. consumer.properties
-&emsp; consumer.properties:消费端的配置文件  
+&emsp; consumer.properties（消费端的配置文件）  
 
 ```properties
 #消费者集群通过连接Zookeeper来找到broker。
@@ -191,7 +190,7 @@ derializer.class=kafka.serializer.DefaultDecoder
 ```
 
 ### 1.2.3. server.properties
-&emsp; server.properties:服务端的配置文件  
+&emsp; server.properties（服务端的配置文件）  
 
 ```properties
 #broker的全局唯一编号，不能重复
