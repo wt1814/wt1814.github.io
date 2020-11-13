@@ -9,7 +9,7 @@
             - [1.1.1.2. Memory Mapped Files](#1112-memory-mapped-files)
         - [1.1.2. 基于 Sendfile 实现零拷贝（Zero Copy）](#112-基于-sendfile-实现零拷贝zero-copy)
     - [1.2. kafka可靠性（如何保证消息队列不丢失）](#12-kafka可靠性如何保证消息队列不丢失)
-        - [1.2.1. 关于 ACK 机制](#121-关于-ack-机制)
+        - [1.2.1. Consumer 端丢失消息(ACK机制)](#121-consumer-端丢失消息ack机制)
         - [1.2.2. Consumer 端丢失消息](#122-consumer-端丢失消息)
     - [1.3. kafka数据一致性，通过HW来保证](#13-kafka数据一致性通过hw来保证)
     - [1.4. kafa高可用性](#14-kafa高可用性)
@@ -82,11 +82,12 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 &emsp; Kafka 把所有的消息都存放在一个一个的文件中，当消费者需要数据的时候 Kafka 直接把文件发送给消费者，配合 mmap 作为文件读写方式，直接把它传给 Sendfile。  
 
 ## 1.2. kafka可靠性（如何保证消息队列不丢失）
-### 1.2.1. 关于 ACK 机制
+### 1.2.1. Consumer 端丢失消息(ACK机制)
 &emsp; Producer 如何保证数据发送不丢失？ack 机制，重试机制。  
 &emsp; 为保证 producer 发送的数据，能可靠的发送到指定的 topic，topic 的每个 partition 收到 producer 数据后，都需要向 producer 发送 ack（acknowledgement确认收到），如果 producer 收到 ack，就会进行下一轮的发送，否则重新发送数据。  
 
 &emsp; **a) 副本数据同步策略主要有如下两种**  
+
 |方案	|优点	|缺点|
 |---|---|---|
 |半数以上完成同步，就发送ack	|延迟低	|选举新的 leader 时，容忍n台节点的故障，需要2n+1个副本|
@@ -97,12 +98,12 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 * 同样为了容忍 n 台节点的故障，第一种方案需要的副本数相对较多，而 Kafka 的每个分区都有大量的数据，第一种方案会造成大量的数据冗余；
 * 虽然第二种方案的网络延迟会比较高，但网络延迟对 Kafka 的影响较小。  
 
-&emsp; **b) ISR**
+&emsp; **b) ISR**  
 &emsp; 采用第二种方案之后，设想一下情景：leader 收到数据，所有 follower 都开始同步数据，但有一个 follower 挂了，迟迟不能与 leader 保持同步，那 leader 就要一直等下去，直到它完成同步，才能发送 ack，这个问题怎么解决呢？  
 &emsp; leader 维护了一个动态的 in-sync replica set(ISR)，意为和 leader 保持同步的 follower 集合。当 ISR 中的follower 完成数据的同步之后，leader 就会给 follower 发送 ack。如果 follower 长时间未向 leader 同步数据，则该 follower 将会被踢出 ISR，该时间阈值由 replica.lag.time.max.ms 参数设定。leader 发生故障之后，就会从 ISR 中选举新的 leader。（之前还有另一个参数，0.9 版本之后 replica.lag.max.messages 参数被移除了）  
 
-c) ack应答机制  
-&emsp; 对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没必要等 ISR 中的follower全部接收成功。
+&emsp; **c) ack应答机制**  
+&emsp; 对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没必要等 ISR 中的follower全部接收成功。  
 &emsp; 所以Kafka为用户提供了三种可靠性级别，用户根据对可靠性和延迟的要求进行权衡，选择以下的acks 参数配置  
 
 * 0：producer 不等待 broker 的 ack，这一操作提供了一个最低的延迟，broker 一接收到还没有写入磁盘就已经返回，当 broker 故障时有可能丢失数据；
@@ -165,10 +166,6 @@ Leader和follower（ISR）落盘才会返回ack，会有数据重复现象，如
 &emsp; 由于Kafka consumer默认是自动提交位移的，所以在后台提交位移前一定要保证消息被正常处理了，因此不建议采用很重的处理逻辑，如果处理耗时很长，则建议把逻辑放到另一个线程中去做。  
 &emsp; 为了避免数据丢失，现给出几点建议：设置 enable.auto.commit=false  
 &emsp; 关闭自动提交位移，在消息被完整处理之后再手动提交位移。  
-
-
-
-
 
 ## 1.3. kafka数据一致性，通过HW来保证  
 
@@ -240,7 +237,7 @@ Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)�
 &emsp; Kafka 在 Topic 级别本身是无序的，只有 partition 上才有序，所以为了保证处理顺序，可以自定义分区器，将需顺序处理的数据发送到同一个 partition
 
 ## 1.6. 提升 Producer 的性能
-v如何提升 Producer 的性能？批量，异步，压缩  
+&emsp; 如何提升 Producer 的性能？批量，异步，压缩  
 
 ### 1.6.1. 批量发送
 &emsp; Kafka允许进行批量发送消息，producter发送消息的时候，可以将消息缓存在本地，等到了固定条件发送到 Kafka 。  
