@@ -20,8 +20,11 @@
 # 1. 零拷贝  
 
 <!-- 
- 框架篇：小白也能秒懂的Linux零拷贝原理 
- https://juejin.im/post/6887469050515947528
+框架篇：小白也能秒懂的Linux零拷贝原理 
+https://juejin.im/post/6887469050515947528
+
+关于零拷贝的一点认识 
+https://mp.weixin.qq.com/s/KD2cpeUviLcEE3wrfdnrlQ
 -->
 
 ## 1.1. DMA介绍

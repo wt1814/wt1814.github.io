@@ -54,5 +54,8 @@ https://mp.weixin.qq.com/s/kBDB2wa2R_YczwRFFN4-Wg
 
     想监控主机性能的话，个人建议这本《SystemsPerformance》就足够了。
 
+Prometheus 高可用
+https://mp.weixin.qq.com/s/aXjUQOBMsP90nCi4yiWaPg
+
 
 -->

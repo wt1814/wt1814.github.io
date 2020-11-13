@@ -8,20 +8,21 @@
             - [1.1.1.1. 顺序写入](#1111-顺序写入)
             - [1.1.1.2. Memory Mapped Files](#1112-memory-mapped-files)
         - [1.1.2. 基于 Sendfile 实现零拷贝（Zero Copy）](#112-基于-sendfile-实现零拷贝zero-copy)
-        - [1.1.3. 批量发送](#113-批量发送)
-        - [1.1.4. 数据压缩](#114-数据压缩)
-        - [1.1.5. 总结](#115-总结)
-    - [1.2. 关于 Kafka 和其他消息队列的区别](#12-关于-kafka-和其他消息队列的区别)
-    - [1.3. kafka可靠性，如何保证消息队列不丢失](#13-kafka可靠性如何保证消息队列不丢失)
-        - [1.3.1. 关于 ACK 机制](#131-关于-ack-机制)
-        - [1.3.2. 关于设置分区](#132-关于设置分区)
-        - [1.3.3. 关闭 unclean leader 选举](#133-关闭-unclean-leader-选举)
-        - [1.3.4. 关于发送消息](#134-关于发送消息)
-        - [1.3.5. Consumer 端丢失消息](#135-consumer-端丢失消息)
-        - [1.3.6. 故障处理](#136-故障处理)
-    - [1.4. kafka数据一致性，通过HW来保证](#14-kafka数据一致性通过hw来保证)
-    - [1.5. kafa高可用性](#15-kafa高可用性)
-    - [1.6. 如何让 Kafka 的消息有序？](#16-如何让-kafka-的消息有序)
+    - [1.2. kafka可靠性（如何保证消息队列不丢失）](#12-kafka可靠性如何保证消息队列不丢失)
+        - [1.2.1. 关于 ACK 机制](#121-关于-ack-机制)
+        - [1.2.2. 关于设置分区](#122-关于设置分区)
+        - [1.2.3. 关闭 unclean leader 选举](#123-关闭-unclean-leader-选举)
+        - [1.2.4. 关于发送消息](#124-关于发送消息)
+        - [1.2.5. Consumer 端丢失消息](#125-consumer-端丢失消息)
+        - [1.2.6. 故障处理](#126-故障处理)
+    - [1.3. kafka数据一致性，通过HW来保证](#13-kafka数据一致性通过hw来保证)
+    - [1.4. kafa高可用性](#14-kafa高可用性)
+    - [1.5. 如何让 Kafka 的消息有序？](#15-如何让-kafka-的消息有序)
+    - [1.6. 提升 Producer 的性能](#16-提升-producer-的性能)
+        - [1.6.1. 批量发送](#161-批量发送)
+        - [1.6.2. 数据压缩](#162-数据压缩)
+        - [1.6.3. 总结](#163-总结)
+    - [1.7. 关于 Kafka 和其他消息队列的区别](#17-关于-kafka-和其他消息队列的区别)
 
 <!-- /TOC -->
 
@@ -47,7 +48,6 @@ https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
 -->
 
 ## 1.1. Kafka的高效读写机制  
-如何提升 Producer 的性能？批量，异步，压缩  
 <!-- 
 
 https://mp.weixin.qq.com/s/nSa2CPjbMFdOsYB2Dt0kYg
@@ -71,14 +71,10 @@ kafka的消息是不断追加到文件中的，这个特性使kafka可以充分�
 
 2.Memory Mapped Files：这个和Java NIO中的内存映射基本相同，在大学的计算机原理里我们学过（划重点），mmf直接利用操作系统的Page来实现文件到物理内存的映射，完成之后对物理内存的操作会直接同步到硬盘。mmf通过内存映射的方式大大提高了IO速率，省去了用户空间到内核空间的复制。它的缺点显而易见--不可靠，当发生宕机而数据未同步到硬盘时，数据会丢失，Kafka提供了produce.type参数来控制是否主动的进行刷新，如果kafka写入到mmp后立即flush再返回给生产者则为同步模式，反之为异步模式。
 -->
-
-&emsp; 下面从数据写入和读取两方面分析，为大家分析下为什么 Kafka 速度这么快。  
-
-    数据写入 Kafka 会把收到的消息都写入到硬盘中，它绝对不会丢失数据。为了优化写入速度 Kafka 采用了两个技术， 顺序写入和 Memory Mapped File 。
+&emsp; 数据写入 Kafka 会把收到的消息都写入到硬盘中，它绝对不会丢失数据。为了优化写入速度，Kafka 采用了两个技术：顺序写入和 Memory Mapped File 。
 
 #### 1.1.1.1. 顺序写入  
-&emsp; Kafka 会把收到的消息都写入到硬盘中，它绝对不会丢失数据。为了优化写入速度 Kafka 采用了两个技术， 顺序写入和 MMFile（Memory Mapped File）。  
-&emsp; 磁盘读写的快慢取决于你怎么使用它，也就是顺序读写或者随机读写。在顺序读写的情况下，磁盘的顺序读写速度和内存持平。因为硬盘是机械结构，每次读写都会寻址->写入，其中寻址是一个“机械动作”，它是最耗时的。「所以硬盘最讨厌随机 I/O，最喜欢顺序 I/O」。为了提高读写硬盘的速度，Kafka 就是使用顺序 I/O。  
+&emsp; 磁盘读写的快慢取决于怎么使用它，也就是顺序读写或者随机读写。在顺序读写的情况下，磁盘的顺序读写速度和内存持平。因为硬盘是机械结构，每次读写都会寻址->写入，其中寻址是一个“机械动作”，它是最耗时的。「所以硬盘最讨厌随机 I/O，最喜欢顺序 I/O」。为了提高读写硬盘的速度，Kafka 就是使用顺序 I/O。  
 &emsp; 而且 Linux 对于磁盘的读写优化也比较多，包括 read-ahead 和 write-behind，磁盘缓存等。  
 &emsp; 如果在内存做这些操作的时候，一个是 Java 对象的内存开销很大，另一个是随着堆内存数据的增多，Java 的 GC 时间会变得很长。  
 &emsp; 使用磁盘操作有以下几个好处：  
@@ -87,7 +83,7 @@ kafka的消息是不断追加到文件中的，这个特性使kafka可以充分�
 * JVM 的 GC 效率低，内存占用大。使用磁盘可以避免这一问题。
 * 系统冷启动后，磁盘缓存依然可用。
 
-&emsp; 下图就展示了 Kafka 是如何写入数据的， 每一个 Partition 其实都是一个文件 ，收到消息后 Kafka 会把数据插入到文件末尾（虚框部分）：
+&emsp; 下图就展示了 Kafka 是如何写入数据的， 每一个 Partition 其实都是一个文件 ，收到消息后 Kafka 会把数据插入到文件末尾（虚框部分）：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-23.png)  
 &emsp; 这种方法有一个缺陷——没有办法删除数据 ，所以 Kafka 是不会删除数据的，它会把所有的数据都保留下来，每个 消费者（Consumer）对每个 Topic 都有一个 Offset 用来表示读取到了第几条数据 。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-24.png)  
@@ -102,7 +98,7 @@ kafka的消息是不断追加到文件中的，这个特性使kafka可以充分�
 2. 「基于 Partition 文件大小」  
 
 #### 1.1.1.2. Memory Mapped Files  
-&emsp; 这个和Java NIO中的内存映射基本相同，在大学的计算机原理里我们学过（划重点），mmf （Memory Mapped Files）直接利用操作系统的Page来实现文件到物理内存的映射，完成之后对物理内存的操作会直接同步到硬盘。mmf 通过内存映射的方式大大提高了IO速率，省去了用户空间到内核空间的复制。它的缺点显而易见--不可靠，当发生宕机而数据未同步到硬盘时，数据会丢失，Kafka 提供了produce.type参数来控制是否主动的进行刷新，如果 Kafka 写入到 mmf 后立即flush再返回给生产者则为同步模式，反之为异步模式。  
+&emsp; 这个和Java NIO中的内存映射基本相同，mmf （Memory Mapped Files）直接利用操作系统的Page来实现文件到物理内存的映射，完成之后对物理内存的操作会直接同步到硬盘。mmf 通过内存映射的方式大大提高了IO速率，省去了用户空间到内核空间的复制。它的缺点显而易见--不可靠，当发生宕机而数据未同步到硬盘时，数据会丢失，Kafka 提供了produce.type参数来控制是否主动的进行刷新，如果 Kafka 写入到 mmf 后立即flush再返回给生产者则为同步模式，反之为异步模式。  
 &emsp; Kafka 提供了一个参数 producer.type 来控制是不是主动 Flush：  
 
 * 如果 Kafka 写入到 mmf 之后就立即 Flush，然后再返回 Producer 叫同步 (Sync)。
@@ -128,43 +124,13 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 
     硬盘—>内核 buf—>用户 buf—>Socket 相关缓冲区—>协议引擎  
     
-&emsp; 而 Sendfile 系统调用则提供了一种减少以上多次 Copy，提升文件传输性能的方法。在内核版本 2.1 中，引入了 Sendfile 系统调用，以简化网络上和两个本地文件之间的数据传输。Sendfile 的引入不仅减少了数据复制，还减少了上下文切换。相较传统 Read/Write 方式，2.1 版本内核引进的 Sendfile 已经减少了内核缓冲区到 User 缓冲区，再由 User 缓冲区到 Socket 相关缓冲区的文件 Copy。而在内核版本 2.4 之后，文件描述符结果被改变，Sendfile 实现了更简单的方式，再次减少了一次 Copy 操作。
+&emsp; 而 Sendfile 系统调用则提供了一种减少以上多次 Copy，提升文件传输性能的方法。在内核版本 2.1 中，引入了 Sendfile 系统调用，以简化网络上和两个本地文件之间的数据传输。Sendfile 的引入不仅减少了数据复制，还减少了上下文切换。相较传统 Read/Write 方式，2.1 版本内核引进的 Sendfile 已经减少了内核缓冲区到 User 缓冲区，再由 User 缓冲区到 Socket 相关缓冲区的文件 Copy。而在内核版本 2.4 之后，文件描述符结果被改变，Sendfile 实现了更简单的方式，再次减少了一次 Copy 操作。  
 &emsp; Kafka 把所有的消息都存放在一个一个的文件中，当消费者需要数据的时候 Kafka 直接把文件发送给消费者，配合 mmap 作为文件读写方式，直接把它传给 Sendfile。  
 
-### 1.1.3. 批量发送
-&emsp; Kafka允许进行批量发送消息，producter发送消息的时候，可以将消息缓存在本地，等到了固定条件发送到 Kafka 。  
+## 1.2. kafka可靠性（如何保证消息队列不丢失）
+&emsp; Producer 如何保证数据发送不丢失？ack 机制，重试机制  
 
-* 等消息条数到固定条数。  
-* 一段时间发送一次。  
-
-### 1.1.4. 数据压缩
-&emsp; Kafka还支持对消息集合进行压缩，Producer可以通过GZIP或Snappy格式对消息集合进行压缩。压缩的好处就是减少传输的数据量，减轻对网络传输的压力。  
-&emsp; Producer压缩之后，在Consumer需进行解压，虽然增加了CPU的工作，但在对大数据处理上，瓶颈在网络上而不是CPU，所以这个成本很值得。  
-&emsp; 注意：「批量发送」和「数据压缩」一起使用，单条做数据压缩的话，效果不明显！  
-
-### 1.1.5. 总结  
-&emsp; 以上，便是Apache Kafka虽然使用了硬盘存储，但是仍然可以速度很快的原因。它把所有的消息都变成一个批量的文件，并且进行合理的批量压缩，减少网络 IO 损耗，通过 mmap 提高 I/O 速度。写入数据的时候由于单个 Partion 是末尾添加，所以速度最优；读取数据的时候配合 Sendfile 直接暴力输出。  
-
-## 1.2. 关于 Kafka 和其他消息队列的区别  
-&emsp; Kafka的设计目标是高吞吐量，它比其它消息系统快的原因体现在以下几方面：  
-1. Kafka操作的是序列文件I / O（序列文件的特征是按顺序写，按顺序读），为保证顺序，Kafka强制点对点的按顺序传递消息，这意味着，一个consumer在消息流（或分区）中只有一个位置。  
-2. Kafka不保存消息的状态，即消息是否被“消费”。一般的消息系统需要保存消息的状态，并且还需要以随机访问的形式更新消息的状态。而Kafka 的做法是保存Consumer在Topic分区中的位置offset，在offset之前的消息是已被“消费”的，在offset之后则为未“消费”的，并且offset是可以任意移动的，这样就消除了大部分的随机IO。
-3. Kafka支持点对点的批量消息传递。  
-4. Kafka的消息存储在OS pagecache（页缓存，page cache的大小为一页，通常为4K，在Linux读写文件时，它用于缓存文件的逻辑内容，从而加快对磁盘上映像和数据的访问）。  
-
-    RabbitMQ:分布式，支持多种MQ协议，重量级；
-    ActiveMQ：与RabbitMQ类似；
-    ZeroMQ：以库的形式提供，使用复杂，无持久化；
-    Redis：单机、纯内存性好，持久化较差； 
-    Kafka：分布式，消息不是使用完就丢失【较长时间持久化】，吞吐量高【高性能】，轻量灵活
-
-
-
-## 1.3. kafka可靠性，如何保证消息队列不丢失
-
-Producer 如何保证数据发送不丢失？ack 机制，重试机制  
-
-### 1.3.1. 关于 ACK 机制
+### 1.2.1. 关于 ACK 机制
 
 Kafka 的交付语义？
 
@@ -203,7 +169,7 @@ c) ack应答机制
 -->
 
 &emsp; 关于 ACK 机制 ，不了解的小伙伴，可以看这里：Kafka 架构深入 ，通过 ACK 机制保证消息送达。Kafka 采用的是至少一次（At least once），消息不会丢，但是可能会重复传输。  
-&emsp; acks 的默认值即为1，代表我们的消息被leader副本接收之后就算被成功发送。我们可以配置 acks = all ，代表则所有副本都要接收到该消息之后该消息才算真正成功被发送。  
+&emsp; acks 的默认值即为1，代表消息被leader副本接收之后就算被成功发送。可以配置 acks = all ，代表则所有副本都要接收到该消息之后该消息才算真正成功被发送。  
 
 ---
 &emsp; 为保证生产者发送的数据，能可靠的发送到指定的topic，topic的每个partition收到生产者发送的数据后，都需要向生产者发送ack（确认收到），如果生产者收到ack，就会进行下一轮的发送，否则重新发送数据。  
@@ -245,13 +211,13 @@ Leader和follower（ISR）落盘才会返回ack，会有数据重复现象，如
 
 
 
-### 1.3.2. 关于设置分区
+### 1.2.2. 关于设置分区
 &emsp; 为了保证 leader 副本能有 follower 副本能同步消息，一般会为 topic 设置 replication.factor >= 3。这样就可以保证每个 分区(partition) 至少有 3 个副本，以确保消息队列的安全性。  
 
-### 1.3.3. 关闭 unclean leader 选举
+### 1.2.3. 关闭 unclean leader 选举
 &emsp; 生产者发送的消息会被发送到 leader 副本，然后 follower 副本才能从 leader 副本中拉取消息进行同步。多个 follower 副本之间的消息同步情况不一样，当配置了 unclean.leader.election.enable = false 的话，当 leader 副本发生故障时就不会从 follower 副本中和 leader 同步程度达不到要求的副本中选择出 leader ，这样降低了消息丢失的可能性。  
 
-### 1.3.4. 关于发送消息
+### 1.2.4. 关于发送消息
 &emsp; 为了得到更好的性能，Kafka 支持在生产者一侧进行本地buffer，也就是累积到一定的条数才发送，如果这里设置不当是会丢消息的。  
 &emsp; 生产者端设置：producer.type=async, sync，默认是 sync。  
 &emsp; 当设置为 async，会大幅提升性能，因为生产者会在本地缓冲消息，并适时批量发送。  
@@ -259,14 +225,14 @@ Leader和follower（ISR）落盘才会返回ack，会有数据重复现象，如
 &emsp; 一般时候还需要设置：min.insync.replicas> 1 ，消息至少要被写入到这么多副本才算成功，也是提升数据持久性的一个参数，与acks配合使用。  
 但如果出现两者相等， 还需要设置 replication.factor = min.insync.replicas + 1 ，避免在一个副本挂掉，整个分区无法工作的情况！
 
-### 1.3.5. Consumer 端丢失消息
+### 1.2.5. Consumer 端丢失消息
 &emsp; consumer端丢失消息的情形比较简单：  
 &emsp; 如果在消息处理完成前就提交了offset，那么就有可能造成数据的丢失。  
 &emsp; 由于Kafka consumer默认是自动提交位移的，所以在后台提交位移前一定要保证消息被正常处理了，因此不建议采用很重的处理逻辑，如果处理耗时很长，则建议把逻辑放到另一个线程中去做。  
 &emsp; 为了避免数据丢失，现给出几点建议：设置 enable.auto.commit=false  
 &emsp; 关闭自动提交位移，在消息被完整处理之后再手动提交位移。  
 
-### 1.3.6. 故障处理  
+### 1.2.6. 故障处理  
 由于我们并不能保证 Kafka 集群中每时每刻 follower 的长度都和 leader 一致（即数据同步是有时延的），那么当leader 挂掉选举某个 follower 为新的 leader 的时候（原先挂掉的 leader 恢复了成为了 follower），可能会出现leader 的数据比 follower 还少的情况。为了解决这种数据量不一致带来的混乱情况，Kafka 提出了以下概念：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-27.png)  
 * LEO（Log End Offset）：指的是每个副本最后一个offset；  
@@ -282,22 +248,14 @@ Leader和follower（ISR）落盘才会返回ack，会有数据重复现象，如
 所以数据一致性并不能保证数据不丢失或者不重复，这是由 ack 控制的。HW 规则只能保证副本之间的数据一致性！
 
 
-## 1.4. kafka数据一致性，通过HW来保证  
-
-Kafka 的消息是否是有序的？  
-
-    Topic 级别无序，Partition 有序  
-
-Kafka 在 Topic 级别本身是无序的，只有 partition 上才有序，所以为了保证处理顺序，可以自定义分区器，将需顺序处理的数据发送到同一个 partition
-
----
+## 1.3. kafka数据一致性，通过HW来保证  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-28.png)  
 
 **HW保证数据存储的一致性**  
 
 A、Follower故障
 
-Follower发生故障后会被临时提出LSR，待该follower恢复后，follower会读取本地的磁盘记录的上次的HW，并将该log文件高于HW的部分截取掉，从HW开始想leader进行同步，等该follower的LEO大于等于该Partition的hw，即follower追上leader后，就可以重新加入LSR
+Follower发生故障后会被临时提出LSR，待该follower恢复后，follower会读取本地的磁盘记录的上次的HW，并将该log文件高于HW的部分截取掉，从HW开始向leader进行同步，等该follower的LEO大于等于该Partition的hw，即follower追上leader后，就可以重新加入LSR
 
 B、Leader故障
 
@@ -306,22 +264,11 @@ Leader发生故障后，会从ISR中选出一个新的leader，之后，为了�
 注意：这个是为了保证多个副本间的数据存储的一致性，并不能保证数据不丢失或者不重复
 
  
-**精准一次（幂等性），保证数据不重复**  
-Ack设置为-1，则可以保证数据不丢失，但是会出现数据重复（at least once）
-
-Ack设置为0，则可以保证数据不重复，但是不能保证数据不丢失（at most once）
-
-但是如果鱼和熊掌兼得，该怎么办？这个时候就就引入了Exactl once（精准一次）
-
- 
-
-在0.11版本后，引入幂等性解决kakfa集群内部的数据重复，在0.11版本之前，在消费者处自己做处理
-
-如果启用了幂等性，则ack默认就是-1，kafka就会为每个生产者分配一个pid，并未每条消息分配seqnumber，如果pid、partition、seqnumber三者一样，则kafka认为是重复数据，就不会落盘保存；但是如果生产者挂掉后，也会出现有数据重复的现象；所以幂等性解决在单次会话的单个分区的数据重复，但是在分区间或者跨会话的是数据重复的是无法解决的
 
 
 
-## 1.5. kafa高可用性
+
+## 1.4. kafa高可用性
 
 <!-- 
 
@@ -354,7 +301,44 @@ Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)�
 
 
 
-## 1.6. 如何让 Kafka 的消息有序？  
+## 1.5. 如何让 Kafka 的消息有序？  
 Kafka 在 Topic 级别本身是无序的，只有 partition 上才有序，所以为了保证处理顺序，可以自定义分区器，将需顺序处理的数据发送到同一个 partition  
 
+Kafka 的消息是否是有序的？  
 
+    Topic 级别无序，Partition 有序  
+
+Kafka 在 Topic 级别本身是无序的，只有 partition 上才有序，所以为了保证处理顺序，可以自定义分区器，将需顺序处理的数据发送到同一个 partition
+
+
+
+
+## 1.6. 提升 Producer 的性能
+如何提升 Producer 的性能？批量，异步，压缩  
+
+### 1.6.1. 批量发送
+&emsp; Kafka允许进行批量发送消息，producter发送消息的时候，可以将消息缓存在本地，等到了固定条件发送到 Kafka 。  
+
+* 等消息条数到固定条数。  
+* 一段时间发送一次。  
+
+### 1.6.2. 数据压缩
+&emsp; Kafka还支持对消息集合进行压缩，Producer可以通过GZIP或Snappy格式对消息集合进行压缩。压缩的好处就是减少传输的数据量，减轻对网络传输的压力。  
+&emsp; Producer压缩之后，在Consumer需进行解压，虽然增加了CPU的工作，但在对大数据处理上，瓶颈在网络上而不是CPU，所以这个成本很值得。  
+&emsp; 注意：「批量发送」和「数据压缩」一起使用，单条做数据压缩的话，效果不明显！  
+
+### 1.6.3. 总结  
+&emsp; 以上，便是Apache Kafka虽然使用了硬盘存储，但是仍然可以速度很快的原因。它把所有的消息都变成一个批量的文件，并且进行合理的批量压缩，减少网络 IO 损耗，通过 mmap 提高 I/O 速度。写入数据的时候由于单个 Partion 是末尾添加，所以速度最优；读取数据的时候配合 Sendfile 直接暴力输出。  
+
+## 1.7. 关于 Kafka 和其他消息队列的区别  
+&emsp; Kafka的设计目标是高吞吐量，它比其它消息系统快的原因体现在以下几方面：  
+1. Kafka操作的是序列文件I / O（序列文件的特征是按顺序写，按顺序读），为保证顺序，Kafka强制点对点的按顺序传递消息，这意味着，一个consumer在消息流（或分区）中只有一个位置。  
+2. Kafka不保存消息的状态，即消息是否被“消费”。一般的消息系统需要保存消息的状态，并且还需要以随机访问的形式更新消息的状态。而Kafka 的做法是保存Consumer在Topic分区中的位置offset，在offset之前的消息是已被“消费”的，在offset之后则为未“消费”的，并且offset是可以任意移动的，这样就消除了大部分的随机IO。
+3. Kafka支持点对点的批量消息传递。  
+4. Kafka的消息存储在OS pagecache（页缓存，page cache的大小为一页，通常为4K，在Linux读写文件时，它用于缓存文件的逻辑内容，从而加快对磁盘上映像和数据的访问）。  
+
+    RabbitMQ:分布式，支持多种MQ协议，重量级；
+    ActiveMQ：与RabbitMQ类似；
+    ZeroMQ：以库的形式提供，使用复杂，无持久化；
+    Redis：单机、纯内存性好，持久化较差； 
+    Kafka：分布式，消息不是使用完就丢失【较长时间持久化】，吞吐量高【高性能】，轻量灵活
