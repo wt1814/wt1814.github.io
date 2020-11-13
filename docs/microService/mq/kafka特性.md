@@ -24,13 +24,6 @@
 
 # 1. kafka特性
 
-<!-- 
-https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247484048&idx=1&sn=2de06942948b02842fd042e7783cbc61&chksm=e8eb7b04df9cf2121a98984fae0207d422b9d643a2c3ff4d7c91cabfe2e8b4d530a62c376035&scene=178&cur_album_id=1338677566013800448#rd
-
-https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247484078&idx=1&sn=3b0e754674804d61bde1df498f0bd092&chksm=e8eb7b3adf9cf22c370346b0eb2aa516f517daf4d0fa5977f41412d64f22cfe86f8eec90c58c&scene=178&cur_album_id=1338677566013800448#rd
--->
-
-
 ## 1.1. Kafka的高效读写机制  
 &emsp; Kafka 的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，因为寻址会比较消耗时间，但是实际上，Kafka 的特性之一就是高吞吐率。Kafka 之所以能这么快，是因为：「顺序写磁盘、大量使用内存页、零拷贝技术的使用」..  
 
@@ -110,48 +103,6 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 
 &emsp; 上面这个过程看似已经很完美了，但是假设如果消息在同步到部分从 Partition 上时，主 Partition 宕机，此时消息会重传，虽然消息不会丢失，但是会造成同一条消息会存储多次。在新版本中 Kafka 提出了幂等性的概念，通过给每条消息设置一个唯一 ID，并且该 ID 可以唯一映射到 Partition 的一个固定位置，从而避免消息重复存储的问题。  
 
-<!-- 
-&emsp; 为保证生产者发送的数据，能可靠的发送到指定的topic，topic的每个partition收到生产者发送的数据后，都需要向生产者发送ack（确认收到），如果生产者收到ack，就会进行下一轮的发送，否则重新发送数据。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-25.png)  
-
-副本数据同步策略
-那么kafka什么时候向生产者发送ack？  
-确保follower和leader同步完成，leader在发送ack给生产者，这样才能确保leader挂掉之后，能再follower中选举出新的leader后，数据不会丢失  
-那多少个follower同步完成后发送ack？  
-
-* 方案1：半数已经完成同步，就发送ack  
-* 方案2：全部完成同步，才发送ack（kafka采用这种方式）  
-
- ISR列表
-采用第二种方案后，设想以下场景，leader收到数据，所有的follower都开始同步数据，但是有一个follower因为某种故障，一直无法完成同步，那leader就要一直等下，直到他同步完成，才能发送ack，这样就非常影响效率，这个问题怎么解决？  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-26.png)  
-Leader维护了一个动态的ISR列表（同步副本的作用），只需要这个列表的中的follower和leader同步；当ISR中的follower完成数据的同步之后，leader就会给生产者发送ack，如果follower长时间未向leader同步数据，则该follower将被剔除ISR，这个时间阈值也是自定义的；同样leader故障后，就会从ISR中选举新的leader
-
-怎么选择ISR的节点呢？  
-
-首先通信的时间要快，要和leader要可以很快的完成通信，这个时间默认是10s  
-然后就看leader数据差距，消息条数默认是10000条（后面版本被移除）  
-
-为什么移除：因为kafka发送消息是批量发送的，所以会一瞬间leader接受完成，但是follower还没有拉取，所以会频繁的踢出加入ISR，这个数据会保存到zk和内存中，所以会频繁的更新zk和内存。  
-
- 
-ack应答机制
-但是对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没必要等ISR中的follower全部接受成功。    
-
-所以kafka为用户提供了三种可靠性级别，用户可以根据可靠性和延迟进行权衡，这个设置在kafka的生成中设置：acks参数设置  
-
-A、acks为0  
-
-生产者不等ack，只管往topic丢数据就可以了，这个丢数据的概率非常高  
-
-B、ack为1  
-
-Leader落盘后就会返回ack，会有数据丢失的现象，如果leader在同步完成后出现故障，则会出现数据丢失  
-
-C、ack为-1（all）  
-
-Leader和follower（ISR）落盘才会返回ack，会有数据重复现象，如果在leader已经写完成，且follower同步完成，但是在返回ack的出现故障，则会出现数据重复现象；极限情况下，这个也会有数据丢失的情况，比如follower和leader通信都很慢，所以ISR中只有一个leader节点，这个时候，leader完成落盘，就会返回ack，如果此时leader故障后，就会导致丢失数据  
--->
 
 ### 1.2.2. Consumer 端丢失消息
 &emsp; consumer端丢失消息的情形比较简单：  
@@ -161,22 +112,6 @@ Leader和follower（ISR）落盘才会返回ack，会有数据重复现象，如
 &emsp; 关闭自动提交位移，在消息被完整处理之后再手动提交位移。  
 
 ## 1.3. kafka数据一致性，通过HW来保证  
-
-<!-- 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-28.png)  
-
-**HW保证数据存储的一致性**  
-
-A、Follower故障
-
-Follower发生故障后会被临时提出LSR，待该follower恢复后，follower会读取本地的磁盘记录的上次的HW，并将该log文件高于HW的部分截取掉，从HW开始向leader进行同步，等该follower的LEO大于等于该Partition的hw，即follower追上leader后，就可以重新加入LSR
-
-B、Leader故障
-
-Leader发生故障后，会从ISR中选出一个新的leader，之后，为了保证多个副本之间的数据一致性，其余的follower会先将各自的log文件高于hw的部分截掉（新leader自己不会截掉），然后从新的leader同步数据
-
-注意：这个是为了保证多个副本间的数据存储的一致性，并不能保证数据不丢失或者不重复
--->
 &emsp; 由于并不能保证 Kafka 集群中每时每刻 follower 的长度都和 leader 一致（即数据同步是有时延的），那么当leader 挂掉选举某个 follower 为新的 leader 的时候（原先挂掉的 leader 恢复了成为了 follower），可能会出现leader 的数据比 follower 还少的情况。为了解决这种数据量不一致带来的混乱情况，Kafka 提出了以下概念：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-27.png)  
 
