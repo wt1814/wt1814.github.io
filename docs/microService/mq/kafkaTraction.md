@@ -26,6 +26,9 @@ Apache Kafka 从 0.11.0 开始，支持了一个非常大的 feature，就是对
 <!-- 
 http://matt33.com/2018/10/24/kafka-idempotent/
 
+https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247484078&idx=1&sn=3b0e754674804d61bde1df498f0bd092&chksm=e8eb7b3adf9cf22c370346b0eb2aa516f517daf4d0fa5977f41412d64f22cfe86f8eec90c58c&scene=178&cur_album_id=1338677566013800448#rd
+
+
 **精准一次（幂等性），保证数据不重复**  
 Ack设置为-1，则可以保证数据不丢失，但是会出现数据重复（at least once）
 

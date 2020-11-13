@@ -9,11 +9,12 @@
             - [1.1.1.2. Memory Mapped Files](#1112-memory-mapped-files)
         - [1.1.2. 基于 Sendfile 实现零拷贝（Zero Copy）](#112-基于-sendfile-实现零拷贝zero-copy)
     - [1.2. kafka可靠性（如何保证消息队列不丢失）](#12-kafka可靠性如何保证消息队列不丢失)
-        - [1.2.1. Consumer 端丢失消息(ACK机制)](#121-consumer-端丢失消息ack机制)
+        - [1.2.1. Producer 端丢失消息(ACK机制)](#121-producer-端丢失消息ack机制)
         - [1.2.2. Consumer 端丢失消息](#122-consumer-端丢失消息)
     - [1.3. kafka数据一致性，通过HW来保证](#13-kafka数据一致性通过hw来保证)
     - [1.4. kafa高可用性](#14-kafa高可用性)
     - [1.5. 如何让 Kafka 的消息有序？](#15-如何让-kafka-的消息有序)
+    - [有遇到过消息重复消费的情况吗？是怎么解决的？](#有遇到过消息重复消费的情况吗是怎么解决的)
     - [1.6. 提升 Producer 的性能](#16-提升-producer-的性能)
         - [1.6.1. 批量发送](#161-批量发送)
         - [1.6.2. 数据压缩](#162-数据压缩)
@@ -23,23 +24,12 @@
 
 # 1. kafka特性
 
-
 <!-- 
-
 https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247484048&idx=1&sn=2de06942948b02842fd042e7783cbc61&chksm=e8eb7b04df9cf2121a98984fae0207d422b9d643a2c3ff4d7c91cabfe2e8b4d530a62c376035&scene=178&cur_album_id=1338677566013800448#rd
 
 https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247484078&idx=1&sn=3b0e754674804d61bde1df498f0bd092&chksm=e8eb7b3adf9cf22c370346b0eb2aa516f517daf4d0fa5977f41412d64f22cfe86f8eec90c58c&scene=178&cur_album_id=1338677566013800448#rd
-
-Kafka 面试必问：聊聊 acks 参数对消息持久化的影响！ 
-https://mp.weixin.qq.com/s/PePsJzuKEIfQpCH1KbxrCg
-
-Kafka 副本机制
-https://juejin.im/post/6844903950009794567
-
 -->
-<!-- 
-https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
--->
+
 
 ## 1.1. Kafka的高效读写机制  
 &emsp; Kafka 的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，因为寻址会比较消耗时间，但是实际上，Kafka 的特性之一就是高吞吐率。Kafka 之所以能这么快，是因为：「顺序写磁盘、大量使用内存页、零拷贝技术的使用」..  
@@ -82,7 +72,9 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 &emsp; Kafka 把所有的消息都存放在一个一个的文件中，当消费者需要数据的时候 Kafka 直接把文件发送给消费者，配合 mmap 作为文件读写方式，直接把它传给 Sendfile。  
 
 ## 1.2. kafka可靠性（如何保证消息队列不丢失）
-### 1.2.1. Consumer 端丢失消息(ACK机制)
+### 1.2.1. Producer 端丢失消息(ACK机制)
+
+
 &emsp; Producer 如何保证数据发送不丢失？ack 机制，重试机制。  
 &emsp; 为保证 producer 发送的数据，能可靠的发送到指定的 topic，topic 的每个 partition 收到 producer 数据后，都需要向 producer 发送 ack（acknowledgement确认收到），如果 producer 收到 ack，就会进行下一轮的发送，否则重新发送数据。  
 
@@ -98,26 +90,27 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 * 同样为了容忍 n 台节点的故障，第一种方案需要的副本数相对较多，而 Kafka 的每个分区都有大量的数据，第一种方案会造成大量的数据冗余；
 * 虽然第二种方案的网络延迟会比较高，但网络延迟对 Kafka 的影响较小。  
 
-&emsp; **b) ISR**  
+&emsp; **b) ISR**   
 &emsp; 采用第二种方案之后，设想一下情景：leader 收到数据，所有 follower 都开始同步数据，但有一个 follower 挂了，迟迟不能与 leader 保持同步，那 leader 就要一直等下去，直到它完成同步，才能发送 ack，这个问题怎么解决呢？  
-&emsp; leader 维护了一个动态的 in-sync replica set(ISR)，意为和 leader 保持同步的 follower 集合。当 ISR 中的follower 完成数据的同步之后，leader 就会给 follower 发送 ack。如果 follower 长时间未向 leader 同步数据，则该 follower 将会被踢出 ISR，该时间阈值由 replica.lag.time.max.ms 参数设定。leader 发生故障之后，就会从 ISR 中选举新的 leader。（之前还有另一个参数，0.9 版本之后 replica.lag.max.messages 参数被移除了）  
+&emsp; leader 维护了一个动态的 in-sync replica set(ISR，保持同步的副本)，意为和 leader 保持同步的 follower 集合。当 ISR 中的follower 完成数据的同步之后，leader 就会给 follower 发送 ack。如果 follower 长时间未向 leader 同步数据，则该 follower 将会被踢出 ISR，该时间阈值由 replica.lag.time.max.ms 参数设定。leader 发生故障之后，就会从 ISR 中选举新的 leader。（之前还有另一个参数，0.9 版本之后 replica.lag.max.messages 参数被移除了）  
 
 &emsp; **c) ack应答机制**  
-&emsp; 对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没必要等 ISR 中的follower全部接收成功。  
-&emsp; 所以Kafka为用户提供了三种可靠性级别，用户根据对可靠性和延迟的要求进行权衡，选择以下的acks 参数配置  
+&emsp; 对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没必要等 ISR 中的follower全部接收成功。所以Kafka为用户提供了三种可靠性级别。  
+    
+    Kafka 的交付语义？交付语义一般有at least once、at most once和exactly once。kafka 通过 ack 的配置来实现前两种。  
 
-* 0：producer 不等待 broker 的 ack，这一操作提供了一个最低的延迟，broker 一接收到还没有写入磁盘就已经返回，当 broker 故障时有可能丢失数据；
-* 1：producer 等待 broker 的 ack，partition 的 leader 落盘成功后返回 ack，如果在 follower 同步成功之前 leader 故障，那么将会丢失数据；
-* -1（all）：producer 等待 broker 的 ack，partition 的 leader 和 follower 全部落盘成功后才返回 ack。但是 如果在 follower 同步完成后，broker 发送 ack 之前，leader 发生故障，那么就会造成数据重复。
+&emsp; Kafka 通过 request.required.acks和min.insync.replicas 两个参数配合，在一定程度上保证消息不会丢失。  
+&emsp; request.required.acks 可设置为 1、0、-1 三种情况。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-61.png)  
+&emsp; 设置为 1 时代表当 Leader 状态的 Partition 接收到消息并持久化时就认为消息发送成功，如果 ISR 列表的 Replica 还没来得及同步消息，Leader 状态的 Partition 对应的 Broker 宕机，则消息有可能丢失。    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-62.png)  
+&emsp; 设置为 0 时代表 Producer 发送消息后就认为成功，消息有可能丢失。    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-63.png)  
+&emsp; 设置为-1 时，代表 ISR 列表中的所有 Replica 将消息同步完成后才认为消息发送成功；但是如果只存在主 Partition 的时候，Broker 异常时同样会导致消息丢失。所以此时就需要min.insync.replicas参数的配合，该参数需要设定值大于等于 2，当 Partition 的个数小于设定的值时，Producer 发送消息会直接报错。  
 
-        Kafka 的交付语义？交付语义一般有at least once、at most once和exactly once。kafka 通过 ack 的配置来实现前两种。  
+&emsp; 上面这个过程看似已经很完美了，但是假设如果消息在同步到部分从 Partition 上时，主 Partition 宕机，此时消息会重传，虽然消息不会丢失，但是会造成同一条消息会存储多次。在新版本中 Kafka 提出了幂等性的概念，通过给每条消息设置一个唯一 ID，并且该 ID 可以唯一映射到 Partition 的一个固定位置，从而避免消息重复存储的问题。  
 
 <!-- 
-
-&emsp; 关于 ACK 机制 ，不了解的小伙伴，可以看这里：Kafka 架构深入 ，通过 ACK 机制保证消息送达。Kafka 采用的是至少一次（At least once），消息不会丢，但是可能会重复传输。  
-&emsp; acks 的默认值即为1，代表消息被leader副本接收之后就算被成功发送。可以配置 acks = all ，代表则所有副本都要接收到该消息之后该消息才算真正成功被发送。  
-
----
 &emsp; 为保证生产者发送的数据，能可靠的发送到指定的topic，topic的每个partition收到生产者发送的数据后，都需要向生产者发送ack（确认收到），如果生产者收到ack，就会进行下一轮的发送，否则重新发送数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-25.png)  
 
@@ -202,8 +195,12 @@ Leader发生故障后，会从ISR中选出一个新的leader，之后，为了�
 
 ## 1.4. kafa高可用性
 
-<!-- 
+Kafka 本身是一个分布式系统，同时采用了 Zookeeper 存储元数据信息，提高了系统的高可用性。  
+Kafka 使用多副本机制，当状态为 Leader 的 Partition 对应的 Broker 宕机或者网络异常时，Kafka 会通过选举机制从对应的 Replica 列表中重新选举出一个 Replica 当做 Leader，从而继续对外提供读写服务（当然，需要注意的一点是，在新版本的 Kafka 中，Replica 也可以对外提供读请求了），利用多副本机制在一定程度上提高了系统的容错性，从而提升了系统的高可用。  
 
+<!-- 
+Kafka 副本机制
+https://juejin.im/post/6844903950009794567
 https://mp.weixin.qq.com/s/OB-ZVy70vHClCtep43gr_A
 https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
 -->
@@ -236,6 +233,19 @@ Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)�
 ## 1.5. 如何让 Kafka 的消息有序？  
 &emsp; Kafka 在 Topic 级别本身是无序的，只有 partition 上才有序，所以为了保证处理顺序，可以自定义分区器，将需顺序处理的数据发送到同一个 partition
 
+&emsp; Kafka 无法做到消息全局有序，只能做到 Partition 维度的有序。所以如果想要消息有序，就需要从 Partition 维度入手。一般有两种解决方案。
+
+* 单 Partition，单 Consumer。通过此种方案强制消息全部写入同一个 Partition 内，但是同时也牺牲掉了 Kafka 高吞吐的特性了，所以一般不会采用此方案。  
+* 多 Partition，多 Consumer，指定 key 使用特定的 Hash 策略，使其消息落入指定的 Partition 中，从而保证相同的 key 对应的消息是有序的。此方案也是有一些弊端，比如当 Partition 个数发生变化时，相同的 key 对应的消息会落入到其他的 Partition 上，所以一旦确定 Partition 个数后就不能在修改 Partition 个数了。  
+
+
+## 有遇到过消息重复消费的情况吗？是怎么解决的？
+&emsp; 有，发生过两次重复消费的情况。发现用户的"xx"计数偶现大于实际情况，排查日志发现大概意思是心跳检测异常导致 commit 还没有来得及提交，对应的 Partition 被重新分配给其他的 Consumer 消费导致消息被重复消费。   
+
+1. 解决方式 1：调整降低消费端的消费速率、提高心跳检测周期。  
+&emsp; 通过方案 1 调整参数后，还是会出现重复消费的情况，只是出现的概率降低了。  
+2. 解决方案 2：在业务层增加 Redis，在一定周期内，相同 key 对应的消息认为是同一条，如果 Redis 内不存在则正常消费消费，反之直接抛弃。  
+
 ## 1.6. 提升 Producer 的性能
 &emsp; 如何提升 Producer 的性能？批量，异步，压缩  
 
@@ -249,5 +259,3 @@ Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)�
 &emsp; Kafka还支持对消息集合进行压缩，Producer可以通过GZIP或Snappy格式对消息集合进行压缩。压缩的好处就是减少传输的数据量，减轻对网络传输的压力。  
 &emsp; Producer压缩之后，在Consumer需进行解压，虽然增加了CPU的工作，但在对大数据处理上，瓶颈在网络上而不是CPU，所以这个成本很值得。  
 &emsp; 注意：「批量发送」和「数据压缩」一起使用，单条做数据压缩的话，效果不明显！  
-
-
