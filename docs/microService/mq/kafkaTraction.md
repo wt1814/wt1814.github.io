@@ -18,14 +18,14 @@
                 - [1.2.3.2.2. 消费-生产并存（consume-Transform-Produce）](#12322-消费-生产并存consume-transform-produce)
         - [1.2.4. kafka事务原理](#124-kafka事务原理)
             - [1.2.4.1. 基本概念](#1241-基本概念)
-        - [1.2.5. 幂等性和事务性的关系](#125-幂等性和事务性的关系)
-            - [1.2.5.1. 事务流程](#1251-事务流程)
-                - [1.2.5.1.1. 查找事务协调者Tranaction Corordinator](#12511-查找事务协调者tranaction-corordinator)
-                - [1.2.5.1.2. 初始化事务 initTransaction](#12512-初始化事务-inittransaction)
-                - [1.2.5.1.3. 开始事务 beginTransaction](#12513-开始事务-begintransaction)
-                - [1.2.5.1.4. Consume-Transform-Produce](#12514-consume-transform-produce)
-                - [1.2.5.1.5. 事务提交和事务终结(放弃事务)](#12515-事务提交和事务终结放弃事务)
-        - [1.2.6. 总结](#126-总结)
+            - [1.2.4.2. 幂等性和事务性的关系](#1242-幂等性和事务性的关系)
+            - [1.2.4.3. 事务流程](#1243-事务流程)
+                - [1.2.4.3.1. 查找事务协调者Tranaction Corordinator](#12431-查找事务协调者tranaction-corordinator)
+                - [1.2.4.3.2. 初始化事务 initTransaction](#12432-初始化事务-inittransaction)
+                - [1.2.4.3.3. 开始事务 beginTransaction](#12433-开始事务-begintransaction)
+                - [1.2.4.3.4. Consume-Transform-Produce](#12434-consume-transform-produce)
+                - [1.2.4.3.5. 事务提交和事务终结(放弃事务)](#12435-事务提交和事务终结放弃事务)
+        - [1.2.5. 总结](#125-总结)
 
 <!-- /TOC -->
 
@@ -307,21 +307,21 @@ Kafka只提供对Kafka本身的读写操作的事务性，不提供包含外部�
 7. 每个生产者增加一个epoch：用于标识同一个事务Id在一次事务中的epoch，每次初始化事务时会递增，从而让服务端可以知道生产者请求是否旧的请求。
 8. 幂等性：保证发送单个分区的消息只会发送一次，不会出现重复消息。增加一个幂等性的开关enable.idempotence，可以独立与事务使用，即可以只开启幂等但不开启事务。  
 
-### 1.2.5. 幂等性和事务性的关系  
+#### 1.2.4.2. 幂等性和事务性的关系  
 <!-- 
 https://blog.csdn.net/mlljava1111/article/details/81180351
 https://blog.csdn.net/BeiisBei/article/details/104737298
 -->
 
 
-#### 1.2.5.1. 事务流程  
+#### 1.2.4.3. 事务流程  
 <!-- 
 https://blog.csdn.net/BeiisBei/article/details/104737298
 https://blog.csdn.net/mlljava1111/article/details/81180351
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-64.png)  
 
-##### 1.2.5.1.1. 查找事务协调者Tranaction Corordinator  
+##### 1.2.4.3.1. 查找事务协调者Tranaction Corordinator  
 &emsp; 由于Transaction Coordinator是分配PID和管理事务的核心，因此Producer要做的第一件事情就是通过向任意一个Broker发送FindCoordinator请求找到Transaction Coordinator的位置。  
 &emsp; 注意：只有应用程序为Producer配置了Transaction ID时才可使用事务特性，也才需要这一步。另外，由于事务性要求Producer开启幂等特性，因此通过将transactional.id设置为非空从而开启事务特性的同时也需要通过将enable.idempotence设置为true来开启幂等特性。  
 
@@ -353,16 +353,16 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
 另外，如果事务特性未开启，InitPidRequest可发送至任意Broker，并且会得到一个全新的唯一的PID。该Producer将只能使用幂等特性以及单一Session内的事务特性，而不能使用跨Session的事务特性。
 -->
 
-##### 1.2.5.1.2. 初始化事务 initTransaction  
+##### 1.2.4.3.2. 初始化事务 initTransaction  
 &emsp; Producer发送InitpidRequest给事务协调器，获取一个Pid。InitpidRequest的处理过程是同步阻塞的，一旦该调用正确返回，Producer就可以开始新的事务。TranactionalId通过InitpidRequest发送给Tranciton Corordinator，然后在Tranaciton Log中记录这\<TranacionalId,pid>的映射关系。除了返回PID之外，还具有如下功能：  
 
     对PID对应的epoch进行递增，这样可以保证同一个app的不同实例对应的PID是一样的，但是epoch是不同的。
     回滚之前的Producer未完成的事务（如果有）。  
 
-##### 1.2.5.1.3. 开始事务 beginTransaction
+##### 1.2.4.3.3. 开始事务 beginTransaction
 &emsp; 执行Producer的beginTransacion()，它的作用是Producer在本地记录下这个transaction的状态为开始状态。这个操作并没有通知Transaction Coordinator，因为Transaction Coordinator只有在Producer发送第一条消息后才认为事务已经开启。
 
-##### 1.2.5.1.4. Consume-Transform-Produce  
+##### 1.2.4.3.4. Consume-Transform-Produce  
 &emsp; 这一阶段，包含了整个事务的数据处理过程，并且包含了多种请求。  
 
 &emsp; **AddPartitionsToTxnRequest**  
@@ -385,7 +385,7 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
 * 写入__consumer_offsets的Offset信息在当前事务Commit前对外是不可见的。也即在当前事务被Commit前，可认为该Offset尚未Commit，也即对应的消息尚未被完成处理。
 * Consumer Coordinator并不会立即更新缓存中相应<Topic, Partition>的Offset，因为此时这些更新操作尚未被COMMIT或ABORT。  
 
-##### 1.2.5.1.5. 事务提交和事务终结(放弃事务)  
+##### 1.2.4.3.5. 事务提交和事务终结(放弃事务)  
 在Producer执行commitTransaction/abortTransaction时，Transaction Coordinator会执行一个两阶段提交：  
 
 * 第一阶段，将Transaction Log内的该事务状态设置为PREPARE_COMMIT或PREPARE_ABORT
@@ -420,7 +420,7 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
 
 &emsp; 补充说明，如果参与该事务的某些\<Topic, Partition>在被写入Transaction Marker前不可用，它对READ_COMMITTED的Consumer不可见，但不影响其它可用\<Topic, Partition>的COMMIT或ABORT。在该\<Topic, Partition>恢复可用后，Transaction Coordinator会重新根据PREPARE_COMMIT或PREPARE_ABORT向该\<Topic, Partition>发送Transaction Marker。  
 
-### 1.2.6. 总结  
+### 1.2.5. 总结  
 * PID与Sequence Number的引入实现了写操作的幂等性
 * 写操作的幂等性结合At Least Once语义实现了单一Session内的Exactly Once语义
 * Transaction Marker与PID提供了识别消息是否应该被读取的能力，从而实现了事务的隔离性
