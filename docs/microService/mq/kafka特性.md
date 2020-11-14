@@ -66,8 +66,6 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 
 ## 1.2. kafka可靠性（如何保证消息队列不丢失）
 ### 1.2.1. Producer 端丢失消息(ACK机制)
-
-
 &emsp; Producer 如何保证数据发送不丢失？ack 机制，重试机制。  
 &emsp; 为保证 producer 发送的数据，能可靠的发送到指定的 topic，topic 的每个 partition 收到 producer 数据后，都需要向 producer 发送 ack（acknowledgement确认收到），如果 producer 收到 ack，就会进行下一轮的发送，否则重新发送数据。  
 
@@ -102,7 +100,6 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 &emsp; 设置为-1 时，代表 ISR 列表中的所有 Replica 将消息同步完成后才认为消息发送成功；但是如果只存在主 Partition 的时候，Broker 异常时同样会导致消息丢失。所以此时就需要min.insync.replicas参数的配合，该参数需要设定值大于等于 2，当 Partition 的个数小于设定的值时，Producer 发送消息会直接报错。  
 
 &emsp; 上面这个过程看似已经很完美了，但是假设如果消息在同步到部分从 Partition 上时，主 Partition 宕机，此时消息会重传，虽然消息不会丢失，但是会造成同一条消息会存储多次。在新版本中 Kafka 提出了幂等性的概念，通过给每条消息设置一个唯一 ID，并且该 ID 可以唯一映射到 Partition 的一个固定位置，从而避免消息重复存储的问题。  
-
 
 ### 1.2.2. Consumer 端丢失消息
 &emsp; consumer端丢失消息的情形比较简单：  
