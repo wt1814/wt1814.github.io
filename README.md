@@ -449,6 +449,7 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 
 [分布式与微服务](/docs/system/serviceSplit.md)  
 [并发系统三高](/docs/system/threeHigh.md)  
+[高可用](/docs/system/highAvailability.md)  
 
 [秒杀系统设计](/docs/system/seckill.md)  
 [订单系统设计](/docs/system/order.md)  
