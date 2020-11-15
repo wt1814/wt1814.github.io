@@ -31,6 +31,8 @@
 <!-- /TOC -->
 
 <!-- 
+
+
  初始synchronized关键字的偏向锁、轻量锁、重量锁 
  https://mp.weixin.qq.com/s/AloGilUSxjoNVDHTfq1ZGQ
 
@@ -56,6 +58,17 @@
 
  浅析synchronized底层实现与锁升级过程 
  https://juejin.im/post/6888112467747176456
+
+ Java基础面试16问 
+ https://mp.weixin.qq.com/s/-xFSHf7Gz3FUcafTJUIGWQ
+
+Synchronized详解（可重入、Monitor原理等）
+https://blog.csdn.net/mulinsen77/article/details/88635558
+
+
+synchronized底层原理—Monitor监视器
+https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
+
 
 -->
 

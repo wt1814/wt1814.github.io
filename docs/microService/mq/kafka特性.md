@@ -65,6 +65,11 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 &emsp; Kafka 把所有的消息都存放在一个一个的文件中，当消费者需要数据的时候 Kafka 直接把文件发送给消费者，配合 mmap 作为文件读写方式，直接把它传给 Sendfile。  
 
 ## 1.2. kafka可靠性（如何保证消息队列不丢失）
+<!-- 
+ Kafka消息中间件到底会不会丢消息 
+ https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
+-->
+
 ### 1.2.1. Producer 端丢失消息(ACK机制)
 &emsp; Producer 如何保证数据发送不丢失？ack 机制，重试机制。  
 &emsp; 为保证 producer 发送的数据，能可靠的发送到指定的 topic，topic 的每个 partition 收到 producer 数据后，都需要向 producer 发送 ack（acknowledgement确认收到），如果 producer 收到 ack，就会进行下一轮的发送，否则重新发送数据。  
