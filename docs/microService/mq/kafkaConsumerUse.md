@@ -23,6 +23,10 @@
 # 1. kafka消费者开发
 &emsp; **<font color = "lime">参考《kafka实战》</font>**  
 
+<!-- 
+https://blog.csdn.net/lwglwg32719/article/details/86510029
+-->
+
 ## 1.1. consumer概览  
 
 ### 1.1.1. 消费者分组  

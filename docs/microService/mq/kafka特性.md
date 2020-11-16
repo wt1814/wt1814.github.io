@@ -140,6 +140,7 @@ Kafka 副本机制
 https://juejin.im/post/6844903950009794567
 https://mp.weixin.qq.com/s/OB-ZVy70vHClCtep43gr_A
 https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
+
 -->
 通过副本来保证数据的高可用，producer ack、重试、自动 Leader 选举，Consumer 自平衡  
 

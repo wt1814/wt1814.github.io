@@ -24,6 +24,10 @@
 
 # 1. kafka生产者
 
+<!-- 
+https://www.cnblogs.com/dennyzhangdd/p/7827564.html
+-->
+
 ## 1.1. 消息发送示例        
 ```java
 package persistent.prestige.demo.kafka;
