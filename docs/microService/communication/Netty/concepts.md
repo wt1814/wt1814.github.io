@@ -19,6 +19,11 @@ https://mp.weixin.qq.com/s?__biz=MzIxNTAwNjA4OQ==&mid=2247486074&idx=2&sn=7f7cf2
 
 ## 1.1. Netty简介  
 <!-- 
+ 掌握Netty，面试怎么回答Netty？ 
+ https://mp.weixin.qq.com/s/36jmjy8YoIwULF-UlnwGtg
+-->
+
+<!-- 
 为什么要使用Netty而不直接使用JAVA中的NIO
 1.Netty支持三种IO模型同时支持三种Reactor模式。
 2.Netty支持很多应用层的协议，提供了很多decoder和encoder。
