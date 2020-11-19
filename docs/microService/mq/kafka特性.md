@@ -67,6 +67,9 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 
 ## 1.2. kafka可靠性（如何保证消息队列不丢失）
 <!-- 
+ 面试官问：Kafka 会不会丢消息？怎么处理的? 
+ https://mp.weixin.qq.com/s/tioD1yMABXu8BLj3dGtTmg
+
  Kafka消息中间件到底会不会丢消息 
  https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 -->

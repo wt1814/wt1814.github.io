@@ -364,6 +364,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [ES原理](/docs/ES/4.principle.md)  
 [ES优化-1](/docs/ES/5.optimization.md)  
 [ELK与EFK](/docs/ES/6.ELK与EFK.md)    
+&emsp; [Kibana 用户手册](/docs/ES/Kibana.md)  
 
 ### 分布式调度
 [延迟队列](/docs/frame/delayQueue.md)  
@@ -455,6 +456,8 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 [订单系统设计](/docs/system/order.md)  
 [支付系统](/docs/system/payment.md)  
 [个别场景](/docs/project/scene.md)  
+
+[短链接](/docs/project/URL.md)  
 
 ## 系统接入层  
 [接入层](/docs/system/access/access.md)    
