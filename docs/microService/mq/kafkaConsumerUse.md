@@ -261,6 +261,12 @@ https://blog.csdn.net/haogenmin/article/details/109489704
 &emsp; 使用rebalance监听器的前提是用户使用consumer group。如果使用的是独立consumer或是直接手动分配分区，那么rebalance监听器是无效的。  
 
 ## 1.7. 多线程消费实例  
+
+<!-- 
+KafkaConsumer是非线程安全的，那么怎么样实现多线程消费？
+https://www.cnblogs.com/luozhiyun/p/11811835.html
+-->
+
 <!-- 
 ~~
 Kafka Consumer多线程实例

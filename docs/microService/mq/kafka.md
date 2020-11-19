@@ -85,16 +85,60 @@ Zookeeper 是 Kafka 用来负责集群元数据管理、控制器选举等操作
 <!-- 
 Kafka学习笔记（四）分区机制
 https://blog.csdn.net/haogenmin/article/details/109449016
+
+“消费组中的消费者个数如果超过topic的分区，那么就会有消费者消费不到数据”这句话是否正确？如果正确，那么有没有什么hack的手段？  
+https://www.cnblogs.com/luozhiyun/p/11811835.html
+
+创建topic时如何选择合适的分区数？ topic分区
+https://www.cnblogs.com/luozhiyun/p/11811835.html
+
+
+
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-18.png)  
 &emsp; 在 Kafka 中，消息以 主题（Topic）来分类，每一个主题都对应一个「消息队列」，这有点儿类似于数据库中的表。但是如果我们把所有同类的消息都塞入到一个“中心”队列中，势必缺少可伸缩性，无论是生产者/消费者数目的增加，还是消息数量的增加，都可能耗尽系统的性能或存储。  
 
 ### 1.2.4. offset
+<!-- 
+https://www.cnblogs.com/luozhiyun/p/11811835.html
+
+消费者提交消费位移时提交的是当前消费到的最新消息的offset还是offset+1?  
+在旧消费者客户端中，消费位移是存储在 ZooKeeper 中的。而在新消费者客户端中，消费位移存储在 Kafka 内部的主题__consumer_offsets 中。  
+当前消费者需要提交的消费位移是offset+1  
+
+-->
 
 ### 1.2.5. replica，副本机制，高可用性  
 <!-- 
 副本机制
 https://blog.csdn.net/haogenmin/article/details/109449944
+
+
+深入理解Kafka必知必会
+https://www.cnblogs.com/luozhiyun/p/12079527.html
+
+
+Kafka中的ISR、AR又代表什么？ISR的伸缩又指什么#
+分区中的所有副本统称为 AR（Assigned Replicas）。所有与 leader 副本保持一定程度同步的副本（包括 leader 副本在内）组成ISR（In-Sync Replicas），ISR 集合是 AR 集合中的一个子集。
+
+ISR的伸缩：
+leader 副本负责维护和跟踪 ISR 集合中所有 follower 副本的滞后状态，当 follower 副本落后太多或失效时，leader 副本会把它从 ISR 集合中剔除。如果 OSR 集合中有 follower 副本“追上”了 leader 副本，那么 leader 副本会把它从 OSR 集合转移至 ISR 集合。默认情况下，当 leader 副本发生故障时，只有在 ISR 集合中的副本才有资格被选举为新的 leader，而在 OSR 集合中的副本则没有任何机会（不过这个原则也可以通过修改相应的参数配置来改变）。
+
+replica.lag.time.max.ms ： 这个参数的含义是 Follower 副本能够落后 Leader 副本的最长时间间隔，当前默认值是 10 秒。
+
+unclean.leader.election.enable：是否允许 Unclean 领导者选举。开启 Unclean 领导者选举可能会造成数据丢失，但好处是，它使得分区 Leader 副本一直存在，不至于停止对外提供服务，因此提升了高可用性。
+
+
+阐述下 Kafka 中的领导者副本(Leader Replica)和追随者副本 (Follower Replica)的区别
+这道题表面上是考核你对 Leader 和 Follower 区别的理解，但很容易引申到 Kafka 的同步 机制上。因此，我建议你主动出击，一次性地把隐含的考点也答出来，也许能够暂时把面试 官“唬住”，并体现你的专业性。
+
+你可以这么回答:Kafka 副本当前分为领导者副本和追随者副本。只有 Leader 副本才能 对外提供读写服务，响应 Clients 端的请求。Follower 副本只是采用拉(PULL)的方 式，被动地同步 Leader 副本中的数据，并且在 Leader 副本所在的 Broker 宕机后，随时 准备应聘 Leader 副本。
+
+通常来说，回答到这个程度，其实才只说了 60%，因此，我建议你再回答两个额外的加分 项。
+
+强调 Follower 副本也能对外提供读服务。自 Kafka 2.4 版本开始，社区通过引入新的 Broker 端参数，允许 Follower 副本有限度地提供读服务。
+强调 Leader 和 Follower 的消息序列在实际场景中不一致。很多原因都可能造成 Leader 和 Follower 保存的消息序列不一致，比如程序 Bug、网络问题等。这是很严重 的错误，必须要完全规避。你可以补充下，之前确保一致性的主要手段是高水位机制， 但高水位值无法保证 Leader 连续变更场景下的数据一致性，因此，社区引入了 Leader Epoch 机制，来修复高水位值的弊端。关于“Leader Epoch 机制”，国内的资料不是 很多，它的普及度远不如高水位，不妨大胆地把这个概念秀出来，力求惊艳一把。
+
 -->
 
 ### 1.2.6. leader和follower  
