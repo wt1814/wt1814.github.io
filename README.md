@@ -235,6 +235,7 @@ Gitee： https://gitee.com/wt1814/
 [Gateway](/docs/microService/microservices/Gateway.md)  
 [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/5.Zuul.md)  
 [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/6.Sleuth.md)  
+&emsp; [SpringMVC、dubbo集成zipkin](/docs/microService/SpringCloudNetflix/zipkin.md)  
 <!-- 
 [Spring Cloud Config]  
 [Spring Cloud Bus]  
