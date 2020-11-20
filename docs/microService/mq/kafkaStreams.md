@@ -210,7 +210,7 @@
 
 #### 1.4.2.2. 连接操作  
 &emsp; 连接操作是通过消息记录键将两个流数据记录进行合并，生成一个新的流数据。  
-&emsp; Kafka流处理中将流抽象为KStream、KTable、GlobalKTable三种类 型，因此连接操作也是在这三类流之间进行互相操作，即：  
+&emsp; Kafka流处理中将流抽象为KStream、KTable、GlobalKTable三种类型，因此连接操作也是在这三类流之间进行互相操作，即：  
 
 * KStream和KStream； 
 * KTable和KTable； 
