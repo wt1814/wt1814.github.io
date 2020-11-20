@@ -232,19 +232,19 @@
 
 * 分布式消息队列
     * [mq](/docs/microService/mq/mq.md)  
-    * [kafka基本概念](/docs/microService/mq/kafka.md)  
-    * [kafka安装](/docs/microService/mq/kafkaInstall.md)  
-    * [kafka生产者](/docs/microService/mq/kafkaProducerUse.md)  
-    * [kafka消费者](/docs/microService/mq/kafkaConsumerUse.md)  
-    * [kafka特性](/docs/microService/mq/kafka特性.md)  
-        * [kafka事务](/docs/microService/mq/kafkaTraction.md)   
-    * [kafka集群管理](/docs/microService/mq/kafkaUse.md)  
-    * [kafka集群监控与调优](/docs/microService/mq/kafkaMonitor.md)  
-    * [kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  
-    * [kafkaStreams](/docs/microService/mq/kafkaStreams.md)  
+    * [kafka基本概念](/docs/microService/mq/kafka/kafka.md)  
+    * [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
+    * [kafka生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
+    * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
+    * [kafka特性](/docs/microService/mq/kafka/kafka特性.md)  
+        * [kafka事务](/docs/microService/mq/kafka/kafkaTraction.md)   
+    * [kafka集群管理](/docs/microService/mq/kafka/kafkaUse.md)  
+    * [kafka集群监控与调优](/docs/microService/mq/kafka/kafkaMonitor.md)  
+    * [kafka-SpringBoot](/docs/microService/mq/kafka/kafkaSpringBoot.md)  
+    * [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
     * [kafka源码]  
-    * [kafka生产者](/docs/microService/mq/kafkaProducer.md)  
-    * [kafka消费者](/docs/microService/mq/kafkaConsumer.md)  
+    * [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
+    * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md)  
 
 * 分布式ID  
     * [分布式ID](/docs/microService/thinking/分布式ID.md)  
