@@ -3,7 +3,7 @@
 
 - [1. kafka消费者开发](#1-kafka消费者开发)
     - [1.1. consumer概览](#11-consumer概览)
-        - [1.1.1. 消费者分组](#111-消费者分组)
+        - [1.1.1. 消费者与消费组](#111-消费者与消费组)
         - [1.1.2. 位移(offset)](#112-位移offset)
         - [1.1.3. 消费者组重平衡](#113-消费者组重平衡)
         - [1.1.4. 消费方式](#114-消费方式)
@@ -14,7 +14,7 @@
         - [1.3.1. 订阅topic列表](#131-订阅topic列表)
         - [1.3.2. 基于正则表达订阅topic](#132-基于正则表达订阅topic)
     - [1.4. 消息轮询](#14-消息轮询)
-    - [1.5. 位移管理](#15-位移管理)
+    - [1.5. 消费者端位移管理](#15-消费者端位移管理)
     - [1.6. 消费者组重平衡(rebalance)](#16-消费者组重平衡rebalance)
     - [1.7. 多线程消费实例](#17-多线程消费实例)
 
@@ -29,36 +29,39 @@ https://blog.csdn.net/lwglwg32719/article/details/86510029
 
 ## 1.1. consumer概览  
 
-### 1.1.1. 消费者分组  
+### 1.1.1. 消费者与消费组  
 &emsp; kafka消费者分为两类：  
 
 * 消费者组(consumer group)：由多个消费者实例构成一个整体进行消费
 * 独立消费者(standalone consumer)：单独执行消费操作
 
-&emsp; **消费者组的特点：**
+&emsp; **<font color = "red">消费者组的特点：</font>**
 
 * 对于同一个group而言，topic的每条消息只能发送到group下一个consumer实例上  
 * topic消息可以发送到多个group中  
 
-&emsp; Kafka通过消费者组，可以实现基于队列和基于发布/订阅的两种消息引擎
+&emsp; 如下图所示，某个主题中共有4个分区（Partition） : PO、Pl、P2、P3。有两个消费组A 和B都订阅了这个主题，消费组A中有4个消费者（CO、Cl、C2和C3），消费组B中有2 个消费者（C4和C5）。按照Kafka默认的规则，最后的分配结果是消费组A中的每一个消费 者分配到1个分区，消费组B中的每一个消费者分配到2个分区，两个消费组之间互不影响。 每个消费者只能消费所分配到的分区中的消息。换言之，每一个分区只能被一个消费组中的一 个消费者所消费。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-65.png)  
+&emsp; 再来看一下消费组内的消费者个数变化时所对应的分区分配的演变。假设目前某消费组内只有一个消费者CO，订阅了一个主题，这个主题包含7个分区：PO、Pl、P2、P3、P4、 P5、P6。也就是说，这个消费者CO订阅了7个分区，具体分配情形参考下图。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-66.png)  
+此时消费组内又加入了一个新的消费者C1,按照既定的逻辑，需要将原来消费者CO的部 分分区分配给消费者C1消费，如下图所示。消费者CO和Cl各自负责消费所分配到的分区，彼此之间并无逻辑上的干扰。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-67.png)  
+&emsp; 紧接着消费组内又加入了一个新的消费者C2,消费者CO、Cl和C2按照下图中的方式 各自负责消费所分配到的分区。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-68.png)  
+&emsp; 消费者与消费组这种模型可以让整体的消费能力具备横向伸缩性，我们可以增加（或减少） 消费者的个数来提高（或降低）整体的消费能力。对于分区数固定的情况，一味地增加消费者 并不会让消费能力一直得到提升，如果消费者过多，出现了消费者的个数大于分区个数的情况, 就会有消费者分配不到任何分区。参考下图，一共有8个消费者，7个分区，那么最后的消费 者C7由于分配不到任何分区而无法消费任何消息。
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-69.png)  
 
-* 实现基于队列的模型：所有consumer实例都属于相同的group，每条消息只会被一个consumer实例处理。  
-* 实现基于发布/订阅模型：consumer实例都属于不同group，这样kafka消息会被广播到所有consumer实例上。  
+&emsp; Kafka通过消费者组，可以实现基于队列和基于发布/订阅的两种消息引擎  
+
+* 如果所有的消费者都隶属于同一个消费组，那么所有的消息都会被均衡地投递给每一 个消费者，即每条消息只会被一个消费者处理，这就相当于点对点模式的应用。  
+* 如果所有的消费者都隶属于不同的消费组，那么所有的消息都会被广播给所有的消费 者，即每条消息会被所有的消费者处理，这就相当于发布/订阅模式的应用。
 
 
 <!-- 
-&emsp; 消费者使用一个消费者组名group.id来标记自己，topic的每条消息都只会被发送到每个订阅它的消费者组的一个消费者实例上。  
-
-&emsp; kafka同时支持基于队列和基于发布/订阅的两种消息引擎模型：
 
 * 实现基于队列的模型：所有consumer实例都属于相同的group，每条消息只会被一个consumer实例处理。  
 * 实现基于发布/订阅模型：consumer实例都属于不同group，这样kafka消息会被广播到所有consumer实例上。  
 
-&emsp; 每个消费者只能消费所分配到的分区的消息，每一个分区只能被一个消费组中的一个消费者所消费，所以同一个消费组中消费者的数量如果超过了分区的数量，将会出现有些消费者分配不到消费的分区。消费组与消费者关系如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-32.png)  
-
-&emsp; consumer group是用于高伸缩性、高容错性的consumer机制。组内多个consumer实例可以同时读取Kafka消息，而且一旦有某个consumer挂掉，consumer group会立即将已崩溃consumer负责的分区转交给其他consumer来负责，从而保证不丢数据，这也成为重平衡。  
-&emsp; Kafka目前只提供单个分区内的消息顺序，而不会维护全局的消息顺序，因此用户如果要实现topic全局的消息顺序读取，就只能通过让每个consumer group下只包含一个consumer实例的方式来实现。 
 -->
 
 ### 1.1.2. 位移(offset)  

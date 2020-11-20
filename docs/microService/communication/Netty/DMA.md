@@ -25,6 +25,8 @@ https://juejin.im/post/6887469050515947528
 
 关于零拷贝的一点认识 
 https://mp.weixin.qq.com/s/KD2cpeUviLcEE3wrfdnrlQ
+
+https://mp.weixin.qq.com/s/LAWUHrRSnxKKicHz1FiGVw
 -->
 
 ## 1.1. DMA介绍

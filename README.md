@@ -327,6 +327,8 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [kafka安装](/docs/microService/mq/kafkaInstall.md)  
 [kafka生产者](/docs/microService/mq/kafkaProducerUse.md)  
 [kafka消费者](/docs/microService/mq/kafkaConsumerUse.md)  
+[主题与分区](/docs/microService/mq/topic.md)  
+[kafka高级应用](/docs/microService/mq/advanced.md)  
 [kafka服务端](/docs/microService/mq/kafkaServer.md)  
 [kafka特性](/docs/microService/mq/kafka特性.md)  
 &emsp; [kafka事务](/docs/microService/mq/kafkaTraction.md)   
@@ -334,6 +336,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [kafka集群监控与调优](/docs/microService/mq/kafkaMonitor.md)  
 [kafka-SpringBoot](/docs/microService/mq/kafkaSpringBoot.md)  
 [kafkaStreams](/docs/microService/mq/kafkaStreams.md)  
+[kafka与Spark集成](/docs/microService/mq/kafkaSpark.md)  
 [kafka源码]  
 [kafka生产者](/docs/microService/mq/kafkaProducer.md)  
 [kafka消费者](/docs/microService/mq/kafkaConsumer.md) 
