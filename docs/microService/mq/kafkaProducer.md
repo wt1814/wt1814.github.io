@@ -75,6 +75,10 @@ public class KafkaProducerTest {
 
 
 ## 1.2. 消息发送流程概述    
+<!-- 
+《深入理解kafka》2.2.1
+-->
+
 &emsp; 在消息发送的过程中，涉及到了两个线程—-main线程和Sender线程，以及一个线程共享变量——RecordAccumulator。 main 线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。  
 &emsp; Producer 发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至 Broker。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  

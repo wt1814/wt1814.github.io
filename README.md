@@ -327,6 +327,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [kafka安装](/docs/microService/mq/kafkaInstall.md)  
 [kafka生产者](/docs/microService/mq/kafkaProducerUse.md)  
 [kafka消费者](/docs/microService/mq/kafkaConsumerUse.md)  
+[kafka服务端](/docs/microService/mq/kafkaServer.md)  
 [kafka特性](/docs/microService/mq/kafka特性.md)  
 &emsp; [kafka事务](/docs/microService/mq/kafkaTraction.md)   
 [kafka集群管理](/docs/microService/mq/kafkaUse.md)  
