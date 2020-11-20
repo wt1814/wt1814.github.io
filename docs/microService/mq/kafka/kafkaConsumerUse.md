@@ -25,6 +25,11 @@
 
 <!-- 
 https://blog.csdn.net/lwglwg32719/article/details/86510029
+
+Kafka 消费者的使用和原理 
+https://mp.weixin.qq.com/s/cmDRWi2tmw0reHoUf5UriQs
+Kafka中的再均衡 
+https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 -->
 
 ## 1.1. consumer概览  
