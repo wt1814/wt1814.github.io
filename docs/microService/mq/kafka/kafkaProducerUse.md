@@ -17,15 +17,6 @@
 
 
 # 1. kafka生产者
-<!-- 
-
-Kafka Producer 发送数据
-https://blog.csdn.net/liruizi/article/details/83820128?utm_source=app
-消息的发送流程
-https://www.jianshu.com/p/17ff6eaae4fb
-
--->
-
 &emsp; **<font color = "lime">参考《kafka实战》</font>**  
 
 ## 1.1. 构造Producer

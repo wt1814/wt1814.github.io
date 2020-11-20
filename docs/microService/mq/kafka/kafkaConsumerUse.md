@@ -25,15 +25,9 @@
 
 <!-- 
 https://blog.csdn.net/lwglwg32719/article/details/86510029
-
-Kafka 消费者的使用和原理 
-https://mp.weixin.qq.com/s/cmDRWi2tmw0reHoUf5UriQs
-Kafka中的再均衡 
-https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 -->
 
 ## 1.1. consumer概览  
-
 ### 1.1.1. 消费者与消费组  
 &emsp; kafka消费者分为两类：  
 
@@ -232,6 +226,8 @@ kakfa消费组和重平衡
 https://blog.csdn.net/haogenmin/article/details/109489704
 消费者组重平衡全流程解析
 https://www.kancloud.cn/nicefo71/kafka/1473378
+Kafka中的再均衡 
+https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 -->
 
 &emsp; rebalance本质上是一组协议，它规定了一个consumer group是如何达成一致来分配订阅topic的所有分区的。coordinator负责对组执行rebalance操作。  
