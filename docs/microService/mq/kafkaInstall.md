@@ -13,7 +13,7 @@
 # 1. kafka安装  
 
 ## 1.1. kafka安装  
-...
+......
 
 ## 1.2. kafka配置文件  
 &emsp; 在kafka/config/目录下面有3个配置文件：  

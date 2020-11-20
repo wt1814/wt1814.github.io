@@ -21,17 +21,22 @@ https://blog.csdn.net/BeiisBei/article/details/104264144
 &emsp; 参考《Kafka实战》第7章  
 
 ## 1.1. 集群管理
+......
 
 ## 1.2. topic管理
+......
 
 ## 1.3. topic动态配置管理
+......
 
 ## 1.4. consumber相关管理
+......
 
 ## 1.5. topic分区管理
+......
 
 ## 1.6. kafka常见脚本工具  
-&emsp; Kafka 的命令行工具在 Kafka 包的/bin目录下，主要包括服务和集群管理脚本，配置脚本，信息查看脚本，Topic 脚本，客户端脚本等。
+&emsp; Kafka的命令行工具在Kafka包的/bin目录下，主要包括服务和集群管理脚本，配置脚本，信息查看脚本，Topic脚本，客户端脚本等。
 
 * kafka-configs.sh：配置管理脚本
 * kafka-console-consumer.sh：kafka 消费者控制台
@@ -53,7 +58,7 @@ https://blog.csdn.net/BeiisBei/article/details/104264144
 * zookeeper-server-stop.sh：停止 zk 服务
 * zookeeper-shell.sh：zk 客户端
 
-&emsp; 通常可以使用kafka-console-consumer.sh和kafka-console-producer.sh脚本来测试 Kafka 生产和消费，kafka-consumer-groups.sh可以查看和管理集群中的 Topic，kafka-topics.sh通常用于查看 Kafka 的消费组情况。  
+&emsp; 通常可以使用kafka-console-consumer.sh和kafka-console-producer.sh脚本来测试Kafka生产和消费，kafka-consumer-groups.sh可以查看和管理集群中的Topic，kafka-topics.sh通常用于查看 Kafka 的消费组情况。  
 
 ## 1.7. MirrorMaker，镜像操作
 &emsp; <font color = "red">Kafka提供了一个镜像操作的工具kafka-mirror-marker.sh，用于将一个集群的数据同步到另外一个集群。通过这个工具可以方便的实现两个集群之间的数据迁移；</font>  

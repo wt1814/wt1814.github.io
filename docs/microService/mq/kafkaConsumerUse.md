@@ -40,13 +40,10 @@ https://blog.csdn.net/lwglwg32719/article/details/86510029
 * 对于同一个group而言，topic的每条消息只能发送到group下一个consumer实例上  
 * topic消息可以发送到多个group中  
 
-&emsp; Kafka可以通过消费者组实现Kafka的基于队列和基于发布/订阅的两种消息引擎
+&emsp; Kafka通过消费者组，可以实现基于队列和基于发布/订阅的两种消息引擎
 
 * 实现基于队列的模型：所有consumer实例都属于相同的group，每条消息只会被一个consumer实例处理。  
 * 实现基于发布/订阅模型：consumer实例都属于不同group，这样kafka消息会被广播到所有consumer实例上。  
-
-&emsp; consumer group是用于高伸缩性、高容错性的consumer机制。组内多个consumer实例可以同时读取Kafka消息，而且一旦有某个consumer挂掉，consumer group会立即将已崩溃consumer负责的分区转交给其他consumer来负责，从而保证不丢数据，这也成为重平衡。  
-&emsp; Kafka目前只提供单个分区内的消息顺序，而不会维护全局的消息顺序，因此用户如果要实现topic全局的消息顺序读取，就只能通过让每个consumer group下只包含一个consumer实例的方式来实现。  
 
 
 <!-- 
@@ -59,6 +56,9 @@ https://blog.csdn.net/lwglwg32719/article/details/86510029
 
 &emsp; 每个消费者只能消费所分配到的分区的消息，每一个分区只能被一个消费组中的一个消费者所消费，所以同一个消费组中消费者的数量如果超过了分区的数量，将会出现有些消费者分配不到消费的分区。消费组与消费者关系如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-32.png)  
+
+&emsp; consumer group是用于高伸缩性、高容错性的consumer机制。组内多个consumer实例可以同时读取Kafka消息，而且一旦有某个consumer挂掉，consumer group会立即将已崩溃consumer负责的分区转交给其他consumer来负责，从而保证不丢数据，这也成为重平衡。  
+&emsp; Kafka目前只提供单个分区内的消息顺序，而不会维护全局的消息顺序，因此用户如果要实现topic全局的消息顺序读取，就只能通过让每个consumer group下只包含一个consumer实例的方式来实现。 
 -->
 
 ### 1.1.2. 位移(offset)  
@@ -69,12 +69,9 @@ https://blog.csdn.net/lwglwg32719/article/details/86510029
 &emsp; consumer把位移提交到kafka的一个内部topic（__consumer_offsets）上，通常不能直接操作该topic，特别注意不要擅自删除或搬移该topic的日志文件。  
 
 ### 1.1.3. 消费者组重平衡   
-&emsp; 假设组内某个实例挂掉了，Kafka 能够自动检测到，然后把这个 Failed 实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。这无疑是非常有用的一个东西，可以保障高可用性。除此之外，它协调着消费组中的消费者分配和订阅 topic 分区，比如某个 Group 下有 20 个 Consumer 实例，它订阅了一个具有 100 个分区的 Topic。正常情况下，Kafka 平均会为每个 Consumer 分配 5 个分区。这个分配的过程也叫 Rebalance。再比如此刻新增了消费者，得分一些分区给它吧，这样才可以负载均衡以及利用好资源，那么这个过程也是 Rebalance 来完成的。  
+&emsp; 假设组内某个实例挂掉了，Kafka能够自动检测到，然后把这个Failed实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。可以保障高可用性。  
+&emsp; 除此之外，它协调着消费组中的消费者分配和订阅 topic 分区，比如某个 Group 下有 20 个 Consumer 实例，它订阅了一个具有 100 个分区的 Topic。正常情况下，Kafka 平均会为每个 Consumer 分配 5 个分区。这个分配的过程也叫 Rebalance。再比如此刻新增了消费者，得分一些分区给它吧，这样才可以负载均衡以及利用好资源，那么这个过程也是 Rebalance 来完成的。  
 
-&emsp; 重平衡只对消费者组有效，它本质上是一种协议，规定了一个consumer group下所有consumer如何达成一致来分配订阅topic的所有分区。  
-<!-- 
-举个例子，假设有一个consumer group，它有20个consumer实例。该group订阅了一个具有100个分区的topic。那么正常情况下，consumer group平均会为每个consumer分配5个分区，即每个consumer负责读取5个分区的数据。这个分配过程就被称作rebalance。  
--->
 ### 1.1.4. 消费方式  
 &emsp; consumer 采用 pull（拉）模式从 broker 中读取数据。  
 &emsp; push（推）模式很难适应消费速率不同的消费者，因为消息发送速率是由 broker 决定的。 它的目标是尽可能以最快速度传递消息，但是这样很容易造成 consumer 来不及处理消息，典型的表现就是拒绝服务以及网络拥塞。而 pull 模式则可以根据 consumer 的消费能力以适当的速率消费消息。  
@@ -82,7 +79,6 @@ https://blog.csdn.net/lwglwg32719/article/details/86510029
 &emsp; pull 模式不足之处是，如果 kafka 没有数据，消费者可能会陷入循环中，一直等待数据到达。为了避免这种情况，在拉取请求中有参数，允许消费者请求在等待数据到达 的“长轮询”中进行阻塞（并且可选地等待到给定的字节数，以确保大的传输大小）。  
 
 ## 1.2. 构建consumer
-
 ### 1.2.1. consumer程序实例
 ```java
 public class ConsumerDemo {
@@ -131,6 +127,7 @@ public class ConsumerDemo {
 6. 关闭 KafkaConsumer。 
 
 ### 1.2.2. consumer参数
+&emsp; 关于consumer的常见参数：  
 
 * bootstrap.servers：连接 broker 地址，host：port 格式。
 * group.id：消费者隶属的消费组。
@@ -144,6 +141,7 @@ public class ConsumerDemo {
 * request.timeout.ms：一次请求响应的最长等待时间。如果在超时时间内未得到响应，kafka 要么重发这条消息，要么超过重试次数的情况下直接置为失败。
 
 ## 1.3. 订阅topic
+&emsp; 两种订阅topic的方式：直接订阅topic列表，基于正则表达订阅topic。  
 
 ### 1.3.1. 订阅topic列表
 1. 消费者组订阅topic列表
@@ -180,7 +178,7 @@ public class ConsumerDemo {
 ## 1.4. 消息轮询
 &emsp; kafka采用类似于Linux I/O模型的poll或select等，使用一个线程来同时管理多个socket连接，即同时与多个broker通信实现消息的并行读取。  
 &emsp; 一旦consumer订阅了topic，所有的消费逻辑包括coordinator的协调、消费者组的rebalance以及数据的获取都会在主逻辑poll方法的一次调用中被执行。这样用户可以很容易使用一个线程来管理所有的consumer I/O操作。  
-&emsp; 新版本Java consumer是一个双线程的Java进程：创建KafkaConsumer的线程被称为用户主线程，同时consumer在后台会创建一个心跳线程，该线程被称为后台心跳线程。KafkaConsumer的poll方法在用户主线程中运行。    
+&emsp; 新版本Java consumer是一个双线程的Java进程：创建KafkaConsumer的线程被称为用户主线程，同时consumer在后台会创建一个心跳线程。KafkaConsumer的poll方法在用户主线程中运行。    
 &emsp; poll方法根据当前consumer的消费位移返回消息集合。poll方法中有个超时的参数，为了让consumer有机会在等待kafka消息的同时还能够定期执行其他任务。   
 &emsp; poll方法返回满足以下任意一个条件即可返回：  
     
@@ -196,17 +194,20 @@ public class ConsumerDemo {
 &emsp; 使用这种方式调用poll，那么需要在另一个线程中调用consumer.wakeup()方法来触发consumer的关闭。  
 &emsp; KafkaConsumer不是线程安全的，但是有一个例外：用户可以安全地在另一个线程中调用consumer.wakeup()。注意，只有wakeup方法是特例，其他KafkaConsumer方法都不能同时在多线程中使用。  
 
-## 1.5. 位移管理
+## 1.5. 消费者端位移管理
 <!-- 
 kakfa消费位移
 https://blog.csdn.net/haogenmin/article/details/109488571
+
+https://www.kancloud.cn/nicefo71/kafka/1471593
 -->
 
 &emsp; consumer会在kafka集群的所有broker中选择一个broker作为consumer group的coordinator（协调者），用于实现组成员管理、消费分配方案制定以及提交位移等。  
 &emsp; 当consumer运行了一段时间之后，它必须要提交自己的位移值。consumer提交位移的主要机制是通过向所属的coordinator发送位移提交请求来实现的。每个位移提交请求都会往内部topic（__consumer_offsets）对应分区上追加写入一条消息。  
 &emsp; 消息的key是group.id、topic和分区的元组，value就是位移值。  
 
-&emsp; 位移提交有两种方式：自动提交、手动提交。  
+**位移提交：**  
+&emsp; **<font color = "red">位移提交有两种方式：</font><font color = "lime">自动提交、手动提交。</font>**  
 * 自动提交  
     &emsp; 使用方法：默认不用配置，或者显示配置enable.auto.commit=true，用auto.commit.interval.ms参数控制自动提交的间隔。  
     &emsp; 使用场景：对消息交付语义无需求，容忍一定的消息丢失。自动提交的问题是用户不能细粒度地处理位移的提交，特别是在有较强的精确一次的处理语义。  
@@ -221,6 +222,8 @@ https://blog.csdn.net/haogenmin/article/details/109488571
 <!-- 
 kakfa消费组和重平衡
 https://blog.csdn.net/haogenmin/article/details/109489704
+消费者组重平衡全流程解析
+https://www.kancloud.cn/nicefo71/kafka/1473378
 -->
 
 &emsp; rebalance本质上是一组协议，它规定了一个consumer group是如何达成一致来分配订阅topic的所有分区的。coordinator负责对组执行rebalance操作。  

@@ -26,7 +26,7 @@
 * 可以在流式记录产生时就进行处理。 
 
 ## 1.2. kafka拓扑结构及相关概念  
-&emsp; 一个典型的 Kafka 包含若干Producer、Broker集群、若干 Consumer 以及一个 Zookeeper 集群。Kafka体系结构如下所示：  
+&emsp; 一个典型的Kafka包含若干Producer、Broker集群、若干 Consumer 以及一个 Zookeeper 集群。Kafka体系结构如下所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-3.png)  
 <!-- 
 https://segmentfault.com/a/1190000020512524?utm_source=tag-newest

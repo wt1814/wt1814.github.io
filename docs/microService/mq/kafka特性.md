@@ -72,6 +72,9 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 
  Kafka消息中间件到底会不会丢消息 
  https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
+
+  面试被问：Kafka 会不会丢消息？我是这么答的 
+  https://mp.weixin.qq.com/s/9W_NUXojzPcZrl4Ux5hDpw
 -->
 
 ### 1.2.1. Producer 端丢失消息(ACK机制)

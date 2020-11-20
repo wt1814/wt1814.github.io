@@ -23,8 +23,7 @@
 <!-- 
 SpringBoot集成kafka全面实战
 https://blog.csdn.net/yuanlong122716/article/details/105160545/
-
- Java人应该知道的SpringBoot For Kafka (下) 
+Java人应该知道的SpringBoot For Kafka (下) 
 https://mp.weixin.qq.com/s/JB660Pgypr-PvkkdGOlhag
 -->
 
@@ -43,7 +42,7 @@ https://mp.weixin.qq.com/s/JB660Pgypr-PvkkdGOlhag
     * 定时启动/停止监听器
 
 ## 1.1. SpringBoot集成kafka  
-&emsp; ① 引入pom依赖  
+1. 引入pom依赖  
 
 ```xml
 <dependency>
@@ -51,7 +50,7 @@ https://mp.weixin.qq.com/s/JB660Pgypr-PvkkdGOlhag
     <artifactId>spring-kafka</artifactId>
 </dependency>
 ```
-&emsp; ② application.propertise配置  
+2. application.propertise配置  
 
 ```xml
 ###########【Kafka集群】###########
@@ -148,7 +147,7 @@ https://blog.csdn.net/yuanlong122716/article/details/105160545/
 
 ## 1.4. 生产者
 ### 1.4.1. 带回调的生产者  
-&emsp; kafkaTemplate提供了一个回调方法addCallback，可以在回调方法中监控消息是否发送成功 或 失败时做补偿处理，有两种写法，  
+&emsp; kafkaTemplate提供了一个回调方法addCallback，可以在回调方法中监控消息是否发送成功或失败时做补偿处理，有两种写法，  
 
 ```java
 @GetMapping("/kafka/callbackOne/{message}")
@@ -189,7 +188,7 @@ public void sendMessage3(@PathVariable("message") String callbackMessage) {
 &emsp; kafka中每个topic被划分为多个分区，那么生产者将消息发送到topic时，具体追加到哪个分区呢？这就是所谓的分区策略，Kafka 提供了默认的分区策略，同时它也支持自定义分区策略。其路由机制为：  
 &emsp; ① 若发送消息时指定了分区（即自定义分区策略），则直接将消息append到指定分区；  
 &emsp; ② 若发送消息时未指定 patition，但指定了 key（kafka允许为每条消息设置一个key），则对key值进行hash计算，根据计算结果路由到指定分区，这种情况下可以保证同一个 Key 的所有消息都进入到相同的分区；  
-&emsp; ③  patition 和 key 都未指定，则使用kafka默认的分区策略，轮询选出一个 patition；  
+&emsp; ③ patition 和 key 都未指定，则使用kafka默认的分区策略，轮询选出一个 patition；  
 
 &emsp; ※ 来自定义一个分区策略，将消息发送到指定的partition，首先新建一个分区器类实现Partitioner接口，重写方法，其中partition方法的返回值就表示将消息发送到几号分区，  
 
@@ -323,7 +322,7 @@ public void onMessage5(List<ConsumerRecord<?, ?>> records) throws Exception {
 
 ### 1.5.4. 消息过滤器
 &emsp; 消息过滤器可以在消息抵达consumer之前被拦截，在实际应用中，可以根据自己的业务逻辑，筛选出需要的信息再交由KafkaListener处理，不需要的消息则过滤掉。  
-&emsp; 配置消息过滤只需要为 监听器工厂 配置一个RecordFilterStrategy（消息过滤策略），返回true的时候消息将会被抛弃，返回false时，消息能正常抵达监听容器。  
+&emsp; 配置消息过滤只需要为监听器工厂配置一个RecordFilterStrategy（消息过滤策略），返回true的时候消息将会被抛弃，返回false时，消息能正常抵达监听容器。  
 
 ```java
 @Component
@@ -382,7 +381,7 @@ public String onMessage7(ConsumerRecord<?, ?> record) {
 &emsp; 默认情况下，当消费者项目启动的时候，监听器就开始工作，监听消费发送到指定topic的消息，那如果不想让监听器立即工作，想让它在指定的时间点开始工作，或者在指定的时间点停止工作，该怎么处理呢——使用KafkaListenerEndpointRegistry：  
 &emsp; ① 禁止监听器自启动；   
 &emsp; ② 创建两个定时任务，一个用来在指定时间点启动定时器，另一个在指定时间点停止定时器；  
-&emsp; 新建一个定时任务类，用注解@EnableScheduling声明，KafkaListenerEndpointRegistry 在SpringIO中已经被注册为Bean，直接注入，设置禁止KafkaListener自启动，  
+&emsp; 新建一个定时任务类，用注解@EnableScheduling声明，KafkaListenerEndpointRegistry在SpringIO中已经被注册为Bean，直接注入，设置禁止KafkaListener自启动，  
 
 ```java
 @EnableScheduling

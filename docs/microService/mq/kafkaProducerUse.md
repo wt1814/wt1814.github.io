@@ -63,7 +63,7 @@ public class KafkaProducerTest {
 ```
 
 &emsp; 构造一个producer实例大致需要以下5个步骤。  
-1. 构造一个 java.utiLProperties 对象，然后至少指定 bootstrap.serverskey.serializer 和 value.serializer这3个属性，它们没有默认值。  
+1. 构造一个 java.utiLProperties 对象，然后至少指定 bootstrap.servers、key.serializer 和 value.serializer这3个属性，它们没有默认值。  
     * bootstrap.servers，指定broker的地址清单
     * key.serializer（key 序列化器），必须是一个实现org.apache.kafka.common.serialization.Serializer接口的类，将key序列化成字节数组。注意：key.serializer必须被设置，即使消息中没有指定key。  
     * value.serializer（value 序列化器），将value序列化成字节数组
@@ -91,9 +91,7 @@ public class KafkaProducerTest {
 
 
 ## 1.2. kafka生产者发送消息过程  
-&emsp; Producer发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至 Broker。  
-
-        kafka生产者发送消息过程详情参考：[kafka生产者源码](/docs/microService/mq/kafkaProducer.md)  
+&emsp; Producer发送消息的过程如下图所示（详情可参考kafka生产者源码部分），需要经过拦截器，序列化器和分区器，最终由累加器批量发送至 Broker。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-8.png)  
@@ -114,17 +112,17 @@ public class KafkaProducerTest {
 2. 做producer端的无消息丢失配置  
     * producer端配置
 
-            max.block.ms=3000     控制block的时长,当buffer空间不够或者metadata丢失时产生block
+            max.block.ms=3000   控制block的时长,当buffer空间不够或者metadata丢失时产生block
             acks=all or -1   所有follower都响应了发送消息才能认为提交成功
-            retries=Integer.MAX_VALUE  producer开启无限重试，只会重试那些可恢复的异常情况
-            max.in.flight.requests.per.connection=1  限制了producer在单个broker连接上能够发送的未响应请求的数量，为了防止topic同分区下的消息乱序问题
+            retries=Integer.MAX_VALUE   producer开启无限重试，只会重试那些可恢复的异常情况
+            max.in.flight.requests.per.connection=1   限制了producer在单个broker连接上能够发送的未响应请求的数量，为了防止topic同分区下的消息乱序问题
             使用带回调机制的send发送消息，即KafkaProducer.send(record,callback)   
             会返回消息发送的结果信息Callback的失败处理逻辑中显式地立即关闭producer，使用close(0)。目的是为了处理消息的乱序问题，将不允许将未完成的消息发送出去
 
     * broker端配置
 
-            unclean.leader.election.enable=false    不允许非ISR中的副本被选举为leader
-            replication.factor=3       强调一定要使用多个副本来保存分区的消息
+            unclean.leader.election.enable=false   不允许非ISR中的副本被选举为leader
+            replication.factor=3   强调一定要使用多个副本来保存分区的消息
             min.insync.replicas=2   控制某条消息至少被写入到ISR中的多少个副本才算成功，只有在producer端的acks设置成all或-1时，这个参数才有意义
             确保replication.factor>min.insync.replicas   
 
@@ -162,4 +160,3 @@ props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
 |多 KafkaProducer 实例|	每个线程维护自己专属的 KafkaProducer 实例|①每个用户线程拥有专属的 KafkaProducer 实例、缓冲 区空间及一组对应的配置参 数，可以进行细粒度的调 优；</br>②单个 KafkaProducer崩溃不会影响其他producer线程工作	|需要较大的内存分配开销|
 
 &emsp; 如果是对分区数不多的Kafka集群而言，比较推荐使用第一种方法，即在多个producer用户线程中共享一个KafkaProducer实例。若是对那些拥有超多分区的集群而言，釆用第二种方法具有较高的可控性，方便producer的后续管理。  
-

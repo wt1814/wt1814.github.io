@@ -34,6 +34,10 @@ https://juejin.im/post/6877741789680238600
  MQ，究竟如何做到削峰填谷？ 
  https://mp.weixin.qq.com/s/2gqajSPgwF67hrl9alRLJg
 
+ MQ消息中间件，面试能问些什么？     
+ https://mp.weixin.qq.com/s/-H83SlULvQf50fgHGcDMzAs
+
+
 -->
 &emsp; **<font color = "lime">总结：</font>**  
 1. 为什么使用mq？
