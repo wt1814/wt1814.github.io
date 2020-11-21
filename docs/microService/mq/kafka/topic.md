@@ -16,7 +16,7 @@
 
 ## 1.2. 分区管理  
 ### 1.2.1. 分区策略  
-&emsp; Kafka提供了默认的分区策略（轮询、随机、按key顺序），同时支持你自定义分区策略。  
+&emsp; Kafka提供了默认的分区策略（轮询、随机、按key顺序），同时支持自定义分区策略。  
 
 ```java
 public int partition(String topic, Object key, byte[] keyBytes, Object value, byte[] valueBytes, Cluster cluster) {
@@ -43,7 +43,6 @@ public int partition(String topic, Object key, byte[] keyBytes, Object value, by
 ```
 1. 首先kafka会判断有没有key，这里的key就是每条消息定义的消息键，发消息的时候在ProducerRecord(String topic, K key, V value)中指定的key。  
 2. 如果没有key，会采用轮询策略，也称 Round-robin 策略，即顺序分配。比如一个主题下有 3 个分区，那么第一条消息被发送到分区 0，第二条被发送到分区 1，第三条被发送到分区 2，以此类推。当生产第 4 条消息时又会重新开始上述轮询。轮询策略有非常优秀的负载均衡表现，它总是能保证消息最大限度地被平均分配到所有分区上，故默认情况下它是最合理的分区策略。  
-
 3. 如果有key，那么就按消息键策略，这样可以保证同一个 Key 的所有消息都进入到相同的分区里面，这样就保证了顺序性了。  
 
 

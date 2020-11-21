@@ -330,7 +330,6 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [主题与分区](/docs/microService/mq/kafka/topic.md)  
 [kafka特性](/docs/microService/mq/kafka/kafka特性.md)  
 &emsp; [kafka事务](/docs/microService/mq/kafka/kafkaTraction.md)  
-[kafka高级应用](/docs/microService/mq/kafka/advanced.md)  
 [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
 [kafka服务端](/docs/microService/mq/kafka/kafkaServer.md)  
 [kafka集群管理](/docs/microService/mq/kafka/kafkaUse.md)  
