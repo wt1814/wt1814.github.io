@@ -21,6 +21,7 @@
 
 <!-- 
 https://mp.weixin.qq.com/s/ilqFpf5kE0XzJnOv9SsX7Q
+https://www.cnblogs.com/lihaoyang/p/7104293.html
 -->
 
 # 1. Java泛型
