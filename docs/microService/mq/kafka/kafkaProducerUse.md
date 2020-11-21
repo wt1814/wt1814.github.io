@@ -53,7 +53,7 @@ public class KafkaProducerTest {
 }
 ```
 
-&emsp; 构造一个producer实例大致需要以下5个步骤。  
+&emsp; 构造一个producer实例大致需要以下5个步骤：   
 1. 构造一个 java.utiLProperties 对象，然后至少指定 bootstrap.servers、key.serializer 和 value.serializer这3个属性，它们没有默认值。  
     * bootstrap.servers，指定broker的地址清单
     * key.serializer（key 序列化器），必须是一个实现org.apache.kafka.common.serialization.Serializer接口的类，将key序列化成字节数组。注意：key.serializer必须被设置，即使消息中没有指定key。  
@@ -82,7 +82,7 @@ public class KafkaProducerTest {
 
 
 ## 1.2. kafka生产者发送消息过程  
-&emsp; Producer发送消息的过程如下图所示（详情可参考kafka生产者源码部分），需要经过拦截器，序列化器和分区器，最终由累加器批量发送至 Broker。  
+&emsp; **Producer发送消息的过程如下图所示（详情可参考kafka生产者源码部分），需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-8.png)  
@@ -100,7 +100,7 @@ public class KafkaProducerTest {
 
 ## 1.6. 无消息丢失配置  
 1. 采用同步发送，但是性能会很差，并不推荐在实际场景中使用。因此最好能有一份配置，既使用异步方式还能有效地避免数据丢失, 即使出现producer崩溃的情况也不会有问题。 
-2. 做producer端的无消息丢失配置  
+2. **做producer端的无消息丢失配置**  
     * producer端配置
 
             max.block.ms=3000   控制block的时长,当buffer空间不够或者metadata丢失时产生block
@@ -123,7 +123,7 @@ public class KafkaProducerTest {
 
 ## 1.7. 消息压缩  
 &emsp; 数据压缩显著地降低了磁盘占用或带宽占用，从而有效地提升了I/O密集型应用的性能。不过引用压缩同时会消耗额外的CPU时钟周期，因此压缩是I/O性能和CPU资源的平衡。  
-&emsp; kafka自0.7.x版本便开始支持压缩特性-producer端能够将一批消息压缩成一条消息发送，而broker端将这条压缩消息写入本地日志文件，consumer端获取到这条压缩消息时会自动对消息进行解压缩。即producer端压缩，broker保持，consumer解压缩。  
+&emsp; kafka自0.7.x版本便开始支持压缩特性。producer端能够将一批消息压缩成一条消息发送，而broker端将这条压缩消息写入本地日志文件，consumer端获取到这条压缩消息时会自动对消息进行解压缩。即producer端压缩，broker保持，consumer解压缩。  
 &emsp; 如果有些前置条件不满足，比如需要进行消息格式的转换等，那么broker端就需要对消息进行解压缩然后再重新压缩。  
 &emsp; kafka支持三种压缩算法：GZIP、Snappy和LZ4，性能LZ4>> Snappy>>GZIP，batch越大，压缩时间越长。
 假定要设置使用Snappy压缩算法，则设置方法如下：  
@@ -139,15 +139,15 @@ props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
 &emsp; 实际环境中只使用一个用户主线程通常无法满足所需的吞吐量目标，因此需要构造多个线程或多个进程来同时给Kafka集群发送消息。这样在使用过程中就存在着两种基本的使用方法。  
 
 * 多线程单KafkaProducer实例  
-&emsp; 顾名思义，这种方法就是在全局构造一个KafkaProducer实例，然后在多个线程中共享使 用。由于KafkaProducer是线程安全的，所以这种使用方式也是线程安全的。  
+&emsp; 这种方法就是在全局构造一个KafkaProducer实例，然后在多个线程中共享使 用。由于KafkaProducer是线程安全的，所以这种使用方式也是线程安全的。  
 * 多线程多KafkaProducer实例  
-&emsp; 除了上面的用法，还可以在每个producer主线程中都构造一个KafkaProducer实例，并且保证此实例在该线程中封闭（thread confinement,线程封闭是实现线程安全的重要手段之一）。   
+&emsp; 除了上面的用法，还可以在每个producer主线程中都构造一个KafkaProducer实例，并且保证此实例在该线程中封闭（thread confinement，线程封闭是实现线程安全的重要手段之一）。   
     
 &emsp; 显然，这两种方式各有优劣，如下表所示。   
 
 ||说 明	|优 势	|劣 势|
 |---|---|---|---|
-|单 KafkaProducer 实例|	所有线程共享一个KafkaProducer 实例|实现简单，性能好|①所有线程共享一个内存缓冲区，可能需要较多内存；</br>②一旦producer某个线程崩溃导致KafkaProducer实例被“破坏”,则所有用户线程都无法工作|
-|多 KafkaProducer 实例|	每个线程维护自己专属的 KafkaProducer 实例|①每个用户线程拥有专属的 KafkaProducer 实例、缓冲 区空间及一组对应的配置参 数，可以进行细粒度的调 优；</br>②单个 KafkaProducer崩溃不会影响其他producer线程工作	|需要较大的内存分配开销|
+|单 KafkaProducer 实例|	所有线程共享一个KafkaProducer 实例|实现简单，性能好|①所有线程共享一个内存缓冲区，可能需要较多内存；</br>②一旦producer某个线程崩溃导致KafkaProducer实例被“破坏”，则所有用户线程都无法工作|
+|多 KafkaProducer 实例|	每个线程维护自己专属的 KafkaProducer 实例|①每个用户线程拥有专属的 KafkaProducer 实例、缓冲 区空间及一组对应的配置参数，可以进行细粒度的调 优；</br>②单个 KafkaProducer崩溃不会影响其他producer线程工作 |需要较大的内存分配开销|
 
 &emsp; 如果是对分区数不多的Kafka集群而言，比较推荐使用第一种方法，即在多个producer用户线程中共享一个KafkaProducer实例。若是对那些拥有超多分区的集群而言，釆用第二种方法具有较高的可控性，方便producer的后续管理。  
