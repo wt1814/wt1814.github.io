@@ -236,15 +236,18 @@
     * [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
     * [kafka生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
     * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
+    * [主题与分区](/docs/microService/mq/kafka/topic.md)  
     * [kafka特性](/docs/microService/mq/kafka/kafka特性.md)  
-        * [kafka事务](/docs/microService/mq/kafka/kafkaTraction.md)   
+        * [kafka事务](/docs/microService/mq/kafka/kafkaTraction.md)  
+    * [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
+    * [kafka服务端](/docs/microService/mq/kafka/kafkaServer.md)  
     * [kafka集群管理](/docs/microService/mq/kafka/kafkaUse.md)  
     * [kafka集群监控与调优](/docs/microService/mq/kafka/kafkaMonitor.md)  
     * [kafka-SpringBoot](/docs/microService/mq/kafka/kafkaSpringBoot.md)  
-    * [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
+    * [kafka与Spark集成](/docs/microService/mq/kafka/kafkaSpark.md)  
     * [kafka源码]  
     * [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
-    * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md)  
+    * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md) 
 
 * 分布式ID  
     * [分布式ID](/docs/microService/thinking/分布式ID.md)  
