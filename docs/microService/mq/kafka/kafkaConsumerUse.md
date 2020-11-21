@@ -15,6 +15,12 @@
         - [1.6.1. 重平衡简介](#161-重平衡简介)
         - [1.6.2. 重平衡触发条件](#162-重平衡触发条件)
         - [1.6.3. 重平衡流程](#163-重平衡流程)
+            - [1.6.3.1. 协调者](#1631-协调者)
+            - [1.6.3.2. 交互方式](#1632-交互方式)
+            - [1.6.3.3. 流程](#1633-流程)
+            - [1.6.3.4. 分配策略](#1634-分配策略)
+            - [1.6.3.5. rebalance generation](#1635-rebalance-generation)
+            - [1.6.3.6. rebalance监听器](#1636-rebalance监听器)
         - [1.6.4. 重平衡劣势](#164-重平衡劣势)
         - [1.6.5. 如何避免重平衡？](#165-如何避免重平衡)
     - [1.7. 多线程消费实例](#17-多线程消费实例)
@@ -214,35 +220,48 @@ https://www.kancloud.cn/nicefo71/kafka/1471593
 <!-- 
 消费者组重平衡全流程解析
 https://www.kancloud.cn/nicefo71/kafka/1473378
-Kafka中的再均衡 
-https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 -->
 ### 1.6.1. 重平衡简介
 &emsp; 假设组内某个实例挂掉了，Kafka能够自动检测到，然后把这个Failed实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。可以保障高可用性。  
-&emsp; 除此之外，它协调着消费组中的消费者分配和订阅 topic 分区，比如某个 Group 下有 20 个 Consumer 实例，它订阅了一个具有 100 个分区的 Topic。正常情况下，Kafka 平均会为每个 Consumer 分配 5 个分区。这个分配的过程也叫 Rebalance。再比如此刻新增了消费者，得分一些分区给它吧，这样才可以负载均衡以及利用好资源，那么这个过程也是 Rebalance 来完成的。  
+&emsp; 除此之外，它协调着消费组中的消费者分配和订阅topic分区，比如某个Group 下有 20 个 Consumer 实例，它订阅了一个具有 100 个分区的 Topic。正常情况下，Kafka 平均会为每个 Consumer 分配 5 个分区。这个分配的过程也叫 Rebalance。再比如此刻新增了消费者，得分一些分区给它吧，这样才可以负载均衡以及利用好资源，那么这个过程也是 Rebalance 来完成的。  
 
 &emsp; rebalance本质上是一组协议，它规定了一个consumer group是如何达成一致来分配订阅topic的所有分区的。coordinator负责对组执行rebalance操作。  
 &emsp; 在 Rebalance 过程中，所有 Consumer 实例共同参与，在协调者组件（Coordinator，专门为 Consumer Group 服务，负责为 Group 执行 Rebalance 以及提供位移管理和组成员管理）的帮助下，完成订阅主题分区的分配。  
 
-
 ### 1.6.2. 重平衡触发条件
 &emsp; **消费者组rebalance触发的条件，满足其一即可：**  
-
 1. 组成员发生变更，比如新consumer加入组，或已有consumer主动离开组，再或是已有consumer崩溃时则触rebalance。（consumer崩溃的情况，有可能是consumer进程“挂掉”或consumer进程所在的机器宕机，也有可能是consumer无法在指定的时间内完成消息的处理。）
 2. 组订阅topic数发生变更，比如使用基于正则表达式的订阅，当匹配正则表达式的新topic被创建时则会触发rebalance。
 3. 组订阅topic的分区数发生变更，比如使用命令行脚本增加了订阅topic的分区数。
 
-
 ### 1.6.3. 重平衡流程
-&emsp; **rebalance流程**  
-1. 指定协调器：计算groupI的哈希值%分区数量(默认是50)的值，寻找__consumer_offsets分区为该值的leader副本所在的broker，该broker即为这个group的协调器  
-2. 成功连接协调器之后便可以执行rebalance操作， 目前rebalance主要分为两步：加入组和同步更新分配方案  
-    1. 加入组：协调器group中选择一个consumer担任leader，并把所有成员信息以及它们的订阅信息发送给leader
-    2. 同步更新分配方案：leader在这一步开始制定分配方案，即根据前面提到的分配策略决定每个consumer都负责那些topic的哪些分区，一旦分配完成，leader会把这个分配方案封装进SyncGroup请求并发送给协调器。注意组内所有成员都会发送SyncGroup请求，不过只有leader发送的SyncGroup请求中包含分配方案。协调器接收到分配方案后把属于每个consumer的方案单独抽取出来作为SyncGroup请求的response返还给给自的consumer
-3. consumer group分配方案是在consumer端执行的
+<!-- 
+https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
+-->
+#### 1.6.3.1. 协调者
+&emsp;再均衡，将分区所属权分配给消费者。因此需要和所有消费者通信，这就需要引进一个协调者的概念，由协调者为消费组服务，为消费者们做好协调工作。在Kafka中，每一台Broker上都有一个协调者组件，负责组成员管理、再均衡和提交位移管理等工作。如果有N台Broker，那就有N个协调者组件，而一个消费组只需一个协调者进行服务，那该**由哪个Broker为其服务？** 确定Broker需要两步：  
+1. 计算分区号
+&emsp;partition = Math.abs(groupID.hashCode() % offsetsTopicPartitionCount)  
+&emsp;根据groupID的哈希值，取余offsetsTopicPartitionCount（内部主题__consumer_offsets的分区数，默认50）的绝对值，其意思就是把消费组哈希散列到内部主题__consumer_offsets的一个分区上。确定协调者为什么要和内部主题扯上关系。这就跟协调者的作用有关了。协调者不仅是负责组成员管理和再均衡，在协调者中还需要负责处理消费者的偏移量提交，而偏移量提交则正是提交到__consumer_offsets的一个分区上。所以这里需要取余offsetsTopicPartitionCount来确定偏移量提交的分区。  
+2. 找出分区Leader副本所在的Broker  
+&emsp;确定了分区就简单了，分区Leader副本所在的Broker上的协调者，就是要找的。  
 
+&emsp;这个算法通常用于帮助定位问题。当一个消费组出现问题时，可以先确定协调者的Broker，然后查看Broker端的日志来定位问题。  
 
-&emsp; **分配策略**  
+#### 1.6.3.2. 交互方式  
+&emsp; 协调者和消费者之间是如何交互的？协调者如何掌握消费者的状态，又如何通知再均衡。这里使用了心跳机制。在消费者端有一个专门的心跳线程负责以heartbeat.interval.ms的间隔频率发送心跳给协调者，告诉协调者自己还活着。同时协调者会返回一个响应。而当需要开始再均衡时，协调者则会在响应中加入REBALANCE_IN_PROGRESS，当消费者收到响应时，便能知道再均衡要开始了。  
+&emsp; 由于再平衡的开始依赖于心跳的响应，所以heartbeat.interval.ms除了决定心跳的频率，也决定了再均衡的通知频率。  
+
+#### 1.6.3.3. 流程  
+1. 当消费者收到协调者的再均衡开始通知时，需要立即提交偏移量；  
+2. 消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；  
+3. 当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，同时等待rebalance.timeout.ms，在收集其他消费者的JoinGroup请求中的订阅信息后，将订阅信息放在JoinGroup响应中发送给Leader消费者，并告知他成为了Leader，同时也会发送成功入组的JoinGroup响应给其他消费者；  
+4. Leader消费者收到JoinGroup响应后，根据消费者的订阅信息制定分配方案，把方案放在SyncGroup请求中，发送给协调者。普通消费者在收到响应后，则直接发送SyncGroup请求，等待Leader的分配方案；  
+5. 协调者收到分配方案后，再通过SyncGroup响应把分配方案发给所有消费组。  
+6. 当所有消费者收到分配方案后，就意味着再均衡的结束，可以正常开始消费工作了。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-70.png)  
+
+#### 1.6.3.4. 分配策略  
 &emsp; kafka新版本consumer默认提供了3种分配策略，分别是range策略、round-robin策略和sticky策略。
 
 * range策略：基于范围的思想，将单个topic的所有分区按照顺序排列，然后把这些分区划分成固定大小的分区段并依次分配给每个consumer。
@@ -253,11 +272,11 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 &emsp; 新版本consumer默认的分配策略是range，用户根据consumer参数partition.assingment.strategy来进行配置。另外kafka支持自定义的分配策略，用户可以创建自己的consumer分配器assignor。  
 
 
-&emsp; **rebalance generation**  
+#### 1.6.3.5. rebalance generation  
 &emsp; rebalance generation：用于标识某次rebalance,每个consumer group进行rebalance后，generation就会加1，表示group进入一个新的版本，generation从0开始。  
 &emsp; consumer group可以执行任意次rebalance，generation是为了防止无效offset提交，延迟的offset提交携带的是旧的generation信息，这次提交就会被consumer group拒绝。  
 
-&emsp; **rebalance监听器**  
+#### 1.6.3.6. rebalance监听器  
 &emsp; rebalance监听器：最常见的用法是手动提交位移到第三方存储（比如数据库中）以及在rebalance前后执行一些必要的审计操作。有一个主要的接口回调类ConsumerRebalanceListener，里面就两个方法onParitionsRevoked和onPartitionAssigned。在coordinator开启新一轮rebalance前onParitionsRevoked方法会被调用，而rebalance完成后会调用onPartitionAssigned方法。  
 &emsp; 使用rebalance监听器的前提是用户使用consumer group。如果使用的是独立consumer或是直接手动分配分区，那么rebalance监听器是无效的。  
 
