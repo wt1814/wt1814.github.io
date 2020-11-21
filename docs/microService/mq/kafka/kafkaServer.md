@@ -1,17 +1,24 @@
+<!-- TOC -->
 
+- [1. Kafka服务端](#1-kafka服务端)
+    - [1.1. 协议设计](#11-协议设计)
+    - [1.2. 控制器](#12-控制器)
+        - [1.2.1. 控制器的选举及异常恢复](#121-控制器的选举及异常恢复)
+        - [1.2.2. 优雅关闭](#122-优雅关闭)
+    - [1.3. Zookeeper集群](#13-zookeeper集群)
+
+<!-- /TOC -->
 
 # 1. Kafka服务端  
-《深入理解kafka》第6章
+&emsp; 参考《深入理解kafka》第6章
 
 ## 1.1. 协议设计
-&emsp; 在实际应用中，Kafka经常被用作高性能、可扩展的消息中间件。Kafka自定义了一组基于 TCP的二进制协议，只要遵守这组协议的格式，就可以向Kafka发送消息，也可以从Kafka中 拉取消息，或者做一些其他的事情，比如提交消费位移等。  
-
-
+&emsp; 在实际应用中，Kafka经常被用作高性能、可扩展的消息中间件。Kafka自定义了一组基于TCP的二进制协议，只要遵守这组协议的格式，就可以向Kafka发送消息，也可以从Kafka中拉取消息，或者做一些其他的事情，比如提交消费位移等。  
 
 ## 1.2. 控制器  
-&emsp; 在Kafka集群中会有一个或多个broker,其中有一个broker会被选举为控制器(Kafka Controller),它负责管理整个集群中所有分区和副本的状态。当某个分区的leader副本出现故 障时，由控制器负责为该分区选举新的leader副本。当检测到某个分区的ISR集合发生变化时，由控制器负责通知所有broker更新其元数据信息。当使用kafka-topics.sh脚本为某个topic增加分区数量时，同样还是由控制器负责分区的重新分配。  
+&emsp; 在Kafka集群中会有一个或多个broker,其中有一个broker会被选举为控制器(Kafka Controller)，它负责管理整个集群中所有分区和副本的状态。当某个分区的leader副本出现故障时，由控制器负责为该分区选举新的leader副本。当检测到某个分区的ISR集合发生变化时，由控制器负责通知所有broker更新其元数据信息。当使用kafka-topics.sh脚本为某个topic增加分区数量时，同样还是由控制器负责分区的重新分配。  
 
-### 控制器的选举及异常恢复  
+### 1.2.1. 控制器的选举及异常恢复  
 &emsp; Kafka中的控制器选举工作依赖于ZooKeeper，成功竞选为控制器的broker会在ZooKeeper中创建/controller这个临时(EPHEMERAL)节点，此临时节点的内容参考如下：  
     
     {”version”：1,"brokerid":0,Htimestampn:n1529210278988n}
@@ -35,10 +42,16 @@
 &emsp; 当/controller节点的数据发生变化时，每个broker都会更新自身内存中保存的activeControllerldo如果broker在数据变更前是控制器，在数据变更后自身的brokerid值与新的activeControllerld值不一致，那么就需要“退位”，关闭相应的资源，比如关闭状态机、注销相应的监听器等。有可能控制器由于异常而下线，造成/controller这个临时节点被自动删除；也有可能是其他原因将此节点删除了。   
 &emsp; 当/controller节点被删除时，每个broker都会进行选举，如果broker在节点被删除前是控制器，那么在选举前还需要有一个“退位”的动作。如果有特殊需要，则可以手动删除/controller节点来触发新一轮的选举。当然关闭控制器所对应的broker，以及手动向/controller节点写入新的brokerid的所对应的数据，同样可以触发新一轮的选举。  
 
-### 优雅关闭  
+### 1.2.2. 优雅关闭  
+&emsp; 可以直接修改 kafka-serve r-st p.sh 脚本的内容，将其中的第一行命令修改如下：  
 
+    PIDS=$(ps ax | grep - i 'kafka' | grep java | grep - v grep | awk  '{print $1 )' )  
 
-## 1.2.1. Zookeeper集群  
+&emsp; 即把“\.Kafka”去掉，这样在绝大多数情况下是可以奏效的。如果有极端情况，即使这样也不能闭，那么需要按照以下两个步骤就可以优雅地关闭Kafka的服务进程：
+1. 获取 Kafka 的服务进程号 PIDS 可以使用 Java 中的 jps 命令或使用 Linux 系统中的ps 命令来查看。
+2. 使用 kill - s TERM PIDS kill -l5 PIDS 的方式来关闭进程，注千万不要使用 kill -9的方式。
+
+## 1.3. Zookeeper集群  
 &emsp; kafka中Zookeeper作用：集群管理，元数据管理。    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-4.png)  
 * Broker 注册：Broker 是分布式部署并且之间相互独立，Zookeeper 用来管理注册到集群的所有 Broker 节点。
