@@ -3,7 +3,7 @@
 - [1. kafka生产者](#1-kafka生产者)
     - [1.1. 消息发送示例](#11-消息发送示例)
     - [1.2. 消息发送流程概述](#12-消息发送流程概述)
-    - [1.3. main线程](#13-main线程)
+    - [1.3. main线程详解](#13-main线程详解)
         - [1.3.1. doSend](#131-dosend)
             - [1.3.1.1. RecordAccumulator#append方法详解](#1311-recordaccumulatorappend方法详解)
                 - [1.3.1.1.1. ProducerBatch tryAppend方法详解](#13111-producerbatch-tryappend方法详解)
@@ -17,7 +17,7 @@
                     - [1.4.2.1.1.2. RecordAccumulator#drain](#142112-recordaccumulatordrain)
                     - [1.4.2.1.1.3. Sender#sendProduceRequests](#142113-sendersendproducerequests)
                 - [1.4.2.1.2. NetworkClient 的 poll 方法](#14212-networkclient-的-poll-方法)
-        - [1.4.3. run 方法流程图](#143-run-方法流程图)
+        - [1.4.3. run方法流程图](#143-run方法流程图)
 
 <!-- /TOC -->
 
@@ -73,18 +73,17 @@ public class KafkaProducerTest {
 * 同步：producer.send()返回一个Future对象，调用get()方法变回进行同步等待，就知道消息是否发送成功。
 * 异步发送：如果消息都进行同步发送，要发送这次的消息需要等到上次的消息成功发送到服务端，这样整个消息发送的效率就很低了。kafka支持producer.send()传入一个回调函数，消息不管成功或者失败都会调用这个回调函数，这样就算是异步发送，也知道消息的发送情况，然后再回调函数中选择记录日志还是重试都取决于调用方。Future\<RecordMetadata> send(ProducerRecord\<K, V> record, Callback callback);  
 
-
 ## 1.2. 消息发送流程概述    
 <!-- 
 《深入理解kafka》2.2.1
 -->
 
-&emsp; 在消息发送的过程中，涉及到了两个线程—-main线程和Sender线程，以及一个线程共享变量——RecordAccumulator。 main 线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。  
+&emsp; 在消息发送的过程中，涉及到了两个线程：main线程和Sender线程，以及一个线程共享变量，RecordAccumulator。 main线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。  
 &emsp; Producer 发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至 Broker。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-8.png)  
 
-## 1.3. main线程   
+## 1.3. main线程详解   
 &emsp; 可以通过KafkaProducer的send方法发送消息，send 方法的声明如下：
 
 ```java
@@ -318,7 +317,7 @@ public FutureRecordMetadata tryAppend(long timestamp, byte[] key, byte[] value, 
 
 ### 1.3.2. Kafka 消息追加流程图与总结  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-12.png)  
-&emsp; 上面的消息发送，其实用消息追加来表达更加贴切，因为 Kafka 的 send 方法，并不会直接向 broker 发送消息，而是首先先追加到生产者的内存缓存中，其内存存储结构如下：ConcurrentMap< TopicPartition, Deque< ProducerBatch>> batches，那我们自然而然的可以得知，Kafka 的生产者为会每一个 topic 的每一个 分区单独维护一个队列，即 ArrayDeque，内部存放的元素为 ProducerBatch，即代表一个批次，即 Kafka 消息发送是按批发送的。其缓存结果图如下：  
+&emsp; 上面的消息发送，其实用消息追加来表达更加贴切，因为 Kafka 的 send 方法，并不会直接向 broker 发送消息，而是首先先追加到生产者的内存缓存中，其内存存储结构如下：ConcurrentMap< TopicPartition, Deque< ProducerBatch>> batches，Kafka 的生产者为会每一个 topic 的每一个 分区单独维护一个队列，即 ArrayDeque，内部存放的元素为 ProducerBatch，即代表一个批次，即 Kafka 消息发送是按批发送的。其缓存结果图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-13.png)  
 &emsp; KafkaProducer 的 send 方法最终返回的 FutureRecordMetadata ，是 Future 的子类，即 Future 模式。那 kafka 的消息发送怎么实现异步发送、同步发送的呢？  
 其实答案也就蕴含在 send 方法的返回值，如果项目方需要使用同步发送的方式，只需要拿到 send 方法的返回结果后，调用其 get() 方法，此时如果消息还未发送到 Broker 上，该方法会被阻塞，等到 broker 返回消息发送结果后该方法会被唤醒并得到消息发送结果。如果需要异步发送，则建议使用 send(ProducerRecord< K, V > record, Callback callback),但不能调用 get 方法即可。Callback 会在收到 broker 的响应结果后被调用，并且支持拦截器。  
@@ -794,15 +793,15 @@ private void sendProduceRequest(long now, int destination, short acks, int timeo
     return responses;
 }
 ```
-本文并不会详细深入探讨其网络实现部分，Kafka 的 网络通讯后续我会专门详细的介绍，在这里先点出其关键点。  
-代码@1：尝试更新云数据。  
-代码@2：触发真正的网络通讯，该方法中会通过收到调用 NIO 中的 Selector#select() 方法，对通道的读写就绪事件进行处理，当写事件就绪后，就会将通道中的消息发送到远端的 broker。  
-代码@3：然后会消息发送，消息接收、断开连接、API版本，超时等结果进行收集。  
-代码@4：并依次对结果进行唤醒，此时会将响应结果设置到 KafkaProducer#send 方法返回的凭证中，从而唤醒发送客户端，完成一次完整的消息发送流程。  
+&emsp; 本文并不会详细深入探讨其网络实现部分，Kafka 的 网络通讯后续我会专门详细的介绍，在这里先点出其关键点。  
+&emsp; 代码@1：尝试更新云数据。  
+&emsp; 代码@2：触发真正的网络通讯，该方法中会通过收到调用 NIO 中的 Selector#select() 方法，对通道的读写就绪事件进行处理，当写事件就绪后，就会将通道中的消息发送到远端的 broker。  
+&emsp; 代码@3：然后会消息发送，消息接收、断开连接、API版本，超时等结果进行收集。  
+&emsp; 代码@4：并依次对结果进行唤醒，此时会将响应结果设置到 KafkaProducer#send 方法返回的凭证中，从而唤醒发送客户端，完成一次完整的消息发送流程。  
 
 Sender 发送线程的流程就介绍到这里了，接下来首先给出一张流程图，然后对上述流程中一些关键的方法再补充深入探讨一下。  
 
-### 1.4.3. run 方法流程图  
+### 1.4.3. run方法流程图  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-14.png)  
 &emsp; 根据上面的源码分析得出上述流程图，图中对重点步骤也详细标注了其关键点。  
 
