@@ -472,9 +472,9 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 [LVS](/docs/system/loadBalance/LVS.md)  
 
 ### Nginx  
-[Nginx](/docs/Linux/Nginx/1.nginx.md)  
-[Nginx使用](/docs/Linux/Nginx/2.nginx使用场景.md)   
-[Nginx运维](/docs/Linux/Nginx/3.nginx运维.md)  
+[Nginx](/docs/system/loadBalance/Nginx/1.nginx.md)  
+[Nginx使用](/docs/system/loadBalance/Nginx/2.nginx使用场景.md)   
+[Nginx运维](/docs/system/loadBalance/Nginx/3.nginx运维.md)  
 
 ### HAProxy
 [HAProxy](/docs/system/loadBalance/HAProxy.md)  
