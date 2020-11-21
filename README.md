@@ -26,14 +26,13 @@
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
-        - [分布式Session](#分布式session)
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式调度](#分布式调度)
         - [分布式通信](#分布式通信)
     - [其他框架](#其他框架)
     - [项目构建基础](#项目构建基础)
     - [架构设计](#架构设计)
-    - [系统接入层](#系统接入层)
+    - [负载均衡](#负载均衡)
         - [LVS](#lvs)
         - [Nginx](#nginx)
         - [HAProxy](#haproxy)
@@ -129,7 +128,7 @@ Gitee： https://gitee.com/wt1814/
 [JVM调优-基础](/docs/java/JVM/6.JVM调优-基础.md)  
 [JVM调优](/docs/java/JVM/7.JVM调优.md)  
 &emsp; [JVM排查案例](/docs/java/JVM/case.md)  
-[JAVA线上故障排查](/docs/Linux/Linux/problem.md)  
+[JAVA线上故障排查](/docs/Linux/problem.md)  
 [Arthas](/docs/java/JVM/Arthas.md)  
 [JMH](/docs/java/JVM/JMH.md)  
 
@@ -359,9 +358,6 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
 &emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
 
-### 分布式Session
-[分布式Session](/docs/microService/thinking/分布式Session.md)  
-
 ### 分布式搜索引擎  
 [ES基本概念](/docs/ES/1.basicConcepts.md)  
 [ES集群](/docs/ES/3.colony.md)  
@@ -465,8 +461,8 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 
 [短链接](/docs/project/URL.md)  
 
-## 系统接入层  
-[接入层](/docs/system/loadBalance/access.md)    
+## 负载均衡  
+[负载均衡](/docs/system/loadBalance/loadBalance.md)    
 
 ### LVS
 [LVS](/docs/system/loadBalance/LVS.md)  
@@ -491,11 +487,11 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 ----
 
 ## Linux  
-[Linux命令](/docs/Linux/Linux/Linux命令.md)  
-&emsp; [文本处理](/docs/Linux/Linux/文本处理.md)  
-&emsp; [网络通讯](/docs/Linux/Linux/网络通讯.md)  
-[shell编程](/docs/Linux/Linux/shell.md)  
-[堡垒机](/docs/Linux/Linux/baolei.md)  
+[Linux命令](/docs/Linux/Linux命令.md)  
+&emsp; [文本处理](/docs/Linux/文本处理.md)  
+&emsp; [网络通讯](/docs/Linux/网络通讯.md)  
+[shell编程](/docs/Linux/shell.md)  
+[堡垒机](/docs/Linux/baolei.md)  
 
 ## DevOps  
 [DevOps与CI/CD](/docs/devOps/devOps.md)  
