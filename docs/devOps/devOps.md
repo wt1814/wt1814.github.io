@@ -13,6 +13,11 @@
 
 # 1. Devops与CI/CD
 
+<!-- 
+CI/CD 工具选型：Jenkins 还是 GitLab CI/CD？ 
+https://mp.weixin.qq.com/s/5RpZRJlkypdg4rMAisCYTA
+-->
+
 ## 1.1. DevOps  
 ### 1.1.1. 定义  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-4.png)   

@@ -465,6 +465,7 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 [负载均衡](/docs/system/loadBalance/loadBalance.md)    
 
 ### CDN
+[CDN](/docs/system/loadBalance/CDN.md)   
 
 ### LVS
 [LVS](/docs/system/loadBalance/LVS.md)  
