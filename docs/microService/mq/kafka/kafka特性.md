@@ -3,12 +3,17 @@
 <!-- TOC -->
 
 - [1. kafka特性](#1-kafka特性)
-    - [1.1. Kafka的高效读写机制](#11-kafka的高效读写机制)
+    - [1.1. Kafka的高性能（读写机制）](#11-kafka的高性能读写机制)
         - [1.1.1. 顺序读写](#111-顺序读写)
             - [1.1.1.1. 顺序写入](#1111-顺序写入)
             - [1.1.1.2. Memory Mapped Files](#1112-memory-mapped-files)
         - [1.1.2. 基于 Sendfile 实现零拷贝（Zero Copy）](#112-基于-sendfile-实现零拷贝zero-copy)
     - [1.2. kafa高可用性（副本机制）](#12-kafa高可用性副本机制)
+            - [Kafka副本的功能](#kafka副本的功能)
+            - [Leader的选举(ISR副本)](#leader的选举isr副本)
+                - [Unclear Leader选举](#unclear-leader选举)
+            - [副本的同步(LEO和HW)](#副本的同步leo和hw)
+            - [Leader Epoch](#leader-epoch)
     - [1.3. kafka可靠性（如何保证消息队列不丢失?）](#13-kafka可靠性如何保证消息队列不丢失)
         - [1.3.1. Broker端丢失消息](#131-broker端丢失消息)
             - [1.3.1.1. ACK机制与ISR列表](#1311-ack机制与isr列表)
@@ -23,7 +28,7 @@
 
 # 1. kafka特性
 
-## 1.1. Kafka的高效读写机制  
+## 1.1. Kafka的高性能（读写机制）  
 &emsp; Kafka 的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，因为寻址会比较消耗时间，但是实际上，Kafka 的特性之一就是高吞吐率。Kafka 之所以能这么快，是因为：「顺序写磁盘、大量使用内存页、零拷贝技术的使用」..  
 
 ### 1.1.1. 顺序读写  
@@ -65,75 +70,139 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 
 
 ## 1.2. kafa高可用性（副本机制）
-
-Kafka 本身是一个分布式系统，同时采用了 Zookeeper 存储元数据信息，提高了系统的高可用性。  
-Kafka 使用多副本机制，当状态为 Leader 的 Partition 对应的 Broker 宕机或者网络异常时，Kafka 会通过选举机制从对应的 Replica 列表中重新选举出一个 Replica 当做 Leader，从而继续对外提供读写服务（当然，需要注意的一点是，在新版本的 Kafka 中，Replica 也可以对外提供读请求了），利用多副本机制在一定程度上提高了系统的容错性，从而提升了系统的高可用。  
-
 <!-- 
 Kafka 副本机制
 https://juejin.im/post/6844903950009794567
 https://mp.weixin.qq.com/s/OB-ZVy70vHClCtep43gr_A
-https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
 
 Kafka中副本机制的设计和原理 
 https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
-
-什么是 AR，ISR？  
-
-    AR：Assigned Replicas。AR 是主题被创建后，分区创建时被分配的副本集合，副本个 数由副本因子决定。ISR：In-Sync Replicas。Kafka 中特别重要的概念，指代的是 AR 中那些与 Leader 保 持同步的副本集合。在 AR 中的副本可能不在 ISR 中，但 Leader 副本天然就包含在 ISR 中。关于 ISR，还有一个常见的面试题目是如何判断副本是否应该属于 ISR。目前的判断 依据是：Follower 副本的 LEO 落后 Leader LEO 的时间，是否超过了 Broker 端参数 replica.lag.time.max.ms 值。如果超过了，副本就会被从 ISR 中移除。 
 副本机制
 https://blog.csdn.net/haogenmin/article/details/109449944
-
-
 深入理解Kafka必知必会
 https://www.cnblogs.com/luozhiyun/p/12079527.html
 
-
-Kafka中的ISR、AR又代表什么？ISR的伸缩又指什么#
-分区中的所有副本统称为 AR（Assigned Replicas）。所有与 leader 副本保持一定程度同步的副本（包括 leader 副本在内）组成ISR（In-Sync Replicas），ISR 集合是 AR 集合中的一个子集。
-
-ISR的伸缩：
-leader 副本负责维护和跟踪 ISR 集合中所有 follower 副本的滞后状态，当 follower 副本落后太多或失效时，leader 副本会把它从 ISR 集合中剔除。如果 OSR 集合中有 follower 副本“追上”了 leader 副本，那么 leader 副本会把它从 OSR 集合转移至 ISR 集合。默认情况下，当 leader 副本发生故障时，只有在 ISR 集合中的副本才有资格被选举为新的 leader，而在 OSR 集合中的副本则没有任何机会（不过这个原则也可以通过修改相应的参数配置来改变）。
-
-replica.lag.time.max.ms ： 这个参数的含义是 Follower 副本能够落后 Leader 副本的最长时间间隔，当前默认值是 10 秒。
-
-unclean.leader.election.enable：是否允许 Unclean 领导者选举。开启 Unclean 领导者选举可能会造成数据丢失，但好处是，它使得分区 Leader 副本一直存在，不至于停止对外提供服务，因此提升了高可用性。
-
-
-阐述下 Kafka 中的领导者副本(Leader Replica)和追随者副本 (Follower Replica)的区别
-这道题表面上是考核你对 Leader 和 Follower 区别的理解，但很容易引申到 Kafka 的同步 机制上。因此，我建议你主动出击，一次性地把隐含的考点也答出来，也许能够暂时把面试 官“唬住”，并体现你的专业性。
-
-你可以这么回答:Kafka 副本当前分为领导者副本和追随者副本。只有 Leader 副本才能 对外提供读写服务，响应 Clients 端的请求。Follower 副本只是采用拉(PULL)的方 式，被动地同步 Leader 副本中的数据，并且在 Leader 副本所在的 Broker 宕机后，随时 准备应聘 Leader 副本。
-
-通常来说，回答到这个程度，其实才只说了 60%，因此，我建议你再回答两个额外的加分 项。
-
-强调 Follower 副本也能对外提供读服务。自 Kafka 2.4 版本开始，社区通过引入新的 Broker 端参数，允许 Follower 副本有限度地提供读服务。
-强调 Leader 和 Follower 的消息序列在实际场景中不一致。很多原因都可能造成 Leader 和 Follower 保存的消息序列不一致，比如程序 Bug、网络问题等。这是很严重 的错误，必须要完全规避。你可以补充下，之前确保一致性的主要手段是高水位机制， 但高水位值无法保证 Leader 连续变更场景下的数据一致性，因此，社区引入了 Leader Epoch 机制，来修复高水位值的弊端。关于“Leader Epoch 机制”，国内的资料不是 很多，它的普及度远不如高水位，不妨大胆地把这个概念秀出来，力求惊艳一把。
-
 -->
-通过副本来保证数据的高可用，producer ack、重试、自动 Leader 选举，Consumer 自平衡  
 
+&emsp; 在分布式数据系统中，通常使用分区来提高系统的处理能力，通过副本来保证数据的高可用性。Kafka中一个分区可以拥有多个副本，副本可分布于多台机器上。而在多个副本中，只会有一个Leader副本与客户端交互，也就是读写数据。其他则作为Follower副本，负责同步Leader的数据，当Leader宕机时，从Follower选举出新的Leader，从而解决分区单点问题。   
 
-分区与副本
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-29.png)  
+<!-- 
+多分区意味着并发处理的能力，这多个副本中，只有一个是 leader，而其他的都是 follower 副本。仅有 leader 副本可以对外提供服务。多个 follower 副本通常存放在和 leader 副本不同的 broker 中。通过这样的机制实现了高可用，当某台机器挂掉后，其他 follower 副本也能迅速”转正“，开始对外提供服务。
+-->
+#### Kafka副本的功能  
+&emsp; 副本机制的使用在计算机的世界里是很常见的，比如MySQL、ZooKeeper、CDN等都有使用副本机制。使用副本机制所能带来的好处有以下几种：  
 
+* 提供数据冗余，提高可用性；
+* 提供扩展性，增加读操作吞吐量；
+* 改善数据局部，降低系统延时。
 
-在分布式数据系统中，通常使用分区来提高系统的处理能力，通过副本来保证数据的高可用性。多分区意味着并发处理的能力，这多个副本中，只有一个是 leader，而其他的都是 follower 副本。仅有 leader 副本可以对外提供服务。多个 follower 副本通常存放在和 leader 副本不同的 broker 中。通过这样的机制实现了高可用，当某台机器挂掉后，其他 follower 副本也能迅速”转正“，开始对外提供服务。
+&emsp; 但并不是每个好处都能获得，这还是和具体的设计有关，比如本文的主角Kafka，只具有第一个好处，即提高可用性。这是因为副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。  
 
-为什么 follower 副本不提供读服务？
+<!--
+https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 
-这个问题本质上是对性能和一致性的取舍。试想一下，如果 follower 副本也对外提供服务那会怎么样呢？首先，性能是肯定会有所提升的。但同时，会出现一系列问题。类似数据库事务中的幻读，脏读。比如你现在写入一条数据到 kafka 主题 a，消费者 b 从主题 a 消费数据，却发现消费不到，因为消费者 b 去读取的那个分区副本中，最新消息还没写入。而这个时候，另一个消费者 c 却可以消费到最新那条数据，因为它消费了 leader 副本。Kafka 通过 WH 和 Offset 的管理来决定 Consumer 可以消费哪些数据，已经当前写入的数据。
-watermark
+&emsp; 为什么 follower 副本不提供读服务？
+这个问题本质上是对性能和一致性的取舍。试想一下，如果 follower 副本也对外提供服务那会怎么样呢？首先，性能是肯定会有所提升的。但同时，会出现一系列问题。类似数据库事务中的幻读，脏读。比如你现在写入一条数据到 kafka 主题 a，消费者 b 从主题 a 消费数据，却发现消费不到，因为消费者 b 去读取的那个分区副本中，最新消息还没写入。而这个时候，另一个消费者 c 却可以消费到最新那条数据，因为它消费了 leader 副本。Kafka 通过 WH 和 Offset 的管理来决定 Consumer 可以消费哪些数据，已经当前写入的数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-30.png)  
+-->
 
+
+#### Leader的选举(ISR副本)
+<!-- 
 只有 Leader 可以对外提供读服务，那如何选举 Leader
 
-kafka 会将与 leader 副本保持同步的副本放到 ISR 副本集合中。当然，leader 副本是一直存在于 ISR 副本集合中的，在某些特殊情况下，ISR 副本中甚至只有 leader 一个副本。当 leader 挂掉时，kakfa 通过 zookeeper 感知到这一情况，在 ISR 副本中选取新的副本成为 leader，对外提供服务。但这样还有一个问题，前面提到过，有可能 ISR 副本集合中，只有 leader，当 leader 副本挂掉后，ISR 集合就为空，这时候怎么办呢？这时候如果设置 unclean.leader.election.enable 参数为 true，那么 kafka 会在非同步，也就是不在 ISR 副本集合中的副本中，选取出副本成为 leader。
+kafka 会将与 leader 副本保持同步的副本放到 ISR 副本集合中。当然，leader 副本是一直存在于 ISR 副本集合中的，在某些特殊情况下，ISR 副本中甚至只有 leader 一个副本。当 leader 挂掉时，kakfa 通过 zookeeper 感知到这一情况，在 ISR 副本中选取新的副本成为 leader，对外提供服务。但这样还有一个问题，前面提到过，有可能 ISR 副本集合中，只有 leader，当 leader 副本挂掉后，ISR 集合就为空，这时候怎么办呢？这时候如果设置 unclean.leader.election.enable 参数为 true，那么 kafka 会在非同步，也就是不在 ISR 副本集合中的副本中，选取出副本成为 leader。  
+-->
+&emsp; 当Leader宕机时，要从Follower中选举出新的Leader，但并不是所有的Follower都有资格参与选举。因为有的Follower的同步情况滞后，如果让他成为Leader将会导致消息丢失。  
+&emsp; 而为了避免这个情况，Kafka引入了ISR（In-Sync Replica）副本的概念，这是一个集合，里面存放的是和Leader保持同步的副本并含有Leader。这是一个动态调整的集合，当副本由同步变为滞后时会从集合中剔除，而当副本由滞后变为同步时又会加入到集合中。  
+&emsp; 那么如何判断一个副本是同步还是滞后呢？Kafka在0.9版本之前，是根据replica.lag.max.messages参数来判断，其含义是同步副本所能落后的最大消息数，当Follower上的最大偏移量落后Leader大于replica.lag.max.messages时，就认为该副本是不同步的了，会从ISR中移除。  
+&emsp; 如果ISR的值设置得过小，会导致Follower经常被踢出ISR，而如果设置过大，则当Leader宕机时，会造成较多消息的丢失。在实际使用时，很难给出一个合理值，这是因为当生产者为了提高吞吐量而调大batch.size时，会发送更多的消息到Leader上，这时候如果不增大replica.lag.max.messages，则会有Follower频繁被踢出ISR的现象  
+&emsp; 而当Follower发生Fetch请求同步后，又被加入到ISR中，ISR将频繁变动。鉴于该参数难以设定，Kafka在0.9版本引入了一个新的参数replica.lag.time.max.ms，默认10s，含义是当Follower超过10s没发送Fetch请求同步Leader时，就会认为不同步而被踢出ISR。从时间维度来考量，能够很好地避免生产者发送大量消息到Leader副本导致分区ISR频繁收缩和扩张的问题。  
 
+##### Unclear Leader选举    
+&emsp; 当ISR集合为空时，即没有同步副本（Leader也挂了），无法选出下一个Leader，Kafka集群将会失效。而为了提高可用性，Kafka提供了unclean.leader.election.enable参数，当设置为true且ISR集合为空时，会进行Unclear Leader选举，允许在非同步副本中选出新的Leader，从而提高Kafka集群的可用性，但这样会造成消息丢失。在允许消息丢失的场景中，是可以开启此参数来提高可用性的。而其他情况，则不建议开启，而是通过其他手段来提高可用性。  
+
+#### 副本的同步(LEO和HW)  
+<!-- 
 副本的存在就会出现副本同步问题
 
 Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)，Producer 向 Broker 发送消息时会根据ack配置来确定需要等待几个副本已经同步了消息才相应成功，Broker 内部会ReplicaManager服务来管理 flower 与 leader 之间的数据同步。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-31.png)  
+-->
+&emsp; 副本的本质其实是一个消息日志，为了让副本正常同步，需要通过一些变量记录副本的状态，如下图所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-75.png)  
+&emsp; 其中LEO（Last End Offset）记录了日志的下一条消息偏移量，即当前最新消息的偏移量加一。而HW（High Watermark）界定了消费者可见的消息，消费者可以消费小于HW的消息，而大于等于HW的消息将无法消费。HW和LEO的关系是HW一定小于LEO。  
+&emsp; 下面介绍下HW的概念，其可翻译为高水位或高水印，这一概念通常用于在流式处理领域（如Flink、Spark等），流式系统将保证在HW为t时刻时，创建时间小于等于t时刻的所有事件都已经到达或可被观测到。而在Kafka中，HW的概念和时间无关，而是和偏移量有关，主要目的是为了保证一致性。  
+&emsp; 试想如果一个消息到达了Leader，而Follower副本还未来得及同步，但该消息能已被消费者消费了，这时候Leader宕机，Follower副本中选出新的Leader，消息将丢失，出现不一致的现象。所以Kafka引入HW的概念，当消息被同步副本同步完成时，才让消息可被消费。  
+&emsp; 上述即是LEO和HW的基本概念，下面我们看下具体是如何工作的。  
+&emsp; 在每个副本中都存有LEO和HW，而Leader副本中除了存有自身的LEO和HW，还存储了其他Follower副本的LEO和HW值，为了区分我们把Leader上存储的Follower副本的LEO和HW值叫做远程副本的LEO和HW值，如下图所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-76.png)  
+&emsp; 之所以这么设计，是为了HW的更新，Leader需保证HW是ISR副本集合中LEO的最小值。关于具体的更新，我们分为Follower副本和Leader副本来看。  
+&emsp; Follower副本更新LEO和HW的时机只有向Leader拉取了消息之后，会用当前的偏移量加1来更新LEO，并且用Leader的HW值和当前LEO的最小值来更新HW：  
+
+    CurrentOffset + 1 -> LEO
+    min(LEO, LeaderHW) -> HW
+
+&emsp; LEO的更新，很好理解。那为什么HW要取LEO和LeaderHW的最小值，为什么不直接取LeaderHW，LeaderHW不是一定大于LEO吗？我们在前文简单的提到了LeaderHW是根据同步副本来决定，所以LeaderHW一定小于所有同步副本的LEO，而并不一定小于非同步副本的LEO，所以如果一个非同步副本在拉取消息，那LEO是会小于LeaderHW的，则应用当前LEO值来更新HW。  
+&emsp; 说完了Follower副本上LEO和HW的更新，下面看Leader副本。   
+&emsp; 正常情况下Leader副本的更新时机有两个：一、收到生产者的消息；二、被Follower拉取消息。  
+&emsp; 当收到生产者消息时，会用当前偏移量加1来更新LEO，然后取LEO和远程ISR副本中LEO的最小值更新HW。  
+
+    CurrentOffset + 1 -> LEO
+    min(LEO, RemoteIsrLEO) -> HW
+
+&emsp; 而当Follower拉取消息时，会更新Leader上存储的Follower副本LEO，然后判断是否需要更新HW，更新的方式和上述相同。  
+
+    FollowerLEO -> RemoteLEO
+    min(LEO, RemoteIsrLEO) -> HW
+
+&emsp; 除了这两种正常情况，而当发生故障时，例如Leader宕机，Follower被选为新的Leader，会尝试更新HW。还有副本被踢出ISR时，也会尝试更新HW。  
+
+&emsp; 下面我们看下更新LEO和HW的示例，假设分区中有两个副本，min.insync.replica=1。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-77.png)  
+&emsp; 从上述过程中，我们可以看到remoteLEO、LeaderHW和FollowerHW的更新发生于Follower更新LEO后的第二轮Fetch请求，而这也意味着，更新需要额外一次Fetch请求。而这也将导致在Leader切换时，会存在数据丢失和数据不一致的问题。下面是数据丢失的示例：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-78.png)  
+&emsp; 当B作为Follower已经Fetch了最新的消息，但是在发送第二轮Fetch时，未来得及处理响应，宕机了。当重启时，会根据HW更新LEO，将发生日志截断，消息m1被丢弃。  
+&emsp; 这时再发送Fetch请求给A，A宕机了，则B未能同步到消息m1，同时B被选为Leader，而当A重启时，作为Follower同步B的消息时，会根据A的HW值更新HW和LEO，因此由2变成了1，也将发生日志截断，而已发送成功的消息m1将永久丢失。  
+
+&emsp; 数据不一致的情况如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-79.png)  
+&emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有m0消息，且HW为1。若A、B同时宕机，且B重启时，A还未恢复，则B被选为Leader。  
+
+    集群处于上述这种状态有两种情况可能导致，一、宕机前，B不在ISR中，因此A未待B同步，即更新了HW，且unclear leader为true，允许B成为Leader；二、宕机前，B同步了消息m1，且发送了第二轮Fetch请求，Leader更新HW，但B未将消息m1落地到磁盘，宕机了，当再重启时，消息m1丢失，只剩m0。
+
+&emsp; 在B重启作为Leader之后，收到消息m2。A宕机重启后向成为Leader的B发送Fetch请求，发现自己的HW和B的HW一致，都是2，因此不会进行消息截断，而这也造成了数据不一致。  
+
+#### Leader Epoch 
+&emsp; 为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制，在每个副本日志目录下都有一个leader-epoch-checkpoint文件，用于保存Leader Epoch信息，其内容示例如下：  
+
+    0 0
+    1 300
+    2 500
+
+&emsp; 上面每一行为一个Leader Epoch，分为两部分，前者Epoch，表示Leader版本号，是一个单调递增的正整数，每当Leader变更时，都会加1，后者StartOffset，为每一代Leader写入的第一条消息的位移。  
+&emsp; 例如第0代Leader写的第一条消息位移为0，而第1代Leader写的第一条消息位移为300，也意味着第0代Leader在写了0-299号消息后挂了，重新选出了新的Leader。下面我们看下Leader Epoch如何工作：  
+
+1. 当副本成为Leader时：
+&emsp; 当收到生产者发来的第一条消息时，会将新的epoch和当前LEO添加到leader-epoch-checkpoint文件中。  
+2. 当副本成为Follower时：
+    1. 向Leader发送LeaderEpochRequest请求，请求内容中含有Follower当前本地的最新Epoch；
+    2. Leader将返回给Follower的响应中含有一个LastOffset，其取值规则为：
+        * 若FollowerLastEpoch = LeaderLastEpoch，则取Leader LEO；
+        * 否则，取大于FollowerLastEpoch的第一个Leader Epoch中的StartOffset。
+    3. Follower在拿到LastOffset后，若LastOffset < LEO，将截断日志；
+    4. Follower开始正常工作，发送Fetch请求；
+
+&emsp; 我们再回顾看下数据丢失和数据不一致的场景，在应用了LeaderEpoch后发生什么改变：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-80.png)  
+&emsp; 当B作为Follower已经Fetch了最新的消息，但是发送第二轮Fetch时，未来得及处理响应，宕机了。当重启时，会向A发送LeaderEpochRequest请求。如果A没宕机，由于 FollowerLastEpoch = LeaderLastEpoch，所以将LeaderLEO，即2作为LastOffset给A，又因为LastOffset=LEO，所以不会截断日志。  
+&emsp; 这种情况比较简单，而图中所画的情况是A宕机的情况，没返回LeaderEpochRequest的响应的情况。这时候B会被选作Leader，将当前LEO和新的Epoch写进leader-epoch-checkpoint文件中。  
+&emsp; 当A作为Follower重启后，发送LeaderEpochRequest请求，包含最新的epoch值0，当B收到请求后，由于FollowerLastEpoch < LeaderLastEpoch，所以会取大于FollowerLastEpoch的第一个Leader Epoch中的StartOffset，即2。当A收到响应时，由于LEO = LastOffset，所以不会发生日志截断，也就不会丢失数据。  
+&emsp; 下面是数据不一致情况：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-81.png)  
+&emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有消息m0，且HW为1，A、B同时宕机。B重启，被选为Leader，将写入新的LeaderEpoch（1, 1）。B开始工作，收到消息m2时。这是A重启，将作为Follower将发送LeaderEpochRequert（FollowerLastEpoch=0），B返回大于FollowerLastEpoch的第一个LeaderEpoch的StartOffset，即1，小于当前LEO值，所以将发生日志截断，并发送Fetch请求，同步消息m2，避免了消息不一致问题。  
+&emsp; 你可能会问，m2消息那岂不是丢失了？是的，m2消息丢失了，但这种情况的发送的根本原因在于min.insync.replicas的值设置为1，即没有任何其他副本同步的情况下，就认为m2消息为已提交状态。LeaderEpoch不能解决min.insync.replicas为1带来的数据丢失问题，但是可以解决其所带来的数据不一致问题。而我们之前所说能解决的数据丢失问题，是指消息已经成功同步到Follower上，但因HW未及时更新引起的数据丢失问题。  
+
 
 ## 1.3. kafka可靠性（如何保证消息队列不丢失?）
 <!-- 
