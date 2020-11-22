@@ -10,6 +10,7 @@
     - [1.4. 消息序列化](#14-消息序列化)
     - [1.5. 消息分区机制](#15-消息分区机制)
     - [1.6. 无消息丢失配置](#16-无消息丢失配置)
+    - [批量发送](#批量发送)
     - [1.7. 消息压缩](#17-消息压缩)
     - [1.8. 多线程处理](#18-多线程处理)
 
@@ -148,6 +149,14 @@ public int partition(String topic, Object key, byte[] keyBytes, Object value, by
 
             enable.auto.commit=false   设置不能自动提交位移，需要用户手动提交位移
 
+## 批量发送  
+&emsp; 如何提升 Producer 的性能？批量，异步，压缩。  
+
+&emsp; Kafka允许进行批量发送消息，producter发送消息的时候，可以将消息缓存在本地，等到了固定条件发送到 Kafka 。  
+
+* 等消息条数到固定条数。  
+* 一段时间发送一次。  
+
 ## 1.7. 消息压缩  
 &emsp; 数据压缩显著地降低了磁盘占用或带宽占用，从而有效地提升了I/O密集型应用的性能。不过引用压缩同时会消耗额外的CPU时钟周期，因此压缩是I/O性能和CPU资源的平衡。  
 &emsp; kafka自0.7.x版本便开始支持压缩特性。producer端能够将一批消息压缩成一条消息发送，而broker端将这条压缩消息写入本地日志文件，consumer端获取到这条压缩消息时会自动对消息进行解压缩。即producer端压缩，broker保持，consumer解压缩。  
@@ -178,3 +187,4 @@ props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
 |多 KafkaProducer 实例|	每个线程维护自己专属的 KafkaProducer 实例|①每个用户线程拥有专属的 KafkaProducer 实例、缓冲 区空间及一组对应的配置参数，可以进行细粒度的调 优；</br>②单个 KafkaProducer崩溃不会影响其他producer线程工作 |需要较大的内存分配开销|
 
 &emsp; 如果是对分区数不多的Kafka集群而言，比较推荐使用第一种方法，即在多个producer用户线程中共享一个KafkaProducer实例。若是对那些拥有超多分区的集群而言，釆用第二种方法具有较高的可控性，方便producer的后续管理。  
+

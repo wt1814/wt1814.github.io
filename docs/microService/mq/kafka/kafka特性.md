@@ -8,19 +8,15 @@
             - [1.1.1.1. 顺序写入](#1111-顺序写入)
             - [1.1.1.2. Memory Mapped Files](#1112-memory-mapped-files)
         - [1.1.2. 基于 Sendfile 实现零拷贝（Zero Copy）](#112-基于-sendfile-实现零拷贝zero-copy)
-    - [1.2. kafka可靠性（如何保证消息队列不丢失?）](#12-kafka可靠性如何保证消息队列不丢失)
-        - [Broker端丢失消息](#broker端丢失消息)
-            - [ACK机制与ISR列表](#ack机制与isr列表)
-        - [Producer端丢失消息](#producer端丢失消息)
-        - [1.2.2. Consumer 端丢失消息](#122-consumer-端丢失消息)
-    - [1.3. kafka数据一致性，通过HW来保证](#13-kafka数据一致性通过hw来保证)
-    - [1.4. kafa高可用性](#14-kafa高可用性)
+    - [1.2. kafa高可用性（副本机制）](#12-kafa高可用性副本机制)
+    - [1.3. kafka可靠性（如何保证消息队列不丢失?）](#13-kafka可靠性如何保证消息队列不丢失)
+        - [1.3.1. Broker端丢失消息](#131-broker端丢失消息)
+            - [1.3.1.1. ACK机制与ISR列表](#1311-ack机制与isr列表)
+        - [1.3.2. Producer端丢失消息](#132-producer端丢失消息)
+        - [1.3.3. Consumer 端丢失消息](#133-consumer-端丢失消息)
+    - [1.4. kafka数据一致性，通过HW来保证](#14-kafka数据一致性通过hw来保证)
     - [1.5. 如何让 Kafka 的消息有序？](#15-如何让-kafka-的消息有序)
     - [1.6. 消息重复消费](#16-消息重复消费)
-    - [消息漏消费](#消息漏消费)
-    - [1.7. 提升 Producer 的性能](#17-提升-producer-的性能)
-        - [1.7.1. 批量发送](#171-批量发送)
-        - [1.7.2. 数据压缩](#172-数据压缩)
 
 <!-- /TOC -->
 
@@ -67,7 +63,79 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 &emsp; 而 Sendfile 系统调用则提供了一种减少以上多次 Copy，提升文件传输性能的方法。<font color = "red">在内核版本 2.1 中，引入了 Sendfile 系统调用，以简化网络上和两个本地文件之间的数据传输。</font>Sendfile 的引入不仅减少了数据复制，还减少了上下文切换。相较传统 Read/Write 方式，2.1 版本内核引进的 Sendfile 已经减少了内核缓冲区到 User 缓冲区，再由 User 缓冲区到 Socket 相关缓冲区的文件 Copy。而在内核版本 2.4 之后，文件描述符结果被改变，Sendfile 实现了更简单的方式，再次减少了一次 Copy 操作。  
 &emsp; Kafka 把所有的消息都存放在一个一个的文件中，当消费者需要数据的时候 Kafka 直接把文件发送给消费者，配合 mmap 作为文件读写方式，直接把它传给 Sendfile。  
 
-## 1.2. kafka可靠性（如何保证消息队列不丢失?）
+
+## 1.2. kafa高可用性（副本机制）
+
+Kafka 本身是一个分布式系统，同时采用了 Zookeeper 存储元数据信息，提高了系统的高可用性。  
+Kafka 使用多副本机制，当状态为 Leader 的 Partition 对应的 Broker 宕机或者网络异常时，Kafka 会通过选举机制从对应的 Replica 列表中重新选举出一个 Replica 当做 Leader，从而继续对外提供读写服务（当然，需要注意的一点是，在新版本的 Kafka 中，Replica 也可以对外提供读请求了），利用多副本机制在一定程度上提高了系统的容错性，从而提升了系统的高可用。  
+
+<!-- 
+Kafka 副本机制
+https://juejin.im/post/6844903950009794567
+https://mp.weixin.qq.com/s/OB-ZVy70vHClCtep43gr_A
+https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
+
+Kafka中副本机制的设计和原理 
+https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
+
+什么是 AR，ISR？  
+
+    AR：Assigned Replicas。AR 是主题被创建后，分区创建时被分配的副本集合，副本个 数由副本因子决定。ISR：In-Sync Replicas。Kafka 中特别重要的概念，指代的是 AR 中那些与 Leader 保 持同步的副本集合。在 AR 中的副本可能不在 ISR 中，但 Leader 副本天然就包含在 ISR 中。关于 ISR，还有一个常见的面试题目是如何判断副本是否应该属于 ISR。目前的判断 依据是：Follower 副本的 LEO 落后 Leader LEO 的时间，是否超过了 Broker 端参数 replica.lag.time.max.ms 值。如果超过了，副本就会被从 ISR 中移除。 
+副本机制
+https://blog.csdn.net/haogenmin/article/details/109449944
+
+
+深入理解Kafka必知必会
+https://www.cnblogs.com/luozhiyun/p/12079527.html
+
+
+Kafka中的ISR、AR又代表什么？ISR的伸缩又指什么#
+分区中的所有副本统称为 AR（Assigned Replicas）。所有与 leader 副本保持一定程度同步的副本（包括 leader 副本在内）组成ISR（In-Sync Replicas），ISR 集合是 AR 集合中的一个子集。
+
+ISR的伸缩：
+leader 副本负责维护和跟踪 ISR 集合中所有 follower 副本的滞后状态，当 follower 副本落后太多或失效时，leader 副本会把它从 ISR 集合中剔除。如果 OSR 集合中有 follower 副本“追上”了 leader 副本，那么 leader 副本会把它从 OSR 集合转移至 ISR 集合。默认情况下，当 leader 副本发生故障时，只有在 ISR 集合中的副本才有资格被选举为新的 leader，而在 OSR 集合中的副本则没有任何机会（不过这个原则也可以通过修改相应的参数配置来改变）。
+
+replica.lag.time.max.ms ： 这个参数的含义是 Follower 副本能够落后 Leader 副本的最长时间间隔，当前默认值是 10 秒。
+
+unclean.leader.election.enable：是否允许 Unclean 领导者选举。开启 Unclean 领导者选举可能会造成数据丢失，但好处是，它使得分区 Leader 副本一直存在，不至于停止对外提供服务，因此提升了高可用性。
+
+
+阐述下 Kafka 中的领导者副本(Leader Replica)和追随者副本 (Follower Replica)的区别
+这道题表面上是考核你对 Leader 和 Follower 区别的理解，但很容易引申到 Kafka 的同步 机制上。因此，我建议你主动出击，一次性地把隐含的考点也答出来，也许能够暂时把面试 官“唬住”，并体现你的专业性。
+
+你可以这么回答:Kafka 副本当前分为领导者副本和追随者副本。只有 Leader 副本才能 对外提供读写服务，响应 Clients 端的请求。Follower 副本只是采用拉(PULL)的方 式，被动地同步 Leader 副本中的数据，并且在 Leader 副本所在的 Broker 宕机后，随时 准备应聘 Leader 副本。
+
+通常来说，回答到这个程度，其实才只说了 60%，因此，我建议你再回答两个额外的加分 项。
+
+强调 Follower 副本也能对外提供读服务。自 Kafka 2.4 版本开始，社区通过引入新的 Broker 端参数，允许 Follower 副本有限度地提供读服务。
+强调 Leader 和 Follower 的消息序列在实际场景中不一致。很多原因都可能造成 Leader 和 Follower 保存的消息序列不一致，比如程序 Bug、网络问题等。这是很严重 的错误，必须要完全规避。你可以补充下，之前确保一致性的主要手段是高水位机制， 但高水位值无法保证 Leader 连续变更场景下的数据一致性，因此，社区引入了 Leader Epoch 机制，来修复高水位值的弊端。关于“Leader Epoch 机制”，国内的资料不是 很多，它的普及度远不如高水位，不妨大胆地把这个概念秀出来，力求惊艳一把。
+
+-->
+通过副本来保证数据的高可用，producer ack、重试、自动 Leader 选举，Consumer 自平衡  
+
+
+分区与副本
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-29.png)  
+
+
+在分布式数据系统中，通常使用分区来提高系统的处理能力，通过副本来保证数据的高可用性。多分区意味着并发处理的能力，这多个副本中，只有一个是 leader，而其他的都是 follower 副本。仅有 leader 副本可以对外提供服务。多个 follower 副本通常存放在和 leader 副本不同的 broker 中。通过这样的机制实现了高可用，当某台机器挂掉后，其他 follower 副本也能迅速”转正“，开始对外提供服务。
+
+为什么 follower 副本不提供读服务？
+
+这个问题本质上是对性能和一致性的取舍。试想一下，如果 follower 副本也对外提供服务那会怎么样呢？首先，性能是肯定会有所提升的。但同时，会出现一系列问题。类似数据库事务中的幻读，脏读。比如你现在写入一条数据到 kafka 主题 a，消费者 b 从主题 a 消费数据，却发现消费不到，因为消费者 b 去读取的那个分区副本中，最新消息还没写入。而这个时候，另一个消费者 c 却可以消费到最新那条数据，因为它消费了 leader 副本。Kafka 通过 WH 和 Offset 的管理来决定 Consumer 可以消费哪些数据，已经当前写入的数据。
+watermark
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-30.png)  
+
+只有 Leader 可以对外提供读服务，那如何选举 Leader
+
+kafka 会将与 leader 副本保持同步的副本放到 ISR 副本集合中。当然，leader 副本是一直存在于 ISR 副本集合中的，在某些特殊情况下，ISR 副本中甚至只有 leader 一个副本。当 leader 挂掉时，kakfa 通过 zookeeper 感知到这一情况，在 ISR 副本中选取新的副本成为 leader，对外提供服务。但这样还有一个问题，前面提到过，有可能 ISR 副本集合中，只有 leader，当 leader 副本挂掉后，ISR 集合就为空，这时候怎么办呢？这时候如果设置 unclean.leader.election.enable 参数为 true，那么 kafka 会在非同步，也就是不在 ISR 副本集合中的副本中，选取出副本成为 leader。
+
+副本的存在就会出现副本同步问题
+
+Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)，Producer 向 Broker 发送消息时会根据ack配置来确定需要等待几个副本已经同步了消息才相应成功，Broker 内部会ReplicaManager服务来管理 flower 与 leader 之间的数据同步。
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-31.png)  
+
+## 1.3. kafka可靠性（如何保证消息队列不丢失?）
 <!-- 
 
 Kafka消息中间件到底会不会丢消息 
@@ -76,7 +144,7 @@ https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 -->
 &emsp; Kafka存在丢消息的问题，消息丢失会发生在Broker，Producer和Consumer三种。  
 
-### Broker端丢失消息
+### 1.3.1. Broker端丢失消息
 Broker丢失消息是由于Kafka本身的原因造成的，kafka为了得到更高的性能和吞吐量，将数据异步批量的存储在磁盘中。消息的刷盘过程，为了提高性能，减少刷盘次数，kafka采用了批量刷盘的做法。即，按照一定的消息量，和时间间隔进行刷盘。这种机制也是由于linux操作系统决定的。将数据存储到linux操作系统种，会先存储到页缓存（Page cache）中，按照时间或者其他条件进行刷盘（从page cache到file），或者通过fsync命令强制刷盘。数据在page cache中时，如果系统挂掉，数据会丢失。  
 上图简述了broker写数据以及同步的一个过程。broker写数据只写到PageCache中，而pageCache位于内存。这部分数据在断电后是会丢失的。pageCache的数据通过linux的flusher程序进行刷盘。刷盘触发条件有三：  
 
@@ -88,7 +156,7 @@ Broker配置刷盘机制，是通过调用fsync函数接管了刷盘动作。从
 Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不丢失消息是做不到的，只能通过调整刷盘机制的参数缓解该情况。比如，减少刷盘间隔，减少刷盘数据量大小。时间越短，性能越差，可靠性越好（尽可能可靠）。这是一个选择题。  
 为了解决该问题，kafka通过producer和broker协同处理单个broker丢失参数的情况。一旦producer发现broker消息丢失，即可自动进行retry。除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。那么producer是如何检测到数据丢失的呢？是通过ack机制。  
 
-#### ACK机制与ISR列表  
+#### 1.3.1.1. ACK机制与ISR列表  
 &emsp; kafka为了保证高可用性，采用了副本机制。  
 &emsp; **a) 副本数据同步策略主要有如下两种**  
 
@@ -127,7 +195,7 @@ Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不�
 
 &emsp; 上面这个过程看似已经很完美了，但是假设如果消息在同步到部分从Partition 上时，主 Partition 宕机，此时消息会重传，虽然消息不会丢失，但是会造成同一条消息会存储多次。在新版本中 Kafka 提出了幂等性的概念，通过给每条消息设置一个唯一 ID，并且该 ID 可以唯一映射到 Partition 的一个固定位置，从而避免消息重复存储的问题。  
 
-### Producer端丢失消息  
+### 1.3.2. Producer端丢失消息  
 &emsp; Producer丢失消息，发生在生产者客户端。  
 &emsp; 为了提升效率，减少IO，producer在发送数据时可以将多个请求进行合并后发送。被合并的请求咋发送一线缓存在本地buffer中。缓存的方式和前文提到的刷盘类似，producer可以将请求打包成“块”或者按照时间间隔，将buffer中的数据发出。通过buffer可以将生产者改造为异步的方式，而这可以提升发送效率。  
 &emsp; 但是，buffer中的数据就是危险的。在正常情况下，客户端的异步调用可以通过callback来处理消息发送失败或者超时的情况，但是，一旦producer被非法的停止了，那么buffer中的数据将丢失，broker将无法收到该部分数据。又或者，当Producer客户端内存不够时，如果采取的策略是丢弃消息（另一种策略是block阻塞），消息也会被丢失。抑或，消息产生（异步产生）过快，导致挂起线程过多，内存不足，导致程序崩溃，消息丢失。  
@@ -139,7 +207,7 @@ Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不�
 * 扩大Buffer的容量配置。这种方式可以缓解该情况的出现，但不能杜绝。  
 * service不直接将消息发送到buffer（内存），而是将消息写到本地的磁盘中（数据库或者文件），由另一个（或少量）生产线程进行消息发送。相当于是在buffer和service之间又加了一层空间更加富裕的缓冲层。  
 
-### 1.2.2. Consumer 端丢失消息
+### 1.3.3. Consumer 端丢失消息
 &emsp; Consumer消费消息有下面几个步骤：  
 
 * 接收消息
@@ -221,7 +289,7 @@ while (true) {
  }
 ```
 
-## 1.3. kafka数据一致性，通过HW来保证  
+## 1.4. kafka数据一致性，通过HW来保证  
 &emsp; 由于并不能保证 Kafka 集群中每时每刻 follower 的长度都和 leader 一致（即数据同步是有时延的），那么当leader 挂掉选举某个 follower 为新的 leader 的时候（原先挂掉的 leader 恢复了成为了 follower），可能会出现leader 的数据比 follower 还少的情况。为了解决这种数据量不一致带来的混乱情况，Kafka 提出了以下概念：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-27.png)  
 
@@ -237,80 +305,9 @@ while (true) {
 
 &emsp; 所以数据一致性并不能保证数据不丢失或者不重复，这是由 ack 控制的。HW 规则只能保证副本之间的数据一致性！
 
-## 1.4. kafa高可用性
 
-Kafka 本身是一个分布式系统，同时采用了 Zookeeper 存储元数据信息，提高了系统的高可用性。  
-Kafka 使用多副本机制，当状态为 Leader 的 Partition 对应的 Broker 宕机或者网络异常时，Kafka 会通过选举机制从对应的 Replica 列表中重新选举出一个 Replica 当做 Leader，从而继续对外提供读写服务（当然，需要注意的一点是，在新版本的 Kafka 中，Replica 也可以对外提供读请求了），利用多副本机制在一定程度上提高了系统的容错性，从而提升了系统的高可用。  
-
-<!-- 
-Kafka 副本机制
-https://juejin.im/post/6844903950009794567
-https://mp.weixin.qq.com/s/OB-ZVy70vHClCtep43gr_A
-https://mp.weixin.qq.com/s/kguKr_k-BrcQz4G5gag8gg
-
-Kafka中副本机制的设计和原理 
-https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
-
-什么是 AR，ISR？  
-
-    AR：Assigned Replicas。AR 是主题被创建后，分区创建时被分配的副本集合，副本个 数由副本因子决定。ISR：In-Sync Replicas。Kafka 中特别重要的概念，指代的是 AR 中那些与 Leader 保 持同步的副本集合。在 AR 中的副本可能不在 ISR 中，但 Leader 副本天然就包含在 ISR 中。关于 ISR，还有一个常见的面试题目是如何判断副本是否应该属于 ISR。目前的判断 依据是：Follower 副本的 LEO 落后 Leader LEO 的时间，是否超过了 Broker 端参数 replica.lag.time.max.ms 值。如果超过了，副本就会被从 ISR 中移除。 
-副本机制
-https://blog.csdn.net/haogenmin/article/details/109449944
-
-
-深入理解Kafka必知必会
-https://www.cnblogs.com/luozhiyun/p/12079527.html
-
-
-Kafka中的ISR、AR又代表什么？ISR的伸缩又指什么#
-分区中的所有副本统称为 AR（Assigned Replicas）。所有与 leader 副本保持一定程度同步的副本（包括 leader 副本在内）组成ISR（In-Sync Replicas），ISR 集合是 AR 集合中的一个子集。
-
-ISR的伸缩：
-leader 副本负责维护和跟踪 ISR 集合中所有 follower 副本的滞后状态，当 follower 副本落后太多或失效时，leader 副本会把它从 ISR 集合中剔除。如果 OSR 集合中有 follower 副本“追上”了 leader 副本，那么 leader 副本会把它从 OSR 集合转移至 ISR 集合。默认情况下，当 leader 副本发生故障时，只有在 ISR 集合中的副本才有资格被选举为新的 leader，而在 OSR 集合中的副本则没有任何机会（不过这个原则也可以通过修改相应的参数配置来改变）。
-
-replica.lag.time.max.ms ： 这个参数的含义是 Follower 副本能够落后 Leader 副本的最长时间间隔，当前默认值是 10 秒。
-
-unclean.leader.election.enable：是否允许 Unclean 领导者选举。开启 Unclean 领导者选举可能会造成数据丢失，但好处是，它使得分区 Leader 副本一直存在，不至于停止对外提供服务，因此提升了高可用性。
-
-
-阐述下 Kafka 中的领导者副本(Leader Replica)和追随者副本 (Follower Replica)的区别
-这道题表面上是考核你对 Leader 和 Follower 区别的理解，但很容易引申到 Kafka 的同步 机制上。因此，我建议你主动出击，一次性地把隐含的考点也答出来，也许能够暂时把面试 官“唬住”，并体现你的专业性。
-
-你可以这么回答:Kafka 副本当前分为领导者副本和追随者副本。只有 Leader 副本才能 对外提供读写服务，响应 Clients 端的请求。Follower 副本只是采用拉(PULL)的方 式，被动地同步 Leader 副本中的数据，并且在 Leader 副本所在的 Broker 宕机后，随时 准备应聘 Leader 副本。
-
-通常来说，回答到这个程度，其实才只说了 60%，因此，我建议你再回答两个额外的加分 项。
-
-强调 Follower 副本也能对外提供读服务。自 Kafka 2.4 版本开始，社区通过引入新的 Broker 端参数，允许 Follower 副本有限度地提供读服务。
-强调 Leader 和 Follower 的消息序列在实际场景中不一致。很多原因都可能造成 Leader 和 Follower 保存的消息序列不一致，比如程序 Bug、网络问题等。这是很严重 的错误，必须要完全规避。你可以补充下，之前确保一致性的主要手段是高水位机制， 但高水位值无法保证 Leader 连续变更场景下的数据一致性，因此，社区引入了 Leader Epoch 机制，来修复高水位值的弊端。关于“Leader Epoch 机制”，国内的资料不是 很多，它的普及度远不如高水位，不妨大胆地把这个概念秀出来，力求惊艳一把。
-
--->
-通过副本来保证数据的高可用，producer ack、重试、自动 Leader 选举，Consumer 自平衡  
-
-
-分区与副本
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-29.png)  
-
-
-在分布式数据系统中，通常使用分区来提高系统的处理能力，通过副本来保证数据的高可用性。多分区意味着并发处理的能力，这多个副本中，只有一个是 leader，而其他的都是 follower 副本。仅有 leader 副本可以对外提供服务。多个 follower 副本通常存放在和 leader 副本不同的 broker 中。通过这样的机制实现了高可用，当某台机器挂掉后，其他 follower 副本也能迅速”转正“，开始对外提供服务。
-
-为什么 follower 副本不提供读服务？
-
-这个问题本质上是对性能和一致性的取舍。试想一下，如果 follower 副本也对外提供服务那会怎么样呢？首先，性能是肯定会有所提升的。但同时，会出现一系列问题。类似数据库事务中的幻读，脏读。比如你现在写入一条数据到 kafka 主题 a，消费者 b 从主题 a 消费数据，却发现消费不到，因为消费者 b 去读取的那个分区副本中，最新消息还没写入。而这个时候，另一个消费者 c 却可以消费到最新那条数据，因为它消费了 leader 副本。Kafka 通过 WH 和 Offset 的管理来决定 Consumer 可以消费哪些数据，已经当前写入的数据。
-watermark
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-30.png)  
-
-只有 Leader 可以对外提供读服务，那如何选举 Leader
-
-kafka 会将与 leader 副本保持同步的副本放到 ISR 副本集合中。当然，leader 副本是一直存在于 ISR 副本集合中的，在某些特殊情况下，ISR 副本中甚至只有 leader 一个副本。当 leader 挂掉时，kakfa 通过 zookeeper 感知到这一情况，在 ISR 副本中选取新的副本成为 leader，对外提供服务。但这样还有一个问题，前面提到过，有可能 ISR 副本集合中，只有 leader，当 leader 副本挂掉后，ISR 集合就为空，这时候怎么办呢？这时候如果设置 unclean.leader.election.enable 参数为 true，那么 kafka 会在非同步，也就是不在 ISR 副本集合中的副本中，选取出副本成为 leader。
-
-副本的存在就会出现副本同步问题
-
-Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)，Producer 向 Broker 发送消息时会根据ack配置来确定需要等待几个副本已经同步了消息才相应成功，Broker 内部会ReplicaManager服务来管理 flower 与 leader 之间的数据同步。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-31.png)  
 
 ## 1.5. 如何让 Kafka 的消息有序？  
-&emsp; Kafka 在 Topic 级别本身是无序的，只有 partition 上才有序，所以为了保证处理顺序，可以自定义分区器，将需顺序处理的数据发送到同一个 partition
-
 &emsp; Kafka 无法做到消息全局有序，只能做到 Partition 维度的有序。所以如果想要消息有序，就需要从 Partition 维度入手。一般有两种解决方案。
 
 * 单 Partition，单 Consumer。通过此种方案强制消息全部写入同一个 Partition 内，但是同时也牺牲掉了 Kafka 高吞吐的特性了，所以一般不会采用此方案。  
@@ -339,21 +336,3 @@ Rebalance
 &emsp; 通过方案 1 调整参数后，还是会出现重复消费的情况，只是出现的概率降低了。  
 2. 解决方案 2：在业务层增加 Redis，在一定周期内，相同 key 对应的消息认为是同一条，如果 Redis 内不存在则正常消费消费，反之直接抛弃。  
 
-## 消息漏消费  
-<!-- 
-https://www.cnblogs.com/luozhiyun/p/11811835.html
--->
-
-## 1.7. 提升 Producer 的性能
-&emsp; 如何提升 Producer 的性能？批量，异步，压缩  
-
-### 1.7.1. 批量发送
-&emsp; Kafka允许进行批量发送消息，producter发送消息的时候，可以将消息缓存在本地，等到了固定条件发送到 Kafka 。  
-
-* 等消息条数到固定条数。  
-* 一段时间发送一次。  
-
-### 1.7.2. 数据压缩
-&emsp; Kafka还支持对消息集合进行压缩，Producer可以通过GZIP或Snappy格式对消息集合进行压缩。压缩的好处就是减少传输的数据量，减轻对网络传输的压力。  
-&emsp; Producer压缩之后，在Consumer需进行解压，虽然增加了CPU的工作，但在对大数据处理上，瓶颈在网络上而不是CPU，所以这个成本很值得。  
-&emsp; 注意：「批量发送」和「数据压缩」一起使用，单条做数据压缩的话，效果不明显！  
