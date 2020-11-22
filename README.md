@@ -23,7 +23,7 @@
         - [限流降级](#限流降级)
         - [分布式消息队列](#分布式消息队列)
             - [kafka](#kafka)
-        - [分布式ID](#分布式ID)
+        - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
         - [分布式搜索引擎](#分布式搜索引擎)
@@ -33,11 +33,11 @@
     - [项目构建基础](#项目构建基础)
     - [架构设计](#架构设计)
     - [负载均衡](#负载均衡)
-        - [LVS](#lvs)
-        - [Nginx](#nginx)
-        - [HAProxy](#haproxy)
-        - [Keepalived](#keepalived)
         - [CDN](#cdn)
+        - [LVS](#lvs)
+        - [HAProxy](#haproxy)
+        - [Nginx](#nginx)
+        - [Keepalived](#keepalived)
     - [网络安全](#网络安全)
     - [Linux](#linux)
     - [DevOps](#devops)
@@ -464,22 +464,21 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 ## 负载均衡  
 [负载均衡](/docs/system/loadBalance/loadBalance.md)    
 
+### CDN
+
 ### LVS
 [LVS](/docs/system/loadBalance/LVS.md)  
+
+### HAProxy
+[HAProxy](/docs/system/loadBalance/HAProxy.md)  
 
 ### Nginx  
 [Nginx](/docs/system/loadBalance/Nginx/1.nginx.md)  
 [Nginx使用](/docs/system/loadBalance/Nginx/2.nginx使用场景.md)   
 [Nginx运维](/docs/system/loadBalance/Nginx/3.nginx运维.md)  
 
-### HAProxy
-[HAProxy](/docs/system/loadBalance/HAProxy.md)  
-
 ### Keepalived
 [Keepalived](/docs/system/loadBalance/Keepalived.md)  
-
-### CDN
-
 
 ## 网络安全  
 [网络安全]( /docs/system/network/security.md)  
