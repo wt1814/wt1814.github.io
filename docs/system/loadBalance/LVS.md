@@ -15,23 +15,10 @@
 # 1. LVS
 
 <!-- 
-
-
-
- 超详细！一文带你了解 LVS 负载均衡集群！
+超详细！一文带你了解 LVS 负载均衡集群！
 https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 
-
-
-官网：http://zh.linuxvirtualserver.org/
-
-
-
-
 LVS
-https://blog.csdn.net/qq_37165604/article/details/79802390
-https://www.cnblogs.com/MacoLee/p/5856858.html
-https://www.jianshu.com/p/7a063123d1f1
 https://www.cnblogs.com/cq146637/p/8517818.html
 https://blog.csdn.net/ghost_leader/article/details/55827729
 -->
@@ -59,6 +46,7 @@ LVS 是四层负载均衡，也就是说建立在 OSI 模型的第四层——�
 LVS 的转发主要通过修改 IP 地址（NAT 模式，分为源地址修改 SNAT 和目标地址修改 DNAT）、修改目标 MAC（DR 模式）来实现。  
 
 https://mp.weixin.qq.com/s/HtOH8-tmCo6bjFoDBhqK_g
+https://blog.csdn.net/qq_37165604/article/details/79802390
 
 ### 1.3.1. NAT（地址转换）  
 
@@ -72,3 +60,6 @@ https://mp.weixin.qq.com/s/HtOH8-tmCo6bjFoDBhqK_g
 ## 1.4. LVS的十种负载调度算法  
 https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 https://blog.csdn.net/qq_37165604/article/details/79802390
+
+
+
