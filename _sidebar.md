@@ -346,12 +346,11 @@
 * [负载均衡](/docs/system/loadBalance/loadBalance.md)   
     * [CDN](/docs/system/loadBalance/CDN.md)   
 	* [LVS](/docs/system/loadBalance/LVS.md)  
-	* [HAProxy](/docs/system/loadBalance/HAProxy.md)  
+    * [Keepalived](/docs/system/loadBalance/Keepalived.md)  
     * Nginx  
         * [Nginx](/docs/system/loadBalance/Nginx/1.nginx.md)  
         * [Nginx使用](/docs/system/loadBalance/Nginx/2.nginx使用场景.md)   
         * [Nginx运维](/docs/system/loadBalance/Nginx/3.nginx运维.md) 
-	* [Keepalived](/docs/system/loadBalance/Keepalived.md)  
 
 * Linux  
     * [Linux命令](/docs/Linux/Linux命令.md)  
