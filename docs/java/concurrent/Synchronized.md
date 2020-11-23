@@ -31,17 +31,18 @@
 <!-- /TOC -->
 
 <!-- 
+synchronized
+https://www.cnblogs.com/dennyzhangdd/p/6734638.html
+
+初始synchronized关键字的偏向锁、轻量锁、重量锁 
+https://mp.weixin.qq.com/s/AloGilUSxjoNVDHTfq1ZGQ
 
 
- 初始synchronized关键字的偏向锁、轻量锁、重量锁 
- https://mp.weixin.qq.com/s/AloGilUSxjoNVDHTfq1ZGQ
+死磕Synchronized底层实现 
+https://mp.weixin.qq.com/s/ca_7lurrWVcA3bLCL7UJcQ
 
-
- 死磕Synchronized底层实现 
- https://mp.weixin.qq.com/s/ca_7lurrWVcA3bLCL7UJcQ
-
-  【185期】面试官：你能说说 Synchronized实现对象锁的两种方式以及它的原理吗？
- https://mp.weixin.qq.com/s/zMSMlnD9h1wwJTNt-3pIHg
+【185期】面试官：你能说说 Synchronized实现对象锁的两种方式以及它的原理吗？
+https://mp.weixin.qq.com/s/zMSMlnD9h1wwJTNt-3pIHg
 
 关键字synchronized取得的锁都是对象锁，而不是把一段代码或方法（函数）当作锁， 所以在上面的示例中，哪个线程先执行带synchronized关键字的方法，哪个线程就持有该方 法所属对象的锁Lock,那么其他线程只能呈等待状态，前提是多个线程访问的是同一个 对象。
 但如果多个线程访问多个对象，则JVM会创建多个锁。
@@ -56,11 +57,11 @@
 
 在大多数的情况下，同步 synchronized代码块都不使用String作为锁对象，而改用其他，比如new Object()实例化一个 Object对象，但它并不放人缓存中。
 
- 浅析synchronized底层实现与锁升级过程 
- https://juejin.im/post/6888112467747176456
+浅析synchronized底层实现与锁升级过程 
+https://juejin.im/post/6888112467747176456
 
- Java基础面试16问 
- https://mp.weixin.qq.com/s/-xFSHf7Gz3FUcafTJUIGWQ
+Java基础面试16问 
+https://mp.weixin.qq.com/s/-xFSHf7Gz3FUcafTJUIGWQ
 
 Synchronized详解（可重入、Monitor原理等）
 https://blog.csdn.net/mulinsen77/article/details/88635558
