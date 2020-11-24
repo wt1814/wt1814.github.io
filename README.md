@@ -458,7 +458,8 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 [短链接](/docs/project/URL.md)  
 
 ## 负载均衡  
-[负载均衡](/docs/system/loadBalance/loadBalance.md)    
+[负载均衡](/docs/system/loadBalance/loadBalance.md)  
+[DNS轮询](/docs/system/loadBalance/DNS.md)  
 [CDN](/docs/system/loadBalance/CDN.md)   
 [LVS](/docs/system/loadBalance/LVS.md)  
 [Keepalived](/docs/system/loadBalance/Keepalived.md)  

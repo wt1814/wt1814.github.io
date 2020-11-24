@@ -42,6 +42,8 @@ https://mp.weixin.qq.com/s/HJYkDheKbCdANj91zRDx2g
 ## 1.2. 高可用实现  
 <!-- 
 https://blog.csdn.net/qq_39720208/article/details/102758662
+
+https://mp.weixin.qq.com/s/RZ7b8IKC7N3E87DaZhWaVA
 -->
 
 ### 1.2.1. MMM架构  

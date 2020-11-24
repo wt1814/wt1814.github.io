@@ -3,4 +3,8 @@
 <!-- 
 CDN内容分发网络 + Varnish服务器集群
 https://mp.weixin.qq.com/s?__biz=MzUyOTk5NDQwOA==&mid=2247486305&idx=2&sn=a0cd6136d8e56bcf5ded7b4b6f618ac0&chksm=fa59cca6cd2e45b0d3a5b6e4d307c9a8dc65549eaea3a7d397fc27c2096d8c260c3c7029b67a&mpshare=1&scene=1&srcid=&sharer_sharetime=1568767960209&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2a4ff15fdd846346193547aceadb49b5cda35f77a2ed37a6bf4fd37dded9488908386840d7327e1cd59c5e8b317b3232d102ad510ceaaa1559218a62788008b01ff465eea2bb68ea97fbc0ea5a7a006b&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=Mlk9kunU%2FZCxR0MQ9XBuuZUeWCK01E5EMZ4L4SyGmYB1Rujk3o2zAwEMTpPxldnG
+
+CDN是什么？与DNS有什么关系？及其原理
+https://blog.csdn.net/hetoto/article/details/90509328
+
 -->

@@ -344,6 +344,7 @@
     * [秒杀系统设计](/docs/system/seckill.md)  
     * [订单系统设计](/docs/system/order.md)  
 * [负载均衡](/docs/system/loadBalance/loadBalance.md)   
+    * [DNS轮询](/docs/system/loadBalance/DNS.md)  
     * [CDN](/docs/system/loadBalance/CDN.md)   
 	* [LVS](/docs/system/loadBalance/LVS.md)  
     * [Keepalived](/docs/system/loadBalance/Keepalived.md)  
