@@ -10,6 +10,13 @@
 <!-- /TOC -->
 
 # 1. 分布式理论  
+
+<!-- 
+
+CAP和BASE理论
+https://mp.weixin.qq.com/s/0qelIYKkyNVsM29u-3yH1w
+-->
+
 ## 1.1. CAP理论  
 &emsp; CAP理论，指的是在一个分布式系统中，一致性（Consistency）、可用性（Availability）、分区容错性（Partition tolerance）。  
 
