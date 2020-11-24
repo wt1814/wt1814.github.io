@@ -21,6 +21,9 @@
 <!-- 
 https://blog.csdn.net/SnailMann/article/details/94724197
 https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
+阿里面试：说说一致性读实现原理？ 
+https://mp.weixin.qq.com/s/qHzb6oPrrbAPoIlfLJVNAg
+
 -->
 
 # 1. MVCC

@@ -201,7 +201,6 @@ Gitee： https://gitee.com/wt1814/
 [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
 [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
 
-
 ----
 
 ## 分布式  
@@ -468,8 +467,6 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 [Nginx](/docs/system/loadBalance/Nginx/1.nginx.md)  
 [Nginx使用](/docs/system/loadBalance/Nginx/2.nginx使用场景.md)   
 [Nginx运维](/docs/system/loadBalance/Nginx/3.nginx运维.md)  
-
-
 
 ## 网络安全  
 [网络安全]( /docs/system/network/security.md)  
