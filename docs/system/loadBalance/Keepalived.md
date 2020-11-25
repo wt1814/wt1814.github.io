@@ -5,6 +5,9 @@
     - [1.2. VRRP，虚拟路由器冗余协议](#12-vrrp虚拟路由器冗余协议)
     - [1.3. Keepalived原理](#13-keepalived原理)
     - [1.4. 配置文件详解](#14-配置文件详解)
+        - [全局配置](#全局配置)
+        - [VRRPD配置](#vrrpd配置)
+        - [LVS配置](#lvs配置)
     - [使用](#使用)
         - [抢占式配置](#抢占式配置)
         - [非抢占式配置](#非抢占式配置)
@@ -98,9 +101,58 @@ VRRP是一种路由容错协议，也可以叫做备份路由协议。一个局�
 &emsp; 应用层（5）：Keepalived的运行方式也更加全面化和复杂化，用户可以通过自定义Keepalived工作方式，例如：可以通过编写程序或者脚本来运行Keepalived，而Keepalived将根据用户的设定参数检测各种程序或者服务是否允许正常，如果Keepalived的检测结果和用户设定的不一致时，Keepalived将把对应的服务器从服务器集群中剔除。  
 
 ## 1.4. 配置文件详解  
-https://blog.csdn.net/benpaobagzb/article/details/48062891
-&emsp; 
+<!-- 
+https://www.cnblogs.com/yyxianren/p/10955538.html
+-->
+&emsp; keepalived有三类配置区域：
 
+* 全局配置(Global Configuration)
+* VRRPD配置
+* LVS配置
+
+### 全局配置
+&emsp; 全局配置又包括两个子配置：  
+
+* 全局定义(global definition)
+* 静态路由配置(static ipaddress/routes)
+
+1. 全局定义(global definition)配置范例  
+
+```text
+global_defs #全局配置标识，表明这个区域{}是全局配置
+{
+    notification_email
+        {
+        admin@example.com #表示发送通知邮件时邮件源地址是谁
+        }
+    notification_email_from admin@example.com #表示keepalived在发生诸如切换操作时需要发送email通知，以及email发送给哪些邮件地址，邮件地址可以多个，每行一个notification_email_from admin@example.com
+    smtp_server 127.0.0.1 #表示发送email时使用的smtp服务器地址，这里可以用本地的sendmail来实现
+    stmp_connect_timeout 30 #连接smtp连接超时时间
+    router_id node1 #机器标识
+}
+```
+2. 静态地址和路由配置范例
+
+```text
+static_ipaddress
+{
+    192.168.1.1/24 brd + dev eth0 scope global #相当于: ip addr add 192.168.1.1/24 brd + dev eth0 scope global
+    192.168.1.2/24 brd + dev eth1 scope global #就是给eth1配置IP地址
+}
+static_routes
+{
+    src $SRC_IP to $DST_IP dev $SRC_DEVICE #路由和ip同理，一般这个区域不需要配置
+    src $SRC_IP to $DST_IP via $GW dev $SRC_DEVICE
+}
+```
+
+&emsp; 这里实际上就是给服务器配置真实的IP地址和路由的，在复杂的环境下可能需要配置，一般不会用这个来配置，可以直接用vi /etc/sysconfig/network-script/ifcfg-eth1来配置！  
+
+### VRRPD配置  
+...
+
+### LVS配置  
+...
 
 ## 使用  
 <!-- 
