@@ -9,6 +9,11 @@
 
 # 1. CDN  
 <!-- 
+ 网友问：帅丙如何给女朋友解释什么是CDN？ 
+https://mp.weixin.qq.com/s/f_yMAWw-ymhRldvBcpRH8Q
+https://mp.weixin.qq.com/s/VIjHRl5GogichFnf66Wi3g
+https://mp.weixin.qq.com/s/VIjHRl5GogichFnf66Wi3g
+
 https://www.imydl.com/work/4073.html
 https://www.imydl.com/wp/5863.html
 -->
