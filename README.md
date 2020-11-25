@@ -1,7 +1,6 @@
 <!-- TOC -->
 
 - [wt1814-note](#wt1814-note)
-    - [杂记](#杂记)
     - [Java](#java)
         - [设计模式](#设计模式)
         - [并发编程](#并发编程)
@@ -46,10 +45,6 @@
 <!-- /TOC -->
 
 # wt1814-note  
-
-
-
-
 ## Java  
 [Java基础](/docs/java/basis/Java基础.md)  
 &emsp; [符号](/docs/java/basis/mark.md)  
