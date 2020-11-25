@@ -13,7 +13,10 @@
 
 
 # 1. Volatile  
-<!-- 
+<!--
+volatile 
+https://mp.weixin.qq.com/s/DFCh1XE1hbikjBGEpYJguw
+
 在某些JVM中，i--的操作要分成如下3步：
 1)取得原有i值。
 2)计算i-1。

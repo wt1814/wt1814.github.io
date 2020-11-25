@@ -219,7 +219,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/4.SpringBootEvent.md)  
 [SpringBoot自动配置原理-@SpringBootApplication](/docs/microService/SpringBoot/自动配置@SpringBootApplication.md)  
 [SpringBoot自动配置原理-运行流程解析](/docs/microService/SpringBoot/自动配置运行流程解析.md)  
-[内置Tomcat]()  
+<!-- [内置Tomcat]()   -->
 [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
 ### SpringCloud   
@@ -402,7 +402,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [乱码](/docs/web/garbled.md)  
 [Assert处理异常](/docs/web/Assert.md)  
 
-[统一日志记录]()  
+<!-- [统一日志记录]()   -->
 [统一格式返回](/docs/web/UnifiedFormat.md)  
 [统一异常处理](/docs/web/ExceptionHandler.md)  
 
@@ -410,8 +410,10 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 &emsp; [RESTful](/docs/microService/RESTful.md)  
 
 &emsp; [接口幂等](/docs/web/idempotent.md)  
+<!-- 
 &emsp; [接口防刷]()  
 &emsp; [接口安全]()  
+-->
 &emsp; [接口超时](/docs/web/timeout.md)  
 
 [JavaBean](/docs/web/JavaBean.md)  
@@ -438,7 +440,6 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
  https://mp.weixin.qq.com/s/OSAxKO6tddY4TucRADqOiQ
 -->
 [架构图](/docs/system/diagram.md)  
-&emsp; [设计文档]()  
 &emsp; [接口文档](/docs/system/document/API.md)  
 [性能指标](/docs/system/performance.md)  
 [软件架构质量属性](/docs/system/qualityAttributes.md)  
@@ -557,7 +558,8 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 [Redis高并发](/docs/Error/redisConcurrent.md)  
 [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 [redis scan命令](/docs/Error/redisScan.md)  
-[雪花利用ZK生成workId]()  
+<!-- [雪花利用ZK生成workId]()   -->
+
 
 ---
 
