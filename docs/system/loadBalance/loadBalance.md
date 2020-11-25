@@ -69,12 +69,4 @@ https://mp.weixin.qq.com/s/cD4_yc9Lp5q76xzeys6N_g
 &emsp; 最小连接法适用于各个节点处理的性能相似时。任务分发单元会将任务平滑分配给服务器。但当服务器性能差距较大时，就无法达到预期的效果。因为此时连接数并不能准确表明处理能力，连接数小而自身性能很差的服务器可能不及连接数大而自身性能极好的服务器。所以在这个时候就会导致任务无法准确的分配到剩余处理能力强的机器上。  
 
 ## 1.5. 常用负载均衡工具
-<!-- 
-HAProxy
-https://www.bookstack.cn/read/HAProxy-zh/ch5.md
-https://blog.csdn.net/freshair_x/article/details/80542481
--->
-<!--
-https://mp.weixin.qq.com/s/cjDSNb9H6HO1DYup7223_g
-https://www.cnblogs.com/fangwenchen/p/9635743.html
--->
+&emsp; 常用的软件负载均衡软件有[Nginx](/docs/system/loadBalance/Nginx/1.nginx.md)、[LVS](/docs/system/loadBalance/LVS.md)、HaProxy等。  
