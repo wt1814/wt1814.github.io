@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [目录](#目录)
+- [wt1814-note](#wt1814-note)
     - [杂记](#杂记)
     - [Java](#java)
         - [设计模式](#设计模式)
@@ -45,15 +45,10 @@
 
 <!-- /TOC -->
 
-# 目录  
+# wt1814-note  
 
-欢迎关注个人公众号： **<font color = "red">王猴卖瓜</font>**   
-GitHub： https://github.com/wt1814/  
-Gitee： https://gitee.com/wt1814/  
-联系我：**wangtao1814@163.com**  
 
-## 杂记  
-<font color="red">多问几个为什么，怎么办，怎么做。</font>  
+
 
 ## Java  
 [Java基础](/docs/java/basis/Java基础.md)  
@@ -219,6 +214,7 @@ Gitee： https://gitee.com/wt1814/
 &emsp; [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/4.SpringBootEvent.md)  
 [SpringBoot自动配置原理-@SpringBootApplication](/docs/microService/SpringBoot/自动配置@SpringBootApplication.md)  
 [SpringBoot自动配置原理-运行流程解析](/docs/microService/SpringBoot/自动配置运行流程解析.md)  
+[内置Tomcat]()  
 <!-- [内置Tomcat]()   -->
 [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
@@ -402,6 +398,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [乱码](/docs/web/garbled.md)  
 [Assert处理异常](/docs/web/Assert.md)  
 
+[统一日志记录]()  
 <!-- [统一日志记录]()   -->
 [统一格式返回](/docs/web/UnifiedFormat.md)  
 [统一异常处理](/docs/web/ExceptionHandler.md)  
@@ -440,6 +437,7 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
  https://mp.weixin.qq.com/s/OSAxKO6tddY4TucRADqOiQ
 -->
 [架构图](/docs/system/diagram.md)  
+&emsp; [设计文档]()  
 &emsp; [接口文档](/docs/system/document/API.md)  
 [性能指标](/docs/system/performance.md)  
 [软件架构质量属性](/docs/system/qualityAttributes.md)  
@@ -558,9 +556,11 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 [Redis高并发](/docs/Error/redisConcurrent.md)  
 [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 [redis scan命令](/docs/Error/redisScan.md)  
+[雪花利用ZK生成workId]()  
 <!-- [雪花利用ZK生成workId]()   -->
 
 
 ---
 
 [个人笔录](/docs/note/record.md)  
+
