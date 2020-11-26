@@ -9,6 +9,11 @@ https://juejin.im/post/6844904046956904456#heading-4
 MapStruct
 https://mp.weixin.qq.com/s/Ya3EZCWvyzUbH6NiLn2BKw
 
+Bean映射工具之Apache BeanUtils VS Spring BeanUtils 
+https://mp.weixin.qq.com/s/dio08z4TqNBxoXqvZXTcjg
+两难！到底用 Spring BeanUtils 还是 Apache BeanUtils？ 
+https://mp.weixin.qq.com/s/xfyx5ux7VadCbOUrkzMVLQ
+
 -->
 
 拷贝一组UerDO.java，是一个集合的时候就不能这样直接赋值了。如果还按照这种逻辑，如下：  
