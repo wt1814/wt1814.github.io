@@ -304,7 +304,7 @@
     * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 
 * 项目构建基础  
-    * [RESTful](/docs/microService/RESTful.md)  
+    * [RESTful风格](/docs/microService/RESTful.md)  
     * [日志系统](/docs/web/log.md)   
     * [SpringTest](/docs/web/test.md)  
     * [乱码]()  

@@ -9,14 +9,19 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/project/idempotent/ide-1.png)  
-
 # 1. 接口幂等  
+
+<!-- 
+你的项目是如何处理重复请求/并发请求的？
+https://mp.weixin.qq.com/s/8I8fRoYuTED6S7EcbHllhQ
+-->
 
 <!-- 
 基于状态机的乐观锁 ——解决幂等性问题
 https://www.jianshu.com/p/c6e9ddbea022
 -->
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/project/idempotent/ide-1.png)  
 
 ## 1.1. 数据问题及产生原因  
 &emsp; 数据库中产生重复数据或数据不一致（假定程序业务代码没问题），绝大部分就是发生了重复的请求，<font color = "red">重复请求是指同一个请求因为某些原因被多次提交。导致这个情况会有几种场景：</font>  

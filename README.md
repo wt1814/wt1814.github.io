@@ -1,6 +1,7 @@
 <!-- TOC -->
 
 - [wt1814-note](#wt1814-note)
+    - [算法](#算法)
     - [Java](#java)
         - [设计模式](#设计模式)
         - [并发编程](#并发编程)
@@ -10,9 +11,9 @@
         - [Spring](#spring)
         - [MyBatis](#mybatis)
     - [分布式](#分布式)
+        - [微服务](#微服务)
         - [SpringBoot](#springboot)
         - [SpringCloud](#springcloud)
-        - [微服务](#微服务)
         - [Dubbo](#dubbo)
         - [Zookeeper](#zookeeper)
         - [分布式理论](#分布式理论)
@@ -36,7 +37,6 @@
     - [网络安全](#网络安全)
     - [Linux](#linux)
     - [DevOps](#devops)
-    - [算法](#算法)
     - [计算机网络](#计算机网络)
     - [开发常用工具](#开发常用工具)
     - [其他工具](#其他工具)
@@ -45,6 +45,24 @@
 <!-- /TOC -->
 
 # wt1814-note  
+## 算法  
+[总结](/docs/java/function/summary.md)  
+[算法基本概念](/docs/java/function/1.notion.md)  
+[基本数据结构]  
+&emsp; [链表](/docs/java/function/structure/array.md)  
+&emsp; [栈](/docs/java/function/structure/stack.md)  
+&emsp; [哈希](/docs/java/function/structure/hash.md)  
+&emsp; [树](/docs/java/function/structure/tree.md)  
+[排序算法](/docs/java/function/4.sort.md)  
+&emsp; [比较排序](/docs/java/function/sort/compare.md)  
+&emsp; [非比较排序](/docs/java/function/sort/noCompare.md)  
+[外部排序](/docs/java/function/sort/externalSort.md)  
+[查找算法](/docs/java/function/5.search.md)  
+[算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
+[其他数据结构]  
+&emsp; [其他数据结构](/docs/java/function/3.otherStructure.md)  
+&emsp; [海量数据应用](/docs/java/function/bigdata.md)  
+
 ## Java  
 [Java基础](/docs/java/basis/Java基础.md)  
 &emsp; [符号](/docs/java/basis/mark.md)  
@@ -74,7 +92,6 @@
 &emsp; &emsp; [动态代理](/docs/java/Design/6.proxy.md)   
 &emsp; [行为型设计模式](/docs/java/Design/5.behavior.md)  
 [设计模式讨论](/docs/java/Design/discuss.md)  
-
 
 ### 并发编程  
 [并发编程总结](/docs/java/concurrent/summary.md)  
@@ -194,6 +211,10 @@
 ----
 
 ## 分布式  
+[RPC](/docs/microService/RPC.md)  
+[Gateway](/docs/microService/microservices/Gateway.md)  
+
+
 ### SpringBoot  
 <!-- 
  非常有必要了解的Springboot启动扩展点 
@@ -209,8 +230,7 @@
 &emsp; [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/4.SpringBootEvent.md)  
 [SpringBoot自动配置原理-@SpringBootApplication](/docs/microService/SpringBoot/自动配置@SpringBootApplication.md)  
 [SpringBoot自动配置原理-运行流程解析](/docs/microService/SpringBoot/自动配置运行流程解析.md)  
-[内置Tomcat]()  
-<!-- [内置Tomcat]()   -->
+[内置Tomcat](/docs/microService/SpringBoot/内置Tomcat.md)  
 [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
 ### SpringCloud   
@@ -229,13 +249,6 @@
 [Spring Cloud Security]  
 -->
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
-
-
-### 微服务  
-[RPC](/docs/microService/RPC.md)  
-[微服务架构设计](/docs/microService/microservices/microservices.md)  
-[Gateway](/docs/microService/microservices/Gateway.md)  
-
 
 ### Dubbo  
 [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
@@ -256,7 +269,6 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 -->
 &emsp; [服务调用](/docs/microService/Dubbo/call.md)  
 [时间轮算法](/docs/microService/Dubbo/timeWheel.md)  
-
 
 ### Zookeeper
 [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
@@ -381,7 +393,6 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 &emsp; [TCP粘拆包与Netty编解码](/docs/microService/communication/Netty/Decoder.md)  
 &emsp; [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
 
-
 ## 其他框架  
 [Security](/docs/frame/Security/Security.md)  
 
@@ -399,7 +410,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [统一异常处理](/docs/web/ExceptionHandler.md)  
 
 [API接口设计](/docs/web/API.md)    
-&emsp; [RESTful](/docs/microService/RESTful.md)  
+&emsp; [RESTful风格](/docs/microService/RESTful.md)  
 
 &emsp; [接口幂等](/docs/web/idempotent.md)  
 <!-- 
@@ -501,26 +512,6 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 &emsp; [网关灰度发布](/docs/system/gatewayGrayscale.md)  
 [监控](/docs/devOps/monitor.md)  
 
----
-
-## 算法  
-[总结](/docs/java/function/summary.md)  
-[算法基本概念](/docs/java/function/1.notion.md)  
-[基本数据结构]  
-&emsp; [链表](/docs/java/function/structure/array.md)  
-&emsp; [栈](/docs/java/function/structure/stack.md)  
-&emsp; [哈希](/docs/java/function/structure/hash.md)  
-&emsp; [树](/docs/java/function/structure/tree.md)  
-[排序算法](/docs/java/function/4.sort.md)  
-&emsp; [比较排序](/docs/java/function/sort/compare.md)  
-&emsp; [非比较排序](/docs/java/function/sort/noCompare.md)  
-[外部排序](/docs/java/function/sort/externalSort.md)  
-[查找算法](/docs/java/function/5.search.md)  
-[算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
-[其他数据结构]  
-&emsp; [其他数据结构](/docs/java/function/3.otherStructure.md)  
-&emsp; [海量数据应用](/docs/java/function/bigdata.md)  
-
 ----
 
 ## 计算机网络  
@@ -531,7 +522,6 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 [TCP](/docs/network/4.TCP.md)  
 [VPN](/docs/network/VPN.md)  
 [衡量计算机网络的主要标准](/docs/network/standard.md)  
-
 
 ----
 
@@ -553,7 +543,6 @@ https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
 [redis scan命令](/docs/Error/redisScan.md)  
 [雪花利用ZK生成workId]()  
 <!-- [雪花利用ZK生成workId]()   -->
-
 
 ---
 
