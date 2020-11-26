@@ -11,7 +11,6 @@
         - [Spring](#spring)
         - [MyBatis](#mybatis)
     - [分布式](#分布式)
-        - [微服务](#微服务)
         - [SpringBoot](#springboot)
         - [SpringCloud](#springcloud)
         - [Dubbo](#dubbo)
@@ -263,10 +262,6 @@
 &emsp; [Dubbo初始化](/docs/microService/Dubbo/dubboSpring.md)  
 &emsp; [服务暴露](/docs/microService/Dubbo/export.md)  
 &emsp; [服务引用](/docs/microService/Dubbo/introduce.md)  
-<!-- 
-Dubbo集群容错  
-https://www.cnblogs.com/caoxb/p/13140347.html
--->
 &emsp; [服务调用](/docs/microService/Dubbo/call.md)  
 [时间轮算法](/docs/microService/Dubbo/timeWheel.md)  
 
@@ -296,10 +291,6 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
 [Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
 [Redis原理](/docs/microService/Redis/Redis原理.md)  
-<!-- 
-Redis的虚拟内存
-https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
--->
 &emsp; [Redis持久化](/docs/microService/Redis/Redis持久化.md)  
 &emsp; [Redis淘汰策略](/docs/microService/Redis/Redis淘汰.md)  
 &emsp; [Redis事务](/docs/microService/Redis/Redis事务.md)  
@@ -310,6 +301,10 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [Redis运维](/docs/microService/Redis/Redis运维.md)  
 [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 [Redis问题及排查](/docs/microService/Redis/problem.md)  
+<!-- 
+Redis的虚拟内存
+https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
+-->
 
 #### Ehcache 
 
@@ -405,19 +400,15 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [Assert处理异常](/docs/web/Assert.md)  
 
 [统一日志记录]()  
-<!-- [统一日志记录]()   -->
 [统一格式返回](/docs/web/UnifiedFormat.md)  
 [统一异常处理](/docs/web/ExceptionHandler.md)  
 
 [API接口设计](/docs/web/API.md)    
-&emsp; [RESTful风格](/docs/microService/RESTful.md)  
-
-&emsp; [接口幂等](/docs/web/idempotent.md)  
-<!-- 
-&emsp; [接口防刷]()  
-&emsp; [接口安全]()  
--->
-&emsp; [接口超时](/docs/web/timeout.md)  
+&emsp; [RESTful风格](/docs/web/interface/RESTful.md)  
+&emsp; [接口幂等](/docs/web/interface/idempotent.md)  
+&emsp; [接口防刷](/docs/web/interface/brush.md)  
+&emsp; [接口安全](/docs/web/interface/security.md)  
+&emsp; [接口超时](/docs/web/interface/timeout.md)  
 
 [JavaBean](/docs/web/JavaBean.md)  
 &emsp; [POJO](/docs/web/POJO.md)  
@@ -433,17 +424,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [其他](/docs/web/other.md)  
 
 ## 架构设计  
-<!-- 
-
-[系统稳定性建设]()  
-10个有意思的架构问题！
-https://mp.weixin.qq.com/s/0IyRzXGzgSKyBBclB96xww
-
- 一个复杂系统的拆分改造实践！ 
- https://mp.weixin.qq.com/s/OSAxKO6tddY4TucRADqOiQ
--->
 [架构图](/docs/system/diagram.md)  
-&emsp; [设计文档]()  
 &emsp; [接口文档](/docs/system/document/API.md)  
 [性能指标](/docs/system/performance.md)  
 [软件架构质量属性](/docs/system/qualityAttributes.md)  

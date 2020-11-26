@@ -304,7 +304,7 @@
     * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 
 * 项目构建基础  
-    * [RESTful风格](/docs/microService/RESTful.md)  
+    * [RESTful风格](/docs/web/interface/RESTful.md)  
     * [日志系统](/docs/web/log.md)   
     * [SpringTest](/docs/web/test.md)  
     * [乱码]()  
@@ -314,9 +314,11 @@
         * [Assert处理异常](/docs/web/Assert.md)  
 
     * [API接口设计](/docs/web/API.md)    
-        * [接口幂等](/docs/web/idempotent.md)  
-        * [接口防刷]()  
-        * [接口安全]()  
+        * [RESTful风格](/docs/web/interface/RESTful.md)  
+        * [接口幂等](/docs/web/interface/idempotent.md)  
+        * [接口防刷](/docs/web/interface/brush.md)  
+        * [接口安全](/docs/web/interface/security.md)  
+        * [接口超时](/docs/web/interface/timeout.md)  
 
     * [JavaBean](/docs/web/JavaBean.md)  
         * [POJO](/docs/web/POJO.md)  

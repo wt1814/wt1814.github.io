@@ -36,7 +36,10 @@ https://mp.weixin.qq.com/s/6Kn9uJ7n6W8BMm4OZmhxIQ
 
 
 -->
-
+<!-- 
+Dubbo集群容错  
+https://www.cnblogs.com/caoxb/p/13140347.html
+-->
 
 <!-- 
 
