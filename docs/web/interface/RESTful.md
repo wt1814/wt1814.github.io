@@ -33,5 +33,10 @@ https://mp.weixin.qq.com/s?__biz=MzI3NzE0NjcwMg==&mid=2650125242&idx=3&sn=13f4ac
 实战：SpringBoot & Restful API 构建示例
 https://mp.weixin.qq.com/s?__biz=MzU2MTI4MjI0MQ==&mid=2247488585&idx=1&sn=3291a2952ea8073ceb5e2ff2838f47d8&chksm=fc7a79e7cb0df0f147c3a4ba8bbd894d11bdfd47b7c05958d587e0768c701bd445252ac49d1a&mpshare=1&scene=1&srcid=&sharer_sharetime=1576407631263&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=cb18063c680e4f10f331b49d6560e67edb084a882f7e778f69deb0b9d4c41721cafacbcd8a774bf9d13f097ffa0d64be37ece7e2beb233e56dca4e70ea4340d4bd2397e4eda30859f00dd79ab19fb6cc&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=AQ%2FVaPDDiOAELnbLuhHwkdc%3D&pass_ticket=bfh6Om%2FZtKWXqMXmAUqyFIYCxvpcWFuUU%2FsESm2I4eWOoa6HSoky8oPs67hVAuPg
 
+RESTful 接口这样设计，前后端分离更完美
+https://mp.weixin.qq.com/s/JHP6mXWv7TlWPOBEkS_mHg
+前后端分离开发，RESTful 接口应该这样设计
+https://mp.weixin.qq.com/s/b40DHr0Wfc6t51M4lfi_Cw
+
 
 -->
