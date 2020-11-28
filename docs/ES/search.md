@@ -4,11 +4,12 @@ elasticsearch有六种搜索方式
 https://blog.csdn.net/lianxiaobao/article/details/79115263
 搜索模板、映射模板、高亮搜索和地理位置的简单玩法
 https://mp.weixin.qq.com/s/BY0f47p6YETCVpQQDzG-dA
-
-
-
 如何用你最熟悉的 SQL 来查询 Elasticsearch 中的数据？ 
 https://mp.weixin.qq.com/s/QQh0M85YqI-sHPnYy3pkBg
+索引模版、检索模板问题 
+https://mp.weixin.qq.com/s/gARgAKgqmUzfeHujK0n71g
+用SQL代替DSL查询ElasticSearch怎样？ 
+https://mp.weixin.qq.com/s/CJkS3vu2BjUWfWrciwNVJg
 -->
 &emsp; elasticsearch有六种搜索方式：  
 1. query string search。  

@@ -264,9 +264,9 @@
     * [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
 * [分布式Session](/docs/microService/thinking/分布式Session.md)  
 * 分布式搜索引擎  
+    * [ES搭建](/docs/ES/7.build.md)   
     * [ES基本概念](/docs/ES/1.basicConcepts.md)  
     * [ES集群](/docs/ES/3.colony.md)  
-    * [ES搭建](/docs/ES/7.build.md)   
     * [ES使用](/docs/ES/2.useTutorials.md)  
         * [索引操作](/docs/ES/index.md)  
         * [文档操作](/docs/ES/document.md)  
