@@ -116,7 +116,7 @@ GET /twitter/_mapping
 DELETE /twitter
 ```
 
-&emsp; 说明：
+&emsp; 说明：  
 &emsp; 可以一次删除多个索引（以逗号间隔） 删除所有索引 _all 或 通配符 *
 
 &emsp; 判断索引是否存在  
@@ -446,12 +446,19 @@ POST /logs_write/_rollover?dry_run
 https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-stats.html  
 
 &emsp; 查看所有的索引状态：  
+
+```text
 GET /_stats  
+```
 
 &emsp; 查看指定索引的状态信息：  
+
+```text
 GET /index1,index2/_stats  
+```
 
 &emsp; 查看索引段信息  
+
 &emsp; 官网链接：
 https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-segments.html  
 
