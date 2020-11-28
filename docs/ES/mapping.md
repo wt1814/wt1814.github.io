@@ -1,5 +1,5 @@
 
-
+# 映射
 
 <!-- 
 
@@ -14,4 +14,8 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490994&idx=1&sn=77ec1e
 
 ElasticSearch 23 种映射参数详解 
 https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247491016&idx=1&sn=843b7e0a94f15d60efee27c4a8efbdc7&scene=21#wechat_redirect
+
+https://mp.weixin.qq.com/s/gi9Dxt23chmEgDK9ZWfHLw
+
 -->
+
