@@ -339,6 +339,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [ES基本概念](/docs/ES/1.basicConcepts.md)  
 [ES集群](/docs/ES/3.colony.md)  
 [ES使用](/docs/ES/2.useTutorials.md)  
+&emsp; [建模](/docs/ES/modeling.md)  
 &emsp; [索引操作](/docs/ES/index.md)  
 &emsp; [文档操作](/docs/ES/document.md)  
 &emsp; [映射详解](/docs/ES/mapping.md)  

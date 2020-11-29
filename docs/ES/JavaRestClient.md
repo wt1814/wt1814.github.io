@@ -19,3 +19,12 @@
 
 ## SpringBoot集成ElasticSearch
 
+<!-- 
+
+Springboot集成ES详解
+https://blog.csdn.net/hzyzzz/article/details/107468837
+
+5分钟_SpringBoot集成ES实现存储、查询
+https://blog.csdn.net/pyfysf/article/details/100810846
+-->
+
