@@ -1,6 +1,8 @@
 
+# JavaRestClient  
 
-&emsp; Elastic Search 提供了官方的 Java Api。这里包括两类，一类是 Low Level Rest Api（低级 Rest Api）和 High Leve Rest Api（高级 Rest Api）。  
+## Java API
+&emsp; ElasticSearch提供了官方的 Java Api。这里包括两类，一类是 Low Level Rest Api（低级 Rest Api）和 High Leve Rest Api（高级 Rest Api）。  
 
 * 低级 Api 并不是功能比较弱，而是指 Api 离底层实现比较近。官方提供的低级 Api 是对原始的 Rest Api 的第一层封装。只是把 Http 调用的细节封装起来。程序还是要自己组装查询的条件字符串、解析返回的结果 json 字符串等。同时也要处理 http 协议的 各种方法、协议头等内容。  
 * 高级 api 是在低级 api 上的进一步封装，不用在在意接口的方法，协议头，也不用人工组合调用的参数字符串，同时对返回的 json 字符串有一定的解析。使用上更方便一些。但是高级 api 并没有实现所有低级 api 实现的功能。所以如果遇到这种情况，还需要利用低级 api 来实现自己功能。  
@@ -14,3 +16,6 @@
     <version>6.5.4</version>
 </dependency>
 ```
+
+## SpringBoot集成ElasticSearch
+

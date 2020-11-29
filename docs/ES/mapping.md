@@ -136,7 +136,7 @@ PUT my_index/_doc/1
 
 ## 1.3. 更新映射  
 &emsp; 使用 dynamic 控制映射是否可以被更新。  
-* dynamic-true
+* dynamic-true  
 &emsp; 设置 dynamic 为 true是默认 dynamic 的默认值，新增字段数据可以写入，同时也可以被索引，Mapping 结构也会被更新。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-45.png)  
 &emsp; 添加数据，同时多添加一个没被定义的 gender 字段。  
@@ -161,7 +161,7 @@ PUT person/_doc/1
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-47.png)  
 &emsp; 新添加的字段值，在添加过程中 Mapping 已自动添加字段。  
 
-* dynamic-false
+* dynamic-false  
 &emsp; 设置 dynamic 为 false时，新增字段数据可以写入，不可以被索引，Mapping 结构会被更新。同样先将 dynamic 设置为 false，然后向里面添加数据，其他步骤和上面 true 操作一样。定义 Mapping，添加数据。搜索 gender 字段： 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-48.png)   
 &emsp; 此时新增字段数据无法被索引，但数据可以写入。  
@@ -169,7 +169,7 @@ PUT person/_doc/1
 &emsp; Mappnig 也不会添加新增的字段：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-50.png)  
 
-* dynamic-strict
+* dynamic-strict  
 &emsp; 设置 dynamic 为 strict时，从字面上意思也可以看出，对于动态映射是较严格的，新增字段数据不可以写入，不可以被索引，Mapping 结构不会被更新。只能按照定义好的 Mapping 结构添加数据。在添加新字段数据时，就马上会抛出异常：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-51.png)  
 
@@ -237,9 +237,9 @@ PUT person/_doc/2
 &emsp; 设置 "null_value":"NULL" 后，空值可以处理搜索。  
 
 ## 1.7. 聚合多个字段  
-聚合多个字段放到一个索引中，使用 copy_to 进行聚合。例如我们在多字段查询中，这是不需要对每个字段进行过滤筛选，只需对聚合字段即可。在使用 copy_to 时，是通过指定聚合的名称实现。  
-实际上，copy_to 不使用数组格式添加名称，也会自动转换成数据格式。  
-添加两条数据，待校验搜索：  
+&emsp; 聚合多个字段放到一个索引中，使用 copy_to 进行聚合。例如我们在多字段查询中，这是不需要对每个字段进行过滤筛选，只需对聚合字段即可。在使用 copy_to 时，是通过指定聚合的名称实现。  
+&emsp; 实际上，copy_to 不使用数组格式添加名称，也会自动转换成数据格式。  
+&emsp; 添加两条数据，待校验搜索：  
 
 ```text
 # 向 person 中添加数据
@@ -266,7 +266,7 @@ PUT person/_doc/2
 }
 ```
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-39.png)  
-查询 full_name 的值，会返回 name 和 address 相关的值的对象。  
+&emsp; 查询 full_name 的值，会返回 name 和 address 相关的值的对象。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-40.png)  
-从上面返回结果看到，_source 中的字段没有增加相应的 copy_to 字段名，所以 copy_to 只会拷贝字段内容至索引，并不会改变包含的字段。  
+&emsp; 从上面返回结果看到，_source 中的字段没有增加相应的 copy_to 字段名，所以 copy_to 只会拷贝字段内容至索引，并不会改变包含的字段。  
 
