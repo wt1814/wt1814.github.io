@@ -101,8 +101,7 @@ PUT twitter
 &emsp; 创建索引时返回的结果说明  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-26.png)  
 
-
-&emsp; Get Index 查看索引的定义信息
+&emsp; Get Index查看索引的定义信息
 &emsp; GET /twitter，可以一次获取多个索引（以逗号间隔） 获取所有索引 _all 或 用通配符*
 
 ```text
