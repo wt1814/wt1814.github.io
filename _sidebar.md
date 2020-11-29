@@ -1,3 +1,20 @@
+* 算法
+    * [总结](/docs/java/function/summary.md)  
+    * [算法基本概念](/docs/java/function/1.notion.md)  
+    * [基本数据结构]  
+    * [链表](/docs/java/function/structure/array.md)  
+    * [栈](/docs/java/function/structure/stack.md)  
+    * [哈希](/docs/java/function/structure/hash.md)  
+    * [树](/docs/java/function/structure/tree.md)  
+    * [排序算法](/docs/java/function/4.sort.md)  
+    * [比较排序](/docs/java/function/sort/compare.md)  
+    * [非比较排序](/docs/java/function/sort/noCompare.md)  
+    * [外部排序](/docs/java/function/sort/externalSort.md)  
+    * [查找算法](/docs/java/function/5.search.md)  
+    * [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
+    * [其他数据结构]
+    * [其他数据结构](/docs/java/function/3.otherStructure.md)  
+    * [海量数据应用](/docs/java/function/bigdata.md)  
 * Java  
     * [Java基础](/docs/java/basis/Java基础.md)  
         * [符号](/docs/java/basis/mark.md)  
@@ -18,7 +35,6 @@
     * [自定义注解](/docs/java/basis/annotation.md)  
     * [IO](/docs/java/basis/JavaIO.md)  
     * [SPI](/docs/java/basis/SPI.md)  
-
 * 设计模式  
     * [七大设计原则](/docs/java/Design/1.principles.md)  
     * [Java设计模式](/docs/java/Design/2.design.md)  
@@ -27,25 +43,6 @@
         * [动态代理](/docs/java/Design/6.proxy.md)  
         * [行为型设计模式](/docs/java/Design/5.behavior.md)  
     * [设计模式讨论](/docs/java/Design/discuss.md)  
-
-* 算法
-    * [总结](/docs/java/function/summary.md)  
-    * [算法基本概念](/docs/java/function/1.notion.md)  
-    * [基本数据结构]  
-    * [链表](/docs/java/function/structure/array.md)  
-    * [栈](/docs/java/function/structure/stack.md)  
-    * [哈希](/docs/java/function/structure/hash.md)  
-    * [树](/docs/java/function/structure/tree.md)  
-    * [排序算法](/docs/java/function/4.sort.md)  
-    * [比较排序](/docs/java/function/sort/compare.md)  
-    * [非比较排序](/docs/java/function/sort/noCompare.md)  
-    * [外部排序](/docs/java/function/sort/externalSort.md)  
-    * [查找算法](/docs/java/function/5.search.md)  
-    * [算法思想题型](/docs/java/function/6.algorithmicIdea.md)  
-    * [其他数据结构]
-    * [其他数据结构](/docs/java/function/3.otherStructure.md)  
-    * [海量数据应用](/docs/java/function/bigdata.md)  
-
 * 并发编程  
     * [并发编程总结](/docs/java/concurrent/summary.md)  
     * [线程基本概念](/docs/java/concurrent/1.Thread.md)  
@@ -72,7 +69,6 @@
         * [tools](/docs/java/concurrent/7.tools.md)
     * [并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
     * [多线程处理大数据量](/docs/java/concurrent/bigData.md)  
-
 * JVM  
     * [JVM总结](/docs/java/JVM/summary.md)  
     * [JDK、JRE、JVM](/docs/java/JVM/1.JDK、JRE、JVM三者间的关系.md)  
@@ -83,7 +79,6 @@
     * [JVM调优-基础](/docs/java/JVM/6.JVM调优-基础.md)  
     * [JVM调优](/docs/java/JVM/7.JVM调优.md)  
     * [JAVA线上故障排查](/docs/Linux/problem.md)   
-
 * 数据库  
     * [建模](/docs/SQL/modeling.md)   
     * [SQL语句](/docs/SQL/1.SQL语句.md)  
@@ -118,7 +113,6 @@
         * [HikariCPConnectionPool]   
         * [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
         * [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
-  
 * Spring  
     * [Spring](/docs/SSM/Spring/1.Spring.md)  
     * [对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
@@ -143,7 +137,6 @@
     * [SpringMVC使用教程](/docs/SSM/Spring/9.SpringMVCUse.md)  
     * [SpringMVC解析](/docs/SSM/Spring/10.SpringMVCAnalysis.md)    
     * [过滤器、拦截器、监听器](docs/web/subassembly.md)  
-
 * MyBatis  
     * [MyBatis教程](/docs/SSM/MyBatis/Mybatis.md)  
     * [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
@@ -152,7 +145,6 @@
     * [PageHelper](/docs/SSM/MyBatis/PageHelper.md)    
     * [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
     * [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
-
 * SpringBoot  
     * [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
     * [SpringBoot启动过程-SpringApplication初始化](/docs/microService/SpringBoot/SpringApplication初始化.md)  
@@ -163,7 +155,6 @@
     * [SpringBoot自动配置原理-@SpringBootApplication](/docs/microService/SpringBoot/自动配置@SpringBootApplication.md)  
     * [SpringBoot自动配置原理-运行流程解析](/docs/microService/SpringBoot/自动配置运行流程解析.md)  
     * [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
-
 * Spring Cloud  
     * [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/0.Netflix.md)  
     * [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/1.Eureka.md)  
@@ -173,7 +164,6 @@
     * [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/5.Zuul.md)  
     * [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/6.Sleuth.md)  
     * [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
-
 * Dubbo  
     * [RPC](/docs/microService/RPC.md)  
     * [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
@@ -190,17 +180,14 @@
         * [服务引用](/docs/microService/Dubbo/introduce.md)  
         * [服务调用](/docs/microService/Dubbo/call.md)  
     * [时间轮算法](/docs/microService/Dubbo/timeWheel.md)  
-        
 * Zookeeper
     * [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
-
 * 分布式理论  
     * [分布式和集群](/docs/system/distributed.md)  
     * [分布式和集中式](/docs/system/deploy.md)  
     * [分布式算法](/docs/microService/thinking/分布式算法.md)  
         * [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
     * [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
-
 * 分布式缓存
     * [分布式缓存](/docs/microService/thinking/分布式缓存.md) 
     * [Redis]
@@ -226,10 +213,8 @@
     * [Redis运维](/docs/microService/Redis/Redis运维.md)  
     * [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
     * [Redis问题及排查](/docs/microService/Redis/problem.md)  
-     
 * [分布式限流](/docs/microService/thinking/分布式限流.md)   
 * [服务降级](/docs/microService/thinking/服务降级.md)  
-
 * 分布式消息队列
     * [mq](/docs/microService/mq/mq.md)  
     * [kafka基本概念](/docs/microService/mq/kafka/kafka.md)  
@@ -248,21 +233,6 @@
     * [kafka源码]  
     * [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
     * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md) 
-
-* 分布式ID  
-    * [分布式ID](/docs/microService/thinking/分布式ID.md)  
-    * [分库分表多维度查询](/docs/microService/thinking/分库分表多维度查询.md)  
-
-* [分布式事务](/docs/microService/thinking/分布式事务.md)  
-    * [DTP](/docs/microService/thinking/分布式事务-1.md)    
-    * [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
-    * [TCC模式](/docs/microService/thinking/分布式事务-3.md)   
-    * [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
-* [分布式锁](/docs/microService/thinking/分布式锁.md)  
-    * [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
-    * [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
-    * [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
-* [分布式Session](/docs/microService/thinking/分布式Session.md)  
 * 分布式搜索引擎  
     * [ES搭建](/docs/ES/7.build.md)   
     * [ES基本概念](/docs/ES/1.basicConcepts.md)  
@@ -276,12 +246,23 @@
     * [ES原理](/docs/ES/4.principle.md)  
     * [ES优化](/docs/ES/5.optimization.md)  
     * [ELK](/docs/ES/6.ELK与EFK.md)   
-
 * [延迟队列](/docs/frame/delayQueue.md)  
 * [StopWatch](/docs/frame/StopWatch.md)  
 * [分布式调度](/docs/frame/taskSheduling.md)  
     * [XXL-JOB](/docs/frame/XXL-JOB.md)  
-
+* 分布式ID  
+    * [分布式ID](/docs/microService/thinking/分布式ID.md)  
+    * [分库分表多维度查询](/docs/microService/thinking/分库分表多维度查询.md)  
+* [分布式事务](/docs/microService/thinking/分布式事务.md)  
+    * [DTP](/docs/microService/thinking/分布式事务-1.md)    
+    * [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
+    * [TCC模式](/docs/microService/thinking/分布式事务-3.md)   
+    * [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
+* [分布式锁](/docs/microService/thinking/分布式锁.md)  
+    * [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
+    * [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
+    * [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
+* [分布式Session](/docs/microService/thinking/分布式Session.md)  
 * 分布式通信  
 * [序列化](/docs/microService/communication/serializbale.md)  
 * [NIO](/docs/microService/communication/NIO.md)  
@@ -301,13 +282,11 @@
         * [Reactor与EventLoop](/docs/microService/communication/Netty/Reactor.md)  
     * [TCP粘拆包与Netty编解码](/docs/microService/communication/Netty/Decoder.md)  
     * [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
-
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [接口响应时间](/docs/Error/responseTime.md)  
     * [熔断降级处理](/docs/Error/hystrix.md)  
     * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-
 * 项目构建基础  
     * [RESTful风格](/docs/web/interface/RESTful.md)  
     * [日志系统](/docs/web/log.md)   
@@ -317,19 +296,16 @@
     * [统一格式返回]()  
     * [统一异常处理](/docs/web/ExceptionHandler.md)  
         * [Assert处理异常](/docs/web/Assert.md)  
-
     * [API接口设计](/docs/web/API.md)    
         * [RESTful风格](/docs/web/interface/RESTful.md)  
         * [接口幂等](/docs/web/interface/idempotent.md)  
         * [接口防刷](/docs/web/interface/brush.md)  
         * [接口安全](/docs/web/interface/security.md)  
         * [接口超时](/docs/web/interface/timeout.md)  
-
     * [JavaBean](/docs/web/JavaBean.md)  
         * [POJO](/docs/web/POJO.md)  
         * [BeanUtils](/docs/web/BeanUtils.md)  
         * [参数校验](/docs/web/Validation.md)  
-
     * [Http重试](/docs/web/httpRetry.md)   
     * [敏感词汇](/docs/web/sensitive.md)  
     * [生成二维码](/docs/web/QRCode.md)  
@@ -337,7 +313,6 @@
     * [加密算法](/docs/web/encryption.md)  
     * [源码安全](/docs/web/codeSecurity.md)  
     * [其他](/docs/web/other.md) 
-
 * 架构设计  
     * [架构图](/docs/system/diagram.md)  
     * [设计文档]()  
@@ -359,13 +334,11 @@
         * [Nginx](/docs/system/loadBalance/Nginx/1.nginx.md)  
         * [Nginx使用](/docs/system/loadBalance/Nginx/2.nginx使用场景.md)   
         * [Nginx运维](/docs/system/loadBalance/Nginx/3.nginx运维.md) 
-
 * Linux  
     * [Linux命令](/docs/Linux/Linux命令.md)  
     * [文本处理](/docs/Linux/文本处理.md)  
     * [网络通讯](/docs/Linux/网络通讯.md)  
     * [shell编程](/docs/Linux/shell.md)  
-
 * DevOps  
     * [DevOps与CI/CD](/docs/devOps/devOps.md)  
     * [DevOps搭建](/docs/devOps/devOpsPractice.md)   
@@ -390,15 +363,12 @@
     * [灰度发布](/docs/system/grayscalePublishe.md)  
     * [网关灰度发布](/docs/system/gatewayGrayscale.md)  
     * [监控](/docs/devOps/monitor.md)  
-
-
 * 计算机网络  
     * [OSI七层网络模型](/docs/network/0.OSI.md)  
     * [HTTP](/docs/network/1.HTTP.md)  
     * [HTTPS](/docs/network/2.HTTPS.md)  
     * [DNS](/docs/network/3.DNS.md)  
     * [TCP](/docs/network/4.TCP.md)  
-    
 * 开发常用工具  
     * [idea](/docs/software/idea/idea.md)  
     * [抓包Charles](/docs/software/charles.md)  

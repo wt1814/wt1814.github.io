@@ -22,11 +22,11 @@
         - [限流降级](#限流降级)
         - [分布式消息队列](#分布式消息队列)
             - [kafka](#kafka)
+        - [分布式搜索引擎](#分布式搜索引擎)
+        - [分布式调度](#分布式调度)
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
-        - [分布式搜索引擎](#分布式搜索引擎)
-        - [分布式调度](#分布式调度)
         - [分布式通信](#分布式通信)
     - [其他框架](#其他框架)
     - [项目构建基础](#项目构建基础)
@@ -334,23 +334,6 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
 [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md) 
 
-### 分布式ID
-[分布式ID](/docs/microService/thinking/分布式ID.md)  
-[分库分表多维度查询](/docs/microService/thinking/分库分表多维度查询.md)  
-
-### 分布式事务
-[分布式事务](/docs/microService/thinking/分布式事务.md)  
-&emsp; [DTP](/docs/microService/thinking/分布式事务-1.md)    
-&emsp; [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
-&emsp; [TCC模式、事务状态表](/docs/microService/thinking/分布式事务-3.md)   
-&emsp; [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
-
-### 分布式锁
-[分布式锁](/docs/microService/thinking/分布式锁.md)  
-&emsp; [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
-&emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
-&emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
-
 ### 分布式搜索引擎  
 [ES搭建](/docs/ES/7.build.md)  
 [ES基本概念](/docs/ES/1.basicConcepts.md)  
@@ -371,6 +354,23 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [StopWatch](/docs/frame/StopWatch.md)  
 [分布式调度](/docs/frame/taskSheduling.md)  
 &emsp; [XXL-JOB](/docs/frame/XXL-JOB.md) 
+
+### 分布式ID
+[分布式ID](/docs/microService/thinking/分布式ID.md)  
+[分库分表多维度查询](/docs/microService/thinking/分库分表多维度查询.md)  
+
+### 分布式事务
+[分布式事务](/docs/microService/thinking/分布式事务.md)  
+&emsp; [DTP](/docs/microService/thinking/分布式事务-1.md)    
+&emsp; [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
+&emsp; [TCC模式、事务状态表](/docs/microService/thinking/分布式事务-3.md)   
+&emsp; [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
+
+### 分布式锁
+[分布式锁](/docs/microService/thinking/分布式锁.md)  
+&emsp; [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
+&emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
+&emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
 
 ### 分布式通信  
 [序列化](/docs/microService/communication/serializbale.md)  
