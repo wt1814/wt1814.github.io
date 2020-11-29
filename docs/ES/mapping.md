@@ -135,9 +135,70 @@ PUT my_index/_doc/1
 ```
 
 ## 1.3. 更新映射  
+&emsp; 使用 dynamic 控制映射是否可以被更新。  
+* dynamic-true
+&emsp; 设置 dynamic 为 true是默认 dynamic 的默认值，新增字段数据可以写入，同时也可以被索引，Mapping 结构也会被更新。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-45.png)  
+&emsp; 添加数据，同时多添加一个没被定义的 gender 字段。  
 
+```text
+# 向 person 中添加数据
+PUT person/_doc/1
+{
+    "uId": 1,
+    "name": "ytao",
+    "age": 18,
+    "address": "广东省珠海市",
+    "birthday": "2020-01-15T12:00:00Z",
+    "money": 108.2,
+    "isStrong": true,
+    "gender": "男"    # Mapping 中未定义的字段
+}
+```
+&emsp; 添加成功，搜索 gender 字段：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-46.png)  
+&emsp; 查看 Mapping 结构：   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-47.png)  
+&emsp; 新添加的字段值，在添加过程中 Mapping 已自动添加字段。  
+
+* dynamic-false
+&emsp; 设置 dynamic 为 false时，新增字段数据可以写入，不可以被索引，Mapping 结构会被更新。同样先将 dynamic 设置为 false，然后向里面添加数据，其他步骤和上面 true 操作一样。定义 Mapping，添加数据。搜索 gender 字段： 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-48.png)   
+&emsp; 此时新增字段数据无法被索引，但数据可以写入。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-49.png)  
+&emsp; Mappnig 也不会添加新增的字段：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-50.png)  
+
+* dynamic-strict
+&emsp; 设置 dynamic 为 strict时，从字面上意思也可以看出，对于动态映射是较严格的，新增字段数据不可以写入，不可以被索引，Mapping 结构不会被更新。只能按照定义好的 Mapping 结构添加数据。在添加新字段数据时，就马上会抛出异常：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-51.png)  
 
 ## 1.4. 多字段  
+&emsp; Mapping 中可以定义 fields 多字段属性，以满足不同场景下的实现。比如 address 定义为 text 类型，fields 里面又有定义 keyword 类型，这里主要是区分两个不同不同使用场景。  
+
+* text 会建立分词倒排索引，用于全文检索。
+* keyword 不会建立分词倒排索引，用于排序和聚合。
+
+&emsp; 添加数据：  
+
+```text
+# 向 person 中添加数据
+PUT person/_doc/1
+{
+    "uId": 1,
+    "name": "ytao",
+    "age": 18,
+    "address": "广东省珠海市",
+    "birthday": "2020-01-15T12:00:00Z",
+    "money": 108.2,
+    "isStrong": true
+}
+```
+&emsp; 查询 address数据。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-43.png)  
+&emsp; 查询 address.keyword数据。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-44.png)  
+&emsp; 通过 keyword检索时，由于不会建立分词索引，并没有获取到数据。  
 
 ## 1.5. 控制索引  
 &emsp; 在字段中使用 index 指定当前字段索引是否能被搜索到。指定类型为 boolean 类型，false 为不可搜索到，true 为可以搜索到。先删除之前的 Mapping：  
