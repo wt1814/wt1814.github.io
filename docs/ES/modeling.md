@@ -60,6 +60,8 @@ https://mp.weixin.qq.com/s/hTGqpCl4KYXlvD74fj8l5Q
 ~~
 从一个实战问题再谈 Elasticsearch 数据建模 
 https://mp.weixin.qq.com/s/lGrNd-O_hmlEQcTc7OykmQ
+干货 | 论Elasticsearch数据建模的重要性 
+https://mp.weixin.qq.com/s?__biz=MzI2NDY1MTA3OQ==&mid=2247484159&idx=1&sn=731562a8bb89c9c81b4fd6a8e92e1a99&chksm=eaa82ad7dddfa3c11e5b63a41b0e8bc10d12f1b8439398e490086ddc6b4107b7864dbb9f891a&scene=21#wechat_redirect
 -->
 
 
