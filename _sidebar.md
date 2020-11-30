@@ -80,7 +80,7 @@
     * [JVM调优](/docs/java/JVM/7.JVM调优.md)  
     * [JAVA线上故障排查](/docs/Linux/problem.md)   
 * 数据库  
-    * [建模](/docs/SQL/modeling.md)   
+    * [SQL建模](/docs/SQL/modeling.md)   
     * [SQL语句](/docs/SQL/1.SQL语句.md)  
         * [基本查询语句](/docs/SQL/9.basicSelect.md)  
         * [连接查询](/docs/SQL/10.joinSelect.md)  
@@ -238,7 +238,7 @@
     * [ES基本概念](/docs/ES/1.basicConcepts.md)  
     * [ES集群](/docs/ES/3.colony.md)  
     * [ES使用](/docs/ES/2.useTutorials.md)  
-        * [建模](/docs/ES/modeling.md)  
+        * [ES建模](/docs/ES/modeling.md)  
         * [索引操作](/docs/ES/index.md)  
         * [文档操作](/docs/ES/document.md)  
         * [映射详解](/docs/ES/mapping.md)  

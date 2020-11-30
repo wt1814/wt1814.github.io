@@ -1,6 +1,11 @@
 
 
 # 1. Kibana用户手册  
+<!-- 
+kibana设置中文
+https://www.cnblogs.com/gaohanghang/p/12099614.html
+-->
+
 &emsp; Kibana文档：https://www.elastic.co/guide/cn/kibana/current/index.html  
 
 ## 1.1. 日志检索  
