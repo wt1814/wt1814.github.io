@@ -15,6 +15,8 @@
 
 # 1. 检索操作  
 <!-- 
+检索类型如何选型呢？
+https://mp.weixin.qq.com/s/Fc5LhiLJIeCtstl9OFeqdQ
 
 ES搜索 term与match区别 bool查询
 https://blog.csdn.net/qq_35240226/article/details/105275789
