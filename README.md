@@ -242,12 +242,12 @@
 [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/5.Zuul.md)  
 [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/6.Sleuth.md)  
 &emsp; [SpringMVC、dubbo集成zipkin](/docs/microService/SpringCloudNetflix/zipkin.md)  
+[Spring Cloud Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
 <!-- 
 [Spring Cloud Config]  
 [Spring Cloud Bus]  
 [Spring Cloud Security]  
 -->
-[Spring Cloud Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
 
 ### Dubbo  
 [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
@@ -428,6 +428,10 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [加密算法](/docs/web/encryption.md)  
 [源码安全](/docs/web/codeSecurity.md)  
 [其他](/docs/web/other.md)  
+<!-- 
+Httpclient4.3+ 连接池监控详细介绍
+https://www.jianshu.com/p/2813af4eb0d3
+-->
 
 ## 架构设计  
 [架构图](/docs/system/diagram.md)  
@@ -476,7 +480,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 ## DevOps  
 [DevOps与CI/CD](/docs/devOps/devOps.md)  
 [DevOps搭建](/docs/devOps/devOpsPractice.md)  
-
+[Jenkins](/docs/devOps/Jenkins.md)  
 [docker]  
 &emsp; [docker总结](/docs/devOps/docker/summary.md)  
 &emsp; [docker架构](/docs/devOps/docker/principle.md)  
@@ -492,13 +496,15 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 &emsp; [k8s运维](/docs/devOps/k8s/tools.md)  
 &emsp; [Kuboard介绍](/docs/devOps/k8s/kuboard.md)  
 
-[Jenkins](/docs/devOps/Jenkins.md)  
+[Jmeter](/docs/devOps/Jmeter.md)  
 [Maven](/docs/devOps/maven.md)  
 [git](/docs/devOps/git/command.md)  
 
 [灰度发布](/docs/system/grayscalePublishe.md)  
 &emsp; [网关灰度发布](/docs/system/gatewayGrayscale.md)  
 [监控](/docs/devOps/monitor.md)  
+
+
 
 ----
 

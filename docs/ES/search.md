@@ -14,6 +14,11 @@
 <!-- /TOC -->
 
 # 1. 检索操作  
+<!-- 
+
+ES搜索 term与match区别 bool查询
+https://blog.csdn.net/qq_35240226/article/details/105275789
+-->
 
 ## 1.1. 检索操作  
 <!-- 

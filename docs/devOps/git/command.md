@@ -1,7 +1,12 @@
 # git
 
-<!-- 
+<!--
 
+
+git clone时报RPC failed; curl 18 transfer closed with outstanding read data remaining
+https://www.cnblogs.com/zjfjava/p/10392150.html
+
+git书籍  
 https://mp.weixin.qq.com/s/bT7VXffqHuzUZUY5c4ce7A
 -->
 

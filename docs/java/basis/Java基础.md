@@ -575,6 +575,11 @@ class TestDemo2 {
 封装的步骤：使用访问控制符private，提供get、set方法。  
 
 ### 1.6.2. 继承  
+<!-- 
+Java继承详解
+https://mp.weixin.qq.com/s/eiU_7QUtwgQhAr7nZlFEDQ
+-->
+
 &emsp; 继承的特性：
 * 子类拥有父类非 private 的属性、方法。  
 * 子类可以拥有自己的属性和方法，即子类可以对父类进行扩展。  

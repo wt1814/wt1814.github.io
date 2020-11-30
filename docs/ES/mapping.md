@@ -16,7 +16,10 @@
 <!-- /TOC -->
 
 # 1. 映射详解
-<!-- 
+<!--
+
+ES的文档映射
+https://www.cnblogs.com/laoyeye/p/13289153.html
 
 -->
 
