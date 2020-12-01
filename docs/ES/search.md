@@ -2,15 +2,15 @@
 
 - [1. 检索操作](#1-检索操作)
     - [1.1. 检索操作](#11-检索操作)
-        - [Searchtimeout](#searchtimeout)
-        - [1.1.1. Query_string](#111-query_string)
-        - [1.1.2. DSL](#112-dsl)
-            - [1.1.2.1. SQL代替DSL](#1121-sql代替dsl)
+        - [1.1.1. Searchtimeout](#111-searchtimeout)
+        - [1.1.2. Query_string](#112-query_string)
+        - [1.1.3. DSL](#113-dsl)
+            - [1.1.3.1. SQL代替DSL](#1131-sql代替dsl)
         - [1.1.4. full-text search(全文检索)](#114-full-text-search全文检索)
         - [1.1.5. phrase search(短语搜索)](#115-phrase-search短语搜索)
-        - [1.1.3. Query and filter(查询和过滤)](#113-query-and-filter查询和过滤)
-        - [Compound queries(组合查询)](#compound-queries组合查询)
-        - [1.1.6. highlight search](#116-highlight-search)
+        - [1.1.6. Query and filter(查询和过滤)](#116-query-and-filter查询和过滤)
+        - [1.1.7. Compound queries(组合查询)](#117-compound-queries组合查询)
+        - [1.1.8. highlight search](#118-highlight-search)
     - [1.2. 检索模板](#12-检索模板)
 
 <!-- /TOC -->
@@ -23,10 +23,6 @@ https://mp.weixin.qq.com/s/Fc5LhiLJIeCtstl9OFeqdQ
 -->
 
 ## 1.1. 检索操作  
-<!-- 
-https://blog.csdn.net/xiaos76/article/details/105883617
-https://blog.csdn.net/jiaojiao521765146514/article/details/82746192
--->
 &emsp; 5.X 版本之后，string 类型不再存在，取代的是text和keyword类型。  
 * text 类型作用：分词，将大段的文字根据分词器切分成独立的词或者词组，以便全文检索。  
     * 适用于：email 内容、某产品的描述等需要分词全文检索的字段；
@@ -43,12 +39,12 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/82746192
 6. highlight search，高亮搜索。
 
 
-### Searchtimeout  
+### 1.1.1. Searchtimeout  
 &emsp; (1)设置：默认没有timeout，如果设置了timeout，那么会执行timeout机制。  
 &emsp; (2)Timeout机制：假设用户查询结果有1W条数据，但是需要10″才能查询完毕，但是用户设置了1″的timeout，那么不管当前一共查询到了多少数据，都会在1″后ES讲停止查询，并返回当前数据。  
 &emsp; (3)用法：GET /_search?timeout=1s/ms/m  
 
-### 1.1.1. Query_string
+### 1.1.2. Query_string
 <!-- 
 https://blog.csdn.net/qq_33746789/article/details/83782932
 --> 
@@ -58,8 +54,9 @@ https://blog.csdn.net/qq_33746789/article/details/83782932
 &emsp; ②带参数：GET /product/_search?q=name:xiaomi  
 &emsp; ③分页：GET /product/_search?from=0&size=2&sort=price:asc  
 
-### 1.1.2. DSL  
-
+### 1.1.3. DSL  
+&emsp; DSL：Domain Specified Language，特定领域的语言。  
+&emsp; http request body：请求体，可以用json的格式来构建查询语法，比较方便，可以构建各种复杂的语法  
 
 &emsp; 示例：  
 ①match_all：匹配所有  
@@ -151,7 +148,7 @@ GET /product/_search
 }
 ```
 
-#### 1.1.2.1. SQL代替DSL  
+#### 1.1.3.1. SQL代替DSL  
 <!-- 
 用SQL代替DSL查询ElasticSearch怎样？ 
 https://mp.weixin.qq.com/s/CJkS3vu2BjUWfWrciwNVJg
@@ -236,6 +233,10 @@ GET /_analyze
 ```
 
 ### 1.1.5. phrase search(短语搜索)
+<!-- 
+跟全文检索相对应，相反，全文检索会将输入的搜索串拆解开来，去倒排索引里面一一匹配，只要能匹配上任意一个拆解后的单词，就可以作为结果返回，phrase search，要求输入的搜索串必须在指定的字段文本中完全包含一模一样的，才可以算匹配，才能作为结果返回。  
+-->
+
 短语搜索，和全文检索相反，“nfc phone”会作为一个短语去检索    
 
 ```text
@@ -249,7 +250,7 @@ GET /product/_search
 }
 ```
 
-### 1.1.3. Query and filter(查询和过滤)
+### 1.1.6. Query and filter(查询和过滤)
 ①bool：可以组合多个查询条件，bool查询也是采用more_matches_is_better的机制，因此满足must和should子句的文档将会合并起来计算分值。  
 1)must：必须满足  
 子句（查询）必须出现在匹配的文档中，并将有助于得分。  
@@ -366,7 +367,7 @@ GET /product/_search
 }
 ```
 
-### Compound queries(组合查询)
+### 1.1.7. Compound queries(组合查询)
 ①想要一台带NFC功能的 或者 小米的手机 但是不要耳机  
 
 ```text
@@ -426,12 +427,13 @@ GET /product/_search
 }
 ```
 
-### 1.1.6. highlight search
+### 1.1.8. highlight search
 <!-- 
 搜索模板、映射模板、高亮搜索和地理位置的简单玩法
 https://mp.weixin.qq.com/s/BY0f47p6YETCVpQQDzG-dA
 -->
 
+```text
 GET /product/_search
 {
     "query" : {
@@ -445,12 +447,7 @@ GET /product/_search
       }
     }
 }
-
-
-
-
-
-
+```
 
 
 ## 1.2. 检索模板  
