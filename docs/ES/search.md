@@ -38,7 +38,6 @@ https://mp.weixin.qq.com/s/Fc5LhiLJIeCtstl9OFeqdQ
 5. phrase search，短语搜索。  
 6. highlight search，高亮搜索。
 
-
 ### 1.1.1. Searchtimeout  
 &emsp; (1)设置：默认没有timeout，如果设置了timeout，那么会执行timeout机制。  
 &emsp; (2)Timeout机制：假设用户查询结果有1W条数据，但是需要10″才能查询完毕，但是用户设置了1″的timeout，那么不管当前一共查询到了多少数据，都会在1″后ES讲停止查询，并返回当前数据。  
@@ -59,7 +58,7 @@ https://blog.csdn.net/qq_33746789/article/details/83782932
 &emsp; http request body：请求体，可以用json的格式来构建查询语法，比较方便，可以构建各种复杂的语法  
 
 &emsp; 示例：  
-①match_all：匹配所有  
+&emsp; ①match_all：匹配所有  
 
 ```text
 GET /product/_search
@@ -69,7 +68,7 @@ GET /product/_search
   }
 }
 ```
-②match：name中包含“nfc”  
+&emsp; ②match：name中包含“nfc”  
 
 ```text
 GET /product/_search
@@ -81,7 +80,7 @@ GET /product/_search
   }
 }
 ```
-③sort：按照价格倒序排序  
+&emsp; ③sort：按照价格倒序排序  
 
 ```text
 GET /product/_search
@@ -99,7 +98,7 @@ GET /product/_search
   ]
 }
 ```
-④multi_match：根据多个字段查询一个关键词，name和desc中包含“nfc”的doc  
+&emsp; ④multi_match：根据多个字段查询一个关键词，name和desc中包含“nfc”的doc  
 
 ```text
 GET /product/_search
@@ -117,7 +116,7 @@ GET /product/_search
   ]
 }
 ```
-⑤_source 元数据：想要查询多个字段，例子中为只查询“name”和“price”字段。  
+&emsp; ⑤_source 元数据：想要查询多个字段，例子中为只查询“name”和“price”字段。  
 
 ```text
 GET /product/_search
@@ -130,7 +129,7 @@ GET /product/_search
   "_source": ["name","price"]
 }
 ```
-⑥分页（deep-paging）：查询第一页（每页两条数据）  
+&emsp; ⑥分页（deep-paging）：查询第一页（每页两条数据）  
 
 ```text
 GET /product/_search
@@ -163,8 +162,7 @@ https://mp.weixin.qq.com/s/QQh0M85YqI-sHPnYy3pkBg
 ES搜索 term与match区别 bool查询
 https://blog.csdn.net/qq_35240226/article/details/105275789
 -->
-
-①query-term：不会被分词，  
+&emsp; ①query-term：不会被分词，  
 
 ```text
 GET /product/_search
@@ -176,7 +174,8 @@ GET /product/_search
   }
 }
 ```
-②match和term区别：  
+&emsp; ②match和term区别：  
+
 ```text
 GET /product/_search
 {
@@ -214,7 +213,8 @@ GET /product/_search
   }
 }
 ```
-③☆全文检索：  
+&emsp; ③☆全文检索：  
+
 ```text
 GET /product/_search
 {
@@ -237,7 +237,7 @@ GET /_analyze
 跟全文检索相对应，相反，全文检索会将输入的搜索串拆解开来，去倒排索引里面一一匹配，只要能匹配上任意一个拆解后的单词，就可以作为结果返回，phrase search，要求输入的搜索串必须在指定的字段文本中完全包含一模一样的，才可以算匹配，才能作为结果返回。  
 -->
 
-短语搜索，和全文检索相反，“nfc phone”会作为一个短语去检索    
+&emsp; 短语搜索，和全文检索相反，“nfc phone”会作为一个短语去检索    
 
 ```text
 GET /product/_search
@@ -251,18 +251,19 @@ GET /product/_search
 ```
 
 ### 1.1.6. Query and filter(查询和过滤)
-①bool：可以组合多个查询条件，bool查询也是采用more_matches_is_better的机制，因此满足must和should子句的文档将会合并起来计算分值。  
-1)must：必须满足  
-子句（查询）必须出现在匹配的文档中，并将有助于得分。  
-2)filter：过滤器 不计算相关度分数，cache☆  
-子句（查询）必须出现在匹配的文档中。但是不像 must查询的分数将被忽略。Filter子句在filter上下文中执行，这意味着计分被忽略，并且子句被考虑用于缓存。  
-3)should：可能满足 or  
-子句（查询）应出现在匹配的文档中。  
-4)must_not：必须不满足 不计算相关度分数   not   
-子句（查询）不得出现在匹配的文档中。子句在过滤器上下文中执行，这意味着计分被忽略，并且子句被视为用于缓存。由于忽略计分，0因此将返回所有文档的分数。  
-5)minimum_should_match  
-②案例：  
-1)demo案例  
+&emsp; ①bool：可以组合多个查询条件，bool查询也是采用more_matches_is_better的机制，因此满足must和should子句的文档将会合并起来计算分值。  
+&emsp; 1)must：必须满足  
+&emsp; 子句（查询）必须出现在匹配的文档中，并将有助于得分。  
+&emsp; 2)filter：过滤器 不计算相关度分数，cache☆  
+&emsp; 子句（查询）必须出现在匹配的文档中。但是不像 must查询的分数将被忽略。Filter子句在filter上下文中执行，这意味着计分被忽略，并且子句被考虑用于缓存。  
+&emsp; 3)should：可能满足 or  
+&emsp; 子句（查询）应出现在匹配的文档中。  
+&emsp; 4)must_not：必须不满足 不计算相关度分数   not   
+&emsp; 子句（查询）不得出现在匹配的文档中。子句在过滤器上下文中执行，这意味着计分被忽略，并且子句被视为用于缓存。由于忽略计分，0因此将返回所有文档的分数。  
+&emsp; 5)minimum_should_match  
+&emsp; ②案例：  
+&emsp; 1)demo案例  
+
 ```text
 #首先筛选name包含“xiaomi phone”并且价格大于1999的数据（不排序），
 #然后搜索name包含“xiaomi”and desc 包含“shouji”
@@ -287,7 +288,7 @@ GET /product/_search
   }
 }
 ```
-2)bool多条件 name包含xiaomi 不包含erji 描述里包不包含nfc都可以，价钱要大于等于4999  
+&emsp; 2)bool多条件 name包含xiaomi 不包含erji 描述里包不包含nfc都可以，价钱要大于等于4999  
 
 ```text
 GET /product/_search
@@ -320,8 +321,8 @@ GET /product/_search
   }
 }
 ```
-③嵌套查询：  
-1)minimum_should_match：参数指定should返回的文档必须匹配的子句的数量或百分比。如果bool查询包含至少一个should子句，而没有must或 filter子句，则默认值为1。否则，默认值为0  
+&emsp; ③嵌套查询：  
+&emsp; 1)minimum_should_match：参数指定should返回的文档必须匹配的子句的数量或百分比。如果bool查询包含至少一个should子句，而没有must或 filter子句，则默认值为1。否则，默认值为0  
 
 ```text
 GET /product/_search
@@ -344,7 +345,7 @@ GET /product/_search
   }
 }
 ```
-2)案例：  
+&emsp; 2)案例：  
 
 ```text
 GET /product/_search
@@ -368,7 +369,7 @@ GET /product/_search
 ```
 
 ### 1.1.7. Compound queries(组合查询)
-①想要一台带NFC功能的 或者 小米的手机 但是不要耳机  
+&emsp; ①想要一台带NFC功能的 或者 小米的手机 但是不要耳机  
 
 ```text
 SELECT * from product 
@@ -394,7 +395,7 @@ GET /product/_search
   }
 }
 ```
-②搜索一台xiaomi nfc phone或者一台满足 是一台手机 并且 价格小于等于2999  
+&emsp; ②搜索一台xiaomi nfc phone或者一台满足 是一台手机 并且 价格小于等于2999  
 
 ```text
 SELECT * FROM product 
