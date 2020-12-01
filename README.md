@@ -6,7 +6,6 @@
         - [设计模式](#设计模式)
         - [并发编程](#并发编程)
         - [JVM](#jvm)
-        - [编码规范](#编码规范)
     - [数据库](#数据库)
     - [SSM](#ssm)
         - [Spring](#spring)
@@ -465,8 +464,6 @@ https://www.jianshu.com/p/2813af4eb0d3
 [Nginx使用](/docs/system/loadBalance/Nginx/2.nginx使用场景.md)   
 [Nginx运维](/docs/system/loadBalance/Nginx/3.nginx运维.md)  
 
-
-
 ----
 
 ## Linux  
@@ -534,8 +531,4 @@ https://www.jianshu.com/p/2813af4eb0d3
 [redis scan命令](/docs/Error/redisScan.md)  
 [雪花利用ZK生成workId]()  
 <!-- [雪花利用ZK生成workId]()   -->
-
----
-
-[个人笔录](/docs/note/record.md)  
 
