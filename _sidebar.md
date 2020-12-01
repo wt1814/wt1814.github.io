@@ -243,6 +243,7 @@
         * [文档操作](/docs/ES/document.md)  
         * [映射详解](/docs/ES/mapping.md)  
         * [检索操作](/docs/ES/search.md)  
+        * [多表关联](/docs/ES/multiTable.md)  
         * [Java客户端](/docs/ES/JavaRestClient.md)  
     * [ES原理](/docs/ES/4.principle.md)  
     * [ES优化](/docs/ES/5.optimization.md)  
