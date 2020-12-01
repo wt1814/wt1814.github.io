@@ -307,12 +307,12 @@
         * [POJO](/docs/web/POJO.md)  
         * [BeanUtils](/docs/web/BeanUtils.md)  
         * [参数校验](/docs/web/Validation.md)  
+    * [源码安全](/docs/web/codeSecurity.md)  
     * [Http重试](/docs/web/httpRetry.md)   
     * [敏感词汇](/docs/web/sensitive.md)  
     * [生成二维码](/docs/web/QRCode.md)  
     * [反爬虫](/docs/web/reptile.md)  
     * [加密算法](/docs/web/encryption.md)  
-    * [源码安全](/docs/web/codeSecurity.md)  
     * [其他](/docs/web/other.md) 
 * 架构设计  
     * [架构图](/docs/system/diagram.md)  

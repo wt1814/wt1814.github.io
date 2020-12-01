@@ -5,6 +5,9 @@
 <!-- 
 这10款牛X的Redis可视化工具横向评测，犯了选择困难症！ 
 https://mp.weixin.qq.com/s/VoQgSi0oxsXciZgOAGDPbg
+帅气逼人的Redis可视化工具 
+https://mp.weixin.qq.com/s/QayyJmQyogyr5wCdd48Jxg
+
 -->
 
 ## Redis监控  
@@ -22,6 +25,7 @@ https://mp.weixin.qq.com/s?__biz=MzU5ODUwNzY1Nw==&mid=2247484177&idx=1&sn=f86f09
 https://mp.weixin.qq.com/s/l9CyrDwMiArH5J6F53bK8A
 Redis性能指标监控 
 https://mp.weixin.qq.com/s/kdEo6PzF1O1CEiHNU6r5dw
-
+企业级别Redis监控，细化到每个项目实例 
+https://mp.weixin.qq.com/s/KuupYUFbOUmaM_WbvP0I0A
 
 -->

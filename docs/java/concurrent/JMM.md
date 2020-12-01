@@ -38,7 +38,9 @@
 
 # 1. JMM  
 
-<!-- 
+<!--
+CPU缓存一致性协议
+https://mp.weixin.qq.com/s/yWifJmirZNnBrAIZrpJwyg
 https://blog.csdn.net/w1453114339/article/details/107563613
 https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 看懂这篇，才能说了解并发底层技术！ 

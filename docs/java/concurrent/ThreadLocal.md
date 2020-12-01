@@ -214,6 +214,8 @@ https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig
 
 
 ## 1.3. ThreadLocal使用  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-54.png)   
+
 &emsp; 常见的ThreadLocal用法主要有两种：
 1. 在线程级别传递变量。  
 &emsp; 在日常Web开发中会遇到需要把一个参数层层的传递到最内层，然后中间层根本不需要使用这个参数，或者是仅仅在特定的工具类中使用，这样完全没有必要在每一个方法里面都传递这样一个通用的参数。如果有一个办法能够在任何一个类里面想用的时候直接拿来使用就太好了。Java Web项目大部分都是基于Tomcat，每次访问都是一个新的线程，可以使用ThreadLocal，每一个线程都独享一个ThreadLocal，在接收请求的时候set特定内容，在需要的时候get这个值。  
