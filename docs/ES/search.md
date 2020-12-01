@@ -15,6 +15,7 @@
         - [1.1.10. Compound queries(组合查询)](#1110-compound-queries组合查询)
         - [1.1.11. highlight search](#1111-highlight-search)
         - [1.1.12. 小结](#1112-小结)
+    - [避免深度分页](#避免深度分页)
     - [1.2. 检索模板](#12-检索模板)
         - [1.2.1. template入门案例](#121-template入门案例)
             - [1.2.1.1. 标准形式](#1211-标准形式)
@@ -499,6 +500,12 @@ GET /product/_search
 
 ### 1.1.12. 小结  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-79.png)  
+
+## 避免深度分页  
+<!-- 
+https://www.cnblogs.com/hello-shf/p/11543453.html
+-->
+
 
 ## 1.2. 检索模板  
 <!-- 
