@@ -226,9 +226,8 @@ integers.parallelStream().forEach(e -> {
 
 private static void setInteger(List<Integer> integerList, Integer e) {
 
-       integerList.add(e);
-
-   }
+    integerList.add(e);
+}
 ```
 &emsp; 以上代码你会发现，执行完了integerList的大小和预期的不一样。、解决方案：在setInteger()方法上加个修饰synchronized。  
 
