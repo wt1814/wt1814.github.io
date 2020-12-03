@@ -7,6 +7,27 @@
 
 <!-- /TOC -->
 
+<!-- 
+
+
+《Kafka成神之路》- 索引类型
+https://mp.weixin.qq.com/s/QPHPugWlbfeh8HhQvELSSQ
+
+Kafka 疑问之offset位移
+https://blog.csdn.net/yujianping_123/article/details/97398373
+Kafka学习笔记:位移主题Offsets Topic
+https://www.pianshen.com/article/17331469353/
+
+Kafka 术语
+https://www.kancloud.cn/nicefo71/kafka/1470866	
+Kafka 副本机制
+https://www.kancloud.cn/nicefo71/kafka/1473376
+Kafka Controller
+https://www.kancloud.cn/nicefo71/kafka/1473379
+Kafka 高水位和 Leader Epoch 机制
+https://www.kancloud.cn/nicefo71/kafka/1473380
+-->
+
 # 1. kafka
 &emsp; **kafka中文文档：** https://kafka.apachecn.org/  
 
