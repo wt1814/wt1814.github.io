@@ -58,4 +58,7 @@ Prometheus 高可用
 https://mp.weixin.qq.com/s/aXjUQOBMsP90nCi4yiWaPg
 
 
+怎样的监控，才真正说明系统有问题？ 
+https://mp.weixin.qq.com/s/1lSdfafmJeNgCrXDe7pLhw
+
 -->
