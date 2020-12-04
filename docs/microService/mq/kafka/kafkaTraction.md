@@ -91,7 +91,7 @@ Kafka中的事务特性主要用于以下两种场景：
 &emsp; Kafka的事务特性本质上代表了三个功能：原子写操作，拒绝僵尸实例（Zombie fencing）和读事务消息。  
 
 #### 1.2.2.1. 原子写
-&emsp; Kafka的事务特性本质上是支持了Kafka跨分区和Topic的原子写操作。在同一个事务中的消息要么同时写入成功，要么同时写入失败。我们知道，Kafka中的Offset信息存储在一个名为_consumed_offsets的Topic中，因此read-process-write模式，除了向目标Topic写入消息，还会向_consumed_offsets中写入已经消费的Offsets数据。因此read-process-write本质上就是跨分区和Topic的原子写操作。Kafka的事务特性就是要确保跨分区的多个写操作的原子性。   
+&emsp; Kafka的事务特性本质上是支持了Kafka跨分区和Topic的原子写操作。在同一个事务中的消息要么同时写入成功，要么同时写入失败。Kafka中的Offset信息存储在一个名为_consumed_offsets的Topic中，因此read-process-write模式，除了向目标Topic写入消息，还会向_consumed_offsets中写入已经消费的Offsets数据。因此read-process-write本质上就是跨分区和Topic的原子写操作。Kafka的事务特性就是要确保跨分区的多个写操作的原子性。   
 
 #### 1.2.2.2. 拒绝僵尸实例（Zombie fencing）
 &emsp; 在分布式系统中，一个instance的宕机或失联，集群往往会自动启动一个新的实例来代替它的工作。此时若原实例恢复了，那么集群中就产生了两个具有相同职责的实例，此时前一个instance就被称为“僵尸实例（Zombie Instance）”。在Kafka中，两个相同的producer同时处理消息并生产出重复的消息（read-process-write模式），这样就严重违反了Exactly Once Processing的语义。这就是僵尸实例问题。  
@@ -104,7 +104,7 @@ Kafka中的事务特性主要用于以下两种场景：
 #### 1.2.3.1. 事务相关配置  
 1. Broker configs
     1. transactional.id.timeout.ms：在ms中，事务协调器在生产者TransactionalId提前过期之前等待的最长时间，并且没有从该生产者TransactionalId接收到任何事务状态更新。默认是604800000(7天)。这允许每周一次的生产者作业维护它们的id
-    2. max.transaction.timeout.ms：事务允许的最大超时。如果客户端请求的事务时间超过此时间，broke将在InitPidRequest中返回InvalidTransactionTimeout错误。这可以防止客户机超时过大，从而导致用户无法从事务中包含的主题读取内容。
+    2. max.transaction.timeout.ms：事务允许的最大超时。如果客户端请求的事务时间超过此时间，broke将在InitPidRequest中返回InvalidTransactionTimeout错误。这可以防止客户机超时过大，从而导致用户无法从事务中包含的主题读取内容。  
     &emsp; 默认值为900000(15分钟)。这是消息事务需要发送的时间的保守上限。
     3. transaction.state.log.replication.factor：事务状态topic的副本数量。默认值:3
     4. transaction.state.log.num.partitions：事务状态主题的分区数。默认值:50
@@ -116,10 +116,10 @@ Kafka中的事务特性主要用于以下两种场景：
     &emsp; 事务协调器在主动中止正在进行的事务之前等待生产者更新事务状态的最长时间。  
     &emsp; 这个配置值将与InitPidRequest一起发送到事务协调器。如果该值大于max.transaction.timeout。在broke中设置ms时，请求将失败，并出现InvalidTransactionTimeout错误。  
     &emsp; 默认是60000。这使得交易不会阻塞下游消费超过一分钟，这在实时应用程序中通常是允许的。  
-    3. transactional.id
+    3. transactional.id  
     &emsp; 用于事务性交付的TransactionalId。这支持跨多个生产者会话的可靠性语义，因为它允许客户端确保使用相同TransactionalId的事务在启动任何新事务之前已经完成。如果没有提供TransactionalId，则生产者仅限于幂等交付。  
-3. Consumer configs
-    1. isolation.level
+3. Consumer configs  
+    1. isolation.level  
     &emsp; read_uncommitted:以偏移顺序使用已提交和未提交的消息。  
     &emsp; read_committed:仅以偏移量顺序使用非事务性消息或已提交事务性消息。为了维护偏移排序，这个设置意味着我们必须在使用者中缓冲消息，直到看到给定事务中的所有消息。  
 

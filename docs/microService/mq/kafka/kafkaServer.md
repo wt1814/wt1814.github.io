@@ -16,7 +16,7 @@
 &emsp; 在实际应用中，Kafka经常被用作高性能、可扩展的消息中间件。Kafka自定义了一组基于TCP的二进制协议，只要遵守这组协议的格式，就可以向Kafka发送消息，也可以从Kafka中拉取消息，或者做一些其他的事情，比如提交消费位移等。  
 
 ## 1.2. 控制器  
-&emsp; 在Kafka集群中会有一个或多个broker，其中有一个broker会被选举为控制器(Kafka Controller)。**<font color = "red">控制器负责管理整个集群中所有分区和副本的状态。</font>** 当某个分区的leader副本出现故障时，由控制器负责为该分区选举新的leader副本。当检测到某个分区的ISR集合发生变化时，由控制器负责通知所有broker更新其元数据信息。当使用kafka-topics.sh脚本为某个topic增加分区数量时，同样还是由控制器负责分区的重新分配。  
+&emsp; 在Kafka集群中会有一个或多个broker，其中有一个broker会被选举为控制器(Kafka Controller)。 **<font color = "red">控制器负责管理整个集群中所有分区和副本的状态。</font>** 当某个分区的leader副本出现故障时，由控制器负责为该分区选举新的leader副本。当检测到某个分区的ISR集合发生变化时，由控制器负责通知所有broker更新其元数据信息。当使用kafka-topics.sh脚本为某个topic增加分区数量时，同样还是由控制器负责分区的重新分配。  
 
 ### 1.2.1. 控制器的选举及异常恢复  
 &emsp; Kafka中的控制器选举工作依赖于ZooKeeper，成功竞选为控制器的broker会在ZooKeeper中创建/controller这个临时(EPHEMERAL)节点，此临时节点的内容参考如下：  
@@ -26,7 +26,7 @@
 &emsp; 在任意时刻，集群中有且仅有一个控制器。每个broker启动的时候会去尝试读取/controller节点的brokerid的值，如果读取到brokerid的值不为-1，则表示己经有其他broker节点成功竞选为控制器，所以当前broker就会放弃竞选；如果ZooKeeper中不存在/controller节点，或者这个节点中的数据异常，那么就会尝试去创建/controller节点。当前broker去创建节点的时候，也有可能其他broker同时去尝试创建这个节点，只有创建成功的那个broker才会成为控制器，而创建失败的broker竞选失败。每个broker都会在内存中保存当前控制器的brokerid值，这个值可以标识为activeControllerId。  
 &emsp; ZooKeeper中还有一个与控制器有关的/controller_epoch节点，这个节点是持久 (PERSISTENT)节点，节点中存放的是一个整型的controller_epoch值。controller_ epoch用于记录控制器发生变更的次数，即记录当前的控制器是第几代控制器，也可以称之为“控制器的纪元”。  
 &emsp; controller_epoch的初始值为1，即集群中第一个控制器的纪元为1,当控制器发生变更时，每选出一个新的控制器就将该字段值加1。每个和控制器交互的请求都会携带controller epoch这个字段，如果请求的controller_epoch值小于内存中的controller_epoch值，则认为这个请求是向己经过期的控制器所发送的请求，那么这个请求会被认定为无效的请求。如果请求的controller_epoch值大于内存中的controller_epoch值，那么说明已经有新的控制器当选了。由此可见，Kafka通过controller_epoch来保证控制器的唯一性，进而保证相关操作的一致性。  
-&emsp; **<font color =red>具备控制器身份的broker需要比其他普通的broker多一份职责，具体细节如下：</font>  
+&emsp; **<font color =red>具备控制器身份的broker需要比其他普通的broker多一份职责，具体细节如下：</font>**  
 
 * 监听分区相关的变化。为ZooKeeper中的/admin/reassign_partitions节点注册PartitionReassignmentHandler，用来处理分区重分配的动作。为ZooKeeper中的/isr_change_notification节点注册 IsrChangeNotificetionHandler，用来处理ISR集合变更的动作。为ZooKeeper中的admin/preferred-replica-election节点添加PreferredReplicaElectionHandler，用来处理优先副本的选举动作。
 * 监听主题相关的变化。为ZooKeeper中的/brokers/topics节点添加TopicChangeHandler，用来处理主题增减的变化；为ZooKeeper中的/admin/delete_topics节点添加TopicDeletionHandler，用来处理删除主题的动作。

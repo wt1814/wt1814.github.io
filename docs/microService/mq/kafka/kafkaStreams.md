@@ -207,8 +207,8 @@
     * 新增的第二个白色方块所代表的消息记录和已有的消息记录时间 差大于5min，所以会另起一个会话窗口。  
 
 
-    &emsp; 【实例】实现一个会话窗口大小为5min。具体见代码9-3。 代码9-3 设置会话窗口大小为5min
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-56.png)  
+&emsp; 【实例】实现一个会话窗口大小为5min。具体见代码9-3。 代码9-3 设置会话窗口大小为5min
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-56.png)  
 
 #### 1.4.2.2. 连接操作  
 &emsp; 连接操作是通过消息记录键将两个流数据记录进行合并，生成一个新的流数据。  
