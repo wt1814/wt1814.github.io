@@ -349,7 +349,11 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [ES优化](/docs/ES/5.optimization.md)  
 [ELK与EFK](/docs/ES/6.ELK与EFK.md)    
 &emsp; [Kibana用户手册](/docs/ES/Kibana.md)  
-&emsp; [日志采集工具](/docs/ES/logCollection.md)  
+
+<!-- 
+ ElasticSearch系列18：Mapping 设计指南 
+ https://mp.weixin.qq.com/s/Ti4V7sMUCZjqfYjQ7RjcFg
+-->
 
 ### 分布式调度
 [延迟队列](/docs/frame/delayQueue.md)  

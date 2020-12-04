@@ -9,6 +9,8 @@
 
 <!-- 
 
+面试题是否有必要深入了解其背后的原理？我觉得应该刨根究底（下）
+https://mp.weixin.qq.com/s/mRBtvAZ2_oJW91R9JiQpgQ
 
 《Kafka成神之路》- 索引类型
 https://mp.weixin.qq.com/s/QPHPugWlbfeh8HhQvELSSQ
