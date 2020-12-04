@@ -4,15 +4,15 @@
 - [1. kafka生产者](#1-kafka生产者)
     - [1.1. 构造Producer](#11-构造producer)
         - [1.1.1. Producer程序实例](#111-producer程序实例)
-        - [1.1.2. Producer主要参数](#112-producer主要参数)
+        - [1.1.2. Producer配置](#112-producer配置)
     - [1.2. kafka生产者发送消息过程](#12-kafka生产者发送消息过程)
     - [1.3. producer拦截器](#13-producer拦截器)
     - [1.4. 消息序列化](#14-消息序列化)
     - [1.5. 消息分区机制](#15-消息分区机制)
-    - [1.6. 无消息丢失配置](#16-无消息丢失配置)
-    - [批量发送](#批量发送)
-    - [1.7. 消息压缩](#17-消息压缩)
-    - [1.8. 多线程处理](#18-多线程处理)
+    - [1.6. xxx无消息丢失配置](#16-xxx无消息丢失配置)
+    - [1.7. 批量发送](#17-批量发送)
+    - [1.8. 消息压缩](#18-消息压缩)
+    - [1.9. 多线程处理](#19-多线程处理)
 
 <!-- /TOC -->
 
@@ -56,34 +56,28 @@ public class KafkaProducerTest {
 
 &emsp; 构造一个producer实例大致需要以下5个步骤：   
 1. 构造一个 java.utiLProperties 对象，然后至少指定 bootstrap.servers、key.serializer 和 value.serializer这3个属性，它们没有默认值。  
-    * bootstrap.servers，指定broker的地址清单
+    * bootstrap.servers，指定broker的地址清单。
     * key.serializer（key 序列化器），必须是一个实现org.apache.kafka.common.serialization.Serializer接口的类，将key序列化成字节数组。注意：key.serializer必须被设置，即使消息中没有指定key。  
-    * value.serializer（value 序列化器），将value序列化成字节数组
+    * value.serializer（value 序列化器），将value序列化成字节数组。
 2. 使用上一步中创建的Properties实例构造KafkaProducer对象。
-3. 构造待发送的消息对象ProducerRecord,指定消息要被发送到的topic、分区以及对 应的key和valueO注意，分区和key信息可以不用指定，由Kafka自行确定目标分区。
+3. 构造待发送的消息对象ProducerRecord，指定消息要被发送到的topic、分区以及对应的key和value。注意，分区和key信息可以不用指定，由Kafka自行确定目标分区。
 4. 调用KafkaProducer的send方法发送消息。
-5. 关闭 KafkaProducero。
+5. 关闭 KafkaProducer。
 
-### 1.1.2. Producer主要参数  
-&emsp; 除了前面的3个参数：bootstrap.servers、key.serializer 和 value.serializer 之外，Java 版本 producer还提供了很多其他很重要的参数。常见参数：  
-
-* batch.num.messages。默认值：200，每次批量消息的数量，只对 asyc 起作用。
-* request.required.acks。默认值：0，0 表示 producer 毋须等待 leader 的确认，1 代表需要 leader 确认写入它的本地 log 并立即确认，-1 代表所有的备份都完成后确认。只对 async 模式起作用，这个参数的调整是数据不丢失和发送效率的 tradeoff，如果对数据丢失不敏感而在乎效率的场景可以考虑设置为 0，这样可以大大提高 producer 发送数据的效率。
-* request.timeout.ms。默认值：10000，确认超时时间。
-* partitioner.class。默认值：kafka.producer.DefaultPartitioner，必须实现 kafka.producer.Partitioner，根据 Key 提供一个分区策略。有时候我们需要相同类型的消息必须顺序处理，这样我们就必须自定义分配策略，从而将相同类型的数据分配到同一个分区中。
-* producer.type。默认值：sync，指定消息发送是同步还是异步。异步 asyc 成批发送用 kafka.producer.AyncProducer， 同步 sync 用 kafka.producer.SyncProducer。同步和异步发送也会影响消息生产的效率。
-* compression.topic。默认值：none，消息压缩，默认不压缩。其余压缩方式还有，"gzip"、"snappy"和"lz4"。对消息的压缩可以极大地减少网络传输量、降低网络 IO，从而提高整体性能。
-* compressed.topics。默认值：null，在设置了压缩的情况下，可以指定特定的 topic 压缩，未指定则全部压缩。
-* message.send.max.retries。默认值：3，消息发送最大尝试次数。
-* retry.backoff.ms。默认值：300，每次尝试增加的额外的间隔时间。
-* topic.metadata.refresh.interval.ms。默认值：600000，定期的获取元数据的时间。当分区丢失，leader 不可用时 producer 也会主动获取元数据，如果为 0，则每次发送完消息就获取元数据，不推荐。如果为负值，则只有在失败的情况下获取元数据。
-* queue.buffering.max.ms。默认值：5000，在 producer queue 的缓存的数据最大时间，仅仅 for asyc。
-* queue.buffering.max.message。默认值：10000，producer 缓存的消息的最大数量，仅仅 for asyc。
-* queue.enqueue.timeout.ms。默认值：-1，0 当 queue 满时丢掉，负值是 queue 满时 block, 正值是 queue 满时 block 相应的时间，仅仅 for asyc。
-
+### 1.1.2. Producer配置   
+&emsp; 除了前面的3个参数：bootstrap.servers、key.serializer 和 value.serializer 之外，Kafka还为JAVA生产者提供了[其他配置](https://kafka.apachecn.org/documentation.html#producerconfigs)。如下：  
+  
+|Name |	Description |	Type |	Default |	Valid Values |	Importance|
+|---|---|----|---|---|----|
+|bootstrap.servers	|这是一个用于建立初始连接到kafka集群的"主机/端口对"配置列表。不论这个参数配置了哪些服务器来初始化连接，客户端都是会均衡地与集群中的所有服务器建立连接。—配置的服务器清单仅用于初始化连接，以便找到集群中的所有服务器。配置格式： host1:port1,host2:port2,.... 由于这些主机是用于初始化连接，以获得整个集群（集群是会动态变化的），因此这个配置清单不需要包含整个集群的服务器。（当然，为了避免单节点风险，这个清单最好配置多台主机）。	|list	| | |	high|
+|key.serializer	|关键字的序列化类，实现以下接口： org.apache.kafka.common.serialization.Serializer 接口。	|class	| | |high|
+|value.serializer	|值的序列化类，实现以下接口： org.apache.kafka.common.serialization.Serializer 接口。	|class	| | |high|
+|acks	|此配置是 Producer 在确认一个请求发送完成之前需要收到的反馈信息的数量。 这个参数是为了保证发送请求的可靠性。以下配置方式是允许的：</br>acks=0 如果设置为0，则 producer 不会等待服务器的反馈。该消息会被立刻添加到 socket buffer 中并认为已经发送完成。在这种情况下，服务器是否收到请求是没法保证的，并且参数retries也不会生效（因为客户端无法获得失败信息）。每个记录返回的 offset 总是被设置为-1。</br>acks=1 如果设置为1，leader节点会将记录写入本地日志，并且在所有 follower 节点反馈之前就先确认成功。在这种情况下，如果 leader 节点在接收记录之后，并且在 follower 节点复制数据完成之前产生错误，则这条记录会丢失。</br>acks=all 如果设置为all，这就意味着 leader 节点会等待所有同步中的副本确认之后再确认这条记录是否发送完成。只要至少有一个同步副本存在，记录就不会丢失。这种方式是对请求传递的最有效保证。acks=-1与acks=all是等效的。 |string	|1	|[all, -1, 0, 1]|	high|
+|buffer.memory|	Producer 用来缓冲等待被发送到服务器的记录的总字节数。如果记录发送的速度比发送到服务器的速度快， Producer 就会阻塞，如果阻塞的时间超过 max.block.ms 配置的时长，则会抛出一个异常。</br>这个配置与 Producer 的可用总内存有一定的对应关系，但并不是完全等价的关系，因为 Producer 的可用内存并不是全部都用来缓存。一些额外的内存可能会用于压缩(如果启用了压缩)，以及维护正在运行的请求。|long	|33554432	|[0,...]|high|
+	
 
 ## 1.2. kafka生产者发送消息过程  
-&emsp; **Producer发送消息的过程如下图所示（详情可参考kafka生产者源码部分），需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。**  
+&emsp; **<font color = "red">Producer发送消息的过程如下图所示（详情可参考kafka生产者源码部分），需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。</font>**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-8.png)  
@@ -97,7 +91,7 @@ public class KafkaProducerTest {
 &emsp; 可自定义序列化：1.定义数据对象格式；2.创建自定义序列化类，实现org.apache.kafka.common.serialization.Serializer接口，在serializer方法中实现序列化逻辑；3.在用于构建KafkaProducer的Properties对象中设置key.serializer或value.serializer，取决于是为消息key还是value做自定义序列化。  
 
 ## 1.5. 消息分区机制  
-&emsp; Kafka提供了默认的分区策略（轮询、随机、按key顺序），同时支持自定义分区策略。  
+&emsp; Kafka提供了默认的分区策略（轮询、随机、按key顺序），同时支持自定义分区策略。分区机制如下：    
 
 ```java
 public int partition(String topic, Object key, byte[] keyBytes, Object value, byte[] valueBytes, Cluster cluster) {
@@ -124,10 +118,10 @@ public int partition(String topic, Object key, byte[] keyBytes, Object value, by
 ```
 1. 首先kafka会判断有没有key，这里的key就是每条消息定义的消息键，发消息的时候在ProducerRecord(String topic, K key, V value)中指定的key。  
 2. 如果没有key，会采用轮询策略，也称 Round-robin 策略，即顺序分配。比如一个主题下有 3 个分区，那么第一条消息被发送到分区 0，第二条被发送到分区 1，第三条被发送到分区 2，以此类推。当生产第 4 条消息时又会重新开始上述轮询。轮询策略有非常优秀的负载均衡表现，它总是能保证消息最大限度地被平均分配到所有分区上，故默认情况下它是最合理的分区策略。  
-3. 如果有key，那么就按消息键策略，这样可以保证同一个 Key 的所有消息都进入到相同的分区里面，这样就保证了顺序性了。  
+3. 如果有key，那么就按消息键策略，这样可以保证同一个 Key 的所有消息都进入到相同的分区里面，这样就保证了顺序性。  
 
-## 1.6. 无消息丢失配置  
-1. 采用同步发送，但是性能会很差，并不推荐在实际场景中使用。因此最好能有一份配置，既使用异步方式还能有效地避免数据丢失, 即使出现producer崩溃的情况也不会有问题。 
+## 1.6. xxx无消息丢失配置  
+1. 采用同步发送，但是性能会很差，并不推荐在实际场景中使用。因此最好能有一份配置，既使用异步方式还能有效地避免数据丢失，即使出现producer崩溃的情况也不会有问题。 
 2. **做producer端的无消息丢失配置**  
     * producer端配置
 
@@ -149,15 +143,15 @@ public int partition(String topic, Object key, byte[] keyBytes, Object value, by
 
             enable.auto.commit=false   设置不能自动提交位移，需要用户手动提交位移
 
-## 批量发送  
-&emsp; 如何提升 Producer 的性能？批量，异步，压缩。  
+## 1.7. 批量发送  
+&emsp; **如何提升Producer的性能？异步，批量，压缩。**  
 
-&emsp; Kafka允许进行批量发送消息，producter发送消息的时候，可以将消息缓存在本地，等到了固定条件发送到 Kafka 。  
+&emsp; Kafka允许进行批量发送消息，producter发送消息的时候，可以将消息缓存在本地，等到了固定条件发送到Kafka 。  
 
 * 等消息条数到固定条数。  
 * 一段时间发送一次。  
 
-## 1.7. 消息压缩  
+## 1.8. 消息压缩  
 &emsp; 数据压缩显著地降低了磁盘占用或带宽占用，从而有效地提升了I/O密集型应用的性能。不过引用压缩同时会消耗额外的CPU时钟周期，因此压缩是I/O性能和CPU资源的平衡。  
 &emsp; kafka自0.7.x版本便开始支持压缩特性。producer端能够将一批消息压缩成一条消息发送，而broker端将这条压缩消息写入本地日志文件，consumer端获取到这条压缩消息时会自动对消息进行解压缩。即producer端压缩，broker保持，consumer解压缩。  
 &emsp; 如果有些前置条件不满足，比如需要进行消息格式的转换等，那么broker端就需要对消息进行解压缩然后再重新压缩。  
@@ -171,7 +165,7 @@ props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
 ```
 &emsp; 如果发现压缩很慢，说明系统的瓶颈在用户主线程而不是I/O发送线程，因此可以考虑增加多个用户线程同时发送消息，这样通常能显著地提升producer吞吐量。
 
-## 1.8. 多线程处理  
+## 1.9. 多线程处理  
 &emsp; 实际环境中只使用一个用户主线程通常无法满足所需的吞吐量目标，因此需要构造多个线程或多个进程来同时给Kafka集群发送消息。这样在使用过程中就存在着两种基本的使用方法。  
 
 * 多线程单KafkaProducer实例  

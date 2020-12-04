@@ -407,9 +407,10 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 ## 项目构建基础  
 [日志系统](/docs/web/log.md)   
 [SpringTest](/docs/web/test.md)  
-[乱码](/docs/web/garbled.md)  
 [Assert处理异常](/docs/web/Assert.md)  
-
+<!-- 
+[乱码](/docs/web/garbled.md)  
+-->
 [统一格式返回](/docs/web/UnifiedFormat.md)  
 [统一异常处理](/docs/web/ExceptionHandler.md)  
 [统一日志记录](/docs/web/unifiedLog.md)  

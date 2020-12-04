@@ -9,11 +9,11 @@
             - [1.1.1.2. Memory Mapped Files](#1112-memory-mapped-files)
         - [1.1.2. 基于 Sendfile 实现零拷贝（Zero Copy）](#112-基于-sendfile-实现零拷贝zero-copy)
     - [1.2. kafa高可用性（副本机制）](#12-kafa高可用性副本机制)
-            - [1.2.0.1. Kafka副本的功能](#1201-kafka副本的功能)
-            - [1.2.0.2. Leader的选举(ISR副本)](#1202-leader的选举isr副本)
-                - [1.2.0.2.1. Unclear Leader选举](#12021-unclear-leader选举)
-            - [1.2.0.3. 副本的同步(LEO和HW)](#1203-副本的同步leo和hw)
-                - [1.2.0.3.1. Leader Epoch](#12031-leader-epoch)
+        - [1.2.1. Kafka副本的功能](#121-kafka副本的功能)
+        - [1.2.2. Leader的选举(ISR副本)](#122-leader的选举isr副本)
+            - [1.2.2.1. Unclear Leader选举](#1221-unclear-leader选举)
+        - [1.2.3. 副本的同步(LEO和HW)](#123-副本的同步leo和hw)
+            - [1.2.3.1. Leader Epoch](#1231-leader-epoch)
     - [1.3. kafka可靠性（如何保证消息队列不丢失?）](#13-kafka可靠性如何保证消息队列不丢失)
         - [1.3.1. Broker端丢失消息](#131-broker端丢失消息)
             - [1.3.1.1. ACK机制与ISR列表](#1311-ack机制与isr列表)
@@ -95,14 +95,14 @@ https://www.cnblogs.com/luozhiyun/p/12079527.html
 <!-- 
 多分区意味着并发处理的能力，这多个副本中，只有一个是 leader，而其他的都是 follower 副本。仅有 leader 副本可以对外提供服务。多个 follower 副本通常存放在和 leader 副本不同的 broker 中。通过这样的机制实现了高可用，当某台机器挂掉后，其他 follower 副本也能迅速”转正“，开始对外提供服务。
 -->
-#### 1.2.0.1. Kafka副本的功能  
+### 1.2.1. Kafka副本的功能  
 &emsp; 副本机制的使用在计算机的世界里是很常见的，比如MySQL、ZooKeeper、CDN等都有使用副本机制。使用副本机制所能带来的好处有以下几种：  
 
 * 提供数据冗余，提高可用性；
 * 提供扩展性，增加读操作吞吐量；
 * 改善数据局部，降低系统延时。
 
-&emsp; 但并不是每个好处都能获得，这还是和具体的设计有关，比如本文的主角Kafka，只具有第一个好处，即提高可用性。这是因为副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。  
+&emsp; 但并不是每个好处都能获得，这还是和具体的设计有关，比如Kafka只具有第一个好处，即提高可用性。这是因为**副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。**  
 
 <!--
 https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
@@ -113,22 +113,22 @@ https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 -->
 
 
-#### 1.2.0.2. Leader的选举(ISR副本)
+### 1.2.2. Leader的选举(ISR副本)
 <!-- 
 只有 Leader 可以对外提供读服务，那如何选举 Leader
 
 kafka 会将与 leader 副本保持同步的副本放到 ISR 副本集合中。当然，leader 副本是一直存在于 ISR 副本集合中的，在某些特殊情况下，ISR 副本中甚至只有 leader 一个副本。当 leader 挂掉时，kakfa 通过 zookeeper 感知到这一情况，在 ISR 副本中选取新的副本成为 leader，对外提供服务。但这样还有一个问题，前面提到过，有可能 ISR 副本集合中，只有 leader，当 leader 副本挂掉后，ISR 集合就为空，这时候怎么办呢？这时候如果设置 unclean.leader.election.enable 参数为 true，那么 kafka 会在非同步，也就是不在 ISR 副本集合中的副本中，选取出副本成为 leader。  
 -->
-&emsp; 当Leader宕机时，要从Follower中选举出新的Leader，但并不是所有的Follower都有资格参与选举。因为有的Follower的同步情况滞后，如果让他成为Leader将会导致消息丢失。  
+&emsp; 当Leader宕机时，要从Follower中选举出新的Leader，但并不是所有的Follower都有资格参与选举。因为有的Follower的同步情况滞后，如果让它成为Leader将会导致消息丢失。  
 &emsp; 而为了避免这个情况，Kafka引入了ISR（In-Sync Replica）副本的概念，这是一个集合，里面存放的是和Leader保持同步的副本并含有Leader。这是一个动态调整的集合，当副本由同步变为滞后时会从集合中剔除，而当副本由滞后变为同步时又会加入到集合中。  
 &emsp; 那么如何判断一个副本是同步还是滞后呢？Kafka在0.9版本之前，是根据replica.lag.max.messages参数来判断，其含义是同步副本所能落后的最大消息数，当Follower上的最大偏移量落后Leader大于replica.lag.max.messages时，就认为该副本是不同步的了，会从ISR中移除。  
 &emsp; 如果ISR的值设置得过小，会导致Follower经常被踢出ISR，而如果设置过大，则当Leader宕机时，会造成较多消息的丢失。在实际使用时，很难给出一个合理值，这是因为当生产者为了提高吞吐量而调大batch.size时，会发送更多的消息到Leader上，这时候如果不增大replica.lag.max.messages，则会有Follower频繁被踢出ISR的现象  
 &emsp; 而当Follower发生Fetch请求同步后，又被加入到ISR中，ISR将频繁变动。鉴于该参数难以设定，Kafka在0.9版本引入了一个新的参数replica.lag.time.max.ms，默认10s，含义是当Follower超过10s没发送Fetch请求同步Leader时，就会认为不同步而被踢出ISR。从时间维度来考量，能够很好地避免生产者发送大量消息到Leader副本导致分区ISR频繁收缩和扩张的问题。  
 
-##### 1.2.0.2.1. Unclear Leader选举    
+#### 1.2.2.1. Unclear Leader选举    
 &emsp; 当ISR集合为空时，即没有同步副本（Leader也挂了），无法选出下一个Leader，Kafka集群将会失效。而为了提高可用性，Kafka提供了unclean.leader.election.enable参数，当设置为true且ISR集合为空时，会进行Unclear Leader选举，允许在非同步副本中选出新的Leader，从而提高Kafka集群的可用性，但这样会造成消息丢失。在允许消息丢失的场景中，是可以开启此参数来提高可用性的。而其他情况，则不建议开启，而是通过其他手段来提高可用性。  
 
-#### 1.2.0.3. 副本的同步(LEO和HW)  
+### 1.2.3. 副本的同步(LEO和HW)  
 <!-- 
 副本的存在就会出现副本同步问题
 
@@ -140,10 +140,10 @@ Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)�
 &emsp; 其中LEO（Last End Offset）记录了日志的下一条消息偏移量，即当前最新消息的偏移量加一。而HW（High Watermark）界定了消费者可见的消息，消费者可以消费小于HW的消息，而大于等于HW的消息将无法消费。HW和LEO的关系是HW一定小于LEO。  
 &emsp; 下面介绍下HW的概念，其可翻译为高水位或高水印，这一概念通常用于在流式处理领域（如Flink、Spark等），流式系统将保证在HW为t时刻时，创建时间小于等于t时刻的所有事件都已经到达或可被观测到。而在Kafka中，HW的概念和时间无关，而是和偏移量有关，主要目的是为了保证一致性。  
 &emsp; 试想如果一个消息到达了Leader，而Follower副本还未来得及同步，但该消息能已被消费者消费了，这时候Leader宕机，Follower副本中选出新的Leader，消息将丢失，出现不一致的现象。所以Kafka引入HW的概念，当消息被同步副本同步完成时，才让消息可被消费。  
-&emsp; 上述即是LEO和HW的基本概念，下面我们看下具体是如何工作的。  
+&emsp; 上述即是LEO和HW的基本概念，下面看下具体是如何工作的。  
 &emsp; 在每个副本中都存有LEO和HW，而Leader副本中除了存有自身的LEO和HW，还存储了其他Follower副本的LEO和HW值，为了区分我们把Leader上存储的Follower副本的LEO和HW值叫做远程副本的LEO和HW值，如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-76.png)  
-&emsp; 之所以这么设计，是为了HW的更新，Leader需保证HW是ISR副本集合中LEO的最小值。关于具体的更新，我们分为Follower副本和Leader副本来看。  
+&emsp; 之所以这么设计，是为了HW的更新，Leader需保证HW是ISR副本集合中LEO的最小值。关于具体的更新，分为Follower副本和Leader副本来看。  
 &emsp; Follower副本更新LEO和HW的时机只有向Leader拉取了消息之后，会用当前的偏移量加1来更新LEO，并且用Leader的HW值和当前LEO的最小值来更新HW：  
 
     CurrentOffset + 1 -> LEO
@@ -164,9 +164,9 @@ Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)�
 
 &emsp; 除了这两种正常情况，而当发生故障时，例如Leader宕机，Follower被选为新的Leader，会尝试更新HW。还有副本被踢出ISR时，也会尝试更新HW。  
 
-&emsp; 下面我们看下更新LEO和HW的示例，假设分区中有两个副本，min.insync.replica=1。  
+&emsp; 下面看下更新LEO和HW的示例，假设分区中有两个副本，min.insync.replica=1。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-77.png)  
-&emsp; 从上述过程中，我们可以看到remoteLEO、LeaderHW和FollowerHW的更新发生于Follower更新LEO后的第二轮Fetch请求，而这也意味着，更新需要额外一次Fetch请求。而这也将导致在Leader切换时，会存在数据丢失和数据不一致的问题。下面是数据丢失的示例：  
+&emsp; 从上述过程中，可以看到remoteLEO、LeaderHW和FollowerHW的更新发生于Follower更新LEO后的第二轮Fetch请求，而这也意味着，更新需要额外一次Fetch请求。而这也将导致在Leader切换时，会存在数据丢失和数据不一致的问题。下面是数据丢失的示例：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-78.png)  
 &emsp; 当B作为Follower已经Fetch了最新的消息，但是在发送第二轮Fetch时，未来得及处理响应，宕机了。当重启时，会根据HW更新LEO，将发生日志截断，消息m1被丢弃。  
 &emsp; 这时再发送Fetch请求给A，A宕机了，则B未能同步到消息m1，同时B被选为Leader，而当A重启时，作为Follower同步B的消息时，会根据A的HW值更新HW和LEO，因此由2变成了1，也将发生日志截断，而已发送成功的消息m1将永久丢失。  
@@ -179,7 +179,7 @@ Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)�
 
 &emsp; 在B重启作为Leader之后，收到消息m2。A宕机重启后向成为Leader的B发送Fetch请求，发现自己的HW和B的HW一致，都是2，因此不会进行消息截断，而这也造成了数据不一致。  
 
-##### 1.2.0.3.1. Leader Epoch 
+#### 1.2.3.1. Leader Epoch 
 &emsp; 为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制，在每个副本日志目录下都有一个leader-epoch-checkpoint文件，用于保存Leader Epoch信息，其内容示例如下：  
 
     0 0
@@ -189,7 +189,7 @@ Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)�
 &emsp; 上面每一行为一个Leader Epoch，分为两部分，前者Epoch，表示Leader版本号，是一个单调递增的正整数，每当Leader变更时，都会加1，后者StartOffset，为每一代Leader写入的第一条消息的位移。  
 &emsp; 例如第0代Leader写的第一条消息位移为0，而第1代Leader写的第一条消息位移为300，也意味着第0代Leader在写了0-299号消息后挂了，重新选出了新的Leader。下面我们看下Leader Epoch如何工作：  
 
-1. 当副本成为Leader时：
+1. 当副本成为Leader时：  
 &emsp; 当收到生产者发来的第一条消息时，会将新的epoch和当前LEO添加到leader-epoch-checkpoint文件中。  
 2. 当副本成为Follower时：
     1. 向Leader发送LeaderEpochRequest请求，请求内容中含有Follower当前本地的最新Epoch；
@@ -199,7 +199,7 @@ Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)�
     3. Follower在拿到LastOffset后，若LastOffset < LEO，将截断日志；
     4. Follower开始正常工作，发送Fetch请求；
 
-&emsp; 我们再回顾看下数据丢失和数据不一致的场景，在应用了LeaderEpoch后发生什么改变：  
+&emsp; 再回顾看下数据丢失和数据不一致的场景，在应用了LeaderEpoch后发生什么改变：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-80.png)  
 &emsp; 当B作为Follower已经Fetch了最新的消息，但是发送第二轮Fetch时，未来得及处理响应，宕机了。当重启时，会向A发送LeaderEpochRequest请求。如果A没宕机，由于 FollowerLastEpoch = LeaderLastEpoch，所以将LeaderLEO，即2作为LastOffset给A，又因为LastOffset=LEO，所以不会截断日志。  
 &emsp; 这种情况比较简单，而图中所画的情况是A宕机的情况，没返回LeaderEpochRequest的响应的情况。这时候B会被选作Leader，将当前LEO和新的Epoch写进leader-epoch-checkpoint文件中。  
@@ -220,16 +220,16 @@ https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 &emsp; Kafka存在丢消息的问题，消息丢失会发生在Broker，Producer和Consumer三种。  
 
 ### 1.3.1. Broker端丢失消息
-Broker丢失消息是由于Kafka本身的原因造成的，kafka为了得到更高的性能和吞吐量，将数据异步批量的存储在磁盘中。消息的刷盘过程，为了提高性能，减少刷盘次数，kafka采用了批量刷盘的做法。即，按照一定的消息量，和时间间隔进行刷盘。这种机制也是由于linux操作系统决定的。将数据存储到linux操作系统种，会先存储到页缓存（Page cache）中，按照时间或者其他条件进行刷盘（从page cache到file），或者通过fsync命令强制刷盘。数据在page cache中时，如果系统挂掉，数据会丢失。  
-上图简述了broker写数据以及同步的一个过程。broker写数据只写到PageCache中，而pageCache位于内存。这部分数据在断电后是会丢失的。pageCache的数据通过linux的flusher程序进行刷盘。刷盘触发条件有三：  
+&emsp; Broker丢失消息是由于Kafka本身的原因造成的，kafka为了得到更高的性能和吞吐量，将数据异步批量的存储在磁盘中。消息的刷盘过程，为了提高性能，减少刷盘次数，kafka采用了批量刷盘的做法。即，按照一定的消息量，和时间间隔进行刷盘。这种机制也是由于linux操作系统决定的。将数据存储到linux操作系统种，会先存储到页缓存（Page cache）中，按照时间或者其他条件进行刷盘（从page cache到file），或者通过fsync命令强制刷盘。数据在page cache中时，如果系统挂掉，数据会丢失。  
+&emsp; 上图简述了broker写数据以及同步的一个过程。broker写数据只写到PageCache中，而pageCache位于内存。这部分数据在断电后是会丢失的。pageCache的数据通过linux的flusher程序进行刷盘。刷盘触发条件有三：  
 
 * 主动调用sync或fsync函数
 * 可用内存低于阀值
 * dirty data时间达到阀值。dirty是pagecache的一个标识位，当有数据写入到pageCache时，pagecache被标注为dirty，数据刷盘以后，dirty标志清除。
 
-Broker配置刷盘机制，是通过调用fsync函数接管了刷盘动作。从单个Broker来看，pageCache的数据会丢失。  
-Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不丢失消息是做不到的，只能通过调整刷盘机制的参数缓解该情况。比如，减少刷盘间隔，减少刷盘数据量大小。时间越短，性能越差，可靠性越好（尽可能可靠）。这是一个选择题。  
-为了解决该问题，kafka通过producer和broker协同处理单个broker丢失参数的情况。一旦producer发现broker消息丢失，即可自动进行retry。除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。那么producer是如何检测到数据丢失的呢？是通过ack机制。  
+&emsp; Broker配置刷盘机制，是通过调用fsync函数接管了刷盘动作。从单个Broker来看，pageCache的数据会丢失。  
+&emsp; Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不丢失消息是做不到的，只能通过调整刷盘机制的参数缓解该情况。比如，减少刷盘间隔，减少刷盘数据量大小。时间越短，性能越差，可靠性越好（尽可能可靠）。这是一个选择题。  
+&emsp; 为了解决该问题，kafka通过producer和broker协同处理单个broker丢失参数的情况。一旦producer发现broker消息丢失，即可自动进行retry。除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。那么producer是如何检测到数据丢失的呢？是通过ack机制。  
 
 #### 1.3.1.1. ACK机制与ISR列表  
 &emsp; kafka为了保证高可用性，采用了副本机制。  
@@ -237,8 +237,8 @@ Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不�
 
 |方案	|优点	|缺点|
 |---|---|---|
-|半数以上完成同步，就发送ack	|延迟低	|选举新的 leader 时，容忍n台节点的故障，需要2n+1个副本|
-|全部完成同步，才发送ack|	选举新的 leader 时，容忍n台节点的故障，需要 n+1 个副本|	延迟高|
+|半数以上完成同步，就发送ack|延迟低	|选举新的 leader 时，容忍n台节点的故障，需要2n+1个副本|
+|全部完成同步，才发送ack|选举新的 leader 时，容忍n台节点的故障，需要 n+1 个副本|延迟高|
 
 &emsp; Kafka 选择了第二种方案，原因如下：
 

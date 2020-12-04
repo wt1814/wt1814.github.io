@@ -51,10 +51,10 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 &emsp; 0.11 版本的 Kafka，引入了一项重大特性：幂等性。所谓的幂等性就是指 Producer 不论向 Server 发送多少次重复数据。Server 端都会只持久化一条，幂等性结合 At Least Once 语义，就构成了 Kafka 的 Exactily Once 语义，即：At Least Once + 幂等性 = Exactly Once  
 
 ### 1.1.3. 幂等性实现  
-&emsp; **开启幂等性**  
+&emsp; **开启幂等性：**  
 &emsp; 要启用幂等性，只需要将 Producer 的参数中 enable.idompotence 设置为 true 即可。  
-&emsp; **幂等性实现原理**  
-&emsp; Kafka 的幂等性实现其实就是将原来下游需要做的去重放在了数据上游。开启幂等性的 Producer 在初始化的时候会被分配一个 PID，发往同一 Partition 的消息会附带 Sequence Number。而 Broker 端会对\<PID,Partition,SeqNumber> 做缓存，当具有相同主键的消息提交时，Broker 只会持久化一条。  
+&emsp; **幂等性实现原理：**  
+&emsp; Kafka 的幂等性实现其实就是将原来下游需要做的去重放在了数据上游。开启幂等性的Producer在初始化的时候会被分配一个PID，发往同一Partition的消息会附带Sequence Number。而Broker端会对\<PID,Partition,SeqNumber> 做缓存，当具有相同主键的消息提交时，Broker只会持久化一条。  
 &emsp; 但是 PID 重启就会变化，同时不同的 Partition 也具有不同主键，所以幂等性无法保证跨分区会话的 Exactly Once。  
 
 ## 1.2. 事务性  

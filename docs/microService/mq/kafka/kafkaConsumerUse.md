@@ -4,7 +4,7 @@
 - [1. kafka消费者开发](#1-kafka消费者开发)
     - [1.1. 构建consumer](#11-构建consumer)
         - [1.1.1. consumer程序实例](#111-consumer程序实例)
-        - [1.1.2. consumer参数](#112-consumer参数)
+        - [1.1.2. consumer配置](#112-consumer配置)
     - [1.2. 消费者与消费组](#12-消费者与消费组)
     - [1.3. 订阅topic](#13-订阅topic)
         - [1.3.1. 订阅topic列表](#131-订阅topic列表)
@@ -82,20 +82,8 @@ public class ConsumerDemo {
 5. 处理获取到的ConsumerRecord对象。
 6. 关闭 KafkaConsumer。 
 
-### 1.1.2. consumer参数
-&emsp; 关于consumer的常见参数：  
-
-* bootstrap.servers：连接 broker 地址，host：port 格式。
-* group.id：消费者隶属的消费组。
-* key.deserializer：与生产者的key.serializer对应，key 的反序列化方式。
-* value.deserializer：与生产者的value.serializer对应，value 的反序列化方式。
-* session.timeout.ms：coordinator 检测失败的时间。默认 10s 该参数是 Consumer Group 主动检测 （组内成员 comsummer) 崩溃的时间间隔，类似于心跳过期时间。
-* auto.offset.reset：该属性指定了消费者在读取一个没有偏移量后者偏移量无效（消费者长时间失效当前的偏移量已经过时并且被删除了）的分区的情况下，应该作何处理，默认值是 latest，也就是从最新记录读取数据（消费者启动之后生成的记录），另一个值是 earliest，意思是在偏移量无效的情况下，消费者从起始位置开始读取数据。
-* enable.auto.commit：否自动提交位移，如果为false，则需要在程序中手动提交位移。对于精确到一次的语义，最好手动提交位移
-* fetch.max.bytes：单次拉取数据的最大字节数量
-* max.poll.records：单次 poll 调用返回的最大消息数，如果处理逻辑很轻量，可以适当提高该值。但是max.poll.records条数据需要在在 session.timeout.ms 这个时间内处理完 。默认值为500
-* request.timeout.ms：一次请求响应的最长等待时间。如果在超时时间内未得到响应，kafka 要么重发这条消息，要么超过重试次数的情况下直接置为失败。
-
+### 1.1.2. consumer配置
+&emsp; Kafka为Java消费者提供的[配置](https://kafka.apachecn.org/documentation.html#configuration)如下：  
 
 ## 1.2. 消费者与消费组  
 &emsp; kafka消费者分为两类：  
@@ -108,7 +96,13 @@ public class ConsumerDemo {
 * 对于同一个group而言，topic的每条消息只能发送到group下一个consumer实例上  
 * topic消息可以发送到多个group中  
 
-&emsp; 如下图所示，某个主题中共有4个分区（Partition） : PO、Pl、P2、P3。有两个消费组A 和B都订阅了这个主题，消费组A中有4个消费者（CO、Cl、C2和C3），消费组B中有2 个消费者（C4和C5）。按照Kafka默认的规则，最后的分配结果是消费组A中的每一个消费 者分配到1个分区，消费组B中的每一个消费者分配到2个分区，两个消费组之间互不影响。 每个消费者只能消费所分配到的分区中的消息。换言之，每一个分区只能被一个消费组中的一 个消费者所消费。  
+&emsp; **Kafka通过消费者组，可以实现基于队列和基于发布/订阅的两种消息引擎：**  
+
+* 如果所有的消费者都隶属于同一个消费组，那么所有的消息都会被均衡地投递给每一 个消费者，即每条消息只会被一个消费者处理，这就相当于点对点模式的应用。  
+* 如果所有的消费者都隶属于不同的消费组，那么所有的消息都会被广播给所有的消费者，即每条消息会被所有的消费者处理，这就相当于发布/订阅模式的应用。
+
+&emsp; **消费组示例：**  
+&emsp; 如下图所示，某个主题中共有4个分区（Partition） : PO、Pl、P2、P3。有两个消费组A和B都订阅了这个主题，消费组A中有4个消费者（CO、Cl、C2和C3），消费组B中有2个消费者（C4和C5）。按照Kafka默认的规则，最后的分配结果是消费组A中的每一个消费者分配到1个分区，消费组B中的每一个消费者分配到2个分区，两个消费组之间互不影响。每个消费者只能消费所分配到的分区中的消息。换言之，每一个分区只能被一个消费组中的一个消费者所消费。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-65.png)  
 &emsp; 再来看一下消费组内的消费者个数变化时所对应的分区分配的演变。假设目前某消费组内只有一个消费者CO，订阅了一个主题，这个主题包含7个分区：PO、Pl、P2、P3、P4、 P5、P6。也就是说，这个消费者CO订阅了7个分区，具体分配情形参考下图。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-66.png)  
@@ -116,14 +110,8 @@ public class ConsumerDemo {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-67.png)  
 &emsp; 紧接着消费组内又加入了一个新的消费者C2，消费者CO、Cl和C2按照下图中的方式 各自负责消费所分配到的分区。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-68.png)  
-&emsp; 消费者与消费组这种模型可以让整体的消费能力具备横向伸缩性，可以增加（或减少）消费者的个数来提高（或降低）整体的消费能力。**<font color = "red">对于分区数固定的情况，一味地增加消费者 并不会让消费能力一直得到提升，如果消费者过多，出现了消费者的个数大于分区个数的情况, 就会有消费者分配不到任何分区。</font>** 参考下图，一共有8个消费者，7个分区，那么最后的消费者C7由于分配不到任何分区而无法消费任何消息。
+&emsp; 消费者与消费组这种模型可以让整体的消费能力具备横向伸缩性，可以增加（或减少）消费者的个数来提高（或降低）整体的消费能力。 **<font color = "red">对于分区数固定的情况，一味地增加消费者 并不会让消费能力一直得到提升，如果消费者过多，出现了消费者的个数大于分区个数的情况, 就会有消费者分配不到任何分区。</font>** 参考下图，一共有8个消费者，7个分区，那么最后的消费者C7由于分配不到任何分区而无法消费任何消息。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-69.png)  
-
-&emsp; **Kafka通过消费者组，可以实现基于队列和基于发布/订阅的两种消息引擎：**  
-
-* 如果所有的消费者都隶属于同一个消费组，那么所有的消息都会被均衡地投递给每一 个消费者，即每条消息只会被一个消费者处理，这就相当于点对点模式的应用。  
-* 如果所有的消费者都隶属于不同的消费组，那么所有的消息都会被广播给所有的消费 者，即每条消息会被所有的消费者处理，这就相当于发布/订阅模式的应用。
-
 
 <!-- 
 
@@ -221,12 +209,12 @@ https://www.kancloud.cn/nicefo71/kafka/1471593
 消费者组重平衡全流程解析
 https://www.kancloud.cn/nicefo71/kafka/1473378
 -->
-### 1.6.1. 重平衡简介
+### 1.6.1. 重平衡简介  
+&emsp; **什么是重平衡？**  
 &emsp; 假设组内某个实例挂掉了，Kafka能够自动检测到，然后把这个Failed实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。可以保障高可用性。  
-&emsp; 除此之外，它协调着消费组中的消费者分配和订阅topic分区，比如某个Group 下有 20 个 Consumer 实例，它订阅了一个具有 100 个分区的 Topic。正常情况下，Kafka 平均会为每个 Consumer 分配 5 个分区。这个分配的过程也叫 Rebalance。再比如此刻新增了消费者，得分一些分区给它吧，这样才可以负载均衡以及利用好资源，那么这个过程也是 Rebalance 来完成的。  
+&emsp; 除此之外，它协调着消费组中的消费者分配和订阅topic分区，比如某个Group下有20个Consumer实例，它订阅了一个具有100个分区的Topic。正常情况下，Kafka平均会为每个Consumer分配5个分区。这个分配的过程也叫 Rebalance。再比如此刻新增了消费者，得分一些分区给它吧，这样才可以负载均衡以及利用好资源，那么这个过程也是 Rebalance 来完成的。  
 
-&emsp; rebalance本质上是一组协议，它规定了一个consumer group是如何达成一致来分配订阅topic的所有分区的。coordinator负责对组执行rebalance操作。  
-&emsp; 在 Rebalance 过程中，所有 Consumer 实例共同参与，在协调者组件（Coordinator，专门为 Consumer Group 服务，负责为 Group 执行 Rebalance 以及提供位移管理和组成员管理）的帮助下，完成订阅主题分区的分配。  
+&emsp; rebalance本质上是一组协议，它规定了一个consumer group是如何达成一致来分配订阅topic的所有分区的。在Rebalance过程中，所有Consumer实例共同参与，在协调者组件（Coordinator，专门为Consumer Group服务，负责为Group执行Rebalance以及提供位移管理和组成员管理）的帮助下，完成订阅主题分区的分配。  
 
 ### 1.6.2. 重平衡触发条件
 &emsp; **消费者组rebalance触发的条件，满足其一即可：**  
@@ -239,8 +227,8 @@ https://www.kancloud.cn/nicefo71/kafka/1473378
 https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 -->
 #### 1.6.3.1. 协调者
-&emsp;再均衡，将分区所属权分配给消费者。因此需要和所有消费者通信，这就需要引进一个协调者的概念，由协调者为消费组服务，为消费者们做好协调工作。在Kafka中，每一台Broker上都有一个协调者组件，负责组成员管理、再均衡和提交位移管理等工作。如果有N台Broker，那就有N个协调者组件，而一个消费组只需一个协调者进行服务，那该**由哪个Broker为其服务？** 确定Broker需要两步：  
-1. 计算分区号
+&emsp; 重均衡，将分区所属权分配给消费者。因此需要和所有消费者通信，这就需要引进一个协调者的概念，由协调者为消费组服务，为消费者们做好协调工作。在Kafka中，每一台Broker上都有一个协调者组件，负责组成员管理、再均衡和提交位移管理等工作。如果有N台Broker，那就有N个协调者组件，而一个消费组只需一个协调者进行服务，那该**由哪个Broker为其服务？** 确定Broker需要两步：  
+1. 计算分区号  
 &emsp;partition = Math.abs(groupID.hashCode() % offsetsTopicPartitionCount)  
 &emsp;根据groupID的哈希值，取余offsetsTopicPartitionCount（内部主题__consumer_offsets的分区数，默认50）的绝对值，其意思就是把消费组哈希散列到内部主题__consumer_offsets的一个分区上。确定协调者为什么要和内部主题扯上关系。这就跟协调者的作用有关了。协调者不仅是负责组成员管理和再均衡，在协调者中还需要负责处理消费者的偏移量提交，而偏移量提交则正是提交到__consumer_offsets的一个分区上。所以这里需要取余offsetsTopicPartitionCount来确定偏移量提交的分区。  
 2. 找出分区Leader副本所在的Broker  
@@ -273,42 +261,27 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 
 
 #### 1.6.3.5. rebalance generation  
-&emsp; rebalance generation：用于标识某次rebalance,每个consumer group进行rebalance后，generation就会加1，表示group进入一个新的版本，generation从0开始。  
+&emsp; rebalance generation：用于标识某次rebalance，每个consumer group进行rebalance后，generation就会加1，表示group进入一个新的版本，generation从0开始。  
 &emsp; consumer group可以执行任意次rebalance，generation是为了防止无效offset提交，延迟的offset提交携带的是旧的generation信息，这次提交就会被consumer group拒绝。  
 
 #### 1.6.3.6. rebalance监听器  
 &emsp; rebalance监听器：最常见的用法是手动提交位移到第三方存储（比如数据库中）以及在rebalance前后执行一些必要的审计操作。有一个主要的接口回调类ConsumerRebalanceListener，里面就两个方法onParitionsRevoked和onPartitionAssigned。在coordinator开启新一轮rebalance前onParitionsRevoked方法会被调用，而rebalance完成后会调用onPartitionAssigned方法。  
 &emsp; 使用rebalance监听器的前提是用户使用consumer group。如果使用的是独立consumer或是直接手动分配分区，那么rebalance监听器是无效的。  
 
-
 ### 1.6.4. 重平衡劣势
 &emsp; **重平衡的劣势：**  
-&emsp; 第一：Rebalance 影响 Consumer 端 TPS，对 Consumer Group 消费过程有极大的影响。我们知道 JVM 的垃圾回收机制，那可怕的万物静止的收集方式，即 stop the world，所有应用线程都会停止工作，整个应用程序僵在那边一动不动。类似，在 Rebalance 期间，Consumer 会停下手头的事情，什么也干不了。  
+&emsp; 第一：Rebalance影响 Consumer 端 TPS，对 Consumer Group 消费过程有极大的影响。类似JVM的stop the world，在Rebalance期间，Consumer会停下手头的事情，什么也干不了。  
 &emsp; 第二：Rebalance 很慢。如果你的 Group 下成员很多，就一定会有这样的痛点。某真实案例：Group 下有几百个 Consumer 实例，Rebalance 一次要几个小时。万物静止几个小时是非常可怕的一件事了，老板可能要提大刀来相见了。  
 &emsp; 为什么会这么慢呢？因为目前 Rebalance 的设计是让所有 Consumer 实例共同参与，全部重新分配所有分区。其实应该尽量保持之前的分配，目前 kafka 社区也在对此进行优化，在 0.11 版本提出了 StickyAssignor，即有粘性的分区分配策略。所谓的有粘性，是指每次 Rebalance 时，该策略会尽可能地保留之前的分配方案。不过不够完善，有 bug，暂时不建议使用。  
 
 ### 1.6.5. 如何避免重平衡？
 &emsp; **如何避免 Rebalances？**  
+&emsp; 由于目前一次rebalance操作的开销很大，生产环境中用户一定要结合自身业务特点仔细调优consumer参数：request.timeout.ms、max.poll.records和max.poll.interval.ms，以避免不必要的rebalance出现。  
 <!-- 
 https://blog.csdn.net/haogenmin/article/details/109489704
 -->
-&emsp; 由于目前一次rebalance操作的开销很大，生产环境中用户一定要结合自身业务特点仔细调优consumer参数：request.timeout.ms、max.poll.records和max.poll.interval.ms，以避免不必要的rebalance出现。  
-
-
 
 ## 1.7. 多线程消费实例  
-
-<!-- 
-KafkaConsumer是非线程安全的，那么怎么样实现多线程消费？
-https://www.cnblogs.com/luozhiyun/p/11811835.html
--->
-
-<!-- 
-~~
-Kafka Consumer多线程实例
-https://blog.csdn.net/matrix_google/article/details/80035222?utm_source=blogxgwz8
--->
-
 &emsp; Kafka Consumer不是线程安全的，所以实现多线程时通常由两种实现方法：  
 1. 每个线程维护一个KafkaConsumer  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-59.png)  
@@ -322,3 +295,14 @@ https://blog.csdn.net/matrix_google/article/details/80035222?utm_source=blogxgwz
 |方法1(每个线程维护一个KafkaConsumer)|方便实现</br>速度较快，因为不需要任何线程间交互</br>易于维护分区内的消息顺序	|更多的TCP连接开销(每个线程都要维护若干个TCP连接)</br>consumer数受限于topic分区数，扩展性差</br>频繁请求导致吞吐量下降</br>线程自己处理消费到的消息可能会导致超时，从而造成rebalance|
 |方法2 (单个(或多个)consumer，多个worker线程)|可独立扩展consumer数和worker数，伸缩性好| 实现麻烦</br>通常难于维护分区内的消息顺序</br>处理链路变长，导致难以保证提交位移的语义正确性 |
 
+
+<!-- 
+KafkaConsumer是非线程安全的，那么怎么样实现多线程消费？
+https://www.cnblogs.com/luozhiyun/p/11811835.html
+-->
+
+<!-- 
+~~
+Kafka Consumer多线程实例
+https://blog.csdn.net/matrix_google/article/details/80035222?utm_source=blogxgwz8
+-->
