@@ -10,21 +10,21 @@
         - [1.3.1. 订阅topic列表](#131-订阅topic列表)
         - [1.3.2. 基于正则表达订阅topic](#132-基于正则表达订阅topic)
     - [1.4. 消息轮询](#14-消息轮询)
-    - [消费语义](#消费语义)
-    - [1.5. 消费者位移(offset)管理](#15-消费者位移offset管理)
-    - [1.6. 消费者组重平衡(rebalance)](#16-消费者组重平衡rebalance)
-        - [1.6.1. 重平衡简介](#161-重平衡简介)
-        - [1.6.2. 重平衡触发条件](#162-重平衡触发条件)
-        - [1.6.3. 重平衡流程](#163-重平衡流程)
-            - [1.6.3.1. 协调者](#1631-协调者)
-            - [1.6.3.2. 交互方式](#1632-交互方式)
-            - [1.6.3.3. 流程](#1633-流程)
-            - [1.6.3.4. 分配策略](#1634-分配策略)
-            - [1.6.3.5. rebalance generation](#1635-rebalance-generation)
-            - [1.6.3.6. rebalance监听器](#1636-rebalance监听器)
-        - [1.6.4. 重平衡劣势](#164-重平衡劣势)
-        - [1.6.5. 如何避免重平衡？](#165-如何避免重平衡)
-    - [1.7. 多线程消费实例](#17-多线程消费实例)
+    - [1.5. 消费语义](#15-消费语义)
+    - [1.6. 消费者位移(offset)管理](#16-消费者位移offset管理)
+    - [1.7. 消费者组重平衡(rebalance)](#17-消费者组重平衡rebalance)
+        - [1.7.1. 重平衡简介](#171-重平衡简介)
+        - [1.7.2. 重平衡触发条件](#172-重平衡触发条件)
+        - [1.7.3. 重平衡流程](#173-重平衡流程)
+            - [1.7.3.1. 协调者](#1731-协调者)
+            - [1.7.3.2. 交互方式](#1732-交互方式)
+            - [1.7.3.3. 流程](#1733-流程)
+            - [1.7.3.4. 分配策略](#1734-分配策略)
+            - [1.7.3.5. rebalance generation](#1735-rebalance-generation)
+            - [1.7.3.6. rebalance监听器](#1736-rebalance监听器)
+        - [1.7.4. 重平衡劣势](#174-重平衡劣势)
+        - [1.7.5. 如何避免重平衡？](#175-如何避免重平衡)
+    - [1.8. 多线程消费实例](#18-多线程消费实例)
 
 <!-- /TOC -->
 
@@ -76,7 +76,7 @@ public class ConsumerDemo {
 }
 ```
 &emsp; 构造consumer需要下面6个步骤：  
-1. 构造一个 java.util.Properties 对象，至少指定 bootstrap.serversn、key.deserializer、value.deserializer和group.id的值，即上面代码中显示指明必须指定带注释的4个参数。
+1. 构造一个java.util.Properties对象，至少指定 bootstrap.serversn、key.deserializer、value.deserializer和group.id的值，即上面代码中显示指明必须指定带注释的4个参数。
 2. 使用上一步创建的Properties实例构造KafkaConsumer对象。
 3. 调用KafkaConsumer.subscribe方法订阅consumer group感兴趣的topic列表。
 4. 循环调用KafkaConsumer.poll方法获取封装在ConsumerRecord的topic消息。
@@ -92,20 +92,19 @@ public class ConsumerDemo {
 * 消费者组(consumer group)：由多个消费者实例构成一个整体进行消费
 * 独立消费者(standalone consumer)：单独执行消费操作
 
+&emsp; Kafka消费端确保一个Partition在一个消费者组内只能被一个消费者消费。   
+
+* 在同一个消费者组内，一个Partition只能被一个消费者消费。
+* 在同一个消费者组内，所有消费者组合起来必定可以消费一个Topic下的所有 Partition。
+* 在同一个消费组内，一个消费者可以消费多个Partition的信息。
+* 在不同消费者组内，同一个分区可以被多个消费者消费。
+* 每个消费者组一定会完整消费一个Topic下的所有Partition。
+<!-- 
 &emsp; **<font color = "red">消费者组的特点：</font>**
 
 * 对于同一个group而言，topic的每条消息只能发送到group下一个consumer实例上  
 * topic消息可以发送到多个group中  
-<!-- 
-Kafka 消费端确保一个 Partition 在一个消费者组内只能被一个消费者消费。这句话改怎么理解呢？
-
-    在同一个消费者组内，一个 Partition 只能被一个消费者消费。
-    在同一个消费者组内，所有消费者组合起来必定可以消费一个 Topic 下的所有 Partition。
-    在同一个消费组内，一个消费者可以消费多个 Partition 的信息。
-    在不同消费者组内，同一个分区可以被多个消费者消费。
-    每个消费者组一定会完整消费一个 Topic 下的所有 Partition。
 -->
-
 &emsp; **Kafka通过消费者组，可以实现基于队列和基于发布/订阅的两种消息引擎：**  
 
 * 如果所有的消费者都隶属于同一个消费组，那么所有的消息都会被均衡地投递给每一 个消费者，即每条消息只会被一个消费者处理，这就相当于点对点模式的应用。  
@@ -124,11 +123,9 @@ Kafka 消费端确保一个 Partition 在一个消费者组内只能被一个消
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-69.png)  
 
 <!-- 
-
 * 实现基于队列的模型：所有consumer实例都属于相同的group，每条消息只会被一个consumer实例处理。  
 * 实现基于发布/订阅模型：consumer实例都属于不同group，这样kafka消息会被广播到所有consumer实例上。  
 -->
-
 ## 1.3. 订阅topic
 &emsp; **两种订阅topic的方式：直接订阅topic列表，基于正则表达订阅topic。**  
 
@@ -170,31 +167,28 @@ Kafka 消费端确保一个 Partition 在一个消费者组内只能被一个消
 &emsp; 对于 Kafka 而言，pull 模式更合适，它可简化 broker 的设计，consumer 可自主控制消费消息的速率，同时consumer可以自己控制消费方式——即可批量消费也可逐条消费，同时还能选择不同的提交方式从而实现不同的传输语义。  
 &emsp; pull 模式不足之处是，如果 kafka 没有数据，消费者可能会陷入循环中，一直等待数据到达。为了避免这种情况，在拉取请求中有参数，允许消费者请求在等待数据到达 的“长轮询”中进行阻塞（并且可选地等待到给定的字节数，以确保大的传输大小）。  
 
-&emsp; **kafka采用类似于Linux I/O模型的poll或select等，使用一个线程来同时管理多个socket连接，即同时与多个broker通信实现消息的并行读取。**  
-&emsp; 一旦consumer订阅了topic，所有的消费逻辑包括coordinator的协调、消费者组的rebalance以及数据的获取都会在主逻辑poll方法的一次调用中被执行。这样用户可以很容易使用一个线程来管理所有的consumer I/O操作。  
-&emsp; 新版本Java consumer是一个双线程的Java进程：创建KafkaConsumer的线程被称为用户主线程，同时consumer在后台会创建一个心跳线程。KafkaConsumer的poll方法在用户主线程中运行。    
-&emsp; poll方法根据当前consumer的消费位移返回消息集合。poll方法中有个超时的参数，为了让consumer有机会在等待kafka消息的同时还能够定期执行其他任务。   
-&emsp; poll方法返回满足以下任意一个条件即可返回：  
-    
-* 要么获取了足够多的可用数据  
-* 要么等待时间超过了指定的超时设置  
+## 1.5. 消费语义  
+&emsp; 消费者从服务端的 Partition 上拉取到消息，消费消息有三种情况，分别如下：  
 
-&emsp; poll的使用方法：  
+* 至少一次。即一条消息至少被消费一次，消息不可能丢失，但是可能会被重复消费。  
+* 至多一次。即一条消息最多可以被消费一次，消息不可能被重复消费，但是消息有可能丢失。  
+* 正好一次。即一条消息正好被消费一次，消息不可能丢失也不可能被重复消费。  
 
-* consumer需要定期执行其他子任务：推荐poll(较小超时时间) + 运行标识布尔变量while(true)的方式  
-* consumer不需要定期执行子任务：推荐poll(MAX_VALUE) + 捕获WakeupException的方式  
+1. 至少一次  
+消费者读取消息，先处理消息，在保存消费进度。消费者拉取到消息，先消费消息，然后在保存偏移量，当消费者消费消息后还没来得及保存偏移量，则会造成消息被重复消费。如下图所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-87.png)  
+<center>先消费后保存消费进度</center>
+2. 至多一次  
+消费者读取消息，先保存消费进度，在处理消息。消费者拉取到消息，先保存了偏移量，当保存了偏移量后还没消费完消息，消费者挂了，则会造成未消费的消息丢失。如下图所示：
+先保存消费进度后消费消息  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-88.png)  
+<center>先保存消费进度后消费消息</center>
+3. 正好一次  
+正好消费一次的办法可以通过将消费者的消费进度和消息处理结果保存在一起。只要能保证两个操作是一个原子操作，就能达到正好消费一次的目的。通常可以将两个操作保存在一起，比如 HDFS 中。正好消费一次流程如下图所示。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-89.png)  
+<center>正好消费一次</center>
 
-&emsp; poll(MAX_VALUE)让consumer程序在未获取到足够多数据时无限等待，然后通过捕获WakeupException异常来判断consumer是否结束。  
-&emsp; 使用这种方式调用poll，那么需要在另一个线程中调用consumer.wakeup()方法来触发consumer的关闭。  
-&emsp; KafkaConsumer不是线程安全的，但是有一个例外：用户可以安全地在另一个线程中调用consumer.wakeup()。注意，只有wakeup方法是特例，其他KafkaConsumer方法都不能同时在多线程中使用。  
-
-## 消费语义  
-<!-- 
-消费者的三种消费情况
-https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247483827&idx=1&sn=44cfb50953b0f745b2719977453c3a42&chksm=e8eb7827df9cf131ea8aa1496e9ec2d1ed22ed245225dad0613511006b9428fffb16c92cdd6a&scene=178&cur_album_id=1338677566013800448#rd
--->
-
-## 1.5. 消费者位移(offset)管理
+## 1.6. 消费者位移(offset)管理
 <!-- 
 kakfa消费位移
 https://blog.csdn.net/haogenmin/article/details/109488571
@@ -223,20 +217,20 @@ https://blog.csdn.net/yujianping_123/article/details/97398373
     &emsp; commitAsync：异步手动提交，这里的异步不是开启一个线程提交，而是指不会阻塞，consumer在后续poll调用时轮询该位移提交的结果。  
     &emsp; commitSync和commitAsync都有带参数的重载方法，目的是实现更加细粒度化的位移提交策略，指定一个Map显示地告诉kafka为哪些分区提交位移，consumer.commitSync(Collections.singletonMap(partition,new OffsetAndMetadata(lastOffset + 1)))。   
 
-## 1.6. 消费者组重平衡(rebalance)
+## 1.7. 消费者组重平衡(rebalance)
 <!-- 
 消费者组重平衡全流程解析
 https://www.kancloud.cn/nicefo71/kafka/1473378
 
 -->
-### 1.6.1. 重平衡简介  
+### 1.7.1. 重平衡简介  
 &emsp; **什么是重平衡？**  
 &emsp; 假设组内某个实例挂掉了，Kafka能够自动检测到，然后把这个Failed实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。可以保障高可用性。  
 &emsp; 除此之外，它协调着消费组中的消费者分配和订阅topic分区，比如某个Group下有20个Consumer实例，它订阅了一个具有100个分区的Topic。正常情况下，Kafka平均会为每个Consumer分配5个分区。这个分配的过程也叫 Rebalance。再比如此刻新增了消费者，得分一些分区给它吧，这样才可以负载均衡以及利用好资源，那么这个过程也是 Rebalance 来完成的。  
 
 &emsp; rebalance本质上是一组协议，它规定了一个consumer group是如何达成一致来分配订阅topic的所有分区的。在Rebalance过程中，所有Consumer实例共同参与，在协调者组件（Coordinator，专门为Consumer Group服务，负责为Group执行Rebalance以及提供位移管理和组成员管理）的帮助下，完成订阅主题分区的分配。  
 
-### 1.6.2. 重平衡触发条件
+### 1.7.2. 重平衡触发条件
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247483827&idx=1&sn=44cfb50953b0f745b2719977453c3a42&chksm=e8eb7827df9cf131ea8aa1496e9ec2d1ed22ed245225dad0613511006b9428fffb16c92cdd6a&scene=178&cur_album_id=1338677566013800448#rd
 -->
@@ -245,11 +239,11 @@ https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247483827&idx=1&sn=44cfb5
 2. 组订阅topic数发生变更，比如使用基于正则表达式的订阅，当匹配正则表达式的新topic被创建时则会触发rebalance。
 3. 组订阅topic的分区数发生变更，比如使用命令行脚本增加了订阅topic的分区数。
 
-### 1.6.3. 重平衡流程
+### 1.7.3. 重平衡流程
 <!-- 
 https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 -->
-#### 1.6.3.1. 协调者
+#### 1.7.3.1. 协调者
 &emsp; 重均衡，将分区所属权分配给消费者。因此需要和所有消费者通信，这就需要引进一个协调者的概念，由协调者为消费组服务，为消费者们做好协调工作。在Kafka中，每一台Broker上都有一个协调者组件，负责组成员管理、再均衡和提交位移管理等工作。如果有N台Broker，那就有N个协调者组件，而一个消费组只需一个协调者进行服务，那该**由哪个Broker为其服务？** 确定Broker需要两步：  
 1. 计算分区号  
 &emsp;partition = Math.abs(groupID.hashCode() % offsetsTopicPartitionCount)  
@@ -259,11 +253,11 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 
 &emsp;这个算法通常用于帮助定位问题。当一个消费组出现问题时，可以先确定协调者的Broker，然后查看Broker端的日志来定位问题。  
 
-#### 1.6.3.2. 交互方式  
+#### 1.7.3.2. 交互方式  
 &emsp; 协调者和消费者之间是如何交互的？协调者如何掌握消费者的状态，又如何通知再均衡。这里使用了心跳机制。在消费者端有一个专门的心跳线程负责以heartbeat.interval.ms的间隔频率发送心跳给协调者，告诉协调者自己还活着。同时协调者会返回一个响应。而当需要开始再均衡时，协调者则会在响应中加入REBALANCE_IN_PROGRESS，当消费者收到响应时，便能知道再均衡要开始了。  
 &emsp; 由于再平衡的开始依赖于心跳的响应，所以heartbeat.interval.ms除了决定心跳的频率，也决定了再均衡的通知频率。  
 
-#### 1.6.3.3. 流程  
+#### 1.7.3.3. 流程  
 1. 当消费者收到协调者的再均衡开始通知时，需要立即提交偏移量；  
 2. 消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；  
 3. 当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，同时等待rebalance.timeout.ms，在收集其他消费者的JoinGroup请求中的订阅信息后，将订阅信息放在JoinGroup响应中发送给Leader消费者，并告知他成为了Leader，同时也会发送成功入组的JoinGroup响应给其他消费者；  
@@ -272,7 +266,7 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 6. 当所有消费者收到分配方案后，就意味着再均衡的结束，可以正常开始消费工作了。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-70.png)  
 
-#### 1.6.3.4. 分配策略  
+#### 1.7.3.4. 分配策略  
 &emsp; kafka新版本consumer默认提供了3种分配策略，分别是range策略、round-robin策略和sticky策略。
 
 * range策略：基于范围的思想，将单个topic的所有分区按照顺序排列，然后把这些分区划分成固定大小的分区段并依次分配给每个consumer。
@@ -283,28 +277,28 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 &emsp; 新版本consumer默认的分配策略是range，用户根据consumer参数partition.assingment.strategy来进行配置。另外kafka支持自定义的分配策略，用户可以创建自己的consumer分配器assignor。  
 
 
-#### 1.6.3.5. rebalance generation  
+#### 1.7.3.5. rebalance generation  
 &emsp; rebalance generation：用于标识某次rebalance，每个consumer group进行rebalance后，generation就会加1，表示group进入一个新的版本，generation从0开始。  
 &emsp; consumer group可以执行任意次rebalance，generation是为了防止无效offset提交，延迟的offset提交携带的是旧的generation信息，这次提交就会被consumer group拒绝。  
 
-#### 1.6.3.6. rebalance监听器  
+#### 1.7.3.6. rebalance监听器  
 &emsp; rebalance监听器：最常见的用法是手动提交位移到第三方存储（比如数据库中）以及在rebalance前后执行一些必要的审计操作。有一个主要的接口回调类ConsumerRebalanceListener，里面就两个方法onParitionsRevoked和onPartitionAssigned。在coordinator开启新一轮rebalance前onParitionsRevoked方法会被调用，而rebalance完成后会调用onPartitionAssigned方法。  
 &emsp; 使用rebalance监听器的前提是用户使用consumer group。如果使用的是独立consumer或是直接手动分配分区，那么rebalance监听器是无效的。  
 
-### 1.6.4. 重平衡劣势
+### 1.7.4. 重平衡劣势
 &emsp; **重平衡的劣势：**  
 &emsp; 第一：Rebalance影响 Consumer 端 TPS，对 Consumer Group 消费过程有极大的影响。类似JVM的stop the world，在Rebalance期间，Consumer会停下手头的事情，什么也干不了。  
 &emsp; 第二：Rebalance 很慢。如果你的 Group 下成员很多，就一定会有这样的痛点。某真实案例：Group 下有几百个 Consumer 实例，Rebalance 一次要几个小时。万物静止几个小时是非常可怕的一件事了，老板可能要提大刀来相见了。  
 &emsp; 为什么会这么慢呢？因为目前 Rebalance 的设计是让所有 Consumer 实例共同参与，全部重新分配所有分区。其实应该尽量保持之前的分配，目前 kafka 社区也在对此进行优化，在 0.11 版本提出了 StickyAssignor，即有粘性的分区分配策略。所谓的有粘性，是指每次 Rebalance 时，该策略会尽可能地保留之前的分配方案。不过不够完善，有 bug，暂时不建议使用。  
 
-### 1.6.5. 如何避免重平衡？
+### 1.7.5. 如何避免重平衡？
 &emsp; **如何避免 Rebalances？**  
 &emsp; 由于目前一次rebalance操作的开销很大，生产环境中用户一定要结合自身业务特点仔细调优consumer参数：request.timeout.ms、max.poll.records和max.poll.interval.ms，以避免不必要的rebalance出现。  
 <!-- 
 https://blog.csdn.net/haogenmin/article/details/109489704
 -->
 
-## 1.7. 多线程消费实例  
+## 1.8. 多线程消费实例  
 <!-- 
 多线程 Consumer Instance
 https://www.kancloud.cn/nicefo71/kafka/1471595
