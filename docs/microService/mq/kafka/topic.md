@@ -8,6 +8,9 @@
 <!-- /TOC -->
 
 # 1. 主题与分区
+<!-- 
+https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247483881&idx=1&sn=6624157a86dea60abd8a6842c863ba4e&chksm=e8eb787ddf9cf16b85561dcd25144a73304709a14f615291a5374f9ca2bf05a2284b181be1af&scene=178&cur_album_id=1338677566013800448#rd
+-->
 &emsp; 《深入理解Kafka》第4章
 
 ## 1.1. 主题管理  

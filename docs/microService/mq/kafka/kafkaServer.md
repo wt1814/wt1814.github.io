@@ -11,6 +11,9 @@
 
 # 1. Kafka服务端  
 &emsp; 参考《深入理解kafka》第6章
+<!-- 
+https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247483919&idx=1&sn=ee4c393dabadcecd51b34380425d227a&chksm=e8eb7b9bdf9cf28da20a8083d772d6744850256e7b338aa79225889c69f8395ab6019808d946&scene=178&cur_album_id=1338677566013800448#rd
+-->
 
 ## 1.1. 协议设计
 &emsp; 在实际应用中，Kafka经常被用作高性能、可扩展的消息中间件。Kafka自定义了一组基于TCP的二进制协议，只要遵守这组协议的格式，就可以向Kafka发送消息，也可以从Kafka中拉取消息，或者做一些其他的事情，比如提交消费位移等。  

@@ -10,6 +10,7 @@
         - [1.3.1. 订阅topic列表](#131-订阅topic列表)
         - [1.3.2. 基于正则表达订阅topic](#132-基于正则表达订阅topic)
     - [1.4. 消息轮询](#14-消息轮询)
+    - [消费语义](#消费语义)
     - [1.5. 消费者位移(offset)管理](#15-消费者位移offset管理)
     - [1.6. 消费者组重平衡(rebalance)](#16-消费者组重平衡rebalance)
         - [1.6.1. 重平衡简介](#161-重平衡简介)
@@ -95,6 +96,15 @@ public class ConsumerDemo {
 
 * 对于同一个group而言，topic的每条消息只能发送到group下一个consumer实例上  
 * topic消息可以发送到多个group中  
+<!-- 
+Kafka 消费端确保一个 Partition 在一个消费者组内只能被一个消费者消费。这句话改怎么理解呢？
+
+    在同一个消费者组内，一个 Partition 只能被一个消费者消费。
+    在同一个消费者组内，所有消费者组合起来必定可以消费一个 Topic 下的所有 Partition。
+    在同一个消费组内，一个消费者可以消费多个 Partition 的信息。
+    在不同消费者组内，同一个分区可以被多个消费者消费。
+    每个消费者组一定会完整消费一个 Topic 下的所有 Partition。
+-->
 
 &emsp; **Kafka通过消费者组，可以实现基于队列和基于发布/订阅的两种消息引擎：**  
 
@@ -117,7 +127,6 @@ public class ConsumerDemo {
 
 * 实现基于队列的模型：所有consumer实例都属于相同的group，每条消息只会被一个consumer实例处理。  
 * 实现基于发布/订阅模型：consumer实例都属于不同group，这样kafka消息会被广播到所有consumer实例上。  
-
 -->
 
 ## 1.3. 订阅topic
@@ -179,6 +188,12 @@ public class ConsumerDemo {
 &emsp; 使用这种方式调用poll，那么需要在另一个线程中调用consumer.wakeup()方法来触发consumer的关闭。  
 &emsp; KafkaConsumer不是线程安全的，但是有一个例外：用户可以安全地在另一个线程中调用consumer.wakeup()。注意，只有wakeup方法是特例，其他KafkaConsumer方法都不能同时在多线程中使用。  
 
+## 消费语义  
+<!-- 
+消费者的三种消费情况
+https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247483827&idx=1&sn=44cfb50953b0f745b2719977453c3a42&chksm=e8eb7827df9cf131ea8aa1496e9ec2d1ed22ed245225dad0613511006b9428fffb16c92cdd6a&scene=178&cur_album_id=1338677566013800448#rd
+-->
+
 ## 1.5. 消费者位移(offset)管理
 <!-- 
 kakfa消费位移
@@ -217,6 +232,9 @@ https://www.kancloud.cn/nicefo71/kafka/1473378
 &emsp; rebalance本质上是一组协议，它规定了一个consumer group是如何达成一致来分配订阅topic的所有分区的。在Rebalance过程中，所有Consumer实例共同参与，在协调者组件（Coordinator，专门为Consumer Group服务，负责为Group执行Rebalance以及提供位移管理和组成员管理）的帮助下，完成订阅主题分区的分配。  
 
 ### 1.6.2. 重平衡触发条件
+<!-- 
+https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247483827&idx=1&sn=44cfb50953b0f745b2719977453c3a42&chksm=e8eb7827df9cf131ea8aa1496e9ec2d1ed22ed245225dad0613511006b9428fffb16c92cdd6a&scene=178&cur_album_id=1338677566013800448#rd
+-->
 &emsp; **消费者组rebalance触发的条件，满足其一即可：**  
 1. 组成员发生变更，比如新consumer加入组，或已有consumer主动离开组，再或是已有consumer崩溃时则触rebalance。（consumer崩溃的情况，有可能是consumer进程“挂掉”或consumer进程所在的机器宕机，也有可能是consumer无法在指定的时间内完成消息的处理。）
 2. 组订阅topic数发生变更，比如使用基于正则表达式的订阅，当匹配正则表达式的新topic被创建时则会触发rebalance。

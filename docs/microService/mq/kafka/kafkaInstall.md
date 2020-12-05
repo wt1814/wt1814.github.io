@@ -11,6 +11,9 @@
 <!-- /TOC -->
 
 # 1. kafka安装  
+<!-- 
+https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247483777&idx=1&sn=5ab919b6c8c29900a8986a72995d5013&chksm=e8eb7815df9cf103edf64a57e7bc8af8affbeeb89e88da9dda1dc445a67072bb209d7b2e9b11&scene=178&cur_album_id=1338677566013800448#rd
+-->
 
 ## 1.1. kafka安装  
 ......

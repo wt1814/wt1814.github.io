@@ -11,7 +11,6 @@
 
 面试题是否有必要深入了解其背后的原理？我觉得应该刨根究底（下）
 https://mp.weixin.qq.com/s/mRBtvAZ2_oJW91R9JiQpgQ
-
 《Kafka成神之路》- 索引类型
 https://mp.weixin.qq.com/s/QPHPugWlbfeh8HhQvELSSQ
 
@@ -49,9 +48,10 @@ https://www.kancloud.cn/nicefo71/kafka/1473380
 2. broker：  
 &emsp; kafka 集群中包含的服务器。
 3. topic：  
-&emsp; 每条发布到 kafka 集群的消息属于的类别，即 kafka 是面向 topic 的。  
+&emsp; 每条发布到 kafka 集群的消息属于的类别，即 kafka 是面向 topic 的。主题，表示一类消息，consumer 通过订阅 Topic 来消费消息，一个 Broker 节点可以有多个 Topic，每个 Topic 又包含 N 个 partition(分区或者分片)。    
 4. partition：  
-&emsp; partition 是物理上的概念，每个 topic 包含一个或多个 partition。kafka 分配的单位是 partition。  
+&emsp; partition 是物理上的概念，每个 topic 包含一个或多个 partition。kafka 分配的单位是 partition。partition 是一个有序且不可变的消息序列，它是以 append log 文件形式存储的，partition 用于存放 Producer 生产的消息，然后 Consumer 消费 partition 上的消息，每个 partition 只能被一个 Consumer 消费。partition 还有副本的概念。    
+
 5. consumer：  
 &emsp; 从 kafka 集群中消费消息的终端或服务。  
 6. Consumer group：  
@@ -65,7 +65,7 @@ https://www.kancloud.cn/nicefo71/kafka/1473380
 10. controller：  
 &emsp; kafka 集群中的其中一个服务器，用来进行 leader election 以及 各种 failover。  
 11. zookeeper：  
-&emsp; kafka 通过 zookeeper 来存储集群的 meta 信息。 
+&emsp; 存储 Kafka 集群的元数据信息，比如记录注册的 Broker 列表，topic 元数据信息，partition 元数据信息等等。   
 
 ## 1.3. kafka使用场景  
 &emsp; Kafka的用途有哪些？使用场景如何？  
