@@ -331,22 +331,95 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 <!-- 
 多线程 Consumer Instance
 https://www.kancloud.cn/nicefo71/kafka/1471595
-KafkaConsumer是非线程安全的，那么怎么样实现多线程消费？
-https://www.cnblogs.com/luozhiyun/p/11811835.html
+
+-->
+<!-- 
+~~
 Kafka Consumer多线程实例
 https://blog.csdn.net/matrix_google/article/details/80035222?utm_source=blogxgwz8
 -->
-&emsp; Kafka Consumer不是线程安全的，所以实现多线程时通常由两种实现方法：  
-1. 每个线程维护一个KafkaConsumer  
+&emsp; KafkaConsumer类不是线程安全的，所有的网络IO处理都是发生在用户主线程中。不能在多个线程中共享同一个 KafkaConsumer 实例，可以使用 KafkaConsumer.wakeup() 在其他线程中唤醒 Consumer。  
+&emsp; 实现多线程时通常由两种实现方法：  
+1. 消费者程序启动多个线程，每个线程维护专属的 KafkaConsumer Instance，负责完整的消息获取、消息处理流程。  
+<!-- 
+线程封闭，即为每个线程实例化一个 KafkaConsumer 对象
+一个线程对应一个 KafkaConsumer 实例，我们可以称之为消费线程。一个消费线程可以消费一个或多个分区中的消息，所有的消费线程都隶属于同一个消费组。
+-->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-59.png)  
-2. 维护一个或多个KafkaConsumer，同时维护多个事件处理线程(worker thread)  
+2. 消费者程序使用单或多线程获取消息，同时创建多个消费线程执行消息处理逻辑
+    * 处理消息交由特定的线程池来做
+    * 将消息获取与处理解耦
+<!-- 
+消费者程序使用单或多线程获取消息，同时创建多个消费线程执行消息处理逻辑。
+获取消息的线程可以是一个，也可以是多个，每个线程维护专属的 KafkaConsumer 实例，处理消息则交由特定的线程池来做，从而实现消息获取与消息处理的真正解耦。具体架构如下图所示：
+
+维护一个或多个KafkaConsumer，同时维护多个事件处理线程(worker thread) 
+--> 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-60.png)  
 
 &emsp; 两种方法的优缺点：   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-93.png)  
 
 |  | 优点| 缺点| 
 |--- |--- |--- | 
 |方法1(每个线程维护一个KafkaConsumer)|方便实现</br>速度较快，因为不需要任何线程间交互</br>易于维护分区内的消息顺序	|更多的TCP连接开销(每个线程都要维护若干个TCP连接)</br>consumer数受限于topic分区数，扩展性差</br>频繁请求导致吞吐量下降</br>线程自己处理消费到的消息可能会导致超时，从而造成rebalance|
 |方法2 (单个(或多个)consumer，多个worker线程)|可独立扩展consumer数和worker数，伸缩性好| 实现麻烦</br>通常难于维护分区内的消息顺序</br>处理链路变长，导致难以保证提交位移的语义正确性 |
 
+&emsp; **示例代码：**  
+&emsp; **方案一：**  
 
+```java
+public class KafkaConsumerRunner implements Runnable {
+     private final AtomicBoolean closed = new AtomicBoolean(false);
+     private final KafkaConsumer consumer;
+
+
+     public void run() {
+         try {
+             consumer.subscribe(Arrays.asList("topic"));
+             while (!closed.get()) {
+      ConsumerRecords records = 
+        consumer.poll(Duration.ofMillis(10000));
+                 //  执行消息处理逻辑
+             }
+         } catch (WakeupException e) {
+             // Ignore exception if closing
+             if (!closed.get()) throw e;
+         } finally {
+             consumer.close();
+         }
+     }
+
+
+     // Shutdown hook which can be called from a separate thread
+     public void shutdown() {
+         closed.set(true);
+         consumer.wakeup();
+     }
+}
+```
+
+&emsp; **方案二：**
+```java
+private final KafkaConsumer<String, String> consumer;
+private ExecutorService executors;
+//...
+
+
+private int workerNum = ...;
+executors = new ThreadPoolExecutor(
+  workerNum, workerNum, 0L, TimeUnit.MILLISECONDS,
+  new ArrayBlockingQueue<>(1000), 
+  new ThreadPoolExecutor.CallerRunsPolicy());
+
+
+//...
+while (true)  {
+  ConsumerRecords<String, String> records = 
+    consumer.poll(Duration.ofSeconds(1));
+  for (final ConsumerRecord record : records) {
+    executors.submit(new Worker(record));
+  }
+}
+//..
+```
