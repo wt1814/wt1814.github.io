@@ -27,6 +27,7 @@
 <!-- 
 https://www.cnblogs.com/dennyzhangdd/p/7827564.html
 -->
+&emsp; 源码地址：https://kafka.apachecn.org/downloads.html  
 
 ## 1.1. 消息发送示例        
 ```java

@@ -218,11 +218,11 @@
 * [服务降级](/docs/microService/thinking/服务降级.md)  
 * 分布式消息队列
     * [mq](/docs/microService/mq/mq.md)  
-    * [kafka基本概念](/docs/microService/mq/kafka/kafka.md)  
     * [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
+    * [kafka基本概念](/docs/microService/mq/kafka/kafka.md)  
     * [kafka生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
-    * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
     * [主题与分区](/docs/microService/mq/kafka/topic.md)  
+    * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
     * [kafka特性](/docs/microService/mq/kafka/kafka特性.md)  
         * [kafka事务](/docs/microService/mq/kafka/kafkaTraction.md)  
     * [kafka服务端](/docs/microService/mq/kafka/kafkaServer.md)  

@@ -83,15 +83,19 @@ public class KafkaProducerTest {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-8.png)  
 
 ## 1.3. producer拦截器  
-&emsp; 主要用于实现clients端的定制化控制逻辑。interceptor使得用户在消息发送前以及producer回调逻辑前有机会对消息做一些定制化需求，比如修改消息等。同时，producer允许用户指定多个interceptor按序作用于同一条消息从而形成一个拦截链interceptor chain。interceptor的实现接口是org.apahce.kafka.clients.producer.ProducerInterceptor，方法是onSend(ProducerRecord),onAcknowledgement(RecordMetadata,Exception),close。  
-&emsp; 若指定多个interceptor，则producer将按照指定顺序调用它们，同时把每个interceptor中捕获的异常记录到错误日志中而不是向上传递。  
+&emsp; producer拦截器主要用于实现clients端的定制化控制逻辑。interceptor使得用户在消息发送前以及producer回调逻辑前有机会对消息做一些定制化需求，比如修改消息等。  
+&emsp; 同时，producer允许用户指定多个interceptor按序作用于同一条消息从而形成一个拦截链interceptor chain。若指定多个interceptor，则producer将按照指定顺序调用它们，同时把每个interceptor中捕获的异常记录到错误日志中而不是向上传递。    
+interceptor的实现接口是org.apahce.kafka.clients.producer.ProducerInterceptor，方法是onSend(ProducerRecord)、onAcknowledgement(RecordMetadata,Exception)、close。  
 
 ## 1.4. 消息序列化  
 &emsp; 序列化器serializer：将消息转换成字节数组ByteArray。  
-&emsp; 可自定义序列化：1.定义数据对象格式；2.创建自定义序列化类，实现org.apache.kafka.common.serialization.Serializer接口，在serializer方法中实现序列化逻辑；3.在用于构建KafkaProducer的Properties对象中设置key.serializer或value.serializer，取决于是为消息key还是value做自定义序列化。  
+&emsp; 可自定义序列化：  
+1. 定义数据对象格式； 
+2. 创建自定义序列化类，实现org.apache.kafka.common.serialization.Serializer接口，在serializer方法中实现序列化逻辑；  
+3. 在用于构建KafkaProducer的Properties对象中设置key.serializer或value.serializer，取决于是为消息key还是value做自定义序列化。  
 
 ## 1.5. 消息分区机制  
-&emsp; Kafka提供了默认的分区策略（轮询、随机、按key顺序），同时支持自定义分区策略。分区机制如下：    
+&emsp; **Kafka提供了默认的分区策略（轮询、随机、按key顺序），同时支持自定义分区策略。**分区机制如下：    
 
 ```java
 public int partition(String topic, Object key, byte[] keyBytes, Object value, byte[] valueBytes, Cluster cluster) {
@@ -175,10 +179,9 @@ props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
     
 &emsp; 显然，这两种方式各有优劣，如下表所示。   
 
-||说 明	|优 势	|劣 势|
+||说 明	|优 势|劣 势|
 |---|---|---|---|
 |单 KafkaProducer 实例|	所有线程共享一个KafkaProducer 实例|实现简单，性能好|①所有线程共享一个内存缓冲区，可能需要较多内存；</br>②一旦producer某个线程崩溃导致KafkaProducer实例被“破坏”，则所有用户线程都无法工作|
 |多 KafkaProducer 实例|	每个线程维护自己专属的 KafkaProducer 实例|①每个用户线程拥有专属的 KafkaProducer 实例、缓冲 区空间及一组对应的配置参数，可以进行细粒度的调 优；</br>②单个 KafkaProducer崩溃不会影响其他producer线程工作 |需要较大的内存分配开销|
 
 &emsp; 如果是对分区数不多的Kafka集群而言，比较推荐使用第一种方法，即在多个producer用户线程中共享一个KafkaProducer实例。若是对那些拥有超多分区的集群而言，釆用第二种方法具有较高的可控性，方便producer的后续管理。  
-
