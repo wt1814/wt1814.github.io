@@ -200,6 +200,10 @@ kakfa消费位移
 https://blog.csdn.net/haogenmin/article/details/109488571
 
 https://www.kancloud.cn/nicefo71/kafka/1471593
+
+位移主题
+https://www.kancloud.cn/nicefo71/kafka/1471591
+https://blog.csdn.net/yujianping_123/article/details/97398373
 -->
 &emsp; 需要明确指出的是，这里的offset指代的是consumer端的offset，与分区日志中的offset是不同的含义。每个consumer实例都会为它消费的分区维护属于自己的位置信息来记录当前 消费了多少条消息。这在Kafka中有一个特有的术语：位移(offset)。kafka consumer在内部使用一个map来保存其订阅topic所属分区的offset，key是group.id、topic和分区的元组，value就是位移值。Kafka同时还引入了检查点机制定期对位移进行持久化。  
 &emsp; consumer客户端需要定期地向Kafka集群汇报自己消费数据的进度，这一过程被称为位移提交(offset commit)。位移提交这件事情对于consumer而言非常重要，它不仅表征了 consumer端的消费进度，同时也直接决定了consumer端的消费语义保证。    
@@ -223,6 +227,7 @@ https://www.kancloud.cn/nicefo71/kafka/1471593
 <!-- 
 消费者组重平衡全流程解析
 https://www.kancloud.cn/nicefo71/kafka/1473378
+
 -->
 ### 1.6.1. 重平衡简介  
 &emsp; **什么是重平衡？**  
@@ -300,6 +305,10 @@ https://blog.csdn.net/haogenmin/article/details/109489704
 -->
 
 ## 1.7. 多线程消费实例  
+<!-- 
+多线程 Consumer Instance
+https://www.kancloud.cn/nicefo71/kafka/1471595
+-->
 &emsp; Kafka Consumer不是线程安全的，所以实现多线程时通常由两种实现方法：  
 1. 每个线程维护一个KafkaConsumer  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-59.png)  

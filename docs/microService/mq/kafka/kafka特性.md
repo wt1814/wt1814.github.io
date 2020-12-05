@@ -80,6 +80,7 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 Kafka 副本机制
 https://juejin.im/post/6844903950009794567
 https://mp.weixin.qq.com/s/OB-ZVy70vHClCtep43gr_A
+https://www.kancloud.cn/nicefo71/kafka/1473376
 
 Kafka中副本机制的设计和原理 
 https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
@@ -209,12 +210,13 @@ Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)�
 &emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有消息m0，且HW为1，A、B同时宕机。B重启，被选为Leader，将写入新的LeaderEpoch（1, 1）。B开始工作，收到消息m2时。这是A重启，将作为Follower将发送LeaderEpochRequert（FollowerLastEpoch=0），B返回大于FollowerLastEpoch的第一个LeaderEpoch的StartOffset，即1，小于当前LEO值，所以将发生日志截断，并发送Fetch请求，同步消息m2，避免了消息不一致问题。  
 &emsp; 你可能会问，m2消息那岂不是丢失了？是的，m2消息丢失了，但这种情况的发送的根本原因在于min.insync.replicas的值设置为1，即没有任何其他副本同步的情况下，就认为m2消息为已提交状态。LeaderEpoch不能解决min.insync.replicas为1带来的数据丢失问题，但是可以解决其所带来的数据不一致问题。而我们之前所说能解决的数据丢失问题，是指消息已经成功同步到Follower上，但因HW未及时更新引起的数据丢失问题。  
 
-
 ## 1.3. kafka可靠性（如何保证消息队列不丢失?）
 <!-- 
 
 Kafka消息中间件到底会不会丢消息 
 https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
+Kafka 无消息丢失配置
+https://www.kancloud.cn/nicefo71/kafka/1471586
 
 -->
 &emsp; Kafka存在丢消息的问题，消息丢失会发生在Broker，Producer和Consumer三种。  

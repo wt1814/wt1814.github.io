@@ -13,6 +13,8 @@
 &emsp; 参考《深入理解kafka》第6章
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247483919&idx=1&sn=ee4c393dabadcecd51b34380425d227a&chksm=e8eb7b9bdf9cf28da20a8083d772d6744850256e7b338aa79225889c69f8395ab6019808d946&scene=178&cur_album_id=1338677566013800448#rd
+Kafka Controller
+https://www.kancloud.cn/nicefo71/kafka/1473379
 -->
 
 ## 1.1. 协议设计
