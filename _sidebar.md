@@ -225,6 +225,7 @@
     * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
     * [kafka特性](/docs/microService/mq/kafka/kafka特性.md)  
         * [kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
+        * [kafka如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
         * [kafka幂等和事务](/docs/microService/mq/kafka/kafkaTraction.md)  
     * [kafka服务端](/docs/microService/mq/kafka/kafkaServer.md)  
     * [kafka集群管理](/docs/microService/mq/kafka/kafkaUse.md)  
