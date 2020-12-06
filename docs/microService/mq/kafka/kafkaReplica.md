@@ -15,7 +15,6 @@
 <!-- 
 Kafka 副本机制
 https://juejin.im/post/6844903950009794567
-
 Kafka中副本机制的设计和原理 
 https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 深入理解Kafka必知必会
@@ -38,7 +37,7 @@ https://www.cnblogs.com/luozhiyun/p/12079527.html
 * 只有Leader副本会读写数据。
 * 其他则作为Follower副本，负责同步Leader的数据，当Leader宕机时，从Follower选举出新的Leader，从而解决分区单点问题。  
 
-&emsp; 这种副本机制设计的优势
+&emsp; 这种副本机制设计的优势：
 
 * 方便实现 Read-your-writes
     * Read-your-writes：当你使用 Producer API 写消息后，马上使用 Consumer API 去消费
@@ -78,7 +77,7 @@ Exception: Replication factor: 3 larger than available brokers: 1.
 
 ## 1.3. 客户端数据请求  
 &emsp; 在所有副本中，只有领导副本才能进行消息的读写处理。由于不同分区的领导副本可能在不同的broker上，如果某个broker收到了一个分区请求，但是该分区的领导副本并不在该broker上，那么它就会向客户端返回一个Not a Leader for Partition的错误响应。为了解决这个问题，Kafka提供了元数据请求机制。  
-&emsp; 首先集群中的每个broker都会缓存所有主题的分区副本信息，客户端会定期发送元数据请求，然后将获取的元数据进行缓存。定时刷新元数据的时间间隔可以通过为客户端配置metadata.max.age.ms来进行指定。有了元数据信息后，客户端就知道了领导副本所在的broker，之后直接将读写请求发送给对应的broker即可。  
+&emsp; 首先集群中的每个broker都会缓存所有主题的分区副本信息， **客户端会定期发送元数据请求，然后将获取的集群元数据信息进行缓存。**定时刷新元数据的时间间隔可以通过为客户端配置metadata.max.age.ms来进行指定。有了元数据信息后，客户端就知道了领导副本所在的broker，之后直接将读写请求发送给对应的broker即可。  
 &emsp; 如果在定时请求的时间间隔内发生的分区副本的选举，则意味着原来缓存的信息可能已经过时了，此时还有可能会收到Not a Leader  for Partition的错误响应，这种情况下客户端会再次求发出元数据请求，然后刷新本地缓存，之后再去正确的broker上执行对应的操作，过程如下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-94.png)  
 
@@ -110,8 +109,9 @@ In-sync Replicas（ISR）
         卡住副本（Stuck replica）：follower replica 在很长一段时间内停止从 leader 获取消息。这可能是以为 GC 停顿，或者副本出现故障；
         刚启动副本（Bootstrapping replica）：当用户给某个主题增加副本因子时，新的 follower replicas 是不同步的，直到它跟上 leader 的日志。
 
-1. **引入ISR**
-&emsp; **而为了避免这个情况，Kafka引入了ISR（In-Sync Replica）副本的概念，这是一个集合，里面存放的是和Leader保持同步的副本并含有Leader。这是一个动态调整的集合，当副本由同步变为滞后时会从集合中剔除，而当副本由滞后变为同步时又会加入到集合中。**  
+1. **引入ISR**  
+&emsp; **而为了避免将旧副本选举为Leader，Kafka引入了ISR（In-Sync Replica，保持同步的副本）的概念，这是一个集合，里面存放的是和Leader保持同步的副本并含有Leader。这是一个动态调整的集合，当副本由同步变为滞后时会从集合中剔除，而当副本由滞后变为同步时又会加入到集合中。**  
+
 <!--
 https://juejin.cn/post/6844903950009794567#heading-3
 每个分区都有一个 ISR(in-sync Replica) 列表，用于维护所有同步的、可用的副本。首领副本必然是同步副本，而对于跟随者副本来说，它需要满足以下条件才能被认为是同步副本：
@@ -121,12 +121,12 @@ https://juejin.cn/post/6844903950009794567#heading-3
 
 如果副本不满足上面条件的话，就会被从 ISR 列表中移除，直到满足条件才会被再次加入。
 -->
+
 2. **副本是否滞后的设置**  
 &emsp; 那么如何判断一个副本是同步还是滞后呢？Kafka在0.9版本之前，是根据replica.lag.max.messages参数来判断，其含义是同步副本所能落后的最大消息数，当Follower上的最大偏移量落后Leader大于replica.lag.max.messages时，就认为该副本是不同步的了，会从ISR中移除。  
 &emsp; 如果ISR的值设置得过小，会导致Follower经常被踢出ISR，而如果设置过大，则当Leader宕机时，会造成较多消息的丢失。  
 &emsp; 在实际使用时，很难给出一个合理值，这是因为当生产者为了提高吞吐量而调大batch.size时，会发送更多的消息到Leader上，这时候如果不增大replica.lag.max.messages，则会有Follower频繁被踢出ISR的现象。而当Follower发生Fetch请求同步后，又被加入到ISR中，ISR将频繁变动。  
-&emsp; 鉴于该参数难以设定，Kafka在0.9版本引入了一个新的参数replica.lag.time.max.ms，默认10s，含义是当Follower超过10s没发送Fetch请求同步Leader时，就会认为不同步而被踢出ISR。从时间维度来考量，能够很好地避免生产者发送大量消息到Leader副本导致分区ISR频繁收缩和扩张的问题。  
-
+&emsp; 鉴于该参数难以设定，**Kafka在0.9版本引入了一个新的参数replica.lag.time.max.ms，默认10s，含义是当Follower超过10s没发送Fetch请求同步Leader时，就会认为不同步而被踢出ISR。**从时间维度来考量，能够很好地避免生产者发送大量消息到Leader副本导致分区ISR频繁收缩和扩张的问题。  
 
 ### 1.4.1. 服务端Unclear Leader选举  
 <!-- 
@@ -184,12 +184,14 @@ kafka数据一致性，通过HW来保证
 &emsp; 在每个副本中都存有LEO和HW，而Leader副本中除了存有自身的LEO和HW，还存储了其他Follower副本的LEO和HW值，为了区分把Leader上存储的Follower副本的LEO和HW值叫做远程副本的LEO和HW值，如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-76.png)  
 &emsp; 之所以这么设计，是为了HW的更新，Leader需保证HW是ISR副本集合中LEO的最小值。关于具体的更新，分为Follower副本和Leader副本来看。  
+
 &emsp; Follower副本更新LEO和HW的时机只有向Leader拉取了消息之后，会用当前的偏移量加1来更新LEO，并且用Leader的HW值和当前LEO的最小值来更新HW：  
 
     CurrentOffset + 1 -> LEO
     min(LEO, LeaderHW) -> HW
 
-&emsp; LEO的更新，很好理解。那为什么HW要取LEO和LeaderHW的最小值，为什么不直接取LeaderHW，LeaderHW不是一定大于LEO吗？我们在前文简单的提到了LeaderHW是根据同步副本来决定，所以LeaderHW一定小于所有同步副本的LEO，而并不一定小于非同步副本的LEO，所以如果一个非同步副本在拉取消息，那LEO是会小于LeaderHW的，则应用当前LEO值来更新HW。  
+&emsp; LEO的更新，很好理解。那为什么HW要取LEO和LeaderHW的最小值，为什么不直接取LeaderHW，LeaderHW不是一定大于LEO吗？LeaderHW是根据同步副本来决定，所以LeaderHW一定小于所有同步副本的LEO，而并不一定小于非同步副本的LEO，所以如果一个非同步副本在拉取消息，那LEO是会小于LeaderHW的，则应用当前LEO值来更新HW。  
+
 &emsp; 说完了Follower副本上LEO和HW的更新，下面看Leader副本。   
 &emsp; 正常情况下Leader副本的更新时机有两个：一、收到生产者的消息；二、被Follower拉取消息。  
 &emsp; 当收到生产者消息时，会用当前偏移量加1来更新LEO，然后取LEO和远程ISR副本中LEO的最小值更新HW。  
