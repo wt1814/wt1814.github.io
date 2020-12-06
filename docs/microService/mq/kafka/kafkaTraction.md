@@ -41,13 +41,27 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 -->
 ## 1.1. 幂等性   
 ### 1.1.1. 幂等性介绍
+&emsp; **幂等又称为exactly once（精确传递一次。消息被处理且只会被处理一次。不丢失不重复就一次）。**Kafka在0.11.0.0之前的版本中只支持At Least Once和At Most Once语义，尚不支持Exactly Once语义。  
+&emsp; 但是在很多要求严格的场景下，如使用Kafka处理交易数据，Exactly Once语义是必须的。可以通过让下游系统具有幂等性来配合Kafka的At Least Once语义来间接实现Exactly Once。但是：  
+
+* 该方案要求下游系统支持幂等操作，限制了Kafka的适用场景
+* 实现门槛相对较高，需要用户对Kafka的工作机制非常了解
+* 对于Kafka Stream而言，Kafka本身即是自己的下游系统，但Kafka在0.11.0.0版本之前不具有幂等发送能力
+
+&emsp; 因此，Kafka本身对Exactly Once语义的支持就非常必要。  
 &emsp; **影响Kafka幂等性的因素有哪些？**  
-&emsp; 在使用Kafka时，需要确保Exactly-Once语义。分布式系统中，一些不可控因素有很多，比如网络、OOM、FullGC等。在Kafka Broker确认Ack时，出现网络异常、FullGC、OOM等问题时导致Ack超时，Producer会进行重复发送。可能出现的情况如下：  
+&emsp; 在使用Kafka时，需要确保Exactly-Once语义。在分布式系统中，一些不可控因素有很多，比如网络、OOM、FullGC等。在Kafka Broker确认Ack时，出现网络异常、FullGC、OOM等问题时导致Ack超时，Producer会进行重复发送。可能出现的情况如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-99.png)  
-&emsp; Kafka0.11版本，引入了一项重大特性：幂等性。生产者进行retry重试，会重复产生消息。brocker都会只持久化一条，幂等性结合At Least Once语义，就构成了Kafka的Exactily Once语义，即：At Least Once + 幂等性 = Exactly Once。  
+&emsp; 生产者进行retry重试，会重复产生消息。Kafka在0.11版本引入幂等性，brocker只持久化一条。  
+&emsp; 幂等性结合At Least Once语义，就构成了Kafka的Exactily Once语义，即：At Least Once + 幂等性 = Exactly Once。  
   
 ### 1.1.2. 幂等性实现原理  
-&emsp; Kafka为了实现幂等性，它在底层设计架构中引入了ProducerID和SequenceNumber。那这两个概念的用途是什么呢？  
+&emsp; 幂等是针对生产者角度的特性。幂等可以保证上生产者发送的消息，不会丢失，而且不会重复。实现幂等的关键点就是服务端可以区分请求是否重复，过滤掉重复的请求。要区分请求是否重复的有两点：  
+
+* 唯一标识：要想区分请求是否重复，请求中就得有唯一标识。例如支付请求中，订单号就是唯一标识  
+* 记录下已处理过的请求标识：光有唯一标识还不够，还需要记录下那些请求是已经处理过的，这样当收到新的请求时，用新请求中的标识和处理记录进行比较，如果处理记录中有相同的标识，说明是重复记录，拒绝掉。  
+
+&emsp; Kafka为了实现幂等性，它在底层设计架构中引入了ProducerID和SequenceNumber。  
 
 * ProducerID：在每个新的Producer初始化时，会被分配一个唯一的ProducerID，这个ProducerID对客户端使用者是不可见的。  
 * SequenceNumber：对于每个ProducerID，Producer发送数据的每个Topic和Partition都对应一个从0开始单调递增的SequenceNumber值。  
@@ -67,13 +81,12 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 &emsp; 当Producer发送消息(x2,y2)给Broker时，Broker接收到消息并将其追加到消息流中。此时，Broker返回Ack信号给Producer时，发生异常导致Producer接收Ack信号失败。对于Producer来说，会触发重试机制，将消息(x2,y2)再次发送，但是，由于引入了幂等性，在每条消息中附带了PID（ProducerID）和SequenceNumber。相同的PID和SequenceNumber发送给Broker，而之前Broker缓存过之前发送的相同的消息，那么在消息流中的消息就只有一条(x2,y2)，不会出现重复发送的情况。  
 
 #### 1.1.2.3. ProducerID是如何生成的？  
+<!-- 
 &emsp; 客户端在生成Producer时，会实例化如下代码：
 
-```java
 // 实例化一个Producer对象
 Producer<String, String> producer = new KafkaProducer<>(props);
-```
-
+-->
 &emsp; 在org.apache.kafka.clients.producer.internals.Sender类中，在run()中有一个maybeWaitForPid()方法，用来生成一个ProducerID，实现代码如下：  
 
 ```java
@@ -109,7 +122,7 @@ private void maybeWaitForPid() {
 
 ### 1.1.3. 幂等性的应用实例  
 &emsp; **开启幂等性：**  
-&emsp; 要启用幂等性，只需要将Producer的参数中enable.idompotence设置为true即可。此时就会默认把acks设置为all，所以不需要再设置acks属性。  
+&emsp; 要启用幂等性，只需要将Producer的参数中enable.idompotence设置为true即可。此时会默认把acks设置为all，所以不需要再设置acks属性。  
 &emsp; **编码示例：**  
 
 ```java
@@ -137,20 +150,15 @@ private Producer buildIdempotProducer(){
 
 ## 1.2. 事务性  
 ### 1.2.1. kafka事务介绍及使用场景  
-&emsp; Kafka在0.11.0.0之前的版本中只支持At Least Once和At Most Once语义，尚不支持Exactly Once语义。  
-&emsp; 但是在很多要求严格的场景下，如使用Kafka处理交易数据，Exactly Once语义是必须的。可以通过让下游系统具有幂等性来配合Kafka的At Least Once语义来间接实现Exactly Once。但是：  
+&emsp; Kafka的幂等性，只能保证一条记录的在分区发送的原子性，但是如果要保证多条记录（多分区）之间的完整性，这个时候就需要开启kafk的事务操作。  
+&emsp; 在Kafka0.11.0.0除了引入的幂等性的概念，同时也引入了事务的概念。Kafka中的事务与数据库的事务类似，Kafka中的事务属性是指一系列的Producer生产消息和消费消息提交Offsets的操作在一个事务中，即原子性操作。对应的结果是同时成功或者同时失败。  
 
-* 该方案要求下游系统支持幂等操作，限制了Kafka的适用场景
-* 实现门槛相对较高，需要用户对Kafka的工作机制非常了解
-* 对于Kafka Stream而言，Kafka本身即是自己的下游系统，但Kafka在0.11.0.0版本之前不具有幂等发送能力
 
-&emsp; 因此，Kafka本身对Exactly Once语义的支持就非常必要。即实现事务。  
 
-&emsp; Kafka中的事务与数据库的事务类似，Kafka中的事务属性是指一系列的Producer生产消息和消费消息提交Offsets的操作在一个事务中，即原子性操作。对应的结果是同时成功或者同时失败。  
 
 &emsp; **<font color= "red">事务场景</font>**  
 
-* 最简单的需求是producer发的多条消息组成一个事务这些消息需要对consumer同时可见或者同时不可见。  
+* 最简单的需求是producer发的多条消息组成一个事务，这些消息需要对consumer同时可见或者同时不可见。  
 * producer可能会给多个topic，多个partition发消息，这些消息也需要能放在一个事务里面，这就形成了一个典型的分布式事务。  
 * kafka的应用场景经常是应用先消费一个topic，然后做处理再发到另一个topic，这个consume-transform-produce过程需要放到一个事务里面，比如在消息处理或者发送的过程中如果失败了，消费位点也不能提交。  
 * producer或者producer所在的应用可能会挂掉，新的producer启动以后需要知道怎么处理之前未完成的事务。  
@@ -325,6 +333,10 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
 &emsp; 补充说明，如果参与该事务的某些\<Topic, Partition>在被写入Transaction Marker前不可用，它对READ_COMMITTED的Consumer不可见，但不影响其它可用\<Topic, Partition>的COMMIT或ABORT。在该\<Topic, Partition>恢复可用后，Transaction Coordinator会重新根据PREPARE_COMMIT或PREPARE_ABORT向该\<Topic, Partition>发送Transaction Marker。  
 
 ### 1.2.4. kafka事务使用  
+&emsp; 通常Kafka的事务分为 生产者事务Only、消费者&生产者事务。一般来说默认消费者消费的消息的级别是read_uncommited数据，这有可能读取到事务失败的数据，所有在开启生产者事务之后，需要用户设置消费者的事务隔离级别。    
+&emsp; isolation.level	=  read_uncommitted 默认。该选项有两个值read_committed|read_uncommitted，如果开始事务控制，消费端必须将事务的隔离级别设置为read_committed  
+&emsp; 开启的生产者事务的时候，只需要指定transactional.id属性即可，一旦开启了事务，默认生产者就已经开启了幂等性。但是要求"transactional.id"的取值必须是唯一的，同一时刻只能有一个"transactional.id"存储在，其他的将会被关闭。  
+
 #### 1.2.4.1. 事务相关配置  
 1. Broker configs
     1. transactional.id.timeout.ms：在ms中，事务协调器在生产者TransactionalId提前过期之前等待的最长时间，并且没有从该生产者TransactionalId接收到任何事务状态更新。默认是604800000(7天)。这允许每周一次的生产者作业维护它们的id
