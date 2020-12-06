@@ -332,7 +332,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
 [kafka源码]  
 [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
-[kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md) 
+[kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md)  
 
 ### 分布式搜索引擎  
 [ES搭建](/docs/ES/7.build.md)  
