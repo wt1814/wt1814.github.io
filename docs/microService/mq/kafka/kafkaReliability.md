@@ -3,8 +3,11 @@
 - [1. kafka如何保证消息队列不丢失?](#1-kafka如何保证消息队列不丢失)
     - [1.1. 前言：消息传递语义](#11-前言消息传递语义)
     - [1.2. Producer端丢失消息](#12-producer端丢失消息)
+        - [1.2.1. 发送消息的流程](#121-发送消息的流程)
+        - [1.2.2. ACK应答机制](#122-ack应答机制)
+        - [1.2.3. 丢失消息的情况](#123-丢失消息的情况)
     - [1.3. Broker端丢失消息](#13-broker端丢失消息)
-        - [1.3.1. ACK机制](#131-ack机制)
+        - [消息持久化](#消息持久化)
     - [1.4. Consumer 端丢失消息](#14-consumer-端丢失消息)
 
 <!-- /TOC -->
@@ -25,7 +28,7 @@ https://www.kancloud.cn/nicefo71/kafka/1471586
 * at least once：至少一次。消息不会丢失，但可能被处理多次。可能重复，不会丢失。
 * exactly once：精确传递一次。消息被处理且只会被处理一次。不丢失不重复就一次。
 
-&emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。  
+&emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。kafka 通过 ack 的配置来实现前两种。  
 
 &emsp; Kafka有三次消息传递的过程：  
 
@@ -36,20 +39,61 @@ https://www.kancloud.cn/nicefo71/kafka/1471586
 在这三步中每一步都有可能会丢失消息。    
 
 ## 1.2. Producer端丢失消息  
-&emsp; Producer丢失消息，发生在生产者客户端。  
-&emsp; 为了提升效率，减少IO，producer在发送数据时可以将多个请求进行合并后发送。被合并的请求咋发送一线缓存在本地buffer中。缓存的方式和前文提到的刷盘类似，producer可以将请求打包成“块”或者按照时间间隔，将buffer中的数据发出。通过buffer可以将生产者改造为异步的方式，而这可以提升发送效率。  
-&emsp; 但是，buffer中的数据就是危险的。在正常情况下，客户端的异步调用可以通过callback来处理消息发送失败或者超时的情况，但是，一旦producer被非法的停止了，那么buffer中的数据将丢失，broker将无法收到该部分数据。又或者，当Producer客户端内存不够时，如果采取的策略是丢弃消息（另一种策略是block阻塞），消息也会被丢失。抑或，消息产生（异步产生）过快，导致挂起线程过多，内存不足，导致程序崩溃，消息丢失。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-73.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-73.png)  
 
-&emsp; **根据上图，可以想到几个解决的思路：**  
+### 1.2.1. 发送消息的流程
+&emsp; 生产者发送消息的一般流程（部分流程与具体配置项强相关，这里先忽略）：  
 
-* 异步发送消息改为同步发送消。或者service产生消息时，使用阻塞的线程池，并且线程数有一定上限。整体思路是控制消息产生速度。  
-* 扩大Buffer的容量配置。这种方式可以缓解该情况的出现，但不能杜绝。  
-* service不直接将消息发送到buffer（内存），而是将消息写到本地的磁盘中（数据库或者文件），由另一个（或少量）生产线程进行消息发送。相当于是在buffer和service之间又加了一层空间更加富裕的缓冲层。  
+1. 生产者是与leader直接交互，所以先从集群获取topic对应分区的leader元数据；
+2. 获取到leader分区元数据后直接将消息发给过去；
+3. Kafka Broker对应的leader分区收到消息后写入文件持久化；
+4. Follower拉取Leader消息与Leader的数据保持一致；
+5. Follower消息拉取完毕需要给Leader回复ACK确认消息；
+6. Kafka Leader和Follower分区同步完，Leader分区会给生产者回复ACK确认消息。
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-96.png)  
+
+&emsp; 生产者采用push模式将数据发布到broker，每条消息追加到分区中，顺序写入磁盘。消息写入Leader后，Follower是主动与Leader进行同步。  
+&emsp; Kafka消息发送有两种方式：同步（sync）和异步（async），默认是同步方式，可通过producer.type属性进行配置。  
+
+### 1.2.2. ACK应答机制  
+<!-- 
+&emsp; kafka为了保证高可用性，采用了副本机制。当 ISR副本中的follower 完成数据的同步之后，leader 就会给 follower 发送 ack。如果 follower 长时间未向 leader 同步数据，则该 follower 将会被踢出 ISR，该时间阈值由 replica.lag.time.max.ms 参数设定。leader 发生故障之后，就会从 ISR 中选举新的 leader。（之前还有另一个参数，0.9 版本之后 replica.lag.max.messages 参数被移除了）  
+&emsp; 对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没必要等 ISR 中的follower全部接收成功。kafka的request.required.acks 可设置为 1、0、-1 三种情况。  
+
+    acks=0，producer不等待broker的响应，效率最高，但是消息很可能会丢。
+    acks=1，leader broker收到消息后，不等待其他follower的响应，即返回ack。也可以理解为ack数为1。此时，如果follower还没有收到leader同步的消息leader就挂了，那么消息会丢失。按照上图中的例子，如果leader收到消息，成功写入PageCache后，会返回ack，此时producer认为消息发送成功。但此时，按照上图，数据还没有被同步到follower。如果此时leader断电，数据会丢失。
+    acks=-1，leader broker收到消息后，挂起，等待所有ISR列表中的follower返回结果后，再返回ack。-1等效与all。这种配置下，只有leader写入数据到pagecache是不会返回ack的，还需要所有的ISR返回“成功”才会触发ack。如果此时断电，producer可以知道消息没有被发送成功，将会重新发送。如果在follower收到数据以后，成功返回ack，leader断电，数据将存在于原来的follower中。在重新选举以后，新的leader会持有该部分数据。数据从leader同步到follower，需要2步：
+        数据从pageCache被刷盘到disk。因为只有disk中的数据才能被同步到replica。
+        数据同步到replica，并且replica成功将数据写入PageCache。在producer得到ack后，哪怕是所有机器都停电，数据也至少会存在于leader的磁盘内。
+-->
+&emsp; 消息发送到brocker后，Kafka会进行副本同步。对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没必要等 ISR 中的follower全部接收成功。kafka的request.required.acks 可设置为 1、0、-1 三种情况。 
+&emsp; Kafka通过配置request.required.acks属性来确认消息的生产：
+
+* 0表示不进行消息接收是否成功的确认；不能保证消息是否发送成功，生成环境基本不会用。
+* 1表示当Leader接收成功时确认；只要Leader存活就可以保证不丢失，保证了吞吐量。
+* -1或者all表示Leader和Follower都接收成功时确认；可以最大限度保证消息不丢失，但是吞吐量低。
+
+&emsp; kafka producer 的参数acks 的默认值为1，所以默认的producer级别是at least once，并不能exactly once。
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-61.png)  
+&emsp; 设置为 1 时代表当 Leader 状态的 Partition 接收到消息并持久化时就认为消息发送成功，如果 ISR 列表的 Replica 还没来得及同步消息，Leader 状态的 Partition 对应的 Broker 宕机，则消息有可能丢失。    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-62.png)  
+&emsp; 设置为 0 时代表 Producer 发送消息后就认为成功，消息有可能丢失。    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-63.png)  
+&emsp; 设置为-1 时，代表 ISR 列表中的所有 Replica 将消息同步完成后才认为消息发送成功；但是如果只存在主 Partition 的时候，Broker 异常时同样会导致消息丢失。所以此时就需要min.insync.replicas参数的配合，该参数需要设定值大于等于 2，当 Partition 的个数小于设定的值时，Producer 发送消息会直接报错。  
+
+&emsp; 上面这个过程看似已经很完美了，但是假设如果消息在同步到部分从Partition 上时，主 Partition 宕机，此时消息会重传，虽然消息不会丢失，但是会造成同一条消息会存储多次。在新版本中 Kafka 提出了幂等性的概念，通过给每条消息设置一个唯一 ID，并且该 ID 可以唯一映射到 Partition 的一个固定位置，从而避免消息重复存储的问题。 
+
+### 1.2.3. 丢失消息的情况  
+
+* 如果acks配置为0，发生网络抖动消息丢了，生产者不校验ACK自然就不知道丢了。
+* 如果acks配置为1保证leader不丢，但是如果leader挂了，恰好选了一个没有ACK的follower，那也丢了。
+* all：保证leader和follower不丢，但是如果网络拥塞，没有收到ACK，会有重复发的问题。
+
+&emsp; 为防止Producer端丢失消息，除了将ack设置为all，还可以使用带有回调通知的发送 API，即producer.send(msg, callback)。  
 
 ## 1.3. Broker端丢失消息
+<!-- 
 &emsp; Broker丢失消息是由于Kafka本身的原因造成的，kafka为了得到更高的性能和吞吐量，将数据异步批量的存储在磁盘中。消息的刷盘过程，为了提高性能，减少刷盘次数，kafka采用了批量刷盘的做法。即，按照一定的消息量，和时间间隔进行刷盘。这种机制也是由于linux操作系统决定的。将数据存储到linux操作系统种，会先存储到页缓存（Page cache）中，按照时间或者其他条件进行刷盘（从page cache到file），或者通过fsync命令强制刷盘。数据在page cache中时，如果系统挂掉，数据会丢失。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-95.png)  
 &emsp; 上图简述了broker写数据以及同步的一个过程。broker写数据只写到PageCache中，而pageCache位于内存。这部分数据在断电后是会丢失的。pageCache的数据通过linux的flusher程序进行刷盘。刷盘触发条件有三：  
@@ -62,28 +106,24 @@ https://www.kancloud.cn/nicefo71/kafka/1471586
 &emsp; Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不丢失消息是做不到的，只能通过调整刷盘机制的参数缓解该情况。比如，减少刷盘间隔，减少刷盘数据量大小。时间越短，性能越差，可靠性越好（尽可能可靠）。这是一个选择题。  
 
 &emsp; **为了解决该问题，**kafka通过producer和broker协同处理单个broker丢失参数的情况。一旦producer发现broker消息丢失，即可自动进行retry。除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。那么producer是如何检测到数据丢失的呢？是通过ack机制。  
-
-### 1.3.1. ACK机制  
-&emsp; kafka为了保证高可用性，采用了副本机制。当 ISR副本中的follower 完成数据的同步之后，leader 就会给 follower 发送 ack。如果 follower 长时间未向 leader 同步数据，则该 follower 将会被踢出 ISR，该时间阈值由 replica.lag.time.max.ms 参数设定。leader 发生故障之后，就会从 ISR 中选举新的 leader。（之前还有另一个参数，0.9 版本之后 replica.lag.max.messages 参数被移除了）  
-&emsp; 对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没必要等 ISR 中的follower全部接收成功。kafka的request.required.acks 可设置为 1、0、-1 三种情况。  
-<!-- 
-    acks=0，producer不等待broker的响应，效率最高，但是消息很可能会丢。
-    acks=1，leader broker收到消息后，不等待其他follower的响应，即返回ack。也可以理解为ack数为1。此时，如果follower还没有收到leader同步的消息leader就挂了，那么消息会丢失。按照上图中的例子，如果leader收到消息，成功写入PageCache后，会返回ack，此时producer认为消息发送成功。但此时，按照上图，数据还没有被同步到follower。如果此时leader断电，数据会丢失。
-    acks=-1，leader broker收到消息后，挂起，等待所有ISR列表中的follower返回结果后，再返回ack。-1等效与all。这种配置下，只有leader写入数据到pagecache是不会返回ack的，还需要所有的ISR返回“成功”才会触发ack。如果此时断电，producer可以知道消息没有被发送成功，将会重新发送。如果在follower收到数据以后，成功返回ack，leader断电，数据将存在于原来的follower中。在重新选举以后，新的leader会持有该部分数据。数据从leader同步到follower，需要2步：
-        数据从pageCache被刷盘到disk。因为只有disk中的数据才能被同步到replica。
-        数据同步到replica，并且replica成功将数据写入PageCache。在producer得到ack后，哪怕是所有机器都停电，数据也至少会存在于leader的磁盘内。
 -->
-    
-    Kafka 的交付语义？交付语义一般有at least once、at most once和exactly once。kafka 通过 ack 的配置来实现前两种。  
+<!-- 
+&emsp; 为了提升效率，减少IO，producer在发送数据时可以将多个请求进行合并后发送。被合并的请求咋发送一线缓存在本地buffer中。缓存的方式和前文提到的刷盘类似，producer可以将请求打包成“块”或者按照时间间隔，将buffer中的数据发出。通过buffer可以将生产者改造为异步的方式，而这可以提升发送效率。  
+&emsp; 但是，buffer中的数据就是危险的。在正常情况下，客户端的异步调用可以通过callback来处理消息发送失败或者超时的情况，但是，一旦producer被非法的停止了，那么buffer中的数据将丢失，broker将无法收到该部分数据。又或者，当Producer客户端内存不够时，如果采取的策略是丢弃消息（另一种策略是block阻塞），消息也会被丢失。抑或，消息产生（异步产生）过快，导致挂起线程过多，内存不足，导致程序崩溃，消息丢失。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-73.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-73.png)  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-61.png)  
-&emsp; 设置为 1 时代表当 Leader 状态的 Partition 接收到消息并持久化时就认为消息发送成功，如果 ISR 列表的 Replica 还没来得及同步消息，Leader 状态的 Partition 对应的 Broker 宕机，则消息有可能丢失。    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-62.png)  
-&emsp; 设置为 0 时代表 Producer 发送消息后就认为成功，消息有可能丢失。    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-63.png)  
-&emsp; 设置为-1 时，代表 ISR 列表中的所有 Replica 将消息同步完成后才认为消息发送成功；但是如果只存在主 Partition 的时候，Broker 异常时同样会导致消息丢失。所以此时就需要min.insync.replicas参数的配合，该参数需要设定值大于等于 2，当 Partition 的个数小于设定的值时，Producer 发送消息会直接报错。  
+&emsp; **根据上图，可以想到几个解决的思路：**  
 
-&emsp; 上面这个过程看似已经很完美了，但是假设如果消息在同步到部分从Partition 上时，主 Partition 宕机，此时消息会重传，虽然消息不会丢失，但是会造成同一条消息会存储多次。在新版本中 Kafka 提出了幂等性的概念，通过给每条消息设置一个唯一 ID，并且该 ID 可以唯一映射到 Partition 的一个固定位置，从而避免消息重复存储的问题。  
+* 异步发送消息改为同步发送消。或者service产生消息时，使用阻塞的线程池，并且线程数有一定上限。整体思路是控制消息产生速度。  
+* 扩大Buffer的容量配置。这种方式可以缓解该情况的出现，但不能杜绝。  
+* service不直接将消息发送到buffer（内存），而是将消息写到本地的磁盘中（数据库或者文件），由另一个（或少量）生产线程进行消息发送。相当于是在buffer和service之间又加了一层空间更加富裕的缓冲层。  
+-->
+
+### 消息持久化  
+&emsp; Kafka Broker接收到数据后会将数据进行持久化存储。  
+
+
 
 ## 1.4. Consumer 端丢失消息
 &emsp; Consumer消费消息有下面几个步骤：  
