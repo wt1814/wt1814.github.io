@@ -2,63 +2,140 @@
 
 - [1. kafka幂等和事务](#1-kafka幂等和事务)
     - [1.1. 幂等性](#11-幂等性)
-        - [1.1.1. 消息交付语义](#111-消息交付语义)
-        - [1.1.2. 幂等性介绍](#112-幂等性介绍)
-        - [1.1.3. 幂等性实现](#113-幂等性实现)
+        - [1.1.1. 幂等性介绍](#111-幂等性介绍)
+        - [1.1.2. 幂等性实现原理](#112-幂等性实现原理)
+            - [1.1.2.1. 幂等性引入之前的问题？](#1121-幂等性引入之前的问题)
+            - [1.1.2.2. 幂等性引入之后解决了什么问题？](#1122-幂等性引入之后解决了什么问题)
+            - [1.1.2.3. ProducerID是如何生成的？](#1123-producerid是如何生成的)
+        - [1.1.3. 幂等性的应用实例](#113-幂等性的应用实例)
     - [1.2. 事务性](#12-事务性)
         - [1.2.1. kafka事务介绍及使用场景](#121-kafka事务介绍及使用场景)
         - [1.2.2. Kafka事务特性](#122-kafka事务特性)
             - [1.2.2.1. 原子写](#1221-原子写)
             - [1.2.2.2. 拒绝僵尸实例（Zombie fencing）](#1222-拒绝僵尸实例zombie-fencing)
             - [1.2.2.3. 读事务消息](#1223-读事务消息)
-        - [1.2.3. kafka事务使用](#123-kafka事务使用)
-            - [1.2.3.1. 事务相关配置](#1231-事务相关配置)
-            - [1.2.3.2. Java API](#1232-java-api)
-                - [1.2.3.2.1. “只有写”应用程序示例](#12321-只有写应用程序示例)
-                - [1.2.3.2.2. 消费-生产并存（consume-Transform-Produce）](#12322-消费-生产并存consume-transform-produce)
-        - [1.2.4. kafka事务原理](#124-kafka事务原理)
-            - [1.2.4.1. 基本概念](#1241-基本概念)
-            - [1.2.4.2. 幂等性和事务性的关系](#1242-幂等性和事务性的关系)
-            - [1.2.4.3. 事务流程](#1243-事务流程)
-                - [1.2.4.3.1. 查找事务协调者Tranaction Corordinator](#12431-查找事务协调者tranaction-corordinator)
-                - [1.2.4.3.2. 初始化事务 initTransaction](#12432-初始化事务-inittransaction)
-                - [1.2.4.3.3. 开始事务 beginTransaction](#12433-开始事务-begintransaction)
-                - [1.2.4.3.4. Consume-Transform-Produce](#12434-consume-transform-produce)
-                - [1.2.4.3.5. 事务提交和事务终结(放弃事务)](#12435-事务提交和事务终结放弃事务)
+        - [1.2.3. kafka事务原理](#123-kafka事务原理)
+            - [1.2.3.1. 基本概念](#1231-基本概念)
+            - [1.2.3.2. 幂等性和事务性的关系](#1232-幂等性和事务性的关系)
+            - [1.2.3.3. 事务流程](#1233-事务流程)
+                - [1.2.3.3.1. 查找事务协调者Tranaction Corordinator](#12331-查找事务协调者tranaction-corordinator)
+                - [1.2.3.3.2. 初始化事务 initTransaction](#12332-初始化事务-inittransaction)
+                - [1.2.3.3.3. 开始事务 beginTransaction](#12333-开始事务-begintransaction)
+                - [1.2.3.3.4. Consume-Transform-Produce](#12334-consume-transform-produce)
+                - [1.2.3.3.5. 事务提交和事务终结(放弃事务)](#12335-事务提交和事务终结放弃事务)
+        - [1.2.4. kafka事务使用](#124-kafka事务使用)
+            - [1.2.4.1. 事务相关配置](#1241-事务相关配置)
+            - [1.2.4.2. Java API](#1242-java-api)
+                - [1.2.4.2.1. “只有写”应用程序示例](#12421-只有写应用程序示例)
+                - [1.2.4.2.2. 消费-生产并存（consume-Transform-Produce）](#12422-消费-生产并存consume-transform-produce)
         - [1.2.5. 总结](#125-总结)
 
 <!-- /TOC -->
 
 # 1. kafka幂等和事务  
 <!-- 
-https://blog.csdn.net/mlljava1111/article/details/81180351
+Kafka的幂等性和事务是比较重要的特性，特别是在数据丢失和数据重复的问题上非常重要。
+-->
+<!-- 
 https://blog.csdn.net/BeiisBei/article/details/104737298
 -->
-## 1.1. 幂等性  
+## 1.1. 幂等性   
+### 1.1.1. 幂等性介绍
+&emsp; **影响Kafka幂等性的因素有哪些？**  
+&emsp; 在使用Kafka时，需要确保Exactly-Once语义。分布式系统中，一些不可控因素有很多，比如网络、OOM、FullGC等。在Kafka Broker确认Ack时，出现网络异常、FullGC、OOM等问题时导致Ack超时，Producer会进行重复发送。可能出现的情况如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-99.png)  
+&emsp; Kafka0.11版本，引入了一项重大特性：幂等性。生产者进行retry重试，会重复产生消息。brocker都会只持久化一条，幂等性结合At Least Once语义，就构成了Kafka的Exactily Once语义，即：At Least Once + 幂等性 = Exactly Once。  
+  
+### 1.1.2. 幂等性实现原理  
+&emsp; Kafka为了实现幂等性，它在底层设计架构中引入了ProducerID和SequenceNumber。那这两个概念的用途是什么呢？  
 
-### 1.1.1. 消息交付语义    
-&emsp; Kafka 在 producer 和 consumer 之间提供的语义保证。显然，Kafka可以提供的消息交付语义保证有多种：  
+* ProducerID：在每个新的Producer初始化时，会被分配一个唯一的ProducerID，这个ProducerID对客户端使用者是不可见的。  
+* SequenceNumber：对于每个ProducerID，Producer发送数据的每个Topic和Partition都对应一个从0开始单调递增的SequenceNumber值。  
 
-* At most once——消息可能会丢失但绝不重传。
-* At least once——消息可以重传但绝不丢失。
-* Exactly once——每一条消息只被传递一次。
+#### 1.1.2.1. 幂等性引入之前的问题？  
+&emsp; Kafka在引入幂等性之前，Producer向Broker发送消息，然后Broker将消息追加到消息流中后给Producer返回Ack信号值。实现流程如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-100.png)  
+&emsp; 上图的实现流程是一种理想状态下的消息发送情况，但是实际情况中，会出现各种不确定的因素，比如在Producer在发送给Broker的时候出现网络异常。比如以下这种异常情况的出现：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-101.png)  
+&emsp; 上图这种情况，当Producer第一次发送消息给Broker时，Broker将消息(x2,y2)追加到了消息流中，但是在返回Ack信号给Producer时失败了（比如网络异常） 。此时，Producer端触发重试机制，将消息(x2,y2)重新发送给Broker，Broker接收到消息后，再次将该消息追加到消息流中，然后成功返回Ack信号给Producer。这样下来，消息流中就被重复追加了两条相同的(x2,y2)的消息。  
 
-&emsp; 值得注意的是，这个问题被分成了两部分：发布消息的持久性保证和消费消息的保证。  
+#### 1.1.2.2. 幂等性引入之后解决了什么问题？  
+&emsp; 面对这样的问题，Kafka引入了幂等性。那么幂等性是如何解决这类重复发送消息的问题的呢？下面先来看看流程图：
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-102.png)  
+&emsp; 同样，这是一种理想状态下的发送流程。实际情况下，会有很多不确定的因素，比如Broker在发送Ack信号给Producer时出现网络异常，导致发送失败。异常情况如下图所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-103.png)  
+&emsp; 当Producer发送消息(x2,y2)给Broker时，Broker接收到消息并将其追加到消息流中。此时，Broker返回Ack信号给Producer时，发生异常导致Producer接收Ack信号失败。对于Producer来说，会触发重试机制，将消息(x2,y2)再次发送，但是，由于引入了幂等性，在每条消息中附带了PID（ProducerID）和SequenceNumber。相同的PID和SequenceNumber发送给Broker，而之前Broker缓存过之前发送的相同的消息，那么在消息流中的消息就只有一条(x2,y2)，不会出现重复发送的情况。  
 
-### 1.1.2. 幂等性介绍
-&emsp; 将服务器的 ACK 级别设置为 -1，可以保证 Producer 到 Server 之间不会丢失数据，即 At Least Once 语义。相对的，将服务器 ACK 级别设置为 0，可以保证生产者每条消息只会被发送一次，即 At Most Once语义。  
-&emsp; At Least Once 可以保证数据不丢失，但是不能保证数据不重复。相对的，At Most Once 可以保证数据不重复，但是不能保证数据不丢失。但是，对于一些非常重要的信息，比如说交易数据，下游数据消费者要求数据既不重复也不丢失，即 Exactly Once 语义。在 0.11 版本以前的 Kafka，对此是无能为力的，只能保证数据不丢失，再在下游消费者对数据做全局去重。对于多个下游应用的情况，每个都需要单独做全局去重，这就对性能造成了很大的影响。  
-&emsp; 0.11 版本的 Kafka，引入了一项重大特性：幂等性。所谓的幂等性就是指 Producer 不论向 Server 发送多少次重复数据。Server 端都会只持久化一条，幂等性结合 At Least Once 语义，就构成了 Kafka 的 Exactily Once 语义，即：At Least Once + 幂等性 = Exactly Once  
+#### 1.1.2.3. ProducerID是如何生成的？  
+&emsp; 客户端在生成Producer时，会实例化如下代码：
 
-### 1.1.3. 幂等性实现  
+```java
+// 实例化一个Producer对象
+Producer<String, String> producer = new KafkaProducer<>(props);
+```
+
+&emsp; 在org.apache.kafka.clients.producer.internals.Sender类中，在run()中有一个maybeWaitForPid()方法，用来生成一个ProducerID，实现代码如下：  
+
+```java
+private void maybeWaitForPid() {
+    if (transactionState == null)
+        return;
+
+    while (!transactionState.hasPid()) {
+        try {
+            Node node = awaitLeastLoadedNodeReady(requestTimeout);
+            if (node != null) {
+                ClientResponse response = sendAndAwaitInitPidRequest(node);
+                if (response.hasResponse() && (response.responseBody() instanceof InitPidResponse)) {
+                    InitPidResponse initPidResponse = (InitPidResponse) response.responseBody();
+                    transactionState.setPidAndEpoch(initPidResponse.producerId(), initPidResponse.epoch());
+                } else {
+                    log.error("Received an unexpected response type for an InitPidRequest from {}. " +
+                            "We will back off and try again.", node);
+                }
+            } else {
+                log.debug("Could not find an available broker to send InitPidRequest to. " +
+                        "We will back off and try again.");
+            }
+        } catch (Exception e) {
+            log.warn("Received an exception while trying to get a pid. Will back off and retry.", e);
+        }
+        log.trace("Retry InitPidRequest in {}ms.", retryBackoffMs);
+        time.sleep(retryBackoffMs);
+        metadata.requestUpdate();
+    }
+}
+```
+
+### 1.1.3. 幂等性的应用实例  
 &emsp; **开启幂等性：**  
-&emsp; 要启用幂等性，只需要将 Producer 的参数中 enable.idompotence 设置为 true 即可。  
-&emsp; **幂等性实现原理：**  
-&emsp; Kafka 的幂等性实现其实就是将原来下游需要做的去重放在了数据上游。开启幂等性的Producer在初始化的时候会被分配一个PID，发往同一Partition的消息会附带Sequence Number。而Broker端会对\<PID,Partition,SeqNumber> 做缓存，当具有相同主键的消息提交时，Broker只会持久化一条。  
-&emsp; 但是 PID 重启就会变化，同时不同的 Partition 也具有不同主键，所以幂等性无法保证跨分区会话的 Exactly Once。  
+&emsp; 要启用幂等性，只需要将Producer的参数中enable.idompotence设置为true即可。此时就会默认把acks设置为all，所以不需要再设置acks属性。  
+&emsp; **编码示例：**  
+
+```java
+private Producer buildIdempotProducer(){
+    // create instance for properties to access producer configs
+    Properties props = new Properties();
+    // bootstrap.servers是Kafka集群的IP地址。多个时,使用逗号隔开
+    props.put("bootstrap.servers", "localhost:9092");
+    props.put("enable.idempotence",true);
+    //If the request fails, the producer can automatically retry,
+    props.put("retries", 3);
+    //Reduce the no of requests less than 0
+    props.put("linger.ms", 1);
+    //The buffer.memory controls the total amount of memory available to the producer for buffering.
+    props.put("buffer.memory", 33554432);
+    // Kafka消息是以键值对的形式发送,需要设置key和value类型序列化器
+    props.put("key.serializer",
+            "org.apache.kafka.common.serialization.StringSerializer");
+    props.put("value.serializer",
+            "org.apache.kafka.common.serialization.StringSerializer");
+    Producer<String, String> producer = new KafkaProducer<String, String>(props);
+    return producer;
+}
+```
 
 ## 1.2. 事务性  
-
 ### 1.2.1. kafka事务介绍及使用场景  
 &emsp; Kafka在0.11.0.0之前的版本中只支持At Least Once和At Most Once语义，尚不支持Exactly Once语义。  
 &emsp; 但是在很多要求严格的场景下，如使用Kafka处理交易数据，Exactly Once语义是必须的。可以通过让下游系统具有幂等性来配合Kafka的At Least Once语义来间接实现Exactly Once。但是：  
@@ -67,7 +144,9 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 * 实现门槛相对较高，需要用户对Kafka的工作机制非常了解
 * 对于Kafka Stream而言，Kafka本身即是自己的下游系统，但Kafka在0.11.0.0版本之前不具有幂等发送能力
 
-&emsp; 因此，Kafka本身对Exactly Once语义的支持就非常必要。即实现事务。    
+&emsp; 因此，Kafka本身对Exactly Once语义的支持就非常必要。即实现事务。  
+
+&emsp; Kafka中的事务与数据库的事务类似，Kafka中的事务属性是指一系列的Producer生产消息和消费消息提交Offsets的操作在一个事务中，即原子性操作。对应的结果是同时成功或者同时失败。  
 
 &emsp; **<font color= "red">事务场景</font>**  
 
@@ -100,8 +179,153 @@ Kafka中的事务特性主要用于以下两种场景：
 #### 1.2.2.3. 读事务消息  
 &emsp; 为了保证事务特性，Consumer如果设置了isolation.level = read_committed，那么它只会读取已经提交了的消息。在Producer成功提交事务后，Kafka会将所有该事务中的消息的Transaction Marker从uncommitted标记为committed状态，从而所有的Consumer都能够消费。
 
-### 1.2.3. kafka事务使用  
-#### 1.2.3.1. 事务相关配置  
+### 1.2.3. kafka事务原理  
+#### 1.2.3.1. 基本概念  
+<!-- 
+https://blog.csdn.net/mlljava1111/article/details/81180351
+
+Transaction Marker与PID提供了识别消息是否应该被读取的能力，从而实现了事务的隔离性。
+Offset的更新标记了消息是否被读取，从而将对读操作的事务处理转换成了对写（Offset）操作的事务处理。
+Kafka事务的本质是，将一组写操作（如果有）对应的消息与一组读操作（如果有）对应的Offset的更新进行同样的标记（Transaction Marker）来实现事务中涉及的所有读写操作同时对外可见或同时对外不可见。
+Kafka只提供对Kafka本身的读写操作的事务性，不提供包含外部系统的事务性。
+
+-->
+&emsp; 为了支持事务，Kafka 0.11.0版本引入以下概念：  
+1. 事务协调者：类似于消费组负载均衡的协调者，每一个实现事务的生产端都被分配到一个事务协调者(Transaction Coordinator)。
+2. 引入一个内部Kafka Topic作为事务Log：类似于消费管理Offset的Topic，事务Topic本身也是持久化的，日志信息记录事务状态信息，由事务协调者写入。
+3. 引入控制消息(Control Messages)：这些消息是客户端产生的并写入到主题的特殊消息，但对于使用者来说不可见。它们是用来让broker告知消费者之前拉取的消息是否被原子性提交。
+4. 引入TransactionId：不同生产实例使用同一个TransactionId表示是同一个事务，可以跨Session的数据幂等发送。当具有相同Transaction ID的新的Producer实例被创建且工作时，旧的且拥有相同Transaction ID的Producer将不再工作，避免事务僵死。
+5. Producer ID：每个新的Producer在初始化的时候会被分配一个唯一的PID，这个PID对用户是不可见的。主要是为提供幂等性时引入的。
+6. Sequence Numbler。（对于每个PID，该Producer发送数据的每个\<Topic, Partition>都对应一个从0开始单调递增的Sequence Number。
+7. 每个生产者增加一个epoch：用于标识同一个事务Id在一次事务中的epoch，每次初始化事务时会递增，从而让服务端可以知道生产者请求是否旧的请求。
+8. 幂等性：保证发送单个分区的消息只会发送一次，不会出现重复消息。增加一个幂等性的开关enable.idempotence，可以独立与事务使用，即可以只开启幂等但不开启事务。  
+
+#### 1.2.3.2. 幂等性和事务性的关系  
+
+&emsp; **两者关系**  
+&emsp; 事务属性实现前提是幂等性，即在配置事务属性transaction id时，必须还得配置幂等性；但是幂等性是可以独立使用的，不需要依赖事务属性。  
+
+* 幂等性引入了Porducer ID  
+* 事务属性引入了Transaction Id属性。  
+
+&emsp; 设置  
+
+* enable.idempotence = true，transactional.id不设置：只支持幂等性。
+* enable.idempotence = true，transactional.id设置：支持事务属性和幂等性
+* enable.idempotence = false，transactional.id不设置：没有事务属性和幂等性的kafka
+* enable.idempotence = false，transactional.id设置：无法获取到PID，此时会报错
+
+&emsp; **tranaction id 、productid 和 epoch**  
+&emsp; 一个app有一个tid，同一个应用的不同实例PID是一样的，只是epoch的值不同。如：
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-82.png)  
+
+#### 1.2.3.3. 事务流程  
+<!-- 
+https://blog.csdn.net/BeiisBei/article/details/104737298
+https://blog.csdn.net/mlljava1111/article/details/81180351
+-->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-64.png)  
+
+##### 1.2.3.3.1. 查找事务协调者Tranaction Corordinator  
+&emsp; 由于Transaction Coordinator是分配PID和管理事务的核心，因此Producer要做的第一件事情就是通过向任意一个Broker发送FindCoordinator请求找到Transaction Coordinator的位置。  
+&emsp; 注意：只有应用程序为Producer配置了Transaction ID时才可使用事务特性，也才需要这一步。另外，由于事务性要求Producer开启幂等特性，因此通过将transactional.id设置为非空从而开启事务特性的同时也需要通过将enable.idempotence设置为true来开启幂等特性。  
+
+<!--
+获取produce ID  
+在知道事务协调者后，生产者需要往协调者发送初始化pid请求(initPidRequest)。这个请求分两种情况：  
+
+* 不带transactionID
+这种情况下直接生成一个新的produce ID即可，返回给客户端  
+* 带transactionID
+这种情况下，kafka根据transactionalId获取对应的PID，这个对应关系是保存在事务日志中（上图2a）。这样可以确保相同的TransactionId返回相同的PID，用于恢复或者终止之前未完成的事务。
+
+---
+找到Transaction Coordinator后，具有幂等特性的Producer必须发起InitPidRequest请求以获取PID。
+
+注意：只要开启了幂等特性即必须执行该操作，而无须考虑该Producer是否开启了事务特性。
+
+如果事务特性被开启
+InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinator是第一次收到包含有该Transaction ID的InitPidRequest请求，它将会把该\<TransactionID, PID>存入Transaction Log，如上图中步骤2.1所示。这样可保证该对应关系被持久化，从而保证即使Transaction Coordinator宕机该对应关系也不会丢失。
+
+除了返回PID外，InitPidRequest还会执行如下任务：
+
+    增加该PID对应的epoch。具有相同PID但epoch小于该epoch的其它Producer（如果有）新开启的事务将被拒绝。
+    恢复（Commit或Abort）之前的Producer未完成的事务（如果有）。
+
+注意：InitPidRequest的处理过程是同步阻塞的。一旦该调用正确返回，Producer即可开始新的事务。
+
+另外，如果事务特性未开启，InitPidRequest可发送至任意Broker，并且会得到一个全新的唯一的PID。该Producer将只能使用幂等特性以及单一Session内的事务特性，而不能使用跨Session的事务特性。
+-->
+
+##### 1.2.3.3.2. 初始化事务 initTransaction  
+&emsp; Producer发送InitpidRequest给事务协调器，获取一个Pid。InitpidRequest的处理过程是同步阻塞的，一旦该调用正确返回，Producer就可以开始新的事务。TranactionalId通过InitpidRequest发送给Tranciton Corordinator，然后在Tranaciton Log中记录这\<TranacionalId,pid>的映射关系。除了返回PID之外，还具有如下功能：  
+
+    对PID对应的epoch进行递增，这样可以保证同一个app的不同实例对应的PID是一样的，但是epoch是不同的。
+    回滚之前的Producer未完成的事务（如果有）。  
+
+##### 1.2.3.3.3. 开始事务 beginTransaction
+&emsp; 执行Producer的beginTransacion()，它的作用是Producer在本地记录下这个transaction的状态为开始状态。这个操作并没有通知Transaction Coordinator，因为Transaction Coordinator只有在Producer发送第一条消息后才认为事务已经开启。
+
+##### 1.2.3.3.4. Consume-Transform-Produce  
+&emsp; 这一阶段，包含了整个事务的数据处理过程，并且包含了多种请求。  
+
+&emsp; **AddPartitionsToTxnRequest**  
+&emsp; 一个Producer可能会给多个\<Topic, Partition>发送数据，给一个新的\<Topic, Partition>发送数据前，它需要先向Transaction Coordinator发送AddPartitionsToTxnRequest。  
+&emsp; Transaction Coordinator会将该\<Transaction, Topic, Partition>存于Transaction Log内，并将其状态置为BEGIN，如上图中步骤4.1所示。有了该信息后，我们才可以在后续步骤中为每个Topic, Partition>设置COMMIT或者ABORT标记（如上图中步骤5.2所示）。  
+&emsp; 另外，如果该\<Topic, Partition>为该事务中第一个\<Topic, Partition>，Transaction Coordinator还会启动对该事务的计时（每个事务都有自己的超时时间）。  
+
+&emsp; **ProduceRequest**  
+&emsp; Producer通过一个或多个ProduceRequest发送一系列消息。除了应用数据外，该请求还包含了PID，epoch，和Sequence Number。该过程如上图中步骤4.2所示。  
+
+&emsp; **AddOffsetsToTxnRequest**  
+&emsp; 为了提供事务性，Producer新增了sendOffsetsToTransaction方法，该方法将多组消息的发送和消费放入同一批处理内。  
+&emsp; 该方法先判断在当前事务中该方法是否已经被调用并传入了相同的Group ID。若是，直接跳到下一步；若不是，则向Transaction Coordinator发送AddOffsetsToTxnRequests请求，Transaction Coordinator将对应的所有\<Topic, Partition>存于Transaction Log中，并将其状态记为BEGIN，如上图中步骤4.3所示。该方法会阻塞直到收到响应。    
+
+&emsp; **TxnOffsetCommitRequest**  
+&emsp; 作为sendOffsetsToTransaction方法的一部分，在处理完AddOffsetsToTxnRequest后，Producer也会发送TxnOffsetCommit请求给Consumer Coordinator从而将本事务包含的与读操作相关的各<Topic, Partition>的Offset持久化到内部的__consumer_offsets中，如上图步骤4.4所示。  
+&emsp; 在此过程中，Consumer Coordinator会通过PID和对应的epoch来验证是否应该允许该Producer的该请求。  
+&emsp; 这里需要注意：  
+
+* 写入__consumer_offsets的Offset信息在当前事务Commit前对外是不可见的。也即在当前事务被Commit前，可认为该Offset尚未Commit，也即对应的消息尚未被完成处理。
+* Consumer Coordinator并不会立即更新缓存中相应<Topic, Partition>的Offset，因为此时这些更新操作尚未被COMMIT或ABORT。  
+
+##### 1.2.3.3.5. 事务提交和事务终结(放弃事务)  
+在Producer执行commitTransaction/abortTransaction时，Transaction Coordinator会执行一个两阶段提交：  
+
+* 第一阶段，将Transaction Log内的该事务状态设置为PREPARE_COMMIT或PREPARE_ABORT
+* 第二阶段，将Transaction Marker写入该事务涉及到的所有消息（即将消息标记为committed或aborted）。这一步骤Transaction Coordinator会发送给当前事务涉及到的每个\<Topic, Partition>的Leader，Broker收到该请求后，会将对应的Transaction Marker控制信息写入日志。
+
+一旦Transaction Marker写入完成，Transaction Coordinator会将最终的COMPLETE_COMMIT或COMPLETE_ABORT状态写入Transaction Log中以标明该事务结束。  
+
+----
+
+&emsp; 一旦上述数据写入操作完成，应用程序必须调用KafkaProducer的commitTransaction方法或者abortTransaction方法以结束当前事务。  
+&emsp; **EndTxnRequest**  
+&emsp; commitTransaction方法使得Producer写入的数据对下游Consumer可见。abortTransaction方法通过Transaction Marker将Producer写入的数据标记为Aborted状态。下游的Consumer如果将isolation.level设置为READ_COMMITTED，则它读到被Abort的消息后直接将其丢弃而不会返回给客户程序，也即被Abort的消息对应用程序不可见。  
+&emsp; 无论是Commit还是Abort，Producer都会发送EndTxnRequest请求给Transaction Coordinator，并通过标志位标识是应该Commit还是Abort。    
+&emsp; 收到该请求后，Transaction Coordinator会进行如下操作  
+
+1. 将PREPARE_COMMIT或PREPARE_ABORT消息写入Transaction Log，如上图中步骤5.1所示
+2. 通过WriteTxnMarker请求以Transaction Marker的形式将COMMIT或ABORT信息写入用户数据日志以及Offset Log中，如上图中步骤5.2所示
+3. 最后将COMPLETE_COMMIT或COMPLETE_ABORT信息写入Transaction Log中，如上图中步骤5.3所示
+
+&emsp; 补充说明：对于commitTransaction方法，它会在发送EndTxnRequest之前先调用flush方法以确保所有发送出去的数据都得到相应的ACK。对于abortTransaction方法，在发送EndTxnRequest之前直接将当前Buffer中的事务性消息（如果有）全部丢弃，但必须等待所有被发送但尚未收到ACK的消息发送完成。  
+&emsp; 上述第二步是实现将一组读操作与写操作作为一个事务处理的关键。因为Producer写入的数据Topic以及记录Comsumer Offset的Topic会被写入相同的Transactin Marker，所以这一组读操作与写操作要么全部COMMIT要么全部ABORT。  
+
+**WriteTxnMarkerRequest**  
+&emsp; 上面提到的WriteTxnMarkerRequest由Transaction Coordinator发送给当前事务涉及到的每个\<Topic, Partition>的Leader。收到该请求后，对应的Leader会将对应的COMMIT(PID)或者ABORT(PID)控制信息写入日志，如上图中步骤5.2所示。  
+&emsp; 该控制消息向Broker以及Consumer表明对应PID的消息被Commit了还是被Abort了。  
+&emsp; 这里要注意，如果事务也涉及到__consumer_offsets，即该事务中有消费数据的操作且将该消费的Offset存于__consumer_offsets中，Transaction Coordinator也需要向该内部Topic的各Partition的Leader发送WriteTxnMarkerRequest从而写入COMMIT(PID)或COMMIT(PID)控制信息。  
+
+**写入最终的COMPLETE_COMMIT或COMPLETE_ABORT消息**  
+&emsp; 写完所有的Transaction Marker后，Transaction Coordinator会将最终的COMPLETE_COMMIT或COMPLETE_ABORT消息写入Transaction Log中以标明该事务结束，如上图中步骤5.3所示。  
+&emsp; 此时，Transaction Log中所有关于该事务的消息全部可以移除。当然，由于Kafka内数据是Append Only的，不可直接更新和删除，这里说的移除只是将其标记为null从而在Log Compact时不再保留。  
+&emsp; 另外，COMPLETE_COMMIT或COMPLETE_ABORT的写入并不需要得到所有Rreplica的ACK，因为如果该消息丢失，可以根据事务协议重发。  
+
+&emsp; 补充说明，如果参与该事务的某些\<Topic, Partition>在被写入Transaction Marker前不可用，它对READ_COMMITTED的Consumer不可见，但不影响其它可用\<Topic, Partition>的COMMIT或ABORT。在该\<Topic, Partition>恢复可用后，Transaction Coordinator会重新根据PREPARE_COMMIT或PREPARE_ABORT向该\<Topic, Partition>发送Transaction Marker。  
+
+### 1.2.4. kafka事务使用  
+#### 1.2.4.1. 事务相关配置  
 1. Broker configs
     1. transactional.id.timeout.ms：在ms中，事务协调器在生产者TransactionalId提前过期之前等待的最长时间，并且没有从该生产者TransactionalId接收到任何事务状态更新。默认是604800000(7天)。这允许每周一次的生产者作业维护它们的id
     2. max.transaction.timeout.ms：事务允许的最大超时。如果客户端请求的事务时间超过此时间，broke将在InitPidRequest中返回InvalidTransactionTimeout错误。这可以防止客户机超时过大，从而导致用户无法从事务中包含的主题读取内容。  
@@ -123,22 +347,29 @@ Kafka中的事务特性主要用于以下两种场景：
     &emsp; read_uncommitted:以偏移顺序使用已提交和未提交的消息。  
     &emsp; read_committed:仅以偏移量顺序使用非事务性消息或已提交事务性消息。为了维护偏移排序，这个设置意味着我们必须在使用者中缓冲消息，直到看到给定事务中的所有消息。  
 
-#### 1.2.3.2. Java API
+#### 1.2.4.2. Java API
 <!-- 
 https://blog.csdn.net/mlljava1111/article/details/81180351
 -->
-&emsp; producer提供了五个事务方法：  
+&emsp; Producer提供了五种事务方法，它们分别是：initTransactions()、beginTransaction()、sendOffsetsToTransaction()、commitTransaction()、abortTransaction()，代码定义在org.apache.kafka.clients.producer.Producer<K,V>接口中，具体定义接口如下：  
 
-* initTransactions
-* beginTransaction
-* sendOffsets
-* commitTransaction
-* abortTransaction
+```java
+// 初始化事务，需要注意确保transation.id属性被分配
+void initTransactions();
+// 开启事务
+void beginTransaction() throws ProducerFencedException;
+// 为Consumer提供的在事务内Commit Offsets的操作
+void sendOffsetsToTransaction(Map<TopicPartition, OffsetAndMetadata> offsets,
+                              String consumerGroupId) throws ProducerFencedException;
+// 提交事务
+void commitTransaction() throws ProducerFencedException;
+// 放弃事务，类似于回滚事务的操作
+void abortTransaction() throws ProducerFencedException;
+```
 
-    消费者代码，将配置中的自动提交属性（auto.commit）进行关闭，而且在代码里面也不能使用手动提交commitSync( )或者commitAsync( )。  
+&emsp; 消费者代码，将配置中的自动提交属性（auto.commit）进行关闭，而且在代码里面也不能使用手动提交commitSync( )或者commitAsync( )。  
 
-
-##### 1.2.3.2.1. “只有写”应用程序示例  
+##### 1.2.4.2.1. “只有写”应用程序示例  
 
 ```java
 package com.example.demo.transaction;
@@ -187,7 +418,7 @@ public class TransactionProducer {
 }
 ```
 
-##### 1.2.3.2.2. 消费-生产并存（consume-Transform-Produce）  
+##### 1.2.4.2.2. 消费-生产并存（consume-Transform-Produce）  
 &emsp; 在一个事务中，既有生产消息操作又有消费消息操作，即常说的Consume-tansform-produce模式。如下实例代码  
 
 ```java
@@ -278,153 +509,6 @@ public class consumeTransformProduce {
     }
 }
 ```
-
-### 1.2.4. kafka事务原理  
-#### 1.2.4.1. 基本概念  
-<!-- 
-https://blog.csdn.net/mlljava1111/article/details/81180351
-
-Transaction Marker与PID提供了识别消息是否应该被读取的能力，从而实现了事务的隔离性。
-Offset的更新标记了消息是否被读取，从而将对读操作的事务处理转换成了对写（Offset）操作的事务处理。
-Kafka事务的本质是，将一组写操作（如果有）对应的消息与一组读操作（如果有）对应的Offset的更新进行同样的标记（Transaction Marker）来实现事务中涉及的所有读写操作同时对外可见或同时对外不可见。
-Kafka只提供对Kafka本身的读写操作的事务性，不提供包含外部系统的事务性。
-
--->
-
-&emsp; 为了支持事务，Kafka 0.11.0版本引入以下概念：  
-1. 事务协调者：类似于消费组负载均衡的协调者，每一个实现事务的生产端都被分配到一个事务协调者(Transaction Coordinator)。
-2. 引入一个内部Kafka Topic作为事务Log：类似于消费管理Offset的Topic，事务Topic本身也是持久化的，日志信息记录事务状态信息，由事务协调者写入。
-3. 引入控制消息(Control Messages)：这些消息是客户端产生的并写入到主题的特殊消息，但对于使用者来说不可见。它们是用来让broker告知消费者之前拉取的消息是否被原子性提交。
-4. 引入TransactionId：不同生产实例使用同一个TransactionId表示是同一个事务，可以跨Session的数据幂等发送。当具有相同Transaction ID的新的Producer实例被创建且工作时，旧的且拥有相同Transaction ID的Producer将不再工作，避免事务僵死。
-5. Producer ID：每个新的Producer在初始化的时候会被分配一个唯一的PID，这个PID对用户是不可见的。主要是为提供幂等性时引入的。
-6. Sequence Numbler。（对于每个PID，该Producer发送数据的每个\<Topic, Partition>都对应一个从0开始单调递增的Sequence Number。
-7. 每个生产者增加一个epoch：用于标识同一个事务Id在一次事务中的epoch，每次初始化事务时会递增，从而让服务端可以知道生产者请求是否旧的请求。
-8. 幂等性：保证发送单个分区的消息只会发送一次，不会出现重复消息。增加一个幂等性的开关enable.idempotence，可以独立与事务使用，即可以只开启幂等但不开启事务。  
-
-#### 1.2.4.2. 幂等性和事务性的关系  
-
-&emsp; **两者关系**  
-&emsp; 事务属性实现前提是幂等性，即在配置事务属性transaction id时，必须还得配置幂等性；但是幂等性是可以独立使用的，不需要依赖事务属性。  
-
-* 幂等性引入了Porducer ID  
-* 事务属性引入了Transaction Id属性。  
-
-&emsp; 设置 
-
-* enable.idempotence = true，transactional.id不设置：只支持幂等性。
-* enable.idempotence = true，transactional.id设置：支持事务属性和幂等性
-* enable.idempotence = false，transactional.id不设置：没有事务属性和幂等性的kafka
-* enable.idempotence = false，transactional.id设置：无法获取到PID，此时会报错
-
-&emsp; **tranaction id 、productid 和 epoch**  
-&emsp; 一个app有一个tid，同一个应用的不同实例PID是一样的，只是epoch的值不同。如：
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-82.png)  
-
-#### 1.2.4.3. 事务流程  
-<!-- 
-https://blog.csdn.net/BeiisBei/article/details/104737298
-https://blog.csdn.net/mlljava1111/article/details/81180351
--->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-64.png)  
-
-##### 1.2.4.3.1. 查找事务协调者Tranaction Corordinator  
-&emsp; 由于Transaction Coordinator是分配PID和管理事务的核心，因此Producer要做的第一件事情就是通过向任意一个Broker发送FindCoordinator请求找到Transaction Coordinator的位置。  
-&emsp; 注意：只有应用程序为Producer配置了Transaction ID时才可使用事务特性，也才需要这一步。另外，由于事务性要求Producer开启幂等特性，因此通过将transactional.id设置为非空从而开启事务特性的同时也需要通过将enable.idempotence设置为true来开启幂等特性。  
-
-
-<!--
-获取produce ID  
-在知道事务协调者后，生产者需要往协调者发送初始化pid请求(initPidRequest)。这个请求分两种情况：  
-
-* 不带transactionID
-这种情况下直接生成一个新的produce ID即可，返回给客户端  
-* 带transactionID
-这种情况下，kafka根据transactionalId获取对应的PID，这个对应关系是保存在事务日志中（上图2a）。这样可以确保相同的TransactionId返回相同的PID，用于恢复或者终止之前未完成的事务。
-
----
-找到Transaction Coordinator后，具有幂等特性的Producer必须发起InitPidRequest请求以获取PID。
-
-注意：只要开启了幂等特性即必须执行该操作，而无须考虑该Producer是否开启了事务特性。
-
-如果事务特性被开启
-InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinator是第一次收到包含有该Transaction ID的InitPidRequest请求，它将会把该\<TransactionID, PID>存入Transaction Log，如上图中步骤2.1所示。这样可保证该对应关系被持久化，从而保证即使Transaction Coordinator宕机该对应关系也不会丢失。
-
-除了返回PID外，InitPidRequest还会执行如下任务：
-
-    增加该PID对应的epoch。具有相同PID但epoch小于该epoch的其它Producer（如果有）新开启的事务将被拒绝。
-    恢复（Commit或Abort）之前的Producer未完成的事务（如果有）。
-
-注意：InitPidRequest的处理过程是同步阻塞的。一旦该调用正确返回，Producer即可开始新的事务。
-
-另外，如果事务特性未开启，InitPidRequest可发送至任意Broker，并且会得到一个全新的唯一的PID。该Producer将只能使用幂等特性以及单一Session内的事务特性，而不能使用跨Session的事务特性。
--->
-
-##### 1.2.4.3.2. 初始化事务 initTransaction  
-&emsp; Producer发送InitpidRequest给事务协调器，获取一个Pid。InitpidRequest的处理过程是同步阻塞的，一旦该调用正确返回，Producer就可以开始新的事务。TranactionalId通过InitpidRequest发送给Tranciton Corordinator，然后在Tranaciton Log中记录这\<TranacionalId,pid>的映射关系。除了返回PID之外，还具有如下功能：  
-
-    对PID对应的epoch进行递增，这样可以保证同一个app的不同实例对应的PID是一样的，但是epoch是不同的。
-    回滚之前的Producer未完成的事务（如果有）。  
-
-##### 1.2.4.3.3. 开始事务 beginTransaction
-&emsp; 执行Producer的beginTransacion()，它的作用是Producer在本地记录下这个transaction的状态为开始状态。这个操作并没有通知Transaction Coordinator，因为Transaction Coordinator只有在Producer发送第一条消息后才认为事务已经开启。
-
-##### 1.2.4.3.4. Consume-Transform-Produce  
-&emsp; 这一阶段，包含了整个事务的数据处理过程，并且包含了多种请求。  
-
-&emsp; **AddPartitionsToTxnRequest**  
-&emsp; 一个Producer可能会给多个\<Topic, Partition>发送数据，给一个新的\<Topic, Partition>发送数据前，它需要先向Transaction Coordinator发送AddPartitionsToTxnRequest。  
-&emsp; Transaction Coordinator会将该\<Transaction, Topic, Partition>存于Transaction Log内，并将其状态置为BEGIN，如上图中步骤4.1所示。有了该信息后，我们才可以在后续步骤中为每个Topic, Partition>设置COMMIT或者ABORT标记（如上图中步骤5.2所示）。  
-&emsp; 另外，如果该\<Topic, Partition>为该事务中第一个\<Topic, Partition>，Transaction Coordinator还会启动对该事务的计时（每个事务都有自己的超时时间）。  
-
-&emsp; **ProduceRequest**  
-&emsp; Producer通过一个或多个ProduceRequest发送一系列消息。除了应用数据外，该请求还包含了PID，epoch，和Sequence Number。该过程如上图中步骤4.2所示。  
-
-&emsp; **AddOffsetsToTxnRequest**  
-&emsp; 为了提供事务性，Producer新增了sendOffsetsToTransaction方法，该方法将多组消息的发送和消费放入同一批处理内。  
-&emsp; 该方法先判断在当前事务中该方法是否已经被调用并传入了相同的Group ID。若是，直接跳到下一步；若不是，则向Transaction Coordinator发送AddOffsetsToTxnRequests请求，Transaction Coordinator将对应的所有\<Topic, Partition>存于Transaction Log中，并将其状态记为BEGIN，如上图中步骤4.3所示。该方法会阻塞直到收到响应。    
-
-&emsp; **TxnOffsetCommitRequest**  
-&emsp; 作为sendOffsetsToTransaction方法的一部分，在处理完AddOffsetsToTxnRequest后，Producer也会发送TxnOffsetCommit请求给Consumer Coordinator从而将本事务包含的与读操作相关的各<Topic, Partition>的Offset持久化到内部的__consumer_offsets中，如上图步骤4.4所示。  
-&emsp; 在此过程中，Consumer Coordinator会通过PID和对应的epoch来验证是否应该允许该Producer的该请求。  
-&emsp; 这里需要注意：  
-
-* 写入__consumer_offsets的Offset信息在当前事务Commit前对外是不可见的。也即在当前事务被Commit前，可认为该Offset尚未Commit，也即对应的消息尚未被完成处理。
-* Consumer Coordinator并不会立即更新缓存中相应<Topic, Partition>的Offset，因为此时这些更新操作尚未被COMMIT或ABORT。  
-
-##### 1.2.4.3.5. 事务提交和事务终结(放弃事务)  
-在Producer执行commitTransaction/abortTransaction时，Transaction Coordinator会执行一个两阶段提交：  
-
-* 第一阶段，将Transaction Log内的该事务状态设置为PREPARE_COMMIT或PREPARE_ABORT
-* 第二阶段，将Transaction Marker写入该事务涉及到的所有消息（即将消息标记为committed或aborted）。这一步骤Transaction Coordinator会发送给当前事务涉及到的每个\<Topic, Partition>的Leader，Broker收到该请求后，会将对应的Transaction Marker控制信息写入日志。
-
-一旦Transaction Marker写入完成，Transaction Coordinator会将最终的COMPLETE_COMMIT或COMPLETE_ABORT状态写入Transaction Log中以标明该事务结束。  
-
-----
-
-&emsp; 一旦上述数据写入操作完成，应用程序必须调用KafkaProducer的commitTransaction方法或者abortTransaction方法以结束当前事务。  
-&emsp; **EndTxnRequest**  
-&emsp; commitTransaction方法使得Producer写入的数据对下游Consumer可见。abortTransaction方法通过Transaction Marker将Producer写入的数据标记为Aborted状态。下游的Consumer如果将isolation.level设置为READ_COMMITTED，则它读到被Abort的消息后直接将其丢弃而不会返回给客户程序，也即被Abort的消息对应用程序不可见。  
-&emsp; 无论是Commit还是Abort，Producer都会发送EndTxnRequest请求给Transaction Coordinator，并通过标志位标识是应该Commit还是Abort。    
-&emsp; 收到该请求后，Transaction Coordinator会进行如下操作  
-
-1. 将PREPARE_COMMIT或PREPARE_ABORT消息写入Transaction Log，如上图中步骤5.1所示
-2. 通过WriteTxnMarker请求以Transaction Marker的形式将COMMIT或ABORT信息写入用户数据日志以及Offset Log中，如上图中步骤5.2所示
-3. 最后将COMPLETE_COMMIT或COMPLETE_ABORT信息写入Transaction Log中，如上图中步骤5.3所示
-
-&emsp; 补充说明：对于commitTransaction方法，它会在发送EndTxnRequest之前先调用flush方法以确保所有发送出去的数据都得到相应的ACK。对于abortTransaction方法，在发送EndTxnRequest之前直接将当前Buffer中的事务性消息（如果有）全部丢弃，但必须等待所有被发送但尚未收到ACK的消息发送完成。  
-&emsp; 上述第二步是实现将一组读操作与写操作作为一个事务处理的关键。因为Producer写入的数据Topic以及记录Comsumer Offset的Topic会被写入相同的Transactin Marker，所以这一组读操作与写操作要么全部COMMIT要么全部ABORT。  
-
-**WriteTxnMarkerRequest**  
-&emsp; 上面提到的WriteTxnMarkerRequest由Transaction Coordinator发送给当前事务涉及到的每个\<Topic, Partition>的Leader。收到该请求后，对应的Leader会将对应的COMMIT(PID)或者ABORT(PID)控制信息写入日志，如上图中步骤5.2所示。  
-&emsp; 该控制消息向Broker以及Consumer表明对应PID的消息被Commit了还是被Abort了。  
-&emsp; 这里要注意，如果事务也涉及到__consumer_offsets，即该事务中有消费数据的操作且将该消费的Offset存于__consumer_offsets中，Transaction Coordinator也需要向该内部Topic的各Partition的Leader发送WriteTxnMarkerRequest从而写入COMMIT(PID)或COMMIT(PID)控制信息。  
-
-**写入最终的COMPLETE_COMMIT或COMPLETE_ABORT消息**  
-&emsp; 写完所有的Transaction Marker后，Transaction Coordinator会将最终的COMPLETE_COMMIT或COMPLETE_ABORT消息写入Transaction Log中以标明该事务结束，如上图中步骤5.3所示。  
-&emsp; 此时，Transaction Log中所有关于该事务的消息全部可以移除。当然，由于Kafka内数据是Append Only的，不可直接更新和删除，这里说的移除只是将其标记为null从而在Log Compact时不再保留。  
-&emsp; 另外，COMPLETE_COMMIT或COMPLETE_ABORT的写入并不需要得到所有Rreplica的ACK，因为如果该消息丢失，可以根据事务协议重发。  
-
-&emsp; 补充说明，如果参与该事务的某些\<Topic, Partition>在被写入Transaction Marker前不可用，它对READ_COMMITTED的Consumer不可见，但不影响其它可用\<Topic, Partition>的COMMIT或ABORT。在该\<Topic, Partition>恢复可用后，Transaction Coordinator会重新根据PREPARE_COMMIT或PREPARE_ABORT向该\<Topic, Partition>发送Transaction Marker。  
 
 ### 1.2.5. 总结  
 * PID与Sequence Number的引入实现了写操作的幂等性

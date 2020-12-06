@@ -44,6 +44,19 @@ https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 
 &emsp; 在这三步中每一步都有可能会丢失消息。    
 
+<!--
+&emsp; Kafka在producer和consumer之间提供的语义保证。显然，Kafka可以提供的消息交付语义保证有多种：  
+
+* At most once——消息可能会丢失但绝不重传。
+* At least once——消息可以重传但绝不丢失。
+* Exactly once——每一条消息只被传递一次。
+
+&emsp; 值得注意的是，这个问题被分成了两部分：发布消息的持久性保证和消费消息的保证。 
+
+
+
+-->
+
 ## 1.2. Producer端丢失消息  
 ### 1.2.1. 发送消息的流程
 &emsp; 生产者发送消息的一般流程（部分流程与具体配置项强相关，这里先忽略）：  
@@ -70,6 +83,9 @@ https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
     acks=-1，leader broker收到消息后，挂起，等待所有ISR列表中的follower返回结果后，再返回ack。-1等效与all。这种配置下，只有leader写入数据到pagecache是不会返回ack的，还需要所有的ISR返回“成功”才会触发ack。如果此时断电，producer可以知道消息没有被发送成功，将会重新发送。如果在follower收到数据以后，成功返回ack，leader断电，数据将存在于原来的follower中。在重新选举以后，新的leader会持有该部分数据。数据从leader同步到follower，需要2步：
         数据从pageCache被刷盘到disk。因为只有disk中的数据才能被同步到replica。
         数据同步到replica，并且replica成功将数据写入PageCache。在producer得到ack后，哪怕是所有机器都停电，数据也至少会存在于leader的磁盘内。
+
+&emsp; 将服务器的ACK级别设置为-1，可以保证Producer到Server之间不会丢失数据，即 At Least Once 语义。相对的，将服务器ACK级别设置为0，可以保证生产者每条消息只会被发送一次，即At Most Once语义。  
+&emsp; At Least Once可以保证数据不丢失，但是不能保证数据不重复。相对的，At Most Once 可以保证数据不重复，但是不能保证数据不丢失。但是，对于一些非常重要的信息，比如说交易数据，下游数据消费者要求数据既不重复也不丢失，即Exactly Once语义。在0.11版本以前的Kafka，对此是无能为力的，只能保证数据不丢失，再在下游消费者对数据做全局去重。对于多个下游应用的情况，每个都需要单独做全局去重，这就对性能造成了很大的影响。 
 -->
 &emsp; 消息发送到brocker后，Kafka会进行副本同步。对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没必要等 ISR 中的follower全部接收成功。kafka的request.required.acks 可设置为 1、0、-1 三种情况。  
 &emsp; Kafka通过配置request.required.acks属性来确认消息的生产：
