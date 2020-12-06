@@ -8,8 +8,9 @@
             - [1.1.1.1. 顺序写入](#1111-顺序写入)
             - [1.1.1.2. Memory Mapped Files](#1112-memory-mapped-files)
         - [1.1.2. 基于 Sendfile 实现零拷贝（Zero Copy）](#112-基于-sendfile-实现零拷贝zero-copy)
-    - [1.2. kafa高可用性（副本机制）](#12-kafa高可用性副本机制)
-        - [1.2.1. Kafka副本的功能](#121-kafka副本的功能)
+    - [1.2. kafka高可用性（副本机制）](#12-kafka高可用性副本机制)
+        - [Kafka副本简介](#kafka副本简介)
+        - [1.2.1. 物理分区分配](#121-物理分区分配)
         - [1.2.2. Leader的选举(ISR副本)](#122-leader的选举isr副本)
             - [1.2.2.1. Unclear Leader选举](#1221-unclear-leader选举)
         - [1.2.3. 副本的同步(LEO和HW)](#123-副本的同步leo和hw)
@@ -33,12 +34,11 @@
 https://mp.weixin.qq.com/s/LEmybNmD5XwkBtcTPHcaEA
 -->
 
-
 ## 1.1. Kafka的高性能（读写机制）  
 &emsp; Kafka 的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，因为寻址会比较消耗时间，但是实际上，Kafka 的特性之一就是高吞吐率。Kafka 之所以能这么快，是因为：「顺序写磁盘、大量使用内存页、零拷贝技术的使用」..  
 
 ### 1.1.1. 顺序读写  
-&emsp; 数据写入 Kafka 会把收到的消息都写入到硬盘中。为了优化写入速度，Kafka 采用了两个技术：顺序写入和 Memory Mapped File 。
+&emsp; 数据写入Kafka会把收到的消息都写入到硬盘中。为了优化写入速度，Kafka使用了：顺序写入和Memory Mapped File 。
 
 #### 1.1.1.1. 顺序写入  
 &emsp; kafka的消息是不断追加到文件中的，这个特性使kafka可以充分利用磁盘的顺序读写性能。Kafka会将数据顺序插入到文件末尾，消费者端通过控制偏移量来读取消息，这样做会导致数据无法删除，时间一长，磁盘空间会满，kafka提供了2种策略来删除数据：基于时间删除和基于partition文件的大小删除。  
@@ -46,7 +46,7 @@ https://mp.weixin.qq.com/s/LEmybNmD5XwkBtcTPHcaEA
     顺序读写不需要硬盘磁头的寻道时间，只需很少的扇区旋转时间，所以速度远快于随机读写。
 
 #### 1.1.1.2. Memory Mapped Files  
-&emsp; 这个和Java NIO中的内存映射基本相同，mmf （Memory Mapped Files）直接利用操作系统的Page来实现文件到物理内存的映射，完成之后对物理内存的操作会直接同步到硬盘。mmf 通过内存映射的方式大大提高了IO速率，省去了用户空间到内核空间的复制。它的缺点显而易见，不可靠，当发生宕机而数据未同步到硬盘时，数据会丢失。  
+&emsp; 这个和Java NIO中的内存映射基本相同，mmf （Memory Mapped Files）直接利用操作系统的Page来实现文件到物理内存的映射，完成之后对物理内存的操作会直接同步到硬盘。**mmf通过内存映射的方式大大提高了IO速率，省去了用户空间到内核空间的复制。它的缺点显而易见，不可靠，当发生宕机而数据未同步到硬盘时，数据会丢失。**  
 <!-- Kafka 提供了produce.type参数来控制是否主动的进行刷新，如果 Kafka 写入到 mmf 后立即flush再返回给生产者则为同步模式，反之为异步模式。 --> 
 &emsp; Kafka 提供了一个参数 producer.type 来控制是不是主动 Flush：  
 
@@ -74,13 +74,10 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 &emsp; 而 Sendfile 系统调用则提供了一种减少以上多次 Copy，提升文件传输性能的方法。<font color = "red">在内核版本 2.1 中，引入了 Sendfile 系统调用，以简化网络上和两个本地文件之间的数据传输。</font>Sendfile 的引入不仅减少了数据复制，还减少了上下文切换。相较传统 Read/Write 方式，2.1 版本内核引进的 Sendfile 已经减少了内核缓冲区到 User 缓冲区，再由 User 缓冲区到 Socket 相关缓冲区的文件 Copy。而在内核版本 2.4 之后，文件描述符结果被改变，Sendfile 实现了更简单的方式，再次减少了一次 Copy 操作。  
 &emsp; Kafka 把所有的消息都存放在一个一个的文件中，当消费者需要数据的时候 Kafka 直接把文件发送给消费者，配合 mmap 作为文件读写方式，直接把它传给 Sendfile。  
 
-
-## 1.2. kafa高可用性（副本机制）
+## 1.2. kafka高可用性（副本机制）
 <!-- 
 Kafka 副本机制
 https://juejin.im/post/6844903950009794567
-https://mp.weixin.qq.com/s/OB-ZVy70vHClCtep43gr_A
-https://www.kancloud.cn/nicefo71/kafka/1473376
 
 Kafka中副本机制的设计和原理 
 https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
@@ -90,13 +87,8 @@ https://blog.csdn.net/haogenmin/article/details/109449944
 https://www.cnblogs.com/luozhiyun/p/12079527.html
 
 -->
-
-&emsp; 在分布式数据系统中，通常使用分区来提高系统的处理能力，通过副本来保证数据的高可用性。Kafka中一个分区可以拥有多个副本，副本可分布于多台机器上。而在多个副本中，只会有一个Leader副本与客户端交互，也就是读写数据。其他则作为Follower副本，负责同步Leader的数据，当Leader宕机时，从Follower选举出新的Leader，从而解决分区单点问题。   
-
-<!-- 
-多分区意味着并发处理的能力，这多个副本中，只有一个是 leader，而其他的都是 follower 副本。仅有 leader 副本可以对外提供服务。多个 follower 副本通常存放在和 leader 副本不同的 broker 中。通过这样的机制实现了高可用，当某台机器挂掉后，其他 follower 副本也能迅速”转正“，开始对外提供服务。
--->
-### 1.2.1. Kafka副本的功能  
+### Kafka副本简介
+&emsp; 在分布式数据系统中，通常使用分区来提高系统的处理能力，通过副本来保证数据的高可用性。  
 &emsp; 副本机制的使用在计算机的世界里是很常见的，比如MySQL、ZooKeeper、CDN等都有使用副本机制。使用副本机制所能带来的好处有以下几种：  
 
 * 提供数据冗余，提高可用性；
@@ -105,6 +97,28 @@ https://www.cnblogs.com/luozhiyun/p/12079527.html
 
 &emsp; 但并不是每个好处都能获得，这还是和具体的设计有关，比如Kafka只具有第一个好处，即提高可用性。这是因为**副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。**  
 
+* 副本的定义是在分区（Partition）层下定义的，每个分区有多个副本。  
+* 副本可分布于多台机器上。
+* Kafka中副本分为领导者副本（Leader Replica） & 追随者副本（Follower Replica）。每个 Partition创建时都要选举一个副本，称为 Leader Replica，其余副本为 Follower Replica。
+* 只有Leader副本会读写数据。
+* 其他则作为Follower副本，负责同步Leader的数据，当Leader宕机时，从Follower选举出新的Leader，从而解决分区单点问题。  
+
+&emsp; 这种副本机制设计的优势
+    * 方便实现 Read-your-writes
+        * Read-your-writes：当你使用 Producer API 写消息后，马上使用 Consumer API 去消费
+        * 如果允许 Follower 对外提供服务，由于异步，因此不能实现 Read-your-writes
+    * 方便实现单调读（Monotonic Reads）
+        * 单调读：对于一个 Consumer，多次消费时，不会看到某条消息一会存在一会不存在
+        * 问题案例
+            * 如果允许 Follower 提供服务，假设有两个 Follower F1、F2
+            * 如果 F1 拉取了最新消息而 F2 还没有
+            * 对于 Consumer 第一次消费时从 F1 看到的消息，第二次从 F2 则可能看不到
+            * 这种场景是非单调读
+            * 所有读请求通过 Leader 则可以实现单调读
+
+<!-- 
+多分区意味着并发处理的能力，这多个副本中，只有一个是 leader，而其他的都是 follower 副本。仅有 leader 副本可以对外提供服务。多个 follower 副本通常存放在和 leader 副本不同的 broker 中。通过这样的机制实现了高可用，当某台机器挂掉后，其他 follower 副本也能迅速”转正“，开始对外提供服务。
+-->
 <!--
 https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 
@@ -112,21 +126,52 @@ https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 这个问题本质上是对性能和一致性的取舍。试想一下，如果 follower 副本也对外提供服务那会怎么样呢？首先，性能是肯定会有所提升的。但同时，会出现一系列问题。类似数据库事务中的幻读，脏读。比如你现在写入一条数据到 kafka 主题 a，消费者 b 从主题 a 消费数据，却发现消费不到，因为消费者 b 去读取的那个分区副本中，最新消息还没写入。而这个时候，另一个消费者 c 却可以消费到最新那条数据，因为它消费了 leader 副本。Kafka 通过 WH 和 Offset 的管理来决定 Consumer 可以消费哪些数据，已经当前写入的数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-30.png)  
 -->
+### 1.2.1. 物理分区分配
+&emsp; 在创建主题时，Kafka 会首先决定如何在broker间分配分区副本，它遵循以下原则：  
 
+* 在所有 broker 上均匀地分配分区副本；
+* 确保分区的每个副本分布在不同的broker上；
+* 如果使用了broker.rack 参数为broker 指定了机架信息，那么会尽可能的把每个分区的副本分配到不同机架的broker上，以避免一个机架不可用而导致整个分区不可用。
+
+&emsp; 基于以上原因，如果在一个单节点上创建一个3副本的主题，通常会抛出下面的异常：  
+
+```text
+Error while executing topic command : org.apache.kafka.common.errors.InvalidReplicationFactor   
+Exception: Replication factor: 3 larger than available brokers: 1.
+```
 
 ### 1.2.2. Leader的选举(ISR副本)
 <!-- 
 只有 Leader 可以对外提供读服务，那如何选举 Leader
 
 kafka 会将与 leader 副本保持同步的副本放到 ISR 副本集合中。当然，leader 副本是一直存在于 ISR 副本集合中的，在某些特殊情况下，ISR 副本中甚至只有 leader 一个副本。当 leader 挂掉时，kakfa 通过 zookeeper 感知到这一情况，在 ISR 副本中选取新的副本成为 leader，对外提供服务。但这样还有一个问题，前面提到过，有可能 ISR 副本集合中，只有 leader，当 leader 副本挂掉后，ISR 集合就为空，这时候怎么办呢？这时候如果设置 unclean.leader.election.enable 参数为 true，那么 kafka 会在非同步，也就是不在 ISR 副本集合中的副本中，选取出副本成为 leader。  
+
+
+In-sync Replicas（ISR）
+
+    对于 Follower 存在与 Leader 不同步的风险
+    Kafka 要明确 Follower 在什么条件下算与 Leader 同步，因此引入 ISR 副本集合
+    Q：什么副本算作 ISR？
+    A：
+        Leader 天然在 ISR 中，某些情况 ISR 中只有 Leader
+        Kafka 判断 Follower 和 Leader 同步的标准基于 Broker 端参数 replica.lag.time.max.ms，i.e. Follower Replica 能够落后 Leader Replica 的最长时间间隔，默认值是 10s
+        如果一个 Follower 落后 Leader 不超过 10s，则认为该 Follower 是同步的，即该 Follower 被认为是 ISR
+    ISR 是动态调整的
 -->
 &emsp; 当Leader宕机时，要从Follower中选举出新的Leader，但并不是所有的Follower都有资格参与选举。因为有的Follower的同步情况滞后，如果让它成为Leader将会导致消息丢失。  
-&emsp; 而为了避免这个情况，Kafka引入了ISR（In-Sync Replica）副本的概念，这是一个集合，里面存放的是和Leader保持同步的副本并含有Leader。这是一个动态调整的集合，当副本由同步变为滞后时会从集合中剔除，而当副本由滞后变为同步时又会加入到集合中。  
+&emsp; **而为了避免这个情况，Kafka引入了ISR（In-Sync Replica）副本的概念，这是一个集合，里面存放的是和Leader保持同步的副本并含有Leader。这是一个动态调整的集合，当副本由同步变为滞后时会从集合中剔除，而当副本由滞后变为同步时又会加入到集合中。**  
 &emsp; 那么如何判断一个副本是同步还是滞后呢？Kafka在0.9版本之前，是根据replica.lag.max.messages参数来判断，其含义是同步副本所能落后的最大消息数，当Follower上的最大偏移量落后Leader大于replica.lag.max.messages时，就认为该副本是不同步的了，会从ISR中移除。  
 &emsp; 如果ISR的值设置得过小，会导致Follower经常被踢出ISR，而如果设置过大，则当Leader宕机时，会造成较多消息的丢失。在实际使用时，很难给出一个合理值，这是因为当生产者为了提高吞吐量而调大batch.size时，会发送更多的消息到Leader上，这时候如果不增大replica.lag.max.messages，则会有Follower频繁被踢出ISR的现象  
 &emsp; 而当Follower发生Fetch请求同步后，又被加入到ISR中，ISR将频繁变动。鉴于该参数难以设定，Kafka在0.9版本引入了一个新的参数replica.lag.time.max.ms，默认10s，含义是当Follower超过10s没发送Fetch请求同步Leader时，就会认为不同步而被踢出ISR。从时间维度来考量，能够很好地避免生产者发送大量消息到Leader副本导致分区ISR频繁收缩和扩张的问题。  
 
 #### 1.2.2.1. Unclear Leader选举    
+<!-- 
+    由于 ISR 是动态调整的，可能出现 ISR 为空，即 Leader 宕机，Follower 都不同步
+    ISR 为空时，如何选举新 Leader？
+        非同步副本：Kafka 把所有不在 ISR 中的存活副本称为非同步副本
+    Broker 参数 unclean.leader.election.enable 控制是否允许 Unclean Leader Election
+    即如果参数为 true，ISR 为空是，会从非同步副本中选举 Leader
+-->
 &emsp; 当ISR集合为空时，即没有同步副本（Leader也挂了），无法选出下一个Leader，Kafka集群将会失效。而为了提高可用性，Kafka提供了unclean.leader.election.enable参数，当设置为true且ISR集合为空时，会进行Unclear Leader选举，允许在非同步副本中选出新的Leader，从而提高Kafka集群的可用性，但这样会造成消息丢失。在允许消息丢失的场景中，是可以开启此参数来提高可用性的。而其他情况，则不建议开启，而是通过其他手段来提高可用性。  
 
 ### 1.2.3. 副本的同步(LEO和HW)  
@@ -138,11 +183,11 @@ Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)�
 -->
 &emsp; 副本的本质其实是一个消息日志，为了让副本正常同步，需要通过一些变量记录副本的状态，如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-75.png)  
-&emsp; 其中LEO（Last End Offset）记录了日志的下一条消息偏移量，即当前最新消息的偏移量加一。而HW（High Watermark）界定了消费者可见的消息，消费者可以消费小于HW的消息，而大于等于HW的消息将无法消费。HW和LEO的关系是HW一定小于LEO。  
+&emsp; **其中LEO（Last End Offset）记录了日志的下一条消息偏移量，即当前最新消息的偏移量加一。<font color = "red">而HW（High Watermark）界定了消费者可见的消息，消费者可以消费小于HW的消息，而大于等于HW的消息将无法消费。</font>HW和LEO的关系是HW一定小于LEO。**  
 &emsp; 下面介绍下HW的概念，其可翻译为高水位或高水印，这一概念通常用于在流式处理领域（如Flink、Spark等），流式系统将保证在HW为t时刻时，创建时间小于等于t时刻的所有事件都已经到达或可被观测到。而在Kafka中，HW的概念和时间无关，而是和偏移量有关，主要目的是为了保证一致性。  
 &emsp; 试想如果一个消息到达了Leader，而Follower副本还未来得及同步，但该消息能已被消费者消费了，这时候Leader宕机，Follower副本中选出新的Leader，消息将丢失，出现不一致的现象。所以Kafka引入HW的概念，当消息被同步副本同步完成时，才让消息可被消费。  
 &emsp; 上述即是LEO和HW的基本概念，下面看下具体是如何工作的。  
-&emsp; 在每个副本中都存有LEO和HW，而Leader副本中除了存有自身的LEO和HW，还存储了其他Follower副本的LEO和HW值，为了区分我们把Leader上存储的Follower副本的LEO和HW值叫做远程副本的LEO和HW值，如下图所示：  
+&emsp; 在每个副本中都存有LEO和HW，而Leader副本中除了存有自身的LEO和HW，还存储了其他Follower副本的LEO和HW值，为了区分把Leader上存储的Follower副本的LEO和HW值叫做远程副本的LEO和HW值，如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-76.png)  
 &emsp; 之所以这么设计，是为了HW的更新，Leader需保证HW是ISR副本集合中LEO的最小值。关于具体的更新，分为Follower副本和Leader副本来看。  
 &emsp; Follower副本更新LEO和HW的时机只有向Leader拉取了消息之后，会用当前的偏移量加1来更新LEO，并且用Leader的HW值和当前LEO的最小值来更新HW：  
