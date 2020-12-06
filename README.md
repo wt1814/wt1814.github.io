@@ -351,11 +351,6 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [ELK与EFK](/docs/ES/6.ELK与EFK.md)    
 &emsp; [Kibana用户手册](/docs/ES/Kibana.md)  
 
-<!-- 
- ElasticSearch系列18：Mapping 设计指南 
- https://mp.weixin.qq.com/s/Ti4V7sMUCZjqfYjQ7RjcFg
--->
-
 ### 分布式调度
 [延迟队列](/docs/frame/delayQueue.md)  
 [StopWatch](/docs/frame/StopWatch.md)  

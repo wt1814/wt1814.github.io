@@ -64,13 +64,11 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 &emsp; 而 Sendfile 系统调用则提供了一种减少以上多次 Copy，提升文件传输性能的方法。<font color = "red">在内核版本 2.1 中，引入了 Sendfile 系统调用，以简化网络上和两个本地文件之间的数据传输。</font>Sendfile 的引入不仅减少了数据复制，还减少了上下文切换。相较传统 Read/Write 方式，2.1 版本内核引进的 Sendfile 已经减少了内核缓冲区到 User 缓冲区，再由 User 缓冲区到 Socket 相关缓冲区的文件 Copy。而在内核版本 2.4 之后，文件描述符结果被改变，Sendfile 实现了更简单的方式，再次减少了一次 Copy 操作。  
 &emsp; Kafka 把所有的消息都存放在一个一个的文件中，当消费者需要数据的时候 Kafka 直接把文件发送给消费者，配合 mmap 作为文件读写方式，直接把它传给 Sendfile。  
 
-
 ## 1.2. 如何让 Kafka 的消息有序？  
 &emsp; Kafka 无法做到消息全局有序，只能做到 Partition 维度的有序。所以如果想要消息有序，就需要从 Partition 维度入手。一般有两种解决方案。
 
 * 单 Partition，单 Consumer。通过此种方案强制消息全部写入同一个 Partition 内，但是同时也牺牲掉了 Kafka 高吞吐的特性了，所以一般不会采用此方案。  
 * 多 Partition，多 Consumer，指定 key 使用特定的 Hash 策略，使其消息落入指定的 Partition 中，从而保证相同的 key 对应的消息是有序的。此方案也是有一些弊端，比如当 Partition 个数发生变化时，相同的 key 对应的消息会落入到其他的 Partition 上，所以一旦确定 Partition 个数后就不能在修改 Partition 个数了。  
-
 
 ## 1.3. 高可用性（副本机制）
 [kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  

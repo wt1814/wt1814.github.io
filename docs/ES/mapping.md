@@ -16,11 +16,14 @@
 <!-- /TOC -->
 
 # 1. 映射详解
-<!--
+<!-- 
+ ElasticSearch系列18：Mapping 设计指南 
+ https://mp.weixin.qq.com/s/Ti4V7sMUCZjqfYjQ7RjcFg
+-->
 
+<!--
 ES的文档映射
 https://www.cnblogs.com/laoyeye/p/13289153.html
-
 -->
 
 <!-- 
