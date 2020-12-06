@@ -1,19 +1,28 @@
+<!-- TOC -->
 
+- [1. Kafka副本机制](#1-kafka副本机制)
+    - [1.1. Kafka副本简介](#11-kafka副本简介)
+    - [1.2. 物理分区分配](#12-物理分区分配)
+    - [1.3. 客户端数据请求](#13-客户端数据请求)
+    - [1.4. 服务端Leader的选举(ISR副本)](#14-服务端leader的选举isr副本)
+        - [1.4.1. 服务端Unclear Leader选举](#141-服务端unclear-leader选举)
+    - [1.5. 服务端副本的同步(数据一致性，LEO和HW)](#15-服务端副本的同步数据一致性leo和hw)
+        - [1.5.1. Leader Epoch](#151-leader-epoch)
 
-# Kafka副本机制  
+<!-- /TOC -->
+
+# 1. Kafka副本机制  
 <!-- 
 Kafka 副本机制
 https://juejin.im/post/6844903950009794567
 
 Kafka中副本机制的设计和原理 
 https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
-副本机制
-https://blog.csdn.net/haogenmin/article/details/109449944
 深入理解Kafka必知必会
 https://www.cnblogs.com/luozhiyun/p/12079527.html
 
 -->
-## Kafka副本简介
+## 1.1. Kafka副本简介
 &emsp; 在分布式数据系统中，通常使用分区来提高系统的处理能力，通过副本来保证数据的高可用性。  
 &emsp; 副本机制的使用在计算机的世界里是很常见的，比如MySQL、ZooKeeper、CDN等都有使用副本机制。使用副本机制所能带来的好处有以下几种：  
 
@@ -21,7 +30,7 @@ https://www.cnblogs.com/luozhiyun/p/12079527.html
 * 提供扩展性，增加读操作吞吐量；
 * 改善数据局部，降低系统延时。
 
-&emsp; 但并不是每个好处都能获得，这还是和具体的设计有关，比如Kafka只具有第一个好处，即提高可用性。这是因为**副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。**  
+&emsp; 但并不是每个好处都能获得，这还是和具体的设计有关，比如Kafka只具有第一个好处，即提高可用性。这是因为**Kafka副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。**  
 
 * 副本的定义是在分区（Partition）层下定义的，每个分区有多个副本。  
 * 副本可分布于多台机器上。
@@ -30,17 +39,18 @@ https://www.cnblogs.com/luozhiyun/p/12079527.html
 * 其他则作为Follower副本，负责同步Leader的数据，当Leader宕机时，从Follower选举出新的Leader，从而解决分区单点问题。  
 
 &emsp; 这种副本机制设计的优势
-    * 方便实现 Read-your-writes
-        * Read-your-writes：当你使用 Producer API 写消息后，马上使用 Consumer API 去消费
-        * 如果允许 Follower 对外提供服务，由于异步，因此不能实现 Read-your-writes
-    * 方便实现单调读（Monotonic Reads）
-        * 单调读：对于一个 Consumer，多次消费时，不会看到某条消息一会存在一会不存在
-        * 问题案例
-            * 如果允许 Follower 提供服务，假设有两个 Follower F1、F2
-            * 如果 F1 拉取了最新消息而 F2 还没有
-            * 对于 Consumer 第一次消费时从 F1 看到的消息，第二次从 F2 则可能看不到
-            * 这种场景是非单调读
-            * 所有读请求通过 Leader 则可以实现单调读
+
+* 方便实现 Read-your-writes
+    * Read-your-writes：当你使用 Producer API 写消息后，马上使用 Consumer API 去消费
+    * 如果允许 Follower 对外提供服务，由于异步，因此不能实现 Read-your-writes
+* 方便实现单调读（Monotonic Reads）
+    * 单调读：对于一个 Consumer，多次消费时，不会看到某条消息一会存在一会不存在
+    * 问题案例
+        * 如果允许 Follower 提供服务，假设有两个 Follower F1、F2
+        * 如果 F1 拉取了最新消息而 F2 还没有
+        * 对于 Consumer 第一次消费时从 F1 看到的消息，第二次从 F2 则可能看不到
+        * 这种场景是非单调读
+        * 所有读请求通过 Leader 则可以实现单调读
 
 <!-- 
 多分区意味着并发处理的能力，这多个副本中，只有一个是 leader，而其他的都是 follower 副本。仅有 leader 副本可以对外提供服务。多个 follower 副本通常存放在和 leader 副本不同的 broker 中。通过这样的机制实现了高可用，当某台机器挂掉后，其他 follower 副本也能迅速”转正“，开始对外提供服务。
@@ -52,7 +62,7 @@ https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 这个问题本质上是对性能和一致性的取舍。试想一下，如果 follower 副本也对外提供服务那会怎么样呢？首先，性能是肯定会有所提升的。但同时，会出现一系列问题。类似数据库事务中的幻读，脏读。比如你现在写入一条数据到 kafka 主题 a，消费者 b 从主题 a 消费数据，却发现消费不到，因为消费者 b 去读取的那个分区副本中，最新消息还没写入。而这个时候，另一个消费者 c 却可以消费到最新那条数据，因为它消费了 leader 副本。Kafka 通过 WH 和 Offset 的管理来决定 Consumer 可以消费哪些数据，已经当前写入的数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-30.png)  
 -->
-## 1.2.1. 物理分区分配
+## 1.2. 物理分区分配
 &emsp; 在创建主题时，Kafka 会首先决定如何在broker间分配分区副本，它遵循以下原则：  
 
 * 在所有 broker 上均匀地分配分区副本；
@@ -66,7 +76,13 @@ Error while executing topic command : org.apache.kafka.common.errors.InvalidRepl
 Exception: Replication factor: 3 larger than available brokers: 1.
 ```
 
-## 1.2.2. Leader的选举(ISR副本)
+## 1.3. 客户端数据请求  
+&emsp; 在所有副本中，只有领导副本才能进行消息的读写处理。由于不同分区的领导副本可能在不同的broker上，如果某个broker收到了一个分区请求，但是该分区的领导副本并不在该broker上，那么它就会向客户端返回一个Not a Leader for Partition的错误响应。为了解决这个问题，Kafka提供了元数据请求机制。  
+&emsp; 首先集群中的每个broker都会缓存所有主题的分区副本信息，客户端会定期发送元数据请求，然后将获取的元数据进行缓存。定时刷新元数据的时间间隔可以通过为客户端配置metadata.max.age.ms来进行指定。有了元数据信息后，客户端就知道了领导副本所在的broker，之后直接将读写请求发送给对应的broker即可。  
+&emsp; 如果在定时请求的时间间隔内发生的分区副本的选举，则意味着原来缓存的信息可能已经过时了，此时还有可能会收到Not a Leader  for Partition的错误响应，这种情况下客户端会再次求发出元数据请求，然后刷新本地缓存，之后再去正确的broker上执行对应的操作，过程如下图：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-94.png)  
+
+## 1.4. 服务端Leader的选举(ISR副本)
 <!-- 
 只有 Leader 可以对外提供读服务，那如何选举 Leader
 
@@ -84,23 +100,58 @@ In-sync Replicas（ISR）
         如果一个 Follower 落后 Leader 不超过 10s，则认为该 Follower 是同步的，即该 Follower 被认为是 ISR
     ISR 是动态调整的
 -->
-&emsp; 当Leader宕机时，要从Follower中选举出新的Leader，但并不是所有的Follower都有资格参与选举。因为有的Follower的同步情况滞后，如果让它成为Leader将会导致消息丢失。  
-&emsp; **而为了避免这个情况，Kafka引入了ISR（In-Sync Replica）副本的概念，这是一个集合，里面存放的是和Leader保持同步的副本并含有Leader。这是一个动态调整的集合，当副本由同步变为滞后时会从集合中剔除，而当副本由滞后变为同步时又会加入到集合中。**  
-&emsp; 那么如何判断一个副本是同步还是滞后呢？Kafka在0.9版本之前，是根据replica.lag.max.messages参数来判断，其含义是同步副本所能落后的最大消息数，当Follower上的最大偏移量落后Leader大于replica.lag.max.messages时，就认为该副本是不同步的了，会从ISR中移除。  
-&emsp; 如果ISR的值设置得过小，会导致Follower经常被踢出ISR，而如果设置过大，则当Leader宕机时，会造成较多消息的丢失。在实际使用时，很难给出一个合理值，这是因为当生产者为了提高吞吐量而调大batch.size时，会发送更多的消息到Leader上，这时候如果不增大replica.lag.max.messages，则会有Follower频繁被踢出ISR的现象  
-&emsp; 而当Follower发生Fetch请求同步后，又被加入到ISR中，ISR将频繁变动。鉴于该参数难以设定，Kafka在0.9版本引入了一个新的参数replica.lag.time.max.ms，默认10s，含义是当Follower超过10s没发送Fetch请求同步Leader时，就会认为不同步而被踢出ISR。从时间维度来考量，能够很好地避免生产者发送大量消息到Leader副本导致分区ISR频繁收缩和扩张的问题。  
+&emsp; 当领导者副本宕机了，Kafka 依托于 ZooKeeper 提供的监控功能能够实时感知到，并立即开启新一轮的领导者选举，从追随者副本中选一个作为新的领导者。老Leader副本重启回来后，只能作为追随者副本加入到集群中。  
 
-### 1.2.2.1. Unclear Leader选举    
+&emsp; 当Leader宕机时，要从Follower中选举出新的Leader，但并不是所有的Follower都有资格参与选举。因为有的Follower的同步情况滞后，如果让它成为Leader将会导致消息丢失。   
+
+    默认情况下（注意只是默认），只有被认定为是实时同步的Follower副本，才可能被选举成Leader。
+    一个副本与 leader 失去实时同步的原因有很多，比如：
+        慢副本（Slow replica）：follower replica 在一段时间内一直无法赶上 leader 的写进度。造成这种情况的最常见原因之一是 follower replica 上的 I/O瓶颈，导致它持久化日志的时间比它从 leader 消费消息的时间要长；
+        卡住副本（Stuck replica）：follower replica 在很长一段时间内停止从 leader 获取消息。这可能是以为 GC 停顿，或者副本出现故障；
+        刚启动副本（Bootstrapping replica）：当用户给某个主题增加副本因子时，新的 follower replicas 是不同步的，直到它跟上 leader 的日志。
+
+1. **引入ISR**
+&emsp; **而为了避免这个情况，Kafka引入了ISR（In-Sync Replica）副本的概念，这是一个集合，里面存放的是和Leader保持同步的副本并含有Leader。这是一个动态调整的集合，当副本由同步变为滞后时会从集合中剔除，而当副本由滞后变为同步时又会加入到集合中。**  
+<!--
+https://juejin.cn/post/6844903950009794567#heading-3
+每个分区都有一个 ISR(in-sync Replica) 列表，用于维护所有同步的、可用的副本。首领副本必然是同步副本，而对于跟随者副本来说，它需要满足以下条件才能被认为是同步副本：
+
+与 Zookeeper 之间有一个活跃的会话，即必须定时向 Zookeeper 发送心跳；
+在规定的时间内从首领副本那里低延迟地获取过消息。
+
+如果副本不满足上面条件的话，就会被从 ISR 列表中移除，直到满足条件才会被再次加入。
+-->
+2. **副本是否滞后的设置**  
+&emsp; 那么如何判断一个副本是同步还是滞后呢？Kafka在0.9版本之前，是根据replica.lag.max.messages参数来判断，其含义是同步副本所能落后的最大消息数，当Follower上的最大偏移量落后Leader大于replica.lag.max.messages时，就认为该副本是不同步的了，会从ISR中移除。  
+&emsp; 如果ISR的值设置得过小，会导致Follower经常被踢出ISR，而如果设置过大，则当Leader宕机时，会造成较多消息的丢失。  
+&emsp; 在实际使用时，很难给出一个合理值，这是因为当生产者为了提高吞吐量而调大batch.size时，会发送更多的消息到Leader上，这时候如果不增大replica.lag.max.messages，则会有Follower频繁被踢出ISR的现象。而当Follower发生Fetch请求同步后，又被加入到ISR中，ISR将频繁变动。  
+&emsp; 鉴于该参数难以设定，Kafka在0.9版本引入了一个新的参数replica.lag.time.max.ms，默认10s，含义是当Follower超过10s没发送Fetch请求同步Leader时，就会认为不同步而被踢出ISR。从时间维度来考量，能够很好地避免生产者发送大量消息到Leader副本导致分区ISR频繁收缩和扩张的问题。  
+
+
+### 1.4.1. 服务端Unclear Leader选举  
 <!-- 
     由于 ISR 是动态调整的，可能出现 ISR 为空，即 Leader 宕机，Follower 都不同步
     ISR 为空时，如何选举新 Leader？
         非同步副本：Kafka 把所有不在 ISR 中的存活副本称为非同步副本
     Broker 参数 unclean.leader.election.enable 控制是否允许 Unclean Leader Election
     即如果参数为 true，ISR 为空是，会从非同步副本中选举 Leader
--->
-&emsp; 当ISR集合为空时，即没有同步副本（Leader也挂了），无法选出下一个Leader，Kafka集群将会失效。而为了提高可用性，Kafka提供了unclean.leader.election.enable参数，当设置为true且ISR集合为空时，会进行Unclear Leader选举，允许在非同步副本中选出新的Leader，从而提高Kafka集群的可用性，但这样会造成消息丢失。在允许消息丢失的场景中，是可以开启此参数来提高可用性的。而其他情况，则不建议开启，而是通过其他手段来提高可用性。  
 
-## 1.2.3. 副本的同步(数据一致性，LEO和HW)  
+unclean领导者选举。再回去看看刚刚我们说Leader挂了怎么办，有句话重点标粗，"默认情况下（注意只是默认），只有被认定为是实时同步的Follower副本，才可能被选举成Leader"。
+
+这是由Broker 端参数 unclean.leader.election.enable 控制的。默认为false，即只有被认定为是实时同步的Follower副本（在ISR中的），才可能被选举成Leader。如果你设置为true,则所有副本都可以被选举。
+
+开启 Unclean 领导者选举可能会造成数据丢失，但好处是，它使得分区 Leader 副本一直存在，不至于停止对外提供服务，因此提升了高可用性。反之，禁止 Unclean 领导者选举的好处在于维护了数据的一致性，避免了消息丢失，但牺牲了高可用性。
+
+如果你听说过 CAP 理论的话，你一定知道，一个分布式系统通常只能同时满足一致性（Consistency）、可用性（Availability）、分区容错性（Partition tolerance）中的两个。显然，在这个问题上，Kafka 赋予你选择 C 或 A 的权利。
+
+你可以根据你的实际业务场景决定是否开启 Unclean 领导者选举。不过，我强烈建议你不要开启它，毕竟我们还可以通过其他的方式来提升高可用性。如果为了这点儿高可用性的改善，牺牲了数据一致性，那就非常不值当了。
+
+对于副本机制，在 broker 级别有一个可选的配置参数 unclean.leader.election.enable，默认值为 fasle，代表禁止不完全的首领选举。这是针对当首领副本挂掉且 ISR 中没有其他可用副本时，是否允许某个不完全同步的副本成为首领副本，这可能会导致数据丢失或者数据不一致，在某些对数据一致性要求较高的场景 (如金融领域)，这可能无法容忍的，所以其默认值为 false，如果你能够允许部分数据不一致的话，可以配置为 true。
+
+-->
+&emsp; ISR 是一个动态调整的集合，而非静态不变的。当ISR集合为空时，即没有同步副本（Leader也挂了），无法选出下一个Leader，Kafka集群将会失效。而为了提高可用性，Kafka提供了unclean.leader.election.enable参数，当设置为true且ISR集合为空时，会进行Unclear Leader选举，允许在非同步副本中选出新的Leader，从而提高Kafka集群的可用性，但这样会造成消息丢失。在允许消息丢失的场景中，是可以开启此参数来提高可用性的。而其他情况，则不建议开启，而是通过其他手段来提高可用性。  
+
+## 1.5. 服务端副本的同步(数据一致性，LEO和HW)  
 <!-- 
 副本的存在就会出现副本同步问题
 
@@ -168,7 +219,7 @@ kafka数据一致性，通过HW来保证
 
 &emsp; 在B重启作为Leader之后，收到消息m2。A宕机重启后向成为Leader的B发送Fetch请求，发现自己的HW和B的HW一致，都是2，因此不会进行消息截断，而这也造成了数据不一致。  
 
-### 1.2.3.1. Leader Epoch 
+### 1.5.1. Leader Epoch 
 &emsp; 为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制，在每个副本日志目录下都有一个leader-epoch-checkpoint文件，用于保存Leader Epoch信息，其内容示例如下：  
 
     0 0
