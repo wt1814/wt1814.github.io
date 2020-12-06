@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [1. kafka事务](#1-kafka事务)
+- [1. kafka幂等和事务](#1-kafka幂等和事务)
     - [1.1. 幂等性](#11-幂等性)
         - [1.1.1. 消息交付语义](#111-消息交付语义)
         - [1.1.2. 幂等性介绍](#112-幂等性介绍)
@@ -29,7 +29,7 @@
 
 <!-- /TOC -->
 
-# 1. kafka事务  
+# 1. kafka幂等和事务  
 <!-- 
 https://blog.csdn.net/mlljava1111/article/details/81180351
 https://blog.csdn.net/BeiisBei/article/details/104737298
