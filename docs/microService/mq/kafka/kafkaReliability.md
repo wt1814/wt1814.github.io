@@ -1,27 +1,58 @@
 <!-- TOC -->
 
 - [1. kafka如何保证消息队列不丢失?](#1-kafka如何保证消息队列不丢失)
-    - [1.1. Broker端丢失消息](#11-broker端丢失消息)
-        - [1.1.1. ACK机制](#111-ack机制)
+    - [1.1. 前言：消息传递语义](#11-前言消息传递语义)
     - [1.2. Producer端丢失消息](#12-producer端丢失消息)
-    - [1.3. Consumer 端丢失消息](#13-consumer-端丢失消息)
+    - [1.3. Broker端丢失消息](#13-broker端丢失消息)
+        - [1.3.1. ACK机制](#131-ack机制)
+    - [1.4. Consumer 端丢失消息](#14-consumer-端丢失消息)
 
 <!-- /TOC -->
 
 # 1. kafka如何保证消息队列不丢失?
 <!-- 
-
+https://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490284&idx=3&sn=afed862fe0d41d9d6b06bae03c2cb115&chksm=fa20baf0cd5733e651e47c6993f70536f3a31e75d00453b027cc9ef1b0940a2529a5f78b9e2f&scene=21&token=1648356605&lang=zh_CN#wechat_redirect
 Kafka消息中间件到底会不会丢消息 
 https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 Kafka 无消息丢失配置
 https://www.kancloud.cn/nicefo71/kafka/1471586
-
 -->
-&emsp; Kafka存在丢消息的问题，消息丢失会发生在Broker，Producer和Consumer三种。  
 
-## 1.1. Broker端丢失消息
+## 1.1. 前言：消息传递语义  
+&emsp; 消息传递语义message delivery semantic，简单说就是消息传递过程中消息传递的保证性。主要分为三种：  
+
+* at most once：最多一次。消息可能丢失也可能被处理，但最多只会被处理一次。
+* at least once：至少一次。消息不会丢失，但可能被处理多次。可能重复，不会丢失。
+* exactly once：精确传递一次。消息被处理且只会被处理一次。不丢失不重复就一次。
+
+&emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。  
+
+&emsp; Kafka有三次消息传递的过程：  
+
+* 生产者发消息给Kafka Broker。
+* Kafka Broker 消息同步和持久化
+* Kafka Broker 将消息传递给消费者。
+
+在这三步中每一步都有可能会丢失消息。    
+
+## 1.2. Producer端丢失消息  
+&emsp; Producer丢失消息，发生在生产者客户端。  
+&emsp; 为了提升效率，减少IO，producer在发送数据时可以将多个请求进行合并后发送。被合并的请求咋发送一线缓存在本地buffer中。缓存的方式和前文提到的刷盘类似，producer可以将请求打包成“块”或者按照时间间隔，将buffer中的数据发出。通过buffer可以将生产者改造为异步的方式，而这可以提升发送效率。  
+&emsp; 但是，buffer中的数据就是危险的。在正常情况下，客户端的异步调用可以通过callback来处理消息发送失败或者超时的情况，但是，一旦producer被非法的停止了，那么buffer中的数据将丢失，broker将无法收到该部分数据。又或者，当Producer客户端内存不够时，如果采取的策略是丢弃消息（另一种策略是block阻塞），消息也会被丢失。抑或，消息产生（异步产生）过快，导致挂起线程过多，内存不足，导致程序崩溃，消息丢失。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-73.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-73.png)  
+
+&emsp; **根据上图，可以想到几个解决的思路：**  
+
+* 异步发送消息改为同步发送消。或者service产生消息时，使用阻塞的线程池，并且线程数有一定上限。整体思路是控制消息产生速度。  
+* 扩大Buffer的容量配置。这种方式可以缓解该情况的出现，但不能杜绝。  
+* service不直接将消息发送到buffer（内存），而是将消息写到本地的磁盘中（数据库或者文件），由另一个（或少量）生产线程进行消息发送。相当于是在buffer和service之间又加了一层空间更加富裕的缓冲层。  
+
+
+## 1.3. Broker端丢失消息
 &emsp; Broker丢失消息是由于Kafka本身的原因造成的，kafka为了得到更高的性能和吞吐量，将数据异步批量的存储在磁盘中。消息的刷盘过程，为了提高性能，减少刷盘次数，kafka采用了批量刷盘的做法。即，按照一定的消息量，和时间间隔进行刷盘。这种机制也是由于linux操作系统决定的。将数据存储到linux操作系统种，会先存储到页缓存（Page cache）中，按照时间或者其他条件进行刷盘（从page cache到file），或者通过fsync命令强制刷盘。数据在page cache中时，如果系统挂掉，数据会丢失。  
-&emsp; broker写数据只写到PageCache中，而pageCache位于内存。这部分数据在断电后是会丢失的。pageCache的数据通过linux的flusher程序进行刷盘。刷盘触发条件有三：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-95.png)  
+&emsp; 上图简述了broker写数据以及同步的一个过程。broker写数据只写到PageCache中，而pageCache位于内存。这部分数据在断电后是会丢失的。pageCache的数据通过linux的flusher程序进行刷盘。刷盘触发条件有三：  
 
 * 主动调用sync或fsync函数
 * 可用内存低于阀值
@@ -29,9 +60,10 @@ https://www.kancloud.cn/nicefo71/kafka/1471586
 
 &emsp; Broker配置刷盘机制，是通过调用fsync函数接管了刷盘动作。从单个Broker来看，pageCache的数据会丢失。  
 &emsp; Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不丢失消息是做不到的，只能通过调整刷盘机制的参数缓解该情况。比如，减少刷盘间隔，减少刷盘数据量大小。时间越短，性能越差，可靠性越好（尽可能可靠）。这是一个选择题。  
-&emsp; 为了解决该问题，kafka通过producer和broker协同处理单个broker丢失参数的情况。一旦producer发现broker消息丢失，即可自动进行retry。除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。那么producer是如何检测到数据丢失的呢？是通过ack机制。  
 
-### 1.1.1. ACK机制  
+&emsp; **为了解决该问题，**kafka通过producer和broker协同处理单个broker丢失参数的情况。一旦producer发现broker消息丢失，即可自动进行retry。除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。那么producer是如何检测到数据丢失的呢？是通过ack机制。  
+
+### 1.3.1. ACK机制  
 &emsp; kafka为了保证高可用性，采用了副本机制。当 ISR副本中的follower 完成数据的同步之后，leader 就会给 follower 发送 ack。如果 follower 长时间未向 leader 同步数据，则该 follower 将会被踢出 ISR，该时间阈值由 replica.lag.time.max.ms 参数设定。leader 发生故障之后，就会从 ISR 中选举新的 leader。（之前还有另一个参数，0.9 版本之后 replica.lag.max.messages 参数被移除了）  
 &emsp; 对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没必要等 ISR 中的follower全部接收成功。kafka的request.required.acks 可设置为 1、0、-1 三种情况。  
 <!-- 
@@ -53,19 +85,7 @@ https://www.kancloud.cn/nicefo71/kafka/1471586
 
 &emsp; 上面这个过程看似已经很完美了，但是假设如果消息在同步到部分从Partition 上时，主 Partition 宕机，此时消息会重传，虽然消息不会丢失，但是会造成同一条消息会存储多次。在新版本中 Kafka 提出了幂等性的概念，通过给每条消息设置一个唯一 ID，并且该 ID 可以唯一映射到 Partition 的一个固定位置，从而避免消息重复存储的问题。  
 
-## 1.2. Producer端丢失消息  
-&emsp; Producer丢失消息，发生在生产者客户端。  
-&emsp; 为了提升效率，减少IO，producer在发送数据时可以将多个请求进行合并后发送。被合并的请求咋发送一线缓存在本地buffer中。缓存的方式和前文提到的刷盘类似，producer可以将请求打包成“块”或者按照时间间隔，将buffer中的数据发出。通过buffer可以将生产者改造为异步的方式，而这可以提升发送效率。  
-&emsp; 但是，buffer中的数据就是危险的。在正常情况下，客户端的异步调用可以通过callback来处理消息发送失败或者超时的情况，但是，一旦producer被非法的停止了，那么buffer中的数据将丢失，broker将无法收到该部分数据。又或者，当Producer客户端内存不够时，如果采取的策略是丢弃消息（另一种策略是block阻塞），消息也会被丢失。抑或，消息产生（异步产生）过快，导致挂起线程过多，内存不足，导致程序崩溃，消息丢失。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-73.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-73.png)  
-&emsp; 根据上图，可以想到几个解决的思路：  
-
-* 异步发送消息改为同步发送消。或者service产生消息时，使用阻塞的线程池，并且线程数有一定上限。整体思路是控制消息产生速度。  
-* 扩大Buffer的容量配置。这种方式可以缓解该情况的出现，但不能杜绝。  
-* service不直接将消息发送到buffer（内存），而是将消息写到本地的磁盘中（数据库或者文件），由另一个（或少量）生产线程进行消息发送。相当于是在buffer和service之间又加了一层空间更加富裕的缓冲层。  
-
-## 1.3. Consumer 端丢失消息
+## 1.4. Consumer 端丢失消息
 &emsp; Consumer消费消息有下面几个步骤：  
 
 * 接收消息
