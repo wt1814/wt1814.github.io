@@ -21,8 +21,6 @@
 
 # 1. SpringBoot集成kafka
 <!-- 
-SpringBoot集成kafka全面实战
-https://blog.csdn.net/yuanlong122716/article/details/105160545/
 Java人应该知道的SpringBoot For Kafka (下) 
 https://mp.weixin.qq.com/s/JB660Pgypr-PvkkdGOlhag
 -->
@@ -147,7 +145,7 @@ https://blog.csdn.net/yuanlong122716/article/details/105160545/
 
 ## 1.4. 生产者
 ### 1.4.1. 带回调的生产者  
-&emsp; kafkaTemplate提供了一个回调方法addCallback，可以在回调方法中监控消息是否发送成功或失败时做补偿处理，有两种写法，  
+&emsp; kafkaTemplate提供了一个回调方法addCallback，可以在回调方法中监控消息是否发送成功或失败时做补偿处理，有两种写法。  
 
 ```java
 @GetMapping("/kafka/callbackOne/{message}")
@@ -240,7 +238,7 @@ public void sendMessage7(){
 
 ## 1.5. 消费者  
 ### 1.5.1. 指定topic、partition、offset消费  
-&emsp; 前面在监听消费topic1的时候，监听的是topic1上所有的消息，如果想指定topic、指定partition、指定offset来消费呢？也很简单，@KafkaListener注解已全部提供，  
+&emsp; 前面在监听消费topic1的时候，监听的是topic1上所有的消息，如果想指定topic、指定partition、指定offset来消费呢？也很简单，@KafkaListener注解已全部提供。  
 
 ```java
 /**
@@ -269,7 +267,7 @@ public void onMessage2(ConsumerRecord<?, ?> record) {
 
 
 ### 1.5.2. 批量消费
-&emsp; 设置application.prpertise开启批量消费即可，  
+&emsp; 设置application.prpertise开启批量消费即可。  
 
 ```properties
 # 设置批量消费
@@ -278,7 +276,7 @@ spring.kafka.listener.type=batch
 spring.kafka.consumer.max-poll-records=50
 ```
 
-&emsp; 接收消息时用List来接收，监听代码如下，  
+&emsp; 接收消息时用List来接收，监听代码如下。  
 
 ```java
 @KafkaListener(id = "consumer2",groupId = "felix-group", topics = "topic1")
@@ -292,7 +290,7 @@ public void onMessage3(List<ConsumerRecord<?, ?>> records) {
 
 ### 1.5.3. ConsumerAwareListenerErrorHandler 异常处理器
 &emsp; 通过异常处理器，可以处理consumer在消费时发生的异常。  
-&emsp; 新建一个 ConsumerAwareListenerErrorHandler 类型的异常处理方法，用@Bean注入，BeanName默认就是方法名，然后将这个异常处理器的BeanName放到@KafkaListener注解的errorHandler属性里面，当监听抛出异常的时候，则会自动调用异常处理器，  
+&emsp; 新建一个ConsumerAwareListenerErrorHandler类型的异常处理方法，用@Bean注入，BeanName默认就是方法名，然后将这个异常处理器的BeanName放到@KafkaListener注解的errorHandler属性里面，当监听抛出异常的时候，则会自动调用异常处理器。  
 
 ```java
 // 新建一个异常处理器，用@Bean注入
@@ -356,12 +354,12 @@ public class KafkaConsumer {
 }
 ```
 
-&emsp; 上面实现了一个"过滤奇数、接收偶数"的过滤策略，向topic1发送0-99总共100条消息，看一下监听器的消费情况，可以看到监听器只消费了偶数，  
+&emsp; 上面实现了一个"过滤奇数、接收偶数"的过滤策略，向topic1发送0-99总共100条消息，看一下监听器的消费情况，可以看到监听器只消费了偶数。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-39.png)  
 
 ### 1.5.5. 消息转发
 &emsp; 在实际开发中，可能有这样的需求，应用A从TopicA获取到消息，经过处理后转发到TopicB，再由应用B监听处理消息，即一个应用处理完成后将该消息转发至其他应用，完成消息的转发。  
-&emsp; 在SpringBoot集成Kafka实现消息的转发也很简单，只需要通过一个@SendTo注解，被注解方法的return值即转发的消息内容，如下，  
+&emsp; 在SpringBoot集成Kafka实现消息的转发也很简单，只需要通过一个@SendTo注解，被注解方法的return值即转发的消息内容，如下。  
 
 ```java
 /**
@@ -381,7 +379,7 @@ public String onMessage7(ConsumerRecord<?, ?> record) {
 &emsp; 默认情况下，当消费者项目启动的时候，监听器就开始工作，监听消费发送到指定topic的消息，那如果不想让监听器立即工作，想让它在指定的时间点开始工作，或者在指定的时间点停止工作，该怎么处理呢——使用KafkaListenerEndpointRegistry：  
 &emsp; ① 禁止监听器自启动；   
 &emsp; ② 创建两个定时任务，一个用来在指定时间点启动定时器，另一个在指定时间点停止定时器；  
-&emsp; 新建一个定时任务类，用注解@EnableScheduling声明，KafkaListenerEndpointRegistry在SpringIO中已经被注册为Bean，直接注入，设置禁止KafkaListener自启动，  
+&emsp; 新建一个定时任务类，用注解@EnableScheduling声明，KafkaListenerEndpointRegistry在SpringIO中已经被注册为Bean，直接注入，设置禁止KafkaListener自启动。  
 
 ```java
 @EnableScheduling
@@ -434,9 +432,9 @@ public class CronTimer {
     }
 }
 ```
-&emsp; 启动项目，触发生产者向topic1发送消息，可以看到consumer没有消费，因为这时监听器还没有开始工作，  
+&emsp; 启动项目，触发生产者向topic1发送消息，可以看到consumer没有消费，因为这时监听器还没有开始工作。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-40.png)  
-&emsp; 11:42分监听器启动开始工作，消费消息，  
+&emsp; 11:42分监听器启动开始工作，消费消息。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-41.png)  
 
 

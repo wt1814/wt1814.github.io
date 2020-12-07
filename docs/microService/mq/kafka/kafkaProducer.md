@@ -79,24 +79,24 @@ public class KafkaProducerTest {
 《深入理解kafka》2.2.1
 -->
 
-&emsp; 在消息发送的过程中，涉及到了两个线程：main线程和Sender线程，以及一个线程共享变量，RecordAccumulator。 main线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。  
-&emsp; Producer 发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至 Broker。  
+&emsp; **在消息发送的过程中，涉及到了两个线程：main线程和Sender线程，以及一个线程共享变量RecordAccumulator（累加器）。 main线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。**  
+&emsp; Producer主线程发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-8.png)  
 
 ## 1.3. main线程详解   
-&emsp; 可以通过KafkaProducer的send方法发送消息，send 方法的声明如下：
+&emsp; 可以通过KafkaProducer的send方法发送消息，send方法的声明如下：
 
 ```java
 Future<RecordMetadata> send(ProducerRecord<K, V> record)
 Future<RecordMetadata> send(ProducerRecord<K, V> record, Callback callback)
 ```
-&emsp; 从上面的 API 可以得知，用户在使用 KafkaProducer 发送消息时，首先需要将待发送的消息封装成 ProducerRecord，返回的是一个 Future 对象，典型的 Future 设计模式。在发送时也可以指定一个 Callable 接口用来执行消息发送的回调。  
+&emsp; 从上面的API可以得知，用户在使用KafkaProducer发送消息时，首先需要将待发送的消息封装成ProducerRecord，返回的是一个Future对象，典型的Future设计模式。在发送时也可以指定一个Callable接口用来执行消息发送的回调。  
 
 &emsp; **Kafka消息追加流程**  
-&emsp; KafkaProducer 的 send 方法，并不会直接向 broker 发送消息，kafka 将消息发送异步化，即分解成两个步骤，send方法的职责是将消息追加到内存中(分区的缓存队列中)，然后会由专门的Send线程异步将缓存中的消息批量发送到 Kafka Broker 中。
+&emsp; KafkaProducer的send方法，并不会直接向broker发送消息，kafka将消息发送异步化，即分解成两个步骤，send方法的职责是将消息追加到内存中(分区的缓存队列中)，然后会由专门的Send线程异步将缓存中的消息批量发送到Kafka Broker中。
 
-&emsp; 消息追加入口为 KafkaProducer#send
+&emsp; 消息追加入口为KafkaProducer#send
 
 ```java
 public Future<RecordMetadata> send(ProducerRecord<K, V> record, Callback callback) {  
