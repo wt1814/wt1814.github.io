@@ -15,6 +15,7 @@
 <!-- 
 https://zhuanlan.zhihu.com/p/43702590
 -->
+《Kafka实战》第8、9章  
 
 ## 1.1. kafka监控  
 &emsp; 从五个维度来讨论Kafka的监控。首先是要监控Kafka集群所在的主机；第二是监控Kafka broker JVM的表现；第三点，要监控Kafka Broker的性能；第四，要监控Kafka客户端的性能。这里的所指的是广义的客户端——可能是指编写的生产者、消费者，也有可能是社区提供的生产者、消费者，比如说Connect的Sink/Source或Streams等；最后需要监控服务器之间的交互行为。  
