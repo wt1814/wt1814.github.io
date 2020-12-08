@@ -37,7 +37,11 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-74.png)  
 
 # 1. Redis Cluster  
+<!-- 
 
+一万字详解 Redis Cluster Gossip 协议 
+https://mp.weixin.qq.com/s/aL5IEnGuq-9SuDcnmBEu_g
+-->
 
 ## 1.1. 分片模式介绍  
 &emsp; **<font color = "lime">分片(sharding)是将数据拆分到多个Redis实例的过程，这样每个实例将只包含所有键的子集，</font>** 这种方法在解决某些问题时可以获得线性级别的性能提升。  

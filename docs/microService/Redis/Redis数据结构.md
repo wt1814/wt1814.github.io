@@ -14,7 +14,8 @@
 <!-- /TOC -->
 
 <!--
-
+ 给你一个亿的keys，Redis如何统计？ 
+ https://mp.weixin.qq.com/s/LDdd9a1A1g649SnpXF2a6g
 Pipeline 有什么好处，为什么要用pipeline？  
 答：可以将多次 IO 往返的时间缩减为一次，前提是 pipeline 执行的指令之间没有因果相关性。使用 redis-benchmark 进行压测的时候可以发现影响 redis 的 QPS 峰值的一个重要因素是 pipeline 批次指令的数目。 
 

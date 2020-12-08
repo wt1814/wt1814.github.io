@@ -17,6 +17,9 @@
 
 # 1. Linux问题排查
 <!-- 
+能说几个常见的Linux性能调优命令吗能说几个常见的Linux性能调优命令吗
+https://mp.weixin.qq.com/s/FlRdH3ejNE2VybBMeyiFHg
+
 面试官：生产服务器变慢了，你能谈谈诊断思路吗 
 https://mp.weixin.qq.com/s/wXeHrdoEAmLApeC497Sk3w
 
