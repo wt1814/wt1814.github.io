@@ -38,6 +38,8 @@ https://mp.weixin.qq.com/s/WVInd3kCciTVa1nzOgeEAQ
 检索类型如何选型呢？
 https://mp.weixin.qq.com/s/Fc5LhiLJIeCtstl9OFeqdQ
 
+fuzzy query
+https://mp.weixin.qq.com/s/ReiCivwDINsE8S5kwUWb5w
 -->
 
 ## 1.1. 检索操作  
