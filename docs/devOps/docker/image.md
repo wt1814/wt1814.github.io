@@ -12,12 +12,18 @@
             - [1.2.1.3. 重启策略](#1213-重启策略)
         - [1.2.2. 容器的文件系统](#122-容器的文件系统)
         - [1.2.3. 容器数据卷](#123-容器数据卷)
-        - [1.2.4. 容器通信](#124-容器通信)
-            - [1.2.4.1. Docker宿主机与容器通信(端口映射)](#1241-docker宿主机与容器通信端口映射)
-            - [1.2.4.2. Docker同宿主机容器和不同宿主机容器之间怎么通信？](#1242-docker同宿主机容器和不同宿主机容器之间怎么通信)
-                - [1.2.4.2.1. 同宿主机容器通信](#12421-同宿主机容器通信)
-                - [1.2.4.2.2. 容器连接](#12422-容器连接)
-                - [1.2.4.2.3. 不同宿主机容器通信](#12423-不同宿主机容器通信)
+        - [1.2.4. Docker宿主机与容器通信(端口映射)](#124-docker宿主机与容器通信端口映射)
+            - [1.2.4.1. 自动映射端口](#1241-自动映射端口)
+            - [1.2.4.2. 绑定端口到指定接口](#1242-绑定端口到指定接口)
+            - [1.2.4.3. 示例](#1243-示例)
+        - [1.2.5. 容器间通信](#125-容器间通信)
+            - [1.2.5.1. Docker四种网络模式](#1251-docker四种网络模式)
+            - [1.2.5.2. 容器间单向通信（Link）](#1252-容器间单向通信link)
+            - [1.2.5.3. 容器间双向通信（bridge）](#1253-容器间双向通信bridge)
+                - [1.2.5.3.1. Docker中的虚拟网桥](#12531-docker中的虚拟网桥)
+                - [1.2.5.3.2. 借助网桥进行容器间通信](#12532-借助网桥进行容器间通信)
+                - [1.2.5.3.3. 网桥通信原理](#12533-网桥通信原理)
+            - [1.2.5.4. 不同主机间容器通信](#1254-不同主机间容器通信)
 
 <!-- /TOC -->
 
@@ -25,6 +31,8 @@
 
 <!-- 
 https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
+ Docker知识进阶与容器编排技术 
+https://mp.weixin.qq.com/s/CsnbPMjsa5kzcWh9FimJSg
 -->
 &emsp; docker一般的运行流程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-39.png)  
@@ -80,7 +88,7 @@ CMD python /app/app.py
 
 &emsp; 当运行上述的命令之后，Docker 客户端会选择合适的 API 来调用 Docker daemon 接收到命令并搜索 Docker 本地缓存，观察是否有命令所请求的镜像。如果没有，就去查询 Docker Hub 是否存在相应镜像。找到镜像后，就将其拉取到本地，并存储在本地。一旦镜像拉取到本地之后，Docker daemon 就会创建容器并在其中运行指定应用。  
 
-&emsp; ps -elf 命令可以看到会显示两个，那么其中一个是运行ps -elf 产生的。  
+&emsp; ps -elf命令可以看到会显示两个，那么其中一个是运行ps -elf 产生的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-22.png)  
 
 &emsp; 假如，此时输入exit退出Bash Shell之后，那么容器也会退出（休眠）。因为容器如果不运行任何进程则无法存在，上面将容器的唯一进程杀死之后，容器也就没了。其实，当把进程的PID为1的进程杀死就会杀死容器。  
@@ -111,41 +119,147 @@ CMD python /app/app.py
 ### 1.2.3. 容器数据卷
 &emsp; 容器数据卷：持久化。docker运行产生的数据持久化。  
 
-### 1.2.4. 容器通信  
+### 1.2.4. Docker宿主机与容器通信(端口映射)  
 <!-- 
-
- Docker知识进阶与容器编排技术 
- https://mp.weixin.qq.com/s/CsnbPMjsa5kzcWh9FimJSg
-
-花了三天时间终于搞懂 Docker 网络了 
-https://mp.weixin.qq.com/s/T1vtKwllafEE68_X4AuRqA
+~~
+Docker学习笔记：Docker 端口映射 
+https://www.docker.org.cn/dockerppt/110.html
 -->
+&emsp; 容器运行在宿主机上，如果外网能够访问容器，才能够使用它提供的服务。Docker容器与宿主机进行通信可以通过映射容器的端口到宿主机上。  
 
-#### 1.2.4.1. Docker宿主机与容器通信(端口映射)  
-&emsp; 容器运行在宿主机上，如果外网能够访问容器，才能够使用它提供的服务。  
-&emsp; Docker容器与宿主机进行通信可以通过映射容器的端口到宿主机上。例如，使用如下命令启动一个容器  
+#### 1.2.4.1. 自动映射端口  
+&emsp; -P使用时需要指定--expose选项，指定需要对外提供服务的端口
+
+```text
+$ sudo docker run -t -P --expose 22 --name server  ubuntu:14.04
+```
+&emsp; 使用docker run -P自动绑定所有对外提供服务的容器端口，映射的端口将会从没有使用的端口池中 (49000..49900) 自动选择，你可以通过docker ps、docker inspect \<container_id>或者docker port \<container_id> \<port>确定具体的绑定信息。 
+
+#### 1.2.4.2. 绑定端口到指定接口  
+&emsp; 基本语法  
+
+```text
+$ sudo docker run -p [([<host_interface>:[host_port]])|(<host_port>):]<container_port>[/udp] <image> <cmd>
+```
+&emsp; 默认不指定绑定ip则监听所有网络接口。  
+
+&emsp; 绑定TCP端口  
+
+```text
+# Bind TCP port 8080 of the container to TCP port 80 on 127.0.0.1 of the host machine. $ sudo docker run -p 127.0.0.1:80:8080 <image> <cmd> # Bind TCP port 8080 of the container to a dynamically allocated TCP port on 127.0.0.1 of the host machine. $ sudo docker run -p 127.0.0.1::8080 <image> <cmd> # Bind TCP port 8080 of the container to TCP port 80 on all available interfaces of the host machine. $ sudo docker run -p 80:8080 <image> <cmd> # Bind TCP port 8080 of the container to a dynamically allocated TCP port on all available interfaces $ sudo docker run -p 8080 <image> <cmd>
+```
+
+&emsp; **绑定UDP端口**  
+
+```text
+# Bind UDP port 5353 of the container to UDP port 53 on 127.0.0.1 of the host machine. $ sudo docker run -p 127.0.0.1:53:5353/udp <image> <cmd>
+```
+
+#### 1.2.4.3. 示例  
+&emsp; 例如，使用如下命令启动一个容器  
 
     docker run -p 8080:80 --name test nginx  
 
 &emsp; 使用-p参数将容器的80端口映射到宿主机的8080端口，这样就可以通过curl localhost:8080访问到容器上80端口的服务了。另外一个参数-P可以将容器的端口映射到宿主机的高位随机端口上，而不需要手动指定。  
 
-#### 1.2.4.2. Docker同宿主机容器和不同宿主机容器之间怎么通信？
+### 1.2.5. 容器间通信  
+#### 1.2.5.1. Docker四种网络模式  
+<!-- 
+初探Docker的网络模式 
+https://www.docker.org.cn/docker/187.html
+-->
+&emsp; docker run 创建 Docker 容器时，可以用 --net 选项指定容器的网络模式，Docker 有以下 4 种网络模式：
 
+* host 模式，使用 --net=host 指定。
+* container 模式，使用 --net=container:NAMEorID 指定。
+* none 模式，使用 --net=none 指定。
+* bridge 模式，使用 --net=bridge 指定，默认设置。
+
+&emsp; 可以使用docker network ls查看当前主机的网络模式。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-44.png)  
+
+* host 模式  
+&emsp; 如果启动容器的时候使用 host 模式，那么这个容器将不会获得一个独立的 Network Namespace，而是和宿主机共用一个 Network Namespace。容器将不会虚拟出自己的网卡，配置自己的 IP 等，而是使用宿主机的 IP 和端口。  
+&emsp; 例如，在 10.10.101.105/24 的机器上用 host 模式启动一个含有 web 应用的 Docker 容器，监听 tcp 80 端口。当容器中执行任何类似 ifconfig 命令查看网络环境时，看到的都是宿主机上的信息。而外界访问容器中的应用，则直接使用 10.10.101.105:80 即可，不用任何 NAT 转换，就如直接跑在宿主机中一样。但是，容器的其他方面，如文件系统、进程列表等还是和宿主机隔离的。  
+* container 模式  
+&emsp; 这个模式指定新创建的容器和已经存在的一个容器共享一个 Network Namespace，而不是和宿主机共享。新创建的容器不会创建自己的网卡，配置自己的 IP，而是和一个指定的容器共享 IP、端口范围等。同样，两个容器除了网络方面，其他的如文件系统、进程列表等还是隔离的。两个容器的进程可以通过 lo 网卡设备通信。  
+* none模式  
+&emsp; 这个模式和前两个不同。在这种模式下，Docker 容器拥有自己的 Network Namespace，但是，并不为 Docker容器进行任何网络配置。也就是说，这个 Docker 容器没有网卡、IP、路由等信息。需要我们自己为 Docker 容器添加网卡、配置 IP 等。  
+* bridge模式  
+&emsp; bridge 模式是 Docker 默认的网络设置，此模式会为每一个容器分配 Network Namespace、设置 IP 等，并将一个主机上的 Docker 容器连接到一个虚拟网桥上。当 Docker server 启动时，会在主机上创建一个名为 docker0 的虚拟网桥，此主机上启动的 Docker 容器会连接到这个虚拟网桥上。虚拟网桥的工作方式和物理交换机类似，这样主机上的所有容器就通过交换机连在了一个二层网络中。接下来就要为容器分配 IP 了，Docker 会从 RFC1918 所定义的私有 IP 网段中，选择一个和宿主机不同的IP地址和子网分配给 docker0，连接到 docker0 的容器就从这个子网中选择一个未占用的 IP 使用。如一般 Docker 会使用 172.17.0.0/16 这个网段，并将 172.17.42.1/16 分配给 docker0 网桥（在主机上使用 ifconfig 命令是可以看到 docker0 的，可以认为它是网桥的管理接口，在宿主机上作为一块虚拟网卡使用）   
+
+#### 1.2.5.2. 容器间单向通信（Link）  
+&emsp; 在docker环境下，容器创建后，都会默认分配一个虚拟ip，该ip无法从外界直接访问，但是在docker环境下各个ip直接是互通互联的。下图假设Tomcat分配的虚拟ip为107.1.31.22，Mysql分配的虚拟ip为107.1.31.24。  
+&emsp; 虽然在Docker环境下可以通过虚拟ip互相访问，但是局限性很大，原因是容器是随时可能宕机，重启的，宕机重启后会为容器重新分配ip，这样原来直接通信的ip就消失了。所以容器间通信不建议通过ip进行通信。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-42.png)  
+&emsp; 可以通过为容器命名，通过名称通信，这样无论该容器重启多少次，ip如何改变，都不会存在通信不可用的情形。  
+
+* 通过docker run -d --name myweb tomcat命令，使用tomcat镜像运行一个名称为myweb的容器。通过docker run -d --name mydatabases mysql命令，使用mysql镜像运行一个名称为mydatabases的容器  
+* 通过docker inspect myweb查看myweb容器的详细配置。其中NetworkSettings下的IPAddress的信息即为docker为该容器分配的虚拟ip地址  
+
+&emsp; 记录mydatabases容器的ip地址，进入myweb容器，用ping命令访问mydatabases的ip。发现是没问题的，说明docker之间运用虚拟ip地址可以直接互相访问。  
+
+&emsp; **配置容器间通过名称访问**
+
+* 把之前的myweb容器。运用docker rm myweb移除掉，保留mydatabases容器。通过docker run -d --name myweb --link mydatabases tomcat来运行容器。其中--link是指定该容器需要和名称为databases的容器通信。  
+* 进入myweb容器docker exec -it myweb sh,运行命令ping mydatabases，即可通信。配置mysql连接的时候，把ip换成mydatabases即可，docker会自动维护mydatabases和该容器ip的映射，即使该容器的ip改变也不会影响访问。  
+
+#### 1.2.5.3. 容器间双向通信（bridge）  
+&emsp; 通过上文，配置容器间互相link，也是可以实现双向通信的，但是有点麻烦。Docker提供了网桥，用来快速实现容器间双向通信。  
+
+##### 1.2.5.3.1. Docker中的虚拟网桥  
+&emsp; docker网桥组件概览图  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-41.png)  
+&emsp; docker中的网桥也是虚拟出来的，网桥的主要用途是用来实现docker环境和外部的通信。我们在某个容器内部ping外部的ip例如百度。是可以ping通的。实际上是容器发出的数据包，通过虚拟网桥，发送给宿主机的物理网卡，实际上是借助物理网卡与外界通信的，反之物理网卡也会通过虚拟网桥把相应的数据包送回给相应的容器。  
+
+##### 1.2.5.3.2. 借助网桥进行容器间通信
+&emsp; 可以借助网桥实现容器间的双向通信。docker虚拟网桥的另一个作用是为容器在网络层面上进行分组，把不同容器都绑定到网桥上，这样容器间就可以天然互联互通。  
+
+* docker run -d --name myweb tomcat运行myweb容器；docker run -d -it --name mydatabases centos sh交互模式挂起一个databases容器（这里用一个linux容器模拟数据库服务器）。由于没配置网桥，此时容器间无法通过名称互相通信  
+* docker network ls列出docker网络服务明细，其中bridge的条目就是docker默认的网桥。接着我们新建立一个网桥docker network create -d bridge my-bridge命名为my-bridge  
+* 把容器与新建立的my-bridge网桥进行绑定: docker network connect my-bridge myweb,同理: docker network connect my-bridge mydatabases。需要让哪些容器互联互通，就把容器绑定到该网桥上,用来标识这些容器同处在my-bridge网桥的分组中。至此容器间可以通过名称互相访问  
+
+```text
+~/ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+a31f18ae4b97        bridge              bridge              local
+9e311308c3ce        host                host                local
+2c5f89509739        none                null                local
+~/ docker network create -d bridge my-bridge
+5e678ed577b120f0d95e87ce43d44bab8e15e47f4002428168cad61120c54cc7
+~/ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+a31f18ae4b97        bridge              bridge              local
+9e311308c3ce        host                host                local
+5e678ed577b1        my-bridge           bridge              local
+2c5f89509739        none                null                local
+~/ docker network connect my-bridge myweb
+~/ docker network connect my-bridge mydatabases
+~/ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+92888ef080a9        centos              "sh"                2 minutes ago       Up 2 minutes                            mydatabases
+03fc2187d4ef        tomcat              "catalina.sh run"   43 minutes ago      Up 43 minutes       8080/tcp            myweb
+~/ docker exec -it 03fc2187d4ef sh
+# ping mydatabases
+PING mydatabases (172.18.0.3) 56(84) bytes of data.
+64 bytes from mydatabases.my-bridge (172.18.0.3): icmp_seq=1 ttl=64 time=0.278 ms
+64 bytes from mydatabases.my-bridge (172.18.0.3): icmp_seq=2 ttl=64 time=0.196 ms
+64 bytes from mydatabases.my-bridge (172.18.0.3): icmp_seq=3 ttl=64 time=0.417 ms
+^C
+--- mydatabases ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 55ms
+rtt min/avg/max/mdev = 0.196/0.297/0.417/0.091 ms
+# exit
+```
+##### 1.2.5.3.3. 网桥通信原理  
+&emsp; 网桥为什么可以实现容器间的互联互通？实际上，每当创建一个网桥，docker都会在宿主机上安装一个虚拟网卡，该虚拟网卡也充当了一个网关的作用。与该网桥（虚拟网关）绑定的容器，相当于处在一个局域网，所以可以通信。虚拟网卡毕竟是虚拟的，如果容器想要和外部通信，仍然需要借助外部（宿主机）的物理网卡。虚拟网卡的数据包进行地址转换，转换为物理网卡的数据包发送出去，反之外部和内部容器通信，也需要进行数据包地址转换  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-44.png)  
+
+#### 1.2.5.4. 不同主机间容器通信  
 <!-- 
 docker同宿主机容器和不同宿主机容器之间怎么通信？
 https://blog.51cto.com/2367685/2349762
---> 
-
-##### 1.2.4.2.1. 同宿主机容器通信  
-......
-
-
-##### 1.2.4.2.2. 容器连接  
-......
-
-##### 1.2.4.2.3. 不同宿主机容器通信
-......
-
-
-
+Docker学习笔记：Docker 网络配置 
+https://www.docker.org.cn/dockerppt/111.html
+-->
 
