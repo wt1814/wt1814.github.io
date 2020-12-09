@@ -1,22 +1,24 @@
 <!-- TOC -->
 
 - [1. Docker](#1-docker)
-    - [1.1. 容器化技术](#11-容器化技术)
+    - [1.1. 虚拟化技术](#11-虚拟化技术)
+        - [1.1.1. 虚拟机结构介绍](#111-虚拟机结构介绍)
+        - [1.1.2. docker结构介绍](#112-docker结构介绍)
+        - [1.1.3. 虚拟机和容器对比](#113-虚拟机和容器对比)
     - [1.2. Docker简介](#12-docker简介)
     - [1.3. Docker的使用场景](#13-docker的使用场景)
     - [1.4. Docker基本架构](#14-docker基本架构)
         - [1.4.1. C/S架构](#141-cs架构)
-        - [1.4.2. docker服务端](#142-docker服务端)
+        - [1.4.2. Docker服务端](#142-docker服务端)
     - [1.5. Docker基本概念](#15-docker基本概念)
 
 <!-- /TOC -->
 
-
 # 1. Docker
 
-## 1.1. 容器化技术  
+## 1.1. 虚拟化技术  
 
-&emsp; **虚拟机结构介绍**    
+### 1.1.1. 虚拟机结构介绍    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-31.png)  
 
 * 基础设施(Infrastructure)。它可以是个人电脑，数据中心的服务器，或者是云主机。
@@ -30,7 +32,7 @@
 
 &emsp; 在虚拟机模型中，首先要启动物理机和 Hypervisor 引导程序（这边略过了 BIOS 和 Bootloader 等阶段）。一旦 Hypervisor 启动之后，就会占用机器上的全部物理资源，如 CPU、RAM、存储和 NIC。Hypervisor 接下来就会将这些物理资源划分为虚拟资源，并且看起来与真实物理资源完全一致。然后 Hypervison 将这些资源打包进一个叫做虚拟机（VM）的软件结构中。之后在 VM 中安装操作系统，并在操作系统上安装应用。假如要运行 4 个应用，那么一般来说需要创建 4 个虚拟机并安装 4 个操作系统，然后分别安装应用。  
 
-&emsp; **docker结构介绍**  
+### 1.1.2. docker结构介绍  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-32.png)  
 
 * 基础设施(Infrastructure)。
@@ -47,7 +49,7 @@
 
 &emsp; 在容器模型中。服务器启动之后，所选择的操作系统会启动。那么启动的操作系统会占用了全部硬件资源。在 OS 层之上，需要安装容器引擎，比如 docker。<font color = "lime">容器引擎会获取系统资源，然后将这些资源分割成安全的互相隔离的资源结构，称之为容器。此时，每个容器在其内部运行应用。</font>  
 
-&emsp; **虚拟机和容器**  
+### 1.1.3. 虚拟机和容器对比  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-12.png)![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-13.png)  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-11.png)  
@@ -137,7 +139,7 @@ https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-16.png)  
 &emsp; Docker是一个客户-服务器（C/S）架构的程序。Docker 客户端只需要向 Docker 服务器或守护进程发出请求，服务器或守护进程将完成所有工作并返回结果。Docker 提供了一个命令行工具和一整套 RESTful API。可以在同一台宿主机上运行 Docker 守护进程和客户端，也可以从本地的 Docker 客户端连接到运行在另一台宿主机上的远程 Docker 守护进程。Docker 以 root 权限运行它的守护进程，来处理普通用户无法完成的操作（如挂载文件系统）。Docker 程序是 Docker 守护进程的客户端程序，同样也需要以 root 身份运行。  
 
-### 1.4.2. docker服务端
+### 1.4.2. Docker服务端
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-18.png)  
 
 * distribution 负责与docker registry交互，上传镜像以及管理 registry 有关的源数据
