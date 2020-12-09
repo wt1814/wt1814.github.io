@@ -344,10 +344,6 @@
 * DevOps  
     * [DevOps与CI/CD](/docs/devOps/devOps.md)  
     * [DevOps搭建](/docs/devOps/devOpsPractice.md)   
-    * [Jenkins](/docs/devOps/Jenkins.md)  
-    * [Jmeter](/docs/devOps/Jmeter.md)  
-    * [Maven](/docs/devOps/maven.md)  
-    * [git](/docs/devOps/git/command.md)   
     * Docker
     * [docker总结](/docs/devOps/docker/summary.md)  
     * [docker架构](/docs/devOps/docker/principle.md)  
@@ -363,6 +359,10 @@
     * [k8s运维](/docs/devOps/k8s/tools.md)  
     * [Kuboard介绍](/docs/devOps/k8s/kuboard.md)  
     * 其他
+    * [Jenkins](/docs/devOps/Jenkins.md)  
+    * [Jmeter](/docs/devOps/Jmeter.md)  
+    * [Maven](/docs/devOps/maven.md)  
+    * [git](/docs/devOps/git/command.md)  
     * [灰度发布](/docs/system/grayscalePublishe.md)  
     * [网关灰度发布](/docs/system/gatewayGrayscale.md)  
     * [监控](/docs/devOps/monitor.md)  

@@ -324,7 +324,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [kafka特性](/docs/microService/mq/kafka/kafka特性.md)  
 &emsp; [kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
 &emsp; [kafka如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
-&emsp; [kafka幂等和事务](/docs/microService/mq/kafka/kafkaTraction.md)  
+&emsp; [kafka幂等和事务](/docs/microService/mq/kafka/kafkaTr action.md)  
 [kafka服务端](/docs/microService/mq/kafka/kafkaServer.md)  
 [kafka集群管理](/docs/microService/mq/kafka/kafkaUse.md)  
 [kafka集群监控与调优](/docs/microService/mq/kafka/kafkaMonitor.md)  
@@ -480,7 +480,6 @@ https://www.jianshu.com/p/2813af4eb0d3
 ## DevOps  
 [DevOps与CI/CD](/docs/devOps/devOps.md)  
 [DevOps搭建](/docs/devOps/devOpsPractice.md)  
-[Jenkins](/docs/devOps/Jenkins.md)  
 [docker]  
 &emsp; [docker总结](/docs/devOps/docker/summary.md)  
 &emsp; [docker架构](/docs/devOps/docker/principle.md)  
@@ -495,7 +494,7 @@ https://www.jianshu.com/p/2813af4eb0d3
 &emsp; &emsp; [滚动更新](/docs/devOps/k8s/rollingUpdate.md)  
 &emsp; [k8s运维](/docs/devOps/k8s/tools.md)  
 &emsp; [Kuboard介绍](/docs/devOps/k8s/kuboard.md)  
-
+[Jenkins](/docs/devOps/Jenkins.md)  
 [Jmeter](/docs/devOps/Jmeter.md)  
 [Maven](/docs/devOps/maven.md)  
 [git](/docs/devOps/git/command.md)  

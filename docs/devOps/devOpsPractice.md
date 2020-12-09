@@ -1,5 +1,11 @@
 
 
+
+
+
+# 构建devops平台  
+&emsp; jenkins+kubernetes+harbor+gitlab构建企业级devops平台   
+
 <!--
 https://blog.csdn.net/zbbkeepgoing/category_7969146.html
 
@@ -16,8 +22,4 @@ https://zhuanlan.zhihu.com/p/62284485
 手把手教你使用 Jenkins 配合 Github hook 持续集成 
 https://mp.weixin.qq.com/s/vqCpsTTm1p7-KvGp-9y2Aw
 -->
-
-
-# 构建devops平台  
-jenkins+kubernetes+harbor+gitlab构建企业级devops平台   
 
