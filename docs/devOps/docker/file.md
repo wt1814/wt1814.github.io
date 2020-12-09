@@ -293,14 +293,13 @@ docker image build -t web:latest .
 * 阶段 1 叫做 appserver
 * 阶段 2 叫做 production
 
-&emsp; 阶段 0 即 storefront 阶段将会拉取大小超过 600MB 的 node:latest 镜像，然后设置工作目录，复制一些应用代码进去，然后使用 2 个 RUN 指令来执行 npm 操作，这会显著增加镜像大小，而其中包含了许多构建工具。  
-&emsp; 阶段 1 即 appserver 阶段将会拉取大小超过 700MB 的 maven:latest 镜像。然后设置工作目录等操作，这个阶段同样会构建出一个非常大的包含许多构建工具的镜像。  
-&emsp; 阶段 3 即 production 阶段拉取 java:8-jdk-alpine 镜像，这个镜像大约 150MB。这个阶段会先创建一个用户，然后设置工作目录并将 storefront 阶段生成的镜像中的一些应用代码复制过来；之后再设置工作目录，将 appserver 阶段生成的镜像中的一些应用代码复制过来。最后设置当前应用程序为容器启动时的主程序。这个阶段的重点在于 COPY --from 指令，这个执行将从之前阶段构建的镜像中仅仅复制生产环境相关的应用代码，或者说仅需的应用代码，而不会产生生产环境不需要的构建工具。  
-&emsp; 之后使用同样的命令（如docker image build -t multi:stage）构建镜像即可。当查看构建出来的镜像时，你会看到其他两个 FROM 阶段，即 storefront 阶段和 appserver 阶段构建出来的镜像，但是这些镜像是没有 REPO 和 TAG 的。  
+&emsp; 阶段 0 即storefront阶段将会拉取大小超过600MB的node:latest镜像，然后设置工作目录，复制一些应用代码进去，然后使用2个RUN指令来执行npm操作，这会显著增加镜像大小，而其中包含了许多构建工具。  
+&emsp; 阶段1即appserver 阶段将会拉取大小超过 700MB 的 maven:latest 镜像。然后设置工作目录等操作，这个阶段同样会构建出一个非常大的包含许多构建工具的镜像。  
+&emsp; 阶段 3 即 production 阶段拉取 java:8-jdk-alpine 镜像，这个镜像大约 150MB。这个阶段会先创建一个用户，然后设置工作目录并将 storefront 阶段生成的镜像中的一些应用代码复制过来；之后再设置工作目录，将 appserver阶段生成的镜像中的一些应用代码复制过来。最后设置当前应用程序为容器启动时的主程序。这个阶段的重点在于 COPY --from指令，这个执行将从之前阶段构建的镜像中仅仅复制生产环境相关的应用代码，或者说仅需的应用代码，而不会产生生产环境不需要的构建工具。  
+&emsp; 之后使用同样的命令（如docker image build -t multi:stage）构建镜像即可。当查看构建出来的镜像时，你会看到其他两个FROM阶段，即storefront阶段和appserver阶段构建出来的镜像，但是这些镜像是没有 REPO 和 TAG 的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-30.png)  
 
 ## 1.4. 附录：构建jdk的镜像 
-
 &emsp; 例：构建一个带有jdk的centos7镜像  
 
 ```text
