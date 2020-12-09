@@ -7,10 +7,10 @@
         - [1.1.3. 虚拟机和容器对比](#113-虚拟机和容器对比)
     - [1.2. Docker简介](#12-docker简介)
     - [1.3. Docker的使用场景](#13-docker的使用场景)
-    - [1.4. Docker基本架构](#14-docker基本架构)
-        - [1.4.1. C/S架构](#141-cs架构)
-        - [1.4.2. Docker服务端](#142-docker服务端)
-    - [1.5. Docker基本概念](#15-docker基本概念)
+    - [1.4. Docker架构](#14-docker架构)
+        - [1.4.1. 基本架构及基本概念](#141-基本架构及基本概念)
+        - [1.4.2. C/S架构](#142-cs架构)
+        - [1.4.3. Docker服务端](#143-docker服务端)
 
 <!-- /TOC -->
 
@@ -129,27 +129,14 @@
 * 多租户环境  
 &emsp; 利用Docker的环境隔离能力，可以为不同的租户提供独占的容器，实现简单而且成本较低。  
 
-## 1.4. Docker基本架构  
+## 1.4. Docker架构  
 <!-- 
 https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
 -->
-
-### 1.4.1. C/S架构
+### 1.4.1. 基本架构及基本概念  
 &emsp; 一个完整的Docker基本架构由如下几个部分构成：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-16.png)  
-&emsp; Docker是一个客户-服务器（C/S）架构的程序。Docker 客户端只需要向 Docker 服务器或守护进程发出请求，服务器或守护进程将完成所有工作并返回结果。Docker 提供了一个命令行工具和一整套 RESTful API。可以在同一台宿主机上运行 Docker 守护进程和客户端，也可以从本地的 Docker 客户端连接到运行在另一台宿主机上的远程 Docker 守护进程。Docker 以 root 权限运行它的守护进程，来处理普通用户无法完成的操作（如挂载文件系统）。Docker 程序是 Docker 守护进程的客户端程序，同样也需要以 root 身份运行。  
-
-### 1.4.2. Docker服务端
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-18.png)  
-
-* distribution 负责与docker registry交互，上传镜像以及管理 registry 有关的源数据
-* registry负责docker registry有关的身份认证、镜像查找、镜像验证以及管理registry mirror等交互操作
-* image 负责与镜像源数据有关的存储、查找，镜像层的索引、查找以及镜像tar包有关的导入、导出操作
-* reference负责存储本地所有镜像的repository和tag名，并维护与镜像id之间的映射关系
-* layer模块负责与镜像层和容器层源数据有关的增删改查，并负责将镜像层的增删改查映射到实际存储镜像层文件的graphdriver模块
-* graghdriver是所有与容器镜像相关操作的执行者
-
-## 1.5. Docker基本概念  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-16.png) 
+&emsp; **Docker基本概念**  
 
 <!-- 
 https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
@@ -173,4 +160,17 @@ https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
     * 当用户创建了自己的镜像之后就可以使用 push 命令将它上传到公有或者私有仓库，这样下次在另外一台机器上使用这个镜像时候，只需要从仓库上 pull 下来就可以了
     * Docker 仓库的概念跟 Git 类似，注册服务器可以理解为 GitHub 这样的托管服务
 * 宿主机：运行引擎的操作系统所在服务器。  
+
+### 1.4.2. C/S架构
+&emsp; Docker是一个客户-服务器（C/S）架构的程序。Docker 客户端只需要向 Docker 服务器或守护进程发出请求，服务器或守护进程将完成所有工作并返回结果。Docker 提供了一个命令行工具和一整套 RESTful API。可以在同一台宿主机上运行 Docker 守护进程和客户端，也可以从本地的 Docker 客户端连接到运行在另一台宿主机上的远程 Docker 守护进程。Docker 以 root 权限运行它的守护进程，来处理普通用户无法完成的操作（如挂载文件系统）。Docker 程序是 Docker 守护进程的客户端程序，同样也需要以 root 身份运行。  
+
+### 1.4.3. Docker服务端
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-18.png)  
+
+* distribution 负责与docker registry交互，上传镜像以及管理registry有关的源数据
+* registry负责docker registry有关的身份认证、镜像查找、镜像验证以及管理registry mirror等交互操作
+* image 负责与镜像源数据有关的存储、查找，镜像层的索引、查找以及镜像tar包有关的导入、导出操作
+* reference负责存储本地所有镜像的repository和tag名，并维护与镜像id之间的映射关系
+* layer模块负责与镜像层和容器层源数据有关的增删改查，并负责将镜像层的增删改查映射到实际存储镜像层文件的graphdriver模块
+* graghdriver是所有与容器镜像相关操作的执行者
 
