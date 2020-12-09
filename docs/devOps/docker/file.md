@@ -16,7 +16,7 @@
 https://mp.weixin.qq.com/s/06w1rsz6c_fLhDe2FYUlJg
 -->
 
-&emsp; 创建镜像的方法主要有三种：基于已有镜像的容器创建、基于本地模板导入、基于Dockerfile创建。  
+&emsp; 创建镜像的方法主要有三种：基于已有镜像的容器创建、基于本地模板导入、基于DockerFile创建。  
 
 ## 1.1. 基于容器构建镜像(docker commit)
 &emsp; 例：构建一个带有jdk的镜像  
@@ -42,7 +42,7 @@ Unpacking JAR files...
 [root@060793baf536 /]# exit
 [root@localhost ~]# docker commit 060793baf536 centos/jdk:2.0
 ```
-&emsp; 通过docker images命令可以看到新增了centos/jdk标签为2.0的镜像  
+&emsp; 通过docker images命令可以看到新增了centos/jdk标签为2.0的镜像。  
 
 ## 1.2. 基于本地模板导入(docker import)  
 &emsp; 用户也可以从模板文件中导入镜像，主要使用docker import命令。  
@@ -57,11 +57,11 @@ Dockerfile是一个文本文件，其内包含了一条条的指令，每一条�
 &emsp; 将应用整合到容器中并且运行起来的这个过程，称为“容器化”(Containerizing )。一般来说，完成的应用容器化过程主要分为以下几个步骤：  
 
 1. 编写应用代码；
-2. 创建一个 Dockerfile，其中包括当前应用的描述、依赖以及该如何运行这个应用；
-3. 对该 Dockerfile 执行 docker image build 命令
-4. 等待 Docker 将应用程序和依赖等构建到 Docker 镜像中。
+2. 创建一个Dockerfile，其中包括当前应用的描述、依赖以及该如何运行这个应用；
+3. 对该Dockerfile执行docker image build命令
+4. 等待 Docker 将应用程序和依赖等构建到Docker镜像中。
 
-&emsp; 一旦应用及其依赖被打包成一个 Docker 镜像，就能以镜像的形式交付并以容器的方式运行了。当然还可以将镜像推送到镜像仓库服务。  
+&emsp; 一旦应用及其依赖被打包成一个Docker镜像，就能以镜像的形式交付并以容器的方式运行了。当然还可以将镜像推送到镜像仓库服务。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-27.png)  
 
 

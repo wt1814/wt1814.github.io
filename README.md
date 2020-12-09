@@ -426,7 +426,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 
 [源码安全](/docs/web/codeSecurity.md)  
 [Http重试](/docs/web/httpRetry.md)   
-[敏感词汇](/docs/web/sensitive.md)  
+[数据脱敏](/docs/web/sensitive.md)  
 [生成二维码](/docs/web/QRCode.md)  
 [反爬虫](/docs/web/reptile.md)  
 [加密算法](/docs/web/encryption.md)  
@@ -502,6 +502,8 @@ https://www.jianshu.com/p/2813af4eb0d3
 [灰度发布](/docs/system/grayscalePublishe.md)  
 &emsp; [网关灰度发布](/docs/system/gatewayGrayscale.md)  
 [监控](/docs/devOps/monitor.md)  
+
+
 
 ----
 

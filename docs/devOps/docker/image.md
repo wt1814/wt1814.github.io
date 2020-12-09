@@ -28,7 +28,6 @@ https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
 -->
 
 ## 1.1. 镜像详解
-
 ### 1.1.1. 分层构建  
 &emsp; Docker镜像是分层构建的，Dockerfile中每条指令都会新建一层。例如以下Dockerfile：  
 
@@ -79,13 +78,13 @@ CMD python /app/app.py
 
 &emsp; 当运行上述的命令之后，Docker 客户端会选择合适的 API 来调用 Docker daemon 接收到命令并搜索 Docker 本地缓存，观察是否有命令所请求的镜像。如果没有，就去查询 Docker Hub 是否存在相应镜像。找到镜像后，就将其拉取到本地，并存储在本地。一旦镜像拉取到本地之后，Docker daemon 就会创建容器并在其中运行指定应用。  
 
-&emsp; ps -elf 命令可以看到会显示两个，那么其中一个是运行 ps -elf 产生的。  
+&emsp; ps -elf 命令可以看到会显示两个，那么其中一个是运行ps -elf 产生的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-22.png)  
 
 &emsp; 假如，此时输入exit退出Bash Shell之后，那么容器也会退出（休眠）。因为容器如果不运行任何进程则无法存在，上面将容器的唯一进程杀死之后，容器也就没了。其实，当把进程的PID为1的进程杀死就会杀死容器。  
 
 #### 1.2.1.2. 休眠和销毁
-&emsp; docker container stop 命令可以让容器进入休眠状态，使用 docker container rm 可以删除容器。删除容器的最佳方式就是先停止容器，然后再删除容器，这样可以给容器中运行的应用/进程一个停止运行并清理残留数据的机会。因为先 stop 的话，docker container stop 命令会像容器内的 PID 1 进程发送 SIGTERM 信号，这样会给进程预留一个清理并优雅停止的机会。如果进程在 10s 的时间内没有终止，那么会发送 SIGKILL 信号强制停止该容器。但是 docker container rm 命令不会友好地发送 SIGTERM ，而是直接发送 SIGKILL 信号。
+&emsp; docker container stop命令可以让容器进入休眠状态，使用docker container rm可以删除容器。删除容器的最佳方式就是先停止容器，然后再删除容器，这样可以给容器中运行的应用/进程一个停止运行并清理残留数据的机会。因为先stop的话，docker container stop命令会像容器内的PID 1进程发送 SIGTERM 信号，这样会给进程预留一个清理并优雅停止的机会。如果进程在10s的时间内没有终止，那么会发送SIGKILL信号强制停止该容器。但是docker container rm命令不会友好地发送 SIGTERM，而是直接发送SIGKILL信号。
 
 #### 1.2.1.3. 重启策略
 &emsp; 容器还可以配置重启策略，这是容器的一种自我修复能力，可以在指定事件或者错误后重启来完成自我修复。配置重启策略有两种方式，一种是命令中直接传入参数，另一种是在 Compose 文件中声明。下面阐述命令中传入参数的方式，也就是在命令中加入 --restart 标志，该标志会检查容器的退出代码，并根据退出码已经重启策略来决定。Docker 支持的重启策略包括 always、unless-stopped 和 on-failed 四种。
