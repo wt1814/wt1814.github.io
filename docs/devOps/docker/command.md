@@ -54,7 +54,6 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 <!-- 
 
 * docker pull 镜像名<:tags> - 从远程仓库抽取镜像   
-
     docker pull centos    (默认获取centos最新的镜像)
     docker pull centos:7 (获取指定标签镜像)
 * docker images - 查看本地镜像  
@@ -65,7 +64,6 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 -->
 
 ### 1.3.2. 容器操作指令
-
 &emsp; **<font color = "red">容器操作常用命令：run、start、stop、exec</font>**  
 
 * 创建并启动容器：  
@@ -105,7 +103,7 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
         [root@localhost ~]# docker stop 89566e38c7fb
         [root@localhost ~]# docker rm 89566e38c7fb
 
-* 进入运行的容器：  
+* **<font color = "red">进入运行的容器：</font>**  
 
         [root@localhost ~]# docker exec -it cbd8b1f35dcc /bin/bash
 

@@ -15,7 +15,10 @@
 <!-- /TOC -->
 
 # 1. Linux命令  
-
+<!-- 
+Linux命令行通配符 
+https://www.cnblogs.com/tdcqma/p/5853020.html
+-->
 &emsp; shell提供了特殊字符来帮助快速指定一组文件名。这些特殊字符叫做通配符。  
 
 ## 1.1. 文件管理

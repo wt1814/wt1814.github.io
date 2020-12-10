@@ -4,8 +4,8 @@
     - [1.1. 基于容器构建镜像(docker commit)](#11-基于容器构建镜像docker-commit)
     - [1.2. 基于本地模板导入(docker import)](#12-基于本地模板导入docker-import)
     - [1.3. 基于Dockerfile构建](#13-基于dockerfile构建)
-        - [1.3.1. Dockerfile](#131-dockerfile)
-        - [1.3.2. 构建过程](#132-构建过程)
+        - [1.3.1. Dockerfile命令详解](#131-dockerfile命令详解)
+        - [1.3.2. 使用Dockerfile的构建过程](#132-使用dockerfile的构建过程)
     - [1.4. 附录：构建jdk的镜像](#14-附录构建jdk的镜像)
 
 <!-- /TOC -->
@@ -14,9 +14,11 @@
 <!--
  Docker系列教程04-Docker构建镜像的三种方式 
 https://mp.weixin.qq.com/s/06w1rsz6c_fLhDe2FYUlJg
--->
 
-&emsp; 创建镜像的方法主要有三种：基于已有镜像的容器创建、基于本地模板导入、基于DockerFile创建。  
+使用Maven插件构建Docker镜像
+http://www.itmuch.com/docker/12-docker-maven/
+-->
+&emsp; 创建镜像的方法：基于已有镜像的容器创建、基于本地模板导入、基于DockerFile创建。  
 
 ## 1.1. 基于容器构建镜像(docker commit)
 &emsp; 例：构建一个带有jdk的镜像  
@@ -47,33 +49,29 @@ Unpacking JAR files...
 ## 1.2. 基于本地模板导入(docker import)  
 &emsp; 用户也可以从模板文件中导入镜像，主要使用docker import命令。  
 
-
 ## 1.3. 基于Dockerfile构建
 <!-- 
 镜像的定制实际上就是定制每一层所添加的配置、文件。我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，这个脚本就是Dockerfile。  
 Dockerfile是一个文本文件，其内包含了一条条的指令，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。 
 -->
-
-&emsp; 将应用整合到容器中并且运行起来的这个过程，称为“容器化”(Containerizing )。一般来说，完成的应用容器化过程主要分为以下几个步骤：  
+&emsp; 将应用整合到容器中并且运行起来的这个过程，称为“容器化”(Containerizing )。一般来说，完成应用的容器化过程主要分为以下几个步骤：  
 
 1. 编写应用代码；
 2. 创建一个Dockerfile，其中包括当前应用的描述、依赖以及该如何运行这个应用；
 3. 对该Dockerfile执行docker image build命令
-4. 等待 Docker 将应用程序和依赖等构建到Docker镜像中。
+4. 等待Docker将应用程序和依赖等构建到Docker镜像中。
 
 &emsp; 一旦应用及其依赖被打包成一个Docker镜像，就能以镜像的形式交付并以容器的方式运行了。当然还可以将镜像推送到镜像仓库服务。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-27.png)  
 
+&emsp; 应用容器化过程中最基础的是创建一个Dockerfile。Dockerfile是一个包含用于组合镜像的命令的文本文档(必须要写成 Dockerfile)，它主要有两个用途，一是对当前应用的描述，二是指导Docker完成镜像的构建。Dockerfile对当前的应用及其依赖有一个清晰准确的描述，并且非常容易阅读和理解。另外，Dockerfile也通常被放在构建上下文的根目录下（在Docker当中，包含应用文件的目录通常被称为构建上下文（Build Context），在构建镜像时构建上下文和该上下文中的文件和目录都会被上传到 Docker daemon，这样 daemon 可以直接访问你想在镜像中存储的任何代码、文件或者其他数据）。  
 
-&emsp; 应用容器化过程中最基础的是创建一个 Dockerfile。Dockerfile是一个包含用于组合镜像的命令的文本文档(必须要写成 Dockerfile)，它主要有两个用途，一是对当前应用的描述，二是指导Docker完成镜像的构建。Dockerfile对当前的应用及其依赖有一个清晰准确的描述，并且非常容易阅读和理解。另外，Dockerfile也通常被放在构建上下文的根目录下（在Docker当中，包含应用文件的目录通常被称为构建上下文（Build Context），在构建镜像时构建上下文和该上下文中的文件和目录都会被上传到 Docker daemon，这样 daemon 可以直接访问你想在镜像中存储的任何代码、文件或者其他数据）。  
-
-### 1.3.1. Dockerfile  
+### 1.3.1. Dockerfile命令详解  
 <!-- 
 https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
--->
-&emsp; Dockerfile 中的注释行都是以 # 开始的，除注释之外，每一行都是一条指令（使用基本的基于 DSL 语法的指令），指令及其使用的参数格式如下。指令是不区分大小写的，但是通常都采用大写的方式（可读性会更高）。  
 
-&emsp; **<font color = "red">组成部分</font>**    
+&emsp; Dockerfile中的注释行都是以 # 开始的，除注释之外，每一行都是一条指令（使用基本的基于DSL语法的指令），指令及其使用的参数格式如下。指令是不区分大小写的，但是通常都采用大写的方式（可读性会更高）。  
+-->
 &emsp; **<font color = "lime">Dockerfile一般分为：基础镜像、镜像元信息、镜像操作指令和容器启动时执行指令，# 为 Dockerfile中的注释。</font>**  
 
 |部分|命令|
@@ -135,11 +133,11 @@ https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
 5. ENV命令  
     &emsp; 设置环境变量，定义了环境变量，那么在后续的指令中，就可以使用这个环境变量：
 
-        ENV <key> <value> # 之后的所有内容均会被视为其的组成部分，因此，一次只能设置一个变量  
-        ENV <key>=<value> ... #可以设置多个变量，每个变量为一个"="的键值对，如果中包含空格，可以使用\来进行转义，也可以通过""来进行标识；另外，\ 也可以用于续行  
+        ENV <key> <value> # 之后的所有内容均会被视为其的组成部分，因此，一次只能设置一个变量。  
+        ENV <key>=<value> ... #可以设置多个变量，每个变量为一个"="的键值对，如果中包含空格，可以使用\来进行转义，也可以通过""来进行标识；另外，\ 也可以用于续行。  
 
-    &emsp; 示例： ENV version 1.0.0 或者 ENV version=1.0.0  
-    &emsp; 可以通过 ${key} 在其它指令中来引用变量，如 ${version} 。也可以通过 docker run 中的 -e \<ENV> 来动态赋值  
+    &emsp; 示例：ENV version 1.0.0或者ENV version=1.0.0  
+    &emsp; 可以通过${key}在其它指令中来引用变量，如 ${version}。也可以通过docker run中的-e \<ENV>来动态赋值  
 
     <!-- 
     这个指令很简单，就是设置环境变量而已，无论是后面的其它指令，如RUN，还是运行时的应用，都可以直接使用这里定义的环境变量。通过${key1}方式引用即可。  
@@ -213,7 +211,7 @@ https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
     &emsp; 因此如果需要改变以后各层的工作目录的位置，那么应该使用WORKIDR指令。  
 
 12. CMD命令  
-    &emsp; 作用：为启动的容器指定默认要运行的程序。CMD指令指定的程序可被docker run命令行参数中指定要运行的程序所覆盖。 **<font color = "lime">注意：如果 Dockerfile 中如果存在多个 CMD 指令，仅最后一个生效。</font>    
+    &emsp; 作用：为启动的容器指定默认要运行的程序。CMD指令指定的程序可被docker run命令行参数中指定要运行的程序所覆盖。 **<font color = "lime">注意：如果 Dockerfile 中如果存在多个 CMD 指令，仅最后一个生效。</font>**    
 
         CMD命令是容器运行时执行的命令，命令和run有本质的区别：CMD 用于指定在容器启动docker run时所要执行的命令，而RUN用于指定镜像构建docker build时所要执行的命令。     
 
@@ -252,11 +250,27 @@ https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
         ONBUILD ADD . /application/src
         ONBUILD RUN /usr/local/bin/python-build --dir /app/src
 
-### 1.3.2. 构建过程  
-&emsp; 上述的 Dockerfile 编写完成之后，使用docker image build 指令，会解析 Dockerfile 中的指令并顺序执行，构建过程是，运行临时容器->在该容器中运行 Dockerfile 中的指令->将指令运行结果保存为一个新的镜像层（执行类似 docker commit 的操作）->删除容器。  
+### 1.3.2. 使用Dockerfile的构建过程  
+<!-- 
+DockerFile构建过程解析
+https://www.cnblogs.com/my-program-life/p/12238016.html
+https://blog.csdn.net/qq_37546891/article/details/90742564
+-->
+1. Docker通过Dockerfile构建镜像过程：  
+&emsp; 首先，docker会从基础镜像运行一个容器，也就是在dockerfile文件中使用FROM命令指定的镜像名；  
+&emsp; 然后会执行一条指令，这条指令会对容器进行修改；  
+&emsp; 对修改后的容器执行类docker commit的操作，提交一个新的镜像层；  
+&emsp; 根据新的镜像层，运行一个新的容器；  
+&emsp; 再执行dockerfile的下一条指令，反复如此，直至所有指令执行完毕；  
+
+
+
+
+<!-- 
+&emsp; 上述的 Dockerfile 编写完成之后，**使用docker image build 指令，会解析 Dockerfile 中的指令并顺序执行。**构建过程是，运行临时容器 -> 在该容器中运行Dockerfile中的指令 -> 将指令运行结果保存为一个新的镜像层（执行类似docker commit的操作）-> 删除容器。  
 
 ```text
-# 构建出一个叫 web:latest 的镜像，.（点）表示将当前目录作为构建上下文并且当前目录需要包含 Dockerfile
+# 构建出一个叫web:latest 的镜像，.（点）表示将当前目录作为构建上下文并且当前目录需要包含Dockerfile
 # 如果没有指定标签的话，那么会默认设置一个 latest 标签
 docker image build -t web:latest . 
 # 可以通过 docker image build 的输出内容了解镜像的构建过程，而构建过程的最终结果是返回了新镜像的 ID。其实，构建的每一步都会返回一个镜像的 ID。
@@ -298,6 +312,7 @@ docker image build -t web:latest .
 &emsp; 阶段 3 即 production 阶段拉取 java:8-jdk-alpine 镜像，这个镜像大约 150MB。这个阶段会先创建一个用户，然后设置工作目录并将 storefront 阶段生成的镜像中的一些应用代码复制过来；之后再设置工作目录，将 appserver阶段生成的镜像中的一些应用代码复制过来。最后设置当前应用程序为容器启动时的主程序。这个阶段的重点在于 COPY --from指令，这个执行将从之前阶段构建的镜像中仅仅复制生产环境相关的应用代码，或者说仅需的应用代码，而不会产生生产环境不需要的构建工具。  
 &emsp; 之后使用同样的命令（如docker image build -t multi:stage）构建镜像即可。当查看构建出来的镜像时，你会看到其他两个FROM阶段，即storefront阶段和appserver阶段构建出来的镜像，但是这些镜像是没有 REPO 和 TAG 的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-30.png)  
+-->
 
 ## 1.4. 附录：构建jdk的镜像 
 &emsp; 例：构建一个带有jdk的centos7镜像  
@@ -326,4 +341,4 @@ RUN rpm -ivh /usr/local/jdk/jdk-8u171-linux-x64.rpm
 &emsp; 运行结果如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-6.png)  
 
-&emsp; docker images可以看到新生成的centos/jdk镜像。  
+&emsp; Docker images可以看到新生成的centos/jdk镜像。  

@@ -487,7 +487,7 @@ https://www.jianshu.com/p/2813af4eb0d3
 &emsp; [镜像容器详解](/docs/devOps/docker/image.md)  
 &emsp; [Docker工具](/docs/devOps/docker/tools.md)  
 &emsp; [Docker核心技术与实现原理](/docs/devOps/docker/theory.md)  
-[Kubernetes](/docs/devOps/k8s/k8s.md)  
+[Kubernetes]    
 &emsp; [k8s原理](/docs/devOps/k8s/principle.md)  
 &emsp; [k8s实践](/docs/devOps/k8s/command.md)  
 &emsp; &emsp; [滚动更新](/docs/devOps/k8s/rollingUpdate.md)  

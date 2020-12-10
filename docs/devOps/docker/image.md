@@ -11,7 +11,7 @@
             - [1.2.1.2. 休眠和销毁](#1212-休眠和销毁)
             - [1.2.1.3. 重启策略](#1213-重启策略)
         - [1.2.2. 容器的文件系统](#122-容器的文件系统)
-        - [1.2.3. 容器数据卷](#123-容器数据卷)
+        - [1.2.3. 容器数据卷（Volume）](#123-容器数据卷volume)
         - [1.2.4. Docker宿主机与容器通信(端口映射)](#124-docker宿主机与容器通信端口映射)
             - [1.2.4.1. 自动映射端口](#1241-自动映射端口)
             - [1.2.4.2. 绑定端口到指定接口](#1242-绑定端口到指定接口)
@@ -31,15 +31,14 @@
 
 <!-- 
 https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
- Docker知识进阶与容器编排技术 
-https://mp.weixin.qq.com/s/CsnbPMjsa5kzcWh9FimJSg
+
 -->
 &emsp; docker一般的运行流程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-39.png)  
 
 ## 1.1. 镜像详解
 ### 1.1.1. 分层构建  
-&emsp; Docker镜像是分层构建的，Dockerfile中每条指令都会新建一层。例如以下Dockerfile：  
+&emsp; **Docker镜像是分层构建的，Dockerfile中每条指令都会新建一层。**例如以下Dockerfile：  
 
 ```text
 FROM ubuntu:18.04
@@ -47,7 +46,7 @@ COPY . /app
 RUN make /app
 CMD python /app/app.py
 ```
-&emsp; 以上四条指令会创建四层，分别对应基础镜像、复制文件、编译文件以及入口文件，每层只记录本层所做的更改，而这些层都是只读层。当启动一个容器，Docker会在最顶部添加读写层，在容器内做的所有更改，如写日志、修改、删除文件等，都保存到了读写层内，一般称该层为容器层，如下图所示：  
+&emsp; 以上四条指令会创建四层，分别对应基础镜像、复制文件、编译文件以及入口文件，每层只记录本层所做的更改，而这些层都是只读层。**当启动一个容器，Docker会在最顶部添加读写层，在容器内做的所有更改，如写日志、修改、删除文件等，都保存到了读写层内，一般称该层为容器层，**如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-15.png)  
 &emsp; 每个镜像可依赖其他镜像进行构建，每一层的镜像可被多个镜像引用，下图的镜像依赖关系，K8S镜像其实是CentOS+GCC+GO+K8S这四个软件结合的镜像。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-19.png)  
@@ -57,13 +56,13 @@ CMD python /app/app.py
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-20.png)  
 &emsp; 上图中Apache应用基于emacs镜像构建，emacs基于Debian系统镜像构建，在启动为容器时，在Apache镜像层之上构造了一个可写层，对容器本身的修改操作都在可写层中进行。Debian是该镜像的基础镜像（Base Image），它提供了内核Kernel的更高级的封装。同时其他的镜像也是基于同一个内核来构建的。  
 &emsp; 事实上，<font color = "lime">容器（container）和镜像（image）的最主要区别就是容器加上了顶层的读写层。</font>所有对容器的修改都发生在此层，镜像并不会被修改。容器需要读取某个文件时，直接从底部只读层去读即可，而如果需要修改某文件，则将该文件拷贝到顶部读写层进行修改，只读层保持不变。  
-&emsp; 每个容器都有自己的读写层，因此多个容器可以使用同一个镜像，另外容器被删除时，其对应的读写层也会被删除（如果希望多个容器共享或者持久化数据，可以使用Docker volume）。  
+&emsp; **每个容器都有自己的读写层，因此多个容器可以使用同一个镜像，**另外容器被删除时，其对应的读写层也会被删除（如果希望多个容器共享或者持久化数据，可以使用Docker volume）。  
 &emsp; 最后，执行命令 docker ps -s，可以看到最后有两列 size 和 virtual size。其中 size就是容器读写层占用的磁盘空间，而 virtual size 就是读写层加上对应只读层所占用的磁盘空间。如果两个容器是从同一个镜像创建，那么只读层就是100%共享，即使不是从同一镜像创建，其镜像仍然可能共享部分只读层（如一个镜像是基于另一个创建）。因此，docker 实际占用的磁盘空间远远小于virtual size 的总和。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-14.png)  
+&emsp; **这种分层结构能充分共享镜像层，能大大减少镜像仓库占用的空间。**  
 
 ### 1.1.3. 联合文件系统  
-&emsp; 这种分层结构能充分共享镜像层，能大大减少镜像仓库占用的空间。  
-&emsp; Docker镜像分层的交互、管理就需要存储驱动程序，也即联合文件系统（UnionFS）。Docker利用UnionFS（联合文件系统）把相关镜像层的目录“联合”到同一个挂载点呈现出来的一个整体。Docker可使用多种驱动，如目前已经合并入Linux 内核、官方推荐的overlay等等，需要根据Docker以及宿主机系统的版本，进行合适的选择。  
+&emsp; Docker镜像分层的交互、管理需要存储驱动程序，也即联合文件系统（UnionFS）。Docker利用UnionFS（联合文件系统）把相关镜像层的目录“联合”到同一个挂载点呈现出来的一个整体。Docker可使用多种驱动，如目前已经合并入Linux 内核、官方推荐的overlay等等，需要根据Docker以及宿主机系统的版本，进行合适的选择。  
 &emsp; UnionFS有很多种，其中Docker中常用的是AUFS，这是UnionFS的升级版，除此之外还有DeviceMapper、Overlay2、ZFS和 VFS等。Docker镜像的每一层默认存放在/var/lib/docker/aufs/diff目录中，当用户启动一个容器时，Docker引擎首先在/var/lib/docker/aufs/diff中新建一个可读写层目录，然后使用UnionFS把该可读写层目录和指定镜像的各层目录联合挂载到/var/lib/docker/aufs/mnt里的一个目录中（其中指定镜像的各层目录都以只读方式挂载），通过LXC等技术进行环境隔离和资源控制，使容器里的应用仅依赖mnt目录中对应的挂载目录和文件运行起来。  
 &emsp; 利用UnionFS写时复制的特点，在启动一个容器时，Docker引擎实际上只是增加了一个可写层和构造了一个Linux容器，这两者都几乎不消耗系统资源，因此Docker容器能够做到秒级启动，一台服务器上能够启动上千个Docker容器，而传统虚拟机在一台服务器上启动几十个就已经非常吃力了，而且虚拟机启动很慢，这是Docker相比于传统虚拟机的两个巨大的优势。  
 &emsp; 当应用只是直接调用了内核功能来运作的情况下，应用本身就能直接作为最底层的层来构建镜像，但因为容器本身会隔绝环境，因此容器内部是无法访问宿主机里文件的（除非指定了某些目录或文件映射到容器内），这种情况下应用代码就只能使用内核的功能。  
@@ -113,12 +112,23 @@ CMD python /app/app.py
 
 * 初始层中大多是初始化容器环境时，与容器相关的环境信息，如容器主机名，主机 host 信息以及域名服务文件等。  
 * 再来看可读写层，这一层的作用非常大，Docker 的镜像层以及顶上的两层加起来，Docker 容器内的进程只对可读写层拥有写权限，其他层对进程而言都是只读的（Read-Only）。比如想修改一个文件，这个文件会从该读写层下面的只读层复制到该读写层，该文件的只读版本仍然存在，但是已经被读写层中的该文件副本所隐藏了。这种机制被称为写时复制（copy on write）（在 AUFS 等文件系统下，写下层镜像内容就会涉及 COW （Copy-on-Write）技术）。另外，关于 VOLUME 以及容器的 hosts、hostname 、resolv.conf 文件等都会挂载到这里。需要额外注意的是，虽然Docker容器有能力在可读写层看到 VOLUME 以及 hosts 文件等内容，但那都仅仅是挂载点，真实内容位于宿主机上。  
+
 &emsp; 在运行阶段时，容器产生的新文件、文件的修改都会在可读写层上，当停止容器（stop）运行之后并不会被损毁，但是删除容器会丢弃其中的数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-23.png)  
 
-### 1.2.3. 容器数据卷
+### 1.2.3. 容器数据卷（Volume）
 &emsp; 容器数据卷：持久化。docker运行产生的数据持久化。  
+<!--
+容器间数据共享的原理，是在宿主机上开辟一块空间，该空间会被其他容器同时共享。我们可以把页面文件存放一份到宿主机的这块磁盘空间中，其他容器挂载这个文件即可。以后更新所有的web服务的页面，我们只需要更改宿主机的这份页面文件即可。
 
+容器间共享数据-挂载
+
+方法一、docker run --name 容器名 -v 宿主机路径:容器内挂载路径 镜像名。例如docker run --name myweb01 -v /usr/webapps:/usr/local/tomcat/webapps tomcat。
+
+方法二、通过设置挂载点，我们可以创建一个用于挂载的容器，其他容器设置参照该容器的挂载信息，进行挂载。例如我们创建一个webpage的容器，设置挂载信息，无需运行该容器：  
+docker create --name webpage -v /webapps:/tomcat/webapps tomcat /bin/true，接着我们创建其他容器参照该容器的挂载信息进行挂载：docker run --volumes-from webpage --name myweb02 -d tomcat,我们创建的myweb02的容器的挂载信息，就和webpage的挂载信息相同。如果需要修改挂载点，只需要修改webpage的挂载信息即可。  
+-->
+ 
 ### 1.2.4. Docker宿主机与容器通信(端口映射)  
 <!-- 
 ~~
@@ -163,6 +173,18 @@ $ sudo docker run -p [([<host_interface>:[host_port]])|(<host_port>):]<container
 &emsp; 使用-p参数将容器的80端口映射到宿主机的8080端口，这样就可以通过curl localhost:8080访问到容器上80端口的服务了。另外一个参数-P可以将容器的端口映射到宿主机的高位随机端口上，而不需要手动指定。  
 
 ### 1.2.5. 容器间通信  
+<!-- 
+
+Docker容器网络
+http://www.itmuch.com/docker/15-docker-network/
+network命令
+http://www.itmuch.com/docker/16-docker-network-command/
+默认bridge网络中配置DNS
+http://www.itmuch.com/docker/17-docker-bridge-dns/
+用户定义网络中的内嵌DNS服务器
+http://www.itmuch.com/docker/18-docker-user-network-embeded-dns/
+-->
+
 #### 1.2.5.1. Docker四种网络模式  
 <!-- 
 初探Docker的网络模式 
