@@ -480,15 +480,14 @@ https://www.jianshu.com/p/2813af4eb0d3
 ## DevOps  
 [DevOps与CI/CD](/docs/devOps/devOps.md)  
 [DevOps搭建](/docs/devOps/devOpsPractice.md)  
-[Docker]  
-&emsp; [Docker总结](/docs/devOps/docker/summary.md)  
+[Docker](/docs/devOps/docker/summary.md)  
 &emsp; [Docker架构](/docs/devOps/docker/principle.md)  
 &emsp; [Docker使用](/docs/devOps/docker/command.md)  
 &emsp; [DockerFile](/docs/devOps/docker/file.md)  
 &emsp; [镜像容器详解](/docs/devOps/docker/image.md)  
 &emsp; [Docker工具](/docs/devOps/docker/tools.md)  
 &emsp; [Docker核心技术与实现原理](/docs/devOps/docker/theory.md)  
-[Kubernetes]  
+[Kubernetes](/docs/devOps/k8s/k8s.md)  
 &emsp; [k8s原理](/docs/devOps/k8s/principle.md)  
 &emsp; [k8s实践](/docs/devOps/k8s/command.md)  
 &emsp; &emsp; [滚动更新](/docs/devOps/k8s/rollingUpdate.md)  

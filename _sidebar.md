@@ -344,15 +344,14 @@
 * DevOps  
     * [DevOps与CI/CD](/docs/devOps/devOps.md)  
     * [DevOps搭建](/docs/devOps/devOpsPractice.md)   
-    * Docker
-    * [Docker总结](/docs/devOps/docker/summary.md)  
+    * [Docker](/docs/devOps/docker/summary.md)  
     * [Docker架构](/docs/devOps/docker/principle.md)  
     * [Docker使用及命令](/docs/devOps/docker/command.md)  
     * [DockerFile](/docs/devOps/docker/file.md)  
     * [镜像容器详解](/docs/devOps/docker/image.md)  
     * [Docker工具](/docs/devOps/docker/tools.md)   
     * [Docker核心技术与实现原理](/docs/devOps/docker/theory.md)  
-    * Kubernetes  
+    * [Kubernetes](/docs/devOps/k8s/k8s.md)  
     * [k8s原理](/docs/devOps/k8s/principle.md)  
     * [k8s实践](/docs/devOps/k8s/command.md)  
     * [滚动更新](/docs/devOps/k8s/rollingUpdate.md)  
