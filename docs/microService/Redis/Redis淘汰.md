@@ -25,6 +25,9 @@
 # 1. Redis内存淘汰  
 
 <!-- 
+**内存占用率
+https://mp.weixin.qq.com/s/insu_PySCOo4SWAUB0Nopg
+
 官方网址  
 http://redis.cn/topics/lru-cache.html
 

@@ -40,6 +40,9 @@ https://mp.weixin.qq.com/s/Fc5LhiLJIeCtstl9OFeqdQ
 
 fuzzy query
 https://mp.weixin.qq.com/s/ReiCivwDINsE8S5kwUWb5w
+
+ElasticSearch 复合查询，理解 Es 中的文档评分策略！ 
+https://mp.weixin.qq.com/s/59D8ouXbTMlh4swb6eY2zA
 -->
 
 ## 1.1. 检索操作  
