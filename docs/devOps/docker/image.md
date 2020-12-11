@@ -4,12 +4,14 @@
     - [1.1. 镜像详解](#11-镜像详解)
         - [1.1.1. 分层构建](#111-分层构建)
         - [1.1.2. 读写层](#112-读写层)
-        - [1.1.3. 联合文件系统](#113-联合文件系统)
+        - [1.1.3. 联合文件系统UnionFS](#113-联合文件系统unionfs)
     - [1.2. 容器详解](#12-容器详解)
         - [1.2.1. 容器生命周期](#121-容器生命周期)
             - [1.2.1.1. 创建和运行](#1211-创建和运行)
             - [1.2.1.2. 休眠和销毁](#1212-休眠和销毁)
             - [1.2.1.3. 重启策略](#1213-重启策略)
+        - [1.1. Namespaces](#11-namespaces)
+        - [1.2. CGroups](#12-cgroups)
         - [1.2.2. 容器的文件系统](#122-容器的文件系统)
         - [1.2.3. 容器数据卷（Volume）](#123-容器数据卷volume)
         - [1.2.4. Docker宿主机与容器通信(端口映射)](#124-docker宿主机与容器通信端口映射)
@@ -33,8 +35,32 @@
 https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
 
 -->
+
+<!-- 
+http://dockone.io/article/2941
+
+-->
+<!-- 
+&emsp; docker本质就是宿主机的一个进程，docker是通过namespace实现资源隔离，通过cgroup实现资源限制，通过写时复制技术（copy-on-write）实现了高效的文件操作（类似虚拟机的磁盘比如分配500g并不是实际占用物理磁盘500g）  
+&emsp; 1）namespaces 名称空间  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-18.png)  
+&emsp; 2）control Group 控制组  
+cgroup的特点是：  　　　
+
+* cgroup的api以一个伪文件系统的实现方式，用户的程序可以通过文件系统实现cgroup的组件管理
+* cgroup的组件管理操作单元可以细粒度到线程级别，另外用户可以创建和销毁cgroup，从而实现资源载分配和再利用
+* 所有资源管理的功能都以子系统的方式实现，接口统一子任务创建之初与其父任务处于同一个cgroup的控制组
+
+
+&emsp; Docker虚拟化技术需要以下核心技术的支撑：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-33.png)  
+
+&emsp; 首先，Docker 的出现一定是因为目前的后端在开发和运维阶段确实需要一种虚拟化技术解决开发环境和生产环境环境一致的问题，通过 Docker 可以将程序运行的环境也纳入到版本控制中，排除因为环境造成不同运行结果的可能。但是上述需求虽然推动了虚拟化技术的产生，但是如果没有合适的底层技术支撑，那么仍然得不到一个完美的产品。本文剩下的内容会介绍几种 Docker 使用的核心技术，如果了解它们的使用方法和原理，就能清楚 Docker 的实现原理。  
+-->
 &emsp; docker一般的运行流程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-39.png)  
+
+&emsp; Docker中镜像是分层的，最顶层是读写层（镜像与容器的区别），其底部依赖于Linux的UnionFS文件系统；单个宿主机的多个容器是隔离的，其依赖于Linux的Namespaces、CGroups，隔离的容器需要通信、文件共享（数据持久化）。  
 
 ## 1.1. 镜像详解
 ### 1.1.1. 分层构建  
@@ -61,7 +87,7 @@ CMD python /app/app.py
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-14.png)  
 &emsp; **这种分层结构能充分共享镜像层，能大大减少镜像仓库占用的空间。**  
 
-### 1.1.3. 联合文件系统  
+### 1.1.3. 联合文件系统UnionFS  
 &emsp; Docker镜像分层的交互、管理需要存储驱动程序，也即联合文件系统（UnionFS）。Docker利用UnionFS（联合文件系统）把相关镜像层的目录“联合”到同一个挂载点呈现出来的一个整体。Docker可使用多种驱动，如目前已经合并入Linux 内核、官方推荐的overlay等等，需要根据Docker以及宿主机系统的版本，进行合适的选择。  
 &emsp; UnionFS有很多种，其中Docker中常用的是AUFS，这是UnionFS的升级版，除此之外还有DeviceMapper、Overlay2、ZFS和 VFS等。Docker镜像的每一层默认存放在/var/lib/docker/aufs/diff目录中，当用户启动一个容器时，Docker引擎首先在/var/lib/docker/aufs/diff中新建一个可读写层目录，然后使用UnionFS把该可读写层目录和指定镜像的各层目录联合挂载到/var/lib/docker/aufs/mnt里的一个目录中（其中指定镜像的各层目录都以只读方式挂载），通过LXC等技术进行环境隔离和资源控制，使容器里的应用仅依赖mnt目录中对应的挂载目录和文件运行起来。  
 &emsp; 利用UnionFS写时复制的特点，在启动一个容器时，Docker引擎实际上只是增加了一个可写层和构造了一个Linux容器，这两者都几乎不消耗系统资源，因此Docker容器能够做到秒级启动，一台服务器上能够启动上千个Docker容器，而传统虚拟机在一台服务器上启动几十个就已经非常吃力了，而且虚拟机启动很慢，这是Docker相比于传统虚拟机的两个巨大的优势。  
@@ -69,6 +95,20 @@ CMD python /app/app.py
 &emsp; 但是Linux内核仅提供了进程管理、内存管理、文件系统管理等一些基础且底层的管理功能，在实际的场景中，几乎所有软件都是基于操作系统来开发的，因此往往都需要依赖操作系统的软件和运行库等，如果这些应用的下一层直接是内核，那么应用将无法运行。所以实际上应用镜像往往底层都是基于一个操作系统镜像来补足运行依赖的。  
 &emsp; Docker中的操作系统镜像，与平常安装系统时用的ISO镜像不同。ISO镜像里包含了操作系统内核及该发行版系统包含的所有目录和软件，而Docker中的操作系统镜像，不包含系统内核，仅包含系统必备的一些目录（如/etc /proc等）和常用的软件和运行库等，可把操作系统镜像看作内核之上的一个应用，一个封装了内核功能，并为用户编写的应用提供运行环境的工具。   
 &emsp; 应用基于这样的镜像构建，就能够利用上相应操作系统的各种软件的功能和运行库，此外，由于应用是基于操作系统镜像来构建的，就算换到另外的服务器，只要操作系统镜像中被应用使用到的功能能适配宿主机的内核，应用就能正常运行，这就是一次构建到处运行的原因。  
+
+<!-- 
+
+&emsp; Linux 的命名空间和控制组分别解决了不同资源隔离的问题，前者解决了进程、网络以及文件系统的隔离，后者实现了 CPU、内存等资源的隔离，但是在 Docker 中还有另一个非常重要的问题需要解决 - 也就是镜像。  
+&emsp; 镜像到底是什么，它又是如何组成和组织的是作者使用Docker以来的一段时间内一直比较让作者感到困惑的问题，可以使用docker run非常轻松地从远程下载Docker的镜像并在本地运行。  
+&emsp; Docker 镜像其实本质就是一个压缩包，可以使用下面的命令将一个Docker镜像中的文件导出：  
+
+```text
+$ docker export $(docker create busybox) | tar -C rootfs -xvf -
+$ ls
+bin  dev  etc  home proc root sys  tmp  usr  var
+```
+&emsp; 可以看到这个busybox镜像中的目录结构与Linux操作系统的根目录中的内容并没有太多的区别，可以说Docker镜像就是一个文件。 
+-->
 
 ## 1.2. 容器详解  
 &emsp; 容器是基于镜像启动起来的，是镜像的一个运行实例，容器中可以运行一个或多个进程。同时，用户可以从单个镜像上启动一个或多个容器。  
@@ -105,6 +145,24 @@ CMD python /app/app.py
 
 * unless-stopped 策略和 always 策略是差不多的，最大的区别是，docker container stop停止的容器在daemon重启之后不会被重启。
 * on-failure 策略会在退出容器并且返回值不会 0 的时候，重启容器。如果容器处于 stopped 状态，那么 daemon 重启的时候也会被重启。另外，on-failure 还接受一个可选的重启次数参数，如--restart=on-failure:5 表示最多重启 5 次。
+
+### 1.1. Namespaces  
+&emsp; <font color = "lime">命名空间（namespaces）是 Linux 提供的用于分离进程树、网络接口、挂载点以及进程间通信等资源的方法。</font>在日常使用 Linux 或者 macOS 时，并没有运行多个完全分离的服务器的需要，但是如果在服务器上启动了多个服务，这些服务其实会相互影响的，每一个服务都能看到其他服务的进程，也可以访问宿主机器上的任意文件，这是很多时候不愿意看到的，更希望运行在同一台机器上的不同服务能做到完全隔离，就像运行在多台不同的机器上一样。 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-34.png)  
+&emsp; 在这种情况下，一旦服务器上的某一个服务被入侵，那么入侵者就能够访问当前机器上的所有服务和文件，这也是不想看到的，而 Docker 其实就通过 Linux 的 Namespaces 对不同的容器实现了隔离。  
+&emsp; Linux 的命名空间机制提供了以下七种不同的命名空间，包括 CLONE_NEWCGROUP、CLONE_NEWIPC、CLONE_NEWNET、CLONE_NEWNS、CLONE_NEWPID、CLONE_NEWUSER 和 CLONE_NEWUTS，通过这七个选项能在创建新的进程时设置新进程应该在哪些资源上与宿主机器进行隔离。  
+
+
+### 1.2. CGroups  
+&emsp; Linux的命名空间为新创建的进程隔离了文件系统、网络并与宿主机器之间的进程相互隔离，但是命名空间并不能够提供物理资源上的隔离，比如 CPU 或者内存，如果在同一台机器上运行了多个对彼此以及宿主机器一无所知的『容器』，这些容器却共同占用了宿主机器的物理资源。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-35.png)  
+&emsp; 如果其中的某一个容器正在执行 CPU 密集型的任务，那么就会影响其他容器中任务的性能与执行效率，导致多个容器相互影响并且抢占资源。如何对多个容器的资源使用进行限制就成了解决进程虚拟资源隔离之后的主要问题，<font color = "red">而Control Groups（简称 CGroups）就是能够隔离宿主机器上的物理资源，例如 CPU、内存、磁盘 I/O 和网络带宽。</font>  
+&emsp; 每一个CGroup都是一组被相同的标准和参数限制的进程，不同的CGroup之间是有层级关系的，也就是说它们之间可以从父类继承一些用于限制资源使用的标准和参数。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-36.png)  
+&emsp; Linux 的 CGroup 能够为一组进程分配资源，也就是在上面提到的 CPU、内存、网络带宽等资源，通过对资源的分配，CGroup 能够提供以下的几种功能：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-37.png)  
+
+    在CGroup中，所有的任务就是一个系统的一个进程，而CGroup就是一组按照某种标准划分的进程，在CGroup这种机制中，所有的资源控制都是以CGroup作为单位实现的，每一个进程都可以随时加入一个CGroup也可以随时退出一个CGroup。
 
 ### 1.2.2. 容器的文件系统   
 &emsp; 容器会共享其所在主机的操作系统/内核（容器执行使用共享主机的内核代码），<font color = "red">但是容器内运行的进程所使用的是容器自己的文件系统，也就是容器内部的进程访问数据时访问的是容器的文件系统。</font>当从一个镜像启动容器的时候，除了把镜像当成容器的文件系统一部分之外，Docker还会在该镜像的最顶层加载一个可读写文件系统，容器中运行的程序就是在这个读写层中执行的。  

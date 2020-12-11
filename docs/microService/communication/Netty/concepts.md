@@ -18,6 +18,9 @@ https://mp.weixin.qq.com/s?__biz=MzIxNTAwNjA4OQ==&mid=2247486074&idx=2&sn=7f7cf2
 解析 Netty 架构与原理
 https://mp.weixin.qq.com/s/kUkw-RoqLEEr1xuv2ex0FQ
 
+Netty 架构与原理
+https://mp.weixin.qq.com/s/insjE_EJRoCOM-1GqgZP9A
+
 -->
 
 ## 1.1. Netty简介  
