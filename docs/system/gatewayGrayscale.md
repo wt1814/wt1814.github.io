@@ -2,7 +2,7 @@
 
 
 # Zuul网关实现灰度发布   
-<flont color = "lime">编写类继承ZuulFilter，实现灰度发布的逻辑</font> 
+&emsp; <flont color = "lime">编写类继承ZuulFilter，实现灰度发布的逻辑</font> 
 
 &emsp; 以会员服务为例  
 1. 会员服务当前版本和新版本分别部署，eureka.instance.metadata-map.version=current表示为当前版本，eureka.instance.metadata-map.version=new表示为新版本；  
@@ -148,8 +148,6 @@ public class GrayReleaseConfigManager {
 6. <flont color = "lime">编写类继承ZuulFilter，实现灰度发布的逻辑</font>  
 
 ```java
-package com.example.config.gray;
-
 import org.springframework.context.annotation.Configuration;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
