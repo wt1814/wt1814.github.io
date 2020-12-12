@@ -29,6 +29,8 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 -->
 
 ## 1.3. Docker命令  
+&emsp; Docker一般的使用流程：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-39.png)  
 
 ### 1.3.1. 镜像操作命令  
 &emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi</font>**  
