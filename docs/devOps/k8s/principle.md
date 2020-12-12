@@ -4,12 +4,12 @@
 - [1. Kubernetes](#1-kubernetes)
     - [1.1. 走进K8S](#11-走进k8s)
     - [1.2. Kubernetes的设计架构](#12-kubernetes的设计架构)
-    - [1.4. Kubernetes的集群组件](#14-kubernetes的集群组件)
-        - [1.4.1. Master组件](#141-master组件)
-        - [1.4.2. Node组件](#142-node组件)
-        - [1.4.3. 核心附件](#143-核心附件)
-    - [1.5. Kubernetes的常用概念和术语](#15-kubernetes的常用概念和术语)
-    - [1.6. Kubernetes的网络模型](#16-kubernetes的网络模型)
+    - [1.3. Kubernetes的集群组件](#13-kubernetes的集群组件)
+        - [1.3.1. Master组件](#131-master组件)
+        - [1.3.2. Node组件](#132-node组件)
+        - [1.3.3. 核心附件](#133-核心附件)
+    - [1.4. Kubernetes的常用概念和术语](#14-kubernetes的常用概念和术语)
+    - [1.5. Kubernetes的网络模型](#15-kubernetes的网络模型)
 
 <!-- /TOC -->
 
@@ -22,7 +22,6 @@ https://www.kubernetes.org.cn/k8s
 https://kuboard.cn/learning/
 -->
 &emsp; 在Kubernetes统治容器编排这一领域之前，其实也有很多容器编排方案，例如compose和Swarm，但是在运维大规模、复杂的集群时，这些方案基本已经都被 Kubernetes替代了。  
-
 ## 1.1. 走进K8S    
 1. K8S是如何对容器编排？  
 &emsp; 在K8S集群中，容器并非最小的单位，K8S集群中最小的调度单位是Pod，容器则被封装在Pod之中。由此可知，一个容器或多个容器可以同属于一个Pod之中。  
@@ -31,7 +30,7 @@ https://kuboard.cn/learning/
 3. Pod资源组成的应用如何提供外部访问的？  
 &emsp; Pod组成的应用是通过Service这类抽象资源提供内部和外部访问的，但是service的外部访问需要端口的映射，带来的是端口映射的麻烦和操作的繁琐。为此还有一种提供外部访问的资源叫做Ingress。  
 4. Service又是怎么关联到Pod呢？  
-&emsp; <font color = "red">在上面说的Pod是由Pod控制器进行管理控制，对Pod资源对象的期望状态进行自动管理。</font>**<font color = "lime">而在Pod控制器是通过一个YAML的文件进行定义Pod资源对象的。在该文件中，还会对Pod资源对象进行打标签，用于Pod的辨识，而Servcie就是通过标签选择器，关联至同一标签类型的Pod资源对象。这样就实现了从service-->pod-->container的一个过程。</font>**  
+&emsp; <font color = "red">在上面说的Pod是由Pod控制器进行管理控制，对Pod资源对象的期望状态进行自动管理。</font> **<font color = "lime">而在Pod控制器是通过一个YAML的文件进行定义Pod资源对象的。在该文件中，还会对Pod资源对象进行打标签，用于Pod的辨识，而Servcie就是通过标签选择器，关联至同一标签类型的Pod资源对象。这样就实现了从service-->pod-->container的一个过程。</font>**  
 5. **<font color = "lime">Pod的创建逻辑流程是怎样的？</font>**  
     1. 客户端提交创建请求，可以通过API Server的Restful API，也可以使用kubectl命令行工具。支持的数据类型包括JSON和YAML。  
     2. API Server处理用户请求，存储Pod数据到etcd。  
@@ -57,7 +56,7 @@ https://kuboard.cn/learning/
 * Kubernetes内部：CRI、CNI、CVI、镜像仓库、Cloud Provider、集群自身的配置和管理等
 
 
-## 1.4. Kubernetes的集群组件
+## 1.3. Kubernetes的集群组件
 
 &emsp; K8S运行流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-5.png)  
@@ -77,11 +76,11 @@ Master 节点主要负责存储集群的状态并为 Kubernetes 对象分配和�
 &emsp; 其中API Server负责处理来自用户的请求，其主要作用就是对外提供RESTful的接口，包括用于查看集群状态的读请求以及改变集群状态的写请求，也是唯一一个与 etcd集群通信的组件。  
 &emsp; 而 Controller 管理器运行了一系列的控制器进程，这些进程会按照用户的期望状态在后台不断地调节整个集群中的对象，当服务的状态发生了改变，控制器就会发现这个改变并且开始向目标状态迁移。  
 &emsp; 最后的Scheduler调度器其实为Kubernetes中运行的Pod选择部署的Worker节点，它会根据用户的需要选择最能满足请求的节点来运行Pod，它会在每次需要调度Pod时执行。  
+
 <!-- 
 Kubernetes Pod调度说明，Scheduler
 https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 -->
-
 * Worker  
 &emsp; Node是Kubernetes的工作节点，负责接收来自Master的工作指令，并根据指令相应地创建和销毁Pod对象，以及调整网络规则进行合理路由和流量转发。生产环境中，Node节点可以有N个。<font color = "red">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>kubelet是K8S集群的工作与节点上的代理组件。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-18.png)  
@@ -90,7 +89,7 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 
 * 一个完整的K8S集群，还包括CoreDNS、Prometheus（或HeapSter）、Dashboard、Ingress Controller等几个附加组件。其中cAdivsor组件作用于各个节点（master和node节点）之上，用于收集及收集容器及节点的CPU、内存以及磁盘资源的利用率指标数据，这些统计数据由Heapster聚合后，可以通过apiserver访问。  
 
-### 1.4.1. Master组件
+### 1.3.1. Master组件
 1. API Server  
 &emsp; K8S对外的唯一接口，提供HTTP/HTTPS RESTful API，即kubernetes API。所有的请求都需要经过这个接口进行通信。主要负责接收、校验并响应所有的REST请求，结果状态被持久存储在etcd当中，所有资源增删改查的唯一入口。
 2. etcd  
@@ -105,7 +104,7 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 4. 调度器（Schedule）  
 &emsp; 资源调度，负责决定将Pod放到哪个Node上运行。Scheduler在调度时会对集群的结构进行分析，当前各个节点的负载，以及应用对高可用、性能等方面的需求。
 
-### 1.4.2. Node组件
+### 1.3.2. Node组件
 &emsp; Node主要负责提供容器的各种依赖环境，并接受Master管理。每个Node有以下几个组件构成。  
 
 1. Kubelet  
@@ -115,7 +114,7 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 3. Kube-proxy  
 &emsp; service在逻辑上代表了后端的多个Pod，外借通过service访问Pod。service接收到请求就需要kube-proxy完成转发到Pod的。每个Node都会运行kube-proxy服务，负责将访问的service的TCP/UDP数据流转发到后端的容器，如果有多个副本，kube-proxy会实现负载均衡，有2种方式：LVS或者Iptables
 
-### 1.4.3. 核心附件  
+### 1.3.3. 核心附件  
 &emsp; K8S集群还依赖一组附件组件，通常是由第三方提供的特定应用程序。如下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-12.png)  
 
@@ -126,11 +125,10 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 3. Heapster  
 &emsp; 容器和节点的性能监控与分析系统，它收集并解析多种指标数据，如资源利用率、生命周期时间，在最新的版本当中，其主要功能逐渐由Prometheus结合其他的组件进行代替。
 4. Ingress Controller  
-&emsp; Service是一种工作于4层的负载均衡器，而Ingress是在应用层实现的HTTP(S)的负载均衡。不过，Ingress资源自身并不能进行流量的穿透，，它仅仅是一组路由规则的集合，这些规则需要通过Ingress控制器（Ingress Controller）发挥作用。目前该功能项目大概有：Nginx-ingress、Traefik、Envoy和HAproxy等。如下图就是Nginx-ingress的应用，具体可以查看博文：https://www.cnblogs.com/linuxk/p/9706720.html
+&emsp; Service是一种工作于4层的负载均衡器，而Ingress是在应用层实现的HTTP(S)的负载均衡。不过，Ingress资源自身并不能进行流量的穿透，，它仅仅是一组路由规则的集合，这些规则需要通过Ingress控制器（Ingress Controller）发挥作用。目前该功能项目大概有：Nginx-ingress、Traefik、Envoy和HAproxy等。如下图就是Nginx-ingress的应用，具体可以查看博文： https://www.cnblogs.com/linuxk/p/9706720.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-13.png)  
 
-
-## 1.5. Kubernetes的常用概念和术语
+## 1.4. Kubernetes的常用概念和术语
 
 <!--
  Kubernetes新手快速入门指南 
@@ -182,10 +180,10 @@ https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%
 **任务（Job）**  
 &emsp; Job是K8s用来控制批处理型任务的API对象。批处理业务与长期伺服业务的主要区别是批处理业务的运行有头有尾，而长期伺服业务在用户不停止的情况下永远运行。Job管理的Pod根据用户的设置把任务成功完成就自动退出了。成功完成的标志根据不同的spec.completions策略而不同：单Pod型任务有一个Pod成功就标志完成；定数成功型任务保证有N个任务全部成功；工作队列型任务根据应用确认的全局成功而标志成功。  
 
-**后台支撑服务集（DaemonSet）**  
+**后台支撑服务集（DaemonSet）**   
 &emsp; 长期伺服型和批处理型服务的核心在业务应用，可能有些节点运行多个同类业务的Pod，有些节点上又没有这类Pod运行；而后台支撑型服务的核心关注点在K8s集群中的节点（物理机或虚拟机），要保证每个节点上都有一个此类Pod运行。节点可能是所有集群节点也可能是通过nodeSelector选定的一些特定节点。典型的后台支撑型服务包括，存储，日志和监控等在每个节点上支持K8s集群运行的服务。  
 
-**有状态服务集（PetSet）**  
+**有状态服务集（PetSet）**   
 &emsp; K8s在1.3版本里发布了Alpha版的PetSet功能。在云原生应用的体系里，有下面两组近义词；第一组是无状态（stateless）、牲畜（cattle）、无名（nameless）、可丢弃（disposable）；第二组是有状态（stateful）、宠物（pet）、有名（having name）、不可丢弃（non-disposable）。RC和RS主要是控制提供无状态服务的，其所控制的Pod的名字是随机设置的，一个Pod出故障了就被丢弃掉，在另一个地方重启一个新的Pod，名字变了、名字和启动在哪儿都不重要，重要的只是Pod总数；而PetSet是用来控制有状态服务，PetSet中的每个Pod的名字都是事先确定的，不能更改。PetSet中Pod的名字的作用，并不是《千与千寻》的人性原因，而是关联与该Pod对应的状态。  
 &emsp; 对于RC和RS中的Pod，一般不挂载存储或者挂载共享存储，保存的是所有Pod共享的状态，Pod像牲畜一样没有分别（这似乎也确实意味着失去了人性特征）；对于PetSet中的Pod，每个Pod挂载自己独立的存储，如果一个Pod出现故障，从其他节点启动一个同样名字的Pod，要挂载上原来Pod的存储继续以它的状态提供服务。  
 适合于PetSet的业务包括数据库服务MySQL和PostgreSQL，集群化管理服务Zookeeper、etcd等有状态服务。PetSet的另一种典型应用场景是作为一种比普通容器更稳定可靠的模拟虚拟机的机制。传统的虚拟机正是一种有状态的宠物，运维人员需要不断地维护它，容器刚开始流行时，我们用容器来模拟虚拟机使用，所有状态都保存在容器里，而这已被证明是非常不安全、不可靠的。使用PetSet，Pod仍然可以通过漂移到不同节点提供高可用，而存储也可以通过外挂的存储来提供高可靠性，PetSet做的只是将确定的Pod与确定的存储关联起来保证状态的连续性。PetSet还只在Alpha阶段，后面的设计如何演变，我们还要继续观察。  
@@ -204,8 +202,8 @@ https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%
 
 **（7）名字空间（Namespace）**  
 &emsp; 名称（Name）是K8S集群中资源对象的标识符，通常作用于名称空间（Namespace），因此名称空间是名称的额外的限定机制。在同一个名称空间中，同一类型资源对象的名称必须具有唯一性。  
-&emsp; 名称空间通常用于实现租户或项目的资源隔离，从而形成逻辑分组。关于此概念可以参考：https://www.jb51.net/article/136411.htm  
-&emsp; 如图：创建的Pod和Service等资源对象都属于名称空间级别，未指定时，都属于默认的名称空间default
+&emsp; 名称空间通常用于实现租户或项目的资源隔离，从而形成逻辑分组。关于此概念可以参考： https://www.jb51.net/article/136411.htm  
+&emsp; 如图：创建的Pod和Service等资源对象都属于名称空间级别，未指定时，都属于默认的名称空间
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-10.png)  
 
 **RBAC访问授权**  
@@ -238,18 +236,16 @@ https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%
 
 &emsp; 在创建好RC （系统将自动创建好Pod）后，Kubemetes会通过RC中定义的Label筛选出 对应的Pod实例并实时监控其状态和数量，如果实例数量少于定义的副本数量（Replicas）,则 会根据RC中定义的Pod模板来创建一个新的Pod,然后将此Pod调度到合适的Node上启动运 行，直到Pod实例的数量达到预定目标。这个过程完全是自动化的，无须人工干预。有了 RC, 服务的扩容就变成了一个纯粹的简单数字游戏了，只要修改RC中的副本数量即可。  
 
-## 1.6. Kubernetes的网络模型  
+## 1.5. Kubernetes的网络模型  
 &emsp; K8S为Pod和Service资源对象分别使用了各自的专有网络，Pod网络由K8S的网络插件配置实现，而Service网络则由K8S集群进行指定。如下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-14.png)  
 &emsp; K8S使用的网络插件需要为每个Pod配置至少一个特定的地址，即Pod IP。Pod IP地址实际存在于某个网卡（可以是虚拟机设备）上。  
 &emsp; <font color = "lime">而Service的地址却是一个虚拟IP地址，没有任何网络接口配置在此地址上，它由Kube-proxy借助iptables规则或ipvs规则重定向到本地端口，再将其调度到后端的Pod对象。</font>Service的IP地址是集群提供服务的接口，也称为Cluster IP。  
 &emsp; Pod网络和IP由K8S的网络插件负责配置和管理，具体使用的网络地址可以在管理配置网络插件时进行指定，如10.244.0.0/16网络。而Cluster网络和IP是由K8S集群负责配置和管理，如10.96.0.0/12网络。  
 &emsp; 从上图进行总结起来，一个K8S集群包含是三个网络。  
-
 （1）节点网络：各主机（Master、Node、ETCD等）自身所属的网络，地址配置在主机的网络接口，用于各主机之间的通信，又称为节点网络。  
 （2）Pod网络：专用于Pod资源对象的网络，它是一个虚拟网络，用于为各Pod对象设定IP地址等网络参数，其地址配置在Pod中容器的网络接口上。Pod网络需要借助kubenet插件或CNI插件实现。  
 （3）Service网络：专用于Service资源对象的网络，它也是一个虚拟网络，用于为K8S集群之中的Service配置IP地址，但是该地址不会配置在任何主机或容器的网络接口上，而是通过Node上的kube-proxy配置为iptables或ipvs规则，从而将发往该地址的所有流量调度到后端的各Pod对象之上。  
-
 
 <!-- 
 &emsp; K8S的网络中主要存在4种类型的通信：  
