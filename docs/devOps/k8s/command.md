@@ -130,11 +130,6 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 
 ## 1.2. kubectl命令行工具  
 &emsp; <font color = "lime">kubectl作为客户端CLI工具，可以让用户通过命令行的方式对Kubernetes集群进行操作。</font>  
-&emsp; kubeadm/kubelet/kubectl区别？  
-
-* kubeadm是kubernetes集群快速构建工具
-* kubelet运行在所有节点上，负责启动POD和容器，以系统服务形式出现
-* kubectl：kubectl是kubenetes命令行工具，提供指令
 
 ### 1.2.1. kubectl用法概述  
 &emsp; kubectl命令行的语法如下：  
@@ -198,7 +193,10 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     $ kubectl delete -f pod.yaml  
     ```
     &emsp; 删除所有包含某个label的Pod和service：  
+
+    ```text
     $ kubectl delete pods,services -1 name=<label-name>  
+    ```
     &emsp; 删除所有Pod:  
 
     ```text
@@ -215,7 +213,7 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     ```text
     $ kubectl exec <pod-name> -c <container-name> date 
     ``` 
-    &emsp; 通过bash获得Pod中某个容器的TTY,相当于登录容器：  
+    &emsp; 通过bash获得Pod中某个容器的TTY，相当于登录容器：  
 
     ```text
     $ kubectl exec -ti <pod-name> -c <container-name> /bin/bash  
@@ -288,7 +286,7 @@ https://blog.csdn.net/qq_23348071/article/details/87185025
 
 ### 1.4.5. Ingress：HTTP 7层路由机制  
 &emsp; Service的表现形式为IP:Port，即工作在TCP/IP 层。而对于基于HTTP的服务来说，不同的URL地址经常对应到不同的后端服务或者虚拟服务 器（Virtual Host），这些应用层的转发机制仅通过Kubernetes的Service机制是无法实现的。从 Kubernetes vl.l版本开始新增Ingress资源对象，用于将不同URL的访问请求转发到后端不同 的Service，以实现HTTP层的业务路由机制。Kubernetes使用一个Ingress策略定义和一个具体的Ingress Controller，两者结合并实现了一个完整的Ingress负载均衡器。  
-&emsp; 使用Ingress进行负载分发时，Ingress Controller将基于Ingress规则将客户端请求直接转发到Service对应的后端Endpoint（即Pod）上，这样会跳过kube-proxy的转发功能，kube-proxy不再起作用。如果Ingress Controller提供的是对外服务，则实际上实现的是边缘路由器的功能。  
+&emsp; **使用Ingress进行负载分发时，Ingress Controller将基于Ingress规则将客户端请求直接转发到Service对应的后端Endpoint（即Pod）上，这样会跳过kube-proxy的转发功能，kube-proxy不再起作用。**如果Ingress Controller提供的是对外服务，则实际上实现的是边缘路由器的功能。  
 
 
 ----
