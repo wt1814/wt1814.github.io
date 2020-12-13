@@ -350,7 +350,7 @@
     * [DockerFile](/docs/devOps/docker/file.md)  
     * [镜像容器详解](/docs/devOps/docker/image.md)  
     * [Docker工具](/docs/devOps/docker/tools.md)   
-    * [Kubernetes](/docs/devOps/k8s/k8s.md)  
+    * [Kubernetes](/docs/devOps/k8s/Kubernetes.md)  
     * [k8s原理](/docs/devOps/k8s/principle.md)  
     * [k8s实践](/docs/devOps/k8s/command.md)  
     * [滚动更新](/docs/devOps/k8s/rollingUpdate.md)  
