@@ -38,6 +38,8 @@ https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 https://mp.weixin.qq.com/s/rQX3AFivFDNIYXE7-r9U_w
 InnoDB的插入缓冲 
 https://mp.weixin.qq.com/s/6t0_XByG8-yuyB0YaLuuBA
+InnoDB 原理
+https://mp.weixin.qq.com/s/nrb0OaiD_QRtPGREpUr0HA
 
 -->
 

@@ -24,6 +24,9 @@ https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
 阿里面试：说说一致性读实现原理？ 
 https://mp.weixin.qq.com/s/qHzb6oPrrbAPoIlfLJVNAg
 
+MVCC是如何实现的？ 
+https://mp.weixin.qq.com/s/JJd0SoZ--JKW0LEtkZONUA
+
 -->
 
 # 1. MVCC

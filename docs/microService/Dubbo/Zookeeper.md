@@ -36,6 +36,8 @@ Zookeeper官网文档：https://zookeeper.apache.org/doc/current
 
 ZooKeeper的十二连问，你顶得了嘛？ 
 https://mp.weixin.qq.com/s/dp8jFlTsxTvGuhSAnct1jA
+用大白话给你解释Zookeeper的选举机制 
+https://mp.weixin.qq.com/s/M7qMQtrdDbZE5ex-BSk-AQ
 
 -->
 

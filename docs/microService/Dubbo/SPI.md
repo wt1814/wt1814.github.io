@@ -22,6 +22,10 @@ http://dubbo.apache.org/zh-cn/docs/source_code_guide/dubbo-spi.html
 自适应拓展机制
 http://dubbo.apache.org/zh-cn/docs/source_code_guide/adaptive-extension.html
 
+
+来说说Dubbo SPI 机制 
+https://mp.weixin.qq.com/s/hR8hlJyGxnn3wIfBhlNbuQ
+
 -->
  
 <!-- 

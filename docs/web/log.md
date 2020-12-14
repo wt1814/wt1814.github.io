@@ -8,6 +8,9 @@ https://mp.weixin.qq.com/s/6Bjr1PUAC98IIaxBFcECNw
 LogBack的filter的应用
 https://blog.csdn.net/wangzhan0123/article/details/81219789
 
+Slf4j适配日志原理 
+https://mp.weixin.qq.com/s/hGtkjhG1Wz9BwrLKU4ph-w
+
 -->
 
 # 编码过程输出日志    
