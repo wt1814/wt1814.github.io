@@ -57,6 +57,9 @@ https://blog.csdn.net/weixin_45691464/article/details/106006125
 &emsp; Kubernetes对Pod的扩容和缩容操作提供了手动和自动两种模式，手动模式通过执行kubectl scale命令对一个Deployment/RC进行Pod副本数量的设置，即可一键完成。自动模式则需要用户根据某个性能指标或者自定义业务指标，并指定Pod副本数量的范围，系统将自动在这个范围内根据性能指标的变化进行调整。  
 
 ## 1.2. 深入掌握Service  
+<!-- 
+https://blog.csdn.net/PpikachuP/article/details/89674578
+-->
 &emsp; Service是Kubernetes最核心的概念，通过创建Service，可以为一组具有相同功能的容器应用提供一个统一的入口地址，并且将请求负载分发到后端的各个容器应用上。本节对Service的使用进行详细说明，包括Service的负载均衡、外网访问、DNS服务的搭建、Ingress7层路由机制等。  
 
 ### 1.2.1. Service基本用法  

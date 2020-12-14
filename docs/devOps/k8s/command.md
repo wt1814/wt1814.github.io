@@ -21,16 +21,14 @@
 k8s的快速使用手册
 https://www.cnblogs.com/linu/p/10955823.html
 
- K8s自动扩缩容工具KEDA发布2.0版本，全面升级应用扩展能力 
- https://mp.weixin.qq.com/s/KZlNqFRb6_N56oE-OKvFBA
+K8s自动扩缩容工具KEDA发布2.0版本，全面升级应用扩展能力 
+https://mp.weixin.qq.com/s/KZlNqFRb6_N56oE-OKvFBA
 -->
-
   
 <!-- 
 k8s上部署Redis三主三从集群
 k8s 上部署 Redis 三主三从 集群
 https://www.cnblogs.com/winstom/p/11881882.html
-
 在K8s上部署Redis 集群
 https://blog.csdn.net/zhutongcloud/article/details/90768390
 
@@ -84,14 +82,14 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 2. 基于HTTP BASE TOKEN 的简单认证方式  
 
 #### 1.1.2.2. Kubernetes集群的网络配置
-&emsp; 在多个Node组成的Kubernetes集群内，跨主机的容器间网络互通是Kubernetes集群能够正常工作的前提条件。Kubernetes本身并不会对跨主机的容器网络进行设置，这需要额外的工 具来实现。除了谷歌公有云GCE平台提供的网络设置，一些开源的工具包括Flannel, Open vSwitch. Weave> Calico等都能够实现跨主机的容器间网络互通。随着CNI网络模型的逐渐成熟，Kubernetes将优先使用CNI网络插件打通跨主机的容器网络。  
+&emsp; 在多个Node组成的Kubernetes集群内，跨主机的容器间网络互通是Kubernetes集群能够正常工作的前提条件。Kubernetes本身并不会对跨主机的容器网络进行设置，这需要额外的工具来实现。除了谷歌公有云GCE平台提供的网络设置，一些开源的工具包括Flannel, Open vSwitch. Weave> Calico等都能够实现跨主机的容器间网络互通。随着CNI网络模型的逐渐成熟，Kubernetes将优先使用CNI网络插件打通跨主机的容器网络。  
 
 ### 1.1.3. 内网中的Kubernetes相关配置  
 1. Docker Private Registry （私有 Docker 镜像库）  
 &emsp; 使用Docker提供的Registry镜像创建一个私有镜像仓库。  
 &emsp; 详细的安装步骤请参考 Docker 的官方文档 https://docs.docker.eom/registry/deploying/o  
 2. kubelet配置  
-    &emsp; 由于在Kubemetes中是以Pod而不是以Docker容器为管理单元的，在kubelet创建Pod时，还通过启动一个名为 ger.io/google_containers/pause 的镜像来实现Pod的概念。  
+    &emsp; 由于在Kubemetes中是以Pod而不是以Docker容器为管理单元的，在kubelet创建Pod时，还通过启动一个名为ger.io/google_containers/pause 的镜像来实现Pod的概念。  
     &emsp; 该镜像存在于谷歌镜像库http://gcr.io 中，需要通过一台能够连上Internet的服务器将其下载，导出文件，再push到私有Docker Registry中。  
     &emsp; 之后，可以给每台Node的kubelet服务加上启动参数-pod-infra-container-image，指定为私有Docker Registry中pause镜像的地址。例如：  
 
@@ -140,7 +138,6 @@ $ kubectl [command] [TYPE] [NAME] [flags]
 4. flags：kubectl子命令的可选参数，例如使用"-s”指定apiserver的URL地址而不用默认值。  
 
 ### 1.2.2. kubectl常用命令
-
 1. 创建资源对象  
     &emsp; 根据yaml配置文件一次性创建service和rc：  
 
@@ -221,6 +218,12 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     ``` 
 
 ## 1.3. 基于NFS文件集群共享  
+<!-- 
+Kubernetes 集群部署 NFS 网络存储
+https://blog.csdn.net/zuozewei/article/details/108165523
+-->
+&emsp; Kubernetes对Pod进行调度时，以当时集群中各节点的可用资源作为主要依据，自动选择某一个可用的节点，并将Pod分配到该节点上。在这种情况下，Pod中容器数据的持久化如果存储在所在节点的磁盘上，就会产生不可预知的问题，例如，当Pod出现故障，Kubernetes 重新调度之后，Pod 所在的新节点上，并不存在上一次 Pod 运行时所在节点上的数据。  
+&emsp; 为了使 Pod 在任何节点上都能够使用同一份持久化存储数据，需要使用网络存储的解决方案为 Pod 提供数据卷。常用的网络存储方案有：NFS/cephfs/glusterfs。  
 
 
 ## 1.4. IDE插件  
