@@ -354,6 +354,7 @@
     * [k8s原理](/docs/devOps/k8s/principle.md)  
     * [k8s实践](/docs/devOps/k8s/command.md)  
     * [k8s重要对象](/docs/devOps/k8s/object.md)  
+    * [Yaml文件配置](/docs/devOps/k8s/yaml.md)  
     * [k8s运维](/docs/devOps/k8s/tools.md)  
     * [Kuboard介绍](/docs/devOps/k8s/kuboard.md)  
     * 其他

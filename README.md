@@ -490,6 +490,7 @@ https://www.jianshu.com/p/2813af4eb0d3
 &emsp; [k8s原理](/docs/devOps/k8s/principle.md)  
 &emsp; [k8s实践](/docs/devOps/k8s/command.md)  
 &emsp; [k8s重要对象](/docs/devOps/k8s/object.md)  
+&emsp; [Yaml文件配置](/docs/devOps/k8s/yaml.md)  
 &emsp; [k8s运维](/docs/devOps/k8s/tools.md)  
 &emsp; [Kuboard介绍](/docs/devOps/k8s/kuboard.md)  
 [Jenkins](/docs/devOps/Jenkins.md)  
