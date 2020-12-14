@@ -3,6 +3,7 @@
 - [1. Kubernetes重要对象](#1-kubernetes重要对象)
     - [1.1. 深入掌握Pod](#11-深入掌握pod)
         - [1.1.1. 创建与管理pod/ReplicaSet](#111-创建与管理podreplicaset)
+        - [pod容器共享Volume](#pod容器共享volume)
         - [1.1.2. Pod的升级和回滚](#112-pod的升级和回滚)
             - [1.1.2.1. kubernetes多种发布方式](#1121-kubernetes多种发布方式)
         - [1.1.3. Pod的扩容和缩容](#113-pod的扩容和缩容)
@@ -17,7 +18,6 @@
 <!-- /TOC -->
 
 # 1. Kubernetes重要对象
-
 ## 1.1. 深入掌握Pod  
 ### 1.1.1. 创建与管理pod/ReplicaSet
 <!-- 
@@ -31,6 +31,8 @@ https://blog.csdn.net/weixin_38070561/article/details/82706973
 K8S：创建pod资源两种方式： kubectl命令 && yaml文件
 https://blog.csdn.net/weixin_45691464/article/details/106006125
 -->
+
+### pod容器共享Volume
 
 ### 1.1.2. Pod的升级和回滚  
 &emsp; 当集群中的某个服务需要升级时，需要停止目前与该服务相关的所有Pod，然后下载新版本镜像并创建新的Pod。如果集群规模比较大，则这个工作就变成了一个挑战，而且先全部停止然后逐步升级的方式会导致较长时间的服务不可用。Kubemetes提供了滚动升级功能来解决上述问题。  
