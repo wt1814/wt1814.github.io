@@ -20,7 +20,7 @@ k8s中文文档
 https://www.kubernetes.org.cn/k8s
 https://kuboard.cn/learning/
 -->
-&emsp; 在Kubernetes统治容器编排这一领域之前，其实也有很多容器编排方案，例如compose和Swarm，但是在运维大规模、复杂的集群时，这些方案基本已经都被Kubernetes替代了。 
+&emsp; 在Kubernetes统治容器编排这一领域之前，其实也有很多容器编排方案，例如Compose和Swarm，但是在运维大规模、复杂的集群时，这些方案基本已经都被[Kubernetes](https://kubernetes.io/zh/docs/home/)替代了。 
  
 ## 1.1. 走进K8S    
 1. K8S是如何对容器编排？  
@@ -55,7 +55,6 @@ Master 节点主要负责存储集群的状态并为 Kubernetes 对象分配和�
 &emsp; 其中API Server负责处理来自用户的请求，其主要作用就是对外提供RESTful的接口，包括用于查看集群状态的读请求以及改变集群状态的写请求，也是唯一一个与 etcd集群通信的组件。  
 &emsp; 而Controller管理器运行了一系列的控制器进程，这些进程会按照用户的期望状态在后台不断地调节整个集群中的对象，当服务的状态发生了改变，控制器就会发现这个改变并且开始向目标状态迁移。  
 &emsp; 最后的Scheduler调度器其实为Kubernetes中运行的Pod选择部署的Worker节点，它会根据用户的需要选择最能满足请求的节点来运行Pod，它会在每次需要调度Pod时执行。  
-
 <!-- 
 Kubernetes Pod调度说明，Scheduler
 https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
@@ -65,7 +64,6 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-18.png)  
 &emsp; kubelet是K8S集群的工作与节点上的代理组件。kubelet是一个节点上的主要服务，它周期性地从API Server接受新的或者修改的Pod规范并且保证节点上的Pod和其中容器的正常运行，还会保证节点会向目标状态迁移，该节点仍然会向Master节点发送宿主机的健康状况。  
 &emsp; 另一个运行在各个节点上的代理服务kube-proxy负责宿主机的子网管理，同时也能将服务暴露给外部，其原理就是在多个隔离的网络中把请求转发给正确的Pod或者容器。  
-
 * 一个完整的K8S集群，还包括CoreDNS、Prometheus（或HeapSter）、Dashboard、Ingress Controller等几个附加组件。其中cAdivsor组件作用于各个节点（master和node节点）之上，用于收集及收集容器及节点的CPU、内存以及磁盘资源的利用率指标数据，这些统计数据由Heapster聚合后，可以通过apiserver访问。  
 
 ### 1.2.1. Master组件
@@ -211,7 +209,6 @@ https://www.cnblogs.com/justmine/p/8684564.html
 &emsp; K8S运行流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-5.png)  
 &emsp; Kubernetes遵循非常传统的客户端服务端架构，客户端通过 RESTful 接口或者直接使用 kubectl 与 Kubernetes 集群进行通信，这两者在实际上并没有太多的区别，后者也只是对 Kubernetes 提供的 RESTful API 进行封装并提供出来。  
-
 
 ## 1.5. Kubernetes的网络模型  
 &emsp; K8S为Pod和Service资源对象分别使用了各自的专有网络，Pod网络由K8S的网络插件配置实现，而Service网络则由K8S集群进行指定。如下图：  

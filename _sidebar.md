@@ -353,7 +353,7 @@
     * [Kubernetes](/docs/devOps/k8s/Kubernetes.md)  
     * [k8s原理](/docs/devOps/k8s/principle.md)  
     * [k8s实践](/docs/devOps/k8s/command.md)  
-    * [滚动更新](/docs/devOps/k8s/rollingUpdate.md)  
+    * [k8s重要对象](/docs/devOps/k8s/object.md)  
     * [k8s运维](/docs/devOps/k8s/tools.md)  
     * [Kuboard介绍](/docs/devOps/k8s/kuboard.md)  
     * 其他
