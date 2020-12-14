@@ -96,6 +96,11 @@ https://blog.csdn.net/zuozewei/article/details/108165523
 
 
 ### 1.2.4. 内网中搭建私有仓库  
+<!-- 
+从私有仓库拉取镜像
+https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-registry/
+-->
+
 
 <!--   
 1. Docker Private Registry （私有 Docker 镜像库）  
