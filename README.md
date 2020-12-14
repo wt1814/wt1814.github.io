@@ -499,7 +499,6 @@ https://www.jianshu.com/p/2813af4eb0d3
 [git](/docs/devOps/git/command.md)  
 
 [灰度发布](/docs/system/grayscalePublishe.md)  
-&emsp; [网关灰度发布](/docs/system/gatewayGrayscale.md)  
 [监控](/docs/devOps/monitor.md)  
 
 ----

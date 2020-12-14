@@ -363,7 +363,6 @@
     * [Maven](/docs/devOps/maven.md)  
     * [git](/docs/devOps/git/command.md)  
     * [灰度发布](/docs/system/grayscalePublishe.md)  
-    * [网关灰度发布](/docs/system/gatewayGrayscale.md)  
     * [监控](/docs/devOps/monitor.md)  
 * 计算机网络  
     * [OSI七层网络模型](/docs/network/0.OSI.md)  
