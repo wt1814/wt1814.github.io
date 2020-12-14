@@ -7,21 +7,22 @@
     - [1.3. Kubernetes的集群组件](#13-kubernetes的集群组件)
         - [1.3.1. Master组件](#131-master组件)
         - [1.3.2. Node组件](#132-node组件)
-        - [1.3.3. 核心附件](#133-核心附件)
+        - [1.3.3. 插件](#133-插件)
     - [1.4. Kubernetes的常用概念和术语](#14-kubernetes的常用概念和术语)
-    - [1.5. Kubernetes的网络模型](#15-kubernetes的网络模型)
+    - [1.5. Kubernetes运行流程](#15-kubernetes运行流程)
+    - [1.6. Kubernetes的网络模型](#16-kubernetes的网络模型)
 
 <!-- /TOC -->
 
 # 1. Kubernetes  
-
 <!--
 ~~
 k8s中文文档
 https://www.kubernetes.org.cn/k8s
 https://kuboard.cn/learning/
 -->
-&emsp; 在Kubernetes统治容器编排这一领域之前，其实也有很多容器编排方案，例如compose和Swarm，但是在运维大规模、复杂的集群时，这些方案基本已经都被 Kubernetes替代了。  
+&emsp; 在Kubernetes统治容器编排这一领域之前，其实也有很多容器编排方案，例如compose和Swarm，但是在运维大规模、复杂的集群时，这些方案基本已经都被Kubernetes替代了。 
+ 
 ## 1.1. 走进K8S    
 1. K8S是如何对容器编排？  
 &emsp; 在K8S集群中，容器并非最小的单位，K8S集群中最小的调度单位是Pod，容器则被封装在Pod之中。由此可知，**一个容器或多个容器可以同属于一个Pod之中。**  
@@ -40,11 +41,10 @@ https://kuboard.cn/learning/
     6. 选择主机：选择打分最高的主机，进行binding操作，结果存储到etcd中。  
     7. kubelet根据调度结果执行Pod创建操作： 绑定成功后，scheduler会调用APIServer的API在etcd中创建一个boundpod对象，描述在一个工作节点上绑定运行的所有pod信息。运行在每个工作节点上的kubelet也会定期与etcd同步boundpod信息，一旦发现应该在该工作节点上运行的boundpod对象没有更新，则调用Docker API创建并启动pod内的容器。  
 
-
 ## 1.2. Kubernetes的设计架构  
-&emsp; Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，如下图所示  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-15.png)  
-
+&emsp; Kubernetes设计理念和功能其实就是一个类似Linux的分层架构，如上图所示。包含：  
+  
 * 核心层：Kubernetes最核心的功能，对外提供API构建高层的应用，对内提供插件式应用执行环境
 * 应用层：部署（无状态应用、有状态应用、批处理任务、集群应用等）和路由（服务发现、DNS解析等）
 * 管理层：系统度量（如基础设施、容器和网络的度量），自动化（如自动扩展、动态Provision等）以及策略管理（RBAC、Quota、PSP、NetworkPolicy等）
@@ -55,13 +55,8 @@ https://kuboard.cn/learning/
 * Kubernetes外部：日志、监控、配置管理、CI、CD、Workflow、FaaS、OTS应用、ChatOps等
 * Kubernetes内部：CRI、CNI、CVI、镜像仓库、Cloud Provider、集群自身的配置和管理等
 
-
 ## 1.3. Kubernetes的集群组件
-&emsp; K8S运行流程图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-5.png)  
-&emsp; Kubernetes是利用共享网络将多个物理机或者虚拟机组成一个集群，在各个服务器之间进行通信，该集群是配置Kubernetes的所有功能和负载的物理平台。  
-
-&emsp; Kubernetes遵循非常传统的客户端服务端架构，客户端通过 RESTful 接口或者直接使用 kubectl 与 Kubernetes 集群进行通信，这两者在实际上并没有太多的区别，后者也只是对 Kubernetes 提供的 RESTful API 进行封装并提供出来。  
+&emsp; **Kubernetes是利用共享网络将多个物理机或者虚拟机组成一个集群，**在各个服务器之间进行通信，该集群是配置Kubernetes的所有功能和负载的物理平台。  
 &emsp; **<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-6.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-11.png)  
@@ -70,10 +65,10 @@ https://kuboard.cn/learning/
 Master 节点主要负责存储集群的状态并为 Kubernetes 对象分配和调度资源。  
 -->  
 * Master  
-&emsp; 作为管理集群状态的 Master 节点，它主要负责接收客户端的请求，安排容器的执行并且运行控制循环，将集群的状态向目标状态进行迁移。<font color = "red">Master的组件包括：apiserver、controller-manager、scheduler和etcd等几个组件。</font> 
+&emsp; 作为管理集群状态的Master节点，它主要负责接收客户端的请求，安排容器的执行并且运行控制循环，将集群的状态向目标状态进行迁移。<font color = "red">Master的组件包括：apiserver、controller-manager、scheduler和etcd等几个组件。</font> 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-17.png)  
 &emsp; 其中API Server负责处理来自用户的请求，其主要作用就是对外提供RESTful的接口，包括用于查看集群状态的读请求以及改变集群状态的写请求，也是唯一一个与 etcd集群通信的组件。  
-&emsp; 而 Controller 管理器运行了一系列的控制器进程，这些进程会按照用户的期望状态在后台不断地调节整个集群中的对象，当服务的状态发生了改变，控制器就会发现这个改变并且开始向目标状态迁移。  
+&emsp; 而Controller管理器运行了一系列的控制器进程，这些进程会按照用户的期望状态在后台不断地调节整个集群中的对象，当服务的状态发生了改变，控制器就会发现这个改变并且开始向目标状态迁移。  
 &emsp; 最后的Scheduler调度器其实为Kubernetes中运行的Pod选择部署的Worker节点，它会根据用户的需要选择最能满足请求的节点来运行Pod，它会在每次需要调度Pod时执行。  
 
 <!-- 
@@ -113,8 +108,8 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 3. Kube-proxy  
 &emsp; service在逻辑上代表了后端的多个Pod，外借通过service访问Pod。service接收到请求就需要kube-proxy完成转发到Pod的。每个Node都会运行kube-proxy服务，负责将访问的service的TCP/UDP数据流转发到后端的容器，如果有多个副本，kube-proxy会实现负载均衡，有2种方式：LVS或者Iptables
 
-### 1.3.3. 核心附件  
-&emsp; K8S集群还依赖一组附件组件，通常是由第三方提供的特定应用程序。如下图：  
+### 1.3.3. 插件  
+&emsp; K8S集群中还有一些有用的插件，通常是由第三方提供的特定应用程序。如下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-12.png)  
 
 1. KubeDNS  
@@ -128,20 +123,17 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-13.png)  
 
 ## 1.4. Kubernetes的常用概念和术语
-
 <!--
- Kubernetes新手快速入门指南 
- https://www.sohu.com/a/245424505_198222
-
-  Kubernetes Pod调度说明2-污点和容忍及固定调度节点. 
-  https://mp.weixin.qq.com/s/ZF1V4Lftg_NFUINMYkYgPw
+Kubernetes新手快速入门指南 
+https://www.sohu.com/a/245424505_198222
+Kubernetes Pod调度说明2-污点和容忍及固定调度节点. 
+https://mp.weixin.qq.com/s/ZF1V4Lftg_NFUINMYkYgPw
 -->
 <!--
 ～～
 https://www.kubernetes.org.cn/kubernetes%e8%ae%be%e8%ae%a1%e7%90%86%e5%bf%b5
 ～～
 -->
-
 &emsp; Kubernetes常用概念和术语：  
 **（1）Pod**  
 &emsp; K8S并不直接地运行容器，而是被一个抽象的资源对象--Pod所封装，它是K8S最小的调度单位。这里要注意的是，Pod可以封装一个或多个容器！同一个Pod中共享网络名称空间和存储资源，而容器之间可以通过本地回环接口直接通信，但是彼此之间又在Mount、User和Pid等名称空间上保持了隔离。  
@@ -235,7 +227,16 @@ https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%
 
 &emsp; 在创建好RC （系统将自动创建好Pod）后，Kubemetes会通过RC中定义的Label筛选出 对应的Pod实例并实时监控其状态和数量，如果实例数量少于定义的副本数量（Replicas）,则 会根据RC中定义的Pod模板来创建一个新的Pod,然后将此Pod调度到合适的Node上启动运 行，直到Pod实例的数量达到预定目标。这个过程完全是自动化的，无须人工干预。有了 RC, 服务的扩容就变成了一个纯粹的简单数字游戏了，只要修改RC中的副本数量即可。  
 
-## 1.5. Kubernetes的网络模型  
+## 1.5. Kubernetes运行流程  
+<!-- 
+https://www.cnblogs.com/justmine/p/8684564.html
+-->
+&emsp; K8S运行流程图如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-5.png)  
+&emsp; Kubernetes遵循非常传统的客户端服务端架构，客户端通过 RESTful 接口或者直接使用 kubectl 与 Kubernetes 集群进行通信，这两者在实际上并没有太多的区别，后者也只是对 Kubernetes 提供的 RESTful API 进行封装并提供出来。  
+
+
+## 1.6. Kubernetes的网络模型  
 &emsp; K8S为Pod和Service资源对象分别使用了各自的专有网络，Pod网络由K8S的网络插件配置实现，而Service网络则由K8S集群进行指定。如下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-14.png)  
 &emsp; K8S使用的网络插件需要为每个Pod配置至少一个特定的地址，即Pod IP。Pod IP地址实际存在于某个网卡（可以是虚拟机设备）上。  

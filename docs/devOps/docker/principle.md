@@ -17,6 +17,9 @@
 &emsp; **Docker中文社区：**https://www.docker.org.cn/dockershuji.html  
 
 ## 1.1. 虚拟化技术  
+<!-- 
+https://kubernetes.io/zh/docs/concepts/overview/what-is-kubernetes/
+-->
 &emsp; 应用部署化的演变：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-40.png)  
 
