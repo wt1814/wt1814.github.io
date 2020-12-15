@@ -11,6 +11,7 @@
         - [1.2.1. Service基本用法](#121-service基本用法)
             - [1.2.1.1. 外部Service](#1211-外部service)
         - [1.2.2. 集群外部访问Pod或Service](#122-集群外部访问pod或service)
+            - [1.2.2.1. 利用Rinetd实现Service负载均衡](#1221-利用rinetd实现service负载均衡)
         - [1.2.3. DNS服务搭建指南](#123-dns服务搭建指南)
         - [1.2.4. 自定义DNS和上游DNS服务器](#124-自定义dns和上游dns服务器)
         - [1.2.5. Ingress：HTTP 7层路由机制](#125-ingresshttp-7层路由机制)
@@ -77,6 +78,12 @@ https://blog.csdn.net/qq_23348071/article/details/87185025
 
 1. 将容器应用的端口号映射到物理机  
 2. 将Service的端口号映射到物理机  
+
+#### 1.2.2.1. 利用Rinetd实现Service负载均衡  
+&emsp; 端口转发工具-Rineted：  
+&emsp; Rineted是Linux操作系统中为重定向传输控制协议工具。  
+&emsp; 可将源IP端口数据转发至目标IP端口。  
+&emsp; 在Kubernetes中用于将service服务对外暴露。  
 
 ### 1.2.3. DNS服务搭建指南  
 &emsp; 作为服务发现机制的基本功能，在集群内需要能够通过服务名对服务进行访问，这就需要一个集群范围的DNS服务来完成服务名到ClusterIP的解析。  

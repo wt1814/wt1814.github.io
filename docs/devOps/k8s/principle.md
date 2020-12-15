@@ -31,7 +31,6 @@ https://kuboard.cn/learning/
 &emsp; Pod组成的应用是通过Service这类抽象资源提供内部和外部访问的，但是service的外部访问需要端口的映射，带来的是端口映射的麻烦和操作的繁琐。为此还有一种提供外部访问的资源叫做Ingress。  
 4. Service又是怎么关联到Pod呢？  
 &emsp; <font color = "red">在上面说的Pod是由Pod控制器进行管理控制，对Pod资源对象的期望状态进行自动管理。</font> **<font color = "lime">而在Pod控制器是通过一个YAML的文件进行定义Pod资源对象的。在该文件中，还会对Pod资源对象进行打标签，用于Pod的辨识，而Servcie就是通过标签选择器，关联至同一标签类型的Pod资源对象。这样就实现了从service-->pod-->container的一个过程。</font>**  
-  
 
 ## 1.2. Kubernetes的集群组件
 &emsp; **Kubernetes是利用共享网络将多个物理机或者虚拟机组成一个集群，** 在各个服务器之间进行通信，该集群是配置Kubernetes的所有功能和负载的物理平台。**<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
@@ -161,9 +160,7 @@ https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%
 &emsp; 如图：创建的Pod和Service等资源对象都属于名称空间级别，未指定时，都属于默认的名称空间
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-10.png)  
 
-
 <!-- 
-
 * **集群联邦（Federation）**  
 &emsp; K8s在1.3版本里发布了beta版的Federation功能。在云计算环境中，服务的作用距离范围从近到远一般可以有：同主机（Host，Node）、跨主机同可用区（Available Zone）、跨可用区同地区（Region）、跨地区同服务商（Cloud Service Provider）、跨云平台。K8s的设计定位是单一集群在同一个地域内，因为同一个地区的网络性能才能满足K8s的调度和计算存储连接要求。而联合集群服务就是为提供跨Region跨服务商K8s集群服务而设计的。  
 &emsp; 每个K8s Federation有自己的分布式存储、API Server和Controller Manager。用户可以通过Federation的API Server注册该Federation的成员K8s Cluster。当用户通过Federation的API Server创建、更改API对象时，Federation API Server会在自己所有注册的子K8s Cluster都创建一份对应的API对象。在提供业务请求服务时，K8s Federation会先在自己的各个子Cluster之间做负载均衡，而对于发送到某个具体K8s Cluster的业务请求，会依照这个K8s Cluster独立提供服务时一样的调度模式去做K8s Cluster内部的负载均衡。而Cluster之间的负载均衡是通过域名服务的负载均衡来实现的。  

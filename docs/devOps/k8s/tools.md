@@ -3,8 +3,8 @@
 
 - [1. Kubernetes运维指南](#1-kubernetes运维指南)
     - [1.1. Kubernetes集群管理指南](#11-kubernetes集群管理指南)
-        - [1.1.1. 集群统一日志管理](#111-集群统一日志管理)
-        - [1.1.2. 使用WebUI（Dashboard）管理集群](#112-使用webuidashboard管理集群)
+        - [1.1.1. 使用WebUI（Dashboard）管理集群](#111-使用webuidashboard管理集群)
+        - [1.1.2. 集群统一日志管理](#112-集群统一日志管理)
         - [1.1.3. Node的管理](#113-node的管理)
         - [1.1.4. 更新资源对象的Label](#114-更新资源对象的label)
         - [1.1.5. Namespace：集群环境共享与隔离](#115-namespace集群环境共享与隔离)
@@ -24,7 +24,14 @@
 ## 1.1. Kubernetes集群管理指南  
 &emsp; 本节将从Node的管理、Label的管理、Namespace资源共享、资源配额管理、集群Master高可用及集群监控等方面，对Kubernetes集群本身的运维管理进行详细说明。  
 
-### 1.1.1. 集群统一日志管理  
+### 1.1.1. 使用WebUI（Dashboard）管理集群  
+<!-- 
+kubernetes部署dashboard可视化插件
+https://blog.csdn.net/networken/article/details/85607593?utm_medium=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.wap_blog_relevant_pic&depth_1-utm_source=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.wap_blog_relevant_pic
+-->
+&emsp; Kubernetes的可视化UI界面有官方提供的插件kubemetes-dashboard。使用kubeadm安装kubernetes-dashboard。  
+
+### 1.1.2. 集群统一日志管理  
 
 <!-- 
 Kubernetes日志的6个最佳实践 
@@ -58,13 +65,6 @@ https://mp.weixin.qq.com/s/oCOKYOgak3PjmHnFiAin7g
 * 利用DaemonSet来让Fluentd Pod在每个Node上运行。  
 
 &emsp; 目前官方推荐的包括Fluentd > Logstash等日志或者监控类的Pod的运行方式就是DaemonSet方式。
-
-### 1.1.2. 使用WebUI（Dashboard）管理集群  
-<!-- 
-kubernetes部署dashboard可视化插件
-https://blog.csdn.net/networken/article/details/85607593?utm_medium=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.wap_blog_relevant_pic&depth_1-utm_source=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.wap_blog_relevant_pic
--->
-&emsp; Kubernetes的可视化UI界面有官方提供的插件kubemetes-dashboard。    
 
 ### 1.1.3. Node的管理  
 1. Node的隔离与恢复  

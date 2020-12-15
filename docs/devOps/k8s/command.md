@@ -70,6 +70,12 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 * 通过yum官方仓库安装  
 * 二进制包的形式进行安装，kubeasz (github)  
 
+
+        kubeadm/kubelet/kubectl区别？  
+        kubeadm是kubernetes集群快速构建工具。
+        kubelet运行在所有节点上，负责启动POD和容器，以系统服务形式出现。
+        kubectl：kubectl是kubenetes命令行工具，提供指令。
+
 ## 1.2. Kubernetes的配置
 ### 1.2.1. Kubernetes集群的安全设置
 
@@ -159,6 +165,7 @@ $ kubectl [command] [TYPE] [NAME] [flags]
 4. flags：kubectl子命令的可选参数，例如使用"-s”指定apiserver的URL地址而不用默认值。  
 
 ### 1.3.2. kubectl常用命令
+[kubectl命令表](http://docs.kubernetes.org.cn/683.html)  
 1. 创建资源对象  
     &emsp; 根据yaml配置文件一次性创建service和rc：  
 
