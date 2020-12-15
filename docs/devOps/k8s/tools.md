@@ -18,10 +18,7 @@
 
 <!-- /TOC -->
 
-
-
 # 1. Kubernetes运维指南  
-
 &emsp; <font color = "lime">整体参考《Kubernetes权威指南》</font>  
 
 ## 1.1. Kubernetes集群管理指南  
@@ -60,18 +57,14 @@ https://mp.weixin.qq.com/s/oCOKYOgak3PjmHnFiAin7g
 * 利用kubelet的—config参数，为每个Node加载Fluentd Pod。  
 * 利用DaemonSet来让Fluentd Pod在每个Node上运行。  
 
-&emsp; 目前官方推荐的包括Fluentd > Logstash等日志或者监控类的Pod的运行方式就是DaemonSet 方式
-
+&emsp; 目前官方推荐的包括Fluentd > Logstash等日志或者监控类的Pod的运行方式就是DaemonSet方式。
 
 ### 1.1.2. 使用WebUI（Dashboard）管理集群  
 <!-- 
 kubernetes部署dashboard可视化插件
 https://blog.csdn.net/networken/article/details/85607593?utm_medium=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.wap_blog_relevant_pic&depth_1-utm_source=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.wap_blog_relevant_pic
 -->
-Kubernetes的可视化UI界面的产品有多种：  
-
-* 官方插件kubemetes-dashboard  
-* Kuboard (https://kuboard.cn/ )  
+&emsp; Kubernetes的可视化UI界面有官方提供的插件kubemetes-dashboard。    
 
 ### 1.1.3. Node的管理  
 1. Node的隔离与恢复  

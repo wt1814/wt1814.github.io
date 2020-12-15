@@ -31,42 +31,28 @@ https://kuboard.cn/learning/
 &emsp; Pod组成的应用是通过Service这类抽象资源提供内部和外部访问的，但是service的外部访问需要端口的映射，带来的是端口映射的麻烦和操作的繁琐。为此还有一种提供外部访问的资源叫做Ingress。  
 4. Service又是怎么关联到Pod呢？  
 &emsp; <font color = "red">在上面说的Pod是由Pod控制器进行管理控制，对Pod资源对象的期望状态进行自动管理。</font> **<font color = "lime">而在Pod控制器是通过一个YAML的文件进行定义Pod资源对象的。在该文件中，还会对Pod资源对象进行打标签，用于Pod的辨识，而Servcie就是通过标签选择器，关联至同一标签类型的Pod资源对象。这样就实现了从service-->pod-->container的一个过程。</font>**  
-5. **<font color = "lime">Pod的创建逻辑流程是怎样的？</font>**  
-    1. 客户端提交创建请求，可以通过API Server的Restful API，也可以使用kubectl命令行工具。支持的数据类型包括JSON和YAML。  
-    2. API Server处理用户请求，存储Pod数据到etcd。  
-    3. 调度器通过API Server查看未绑定的Pod。尝试为Pod分配主机。  
-    4. 过滤主机 (调度预选)：调度器用一组规则过滤掉不符合要求的主机。比如Pod指定了所需要的资源量，那么可用资源比Pod需要的资源量少的主机会被过滤掉。  
-    5. 主机打分(调度优选)：对第一步筛选出的符合要求的主机进行打分，在主机打分阶段，调度器会考虑一些整体优化策略，比如把容器一个Replication Controller的副本分布到不同的主机上，使用最低负载的主机等。  
-    6. 选择主机：选择打分最高的主机，进行binding操作，结果存储到etcd中。  
-    7. kubelet根据调度结果执行Pod创建操作： 绑定成功后，scheduler会调用APIServer的API在etcd中创建一个boundpod对象，描述在一个工作节点上绑定运行的所有pod信息。运行在每个工作节点上的kubelet也会定期与etcd同步boundpod信息，一旦发现应该在该工作节点上运行的boundpod对象没有更新，则调用Docker API创建并启动pod内的容器。  
+  
 
 ## 1.2. Kubernetes的集群组件
-&emsp; **Kubernetes是利用共享网络将多个物理机或者虚拟机组成一个集群，**在各个服务器之间进行通信，该集群是配置Kubernetes的所有功能和负载的物理平台。  
-&emsp; **<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
+&emsp; **Kubernetes是利用共享网络将多个物理机或者虚拟机组成一个集群，** 在各个服务器之间进行通信，该集群是配置Kubernetes的所有功能和负载的物理平台。**<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-6.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-11.png)  
 <!--
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-11.png)  
 &emsp; Master：是集群的网关和中枢枢纽，主要作用：暴露API接口，跟踪其他服务器的健康状态、以最优方式调度负载，以及编排其他组件之间的通信。单个的Master节点可以完成所有的功能，但是考虑单点故障的痛点，生产环境中通常要部署多个Master节点，组成Cluster。  
 Master 节点主要负责存储集群的状态并为 Kubernetes 对象分配和调度资源。  
 -->  
-* Master  
-&emsp; 作为管理集群状态的Master节点，它主要负责接收客户端的请求，安排容器的执行并且运行控制循环，将集群的状态向目标状态进行迁移。<font color = "red">Master的组件包括：apiserver、controller-manager、scheduler和etcd等几个组件。</font> 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-17.png)  
+
+### 1.2.1. Master组件
+&emsp; 作为管理集群状态的Master节点，它主要负责接收客户端的请求，安排容器的执行并且运行控制循环，将集群的状态向目标状态进行迁移。**<font color = "lime">Master的组件包括：apiserver、controller-manager、scheduler和etcd等几个组件。</font>** 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-17.png)   
+<!-- 
 &emsp; 其中API Server负责处理来自用户的请求，其主要作用就是对外提供RESTful的接口，包括用于查看集群状态的读请求以及改变集群状态的写请求，也是唯一一个与 etcd集群通信的组件。  
 &emsp; 而Controller管理器运行了一系列的控制器进程，这些进程会按照用户的期望状态在后台不断地调节整个集群中的对象，当服务的状态发生了改变，控制器就会发现这个改变并且开始向目标状态迁移。  
-&emsp; 最后的Scheduler调度器其实为Kubernetes中运行的Pod选择部署的Worker节点，它会根据用户的需要选择最能满足请求的节点来运行Pod，它会在每次需要调度Pod时执行。  
-<!-- 
+&emsp; 最后的Scheduler调度器其实为Kubernetes中运行的Pod选择部署的Worker节点，它会根据用户的需要选择最能满足请求的节点来运行Pod，它会在每次需要调度Pod时执行。
+
 Kubernetes Pod调度说明，Scheduler
 https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 -->
-* Worker  
-&emsp; Node是Kubernetes的工作节点，负责接收来自Master的工作指令，并根据指令相应地创建和销毁Pod对象，以及调整网络规则进行合理路由和流量转发。生产环境中，Node节点可以有N个。<font color = "red">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-18.png)  
-&emsp; kubelet是K8S集群的工作与节点上的代理组件。kubelet是一个节点上的主要服务，它周期性地从API Server接受新的或者修改的Pod规范并且保证节点上的Pod和其中容器的正常运行，还会保证节点会向目标状态迁移，该节点仍然会向Master节点发送宿主机的健康状况。  
-&emsp; 另一个运行在各个节点上的代理服务kube-proxy负责宿主机的子网管理，同时也能将服务暴露给外部，其原理就是在多个隔离的网络中把请求转发给正确的Pod或者容器。  
-* 一个完整的K8S集群，还包括CoreDNS、Prometheus（或HeapSter）、Dashboard、Ingress Controller等几个附加组件。其中cAdivsor组件作用于各个节点（master和node节点）之上，用于收集及收集容器及节点的CPU、内存以及磁盘资源的利用率指标数据，这些统计数据由Heapster聚合后，可以通过apiserver访问。  
-
-### 1.2.1. Master组件
 1. API Server  
 &emsp; K8S对外的唯一接口，提供HTTP/HTTPS RESTful API，即kubernetes API。所有的请求都需要经过这个接口进行通信。主要负责接收、校验并响应所有的REST请求，结果状态被持久存储在etcd当中，所有资源增删改查的唯一入口。
 2. etcd  
@@ -82,8 +68,13 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 &emsp; 资源调度，负责决定将Pod放到哪个Node上运行。Scheduler在调度时会对集群的结构进行分析，当前各个节点的负载，以及应用对高可用、性能等方面的需求。
 
 ### 1.2.2. Node组件
-&emsp; Node主要负责提供容器的各种依赖环境，并接受Master管理。每个Node有以下几个组件构成。  
-
+&emsp; Node是Kubernetes的工作节点，负责接收来自Master的工作指令，并根据指令相应地创建和销毁Pod对象，以及调整网络规则进行合理路由和流量转发。生产环境中，Node节点可以有N个。**<font color = "lime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-18.png)  
+<!-- 
+&emsp; kubelet是K8S集群的工作与节点上的代理组件。kubelet是一个节点上的主要服务，它周期性地从API Server接受新的或者修改的Pod规范并且保证节点上的Pod和其中容器的正常运行，还会保证节点会向目标状态迁移，该节点仍然会向Master节点发送宿主机的健康状况。  
+&emsp; 另一个运行在各个节点上的代理服务kube-proxy负责宿主机的子网管理，同时也能将服务暴露给外部，其原理就是在多个隔离的网络中把请求转发给正确的Pod或者容器。  
+&emsp; Node主要负责提供容器的各种依赖环境，并接受Master管理。每个Node有以下几个组件构成。 
+-->
 1. Kubelet  
 &emsp; kubelet是node的agent，当Scheduler确定在某个Node上运行Pod后，会将Pod的具体配置信息（image、volume等）发送给该节点的kubelet，kubelet会根据这些信息创建和运行容器，并向master报告运行状态。
 2. Container Runtime  
@@ -92,7 +83,10 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 &emsp; service在逻辑上代表了后端的多个Pod，外借通过service访问Pod。service接收到请求就需要kube-proxy完成转发到Pod的。每个Node都会运行kube-proxy服务，负责将访问的service的TCP/UDP数据流转发到后端的容器，如果有多个副本，kube-proxy会实现负载均衡，有2种方式：LVS或者Iptables
 
 ### 1.2.3. 插件  
-&emsp; K8S集群中还有一些有用的插件，通常是由第三方提供的特定应用程序。如下图：  
+<!-- 
+一个完整的K8S集群，还包括CoreDNS、Prometheus（或HeapSter）、Dashboard、Ingress Controller等几个附加组件。其中cAdivsor组件作用于各个节点（master和node节点）之上，用于收集及收集容器及节点的CPU、内存以及磁盘资源的利用率指标数据，这些统计数据由Heapster聚合后，可以通过apiserver访问。 
+-->
+&emsp; K8S集群中还有一些有用的插件，如：CoreDNS、Prometheus（或HeapSter）、Dashboard、Ingress Controller，通常是由第三方提供的特定应用程序。如下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-12.png)  
 
 1. KubeDNS  
@@ -117,6 +111,10 @@ https://mp.weixin.qq.com/s/ZF1V4Lftg_NFUINMYkYgPw
 https://www.kubernetes.org.cn/kubernetes%e8%ae%be%e8%ae%a1%e7%90%86%e5%bf%b5
 ～～
 -->
+<!--
+标签和选择器
+https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E6%A0%87%E7%AD%BE
+-->
 &emsp; Kubernetes常用概念和术语：  
 
 * **Pod**  
@@ -125,11 +123,7 @@ https://www.kubernetes.org.cn/kubernetes%e8%ae%be%e8%ae%a1%e7%90%86%e5%bf%b5
 &emsp; 标签（Label）是将资源进行分类的标识符，就好像超市的商品分类一般。资源标签具体化的就是一个键值型（key/values)数据。使用标签是为了对指定对象进行辨识，比如Pod对象。标签可以在对象创建时进行附加，也可以创建后进行添加或修改。要知道的是一个对象可以有多个标签，一个标签页可以附加到多个对象。如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-7.png)  
 * **标签选择器（Selector）**  
-<!--
-标签和选择器
-https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E6%A0%87%E7%AD%BE
--->
-&emsp; **有标签，当然就有标签选择器，它是根据Label进行过滤符合条件的资源对象的一种机制。** 比如将含有标签role: backend的所有Pod对象挑选出来归并为一组。通常在使用过程中，会通过标签对资源对象进行分类，然后再通过标签选择器进行筛选，最常见的应用就是讲一组这样的Pod资源对象创建为某个Service的端点。如图：
+&emsp; **有标签，当然就有标签选择器，它是根据Label进行过滤符合条件的资源对象的一种机制。** 比如将含有标签role: backend的所有Pod对象挑选出来归并为一组。通常在使用过程中，会通过标签对资源对象进行分类，然后再通过标签选择器进行筛选，最常见的应用就是讲一组这样的Pod资源对象创建为某个Service的端点。如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-8.png)  
 * **Pod控制器（Controller）**  
 &emsp; 虽然Pod是K8S的最小调度单位，但是K8S并不会直接地部署和管理Pod对象，而是要借助于另外一个抽象资源--Controller进行管理。**其实一种管理Pod生命周期的资源抽象，并且它是一类对象，并非单个的资源对象，其中包括：ReplicationController、ReplicaSet、Deployment、StatefulSet、Job等。**  
@@ -208,7 +202,16 @@ https://www.cnblogs.com/justmine/p/8684564.html
 -->
 &emsp; K8S运行流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-5.png)  
-&emsp; Kubernetes遵循非常传统的客户端服务端架构，客户端通过 RESTful 接口或者直接使用 kubectl 与 Kubernetes 集群进行通信，这两者在实际上并没有太多的区别，后者也只是对 Kubernetes 提供的 RESTful API 进行封装并提供出来。  
+&emsp; Kubernetes遵循非常传统的客户端服务端架构，客户端通过RESTful接口或者直接使用kubectl与Kubernetes集群进行通信，这两者在实际上并没有太多的区别，后者也只是对Kubernetes提供的RESTful API进行封装并提供出来。  
+
+&emsp; **<font color = "lime">Pod的创建逻辑流程是怎样的？</font>**  
+1. 客户端提交创建请求，可以通过API Server的Restful API，也可以使用kubectl命令行工具。支持的数据类型包括JSON和YAML。  
+2. API Server处理用户请求，存储Pod数据到etcd。  
+3. 调度器通过API Server查看未绑定的Pod。尝试为Pod分配主机。  
+4. 过滤主机 (调度预选)：调度器用一组规则过滤掉不符合要求的主机。比如Pod指定了所需要的资源量，那么可用资源比Pod需要的资源量少的主机会被过滤掉。  
+5. 主机打分(调度优选)：对第一步筛选出的符合要求的主机进行打分，在主机打分阶段，调度器会考虑一些整体优化策略，比如把容器一个Replication Controller的副本分布到不同的主机上，使用最低负载的主机等。  
+6. 选择主机：选择打分最高的主机，进行binding操作，结果存储到etcd中。  
+7. kubelet根据调度结果执行Pod创建操作：绑定成功后，scheduler会调用APIServer的API在etcd中创建一个boundpod对象，描述在一个工作节点上绑定运行的所有pod信息。运行在每个工作节点上的kubelet也会定期与etcd同步boundpod信息，一旦发现应该在该工作节点上运行的boundpod对象没有更新，则调用Docker API创建并启动pod内的容器。
 
 ## 1.5. Kubernetes的网络模型  
 &emsp; K8S为Pod和Service资源对象分别使用了各自的专有网络，Pod网络由K8S的网络插件配置实现，而Service网络则由K8S集群进行指定。如下图：  
@@ -217,9 +220,10 @@ https://www.cnblogs.com/justmine/p/8684564.html
 &emsp; <font color = "lime">而Service的地址却是一个虚拟IP地址，没有任何网络接口配置在此地址上，它由Kube-proxy借助iptables规则或ipvs规则重定向到本地端口，再将其调度到后端的Pod对象。</font>Service的IP地址是集群提供服务的接口，也称为Cluster IP。  
 &emsp; Pod网络和IP由K8S的网络插件负责配置和管理，具体使用的网络地址可以在管理配置网络插件时进行指定，如10.244.0.0/16网络。而Cluster网络和IP是由K8S集群负责配置和管理，如10.96.0.0/12网络。  
 &emsp; 从上图进行总结起来，一个K8S集群包含是三个网络。  
-（1）节点网络：各主机（Master、Node、ETCD等）自身所属的网络，地址配置在主机的网络接口，用于各主机之间的通信，又称为节点网络。  
-（2）Pod网络：专用于Pod资源对象的网络，它是一个虚拟网络，用于为各Pod对象设定IP地址等网络参数，其地址配置在Pod中容器的网络接口上。Pod网络需要借助kubenet插件或CNI插件实现。  
-（3）Service网络：专用于Service资源对象的网络，它也是一个虚拟网络，用于为K8S集群之中的Service配置IP地址，但是该地址不会配置在任何主机或容器的网络接口上，而是通过Node上的kube-proxy配置为iptables或ipvs规则，从而将发往该地址的所有流量调度到后端的各Pod对象之上。  
+
+* 节点网络：各主机（Master、Node、ETCD等）自身所属的网络，地址配置在主机的网络接口，用于各主机之间的通信，又称为节点网络。  
+* Pod网络：专用于Pod资源对象的网络，它是一个虚拟网络，用于为各Pod对象设定IP地址等网络参数，其地址配置在Pod中容器的网络接口上。Pod网络需要借助kubenet插件或CNI插件实现。  
+* Service网络：专用于Service资源对象的网络，它也是一个虚拟网络，用于为K8S集群之中的Service配置IP地址，但是该地址不会配置在任何主机或容器的网络接口上，而是通过Node上的kube-proxy配置为iptables或ipvs规则，从而将发往该地址的所有流量调度到后端的各Pod对象之上。  
 
 <!-- 
 &emsp; K8S的网络中主要存在4种类型的通信：  

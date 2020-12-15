@@ -65,7 +65,7 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 
 &emsp; **Kubernetes的安装方式：**  
 
-* （推荐）使用kubeadmin通过离线镜像安装  
+* **（推荐）使用<font color = "red">kubeadmin</font>通过离线镜像安装**  
 * 使用阿里公有云平台k8s  
 * 通过yum官方仓库安装  
 * 二进制包的形式进行安装，kubeasz (github)  
@@ -81,8 +81,7 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 kubernetes集群网络
 https://www.cnblogs.com/yuezhimi/p/13042037.html
 -->
-&emsp; 在多个Node组成的Kubernetes集群内，跨主机的容器间网络互通是Kubernetes集群能够正常工作的前提条件。Kubernetes本身并不会对跨主机的容器网络进行设置，这需要额外的工具来实现。除了谷歌公有云GCE平台提供的网络设置，一些开源的工具包括Flannel, Open vSwitch. Weave> Calico等都能够实现跨主机的容器间网络互通。随着CNI网络模型的逐渐成熟，Kubernetes将优先使用CNI网络插件打通跨主机的容器网络。  
-
+&emsp; 在多个Node组成的Kubernetes集群内，跨主机的容器间网络互通是Kubernetes集群能够正常工作的前提条件。Kubernetes本身并不会对跨主机的容器网络进行设置，这需要额外的工具来实现。除了谷歌公有云GCE平台提供的网络设置，一些开源的工具包括Flannel, Open vSwitch. Weave> Calico等都能够实现跨主机的容器间网络互通。  
 
 ### 1.2.3. 基于NFS文件集群共享  
 <!-- 
@@ -93,9 +92,11 @@ https://blog.csdn.net/zuozewei/article/details/108165523
 &emsp; 为了使 Pod 在任何节点上都能够使用同一份持久化存储数据，需要使用网络存储的解决方案为Pod提供数据卷。常用的网络存储方案有：NFS/cephfs/glusterfs。  
 
 &emsp; **Kubernetes集群网络存储与Pod挂载点的区别：**  
+&emsp; <font color = "lime">Kubernetes集群网络存储是不同宿主机实现文件共享；Pod挂载点是容器与宿主机实现文件共享。</font>  
 
 
 ### 1.2.4. 内网中搭建私有仓库  
+......
 <!-- 
 从私有仓库拉取镜像
 https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-registry/

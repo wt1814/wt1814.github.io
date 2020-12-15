@@ -1,6 +1,13 @@
+<!-- TOC -->
 
+- [1. Yaml文件配置详解](#1-yaml文件配置详解)
+    - [1.1. k8s的yaml文件配置详解](#11-k8s的yaml文件配置详解)
+    - [1.2. 资源限制](#12-资源限制)
+    - [1.3. 零停机滚动更新](#13-零停机滚动更新)
 
-# Yaml文件配置详解
+<!-- /TOC -->
+
+# 1. Yaml文件配置详解
 <!-- 
 k8s的yaml文件配置详解
 https://www.cnblogs.com/arrow-kejin/p/10058758.html
@@ -10,7 +17,7 @@ https://blog.51cto.com/14154700/2453845
 https://www.jianshu.com/p/c63c9efaeac3
 -->
 
-## k8s的yaml文件配置详解  
+## 1.1. k8s的yaml文件配置详解  
 
 <!-- 
 
@@ -171,8 +178,8 @@ spec: # 【必选-Object】 Pod中容器的详细定义
             path: String
 -->
 
-## 资源限制  
+## 1.2. 资源限制  
 
 
-## 零停机滚动更新  
+## 1.3. 零停机滚动更新  
 
