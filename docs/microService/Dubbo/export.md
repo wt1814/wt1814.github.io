@@ -40,7 +40,7 @@
 * ProtocolFilterWrapper  
 &emsp; 是一个Protocol的支持过滤器的装饰器。通过该装饰器的对原始对象的包装使得Protocol支持可扩展的过滤器链，已 经支持的包括ExceptionFilter、ExecuteLimitFilter和TimeoutFilter等多种支持不同特性的过滤器。
 * ProtocolListenerWrapper  
-&emsp; 一个支持监听器特性的Protocal的包装器。支持两种监听器的功能扩展，分别是：ExporterListener是远程服务发布 监听器，可以监听服务发布和取消发布两个事件点；InvokerListener是服务消费者引用调用器的监听器，可以监听 引用和销毁两个事件方法。支持可扩展的事件监听模型，目前只提供了一些适配器InvokerListenerAdapter、ExporterListenerAdapter以及简单的过期服务调用监听器DeprecatedInvokerListener。开发者可自行扩展自己的监 听器。  
+&emsp; 一个支持监听器特性的Protocal的包装器。支持两种监听器的功能扩展，分别是：ExporterListener是远程服务发布监听器，可以监听服务发布和取消发布两个事件点；InvokerListener是服务消费者引用调用器的监听器，可以监听引用和销毁两个事件方法。支持可扩展的事件监听模型，目前只提供了一些适配器InvokerListenerAdapter、ExporterListenerAdapter以及简单的过期服务调用监听器DeprecatedInvokerListener。开发者可自行扩展自己的监听器。  
 * ProxyFactory  
 &emsp; dubbo的代理工厂。定义了两个接口分别是：getProxy根据invoker目标接口的代理对象，一般是消费者获得代理对  象触发远程调用；getInvoker方法将代理对象proxy、接口类type和远程服务的URL获取执行对象Invoker，往往是提 供者获得目标执行对象执行目标实现调用。AbstractProxyFactory是其抽象实现，提供了getProxy的模版方法实现，使得可以支持多接口的映射。dubbo最终内置了两种动态代理的实现，分别是jdkproxy和javassist。默认的实现 使用javassist。  
 * Invoker  
@@ -63,12 +63,10 @@
 &emsp; **暴露服务时序图**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-20.png)   
 
-**[服务暴露流程](/docs/microService/Dubbo/export.md)**  
+&emsp; **服务暴露流程**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-40.png)  
 &emsp; 首先ServiceConfig类拿到对外提供服务的实际类ref(如：HelloWorldImpl),然后通过ProxyFactory类的getInvoker方法使用ref生成一个AbstractProxyInvoker实例，到这一步就完成具体服务到Invoker的转化。接下来就是Invoker转换  到Exporter的过程。  
 &emsp; Dubbo处理服务暴露的关键就在Invoker转换到Exporter的过程(如上图中的红色部分)。  
-
-
 
 ## 1.3. 服务暴露总体流程
 &emsp; **<font color = "red">Dubbo 服务暴露过程始于 Spring 容器发布刷新事件，Dubbo 在接收到事件后，会立即执行服务暴露逻辑。（[服务提供者初始化](/docs/microService/Dubbo/dubboSpring.md)）</font>** <font color = "lime">整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装 URL。第二部分是导出服务，包含导出服务到本地 (JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。</font>本篇文章将会对这三个部分代码进行详细的分析。  

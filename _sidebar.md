@@ -169,8 +169,6 @@
     * [RPC](/docs/microService/RPC.md)  
     * [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
     * [Dubbo使用教程](/docs/microService/Dubbo/Dubbo使用教程.md)  
-    * [Dubbo生态](/docs/microService/Dubbo/ecology.md)    
-    
     * [Dubbo框架设计](/docs/microService/Dubbo/design.md)  
     * [扩展点加载(SPI)](/docs/microService/Dubbo/SPI.md)  
         * [获得指定拓展对象](/docs/microService/Dubbo/getExtension.md)  

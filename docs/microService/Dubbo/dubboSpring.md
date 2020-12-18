@@ -42,7 +42,7 @@ https://www.cnblogs.com/caoxb/p/13140261.html
 &emsp; 服务提供者初始化过程，即ServiceBean 初始化过程。   
 
 ### 1.2.1. 解析配置文件  
-&emsp; spring在解析配置文件的过程中，会找到dubbo 命名空间对应的handler，DubboNamespaceHandler。  
+&emsp; Spring解析Dubbo配置文件时，会找到dubbo命名空间对应的handler，DubboNamespaceHandler。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-42.png)   
 
 ```java
@@ -70,7 +70,7 @@ public class DubboNamespaceHandler extends NamespaceHandlerSupport {
 &emsp; 启动大致流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-43.png)   
 
-&emsp; 流程如下  
+&emsp; 流程如下：  
 
 1. spring容器启动
 2. ServiceBean初始化
@@ -80,7 +80,7 @@ public class DubboNamespaceHandler extends NamespaceHandlerSupport {
 
 ### 1.2.2. ServiceBean执行export  
 
-&emsp; 当Spring容器处理完<dubbo:service>标签后，会在Spring容器中生成一个ServiceBean ，服务的发布也会在ServiceBean中完成。ServiceBean的定义如下：  
+&emsp; 当Spring容器处理完\<dubbo:service>标签后，会在Spring容器中生成一个ServiceBean，服务的发布也会在ServiceBean中完成。ServiceBean的定义如下：  
 
 ```java
 public class ServiceBean<T> extends ServiceConfig<T> 
@@ -127,8 +127,10 @@ https://www.cnblogs.com/caoxb/p/13140244.html
 &emsp; 服务消费者初始化过程，即生成RefrenceBean的过程    
 &emsp; 整体执行流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-44.png)   
-&emsp; 备注：Dubbo 默认使用 Javassist 框架为服务接口生成动态代理类，可以使用使用阿里开源 Java 应用诊断工具 Arthas 反编译代理类。  
-&emsp; ubbo官网提供的时序图  
+
+    备注：Dubbo 默认使用 Javassist 框架为服务接口生成动态代理类，可以使用使用阿里开源 Java 应用诊断工具 Arthas 反编译代理类。  
+
+&emsp; dubbo官网提供的时序图  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-45.png)  
 
 ### 1.3.1. RefrenceBean生成过程  
