@@ -188,7 +188,7 @@
 &emsp; 类的使用包括主动引用和被动引用。参考类初始化时机。  
 
 ### 1.2.5. 卸载  
-&emsp; 参考[GC](/docs/java/JVM/5.GC垃圾回收.md)方法区回收。  
+&emsp; 参考[GC](/docs/java/JVM/GC垃圾回收.md)方法区回收。  
 
 ## 1.3. 类加载的方式：类加载器  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-6.png)  
