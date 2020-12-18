@@ -88,6 +88,10 @@ typedef struct redisObject {
 2. <font color = "red">压缩列表ziplist用于实现Hsh、List、Zset；</font>  
 
 ## 1.3. String内部编码  
+<!-- 
+Redis 字符串
+https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
+-->
 &emsp; **<font color = "red">字符串类型的内部编码有三种：</font>**  
 
 *  int，存储 8 个字节的长整型（long，2^63-1）。   

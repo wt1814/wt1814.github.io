@@ -10,6 +10,8 @@
 
 # 1. netty核心概念  
 <!-- 
+45 张图深度解析 Netty 架构与原理 
+https://mp.weixin.qq.com/s/insjE_EJRoCOM-1GqgZP9A
 你要的Netty常见面试题总结，敖丙搞来了！
 https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 Netty网络框架

@@ -30,7 +30,10 @@
 
 <!-- /TOC -->
 
-<!-- 
+<!--
+ Synchronized 的 8 种用法，真是绝了！ 
+ https://mp.weixin.qq.com/s/TOkDyqAE5TToriOMX6I6tg
+
 synchronized
 https://www.cnblogs.com/dennyzhangdd/p/6734638.html
 
