@@ -1,15 +1,13 @@
 <!-- TOC -->
 
 - [1. Dubbo框架设计](#1-dubbo框架设计)
-    - [1.1. 源码构建](#11-源码构建)
-    - [1.5. 模块分包](#15-模块分包)
-    - [1.6. 依赖关系](#16-依赖关系)
-    - [1.2. 整体设计](#12-整体设计)
-    - [1.7. 调用链](#17-调用链)
-    - [1.8. 暴露服务时序](#18-暴露服务时序)
-    - [1.9. 引用服务时序](#19-引用服务时序)
-    - [1.10. 领域模型](#110-领域模型)
-    - [1.11. 基本设计原则](#111-基本设计原则)
+    - [1.1. 源码介绍](#11-源码介绍)
+    - [1.2. 整体分层设计](#12-整体分层设计)
+    - [1.3. Dubbo服务调用](#13-dubbo服务调用)
+        - [1.3.1. 调用链](#131-调用链)
+        - [1.3.2. 暴露服务时序](#132-暴露服务时序)
+        - [1.3.3. 引用服务时序](#133-引用服务时序)
+    - [1.4. DDD领域模型](#14-ddd领域模型)
 
 <!-- /TOC -->
 
@@ -21,11 +19,11 @@ http://dubbo.apache.org/zh-cn/docs/dev/design.html
 
 -->
 
-## 1.1. 源码构建 
+## 1.1. 源码介绍 
 &emsp; git clone https://github.com/apache/dubbo.git ，将代码导入编辑器。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-15.png)   
 
-## 1.5. 模块分包  
+&emsp; **模块分包**  
 <!-- 
 http://svip.iocoder.cn/Dubbo/intro/
 -->
@@ -50,7 +48,7 @@ http://svip.iocoder.cn/Dubbo/intro/
 * transport 层和 exchange 层都放在 remoting 模块中，为 rpc 调用的通讯基础。
 * serialize 层放在 common 模块中，以便更大程度复用。
 
-## 1.6. 依赖关系  
+&emsp; **依赖关系**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-18.png)   
 &emsp; 图例说明：  
 
@@ -59,7 +57,12 @@ http://svip.iocoder.cn/Dubbo/intro/
 * 图中蓝色虚线为初始化时调用，红色虚线为运行时异步调用，红色实线为运行时同步调用。
 * 图中只包含 RPC 的层，不包含 Remoting 的层，Remoting 整体都隐含在 Protocol 中。
 
-## 1.2. 整体设计  
+## 1.2. 整体分层设计  
+&emsp; 基本设计原则
+
+* 采用 Microkernel + Plugin 模式，Microkernel 只负责组装 Plugin，Dubbo 自身的功能也是通过扩展点实现的，也就是 Dubbo 的所有功能点都可被用户自定义扩展所替换。
+* 采用 URL 作为配置信息的统一格式，所有扩展点都通过传递 URL 携带配置信息。
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-16.png)   
 &emsp; 图例说明：  
 
@@ -89,28 +92,25 @@ http://svip.iocoder.cn/Dubbo/intro/
 &emsp; 而Remoting实现是Dubbo协议的实现，如果选择RMI协议，整个Remoting都不会用上，Remoting内部再划为Transport传输层和Exchange信息交换层，Transport 层只负责单向消息传输，是对 Mina, Netty, Grizzly 的抽象，它也可以扩展 UDP 传输，而 Exchange 层是在传输层之上封装了 Request-Response 语义。
 * Registry 和 Monitor 实际上不算一层，而是一个独立的节点，只是为了全局概览，用层的方式画在一起。
 
-## 1.7. 调用链  
+## 1.3. Dubbo服务调用
+
+### 1.3.1. 调用链  
 &emsp; 展开总设计图的红色调用链，如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-19.png)   
 
-## 1.8. 暴露服务时序  
+### 1.3.2. 暴露服务时序  
 &emsp; 展开总设计图左边服务提供方暴露服务的蓝色初始化链，时序图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-20.png)   
 
-## 1.9. 引用服务时序
+### 1.3.3. 引用服务时序
 &emsp; 展开总设计图右边服务消费方引用服务的蓝色初始化链，时序图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-21.png)   
 
 
-## 1.10. 领域模型
+## 1.4. DDD领域模型
 &emsp; 在Dubbo的核心领域模型中：  
 
 * Protocol是服务域，它是 Invoker 暴露和引用的主功能入口，它负责 Invoker 的生命周期管理。
 * Invoker是实体域，它是 Dubbo 的核心模型，其它模型都向它靠扰，或转换成它，它代表一个可执行体，可向它发起 invoke 调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。
 * Invocation 是会话域，它持有调用过程中的变量，比如方法名，参数等。
-
-## 1.11. 基本设计原则
-
-* 采用 Microkernel + Plugin 模式，Microkernel 只负责组装 Plugin，Dubbo 自身的功能也是通过扩展点实现的，也就是 Dubbo 的所有功能点都可被用户自定义扩展所替换。
-* 采用 URL 作为配置信息的统一格式，所有扩展点都通过传递 URL 携带配置信息。
 

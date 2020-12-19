@@ -15,44 +15,39 @@
 
 # 1. Dubbo SPI  
 <!-- 
-
 Dubbo SPI  
 http://dubbo.apache.org/zh-cn/docs/source_code_guide/dubbo-spi.html
 
 自适应拓展机制
 http://dubbo.apache.org/zh-cn/docs/source_code_guide/adaptive-extension.html
 
-
 来说说Dubbo SPI 机制 
 https://mp.weixin.qq.com/s/hR8hlJyGxnn3wIfBhlNbuQ
-
--->
- 
-<!-- 
 扩展点加载
 http://dubbo.apache.org/zh-cn/docs/dev/SPI.html
 -->
 
+
 ## 1.1. SPI简介  
-&emsp; **<font color = "red">SPI 全称为 Service Provider Interface，是一种服务发现机制。SPI 的本质是将接口实现类的全限定名配置在文件中，并由服务加载器读取配置文件，加载实现类。这样可以在运行时，动态为接口替换实现类。</font>** 正因此特性，可以很容易的通过 SPI 机制为程序提供拓展功能。SPI 机制在第三方框架中也有所应用，比如 Dubbo 就是通过 SPI 机制加载所有的组件。不过，Dubbo 并未使用 Java 原生的 SPI 机制，而是对其进行了增强，使其能够更好的满足需求。  
-&emsp; Dubbo改进了 JDK 标准的 SPI 的以下问题：  
+&emsp; **<font color = "red">SPI全称为 Service Provider Interface，是一种服务发现机制。SPI的本质是将接口实现类的全限定名配置在文件中，并由服务加载器读取配置文件，加载实现类。这样可以在运行时，动态为接口替换实现类。</font>** 正因此特性，可以很容易的通过SPI机制为程序提供拓展功能。SPI机制在第三方框架中也有所应用，比如 Dubbo就是通过SPI机制加载所有的组件。不过，Dubbo并未使用Java原生的SPI机制，而是对其进行了增强，使其能够更好的满足需求。  
+&emsp; Dubbo改进了JDK标准的SPI的以下问题：  
 
-* <font color = "red">JDK 标准的 SPI 会一次性实例化扩展点所有实现，</font>如果有扩展实现初始化很耗时，但如果没用上也加载，会很浪费资源。
-* <font color = "red">如果扩展点加载失败，连扩展点的名称都拿不到了。</font>比如：JDK 标准的 ScriptEngine，通过 getName() 获取脚本类型的名称，但如果 RubyScriptEngine 因为所依赖的 jruby.jar 不存在，导致 RubyScriptEngine 类加载失败，这个失败原因被吃掉了，和 ruby 对应不起来，当用户执行 ruby 脚本时，会报不支持 ruby，而不是真正失败的原因。
-* <font color = "red">增加了对扩展点 IoC 和 AOP 的支持，</font>一个扩展点可以直接 setter 注入其它扩展点。
+* <font color = "red">JDK标准的SPI会一次性实例化扩展点所有实现，</font>如果有扩展实现初始化很耗时，但如果没用上也加载，会很浪费资源。
+* <font color = "red">如果扩展点加载失败，连扩展点的名称都拿不到了。</font>比如：JDK标准的ScriptEngine，通过getName()获取脚本类型的名称，但如果 RubyScriptEngine因为所依赖的jruby.jar不存在，导致RubyScriptEngine类加载失败，这个失败原因被吃掉了，和ruby对应不起来，当用户执行ruby脚本时，会报不支持ruby，而不是真正失败的原因。
+* <font color = "red">增加了对扩展点IoC和AOP的支持，</font>一个扩展点可以直接setter注入其它扩展点。
 
-&emsp; 接下来，先来了解一下 Java SPI 与 Dubbo SPI 的用法。  
+&emsp; 接下来，先来了解一下Java SPI与Dubbo SPI的用法。  
 
 ## 1.2. SPI示例  
 ### 1.2.1. Java SPI 示例  
-&emsp; 定义一个接口，名称为 Robot。  
+&emsp; 定义一个接口，名称为Robot。  
 
 ```java
 public interface Robot {
     void sayHello();
 }
 ```
-&emsp; 接下来定义两个实现类，分别为 OptimusPrime 和 Bumblebee。  
+&emsp; 接下来定义两个实现类，分别为OptimusPrime和Bumblebee。  
 
 ```java
 public class OptimusPrime implements Robot {
@@ -71,7 +66,7 @@ public class Bumblebee implements Robot {
     }
 }
 ```
-&emsp; 接下来 META-INF/services 文件夹下创建一个文件，名称为 Robot 的全限定名 org.apache.spi.Robot。文件内容为实现类的全限定的类名，如下：  
+&emsp; 接下来META-INF/services文件夹下创建一个文件，名称为 Robot 的全限定名 org.apache.spi.Robot。文件内容为实现类的全限定的类名，如下：  
 
 ```text
 org.apache.spi.OptimusPrime
@@ -92,7 +87,7 @@ public class JavaSPITest {
 ```
 &emsp; 最后来看一下测试结果，如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-27.png)   
-&emsp; 从测试结果可以看出，两个实现类被成功的加载，并输出了相应的内容。关于 Java SPI 的演示先到这里，接下来演示 Dubbo SPI。  
+&emsp; 从测试结果可以看出，两个实现类被成功的加载，并输出了相应的内容。关于Java SPI的演示先到这里，接下来演示Dubbo SPI。  
 
 ### 1.2.2. Dubbo SPI 示例  
 &emsp; <font color = "red">Dubbo SPI的相关逻辑被封装在了ExtensionLoader类中，通过ExtensionLoader，可以加载指定的实现类。Dubbo SPI所需的配置文件需放置在 META-INF/dubbo 路径下，</font>配置内容如下。  
@@ -101,7 +96,7 @@ public class JavaSPITest {
 optimusPrime = org.apache.spi.OptimusPrime
 bumblebee = org.apache.spi.Bumblebee
 ```
-&emsp; 与Java SPI实现类配置不同，Dubbo SPI是通过键值对的方式进行配置，这样可以按需加载指定的实现类。另外，在测试Dubbo SPI时，需要在Robot接口上标注 @SPI注解。下面来演示Dubbo SPI的用法：  
+&emsp; 与Java SPI实现类配置不同，Dubbo SPI是通过键值对的方式进行配置，这样可以按需加载指定的实现类。另外，在测试Dubbo SPI时，需要在Robot接口上标注@SPI注解。下面来演示Dubbo SPI的用法：  
 
 ```java
 public class DubboSPITest {
@@ -127,7 +122,7 @@ Dubbo扩展机制（三）Wrapper【代理】
 https://www.cnblogs.com/caoxb/p/13140345.html
 -->
 
-&emsp; <font color = "color">自动包装扩展点的 Wrapper 类。</font>ExtensionLoader 在加载扩展点时，如果加载到的扩展点有拷贝构造函数，则判定为扩展点 Wrapper 类。  
+&emsp; <font color = "color">自动包装扩展点的Wrapper类。</font>ExtensionLoader在加载扩展点时，如果加载到的扩展点有拷贝构造函数，则判定为扩展点Wrapper类。  
 &emsp; Wrapper类内容：  
 
 ```java
@@ -148,13 +143,13 @@ public class XxxProtocolWrapper implements Protocol {
     // ...
 }
 ```
-&emsp; Wrapper类同样实现了扩展点接口，但是 Wrapper 不是扩展点的真正实现。它的用途主要是用于从 ExtensionLoader 返回扩展点时，包装在真正的扩展点实现外。即从 ExtensionLoader 中返回的实际上是 Wrapper 类的实例，Wrapper 持有了实际的扩展点实现类。  
-&emsp; 扩展点的 Wrapper 类可以有多个，也可以根据需要新增。  
-&emsp; 通过 Wrapper 类可以把所有扩展点公共逻辑移至 Wrapper 中。新加的 Wrapper 在所有的扩展点上添加了逻辑，有些类似 AOP，即 Wrapper 代理了扩展点。  
+&emsp; Wrapper类同样实现了扩展点接口，但是Wrapper不是扩展点的真正实现。它的用途主要是用于从ExtensionLoader返回扩展点时，包装在真正的扩展点实现外。即从 ExtensionLoader中返回的实际上是Wrapper类的实例，Wrapper持有了实际的扩展点实现类。  
+&emsp; 扩展点的Wrapper类可以有多个，也可以根据需要新增。  
+&emsp; 通过Wrapper类可以把所有扩展点公共逻辑移至Wrapper中。新加的Wrapper在所有的扩展点上添加了逻辑，有些类似AOP，即Wrapper代理了扩展点。  
 
 ### 1.3.2. 扩展点自动装配  
-&emsp; 加载扩展点时，自动注入依赖的扩展点。加载扩展点时，扩展点实现类的成员如果为其它扩展点类型，ExtensionLoader 在会自动注入依赖的扩展点。ExtensionLoader 通过扫描扩展点实现类的所有 setter 方法来判定其成员。即 ExtensionLoader 会执行扩展点的拼装操作。  
-&emsp; 示例：有两个为扩展点 CarMaker（造车者）、WheelMaker \(造轮者)  
+&emsp; 加载扩展点时，自动注入依赖的扩展点。加载扩展点时，扩展点实现类的成员如果为其它扩展点类型，ExtensionLoader在会自动注入依赖的扩展点。ExtensionLoader通过扫描扩展点实现类的所有setter方法来判定其成员。即ExtensionLoader会执行扩展点的拼装操作。  
+&emsp; 示例：有两个为扩展点CarMaker（造车者）、WheelMaker(造轮者)  
 &emsp; 接口类如下：  
 
 ```java
@@ -184,7 +179,7 @@ public class RaceCarMaker implements CarMaker {
     }
 }
 ```
-&emsp; ExtensionLoader 加载 CarMaker 的扩展点实现 RaceCarMaker 时，setWheelMaker 方法的 WheelMaker 也是扩展点则会注入 WheelMaker 的实现。  
+&emsp; ExtensionLoader加载CarMaker的扩展点实现RaceCarMaker时，setWheelMaker 方法的 WheelMaker 也是扩展点则会注入 WheelMaker 的实现。  
 &emsp; 这里带来另一个问题，ExtensionLoader 要注入依赖扩展点时，如何决定要注入依赖扩展点的哪个实现。在这个示例中，即是在多个WheelMaker 的实现中要注入哪个。这个问题在下面一点 扩展点自适应 中说明。  
 
 ### 1.3.3. 扩展点自适应  
