@@ -3,8 +3,13 @@
 - [1. 分布式通信基础](#1-分布式通信基础)
     - [1.1. Socket](#11-socket)
     - [1.2. Linux的五种I/O模型](#12-linux的五种io模型)
-        - [1.2.1. I/O交换流程](#121-io交换流程)
-        - [1.2.2. 五种I/O通信模型](#122-五种io通信模型)
+        - [1.2.1. 概念说明](#121-概念说明)
+            - [1.2.1.1. 用户空间与内核空间](#1211-用户空间与内核空间)
+            - [1.2.1.2. 进程切换](#1212-进程切换)
+            - [1.2.1.3. 进程的阻塞](#1213-进程的阻塞)
+            - [1.2.1.4. 文件描述符fd](#1214-文件描述符fd)
+            - [1.2.1.5. 缓存 I/O](#1215-缓存-io)
+        - [1.2.2. I/O模式](#122-io模式)
             - [1.2.2.1. 阻塞IO](#1221-阻塞io)
             - [1.2.2.2. 非阻塞IO](#1222-非阻塞io)
             - [1.2.2.3. 多路复用IO](#1223-多路复用io)
@@ -22,10 +27,10 @@
 
 # 1. 分布式通信基础  
 <!-- 
- 「网络IO套路」当时就靠它追到女友 
- https://mp.weixin.qq.com/s/x-AZQO5uiuu5svIvScotzA
-  图解BIO、NIO、AIO、多路复用IO的区别 
- https://mp.weixin.qq.com/s/XFJX1sUYhTb8509FikgqGg
+「网络IO套路」当时就靠它追到女友 
+https://mp.weixin.qq.com/s/x-AZQO5uiuu5svIvScotzA
+图解BIO、NIO、AIO、多路复用IO的区别 
+https://mp.weixin.qq.com/s/XFJX1sUYhTb8509FikgqGg
 -->
 ## 1.1. Socket  
 <!-- 
@@ -49,31 +54,67 @@ https://www.cnblogs.com/meier1205/p/5971313.html
 ## 1.2. Linux的五种I/O模型  
 <!-- 
 https://segmentfault.com/a/1190000003063859
-
-四图，读懂 BIO、NIO、AIO、多路复用 IO 的区别 
-https://mp.weixin.qq.com/s/CRd3-vRD7xwoexqv7xyHRw
-彤哥说netty系列之IO的五种模型
-https://mp.weixin.qq.com/s?__biz=Mzg2ODA0ODM0Nw==&mid=2247484080&idx=1&sn=54d451db27af1067365ed1fef94a0b2d&chksm=ceb30e04f9c48712bcc13ecb14014fd3b244385881d1aabd66e794b14429ce938b8296f54297&mpshare=1&scene=1&srcid=&sharer_sharetime=1573694075606&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=0fd7b4fa2fb2f076f6b32bb04fcdff32f38e3e711297c12c2ac01f3cda80a8dbf8e95fe381e01b6d0fb0124c2b23cde0c2d17b5f5363615e42acd8ef9d1dd60a86ac6cf94adacae356330adbe943613b&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=9PZBgG0W8u5aIQH8JwuoebfJbcWXVv%2F8Jwpab0URWoWCafXeDrv6e7zaSa2n%2B7Oa
 -->
-### 1.2.1. I/O交换流程  
-&emsp; 对于一次IO操作，数据会先拷贝到内核空间中，然后再从内核空间拷贝到用户空间中，所以<font color = "red">一次read操作，会经历两个阶段：1. 等待数据准备；2. 数据从内核空间拷贝到用户空间。基于以上两个阶段就产生了五种不同的IO模式，分别是：阻塞I/O模型、非阻塞I/O模型、多路复用I/O模型、异步I/O模型。</font><font color= "lime">其中，前四种被称为同步I/O。</font>  
+&emsp; 本章讨论的背景是Linux环境下的network IO。  
 
-### 1.2.2. 五种I/O通信模型  
+### 1.2.1. 概念说明  
+&emsp; 在进行解释之前，首先要说明几个概念：  
+- 用户空间和内核空间   
+- 进程切换  
+- 进程的阻塞  
+- 文件描述符  
+- 缓存 I/O  
 
+#### 1.2.1.1. 用户空间与内核空间
+&emsp; 现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操心系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间。  
+
+#### 1.2.1.2. 进程切换
+&emsp; 为了控制进程的执行，内核必须有能力挂起正在CPU上运行的进程，并恢复以前挂起的某个进程的执行。这种行为被称为进程切换。因此可以说，任何进程都是在操作系统内核的支持下运行的，是与内核紧密相关的。  
+&emsp; 从一个进程的运行转到另一个进程上运行，这个过程中经过下面这些变化：  
+1. 保存处理机上下文，包括程序计数器和其他寄存器。
+2. 更新PCB信息。
+3. 把进程的PCB移入相应的队列，如就绪、在某事件阻塞等队列。
+4. 选择另一个进程执行，并更新其PCB。
+5. 更新内存管理的数据结构。
+6. 恢复处理机上下文。  
+
+#### 1.2.1.3. 进程的阻塞
+&emsp; 正在执行的进程，由于期待的某些事件未发生，如请求系统资源失败、等待某种操作的完成、新数据尚未到达或无新工作做等，则由系统自动执行阻塞原语(Block)，使自己由运行状态变为阻塞状态。可见，进程的阻塞是进程自身的一种主动行为，也因此只有处于运行态的进程（获得CPU），才可能将其转为阻塞状态。当进程进入阻塞状态，是不占用CPU资源的。  
+
+#### 1.2.1.4. 文件描述符fd
+&emsp; 文件描述符（File descriptor）是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。  
+&emsp; 文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。  
+
+#### 1.2.1.5. 缓存 I/O
+&emsp; 缓存 I/O 又被称作标准 I/O，大多数文件系统的默认 I/O 操作都是缓存 I/O。在 Linux 的缓存 I/O 机制中，操作系统会将 I/O 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。  
+&emsp; **缓存I/O的缺点：**  
+&emsp; 数据在传输过程中需要在应用程序地址空间和内核进行多次数据拷贝操作，这些数据拷贝操作所带来的 CPU 以及内存开销是非常大的。  
+
+### 1.2.2. I/O模式  
+&emsp; I/O交换流程：在操作系统中，应用程序对于一次IO操作（以read举例），数据会先拷贝到内核空间中，然后再从内核空间拷贝到用户空间中，所以<font color = "red">一次read操作，会经历两个阶段：1. 等待数据准备；2. 数据从内核空间拷贝到用户空间。基于以上两个阶段就产生了五种不同的IO模式，分别是：阻塞I/O模型、非阻塞I/O模型、多路复用I/O模型、异步I/O模型。</font><font color= "lime">其中，前四种被称为同步I/O。</font>  
+<!-- 
+①同步阻塞IO（Blocking IO）：即传统的IO模型。
+②同步非阻塞IO（Non-blocking IO）：默认创建的socket都是阻塞的，非阻塞IO要求socket被设置为NONBLOCK。注意这里所说的NIO并非Java的NIO（New IO）库。
+③多路复用IO（IO Multiplexing）：即经典的Reactor设计模式，有时也称为异步阻塞IO，Java中的Selector和Linux中的epoll都是这种模型（Redis单线程为什么速度还那么快，就是因为用了多路复用IO和缓存操作的原因）
+④异步IO（Asynchronous IO）：即经典的Proactor设计模式，也称为****异步非阻塞IO****。
+-->
 #### 1.2.2.1. 阻塞IO  
 &emsp; 从进程发起IO操作，一直等待上述两个阶段完成。  
 &emsp; 两阶段一起阻塞。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-1.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-47.png)  
 
 #### 1.2.2.2. 非阻塞IO  
 &emsp; 进程一直询问IO准备好了没有，准备好了再发起读取操作，这时才把数据从内核空间拷贝到用户空间。  
 &emsp; 第一阶段不阻塞但要轮询，第二阶段阻塞。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-2.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-48.png)  
 
 #### 1.2.2.3. 多路复用IO  
 &emsp; 多个连接使用同一个select去询问IO准备好了没有，如果有准备好了的，就返回有数据准备好了，然后对应的连接再发起读取操作，把数据从内核空间拷贝到用户空间。  
 &emsp; 两阶段分开阻塞。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-3.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-49.png)  
 
 #### 1.2.2.4. 信号驱动IO  
 &emsp; 进程发起读取操作会立即返回，当数据准备好了会以通知的形式告诉进程，进程再发起读取操作，把数据从内核空间拷贝到用户空间。  
@@ -84,6 +125,7 @@ https://mp.weixin.qq.com/s?__biz=Mzg2ODA0ODM0Nw==&mid=2247484080&idx=1&sn=54d451
 &emsp; 进程发起读取操作会立即返回，等到数据准备好且已经拷贝到用户空间了再通知进程拿数据。  
 &emsp; 两个阶段都不阻塞。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-5.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-50.png)  
 
 ### 1.2.3. 同步/异步、阻塞/非阻塞  
 #### 1.2.3.1. 同步和异步
