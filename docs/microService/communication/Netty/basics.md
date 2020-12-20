@@ -2,7 +2,7 @@
 
 - [1. 分布式通信基础](#1-分布式通信基础)
     - [1.1. Socket](#11-socket)
-    - [1.2. linux的五种I/O模型](#12-linux的五种io模型)
+    - [1.2. Linux的五种I/O模型](#12-linux的五种io模型)
         - [1.2.1. I/O交换流程](#121-io交换流程)
         - [1.2.2. 五种I/O通信模型](#122-五种io通信模型)
             - [1.2.2.1. 阻塞IO](#1221-阻塞io)
@@ -21,21 +21,16 @@
 
 
 # 1. 分布式通信基础  
-
 <!-- 
  「网络IO套路」当时就靠它追到女友 
  https://mp.weixin.qq.com/s/x-AZQO5uiuu5svIvScotzA
   图解BIO、NIO、AIO、多路复用IO的区别 
  https://mp.weixin.qq.com/s/XFJX1sUYhTb8509FikgqGg
 -->
-
 ## 1.1. Socket  
-
 <!-- 
 https://www.cnblogs.com/meier1205/p/5971313.html
-
 -->
-
 &emsp; Socket本身有“插座”的意思，不是Java中特有的概念，而是一个语言无关的标准，任何可以实现网络编程的编程语言都有Socket。在Linux环境下，用于表示进程间网络通信的特殊文件类型，其本质为内核借助缓冲区形成的伪文件。既然是文件，那么理所当然的，可以使用文件描述符引用套接字。   
 &emsp; 与管道类似的，Linux系统将其封装成文件的目的是为了统一接口，使得读写套接字和读写文件的操作一致。区别是管道主要应用于本地进程间通信，而套接字多应用于网络进程间数据的传递。  
 &emsp; 可以这么理解：Socket就是网络上的两个应用程序通过一个双向通信连接实现数据交换的编程接口API。  
@@ -51,8 +46,7 @@ https://www.cnblogs.com/meier1205/p/5971313.html
 
 &emsp; 一般很少直接使用socket来编程，使用框架比较多，而netty就是其中一种框架。  
 
-## 1.2. linux的五种I/O模型  
-
+## 1.2. Linux的五种I/O模型  
 <!-- 
 https://segmentfault.com/a/1190000003063859
 
@@ -132,5 +126,3 @@ https://mp.weixin.qq.com/s?__biz=Mzg2ODA0ODM0Nw==&mid=2247484080&idx=1&sn=54d451
 ## 1.3. 多路复用详解（select poll epoll）
 
 &emsp; 参考[多路复用详解（select poll epoll）](/docs/microService/communication/Netty/epoll.md)  
-
-

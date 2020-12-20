@@ -151,8 +151,8 @@ public <T> B option(ChannelOption<T> option, T value) {
 |SO_SNDBUF	|套接字使用的发送缓冲区大小|
 |SO_RCVBUF	|套接字使用的接受缓冲区大小|
 |SO_REUSEADDR	|用于决定如果网络上仍然有数据向旧的 ServerSocket 传输数据，是否允许新的 ServerSocket 绑定到与旧的 ServerSocket 同样的端口上。SO_REUSEADDR 选项的默认值与操作系统有关，在某些系统中，允许重用端口，而在某些系统上不允许重用端口|
-|CONNECT_TIMEOUT_MILLIS	|客户端连接超时时间，由于 NIO 原生客户端不提供连接超时接口，因此 Netty 采用的是自定义的连接超时定时器负责检测和超时控制。
-TCP_NODELAY	激活或禁止 TCP_NODELAY 套接字选项，它决定是否使用 Nagle 算法。如果是时间敏感型的应用，建议关闭 Nagle 算法|
+|CONNECT_TIMEOUT_MILLIS	|客户端连接超时时间，由于 NIO 原生客户端不提供连接超时接口，因此 Netty 采用的是自定义的连接超时定时器负责检测和超时控制。|
+|TCP_NODELAY|激活或禁止 TCP_NODELAY 套接字选项，它决定是否使用 Nagle 算法。如果是时间敏感型的应用，建议关闭 Nagle 算法|
 
 &emsp; 设置完参数，就是进行 channel 的设置。与服务端不一样的是，客户端是用的 NioSocketChannel。这里依旧是使用反射工厂实例化 ReflectiveChannelFactory。  
 

@@ -106,7 +106,7 @@ public final class EchoServer {
 * 第 48 行：先调用 #closeFuture() 方法，监听服务器关闭，后调用 ChannelFuture#sync() 方法，阻塞等待成功。😈 注意，此处不是关闭服务器，而是“监听”关闭。
 * 第 49 至 54 行：执行到此处，说明服务端已经关闭，所以调用 EventLoopGroup#shutdownGracefully() 方法，分别关闭两个 EventLoopGroup 对象。
 
-&emsp; **<font color = "lime">Netty启动服务端</font>  
+&emsp; **<font color = "lime">Netty启动服务端</font>**  
 1. 创建ServerBootstrap服务端启动对象。  
 2. 配置bossGroup和workerGroup，其中bossGroup负责接收连接，workerGroup负责处理连接的读写就绪事件。
 3. 配置父Channel，一般为NioServerSocketChannel。  
@@ -191,11 +191,10 @@ int listen(int fd, int backlog);
 &emsp; 接着是步骤5，是设置服务端的 Handler。Handler 分为两种，一种是 子类中的 Handler 是 NioServerSocketChannel 对应的 ChannelPipeline 的 Handler，另一种是父类中的 Handler 是客户端新接入的连接 SocketChannel 对应的 ChannelPipeline 的 Handler。  
 
 ```java
-b.handler()
-    .childHandler();
+b.handler().childHandler();
 ```
 
-&emsp; 上面代码有两个 handler 方法，区别在于 handler() 方法是 NioServerSocketChannel 使用的，所有连接该监听端口的客户端都会执行它；父类 AbstractBootstrap 中的 Handler 是个工厂类，它为每个接入的客户端都创建一个新的 Handler。  
+&emsp; 上面代码有两个 handler 方法，区别在于 handler() 方法是 NioServerSocketChannel使用的，所有连接该监听端口的客户端都会执行它；父类 AbstractBootstrap 中的 Handler 是个工厂类，它为每个接入的客户端都创建一个新的 Handler。  
 
 &emsp; 接着是步骤6，就是绑定本地端口然后启动服务。这是比较重要的一步，我们来分析 ServerBootstrap 的 bind 方法。  
 

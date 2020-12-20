@@ -46,7 +46,7 @@ https://mp.weixin.qq.com/s/insjE_EJRoCOM-1GqgZP9A
 * NIO的类库和API繁杂，使用麻烦，需要熟练掌握Selector、ServerSocketChannek、SockctChannek、ByteBuffer等。  
 * 原生API使用单线程模型，不能很好利用多核优势；  
 * 原生API是直接使用的IO数据，没有做任何封装处理，对数据的编解码、TCP的粘包和拆包、客户端断连、网络的可靠性和安全性方面没有做处理；  
-* **<fong color = "red">(4)JDKNIO的BUG,例如見名昭著的epoll bug，它会导致Selector空轮询，最终导致CPU100%。官方声称在JDK 1.6版本的update18修复了该问题,但是直到JDK 1.7版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有得到根本性解决。该BUG以及与该BUG相关的问题单可以参见以下链接内容。**</font>  
+* **<fong color = "red">JDK NIO的BUG，例如見名昭著的epoll bug，它会导致Selector空轮询，最终导致CPU100%。官方声称在JDK 1.6版本的update18修复了该问题,但是直到JDK 1.7版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有得到根本性解决。该BUG以及与该BUG相关的问题单可以参见以下链接内容。**</font>  
     * http://bugs.java.com/bugdatabase/viewbug.do?bug_id=6403933  
     * http://bugs.java.com/bugdalabase/viewbug.do?bug_id=21477l9  
 
@@ -103,12 +103,11 @@ https://mp.weixin.qq.com/s/insjE_EJRoCOM-1GqgZP9A
 <!-- 
 《Netty权威指南》第20章
 -->
-
 &emsp; Netty采用了典型的三层网络架构进行设计和开发，逻辑架构如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-27.png)  
 
 * Reactor通信调度层  
-&emsp; 它由一系列辅助类完成，包括Reactor线程NioEvenlLoop及其父类，NioSocketChannel/ NioServerSocketChannel及其父类，ByteBuffer以及由其衍生出来的各种Buffer，Unsafe以及其衍生出的各种内部类等。该层的主要职责就是监听网络的读写和连接操作，负责将网络层的数据读取到内存缓冲区中，然后触发务种网络事件，例如连接创建、连接激活、 读申件、写事件等，将这些少件触发到PipeLine中，由PipeLine管理的职责链来进行后续的处理。  
+&emsp; 它由一系列辅助类完成，包括Reactor线程NioEvenlLoop及其父类，NioSocketChannel/NioServerSocketChannel及其父类，ByteBuffer以及由其衍生出来的各种Buffer，Unsafe以及其衍生出的各种内部类等。该层的主要职责就是监听网络的读写和连接操作，负责将网络层的数据读取到内存缓冲区中，然后触发务种网络事件，例如连接创建、连接激活、 读申件、写事件等，将这些少件触发到PipeLine中，由PipeLine管理的职责链来进行后续的处理。  
 * 职责链ChannelPipeline  
 &emsp; 它负责事件在职责链中的有序传播，同时负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。不同应用的Handler用于消息的编解码，它可以将外部的协议消息转换成内部的POJO对象，这样上层业务则只需要关心处理业务逻辑即可，不需要感知底层的协议差异和线程模型差异，实现了架构层面的分层隔离。  
 * 业务逻辑编排层(Service ChannelHandler)  
