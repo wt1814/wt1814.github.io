@@ -21,43 +21,12 @@
 <!-- /TOC -->
 
 <!-- 
- 
 芋道源码
 http://www.iocoder.cn/Dubbo/good-collection/
-
-Dubbo之服务暴露 
-https://mp.weixin.qq.com/s/TK9ZU3Vm4IoTrrwmbvV-uQ
-Dubbo之服务消费原理 
-https://mp.weixin.qq.com/s/9ibX-46VfTnBLWcSSLpXQg
-Dubbo 扩展点加载机制：从 Java SPI 到 Dubbo SPI 
-https://mp.weixin.qq.com/s/PMF2kqT-XnAVmrxoutE0eQ
-Dubbo 路由机制的实现 
-https://mp.weixin.qq.com/s/D81M2PgyQTLEOif_Ex6c-A
-Dubbo 负载均衡的实现 
-https://mp.weixin.qq.com/s/6Kn9uJ7n6W8BMm4OZmhxIQ
-
 -->
-<!-- 
-Dubbo集群容错  
-https://www.cnblogs.com/caoxb/p/13140347.html
--->
-
-<!-- 
-
- Dubbo几个常见面试题 
- https://mp.weixin.qq.com/s/xkwwAUV9ziabPNUMEr5DPQ
- 
--->
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo.png)   
 
 # 1. Dubbo  
-&emsp; Dubbo提供了3个关键功能：  
-
-* 基于接口的远程调用  
-* 容错和负载均衡  
-* 自动服务注册和发现 
-
 ## 1.1. Dubbo介绍
 ### 1.1.1. Dubbo工作流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-11.png)   
@@ -76,6 +45,30 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 4. <font color = "red">(notify)注册中心Registry返回服务提供者地址列表给消费者，</font><font color = "lime">如果有变更，注册中心将基于长连接推送变更数据给消费者。</font>  
 5. <font color = "red">(invoke)服务消费者Consumer，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。</font>  
 6. (count)服务消费者Consumer和提供者Provider，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。  
+
+&emsp; Dubbo提供了3个关键功能：  
+
+* 基于接口的远程调用  
+* 容错和负载均衡  
+* 自动服务注册和发现 
+
+-----
+&emsp; Dubbo的工作原理：  
+1. 服务启动的时候，provider和consumer根据配置信息，连接到注册中心register，分别向注册中心注册和订阅服务  
+2. register根据服务订阅关系，返回provider信息到consumer，同时consumer会把provider信息缓存到本地。如果信息有变更，consumer会收到来自register的推送  
+3， consumer生成代理对象，同时根据负载均衡策略，选择一台provider，同时定时向monitor记录接口的调用次数和时间信息  
+4. 拿到代理对象之后，consumer通过代理对象发起接口调用  
+5. provider收到请求后对数据进行反序列化，然后通过代理调用具体的接口实现  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-52.png)   
+
+&emsp; **为什么要通过代理对象通信？**    
+&emsp; 主要是为了实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：  
+
+1. 调用的负载均衡策略  
+2. 调用失败、超时、降级和容错机制  
+3. 做一些过滤操作，比如加入缓存、mock数据  
+4. 接口调用数据统计  
 
 ### 1.1.2. Dubbo需要Web容器吗？内置了哪几种服务容器？  
 &emsp; 不需要，如果强制使用Web容器，只会增加复杂性，也浪费资源。  
@@ -114,6 +107,7 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-12.png)   
 
 ### 1.1.8. ※※※负载均衡  
+<!-- https://mp.weixin.qq.com/s/xkwwAUV9ziabPNUMEr5DPQ -->
 * <font color = "red">Random（缺省），随机，按权重设置随机概率。</font>在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。  
 * <font color = "red">RoundRobin，轮循，按公约后的权重设置轮循比率。</font>  
 &emsp; 轮询负载均衡算法的不足：存在慢的提供者累积请求的问题，比如：第二台机器很慢，但没挂，当请求调到第二台时就卡在那，久而久之，所有请求都卡在调到第二台上。  
@@ -125,7 +119,6 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 
 ### 1.1.9. ※※※集群容错策略  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-13.png)   
-
 &emsp; <font color = "red">在集群调用失败时，Dubbo 提供了多种容错方案，缺省为 failover 重试。</font>下面列举dubbo支持的容错策略：  
 
 * Failover（默认） - 失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过 retries="2" 来设置重试次数(不含第一次)  
@@ -135,6 +128,20 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 * Forking - 并行调用多个服务器，只要一个成功即返回。通常用于实时性要求较高的读操作，但需要浪费更多服务资源。可通过 forks="2" 来设置最大并行数。  
 * Broadcast - 广播调用所有提供者，逐个调用，任意一台报错则报错。通常用于通知所有提供者更新缓存或日志等本地资源信息。  
 
+<!-- 
+    Failover Cluster失败自动切换：dubbo的默认容错方案，当调用失败时自动切换到其他可用的节点，具体的重试次数和间隔时间可用通过引用服务的时候配置，默认重试次数为1也就是只调用一次。
+
+    Failback Cluster快速失败：在调用失败，记录日志和调用信息，然后返回空结果给consumer，并且通过定时任务每隔5秒对失败的调用进行重试
+
+    Failfast Cluster失败自动恢复：只会调用一次，失败后立刻抛出异常
+
+    Failsafe Cluster失败安全：调用出现异常，记录日志不抛出，返回空结果
+
+    Forking Cluster并行调用多个服务提供者：通过线程池创建多个线程，并发调用多个provider，结果保存到阻塞队列，只要有一个provider成功返回了结果，就会立刻返回结果
+
+    Broadcast Cluster广播模式：逐个调用每个provider，如果其中一台报错，在循环调用结束后，抛出异常。
+
+-->
 ### 1.1.10. 服务降级  
 &emsp; 当服务器压力过大时，可以通过服务降级来使某些非关键服务的调用变得简单；可以对其直接进行屏蔽，即客户端不发送请求直接返回null；也可以正常发送请求当请求超时或不可达时再返回null。  
 &emsp; 服务降级的相关配置可以直接在dubbo-admin的监控页面进行配置；通常是基于消费者来配置的，在dubbo-admin找到对应的消费者想要降级的服务，点击其后面的屏蔽或容错按钮即可生效；其中，屏蔽按钮点击表示放弃远程调用直接返回空，而容错按钮点击表示继续尝试进行远程调用当调用失败时再返回空。  

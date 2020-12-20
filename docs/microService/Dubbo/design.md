@@ -16,7 +16,6 @@
 <!-- 
 官网
 http://dubbo.apache.org/zh-cn/docs/dev/design.html
-
 -->
 
 ## 1.1. 源码介绍 
@@ -32,37 +31,24 @@ http://svip.iocoder.cn/Dubbo/intro/
 
 &emsp; 模块说明：
 
-* dubbo-common 公共逻辑模块：包括 Util 类和通用模型。
-* dubbo-remoting 远程通讯模块：相当于 Dubbo 协议的实现，如果 RPC 用 RMI协议则不需要使用此包。
-* dubbo-rpc 远程调用模块：抽象各种协议，以及动态代理，只包含一对一的调用，不关心集群的管理。
-* dubbo-cluster 集群模块：将多个服务提供方伪装为一个提供方，包括：负载均衡, 容错，路由等，集群的地址列表可以是静态配置的，也可以是由注册中心下发。
+* dubbo-common公共逻辑模块：包括 Util 类和通用模型。
+* dubbo-remoting远程通讯模块：相当于Dubbo协议的实现，如果RPC用RMI协议则不需要使用此包。
+* dubbo-rpc远程调用模块：抽象各种协议，以及动态代理，只包含一对一的调用，不关心集群的管理。
+* dubbo-cluster集群模块：将多个服务提供方伪装为一个提供方，包括：负载均衡, 容错，路由等，集群的地址列表可以是静态配置的，也可以是由注册中心下发。
 * dubbo-registry 注册中心模块：基于注册中心下发地址的集群方式，以及对各种注册中心的抽象。
-* dubbo-monitor 监控模块：统计服务调用次数，调用时间的，调用链跟踪的服务。
-* dubbo-config 配置模块：是 Dubbo 对外的 API，用户通过 Config 使用Dubbo，隐藏 Dubbo 所有细节。
-* dubbo-container 容器模块：是一个 Standlone 的容器，以简单的 Main 加载 Spring 启动，因为服务通常不需要 Tomcat/JBoss 等 Web 容器的特性，没必要用 Web 容器去加载服务。
-
-&emsp; 整体上按照分层结构进行分包，与分层的不同点在于：  
-
-* container 为服务容器，用于部署运行服务，没有在层中画出。
-* protocol 层和 proxy 层都放在 rpc 模块中，这两层是 rpc 的核心，在不需要集群也就是只有一个提供者时，可以只使用这两层完成 rpc 调用。
-* transport 层和 exchange 层都放在 remoting 模块中，为 rpc 调用的通讯基础。
-* serialize 层放在 common 模块中，以便更大程度复用。
-
-&emsp; **依赖关系**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-18.png)   
-&emsp; 图例说明：  
-
-* 图中小方块 Protocol, Cluster, Proxy, Service, Container, Registry, Monitor 代表层或模块，蓝色的表示与业务有交互，绿色的表示只对 Dubbo 内部交互。
-* 图中背景方块 Consumer, Provider, Registry, Monitor 代表部署逻辑拓扑节点。
-* 图中蓝色虚线为初始化时调用，红色虚线为运行时异步调用，红色实线为运行时同步调用。
-* 图中只包含 RPC 的层，不包含 Remoting 的层，Remoting 整体都隐含在 Protocol 中。
+* dubbo-monitor监控模块：统计服务调用次数，调用时间的，调用链跟踪的服务。
+* dubbo-config配置模块：是Dubbo对外的API，用户通过Config使用Dubbo，隐藏Dubbo所有细节。
+* dubbo-container容器模块：是一个Standlone的容器，以简单的Main加载Spring启动，因为服务通常不需要Tomcat/JBoss等Web容器的特性，没必要用Web容器去加载服务。
 
 ## 1.2. 整体分层设计  
-&emsp; 基本设计原则
+&emsp; Dubbo基本设计原则
 
 * 采用 Microkernel + Plugin 模式，Microkernel 只负责组装 Plugin，Dubbo 自身的功能也是通过扩展点实现的，也就是 Dubbo 的所有功能点都可被用户自定义扩展所替换。
 * 采用 URL 作为配置信息的统一格式，所有扩展点都通过传递 URL 携带配置信息。
 
+&emsp; 从大的范围来说，dubbo分为三层，business业务逻辑层由我们自己来提供接口和实现还有一些配置信息，RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理，remoting则是对网络传输协议和数据转换的封装。  
+&emsp; 划分到更细的层面，就是图中的10层模式，整个分层依赖由上至下，除开business业务逻辑之外，其他的几层都是SPI机制。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-51.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-16.png)   
 &emsp; 图例说明：  
 
@@ -90,10 +76,25 @@ http://svip.iocoder.cn/Dubbo/intro/
 * 而 Cluster 是外围概念，所以 Cluster 的目的是将多个 Invoker 伪装成一个 Invoker，这样其它人只要关注 Protocol 层 Invoker 即可，加上 Cluster 或者去掉 Cluster 对其它层都不会造成影响，因为只有一个提供者时，是不需要 Cluster 的。
 * Proxy 层封装了所有接口的透明化代理，而在其它层都以 Invoker 为中心，只有到了暴露给用户使用时，才用 Proxy 将 Invoker 转成接口，或将接口实现转成 Invoker，也就是去掉 Proxy 层 RPC 是可以 Run 的，只是不那么透明，不那么看起来像调本地服务一样调远程服务。
 &emsp; 而Remoting实现是Dubbo协议的实现，如果选择RMI协议，整个Remoting都不会用上，Remoting内部再划为Transport传输层和Exchange信息交换层，Transport 层只负责单向消息传输，是对 Mina, Netty, Grizzly 的抽象，它也可以扩展 UDP 传输，而 Exchange 层是在传输层之上封装了 Request-Response 语义。
-* Registry 和 Monitor 实际上不算一层，而是一个独立的节点，只是为了全局概览，用层的方式画在一起。
+* Registry 和 Monitor 实际上不算一层，而是一个独立的节点，只是为了全局概览，用层的方式画在一起。  
+
+&emsp; Dubbo源码整体上按照分层结构进行分包，与分层的不同点在于：  
+
+* container 为服务容器，用于部署运行服务，没有在层中画出。
+* protocol 层和 proxy 层都放在 rpc 模块中，这两层是 rpc 的核心，在不需要集群也就是只有一个提供者时，可以只使用这两层完成 rpc 调用。
+* transport 层和 exchange 层都放在 remoting 模块中，为 rpc 调用的通讯基础。
+* serialize 层放在 common 模块中，以便更大程度复用。  
+
+&emsp; **依赖关系**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-18.png)   
+&emsp; 图例说明：  
+
+* 图中小方块 Protocol, Cluster, Proxy, Service, Container, Registry, Monitor 代表层或模块，蓝色的表示与业务有交互，绿色的表示只对 Dubbo 内部交互。
+* 图中背景方块 Consumer, Provider, Registry, Monitor代表部署逻辑拓扑节点。
+* 图中蓝色虚线为初始化时调用，红色虚线为运行时异步调用，红色实线为运行时同步调用。
+* 图中只包含 RPC 的层，不包含 Remoting 的层，Remoting 整体都隐含在 Protocol 中。
 
 ## 1.3. Dubbo服务调用
-
 ### 1.3.1. 调用链  
 &emsp; 展开总设计图的红色调用链，如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-19.png)   
@@ -105,7 +106,6 @@ http://svip.iocoder.cn/Dubbo/intro/
 ### 1.3.3. 引用服务时序
 &emsp; 展开总设计图右边服务消费方引用服务的蓝色初始化链，时序图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-21.png)   
-
 
 ## 1.4. DDD领域模型
 &emsp; 在Dubbo的核心领域模型中：  

@@ -21,6 +21,10 @@
 <!-- /TOC -->
 
 # 1. 服务暴露  
+<!-- 
+Dubbo之服务暴露 
+https://mp.weixin.qq.com/s/TK9ZU3Vm4IoTrrwmbvV-uQ
+-->
 
 ## 1.1. dubbo-rpc模块简介  
 ### 1.1.1. dubbo-­rpc-­api模块  
@@ -28,7 +32,7 @@
 
 &emsp; **简化的类图**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-38.png)  
-&emsp; 该图是经过简化后的rpc-­api模块的类图，去除了一些非关键的属性和方法定义，也去除了一些非核心的类和接口， 只是一个简化了的的示意图。  
+&emsp; 该图是经过简化后的rpc-­api模块的类图，去除了一些非关键的属性和方法定义，也去除了一些非核心的类和接口，只是一个简化了的的示意图。  
 
 **核心类说明**    
 * Protocol  
@@ -38,14 +42,13 @@
 * AbstractProxyProtocol  
 &emsp; 继承自AbstractProtoco的一个抽象代理协议类。它聚合了代理工厂ProxyFactory对象来实现服务的暴露和引用。  
 * ProtocolFilterWrapper  
-&emsp; 是一个Protocol的支持过滤器的装饰器。通过该装饰器的对原始对象的包装使得Protocol支持可扩展的过滤器链，已 经支持的包括ExceptionFilter、ExecuteLimitFilter和TimeoutFilter等多种支持不同特性的过滤器。
+&emsp; 一个Protocol的支持过滤器的装饰器。通过该装饰器的对原始对象的包装使得Protocol支持可扩展的过滤器链，已经支持的包括ExceptionFilter、ExecuteLimitFilter和TimeoutFilter等多种支持不同特性的过滤器。
 * ProtocolListenerWrapper  
 &emsp; 一个支持监听器特性的Protocal的包装器。支持两种监听器的功能扩展，分别是：ExporterListener是远程服务发布监听器，可以监听服务发布和取消发布两个事件点；InvokerListener是服务消费者引用调用器的监听器，可以监听引用和销毁两个事件方法。支持可扩展的事件监听模型，目前只提供了一些适配器InvokerListenerAdapter、ExporterListenerAdapter以及简单的过期服务调用监听器DeprecatedInvokerListener。开发者可自行扩展自己的监听器。  
 * ProxyFactory  
-&emsp; dubbo的代理工厂。定义了两个接口分别是：getProxy根据invoker目标接口的代理对象，一般是消费者获得代理对  象触发远程调用；getInvoker方法将代理对象proxy、接口类type和远程服务的URL获取执行对象Invoker，往往是提 供者获得目标执行对象执行目标实现调用。AbstractProxyFactory是其抽象实现，提供了getProxy的模版方法实现，使得可以支持多接口的映射。dubbo最终内置了两种动态代理的实现，分别是jdkproxy和javassist。默认的实现 使用javassist。  
+&emsp; dubbo的代理工厂。定义了两个接口分别是：getProxy根据invoker目标接口的代理对象，一般是消费者获得代理对  象触发远程调用；getInvoker方法将代理对象proxy、接口类type和远程服务的URL获取执行对象Invoker，往往是提供者获得目标执行对象执行目标实现调用。AbstractProxyFactory是其抽象实现，提供了getProxy的模版方法实现，使得可以支持多接口的映射。dubbo最终内置了两种动态代理的实现，分别是jdkproxy和javassist。默认的实现 使用javassist。  
 * Invoker  
-&emsp; 该接口是服务的执行体。它有获取服务发布的URL，服务的接口类等关键属性的行为；还有核心的服务执行方法invoke，执行该方法后返回执行结果Result，而传递的参数是调用信息Invocation。该接口有大量的抽象和具体实现 类。AbstractProxyInvoker是基于代理的执行器抽象实现，AbstractInvoker是通用的抽象实现。  
-
+&emsp; 该接口是服务的执行体。它有获取服务发布的URL，服务的接口类等关键属性的行为；还有核心的服务执行方法invoke，执行该方法后返回执行结果Result，而传递的参数是调用信息Invocation。该接口有大量的抽象和具体实现类。AbstractProxyInvoker是基于代理的执行器抽象实现，AbstractInvoker是通用的抽象实现。  
 
 ### 1.1.2. dubbo­-rpc­-default模块  
 &emsp; dubbo-­rpc-­default模块是dubbo­-rpc-­api模块的默认实现，提供了默认的dubbo协议的实现，它是所有模块中最为复杂的一个模块，因为底层的协议都是它自己实现的。  
@@ -85,7 +88,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
     
 }
 ```
-&emsp; 这个方法首先会根据条件决定是否导出服务，比如有些服务设置了延时导出，那么此时就不应该在此处导出。还有一些服务已经被导出了，或者当前服务被取消导出了，此时也不能再次导出相关服务。注意这里的 isDelay 方法，这个方法字面意思是“是否延迟导出服务”，返回 true 表示延迟导出，false 表示不延迟导出。但是该方法真实意思却并非如此，当方法返回 true 时，表示无需延迟导出。返回 false 时，表示需要延迟导出。与字面意思恰恰相反，这个需要大家注意一下。下面来看一下这个方法的逻辑。  
+&emsp; 这个方法首先会根据条件决定是否导出服务，比如有些服务设置了延时导出，那么此时就不应该在此处导出。还有一些服务已经被导出了，或者当前服务被取消导出了，此时也不能再次导出相关服务。注意这里的isDelay方法，这个方法字面意思是“是否延迟导出服务”，返回 true 表示延迟导出，false 表示不延迟导出。但是该方法真实意思却并非如此，当方法返回 true 时，表示无需延迟导出。返回 false 时，表示需要延迟导出。与字面意思恰恰相反，这个需要大家注意一下。下面来看一下这个方法的逻辑。  
 
 ```java
 // -☆- ServiceBean
@@ -101,14 +104,14 @@ private boolean isDelay() {
     return supportedApplicationListener && (delay == null || delay == -1);
 }
 ```
-&emsp; 暂时忽略 supportedApplicationListener 这个条件，当 delay 为空，或者等于-1时，该方法返回 true，而不是 false。  
-&emsp; 现在解释一下 supportedApplicationListener 变量含义，该变量用于表示当前的 Spring 容器是否支持 ApplicationListener，这个值初始为 false。在 Spring 容器将自己设置到 ServiceBean 中时，ServiceBean 的 setApplicationContext 方法会检测 Spring 容器是否支持 ApplicationListener。若支持，则将 supportedApplicationListener 置为 true。ServiceBean 是 Dubbo 与 Spring 框架进行整合的关键，可以看做是两个框架之间的桥梁。具有同样作用的类还有 ReferenceBean。  
-&emsp; 现在知道了 Dubbo 服务导出过程的起点，接下来对服务导出的前置逻辑进行分析。  
+&emsp; 暂时忽略supportedApplicationListener这个条件，当delay为空，或者等于-1时，该方法返回true，而不是false。  
+&emsp; 现在解释一下supportedApplicationListener变量含义，该变量用于表示当前的 Spring容器是否支持ApplicationListener，这个值初始为false。在Spring容器将自己设置到ServiceBean中时，ServiceBean的setApplicationContext方法会检测Spring容器是否支持ApplicationListener。若支持，则将supportedApplicationListener置为true。ServiceBean是Dubbo与Spring框架进行整合的关键，可以看做是两个框架之间的桥梁。具有同样作用的类还有ReferenceBean。  
+&emsp; 现在知道了Dubbo服务导出过程的起点，接下来对服务导出的前置逻辑进行分析。  
 
 ## 1.4. 前置工作  
-&emsp; 前置工作主要包含两个部分，分别是配置检查，以及 URL 装配。在导出服务之前，Dubbo 需要检查用户的配置是否合理，或者为用户补充缺省配置。配置检查完成后，接下来需要根据这些配置组装 URL。**在 Dubbo 中，URL 的作用十分重要。Dubbo 使用 URL 作为配置载体，所有的拓展点都是通过 URL 获取配置。这一点，官方文档中有所说明。**  
+&emsp; 前置工作主要包含两个部分，分别是配置检查，以及 URL 装配。在导出服务之前，Dubbo 需要检查用户的配置是否合理，或者为用户补充缺省配置。配置检查完成后，接下来需要根据这些配置组装URL。**在Dubbo中，URL的作用十分重要。Dubbo使用URL作为配置载体，所有的拓展点都是通过URL获取配置。这一点，官方文档中有所说明。**  
 
-    采用 URL 作为配置信息的统一格式，所有扩展点都通过传递 URL 携带配置信息。
+    采用URL作为配置信息的统一格式，所有扩展点都通过传递 URL 携带配置信息。
 
 &emsp; 接下来，先来分析配置检查部分的源码，随后再来分析 URL 组装部分的源码。  
 
@@ -264,16 +267,16 @@ protected synchronized void doExport() {
 ```
 &emsp; 以上就是配置检查的相关分析，代码比较多，需要大家耐心看一下。下面对配置检查的逻辑进行简单的总结，如下：  
 
-1. 检测 \<dubbo:service> 标签的 interface 属性合法性，不合法则抛出异常
+1. 检测 \<dubbo:service> 标签的interface属性合法性，不合法则抛出异常
 2. 检测 ProviderConfig、ApplicationConfig 等核心配置类对象是否为空，若为空，则尝试从其他配置类对象中获取相应的实例。
 3. 检测并处理泛化服务和普通服务类
 4. 检测本地存根配置，并进行相应的处理
 5. 对 ApplicationConfig、RegistryConfig 等配置类进行检测，为空则尝试创建，若无法创建则抛出异常
 
-&emsp; 配置检查并非本文重点，因此这里不打算对 doExport 方法所调用的方法进行分析（doExportUrls 方法除外）。在这些方法中，除了 appendProperties 方法稍微复杂一些，其他方法逻辑不是很复杂。因此，大家可自行分析。  
+&emsp; 配置检查并非本文重点，因此这里不打算对doExport方法所调用的方法进行分析（doExportUrls 方法除外）。在这些方法中，除了appendProperties方法稍微复杂一些，其他方法逻辑不是很复杂。因此，大家可自行分析。  
 
 ### 1.4.2. 多协议多注册中心导出服务
-&emsp; Dubbo 允许使用不同的协议导出服务，也允许向多个注册中心注册服务。Dubbo 在 doExportUrls 方法中对多协议，多注册中心进行了支持。相关代码如下：  
+&emsp; Dubbo允许使用不同的协议导出服务，也允许向多个注册中心注册服务。Dubbo在 doExportUrls方法中对多协议，多注册中心进行了支持。相关代码如下：  
 
 ```java
 private void doExportUrls() {
@@ -285,7 +288,7 @@ private void doExportUrls() {
     }
 }
 ```
-&emsp; 上面代码首先是通过 loadRegistries 加载注册中心链接，然后再遍历 ProtocolConfig 集合导出每个服务。并在导出服务的过程中，将服务注册到注册中心。下面，先来看一下 loadRegistries 方法的逻辑。
+&emsp; 上面代码首先是通过loadRegistries加载注册中心链接，然后再遍历 ProtocolConfig集合导出每个服务。并在导出服务的过程中，将服务注册到注册中心。下面，先来看一下loadRegistries方法的逻辑。
 
 ```java
 protected List<URL> loadRegistries(boolean provider) {
@@ -350,17 +353,17 @@ protected List<URL> loadRegistries(boolean provider) {
 }
 ```
 
-&emsp; <font color = "red">loadRegistries 方法主要包含如下的逻辑：</font>  
+&emsp; <font color = "red">loadRegistries方法主要包含如下的逻辑：</font>  
 
 1. 检测是否存在注册中心配置类，不存在则抛出异常
-2. 构建参数映射集合，也就是 map
+2. 构建参数映射集合，也就是map
 3. 构建注册中心链接列表
-4. 遍历链接列表，并根据条件决定是否将其添加到 registryList 中
+4. 遍历链接列表，并根据条件决定是否将其添加到registryList中
 
-&emsp; 关于多协议多注册中心导出服务就先分析到这，代码不是很多，接下来分析 URL 组装过程。    
+&emsp; 关于多协议多注册中心导出服务就先分析到这，代码不是很多，接下来分析URL组装过程。    
 
 ### 1.4.3. 组装 URL
-&emsp; 配置检查完毕后，紧接着要做的事情是根据配置，以及其他一些信息组装 URL。前面说过，<font color = "red">URL 是 Dubbo 配置的载体，通过 URL 可让 Dubbo 的各种配置在各个模块之间传递。</font>大家在阅读 Dubbo 服务导出相关源码的过程中，要注意 URL 内容的变化。既然 URL 如此重要，那么下面来了解一下 URL 组装的过程。  
+&emsp; 配置检查完毕后，紧接着要做的事情是根据配置，以及其他一些信息组装 URL。前面说过，<font color = "red">URL是Dubbo配置的载体，通过URL可让Dubbo的各种配置在各个模块之间传递。</font>大家在阅读 Dubbo 服务导出相关源码的过程中，要注意 URL 内容的变化。既然 URL 如此重要，那么下面来了解一下 URL 组装的过程。  
 
 ```java
 private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> registryURLs) {

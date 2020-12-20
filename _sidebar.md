@@ -174,7 +174,7 @@
     * [扩展点加载(SPI)](/docs/microService/Dubbo/SPI.md)  
         * [获得指定拓展对象](/docs/microService/Dubbo/getExtension.md)  
         * [获得自适应的拓展对象](/docs/microService/Dubbo/getAdaptiveExtension.md)  
-    * [Dubbo实现细节](/docs/microService/Dubbo/realization.md)  
+    * [Dubbo运行流程](/docs/microService/Dubbo/realization.md)  
         * [Dubbo初始化](/docs/microService/Dubbo/dubboSpring.md)  
         * [服务暴露](/docs/microService/Dubbo/export.md)  
         * [服务引用](/docs/microService/Dubbo/introduce.md)  

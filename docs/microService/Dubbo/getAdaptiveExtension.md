@@ -28,7 +28,7 @@
 <!-- /TOC -->
 
 # 1. 获得自适应的拓展对象
-&emsp; Dubbo SPI 的扩展点自适应机制：在 Dubbo 中，很多拓展都是通过 SPI 机制进行加载的，比如 Protocol、Cluster、LoadBalance 等。<font color = "lime">有时，有些拓展并不想在框架启动阶段被加载，而是希望在拓展方法被调用时，根据运行时参数进行加载。这听起来有些矛盾。</font>拓展未被加载，那么拓展方法就无法被调用（静态方法除外）。拓展方法未被调用，拓展就无法被加载。对于这个矛盾的问题，Dubbo 通过自适应拓展机制很好的解决了。自适应拓展机制的实现逻辑比较复杂，首先 Dubbo 会为拓展接口生成具有代理功能的代码。然后通过 javassist 或 jdk 编译这段代码，得到 Class 类。最后再通过反射创建代理类，整个过程比较复杂。  
+&emsp; Dubbo SPI的扩展点自适应机制：在Dubbo中，很多拓展都是通过SPI机制进行加载的，比如Protocol、Cluster、LoadBalance等。<font color = "lime">有时，有些拓展并不想在框架启动阶段被加载，而是希望在拓展方法被调用时，根据运行时参数进行加载。这听起来有些矛盾。</font>拓展未被加载，那么拓展方法就无法被调用（静态方法除外）。拓展方法未被调用，拓展就无法被加载。对于这个矛盾的问题，Dubbo通过自适应拓展机制很好的解决了。自适应拓展机制的实现逻辑比较复杂，首先Dubbo会为拓展接口生成具有代理功能的代码。然后通过javassist或jdk编译这段代码，得到Class类。最后再通过反射创建代理类，整个过程比较复杂。  
 
 ## 1.1. 自适应示例  
 &emsp; 为了让大家对自适应拓展有一个感性的认识，下面通过一个示例进行演示。这是一个与汽车相关的例子，有一个车轮制造厂接口 WheelMaker：  
@@ -63,13 +63,13 @@ public class AdaptiveWheelMaker implements WheelMaker {
     }
 }
 ```
-&emsp; AdaptiveWheelMaker 是一个代理类，与传统的代理逻辑不同，AdaptiveWheelMaker 所代理的对象是在 makeWheel 方法中通过 SPI 加载得到的。makeWheel 方法主要做了三件事情：
+&emsp; AdaptiveWheelMaker是一个代理类，与传统的代理逻辑不同，AdaptiveWheelMaker所代理的对象是在makeWheel方法中通过SPI加载得到的。makeWheel方法主要做了三件事情：
 
-1. 从 URL 中获取 WheelMaker 名称
-2. 通过 SPI 加载具体的 WheelMaker 实现类
+1. 从URL中获取WheelMaker名称
+2. 通过SPI加载具体的WheelMaker实现类
 3. 调用目标方法
 
-&emsp; 接下来，看看汽车制造厂 CarMaker 接口与其实现类。  
+&emsp; 接下来，看看汽车制造厂CarMaker接口与其实现类。  
 
 ```java
 public interface CarMaker {
@@ -90,18 +90,18 @@ public class RaceCarMaker implements CarMaker {
     }
 }
 ```
-&emsp; RaceCarMaker 持有一个 WheelMaker 类型的成员变量，在程序启动时，可以将 AdaptiveWheelMaker 通过 setter 方法注入到 RaceCarMaker 中。在运行时，假设有这样一个 url 参数传入：  
+&emsp; RaceCarMaker持有一个WheelMaker类型的成员变量，在程序启动时，可以将 AdaptiveWheelMaker通过setter方法注入到RaceCarMaker中。在运行时，假设有这样一个 url参数传入：  
 
 ```text
 dubbo://192.168.0.101:20880/XxxService?wheel.maker=MichelinWheelMaker
 ```
-&emsp; RaceCarMaker 的 makeCar 方法将上面的 url 作为参数传给 AdaptiveWheelMaker 的 makeWheel 方法，makeWheel 方法从 url 中提取 wheel.maker 参数，得到 MichelinWheelMaker。之后再通过 SPI 加载配置名为 MichelinWheelMaker 的实现类，得到具体的 WheelMaker 实例。  
+&emsp; RaceCarMaker的makeCar方法将上面的url作为参数传给AdaptiveWheelMaker的 makeWheel方法，makeWheel方法从url中提取wheel.maker参数，得到 MichelinWheelMaker。之后再通过 SPI 加载配置名为MichelinWheelMaker的实现类，得到具体的WheelMaker实例。  
 
 &emsp; 上面的示例展示了自适应拓展类的核心实现 ---- 在拓展接口的方法被调用时，通过 SPI 加载具体的拓展实现类，并调用拓展对象的同名方法。接下来，深入到源码中，探索自适应拓展类生成的过程。  
 
 ## 1.2. 源码分析  
 ### 1.2.1. @Adaptive  
-&emsp; 在对自适应拓展生成过程进行深入分析之前，先来看一下与自适应拓展息息相关的一个注解，即 Adaptive 注解（自适应拓展信息的标记）。  
+&emsp; 在对自适应拓展生成过程进行深入分析之前，先来看一下与自适应拓展息息相关的一个注解，即Adaptive注解（自适应拓展信息的标记）。  
 
 ```java
 @Documented
@@ -151,7 +151,7 @@ public @interface Adaptive {
 
 }
 ```
-&emsp; @Adaptive 注解，可添加类或方法上，分别代表了两种不同的使用方式。  
+&emsp; @Adaptive注解，可添加类或方法上，分别代表了两种不同的使用方式。  
 
 * 第一种，标记在类上，代表手动实现它是一个拓展接口的 Adaptive 拓展实现类。目前 Dubbo 项目里，只有 ExtensionFactory 拓展的实现类 AdaptiveExtensionFactory 有这么用。详细解析见 「AdaptiveExtensionFactory」 。
 * 第二种，标记在拓展接口的方法上，代表自动生成代码实现该接口的 Adaptive 拓展实现类。
@@ -208,11 +208,11 @@ private T createAdaptiveExtension() {
 ```
 &emsp; createAdaptiveExtension 方法的代码比较少，但却包含了三个逻辑，分别如下：  
 
-1. 调用 getAdaptiveExtensionClass 方法获取自适应拓展 Class 对象
+1. 调用getAdaptiveExtensionClass方法获取自适应拓展Class对象
 2. 通过反射进行实例化
-3. 调用 injectExtension 方法向拓展实例中注入依赖
+3. 调用injectExtension方法向拓展实例中注入依赖
 
-&emsp; 前两个逻辑比较好理解，第三个逻辑用于向自适应拓展对象中注入依赖。这个逻辑看似多余，但有存在的必要，这里简单说明一下。前面说过，Dubbo 中有两种类型的自适应拓展，一种是手工编码的，一种是自动生成的。手工编码的自适应拓展中可能存在着一些依赖，而自动生成的 Adaptive 拓展则不会依赖其他类。这里调用 injectExtension 方法的目的是为手工编码的自适应拓展注入依赖，这一点需要大家注意一下。关于 injectExtension 方法，前文已经分析过了，这里不再赘述。接下来，分析 getAdaptiveExtensionClass 方法的逻辑。  
+&emsp; 前两个逻辑比较好理解，第三个逻辑用于向自适应拓展对象中注入依赖。这个逻辑看似多余，但有存在的必要，这里简单说明一下。前面说过，Dubbo中有两种类型的自适应拓展，一种是手工编码的，一种是自动生成的。手工编码的自适应拓展中可能存在着一些依赖，而自动生成的Adaptive拓展则不会依赖其他类。这里调用injectExtension方法的目的是为手工编码的自适应拓展注入依赖，这一点需要大家注意一下。关于injectExtension方法，前文已经分析过了，这里不再赘述。接下来，分析getAdaptiveExtensionClass方法的逻辑。  
 
 #### 1.2.3.1. getAdaptiveExtensionClass
 
@@ -230,7 +230,7 @@ private Class<?> getAdaptiveExtensionClass() {
 ```
 &emsp; getAdaptiveExtensionClass 方法同样包含了三个逻辑，如下：  
 
-1. 调用 getExtensionClasses 获取所有的拓展类
+1. 调用getExtensionClasses获取所有的拓展类
 2. 检查缓存，若缓存不为空，则返回缓存
 3. 若缓存为空，则调用 createAdaptiveExtensionClass 创建自适应拓展类
 
@@ -247,14 +247,13 @@ private Class<?> createAdaptiveExtensionClass() {
     return compiler.compile(code, classLoader);
 }
 ```
-&emsp; createAdaptiveExtensionClass 方法用于生成自适应拓展类，该方法首先会生成自适应拓展类的源码，然后通过 Compiler 实例（Dubbo 默认使用 javassist 作为编译器）编译源码，得到代理类 Class 实例。接下来，我们把重点放在代理类代码生成的逻辑上，其他逻辑大家自行分析。  
-
+&emsp; createAdaptiveExtensionClass方法用于生成自适应拓展类，该方法首先会生成自适应拓展类的源码，然后通过Compiler实例（Dubbo默认使用javassist作为编译器）编译源码，得到代理类 Class 实例。接下来，把重点放在代理类代码生成的逻辑上，其他逻辑大家自行分析。  
 
 ### 1.2.4. 自适应拓展类代码生成
-&emsp; createAdaptiveExtensionClassCode 方法代码略多，约有两百行代码。因此本节将会对该方法的代码进行拆分分析，以帮助大家更好的理解代码逻辑。  
+&emsp; createAdaptiveExtensionClassCode方法代码略多，约有两百行代码。因此本节将会对该方法的代码进行拆分分析，以帮助大家更好的理解代码逻辑。  
 
 #### 1.2.4.1. Adaptive 注解检测
-&emsp; 在生成代理类源码之前，createAdaptiveExtensionClassCode 方法首先会通过反射检测接口方法是否包含 Adaptive 注解。对于要生成自适应拓展的接口，Dubbo 要求该接口至少有一个方法被 Adaptive 注解修饰。若不满足此条件，就会抛出运行时异常。相关代码如下：  
+&emsp; 在生成代理类源码之前，createAdaptiveExtensionClassCode方法首先会通过反射检测接口方法是否包含Adaptive注解。对于要生成自适应拓展的接口，Dubbo要求该接口至少有一个方法被Adaptive注解修饰。若不满足此条件，就会抛出运行时异常。相关代码如下：  
 
 ```java
 // 通过反射获取所有的方法
@@ -275,7 +274,7 @@ if (!hasAdaptiveAnnotation)
 ```
 
 #### 1.2.4.2. 生成类
-&emsp; 通过 Adaptive 注解检测后，即可开始生成代码。代码生成的顺序与 Java 文件内容顺序一致，首先会生成 package 语句，然后生成 import 语句，紧接着生成类名等代码。整个逻辑如下：
+&emsp; 通过 Adaptive 注解检测后，即可开始生成代码。代码生成的顺序与 Java 文件内容顺序一致，首先会生成 package 语句，然后生成import语句，紧接着生成类名等代码。整个逻辑如下：
 
 ```java
 // 生成 package 代码：package + type 所在包
