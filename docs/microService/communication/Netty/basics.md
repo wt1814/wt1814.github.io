@@ -29,8 +29,6 @@
 <!-- 
 「网络IO套路」当时就靠它追到女友 
 https://mp.weixin.qq.com/s/x-AZQO5uiuu5svIvScotzA
-图解BIO、NIO、AIO、多路复用IO的区别 
-https://mp.weixin.qq.com/s/XFJX1sUYhTb8509FikgqGg
 -->
 ## 1.1. Socket  
 <!-- 
@@ -52,9 +50,6 @@ https://www.cnblogs.com/meier1205/p/5971313.html
 &emsp; 一般很少直接使用socket来编程，使用框架比较多，而netty就是其中一种框架。  
 
 ## 1.2. Linux的五种I/O模型  
-<!-- 
-https://segmentfault.com/a/1190000003063859
--->
 &emsp; 本章讨论的背景是Linux环境下的network IO。  
 
 ### 1.2.1. 概念说明  
@@ -101,20 +96,33 @@ https://segmentfault.com/a/1190000003063859
 #### 1.2.2.1. 阻塞IO  
 &emsp; 从进程发起IO操作，一直等待上述两个阶段完成。  
 &emsp; 两阶段一起阻塞。  
+&emsp; 在linux中，默认情况下所有的socket都是blocking，一个典型的读操作流程大概是这样：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-1.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-47.png)  
+&emsp; 当用户进程调用了recvfrom这个系统调用，kernel就开始了IO的第一个阶段：准备数据（对于网络IO来说，很多时候数据在一开始还没有到达。比如，还没有收到一个完整的UDP包。这个时候kernel就要等待足够的数据到来）。这个过程需要等待，也就是说数据被拷贝到操作系统内核的缓冲区中是需要一个过程的。而在用户进程这边，整个进程会被阻塞（当然，是进程自己选择的阻塞）。当kernel一直等到数据准备好了，它就会将数据从kernel中拷贝到用户内存，然后kernel返回结果，用户进程才解除block的状态，重新运行起来。  
+&emsp; 所以，blocking IO的特点就是在IO执行的两个阶段都被block了。  
 
 #### 1.2.2.2. 非阻塞IO  
 &emsp; 进程一直询问IO准备好了没有，准备好了再发起读取操作，这时才把数据从内核空间拷贝到用户空间。  
 &emsp; 第一阶段不阻塞但要轮询，第二阶段阻塞。  
+&emsp; linux下，可以通过设置socket使其变为non-blocking。当对一个non-blocking socket执行读操作时，流程是这个样子：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-2.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-48.png)  
+&emsp; 当用户进程发出read操作时，如果kernel中的数据还没有准备好，那么它并不会block用户进程，而是立刻返回一个error。从用户进程角度讲，它发起一个read操作后，并不需要等待，而是马上就得到了一个结果。用户进程判断结果是一个error时，它就知道数据还没有准备好，于是它可以再次发送read操作。一旦kernel中的数据准备好了，并且又再次收到了用户进程的system call，那么它马上就将数据拷贝到了用户内存，然后返回。  
+&emsp; 所以，nonblocking IO的特点是用户进程需要不断的主动询问kernel数据好了没有。  
 
 #### 1.2.2.3. 多路复用IO  
 &emsp; 多个连接使用同一个select去询问IO准备好了没有，如果有准备好了的，就返回有数据准备好了，然后对应的连接再发起读取操作，把数据从内核空间拷贝到用户空间。  
 &emsp; 两阶段分开阻塞。  
+&emsp; IO multiplexing就是我们说的select，poll，epoll，有些地方也称这种IO方式为event driven IO。select/epoll的好处就在于单个process就可以同时处理多个网络连接的IO。它的基本原理就是select，poll，epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-3.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-49.png)  
+
+&emsp; 当用户进程调用了select，那么整个进程会被block，而同时，kernel会“监视”所有select负责的socket，当任何一个socket中的数据准备好了，select就会返回。这个时候用户进程再调用read操作，将数据从kernel拷贝到用户进程。  
+&emsp; 所以，I/O 多路复用的特点是通过一种机制一个进程能同时等待多个文件描述符，而这些文件描述符（套接字描述符）其中的任意一个进入读就绪状态，select()函数就可以返回。  
+&emsp; 这个图和blocking IO的图其实并没有太大的不同，事实上，还更差一些。因为这里需要使用两个system call (select 和 recvfrom)，而blocking IO只调用了一个system call (recvfrom)。但是，用select的优势在于它可以同时处理多个connection。  
+&emsp; 所以，如果处理的连接数不是很高的话，使用select/epoll的web server不一定比使用multi-threading + blocking IO的web server性能更好，可能延迟还更大。select/epoll的优势并不是对于单个连接能处理得更快，而是在于能处理更多的连接。）  
+&emsp; 在IO multiplexing Model中，实际中，对于每一个socket，一般都设置成为non-blocking，但是，如上图所示，整个用户的process其实是一直被block的。只不过process是被select这个函数block，而不是被socket IO给block。  
 
 #### 1.2.2.4. 信号驱动IO  
 &emsp; 进程发起读取操作会立即返回，当数据准备好了会以通知的形式告诉进程，进程再发起读取操作，把数据从内核空间拷贝到用户空间。  
@@ -126,12 +134,13 @@ https://segmentfault.com/a/1190000003063859
 &emsp; 两个阶段都不阻塞。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-5.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-50.png)  
+&emsp; 用户进程发起read操作之后，立刻就可以开始去做其它的事。而另一方面，从kernel的角度，当它受到一个asynchronous read之后，首先它会立刻返回，所以不会对用户进程产生任何block。然后，kernel会等待数据准备完成，然后将数据拷贝到用户内存，当这一切都完成之后，kernel会给用户进程发送一个signal，告诉它read操作完成了。  
+
 
 ### 1.2.3. 同步/异步、阻塞/非阻塞  
 #### 1.2.3.1. 同步和异步
 <!-- 
 同步非同步的区别在于调用操作系统的recvfrom()的时候是否阻塞，可见除了最后的异步IO其它都是同步IO。
-
 同步、异步  
 &emsp; 同步请求，A调用B，B的处理是同步的，在处理完之前不会通知A，只有处理完之后才会明确的通知A。  
 &emsp; 异步请求，A调用B，B的处理是异步的，B在接到请求后先告诉A已经接到请求了，然后异步去处理，处理完之后通过回调等方式再通知A。  
@@ -162,9 +171,12 @@ https://segmentfault.com/a/1190000003063859
 &emsp; 前四种I/O模型都是同步I/O操作，它们的区别在于第一阶段，而第二阶段是一样的：在数据从内核拷贝到应用缓冲期间（用户空间），进程阻塞于recvfrom调用。  
 &emsp; 下图是各I/O 模型的阻塞状态对比：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-6.png)  
+<!-- 
+
+通过上面的图片，可以发现non-blocking IO和asynchronous IO的区别还是很明显的。在non-blocking IO中，虽然进程大部分时间都不会被block，但是它仍然要求进程去主动的check，并且当数据准备完成以后，也需要进程主动的再次调用recvfrom来将数据拷贝到用户内存。而asynchronous IO则完全不同。它就像是用户进程将整个IO操作交给了他人（kernel）完成，然后他人做完后发信号通知。在此期间，用户进程不需要去检查IO操作的状态，也不需要主动的去拷贝数据。
+-->
 &emsp; 从上图可以看出，阻塞程度：阻塞I/O>非阻塞I/O>多路复用I/O>信号驱动I/O>异步I/O，效率是由低到高到。最后，再看一下下表，从多维度总结了各I/O模型之间到差异。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-7.png)  
 
 ## 1.3. 多路复用详解（select poll epoll）
-
 &emsp; 参考[多路复用详解（select poll epoll）](/docs/microService/communication/Netty/epoll.md)  

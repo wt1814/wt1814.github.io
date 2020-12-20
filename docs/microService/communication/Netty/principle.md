@@ -18,7 +18,6 @@ http://svip.iocoder.cn/Netty/bootstrap-1-server/
 《Netty权威指南》第13章
 高性能 Netty 源码解析之服务端创建 
 https://mp.weixin.qq.com/s/ZvLLSxA42aEWjXvRvot74A
-
 Netty服务端启动源码分析
 https://mp.weixin.qq.com/s/PKwt7cN1hRbqmEvAmSDcOA
 -->

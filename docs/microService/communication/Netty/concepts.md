@@ -16,21 +16,11 @@ https://mp.weixin.qq.com/s/insjE_EJRoCOM-1GqgZP9A
 https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 Netty网络框架
 https://mp.weixin.qq.com/s?__biz=MzIxNTAwNjA4OQ==&mid=2247486074&idx=2&sn=7f7cf296f4f920f251a66e1857db7f04&chksm=979fa49ca0e82d8a628a4e638dfa89a24d74ce6924ab2f9fe0a8582fea33a4a7a2cd75ada4e0&mpshare=1&scene=1&srcid=&sharer_sharetime=1575464797228&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=ba91437029ffb265b462be29eed847d121d1877a58bddf202764fdbcd61e94a41419579d5bf5bf789bbd3bc854452600fcd9e7cafe71703e577957ee7731613da98d69b2581744c5f666bc4318028a01&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=AVVqSkDHGCNLIElG3PjpXco%3D&pass_ticket=UIzvXMBOSWKDgIz4M7cQoxQ548Mbvo9Oik9jB6kaYK60loRzg3FsHZUpAHYbC4%2By
-
-解析 Netty 架构与原理
-https://mp.weixin.qq.com/s/kUkw-RoqLEEr1xuv2ex0FQ
-
-Netty 架构与原理
-https://mp.weixin.qq.com/s/insjE_EJRoCOM-1GqgZP9A
-
--->
-
-## 1.1. Netty简介  
-<!-- 
- 掌握Netty，面试怎么回答Netty？ 
+掌握Netty，面试怎么回答Netty？ 
  https://mp.weixin.qq.com/s/36jmjy8YoIwULF-UlnwGtg
 -->
 
+## 1.1. Netty简介  
 <!-- 
 为什么要使用Netty而不直接使用JAVA中的NIO
 1.Netty支持三种IO模型同时支持三种Reactor模式。
@@ -46,7 +36,7 @@ https://mp.weixin.qq.com/s/insjE_EJRoCOM-1GqgZP9A
 * NIO的类库和API繁杂，使用麻烦，需要熟练掌握Selector、ServerSocketChannek、SockctChannek、ByteBuffer等。  
 * 原生API使用单线程模型，不能很好利用多核优势；  
 * 原生API是直接使用的IO数据，没有做任何封装处理，对数据的编解码、TCP的粘包和拆包、客户端断连、网络的可靠性和安全性方面没有做处理；  
-* **<fong color = "red">JDK NIO的BUG，例如見名昭著的epoll bug，它会导致Selector空轮询，最终导致CPU100%。官方声称在JDK 1.6版本的update18修复了该问题,但是直到JDK 1.7版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有得到根本性解决。该BUG以及与该BUG相关的问题单可以参见以下链接内容。**</font>  
+* **<fong color = "red">JDK NIO的BUG，例如臭名昭著的epoll bug，它会导致Selector空轮询，最终导致CPU100%。官方声称在JDK 1.6版本的update18修复了该问题，但是直到JDK 1.7版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有得到根本性解决。该BUG以及与该BUG相关的问题单可以参见以下链接内容。**</font>  
     * http://bugs.java.com/bugdatabase/viewbug.do?bug_id=6403933  
     * http://bugs.java.com/bugdalabase/viewbug.do?bug_id=21477l9  
 
@@ -56,8 +46,15 @@ https://mp.weixin.qq.com/s/insjE_EJRoCOM-1GqgZP9A
 &emsp; (3)可靠性能力补齐，工作量和难度都非常大。例如客户端面临断连重连、网络闪断、 半包读写、失败缓存、网络拥塞和异常码流的处理等问题，NIO编程的特点是功能开发相对容易，但是可靠性能力补齐的工作量和难度都非常大。  
 &emsp; **<fong color = "red">(4)JDKNIO的BUG,例如見名昭著的epoll bug，它会导致Selector空轮询，最终导致CPU100%。官方声称在JDK 1.6版本的update18修复了该问题,但是直到JDK 1.7版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有得到根本性解决。该BUG以及与该BUG相关的问题单可以参见以下链接内容。**</font>  
 -->
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-18.png)  
+
+&emsp; Netty主要用来做网络通信：  
+
+1. 作为RPC框架的网络通信工具 ：我们在分布式系统中，不同服务节点之间经常需要相互调用，这个时候就需要 RPC 框架了。不同服务节点之间的通信是如何做的呢？可以使用 Netty 来做。比如我调用另外一个节点的方法的话，至少是要让对方知道我调用的是哪个类中的哪个方法以及相关参数吧！  
+2. 实现一个自己的 HTTP 服务器 ：通过 Netty 我们可以自己实现一个简单的 HTTP 服务器，这个大家应该不陌生。说到 HTTP 服务器的话，作为 Java 后端开发，我们一般使用 Tomcat 比较多。一个最基本的 HTTP 服务器可要以处理常见的 HTTP Method 的请求，比如 POST 请求、GET 请求等等。  
+3. 实现一个即时通讯系统 ：使用 Netty 我们可以实现一个可以聊天类似微信的即时通讯系统，这方面的开源项目还蛮多的，可以自行去 Github 找一找。  
+4. 实现消息推送系统 ：市面上有很多消息推送系统都是基于 Netty 来做的。  
+5. ......
 
 ## 1.2. Netty项目架构  
 &emsp; **Netty的项目结构：**  
@@ -67,14 +64,14 @@ https://mp.weixin.qq.com/s/insjE_EJRoCOM-1GqgZP9A
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-25.png)  
 
 * Core ：核心部分，是底层的网络通用抽象和部分实现。
-    * Extensible Event Model ：可拓展的事件模型。Netty 是基于事件模型的网络应用框架。
-    * Universal Communication API ：通用的通信 API 层。Netty 定义了一套抽象的通用通信层的 API 。
-    * Zero-Copy-Capable Rich Byte Buffer ：支持零拷贝特性的 Byte Buffer 实现。
+    * Extensible Event Model：可拓展的事件模型。Netty 是基于事件模型的网络应用框架。
+    * Universal Communication API：通用的通信 API 层。Netty 定义了一套抽象的通用通信层的 API 。
+    * Zero-Copy-Capable Rich Byte Buffer：支持零拷贝特性的 Byte Buffer 实现。
 * Transport Services ：传输( 通信 )服务，具体的网络传输的定义与实现。
-    * Socket & Datagram ：TCP 和 UDP 的传输实现。
-    * HTTP Tunnel ：HTTP通道的传输实现。
-    * In-VM Piple ：JVM内部的传输实现。  
-* Protocol Support ：协议支持。Netty对于一些通用协议的编解码实现。例如：HTTP、Redis、DNS等等。
+    * Socket & Datagram：TCP 和 UDP 的传输实现。
+    * HTTP Tunnel：HTTP通道的传输实现。
+    * In-VM Piple：JVM内部的传输实现。  
+* Protocol Support：协议支持。Netty对于一些通用协议的编解码实现。例如：HTTP、Redis、DNS等等。
 
 &emsp; **各个项目作用：**  
 

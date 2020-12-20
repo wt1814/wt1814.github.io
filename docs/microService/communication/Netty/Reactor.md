@@ -23,11 +23,12 @@
 <!--
 说说Netty的线程模型 
 https://mp.weixin.qq.com/s?__biz=MzAxNjM2MTk0Ng==&mid=2247488256&idx=3&sn=253eb6ba1f500d545bd8c836adaf1980&chksm=9bf4a3b5ac832aa3bb05595fac709334dd318698e577fa00b16d696a0fe235d3dee24cee3c75&mpshare=1&scene=1&srcid=&sharer_sharetime=1566173423019&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=5ead8116cc3d877610998f2c6fdc157f31c27badb458427f3cab67f312240f562e06a1819f6ac147c195e43f2d840d672dd0cf1f80fdb1dac6e8bd0157492bfe8b87c145bb2fe49422115139efca9e03&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=dj0rerrTmP1viAq%2FqHfGf12HB9AUM6AWfIt3Bw3twmsR0CedhQsJ3IHhoWnQJOqn
-
-
 linux高性能网络IO+Reactor模型 
 https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
-
+-->
+<!-- 
+Netty如何支持Reactor模式? 
+https://mp.weixin.qq.com/s/s2y8E5Cvz8q9c9oVxRBnNw
 -->
 ## 1.1. Reactor是什么
 &emsp; 在处理web请求时，通常有两种体系结构，分别为：thread-based architecture（基于线程）、event-driven architecture（事件驱动）。  
@@ -40,7 +41,7 @@ https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
 &emsp; 事件驱动体系结构是目前比较广泛使用的一种。这种方式会定义一系列的事件处理器来响应事件的发生，并且将服务端接受连接与对事件的处理分离。其中，事件是一种状态的改变。比如，tcp中socket的new incoming connection、ready for read、ready for write。  
 
 ### 1.1.3. reactor（反应堆）  
-&emsp; reactor设计模式是event-driven architecture的一种实现方式，处理多个客户端并发的向服务端请求服务的场景。每种服务在服务端可能由多个方法组成。reactor会解耦并发请求的服务并分发给对应的事件处理器来处理。目前，许多流行的开源框架都用到了reactor模式，如：netty、node.js等，包括java的nio。  
+&emsp; Reactor设计模式是event-driven architecture的一种实现方式，处理多个客户端并发的向服务端请求服务的场景。每种服务在服务端可能由多个方法组成。reactor会解耦并发请求的服务并分发给对应的事件处理器来处理。目前，许多流行的开源框架都用到了reactor模式，如：netty、node.js等，包括java的nio。  
 
         维基百科上的定义：“反应堆设计模式是一种事件处理模式，用于处理由一个或多个输入同时发送的服务请求。然后，服务处理程序将传入的请求多路分解，并同步地将其分发到关联的请求处理程序。”。
 

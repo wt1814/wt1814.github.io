@@ -21,7 +21,6 @@ http://svip.iocoder.cn/Netty/bootstrap-2-client/
 <!-- 
 《Netty权威指南》第14章
 https://mp.weixin.qq.com/s?__biz=MzIxNTQzMDM0Ng==&mid=2247483815&idx=1&sn=df1ffcf0cdc5bdd6db25beb689cf6640&chksm=97992402a0eead1445a8cfcfd043818b3c37c5ed230a874c19d67604e3833ec60025aaf8ea84&scene=178&cur_album_id=1471431037254680580#rd
-
 Netty客户端启动源码分析
 https://mp.weixin.qq.com/s/54wmqi2Y3_E6o_hCLxsJKw
 -->
