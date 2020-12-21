@@ -31,7 +31,7 @@ https://mp.weixin.qq.com/s?__biz=MzIxNTAwNjA4OQ==&mid=2247486074&idx=2&sn=7f7cf2
 -->
 
 &emsp; 为什么要用 Netty？  
-&emsp; Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
+&emsp; **Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。**在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
 
 * NIO的类库和API繁杂，使用麻烦，需要熟练掌握Selector、ServerSocketChannek、SockctChannek、ByteBuffer等。  
 * 原生API使用单线程模型，不能很好利用多核优势；  
@@ -46,8 +46,6 @@ https://mp.weixin.qq.com/s?__biz=MzIxNTAwNjA4OQ==&mid=2247486074&idx=2&sn=7f7cf2
 &emsp; (3)可靠性能力补齐，工作量和难度都非常大。例如客户端面临断连重连、网络闪断、 半包读写、失败缓存、网络拥塞和异常码流的处理等问题，NIO编程的特点是功能开发相对容易，但是可靠性能力补齐的工作量和难度都非常大。  
 &emsp; **<fong color = "red">(4)JDKNIO的BUG,例如見名昭著的epoll bug，它会导致Selector空轮询，最终导致CPU100%。官方声称在JDK 1.6版本的update18修复了该问题,但是直到JDK 1.7版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有得到根本性解决。该BUG以及与该BUG相关的问题单可以参见以下链接内容。**</font>  
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-18.png)  
-
 &emsp; Netty主要用来做网络通信：  
 
 1. 作为RPC框架的网络通信工具 ：我们在分布式系统中，不同服务节点之间经常需要相互调用，这个时候就需要 RPC 框架了。不同服务节点之间的通信是如何做的呢？可以使用 Netty 来做。比如我调用另外一个节点的方法的话，至少是要让对方知道我调用的是哪个类中的哪个方法以及相关参数吧！  
@@ -55,6 +53,9 @@ https://mp.weixin.qq.com/s?__biz=MzIxNTAwNjA4OQ==&mid=2247486074&idx=2&sn=7f7cf2
 3. 实现一个即时通讯系统 ：使用 Netty 我们可以实现一个可以聊天类似微信的即时通讯系统，这方面的开源项目还蛮多的，可以自行去 Github 找一找。  
 4. 实现消息推送系统 ：市面上有很多消息推送系统都是基于 Netty 来做的。  
 5. ......
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-18.png)  
+
+
 
 ## 1.2. Netty项目架构  
 &emsp; **Netty的项目结构：**  

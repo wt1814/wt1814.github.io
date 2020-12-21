@@ -179,7 +179,6 @@
         * [服务暴露](/docs/microService/Dubbo/export.md)  
         * [服务引用](/docs/microService/Dubbo/introduce.md)  
         * [服务调用](/docs/microService/Dubbo/call.md)  
-    * [时间轮算法](/docs/microService/Dubbo/timeWheel.md)  
 * Zookeeper
     * [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
 * 分布式理论  
@@ -252,6 +251,7 @@
     * [ELK](/docs/ES/6.ELK与EFK.md)   
 * [延迟队列](/docs/frame/delayQueue.md)  
 * [StopWatch](/docs/frame/StopWatch.md)  
+* [时间轮算法](/docs/microService/Dubbo/timeWheel.md)  
 * [分布式调度](/docs/frame/taskSheduling.md)  
     * [XXL-JOB](/docs/frame/XXL-JOB.md)  
 * 分布式ID  

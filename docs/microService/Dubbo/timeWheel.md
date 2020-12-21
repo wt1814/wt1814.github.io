@@ -13,6 +13,12 @@
 <!-- /TOC -->
 
 # 1. Dubbo中的时间轮  
+<!-- 
+
+定时任务实现原理详解 
+https://mp.weixin.qq.com/s/w_26-slajnM57HIbu4b5CA
+-->
+
 ## 1.1. 定时任务功能  
 &emsp; Netty、Quartz、Kafka 以及 Linux 都有定时任务功能。  
 &emsp; JDK 自带的 java.util.Timer 和 DelayedQueue 可实现简单的定时任务，底层用的是堆，存取复杂度都是 O(nlog(n))，但无法支撑海量定时任务。  

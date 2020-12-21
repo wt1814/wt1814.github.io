@@ -261,7 +261,6 @@
 &emsp; &emsp; [服务暴露](/docs/microService/Dubbo/export.md)  
 &emsp; &emsp; [服务引用](/docs/microService/Dubbo/introduce.md)  
 &emsp; &emsp; [服务调用](/docs/microService/Dubbo/call.md)  
-&emsp; [时间轮算法](/docs/microService/Dubbo/timeWheel.md)  
 
 ### Zookeeper
 [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
@@ -354,6 +353,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 ### 分布式调度
 [延迟队列](/docs/frame/delayQueue.md)  
 [StopWatch](/docs/frame/StopWatch.md)  
+[时间轮算法](/docs/microService/Dubbo/timeWheel.md)  
 [分布式调度](/docs/frame/taskSheduling.md)  
 &emsp; [XXL-JOB](/docs/frame/XXL-JOB.md) 
 

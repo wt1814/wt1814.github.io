@@ -81,7 +81,7 @@ https://www.cnblogs.com/meier1205/p/5971313.html
 &emsp; 文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。  
 
 #### 1.2.1.5. 缓存 I/O
-&emsp; 缓存 I/O 又被称作标准 I/O，大多数文件系统的默认 I/O 操作都是缓存 I/O。在 Linux 的缓存 I/O 机制中，操作系统会将 I/O 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。  
+&emsp; 缓存 I/O 又被称作标准I/O，大多数文件系统的默认 I/O 操作都是缓存 I/O。在 Linux 的缓存 I/O 机制中，操作系统会将 I/O 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。  
 &emsp; **缓存I/O的缺点：**  
 &emsp; 数据在传输过程中需要在应用程序地址空间和内核进行多次数据拷贝操作，这些数据拷贝操作所带来的 CPU 以及内存开销是非常大的。  
 
@@ -94,18 +94,16 @@ https://www.cnblogs.com/meier1205/p/5971313.html
 ④异步IO（Asynchronous IO）：即经典的Proactor设计模式，也称为****异步非阻塞IO****。
 -->
 #### 1.2.2.1. 阻塞IO  
-&emsp; 从进程发起IO操作，一直等待上述两个阶段完成。  
-&emsp; 两阶段一起阻塞。  
-&emsp; 在linux中，默认情况下所有的socket都是blocking，一个典型的读操作流程大概是这样：  
+&emsp; 在linux中，默认情况下所有的socket都是blocking。从进程发起IO操作，一直等待上述两个阶段完成。两阶段一起阻塞。  
+&emsp; 一个典型的读操作流程大概是这样：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-1.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-47.png)  
 &emsp; 当用户进程调用了recvfrom这个系统调用，kernel就开始了IO的第一个阶段：准备数据（对于网络IO来说，很多时候数据在一开始还没有到达。比如，还没有收到一个完整的UDP包。这个时候kernel就要等待足够的数据到来）。这个过程需要等待，也就是说数据被拷贝到操作系统内核的缓冲区中是需要一个过程的。而在用户进程这边，整个进程会被阻塞（当然，是进程自己选择的阻塞）。当kernel一直等到数据准备好了，它就会将数据从kernel中拷贝到用户内存，然后kernel返回结果，用户进程才解除block的状态，重新运行起来。  
 &emsp; 所以，blocking IO的特点就是在IO执行的两个阶段都被block了。  
 
 #### 1.2.2.2. 非阻塞IO  
-&emsp; 进程一直询问IO准备好了没有，准备好了再发起读取操作，这时才把数据从内核空间拷贝到用户空间。  
-&emsp; 第一阶段不阻塞但要轮询，第二阶段阻塞。  
-&emsp; linux下，可以通过设置socket使其变为non-blocking。当对一个non-blocking socket执行读操作时，流程是这个样子：  
+&emsp; Linux下，可以通过设置socket使其变为non-blocking。进程一直询问IO准备好了没有，准备好了再发起读取操作，这时才把数据从内核空间拷贝到用户空间。第一阶段不阻塞但要轮询，第二阶段阻塞。  
+&emsp; 当对一个non-blocking socket执行读操作时，流程是这个样子：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-2.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-48.png)  
 &emsp; 当用户进程发出read操作时，如果kernel中的数据还没有准备好，那么它并不会block用户进程，而是立刻返回一个error。从用户进程角度讲，它发起一个read操作后，并不需要等待，而是马上就得到了一个结果。用户进程判断结果是一个error时，它就知道数据还没有准备好，于是它可以再次发送read操作。一旦kernel中的数据准备好了，并且又再次收到了用户进程的system call，那么它马上就将数据拷贝到了用户内存，然后返回。  
@@ -114,7 +112,7 @@ https://www.cnblogs.com/meier1205/p/5971313.html
 #### 1.2.2.3. 多路复用IO  
 &emsp; 多个连接使用同一个select去询问IO准备好了没有，如果有准备好了的，就返回有数据准备好了，然后对应的连接再发起读取操作，把数据从内核空间拷贝到用户空间。  
 &emsp; 两阶段分开阻塞。  
-&emsp; IO multiplexing就是我们说的select，poll，epoll，有些地方也称这种IO方式为event driven IO。select/epoll的好处就在于单个process就可以同时处理多个网络连接的IO。它的基本原理就是select，poll，epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程。  
+&emsp; IO multiplexing就是指select，poll，epoll，有些也称这种IO方式为event driven IO。select/epoll的好处就在于单个process就可以同时处理多个网络连接的IO。它的基本原理就是select，poll，epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-3.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-49.png)  
 
@@ -125,13 +123,11 @@ https://www.cnblogs.com/meier1205/p/5971313.html
 &emsp; 在IO multiplexing Model中，实际中，对于每一个socket，一般都设置成为non-blocking，但是，如上图所示，整个用户的process其实是一直被block的。只不过process是被select这个函数block，而不是被socket IO给block。  
 
 #### 1.2.2.4. 信号驱动IO  
-&emsp; 进程发起读取操作会立即返回，当数据准备好了会以通知的形式告诉进程，进程再发起读取操作，把数据从内核空间拷贝到用户空间。  
-&emsp; 第一阶段不阻塞，第二阶段阻塞。  
+&emsp; 进程发起读取操作会立即返回，当数据准备好了会以通知的形式告诉进程，进程再发起读取操作，把数据从内核空间拷贝到用户空间。第一阶段不阻塞，第二阶段阻塞。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-4.png)  
 
 #### 1.2.2.5. 异步IO
-&emsp; 进程发起读取操作会立即返回，等到数据准备好且已经拷贝到用户空间了再通知进程拿数据。  
-&emsp; 两个阶段都不阻塞。  
+&emsp; 进程发起读取操作会立即返回，等到数据准备好且已经拷贝到用户空间了再通知进程拿数据。两个阶段都不阻塞。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-5.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-50.png)  
 &emsp; 用户进程发起read操作之后，立刻就可以开始去做其它的事。而另一方面，从kernel的角度，当它受到一个asynchronous read之后，首先它会立刻返回，所以不会对用户进程产生任何block。然后，kernel会等待数据准备完成，然后将数据拷贝到用户内存，当这一切都完成之后，kernel会给用户进程发送一个signal，告诉它read操作完成了。  
@@ -146,7 +142,7 @@ https://www.cnblogs.com/meier1205/p/5971313.html
 &emsp; 异步请求，A调用B，B的处理是异步的，B在接到请求后先告诉A已经接到请求了，然后异步去处理，处理完之后通过回调等方式再通知A。  
 &emsp; 所以说，同步和异步最大的区别就是被调用方的执行方式和返回时机。同步指的是被调用方做完事情之后再返回，异步指的是被调用方先返回，然后再做事情，做完之后再想办法通知调用方。
 -->
-&emsp; 同步和异步其实是指获取CPU时间片到利用，主要看请求发起方对消息结果的获取是主动发起的，还是被动通知的，如下图所示。如果是请求方主动发起的，一直在等待应答结果（同步阻塞），或者可以先去处理其他事情，但要不断轮询查看发起的请求是否由应答结果（同步非阻塞），因为不管如何都要发起方主动获取消息结果，所以形式上还是同步操作。如果是由服务方通知的，也就是请求方发出请求后，要么一直等待通知（异步阻塞），要么先去干自己的事（异步非阻塞）。当事情处理完成后，服务方会主动通知请求方，它的请求已经完成，这就是异步。异步通知的方式一般通过状态改变、消息通知或者回调函数来完成，大多数时候采用的都是回调函数。  
+&emsp; 同步和异步其实是指获取CPU时间片到利用，**主要看请求发起方对消息结果的获取是主动发起的，还是被动通知的。**如下图所示，如果是请求方主动发起的，一直在等待应答结果（同步阻塞），或者可以先去处理其他事情，但要不断轮询查看发起的请求是否由应答结果（同步非阻塞），因为不管如何都要发起方主动获取消息结果，所以形式上还是同步操作。如果是由服务方通知的，也就是请求方发出请求后，要么一直等待通知（异步阻塞），要么先去干自己的事（异步非阻塞）。当事情处理完成后，服务方会主动通知请求方，它的请求已经完成，这就是异步。异步通知的方式一般通过状态改变、消息通知或者回调函数来完成，大多数时候采用的都是回调函数。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-8.png)  
 
 #### 1.2.3.2. 阻塞和非阻塞  
@@ -156,7 +152,7 @@ https://www.cnblogs.com/meier1205/p/5971313.html
 &emsp; 非阻塞请求，A调用B，A不用一直等着B的返回，先去处理其他事情。  
 &emsp; 所以说，阻塞非阻塞最大的区别就是在被调用方返回结果之前的这段时间内，调用方是否一直等待。阻塞指的是调用方一直等待别的事情什么都不做。非阻塞指的是调用方先去忙别的事情。
 -->
-&emsp; 阻塞和非阻塞在计算机的世界里，通常指针对I/O的操作，如网络I/O和磁盘I/O等。那么什么是阻塞和非阻塞呢？简单地说，就是调用来一个函数后，在等待这个函数返回结果之前，当前的线程是处于挂起状态还是运行状态。如果是挂起状态，就意味着当前线程什么都不能干，就等着获取结果，这就是同步阻塞；如果仍然是运行状态，就意味着当前线程是可以继续处理其他任务的，但要时不时地看一下是否由结果来，这就是同步非阻塞。具体如下图所示。  
+&emsp; 阻塞和非阻塞在计算机的世界里，通常指针对I/O的操作，如网络I/O和磁盘I/O等。那么什么是阻塞和非阻塞呢？简单地说，就是调用一个函数后，**在等待这个函数返回结果之前，当前的线程是处于挂起状态还是运行状态。**如果是挂起状态，就意味着当前线程什么都不能干，就等着获取结果，这就是同步阻塞；如果仍然是运行状态，就意味着当前线程是可以继续处理其他任务的，但要时不时地看一下是否由结果来，这就是同步非阻塞。具体如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-9.png)  
 
 

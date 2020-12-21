@@ -13,7 +13,7 @@
 
 # 1. 多路复用(select poll epoll)
 &emsp; 在Linux Socket服务器短编程时，为了处理大量客户的连接请求，需要使用非阻塞I/O和复用，select、poll和epoll是Linux API提供的I/O复用方式。  
-&emsp; select，poll，epoll都是IO多路复用的机制。I/O多路复用就是通过一种机制，一个进程可以监视多个描述符，一旦某个描述符就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作。但select，poll，epoll本质上都是同步I/O，因为他们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的，而异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间。  
+&emsp; select，poll，epoll都是IO多路复用的机制。I/O多路复用就是通过一种机制，一个进程可以监视多个描述符，一旦某个描述符就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作。但select，poll，epoll本质上都是同步I/O，因为它们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的，而异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间。  
 
 ## 1.2. select  
 &emsp; 下面是select的函数接口：  
@@ -21,7 +21,7 @@
 ```c
 int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout); 
 ```
-
+<!-- 
 &emsp; 【参数说明】  
 &emsp; int maxfdp1 指定待测试的文件描述字个数，它的值是待测试的最大描述字加1。  
 &emsp; fd_set *readset , fd_set *writeset , fd_set *exceptset  
@@ -30,8 +30,8 @@ int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct 
 
 &emsp; 【返回值】  
 &emsp; int 若有就绪描述符返回其数目，若超时则为0，若出错则为-1  
-
-&emsp; select 函数监视的文件描述符分3类，分别是writefds、readfds、和exceptfds。调用后select函数会阻塞，直到有描述副就绪（有数据 可读、可写、或者有except），或者超时（timeout指定等待时间，如果立即返回设为null即可），函数返回。当select函数返回后，可以通过遍历fdset，来找到就绪的描述符。  
+-->
+&emsp; select 函数监视的文件描述符分3类，分别是writefds、readfds、和exceptfds。调用后select函数会阻塞，直到有描述符就绪（有数据 可读、可写、或者有except），或者超时（timeout指定等待时间，如果立即返回设为null即可），函数返回。当select函数返回后，可以通过遍历fdset，来找到就绪的描述符。  
 &emsp; select目前几乎在所有的平台上支持，其良好跨平台支持也是它的一个优点。select的一 个缺点在于单个进程能够监视的文件描述符的数量存在最大限制，在Linux上一般为1024，可以通过修改宏定义甚至重新编译内核的方式提升这一限制，但 是这样也会造成效率的降低。  
 
 &emsp; **select运行机制**  
@@ -56,10 +56,8 @@ int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct 
 * 用户空间和内核空间的复制非常消耗资源；  
 
 ## 1.3. poll  
-
-poll的机制与select类似，与select在本质上没有多大差别，管理多个描述符也是进行轮询，根据描述符的状态进行处理，但是poll没有最大文件描述符数量的限制。也就是说，poll只解决了上面的问题3，并没有解决问题1，2的性能开销问题。  
-
-&emsp; 不同与select使用三个位图来表示三个fdset的方式，poll使用一个 pollfd的指针实现。  
+&emsp; poll的机制与select类似，与select在本质上没有多大差别，管理多个描述符也是进行轮询，根据描述符的状态进行处理，但是poll没有最大文件描述符数量的限制。也就是说，poll只解决了上面的问题3，并没有解决问题1，2的性能开销问题。  
+&emsp; 不同与select使用三个位图来表示三个fdset的方式，poll使用一个pollfd的指针实现。  
 
 ```c
 int poll(struct pollfd *fds, nfds_t nfds, int timeout);
@@ -71,29 +69,23 @@ typedef struct pollfd {
 } pollfd_t;
 
 ```
-poll改变了文件描述符集合的描述方式，使用了pollfd结构而不是select的fd_set结构，使得poll支持的文件描述符集合限制远大于select的1024  
-
+&emsp; poll改变了文件描述符集合的描述方式，使用了pollfd结构而不是select的fd_set结构，使得poll支持的文件描述符集合限制远大于select的1024  
+<!-- 
 【参数说明】  
 struct pollfd *fds fds是一个struct pollfd类型的数组，用于存放需要检测其状态的socket描述符，并且调用poll函数之后fds数组不会被清空；一个pollfd结构体表示一个被监视的文件描述符，通过传递fds指示 poll() 监视多个文件描述符。其中，结构体的events域是监视该文件描述符的事件掩码，由用户来设置这个域，结构体的revents域是文件描述符的操作结果事件掩码，内核在调用返回时设置这个域  
 nfds_t nfds 记录数组fds中描述符的总数量  
 【返回值】  
 int 函数返回fds集合中就绪的读、写，或出错的描述符数量，返回0表示超时，返回-1表示出错；  
-
-
-
+-->
 &emsp; pollfd结构包含了要监视的event和发生的event，不再使用select“参数-值”传递的方式。同时，pollfd并没有最大数量限制（但是数量过大后性能也是会下降）。 和select函数一样，poll返回后，需要轮询pollfd来获取就绪的描述符。  
 &emsp; 从上面看，select和poll都需要在返回后，通过遍历文件描述符来获取已经就绪的socket。事实上，同时连接的大量客户端在一时刻可能只有很少的处于就绪状态，因此随着监视的描述符数量的增长，其效率也会线性下降。  
-
 
 &emsp; 调用过程和select类似。  
 &emsp; 时间复杂度:O(n)。  
 &emsp; 其和select不同的地方：采用链表的方式替换原有fd_set数据结构,而使其没有连接数的限制。
 
 ## 1.4. epoll
-epoll是在2.6内核中提出的，是之前的select和poll的增强版本。相对于select和poll来说，epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。  
-
-
-
+&emsp; epoll是在2.6内核中提出的，是之前的select和poll的增强版本。相对于select和poll来说，epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。  
 
 ### epoll操作过程
 &emsp; epoll的接口如下：  
@@ -119,7 +111,7 @@ int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout
 &emsp; 在 select/poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描，而epoll事先通过epoll_ctl()来注册一 个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait() 时便得到通知。  
 
 ----
-epoll操作过程需要三个接口，分别如下：  
+&emsp; epoll操作过程需要三个接口，分别如下：  
 
 ```c
 int epoll_create(int size)；//创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大
@@ -128,14 +120,14 @@ int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout
 ```
 
 1. int epoll_create(int size);  
-创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大，这个参数不同于select()中的第一个参数，给出最大监听的fd+1的值，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。  
-当创建好epoll句柄后，它就会占用一个fd值，在linux下如果查看/proc/进程id/fd/，是能够看到这个fd的，所以在使用完epoll后，必须调用close()关闭，否则可能导致fd被耗尽。  
+&emsp; &emsp; 创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大，这个参数不同于select()中的第一个参数，给出最大监听的fd+1的值，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。  
+&emsp; &emsp; 当创建好epoll句柄后，它就会占用一个fd值，在linux下如果查看/proc/进程id/fd/，是能够看到这个fd的，所以在使用完epoll后，必须调用close()关闭，否则可能导致fd被耗尽。  
 2. int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)；  
-函数是对指定描述符fd执行op操作。  
-- epfd：是epoll_create()的返回值。  
-- op：表示op操作，用三个宏来表示：添加EPOLL_CTL_ADD，删除EPOLL_CTL_DEL，修改EPOLL_CTL_MOD。分别添加、删除和修改对fd的监听事件。  
-- fd：是需要监听的fd（文件描述符）  
-- epoll_event：是告诉内核需要监听什么事，struct epoll_event结构如下：  
+&emsp; 函数是对指定描述符fd执行op操作。  
+    - epfd：是epoll_create()的返回值。  
+    - op：表示op操作，用三个宏来表示：添加EPOLL_CTL_ADD，删除EPOLL_CTL_DEL，修改EPOLL_CTL_MOD。分别添加、删除和修改对fd的监听事件。  
+    - fd：是需要监听的fd（文件描述符）  
+    - epoll_event：是告诉内核需要监听什么事，struct epoll_event结构如下：  
 
 ```c
 struct epoll_event {
@@ -153,13 +145,12 @@ EPOLLET： 将EPOLL设为边缘触发(Edge Triggered)模式，这是相对于水
 EPOLLONESHOT：只监听一次事件，当监听完这次事件之后，如果还需要继续监听这个socket的话，需要再次把这个socket加入到EPOLL队列里
 ```
 3. int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);  
-等待epfd上的io事件，最多返回maxevents个事件。  
-参数events用来从内核得到事件的集合，maxevents告之内核这个events有多大，这个maxevents的值不能大于创建epoll_create()时的size，参数timeout是超时时间（毫秒，0会立即返回，-1将不确定，也有说法说是永久阻塞）。该函数返回需要处理的事件数目，如返回0表示已超时。  
-
+&emsp; 等待epfd上的io事件，最多返回maxevents个事件。  
+&emsp; 参数events用来从内核得到事件的集合，maxevents告之内核这个events有多大，这个maxevents的值不能大于创建epoll_create()时的size，参数timeout是超时时间（毫秒，0会立即返回，-1将不确定，也有说法说是永久阻塞）。该函数返回需要处理的事件数目，如返回0表示已超时。  
 
 ----
 
-Linux中提供的epoll相关函数如下：  
+&emsp; Linux中提供的epoll相关函数如下：  
 
 ```c
 int epoll_create(int size);
@@ -178,7 +169,7 @@ int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout
     * fd 是要监听的描述符
     * event 表示要监听的事件
 
-epoll_event 结构体定义如下：    
+&emsp; epoll_event结构体定义如下：    
 
 ```c
 struct epoll_event {
@@ -207,11 +198,11 @@ epoll是Linux内核为处理大批量文件描述符而作了改进的poll，是
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-46.png)  
 
-&emsp; 时间复杂度:O(1)  
+&emsp; 时间复杂度：O(1)  
 
 ### epoll工作模式
 &emsp; **epoll的工作方式**  
-&emsp; epoll的两种工作方式：1.水平触发（LT）2.边缘触发（ET）  
+&emsp; epoll有两种工作方式：1.水平触发（LT）2.边缘触发（ET）  
 
 * LT模式：若就绪的事件一次没有处理完要做的事件，就会一直去处理。即就会将没有处理完的事件继续放回到就绪队列之中（即那个内核中的链表），一直进行处理。   
 * ET模式：就绪的事件只能处理一次，若没有处理完会在下次的其它事件就绪时再进行处理。而若以后再也没有就绪的事件，那么剩余的那部分数据也会随之而丢失。   
