@@ -140,7 +140,7 @@ b.group(eventLoopGroup)
 &emsp; ChannelInboundHandler处理入站数据以及各种状态变化，当Channel状态发生改变会调用ChannelInboundHandler中的一些生命周期方法。这些方法与Channel的生命密切相关。  
 &emsp; 入站数据，就是进入socket的数据。下面展示一些该接口的生命周期API：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-54.png)  
-当某个 ChannelInboundHandler的实现重写 channelRead()方法时，它将负责显式地释放与池化的 ByteBuf 实例相关的内存。Netty 为此提供了一个实用方法ReferenceCountUtil.release()。  
+&emsp; 当某个 ChannelInboundHandler的实现重写 channelRead()方法时，它将负责显式地释放与池化的 ByteBuf 实例相关的内存。Netty 为此提供了一个实用方法ReferenceCountUtil.release()。  
 
 ```java
 @Sharable
@@ -165,7 +165,7 @@ public class SimpleDiscardHandler
 ```
 
 ### 1.5.1. ChannelInboundHandler  
-emsp; &出站操作和数据将由 ChannelOutboundHandler 处理。它的方法将被 Channel、 ChannelPipeline以及 ChannelHandlerContext 调用。ChannelOutboundHandler 的一个强大的功能是可以按需推迟操作或者事件，这使得可以通过一些复杂的方法来处理请求。例如， 如果到远程节点的写入被暂停了， 那么你可以推迟冲刷操作并在稍后继续。  
+&emsp; 出站操作和数据将由 ChannelOutboundHandler 处理。它的方法将被 Channel、 ChannelPipeline以及 ChannelHandlerContext 调用。ChannelOutboundHandler 的一个强大的功能是可以按需推迟操作或者事件，这使得可以通过一些复杂的方法来处理请求。例如， 如果到远程节点的写入被暂停了， 那么你可以推迟冲刷操作并在稍后继续。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-55.png)  
 &emsp; ChannelPromise与ChannelFuture: ChannelOutboundHandler中的大部分方法都需要一个ChannelPromise参数， 以便在操作完成时得到通知。ChannelPromise是ChannelFuture的一个子类，其定义了一些可写的方法，如setSuccess()和setFailure()，从而使ChannelFuture不可变。  
 
