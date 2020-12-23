@@ -30,6 +30,9 @@ https://juejin.im/post/6887469050515947528
 https://mp.weixin.qq.com/s/KD2cpeUviLcEE3wrfdnrlQ
 
 https://mp.weixin.qq.com/s/LAWUHrRSnxKKicHz1FiGVw
+
+小白也能秒懂的Linux零拷贝原理 
+https://mp.weixin.qq.com/s/SKuNuC3kSGGor0xwArzvcg
 -->
 
 ## 1.1. DMA介绍
