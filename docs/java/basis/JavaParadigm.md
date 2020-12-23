@@ -24,6 +24,9 @@ https://mp.weixin.qq.com/s/ilqFpf5kE0XzJnOv9SsX7Q
 https://www.cnblogs.com/lihaoyang/p/7104293.html
 Java-TypeToken原理及泛型擦除
 https://mp.weixin.qq.com/s/oPnJGmw-fNwtgG6ioAJ-ZQ
+精通 Java，却不了解泛型？  精通 Java，却不了解泛型？ 
+https://mp.weixin.qq.com/s/4QqRkHJ4NeZW9EgR4oOwhA
+https://mp.weixin.qq.com/s/kXaXODEZcxSNkALE7Im8Aw
 -->
 
 # 1. Java泛型
