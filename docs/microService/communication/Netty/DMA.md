@@ -6,6 +6,7 @@
 - [1. 零拷贝](#1-零拷贝)
     - [1.1. DMA介绍](#11-dma介绍)
         - [1.1.1. 为什么要有 DMA 技术?](#111-为什么要有-dma-技术)
+        - [DMA介绍](#dma介绍)
         - [1.1.2. 传统的文件传输有多糟糕？](#112-传统的文件传输有多糟糕)
         - [1.1.3. 如何优化文件传输的性能？](#113-如何优化文件传输的性能)
         - [1.1.4. 如何实现零拷贝？](#114-如何实现零拷贝)
@@ -18,24 +19,6 @@
 <!-- /TOC -->
 
 # 1. 零拷贝  
-
-<!-- 
-零拷贝
-https://mp.weixin.qq.com/s/mWPjFbCVzvuAW3Y9lEQbGg
-
-框架篇：小白也能秒懂的Linux零拷贝原理 
-https://juejin.im/post/6887469050515947528
-
-关于零拷贝的一点认识 
-https://mp.weixin.qq.com/s/KD2cpeUviLcEE3wrfdnrlQ
-
-https://mp.weixin.qq.com/s/LAWUHrRSnxKKicHz1FiGVw
-
-小白也能秒懂的Linux零拷贝原理 
-https://mp.weixin.qq.com/s/SKuNuC3kSGGor0xwArzvcg
-
--->
-
 ## 1.1. DMA介绍
 ### 1.1.1. 为什么要有 DMA 技术?  
 &emsp; 在没有 DMA 技术前，I/O 的过程是这样的：  
@@ -49,6 +32,8 @@ https://mp.weixin.qq.com/s/SKuNuC3kSGGor0xwArzvcg
 &emsp; 可以看到，整个数据的传输过程，都要需要 CPU 亲自参与搬运数据的过程，而且这个过程，CPU 是不能做其他事情的。  
 &emsp; 简单的搬运几个字符数据那没问题，但是如果我们用千兆网卡或者硬盘传输大量数据的时候，都用 CPU 来搬运的话，肯定忙不过来。  
 &emsp; 计算机科学家们发现了事情的严重性后，于是就发明了 DMA 技术，也就是直接内存访问（Direct Memory Access） 技术。  
+
+### DMA介绍
 &emsp; 什么是 DMA 技术？简单理解就是，在进行 I/O 设备和内存的数据传输的时候，数据搬运的工作全部交给 DMA 控制器，而 CPU 不再参与任何与数据搬运相关的事情，这样 CPU 就可以去处理别的事务。  
 
 &emsp; 使用 DMA 控制器进行数据传输的过程如下图：  

@@ -278,7 +278,7 @@
     * [Netty介绍及架构剖析](/docs/microService/communication/Netty/concepts.md)  
     * [Netty核心组件](/docs/microService/communication/Netty/components.md)    
     * [Netty高性能](/docs/microService/communication/Netty/performance.md)  
-        * [零拷贝](/docs/microService/communication/Netty/DMA.md)  
+        * [零拷贝](/docs/microService/communication/Netty/DMA2.md)  
         * [Reactor与EventLoop](/docs/microService/communication/Netty/Reactor.md)  
     * [TCP粘拆包与Netty编解码](/docs/microService/communication/Netty/Decoder.md)  
     * [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
