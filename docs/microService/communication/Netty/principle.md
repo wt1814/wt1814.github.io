@@ -1,7 +1,7 @@
 <!-- TOC -->
 
 - [1. Netty服务端创建](#1-netty服务端创建)
-    - [1.1. ServerBootstrap 示例](#11-serverbootstrap-示例)
+    - [1.1. ServerBootstrap示例](#11-serverbootstrap示例)
     - [1.2. Netty服务端创建时序图](#12-netty服务端创建时序图)
     - [1.3. Netty服务端创建源码分析](#13-netty服务端创建源码分析)
     - [1.4. 客户端接入源码分析](#14-客户端接入源码分析)
@@ -10,25 +10,26 @@
 
 # 1. Netty服务端创建  
 <!-- 
-~~
-http://svip.iocoder.cn/Netty/bootstrap-1-server/
+高性能 Netty 源码解析之服务端创建 
+https://mp.weixin.qq.com/s/ZvLLSxA42aEWjXvRvot74A
 -->
 
 <!-- 
 《Netty权威指南》第13章
-高性能 Netty 源码解析之服务端创建 
-https://mp.weixin.qq.com/s/ZvLLSxA42aEWjXvRvot74A
 Netty服务端启动源码分析
 https://mp.weixin.qq.com/s/PKwt7cN1hRbqmEvAmSDcOA
 -->
+&emsp; **<font color = "lime">Netty启动服务端：</font>**  
+1. 创建ServerBootstrap服务端启动对象。  
+2. 配置bossGroup和workerGroup，其中bossGroup负责接收连接，workerGroup负责处理连接的读写就绪事件。
+3. 配置父Channel，一般为NioServerSocketChannel。  
+4. 配置子Channel与Handler之间的关系。
+5. 给父Channel配置参数。
+6. 给子Channel配置参数。
+7. 绑定端口，启动服务。
 
-## 1.1. ServerBootstrap 示例  
-
-
-&emsp; 在netty源码包中，执行 io.netty.example.echo.EchoServer 的 #main(args) 方法，启动服务端。  
-
-
-&emsp; EchoServer源码如下：  
+## 1.1. ServerBootstrap示例  
+&emsp; 在netty源码包中，执行io.netty.example.echo.EchoServer的#main(args) 方法，启动服务端。EchoServer源码如下：  
 
 ```java
 public final class EchoServer {
@@ -93,19 +94,18 @@ public final class EchoServer {
 * 第 17 至 20 行：创建两个 EventLoopGroup 对象。
     * boss 线程组：用于服务端接受客户端的连接。
     * worker 线程组：用于进行客户端的 SocketChannel 的数据读写。
-    * 关于为什么是两个 EventLoopGroup 对象，我们在后续的文章，进行分享。
 * 第 22 行：创建 io.netty.example.echo.EchoServerHandler 对象。
 * 第 24 行：创建 ServerBootstrap 对象，用于设置服务端的启动配置。
     * 第 26 行：调用 #group(EventLoopGroup parentGroup, EventLoopGroup childGroup) 方法，设置使用的 EventLoopGroup 。
-    * 第 27 行：调用 #channel(Class<? extends C> channelClass) 方法，设置要被实例化的 Channel 为 NioServerSocketChannel 类。在下文中，我们会看到该 Channel 内嵌了 java.nio.channels.ServerSocketChannel 对象。是不是很熟悉 😈 ？
+    * 第 27 行：调用 #channel(Class<? extends C> channelClass) 方法，设置要被实例化的 Channel 为 NioServerSocketChannel 类。该 Channel 内嵌了 java.nio.channels.ServerSocketChannel 对象。
     * 第 28 行：调用 #option(ChannelOption<T> option, T value) 方法，设置 NioServerSocketChannel 的可选项。在 io.netty.channel.ChannelOption 类中，枚举了相关的可选项。
-    * 第 29 行：调用 #handler(ChannelHandler handler) 方法，设置 NioServerSocketChannel 的处理器。在本示例中，使用了 io.netty.handler.logging.LoggingHandler 类，用于打印服务端的每个事件。详细解析，见后续文章。
+    * 第 29 行：调用 #handler(ChannelHandler handler) 方法，设置 NioServerSocketChannel 的处理器。在本示例中，使用了 io.netty.handler.logging.LoggingHandler 类，用于打印服务端的每个事件。
     * 第 30 至 40 行：调用 #childHandler(ChannelHandler handler) 方法，设置连入服务端的 Client 的 SocketChannel 的处理器。在本实例中，使用 ChannelInitializer 来初始化连入服务端的 Client 的 SocketChannel 的处理器。
 * 第 44 行：先调用 #bind(int port) 方法，绑定端口，后调用 ChannelFuture#sync() 方法，阻塞等待成功。这个过程，就是“启动服务端”。
-* 第 48 行：先调用 #closeFuture() 方法，监听服务器关闭，后调用 ChannelFuture#sync() 方法，阻塞等待成功。😈 注意，此处不是关闭服务器，而是“监听”关闭。
+* 第 48 行：先调用 #closeFuture() 方法，监听服务器关闭，后调用 ChannelFuture#sync() 方法，阻塞等待成功。注意，此处不是关闭服务器，而是“监听”关闭。
 * 第 49 至 54 行：执行到此处，说明服务端已经关闭，所以调用 EventLoopGroup#shutdownGracefully() 方法，分别关闭两个 EventLoopGroup 对象。
 
-&emsp; **<font color = "lime">Netty启动服务端</font>**  
+&emsp; **<font color = "lime">Netty启动服务端：</font>**  
 1. 创建ServerBootstrap服务端启动对象。  
 2. 配置bossGroup和workerGroup，其中bossGroup负责接收连接，workerGroup负责处理连接的读写就绪事件。
 3. 配置父Channel，一般为NioServerSocketChannel。  
@@ -142,7 +142,7 @@ EventLoopGroup bossGroup = new NioEventLoopGroup();
 EventLoopGroup workerGroup = new NioEventLoopGroup();
 ```
 
-&emsp; bossGroup 负责的是接受请求，workerGroup 负责的是处理请求。我们可以看到，通过 ServerBootstrap 的方法 group() 传入之后，会设置成为 ServerBootstrap 的 parentGroup 和 childGroup  
+&emsp; bossGroup负责的是接受请求，workerGroup负责的是处理请求。通过 ServerBootstrap 的方法 group() 传入之后，会设置成为 ServerBootstrap 的 parentGroup 和 childGroup  
 
 ```java
 public ServerBootstrap group(EventLoopGroup parentGroup, EventLoopGroup childGroup) {
@@ -186,7 +186,7 @@ int listen(int fd, int backlog);
     新条目会直到第三个分节到达前（客户端对服务器 syn 的 ack）都会一直保留在未完成连接队列中，如果三路握手完成，该条目将从未完成队列搬到已完成队列的尾部。
     当进程调用 accept 时，从已完成队列的头部取一条目给进程，当已完成队列为空的时候进程就睡眠，直到有条目在已完成连接队列中才唤醒。
 
-&emsp; 现在说到了重点，backlog 其实是两个队列的总和的最大值，大多数实现默认值为 5。但是高并发的情况之下，并不够用。因为可能客户端 syn 的到达以及等待三路握手第三个分节的到达延时而增大。 所以我们需要根据实际场景和网络状况进行灵活配置。  
+&emsp; 现在说到了重点，backlog 其实是两个队列的总和的最大值，大多数实现默认值为 5。但是高并发的情况之下，并不够用。因为可能客户端 syn 的到达以及等待三路握手第三个分节的到达延时而增大。 所以需要根据实际场景和网络状况进行灵活配置。  
 &emsp; 接着是步骤5，是设置服务端的 Handler。Handler 分为两种，一种是 子类中的 Handler 是 NioServerSocketChannel 对应的 ChannelPipeline 的 Handler，另一种是父类中的 Handler 是客户端新接入的连接 SocketChannel 对应的 ChannelPipeline 的 Handler。  
 
 ```java
@@ -195,7 +195,7 @@ b.handler().childHandler();
 
 &emsp; 上面代码有两个 handler 方法，区别在于 handler() 方法是 NioServerSocketChannel使用的，所有连接该监听端口的客户端都会执行它；父类 AbstractBootstrap 中的 Handler 是个工厂类，它为每个接入的客户端都创建一个新的 Handler。  
 
-&emsp; 接着是步骤6，就是绑定本地端口然后启动服务。这是比较重要的一步，我们来分析 ServerBootstrap 的 bind 方法。  
+&emsp; 接着是步骤6，就是绑定本地端口然后启动服务。这是比较重要的一步，来分析下 ServerBootstrap 的 bind 方法。  
 
 ```java
 private ChannelFuture doBind(final SocketAddress localAddress) {
@@ -315,7 +315,7 @@ private static void doBind0(
 }
 ```
 
-&emsp; 上述代码是不断地添加 handler 进入 pipleline，所以我们可以来看看 NioServerSocketChannel 的 ChannelPipiline 的组成。  
+&emsp; 上述代码是不断地添加 handler 进入 pipleline，所以可以来看看 NioServerSocketChannel 的 ChannelPipiline 的组成。  
 
 ```text
 			----> in stream
@@ -350,9 +350,9 @@ public EventLoop next() {
 |PowerOfTwoEventExecutorChooser	|按位与(&)操作符|
 |GenericEventExecutorChooser	|取模(%)运算符|
 
-&emsp; chooserFactory 最后会选择出 EventExecutor 后，就可以将 Channel 进行注册了。在 Netty 的 NioEventLoopGroup 中 EventExecutor 都是 SingleThreadEventLoop 来承担的（如果你继续跟进代码的话，你会发现其实 EventExecutor 实际上就是一个 Java 原生的线程池，最后实现的是一个 ExecutorService ）。  
+&emsp; chooserFactory 最后会选择出 EventExecutor 后，就可以将 Channel 进行注册了。在 Netty 的 NioEventLoopGroup 中 EventExecutor 都是 SingleThreadEventLoop 来承担的（如果继续跟进代码的话，会发现其实 EventExecutor 实际上就是一个 Java 原生的线程池，最后实现的是一个 ExecutorService ）。  
 
-&emsp; 接下来，我们获取到了 EventExecutor 后，就可以让它帮忙注册了。  
+&emsp; 接下来，获取到了 EventExecutor 后，就可以让它帮忙注册了。  
 
 ```java
 public final void register(EventLoop eventLoop, final ChannelPromise promise) {
@@ -378,7 +378,7 @@ public final void register(EventLoop eventLoop, final ChannelPromise promise) {
     }
 }
 ```
-&emsp; 我们发现了实际注册的是 register0()，我们继续跟进
+&emsp; 发现实际注册的是 register0()，继续跟进
 
 ```java
 private void register0(ChannelPromise promise) {
@@ -415,7 +415,7 @@ private void register0(ChannelPromise promise) {
     }
 }
 ```
-&emsp; 我们发现虽然上面的方法写着 register，但实际上只是调用了一下 Netty 定义的生命周期函数。实际将 Channel 挂到 Selector 的代码在 doRegister() 方法里面。
+&emsp; 发现虽然上面的方法写着 register，但实际上只是调用了一下 Netty 定义的生命周期函数。实际将 Channel 挂到 Selector 的代码在 doRegister() 方法里面。
 
 ```java
 protected void doRegister() throws Exception {
@@ -478,7 +478,7 @@ public void beginRead() {
     //...省略代码
 }
 ```
-&emsp; 由于不同类型的 Channel 对于读操作的处理是不同的，所以合格 beginRead 也算是多态方法。对于 NIO 的 channel，无论是客户端还是服务端，都是修改网络监听操作位为自身感兴趣的shi  
+&emsp; 由于不同类型的 Channel 对于读操作的处理是不同的，所以合格 beginRead 也算是多态方法。对于 NIO 的 channel，无论是客户端还是服务端，都是修改网络监听操作位为自身感兴趣的事件。  
 
 ```java
 protected void doBeginRead() throws Exception {
@@ -508,7 +508,7 @@ protected void doBeginRead() throws Exception {
 
 
 ## 1.4. 客户端接入源码分析  
-&emsp; 负责处理网络读写，连接和客户端情感求接入的 Reactor 线程是 NioEventLoop，我们分析一下客户端是怎么接入的。当多路复用器检测到准备就绪的 channel，默认执行 processSelectedKeysOptimized，代码如下  
+&emsp; 负责处理网络读写，连接和客户端情感求接入的 Reactor 线程是 NioEventLoop，分析一下客户端是怎么接入的。当多路复用器检测到准备就绪的 channel，默认执行 processSelectedKeysOptimized，代码如下  
 
 ```java
 private void processSelectedKeys() {
@@ -530,7 +530,7 @@ if (a instanceof AbstractNioChannel) {
     processSelectedKey(k, task);
 }
 ```
-&emsp; 由于 NioEventLoop 属于 AbstractNioChannel，所以执行 processSelectedKey 方法。processSelectedKey 顾名思义，就是处理所选择 selectionKey。我们看方法核心代码  
+&emsp; 由于 NioEventLoop 属于 AbstractNioChannel，所以执行 processSelectedKey 方法。processSelectedKey 顾名思义，就是处理所选择 selectionKey。看方法核心代码  
 
 ```java
 int readyOps = k.readyOps();

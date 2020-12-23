@@ -15,7 +15,7 @@
 # 1. Netty客户端创建
 <!--
 ~~
-http://svip.iocoder.cn/Netty/bootstrap-2-client/
+
 -->
 
 <!-- 
@@ -90,7 +90,7 @@ public final class EchoClient {
 }
 ```
 
-&emsp; <font color = "lime">**Netty启动客户端**</font>  
+&emsp; <font color = "lime">**Netty启动客户端：**</font>  
 1. 创建Bootstrap客户端启动对象。  
 2. 配置workerGroup，负责处理连接的读写就绪事件。  
 3. 配置父Channel，一般为NioSocketChannel。  
@@ -99,13 +99,12 @@ public final class EchoClient {
 6. 连接服务器。
 
 ## 1.2. Netty客户端创建时序图  
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-29.png)  
 
-&emsp; 客户端创建的流程有以下步骤
+&emsp; <font color = "lime">**客户端创建的流程有以下步骤：**</font>
 
-1. 创建 Bootstrap 实例，通过 API 设置客户端的参数，异步发起连接  
-2. 创建客户端连接，IO 读写的 Reactor 线程组 NioEventLoopGroup  
+1. 创建 Bootstrap 实例，通过API设置客户端的参数，异步发起连接  
+2. 创建客户端连接，IO读写的Reactor线程组NioEventLoopGroup  
 3. 指定 Channel 类型  
 4. 创建默认的 Channel Handler Pipeline，用于调度和执行网络事件  
 5. 异步发起 TCP 连接，判断连接是否成功。如果成功，则直接将 NioSocketChannel 注册到多路复用器上。监听读操作位，用于数据报读取和消息发送；如果不成功，则注册连接监听位到多路复用器，等待连接结果。  
@@ -357,7 +356,7 @@ protected boolean doConnect(SocketAddress remoteAddress, SocketAddress localAddr
 &emsp; 目前为止，客户端的已经完成了“发起连接”这个动作了。如果成功还好，如果是第二种情况返回 false，后面成功了怎么处理呢？我们继续往下走~  
 
 ### 1.3.2. 异步连接结果通知  
-&emsp; 由于上面再 NioSocketChannel 如果暂时不能成功注册的话，就返回继续将 selectionKey 设为 OP_CONNECT。那么后续交给了我们的“线程池” NioEventLoopGroup 继续去监听实行。我们都知道 NioEventLoopGroup 是一个线程池集合。而里面每一个线程池其实是 NioEventLoop。所以后续异步连接结果还是由 NioEventLoop 继续处理。我们去看看它的源码。  
+&emsp; 由于上面再NioSocketChannel如果暂时不能成功注册的话，就返回继续将 selectionKey设为OP_CONNECT。那么后续交给了“线程池” NioEventLoopGroup继续去监听实行。NioEventLoopGroup是一个线程池集合。而里面每一个线程池其实是NioEventLoop。所以后续异步连接结果还是由 NioEventLoop 继续处理。我们去看看它的源码。  
 
 ```java
 private void processSelectedKey(SelectionKey k, AbstractNioChannel ch) {
@@ -417,7 +416,7 @@ private void fulfillConnectPromise(ChannelPromise promise, boolean wasActive) {
 
 ### 1.3.3. 超时机制  
 &emsp; 上面讲了连接失败的情况，如果客户端连接超时怎么办呢？要知道原生的 Java NIO 过于简洁（同时也是一种好处吧，给了开发一个极大的发挥空间），所以 Netty 要自己实现这个超时的机制。  
-&emsp; 首先，我们需要使用 Netty 的超时机制，我们要在客户端启动的时候进行设置  
+&emsp; 首先，需要使用 Netty 的超时机制，要在客户端启动的时候进行设置  
 
 ```java
 b.group(group).channel(NioSocketChannel.class)
