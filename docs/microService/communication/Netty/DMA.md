@@ -104,7 +104,7 @@ write(socket, tmp_buf, len);
 &emsp; 下面就谈一谈，它们是如何减少「上下文切换」和「数据拷贝」的次数。  
 
 #### 1.1.4.1. mmap + write  
-&emsp; 在前面已经知道，read() 系统调用的过程中会把内核缓冲区的数据拷贝到用户的缓冲区里，于是为了减少这一步开销，我们可以用 mmap() 替换 read() 系统调用函数。  
+&emsp; read() 系统调用的过程中会把内核缓冲区的数据拷贝到用户的缓冲区里，于是为了减少这一步开销，我们可以用 mmap() 替换 read() 系统调用函数。  
 
 ```text
 buf = mmap(file, len);
@@ -121,13 +121,8 @@ write(sockfd, buf, len);
 &emsp; 我们可以得知，通过使用 mmap() 来代替 read()， 可以减少一次数据拷贝的过程。  
 &emsp; 但这还不是最理想的零拷贝，因为仍然需要通过 CPU 把内核缓冲区的数据拷贝到 socket 缓冲区里，而且仍然需要 4 次上下文切换，因为系统调用还是 2 次。  
 
------
-&emsp; mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享。  
-&emsp; 这样就减少了一次用户态和内核态的CPU拷贝，但是在内核空间内仍然有一次CPU拷贝。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-30.png)  
-&emsp; mmap对大文件传输有一定优势，但是小文件可能出现碎片，并且在多个进程同时操作文件时可能产生引发coredump的signal。  
-
 #### 1.1.4.2. sendfile  
+&emsp; mmap+write方式有一定改进，但是由系统调用引起的状态切换并没有减少。  
 &emsp; 在 Linux 内核版本 2.1 中，提供了一个专门发送文件的系统调用函数 sendfile()，函数形式如下：
 
 ```text
@@ -159,13 +154,7 @@ scatter-gather: on
 &emsp; 所以，总体来看，零拷贝技术可以把文件传输的性能提高至少一倍以上。  
 
 -----
-&emsp; mmap+write方式有一定改进，但是由系统调用引起的状态切换并没有减少。  
-&emsp; sendfile系统调用是在 Linux 内核2.1版本中被引入，它建立了两个文件之间的传输通道。  
-&emsp; sendfile方式只使用一个函数就可以完成之前的read+write 和 mmap+write的功能，这样就少了2次状态切换，由于数据不经过用户缓冲区，因此该数据无法被修改。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-31.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-32.png)  
-&emsp; 从图中可以看到，应用程序只需要调用sendfile函数即可完成，只有2次状态切换、1次CPU拷贝、2次DMA拷贝。  
-&emsp; 但是sendfile在内核缓冲区和socket缓冲区仍然存在一次CPU拷贝，或许这个还可以优化。  
+
 
 ### 1.1.5. sendfile+DMA收集  
 &emsp; Linux 2.4 内核对 sendfile 系统调用进行优化，但是需要硬件DMA控制器的配合。  

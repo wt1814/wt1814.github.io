@@ -15,6 +15,9 @@ jvm全套 链接: https://pan.baidu.com/s/1PcaER6cNiDt6teawLOwpgQ 提取码: c5f
 
 JVM学习目录
 https://www.cnblogs.com/ding-dang/p/13129619.html
+
+JDK、JRE、JVM，是什么关系？
+https://mp.weixin.qq.com/s/-CbNU5uPH1cpMuZ-eQQgFw
 -->
 # 1. JDK、JRE、JVM  
 ## 1.1. JDK  
