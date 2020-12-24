@@ -5,7 +5,7 @@
     - [1.1. Reactor是什么](#11-reactor是什么)
         - [1.1.1. thread-based architecture](#111-thread-based-architecture)
         - [1.1.2. event-driven architecture](#112-event-driven-architecture)
-        - [1.1.3. reactor（反应堆）](#113-reactor反应堆)
+        - [1.1.3. Reactor（反应堆）](#113-reactor反应堆)
     - [1.2. Reactor线程模型详解](#12-reactor线程模型详解)
         - [1.2.1. 单线程模型](#121-单线程模型)
         - [1.2.2. 多线程模型](#122-多线程模型)
@@ -27,8 +27,7 @@ linux高性能网络IO+Reactor模型
 https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
 -->
 <!-- 
-Netty如何支持Reactor模式? 
-https://mp.weixin.qq.com/s/s2y8E5Cvz8q9c9oVxRBnNw
+
 -->
 ## 1.1. Reactor是什么
 &emsp; 在处理web请求时，通常有两种体系结构，分别为：thread-based architecture（基于线程）、event-driven architecture（事件驱动）。  
@@ -40,7 +39,7 @@ https://mp.weixin.qq.com/s/s2y8E5Cvz8q9c9oVxRBnNw
 ### 1.1.2. event-driven architecture
 &emsp; 事件驱动体系结构是目前比较广泛使用的一种。这种方式会定义一系列的事件处理器来响应事件的发生，并且将服务端接受连接与对事件的处理分离。其中，事件是一种状态的改变。比如，tcp中socket的new incoming connection、ready for read、ready for write。  
 
-### 1.1.3. reactor（反应堆）  
+### 1.1.3. Reactor（反应堆）  
 &emsp; Reactor设计模式是event-driven architecture的一种实现方式，处理多个客户端并发的向服务端请求服务的场景。每种服务在服务端可能由多个方法组成。reactor会解耦并发请求的服务并分发给对应的事件处理器来处理。目前，许多流行的开源框架都用到了reactor模式，如：netty、node.js等，包括java的nio。  
 
         维基百科上的定义：“反应堆设计模式是一种事件处理模式，用于处理由一个或多个输入同时发送的服务请求。然后，服务处理程序将传入的请求多路分解，并同步地将其分发到关联的请求处理程序。”。
@@ -50,20 +49,15 @@ https://mp.weixin.qq.com/s/s2y8E5Cvz8q9c9oVxRBnNw
 <!-- 
 https://www.jianshu.com/p/eef7ebe28673
 -->
-&emsp; reactor主要由以下几个角色构成：handle、Synchronous Event Demultiplexer、Initiation Dispatcher、Event Handler、Concrete Event Handler  
+&emsp; Reactor主要由以下几个角色构成：handle、Synchronous Event Demultiplexer、Initiation Dispatcher、Event Handler、Concrete Event Handler  
 
-* Handle  
-&emsp; handle在linux中一般称为文件描述符，而在window称为句柄，两者的含义一样。handle是事件的发源地。比如一个网络socket、磁盘文件等。而发生在handle上的事件可以有connection、ready for read、ready for write等。  
-* Synchronous Event Demultiplexer  
-&emsp; 同步事件分离器，本质上是系统调用。比如linux中的select、poll、epoll等。比如，select方法会一直阻塞直到handle上有事件发生时才会返回。  
-* Event Handler  
-&emsp; 事件处理器，其会定义一些回调方法或者称为钩子函数，当handle上有事件发生时，回调方法便会执行，一种事件处理机制。  
-* Concrete Event Handler  
-&emsp; 具体的事件处理器，实现了Event Handler。在回调方法中会实现具体的业务逻辑。  
-* Initiation Dispatcher  
-&emsp; 初始分发器，也是reactor角色，提供了注册、删除与转发event handler的方法。当Synchronous Event Demultiplexer检测到handle上有事件发生时，便会通知initiation dispatcher调用特定的event handler的回调方法。  
+* Handle，handle，在linux中一般称为文件描述符，而在window称为句柄，两者的含义一样。handle是事件的发源地。比如一个网络socket、磁盘文件等。而发生在handle上的事件可以有connection、ready for read、ready for write等。  
+* Synchronous Event Demultiplexer，同步事件分离器，本质上是系统调用。比如linux中的select、poll、epoll等。比如，select方法会一直阻塞直到handle上有事件发生时才会返回。  
+* **Event Handler，事件处理器，**其会定义一些回调方法或者称为钩子函数，当handle上有事件发生时，回调方法便会执行，一种事件处理机制。  
+* **Concrete Event Handler，具体的事件处理器，**实现了Event Handler。在回调方法中会实现具体的业务逻辑。  
+* Initiation Dispatcher，初始分发器，也是reactor角色，提供了注册、删除与转发event handler的方法。当Synchronous Event Demultiplexer检测到handle上有事件发生时，便会通知initiation dispatcher调用特定的event handler的回调方法。  
 
-&emsp; **处理流程**  
+&emsp; **处理流程：**  
 1. 当应用向Initiation Dispatcher注册Concrete Event Handler时，应用会标识出该事件处理器希望Initiation Dispatcher在某种类型的事件发生发生时向其通知，事件与handle关联  
 2. Initiation Dispatcher要求注册在其上面的Concrete Event Handler传递内部关联的handle，该handle会向操作系统标识
 3. 当所有的Concrete Event Handler都注册到 Initiation Dispatcher上后，应用会调用handle_events方法来启动Initiation Dispatcher的事件循环，这时Initiation Dispatcher会将每个Concrete Event Handler关联的handle合并，并使用Synchronous Event Demultiplexer来等待这些handle上事件的发生
@@ -97,7 +91,7 @@ https://www.jianshu.com/p/eef7ebe28673
 &emsp; 单Reactor承当所有事件的监听和响应，而当服务端遇到大量的客户端同时进行连接，或者在请求连接时执行一些耗时操作，比如身份认证，权限检查等，这种瞬时的高并发就容易成为性能瓶颈  
 
 ### 1.2.3. 主从多线程模型  
-&emsp; 从一个 主线程 NIO 线程池中选择一个线程作为 Acceptor 线程，绑定监听端口，接收客户端连接的连接，其他线程负责后续的接入认证等工作。连接建立完成后，Sub NIO 线程池负责具体处理 I/O 读写。如果多线程模型无法满足你的需求的时候，可以考虑使用主从多线程模型 。  
+&emsp; 从一个 主线程 NIO 线程池中选择一个线程作为 Acceptor 线程，绑定监听端口，接收客户端连接的连接，其他线程负责后续的接入认证等工作。连接建立完成后，Sub NIO 线程池负责具体处理 I/O 读写。如果多线程模型无法满足需求的时候，可以考虑使用主从多线程模型 。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-12.png)  
 
 * 存在多个Reactor，每个Reactor都有自己的selector选择器，线程和dispatch
