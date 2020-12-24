@@ -21,7 +21,7 @@
 ~~
 https://mp.weixin.qq.com/s?__biz=Mzg5ODA5NDIyNQ==&mid=2247484812&idx=1&sn=52d38717da60683d671136f50009f4fd&chksm=c0668072f71109643fb4697d2ddcec1a1983544dc4e3497f2c2a6aff525c292d3d9f2bd30be0&scene=178&cur_album_id=1486063894363242498#rd
 -->
-&emsp; **<font color = "lime">总结：</font>**1.TCP粘包/拆包问题、原因、解决方案；2.Netty解决TCP粘包/拆包问题。
+&emsp; **<font color = "lime">总结：</font>** 1.TCP粘包/拆包问题、原因、解决方案；2.Netty解决TCP粘包/拆包问题。
 
 ## 1.1. TCP粘包/拆包  
 &emsp; 在RPC框架中，粘包和拆包问题是必须解决一个问题，因为RPC框架中，各个微服务相互之间都是维系了一个TCP长连接，比如dubbo就是一个全双工的长连接。由于微服务往对方发送信息的时候，所有的请求都是使用的同一个连接，这样就会产生粘包和拆包的问题。  
