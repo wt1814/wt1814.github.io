@@ -29,10 +29,6 @@
 
 # 1. 零拷贝  
 <!-- 
-小白也能秒懂的Linux零拷贝原理 
-https://mp.weixin.qq.com/s/SKuNuC3kSGGor0xwArzvcg
-关于零拷贝的一点认识 
-https://mp.weixin.qq.com/s/KD2cpeUviLcEE3wrfdnrlQ
 
 零拷贝
 https://mp.weixin.qq.com/s/mWPjFbCVzvuAW3Y9lEQbGg
@@ -40,7 +36,6 @@ https://mp.weixin.qq.com/s/mWPjFbCVzvuAW3Y9lEQbGg
 
 <!-- 
 ~~
-
 零拷贝Zero-Copy
 https://mp.weixin.qq.com/s/LAWUHrRSnxKKicHz1FiGVw
 -->
@@ -152,7 +147,15 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 
 * 减少甚至完全避免不必要的CPU拷贝，从而让CPU解脱出来去执行其他的任务；  
 * 减少内存带宽的占用；  
-* 通常零拷贝技术还能够减少用户空间和操作系统内核空间之间的上下文切换。  
+* 通常零拷贝技术还能够减少用户空间和操作系统内核空间之间的上下文切换。 
+
+<!-- 
+零拷贝的好处
+
+减少或避免不必要的CPU数据拷贝，从而释放CPU去执行其他任务
+零拷贝机制能减少用户空间和操作系统内核空间的上下文切换
+减少内存的占用
+-->
 
 ### 1.3.2. 零拷贝技术实现技术  
 &emsp; 目前，零拷贝技术的几个实现手段包括：mmap+write、sendfile、sendfile+DMA收集、splice等。  
@@ -163,6 +166,21 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 &emsp; 这样就减少了一次用户态和内核态的CPU拷贝，但是在内核空间内仍然有一次CPU拷贝。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-30.png)  
 &emsp; mmap对大文件传输有一定优势，但是小文件可能出现碎片，并且在多个进程同时操作文件时可能产生引发coredump的signal。  
+<!-- 
+使用mmap+write方式代替原来的read+write方式，mmap是一种内存映射文件的方法，即将一个文件或者其它对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对映关系；这样就可以省掉原来内核read缓冲区copy数据到用户缓冲区，但是还是需要内核read缓冲区将数据copy到内核socket缓冲区，大致如下图所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-73.png)  
+
+include <sys/mman.h>
+void *mmap(void *start, size_t length, int prot, int flags, int fd, off_t offset)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-75.png)   
+    1）发出mmap系统调用，导致用户空间到内核空间的上下文切换。然后通过DMA引擎将磁盘文件中的数据复制到内核空间缓冲区
+    2）mmap系统调用返回，导致内核空间到用户空间的上下文切换
+    3）这里不需要将数据从内核空间复制到用户空间，因为用户空间和内核空间共享了这个缓冲区
+    4）发出write系统调用，导致用户空间到内核空间的上下文切换。将数据从内核空间缓冲区复制到内核空间socket缓冲区；write系统调用返回，导致内核空间到用户空间的上下文切换
+    5）异步，DMA引擎将socket缓冲区中的数据copy到网卡
+
+「通过mmap实现的零拷贝I/O进行了4次用户空间与内核空间的上下文切换，以及3次数据拷贝；其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝」  
+-->
 
 #### 1.3.2.2. sendfile方式  
 &emsp; mmap+write方式有一定改进，但是由系统调用引起的状态切换并没有减少。  
@@ -173,12 +191,40 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 &emsp; 从图中可以看到，应用程序只需要调用sendfile函数即可完成，只有2次状态切换、1次CPU拷贝、2次DMA拷贝。  
 &emsp; 但是sendfile在内核缓冲区和socket缓冲区仍然存在一次CPU拷贝，或许这个还可以优化。 
 
+<!-- 
+sendfile系统调用在内核版本2.1中被引入，目的是简化通过网络在两个通道之间进行的数据传输过程。sendfile系统调用的引入，不仅减少了数据复制，还减少了上下文切换的次数，大致如下图所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-74.png)  
+数据传送只发生在内核空间，所以减少了一次上下文切换；但是还是存在一次copy，能不能把这一次copy也省略掉，Linux2.4内核中做了改进，将Kernel buffer中对应的数据描述信息（内存地址，偏移量）记录到相应的socket缓冲区当中，这样连内核空间中的一次cpu copy也省掉了；  
+
+include <sys/sendfile.h>
+ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-76.png)  
+    1）发出sendfile系统调用，导致用户空间到内核空间的上下文切换，然后通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区中，接着再将数据从内核空间缓冲区复制到socket相关的缓冲区
+    2）sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA异步将内核空间socket缓冲区中的数据传递到网卡
+
+「通过sendfile实现的零拷贝I/O使用了2次用户空间与内核空间的上下文切换，以及3次数据的拷贝。其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝」
+
+-->
+
 #### 1.3.2.3. sendfile+DMA收集  
 &emsp; Linux 2.4 内核对 sendfile 系统调用进行优化，但是需要硬件DMA控制器的配合。  
 &emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。  
 &emsp; DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩1次CPU拷贝。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-33.png)  
-&emsp; 这种方式有2次状态切换、0次CPU拷贝、2次DMA拷贝，但是仍然无法对数据进行修改，并且需要硬件层面DMA的支持，并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。  
+&emsp; 这种方式有2次状态切换、0次CPU拷贝、2次DMA拷贝，但是仍然无法对数据进行修改，并且需要硬件层面DMA的支持，并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。 
+
+<!-- 
+
+带有DMA收集拷贝功能的sendfile实现的零拷贝  
+从Linux 2.4版本开始，操作系统提供scatter和gather的SG-DMA方式，直接从内核空间缓冲区中将数据读取到网卡，无需将内核空间缓冲区的数据再复制一份到socket缓冲区  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-77.png)  
+    1）发出sendfile系统调用，导致用户空间到内核空间的上下文切换。通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区
+    2）这里没把数据复制到socket缓冲区；取而代之的是，相应的描述符信息被复制到socket缓冲区。该描述符包含了两种的信息：A)内核缓冲区的内存地址、B)内核缓冲区的偏移量
+    3）sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA根据socket缓冲区的描述符提供的地址和偏移量直接将内核缓冲区中的数据复制到网卡
+
+「带有DMA收集拷贝功能的sendfile实现的I/O使用了2次用户空间与内核空间的上下文切换，以及2次数据的拷贝，而且这2次的数据拷贝都是非CPU拷贝。这样一来我们就实现了最理想的零拷贝I/O传输了，不需要任何一次的CPU拷贝，以及最少的上下文切换」
+
+-->
 
 #### 1.3.2.4. plice方式  
 &emsp; splice系统调用是Linux 在 2.6 版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
@@ -190,9 +236,34 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 
 ### 1.3.3. 零拷贝实现  
 #### 1.3.3.1. Java零拷贝  
-
-
 ##### 1.3.3.1.1. MappedByteBuffer  
+<!-- 
+java NIO的零拷贝实现是基于mmap+write方式
+
+FileChannel的map方法产生的MappedByteBuffer FileChannel提供了map()方法，该方法可以在一个打开的文件和MappedByteBuffer之间建立一个虚拟内存映射，MappedByteBuffer继承于ByteBuffer；
+
+该缓冲器的内存是一个文件的内存映射区域。
+
+map方法底层是通过mmap实现的，因此将文件内存从磁盘读取到内核缓冲区后，用户空间和内核空间共享该缓冲区。
+
+用法如下
+
+```java
+   public void main(String[] args){
+    try {
+        FileChannel readChannel = FileChannel.open(Paths.get("./cscw.txt"), StandardOpenOption.READ);
+        FileChannel writeChannel = FileChannel.open(Paths.get("./siting.txt"), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+        MappedByteBuffer data = readChannel.map(FileChannel.MapMode.READ_ONLY, 0, 1024 * 1024 * 40);
+        //数据传输
+        writeChannel.write(data);
+        readChannel.close();
+        writeChannel.close();
+    }catch (Exception e){
+        System.out.println(e.getMessage());
+    }
+}
+```
+-->
 &emsp; java nio提供的FileChannel提供了map()方法，该方法可以在一个打开的文件和MappedByteBuffer之间建立一个虚拟内存映射，MappedByteBuffer继承于ByteBuffer，类似于一个基于内存的缓冲区，只不过该对象的数据元素存储在磁盘的一个文件中；调用get()方法会从磁盘中获取数据，此数据反映该文件当前的内容，调用put()方法会更新磁盘上的文件，并且对文件做的修改对其他阅读者也是可见的；下面看一个简单的读取实例，然后在对MappedByteBuffer进行分析：  
 
 ```java
@@ -291,6 +362,29 @@ ByteBuffer directByteBuffer = ByteBuffer.allocateDirect(100);
 &emsp; 如上开辟了100字节的直接内存空间；  
 
 ##### 1.3.3.1.3. Channel-to-Channel传输  
+<!-- 
+
+FileChannel的transferTo、transferFrom 如果操作系统底层支持的话，transferTo、transferFrom也会使用相关的零拷贝技术来实现数据的传输。用法如下
+
+```java
+public void main(String[] args) {
+    try {
+        FileChannel readChannel = FileChannel.open(Paths.get("./cscw.txt"), StandardOpenOption.READ);
+        FileChannel writeChannel = FileChannel.open(Paths.get("./siting.txt"), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+        long len = readChannel.size();
+        long position = readChannel.position();
+        //数据传输
+        readChannel.transferTo(position, len, writeChannel);
+        //效果和transferTo 一样的
+        //writeChannel.transferFrom(readChannel, position, len, );
+        readChannel.close();
+        writeChannel.close();
+    } catch (Exception e) {
+        System.out.println(e.getMessage());
+    }
+}
+```
+-->
 &emsp; 经常需要从一个位置将文件传输到另外一个位置，FileChannel提供了transferTo()方法用来提高传输的效率，首先看一个简单的实例：  
 
 ```java
