@@ -12,9 +12,6 @@
         - [1.1.4. 如何实现零拷贝？](#114-如何实现零拷贝)
             - [1.1.4.1. mmap + write](#1141-mmap--write)
             - [1.1.4.2. sendfile](#1142-sendfile)
-        - [1.1.5. sendfile+DMA收集](#115-sendfiledma收集)
-        - [1.1.6. plice方式](#116-plice方式)
-    - [1.2. Netty中的零拷贝](#12-netty中的零拷贝)
 
 <!-- /TOC -->
 
@@ -153,25 +150,4 @@ scatter-gather: on
 &emsp; 零拷贝技术的文件传输方式相比传统文件传输的方式，减少了 2 次上下文切换和数据拷贝次数，只需要 2 次上下文切换和数据拷贝次数，就可以完成文件的传输，而且 2 次的数据拷贝过程，都不需要通过 CPU，2 次都是由 DMA 来搬运。  
 &emsp; 所以，总体来看，零拷贝技术可以把文件传输的性能提高至少一倍以上。  
 
------
 
-
-### 1.1.5. sendfile+DMA收集  
-&emsp; Linux 2.4 内核对 sendfile 系统调用进行优化，但是需要硬件DMA控制器的配合。  
-&emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。  
-&emsp; DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩1次CPU拷贝。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-33.png)  
-&emsp; 这种方式有2次状态切换、0次CPU拷贝、2次DMA拷贝，但是仍然无法对数据进行修改，并且需要硬件层面DMA的支持，并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。  
-
-### 1.1.6. plice方式  
-&emsp; splice系统调用是Linux 在 2.6 版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-34.png)  
-&emsp; splice 系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的 CPU 拷贝操作。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-35.png)  
-&emsp; splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。  
-
-## 1.2. Netty中的零拷贝  
-&emsp; Netty的零拷贝主要体现在如下三个方面  
-&emsp; （1）Netty接收和发送ByteBuffer采用DirectBuffer，使用堆外直接内存进行Socket读写，不需要进行字节缓冲区的二次拷贝。如果使用传统的堆存（Heap Buffer）进行Socket读写，那么JVM会将堆存拷贝一份到直接内存中，然后才写入Socket。相比于堆外直接内存，消息在发送过程中多了一次缓冲区的内存拷贝。  
-&emsp; （2）Netty提供了组合Buffer对象，可以聚合多个ByteBuffer对象，用户可以像操作一个Buffer那样方便地对组合Buffer进行操作，避免了传统的通过内存拷贝的方式将几个小Buffer合并成一个大Buffer大烦琐操作。  
-&emsp; （3）Netty中文件传输采用了transferTo()方法，它可以直接将文件缓冲区的数据发送到目标Channel，避免了传统通过循环write()方式导致的内存拷贝问题。  
