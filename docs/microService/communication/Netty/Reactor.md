@@ -3,8 +3,8 @@
 
 - [1. Reactor线程模型](#1-reactor线程模型)
     - [1.1. Reactor是什么](#11-reactor是什么)
-        - [1.1.1. thread-based architecture](#111-thread-based-architecture)
-        - [1.1.2. event-driven architecture](#112-event-driven-architecture)
+        - [1.1.1. thread-based architecture（基于线程）](#111-thread-based-architecture基于线程)
+        - [1.1.2. event-driven architecture（事件驱动）](#112-event-driven-architecture事件驱动)
         - [1.1.3. Reactor（反应堆）介绍](#113-reactor反应堆介绍)
     - [1.2. Reactor线程模型详解](#12-reactor线程模型详解)
         - [1.2.1. 单线程模型](#121-单线程模型)
@@ -30,11 +30,11 @@ https://mp.weixin.qq.com/s?__biz=MzAxNjM2MTk0Ng==&mid=2247488256&idx=3&sn=253eb6
 ## 1.1. Reactor是什么
 &emsp; 在处理web请求时，通常有两种体系结构，分别为：thread-based architecture（基于线程）、event-driven architecture（事件驱动）。  
 
-### 1.1.1. thread-based architecture
+### 1.1.1. thread-based architecture（基于线程）
 &emsp; 基于线程的体系结构通常会使用多线程来处理客户端的请求，每当接收到一个请求，便开启一个独立的线程来处理。这种方式虽然是直观的，但是仅适用于并发访问量不大的场景，因为线程需要占用一定的内存资源，且操作系统在线程之间的切换也需要一定的开销，当线程数过多时显然会降低web服务器的性能。并且，当线程在处理I/O操作，在等待输入的这段时间线程处于空闲的状态，同样也会造成cpu资源的浪费。一个典型的设计如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-36.png)  
 
-### 1.1.2. event-driven architecture
+### 1.1.2. event-driven architecture（事件驱动）
 &emsp; 事件驱动体系结构是目前比较广泛使用的一种。这种方式会定义一系列的事件处理器来响应事件的发生，并且将服务端接受连接与对事件的处理分离。其中，事件是一种状态的改变。比如，tcp中socket的new incoming connection、ready for read、ready for write。  
 
 ### 1.1.3. Reactor（反应堆）介绍  
