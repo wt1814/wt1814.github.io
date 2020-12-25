@@ -25,11 +25,17 @@ https://mp.weixin.qq.com/s/zuJyYOgJrfydTasIATuijA
 必须了解的 MySQL 三大日志 
 https://mp.weixin.qq.com/s/4utIiy6p_LKXuH4HU36w4A
 
- 面试官的灵魂一击：你懂 MySQL 事务日志吗？ 
- https://mp.weixin.qq.com/s/QevM6j-lh621MXlHlg0tQAs
+面试官的灵魂一击：你懂 MySQL 事务日志吗？ 
+https://mp.weixin.qq.com/s/QevM6j-lh621MXlHlg0tQAs
 
-  你是不是 redo log 和 binlog 傻傻分不清楚？ 
-  https://mp.weixin.qq.com/s/Sbb-qVhYZU1rUc0w4k8AMA
+你是不是 redo log 和 binlog 傻傻分不清楚？ 
+https://mp.weixin.qq.com/s/Sbb-qVhYZU1rUc0w4k8AMA
+
+MySQL binlog原来可以这样用？
+https://mp.weixin.qq.com/s/fb7H5Ol6T6SvZTukVD1UGg
+
+大厂如何基于binlog解决多机房同步mysql数据（二）？ 
+https://mp.weixin.qq.com/s/d6cjgj8rxqKTw9AkKkpG9A
 
 -->
 
