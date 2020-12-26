@@ -14,7 +14,7 @@
                 - [1.2.2.2.2. Reduce聚合操作](#12222-reduce聚合操作)
                 - [1.2.2.2.3. Collect收集结果](#12223-collect收集结果)
             - [1.2.2.3. ParallelStream](#1223-parallelstream)
-                - [1.2.2.3.1. parallelStream() 线程安全](#12231-parallelstream-线程安全)
+                - [1.2.2.3.1. ***parallelStream() 线程安全](#12231-parallelstream-线程安全)
     - [1.3. intellij debug 技巧:java 8 stream](#13-intellij-debug-技巧java-8-stream)
 
 <!-- /TOC -->
@@ -192,17 +192,12 @@ reduce("", String::concat);
 1. 并行流在启动线程上，默认会调用 Runtime.getRuntime().availableProcessors()，获取JVM底层最大设备线程数。  
 2. 如果想设置并行线程启动数量，则需要全局设置System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "12");  
 
-##### 1.2.2.3.1. parallelStream() 线程安全  
-&emsp; 使用parallelStream()有线程安全问题。例如：parallelStream().forEach()内部修改集合会有问题。  
-&emsp; 示例：  
-
+##### 1.2.2.3.1. ***parallelStream() 线程安全  
 <!-- 
 https://www.jianshu.com/p/e9a36f2802ae?from=timeline&isappinstalled=0
 https://www.jianshu.com/p/32277e84dd1d
 -->
-
-&emsp; 解决方案：使用锁Syschronize或Lock或其他方案保障线程安全。  
-
+&emsp; **<font color = "lime">使用parallelStream()有线程安全问题。例如：parallelStream().forEach()内部修改集合会有问题。解决方案：使用锁Syschronize或Lock或其他方案保障线程安全。</font>**  
 &emsp; 示例：非安全代码  
 
 ```java
@@ -229,7 +224,7 @@ private static void setInteger(List<Integer> integerList, Integer e) {
     integerList.add(e);
 }
 ```
-&emsp; 以上代码你会发现，执行完了integerList的大小和预期的不一样。、解决方案：在setInteger()方法上加个修饰synchronized。  
+&emsp; 以上代码会发现，执行完了integerList的大小和预期的不一样。解决方案：在setInteger()方法上加个修饰synchronized。  
 
 ```java
 // 加synchronized修饰的方法是线程安全的，某一线程在执行这个方法的时候，其他线程只能眼巴巴看着；

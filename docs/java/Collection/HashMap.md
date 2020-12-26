@@ -11,9 +11,6 @@
             - [1.2.4.1. hash()函数](#1241-hash函数)
             - [1.2.4.2. put()，插入](#1242-put插入)
             - [1.2.4.3. resize()，扩容机制](#1243-resize扩容机制)
-        - [1.2.5. rehash时，链表怎么处理？](#125-rehash时链表怎么处理)
-        - [1.2.6. rehash时，红黑树怎么处理？](#126-rehash时红黑树怎么处理)
-    - [1.3. put()](#13-put)
     - [1.4. HashMap在JDK1.7和JDK1.8中的区别总结](#14-hashmap在jdk17和jdk18中的区别总结)
     - [1.5. HashMap的线程安全问题](#15-hashmap的线程安全问题)
         - [1.5.1. JDK1.8](#151-jdk18)
@@ -24,12 +21,10 @@
 
 
 <!--- 
-
 https://mp.weixin.qq.com/s/3yT4YkRtxXeu9Hv0EOtkpQ
 https://mp.weixin.qq.com/s/qfm-Xq1ZNJFJdSZ58qSLLA
 https://mp.weixin.qq.com/s/zKrpKLo1S2e0LuPJRDSiiQ
 https://mp.weixin.qq.com/s/wIjAj4rAAZccAl-yhmj_TA
-
 https://mp.weixin.qq.com/s/VpcgoV9JJWZz6tLagsIYnQ
 https://mp.weixin.qq.com/s/yijuwQuuOBE8x1VKk6lhCQ
 -->
@@ -292,7 +287,6 @@ static final int tableSizeFor(int cap) {
 -->
 1. cap - 1 是为了处理 cap 本身就是 2 的N次方的情况。让cap-1再赋值给n的目的是使得找到的目标值大于或等于原值。例如二进制 1000，十进制数值为 8。如果不对它减1而直接操作，将得到答案 10000，即 16。显然不是结果。减 1 后二进制为 111，再进行操作则会得到原来的数值 1000，即 8。通过一系列位运算大大提高效率。  
 2. \>>>（无符号右移）：例如 a >>> b 指的是将 a 向右移动 b 指定的位数，右移后左边空出的位用零来填充，移出右边的位被丢弃。  
-&emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-17.png)  
 3. <font color = "lime">运算符 |= ，它表示的是按位或，双方都转换为二进制，来进行与操作。</font>（「a+=b 的意思是 a=a+b」，那么同理：a |= b 就是 a = a | b。）  
 
 &emsp; 完整示例：  
@@ -341,7 +335,7 @@ static final int hash(Object key) {
 
 #### 1.2.4.2. put()，插入 
 &emsp; **<font color = "lime">插入元素方法：</font>**   
-&emsp; **<font color = "lime">在put的时候，首先对key做hash运算，计算出该key所在的index。如果没碰撞，直接放到数组中，如果碰撞了，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。假设key是相同的，则替换到原来的值。最后判断哈希表是否满了(当前哈希表大小*负载因子），如果满了，则扩容。</font>**  
+&emsp; <font color = "lime">在put的时候，首先对key做hash运算，计算出该key所在的index。如果没碰撞，直接放到数组中，如果碰撞了，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。假设key是相同的，则替换到原来的值。最后判断哈希表是否满了(当前哈希表大小*负载因子），如果满了，则扩容。</font>  
 
 1. 计算 key 的 hash 值。  
 &emsp; 计算方式是 (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);  
@@ -533,7 +527,7 @@ resize();
     &emsp; 示例：  
     &emsp; 扩容前 table 的容量为16，a 节点和 b 节点在扩容前处于同一索引位置。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-19.png)  
-    &emsp; 扩容后，table 长度为32，新表的 n - 1 只比老表的 n - 1 在高位多了一个1（图中标红）。
+    &emsp; 扩容后，table 长度为32，新表的 n - 1 只比老表的 n - 1 在高位多了一个1（图中标红）。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-20.png)  
     &emsp; 因为 2 个节点在老表是同一个索引位置，因此计算新表的索引位置时，只取决于新表在高位多出来的这一位（图中标红），而这一位的值刚好等于 oldCap。  
     &emsp; 因为只取决于这一位，所以只会存在两种情况：1）  (e.hash & oldCap) == 0 ，则新表索引位置为“原索引位置” ；2）(e.hash & oldCap) == 1，则新表索引位置为“原索引 + oldCap 位置”。  
@@ -627,20 +621,15 @@ final Node<K,V>[] resize() {
 
 -----
 
-### 1.2.5. rehash时，链表怎么处理？  
 <!-- 
 https://www.jianshu.com/p/87d2ef48e645
--->
-&emsp; 正常是把所有元素都重新计算一下下标值，再决定放入哪个桶，JDK1.8优化成直接把链表拆成高位和低位两条，通过位运算来决定放在原索引处或者原索引加原数组长度的偏移量处。  
 
-### 1.2.6. rehash时，红黑树怎么处理？  
-<!-- 
-https://www.jianshu.com/p/87d2ef48e645
--->
-&emsp; 红黑树的拆分和链表的逻辑基本一致，不同的地方在于，重新映射后，会将红黑树拆分成两条链表，根据链表的长度，判断需不需要把链表重新进行树化。  
+rehash时，链表怎么处理？  
+&emsp; 正常是把所有元素都重新计算一下下标值，再决定放入哪个桶，JDK1.8优化成直接把链表拆成高位和低位两条，通过位运算来决定放在原索引处或者原索引加原数组长度的偏移量处。
+rehash时，红黑树怎么处理？
+&emsp; 红黑树的拆分和链表的逻辑基本一致，不同的地方在于，重新映射后，会将红黑树拆分成两条链表，根据链表的长度，判断需不需要把链表重新进行树化。   
 
-## 1.3. put()  
-&emsp; 在get的时候，还是对key做hash运算，计算出该key所在的index，然后判断是否有hash冲突，假设没有直接返回，假设有则判断当前数据结构是链表还是红黑树，分别从不同的数据结构中取出。  
+-->
 
 ## 1.4. HashMap在JDK1.7和JDK1.8中的区别总结  
 
