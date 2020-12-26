@@ -251,7 +251,6 @@ public static void main(String[] args) {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-18.png)  
 &emsp; 步骤2：知道了 cur 和 pre,翻转就容易了，把 cur 指向 pre 即可，之后把 cur 设置为 pre ，cur 的后继结点设置为 cur 一直往前重复此步骤即可，完整动图如下  
 <iframe height=500 width=500 src="https://gitee.com/wt1814/pic-host/raw/master/images/java/function/640.gif">  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-19.png)  
 
 &emsp; 注意：同递归翻转一样，迭代翻转完了之后 head 的后继结点从 4 变成了 1，记得重新设置一下。  
 
@@ -302,8 +301,9 @@ https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247483899&idx=1&sn=ab5b06
 &emsp; 这里引入快慢指针，主要有三步 1、 快慢指针同时指向 head 的后继结点 2、 慢指针走一步，快指针走两步 3、 不断地重复步骤2，什么时候停下来呢，这取决于链表的长度是奇数还是偶数  
 
 * 如果链表长度为奇数,当 fast.next = null 时,slow 为中间结点   
-
+<iframe height=500 width=500 src="https://gitee.com/wt1814/pic-host/raw/master/images/java/function/641.gif">  
 * 如果链表长度为偶数,当 fast = null 时,slow 为中间结点  
+<iframe height=500 width=500 src="https://gitee.com/wt1814/pic-host/raw/master/images/java/function/642.gif">  
 
 &emsp; 由以上分析可知:当 fast = null 或者 fast.next = null 时，此时的 slow 结点即为我们要求的中间结点,否则不断地重复步骤 2， 知道了思路，代码实现就简单了  
 
