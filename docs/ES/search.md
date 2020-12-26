@@ -46,6 +46,10 @@ https://mp.weixin.qq.com/s/59D8ouXbTMlh4swb6eY2zA
 
 ElasticSearch 如何像 MySQL 一样做多表联合查询？ 
 https://mp.weixin.qq.com/s/SDRI7GmZmmO7bLvhCgUDCg
+ElasticSearch 搜索高亮与排序 
+https://mp.weixin.qq.com/s/pxHjq0ejT0Fy9v7-dpg0Tw
+Elasticsearch之评分机制
+https://www.jianshu.com/p/2624f61f1d02
 -->
 
 ## 1.1. 检索操作  

@@ -287,6 +287,10 @@ https://www.cnblogs.com/liangzs/p/8489321.html
 
 ### 1.2.4. 线程死锁  
 &emsp; 死循环、死锁、阻塞、页面打开慢等问题，打印线程dump是最好的解决问题的途径。  
+<!-- 
+一文学会Java死锁和CPU 100% 问题的排查技巧
+https://club.perfma.com/article/2073508
+-->
 
 ## 1.3. 系统其他问题  
 ### 1.3.1. qps飘高  

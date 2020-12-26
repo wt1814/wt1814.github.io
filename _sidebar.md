@@ -140,6 +140,7 @@
 * MyBatis  
     * [MyBatis教程](/docs/SSM/MyBatis/Mybatis.md)  
     * [流式查询](/docs/SSM/MyBatis/streamingQuery.md)  
+    * [MyBatis test语句大坑](/docs/SSM/MyBatis/test.md)  
     * [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
     * [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
     * [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
