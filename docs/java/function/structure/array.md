@@ -11,10 +11,8 @@
                 - [1.2.2.1.2. 非递归翻转链表（迭代解法）](#12212-非递归翻转链表迭代解法)
                 - [1.2.2.1.3. 变形题](#12213-变形题)
             - [1.2.2.2. 快慢指针](#1222-快慢指针)
-                - [1.2.2.2.1. 寻找/删除第 K 个结点](#12221-寻找删除第-k-个结点)
+                - [1.2.2.2.1. 寻找/删除第K个结点](#12221-寻找删除第k个结点)
                 - [1.2.2.2.2. 有关链表环问题的相关解法](#12222-有关链表环问题的相关解法)
-                    - [1.2.2.2.2.1. 判断是否有环？](#122221-判断是否有环)
-                    - [1.2.2.2.2.2. 找到入口结点](#122222-找到入口结点)
 
 <!-- /TOC -->
 
@@ -249,7 +247,7 @@ public static void main(String[] args) {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-17.png)  
 &emsp; 步骤 1： 定义两个节点：pre, cur ，其中 cur 是 pre 的后继结点，如果是首次定义， 需要把 pre 指向 cur 的指针去掉，否则由于之后链表翻转，cur 会指向 pre， 就进行了一个环(如下)，这一点需要注意  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-18.png)  
-&emsp; 步骤2：知道了 cur 和 pre,翻转就容易了，把 cur 指向 pre 即可，之后把 cur 设置为 pre ，cur 的后继结点设置为 cur 一直往前重复此步骤即可，完整动图如下  
+&emsp; 步骤2：知道了cur 和 pre,翻转就容易了，把 cur 指向 pre 即可，之后把 cur 设置为 pre ，cur 的后继结点设置为 cur 一直往前重复此步骤即可，完整动图如下  
 <iframe height=500 width=500 src="https://gitee.com/wt1814/pic-host/raw/master/images/java/function/640.gif">  
 
 &emsp; 注意：同递归翻转一样，迭代翻转完了之后 head 的后继结点从 4 变成了 1，记得重新设置一下。  
@@ -294,7 +292,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247483899&idx=1&sn=ab5b06
 1. 寻找/删除第K个结点  
 2. 有关链表环问题的相关解法    
 
-##### 1.2.2.2.1. 寻找/删除第 K 个结点  
+##### 1.2.2.2.1. 寻找/删除第K个结点  
 
     LeetCode 876：给定一个带有头结点 head 的非空单链表，返回链表的中间结点。如果有两个中间结点，则返回第二个中间结点。  
 
@@ -327,8 +325,71 @@ public Node findMiddleNodeWithSlowFastPointer() {
 ```
 
 ##### 1.2.2.2.2. 有关链表环问题的相关解法  
-###### 1.2.2.2.2.1. 判断是否有环？  
+&emsp; 接下来看如何用快慢指针来判断链表是否有环,这是快慢指针最常见的用法  
+ 
+&emsp; 判断链表是否有环，如果有，找到环的入口位置（下图中的 2），要求空间复杂度为O(1)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-20.png)  
+&emsp; 首先要看如果链表有环有什么规律，如果从 head 结点开始遍历，则这个遍历指针一定会在以上的环中绕圈子，所以可以分别定义快慢指针，慢指针走一步，快指针走两步， 由于最后快慢指针在遍历过程中一直会在圈中里绕，且快慢指针每次的遍历步长不一样，所以它们在里面不断绕圈子的过程一定会相遇，就像 5000 米长跑，一人跑的快，一人快的慢，跑得快的人一定会追上跑得慢的（即套圈）。  
 
+&emsp; 简单证明一下  
+1. 假如快指针离慢指针相差一个结点,则再一次遍历，慢指针走一步，快指针走两步，相遇    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-21.png)   
+2. 假如快指针离慢指针相差两个结点,则再一次遍历，慢指针走一步，快指针走两步，相差一个结点，转成上述 1 的情况   
+3. 假如快指针离慢指针相差 N 个结点（N大于2），则下一次遍历由于慢指针走一步，快指针走两步，所以相差 N+1-2 = N-1 个结点，发现了吗，相差的结点从 N 变成了 N-1,缩小了！不断地遍历，相差的结点会不断地缩小，当 N 缩小为 2 时，即转为上述步骤 2 的情况，由此得证，如果有环，快慢指针一定会相遇！   
 
-###### 1.2.2.2.2.2. 找到入口结点  
+    画外音：如果慢指针走一步，快指针走的不是两步，而是大于两步，会有什么问题，大家可以考虑一下
 
+```java
+/**
+ * 判断是否有环,返回快慢指针相遇结点,否则返回空指针
+ */
+public Node detectCrossNode() {
+    Node slow = head;
+    Node fast = head;
+
+    while (fast != null && fast.next != null) {
+        fast = fast.next.next;
+        slow = slow.next;
+        
+        if (fast == null) {
+            return null;
+        }
+
+        if (slow == fast) {
+            return slow;
+        }
+    }
+    return  null;
+}
+```
+&emsp; 判断有环为啥要返回相遇的结点，而不是返回 true 或 false 呢。 因为题目中还有一个要求，判断环的入口位置，就是为了这个做铺垫的,一起来看看怎么找环的入口，需要一些分析的技巧  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-22.png)  
+&emsp; 假设上图中的 7 为快慢指针相遇的结点，不难看出慢指针走了 L + S 步，快指针走得比慢指针更快，它除了走了 L + S 步外，还额外在环里绕了 n  圈，所以快指针走了 L+S+nR 步（R为图中环的长度）,另外我们知道每遍历一次，慢指针走了一步，快指针走了两步，所以快指针走的路程是慢指针的两倍,即 2 (L+S) = L+S+nR，即  L+S = nR  
+
+* 当 n = 1 时，则 L+S = R 时,则从相遇点 7 开始遍历走到环入口点 2 的距离为 R - S = L，刚好是环的入口结点,而 head 与环入口点 2 的距离恰好也为 L，所以只要在头结点定义一个指针，在相遇点（7）定义另外一个指针，两个指针同时遍历，每次走一步，必然在环的入口位置 2 相遇
+* 当 n > 1 时，L + S = nR,即 L = nR - S,  nR-S 怎么理解？可以看作是指针从结点  7 出发，走了 n 圈后，回退 S 步，此时刚好指向环入口位置，也就是说如果设置一个指针指向 head（定义为p1）, 另设一个指针指向 7（定义为p2），不断遍历，p2 走了 nR-S 时（即环的入口位置），p1也刚好走到这里（此时 p1 走了 nR-S =  L步，刚好是环入口位置），即两者相遇！
+
+&emsp; 综上所述，要找到入口结点，只需定义两个指针，一个指针指向head, 一个指针指向快慢指向的相遇点，然后这两个指针不断遍历（同时走一步），当它们指向同一个结点时即是环的入口结点  
+
+```java
+public Node getRingEntryNode() {
+    // 获取快慢指针相遇结点
+    Node crossNode = detectCrossNode();
+
+    // 如果没有相遇点，则没有环
+    if (crossNode == null) {
+        return null;
+    }
+
+    // 分别定义两个指针，一个指向头结点，一个指向相交结点
+    Node tmp1 = head;
+    Node tmp2 = crossNode;
+
+    // 两者相遇点即为环的入口结点
+    while (tmp1.data != tmp2.data) {
+        tmp1 = tmp1.next;
+        tmp2 = tmp2.next;
+    }
+    return tmp1;
+}
+```
