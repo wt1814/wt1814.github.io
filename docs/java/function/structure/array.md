@@ -18,6 +18,10 @@
 
 # 1. 数组和链表
 
+![Alt Text](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/640.gif)   
+<iframe src="https://gitee.com/wt1814/pic-host/raw/master/images/java/function/640.gif"/>  
+
+
 ## 1.1. 数组  
 &emsp; 这里讲解下二维数组。二维数组是一个元素为一维数组的数组。  
 
@@ -249,7 +253,7 @@ public static void main(String[] args) {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-18.png)  
 &emsp; 步骤2：知道了cur 和 pre,翻转就容易了，把 cur 指向 pre 即可，之后把 cur 设置为 pre ，cur 的后继结点设置为 cur 一直往前重复此步骤即可，完整动图如下  
 <!-- 
-<iframe height=500 width=500 src="https://gitee.com/wt1814/pic-host/raw/master/images/java/function/640.gif">  
+<iframe src="https://gitee.com/wt1814/pic-host/raw/master/images/java/function/640.gif"/>  
 -->
 &emsp; 注意：同递归翻转一样，迭代翻转完了之后 head 的后继结点从 4 变成了 1，记得重新设置一下。  
 
