@@ -13,15 +13,14 @@
 
 <!-- /TOC -->
 
+# 1. 树  
 <!--
 AVL树
 https://mp.weixin.qq.com/s/7MJWagl_L-ZFlLtKdJwbFQ
 图文详解 树的DFS 和 BFS 
 https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247484022&idx=1&sn=9890a47b9a08809c9a66e613aa8fe311&scene=21#wechat_redirect
-
 -->
 
-# 1. 树  
 ## 1.1. 二叉树  
 ### 1.1.1. 二叉树简介及各种类型
 &emsp; 二叉树有两种特殊形式，一个叫满二叉树，一个叫完全二叉树。  
@@ -44,14 +43,12 @@ https://mp.weixin.qq.com/s?__biz=MzA4NDE4MzY2MA==&mid=2647523614&idx=1&sn=cf4ee3
 -->
 
 ### 1.1.3. 红黑树  
-
 <!-- 
 如果面试被问“红黑树”，可以这样回答 
 https://mp.weixin.qq.com/s/2_G9dKF033_suehS0Fer1w
-
 -->
 
-&emsp; <font color = "red">红黑树是一种近似平衡的二叉查找树。在每个节点增加一个存储位表示节点的颜色，可以是红或黑（非红即黑）。其主要的优点就是“平衡“，</font>即左右子树高度几乎一致，以此来防止树退化为链表，通过这种方式来保障查找的时间复杂度为 log(n)。  
+&emsp; <font color = "red">红黑树是一种近似平衡的二叉查找树。在每个节点增加一个存储位表示节点的颜色，可以是红或黑（非红即黑）。其主要的优点就是“平衡”，</font>即左右子树高度几乎一致，以此来防止树退化为链表，通过这种方式来保障查找的时间复杂度为 log(n)。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-6.png)  
 
 &emsp; **<font color = "red">红黑树主要有以下几个特性：</font>**   
@@ -85,7 +82,7 @@ https://mp.weixin.qq.com/s/2_G9dKF033_suehS0Fer1w
 4. 所有的叶子结点都位于同一层。  
 
 &emsp; 在B-树中，每个结点中关键字从小到大排列，并且当该结点的孩子是非叶子结点时，该k-1个关键字正好是k个孩子包含的关键字的值域的分划。  
-因为叶子结点不包含关键字，所以可以把叶子结点看成在树里实际上并不存在外部结点，指向这些外部结点的指针为空，叶子结点的数目正好等于树中所包含的关键字总个数加1。  
+&emsp; 因为叶子结点不包含关键字，所以可以把叶子结点看成在树里实际上并不存在外部结点，指向这些外部结点的指针为空，叶子结点的数目正好等于树中所包含的关键字总个数加1。  
 &emsp; B-树中的一个包含n个关键字，n+1个指针的结点的一般形式为：（n,P0,K1,P1,K2,P2,…,Kn,Pn）  
 &emsp; 其中，Ki为关键字，K1<K2<…<Kn, Pi 是指向包括Ki到Ki+1之间的关键字的子树的指针。
 
