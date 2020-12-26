@@ -16,6 +16,8 @@
 <!--
 AVL树
 https://mp.weixin.qq.com/s/7MJWagl_L-ZFlLtKdJwbFQ
+图文详解 树的DFS 和 BFS 
+https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247484022&idx=1&sn=9890a47b9a08809c9a66e613aa8fe311&scene=21#wechat_redirect
 
 -->
 
