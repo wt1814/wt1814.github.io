@@ -5,7 +5,7 @@
 - [1. 树](#1-树)
     - [1.1. 二叉树](#11-二叉树)
         - [1.1.1. 二叉树简介及各种类型](#111-二叉树简介及各种类型)
-        - [1.1.2. 二叉树的三种遍历方式](#112-二叉树的三种遍历方式)
+        - [1.1.2. 二叉树的遍历方式](#112-二叉树的遍历方式)
         - [1.1.3. 有关二叉树的算法题](#113-有关二叉树的算法题)
             - [1.1.3.1. 两个通用方法和思路](#1131-两个通用方法和思路)
                 - [1.1.3.1.1. 自顶向下的递归遍历](#11311-自顶向下的递归遍历)
@@ -31,13 +31,11 @@ https://mp.weixin.qq.com/s/7MJWagl_L-ZFlLtKdJwbFQ
 &emsp; 二叉查找树有可能退化成一个链表，可以采用自平衡方式优化结构。<font color = "red">二叉树自平衡的方式有多种，如红黑树、平衡二叉树（AVL）等。</font>  
 &emsp; **树与递归：**对于二分搜索树这种结构我们要明确的是，树是一种天然的可递归的结构。  
 
-### 1.1.2. 二叉树的三种遍历方式  
+### 1.1.2. 二叉树的遍历方式  
 <!-- 
-
-https://mp.weixin.qq.com/s?__biz=MzUyNjQxNjYyMg==&mid=2247483881&idx=1&sn=3b1de7f74aaaade96ee0f71960a80609&chksm=fa0e6e68cd79e77e45633b52731e83262dd7ad70a0fd4d97e3c1e44170cc69a62f870526568e&scene=21#wechat_redirect
 图文详解 树的DFS 和 BFS 
 https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247484022&idx=1&sn=9890a47b9a08809c9a66e613aa8fe311&scene=21#wechat_redirect
-
+https://mp.weixin.qq.com/s?__biz=MzUyNjQxNjYyMg==&mid=2247483881&idx=1&sn=3b1de7f74aaaade96ee0f71960a80609&chksm=fa0e6e68cd79e77e45633b52731e83262dd7ad70a0fd4d97e3c1e44170cc69a62f870526568e&scene=21#wechat_redirect
 -->
 
 ### 1.1.3. 有关二叉树的算法题
