@@ -1,7 +1,7 @@
 * 算法
     * [总结](/docs/java/function/summary.md)  
     * [算法基本概念](/docs/java/function/1.notion.md)  
-    * [基本数据结构](/docs/java/function/structure.md)      
+    * [基本数据结构](/docs/java/function/structure/structure.md)      
     * [数组和链表](/docs/java/function/structure/array.md)  
     * [栈与队列](/docs/java/function/structure/stack.md)  
     * [哈希](/docs/java/function/structure/hash.md)  
