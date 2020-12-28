@@ -17,6 +17,13 @@ https://mp.weixin.qq.com/s?__biz=MzU3NzczMTAzMg==&mid=2247485642&idx=1&sn=87686a
 5. 所有的叶节点都是是黑色的（注意这里说叶子节点其实是上图中的 NIL 节点）；
 
 在树的结构发生改变时（插入或者删除操作），往往会破坏上述条件3或条件 4，需要通过调整使得查找树重新满足红黑树的条件。
+
+什么是红黑树？
+https://mp.weixin.qq.com/s/DXh93cQaKRgsKccmoQOAjQ
+什么是红黑树？
+https://mp.weixin.qq.com/s/tnbbvgPyqz0pEpA76rn_1g
+什么是红黑树？
+https://mp.weixin.qq.com/s/oAyiRC_O-N5CHqAjt2va9w
 -->
 &emsp; <font color = "red">红黑树是一种近似平衡的二叉查找树。在每个节点增加一个存储位表示节点的颜色，可以是红或黑（非红即黑）。其主要的优点就是“平衡”，</font>即左右子树高度几乎一致，以此来防止树退化为链表，通过这种方式来保障查找的时间复杂度为 log(n)。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-6.png)  
