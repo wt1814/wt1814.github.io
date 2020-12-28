@@ -18,10 +18,6 @@
 <!-- /TOC -->
 
 # 1. 树  
-<!--
-AVL树
-https://mp.weixin.qq.com/s/7MJWagl_L-ZFlLtKdJwbFQ
--->
 
 ## 1.1. 二叉树  
 ### 1.1.1. 二叉树简介及各种类型
