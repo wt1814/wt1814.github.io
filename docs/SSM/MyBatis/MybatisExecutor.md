@@ -26,6 +26,12 @@
 <!-- /TOC -->
 
 # 1. MyBatis解析
+<!--
+ 
+ 浅析MyBatis的动态代理原理 
+ https://mp.weixin.qq.com/s/U1Mgoe7XUEzY0wshjkzx7g
+-->
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-30.png)  
 
 ## 1.1. Mybatis工作流程概述  

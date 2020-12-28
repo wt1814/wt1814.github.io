@@ -50,6 +50,9 @@ ElasticSearch 搜索高亮与排序
 https://mp.weixin.qq.com/s/pxHjq0ejT0Fy9v7-dpg0Tw
 Elasticsearch之评分机制
 https://www.jianshu.com/p/2624f61f1d02
+ElasticSearch 指标聚合 
+https://mp.weixin.qq.com/s/h5sOm7Xzk2XUxmMzTok7xg
+
 -->
 
 ## 1.1. 检索操作  

@@ -11,6 +11,11 @@ https://mp.weixin.qq.com/s/srgr5nigSRWlync-K_r5cw
 
 QPS、TPS、并发用户数、吞吐量关系，这下明白了 
 https://mp.weixin.qq.com/s/Lo3Pt1Z5T1aN6jaIrp_kJg
+
+ 带宽、延时、吞吐率、PPS 这些都是啥？ 
+https://mp.weixin.qq.com/s/MIIRaMOqlrXx_8w3bvJ4nA
+99%的人都不知道内网、外网、宽带、带宽、流量、网速之间的区别与联系 
+https://mp.weixin.qq.com/s/oedxbSMmsw7Lu_q2dmoXgQ
 -->
 
 * 并发数：指系统同时能处理的请求数量，同样反应了系统的负载能力。这个数值可以分析机器1s内的访问日志数量来得到。  

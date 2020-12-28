@@ -11,7 +11,12 @@
 
 <!-- /TOC -->
 
+<!-- 
 
+ 漫画：什么是蓝绿部署？ 
+ https://mp.weixin.qq.com/s/pzvZoyFG9j4takV6Q0pHWw
+ https://www.baidu.com/baidu?tn=monline_7_dg&ie=utf-8&wd=%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83%E5%92%8C%E8%93%9D%E7%BB%BF%E5%8F%91%E5%B8%83https://www.baidu.com/baidu?tn=monline_7_dg&ie=utf-8&wd=%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83%E5%92%8C%E8%93%9D%E7%BB%BF%E5%8F%91%E5%B8%83
+-->
 
 # 1. 灰度发布  
 <!-- 
