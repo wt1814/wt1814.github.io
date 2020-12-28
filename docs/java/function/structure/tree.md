@@ -6,6 +6,8 @@
     - [1.1. 二叉树](#11-二叉树)
         - [1.1.1. 二叉树简介及各种类型](#111-二叉树简介及各种类型)
         - [1.1.2. 二叉树的遍历方式](#112-二叉树的遍历方式)
+            - [1.1.2.1. 深度优先遍历](#1121-深度优先遍历)
+            - [1.1.2.2. 广度优先遍历](#1122-广度优先遍历)
         - [1.1.3. 有关二叉树的算法题](#113-有关二叉树的算法题)
             - [1.1.3.1. 两个通用方法和思路](#1131-两个通用方法和思路)
                 - [1.1.3.1.1. 自顶向下的递归遍历](#11311-自顶向下的递归遍历)
@@ -36,6 +38,191 @@ https://mp.weixin.qq.com/s/7MJWagl_L-ZFlLtKdJwbFQ
 https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247484022&idx=1&sn=9890a47b9a08809c9a66e613aa8fe311&scene=21#wechat_redirect
 https://mp.weixin.qq.com/s?__biz=MzUyNjQxNjYyMg==&mid=2247483881&idx=1&sn=3b1de7f74aaaade96ee0f71960a80609&chksm=fa0e6e68cd79e77e45633b52731e83262dd7ad70a0fd4d97e3c1e44170cc69a62f870526568e&scene=21#wechat_redirect
 -->
+&emsp; 二叉树都有哪些遍历方式呢？  
+&emsp; 从节点之间位置关系的角度来看，二叉树的遍历分为4种。1. 前序遍历。2. 中序遍历。3. 后序遍历。4. 层序遍历。  
+&emsp; 从更宏观的角度来看，二叉树的遍历归结为两大类。 1. 深度优先遍历（前序遍历、中序遍历、后序遍历）。2. 广度优先遍历（层序遍历）。  
+
+
+#### 1.1.2.1. 深度优先遍历  
+* 前序遍历  
+&emsp; 二叉树的前序遍历，输出顺序是根节点、左子树、右子树。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-26.png)  
+&emsp; 输出顺序为1--->2--->4--->5--->3--->6。  
+* 中序遍历  
+&emsp; 二叉树的中序遍历，输出顺序是左子树、根节点、右子树。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-27.png)  
+&emsp; 输出顺序为4--->2--->5--->1--->3--->6。  
+* 后序遍历  
+&emsp; 二叉树的后序遍历，输出顺序是左子树、右子树、根节点。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-28.png)  
+&emsp; 输出顺序为4--->5--->2--->6--->3--->1。  
+
+&emsp; 使用递归方式来实现前序、中序、后序遍历。  
+```java
+
+import java.util.Arrays;
+import java.util.LinkedList;
+
+public class BinaryTreeTraversal {
+
+    /**
+     * 构建二叉树
+     * @param inputList   输入序列
+     */
+    public static TreeNode createBinaryTree(LinkedList<Integer> inputList){
+        TreeNode node = null;
+        if(inputList==null || inputList.isEmpty()){
+            return null;
+        }
+        Integer data = inputList.removeFirst();
+        //这里的判空很关键。如果元素是空，说明该节点不存在，跳出这一层递归；如果元素非空，继续递归构建该节点的左右孩子。
+        if(data != null){
+            node = new TreeNode(data);
+            node.leftChild = createBinaryTree(inputList);
+            node.rightChild = createBinaryTree(inputList);
+        }
+        return node;
+    }
+
+    /**
+     * 二叉树前序遍历
+     * @param node   二叉树节点
+     */
+    public static void preOrderTraversal(TreeNode node){
+        if(node == null){
+            return;
+        }
+        System.out.println(node.data);
+        preOrderTraversal(node.leftChild);
+        preOrderTraversal(node.rightChild);
+    }
+
+    /**
+     * 二叉树中序遍历
+     * @param node   二叉树节点
+     */
+    public static void inOrderTraversal(TreeNode node){
+        if(node == null){
+            return;
+        }
+        inOrderTraversal(node.leftChild);
+        System.out.println(node.data);
+        inOrderTraversal(node.rightChild);
+    }
+
+
+    /**
+     * 二叉树后序遍历
+     * @param node   二叉树节点
+     */
+    public static void postOrderTraversal(TreeNode node){
+        if(node == null){
+            return;
+        }
+        postOrderTraversal(node.leftChild);
+        postOrderTraversal(node.rightChild);
+        System.out.println(node.data);
+    }
+
+    /**
+     * 二叉树节点
+     */
+    private static class TreeNode {
+        int data;
+        TreeNode leftChild;
+        TreeNode rightChild;
+
+        TreeNode(int data) {
+            this.data = data;
+        }
+    }
+
+    public static void main(String[] args) {
+        LinkedList<Integer> inputList = new LinkedList<Integer>(Arrays.asList(new Integer[]{3,2,9,null,null,10,null,null,8,null,4,}));
+        TreeNode treeNode = createBinaryTree(inputList);
+        System.out.println("前序遍历：");
+        preOrderTraversal(treeNode);
+        System.out.println("中序遍历：");
+        inOrderTraversal(treeNode);
+        System.out.println("后序遍历：");
+        postOrderTraversal(treeNode);
+    }
+}
+```
+
+#### 1.1.2.2. 广度优先遍历  
+&emsp; 如果说深度优先遍历是在一个方向上“一头扎到底”，那么广度优先遍历则恰 恰相反：先在各个方向上各走出1步，再在各个方向上走出第2步、第3步……一直到 各个方向全部走完。通过二叉树的层序遍历，来看一 看广度优先是怎么回事。  
+&emsp; 层序遍历，顾名思义，就是二叉树按照从根节点到叶子节点的层次关系，一层 一层横向遍历各个节点。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-29.png)  
+&emsp; 输出顺序为1--->2--->3--->4--->5--->6。  
+
+```java
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class BinaryTreeTraversalLevel {
+
+    /**
+     * 构建二叉树
+     * @param inputList   输入序列
+     */
+    public static TreeNode createBinaryTree(LinkedList<Integer> inputList){
+        TreeNode node = null;
+        if(inputList==null || inputList.isEmpty()){
+            return null;
+        }
+        Integer data = inputList.removeFirst();
+        //这里的判空很关键。如果元素是空，说明该节点不存在，跳出这一层递归；如果元素非空，继续递归构建该节点的左右孩子。
+        if(data != null){
+            node = new TreeNode(data);
+            node.leftChild = createBinaryTree(inputList);
+            node.rightChild = createBinaryTree(inputList);
+        }
+        return node;
+    }
+
+    /**
+     * 二叉树层序遍历
+     * @param root   二叉树根节点
+     */
+    public static void levelOrderTraversal(TreeNode root){
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            TreeNode node = queue.poll();
+            System.out.println(node.data);
+            if(node.leftChild != null){
+                queue.offer(node.leftChild);
+            }
+            if(node.rightChild != null){
+                queue.offer(node.rightChild);
+            }
+        }
+    }
+
+    /**
+     * 二叉树节点
+     */
+    private static class TreeNode {
+        int data;
+        TreeNode leftChild;
+        TreeNode rightChild;
+
+        TreeNode(int data) {
+            this.data = data;
+        }
+    }
+
+    public static void main(String[] args) {
+        LinkedList<Integer> inputList = new LinkedList<Integer>(Arrays.asList(new Integer[]{3,2,9,null,null,10,null,null,8,null,4,}));
+        TreeNode treeNode = createBinaryTree(inputList);
+        System.out.println("层序遍历：");
+        levelOrderTraversal(treeNode);
+    }
+
+}
+```
 
 ### 1.1.3. 有关二叉树的算法题
 <!-- 
