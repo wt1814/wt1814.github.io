@@ -105,8 +105,7 @@ public static void main(String[] args) {
 &emsp; 第二轮：在第一轮排序结果的基础上，按照第二位字符排序。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-9.png)  
 &emsp; 需要注意的是，这里使用的计数排序必须是稳定排序，这样才能保证第一轮排出的先后顺序在第二轮还能继续保持。  
-比如在第一轮排序后，元素uue在元素yui之前。那么第二轮排序时，两者的第二位字符虽然同样是u，但先后顺序万万不能变，否则第一轮排序就白做了。  
-
+&emsp; 比如在第一轮排序后，元素uue在元素yui之前。那么第二轮排序时，两者的第二位字符虽然同样是u，但先后顺序万万不能变，否则第一轮排序就白做了。  
 &emsp; 第三轮：在第二轮排序结果的基础上，按照最高位字符排序。   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-10.png)  
 &emsp; 如此一来，这些字符串的顺序就排好了。  
