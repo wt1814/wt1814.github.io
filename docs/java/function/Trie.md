@@ -2,7 +2,7 @@
 
 
 
-# 1.5. trie，前缀树/字典树  
+# 1. trie，前缀树/字典树  
 <!-- 
 
 https://www.cnblogs.com/justinh/p/7716421.html

@@ -20,8 +20,8 @@
     * [其他数据结构](/docs/java/function/otherStructure.md)  
     * [跳跃表](/docs/java/function/SkipList.md)  
     * [位图](/docs/java/function/BitMap.md)  
-    * [HyperLogLog](/docs/java/function/HyperLogLog.md)  
     * [BloomFilter](/docs/java/function/BloomFilter.md)  
+    * [HyperLogLog](/docs/java/function/HyperLogLog.md)  
     * [Trie](/docs/java/function/Trie.md)  
     * [海量数据应用](/docs/java/function/bigdata.md)  
 * Java  
