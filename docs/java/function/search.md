@@ -9,21 +9,20 @@
 
 <!-- /TOC -->
 
+
+<!-- 
+
+
+-->
+
 <!-- 
 三款经典的查找算法
 https://mp.weixin.qq.com/s/3RvYUaAL8xAQQvT88WAJ7g
 
 在N个乱序数字中查找第k大的数字
 https://blog.csdn.net/u010412301/article/details/67704530
-
 寻找第K大数的方法
 https://blog.csdn.net/csl13/article/details/6056522
--->
-<!-- 
-你真的会写二分检索吗？ 
-https://mp.weixin.qq.com/s/zlNDNwsTV5GvPzlGjfB0sQ
-一网打尽！二分查找解题模版与题型全面解析 
-https://mp.weixin.qq.com/s?__biz=MzIwNTc4NTEwOQ==&mid=2247487194&idx=1&sn=bd094c2953137469a51bc700319286a2&chksm=972adfa0a05d56b625e9a40bf6d7cb5baf32b34e9bcca861ba3e3ba5b7e1a39670126e62bfe8&mpshare=1&scene=1&srcid=&sharer_sharetime=1568041137749&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=dee829c9aae7a0c07b1a6df0769ad2ff9adcf98eff1f993fbfcb5665f85eb64c3f3ad155311c62a3935f7e826bfa9a18edb4368cb626bc3386a5188fca1f22bcaf8c26344b6956a89644391713eb0616&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=5e25q4PxFBEBE22tP%2FFCoORgWWOx%2FBQjku90ubbS9N5KcxzzEydoolU%2BArDDM%2FKQ
 -->
 
 # 查找算法  
@@ -31,7 +30,7 @@ https://mp.weixin.qq.com/s?__biz=MzIwNTc4NTEwOQ==&mid=2247487194&idx=1&sn=bd094c
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-32.png)  
 
 ## 1. 二分查找  
-&emsp; <font color = "lime">要在有序数组中进行查找，最好的解决方法是使用二分查找算法。</font>  
+&emsp; 要在 **<font color = "lime">有序数组</font>** 中进行查找，最好的解决方法是使用二分查找算法。  
 
 ### 1.1. 二分查找模版   
 
@@ -116,12 +115,121 @@ public static void main(String[] args) {
 ```  
 
 ### 1.3. 二分查找题型  
+&emsp; 很多的时候，应用二分查找的地方都不是直接的查找和key相等的元素，而是使用下面提到的二分查找的各个变种。  
 
-1. 找出第一个与key相等的元素
-2. 找出最后一个与key相等的元素
-3. 查找第一个等于或者大于Key的元素
-4. 查找第一个大于key的元素
-5. 查找最后一个等于或者小于key的元素
-6. 查找最后一个小于key的元素  
+1. 找出第一个与key相等的元素  
 
+```java
+int searchFirstEqual(int *arr, int n, int key)
+{
+    int left = 0, right = n-1;
+    while(left<=right) {
+        int mid = (left+right)/2;
+        if(arr[mid] >= key) right = mid - 1;
+        else if(arr[mid] < key) left = mid + 1;
+    }
+    if( left < n && arr[left] == key) return left;
+    return -1;
+}
+```
+2. 找出最后一个与key相等的元素  
 
+```java
+int searchLastEqual(int *arr, int n, int key)
+{
+   int left = 0, right = n-1;
+   while(left<=right) {
+       int mid = (left+right)/2;
+       if(arr[mid] > key) right = mid - 1;
+       else if(arr[mid] <= key) left = mid + 1;
+   }
+   if( right>=0 && arr[right] == key) return right;
+    return -1;
+}
+```
+3. 查找第一个等于或者大于Key的元素  
+
+```java
+int searchFirstEqualOrLarger(int *arr, int n, int key)
+{
+   int left=0, right=n-1;
+   while(left<=right) {
+       int mid = (left+right)/2;
+       if(arr[mid] >= key) right = mid-1;
+       else if (arr[mid] < key) left = mid+1;
+   }
+   return left;
+}
+```
+4. 查找第一个大于key的元素  
+
+```java
+int searchFirstLarger(int *arr, int n, int key)
+{
+   int left=0, right=n-1;
+   while(left<=right) {
+       int mid = (left+right)/2;
+       if(arr[mid] > key) right = mid-1;
+       else if (arr[mid] <= key) left = mid+1;
+   }
+   return left;
+}
+```
+5. 查找最后一个等于或者小于key的元素  
+
+```java
+int searchLastEqualOrSmaller(int *arr, int n, int key)
+{
+   int left=0, right=n-1;
+   while(left<=right) {
+       int m = (left+right)/2;
+       if(arr[m] > key) right = m-1;
+       else if (arr[m] <= key) left = m+1;
+   }
+   return right;
+}
+```
+6. 查找最后一个小于key的元素    
+
+```java
+int searchLastSmaller(int *arr, int n, int key)
+{
+   int left=0, right=n-1;
+   while(left<=right) {
+       int mid = (left+right)/2;
+       if(arr[mid] >= key) right = mid-1;
+       else if (arr[mid] < key) left = mid+1;
+   }
+   return right;
+}
+```
+
+&emsp; 下面是一个测试的例子：  
+
+```java
+int main(void)
+{
+   int arr[17] = {1,
+                  2, 2, 5, 5, 5,
+                  5, 5, 5, 5, 5,
+                  5, 5, 6, 6, 7};
+   printf("First Equal           : %2d \n", searchFirstEqual(arr, 16, 5));
+   printf("Last Equal            : %2d \n", searchLastEqual(arr, 16, 5));
+   printf("First Equal or Larger : %2d \n", searchFirstEqualOrLarger(arr, 16, 5));
+    printf("First Larger          : %2d \n", searchFirstLarger(arr, 16, 5));
+    printf("Last Equal or Smaller : %2d \n", searchLastEqualOrSmaller(arr, 16, 5));
+    printf("Last Smaller          : %2d \n", searchLastSmaller(arr, 16, 5));
+    system("pause");
+    return 0;
+}
+```
+&emsp; 最后输出结果是：  
+
+```java
+First Equal           :  3
+Last Equal            : 12
+First Equal or Larger :  3
+First Larger          : 13
+Last Equal or Smaller : 12
+Last Smaller          :  2
+```
