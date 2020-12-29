@@ -98,7 +98,7 @@ if (user.isPresent()) {
 
 ```java
 return user.map(u -> u.getOrders()).orElse(Collections.emptyList())
-//上面避免了我们类似 Java 8 之前的做法
+//上面避免了类似 Java 8 之前的做法
 if(user.isPresent()) {
     return user.get().getOrders();
 } else {

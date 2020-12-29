@@ -35,7 +35,7 @@ https://mp.weixin.qq.com/s/9qk1-wO3x1fkQt-EcwX7SQ
 
 * 非线程安全：java.util.Date是非线程安全的，所有的日期类都是可变的，这是Java日期类最大的问题之一。  
 * 设计很差：Java的日期/时间类的定义并不一致，在java.util和java.sql的包中都有日期类，此外用于格式化和解析的类在java.text包中定义。java.util.Date同时包含日期和时间，而java.sql.Date仅包含日期，将其纳入java.sql包并不合理。另外这两个类都有相同的名字，这本身就是一个非常糟糕的设计。  
-* 时区处理麻烦：日期类并不提供国际化，没有时区支持，因此Java引入了java.util.Calendar和java.util.TimeZone类，但他们同样存在上述所有的问题。  
+* 时区处理麻烦：日期类并不提供国际化，没有时区支持，因此Java引入了java.util.Calendar和java.util.TimeZone类，但它们同样存在上述所有的问题。  
 
 &emsp; 新的日期API是JSR-310规范的实现，Joda-Time框架的作者正是JSR-310的规范的倡导者，所以能从Java 8的日期API中看到很多Joda-Time的特性。  
 
