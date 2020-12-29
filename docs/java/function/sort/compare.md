@@ -29,13 +29,6 @@
 
 <!-- /TOC -->
 
-<!-- 
-
-https://mp.weixin.qq.com/mp/appmsgalbum?__biz=Mzg2OTAwNDI2NQ==&action=getalbum&album_id=1384553997595688961&subscene=159&subscene=&scenenote=https%3A%2F%2Fmp.weixin.qq.com%2Fs%2FejIchGyB-Q3AXXyYA5_Q5g#wechat_redirect
-
-
-https://mp.weixin.qq.com/s/D0mIP6RiO-LQMXdkIjM8BA
--->
 
 # 1. 比较排序  
 
@@ -309,7 +302,8 @@ public static void main(String[] args) {
 
 
 ## 1.4. 堆排序  
-<!-- 
+<!--
+Heap Sort 堆排序与 Top K 问题 
 https://mp.weixin.qq.com/s?__biz=MzA4NDE4MzY2MA==&mid=2647523648&idx=1&sn=a2c93982ccfe331d4db33b61acadc08d&chksm=87d1be43b0a637558f6b84cdb77de72bd6890a1fc072714083b004e96398f7d3926a808131f3&scene=178#rd
 https://mp.weixin.qq.com/s/D_RPGriu3xMGYA11TMzxeA
 -->

@@ -17,6 +17,9 @@
 
 # 1. 非比较排序
 ## 1.1. 计数排序  
+<!-- 
+https://mp.weixin.qq.com/s?__biz=Mzg2OTAwNDI2NQ==&mid=2247484707&idx=1&sn=9c2a50e35704cc13496a565f03c24a79&chksm=cea2e3a5f9d56ab3eeb891552684da61b1ccd1b0712e3c173ecce6bed0c619a60aeee3155c06&scene=178&cur_album_id=1384553997595688961#rd
+-->
 &emsp; 计数排序适用于一定范围的整数排序。
 
 ### 1.1.1. 算法描述  
