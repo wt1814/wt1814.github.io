@@ -18,6 +18,11 @@
     * [查找算法](/docs/java/function/search.md)  
     * [算法方法](/docs/java/function/algorithmicIdea.md)  
     * [其他数据结构](/docs/java/function/otherStructure.md)  
+    * [跳跃表](/docs/java/function/SkipList.md)  
+    * [位图](/docs/java/function/BitMap.md)  
+    * [HyperLogLog](/docs/java/function/HyperLogLog.md)  
+    * [BloomFilter](/docs/java/function/BloomFilter.md)  
+    * [Trie](/docs/java/function/Trie.md)  
     * [海量数据应用](/docs/java/function/bigdata.md)  
 * Java  
     * [Java基础](/docs/java/basis/Java基础.md)  
