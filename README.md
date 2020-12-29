@@ -45,7 +45,7 @@
 # wt1814-note  
 ## 算法  
 [总结](/docs/java/function/summary.md)  
-[算法基本概念](/docs/java/function/1.notion.md)  
+[算法基本概念](/docs/java/function/notion.md)  
 [基本数据结构](/docs/java/function/structure/structure.md)  
 &emsp; [数组和链表](/docs/java/function/structure/array.md)  
 &emsp; [栈与队列](/docs/java/function/structure/stack.md)  
@@ -62,7 +62,7 @@
 &emsp; [外部排序](/docs/java/function/sort/externalSort.md)  
 [查找算法](/docs/java/function/search.md)  
 [算法方法](/docs/java/function/algorithmicIdea.md)  
-[其他数据结构](/docs/java/function/3.otherStructure.md)  
+[其他数据结构](/docs/java/function/otherStructure.md)  
 [海量数据应用](/docs/java/function/bigdata.md)  
 
 ## Java  

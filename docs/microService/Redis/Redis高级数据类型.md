@@ -237,7 +237,7 @@ https://mp.weixin.qq.com/s/6gcM16OGodC0e3LJPLEY3g
 &emsp; Redis的HyperLogLog 通过牺牲准确率来减少内存空间的消耗，只需要12K内存，在标准误差0.81%的前提下，能够统计2^64个数据。所以 HyperLogLog 是否适合在比如统计日活月活此类的对精度要不不高的场景。
 
 ### 1.3.4. HyperLogLog用作基数统计  
-&emsp; [HyperLogLog](/docs/java/function/3.otherStructure.md)可用于基数统计。Hyper指的是超级。 **<font color = "red">Hyperloglog提供不精确的去重计数功能，HyperLogLog适于做大规模数据的去重统计。</font>**   
+&emsp; [HyperLogLog](/docs/java/function/otherStructure.md)可用于基数统计。Hyper指的是超级。 **<font color = "red">Hyperloglog提供不精确的去重计数功能，HyperLogLog适于做大规模数据的去重统计。</font>**   
 
 &emsp; **HyperLogLog优点与缺点：**  
 
@@ -277,7 +277,7 @@ https://www.cnblogs.com/williamjie/p/11201654.html
 -->
 
 ## 1.6. Redis中的布隆过滤器  
-&emsp; 之前的布隆过滤器可以使用Redis中的位图操作实现，直到Redis4.0版本提供了插件功能，Redis官方提供的布隆过滤器才正式登场。[布隆过滤器](/docs/java/function/3.otherStructure.md)作为一个插件加载到Redis Server中，就会给Redis提供了强大的布隆去重功能。  
+&emsp; 之前的布隆过滤器可以使用Redis中的位图操作实现，直到Redis4.0版本提供了插件功能，Redis官方提供的布隆过滤器才正式登场。[布隆过滤器](/docs/java/function/otherStructure.md)作为一个插件加载到Redis Server中，就会给Redis提供了强大的布隆去重功能。  
 
 <!-- 
 详细解析Redis中的布隆过滤器及其应用

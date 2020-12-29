@@ -1,6 +1,6 @@
 * 算法
     * [总结](/docs/java/function/summary.md)  
-    * [算法基本概念](/docs/java/function/1.notion.md)  
+    * [算法基本概念](/docs/java/function/notion.md)  
     * [基本数据结构](/docs/java/function/structure/structure.md)      
     * [数组和链表](/docs/java/function/structure/array.md)  
     * [栈与队列](/docs/java/function/structure/stack.md)  
@@ -17,7 +17,7 @@
     * [外部排序](/docs/java/function/sort/externalSort.md)  
     * [查找算法](/docs/java/function/search.md)  
     * [算法方法](/docs/java/function/algorithmicIdea.md)  
-    * [其他数据结构](/docs/java/function/3.otherStructure.md)  
+    * [其他数据结构](/docs/java/function/otherStructure.md)  
     * [海量数据应用](/docs/java/function/bigdata.md)  
 * Java  
     * [Java基础](/docs/java/basis/Java基础.md)  
