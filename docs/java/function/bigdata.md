@@ -1,6 +1,12 @@
 
 # 海量数据  
 
+<!-- 
+
+ 面试：如何从 100 亿 URL 中找出相同的 URL？ 
+ https://mp.weixin.qq.com/s/bErFWopdFk-Vl6gAqO1_Jg
+-->
+
 ## 数据结构选择
 1. Hashing  
 &emsp; 适用范围：快速查找，删除的基本数据结构，<font color = "lime">通常需要总数据量可以放入内存。</font>  

@@ -15,6 +15,9 @@
 
 CAP和BASE理论
 https://mp.weixin.qq.com/s/0qelIYKkyNVsM29u-3yH1w
+
+一文搞懂注册中心 zookeeper 和 eureka 中的CP和 AP 
+https://mp.weixin.qq.com/s/DrSXZK-sXmdXHYBcnbEDhQ
 -->
 
 ## 1.1. CAP理论  
