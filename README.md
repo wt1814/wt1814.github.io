@@ -61,7 +61,7 @@
 &emsp; [非比较排序](/docs/java/function/sort/noCompare.md)  
 &emsp; [外部排序](/docs/java/function/sort/externalSort.md)  
 [查找算法](/docs/java/function/search.md)  
-[算法思想题型](/docs/java/function/algorithmicIdea.md)  
+[算法方法](/docs/java/function/algorithmicIdea.md)  
 [其他数据结构](/docs/java/function/3.otherStructure.md)  
 [海量数据应用](/docs/java/function/bigdata.md)  
 
@@ -279,7 +279,8 @@
 [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
 
 ### 分布式缓存  
-[分布式缓存](/docs/microService/thinking/分布式缓存.md)  
+[分布式缓存](/docs/cache/DistributedCache.md)  
+[缓存算法](/docs/cache/CacheAlgorithm.md)  
 
 #### Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  

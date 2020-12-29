@@ -3,31 +3,24 @@
 <!-- TOC -->
 
 - [1. 算法](#1-算法)
-    - [1.1. 递归](#11-递归)
-        - [1.1.1. 递归题型](#111-递归题型)
-    - [1.2. 回溯算法](#12-回溯算法)
-    - [1.3. 动态规划](#13-动态规划)
-        - [1.3.1. 动态规划题型](#131-动态规划题型)
-    - [1.4. 缓存LRU算法](#14-缓存lru算法)
-        - [1.4.1. 基于哈希链表的LRU实现](#141-基于哈希链表的lru实现)
+    - [1.1. 算法方法分类](#11-算法方法分类)
+    - [1.2. 递归](#12-递归)
+        - [1.2.1. 递归题型](#121-递归题型)
+    - [1.3. 回溯算法](#13-回溯算法)
+    - [1.4. 动态规划](#14-动态规划)
+        - [1.4.1. 动态规划题型](#141-动态规划题型)
 
 <!-- /TOC -->
 
 # 1. 算法  
 <!-- 
+
 一文图解分治算法和思想 
 https://mp.weixin.qq.com/s/kRBAwF5xAV54AqdvmMLxAg
-一文学会动态规划解题技巧
-https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247483932&idx=1&sn=d9cd9d5a5ebf5f31e23f11c82b6465f1&scene=21#wechat_redirect
-一文学会递归解题
-https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247483813&idx=1&sn=423c8804cd708b8892763a41cfcc8886&scene=21#wechat_redirect
-
-
 拜托，别再问我贪心算法了！ 
 https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247483945&idx=1&sn=6f5b0d8c0ac60f40068986738d038a4d&scene=21#wechat_redirect
 你说你会位运算，那你用位运算来解下八皇后问题吧 
 https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247483994&idx=1&sn=2baad696e0f74986195c3bcc7db3816e&scene=21#wechat_redirect
-
 
 一文学会排列组合 
 https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247483857&idx=1&sn=c4fbb9d55a656aac55c4976c48879c45&scene=21#wechat_redirect
@@ -89,8 +82,38 @@ https://blog.csdn.net/qfikh/article/details/51954901
 迭代法也称辗转法，是一种不断用变量的旧值递推新值的过程，跟迭代法相对应的是直接法（或者称为一次解法），即一次性解决问题。迭代法又分为精确迭代和近似迭代。“二分法”和“牛顿迭代法”属于近似迭代法。迭代算法是用计算机解决问题的一种基本方法。它利用计算机运算速度快、适合做重复性操作的特点，让计算机对一组指令（或一定步骤）进行重复执行，在每次执行这组指令（或这些步骤）时，都从变量的原值推出它的一个新值。
 -->
 
-## 1.1. 递归  
+## 1.1. 算法方法分类  
+&emsp; 算法在百度百科中介绍有方法：递推法、递归法、穷举法、贪心算法、分治法、动态规划法、迭代法、分支界限法、动态规划法、迭代法、分支界限法、回溯法。  
 
+## 1.2. 递归  
+<!-- 
+一文学会递归解题
+https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247483813&idx=1&sn=423c8804cd708b8892763a41cfcc8886&scene=21#wechat_redirect
+
+1. 什么是递归？
+2. 递归算法通用解决思路
+3. 递归题型
+
+递归就是指函数直接或间接的调用自己。递归函数也可以使用栈加循环来实现。
+
+递归的特点（满足递归的条件、递归解题的关键）：
+1. 一个问题的解可以分解为几个子问题的解；
+2. 这个问题与分解之后的子问题，除了数据规模不同，求解思路完全一样；
+3. 存在递归终止条件，即必须有一个明确的递归结束条件，称之为递归出口。
+
+如何写递归代码：
+1. 找到如何将大问题分解为小问题的规律
+2. 通过规律写出递推公式
+3. 通过递归公式的临界点推敲出终止条件
+4. 将递推公式和终止条件翻译成代码
+
+用递归解题的基本套路（四步曲）：
+1. 先定义一个函数，明确这个函数的功能，由于递归的特点是问题和子问题都会调用函数自身，所以这个函数的功能一旦确定了， 之后只要找寻问题与子问题的递归关系即可
+2. 接下来寻找问题与子问题间的关系（即递推公式），这样由于问题与子问题具有相同解决思路，只要子问题调用步骤 1 定义好的函数，问题即可解决。所谓的关系最好能用一个公式表示出来，比如 f(n) = n * f(n-) 这样，如果暂时无法得出明确的公式，用伪代码表示也是可以的, 发现递推关系后，要寻找最终不可再分解的子问题的解，即（临界条件），确保子问题不会无限分解下去。由于第一步我们已经定义了这个函数的功能，所以当问题拆分成子问题时，子问题可以调用步骤 1 定义的函数，符合递归的条件（函数里调用自身）
+3. 将第二步的递推公式用代码表示出来补充到步骤1定义的函数中
+4. 最后也是很关键的一步，根据问题与子问题的关系，推导出时间复杂度,如果发现递归时间复杂度不可接受，则需转换思路对其进行改造，看下是否有更靠谱的解法
+
+-->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-5.png)  
 
 &emsp; 递归就是指函数直接或间接的调用自己。递归函数也可以使用栈加循环来实现。  
@@ -106,10 +129,20 @@ https://blog.csdn.net/qfikh/article/details/51954901
 3. 通过递归公式的临界点推敲出终止条件
 4. 将递推公式和终止条件翻译成代码
 
-### 1.1.1. 递归题型  
-......
+### 1.2.1. 递归题型  
+<!-- 
 
-## 1.2. 回溯算法  
+Java递归实现字符串的排列和组合
+https://mp.weixin.qq.com/s?__biz=MzA5NDIwNTk2Mw==&mid=2247484636&amp;idx=1&amp;sn=9ea705d330e7955c83dcfc3d6a7f90d0&source=41#wechat_redirect
+一文学会递归解题
+https://mp.weixin.qq.com/s/LQRrZbWW_UJQrxMLOj-s8w
+为什么你学不会递归？告别递归，谈谈我的一些经验
+https://mp.weixin.qq.com/s/RkYTtHYghiK8LNUnlWUrlg
+数据结构与算法之递归系列
+https://mp.weixin.qq.com/s/2gL7s8T6vjYQwwz_4UDy4g
+-->
+
+## 1.3. 回溯算法  
 ......
 <!-- 
  揭秘回溯算法 
@@ -117,13 +150,29 @@ https://blog.csdn.net/qfikh/article/details/51954901
 
 -->
 
-## 1.3. 动态规划  
+## 1.4. 动态规划  
 <!-- 
  不会动态规划，如何做出这道动态规划题？ 
  https://mp.weixin.qq.com/s/2SWKifZJ3Gf1s5L2xBDJtg
 
   这才是真正的状态压缩动态规划好不好！！！ 
   https://mp.weixin.qq.com/s/H2V3D0DMPbT8hQW9Cq6LjQ
+  一文学会动态规划解题技巧
+https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247483932&idx=1&sn=d9cd9d5a5ebf5f31e23f11c82b6465f1&scene=21#wechat_redirect
+
+动态规划题型：
+
+
+爬台阶问题：
+
+国王和金矿问题：
+
+KMP算法，字符串匹配：
+动态规划之 KMP 算法详解（配代码版） 
+https://mp.weixin.qq.com/s?__biz=MzUyNjQxNjYyMg==&mid=2247486490&idx=3&sn=35ba410818207a1bef83d6578f4b332c&chksm=fa0e639bcd79ea8dff1141a8729cf4b1243d23ac276652a58fc23d7b6b2ce01ca2666feab293&mpshare=1&scene=1&srcid=&sharer_sharetime=1569055567478&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=20f7b87cb3d4d9a8e94f75ad1bbd1fe8ed4af91513a424bebd0c4df328ea367a462e742f0885a4dbf9693a65560f764378ab2da5e0d620daa8cd627756a8d79b7b364eb9ccf4a8629e46dad4de38545d&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=l152qY7UDy13%2FQ8lMQftZpzwON66UoS8zNnRNqU0gQ1B38kfpkeCoh6I%2F0Cu%2FOwX
+
+字符串匹配的KMP算法 
+https://mp.weixin.qq.com/s?__biz=MzIwNTc4NTEwOQ==&mid=2247486950&idx=1&sn=61185c72b270891a0e1aa0db1f9a627f&chksm=972adc9ca05d558a3d5e8a505b29937768e6f47b6c318bc6cc478803d9634e2f4555c26179f9&mpshare=1&scene=1&srcid=&key=00a8e91eefd868fc0218770ad47efc19a0eb1837e26a2fde21a4e6ae367993f51dcfd216c2397954d6a4de33fa5f65dd63b8b620d6e981902b0f9ace3bbbf335784449a15c08450df602e9229d6857de&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060833&lang=zh_CN&pass_ticket=eg5OolRG8y0%2Bw9bavl09Uyc6GPxVmhjvDrWe622XQSg9XG10VZWa9GR31nV6T9cV
 -->
 
 &emsp; **动态规划与分治：**  
@@ -140,7 +189,7 @@ https://blog.csdn.net/qfikh/article/details/51954901
 &emsp; 动态规划求解最值问题。动态规划实质是求最优解，不过很多题目是简化版，只要求返回最大值/最小值。最优解问题是指问题通常有多个可行解，需要从这些可行解中找到一个最优的可行解。  
 &emsp; 动态规划中包含三个重要的概念：最优子结构（ f(10) =f(9)+f(8) ）、边界（ f(1) 与 f(2) ）、状态转移公式（ f(n) =f(n-1)+f(n-2) ）。  
 
-### 1.3.1. 动态规划题型  
+### 1.4.1. 动态规划题型  
 <!-- 
 最长公共子串
 https://mp.weixin.qq.com/s/0Mhe1NAZJIewbVy6A0HE4Q
@@ -150,178 +199,3 @@ https://mp.weixin.qq.com/s/0Mhe1NAZJIewbVy6A0HE4Q
 ---
 
 
-## 1.4. 缓存LRU算法  
-&emsp; LRU是Least Recently Used的缩写，即最近最少使用。选择最近最久未使用的数据删除。  
-&emsp; LRU Cache具备的操作：  
-1. put(key, val) 方法插入新的或更新已有键值对，如果缓存已满的话，要删除那个最久没用过的键值对以腾出位置插入。  
-2. get(key) 方法获取 key 对应的 val，如果 key 不存在则返回 -1。  
-
-### 1.4.1. 基于哈希链表的LRU实现    
-&emsp; **<font color = "red">LRU缓存算法的核心数据结构就是哈希链表，双向链表和哈希表的结合体。哈希表查找快，但是数据无固定顺序；链表有顺序之分，插入删除快，但是查找慢。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-4.png)  
-
-&emsp; LRU算法实现：  
-&emsp; 方式一：  
-
-```java
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-public class LRUCache3<K, V> {
-    /**
-     * 最大缓存大小
-     */
-    private int cacheSize;
-    private LinkedHashMap<K, V> cacheMap;
-
-    public LRUCache3(int cacheSize) {
-        this.cacheSize = cacheSize;
-        cacheMap = new LinkedHashMap(16, 0.75F, true) {
-            @Override
-            protected boolean removeEldestEntry(Map.Entry eldest) {
-                if (cacheSize + 1 == cacheMap.size()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
-    }
-
-    public void put(K key, V value) {
-        cacheMap.put(key, value);
-    }
-
-    public V get(K key) {
-        return cacheMap.get(key);
-    }
-}
-```  
-
-&emsp; 手写LRU算法    
-&emsp; 基于LinkedHashMap实现一个简单版本的LRU算法。  
-
-```java
-class LRUCache<K, V> extends LinkedHashMap<K, V> {
-    private final int CACHE_SIZE;
-    /**
-     * @param cacheSize 缓存大小
-     */
-    // true表示让linkedHashMap按照访问顺序来进行排序，最近访问的放在头部，最老访问的放在尾部。
-    public LRUCache(int cacheSize) {
-        super((int) Math.ceil(cacheSize / 0.75) + 1, 0.75f, true);
-        CACHE_SIZE = cacheSize;
-    }
-
-    @Override
-    // 当map中的数据量大于指定的缓存个数的时候，就自动删除最老的数据。
-    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-        return size() > CACHE_SIZE;
-    }
-}
-```
-
-```java
-public class LRUCache<k, v> {
-    //容量
-    private int capacity;
-    //当前有多少节点的统计
-    private int count;
-    //缓存节点
-    private Map<k, node> nodeMap;
-    private Node head;
-    private Node tail;
-
-    public LRUCache(int capacity) {
-        if (capacity < 1) {
-            throw new IllegalArgumentException(String.valueOf(capacity));
-        }
-        this.capacity = capacity;
-        this.nodeMap = new HashMap<>();
-        //初始化头节点和尾节点，利用哨兵模式减少判断头结点和尾节点为空的代码
-        Node headNode = new Node(null, null);
-        Node tailNode = new Node(null, null);
-        headNode.next = tailNode;
-        tailNode.pre = headNode;
-        this.head = headNode;
-        this.tail = tailNode;
-    }
-
-    public void put(k key, v value) {
-        Node node = nodeMap.get(key);
-        if (node == null) {
-            if (count >= capacity) {
-                //先移除一个节点
-                removeNode();
-            }
-            node = new Node<>(key, value);
-            //添加节点
-            addNode(node);
-        } else {
-            //移动节点到头节点
-            moveNodeToHead(node);
-        }
-    }
-
-    public Node get(k key) {
-        Node node = nodeMap.get(key);
-        if (node != null) {
-            moveNodeToHead(node);
-        }
-        return node;
-    }
-
-    private void removeNode() {
-        Node node = tail.pre;
-        //从链表里面移除
-        removeFromList(node);
-        nodeMap.remove(node.key);
-        count--;
-    }
-
-    private void removeFromList(Node node) {
-        Node pre = node.pre;
-        Node next = node.next;
-
-        pre.next = next;
-        next.pre = pre;
-
-        node.next = null;
-        node.pre = null;
-    }
-
-    private void addNode(Node node) {
-        //添加节点到头部
-        addToHead(node);
-        nodeMap.put(node.key, node);
-        count++
-    }
-
-    private void addToHead(Node node) {
-        Node next = head.next;
-        next.pre = node;
-        node.next = next;
-        node.pre = head;
-        head.next = node;
-    }
-
-    public void moveNodeToHead(Node node) {
-        //从链表里面移除
-        removeFromList(node);
-        //添加节点到头部
-        addToHead(node);
-    }
-
-    class Node<k, v> {
-        k key;
-        v value;
-        Node pre;
-        Node next;
-
-        public Node(k key, v value) {
-            this.key = key;
-            this.value = value;
-        }
-    }
-}
-```
