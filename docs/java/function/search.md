@@ -19,6 +19,12 @@ https://blog.csdn.net/u010412301/article/details/67704530
 寻找第K大数的方法
 https://blog.csdn.net/csl13/article/details/6056522
 -->
+<!-- 
+你真的会写二分检索吗？ 
+https://mp.weixin.qq.com/s/zlNDNwsTV5GvPzlGjfB0sQ
+一网打尽！二分查找解题模版与题型全面解析 
+https://mp.weixin.qq.com/s?__biz=MzIwNTc4NTEwOQ==&mid=2247487194&idx=1&sn=bd094c2953137469a51bc700319286a2&chksm=972adfa0a05d56b625e9a40bf6d7cb5baf32b34e9bcca861ba3e3ba5b7e1a39670126e62bfe8&mpshare=1&scene=1&srcid=&sharer_sharetime=1568041137749&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=dee829c9aae7a0c07b1a6df0769ad2ff9adcf98eff1f993fbfcb5665f85eb64c3f3ad155311c62a3935f7e826bfa9a18edb4368cb626bc3386a5188fca1f22bcaf8c26344b6956a89644391713eb0616&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=5e25q4PxFBEBE22tP%2FFCoORgWWOx%2FBQjku90ubbS9N5KcxzzEydoolU%2BArDDM%2FKQ
+-->
 
 # 查找算法  
 &emsp; 顺序查找、二分查找、分块查找、哈希表查找  
@@ -110,12 +116,6 @@ public static void main(String[] args) {
 ```  
 
 ### 1.3. 二分查找题型  
-<!-- 
-你真的会写二分检索吗？ 
-https://mp.weixin.qq.com/s/zlNDNwsTV5GvPzlGjfB0sQ
-一网打尽！二分查找解题模版与题型全面解析 
-https://mp.weixin.qq.com/s?__biz=MzIwNTc4NTEwOQ==&mid=2247487194&idx=1&sn=bd094c2953137469a51bc700319286a2&chksm=972adfa0a05d56b625e9a40bf6d7cb5baf32b34e9bcca861ba3e3ba5b7e1a39670126e62bfe8&mpshare=1&scene=1&srcid=&sharer_sharetime=1568041137749&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=dee829c9aae7a0c07b1a6df0769ad2ff9adcf98eff1f993fbfcb5665f85eb64c3f3ad155311c62a3935f7e826bfa9a18edb4368cb626bc3386a5188fca1f22bcaf8c26344b6956a89644391713eb0616&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=5e25q4PxFBEBE22tP%2FFCoORgWWOx%2FBQjku90ubbS9N5KcxzzEydoolU%2BArDDM%2FKQ
--->
 
 1. 找出第一个与key相等的元素
 2. 找出最后一个与key相等的元素
