@@ -32,6 +32,10 @@ https://mp.weixin.qq.com/s/NUgsE7PYcZTujsEhJtMdIQ
 
 缓存与数据库一致性问题深度剖析
 https://mp.weixin.qq.com/s/5amSPJC7e4_3ewtWPATMKw
+缓存预热、缓存降级
+https://mp.weixin.qq.com/s/3v2-CkZEpoQB-n1KA0-fdA
+如何优化缓存中百万级并发的KEY 
+https://mp.weixin.qq.com/s/Bm3JlCdBF8UdlOjUgKyqow
 
 -->
 

@@ -50,6 +50,10 @@ public class bianlishuzu2 {
 ```
 
 ## 1.2. 链表  
+<!-- 
+ 23张图！万字详解「链表」，从小白到大佬！ 
+ https://mp.weixin.qq.com/s/BRcsDO9aAKtYWduCtST9gA
+-->
 &emsp; 链表分类：单向链表、双端链表、有序链表、双向链表。  
 
 ### 1.2.1. 单向链表  
