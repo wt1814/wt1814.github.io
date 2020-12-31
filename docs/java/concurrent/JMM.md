@@ -48,14 +48,13 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 -->
 
 ## 1.1. JMM介绍
-&emsp; JMM是Java内存模型，也就是Java Memory Model，简称JMM，本身是一种抽象的概念，实际上并不存在，它描述的是一组规则或规范，通过这组规范定义了程序中各个变量（包括实例字段，静态字段和构成数组对象的元素）的访问方式。  
+&emsp; JMM是Java内存模型，也就是Java Memory Model，本身是一种抽象的概念，实际上并不存在，它描述的是一组规则或规范，通过这组规范定义了程序中各个变量(包括实例字段，静态字段和构成数组对象的元素)的访问方式。  
 
 1. 定义程序中各种变量的访问规则
 2. 把变量值存储到内存的底层细节
 3. 从内存中取出变量值的底层细节
 
 ## 1.2. JMM中内存划分  
-
 ### 1.2.1. 计算机内存模型
 ...
 
@@ -66,11 +65,12 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 -->
 &emsp; Java线程内存模型跟cpu缓存模型类似，是基于cpu缓存模型来建立的，Java线程内存模型是标准化的，屏蔽掉了底层不同计算机的区别。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-7.png)   
+&emsp; Java内存模型划分： 
 
-* 主内存：Java 内存模型规定了所有变量都存储在主内存(Main Memory)中（此处的主内存与物理硬件的主内存RAM 名字一样，两者可以互相类比，但此处仅是虚拟机内存的一部分）。  
+* 主内存：Java内存模型规定了所有变量都存储在主内存(Main Memory)中（此处的主内存与物理硬件的主内存RAM 名字一样，两者可以互相类比，但此处仅是虚拟机内存的一部分）。  
     * Java堆中对象实例数据部分
     * 对应于物理硬件的内存
-* 工作内存：每条线程都有自己的工作内存(Working Memory，又称本地内存，可与CPU高速缓存类比)，线程的工作内存中保存了该线程使用到的主内存中的共享变量的副本拷贝。线程对变量的所有操作都必须在工作内存进行，而不能直接读写主内存中的变量。工作内存是 JMM 的一个抽象概念，并不真实存在。  
+* 工作内存：每条线程都有自己的工作内存(Working Memory，又称本地内存，可与CPU高速缓存类比)，线程的工作内存中保存了该线程使用到的主内存中的共享变量的副本拷贝。线程对变量的所有操作都必须在工作内存进行，而不能直接读写主内存中的变量。工作内存是JMM的一个抽象概念，并不真实存在。  
     * Java栈中的部分区域
     * 优先存储于寄存器和高速缓存
 
@@ -82,9 +82,6 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 5. 线程对变量的操作必须在工作内存中进行  
 6. 不同线程之间无法直接访问对方工作内存中的变量  
 7. 线程间变量值的传递均需要通过主内存来完成  
-
-&emsp; 由于JVM运行程序的实体是线程，而每个线程创建时JVM都会为其创建一个工作内存（有些地方称为栈空间），工作内存是每个线程的私有数据区域，而Java内存模型中规定所有变量都存储在主内存，主内存是共享内存区域，所有线程都可以访问，<font color = "red">但线程对变量的操作（读取赋值等）必须在工作内存中进行，首先要将变量从主内存拷贝到自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，不能直接操作主内存中的变量，</font>各个线程中的工作内存中存储着主内存中的变量副本拷贝，<font color = "lime">因此不同的线程间无法访问对方的工作内存，线程间的通信（传值）必须通过主内存来完成，</font>其简要访问过程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-42.png)   
 
 &emsp; **JMM定义了Java虚拟机（JVM）在计算机内存（RAM）中的工作方式。JMM主要规定了以下两点：**  
 
@@ -108,6 +105,8 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 &emsp; **<font color = "red">Java的并发采用的是共享内存模型</font>，**Java线程之间的通信总是隐式进行，整个通信过程对程序员完全透明。  
 
 ### 1.2.3. JMM内存间的交互操作  
+&emsp; 由于JVM运行程序的实体是线程，而每个线程创建时JVM都会为其创建一个工作内存（有些地方称为栈空间），工作内存是每个线程的私有数据区域，而Java内存模型中规定所有变量都存储在主内存，主内存是共享内存区域，所有线程都可以访问，<font color = "red">但线程对变量的操作（读取赋值等）必须在工作内存中进行，首先要将变量从主内存拷贝到自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，不能直接操作主内存中的变量，</font>各个线程中的工作内存中存储着主内存中的变量副本拷贝，<font color = "lime">因此不同的线程间无法访问对方的工作内存，线程间的通信（传值）必须通过主内存来完成，</font>其简要访问过程：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-42.png)   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-8.png)   
 &emsp; Java内存模型为主内存和工作内存间的变量拷贝及同步定义8种原子性操作指令。  
 
@@ -235,7 +234,6 @@ class Demo {
 &emsp; 早期，cpu从主内存读取数据到高速缓存，会在总线对这个数据加锁，这样其他cpu无法去读或写这个数据，直到这个cpu使用完数据释放锁之后其他cpu才能读取该数据。  
 
 ### 1.5.3. MESI缓存一致性协议  
-
 <!-- 
 &emsp; 而这个规则就有MESI协议。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-43.png)  
@@ -262,7 +260,6 @@ class Demo {
 &emsp; 由于MESI缓存一致性协议，需要不断对主线进行内存嗅探，大量的交互会导致总线带宽达到峰值。因此不要滥用volatile，可以用锁来替代，看使用场景。  
 
 ## 1.6. JMM中的happens-before原则
-
 &emsp; JSR-133内存模型 **<font color = "red">使用happens-before的概念来阐述操作之间的内存可见性。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
 <!-- 
 &emsp; Happens-before规则主要用来约束两个操作，两个操作之间具有 happens-before关系, 并不意味着前一个操作必须要在后一个操作之前执行，happens-before 仅仅要求前一个操作(执行的结果)对后一个操作可见, (the first is visible to and ordered before the second，前一个操作的结果可以被后续的操作获取)。  
