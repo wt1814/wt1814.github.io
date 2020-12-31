@@ -36,6 +36,8 @@ https://mp.weixin.qq.com/s/5amSPJC7e4_3ewtWPATMKw
 https://mp.weixin.qq.com/s/3v2-CkZEpoQB-n1KA0-fdA
 如何优化缓存中百万级并发的KEY 
 https://mp.weixin.qq.com/s/Bm3JlCdBF8UdlOjUgKyqow
+漫话：如何给女朋友解释什么是缓存穿透、缓存击穿、缓存雪崩？ 
+https://mp.weixin.qq.com/s/ikWdYpc2kAY0Bp7-Ajiquw
 
 -->
 

@@ -435,6 +435,7 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 &emsp; [BeanUtils](/docs/web/BeanUtils.md)  
 &emsp; [参数校验](/docs/web/Validation.md)  
 
+[格式化](/docs/web/Format.md)  
 [源码安全](/docs/web/codeSecurity.md)  
 [Http重试](/docs/web/httpRetry.md)   
 [数据脱敏](/docs/web/sensitive.md)  

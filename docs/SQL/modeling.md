@@ -9,4 +9,7 @@ https://mp.weixin.qq.com/s/3HYOXJZzsQd_AXwB-uLYFw
 
  MySQL中的数据类型和schema优化 
  https://mp.weixin.qq.com/s/wSwXvsMykZYZhROOXOON2w
+ 
+ 如何进行数据库设计？
+ https://mp.weixin.qq.com/s/YgKknhoqcUnXOjMs6YGvHg
 -->
