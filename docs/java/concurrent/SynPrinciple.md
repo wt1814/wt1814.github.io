@@ -5,6 +5,7 @@
         - [1.1.1. 反编译Synchronized代码块](#111-反编译synchronized代码块)
             - [1.1.1.1. 同步代码块](#1111-同步代码块)
             - [1.1.1.2. 同步方法](#1112-同步方法)
+            - [monitor对象](#monitor对象)
     - [1.2. synchronized的锁优化](#12-synchronized的锁优化)
         - [1.2.1. 锁消除](#121-锁消除)
         - [1.2.2. 锁粗化](#122-锁粗化)
@@ -20,6 +21,11 @@
 
 # 1. synchronized原理
 <!-- 
+浅析synchronized底层实现与锁升级过程 
+https://juejin.im/post/6888112467747176456
+synchronized底层原理—Monitor监视器
+https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
+
  synchronized 原理知多少
 https://mp.weixin.qq.com/s/KpJZFLTeCxiuxQeiyEEJpQ
  Synchronized的底层实现快问快答 
@@ -28,15 +34,10 @@ https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 https://mp.weixin.qq.com/s/ca_7lurrWVcA3bLCL7UJcQ
 初始synchronized关键字的偏向锁、轻量锁、重量锁 
 https://mp.weixin.qq.com/s/AloGilUSxjoNVDHTfq1ZGQ
-Synchronized详解（可重入、Monitor原理等）
-https://blog.csdn.net/mulinsen77/article/details/88635558
-synchronized底层原理—Monitor监视器
-https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
-浅析synchronized底层实现与锁升级过程 
-https://juejin.im/post/6888112467747176456
 
+Java基础面试16问 
+https://mp.weixin.qq.com/s/-xFSHf7Gz3FUcafTJUIGWQ
 synchronized 同步语句块的实现使用的是 monitorenter 和 monitorexit 指令，其中monitorenter 指令指向同步代码块的开始位置，monitorexit 指令则指明同步代码块的结束位置。当执行 monitorenter 指令时，线程试图获取锁也就是获取 monitor(monitor对象存在于每个Java对象的对象头中，synchronized 锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因) 的持有权.当计数器为0则可以成功获取，获取后将锁计数器设为1也就是加1。相应的在执行monitorexit 指令后，将锁计数器设为0，表明锁被释放。如果获取对象锁失败，那当前线程就要阻塞等待，直到锁被另外一个线程释放为止。
-
 -->
 
 ## 1.1. synchronized底层  
@@ -166,12 +167,49 @@ https://www.jianshu.com/p/c3313dcf2c23
 &emsp; synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被synchronized修饰的方法，<font color= "lime">而是在Class文件的方法表中将该方法的access_flags字段中的synchronized标志位置1，表示该方法是同步方法，</font>并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
 
 <!-- 
+方法中的synchronized与代码块中实现的方式不同，方法中会添加一个叫ACC_SYNCHRONIZED的标志，当调用方法时，首先会检查是否有ACC_SYNCHRONIZED标志，如果存在，则获取monitor对象，调用monitorenter和monitorexit指令。  
 
 当JVM执行引擎执行某一个方法时，其会从方法区中获取该方法的access_flags，检查其是否有ACC_SYNCRHONIZED标识符，若是有该标识符，则说明当前方法是同步方法，需要先获取当前对象的monitor，再来执行方法。
-
+同步方法的时候，一旦执行到这个方法，就会先判断是否有标志位，然后，ACC_SYNCHRONIZED会去隐式调用刚才的两个指令：monitorenter和monitorexit。
 -->
 
+#### monitor对象  
+&emsp; monitor监视器源码是C++写的，在虚拟机的ObjectMonitor.hpp文件中。  
+<!-- 在Java虚拟机(HotSpot)中，monitor是由ObjectMonitor实现的 -->
+
+```C
+ObjectMonitor() {
+    _header       = NULL;
+    _count        = 0;
+    _waiters      = 0,
+    _recursions   = 0;  // 线程重入次数
+    _object       = NULL;  // 存储Monitor对象
+    _owner        = NULL;  // 持有当前线程的owner
+    _WaitSet      = NULL;  // wait状态的线程列表
+    _WaitSetLock  = 0 ;
+    _Responsible  = NULL ;
+    _succ         = NULL ;
+    _cxq          = NULL ;  // 单向列表
+    FreeNext      = NULL ;
+    _EntryList    = NULL ;  // 处于等待锁状态block状态的线程列表
+    _SpinFreq     = 0 ;
+    _SpinClock    = 0 ;
+    OwnerIsThread = 0 ;
+    _previous_owner_tid = 0;
+  }
+```
+&emsp; synchronized底层的源码就是引入了ObjectMonitor。  
+&emsp; ObjectMonitor中有两个队列，_WaitSet 和 _EntryList，用来保存ObjectWaiter对象列表( 每个等待锁的线程都会被封装成ObjectWaiter对象)；  
+&emsp; 整个monitor运行的机制过程如下：  
+&emsp; _owner指向持有ObjectMonitor对象的线程，当多个线程同时访问一段同步代码时，首先会进入 _EntryList 集合，当线程获取到对象的monitor 后进入 _Owner 区域并把monitor中的owner变量设置为当前线程同时monitor中的计数器count加1，若线程调用 wait() 方法，将释放当前持有的monitor，owner变量恢复为null，count自减1，同时该线程进入 WaitSe t集合中等待被唤醒。若当前线程执行完毕也将释放monitor(锁)并复位变量的值，以便其他线程进入获取monitor(锁)。  
+&emsp; 具体见下图：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
+&emsp; 因此，monitor对象存在于每个Java对象的对象头中(存储的指针的指向)，synchronized锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因，同时也是notify/notifyAll/wait等方法存在于顶级对象Object中的原因。  
+
 ## 1.2. synchronized的锁优化
+<!-- synchronized
+https://www.cnblogs.com/dennyzhangdd/p/6734638.html
+-->
 &emsp; **<font color = "lime">锁升级过程主要是理解偏向锁、轻量级锁的升级过程。</font>**    
 &emsp; **<font color = "lime">~~一句话概述：新线程竞争锁时，获取锁对象的 Markword。起初只有一个线程，会获取到偏向锁，当另一个线程竞争锁，只cas一次，抢占到撤销原线程的偏向锁；抢占不到升级成轻量级锁；轻量级锁加锁过程中会使用自旋锁，新线程自旋多次获取轻量级锁失败（锁对象不是当前线程），会升级成重量级锁。并且已经获取轻量级锁的线程在释放锁时，也会升级成重量级锁。~~</font>**  
 

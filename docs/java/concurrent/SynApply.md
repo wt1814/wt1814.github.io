@@ -17,37 +17,13 @@
 
 <!-- /TOC -->
 
-<!--
- Synchronized 的 8 种用法，真是绝了！ 
- https://mp.weixin.qq.com/s/TOkDyqAE5TToriOMX6I6tg
-
-synchronized
-https://www.cnblogs.com/dennyzhangdd/p/6734638.html
-
-
-【185期】面试官：你能说说 Synchronized实现对象锁的两种方式以及它的原理吗？
-https://mp.weixin.qq.com/s/zMSMlnD9h1wwJTNt-3pIHg
-
-Java基础面试16问 
-https://mp.weixin.qq.com/s/-xFSHf7Gz3FUcafTJUIGWQ
-
-关键字synchronized取得的锁都是对象锁，而不是把一段代码或方法（函数）当作锁， 所以在上面的示例中，哪个线程先执行带synchronized关键字的方法，哪个线程就持有该方 法所属对象的锁Lock,那么其他线程只能呈等待状态，前提是多个线程访问的是同一个 对象。
-但如果多个线程访问多个对象，则JVM会创建多个锁。
-
-关键字synchronized拥有锁重人的功能，也就是在使用synchronized时，当一个线程 得到一个对象锁后，再次请求此对象锁时是可以再次得到该对象的锁的。这也证明在一个 synchronized方法/块的内部调用本类的其他synchronized方法/块时，是永远可以得到锁的。
-
-“可重人锁”的概念是：自己可以再次获取自己的内部锁。 比如有1条线程获得了某个对象的锁，此时这个对象锁还没 有释放，当其再次想要获取这个对象的锁的时候还是可以获 取的，如果不可锁重人的话，就会造成死锁。
-
-锁非this对象具有一定的优点：如果在一个类中有很多个synchronized方法，这时虽然 能实现同步，但会受到阻塞，所以影响运行效率；但如果使用同步代码块锁非this对象，则synchronized(非this)代码块中的程序与同步方法是 异步的，不与其他锁this同步方法争抢this锁，则可 大大提高运行效率。
-
-在大多数的情况下，同步 synchronized代码块都不使用String作为锁对象，而改用其他，比如new Object()实例化一个 Object对象，但它并不放人缓存中。
-
--->
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-16.png)  
 
 # 1. synchronized  
-
+<!--
+ Synchronized 的 8 种用法，真是绝了！ 
+ https://mp.weixin.qq.com/s/TOkDyqAE5TToriOMX6I6tg
+-->
 ## 1.1. synchronized介绍
 &emsp; **<font color = "red">synchronized能够保证在同一时刻最多只有一个线程执行该段代码。</font>**  
 
@@ -57,20 +33,27 @@ https://mp.weixin.qq.com/s/-xFSHf7Gz3FUcafTJUIGWQ
 * 可见性：保证持有锁的当前线程在释放锁之前，对共享变量的修改会刷新到主存中，并对其它线程可见。  
 * 有序性：保证多线程时刻中只有一个线程执行，线程执行的顺序都是有序的。  
 * 可重入性：保证在多线程中，有其他的线程试图竞争持有锁的临界资源时，其它的线程会处于等待状态，而当前持有锁的线程可以重复的申请自己持有锁的临界资源。  
+<!-- 
+关键字synchronized拥有锁重人的功能，也就是在使用synchronized时，当一个线程 得到一个对象锁后，再次请求此对象锁时是可以再次得到该对象的锁的。这也证明在一个 synchronized方法/块的内部调用本类的其他synchronized方法/块时，是永远可以得到锁的。
 
+“可重人锁”的概念是：自己可以再次获取自己的内部锁。 比如有1条线程获得了某个对象的锁，此时这个对象锁还没 有释放，当其再次想要获取这个对象的锁的时候还是可以获 取的，如果不可锁重人的话，就会造成死锁。
+-->
 &emsp; Synchronized可以禁止指令重排吗？不可以。  
 &emsp; <font color = "red">即然Synchronized无法禁止指令重排，为何可以保证有序性？</font>  
 &emsp; <font color = "red">Synchronized遵守as-if-serial语义（在java中，不管怎么排序，都不能影响单线程程序的执行结果）。</font><font color = "lime">某个线程执行到被synchronized修饰的代码之前，会先进行加锁。执行完代码后才进行解锁。在这个期间，其他线程无法获得锁。也就是在这段时间，被synchronized修饰的代码是单线程执行的。满足了as-if-serial语义的一个前提。</font>  
-
 <!-- 
 https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 -->
-
 ## 1.2. synchronized使用  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-11.png)  
 
 &emsp; synchronized可以使用在普通方法、静态方法、同步块中。synchronized使用在同步块中，锁粒度更小。根据锁的具体实例，又可以分为类锁和对象锁。  
-
+&emsp; 关键字synchronized取得的锁都是对象锁，而不是把一段代码或方法（函数）当作锁。  
+<!-- 
+锁非this对象具有一定的优点：如果在一个类中有很多个synchronized方法，这时虽然能实现同步，但会受到阻塞，所以影响运行效率；但如果使用同步代码块锁非this对象，则synchronized(非this)代码块中的程序与同步方法是异步的，不与其他锁this同步方法争抢this锁，则可 大大提高运行效率。  
+在大多数的情况下，同步synchronized代码块都不使用String作为锁对象，而改用其他，比如new Object()实例化一个 Object对象，但它并不放人缓存中。  
+-->
+ 
 ### 1.2.1. 类锁和对象锁
 &emsp; **synchronized的范围：类锁和对象锁。** 
 1. 类锁：当synchronized修饰静态方法或synchronized修饰代码块传入某个class对象（synchronized (XXXX.class)）时被称为类锁。某个线程得到了一个类锁之后，其他所有被该类锁加锁方法或代码块是锁定的，其他线程是无法访问的，但是其他线程还是可以访问没有被该类锁加锁的任何代码。  
@@ -206,7 +189,7 @@ private void synchronizedInstance() {
 5. 锁绑定多个条件。一个 ReentrantLock 可以同时绑定多个 Condition 对象。  
 
 &emsp; **synchronized与ReentrantLock的使用选择：**  
-&emsp; 除非需要使用ReentrantLock的高级功能，否则优先使用synchronized。这是因为synchronized是JVM实现的一种锁机制，JVM原生地支持它，而 ReentrantLock 不是所有的JDK版本都支持。并且使用synchronized不用担心没有释放锁而导致死锁问题，因为JVM会确保锁的释放。  
+&emsp; 除非需要使用ReentrantLock的高级功能，否则优先使用synchronized。这是因为synchronized是JVM实现的一种锁机制，JVM原生地支持它，而ReentrantLock不是所有的JDK版本都支持。并且使用synchronized不用担心没有释放锁而导致死锁问题，因为JVM会确保锁的释放。  
 
 ## 1.4. synchronized与Object#wait()  
 &emsp; 为什么线程通信的方法wait()，notify()和notifyAll()被定义在Object类里？  
