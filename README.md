@@ -104,7 +104,6 @@
 ### 并发编程  
 [并发编程总结](/docs/java/concurrent/summary.md)  
 [线程基本概念](/docs/java/concurrent/1.Thread.md)  
-&emsp; [wait](/docs/java/concurrent/wait.md)  
 [并发问题](/docs/java/concurrent/2.Multithread.md)  
 &emsp; [JMM](/docs/java/concurrent/JMM.md)  
 &emsp; [线程安全](/docs/java/concurrent/线程安全.md)  
