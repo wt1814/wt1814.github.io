@@ -58,7 +58,7 @@
     * [并发问题](/docs/java/concurrent/2.Multithread.md)  
         * [JMM](/docs/java/concurrent/JMM.md)  
         * [并发问题](/docs/java/concurrent/ConcurrencyProblem.md)  
-        * [线程安全](/docs/java/concurrent/线程安全.md)  
+        * [线程安全](/docs/java/concurrent/ThreadSafety.md)  
         * [Synchronized应用](/docs/java/concurrent/SynApply.md)  
         * [Synchronized原理](/docs/java/concurrent/SynPrinciple.md)  
         * [Volatile](/docs/java/concurrent/Volatile.md)  

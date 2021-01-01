@@ -7,7 +7,6 @@
 因为线程的封闭阿粉错失了一份非常不错的工作 
 https://mp.weixin.qq.com/s/3PfvkKKtH48XbMEtab2Z_g
 -->
-
 &emsp; 线程安全包含原子性和可见性两个方面，Java的同步机制都是围绕这两个方面来确保线程安全的。  
 &emsp; 若多个线程同时对资源执行写操作，一般都需要考虑线程同步，否则的话就可能影响线程安全。线程安全问题有“丢失修改”、“不可重复读”、“读‘脏’数据”等。  
 
@@ -28,6 +27,12 @@ https://mp.weixin.qq.com/s/3PfvkKKtH48XbMEtab2Z_g
 &emsp; 不可变（Immutable）的对象一定是线程安全的，不需要再采取任何的线程安全保障措施。只要一个不可变的对象被正确地构建出来，永远也不会看到它在多个线程之中处于不一致的状态。多线程环境下，应当尽量使对象成为不可变，来满足线程安全。  
 &emsp; <font color = "red">不可变的类型：final关键字修饰的基本数据类型、String、枚举类型</font>、Number 部分子类，如Long和Double等数值包装类型，BigInteger和BigDecimal等大数据类型。但同为Number的原子类AtomicInteger和AtomicLong则是可变的。    
 
+
+&emsp; **java并发原语：**Java内存模型，除了定义了一套规范，还提供了一系列原语，封装了底层实现后，供开发者直接使用。  
+
+* 原子性可以通过synchronized和Lock来实现。  
+* 可见性可以通过Volatile、synchronized、final来实现。  
+* 有序性可以通过synchronized或者Lock、volatile来实现。  
 
 <!-- 
 
