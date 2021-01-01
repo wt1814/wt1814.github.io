@@ -1,15 +1,15 @@
 <!-- TOC -->
 
 - [1. Synchronized原理](#1-synchronized原理)
+    - [1.2.3. Java对象头与monitor-1](#123-java对象头与monitor-1)
     - [1.1. Synchronized底层](#11-synchronized底层)
         - [1.1.1. 反编译Synchronized代码块](#111-反编译synchronized代码块)
+            - [1.1.1.3. monitor对象](#1113-monitor对象)
             - [1.1.1.1. 同步代码块](#1111-同步代码块)
             - [1.1.1.2. 同步方法](#1112-同步方法)
-            - [1.1.1.3. monitor对象](#1113-monitor对象)
     - [1.2. Synchronized的锁优化](#12-synchronized的锁优化)
         - [1.2.1. 锁消除](#121-锁消除)
         - [1.2.2. 锁粗化](#122-锁粗化)
-        - [1.2.3. 了解HotSpot虚拟机对象的内存布局](#123-了解hotspot虚拟机对象的内存布局)
         - [1.2.4. 偏向锁](#124-偏向锁)
             - [1.2.4.1. 偏向锁的性能](#1241-偏向锁的性能)
             - [1.2.4.2. 偏向锁的失效](#1242-偏向锁的失效)
@@ -23,13 +23,9 @@
 <!-- 
 浅析Synchronized底层实现与锁升级过程 
 https://juejin.im/post/6888112467747176456
-Synchronized底层原理—Monitor监视器
-https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
 
  Synchronized 原理知多少
 https://mp.weixin.qq.com/s/KpJZFLTeCxiuxQeiyEEJpQ
- Synchronized的底层实现快问快答 
-https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 死磕Synchronized底层实现 
 https://mp.weixin.qq.com/s/ca_7lurrWVcA3bLCL7UJcQ
 初始Synchronized关键字的偏向锁、轻量锁、重量锁 
@@ -39,14 +35,50 @@ Java基础面试16问
 https://mp.weixin.qq.com/s/-xFSHf7Gz3FUcafTJUIGWQ
 Synchronized 同步语句块的实现使用的是 monitorenter 和 monitorexit 指令，其中monitorenter 指令指向同步代码块的开始位置，monitorexit 指令则指明同步代码块的结束位置。当执行 monitorenter 指令时，线程试图获取锁也就是获取 monitor(monitor对象存在于每个Java对象的对象头中，Synchronized 锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因) 的持有权.当计数器为0则可以成功获取，获取后将锁计数器设为1也就是加1。相应的在执行monitorexit 指令后，将锁计数器设为0，表明锁被释放。如果获取对象锁失败，那当前线程就要阻塞等待，直到锁被另外一个线程释放为止。
 -->
+<!-- 
+~~
+Synchronized底层原理—Monitor监视器
+https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
+-->
+
+## 1.2.3. Java对象头与monitor-1  
+<!-- 
+Java对象头与monitor
+https://blog.csdn.net/kking_edc/article/details/108382333
+-->
+&emsp;  **<font color = "red">先了解下HotSpot虚拟机对象的内存布局。</font>** 在64位的HotSpot虚拟机中，不同状态下对象头的存储内容如下图所示。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-56.png)   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)   
+&emsp; HotSpot虚拟机的对象头（Object Header）分为三部分：对象头(Header)、实例数据(Instance Data)、对齐填充(Padding)。<font color = "red">用对象头中markword最低的三位代表锁状态，其中1位是偏向锁位，两位是普通锁位。</font>  
+
+* 对象头：
+    * 第一部分用于存储对象自身的运行时数据，如哈希码、GC分代年龄、锁标识状态、线程持有的锁、偏向线程ID等。这部分数据的长度在32位和64位的Java虚拟机中分别会占用32个或64个比特，官方称它为“Mark Word”。这部分是实现轻量级锁和偏向锁的关键。  
+    * 另外一部分指针类型，指向对象的类元数据类型（即对象代表哪个类）。如果是数组对象，则对象头中还有一部分用来记录数组长度。  
+    * 还会有一个额外的部分用于存储数组长度。  
+* 实例数据：存储对象真正的有效信息（包括父类继承下来的和自己定义的）  
+* 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐） 
+
+&emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
+
+        为什么锁信息存放在对象头里？
+        因为在Java中任意对象都可以用作锁，因此必定要有一个映射关系，存储该对象以及其对应的锁信息（比如当前哪个线程持有锁，哪些线程在等待）。一种很直观的方法是，用一个全局map，来存储这个映射关系，但这样会有一些问题：需要对map做线程安全保障，不同的Synchronized之间会相互影响，性能差；另外当同步对象较多时，该map可能会占用比较多的内存。
+        所以最好的办法是将这个映射关系存储在对象头中，因为对象头本身也有一些hashcode、GC相关的数据，所以如果能将锁信息与这些信息共存在对象头中就好了。
+        也就是说，如果用一个全局 map 来存对象的锁信息，还需要对该 map 做线程安全处理，不同的锁之间会有影响。所以直接存到对象头。
+
+<!--   
+工具：JOL = Java Object Layout   
+<dependencies>
+    <dependency>
+        <groupId>org.openjdk.jol</groupId>
+        <artifactId>jol-core</artifactId>
+        <version>0.9</version>
+    </dependency>
+</dependencies>
+-->
 
 ## 1.1. Synchronized底层  
 
 ### 1.1.1. 反编译Synchronized代码块  
-<!-- 
-https://www.cnblogs.com/huangyin/p/6586469.html
--->
-
 ```java
 public class SyncDemo {
 
@@ -58,6 +90,9 @@ public class SyncDemo {
     }
 }
 ```
+
+<!-- 编译完成，我们去对应目录执行 javap -c xxx.class 命令查看反编译的文件：  
+-->
 &emsp; 利用javap工具查看生成的class文件信息分析Synchronized，下面是部分信息:  
 
     查看字节码工具：  
@@ -119,12 +154,7 @@ public com.zzw.juc.sync.SyncDemo();
 * **<font color = "red">方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。</font>**  
 * **<font color = "red">代码块同步：使用monitorenter和monitorexit指令实现。</font>**  
 
-#### 1.1.1.1. 同步代码块  
-&emsp; 同步代码块：monitorenter指令插入到同步代码块的开始位置，monitorexit指令插入到同步代码块的结束位置，<font color = "red">JVM需要保证每一个monitorenter都有一个monitorexit与之相对应。</font>  
-&emsp; monitorenter操作的目标一定要是一个对象，类型是reference。Reference实际就是堆里的一个存放对象的地址。每个对象（reference）都有一个monitor对应，如果有其它的线程获取了这个对象的monitor，当前的线程就要一直等待，直到获得 monitor的线程放弃monitor，当前的线程才有机会获得monitor。  
-&emsp; 如果monitor没有被任何线程获取，那么当前线程获取这个monitor，把monitor的entry count设置为1。表示这个monitor被线程1占用了。  
-&emsp; 当前线程获取了monitor之后，会增加这个monitor的时间计数，来记录当前线程占用了monitor多长时间。  
-
+#### 1.1.1.3. monitor对象  
 <!-- 
 &emsp; 任何对象都有一个monitor与之相关联，当且一个monitor被持有之后，它将处于锁定状态。线程执行到monitorenter指令时，将会尝试获取对象所对应的monitor所有权，即尝试获取对象的锁。
 &emsp; monitor对象介绍：  
@@ -147,33 +177,11 @@ _count：用来记录该线程获取锁的次数；
 https://www.jianshu.com/p/c3313dcf2c23
 
 -->
+每个对象实例都会有个Monitor对象，Monitor对象和Java对象一同创建并消毁，在Java虚拟机(HotSpot)中,Monitor是基于C++实现的，由ObjectMonitor实现。ObjectMonitor的成员变量如下( Hospot 1.8) ：  
 
-&emsp; 两条指令的作用：  
-* monitorenter：  
-&emsp; <font color = "red">线程执行monitorenter指令时尝试获取monitor的所有权，当monitor被占用时就会处于锁定状态。</font>过程如下：
-    1. <font color = "red">如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。</font>  
-    2. 如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1，所以Synchronized关键字实现的锁是可重入的锁。  
-    3. 如果其他线程已经占用了monitor，则该线程进入阻塞状态，直到monitor的进入数为0，再重新尝试获取monitor的所有权。  
-
-* monitorexit：  
-&emsp; 执行monitorexit的线程必须是objectref所对应的monitor的所有者。  
-&emsp; 指令执行时，monitor的进入数减1，如果减1后进入数为0，当前线程释放monitor，不再是这个monitor的所有者。其他被这个monitor阻塞的线程可以尝试去获取这个monitor的所有权。  
-
-&emsp; **<font color = "red">同步代码块中会出现两次的monitorexit。</font>** 这是因为一个线程对一个对象上锁了，后续就一定要解锁，第二个monitorexit是为了保证在线程异常时，也能正常解锁，避免造成死锁。  
-
-&emsp; 总结：Synchronized的实现原理，Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。  
-
-#### 1.1.1.2. 同步方法  
-&emsp; Synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被Synchronized修饰的方法，<font color= "lime">而是在Class文件的方法表中将该方法的access_flags字段中的Synchronized标志位置1，表示该方法是同步方法，</font>并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
-
-<!-- 
-方法中的Synchronized与代码块中实现的方式不同，方法中会添加一个叫ACC_Synchronized的标志，当调用方法时，首先会检查是否有ACC_Synchronized标志，如果存在，则获取monitor对象，调用monitorenter和monitorexit指令。  
-
-当JVM执行引擎执行某一个方法时，其会从方法区中获取该方法的access_flags，检查其是否有ACC_SYNCRHONIZED标识符，若是有该标识符，则说明当前方法是同步方法，需要先获取当前对象的monitor，再来执行方法。
-同步方法的时候，一旦执行到这个方法，就会先判断是否有标志位，然后，ACC_Synchronized会去隐式调用刚才的两个指令：monitorenter和monitorexit。
--->
-
-#### 1.1.1.3. monitor对象  
+&emsp; 每个对象都有一个monitor对应，如果有其它的线程获取了这个对象的monitor，当前的线程就要一直等待，直到获得 monitor的线程放弃monitor，当前的线程才有机会获得monitor。  
+&emsp; 如果monitor没有被任何线程获取，那么当前线程获取这个monitor，把monitor的entry count设置为1。表示这个monitor被线程1占用了。  
+&emsp; 当前线程获取了monitor之后，会增加这个monitor的时间计数，来记录当前线程占用了monitor多长时间。 
 &emsp; monitor监视器源码是C++写的，在虚拟机的ObjectMonitor.hpp文件中。  
 <!-- 在Java虚拟机(HotSpot)中，monitor是由ObjectMonitor实现的 -->
 
@@ -200,11 +208,163 @@ ObjectMonitor() {
 ```
 &emsp; Synchronized底层的源码就是引入了ObjectMonitor。  
 &emsp; ObjectMonitor中有两个队列，_WaitSet 和 _EntryList，用来保存ObjectWaiter对象列表( 每个等待锁的线程都会被封装成ObjectWaiter对象)；  
+
+&emsp; _WaitSet和 _EntryList有什么区别呢？  
+​&emsp; 当多个线程同时访问同步代码时，首先进入的就是_EntryList 。当获得对象的monitor时，_owner 指向当前线程，_count进行加1。  
+​&emsp; 若持有monitor的线程调用wait()，则释放持有的monitor，_owner变为null，_count减1。  
+​&emsp; 同时该线程进入_WaitSet 等待被唤醒。如果执行完毕，也释放monitor。  
+
 &emsp; 整个monitor运行的机制过程如下：  
 &emsp; _owner指向持有ObjectMonitor对象的线程，当多个线程同时访问一段同步代码时，首先会进入 _EntryList 集合，当线程获取到对象的monitor 后进入 _Owner 区域并把monitor中的owner变量设置为当前线程同时monitor中的计数器count加1，若线程调用 wait() 方法，将释放当前持有的monitor，owner变量恢复为null，count自减1，同时该线程进入 WaitSe t集合中等待被唤醒。若当前线程执行完毕也将释放monitor(锁)并复位变量的值，以便其他线程进入获取monitor(锁)。  
 &emsp; 具体见下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
 &emsp; 因此，monitor对象存在于每个Java对象的对象头中(存储的指针的指向)，Synchronized锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因，同时也是notify/notifyAll/wait等方法存在于顶级对象Object中的原因。  
+
+那你能说说看monitor吗，到底是怎么实现了加锁和锁释放的呢？  
+
+云霄：当多个线程同时访问同一段代码的时候，这些线程会被放在EntrySet集合,处于阻塞状态的线程都会被放在该列表当中，当线程获取到对象的monitor时，监视器锁monitor本质又是依赖于底层的操作系统的 Mutex Lock 来实现的，线程获取Mutex成功，这个时候其他的线程就无法获取到该Mutex。  
+
+如果线程调用了wait方法，那么该线程就会释放掉持有的Mutex，并且该线程会进入到WaitSet集合(等待集合中)，等待下一次被其他的线程notify/notifyAll唤醒，如果当前线程的方法执行完毕，那么它也会释放掉所持有的Mutex。  
+
+下面在看一下加锁的代码：  
+
+```text
+void ATTR ObjectMonitor::enter(TRAPS) {
+  // The following code is ordered to check the most common cases first
+  // and to reduce RTS->RTO cache line upgrades on SPARC and IA32 processors.
+
+ //获取当前线程指针
+  Thread * const Self = THREAD ;
+  void * cur ;
+
+//尝试通过CAS将OjectMonitor的_owner设置为当前线程；
+  cur = Atomic::cmpxchg_ptr (Self, &_owner, NULL) ;
+
+//尝试失败
+  if (cur == NULL) {
+     // Either ASSERT _recursions == 0 or explicitly set _recursions = 0.
+     assert (_recursions == 0   , "invariant") ;
+     assert (_owner      == Self, "invariant") ;
+     // CONSIDER: set or assert OwnerIsThread == 1
+     return ;
+  }
+
+//如果cur等于当前线程，说明当前线程已经持有锁，即为锁重入，_recursions自增，并获得锁。 
+  if (cur == Self) {
+     // TODO-FIXME: check for integer overflow!  BUGID 6557169.
+     _recursions ++ ;
+     return ;
+  }
+
+//第一次设置_owner成功,锁的重入次数_recursions设置为1，_owner设置为当前线程，
+  if (Self->is_lock_owned ((address)cur)) {
+    assert (_recursions == 0, "internal state error");
+    _recursions = 1 ;
+    // Commute owner from a thread-specific on-stack BasicLockObject address to
+    // a full-fledged "Thread *".
+    _owner = Self ;
+    OwnerIsThread = 1 ;
+    return ;
+  }
+
+ //代码省略。。。。。
+
+    // TODO-FIXME: change the following for(;;) loop to straight-line code.
+   //如果竞争是失败的，会进入下面中的无线循环，反复调用EnterI方法，自旋尝试获取锁
+    for (;;) {
+      jt->set_suspend_equivalent();
+      // cleared by handle_special_suspend_equivalent_condition()
+      // or java_suspend_self()
+
+      EnterI (THREAD) ;
+
+      if (!ExitSuspendEquivalent(jt)) break ;
+
+      //
+      // We have acquired the contended monitor, but while we were
+      // waiting another thread suspended us. We don't want to enter
+      // the monitor while suspended because that would surprise the
+      // thread that suspended us.
+      //
+          _recursions = 0 ;
+      _succ = NULL ;
+      exit (false, Self) ;
+
+      jt->java_suspend_self();
+    }
+
+   //代码省略。。。。。。。。。。。。。
+```
+
+下面再看一下释放锁的代码：  
+
+```text
+void ATTR ObjectMonitor::exit(bool not_suspended, TRAPS) {
+   Thread * Self = THREAD ;
+   if (THREAD != _owner) {
+     if (THREAD->is_lock_owned((address) _owner)) {
+       // Transmute _owner from a BasicLock pointer to a Thread address.
+       // We don't need to hold _mutex for this transition.
+       // Non-null to Non-null is safe as long as all readers can
+       // tolerate either flavor.
+       assert (_recursions == 0, "invariant") ;
+       _owner = THREAD ;
+       _recursions = 0 ;
+       OwnerIsThread = 1 ;
+     } else {
+       // NOTE: we need to handle unbalanced monitor enter/exit
+       // in native code by throwing an exception.
+       // TODO: Throw an IllegalMonitorStateException ?
+       TEVENT (Exit - Throw IMSX) ;
+       assert(false, "Non-balanced monitor enter/exit!");
+       if (false) {
+          THROW(vmSymbols::java_lang_IllegalMonitorStateException());
+       }
+       return;
+     }
+   }
+
+   if (_recursions != 0) {
+     _recursions--;        // this is simple recursive enter
+     TEVENT (Inflated exit - recursive) ;
+     return ;
+   }
+
+   //代码省略。。。。。。。。。。。。。
+}
+```
+
+#### 1.1.1.1. 同步代码块  
+&emsp; 同步代码块：monitorenter指令插入到同步代码块的开始位置，monitorexit指令插入到同步代码块的结束位置，<font color = "red">JVM需要保证每一个monitorenter都有一个monitorexit与之相对应。</font>  
+
+
+
+&emsp; 两条指令的作用：  
+* monitorenter：  
+&emsp; <font color = "red">线程执行monitorenter指令时尝试获取monitor的所有权，当monitor被占用时就会处于锁定状态。</font>过程如下：
+    1. <font color = "red">如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。</font>  
+    2. 如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1，所以Synchronized关键字实现的锁是可重入的锁。  
+    3. 如果其他线程已经占用了monitor，则该线程进入阻塞状态，直到monitor的进入数为0，再重新尝试获取monitor的所有权。  
+
+* monitorexit：  
+&emsp; 执行monitorexit的线程必须是objectref所对应的monitor的所有者。  
+&emsp; 指令执行时，monitor的进入数减1，如果减1后进入数为0，当前线程释放monitor，不再是这个monitor的所有者。其他被这个monitor阻塞的线程可以尝试去获取这个monitor的所有权。  
+
+&emsp; **<font color = "red">同步代码块中会出现两次的monitorexit。</font>** 这是因为一个线程对一个对象上锁了，后续就一定要解锁，第二个monitorexit是为了保证在线程异常时，也能正常解锁，避免造成死锁。  
+
+&emsp; 总结：Synchronized的实现原理，Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。  
+
+#### 1.1.1.2. 同步方法  
+&emsp; Synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被Synchronized修饰的方法，<font color= "lime">而是在Class文件的方法表中将该方法的access_flags字段中的Synchronized标志位置1，表示该方法是同步方法，</font>并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
+
+<!-- 
+方法中的Synchronized与代码块中实现的方式不同，方法中会添加一个叫ACC_Synchronized的标志，当调用方法时，首先会检查是否有ACC_Synchronized标志，如果存在，则获取monitor对象，调用monitorenter和monitorexit指令。  
+
+当JVM执行引擎执行某一个方法时，其会从方法区中获取该方法的access_flags，检查其是否有ACC_SYNCRHONIZED标识符，若是有该标识符，则说明当前方法是同步方法，需要先获取当前对象的monitor，再来执行方法。
+同步方法的时候，一旦执行到这个方法，就会先判断是否有标志位，然后，ACC_Synchronized会去隐式调用刚才的两个指令：monitorenter和monitorexit。
+-->
+
+
 
 ## 1.2. Synchronized的锁优化
 <!-- Synchronized
@@ -281,36 +441,6 @@ public String test(String str){
 ```
 &emsp; JVM会检测到这样一连串的操作都对同一个对象加锁（while 循环内 100 次执行 append，没有锁粗化的就要进行 100 次加锁/解锁），此时 JVM 就会将加锁的范围粗化到这一连串的操作的外部（比如 while 虚幻体外），使得这一连串操作只需要加一次锁即可。  
 
-### 1.2.3. 了解HotSpot虚拟机对象的内存布局  
-
-&emsp; 下面讲解Synchroized的偏向锁、轻量级锁、重量级锁。 **<font color = "red">需要先了解HotSpot虚拟机对象的内存布局。</font>** 在64位的HotSpot虚拟机中，不同状态下对象头的存储内容如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)   
-&emsp; HotSpot虚拟机的对象头（Object Header）分为三部分：对象头(Header)、实例数据(Instance Data)、对齐填充(Padding)。<font color = "red">用对象头中markword最低的三位代表锁状态，其中1位是偏向锁位，两位是普通锁位。</font>  
-
-* 对象头：
-    * 第一部分用于存储对象自身的运行时数据，如哈希码、GC分代年龄、锁标识状态、线程持有的锁、偏向线程ID等。这部分数据的长度在32位和64位的Java虚拟机中分别会占用32个或64个比特，官方称它为“Mark Word”。这部分是实现轻量级锁和偏向锁的关键。  
-    * 另外一部分指针类型，指向对象的类元数据类型（即对象代表哪个类）。如果是数组对象，则对象头中还有一部分用来记录数组长度。  
-    * 还会有一个额外的部分用于存储数组长度。  
-* 实例数据：存储对象真正的有效信息（包括父类继承下来的和自己定义的）  
-* 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐） 
-
-&emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
-
-        为什么锁信息存放在对象头里？
-        因为在Java中任意对象都可以用作锁，因此必定要有一个映射关系，存储该对象以及其对应的锁信息（比如当前哪个线程持有锁，哪些线程在等待）。一种很直观的方法是，用一个全局map，来存储这个映射关系，但这样会有一些问题：需要对map做线程安全保障，不同的Synchronized之间会相互影响，性能差；另外当同步对象较多时，该map可能会占用比较多的内存。
-        所以最好的办法是将这个映射关系存储在对象头中，因为对象头本身也有一些hashcode、GC相关的数据，所以如果能将锁信息与这些信息共存在对象头中就好了。
-        也就是说，如果用一个全局 map 来存对象的锁信息，还需要对该 map 做线程安全处理，不同的锁之间会有影响。所以直接存到对象头。
-
-<!--   
-工具：JOL = Java Object Layout   
-<dependencies>
-    <dependency>
-        <groupId>org.openjdk.jol</groupId>
-        <artifactId>jol-core</artifactId>
-        <version>0.9</version>
-    </dependency>
-</dependencies>
--->
 
 ### 1.2.4. 偏向锁  
 &emsp; <font color = "red">偏向锁定义：</font>偏向锁是指偏向于让第一个获取锁对象的线程，这个线程在之后获取该锁就不再需要进行同步操作。 
