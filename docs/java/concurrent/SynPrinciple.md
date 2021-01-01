@@ -1,12 +1,12 @@
 <!-- TOC -->
 
-- [1. synchronized原理](#1-synchronized原理)
-    - [1.1. synchronized底层](#11-synchronized底层)
+- [1. Synchronized原理](#1-synchronized原理)
+    - [1.1. Synchronized底层](#11-synchronized底层)
         - [1.1.1. 反编译Synchronized代码块](#111-反编译synchronized代码块)
             - [1.1.1.1. 同步代码块](#1111-同步代码块)
             - [1.1.1.2. 同步方法](#1112-同步方法)
-            - [monitor对象](#monitor对象)
-    - [1.2. synchronized的锁优化](#12-synchronized的锁优化)
+            - [1.1.1.3. monitor对象](#1113-monitor对象)
+    - [1.2. Synchronized的锁优化](#12-synchronized的锁优化)
         - [1.2.1. 锁消除](#121-锁消除)
         - [1.2.2. 锁粗化](#122-锁粗化)
         - [1.2.3. 了解HotSpot虚拟机对象的内存布局](#123-了解hotspot虚拟机对象的内存布局)
@@ -19,28 +19,28 @@
 
 <!-- /TOC -->
 
-# 1. synchronized原理
+# 1. Synchronized原理
 <!-- 
-浅析synchronized底层实现与锁升级过程 
+浅析Synchronized底层实现与锁升级过程 
 https://juejin.im/post/6888112467747176456
-synchronized底层原理—Monitor监视器
+Synchronized底层原理—Monitor监视器
 https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
 
- synchronized 原理知多少
+ Synchronized 原理知多少
 https://mp.weixin.qq.com/s/KpJZFLTeCxiuxQeiyEEJpQ
  Synchronized的底层实现快问快答 
 https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 死磕Synchronized底层实现 
 https://mp.weixin.qq.com/s/ca_7lurrWVcA3bLCL7UJcQ
-初始synchronized关键字的偏向锁、轻量锁、重量锁 
+初始Synchronized关键字的偏向锁、轻量锁、重量锁 
 https://mp.weixin.qq.com/s/AloGilUSxjoNVDHTfq1ZGQ
 
 Java基础面试16问 
 https://mp.weixin.qq.com/s/-xFSHf7Gz3FUcafTJUIGWQ
-synchronized 同步语句块的实现使用的是 monitorenter 和 monitorexit 指令，其中monitorenter 指令指向同步代码块的开始位置，monitorexit 指令则指明同步代码块的结束位置。当执行 monitorenter 指令时，线程试图获取锁也就是获取 monitor(monitor对象存在于每个Java对象的对象头中，synchronized 锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因) 的持有权.当计数器为0则可以成功获取，获取后将锁计数器设为1也就是加1。相应的在执行monitorexit 指令后，将锁计数器设为0，表明锁被释放。如果获取对象锁失败，那当前线程就要阻塞等待，直到锁被另外一个线程释放为止。
+Synchronized 同步语句块的实现使用的是 monitorenter 和 monitorexit 指令，其中monitorenter 指令指向同步代码块的开始位置，monitorexit 指令则指明同步代码块的结束位置。当执行 monitorenter 指令时，线程试图获取锁也就是获取 monitor(monitor对象存在于每个Java对象的对象头中，Synchronized 锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因) 的持有权.当计数器为0则可以成功获取，获取后将锁计数器设为1也就是加1。相应的在执行monitorexit 指令后，将锁计数器设为0，表明锁被释放。如果获取对象锁失败，那当前线程就要阻塞等待，直到锁被另外一个线程释放为止。
 -->
 
-## 1.1. synchronized底层  
+## 1.1. Synchronized底层  
 
 ### 1.1.1. 反编译Synchronized代码块  
 <!-- 
@@ -50,10 +50,10 @@ https://www.cnblogs.com/huangyin/p/6586469.html
 ```java
 public class SyncDemo {
 
-    public synchronized void play() {}
+    public Synchronized void play() {}
 
     public void learn() {
-        synchronized(this) {
+        Synchronized(this) {
         }
     }
 }
@@ -79,9 +79,9 @@ public com.zzw.juc.sync.SyncDemo();
         Start  Length  Slot  Name   Signature
             0       5     0  this   Lcom/zzw/juc/sync/SyncDemo;
 
-  public synchronized void play();
+  public Synchronized void play();
     descriptor: ()V
-    flags: ACC_PUBLIC, ACC_SYNCHRONIZED
+    flags: ACC_PUBLIC, ACC_Synchronized
     Code:
       stack=0, locals=1, args_size=1
          0: return
@@ -116,7 +116,7 @@ public com.zzw.juc.sync.SyncDemo();
 ```
 &emsp; JVM基于进入和退出Monitor对象来实现方法同步和代码块同步，但两者实现细节不同。  
 
-* **<font color = "red">方法同步：依靠的是方法修饰符上的ACC_SYNCHRONIZED实现。</font>**  
+* **<font color = "red">方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。</font>**  
 * **<font color = "red">代码块同步：使用monitorenter和monitorexit指令实现。</font>**  
 
 #### 1.1.1.1. 同步代码块  
@@ -152,7 +152,7 @@ https://www.jianshu.com/p/c3313dcf2c23
 * monitorenter：  
 &emsp; <font color = "red">线程执行monitorenter指令时尝试获取monitor的所有权，当monitor被占用时就会处于锁定状态。</font>过程如下：
     1. <font color = "red">如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。</font>  
-    2. 如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1，所以synchronized关键字实现的锁是可重入的锁。  
+    2. 如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1，所以Synchronized关键字实现的锁是可重入的锁。  
     3. 如果其他线程已经占用了monitor，则该线程进入阻塞状态，直到monitor的进入数为0，再重新尝试获取monitor的所有权。  
 
 * monitorexit：  
@@ -164,16 +164,16 @@ https://www.jianshu.com/p/c3313dcf2c23
 &emsp; 总结：Synchronized的实现原理，Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。  
 
 #### 1.1.1.2. 同步方法  
-&emsp; synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被synchronized修饰的方法，<font color= "lime">而是在Class文件的方法表中将该方法的access_flags字段中的synchronized标志位置1，表示该方法是同步方法，</font>并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
+&emsp; Synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被Synchronized修饰的方法，<font color= "lime">而是在Class文件的方法表中将该方法的access_flags字段中的Synchronized标志位置1，表示该方法是同步方法，</font>并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
 
 <!-- 
-方法中的synchronized与代码块中实现的方式不同，方法中会添加一个叫ACC_SYNCHRONIZED的标志，当调用方法时，首先会检查是否有ACC_SYNCHRONIZED标志，如果存在，则获取monitor对象，调用monitorenter和monitorexit指令。  
+方法中的Synchronized与代码块中实现的方式不同，方法中会添加一个叫ACC_Synchronized的标志，当调用方法时，首先会检查是否有ACC_Synchronized标志，如果存在，则获取monitor对象，调用monitorenter和monitorexit指令。  
 
 当JVM执行引擎执行某一个方法时，其会从方法区中获取该方法的access_flags，检查其是否有ACC_SYNCRHONIZED标识符，若是有该标识符，则说明当前方法是同步方法，需要先获取当前对象的monitor，再来执行方法。
-同步方法的时候，一旦执行到这个方法，就会先判断是否有标志位，然后，ACC_SYNCHRONIZED会去隐式调用刚才的两个指令：monitorenter和monitorexit。
+同步方法的时候，一旦执行到这个方法，就会先判断是否有标志位，然后，ACC_Synchronized会去隐式调用刚才的两个指令：monitorenter和monitorexit。
 -->
 
-#### monitor对象  
+#### 1.1.1.3. monitor对象  
 &emsp; monitor监视器源码是C++写的，在虚拟机的ObjectMonitor.hpp文件中。  
 <!-- 在Java虚拟机(HotSpot)中，monitor是由ObjectMonitor实现的 -->
 
@@ -198,16 +198,16 @@ ObjectMonitor() {
     _previous_owner_tid = 0;
   }
 ```
-&emsp; synchronized底层的源码就是引入了ObjectMonitor。  
+&emsp; Synchronized底层的源码就是引入了ObjectMonitor。  
 &emsp; ObjectMonitor中有两个队列，_WaitSet 和 _EntryList，用来保存ObjectWaiter对象列表( 每个等待锁的线程都会被封装成ObjectWaiter对象)；  
 &emsp; 整个monitor运行的机制过程如下：  
 &emsp; _owner指向持有ObjectMonitor对象的线程，当多个线程同时访问一段同步代码时，首先会进入 _EntryList 集合，当线程获取到对象的monitor 后进入 _Owner 区域并把monitor中的owner变量设置为当前线程同时monitor中的计数器count加1，若线程调用 wait() 方法，将释放当前持有的monitor，owner变量恢复为null，count自减1，同时该线程进入 WaitSe t集合中等待被唤醒。若当前线程执行完毕也将释放monitor(锁)并复位变量的值，以便其他线程进入获取monitor(锁)。  
 &emsp; 具体见下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
-&emsp; 因此，monitor对象存在于每个Java对象的对象头中(存储的指针的指向)，synchronized锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因，同时也是notify/notifyAll/wait等方法存在于顶级对象Object中的原因。  
+&emsp; 因此，monitor对象存在于每个Java对象的对象头中(存储的指针的指向)，Synchronized锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因，同时也是notify/notifyAll/wait等方法存在于顶级对象Object中的原因。  
 
-## 1.2. synchronized的锁优化
-<!-- synchronized
+## 1.2. Synchronized的锁优化
+<!-- Synchronized
 https://www.cnblogs.com/dennyzhangdd/p/6734638.html
 -->
 &emsp; **<font color = "lime">锁升级过程主要是理解偏向锁、轻量级锁的升级过程。</font>**    
@@ -253,7 +253,7 @@ public void add(String str1,String str2){
          sb.append(str1).append(str2);
 }
 ```
- &emsp; StringBuffer是线程安全的，因为它的关键方法都是被synchronized修饰过的，但看上面这段代码，会发现，sb这个引用只会在add方法中使用，不可能被其它线程引用（因为是局部变量，栈私有），因此sb是不可能共享的资源，JVM会自动消除StringBuffer对象内部的锁。  
+ &emsp; StringBuffer是线程安全的，因为它的关键方法都是被Synchronized修饰过的，但看上面这段代码，会发现，sb这个引用只会在add方法中使用，不可能被其它线程引用（因为是局部变量，栈私有），因此sb是不可能共享的资源，JVM会自动消除StringBuffer对象内部的锁。  
 
 ### 1.2.2. 锁粗化  
 &emsp; 原则上，在编写代码的时候，总是推荐将同步块的作用范围限制得尽量小，一直在共享数据的实际作用域才进行同步，这样是为了使得需要同步的操作数量尽可能变小，如果存在锁竞争，那等待线程也能尽快拿到锁。  
@@ -297,7 +297,7 @@ public String test(String str){
 &emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
 
         为什么锁信息存放在对象头里？
-        因为在Java中任意对象都可以用作锁，因此必定要有一个映射关系，存储该对象以及其对应的锁信息（比如当前哪个线程持有锁，哪些线程在等待）。一种很直观的方法是，用一个全局map，来存储这个映射关系，但这样会有一些问题：需要对map做线程安全保障，不同的synchronized之间会相互影响，性能差；另外当同步对象较多时，该map可能会占用比较多的内存。
+        因为在Java中任意对象都可以用作锁，因此必定要有一个映射关系，存储该对象以及其对应的锁信息（比如当前哪个线程持有锁，哪些线程在等待）。一种很直观的方法是，用一个全局map，来存储这个映射关系，但这样会有一些问题：需要对map做线程安全保障，不同的Synchronized之间会相互影响，性能差；另外当同步对象较多时，该map可能会占用比较多的内存。
         所以最好的办法是将这个映射关系存储在对象头中，因为对象头本身也有一些hashcode、GC相关的数据，所以如果能将锁信息与这些信息共存在对象头中就好了。
         也就是说，如果用一个全局 map 来存对象的锁信息，还需要对该 map 做线程安全处理，不同的锁之间会有影响。所以直接存到对象头。
 
@@ -421,7 +421,7 @@ public String test(String str){
 &emsp; 重量级排序 ：无锁 > 轻量级锁 > 偏向锁 > 重量级锁    
 &emsp; **<font color = "lime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>
 
-&emsp; **<font color = "lime">synchronized锁对比：</font>**  
+&emsp; **<font color = "lime">Synchronized锁对比：</font>**  
 &emsp; 用户空间锁VS重量级锁：  
 
 * 偏向锁、自旋锁都是用户空间完成。  

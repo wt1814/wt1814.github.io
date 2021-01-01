@@ -28,6 +28,8 @@
 <!-- /TOC -->
 
 # 1. 并发问题
+&emsp; **<font color = "lime">总结：并发3个问题，原子性、可见性（缓存一致性）、有序性（重排序）。使用内存屏障来解决。</font>**    
+
 ## 1.1. 并发问题及含义  
 <!-- 
 https://mp.weixin.qq.com/s/DaCTrm8y9vWeaJyHfbRoTw
