@@ -21,7 +21,7 @@
 
 # 1. Synchronized原理
 <!-- 
-浅析Synchronized底层实现与锁升级过程 
+JVM层实现  浅析Synchronized底层实现与锁升级过程   
 https://juejin.im/post/6888112467747176456
 
  Synchronized 原理知多少
@@ -91,7 +91,10 @@ public class SyncDemo {
 }
 ```
 
-<!-- 编译完成，我们去对应目录执行 javap -c xxx.class 命令查看反编译的文件：  
+<!-- 编译完成，我们去对应目录执行 javap -c xxx.class 命令查看反编译的文件： 
+https://juejin.cn/post/6888112467747176456 
+先将SynchronizedDemo.java使用javac SynchronizedDemo.java命令将其编译成SynchronizedDemo.class。然后使用javap -c SynchronizedDemo.class反编译字节码。  
+通过javap -v -c SynchronizedMethodDemo.class命令反编译SynchronizedMethodDemo类。-v参数即-verbose，表示输出反编译的附加信息。下面以反编译普通方法为例。  
 -->
 &emsp; 利用javap工具查看生成的class文件信息分析Synchronized，下面是部分信息:  
 
@@ -354,6 +357,45 @@ void ATTR ObjectMonitor::exit(bool not_suspended, TRAPS) {
 
 &emsp; 总结：Synchronized的实现原理，Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。  
 
+<!-- 
+monitorenter ：
+
+每个对象有一个监视器锁（monitor）。当monitor被占用时就会处于锁定状态，线程执行monitorenter指令时尝试获取monitor的所有权，过程如下：
+
+1、如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。
+
+2、如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1.
+
+3.如果其他线程已经占用了monitor，则该线程进入阻塞状态，直到monitor的进入数为0，再重新尝试获取monitor的所有权。
+
+monitorexit：
+
+　　执行monitorexit的线程必须是objectref所对应的monitor的所有者。
+
+　　指令执行时，monitor的进入数减1，如果减1后进入数为0，那线程退出monitor，不再是这个monitor的所有者。其他被这个monitor阻塞的线程可以尝试去获取这个 monitor 的所有权。
+
+　　Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。
+
+
+
+「monitorenter」：
+Java对象天生就是一个Monitor，当monitor被占用，它就处于锁定的状态。
+每个对象都与一个监视器关联。且只有在有线程持有的情况下，监视器才被锁定。
+执行monitorenter的线程尝试获得monitor的所有权：
+
+如果与objectref关联的监视器的条目计数为0，则线程进入监视器，并将其条目计数设置为1。然后，该线程是monitor的所有者。如果线程已经拥有与objectref关联的监视器，则它将重新进入监视器，从而增加其条目计数。这个就是锁重入。如果另一个线程已经拥有与objectref关联的监视器，则该线程将阻塞，直到该监视器的条目计数为零为止，然后再次尝试获取所有权。
+「monitorexit」：
+一个或多个MonitorExit指令可与Monitorenter指令一起使用，它们共同实现同步语句。
+尽管可以将monitorenter和monitorexit指令用于提供等效的锁定语义，但它们并未用于同步方法的实现中。
+JVM在完成monitorexit时的处理方式分为正常退出和出现异常时退出：
+
+常规同步方法完成时监视器退出由Java虚拟机的返回指令处理。也就是说程序正常执行完毕的时候，JVM有一个指令会隐式的完成monitor的退出---monitorexit，这个指令是athrow。如果同步语句出现了异常时，JVM的异常处理机制也能monitorexit。
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-57.png)  
+简单的加锁解锁过程
+因此，执行同步代码块后首先要执行monitorenter指令，退出的时候monitorexit指令。  
+
+-->
+
 #### 1.1.1.2. 同步方法  
 &emsp; Synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被Synchronized修饰的方法，<font color= "lime">而是在Class文件的方法表中将该方法的access_flags字段中的Synchronized标志位置1，表示该方法是同步方法，</font>并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
 
@@ -362,6 +404,10 @@ void ATTR ObjectMonitor::exit(bool not_suspended, TRAPS) {
 
 当JVM执行引擎执行某一个方法时，其会从方法区中获取该方法的access_flags，检查其是否有ACC_SYNCRHONIZED标识符，若是有该标识符，则说明当前方法是同步方法，需要先获取当前对象的monitor，再来执行方法。
 同步方法的时候，一旦执行到这个方法，就会先判断是否有标志位，然后，ACC_Synchronized会去隐式调用刚才的两个指令：monitorenter和monitorexit。
+
+
+从反编译的结果来看，方法的同步并没有通过指令monitorenter和monitorexit来完成（理论上其实也可以通过这两条指令来实现），不过相对于普通方法，其常量池中多了ACC_SYNCHRONIZED标示符。JVM就是根据该标示符来实现方法的同步的：当方法调用时，调用指令将会检查方法的 ACC_SYNCHRONIZED 访问标志是否被设置，如果设置了，执行线程将先获取monitor，获取成功之后才能执行方法体，方法执行完后再释放monitor。在方法执行期间，其他任何线程都无法再获得同一个monitor对象。 其实本质上没有区别，只是方法的同步是一种隐式的方式来实现，无需通过字节码来完成。  
+方法中的synchronized与代码块中实现的方式不同，方法中会添加一个叫ACC_SYNCHRONIZED的标志，当调用方法时，首先会检查是否有ACC_SYNCHRONIZED标志，如果存在，则获取monitor对象，调用monitorenter和monitorexit指令。  
 -->
 
 
@@ -537,6 +583,13 @@ public String test(String str){
         线程A获取轻量级锁时会把对象头中的MarkWord复制一份到线程A的栈帧中创建用于存储锁记录的空间DisplacedMarkWord，然后使用CAS将对象头中的内容替换成线程A存储DisplacedMarkWord的地址。如果这时候出现线程B来获取锁，线程B也跟线程A同样复制对象头的MarkWord到自己的DisplacedMarkWord中，如果线程A锁还没释放，这时候那么线程B的CAS操作会失败，会继续自旋，当然不可能让线程B一直自旋下去，自旋到一定次数（固定次数/自适应）就会升级为重量级锁。 
 
 ### 1.2.6. 重量级锁
+<!-- 
+
+为什么说Synchronized是重量级锁？
+
+云霄：这个问题，上面有涉及，Synchronized底层是monitor实现，监视器锁monitor本质又是依赖于底层的操作系统的 Mutex Lock 来实现的，这就涉及到操作系统让线程从用户态切换到内核态。这个成本非常高，状态之间的转换需要相对比较长的时间，这就是为什么Synchronized 效率低的原因。因此，这种依赖于操作系统 Mutex Lock 所实现的锁我们称之为重量级锁。  
+
+-->
 &emsp; <font color = "lime">重量级锁是依赖对象内部的monitor锁来实现的，而monitor又依赖操作系统的MutexLock(互斥锁)来实现的，所以重量级锁也称为互斥锁。</font>  
 &emsp; <font color = "lime">为什么说重量级线程开销很大？</font>  
 &emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，被阻塞的线程不会消耗cpu。但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。  
