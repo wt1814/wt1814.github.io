@@ -57,6 +57,7 @@
     * [线程基本概念](/docs/java/concurrent/1.Thread.md)  
     * [并发问题](/docs/java/concurrent/2.Multithread.md)  
         * [JMM](/docs/java/concurrent/JMM.md)  
+        * [并发问题](/docs/java/concurrent/ConcurrencyProblem.md)  
         * [线程安全](/docs/java/concurrent/线程安全.md)  
         * [Synchronized应用](/docs/java/concurrent/SynApply.md)  
         * [Synchronized原理](/docs/java/concurrent/SynPrinciple.md)  
