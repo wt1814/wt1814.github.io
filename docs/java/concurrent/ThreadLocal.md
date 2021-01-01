@@ -30,11 +30,12 @@
 &emsp; **ThreadLocal和Synchonized关系：**  
 &emsp; ThreadLocal，用于线程间的数据隔离，主要解决多线程中数据因并发产生不一致问题；Synchonized，多个线程间通信时能够获得数据共享。它们都用于解决多线程并发访问。  
 &emsp; 但是ThreadLocal与synchronized有本质的区别：  
-* 资源共享：  
-&emsp; lock的资源是多个线程共享的，所以访问的时候需要加锁。  
-&emsp; ThreadLocal为每一个线程都提供了变量的副本，是一个线程的本地变量，也就意味着这个变量是线程独有的，是不能与其他线程共享的。即隔离了多个线程对数据的数据共享，这样就可以避免资源竞争带来的多线程的问题。  
-* 性能开销：lock是通过时间换空间的做法；ThreadLocal是典型的通过空间换时间的做法。  
-* 当然它们的使用场景也是不同的，关键看资源是需要多线程之间共享的还是单线程内部共享的。  
+
+    * 资源共享：  
+    &emsp; lock的资源是多个线程共享的，所以访问的时候需要加锁。  
+    &emsp; ThreadLocal为每一个线程都提供了变量的副本，是一个线程的本地变量，也就意味着这个变量是线程独有的，是不能与其他线程共享的。即隔离了多个线程对数据的数据共享，这样就可以避免资源竞争带来的多线程的问题。  
+    * 性能开销：lock是通过时间换空间的做法；ThreadLocal是典型的通过空间换时间的做法。  
+    * 当然它们的使用场景也是不同的，关键看资源是需要多线程之间共享的还是单线程内部共享的。  
 
 &emsp; **ThreadLocal和线程池一起使用？**  
 &emsp; ThreadLocal对象的生命周期跟线程的生命周期一样长，那么如果将ThreadLocal对象和线程池一起使用，就可能会遇到这种情况：一个线程的ThreadLocal对象会和其他线程的ThreadLocal对象串掉，一般不建议将两者一起使用。  
@@ -177,13 +178,10 @@ private T setInitialValue() {
 ```
 
 ## 1.2. ThreadLocal的内存泄漏  
-
 <!-- 
 这4种ThreadLocal你都知道吗？ 
 https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig
-
 -->
-
 <!-- 
 &emsp; <font color = "red">ThreadLocalMap的key为ThreadLocal实例，是一个弱引用，弱引用有利于GC的回收，当key == null时，GC就会回收这部分空间，但value不一定能被回收，因为它和Current Thread之间还存在一个强引用的关系。</font>  
 &emsp; 由于这个强引用的关系，会导致value无法回收，如果线程对象不消除这个强引用的关系，就可能会出现OOM。调用ThreadLocal的remove()方法进行显式处理。 
