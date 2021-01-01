@@ -367,7 +367,7 @@ public String test(String str){
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-39.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-40.png)  
 
-&emsp; 轻量级锁重量级锁的hashCode存在什么地方？
+&emsp; 轻量级锁重量级锁的hashCode存在什么地方？  
 &emsp; 存在线程栈中，轻量级锁的LR中，或是代表重量级锁的ObjectMonitor的成员中。  
 
 ### 1.2.5. 轻量级锁  
