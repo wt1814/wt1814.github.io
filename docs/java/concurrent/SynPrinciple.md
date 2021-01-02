@@ -1,21 +1,26 @@
 <!-- TOC -->
 
 - [1. Synchronized原理](#1-synchronized原理)
-    - [1.2.3. Java对象头与monitor-1](#123-java对象头与monitor-1)
-    - [1.1. Synchronized底层](#11-synchronized底层)
-        - [1.1.1. 反编译Synchronized代码块](#111-反编译synchronized代码块)
-            - [1.1.1.3. monitor对象](#1113-monitor对象)
-            - [1.1.1.1. 同步代码块](#1111-同步代码块)
-            - [1.1.1.2. 同步方法](#1112-同步方法)
-    - [1.2. Synchronized的锁优化](#12-synchronized的锁优化)
-        - [1.2.1. 锁消除](#121-锁消除)
-        - [1.2.2. 锁粗化](#122-锁粗化)
-        - [1.2.4. 偏向锁](#124-偏向锁)
-            - [1.2.4.1. 偏向锁的性能](#1241-偏向锁的性能)
-            - [1.2.4.2. 偏向锁的失效](#1242-偏向锁的失效)
-        - [1.2.5. 轻量级锁](#125-轻量级锁)
-        - [1.2.6. 重量级锁](#126-重量级锁)
-        - [1.2.7. 锁状态总结](#127-锁状态总结)
+    - [1.1. Java对象头与monitor](#11-java对象头与monitor)
+        - [1.1.1. 对象头形式](#111-对象头形式)
+        - [1.1.2. 对象头的组成](#112-对象头的组成)
+            - [1.1.2.1. Mark Word](#1121-mark-word)
+            - [1.1.2.2. class pointer](#1122-class-pointer)
+            - [1.1.2.3. array length](#1123-array-length)
+    - [1.2. Synchronized底层](#12-synchronized底层)
+        - [1.2.1. 反编译Synchronized代码块](#121-反编译synchronized代码块)
+            - [1.2.1.1. monitor对象](#1211-monitor对象)
+            - [1.2.1.2. 同步代码块](#1212-同步代码块)
+            - [1.2.1.3. 同步方法](#1213-同步方法)
+    - [1.3. Synchronized的锁优化](#13-synchronized的锁优化)
+        - [1.3.1. 锁消除](#131-锁消除)
+        - [1.3.2. 锁粗化](#132-锁粗化)
+        - [1.3.3. 偏向锁](#133-偏向锁)
+            - [1.3.3.1. 偏向锁的性能](#1331-偏向锁的性能)
+            - [1.3.3.2. 偏向锁的失效](#1332-偏向锁的失效)
+        - [1.3.4. 轻量级锁](#134-轻量级锁)
+        - [1.3.5. 重量级锁](#135-重量级锁)
+        - [1.3.6. 锁状态总结](#136-锁状态总结)
 
 <!-- /TOC -->
 
@@ -41,22 +46,24 @@ Synchronized底层原理—Monitor监视器
 https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
 -->
 
-## 1.2.3. Java对象头与monitor-1  
+## 1.1. Java对象头与monitor  
 <!-- 
 Java对象头与monitor
 https://blog.csdn.net/kking_edc/article/details/108382333
 -->
-&emsp;  **<font color = "red">先了解下HotSpot虚拟机对象的内存布局。</font>** 在64位的HotSpot虚拟机中，不同状态下对象头的存储内容如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-56.png)   
+&emsp;  **<font color = "red">先了解下HotSpot虚拟机中对象的内存布局。</font>** 在64位的HotSpot虚拟机中，不同状态下对象头的存储内容如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-56.png)   
 &emsp; HotSpot虚拟机的对象头（Object Header）分为三部分：对象头(Header)、实例数据(Instance Data)、对齐填充(Padding)。<font color = "red">用对象头中markword最低的三位代表锁状态，其中1位是偏向锁位，两位是普通锁位。</font>  
 
 * 对象头：
     * 第一部分用于存储对象自身的运行时数据，如哈希码、GC分代年龄、锁标识状态、线程持有的锁、偏向线程ID等。这部分数据的长度在32位和64位的Java虚拟机中分别会占用32个或64个比特，官方称它为“Mark Word”。这部分是实现轻量级锁和偏向锁的关键。  
     * 另外一部分指针类型，指向对象的类元数据类型（即对象代表哪个类）。如果是数组对象，则对象头中还有一部分用来记录数组长度。  
     * 还会有一个额外的部分用于存储数组长度。  
-* 实例数据：存储对象真正的有效信息（包括父类继承下来的和自己定义的）  
-* 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐） 
+* 实例数据：存放类的属性数据信息，包括父类的属性信息，如果是数组的实例部分还包括数组的长度，这部分内存按4字节对齐。    
+* 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐）。填充数据不是必须存在的，仅仅是为了字节对齐。   
+
+&emsp; Java头对象则是实现synchronized的锁对象的基础。  
 
 &emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
 
@@ -64,6 +71,13 @@ https://blog.csdn.net/kking_edc/article/details/108382333
         因为在Java中任意对象都可以用作锁，因此必定要有一个映射关系，存储该对象以及其对应的锁信息（比如当前哪个线程持有锁，哪些线程在等待）。一种很直观的方法是，用一个全局map，来存储这个映射关系，但这样会有一些问题：需要对map做线程安全保障，不同的Synchronized之间会相互影响，性能差；另外当同步对象较多时，该map可能会占用比较多的内存。
         所以最好的办法是将这个映射关系存储在对象头中，因为对象头本身也有一些hashcode、GC相关的数据，所以如果能将锁信息与这些信息共存在对象头中就好了。
         也就是说，如果用一个全局 map 来存对象的锁信息，还需要对该 map 做线程安全处理，不同的锁之间会有影响。所以直接存到对象头。
+
+### 1.1.1. 对象头形式  
+&emsp; JVM中对象头的方式有以下两种（以32位JVM为例）  
+&emsp; 普通对象：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-60.png)   
+&emsp; 数组对象：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-61.png)   
 
 <!--   
 工具：JOL = Java Object Layout   
@@ -76,9 +90,42 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 </dependencies>
 -->
 
-## 1.1. Synchronized底层  
+### 1.1.2. 对象头的组成  
+#### 1.1.2.1. Mark Word  
+&emsp; 这部分主要用来存储对象自身的运行时数据，如hashcode、gc分代年龄等。mark word的位长度为JVM的一个Word大小，也就是说32位JVM的Mark word为32位，64位JVM为64位。
+为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位，不同标记位下的Mark Word示意如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-62.png)   
+其中各部分的含义如下：  
 
-### 1.1.1. 反编译Synchronized代码块  
+* lock：2位的锁状态标记位，由于希望用尽可能少的二进制位表示尽可能多的信息，所以设置了lock标记。该标记的值不同，整个mark word表示的含义不同。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-63.png)   
+* bias_lock：对象是否启动偏向锁标记，只占1个二进制位。为1时表示对象启动偏向锁，为0时表示对象没有偏向锁。  
+* age：4位的Java对象年龄。在GC中，如果对象在Survivor区复制一次，年龄增加1。当对象达到设定的阈值时，将会晋升到老年代。默认情况下，并行GC的年龄阈值为15，并发GC的年龄阈值为6。由于age只有4位，所以最大值为15，这就是-XX:MaxTenuringThreshold选项最大值为15的原因。  
+* identity_hashcode：25位的对象标识Hash码，采用延迟加载技术。调用方法System.identityHashCode()计算，并会将结果写到该对象头中。当对象被锁定时，该值会移动到管程Monitor中。  
+* thread：持有偏向锁的线程ID。  
+* epoch：偏向时间戳。  
+* ptr_to_lock_record：指向栈中锁记录的指针。  
+* **<font color = "lime">ptr_to_heavyweight_monitor：指向monitor对象（也称为管程或监视器锁）的起始地址，每个对象都存在着一个monitor与之关联，对象与其monitor之间的关系有存在多种实现方式，如monitor对象可以与对象一起创建销毁或当前线程试图获取对象锁时自动生，但当一个monitor被某个线程持有后，它便处于锁定状态。</font>**  
+
+&emsp; 64位下的标记字与32位的相似：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-64.png)   
+
+#### 1.1.2.2. class pointer
+&emsp; 这一部分用于存储对象的类型指针，该指针指向它的类元数据，JVM通过这个指针确定对象是哪个类的实例。该指针的位长度为JVM的一个字大小，即32位的JVM为32位，64位的JVM为64位。  
+&emsp; 如果应用的对象过多，使用64位的指针将浪费大量内存，统计而言，64位的JVM将会比32位的JVM多耗费50%的内存。为了节约内存可以使用选项+UseCompressedOops开启指针压缩，其中，oop即ordinary object pointer普通对象指针。开启该选项后，下列指针将压缩至32位：  
+
+* 每个Class的属性指针（即静态变量）
+* 每个对象的属性指针（即对象变量）
+* 普通对象数组的每个元素指针
+
+&emsp; 当然，也不是所有的指针都会压缩，一些特殊类型的指针JVM不会优化，比如指向PermGen的Class对象指针(JDK8中指向元空间的Class对象指针)、本地变量、堆栈元素、入参、返回值和NULL指针等。  
+
+#### 1.1.2.3. array length  
+&emsp; 如果对象是一个数组，那么对象头还需要有额外的空间用于存储数组的长度，这部分数据的长度也随着JVM架构的不同而不同：32位的JVM上，长度为32位；64位JVM则为64位。64位JVM如果开启+UseCompressedOops选项，该区域长度也将由64位压缩至32位。  
+
+## 1.2. Synchronized底层  
+
+### 1.2.1. 反编译Synchronized代码块  
 ```java
 public class SyncDemo {
 
@@ -157,7 +204,7 @@ public com.zzw.juc.sync.SyncDemo();
 * **<font color = "red">方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。</font>**  
 * **<font color = "red">代码块同步：使用monitorenter和monitorexit指令实现。</font>**  
 
-#### 1.1.1.3. monitor对象  
+#### 1.2.1.1. monitor对象  
 <!-- 
 &emsp; 任何对象都有一个monitor与之相关联，当且一个monitor被持有之后，它将处于锁定状态。线程执行到monitorenter指令时，将会尝试获取对象所对应的monitor所有权，即尝试获取对象的锁。
 &emsp; monitor对象介绍：  
@@ -184,7 +231,7 @@ https://www.jianshu.com/p/c3313dcf2c23
 
 &emsp; 每个对象都有一个monitor对应，如果有其它的线程获取了这个对象的monitor，当前的线程就要一直等待，直到获得 monitor的线程放弃monitor，当前的线程才有机会获得monitor。  
 &emsp; 如果monitor没有被任何线程获取，那么当前线程获取这个monitor，把monitor的entry count设置为1。表示这个monitor被线程1占用了。  
-&emsp; 当前线程获取了monitor之后，会增加这个monitor的时间计数，来记录当前线程占用了monitor多长时间。 
+&emsp; 当前线程获取了monitor之后，会增加这个monitor的时间计数，来记录当前线程占用了monitor多长时间。  
 &emsp; monitor监视器源码是C++写的，在虚拟机的ObjectMonitor.hpp文件中。  
 <!-- 在Java虚拟机(HotSpot)中，monitor是由ObjectMonitor实现的 -->
 
@@ -223,13 +270,13 @@ ObjectMonitor() {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
 &emsp; 因此，monitor对象存在于每个Java对象的对象头中(存储的指针的指向)，Synchronized锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因，同时也是notify/notifyAll/wait等方法存在于顶级对象Object中的原因。  
 
-那你能说说看monitor吗，到底是怎么实现了加锁和锁释放的呢？  
+&emsp; 那你能说说看monitor吗，到底是怎么实现了加锁和锁释放的呢？  
 
-云霄：当多个线程同时访问同一段代码的时候，这些线程会被放在EntrySet集合,处于阻塞状态的线程都会被放在该列表当中，当线程获取到对象的monitor时，监视器锁monitor本质又是依赖于底层的操作系统的 Mutex Lock 来实现的，线程获取Mutex成功，这个时候其他的线程就无法获取到该Mutex。  
+&emsp; 云霄：当多个线程同时访问同一段代码的时候，这些线程会被放在EntrySet集合,处于阻塞状态的线程都会被放在该列表当中，当线程获取到对象的monitor时，监视器锁monitor本质又是依赖于底层的操作系统的 Mutex Lock 来实现的，线程获取Mutex成功，这个时候其他的线程就无法获取到该Mutex。  
 
-如果线程调用了wait方法，那么该线程就会释放掉持有的Mutex，并且该线程会进入到WaitSet集合(等待集合中)，等待下一次被其他的线程notify/notifyAll唤醒，如果当前线程的方法执行完毕，那么它也会释放掉所持有的Mutex。  
+&emsp; 如果线程调用了wait方法，那么该线程就会释放掉持有的Mutex，并且该线程会进入到WaitSet集合(等待集合中)，等待下一次被其他的线程notify/notifyAll唤醒，如果当前线程的方法执行完毕，那么它也会释放掉所持有的Mutex。  
 
-下面在看一下加锁的代码：  
+&emsp; 下面在看一下加锁的代码：  
 
 ```text
 void ATTR ObjectMonitor::enter(TRAPS) {
@@ -299,7 +346,7 @@ void ATTR ObjectMonitor::enter(TRAPS) {
    //代码省略。。。。。。。。。。。。。
 ```
 
-下面再看一下释放锁的代码：  
+&emsp; 下面再看一下释放锁的代码：  
 
 ```text
 void ATTR ObjectMonitor::exit(bool not_suspended, TRAPS) {
@@ -337,10 +384,8 @@ void ATTR ObjectMonitor::exit(bool not_suspended, TRAPS) {
 }
 ```
 
-#### 1.1.1.1. 同步代码块  
+#### 1.2.1.2. 同步代码块  
 &emsp; 同步代码块：monitorenter指令插入到同步代码块的开始位置，monitorexit指令插入到同步代码块的结束位置，<font color = "red">JVM需要保证每一个monitorenter都有一个monitorexit与之相对应。</font>  
-
-
 
 &emsp; 两条指令的作用：  
 * monitorenter：  
@@ -396,7 +441,7 @@ JVM在完成monitorexit时的处理方式分为正常退出和出现异常时退
 
 -->
 
-#### 1.1.1.2. 同步方法  
+#### 1.2.1.3. 同步方法  
 &emsp; Synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被Synchronized修饰的方法，<font color= "lime">而是在Class文件的方法表中将该方法的access_flags字段中的Synchronized标志位置1，表示该方法是同步方法，</font>并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
 
 <!-- 
@@ -410,9 +455,7 @@ JVM在完成monitorexit时的处理方式分为正常退出和出现异常时退
 方法中的synchronized与代码块中实现的方式不同，方法中会添加一个叫ACC_SYNCHRONIZED的标志，当调用方法时，首先会检查是否有ACC_SYNCHRONIZED标志，如果存在，则获取monitor对象，调用monitorenter和monitorexit指令。  
 -->
 
-
-
-## 1.2. Synchronized的锁优化
+## 1.3. Synchronized的锁优化
 <!-- Synchronized
 https://www.cnblogs.com/dennyzhangdd/p/6734638.html
 -->
@@ -446,7 +489,7 @@ https://www.cnblogs.com/dennyzhangdd/p/6734638.html
 -->
 
 
-### 1.2.1. 锁消除  
+### 1.3.1. 锁消除  
 <!-- https://juejin.im/post/5d2303b5f265da1b8f1ae5b0 -->
 &emsp; 锁消除是指虚拟机即时编译器在运行时，对一些代码上要求同步，但是被检测到不可能存在共享数据竞争的锁进行清除。锁清除的主要判定依据来源于逃逸分析的数据支持，如果判断在一段代码中，堆上的所有数据都不会逃逸出去从而被其他线程访问到，那就可以把它们当做栈上数据对待，认为它们是线程私有的，同步枷锁自然就无需进行。  
 &emsp; 简单来说，Java中使用同步来保证数据的安全性，但是<font color = "red">对于一些明显不会产生竞争的情况下，Jvm会根据现实执行情况对代码进行锁消除以提高执行效率。</font>  
@@ -461,7 +504,7 @@ public void add(String str1,String str2){
 ```
  &emsp; StringBuffer是线程安全的，因为它的关键方法都是被Synchronized修饰过的，但看上面这段代码，会发现，sb这个引用只会在add方法中使用，不可能被其它线程引用（因为是局部变量，栈私有），因此sb是不可能共享的资源，JVM会自动消除StringBuffer对象内部的锁。  
 
-### 1.2.2. 锁粗化  
+### 1.3.2. 锁粗化  
 &emsp; 原则上，在编写代码的时候，总是推荐将同步块的作用范围限制得尽量小，一直在共享数据的实际作用域才进行同步，这样是为了使得需要同步的操作数量尽可能变小，如果存在锁竞争，那等待线程也能尽快拿到锁。  
 &emsp; 大部分情况下，上面的原则都是没有问题的，但是如果一系列的连续操作都对同一个对象反复加锁和解锁，那么会带来很多不必要的性能消耗。  
 &emsp; 如果虚拟机探测到有这样<font color = "lime">一串零碎的操作都对同一个对象加锁，将会把加锁同步的范围扩展（粗化）到整个操作序列到外部。</font>  
@@ -488,7 +531,7 @@ public String test(String str){
 &emsp; JVM会检测到这样一连串的操作都对同一个对象加锁（while 循环内 100 次执行 append，没有锁粗化的就要进行 100 次加锁/解锁），此时 JVM 就会将加锁的范围粗化到这一连串的操作的外部（比如 while 虚幻体外），使得这一连串操作只需要加一次锁即可。  
 
 
-### 1.2.4. 偏向锁  
+### 1.3.3. 偏向锁  
 &emsp; <font color = "red">偏向锁定义：</font>偏向锁是指偏向于让第一个获取锁对象的线程，这个线程在之后获取该锁就不再需要进行同步操作。 
 
 <!-- 
@@ -535,10 +578,10 @@ public String test(String str){
 * 可重偏向(Rebiasable)。在此状态下，偏向锁的epoch字段是无效的（与锁对象对应的class的mark_prototype的epoch值不匹配）。下一个试图获取锁对象的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。**在批量重偏向的操作中，未被持有的锁对象都被至于这个状态，以便允许被快速重偏向。**
 * 已偏向(Biased)。这种状态下，thread pointer非空，且epoch为有效值——意味着其他线程正在持有这个锁对象。
 
-#### 1.2.4.1. 偏向锁的性能   
+#### 1.3.3.1. 偏向锁的性能   
 &emsp; 偏向锁可以提高带有同步但无竞争的程序性能，但它同样是一个带有效益权衡（Trade Off）性质的优化，也就是说它并非总是对程序运行有利。 **<font color = "lime">如果程序中大多数的锁都总是被多个不同的线程访问，那偏向模式就是多余的。</font>** 在具体问题具体分析的前提下，有时候使用参数-XX：-UseBiasedLocking来禁止偏向锁优化反而可以提升性能。 
 
-#### 1.2.4.2. 偏向锁的失效  
+#### 1.3.3.2. 偏向锁的失效  
 &emsp; 如果计算过对象的hashcode()，则对象无法进入偏向状态。    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-39.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-40.png)  
@@ -546,7 +589,7 @@ public String test(String str){
 &emsp; 轻量级锁重量级锁的hashCode存在什么地方？  
 &emsp; 存在线程栈中，轻量级锁的LR中，或是代表重量级锁的ObjectMonitor的成员中。  
 
-### 1.2.5. 轻量级锁  
+### 1.3.4. 轻量级锁  
 &emsp; 轻量级锁在加锁过程中，用到了自旋锁。  
 &emsp; **<font color = "lime">为什么有了自旋锁还需要重量级锁？</font>**  
 &emsp; 偏向锁、自旋锁都是用户空间完成。重量级锁是需要向内核申请。  
@@ -582,7 +625,7 @@ public String test(String str){
 
         线程A获取轻量级锁时会把对象头中的MarkWord复制一份到线程A的栈帧中创建用于存储锁记录的空间DisplacedMarkWord，然后使用CAS将对象头中的内容替换成线程A存储DisplacedMarkWord的地址。如果这时候出现线程B来获取锁，线程B也跟线程A同样复制对象头的MarkWord到自己的DisplacedMarkWord中，如果线程A锁还没释放，这时候那么线程B的CAS操作会失败，会继续自旋，当然不可能让线程B一直自旋下去，自旋到一定次数（固定次数/自适应）就会升级为重量级锁。 
 
-### 1.2.6. 重量级锁
+### 1.3.5. 重量级锁
 <!-- 
 
 为什么说Synchronized是重量级锁？
@@ -598,7 +641,7 @@ public String test(String str){
 &emsp; 升级为重量级锁过程：  
 &emsp; 升级重量级锁--->向操作系统申请资源，linux mutex，CPU从3级-0级系统调用，线程挂起，进入等待队列，等待操作系统的调度，然后再映射回用户空间。  
 
-### 1.2.7. 锁状态总结  
+### 1.3.6. 锁状态总结  
 &emsp; JDK 1.6 引入了偏向锁和轻量级锁，从而让锁拥有了四个状态： **无锁状态（unlocked）(MarkWord标志位01，没有线程执行同步方法/代码块时的状态)** 、偏向锁状态（biasble）、轻量级锁状态（lightweight locked）和重量级锁状态（inflated）。  
 
 &emsp; 重量级排序 ：无锁 > 轻量级锁 > 偏向锁 > 重量级锁    
