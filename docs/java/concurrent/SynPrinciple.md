@@ -2,16 +2,16 @@
 
 - [1. Synchronized原理](#1-synchronized原理)
     - [1.1. Java对象头与monitor](#11-java对象头与monitor)
-        - [1.1.1. 对象头形式](#111-对象头形式)
-        - [1.1.2. 对象头的组成](#112-对象头的组成)
-            - [1.1.2.1. Mark Word](#1121-mark-word)
-            - [1.1.2.2. class pointer](#1122-class-pointer)
-            - [1.1.2.3. array length](#1123-array-length)
+        - [1.1.1. Java对象头](#111-java对象头)
+            - [1.1.1.1. 对象头形式](#1111-对象头形式)
+            - [1.1.1.2. 对象头的组成](#1112-对象头的组成)
+                - [1.1.1.2.1. Mark Word](#11121-mark-word)
+                - [1.1.1.2.2. class pointer](#11122-class-pointer)
+                - [1.1.1.2.3. array length](#11123-array-length)
+        - [1.1.2. monitor对象](#112-monitor对象)
     - [1.2. Synchronized底层](#12-synchronized底层)
-        - [1.2.1. 反编译Synchronized代码块](#121-反编译synchronized代码块)
-            - [1.2.1.1. monitor对象](#1211-monitor对象)
-            - [1.2.1.2. 同步代码块](#1212-同步代码块)
-            - [1.2.1.3. 同步方法](#1213-同步方法)
+        - [1.2.1. 同步代码块](#121-同步代码块)
+        - [1.2.2. 同步方法](#122-同步方法)
     - [1.3. Synchronized的锁优化](#13-synchronized的锁优化)
         - [1.3.1. 锁消除](#131-锁消除)
         - [1.3.2. 锁粗化](#132-锁粗化)
@@ -28,17 +28,14 @@
 <!-- 
 JVM层实现  浅析Synchronized底层实现与锁升级过程   
 https://juejin.im/post/6888112467747176456
-
- Synchronized 原理知多少
+Synchronized 原理知多少
 https://mp.weixin.qq.com/s/KpJZFLTeCxiuxQeiyEEJpQ
 死磕Synchronized底层实现 
 https://mp.weixin.qq.com/s/ca_7lurrWVcA3bLCL7UJcQ
 初始Synchronized关键字的偏向锁、轻量锁、重量锁 
 https://mp.weixin.qq.com/s/AloGilUSxjoNVDHTfq1ZGQ
-
 Java基础面试16问 
 https://mp.weixin.qq.com/s/-xFSHf7Gz3FUcafTJUIGWQ
-Synchronized 同步语句块的实现使用的是 monitorenter 和 monitorexit 指令，其中monitorenter 指令指向同步代码块的开始位置，monitorexit 指令则指明同步代码块的结束位置。当执行 monitorenter 指令时，线程试图获取锁也就是获取 monitor(monitor对象存在于每个Java对象的对象头中，Synchronized 锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因) 的持有权.当计数器为0则可以成功获取，获取后将锁计数器设为1也就是加1。相应的在执行monitorexit 指令后，将锁计数器设为0，表明锁被释放。如果获取对象锁失败，那当前线程就要阻塞等待，直到锁被另外一个线程释放为止。
 -->
 <!-- 
 ~~
@@ -47,6 +44,7 @@ https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
 -->
 
 ## 1.1. Java对象头与monitor  
+### 1.1.1. Java对象头
 <!-- 
 Java对象头与monitor
 https://blog.csdn.net/kking_edc/article/details/108382333
@@ -61,9 +59,11 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 * 实例数据：存放类的属性数据信息，包括父类的属性信息，如果是数组的实例部分还包括数组的长度，这部分内存按4字节对齐。    
 * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐）。填充数据不是必须存在的，仅仅是为了字节对齐。   
 
+
+
 &emsp; Java头对象则是实现synchronized的锁对象的基础。  
 
-### 1.1.1. 对象头形式  
+#### 1.1.1.1. 对象头形式  
 &emsp; JVM中对象头的方式有以下两种（以32位JVM为例）  
 &emsp; 普通对象：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-60.png)   
@@ -81,10 +81,10 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 </dependencies>
 -->
 
-### 1.1.2. 对象头的组成  
+#### 1.1.1.2. 对象头的组成  
 &emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
 
-#### 1.1.2.1. Mark Word  
+##### 1.1.1.2.1. Mark Word  
 &emsp; 这部分主要用来存储对象自身的运行时数据，如hashcode、gc分代年龄等。mark word的位长度为JVM的一个Word大小，也就是说32位JVM的Mark word为32位，64位JVM为64位。
 为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位，不同标记位下的Mark Word示意如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-62.png)   
@@ -110,7 +110,7 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-64.png)   
 
-#### 1.1.2.2. class pointer
+##### 1.1.1.2.2. class pointer
 &emsp; 这一部分用于存储对象的类型指针，该指针指向它的类元数据，JVM通过这个指针确定对象是哪个类的实例。该指针的位长度为JVM的一个字大小，即32位的JVM为32位，64位的JVM为64位。  
 &emsp; 如果应用的对象过多，使用64位的指针将浪费大量内存，统计而言，64位的JVM将会比32位的JVM多耗费50%的内存。为了节约内存可以使用选项+UseCompressedOops开启指针压缩，其中，oop即ordinary object pointer普通对象指针。开启该选项后，下列指针将压缩至32位：  
 
@@ -120,91 +120,10 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 
 &emsp; 当然，也不是所有的指针都会压缩，一些特殊类型的指针JVM不会优化，比如指向PermGen的Class对象指针(JDK8中指向元空间的Class对象指针)、本地变量、堆栈元素、入参、返回值和NULL指针等。  
 
-#### 1.1.2.3. array length  
+##### 1.1.1.2.3. array length  
 &emsp; 如果对象是一个数组，那么对象头还需要有额外的空间用于存储数组的长度，这部分数据的长度也随着JVM架构的不同而不同：32位的JVM上，长度为32位；64位JVM则为64位。64位JVM如果开启+UseCompressedOops选项，该区域长度也将由64位压缩至32位。  
 
-## 1.2. Synchronized底层  
-
-### 1.2.1. 反编译Synchronized代码块  
-```java
-public class SyncDemo {
-
-    public Synchronized void play() {}
-
-    public void learn() {
-        Synchronized(this) {
-        }
-    }
-}
-```
-
-<!-- 编译完成，我们去对应目录执行 javap -c xxx.class 命令查看反编译的文件： 
-https://juejin.cn/post/6888112467747176456 
-先将SynchronizedDemo.java使用javac SynchronizedDemo.java命令将其编译成SynchronizedDemo.class。然后使用javap -c SynchronizedDemo.class反编译字节码。  
-通过javap -v -c SynchronizedMethodDemo.class命令反编译SynchronizedMethodDemo类。-v参数即-verbose，表示输出反编译的附加信息。下面以反编译普通方法为例。  
--->
-&emsp; 利用javap工具查看生成的class文件信息分析Synchronized，下面是部分信息:  
-
-    查看字节码工具：  
-    Show Uytecode With jclasslib
-    Show Bytccodc
-
-```java
-public com.zzw.juc.sync.SyncDemo();
-    descriptor: ()V
-    flags: ACC_PUBLIC
-    Code:
-      stack=1, locals=1, args_size=1
-         0: aload_0
-         1: invokespecial #1        // Method java/lang/Object."<init>":()V
-         4: return
-      LineNumberTable:
-        line 8: 0
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-            0       5     0  this   Lcom/zzw/juc/sync/SyncDemo;
-
-  public Synchronized void play();
-    descriptor: ()V
-    flags: ACC_PUBLIC, ACC_Synchronized
-    Code:
-      stack=0, locals=1, args_size=1
-         0: return
-      LineNumberTable:
-        line 10: 0
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-            0       1     0  this   Lcom/zzw/juc/sync/SyncDemo;
-
-  public void learn();
-    descriptor: ()V
-    flags: ACC_PUBLIC
-    Code:
-      stack=2, locals=3, args_size=1
-         0: aload_0
-         1: dup
-         2: astore_1
-         3: monitorenter
-         4: aload_1
-         5: monitorexit
-         6: goto          14
-         9: astore_2
-        10: aload_1
-        11: monitorexit
-        12: aload_2
-        13: athrow
-        14: return
-      Exception table:
-         from    to  target type
-             4     6     9   any
-             9    12     9   any
-```
-&emsp; JVM基于进入和退出Monitor对象来实现方法同步和代码块同步，但两者实现细节不同。  
-
-* **<font color = "red">方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。</font>**  
-* **<font color = "red">代码块同步：使用monitorenter和monitorexit指令实现。</font>**  
-
-#### 1.2.1.1. monitor对象  
+### 1.1.2. monitor对象  
 <!-- 
 &emsp; 任何对象都有一个monitor与之相关联，当且一个monitor被持有之后，它将处于锁定状态。线程执行到monitorenter指令时，将会尝试获取对象所对应的monitor所有权，即尝试获取对象的锁。
 &emsp; monitor对象介绍：  
@@ -361,7 +280,87 @@ void ATTR ObjectMonitor::exit(bool not_suspended, TRAPS) {
 }
 ```
 
-#### 1.2.1.2. 同步代码块  
+## 1.2. Synchronized底层  
+
+```java
+public class SyncDemo {
+
+    public Synchronized void play() {}
+
+    public void learn() {
+        Synchronized(this) {
+        }
+    }
+}
+```
+
+<!-- 编译完成，我们去对应目录执行 javap -c xxx.class 命令查看反编译的文件： 
+https://juejin.cn/post/6888112467747176456 
+先将SynchronizedDemo.java使用javac SynchronizedDemo.java命令将其编译成SynchronizedDemo.class。然后使用javap -c SynchronizedDemo.class反编译字节码。  
+通过javap -v -c SynchronizedMethodDemo.class命令反编译SynchronizedMethodDemo类。-v参数即-verbose，表示输出反编译的附加信息。下面以反编译普通方法为例。  
+-->
+&emsp; 利用javap工具查看生成的class文件信息分析Synchronized，下面是部分信息:  
+
+    查看字节码工具：  
+    Show Uytecode With jclasslib
+    Show Bytccodc
+
+```java
+public com.zzw.juc.sync.SyncDemo();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1        // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 8: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   Lcom/zzw/juc/sync/SyncDemo;
+
+  public Synchronized void play();
+    descriptor: ()V
+    flags: ACC_PUBLIC, ACC_Synchronized
+    Code:
+      stack=0, locals=1, args_size=1
+         0: return
+      LineNumberTable:
+        line 10: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       1     0  this   Lcom/zzw/juc/sync/SyncDemo;
+
+  public void learn();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=3, args_size=1
+         0: aload_0
+         1: dup
+         2: astore_1
+         3: monitorenter
+         4: aload_1
+         5: monitorexit
+         6: goto          14
+         9: astore_2
+        10: aload_1
+        11: monitorexit
+        12: aload_2
+        13: athrow
+        14: return
+      Exception table:
+         from    to  target type
+             4     6     9   any
+             9    12     9   any
+```
+&emsp; JVM基于进入和退出Monitor对象来实现方法同步和代码块同步，但两者实现细节不同。  
+
+* **<font color = "red">方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。</font>**  
+* **<font color = "red">代码块同步：使用monitorenter和monitorexit指令实现。</font>**  
+
+### 1.2.1. 同步代码块  
 &emsp; monitorenter指令插入到同步代码块的开始位置，monitorexit指令插入到同步代码块的结束位置，<font color = "red">JVM需要保证每一个monitorenter都有一个monitorexit与之相对应。</font>  
 
 &emsp; 两条指令的作用：  
@@ -397,8 +396,6 @@ monitorexit：
 
 　　Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。
 
-
-
 「monitorenter」：
 Java对象天生就是一个Monitor，当monitor被占用，它就处于锁定的状态。
 每个对象都与一个监视器关联。且只有在有线程持有的情况下，监视器才被锁定。
@@ -416,7 +413,7 @@ JVM在完成monitorexit时的处理方式分为正常退出和出现异常时退
 因此，执行同步代码块后首先要执行monitorenter指令，退出的时候monitorexit指令。  
 -->
 
-#### 1.2.1.3. 同步方法  
+### 1.2.2. 同步方法  
 &emsp; 当JVM执行引擎执行某一个方法时，其会从方法区中获取该方法的access_flags，检查其是否有ACC_SYNCRHONIZED标识符，若是有该标识符，则说明当前方法是同步方法，需要先获取当前对象的monitor，再来执行方法，方法执行完后再释放monitor。在方法执行期间，其他任何线程都无法再获得同一个monitor对象。 其实本质上没有区别，只是方法的同步是一种隐式的方式来实现，无需通过字节码来完成。  
 
 ## 1.3. Synchronized的锁优化
