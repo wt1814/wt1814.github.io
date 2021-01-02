@@ -51,12 +51,10 @@ https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
 Java对象头与monitor
 https://blog.csdn.net/kking_edc/article/details/108382333
 -->
-&emsp;  **<font color = "red">先了解下HotSpot虚拟机中对象的内存布局。</font>** 在64位的HotSpot虚拟机中，不同状态下对象头的存储内容如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-56.png)   
-&emsp; HotSpot虚拟机的对象头（Object Header）分为三部分：对象头(Header)、实例数据(Instance Data)、对齐填充(Padding)。<font color = "red">用对象头中markword最低的三位代表锁状态，其中1位是偏向锁位，两位是普通锁位。</font>  
+&emsp; 在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充，如下所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-65.png)   
 
-* 对象头：
+* 对象头：包含Mark Word、class pointer、array length3部分。  
     * 第一部分用于存储对象自身的运行时数据，如哈希码、GC分代年龄、锁标识状态、线程持有的锁、偏向线程ID等。这部分数据的长度在32位和64位的Java虚拟机中分别会占用32个或64个比特，官方称它为“Mark Word”。这部分是实现轻量级锁和偏向锁的关键。  
     * 另外一部分指针类型，指向对象的类元数据类型（即对象代表哪个类）。如果是数组对象，则对象头中还有一部分用来记录数组长度。  
     * 还会有一个额外的部分用于存储数组长度。  
@@ -64,13 +62,6 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐）。填充数据不是必须存在的，仅仅是为了字节对齐。   
 
 &emsp; Java头对象则是实现synchronized的锁对象的基础。  
-
-&emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
-
-        为什么锁信息存放在对象头里？
-        因为在Java中任意对象都可以用作锁，因此必定要有一个映射关系，存储该对象以及其对应的锁信息（比如当前哪个线程持有锁，哪些线程在等待）。一种很直观的方法是，用一个全局map，来存储这个映射关系，但这样会有一些问题：需要对map做线程安全保障，不同的Synchronized之间会相互影响，性能差；另外当同步对象较多时，该map可能会占用比较多的内存。
-        所以最好的办法是将这个映射关系存储在对象头中，因为对象头本身也有一些hashcode、GC相关的数据，所以如果能将锁信息与这些信息共存在对象头中就好了。
-        也就是说，如果用一个全局 map 来存对象的锁信息，还需要对该 map 做线程安全处理，不同的锁之间会有影响。所以直接存到对象头。
 
 ### 1.1.1. 对象头形式  
 &emsp; JVM中对象头的方式有以下两种（以32位JVM为例）  
@@ -91,11 +82,13 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 -->
 
 ### 1.1.2. 对象头的组成  
+&emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
+
 #### 1.1.2.1. Mark Word  
 &emsp; 这部分主要用来存储对象自身的运行时数据，如hashcode、gc分代年龄等。mark word的位长度为JVM的一个Word大小，也就是说32位JVM的Mark word为32位，64位JVM为64位。
 为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位，不同标记位下的Mark Word示意如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-62.png)   
-其中各部分的含义如下：  
+&emsp; 其中各部分的含义如下：（<font color = "red">用对象头中markword最低的三位代表锁状态，其中1位是偏向锁位，两位是普通锁位。</font>）  
 
 * lock：2位的锁状态标记位，由于希望用尽可能少的二进制位表示尽可能多的信息，所以设置了lock标记。该标记的值不同，整个mark word表示的含义不同。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-63.png)   
@@ -106,8 +99,15 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 * epoch：偏向时间戳。  
 * ptr_to_lock_record：指向栈中锁记录的指针。  
 * **<font color = "lime">ptr_to_heavyweight_monitor：指向monitor对象（也称为管程或监视器锁）的起始地址，每个对象都存在着一个monitor与之关联，对象与其monitor之间的关系有存在多种实现方式，如monitor对象可以与对象一起创建销毁或当前线程试图获取对象锁时自动生，但当一个monitor被某个线程持有后，它便处于锁定状态。</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-56.png)   
+
+        为什么锁信息存放在对象头里？
+        因为在Java中任意对象都可以用作锁，因此必定要有一个映射关系，存储该对象以及其对应的锁信息（比如当前哪个线程持有锁，哪些线程在等待）。一种很直观的方法是，用一个全局map，来存储这个映射关系，但这样会有一些问题：需要对map做线程安全保障，不同的Synchronized之间会相互影响，性能差；另外当同步对象较多时，该map可能会占用比较多的内存。
+        所以最好的办法是将这个映射关系存储在对象头中，因为对象头本身也有一些hashcode、GC相关的数据，所以如果能将锁信息与这些信息共存在对象头中就好了。
+        也就是说，如果用一个全局 map 来存对象的锁信息，还需要对该 map 做线程安全处理，不同的锁之间会有影响。所以直接存到对象头。
 
 &emsp; 64位下的标记字与32位的相似：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-64.png)   
 
 #### 1.1.2.2. class pointer
