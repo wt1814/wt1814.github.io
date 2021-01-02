@@ -209,31 +209,12 @@ public com.zzw.juc.sync.SyncDemo();
 &emsp; 任何对象都有一个monitor与之相关联，当且一个monitor被持有之后，它将处于锁定状态。线程执行到monitorenter指令时，将会尝试获取对象所对应的monitor所有权，即尝试获取对象的锁。
 &emsp; monitor对象介绍：  
 &emsp; 每个对象有一个监视器锁（monitor），monitor本质是基于操作系统互斥（mutex）实现的，操作系统实现线程之间切换需要从用户态到内核态切换，成本非常高。一个monitor只能被一个线程拥有。
-
-```text
-    monitor对象重要属性说明：
-_owner：指向持有ObjectMonitor对象的线程；
-_WaitSet：存放处于wait状态的线程队列；
-_EntryList：存放处于等待锁block状态的线程队列；
-_recursions：锁的重入次数；
-_count：用来记录该线程获取锁的次数；
-
-    假如当前线程A、B、C同时访问同步块。假如A获取到锁，也就会将 monitor 对象中的 _owner 的值赋值为当前线程ID。B、C线程会进入EntryList中。count =1 ，recursions=1。假如A线程第二次进入同步快，count = 2, recursions=2，当前线程退出时，count和recursions会减一，直到count=0, recursions=0时，说明线程A释放了monitor锁，然后会唤醒EntryList中的线程，EntryList线程会竞争monitor，竞争到了，和线程A的操作一致。
-```
 -->
-
 <!-- 
 监视器monitor
 https://www.jianshu.com/p/c3313dcf2c23
-
 -->
-每个对象实例都会有个Monitor对象，Monitor对象和Java对象一同创建并消毁，在Java虚拟机(HotSpot)中,Monitor是基于C++实现的，由ObjectMonitor实现。ObjectMonitor的成员变量如下( Hospot 1.8) ：  
-
-&emsp; 每个对象都有一个monitor对应，如果有其它的线程获取了这个对象的monitor，当前的线程就要一直等待，直到获得 monitor的线程放弃monitor，当前的线程才有机会获得monitor。  
-&emsp; 如果monitor没有被任何线程获取，那么当前线程获取这个monitor，把monitor的entry count设置为1。表示这个monitor被线程1占用了。  
-&emsp; 当前线程获取了monitor之后，会增加这个monitor的时间计数，来记录当前线程占用了monitor多长时间。  
-&emsp; monitor监视器源码是C++写的，在虚拟机的ObjectMonitor.hpp文件中。  
-<!-- 在Java虚拟机(HotSpot)中，monitor是由ObjectMonitor实现的 -->
+&emsp; 每个对象实例都会有个Monitor对象，Monitor对象和Java对象一同创建并消毁，在Java虚拟机(HotSpot)中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。ObjectMonitor的成员变量如下( Hospot 1.8) ：  
 
 ```C
 ObjectMonitor() {
@@ -256,26 +237,22 @@ ObjectMonitor() {
     _previous_owner_tid = 0;
   }
 ```
-&emsp; Synchronized底层的源码就是引入了ObjectMonitor。  
-&emsp; ObjectMonitor中有两个队列，_WaitSet 和 _EntryList，用来保存ObjectWaiter对象列表( 每个等待锁的线程都会被封装成ObjectWaiter对象)；  
-
+&emsp; ObjectMonitor中有两个队列，_WaitSet 和 _EntryList，用来保存ObjectWaiter对象列表( 每个等待锁的线程都会被封装成ObjectWaiter对象)。  
 &emsp; _WaitSet和 _EntryList有什么区别呢？  
 ​&emsp; 当多个线程同时访问同步代码时，首先进入的就是_EntryList 。当获得对象的monitor时，_owner 指向当前线程，_count进行加1。  
 ​&emsp; 若持有monitor的线程调用wait()，则释放持有的monitor，_owner变为null，_count减1。  
-​&emsp; 同时该线程进入_WaitSet 等待被唤醒。如果执行完毕，也释放monitor。  
+​&emsp; 同时该线程进入_WaitSet等待被唤醒。如果执行完毕，也释放monitor。  
 
 &emsp; 整个monitor运行的机制过程如下：  
-&emsp; _owner指向持有ObjectMonitor对象的线程，当多个线程同时访问一段同步代码时，首先会进入 _EntryList 集合，当线程获取到对象的monitor 后进入 _Owner 区域并把monitor中的owner变量设置为当前线程同时monitor中的计数器count加1，若线程调用 wait() 方法，将释放当前持有的monitor，owner变量恢复为null，count自减1，同时该线程进入 WaitSe t集合中等待被唤醒。若当前线程执行完毕也将释放monitor(锁)并复位变量的值，以便其他线程进入获取monitor(锁)。  
+&emsp; _owner指向持有ObjectMonitor对象的线程，当多个线程同时访问一段同步代码时，首先会进入 _EntryList 集合，当线程获取到对象的monitor后进入_Owner区域并把monitor中的owner变量设置为当前线程同时monitor中的计数器count加1，若线程调用 wait() 方法，将释放当前持有的monitor，owner变量恢复为null，count自减1，同时该线程进入 WaitSe t集合中等待被唤醒。若当前线程执行完毕也将释放monitor(锁)并复位变量的值，以便其他线程进入获取monitor(锁)。  
 &emsp; 具体见下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
 &emsp; 因此，monitor对象存在于每个Java对象的对象头中(存储的指针的指向)，Synchronized锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因，同时也是notify/notifyAll/wait等方法存在于顶级对象Object中的原因。  
-
+<!-- 
 &emsp; 那你能说说看monitor吗，到底是怎么实现了加锁和锁释放的呢？  
-
-&emsp; 云霄：当多个线程同时访问同一段代码的时候，这些线程会被放在EntrySet集合,处于阻塞状态的线程都会被放在该列表当中，当线程获取到对象的monitor时，监视器锁monitor本质又是依赖于底层的操作系统的 Mutex Lock 来实现的，线程获取Mutex成功，这个时候其他的线程就无法获取到该Mutex。  
-
+&emsp; 当多个线程同时访问同一段代码的时候，这些线程会被放在EntrySet集合，处于阻塞状态的线程都会被放在该列表当中，当线程获取到对象的monitor时，监视器锁monitor本质又是依赖于底层的操作系统的 Mutex Lock 来实现的，线程获取Mutex成功，这个时候其他的线程就无法获取到该Mutex。  
 &emsp; 如果线程调用了wait方法，那么该线程就会释放掉持有的Mutex，并且该线程会进入到WaitSet集合(等待集合中)，等待下一次被其他的线程notify/notifyAll唤醒，如果当前线程的方法执行完毕，那么它也会释放掉所持有的Mutex。  
-
+-->
 &emsp; 下面在看一下加锁的代码：  
 
 ```text
@@ -283,14 +260,14 @@ void ATTR ObjectMonitor::enter(TRAPS) {
   // The following code is ordered to check the most common cases first
   // and to reduce RTS->RTO cache line upgrades on SPARC and IA32 processors.
 
- //获取当前线程指针
+  //获取当前线程指针
   Thread * const Self = THREAD ;
   void * cur ;
 
-//尝试通过CAS将OjectMonitor的_owner设置为当前线程；
+  //尝试通过CAS将OjectMonitor的_owner设置为当前线程；
   cur = Atomic::cmpxchg_ptr (Self, &_owner, NULL) ;
 
-//尝试失败
+  //尝试失败
   if (cur == NULL) {
      // Either ASSERT _recursions == 0 or explicitly set _recursions = 0.
      assert (_recursions == 0   , "invariant") ;
@@ -299,14 +276,14 @@ void ATTR ObjectMonitor::enter(TRAPS) {
      return ;
   }
 
-//如果cur等于当前线程，说明当前线程已经持有锁，即为锁重入，_recursions自增，并获得锁。 
+  //如果cur等于当前线程，说明当前线程已经持有锁，即为锁重入，_recursions自增，并获得锁。 
   if (cur == Self) {
      // TODO-FIXME: check for integer overflow!  BUGID 6557169.
      _recursions ++ ;
      return ;
   }
 
-//第一次设置_owner成功,锁的重入次数_recursions设置为1，_owner设置为当前线程，
+  //第一次设置_owner成功,锁的重入次数_recursions设置为1，_owner设置为当前线程，
   if (Self->is_lock_owned ((address)cur)) {
     assert (_recursions == 0, "internal state error");
     _recursions = 1 ;
@@ -317,10 +294,10 @@ void ATTR ObjectMonitor::enter(TRAPS) {
     return ;
   }
 
- //代码省略。。。。。
+    //代码省略。。。。。
 
     // TODO-FIXME: change the following for(;;) loop to straight-line code.
-   //如果竞争是失败的，会进入下面中的无线循环，反复调用EnterI方法，自旋尝试获取锁
+    //如果竞争是失败的，会进入下面中的无线循环，反复调用EnterI方法，自旋尝试获取锁
     for (;;) {
       jt->set_suspend_equivalent();
       // cleared by handle_special_suspend_equivalent_condition()
@@ -343,7 +320,7 @@ void ATTR ObjectMonitor::enter(TRAPS) {
       jt->java_suspend_self();
     }
 
-   //代码省略。。。。。。。。。。。。。
+    //代码省略。。。。。。。。。。。。。
 ```
 
 &emsp; 下面再看一下释放锁的代码：  
