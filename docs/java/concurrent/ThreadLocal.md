@@ -7,7 +7,7 @@
         - [1.1.1. set()](#111-set)
         - [1.1.2. get()](#112-get)
     - [1.2. ThreadLocal内存模型](#12-threadlocal内存模型)
-    - [1.3. ThreadLocal的内存泄漏](#13-threadlocal的内存泄漏)
+    - [1.3. ThreadLocal可能的内存泄漏](#13-threadlocal可能的内存泄漏)
     - [1.4. ThreadLocal使用](#14-threadlocal使用)
         - [1.4.1. ※※※正确使用](#141-※※※正确使用)
         - [1.4.2. SimpleDateFormat非线程安全问题](#142-simpledateformat非线程安全问题)
@@ -40,11 +40,6 @@
 &emsp; ThreadLocal对象的生命周期跟线程的生命周期一样长，那么如果将ThreadLocal对象和线程池一起使用，就可能会遇到这种情况：一个线程的ThreadLocal对象会和其他线程的ThreadLocal对象串掉，一般不建议将两者一起使用。  
 
 ## 1.1. ThreadLocal源码  
-<!-- 
-https://www.jianshu.com/p/1a5d288bdaee
-
--->
-
 &emsp; ThreadLocal接口方法有4个。这些方法为每一个使用这个变量的线程都存有一份独立的副本，因此get总是返回由当前线程在调用set时设置的最新值。  
 
 ```java
@@ -191,7 +186,6 @@ private T setInitialValue() {
 * Map实例化之后，也就拿到了该ThreadLocalMap的句柄，然后如果将当前ThreadLocal对象作为key，进行存取操作
 * 图中的虚线，表示key对ThreadLocal实例的引用是个弱引用
 
-
 ## 1.3. ThreadLocal可能的内存泄漏  
 <!-- 
 这4种ThreadLocal你都知道吗？ 
@@ -200,18 +194,8 @@ https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig
 <!-- 
 &emsp; <font color = "red">ThreadLocalMap的key为ThreadLocal实例，是一个弱引用，弱引用有利于GC的回收，当key == null时，GC就会回收这部分空间，但value不一定能被回收，因为它和Current Thread之间还存在一个强引用的关系。</font>  
 &emsp; 由于这个强引用的关系，会导致value无法回收，如果线程对象不消除这个强引用的关系，就可能会出现OOM。调用ThreadLocal的remove()方法进行显式处理。 
--->
-&emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key(ThreadLocal实例)会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
-&emsp; **<font color = "lime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  
 
-&emsp; **<font color = "lime">为什么使用弱引用而不是强引用？</font>**  
-* key使用强引用  
-&emsp; 当threadLocalMap的key为强引用，<font color = "red">回收ThreadLocal时，因为ThreadLocalMap还持有ThreadLocal的强引用，如果没有手动删除，ThreadLocal不会被回收，导致Entry内存泄漏。</font>  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-53.png)   
-* key使用弱引用  
-&emsp; <font color = "lime">当ThreadLocalMap的key为弱引用，回收ThreadLocal时，由于ThreadLocalMap持有ThreadLocal的弱引用，即使没有手动删除，ThreadLocal也会被回收。</font>当key为null，在下一次ThreadLocalMap调用set()，get()，remove()方法的时候会被清除value值。  
 
-----
 &emsp; 由于ThreadLocalMap是以弱引用的方式引用着ThreadLocal，换句话说，就是ThreadLocal是被ThreadLocalMap以弱引用的方式关联着，因此如果ThreadLocal没有被ThreadLocalMap以外的对象引用，则在下一次GC的时候，ThreadLocal实例就会被回收，那么此时ThreadLocalMap里的一组KV的K就是null了，因此在没有额外操作的情况下，此处的V便不会被外部访问到，而且只要Thread实例一直存在，Thread实例就强引用着ThreadLocalMap，因此ThreadLocalMap就不会被回收，那么这里K为null的V就一直占用着内存。  
 
 &emsp; 综上，发生内存泄露的条件是  
@@ -221,6 +205,17 @@ https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig
 * 当前Thread实例一直存在，则会一直强引用着ThreadLocalMap，也就是说ThreadLocalMap也不会被GC
 
 &emsp; 也就是说，如果Thread实例还在，但是ThreadLocal实例却不在了，则ThreadLocal实例作为key所关联的value无法被外部访问，却还被强引用着，因此出现了内存泄露。  
+-->
+&emsp; **<font color = "lime">为什么使用弱引用而不是强引用？</font>**  
+* key使用强引用  
+&emsp; 当threadLocalMap的key为强引用，<font color = "red">回收ThreadLocal时，因为ThreadLocalMap还持有ThreadLocal的强引用，如果没有手动删除，ThreadLocal不会被回收，导致Entry内存泄漏。</font>  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-53.png)   
+* key使用弱引用  
+&emsp; <font color = "lime">当ThreadLocalMap的key为弱引用，回收ThreadLocal时，由于ThreadLocalMap持有ThreadLocal的弱引用，即使没有手动删除，ThreadLocal也会被回收。</font>当key为null，在下一次ThreadLocalMap调用set()，get()，remove()方法的时候会被清除value值。  
+
+&emsp; **<font color = "lime">ThreadLocal可能的内存泄漏</font>**  
+&emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key(ThreadLocal实例)会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
+&emsp; **<font color = "lime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  
 
 ## 1.4. ThreadLocal使用  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-54.png)   
