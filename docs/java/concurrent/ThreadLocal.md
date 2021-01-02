@@ -192,7 +192,7 @@ private T setInitialValue() {
 * 图中的虚线，表示key对ThreadLocal实例的引用是个弱引用
 
 
-## 1.3. ThreadLocal的内存泄漏  
+## 1.3. ThreadLocal可能的内存泄漏  
 <!-- 
 这4种ThreadLocal你都知道吗？ 
 https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig

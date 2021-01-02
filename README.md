@@ -4,8 +4,8 @@
     - [算法](#算法)
     - [Java](#java)
         - [设计模式](#设计模式)
-        - [并发编程](#并发编程)
         - [JVM](#jvm)
+        - [并发编程](#并发编程)
     - [数据库](#数据库)
     - [SSM](#ssm)
         - [Spring](#spring)
@@ -101,6 +101,20 @@
 &emsp; [行为型设计模式](/docs/java/Design/5.behavior.md)  
 [设计模式讨论](/docs/java/Design/discuss.md)  
 
+### JVM  
+[JVM总结](/docs/java/JVM/summary.md)  
+[JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM三者间的关系.md)   
+[字节码文件](/docs/java/JVM/Class.md)  
+[JVM类的加载](/docs/java/JVM/JVM类的加载.md)  
+[JVM内存结构](/docs/java/JVM/JVM内存结构.md)  
+[GC垃圾回收](/docs/java/JVM/GC垃圾回收.md)  
+[JVM调优-基础](/docs/java/JVM/JVM调优-基础.md)  
+[JVM调优](/docs/java/JVM/JVM调优.md)  
+&emsp; [JVM排查案例](/docs/java/JVM/case.md)  
+[JAVA线上故障排查](/docs/Linux/problem.md)  
+[Arthas](/docs/java/JVM/Arthas.md)  
+[JMH](/docs/java/JVM/JMH.md)  
+
 ### 并发编程  
 [并发编程总结](/docs/java/concurrent/summary.md)  
 [线程基本概念](/docs/java/concurrent/1.Thread.md)  
@@ -131,20 +145,6 @@
 &emsp; [tools](/docs/java/concurrent/7.tools.md)  
 [并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
 [多线程处理大数据量](/docs/java/concurrent/bigData.md)  
-
-### JVM  
-[JVM总结](/docs/java/JVM/summary.md)  
-[JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM三者间的关系.md)   
-[字节码文件](/docs/java/JVM/Class.md)  
-[JVM类的加载](/docs/java/JVM/JVM类的加载.md)  
-[JVM内存结构](/docs/java/JVM/JVM内存结构.md)  
-[GC垃圾回收](/docs/java/JVM/GC垃圾回收.md)  
-[JVM调优-基础](/docs/java/JVM/JVM调优-基础.md)  
-[JVM调优](/docs/java/JVM/JVM调优.md)  
-&emsp; [JVM排查案例](/docs/java/JVM/case.md)  
-[JAVA线上故障排查](/docs/Linux/problem.md)  
-[Arthas](/docs/java/JVM/Arthas.md)  
-[JMH](/docs/java/JVM/JMH.md)  
 
 ## 数据库  
 [学习SQL的总结](/docs/SQL/学习SQL的总结.md)  

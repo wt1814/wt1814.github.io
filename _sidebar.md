@@ -52,6 +52,16 @@
         * [动态代理](/docs/java/Design/6.proxy.md)  
         * [行为型设计模式](/docs/java/Design/5.behavior.md)  
     * [设计模式讨论](/docs/java/Design/discuss.md)  
+* JVM  
+    * [JVM总结](/docs/java/JVM/summary.md)  
+    * [JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM三者间的关系.md)  
+    * [字节码文件](/docs/java/JVM/Class.md)  
+    * [JVM类的加载](/docs/java/JVM/JVM类的加载.md)  
+    * [JVM内存结构](/docs/java/JVM/JVM内存结构.md)  
+    * [GC垃圾回收](/docs/java/JVM/GC垃圾回收.md)  
+    * [JVM调优-基础](/docs/java/JVM/JVM调优-基础.md)  
+    * [JVM调优](/docs/java/JVM/JVM调优.md)  
+    * [JAVA线上故障排查](/docs/Linux/problem.md)   
 * 并发编程  
     * [并发编程总结](/docs/java/concurrent/summary.md)  
     * [线程基本概念](/docs/java/concurrent/1.Thread.md)  
@@ -81,16 +91,6 @@
         * [tools](/docs/java/concurrent/7.tools.md)
     * [并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
     * [多线程处理大数据量](/docs/java/concurrent/bigData.md)  
-* JVM  
-    * [JVM总结](/docs/java/JVM/summary.md)  
-    * [JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM三者间的关系.md)  
-    * [字节码文件](/docs/java/JVM/Class.md)  
-    * [JVM类的加载](/docs/java/JVM/JVM类的加载.md)  
-    * [JVM内存结构](/docs/java/JVM/JVM内存结构.md)  
-    * [GC垃圾回收](/docs/java/JVM/GC垃圾回收.md)  
-    * [JVM调优-基础](/docs/java/JVM/JVM调优-基础.md)  
-    * [JVM调优](/docs/java/JVM/JVM调优.md)  
-    * [JAVA线上故障排查](/docs/Linux/problem.md)   
 * 数据库  
     * [SQL建模](/docs/SQL/modeling.md)   
     * [SQL语句](/docs/SQL/1.SQL语句.md)  
