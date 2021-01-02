@@ -54,8 +54,6 @@ protected T initialValue() { } // 初始化的数据，用于子类自定义初�
 ```
 
 ### 1.1.2.1. set()  
-
-
 ```java
 public void set(T value) {
     Thread t = Thread.currentThread();
@@ -64,10 +62,6 @@ public void set(T value) {
         map.set(this, value);
     else
         createMap(t, value);
-}
-
-ThreadLocalMap getMap(Thread t) {
-    return t.threadLocals;
 }
 
 /**
@@ -104,8 +98,15 @@ private void set(ThreadLocal<?> key, Object value) {
         rehash();
 }
 ```
-&emsp; 当线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，而是存储在Thread对象的threadLocals属性中。  
-&emsp; ThreadLoca会将值存储在每个Thread实例的threadLocals属性中。Thread.java相关源码如下：  
+
+&emsp; getMap()方法详解：  
+
+```java
+ThreadLocalMap getMap(Thread t) {
+    return t.threadLocals;
+}
+```
+&emsp; 当线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，而是将值存储在每个Thread实例的threadLocals属性中。Thread.java相关源码如下：  
 
 ```java
 //与此线程有关的ThreadLocal值。由ThreadLocal类维护
@@ -113,14 +114,13 @@ ThreadLocalMap threadLocals = null;
 //与此线程有关的InheritableThreadLocal值。由InheritableThreadLocal类维护
 ThreadLocalMap inheritableThreadLocals = null;
 ```
-&emsp; 从上面Thread类源代码可以看出Thread类中有一个threadLocals和一个inheritableThreadLocals变量，它们都是ThreadLocalMap类型的变量 <font color = "red">(ThreadLocalMap是ThreadLocal类的内部类)</font> 。默认情况下这两个变量都是null，<font color = "red">只有当前线程调用ThreadLocal类的set或get方法时才创建它们，实际上调用这两个方法的时候，调用的是ThreadLocalMap类对应的 get()、set()方法。</font>  
-&emsp; 具体的ThreadLocalMap实例并不是ThreadLocal保持，而是每个Thread持有，且不同的Thread持有不同的ThreadLocalMap实例, 因此它们是不存在线程竞争的(不是一个全局的map)，另一个好处是每次线程死亡，所有map中引用到的对象都会随着这个Thread的死亡而被垃圾收集器一起收集。 
+&emsp; 从上面Thread类源代码可以看出Thread类中有一个threadLocals和一个inheritableThreadLocals变量，它们都是ThreadLocalMap类型的变量 <font color = "red">(ThreadLocalMap是ThreadLocal类的内部类)</font> 。即，具体的ThreadLocalMap实例并不是ThreadLocal保持，而是每个Thread持有，且不同的Thread持有不同的ThreadLocalMap实例, 因此它们是不存在线程竞争的(不是一个全局的map)，另一个好处是每次线程死亡，所有map中引用到的对象都会随着这个Thread的死亡而被垃圾收集器一起收集。     
+&emsp; 默认情况下这两个变量都是null，<font color = "red">只有当前线程调用ThreadLocal类的set或get方法时才创建它们，实际上调用这两个方法的时候，调用的是ThreadLocalMap类对应的 get()、set()方法。</font>  
 
 &emsp; ThradLocal中内部类ThreadLocalMap：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-23.png)   
 &emsp; **<font color = "lime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。<font color = "lime">Key是一个ThreadLocal实例，Value是设置的值。Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
  
-
         ThreadLocalMap如何解决Hash冲突？
         ThreadLocalMap虽然是类似Map结构的数据结构，但它并没有实现Map接口。它不支持Map接口中的next方法，这意味着ThreadLocalMap中解决Hash冲突的方式并非拉链表方式。
         实际上，ThreadLocalMap 采用线性探测的方式来解决Hash冲突。所谓线性探测，就是根据初始 key 的 hashcode 值确定元素在 table 数组中的位置，如果发现这个位置上已经被其他的 key 值占用，则利用固定的算法寻找一定步长的下个位置，依次判断，直至找到能够存放的位置。
