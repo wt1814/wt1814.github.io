@@ -78,7 +78,6 @@
     * [线程池](/docs/java/concurrent/3.ThreadPool.md)  
         * [ThreadPoolExecutor](/docs/java/concurrent/ThreadPoolExecutor.md)  
         * [ForkJoinPool](/docs/java/concurrent/ForkJoinPool.md)  
-        * [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
     * [J.U.C包](/docs/java/concurrent/4.ConcurrentPackage.md)  
         * [CAS](/docs/java/concurrent/CAS.md)  
         * [AQS](/docs/java/concurrent/AQS.md)  
@@ -89,6 +88,7 @@
         * [ConcurrentHashMap](/docs/java/concurrent/5.ConcurrentHashMap.md)  
         * [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
         * [tools](/docs/java/concurrent/7.tools.md)
+    * [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
     * [并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
     * [多线程处理大数据量](/docs/java/concurrent/bigData.md)  
 * 数据库  
