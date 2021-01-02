@@ -26,16 +26,8 @@
 
 # 1. Synchronized原理
 <!-- 
-JVM层实现  浅析Synchronized底层实现与锁升级过程   
-https://juejin.im/post/6888112467747176456
-Synchronized 原理知多少
-https://mp.weixin.qq.com/s/KpJZFLTeCxiuxQeiyEEJpQ
-死磕Synchronized底层实现 
-https://mp.weixin.qq.com/s/ca_7lurrWVcA3bLCL7UJcQ
 初始Synchronized关键字的偏向锁、轻量锁、重量锁 
 https://mp.weixin.qq.com/s/AloGilUSxjoNVDHTfq1ZGQ
-Java基础面试16问 
-https://mp.weixin.qq.com/s/-xFSHf7Gz3FUcafTJUIGWQ
 -->
 <!-- 
 ~~
@@ -58,8 +50,6 @@ https://blog.csdn.net/kking_edc/article/details/108382333
     * 还会有一个额外的部分用于存储数组长度。  
 * 实例数据：存放类的属性数据信息，包括父类的属性信息，如果是数组的实例部分还包括数组的长度，这部分内存按4字节对齐。    
 * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐）。填充数据不是必须存在的，仅仅是为了字节对齐。   
-
-
 
 &emsp; Java头对象则是实现synchronized的锁对象的基础。  
 
@@ -109,6 +99,11 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 &emsp; 64位下的标记字与32位的相似：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-64.png)   
+
+----
+&emsp; 下面两张图是32位JVM和64位JVM中“Mark Word”所记录的信息  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-67.png)   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-68.png)   
 
 ##### 1.1.1.2.2. class pointer
 &emsp; 这一部分用于存储对象的类型指针，该指针指向它的类元数据，JVM通过这个指针确定对象是哪个类的实例。该指针的位长度为JVM的一个字大小，即32位的JVM为32位，64位的JVM为64位。  
@@ -171,6 +166,15 @@ ObjectMonitor() {
 &emsp; 每个对象都有一个monitor对应，如果有其它的线程获取了这个对象的monitor，当前的线程就要一直等待，直到获得 monitor的线程放弃monitor，当前的线程才有机会获得monitor。  
 &emsp; 如果monitor没有被任何线程获取，那么当前线程获取这个monitor，把monitor的entry count设置为1。表示这个monitor被线程1占用了。  
 &emsp; 当前线程获取了monitor之后，会增加这个monitor的时间计数，来记录当前线程占用了monitor多长时间。  
+
+有两个队列waitSet和entryList。
+
+    当多个线程进入同步代码块时，首先进入entryList
+    有一个线程获取到monitor锁后，就赋值给当前线程，并且计数器+1
+    如果线程调用wait方法，将释放锁，当前线程置为null，计数器-1，同时进入waitSet等待被唤醒，调用notify或者notifyAll之后又会进入entryList竞争锁
+    如果线程执行完毕，同样释放锁，计数器-1，当前线程置为null
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-69.png)  
+
 -->
 &emsp; 下面在看一下加锁的代码：  
 
@@ -494,11 +498,12 @@ public String test(String str){
 
 ### 1.3.3. 偏向锁  
 &emsp; <font color = "red">偏向锁定义：</font>偏向锁是指偏向于让第一个获取锁对象的线程，这个线程在之后获取该锁就不再需要进行同步操作。 
-
 <!-- 
+偏向锁：当线程访问同步块获取锁时，会在对象头和栈帧中的锁记录里存储偏向锁的线程ID，之后这个线程再次进入同步块时都不需要CAS来加锁和解锁了，偏向锁会永远偏向第一个获得锁的线程，如果后续没有其他线程获得过这个锁，持有锁的线程就永远不需要进行同步，反之，当有其他线程竞争偏向锁时，持有偏向锁的线程就会释放偏向锁。可以用过设置-XX:+UseBiasedLocking开启偏向锁。
 偏向锁 - markword 上记录当前线程指针，下次同一个线程加锁的时候，不需要争用，只需要判断线程指针是否同一个，所以，偏向锁，偏向加锁的第一个线程 。hashCode备份在线程栈上 线程销毁，锁降级为无锁
--->
 
+顾名思义，偏向锁会偏向某个线程，其不会造成用户态与内核态的切换。偏向锁在第一次加锁时会偏向拿到锁的线程，当这个线程再来加锁时，就可以直接拿到锁而不用做其他的逻辑判断，所以在这种场景下其性能最高。不过，如果有其他线程再来加锁的话，JVM就会把偏向锁膨胀为轻量锁（没有锁竞争）或重量锁（有锁竞争）了。
+-->
 &emsp; 偏向锁的获得和撤销流程图解：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-31.png)   
 
@@ -521,6 +526,14 @@ public String test(String str){
     1. 原获得偏向锁的线程如果已经退出了临界区，也就是同步代码块执行完了，那么这个时候会把对象头设置成无锁状态并且争抢锁的线程可以基于 CAS 重新偏向之前线程。
     2. 如果原获得偏向锁的线程的同步代码块还没执行完，处于临界区之内，这个时候会把原获得偏向锁的线程升级为轻量级锁后继续执行同步代码块。
 
+<!--
+撤销锁
+如果有其他线程出现，尝试获取偏向锁，让偏向锁处于竞争状态，那么当前偏向锁就会撤销。撤销偏向锁时，首先会暂停持有偏向锁的线程，并将线程ID设为空，然后检查该线程是否存活：
+
+    当暂停线程非存活，则设置对象头为无锁状态。
+    当暂停线程存活，执行偏向锁的栈，最后对象头的保存其他获取到偏向锁的线程ID或者转向无锁状态。
+-->
+
 ----
 &emsp; 引用《阿里手册：码出高效》的描述再理解一次：
 
@@ -541,6 +554,9 @@ public String test(String str){
 
 #### 1.3.3.1. 偏向锁的性能   
 &emsp; 偏向锁可以提高带有同步但无竞争的程序性能，但它同样是一个带有效益权衡（Trade Off）性质的优化，也就是说它并非总是对程序运行有利。 **<font color = "lime">如果程序中大多数的锁都总是被多个不同的线程访问，那偏向模式就是多余的。</font>** 在具体问题具体分析的前提下，有时候使用参数-XX：-UseBiasedLocking来禁止偏向锁优化反而可以提升性能。 
+<!-- 
+JVM默认会设置一个4秒钟的偏向延迟，也就是说JVM启动4秒钟内创建出的所有对象都是不可偏向的（也就是上图中的无锁不可偏向状态），如果对这些对象去加锁，加的会是轻量锁而不是偏向锁
+-->
 
 #### 1.3.3.2. 偏向锁的失效  
 &emsp; 如果计算过对象的hashcode()，则对象无法进入偏向状态。    
@@ -556,7 +572,9 @@ public String test(String str){
 &emsp; 偏向锁、自旋锁都是用户空间完成。重量级锁是需要向内核申请。  
 &emsp; 自旋是消耗CPU资源的，如果锁的时间长，或者自旋线程多，CPU会被大量消耗。  
 &emsp; 重量级锁有等待队列，所有拿不到锁的线程进入等待队列，不需要消耗CPU资源。  
-
+<!-- 
+自旋锁：由于大部分时候，锁被占用的时间很短，共享变量的锁定时间也很短，所有没有必要挂起线程，用户态和内核态的来回上下文切换严重影响性能。自旋的概念就是让线程执行一个忙循环，可以理解为就是啥也不干，防止从用户态转入内核态，自旋锁可以通过设置-XX:+UseSpining来开启，自旋的默认次数是10次，可以使用-XX:PreBlockSpin设置。
+-->
 &emsp; **<font color = "lime">偏向锁是否一定比自旋锁效率高？</font>**  
 &emsp; <font color = "red">不一定，在明确知道会有多线程竞争的情况下，偏向锁肯定会涉及锁撤销，这时候直接使用自旋锁。</font>  
 &emsp; <font color = "red">JVM启动过程，一般会有很多线程竞争，所以默认情况启动时不打开偏向锁，过一段时间再打开。</font>  
@@ -604,8 +622,8 @@ public String test(String str){
 
 ### 1.3.6. 锁状态总结  
 &emsp; JDK 1.6 引入了偏向锁和轻量级锁，从而让锁拥有了四个状态： **无锁状态（unlocked）(MarkWord标志位01，没有线程执行同步方法/代码块时的状态)** 、偏向锁状态（biasble）、轻量级锁状态（lightweight locked）和重量级锁状态（inflated）。  
-
-&emsp; 重量级排序 ：无锁 > 轻量级锁 > 偏向锁 > 重量级锁    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-66.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-70.png)  
 &emsp; **<font color = "lime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>
 
 &emsp; **<font color = "lime">Synchronized锁对比：</font>**  
