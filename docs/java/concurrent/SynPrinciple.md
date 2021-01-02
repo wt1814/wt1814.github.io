@@ -54,7 +54,7 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 &emsp; 在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充，如下所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-65.png)   
 
-* 对象头：包含Mark Word、class pointer、array length3部分。  
+* 对象头：包含Mark Word、class pointer、array length共3部分。  
     * 第一部分用于存储对象自身的运行时数据，如哈希码、GC分代年龄、锁标识状态、线程持有的锁、偏向线程ID等。这部分数据的长度在32位和64位的Java虚拟机中分别会占用32个或64个比特，官方称它为“Mark Word”。这部分是实现轻量级锁和偏向锁的关键。  
     * 另外一部分指针类型，指向对象的类元数据类型（即对象代表哪个类）。如果是数组对象，则对象头中还有一部分用来记录数组长度。  
     * 还会有一个额外的部分用于存储数组长度。  
@@ -210,10 +210,6 @@ public com.zzw.juc.sync.SyncDemo();
 &emsp; monitor对象介绍：  
 &emsp; 每个对象有一个监视器锁（monitor），monitor本质是基于操作系统互斥（mutex）实现的，操作系统实现线程之间切换需要从用户态到内核态切换，成本非常高。一个monitor只能被一个线程拥有。
 -->
-<!-- 
-监视器monitor
-https://www.jianshu.com/p/c3313dcf2c23
--->
 &emsp; 每个对象实例都会有个Monitor对象，Monitor对象和Java对象一同创建并消毁，在Java虚拟机(HotSpot)中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。ObjectMonitor的成员变量如下( Hospot 1.8) ：  
 
 ```C
@@ -252,6 +248,10 @@ ObjectMonitor() {
 &emsp; 那你能说说看monitor吗，到底是怎么实现了加锁和锁释放的呢？  
 &emsp; 当多个线程同时访问同一段代码的时候，这些线程会被放在EntrySet集合，处于阻塞状态的线程都会被放在该列表当中，当线程获取到对象的monitor时，监视器锁monitor本质又是依赖于底层的操作系统的 Mutex Lock 来实现的，线程获取Mutex成功，这个时候其他的线程就无法获取到该Mutex。  
 &emsp; 如果线程调用了wait方法，那么该线程就会释放掉持有的Mutex，并且该线程会进入到WaitSet集合(等待集合中)，等待下一次被其他的线程notify/notifyAll唤醒，如果当前线程的方法执行完毕，那么它也会释放掉所持有的Mutex。  
+
+&emsp; 每个对象都有一个monitor对应，如果有其它的线程获取了这个对象的monitor，当前的线程就要一直等待，直到获得 monitor的线程放弃monitor，当前的线程才有机会获得monitor。  
+&emsp; 如果monitor没有被任何线程获取，那么当前线程获取这个monitor，把monitor的entry count设置为1。表示这个monitor被线程1占用了。  
+&emsp; 当前线程获取了monitor之后，会增加这个monitor的时间计数，来记录当前线程占用了monitor多长时间。  
 -->
 &emsp; 下面在看一下加锁的代码：  
 
@@ -362,15 +362,15 @@ void ATTR ObjectMonitor::exit(bool not_suspended, TRAPS) {
 ```
 
 #### 1.2.1.2. 同步代码块  
-&emsp; 同步代码块：monitorenter指令插入到同步代码块的开始位置，monitorexit指令插入到同步代码块的结束位置，<font color = "red">JVM需要保证每一个monitorenter都有一个monitorexit与之相对应。</font>  
+&emsp; monitorenter指令插入到同步代码块的开始位置，monitorexit指令插入到同步代码块的结束位置，<font color = "red">JVM需要保证每一个monitorenter都有一个monitorexit与之相对应。</font>  
 
 &emsp; 两条指令的作用：  
 * monitorenter：  
+&emsp; 每一个对象都会和一个监视器monitor关联。监视器被占用时会被锁住，其他线程无法来获取该monitor。  
 &emsp; <font color = "red">线程执行monitorenter指令时尝试获取monitor的所有权，当monitor被占用时就会处于锁定状态。</font>过程如下：
     1. <font color = "red">如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。</font>  
     2. 如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1，所以Synchronized关键字实现的锁是可重入的锁。  
     3. 如果其他线程已经占用了monitor，则该线程进入阻塞状态，直到monitor的进入数为0，再重新尝试获取monitor的所有权。  
-
 * monitorexit：  
 &emsp; 执行monitorexit的线程必须是objectref所对应的monitor的所有者。  
 &emsp; 指令执行时，monitor的进入数减1，如果减1后进入数为0，当前线程释放monitor，不再是这个monitor的所有者。其他被这个monitor阻塞的线程可以尝试去获取这个monitor的所有权。  
@@ -381,7 +381,6 @@ void ATTR ObjectMonitor::exit(bool not_suspended, TRAPS) {
 
 <!-- 
 monitorenter ：
-
 每个对象有一个监视器锁（monitor）。当monitor被占用时就会处于锁定状态，线程执行monitorenter指令时尝试获取monitor的所有权，过程如下：
 
 1、如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。
@@ -415,22 +414,10 @@ JVM在完成monitorexit时的处理方式分为正常退出和出现异常时退
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-57.png)  
 简单的加锁解锁过程
 因此，执行同步代码块后首先要执行monitorenter指令，退出的时候monitorexit指令。  
-
 -->
 
 #### 1.2.1.3. 同步方法  
-&emsp; Synchronized方法会被翻译成普通的方法调用和返回指令，如：invokevirtual、areturn指令，在JVM字节码层面并没有任何特别的指令来实现被Synchronized修饰的方法，<font color= "lime">而是在Class文件的方法表中将该方法的access_flags字段中的Synchronized标志位置1，表示该方法是同步方法，</font>并使用调用该方法的对象或该方法所属的Class在JVM的内部对象表示Klass做为锁对象。  
-
-<!-- 
-方法中的Synchronized与代码块中实现的方式不同，方法中会添加一个叫ACC_Synchronized的标志，当调用方法时，首先会检查是否有ACC_Synchronized标志，如果存在，则获取monitor对象，调用monitorenter和monitorexit指令。  
-
-当JVM执行引擎执行某一个方法时，其会从方法区中获取该方法的access_flags，检查其是否有ACC_SYNCRHONIZED标识符，若是有该标识符，则说明当前方法是同步方法，需要先获取当前对象的monitor，再来执行方法。
-同步方法的时候，一旦执行到这个方法，就会先判断是否有标志位，然后，ACC_Synchronized会去隐式调用刚才的两个指令：monitorenter和monitorexit。
-
-
-从反编译的结果来看，方法的同步并没有通过指令monitorenter和monitorexit来完成（理论上其实也可以通过这两条指令来实现），不过相对于普通方法，其常量池中多了ACC_SYNCHRONIZED标示符。JVM就是根据该标示符来实现方法的同步的：当方法调用时，调用指令将会检查方法的 ACC_SYNCHRONIZED 访问标志是否被设置，如果设置了，执行线程将先获取monitor，获取成功之后才能执行方法体，方法执行完后再释放monitor。在方法执行期间，其他任何线程都无法再获得同一个monitor对象。 其实本质上没有区别，只是方法的同步是一种隐式的方式来实现，无需通过字节码来完成。  
-方法中的synchronized与代码块中实现的方式不同，方法中会添加一个叫ACC_SYNCHRONIZED的标志，当调用方法时，首先会检查是否有ACC_SYNCHRONIZED标志，如果存在，则获取monitor对象，调用monitorenter和monitorexit指令。  
--->
+&emsp; 当JVM执行引擎执行某一个方法时，其会从方法区中获取该方法的access_flags，检查其是否有ACC_SYNCRHONIZED标识符，若是有该标识符，则说明当前方法是同步方法，需要先获取当前对象的monitor，再来执行方法，方法执行完后再释放monitor。在方法执行期间，其他任何线程都无法再获得同一个monitor对象。 其实本质上没有区别，只是方法的同步是一种隐式的方式来实现，无需通过字节码来完成。  
 
 ## 1.3. Synchronized的锁优化
 <!-- Synchronized
