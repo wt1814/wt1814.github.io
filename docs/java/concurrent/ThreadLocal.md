@@ -3,11 +3,9 @@
 <!-- TOC -->
 
 - [1. ThreadLocal](#1-threadlocal)
-    - [1.1. ThreadLocal源码-1](#11-threadlocal源码-1)
-        - [1.1.1. ThreadLocal存储结构](#111-threadlocal存储结构)
-        - [1.1.2. ThreadLocal成员方法](#112-threadlocal成员方法)
-            - [1.1.2.1. set()](#1121-set)
-            - [1.1.2.2. get()](#1122-get)
+    - [1.1. ThreadLocal源码](#11-threadlocal源码)
+        - [1.1.2.1. set()](#1121-set)
+        - [1.1.2.2. get()](#1122-get)
     - [1.2. ThreadLocal的内存泄漏](#12-threadlocal的内存泄漏)
     - [1.3. ThreadLocal使用](#13-threadlocal使用)
         - [1.3.1. ※※※正确使用](#131-※※※正确使用)
@@ -32,51 +30,20 @@
 &emsp; 但是ThreadLocal与synchronized有本质的区别：  
 
     * 资源共享：  
-    &emsp; lock的资源是多个线程共享的，所以访问的时候需要加锁。  
-    &emsp; ThreadLocal为每一个线程都提供了变量的副本，是一个线程的本地变量，也就意味着这个变量是线程独有的，是不能与其他线程共享的。即隔离了多个线程对数据的数据共享，这样就可以避免资源竞争带来的多线程的问题。  
+        lock的资源是多个线程共享的，所以访问的时候需要加锁。  
+        ThreadLocal为每一个线程都提供了变量的副本，是一个线程的本地变量，也就意味着这个变量是线程独有的，是不能与其他线程共享的。即隔离了多个线程对数据的数据共享，这样就可以避免资源竞争带来的多线程的问题。  
     * 性能开销：lock是通过时间换空间的做法；ThreadLocal是典型的通过空间换时间的做法。  
     * 当然它们的使用场景也是不同的，关键看资源是需要多线程之间共享的还是单线程内部共享的。  
 
 &emsp; **ThreadLocal和线程池一起使用？**  
 &emsp; ThreadLocal对象的生命周期跟线程的生命周期一样长，那么如果将ThreadLocal对象和线程池一起使用，就可能会遇到这种情况：一个线程的ThreadLocal对象会和其他线程的ThreadLocal对象串掉，一般不建议将两者一起使用。  
 
-## 1.1. ThreadLocal源码-1  
+## 1.1. ThreadLocal源码  
 <!-- 
-https://mp.weixin.qq.com/s/WxjKr2Ti_kySbGh_A67VLA
 https://www.jianshu.com/p/1a5d288bdaee
+https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig
 -->
 
-### 1.1.1. ThreadLocal存储结构  
-&emsp; 查看ThreadLocal#set()方法  
-
-```java
-ThreadLocalMap getMap(Thread t) {
-    return t.threadLocals;
-}
-```
-&emsp; ThreadLoca会将值存储在每个Thread实例的threadLocals属性中。Thread.java相关源码如下：  
-
-```java
-//与此线程有关的ThreadLocal值。由ThreadLocal类维护
-ThreadLocalMap threadLocals = null;
-//与此线程有关的InheritableThreadLocal值。由InheritableThreadLocal类维护
-ThreadLocalMap inheritableThreadLocals = null;
-```
-&emsp; 从上面Thread类源代码可以看出Thread类中有一个threadLocals和一个inheritableThreadLocals变量，它们都是ThreadLocalMap类型的变量 <font color = "red">(ThreadLocalMap是ThreadLocal类的内部类)</font> 。默认情况下这两个变量都是null，<font color = "red">只有当前线程调用ThreadLocal类的set或get方法时才创建它们，实际上调用这两个方法的时候，调用的是ThreadLocalMap类对应的 get()、set()方法。</font>  
-&emsp; 具体的ThreadLocalMap实例并不是ThreadLocal保持，而是每个Thread持有，且不同的Thread持有不同的ThreadLocalMap实例, 因此它们是不存在线程竞争的(不是一个全局的map)，另一个好处是每次线程死亡，所有map中引用到的对象都会随着这个Thread的死亡而被垃圾收集器一起收集。 
-
-&emsp; ThradLocal中内部类ThreadLocalMap：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-23.png)   
-&emsp; **<font color = "lime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。<font color = "lime">Key是一个ThreadLocal实例，Value是设置的值。Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
- 
-
-        ThreadLocalMap如何解决Hash冲突？
-        ThreadLocalMap虽然是类似Map结构的数据结构，但它并没有实现Map接口。它不支持Map接口中的next方法，这意味着ThreadLocalMap中解决Hash冲突的方式并非拉链表方式。
-        实际上，ThreadLocalMap 采用线性探测的方式来解决Hash冲突。所谓线性探测，就是根据初始 key 的 hashcode 值确定元素在 table 数组中的位置，如果发现这个位置上已经被其他的 key 值占用，则利用固定的算法寻找一定步长的下个位置，依次判断，直至找到能够存放的位置。
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-24.png)   
-
-### 1.1.2. ThreadLocal成员方法  
 &emsp; ThreadLocal接口方法有4个。这些方法为每一个使用这个变量的线程都存有一份独立的副本，因此get总是返回由当前线程在调用set时设置的最新值。  
 
 ```java
@@ -85,15 +52,14 @@ public void set(T value) { }  //存数据
 public void remove() { }  //删除数据。将当前线程局部变量的值删除，目的是为了减少内存的占用，该方法是JDK5.0新增的方法。需要指出的是，当线程结束后，对应该线程的局部变量将自动被垃圾回收，所以显式调用该方法清除线程的局部变量并不是必须的操作，但它可以加快内存的回收速度。
 protected T initialValue() { } // 初始化的数据，用于子类自定义初始化值。返回该线程局部变量的初始值，该方法是一个protected的方法，显然是为了让子类覆盖而设计的。这个方法是一个延迟调用方法，在线程第1次调用get()或set(Object)时才执行，并且仅执行1次。ThreadLocal中的缺省实现直接返回一个null。
 ```
-&emsp; **ThreadLocal.set()、get()、remove()方法都是对Thread对象的threadLocals属性进行操作。**
-  
-#### 1.1.2.1. set()  
-&emsp; 当线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，而是存储在Thread对象的threadLocals属性中。  
+
+### 1.1.2.1. set()  
+
 
 ```java
 public void set(T value) {
     Thread t = Thread.currentThread();
-    ThreadLocalMap map = getMap(t);
+    ThreadLocalMap map = getMap(t);  //todo
     if (map != null)
         map.set(this, value);
     else
@@ -138,8 +104,30 @@ private void set(ThreadLocal<?> key, Object value) {
         rehash();
 }
 ```
+&emsp; 当线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，而是存储在Thread对象的threadLocals属性中。  
+&emsp; ThreadLoca会将值存储在每个Thread实例的threadLocals属性中。Thread.java相关源码如下：  
 
-#### 1.1.2.2. get()  
+```java
+//与此线程有关的ThreadLocal值。由ThreadLocal类维护
+ThreadLocalMap threadLocals = null;
+//与此线程有关的InheritableThreadLocal值。由InheritableThreadLocal类维护
+ThreadLocalMap inheritableThreadLocals = null;
+```
+&emsp; 从上面Thread类源代码可以看出Thread类中有一个threadLocals和一个inheritableThreadLocals变量，它们都是ThreadLocalMap类型的变量 <font color = "red">(ThreadLocalMap是ThreadLocal类的内部类)</font> 。默认情况下这两个变量都是null，<font color = "red">只有当前线程调用ThreadLocal类的set或get方法时才创建它们，实际上调用这两个方法的时候，调用的是ThreadLocalMap类对应的 get()、set()方法。</font>  
+&emsp; 具体的ThreadLocalMap实例并不是ThreadLocal保持，而是每个Thread持有，且不同的Thread持有不同的ThreadLocalMap实例, 因此它们是不存在线程竞争的(不是一个全局的map)，另一个好处是每次线程死亡，所有map中引用到的对象都会随着这个Thread的死亡而被垃圾收集器一起收集。 
+
+&emsp; ThradLocal中内部类ThreadLocalMap：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-23.png)   
+&emsp; **<font color = "lime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。<font color = "lime">Key是一个ThreadLocal实例，Value是设置的值。Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
+ 
+
+        ThreadLocalMap如何解决Hash冲突？
+        ThreadLocalMap虽然是类似Map结构的数据结构，但它并没有实现Map接口。它不支持Map接口中的next方法，这意味着ThreadLocalMap中解决Hash冲突的方式并非拉链表方式。
+        实际上，ThreadLocalMap 采用线性探测的方式来解决Hash冲突。所谓线性探测，就是根据初始 key 的 hashcode 值确定元素在 table 数组中的位置，如果发现这个位置上已经被其他的 key 值占用，则利用固定的算法寻找一定步长的下个位置，依次判断，直至找到能够存放的位置。
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-24.png)   
+
+### 1.1.2.2. get()  
 
 ```java
 public T get() {
@@ -193,7 +181,7 @@ https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig
 * key使用强引用  
 &emsp; 当threadLocalMap的key为强引用，<font color = "red">回收ThreadLocal时，因为ThreadLocalMap还持有ThreadLocal的强引用，如果没有手动删除，ThreadLocal不会被回收，导致Entry内存泄漏。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-53.png)   
-* key 使用弱引用  
+* key使用弱引用  
 &emsp; <font color = "lime">当ThreadLocalMap的key为弱引用，回收ThreadLocal时，由于ThreadLocalMap持有ThreadLocal的弱引用，即使没有手动删除，ThreadLocal也会被回收。</font>当key为null，在下一次ThreadLocalMap调用set()，get()，remove()方法的时候会被清除value值。  
 
 ----
@@ -201,12 +189,11 @@ https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig
 
 &emsp; 综上，发生内存泄露的条件是  
 
-* ThreadLocal实例没有被外部强引用，比如我们假设在提交到线程池的task中实例化的ThreadLocal对象，当task结束时，ThreadLocal的强引用也就结束了
+* ThreadLocal实例没有被外部强引用，比如假设在提交到线程池的task中实例化的ThreadLocal对象，当task结束时，ThreadLocal的强引用也就结束了
 * ThreadLocal实例被回收，但是在ThreadLocalMap中的V没有被任何清理机制有效清理
 * 当前Thread实例一直存在，则会一直强引用着ThreadLocalMap，也就是说ThreadLocalMap也不会被GC
 
 &emsp; 也就是说，如果Thread实例还在，但是ThreadLocal实例却不在了，则ThreadLocal实例作为key所关联的value无法被外部访问，却还被强引用着，因此出现了内存泄露。  
-
 
 ## 1.3. ThreadLocal使用  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-54.png)   
