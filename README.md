@@ -135,6 +135,8 @@
 &emsp; [CAS](/docs/java/concurrent/CAS.md)  
 &emsp; [AQS](/docs/java/concurrent/AQS.md)  
 &emsp; [Lock](/docs/java/concurrent/8.Lock.md)  
+&emsp; &emsp; [ReentrantLock](/docs/java/concurrent/ReentrantLock.md)  
+&emsp; &emsp; [ReadWriteLock](/docs/java/concurrent/ReadWriteLock.md)  
 &emsp; &emsp; [LocLockSupportk](/docs/java/concurrent/LockSupport.md)         
 &emsp; [Atmoic](/docs/java/concurrent/9.Atmoic.md)  
 &emsp; &emsp; [AtomicStampedReference](/docs/java/concurrent/6.AtomicStampedReference.md)  
