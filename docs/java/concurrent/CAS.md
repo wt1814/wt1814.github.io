@@ -9,12 +9,10 @@
 <!-- /TOC -->
 
 # 1. CAS算法  
-
 ## 1.1. CAS算法思想  
 <!-- 
 CAS包含了 3个操作数：需要读写的内存位置V、进行比较的值A和拟写入的新值 B。当且仅当V的值等于A时，CAS才会通过原子方式用新值B来更新V的值，否则不会执 行任何操作。无论位置V的值是否等于A,都将返回V原有的值。（这种变化形式被称为比较 并设置，无论操作是否成功都会返回。）
 -->
-
 &emsp; **<font color = "lime">CAS，Compare And Swap，即比较并交换。一种无锁原子算法，CAS是一种乐观锁。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-29.png)   
 &emsp; 在函数CAS(V,E,N)中有3个参数。读取当前值E，计算结果值V，<font color = "lime">将读取的当前值E和当前新值N作比较，如果相等，更新为V；</font>如果不相等，再次读取当前值E计算结果V，将E再和新的当前值N比较，直到相等。  
@@ -54,5 +52,3 @@ public final native boolean compareAndSwapObject(Object paramObject1, long param
 public final native boolean compareAndSwapInt(Object paramObject, long paramLong, int paramInt1, int paramInt2);
 public final native boolean compareAndSwapLong(Object paramObject, long paramLong1, long paramLong2, long paramLong3);
 ```
-
-
