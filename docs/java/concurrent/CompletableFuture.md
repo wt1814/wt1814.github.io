@@ -1,13 +1,12 @@
 <!-- TOC -->
 
-- [1. CompletableFuture<T> JDK1.8](#1-completablefuturet-jdk18)
+- [1. CompletableFuture<T>](#1-completablefuturet)
     - [1.1. ForkJoinPool与CompletableFuture](#11-forkjoinpool与completablefuture)
     - [1.2. CompletableFuture使用](#12-completablefuture使用)
 
 <!-- /TOC -->
 
-
-# 1. CompletableFuture<T> JDK1.8  
+# 1. CompletableFuture<T>  
 <!-- 
 异步神器CompletableFuture 
 https://mp.weixin.qq.com/s/pQsWfME5QrHhp4xKS4WSrA

@@ -1,7 +1,7 @@
 <!-- TOC -->
 
 - [1. 阻塞队列](#1-阻塞队列)
-    - [1.1. BlockingQueue](#11-blockingqueue)
+    - [1.1. BlockingQueue接口](#11-blockingqueue接口)
     - [1.2. 常见BlockingQueue](#12-常见blockingqueue)
         - [1.2.1. ArrayBlockingQueue](#121-arrayblockingqueue)
             - [1.2.1.1. 属性](#1211-属性)
@@ -18,15 +18,8 @@
 
 
 # 1. 阻塞队列  
-<!-- 
-
-https://mp.weixin.qq.com/s/mlByGOYszEivF-sRgSXmyw
--->
-
 &emsp; **<font color = "lime">阻塞队列与普通队列的区别在于，当队列是空的时，从队列中获取元素的操作将会被阻塞，或者当队列是满时，往队列里添加元素的操作会被阻塞。</font>** 试图从空的阻塞队列中获取元素的线程将会被阻塞，直到其他的线程往空的队列插入新的元素。同样，试图往已满的阻塞队列中添加新元素的线程同样也会被阻塞，直到其他的线程使队列重新变得空闲起来，如从队列中移除一个或者多个元素，或者完全清空队列，下图展示了如何通过阻塞队列来合作：  
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-34.png)  
-
 <!-- 
 阻塞队列是一个在队列基础上又支持了两个附加操作的队列。  
 2个附加操作：  
@@ -35,9 +28,8 @@ https://mp.weixin.qq.com/s/mlByGOYszEivF-sRgSXmyw
 -->
 &emsp; <font color = "lime">阻塞队列常用于生产者和消费者的场景，生产者是向队列里添加元素的线程，消费者是从队列里取元素的线程。</font>简而言之，阻塞队列是生产者用来存放元素、消费者获取元素的容器。  
 
-## 1.1. BlockingQueue  
+## 1.1. BlockingQueue接口  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-35.png)  
-
 &emsp; BlockingQueue是继承自Queue的接口，在Queue的基础上增加了阻塞操作。相比Queue接口有两种形式的api，BlockingQueue则有四种形式的api，阻塞队列定义如果调用了某个函数可能当时不能立即满足结果 ，但很有可能在未来的某个时刻会满足。四种api定义：  
 * 添加数据方法：  
     * add(e)：将元素添加到队列末尾，成功则返回true；<font color = "red">如果队列已满，则插入失败，抛出异常。</font>  
@@ -51,7 +43,8 @@ https://mp.weixin.qq.com/s/mlByGOYszEivF-sRgSXmyw
     * poll(time,unit)：从队首取元素，如果队列为空，则等待一定的时间，当时间期限达到时，如果还没有取出元素，则返回null；否则返回队首元素。
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-36.png)  
-
+&emsp; 检查是在有数据时返回队列的第一个数据，并不会从队列中移除该数据。内部使用 ReentrantLock进行同步控制的。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-71.png)  
 <!-- 
 * 调用函数失败，抛出异常
 * 调用失败，返回null或者false
@@ -76,31 +69,23 @@ https://mp.weixin.qq.com/s/mlByGOYszEivF-sRgSXmyw
 4. 两者的实现队列添加或移除的锁不一样，ArrayBlockingQueue实现的队列中的锁是没有分离的，即添加操作和移除操作采用的同一个ReenterLock锁，而LinkedBlockingQueue实现的队列中的锁是分离的，其添加采用的是putLock，移除采用的则是takeLock，这样能大大提高队列的吞吐量，也意味着在高并发的情况下生产者和消费者可以并行地操作队列中的数据，以此来提高整个队列的并发性能。
 
 ### 1.2.1. ArrayBlockingQueue  
-
 #### 1.2.1.1. 属性  
 
 ```java
 // 存储队列中的元素
 final Object[] items;
-
 // 队头
 int takeIndex;
-
 // 队尾（为null，等待接收元素）
 int putIndex;
-
 // 队列中的元素个数
 int count;
-
 // 队列锁
 final ReentrantLock lock;
-
 // 出队条件
 private final Condition notEmpty;
-
 // 入队条件
 private final Condition notFull;
-
 // 记录作用于该队列的迭代器（一个链表）
 transient Itrs itrs;
 ```  
@@ -221,7 +206,7 @@ public E take() throws InterruptedException {
 }
 ```
 
-&emsp; poll 立即返回式 有参方法可添加超时参数。  
+&emsp; poll立即返回式，有参方法可添加超时参数。  
 
 ```java
 // 出队，线程安全，队空时阻塞一段时间，如果在指定的时间内没有机会取出元素，则返回null
@@ -253,7 +238,6 @@ public E poll(long timeout, TimeUnit unit) throws InterruptedException {
 <!-- 
 https://blog.csdn.net/tonywu1992/article/details/83419448
 -->
-
 &emsp; LinkedBlockingQueue不同于ArrayBlockingQueue，它如果不指定容量，默认为Integer.MAX_VALUE，也就是无界队列。所以为了避免队列过大造成机器负载或者内存爆满的情况出现，在使用的时候建议手动传一个队列的大小。  
 
 #### 1.2.2.1. 属性  
@@ -469,7 +453,3 @@ https://blog.csdn.net/yanpenglei/article/details/79556591
 * BlockingQueue阻塞队列方法
 * 信号量
 * 管道
-
-
-
-
