@@ -2,9 +2,7 @@
 
 - [1. ReadWriteLock](#1-readwritelock)
     - [1.1. ReentrantReadWriteLock，读写锁](#11-reentrantreadwritelock读写锁)
-        - [1.1.1. 示例](#111-示例)
     - [1.2. StampedLock，读写锁的升级](#12-stampedlock读写锁的升级)
-        - [1.2.1. 使用示例](#121-使用示例)
 
 <!-- /TOC -->
 
@@ -14,7 +12,8 @@
 &emsp; 优点：与互斥锁相比，虽然一次只能有一个写线程可以修改共享数据，但大量读线程可以同时读取共享数据，所以，读写锁适用于共享数据很大，且读操作远多于写操作的情况。  
 &emsp; **<font color = "red">缺点：只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "lime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
 
-### 1.1.1. 示例  
+
+&emsp; 编码示例：  
 
 ```java
 private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -46,26 +45,17 @@ StampedLock
 https://mp.weixin.qq.com/s/vwvcgBPOnW7M2GrgVDDdGg
 -->
 
-&emsp; 读写锁导致写线程饥饿的原因是读锁和写锁互斥，StampedLock提供了解决这一问题的方案，乐观读锁 Optimistic reading，即一个线程获取的乐观读锁之后，不会阻塞线程获取写锁。  
-
-&emsp; StampedLock特点：  
-
-* StampedLock是不可重入的，如果一个线程已经持有了写锁，再去获取写锁的话就会造成死锁。  
-* StampedLock支持读锁和写锁的相互转换。使用ReentrantReadWriteLock，当线程获取到写锁后，可以降级为读锁，但是读锁是不能直接升级为写锁的。而StampedLock提供了读锁和写锁相互转换的功能，使得该类支持更多的应用场景。  
-
-&emsp; StampedLock的三种模式  
+&emsp; **读写锁导致写线程饥饿的原因是读锁和写锁互斥，StampedLock提供了解决这一问题的方案，乐观读锁 Optimistic reading，即一个线程获取的乐观读锁之后，不会阻塞线程获取写锁。**  
 &emsp; <font color = "lime">StampedLock提供了三种模式来控制读写操作：写锁 writeLock、悲观读锁readLock、乐观读锁Optimistic reading。</font>
 
 * 写锁 writeLock  
 &emsp; 类似ReentrantReadWriteLock的写锁，独占锁，当一个线程获取该锁后，其它请求的线程必须等待。  
 &emsp; 获取：没有线程持有悲观读锁或者写锁的时候才可以获取到该锁。  
 &emsp; 释放：请求该锁成功后会返回一个 stamp 票据变量用来表示该锁的版本，当释放该锁时候需要将这个 stamp 作为参数传入解锁方法。  
-
 * 悲观读锁 readLock  
 &emsp; 类似ReentrantReadWriteLock的读锁，共享锁，同时多个线程可以获取该锁。悲观的认为在具体操作数据前其他线程会对自己操作的数据进行修改，所以当前线程获取到悲观读锁的之后会阻塞线程获取写锁。  
 &emsp; 获取：在没有线程获取独占写锁的情况下，同时多个线程可以获取该锁。  
 &emsp; 释放：请求该锁成功后会返回一个 stamp 票据变量用来表示该锁的版本，当释放该锁时候需要 unlockRead 并传递参数 stamp。  
-
 * 乐观读锁 tryOptimisticRead  
 &emsp; 获取：不需要通过 CAS 设置锁的状态，如果当前没有线程持有写锁，直接简单的返回一个非 0 的 stamp 版本信息，表示获取锁成功。  
 &emsp; 释放：并没有使用 CAS 设置锁状态所以不需要显示的释放该锁。  
@@ -73,7 +63,12 @@ https://mp.weixin.qq.com/s/vwvcgBPOnW7M2GrgVDDdGg
 &emsp; **乐观读锁如何保证数据一致性呢？**  
 &emsp; 乐观读锁在获取 stamp 时，会将需要的数据拷贝一份出来。在真正进行读取操作时，验证 stamp 是否可用。如何验证 stamp 是否可用呢？从获取 stamp 到真正进行读取操作这段时间内，如果有线程获取了写锁，stamp 就失效了。如果 stamp 可用就可以直接读取原来拷贝出来的数据，如果 stamp 不可用，就重新拷贝一份出来用。操作的是方法栈里面的数据，也就是一个快照，所以最多返回的不是最新的数据，但是一致性还是得到保障的。  
 
-### 1.2.1. 使用示例  
+&emsp; StampedLock特点：  
+
+* StampedLock是不可重入的，如果一个线程已经持有了写锁，再去获取写锁的话就会造成死锁。  
+* StampedLock支持读锁和写锁的相互转换。使用ReentrantReadWriteLock，当线程获取到写锁后，可以降级为读锁，但是读锁是不能直接升级为写锁的。而StampedLock提供了读锁和写锁相互转换的功能，使得该类支持更多的应用场景。  
+
+&emsp; 编码示例：  
 
 ```java
 class Point {
