@@ -1,12 +1,20 @@
+<!-- TOC -->
 
+- [1. ReadWriteLock](#1-readwritelock)
+    - [1.1. ReentrantReadWriteLock，读写锁](#11-reentrantreadwritelock读写锁)
+        - [1.1.1. 示例](#111-示例)
+    - [1.2. StampedLock，读写锁的升级](#12-stampedlock读写锁的升级)
+        - [1.2.1. 使用示例](#121-使用示例)
 
-# ReadWriteLock  
-## 1.3. ReentrantReadWriteLock，读写锁
+<!-- /TOC -->
+
+# 1. ReadWriteLock  
+## 1.1. ReentrantReadWriteLock，读写锁
 &emsp; ReentrantReadWriteLock维护了两个锁，读锁和写锁，所以一般称其为读写锁。写锁是独占的（写操作只能由一个线程来操作）。读锁是共享的，如果没有写锁，读锁可以由多个线程共享。  
 &emsp; 优点：与互斥锁相比，虽然一次只能有一个写线程可以修改共享数据，但大量读线程可以同时读取共享数据，所以，读写锁适用于共享数据很大，且读操作远多于写操作的情况。  
 &emsp; **<font color = "red">缺点：只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "lime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
 
-### 1.3.1. 示例  
+### 1.1.1. 示例  
 
 ```java
 private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -32,7 +40,7 @@ public Object handleRead() throws InterruptedException {
 }
 ```
 
-## 1.4. StampedLock，读写锁的升级
+## 1.2. StampedLock，读写锁的升级
 <!-- 
 StampedLock
 https://mp.weixin.qq.com/s/vwvcgBPOnW7M2GrgVDDdGg
@@ -65,7 +73,7 @@ https://mp.weixin.qq.com/s/vwvcgBPOnW7M2GrgVDDdGg
 &emsp; **乐观读锁如何保证数据一致性呢？**  
 &emsp; 乐观读锁在获取 stamp 时，会将需要的数据拷贝一份出来。在真正进行读取操作时，验证 stamp 是否可用。如何验证 stamp 是否可用呢？从获取 stamp 到真正进行读取操作这段时间内，如果有线程获取了写锁，stamp 就失效了。如果 stamp 可用就可以直接读取原来拷贝出来的数据，如果 stamp 不可用，就重新拷贝一份出来用。操作的是方法栈里面的数据，也就是一个快照，所以最多返回的不是最新的数据，但是一致性还是得到保障的。  
 
-### 1.4.2. 使用示例  
+### 1.2.1. 使用示例  
 
 ```java
 class Point {

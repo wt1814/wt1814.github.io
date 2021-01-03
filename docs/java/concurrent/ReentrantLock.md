@@ -7,7 +7,10 @@
             - [1.1.1.1. ReentrantLock类层次结构](#1111-reentrantlock类层次结构)
             - [1.1.1.2. 构造函数](#1112-构造函数)
             - [1.1.1.3. 成员方法](#1113-成员方法)
-            - [1.1.1.4. 非公平锁的lock方法](#1114-非公平锁的lock方法)
+            - [1.1.1.4. 非公平锁NonfairSync](#1114-非公平锁nonfairsync)
+                - [1.1.1.4.1. 获取锁lock()](#11141-获取锁lock)
+                - [1.1.1.4.2. 释放锁unlock()](#11142-释放锁unlock)
+            - [1.1.1.5. 公平锁FairSync](#1115-公平锁fairsync)
         - [1.1.2. ReentrantLock与synchronized比较](#112-reentrantlock与synchronized比较)
         - [1.1.3. 使用示例](#113-使用示例)
     - [1.2. Condition，等待/通知机制](#12-condition等待通知机制)
@@ -16,12 +19,6 @@
         - [1.2.3. 使用示例](#123-使用示例)
 
 <!-- /TOC -->
-
-
-<!-- 
-一文彻底理解ReentrantLock可重入锁的使用
-http://baijiahao.baidu.com/s?id=1648624077736116382&wfr=spider&for=pc
--->
 
 # 1. ReentrantLock 
 &emsp; **<font color = "lime">一句话概述：</font>**  
@@ -34,13 +31,13 @@ http://baijiahao.baidu.com/s?id=1648624077736116382&wfr=spider&for=pc
     3. acquireQueued()使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
     4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。
 
-
 ## 1.1. ReentrantLock，重入锁  
 &emsp; ReentrantLock(Re-Entrant-Lock)，可重入互斥锁，具有与synchronized隐式锁相同的基本行为和语义，但扩展了功能。  
 
 ### 1.1.1. ReentrantLock解析  
 <!-- 
 https://blog.csdn.net/weixin_39910081/article/details/80147754
+https://blog.csdn.net/fuyuwei2015/article/details/83719444
 -->
 
 #### 1.1.1.1. ReentrantLock类层次结构  
@@ -102,7 +99,10 @@ public Condition newCondition() {
 }
 ```
 
-#### 1.1.1.4. 非公平锁的lock方法  
+#### 1.1.1.4. 非公平锁NonfairSync  
+&emsp; ReentrantLock主要利用CAS+AQS队列来实现。  
+
+##### 1.1.1.4.1. 获取锁lock()  
 &emsp; lock方法描述：  
 
 1. 在初始化ReentrantLock的时候，如果不传参数是否公平，那么默认使用非公平锁，也就是NonfairSync。  
@@ -133,6 +133,11 @@ static final class NonfairSync extends Sync {
 }
 ```
 
+##### 1.1.1.4.2. 释放锁unlock()
+
+#### 1.1.1.5. 公平锁FairSync  
+&emsp; 公平锁和非公平锁不同之处在于，公平锁在获取锁的时候，不会先去检查state状态，而是直接执行aqcuire(1)。
+
 ### 1.1.2. ReentrantLock与synchronized比较 
 &emsp; Java提供了两种锁机制来控制多个线程对共享资源的互斥访问，第一个是JVM实现的synchronized，而另一个是JDK实现的ReentrantLock。  
 &emsp; ReentrantLock与synchronized的联系：Lock接口提供了与synchronized关键字类似的同步功能，但需要在使用时手动获取锁和释放锁。ReentrantLock和synchronized都是可重入的互斥锁。  
@@ -140,7 +145,7 @@ static final class NonfairSync extends Sync {
 1. （支持非公平）ReenTrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁。所谓的公平锁就是先等待的线程先获得锁。  
 2. Lock接口可以尝试非阻塞地获取锁，当前线程尝试获取锁。如果这一时刻锁没有被其他线程获取到，则成功获取并持有锁。  
 3. （可被中断）Lock接口能被中断地获取锁，与synchronized不同，获取到锁的线程能够响应中断，当获取到的锁的线程被中断时，中断异常将会被抛出，同时锁会被释放。 可以使线程在等待锁的时候响应中断；  
-4. （支持超时）Lock接口可以在指定的截止时间之前获取锁，如果截止时间到了依旧无法获取锁，则返回。可以让线程尝试获取锁，并在无法获取锁的时候立即返回或者等待一段时间；  
+4. （支持超时/限时等待）Lock接口可以在指定的截止时间之前获取锁，如果截止时间到了依旧无法获取锁，则返回。可以让线程尝试获取锁，并在无法获取锁的时候立即返回或者等待一段时间；  
 5. （可实现选择性通知，锁可以绑定多个条件）ReenTrantLock提供了一个Condition（条件）类，用来实现分组唤醒需要唤醒的一些线程，而不是像synchronized要么随机唤醒一个线程要么唤醒全部线程。  
   
 &emsp; **什么时候选择用ReentrantLock代替synchronized？**  
