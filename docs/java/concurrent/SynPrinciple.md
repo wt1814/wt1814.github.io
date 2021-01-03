@@ -90,6 +90,7 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 * ptr_to_lock_record：指向栈中锁记录的指针。  
 * **<font color = "lime">ptr_to_heavyweight_monitor：指向monitor对象（也称为管程或监视器锁）的起始地址，每个对象都存在着一个monitor与之关联，对象与其monitor之间的关系有存在多种实现方式，如monitor对象可以与对象一起创建销毁或当前线程试图获取对象锁时自动生，但当一个monitor被某个线程持有后，它便处于锁定状态。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-56.png)   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-76.png)   
 
         为什么锁信息存放在对象头里？
         因为在Java中任意对象都可以用作锁，因此必定要有一个映射关系，存储该对象以及其对应的锁信息（比如当前哪个线程持有锁，哪些线程在等待）。一种很直观的方法是，用一个全局map，来存储这个映射关系，但这样会有一些问题：需要对map做线程安全保障，不同的Synchronized之间会相互影响，性能差；另外当同步对象较多时，该map可能会占用比较多的内存。
@@ -120,6 +121,8 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 
 ### 1.1.2. monitor对象  
 <!-- 
+https://mp.weixin.qq.com/s/nzEt7_FyOUMPY5wOJ-EeKg
+
 &emsp; 任何对象都有一个monitor与之相关联，当且一个monitor被持有之后，它将处于锁定状态。线程执行到monitorenter指令时，将会尝试获取对象所对应的monitor所有权，即尝试获取对象的锁。
 &emsp; monitor对象介绍：  
 &emsp; 每个对象有一个监视器锁（monitor），monitor本质是基于操作系统互斥（mutex）实现的，操作系统实现线程之间切换需要从用户态到内核态切换，成本非常高。一个monitor只能被一个线程拥有。
