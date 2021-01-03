@@ -295,5 +295,3 @@ https://club.perfma.com/article/2073508
 ## 1.3. 系统其他问题  
 ### 1.3.1. qps飘高  
 &emsp; 查看[秒杀系统设计](/docs/system/seckill.md)  
-
-
