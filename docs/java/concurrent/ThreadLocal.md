@@ -15,7 +15,8 @@
     - [1.5. ThreadLocal局限性（变量不具有传递性）](#15-threadlocal局限性变量不具有传递性)
         - [1.5.1. 类InheritableThreadLocal的使用](#151-类inheritablethreadlocal的使用)
         - [1.5.2. 类TransmittableThreadLocal(alibaba)的使用](#152-类transmittablethreadlocalalibaba的使用)
-    - [1.6. FastThreadLocal](#16-fastthreadlocal)
+    - [1.6. ThreadLocal和线程池](#16-threadlocal和线程池)
+    - [1.7. FastThreadLocal](#17-fastthreadlocal)
 
 <!-- /TOC -->
 
@@ -35,9 +36,6 @@
         ThreadLocal为每一个线程都提供了变量的副本，是一个线程的本地变量，也就意味着这个变量是线程独有的，是不能与其他线程共享的。即隔离了多个线程对数据的数据共享，这样就可以避免资源竞争带来的多线程的问题。  
     * 性能开销：lock是通过时间换空间的做法；ThreadLocal是典型的通过空间换时间的做法。  
     * 当然它们的使用场景也是不同的，关键看资源是需要多线程之间共享的还是单线程内部共享的。  
-
-&emsp; **ThreadLocal和线程池一起使用？**  
-&emsp; ThreadLocal对象的生命周期跟线程的生命周期一样长，那么如果将ThreadLocal对象和线程池一起使用，就可能会遇到这种情况：一个线程的ThreadLocal对象会和其他线程的ThreadLocal对象串掉，一般不建议将两者一起使用。  
 
 ## 1.1. ThreadLocal源码  
 &emsp; ThreadLocal接口方法有4个。这些方法为每一个使用这个变量的线程都存有一份独立的副本，因此get总是返回由当前线程在调用set时设置的最新值。  
@@ -317,7 +315,11 @@ public class Service {
 &emsp; 但并发、多线程就离不开线程池的使用，因为线程池能够复用线程，减少线程的频繁创建与销毁，如果使用InheritableThreadLocal，那么线程池中的线程拷贝的数据来自于第一个提交任务的外部线程，即后面的外部线程向线程池中提交任务时，子线程访问的本地变量都来源于第一个外部线程，造成线程本地变量混乱。  
 &emsp; TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
 
-## 1.6. FastThreadLocal  
+## 1.6. ThreadLocal和线程池
+&emsp; **ThreadLocal和线程池一起使用？**  
+&emsp; ThreadLocal对象的生命周期跟线程的生命周期一样长，那么如果将ThreadLocal对象和线程池一起使用，就可能会遇到这种情况：一个线程的ThreadLocal对象会和其他线程的ThreadLocal对象串掉，一般不建议将两者一起使用。  
+
+## 1.7. FastThreadLocal  
 &emsp; Netty对ThreadLocal进行了优化，优化方式是继承了Thread类，实现了自己的FastThreadLocal。FastThreadLocal的吞吐量是jdk的ThreadLocal的3倍左右。 
 
 <!-- 
