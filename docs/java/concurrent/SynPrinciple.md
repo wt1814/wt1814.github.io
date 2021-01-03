@@ -36,6 +36,8 @@ https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
 -->
 
 ## 1.1. Java对象头与monitor  
+[内存对象](/docs/java/JVM/MemoryObject.md)  
+
 ### 1.1.1. Java对象头
 <!-- 
 Java对象头与monitor

@@ -3,7 +3,7 @@
 
 - [1. 内存中对象](#1-内存中对象)
     - [1.1. 对象的创建过程](#11-对象的创建过程)
-        - [1.1.1. TLAB](#111-tlab)
+    - [1.1.1. TLAB(为对象分配内存)](#111-tlab为对象分配内存)
     - [1.2. 对象的内存布局](#12-对象的内存布局)
     - [1.3. 对象的访问定位](#13-对象的访问定位)
     - [1.4. 堆内存分配策略](#14-堆内存分配策略)
@@ -16,10 +16,6 @@
 <!-- /TOC -->
 
 # 1. 内存中对象  
-<!--
-https://mp.weixin.qq.com/s/wsgxJSpEbY3yrmL9mDC2sw
--->
-
 ## 1.1. 对象的创建过程  
 &emsp; 简述一下Java中创建一个对象的过程？  
 &emsp; 解析：回答这个问题首先就要清楚类的生命周期  
@@ -35,10 +31,10 @@ https://mp.weixin.qq.com/s/wsgxJSpEbY3yrmL9mDC2sw
     * 对于内存绝对规整的情况相对简单一些，虚拟机只需要在被占用的内存和可用空间之间移动指针即可，这种方式被称为指针碰撞。  
     * 对于内存不规整的情况稍微复杂一点，这时候虚拟机需要维护一个列表，来记录哪些内存是可用的。分配内存的时候需要找到一个可用的内存空间，然后在列表上记录下已被分配，这种方式称为空闲列表。  
         
-    &emsp; <font color = "red">分配内存的时候也需要考虑线程安全问题，有两种解决方案：</font>  
+&emsp; <font color = "red">分配内存的时候也需要考虑线程安全问题，有两种解决方案：</font>  
 
     * 第一种是采用同步的办法，使用CAS来保证操作的原子性。
-    * 另一种是每个线程分配内存都在自己的空间内进行，即是每个线程都在堆中预先分配一小块内存，称为本地线程分配缓冲（TLAB），分配内存的时候再TLAB上分配，互不干扰。
+    * **<font color = "lime">另一种是每个线程分配内存都在自己的空间内进行，即是每个线程都在堆中预先分配一小块内存，称为本地线程分配缓冲（TLAB），分配内存的时候再TLAB上分配，互不干扰。</font>**
 3. <font color = "red">为分配的内存空间初始化零值</font>  
 &emsp; 对象的内存分配完成后，还需要将对象的内存空间都初始化为零值，这样能保证对象即使没有赋初值，也可以直接使用。  
 4. <font color = "red">对对象进行其他设置</font>  
@@ -49,14 +45,23 @@ https://mp.weixin.qq.com/s/wsgxJSpEbY3yrmL9mDC2sw
 &emsp; 到此为止一个对象就产生了，这就是new关键字创建对象的过程。过程如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-60.png)  
 
-### 1.1.1. TLAB  
+## 1.1.1. TLAB(为对象分配内存)  
 &emsp; ......
 <!-- 
+https://blog.csdn.net/xiaomingdetianxia/article/details/77688945
+https://www.jianshu.com/p/8be816cbb5ed
+
 https://mp.weixin.qq.com/s/jPIHNsQwiYNCRUQt1qXR6Q
 https://mp.weixin.qq.com/s/fyorrpT5-hFpIS5aEDNjZA
 -->
 
 ## 1.2. 对象的内存布局  
+<!--
+ JOL：分析Java对象的内存布局 
+https://mp.weixin.qq.com/s/wsgxJSpEbY3yrmL9mDC2sw
+-->
+&emsp; [Synchronized原理](/docs/java/concurrent/SynPrinciple.md)  
+
 &emsp; 对象的内存布局包括三个部分：对象头，实例数据和对齐填充。
 
 * 对象头：对象头包括两部分信息，第一部分是存储对象自身的运行时数据，如哈希码，GC分代年龄，锁状态标志，线程持有的锁等等。第二部分是类型指针，即对象指向类元数据的指针。  
