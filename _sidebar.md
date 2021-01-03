@@ -58,6 +58,8 @@
     * [字节码文件](/docs/java/JVM/Class.md)  
     * [JVM类的加载](/docs/java/JVM/JVM类的加载.md)  
     * [JVM内存结构](/docs/java/JVM/JVM内存结构.md)  
+    * [内存对象](/docs/java/JVM/MemoryObject.md)  
+    * [内存泄露](/docs/java/JVM/MemoryLeak.md)  
     * [GC垃圾回收](/docs/java/JVM/GC垃圾回收.md)  
     * [JVM调优-基础](/docs/java/JVM/JVM调优-基础.md)  
     * [JVM调优](/docs/java/JVM/JVM调优.md)  
