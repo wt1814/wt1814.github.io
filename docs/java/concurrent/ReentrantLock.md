@@ -35,11 +35,6 @@
 &emsp; ReentrantLock(Re-Entrant-Lock)，可重入互斥锁，具有与synchronized隐式锁相同的基本行为和语义，但扩展了功能。  
 
 ### 1.1.1. ReentrantLock解析  
-<!-- 
-https://blog.csdn.net/weixin_39910081/article/details/80147754
-https://blog.csdn.net/fuyuwei2015/article/details/83719444
--->
-
 #### 1.1.1.1. ReentrantLock类层次结构  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-26.png)  
 
@@ -126,14 +121,238 @@ static final class NonfairSync extends Sync {
         else
             acquire(1);
     }
-
-    protected final boolean tryAcquire(int acquires) {
-        return nonfairTryAcquire(acquires);
-    }
 }
 ```
+&emsp; 首先用一个CAS操作，判断state是否是0（表示当前锁未被占用），如果是0则把它置为1，并且设置当前线程为该锁的独占线程，表示获取锁成功。当多个线程同时尝试占用同一个锁时，CAS操作只能保证一个线程操作成功。  
+
+&emsp; **<font color = "lime">“非公平”即体现在这里，如果占用锁的线程刚释放锁，state置为0，而排队等待锁的线程还未唤醒时，新来的线程就直接抢占了该锁，那么就“插队”了。</font>**  
+
+&emsp; 如果CAS失败，会执行acquire(1)方法。acquire(1)实际上使用的是AbstractQueuedSynchronizer的acquire方法。(再次理解下AQS独占模式下的获取锁过程)  
+
+&emsp; 若当前有三个线程去竞争锁，假设线程A的CAS操作成功，返回。那么线程B和C则设置state失败，走到了else里面。  
+
+```java
+public final void acquire(int arg) {
+        if (!tryAcquire(arg) &&
+acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
+            selfInterrupt();
+}
+```
+1. 第一步。尝试去获取锁。如果尝试获取锁成功，方法直接返回。  
+&emsp; acquire方法内部先使用tryAcquire这个钩子方法去尝试再次获取锁，这个方法在NonfairSync这个类中其实就是使用了nonfairTryAcquire，具体实现原理是先比较当前锁的状态是否是0，如果是0，则尝试去原子抢占这个锁（设置状态为1，然后把当前线程设置成独占线程），如果当前锁的状态不是0，就去比较当前线程和占用锁的线程是不是一个线程，如果是，会去增加状态变量的值，从这里看出可重入锁之所以可重入，就是同一个线程可以反复使用它占用的锁。如果以上两种情况都不通过，则返回失败false。代码如下：  
+
+```java
+//tryAcquire(arg)
+final boolean nonfairTryAcquire(int acquires) {
+    //获取当前线程
+    final Thread current = Thread.currentThread();
+    //获取state变量值
+    int c = getState();
+    if (c == 0) { //没有线程占用锁
+        if (compareAndSetState(0, acquires)) {
+            //占用锁成功,设置独占线程为当前线程
+            setExclusiveOwnerThread(current);
+            return true;
+        }
+    } else if (current == getExclusiveOwnerThread()) { //当前线程已经占用该锁
+        int nextc = c + acquires;
+        if (nextc < 0) // overflow
+            throw new Error("Maximum lock count exceeded");
+        // 更新state值为新的重入次数
+        setState(nextc);
+        return true;
+    }
+    //获取锁失败
+    return false;
+}
+```
+<!-- 非公平锁tryAcquire的流程是：检查state字段，若为0，表示锁未被占用，那么尝试占用，若不为0，检查当前锁是否被自己占用，若被自己占用，则更新state字段，表示重入锁的次数。如果以上两点都没有成功，则获取锁失败，返回false。-->
+
+2. tryAcquire一旦返回false，就会则进入acquireQueued流程，也就是基于CLH队列的抢占模式：  
+    3. 第二步，入队：由于上文中提到线程A已经占用了锁，所以B和C执行tryAcquire失败，并且入等待队列。如果线程A拿着锁死死不放，那么B和C就会被挂起。    
+    ```java
+    /**
+    * 将新节点和当前线程关联并且入队列
+    * @param mode 独占/共享
+    * @return 新节点
+    */
+    private Node addWaiter(Node mode) {
+        //初始化节点，设置关联线程和模式(独占 or 共享)
+        Node node = new Node(Thread.currentThread(), mode);
+        // 获取尾节点引用
+        Node pred = tail;
+        // 尾节点不为空，说明队列已经初始化过
+        if (pred != null) {
+            node.prev = pred;
+            // 设置新节点为尾节点
+            if (compareAndSetTail(pred, node)) {
+                pred.next = node;
+                return node;
+            }
+        }
+        // 尾节点为空,说明队列还未初始化，需要初始化head节点并入队新节点
+        enq(node);
+        return node;
+    }
+    ```
+    &emsp; B、C线程同时尝试入队列，由于队列尚未初始化，tail==null，故至少会有一个线程会走到enq(node)。假设同时走到了enq(node)里。  
+
+    ```java
+    /**
+    * 初始化队列并且入队新节点
+    */
+    private Node enq(final Node node) {
+        //开始自旋
+        for (;;) {
+            Node t = tail;
+            if (t == null) { // Must initialize
+                // 如果tail为空,则新建一个head节点,并且tail指向head
+                if (compareAndSetHead(new Node()))
+                    tail = head;
+            } else {
+                node.prev = t;
+                // tail不为空,将新节点入队
+                if (compareAndSetTail(t, node)) {
+                    t.next = node;
+                    return t;
+                }
+            }
+        }
+    }
+    ```
+    &emsp; 这里体现了经典的自旋+CAS组合来实现非阻塞的原子操作。由于compareAndSetHead的实现使用了unsafe类提供的CAS操作，所以只有一个线程会创建head节点成功。假设线程B成功，之后B、C开始第二轮循环，此时tail已经不为空，两个线程都走到else里面。假设B线程compareAndSetTail成功，那么B就可以返回了，C由于入队失败还需要第三轮循环。最终所有线程都可以成功入队。  
+    &emsp; 当B、C入等待队列后，此时AQS队列如下：  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-73.png)  
+    4. 第三步，挂起。B和C相继执行acquireQueued(final Node node, int arg)。这个方法让已经入队的线程尝试获取锁，若失败则会被挂起。  
+
+    ```java
+    /**
+    * 已经入队的线程尝试获取锁
+    */
+    final boolean acquireQueued(final Node node, int arg) {
+        boolean failed = true; //标记是否成功获取锁
+        try {
+            boolean interrupted = false; //标记线程是否被中断过
+            for (;;) {
+                final Node p = node.predecessor(); //获取前驱节点
+                //如果前驱是head,即该结点已成老二，那么便有资格去尝试获取锁
+                if (p == head && tryAcquire(arg)) {
+                    setHead(node); // 获取成功,将当前节点设置为head节点
+                    p.next = null; // 原head节点出队,在某个时间点被GC回收
+                    failed = false; //获取成功
+                    return interrupted; //返回是否被中断过
+                }
+                // 判断获取失败后是否可以挂起,若可以则挂起
+                if (shouldParkAfterFailedAcquire(p, node) &&
+                        parkAndCheckInterrupt())
+                    // 线程若被中断,设置interrupted为true
+                    interrupted = true;
+            }
+        } finally {
+            if (failed)
+                cancelAcquire(node);
+        }
+    }
+    ```
+    &emsp; 假设B和C在竞争锁的过程中A一直持有锁，那么它们的tryAcquire操作都会失败，因此会走到第2个if语句中。再看下shouldParkAfterFailedAcquire和parkAndCheckInterrupt方法。  
+
+    ```java
+    /**
+    * 判断当前线程获取锁失败之后是否需要挂起.
+    */
+    private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
+        //前驱节点的状态
+        int ws = pred.waitStatus;
+        if (ws == Node.SIGNAL)
+            // 前驱节点状态为signal,返回true
+            return true;
+        // 前驱节点状态为CANCELLED
+        if (ws > 0) {
+            // 从队尾向前寻找第一个状态不为CANCELLED的节点
+            do {
+                node.prev = pred = pred.prev;
+            } while (pred.waitStatus > 0);
+            pred.next = node;
+        } else {
+            // 将前驱节点的状态设置为SIGNAL
+            compareAndSetWaitStatus(pred, ws, Node.SIGNAL);
+        }
+        return false;
+    }
+    
+    /**
+    * 挂起当前线程,返回线程中断状态并重置
+    */
+    private final boolean parkAndCheckInterrupt() {
+        LockSupport.park(this);
+        return Thread.interrupted();
+    }
+    ```
+    &emsp; 线程入队后能够挂起的前提是，它的前驱节点的状态为SIGNAL，它的含义是“Hi，前面的兄弟，如果你获取锁并且出队后，记得把我唤醒！”。所以shouldParkAfterFailedAcquire会先判断当前节点的前驱是否状态符合要求，若符合则返回true，然后调用parkAndCheckInterrupt，将自己挂起。如果不符合，再看前驱节点是否>0(CANCELLED)，若是那么向前遍历直到找到第一个符合要求的前驱，若不是则将前驱节点的状态设置为SIGNAL。  
+    &emsp; 整个流程中，如果前驱结点的状态不是SIGNAL，那么自己就不能安心挂起，需要去找个安心的挂起点，同时可以再尝试下看有没有机会去尝试竞争锁。  
+
+    &emsp; 最终队列可能会如下图所示：  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-74.png) 
+
+&emsp; 用一张流程图总结一下非公平锁的获取锁的过程。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-75.png) 
 
 ##### 1.1.1.4.2. 释放锁unlock()
+&emsp; unlock方法的时序图
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-72.png)  
+
+```java
+public void unlock() {
+    sync.release(1);
+}
+  
+public final boolean release(int arg) {
+    if (tryRelease(arg)) {
+        Node h = head;
+        if (h != null && h.waitStatus != 0)
+            unparkSuccessor(h);
+        return true;
+    }
+    return false;
+}
+```
+&emsp; 调用unlock方法，其实是直接调用AbstractQueuedSynchronizer的release操作。（再次理解下AQS独占模式下的释放锁过程）  
+
+&emsp; 解锁流程大致为先尝试释放锁，若释放成功，那么查看头结点的状态是否为SIGNAL，如果是则唤醒头结点的下个节点关联的线程，如果释放失败那么返回false表示解锁失败。每次都只唤起头结点的下一个节点关联的线程。  
+<!-- 
+1、调用unlock方法，其实是直接调用AbstractQueuedSynchronizer的release操作。
+2、进入release方法，内部先尝试tryRelease操作,主要是去除锁的独占线程，然后将状态减一，这里减一主要是考虑到可重入锁可能自身会多次占用锁，只有当状态变成0，才表示完全释放了锁。
+3、一旦tryRelease成功，则将CHL队列的头节点的状态设置为0，然后唤醒下一个非取消的节点线程。
+4、一旦下一个节点的线程被唤醒，被唤醒的线程就会进入acquireQueued代码流程中，去获取锁。
+-->
+&emsp; tryRelease的执行过程  
+
+```java
+/**
+ * 释放当前线程占用的锁
+ * @param releases
+ * @return 是否释放成功
+ */
+protected final boolean tryRelease(int releases) {
+    // 计算释放后state值
+    int c = getState() - releases;
+    // 如果不是当前线程占用锁,那么抛出异常
+    if (Thread.currentThread() != getExclusiveOwnerThread())
+        throw new IllegalMonitorStateException();
+    boolean free = false;
+    if (c == 0) {
+        // 锁被重入次数为0,表示释放成功
+        free = true;
+        // 清空独占线程
+        setExclusiveOwnerThread(null);
+    }
+    // 更新state值
+    setState(c);
+    return free;
+}
+```
+&emsp; 这里入参为1。tryRelease的过程为：当前释放锁的线程若不持有锁，则抛出异常。若持有锁，计算释放后的state值是否为0，若为0表示锁已经被成功释放，并且则清空独占线程，最后更新state值，返回free。   
+
 
 #### 1.1.1.5. 公平锁FairSync  
 &emsp; 公平锁和非公平锁不同之处在于，公平锁在获取锁的时候，不会先去检查state状态，而是直接执行aqcuire(1)。
