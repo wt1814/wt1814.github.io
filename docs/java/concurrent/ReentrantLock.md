@@ -21,6 +21,7 @@
 <!-- /TOC -->
 
 # 1. ReentrantLock 
+<!-- 
 &emsp; **<font color = "lime">一句话概述：</font>**  
 &emsp; ReentrantLock默认使用非公平锁NonfairSync，调用ReentrantLock.lock()也是调用NonfairSync.lock()。流程：  
 
@@ -30,7 +31,7 @@
     2. addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；
     3. acquireQueued()使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
     4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。
-
+-->
 ## 1.1. ReentrantLock，重入锁  
 &emsp; ReentrantLock(Re-Entrant-Lock)，可重入互斥锁，具有与synchronized隐式锁相同的基本行为和语义，但扩展了功能。  
 

@@ -30,3 +30,24 @@
     * CPU飚高  
     * 内存溢出
 
+-------------
+<!-- 
+https://mp.weixin.qq.com/s/PFlZXXZU-zu_prCg5g4V0Q
+jvm全套 链接: https://pan.baidu.com/s/1PcaER6cNiDt6teawLOwpgQ 提取码: c5fh
+JVM学习目录
+https://www.cnblogs.com/ding-dang/p/13129619.html
+-->
+
+[JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM三者间的关系.md)   
+[字节码文件](/docs/java/JVM/Class.md)  
+[JVM类的加载](/docs/java/JVM/JVM类的加载.md)  
+[JVM内存结构](/docs/java/JVM/JVM内存结构.md)  
+[GC垃圾回收](/docs/java/JVM/GC垃圾回收.md)  
+[JVM调优-基础](/docs/java/JVM/JVM调优-基础.md)  
+[JVM调优](/docs/java/JVM/JVM调优.md)  
+&emsp; [JVM排查案例](/docs/java/JVM/case.md)  
+[JAVA线上故障排查](/docs/Linux/problem.md)  
+[Arthas](/docs/java/JVM/Arthas.md)  
+[JMH](/docs/java/JVM/JMH.md)  
+
+
