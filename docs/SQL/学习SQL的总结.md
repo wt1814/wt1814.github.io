@@ -23,4 +23,7 @@
 表中数据很大：
     1. 修改表结构
     2. 删除数据
+
+MySQL 在并发场景下会遇到的问题及解决方案～ 
+https://mp.weixin.qq.com/s/tFiTv7a8VFvU-paghtGkcw
 -->

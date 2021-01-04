@@ -66,4 +66,7 @@ https://mp.weixin.qq.com/s/1lSdfafmJeNgCrXDe7pLhw
 全面解析微服务系统监控分层，啃透服务治理核心！ 
 https://mp.weixin.qq.com/s/5xCL7KkMpnsfB6ivG4-0MQ
 
+ 三分钟构建自动化运维平台-nightingale(夜莺) 
+ https://mp.weixin.qq.com/s/LwsR3o0Ze6fQiYXgGVZrqw
+
 -->
