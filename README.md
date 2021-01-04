@@ -166,7 +166,7 @@
 &emsp; [MySqlMVCC](/docs/SQL/MVCC.md)  
 &emsp; [MySql事务日志](/docs/SQL/log.md)  
 [数据库分布式](/docs/SQL/4.分布式数据库.md)  
-&emsp; [主从复制](/docs/SQL/1   6.replication.md)  
+&emsp; [主从复制](/docs/SQL/16.replication.md)  
 &emsp; &emsp; [主从复制的高可用](/docs/SQL/replicationAvailability.md)   
 &emsp; &emsp; [主从复制的问题](/docs/SQL/replicationProblem.md)  
 &emsp; &emsp; [读写分离](/docs/SQL/SeparationReade.md)  

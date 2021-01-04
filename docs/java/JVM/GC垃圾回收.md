@@ -95,13 +95,6 @@ https://mp.weixin.qq.com/s/Tahs-CrAxNUmooPRDHiYIg
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-56.png)  
 
-&emsp; GC主要解决下面的三个问题：  
-
-* 哪些内存需要回收？&emsp; GC回收的主要区域是堆、方法区。  
-* 什么时候回收？  
-* 如何回收？  
-
-# 1. GC
 &emsp; **<font color = "lime">总结：</font>**  
 1. 堆中对象：  
     1. 存活标准：引用计数法、根可达性分析法  
@@ -111,6 +104,14 @@ https://mp.weixin.qq.com/s/Tahs-CrAxNUmooPRDHiYIg
     1. GC算法
     2. Young GC与Full GC
     3. 垃圾回收器  
+    
+
+# 1. GC  
+&emsp; GC主要解决下面的三个问题：  
+
+* 哪些内存需要回收？&emsp; GC回收的主要区域是堆、方法区。  
+* 什么时候回收？  
+* 如何回收？  
 
 ## 1.1. 堆中对象的存活
 <!-- https://juejin.im/post/5e151b38f265da5d495c8025 --> 
@@ -539,7 +540,7 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
 
 &emsp; **<font color = "red">由于在整个过程中耗时最长的并发标记和并发清除阶段中，垃圾收集器线程都可以与用户线程一起工作，所以从总体上来说，CMS收集器的内存回收过程是与用户线程一起并发执行的。</font>**  
 
-&emsp; CMS是一款优秀的收集器，它最主要的优点在名字上已经体现出来： **<font color = "lime">并发收集、低停顿。</font>** 但是也有以下**<font color = "red">三个明显的缺点：</font>**  
+&emsp; CMS是一款优秀的收集器，它最主要的优点在名字上已经体现出来： **<font color = "lime">并发收集、低停顿。</font>** 但是也有以下 **<font color = "red">三个明显的缺点：</font>**  
 
 * **<font color = "lime">吞吐量低</font>**    
 &emsp; <font color = "red">由于CMS在垃圾收集过程使用用户线程和GC线程并行执行，从而线程切换会有额外开销，</font>因此CPU吞吐量就不如在GC过程中停止一切用户线程的方式来的高。
