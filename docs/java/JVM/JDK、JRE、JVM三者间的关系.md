@@ -20,7 +20,7 @@ https://mp.weixin.qq.com/s/-CbNU5uPH1cpMuZ-eQQgFw
 
 * bin：一堆 EXE 可执行文件，java.exe、javac.exe、javadoc.exe，已经密钥管理工具等。  
 * db：内置了Derby数据库，体积小，免安装。  
-* include：Java 和 JVM 交互的头文件，例如我们 JVMTI 写的 C++ 工程时，就需要把这个 include 包引入进去jvmti.h。例如：基于jvmti设计非入侵监控  
+* include：Java 和 JVM 交互的头文件，例如JVMTI 写的 C++ 工程时，就需要把这个 include 包引入进去jvmti.h。例如：基于jvmti设计非入侵监控  
 * jre：Java 运行环境，包含了运行时需要的可执行文件，以及运行时需要依赖的Java类库和动态链接库.so .dll .dylib  
 * lib：Java 类库，例如 dt.jar、tools.jar  
 

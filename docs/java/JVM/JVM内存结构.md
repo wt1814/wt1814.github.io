@@ -166,7 +166,7 @@ https://mp.weixin.qq.com/s/Tv-0hjIgN9Grqvch1fFUiA -->
 &emsp; **<font color = "red">堆分类：从垃圾回收的角度，由于现在收集器基本都采用分代垃圾收集算法，所以Java堆还可以细分为：新生代和老年代。新生代内存又被分成三部分，Eden、From Survivor、To Survivor，默认情况下年轻代按照8 :1 :1的比例来分配。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-10.png)  
 
-&emsp; **<font color = "red">在Eden区中，JVM 为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。    
+&emsp; **<font color = "red">在Eden区中，JVM 为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
 
 ### 1.4.2. 堆是分配对象存储的唯一选择吗？（逃逸分析）  
 <!-- 
@@ -206,7 +206,7 @@ public class ObjectEscape{
     }
 }
 ```
-&emsp; 在ObjectEscape类中，存在一个成员变量user，我们在init()方法中，创建了一个User类的对象，并将其赋值给成员变量user。此时，对象被复制给了成员变量，可能被外部使用，此时的变量就发生了逃逸。  
+&emsp; 在ObjectEscape类中，存在一个成员变量user，在init()方法中，创建了一个User类的对象，并将其赋值给成员变量user。此时，对象被复制给了成员变量，可能被外部使用，此时的变量就发生了逃逸。  
 &emsp; 另一种典型的场景就是：对象通过return语句返回。如果对象通过return语句返回了，此时的程序并不能确定这个对象后续会不会被使用，外部的线程可以访问到这个变量，此时对象也发生了逃逸。  
 &emsp; 可以用下面的代码来表示这个现象。  
 
