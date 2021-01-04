@@ -17,6 +17,8 @@
 
 # 1. Linux问题排查
 <!-- 
+JAVA 线上故障排查完整套路
+https://mp.weixin.qq.com/s/aqvXXdrJyslXuhXE6IqYfw
 能说几个常见的Linux性能调优命令吗能说几个常见的Linux性能调优命令吗
 https://mp.weixin.qq.com/s/FlRdH3ejNE2VybBMeyiFHg
 

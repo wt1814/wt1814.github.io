@@ -37,6 +37,7 @@
                 - [1.3.2.3.1. G1的内存布局](#13231-g1的内存布局)
                 - [1.3.2.3.2. G1运行流程](#13232-g1运行流程)
                 - [1.3.2.3.3. G1优缺点](#13233-g1优缺点)
+                - [收集过程](#收集过程)
                 - [1.3.2.3.4. 使用G1](#13234-使用g1)
             - [1.3.2.4. 常用的收集器组合](#1324-常用的收集器组合)
             - [1.3.2.5. ZGC](#1325-zgc)
@@ -48,57 +49,28 @@
 
 <!-- /TOC -->
 
+
 <!-- 
 亿级流量系统如何玩转 JVM 
 https://mp.weixin.qq.com/s/_uKSQjI--eT3n04Voel5_g
-
-JAVA 线上故障排查完整套路
-https://mp.weixin.qq.com/s/aqvXXdrJyslXuhXE6IqYfw
-
-https://mp.weixin.qq.com/s/Cz3fXRRT1B8iAd36fNTdPA
-
-JVM夺命连环10问 
-https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
-
-https://mp.weixin.qq.com/s/IH9p5X7WveKGx1ujfHzFag
-
-
-MinorGC 和 FullGC的理解
-https://www.cnblogs.com/leeego-123/p/11298267.html
+CMS GC
+https://mp.weixin.qq.com/s/WqfzZRlk2NMkNc5a_Yjpdw
 
 &emsp; 可以作为GC ROOT的对象包括：  
 1. 栈中引用的对象
 2. 静态变量、常量引用的对象
 3. 本地方法栈native方法引用的对象
+-->
+<!-- 
+~~
 
-JVM之垃圾收集篇
-https://mp.weixin.qq.com/s/5vfnww5dmOzdScYHJQOy8w
-
-CMS GC
-https://mp.weixin.qq.com/s/WqfzZRlk2NMkNc5a_Yjpdw
-
-ZGC
-https://mp.weixin.qq.com/s/5trCK-KlwikKO-R6kaTEAg
-
-深入理解Major GC, Full GC, CMS
-https://blog.csdn.net/hellozhxy/article/details/80649342
-https://www.cnblogs.com/caiba/p/10693682.html
-https://blog.csdn.net/weixin_42615068/article/details/102813947s    
-
-Java 虚拟机垃圾收集机制详解 
-https://mp.weixin.qq.com/s/Tahs-CrAxNUmooPRDHiYIg
-
-
- 一文读懂Java 11的ZGC为何如此高效 
- https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
- 深度揭秘垃圾回收底层，这次让你彻底弄懂她 
+https://mp.weixin.qq.com/s/IH9p5X7WveKGx1ujfHzFag
+深度揭秘垃圾回收底层，这次让你彻底弄懂她 
 https://mp.weixin.qq.com/s?__biz=MzU4Mjk0MjkxNA==&mid=2247487815&idx=2&sn=c94666e98b4f3c6e46f4e9378f3f4e39&chksm=fdb1f8eacac671fc587323800a0421cdf015b59b10ac8086936f28cfa9f6921410ab7fbd28c4&scene=21#wechat_redirect
 炸了！一口气问了我18个JVM问题！ 
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
-
-
-
 -->
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-56.png)  
 
 &emsp; **<font color = "lime">总结：</font>**  
@@ -198,7 +170,6 @@ Java设计这四种引用的主要目的有两个：
 Map<String, SoftReference<Bitmap>> imageCache = new HashMap<>();  
 ```  
 
------
 ### 1.1.2. 对象生存还是死亡
 
 <!-- 
@@ -206,6 +177,15 @@ Map<String, SoftReference<Bitmap>> imageCache = new HashMap<>();
 &emsp; 1）如果对象在可达性分析算法中不可达，那么它会被第一次标记并进行一次刷选，刷选的条件是是否需要执行finalize()方法（当对象没有覆盖finalize()或者finalize()方法已经执行过了（对象的此方法只会执行一次）），虚拟机将这两种情况都会视为没有必要执行）。  
 &emsp; 2）如果这个对象有必要执行finalize()方法会将其放入F-Queue队列中，稍后GC将对F-Queue队列进行第二次标记，如果在重写finalize()方法中将对象自己赋值给某个类变量或者对象的成员变量，那么第二次标记时候就会将它移出“即将回收”的集合。  
 &emsp; finalize()能做的工作，使用try-finally或者其他方式都能做到更好，更及时，所以不建议使用此方法。  
+
+
+在可达性分析中被判定为不可达的对象，并不是立即赴死，至少要经历两次标记过程：如果对象在进行可达性分析后发现没有与 GC Root 相连接的引用链，那么它将被第一次标记，随后再进行一次筛选，筛选条件是对象是否有必要执行 finalize() 方法，如果对象没有覆盖 finalize() 方法或是 finalize() 方法已经被调用过，则都视为“没有必要执行”
+
+如果对象被判定为有必要执行 finalize() 方法，那么该对象将会被放置在一个名为 F-Queue 的队列之中，并在稍后由一条由虚拟机自动创建的、低调度优先级的 Finalizer 线程去执行它们的 finalize() 方法。注意这里所说的执行是指虚拟机会触发这个方法开始运行，但并不承诺一定会等待它运行结束。这样做的原因是防止某个对象的 finalize() 方法执行缓慢，或者发生死循环，导致 F-Queue 队列中的其他对象永久处于等待状态
+
+finalize() 方法是对象逃脱死亡命运的最后一次机会，稍后收集器将对 F-Queue 中的对象进行第二次小规模标记，如果对象希望在 finalize() 方法中成功拯救自己，只要重新与引用链上的任何一个对象建立关联即可，那么在第二次标记时它将被移出“即将回收”的集合；如果对象这时候还没有逃脱，那基本上就真的要被回收了
+
+任何一个对象的 finalize() 方法都只会被系统自动调用一次，如果对象面临下一次回收，它的 finalize() 方法将不会再执行。finalize() 方法运行代价高，不确定性大，无法保证各个对象的调用顺序，因此已被官方明确声明为不推荐使用的语法
 -->
 <!-- 
 https://www.jianshu.com/p/0618241f9f44
@@ -364,6 +344,28 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
     * 缺点：<font color = "red">扫描两次，，指针需要调整（移动对象），效率偏低。</font>  
 
 ### 1.2.4. 分代收集理论  
+<!-- 
+https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
+https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
+
+分代收集理论
+
+当前商业虚拟机的垃圾收集器大多数都遵循了“分代收集”的设计理论，分代收集理论其实是一套符合大多数程序运行实际情况的经验法则，主要建立在两个分代假说之上：
+
+    弱分代假说：绝大多数对象都是朝生夕灭的
+
+    强分代假说：熬过越多次垃圾收集过程的对象就越难以消亡
+
+这两个分代假说共同奠定了多款常用垃圾收集器的一致设计原则：收集器应该将 Java 堆划分出不同的区域，将回收对象依据年龄（即对象熬过垃圾收集过程的次数）分配到不同的区域之中存储，把存活时间短的对象集中在一起，每次回收只关注如何保留少量存活的对象，即新生代（Young Generation）；把难以消亡的对象集中在一起，虚拟机就可以使用较低的频率来回收这个区域，即老年代（Old Generation）
+
+正因为划出了不同的区域，垃圾收集器才可以每次只回收其中一个或多个区域，因此才有了“Minor GC”、“Major GC”、“Full GC”这样的回收类型划分，也才能够针对不同的区域采用不同的垃圾收集算法，因而有了“标记-复制”算法、“标记-清除”算法、“标记-整理”算法
+
+分代收集并非只是简单划分一下内存区域，它至少存在一个明显的困难：对象之间不是孤立的，对象之间会存在跨代引用。假如现在要进行只局限于新生代的垃圾收集，根据前面可达性分析的知识，与 GC Roots 之间不存在引用链即为可回收，但新生代的对象很有可能会被老年代所引用，那么老年代对象将临时加入 GC Roots 集合中，我们不得不再额外遍历整个老年代中的所有对象来确保可达性分析结果的正确性，这无疑为内存回收带来很大的性能负担。为了解决这个问题，就需要对分代收集理论添加第三条经验法则：
+
+    跨代引用假说：跨代引用相对于同代引用仅占少数
+
+存在互相引用的两个对象，应该是倾向于同时生存或同时消亡的，举个例子，如果某个新生代对象存在跨代引用，由于老年代对象难以消亡，会使得新生代对象同样在收集时得以存活，进而年龄增长后晋升到老年代，那么跨代引用也随之消除了。既然跨代引用只是少数，那么就没必要去扫描整个老年代，也不必专门记录每一个对象是否存在哪些跨代引用，只需在新生代上建立一个全局的数据结构，称为记忆集（Remembered Set），这个结构把老年代划分为若干个小块，标识出老年代的哪一块内存会存在跨代引用。此后当发生 Minor GC 时，只有包含了跨代引用的小块内存里的对象才会被加入 GC Roots 进行扫描
+-->
 &emsp; 新生代采用复制算法、老年代采用标记-整理算法。  
 &emsp; 
 
@@ -381,7 +383,6 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
 * 当老年代空间不足，那么触发full gc，STW的时间更长  
 
 #### 1.2.4.1. HotSpot GC  
-
 &emsp; GC经常发生的区域是堆区，堆区还可以细分为新生代、老年代，新生代还分为一个Eden区和两个Survivor区。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-33.png)  
 
@@ -567,9 +568,10 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
 <!-- 
 https://www.cnblogs.com/cuizhiquan/articles/10961354.html
 https://mp.weixin.qq.com/s/dWg5S7m-LUQhxUofHfqb3g
+https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
 
 -->
-&emsp; G1是目前技术发展的最前沿成果之一，HotSpot开发团队赋予它的使命是未来可以替换掉JDK1.5中发布的CMS收集器。  
+&emsp; G1(Garbage first)是目前技术发展的最前沿成果之一，HotSpot开发团队赋予它的使命是未来可以替换掉JDK1.5中发布的CMS收集器。  
 &emsp; G1是一款而向服务端应用的垃圾收集器。G1回收器在jdk1.9后成为了JVM的默认垃圾回收器。  
 &emsp; 通过把Java堆分成大小相等的多个独立区域，回收时计算出每个区域回收所获得的空间以及所需时间的经验值，根据记录两个值来判断哪个区域最具有回收价值，所以叫Garbage First（垃圾优先）。
 
@@ -612,7 +614,16 @@ https://mp.weixin.qq.com/s/dWg5S7m-LUQhxUofHfqb3g
 ---------
     G1 收集器两个最突出的改进是：  
     1. 基于标记-整理算法，不产生内存碎片。
-    2. 可以非常精确控制停顿时间，在不牺牲吞吐量前提下，实现低停顿垃圾回收。
+    2. 可以非常精确控制停顿时间，在不牺牲吞吐量前提下，实现低停顿垃圾回收。  
+
+##### 收集过程
+&emsp; 收集过程：  
+&emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-95.png)  
+&emsp; G1的回收过程主要分为 3 类：  
+&emsp; （1）G1“年轻代”的垃圾回收，同样叫 Minor G1，这个过程和我们前面描述的类似，发生时机就是 Eden 区满的时候。  
+（2）老年代的垃圾收集，严格上来说其实不算是收集，它是一个“并发标记”的过程，顺便清理了一点点对象。  
+&emsp; （3）真正的清理，发生在“混合模式”，它不止清理年轻代，还会将老年代的一部分区域进行清理。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-96.png)  
 
 ##### 1.3.2.3.4. 使用G1  
 &emsp; **开启G1：** 在JDK9之前，JDK7和JDK8默认都是ParallelGC垃圾回收。到了JDK9，G1才是默认的垃圾回收器。所以如果JDK7或者JDK8需要使用G1的话，需要通过参数（-XX:+UseG1GC）显示执行垃圾回收器。而JDK9以后的版本，不需要任何JVM参数，默认就是G1垃圾回收模式，显示指定G1运行一个Demo程序如下：  
@@ -637,6 +648,10 @@ java -Xmx1g -Xms1g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -jar demo.jar
 <!-- 
  新一代垃圾回收器ZGC的探索与实践 
  https://mp.weixin.qq.com/s/ag5u2EPObx7bZr7hkcrOTg
+ ZGC
+https://mp.weixin.qq.com/s/5trCK-KlwikKO-R6kaTEAg
+一文读懂Java 11的ZGC为何如此高效 
+https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
 
 -->
 &emsp; 一款由Oracle公司研发的，以低延迟为首要目标的一款垃圾收集器。它是基于动态Region内存布局，（暂时）不设年龄分代，使用了读屏障、染色指针和内存多重映射等技术来实现可并发的标记-整理算法的收集器。在JDK 11新加入，还在实验阶段，主要特点是：回收TB级内存（最大4T），停顿时间不超过10ms  
@@ -736,6 +751,32 @@ java -Xmx1g -Xms1g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -jar demo.jar
 * 如果响应时间最重要，并且不能超过1秒，使用并发收集器  
 * 对于G1收集  
 
+<!-- 
+    如果你的堆大小不是很大（比如 100MB），选择串行收集器一般是效率最高的。
+
+    参数：-XX:+UseSerialGC。
+
+    如果你的应用运行在单核的机器上，或者你的虚拟机核数只有单核，选择串行收集器依然是合适的，这时候启用一些并行收集器没有任何收益。
+
+    参数：-XX:+UseSerialGC。
+
+    如果你的应用是“吞吐量”优先的，并且对较长时间的停顿没有什么特别的要求。选择并行收集器是比较好的。
+
+    参数：-XX:+UseParallelGC。
+
+    如果你的应用对响应时间要求较高，想要较少的停顿。甚至 1 秒的停顿都会引起大量的请求失败，那么选择G1、ZGC、CMS都是合理的。虽然这些收集器的 GC 停顿通常都比较短，但它需要一些额外的资源去处理这些工作，通常吞吐量会低一些。
+
+    参数：
+
+    -XX:+UseConcMarkSweepGC、
+
+    -XX:+UseG1GC、
+
+    -XX:+UseZGC 等。
+
+从上面这些出发点来看，我们平常的 Web 服务器，都是对响应性要求非常高的。选择性其实就集中在 CMS、G1、ZGC上。而对于某些定时任务，使用并行收集器，是一个比较好的选择。
+-->
+
 ### 1.3.4. ~~垃圾收集器常用参数~~  
 &emsp; -XX:+UseSerialGC：在新生代和老年代使用串行收集器  
 &emsp; -XX:+UseParNewGC：在新生代使用并行收集器  
@@ -764,4 +805,22 @@ java -Xmx1g -Xms1g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -jar demo.jar
 
 &emsp; 如何判断⼀个常量是废弃常量?   
 &emsp; 运行时常量主要回收的是废弃的常量。假如在常量池中存在字符串"abc"，如果当前没有任何String对象引用该字符串常量的话，就说明常量"abc"就是废弃常量，如果这时发生内存回收的话而且有必要的话，"abc"就会被系统清理出常量池。  
+
+
+<!-- 
+方法区的垃圾收集主要回收两部分：废弃的常量和不再使用的类型。
+
+废弃常量以及无用类
+3.1，如何判断一个常量是废弃常量？
+运行时常量池主要回收的是废弃的常量。那么，我们如何判断一个常量是废弃常量呢?
+假如在常量池中存在字符串"abc" ,如果当前没有任何String对象引用该字符串常量的话，就说明常量"abc"就是废弃常量,如果这时发生内存回收的话而且有必要的话，" abc"就会被系统清理出常量池。
+3.2，如何判断一个类是无用的类？
+判定一个常量是否是“废弃常量”比较简单，而要判定一个类是否是“无用的类”的条件则相对苛刻许多。方法区主要回收无用的类，类需要同时满足下面3个条件才能算是 “无用的类” ：
+
+    该类所有的实例都已经被回收，也就是 Java 堆中不存在该类的任何实例。
+    加载该类的 ClassLoader 已经被回收。
+    该类对应的 java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。
+
+虚拟机可以对满足上述3个条件的无用类进行回收，这里说的仅仅是“可以”，而并不是和对象一样不使用了就会必然被回收。
+-->
 
