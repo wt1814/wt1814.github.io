@@ -91,8 +91,14 @@ https://mp.weixin.qq.com/s/Tahs-CrAxNUmooPRDHiYIg
 
  一文读懂Java 11的ZGC为何如此高效 
  https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
--->
+ 深度揭秘垃圾回收底层，这次让你彻底弄懂她 
+https://mp.weixin.qq.com/s?__biz=MzU4Mjk0MjkxNA==&mid=2247487815&idx=2&sn=c94666e98b4f3c6e46f4e9378f3f4e39&chksm=fdb1f8eacac671fc587323800a0421cdf015b59b10ac8086936f28cfa9f6921410ab7fbd28c4&scene=21#wechat_redirect
+炸了！一口气问了我18个JVM问题！ 
+https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 
+
+
+-->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-56.png)  
 
 &emsp; **<font color = "lime">总结：</font>**  

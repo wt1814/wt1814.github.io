@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. ForkJoinPool JDK 1.7](#1-forkjoinpool-jdk-17)
+- [1. ForkJoinPool](#1-forkjoinpool)
     - [1.1. ForkJoinPool内部原理，工作窃取算法](#11-forkjoinpool内部原理工作窃取算法)
         - [1.1.1. 分而治之](#111-分而治之)
         - [1.1.2. 工作窃取(Work Stealing)算法](#112-工作窃取work-stealing算法)
@@ -14,11 +14,10 @@
 <!-- /TOC -->
 
 
-# 1. ForkJoinPool JDK 1.7  
+# 1. ForkJoinPool  
 <!-- 
 http://ifeve.com/talk-concurrency-forkjoin/
 -->
-
 &emsp; ForkJoinPool是java 7中新增的线程池类。  
 &emsp; 为什么使用ForkJoinPool？  
 &emsp; ThreadPoolExecutor中每个任务都是由单个线程独立处理的，如果出现一个非常耗时的大任务(比如大数组排序)，就可能出现线程池中只有一个线程在处理这个大任务，而其他线程却空闲着，这会导致CPU负载不均衡：空闲的处理器无法帮助工作繁忙的处理器。  

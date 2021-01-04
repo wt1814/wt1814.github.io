@@ -7,23 +7,48 @@
 
 <!-- /TOC -->
 
+
+# 1. JDK、JRE、JVM  
 <!-- 
-https://mp.weixin.qq.com/s/h-q3yfadzGOpx9XKfWBkfw 
-
-https://mp.weixin.qq.com/s/PFlZXXZU-zu_prCg5g4V0Q
-jvm全套 链接: https://pan.baidu.com/s/1PcaER6cNiDt6teawLOwpgQ 提取码: c5fh
-
-JVM学习目录
-https://www.cnblogs.com/ding-dang/p/13129619.html
-
 JDK、JRE、JVM，是什么关系？
 https://mp.weixin.qq.com/s/-CbNU5uPH1cpMuZ-eQQgFw
 -->
-# 1. JDK、JRE、JVM  
 ## 1.1. JDK  
-&emsp; JDK（Java SE Development Kit）：是整个JAVA的核心，Java标准开发包。它提供了编译、运行Java程序所需的各种工具和资源，包括Java编译器即JDK中的javac.exe、Java运行环境JRE，以及Java基础的类库（即Java API，包括rt.jar）。  
+&emsp; JDK(Java SE Development Kit)：是整个JAVA的核心，Java标准开发包。它提供了编译、运行Java程序所需的各种工具和资源，包括Java编译器即JDK中的javac.exe、Java运行环境JRE，以及Java基础的类库（即Java API，包括rt.jar）。  
 &emsp; 下图是JDK的安装目录：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-1.png)  
+
+* bin：一堆 EXE 可执行文件，java.exe、javac.exe、javadoc.exe，已经密钥管理工具等。  
+* db：内置了Derby数据库，体积小，免安装。  
+* include：Java 和 JVM 交互的头文件，例如我们 JVMTI 写的 C++ 工程时，就需要把这个 include 包引入进去jvmti.h。例如：基于jvmti设计非入侵监控  
+* jre：Java 运行环境，包含了运行时需要的可执行文件，以及运行时需要依赖的Java类库和动态链接库.so .dll .dylib  
+* lib：Java 类库，例如 dt.jar、tools.jar  
+
+&emsp; JDK 是 JRE 的超集，JDK 包含了 JRE 所有的开发、调试以及监视应用程序的工具。以及如下重要的组件：  
+
+* java – 运行工具，运行 .class 的字节码
+* javac– 编译器，将后缀名为.java的源代码编译成后缀名为.class的字节码
+* javap – 反编译程序
+* javadoc – 文档生成器，从源码注释中提取文档，注释需符合规范
+* jar – 打包工具，将相关的类文件打包成一个文件
+* jdb – debugger，调试工具
+* jps – 显示当前java程序运行的进程状态
+* appletviewer – 运行和调试applet程序的工具，不需要使用浏览器
+* javah – 从Java类生成C头文件和C源文件。这些文件提供了连接胶合，使 Java 和 C 代码可进行交互。
+* javaws – 运行 JNLP 程序
+* extcheck – 一个检测jar包冲突的工具
+* apt – 注释处理工具
+* jhat – java堆分析工具
+* jstack – 栈跟踪程序
+* jstat – JVM检测统计工具
+* jstatd – jstat守护进程
+* jinfo – 获取正在运行或崩溃的java程序配置信息
+* jmap – 获取java进程内存映射信息
+* idlj – IDL-to-Java 编译器. 将IDL语言转化为java文件
+* policytool – 一个GUI的策略文件创建和管理工具
+* jrunscript – 命令行脚本运行
+* appletviewer：小程序浏览器，一种执行HTML文件上的Java小程序的Java浏览器
+
 &emsp; Java程序从源代码到运行一般有下面3步：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-2.png)  
 &emsp; Java源文件，通过编译器，能够生产相应的.Class文件，也就是字节码文件；而字节码文件又通过Java虚拟机中的解释器，编译成特定机器上的机器码。  

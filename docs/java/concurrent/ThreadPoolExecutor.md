@@ -15,24 +15,10 @@
 <!-- /TOC -->
 
 <!--
-
-面试必备之线程池
-https://mp.weixin.qq.com/s/9l2l2whLgYPrBbsGv3Xw6w
-
-线程池中多余的线程是如何回收的？
-https://mp.weixin.qq.com/s/bKZCcbSRdha1TAxAP9_J9w
-
-线程池---如何保证核心线程不被销毁的
-https://blog.csdn.net/m0_37039331/article/details/87734270
-
-
 https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
 https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
 深入分析线程池的实现原理 
 https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
-
-  【Java并发编程】从源码分析几道必问线程池的面试题？ 
-  https://mp.weixin.qq.com/s/cXNuepxoYbu4himXrwammA
 -->
 
 # 1. ThreadPoolExecutor
@@ -143,9 +129,7 @@ private void decrementWorkerCount() {
 ```
 
 &emsp; **<font color = "red">线程池状态：</font>**  
-&emsp; 整型包装类型Integer实例的大小是4 byte，一共32 bit，也就是一共有32个位用于存放0或者1。在ThreadPoolExecutor实现中，使用32位的整型包装类型存放工作线程数和线程池状态。其中，低29位用于存放工作线程数，而高3位用于存放线程池状态。  
-
-&emsp; **<font color = "red">线程池存在5种状态：</font>**  
+&emsp; 整型包装类型Integer实例的大小是4 byte，一共32 bit，也就是一共有32个位用于存放0或者1。在ThreadPoolExecutor实现中，使用32位的整型包装类型存放工作线程数和线程池状态。其中，低29位用于存放工作线程数，而高3位用于存放线程池状态。**<font color = "red">线程池存在5种状态：</font>**  
 
 * RUNNING：高3位为111，在这个状态的线程池能判断接收新提交的任务，并且也能处理阻塞队列中的任务。  
 * SHUTDOWN：高3位为000，处于关闭的状态，该线程池不能接收新提交的任务，但是可以处理阻塞队列中已经保存的任务，在线程处于RUNNING状态，调用shutdown()方法能切换为该状态。  
@@ -205,7 +189,14 @@ public ThreadPoolExecutor(int corePoolSize,
 * long  keepAliveTime：空闲线程（超出corePoolSize的线程）的生存时间。这些线程如果长时间没有执行任务，并且超过了keepAliveTime设定的时间，就会消亡。  
 * TimeUnit unit：参数keepAliveTime的单位。有7种取值，在TimeUnit类中有7种静态属性：TimeUnit.DAYS；TimeUnit.HOURS；  
 * BlockingQueue<Runnable\>  workQueue：任务阻塞队列，是java.util.concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样,如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态,直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition(显示锁Lock及Condition的学习与使用)来实现阻塞和唤醒。  
-* ThreadFactory threadFactory：创建线程的工厂。  
+* ThreadFactory threadFactory：用户设置创建线程的工厂，可以通过这个工厂来创建有业务意义的线程名字。可以对比下自定义的线程工厂和默认的线程工厂创建的名字。   
+ 
+|默认产生线程的名字	|自定义线程工厂产生名字|
+|---|---|
+|pool-5-thread-1|testPool-1-thread-1|
+&emsp; 阿里开发手册也有明确说到，需要指定有意义的线程名字。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-18.png)  
+
 * RejectedExecutionHandler  handler：<font color = "red">当提交任务数超过maxmumPoolSize+workQueue之和时，任务会交给RejectedExecutionHandler来处理，执行拒绝策略。</font>有四种策略，<font color = "lime">默认是AbortPolicy(丢弃任务并抛出RejectedExecutionException异常)</font>。内置拒绝策略均实现了RejectedExecutionHandler接口，若以下策略仍无法满足实际需要，可以扩展RejectedExecutionHandler接口。  
 
     | 名称 | Condition |  
@@ -785,6 +776,3 @@ private void interruptIdleWorkers(boolean onlyOne) {
 
     If otherwise eligible to terminate but workerCount is nonzero, interrupts an idle worker to ensure that shutdown signals propagate.
     当满足终结线程池的条件但是工作线程数不为0，这个时候需要中断一个空闲的工作线程去确保线程池关闭的信号得以传播。
-
-
-
