@@ -1,296 +1,49 @@
 
-
 <!-- TOC -->
 
 - [1. GC](#1-gc)
-    - [1.1. 堆中对象的存活](#11-堆中对象的存活)
-        - [1.1.1. GC的存活标准](#111-gc的存活标准)
-            - [1.1.1.1. 引用计数法](#1111-引用计数法)
-            - [1.1.1.2. 根可达性分析法](#1112-根可达性分析法)
-            - [1.1.1.3. 对象的四种引用状态，强弱软虚](#1113-对象的四种引用状态强弱软虚)
-                - [1.1.1.3.1. 强引用](#11131-强引用)
-                - [1.1.1.3.2. 软引用](#11132-软引用)
-                - [1.1.1.3.3. 弱引用](#11133-弱引用)
-                - [1.1.1.3.4. 虚引用](#11134-虚引用)
-                - [1.1.1.3.5. 软引用和弱引用的使用](#11135-软引用和弱引用的使用)
-        - [1.1.2. 对象生存还是死亡](#112-对象生存还是死亡)
-            - [1.1.2.1. null与GC](#1121-null与gc)
-    - [1.2. GC算法](#12-gc算法)
-        - [1.2.1. 标记-清除（Mark-Sweep）算法](#121-标记-清除mark-sweep算法)
-        - [1.2.2. 标记-复制（Copying）算法](#122-标记-复制copying算法)
-        - [1.2.3. 标记-整理（Mark-Compact）算法](#123-标记-整理mark-compact算法)
-        - [1.2.4. 分代收集理论](#124-分代收集理论)
-            - [1.2.4.1. HotSpot GC](#1241-hotspot-gc)
-            - [1.2.4.2. Stop the world](#1242-stop-the-world)
-    - [1.3. 垃圾回收器](#13-垃圾回收器)
-        - [1.3.1. 收集器分类](#131-收集器分类)
-        - [1.3.2. 收集器详解](#132-收集器详解)
-            - [1.3.2.1. 新生代收集器](#1321-新生代收集器)
-                - [1.3.2.1.1. Serial收集器](#13211-serial收集器)
-                - [1.3.2.1.2. ParNew收集器](#13212-parnew收集器)
-                - [1.3.2.1.3. Parallel Scavenge收集器](#13213-parallel-scavenge收集器)
-            - [1.3.2.2. 老年代收集器](#1322-老年代收集器)
-                - [1.3.2.2.1. Serial Old收集器](#13221-serial-old收集器)
-                - [1.3.2.2.2. Parallel Old收集器](#13222-parallel-old收集器)
-                - [1.3.2.2.3. CMS收集器](#13223-cms收集器)
-            - [1.3.2.3. G1收集器](#1323-g1收集器)
-                - [1.3.2.3.1. G1的内存布局](#13231-g1的内存布局)
-                - [1.3.2.3.2. G1运行流程](#13232-g1运行流程)
-                - [1.3.2.3.3. G1优缺点](#13233-g1优缺点)
-                - [收集过程](#收集过程)
-                - [1.3.2.3.4. 使用G1](#13234-使用g1)
-            - [1.3.2.4. 常用的收集器组合](#1324-常用的收集器组合)
-            - [1.3.2.5. ZGC](#1325-zgc)
-            - [1.3.2.6. Epsilon](#1326-epsilon)
-            - [1.3.2.7. Shenandoah](#1327-shenandoah)
-        - [1.3.3. 选择合适的垃圾收集器](#133-选择合适的垃圾收集器)
-        - [1.3.4. ~~垃圾收集器常用参数~~](#134-垃圾收集器常用参数)
-    - [1.4. 方法区(类和常量)回收/类的卸载阶段](#14-方法区类和常量回收类的卸载阶段)
+    - [1.1. GC算法](#11-gc算法)
+        - [1.1.1. 标记-清除（Mark-Sweep）算法](#111-标记-清除mark-sweep算法)
+        - [1.1.2. 标记-复制（Copying）算法](#112-标记-复制copying算法)
+        - [1.1.3. 标记-整理（Mark-Compact）算法](#113-标记-整理mark-compact算法)
+        - [1.1.4. 分代收集理论](#114-分代收集理论)
+            - [1.1.4.1. HotSpot GC](#1141-hotspot-gc)
+            - [1.1.4.2. Stop the world](#1142-stop-the-world)
+    - [1.2. 垃圾回收器](#12-垃圾回收器)
+        - [1.2.1. 收集器分类](#121-收集器分类)
+        - [1.2.2. 收集器详解](#122-收集器详解)
+            - [1.2.2.1. 新生代收集器](#1221-新生代收集器)
+                - [1.2.2.1.1. Serial收集器](#12211-serial收集器)
+                - [1.2.2.1.2. ParNew收集器](#12212-parnew收集器)
+                - [1.2.2.1.3. Parallel Scavenge收集器](#12213-parallel-scavenge收集器)
+            - [1.2.2.2. 老年代收集器](#1222-老年代收集器)
+                - [1.2.2.2.1. Serial Old收集器](#12221-serial-old收集器)
+                - [1.2.2.2.2. Parallel Old收集器](#12222-parallel-old收集器)
+                - [1.2.2.2.3. CMS收集器](#12223-cms收集器)
+            - [1.2.2.3. G1收集器](#1223-g1收集器)
+                - [1.2.2.3.1. G1的内存布局](#12231-g1的内存布局)
+                - [1.2.2.3.2. G1运行流程](#12232-g1运行流程)
+                - [1.2.2.3.3. G1优缺点](#12233-g1优缺点)
+                - [1.2.2.3.4. 收集过程](#12234-收集过程)
+                - [1.2.2.3.5. 使用G1](#12235-使用g1)
+            - [1.2.2.4. 常用的收集器组合](#1224-常用的收集器组合)
+            - [1.2.2.5. ZGC](#1225-zgc)
+            - [1.2.2.6. Epsilon](#1226-epsilon)
+            - [1.2.2.7. Shenandoah](#1227-shenandoah)
+        - [1.2.3. 选择合适的垃圾收集器](#123-选择合适的垃圾收集器)
+        - [1.2.4. ~~垃圾收集器常用参数~~](#124-垃圾收集器常用参数)
 
 <!-- /TOC -->
 
-
-<!-- 
-亿级流量系统如何玩转 JVM 
-https://mp.weixin.qq.com/s/_uKSQjI--eT3n04Voel5_g
-CMS GC
-https://mp.weixin.qq.com/s/WqfzZRlk2NMkNc5a_Yjpdw
-
-&emsp; 可以作为GC ROOT的对象包括：  
-1. 栈中引用的对象
-2. 静态变量、常量引用的对象
-3. 本地方法栈native方法引用的对象
--->
-<!-- 
-~~
-
-https://mp.weixin.qq.com/s/IH9p5X7WveKGx1ujfHzFag
-深度揭秘垃圾回收底层，这次让你彻底弄懂她 
-https://mp.weixin.qq.com/s?__biz=MzU4Mjk0MjkxNA==&mid=2247487815&idx=2&sn=c94666e98b4f3c6e46f4e9378f3f4e39&chksm=fdb1f8eacac671fc587323800a0421cdf015b59b10ac8086936f28cfa9f6921410ab7fbd28c4&scene=21#wechat_redirect
-炸了！一口气问了我18个JVM问题！ 
-https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
--->
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-56.png)  
-
-&emsp; **<font color = "lime">总结：</font>**  
-1. 堆中对象：  
-    1. 存活标准：引用计数法、根可达性分析法  
-    2. 四种引用
-    3. 对象生存还是死亡？null与GC
-2. GC算法：  
-    1. GC算法
-    2. Young GC与Full GC
-    3. 垃圾回收器  
-    
-
-# 1. GC  
-&emsp; GC主要解决下面的三个问题：  
-
-* 哪些内存需要回收？&emsp; GC回收的主要区域是堆、方法区。  
-* 什么时候回收？  
-* 如何回收？  
-
-## 1.1. 堆中对象的存活
-<!-- https://juejin.im/post/5e151b38f265da5d495c8025 --> 
-
-
-### 1.1.1. GC的存活标准  
-&emsp; 对于如何判断对象是否可以回收，有两种比较经典的判断策略：引用计数算法、可达性分析算法。  
-
-#### 1.1.1.1. 引用计数法  
-&emsp; 给每个对象添加一个计数器，当有地方引用该对象时计数器加1，当引用失效时计数器减1。用对象计数器是否为0来判断对象是否可被回收。  
-&emsp; 缺点： **<font color = "red">无法解决循环引用的问题。</font>** 如果出现A引用了B，B又引用了A，这时候就算它们都不再使用了，但因为相互引用，计算器=1，永远无法被回收。Java中没有使用这种算法。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-16.png)  
-
-#### 1.1.1.2. 根可达性分析法  
-&emsp; 从GC Roots开始向下搜索，搜索所走过的路径称为引用链。当一个对象到GC Roots没有任何引用链相连时，则证明此对象是不可用的，那么虚拟机就判断是可回收对象。可达性分析可以解决循环引用的问题。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-17.png)  
-&emsp; 可作为GC ROOTs的对象：  
-
-* 虚拟机栈中引用的对象；  
-* 方法区中，类静态属性(static)引用的对象；  
-* 方法区中，常量(final static)引用的对象；  
-* 本地方法栈中，JNI（即Native方法）引用的对象；  
-
-#### 1.1.1.3. 对象的四种引用状态，强弱软虚    
-&emsp; 无论是通过引用计数算法判断对象的引用数量，还是通过根搜索算法判断对象的引用链是否可达，判定对象是否存活都与“引用”有关。  
-&emsp; 在JDK中提供了四个级别的引用：强引用，软引用，弱引用和虚引用。在这四个引用类型中，只有强引用Final Reference类是包内可见，其他三种引用类型均为public，可以在应用程序中直接使用。引用类型的类结构如图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-22.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-18.png)  
-&emsp; <font color = "lime">Java 中引入四种引用的目的是让程序自己决定对象的生命周期，JVM 是通过垃圾回收器对这四种引用做不同的处理，来实现对象生命周期的改变。</font>  
-
-<!-- 
-Java设计这四种引用的主要目的有两个：
-    可以让程序员通过代码的方式来决定某个对象的生命周期；
-    有利用垃圾回收。
--->
-
-##### 1.1.1.3.1. 强引用  
-&emsp; 代码中普遍存在的类似"Object obj = new Object()"这类的引用，只要强引用还存在，垃圾收集器永远不会回收掉被引用的对象。  
-&emsp; 强引用的特点： 
- 
-* 强引用可以直接访问目标对象。  
-* 强引用所指向的对象在任何时候都不会被系统回收。JVM宁愿抛出OOM异常，也不会回收强引用所指向的对象。  
-* 强引用可能导致内存泄漏。  
-
-##### 1.1.1.3.2. 软引用  
-&emsp; 软引用是除了强引用外，最强的引用类型。可以通过java.lang.ref.SoftReference使用软引用。一个持有软引用的对象，不会被JVM很快回收，JVM会根据当前堆的使用情况来判断何时回收。 **<font color = "red">当堆使用率临近阈值时，才会去回收软引用的对象。</font>** 因此，软引用可以用于实现对内存敏感的高速缓存。  
-&emsp; 软引用示例：  
-&emsp; 在IDE设置参数-Xmx2m -Xms2m规定堆内存大小为2m。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-19.png)  
-&emsp; 运行结果：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-20.png)  
-&emsp; 打开被注释掉的new byte[1024*100]语句，这条语句请求一块大的堆空间，使堆内存使用紧张。并显式的再调用一次GC，结果如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-21.png)说明在系统内存紧张的情况下，软引用被回收。  
-
-##### 1.1.1.3.3. 弱引用  
-&emsp; 弱引用是一种比软引用较弱的引用类型。在系统GC时， **<font color = "red">只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>** <font color = "lime">它可以作为简单的缓存表解决方案。</font>  
-&emsp; 在java中，可以用java.lang.ref.WeakReference实例来保存对一个Java对象的弱引用。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-23.png)  
-&emsp; 运行结果：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-24.png)  
-
-##### 1.1.1.3.4. 虚引用  
-&emsp; 虚引用是所有类型中最弱的一个。 **<font color = "red">一个持有虚引用的对象，和没有引用几乎是一样的，随时可能被垃圾回收器回收。</font>** 当试图通过虚引用的get()方法取得强引用时，总是会失败。并且，虚引用必须和引用队列一起使用，它的作用在于跟踪垃圾回收过程。  
-&emsp; 当垃圾回收器准备回收一个对象时，如果发现它还有虚引用，就会在垃圾回收后，销毁这个对象，将这个虚引用加入引用队列。程序可以通过判断引用队列中是否已经加入了虚引用，来了解被引用的对象是否将要被垃圾回收。如果程序发现某个虚引用已经被加入到引用队列，那么就可以在所引用的对象的内存被回收之前采取必要的行动。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-25.png)  
-&emsp; 运行结果：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-26.png)  
-&emsp; 对虚引用的get()操作，总是返回null，因为sf.get()方法的实现如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-27.png)  
-
-##### 1.1.1.3.5. 软引用和弱引用的使用  
-&emsp; **<font color>软引用，弱引用都非常适合来保存那些可有可无的缓存数据，如果这么做，当系统内存不足时，这些缓存数据会被回收，不会导致内存溢出。而当内存资源充足时，这些缓存数据又可以存在相当长的时间，从而起到加速系统的作用。</font>**  
-
-&emsp; 假如⼀个应⽤需要读取⼤量的本地图⽚，如果每次读取图⽚都从硬盘读取会严重影响性能，如果⼀次性全部加载到内存⼜可能造成内存溢出，这时可以⽤软引⽤解决这个问题。  
-&emsp; 设计思路：⽤⼀个HashMap来保存图⽚路径和相应图⽚对象关联的软引⽤之间的映射关系，在内存不⾜时，JVM会⾃动共回收这些缓存图⽚对象所占的空间，避免OOM。  
-
-```java
-Map<String, SoftReference<Bitmap>> imageCache = new HashMap<>();  
-```  
-
-### 1.1.2. 对象生存还是死亡
-
-<!-- 
-&emsp; 即使在可达性分析算法中不可达的对象，也并非一定是“非死不可”的，这时候他们暂时处于“缓刑”阶段，真正宣告一个对象死亡至少要经历两次标记过程：  
-&emsp; 1）如果对象在可达性分析算法中不可达，那么它会被第一次标记并进行一次刷选，刷选的条件是是否需要执行finalize()方法（当对象没有覆盖finalize()或者finalize()方法已经执行过了（对象的此方法只会执行一次）），虚拟机将这两种情况都会视为没有必要执行）。  
-&emsp; 2）如果这个对象有必要执行finalize()方法会将其放入F-Queue队列中，稍后GC将对F-Queue队列进行第二次标记，如果在重写finalize()方法中将对象自己赋值给某个类变量或者对象的成员变量，那么第二次标记时候就会将它移出“即将回收”的集合。  
-&emsp; finalize()能做的工作，使用try-finally或者其他方式都能做到更好，更及时，所以不建议使用此方法。  
-
-
-在可达性分析中被判定为不可达的对象，并不是立即赴死，至少要经历两次标记过程：如果对象在进行可达性分析后发现没有与 GC Root 相连接的引用链，那么它将被第一次标记，随后再进行一次筛选，筛选条件是对象是否有必要执行 finalize() 方法，如果对象没有覆盖 finalize() 方法或是 finalize() 方法已经被调用过，则都视为“没有必要执行”
-
-如果对象被判定为有必要执行 finalize() 方法，那么该对象将会被放置在一个名为 F-Queue 的队列之中，并在稍后由一条由虚拟机自动创建的、低调度优先级的 Finalizer 线程去执行它们的 finalize() 方法。注意这里所说的执行是指虚拟机会触发这个方法开始运行，但并不承诺一定会等待它运行结束。这样做的原因是防止某个对象的 finalize() 方法执行缓慢，或者发生死循环，导致 F-Queue 队列中的其他对象永久处于等待状态
-
-finalize() 方法是对象逃脱死亡命运的最后一次机会，稍后收集器将对 F-Queue 中的对象进行第二次小规模标记，如果对象希望在 finalize() 方法中成功拯救自己，只要重新与引用链上的任何一个对象建立关联即可，那么在第二次标记时它将被移出“即将回收”的集合；如果对象这时候还没有逃脱，那基本上就真的要被回收了
-
-任何一个对象的 finalize() 方法都只会被系统自动调用一次，如果对象面临下一次回收，它的 finalize() 方法将不会再执行。finalize() 方法运行代价高，不确定性大，无法保证各个对象的调用顺序，因此已被官方明确声明为不推荐使用的语法
--->
-<!-- 
-https://www.jianshu.com/p/0618241f9f44
--->
-
-&emsp; <font color = "red">在可达性分析算法中，不可达的对象也不是一定会死亡的，它们暂时都处于“缓刑”阶段，要真正宣告一个对象“死亡”，至少要经历两次标记过程。</font>  
-
-    finalize()⽅法什么时候被调⽤？析构函数(finalization)的⽬的是什么？
-    垃圾回收器(garbage colector)决定回收某对象时，就会运⾏该对象的finalize()⽅法，但是在Java中很不幸，如果内存总是充⾜的，那么垃圾回收可能永远不会进⾏，也就是说filalize() 可能永远不被执⾏，显然指望它做收尾⼯作是靠不住的。 那么finalize()究竟是做什么的呢？ 它最主要的⽤途是回收特殊渠道申请的内存。Java程序有垃圾回收器，所以⼀般情况下内存问题不⽤程序员操⼼。但有⼀种JNI(Java Native Interface)调⽤non-Java程序（C或C++）， finalize()的⼯作就是回收这部分的内存。
- 
-1. <font color = "red">如果对象在进行可达性分析后没有与GC Root相连接的引用链，那么它会被第一次标记并进行一次筛选，</font><font color = "lime">筛选的条件是是否有必要执行finalize()。</font>即：当对象没有被覆盖finalize()或者finalize()方法已经被虚拟机调用过了，虚拟机将这两种情况都是为没有必要执行。  
-2. <font color = "red">当一个对象被判断为有必要执行finalize()方法，那么这个对象会被放置到F-Queue队列中，</font><font color = "lime">并且稍后JVM自动建立一个低优先级的Finalizer线程执行它，这里“执行”是虚拟机会触发这个方法，但不会承诺等待它运行结束</font>（万一这个方法运行缓慢或者死循环，F-Queue队列其他对象岂不是永久等待）。<font color = "red">finalize()是对象逃脱死亡的最后一次机会。稍后GC会对F-Queue进行第二次小规模标记。</font>如果对象能在finalize()方法中重新与引用链上任何一个方法建立关联（例如把自己this关键字赋值给某个类变量或者对象的成员变量）。那么第二次标记时，将会移出即将回收的集合。否则，这个对象就会被回收了。  
-&emsp; 注：任何对象的finalize()方法都只会被系统调用一次。  
-
-<!--
-&emsp; 步骤1：<font color = "red">判断有没有必要执行Object#finalize()方法</font>  
-&emsp; **<font color = "lime">如果对象在进行可达性分析后发现没有与GC Roots相连接的引用链，那它将会被第一次标记并且进行一次筛选，</font>** 筛选的条件是此对象是否有必要执行finalize()方法。  
-&emsp; 另外，有两种情况都视为“没有必要执行”：对象没有覆盖finaliza()方法、finalize()方法已经被虚拟机调用过。  
-
-&emsp; 步骤2：<font color = "red">如何执行？</font>F-Queue的队列  
-&emsp; 如果这个对象被判定为有必要执行finalize()方法，那么此对象将会放置在一个叫做 F-Queue 的队列中，并在稍后由一个虚拟机自动建立的、低优先级的Finalizer线程去执行它。  
-
-&emsp; 步骤3：<font color = "red">执行死亡还是逃脱死亡？</font>  
-&emsp; 首先，需要知道，finalize()方法是对象逃脱死亡命运的最后一次机会，**<font color = "lime">稍后GC将对F-Queue 队列中的对象进行第二次小规模的标记。</font>**  
-&emsp; 逃脱死亡：对象想在finalize()方法中成功拯救自己，只要重新与引用链上的任何一个对象建立关联即可，例如把自己（this关键字）赋值给某个类变量或者对象的成员变量，这样在第二次标记时它将被移出“即将回收”的集合。  
-&emsp; 执行死亡：对象没有执行逃脱死亡，那就是死亡了。  
-&emsp; 注：任何对象的finalize()方法都只会被系统调用一次。  
--->
-
-
-&emsp; 一次对象的自我拯救：  
-
-```java
-/*此代码演示了两点
- * 对象可以在GC时自我拯救
- * 这种自救只会有一次，因为一个对象的finalize方法只会被自动调用一次
- * */
-public class FinalizeEscapeGC {
-	public static FinalizeEscapeGC SAVE_HOOK=null;
-	public void isAlive(){
-		System.out.println("yes我还活着");
-	}
-	public void finalize() throws Throwable{
-		super.finalize();
-		System.out.println("执行finalize方法");
-		FinalizeEscapeGC.SAVE_HOOK=this;//自救
-	}
-	public static void main(String[] args) throws InterruptedException{
-		SAVE_HOOK=new FinalizeEscapeGC();
-		//对象的第一次回收
-		SAVE_HOOK=null;
-		System.gc();
-		//因为finalize方法的优先级很低所以暂停0.5秒等它
-		Thread.sleep(500);
-		if(SAVE_HOOK!=null){
-			SAVE_HOOK.isAlive();
-		}else{
-			System.out.println("no我死了");
-		}
-		//下面的代码和上面的一样，但是这次自救却失败了
-		//对象的第一次回收
-		SAVE_HOOK=null;
-		System.gc();
-		Thread.sleep(500);
-		if(SAVE_HOOK!=null){
-			SAVE_HOOK.isAlive();
-		}else{
-			System.out.println("no我死了");
-		}
-	}
-}
-```
-
-#### 1.1.2.1. null与GC  
-<!-- 
-https://www.codebye.com/jiang-dui-xiang-shu-xing-fu-wei-null-gc-hui-hui-shou-ma.html
-
-https://www.polarxiong.com/archives/Java-%E5%AF%B9%E8%B1%A1%E4%B8%8D%E5%86%8D%E4%BD%BF%E7%94%A8%E6%97%B6%E8%B5%8B%E5%80%BC%E4%B8%BAnull%E7%9A%84%E4%BD%9C%E7%94%A8%E5%92%8C%E5%8E%9F%E7%90%86.html
-
-https://www.cnblogs.com/ouhaitao/p/9996374.html
-
-java方法中把对象置null,到底能不能加速垃圾回收
-https://blog.csdn.net/dfdsggdgg/article/details/52463882?utm_medium=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase&depth_1-utm_source=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase
-
-https://www.cnblogs.com/ouhaitao/p/9996374.html
-https://www.cnblogs.com/raylee2007/p/4944465.html
-https://www.cnblogs.com/christmad/p/13124907.html
-https://blog.csdn.net/shudaqi2010/article/details/53811992
-
--->
-&emsp; **<font color = "lime">手动将不用的对象引用置为null，可以使得JVM在下一次GC时释放这部分内存。</font>**  
-&emsp; 对于占用空间比较大的对象（比如大数组），推荐在确认不再使用的时候将其值为null，jvm在回收大对象的时候不如小对象来的及时，置为null就能强制在下次GC的时候回收掉它。  
-
-&emsp; 一个对象的引用执行null，并不会被立即回收，还需要执行finalize()方法（必须要重写这个方法，且只能执行一次）。可执行过程中，可能会重新变为可达对象。但是并不鼓励使用这个方法！  
-
-
--------
-## 1.2. GC算法  
+# 1. GC
+## 1.1. GC算法  
 <!-- 
 分代收集算法 
 https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
 -->
 &emsp; GC常用的算法：标记-清除（Mark-Sweep）、复制（Copying）、标记-整理（Mark-Compact）、分代收集（新生用复制，老年用标记-整理）。  
 
-### 1.2.1. 标记-清除（Mark-Sweep）算法  
+### 1.1.1. 标记-清除（Mark-Sweep）算法  
 1. <font color = "red">标记-清除算法是最基础的收集算法，是因为后续的收集算法大多都是以标记-清除算法为基础，对其缺点进行改进而得到的。</font>  
 2. 标记-清除算法分为两个阶段：标记阶段和清除阶段。标记阶段是标记出所有需要被回收的对象，清除阶段就是回收被标记的对象所占用的空间。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-73.png)  
@@ -303,7 +56,7 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
         1. (效率偏低，两遍扫描，标记和清除都比较耗时)执行效率不稳定，如果Java堆中包含大量对象，而且其中大部分是需要被回收的，这时必须进行大量标记和清除的动作，导致标记和清除两个过程的执行效率都随对象数量增长而降低；  
         2. (位置不连续，产生碎片)<font color = "lime">内存空间的碎片化问题，</font>清除后产生大量不连续的内存碎片。如果有大对象会出现空间不够的现象，从而不得不提前触发另一次垃圾收集动作。 
 
-### 1.2.2. 标记-复制（Copying）算法 
+### 1.1.2. 标记-复制（Copying）算法 
 <!-- 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-13.png)  
 &emsp; 标记-复制算法的执行过程：  
@@ -324,7 +77,7 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
         1. 移动复制对象，需要调整对象引用。  
         2. 50%的内存空间始终空闲浪费，存活对象越多效率越低。
 
-### 1.2.3. 标记-整理（Mark-Compact）算法  
+### 1.1.3. 标记-整理（Mark-Compact）算法  
 <!-- 
 &emsp; 标记-整理算法是一种老年代的回收算法。  
 &emsp; 标记-整理算法的工作过程如图：  
@@ -343,7 +96,7 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
         2. 不会产生内存减半
     * 缺点：<font color = "red">扫描两次，，指针需要调整（移动对象），效率偏低。</font>  
 
-### 1.2.4. 分代收集理论  
+### 1.1.4. 分代收集理论  
 <!-- 
 https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
@@ -382,7 +135,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 * 当对象寿命超过阈值时，会晋升至老年代，最大寿命15（4bit）
 * 当老年代空间不足，那么触发full gc，STW的时间更长  
 
-#### 1.2.4.1. HotSpot GC  
+#### 1.1.4.1. HotSpot GC  
 &emsp; GC经常发生的区域是堆区，堆区还可以细分为新生代、老年代，新生代还分为一个Eden区和两个Survivor区。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-33.png)  
 
@@ -414,7 +167,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 5. Concurrent Mode Failure  
 &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足（可能是GC过程中浮动垃圾过多导致暂时性的空间不足），便会报Concurrent Mode Failure错误，并触发Full GC。  
 
-#### 1.2.4.2. Stop the world  
+#### 1.1.4.2. Stop the world  
 &emsp; Java中Stop-The-World机制简称STW，是在执行垃圾收集时，Java应用程序的其他所有线程都被挂起（除了垃圾收集帮助器之外）。Java中一种全局暂停现象，全局停顿，所有Java代码停止，native代码可以执行，但不能与JVM交互；这些现象多半是由于gc引起。  
 &emsp; GC时的Stop the World(STW)是Java开发最大的敌人。但可能很多人还不清楚，除了GC，JVM下还会发生停顿现象。  
 &emsp; JVM里有一条特殊的线程－－VM Threads，专门用来执行一些特殊的VM Operation，比如分派GC，thread dump等，这些任务都需要整个Heap，以及所有线程的状态是静止的，一致的才能进行。所以JVM引入了安全点(Safe Point)的概念，想办法在需要进行VM Operation时，通知所有的线程进入一个静止的安全点。  
@@ -425,10 +178,10 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 3. Biased lock revocation 取消偏向锁 ；  
 4. Various debug operation (e.g. thread dump or deadlock check)；  
 
-## 1.3. 垃圾回收器  
+## 1.2. 垃圾回收器  
 &emsp; 垃圾收集算法是内存回收的理论基础，而垃圾收集器就是内存回收的具体实现。   
 
-### 1.3.1. 收集器分类  
+### 1.2.1. 收集器分类  
 &emsp; <font color = "lime">1. 根据收集器的指标分类（两个关键指标，停顿时间和吞吐量）：</font>  
 &emsp; 收集器性能考虑因素：  
 
@@ -458,7 +211,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 * 并发收集器[停顿时间优先]->CMS、G1  
 &emsp; **<font color = "red">用户线程和垃圾收集线程同时执行(但并不一定是并行的，可能是交替执行的)，垃圾收集线程在执行的时候不会停顿用户线程的运行。</font>** 适用于相对时间有要求的场景，比如Web 。  
 
-### 1.3.2. 收集器详解
+### 1.2.2. 收集器详解
 &emsp; HotSpot虚拟机所包含的所有收集器如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-55.png)  
 &emsp; 上图展示了多种作用于不同分代的收集器。如果两个收集器之间存在连线，那说明它们可以搭配使用。虚拟机所处的区域说明它是属于新生代收集器还是老年代收集器。选择对具体应用最合适的收集器。  
@@ -485,8 +238,8 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 * Epsilon垃圾收集器  
      没有操作的垃圾收集器、处理内存分配但不实现任何实际内存回收机制的GC  
 
-#### 1.3.2.1. 新生代收集器  
-##### 1.3.2.1.1. Serial收集器  
+#### 1.2.2.1. 新生代收集器  
+##### 1.2.2.1.1. Serial收集器  
 &emsp; 最基本、发展历史最久的收集器，这个收集器是一个采用复制算法的单线程的收集器。  
 &emsp; 迄今为止，Serial收集器依然是虚拟机运行在Client模式下的默认新生代收集器，因为它简单而高效。用户桌面应用场景中，分配给虚拟机管理的内存一般来说不会很大，收集几十兆甚至一两百兆的新生代停顿时间在几十毫秒最多一百毫秒，只要不是频繁发生，这点停顿是完全可以接受的。  
 &emsp; 参数控制：
@@ -499,7 +252,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 
 &emsp; **<font color = "red">一句话概括：Serial收集器，采用复制算法的单线程的收集器，运行在Client模式下的默认新生代收集器，适用于用户桌面应用中。</font>**
 
-##### 1.3.2.1.2. ParNew收集器  
+##### 1.2.2.1.2. ParNew收集器  
 &emsp; （相同）ParNew收集器是Serial收集器的多线程版本，除了使用多条线程进行垃圾收集外，其余行为和Serial收集器完全一样，包括使用的也是复制算法。  
 &emsp; （不同）ParNew收集器除了多线程以外和Serial收集器并没有太多创新的地方，但是它却是JDK7之前Server模式下的虚拟机首选的新生代收集器，其中有一个很重要的和性能无关的原因是，除了Serial收集器外，目前只有它能与CMS收集器配合工作。  
 &emsp; （对比）ParNew收集器在单CPU的环境中绝对不会有比Serial收集器更好的效果，甚至由于线程交互的开销，该收集器在两个CPU的环境中都不能百分之百保证可以超越Serial收集器。当然，随着可用CPU数量的增加，它对于GC时系统资源的有效利用还是很有好处的。它默认开启的收集线程数与CPU数量相同，在CPU数量非常多的情况下，可以使用-XX:ParallelGCThreads参数来限制垃圾收集的线程数。  
@@ -513,7 +266,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 
 &emsp; **<font color = "red">一句话概括：Serial收集器的多线程版本，降低停顿时间，JDK7之前Server模式下的虚拟机首选的新生代收集器，能与CMS收集器配合。</font>**
 
-##### 1.3.2.1.3. Parallel Scavenge收集器  
+##### 1.2.2.1.3. Parallel Scavenge收集器  
 &emsp; Parallel Scavenge收集器也是一个新生代收集器，也是用复制算法的收集器，也是并行的多线程收集器。Parallel Scavenge收集器是虚拟机运行在Server模式下的默认垃圾收集器。   
 &emsp; 它的特点是它的关注点和其他收集器不同。<font color = "lime">Parallel Scavenge收集器的目标则是达到一个可控制的吞吐量（吞吐量=运行用户代码时间/(运行用户代码时间+垃圾收集时间)））。</font> 高吞吐量可以最高效率地利用 CPU 时间，尽快地完成程序的运算任务，主要适用于在后台运算而不需要太多交互的任务。<font color = "red">自适应调节策略也是 ParallelScavenge 收集器与 ParNew 收集器的一个重要区别。</font>   
 &emsp; 参数控制：    
@@ -524,11 +277,11 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 
 &emsp; **<font color = "red"> Parallel Scavenge收集器，也是采用复制算法的并行的多线程收集器，Server模式下的默认垃圾收集器</font>，<font color = "lime">目标是达到一个可控制的吞吐量。</font>**
 
-#### 1.3.2.2. 老年代收集器  
-##### 1.3.2.2.1. Serial Old收集器  
+#### 1.2.2.2. 老年代收集器  
+##### 1.2.2.2.1. Serial Old收集器  
 &emsp; Serial收集器的老年代版本，同样是一个单线程收集器，使用“标记-整理算法”，这个收集器的主要意义也是在于给Client模式下的虚拟机使用。 
 
-##### 1.3.2.2.2. Parallel Old收集器  
+##### 1.2.2.2.2. Parallel Old收集器  
 &emsp; Parallel Scavenge收集器的老年代版本，使用多线程和“标记-整理”算法。这个收集器在JDK 1.6之后的出现，“吞吐量优先收集器”终于有了比较名副其实的应用组合，在注重吞吐量以及CPU资源敏感的场合，都可以优先考虑Parallel Scavenge收集器+Parallel Old收集器的组合。  
 &emsp; 数控制：  
 
@@ -537,7 +290,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 &emsp; 运行过程如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-31.png)  
 
-##### 1.3.2.2.3. CMS收集器  
+##### 1.2.2.2.3. CMS收集器  
 &emsp; CMS（Conrrurent Mark Sweep）收集器是以 **<font color = "lime">获取最短回收停顿时间为目标</font>** 的收集器。  
 &emsp; 使用标记-清除算法，收集过程分为如下四步：  
 1. 初始标记，标记GCRoots能直接关联到的对象，时间很短。  
@@ -563,7 +316,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
     -XX:+ UseCMSCompactAtFullCollection Full GC后，进行一次碎片整理；整理过程是独占的，会引起停顿时间变长
     -XX:+CMSFullGCsBeforeCompaction 设置进行几次Full GC后，进行一次碎片整理-XX:ParallelCMSThreads 设定CMS的线程数量（一般情况约等于可用CPU数量）
 
-#### 1.3.2.3. G1收集器  
+#### 1.2.2.3. G1收集器  
 
 <!-- 
 https://www.cnblogs.com/cuizhiquan/articles/10961354.html
@@ -575,7 +328,7 @@ https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
 &emsp; G1是一款而向服务端应用的垃圾收集器。G1回收器在jdk1.9后成为了JVM的默认垃圾回收器。  
 &emsp; 通过把Java堆分成大小相等的多个独立区域，回收时计算出每个区域回收所获得的空间以及所需时间的经验值，根据记录两个值来判断哪个区域最具有回收价值，所以叫Garbage First（垃圾优先）。
 
-##### 1.3.2.3.1. G1的内存布局  
+##### 1.2.2.3.1. G1的内存布局  
 <!-- 深入理解Java虚拟机 第3版 -->
 &emsp; **<font color = "red">G1的内存布局：</font>** 在G1之前的垃圾收集器，收集的范围都是整个新生代或者老年代，而G1不再是这样。使用G1收集器时，Java堆的内存布局与其他收集器有很大差别，它<font color = "red">将整个Java堆划分为多个大小相等的独立区域（Region）</font>，虽然还保留有新生代和老年代的概念，但新生代和老年代不再是物理隔离的了，它们都是一部分（可以不连续）Region的集合。  
 &emsp; **<font color = "red">G1收集器能建立可预测的停顿时间模型，</font>** 是因为它可以有计划地避免在整个Java堆中进行全区域的垃圾收集。<font color = "red">G1跟踪各个Region里面的垃圾堆积的价值大小（回收所获得的空间大小以及回收所需时间的经验值），在后台维护一个优先列表，</font><font color = "lime">每次根据允许的收集时间，优先回收价值最大的Region/这也就是Garbage-First名称的来由）。</font>这种使用Region划分内存空间以及有优先级的区域回收方式，保证子G1收集器在有限的时间内可以获取尽可能高的收集效率。  
@@ -585,7 +338,7 @@ https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
 &emsp; Region不可能是孤立的。一个对象分配在某个Region中，它并非只能被本Region中的其他对象引用，而是可以与整个Java堆任意的对象发生引用关系。  
 &emsp; 在G1收集器中，Region之间的对象引用以及其他收集器中的新生代与老年代之间的对象引用，<font color = "red">虚拟机是使用Remembered Set 来避免全堆扫描的</font>。G1中每个Region都有一个与之对应的Remembered Set，虚拟机发现程序在对Reference类型的数据进行写操作时，会产生一个Write Barrier暂时中断写操作，检查Reference引用的对象是否处于不同的Region之中（在分代的例子中就是检查是否老年代中的对象引用了新生代中的对象），如果是，便通过CardTable 把相关引用信息记录到被引用对象所属的Region的Remembered Set之中。当进行内存回收时，在GC根节点的枚举范围中加入Remembered Set即可保证不对全堆扫描也不会有遗漏。  
 
-##### 1.3.2.3.2. G1运行流程  
+##### 1.2.2.3.2. G1运行流程  
 <!-- https://baijiahao.baidu.com/s?id=1663956888745443356&wfr=spider&for=pc-->
 &emsp; 不去计算用户线程运行过程中的动作（如使用写屏障维护记忆集的操作），G1收集器的运作过程大致可划分为以下四个步骤：  
 
@@ -596,7 +349,7 @@ https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
 
 &emsp; G1收集器除了并发标记外，其余阶段也是要完全暂停用户线程的， 换言之，它并非纯粹地追求低延迟， **<font color = "lime">官方给它设定的目标是在延迟可控的情况下获得尽可能高的吞吐量，</font>** 所以才能担当起“全功能收集器”的重任与期望。
 
-##### 1.3.2.3.3. G1优缺点  
+##### 1.2.2.3.3. G1优缺点  
 
 &emsp; G1收集器有以下特点：  
 
@@ -616,7 +369,7 @@ https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
     1. 基于标记-整理算法，不产生内存碎片。
     2. 可以非常精确控制停顿时间，在不牺牲吞吐量前提下，实现低停顿垃圾回收。  
 
-##### 收集过程
+##### 1.2.2.3.4. 收集过程
 &emsp; 收集过程：  
 &emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-95.png)  
 &emsp; G1的回收过程主要分为 3 类：  
@@ -625,14 +378,14 @@ https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
 &emsp; （3）真正的清理，发生在“混合模式”，它不止清理年轻代，还会将老年代的一部分区域进行清理。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-96.png)  
 
-##### 1.3.2.3.4. 使用G1  
+##### 1.2.2.3.5. 使用G1  
 &emsp; **开启G1：** 在JDK9之前，JDK7和JDK8默认都是ParallelGC垃圾回收。到了JDK9，G1才是默认的垃圾回收器。所以如果JDK7或者JDK8需要使用G1的话，需要通过参数（-XX:+UseG1GC）显示执行垃圾回收器。而JDK9以后的版本，不需要任何JVM参数，默认就是G1垃圾回收模式，显示指定G1运行一个Demo程序如下：  
 
 ```java
 java -Xmx1g -Xms1g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -jar demo.jar
 ```
   
-#### 1.3.2.4. 常用的收集器组合  
+#### 1.2.2.4. 常用的收集器组合  
 
 | |新生代GC策略	|老年代GC策略	|说明|
 |---|---|---|---|
@@ -644,7 +397,7 @@ java -Xmx1g -Xms1g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -jar demo.jar
 |组合6|Parallel Scavenge|Parallel Old|Parallel Old是Serial Old的并行版本|
 |组合7|G1GC|G1GC|-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC  <br/>#开启  <br/>-XX:MaxGCPauseMillis =50  #暂停时间目标  <br/>-XX:GCPauseIntervalMillis =200  #暂停间隔目标  <br/>-XX:+G1YoungGenSize=512m  #年轻代大小  <br/>-XX:SurvivorRatio=6  #幸存区比例|
 
-#### 1.3.2.5. ZGC  
+#### 1.2.2.5. ZGC  
 <!-- 
  新一代垃圾回收器ZGC的探索与实践 
  https://mp.weixin.qq.com/s/ag5u2EPObx7bZr7hkcrOTg
@@ -702,7 +455,7 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
 * 并发重映射（Concurrent Remap）：重映射所做的就是修正整个堆中指向重分配集中旧对象的所有引用，但是ZGC中对象引用存在“自愈”功能，所以这个重映射操作并不是很迫切。ZGC很巧妙地把并发重映射阶段要做的工作，合并到了下一次垃圾收集循环中的并发标记阶段里去完成，反正它们都是要遍历所有对象的，这样合并就节省了一次遍历对象图的开销
 
 
-#### 1.3.2.6. Epsilon  
+#### 1.2.2.6. Epsilon  
 &emsp; Epsilon（A No-Op Garbage Collector）垃圾回收器控制内存分配，但是不执行任何垃圾回收工作。一旦java的堆被耗尽，jvm就直接关闭。设计的目的是提供一个完全消极的GC实现，分配有限的内存分配，最大限度降低消费内存占用量和内存吞吐时的延迟时间。一个好的实现是隔离代码变化，不影响其他GC，最小限度的改变其他的JVM代码  
 &emsp; 适用场景:  
 
@@ -714,7 +467,7 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
     UnlockExperimentalVMOptions：解锁隐藏的虚拟机参数
     -XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC -Xms100m -Xmx100m
 
-#### 1.3.2.7. Shenandoah  
+#### 1.2.2.7. Shenandoah  
 &emsp; 一款只有OpenJDK才会包含的收集器，最开始由RedHat公司独立发展后来贡献给了OpenJDK  
 &emsp; Shenandoah与G1类似，也是使用基于Region的堆内存布局，同样有着用于存放大对象的Humongous Region，默认的回收策略也同样是优先处理回收价值最大的Region  
 &emsp; 但是管理堆内存方面，与G1至少有三个明显的不同之处：  
@@ -741,7 +494,7 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
 &emsp; Brooks形式的转发指针在设计上决定了它是必然会出现多线程竞争问题的，如果收集器线程与用户线程发生的只是并发读取，那无论读到旧对象还是新对象上的字段，返回的结果都应该是一样的，这个场景还可以有一些“偷懒”的处理余地；但如果发生的是并发写入，就一定必须保证写操作只能发生在新复制的对象上，而不是写入旧对象的内存中  
 &emsp; 解决方案：Shenandoah不得不同时设置读、写屏障去拦截  
 
-### 1.3.3. 选择合适的垃圾收集器  
+### 1.2.3. 选择合适的垃圾收集器  
 &emsp; 官网：https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/collectors.html#sthref28
 
 * 优先调整堆的大小让服务器自己来选择  
@@ -777,7 +530,7 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
 从上面这些出发点来看，我们平常的 Web 服务器，都是对响应性要求非常高的。选择性其实就集中在 CMS、G1、ZGC上。而对于某些定时任务，使用并行收集器，是一个比较好的选择。
 -->
 
-### 1.3.4. ~~垃圾收集器常用参数~~  
+### 1.2.4. ~~垃圾收集器常用参数~~  
 &emsp; -XX:+UseSerialGC：在新生代和老年代使用串行收集器  
 &emsp; -XX:+UseParNewGC：在新生代使用并行收集器  
 &emsp; -XX:+UseParallelGC：新生代使用并行回收收集器，更加关注吞吐量  
@@ -786,41 +539,4 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
 &emsp; -XX:+UseConcMarkSweepGC：新生代使用并行收集器，老年代使用CMS+串行收集器  
 &emsp; -XX:ParallelCMSThreads：设定CMS的线程数量  
 &emsp; -XX:+UseG1GC：启用G1垃圾回收器  
-
-
-
-
-----
-## 1.4. 方法区(类和常量)回收/类的卸载阶段
-&emsp; 永久代中回收的内容主要是两部分：废弃的常量和无用的类。  
-&emsp; <font color = "lime">类的卸载阶段，判断无用的类必须满足三个条件：</font>  
-
-* 该类所以的实例都已经被回收  
-* 加载该类的ClassLoader被回收  
-* 该类对应的java.lang.Class对象没有在任何地方引用，无法在任何地方通过反射访问该类的方法  
-
-&emsp; 虚拟机可以对上述3个条件对无用类进行回收，这里说的仅仅是“可以”，而不是和对象一样不使用了就会必然回收。  
-
-&emsp; 如果以上三个条件全部满足，<font color = "lime">jvm会在方法区垃圾回收的时候对类进行卸载</font>，<font color = "red">类的卸载过程其实就是在方法区中清空类信息，java类的整个生命周期就结束了。</font>  
-
-&emsp; 如何判断⼀个常量是废弃常量?   
-&emsp; 运行时常量主要回收的是废弃的常量。假如在常量池中存在字符串"abc"，如果当前没有任何String对象引用该字符串常量的话，就说明常量"abc"就是废弃常量，如果这时发生内存回收的话而且有必要的话，"abc"就会被系统清理出常量池。  
-
-
-<!-- 
-方法区的垃圾收集主要回收两部分：废弃的常量和不再使用的类型。
-
-废弃常量以及无用类
-3.1，如何判断一个常量是废弃常量？
-运行时常量池主要回收的是废弃的常量。那么，我们如何判断一个常量是废弃常量呢?
-假如在常量池中存在字符串"abc" ,如果当前没有任何String对象引用该字符串常量的话，就说明常量"abc"就是废弃常量,如果这时发生内存回收的话而且有必要的话，" abc"就会被系统清理出常量池。
-3.2，如何判断一个类是无用的类？
-判定一个常量是否是“废弃常量”比较简单，而要判定一个类是否是“无用的类”的条件则相对苛刻许多。方法区主要回收无用的类，类需要同时满足下面3个条件才能算是 “无用的类” ：
-
-    该类所有的实例都已经被回收，也就是 Java 堆中不存在该类的任何实例。
-    加载该类的 ClassLoader 已经被回收。
-    该类对应的 java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。
-
-虚拟机可以对满足上述3个条件的无用类进行回收，这里说的仅仅是“可以”，而并不是和对象一样不使用了就会必然被回收。
--->
 
