@@ -43,7 +43,7 @@
 &emsp; **<font color = "red">设置参数的方式：</font>**  
 
 * 开发工具中设置比如IDEA，eclipse  
-* 运行jar包的时候:java -XX:+UseG1GC xxx.jar  
+* 运行jar包的时候：java -XX:+UseG1GC xxx.jar  
 * web容器比如tomcat，可以在脚本中的进行设置  
 * 通过jinfo实时调整某个java进程的参数(参数只有被标记为manageable的flags可以被实时修改)  
 
@@ -135,7 +135,7 @@
 
 &emsp; 将-Xms和-Xmx设置为相同值，会提高JVM性能。  
 
-&emsp; 元空间是将存储JVM的元数据定义（例如类定义，方法定义）的区域。默认情况下，可用于存储此元数据信息的内存量是无限的（即受您的容器或计算机的RAM大小的限制）。需要使用-XX：MaxMetaspaceSize参数来指定可用于存储元数据信息的内存量的上限。  
+&emsp; 元空间是将存储JVM的元数据定义（例如类定义，方法定义）的区域。默认情况下，可用于存储此元数据信息的内存量是无限的（即受容器或计算机的RAM大小的限制）。需要使用-XX：MaxMetaspaceSize参数来指定可用于存储元数据信息的内存量的上限。  
 &emsp; -XX:MaxMetaspaceSize=256m  
 
 &emsp; -Xss，设置栈的大小。栈都是每个线程独有一个，所有一般都是几百k的大小。  
@@ -178,12 +178,7 @@
 ----
 ## 1.3. GC日志分析  
 ### 1.3.1. GC日志详解  
-&emsp; 在某个应用中，配置  
-
-```
--XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:D:/gc.log
-```
-&emsp; 启动后打印如下 GC 日志：  
+&emsp; 在某个应用中，配置`-XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:D:/gc.log`。启动后打印如下 GC 日志：  
 &emsp; YongGC  
 
 ```
@@ -296,7 +291,7 @@ https://mp.weixin.qq.com/s/XBB2IJf8ODkcjZiU423J4Q
 1. 查看类装载信息  
 &emsp; jstat -class PID 1000 10  查看某个java进程的类装载信息，每1000毫秒输出一次，共输出10次  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-38.png)  
-2. 查看垃圾收集信息
+2. 查看垃圾收集信息  
 &emsp; jstat -gc PID 1000 10  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-39.png)  
 
