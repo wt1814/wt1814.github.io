@@ -1,8 +1,15 @@
 
+<!-- TOC -->
 
+- [1. 性能指标](#1-性能指标)
+    - [1.1. 性能指标简介](#11-性能指标简介)
+    - [1.2. qps飘高](#12-qps飘高)
 
-# 性能指标  
+<!-- /TOC -->
 
+# 1. 性能指标  
+
+## 1.1. 性能指标简介
 <!-- 
 不了解 QPS、TPS、RT、并发数、吞吐量，劝你简历别写熟悉高并发 
 https://mp.weixin.qq.com/s/LFBK_3Mfo644mzXZXxsSTw
@@ -42,3 +49,6 @@ https://mp.weixin.qq.com/s/oedxbSMmsw7Lu_q2dmoXgQ
  mysql的并发量是多少？
  https://ask.csdn.net/questions/1091683
 -->
+
+## 1.2. qps飘高  
+&emsp; 查看[秒杀系统设计](/docs/system/seckill.md)  

@@ -5,7 +5,7 @@
     - [1.1. 内存设置](#11-内存设置)
     - [1.2. GC调优](#12-gc调优)
         - [1.2.1. YGC、FGC优化](#121-ygcfgc优化)
-                - [1.2.1.0.1. ※※※FGC过高](#12101-※※※fgc过高)
+            - [1.2.1.1. ※※※FGC过高](#1211-※※※fgc过高)
         - [1.2.2. GC策略调整](#122-gc策略调整)
 
 <!-- /TOC -->
@@ -61,7 +61,7 @@ https://mp.weixin.qq.com/s/PFCAVVPvD4rh6CU-7wVmJQ
     * <font color = "red">线上多个线程的CPU都超过了100%，通过jstack命令可以看到这些线程主要是垃圾回收线程。</font>  
     * 通过jstat命令监控GC情况，可以看到Full GC次数非常多，并且次数在不断增加。  
 
-##### 1.2.1.0.1. ※※※FGC过高  
+#### 1.2.1.1. ※※※FGC过高  
 &emsp; 使用jstack来分析GC是不是太频繁， **<font color = "lime">使用jstat -gc pid 1000命令来对gc分代变化情况进行观察，</font>** 1000表示采样间隔(ms)，S0C/S1C、S0U/S1U、EC/EU、OC/OU、MC/MU分别代表两个Survivor区、Eden区、老年代、元数据区的容量和使用量。YGC/YGT、FGC/FGCT、GCT则代表YoungGc、FullGc的耗时和次数以及总耗时。如果看到gc比较频繁，再针对gc方面做进一步分析。   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-81.png)  
 

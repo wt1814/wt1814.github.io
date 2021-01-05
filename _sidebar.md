@@ -65,6 +65,7 @@
     * [JVM调优](/docs/java/JVM/tuning.md)  
     * [JVM问题排查](/docs/java/JVM/TroubleShooting.md)  
     * [Arthas](/docs/java/JVM/Arthas.md)  
+    * [性能指标](/docs/system/performance.md)  
     * [JAVA线上故障排查](/docs/Linux/problem.md)   
 * 并发编程  
     * [并发编程总结](/docs/java/concurrent/summary.md)  
@@ -338,7 +339,6 @@
 * 架构设计  
     * [架构图](/docs/system/diagram.md)   
     * [接口文档](/docs/system/document/API.md) 
-    * [性能指标](/docs/system/performance.md)  
     * [软件架构质量属性](/docs/system/qualityAttributes.md)  
     * [软件架构设计模式](/docs/system/designPattern.md)  
     * [领域驱动模型](/docs/system/DDD.md)  

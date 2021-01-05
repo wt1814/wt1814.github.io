@@ -14,7 +14,6 @@
             - [1.3.2.1. 使用内存查看工具分析堆dump文件](#1321-使用内存查看工具分析堆dump文件)
             - [1.3.2.2. jvm内存快照dump文件太大，怎么分析](#1322-jvm内存快照dump文件太大怎么分析)
     - [1.4. 线程死锁](#14-线程死锁)
-    - [1.5. qps飘高](#15-qps飘高)
 
 <!-- /TOC -->
 
@@ -181,6 +180,3 @@ https://www.cnblogs.com/liangzs/p/8489321.html
 一文学会Java死锁和CPU 100% 问题的排查技巧
 https://club.perfma.com/article/2073508
 -->
-
-## 1.5. qps飘高  
-&emsp; 查看[秒杀系统设计](/docs/system/seckill.md)  
