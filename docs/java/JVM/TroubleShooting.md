@@ -71,7 +71,7 @@ https://www.cnblogs.com/klvchen/p/11089632.html
 &emsp; 如下图所示，PID为3033的进程耗费cpu最高。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-42.png)  
 2. 查找该进程下消耗cpu最高的线程号  
-&emsp; 执行命令top -Hp 3033 ，显示一个进程的线程运行信息列表。按下P,进程按照cpu使用率排序。  
+&emsp; 执行命令top -Hp 3033 ，显示一个进程的线程运行信息列表。按下P，进程按照cpu使用率排序。  
 &emsp; 如下图所示，PID为3034的线程耗费cpu最高。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-43.png)  
 &emsp; 这是十进制的数据，需转成十六进制为0xbda。  

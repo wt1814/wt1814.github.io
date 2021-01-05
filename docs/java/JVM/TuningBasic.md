@@ -58,7 +58,7 @@
 4. -Xmn。设置年轻代的⼤⼩  
 5. -XX:MetaspaceSize。设置元空间⼤⼩元空间的本质和永久代类似，都是对JVM规范中⽅法区的实现，不过元空间与永久代最⼤的区别在于：==元空间并不在虚拟机中，⽽是在本地内存中。==因此，默认元空间的⼤⼩仅受本地内存限制  
 6. -XX:+PrintGCDetails。输出详细GC收集⽇志信息[名称：GC前内存占⽤->GC后内存占⽤(该区内存总⼤⼩)]  
-7. -XX:SurvivorRatio。设置新⽣代中Eden和S0/S1空间的⽐例，默认-XX:SurvivorRatio=8，Eden\:S0\:S1=8 :1 :1。  
+7. -XX:SurvivorRatio。设置新⽣代中Eden和S0/S1空间的⽐例，默认-XX:SurvivorRatio=8，Eden :S0 :S1=8 :1 :1。  
 8. -XX:NewRatio。设置年轻代与⽼年代在堆结构的占⽐。默认-XX:NewRatio=2 新⽣代在1，⽼年代2，年轻代占整个堆的1/3。NewRatio值⼏句诗设置⽼年代的占⽐，剩下的1给新⽣代。  
 9. -XX:MaxTenuringThreshold。设置垃圾的最⼤年龄默认-XX:MaxTenuringThreshold=15。如果设置为0，年轻代对象不经过Survivor区，直接进⼊年⽼代。对于年⽼代⽐较多的应⽤，可以提⾼效率。如果将此值设置为⼀个较⼤的值，则年轻代对象回在Survivor区进⾏多次复制，这样可以增加对对象在年轻代的存活时间，增加在年轻代即被回收的概率。  
 10. -XX:+UseSerialGC。串⾏垃圾回收器
@@ -95,7 +95,7 @@
             |参数	|描述|
             |---|---|
             |-XX:-DisableExplicitGC	|禁止调用System.gc()；但jvm的gc仍然有效|
-            |-XX:-UseConcMarkSweepGC	|对老生代采用并发标记交换算法进行GC|
+            |-XX:-UseConcMarkSweepGC|对老生代采用并发标记交换算法进行GC|
             |-XX:-UseParallelGC	|启用并行GC|
             |-XX:-UseParallelOldGC	|对Full GC启用并行，当-XX:-UseParallelGC启用时该项自动启用|
             |-XX:-UseSerialGC	|启用串行GC|

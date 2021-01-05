@@ -13,10 +13,6 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-57.png)  
 
 # 1. JVM调优(落地)  
-<!-- 
-GC调优
-https://mp.weixin.qq.com/s/PFCAVVPvD4rh6CU-7wVmJQ
--->
 &emsp; JVM的调优主要有两个方面：内存调优、垃圾回收策略调优。  
 
     获取堆内存日志，调整内存比例或者gc回收策略； 
@@ -51,7 +47,7 @@ https://mp.weixin.qq.com/s/PFCAVVPvD4rh6CU-7wVmJQ
     Full GC执行时间不到1s，Full GC执行频率不低于10分钟1次；
 
 * YGC  
-&emsp; YGC，首先看频率，如果YGC超过10秒一次，甚至更长，说明系统内存过大，应该缩小容量，如果频率很高，说明Eden区过小，可以将Eden区增大，但整个新生代的容量应该在堆的30% - 40%之间，eden、from 和to的比例应该在8\:1\:1左右，这个比例可根据对象晋升的大小进行调整。
+&emsp; YGC，首先看频率，如果YGC超过10秒一次，甚至更长，说明系统内存过大，应该缩小容量，如果频率很高，说明Eden区过小，可以将Eden区增大，但整个新生代的容量应该在堆的30% - 40%之间，eden、from 和to的比例应该在8 :1 :1左右，这个比例可根据对象晋升的大小进行调整。
 如果YGC时间过长呢？YGC有2个过程，一个是扫描，一个是复制，通常扫描速度很快，复制速度相比而言要慢一些，如果每次都有大量对象要复制，就会将STW时间延长，还有一个情况就是StringTable ，这个数据结构中存储着String.intern方法返回的常连池的引用，YGC每次都会扫描这个数据结构（HashTable），如果这个数据结构很大，且没有经过FGC，那么也会拉长STW时长，还有一种情况就是操作系统的虚拟内存，当GC时正巧操作系统正在交换内存，也会拉长STW时长。  
 
 * FGC  
