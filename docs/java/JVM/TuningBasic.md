@@ -62,13 +62,12 @@
 8. -XX:NewRatio。设置年轻代与⽼年代在堆结构的占⽐。默认-XX:NewRatio=2 新⽣代在1，⽼年代2，年轻代占整个堆的1/3。NewRatio值⼏句诗设置⽼年代的占⽐，剩下的1给新⽣代。  
 9. -XX:MaxTenuringThreshold。设置垃圾的最⼤年龄默认-XX:MaxTenuringThreshold=15。如果设置为0，年轻代对象不经过Survivor区，直接进⼊年⽼代。对于年⽼代⽐较多的应⽤，可以提⾼效率。如果将此值设置为⼀个较⼤的值，则年轻代对象回在Survivor区进⾏多次复制，这样可以增加对对象在年轻代的存活时间，增加在年轻代即被回收的概率。  
 10. -XX:+UseSerialGC。串⾏垃圾回收器
-11. -XX:+UseParallelGC并⾏垃圾回收器  
+11. -XX:+UseParallelGC。并⾏垃圾回收器  
 
 ### 1.2.1. JVM参数分类  
 &emsp; JVM参数主要可以分为以下三类：  
 
 * 标准参数（-），所有的JVM实现都必须实现这些参数的功能，而且向后兼容。例如 -verbose:gc（输出每次GC的相关情况)。  
-
 * 非标准参数（-X），默认JVM实现这些参数的功能，但是并不保证所有JVM实现都满足，且不保证向后兼容。栈，堆大小的设置都是通过这个参数来配置的，用得最多的如下。   
 
     |参数	|描述|
@@ -82,16 +81,16 @@
     * 分Boolean类型和非Boolean类型：  
         * Boolean类型  
 
-                格式：-XX:[+-]<name> +或-表示启用或者禁用name属性  
-                比如：-XX:+UseConcMarkSweepGC 表示启用CMS类型的垃圾回收器  
-                     -XX:+UseG1GC 表示启用G1类型的垃圾回收器  
+                格式：-XX:[+-]<name>，+或-表示启用或者禁用name属性  
+                比如：-XX:+UseConcMarkSweepGC，表示启用CMS类型的垃圾回收器  
+                     -XX:+UseG1GC，表示启用G1类型的垃圾回收器  
         * 非Boolean类型  
         
-                格式：-XX<name>=<value>表示name属性的值是value  
+                格式：-XX<name>=<value>，表示name属性的值是value  
                 比如：-XX:MaxGCPauseMillis=500  
        
     * 分行为参数、性能调优、调试参数：  
-        * 行为参数（Behavioral Options）：用于改变 JVM 的一些基础行为，如启用串行/并行 GC。    
+        * 行为参数(Behavioral Options)：用于改变JVM的一些基础行为，如启用串行/并行 GC。    
             
             |参数	|描述|
             |---|---|
@@ -101,7 +100,7 @@
             |-XX:-UseParallelOldGC	|对Full GC启用并行，当-XX:-UseParallelGC启用时该项自动启用|
             |-XX:-UseSerialGC	|启用串行GC|
         
-        * 性能调优（Performance Tuning）：用于 jvm 的性能调优，如设置新老生代内存容量比例。    
+        * 性能调优(Performance Tuning)：用于jvm的性能调优，如设置新老生代内存容量比例。    
             
             |参数|描述|
             |---|---|
@@ -111,7 +110,7 @@
             |-XX:ReservedCodeCacheSize=32m	|保留代码占用的内存容量|
             |-XX:ThreadStackSize=512	|设置线程栈大小，若为0则使用系统默认值|
         
-        * 调试参数（Debugging Options）：一般用于打开跟踪、打印、输出等 JVM 参数，用于显示 JVM 更加详细的信息。    
+        * 调试参数（Debugging Options）：一般用于打开跟踪、打印、输出等JVM参数，用于显示JVM更加详细的信息。    
 
             |参数	|描述|
             |---|---|
@@ -173,7 +172,6 @@
 |-XX:+UseG1GC|启用G1垃圾回收器|
 
 &emsp; 未明确指定GC算法，那么JVM将选择默认算法。在Java 8之前，Parallel GC是默认的GC算法。从Java 9开始，G1 GC是默认的GC算法。  
-
 
 ----
 ## 1.3. GC日志分析  
