@@ -58,7 +58,7 @@
 4. -Xmn。设置年轻代的⼤⼩  
 5. -XX:MetaspaceSize。设置元空间⼤⼩元空间的本质和永久代类似，都是对JVM规范中⽅法区的实现，不过元空间与永久代最⼤的区别在于：==元空间并不在虚拟机中，⽽是在本地内存中。==因此，默认元空间的⼤⼩仅受本地内存限制  
 6. -XX:+PrintGCDetails。输出详细GC收集⽇志信息[名称：GC前内存占⽤->GC后内存占⽤(该区内存总⼤⼩)]  
-7. -XX:SurvivorRatio。设置新⽣代中Eden和S0/S1空间的⽐例，默认-XX:SurvivorRatio=8，Eden:S0:S1=8 :1 :1。  
+7. -XX:SurvivorRatio。设置新⽣代中Eden和S0/S1空间的⽐例，默认-XX:SurvivorRatio=8，Eden\:S0\:S1=8 :1 :1。  
 8. -XX:NewRatio。设置年轻代与⽼年代在堆结构的占⽐。默认-XX:NewRatio=2 新⽣代在1，⽼年代2，年轻代占整个堆的1/3。NewRatio值⼏句诗设置⽼年代的占⽐，剩下的1给新⽣代。  
 9. -XX:MaxTenuringThreshold。设置垃圾的最⼤年龄默认-XX:MaxTenuringThreshold=15。如果设置为0，年轻代对象不经过Survivor区，直接进⼊年⽼代。对于年⽼代⽐较多的应⽤，可以提⾼效率。如果将此值设置为⼀个较⼤的值，则年轻代对象回在Survivor区进⾏多次复制，这样可以增加对对象在年轻代的存活时间，增加在年轻代即被回收的概率。  
 10. -XX:+UseSerialGC。串⾏垃圾回收器
@@ -215,10 +215,9 @@
 JVM 性能调优监控工具 jps、jstack、jmap、jhat、jstat、hprof 使用详解
 https://mp.weixin.qq.com/s/XBB2IJf8ODkcjZiU423J4Q
 -->
-
 &emsp; **<font color = "clime">注意如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。</font>**  
 
-|名称	|主要作用|
+|名称|主要作用|
 |---|---|
 |jps|JVM Process Status Tool，显示指定系统内所有的HotSpot虚拟机进程。|
 |jstack|Stack Trace for Java，显示虚拟机的线程快照。
@@ -255,15 +254,15 @@ https://mp.weixin.qq.com/s/XBB2IJf8ODkcjZiU423J4Q
 &emsp; jmap不仅能生成dump文件，还可以查询finalize执行队列、Java堆和永久代的详细信息，如当前使用率、当前使用的是哪种收集器等。  
 &emsp; 命令格式：jmap [option]  PID。option参数： 
 
-* dump : 生成堆转储快照
-* finalizerinfo : 显示在F-Queue队列等待Finalizer线程执行finalizer方法的对象
-* heap : 显示Java堆详细信息
-* histo : 显示堆中对象的统计信息
-* permstat : to print permanent generation statistics
-* F : 当-dump没有响应时，强制生成dump快照  
+* dump：生成堆转储快照
+* finalizerinfo：显示在F-Queue队列等待Finalizer线程执行finalizer方法的对象
+* heap：显示Java堆详细信息
+* histo：显示堆中对象的统计信息
+* permstat：to print permanent generation statistics
+* F：当-dump没有响应时，强制生成dump快照  
   
 &emsp; jmap -dump:format=b,file=heap.hprof PID。  
-&emsp; format指定输出格式，live指明是活着的对象,file指定文件名。  
+&emsp; format指定输出格式，live指明是活着的对象，file指定文件名。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-37.png)  
 
 ##### 1.4.1.3.1. jmap的几个操作要慎用  
@@ -287,7 +286,7 @@ https://mp.weixin.qq.com/s/XBB2IJf8ODkcjZiU423J4Q
 * [count] : 连续输出的次数  
 
 1. 查看类装载信息  
-&emsp; jstat -class PID 1000 10  查看某个java进程的类装载信息，每1000毫秒输出一次，共输出10次  
+&emsp; jstat -class PID 1000 10查看某个java进程的类装载信息，每1000毫秒输出一次，共输出10次  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-38.png)  
 2. 查看垃圾收集信息  
 &emsp; jstat -gc PID 1000 10  
@@ -302,7 +301,7 @@ https://mp.weixin.qq.com/s/XBB2IJf8ODkcjZiU423J4Q
 * -sysprops : 输出系统属性，等同于System.getProperties()  
 
 1. 查看  
-jinfo -flag name PID 查看某个java进程的name属性的值  
+jinfo -flag name PID查看某个java进程的name属性的值  
 jinfo -flag MaxHeapSize PID  
 jinfo -flag UseG1GC PID  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-40.png)  
