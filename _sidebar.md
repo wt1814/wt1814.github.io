@@ -64,7 +64,7 @@
     * [JVM调优-基础](/docs/java/JVM/TuningBasic.md)  
     * [JVM调优](/docs/java/JVM/tuning.md)  
     * [JVM问题排查](/docs/java/JVM/TroubleShooting.md)  
-    * [Arthas](/docs/java/JVM/Arthas.md)  
+    * [Arthas工具](/docs/java/JVM/Arthas.md)  
     * [性能指标](/docs/system/performance.md)  
     * [JAVA线上故障排查](/docs/Linux/problem.md)   
 * 并发编程  

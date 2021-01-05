@@ -115,7 +115,7 @@
 [JVM调优](/docs/java/JVM/tuning.md)  
 [JVM问题排查](/docs/java/JVM/TroubleShooting.md)  
 &emsp; [JVM排查案例](/docs/java/JVM/case.md)  
-[Arthas](/docs/java/JVM/Arthas.md)  
+[Arthas工具](/docs/java/JVM/Arthas.md)  
 [性能指标](/docs/system/performance.md)  
 [JAVA线上故障排查](/docs/Linux/problem.md)  
 
