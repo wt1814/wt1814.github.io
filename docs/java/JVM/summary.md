@@ -43,7 +43,7 @@ https://www.cnblogs.com/ding-dang/p/13129619.html
 [JVM类的加载](/docs/java/JVM/JVM类的加载.md)  
 [JVM内存结构](/docs/java/JVM/JVM内存结构.md)  
 [GC垃圾回收](/docs/java/JVM/GC.md)  
-[JVM调优-基础](/docs/java/JVM/JVM调优-基础.md)  
+[JVM调优-基础](/docs/java/JVM/TuningBasic.md)  
 [JVM调优](/docs/java/JVM/JVM调优.md)  
 &emsp; [JVM排查案例](/docs/java/JVM/case.md)  
 [JAVA线上故障排查](/docs/Linux/problem.md)  

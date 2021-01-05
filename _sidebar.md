@@ -61,8 +61,9 @@
     * [内存对象](/docs/java/JVM/MemoryObject.md)  
     * [内存泄露](/docs/java/JVM/MemoryLeak.md)  
     * [GC垃圾回收](/docs/java/JVM/GC.md)  
-    * [JVM调优-基础](/docs/java/JVM/JVM调优-基础.md)  
-    * [JVM调优](/docs/java/JVM/JVM调优.md)  
+    * [JVM调优-基础](/docs/java/JVM/TuningBasic.md)  
+    * [JVM调优](/docs/java/JVM/tuning.md)  
+    * [JVM问题排查](/docs/java/JVM/TroubleShooting.md)  
     * [JAVA线上故障排查](/docs/Linux/problem.md)   
 * 并发编程  
     * [并发编程总结](/docs/java/concurrent/summary.md)  

@@ -27,3 +27,9 @@
 MySQL 在并发场景下会遇到的问题及解决方案～ 
 https://mp.weixin.qq.com/s/tFiTv7a8VFvU-paghtGkcw
 -->
+
+<!-- 
+Prometheus + Granafa 构建高大上的MySQL监控平台 
+https://mp.weixin.qq.com/s/S8-_QGrKYn5rMD645BKwjQ
+
+-->

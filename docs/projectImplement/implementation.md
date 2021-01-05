@@ -17,6 +17,9 @@
 数据库迁移神器——Flyway 
 https://mp.weixin.qq.com/s/QJFY46Ku66MwQwkb7AQpNQ
 
+ 数据库迁移搞炸了！没用这款开源神器的锅？ 
+ https://mp.weixin.qq.com/s/_LJWWHk9E07i1hNQ_D4R9A
+
  服务化带来的问题---之数据迁移经历 
  https://mp.weixin.qq.com/s?__biz=MzU5MTIyODk1Mg==&mid=2247484005&amp;idx=1&amp;sn=8957f419dfcffc85523aadd0a496ebec&source=41#wechat_redirect
 -->

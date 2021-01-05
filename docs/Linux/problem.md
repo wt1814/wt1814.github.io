@@ -6,12 +6,11 @@
     - [1.1. OS诊断](#11-os诊断)
         - [1.1.1. CPU](#111-cpu)
         - [1.1.2. 内存占用](#112-内存占用)
-            - [堆内内存](#堆内内存)
-            - [堆外内存](#堆外内存)
+            - [1.1.2.1. 堆内内存](#1121-堆内内存)
+            - [1.1.2.2. 堆外内存](#1122-堆外内存)
         - [1.1.3. I/O](#113-io)
-            - [网络I/O](#网络io)
+            - [1.1.3.1. 网络I/O](#1131-网络io)
     - [1.2. Linux下性能分析工具总结](#12-linux下性能分析工具总结)
-    - [Linux服务器指标](#linux服务器指标)
 
 <!-- /TOC -->
 
@@ -68,11 +67,11 @@ https://www.linuxidc.com/Linux/2020-05/163174.htm
 &emsp; 内存问题排查起来相对比CPU麻烦一些，场景也比较多。主要包括OOM、GC问题和堆外内存。一般来讲，会先用free命令先来检查一发内存的各种情况。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-82.png)  
 
-#### 堆内内存
+#### 1.1.2.1. 堆内内存
 
 &emsp; 内存问题大多还都是堆内内存问题。表象上主要分为OOM和StackOverflow。  
 
-#### 堆外内存  
+#### 1.1.2.2. 堆外内存  
 &emsp; 如果碰到堆外内存溢出，那可真是太不幸了。首先堆外内存溢出表现就是物理常驻内存增长快，报错的话视使用方式都不确定，如果由于使用Netty导致的，那错误日志里可能会出现OutOfDirectMemoryError错误，如果直接是DirectByteBuffer，那会报OutOfMemoryError: Direct buffer memory。  
 &emsp; 堆外内存溢出往往是和NIO的使用相关，一般先通过pmap来查看下进程占用的内存情况pmap -x pid | sort -rn -k3 | head -30，这段意思是查看对应pid倒序前30大的内存段。这边可以再一段时间后再跑一次命令看看内存增长情况，或者和正常机器比较可疑的内存段在哪里。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-83.png)  
@@ -98,15 +97,8 @@ https://www.linuxidc.com/Linux/2020-05/163174.htm
 &emsp; I/O包括磁盘I/O和网络I/O，一般情况下磁盘更容易出现I/O 瓶颈。通过iostat可以查看磁盘的读写情况，通过CPU的I/O wait可以看出磁盘I/O是否正常。  
 &emsp; 如果磁盘I/O一直处于很高的状态，说明磁盘太慢或故障，成为了性能瓶颈，需要进行应用优化或者磁盘更换。  
 
-#### 网络I/O
+#### 1.1.3.1. 网络I/O
 &emsp; 涉及到网络I/O的问题一般都比较复杂，场景多，定位难，成为了大多数开发的噩梦，应该是最复杂的了。这里会举一些例子，并从tcp层、应用层以及工具的使用等方面进行阐述。  
 
 ## 1.2. Linux下性能分析工具总结  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Linux/linux-1.png) 
-
-
-
-## Linux服务器指标  
-
-......
-

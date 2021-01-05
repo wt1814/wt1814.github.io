@@ -19,15 +19,15 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "red">部分参考《Redis开发与运维》</font>**
-
+&emsp; **<font color = "red">部分参考《Redis开发与运维》</font>**  
 <!-- 
 redis系列--redis4.0深入持久化
 https://www.cnblogs.com/wdliu/p/9377278.html
+AOF和RDB混合使用
+https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 -->
 
 # 1. Redis持久化  
-
 **<font color = "lime">&emsp; 一句话概述：  
 &emsp; RDB，快照；保存某一时刻的全部数据；缺点是间隔长（配置文件中默认最少60s）。  
 &emsp; AOF，文件追加；记录所有操作命令；优点是默认间隔1s，丢失数据少；缺点是文件比较大，通过重写机制来压缩文件体积。  

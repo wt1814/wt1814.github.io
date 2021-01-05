@@ -14,6 +14,9 @@ https://mp.weixin.qq.com/s/dio08z4TqNBxoXqvZXTcjg
 两难！到底用 Spring BeanUtils 还是 Apache BeanUtils？ 
 https://mp.weixin.qq.com/s/xfyx5ux7VadCbOUrkzMVLQ
 
+优雅的对象转换解决方案-MapStruct使用进阶 
+https://mp.weixin.qq.com/s/eGSoYQC4E2NuvlHQzj_RHg
+
 -->
 
 拷贝一组UerDO.java，是一个集合的时候就不能这样直接赋值了。如果还按照这种逻辑，如下：  
