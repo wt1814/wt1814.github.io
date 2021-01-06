@@ -26,6 +26,8 @@
 ### 1.1.1. InnoDB逻辑结构页介绍  
 <!-- 
 https://www.cnblogs.com/bdsir/p/8745553.html
+存储引擎
+https://mp.weixin.qq.com/s/IsZjLI7QAB6t7H7NyGscGg
 -->
 &emsp; 页是InnoDB磁盘管理的最小单位，每次读取数据都会读取一个页大小的数据。在InnoDB存储引擎中，默认每个页的大小为16KB。 (在操作系统中默认页大小是4KB。) 可以使用命令SHOW GLOBAL STATUS LIKE 'Innodb_page_size' 查看。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-99.png)  
