@@ -102,7 +102,8 @@
     * [并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
     * [多线程处理大数据量](/docs/java/concurrent/bigData.md)  
 * 数据库  
-    * [数据建模](/docs/SQL/modeling.md)   
+    * [数据建模](/docs/SQL/modeling.md)  
+    * [数据类型](/docs/SQL/dataType.md)  
     * [SQL语句](/docs/SQL/1.SQL语句.md)  
         * [基本查询语句](/docs/SQL/9.basicSelect.md)  
         * [连接查询](/docs/SQL/10.joinSelect.md)  
