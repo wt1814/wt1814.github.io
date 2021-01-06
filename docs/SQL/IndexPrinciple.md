@@ -1,14 +1,29 @@
 
+<!-- TOC -->
 
+- [1. 索引底层原理](#1-索引底层原理)
+    - [1.1. InnoDB引擎的索引实现](#11-innodb引擎的索引实现)
+        - [1.1.1. InnoDB逻辑结构页介绍](#111-innodb逻辑结构页介绍)
+        - [1.1.2. 为什么 InnoDB会使用B+树？](#112-为什么-innodb会使用b树)
+        - [1.1.3. InnoDB索引B+tree实现过程](#113-innodb索引btree实现过程)
+        - [1.1.4. InnoDB索引类型](#114-innodb索引类型)
+        - [1.1.5. InnoDB引擎的索引物理文件](#115-innodb引擎的索引物理文件)
+        - [1.1.6. 为什么官方建议InnoDB使用自增长主键作为索引？](#116-为什么官方建议innodb使用自增长主键作为索引)
+            - [1.1.6.1. ***碎片问题](#1161-碎片问题)
+        - [1.1.7. 普通索引和唯一索引的区别](#117-普通索引和唯一索引的区别)
+    - [1.2. MyISAM引擎的索引](#12-myisam引擎的索引)
+    - [1.3. Hash索引介绍](#13-hash索引介绍)
 
-## 1.2. 索引底层原理  
+<!-- /TOC -->
+
+# 1. 索引底层原理  
 &emsp; 不同的存储引擎支持的索引类型不一样：  
 
 * InnoDB支持事务，支持行级别锁定，支持B-tree、Full-text等索引，不支持Hash索引；  
 * MyISAM不支持事务，支持表级别锁定，支持B-tree、Full-text等索引，不支持Hash索引；  
 
-### 1.2.1. InnoDB引擎的索引实现  
-#### 1.2.1.1. InnoDB逻辑结构页介绍  
+## 1.1. InnoDB引擎的索引实现  
+### 1.1.1. InnoDB逻辑结构页介绍  
 <!-- 
 https://www.cnblogs.com/bdsir/p/8745553.html
 -->
@@ -22,7 +37,7 @@ https://www.cnblogs.com/bdsir/p/8745553.html
 &emsp; 1页或页的倍数最为合适。因为如果一个节点的大小小于1页，那么读取这个节点的时候其实也会读出1页，造成资源的浪费。所以为了不造成浪费，所以最后把一个节点的大小控制在1页、2页、3页等倍数页大小最为合适。  
 &emsp; 在 MySQL 中 B+ 树的一个节点大小为“1页”，也就是16k。   
 
-#### 1.2.1.2. 为什么 InnoDB会使用B+树？  
+### 1.1.2. 为什么 InnoDB会使用B+树？  
 <!--
 https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
 -->
@@ -73,7 +88,7 @@ https://www.jianshu.com/p/c82148473235
         2. **<font color = "red">叶子节点之间会有个指针指向，这个也是B+树的核心点，可以大大提升范围查询效率，也方便遍历整个树。</font>** 
         3. **<font color = "red">B+tree的查询效率更加稳定。由于非终结点并不是最终指向文件内容的结点，而只是叶子结点中关键字的索引。所以任何关键字的查找必须走一条从根结点到叶子结点的路。所有关键字查询的路径长度相同，导致每一个数据的查询效率相当。</font>**   
 
-#### 1.2.1.3. InnoDB索引B+tree实现过程  
+### 1.1.3. InnoDB索引B+tree实现过程  
 <!-- 
 https://mp.weixin.qq.com/s/6BoGlaYpdDjzZy19YhInEw
 -->
@@ -96,7 +111,7 @@ https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
 &emsp; 联合索引底层还是使用B+树索引，并且还是只有一棵树，只是此时的排序会：首先按照第一个索引排序，在第一个索引相同的情况下，再按第二个索引排序，依次类推。  
 &emsp; 这也是为什么有“最佳左前缀原则”的原因，因为右边（后面）的索引都是在左边（前面）的索引排序的基础上进行排序的，如果没有左边的索引，单独看右边的索引，其实是无序的。  
 
-#### 1.2.1.4. InnoDB索引类型  
+### 1.1.4. InnoDB索引类型  
 &emsp; <font color = "red">InnoDB索引类型可以分为主键索引和辅助索引（非主键索引）。</font>  
 &emsp; **<font color = "lime">主键索引树中，叶子结点保存着主键和对应行的全部数据。主键索引又被称为聚簇索引。</font>**   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-34.png)  
@@ -121,7 +136,7 @@ InnoDB 中，对于主键索引，只需要走一遍主键索引的查询就能�
 
 ----
 
-#### 1.2.1.5. InnoDB引擎的索引物理文件
+### 1.1.5. InnoDB引擎的索引物理文件
 <!-- 
 https://www.cnblogs.com/tongxiaoda/p/7874535.html
 -->
@@ -174,7 +189,7 @@ https://www.cnblogs.com/tongxiaoda/p/7874535.html
 
 -----
 
-#### 1.2.1.6. 为什么官方建议InnoDB使用自增长主键作为索引？  
+### 1.1.6. 为什么官方建议InnoDB使用自增长主键作为索引？  
 
         适合用业务字段做主键的场景需求：1).只有一个索引；2).该索引必须是唯一索引。这就是典型的KV场景。由于没有其他索引，所以也就不用考虑其他索引的叶子节点大小的问题。 
 
@@ -191,7 +206,7 @@ https://www.cnblogs.com/tongxiaoda/p/7874535.html
 &emsp; <font color = "red">根据B+Tree的特点，自增主键是连续的，在插入过程中尽量减少InnoDB存储引擎的页分裂，</font>即使要进行页分裂，也只会分裂很少一部分。并且能减少数据的移动，每次插入都是插入到最后。即减少分裂和移动的频率。  
 &emsp; <font color = "lime">如果写入是乱序的，InnoDB不得不频繁地做页分裂操作，以便为新的行分配空间。</font>页分裂会导致移动大量数据，一次插入最少需要修改三个页而不是一个页。 <font color = "lime">如果频繁的页分裂，页会变得稀疏并被不规则地填充，所以最终数据会有碎片。</font>  
 
-##### 1.2.1.6.1. ***碎片问题  
+#### 1.1.6.1. ***碎片问题  
 
 1. 碎片问题的产生：  
     * 页分裂产生碎片。  
@@ -206,7 +221,7 @@ https://www.cnblogs.com/tongxiaoda/p/7874535.html
 &emsp; 此外，OPTIMIZE TABLE语句有两个可选的关键字：LOCAL和NO_WRITE_TO_BINLOG。在默认情况下，OPTIMIZE TABLE语句将会被记录到二进制日志中，如果指定了LOCAL或NO_WRITE_TO_BINLOG关键字，则不会记录。当然，一般情况下，也无需关注这两个关键字。  
 
 
-#### 1.2.1.7. 普通索引和唯一索引的区别
+### 1.1.7. 普通索引和唯一索引的区别
 <!-- 
 https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
 -->
@@ -224,7 +239,7 @@ https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
 &emsp; 如果所有的更新后面，都马上伴随着对这个记录的查询，那么应该关闭change buffer。而在其他情况下，change buffer都能提升更新性能。  
 &emsp; 在实际使用中，普通索引和change buffer的配合使用，对于数据量大的表的更新优化还是很明显的。  
 
-### 1.2.2. MyISAM引擎的索引  
+## 1.2. MyISAM引擎的索引  
 &emsp; <font color = "red">MyISAM也是B+树结构，但是MyISAM索引的叶子节点的数据保存的是行数据的地址。</font>因此，MyISAM中索引检索的算法首先在索引树中找到行数据的地址，然后根据地址找到对应的行数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-37.png)  
 &emsp; MyISAM的索引文件仅仅保存数据记录的地址。主键索引和辅助索引，只是主索引要求key是唯一的，而辅助索引的key可以重复。如果在Col2上建立一个辅助索引，则此索引的如下图：  
@@ -237,10 +252,11 @@ https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
 * .MYD (MYData) 文件：MyISAM 存储引擎专用，用于存储MyISAM 表的数据。  
 * .MYI (MYIndex)文件：MyISAM 存储引擎专用，用于存储MyISAM 表的索引相关信息。  
 
-### 1.2.3. Hash索引介绍  
+## 1.3. Hash索引介绍  
 &emsp; 哈希索引底层的数据结构就是哈希表。对于每一行数据，存储引擎都会对所有的索引列计算一个哈希码（hash code），并且Hash索引将所有的哈希码存储在索引中，同时在索引表中保存指向每个数据行的指针。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-39.png)  
 &emsp; 在 MySQL 中，只有 Memory 存储引擎显式的支持哈希索引，而innodb是隐式支持哈希索引的。  
 
 &emsp; <font color = "red">哈希索引适用的场景</font>：等值查询。  
 &emsp; <font color = "red">哈希索引不适用的场景</font>：hash函数的不可预测性，hash索引中经过hash函数建立索引之后，索引的顺序与原顺序无法保持一致。不支持范围查询、不支持索引完成排序、不支持联合索引的最左前缀匹配规则、不支持部分匹配、只支持等值查询如=，IN()，不支持 < >。  
+
