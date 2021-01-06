@@ -42,6 +42,11 @@
 
 <!-- /TOC -->
 
+<!-- 
+mybatis日志功能是如何设计的？ 
+https://mp.weixin.qq.com/s/JkdszV7Oy9E9cITNebY2NA
+
+-->
 
 # 1. MyBatis使用教程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-29.png)  

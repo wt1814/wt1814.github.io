@@ -112,14 +112,6 @@
     * [SQL优化](/docs/SQL/2.SQL优化.md)  
         * [索引优化](/docs/SQL/7.index.md)  
         * [优化案例](/docs/SQL/12.case.md)  
-    * [MySql架构](/docs/SQL/8.MySql架构.md)  
-    * [MySql原理]  
-        * [MySql存储引擎](/docs/SQL/13.MySqlStorage.md)  
-        * [InnoDB](/docs/SQL/InnoDB.md)  
-        * [MySql事务](/docs/SQL/14.transaction.md)  
-        * [MySql锁](/docs/SQL/15.lock.md)  
-        * [MySqlMVCC](/docs/SQL/MVCC.md)  
-        * [MySql事务日志](/docs/SQL/log.md)  
     * [数据库分布式](/docs/SQL/4.分布式数据库.md)  
         * [主从复制](/docs/SQL/16.replication.md)  
         * [主从复制的高可用](/docs/SQL/replicationAvailability.md)   
@@ -129,12 +121,23 @@
         * [分库分表](/docs/SQL/18.sub.md)  
         * [数据库分布式实现](/docs/SQL/subRealize.md)  
         * [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
-    * [数据迁移](/docs/projectImplement/implementation.md)   
-    * [大数据量操作](/docs/SQL/largeData.md)  
     * [数据库连接池](/docs/SQL/connectionPool.md)  
-        * [HikariCPConnectionPool]   
+        * [HikariCPConnectionPool](/docs/SQL/connectionPool.md)     
         * [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
         * [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
+    
+    * [MySql原理](/docs/SQL/MySqlPrinciple.md)    
+        * [MySql架构](/docs/SQL/8.MySql架构.md)  
+        * [MySql存储引擎](/docs/SQL/13.MySqlStorage.md)  
+        * [InnoDB](/docs/SQL/InnoDB.md)  
+        * [MySql事务](/docs/SQL/14.transaction.md)  
+        * [MySql锁](/docs/SQL/15.lock.md)  
+        * [MySqlMVCC](/docs/SQL/MVCC.md)  
+        * [MySql事务日志](/docs/SQL/log.md)  
+
+    * [数据迁移](/docs/projectImplement/implementation.md)   
+    * [大数据量操作](/docs/SQL/largeData.md)  
+
 * Spring  
     * [Spring](/docs/SSM/Spring/1.Spring.md)  
     * [对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  

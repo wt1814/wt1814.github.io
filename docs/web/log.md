@@ -1,6 +1,7 @@
 
 
 
+# 编码过程输出日志  
 <!-- 
 如何在12个小时，搞定日志监控？
 https://mp.weixin.qq.com/s/6Bjr1PUAC98IIaxBFcECNw
@@ -11,9 +12,9 @@ https://blog.csdn.net/wangzhan0123/article/details/81219789
 Slf4j适配日志原理 
 https://mp.weixin.qq.com/s/hGtkjhG1Wz9BwrLKU4ph-w
 
--->
-
-# 编码过程输出日志    
+mybatis日志功能是如何设计的？ 
+https://mp.weixin.qq.com/s/JkdszV7Oy9E9cITNebY2NA
+-->  
 &emsp; 使用[]进行参数变量隔离  
 &emsp; 如有参数变量，应该写成如下写法:  
 

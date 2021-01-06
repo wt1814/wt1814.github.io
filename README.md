@@ -166,14 +166,6 @@
 [SQL优化](/docs/SQL/2.SQL优化.md)  
 &emsp; [索引优化](/docs/SQL/7.index.md)  
 &emsp; [优化案例](/docs/SQL/12.case.md)  
-[MySql架构](/docs/SQL/8.MySql架构.md)  
-[MySql原理]  
-&emsp; [MySql存储引擎](/docs/SQL/13.MySqlStorage.md)  
-&emsp; &emsp; [InnoDB](/docs/SQL/InnoDB.md)  
-&emsp; [MySql事务](/docs/SQL/14.transaction.md)  
-&emsp; [MySql锁](/docs/SQL/15.lock.md)  
-&emsp; [MySqlMVCC](/docs/SQL/MVCC.md)  
-&emsp; [MySql事务日志](/docs/SQL/log.md)  
 [数据库分布式](/docs/SQL/4.分布式数据库.md)  
 &emsp; [主从复制](/docs/SQL/16.replication.md)  
 &emsp; &emsp; [主从复制的高可用](/docs/SQL/replicationAvailability.md)   
@@ -183,11 +175,21 @@
 &emsp; [分库分表](/docs/SQL/18.sub.md)  
 &emsp; [数据库分布式实现](/docs/SQL/subRealize.md)  
 &emsp; &emsp; [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
+
+[MySql原理](/docs/SQL/MySqlPrinciple.md)   
+&emsp; [MySql架构](/docs/SQL/8.MySql架构.md)   
+&emsp; [MySql存储引擎](/docs/SQL/13.MySqlStorage.md)  
+&emsp; &emsp; [InnoDB](/docs/SQL/InnoDB.md)  
+&emsp; [MySql事务](/docs/SQL/14.transaction.md)  
+&emsp; [MySql锁](/docs/SQL/15.lock.md)  
+&emsp; [MySqlMVCC](/docs/SQL/MVCC.md)  
+&emsp; [MySql事务日志](/docs/SQL/log.md)  
+
 [数据迁移](/docs/projectImplement/implementation.md)  
 [大数据量操作](/docs/SQL/largeData.md)  
 
 [数据库连接池](/docs/SQL/connectionPool.md)  
-&emsp; [HikariCPConnectionPool]   
+&emsp; [HikariCPConnectionPool](/docs/SQL/HikariCP.md)   
 &emsp; &emsp; [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
 &emsp; &emsp; [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
 

@@ -214,6 +214,8 @@
 <!-- 
 JVM 性能调优监控工具 jps、jstack、jmap、jhat、jstat、hprof 使用详解
 https://mp.weixin.qq.com/s/XBB2IJf8ODkcjZiU423J4Q
+JVM 常用命令行工具 
+https://mp.weixin.qq.com/s/MC2y6JAbZyjIVp7yTxT7fQ
 -->
 &emsp; **<font color = "clime">注意如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。</font>**  
 
