@@ -11,6 +11,7 @@
     - [1.3. 关联查询优化](#13-关联查询优化)
     - [1.4. 组合查询优化](#14-组合查询优化)
     - [1.5. INSERT的优化](#15-insert的优化)
+    - [1.6. 快速删除大量（百万级）数据](#16-快速删除大量百万级数据)
 
 <!-- /TOC -->
 
@@ -109,3 +110,9 @@ select * from student u where major_id not in (select major_id from major);
 3. 将索引文件和数据文件分在不同的磁盘上存放（InnoDB引擎是在同一个表空间的）。  
 4. 如果批量插入，则可以增加bluk_insert_buffer_size变量值提供速度（只对MyISAM有用）  
 5. 当从一个文本文件装载一个表时，使用LOAD DATA INFILE，通常比INSERT语句快20倍。  
+
+## 1.6. 快速删除大量（百万级）数据  
+
+<!-- 
+https://jingyan.baidu.com/article/48b37f8d2e0cad1a65648879.html
+-->
