@@ -121,10 +121,7 @@
         * [分库分表](/docs/SQL/18.sub.md)  
         * [数据库分布式实现](/docs/SQL/subRealize.md)  
         * [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
-    * [数据库连接池](/docs/SQL/connectionPool.md)  
-        * [HikariCPConnectionPool](/docs/SQL/connectionPool.md)     
-        * [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
-        * [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
+    * [MySQL监控](/docs/SQL/MySqlMonitor.md)  
     * [MySql原理](/docs/SQL/MySqlPrinciple.md)    
         * [MySql架构](/docs/SQL/8.MySql架构.md)  
         * [MySql存储引擎](/docs/SQL/13.MySqlStorage.md)  
@@ -133,7 +130,10 @@
         * [MySql锁](/docs/SQL/15.lock.md)  
         * [MySqlMVCC](/docs/SQL/MVCC.md)  
         * [MySql事务日志](/docs/SQL/log.md)  
-
+    * [数据库连接池](/docs/SQL/connectionPool.md)  
+        * [HikariCPConnectionPool](/docs/SQL/connectionPool.md)     
+        * [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
+        * [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
     * [数据迁移](/docs/projectImplement/implementation.md)   
     * [大数据量操作](/docs/SQL/largeData.md)  
 
