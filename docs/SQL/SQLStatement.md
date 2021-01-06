@@ -1,9 +1,19 @@
 
-# SQL语句优化
+<!-- TOC -->
 
+- [1. SQL语句优化](#1-sql语句优化)
+    - [1.1. 基本查询优化](#11-基本查询优化)
+    - [1.2. 子查询优化](#12-子查询优化)
+    - [1.3. 关联查询优化](#13-关联查询优化)
+    - [1.4. 组合查询优化](#14-组合查询优化)
+    - [1.5. INSERT的优化](#15-insert的优化)
+
+<!-- /TOC -->
+
+# 1. SQL语句优化
 &emsp; MySql官网提供的优化方案：https://dev.mysql.com/doc/refman/5.7/en/optimization.html  
 
-## 1.5.1. 基本查询优化  
+## 1.1. 基本查询优化  
 &emsp; **查询结果集优化**  
 &emsp; 避免使用select \*。count(1)或count(列)代替count(*)。  
 
@@ -59,7 +69,7 @@ https://mp.weixin.qq.com/s/FykC_mfqJH5oics3wIzBQA
     
     SELECT*FROM user ORDER BY key1, key2;
 
-## 1.5.2. 子查询优化  
+## 1.2. 子查询优化  
 &emsp; <font color = "red">使用子查询有时候可以使用更有效的JOIN连接代替，这是因为MySQL中不需要在内存中创建临时表完成SELECT子查询与主查询两部分查询工作。但是并不是所有的时候都成立，最好是在on关键字后面的列有索引的话，效果会更好！</font>  
 &emsp; 比如在表major中major_id是有索引的：  
 
@@ -73,15 +83,15 @@ select * from student u left join major m on u.major_id=m.major_id where m.major
 select * from student u where major_id not in (select major_id from major);
 ```
 
-## 1.5.3. 关联查询优化  
+## 1.3. 关联查询优化  
 1. 在进行多表关联时，多用Where语句把单个表的结果集最小化，多用聚合函数汇总结果集后再与其它表做关联，以使结果集数据量最小化  
 ......
 
-## 1.5.4. 组合查询优化  
+## 1.4. 组合查询优化  
 1. MySQL处理UNION的策略是先创建临时表，然后再把各个查询结果插入到临时表中，最后再来做查询。因此很多优化策略在UNION查询中都没有办法很好的时候。经常需要手动将WHERE、LIMIT、ORDER BY等字句“下推”到各个子查询中，以便优化器可以充分利用这些条件先优化。  
 2. 如果结果集允许重复的话,使用UNION ALL代替UNION。  
 
-## 1.5.5. INSERT的优化  
+## 1.5. INSERT的优化  
 1. 尽量使用多个值表的 INSERT 语句，这种方式将大大缩减客户端与数据库之间的连接、关闭等消耗。（同一客户的情况下），即：  
 
     INSERT INTO tablename values(1,2),(1,3),(1,4)  
