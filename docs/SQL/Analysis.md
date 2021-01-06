@@ -1,6 +1,20 @@
+<!-- TOC -->
 
+- [1. EXPLAIN、PROCEDURE ANALYSE(分析)](#1-explainprocedure-analyse分析)
+    - [1.1. explain与explain extended](#11-explain与explain-extended)
+        - [1.1.1. explain extended](#111-explain-extended)
+    - [1.2. show warnings](#12-show-warnings)
+    - [1.3. ~~proceduer analyse()取得建议~~](#13-proceduer-analyse取得建议)
+    - [1.4. profiling](#14-profiling)
+        - [1.4.1. 查看profile开启情况](#141-查看profile开启情况)
+        - [1.4.2. 启用profile](#142-启用profile)
+        - [1.4.3. 查看执行的SQL列表](#143-查看执行的sql列表)
+        - [1.4.4. 查询指定ID的执行详细信息](#144-查询指定id的执行详细信息)
+        - [1.4.5. 获取CPU、Block IO等信息](#145-获取cpublock-io等信息)
 
-## 1.4. EXPLAIN、PROCEDURE ANALYSE(分析)  
+<!-- /TOC -->
+
+# 1. EXPLAIN、PROCEDURE ANALYSE(分析)  
 
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MzAxODcyNjEzNQ==&mid=2247487641&idx=1&sn=3551d8f82bf8b503041e079b6ce704ce&chksm=9bd0bd01aca734172fff2cda5c4a46bce8f1dabc1b0d44334794510b34b665e3cf8b1f1abced&mpshare=1&scene=1&srcid=&key=00a8e91eefd868fcd64be6325594939523bc619318b02b06053cd6a26de9a9f6490cd967c97a822819178ab39d2507e2b41ba0694bcac89b80ab27e7518e7df3f17aa0d224992a132b90164c45e889c2&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060833&lang=zh_CN&pass_ticket=A8TVciY05jxe73%2ByAqBufT%2F39WMw2DS5UIeWy9gagHorTGRPzk0IoQC5RsOCwRL0
@@ -17,7 +31,7 @@ A --> D(profiling)
 
 &emsp; **<font color = "lime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling。</font>**  
 
-### 1.4.1. explain与explain extended
+## 1.1. explain与explain extended
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MzAxODcyNjEzNQ==&mid=2247487641&idx=1&sn=3551d8f82bf8b503041e079b6ce704ce&chksm=9bd0bd01aca734172fff2cda5c4a46bce8f1dabc1b0d44334794510b34b665e3cf8b1f1abced&mpshare=1&scene=1&srcid=&key=00a8e91eefd868fcd64be6325594939523bc619318b02b06053cd6a26de9a9f6490cd967c97a822819178ab39d2507e2b41ba0694bcac89b80ab27e7518e7df3f17aa0d224992a132b90164c45e889c2&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060833&lang=zh_CN&pass_ticket=A8TVciY05jxe73%2ByAqBufT%2F39WMw2DS5UIeWy9gagHorTGRPzk0IoQC5RsOCwRL0
 
@@ -124,10 +138,10 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
     * Using sort_union(...), Using union(...), Using intersect(...):这些函数说明如何为index_merge联接类型合并索引扫描。  
     * Using index for group-by:类似于访问表的Using index方式，Using index for group-by表示MySQL发现了一个索引,可以用来查询GROUP BY或DISTINCT查询的所有列,而不要额外搜索硬盘访问实际的表。  
 
-#### 1.4.1.1. explain extended
+### 1.1.1. explain extended
 &emsp; <font color = "red">用explain extended查看执行计划会比explain多一列 filtered。filtered列给出了一个百分比的值，这个百分比值和rows列的值一起使用，可以估计出那些将要和explain中的前一个表进行连接的行的数目。前一个表就是指explain 的 id列的值比当前表的id小的表。</font>  
 
-### 1.4.2. show warnings
+## 1.2. show warnings
 
 &emsp; SHOW WARNINGS显示有关由于当前会话中执行最新的非诊断性语句而导致的条件的信息。  
 &emsp; 使用mysql show warnings 避免一些隐式转换。  
@@ -138,7 +152,7 @@ explain extended + show warnings
 https://mp.weixin.qq.com/s/6jjLv2SIBmh2kjHunxJVYA
 -->
 
-### 1.4.3. ~~proceduer analyse()取得建议~~  
+## 1.3. ~~proceduer analyse()取得建议~~  
 &emsp; PROCEDURE ANALYSE() ，在优化表结构时可以辅助参考分析语句。  
 &emsp; 使用proceduer analyse()对当前已有应用的表类型的判断，该函数可以对数据表中的列的数据类型（字段类型）提出优化建议（Optimal_fieldtype）。  
 
@@ -146,10 +160,10 @@ https://mp.weixin.qq.com/s/6jjLv2SIBmh2kjHunxJVYA
 SELECT column_name FROM table_name PROCEDURE ANALYSE();
 ```
 
-### 1.4.4. profiling  
+## 1.4. profiling  
 &emsp; 使用 profiling 命令可以了解 SQL 语句消耗资源的详细信息（每个执行步骤的开销）。  
 
-#### 1.4.4.1. 查看profile开启情况  
+### 1.4.1. 查看profile开启情况  
 ```
 select @@profiling;
 ```
@@ -166,7 +180,7 @@ mysql> select @@profiling;
 ```
 &emsp; 0 表示关闭状态，1表示开启  
 
-#### 1.4.4.2. 启用profile  
+### 1.4.2. 启用profile  
 ```
 set profiling = 1;  
 ```
@@ -186,7 +200,7 @@ mysql> select @@profiling;
 ```
 &emsp; 在连接关闭后，profiling 状态自动设置为关闭状态。  
 
-#### 1.4.4.3. 查看执行的SQL列表  
+### 1.4.3. 查看执行的SQL列表  
 ```
 show profiles;  
 ```
@@ -210,7 +224,7 @@ mysql> show profiles;
 ```
 &emsp; 该命令执行之前，需要执行其他 SQL 语句才有记录。  
 
-#### 1.4.4.4. 查询指定ID的执行详细信息  
+### 1.4.4. 查询指定ID的执行详细信息  
 
 ```sql
 show profile for query Query_ID;
@@ -242,7 +256,7 @@ mysql> show profile for query 9;
 ```
 &emsp; 每行都是状态变化的过程以及它们持续的时间。Status 这一列和 show processlist 的 State 是一致的。因此，需要优化的注意点与上文描述的一样。  
 
-#### 1.4.4.5. 获取CPU、Block IO等信息  
+### 1.4.5. 获取CPU、Block IO等信息  
 
 ```sql
 show profile block io,cpu for query Query_ID;
