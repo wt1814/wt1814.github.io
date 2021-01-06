@@ -3,6 +3,10 @@
 
 - [1. SQL语句优化](#1-sql语句优化)
     - [1.1. 基本查询优化](#11-基本查询优化)
+        - [1.1.1. 查询结果集优化](#111-查询结果集优化)
+        - [1.1.2. group by优化](#112-group-by优化)
+        - [1.1.3. Order by优化](#113-order-by优化)
+        - [1.1.4. like优化](#114-like优化)
     - [1.2. 子查询优化](#12-子查询优化)
     - [1.3. 关联查询优化](#13-关联查询优化)
     - [1.4. 组合查询优化](#14-组合查询优化)
@@ -14,7 +18,7 @@
 &emsp; MySql官网提供的优化方案：https://dev.mysql.com/doc/refman/5.7/en/optimization.html  
 
 ## 1.1. 基本查询优化  
-&emsp; **查询结果集优化**  
+### 1.1.1. 查询结果集优化  
 &emsp; 避免使用select \*。count(1)或count(列)代替count(*)。  
 
     count(*) 和 count(1)和count(列名)区别：  
@@ -30,7 +34,7 @@
         如果有主键，则 select count（主键）的执行效率是最优的  
         如果表只有一个字段，则 select count（*）最优。
 
-&emsp; **group by优化**  
+### 1.1.2. group by优化 
 1. 优化GROUP BY: 提高GROUP BY语句的效率，<font color = "red">可以通过将不需要的记录在GROUP BY之前过滤掉。即联合使用where子句和having子句。</font>  
 2. 在默认情况下，MySQL中的GROUP BY语句会对其后出现的字段进行默认排序（非主键情况），就好比使用ORDER BY col1,col2,col3…所以在后面跟上具有相同列（与GROUP BY后出现的col1,col2,col3…相同）ORDER BY子句并没有影响该SQL的实际执行性能。  
 
@@ -42,7 +46,7 @@
 &emsp; 当使用ORDER BY NULL禁止排序后，Using filesort不存在  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-55.png)  
 
-&emsp; **Order by优化：**  
+### 1.1.3. Order by优化 
 <!-- 
 MySQL中order by语句的实现原理以及优化手段 
 https://mp.weixin.qq.com/s/FykC_mfqJH5oics3wIzBQA
@@ -68,6 +72,12 @@ https://mp.weixin.qq.com/s/FykC_mfqJH5oics3wIzBQA
 3. ORDER BY对不同的关键字使用，即ORDER BY后的关键字不相同  
     
     SELECT*FROM user ORDER BY key1, key2;
+
+### 1.1.4. like优化  
+<!-- 
+like %%怎么优化
+https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
+-->
 
 ## 1.2. 子查询优化  
 &emsp; <font color = "red">使用子查询有时候可以使用更有效的JOIN连接代替，这是因为MySQL中不需要在内存中创建临时表完成SELECT子查询与主查询两部分查询工作。但是并不是所有的时候都成立，最好是在on关键字后面的列有索引的话，效果会更好！</font>  

@@ -15,12 +15,7 @@
 <!-- /TOC -->
 
 # 1. EXPLAIN、PROCEDURE ANALYSE(分析)  
-
-<!-- 
-https://mp.weixin.qq.com/s?__biz=MzAxODcyNjEzNQ==&mid=2247487641&idx=1&sn=3551d8f82bf8b503041e079b6ce704ce&chksm=9bd0bd01aca734172fff2cda5c4a46bce8f1dabc1b0d44334794510b34b665e3cf8b1f1abced&mpshare=1&scene=1&srcid=&key=00a8e91eefd868fcd64be6325594939523bc619318b02b06053cd6a26de9a9f6490cd967c97a822819178ab39d2507e2b41ba0694bcac89b80ab27e7518e7df3f17aa0d224992a132b90164c45e889c2&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060833&lang=zh_CN&pass_ticket=A8TVciY05jxe73%2ByAqBufT%2F39WMw2DS5UIeWy9gagHorTGRPzk0IoQC5RsOCwRL0
-
-https://mp.weixin.qq.com/s/eJ_ConoGHP6az3IKNe6L2g
--->
+&emsp; **<font color = "lime">explain：type单表查询类型要达到range级别（只检索给定范围的行，使用一个索引来选择行，非全表扫描），extra包含不在其他属性显示，但是又非常重要的信息，常见的不太友好的值，如下：Using filesort，Using temporary。其他重要字段：key、key_len</font>**  
 
 ```meimaid
 graph LR
@@ -33,10 +28,10 @@ A --> D(profiling)
 
 ## 1.1. explain与explain extended
 <!-- 
-https://mp.weixin.qq.com/s?__biz=MzAxODcyNjEzNQ==&mid=2247487641&idx=1&sn=3551d8f82bf8b503041e079b6ce704ce&chksm=9bd0bd01aca734172fff2cda5c4a46bce8f1dabc1b0d44334794510b34b665e3cf8b1f1abced&mpshare=1&scene=1&srcid=&key=00a8e91eefd868fcd64be6325594939523bc619318b02b06053cd6a26de9a9f6490cd967c97a822819178ab39d2507e2b41ba0694bcac89b80ab27e7518e7df3f17aa0d224992a132b90164c45e889c2&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060833&lang=zh_CN&pass_ticket=A8TVciY05jxe73%2ByAqBufT%2F39WMw2DS5UIeWy9gagHorTGRPzk0IoQC5RsOCwRL0
-
+~~
 https://mp.weixin.qq.com/s/eJ_ConoGHP6az3IKNe6L2g
---> 
+https://mp.weixin.qq.com/s?__biz=MzAxODcyNjEzNQ==&mid=2247487641&idx=1&sn=3551d8f82bf8b503041e079b6ce704ce&chksm=9bd0bd01aca734172fff2cda5c4a46bce8f1dabc1b0d44334794510b34b665e3cf8b1f1abced&mpshare=1&scene=1&srcid=&key=00a8e91eefd868fcd64be6325594939523bc619318b02b06053cd6a26de9a9f6490cd967c97a822819178ab39d2507e2b41ba0694bcac89b80ab27e7518e7df3f17aa0d224992a132b90164c45e889c2&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060833&lang=zh_CN&pass_ticket=A8TVciY05jxe73%2ByAqBufT%2F39WMw2DS5UIeWy9gagHorTGRPzk0IoQC5RsOCwRL0
+-->
 
 ```sql
 EXPLAIN SELECT column_name FROM table_name;  
@@ -142,10 +137,8 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
 &emsp; <font color = "red">用explain extended查看执行计划会比explain多一列 filtered。filtered列给出了一个百分比的值，这个百分比值和rows列的值一起使用，可以估计出那些将要和explain中的前一个表进行连接的行的数目。前一个表就是指explain 的 id列的值比当前表的id小的表。</font>  
 
 ## 1.2. show warnings
-
 &emsp; SHOW WARNINGS显示有关由于当前会话中执行最新的非诊断性语句而导致的条件的信息。  
 &emsp; 使用mysql show warnings 避免一些隐式转换。  
-
 <!-- 
 explain extended + show warnings
 阿里的程序员也不过如此，竟被一个简单的SQL查询难住 

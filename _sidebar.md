@@ -114,6 +114,7 @@
         * [SQL分析](/docs/SQL/Analysis.md)  
         * [SQL语句优化](/docs/SQL/SQLStatement.md)  
         * [索引优化](/docs/SQL/7.index.md)  
+        * [索引底层原理](/docs/SQL/IndexPrinciple.md)  
         * [优化案例](/docs/SQL/12.case.md)  
     * [数据库分布式](/docs/SQL/4.分布式数据库.md)  
         * [主从复制](/docs/SQL/16.replication.md)  

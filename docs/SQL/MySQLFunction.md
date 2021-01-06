@@ -2,7 +2,7 @@
 
 - [1. MySql函数](#1-mysql函数)
     - [1.1. 控制流程函数](#11-控制流程函数)
-        - [1.1.1. CASE WHEN THEN 函数](#111-case-when-then-函数)
+        - [1.1.1. CASE WHEN THEN函数](#111-case-when-then函数)
         - [1.1.2. IF函数用法](#112-if函数用法)
         - [1.1.3. IFNULL函数](#113-ifnull函数)
         - [1.1.4. NULLIF函数](#114-nullif函数)
@@ -13,7 +13,7 @@
 &emsp; **<font color = "red">控制流程函数、字符串函数、数学函数、日期时间函数、聚合函数</font>**  
 
 ## 1.1. 控制流程函数  
-### 1.1.1. CASE WHEN THEN 函数  
+### 1.1.1. CASE WHEN THEN函数  
 &emsp; Case具有两种格式。简单Case函数和Case搜索函数。  
 &emsp; 第一种格式：简单Case函数，格式说明：  
 
