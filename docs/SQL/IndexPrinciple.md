@@ -89,6 +89,10 @@ https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
 二狗：为什么一个节点为1页就够了？
 https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
 -->
+<!-- 
+InnoDB中一棵B+树可以存放多少行数据？
+https://mp.weixin.qq.com/s/QKLX7zNm7xxMZ7dYvlkxxw
+-->
 &emsp; B+树中一个节点到底多大合适？  
 &emsp; 1页或页的倍数最为合适。因为如果一个节点的大小小于1页，那么读取这个节点的时候其实也会读出1页，造成资源的浪费。所以为了不造成浪费，所以最后把一个节点的大小控制在1页、2页、3页等倍数页大小最为合适。  
 &emsp; 在 MySQL中B+ 树的一个节点大小为“1页”，也就是16k。 

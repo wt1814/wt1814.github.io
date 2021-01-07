@@ -248,9 +248,6 @@ Empty set (0.00 sec)
 &emsp; <font color = "lime">而对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>  
 &emsp; 其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update，当使用了 Gap Lock 时，Gap 锁会锁住 id < 10 的整个范围，因此其他事务无法插入 id < 10 的数据，从而防止了幻读。  
 
-
-
-
 <!-- 
 
 1. 每种存储引擎对MVCC的实现方式不同。<font color = "lime">InnoDB 的 MVCC，是通过在每行记录后面保存两个隐藏的列来实现。</font>这两个列，一个保存了行的创建时间，一个保存行的过期时间（删除时间）。当然存储的并不是真实的时间，而是系统版本号（system version number）。每开始一个新的事务，系统版本号都会自动递增。事务开始时刻的系统版本号会作为事务的版本号，用来和查询到的每行记录的版本号进行比较。  

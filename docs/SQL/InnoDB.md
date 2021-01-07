@@ -18,8 +18,6 @@
             - [1.1.3.4. 相关参数](#1134-相关参数)
             - [1.1.3.5. 总结](#1135-总结)
         - [1.1.4. 自适应哈希索引](#114-自适应哈希索引)
-    - [1.3. 表](#13-表)
-        - [1.3.1. InnoDB的逻辑存储结构](#131-innodb的逻辑存储结构)
 
 <!-- /TOC -->
 
@@ -318,12 +316,9 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 3）完成第二步之后，马上调用 fsync 函数，将doublewrite buffer中的脏页数据写入实际的各个表空间文件（离散写）。
 
 如果操作系统在将页写入磁盘的过程中发生崩溃，InnoDB 再次启动后，发现了一个 page 数据已经损坏，InnoDB 存储引擎可以从共享表空间的 doublewrite 中找到该页的一个最近的副本，用于进行数据恢复了。
-
-
 -->
 
 #### 1.1.3.1. 部分写失效  
- 
 &emsp; <font color = "lime">如果说写缓冲带给InnoDB存储引擎的是性能，那么两次写带给InnoDB存储引擎的是数据的可靠性。</font><font color = "red">当数据库宕机时，可能发生数据库正在写一个页面，而这个页只写了一部分（比如16K的页，只写前4K的页）的情况，称之为部分写失效（partial page write）。</font>在InnoDB存储引擎未使用double write技术前，曾出现过因为部分写失效而导致数据丢失的情况。  
 
 &emsp; MySQL的buffer一页的大小是16K，文件系统一页的大小是4K，也就是说，<font color = "lime">MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。</font>  
@@ -426,37 +421,3 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 &emsp; 注意：在某些工作负载下，通过哈希索引查找带来的性能提升远大于额外的监控索引搜索情况和保持这个哈希表结构所带来的开销。  
 &emsp; 但某些时候，在负载高的情况下，自适应哈希索引中添加的read/write锁也会带来竞争，比如高并发的join操作。like操作和%的通配符操作也不适用于自适应哈希索引，可能要关闭自适应哈希索引。  
 -->
-
-
-
-
-
-## 1.3. 表
-### 1.3.1. InnoDB的逻辑存储结构  
-<!-- 
-https://zhuanlan.zhihu.com/p/111958646
--->
-
-&emsp; 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间（tablespace）。表空间又由段（segment），区（extent），页（page）组成。页在一些文档中有时候也称为块（block）。InnoDb逻辑存储结构图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-41.png)  
-
-* 表空间（tablespace）：  
-&emsp; 表空间是Innodb存储引擎逻辑的最高层，所有的数据都存放在表空间中。  
-&emsp; 默认情况下，Innodb存储引擎有一个共享表空间ibdata1，即所有数据都存放在这个表空间中内。  
-&emsp; 如果启用了innodbfileper_table参数，需要注意的是每张表的表空间内存放的只是数据、索引、和插入缓冲Bitmap，其他类的数据，比如回滚(undo)信息、插入缓冲检索页、系统事物信息，二次写缓冲等还是放在原来的共享表内的。  
-* 段（segment）：  
-&emsp; 表空间由段组成，常见的段有数据段、索引段、回滚段等。  
-&emsp; InnoDB存储引擎表是索引组织的，因此数据即索引，索引即数据。数据段即为B+树的叶子结点，索引段即为B+树的非索引结点。  
-&emsp; 在InnoDB存储引擎中对段的管理都是由引擎自身所完成，DBA不能也没必要对其进行控制。  
-* 区（extent）：  
-&emsp; 区是由连续页组成的空间，在任何情况下每个区的大小都为1MB。  
-&emsp; 为了保证区中页的连续性，InnoDB存储引擎一次从磁盘申请4~5个区。  
-&emsp; 默认情况下，InnoDB存储引擎页的大小为16KB，一个区中一共64个连续的区。  
-* 页（page）：  
-&emsp; 页是InnoDB磁盘管理的最小单位。在InnoDB存储引擎中，默认每个页的大小为16KB。  
-&emsp; 从InnoDB1.2.x版本开始，可以通过参数innodbpagesize将页的大小设置为4K，8K，16K。  
-&emsp; InnoDB存储引擎中，常见的页类型有：数据页，undo页，系统页，事务数据页，插入缓冲位图页，插入缓冲空闲列表页等。 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-78.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-79.png)  
-
-

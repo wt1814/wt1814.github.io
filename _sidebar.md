@@ -126,7 +126,7 @@
     * [MySql原理](/docs/SQL/MySqlPrinciple.md)    
         * [MySql架构](/docs/SQL/8.MySql架构.md)  
         * [MySql存储引擎](/docs/SQL/13.MySqlStorage.md)  
-        * [InnoDB](/docs/SQL/InnoDB.md)  
+        * [InnoDB关键特性](/docs/SQL/InnoDB.md)  
         * [索引底层原理](/docs/SQL/IndexPrinciple.md)  
         * [MySql事务](/docs/SQL/14.transaction.md)  
         * [MySql锁](/docs/SQL/15.lock.md)  
