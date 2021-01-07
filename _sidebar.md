@@ -116,7 +116,7 @@
         * [索引优化](/docs/SQL/7.index.md)  
         * [索引底层原理](/docs/SQL/IndexPrinciple.md)  
         * [优化案例](/docs/SQL/12.case.md)  
-    * [数据库分布式](/docs/SQL/4.分布式数据库.md)  
+    * [数据库分布式](/docs/SQL/DistributedDatabase.md)  
         * [主从复制](/docs/SQL/16.replication.md)  
         * [主从复制的高可用](/docs/SQL/replicationAvailability.md)   
         * [主从复制的问题](/docs/SQL/replicationProblem.md)  
