@@ -155,7 +155,7 @@
         * [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
         * [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
         * [事件](/docs/SSM/Spring/feature/Event.md)  
-        * [循环依赖](/docs/SSM/Spring/feature/循环依赖.md)  
+        * [循环依赖](/docs/SSM/Spring/feature/CircularDepend.md)  
         * [lazy-init](/docs/SSM/Spring/feature/lazy-init.md)  
 
     * [SpringAOP教程](/docs/SSM/Spring/5.SpringAOP.md)  

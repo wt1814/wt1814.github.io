@@ -18,6 +18,10 @@
 
 # 1. Netty编解码  
 <!-- 
+Socket粘包问题的3种解决方案
+https://mp.weixin.qq.com/s/ODxGlLrohCveH-2m-BSDWQ
+-->
+<!-- 
 ~~
 https://mp.weixin.qq.com/s?__biz=Mzg5ODA5NDIyNQ==&mid=2247484812&idx=1&sn=52d38717da60683d671136f50009f4fd&chksm=c0668072f71109643fb4697d2ddcec1a1983544dc4e3497f2c2a6aff525c292d3d9f2bd30be0&scene=178&cur_album_id=1486063894363242498#rd
 -->
