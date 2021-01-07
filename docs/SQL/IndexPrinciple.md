@@ -2,16 +2,16 @@
 <!-- TOC -->
 
 - [1. 索引底层原理](#1-索引底层原理)
-    - [1.1. InnoDB引擎的索引实现](#11-innodb引擎的索引实现)
-        - [1.1.1. InnoDB逻辑结构页介绍](#111-innodb逻辑结构页介绍)
-        - [1.1.2. 为什么InnoDB会使用B+树？](#112-为什么innodb会使用b树)
-        - [1.1.3. B+树中一个节点到底多大合适？](#113-b树中一个节点到底多大合适)
-        - [1.1.4. InnoDB索引B+tree实现过程](#114-innodb索引btree实现过程)
-        - [1.1.5. InnoDB索引类型](#115-innodb索引类型)
-        - [1.1.6. InnoDB引擎的索引物理文件](#116-innodb引擎的索引物理文件)
-        - [1.1.7. 为什么官方建议InnoDB使用自增长主键作为索引？](#117-为什么官方建议innodb使用自增长主键作为索引)
-            - [1.1.7.1. ***碎片问题](#1171-碎片问题)
-        - [1.1.8. 普通索引和唯一索引的区别](#118-普通索引和唯一索引的区别)
+    - [1.1. InnoDB引擎的索引](#11-innodb引擎的索引)
+        - [1.1.1. InnoDB索引实现](#111-innodb索引实现)
+            - [1.1.1.1. InnoDB逻辑结构页介绍](#1111-innodb逻辑结构页介绍)
+            - [1.1.1.2. 为什么InnoDB会使用B+树？](#1112-为什么innodb会使用b树)
+            - [1.1.1.3. B+树中一个节点到底多大合适？](#1113-b树中一个节点到底多大合适)
+            - [1.1.1.4. InnoDB索引B+tree实现过程](#1114-innodb索引btree实现过程)
+        - [1.1.2. InnoDB索引类型](#112-innodb索引类型)
+        - [1.1.3. 普通索引和唯一索引的区别？](#113-普通索引和唯一索引的区别)
+        - [1.1.4. 为什么官方建议InnoDB使用自增长主键作为索引？](#114-为什么官方建议innodb使用自增长主键作为索引)
+            - [1.1.4.1. ***碎片问题](#1141-碎片问题)
     - [1.2. MyISAM引擎的索引](#12-myisam引擎的索引)
     - [1.3. Hash索引介绍](#13-hash索引介绍)
 
@@ -23,23 +23,12 @@
 * InnoDB支持事务，支持行级别锁定，支持B-tree、Full-text等索引，不支持Hash索引；  
 * MyISAM不支持事务，支持表级别锁定，支持B-tree、Full-text等索引，不支持Hash索引；  
 
-## 1.1. InnoDB引擎的索引实现  
-### 1.1.1. InnoDB逻辑结构页介绍  
-<!-- 
-https://www.cnblogs.com/bdsir/p/8745553.html
+## 1.1. InnoDB引擎的索引  
+### 1.1.1. InnoDB索引实现
+#### 1.1.1.1. InnoDB逻辑结构页介绍  
+&emsp; 参考[MySql存储引擎](/docs/SQL/13.MySqlStorage.md)  
 
--->
-&emsp; 页是InnoDB磁盘管理的最小单位，每次读取数据都会读取一个页大小的数据。在InnoDB存储引擎中，默认每个页的大小为16KB。 (在操作系统中默认页大小是4KB。) 可以使用命令SHOW GLOBAL STATUS LIKE 'Innodb_page_size' 查看。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-99.png)  
-
-&emsp; 页结构如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-79.png)  
-
-&emsp; B+树中一个节点到底多大合适？  
-&emsp; 1页或页的倍数最为合适。因为如果一个节点的大小小于1页，那么读取这个节点的时候其实也会读出1页，造成资源的浪费。所以为了不造成浪费，所以最后把一个节点的大小控制在1页、2页、3页等倍数页大小最为合适。  
-&emsp; 在 MySQL中B+ 树的一个节点大小为“1页”，也就是16k。   
-
-### 1.1.2. 为什么InnoDB会使用B+树？  
+#### 1.1.1.2. 为什么InnoDB会使用B+树？  
 <!--
 https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
 -->
@@ -92,13 +81,16 @@ https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
 2. 查询速度更稳定  
 &emsp; 由于B+Tree非叶子节点不存储数据（data），因此所有的数据都要查询至叶子节点，而叶子节点的高度都是相同的，因此所有数据的查询速度都是一样的。  
 
-### 1.1.3. B+树中一个节点到底多大合适？  
+#### 1.1.1.3. B+树中一个节点到底多大合适？  
 <!-- 
 二狗：为什么一个节点为1页就够了？
 https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
 -->
+&emsp; B+树中一个节点到底多大合适？  
+&emsp; 1页或页的倍数最为合适。因为如果一个节点的大小小于1页，那么读取这个节点的时候其实也会读出1页，造成资源的浪费。所以为了不造成浪费，所以最后把一个节点的大小控制在1页、2页、3页等倍数页大小最为合适。  
+&emsp; 在 MySQL中B+ 树的一个节点大小为“1页”，也就是16k。 
 
-### 1.1.4. InnoDB索引B+tree实现过程  
+#### 1.1.1.4. InnoDB索引B+tree实现过程  
 <!-- 
 https://mp.weixin.qq.com/s/6BoGlaYpdDjzZy19YhInEw
 -->
@@ -115,7 +107,7 @@ https://mp.weixin.qq.com/s/6BoGlaYpdDjzZy19YhInEw
 &emsp; 联合索引底层还是使用B+树索引，并且还是只有一棵树，只是此时的排序会：首先按照第一个索引排序，在第一个索引相同的情况下，再按第二个索引排序，依次类推。  
 &emsp; 这也是为什么有“最佳左前缀原则”的原因，因为右边（后面）的索引都是在左边（前面）的索引排序的基础上进行排序的，如果没有左边的索引，单独看右边的索引，其实是无序的。  
 
-### 1.1.5. InnoDB索引类型  
+### 1.1.2. InnoDB索引类型  
 &emsp; <font color = "red">InnoDB索引类型可以分为主键索引和辅助索引（非主键索引）。</font>  
 &emsp; **<font color = "lime">主键索引树中，叶子结点保存着主键和对应行的全部数据。主键索引又被称为聚簇索引。</font>**   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-34.png)  
@@ -136,15 +128,22 @@ InnoDB 中，对于主键索引，只需要走一遍主键索引的查询就能�
 &emsp; 总结：B+树在满足聚簇索引和覆盖索引的时候不需要回表查询数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-35.png)  
 
-### 1.1.6. InnoDB引擎的索引物理文件
-&emsp; <font color = "red">在InnoDB中，数据和索引文件是合起来储存的，如图所示，InnoDB 的存储文件有两个，后缀名分别是 .frm 和 .idb，其中 .frm 是表的定义文件，</font> **<font color = "lime">而idb是数据文件/索引文件。</font>**   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-33.png)  
+### 1.1.3. 普通索引和唯一索引的区别？
+&emsp; 唯一索引和普通索引的区别？  
 
-* .frm文件：与表相关的元数据信息都存放在frm文件，包括表结构的定义信息等。  
-* .ibd文件或.ibdata文件：这两种文件都是存放InnoDB数据的文件，之所以有两种文件形式存放 InnoDB 的数据，是因为InnoDB的数据存储方式能够通过配置来决定是使用共享表空间存放存储数据，还是用独享表空间存放存储数据。  
-&emsp; 独享表空间存储方式使用.ibd文件，并且每个表一个.ibd文件 共享表空间存储方式使用.ibdata文件，所有表共同使用一个.ibdata文件（或多个，可自己配置）。  
+* 查询过程：  
+&emsp; 执行查询的语句是select id from T where k=5。  
+&emsp; 对于普通索引来说，查找到满足条件的第一个记录(5,500)后，需要查找下一个记录，直到碰到第一个不满足k=5条件的记录。  
+&emsp; 对于唯一索引来说，<font color = "red">由于索引定义了唯一性，查找到第一个满足条件的记录后，就会停止继续检索。</font>  
+* 更新过程：  
+&emsp; 普通索引会使用[change buffer](/docs/SQL/InnoDB.md)提升性能。而change buffer不适用于唯一索引。  
 
-### 1.1.7. 为什么官方建议InnoDB使用自增长主键作为索引？  
+* 索引选择和实践：  
+&emsp; 其实，这两类索引在查询能力上是没差别的，主要考虑的是对更新性能的影响。所以，建议尽量选择普通索引。  
+&emsp; 如果所有的更新后面，都马上伴随着对这个记录的查询，那么应该关闭change buffer。而在其他情况下，change buffer都能提升更新性能。  
+&emsp; 在实际使用中，普通索引和change buffer的配合使用，对于数据量大的表的更新优化还是很明显的。  
+
+### 1.1.4. 为什么官方建议InnoDB使用自增长主键作为索引？  
 
         适合用业务字段做主键的场景需求：1).只有一个索引；2).该索引必须是唯一索引。这就是典型的KV场景。由于没有其他索引，所以也就不用考虑其他索引的叶子节点大小的问题。 
 
@@ -161,7 +160,7 @@ InnoDB 中，对于主键索引，只需要走一遍主键索引的查询就能�
 &emsp; <font color = "red">根据B+Tree的特点，自增主键是连续的，在插入过程中尽量减少InnoDB存储引擎的页分裂，</font>即使要进行页分裂，也只会分裂很少一部分。并且能减少数据的移动，每次插入都是插入到最后。即减少分裂和移动的频率。  
 &emsp; <font color = "lime">如果写入是乱序的，InnoDB不得不频繁地做页分裂操作，以便为新的行分配空间。</font>页分裂会导致移动大量数据，一次插入最少需要修改三个页而不是一个页。 <font color = "lime">如果频繁的页分裂，页会变得稀疏并被不规则地填充，所以最终数据会有碎片。</font>  
 
-#### 1.1.7.1. ***碎片问题  
+#### 1.1.4.1. ***碎片问题  
 
 1. 碎片问题的产生：  
     * 页分裂产生碎片。  
@@ -172,22 +171,6 @@ InnoDB 中，对于主键索引，只需要走一遍主键索引的查询就能�
 &emsp; OPTIMIZE [LOCAL | NO_WRITE_TO_BINLOG] TABLE table_name1 [, table_name2] ...  
 &emsp; 从上面的语法描述中，可以得知，OPTIMIZE TABLE可以一次性对多个表进行碎片整理，只需要在OPTIMIZE TABLE后面接多个表名，并以英文逗号隔开即可。  
 &emsp; 此外，OPTIMIZE TABLE语句有两个可选的关键字：LOCAL和NO_WRITE_TO_BINLOG。在默认情况下，OPTIMIZE TABLE语句将会被记录到二进制日志中，如果指定了LOCAL或NO_WRITE_TO_BINLOG关键字，则不会记录。当然，一般情况下，也无需关注这两个关键字。  
-
-
-### 1.1.8. 普通索引和唯一索引的区别
-&emsp; 唯一索引和普通索引的区别？  
-
-* 查询过程：  
-&emsp; 执行查询的语句是select id from T where k=5。  
-&emsp; 对于普通索引来说，查找到满足条件的第一个记录(5,500)后，需要查找下一个记录，直到碰到第一个不满足k=5条件的记录。  
-&emsp; 对于唯一索引来说，<font color = "red">由于索引定义了唯一性，查找到第一个满足条件的记录后，就会停止继续检索。</font>  
-* 更新过程：  
-&emsp; 普通索引会使用[change buffer](/docs/SQL/InnoDB.md)提升性能。而change buffer不适用于唯一索引。  
-
-* 索引选择和实践：  
-&emsp; 其实，这两类索引在查询能力上是没差别的，主要考虑的是对更新性能的影响。所以，建议尽量选择普通索引。  
-&emsp; 如果所有的更新后面，都马上伴随着对这个记录的查询，那么应该关闭change buffer。而在其他情况下，change buffer都能提升更新性能。  
-&emsp; 在实际使用中，普通索引和change buffer的配合使用，对于数据量大的表的更新优化还是很明显的。  
 
 ## 1.2. MyISAM引擎的索引  
 &emsp; <font color = "red">MyISAM也是B+树结构，但是MyISAM索引的叶子节点的数据保存的是行数据的地址。</font>因此，MyISAM中索引检索的算法首先在索引树中找到行数据的地址，然后根据地址找到对应的行数据。  
