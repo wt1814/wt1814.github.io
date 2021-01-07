@@ -16,6 +16,9 @@
     - [1.3. Hash索引介绍](#13-hash索引介绍)
 
 <!-- /TOC -->
+<!-- 
+https://mp.weixin.qq.com/s/StjX9bi-YDANrMX21Pn_Uw
+-->
 
 # 1. 索引底层原理  
 &emsp; 不同的存储引擎支持的索引类型不一样：  
