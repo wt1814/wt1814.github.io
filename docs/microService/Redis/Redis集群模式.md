@@ -41,6 +41,9 @@
 
 一万字详解 Redis Cluster Gossip 协议 
 https://mp.weixin.qq.com/s/aL5IEnGuq-9SuDcnmBEu_g
+
+ Redis集群环境搭建实践 
+ https://mp.weixin.qq.com/s/KT8kGgzn6TQwBGCUkMw_4g
 -->
 
 ## 1.1. 分片模式介绍  
