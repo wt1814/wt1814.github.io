@@ -4,13 +4,14 @@
 - [1. 索引底层原理](#1-索引底层原理)
     - [1.1. InnoDB引擎的索引实现](#11-innodb引擎的索引实现)
         - [1.1.1. InnoDB逻辑结构页介绍](#111-innodb逻辑结构页介绍)
-        - [1.1.2. 为什么 InnoDB会使用B+树？](#112-为什么-innodb会使用b树)
-        - [1.1.3. InnoDB索引B+tree实现过程](#113-innodb索引btree实现过程)
-        - [1.1.4. InnoDB索引类型](#114-innodb索引类型)
-        - [1.1.5. InnoDB引擎的索引物理文件](#115-innodb引擎的索引物理文件)
-        - [1.1.6. 为什么官方建议InnoDB使用自增长主键作为索引？](#116-为什么官方建议innodb使用自增长主键作为索引)
-            - [1.1.6.1. ***碎片问题](#1161-碎片问题)
-        - [1.1.7. 普通索引和唯一索引的区别](#117-普通索引和唯一索引的区别)
+        - [1.1.2. 为什么InnoDB会使用B+树？](#112-为什么innodb会使用b树)
+        - [1.1.3. B+树中一个节点到底多大合适？](#113-b树中一个节点到底多大合适)
+        - [1.1.4. InnoDB索引B+tree实现过程](#114-innodb索引btree实现过程)
+        - [1.1.5. InnoDB索引类型](#115-innodb索引类型)
+        - [1.1.6. InnoDB引擎的索引物理文件](#116-innodb引擎的索引物理文件)
+        - [1.1.7. 为什么官方建议InnoDB使用自增长主键作为索引？](#117-为什么官方建议innodb使用自增长主键作为索引)
+            - [1.1.7.1. ***碎片问题](#1171-碎片问题)
+        - [1.1.8. 普通索引和唯一索引的区别](#118-普通索引和唯一索引的区别)
     - [1.2. MyISAM引擎的索引](#12-myisam引擎的索引)
     - [1.3. Hash索引介绍](#13-hash索引介绍)
 
@@ -26,8 +27,7 @@
 ### 1.1.1. InnoDB逻辑结构页介绍  
 <!-- 
 https://www.cnblogs.com/bdsir/p/8745553.html
-存储引擎
-https://mp.weixin.qq.com/s/IsZjLI7QAB6t7H7NyGscGg
+
 -->
 &emsp; 页是InnoDB磁盘管理的最小单位，每次读取数据都会读取一个页大小的数据。在InnoDB存储引擎中，默认每个页的大小为16KB。 (在操作系统中默认页大小是4KB。) 可以使用命令SHOW GLOBAL STATUS LIKE 'Innodb_page_size' 查看。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-99.png)  
@@ -37,18 +37,16 @@ https://mp.weixin.qq.com/s/IsZjLI7QAB6t7H7NyGscGg
 
 &emsp; B+树中一个节点到底多大合适？  
 &emsp; 1页或页的倍数最为合适。因为如果一个节点的大小小于1页，那么读取这个节点的时候其实也会读出1页，造成资源的浪费。所以为了不造成浪费，所以最后把一个节点的大小控制在1页、2页、3页等倍数页大小最为合适。  
-&emsp; 在 MySQL 中 B+ 树的一个节点大小为“1页”，也就是16k。   
+&emsp; 在 MySQL中B+ 树的一个节点大小为“1页”，也就是16k。   
 
-### 1.1.2. 为什么 InnoDB会使用B+树？  
+### 1.1.2. 为什么InnoDB会使用B+树？  
 <!--
 https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
 -->
-
-&emsp; B+Tree树介绍  
 * BTree  
     &emsp; BTree是平衡搜索多叉树，设树的度为2d（d>1），高度为h，那么BTree要满足以一下条件：  
     * 每个叶子结点的高度一样，等于h；
-    * 每个非叶子结点由n-1个key和n个指针point组成，其中d<=n<=2d,key和point相互间隔，结点两端一定是key；
+    * 每个非叶子结点由n-1个key和n个指针point组成，其中d<=n<=2d，key和point相互间隔，结点两端一定是key；
     * 叶子结点指针都为null；
     * 非叶子结点的key都是[key,data]二元组，其中key表示作为索引的键，data为键值所在行的数据；
 
@@ -67,9 +65,6 @@ https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-92.png)  
 
 &emsp; <font color = "red">为什么索引结构默认使用B+Tree，而不是BTree，二叉树，红黑树？</font>  
-<!-- 
-https://www.jianshu.com/p/c82148473235
--->
 1. 操作系统中以页这种结构作为读写的基本单位。  
 2. 操作系统IO消耗：<font color = "red">一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储的磁盘上。</font>这样的话，索引查找过程中就要产生磁盘I/O消耗，相对于内存存取，I/O存取的消耗要高几个数量级，所以评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中磁盘I/O操作次数的渐进复杂度。换句话说，索引的结构组织要尽量减少查找过程中磁盘I/O的存取次数。  
 3. 具体分析：（重点B树和B+树的对比）  
@@ -90,16 +85,23 @@ https://www.jianshu.com/p/c82148473235
         2. **<font color = "red">叶子节点之间会有个指针指向，这个也是B+树的核心点，可以大大提升范围查询效率，也方便遍历整个树。</font>** 
         3. **<font color = "red">B+tree的查询效率更加稳定。由于非终结点并不是最终指向文件内容的结点，而只是叶子结点中关键字的索引。所以任何关键字的查找必须走一条从根结点到叶子结点的路。所有关键字查询的路径长度相同，导致每一个数据的查询效率相当。</font>**   
 
-### 1.1.3. InnoDB索引B+tree实现过程  
-<!-- 
-https://mp.weixin.qq.com/s/6BoGlaYpdDjzZy19YhInEw
--->
+----
+&emsp; B+Tree对比BTree的优点：  
+1. 磁盘读写代价更低  
+&emsp; 一般来说B+Tree比BTree更适合实现外存的索引结构，因为存储引擎的设计专家巧妙的利用了外存（磁盘）的存储结构，即磁盘的最小存储单位是扇区（sector），而操作系统的块（block）通常是整数倍的sector，操作系统以页（page）为单位管理内存，一页（page）通常默认为4K，数据库的页通常设置为操作系统页的整数倍，因此索引结构的节点被设计为一个页的大小，然后利用外存的“预读取”原则，每次读取的时候，把整个节点的数据读取到内存中，然后在内存中查找，已知内存的读取速度是外存读取I/O速度的几百倍，那么提升查找速度的关键就在于尽可能少的磁盘I/O，那么可以知道，每个节点中的key个数越多，那么树的高度越小，需要I/O的次数越少，因此一般来说B+Tree比BTree更快，因为B+Tree的非叶节点中不存储data，就可以存储更多的key。  
+2. 查询速度更稳定  
+&emsp; 由于B+Tree非叶子节点不存储数据（data），因此所有的数据都要查询至叶子节点，而叶子节点的高度都是相同的，因此所有数据的查询速度都是一样的。  
 
+### 1.1.3. B+树中一个节点到底多大合适？  
 <!-- 
 二狗：为什么一个节点为1页就够了？
 https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
 -->
 
+### 1.1.4. InnoDB索引B+tree实现过程  
+<!-- 
+https://mp.weixin.qq.com/s/6BoGlaYpdDjzZy19YhInEw
+-->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-78.png)  
 &emsp; InnoDB的B+tree的节点：  
 
@@ -113,7 +115,7 @@ https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
 &emsp; 联合索引底层还是使用B+树索引，并且还是只有一棵树，只是此时的排序会：首先按照第一个索引排序，在第一个索引相同的情况下，再按第二个索引排序，依次类推。  
 &emsp; 这也是为什么有“最佳左前缀原则”的原因，因为右边（后面）的索引都是在左边（前面）的索引排序的基础上进行排序的，如果没有左边的索引，单独看右边的索引，其实是无序的。  
 
-### 1.1.4. InnoDB索引类型  
+### 1.1.5. InnoDB索引类型  
 &emsp; <font color = "red">InnoDB索引类型可以分为主键索引和辅助索引（非主键索引）。</font>  
 &emsp; **<font color = "lime">主键索引树中，叶子结点保存着主键和对应行的全部数据。主键索引又被称为聚簇索引。</font>**   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-34.png)  
@@ -121,13 +123,11 @@ https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
 
         如果是通过主键索引查询的，会直接搜索B+树，从而查询到数据。
         如果不是通过主键索引查询到，需要先搜索索引树，得到在B+树上的值，再到B+树上搜索符合条件的数据，这个过程就是“回表”。
-
 <!-- 
 什么是回表查询？
 InnoDB 中，对于主键索引，只需要走一遍主键索引的查询就能在叶子节点拿到数据。
 而对于普通索引，叶子节点存储的是 key + 主键值，因此需要再走一次主键索引，通过主键索引找到行记录，这就是所谓的回表查询，先定位主键值，再定位行记录。
 -->
-
 &emsp; <font color = "red">非聚簇索引一定会回表查询吗?（覆盖索引）</font>  
 &emsp; 不一定，这涉及到查询语句所要求的字段是否全部命中了索引，如果全部命中了索引，即索引覆盖，那么就不必再进行回表查询。  
     
@@ -136,12 +136,7 @@ InnoDB 中，对于主键索引，只需要走一遍主键索引的查询就能�
 &emsp; 总结：B+树在满足聚簇索引和覆盖索引的时候不需要回表查询数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-35.png)  
 
-----
-
-### 1.1.5. InnoDB引擎的索引物理文件
-<!-- 
-https://www.cnblogs.com/tongxiaoda/p/7874535.html
--->
+### 1.1.6. InnoDB引擎的索引物理文件
 &emsp; <font color = "red">在InnoDB中，数据和索引文件是合起来储存的，如图所示，InnoDB 的存储文件有两个，后缀名分别是 .frm 和 .idb，其中 .frm 是表的定义文件，</font> **<font color = "lime">而idb是数据文件/索引文件。</font>**   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-33.png)  
 
@@ -149,49 +144,7 @@ https://www.cnblogs.com/tongxiaoda/p/7874535.html
 * .ibd文件或.ibdata文件：这两种文件都是存放InnoDB数据的文件，之所以有两种文件形式存放 InnoDB 的数据，是因为InnoDB的数据存储方式能够通过配置来决定是使用共享表空间存放存储数据，还是用独享表空间存放存储数据。  
 &emsp; 独享表空间存储方式使用.ibd文件，并且每个表一个.ibd文件 共享表空间存储方式使用.ibdata文件，所有表共同使用一个.ibdata文件（或多个，可自己配置）。  
 
-<!--
-&emsp; **.ibd文件或.ibdata文件详解：**  
-1. 表空间  
-&emsp; Innodb存储引擎可将所有数据存放于ibdata*的共享表空间，也可将每张表存放于独立的.ibd文件的独立表空间。  
-&emsp; 共享表空间以及独立表空间都是针对数据的存储方式而言的。
-
-* 共享表空间: 某一个数据库的所有的表数据，索引文件全部放在一个文件中，默认这个共享表空间的文件路径在data目录下。 默认的文件名为:ibdata1 初始化为10M。
-* 独立表空间: 每一个表都将会生成以独立的文件方式来进行存储，每一个表都有一个.frm表描述文件，还有一个.ibd文件。 其中这个文件包括了单独一个表的数据内容以及索引内容，默认情况下它的存储位置也是在表的位置之中。  
-
-    ```sql
-    [root@localhost data]# ls
-    a1  a2  a3  auto.cnf  ib_buffer_pool  ibdata1  ib_logfile0  ib_logfile1  ibtmp1  localhost.localdomain.err  localhost.localdomain.pid  mysql  performance_schema  sys
-    ```
-
-    &emsp; ibdata1就是InnoDB表的共享存储空间，默认innodb所有表的数据都在一个ibdata1里。  
-
-2. 优缺点  
-（1）共享表空间：
-优点：
-可以将表空间分成多个文件存放到各个磁盘上（表空间文件大小不受表大小的限制，如一个表可以分布在不同的文件上）。数据和文件放在一起方便管理。
-缺点：
-所有的数据和索引存放到一个文件中，虽然可以把一个大文件分成多个小文件，但是多个表及索引在表空间中混合存储，这样对于一个表做了大量删除操作后表空间中将会有大量的空隙，特别是对于统计分析，日值系统这类应用最不适合用共享表空间。
-
-（2）独立表空间：
-在配置文件（my.cnf）中设置： innodb_file_per_table
-优点：
-1）每个表都有自已独立的表空间。
-2）每个表的数据和索引都会存在自已的表空间中。
-3）可以实现单表在不同的数据库中移动。
-4）空间可以回收（除drop table操作处，表空不能自已回收）
-
-    Drop table操作自动回收表空间，如果对于统计分析或是日值表，删除大量数据后可以通过:alter table TableName engine=innodb;回缩不用的空间。
-    对于使innodb-plugin的Innodb使用turncate table也会使空间收缩。
-    对于使用独立表空间的表，不管怎么删除，表空间的碎片不会太严重的影响性能，而且还有机会处理。
-
-缺点：
-单表增加过大，如超过100个G。
-相比较之下，使用独占表空间的效率以及性能会更高一点。
--->
-
------
-
-### 1.1.6. 为什么官方建议InnoDB使用自增长主键作为索引？  
+### 1.1.7. 为什么官方建议InnoDB使用自增长主键作为索引？  
 
         适合用业务字段做主键的场景需求：1).只有一个索引；2).该索引必须是唯一索引。这就是典型的KV场景。由于没有其他索引，所以也就不用考虑其他索引的叶子节点大小的问题。 
 
@@ -208,13 +161,11 @@ https://www.cnblogs.com/tongxiaoda/p/7874535.html
 &emsp; <font color = "red">根据B+Tree的特点，自增主键是连续的，在插入过程中尽量减少InnoDB存储引擎的页分裂，</font>即使要进行页分裂，也只会分裂很少一部分。并且能减少数据的移动，每次插入都是插入到最后。即减少分裂和移动的频率。  
 &emsp; <font color = "lime">如果写入是乱序的，InnoDB不得不频繁地做页分裂操作，以便为新的行分配空间。</font>页分裂会导致移动大量数据，一次插入最少需要修改三个页而不是一个页。 <font color = "lime">如果频繁的页分裂，页会变得稀疏并被不规则地填充，所以最终数据会有碎片。</font>  
 
-#### 1.1.6.1. ***碎片问题  
+#### 1.1.7.1. ***碎片问题  
 
 1. 碎片问题的产生：  
     * 页分裂产生碎片。  
     * 删除数据产生碎片：每当MySQL从列表中删除了一行内容，该段空间就会被留空。而在一段时间内的大量删除操作，会使这种留空的空间变得比存储列表内容所使用的空间更大。当MySQL对数据进行扫描时，它扫描的对象实际是列表的容量需求上限，也就是数据被写入的区域中处于峰值位置的部分。<font color = "red">如果进行新的插入操作，MySQL将尝试利用这些留空的区域，但仍然无法将其彻底占用。</font>  
- 
-
 2. 碎片优化  
 &emsp; 这种额外的破碎的存储空间在读取效率方面比正常占用的空间要低得多。  
 &emsp; 对MySQL进行碎片整理的方法非常简单，因为MySQL已经给提供了对应的SQL指令，这个SQL指令就是OPTIMIZE TABLE，其完整语法如下：  
@@ -223,10 +174,7 @@ https://www.cnblogs.com/tongxiaoda/p/7874535.html
 &emsp; 此外，OPTIMIZE TABLE语句有两个可选的关键字：LOCAL和NO_WRITE_TO_BINLOG。在默认情况下，OPTIMIZE TABLE语句将会被记录到二进制日志中，如果指定了LOCAL或NO_WRITE_TO_BINLOG关键字，则不会记录。当然，一般情况下，也无需关注这两个关键字。  
 
 
-### 1.1.7. 普通索引和唯一索引的区别
-<!-- 
-https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
--->
+### 1.1.8. 普通索引和唯一索引的区别
 &emsp; 唯一索引和普通索引的区别？  
 
 * 查询过程：  
@@ -261,4 +209,3 @@ https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
 
 &emsp; <font color = "red">哈希索引适用的场景</font>：等值查询。  
 &emsp; <font color = "red">哈希索引不适用的场景</font>：hash函数的不可预测性，hash索引中经过hash函数建立索引之后，索引的顺序与原顺序无法保持一致。不支持范围查询、不支持索引完成排序、不支持联合索引的最左前缀匹配规则、不支持部分匹配、只支持等值查询如=，IN()，不支持 < >。  
-
