@@ -18,15 +18,14 @@
         - [分布式理论](#分布式理论)
         - [分布式缓存](#分布式缓存)
             - [Redis](#redis)
-            - [Ehcache](#ehcache)
-        - [限流降级](#限流降级)
         - [分布式消息队列](#分布式消息队列)
             - [kafka](#kafka)
-        - [分布式搜索引擎](#分布式搜索引擎)
-        - [分布式调度](#分布式调度)
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
+        - [限流降级](#限流降级)
+        - [分布式调度](#分布式调度)
+        - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式通信](#分布式通信)
     - [其他框架](#其他框架)
     - [项目构建基础](#项目构建基础)
@@ -328,13 +327,6 @@ Redis的虚拟内存
 https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 -->
 
-#### Ehcache 
-
-### 限流降级
-[分布式限流](/docs/microService/thinking/分布式限流.md)   
-&emsp; [Sentinel](/docs/microService/thinking/Sentinel.md)  
-[服务降级](/docs/microService/thinking/服务降级.md)  
-
 ### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  
 
@@ -358,30 +350,6 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
 [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md)  
 
-### 分布式搜索引擎  
-[ES搭建](/docs/ES/7.build.md)  
-[ES基本概念](/docs/ES/1.basicConcepts.md)  
-[ES集群](/docs/ES/3.colony.md)  
-[ES使用](/docs/ES/2.useTutorials.md)  
-&emsp; [ES建模](/docs/ES/modeling.md)  
-&emsp; [索引操作](/docs/ES/index.md)  
-&emsp; [文档操作](/docs/ES/document.md)  
-&emsp; [映射详解](/docs/ES/mapping.md)  
-&emsp; [检索操作](/docs/ES/search.md)  
-&emsp; [多表关联](/docs/ES/multiTable.md)  
-&emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
-[ES原理](/docs/ES/4.principle.md)  
-[ES优化](/docs/ES/5.optimization.md)  
-[ELK与EFK](/docs/ES/6.ELK与EFK.md)    
-&emsp; [Kibana用户手册](/docs/ES/Kibana.md)  
-
-### 分布式调度
-[延迟队列](/docs/frame/delayQueue.md)  
-[StopWatch](/docs/frame/StopWatch.md)  
-[时间轮算法](/docs/microService/Dubbo/timeWheel.md)  
-[分布式调度](/docs/frame/taskSheduling.md)  
-&emsp; [XXL-JOB](/docs/frame/XXL-JOB.md) 
-
 ### 分布式ID
 [分布式ID](/docs/microService/thinking/分布式ID.md)  
 [分库分表多维度查询](/docs/microService/thinking/分库分表多维度查询.md)  
@@ -398,6 +366,35 @@ https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
 &emsp; [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
 &emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
+
+### 限流降级
+[分布式限流](/docs/microService/thinking/分布式限流.md)   
+&emsp; [Sentinel](/docs/microService/thinking/Sentinel.md)  
+[服务降级](/docs/microService/thinking/服务降级.md)  
+
+### 分布式调度
+[延迟队列](/docs/frame/delayQueue.md)  
+[StopWatch](/docs/frame/StopWatch.md)  
+[时间轮算法](/docs/microService/Dubbo/timeWheel.md)  
+[分布式调度](/docs/frame/taskSheduling.md)  
+&emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
+
+### 分布式搜索引擎  
+[ES搭建](/docs/ES/7.build.md)  
+[ES基本概念](/docs/ES/1.basicConcepts.md)  
+[ES集群](/docs/ES/3.colony.md)  
+[ES使用](/docs/ES/2.useTutorials.md)  
+&emsp; [ES建模](/docs/ES/modeling.md)  
+&emsp; [索引操作](/docs/ES/index.md)  
+&emsp; [文档操作](/docs/ES/document.md)  
+&emsp; [映射详解](/docs/ES/mapping.md)  
+&emsp; [检索操作](/docs/ES/search.md)  
+&emsp; [多表关联](/docs/ES/multiTable.md)  
+&emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
+[ES原理](/docs/ES/4.principle.md)  
+[ES优化](/docs/ES/5.optimization.md)  
+[ELK与EFK](/docs/ES/6.ELK与EFK.md)    
+&emsp; [Kibana用户手册](/docs/ES/Kibana.md)  
 
 ### 分布式通信  
 [序列化](/docs/microService/communication/serializbale.md)  
