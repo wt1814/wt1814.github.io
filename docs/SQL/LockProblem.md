@@ -16,6 +16,11 @@
 <!-- /TOC -->
 
 # 1. MySql锁造成的问题
+<!-- 
+ MySQL死锁产生原因和解决方法 
+https://mp.weixin.qq.com/s/3HHjoo0Nbug6wSor7gM-2Q
+-->
+
 ## 1.1. 锁表  
 1. 锁表发生在insert、update、delete中。  
 2. 锁表的原理是数据库使用独占式封锁机制，当执行上面的语句时，对表进行锁住，直到发生commite 或者 回滚 或者 退出数据库用户。  
