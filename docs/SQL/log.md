@@ -54,7 +54,6 @@ https://mp.weixin.qq.com/s/4BKz49yMd3rLp06crHR2_g
 
 
 ## 1.1. undolog，回滚日志
-
 <!-- 
 * undo log（回滚日志）  实现原子性  
 &emsp; undo log 主要为事务的回滚服务。在事务执行的过程中，除了记录redo log，还会记录一定量的undo log。<font color = "red">undo log记录了数据在每个操作前的状态，如果事务执行过程中需要回滚，就可以根据undo log进行回滚操作。</font>单个事务的回滚，只会回滚当前事务做的操作，并不会影响到其他的事务做的操作。  
@@ -62,7 +61,6 @@ https://mp.weixin.qq.com/s/4BKz49yMd3rLp06crHR2_g
 
 &emsp; 二种日志均可以视为一种恢复操作，redo_log是恢复提交事务修改的页操作，而undo_log是回滚行记录到特定版本。二者记录的内容也不同，redo_log是物理日志，记录页的物理修改操作，而undo_log是逻辑日志，根据每行记录进行记录。  
 -->
-
 **作用：**     
 *  <font color = "lime">保存了事务发生之前的数据的一个版本，可以用于回滚，实现了原子性；  
 * 同时可以提供多版本并发控制下的读（MVCC），也即非锁定读。</font>  
@@ -100,8 +98,6 @@ https://mp.weixin.qq.com/s/4BKz49yMd3rLp06crHR2_g
 &emsp; 因此，mysql5.7之后的“独立undo 表空间”的配置就显得很有必要了。  
 
 ## 1.2. redolog，重做日志
-
-
 <!-- 
 Log Buffer 
 https://mp.weixin.qq.com/s/-Hx2KKYMEQCcTC-ADEuwVA
@@ -114,8 +110,6 @@ https://mp.weixin.qq.com/s/mNfjT99qIbjKGraZLV8EIQ
 &emsp; 在innoDB的存储引擎中，事务日志通过重做(redo)日志和innoDB存储引擎的日志缓冲(InnoDB Log Buffer)实现。<font color = "red">事务开启时，事务中的操作，都会先写入存储引擎的日志缓冲中，在事务提交之前，这些缓冲的日志都需要提前刷新到磁盘上持久化，</font>这就是DBA们口中常说的“日志先行”(Write-Ahead Logging)。<font color = "red">当事务提交之后，在Buffer Pool中映射的数据文件才会慢慢刷新到磁盘。</font>此时如果数据库崩溃或者宕机，那么当系统重启进行恢复时，就可以根据redo log中记录的日志，把数据库恢复到崩溃前的一个状态。未完成的事务，可以继续提交，也可以选择回滚，这基于恢复的策略而定。  
 &emsp; 在系统启动的时候，就已经为redo log分配了一块连续的存储空间，以顺序追加的方式记录Redo Log，通过顺序IO来改善性能。所有的事务共享redo log的存储空间，它们的Redo Log按语句的执行顺序，依次交替的记录在一起。  
 -->
-
-
 **作用：**  
 
 * <font color = "red">确保事务的持久性。</font>  
@@ -288,7 +282,5 @@ binlog 会记录所有的逻辑操作，并且是采用追加写的形式。当�
 •首先，找到最近的一次全量备份，从这个备份恢复到临时库•然后，从备份的时间点开始，将备份的 binlog 依次取出来，重放到中午误删表之前的那个时刻。
 这样你的临时库就跟误删之前的线上库一样了，然后你可以把表数据从临时库取出来，按需要恢复到线上库去。
 -->
-
-
 &emsp; 启动innodb的时候，不管上次是正常关闭还是异常关闭，总是会进行恢复操作。因为redo log记录的是数据页的物理变化，因此恢复的时候速度比逻辑日志(如binlog)要快很多。重启innodb时，首先会检查磁盘中数据页的LSN，如果数据页的LSN小于日志中的LSN，则会从checkpoint开始恢复。还有一种情况，在宕机前正处于checkpoint的刷盘过程，且数据页的刷盘进度超过了日志页的刷盘进度，此时会出现数据页中记录的LSN大于日志中的LSN，这时超出日志进度的部分将不会重做，因为这本身就表示已经做过的事情，无需再重做。  
 
