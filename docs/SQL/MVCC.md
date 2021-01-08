@@ -26,7 +26,16 @@ https://mp.weixin.qq.com/s/qHzb6oPrrbAPoIlfLJVNAg
 
 MVCC是如何实现的？ 
 https://mp.weixin.qq.com/s/JJd0SoZ--JKW0LEtkZONUA
+MySQL事务与MVCC如何实现的隔离级别 
+https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
 
+
+面试官灵魂的一击：你懂MySQL事务吗？ 
+https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
+事务隔离级别中的可重复读能防幻读吗?
+https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
+MySQL事务与MVCC如何实现的隔离级别 
+https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
 -->
 
 # 1. MVCC

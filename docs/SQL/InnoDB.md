@@ -24,27 +24,22 @@
 # 1. InnoDB  
 <!-- 
 
- MySQL事务与MVCC如何实现的隔离级别 
- https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
 
 
-了解InnoDB的后台线程 
-https://mp.weixin.qq.com/s/2dUIAot8OKHiWar44qRi-A
+
+
 了解InnoDB存储引擎的内存池 
 https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 了解InnoDB的Checkpoint技术
 https://mp.weixin.qq.com/s/rQX3AFivFDNIYXE7-r9U_w
 InnoDB的插入缓冲 
 https://mp.weixin.qq.com/s/6t0_XByG8-yuyB0YaLuuBA
-InnoDB 原理
-https://mp.weixin.qq.com/s/nrb0OaiD_QRtPGREpUr0HA
-
+InnoDB的Double Write
+https://mp.weixin.qq.com/s?__biz=MzI0MjE4NTM5Mg==&mid=2648976025&idx=1&sn=3ee3d20a3f22528f9ba600dbbd338a64&chksm=f110af46c6672650cca073fd7f6ebd1a87944f98ba40843cdcfaca6ceff8745f1c079555af69&scene=178&cur_album_id=1536468200543027201#rd
 -->
-
 **<font color = "red">《MySQL技术内幕：InnoDB存储引擎》</font>**  
 &emsp; https://dev.mysql.com/doc/refman/5.7/en/  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-125.png)  
-
 
 ## 1.1. 关键特性  
 &emsp; InnoDB存储引擎的关键特性包括缓冲池、写缓冲、两次写（double write）、自适应哈希索引（adaptive hash index）......。  

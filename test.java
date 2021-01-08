@@ -211,6 +211,12 @@ public class AdvertPlaceServiceImpl implements AdvertPlaceService {
                     advertPlaceAppDTOS.add(advertPlaceAppDTO);
                 }
             }
+
+
+
+
+
+            //
         }
     }
 }
