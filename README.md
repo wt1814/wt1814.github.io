@@ -184,7 +184,7 @@
 &emsp; [MySql事务](/docs/SQL/14.transaction.md)  
 &emsp; [MySql锁](/docs/SQL/15.lock.md)  
 &emsp; [MySql锁造成的问题](/docs/SQL/LockProblem.md)  
-&emsp; [MySqlMVCC](/docs/SQL/MVCC.md)  
+&emsp; [MySql-MVCC](/docs/SQL/MVCC.md)  
 &emsp; [MySql事务日志](/docs/SQL/log.md)  
 
 [数据库连接池](/docs/SQL/connectionPool.md)  

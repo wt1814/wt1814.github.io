@@ -1,33 +1,27 @@
 
 <!-- TOC -->
 
-- [1. InnoDB](#1-innodb)
-    - [1.1. 关键特性](#11-关键特性)
-        - [1.1.1. 缓冲池(buffer pool)](#111-缓冲池buffer-pool)
-            - [1.1.1.1. 前言：预读](#1111-前言预读)
-            - [1.1.1.2. LRU算法](#1112-lru算法)
-                - [1.1.1.2.1. 预读失效](#11121-预读失效)
-                - [1.1.1.2.2. 缓冲池污染](#11122-缓冲池污染)
-            - [1.1.1.3. 相关参数](#1113-相关参数)
-            - [1.1.1.4. 总结](#1114-总结)
-        - [1.1.2. 写缓冲(change buffer)](#112-写缓冲change-buffer)
-        - [1.1.3. 两次写](#113-两次写)
-            - [1.1.3.1. 部分写失效](#1131-部分写失效)
-            - [1.1.3.2. doublewrite架构及流程](#1132-doublewrite架构及流程)
-            - [1.1.3.3. 性能](#1133-性能)
-            - [1.1.3.4. 相关参数](#1134-相关参数)
-            - [1.1.3.5. 总结](#1135-总结)
-        - [1.1.4. 自适应哈希索引](#114-自适应哈希索引)
+- [1. InnoDB关键特性](#1-innodb关键特性)
+    - [1.1. 缓冲池(buffer pool)](#11-缓冲池buffer-pool)
+        - [1.1.1. 前言：预读](#111-前言预读)
+        - [1.1.2. LRU算法](#112-lru算法)
+            - [1.1.2.1. 预读失效](#1121-预读失效)
+            - [1.1.2.2. 缓冲池污染](#1122-缓冲池污染)
+        - [1.1.3. 相关参数](#113-相关参数)
+        - [1.1.4. 总结](#114-总结)
+    - [1.2. 写缓冲(change buffer)](#12-写缓冲change-buffer)
+    - [1.3. 自适应哈希索引](#13-自适应哈希索引)
+    - [1.4. 两次写](#14-两次写)
+        - [1.4.1. 部分写失效](#141-部分写失效)
+        - [1.4.2. doublewrite架构及流程](#142-doublewrite架构及流程)
+        - [1.4.3. 性能](#143-性能)
+        - [1.4.4. 相关参数](#144-相关参数)
+        - [1.4.5. 总结](#145-总结)
 
 <!-- /TOC -->
 
-# 1. InnoDB  
+
 <!-- 
-
-
-
-
-
 了解InnoDB存储引擎的内存池 
 https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 了解InnoDB的Checkpoint技术
@@ -41,10 +35,10 @@ https://mp.weixin.qq.com/s?__biz=MzI0MjE4NTM5Mg==&mid=2648976025&idx=1&sn=3ee3d2
 &emsp; https://dev.mysql.com/doc/refman/5.7/en/  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-125.png)  
 
-## 1.1. 关键特性  
+# 1. InnoDB关键特性  
 &emsp; InnoDB存储引擎的关键特性包括缓冲池、写缓冲、两次写（double write）、自适应哈希索引（adaptive hash index）......。  
 
-### 1.1.1. 缓冲池(buffer pool)  
+## 1.1. 缓冲池(buffer pool)  
 
 <!-- 
 https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
@@ -58,7 +52,7 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 
 &emsp; 如何管理与淘汰缓冲池，使得性能最大化呢？在介绍具体细节之前，先介绍下“预读”的概念。  
 
-#### 1.1.1.1. 前言：预读  
+### 1.1.1. 前言：预读  
 <!-- 
 预读（read ahead）  
 &emsp; InnoDB 在 I/O 的优化上有个比较重要的特性为预读，<font color = "red">当 InnoDB 预计某些 page 可能很快就会需要用到时，它会异步地将这些 page 提前读取到缓冲池（buffer pool）中，</font>这其实有点像空间局部性的概念。  
@@ -84,7 +78,7 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; 线性预读（Linear read-ahead）：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64（一个 extend 上限就是64页）的任何值，默认值为56，值越高，访问模式检查越严格。  
 &emsp; 随机预读（Random read-ahead）: 随机预读方式则是表示当同一个extent中的一些page在buffer pool中发现时，Innodb 会将该 extent 中的剩余page一并读到 buffer pool中，由于随机预读方式给Innodb code带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。 
 
-#### 1.1.1.2. LRU算法  
+### 1.1.2. LRU算法  
 &emsp; InnoDB是以什么算法，来管理这些缓冲页呢？  
 &emsp; memcache，OS都会用LRU来进行页置换管理，但MySQL并没有直接使用LRU算法。  
 
@@ -107,7 +101,7 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; （1）预读失效；  
 &emsp; （2）缓冲池污染；  
 
-##### 1.1.1.2.1. 预读失效  
+#### 1.1.2.1. 预读失效  
 &emsp; 什么是预读失效？  
 &emsp; <font color = "lime">由于预读(Read-Ahead)，提前把页放入了缓冲池，但最终MySQL并没有从页中读取数据，称为预读失效。</font>  
 
@@ -137,7 +131,7 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; 改进版缓冲池LRU能够很好的解决“预读失败”的问题。不要因为害怕预读失败而取消预读策略，大部分情况下，局部性原理是成立的，预读是有效的。  
 &emsp; 新老生代改进版LRU仍然解决不了缓冲池污染的问题。  
 
-##### 1.1.1.2.2. 缓冲池污染  
+#### 1.1.2.2. 缓冲池污染  
 &emsp; <font color = "red">当某一个SQL语句，要批量扫描大量数据时(例如like语句)，可能导致把缓冲池的所有页都替换出去，导致大量热数据被换出，MySQL性能急剧下降，这种情况叫缓冲池污染。</font>  
 &emsp; 例如，有一个数据量较大的用户表，当执行：  
 
@@ -166,7 +160,7 @@ select * from user where name like "%shenjian%";
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-114.png)  
 &emsp; 而只有在老生代呆的时间足够久，停留时间大于T，才会被插入新生代头部。  
 
-#### 1.1.1.3. 相关参数  
+### 1.1.3. 相关参数  
 &emsp; 有三个比较重要的参数。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-105.png)  
 &emsp; 参数：innodb_buffer_pool_size  
@@ -178,7 +172,7 @@ select * from user where name like "%shenjian%";
 &emsp; 参数：innodb_old_blocks_time  
 &emsp; 介绍：老生代停留时间窗口，单位是毫秒，默认是1000，即同时满足“被访问”与“在老生代停留时间超过1秒”两个条件，才会被插入到新生代头部。  
 
-#### 1.1.1.4. 总结  
+### 1.1.4. 总结  
 1. 缓冲池(buffer pool)是一种常见的降低磁盘访问的机制；  
 2. 缓冲池通常以页(page)为单位缓存数据；  
 3. 缓冲池的常见管理算法是LRU，memcache，OS，InnoDB都使用了这种算法；  
@@ -186,7 +180,7 @@ select * from user where name like "%shenjian%";
     * **<font color = "lime">将缓冲池分为老生代和新生代，入缓冲池的页，优先进入老生代，页被访问，才进入新生代，以解决预读失效的问题</font>**  
     * **<font color = "lime">页被访问，且在老生代停留时间超过配置阈值的，才进入新生代，以解决批量数据访问，大量热数据淘汰的问题</font>**  
 
-### 1.1.2. 写缓冲(change buffer)
+## 1.2. 写缓冲(change buffer)
 &emsp; **<font color = "lime">总结：当使用普通索引，修改数据时，没有命中缓冲池时，会使用到写缓冲（写缓冲是缓冲池的一部分）。在写缓冲中记录这个操作，一次内存操作；写入redo log，一次磁盘顺序写操作。</font>**  
 &emsp; <font color = "lime">change buffer是一种应用在非唯一普通索引页不在缓冲池中，对页进行了写操作，并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更，等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中的技术。</font>写缓冲的目的是降低写操作的磁盘IO，提升数据库性能。  
 &emsp; 什么时候缓冲池中的页，会刷到磁盘上呢？定期刷磁盘，而不是每次刷磁盘，能够降低磁盘IO，提升MySQL的性能。  
@@ -281,8 +275,30 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; 参数：innodb_change_buffering  
 &emsp; 介绍：配置哪些写操作启用写缓冲，可以设置成all/none/inserts/deletes等。  
 
+## 1.3. 自适应哈希索引  
+<!-- 
+ InnoDB到底支不支持哈希索引，为啥不同的人说的不一样？ 
+ https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651962875&idx=1&sn=c6b3e7dc8a41609cfe070026bd27b71d&chksm=bd2d08278a5a813108b1f4116341ff31170574b9098e2708cbc212b008a1fac8dfd1ffeabc6b&scene=21#wechat_redirect
+-->
 
-### 1.1.3. 两次写  
+&emsp; 哈希（hash）是一种非常快的查找方法，一般情况下查找的时间复杂度为O(1)。常用于连接（join）操作，如SQL Server和Oracle中的哈希连接（hash join）。但是SQL Server和Oracle等常见的数据库并不支持哈希索引（hash index）。MySQL的Heap存储引擎默认的索引类型为哈希，而InnoDB存储引擎提出了另一种实现方法，自适应哈希索引（adaptive hash index）。  
+&emsp; <font color = "red">InnoDB存储引擎会监控对表上索引的查找，如果观察到建立哈希索引可以带来速度的提升，则建立哈希索引，所以称之为自适应（adaptive）的。</font>自适应哈希索引通过缓冲池的B+树构造而来，因此建立的速度很快。而且不需要将整个表都建哈希索引，InnoDB存储引擎会自动根据访问的频率和模式来为某些页建立哈希索引。  
+&emsp; 根据InnoDB的官方文档显示，启用自适应哈希索引后，读取和写入速度可以提高2倍；对于辅助索引的连接操作，性能可以提高5倍。自适应哈希索引是非常好的优化模式，其设计思想是数据库自优化（self-tuning），即无需DBA对数据库进行调整。  
+&emsp; 查看当前自适应哈希索引的使用状况：show engine innodb status\G  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-88.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-89.png)  
+&emsp; 现在可以看到自适应哈希索引的使用信息了，包括自适应哈希索引的大小、使用情况、每秒使用自适应哈希索引搜索的情况。值得注意的是，哈希索引只能用来搜索等值的查询，如select * from table where index_col='xxx'，而对于其他查找类型，如范围查找，是不能使用的。因此，这里出现了non-hash searches/s的情况。用hash searches:non-hash searches命令可以大概了解使用哈希索引后的效率。  
+&emsp; 由于自适应哈希索引是由InnoDB存储引擎控制的，所以这里的信息只供参考。不过可以通过参数innodb_adaptive_hash_index来禁用或启动此特性，默认为开启。  
+
+<!-- 
+&emsp; **<font color = "red">自适应哈希索引：</font>**  
+&emsp; InnoDB引擎中默认使用的是B+树索引，它会实时监控表上索引的使用情况。如果认为建立哈希索引可以提高查询效率，则自动在内存中的“自适应哈希索引缓冲区”建立哈希索引（在InnoDB中默认开启自适应哈希索引）。  
+&emsp; 通过观察搜索模式，MySQL会利用index key的前缀建立哈希索引，如果一个表几乎大部分都在缓冲池中，那么建立一个哈希索引能够加快等值查询。  
+&emsp; 注意：在某些工作负载下，通过哈希索引查找带来的性能提升远大于额外的监控索引搜索情况和保持这个哈希表结构所带来的开销。  
+&emsp; 但某些时候，在负载高的情况下，自适应哈希索引中添加的read/write锁也会带来竞争，比如高并发的join操作。like操作和%的通配符操作也不适用于自适应哈希索引，可能要关闭自适应哈希索引。  
+-->
+
+## 1.4. 两次写  
 
 &emsp; **<font color = "lime">总结：</font>**  
 &emsp; MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
@@ -313,7 +329,7 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 如果操作系统在将页写入磁盘的过程中发生崩溃，InnoDB 再次启动后，发现了一个 page 数据已经损坏，InnoDB 存储引擎可以从共享表空间的 doublewrite 中找到该页的一个最近的副本，用于进行数据恢复了。
 -->
 
-#### 1.1.3.1. 部分写失效  
+### 1.4.1. 部分写失效  
 &emsp; <font color = "lime">如果说写缓冲带给InnoDB存储引擎的是性能，那么两次写带给InnoDB存储引擎的是数据的可靠性。</font><font color = "red">当数据库宕机时，可能发生数据库正在写一个页面，而这个页只写了一部分（比如16K的页，只写前4K的页）的情况，称之为部分写失效（partial page write）。</font>在InnoDB存储引擎未使用double write技术前，曾出现过因为部分写失效而导致数据丢失的情况。  
 
 &emsp; MySQL的buffer一页的大小是16K，文件系统一页的大小是4K，也就是说，<font color = "lime">MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。</font>  
@@ -326,7 +342,7 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 
 &emsp; 有人也许会想，如果发生写失效，可以通过重做日志进行恢复。这是一个办法。但是必须清楚的是，重做日志中记录的是对页的物理操作，如偏移量800，写'aaaa'记录。如果这个页本身已经损坏，再对其进行重做是没有意义的。 **<font color = "lime">因此，在应用（apply）重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。</font>**  
 
-#### 1.1.3.2. doublewrite架构及流程
+### 1.4.2. doublewrite架构及流程
 **doublewrite：**  
 &emsp; InnoDB存储引擎doublewrite的体系架构如下图所示  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-90.png)  
@@ -355,7 +371,7 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-116.png)  
 -->
 
-#### 1.1.3.3. 性能  
+### 1.4.3. 性能  
 &emsp; 能够通过DWB保证页数据的完整性，但毕竟DWB要写两次磁盘， **<font color = "red">会不会导致数据库性能急剧降低呢？</font>**   
 &emsp; 在这个过程中，因为doublewrite页是连续的，因此这个过程是顺序写的，开销并不是很大。在完成doublewrite页的写入后，再将doublewrite buffer中的页写入各个表空间文件中，此时的写入则是离散的。  
 
@@ -367,7 +383,7 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 &emsp; 另外，128页（每页16K）2M的DWB，会分两次刷入磁盘，每次最多64页，即1M的数据，执行也是非常之快的。  
 &emsp; 综上，性能会有所影响，但影响并不大。
 
-#### 1.1.3.4. 相关参数
+### 1.4.4. 相关参数
 &emsp; **InnoDB里有两个变量可以查看double write buffer相关的情况：**  
 &emsp; Innodb_dblwr_pages_written  
 &emsp; 记录写入DWB中页的数量。  
@@ -384,7 +400,7 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 &emsp; 参数skip_innodb_doublewrite可以禁止使用两次写功能，这时可能会发生前面提及的写失效问题。不过，如果有多台从服务器（slave server），需要提供较快的性能（如slave上做的是RAID0），也许启用这个参数是一个办法。不过，在需要提供数据高可靠性的主服务器（master server）上，任何时候都应确保开启两次写功能。  
 &emsp; 注意：有些文件系统本身就提供了部分写失效的防范机制，如ZFS文件系统。在这种情况下，就不要启用doublewrite了。  
 
-#### 1.1.3.5. 总结
+### 1.4.5. 总结
 &emsp; **总结：**  
 &emsp; MySQL有很强的数据安全性机制：  
 1. 在异常崩溃时，如果不出现“页数据损坏”，能够通过redo恢复数据；  
@@ -394,25 +410,4 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 &emsp; （1）不是一个内存buffer，是一个内存/磁盘两层的结构，是InnoDB里On-Disk架构里很重要的一部分；  
 &emsp; （2）是一个通过写两次，保证页完整性的机制；  
 
-### 1.1.4. 自适应哈希索引  
-<!-- 
- InnoDB到底支不支持哈希索引，为啥不同的人说的不一样？ 
- https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651962875&idx=1&sn=c6b3e7dc8a41609cfe070026bd27b71d&chksm=bd2d08278a5a813108b1f4116341ff31170574b9098e2708cbc212b008a1fac8dfd1ffeabc6b&scene=21#wechat_redirect
--->
 
-&emsp; 哈希（hash）是一种非常快的查找方法，一般情况下查找的时间复杂度为O(1)。常用于连接（join）操作，如SQL Server和Oracle中的哈希连接（hash join）。但是SQL Server和Oracle等常见的数据库并不支持哈希索引（hash index）。MySQL的Heap存储引擎默认的索引类型为哈希，而InnoDB存储引擎提出了另一种实现方法，自适应哈希索引（adaptive hash index）。  
-&emsp; <font color = "red">InnoDB存储引擎会监控对表上索引的查找，如果观察到建立哈希索引可以带来速度的提升，则建立哈希索引，所以称之为自适应（adaptive）的。</font>自适应哈希索引通过缓冲池的B+树构造而来，因此建立的速度很快。而且不需要将整个表都建哈希索引，InnoDB存储引擎会自动根据访问的频率和模式来为某些页建立哈希索引。  
-&emsp; 根据InnoDB的官方文档显示，启用自适应哈希索引后，读取和写入速度可以提高2倍；对于辅助索引的连接操作，性能可以提高5倍。自适应哈希索引是非常好的优化模式，其设计思想是数据库自优化（self-tuning），即无需DBA对数据库进行调整。  
-&emsp; 查看当前自适应哈希索引的使用状况：show engine innodb status\G  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-88.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-89.png)  
-&emsp; 现在可以看到自适应哈希索引的使用信息了，包括自适应哈希索引的大小、使用情况、每秒使用自适应哈希索引搜索的情况。值得注意的是，哈希索引只能用来搜索等值的查询，如select * from table where index_col='xxx'，而对于其他查找类型，如范围查找，是不能使用的。因此，这里出现了non-hash searches/s的情况。用hash searches:non-hash searches命令可以大概了解使用哈希索引后的效率。  
-&emsp; 由于自适应哈希索引是由InnoDB存储引擎控制的，所以这里的信息只供参考。不过可以通过参数innodb_adaptive_hash_index来禁用或启动此特性，默认为开启。  
-
-<!-- 
-&emsp; **<font color = "red">自适应哈希索引：</font>**  
-&emsp; InnoDB引擎中默认使用的是B+树索引，它会实时监控表上索引的使用情况。如果认为建立哈希索引可以提高查询效率，则自动在内存中的“自适应哈希索引缓冲区”建立哈希索引（在InnoDB中默认开启自适应哈希索引）。  
-&emsp; 通过观察搜索模式，MySQL会利用index key的前缀建立哈希索引，如果一个表几乎大部分都在缓冲池中，那么建立一个哈希索引能够加快等值查询。  
-&emsp; 注意：在某些工作负载下，通过哈希索引查找带来的性能提升远大于额外的监控索引搜索情况和保持这个哈希表结构所带来的开销。  
-&emsp; 但某些时候，在负载高的情况下，自适应哈希索引中添加的read/write锁也会带来竞争，比如高并发的join操作。like操作和%的通配符操作也不适用于自适应哈希索引，可能要关闭自适应哈希索引。  
--->
