@@ -12,10 +12,10 @@
 
 # 1. 两次写  
 <!-- 
-了解InnoDB的Checkpoint技术
-https://mp.weixin.qq.com/s/rQX3AFivFDNIYXE7-r9U_w
 InnoDB的Double Write
 https://mp.weixin.qq.com/s?__biz=MzI0MjE4NTM5Mg==&mid=2648976025&idx=1&sn=3ee3d20a3f22528f9ba600dbbd338a64&chksm=f110af46c6672650cca073fd7f6ebd1a87944f98ba40843cdcfaca6ceff8745f1c079555af69&scene=178&cur_album_id=1536468200543027201#rd
+ double write buffer，你居然没听过？ 
+ https://mp.weixin.qq.com/s/bkoQ9g4cIcFFZBnpVh8ERQ
 -->
 &emsp; **<font color = "lime">总结：</font>**  
 &emsp; MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
@@ -27,13 +27,8 @@ https://mp.weixin.qq.com/s?__biz=MzI0MjE4NTM5Mg==&mid=2648976025&idx=1&sn=3ee3d2
 1. 第一步：页数据先memcopy到doublewrite buffer的内存里；
 2. 第二步：doublewrite buffe的内存里，会先刷到doublewrite buffe的磁盘上；
 3. 第三步：doublewrite buffe的内存里，再刷到数据磁盘存储上； 
-<!-- 
- double write buffer，你居然没听过？ 
- https://mp.weixin.qq.com/s/bkoQ9g4cIcFFZBnpVh8ERQ
--->
 
 <!-- 
-
 脏页刷盘风险：InnoDB 的 page size一般是16KB，操作系统写文件是以4KB作为单位，那么每写一个 InnoDB 的 page 到磁盘上，操作系统需要写4个块。于是可能出现16K的数据，写入4K 时，发生了系统断电或系统崩溃，只有一部分写是成功的，这就是 partial page write（部分页写入）问题。这时会出现数据不完整的问题。
 这时是无法通过 redo log 恢复的，因为 redo log 记录的是对页的物理修改，如果页本身已经损坏，重做日志也无能为力。
 
@@ -60,7 +55,6 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 &emsp; 有人也许会想，如果发生写失效，可以通过重做日志进行恢复。这是一个办法。但是必须清楚的是，重做日志中记录的是对页的物理操作，如偏移量800，写'aaaa'记录。如果这个页本身已经损坏，再对其进行重做是没有意义的。 **<font color = "lime">因此，在应用（apply）重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。</font>**  
 
 ## 1.2. doublewrite架构及流程
-**doublewrite：**  
 &emsp; InnoDB存储引擎doublewrite的体系架构如下图所示  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-90.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-117.png)  

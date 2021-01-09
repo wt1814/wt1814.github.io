@@ -184,12 +184,14 @@
 &emsp; &emsp; [AdaptiveHashIndex](/docs/SQL/AdaptiveHashIndex.md)  
 &emsp; &emsp; [表空间](/docs/SQL/TableSpace.md)  
 &emsp; &emsp; [Double Write](/docs/SQL/DoubleWrite.md)  
+&emsp; &emsp; [MySql事务日志](/docs/SQL/log.md)  
+&emsp; &emsp; [Checkpoint](/docs/SQL/Checkpoint.md)  
 &emsp; [索引底层原理](/docs/SQL/IndexPrinciple.md)  
 &emsp; [MySql事务](/docs/SQL/14.transaction.md)  
 &emsp; [MySql锁](/docs/SQL/15.lock.md)  
 &emsp; [MySql锁造成的问题](/docs/SQL/LockProblem.md)  
 &emsp; [MySql-MVCC](/docs/SQL/MVCC.md)  
-&emsp; [MySql事务日志](/docs/SQL/log.md)  
+
 
 [数据库连接池](/docs/SQL/connectionPool.md)  
 &emsp; [HikariCPConnectionPool](/docs/SQL/HikariCP.md)   
