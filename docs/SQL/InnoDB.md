@@ -4,10 +4,12 @@
 - [1. InnoDB关键特性](#1-innodb关键特性)
     - [1.1. InnoDB内存中的结构](#11-innodb内存中的结构)
         - [1.1.1. 缓冲池(buffer pool)](#111-缓冲池buffer-pool)
-            - [1.1.1.1. 前言：预读](#1111-前言预读)
-            - [1.1.1.2. LRU算法](#1112-lru算法)
-                - [1.1.1.2.1. 预读失效](#11121-预读失效)
-                - [1.1.1.2.2. 缓冲池污染](#11122-缓冲池污染)
+            - [1.1.1.1. 简介](#1111-简介)
+            - [1.1.1.2. 原理](#1112-原理)
+                - [1.1.1.2.1. 前言：预读](#11121-前言预读)
+                - [1.1.1.2.2. LRU算法](#11122-lru算法)
+                    - [1.1.1.2.2.1. 预读失效](#111221-预读失效)
+                    - [1.1.1.2.2.2. 缓冲池污染](#111222-缓冲池污染)
             - [1.1.1.3. 相关参数](#1113-相关参数)
             - [1.1.1.4. 总结](#1114-总结)
         - [1.1.2. 写缓冲(change buffer)](#112-写缓冲change-buffer)
@@ -22,10 +24,7 @@
 
 <!-- /TOC -->
 
-
 <!-- 
-了解InnoDB存储引擎的内存池 
-https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 了解InnoDB的Checkpoint技术
 https://mp.weixin.qq.com/s/rQX3AFivFDNIYXE7-r9U_w
 InnoDB的插入缓冲 
@@ -33,29 +32,43 @@ https://mp.weixin.qq.com/s/6t0_XByG8-yuyB0YaLuuBA
 InnoDB的Double Write
 https://mp.weixin.qq.com/s?__biz=MzI0MjE4NTM5Mg==&mid=2648976025&idx=1&sn=3ee3d20a3f22528f9ba600dbbd338a64&chksm=f110af46c6672650cca073fd7f6ebd1a87944f98ba40843cdcfaca6ceff8745f1c079555af69&scene=178&cur_album_id=1536468200543027201#rd
 -->
-**<font color = "red">《MySQL技术内幕：InnoDB存储引擎》</font>**  
-&emsp; https://dev.mysql.com/doc/refman/5.7/en/  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-125.png)  
+
+&emsp; **参考：**  
+* 《MySQL技术内幕：InnoDB存储引擎》  
+* https://dev.mysql.com/doc/refman/5.7/en/  
 
 # 1. InnoDB关键特性  
 &emsp; InnoDB存储引擎的关键特性包括缓冲池、写缓冲、两次写（double write）、自适应哈希索引（adaptive hash index）......。  
 
 ## 1.1. InnoDB内存中的结构 
 ### 1.1.1. 缓冲池(buffer pool)  
-
 <!-- 
-https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
+了解InnoDB存储引擎的内存池 
+https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
+-->
 
-&emsp; Buffer Pool 是 InnoDB 维护的一个缓存区域，用来缓存数据和索引在内存中，主要用来加速数据的读写，如果 Buffer Pool 越大，那么 MySQL 就越像一个内存数据库，默认大小为 128M。  
+#### 1.1.1.1. 简介
+&emsp; 缓冲池是主内存中的一个区域，在InnoDB访问表和索引数据时会在其中进行高速缓存。**在专用服务器上，通常将多达80％的物理内存分配给缓冲池。**  
+&emsp; 为了提高大容量读取操作的效率，缓冲池被分为多个页面，这些页面可能包含多个行。为了提高缓存管理的效率，缓冲池被实现为页面的链接列表。使用LRU算法的变体将很少使用的数据从缓存中老化掉。  
+&emsp; **缓冲池允许直接从内存中处理经常使用的数据，从而加快了处理速度。**  
+
+* 读数据操作：
+    * 首先将从磁盘读到的页存放在缓冲池中，这个过程称为将页“FIX”在缓冲池中
+    * 下一次再读相同的页时，首先判断该页是否在缓冲池中
+    * 若在缓冲池中，称该页在缓冲池中被命中，直接读取该页。否则，读取磁盘上的页
+* 写数据操作：
+    * 如果数据的页在 Buffer Pool 中，首先修改在缓冲池中的页，此时称这个页为脏页。然后再以一定的频率刷新到磁盘上
+    * 页从缓冲池刷新回磁盘的操作并不是在每次页发生更新时触发
+    * 通过一种称为Checkpoint的机制刷新回磁盘
+<!-- 
 &emsp; InnoDB 会将那些热点数据和一些 InnoDB 认为即将访问到的数据存在 Buffer Pool 中，以提升数据的读取性能。  
 &emsp; InnoDB 在修改数据时，如果数据的页在 Buffer Pool 中，则会直接修改 Buffer Pool，此时称这个页为脏页，InnoDB 会以一定的频率将脏页刷新到磁盘，这样可以尽量减少磁盘I/O，提升性能。 
 -->
 
-&emsp; MySQL作为一个存储系统，具有缓冲池(buffer pool)机制，<font color = "red">缓存表数据与索引数据，把磁盘上的数据加载到缓冲池，</font><font color = "lime">以避免每次查询数据都进行磁盘IO。缓冲池提高了读能力。</font>  
-
+#### 1.1.1.2. 原理
 &emsp; 如何管理与淘汰缓冲池，使得性能最大化呢？在介绍具体细节之前，先介绍下“预读”的概念。  
 
-#### 1.1.1.1. 前言：预读  
+##### 1.1.1.2.1. 前言：预读  
 <!-- 
 预读（read ahead）  
 &emsp; InnoDB 在 I/O 的优化上有个比较重要的特性为预读，<font color = "red">当 InnoDB 预计某些 page 可能很快就会需要用到时，它会异步地将这些 page 提前读取到缓冲池（buffer pool）中，</font>这其实有点像空间局部性的概念。  
@@ -65,7 +78,6 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; 线性预读（Linear read-ahead）：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64（一个 extend 上限就是64页）的任何值，默认值为56，值越高，访问模式检查越严格。  
 &emsp; 随机预读（Random read-ahead）: 随机预读方式则是表示当同一个 extent 中的一些 page 在 buffer pool 中发现时，Innodb 会将该 extent 中的剩余 page 一并读到 buffer pool中，由于随机预读方式给 Innodb code 带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。  
 -->
-
 &emsp; 什么是预读？  
 &emsp; 磁盘读写，并不是按需读取，而是按页读取， **<font color = "lime">一次至少读一页数据（一般是4K），如果未来要读取的数据就在页中，就能够省去后续的磁盘IO，提高效率。</font>**  
 
@@ -76,12 +88,11 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; （1）磁盘访问按页读取能够提高性能，所以缓冲池一般也是按页缓存数据；  
 &emsp; （2） **<font color = "lime">预读机制能把一些“可能要访问”的页提前加入缓冲池，避免未来的磁盘IO操作；</font>**  
 
-&emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）。  
-&emsp; 其中，线性预读以 extent（块，1个 extent 等于64个 page）为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
+&emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）。其中，线性预读以 extent（块，1个 extent 等于64个 page）为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
 &emsp; 线性预读（Linear read-ahead）：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64（一个 extend 上限就是64页）的任何值，默认值为56，值越高，访问模式检查越严格。  
 &emsp; 随机预读（Random read-ahead）: 随机预读方式则是表示当同一个extent中的一些page在buffer pool中发现时，Innodb 会将该 extent 中的剩余page一并读到 buffer pool中，由于随机预读方式给Innodb code带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。 
 
-#### 1.1.1.2. LRU算法  
+##### 1.1.1.2.2. LRU算法  
 &emsp; InnoDB是以什么算法，来管理这些缓冲页呢？  
 &emsp; memcache，OS都会用LRU来进行页置换管理，但MySQL并没有直接使用LRU算法。  
 
@@ -104,7 +115,7 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; （1）预读失效；  
 &emsp; （2）缓冲池污染；  
 
-##### 1.1.1.2.1. 预读失效  
+###### 1.1.1.2.2.1. 预读失效  
 &emsp; 什么是预读失效？  
 &emsp; <font color = "lime">由于预读(Read-Ahead)，提前把页放入了缓冲池，但最终MySQL并没有从页中读取数据，称为预读失效。</font>  
 
@@ -134,7 +145,7 @@ https://mp.weixin.qq.com/s/nA6UHBh87U774vu4VvGhyw
 &emsp; 改进版缓冲池LRU能够很好的解决“预读失败”的问题。不要因为害怕预读失败而取消预读策略，大部分情况下，局部性原理是成立的，预读是有效的。  
 &emsp; 新老生代改进版LRU仍然解决不了缓冲池污染的问题。  
 
-##### 1.1.1.2.2. 缓冲池污染  
+###### 1.1.1.2.2.2. 缓冲池污染  
 &emsp; <font color = "red">当某一个SQL语句，要批量扫描大量数据时(例如like语句)，可能导致把缓冲池的所有页都替换出去，导致大量热数据被换出，MySQL性能急剧下降，这种情况叫缓冲池污染。</font>  
 &emsp; 例如，有一个数据量较大的用户表，当执行：  
 
@@ -184,7 +195,8 @@ select * from user where name like "%shenjian%";
     * **<font color = "lime">页被访问，且在老生代停留时间超过配置阈值的，才进入新生代，以解决批量数据访问，大量热数据淘汰的问题</font>**  
 
 ### 1.1.2. 写缓冲(change buffer)
-&emsp; **<font color = "lime">总结：当使用普通索引，修改数据时，没有命中缓冲池时，会使用到写缓冲（写缓冲是缓冲池的一部分）。在写缓冲中记录这个操作，一次内存操作；写入redo log，一次磁盘顺序写操作。</font>**  
+&emsp; **<font color = "clime">总结：当使用普通索引，修改数据时，没有命中缓冲池时，会使用到写缓冲（写缓冲是缓冲池的一部分）。在写缓冲中记录这个操作，一次内存操作；写入redo log，一次磁盘顺序写操作。</font>**  
+
 &emsp; <font color = "lime">change buffer是一种应用在非唯一普通索引页不在缓冲池中，对页进行了写操作，并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更，等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中的技术。</font>写缓冲的目的是降低写操作的磁盘IO，提升数据库性能。  
 &emsp; 什么时候缓冲池中的页，会刷到磁盘上呢？定期刷磁盘，而不是每次刷磁盘，能够降低磁盘IO，提升MySQL的性能。  
 <!--
