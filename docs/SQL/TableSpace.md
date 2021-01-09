@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [1. InnoDB磁盘上的结构](#1-innodb磁盘上的结构)
+- [1. 表空间](#1-表空间)
     - [1.1. 逻辑存储结构](#11-逻辑存储结构)
         - [1.1.1. 表空间详解](#111-表空间详解)
         - [1.1.2. InnoDB数据页结构](#112-innodb数据页结构)
@@ -15,7 +15,7 @@
 https://zhuanlan.zhihu.com/p/111958646
 -->
 
-# 1. InnoDB磁盘上的结构  
+# 1. 表空间  
 &emsp; 官方文档：https://dev.mysql.com/doc/refman/5.7/en/innodb-on-disk-structures.html  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-133.png)  
 
@@ -96,9 +96,9 @@ https://juejin.cn/post/6844904190477598733#heading-14
 * NULL标志位：bit向量标识的null列  
 * 记录头信息：固定占用5个字节   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-138.png)  
-* **<font color = "red">隐藏列：</font>**每行数据除了用户定义的列之外还有可能三种隐藏列  
-* **<font color = "red">事务id列：</font>**占用6个字节，标识当前列的事务id  
-* **<font color = "red">回滚指针列：</font>**占用7个字节行id：如果该表没有指定主键的话，会有占用6字节的
+* **<font color = "red">隐藏列：</font>** 每行数据除了用户定义的列之外还有可能三种隐藏列  
+* **<font color = "red">事务id列：</font>** 占用6个字节，标识当前列的事务id  
+* **<font color = "red">回滚指针列：</font>** 占用7个字节行id：如果该表没有指定主键的话，会有占用6字节的
 * **<font color = "red">行id列</font>**  
 
 &emsp; 综上，无论是char类型还是varchar类型，null值都不占用任何存储空间。  
