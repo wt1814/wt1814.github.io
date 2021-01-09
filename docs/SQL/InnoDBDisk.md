@@ -31,9 +31,7 @@ https://zhuanlan.zhihu.com/p/111958646
 &emsp; 为了保证区中页的连续性，InnoDB存储引擎一次从磁盘申请4~5个区。  
 &emsp; 默认情况下，InnoDB存储引擎页的大小为16KB，一个区中一共64个连续的区。  
 * 页(page)：页是InnoDB磁盘管理的最小单位。在InnoDB存储引擎中，默认每个页的大小为16KB。从InnoDB1.2.x版本开始，可以通过参数innodbpagesize将页的大小设置为4K，8K，16K。  
-&emsp; **InnoDB存储引擎中，常见的页类型有：数据页，undo页，系统页，事务数据页，插入缓冲位图页，插入缓冲空闲列表页等。** 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-78.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-79.png)  
+&emsp; **InnoDB存储引擎中，常见的页类型有：数据页，undo页，系统页，事务数据页，插入缓冲位图页，插入缓冲空闲列表页等。**  
 
 ### 1.1.1. 表空间详解  
 &emsp; Innodb中表空间可以分为以下几种：  
@@ -86,7 +84,7 @@ https://zhuanlan.zhihu.com/p/111958646
 https://zhuanlan.zhihu.com/p/111958646
 https://juejin.cn/post/6844904190477598733#heading-14
 -->
-&emsp; Innodb中数据的实际都是按照行的格式存储的，每个页能存放的行的数量也是有严格的规定，最多可以存放16K / 2 - 200 即7992行。
+&emsp; Innodb中数据的实际都是按照行的格式存储的，每个页能存放的行的数量也是有严格的规定，最多可以存放16K / 2 - 200 即7992行。  
 &emsp; mysql支持4种不同类型的行格式：Compact（5.0中引入）、Redundant（比较老）、Dynamic、Compressed。    
 <!-- 
 先说一个结论：页中放的行越多，innodb性能越高。所以在mysql 5.0中引入了compact行记录格式。  
@@ -98,10 +96,10 @@ https://juejin.cn/post/6844904190477598733#heading-14
 * NULL标志位：bit向量标识的null列  
 * 记录头信息：固定占用5个字节   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-138.png)  
-* 隐藏列：每行数据除了用户定义的列之外还有可能三种隐藏列  
-* 事务id列：占用6个字节，标识当前列的事务id  
-* 回滚指针列：占用7个字节行id：如果该表没有指定主键的话，会有占用6字节的
-* 行id列  
+* **<font color = "red">隐藏列：</font>**每行数据除了用户定义的列之外还有可能三种隐藏列  
+* **<font color = "red">事务id列：</font>**占用6个字节，标识当前列的事务id  
+* **<font color = "red">回滚指针列：</font>**占用7个字节行id：如果该表没有指定主键的话，会有占用6字节的
+* **<font color = "red">行id列</font>**  
 
 &emsp; 综上，无论是char类型还是varchar类型，null值都不占用任何存储空间。  
 
