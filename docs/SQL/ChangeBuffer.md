@@ -6,24 +6,26 @@
 <!-- /TOC -->
 
 <!-- 
-了解InnoDB的Checkpoint技术
-https://mp.weixin.qq.com/s/rQX3AFivFDNIYXE7-r9U_w
 InnoDB的插入缓冲 
 https://mp.weixin.qq.com/s/6t0_XByG8-yuyB0YaLuuBA
+https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 -->
 
 # 1. 写缓冲(change buffer)
 &emsp; **<font color = "clime">总结：当使用普通索引，修改数据时，没有命中缓冲池时，会使用到写缓冲（写缓冲是缓冲池的一部分）。在写缓冲中记录这个操作，一次内存操作；写入redo log，一次磁盘顺序写操作。</font>**  
 
-&emsp; <font color = "lime">change buffer是一种应用在非唯一普通索引页不在缓冲池中，对页进行了写操作，并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更，等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中的技术。</font>写缓冲的目的是降低写操作的磁盘IO，提升数据库性能。  
-&emsp; 什么时候缓冲池中的页，会刷到磁盘上呢？定期刷磁盘，而不是每次刷磁盘，能够降低磁盘IO，提升MySQL的性能。  
-<!--
-https://www.cnblogs.com/wangchunli-blogs/p/10416046.html
-https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
+<!-- 
+在进行数据插入时必然会引起索引的变化，聚集索引不必说，一般都是递增有序的。而非聚集索引就不一定是什么数据了，其离散性导致了在插入时结构的不断变化，从而导致插入性能降低。
+所以为了解决非聚集索引插入性能的问题，InnoDB引擎 创造了Insert Buffer。
 -->
+&emsp; 通常来说，InnoDB辅助索引不同于聚集索引的顺序插入，如果每次修改二级索引都直接写入磁盘，则会有大量频繁的随机IO。Change buffer 的主要目的是将对 非唯一 辅助索引页的操作缓存下来，以此减少辅助索引的随机IO，并达到操作合并的效果。它会占用部分Buffer Pool 的内存空间。  
+&emsp; 如果辅助索引页已经在缓冲区了，则直接修改即可；如果不在，则先将修改保存到 Change Buffer。Change Buffer的数据在对应辅助索引页读取到缓冲区时合并到真正的辅助索引页中。Change Buffer 内部实现也是使用的 B+ 树。  
+---
+&emsp; <font color = "lime">change buffer是一种应用在非唯一普通索引页不在缓冲池中，</font><font color = "red">对页进行了写操作，并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更，等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中的技术。</font>写缓冲的目的是降低写操作的磁盘IO，提升数据库性能。  
+&emsp; 什么时候缓冲池中的页，会刷到磁盘上呢？定期刷磁盘，而不是每次刷磁盘，能够降低磁盘IO，提升MySQL的性能。  
+
 
 <!-- 
-
 索引是存储在磁盘上的，所以对于索引的操作需要涉及磁盘操作。如果我们使用自增主键，那么在插入主键索引（聚簇索引）时，只需不断追加即可，不需要磁盘的随机 I/O。但是如果我们使用的是普通索引，大概率是无序的，此时就涉及到磁盘的随机 I/O，而随机I/O的性能是比较差的（Kafka 官方数据：磁盘顺序I/O的性能是磁盘随机I/O的4000~5000倍）。
 
 因此，InnoDB 存储引擎设计了 Insert Buffer ，对于非聚集索引的插入或更新操作，不是每一次直接插入到索引页中，而是先判断插入的非聚集索引页是否在缓冲池（Buffer pool）中，若在，则直接插入；若不在，则先放入到一个 Insert Buffer 对象中，然后再以一定的频率和情况进行 Insert Buffer 和辅助索引页子节点的 merge（合并）操作，这时通常能将多个插入合并到一个操作中（因为在一个索引页中），这就大大提高了对于非聚集索引插入的性能。

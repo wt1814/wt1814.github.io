@@ -1,14 +1,14 @@
 <!-- TOC -->
 
 - [1. 缓冲池(buffer pool)](#1-缓冲池buffer-pool)
-        - [1.0.1. 简介](#101-简介)
-    - [1.1. 原理](#11-原理)
-        - [1.1.1. 前言：预读](#111-前言预读)
-        - [1.1.2. LRU算法](#112-lru算法)
-            - [1.1.2.1. 预读失效](#1121-预读失效)
-            - [1.1.2.2. 缓冲池污染](#1122-缓冲池污染)
-    - [1.2. 相关参数](#12-相关参数)
-    - [1.3. 总结](#13-总结)
+    - [1.1. 简介](#11-简介)
+    - [1.2. 原理](#12-原理)
+        - [1.2.1. 前言：预读](#121-前言预读)
+        - [1.2.2. LRU算法](#122-lru算法)
+            - [1.2.2.1. 预读失效](#1221-预读失效)
+            - [1.2.2.2. 缓冲池污染](#1222-缓冲池污染)
+    - [1.3. 相关参数](#13-相关参数)
+    - [1.4. 总结](#14-总结)
 
 <!-- /TOC -->
 
@@ -18,7 +18,7 @@
 https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 -->
 
-### 1.0.1. 简介
+## 1.1. 简介
 &emsp; 缓冲池是主内存中的一个区域，在InnoDB访问表和索引数据时会在其中进行高速缓存。**在专用服务器上，通常将多达80％的物理内存分配给缓冲池。**  
 &emsp; 为了提高大容量读取操作的效率，缓冲池被分为多个页面，这些页面可能包含多个行。为了提高缓存管理的效率，缓冲池被实现为页面的链接列表。使用LRU算法的变体将很少使用的数据从缓存中老化掉。  
 &emsp; **缓冲池允许直接从内存中处理经常使用的数据，从而加快了处理速度。**  
@@ -36,10 +36,10 @@ https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 &emsp; InnoDB 在修改数据时，如果数据的页在 Buffer Pool 中，则会直接修改 Buffer Pool，此时称这个页为脏页，InnoDB 会以一定的频率将脏页刷新到磁盘，这样可以尽量减少磁盘I/O，提升性能。 
 -->
 
-## 1.1. 原理
+## 1.2. 原理
 &emsp; 如何管理与淘汰缓冲池，使得性能最大化呢？在介绍具体细节之前，先介绍下“预读”的概念。  
 
-### 1.1.1. 前言：预读  
+### 1.2.1. 前言：预读  
 <!-- 
 预读（read ahead）  
 &emsp; InnoDB 在 I/O 的优化上有个比较重要的特性为预读，<font color = "red">当 InnoDB 预计某些 page 可能很快就会需要用到时，它会异步地将这些 page 提前读取到缓冲池（buffer pool）中，</font>这其实有点像空间局部性的概念。  
@@ -63,7 +63,7 @@ https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 &emsp; 线性预读（Linear read-ahead）：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64（一个 extend 上限就是64页）的任何值，默认值为56，值越高，访问模式检查越严格。  
 &emsp; 随机预读（Random read-ahead）: 随机预读方式则是表示当同一个extent中的一些page在buffer pool中发现时，Innodb 会将该 extent 中的剩余page一并读到 buffer pool中，由于随机预读方式给Innodb code带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。 
 
-### 1.1.2. LRU算法  
+### 1.2.2. LRU算法  
 &emsp; InnoDB是以什么算法，来管理这些缓冲页呢？  
 &emsp; memcache，OS都会用LRU来进行页置换管理，但MySQL并没有直接使用LRU算法。  
 
@@ -86,7 +86,7 @@ https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 &emsp; （1）预读失效；  
 &emsp; （2）缓冲池污染；  
 
-#### 1.1.2.1. 预读失效  
+#### 1.2.2.1. 预读失效  
 &emsp; 什么是预读失效？  
 &emsp; <font color = "lime">由于预读(Read-Ahead)，提前把页放入了缓冲池，但最终MySQL并没有从页中读取数据，称为预读失效。</font>  
 
@@ -116,7 +116,7 @@ https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 &emsp; 改进版缓冲池LRU能够很好的解决“预读失败”的问题。不要因为害怕预读失败而取消预读策略，大部分情况下，局部性原理是成立的，预读是有效的。  
 &emsp; 新老生代改进版LRU仍然解决不了缓冲池污染的问题。  
 
-#### 1.1.2.2. 缓冲池污染  
+#### 1.2.2.2. 缓冲池污染  
 &emsp; <font color = "red">当某一个SQL语句，要批量扫描大量数据时(例如like语句)，可能导致把缓冲池的所有页都替换出去，导致大量热数据被换出，MySQL性能急剧下降，这种情况叫缓冲池污染。</font>  
 &emsp; 例如，有一个数据量较大的用户表，当执行：  
 
@@ -145,7 +145,7 @@ select * from user where name like "%shenjian%";
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-114.png)  
 &emsp; 而只有在老生代呆的时间足够久，停留时间大于T，才会被插入新生代头部。  
 
-## 1.2. 相关参数  
+## 1.3. 相关参数  
 &emsp; 有三个比较重要的参数。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-105.png)  
 &emsp; 参数：innodb_buffer_pool_size  
@@ -157,7 +157,7 @@ select * from user where name like "%shenjian%";
 &emsp; 参数：innodb_old_blocks_time  
 &emsp; 介绍：老生代停留时间窗口，单位是毫秒，默认是1000，即同时满足“被访问”与“在老生代停留时间超过1秒”两个条件，才会被插入到新生代头部。  
 
-## 1.3. 总结  
+## 1.4. 总结  
 1. 缓冲池(buffer pool)是一种常见的降低磁盘访问的机制；  
 2. 缓冲池通常以页(page)为单位缓存数据；  
 3. 缓冲池的常见管理算法是LRU，memcache，OS，InnoDB都使用了这种算法；  
