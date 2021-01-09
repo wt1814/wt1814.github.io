@@ -132,6 +132,7 @@
         * [表空间](/docs/SQL/TableSpace.md)  
         * [Double Write](/docs/SQL/DoubleWrite.md)  
         * [MySql事务日志](/docs/SQL/log.md)  
+        * [BinLog使用](/docs/SQL/BinLog.md)  
         * [索引底层原理](/docs/SQL/IndexPrinciple.md)  
         * [MySql事务](/docs/SQL/14.transaction.md)  
         * [MySql锁](/docs/SQL/15.lock.md)  

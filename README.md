@@ -185,7 +185,7 @@
 &emsp; &emsp; [表空间](/docs/SQL/TableSpace.md)  
 &emsp; &emsp; [Double Write](/docs/SQL/DoubleWrite.md)  
 &emsp; &emsp; [MySql事务日志](/docs/SQL/log.md)  
-&emsp; &emsp; [Checkpoint](/docs/SQL/Checkpoint.md)  
+&emsp; &emsp; [BinLog使用](/docs/SQL/BinLog.md)  
 &emsp; [索引底层原理](/docs/SQL/IndexPrinciple.md)  
 &emsp; [MySql事务](/docs/SQL/14.transaction.md)  
 &emsp; [MySql锁](/docs/SQL/15.lock.md)  
