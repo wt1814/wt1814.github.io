@@ -25,6 +25,9 @@
 
 <!-- /TOC -->
 <!-- 
+重做日志缓冲(redo log buffer)
+https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
+
 知识点：了解InnoDB的Checkpoint技术 
 https://mp.weixin.qq.com/s/rQX3AFivFDNIYXE7-r9U_w
 -->
@@ -105,6 +108,14 @@ Log Buffer
 https://mp.weixin.qq.com/s/-Hx2KKYMEQCcTC-ADEuwVA
 https://mp.weixin.qq.com/s/mNfjT99qIbjKGraZLV8EIQ
 https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
+-->
+<!-- 
+redo 与检查点
+
+InnoDB 使用日志先行策略，将数据修改先在内存中完成，并且将事务记录成重做日志(Redo Log)，转换为顺序IO高效的提交事务。
+这里日志先行，说的是日志记录到数据库以后，对应的事务就可以返回给用户，表示事务完成。但是实际上，这个数据可能还只在内存中修改完，并没有刷到磁盘上去。内存是易失的，如果在数据落地前，机器挂了，那么这部分数据就丢失了。
+InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重做日志，显然可以在系统崩溃时根据日志重建数据。
+当然记录所有的重做日志不太现实，所以 InnoDB 引入了检查点机制。即定期检查，保证检查点之前的日志都已经写到磁盘，则下次恢复只需要从检查点开始。
 -->
 
 ### 1.3.1. 为什么需要redo log  
@@ -266,6 +277,10 @@ https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 &emsp; 由binlog和redo log的区别可知：binlog日志只用于归档，只依靠binlog是没有crash-safe能力的。但只有redo log也不行，因为redo log是InnoDB特有的，且日志上的记录落盘后会被覆盖掉。因此需要binlog和redo log二者同时记录，才能保证当数据库发生宕机重启时，数据不会丢失。  
 
 ## 1.6. 两阶段提交  
+<!-- 
+Redo log 两阶段提交
+更新内存后引擎层写 Redo log 将状态改成 prepare 为预提交第一阶段，Server 层写 Binlog，将状态改成 commit为提交第二阶段。两阶段提交可以确保 Binlog 和 Redo log 数据一致性。  
+-->
 &emsp; MySQL 使用两阶段提交主要解决 binlog 和 redo log 的数据一致性的问题。  
 &emsp; redo log 和 binlog 都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。下图为 MySQL 二阶段提交简图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-96.png)  
@@ -279,6 +294,14 @@ https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 ## 1.7. 恢复
 <!-- 
 https://www.jianshu.com/p/d0e16db410e4
+Redo log 容灾恢复过程
+
+MySQL的处理过程如下
+
+    判断 redo log 是否完整，如果判断是完整（commit）的，直接用 Redo log 恢复
+    如果 redo log 只是预提交 prepare 但不是 commit 状态，这个时候就会去判断 binlog 是否完整，如果完整就提交 Redo log，用 Redo log 恢复，不完整就回滚事务，丢弃数据。
+
+只有在 redo log 状态为 prepare 时，才会去检查 binlog 是否存在，否则只校验 redo log 是否是 commit 就可以啦。怎么检查 binlog：一个完整事务 binlog 结尾有固定的格式。
 -->
 &emsp; 数据库关闭只有2种情况，正常关闭，非正常关闭（包括数据库实例crash及服务器crash）。正常关闭情况，所有buffer pool里边的脏页都会都会刷新一遍到磁盘，同时记录最新LSN到ibdata文件的第一个page中。而非正常关闭来不及做这些操作，也就是没及时把脏数据flush到磁盘，也没有记录最新LSN到ibdata file。  
 &emsp; 当重启数据库实例的时候，数据库做2个阶段性操作：redo log处理，undo log及binlog 处理。(在崩溃恢复中还需要回滚没有提交的事务，提交没有提交成功的事务。<font color = "red">由于回滚操作需要undo日志的支持，undo日志的完整性和可靠性需要redo日志来保证，所以崩溃恢复先做redo前滚，然后做undo回滚。</font>)
