@@ -4,7 +4,7 @@
 
 - [1. MVCC](#1-mvcc)
     - [1.1. 什么是当前读和快照读？](#11-什么是当前读和快照读)
-    - [1.2. MVCC定义](#12-mvcc定义)
+    - [1.2. ~~MVCC定义~~](#12-mvcc定义)
     - [1.3. MVCC的实现](#13-mvcc的实现)
         - [1.3.1. 版本链的生成](#131-版本链的生成)
         - [1.3.2. Read View，一致读快照](#132-read-view一致读快照)
@@ -22,19 +22,9 @@
 <!-- 
 MySQL事务与MVCC如何实现的隔离级别 
 https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
-
 https://blog.csdn.net/SnailMann/article/details/94724197
-
-那经常有人说 Repeatable Read 解决了幻读是什么情况？
-SQL 标准中规定的 RR 并不能消除幻读，但是 MySQL 的 RR 可以，靠的就是 Gap 锁。在 RR 级别下，Gap 锁是默认开启的，而在 RC 级别下，Gap 锁是关闭的。
-
-MVCC在MySQL InnoDB中的实现主要是为了提高数据库并发性能，用更好的方式去处理读-写冲突，做到即使有读写冲突时，也能做到不加锁，非阻塞并发读
 -->
 
-<!-- 
-阿里面试：说说一致性读实现原理？ 
-https://mp.weixin.qq.com/s/qHzb6oPrrbAPoIlfLJVNAg
--->
 <!-- 
 ~~
 MVCC是如何实现的？ 
@@ -55,16 +45,18 @@ MCVV这种读取历史数据的方式称为快照读(snapshot read)，而读取�
 * 快照读  
 &emsp; 像不加锁的select操作就是快照读，即不加锁的非阻塞读；快照读的前提是隔离级别不是串行级别，串行级别下的快照读会退化成当前读；之所以出现快照读的情况，是基于提高并发性能的考虑，快照读的实现是基于多版本并发控制，即MVCC,可以认为MVCC是行锁的一个变种，但它在很多情况下，避免了加锁操作，降低了开销；既然是基于多版本，即快照读可能读到的并不一定是数据的最新版本，而有可能是之前的历史版本。
 
-&emsp; <font color = "red">MVCC就是为了实现读-写冲突不加锁，而这个读指的就是快照读，而非当前读，当前读实际上是一种加锁的操作，是悲观锁的实现。</font>  
-
 <!-- 
+&emsp; 谈到幻读，首先要引入“当前读”和“快照读”的概念：  
+* 快照读：生成一个事务快照（ReadView），之后都从这个快照获取数据。普通 select 语句就是快照读。  
+* 当前读：读取数据的最新版本。常见的 update/insert/delete、还有 select ... for update、select ... lock in share mode 都是当前读。  
+
 &emsp; 当前读，快照读和MVCC的关系？  
 &emsp; 准确的说，MVCC多版本并发控制指的是 “维持一个数据的多个版本，使得读写操作没有冲突” 这么一个概念。仅仅是一个理想概念。  
 &emsp; 而在MySQL中，实现这么一个MVCC理想概念，我们就需要MySQL提供具体的功能去实现它，而快照读就是MySQL为我们实现MVCC理想模型的其中一个具体非阻塞读功能。而相对而言，当前读就是悲观锁的具体功能实现。  
 &emsp; 要说的再细致一些，快照读本身也是一个抽象概念，再深入研究。MVCC模型在MySQL中的具体实现则是由 3个隐式字段，undo日志 ，Read View 等去完成的，具体可以看下面的MVCC实现原理。
 -->
 
-## 1.2. MVCC定义
+## 1.2. ~~MVCC定义~~
 &emsp; Multi-Version Concurrency Control，多版本并发控制。<font color = "red">MVCC 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问。MVCC是无锁操作的一种实现方式。</font>  
 
 &emsp; 数据库并发场景有三种，分别为：
@@ -80,6 +72,7 @@ MCVV这种读取历史数据的方式称为快照读(snapshot read)，而读取�
 
 &emsp; <font color = "lime">MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
 
+&emsp; <font color = "red">MVCC就是为了实现读-写冲突不加锁，而这个读指的就是快照读，而非当前读，当前读实际上是一种加锁的操作，是悲观锁的实现。</font>  
 
 <!-- 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-77.png)  
@@ -92,13 +85,7 @@ MCVV这种读取历史数据的方式称为快照读(snapshot read)，而读取�
 -->
 
 ## 1.3. MVCC的实现
-&emsp; InnoDB有两个非常重要的模块来实现MVCC，<font color = "lime">一个是undo log，用于记录数据的变化轨迹，用于数据回滚，另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。</font>  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-72.png)  
-
-&emsp; MVCC的基本原理如下：  
-1. 每行数据都存在一个版本，每次数据更新时都更新该版本。  
-2. 修改时Copy出当前版本随意修改，各个事务之间无干扰。  
-3. 保存时比较版本号，如果成功(commit)，则覆盖原记录；失败则放弃copy(rollback)。  
+&emsp; InnoDB有两个非常重要的模块来实现MVCC，<font color = "lime">一个是undo log，用于记录数据的变化轨迹(版本链)，用于数据回滚；另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。</font>   
 
 ### 1.3.1. 版本链的生成  
 &emsp; 在数据库中的每一条记录实际都会存在三个隐藏列：  
@@ -135,13 +122,11 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
     在事务中，只有执行插入、更新、删除操作时才会分配到一个事务 id。如果事务只是一个单纯的读取事务，那么它的事务 id 就是默认的 0。
 
 &emsp; Read View的结构如下：  
-
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-75.png)  
 * rw_trx_ids：表示在生成 Read View 时，<font color = "red">当前活跃的读写事务数组。</font>
 * up_limit_id：表示在生成 Read View 时，当前已提交的事务号 + 1，也就是在 rw_trx_ids 中的最小事务号。<font color = "lime">trx_id 小于该值都能看到。</font>
 * low_limit_id：表示在生成 Read View 时，当前已分配的事务号 + 1，也就是将要分配给下一个事务的事务号。<font color = "lime">trx_id 大于等于该值都不能看到。</font>
 * curr_trx_id：创建 Read View 的当前事务id。
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-75.png)  
 
 &emsp; <font color = "red">有了ReadView，在访问某条记录时，MySQL会根据以下规则来判断版本链中的哪个版本（记录）是在本次事务中可见的：</font>  
 
@@ -248,6 +233,13 @@ Empty set (0.00 sec)
 &emsp; 实际上，REPEATABLE READ 与 READ COMMITTED 的区别只有在生成 Read View 的时机上。  
 &emsp; READ COMMITTED（读已提交） 是在每次执行 select 操作时，都会生成一个新的 Read View。而 REPEATABLE READ （可重复读）只会在第一次执行 select 操作时生成一个 Read View，直到该事务提交之前，所有的 select 操作都是使用第一次生成的 Read View。  
 
+<!-- 
+那经常有人说 Repeatable Read 解决了幻读是什么情况？
+SQL 标准中规定的 RR 并不能消除幻读，但是 MySQL 的 RR 可以，靠的就是 Gap 锁。在 RR 级别下，Gap 锁是默认开启的，而在 RC 级别下，Gap 锁是关闭的。
+
+MVCC在MySQL InnoDB中的实现主要是为了提高数据库并发性能，用更好的方式去处理读-写冲突，做到即使有读写冲突时，也能做到不加锁，非阻塞并发读
+-->
+
 #### 1.3.3.4. SERIALIZABLE
 &emsp; 该隔离级别不会使用 MVCC。如果使用的是普通的 select 语句，它会在该语句后面加上 lock in share mode，变为一致性锁定读。假设一个事务读取一条记录，其他事务对该记录的更改都会被阻塞。假设一个事务在更改一条记录，其他事务对该记录的读取都会被阻塞。  
 &emsp; 在该隔离级别下，读写操作变为了串行操作。  
@@ -271,13 +263,9 @@ Empty set (0.00 sec)
 2. 事务2插入了 id = 2 的数据；  
 3. 事务1使用同样的语句第二次查询时，查到了 id = 1、id = 2 的数据，出现了幻读。  
 
-&emsp; 谈到幻读，首先要引入“当前读”和“快照读”的概念：  
-* 快照读：生成一个事务快照（ReadView），之后都从这个快照获取数据。普通 select 语句就是快照读。  
-* 当前读：读取数据的最新版本。常见的 update/insert/delete、还有 select ... for update、select ... lock in share mode 都是当前读。  
-
+&emsp; MVCC解决了快照读的幻读：  
 &emsp; <font color = "lime">对于快照读，MVCC 因为从 ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
-&emsp; <font color = "lime">而对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>  
-&emsp; 其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update，当使用了 Gap Lock 时，Gap 锁会锁住 id < 10 的整个范围，因此其他事务无法插入 id < 10 的数据，从而防止了幻读。  
+&emsp; <font color = "lime">而对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update，当使用了 Gap Lock 时，Gap 锁会锁住 id < 10 的整个范围，因此其他事务无法插入 id < 10 的数据，从而防止了幻读。  
 
 <!-- 
 
