@@ -36,6 +36,13 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
 https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 MySQL事务与MVCC如何实现的隔离级别 
 https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
+
+MVCC、MVCC 解决了幻读了没有？
+https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
+那经常有人说 Repeatable Read 解决了幻读是什么情况？
+SQL 标准中规定的 RR 并不能消除幻读，但是 MySQL 的 RR 可以，靠的就是 Gap 锁。在 RR 级别下，Gap 锁是默认开启的，而在 RC 级别下，Gap 锁是关闭的。
+
+https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
 -->
 
 # 1. MVCC
