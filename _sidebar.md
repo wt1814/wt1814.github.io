@@ -134,6 +134,7 @@
         * [MySql事务日志](/docs/SQL/log.md)  
         * [BinLog使用](/docs/SQL/BinLog.md)  
         * [索引底层原理](/docs/SQL/IndexPrinciple.md)  
+        * [各种索引](/docs/SQL/IndexKnowledge.md)  
         * [MySql事务](/docs/SQL/14.transaction.md)  
         * [MySql锁](/docs/SQL/15.lock.md)  
         * [MySql锁造成的问题](/docs/SQL/LockProblem.md)  
