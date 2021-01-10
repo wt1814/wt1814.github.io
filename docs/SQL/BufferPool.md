@@ -14,8 +14,13 @@
 
 # 1. 缓冲池(buffer pool)  
 <!-- 
+能说一说Mysql缓存池吗？ 
+https://mp.weixin.qq.com/s/AbiYMbDUJsMWK-_g0mFNwg
+
 了解InnoDB存储引擎的内存池 
 https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
+MySQL 缓冲池 是什么？ 
+https://mp.weixin.qq.com/s/rCTJDh3_WbEAbGLZdZiQzg
 -->
 
 ## 1.1. 简介

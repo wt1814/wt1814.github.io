@@ -36,6 +36,8 @@
 <!-- 
 Redis的主从复制是如何做的？复制过程中也会产生各种问题 
  https://mp.weixin.qq.com/s/ee7Xdj4d1O-D-Yaa9G6U3w
+Redis复制原理你应该理解
+https://mp.weixin.qq.com/s/XUmmwykpiO8r5-FDt4XyYw
 -->
 
 ## 1.1. 主从复制的作用  

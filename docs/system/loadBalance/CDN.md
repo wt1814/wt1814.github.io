@@ -16,6 +16,9 @@ https://mp.weixin.qq.com/s/VIjHRl5GogichFnf66Wi3g
 
 https://www.imydl.com/work/4073.html
 https://www.imydl.com/wp/5863.html
+
+5分钟了解CDN 加速原理
+https://mp.weixin.qq.com/s/Keway7ExLfTNunZTACoxnA
 -->
 
 ## 1.1. CDN介绍  

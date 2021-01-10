@@ -67,6 +67,10 @@ protected synchronized Class<?> loadClass(String name, boolean resolve)throws Cl
 * <font color = "lime">防止核心API被随意篡改，</font>避免用户自己编写的类动态替换Java的一些核心类，比如自定义类：java.lang.String。  
 
 ### 1.2.2. 破坏双亲委派模型  
+<!-- 
+ClassLoader
+https://mp.weixin.qq.com/s/2iGaiOpxBIM3msAZYPUOnQ
+-->
 &emsp; 双亲委派模型并不是一个强制性的约束模型，而是Java设计者推荐给开发者的类加载器实现方式，可以“被破坏”。  
 
 &emsp; **<font color = "red">破坏双亲委派模型的案例：</font>**  

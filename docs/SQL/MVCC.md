@@ -7,7 +7,7 @@
     - [1.2. MVCC定义](#12-mvcc定义)
     - [1.3. MVCC的实现](#13-mvcc的实现)
         - [1.3.1. 版本链的生成](#131-版本链的生成)
-        - [1.3.2. Read View](#132-read-view)
+        - [1.3.2. Read View，一致读快照](#132-read-view一致读快照)
         - [1.3.3. 不同隔离级别下的MVCC](#133-不同隔离级别下的mvcc)
             - [1.3.3.1. READ UNCOMMITTED](#1331-read-uncommitted)
             - [1.3.3.2. READ COMMITTED](#1332-read-committed)
@@ -18,37 +18,37 @@
 
 <!-- /TOC -->
 
+
 <!-- 
+MySQL事务与MVCC如何实现的隔离级别 
+https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
+
 https://blog.csdn.net/SnailMann/article/details/94724197
-https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
-阿里面试：说说一致性读实现原理？ 
-https://mp.weixin.qq.com/s/qHzb6oPrrbAPoIlfLJVNAg
 
-MVCC是如何实现的？ 
-https://mp.weixin.qq.com/s/JJd0SoZ--JKW0LEtkZONUA
-MySQL事务与MVCC如何实现的隔离级别 
-https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
-
-
-面试官灵魂的一击：你懂MySQL事务吗？ 
-https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
-事务隔离级别中的可重复读能防幻读吗?
-https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
-MySQL事务与MVCC如何实现的隔离级别 
-https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
-
-MVCC、MVCC 解决了幻读了没有？
-https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
 那经常有人说 Repeatable Read 解决了幻读是什么情况？
 SQL 标准中规定的 RR 并不能消除幻读，但是 MySQL 的 RR 可以，靠的就是 Gap 锁。在 RR 级别下，Gap 锁是默认开启的，而在 RC 级别下，Gap 锁是关闭的。
 
-https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
+MVCC在MySQL InnoDB中的实现主要是为了提高数据库并发性能，用更好的方式去处理读-写冲突，做到即使有读写冲突时，也能做到不加锁，非阻塞并发读
+-->
+
+<!-- 
+阿里面试：说说一致性读实现原理？ 
+https://mp.weixin.qq.com/s/qHzb6oPrrbAPoIlfLJVNAg
+-->
+<!-- 
+~~
+MVCC是如何实现的？ 
+https://mp.weixin.qq.com/s/JJd0SoZ--JKW0LEtkZONUA
 -->
 
 # 1. MVCC
-&emsp; **<font color = "lime">一句话概述：MVCC使用无锁并发控制，解决数据库读写问题。数据库会根据回顾指针，形成版本链；MVCC会根据Read View来决定读取版本链中的哪条记录。</font>**
+&emsp; **<font color = "lime">一句话概述：MVCC使用无锁并发控制，解决数据库读写问题。数据库会根据回顾指针，形成版本链；MVCC会根据Read View来决定读取版本链中的哪条记录。</font>**  
+<!-- 
+MCVV这种读取历史数据的方式称为快照读(snapshot read)，而读取数据库当前版本数据的方式，叫当前读(current read)。
+-->
 
 ## 1.1. 什么是当前读和快照读？  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-145.png)  
 &emsp; 在学习MVCC多版本并发控制之前，必须先了解一下，什么是MySQL InnoDB下的当前读和快照读?  
 * 当前读  
 &emsp; 像select lock in share mode(共享锁)，select for update；update，insert，delete(排他锁)这些操作都是一种当前读，为什么叫当前读？就是它读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加锁。  
@@ -74,7 +74,7 @@ https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
     写-写：有线程安全问题，可能会存在更新丢失问题，比如第一类更新丢失，第二类更新丢失
 
 &emsp; MVCC带来的好处是？
-多版本并发控制（MVCC）是一种用来解决读-写冲突的无锁并发控制，也就是为事务分配单向增长的时间戳，为每个修改保存一个版本，版本与事务时间戳关联，读操作只读该事务开始前的数据库的快照。 所以MVCC可以为数据库解决以下问题：  
+&emsp; 多版本并发控制（MVCC）是一种用来解决读-写冲突的无锁并发控制，也就是为事务分配单向增长的时间戳，为每个修改保存一个版本，版本与事务时间戳关联，读操作只读该事务开始前的数据库的快照。 所以MVCC可以为数据库解决以下问题：  
 1. 在并发读写数据库时，可以做到在读操作时不用阻塞写操作，写操作也不用阻塞读操作，提高了数据库并发读写的性能。
 2. 同时还可以解决脏读，幻读，不可重复读等事务隔离问题，但不能解决更新丢失问题。
 
@@ -98,7 +98,7 @@ https://mp.weixin.qq.com/s/Ad3PJM3sBKJD2j2NvMno7w
 &emsp; MVCC的基本原理如下：  
 1. 每行数据都存在一个版本，每次数据更新时都更新该版本。  
 2. 修改时Copy出当前版本随意修改，各个事务之间无干扰。  
-3. 保存时比较版本号，如果成功（commit），则覆盖原记录；失败则放弃copy（rollback）。  
+3. 保存时比较版本号，如果成功(commit)，则覆盖原记录；失败则放弃copy(rollback)。  
 
 ### 1.3.1. 版本链的生成  
 &emsp; 在数据库中的每一条记录实际都会存在三个隐藏列：  
@@ -121,11 +121,15 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
 &emsp; 当执行完上面两条语句之后，但是还没有提交事务之前，它的版本链如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-74.png)  
 
-### 1.3.2. Read View  
+### 1.3.2. Read View，一致读快照  
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MzU0MDEwMjgwNA==&mid=2247489840&idx=1&sn=77800cbea0eeaa61e1bd8334c8ad42c4&chksm=fb3f00cbcc4889dd6e8aed60812a7cd7d0c9e7fc6ec5a2aec2803ba05b26de34cd79ff109f06&scene=21#wechat_redirect
 -->
-
+<!-- 
+~~
+面试官灵魂的一击：你懂MySQL事务吗？ 
+https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
+-->
 &emsp; **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
     
     在事务中，只有执行插入、更新、删除操作时才会分配到一个事务 id。如果事务只是一个单纯的读取事务，那么它的事务 id 就是默认的 0。
@@ -174,6 +178,17 @@ https://mp.weixin.qq.com/s?__biz=MzU0MDEwMjgwNA==&mid=2247489840&idx=1&sn=77800c
 
 对于删除的情况可以认为是update的特色情况，会将版本链上最新的数据复制一份，然后将trx_id修改成删除操作的trx_id，同时在该条记录的头信息(record header)里的(deleted_flag)标记位写上true，来表示当前记录已经被删除，在查询时按照上面的规则查到对应的记录，如果delete_flag标记为true，意味着记录已经被删除，则不返回数据。   
 -->
+---
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-146.png)  
+&emsp; 执行过程如下：  
+1. 如果被访问版本的trx_id=creator_id，意味着当前事务在访问它自己修改过的记录，所以该版本可以被当前事务访问  
+2. 如果被访问版本的trx_id<min_trx_id，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问
+3. 被访问版本的trx_id>=max_trx_id，表明生成该版本的事务在当前事务生成ReadView后才开启，该版本不可以被当前事务访问  
+4. 被访问版本的trx_id是否在m_ids列表中
+    1. 是，创建ReadView时，该版本还是活跃的，该版本不可以被访问。顺着版本链找下一个版本的数据，继续执行上面的步骤判断可见性，如果最后一个版本还不可见，意味着记录对当前事务完全不可见  
+    2. 否，创建ReadView时，生成该版本的事务已经被提交，该版本可以被访问  
+
+----
 
 &emsp; 如下，它是一段MySQL判断可见性的一段源码  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-97.png)  
