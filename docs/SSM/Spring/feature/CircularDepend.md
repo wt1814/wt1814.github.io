@@ -18,6 +18,22 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
  【死磕 Spring】—– IOC 之循环依赖处理 
 https://mp.weixin.qq.com/s/cxSSbbfFUNDUi9_fLfzSTw
 
+/**
+ * 一级缓存，用于存放已经初始化完成的Spring Bean（经历了完整的Spring Bean初始化生命周期 ）
+ */
+private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
+
+/**
+ * 二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean（尚未经历了完整的Spring Bean初始化生命周期 ）
+ * 这种对象提前暴露出来，就是为了解决循环引用，避免“鸡生蛋，蛋生鸡”的问题
+ */
+private final Map<String, Object> earlySingletonObjects = new HashMap<>(16);
+
+
+/**
+ * 三级缓存，用于存放二级缓存中Bean的工厂
+ */
+private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
 -->
 
 <!-- 
