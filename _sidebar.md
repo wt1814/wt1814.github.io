@@ -152,7 +152,7 @@
         * [容器初始化详解](/docs/SSM/Spring/ContainerInit.md)  
     * [SpringDI解析](/docs/SSM/Spring/SpringDI.md)  
     * [SpringBean生命周期](/docs/SSM/Spring/SpringBean.md)  
-    * [容器相关特性]  
+    * [容器相关特性](/docs/SSM/Spring/feature/ContainerFeature.md)  
         * [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
         * [可二次开发常用接口](/docs/SSM/Spring/feature/SecendDeve.md)  
         * [Aware接口](/docs/SSM/Spring/feature/Aware.md)  

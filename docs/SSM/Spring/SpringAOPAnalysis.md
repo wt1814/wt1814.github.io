@@ -22,6 +22,9 @@
 
 <!-- 
 
+ 你知道Spring是怎么将AOP应用到Bean的生命周期中的吗? 
+ https://mp.weixin.qq.com/s?__biz=MzU5ODg2Njk4OA==&mid=2247484456&idx=1&sn=395189e7139ba306db901f1cadc7b08c&chksm=febce96bc9cb607df38f916490b5d81a57988e40b9380e79c1169a8b14d5a53f13e18423c7fa&scene=21#wechat_redirect
+
 6.7AOP 有哪些实现方式？
 
 实现 AOP 的技术， 主要分为两大类：

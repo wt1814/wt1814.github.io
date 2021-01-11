@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. SpringBean生命周期](#1-springbean生命周期)
+- [1. ~~SpringBean生命周期~~](#1-springbean生命周期)
     - [1.1. SpringBean生命周期的概要流程](#11-springbean生命周期的概要流程)
     - [1.2. 实例演示](#12-实例演示)
     - [1.3. 源码解析](#13-源码解析)
@@ -12,15 +12,37 @@
 
 
 
-# 1. SpringBean生命周期
+# 1. ~~SpringBean生命周期~~
 <!-- 
 https://mp.weixin.qq.com/s/DC_PH_PXpbNgDQuGslTTTg
-
- 你知道Spring是怎么将AOP应用到Bean的生命周期中的吗? 
- https://mp.weixin.qq.com/s?__biz=MzU5ODg2Njk4OA==&mid=2247484456&idx=1&sn=395189e7139ba306db901f1cadc7b08c&chksm=febce96bc9cb607df38f916490b5d81a57988e40b9380e79c1169a8b14d5a53f13e18423c7fa&scene=21#wechat_redirect
 -->
 
 ## 1.1. SpringBean生命周期的概要流程  
+<!-- 
+
+Bean创建的三个阶段：  
+Spring在创建一个Bean时是分为三个步骤的  
+
+    实例化，可以理解为new一个对象
+    属性注入，可以理解为调用setter方法完成属性注入
+    初始化，你可以按照Spring的规则配置一些初始化的方法（例如，@PostConstruct注解）
+
+生命周期的概念：  
+Bean的生命周期指的就是在上面三个步骤中后置处理器BeanPostprocessor穿插执行的过程
+
+-->
+&emsp; **Bean创建的三个阶段：**    
+&emsp; Spring在创建一个Bean时是分为三个步骤的：    
+
+1. 实例化，可以理解为new一个对象
+2. 属性注入，可以理解为调用setter方法完成属性注入
+3. 初始化，你可以按照Spring的规则配置一些初始化的方法（例如，@PostConstruct注解）
+
+&emsp; **生命周期的概念：**  
+&emsp; Bean的生命周期指的就是在上面三个步骤中后置处理器BeanPostprocessor穿插执行的过程  
+
+------
+
 &emsp; **<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-11.png)  
