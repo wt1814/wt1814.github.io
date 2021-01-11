@@ -52,6 +52,13 @@ https://blog.csdn.net/weixin_39035120/article/details/86225377
 ### 1.2.1. ApplicationEvent，事件  
 &emsp; ApplicationEvent表示事件，每个实现类表示一类事件，可携带数据。<font color = "lime">下面是一些Spring提供的标准事件，都继承了ApplicationEvent。</font>  
 
+|事件名|注释|
+|---|---|
+|ContextRefreshedEvent|Spring应用上下文就绪事件|
+|ContextStartedEvent|Spring应用上下文启动事件|
+|ContextStopedEvent|Spring应用上下文停止事件|
+vContextClosedEvent|Spring应用上下文关闭事件v
+
 * ContextRefreshedEvent，上下文更新事件  
     &emsp; **<font color = "lime">ContextRefreshedEvent上下文更新事件发生在刷新容器（refresh()方法）的“完成刷新容器时发布对应的事件”步骤中。</font>**  
     ```java

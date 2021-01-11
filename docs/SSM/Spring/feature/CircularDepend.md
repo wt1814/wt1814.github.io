@@ -14,19 +14,17 @@
 如何解决循环依赖问题！ 
 https://mp.weixin.qq.com/s/qXvKA0sIzo3JbledSr4NNQ
 https://mp.weixin.qq.com/s/fAb9bp4BIZ6FS6J3vRLq1w
-https://mp.weixin.qq.com/s/0EwkxNTFs6oW3Sl0P9sFXg
  【死磕 Spring】—– IOC 之循环依赖处理 
 https://mp.weixin.qq.com/s/cxSSbbfFUNDUi9_fLfzSTw
 https://mp.weixin.qq.com/s/p01mrjBwstK74d3D3181og
-烂了大街的 Spring 循环依赖问题
-https://mp.weixin.qq.com/s/M7hHG93dOnSBPeSaiI_wLA
 【171期】面试官：小伙汁，Spring是怎么解决循环依赖的呢？ 
 https://mp.weixin.qq.com/s/T_L3Yhl-JP3zjPigh8lmxQ
 Spring循环依赖三级缓存是否可以减少为二级缓存？ 
 https://mp.weixin.qq.com/s/3ny7oIE89c7mztV0WSAfbA
+
+
 循环依赖
 https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
-
 -->
 
 
