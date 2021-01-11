@@ -2,39 +2,41 @@
 
 <!-- TOC -->
 
-- [1. 循环依赖-1](#1-循环依赖-1)
+- [1. 循环依赖](#1-循环依赖)
     - [1.1. 什么是循环依赖？](#11-什么是循环依赖)
-    - [1.2. 如何检测是否存在循环依赖？](#12-如何检测是否存在循环依赖)
+    - [Spring循环依赖的场景](#spring循环依赖的场景)
     - [1.3. Spring如何解决循环依赖的问题?](#13-spring如何解决循环依赖的问题)
     - [1.4. 常见问题](#14-常见问题)
 
 <!-- /TOC -->
 
 <!-- 
-如何解决循环依赖问题！ 
-https://mp.weixin.qq.com/s/qXvKA0sIzo3JbledSr4NNQ
-https://mp.weixin.qq.com/s/fAb9bp4BIZ6FS6J3vRLq1w
+https://mp.weixin.qq.com/s/p01mrjBwstK74d3D3181og
+
+
  【死磕 Spring】—– IOC 之循环依赖处理 
 https://mp.weixin.qq.com/s/cxSSbbfFUNDUi9_fLfzSTw
-https://mp.weixin.qq.com/s/p01mrjBwstK74d3D3181og
-【171期】面试官：小伙汁，Spring是怎么解决循环依赖的呢？ 
-https://mp.weixin.qq.com/s/T_L3Yhl-JP3zjPigh8lmxQ
-Spring循环依赖三级缓存是否可以减少为二级缓存？ 
-https://mp.weixin.qq.com/s/3ny7oIE89c7mztV0WSAfbA
-
-
+如何解决循环依赖问题！ 
+https://mp.weixin.qq.com/s/0EwkxNTFs6oW3Sl0P9sFXg
 循环依赖
 https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 -->
 
+<!-- 
+~~
+【171期】面试官：小伙汁，Spring是怎么解决循环依赖的呢？ 
+https://mp.weixin.qq.com/s/T_L3Yhl-JP3zjPigh8lmxQ
+https://juejin.cn/post/6895753832815394824
+-->
 
-# 1. 循环依赖-1  
+# 1. 循环依赖  
 
 ## 1.1. 什么是循环依赖？  
 &emsp; 多个bean之间相互依赖，形成了一个闭环。比如：A依赖于B、B依赖于C、C依赖于A。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-5.png)  
 
 &emsp; 代码中表示：  
+<!-- https://mp.weixin.qq.com/s/qXvKA0sIzo3JbledSr4NNQ -->
 
 ```java
 public class A{
@@ -48,7 +50,10 @@ public class C{
 }
 ```
 
-## 1.2. 如何检测是否存在循环依赖？  
+## Spring循环依赖的场景  
+<!-- 
+https://mp.weixin.qq.com/s/wykX4CdrHT1tvSz2-24NEQ
+-->
 &emsp; Spring创建bean主要的几个步骤(参考SpringBean生命周期)：  
 
 * 步骤1：实例化bean，即调用构造器创建bean实例  
@@ -57,8 +62,14 @@ public class C{
 
 &emsp; 从上面3个步骤中可以看出，<font color = "lime">注入依赖的对象，有2种情况：</font>  
 1. **<font color = "red">通过步骤1中构造器的方式注入依赖</font>**  
-2. **<font color = "red">通过步骤2填充属性注入依赖</font>**  
+2. **<font color = "red">通过步骤2填充field属性注入依赖</font>**  
 
+&emsp; 在这两种情况，都有可能出现循环依赖。并非所有循环依赖，Spring都能自动解决。    
+&emsp; <font color = "lime">Spring解决循环依赖的前置条件：</font>  
+1. 出现循环依赖的Bean必须要是单例  
+2. 依赖注入的方式不能全是构造器注入的方式（很多博客上说，只能解决setter方法的循环依赖，这是错误的）  
+
+&emsp; 否则，抛出BeanCurrentlyInCreationException异常，表示循环依赖。  
 
 &emsp; <font color = "red">检测循环依赖比较简单，使用一个列表来记录正在创建中的bean，bean创建之前，先去记录中看一下自己是否已经在列表中了，如果在，说明存在循环依赖，如果不在，则将其加入到这个列表，bean创建完毕之后，将其再从这个列表中移除。</font>  
 &emsp; 源码示例：Spring创建单例bean时，会调用以下方法  
@@ -106,23 +117,13 @@ if (mbd.isPrototype()) {
 &emsp; 同样，构造器注入的Bean循环依赖，也会抛出异常BeanCurrentlyInCreationException。  
 &emsp; 只有含有field属性注入的单例Bean，通过3级缓存解决循环依赖。  
 
-
 ## 1.3. Spring如何解决循环依赖的问题?  
-&emsp; <font color = "lime">Spring解决循环依赖是有前置条件的</font>  
-1. 出现循环依赖的Bean必须要是单例  
-2. 依赖注入的方式不能全是构造器注入的方式（很多博客上说，只能解决setter方法的循环依赖，这是错误的）  
-
-<!-- 
-https://mp.weixin.qq.com/s/0EwkxNTFs6oW3Sl0P9sFXg
-https://mp.weixin.qq.com/s/wykX4CdrHT1tvSz2-24NEQ
-https://mp.weixin.qq.com/s/GqghXjMgdcTL9c1fPbfWUw
--->
 <!-- 
 https://blog.csdn.net/lkforce/article/details/97183065
 https://www.cnblogs.com/leeego-123/p/12165278.html
 -->
 
-&emsp; **<font color = "red">field属性注入的单例Bean循环依赖，Spring通过3级缓存解决。</font>** ：  
+&emsp; **<font color = "red">field属性注入的单例Bean循环依赖，Spring通过3级缓存解决。</font>**  
 
 &emsp; 在Spring Bean的生命周期中，创建单例bean时首先会从缓存中获取这个单例的bean。  
 
@@ -218,7 +219,6 @@ protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 
 
 ## 1.4. 常见问题  
-
 1. 为什么使用构造器注入属性的时候不能解决循环依赖问题？  
 &emsp; 原因在于此方式是实例化和初始化分开（在进行实例化的时候不必给属性赋值）操作，将提前实例化好的对象前景暴露出去，供别人调用，而使用构造器的时候，必须要调用构造方法了，没有构造方法无法完成对象的实例化操作，也就无法创建对象的实例化操作，也就无法创建对象，那么永远会陷入到死循环中。   
 
@@ -226,14 +226,8 @@ protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 &emsp; 不能，在三个级别的缓存中，放置的对象是有区别的，（1、是完成实例化且初始化的对象，2、是实例化但是未初始化的对象），如果只有一级缓存，就有可能取到实例化但未初始化的对象，属性值都为空，肯定有问题。  
 
 3. 二级缓存能不能解决？为什么要三级缓存？  
+<!-- Spring循环依赖三级缓存是否可以减少为二级缓存？ 
+https://mp.weixin.qq.com/s/3ny7oIE89c7mztV0WSAfbA-->
 &emsp; 理论上来说是可以解决循环依赖的问题，但是注意：为什么要在三级缓存中放置匿名内部类？  
 &emsp; 本质在于为了创建代理对象，假如现在有A类，需要生成代理对象，A需要实例化。  
-
 &emsp; 在三级缓存中放置的是，生成具体对象的一个匿名内部类，这个匿名内部类可能是代理类，也可能是普通的实例对象，而使用三级缓存就保证了不管是否需要代理对象，都保证使用的是一个对象，而不会出现，前面使用普通bean，后面使用代理类。
-
-
-
-
-
-
-

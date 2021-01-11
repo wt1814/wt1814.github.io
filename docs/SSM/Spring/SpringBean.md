@@ -107,7 +107,7 @@ obj, String s)方法；由于这个方法是在Bean初始化结束时调用的�
 1. 实例化（Instantiation）；
 2. 属性赋值（Populate）；
 3. 初始化（Initialization）；
-4. 销毁（Destruction）。  
+4. 销毁（Destruction）---注册Destruction回调函数。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-10.png)  
 1. 实例化：第 1 步，实例化一个 bean 对象；
