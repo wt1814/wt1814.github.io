@@ -198,5 +198,3 @@ public void destroy() {
 * 首先是实例化、属性赋值、初始化、销毁这 4 个大阶段；
 * 再是初始化的具体操作，有 Aware 接口的依赖注入、BeanPostProcessor 在初始化前后的处理以及 InitializingBean 和 init-method 的初始化操作；
 * 销毁的具体操作，有注册相关销毁回调接口，最后通过DisposableBean 和 destory-method 进行销毁。
-
-

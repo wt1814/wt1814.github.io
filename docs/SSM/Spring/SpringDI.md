@@ -17,20 +17,20 @@
 
 # 1. SpringDI解析
 ## 1.1. 依赖注入发生的时间  
-&emsp; 当 Spring IOC 容器完成了Bean定义资源的定位、载入和解析注册以后，IOC 容器中已经管理类 Bean 定义的相关数据，但是此时 IOC 容器还没有对所管理的 Bean 进行依赖注入，<font color= "red">依赖注入在以下两种情况发生</font>：  
+&emsp; 当Spring IOC容器完成了Bean定义资源的定位、载入和解析注册以后，IOC容器中已经管理类Bean定义的相关数据，但是此时IOC容器还没有对所管理的Bean进行依赖注入，<font color= "red">依赖注入在以下两种情况发生</font>：  
 
 * 用户第一次调用getBean()方法时，IOC容器触发依赖注入。  
-* 当用户在配置文件中将<bean\>元素配置了 lazy-init=false 属性，即让容器在解析注册 Bean 定义时进行预实例化，触发依赖注入。  
+* 当用户在配置文件中将<bean\>元素配置了lazy-init=false属性，即让容器在解析注册Bean定义时进行预实例化，触发依赖注入。  
 
 &emsp; getBean()方法定义在BeanFactory接口中，可以通过分析其子类的具体实现，理解Spring IOC容器在用户索取 Bean时如何完成依赖注入。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/Spring/SpringDI-2.png)  
-&emsp; 在BeanFactory中可以看到getBean(String...)方法，但它具体实现在 AbstractBeanFactory 中。  
+&emsp; 在BeanFactory中可以看到getBean(String...)方法，但它具体实现在AbstractBeanFactory中。  
 
 ## 1.2. SpringDI时序图  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/Spring/SpringDI-1.png)  
 
 ## 1.3. AbstractBeanFactory#getBean()，获取Bean  
-&emsp; AbstractBeanFactory 的 getBean()相关方法的源码如下：  
+&emsp; AbstractBeanFactory的getBean()相关方法的源码如下：  
 
 ```java
 //获取 IOC 容器中指定名称的Bean
@@ -66,7 +66,7 @@ public <T> T getBean(String name, @Nullable Class<T> requiredType, @Nullable Obj
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/Spring/SpringDI-3.png)  
 
 &emsp; **主要流程：**  
-1. 先处理Bean 的名称，因为如果以“&”开头的Bean名称表示获取的是对应的FactoryBean对象；  
+1. 先处理Bean的名称，因为如果以“&”开头的Bean名称表示获取的是对应的FactoryBean对象；  
 2. 从缓存中获取单例Bean，有则进一步判断这个Bean是不是在创建中，如果是的就等待创建完毕，否则直接返回这个Bean对象；  
 3. 如果不存在单例Bean缓存，则先进行循环依赖的解析；  
 4. 解析完毕之后先获取父类BeanFactory，获取到了则调用父类的getBean方法，不存在则先合并然后创建Bean。  
@@ -241,19 +241,19 @@ protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredTy
 }
 ```
 &emsp; 通过上面对向 IOC 容器获取 Bean 方法的分析，可以看到在 Spring 中，如果 Bean 定义的单例模式(Singleton)，则容器在创建之前先从缓存中查找，以确保整个容器中只存在一个实例对象。如果 Bean 定义的是原型模式(Prototype)，则容器每次都会创建一个新的实例对象。除此之外，Bean 定义还可以扩展为指定其生命周期范围。  
-&emsp; 上面的源码只是定义了根据 Bean 定义的模式，采取的不同创建 Bean 实例对象的策略，具体的 Bean 实例对象的创建过程由实现了 ObjectFactory 接口的匿名内部类的 createBean() 方法完成，ObjectFactory 使 用 委 派 模 式 ， 具 体 的 Bean 实 例 创 建 过 程 交 由 其 实 现 类AbstractAutowireCapableBeanFactory 完成，继续分析AbstractAutowireCapableBeanFactory 的 createBean()方法的源码，理解其创建 Bean 实例的具体实现过程。  
+&emsp; 上面的源码只是定义了根据Bean定义的模式，采取的不同创建Bean实例对象的策略，具体的Bean实例对象的创建过程由实现了ObjectFactory接口的匿名内部类的createBean()方法完成，ObjectFactory使用委派模式，具体的Bean实例创建过程交由其实现类AbstractAutowireCapableBeanFactory完成，继续分析AbstractAutowireCapableBeanFactory的createBean()方法的源码，理解其创建Bean实例的具体实现过程。  
 
 ## 1.4. AbstractAutowireCapableBeanFactory#createBean()，实例化Bean  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/Spring/SpringDI-4.png)  
 &emsp; **主要流程：**  
-1. 这里会先获取 RootBeanDefinition对象中的Class对象并确保已经关联了要创建的Bean的Class 。  
+1. 这里会先获取 RootBeanDefinition对象中的Class对象并确保已经关联了要创建的Bean的Class。  
 2. 这里会检查3个条件  
     * Bean的属性中的 beforeInstantiationResolved字段是否为true，默认是false。  
     * Bean是否是原生的Bean  
     * Bean的 hasInstantiationAwareBeanPostProcessors属性是否为true。这个属性在Spring准备刷新容器前准备BeanPostProcessors的时候会设置，如果当前Bean实现了 InstantiationAwareBeanPostProcessor则这个就会是true。  
     
-    &emsp; 当三个条件都存在的时候，就会调用实现的 InstantiationAwareBeanPostProcessor接口的 postProcessBeforeInstantiation方法，然后获取返回的Bean，如果返回的Bean不是null还会调用实现的 BeanPostProcessor接口的 postProcessAfterInitialization方法。  
-3. 如果上面3个条件其中一个不满足就不会调用实现的方法。默认这里都不会调用的这些BeanPostProcessors的实现方法。然后继续执行后面的 doCreateBean方法。  
+    &emsp; 当三个条件都存在的时候，就会调用实现的InstantiationAwareBeanPostProcessor接口的postProcessBeforeInstantiation方法，然后获取返回的Bean，如果返回的Bean不是null还会调用实现的 BeanPostProcessor接口的postProcessAfterInitialization方法。  
+3. 如果上面3个条件其中一个不满足就不会调用实现的方法。默认这里都不会调用的这些BeanPostProcessors的实现方法。然后继续执行后面的doCreateBean方法。  
 
 &emsp; **源码解析：**  
 
@@ -314,12 +314,7 @@ protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable O
 1. 先检查 instanceWrapper变量是不是null，这里一般是null，除非当前正在创建的Bean在 factoryBeanInstanceCache中存在这个是保存还没创建完成的FactoryBean的集合。  
 2. **<font color = "lime">调用createBeanInstance方法实例化Bean</font>**  
 3. 如果当前 RootBeanDefinition对象还没有调用过实现了的 MergedBeanDefinitionPostProcessor接口的方法，则会进行调用 。  
-4. 当满足以下三点  
-    * 是单例Bean  
-    * **<font color = "lime">尝试解析bean之间的循环引用</font>**  
-    * bean目前正在创建中  
-    
-    &emsp; 则会进一步检查是否实现了 SmartInstantiationAwareBeanPostProcessor接口。如果实现了则调用是实现的 getEarlyBeanReference方法  
+4. 当满足这三点：单例Bean、**<font color = "lime">尝试解析bean之间的循环引用</font>**、bean目前正在创建中，则会进一步检查是否实现了 SmartInstantiationAwareBeanPostProcessor接口。如果实现了则调用是实现的 getEarlyBeanReference方法  
 5. **<font color = "lime">调用 populateBean方法进行属性填充</font>**  
 6. **<font color = "lime">调用 initializeBean方法对Bean进行初始化</font>**  
 
@@ -433,8 +428,8 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
 2. 如果用户定义了Bean实例化的函数，则调用并返回  
 3. 如果当前Bean实现了 FactoryBean接口则调用对应的 FactoryBean接口的 getObject方法  
 4. 根据getBean时候是否传入构造参数进行处理  
-    * 如果没有传入构造参数，则检查是否存在已经缓存的无参构造器，有则使用构造器直接创建，没有就会调用 instantiateBean方法，先获取实例化的策略，默认是 CglibSubclassingInstantiationStrategy，然后实例化Bean。最后返回。  
-    * 如果传入了构造参数，则会先检查是否实现了 SmartInstantiationAwareBeanPostProcessor接口，如果实现了会调用 determineCandidateConstructors获取返回的候选构造器。  
+    * 如果没有传入构造参数，则检查是否存在已经缓存的无参构造器，有则使用构造器直接创建，没有就会调用instantiateBean方法，先获取实例化的策略，默认是 CglibSubclassingInstantiationStrategy，然后实例化Bean。最后返回。  
+    * 如果传入了构造参数，则会先检查是否实现了SmartInstantiationAwareBeanPostProcessor接口，如果实现了会调用determineCandidateConstructors获取返回的候选构造器。  
     * 检查4个条件是否满足一个  
         * 构造器不为null，  
         * 从RootBeanDefinition中获取到的关联的注入方式是构造器注入（没有构造参数就是setter注入，有则是构造器注入）  

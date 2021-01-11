@@ -17,7 +17,6 @@
 
 <!-- /TOC -->
 
-# 1. SpringIOC解析
 &emsp; **<font color = "red">总结：</font>**  
 1. BeanFactory与ApplicationContext
 2. BeanDefinition：BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。  
@@ -41,6 +40,7 @@
     12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
     13. 重置公共的一些缓存数据。  
 
+# 1. SpringIOC解析
 ## 1.1. IOC容器的设计与实现  
 &emsp; 在Spring IOC容器的设计当中，可以看到两个主要的容器系列（根据命名）。  
 
@@ -48,14 +48,13 @@
 * ApplicationContext应用上下文，容器的高级形态，增加了许多面向框架的特性和对应用环境的适配；  
 
 ### 1.1.1. BeanFactory  
-&emsp; Spring Bean的创建是典型的工厂模式，这一系列的Bean工厂，也即IOC容器为开发者管理对象间的依赖关系提供了很多便利和基础服务。  
-
 <!--  
 在Spring中有许多的 IOC 容器的实现供用户选择和使用，其相互关系如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-3.png)  
 -->
-&emsp; 其中BeanFactory作为最顶层的一个接口类，它定义了IOC容器的基本功能规范。BeanFactory有三个重要的子类：ListableBeanFactory、 HierarchicalBeanFactory和AutowireCapableBeanFactory。它们最终的默认实现类是<font color = "red">DefaultListableBeanFactory</font>，它实现了所有的接口。  
-&emsp; 为什么定义这么多层次的接口？查阅这些接口的源码和说明发现，每个接口都有使用的场合，主要是为了区分在 Spring 内部在操作过程中对象的传递和转化过程时，对对象的数据访问所做的限制。例如 ListableBeanFactory 接口表示这些 Bean 是可列表化的，而 HierarchicalBeanFactory 表示的是这些 Bean 是有继承关系的，也就是每个 Bean 有可能有父 Bean。AutowireCapableBeanFactory 接口定义 Bean 的自动装配规则。这三个接口共同定义了 Bean 的集合、Bean 之间的关系、以及 Bean 行为。  
+&emsp; Spring Bean的创建是典型的工厂模式，这一系列的Bean工厂，也即IOC容器为开发者管理对象间的依赖关系提供了很多便利和基础服务。  
+&emsp; 其中BeanFactory作为最顶层的一个接口类，它定义了IOC容器的基本功能规范。BeanFactory有三个重要的子类：ListableBeanFactory、HierarchicalBeanFactory和AutowireCapableBeanFactory。它们最终的默认实现类是<font color = "red">DefaultListableBeanFactory</font>，它实现了所有的接口。  
+&emsp; 为什么定义这么多层次的接口？查阅这些接口的源码和说明发现，每个接口都有使用的场合，主要是为了区分在Spring内部在操作过程中对象的传递和转化过程时，对对象的数据访问所做的限制。例如ListableBeanFactory接口表示这些Bean是可列表化的，而HierarchicalBeanFactory表示的是这些Bean是有继承关系的，也就是每个Bean有可能有父Bean。AutowireCapableBeanFactory 接口定义 Bean 的自动装配规则。这三个接口共同定义了Bean的集合、Bean之间的关系、以及Bean行为。  
 &emsp; 最基本的IOC容器接口BeanFactory，来看一下它的源码：  
 
 ```java
@@ -183,7 +182,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 ### 1.3.2. refresh()方法  
 &emsp; SpringIOC容器对Bean配置资源的载入是从refresh()函数开始的，refresh()是一个模板方法，规定了IOC容器的启动流程，有些逻辑要交给其子类去实现。 **<font color = "red">Spring bean容器刷新的核心 12+1个步骤完成IoC容器的创建及初始化工作：</font>**  
 1. 刷新前的准备工作。  
-2. **<font color = "red">创建IoC容器（DefaultListableBeanFactory），加载和注册BeanDefinition对象。</font>**  
+2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>**  
 3. 对IoC容器进行一些预处理。  
 4. 允许在上下文子类中对bean工厂进行后处理。  
 5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理。</font>**  
@@ -291,13 +290,3 @@ public void refresh() throws BeansException, IllegalStateException {
 
 ### 1.3.3. 容器初始化详解（obtainFreshBeanFactory()方法）  
 &emsp; [容器初始化详解](/docs/SSM/Spring/容器初始化详解.md)  
-
-
-
-
-
-
-
-
-
-

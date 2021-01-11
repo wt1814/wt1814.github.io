@@ -66,11 +66,11 @@ protected final void refreshBeanFactory() throws BeansException {
     } 
 }
 ```
-&emsp; 在这个方法中，先判断BeanFactory是否存在，如果存在则先销毁beans并关闭 beanFactory，接着创建 DefaultListableBeanFactory，并调用loadBeanDefinitions(beanFactory)装载bean定义。  
+&emsp; 在这个方法中，先判断BeanFactory是否存在，如果存在则先销毁beans并关闭beanFactory，接着创建DefaultListableBeanFactory，并调用loadBeanDefinitions(beanFactory)装载bean定义。  
 
 ## 1.3. 载入配置路径  
-&emsp; AbstractRefreshableApplicationContext 中只定义了抽象的 loadBeanDefinitions 方法，容器真正调用的是其子类 AbstractXmlApplicationContext 对该方法的实现，AbstractXmlApplicationContext 的主要源码如下：  
-&emsp; loadBeanDefinitions() 方 法 同 样 是 抽 象 方 法 ， 是 由 其 子 类 实 现 的 ， 也 即 在 AbstractXmlApplicationContext 中。  
+&emsp; AbstractRefreshableApplicationContext中只定义了抽象的loadBeanDefinitions方法，容器真正调用的是其子类AbstractXmlApplicationContext对该方法的实现，AbstractXmlApplicationContext 的主要源码如下：  
+&emsp; loadBeanDefinitions()方法同样是抽象方法，是由其子类实现的，也即在AbstractXmlApplicationContext中。  
 
 ```java
 public abstract class AbstractXmlApplicationContext extends AbstractRefreshableConfigApplicationContext {
@@ -122,7 +122,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
     }
 }
 ```
-&emsp; 以 XmlBean 读取器的其中一种策略 XmlBeanDefinitionReader 为例。XmlBeanDefinitionReader 调 用其父类AbstractBeanDefinitionReader的 reader.loadBeanDefinitions()方法读取Bean配置资源。 由于我们使用 ClassPathXmlApplicationContext 作为例子分析，因此 getConfigResources 的返回值 为 null，因此程序执行 reader.loadBeanDefinitions(configLocations)分支。  
+&emsp; 以 XmlBean 读取器的其中一种策略 XmlBeanDefinitionReader 为例。XmlBeanDefinitionReader 调 用其父类AbstractBeanDefinitionReader的 reader.loadBeanDefinitions()方法读取Bean配置资源。 由于使用 ClassPathXmlApplicationContext 作为例子分析，因此 getConfigResources 的返回值 为 null，因此程序执行 reader.loadBeanDefinitions(configLocations)分支。  
 
 ## 1.4. 分配路径处理策略  
 &emsp; 在 XmlBeanDefinitionReader 的抽象父类 AbstractBeanDefinitionReader 中定义了载入过程。  
@@ -377,7 +377,7 @@ protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate d
 ......
 
 ## 1.10. 分配注册策略  
-&emsp; 让我们继续跟踪程序的执行顺序，接下来我们来分析DefaultBeanDefinitionDocumentReader对Bean定义转换的Document对象解析的流程中，在其 parseDefaultElement()方法中完成对Document对象的解析后得到封装BeanDefinition的BeanDefinitionHold对象，然后调用BeanDefinitionReaderUtils的 registerBeanDefinition()方法向IOC容器注册解析的Bean，BeanDefinitionReaderUtils的注册的源码如下：  
+&emsp; 继续跟踪程序的执行顺序，接下来分析DefaultBeanDefinitionDocumentReader对Bean定义转换的Document对象解析的流程中，在其 parseDefaultElement()方法中完成对Document对象的解析后得到封装BeanDefinition的BeanDefinitionHold对象，然后调用BeanDefinitionReaderUtils的 registerBeanDefinition()方法向IOC容器注册解析的Bean，BeanDefinitionReaderUtils的注册的源码如下：  
 
 ```java
 //将解析的 BeanDefinitionHold 注册到容器中
