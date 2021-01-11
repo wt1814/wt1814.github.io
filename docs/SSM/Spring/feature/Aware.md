@@ -8,6 +8,12 @@
 
 <!-- /TOC -->
 
+
+<!-- 
+ 【死磕 Spring】----- IOC 之 深入分析 Aware 接口 
+ https://mp.weixin.qq.com/s/jz2PU64RZ0-RJjjKfONSQA
+-->
+
 # 1. Aware接口，Bean对容器对感知  
 &emsp; **<font color = "lime">容器管理的Bean一般不需要了解容器的状态和直接使用容器，但在某些情况下，是需要在Bean中直接对IOC容器进行操作的，这时候，就需要在Bean中设定对容器的感知。Spring IOC容器也提供了该功能，它是通过特定的aware接口来完成的。</font>** <font color = "red">aware接口有以下这些：
 
@@ -192,6 +198,3 @@ public class BeanTest implements BeanNameAware{
 }
 ```
 &emsp; setBeanName()方法Spring会自动调用。setBeanName()会在Spring自身完成Bean配置之后，且在调用任何Bean生命周期回调（初始化或者销毁）方法之前就调用这个方法。换言之，在程序中使用BeanFactory.getBean(String beanName)之前，Bean的名字就已经设定好了。所以，程序中可以使用BeanName而不用担心它没有被初始化。  
-
- 
-

@@ -19,16 +19,21 @@ https://mp.weixin.qq.com/s/DC_PH_PXpbNgDQuGslTTTg
 
 ## 1.1. SpringBean生命周期的概要流程  
 <!-- 
+doCreateBean() 方法主要干三件事情：  
 
-Bean创建的三个阶段：  
-Spring在创建一个Bean时是分为三个步骤的  
+    实例化 bean 对象： createBeanInstance()  
 
-    实例化，可以理解为new一个对象
-    属性注入，可以理解为调用setter方法完成属性注入
-    初始化，你可以按照Spring的规则配置一些初始化的方法（例如，@PostConstruct注解）
+    属性注入： populateBean()  
 
-生命周期的概念：  
-Bean的生命周期指的就是在上面三个步骤中后置处理器BeanPostprocessor穿插执行的过程
+    初始化 bean 对象： initializeBean()  
+
+而初始化 bean 对象时也是干了三件事情：  
+
+    激活 Aware 方法  
+
+    后置处理器的应用  
+
+    激活自定义的 init 方法  
 
 -->
 &emsp; **Bean创建的三个阶段：**    

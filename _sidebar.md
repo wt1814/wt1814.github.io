@@ -155,10 +155,10 @@
     * [容器相关特性](/docs/SSM/Spring/feature/ContainerFeature.md)  
         * [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
         * [可二次开发常用接口](/docs/SSM/Spring/feature/SecendDeve.md)  
+        * [事件](/docs/SSM/Spring/feature/Event.md)  
         * [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
         * [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
         * [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
-        * [事件](/docs/SSM/Spring/feature/Event.md)  
         * [循环依赖](/docs/SSM/Spring/feature/CircularDepend.md)  
         * [lazy-init](/docs/SSM/Spring/feature/lazy-init.md)  
 

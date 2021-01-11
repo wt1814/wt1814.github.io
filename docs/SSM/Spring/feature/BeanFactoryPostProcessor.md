@@ -9,7 +9,14 @@
 
 <!-- /TOC -->
 
+
+
 # 1. BeanFactoryPostProcessor和BeanPostProcessor  
+<!-- 
+【死磕 Spring】----- IOC 之 深入分析 BeanPostProcessor 
+https://mp.weixin.qq.com/s/5gSIrm6-zE2aAYt0B8LtLA
+-->
+
 ## 1.1. BeanFactoryPostProcessor接口  
 &emsp; 该接口的定义如下：  
 
@@ -65,14 +72,8 @@ public interface BeanPostProcessor {
 
 &emsp; 注意：BeanPostProcessor是在spring容器加载了bean的定义文件并且实例化bean之后执行的。BeanPostProcessor的执行顺序是在BeanFactoryPostProcessor之后。  
 
-&emsp; **BeanFactory和ApplicationContext加载BeanPostProcessor：**  
-&emsp; BeanFactory和ApplicationContext对待bean后置处理器稍有不同。ApplicationContext会自动检测在配置文件中实现了BeanPostProcessor接口的所有bean，并把它们注册为后置处理器，然后在容器创建bean的适当时候调用它，因此部署一个后置处理器同部署其他的bean并没有什么区别。而使用BeanFactory实现的时候，bean 后置处理器必须通过代码显式地去注册，在IoC容器继承体系中的ConfigurableBeanFactory接口中定义了注册方法  
 
-    void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
-
-&emsp; 另外，不要将BeanPostProcessor标记为延迟初始化。因为如果这样做，Spring容器将不会注册它们，自定义逻辑也就无法得到应用。假如在<beans/\>元素的定义中使用了'default-lazy-init'属性，请确信各个BeanPostProcessor标记为'lazy-init="false"'。  
-
-&emsp; **<font color = "red">Spring中有内置的一些BeanPostProcessor实现类，</font>**例如：  
+&emsp; **<font color = "red">Spring中有内置的一些BeanPostProcessor实现类，</font>** 例如：  
 
 * org.springframework.context.annotation.CommonAnnotationBeanPostProcessor：支持@Resource注解的注入  
 * org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor：支持@Required注解的注入  
@@ -83,6 +84,14 @@ public interface BeanPostProcessor {
 &emsp; 这些注解类的BeanPostProcessor，在spring配置文件中，可以通过这样的配置 <context:component-scan base-package="*.*" /\> ，自动进行注册。（spring通过ComponentScanBeanDefinitionParser类来解析该标签）  
 
 &emsp; 如果自定义了多个的BeanPostProcessor的实现类，通过实现Ordered接口，设置order属性，可以按照顺序执行实现类的方法。  
+
+
+&emsp; **BeanFactory和ApplicationContext加载BeanPostProcessor：**  
+&emsp; BeanFactory和ApplicationContext对待bean后置处理器稍有不同。ApplicationContext会自动检测在配置文件中实现了BeanPostProcessor接口的所有bean，并把它们注册为后置处理器，然后在容器创建bean的适当时候调用它，因此部署一个后置处理器同部署其他的bean并没有什么区别。而使用BeanFactory实现的时候，bean 后置处理器必须通过代码显式地去注册，在IoC容器继承体系中的ConfigurableBeanFactory接口中定义了注册方法  
+
+    void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
+
+&emsp; 另外，不要将BeanPostProcessor标记为延迟初始化。因为如果这样做，Spring容器将不会注册它们，自定义逻辑也就无法得到应用。假如在<beans/\>元素的定义中使用了'default-lazy-init'属性，请确信各个BeanPostProcessor标记为'lazy-init="false"'。  
 
 ### 1.2.1. InstantiationAwareBeanPostProcessor  
 &emsp; InstantiationAwareBeanPostProcessor是BeanPostProcessor的子接口，可以在Bean生命周期的另外两个时期提供扩展的回调接口，即实例化Bean之前（调用postProcessBeforeInstantiation方法）和实例化Bean之后（调用postProcessAfterInstantiation方法）。  

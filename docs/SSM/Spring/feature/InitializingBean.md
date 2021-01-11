@@ -8,6 +8,12 @@
 <!-- /TOC -->
 
 # 1. InitializingBean接口、DisposableBean接口  
+<!-- 
+
+【死磕 Spring】----- IOC 之 深入分析 InitializingBean 和 init-method 
+https://mp.weixin.qq.com/s/gMWba4Z2Aal0AnKcCGkBFg
+-->
+
 ## 1.1. InitializingBean接口  
 &emsp; <font color = "lime">当需要在bean的全部属性设置成功后做些特殊的处理，</font>可以让<font color = "red">该bean实现InitializingBean接口，效果等同于bean的init-method属性的使用或者@PostContsuct注解的使用，</font>它只包括afterPropertiesSet方法，凡是继承该接口的类，在初始化bean的时候都会执行该方法。  
 
