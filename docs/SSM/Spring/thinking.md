@@ -31,7 +31,7 @@
     13. 重置公共的一些缓存数据。  
 
 ---
-&emsp;  Spring提供的扩展接口有aware接口、后置处理器、InitializingBean和DisposableBean、事件机制。这些可扩展的接口主要分两类，一类是针对单个Bean、另一类是针对容器。  
+&emsp;  Spring提供的扩展接口有aware接口、后置处理器、InitializingBean和DisposableBean、事件机制。**这些可扩展的接口主要分两类，一类是针对单个Bean、另一类是针对容器。**s  
 
 * 针对单个Bean，BeanNameAware、BeanPostProcessor、InitializingBean和DisposableBean。
 * 针对容器，ApplicationContextAware、BeanFactoryPostProcessor、Spring提供的5种标准事件机制。  
@@ -41,7 +41,7 @@
 
 * Aware接口提供了Bean对容器对感知  
 &emsp;  容器管理的Bean一般不需要了解容器的状态和直接使用容器，但在某些情况下，是需要在Bean中直接对IOC容器进行操作的，这时候，就需要在Bean中设定对容器的感知。Spring IOC容器也提供了该功能，它是通过特定的aware接口来完成的。   
-* BeanPostProcessor
+* BeanPostProcessor  
 &emsp;  BeanPostProcessor，可以在spring容器实例化bean之后，在执行bean的初始化方法前后，添加一些自己的处理逻辑。   
 &emsp;  实现BeanFactoryPostProcessor接口，可以在spring的bean创建之前，修改bean的定义属性。
 * InitializingBean和DisposableBean
@@ -53,10 +53,10 @@
 1. 实例化 bean 对象： createBeanInstance()  
 2. 属性注入： populateBean()  
 3. 初始化 bean 对象： initializeBean()  
-&emsp;  而初始化 bean 对象时也是干了三件事情：  
-1. 激活 Aware 方法  
-2. 后置处理器的应用  
-3. 激活自定义的 init 方法
+&emsp; 而初始化 bean 对象时也是干了三件事情：  
+    1. 激活 Aware 方法  
+    2. 后置处理器的应用  
+    3. 激活自定义的 init 方法
 
 ---
 
