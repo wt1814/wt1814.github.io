@@ -11,12 +11,18 @@
 <!-- /TOC -->
 
 <!-- 
+什么是循环依赖？
+循环依赖怎么解决？
+Spring中为什么要使用三级缓存来解决循环依赖问题？二级缓存能不能解决循环依赖问题？
+
 https://mp.weixin.qq.com/s/p01mrjBwstK74d3D3181og
 
 循环依赖
 https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
  【死磕 Spring】—– IOC 之循环依赖处理 
 https://mp.weixin.qq.com/s/cxSSbbfFUNDUi9_fLfzSTw
+
+https://mp.weixin.qq.com/s/YQRO2ZTn4T6A-iPUfs5ROg
 
 /**
  * 一级缓存，用于存放已经初始化完成的Spring Bean（经历了完整的Spring Bean初始化生命周期 ）

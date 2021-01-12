@@ -13,6 +13,11 @@
 
 <!-- /TOC -->
 
+<!-- 
+ 我竟然被“双亲委派”给虐了 
+ https://mp.weixin.qq.com/s/Q0MqcvbeI7gAcJH5ZaQWgA
+-->
+
 # 1. 类加载的方式：类加载器  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-6.png)  
 

@@ -18,12 +18,14 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486105&idx=2&sn=f4b473
 https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f8764d807692f5ae7221ac88d69b8&chksm=ec5053bbdb27daaddd7a5f9d4e3737d584c13cf1f861d5b82aec443390fcc327ff0f6fe8bdef&scene=21#wechat_redirect
 
 
- 一网打尽Redis Lua脚本并发原子组合操作 
- https://mp.weixin.qq.com/s/k0T6M1_gUvnBmviM0GGFKg
+一网打尽Redis Lua脚本并发原子组合操作 
+https://mp.weixin.qq.com/s/k0T6M1_gUvnBmviM0GGFKg
 
 
- 第三方jar没有封装的命令我们该怎么执行？ 
- https://mp.weixin.qq.com/s/qC_tfPjaENmE5djcjP7MAw
+第三方jar没有封装的命令我们该怎么执行？ 
+https://mp.weixin.qq.com/s/qC_tfPjaENmE5djcjP7MAw
+Redis 消息队列的三种方案（List、Streams、Pub/Sub） 
+https://mp.weixin.qq.com/s/_q0bI62iFrG8h-gZ-bCvNQ
 -->
 
 ## 1.1. 发布订阅简介  

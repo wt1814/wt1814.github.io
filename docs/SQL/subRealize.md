@@ -13,6 +13,11 @@
 
 <!-- /TOC -->
 
+<!-- 
+ShardingSphere内核原理 
+https://mp.weixin.qq.com/s/hPJHCKcptRYvKQPZRz6Tdg
+-->
+
 # 1. 数据库分布式实现  
 
 ## 1.1. 数据库中间件  
