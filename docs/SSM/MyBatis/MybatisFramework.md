@@ -1,16 +1,16 @@
 <!-- TOC -->
 
-- [Mybatis架构](#mybatis架构)
-    - [Mybatis工作流程概述](#mybatis工作流程概述)
-    - [MyBatis架构分层与模块划分](#mybatis架构分层与模块划分)
-        - [API接口层](#api接口层)
-        - [核心处理层](#核心处理层)
-        - [基础支持层](#基础支持层)
+- [1. Mybatis架构](#1-mybatis架构)
+    - [1.1. Mybatis工作流程概述](#11-mybatis工作流程概述)
+    - [1.2. MyBatis架构分层与模块划分](#12-mybatis架构分层与模块划分)
+        - [1.2.1. API接口层](#121-api接口层)
+        - [1.2.2. 核心处理层](#122-核心处理层)
+        - [1.2.3. 基础支持层](#123-基础支持层)
 
 <!-- /TOC -->
 
-# Mybatis架构
-## Mybatis工作流程概述  
+# 1. Mybatis架构
+## 1.1. Mybatis工作流程概述  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-13.png)  
 &emsp; Mybatis工作流程概述：  
 1. 读取核心配置文件并返回InputStream流对象。
@@ -20,7 +20,7 @@
 5. 对执行结果进行二次封装。
 6. 提交与事务。
 
-## MyBatis架构分层与模块划分  
+## 1.2. MyBatis架构分层与模块划分  
 &emsp; 在 MyBatis 的主要工作流程里，不同的功能是由很多不同的类协作完成的，它们分布在MyBatis jar包的不同的 package里面。  
 &emsp; MyBatis(基于3.5.1)jar 包结构（21 个包）：  
 
@@ -58,7 +58,7 @@
 * 核心处理层：负责具体的SQL查找、SQL解析、SQL执行和执行结果映射处理等。它主要的目的是根据调用的请求完成一次数据库操作。  
 * 基础支持层：负责最基础的功能支撑，包括连接管理、事务管理、配置加载和缓存处理，这些都是共用的东西，将它们抽取出来作为最基础的组件。为上层的数据处理层提供最基础的支撑。  
 
-### API接口层  
+### 1.2.1. API接口层  
 &emsp; 在不与Spring 集成的情况下，使用 MyBatis 执行数据库的操作主要如下：  
 
 ```java
@@ -70,7 +70,7 @@ sqlSession = factory.openSession();
 &emsp; 其中的SqlSessionFactory，SqlSession是 MyBatis 接口的核心类。SqlSession是上层应用和 MyBatis 打交道的桥梁，SqlSession 上定义了非常多的对数据库的操作方法。  
 &emsp; 接口层在接收到调用请求的时候，会调用核心处理层的相应模块来完成具体的数据库操作。  
 
-### 核心处理层  
+### 1.2.2. 核心处理层  
 &emsp; 核心处理层功能如下：  
 
 * 配置解析  
@@ -109,7 +109,7 @@ Configuration:  MyBatis 所有的配置信息都维持在 Configuration 对象�
 
 &emsp; <font color= "red">插件也属于核心层，这是由它的工作方式和拦截的对象决定的。</font>   
 
-### 基础支持层  
+### 1.2.3. 基础支持层  
 &emsp; 最后一个就是基础支持层。基础支持层主要是一些抽取出来的通用的功能（实现复用），用来支持核心处理层的功能。比如数据源、缓存、日志、xml 解析、反射、IO、事务等等这些功能。  
 
 * 反射模块  
