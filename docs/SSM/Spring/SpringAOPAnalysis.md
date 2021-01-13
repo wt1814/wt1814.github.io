@@ -17,15 +17,15 @@
 
 <!-- /TOC -->
 
+&emsp; <font color = "lime">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
+
 # 1. SpringAOP解析
 <!-- 
 
  你知道Spring是怎么将AOP应用到Bean的生命周期中的吗? 
  https://mp.weixin.qq.com/s?__biz=MzU5ODg2Njk4OA==&mid=2247484456&idx=1&sn=395189e7139ba306db901f1cadc7b08c&chksm=febce96bc9cb607df38f916490b5d81a57988e40b9380e79c1169a8b14d5a53f13e18423c7fa&scene=21#wechat_redirect
 -->
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/aop-7.png)  
-
 <!-- &emsp; Spring AOP的功能是什么？根据配置来生成代理类，拦截指定的方法，将指定的advice织入。  -->
 1. <font color = "red">Spring AOP 的触发时机是什么时候？</font>  
 2. <font color = "red">Spring AOP 是如何解析配置的Aspect，生成 Advisors 链的？</font>  
@@ -140,7 +140,6 @@ public interface BeanPostProcessor {
 1. Step1 创建实例对象createBeanInstance()；
 2. Step2 属性装配populateBean()，得到一个真正的实现类；
 3. <font color = "lime">在Step3 initializeBean()中，IoC容器会处理Bean初始化之后的各种回调事件</font>，然后返回一个“可能经过加工”的bean对象。其中就包括了BeanPostProcessor 的 postProcessBeforeInitialization 回调 和postProcessAfterInitialization 回调。  
-
 &emsp; **而<font color = "lime">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！
 
 ## 1.3. 代理类的生成流程  
@@ -208,15 +207,14 @@ protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) 
     }
 }
 ```
-&emsp; 这个方法里有两个核心点：  
-1. 获取当前的Spring Bean 适配的 advisors  
+&emsp; **<font color = "lime">这个方法里有两个核心点：</font>**  
+1. 获取当前的Spring Bean 适配的advisors  
 2. 创建代理类  
 
 ### 1.3.1. 获取对应Bean适配的Advisors链  
-
-&emsp; 获取对应 Bean 适配的 Advisors 链，分为两步。  
-1. 获取容器所有的 advisors 作为候选，即解析Spring 容器中所有 Aspect 类中的 advice 方法，包装成 advisor；  
-2. 从候选的 Advisors 中筛选出适配当前 Bean的 Advisors 链； 
+&emsp; 获取对应Bean适配的Advisors链，分为两步。  
+1. 获取容器所有的advisors作为候选，即解析Spring容器中所有Aspect类中的advice方法，包装成advisor；  
+2. 从候选的Advisors中筛选出适配当前Bean的Advisors链； 
 
 #### 1.3.1.1. 获取候选的advisors  
 &emsp; AspectJAwareAdvisorAutoProxyCreator#shouldSkip(..)  
@@ -461,15 +459,15 @@ protected Object createProxy(Class<?> beanClass, String beanName, Object[] speci
 5. Spring中为子类提供了定制的函数customizeProxyFactory，子类可以在此函数中6. 对ProxyFactory的进一步封装
 7. ★★★ **获取代理操作**
 
-```java
-ProxyFactory#getProxy(..)
-public Object getProxy(ClassLoader classLoader) {
-    return createAopProxy().getProxy(classLoader);
-}
-```
-&emsp; 这里要分为两步：
-1. 创建AopProxy
-2. 获取代理类
+    ```java
+    ProxyFactory#getProxy(..)
+    public Object getProxy(ClassLoader classLoader) {
+        return createAopProxy().getProxy(classLoader);
+    }
+    ```
+    &emsp; 这里要分为两步：
+    1. 创建AopProxy
+    2. 获取代理类
 
 #### 1.3.2.1. 创建 AopProxy  
 &emsp; ProxyCreatorSupport#AopProxy()  

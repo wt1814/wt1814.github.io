@@ -431,6 +431,3 @@ protected ModelAndView handleInternal(HttpServletRequest request, HttpServletRes
 &emsp; 找到处理 Request 的 Controller 中的方法后，会解析该方法上的参数，并反射调用该方法。在RequestMappingHandlerAdapter#invokeHandlerMethod()方法中，invocableMethod.invokeAndHandle()最终要实现的目的就是：完成 Request 中的参 数和方法参数上数据的绑定。  
 
 &emsp; 到这里，方法的参数值列表也获取到了，就可以直接进行方法的调用了。整个请求过程中最复杂的一步就是在这里了。到这里整个请求处理过程的关键步骤都已了解。  
-
-
-
