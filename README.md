@@ -233,6 +233,7 @@
 &emsp; [PageHelper](/docs/SSM/MyBatis/PageHelper.md)  
 &emsp; [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
 [MyBatis解析](/docs/SSM/MyBatis/MybatisAnalysis.md)  
+&emsp; [MyBatis架构](/docs/SSM/MyBatis/MybatisFramework.md)  
 &emsp; [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
 &emsp; [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
 &emsp; [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
