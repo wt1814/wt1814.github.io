@@ -229,8 +229,7 @@
 
 ### MyBatis  
 [MyBatis教程](/docs/SSM/MyBatis/Mybatis.md)  
-&emsp; [流式查询](/docs/SSM/MyBatis/streamingQuery.md)  
-&emsp; [MyBatis test语句大坑](/docs/SSM/MyBatis/test.md)  
+&emsp; [MyBatis使用](/docs/SSM/MyBatis/MybatisSenior.md)  
 &emsp; [PageHelper](/docs/SSM/MyBatis/PageHelper.md)  
 &emsp; [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
 [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  

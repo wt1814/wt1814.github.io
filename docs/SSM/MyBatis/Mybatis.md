@@ -51,7 +51,6 @@ https://mp.weixin.qq.com/s/JkdszV7Oy9E9cITNebY2NA
 # 1. MyBatis使用教程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-29.png)  
 
-
 ## 1.1. #和$的区别  
 ### 1.1.1. 取值引用  
 #### 1.1.1.1. #{}方式  
@@ -211,7 +210,6 @@ Private Userxxx SelectUser(){
 ```
 
 #### 1.2.1.3. 映射器注解@Param  
-
 &emsp; Dao层的函数方法  
 
 ```java
@@ -267,7 +265,6 @@ public List<user> getUserInformation(@Param("user") User user);
 #### 1.2.1.4. 标签paramType  
 &emsp; @Param与xml配置paramType的区别：@param适用于少量不同的参数。Xml配置paramType适用于list，多个复杂参数。    
 
-
 ### 1.2.2. resultType和resultMap  
 &emsp; MyBatis中在查询进行select映射的时候，返回结果集使用resultType或resultMap。resultType是直接表示返回类型的，而resultMap则是对xml文件中ResultMap的引用。  
 &emsp; 当实体类中的属性名和表中的字段名不一样，怎么办？  
@@ -278,7 +275,6 @@ public List<user> getUserInformation(@Param("user") User user);
     select order_id id, order_no orderno ,order_price price form orders where order_id=#{id};
 </select>
 ```
-
 &emsp; 第2种：通过来映射字段名和实体类属性名的一一对应的关系。  
 
 ```xml
@@ -370,8 +366,7 @@ delete form user where id in (1,2,3,4,5)
 &emsp; 所以，不管是多参数还是单参数的list,array类型，都可以封装为map进行传递。如果传递的是一个List，则mybatis会封装为一个list为key，list值为object的map，如果是array，则封装成一个array为key，array的值为object的map，如果自己封装呢，则colloection里放的是自己封装的map里的key值。  
 
 ```java
-//mapper中我们要为这个方法传递的是一个容器,将容器中的元素一个一个的
-//拼接到xml的方法中就要使用这个forEach这个标签了
+//mapper中要为这个方法传递的是一个容器，将容器中的元素一个一个的拼接到xml的方法中就要使用这个forEach这个标签了
 public List<Entity> queryById(List<String> userids);
 
 //对应的xml中如下
@@ -407,15 +402,14 @@ public List<Entity> queryById(List<String> userids);
 ```
 
 #### 1.3.2.3. choose标签的使用   
-&emsp; choose when otherwise 标签实现if else的逻辑。一个choose标签至少有一个when，最多一个otherwise。    
+&emsp; choose when otherwise标签实现if else的逻辑。一个choose标签至少有一个when，最多一个otherwise。    
 &emsp; if是与(and)的关系，而choose是或（or）的关系。  
-
 
 ### 1.3.3. 格式化输出  
 &emsp; 三种格式化输出：where、set、trim。  
 
 #### 1.3.3.1. Trim标签   
-&emsp; trim是更灵活的去处多余关键字的标签，他可以实践where和set的效果。   
+&emsp; trim是更灵活的去处多余关键字的标签，可以实践where和set的效果。   
 &emsp; trim标记是一个格式化的标记，是更灵活的去处多余关键字的标签。[在 WHERE条件中使用if标签] SQL的时候，where 1=1这个条件不希望存在。可以完成set或者是where标记的功能（where、set后的判断条件全为是否为null状态，没有一个固定的判断条件）。  
 
 &emsp; trim的几个属性：  
@@ -545,7 +539,6 @@ System.out.println("新增学生ID: " + entity.getStudentId());
     classpath*:**/*-Beans.xml
     说明：“classpath*:”表示加载多个资源文件，即使重名也会被加载，比如app1.jar中有一个config-Beans.xml，app2.jar中也有一个config-Beans.xml，这个时候，两个都会加载。
 
-
 ----
 
 ## 1.5. Intellij IDEA中Mybatis Mapper自动注入警告的解决方案   
@@ -556,5 +549,3 @@ System.out.println("新增学生ID: " + entity.getStudentId());
 
 ## 1.7. MyBatis之分页插件  
 ...
-
-

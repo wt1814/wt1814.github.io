@@ -25,7 +25,6 @@ https://mp.weixin.qq.com/s/RpA3RvYv4I4zYSzBmZaDiA
 # 1. Spring事务   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/aop-8.png)  
 
-
 ## 1.1. Spring事务简介  
 &emsp; 事务分为业务事务和系统事务。业务事务也就是业务逻辑上操作的一致性，系统事务指真正的数据库事务。  
 &emsp; Spring事务为业务逻辑进行事务管理，保证业务逻辑上数据的原子性。事务根据项目性质来细分，事务可以设置到三个层面(dao层、service层和web层)。  
