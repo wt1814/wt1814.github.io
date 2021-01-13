@@ -172,12 +172,12 @@
 * MyBatis  
     * [MyBatis教程](/docs/SSM/MyBatis/Mybatis.md)  
     * [MyBatis使用](/docs/SSM/MyBatis/MybatisSenior.md)  
-    * [PageHelper](/docs/SSM/MyBatis/PageHelper.md)  
+    * [PageHelper](/docs/SSM/MyBatis/PageHelper.md)    
+    * [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
+    * [MyBatis解析](/docs/SSM/MyBatis/MybatisAnalysis.md)  
     * [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
     * [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
     * [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
-    * [PageHelper](/docs/SSM/MyBatis/PageHelper.md)    
-    * [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
     * [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
 * SpringBoot  
     * [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  

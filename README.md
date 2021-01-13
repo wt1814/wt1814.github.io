@@ -232,10 +232,11 @@
 &emsp; [MyBatis使用](/docs/SSM/MyBatis/MybatisSenior.md)  
 &emsp; [PageHelper](/docs/SSM/MyBatis/PageHelper.md)  
 &emsp; [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
-[MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
-[MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
-[MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
-[MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
+[MyBatis解析](/docs/SSM/MyBatis/MybatisAnalysis.md)  
+&emsp; [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
+&emsp; [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
+&emsp; [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
+&emsp; [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
 
 ----
 
