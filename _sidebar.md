@@ -161,7 +161,7 @@
         * [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
         * [循环依赖](/docs/SSM/Spring/feature/CircularDepend.md)  
         * [lazy-init](/docs/SSM/Spring/feature/lazy-init.md)  
-
+    * [AOP基本概念](/docs/SSM/Spring/AOP.md)  
     * [SpringAOP教程](/docs/SSM/Spring/SpringAOP.md)  
     * [SpringAOP解析](/docs/SSM/Spring/SpringAOPAnalysis.md)  
     * [Spring事务](/docs/SSM/Spring/SpringTransaction.md)  
