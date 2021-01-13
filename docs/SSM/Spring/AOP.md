@@ -1,0 +1,74 @@
+
+
+
+# AOP
+## AOP基本概念  
+<!-- 
+关于Spring AOP，除了动态代理、CGLIB，你还知道什么？
+https://mp.weixin.qq.com/s/ZC9WMbOZJ6V3RkaFm6UZYQ
+-->
+&emsp; 通知定义了切面要发生的“故事”和时间；切入点定义了“故事”发生的地点；通知和切入点共同组成了切面：时间、地点和要发生的“故事”。
+1. 连接点（join point）：连接点是应用程序执行过程中能够插入切面的地点。这些点可以是方法被调用时、异常抛出时、甚至字段被编辑时。
+2. 切点（pointcut）：如果说通知定义了切面的"什么"和"何时"，那么切入点就定义了"何地"。切入点是连接点的集合。
+3. 通知（Advice）：通知定义了切面是什么以及何时使用。除了描述切面要完成的工作，通知还解决了何时执行这个工作的问题。应该在一个方法被调用之前、之后或者抛出异常时。  
+
+        通知类型：
+        前置通知（Before advice），方法开始之前执行一段代码。
+        异常通知（After throwing advice）：在方法抛出异常退出时执行的通知。可以访问到异常对象，可以指定在出现特定异常时在执行通知代码。
+        最终通知（After (finally) advice）：当某连接点退出的时候执行的通知（不论是正常返回还是异常退出）。
+        后置通知（After returning advice），方法执行之后执行一段代码，无论该方法是否出现异常。
+        环绕通知（Around Advice）（优先级最高）：包围一个连接点的通知，如方法调用。这是最强大的一种通知类型。环绕通知可以在方法调用前后完成自定义的行为。也会选择是否继续执行连接点或直接返回自己的返回值或抛出异常来结束执行。环绕通知是最常用的通知类型。和AspectJ一样，Spring提供所有类型的通知，推荐使用尽可能简单的通知类型来实现需要的功能。
+        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/aop-10.png)  
+4. 切面（aspect）：切面是要实现的交叉功能。就是通知和切入点的结合。通知和切入点共同定义了关于切面的全部内容：它的功能、在何时和何地完成功能。  
+&emsp; Spring中的切面类型：  
+    * Advisor：都是有一个切点和一个通知组合。Spring中传统切面。  
+    * Aspect：多个切点和多个通知组合。  
+    
+    &emsp; 多个切面的情况下，可以通过@Order指定先后顺序，数字越小，优先级越高。  
+5. 引入（Intrduction）：**引入允许为已经存在的类添加新方法和属性**。比如一个Auditable通知类，记录对象在最后一次被修改时的状态。只需要一个setLastModified(Date)方法，和一个实例变量来保存这个状态。这个新方法和实例变量就可以被引入到现有的类，从而在不修改它们的情况下，让他们具有新的行为和状态。  
+6. 织入（weaving）：织入是将切面应用到目标对象从而创建一个新的代理对象的过程。在目标对象的生命周期里有多个机会发生织入过程。比如编译时、类加载时、运行时。  
+
+        Spring AOP 中织入的三种时期
+        编译期: 切面在目标类编译时被织入，这种方式需要特殊的编译器。AspectJ 的织入编译器就是以这种方式织入切面的。
+        类加载期: 切面在目标类加载到 JVM 时被织入，这种方式需要特殊的类加载器( ClassLoader )，它可以在目标类引入应用之前增强目标类的字节码。
+        运行期: 切面在应用运行的某个时期被织入。一般情况下，在织入切面时，AOP容器会为目标对象动态创建一个代理对象，Spring AOP 采用的就是这种织入方式。
+
+## 动态代理  
+<!-- 
+~~
+https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
+-->
+&emsp; 常用的代理有通过接口的[JDK动态代理](/docs/java/Design/6.proxy.md)和通过继承类的CGLIB动态代理。  
+1. JDK动态代理  
+&emsp; <font color = "red">利用拦截器(拦截器必须实现InvocationHanlder)加上反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理。</font>  
+
+2. CGLIB动态代理  
+&emsp; <font color = "red">利用ASM开源包，对代理对象类的class文件加载进来，通过修改其字节码生成子类来处理。</font>  
+&emsp; 使用字节码处理框架ASM，其原理是通过字节码技术为一个类创建子类，并在子类中采用方法拦截的技术拦截所有父类方法的调用，顺势织入横切逻辑。  
+&emsp; CGLib创建的动态代理对象性能比JDK创建的动态代理对象的性能高不少，但是CGLib在创建代理对象时所花费的时间却比JDK多得多，所以对于单例的对象，因为无需频繁创建对象，用CGLib合适，反之，使用JDK方式要更为合适一些。同时，由于CGLib由于是采用动态创建子类的方法，对于final方法，无法进行代理。  
+
+
+5. JDK动态代理和CGLIB字节码生成的区别？   
+    1. JDK动态代理只能对实现了接口的类生成代理，而不能针对类。  
+    2. CGLIB是针对类实现代理，主要是对指定的类生成一个子类，覆盖其中的方法，并覆盖其中方法实现增强，但是因为采用的是继承，所以该类或方法最好不要声明成final，对于final类或方法，是无法继承的。  
+    
+3. 何时使用JDK还是CGLIB？  
+    1. 如果目标对象实现了接口，默认情况下会采用JDK的动态代理实现AOP。  
+    2. 如果目标对象实现了接口，可以强制使用CGLIB实现AOP。  
+    3. 如果目标对象没有实现了接口，必须采用CGLIB库，Spring会自动在JDK动态代理和CGLIB之间转换。  
+
+7. Spring如何选择用JDK还是CGLIB？  
+    1. 当Bean实现接口时，Spring就会用JDK的动态代理。  
+    2. 当Bean没有实现接口时，Spring使用CGlib是实现。  
+    3. 可以强制使用CGlib（在spring配置中加入<aop:aspectj-autoproxy proxy-target-class="true"/>）。  
+
+4. 如何强制使用CGLIB实现AOP？  
+    1. 添加CGLIB库(aspectjrt-xxx.jar、aspectjweaver-xxx.jar、cglib-nodep-xxx.jar)  
+    2. 在Spring配置文件中加入<aop:aspectj-autoproxy proxy-target-class="true"/>  
+
+6. CGlib比JDK快？  
+    1. 使用CGLib实现动态代理，<font color = "red">CGLib底层采用ASM字节码生成框架，使用字节码技术生成代理类</font>，在jdk6之前比使用Java反射效率要高。唯一需要注意的是，CGLib不能对声明为final的方法进行代理，因为CGLib原理是动态生成被代理类的子类。  
+    2. 在jdk6、jdk7、jdk8逐步对JDK动态代理优化之后，在调用次数较少的情况下，JDK代理效率高于CGLIB代理效率，只有当进行大量调用的时候，jdk6和jdk7比CGLIB代理效率低一点，但是到jdk8的时候，jdk代理效率高于CGLIB代理，总之，每一次jdk版本升级，jdk代理效率都得到提升，而CGLIB代理消息确有点跟不上步伐。  
+ 
+
+

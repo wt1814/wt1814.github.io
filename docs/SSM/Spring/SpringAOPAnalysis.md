@@ -2,87 +2,27 @@
 <!-- TOC -->
 
 - [1. SpringAOP解析](#1-springaop解析)
-    - [1.1. 前言：JDK动态代理和CGLIB动态代理](#11-前言jdk动态代理和cglib动态代理)
-    - [1.2. 开启AOP自动代理解析](#12-开启aop自动代理解析)
-    - [1.3. 自动代理的触发时机](#13-自动代理的触发时机)
-    - [1.4. 代理类的生成流程](#14-代理类的生成流程)
-        - [1.4.1. 获取对应Bean适配的Advisors链](#141-获取对应bean适配的advisors链)
-            - [1.4.1.1. 获取候选的advisors](#1411-获取候选的advisors)
-            - [1.4.1.2. 筛选出适配当前类的 Advisors](#1412-筛选出适配当前类的-advisors)
-            - [1.4.1.3. 小结](#1413-小结)
-        - [1.4.2. 创建代理类](#142-创建代理类)
-            - [1.4.2.1. 创建 AopProxy](#1421-创建-aopproxy)
-            - [1.4.2.2. 创建代理类](#1422-创建代理类)
-                - [1.4.2.2.1. JDK动态代理](#14221-jdk动态代理)
-                - [1.4.2.2.2. Cglib代理](#14222-cglib代理)
+    - [1.1. 开启AOP自动代理解析](#11-开启aop自动代理解析)
+    - [1.2. 自动代理的触发时机](#12-自动代理的触发时机)
+    - [1.3. 代理类的生成流程](#13-代理类的生成流程)
+        - [1.3.1. 获取对应Bean适配的Advisors链](#131-获取对应bean适配的advisors链)
+            - [1.3.1.1. 获取候选的advisors](#1311-获取候选的advisors)
+            - [1.3.1.2. 筛选出适配当前类的 Advisors](#1312-筛选出适配当前类的-advisors)
+            - [1.3.1.3. 小结](#1313-小结)
+        - [1.3.2. 创建代理类](#132-创建代理类)
+            - [1.3.2.1. 创建 AopProxy](#1321-创建-aopproxy)
+            - [1.3.2.2. 创建代理类](#1322-创建代理类)
+                - [1.3.2.2.1. JDK动态代理](#13221-jdk动态代理)
+                - [1.3.2.2.2. Cglib代理](#13222-cglib代理)
 
 <!-- /TOC -->
 
 # 1. SpringAOP解析
-
 <!-- 
 
  你知道Spring是怎么将AOP应用到Bean的生命周期中的吗? 
  https://mp.weixin.qq.com/s?__biz=MzU5ODg2Njk4OA==&mid=2247484456&idx=1&sn=395189e7139ba306db901f1cadc7b08c&chksm=febce96bc9cb607df38f916490b5d81a57988e40b9380e79c1169a8b14d5a53f13e18423c7fa&scene=21#wechat_redirect
-
-6.7AOP 有哪些实现方式？
-
-实现 AOP 的技术， 主要分为两大类：
-静态代理
-
-指使用 AOP 框架提供的命令进行编译，从而在编译阶段就可生成 AOP 代理类， 因此也称为编译时增强；
-
-编译时编织（特殊编译器实现）
-类加载时编织（特殊的类加载器实现）。
-
-动态代理
-
-在运行时在内存中“ 临时” 生成 AOP 动态代理类， 因此也被称为运行时增强。
-
-JDK 动态代理
-CGLIB
 -->
-
-## 1.1. 前言：JDK动态代理和CGLIB动态代理  
-<!-- 
-~~
-https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
--->
-&emsp; 常用的代理有通过接口的[JDK动态代理](/docs/java/Design/6.proxy.md)和通过继承类的CGLIB动态代理。  
-1. JDK动态代理  
-&emsp; <font color = "red">利用拦截器(拦截器必须实现InvocationHanlder)加上反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理。</font>  
-
-2. CGLIB动态代理  
-&emsp; <font color = "red">利用ASM开源包，对代理对象类的class文件加载进来，通过修改其字节码生成子类来处理。</font>  
-
-使用字节码处理框架ASM，其原理是通过字节码技术为一个类创建子类，并在子类中采用方法拦截的技术拦截所有父类方法的调用，顺势织入横切逻辑。  
-CGLib创建的动态代理对象性能比JDK创建的动态代理对象的性能高不少，但是CGLib在创建代理对象时所花费的时间却比JDK多得多，所以对于单例的对象，因为无需频繁创建对象，用CGLib合适，反之，使用JDK方式要更为合适一些。同时，由于CGLib由于是采用动态创建子类的方法，对于final方法，无法进行代理。  
-
-3. 何时使用JDK还是CGLIB？  
-    1. 如果目标对象实现了接口，默认情况下会采用JDK的动态代理实现AOP。  
-    2. 如果目标对象实现了接口，可以强制使用CGLIB实现AOP。  
-    3. 如果目标对象没有实现了接口，必须采用CGLIB库，Spring会自动在JDK动态代理和CGLIB之间转换。  
-
-4. 如何强制使用CGLIB实现AOP？  
-    1. 添加CGLIB库(aspectjrt-xxx.jar、aspectjweaver-xxx.jar、cglib-nodep-xxx.jar)  
-    2. 在Spring配置文件中加入<aop:aspectj-autoproxy proxy-target-class="true"/>  
-
-5. JDK动态代理和CGLIB字节码生成的区别？   
-    1. JDK动态代理只能对实现了接口的类生成代理，而不能针对类。  
-    2. CGLIB是针对类实现代理，主要是对指定的类生成一个子类，覆盖其中的方法，并覆盖其中方法实现增强，但是因为采用的是继承，所以该类或方法最好不要声明成final，对于final类或方法，是无法继承的。  
-
-6. CGlib比JDK快？  
-    1. 使用CGLib实现动态代理，<font color = "red">CGLib底层采用ASM字节码生成框架，使用字节码技术生成代理类</font>，在jdk6之前比使用Java反射效率要高。唯一需要注意的是，CGLib不能对声明为final的方法进行代理，因为CGLib原理是动态生成被代理类的子类。  
-    2. 在jdk6、jdk7、jdk8逐步对JDK动态代理优化之后，在调用次数较少的情况下，JDK代理效率高于CGLIB代理效率，只有当进行大量调用的时候，jdk6和jdk7比CGLIB代理效率低一点，但是到jdk8的时候，jdk代理效率高于CGLIB代理，总之，每一次jdk版本升级，jdk代理效率都得到提升，而CGLIB代理消息确有点跟不上步伐。  
-
-7. Spring如何选择用JDK还是CGLIB？  
-    1. 当Bean实现接口时，Spring就会用JDK的动态代理。  
-    2. 当Bean没有实现接口时，Spring使用CGlib是实现。  
-    3. 可以强制使用CGlib（在spring配置中加入<aop:aspectj-autoproxy proxy-target-class="true"/>）。   
-
-----
-----
-----
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/aop-7.png)  
 
@@ -91,7 +31,7 @@ CGLib创建的动态代理对象性能比JDK创建的动态代理对象的性能
 2. <font color = "red">Spring AOP 是如何解析配置的Aspect，生成 Advisors 链的？</font>  
 3. <font color = "red">Spring AOP 是如何生成代理类的，如何将 advice 织入代理类？</font>  
 
-## 1.2. 开启AOP自动代理解析  
+## 1.1. 开启AOP自动代理解析  
 &emsp; 可以使用@EnableAspectJAutoProxy注解开启Spring AOP注解的使用。自动让 ioc 容器中的所有 advisor 来匹配方法，advisor 内部都是有 advice 的，让它们内部的 advice 来执行拦截处理。  
 
 1. @EnableAspectJAutoProxy代码：  
@@ -173,7 +113,7 @@ private static BeanDefinition registerOrEscalateApcAsRequired(Class<?> cls, Bean
 ```
 &emsp; 在AspectJAutoProxyRegistrar中，实际上就是将AspectJAnnotationAutoProxyCreator的BeanDefinition注册到IoC容器当中。  
 
-## 1.3. 自动代理的触发时机  
+## 1.2. 自动代理的触发时机  
 &emsp; 首先看一下AspectJAnnotationAutoProxyCreator的继承体系。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/AOP-5.png)  
 &emsp; AspectJAnnotationAutoProxyCreator继承了BeanPostProcessor 。  
@@ -203,7 +143,7 @@ public interface BeanPostProcessor {
 
 &emsp; **而<font color = "lime">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！
 
-## 1.4. 代理类的生成流程  
+## 1.3. 代理类的生成流程  
 &emsp; 在开启AOP自动代理解析阶段中的AnnotationAwareAspectJAutoProxyCreator是一种具体的创建创建AOP代理对象的子类。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/AOP-6.png)  
 &emsp; 可以看到实际回调的postProcessBeforeInitialization和postProcessAfterInitialization这两个方式是在AbstractAdvisorAutoProxyCreator中override的。  
@@ -272,13 +212,13 @@ protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) 
 1. 获取当前的Spring Bean 适配的 advisors  
 2. 创建代理类  
 
-### 1.4.1. 获取对应Bean适配的Advisors链  
+### 1.3.1. 获取对应Bean适配的Advisors链  
 
 &emsp; 获取对应 Bean 适配的 Advisors 链，分为两步。  
 1. 获取容器所有的 advisors 作为候选，即解析Spring 容器中所有 Aspect 类中的 advice 方法，包装成 advisor；  
 2. 从候选的 Advisors 中筛选出适配当前 Bean的 Advisors 链； 
 
-#### 1.4.1.1. 获取候选的advisors  
+#### 1.3.1.1. 获取候选的advisors  
 &emsp; AspectJAwareAdvisorAutoProxyCreator#shouldSkip(..)  
 
 ```java
@@ -321,7 +261,7 @@ protected List<Advisor> findEligibleAdvisors(Class<?> beanClass, String beanName
 ```
 &emsp; 看到两个方法都调用了findCandidateAdvisors()方法，也就是去获取候选的Advisors。  
 
-#### 1.4.1.2. 筛选出适配当前类的 Advisors  
+#### 1.3.1.2. 筛选出适配当前类的 Advisors  
 &emsp; AbstractAdvisorAutoProxyCreator#findEligibleAdvisors(..)  
 
 ```java
@@ -450,7 +390,7 @@ public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasInt
 ```
 &emsp; 筛选的工作主要由 ClassFilter 和 MethodMatcher 完成，比如AspectJExpressionPointcut的实现了ClassFilter和MethodMatcher接口，最终由AspectJ表达式解析  
 
-#### 1.4.1.3. 小结  
+#### 1.3.1.3. 小结  
 &emsp; Spring AOP获取对应 Bean 适配的Advisors 链的核心逻辑：
 1. 获取当前 IoC 容器中所有的 Aspect 类
 2. 给 每个Aspect 类的advice 方法创建一个 Spring Advisor，这一步又能细分为 
@@ -464,7 +404,7 @@ public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasInt
     3. 遍历方法，通过 切入点 的 methodMatcher 匹配当前方法，只有有一个匹配成功就相当于当前的Advisor 适配
 5. 对筛选之后的 Advisor 链进行排序
 
-### 1.4.2. 创建代理类  
+### 1.3.2. 创建代理类  
 &emsp; AbstractAutoProxyCreator#createProxy  
 
 ```java
@@ -531,7 +471,7 @@ public Object getProxy(ClassLoader classLoader) {
 1. 创建AopProxy
 2. 获取代理类
 
-#### 1.4.2.1. 创建 AopProxy  
+#### 1.3.2.1. 创建 AopProxy  
 &emsp; ProxyCreatorSupport#AopProxy()  
 
 ```java
@@ -596,13 +536,13 @@ public CglibAopProxy(AdvisedSupport config) throws AopConfigException {
 }
 ```
 
-#### 1.4.2.2. 创建代理类  
-##### 1.4.2.2.1. JDK动态代理  
+#### 1.3.2.2. 创建代理类  
+##### 1.3.2.2.1. JDK动态代理  
 &emsp; 源码位置：JdkDynamicAopProxy#getProxy(..)  
 
 
 
-##### 1.4.2.2.2. Cglib代理
+##### 1.3.2.2.2. Cglib代理
 ......
 
 

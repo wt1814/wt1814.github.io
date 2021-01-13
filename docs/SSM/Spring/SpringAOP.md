@@ -3,21 +3,20 @@
 <!-- TOC -->
 
 - [1. SpringAOP](#1-springaop)
-    - [1.1. AOP基本概念](#11-aop基本概念)
+    - [1.1. SpringAOP编码](#11-springaop编码)
+        - [1.1.1. SpringBoot整合AOP](#111-springboot整合aop)
+        - [1.1.2. 切点Execution表达式详解](#112-切点execution表达式详解)
+            - [1.1.2.1. 通配符](#1121-通配符)
+            - [1.1.2.2. 分类](#1122-分类)
+        - [1.1.3. AOP切面传参](#113-aop切面传参)
+            - [1.1.3.1. 具体形参类型](#1131-具体形参类型)
+            - [1.1.3.2. 不定形参类型](#1132-不定形参类型)
     - [1.2. ※※※SpringAOP使用](#12-※※※springaop使用)
         - [1.2.1. 切面和自定义注解配合使用](#121-切面和自定义注解配合使用)
         - [1.2.2. 实战：记录操作日志、异常日志](#122-实战记录操作日志异常日志)
-    - [1.3. SpringAOP编码](#13-springaop编码)
-        - [1.3.1. SpringBoot整合AOP](#131-springboot整合aop)
-        - [1.3.2. ※※※SpringAOP失效](#132-※※※springaop失效)
-            - [1.3.2.1. 解决方案](#1321-解决方案)
-                - [1.3.2.1.1. 通过ApplicationContext来获得动态代理对象](#13211-通过applicationcontext来获得动态代理对象)
-        - [1.3.3. 切点Execution表达式详解](#133-切点execution表达式详解)
-            - [1.3.3.1. 通配符](#1331-通配符)
-            - [1.3.3.2. 分类](#1332-分类)
-        - [1.3.4. AOP切面传参](#134-aop切面传参)
-            - [1.3.4.1. 具体形参类型](#1341-具体形参类型)
-            - [1.3.4.2. 不定形参类型](#1342-不定形参类型)
+    - [1.3. ※※※SpringAOP失效](#13-※※※springaop失效)
+        - [1.3.1. 解决方案](#131-解决方案)
+            - [1.3.1.1. 通过ApplicationContext来获得动态代理对象](#1311-通过applicationcontext来获得动态代理对象)
 
 <!-- /TOC -->
 
@@ -37,36 +36,81 @@ https://mp.weixin.qq.com/s/3Elf_HQXXl1tObq3HRlrfA
 &emsp; AOP（Aspect-Oriented Programming面向切面编程）能够将那些与业务无关，却为业务模块所共同调用的逻辑或责任（例如事务处理、日志管理、权限控制等）封装起来，便于减少系统的重复代码，降低模块间的耦合度，并有利于未来的可拓展性和可维护性。  
 &emsp; AOP可以算作是代理模式的一个典型应用。AOP提供了对通知（advice）的支持。通知不同于必须显式调用的方法，每当发生匹配的触发事件时，它就自动地执行。  
 
-## 1.1. AOP基本概念  
-<!-- 
-关于Spring AOP，除了动态代理、CGLIB，你还知道什么？
-https://mp.weixin.qq.com/s/ZC9WMbOZJ6V3RkaFm6UZYQ
--->
-&emsp; 通知定义了切面要发生的“故事”和时间；切入点定义了“故事”发生的地点；通知和切入点共同组成了切面：时间、地点和要发生的“故事”。
-1. 连接点（join point）：连接点是应用程序执行过程中能够插入切面的地点。这些点可以是方法被调用时、异常抛出时、甚至字段被编辑时。
-2. 切点（pointcut）：如果说通知定义了切面的"什么"和"何时"，那么切入点就定义了"何地"。切入点是连接点的集合。
-3. 通知（Advice）：通知定义了切面是什么以及何时使用。除了描述切面要完成的工作，通知还解决了何时执行这个工作的问题。应该在一个方法被调用之前、之后或者抛出异常时。  
 
-        通知类型：
-        前置通知（Before advice），方法开始之前执行一段代码。
-        异常通知（After throwing advice）：在方法抛出异常退出时执行的通知。可以访问到异常对象，可以指定在出现特定异常时在执行通知代码。
-        最终通知（After (finally) advice）：当某连接点退出的时候执行的通知（不论是正常返回还是异常退出）。
-        后置通知（After returning advice），方法执行之后执行一段代码，无论该方法是否出现异常。
-        环绕通知（Around Advice）（优先级最高）：包围一个连接点的通知，如方法调用。这是最强大的一种通知类型。环绕通知可以在方法调用前后完成自定义的行为。也会选择是否继续执行连接点或直接返回自己的返回值或抛出异常来结束执行。环绕通知是最常用的通知类型。和AspectJ一样，Spring提供所有类型的通知，推荐使用尽可能简单的通知类型来实现需要的功能。
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/aop-10.png)  
-4. 切面（aspect）：切面是要实现的交叉功能。就是通知和切入点的结合。通知和切入点共同定义了关于切面的全部内容：它的功能、在何时和何地完成功能。  
-&emsp; Spring中的切面类型：  
-    * Advisor：都是有一个切点和一个通知组合。Spring中传统切面。  
-    * Aspect：多个切点和多个通知组合。  
-    
-    &emsp; 多个切面的情况下，可以通过@Order指定先后顺序，数字越小，优先级越高。  
-5. 引入（Intrduction）：**引入允许为已经存在的类添加新方法和属性**。比如一个Auditable通知类，记录对象在最后一次被修改时的状态。只需要一个setLastModified(Date)方法，和一个实例变量来保存这个状态。这个新方法和实例变量就可以被引入到现有的类，从而在不修改它们的情况下，让他们具有新的行为和状态。  
-6. 织入（weaving）：织入是将切面应用到目标对象从而创建一个新的代理对象的过程。在目标对象的生命周期里有多个机会发生织入过程。比如编译时、类加载时、运行时。  
 
-        Spring AOP 中织入的三种时期
-        编译期: 切面在目标类编译时被织入，这种方式需要特殊的编译器。AspectJ 的织入编译器就是以这种方式织入切面的。
-        类加载期: 切面在目标类加载到 JVM 时被织入，这种方式需要特殊的类加载器( ClassLoader )，它可以在目标类引入应用之前增强目标类的字节码。
-        运行期: 切面在应用运行的某个时期被织入。一般情况下，在织入切面时，AOP容器会为目标对象动态创建一个代理对象，Spring AOP 采用的就是这种织入方式。
+## 1.1. SpringAOP编码  
+### 1.1.1. SpringBoot整合AOP  
+.......
+
+### 1.1.2. 切点Execution表达式详解  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/AOP-3.png)  
+
+#### 1.1.2.1. 通配符  
+
+|通配符	|定义|
+|---|---|
+|..	|该通配符匹配方法定义中的任何数量的参数，此外还匹配类定义中任何数量的包|
+|+	|该通配符匹配给定类的任何子类|
+|*	|该通配符匹配任何数量的字符|
+  
+
+#### 1.1.2.2. 分类  
+1. 通过方法签名定义切点：  
+&emsp; execution(public * *(..)),匹配所有目标类的public方法，但不匹配SmartSeller和protected void showGoods()方法。第一个*代表返回类型，第二个*代表方法名，而..代表任意入参的方法；    
+&emsp; execution(* *To(..)),匹配目标类所有以To为后缀的方法。它匹配NaiveWaiter和NaughtyWaiter的greetTo()和serveTo()方法。第一个*代表返回类型，而*To代表任意以To为后缀的方法；  
+2. 通过类定义切点：  
+&emsp; execution(* com.baobaotao.Waiter.*(..))，匹配Waiter接口的所有方法，它匹配NaiveWaiter和NaughtyWaiter类的greetTo()和serveTo()方法。第一个*代表返回任意类型，com.baobaotao.Waiter.*代表Waiter接口中的所有方法；  
+&emsp; execution(* com.baobaotao.Waiter+.*(..))，匹配Waiter接口及其所有实现类的方法，它不但匹配NaiveWaiter和NaughtyWaiter类的greetTo()和serveTo()这两个Waiter接口定义的方法，同时还匹配NaiveWaiter#smile()和NaughtyWaiter#joke()这两个不在Waiter接口中定义的方法。  
+3. 通过类包定义切点：  
+&emsp; 在类名模式串中，“.*”表示包下的所有类，而“..*”表示包、子孙包下的所有类。  
+&emsp; execution(* com.baobaotao.*(..))，匹配com.baobaotao包下所有类的所有方法；  
+&emsp; execution(* com.baobaotao..*(..))，匹配com.baobaotao包、子孙包下所有类的所有方法，如com.baobaotao.dao，com.baobaotao.servier以及 com.baobaotao.dao.user包下的所有类的所有方法都匹配。“..”出现在类名中时，后面必须跟“*”，表示包、子孙包下的所有类；  
+&emsp; execution(* com..*.*Dao.find*(..))，匹配包名前缀为com的任何包下类名后缀为Dao的方法，方法名必须以find为前缀。如com.baobaotao.UserDao#findByUserId()、com.baobaotao.dao.ForumDao#findById()的方法都匹配切点。  
+4. 通过方法入参定义切点：  
+&emsp; 切点表达式中方法入参部分比较复杂，可以使用“*”和“ ..”通配符，其中“*”表示任意类型的参数，而“..”表示任意类型参数且参数个数不限。
+execution(* joke(String,int))),匹 配joke(String,int)方法，且joke()方法的第一个入参是String，第二个入参是int。它匹配 NaughtyWaiter#joke(String,int)方法。如果方法中的入参类型是java.lang包下的类，可以直接使用类名，否则必须使用全限定类名，如joke(java.util.List,int)；  
+&emsp; execution(* joke(String,*)))，匹配目标类中的joke()方法，该方法第一个入参为String，第二个入参可以是任意类型，如joke(String s1,String s2)和joke(String s1,double d2)都匹配，但joke(String s1,double d2,String s3)则不匹配；  
+&emsp; execution(* joke(String,..)))，匹配目标类中的joke()方法，该方法第一个入参为String，后面可以有任意个入参且入参类型不限，如joke(String s1)、joke(String s1,String s2)和joke(String s1,double d2,String s3)都匹配。  
+&emsp; execution(* joke(Object+)))，匹配目标类中的joke()方法，方法拥有一个入参，且入参是Object类型或该类的子类。它匹配joke(String s1)和joke(Client c)。如果定义的切点是execution(* joke(Object))，则只匹配joke(Object object)而不匹配joke(String cc)或joke(Client c)。  
+
+&emsp; 在多个表达式之间使用||、or表示或；&&、and表示与；！表示非。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/AOP-4.png)  
+
+### 1.1.3. AOP切面传参  
+#### 1.1.3.1. 具体形参类型  
+&emsp; 业务方法、Execution表达式、AOP方法3者形参类型一致。  
+
+```java
+public void biz(String name,String password){
+    this.name=name;
+    this.password=password;
+}
+```
+
+```xml
+<aop:pointcut expression="execution(* com.spring.TestBiz.biz(String,String)) and args(name,password)" id="testpoint"/>
+<aop:aspect ref="testaspect">
+<aop:before method="save" pointcut-ref="testpoint" arg-names="name,password"/>
+```
+
+&emsp; AOP  
+
+```java
+public void save(String name,String password){
+    System.out.println("guo="+name);
+    System.out.println("password="+password);
+    this.name=name;
+    this.password=password;
+    System.out.println(this.name);
+}
+```
+
+#### 1.1.3.2. 不定形参类型  
+&emsp; Spring AOP提供使用org.aspectj.lang.JoinPoint类型获取连接点数据，任何通知方法的第一个参数都可以是JoinPoint(环绕通知是ProceedingJoinPoint，JoinPoint子类)。  
+1. JoinPoint：提供访问当前被通知方法的目标对象、代理对象、方法参数等数据  
+2. ProceedingJoinPoint：只用于环绕通知，使用proceed()方法来执行目标方法  
+
+&emsp; 如参数类型是JoinPoint、ProceedingJoinPoint类型，可以从“argNames”属性省略掉该参数名（可选，写上也对），这些类型对象会自动传入的，但必须作为第一个参数。 
 
 
 ## 1.2. ※※※SpringAOP使用  
@@ -95,16 +139,11 @@ https://mp.weixin.qq.com/s/hqRm9veJk4eUrzWrCI_Vlg
 
 
 
-## 1.3. SpringAOP编码  
-### 1.3.1. SpringBoot整合AOP  
-.......
-
-
-### 1.3.2. ※※※SpringAOP失效  
+## 1.3. ※※※SpringAOP失效  
 &emsp; <font color = "red">同一对象内部方法嵌套调用，慎用this来调用被@Async、@Transactional、@Cacheable等注解标注的方法，this下注解可能不生效。</font>async方法中的this不是动态代理的子类对象，而是原始的对象，故this调用无法通过动态代理来增强。 
 
-#### 1.3.2.1. 解决方案  
-##### 1.3.2.1.1. 通过ApplicationContext来获得动态代理对象  
+### 1.3.1. 解决方案  
+#### 1.3.1.1. 通过ApplicationContext来获得动态代理对象  
 
 ```java
 @Component
@@ -139,74 +178,3 @@ public class AsyncService implements ApplicationContextAware {
 ```
 &emsp; 可以看到完美达到目的。同理是用BeanFactoryAware可达到同样的效果。  
 
-
-
-### 1.3.3. 切点Execution表达式详解  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/AOP-3.png)  
-
-#### 1.3.3.1. 通配符  
-
-|通配符	|定义|
-|---|---|
-|..	|该通配符匹配方法定义中的任何数量的参数，此外还匹配类定义中任何数量的包|
-|+	|该通配符匹配给定类的任何子类|
-|*	|该通配符匹配任何数量的字符|
-  
-
-#### 1.3.3.2. 分类  
-1. 通过方法签名定义切点：  
-&emsp; execution(public * *(..)),匹配所有目标类的public方法，但不匹配SmartSeller和protected void showGoods()方法。第一个*代表返回类型，第二个*代表方法名，而..代表任意入参的方法；    
-&emsp; execution(* *To(..)),匹配目标类所有以To为后缀的方法。它匹配NaiveWaiter和NaughtyWaiter的greetTo()和serveTo()方法。第一个*代表返回类型，而*To代表任意以To为后缀的方法；  
-2. 通过类定义切点：  
-&emsp; execution(* com.baobaotao.Waiter.*(..))，匹配Waiter接口的所有方法，它匹配NaiveWaiter和NaughtyWaiter类的greetTo()和serveTo()方法。第一个*代表返回任意类型，com.baobaotao.Waiter.*代表Waiter接口中的所有方法；  
-&emsp; execution(* com.baobaotao.Waiter+.*(..))，匹配Waiter接口及其所有实现类的方法，它不但匹配NaiveWaiter和NaughtyWaiter类的greetTo()和serveTo()这两个Waiter接口定义的方法，同时还匹配NaiveWaiter#smile()和NaughtyWaiter#joke()这两个不在Waiter接口中定义的方法。  
-3. 通过类包定义切点：  
-&emsp; 在类名模式串中，“.*”表示包下的所有类，而“..*”表示包、子孙包下的所有类。  
-&emsp; execution(* com.baobaotao.*(..))，匹配com.baobaotao包下所有类的所有方法；  
-&emsp; execution(* com.baobaotao..*(..))，匹配com.baobaotao包、子孙包下所有类的所有方法，如com.baobaotao.dao，com.baobaotao.servier以及 com.baobaotao.dao.user包下的所有类的所有方法都匹配。“..”出现在类名中时，后面必须跟“*”，表示包、子孙包下的所有类；  
-&emsp; execution(* com..*.*Dao.find*(..))，匹配包名前缀为com的任何包下类名后缀为Dao的方法，方法名必须以find为前缀。如com.baobaotao.UserDao#findByUserId()、com.baobaotao.dao.ForumDao#findById()的方法都匹配切点。  
-4. 通过方法入参定义切点：  
-&emsp; 切点表达式中方法入参部分比较复杂，可以使用“*”和“ ..”通配符，其中“*”表示任意类型的参数，而“..”表示任意类型参数且参数个数不限。
-execution(* joke(String,int))),匹 配joke(String,int)方法，且joke()方法的第一个入参是String，第二个入参是int。它匹配 NaughtyWaiter#joke(String,int)方法。如果方法中的入参类型是java.lang包下的类，可以直接使用类名，否则必须使用全限定类名，如joke(java.util.List,int)；  
-&emsp; execution(* joke(String,*)))，匹配目标类中的joke()方法，该方法第一个入参为String，第二个入参可以是任意类型，如joke(String s1,String s2)和joke(String s1,double d2)都匹配，但joke(String s1,double d2,String s3)则不匹配；  
-&emsp; execution(* joke(String,..)))，匹配目标类中的joke()方法，该方法第一个入参为String，后面可以有任意个入参且入参类型不限，如joke(String s1)、joke(String s1,String s2)和joke(String s1,double d2,String s3)都匹配。  
-&emsp; execution(* joke(Object+)))，匹配目标类中的joke()方法，方法拥有一个入参，且入参是Object类型或该类的子类。它匹配joke(String s1)和joke(Client c)。如果定义的切点是execution(* joke(Object))，则只匹配joke(Object object)而不匹配joke(String cc)或joke(Client c)。  
-
-&emsp; 在多个表达式之间使用||、or表示或；&&、and表示与；！表示非。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/AOP-4.png)  
-
-### 1.3.4. AOP切面传参  
-#### 1.3.4.1. 具体形参类型  
-&emsp; 业务方法、Execution表达式、AOP方法3者形参类型一致。  
-
-```java
-public void biz(String name,String password){
-    this.name=name;
-    this.password=password;
-}
-```
-
-```xml
-<aop:pointcut expression="execution(* com.spring.TestBiz.biz(String,String)) and args(name,password)" id="testpoint"/>
-<aop:aspect ref="testaspect">
-<aop:before method="save" pointcut-ref="testpoint" arg-names="name,password"/>
-```
-
-&emsp; AOP  
-
-```java
-public void save(String name,String password){
-    System.out.println("guo="+name);
-    System.out.println("password="+password);
-    this.name=name;
-    this.password=password;
-    System.out.println(this.name);
-}
-```
-
-#### 1.3.4.2. 不定形参类型  
-&emsp; Spring AOP提供使用org.aspectj.lang.JoinPoint类型获取连接点数据，任何通知方法的第一个参数都可以是JoinPoint(环绕通知是ProceedingJoinPoint，JoinPoint子类)。  
-1. JoinPoint：提供访问当前被通知方法的目标对象、代理对象、方法参数等数据  
-2. ProceedingJoinPoint：只用于环绕通知，使用proceed()方法来执行目标方法  
-
-&emsp; 如参数类型是JoinPoint、ProceedingJoinPoint类型，可以从“argNames”属性省略掉该参数名（可选，写上也对），这些类型对象会自动传入的，但必须作为第一个参数。 
