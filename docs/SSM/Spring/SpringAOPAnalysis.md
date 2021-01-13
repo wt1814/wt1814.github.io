@@ -2,7 +2,7 @@
 <!-- TOC -->
 
 - [1. SpringAOP解析](#1-springaop解析)
-    - [1.1. JDK动态代理和CGLIB动态代理](#11-jdk动态代理和cglib动态代理)
+    - [1.1. 前言：JDK动态代理和CGLIB动态代理](#11-前言jdk动态代理和cglib动态代理)
     - [1.2. 开启AOP自动代理解析](#12-开启aop自动代理解析)
     - [1.3. 自动代理的触发时机](#13-自动代理的触发时机)
     - [1.4. 代理类的生成流程](#14-代理类的生成流程)
@@ -43,13 +43,20 @@ JDK 动态代理
 CGLIB
 -->
 
-## 1.1. JDK动态代理和CGLIB动态代理  
+## 1.1. 前言：JDK动态代理和CGLIB动态代理  
+<!-- 
+~~
+https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
+-->
 &emsp; 常用的代理有通过接口的[JDK动态代理](/docs/java/Design/6.proxy.md)和通过继承类的CGLIB动态代理。  
 1. JDK动态代理  
 &emsp; <font color = "red">利用拦截器(拦截器必须实现InvocationHanlder)加上反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理。</font>  
 
 2. CGLIB动态代理  
 &emsp; <font color = "red">利用ASM开源包，对代理对象类的class文件加载进来，通过修改其字节码生成子类来处理。</font>  
+
+使用字节码处理框架ASM，其原理是通过字节码技术为一个类创建子类，并在子类中采用方法拦截的技术拦截所有父类方法的调用，顺势织入横切逻辑。  
+CGLib创建的动态代理对象性能比JDK创建的动态代理对象的性能高不少，但是CGLib在创建代理对象时所花费的时间却比JDK多得多，所以对于单例的对象，因为无需频繁创建对象，用CGLib合适，反之，使用JDK方式要更为合适一些。同时，由于CGLib由于是采用动态创建子类的方法，对于final方法，无法进行代理。  
 
 3. 何时使用JDK还是CGLIB？  
     1. 如果目标对象实现了接口，默认情况下会采用JDK的动态代理实现AOP。  
