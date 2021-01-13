@@ -17,7 +17,7 @@
 
 <!-- /TOC -->
 
-&emsp; <font color = "lime">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
+&emsp; <font color = "lime">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>因此Spring AOP是在这一步，进行代理增强！  
 
 # 1. SpringAOP解析
 <!-- 
