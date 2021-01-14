@@ -6,9 +6,12 @@
     - [1.1. Mybatis工作流程概述](#11-mybatis工作流程概述)
     - [1.2. 配置文件加载](#12-配置文件加载)
     - [1.3. 解析配置文件，创建SqlSessionFactory](#13-解析配置文件创建sqlsessionfactory)
+        - [1.3.1. 解析配置文件](#131-解析配置文件)
+            - [1.3.1.1. 解析mapper映射文件](#1311-解析mapper映射文件)
+                - [1.3.1.1.1. ***第一步，bindMapperForNamespace()，存放mapper信息](#13111-第一步bindmapperfornamespace存放mapper信息)
     - [1.4. 创建SqlSession](#14-创建sqlsession)
     - [1.5. 执行具体的sql请求](#15-执行具体的sql请求)
-        - [1.5.1. Mapper接口代理类的生成](#151-mapper接口代理类的生成)
+        - [1.5.1. 第二步：获取Mapper接口，创建动态代理类](#151-第二步获取mapper接口创建动态代理类)
         - [1.5.2. 查询语句执行逻辑](#152-查询语句执行逻辑)
         - [1.5.3. SQL执行（二级缓存）](#153-sql执行二级缓存)
         - [1.5.4. SQL查询（一级缓存）](#154-sql查询一级缓存)
@@ -20,17 +23,19 @@
 
 <!-- /TOC -->
 
+&emsp; <font color = "clime">概括总结：  
+1. sql执行流程。    
+2. Mapper接口动态代理类的生成。</font>  
+
 # 1. MyBatis解析
 <!--
+～～
  浅析MyBatis的动态代理原理 
  https://mp.weixin.qq.com/s/U1Mgoe7XUEzY0wshjkzx7g
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-30.png)  
 
 ## 1.1. Mybatis工作流程概述  
-
-
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-13.png)  
 &emsp; Mybatis工作流程概述：  
 1. 读取核心配置文件并返回InputStream流对象。
@@ -151,6 +156,7 @@ public SqlSessionFactory build(InputStream inputStream, String environment, Prop
 ```
 &emsp; 通过Document对象来解析配置文件，然后返回InputStream对象，然后交给XMLConfigBuilder构造成org.apache.ibatis.session.Configuration对象，然后交给build()方法构造程SqlSessionFactory。  
 
+### 1.3.1. 解析配置文件
 &emsp; <font color = "red">#parse()方法，解析mybatis-config.xml。</font> 源码：  
 
 ```java
@@ -165,9 +171,7 @@ public Configuration parse() {
     parseConfiguration(parser.evalNode("/configuration"));
     return configuration;
 }
-```
 
-```java
 private void parseConfiguration(XNode root) {
     try {
         //解析<Configuration>下的节点
@@ -204,6 +208,7 @@ private void parseConfiguration(XNode root) {
 }
 ```
 
+#### 1.3.1.1. 解析mapper映射文件
 &emsp; <font color = "red">mapperElement(root.evalNode("mappers"))，mapperElemet()方法是解析mapper映射文件的。</font> mapper标签配置方式：  
 
 ```xml
@@ -285,9 +290,7 @@ public void parse() {
     parsePendingCacheRefs();
     parsePendingStatements();
   }
-```
 
-```java
 //解析mapper文件里面的节点
 // 拿到里面配置的配置项 最终封装成一个MapperedStatemanet
 private void configurationElement(XNode context) {
@@ -341,172 +344,84 @@ private void buildStatementFromContext(List<XNode> list, String requiredDatabase
         }
     }
 }
-
-public void parseStatementNode() {
-    //获取<select id="xxx">中的id
-    String id = context.getStringAttribute("id");
-    //获取databaseId 用于多数据库，这里为null
-    String databaseId = context.getStringAttribute("databaseId");
-
-    if (!databaseIdMatchesCurrent(id, databaseId, this.requiredDatabaseId)) {
-        return;
-    }
-    //获取节点名  select update delete insert
-    String nodeName = context.getNode().getNodeName();
-    //根据节点名，得到SQL操作的类型
-    SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));
-    //判断是否是查询
-    boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
-    //是否刷新缓存 默认:增删改刷新 查询不刷新
-    boolean flushCache = context.getBooleanAttribute("flushCache", !isSelect);
-    //是否使用二级缓存 默认值:查询使用 增删改不使用
-    boolean useCache = context.getBooleanAttribute("useCache", isSelect);
-    //是否需要处理嵌套查询结果 group by
-
-    // 三组数据 分成一个嵌套的查询结果
-    boolean resultOrdered = context.getBooleanAttribute("resultOrdered", false);
-
-    // Include Fragments before parsing
-    XMLIncludeTransformer includeParser = new XMLIncludeTransformer(configuration, builderAssistant);
-    //替换Includes标签为对应的sql标签里面的值
-    includeParser.applyIncludes(context.getNode());
-
-    //获取parameterType名
-    String parameterType = context.getStringAttribute("parameterType");
-    //获取parameterType的Class
-    Class<?> parameterTypeClass = resolveClass(parameterType);
-
-    //解析配置的自定义脚本语言驱动 这里为null
-    String lang = context.getStringAttribute("lang");
-    LanguageDriver langDriver = getLanguageDriver(lang);
-
-    // Parse selectKey after includes and remove them.
-    //解析selectKey
-    processSelectKeyNodes(id, parameterTypeClass, langDriver);
-
-    // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
-    //设置主键自增规则
-    KeyGenerator keyGenerator;
-    String keyStatementId = id + SelectKeyGenerator.SELECT_KEY_SUFFIX;
-    keyStatementId = builderAssistant.applyCurrentNamespace(keyStatementId, true);
-    if (configuration.hasKeyGenerator(keyStatementId)) {
-        keyGenerator = configuration.getKeyGenerator(keyStatementId);
-    } else {
-        keyGenerator = context.getBooleanAttribute("useGeneratedKeys",
-                configuration.isUseGeneratedKeys() && SqlCommandType.INSERT.equals(sqlCommandType))
-                ? Jdbc3KeyGenerator.INSTANCE : NoKeyGenerator.INSTANCE;
-    }
-/********************************************************/
-    //解析Sql（重要）  根据sql文本来判断是否需要动态解析 如果没有动态sql语句且 只有#{}的时候 直接静态解析使用?占位 当有 ${} 不解析
-    SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
-    //获取StatementType，可以理解为Statement和PreparedStatement
-    StatementType statementType = StatementType.valueOf(context.getStringAttribute("statementType", StatementType.PREPARED.toString()));
-    //没用过
-    Integer fetchSize = context.getIntAttribute("fetchSize");
-    //超时时间
-    Integer timeout = context.getIntAttribute("timeout");
-    //已过时
-    String parameterMap = context.getStringAttribute("parameterMap");
-    //获取返回值类型名
-    String resultType = context.getStringAttribute("resultType");
-    //获取返回值烈性的Class
-    Class<?> resultTypeClass = resolveClass(resultType);
-    //获取resultMap的id
-    String resultMap = context.getStringAttribute("resultMap");
-    //获取结果集类型
-    String resultSetType = context.getStringAttribute("resultSetType");
-    ResultSetType resultSetTypeEnum = resolveResultSetType(resultSetType);
-    if (resultSetTypeEnum == null) {
-        resultSetTypeEnum = configuration.getDefaultResultSetType();
-    }
-    String keyProperty = context.getStringAttribute("keyProperty");
-    String keyColumn = context.getStringAttribute("keyColumn");
-    String resultSets = context.getStringAttribute("resultSets");
-
-    //将刚才获取到的属性，封装成MappedStatement对象（代码贴在下面）
-    builderAssistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType,
-            fetchSize, timeout, parameterMap, parameterTypeClass, resultMap, resultTypeClass,
-            resultSetTypeEnum, flushCache, useCache, resultOrdered,
-            keyGenerator, keyProperty, keyColumn, databaseId, langDriver, resultSets);
-}
-
-
-//将刚才获取到的属性，封装成mao变量MappedStatement对象
-public MappedStatement addMappedStatement(
-        String id,
-        SqlSource sqlSource,
-        StatementType statementType,
-        SqlCommandType sqlCommandType,
-        Integer fetchSize,
-        Integer timeout,
-        String parameterMap,
-        Class<?> parameterType,
-        String resultMap,
-        Class<?> resultType,
-        ResultSetType resultSetType,
-        boolean flushCache,
-        boolean useCache,
-        boolean resultOrdered,
-        KeyGenerator keyGenerator,
-        String keyProperty,
-        String keyColumn,
-        String databaseId,
-        LanguageDriver lang,
-        String resultSets) {
-
-    if (unresolvedCacheRef) {
-        throw new IncompleteElementException("Cache-ref not yet resolved");
-    }
-
-    //id = namespace
-    id = applyCurrentNamespace(id, false);
-    boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
-
-    //通过构造者模式+链式变成，构造一个MappedStatement的构造者
-    MappedStatement.Builder statementBuilder = new MappedStatement.Builder(configuration, id, sqlSource, sqlCommandType)
-            .resource(resource)
-            .fetchSize(fetchSize)
-            .timeout(timeout)
-            .statementType(statementType)
-            .keyGenerator(keyGenerator)
-            .keyProperty(keyProperty)
-            .keyColumn(keyColumn)
-            .databaseId(databaseId)
-            .lang(lang)
-            .resultOrdered(resultOrdered)
-            .resultSets(resultSets)
-            .resultMaps(getStatementResultMaps(resultMap, resultType, id))
-            .resultSetType(resultSetType)
-            .flushCacheRequired(valueOrDefault(flushCache, !isSelect))
-            .useCache(valueOrDefault(useCache, isSelect))
-            .cache(currentCache);
-
-    ParameterMap statementParameterMap = getStatementParameterMap(parameterMap, parameterType, id);
-    if (statementParameterMap != null) {
-        statementBuilder.parameterMap(statementParameterMap);
-    }
-
-    //通过构造者构造MappedStatement
-    MappedStatement statement = statementBuilder.build();
-    //将MappedStatement对象封装到Configuration对象中
-    configuration.addMappedStatement(statement);
-    return statement;
-}
 ```
 
-&emsp; 这个代码段虽然很长，但是一句话形容它就是繁琐但不复杂，里面主要也就是对xml的节点进行解析。举个比上面简单的例子吧，假设有这样一段配置：  
+parseStatementNode()主要是对xml的节点进行解析。假设有这样一段配置：  
 
 ```xml
 <select id="selectDemo" parameterType="java.lang.Integer" resultType='Map'>
     SELECT * FROM test
 </select>
 ```
-&emsp; MyBatis需要做的就是，先判断这个节点是用来干什么的，然后再获取这个节点的id、parameterType、resultType等属性，封装成一个MappedStatement对象，由于这个对象很复杂，所以MyBatis使用了构造者模式来构造这个对象，最后当MappedStatement对象构造完成后，将其封装到Configuration对象中。  
-
+&emsp; MyBatis需要做的就是，先判断这个节点是用来干什么的，然后再获取这个节点的id、parameterType、resultType等属性，封装成一个MappedStatement对象，由于这个对象很复杂，所以MyBatis使用了构造者模式来构造这个对象，最后当MappedStatement对象构造完成后，将其封装到Configuration对象中。   
 <!-- 还有没看的 -->
 
+##### 1.3.1.1.1. ***第一步，bindMapperForNamespace()，存放mapper信息
+&emsp; 该方法是核心方法，它会根据mapper文件中的namespace属性值，为接口生成动态代理类。  
+
+```java
+private void bindMapperForNamespace() {
+    //获取mapper元素的namespace属性值
+    String namespace = builderAssistant.getCurrentNamespace();
+    if (namespace != null) {
+        Class<?> boundType = null;
+        try {
+        // 获取namespace属性值对应的Class对象
+        boundType = Resources.classForName(namespace);
+        } catch (ClassNotFoundException e) {
+            //如果没有这个类，则直接忽略，这是因为namespace属性值只需要唯一即可，并不一定对应一个XXXMapper接口
+            //没有XXXMapper接口的时候，我们可以直接使用SqlSession来进行增删改查
+        }
+        if (boundType != null) {
+            if (!configuration.hasMapper(boundType)) {
+                // Spring may not know the real resource name so we set a flag
+                // to prevent loading again this resource from the mapper interface
+                // look at MapperAnnotationBuilder#loadXmlResource
+                configuration.addLoadedResource("namespace:" + namespace);
+                //如果namespace属性值有对应的Java类，调用Configuration的addMapper方法，将其添加到MapperRegistry中
+                configuration.addMapper(boundType);
+            }
+        }
+    }
+}
+```
+
+&emsp; 调用Configuration的addMapper方法，Configuration将addMapper方法委托给MapperRegistry的addMapper进行的，MapperRegistry对象维护了所有要生成动态代理类的XxxMapper接口信息。  
+
+```java
+public <T> void addMapper(Class<T> type) {
+  // 这个class必须是一个接口，因为是使用JDK动态代理，所以需要是接口，否则不会针对其生成动态代理
+  if (type.isInterface()) {
+    if (hasMapper(type)) {
+      throw new BindingException("Type " + type + " is already known to the MapperRegistry.");
+    }
+    boolean loadCompleted = false;
+    try {
+      // 生成一个MapperProxyFactory，用于之后生成动态代理类
+      knownMappers.put(type, new MapperProxyFactory<>(type));
+      //以下代码片段用于解析我们定义的XxxMapper接口里面使用的注解，这主要是处理不使用xml映射文件的情况
+      MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
+      parser.parse();
+      loadCompleted = true;
+    } finally {
+      if (!loadCompleted) {
+        knownMappers.remove(type);
+      }
+    }
+  }
+}
+```
+
+&emsp; MapperRegistry内部维护一个映射关系，每个接口对应一个MapperProxyFactory（生成动态代理工厂类）  
+
+```java
+private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<>(); 
+```
+&emsp; 这样便于在后面调用MapperRegistry的getMapper()时，直接从Map中获取某个接口对应的动态代理工厂类，然后再利用工厂类针对其接口生成真正的动态代理类。  
+
+
 ## 1.4. 创建SqlSession  
-&emsp; openSession中实际上对SqlSession做了进一步的加工封装，增加了事务、执行器等。  
+&emsp; <font color = "red">openSession中实际上对SqlSession做了进一步的加工封装，增加了事务、执行器等。</font>  
 
 ```java
 public SqlSession openSession() {
@@ -551,6 +466,7 @@ public DefaultSqlSession(Configuration configuration, Executor executor, boolean
 &emsp; executor在这一步得到创建，具体的使用在下一步。  
 
 ## 1.5. 执行具体的sql请求  
+### 1.5.1. 第二步：获取Mapper接口，创建动态代理类    
 &emsp; 平时使用MyBatis的时候，DAO层编码：  
 
 ```java
@@ -567,90 +483,31 @@ Map<String,Object> map = new HashMap();
 map.put("id","123");
 mapper.selectAll(map);
 ```
-&emsp; **<font color = "lime">MyBatis底层使用了动态代理，来对这个接口进行代理。</font>**  
 
-
-&emsp; 入口：在获取Mapper的时候，需要调用SqlSession的getMapper()方法。    
+&emsp; **在获取Mapper的时候，需要调用SqlSession的getMapper()方法，会调用Configuration的getMapper()方法，最终会调用MapperRegistry.getMapper()方法。**      
 
 ```java
 //getMapper方法最终会调用到这里，这个是MapperRegistry的getMapper方法
-@SuppressWarnings("unchecked")
 public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
-    //MapperProxyFactory在解析的时候会生成一个map，map中会有编写的DemoMapper的Class
-    final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
-    if (mapperProxyFactory == null) {
-        throw new BindingException("Type " + type + " is not known to the MapperRegistry.");
-    }
-    try {
-        return mapperProxyFactory.newInstance(sqlSession);
-    } catch (Exception e) {
-        throw new BindingException("Error getting mapper instance. Cause: " + e, e);
-    }
+  //根据Class对象获取创建动态代理的工厂对象MapperProxyFactory
+  //MapperProxyFactory在解析的时候会生成一个map，map中会有编写的DemoMapper的Class
+  final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
+  if (mapperProxyFactory == null) {
+    throw new BindingException("Type " + type + " is not known to the MapperRegistry.");
+  }
+  try {
+    //这里可以看到每次调用都会创建一个新的代理对象返回
+    return mapperProxyFactory.newInstance(sqlSession);
+  } catch (Exception e) {
+    throw new BindingException("Error getting mapper instance. Cause: " + e, e);
+  }
 }
 ```
 &emsp; 可以看到这里mapperProxyFactory对象会从一个叫做knownMappers的对象中以type为key取出值，这个knownMappers是一个HashMap，存放了DemoMapper对象，而这里的type，就是上面写的Mapper接口。  
 
+    knownMappers是在什么时候生成的？
+    在解析的时候，会调用parse()方法，这个方法内部有一个bindMapperForNamespace方法，而就是这个方法完成了knownMappers的生成，并且将Mapper接口put进去。  
 
-```java
-public void parse() {
-    //判断文件是否之前解析过
-    if (!configuration.isResourceLoaded(resource)) {
-        //解析mapper文件
-        configurationElement(parser.evalNode("/mapper"));
-        configuration.addLoadedResource(resource);
-        //这里：绑定Namespace里面的Class对象*
-        bindMapperForNamespace();
-    }
-
-    //重新解析之前解析不了的节点
-    parsePendingResultMaps();
-    parsePendingCacheRefs();
-    parsePendingStatements();
-}
-```
-
-### 1.5.1. Mapper接口代理类的生成
-&emsp; knownMappers是在什么时候生成的？
-&emsp; 在解析的时候，会调用parse()方法，这个方法内部有一个bindMapperForNamespace方法，而就是这个方法完成了knownMappers的生成，并且将Mapper接口put进去。  
-
-```java
-private void bindMapperForNamespace() {
-    String namespace = builderAssistant.getCurrentNamespace();
-    if (namespace != null) {
-        Class<?> boundType = null;
-        try {
-            boundType = Resources.classForName(namespace);
-        } catch (ClassNotFoundException e) {
-        }
-        if (boundType != null) {
-            if (!configuration.hasMapper(boundType)) {
-                configuration.addLoadedResource("namespace:" + namespace);
-                //这里将接口class传入
-                configuration.addMapper(boundType);
-            }
-        }
-    }
-}
-public <T> void addMapper(Class<T> type) {
-    if (type.isInterface()) {
-        if (hasMapper(type)) {
-            throw new BindingException("Type " + type + " is already known to the MapperRegistry.");
-        }
-        boolean loadCompleted = false;
-        try {
-            //这里将接口信息put进konwMappers。
-            knownMappers.put(type, new MapperProxyFactory<>(type));
-            MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
-            parser.parse();
-            loadCompleted = true;
-        } finally {
-            if (!loadCompleted) {
-                knownMappers.remove(type);
-            }
-        }
-    }
-}
-```
 
 &emsp; 在getMapper之后，获取一个Class。之后的代码就是生成标准的代理类，调用newInstance()方法。  
 
