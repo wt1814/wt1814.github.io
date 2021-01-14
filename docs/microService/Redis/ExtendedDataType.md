@@ -8,9 +8,9 @@
         - [1.2.1. 位图介绍](#121-位图介绍)
         - [1.2.2. Redis Bitmap命令](#122-redis-bitmap命令)
         - [1.2.3. 应用场景](#123-应用场景)
-            - [使用场景一：用户签到](#使用场景一用户签到)
-            - [使用场景二：统计活跃用户](#使用场景二统计活跃用户)
-            - [使用场景三：用户在线状态](#使用场景三用户在线状态)
+            - [1.2.3.1. 使用场景一：用户签到](#1231-使用场景一用户签到)
+            - [1.2.3.2. 使用场景二：统计活跃用户](#1232-使用场景二统计活跃用户)
+            - [1.2.3.3. 使用场景三：用户在线状态](#1233-使用场景三用户在线状态)
     - [1.3. HyperLogLog基数统计](#13-hyperloglog基数统计)
         - [1.3.1. 前言](#131-前言)
         - [1.3.2. 基数统计](#132-基数统计)
@@ -43,11 +43,11 @@ https://www.yuque.com/happy-coder/qka0of/ekdfzb
 
 &emsp; Redis提供了一些扩展数据类型和时序数据库模块：  
 
-bitmap：基于bit位的存储，每一个bit存储0或1，一般用来进行海量数据的精准判重  
-HyperLogLog：一般用来对海量数据进行基于概率的基数统计，比如说网站的独立访客数、独立IP数等  
-Geo：基于地理空间的数据存储，常应用在那些基于位置服务，也就是我们常说的LBS(Location-Based Service)的应用，比如说打车等生活服务类应用  
-Stream：消息流，Redis自5.0版本之后，引入了消息队列的机制，也就是我们熟悉的Pub/Sub（发布/订阅）机制。  
-RedisTimeSeries：时间数据库模块，主要存储一些跟时间戳相关，需要范围查询，聚合计算等场景的数据集    
+* bitmap：基于bit位的存储，每一个bit存储0或1，一般用来进行海量数据的精准判重  
+* HyperLogLog：一般用来对海量数据进行基于概率的基数统计，比如说网站的独立访客数、独立IP数等  
+* Geo：基于地理空间的数据存储，常应用在那些基于位置服务，也就是常说的LBS(Location-Based Service)的应用，比如说打车等生活服务类应用  
+* Stream：消息流，Redis自5.0版本之后，引入了消息队列的机制，也就是我们熟悉的Pub/Sub（发布/订阅）机制。  
+* RedisTimeSeries：时间数据库模块，主要存储一些跟时间戳相关，需要范围查询，聚合计算等场景的数据集    
 
 ## 1.1. 前言：网页流量统计里的PV、UV
 &emsp; PV（Page View）访问量, 即页面浏览量或点击量，衡量网站用户访问的网页数量；在一定统计周期内用户每打开或刷新一个页面就记录1次，多次打开或刷新同一页面则浏览量累计。  
@@ -91,7 +91,7 @@ RedisTimeSeries：时间数据库模块，主要存储一些跟时间戳相关�
     * GETBIT命令指示返回指定位置bit的值。超过范围（寻址地址在目标key的string长度以外的位）的GETBIT总是返回0。  
 
 2. 操作bits组的命令如下：  
-    * BITOP执行两个不同string的位操作.，包括AND，OR，XOR和NOT。
+    * BITOP执行两个不同string的位操作，包括AND，OR，XOR和NOT。
     * BITCOUNT统计位的值为1的数量。
     * BITPOS寻址第一个为0或者1的bit的位置（寻址第一个为1的bit的位置：bitpos dupcheck 1；寻址第一个为0的bit的位置：bitpos dupcheck 0）。  
 
@@ -100,7 +100,7 @@ RedisTimeSeries：时间数据库模块，主要存储一些跟时间戳相关�
 * <font color = "red">各种实时分析，例如在线用户统计。</font>
 * <font color = "red">用户访问统计。</font>
 
-#### 使用场景一：用户签到  
+#### 1.2.3.1. 使用场景一：用户签到  
 <!-- 
 实现一个签到功能
 https://mp.weixin.qq.com/s/pd_wRas4yyx5PsTpIdimgA
@@ -155,7 +155,7 @@ https://mp.weixin.qq.com/s/pd_wRas4yyx5PsTpIdimgA
     echo $redis->bitCount($cacheKey, 0, 20) . PHP_EOL;
     ```
 
-#### 使用场景二：统计活跃用户  
+#### 1.2.3.2. 使用场景二：统计活跃用户  
 &emsp; 使用时间作为cacheKey，然后用户ID为offset，如果当日活跃过就设置为1  
 &emsp; 那么如果计算某几天/月/年的活跃用户呢(暂且约定，统计时间内只有有一天在线就称为活跃)，使用redis的命令   
 &emsp; 命令 BITOP operation destkey key [key ...]  
@@ -193,7 +193,7 @@ https://mp.weixin.qq.com/s/pd_wRas4yyx5PsTpIdimgA
     echo "总活跃用户：" . $redis->bitCount('stat2') . PHP_EOL;
     ```
 
-#### 使用场景三：用户在线状态  
+#### 1.2.3.3. 使用场景三：用户在线状态  
 &emsp; 前段时间开发一个项目，对方给我提供了一个查询当前用户是否在线的接口。不了解对方是怎么做的，自己考虑了一下，使用bitmap是一个节约空间效率又高的一种方法，只需要一个key，然后用户ID为offset，如果在线就设置为1，不在线就设置为0，和上面的场景一样，5000W用户只需要6MB的空间。  
 
     ```php
