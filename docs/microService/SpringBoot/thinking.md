@@ -1,6 +1,13 @@
 
 
 # 学习SpringBoot的感悟  
+
+<!-- 
+ 非常有必要了解的Springboot启动扩展点 
+ https://mp.weixin.qq.com/s/H9hcQHZUNhuRodEPiVOHfQ
+ https://mp.weixin.qq.com/s/Z5meCbbfgUmnLnnWjeEeVw
+-->
+
 ## 前言  
 &emsp; SpringBoot基本上是Spring框架的扩展，它消除了设置Spring应用程序所需的 XML配置，为更快，更高效的开发生态系统铺平了道路。  
 

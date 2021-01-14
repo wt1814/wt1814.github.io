@@ -247,11 +247,6 @@
 [Gateway](/docs/microService/microservices/Gateway.md)  
 
 ### SpringBoot  
-<!-- 
- 非常有必要了解的Springboot启动扩展点 
- https://mp.weixin.qq.com/s/H9hcQHZUNhuRodEPiVOHfQ
- https://mp.weixin.qq.com/s/Z5meCbbfgUmnLnnWjeEeVw
--->
 [学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
 [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
 [SpringBoot启动过程-SpringApplication初始化](/docs/microService/SpringBoot/SpringApplication初始化.md)  
@@ -264,7 +259,7 @@
 [内置Tomcat](/docs/microService/SpringBoot/内置Tomcat.md)  
 [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
-### SpringCloud   
+### SpringCloud    
 [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/0.Netflix.md)  
 [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/1.Eureka.md)  
 [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/2.Ribbon.md)  
@@ -275,11 +270,6 @@
 [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/6.Sleuth.md)  
 &emsp; [SpringMVC、dubbo集成zipkin](/docs/microService/SpringCloudNetflix/zipkin.md)  
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
-<!-- 
-[Spring Cloud Config]  
-[Spring Cloud Bus]  
-[Spring Cloud Security]  
--->
 
 ### Dubbo  
 [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
@@ -319,7 +309,6 @@
 [Redis其他功能]  
 &emsp; [Redis发布订阅](/docs/microService/Redis/pub.md)  
 &emsp; [Redis和lua](/docs/microService/Redis/pub.md)  
-[Redis配置文件](/docs/microService/Redis/RedisConf.md)  
 [Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
 [Redis原理](/docs/microService/Redis/Redis原理.md)  
 &emsp; [Redis持久化](/docs/microService/Redis/Redis持久化.md)  
@@ -329,6 +318,7 @@
 &emsp; [Redis主从复制](/docs/microService/Redis/Redis主从复制.md)  
 &emsp; [Redis哨兵模式](/docs/microService/Redis/Redis哨兵模式.md)  
 &emsp; [Redis集群模式](/docs/microService/Redis/Redis集群模式.md)  
+[Redis配置文件](/docs/microService/Redis/RedisConf.md)  
 [Redis运维](/docs/microService/Redis/Redis运维.md)  
 [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 [Redis问题及排查](/docs/microService/Redis/problem.md)  

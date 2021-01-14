@@ -1011,4 +1011,3 @@ private void handleResultSet(ResultSetWrapper rsw, ResultMap resultMap, List<Obj
 
 ## 1.6. 执行阶段总结  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-17.png)  
-

@@ -224,8 +224,7 @@
 * 分布式缓存
     * [分布式缓存](/docs/cache/DistributedCache.md) 
     * [缓存算法](/docs/cache/CacheAlgorithm.md)  
-    * [Redis]
-    * [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
+    * [Redis](/docs/microService/Redis/RedisSummary.md)   
     * [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
         * [Redis的API](/docs/microService/Redis/RedisAPI.md)  
         * [Redisson](/docs/microService/Redis/Redisson.md)  
@@ -234,7 +233,6 @@
     * [Redis其他功能]  
         * [Redis发布订阅](/docs/microService/Redis/pub.md)  
         * [Redis和lua](/docs/microService/Redis/pub.md)  
-    * [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
     * [Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
     * [Redis原理](/docs/microService/Redis/Redis原理.md)  
         * [Redis持久化](/docs/microService/Redis/Redis持久化.md)  
@@ -244,6 +242,7 @@
         * [Redis主从复制](/docs/microService/Redis/Redis主从复制.md)  
         * [Redis哨兵模式](/docs/microService/Redis/Redis哨兵模式.md)  
         * [Redis集群模式](/docs/microService/Redis/Redis集群模式.md)  
+    * [Redis配置文件](/docs/microService/Redis/RedisConf.md)  
     * [Redis运维](/docs/microService/Redis/Redis运维.md)  
     * [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
     * [Redis问题及排查](/docs/microService/Redis/problem.md)  
