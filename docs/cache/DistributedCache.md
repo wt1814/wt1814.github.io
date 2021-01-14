@@ -21,34 +21,15 @@
 
 <!-- /TOC -->
 
+# 1. 分布式缓存  
 <!-- 
 
-什么是集群？什么又是负载均衡？你说得清楚吗？ 
-https://mp.weixin.qq.com/s/bIpaqo2qQeXfO_vEaq7CNg
-京东的热点key探测系统发布，单机 QPS 提升至 37 万 
-https://mp.weixin.qq.com/s/UN-lk8KXsbhdF8u09a4GOA
+-->
+<!-- 
+~~
 缓存与数据库一致性问题深度剖析
 https://mp.weixin.qq.com/s/NUgsE7PYcZTujsEhJtMdIQ
-
-缓存与数据库一致性问题深度剖析
-https://mp.weixin.qq.com/s/5amSPJC7e4_3ewtWPATMKw
-缓存预热、缓存降级
-https://mp.weixin.qq.com/s/3v2-CkZEpoQB-n1KA0-fdA
-如何优化缓存中百万级并发的KEY 
-https://mp.weixin.qq.com/s/Bm3JlCdBF8UdlOjUgKyqow
-漫话：如何给女朋友解释什么是缓存穿透、缓存击穿、缓存雪崩？ 
-https://mp.weixin.qq.com/s/ikWdYpc2kAY0Bp7-Ajiquw
-
 -->
-
-<!-- 
-https://mp.weixin.qq.com/s/zGIKHCUyc8ggB7FcX-UydA
-
- 关于Redis缓存的三个一定要知道的问题哟！ 
- https://mp.weixin.qq.com/s/msxruS9a7Xa2niMs2sGxPA
-
--->
-# 1. 分布式缓存  
 &emsp; **<font color = "red">简单解决方案：缓存穿透，空值缓存；缓存击穿和缓存雪崩，可以设置缓存时间为随机值或永久不过期；缓存与数据库的双写一致性，可以使用延迟双删策略。</font>**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-32.png)  

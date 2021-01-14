@@ -579,7 +579,6 @@ class TestDemo2 {
 Java继承详解
 https://mp.weixin.qq.com/s/eiU_7QUtwgQhAr7nZlFEDQ
 -->
-
 &emsp; 继承的特性：
 * 子类拥有父类非 private 的属性、方法。  
 * 子类可以拥有自己的属性和方法，即子类可以对父类进行扩展。  
@@ -594,7 +593,6 @@ https://mp.weixin.qq.com/s/eiU_7QUtwgQhAr7nZlFEDQ
 2. **super(parameter1,parameter2....)，主要用在（父类中没有无参构造函数）子类的构造器中显示地调用父类的构造器，且必须是子类构造器的第一个语句。**  
 
 ### 1.6.3. 多态  
-
 <!-- 
 Java 多态的实现机制
 https://mp.weixin.qq.com/s/a3gS8-rhINeMORRczwKhrg
