@@ -302,7 +302,7 @@
 
 #### Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
-[Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
+[Redis基本数据类型](/docs/microService/Redis/RedisStructure.md)  
 &emsp; [Redis的API](/docs/microService/Redis/RedisAPI.md)  
 &emsp; [Redisson](/docs/microService/Redis/Redisson.md)  
 &emsp; [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
@@ -323,10 +323,6 @@
 [Redis运维](/docs/microService/Redis/Redis运维.md)  
 [Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 [Redis问题及排查](/docs/microService/Redis/problem.md)  
-<!-- 
-Redis的虚拟内存
-https://mp.weixin.qq.com/s/CmfUSVfMss8TeQkLrE8GGQ
--->
 
 ### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  

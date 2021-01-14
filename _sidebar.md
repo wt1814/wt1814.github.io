@@ -225,7 +225,7 @@
     * [分布式缓存](/docs/cache/DistributedCache.md) 
     * [缓存算法](/docs/cache/CacheAlgorithm.md)  
     * [Redis](/docs/microService/Redis/RedisSummary.md)   
-    * [Redis基本数据类型](/docs/microService/Redis/Redis数据结构.md)  
+    * [Redis基本数据类型](/docs/microService/Redis/RedisStructure.md)  
         * [Redis的API](/docs/microService/Redis/RedisAPI.md)  
         * [Redisson](/docs/microService/Redis/Redisson.md)  
         * [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  

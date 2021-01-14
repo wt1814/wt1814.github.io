@@ -16,52 +16,17 @@
 <!--
  给你一个亿的keys，Redis如何统计？ 
  https://mp.weixin.qq.com/s/LDdd9a1A1g649SnpXF2a6g
-Pipeline 有什么好处，为什么要用pipeline？  
-答：可以将多次 IO 往返的时间缩减为一次，前提是 pipeline 执行的指令之间没有因果相关性。使用 redis-benchmark 进行压测的时候可以发现影响 redis 的 QPS 峰值的一个重要因素是 pipeline 批次指令的数目。 
-
-
-Redis 如何做内存优化？
-
-尽可能使用散列表（ hashes）， 散列表（ 是说散列表里面存储的数少） 使用 的内存非常小， 所以你应该尽可能的将你的数据模型抽象到一个散列表里面。比如 你的 web 系统中有一个用户对象， 不要为这个用户的名称， 姓氏， 邮箱， 密码设置 单独的 key,而是应该把这个用户的所有信息存储到一张散列表里。  
-
-
-假如 Redis 里面有 1 亿个key，其中有 10w 个key 是以某个固定的已知的前缀开头的，如果将它们全部找出来？
-答： 使用 keys 指令可以扫出指定模式的 key 列表。  
-对方接着追问： 如果这个 redis 正在给线上的业务提供服务， 那使用 keys 指令会有什么问题？  
-
-这个时候你要回答 redis 关键的一个特性：redis 的单线程的。keys 指令会导致线程阻塞一段时间， 线上服务会停顿， 直到指令执行完毕， 服务才能恢复。这个时候可以使用scan 指令， scan 指令可以无阻塞的提取出指定模式的 key 列表， 但是会有一定的重复概率， 在客户端做一次去重就可以了， 但是整体所花费的时间会比直接用 keys 指令长。   
-
-
-使用过 Redis 做异步队列么，你是怎么用的？
-
-答：一般使用 list 结构作为队列，rpush 生产消息，lpop 消费消息。当 lpop 没有消息的时候， 要适当 sleep 一会再重试。
-
-如果对方追问可不可以不用 sleep 呢？
-
-list 还有个指令叫 blpop，在没有消息的时候，它会阻塞住直到消息到来。如果对方追问能不能生产一次消费多次呢？ 使用 pub/sub 主题订阅者模式， 可以实现1:N 的消息队列。
-
-如果对方追问 pub/sub 有什么缺点？
-
-在消费者下线的情况下，生产的消息会丢失，得使用专业的消息队列如 RabbitMQ 等。
-
-如果对方追问 redis 如何实现延时队列？
-
-我估计现在你很想把面试官一棒打死如果你手上有一根棒球棍的话， 怎么问的这么详细。但是你很克制，然后神态自若的回答道：使用 sortedset，拿时间戳作为score，消息内容作为 key 调用 zadd 来生产消息，消费者用 zrangebyscore 指令获取 N 秒之前的数据轮询进行处理。到这里， 面试官暗地里已经对你竖起了大拇指。但是他不知道的是此刻你却竖起了中指， 在椅子背后。
-
 
 Redis五大数据类型使用场景 
 https://mp.weixin.qq.com/s/QKFXW-Z4A6hj9yB_V1gb2A
-
 -->
-
-
 
 # 1. Redis  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-72.png)  
 &emsp; <font color="red">整体参考《Redis开发与运维》，数据结构参考《Redis深度历险：核心原理和应用实践》</font>  
 
 ## 1.1. Redis简介  
-&emsp; Redis是一个开源，内存存储的数据结构服务器，可用作数据库，高速缓存和消息队列代理。  
+&emsp; Redis是一个开源，内存存储的数据结构服务器，可用作数据库，高速缓存和消息队列。  
 1. 支持字符串、哈希表、列表、集合、有序集合，位图，hyperloglogs等丰富的数据类型。  
 2. 提供Lua脚本、LRU收回、事务以及不同级别磁盘持久化功能。  
 3. 同时通过Redis Sentinel提供高可用，通过Redis Cluster提供自动分区。  
@@ -69,7 +34,7 @@ https://mp.weixin.qq.com/s/QKFXW-Z4A6hj9yB_V1gb2A
 ## 1.2. Redis的数据类型  
 &emsp; Redis属于<key,value\>形式的数据结构。key和value的最大长度限制是512M。  
 1. Redis的key是字符串类型，但是key中不能包括边界字符，不能空格和换行。  
-2. Redis的value支持五种基本数据类型<font color = "lime">（注意是数据类型不是数据结构）</font>：String（字符串），Hash（哈希），List（列表），Set（集合）及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
+2. Redis的value支持五种基本数据类型<font color = "lime">(注意是数据类型不是数据结构)</font>：String(字符串)，Hash(哈希)，List(列表)，Set(集合)及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
 3. Redis还有几种高级数据类型：bitmaps、HyperLogLog、geo、Streams（5.0最新版本数据结构）。  
 4. Redis提供插件功能使用布隆过滤器。  
 5. Redis内部采用对象系统RedisObject构建数据类型。  
@@ -95,7 +60,7 @@ https://mp.weixin.qq.com/s/QKFXW-Z4A6hj9yB_V1gb2A
 &emsp; <font color = "lime">Hash与String同样是存储字符串（存储单个字符串时使用String；存储对象时使用Hash，勿将对象序列化后存String类型），它们的主要区别：</font>  
 1. 把所有相关的值聚集到一个 key 中，节省内存空间  
 2. 只使用一个 key，减少 key 冲突  
-3. 当需要批量获取值的时候，只需要使用一个命令，减少内存/IO/CPU 的消耗 Hash 
+3. 当需要批量获取值的时候，只需要使用一个命令，减少内存/IO/CPU 的消耗  
 
 &emsp; **不适合的场景：** 
 1. Field 不能单独设置过期时间  
@@ -111,7 +76,6 @@ https://mp.weixin.qq.com/s/QKFXW-Z4A6hj9yB_V1gb2A
 &emsp; +1：hincr。-1：hdecr。删除：hdel。全选：hgetall。商品数：hlen。  
 
 ### 1.2.3. List  
- 
 &emsp; 存储有序的字符串（从左到右），元素可以重复。可以充当队列和栈的角色。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-61.png)  
 
@@ -170,15 +134,8 @@ https://mp.weixin.qq.com/s/QKFXW-Z4A6hj9yB_V1gb2A
 * 用户关注、推荐模型  
 
 ### 1.2.5. ZSet  
-
-<!-- 
-Redis 数据类型及应用场景——zset
-https://www.jianshu.com/p/0cccf031da00
-读懂才会用：Redis ZSet 的几种使用场景
-https://zhuanlan.zhihu.com/p/147912757
--->
-
-&emsp; sorted set，有序的 set，每个元素有个 score。 有序集合中的元素不能重复，但是score可以重复。score 相同时，按照 key 的 ASCII 码排序。  
+&emsp; sorted set，有序的 set，每个元素有个 score。有序集合中的元素不能重复，但是score可以重复。score 相同时，按照 key 的 ASCII 码排序。  
+&emsp; 有序集合(sort set)是在集合类型的基础上为每个元素关联一个分数，不仅可以完成插入，删除和判断元素是否存在等集合操作，还能够获得分数最高（或最低）的前N个元素，获得指定分数范围内的元素等分数有关的操作。虽然集合中每个元素都是不相同的，但是分数可以相同。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-70.png)  
 
 &emsp; 数据结构对比： 
@@ -189,7 +146,16 @@ https://zhuanlan.zhihu.com/p/147912757
 |集合 set |否 |否| 无 |
 |有序集合 zset |否 |是 |分值 score|
 
+&emsp; 命令：  
+<!-- 
+Redis 数据类型及应用场景——zset
+https://www.jianshu.com/p/0cccf031da00
+-->
 &emsp; 使用场景  
+<!-- 
+读懂才会用：Redis ZSet 的几种使用场景
+https://zhuanlan.zhihu.com/p/147912757
+-->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-104.png)  
 
 * 排行榜  
