@@ -20,7 +20,7 @@
 # 1. Redis的API
 
 ## 1.1. Redis客户端
-&emsp; 官网推荐的 Java 客户端有 3 个 Jedis，Redisson 和 Luttuce。  
+&emsp; **官网推荐的 Java 客户端有 3 个 Jedis，[Redisson](https://github.com/redisson/redisson/wiki/%E7%9B%AE%E5%BD%95) 和 Luttuce。**  
 
 * Jedis，轻量，简洁，便于集成和改造。  
 * Lettuce   
@@ -115,7 +115,7 @@ https://www.cnblogs.com/DreamDrive/p/5772198.html
 
 ## 1.5. List操作命令  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-64.png)  
-
+&emsp; List中分页查询命令LRANGE  
 
 ## 1.6. Set操作命令  
 &emsp; 可以分为集合内操作、集合间操作。
@@ -124,7 +124,7 @@ https://www.cnblogs.com/DreamDrive/p/5772198.html
 
 ## 1.7. Zset操作命令  
 &emsp; 可以分为集合内操作、集合间操作。  
-
+&emsp; Sorted Set分页查询命令ZRANGEBYSCORE。  
 
 
 

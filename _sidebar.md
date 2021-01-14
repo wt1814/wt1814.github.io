@@ -227,8 +227,7 @@
     * [Redis](/docs/microService/Redis/RedisSummary.md)   
     * [Redis基本数据类型](/docs/microService/Redis/RedisStructure.md)  
         * [Redis的API](/docs/microService/Redis/RedisAPI.md)  
-        * [Redisson](/docs/microService/Redis/Redisson.md)  
-        * [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
+        * [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
         * [Redis底层实现](/docs/microService/Redis/Redis底层实现.md)  
     * [Redis其他功能]  
         * [Redis发布订阅](/docs/microService/Redis/pub.md)  

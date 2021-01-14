@@ -304,8 +304,7 @@
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
 [Redis基本数据类型](/docs/microService/Redis/RedisStructure.md)  
 &emsp; [Redis的API](/docs/microService/Redis/RedisAPI.md)  
-&emsp; [Redisson](/docs/microService/Redis/Redisson.md)  
-&emsp; [Redis高级数据类型](/docs/microService/Redis/Redis高级数据类型.md)  
+&emsp; [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
 &emsp; [Redis底层实现](/docs/microService/Redis/Redis底层实现.md)  
 [Redis其他功能]  
 &emsp; [Redis发布订阅](/docs/microService/Redis/pub.md)  

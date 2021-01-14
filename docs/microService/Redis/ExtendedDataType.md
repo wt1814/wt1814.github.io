@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. Redis高级数据类型](#1-redis高级数据类型)
+- [1. Redis扩展数据类型](#1-redis扩展数据类型)
     - [1.1. 前言：网页流量统计里的PV、UV](#11-前言网页流量统计里的pvuv)
     - [1.2. Bitmap，位图](#12-bitmap位图)
         - [1.2.1. 位图介绍](#121-位图介绍)
@@ -25,8 +25,6 @@
 
 <!-- /TOC -->
 
-
-# 1. Redis高级数据类型  
 &emsp; **<font color = "lime">总结：</font>**  
 1. <font color = "lime">Bitmap、HyperLogLog都是作为Redis的Value值。</font>  
 2. <font color = "lime">Redis中的Bitmap：key可以为某一天、某一ID，Bitmap中bit可以存储用户的任意信息。所以Redis Bitmap可以用作统计信息。</font>  
@@ -34,8 +32,22 @@
     * 基数统计是指找出集合中不重复元素，用于去重。  
     * 使用Redis统计集合的基数一般有三种方法，分别是使用Redis的 HashMap，BitMap和HyperLogLog。  
     * HyperLogLog内存空间消耗少，但存在误差0.81%。  
-
+    
+# 1. Redis扩展数据类型  
+<!-- 
+https://www.yuque.com/happy-coder/qka0of/ekdfzb
+给你一个亿的keys，Redis如何统计？ 
+ https://mp.weixin.qq.com/s/LDdd9a1A1g649SnpXF2a6g
+-->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-73.png)  
+
+&emsp; Redis提供了一些扩展数据类型和时序数据库模块：  
+
+bitmap：基于bit位的存储，每一个bit存储0或1，一般用来进行海量数据的精准判重  
+HyperLogLog：一般用来对海量数据进行基于概率的基数统计，比如说网站的独立访客数、独立IP数等  
+Geo：基于地理空间的数据存储，常应用在那些基于位置服务，也就是我们常说的LBS(Location-Based Service)的应用，比如说打车等生活服务类应用  
+Stream：消息流，Redis自5.0版本之后，引入了消息队列的机制，也就是我们熟悉的Pub/Sub（发布/订阅）机制。  
+RedisTimeSeries：时间数据库模块，主要存储一些跟时间戳相关，需要范围查询，聚合计算等场景的数据集    
 
 ## 1.1. 前言：网页流量统计里的PV、UV
 &emsp; PV（Page View）访问量, 即页面浏览量或点击量，衡量网站用户访问的网页数量；在一定统计周期内用户每打开或刷新一个页面就记录1次，多次打开或刷新同一页面则浏览量累计。  
