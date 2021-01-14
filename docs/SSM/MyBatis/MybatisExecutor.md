@@ -4,19 +4,19 @@
 
 - [1. MyBatis解析](#1-mybatis解析)
     - [1.1. Mybatis工作流程概述](#11-mybatis工作流程概述)
-    - [1.2. Mybatis初始化](#12-mybatis初始化)
-    - [1.3. 配置文件加载](#13-配置文件加载)
-    - [1.4. 创建SqlSessionFactory](#14-创建sqlsessionfactory)
-    - [1.5. 创建SqlSession](#15-创建sqlsession)
-    - [1.6. 执行具体的sql请求](#16-执行具体的sql请求)
-        - [1.6.1. 查询语句执行逻辑](#161-查询语句执行逻辑)
-        - [1.6.2. SQL执行（二级缓存）](#162-sql执行二级缓存)
-        - [1.6.3. SQL查询（一级缓存）](#163-sql查询一级缓存)
-        - [1.6.4. SQL执行（数据库查询）](#164-sql执行数据库查询)
-        - [1.6.5. 参数赋值](#165-参数赋值)
-        - [1.6.6. 正式执行](#166-正式执行)
-        - [1.6.7. 结果集处理](#167-结果集处理)
-    - [1.7. 执行阶段总结](#17-执行阶段总结)
+    - [1.2. 配置文件加载](#12-配置文件加载)
+    - [1.3. 解析配置文件，创建SqlSessionFactory](#13-解析配置文件创建sqlsessionfactory)
+    - [1.4. 创建SqlSession](#14-创建sqlsession)
+    - [1.5. 执行具体的sql请求](#15-执行具体的sql请求)
+        - [1.5.1. Mapper接口代理类的生成](#151-mapper接口代理类的生成)
+        - [1.5.2. 查询语句执行逻辑](#152-查询语句执行逻辑)
+        - [1.5.3. SQL执行（二级缓存）](#153-sql执行二级缓存)
+        - [1.5.4. SQL查询（一级缓存）](#154-sql查询一级缓存)
+        - [1.5.5. SQL执行（数据库查询）](#155-sql执行数据库查询)
+        - [1.5.6. 参数赋值](#156-参数赋值)
+        - [1.5.7. 正式执行](#157-正式执行)
+        - [1.5.8. 结果集处理](#158-结果集处理)
+    - [1.6. 执行阶段总结](#16-执行阶段总结)
 
 <!-- /TOC -->
 
@@ -28,6 +28,9 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-30.png)  
 
 ## 1.1. Mybatis工作流程概述  
+
+
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-13.png)  
 &emsp; Mybatis工作流程概述：  
 1. 读取核心配置文件并返回InputStream流对象。
@@ -37,9 +40,10 @@
 5. 对执行结果进行二次封装。
 6. 提交与事务。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-15.png)  
+&emsp; **定义XXXMapper接口类并利用它来做CRUD操作时，Mybatis是利用了动态代理的技术生成代理类。**   
 
-## 1.2. Mybatis初始化  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-15.png)  
+ 
 &emsp; MyBatis的初始化可以有两种方式：  
 
 * 基于XML配置文件：基于XML配置文件的方式是将MyBatis的所有配置信息放在XML文件中，MyBatis通过加载并XML配置文件，将配置文信息组装成内部的Configuration对象。  
@@ -69,7 +73,9 @@ public static void main(String[] args) throws Exception {
 }
 ```
 
-## 1.3. 配置文件加载  
+&emsp; **<font color = "climes">sqlSession.getMapper()方法获取DemoMapper对象，实际上这里是获取了DemoMapper接口的代理类，然后再由代理类执行方法。</font>**  
+
+## 1.2. 配置文件加载  
 &emsp; Resources.getResourceAsStream(resource)解读：  
 &emsp; Resources是mybatis提供的一个加载资源文件的工具类。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-16.png)  
@@ -112,7 +118,7 @@ InputStream getResourceAsStream(String resource, ClassLoader[] classLoader) {
 }
 ```
 
-## 1.4. 创建SqlSessionFactory  
+## 1.3. 解析配置文件，创建SqlSessionFactory  
 &emsp; **<font color = "lime">SqlSessionFactory对象的生成使用了建造者模式。</font>**  
 
 ```java
@@ -190,6 +196,7 @@ private void parseConfiguration(XNode root) {
         // typeHandlers
         typeHandlerElement(root.evalNode("typeHandlers"));
         //主要 <mappers> 指向存放SQL的xxxxMapper.xml文件
+        //解析mapper映射器文件
         mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
         throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -260,6 +267,7 @@ private void mapperElement(XNode parent) throws Exception {
 ```
 
 &emsp; 根据以上代码可以分析，在写mapper映射文件的地址时不仅可以写成resource，还可以写成url和mapperClass的形式。如果配置文件中写的是通过resource来加载mapper.xml的，会通过XMLMapperBuilder来进行解析。  
+
 &emsp; XMLMapperBuilder#parse()方法  
 
 ```java
@@ -277,8 +285,9 @@ public void parse() {
     parsePendingCacheRefs();
     parsePendingStatements();
   }
+```
 
-
+```java
 //解析mapper文件里面的节点
 // 拿到里面配置的配置项 最终封装成一个MapperedStatemanet
 private void configurationElement(XNode context) {
@@ -496,7 +505,7 @@ public MappedStatement addMappedStatement(
 
 <!-- 还有没看的 -->
 
-## 1.5. 创建SqlSession  
+## 1.4. 创建SqlSession  
 &emsp; openSession中实际上对SqlSession做了进一步的加工封装，增加了事务、执行器等。  
 
 ```java
@@ -541,7 +550,7 @@ public DefaultSqlSession(Configuration configuration, Executor executor, boolean
 ```
 &emsp; executor在这一步得到创建，具体的使用在下一步。  
 
-## 1.6. 执行具体的sql请求  
+## 1.5. 执行具体的sql请求  
 &emsp; 平时使用MyBatis的时候，DAO层编码：  
 
 ```java
@@ -581,8 +590,6 @@ public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
 ```
 &emsp; 可以看到这里mapperProxyFactory对象会从一个叫做knownMappers的对象中以type为key取出值，这个knownMappers是一个HashMap，存放了DemoMapper对象，而这里的type，就是上面写的Mapper接口。  
 
-    knownMappers是在什么时候生成的？
-    在解析的时候，会调用parse()方法，这个方法内部有一个bindMapperForNamespace方法，而就是这个方法完成了knownMappers的生成，并且将Mapper接口put进去。  
 
 ```java
 public void parse() {
@@ -600,6 +607,13 @@ public void parse() {
     parsePendingCacheRefs();
     parsePendingStatements();
 }
+```
+
+### 1.5.1. Mapper接口代理类的生成
+&emsp; knownMappers是在什么时候生成的？
+&emsp; 在解析的时候，会调用parse()方法，这个方法内部有一个bindMapperForNamespace方法，而就是这个方法完成了knownMappers的生成，并且将Mapper接口put进去。  
+
+```java
 private void bindMapperForNamespace() {
     String namespace = builderAssistant.getCurrentNamespace();
     if (namespace != null) {
@@ -712,7 +726,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
 &emsp; 在方法开始代理之前，首先会先判断是否调用了Object类的方法，如果是，那么MyBatis不会去改变其行为，直接返回，如果是默认方法，则绑定到代理对象中然后调用（不是本文的重点），如果都不是，那么就是定义的mapper接口方法了，那么就开始执行。  
 &emsp; 执行方法需要一个MapperMethod对象，这个对象是MyBatis执行方法逻辑使用的，MyBatis这里获取MapperMethod对象的方式是，首先去方法缓存中看看是否已经存在了，如果不存在则new一个然后存入缓存中，因为创建代理对象是十分消耗资源的操作。总而言之，这里会得到一个MapperMethod对象，然后通过MapperMethod的excute()方法，来真正地执行逻辑。  
 
-### 1.6.1. 查询语句执行逻辑  
+### 1.5.2. 查询语句执行逻辑  
 &emsp; 这里首先会判断SQL的类型：SELECT|DELETE|UPDATE|INSERT，示例中是SELECT，其它的其实都差不多。判断SQL类型为SELECT之后，就开始判断返回值类型，根据不同的情况做不同的操作。然后开始获取参数，执行SQL。  
 
 ```java
@@ -836,7 +850,7 @@ public Object getNamedParams(Object[] args) {
 }
 ```
 
-### 1.6.2. SQL执行（二级缓存）  
+### 1.5.3. SQL执行（二级缓存）  
 &emsp; 执行SQL的核心方法就是selectList，即使是selectOne，底层实际上也是调用了selectList方法，然后取第一个而已。  
 
 ```java
@@ -898,7 +912,7 @@ public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds r
 ```
 &emsp; 首先MyBatis在查询时，不会直接查询数据库，而是会进行二级缓存的查询，由于二级缓存的作用域是namespace，也可以理解为一个mapper，所以还会判断一下这个mapper是否开启了二级缓存，如果没有开启，则进入一级缓存继续查询。  
 
-### 1.6.3. SQL查询（一级缓存）  
+### 1.5.4. SQL查询（一级缓存）  
 
 ```java
 //一级缓存查询
@@ -945,7 +959,7 @@ public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBoun
 ```
 &emsp; 如果一级缓存查到了，那么直接就返回结果了，如果一级缓存没有查到结果，那么最终会进入数据库进行查询。  
 
-### 1.6.4. SQL执行（数据库查询）  
+### 1.5.5. SQL执行（数据库查询）  
 
 ```java
 //数据库查询
@@ -985,7 +999,7 @@ public <E> List<E> doQuery(MappedStatement ms, Object parameter, RowBounds rowBo
 ```
 &emsp; 在真正的数据库查询之前，语句还是这样的：select * from test where id = ?，所以要先将占位符换成真实的参数值，所以接下来会进行参数的赋值。  
 
-### 1.6.5. 参数赋值  
+### 1.5.6. 参数赋值  
 &emsp; 因为MyBatis底层封装的就是java最基本的jdbc，所以赋值一定也是调用jdbc的putString()方法。  
 
 ```java
@@ -1052,7 +1066,7 @@ public void setNonNullParameter(PreparedStatement ps, int i, String parameter, J
 /**********************参数赋值部分*********************/
 ```
 
-### 1.6.6. 正式执行  
+### 1.5.7. 正式执行  
 &emsp; 当参数赋值完毕后，SQL就可以执行了，在上文中的代码可以看到当参数赋值完毕后，直接通过hanler.query()方法进行数据库查询。  
 
 ```java
@@ -1066,7 +1080,7 @@ public <E> List<E> query(Statement statement, ResultHandler resultHandler) throw
 }
 ```
 
-### 1.6.7. 结果集处理
+### 1.5.8. 结果集处理
 
 ```java
 @Override
@@ -1138,6 +1152,6 @@ private void handleResultSet(ResultSetWrapper rsw, ResultMap resultMap, List<Obj
 }
 ```
 
-## 1.7. 执行阶段总结  
+## 1.6. 执行阶段总结  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-17.png)  
 

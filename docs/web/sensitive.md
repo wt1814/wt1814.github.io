@@ -11,4 +11,7 @@ https://mp.weixin.qq.com/s/4xi0K9s_H4phMI-mAGurIw
   大厂也在用的 6种 数据脱敏方案，别做泄密内鬼 
   https://mp.weixin.qq.com/s/_Dgekk1AJsIx0TTlnH6kUA
 
+ 身份证、手机号加密存储的一些思路 
+ https://mp.weixin.qq.com/s/Pun61iQjHO7PugOoPySSWg
+
 -->

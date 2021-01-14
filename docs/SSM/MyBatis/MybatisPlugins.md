@@ -13,7 +13,6 @@
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-32.png)  
 
-
 # 1. Mybatis插件  
 ## 1.1. Mybatis插件简介   
 &emsp; <font color="red">编写Mybatis插件前，需要对Mybatis的运行原理、Mybatis插件原理有一定的了解。</font>  
@@ -27,7 +26,7 @@
 * 性能监控  
 &emsp; 对于SQL语句执行的性能监控，可以通过拦截Executor类的update, query等方法，用日志记录每个方法执行的时间；  
 
-&emsp; 其实mybatis扩展性很强，基于插件机制，基本上可以控制SQL执行的各个阶段，如执行阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。  
+&emsp; 其实mybatis扩展性很强，**<font color = "clime">基于插件机制，基本上可以控制SQL执行的各个阶段，如执行阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。</font>**  
 
 ## 1.2. Mybatis插件编码示例  
 &emsp; 1. 写一个打印SQL执行时间的插件  
@@ -82,7 +81,7 @@ select id, role_name as roleName, note from role where id = ?, cost is 35
 ```
 
 ## 1.3. Mybatis插件运行机制  
-&emsp; **<font color="lime">Mybaits插件的实现主要用了责任链模式和动态代理。</font>** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
+&emsp; **<font color="clime">Mybaits插件的实现主要用了责任链模式和动态代理。</font>** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
 
 &emsp; 有哪些对象允许被代理？有哪些方法可以被拦截？在 MyBatis官网有参考，www.mybatis.org/mybatis-3/zh/configuration.html#plugins 。  
 &emsp; 支持拦截的方法：  
@@ -284,4 +283,3 @@ public class Invocation {
 }
 ```
 &emsp; 只有一个方法proceed()方法，而proceed()只是执行被拦截的方法。这时清楚了应该在Interceptor对象的intercept方法中做哪些操作了，只需要写增强的逻辑，最后调用Invocation对象的proceed()方法即可。  
-

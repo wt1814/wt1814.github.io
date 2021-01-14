@@ -18,16 +18,11 @@
 <!-- 
 [MyBatis] 缓存模块实现原理剖析 
 https://mp.weixin.qq.com/s/_V8d37Oo3PMubLu429K2Lw
-Mybatis一级缓存和二级缓存总结
-https://www.cnblogs.com/jelly12345/p/11985647.html
-
- 带你彻底掌握 MyBatis缓存工作原理 
- https://mp.weixin.qq.com/s/nkoUjud9_-QhG5Tp40gFeA
-
+带你彻底掌握 MyBatis缓存工作原理 
+https://mp.weixin.qq.com/s/nkoUjud9_-QhG5Tp40gFeA
 -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-31.png)  
-
 
 # 1. MyBatis缓存  
 &emsp; MyBatis支持声明式数据缓存（declarative data caching）。MyBatis提供了默认基于Java HashMap的缓存实现，以及用于与OSCache、Ehcache、Hazelcast和Memcached连接的默认连接器。MyBatis还提供API供其他缓存实现使用。  
@@ -316,6 +311,10 @@ public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBoun
 ```
 
 ## 1.4. Spring整合MyBatis缓存失效问题  
+<!-- 
+Mybatis一级缓存和二级缓存总结
+https://www.cnblogs.com/jelly12345/p/11985647.html
+-->
 &emsp; 一级缓存的作用域是SqlSession，而使用者可以自定义SqlSession什么时候出现什么时候销毁，在这段期间一级缓存都是存在的。当使用者调用close()方法之后，就会销毁一级缓存。  
 &emsp; 但是，MyBatis和Spring整合之后，Spring跳过了SqlSessionFactory这一步，可以直接调用Mapper，导致在操作完数据库之后，Spring就将SqlSession就销毁了，一级缓存就随之销毁了，所以一级缓存就失效了。  
 
