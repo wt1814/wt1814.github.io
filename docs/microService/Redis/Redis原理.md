@@ -22,6 +22,9 @@
 https://mp.weixin.qq.com/s/5Kdz3-Xx-tMPbhKMGundfw
 
 https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
+
+Redis 6.0 新特性-多线程连环13问！ 
+https://mp.weixin.qq.com/s/FZu3acwK6zrCBZQ_3HoUgw
 -->
 
 Redis是单线程的，为什么采用单线程的Redis也会如此之快呢？  

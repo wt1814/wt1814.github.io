@@ -306,11 +306,11 @@
 &emsp; [Redis的API](/docs/microService/Redis/RedisAPI.md)  
 &emsp; [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
 &emsp; [Redis底层实现](/docs/microService/Redis/Redis底层实现.md)  
-[Redis其他功能]  
+[Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
+[Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
+[Redis内置功能](/docs/microService/Redis/BuiltIn.md)    
 &emsp; [Redis发布订阅](/docs/microService/Redis/pub.md)  
 &emsp; [Redis和lua](/docs/microService/Redis/pub.md)  
-[Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
-[Redis原理](/docs/microService/Redis/Redis原理.md)  
 &emsp; [Redis持久化](/docs/microService/Redis/Redis持久化.md)  
 &emsp; [Redis淘汰策略](/docs/microService/Redis/Redis淘汰.md)  
 &emsp; [Redis事务](/docs/microService/Redis/Redis事务.md)  
@@ -318,9 +318,8 @@
 &emsp; [Redis主从复制](/docs/microService/Redis/Redis主从复制.md)  
 &emsp; [Redis哨兵模式](/docs/microService/Redis/Redis哨兵模式.md)  
 &emsp; [Redis集群模式](/docs/microService/Redis/Redis集群模式.md)  
-[Redis配置文件](/docs/microService/Redis/RedisConf.md)  
+[Redis原理](/docs/microService/Redis/Redis原理.md)  
 [Redis运维](/docs/microService/Redis/Redis运维.md)  
-[Redis6.0](/docs/microService/Redis/Redis6.0.md)  
 [Redis问题及排查](/docs/microService/Redis/problem.md)  
 
 ### 分布式消息队列  
