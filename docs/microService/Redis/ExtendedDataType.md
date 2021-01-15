@@ -22,6 +22,7 @@
     - [1.4. Geospatial地图](#14-geospatial地图)
     - [1.5. Streams消息队列](#15-streams消息队列)
     - [1.6. Redis中的布隆过滤器](#16-redis中的布隆过滤器)
+    - [1.7. 小结](#17-小结)
 
 <!-- /TOC -->
 
@@ -35,19 +36,22 @@
     
 # 1. Redis扩展数据类型  
 <!-- 
+
+-->
+<!-- 
+~~
+RedisTimeSeries
 https://www.yuque.com/happy-coder/qka0of/ekdfzb
-给你一个亿的keys，Redis如何统计？ 
- https://mp.weixin.qq.com/s/LDdd9a1A1g649SnpXF2a6g
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-73.png)  
 
 &emsp; Redis提供了一些扩展数据类型和时序数据库模块：  
 
-* bitmap：基于bit位的存储，每一个bit存储0或1，一般用来进行海量数据的精准判重  
-* HyperLogLog：一般用来对海量数据进行基于概率的基数统计，比如说网站的独立访客数、独立IP数等  
-* Geo：基于地理空间的数据存储，常应用在那些基于位置服务，也就是常说的LBS(Location-Based Service)的应用，比如说打车等生活服务类应用  
-* Stream：消息流，Redis自5.0版本之后，引入了消息队列的机制，也就是我们熟悉的Pub/Sub（发布/订阅）机制。  
-* RedisTimeSeries：时间数据库模块，主要存储一些跟时间戳相关，需要范围查询，聚合计算等场景的数据集    
+* bitmap：基于bit位的存储，每一个bit存储0或1，一般用来进行海量数据的精准判重。  
+* HyperLogLog：一般用来对海量数据进行基于概率的基数统计，比如说网站的独立访客数、独立IP数等。  
+* Geo：基于地理空间的数据存储，常应用在那些基于位置服务，也就是常说的LBS(Location-Based Service)的应用，比如说打车等生活服务类应用。  
+* Stream：消息流，Redis自5.0版本之后，引入了消息队列的机制，也就是Pub/Sub（发布/订阅）机制。  
+* RedisTimeSeries：时间数据库模块，主要存储一些跟时间戳相关，需要范围查询，聚合计算等场景的数据集。    
 
 ## 1.1. 前言：网页流量统计里的PV、UV
 &emsp; PV（Page View）访问量, 即页面浏览量或点击量，衡量网站用户访问的网页数量；在一定统计周期内用户每打开或刷新一个页面就记录1次，多次打开或刷新同一页面则浏览量累计。  
@@ -55,11 +59,9 @@ https://www.yuque.com/happy-coder/qka0of/ekdfzb
  
 --------------
 ## 1.2. Bitmap，位图
-<!-- 
-
- 10亿数据量只需要100MB内存，redis的位存储为什么这么牛？ 
- https://mp.weixin.qq.com/s/91LkFAuaOScuvPslFLSGPQ
--->
+&emsp; **二值状态统计：**  
+&emsp; 二值状态指的是取值0或者1两种；在签到打卡的场景中，只需要记录签到（1）和未签到（0）两种状态，这就是典型的二值状态统计。  
+&emsp; 二值状态的统计可以使用Redis的扩展数据类型Bitmap。  
 
 ### 1.2.1. 位图介绍    
 &emsp; Bitmaps是在字符串类型上面定义的位操作。一个字节由8个二进制位组成。每个二进制位只能存储0或1。   
@@ -96,6 +98,23 @@ https://www.yuque.com/happy-coder/qka0of/ekdfzb
     * BITPOS寻址第一个为0或者1的bit的位置（寻址第一个为1的bit的位置：bitpos dupcheck 1；寻址第一个为0的bit的位置：bitpos dupcheck 0）。  
 
 ### 1.2.3. 应用场景
+<!-- 
+实际项目开发中有很多业务都适合采用redis的bit来实现。
+用户签到场景
+
+每天的日期字符串作为一个key，用户Id作为offset，统计每天用户的签到情况，总的用户签到数
+活跃用户数统计
+
+用户日活、月活、留存率等均可以用redis位数组来存储，还是以每天的日期作为key，用户活跃了就写入offset为用户id的位值1。
+
+同理月活也是如此。
+用户是否在线以及总在线人数统计
+
+同样是使用一个位数组，用户的id映射偏移量，在线标识为1，下线标识为0。即可实现用户上下线查询和总在线人数的统计
+APP内用户的全局消息提示小红点
+
+现在大多数的APP里都有站内信的功能，当有消息的时候，则提示一个小红点，代表用户有新的消息。
+-->
 
 * <font color = "red">各种实时分析，例如在线用户统计。</font>
 * <font color = "red">用户访问统计。</font>
@@ -105,7 +124,6 @@ https://www.yuque.com/happy-coder/qka0of/ekdfzb
 实现一个签到功能
 https://mp.weixin.qq.com/s/pd_wRas4yyx5PsTpIdimgA
 -->
-
 &emsp; 很多网站都提供了签到功能(这里不考虑数据落地事宜)，并且需要展示最近一个月的签到情况，可以使用Bitmap。  
 
     ```php
@@ -194,7 +212,7 @@ https://mp.weixin.qq.com/s/pd_wRas4yyx5PsTpIdimgA
     ```
 
 #### 1.2.3.3. 使用场景三：用户在线状态  
-&emsp; 前段时间开发一个项目，对方给我提供了一个查询当前用户是否在线的接口。不了解对方是怎么做的，自己考虑了一下，使用bitmap是一个节约空间效率又高的一种方法，只需要一个key，然后用户ID为offset，如果在线就设置为1，不在线就设置为0，和上面的场景一样，5000W用户只需要6MB的空间。  
+&emsp; 前段时间开发一个项目，对方提供了一个查询当前用户是否在线的接口。不了解对方是怎么做的，自己考虑了一下，使用bitmap是一个节约空间效率又高的一种方法，只需要一个key，然后用户ID为offset，如果在线就设置为1，不在线就设置为0，和上面的场景一样，5000W用户只需要6MB的空间。  
 
     ```php
     //批量设置在线状态
@@ -218,27 +236,19 @@ https://mp.weixin.qq.com/s/pd_wRas4yyx5PsTpIdimgA
     */
     ```
 
-
 ## 1.3. HyperLogLog基数统计  
-<!-- 
-https://mp.weixin.qq.com/s/EF1cgBlJB3U37oZm3KgQvQ
-
-如何用 Redis 统计独立用户访问量？ 
-https://mp.weixin.qq.com/s/6gcM16OGodC0e3LJPLEY3g
-
--->
 ### 1.3.1. 前言  
 &emsp; <font color = "lime">如果统计 PV(浏览量，用户没点一次记录一次)，给每个页面配置一个独立的Redis计数器就可以了，把这个计数器的key后缀加上当天的日期。</font>这样每来一个请求，就执行INCRBY指令一次，最终就可以统计出所有的PV数据了。  
 &emsp; 但是UV不同，它要去重，<font color = "lime">UV要求同一个用户一天之内的多次访问请求只能计数一次。</font>这就要求了每一个网页请求都需要带上用户的ID，无论是登录用户还是未登录的用户，都需要一个唯一ID来标识。<font color = "lime">对于统计UV数据需要基数统计。</font>  
 
 ### 1.3.2. 基数统计  
 &emsp; 什么是基数?  
-&emsp; 比如数据集 {1, 3, 5, 7, 5, 7, 8}， 那么这个数据集的基数集为 {1, 3, 5 ,7, 8}, 基数(不重复元素)为5。 基数估计就是在误差可接受的范围内，快速计算基数。  
+&emsp; 比如数据集 {1, 3, 5, 7, 5, 7, 8}，那么这个数据集的基数集为 {1, 3, 5 ,7, 8}，基数(不重复元素)为5。基数估计就是在误差可接受的范围内，快速计算基数。  
 
-&emsp; 基数统计(Cardinality Counting) 通常是用来统计一个集合中不重复的元素个数。例如： **<font color = "red">统计每个网页的UV(独立访客，每个用户每天只记录一次，需要对每天对浏览去重) 。</font>**   
+&emsp; **<font color = "clime">基数统计(Cardinality Counting) 通常是用来统计一个集合中不重复的元素个数。</font>** 例如： **<font color = "red">统计每个网页的UV(独立访客，每个用户每天只记录一次，需要对每天对浏览去重) 。</font>**   
 
 ### 1.3.3. Redis中的基数统计方式  
-&emsp; HyperLogLog 是一种概率数据结构，用来估算数据的基数。数据集可以是网站访客的 IP 地址，E-mail 邮箱或者用户 ID。
+&emsp; HyperLogLog 是一种概率数据结构，用来估算数据的基数。数据集可以是网站访客的 IP 地址，E-mail邮箱或者用户ID。
 
 &emsp; 基数就是指一个集合中不同值的数目，比如 a, b, c, d 的基数就是 4，a, b, c, d, a 的基数还是 4。虽然 a 出现两次，只会被计算一次。
 
@@ -272,7 +282,6 @@ https://mp.weixin.qq.com/s/6gcM16OGodC0e3LJPLEY3g
 * PFMERGE命令执行多个HLL之间的联合操作。  
 
 #### 1.3.5.2. Redis中的HyperLogLog原理  
-
 <!--
 https://www.jianshu.com/p/096b25cbc39c
 https://www.cnblogs.com/linguanh/p/10460421.html
@@ -297,4 +306,8 @@ https://mp.weixin.qq.com/s/h7K7w9XBYRk7NApRV9evYA
 Redis亿级数据过滤和布隆过滤器
 https://mp.weixin.qq.com/s/3TcNbNNobn2QEJFat-f90A
 -->
+
+
+## 1.7. 小结  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-105.png)  
 
