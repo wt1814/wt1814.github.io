@@ -10,12 +10,10 @@
 <!-- /TOC -->
 
 # 1. Redis事务  
-
 <!-- 
 不支持原子性的 Redis 事务也敢叫事务？ 
 https://mp.weixin.qq.com/s/v2Ob6gZjmoJW1cEKb1Om0Q
 -->
-
 《Redis深度历险 核心原理与应用实践》  
 
 ## 1.1. Redis事务简介  
@@ -37,10 +35,10 @@ https://mp.weixin.qq.com/s/v2Ob6gZjmoJW1cEKb1Om0Q
 
 &emsp; **Redis事务相关命令：**  
 
-* multi: 标记一个事务块的开始（queued）
-* exec: 执行所有事务块的命令（一旦执行exec后，之前加的监控锁都会被取消掉 ）　
-* discard: 取消事务，放弃事务块中的所有命令
-* watch key1 key2 ...: <font color = "red">监视一或多个key，如果在事务执行之前，被监视的key被其他命令改动，则事务被打断（类似乐观锁）</font>
+* multi：标记一个事务块的开始（queued）
+* exec：执行所有事务块的命令（一旦执行exec后，之前加的监控锁都会被取消掉 ）　
+* discard：取消事务，放弃事务块中的所有命令
+* watch key1 key2 ...：<font color = "red">监视一或多个key，如果在事务执行之前，被监视的key被其他命令改动，则事务被打断(类似乐观锁)</font>
 * unwatch: 取消watch对所有key的监控
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-98.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-99.png)  
