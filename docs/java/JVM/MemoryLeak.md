@@ -10,6 +10,12 @@
 <!-- /TOC -->
 
 # 1. 内存泄漏、内存溢出  
+<!-- 
+
+ JAVA内存泄漏和内存溢出的区别和联系 
+ https://mp.weixin.qq.com/s/QwY0PAHO_oyELPlxRuHbOQ
+-->
+
 ## 1.1. 简介
 &emsp; **<font color = "red">内存溢出out of memory</font>** ，是指<font color = "red">程序在申请内存时，没有足够的内存空间供其使用</font>，出现out of memory；  
 &emsp; **<font color = "red">内存泄露 memory leak</font>** ，是指<font color = "red">程序在申请内存后，无法释放已申请的内存空间</font>。一次内存泄露危害可以忽略，但内存泄露堆积后果很严重，无论多少内存，迟早会被占光。内存泄露，会导致频繁的Full GC。  

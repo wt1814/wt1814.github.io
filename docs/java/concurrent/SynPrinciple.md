@@ -26,6 +26,9 @@
 
 # 1. Synchronized原理
 <!-- 
+17张图带你秒杀synchronized关键字 
+https://mp.weixin.qq.com/s/v1XgT2X4IuF3_WNqeUVhVA
+
 初始Synchronized关键字的偏向锁、轻量锁、重量锁 
 https://mp.weixin.qq.com/s/AloGilUSxjoNVDHTfq1ZGQ
 -->
@@ -37,6 +40,7 @@ https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
 
 ## 1.1. Java对象头与monitor  
 [内存对象](/docs/java/JVM/MemoryObject.md)  
+&emsp; synchronized 的锁是锁在对象上的。  
 
 ### 1.1.1. Java对象头
 <!-- 

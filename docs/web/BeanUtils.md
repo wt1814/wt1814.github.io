@@ -16,6 +16,8 @@ https://mp.weixin.qq.com/s/xfyx5ux7VadCbOUrkzMVLQ
 
 优雅的对象转换解决方案-MapStruct使用进阶 
 https://mp.weixin.qq.com/s/eGSoYQC4E2NuvlHQzj_RHg
+ Java 浅拷贝性能大比拼，对象拷贝哪家强？ 
+https://mp.weixin.qq.com/s/vWUnxd38RYX5_2nmc0ch5A
 
 -->
 
