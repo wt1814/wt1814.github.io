@@ -6,6 +6,9 @@
 
  Redis 越来越慢？常见延迟问题定位与分析 
  https://mp.weixin.qq.com/s/Abb2muE0GaVRYswqwxfJCw
+
+ **内存占用率
+https://mp.weixin.qq.com/s/insu_PySCOo4SWAUB0Nopg
 -->
 
 ## 高并发，can not get resource from pool
