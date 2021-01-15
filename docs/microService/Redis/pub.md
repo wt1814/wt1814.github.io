@@ -9,42 +9,28 @@
 <!-- /TOC -->
 
 # 1. Redis发布订阅  
-
 <!-- 
-https://mp.weixin.qq.com/s/ConI2dcD9F9crSx0qVa7GQ
-
-消息订阅、pipeline
-https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486105&idx=2&sn=f4b4734951ec262ad67c865be940e5c5&chksm=ec505348db27da5ee9b956e40963b0abb52f739863a82c7d1838ca1a92928f50facc012ccd12&scene=21#wechat_redirect
-https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486058&idx=2&sn=2b4f8764d807692f5ae7221ac88d69b8&chksm=ec5053bbdb27daaddd7a5f9d4e3737d584c13cf1f861d5b82aec443390fcc327ff0f6fe8bdef&scene=21#wechat_redirect
-
-
-一网打尽Redis Lua脚本并发原子组合操作 
-https://mp.weixin.qq.com/s/k0T6M1_gUvnBmviM0GGFKg
-
-
-第三方jar没有封装的命令我们该怎么执行？ 
-https://mp.weixin.qq.com/s/qC_tfPjaENmE5djcjP7MAw
 Redis 消息队列的三种方案（List、Streams、Pub/Sub） 
 https://mp.weixin.qq.com/s/_q0bI62iFrG8h-gZ-bCvNQ
 -->
 
 ## 1.1. 发布订阅简介  
-&emsp; Redis发布订阅(pub/sub)是一种消息通信模式：发送者(pub)发送消息，订阅者(sub)接收消息。  
-&emsp; Redis客户端可以订阅任意数量的频道。  
+&emsp; Redis 提供了基于“发布/订阅”模式的消息机制，发送者(publish)发送消息，订阅者(subscribe)接收消息。Redis作为消息发布和订阅之间的服务器，起到桥梁的作用，在Redis里面有一个channel的概念，也就是频道，发布者通过指定发布到某个频道，然后只要有订阅者订阅了该频道，该消息就会发送给订阅者。Redis客户端可以订阅任意数量的频道。  
 
 &emsp; 下图展示了频道channel1，以及订阅这个频道的三个客户端——client2、client5和client1之间的关系：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-100.png)  
 &emsp; 当有新消息通过 PUBLISH 命令发送给频道 channel1 时， 这个消息就会被发送给订阅它的三个客户端：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-101.png)  
 
+&emsp; **<font color = "red">使用场景：</font>**  
 &emsp; Redis的发布与订阅的功能应用还是比较广泛的，它的应用场景有很多。比如：最常见的就是实现实时聊天的功能，还是有就是博客的粉丝文章的推送，当博主推送原创文章的时候，就会将文章实时推送给博主的粉丝。  
 
 ## 1.2. redis发布订阅和rabbitmq的区别  
 * 可靠性  
-&emsp; redis：没有相应的机制保证消息的可靠消费，如果发布者发布一条消息，而没有对应的订阅者的话，这条消息将丢失，不会存在内存中；
+&emsp; redis：没有相应的机制保证消息的可靠消费，如果发布者发布一条消息，而没有对应的订阅者的话，这条消息将丢失，不会存在内存中；  
 &emsp; rabbitmq：具有消息消费确认机制，如果发布一条消息，还没有消费者消费该队列，那么这条消息将一直存放在队列中，直到有消费者消费了该条消息，以此可以保证消息的可靠消费；
 * 实时性  
-&emsp; redis:实时性高，redis作为高效的缓存服务器，所有数据都存在在服务器中，所以它具有更高的实时性
+&emsp; redis:实时性高，redis作为高效的缓存服务器，所有数据都存在在服务器中，所以它具有更高的实时性。
 * 消费者负载均衡  
 &emsp; rabbitmq队列可以被多个消费者同时监控消费，但是每一条消息只能被消费一次，由于rabbitmq的消费确认机制，因此它能够根据消费者的消费能力而调整它的负载；  
 &emsp; redis发布订阅模式，一个队列可以被多个消费者同时订阅，当有消息到达时，会将该消息依次发送给每个订阅者；  
@@ -95,6 +81,12 @@ https://mp.weixin.qq.com/s/_q0bI62iFrG8h-gZ-bCvNQ
     |NUMPAT| |返回订阅模式的数量，注意：这个命令返回的不是订阅模式的客户端的数量，而是客户端订阅的所有模式的数量总和|  
 
 ## 1.4. 代码实练  
+<!-- 
+~~
+https://mp.weixin.qq.com/s/ConI2dcD9F9crSx0qVa7GQ
+https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486105&idx=2&sn=f4b4734951ec262ad67c865be940e5c5&chksm=ec505348db27da5ee9b956e40963b0abb52f739863a82c7d1838ca1a92928f50facc012ccd12&scene=21#wechat_redirect
+-->
+
 &emsp; （1）首先第一步想要操作Redis，再SpringBoot项目中引入jedis的依赖，毕竟jedis是官方推荐使用操作Redis的工具。  
 
 ```xml
