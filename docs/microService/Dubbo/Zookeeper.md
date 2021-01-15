@@ -38,6 +38,8 @@ ZooKeeper的十二连问，你顶得了嘛？
 https://mp.weixin.qq.com/s/dp8jFlTsxTvGuhSAnct1jA
 用大白话给你解释Zookeeper的选举机制 
 https://mp.weixin.qq.com/s/M7qMQtrdDbZE5ex-BSk-AQ
+讲解 Zookeeper 的五个核心知识点 
+https://mp.weixin.qq.com/s/W6QgmFTpXQ8EL-dVvLWsyg
 
 -->
 
