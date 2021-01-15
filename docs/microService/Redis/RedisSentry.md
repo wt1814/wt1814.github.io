@@ -50,7 +50,6 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 
 ## 1.3. 哨兵原理  
 <!--- 
-
 头条二面：宕机后，Redis如何实现快速恢复？ 
 https://mp.weixin.qq.com/s/MhH1M6lpEeUFoIw45dEsVQ
 -->
@@ -110,7 +109,6 @@ https://mp.weixin.qq.com/s/MhH1M6lpEeUFoIw45dEsVQ
 6. 当Master主服务器被 Sentinel（哨兵）进程标记为客观下线（ODOWN）时，Sentinel（哨兵）进程向下线的 Master主服务器的所有 Slave从服务器发送 INFO 命令的频率会从 10 秒一次改为每秒一次。  
 7. 若没有足够数量的 Sentinel（哨兵）进程同意 Master主服务器下线， Master主服务器的客观下线状态就会被移除。若 Master主服务器重新向 Sentinel（哨兵）进程发送 PING 命令返回有效回复，Master主服务器的主观下线状态就会被移除。  
 -->
-
 
 ### 1.3.4. Sentinel选举  
 &emsp; 假如一个 Sentinel 节点完成了主节点的客观下线，那么是不是就可以立刻进行故障转移呢？显然不是，因为 **<font color = "red">Redis的故障转移工作只需要一个Sentinel节点来完成，所以会有一个选举的过程，选举出来一个领导者来完成故障转移工作。Redis节点采用[Raft算法]()来完成领导者写选举。</font>**    
