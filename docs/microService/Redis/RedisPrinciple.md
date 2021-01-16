@@ -17,20 +17,15 @@
 <!-- 
  面试时说Redis是单线程的，被喷惨了！ 
  https://mp.weixin.qq.com/s/ucJ8nVwnbWvMOg0hQIJlAg
-
-
 https://mp.weixin.qq.com/s/5Kdz3-Xx-tMPbhKMGundfw
-
-https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
-
 Redis 6.0 新特性-多线程连环13问！ 
 https://mp.weixin.qq.com/s/FZu3acwK6zrCBZQ_3HoUgw
 -->
 
-Redis是单线程的，为什么采用单线程的Redis也会如此之快呢？  
-严格来说，Redis Server是多线程的，只是它的请求处理整个流程是单线程处理的。  
+&emsp; Redis是单线程的，为什么采用单线程的Redis也会如此之快呢？  
+&emsp; 严格来说，Redis Server是多线程的，只是它的请求处理整个流程是单线程处理的。  
 
-Redis的性能非常之高，每秒可以承受10W+的QPS，它如此优秀的性能主要取决于以下几个方面：  
+&emsp; Redis的性能非常之高，每秒可以承受10W+的QPS，它如此优秀的性能主要取决于以下几个方面：  
 
 * 纯内存操作
 * 使用IO多路复用技术
