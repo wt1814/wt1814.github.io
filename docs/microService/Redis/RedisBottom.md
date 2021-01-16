@@ -4,23 +4,29 @@
 - [1. Redis底层实现](#1-redis底层实现)
     - [1.1. Redis源码阅读之环境搭建及准备](#11-redis源码阅读之环境搭建及准备)
     - [1.2. 对象系统RedisObject](#12-对象系统redisobject)
-    - [1.3. String内部编码](#13-string内部编码)
-        - [1.3.1. 采用SDS实现](#131-采用sds实现)
+    - [1.3. 数据结构介绍](#13-数据结构介绍)
+        - [1.3.1. SDS](#131-sds)
             - [1.3.1.1. SDS代码结构](#1311-sds代码结构)
             - [1.3.1.2. ※※※SDS动态扩展特点](#1312-※※※sds动态扩展特点)
             - [1.3.1.3. Redis字符串的性能优势](#1313-redis字符串的性能优势)
-    - [1.4. Hash内部编码](#14-hash内部编码)
-        - [1.4.1. 采用ziplist压缩列表实现](#141-采用ziplist压缩列表实现)
-        - [1.4.2. 采用dictht字典实现](#142-采用dictht字典实现)
-    - [1.5. List内部编码](#15-list内部编码)
-        - [1.5.1. 采用LinkedList双向链表实现](#151-采用linkedlist双向链表实现)
-        - [1.5.2. 采用quicklist快速列表实现](#152-采用quicklist快速列表实现)
-    - [1.6. Set内部编码](#16-set内部编码)
-        - [1.6.1. 采用inset实现](#161-采用inset实现)
-    - [1.7. Zset内部编码](#17-zset内部编码)
-        - [1.7.1. 采用ZipList压缩列表实现](#171-采用ziplist压缩列表实现)
-        - [1.7.2. 采用SkipList跳跃表实现](#172-采用skiplist跳跃表实现)
-    - [1.8. 查看redis内部存储的操作](#18-查看redis内部存储的操作)
+        - [1.3.2. 双端链表](#132-双端链表)
+        - [1.3.3. 压缩列表](#133-压缩列表)
+        - [1.3.4. 字典](#134-字典)
+        - [1.3.5. 跳跃表](#135-跳跃表)
+    - [1.4. 数据类型](#14-数据类型)
+        - [1.4.1. String内部编码](#141-string内部编码)
+        - [1.4.2. Hash内部编码](#142-hash内部编码)
+            - [1.4.2.1. 采用ziplist压缩列表实现](#1421-采用ziplist压缩列表实现)
+            - [1.4.2.2. 采用dictht字典实现](#1422-采用dictht字典实现)
+        - [1.4.3. List内部编码](#143-list内部编码)
+            - [1.4.3.1. 采用LinkedList双向链表实现](#1431-采用linkedlist双向链表实现)
+            - [1.4.3.2. 采用quicklist快速列表实现](#1432-采用quicklist快速列表实现)
+        - [1.4.4. Set内部编码](#144-set内部编码)
+            - [1.4.4.1. 采用inset实现](#1441-采用inset实现)
+        - [1.4.5. Zset内部编码](#145-zset内部编码)
+            - [1.4.5.1. 采用ZipList压缩列表实现](#1451-采用ziplist压缩列表实现)
+            - [1.4.5.2. 采用SkipList跳跃表实现](#1452-采用skiplist跳跃表实现)
+    - [1.5. 查看redis内部存储的操作](#15-查看redis内部存储的操作)
 
 <!-- /TOC -->
 
@@ -34,9 +40,7 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-106.png)  
 
 <!--
-https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
-万字长文的Redis五种数据结构详解（理论+实战），建议收藏。 
-https://mp.weixin.qq.com/s/ipP35Zho9STAgu_lFT79rQ
+
 全面阐释Redis常见对象类型的底层数据结构 
 https://mp.weixin.qq.com/s/QVxwJb6F99E17ZaGQlhVTQ
 
@@ -88,29 +92,13 @@ typedef struct redisObject {
 1. <font color = "red">字典dictht用于实现Hash、Set；</font>  
 2. <font color = "red">压缩列表ziplist用于实现Hsh、List、Zset；</font>  
 
-## 1.3. String内部编码  
+## 1.3. 数据结构介绍  
 <!-- 
-Redis 字符串
-https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
+https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 -->
-&emsp; **<font color = "red">字符串类型的内部编码有三种：</font>**  
 
-*  int，存储 8 个字节的长整型（long，2^63-1）。   
-*  embstr，代表 embstr 格式的 SDS（Simple Dynamic String 简单动态字符串），存储小于44个字节的字符串。   
-*  raw，存储大于 44 个字节的字符串（3.2 版本之前是 39 字节）。  
 
-&emsp; <font color = "red">Redis会根据当前值的类型和长度决定使用哪种内部编码实现。</font>  
-
-1. embstr和raw的区别？  
-&emsp; embstr的使用只分配一次内存空间（因为RedisObject和SDS是连续的），而raw需要分配两次内存空间(分别为RedisObject和SDS分配空间)。因此与raw相比，<font color = "red">embstr的好处在于创建时少分配一次空间，删除时少释放一次空间，以及对象的所有数据连在一起，寻找方便。而embstr的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个RedisObject和SDS都需要重新分配空间，</font>因此Redis中的embstr实现为只读。  
-2. int和embstr什么时候转化为raw?  
-&emsp; 当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
-3. embstr没有超过阈值，为什么变成raw了？  
-&emsp; 对于embstr，由于其实现是只读的，因此在对embstr对象进行修改时，都会先转化为raw再进行修改。因此，只要是修改embstr对象，修改后的对象一定是raw的，无论是否达到了44个字节。  
-4. 当长度小于阈值时，会还原吗？  
-&emsp; 关于Redis内部编码的转换，都符合以下规律：编码转换在Redis写入数据时完成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
-
-### 1.3.1. 采用SDS实现  
+### 1.3.1. SDS  
 <!-- 
 https://mp.weixin.qq.com/s/VY31lBOSggOHvVf54GzvYw
 https://mp.weixin.qq.com/s/f71rakde6KBJ_ilRf1M8xQ
@@ -190,7 +178,7 @@ struct sdshdr{
         * 当修改后的字符串长度len < 1M，则会分配与len相同长度的未使用的空间(free)
         * 当修改后的字符串长度len >= 1M，则会分配1M长度的未使用的空间(free)
 
-        &emsp; 有了这个预分配策略之后会减少内存分配次数，因为分配之前会检查已有的free空间是否够，如果够则不开辟了。
+        有了这个预分配策略之后会减少内存分配次数，因为分配之前会检查已有的free空间是否够，如果够则不开辟了。
     2. <font color = "lime">惰性空间回收</font>  
         &emsp; 与上面情况相反，<font color = "red">惰性空间回收适用于字符串缩减操作。</font>比如有个字符串s1="hello world"，对s1进行sdstrim(s1," world")操作，<font color = "red">执行完该操作之后Redis不会立即回收减少的部分，而是会分配给下一个需要内存的程序。</font>
 
@@ -201,15 +189,54 @@ SDS还提供「空间预分配」和「惰性空间释放」两种策略。在�
 -->
 
 4. <font color = "lime">二进制安全</font>  
-&emsp; SDS是二进制安全的，除了可以储存字符串以外还可以储存二进制文件（如图片、音频，视频等文件的二进制数据）；而c语言中的字符串是以空字符串作为结束符，一些图片中含有结束符，因此不是二进制安全的。  
+&emsp; SDS是二进制安全的，除了可以储存字符串以外还可以储存二进制文件(如图片、音频，视频等文件的二进制数据)；而c语言中的字符串是以空字符串作为结束符，一些图片中含有结束符，因此不是二进制安全的。  
 
-## 1.4. Hash内部编码  
+### 1.3.2. 双端链表  
+
+### 1.3.3. 压缩列表
+&emsp; 在双端链表中，如果在一个链表节点中存储一个小数据，比如一个字节。那么对应的就要保存头节点，前后指针等额外的数据。  
+&emsp; 这样就浪费了空间，同时由于反复申请与释放也容易导致内存碎片化。这样内存的使用效率就太低了。  
+&emsp; Redis设计了压缩列表  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-110.png)  
+
+&emsp; 它是经过特殊编码，专门为了提升内存使用效率设计的。所有的操作都是通过指针与解码出来的偏移量进行的。  
+&emsp; 并且压缩列表的内存是连续分配的，遍历的速度很快。  
+
+### 1.3.4. 字典  
+
+### 1.3.5. 跳跃表  
+
+## 1.4. 数据类型
+### 1.4.1. String内部编码  
+<!-- 
+Redis 字符串
+https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
+-->
+&emsp; **<font color = "red">字符串类型的内部编码有三种：</font>**  
+
+*  int，存储 8 个字节的长整型（long，2^63-1）。   
+*  embstr，代表 embstr 格式的 SDS（Simple Dynamic String 简单动态字符串），存储小于44个字节的字符串。   
+*  raw，存储大于 44 个字节的字符串（3.2 版本之前是 39 字节）。  
+
+&emsp; <font color = "red">Redis会根据当前值的类型和长度决定使用哪种内部编码实现。</font>  
+
+1. embstr和raw的区别？  
+&emsp; embstr的使用只分配一次内存空间（因为RedisObject和SDS是连续的），而raw需要分配两次内存空间(分别为RedisObject和SDS分配空间)。因此与raw相比，<font color = "red">embstr的好处在于创建时少分配一次空间，删除时少释放一次空间，以及对象的所有数据连在一起，寻找方便。而embstr的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个RedisObject和SDS都需要重新分配空间，</font>因此Redis中的embstr实现为只读。  
+2. int和embstr什么时候转化为raw?  
+&emsp; 当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
+3. embstr没有超过阈值，为什么变成raw了？  
+&emsp; 对于embstr，由于其实现是只读的，因此在对embstr对象进行修改时，都会先转化为raw再进行修改。因此，只要是修改embstr对象，修改后的对象一定是raw的，无论是否达到了44个字节。  
+4. 当长度小于阈值时，会还原吗？  
+&emsp; 关于Redis内部编码的转换，都符合以下规律：编码转换在Redis写入数据时完成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
+
+
+### 1.4.2. Hash内部编码  
 &emsp; <font color = "lime">Redis的Hash可以使用两种数据结构实现：ziplist、dictht。</font>Hash结构当同时满足如下两个条件时底层采用了ZipList实现，一旦有一个条件不满足时，就会被转码为dictht进行存储。  
 
 * Hash中存储的所有元素的key和value的长度都小于64byte。(通过修改hash-max-ziplist-value配置调节大小)
 * Hash中存储的元素个数小于512。(通过修改hash-max-ziplist-entries配置调节大小)  
 
-### 1.4.1. 采用ziplist压缩列表实现  
+#### 1.4.2.1. 采用ziplist压缩列表实现  
 &emsp; ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>** 只用在字段个数少，字段值小的场景面。  
 
 &emsp; 压缩列表的内存结构图如下：  
@@ -231,7 +258,7 @@ SDS还提供「空间预分配」和「惰性空间释放」两种策略。在�
 * 优点：<font color = "red">内存地址连续，省去了每个元素的头尾节点指针占用的内存。</font>  
 * 缺点：对于删除和插入操作比较可能会触发连锁更新反应，比如在 list 中间插入删除一个元素时，在插入或删除位置后面的元素可能都需要发生相应的移动操作。 
 
-### 1.4.2. 采用dictht字典实现  
+#### 1.4.2.2. 采用dictht字典实现  
 <!-- 
 Redis 字典
 https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
@@ -255,14 +282,14 @@ https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
 &emsp; 当rehash操作开始时会将该值改成0，在渐进式rehash的过程「更新、删除、查询会在ht[0]和ht[1]中都进行」，比如更新一个值先更新ht[0]，然后再更新ht[1]。  
 &emsp; 而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，这样保证「ht[0]只减不增，直到最后的某一个时刻变成空表」，这样rehash操作完成。  
 
-## 1.5. List内部编码   
+### 1.4.3. List内部编码   
 &emsp; **在 Redis3.2 之前，List 底层采用了 ZipList 和 LinkedList 实现的，在 3.2 之后，List 底层采用了 QuickList。**  
 &emsp; Redis3.2 之前，初始化的 List 使用的 ZipList，List 满足以下两个条件时则一直使用 ZipList 作为底层实现，当以下两个条件任一一个不满足时，则会被转换成 LinkedList。
 
 * List 中存储的每个元素的长度小于64byte  
 * 元素个数小于512 
 
-### 1.5.1. 采用LinkedList双向链表实现  
+#### 1.4.3.1. 采用LinkedList双向链表实现  
 &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-62.png)  
 
@@ -284,7 +311,7 @@ https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
 &emsp; 从图中可以看出Redis的linkedlist双端链表有以下特性：节点带有prev、next指针、head指针和tail指针，获取前置节点、后置节点、表头节点和表尾节点的复杂度都是O(1)。len属性获取节点数量也为O(1)。 
 -->
 
-### 1.5.2. 采用quicklist快速列表实现
+#### 1.4.3.2. 采用quicklist快速列表实现
 &emsp; 在 Redis3.2 版本之后，Redis 集合采用了 QuickList 作为 List 的底层实现，QuickList 其实就是结合了 ZipList 和 LinkedList 的优点设计出来的。quicklist 存储了一个双向链表，每个节点 都是一个ziplist。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-63.png)  
 
@@ -293,7 +320,7 @@ https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
 * 每个listNode 存储一个指向 ZipList 的指针，ZipList 用来真正存储元素的数据。
 * ZipList 中存储的元素数据总大小超过 8kb（默认大小，通过 list-max-ziplist-size 参数可以进行配置）的时候，就会重新创建出来一个 ListNode 和 ZipList，然后将其通过指针关联起来。
 
-## 1.6. Set内部编码   
+### 1.4.4. Set内部编码   
 &emsp; Redis中列表和集合都可以用来存储字符串，但是<font color = "red">「Set是不可重复的集合，而List列表可以存储相同的字符串」，</font>「Set是一个特殊的value为空的Hash」，Set集合是无序的这个和后面讲的ZSet有序集合相对。  
 
 &emsp; Redis 用intset或dictEntry存储set。当满足如下两个条件的时候，采用整数集合实现；一旦有一个条件不满足时则采用字典来实现。  
@@ -301,7 +328,7 @@ https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
 * Set 集合中的所有元素都为整数
 * Set 集合中的元素个数不大于 512（默认 512，可以通过修改 set-max-intset-entries 配置调整集合大小） 
 
-### 1.6.1. 采用inset实现  
+#### 1.4.4.1. 采用inset实现  
 &emsp; inset的数据结构：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-7.png)  
 &emsp; inset也叫做整数集合，用于保存整数值的数据结构类型，它可以保存int16_t、int32_t 或者int64_t 的整数值。  
@@ -312,17 +339,17 @@ https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
 2. 然后将原来的数组中的元素转为新元素的类型，并放到扩展后数组对应的位置。  
 3. 整数集合升级后就不会再降级，编码会一直保持升级后的状态。  
 
-## 1.7. Zset内部编码   
+### 1.4.5. Zset内部编码   
 &emsp; ZSet的底层实现是ziplist和skiplist实现的，由ziplist转换为skiplist。当同时满足以下两个条件时，采用ZipList实现；反之采用SkipList实现。
 
 * Zset中保存的元素个数小于128。（通过修改zset-max-ziplist-entries配置来修改）  
 * Zset中保存的所有元素长度小于64byte。（通过修改zset-max-ziplist-values配置来修改）  
 
-### 1.7.1. 采用ZipList压缩列表实现  
+#### 1.4.5.1. 采用ZipList压缩列表实现  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-84.png)  
 &emsp; 和List的底层实现有些相似，对于Zset不同的是，其存储是以键值对的方式依次排列，键存储的是实际 value，值存储的是value对应的分值。  
 
-### 1.7.2. 采用SkipList跳跃表实现  
+#### 1.4.5.2. 采用SkipList跳跃表实现  
 &emsp; skiplist也叫做「跳跃表」，跳跃表是一种有序的数据结构，它通过每一个节点维持多个指向其它节点的指针，从而达到快速访问的目的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-85.png)  
 <!-- 
@@ -344,5 +371,5 @@ https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
 &emsp; 如下图所示，红线是查找10的过程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-83.png)  
 
-## 1.8. 查看redis内部存储的操作  
+## 1.5. 查看redis内部存储的操作  
 &emsp; ......
