@@ -38,11 +38,6 @@
 # 1. Redis Cluster  
 <!-- 
 
-一万字详解 Redis Cluster Gossip 协议 
-https://mp.weixin.qq.com/s/aL5IEnGuq-9SuDcnmBEu_g
-
- Redis集群环境搭建实践 
- https://mp.weixin.qq.com/s/KT8kGgzn6TQwBGCUkMw_4g
 -->
 
 ## 1.1. 分片模式介绍  
@@ -100,7 +95,7 @@ https://mp.weixin.qq.com/s/aL5IEnGuq-9SuDcnmBEu_g
 
 &emsp; **Redis生产集群的部署架构**  
 <!-- 
-https://mp.weixin.qq.com/s/dfj-_qYdK3emt965hj9_jw
+看看你了解不了解你们公司的 redis 生产集群的部署架构，如果你不了解，那么确实你就很失职了，你的redis 是主从架构？集群架构？用了哪种集群方案？有没有做高可用保证？有没有开启持久化机制确保可以进行数据恢复？线上 redis 给几个 G 的内存？设置了哪些参数？压测后你们 redis 集群承载多少QPS？
 -->
 &emsp; redis cluster，10台机器，5台机器部署了redis主实例，另外5台机器部署了redis的从实例，每个主实例挂了一个从实例，5个节点对外提供读写服务，每个节点的读写高峰qps可能可以达到每秒5万，5台机器最多是25万读写请求/s。  
 &emsp; 机器是什么配置？32G内存+ 8核CPU + 1T磁盘，但是分配给redis进程的是10g内存，一般线上生产环境，redis的内存尽量不要超过10g，超过10g可能会有问题。5台机器对外提供读写，一共有50g内存。  
@@ -108,6 +103,10 @@ https://mp.weixin.qq.com/s/dfj-_qYdK3emt965hj9_jw
 &emsp; 往内存里写的是什么数据？每条数据的大小是多少？商品数据，每条数据是10kb。100条数据是1mb，10万条数据是1g。常驻内存的是200万条商品数据，占用内存是20g，仅仅不到总内存的50%。目前高峰期每秒就是3500左右的请求量。  
 
 ### 1.2.2. 部署  
+<!--  
+Redis集群环境搭建实践 
+https://mp.weixin.qq.com/s/KT8kGgzn6TQwBGCUkMw_4g
+-->
 ...
 
 ### 1.2.3. 原理  
@@ -136,7 +135,6 @@ https://mp.weixin.qq.com/s/dfj-_qYdK3emt965hj9_jw
 
 https://mp.weixin.qq.com/s/dfj-_qYdK3emt965hj9_jw
 -->
-
 &emsp; 在分布式存储中需要提供维护节点元数据信息的机制，所谓元数据是指：节点负责哪些数据，是否出现故障等状态信息。常见的元数据维护方式分为：集中式和P2P方式。Redis集群采用P2P的Gossip（流言）协议，Gossip协议工作原理就是节点彼此不断通信交换信息，一段时间后所有的节点都会知道集群完整的信息，这种方式类似流言传播，如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-87.png)  
 &emsp; 通信过程说明：  
