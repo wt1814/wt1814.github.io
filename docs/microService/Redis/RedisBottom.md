@@ -9,18 +9,15 @@
             - [1.3.1.1. SDS代码结构](#1311-sds代码结构)
             - [1.3.1.2. ※※※SDS动态扩展特点](#1312-※※※sds动态扩展特点)
             - [1.3.1.3. Redis字符串的性能优势](#1313-redis字符串的性能优势)
-        - [1.3.2. 双端链表](#132-双端链表)
-        - [1.3.3. 压缩列表](#133-压缩列表)
-        - [1.3.4. 字典](#134-字典)
+        - [1.3.2. LinkedList双端链表](#132-linkedlist双端链表)
+        - [1.3.3. Ziplist压缩列表](#133-ziplist压缩列表)
+        - [Quicklist快速列表](#quicklist快速列表)
+        - [1.3.4. Dictht字典](#134-dictht字典)
         - [1.3.5. 跳跃表](#135-跳跃表)
     - [1.4. 数据类型](#14-数据类型)
         - [1.4.1. String内部编码](#141-string内部编码)
         - [1.4.2. Hash内部编码](#142-hash内部编码)
-            - [1.4.2.1. 采用ziplist压缩列表实现](#1421-采用ziplist压缩列表实现)
-            - [1.4.2.2. 采用dictht字典实现](#1422-采用dictht字典实现)
         - [1.4.3. List内部编码](#143-list内部编码)
-            - [1.4.3.1. 采用LinkedList双向链表实现](#1431-采用linkedlist双向链表实现)
-            - [1.4.3.2. 采用quicklist快速列表实现](#1432-采用quicklist快速列表实现)
         - [1.4.4. Set内部编码](#144-set内部编码)
             - [1.4.4.1. 采用inset实现](#1441-采用inset实现)
         - [1.4.5. Zset内部编码](#145-zset内部编码)
@@ -89,15 +86,10 @@ typedef struct redisObject {
 |Set	|intset（整数集合）或者dictht（字典）|
 |ZSet	|ziplist（压缩列表）或者skiplist（跳跃表）|
 
-1. <font color = "red">字典dictht用于实现Hash、Set；</font>  
-2. <font color = "red">压缩列表ziplist用于实现Hsh、List、Zset；</font>  
-
 ## 1.3. 数据结构介绍  
 <!-- 
 https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 -->
-
-
 ### 1.3.1. SDS  
 <!-- 
 https://mp.weixin.qq.com/s/VY31lBOSggOHvVf54GzvYw
@@ -191,105 +183,7 @@ SDS还提供「空间预分配」和「惰性空间释放」两种策略。在�
 4. <font color = "lime">二进制安全</font>  
 &emsp; SDS是二进制安全的，除了可以储存字符串以外还可以储存二进制文件(如图片、音频，视频等文件的二进制数据)；而c语言中的字符串是以空字符串作为结束符，一些图片中含有结束符，因此不是二进制安全的。  
 
-### 1.3.2. 双端链表  
-
-### 1.3.3. 压缩列表
-&emsp; 在双端链表中，如果在一个链表节点中存储一个小数据，比如一个字节。那么对应的就要保存头节点，前后指针等额外的数据。  
-&emsp; 这样就浪费了空间，同时由于反复申请与释放也容易导致内存碎片化。这样内存的使用效率就太低了。  
-&emsp; Redis设计了压缩列表  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-110.png)  
-
-&emsp; 它是经过特殊编码，专门为了提升内存使用效率设计的。所有的操作都是通过指针与解码出来的偏移量进行的。  
-&emsp; 并且压缩列表的内存是连续分配的，遍历的速度很快。  
-
-### 1.3.4. 字典  
-
-### 1.3.5. 跳跃表  
-
-## 1.4. 数据类型
-### 1.4.1. String内部编码  
-<!-- 
-Redis 字符串
-https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
--->
-&emsp; **<font color = "red">字符串类型的内部编码有三种：</font>**  
-
-*  int，存储 8 个字节的长整型（long，2^63-1）。   
-*  embstr，代表 embstr 格式的 SDS（Simple Dynamic String 简单动态字符串），存储小于44个字节的字符串。   
-*  raw，存储大于 44 个字节的字符串（3.2 版本之前是 39 字节）。  
-
-&emsp; <font color = "red">Redis会根据当前值的类型和长度决定使用哪种内部编码实现。</font>  
-
-1. embstr和raw的区别？  
-&emsp; embstr的使用只分配一次内存空间（因为RedisObject和SDS是连续的），而raw需要分配两次内存空间(分别为RedisObject和SDS分配空间)。因此与raw相比，<font color = "red">embstr的好处在于创建时少分配一次空间，删除时少释放一次空间，以及对象的所有数据连在一起，寻找方便。而embstr的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个RedisObject和SDS都需要重新分配空间，</font>因此Redis中的embstr实现为只读。  
-2. int和embstr什么时候转化为raw?  
-&emsp; 当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
-3. embstr没有超过阈值，为什么变成raw了？  
-&emsp; 对于embstr，由于其实现是只读的，因此在对embstr对象进行修改时，都会先转化为raw再进行修改。因此，只要是修改embstr对象，修改后的对象一定是raw的，无论是否达到了44个字节。  
-4. 当长度小于阈值时，会还原吗？  
-&emsp; 关于Redis内部编码的转换，都符合以下规律：编码转换在Redis写入数据时完成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
-
-
-### 1.4.2. Hash内部编码  
-&emsp; <font color = "lime">Redis的Hash可以使用两种数据结构实现：ziplist、dictht。</font>Hash结构当同时满足如下两个条件时底层采用了ZipList实现，一旦有一个条件不满足时，就会被转码为dictht进行存储。  
-
-* Hash中存储的所有元素的key和value的长度都小于64byte。(通过修改hash-max-ziplist-value配置调节大小)
-* Hash中存储的元素个数小于512。(通过修改hash-max-ziplist-entries配置调节大小)  
-
-#### 1.4.2.1. 采用ziplist压缩列表实现  
-&emsp; ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>** 只用在字段个数少，字段值小的场景面。  
-
-&emsp; 压缩列表的内存结构图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-79.png)  
-&emsp; 从图中可以看出 ZipList 没有前后指针。压缩列表中每一个节点表示的含义如下所示：
-1. zlbytes：4个字节的大小，记录压缩列表占用内存的字节数。
-2. zltail：4个字节大小，记录表尾节点距离起始地址的偏移量，用于快速定位到尾节点的地址。
-3. zllen：2个字节的大小，记录压缩列表中的节点数。
-4. entry：表示列表中的每一个节点。
-5. zlend：表示压缩列表的特殊结束符号'0xFF'。
-
-&emsp; 在压缩列表中每一个entry节点又有三部分组成，包括previous_entry_ength、encoding、content。  
-1. previous_entry_ength表示前一个节点entry的长度，可用于计算前一个节点的其实地址，因为它们的地址是连续的。  
-2. encoding：这里保存的是content的内容类型和长度。  
-3. content：content保存的是每一个节点的内容。  
-
-&emsp; ZipList 的优缺点比较：  
-
-* 优点：<font color = "red">内存地址连续，省去了每个元素的头尾节点指针占用的内存。</font>  
-* 缺点：对于删除和插入操作比较可能会触发连锁更新反应，比如在 list 中间插入删除一个元素时，在插入或删除位置后面的元素可能都需要发生相应的移动操作。 
-
-#### 1.4.2.2. 采用dictht字典实现  
-<!-- 
-Redis 字典
-https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
--->
-
-&emsp; 字典类型的底层是hashtable实现的，明白了字典的底层实现原理也就是明白了hashtable的实现原理，hashtable的实现原理可以与HashMap的是底层原理相类比。它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。  
-&emsp; dictEntry与HashMap两者在新增时都会通过key计算出数组下标，不同的是计算法方式不同，HashMap中是以hash函数的方式，而hashtable中计算出hash值后，还要通过sizemask 属性和哈希值再次得到数组下标。结构如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-81.png)  
-
-**rehash：**  
-&emsp; 在字典的底层实现中，value对象以每一个dictEntry的对象进行存储，当hash表中的存放的键值对不断的增加或者减少时，需要对hash表进行一个扩展或者收缩。  
-&emsp; 这里就会和HashMap一样，也会就进行rehash操作，进行重新散列排布。从上图中可以看到有ht[0]和ht[1]两个对象，先来看看对象中的属性是干嘛用的。  
-&emsp; 在hash表结构定义中有四个属性分别是table、unsigned long size、unsigned long sizemask、unsigned long used，分别表示的含义就是「哈希表数组、hash表大小、用于计算索引值，总是等于size-1、hash表中已有的节点数」。  
-&emsp; ht[0]是用来最开始存储数据的，当要进行扩展或者收缩时，ht[0]的大小就决定了ht[1]的大小，ht[0]中的所有的键值对就会重新散列到ht[1]中。  
-&emsp; 扩展操作：ht[1]扩展的大小是比当前 ht[0].used 值的二倍大的第一个 2 的整数幂；收缩操作：ht[0].used 的第一个大于等于的 2 的整数幂。  
-&emsp; 当ht[0]上的所有的键值对都rehash到ht[1]中，会重新计算所有的数组下标值，当数据迁移完后ht[0]就会被释放，然后将ht[1]改为ht[0]，并新创建ht[1]，为下一次的扩展和收缩做准备。  
-
-**渐进式rehash：**  
-&emsp; 假如在rehash的过程中数据量非常大，Redis不是一次性把全部数据rehash成功，这样会导致Redis对外服务停止，Redis内部为了处理这种情况采用「渐进式的rehash」。  
-&emsp; Redis将所有的rehash的操作分成多步进行，直到都rehash完成，具体的实现与对象中的rehashindex属性相关，「若是rehashindex 表示为-1表示没有rehash操作」。  
-&emsp; 当rehash操作开始时会将该值改成0，在渐进式rehash的过程「更新、删除、查询会在ht[0]和ht[1]中都进行」，比如更新一个值先更新ht[0]，然后再更新ht[1]。  
-&emsp; 而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，这样保证「ht[0]只减不增，直到最后的某一个时刻变成空表」，这样rehash操作完成。  
-
-### 1.4.3. List内部编码   
-&emsp; **在 Redis3.2 之前，List 底层采用了 ZipList 和 LinkedList 实现的，在 3.2 之后，List 底层采用了 QuickList。**  
-&emsp; Redis3.2 之前，初始化的 List 使用的 ZipList，List 满足以下两个条件时则一直使用 ZipList 作为底层实现，当以下两个条件任一一个不满足时，则会被转换成 LinkedList。
-
-* List 中存储的每个元素的长度小于64byte  
-* 元素个数小于512 
-
-#### 1.4.3.1. 采用LinkedList双向链表实现  
+### 1.3.2. LinkedList双端链表  
 &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-62.png)  
 
@@ -311,7 +205,39 @@ https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
 &emsp; 从图中可以看出Redis的linkedlist双端链表有以下特性：节点带有prev、next指针、head指针和tail指针，获取前置节点、后置节点、表头节点和表尾节点的复杂度都是O(1)。len属性获取节点数量也为O(1)。 
 -->
 
-#### 1.4.3.2. 采用quicklist快速列表实现
+
+### 1.3.3. Ziplist压缩列表
+&emsp; 在双端链表中，如果在一个链表节点中存储一个小数据，比如一个字节。那么对应的就要保存头节点，前后指针等额外的数据。  
+&emsp; 这样就浪费了空间，同时由于反复申请与释放也容易导致内存碎片化。这样内存的使用效率就太低了。  
+&emsp; Redis设计了压缩列表  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-110.png)  
+
+&emsp; 它是经过特殊编码，专门为了提升内存使用效率设计的。所有的操作都是通过指针与解码出来的偏移量进行的。  
+&emsp; 并且压缩列表的内存是连续分配的，遍历的速度很快。  
+
+---
+&emsp; ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一 个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>** 只用在字段个数少，字段值小的场景面。  
+
+&emsp; 压缩列表的内存结构图如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-79.png)  
+&emsp; 从图中可以看出 ZipList 没有前后指针。压缩列表中每一个节点表示的含义如下所示：
+1. zlbytes：4个字节的大小，记录压缩列表占用内存的字节数。
+2. zltail：4个字节大小，记录表尾节点距离起始地址的偏移量，用于快速定位到尾节点的地址。
+3. zllen：2个字节的大小，记录压缩列表中的节点数。
+4. entry：表示列表中的每一个节点。
+5. zlend：表示压缩列表的特殊结束符号'0xFF'。
+
+&emsp; 在压缩列表中每一个entry节点又有三部分组成，包括previous_entry_ength、encoding、content。  
+1. previous_entry_ength表示前一个节点entry的长度，可用于计算前一个节点的其实地址，因为它们的地址是连续的。  
+2. encoding：这里保存的是content的内容类型和长度。  
+3. content：content保存的是每一个节点的内容。  
+
+&emsp; ZipList 的优缺点比较：  
+
+* 优点：<font color = "red">内存地址连续，省去了每个元素的头尾节点指针占用的内存。</font>  
+* 缺点：对于删除和插入操作比较可能会触发连锁更新反应，比如在 list 中间插入删除一个元素时，在插入或删除位置后面的元素可能都需要发生相应的移动操作。 
+
+### Quicklist快速列表
 &emsp; 在 Redis3.2 版本之后，Redis 集合采用了 QuickList 作为 List 的底层实现，QuickList 其实就是结合了 ZipList 和 LinkedList 的优点设计出来的。quicklist 存储了一个双向链表，每个节点 都是一个ziplist。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-63.png)  
 
@@ -319,6 +245,70 @@ https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
 
 * 每个listNode 存储一个指向 ZipList 的指针，ZipList 用来真正存储元素的数据。
 * ZipList 中存储的元素数据总大小超过 8kb（默认大小，通过 list-max-ziplist-size 参数可以进行配置）的时候，就会重新创建出来一个 ListNode 和 ZipList，然后将其通过指针关联起来。
+
+
+### 1.3.4. Dictht字典  
+<!-- 
+Redis 字典
+https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
+-->
+&emsp; 字典类型的底层是hashtable实现的，明白了字典的底层实现原理也就是明白了hashtable的实现原理，hashtable的实现原理可以与HashMap的是底层原理相类比。它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。  
+&emsp; dictEntry与HashMap两者在新增时都会通过key计算出数组下标，不同的是计算法方式不同，HashMap中是以hash函数的方式，而hashtable中计算出hash值后，还要通过sizemask 属性和哈希值再次得到数组下标。结构如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-81.png)  
+
+**rehash：**  
+&emsp; 在字典的底层实现中，value对象以每一个dictEntry的对象进行存储，当hash表中的存放的键值对不断的增加或者减少时，需要对hash表进行一个扩展或者收缩。  
+&emsp; 这里就会和HashMap一样，也会就进行rehash操作，进行重新散列排布。从上图中可以看到有ht[0]和ht[1]两个对象，先来看看对象中的属性是干嘛用的。  
+&emsp; 在hash表结构定义中有四个属性分别是table、unsigned long size、unsigned long sizemask、unsigned long used，分别表示的含义就是「哈希表数组、hash表大小、用于计算索引值，总是等于size-1、hash表中已有的节点数」。  
+&emsp; ht[0]是用来最开始存储数据的，当要进行扩展或者收缩时，ht[0]的大小就决定了ht[1]的大小，ht[0]中的所有的键值对就会重新散列到ht[1]中。  
+&emsp; 扩展操作：ht[1]扩展的大小是比当前 ht[0].used 值的二倍大的第一个 2 的整数幂；收缩操作：ht[0].used 的第一个大于等于的 2 的整数幂。  
+&emsp; 当ht[0]上的所有的键值对都rehash到ht[1]中，会重新计算所有的数组下标值，当数据迁移完后ht[0]就会被释放，然后将ht[1]改为ht[0]，并新创建ht[1]，为下一次的扩展和收缩做准备。  
+
+**渐进式rehash：**  
+&emsp; 假如在rehash的过程中数据量非常大，Redis不是一次性把全部数据rehash成功，这样会导致Redis对外服务停止，Redis内部为了处理这种情况采用「渐进式的rehash」。  
+&emsp; Redis将所有的rehash的操作分成多步进行，直到都rehash完成，具体的实现与对象中的rehashindex属性相关，「若是rehashindex 表示为-1表示没有rehash操作」。  
+&emsp; 当rehash操作开始时会将该值改成0，在渐进式rehash的过程「更新、删除、查询会在ht[0]和ht[1]中都进行」，比如更新一个值先更新ht[0]，然后再更新ht[1]。  
+&emsp; 而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，这样保证「ht[0]只减不增，直到最后的某一个时刻变成空表」，这样rehash操作完成。  
+### 1.3.5. 跳跃表  
+
+## 1.4. 数据类型
+### 1.4.1. String内部编码  
+<!-- 
+Redis 字符串
+https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
+-->
+&emsp; **<font color = "red">字符串类型的内部编码有三种：</font>**  
+
+*  int，存储8个字节的长整型（long，2^63-1）。   
+*  embstr，代表 embstr 格式的 SDS（Simple Dynamic String 简单动态字符串），存储小于44个字节的字符串。   
+*  raw，存储大于 44 个字节的字符串（3.2 版本之前是 39 字节）。  
+
+&emsp; <font color = "red">Redis会根据当前值的类型和长度决定使用哪种内部编码实现。</font>  
+
+1. embstr和raw的区别？  
+&emsp; embstr的使用只分配一次内存空间（因为RedisObject和SDS是连续的），而raw需要分配两次内存空间(分别为RedisObject和SDS分配空间)。因此与raw相比，<font color = "red">embstr的好处在于创建时少分配一次空间，删除时少释放一次空间，以及对象的所有数据连在一起，寻找方便。而embstr的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个RedisObject和SDS都需要重新分配空间，</font>因此Redis中的embstr实现为只读。  
+2. int和embstr什么时候转化为raw?  
+&emsp; 当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
+3. embstr没有超过阈值，为什么变成raw了？  
+&emsp; 对于embstr，由于其实现是只读的，因此在对embstr对象进行修改时，都会先转化为raw再进行修改。因此，只要是修改embstr对象，修改后的对象一定是raw的，无论是否达到了44个字节。  
+4. 当长度小于阈值时，会还原吗？  
+&emsp; 关于Redis内部编码的转换，都符合以下规律：编码转换在Redis写入数据时完成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
+
+
+### 1.4.2. Hash内部编码  
+&emsp; <font color = "lime">Redis的Hash可以使用两种数据结构实现：ziplist、dictht。</font>Hash结构当同时满足如下两个条件时底层采用了ZipList实现，一旦有一个条件不满足时，就会被转码为dictht进行存储。  
+
+* Hash中存储的所有元素的key和value的长度都小于64byte。(通过修改hash-max-ziplist-value配置调节大小)
+* Hash中存储的元素个数小于512。(通过修改hash-max-ziplist-entries配置调节大小)  
+
+### 1.4.3. List内部编码   
+&emsp; **在 Redis3.2 之前，List 底层采用了 ZipList 和 LinkedList 实现的，在 3.2 之后，List 底层采用了 QuickList。**  
+&emsp; Redis3.2 之前，初始化的 List 使用的 ZipList，List 满足以下两个条件时则一直使用 ZipList 作为底层实现，当以下两个条件任一一个不满足时，则会被转换成 LinkedList。
+
+* List 中存储的每个元素的长度小于64byte  
+* 元素个数小于512 
+
+
 
 ### 1.4.4. Set内部编码   
 &emsp; Redis中列表和集合都可以用来存储字符串，但是<font color = "red">「Set是不可重复的集合，而List列表可以存储相同的字符串」，</font>「Set是一个特殊的value为空的Hash」，Set集合是无序的这个和后面讲的ZSet有序集合相对。  
