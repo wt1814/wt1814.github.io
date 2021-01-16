@@ -100,10 +100,11 @@ https://mp.weixin.qq.com/s/XUmmwykpiO8r5-FDt4XyYw
 
 ### 1.3.2. 数据同步阶段两种复制方式
 &emsp; 主从节点在数据同步阶段，主节点会根据当前状态的不同执行不同复制操作，包括：全量复制和部分复制。  
-&emsp; redis 2.8之前使用sync [runId] [offset]同步命令，redis2.8之后使用psync [runId] [offset]命令。两者不同在于，sync命令仅支持全量复制过程，psync支持全量和部分复制。  
 
 * <font color = "red">全量复制：用于首次复制或者其他不能进行部分复制的情况。</font>全量复制是一个非常重的操作，一般都要规避它。  
 * <font color = "red">部分复制：用于从节点短暂中断的情况（网络中断、短暂的服务宕机）。</font>部分复制是一个非常轻量级的操作，因为它只需要将中断期间的命令同步给从节点即可，相比于全量复制，它显得更加高效。  
+
+&emsp; redis 2.8之前使用sync [runId] [offset]同步命令，redis2.8之后使用psync [runId] [offset]命令。两者不同在于，sync命令仅支持全量复制过程，psync支持全量和部分复制。  
 
 #### 1.3.2.1. 全量复制  
 &emsp; 全量复制的流程图如下：  
