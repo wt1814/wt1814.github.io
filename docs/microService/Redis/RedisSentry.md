@@ -16,6 +16,7 @@
 <!-- /TOC -->
 
 <!-- 
+~~
 Redis如何实现故障自动恢复？ 
 https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 -->
@@ -65,6 +66,7 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 #### 1.2.1.1. 定时任务一
 &emsp; 每隔10秒，每个Sentinel节点会向主节点和从节点发送info命令获取最新的拓扑结构，如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-107.png)  
+<center>Sentinel节点定时执行info命令</center>  
 &emsp; 下图是 info 命令的响应。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-46.png)  
 &emsp; Sentinel节点通过对上述结果进行解析就可以找到相应的从节点。  
