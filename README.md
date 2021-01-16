@@ -314,16 +314,17 @@
 &emsp; [Redis事务](/docs/microService/Redis/RedisTransaction.md)  
 &emsp; [Redis和Lua](/docs/microService/Redis/lua.md)  
 &emsp; [Redis持久化](/docs/microService/Redis/RedisPersistence.md)  
-&emsp; [Redis淘汰策略](/docs/microService/Redis/RedisEliminate.md)  
+&emsp; [Redis内存](/docs/microService/Redis/RedisEliminate.md)  
 [Redis部署](/docs/microService/Redis/RedisDeploy.md)  
 &emsp; [Redis主从复制](/docs/microService/Redis/RedisMasterSlave.md)  
 &emsp; [Redis哨兵模式](/docs/microService/Redis/RedisSentry.md)  
 &emsp; [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
 <!-- [Redis原理](/docs/microService/Redis/RedisPrinciple.md)  -->
 [Redis运维](/docs/microService/Redis/RedisOperation.md)  
-[Redis问题及排查](/docs/microService/Redis/problem.md)  
+[Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 
 ### 分布式消息队列  
+
 [mq](/docs/microService/mq/mq.md)  
 
 #### kafka   

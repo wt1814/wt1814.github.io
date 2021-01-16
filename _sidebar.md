@@ -243,7 +243,7 @@
         * [Redis哨兵模式](/docs/microService/Redis/RedisSentry.md)  
         * [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
     * [Redis运维](/docs/microService/Redis/RedisOperation.md)  
-    * [Redis问题及排查](/docs/microService/Redis/problem.md)  
+    * [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 * 分布式消息队列
     * [mq](/docs/microService/mq/mq.md)  
     * [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  

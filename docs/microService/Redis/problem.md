@@ -1,56 +1,28 @@
+<!-- TOC -->
 
+- [1. Redis常见问题与优化](#1-redis常见问题与优化)
+    - [1.1. 客户端常见异常](#11-客户端常见异常)
+    - [1.2. 客户端案例分析](#12-客户端案例分析)
+        - [1.2.1. Redis内存陡增](#121-redis内存陡增)
+        - [1.2.2. 客户端周期性的超时](#122-客户端周期性的超时)
+    - [1.3. Redis的噩梦：阻塞](#13-redis的噩梦阻塞)
+    - [1.4. 持久化问题定位与优化](#14-持久化问题定位与优化)
+    - [1.5. 内存优化](#15-内存优化)
 
-# Redis
+<!-- /TOC -->
+
+# 1. Redis常见问题与优化  
+&emsp; 参考《Redis开发与运维》  
+
 
 <!-- 
 
- Redis 越来越慢？常见延迟问题定位与分析 
- https://mp.weixin.qq.com/s/Abb2muE0GaVRYswqwxfJCw
-
- **内存占用率
-https://mp.weixin.qq.com/s/insu_PySCOo4SWAUB0Nopg
--->
-
-## 高并发，can not get resource from pool
-<!-- 
-线上Redis高并发性能调优实践  
-https://mp.weixin.qq.com/s/JFNqQWS5GrCW5Q2kmeNVrw
--->
-
-&emsp; <font color = "lime">[Redis高并发](/docs/Error/redisConcurrent.md)</font>  
-
-&emsp; <font color = "lime">Redis连接池值比较小；也有可能是未释放连接数。</font>  
-
-&emsp; 1000个线程并发还能跑，5000个线程的时候出现这种问题，查后台debug日志，发现redis 线程池不够。刚开始设置的是：  
-
-&emsp; 等待时间10s改为300s  
-&emsp; maxTotal 资源池中最大连接数 默认值8 建议值  
-
-```xml
-# redis 配置文件
-#redis
-redis.host=127.0.0.1
-redis.port=6379
-redis.timeout=300        等待时间  10s改为300s
-redis.password=123456
-redis.poolMaxTotal=1000   连接数，刚开始最大连接数 设置为100.
-redis.poolMaxIdle=500      最大空闲连接数  100改成500
-redis.poolMaxWait=300      
-```
-
-
-
-## Redis连接超时
-<!-- 
+Redis 越来越慢？常见延迟问题定位与分析 
+https://mp.weixin.qq.com/s/Abb2muE0GaVRYswqwxfJCw
+ 线上Redis高并发性能调优实践 
+ https://mp.weixin.qq.com/s/JFNqQWS5GrCW5Q2kmeNVrw
 【95期】面试官：你遇到 Redis 线上连接超时一般如何处理？ 
 https://mp.weixin.qq.com/s/LqeeCviPW84ykfPhluTMlQ
-
--->
-&emsp; redis响应变慢，查看日志，发现大量 TimeoutException。  
-
-
-## Redis内存耗尽  
-<!-- 
 一次生产环境redis内存占用居高不下问题排查
 https://blog.csdn.net/eene894777/article/details/102820565?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param
 
@@ -61,12 +33,25 @@ https://blog.csdn.net/weixin_41507324/article/details/90742075?utm_medium=distri
 
 记录一次生产环境中Redis内存增长异常排查全流程！ 
 https://mp.weixin.qq.com/s/1Rqzn4juKMqlNK9sBzlGig
+
+ **内存占用率
+https://mp.weixin.qq.com/s/insu_PySCOo4SWAUB0Nopg
 -->
 
-## Redis延迟
+## 1.1. 客户端常见异常  
+......
 
-<!-- 
- Redis为什么变慢了？常见延迟问题定位与分析 
- https://mp.weixin.qq.com/s/tmMlDy3ESq6-5sOnsGbAWQ
--->
+## 1.2. 客户端案例分析  
+### 1.2.1. Redis内存陡增  
+......
+### 1.2.2. 客户端周期性的超时  
+......
 
+## 1.3. Redis的噩梦：阻塞  
+......
+
+## 1.4. 持久化问题定位与优化
+......
+
+## 1.5. 内存优化  
+......
