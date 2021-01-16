@@ -59,16 +59,15 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 
 ## 1.2. 哨兵原理  
 ### 1.2.1. 心跳检查  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-90.png)  
-
 &emsp; **<font color = "red">Sentinel通过三个定时任务来完成对各个节点的发现和监控，这是保证Redis高可用的重要机制。</font>**  
 
 #### 1.2.1.1. 定时任务一
 &emsp; 每隔10秒，每个Sentinel节点会向主节点和从节点发送info命令获取最新的拓扑结构，如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-107.png)  
 <center>Sentinel节点定时执行info命令</center>  
-&emsp; 下图是 info 命令的响应。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-46.png)  
+
+&emsp; 下图是info 命令的响应。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-46.png)
 &emsp; Sentinel节点通过对上述结果进行解析就可以找到相应的从节点。  
 &emsp; 这个定时任务的作用具体可以表现在三个方面：  
 
@@ -94,7 +93,7 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 #### 1.2.1.3. 定时任务三  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-109.png)  
 <center>Sentinel节点向其余节点发送ping命令</center>  
-&emsp; 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令做一次心跳检测，来确认这些节点当前是否可达。如图9- 28所示。通过上面的定时任务，Sentinel节点对主节点、从节点、其余 Sentinel节点都建立起连接，实现了对每个节点的监控，这个定时任务是节 点失败判定的重要依据。  
+&emsp; 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令做一次心跳检测，来确认这些节点当前是否可达。如上图所示。通过上面的定时任务，Sentinel节点对主节点、从节点、其余 Sentinel节点都建立起连接，实现了对每个节点的监控，这个定时任务是节 点失败判定的重要依据。  
 
 ### 1.2.2. 主观下线、客观下线  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-88.png)  
