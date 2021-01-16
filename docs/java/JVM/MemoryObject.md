@@ -54,6 +54,8 @@ https://www.jianshu.com/p/8be816cbb5ed
 https://mp.weixin.qq.com/s/jPIHNsQwiYNCRUQt1qXR6Q
 https://mp.weixin.qq.com/s/fyorrpT5-hFpIS5aEDNjZA
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
+https://www.cnblogs.com/BlueStarWei/p/9358757.html
+https://www.jianshu.com/p/e832aa3b8b70
 -->
 
 ## 1.2. 对象的内存布局  
