@@ -11,18 +11,16 @@
             - [1.3.1.3. Redis字符串的性能优势](#1313-redis字符串的性能优势)
         - [1.3.2. LinkedList双端链表](#132-linkedlist双端链表)
         - [1.3.3. Ziplist压缩列表](#133-ziplist压缩列表)
-        - [Quicklist快速列表](#quicklist快速列表)
-        - [1.3.4. Dictht字典](#134-dictht字典)
-        - [1.3.5. 跳跃表](#135-跳跃表)
+        - [1.3.4. Quicklist快速列表](#134-quicklist快速列表)
+        - [1.3.5. Dictht字典](#135-dictht字典)
+        - [1.3.6. 整数集合inset](#136-整数集合inset)
+        - [1.3.7. SkipList跳跃表](#137-skiplist跳跃表)
     - [1.4. 数据类型](#14-数据类型)
         - [1.4.1. String内部编码](#141-string内部编码)
         - [1.4.2. Hash内部编码](#142-hash内部编码)
         - [1.4.3. List内部编码](#143-list内部编码)
         - [1.4.4. Set内部编码](#144-set内部编码)
-            - [1.4.4.1. 采用inset实现](#1441-采用inset实现)
         - [1.4.5. Zset内部编码](#145-zset内部编码)
-            - [1.4.5.1. 采用ZipList压缩列表实现](#1451-采用ziplist压缩列表实现)
-            - [1.4.5.2. 采用SkipList跳跃表实现](#1452-采用skiplist跳跃表实现)
     - [1.5. 查看redis内部存储的操作](#15-查看redis内部存储的操作)
 
 <!-- /TOC -->
@@ -205,7 +203,6 @@ SDS还提供「空间预分配」和「惰性空间释放」两种策略。在�
 &emsp; 从图中可以看出Redis的linkedlist双端链表有以下特性：节点带有prev、next指针、head指针和tail指针，获取前置节点、后置节点、表头节点和表尾节点的复杂度都是O(1)。len属性获取节点数量也为O(1)。 
 -->
 
-
 ### 1.3.3. Ziplist压缩列表
 &emsp; 在双端链表中，如果在一个链表节点中存储一个小数据，比如一个字节。那么对应的就要保存头节点，前后指针等额外的数据。  
 &emsp; 这样就浪费了空间，同时由于反复申请与释放也容易导致内存碎片化。这样内存的使用效率就太低了。  
@@ -237,7 +234,7 @@ SDS还提供「空间预分配」和「惰性空间释放」两种策略。在�
 * 优点：<font color = "red">内存地址连续，省去了每个元素的头尾节点指针占用的内存。</font>  
 * 缺点：对于删除和插入操作比较可能会触发连锁更新反应，比如在 list 中间插入删除一个元素时，在插入或删除位置后面的元素可能都需要发生相应的移动操作。 
 
-### Quicklist快速列表
+### 1.3.4. Quicklist快速列表
 &emsp; 在 Redis3.2 版本之后，Redis集合采用了QuickList作为List的底层实现，QuickList其实就是结合了ZipList和LinkedList的优点设计出来的。quicklist存储了一个双向链表，每个节点都是一个ziplist。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-63.png)  
 
@@ -247,7 +244,7 @@ SDS还提供「空间预分配」和「惰性空间释放」两种策略。在�
 * ZipList 中存储的元素数据总大小超过 8kb（默认大小，通过 list-max-ziplist-size 参数可以进行配置）的时候，就会重新创建出来一个 ListNode 和 ZipList，然后将其通过指针关联起来。
 
 
-### 1.3.4. Dictht字典  
+### 1.3.5. Dictht字典  
 <!-- 
 Redis 字典
 https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
@@ -269,7 +266,40 @@ https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
 &emsp; Redis将所有的rehash的操作分成多步进行，直到都rehash完成，具体的实现与对象中的rehashindex属性相关，「若是rehashindex 表示为-1表示没有rehash操作」。  
 &emsp; 当rehash操作开始时会将该值改成0，在渐进式rehash的过程「更新、删除、查询会在ht[0]和ht[1]中都进行」，比如更新一个值先更新ht[0]，然后再更新ht[1]。  
 &emsp; 而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，这样保证「ht[0]只减不增，直到最后的某一个时刻变成空表」，这样rehash操作完成。  
-### 1.3.5. 跳跃表  
+
+
+### 1.3.6. 整数集合inset  
+&emsp; inset的数据结构：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-7.png)  
+&emsp; inset也叫做整数集合，用于保存整数值的数据结构类型，它可以保存int16_t、int32_t 或者int64_t 的整数值。  
+&emsp; 在整数集合中，有三个属性值encoding、length、contents[]，分别表示编码方式、整数集合的长度、以及元素内容，length就是记录contents里面的大小。  
+
+&emsp; 在整数集合新增元素的时候，若是超出了原集合的长度大小，就会对集合进行升级，具体的升级过程如下：  
+1. 首先扩展底层数组的大小，并且数组的类型为新元素的类型。  
+2. 然后将原来的数组中的元素转为新元素的类型，并放到扩展后数组对应的位置。  
+3. 整数集合升级后就不会再降级，编码会一直保持升级后的状态。  
+
+### 1.3.7. SkipList跳跃表  
+&emsp; skiplist也叫做「跳跃表」，跳跃表是一种有序的数据结构，它通过每一个节点维持多个指向其它节点的指针，从而达到快速访问的目的。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-85.png)  
+<!-- 
+&emsp; 具体实现的结构图如下所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-82.png)  
+-->
+&emsp; SkipList分为两部分，dict部分是由字典实现，Zset部分使用跳跃表实现，从图中可以看出，dict和跳跃表都存储了数据，实际上dict和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
+
+&emsp; 在跳跃表的结构中有head和tail表示指向头节点和尾节点的指针，能快速的实现定位。level表示层数，len表示跳跃表的长度，BW表示后退指针，在从尾向前遍历的时候使用。BW下面还有两个值分别表示分值（score）和成员对象（各个节点保存的成员对象）。  
+
+&emsp; skiplist有如下几个特点：  
+1. 有很多层组成，由上到下节点数逐渐密集，最上层的节点最稀疏，跨度也最大。  
+2. 每一层都是一个有序链表，至少包含两个节点，头节点和尾节点。  
+3. 每一层的每一个节点都含有指向同一层下一个节点和下一层同一个位置节点的指针。  
+4. 如果一个节点在某一层出现，那么该以下的所有链表同一个位置都会出现该节点。  
+
+&emsp; 跳跃表的上面层就相当于索引层，都是为了找到最后的数据而服务的，数据量越大，条表所体现的查询的效率就越高，和平衡树的查询效率相差无几。  
+
+&emsp; 如下图所示，红线是查找10的过程：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-83.png)  
 
 ## 1.4. 数据类型
 ### 1.4.1. String内部编码  
@@ -318,16 +348,6 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 * Set 集合中的所有元素都为整数
 * Set 集合中的元素个数不大于 512（默认 512，可以通过修改 set-max-intset-entries 配置调整集合大小） 
 
-#### 1.4.4.1. 采用inset实现  
-&emsp; inset的数据结构：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-7.png)  
-&emsp; inset也叫做整数集合，用于保存整数值的数据结构类型，它可以保存int16_t、int32_t 或者int64_t 的整数值。  
-&emsp; 在整数集合中，有三个属性值encoding、length、contents[]，分别表示编码方式、整数集合的长度、以及元素内容，length就是记录contents里面的大小。  
-
-&emsp; 在整数集合新增元素的时候，若是超出了原集合的长度大小，就会对集合进行升级，具体的升级过程如下：  
-1. 首先扩展底层数组的大小，并且数组的类型为新元素的类型。  
-2. 然后将原来的数组中的元素转为新元素的类型，并放到扩展后数组对应的位置。  
-3. 整数集合升级后就不会再降级，编码会一直保持升级后的状态。  
 
 ### 1.4.5. Zset内部编码   
 &emsp; ZSet的底层实现是ziplist和skiplist实现的，由ziplist转换为skiplist。当同时满足以下两个条件时，采用ZipList实现；反之采用SkipList实现。
@@ -335,31 +355,8 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 * Zset中保存的元素个数小于128。（通过修改zset-max-ziplist-entries配置来修改）  
 * Zset中保存的所有元素长度小于64byte。（通过修改zset-max-ziplist-values配置来修改）  
 
-#### 1.4.5.1. 采用ZipList压缩列表实现  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-84.png)  
 &emsp; 和List的底层实现有些相似，对于Zset不同的是，其存储是以键值对的方式依次排列，键存储的是实际 value，值存储的是value对应的分值。  
-
-#### 1.4.5.2. 采用SkipList跳跃表实现  
-&emsp; skiplist也叫做「跳跃表」，跳跃表是一种有序的数据结构，它通过每一个节点维持多个指向其它节点的指针，从而达到快速访问的目的。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-85.png)  
-<!-- 
-&emsp; 具体实现的结构图如下所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-82.png)  
--->
-&emsp; SkipList分为两部分，dict部分是由字典实现，Zset部分使用跳跃表实现，从图中可以看出，dict和跳跃表都存储了数据，实际上dict和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
-
-&emsp; 在跳跃表的结构中有head和tail表示指向头节点和尾节点的指针，能快速的实现定位。level表示层数，len表示跳跃表的长度，BW表示后退指针，在从尾向前遍历的时候使用。BW下面还有两个值分别表示分值（score）和成员对象（各个节点保存的成员对象）。  
-
-&emsp; skiplist有如下几个特点：  
-1. 有很多层组成，由上到下节点数逐渐密集，最上层的节点最稀疏，跨度也最大。  
-2. 每一层都是一个有序链表，至少包含两个节点，头节点和尾节点。  
-3. 每一层的每一个节点都含有指向同一层下一个节点和下一层同一个位置节点的指针。  
-4. 如果一个节点在某一层出现，那么该以下的所有链表同一个位置都会出现该节点。  
-
-&emsp; 跳跃表的上面层就相当于索引层，都是为了找到最后的数据而服务的，数据量越大，条表所体现的查询的效率就越高，和平衡树的查询效率相差无几。  
-
-&emsp; 如下图所示，红线是查找10的过程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-83.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-84.png)  
 
 ## 1.5. 查看redis内部存储的操作  
 &emsp; ......
