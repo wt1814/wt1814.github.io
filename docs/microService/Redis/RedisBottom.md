@@ -5,7 +5,7 @@
     - [1.1. Redis源码阅读之环境搭建及准备](#11-redis源码阅读之环境搭建及准备)
     - [1.2. 对象系统RedisObject](#12-对象系统redisobject)
     - [1.3. 数据结构介绍](#13-数据结构介绍)
-        - [1.3.1. SDS](#131-sds)
+        - [1.3.1. SDS字符串](#131-sds字符串)
             - [1.3.1.1. SDS代码结构](#1311-sds代码结构)
             - [1.3.1.2. ※※※SDS动态扩展特点](#1312-※※※sds动态扩展特点)
             - [1.3.1.3. Redis字符串的性能优势](#1313-redis字符串的性能优势)
@@ -90,7 +90,7 @@ typedef struct redisObject {
 <!-- 
 https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 -->
-### 1.3.1. SDS  
+### 1.3.1. SDS字符串  
 <!-- 
 https://mp.weixin.qq.com/s/VY31lBOSggOHvVf54GzvYw
 https://mp.weixin.qq.com/s/f71rakde6KBJ_ilRf1M8xQ
