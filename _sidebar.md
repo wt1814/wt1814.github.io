@@ -262,7 +262,8 @@
     * [kafka-SpringBoot](/docs/microService/mq/kafka/kafkaSpringBoot.md)  
     * [kafka高级应用](/docs/microService/mq/kafka/advanced.md)  
     * [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
-    * [kafka源码]  
+    
+    * [kafka源码](/docs/microService/mq/kafka/kafkaSource.md)  
     * [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
     * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md) 
 * 分布式ID  
