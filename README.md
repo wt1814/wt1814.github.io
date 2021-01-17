@@ -112,6 +112,7 @@
 [内存泄露](/docs/java/JVM/MemoryLeak.md)  
 [GC-回收对象](/docs/java/JVM/GCProject.md)  
 [GC-回收器](/docs/java/JVM/GCReclaimer.md)  
+[GC-重要的回收器](/docs/java/JVM/GCReclaimerOne.md)  
 [JVM调优-基础](/docs/java/JVM/TuningBasic.md)  
 [JVM调优](/docs/java/JVM/tuning.md)  
 [JVM问题排查](/docs/java/JVM/TroubleShooting.md)  
