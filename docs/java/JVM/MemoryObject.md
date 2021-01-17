@@ -16,6 +16,10 @@
 <!-- /TOC -->
 
 # 1. 内存中对象  
+<!-- 
+https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
+-->
+
 ## 1.1. 对象的创建过程  
 &emsp; 简述一下Java中创建一个对象的过程？  
 &emsp; 解析：回答这个问题首先就要清楚类的生命周期  

@@ -74,7 +74,6 @@ public class KafkaProducerTest {
 |value.serializer	|值的序列化类，实现以下接口： org.apache.kafka.common.serialization.Serializer 接口。	|class	| | |high|
 |acks	|此配置是 Producer 在确认一个请求发送完成之前需要收到的反馈信息的数量。 这个参数是为了保证发送请求的可靠性。以下配置方式是允许的：</br>acks=0 如果设置为0，则 producer 不会等待服务器的反馈。该消息会被立刻添加到 socket buffer 中并认为已经发送完成。在这种情况下，服务器是否收到请求是没法保证的，并且参数retries也不会生效（因为客户端无法获得失败信息）。每个记录返回的 offset 总是被设置为-1。</br>acks=1 如果设置为1，leader节点会将记录写入本地日志，并且在所有 follower 节点反馈之前就先确认成功。在这种情况下，如果 leader 节点在接收记录之后，并且在 follower 节点复制数据完成之前产生错误，则这条记录会丢失。</br>acks=all 如果设置为all，这就意味着 leader 节点会等待所有同步中的副本确认之后再确认这条记录是否发送完成。只要至少有一个同步副本存在，记录就不会丢失。这种方式是对请求传递的最有效保证。acks=-1与acks=all是等效的。 |string	|1	|[all, -1, 0, 1]|	high|
 |buffer.memory|	Producer 用来缓冲等待被发送到服务器的记录的总字节数。如果记录发送的速度比发送到服务器的速度快， Producer 就会阻塞，如果阻塞的时间超过 max.block.ms 配置的时长，则会抛出一个异常。</br>这个配置与 Producer 的可用总内存有一定的对应关系，但并不是完全等价的关系，因为 Producer 的可用内存并不是全部都用来缓存。一些额外的内存可能会用于压缩(如果启用了压缩)，以及维护正在运行的请求。|long	|33554432	|[0,...]|high|
-	
 
 ## 1.2. kafka生产者发送消息过程  
 &emsp; **<font color = "red">Producer发送消息的过程如下图所示（详情可参考kafka生产者源码部分），需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。</font>**  

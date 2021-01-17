@@ -281,4 +281,3 @@ advertised.host.name=192.168.239.128
 
 ## 1.3. kafka线上环境部署  
 &emsp; 参考《Apache kafka实战》第3章 Kafka线上环境部署
-

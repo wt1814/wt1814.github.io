@@ -3,10 +3,17 @@
 <!-- TOC -->
 
 - [1. JMM](#1-jmm)
-    - [1.1. 计算机内存模型介绍](#11-计算机内存模型介绍)
-    - [1.2. JMM中内存划分](#12-jmm中内存划分)
-    - [1.3. 线程间的通信过程](#13-线程间的通信过程)
-    - [1.4. JMM内存间的交互操作](#14-jmm内存间的交互操作)
+    - [1.1. 计算机CPU缓存模型](#11-计算机cpu缓存模型)
+    - [1.2. JMM](#12-jmm)
+        - [JMM中内存划分](#jmm中内存划分)
+        - [1.3. 线程间的通信过程](#13-线程间的通信过程)
+        - [1.4. JMM内存间的交互操作](#14-jmm内存间的交互操作)
+    - [1.2. CPU的MESI缓存一致性协议](#12-cpu的mesi缓存一致性协议)
+        - [1.2.1. 缓存一致性问题](#121-缓存一致性问题)
+        - [1.2.2. 总线锁（性能低）](#122-总线锁性能低)
+        - [1.2.3. MESI缓存一致性协议](#123-mesi缓存一致性协议)
+        - [1.2.4. 总线嗅探](#124-总线嗅探)
+        - [1.2.5. 总线风暴](#125-总线风暴)
 
 <!-- /TOC -->
 
@@ -16,13 +23,12 @@
 
 <!--
 CPU缓存一致性协议
-https://mp.weixin.qq.com/s/yWifJmirZNnBrAIZrpJwyg
+
 https://blog.csdn.net/w1453114339/article/details/107563613
 https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 看懂这篇，才能说了解并发底层技术！ 
 https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 
-https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccddb6c8b37114c022c4ad50368ecf&scene=21#wechat_redirect
 
 -->
@@ -34,14 +40,16 @@ https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccdd
 3. 从内存中取出变量值的底层细节
 
  
-## 1.1. 计算机内存模型介绍
+## 1.1. 计算机CPU缓存模型  
+
 ...
 
-## 1.2. JMM中内存划分  
+## 1.2. JMM  
 <!-- 
 &emsp; Java内存模型（Java Memory Model，JMM）是一种符合顺序一致内存模型规范的，屏蔽了各种硬件和操作系统的访问差异的，保证了Java程序在各种平台下对内存的访问都能保证效果一致的机制及规范。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-6.png)  
 -->
+### JMM中内存划分
 &emsp; Java线程内存模型跟cpu缓存模型类似，是基于cpu缓存模型来建立的，Java线程内存模型是标准化的，屏蔽掉了底层不同计算机的区别。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-7.png)   
 &emsp; Java内存模型划分： 
@@ -62,7 +70,7 @@ https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccdd
 6. 不同线程之间无法直接访问对方工作内存中的变量  
 7. 线程间变量值的传递均需要通过主内存来完成  
 
-## 1.3. 线程间的通信过程  
+### 1.3. 线程间的通信过程  
 &emsp; **JMM定义了Java虚拟机（JVM）在计算机内存（RAM）中的工作方式。JMM主要规定了以下两点：**  
 
 * 规定了一个线程如何以及何时可以看到其他线程修改过后的共享变量的值，即线程之间共享变量的可见性。  
@@ -88,7 +96,7 @@ https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccdd
 &emsp; 由于JVM运行程序的实体是线程，而每个线程创建时JVM都会为其创建一个工作内存（有些地方称为栈空间），工作内存是每个线程的私有数据区域，而Java内存模型中规定所有变量都存储在主内存，主内存是共享内存区域，所有线程都可以访问，<font color = "red">但线程对变量的操作（读取赋值等）必须在工作内存中进行，首先要将变量从主内存拷贝到自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，不能直接操作主内存中的变量，</font>各个线程中的工作内存中存储着主内存中的变量副本拷贝，<font color = "lime">因此不同的线程间无法访问对方的工作内存，线程间的通信（传值）必须通过主内存来完成，</font>其简要访问过程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-42.png)   
 
-## 1.4. JMM内存间的交互操作  
+### 1.4. JMM内存间的交互操作  
 &emsp; Java内存模型为主内存和工作内存间的变量拷贝及同步定义8种原子性操作指令。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-8.png)   
 
@@ -114,4 +122,41 @@ https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccdd
 * 如果对一个变量执行lock操作，将会清空工作内存中此变量的值，在执行引擎使用这个变量前需要重新执行load或assign操作初始化变量的值  
 * 如果一个变量事先没有被lock操作锁定，则不允许对它执行unlock操作；也不允许去unlock一个被其他线程锁定的变量。  
 * 对一个变量执行unlock操作之前，必须先把此变量同步到主内存中（执行store和write操作）。
+
+
+## 1.2. CPU的MESI缓存一致性协议
+### 1.2.1. 缓存一致性问题  
+&emsp; 当多个CPU持有的缓存都来自同一个主内存的拷贝，当有某个CPU修改了这个主内存数据后，而其他CPU并不知道，那拷贝的内存将会和主内存不一致，这就是缓存不一致。那如何来保证缓存一致呢？这里就需要操作系统来共同制定一个同步规则来保证。  
+
+### 1.2.2. 总线锁（性能低）  
+&emsp; 早期，cpu从主内存读取数据到高速缓存，会在总线对这个数据加锁，这样其他cpu无法去读或写这个数据，直到这个cpu使用完数据释放锁之后其他cpu才能读取该数据。  
+
+### 1.2.3. MESI缓存一致性协议  
+<!-- 
+~~
+https://mp.weixin.qq.com/s/yWifJmirZNnBrAIZrpJwyg
+-->
+<!-- 
+&emsp; 而这个规则就有MESI协议。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-43.png)  
+&emsp; 如下图所示，CPU2 偷偷将num修改为2，内存中num也被修改为2，但是CPU1和CPU3并不知道num值变了。  
+-->
+&emsp; **<font color = "lime">多个cpu从主内存读取同一个数据到各自的高速缓存，当其中某个cpu修改了缓存里的数据，该数据会马上同步回主内存，其他cpu通过总线嗅探机制可以感知到数据的变化从而将自己缓存里的数据失效。</font>**  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-47.png)  
+
+&emsp; 当CPU写数据时，如果发现操作的变量是共享变量，即在其它CPU中也存在该变量的副本，系统会发出信号通知其它CPU将该内存变量的缓存行设置为无效。如下图所示，CPU1和CPU3 中num=1已经失效了。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-44.png)  
+&emsp; 当其它CPU读取这个变量的时，发现自己缓存该变量的缓存行是无效的，那么它就会从内存中重新读取。  
+&emsp; 如下图所示，CPU1和CPU3发现缓存的num值失效了，就重新从内存读取，num值更新为2。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-45.png)  
+
+### 1.2.4. 总线嗅探  
+&emsp; 那其他CPU是怎么知道要将缓存更新为失效的呢？这里是用到了总线嗅探技术。  
+&emsp; **<font color = "red">每个CPU不断嗅探总线上传播的数据来检查自己缓存值是否过期了，如果处理器发现自己的缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置为无效状态，当处理器对这个数据进行修改操作的时候，会重新从内存中把数据读取到处理器缓存中。</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-46.png)  
+
+### 1.2.5. 总线风暴
+&emsp; 总线嗅探技术有哪些缺点？  
+&emsp; 由于MESI缓存一致性协议，需要不断对主线进行内存嗅探，大量的交互会导致总线带宽达到峰值。因此不要滥用volatile，可以用锁来替代，看使用场景。  
 

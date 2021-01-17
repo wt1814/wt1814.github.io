@@ -24,7 +24,6 @@
 Java人应该知道的SpringBoot For Kafka (下) 
 https://mp.weixin.qq.com/s/JB660Pgypr-PvkkdGOlhag
 -->
-
 1. 生产者实践
     * 普通生产者
     * 带回调的生产者
