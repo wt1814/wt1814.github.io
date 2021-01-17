@@ -3,22 +3,22 @@
 
 - [1. 重要的垃圾收集器](#1-重要的垃圾收集器)
     - [1.1. CMS](#11-cms)
-        - [1.1.1. 流程](#111-流程)
+        - [1.1.1. 回收流程](#111-回收流程)
         - [1.1.2. 优点与缺点](#112-优点与缺点)
+        - [1.1.3. CMS使用](#113-cms使用)
     - [1.2. G1](#12-g1)
         - [1.2.1. G1的内存布局](#121-g1的内存布局)
-        - [1.2.2. G1运行流程](#122-g1运行流程)
+        - [1.2.2. 回收流程](#122-回收流程)
         - [1.2.3. G1优缺点](#123-g1优缺点)
         - [1.2.4. 使用G1](#124-使用g1)
 
 <!-- /TOC -->
 
 # 1. 重要的垃圾收集器  
-
 ## 1.1. CMS  
 &emsp; CMS（Conrrurent Mark Sweep）收集器是以 **<font color = "lime">获取最短回收停顿时间为目标</font>** 的收集器。  
 
-### 1.1.1. 流程  
+### 1.1.1. 回收流程  
 &emsp; 使用标记-清除算法，收集过程分为如下四步：  
 1. 初始标记，标记GCRoots能直接关联到的对象，时间很短。  
 2. 并发标记，进行GCRoots Tracing（可达性分析）过程，过程耗时较长但是不需要停顿用户线程，可以与垃圾收集线程一起并发运行。  
@@ -38,6 +38,7 @@
 * **<font color = "lime">使用"标记-清除"算法，产生碎片空间</font>**  
 &emsp; 由于CMS使用了"标记-清除"算法, 因此清除之后会产生大量的碎片空间，不利于空间利用率。不过CMS提供了应对策略：开启-XX:+UseCMSCompactAtFullCollection，开启该参数后，每次FullGC完成后都会进行一次内存压缩整理，将零散在各处的对象整理到一块儿。但每次都整理效率不高，因此提供了另外一个参数，设置参数-XX:CMSFullGCsBeforeCompaction，本参数告诉CMS，经过了N次Full GC过后再进行一次内存整理。  
 
+### 1.1.3. CMS使用
 &emsp; 参数控制：  
 
     -XX:+UseConcMarkSweepGC 使用CMS收集器
@@ -48,7 +49,6 @@
 <!-- 
 https://www.cnblogs.com/cuizhiquan/articles/10961354.html
 https://mp.weixin.qq.com/s/dWg5S7m-LUQhxUofHfqb3g
-https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
 |组合7|G1GC|G1GC|-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC  <br/>#开启  <br/>-XX:MaxGCPauseMillis =50  #暂停时间目标  <br/>-XX:GCPauseIntervalMillis =200  #暂停间隔目标  <br/>-XX:+G1YoungGenSize=512m  #年轻代大小  <br/>-XX:SurvivorRatio=6  #幸存区比例|
 
 -->
@@ -65,7 +65,7 @@ https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
 &emsp; Region不可能是孤立的。一个对象分配在某个Region中，它并非只能被本Region中的其他对象引用，而是可以与整个Java堆任意的对象发生引用关系。  
 &emsp; 在G1收集器中，Region之间的对象引用以及其他收集器中的新生代与老年代之间的对象引用，<font color = "red">虚拟机是使用Remembered Set 来避免全堆扫描的</font>。G1中每个Region都有一个与之对应的Remembered Set，虚拟机发现程序在对Reference类型的数据进行写操作时，会产生一个Write Barrier暂时中断写操作，检查Reference引用的对象是否处于不同的Region之中（在分代的例子中就是检查是否老年代中的对象引用了新生代中的对象），如果是，便通过CardTable 把相关引用信息记录到被引用对象所属的Region的Remembered Set之中。当进行内存回收时，在GC根节点的枚举范围中加入Remembered Set即可保证不对全堆扫描也不会有遗漏。  
 
-### 1.2.2. G1运行流程  
+### 1.2.2. 回收流程  
 <!-- https://baijiahao.baidu.com/s?id=1663956888745443356&wfr=spider&for=pc-->
 &emsp; 不去计算用户线程运行过程中的动作（如使用写屏障维护记忆集的操作），G1收集器的运作过程大致可划分为以下四个步骤：  
 
