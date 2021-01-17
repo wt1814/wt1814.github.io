@@ -20,28 +20,23 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-10.png)  
 
 # 1. JMM  
-
 <!--
 CPU缓存一致性协议
-
 https://blog.csdn.net/w1453114339/article/details/107563613
 https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
-看懂这篇，才能说了解并发底层技术！ 
-https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
-
-https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccddb6c8b37114c022c4ad50368ecf&scene=21#wechat_redirect
 
 -->
-
+<!-- 
+~~
+https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccddb6c8b37114c022c4ad50368ecf&scene=21#wechat_redirect
+-->
 &emsp; JMM是指Java内存模型(Java Memory Model)，本身是一种抽象的概念，实际上并不存在，它描述的是一组规则或规范，通过这组规范定义了程序中各个变量(包括实例字段，静态字段和构成数组对象的元素)的访问方式。  
 
 1. 定义程序中各种变量的访问规则
 2. 把变量值存储到内存的底层细节
 3. 从内存中取出变量值的底层细节
-
  
 ## 1.1. 计算机CPU缓存模型  
-
 ...
 
 ## 1.2. JMM  
@@ -123,7 +118,6 @@ https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccdd
 * 如果一个变量事先没有被lock操作锁定，则不允许对它执行unlock操作；也不允许去unlock一个被其他线程锁定的变量。  
 * 对一个变量执行unlock操作之前，必须先把此变量同步到主内存中（执行store和write操作）。
 
-
 ## 1.2. CPU的MESI缓存一致性协议
 ### 1.2.1. 缓存一致性问题  
 &emsp; 当多个CPU持有的缓存都来自同一个主内存的拷贝，当有某个CPU修改了这个主内存数据后，而其他CPU并不知道，那拷贝的内存将会和主内存不一致，这就是缓存不一致。那如何来保证缓存一致呢？这里就需要操作系统来共同制定一个同步规则来保证。  
@@ -135,12 +129,11 @@ https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccdd
 <!-- 
 ~~
 https://mp.weixin.qq.com/s/yWifJmirZNnBrAIZrpJwyg
+看懂这篇，才能说了解并发底层技术！ 
+https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 -->
-<!-- 
-&emsp; 而这个规则就有MESI协议。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-43.png)  
-&emsp; 如下图所示，CPU2 偷偷将num修改为2，内存中num也被修改为2，但是CPU1和CPU3并不知道num值变了。  
--->
+&emsp; 缓存一致性协议有很多种，MESI（Modified-Exclusive-Shared-Invalid）协议其实是目前使用很广泛的缓存一致性协议，x86处理器所使用的缓存一致性协议就是基于MESI的。  
+
 &emsp; **<font color = "lime">多个cpu从主内存读取同一个数据到各自的高速缓存，当其中某个cpu修改了缓存里的数据，该数据会马上同步回主内存，其他cpu通过总线嗅探机制可以感知到数据的变化从而将自己缓存里的数据失效。</font>**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-47.png)  
