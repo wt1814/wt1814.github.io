@@ -36,7 +36,3 @@ https://blog.csdn.net/zzhuan_1/article/details/85312053
 |<font color = "red">ApplicationRunner</font>|<font color = "lime">容器启动完成后被回调</font>|需要放在IOC容器中，因为SpringBoot启动流程中是从IOC容器中取出的|
 |<font color = "red">CommandLineRunner</font>|<font color = "lime">ApplicationRunner之后被回调</font>|需要放在IOC容器中，因为SpringBoot启动流程中是从IOC容器中取出的|
 
-
-
-
-

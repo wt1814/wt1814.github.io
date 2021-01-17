@@ -23,11 +23,10 @@
 <!--
 CPU缓存一致性协议
 https://blog.csdn.net/w1453114339/article/details/107563613
-https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
-
 -->
 <!-- 
 ~~
+https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccddb6c8b37114c022c4ad50368ecf&scene=21#wechat_redirect
 -->
 &emsp; JMM是指Java内存模型(Java Memory Model)，本身是一种抽象的概念，实际上并不存在，它描述的是一组规则或规范，通过这组规范定义了程序中各个变量(包括实例字段，静态字段和构成数组对象的元素)的访问方式。  
@@ -151,5 +150,5 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 
 ### 1.2.5. 总线风暴
 &emsp; 总线嗅探技术有哪些缺点？  
-&emsp; 由于MESI缓存一致性协议，需要不断对主线进行内存嗅探，大量的交互会导致总线带宽达到峰值。因此不要滥用volatile，可以用锁来替代，看使用场景。  
-
+&emsp; 由于MESI缓存一致性协议，需要不断对主线进行内存嗅探，大量的交互会导致总线带宽达到峰值。   
+&emsp; 因此不要滥用volatile，可以用锁来替代，看使用场景。  

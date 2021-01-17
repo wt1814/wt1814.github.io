@@ -33,9 +33,7 @@ https://www.jianshu.com/p/2fd2b5a51227
 &emsp; 自定义starter使项目组件化、模块化。  
 
 ## 1.2. 开发  
-
 <!-- 
-
 https://mp.weixin.qq.com/s/O4Gni_c725p-qh9Zs7JmfA
 https://mp.weixin.qq.com/s/xG8WCmmm0aIqy2Kmrxn2sg
 https://www.cnblogs.com/hello-shf/p/10864977.html

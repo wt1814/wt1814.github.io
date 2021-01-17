@@ -34,5 +34,3 @@
 |CommandLineRunner|ApplicationRunner之后被回调|需要放在IOC容器中，因为SpringBoot启动流程中是从IOC容器中取出的|
 
 &emsp; 其中SpringApplicationRunListener是SpringBoot的事件监听机制。其最终会依赖到JDK的事件基类EventObject。SpringBoot内置了7种生命周期事件。  
-
-

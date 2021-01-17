@@ -21,7 +21,6 @@
 &emsp; **<font color = "lime">参考《kafka实战》</font>**  
 
 ## 1.1. 构造Producer
-
 ### 1.1.1. Producer程序实例
 ```java
 package persistent.prestige.demo.kafka;
