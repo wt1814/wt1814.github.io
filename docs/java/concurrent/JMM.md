@@ -123,6 +123,7 @@ https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccdd
 
 ### 1.2.2. 总线锁（性能低）  
 &emsp; 早期，cpu从主内存读取数据到高速缓存，会在总线对这个数据加锁，这样其他cpu无法去读或写这个数据，直到这个cpu使用完数据释放锁之后其他cpu才能读取该数据。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-103.png)  
 
 ### 1.2.3. MESI缓存一致性协议  
 <!-- 
@@ -131,6 +132,7 @@ https://mp.weixin.qq.com/s/yWifJmirZNnBrAIZrpJwyg
 看懂这篇，才能说了解并发底层技术！ 
 https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 -->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-104.png)  
 &emsp; 缓存一致性协议有很多种，MESI（Modified-Exclusive-Shared-Invalid）协议其实是目前使用很广泛的缓存一致性协议，x86处理器所使用的缓存一致性协议就是基于MESI的。  
 
 &emsp; **<font color = "lime">多个cpu从主内存读取同一个数据到各自的高速缓存，当其中某个cpu修改了缓存里的数据，该数据会马上同步回主内存，其他cpu通过总线嗅探机制可以感知到数据的变化从而将自己缓存里的数据失效。</font>**  
