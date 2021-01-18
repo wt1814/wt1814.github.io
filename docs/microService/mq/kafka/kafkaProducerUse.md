@@ -9,13 +9,16 @@
     - [1.3. producer拦截器](#13-producer拦截器)
     - [1.4. 消息序列化](#14-消息序列化)
     - [1.5. 消息分区机制](#15-消息分区机制)
-    - [1.6. xxx无消息丢失配置](#16-xxx无消息丢失配置)
+    - [1.6. ※※※无消息丢失配置](#16-※※※无消息丢失配置)
     - [1.7. 批量发送](#17-批量发送)
     - [1.8. 消息压缩](#18-消息压缩)
     - [1.9. 多线程处理](#19-多线程处理)
 
 <!-- /TOC -->
 
+&emsp; **总结：**  
+&emsp; Producer发送消息的过程如下图所示（详情可参考kafka生产者源码部分），需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。  
+&emsp; Kafka提供了默认的分区策略（轮询、随机、按key顺序），同时支持自定义分区策略。  
 
 # 1. kafka生产者
 &emsp; **<font color = "lime">参考《kafka实战》</font>**  
@@ -83,7 +86,7 @@ public class KafkaProducerTest {
 ## 1.3. producer拦截器  
 &emsp; producer拦截器主要用于实现clients端的定制化控制逻辑。interceptor使得用户在消息发送前以及producer回调逻辑前有机会对消息做一些定制化需求，比如修改消息等。  
 &emsp; 同时，producer允许用户指定多个interceptor按序作用于同一条消息从而形成一个拦截链interceptor chain。若指定多个interceptor，则producer将按照指定顺序调用它们，同时把每个interceptor中捕获的异常记录到错误日志中而不是向上传递。    
-interceptor的实现接口是org.apahce.kafka.clients.producer.ProducerInterceptor，方法是onSend(ProducerRecord)、onAcknowledgement(RecordMetadata,Exception)、close。  
+&emsp; interceptor的实现接口是org.apahce.kafka.clients.producer.ProducerInterceptor，方法是onSend(ProducerRecord)、onAcknowledgement(RecordMetadata,Exception)、close。  
 
 ## 1.4. 消息序列化  
 &emsp; 序列化器serializer：将消息转换成字节数组ByteArray。  
@@ -122,7 +125,7 @@ public int partition(String topic, Object key, byte[] keyBytes, Object value, by
 2. 如果没有key，会采用轮询策略，也称 Round-robin 策略，即顺序分配。比如一个主题下有 3 个分区，那么第一条消息被发送到分区 0，第二条被发送到分区 1，第三条被发送到分区 2，以此类推。当生产第 4 条消息时又会重新开始上述轮询。轮询策略有非常优秀的负载均衡表现，它总是能保证消息最大限度地被平均分配到所有分区上，故默认情况下它是最合理的分区策略。  
 3. 如果有key，那么就按消息键策略，这样可以保证同一个 Key 的所有消息都进入到相同的分区里面，这样就保证了顺序性。  
 
-## 1.6. xxx无消息丢失配置  
+## 1.6. ※※※无消息丢失配置  
 1. 采用同步发送，但是性能会很差，并不推荐在实际场景中使用。因此最好能有一份配置，既使用异步方式还能有效地避免数据丢失，即使出现producer崩溃的情况也不会有问题。 
 2. **做producer端的无消息丢失配置**  
     * producer端配置
