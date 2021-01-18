@@ -328,9 +328,10 @@
 
 [mq](/docs/microService/mq/mq.md)  
 
-#### kafka   
+#### kafka  
+[kafka总结](/docs/microService/mq/kafka/kafka.md)   
 [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
-[kafka基本概念](/docs/microService/mq/kafka/kafka.md)  
+[kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  
 [kafka生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
 [主题与分区](/docs/microService/mq/kafka/topic.md)  
 [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
