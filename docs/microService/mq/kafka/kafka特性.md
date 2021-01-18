@@ -25,7 +25,7 @@ https://mp.weixin.qq.com/s/LEmybNmD5XwkBtcTPHcaEA
 -->
 
 ## 1.1. 高性能（读写机制）  
-&emsp; Kafka 的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，因为寻址会比较消耗时间，但是实际上，Kafka 的特性之一就是高吞吐率。Kafka 之所以能这么快，是因为：「顺序写磁盘、大量使用内存页、零拷贝技术的使用」..  
+&emsp; Kafka 的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，因为寻址会比较消耗时间，但是实际上，Kafka 的特性之一就是高吞吐率。 **Kafka 之所以能这么快，是因为：「顺序写磁盘、大量使用内存页、零拷贝技术的使用」..**  
 
 ### 1.1.1. 顺序读写  
 &emsp; 数据写入Kafka会把收到的消息都写入到硬盘中。为了优化写入速度，Kafka使用了：顺序写入和Memory Mapped File 。
@@ -68,7 +68,7 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 &emsp; Kafka 无法做到消息全局有序，只能做到 Partition 维度的有序。所以如果想要消息有序，就需要从 Partition 维度入手。一般有两种解决方案。
 
 * 单 Partition，单 Consumer。通过此种方案强制消息全部写入同一个 Partition 内，但是同时也牺牲掉了 Kafka 高吞吐的特性了，所以一般不会采用此方案。  
-* 多 Partition，多 Consumer，指定 key 使用特定的 Hash 策略，使其消息落入指定的 Partition 中，从而保证相同的 key 对应的消息是有序的。此方案也是有一些弊端，比如当 Partition 个数发生变化时，相同的 key 对应的消息会落入到其他的 Partition 上，所以一旦确定 Partition 个数后就不能在修改 Partition 个数了。  
+* **多 Partition，多 Consumer，指定 key 使用特定的 Hash 策略，使其消息落入指定的 Partition 中，从而保证相同的 key 对应的消息是有序的。** 此方案也是有一些弊端，比如当 Partition 个数发生变化时，相同的 key 对应的消息会落入到其他的 Partition 上，所以一旦确定 Partition 个数后就不能在修改 Partition 个数了。  
 
 ## 1.3. 高可用性（副本机制）
 [kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  

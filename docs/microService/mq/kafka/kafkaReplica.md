@@ -32,8 +32,8 @@ https://www.cnblogs.com/luozhiyun/p/12079527.html
 &emsp; 但并不是每个好处都能获得，这还是和具体的设计有关，比如Kafka只具有第一个好处，即提高可用性。这是因为**Kafka副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。**  
 
 * 副本的定义是在分区（Partition）层下定义的，每个分区有多个副本。  
-* 副本可分布于多台机器上。
-* Kafka中副本分为领导者副本（Leader Replica） & 追随者副本（Follower Replica）。每个 Partition创建时都要选举一个副本，称为 Leader Replica，其余副本为 Follower Replica。
+* **副本可分布于多台机器上。**
+* **Kafka中副本分为领导者副本（Leader Replica） & 追随者副本（Follower Replica）。每个 Partition创建时都要选举一个副本，称为 Leader Replica，其余副本为 Follower Replica。**
 * 只有Leader副本会读写数据。
 * 其他则作为Follower副本，负责同步Leader的数据，当Leader宕机时，从Follower选举出新的Leader，从而解决分区单点问题。  
 
