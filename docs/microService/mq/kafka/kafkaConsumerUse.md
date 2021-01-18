@@ -11,11 +11,11 @@
         - [1.3.2. 基于正则表达订阅topic](#132-基于正则表达订阅topic)
     - [1.4. 消息轮询](#14-消息轮询)
     - [1.5. 消费语义](#15-消费语义)
-    - [1.6. 消费者位移(offset)管理](#16-消费者位移offset管理)
+    - [1.6. ※※※消费者位移(offset)管理](#16-※※※消费者位移offset管理)
         - [1.6.1. 位移提交方式](#161-位移提交方式)
         - [1.6.2. 位移主题(__consumer_offsets) ，位移提交地址](#162-位移主题__consumer_offsets-位移提交地址)
         - [1.6.3. 消费组消费进度查看的命令](#163-消费组消费进度查看的命令)
-    - [1.7. 消费者组重平衡(rebalance)](#17-消费者组重平衡rebalance)
+    - [1.7. ※※※消费者组重平衡(rebalance)](#17-※※※消费者组重平衡rebalance)
         - [1.7.1. 重平衡简介](#171-重平衡简介)
         - [1.7.2. 重平衡触发条件](#172-重平衡触发条件)
         - [1.7.3. 重平衡流程](#173-重平衡流程)
@@ -190,7 +190,7 @@ public class ConsumerDemo {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-89.png)  
 <center>正好消费一次</center>
 
-## 1.6. 消费者位移(offset)管理
+## 1.6. ※※※消费者位移(offset)管理
 <!-- 
 -->
 &emsp; 需要明确指出的是，这里的offset指代的是consumer端的offset，与分区日志中的offset是不同的含义。每个consumer实例都会为它消费的分区维护属于自己的位置信息来记录当前消费了多少条消息。这在Kafka中有一个特有的术语：位移(offset)。  
@@ -237,7 +237,7 @@ kafka_test      3          7437            7437            0               consu
 kafka_test      0          7399            7399            0               consumer-1-696cc434-d9f0-4f95-8ac5-2202dee19d2d /192.168.109.1  consumer-1
 ```
 
-## 1.7. 消费者组重平衡(rebalance)
+## 1.7. ※※※消费者组重平衡(rebalance)
 <!-- 
 消费者组重平衡全流程解析
 https://www.kancloud.cn/nicefo71/kafka/1473378

@@ -333,7 +333,7 @@
 [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
 [kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  
 [kafka生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
-[主题与分区](/docs/microService/mq/kafka/topic.md)  
+[消息的主题与分区](/docs/microService/mq/kafka/topic.md)  
 [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
 [kafka特性](/docs/microService/mq/kafka/kafka特性.md)  
 &emsp; [kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
