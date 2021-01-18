@@ -6,17 +6,18 @@
         - [1.1.1. Producer程序实例](#111-producer程序实例)
         - [1.1.2. Producer配置](#112-producer配置)
     - [1.2. kafka生产者发送消息过程](#12-kafka生产者发送消息过程)
-    - [1.3. producer拦截器](#13-producer拦截器)
-    - [1.4. 消息序列化](#14-消息序列化)
-    - [1.5. 消息分区机制](#15-消息分区机制)
-    - [1.6. ※※※无消息丢失配置](#16-※※※无消息丢失配置)
-    - [1.7. 批量发送](#17-批量发送)
-    - [1.8. 消息压缩](#18-消息压缩)
-    - [1.9. 多线程处理](#19-多线程处理)
+    - [1.3. 发送方式](#13-发送方式)
+    - [1.4. producer拦截器](#14-producer拦截器)
+    - [1.5. 消息序列化](#15-消息序列化)
+    - [1.6. 消息分区机制](#16-消息分区机制)
+    - [1.7. ※※※无消息丢失配置](#17-※※※无消息丢失配置)
+    - [1.8. 批量发送](#18-批量发送)
+    - [1.9. 消息压缩](#19-消息压缩)
+    - [1.10. 多线程处理](#110-多线程处理)
 
 <!-- /TOC -->
 
-&emsp; **总结：**  
+&emsp; **<font color = "lime">总结：</font>**  
 &emsp; Producer发送消息的过程如下图所示（详情可参考kafka生产者源码部分），需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。  
 &emsp; Kafka提供了默认的分区策略（轮询、随机、按key顺序），同时支持自定义分区策略。  
 
@@ -83,19 +84,24 @@ public class KafkaProducerTest {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-8.png)  
 
-## 1.3. producer拦截器  
+## 1.3. 发送方式  
+<!-- 
+https://blog.csdn.net/lwglwg32719/article/details/86510029
+-->
+
+## 1.4. producer拦截器  
 &emsp; producer拦截器主要用于实现clients端的定制化控制逻辑。interceptor使得用户在消息发送前以及producer回调逻辑前有机会对消息做一些定制化需求，比如修改消息等。  
 &emsp; 同时，producer允许用户指定多个interceptor按序作用于同一条消息从而形成一个拦截链interceptor chain。若指定多个interceptor，则producer将按照指定顺序调用它们，同时把每个interceptor中捕获的异常记录到错误日志中而不是向上传递。    
 &emsp; interceptor的实现接口是org.apahce.kafka.clients.producer.ProducerInterceptor，方法是onSend(ProducerRecord)、onAcknowledgement(RecordMetadata,Exception)、close。  
 
-## 1.4. 消息序列化  
+## 1.5. 消息序列化  
 &emsp; 序列化器serializer：将消息转换成字节数组ByteArray。  
 &emsp; 可自定义序列化：  
 1. 定义数据对象格式； 
 2. 创建自定义序列化类，实现org.apache.kafka.common.serialization.Serializer接口，在serializer方法中实现序列化逻辑；  
 3. 在用于构建KafkaProducer的Properties对象中设置key.serializer或value.serializer，取决于是为消息key还是value做自定义序列化。  
 
-## 1.5. 消息分区机制  
+## 1.6. 消息分区机制  
 &emsp; **Kafka提供了默认的分区策略（轮询、随机、按key顺序），同时支持自定义分区策略。**分区机制如下：    
 
 ```java
@@ -125,7 +131,7 @@ public int partition(String topic, Object key, byte[] keyBytes, Object value, by
 2. 如果没有key，会采用轮询策略，也称 Round-robin 策略，即顺序分配。比如一个主题下有 3 个分区，那么第一条消息被发送到分区 0，第二条被发送到分区 1，第三条被发送到分区 2，以此类推。当生产第 4 条消息时又会重新开始上述轮询。轮询策略有非常优秀的负载均衡表现，它总是能保证消息最大限度地被平均分配到所有分区上，故默认情况下它是最合理的分区策略。  
 3. 如果有key，那么就按消息键策略，这样可以保证同一个 Key 的所有消息都进入到相同的分区里面，这样就保证了顺序性。  
 
-## 1.6. ※※※无消息丢失配置  
+## 1.7. ※※※无消息丢失配置  
 1. 采用同步发送，但是性能会很差，并不推荐在实际场景中使用。因此最好能有一份配置，既使用异步方式还能有效地避免数据丢失，即使出现producer崩溃的情况也不会有问题。 
 2. **做producer端的无消息丢失配置**  
     * producer端配置
@@ -148,7 +154,7 @@ public int partition(String topic, Object key, byte[] keyBytes, Object value, by
 
             enable.auto.commit=false   设置不能自动提交位移，需要用户手动提交位移
 
-## 1.7. 批量发送  
+## 1.8. 批量发送  
 &emsp; **如何提升Producer的性能？异步，批量，压缩。**  
 
 &emsp; Kafka允许进行批量发送消息，producter发送消息的时候，可以将消息缓存在本地，等到了固定条件发送到Kafka 。  
@@ -156,7 +162,7 @@ public int partition(String topic, Object key, byte[] keyBytes, Object value, by
 * 等消息条数到固定条数。  
 * 一段时间发送一次。  
 
-## 1.8. 消息压缩  
+## 1.9. 消息压缩  
 &emsp; 数据压缩显著地降低了磁盘占用或带宽占用，从而有效地提升了I/O密集型应用的性能。不过引用压缩同时会消耗额外的CPU时钟周期，因此压缩是I/O性能和CPU资源的平衡。  
 &emsp; kafka自0.7.x版本便开始支持压缩特性。producer端能够将一批消息压缩成一条消息发送，而broker端将这条压缩消息写入本地日志文件，consumer端获取到这条压缩消息时会自动对消息进行解压缩。即producer端压缩，broker保持，consumer解压缩。  
 &emsp; 如果有些前置条件不满足，比如需要进行消息格式的转换等，那么broker端就需要对消息进行解压缩然后再重新压缩。  
@@ -170,7 +176,7 @@ props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
 ```
 &emsp; 如果发现压缩很慢，说明系统的瓶颈在用户主线程而不是I/O发送线程，因此可以考虑增加多个用户线程同时发送消息，这样通常能显著地提升producer吞吐量。
 
-## 1.9. 多线程处理  
+## 1.10. 多线程处理  
 &emsp; 实际环境中只使用一个用户主线程通常无法满足所需的吞吐量目标，因此需要构造多个线程或多个进程来同时给Kafka集群发送消息。这样在使用过程中就存在着两种基本的使用方法。  
 
 * 多线程单KafkaProducer实例  

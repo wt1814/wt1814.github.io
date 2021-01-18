@@ -4,7 +4,7 @@
     - [1.1. 主题与分区管理](#11-主题与分区管理)
     - [1.2. 为什么分区？](#12-为什么分区)
     - [1.3. 如何选择合适的分区数？](#13-如何选择合适的分区数)
-    - [1.4. 消息在分区上的存储（Partition、Replica、Log和LogSegment的关系）](#14-消息在分区上的存储partitionreplicalog和logsegment的关系)
+    - [1.4. ~~分区存储数据(日志存储) ~~](#14-分区存储数据日志存储-)
 
 <!-- /TOC -->
 
@@ -14,13 +14,8 @@
 ......
 
 ## 1.2. 为什么分区？  
-<!-- 
-kafka为什么分区  
-https://www.cnblogs.com/listenfwind/p/12465409.html
-https://www.zhihu.com/question/28925721
-https://blog.51cto.com/2164097/2063781?source=dra
-https://blog.csdn.net/weixin_38750084/article/details/82942564
--->
+&emsp;从数据组织形式来说，kafka有三层形式，kafka有多个主题，每个主题有多个分区，每个分区又有多条消息。  
+&emsp;而每个分区可以分布到不同的机器上，这样一来，从服务端来说，分区可以实现高伸缩性，以及负载均衡，动态调节的能力。  
 
 ## 1.3. 如何选择合适的分区数？  
 &emsp; 在Kafka中，性能与分区数有着必然的关系，在设定分区数时一般也需要考虑性能的因素。对不同的硬件而言，其对应的性能也会不太一样。**可以使用Kafka 本身提供的用于生产者性能测试的kafka-producer-perf-test.sh和用于消费者性能测试的kafka-consumer-perf-test.sh来进行测试。**  
@@ -28,7 +23,9 @@ https://blog.csdn.net/weixin_38750084/article/details/82942564
 &emsp; 分区数的多少还会影响系统的可用性。如果分区数非常多，如果集群中的某个broker节点宕机，那么就会有大量的分区需要同时进行leader角色切换，这个切换的过程会耗费一笔可观的时间，并且在这个时间窗口内这些分区也会变得不可用。  
 &emsp; 分区数越多也会让Kafka的正常启动和关闭的耗时变得越长，与此同时，主题的分区数越多不仅会增加日志清理的耗时，而且在被删除时也会耗费更多的时间。  
 
-## 1.4. 消息在分区上的存储（Partition、Replica、Log和LogSegment的关系）
+## 1.4. ~~分区存储数据(日志存储) ~~ 
+<!-- 
+消息在分区上的存储（Partition、Replica、Log和LogSegment的关系）
 &emsp; 假设有一个 Kafka 集群，Broker 个数为 3，Topic 个数为 1，Partition 个数为 3，Replica 个数为 2。Partition 的物理分布如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-83.png)  
 &emsp; 从上图可以看出，该 Topic 由三个 Partition 构成，并且每个 Partition 由主从两个副本构成。每个 Partition 的主从副本分布在不同的 Broker 上，通过这点也可以看出，当某个 Broker 宕机时，可以将分布在其他 Broker 上的从副本设置为主副本，因为只有主副本对外提供读写请求，当然在最新的 2.x 版本中从副本也可以对外读请求了。将主从副本分布在不同的Broker上从而提高系统的可用性。   
@@ -37,54 +34,36 @@ https://blog.csdn.net/weixin_38750084/article/details/82942564
 
 &emsp; **总结一下 Partition、Replica、Log 和 LogSegment 之间的关系。** 消息是以 Partition 维度进行管理的，为了提高系统的可用性，每个 Partition 都可以设置相应的 Replica 副本数，一般在创建 Topic 的时候同时指定 Replica 的个数；Partition 和 Replica 的实际物理存储形式是通过 Log 文件展现的，为了防止消息不断写入，导致 Log 文件大小持续增长，所以将 Log 切割成一个一个的 LogSegment 文件。  
 &emsp; 注意： 在同一时刻，每个主 Partition 中有且只有一个 LogSegment 被标识为可写入状态，当一个 LogSegment 文件大小超过一定大小后（比如当文件大小超过 1G，这个就类似于 HDFS 存储的数据文件，HDFS 中数据文件达到 128M 的时候就会被分出一个新的文件来存储数据），就会新创建一个 LogSegment 来继续接收新写入的消息。  
-
-
-
-
-<!-- 
-
- 1.4.2. ※※※生产者写入消息流程分析  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-84.png)  
-
- 1.4.2.1. 流程解析  
-&emsp; 生产者客户端对于每个 Partition 一次会发送一批消息到服务端，服务端收到一批消息后写入相应的 Partition 上。上图流程主要分为如下几步：
-1. 客户端消息收集器收集属于同一个分区的消息，并对每条消息设置一个偏移量，且每一批消息总是从 0 开始单调递增。比如第一次发送 3 条消息，则对三条消息依次编号 [0,1,2]，第二次发送 4 条消息，则消息依次编号为 [0,1,2,3]。注意此处设置的消息偏移量是相对偏移量。
-2. 客户端将消息发送给服务端，服务端拿到下一条消息的绝对偏移量，将传到服务端的这批消息的相对偏移量修改成绝对偏移量。
-3. 将修改后的消息以追加的方式追加到当前活跃的 LogSegment 后面，然后更新绝对偏移量。
-4. 将消息集写入到文件通道。
-5. 文件通道将消息集 flush 到磁盘，完成消息的写入操作。
-
-&emsp; 了解以上过程后，再来看看消息的具体构成情况。  
-&emsp; 一条消息由如下三部分构成：  
-
-* OffSet：偏移量，消息在客户端发送前将相对偏移量存储到该位置，当消息存储到 LogSegment 前，先将其修改为绝对偏移量在写入磁盘。  
-* Size：本条 Message 的内容大小  
-* Message：消息的具体内容，其具体又由 7 部分组成，crc 用于校验消息，Attribute 代表了属性，key-length 和 value-length 分别代表 key 和 value 的长度，key 和 value 分别代表了其对应的内容。  
-
- 1.4.2.2. 消息偏移量的计算过程  
-&emsp; 通过以上流程可以看出，每条消息在被实际存储到磁盘时都会被分配一个绝对偏移量后才能被写入磁盘。在同一个分区内，消息的绝对偏移量都是从 0 开始，且单调递增；在不同分区内，消息的绝对偏移量是没有任何关系的。接下来讨论下消息的绝对偏移量的计算规则。  
-&emsp; 确定消息偏移量有两种方式，一种是顺序读取每一条消息来确定，此种方式代价比较大，实际上我们并不想知道消息的内容，而只是想知道消息的偏移量；第二种是读取每条消息的 Size 属性，然后计算出下一条消息的起始偏移量。比如第一条消息内容为 “abc”，写入磁盘后的偏移量为：8（OffSet）+ 4（Message 大小）+ 3（Message 内容的长度）= 15。第二条写入的消息内容为“defg”，其起始偏移量为 15，下一条消息的起始偏移量应该是：15+8+4+4=31，以此类推。  
-
- 1.4.3. ※※※消费消息及副本同步流程分析  
-&emsp; 和写入消息流程不同，读取消息流程分为两种情况，分别是消费端消费消息和从副本（备份副本）同步主副本的消息。在开始分析读取流程之前，需要先明白几个用到的变量，不然流程分析可能会看的比较糊涂。  
-
-* BaseOffSet：基准偏移量，每个 Partition 由 N 个 LogSegment 组成，每个 LogSegment 都有基准偏移量，大概由如下构成，数组中每个数代表一个 LogSegment 的基准偏移量：[0,200,400,600, ...]。  
-* StartOffSet：起始偏移量，由消费端发起读取消息请求时，指定从哪个位置开始消费消息。  
-* MaxLength：拉取大小，由消费端发起读取消息请求时，指定本次最大拉取消息内容的数据大小。该参数可以通过max.partition.fetch.bytes来指定，默认大小为 1M。  
-* MaxOffSet：最大偏移量，消费端拉取消息时，最高可拉取消息的位置，即俗称的“高水位”。该参数由服务端指定，其作用是为了防止生产端还未写入的消息就被消费端进行消费。此参数对于从副本同步主副本不会用到。  
-* MaxPosition：LogSegment 的最大位置，确定了起始偏移量在某个 LogSegment 上开始，读取 MaxLength 后，不能超过 MaxPosition。MaxPosition 是一个实际的物理位置，而非偏移量。  
-
-&emsp; 假设消费端从 000000621 位置开始消费消息，关于几个变量的关系如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-85.png)  
-&emsp; 消费端和从副本拉取流程如下：
-
-1. 客户端确定拉取的位置，即 StartOffSet 的值，找到主副本对应的 LogSegment。
-LogSegment 由索引文件和数据文件构成，由于索引文件是从小到大排列的，首先从索引文件确定一个小于等于 StartOffSet 最近的索引位置。  
-2. 根据索引位置找到对应的数据文件位置，由于数据文件也是从小到大排列的，从找到的数据文件位置顺序向后遍历，直到找到和 StartOffSet 相等的位置，即为消费或拉取消息的位置。  
-3. 从 StartOffSet 开始向后拉取 MaxLength 大小的数据，返回给消费端或者从副本进行消费或备份操作。
-
-&emsp; 假设拉取消息起始位置为 00000313，消息拉取流程图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-86.png)  
-
-
 -->
+&emsp; Kafka系统存储有关的六个概念：  
+  
+* 代理节点(Broker)：Kafka集群组建的最小单位，消息中间件的代理节点。  
+* 主题(Topic)：用来区分不同的业务消息，类似于数据库中的表。  
+* 分区(Partition)：是主题物理意义上的分组。一个主题可以分为多个分区，每个分区是一个有序的队列。  
+* 片段(Segment)：每个分区又可以分为多个片段文件。  
+* 偏移量(Offset)：每个分区都由一系列有序的、不可修改的消息组成，这些消息被持续追加到分区中，分区中的每条消息记录都有一个连续的序号，即Offset值，Offset值用来标识这条消息的唯一性。  
+* 消息(Message)：是Kafka系统中文件的最小存储单位。  
+
+&emsp; 在Kafka系统中，消息以主题作为基本单位。不同的主题之间是相互独立、互不干扰的。每个主题又可以分为若干个分区，每个分区用来存储一部分的消息。  
+
+----
+
+<!-- 深入理解kafka：核心设计 第5章 -->
+&emsp; 在创建主题时，Kafka系统会将分区分配到各个代理节点（Broker）。例如，现有3个代理节点，准备创建一个包含6个分区、3 个副本的主题，那么Kafka系统就会有18个分区副本，这18个分区副本将被分配到3个代理节点中。  
+1. 分区文件存储  
+&emsp; 在 Kafka 系统中，一个主题（Topic）下包含多个不同的分区（Partition），每个分区为单独的一个目录。分区的命名规则为：主题名+有序序号。第一个分区的序号从0开始，序号最大值等于分区总数减1。  
+&emsp; 主题的存储路径由“log.dirs”属性决定。代理节点中主题分区的存储分布如下图所示。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-108.png)  
+&emsp; 每个分区相当于一个超大的文件被均匀分割成的若干个大小相等的片段（Segment），但是每个片段的消息数据量不一定相等。因此，过期的片段数据才能被快速地删除。  
+&emsp; 片段文件的生命周期由代理节点server.properties文件中配置的参数决定，这样，快速删除无用的数据可以有效地提高磁盘利用率。  
+
+2. 片段文件存储  
+&emsp; 片段文件由索引文件和数据文件组成：后缀为“.index”的是索引文件，后缀为“.log”的是数据文件。  
+&emsp; 查看某一个分区的片段，输出结果如下图所示。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-109.png)  
+&emsp; Kafka系统中，索引文件并没有给数据文件中的每条消息记录都建立索引，而是采用了稀疏存储的方式——每隔一定字节的数据建立一条索引，如下图所示。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-110.png)  
+&emsp; 提示：  
+&emsp; 稀疏存储索引避免了索引文件占用过多的磁盘空间。  
+&emsp; 将索引文件存储在内存中，虽然没有建立索引的Message，不能一次就定位到所在的数据文件上的位置，但是稀疏索引的存在会极大地减少顺序扫描的范围。  
+

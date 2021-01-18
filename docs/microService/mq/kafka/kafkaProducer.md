@@ -197,12 +197,10 @@ private Future<RecordMetadata> doSend(ProducerRecord<K, V> record, Callback call
 }
 ```
 
-
 #### 1.3.1.1. RecordAccumulator#append方法详解  
 &emsp; 接下来将重点介绍step8如何将消息追加到生产者的发送缓存区，其实现类为：RecordAccumulator。  
-&emsp; 纵观 RecordAccumulator append 的流程，基本上就是从双端队列获取一个未填充完毕的 ProducerBatch（消息批次），然后尝试将其写入到该批次中（缓存、内存中），如果追加失败，则尝试创建一个新的 ProducerBatch 然后继续追加。Kafka 双端队列的存储结构：  
+&emsp; 纵观 RecordAccumulator append 的流程，基本上就是从双端队列获取一个未填充完毕的 ProducerBatch（消息批次），然后尝试将其写入到该批次中（缓存、内存中），如果追加失败，则尝试创建一个新的ProducerBatch然后继续追加。Kafka双端队列的存储结构：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-11.png)  
-
 
 &emsp; RecordAccumulator#append  
 
@@ -316,7 +314,7 @@ public FutureRecordMetadata tryAppend(long timestamp, byte[] key, byte[] value, 
 &emsp; 上面的消息发送，其实用消息追加来表达更加贴切，因为 Kafka 的 send 方法，并不会直接向 broker 发送消息，而是首先先追加到生产者的内存缓存中，其内存存储结构如下：ConcurrentMap< TopicPartition, Deque< ProducerBatch>> batches，Kafka 的生产者为会每一个 topic 的每一个 分区单独维护一个队列，即 ArrayDeque，内部存放的元素为 ProducerBatch，即代表一个批次，即 Kafka 消息发送是按批发送的。其缓存结果图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-13.png)  
 &emsp; KafkaProducer 的 send 方法最终返回的 FutureRecordMetadata ，是 Future 的子类，即 Future 模式。那 kafka 的消息发送怎么实现异步发送、同步发送的呢？  
-&emsp; 其实答案也就蕴含在 send 方法的返回值，如果项目方需要使用同步发送的方式，只需要拿到 send 方法的返回结果后，调用其 get() 方法，此时如果消息还未发送到 Broker 上，该方法会被阻塞，等到 broker 返回消息发送结果后该方法会被唤醒并得到消息发送结果。如果需要异步发送，则建议使用 send(ProducerRecord< K, V > record, Callback callback),但不能调用 get 方法即可。Callback 会在收到 broker 的响应结果后被调用，并且支持拦截器。  
+&emsp; 其实答案也就蕴含在 send 方法的返回值，如果项目方需要使用同步发送的方式，只需要拿到 send 方法的返回结果后，调用其 get() 方法，此时如果消息还未发送到 Broker 上，该方法会被阻塞，等到 broker 返回消息发送结果后该方法会被唤醒并得到消息发送结果。如果需要异步发送，则建议使用 send(ProducerRecord< K, V > record, Callback callback)，但不能调用 get 方法即可。Callback 会在收到 broker 的响应结果后被调用，并且支持拦截器。  
 &emsp; 消息追加流程就介绍到这里了，消息被追加到缓存区后，什么是会被发送到 broker 端呢？将在下一节中详细介绍。  
 
 ## 1.4. Sender 线程详解  
@@ -791,7 +789,7 @@ private void sendProduceRequest(long now, int destination, short acks, int timeo
     return responses;
 }
 ```
-&emsp; 本文并不会详细深入探讨其网络实现部分，Kafka 的 网络通讯后续我会专门详细的介绍，在这里先点出其关键点。  
+&emsp; 本文并不会详细深入探讨其网络实现部分，在这里先点出其关键点。  
 &emsp; 代码@1：尝试更新云数据。  
 &emsp; 代码@2：触发真正的网络通讯，该方法中会通过收到调用 NIO 中的 Selector#select() 方法，对通道的读写就绪事件进行处理，当写事件就绪后，就会将通道中的消息发送到远端的 broker。  
 &emsp; 代码@3：然后会消息发送，消息接收、断开连接、API版本，超时等结果进行收集。  

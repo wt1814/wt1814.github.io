@@ -16,6 +16,11 @@
 
 
 # 1. kafka服务端
+<!-- 
+zookeeper
+https://blog.csdn.net/lwglwg32719/article/details/86510029
+-->
+
 ## 1.1. Kafka控制器  
 &emsp; 参考《深入理解kafka》第6章
 <!-- 
