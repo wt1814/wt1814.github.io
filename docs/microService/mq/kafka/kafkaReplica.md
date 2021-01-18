@@ -20,6 +20,8 @@ https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 深入理解Kafka必知必会
 https://www.cnblogs.com/luozhiyun/p/12079527.html
 
+https://blog.csdn.net/qq_38658567/article/details/108722849
+
 -->
 ## 1.1. Kafka副本简介
 &emsp; 在分布式数据系统中，通常使用分区来提高系统的处理能力，通过副本来保证数据的高可用性。  
