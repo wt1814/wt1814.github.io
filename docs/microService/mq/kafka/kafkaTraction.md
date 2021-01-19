@@ -226,24 +226,23 @@ https://www.cnblogs.com/middleware/p/9477133.html
 <!-- 
 https://www.cnblogs.com/middleware/p/9477133.html
 -->
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-64.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-111.png)  
 
 1. 查找事务协调者Tranaction Corordinator  
-生产者会首先发起一个查找事务协调者的请求(FindCoordinatorRequest)。协调者会负责分配一个PID给生产者。类似于消费组的协调者。  
-2. 获取produce ID
-在知道事务协调者后，生产者需要往协调者发送初始化pid请求(initPidRequest)。这个请求分两种情况：
+&emsp; 生产者会首先发起一个查找事务协调者的请求(FindCoordinatorRequest)。协调者会负责分配一个PID给生产者。类似于消费组的协调者。  
+2. 获取produce ID  
+&emsp; 在知道事务协调者后，生产者需要往协调者发送初始化pid请求(initPidRequest)。这个请求分两种情况：  
 
-    * 不带transactionID  
-    这种情况下直接生成一个新的produce ID即可，返回给客户端
-    * 带transactionID
-    这种情况下，kafka根据transactionalId获取对应的PID，这个对应关系是保存在事务日志中（上图2a）。这样可以确保相同的TransactionId返回相同的PID，用于恢复或者终止之前未完成的事务。  
+    * 不带transactionID   
+    &emsp; 这种情况下直接生成一个新的produce ID即可，返回给客户端
+    * 带transactionID  
+    &emsp; 这种情况下，kafka根据transactionalId获取对应的PID，这个对应关系是保存在事务日志中（上图2a）。这样可以确保相同的TransactionId返回相同的PID，用于恢复或者终止之前未完成的事务。  
 
 3. 启动事务  
-生产者通过调用beginTransaction接口启动事务，此时只是内部的状态记录为事务开始，但是事务协调者认为事务开始只有当生产者开始发送第一条消息才开始。  
+&emsp; 生产者通过调用beginTransaction接口启动事务，此时只是内部的状态记录为事务开始，但是事务协调者认为事务开始只有当生产者开始发送第一条消息才开始。  
 4. 消费和生产配合过程  
-这一步是消费和生成互相配合完成事务的过程，其中涉及多个请求：  
+&emsp; 这一步是消费和生成互相配合完成事务的过程，其中涉及多个请求：  
     * 增加分区到事务请求  
     当生产者有新分区要写入数据，则会发送AddPartitionToTxnRequest到事务协调者。协调者会处理请求，主要做的事情是更新事务元数据信息，并把信息写入到事务日志中（事务Topic）。  
     * 生产请求  
@@ -263,7 +262,6 @@ https://www.cnblogs.com/middleware/p/9477133.html
     &emsp; 这里要注意，如果事务也涉及到__consumer_offsets，即该事务中有消费数据的操作且将该消费的Offset存于__consumer_offsets中，Transaction Coordinator也需要向该内部Topic的各Partition的Leader发送WriteTxnMarkerRequest从而写入COMMIT(PID)或COMMIT(PID)控制信息(5.2a 左边)。  
     * 写入最终提交或回滚信息
     &emsp; 当提交和回滚信息写入数据日子后，事务协调者会往事务日志中写入最终的提交或者终止信息以表示事务已经完成(图5.3)，此时大部分于事务有关系的消息都可以被删除（通过标记后面在日志压缩时会被移除），只需要保留事务ID以及其时间戳即可。
- 
 
 <!--
 查找事务协调者Tranaction Corordinator 
