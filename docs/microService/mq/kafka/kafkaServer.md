@@ -19,6 +19,8 @@
 <!-- 
 zookeeper
 https://blog.csdn.net/lwglwg32719/article/details/86510029
+https://www.cnblogs.com/yogoup/p/12000545.html
+https://www.cnblogs.com/frankdeng/p/9310713.html
 -->
 
 ## 1.1. Kafka控制器  

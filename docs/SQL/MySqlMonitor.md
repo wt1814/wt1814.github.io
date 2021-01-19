@@ -4,4 +4,7 @@
 <!-- 
 Prometheus + Granafa 构建高大上的MySQL监控平台 
 https://mp.weixin.qq.com/s/S8-_QGrKYn5rMD645BKwjQ
+
+有了这 4 款工具，老大再也不怕我写烂SQL了 
+https://mp.weixin.qq.com/s/bNtNoBkn2xa3nTnvYYDz9A
 -->

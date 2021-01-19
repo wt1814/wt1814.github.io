@@ -77,7 +77,7 @@ public class KafkaProducerTest {
 《深入理解kafka》2.2.1
 -->
 
-&emsp; **在消息发送的过程中，涉及到了两个线程：Main线程和Sender线程，以及一个线程共享变量RecordAccumulator（消息累加器）。 main线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。<font color = "red">其中主线程发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。</font>**  
+&emsp; **在消息发送的过程中，涉及到了两个线程：Main线程和Sender线程，以及一个线程共享变量RecordAccumulator(消息累加器)。 <font color = "clime">main线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。</font><font color = "red">其中主线程发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-7.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-8.png)  
 
@@ -398,7 +398,6 @@ public void run() {
 &emsp; 接下来将分别探讨其上述方法的实现细节。  
 
 #### 1.4.1.1. runOnce 详解  
-&emsp; Sender#runOnce(本文不关注事务消息的实现原理，故省略了该部分的代码。)  
 
 ```java
 void runOnce() {

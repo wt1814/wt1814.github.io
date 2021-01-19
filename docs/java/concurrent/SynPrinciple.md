@@ -28,9 +28,10 @@
 <!-- 
 17张图带你秒杀synchronized关键字 
 https://mp.weixin.qq.com/s/v1XgT2X4IuF3_WNqeUVhVA
-
 初始Synchronized关键字的偏向锁、轻量锁、重量锁 
 https://mp.weixin.qq.com/s/AloGilUSxjoNVDHTfq1ZGQ
+关于 synchronized 锁优化 
+https://mp.weixin.qq.com/s/XHrAXyLbJf5Rs6UbXiYY1A
 -->
 <!-- 
 ~~

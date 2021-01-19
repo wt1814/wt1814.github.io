@@ -20,11 +20,10 @@
 <!-- 
 Springboot 关于日期时间格式化处理方式总结 
 https://mp.weixin.qq.com/s/-jy0zEpeWXnvQELGv6PsgA
-
 有关机器时间、UTC时间、本地时间的总结 
 https://mp.weixin.qq.com/s/eGgwu-qrtLA-NqrAwAqocg
-
-
+全网最全！彻底弄透Java处理GMT/UTC日期时间 
+https://mp.weixin.qq.com/s/R2OTG9xkUBUsd4xqQ1ND9A
 JDK8中的新时间API:Duration Period和ChronoUnit介绍 
 https://mp.weixin.qq.com/s/9qk1-wO3x1fkQt-EcwX7SQ
 

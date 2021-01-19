@@ -1,10 +1,10 @@
 <!-- TOC -->
 
 - [1. kafka如何保证消息队列不丢失?](#1-kafka如何保证消息队列不丢失)
-    - [1.1. 前言：消息传递语义](#11-前言消息传递语义)
+    - [1.1. Kafka消息传递过程概述](#11-kafka消息传递过程概述)
     - [1.2. Producer端丢失消息](#12-producer端丢失消息)
         - [1.2.1. 发送消息的流程](#121-发送消息的流程)
-        - [1.2.2. ACK应答机制](#122-ack应答机制)
+        - [1.2.2. Producer的ACK应答机制](#122-producer的ack应答机制)
         - [1.2.3. 丢失消息的情况](#123-丢失消息的情况)
     - [1.3. Broker端丢失消息](#13-broker端丢失消息)
         - [1.3.1. 消息持久化](#131-消息持久化)
@@ -27,7 +27,8 @@ https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 
 -->
 
-## 1.1. 前言：消息传递语义  
+## 1.1. Kafka消息传递过程概述  
+&emsp; **消息传递语义介绍：**  
 &emsp; 消息传递语义message delivery semantic，简单说就是消息传递过程中消息传递的保证性。主要分为三种：  
 
 * at most once：最多一次。消息可能丢失也可能被处理，但最多只会被处理一次。
@@ -36,13 +37,13 @@ https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 
 &emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。kafka 通过 ack 的配置来实现前两种。  
 
-&emsp; Kafka有三次消息传递的过程：  
+&emsp; **Kafka有三次消息传递的过程：**  
 
 * 生产者发消息给Kafka Broker。
 * Kafka Broker消息同步和持久化
 * Kafka Broker将消息传递给消费者。
 
-&emsp; 在这三步中每一步都有可能会丢失消息。    
+&emsp; **在这三步中每一步都有可能会丢失消息。**    
 
 <!--
 &emsp; Kafka在producer和consumer之间提供的语义保证。显然，Kafka可以提供的消息交付语义保证有多种：  
@@ -52,9 +53,6 @@ https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 * Exactly once——每一条消息只被传递一次。
 
 &emsp; 值得注意的是，这个问题被分成了两部分：发布消息的持久性保证和消费消息的保证。 
-
-
-
 -->
 
 ## 1.2. Producer端丢失消息  
@@ -73,7 +71,7 @@ https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 &emsp; 生产者采用push模式将数据发布到broker，每条消息追加到分区中，顺序写入磁盘。消息写入Leader后，Follower是主动与Leader进行同步。  
 &emsp; Kafka消息发送有两种方式：同步（sync）和异步（async），默认是同步方式，可通过producer.type属性进行配置。  
 
-### 1.2.2. ACK应答机制  
+### 1.2.2. Producer的ACK应答机制  
 <!-- 
 &emsp; kafka为了保证高可用性，采用了副本机制。当 ISR副本中的follower 完成数据的同步之后，leader 就会给 follower 发送 ack。如果 follower 长时间未向 leader 同步数据，则该 follower 将会被踢出 ISR，该时间阈值由 replica.lag.time.max.ms 参数设定。leader 发生故障之后，就会从 ISR 中选举新的 leader。（之前还有另一个参数，0.9 版本之后 replica.lag.max.messages 参数被移除了）  
 &emsp; 对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没必要等 ISR 中的follower全部接收成功。kafka的request.required.acks 可设置为 1、0、-1 三种情况。  
@@ -241,8 +239,7 @@ while (true) {
 &emsp; Consumer 自动地向前更新 offset，如果某个线程失败，则该线程上消息丢失。  
 
 ### 1.4.5. 丢失消息情况四（增加分区）  
-&emsp; 增加 Topic Partition  
-&emsp; 在某段不巧的时间间隔后，Producer 先于 Consumer 感知到新增加的Partition，此时 Consumer 设置的是从最新位移处开始读取消息，因此在 Consumer 感知到新分区前，Producer 发送的这些消息就全部丢失了。
+&emsp; 增加Topic Partition分区。在某段不巧的时间间隔后，Producer 先于 Consumer 感知到新增加的Partition，此时 Consumer 设置的是从最新位移处开始读取消息，因此在 Consumer 感知到新分区前，Producer 发送的这些消息就全部丢失了。
 
 ### 1.4.6. 使用Low level API，严格控制位移
 &emsp; 开发中一般直接使用Consumer的High level API，客户端对于offset等控制是透明的。也可以采用Low level API的方式，手动控制offset，也可以保证消息不丢，不过会更加复杂。  
