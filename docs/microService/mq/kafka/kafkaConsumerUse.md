@@ -18,7 +18,7 @@
         - [1.3.5. 如何避免重平衡？](#135-如何避免重平衡)
     - [1.4. ※※※消费者位移(offset)管理](#14-※※※消费者位移offset管理)
         - [1.4.1. 位移提交方式](#141-位移提交方式)
-        - [1.4.2. 位移主题(__consumer_offsets) ，位移提交地址](#142-位移主题__consumer_offsets-位移提交地址)
+        - [1.4.2. 位移主题(__consumer_offsets) ，(位移提交地址)](#142-位移主题__consumer_offsets-位移提交地址)
         - [1.4.3. 消费组消费进度查看的命令](#143-消费组消费进度查看的命令)
     - [1.5. 订阅topic](#15-订阅topic)
         - [1.5.1. 订阅topic列表](#151-订阅topic列表)
@@ -28,6 +28,13 @@
     - [1.8. 多线程消费实例](#18-多线程消费实例)
 
 <!-- /TOC -->
+
+&emsp; 总结：  
+&emsp; **消费者组重平衡：**
+2. **<font color = "red">消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；</font>**  
+3. **<font color = "red">当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，</font>**
+
+&emsp; **消费者位移提交：** Kafka消费者通过自动提交/手动提交位移信息到位移主题(__consumer_offsets)。  
 
 # 1. kafka消费者开发
 &emsp; **<font color = "lime">参考《kafka实战》</font>**  
@@ -171,8 +178,8 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 
 #### 1.3.3.3. 流程  
 1. 当消费者收到协调者的再均衡开始通知时，需要立即提交偏移量；  
-2. **消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；**  
-3. 当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，同时等待rebalance.timeout.ms，在收集其他消费者的JoinGroup请求中的订阅信息后，将订阅信息放在JoinGroup响应中发送给Leader消费者，并告知它成为了Leader，同时也会发送成功入组的JoinGroup响应给其他消费者；  
+2. **<font color = "red">消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；</font>**  
+3. **<font color = "red">当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，</font>** 同时等待rebalance.timeout.ms，在收集其他消费者的JoinGroup请求中的订阅信息后，将订阅信息放在JoinGroup响应中发送给Leader消费者，并告知它成为了Leader，同时也会发送成功入组的JoinGroup响应给其他消费者；  
 4. Leader消费者收到JoinGroup响应后，根据消费者的订阅信息制定分配方案，把方案放在SyncGroup请求中，发送给协调者。普通消费者在收到响应后，则直接发送SyncGroup请求，等待Leader的分配方案；  
 5. 协调者收到分配方案后，再通过SyncGroup响应把分配方案发给所有消费组。  
 6. 当所有消费者收到分配方案后，就意味着再均衡的结束，可以正常开始消费工作了。  
@@ -190,9 +197,9 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 
 ### 1.3.4. 重平衡劣势
 &emsp; **重平衡的劣势：**  
-&emsp; 第一：Rebalance影响 Consumer 端 TPS，对 Consumer Group 消费过程有极大的影响。类似JVM的stop the world，在Rebalance期间，Consumer会停下手头的事情，什么也干不了。  
-&emsp; 第二：Rebalance 很慢。如果你的 Group 下成员很多，就一定会有这样的痛点。某真实案例：Group 下有几百个 Consumer 实例，Rebalance 一次要几个小时。万物静止几个小时是非常可怕的一件事了，老板可能要提大刀来相见了。  
-&emsp; 为什么会这么慢呢？因为目前Rebalance的设计是让所有 Consumer 实例共同参与，全部重新分配所有分区。其实应该尽量保持之前的分配，目前 kafka 社区也在对此进行优化，在0.11版本提出了 StickyAssignor，即有粘性的分区分配策略。所谓的有粘性，是指每次Rebalance时，该策略会尽可能地保留之前的分配方案。不过不够完善，有bug，暂时不建议使用。  
+&emsp; 第一：Rebalance影响Consumer端TPS，对Consumer Group消费过程有极大的影响。类似JVM的stop the world，在Rebalance期间，Consumer会停下手头的事情，什么也干不了。  
+&emsp; 第二：Rebalance很慢。如果Group下成员很多，就一定会有这样的痛点。某真实案例：Group 下有几百个Consumer实例，Rebalance 一次要几个小时。  
+&emsp; 为什么会这么慢呢？因为目前Rebalance的设计是让所有Consumer实例共同参与，全部重新分配所有分区。其实应该尽量保持之前的分配，目前 kafka 社区也在对此进行优化，在0.11版本提出了StickyAssignor，即有粘性的分区分配策略。所谓的有粘性，是指每次Rebalance时，该策略会尽可能地保留之前的分配方案。不过不够完善，有bug，暂时不建议使用。  
 
 ### 1.3.5. 如何避免重平衡？
 <!-- 
@@ -200,11 +207,11 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 &emsp; 由于目前一次rebalance操作的开销很大，生产环境中用户一定要结合自身业务特点仔细调优consumer参数：request.timeout.ms、max.poll.records和max.poll.interval.ms，以避免不必要的rebalance出现。  
 -->
 &emsp; 刚刚说到三个触发机制，后面两者一般是用户主动操作，这不可避免，所以应该重点关注第一个场景，当然消费实例增加也是出于伸缩性的需求，所以其实只需要避免实例减少的情况就行了。  
-&emsp; 实际中，不是主动 kill 消费成员，或者机器宕机那种情况，才算是被踢出组，消费时间过长，也是会被踢的。不仅如此，某些情况会让 Coordinator 错误地认为 Consumer 实例“已停止”从而被“踢出”Group。  
+&emsp; 实际中，不是主动kill消费成员，或者机器宕机那种情况，才算是被踢出组，消费时间过长，也是会被踢的。不仅如此，某些情况会让Coordinator错误地认为 Consumer 实例“已停止”从而被“踢出”Group。  
 &emsp; 以下情景会让协调者认为消费者实例已经死亡并把它们踢出组。  
 1. 未能及时发送心跳  
 &emsp; Consumer实例未能及时发送心跳，导致 Coordinator 误认为它已经死亡。  
-&emsp; 心跳机制都有阈值和频率的概念。阈值是 Coordinator 最长能接受的心跳间隔，默认 10s，即超过 10s 还没收到心跳才认定 consumer 死亡，从而将其从 Group 中移除，然后开启新一轮 Rebalance。频率是指 Consumer 发送心跳的频率。它俩对应的参数分为叫做session.timeout.ms，heartbeat.interval.ms，因此需要合理的设置这两个参数。  
+&emsp; 心跳机制都有阈值和频率的概念。阈值是 Coordinator 最长能接受的心跳间隔，默认10s，即超过10s还没收到心跳才认定consumer死亡，从而将其从Group中移除，然后开启新一轮Rebalance。频率是指Consumer发送心跳的频率。它俩对应的参数分为叫做session.timeout.ms，heartbeat.interval.ms，因此需要合理的设置这两个参数。  
 &emsp; 千万不要无脑的觉得把频率调高点，阈值也调高点，比如1s 发一次心跳，并设置超过 1 分钟才可以认定为死亡，就完美避免了未能及时收到心跳请求而误认为死亡。发送心跳的目的就是为了及时通知协调者自己是否健康。所以session.timeout.ms这个参数，不宜最长。heartbeat.interval.ms这个值也不宜过短，频繁地发送心跳请求会额外消耗带宽资源。  
 
 * 推荐设置 session.timeout.ms = 6s。
@@ -213,8 +220,8 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 &emsp; 保证Consumer实例在被判定为“dead”之前，能够发送至少 3 轮的心跳请求，因此上面推荐的配置是一个三倍的关系。  
 
 2. 消费时间过长    
-&emsp; Consumer因为处理消息的时间太长而引发 Rebalance 。
-&emsp; Consumer端有一个参数，用于控制Consumer 实际消费能力对 Rebalance 的影响，即 max.poll.interval.ms 参数。它限定了Consumer 端应用程序两次调用 poll 方法的最大时间间隔。它的默认值是 5 分钟，表示Consumer 程序如果在 5 分钟之内无法消费完 poll 方法返回的消息，那么 Consumer 会主动发起“离开组”的请求，Coordinator 也会开启新一轮 Rebalance。因此你最好将该参数值设置得大一点，比下游最大处理时间稍长一点。还可以配置一个参数max.poll.records，它代表批量消费的 size，如果一次性 poll 的数据量过多，导致一次 poll 的处理无法在指定时间内完成，则会 Rebalance。因此，需要预估你的业务处理时间，并正确的设置这两个参数。  
+&emsp; Consumer因为处理消息的时间太长而引发Rebalance 。
+&emsp; Consumer端有一个参数，用于控制Consumer实际消费能力对Rebalance的影响，即 max.poll.interval.ms 参数。它限定了Consumer 端应用程序两次调用 poll 方法的最大时间间隔。它的默认值是 5 分钟，表示Consumer 程序如果在 5 分钟之内无法消费完 poll 方法返回的消息，那么 Consumer 会主动发起“离开组”的请求，Coordinator 也会开启新一轮 Rebalance。因此你最好将该参数值设置得大一点，比下游最大处理时间稍长一点。还可以配置一个参数max.poll.records，它代表批量消费的 size，如果一次性 poll 的数据量过多，导致一次 poll 的处理无法在指定时间内完成，则会 Rebalance。因此，需要预估你的业务处理时间，并正确的设置这两个参数。  
 
 ## 1.4. ※※※消费者位移(offset)管理
 <!-- 
@@ -239,7 +246,7 @@ https://www.kancloud.cn/nicefo71/kafka/1471593
     &emsp; commitAsync：异步手动提交，这里的异步不是开启一个线程提交，而是指不会阻塞，consumer在后续poll调用时轮询该位移提交的结果。  
     &emsp; commitSync和commitAsync都有带参数的重载方法，目的是实现更加细粒度化的位移提交策略，指定一个Map显示地告诉kafka为哪些分区提交位移，consumer.commitSync(Collections.singletonMap(partition,new OffsetAndMetadata(lastOffset + 1)))。  
 
-### 1.4.2. 位移主题(__consumer_offsets) ，位移提交地址 
+### 1.4.2. 位移主题(__consumer_offsets) ，(位移提交地址) 
 <!-- 
 https://www.kancloud.cn/nicefo71/kafka/1471591
 -->
