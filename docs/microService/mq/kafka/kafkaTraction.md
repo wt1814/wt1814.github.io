@@ -13,13 +13,13 @@
             - [1.2.1.1. kafka事务简介](#1211-kafka事务简介)
             - [1.2.1.2. Kafka事务特性](#1212-kafka事务特性)
                 - [1.2.1.2.1. 原子写](#12121-原子写)
-                - [1.2.1.2.2. 拒绝僵尸实例（Zombie fencing）](#12122-拒绝僵尸实例zombie-fencing)
+                - [1.2.1.2.2. 拒绝僵尸实例](#12122-拒绝僵尸实例)
                 - [1.2.1.2.3. 读事务消息](#12123-读事务消息)
             - [1.2.1.3. Kafka事务使用场景](#1213-kafka事务使用场景)
         - [1.2.2. 幂等性和事务性的关系](#122-幂等性和事务性的关系)
-        - [1.2.3. ～～kafka事务原理～～](#123-kafka事务原理)
-            - [基本概念](#基本概念)
-            - [事务流程](#事务流程)
+        - [1.2.3. ~~kafka事务原理~~](#123-kafka事务原理)
+            - [1.2.3.1. 基本概念](#1231-基本概念)
+            - [1.2.3.2. 事务流程](#1232-事务流程)
         - [1.2.4. kafka事务使用](#124-kafka事务使用)
             - [1.2.4.1. 事务相关配置](#1241-事务相关配置)
             - [1.2.4.2. Java API](#1242-java-api)
@@ -157,7 +157,7 @@ private Producer buildIdempotProducer(){
 ##### 1.2.1.2.1. 原子写
 &emsp; Kafka的事务特性本质上是支持了Kafka跨分区和Topic的原子写操作。在同一个事务中的消息要么同时写入成功，要么同时写入失败。Kafka中的Offset信息存储在一个名为_consumed_offsets的Topic中，因此read-process-write模式，除了向目标Topic写入消息，还会向_consumed_offsets中写入已经消费的Offsets数据。因此read-process-write本质上就是跨分区和Topic的原子写操作。Kafka的事务特性就是要确保跨分区的多个写操作的原子性。   
 
-##### 1.2.1.2.2. 拒绝僵尸实例（Zombie fencing）
+##### 1.2.1.2.2. 拒绝僵尸实例
 &emsp; 在分布式系统中，一个实例的宕机或失联，集群往往会自动启动一个新的实例来代替它的工作。此时若原实例恢复了，那么集群中就产生了两个具有相同职责的实例，此时前一个instance就被称为“僵尸实例（Zombie Instance）”。在Kafka中，两个相同的producer同时处理消息并生产出重复的消息（read-process-write模式），这样就严重违反了Exactly Once Processing的语义。这就是僵尸实例问题。  
 &emsp; Kafka事务特性通过transaction-id属性来解决僵尸实例问题。所有具有相同transaction-id的Producer都会被分配相同的pid，同时每一个Producer还会被分配一个递增的epoch。Kafka收到事务提交请求时，如果检查当前事务提交者的epoch不是最新的，那么就会拒绝该Producer的请求。从而达成拒绝僵尸实例的目标。
 
@@ -200,7 +200,7 @@ private Producer buildIdempotProducer(){
 &emsp; 一个app有一个tid，同一个应用的不同实例PID是一样的，只是epoch的值不同。如：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-82.png)  
 s
-### 1.2.3. ～～kafka事务原理～～
+### 1.2.3. ~~kafka事务原理~~
 <!-- 
 事务工作原理
 https://www.cnblogs.com/wangzhuxing/p/10125437.html#_label4
@@ -208,7 +208,7 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 https://www.cnblogs.com/middleware/p/9477133.html
 -->
 
-#### 基本概念
+#### 1.2.3.1. 基本概念
 &emsp; 为了支持事务，Kafka 0.11.0版本引入以下概念：  
 1. 事务协调者：类似于消费组负载均衡的协调者，每一个实现事务的生产端都被分配到一个事务协调者(Transaction Coordinator)。
 2. 引入一个内部Kafka Topic作为事务Log：类似于消费管理Offset的Topic，事务Topic本身也是持久化的，日志信息记录事务状态信息，由事务协调者写入。
@@ -222,7 +222,7 @@ https://www.cnblogs.com/middleware/p/9477133.html
 3. 引入控制消息(Control Messages)：这些消息是客户端产生的并写入到主题的特殊消息，但对于使用者来说不可见。它们是用来让broker告知消费者之前拉取的消息是否被原子性提交。
 -->
 
-#### 事务流程  
+#### 1.2.3.2. 事务流程  
 <!-- 
 https://www.cnblogs.com/middleware/p/9477133.html
 -->
