@@ -244,7 +244,6 @@
 ----
 
 ## 分布式  
-[RPC](/docs/microService/RPC.md)  
 [Gateway](/docs/microService/microservices/Gateway.md)  
 
 ### SpringBoot  
@@ -273,6 +272,7 @@
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
 
 ### Dubbo  
+[RPC](/docs/microService/RPC.md)  
 [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
 [Dubbo使用教程](/docs/microService/Dubbo/Dubbo使用教程.md)  
 [Dubbo框架设计](/docs/microService/Dubbo/design.md)  
