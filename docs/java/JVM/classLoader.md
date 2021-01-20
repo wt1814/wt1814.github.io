@@ -14,8 +14,10 @@
 <!-- /TOC -->
 
 <!-- 
- 我竟然被“双亲委派”给虐了 
- https://mp.weixin.qq.com/s/Q0MqcvbeI7gAcJH5ZaQWgA
+我竟然被“双亲委派”给虐了 
+https://mp.weixin.qq.com/s/Q0MqcvbeI7gAcJH5ZaQWgA
+JDK为何自己先破坏双亲委派模型? 
+https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 -->
 
 # 1. 类加载的方式：类加载器  

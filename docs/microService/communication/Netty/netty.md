@@ -16,4 +16,7 @@
 <!-- 
 Netty知识点
 https://mp.weixin.qq.com/s/I9PGsWo7-ykGf2diKklGtA
+
+服务的心跳机制与断线重连，Netty底层是怎么实现
+https://mp.weixin.qq.com/s/TC7gQnxBoxvFh-iaQg28YQ
 -->
