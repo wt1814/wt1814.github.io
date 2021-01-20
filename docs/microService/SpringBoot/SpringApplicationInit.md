@@ -15,7 +15,12 @@
 
 <!-- /TOC -->
 
+
+
+
+# 1. Spring Boot启动全过程源码分析
 <!--
+~~
 SpringBoot2.1源码分析大纲
 https://mp.weixin.qq.com/s/lpWB9kWgN_QKkLaBmsAhkA
 如何搭建自己的SpringBoot源码调试环境？--SpringBoot源码（一）
@@ -39,9 +44,6 @@ https://mp.weixin.qq.com/s/220rJiWAZg5Z3iY7VpmkUw
 SpringBoot内置生命周期事件详解 SpringBoot源码(十)
 https://mp.weixin.qq.com/s/bLqWb6bc2ki3mKbfFqm0vg
 -->
-
-
-# 1. Spring Boot启动全过程源码分析
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-4.png)  
 &emsp; **<font color = "lime">总结：</font>**  
 &emsp; **<font color = "clime">构造过程一般是对构造函数的一些成员属性赋值。SpringApplication有6个属性：SpringBoot的启动类、包含main函数的主类、资源加载器、应用类型、初始化器、监听器。</font>**  

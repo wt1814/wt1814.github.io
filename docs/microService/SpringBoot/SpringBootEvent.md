@@ -350,6 +350,3 @@ public class ApplicationFailedEvent extends SpringApplicationEvent {
 ```
 &emsp; ApplicationFailedEvent事件除了多了一个context属性外，还多了一个Throwable类型的exception属性用来记录SpringBoot启动失败时的异常。  
 &emsp; ApplicationFailedEvent事件在SpringBoot启动失败时触发，标志SpringBoot启动失败。  
-
-
-

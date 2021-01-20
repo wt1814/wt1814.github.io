@@ -10,3 +10,9 @@
 &emsp; [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
 &emsp; [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
 &emsp; [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
+
+
+<!-- 
+ 非常有必要了解的Springboot启动扩展点 
+ https://mp.weixin.qq.com/s/H9hcQHZUNhuRodEPiVOHfQ
+-->

@@ -105,6 +105,3 @@ https://www.cnblogs.com/hello-shf/p/10864977.html
 
 ### 1.2.4. 第四步，打包测试  
 &emsp; mvn intall，在其他项目中的pom中引入进行测试。
-
-
-
