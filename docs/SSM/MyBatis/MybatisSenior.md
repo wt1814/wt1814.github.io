@@ -1,6 +1,11 @@
 
 
 # MyBatis使用
+<!-- 
+MySQL 千万数据量深分页优化, 拒绝线上故障！ 
+https://mp.weixin.qq.com/s/i3wLeCSxqWKrTwgtfelumQ
+-->
+
 ## Mybatis 中 if-test 判断大坑  
 <!-- 
 mybatis 中 if-test 判断大坑
@@ -13,6 +18,9 @@ https://www.cnblogs.com/grasp/p/11268049.html
 <!--
  MyBatis读取大量数据（流式读取）
 https://www.cnblogs.com/yifanSJ/p/12658536.html
+ 炸！使用 MyBatis 查询千万数据量？ 
+ https://mp.weixin.qq.com/s/-gljMMrP0RcALfvigFXT1Q
+
 JDBC三种读取方式：
 1. 一次全部（默认）：一次获取全部。
 2. 流式：多次获取，一次一行。

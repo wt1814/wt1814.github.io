@@ -28,6 +28,11 @@
 2. Mapper接口动态代理类的生成。</font>  
 
 # 1. MyBatis解析
+<!-- 
+
+超全MyBatis动态代理详解！
+https://mp.weixin.qq.com/s/RjRzacdmx3DMHlhjj1GM3g
+-->
 <!--
 ～～
  浅析MyBatis的动态代理原理 

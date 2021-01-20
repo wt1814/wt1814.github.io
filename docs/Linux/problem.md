@@ -16,6 +16,10 @@
 
 # 1. Linux问题排查
 <!-- 
+Linux 服务器 CPU 详细信息查看、物理 CPU 以及逻辑 CPU 
+https://mp.weixin.qq.com/s/nPRjExUQiSguas9-GNSaag
+
+
 JAVA 线上故障排查完整套路
 https://mp.weixin.qq.com/s/aqvXXdrJyslXuhXE6IqYfw
 能说几个常见的Linux性能调优命令吗能说几个常见的Linux性能调优命令吗
