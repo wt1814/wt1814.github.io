@@ -13,7 +13,6 @@
 
 
 # 1. 自定义springboot-starter
-
 &emsp; 通过配置文件定义自动配置开关：  
 1. 编写业务逻辑  
 2. 定义配置文件对应类  
@@ -77,7 +76,7 @@ https://www.cnblogs.com/hello-shf/p/10864977.html
 
     &emsp; matchIfMissing：在matchIfMissing为false时，如果name值为空，则返回false；如果name不为空，则将该值与havingValue指定的值进行比较，如果一样则返回true，否则返回false。返回false也就意味着自动配置不会生效。  
 
-    &emsp; 各种condition注解：  
+    &emsp; ~~各种condition注解：~~  
 
     |类型|注解|说明|
     |---|---|---|

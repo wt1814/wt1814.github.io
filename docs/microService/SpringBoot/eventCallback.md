@@ -4,11 +4,10 @@
  非常有必要了解的Springboot启动扩展点 
  https://mp.weixin.qq.com/s/H9hcQHZUNhuRodEPiVOHfQ
 -->
-
-# SpringBoot事件回调  
 <!-- 
 https://blog.csdn.net/zzhuan_1/article/details/85312053
 -->
+
 &emsp; **<font color = "lime">总结：</font>**  
 &emsp; **<font color = "lime">SpringBoot事件回调：</font>**  
 
@@ -17,10 +16,12 @@ https://blog.csdn.net/zzhuan_1/article/details/85312053
 * **<font color = "red">ApplicationRunner，容器启动完成后被回调；</font>**  
 * **<font color = "red">CommandLineRunner，ApplicationRunner之后被回调。</font>**  
 
+# SpringBoot事件回调  
+
 ## 前言  
 &emsp; SpringBoot涉及了几个比较重要的事件回调机制，巧妙运用给开发者带来不一样的“福利”。   
 
-&emsp; 回调：ApplicationContextInitializer、SpringApplicationRunListener、CommandLineRunner、ApplicationRunner。  
+&emsp; 回调接口：ApplicationContextInitializer、SpringApplicationRunListener、CommandLineRunner、ApplicationRunner。  
 &emsp; 哪些场景会用到？  
 1. 启动前环境检测？
 2. 启动时配置初始化？  
