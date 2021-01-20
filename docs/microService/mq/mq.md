@@ -19,25 +19,12 @@
 <!-- 
 分布式消息队列面试题  
 https://gitee.com/shishan100/Java-Interview-Advanced/tree/master#%E5%88%86%E5%B8%83%E5%BC%8F%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97
-
 消息队列常见问题总结和分析 
 https://mp.weixin.qq.com/s/pHyBTR_liNocLt1XHhNMlw
-
-
-分布式常见的十大坑
-https://mp.weixin.qq.com/s/HJyQLLS0HdET_w2EBGyhHg
-
 MQ夺命连环11问
 https://juejin.im/post/6877741789680238600
-
-
- MQ，究竟如何做到削峰填谷？ 
- https://mp.weixin.qq.com/s/2gqajSPgwF67hrl9alRLJg
-
- MQ消息中间件，面试能问些什么？     
- https://mp.weixin.qq.com/s/-H83SlULvQf50fgHGcDMzAs
-
-
+MQ消息中间件，面试能问些什么？     
+https://mp.weixin.qq.com/s/-H83SlULvQf50fgHGcDMzA
 -->
 &emsp; **<font color = "lime">总结：</font>**  
 1. 为什么使用mq？
@@ -56,7 +43,7 @@ https://juejin.im/post/6877741789680238600
 &emsp; 消息队列的主要特点是异步处理和解耦。其主要的使用场景就是将比较耗时而且不需要同步返回结果的操作作为消息放入消息队列。同时由于使用了消息队列，只要保证消息格式不变，消息的发送方和接受者并不需要彼此联系，也不需要受对方的影响，即解耦。  
 &emsp; 消息中间件的发展：第一代以ActiveMQ为代表，遵循JMS（java消息服务）规范；第二代以RabbitMQ为代表是一个有Erlang语言开发的AMQP(高级消息队列协议)的开源实现；第三代以Kafka为代表，是一代高吞吐、高可用的消息中间件，以及RocketMQ；   
 
-&emsp; 常用的几种信息交互技术：httpClient、hessian、dubbo、jms、webservice 。
+&emsp; 常用的几种信息交互技术：httpClient、hessian、dubbo、jms、webservice。  
 &emsp; RPC和消息中间件的差异：  
 
 * RPC同步请求、消息中间件异步消息；  
@@ -75,10 +62,9 @@ https://juejin.im/post/6877741789680238600
 &emsp; 订单系统：用户下单后，订单系统完成持久化处理，将消息写入消息队列，返回用户订单下单成功。  
 &emsp; 库存系统：订阅下单的消息，采用拉/推的方式，获取下单信息，库存系统根据下单信息，进行库存操作。  
 &emsp; 假如：在下单时库存系统不能正常使用。也不影响正常下单，因为下单后，订单系统写入消息队列就不再关心其他的后续操作了。实现订单系统与库存系统的应用解耦。  
-* 异步处理  
+* **异步处理**  
 &emsp; 引入消息队列，将不是必须的业务逻辑，异步处理。 
-* 流量削锋/限流
-&emsp; **<font color = "lime"></font>**
+* **流量削锋/限流**
 &emsp; 上游系统的吞吐能力高于下游系统，在流量洪峰时可能会冲垮下游系统，消息中间件可以在峰值时堆积消息，而在峰值过去后下游系统慢慢消费消息解决流量洪峰的问题。  
 &emsp; 流量削锋是消息队列中的常用场景，一般在秒杀或团抢活动中使用广泛。秒杀活动，一般会因为流量过大，导致流量暴增，应用挂掉。为解决这个问题，一般需要在应用前端加入消息队列。用户的请求，服务器接收后，首先写入消息队列。假如消息队列长度超过最大数量，则直接抛弃用户请求或跳转到错误页面。  
 &emsp; 秒杀业务根据消息队列中的请求信息，再做后续处理。  
@@ -163,20 +149,7 @@ https://mp.weixin.qq.com/s/lh1yLcKHDLSCatdA9EY6wQ
 https://blog.csdn.net/hanjungua8144/article/details/86244930
 https://www.cnblogs.com/jack1995/p/10908814.html
 -->
-&emsp; **<font color = "lime">发送到单个queue或partition，单线程消费。</font>**  
-
-&emsp; 我举个例子，我们以前做过一个mysql binlog+同步的系统，压力还是非常大的，日同步数据要达到上亿。mysql -> mysql，常见的一点在于说大数据team，就需要同步一个mysql库过来，对公司的业务系统的数据做各种复杂的操作。  
-&emsp; 你在mysql里增删改一条数据，对应出来了增删改3条binlog，接着这三条binlog发送到MQ里面，到消费出来依次执行，起码得保证人家是按照顺序来的吧？不然本来是：增加、修改、删除；你楞是换了顺序给执行成删除、修改、增加，不全错了么。  
-&emsp; 本来这个数据同步过来，应该最后这个数据被删除了；结果你搞错了这个顺序，最后这个数据保留下来了，数据同步就出错了。  
-&emsp; 先看看顺序会错乱的俩场景  
-&emsp; （1）rabbitmq：一个queue，多个consumer，这不明显乱了  
-&emsp; （2）kafka：一个topic，一个partition，一个consumer，内部多线程，这不也明显乱了  
-&emsp; 那如何保证消息的顺序性呢？简单简单  
-&emsp; （1）rabbitmq：拆分多个queue，每个queue一个consumer，就是多一些queue而已，确实是麻烦点；或者就一个queue但是对应一个consumer，然后这个consumer内部用内存队列做排队，然后分发给底层不同的worker来处理  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/mq-14.png)  
-&emsp; （2）kafka：一个topic，一个partition，一个consumer，内部单线程消费，写N个内存queue，然后N个线程分别消费一个内存queue即可  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/mq-15.png)  
-
+......
 
 ## 1.8. 消息积压  
 &emsp; **多线程消费。修复消费者问题，临时增加消费者。**   
@@ -190,7 +163,7 @@ https://www.cnblogs.com/jack1995/p/10908814.html
 &emsp; **大量消息在 mq 里积压了几个小时了还没解决**   
 &emsp; 几千万条数据在 MQ 里积压了七八个小时，从下午 4 点多，积压到了晚上 11 点多。这个是我们真实遇到过的一个场景，确实是线上故障了，这个时候要不然就是修复 consumer 的问题，让它恢复消费速度，然后傻傻的等待几个小时消费完毕。这个肯定不能在面试的时候说吧。  
 
-&emsp; 一个消费者一秒是 1000 条，一秒 3 个消费者是 3000 条，一分钟就是 18 万条。所以如果你积压了几百万到上千万的数据，即使消费者恢复了，也需要大概 1 小时的时间才能恢复过来。  
+&emsp; 一个消费者一秒是1000条，一秒 3 个消费者是3000条，一分钟就是18万条。所以如果你积压了几百万到上千万的数据，即使消费者恢复了，也需要大概 1 小时的时间才能恢复过来。  
 
 &emsp; 一般这个时候，只能临时紧急扩容了，具体操作步骤和思路如下：  
 - 先修复 consumer 的问题，确保其恢复消费速度，然后将现有 consumer 都停掉。  

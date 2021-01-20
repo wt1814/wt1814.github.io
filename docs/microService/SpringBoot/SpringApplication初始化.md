@@ -7,11 +7,11 @@
     - [1.2. SpringApplication初始化](#12-springapplication初始化)
         - [1.2.1. 主要流程解析](#121-主要流程解析)
             - [1.2.1.1. 推断当前WEB应用类型](#1211-推断当前web应用类型)
-            - [1.2.1.2. 设置应用上下文初始化器（SpringBoot的SPI机制原理）](#1212-设置应用上下文初始化器springboot的spi机制原理)
+            - [1.2.1.2. ※※※设置应用上下文初始化器（SpringBoot的SPI机制原理）](#1212-※※※设置应用上下文初始化器springboot的spi机制原理)
                 - [1.2.1.2.1. 获得类加载器](#12121-获得类加载器)
                 - [1.2.1.2.2. 加载spring.factories配置文件中的SPI扩展类](#12122-加载springfactories配置文件中的spi扩展类)
                 - [1.2.1.2.3. 实例化从spring.factories中加载的SPI扩展类](#12123-实例化从springfactories中加载的spi扩展类)
-            - [1.2.1.3. 设置监听器](#1213-设置监听器)
+            - [1.2.1.3. ※※※设置监听器](#1213-※※※设置监听器)
 
 <!-- /TOC -->
 
@@ -43,7 +43,8 @@ https://mp.weixin.qq.com/s/bLqWb6bc2ki3mKbfFqm0vg
 
 # 1. Spring Boot启动全过程源码分析
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-4.png)  
-&emsp; <font color = "lime">一句话概述：SpringApplication有6个属性：SpringBoot的启动类、包含main函数的主类、资源加载器、应用类型、初始化器、监听器。</font>  
+&emsp; **<font color = "lime">总结：</font>**  
+&emsp; **<font color = "clime">构造过程一般是对构造函数的一些成员属性赋值。SpringApplication有6个属性：SpringBoot的启动类、包含main函数的主类、资源加载器、应用类型、初始化器、监听器。</font>**  
 
 ## 1.1. SpringBoot启动类
 &emsp; SpringBoot启动类代码如下：  
@@ -190,8 +191,8 @@ public enum WebApplicationType {
 ```
 &emsp; 这个就是根据类路径下是否有对应项目类型的类推断出不同的应用类型。  
 
-#### 1.2.1.2. 设置应用上下文初始化器（SpringBoot的SPI机制原理）  
-&emsp; <font color = "red">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。</font>  
+#### 1.2.1.2. ※※※设置应用上下文初始化器（SpringBoot的SPI机制原理）  
+&emsp; **<font color = "clime">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。</font>**  
 
 &emsp; **<font color = "lime">SpringBoot通过以下步骤实现自己的SPI机制：</font>**  
 1. 首先获取线程上下文类加载器;  
@@ -412,10 +413,9 @@ private <T> List<T> createSpringFactoriesInstances(Class<T> type,
 }
 ```
 
-#### 1.2.1.3. 设置监听器  
+#### 1.2.1.3. ※※※设置监听器  
 
 ```java
 this.setListeners(this.getSpringFactoriesInstances(ApplicationListener.class));
 ```
-&emsp; 参数ApplicationListener.class继承了JDK 的 java.util.EventListener 接口，实现了观察者模式，它一般用来定义感兴趣的事件类型，事件类型限定于 ApplicationEvent的子类。  
-
+&emsp; 参数ApplicationListener.class继承了JDK的java.util.EventListener接口，实现了观察者模式，它一般用来定义感兴趣的事件类型，事件类型限定于ApplicationEvent的子类。  
