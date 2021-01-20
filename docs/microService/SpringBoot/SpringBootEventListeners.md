@@ -356,4 +356,4 @@ public void starting() {
 &emsp; EventPublishingRunListener对象将发布ApplicationStartingEvent这件事情委托给了SimpleApplicationEventMulticaster对象initialMulticaster, 而initialMulticaster对象最终会调用其multicastEvent方法来发布ApplicationStartingEvent事件。  
 
 ## 1.4. SpringBoot内置生命周期事件详解  
-[SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/4.SpringBootEvent.md)  
+[SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/SpringBootEvent.md)  
