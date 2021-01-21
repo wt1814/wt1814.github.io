@@ -34,6 +34,9 @@ https://mp.weixin.qq.com/s/WqfzZRlk2NMkNc5a_Yjpdw
 
 <!-- 
 ~~
+先动手验证垃圾回收
+https://mp.weixin.qq.com/s/SMkovwz5fZP5obsUtgQAUg
+
 https://mp.weixin.qq.com/s/IH9p5X7WveKGx1ujfHzFag
 深度揭秘垃圾回收底层，这次让你彻底弄懂她 
 https://mp.weixin.qq.com/s?__biz=MzU4Mjk0MjkxNA==&mid=2247487815&idx=2&sn=c94666e98b4f3c6e46f4e9378f3f4e39&chksm=fdb1f8eacac671fc587323800a0421cdf015b59b10ac8086936f28cfa9f6921410ab7fbd28c4&scene=21#wechat_redirect
