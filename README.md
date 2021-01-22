@@ -267,7 +267,6 @@
 [Spring Cloud Feign](/docs/microService/SpringCloudNetflix/Feign.md)  
 [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
 [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
-&emsp; [SpringMVC、dubbo集成zipkin](/docs/microService/SpringCloudNetflix/zipkin.md)  
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
 
 ### Dubbo  
@@ -437,7 +436,7 @@
 &emsp; [接口防刷](/docs/web/interface/brush.md)  
 &emsp; [接口安全](/docs/web/interface/security.md)  
 &emsp; [接口超时](/docs/web/interface/timeout.md)  
-[Resttemplate](/docs/web/Resttemplate.md)  
+[RestTemplate](/docs/web/Resttemplate.md)  
 
 [JavaBean](/docs/web/JavaBean.md)  
 &emsp; [POJO](/docs/web/POJO.md)  

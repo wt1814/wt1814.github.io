@@ -338,6 +338,7 @@
         * [接口防刷](/docs/web/interface/brush.md)  
         * [接口安全](/docs/web/interface/security.md)  
         * [接口超时](/docs/web/interface/timeout.md)  
+    * [RestTemplate](/docs/web/Resttemplate.md)  
     * [JavaBean](/docs/web/JavaBean.md)  
         * [POJO](/docs/web/POJO.md)  
         * [BeanUtils](/docs/web/BeanUtils.md)  
