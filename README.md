@@ -438,6 +438,7 @@
 &emsp; [接口防刷](/docs/web/interface/brush.md)  
 &emsp; [接口安全](/docs/web/interface/security.md)  
 &emsp; [接口超时](/docs/web/interface/timeout.md)  
+[Resttemplate](/docs/web/Resttemplate.md)  
 
 [JavaBean](/docs/web/JavaBean.md)  
 &emsp; [POJO](/docs/web/POJO.md)  
