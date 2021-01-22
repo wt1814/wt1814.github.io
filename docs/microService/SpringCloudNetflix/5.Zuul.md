@@ -94,7 +94,7 @@ zuul.addHostHeader=true
 ```
 
 ### 1.1.6. 使用zuul上传文件问题  
-&emsp; 对于小文件（1M以内上传），无须任何处理，即可正常上传。**<font color = "red">对于大文件（10M以上）上传，需要为上传路径添加/zuul前缀。也可使用zuul.servlet-path自定义前缀。</font>**  
+&emsp; 对于小文件（1M以内上传），无须任何处理，即可正常上传。 **<font color = "red">对于大文件（10M以上）上传，需要为上传路径添加/zuul前缀。也可使用zuul.servlet-path自定义前缀。</font>**   
 &emsp; 假设zuul.routes.microservice-file-upload=/microservice-file-upload/**  
 &emsp; 如果http://{HOST}:{PORT}/upload 是微服务microservice-file-upload的上传路径，则可使用Zuul的/zuul/microservice-file-upload/upload路径上传大文件。  
 &emsp; 如果Zuul使用了Ribbon做负载均衡，那么对于超大的文件（例如500M），需要提高超时设置，例如：  
