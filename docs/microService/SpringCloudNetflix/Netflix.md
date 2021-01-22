@@ -15,6 +15,11 @@
 [Spring Cloud Security]  
 -->
 
+<!-- 
+Spring CLoud系列
+https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkwMzE3MDY0Ng==&action=getalbum&album_id=1571227588654645250&scene=173&from_msgid=2247486840&from_itemidx=1&count=3#wechat_redirect
+-->
+
 &emsp; **<font color = "lime">总结：</font>**  
 1. 服务注册发现，注册中心（Eureka）  
 2. 服务分发（Ribbon）：客户端负载均衡，Ribbon中提供了多种负载均衡策略：轮询、随机、重试、权重等。  
