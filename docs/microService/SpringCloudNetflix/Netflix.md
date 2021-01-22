@@ -1,14 +1,14 @@
 
 
-[Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/1.Eureka.md)  
-[Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/2.Ribbon.md)  
-[Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/3.Hytrix.md)  
-[Spring Cloud Feign](/docs/microService/SpringCloudNetflix/4.Feign.md)  
+[Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
+[Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
+[Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/Hytrix.md)  
+[Spring Cloud Feign](/docs/microService/SpringCloudNetflix/Feign.md)  
 [Gateway](/docs/microService/microservices/Gateway.md)  
-[Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/5.Zuul.md)  
-[Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/6.Sleuth.md)  
+[Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
+[Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
 &emsp; [SpringMVC、dubbo集成zipkin](/docs/microService/SpringCloudNetflix/zipkin.md)  
-[Spring Cloud Admin](/docs/microService/SpringCloudNetflix/7.SpringBootAdmin.md)  
+[Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
 <!-- 
 [Spring Cloud Config]  
 [Spring Cloud Bus]  
