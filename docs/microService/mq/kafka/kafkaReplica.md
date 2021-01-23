@@ -216,7 +216,10 @@ https://my.oschina.net/u/3379856/blog/4388538
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-78.png)  
 &emsp; 当B作为Follower已经Fetch了最新的消息，但是在发送第二轮Fetch时，未来得及处理响应，宕机了。当重启时，会根据HW更新LEO，将发生日志截断，消息m1被丢弃。  
 &emsp; 这时再发送Fetch请求给A，A宕机了，则B未能同步到消息m1，同时B被选为Leader，而当A重启时，作为Follower同步B的消息时，会根据A的HW值更新HW和LEO，因此由2变成了1，也将发生日志截断，而已发送成功的消息m1将永久丢失。  
+---
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-114.png)  
 
+---
 &emsp; 数据不一致的情况如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-79.png)  
 &emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有m0消息，且HW为1。若A、B同时宕机，且B重启时，A还未恢复，则B被选为Leader。  
@@ -224,6 +227,8 @@ https://my.oschina.net/u/3379856/blog/4388538
     集群处于上述这种状态有两种情况可能导致，一、宕机前，B不在ISR中，因此A未待B同步，即更新了HW，且unclear leader为true，允许B成为Leader；二、宕机前，B同步了消息m1，且发送了第二轮Fetch请求，Leader更新HW，但B未将消息m1落地到磁盘，宕机了，当再重启时，消息m1丢失，只剩m0。
 
 &emsp; 在B重启作为Leader之后，收到消息m2。A宕机重启后向成为Leader的B发送Fetch请求，发现自己的HW和B的HW一致，都是2，因此不会进行消息截断，而这也造成了数据不一致。  
+---
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-115.png)  
 
 ### 1.5.6. Leader Epoch 
 &emsp; 为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制，在每个副本日志目录下都有一个leader-epoch-checkpoint文件，用于保存Leader Epoch信息，其内容示例如下：  
