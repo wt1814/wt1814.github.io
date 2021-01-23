@@ -10,30 +10,17 @@
             - [1.3.2.1. 选举流程，恢复模式](#1321-选举流程恢复模式)
             - [1.3.2.2. 数据同步，广播模式](#1322-数据同步广播模式)
     - [1.4. Zookeeper的CP模型](#14-zookeeper的cp模型)
-    - [1.5. Zookeeper应用](#15-zookeeper应用)
-        - [1.5.1. 应用场景](#151-应用场景)
-            - [1.5.1.1. 集群管理，HA高可用性](#1511-集群管理ha高可用性)
-            - [1.5.1.2. 元数据/配置信息管理](#1512-元数据配置信息管理)
-            - [1.5.1.3. 分布式锁](#1513-分布式锁)
-            - [1.5.1.4. XXXXX分布式协调](#1514-xxxxx分布式协调)
-            - [1.5.1.5. 统一命名服务](#1515-统一命名服务)
-            - [1.5.1.6. 队列管理](#1516-队列管理)
-        - [1.5.2. Zookeeper的API](#152-zookeeper的api)
-            - [1.5.2.1. 原生API](#1521-原生api)
-            - [1.5.2.2. ZkClient](#1522-zkclient)
-            - [1.5.2.3. Curator](#1523-curator)
-        - [1.5.3. Zookeeper监控](#153-zookeeper监控)
-            - [1.5.3.1. Zookeeper的四字命令](#1531-zookeeper的四字命令)
-            - [1.5.3.2. IDEA zookeeper插件的使用](#1532-idea-zookeeper插件的使用)
-            - [1.5.3.3. JMX](#1533-jmx)
-    - [1.6. 部署](#16-部署)
+    - [1.5. Zookeeper应用场景](#15-zookeeper应用场景)
+        - [1.5.1. 集群管理，HA高可用性](#151-集群管理ha高可用性)
+        - [1.5.2. 元数据/配置信息管理](#152-元数据配置信息管理)
+        - [1.5.3. 分布式锁](#153-分布式锁)
+        - [1.5.4. XXXXX分布式协调](#154-xxxxx分布式协调)
+        - [1.5.5. 统一命名服务](#155-统一命名服务)
+        - [1.5.6. 队列管理](#156-队列管理)
 
 <!-- /TOC -->
 
 <!-- 
-
-Zookeeper官网文档：https://zookeeper.apache.org/doc/current
-
 ZooKeeper的十二连问，你顶得了嘛？ 
 https://mp.weixin.qq.com/s/dp8jFlTsxTvGuhSAnct1jA
 用大白话给你解释Zookeeper的选举机制 
@@ -43,26 +30,24 @@ https://mp.weixin.qq.com/s/W6QgmFTpXQ8EL-dVvLWsyg
 
 -->
 
-
-
-# 1. Zookeeper
 &emsp; **<font color = "lime">总结：Watcher机制、ZAB协议、应用（配置信息、分布式锁、集群管理、分布式协调...）</font>**  
-
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-2.png)  
 &emsp; <font color = "lime">在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，</font>然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交（类2PC事务）。  
 
 &emsp; <font color = "lime">Zookeeper的CP模型：</font>  
 1. 为什么不满足AP模型？Zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。  
 2. Zookeeper的CP模型：Zookeeper提供的只是单调一致性。  
 
+# 1. Zookeeper
+&emsp; Zookeeper官网文档：https://zookeeper.apache.org/doc/current
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-2.png)  
+
 ## 1.1. Zookeeper是什么  
 &emsp; Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题，例如怎样避免同时操作同一数据造成脏读的问题。  
-&emsp; **Zookeeper特性：**  
+&emsp; **Zookeeper集群特性：**  
 
 * 全局数据一致：每个 server 保存一份相同的数据副本，client 无论连 接到哪个server，展示的数据都是一致的，这是最重要的特征。  
 * 可靠性：如果消息被其中一台服务器接受，那么将被所有的服务器接受。  
-* 顺序性：包括全局有序和偏序两种：全局有序是指如果在一台服务器上消息 a 在消息b前发布，则在所有Server上消息a都将在消息b前被发布；偏序是指如果一个消息b在消息a后被同一个发送者发布，a必将排在b前面。  
+* 顺序性：包括全局有序和偏序两种。全局有序是指如果在一台服务器上消息 a 在消息b前发布，则在所有Server上消息a都将在消息b前被发布；偏序是指如果一个消息b在消息a后被同一个发送者发布，a必将排在b前面。  
 
         如何保证事务的顺序一致性的？  
         zookeeper采用了递增的事务Id来标识，所有的proposal（提议）都在被提出的时候加上了zxid。zxid实际上是一个64位的数字，高32位是epoch（时期; 纪元; 世; 新时代）用来标识leader是否发生改变，如果有新的leader产生出来，epoch会自增；低32位用来递增计数。当新产生proposal的时候，会依据数据库的两阶段过程，首先会向其他的server发出事务执行请求，如果超过半数的机器都能执行并且能够成功，那么就会开始执行。  
@@ -128,7 +113,7 @@ https://mp.weixin.qq.com/s/W6QgmFTpXQ8EL-dVvLWsyg
 
 &emsp; **选举流程中几个重要参数：**  
 &emsp; 服务器ID：即配置的myId。id越大，选举时权重越高。  
-&emsp; <font color = "red">事务ID，zkid(Zookeeper Transaction Id)：服务器在运行时产生的数据id，即zkid, 这里指本地最新snapshot的id。id越大说明数据越新，选举时权重越高。</font>  
+&emsp; <font color = "red">事务ID，zkid(Zookeeper Transaction Id)：服务器在运行时产生的数据id，即zkid，这里指本地最新snapshot的id。id越大说明数据越新，选举时权重越高。</font>  
 &emsp; 选举轮数：Epoch，即逻辑时钟。随着选举的轮数++。  
 &emsp; 选举状态：4种状态。LOOKING，竞选状态；FOLLOWING，随从状态，同步leader状态，参与投票；OBSERVING，观察状态，同步leader状态，不参与投票；LEADING，领导者状态。  
 <!-- 
@@ -200,32 +185,29 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 
 ----
 
-## 1.5. Zookeeper应用  
-### 1.5.1. 应用场景  
-
-
-#### 1.5.1.1. 集群管理，HA高可用性
+## 1.5. Zookeeper应用场景  
+### 1.5.1. 集群管理，HA高可用性
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-29.png) 
 
 &emsp; 所谓集群管理无在乎两点：是否有机器退出和加入、选举master。  
-&emsp; 对于第一点，所有机器约定在父目录GroupMembers下创建临时目录节点，然后监听父目录节点的子节点变化消息。一旦有机器挂掉，该机器与zookeeper的连接断开，其所创建的临时目录节点被删除，所有其他机器都收到通知。新机器加入 也是类似，所有机器收到通知。  
+&emsp; 对于第一点，所有机器约定在父目录GroupMembers下创建临时目录节点，然后监听父目录节点的子节点变化消息。一旦有机器挂掉，该机器与zookeeper的连接断开，其所创建的临时目录节点被删除，所有其他机器都收到通知。新机器加入也是类似，所有机器收到通知。  
 &emsp; 对于第二点，稍微改变一下，所有机器创建临时顺序编号目录节点，每次选取编号最小的机器作为master就好。  
 &emsp; 集群启动、集群同步、集群FastPaxos  
 
 &emsp; hadoop、hdfs、yarn等很多大数据系统，都选择基于zookeeper来开发HA高可用机制，就是一个重要进程一般会做主备两个，主进程挂了立马通过 zookeeper 感知到切换到备用进程。
 
-#### 1.5.1.2. 元数据/配置信息管理
+### 1.5.2. 元数据/配置信息管理
 &emsp; 配置的分布式管理，相同的配置需要应用到多台机器上。这种配置完全可以由zookeeper来管理，将配置信息保存在某个目录节点中，然后将所有的应用机器监控配置信息的状态，一旦发生变化，就可以从zookeeper中获取最新的配置信息，并应用到系统中。  
 &emsp; 发布与订阅模型，即所谓的配置中心，顾名思义就是发布者将数据发布到ZK节点上，供订阅者动态获取数据，实现配置信息的集中式管理和动态更新。例如全局的配置信息，服务式服务框架的服务地址列表等就非常合适用。  
 
 
-#### 1.5.1.3. 分布式锁  
+### 1.5.3. 分布式锁  
 &emsp; 有了zookeeper的一致性文件系统，锁的问题变得容易。锁服务可以分为两类，一个是保持独占，另一个是控制时序。  
 &emsp; 对于第一类，将zookeeper上的一个znode看作是一把锁，通过createznode的方式来实现。所有客户端都去创建/distribute_lock节点，最终成功创建的那个客户端也即拥有了这把锁。用完删除掉自己创建的distribute_lock节点就释放出锁。  
 &emsp; 对于第二类，/distribute_lock已经预先存在，所有客户端在它下面创建临时顺序编号目录节点，和选master一样，编号最小的获得锁，用完删除，依次方便。  
 
 
-#### 1.5.1.4. XXXXX分布式协调
+### 1.5.4. XXXXX分布式协调
 <!-- 
 ZooKeeper的典型应用场景之分布式协调/通知
 https://blog.csdn.net/en_joker/article/details/78799737
@@ -235,51 +217,14 @@ https://blog.csdn.net/en_joker/article/details/78799737
 
 &emsp; 这个其实是zookeeper很经典的一个用法，简单来说，就好比，A系统发送个请求到mq，然后B系统消息消费之后处理了。那A系统如何知道B系统的处理结果？用zookeeper就可以实现分布式系统之间的协调工作。A系统发送请求之后可以在zookeeper上对某个节点的值注册个监听器，一旦B系统处理完了就修改zookeeper那个节点的值，A系统立马就可以收到通知，完美解决。  
 
-
-
-
-#### 1.5.1.5. 统一命名服务  
+### 1.5.5. 统一命名服务  
 &emsp; 分布式应用中，通常需要一套完整的命名规则，即能保证唯一又便于人识别和记住，通常采用树形的名称结构。  
 &emsp; 在zookeeper的文件系统里创建一个目录，即有唯一的path，调用create接口即可建一个目录节点。  
 
-
-#### 1.5.1.6. 队列管理
+### 1.5.6. 队列管理
 &emsp; 两种类型的队列：  
 1. 同步队列，当一个队列的成员都聚齐时，这个队列才可用，否则一直等待所有成员到达。  
 2. 队列按照FIFO方式进行入队和出队操作。 
  
 &emsp; 第一类，在约定目录下创建临时目录节点，监听节点数目是否是要求的数目。  
 &emsp; 第二类，和分布式锁服务中的控制时序场景基本原理一致，入列有编号，出列按编号。  
-
-----
-
-### 1.5.2. Zookeeper的API  
-#### 1.5.2.1. 原生API  
-......  
-
-#### 1.5.2.2. ZkClient  
-&emsp; Zkclient是由Datameer的工程师开发的开源客户端，对Zookeeper的原生API进行了包装，实现了超时重连，Watcher反复注册等功能。  
-
-#### 1.5.2.3. Curator  
-&emsp; Curator是Netflix公司开源的一个Zookeeper客户端，与Zookeeper提供的原生客户端相比，Curator的抽象层次更高，简化了Zookeeper客户端的开发量。  
-
-### 1.5.3. Zookeeper监控  
-#### 1.5.3.1. Zookeeper的四字命令  
-.......  
-
-#### 1.5.3.2. IDEA zookeeper插件的使用  
-......  
-
-#### 1.5.3.3. JMX  
-......
-
-
-## 1.6. 部署
-&emsp; ZooKeeper 的三种部署方式：  
-
-* 单机模式，即部署在单台机器上的一个 ZK 服务，适用于学习、了解 ZK 基础功能；
-* 伪分布模式，即部署在一台机器上的多个（原则上大于3个）ZK 服务，伪集群，适用于学习、开发和测试；
-* 全分布式模式（复制模式），即在多台机器上部署服务，真正的集群模式，生产环境中使用。
-
-
-

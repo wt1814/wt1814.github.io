@@ -215,7 +215,8 @@
         * [服务引用](/docs/microService/Dubbo/introduce.md)  
         * [服务调用](/docs/microService/Dubbo/call.md)  
 * Zookeeper
-    * [Zookeeper](/docs/microService/Dubbo/Zookeeper.md)  
+    * [Zookeeper原理](/docs/microService/Dubbo/Zookeeper.md)  
+    * [Zookeeper使用](/docs/microService/Dubbo/ZookeeperUse.md)  
 * 分布式理论  
     * [分布式和集群](/docs/system/distributed.md)  
     * [分布式和集中式](/docs/system/deploy.md)  
