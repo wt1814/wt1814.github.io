@@ -324,7 +324,6 @@
 [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 
 ### 分布式消息队列  
-
 [mq](/docs/microService/mq/mq.md)  
 
 #### kafka  
