@@ -28,10 +28,6 @@
 
 
 # 1. Spring Cloud Hytrix
-<!-- 
-什么是Hystrix
-https://mp.weixin.qq.com/s/CcyYlA67SrnHVqUsEOXokw   
--->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-30.png)  
 
 ## 1.1. 服务雪崩  
@@ -39,7 +35,7 @@ https://mp.weixin.qq.com/s/CcyYlA67SrnHVqUsEOXokw
 &emsp; **<font color = "lime">在微服务架构中，存在着那么多的服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统的瘫痪，</font>** 这样的架构相较传统架构更加不稳定。为了解决这样的问题，产生了断路器等一系列的服务保护机制。  
 
 ## 1.2. Hytrix简介  
-&emsp; **<font color = "red">针对服务雪崩，Spring Cloud Hystrix实现了断路器、线程隔离等一系列服务保护功能。</font>** 它也是基于Netflix的开源框架Hystrix实现的，该框架的目标在于通过控制那些访问远程系统、服务和第三方库的节点，从而对延迟和故障提供更强大的容错能力。**<font color = "red">Hystrix具备服务降级、服务熔断、线程和信号隔离、请求缓存、请求合并以及服务监控等强大功能。</font>**  
+&emsp; **<font color = "red">针对服务雪崩，Spring Cloud Hystrix实现了断路器、线程隔离等一系列服务保护功能。</font>** 它也是基于Netflix的开源框架Hystrix实现的，该框架的目标在于通过控制那些访问远程系统、服务和第三方库的节点，从而对延迟和故障提供更强大的容错能力。 **<font color = "red">Hystrix具备服务降级、服务熔断、线程和信号隔离、请求缓存、请求合并以及服务监控等强大功能。</font>**  
  
 &emsp; Hystrix设计目标：  
 
@@ -182,7 +178,7 @@ publicStringqueryOrderTimeout(){
 |线程池隔离	|每个服务单独用线程池	|支持，可直接返回	|支持，当线程池到达maxSize后，再请求会触发fallback接口进行熔断	|可以是异步，也可以是同步。看调用的方法	|大，大量线程的上下文切换，容易造成机器负载高|
 |信号量隔离	|通过信号量的计数器	|不支持，如果阻塞，只能通过调用协议（如：socket）超时才能返回	|支持，当信号量达到maxConcurrentRequests后。再请求会触发fallback	|同步调用，不支持异步|小，只是个计数器|
 
-* 线程池主要优势是客户端隔离和超时设置，但是如果是海量低延迟请求时，频繁的线程切换带来的损耗也是很可观的，这种情况我们就可以使用信号量的策略；  
+* 线程池主要优势是客户端隔离和超时设置，但是如果是海量低延迟请求时，频繁的线程切换带来的损耗也是很可观的，这种情况就可以使用信号量的策略；  
 * 信号量的主要缺点就是不能处理超时，请求发送到客户端后，如果被客户端pending住，那么就需要一直等待； 
     
 &emsp; **<font color = "red">信号量的开销比线程池的开销小，但是它不能设置超时和实现异步访问。所以只有在依赖服务是足够可靠的情况下才使用信号量。</font>**   
@@ -287,4 +283,3 @@ hystrix:
 
 ### 1.7.2. 与消息代理结合  
 &emsp; Spring Cloud在封装Turbine的时候， 还封装了基于消息代理的收集实现。 所以， 可以将所有需要收集的监控信息都输出到消息代理中，然后Turbine服务再从消息代理中异步获取这些监控信息， 最后将这些监控信息聚合并输出到Hystrix Dashboard中。 通过引入消息代理。  
-

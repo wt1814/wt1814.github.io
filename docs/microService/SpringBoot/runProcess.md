@@ -1,10 +1,5 @@
 
 
-<!-- TOC -->
-
-- [1. SpringApplication实例run()方法运行过程](#1-springapplication实例run方法运行过程)
-
-<!-- /TOC -->
 
 &emsp; **<font color = "lime">总结：</font>**  
 &emsp; **<font color = "lime">运行流程：准备环境变量、创建容器、准备容器、刷新容器、执行刷新容器后的后置处理逻辑、</font>** **<font color = "clime">调用ApplicationRunner和CommandLineRunner的run方法。</font>**  
