@@ -27,3 +27,8 @@
 MySQL 在并发场景下会遇到的问题及解决方案～ 
 https://mp.weixin.qq.com/s/tFiTv7a8VFvU-paghtGkcw
 -->
+
+<!-- 
+再见了，收费的Navicat。 
+https://mp.weixin.qq.com/s/PSx1ppNjhYpxnWGFPzZTAw
+-->
