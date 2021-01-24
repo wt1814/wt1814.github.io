@@ -13,7 +13,6 @@
 
 <!-- /TOC -->
 
-
 # 1. Dubbo运行流程  
 ## 1.1. 初始化过程细节
 ### 1.1.1. 解析服务  
@@ -111,4 +110,3 @@ public class DemoServiceImpl implements DemoService {
 }
 ```
 &emsp; 上面这个类会被封装成为一个 AbstractProxyInvoker 实例，并新生成一个 Exporter 实例。<font color = "red">这样当网络通讯层收到一个请求后，会找到对应的 Exporter 实例，并调用它所对应的 AbstractProxyInvoker 实例，从而真正调用了服务提供者的代码。Dubbo 里还有一些其他的 Invoker 类，但上面两种是最重要的。</font>  
-

@@ -132,18 +132,16 @@ http://www.iocoder.cn/Dubbo/good-collection/
 * Broadcast - 广播调用所有提供者，逐个调用，任意一台报错则报错。通常用于通知所有提供者更新缓存或日志等本地资源信息。  
 
 <!-- 
-    Failover Cluster失败自动切换：dubbo的默认容错方案，当调用失败时自动切换到其他可用的节点，具体的重试次数和间隔时间可用通过引用服务的时候配置，默认重试次数为1也就是只调用一次。
+Failover Cluster失败自动切换：dubbo的默认容错方案，当调用失败时自动切换到其他可用的节点，具体的重试次数和间隔时间可用通过引用服务的时候配置，默认重试次数为1也就是只调用一次。
+Failback Cluster快速失败：在调用失败，记录日志和调用信息，然后返回空结果给consumer，并且通过定时任务每隔5秒对失败的调用进行重试
 
-    Failback Cluster快速失败：在调用失败，记录日志和调用信息，然后返回空结果给consumer，并且通过定时任务每隔5秒对失败的调用进行重试
+Failfast Cluster失败自动恢复：只会调用一次，失败后立刻抛出异常
 
-    Failfast Cluster失败自动恢复：只会调用一次，失败后立刻抛出异常
+Failsafe Cluster失败安全：调用出现异常，记录日志不抛出，返回空结果
 
-    Failsafe Cluster失败安全：调用出现异常，记录日志不抛出，返回空结果
+Forking Cluster并行调用多个服务提供者：通过线程池创建多个线程，并发调用多个provider，结果保存到阻塞队列，只要有一个provider成功返回了结果，就会立刻返回结果
 
-    Forking Cluster并行调用多个服务提供者：通过线程池创建多个线程，并发调用多个provider，结果保存到阻塞队列，只要有一个provider成功返回了结果，就会立刻返回结果
-
-    Broadcast Cluster广播模式：逐个调用每个provider，如果其中一台报错，在循环调用结束后，抛出异常。
-
+Broadcast Cluster广播模式：逐个调用每个provider，如果其中一台报错，在循环调用结束后，抛出异常。
 -->
 ### 1.1.10. 服务降级  
 &emsp; 当服务器压力过大时，可以通过服务降级来使某些非关键服务的调用变得简单；可以对其直接进行屏蔽，即客户端不发送请求直接返回null；也可以正常发送请求当请求超时或不可达时再返回null。  
@@ -165,4 +163,3 @@ http://www.iocoder.cn/Dubbo/good-collection/
 ### 1.3.1. Dubbo与分布式事务  
 &emsp; Dubbo支持分布式事务吗？   
 &emsp; 目前暂时不支持，可与通过tcc-transaction框架实现。TCC-Transaction通过Dubbo隐式传参的功能，避免自己对业务代码的入侵。 
-

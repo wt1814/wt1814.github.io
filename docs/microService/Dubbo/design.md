@@ -26,7 +26,6 @@ http://dubbo.apache.org/zh-cn/docs/dev/design.html
 <!-- 
 http://svip.iocoder.cn/Dubbo/intro/
 -->
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-17.png)   
 
 &emsp; 模块说明：

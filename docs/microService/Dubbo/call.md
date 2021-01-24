@@ -28,7 +28,6 @@ https://mp.weixin.qq.com/s/6Kn9uJ7n6W8BMm4OZmhxIQ
 Dubbo集群容错  
 https://www.cnblogs.com/caoxb/p/13140347.html
 -->
-
 &emsp; Dubbo 服务调用过程比较复杂，包含众多步骤，比如发送请求、编解码、服务降级、过滤器链处理、序列化、线程派发以及响应请求等步骤。限于篇幅原因，本篇文章无法对所有的步骤一一进行分析。本篇文章将会重点分析请求的发送与接收、编解码、线程派发以及响应的发送与接收等过程。  
 &emsp; 在进行源码分析之前，先来通过一张图了解 Dubbo 服务调用过程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-33.png)   
@@ -1929,4 +1928,3 @@ public class DefaultFuture implements ResponseFuture {
 
 ## 1.6. 总结
 &emsp; 本篇文章主要对 Dubbo 中的几种服务调用方式，以及从双向通信的角度对整个通信过程进行了详细的分析。按照通信顺序，通信过程包括服务消费方发送请求，服务提供方接收请求，服务提供方返回响应数据，服务消费方接收响应数据等过程。理解这些过程需要大家对网络编程，尤其是 Netty 有一定的了解。限于篇幅原因，本篇文章无法将服务调用的所有内容都一一进行分析。对于本篇文章未讲到或未详细分析的内容，比如服务降级、过滤器链、以及序列化等。大家若感兴趣，可自行进行分析。并将分析整理成文，分享给社区。
-

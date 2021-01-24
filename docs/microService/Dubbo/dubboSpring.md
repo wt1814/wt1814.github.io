@@ -17,7 +17,6 @@
 # 1. Dubbo初始化  
 
 ## 1.1. Dubbo中对Spring配置标签扩展  
-
 <!-- 
 Dubbo中对Spring配置标签扩展
 https://blog.csdn.net/weixin_33769207/article/details/86361060
@@ -34,11 +33,9 @@ https://blog.csdn.net/weixin_33769207/article/details/86361060
 
 ## 1.2. 服务提供者初始化  
 <!-- 
-
 Dubbo-服务提供者初始化
 https://www.cnblogs.com/caoxb/p/13140261.html
 -->
-
 &emsp; 服务提供者初始化过程，即ServiceBean 初始化过程。   
 
 ### 1.2.1. 解析配置文件  
@@ -117,10 +114,8 @@ public void onApplicationEvent(ApplicationEvent event) {
 }　　
 ```
 
-
 ## 1.3. 服务消费者初始化  
 <!-- 
-
 Dubbo-服务消费者初始化
 https://www.cnblogs.com/caoxb/p/13140244.html
 -->
@@ -541,5 +536,3 @@ public java.lang.String sayHello(java.lang.String arg0){
     return (java.lang.String)ret;
 }
 ```
-
-
