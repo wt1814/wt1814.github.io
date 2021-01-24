@@ -11,15 +11,16 @@
         - [Spring](#spring)
         - [MyBatis](#mybatis)
     - [分布式](#分布式)
-        - [SpringBoot](#springboot)
-        - [SpringCloud](#springcloud)
-        - [Dubbo](#dubbo)
-        - [Zookeeper](#zookeeper)
-        - [分布式理论](#分布式理论)
         - [分布式缓存](#分布式缓存)
             - [Redis](#redis)
         - [分布式消息队列](#分布式消息队列)
             - [kafka](#kafka)
+        - [SpringBoot](#springboot)
+        - [SpringCloud](#springcloud)
+        - [微服务](#微服务)
+        - [Dubbo](#dubbo)
+        - [Zookeeper](#zookeeper)
+        - [分布式理论](#分布式理论)
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
@@ -244,57 +245,6 @@
 ----
 
 ## 分布式  
-[Gateway](/docs/microService/microservices/Gateway.md)  
-
-### SpringBoot  
-[学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
-[SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
-[SpringBoot启动过程-SpringApplication初始化](/docs/microService/SpringBoot/SpringApplicationInit.md)  
-[SpringBoot启动过程-run()方法运行过程](/docs/microService/SpringBoot/runProcess.md)  
-&emsp; [SpringBoot事件监听](/docs/microService/SpringBoot/EventListeners.md)  
-&emsp; [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/SpringBootEvent.md)  
-&emsp; [SpringBoot事件回调机制](/docs/microService/SpringBoot/eventCallback.md)  
-[SpringBoot自动配置原理-@SpringBootApplication](/docs/microService/SpringBoot/SpringBootApplication.md)  
-[SpringBoot自动配置原理-加载自动配置](/docs/microService/SpringBoot/ApplicationProcess.md)  
-[内置Tomcat](/docs/microService/SpringBoot/Tomcat.md)  
-[自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
-
-### SpringCloud    
-[Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
-[Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
-[Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
-[Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/Hytrix.md)  
-[Spring Cloud Feign](/docs/microService/SpringCloudNetflix/Feign.md)  
-[Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
-[Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
-[Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
-
-### Dubbo  
-[RPC](/docs/microService/RPC.md)  
-[Dubbo](/docs/microService/Dubbo/Dubbo.md)   
-[Dubbo使用教程](/docs/microService/Dubbo/Dubbo使用教程.md)  
-[Dubbo框架设计](/docs/microService/Dubbo/design.md)  
-[Dubbo源码](/docs/microService/Dubbo/DubboSource.md)  
-&emsp; [扩展点加载(SPI)](/docs/microService/Dubbo/SPI.md)  
-&emsp; &emsp; [获得指定拓展对象](/docs/microService/Dubbo/getExtension.md)  
-&emsp; &emsp; [获得自适应的拓展对象](/docs/microService/Dubbo/getAdaptiveExtension.md)  
-&emsp; [Dubbo运行流程](/docs/microService/Dubbo/realization.md)  
-&emsp; &emsp; [Dubbo初始化](/docs/microService/Dubbo/dubboSpring.md)  
-&emsp; &emsp; [服务暴露](/docs/microService/Dubbo/export.md)  
-&emsp; &emsp; [服务引用](/docs/microService/Dubbo/introduce.md)  
-&emsp; &emsp; [服务调用](/docs/microService/Dubbo/call.md)  
-
-### Zookeeper
-[Zookeeper原理](/docs/microService/Dubbo/Zookeeper.md)  
-[Zookeeper使用](/docs/microService/Dubbo/ZookeeperUse.md)  
-
-### 分布式理论  
-[分布式和集群](/docs/system/distributed.md)   
-[分布式和集中式](/docs/system/deploy.md)  
-[分布式算法](/docs/microService/thinking/分布式算法.md)  
-&emsp; [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
-[分布式理论](/docs/microService/thinking/DistributedTheory.md)  
-
 ### 分布式缓存  
 [缓存](/docs/cache/Cache.md)  
 [分布式缓存](/docs/cache/DistributedCache.md)  
@@ -346,6 +296,58 @@
 [kafka源码](/docs/microService/mq/kafka/kafkaSource.md)  
 [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
 [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md)  
+
+### SpringBoot  
+[学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
+[SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
+[SpringBoot启动过程-SpringApplication初始化](/docs/microService/SpringBoot/SpringApplicationInit.md)  
+[SpringBoot启动过程-run()方法运行过程](/docs/microService/SpringBoot/runProcess.md)  
+&emsp; [SpringBoot事件监听](/docs/microService/SpringBoot/EventListeners.md)  
+&emsp; [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/SpringBootEvent.md)  
+&emsp; [SpringBoot事件回调机制](/docs/microService/SpringBoot/eventCallback.md)  
+[SpringBoot自动配置原理-@SpringBootApplication](/docs/microService/SpringBoot/SpringBootApplication.md)  
+[SpringBoot自动配置原理-加载自动配置](/docs/microService/SpringBoot/ApplicationProcess.md)  
+[内置Tomcat](/docs/microService/SpringBoot/Tomcat.md)  
+[自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
+
+### SpringCloud    
+[Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
+[Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
+[Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
+[Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/Hytrix.md)  
+[Spring Cloud Feign](/docs/microService/SpringCloudNetflix/Feign.md)  
+[Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
+[Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
+[Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
+
+### 微服务
+[Gateway](/docs/microService/microservices/Gateway.md)  
+
+### Dubbo  
+[RPC](/docs/microService/RPC.md)  
+[Dubbo](/docs/microService/Dubbo/Dubbo.md)   
+[Dubbo使用教程](/docs/microService/Dubbo/Dubbo使用教程.md)  
+[Dubbo框架设计](/docs/microService/Dubbo/design.md)  
+[Dubbo源码](/docs/microService/Dubbo/DubboSource.md)  
+&emsp; [扩展点加载(SPI)](/docs/microService/Dubbo/SPI.md)  
+&emsp; &emsp; [获得指定拓展对象](/docs/microService/Dubbo/getExtension.md)  
+&emsp; &emsp; [获得自适应的拓展对象](/docs/microService/Dubbo/getAdaptiveExtension.md)  
+&emsp; [Dubbo运行流程](/docs/microService/Dubbo/realization.md)  
+&emsp; &emsp; [Dubbo初始化](/docs/microService/Dubbo/dubboSpring.md)  
+&emsp; &emsp; [服务暴露](/docs/microService/Dubbo/export.md)  
+&emsp; &emsp; [服务引用](/docs/microService/Dubbo/introduce.md)  
+&emsp; &emsp; [服务调用](/docs/microService/Dubbo/call.md)  
+
+### Zookeeper
+[Zookeeper原理](/docs/microService/Dubbo/Zookeeper.md)  
+[Zookeeper使用](/docs/microService/Dubbo/ZookeeperUse.md)  
+
+### 分布式理论  
+[分布式和集群](/docs/system/distributed.md)   
+[分布式和集中式](/docs/system/deploy.md)  
+[分布式算法](/docs/microService/thinking/分布式算法.md)  
+&emsp; [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
+[分布式理论](/docs/microService/thinking/DistributedTheory.md)  
 
 ### 分布式ID
 [分布式ID](/docs/microService/thinking/分布式ID.md)  

@@ -26,6 +26,9 @@
 &emsp; Curator是Netflix公司开源的一个Zookeeper客户端，与Zookeeper提供的原生客户端相比，Curator的抽象层次更高，简化了Zookeeper客户端的开发量。  
 
 ## 1.2. Zookeeper监控  
+<!-- 
+taokeeper
+-->
 ### 1.2.1. Zookeeper的四字命令  
 .......  
 
