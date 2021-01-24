@@ -10,8 +10,8 @@
         - [1.4.1. 检查配置](#141-检查配置)
         - [1.4.2. 多协议多注册中心导出服务](#142-多协议多注册中心导出服务)
         - [1.4.3. 组装 URL](#143-组装-url)
-    - [1.5. 导出 Dubbo 服务](#15-导出-dubbo-服务)
-        - [1.5.1. Invoker 创建过程](#151-invoker-创建过程)
+    - [1.5. 导出Dubbo服务](#15-导出dubbo服务)
+        - [1.5.1. Invoker创建过程](#151-invoker创建过程)
         - [1.5.2. 导出服务到本地](#152-导出服务到本地)
         - [1.5.3. 导出服务到远程](#153-导出服务到远程)
     - [1.6. 服务注册](#16-服务注册)
@@ -551,8 +551,8 @@ for (遍历 ArgumentConfig 列表) {
 ```
 &emsp; 在本节分析的源码中，appendParameters 这个方法出现的次数比较多，该方法用于将对象字段信息添加到 map 中。实现上则是通过反射获取目标对象的 getter 方法，并调用该方法获取属性值。然后再通过 getter 方法名解析出属性名，比如从方法名 getName 中可解析出属性 name。如果用户传入了属性名前缀，此时需要将属性名加入前缀内容。最后将 <属性名，属性值> 键值对存入到 map 中就行了。限于篇幅原因，这里就不分析 appendParameters 方法的源码了，大家请自行分析。   
 
-## 1.5. 导出 Dubbo 服务
-&emsp; 前置工作做完，接下来就可以进行服务导出了。服务导出分为导出到本地 (JVM)，和导出到远程。在深入分析服务导出的源码前，先来从宏观层面上看一下服务导出逻辑。如下：  
+## 1.5. 导出Dubbo服务
+&emsp; 前置工作做完，接下来就可以进行服务导出了。服务导出分为导出到本地(JVM)，和导出到远程。在深入分析服务导出的源码前，先来从宏观层面上看一下服务导出逻辑。如下：  
 
 ```java
 private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> registryURLs) {
@@ -614,18 +614,18 @@ private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> r
     this.urls.add(url);
 }
 ```
-&emsp; 上面代码根据 url 中的 scope 参数决定服务导出方式，分别如下：  
+&emsp; 上面代码根据url中的scope参数决定服务导出方式，分别如下：  
 
     scope = none，不导出服务
     scope != remote，导出到本地
     scope != local，导出到远程
 
-&emsp; 不管是导出到本地，还是远程。进行服务导出之前，均需要先创建 Invoker，这是一个很重要的步骤。因此下面先来分析 Invoker 的创建过程。  
+&emsp; 不管是导出到本地，还是远程。进行服务导出之前，均需要先创建Invoker，这是一个很重要的步骤。因此下面先来分析Invoker的创建过程。  
 
-### 1.5.1. Invoker 创建过程
-&emsp; 在 Dubbo 中，Invoker 是一个非常重要的模型。在服务提供端，以及服务引用端均会出现 Invoker。Dubbo 官方文档中对 Invoker 进行了说明，这里引用一下。  
+### 1.5.1. Invoker创建过程
+&emsp; 在Dubbo中，Invoker是一个非常重要的模型。在服务提供端，以及服务引用端均会出现Invoker。Dubbo官方文档中对Invoker进行了说明，这里引用一下。  
 
-    Invoker 是实体域，它是 Dubbo 的核心模型，其它模型都向它靠拢，或转换成它，它代表一个可执行体，可向它发起 invoke 调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。
+    Invoker 是实体域，它是Dubbo的核心模型，其它模型都向它靠拢，或转换成它，它代表一个可执行体，可向它发起invoke调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。
 
 &emsp; 既然 Invoker 如此重要，那么很有必要搞清楚 Invoker 的用途。Invoker 是由 ProxyFactory 创建而来，Dubbo 默认的 ProxyFactory 实现类是 JavassistProxyFactory。下面到 JavassistProxyFactory 代码中，探索 Invoker 的创建过程。如下：  
 
@@ -1513,6 +1513,3 @@ public void createEphemeral(String path) {
 }
 ```
 &emsp; 好了，到此关于服务注册的过程就分析完了。整个过程可简单总结为：先创建注册中心实例，之后再通过注册中心实例注册服务。本节先到这，接下来分析数据订阅过程。    
-
-
-
