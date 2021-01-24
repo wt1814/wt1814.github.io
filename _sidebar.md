@@ -247,7 +247,7 @@
 * Dubbo  
     * [RPC](/docs/microService/RPC.md)  
     * [Dubbo](/docs/microService/Dubbo/Dubbo.md)   
-    * [Dubbo使用教程](/docs/microService/Dubbo/Dubbo使用教程.md)  
+    * [Dubbo使用教程](/docs/microService/Dubbo/DubboUse.md)  
     * [Dubbo框架设计](/docs/microService/Dubbo/design.md)  
     * [Dubbo源码](/docs/microService/Dubbo/DubboSource.md)  
     * [扩展点加载(SPI)](/docs/microService/Dubbo/SPI.md)  
