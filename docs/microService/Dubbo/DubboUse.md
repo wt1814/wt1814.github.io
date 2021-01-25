@@ -158,7 +158,7 @@
 
 ## 1.8. 日志适配 
 &emsp; 缺省自动查找：log4j、slf4j、jcl、jdk。可以通过以下方式配置日志输出策略：<dubbo:application logger="log4j"/>  
-&emsp; 访问日志：如果你想记录每一次请求信息，可开启访问日志，类似于apache的访问日志。此日志量比较大，请注意磁盘容量。  
+&emsp; 访问日志：如果想记录每一次请求信息，可开启访问日志，类似于apache的访问日志。此日志量比较大，请注意磁盘容量。  
 &emsp; 将访问日志输出到当前应用的log4j日志：  
 
     <dubbo:protocol accesslog="true" />

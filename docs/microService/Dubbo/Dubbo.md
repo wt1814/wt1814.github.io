@@ -85,7 +85,7 @@ http://www.iocoder.cn/Dubbo/good-collection/
 
 * Multicast注册中心：Multicast注册中心不需要任何中心节点，只要广播地址，就能进行服务注册和发现。基于网络中组播传输实现；  
 * Zookeeper注册中心：基于分布式协调系统Zookeeper实现，采用Zookeeper的watch机制实现数据变更；  
-* redis注册中心：基于redis实现，采用key/Map存储，住key存储服务名和类型，Map中key存储服务URL，value服务过期时间。基于redis的发布/订阅模式通知数据变更；  
+* redis注册中心：基于redis实现，采用key/Map存储，key中存储服务名和类型，Map中key存储服务URL，value服务过期时间。基于redis的发布/订阅模式通知数据变更；  
 * Simple注册中心。  
 
 ### 1.1.4. Dubbo支持哪些序列化方式？  

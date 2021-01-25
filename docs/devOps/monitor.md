@@ -69,4 +69,7 @@ https://mp.weixin.qq.com/s/5xCL7KkMpnsfB6ivG4-0MQ
  三分钟构建自动化运维平台-nightingale(夜莺) 
  https://mp.weixin.qq.com/s/LwsR3o0Ze6fQiYXgGVZrqw
 
+  全网最完整之实战 Prometheus 搭建监控系统 
+  https://mp.weixin.qq.com/s/VAzATGHgYdKZY8Yk2PHKuw
+
 -->
