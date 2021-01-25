@@ -12,11 +12,11 @@
 <!-- /TOC -->
 
 # 1. Dubbo框架设计  
-
 <!-- 
 官网
-http://dubbo.apache.org/zh-cn/docs/dev/design.html
+http://dubbo.apache.org/zh/docs/v2.7/dev/design/
 -->
+&emsp; **<font color = "red">官网：http://dubbo.apache.org/</font>** 
 
 ## 1.1. 源码介绍 
 &emsp; git clone https://github.com/apache/dubbo.git ，将代码导入编辑器。  
@@ -110,5 +110,5 @@ http://svip.iocoder.cn/Dubbo/intro/
 &emsp; 在Dubbo的核心领域模型中：  
 
 * Protocol是服务域，它是 Invoker 暴露和引用的主功能入口，它负责 Invoker 的生命周期管理。
-* Invoker是实体域，它是 Dubbo 的核心模型，其它模型都向它靠扰，或转换成它，它代表一个可执行体，可向它发起 invoke 调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。
+* Invoker是实体域，它是 Dubbo 的核心模型，其它模型都向它靠扰，或转换成它，它代表一个可执行体，可向它发起invoke调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。
 * Invocation 是会话域，它持有调用过程中的变量，比如方法名，参数等。
