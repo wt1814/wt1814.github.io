@@ -202,7 +202,7 @@
 ## 1.11. Dubbo注册中心 
 &emsp; Multicast注册中心，Multicast注册中心不需要任何中心节点，只要广播地址，就能进行服务注册和发现。基于网络中组播传输实现；  
 &emsp; Zookeeper注册中心，基于分布式协调系统Zookeeper实现，采用Zookeeper的Watch机制实现数据变更；  
-&emsp; redis注册中心，基于redis实现，采用key/Map存储，往key存储服务名和类型，Map中key存储服务URL，value服务过期时间。基于redis的发布/订阅模式通知数据变更；  
+&emsp; redis注册中心，基于redis实现，采用key/Map存储，key中存储服务名和类型，Map中key存储服务URL，value服务过期时间。基于redis的发布/订阅模式通知数据变更；  
 &emsp; Simple注册中心。   
 
 ### 1.11.1. 服务注册中心zookeeper的配置
@@ -224,7 +224,7 @@
     &emsp; 其中集群配置方式一特别适用于dubbo-admin和dubbo-monitor。  
 
 ### 1.11.2. 多注册中心
-&emsp; Dubbo支持同一服务向多注册中心同时注册，或者不同服务分别注册到不同的注册中心上去，甚至可以同时引用注册在不同注册中心上的同名服务。另外，注册中心是支持自定义扩展的。  
+&emsp; **Dubbo支持同一服务向多注册中心同时注册，或者不同服务分别注册到不同的注册中心上去，甚至可以同时引用注册在不同注册中心上的同名服务。** 另外，注册中心是支持自定义扩展的。  
 * 多注册中心注册  
 
         <!--  多注册中心配置 -->
@@ -242,9 +242,9 @@
         <dubbo:reference id="chinaHelloService" interface="com.alibaba.hello.api.HelloServ ice" version="1.0.0" registry="chinaRegistry" />           
         <!--   引用国际站站服务    -->
         <dubbo:reference id="intlHelloService" interface="com.alibaba.hello.api.HelloServi ce" version="1.0.0" registry="intlRegistry" />
-        <!--    多注册中心配置，竖号分隔表示同时连接多个不同注册中心，同一注册中心的多个集群地址用逗号分隔   -->
+        <!--   多注册中心配置，竖号分隔表示同时连接多个不同注册中心，同一注册中心的多个集群地址用逗号分隔   -->
         <dubbo:registry address="10.20.141.150:9090|10.20.154.177:9010" />
-        <!--    引用服务  -->
+        <!--   引用服务  -->
         <dubbo:reference id="helloService" interface="com.alibaba.hello.api.HelloService" version="1.0.0" /> 
 
 ---------
@@ -310,12 +310,12 @@ assert(status.equals("OK"));
 
 ## 1.17. 服务分组  
 &emsp; 当一个接口有多种实现时，可以用group区分。  
-&emsp; 服务  
+&emsp; 服务提供者  
 
     <dubbo:service group="feedback" interface="com.xxx.IndexService" />
     <dubbo:service group="member" interface="com.xxx.IndexService" />
     
-&emsp; 引用  
+&emsp; 引用服务  
 
     <dubbo:reference id="feedbackIndexService" group="feedback" interface="com.xxx.IndexService" />
     <dubbo:reference id="memberIndexService" group="member" interface="com.xxx.IndewxService" />
@@ -323,8 +323,7 @@ assert(status.equals("OK"));
     <dubbo:reference id="barService" interface="com.foo.BarService" group="*" />  
 
 ## 1.18. 多版本
-&emsp; 当一个接口实现，出现不兼容升级时，可以用版本号过渡，版本号不同的服务相互间不引用。可以按照以下的步骤进行版本迁移：
-在低压力时间段，先升级一半提供者为新版本，再将所有消费者升级为新版本，然后将剩下的一半提供者升级为新版本。  
+&emsp; **<font color = "red">当一个接口实现，出现不兼容升级时，可以用版本号过渡，版本号不同的服务相互间不引用。</font>** 可以按照以下的步骤进行版本迁移：在低压力时间段，先升级一半提供者为新版本，再将所有消费者升级为新版本，然后将剩下的一半提供者升级为新版本。  
 
     <dubbo:service  interface="com.foo.BarService"  version="2.0.0" />
     <dubbo:reference id="barService" interface="com.foo.BarService" version="2.0.0" />
@@ -377,8 +376,8 @@ assert(status.equals("OK"));
     <dubbo:protocol name="dubbo" dispatcher="all" threadpool="fixed" threads="100" />  
     
 ## 1.21. 上下文信息  
-&emsp; 上下文中存放的是当前调用过程中所需的环境信息，所有配置信息都将转换为URL的参数。  
-&emsp; 服务消费方  
+&emsp; **<font color = "red">上下文中存放的是当前调用过程中所需的环境信息，所有配置信息都将转换为URL的参数。</font>**  
+&emsp; 服务消费方：  
 
 ```java
 // 远程调用 
@@ -393,7 +392,7 @@ String application = RpcContext.getContext().getUrl().getParameter("application"
 yyyService.yyy();  
 ```
 
-&emsp; 服务提供方  
+&emsp; 服务提供方：  
 
 ```java
 public class XxxServiceImpl implements XxxService {
@@ -472,7 +471,7 @@ Bar bar = barFuture.get();
 &emsp; 同步无回调：async=false；  
 
 ## 1.25. 本地存根  
-&emsp; 远程服务后，客户端通常只剩下接口，而实现全在服务器端，但提供方有时候想在客户端也执行部分逻辑，比如：做ThreadLocal缓存，提前验证参数，调用失败后伪造容错数据等等，此时就需要在API中带上Stub，客户端生成Proxy实例，会把Proxy通过构造函数传给Stub，然后把Stub暴露给用户，Stub可以决定要不要去调Proxy。  
+&emsp; 远程服务后，客户端通常只剩下接口，而实现全在服务器端， **<font color = "lime">但提供方有时候想在客户端也执行部分逻辑，</font>** 比如：做ThreadLocal缓存，提前验证参数，调用失败后伪造容错数据等等，此时就需要在API中带上Stub，客户端生成Proxy实例，会把Proxy通过构造函数传给Stub，然后把Stub暴露给用户，Stub可以决定要不要去调Proxy。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-9.png)   
 
     <dubbo:service interface="com.foo.BarService" stub="true" />

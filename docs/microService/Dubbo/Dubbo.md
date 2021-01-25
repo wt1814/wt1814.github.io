@@ -21,15 +21,6 @@
 <!-- /TOC -->
 
 
-<!-- 
-Dubbo中的统一契约是如何实现的？ 
-https://mp.weixin.qq.com/s/89M2nN6FWLy-Ha4xMqrAbA
-妹妹问我：Dubbo集群容错负载均衡 
-https://mp.weixin.qq.com/s/-IkHNAM4B0R_j50LkQunig
-
-芋道源码
-http://www.iocoder.cn/Dubbo/good-collection/
--->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo.png)   
 
 # 1. Dubbo  
@@ -62,13 +53,13 @@ http://www.iocoder.cn/Dubbo/good-collection/
 &emsp; Dubbo的工作原理：  
 1. 服务启动的时候，provider和consumer根据配置信息，连接到注册中心register，分别向注册中心注册和订阅服务  
 2. register根据服务订阅关系，返回provider信息到consumer，同时consumer会把provider信息缓存到本地。如果信息有变更，consumer会收到来自register的推送  
-3， consumer生成代理对象，同时根据负载均衡策略，选择一台provider，同时定时向monitor记录接口的调用次数和时间信息  
+3. consumer生成代理对象，同时根据负载均衡策略，选择一台provider，同时定时向monitor记录接口的调用次数和时间信息  
 4. 拿到代理对象之后，consumer通过代理对象发起接口调用  
 5. provider收到请求后对数据进行反序列化，然后通过代理调用具体的接口实现  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-52.png)   
 
-&emsp; **为什么要通过代理对象通信？**    
+&emsp; **<font color = "red">为什么要通过代理对象通信？</font>**    
 &emsp; 主要是为了实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：  
 
 1. 调用的负载均衡策略  
