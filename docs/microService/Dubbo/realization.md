@@ -14,6 +14,8 @@
 <!-- /TOC -->
 
 # 1. Dubbo运行流程  
+
+
 ## 1.1. 初始化过程细节
 ### 1.1.1. 解析服务  
 &emsp; **<font color = "lime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
