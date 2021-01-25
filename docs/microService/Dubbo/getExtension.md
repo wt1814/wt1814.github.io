@@ -20,11 +20,21 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; Dubbo SPI获得指定拓展对象，首先通过ExtensionLoader的getExtensionLoader方法获取一个ExtensionLoader实例，然后再通过ExtensionLoader的getExtension方法(调用createExtension方法)获取拓展类对象。createExtension方法包含了如下的步骤：
+
+* 通过getExtensionClasses获取所有的拓展类
+* 通过反射创建拓展对象
+* 向拓展对象中注入依赖
+* 将拓展对象包裹在相应的Wrapper对象中
+
+&emsp; 以上步骤中，第一个步骤是加载拓展类的关键，第三和第四个步骤是Dubbo IOC与AOP的具体实现。  
+
 # 1. SPI解析
 ## 1.1. 代码结构  
-&emsp; Dubbo SPI在dubbo-common 的 extension 包实现，如下图所示：  
+&emsp; Dubbo SPI在dubbo-common的extension 包实现，如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-28.png)   
-&emsp; Dubbo SPI的相关逻辑被封装在了ExtensionLoader 类(拓展加载器)中，通过 ExtensionLoader，可以加载指定的实现类。  
+&emsp; Dubbo SPI的相关逻辑被封装在了ExtensionLoader 类(拓展加载器)中，通过ExtensionLoader，可以加载指定的实现类。  
 
 ## 1.2. 获得指定拓展对象  
 &emsp; <font color = "lime">Dubbo SPI获得指定拓展对象，首先通过ExtensionLoader的getExtensionLoader方法获取一个ExtensionLoader实例，然后再通过ExtensionLoader的getExtension方法获取拓展类对象。</font>  
@@ -37,7 +47,7 @@ ExtensionLoader<Robot> extensionLoader = ExtensionLoader.getExtensionLoader(Robo
 ```
 
 #### 1.2.1.1. getExtensionLoader  
-&emsp; getExtensionLoader(type) 静态方法，根据拓展点的接口，获得拓展加载器。代码如下：  
+&emsp; getExtensionLoader(type)静态方法，根据拓展点的接口，获得拓展加载器。代码如下：  
 
 ```java
 /**
@@ -110,8 +120,8 @@ private ExtensionLoader(Class<?> type) {
 ```
 
 * objectFactory属性，对象工厂，功能上和Spring IOC一致。
-    * 用于调用 #injectExtension(instance) 方法时，向创建的拓展注入其依赖的属性。例如，CacheFilter.cacheFactory 属性。
-    * 第3行：当拓展接口非ExtensionFactory时( 如果不加这个判断，会是一个死循环 )，调用ExtensionLoader#getAdaptiveExtension()方法，获得ExtensionFactory拓展接口的自适应拓展实现对象。为什么呢？在「ExtensionFactory」详细解析。
+    * 用于调用#injectExtension(instance)方法时，向创建的拓展注入其依赖的属性。例如，CacheFilter.cacheFactory属性。
+    * 第3行：当拓展接口非ExtensionFactory时(如果不加这个判断，会是一个死循环)，调用ExtensionLoader#getAdaptiveExtension()方法，获得ExtensionFactory拓展接口的自适应拓展实现对象。为什么呢？在「ExtensionFactory」详细解析。
 
 ### 1.2.2. 获得指定拓展对象  
 
@@ -193,11 +203,11 @@ private T createExtension(String name) {
 3. 向拓展对象中注入依赖
 4. 将拓展对象包裹在相应的Wrapper对象中
 
-&emsp; 以上步骤中，第一个步骤是加载拓展类的关键，<font color = "lime">第三和第四个步骤是Dubbo IOC与AOP的具体实现。</font>在接下来的章节中，将会重点分析 getExtensionClasses方法的逻辑，以及简单介绍Dubbo IOC的具体实现。  
+&emsp; 以上步骤中，第一个步骤是加载拓展类的关键，<font color = "lime">第三和第四个步骤是Dubbo IOC与AOP的具体实现。</font>在接下来的章节中，将会重点分析getExtensionClasses方法的逻辑，以及简单介绍Dubbo IOC的具体实现。  
 
 ##### 1.2.2.2.1. 获取所有的拓展类  
 ###### 1.2.2.2.1.1. getExtensionClasses  
-&emsp; 在通过名称获取拓展类之前，首先需要根据配置文件解析出拓展项名称到拓展类的映射关系表（Map<名称, 拓展类>），之后再根据拓展项名称从映射关系表中取出相应的拓展类即可。相关过程的代码分析如下：  
+&emsp; 在通过名称获取拓展类之前，首先需要根据配置文件解析出拓展项名称到拓展类的映射关系表(Map<名称,拓展类>)，之后再根据拓展项名称从映射关系表中取出相应的拓展类即可。相关过程的代码分析如下：  
 
 ```java
 private Map<String, Class<?>> getExtensionClasses() {
@@ -218,7 +228,7 @@ private Map<String, Class<?>> getExtensionClasses() {
 }
 ```
 
-&emsp; 这里也是先检查缓存，若缓存未命中，则通过synchronized加锁。加锁后再次检查缓存，并判空。此时如果classes仍为null，则通过loadExtensionClasses加载拓展类。下面分析 loadExtensionClasses 方法的逻辑。  
+&emsp; 这里也是先检查缓存，若缓存未命中，则通过synchronized加锁。加锁后再次检查缓存，并判空。此时如果classes仍为null，则通过loadExtensionClasses加载拓展类。下面分析loadExtensionClasses方法的逻辑。  
 
 ###### 1.2.2.2.1.2. loadExtensionClasses
 
@@ -281,7 +291,7 @@ private void loadDirectory(Map<String, Class<?>> extensionClasses, String dir) {
 }
 ```
 
-&emsp; loadDirectory方法先通过classLoader获取所有资源链接，然后再通过 loadResource方法加载资源。接下来，看一下loadResource方法的实现。  
+&emsp; loadDirectory方法先通过classLoader获取所有资源链接，然后再通过loadResource方法加载资源。接下来，看一下loadResource方法的实现。  
 
 ###### 1.2.2.2.1.4. loadResource
 
@@ -329,10 +339,10 @@ private void loadResource(Map<String, Class<?>> extensionClasses,
     }
 }
 ```
-&emsp; loadResource方法用于读取和解析配置文件，并通过反射加载类，最后调用 loadClass方法进行其他操作。  
+&emsp; loadResource方法用于读取和解析配置文件，并通过反射加载类，最后调用loadClass方法进行其他操作。  
 
 ###### 1.2.2.2.1.5. loadClass
-&emsp; loadClass 方法用于主要用于操作缓存，该方法的逻辑如下：  
+&emsp; loadClass方法用于主要用于操作缓存，该方法的逻辑如下：  
 
 ```java
 private void loadClass(Map<String, Class<?>> extensionClasses, java.net.URL resourceURL, 
@@ -402,7 +412,7 @@ private void loadClass(Map<String, Class<?>> extensionClasses, java.net.URL reso
 &emsp; 到此，关于缓存类加载的过程就分析完了。  
 
 ### 1.2.3. injectExtension，Dubbo IOC
-&emsp; Dubbo IOC是通过setter方法注入依赖。Dubbo首先会通过反射获取到实例的所有方法，然后再遍历方法列表，检测方法名是否具有setter方法特征。若有，则通过 ObjectFactory获取依赖对象，最后通过反射调用setter方法将依赖设置到目标对象中。整个过程对应的代码如下：  
+&emsp; Dubbo IOC是通过setter方法注入依赖。Dubbo首先会通过反射获取到实例的所有方法，然后再遍历方法列表，检测方法名是否具有setter方法特征。若有，则通过ObjectFactory获取依赖对象，最后通过反射调用setter方法将依赖设置到目标对象中。整个过程对应的代码如下：  
 
 ```java
 private T injectExtension(T instance) {
@@ -439,5 +449,5 @@ private T injectExtension(T instance) {
     return instance;
 }
 ```
-&emsp; 在上面代码中，objectFactory变量的类型为 AdaptiveExtensionFactory，AdaptiveExtensionFactory内部维护了一个ExtensionFactory列表，用于存储其他类型的 ExtensionFactory。Dubbo目前提供了两种ExtensionFactory，分别是 SpiExtensionFactory和SpringExtensionFactory。前者用于创建自适应的拓展，后者是用于从Spring的IOC容器中获取所需的拓展。这两个类的类的代码不是很复杂，这里就不一一分析了。  
+&emsp; 在上面代码中，objectFactory变量的类型为AdaptiveExtensionFactory，AdaptiveExtensionFactory内部维护了一个ExtensionFactory列表，用于存储其他类型的ExtensionFactory。Dubbo目前提供了两种ExtensionFactory，分别是SpiExtensionFactory和SpringExtensionFactory。前者用于创建自适应的拓展，后者是用于从Spring的IOC容器中获取所需的拓展。这两个类的类的代码不是很复杂，这里就不一一分析了。  
 &emsp; Dubbo IOC目前仅支持setter方式注入。  

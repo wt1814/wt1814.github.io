@@ -11,8 +11,6 @@
         - [1.6.2. 暴露服务时序](#162-暴露服务时序)
         - [1.6.3. 引用服务时序](#163-引用服务时序)
     - [1.7. DDD领域模型](#17-ddd领域模型)
-    - [1.8. 源码介绍](#18-源码介绍)
-    - [1.9. 整体分层设计](#19-整体分层设计)
 
 <!-- /TOC -->
 
@@ -22,7 +20,7 @@
 http://dubbo.apache.org/zh/docs/v2.7/dev/design/
 -->
 &emsp; **<font color = "red">官网：http://dubbo.apache.org/</font>**  
-&emsp; **参考官方文档：http://dubbo.apache.org/zh/docs/v2.7/dev/design/**  
+&emsp; **本节参考官方文档：http://dubbo.apache.org/zh/docs/v2.7/dev/design/**  
 
 ## 1.1. 整体设计  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-16.png)   
@@ -51,10 +49,16 @@ http://dubbo.apache.org/zh/docs/v2.7/dev/design/
 
 * 在 RPC 中，Protocol是核心层，也就是只要有 Protocol + Invoker + Exporter 就可以完成非透明的 RPC 调用，然后在 Invoker 的主过程上 Filter 拦截点。
 * 图中的 Consumer 和 Provider 是抽象概念，只是想让看图者更直观的了解哪些类分属于客户端与服务器端，不用 Client 和 Server 的原因是 Dubbo 在很多场景下都使用 Provider, Consumer, Registry, Monitor 划分逻辑拓普节点，保持统一概念。
-* 而 Cluster 是外围概念，所以 Cluster 的目的是将多个 Invoker 伪装成一个 Invoker，这样其它人只要关注 Protocol 层 Invoker 即可，加上 Cluster 或者去掉 Cluster 对其它层都不会造成影响，因为只有一个提供者时，是不需要 Cluster 的。
-* Proxy 层封装了所有接口的透明化代理，而在其它层都以 Invoker 为中心，只有到了暴露给用户使用时，才用 Proxy 将 Invoker 转成接口，或将接口实现转成 Invoker，也就是去掉 Proxy 层 RPC 是可以 Run 的，只是不那么透明，不那么看起来像调本地服务一样调远程服务。
+* 而 Cluster 是外围概念，所以 Cluster 的目的是将多个 Invoker 伪装成一个 Invoker，这样其它人只要关注 Protocol 层 Invoker 即可，加上 Cluster 或者去掉 Cluster 对其它层都不会造成影响，因为只有一个提供者时，是不需要 Cluster 的。  
+* Proxy 层封装了所有接口的透明化代理，而在其它层都以 Invoker 为中心，只有到了暴露给用户使用时，才用 Proxy 将 Invoker 转成接口，或将接口实现转成 Invoker，也就是去掉 Proxy 层 RPC 是可以 Run 的，只是不那么透明，不那么看起来像调本地服务一样调远程服务。  
 &emsp; 而Remoting实现是Dubbo协议的实现，如果选择RMI协议，整个Remoting都不会用上，Remoting内部再划为Transport传输层和Exchange信息交换层，Transport 层只负责单向消息传输，是对 Mina, Netty, Grizzly 的抽象，它也可以扩展 UDP 传输，而 Exchange 层是在传输层之上封装了 Request-Response 语义。
 * Registry 和 Monitor 实际上不算一层，而是一个独立的节点，只是为了全局概览，用层的方式画在一起。  
+
+----
+&emsp; 从大的范围来说，dubbo分为三层，business业务逻辑层由我们自己来提供接口和实现还有一些配置信息，RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理，remoting则是对网络传输协议和数据转换的封装。  
+&emsp; 划分到更细的层面，就是图中的10层模式，整个分层依赖由上至下，除开business业务逻辑之外，其他的几层都是SPI机制。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-51.png)  
+
 
 ## 1.4. 模块分包  
 <!-- 
@@ -107,22 +111,3 @@ http://svip.iocoder.cn/Dubbo/intro/
 * Protocol是服务域，它是 Invoker 暴露和引用的主功能入口，它负责 Invoker 的生命周期管理。
 * Invoker是实体域，它是 Dubbo 的核心模型，其它模型都向它靠扰，或转换成它，它代表一个可执行体，可向它发起invoke调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。
 * Invocation 是会话域，它持有调用过程中的变量，比如方法名，参数等。
-
-
-----
-
-## 1.8. 源码介绍 
-&emsp; git clone https://github.com/apache/dubbo.git ，将代码导入编辑器。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-15.png)   
-
-
-## 1.9. 整体分层设计  
-&emsp; Dubbo基本设计原则：
-
-* 采用 Microkernel + Plugin 模式，Microkernel 只负责组装 Plugin，Dubbo 自身的功能也是通过扩展点实现的，也就是 Dubbo 的所有功能点都可被用户自定义扩展所替换。
-* 采用 URL 作为配置信息的统一格式，所有扩展点都通过传递 URL 携带配置信息。
-
-&emsp; 从大的范围来说，dubbo分为三层，business业务逻辑层由我们自己来提供接口和实现还有一些配置信息，RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理，remoting则是对网络传输协议和数据转换的封装。  
-&emsp; 划分到更细的层面，就是图中的10层模式，整个分层依赖由上至下，除开business业务逻辑之外，其他的几层都是SPI机制。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-51.png)  
-

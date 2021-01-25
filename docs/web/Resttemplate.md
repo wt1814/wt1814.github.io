@@ -15,5 +15,21 @@ https://www.cnblogs.com/javazhiyin/p/9851775.html
 resttemplate 发送get请求
 https://blog.csdn.net/qq_35794202/article/details/102998621
 
+发送json
+        //封装请求头
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Souche-Std-Response","1");
+        headers.set("AppName","cheyipai");
+        //todo
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+
+        OpenAccountRequestDTO openAccountRequestDTO = new OpenAccountRequestDTO();
+        openAccountRequestDTO.setOpenType("");
+        openAccountRequestDTO.setSignature("");
+        openAccountRequestDTO.setTradeNo("");
+        openAccountRequestDTO.setExt("");
+        String openAccountRequest = JsonUtils.toJson(openAccountRequestDTO);
+        //todo
+        HttpEntity<String> httpEntity = new HttpEntity(openAccountRequest,headers);
 
 -->
