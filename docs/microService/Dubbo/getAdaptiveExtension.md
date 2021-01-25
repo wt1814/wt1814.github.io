@@ -28,10 +28,10 @@
 <!-- /TOC -->
 
 # 1. 获得自适应的拓展对象
-&emsp; Dubbo SPI的扩展点自适应机制：在Dubbo中，很多拓展都是通过SPI机制进行加载的，比如Protocol、Cluster、LoadBalance等。<font color = "lime">有时，有些拓展并不想在框架启动阶段被加载，而是希望在拓展方法被调用时，根据运行时参数进行加载。这听起来有些矛盾。</font>拓展未被加载，那么拓展方法就无法被调用（静态方法除外）。拓展方法未被调用，拓展就无法被加载。对于这个矛盾的问题，Dubbo通过自适应拓展机制很好的解决了。自适应拓展机制的实现逻辑比较复杂，首先Dubbo会为拓展接口生成具有代理功能的代码。然后通过javassist或jdk编译这段代码，得到Class类。最后再通过反射创建代理类，整个过程比较复杂。  
+&emsp; Dubbo SPI的扩展点自适应机制： **<font color = "red">在Dubbo中，很多拓展都是通过SPI机制进行加载的，比如Protocol、Cluster、LoadBalance等。</font>** <font color = "lime">有时，有些拓展并不想在框架启动阶段被加载，而是希望在拓展方法被调用时，根据运行时参数进行加载。这听起来有些矛盾。</font>拓展未被加载，那么拓展方法就无法被调用（静态方法除外）。拓展方法未被调用，拓展就无法被加载。对于这个矛盾的问题，Dubbo通过自适应拓展机制很好的解决了。自适应拓展机制的实现逻辑比较复杂，首先Dubbo会为拓展接口生成具有代理功能的代码。然后通过javassist或jdk编译这段代码，得到Class类。最后再通过反射创建代理类，整个过程比较复杂。  
 
 ## 1.1. 自适应示例  
-&emsp; 为了让大家对自适应拓展有一个感性的认识，下面通过一个示例进行演示。这是一个与汽车相关的例子，有一个车轮制造厂接口 WheelMaker：  
+&emsp; 为了让大家对自适应拓展有一个感性的认识，下面通过一个示例进行演示。这是一个与汽车相关的例子，有一个车轮制造厂接口WheelMaker：  
 
 ```java
 public interface WheelMaker {
@@ -90,14 +90,14 @@ public class RaceCarMaker implements CarMaker {
     }
 }
 ```
-&emsp; RaceCarMaker持有一个WheelMaker类型的成员变量，在程序启动时，可以将 AdaptiveWheelMaker通过setter方法注入到RaceCarMaker中。在运行时，假设有这样一个 url参数传入：  
+&emsp; RaceCarMaker持有一个WheelMaker类型的成员变量，在程序启动时，可以将AdaptiveWheelMaker通过setter方法注入到RaceCarMaker中。在运行时，假设有这样一个url参数传入：  
 
 ```text
 dubbo://192.168.0.101:20880/XxxService?wheel.maker=MichelinWheelMaker
 ```
-&emsp; RaceCarMaker的makeCar方法将上面的url作为参数传给AdaptiveWheelMaker的 makeWheel方法，makeWheel方法从url中提取wheel.maker参数，得到 MichelinWheelMaker。之后再通过 SPI 加载配置名为MichelinWheelMaker的实现类，得到具体的WheelMaker实例。  
+&emsp; RaceCarMaker的makeCar方法将上面的url作为参数传给AdaptiveWheelMaker的makeWheel方法，makeWheel方法从url中提取wheel.maker参数，得到MichelinWheelMaker。之后再通过SPI加载配置名为MichelinWheelMaker的实现类，得到具体的WheelMaker实例。  
 
-&emsp; 上面的示例展示了自适应拓展类的核心实现 ---- 在拓展接口的方法被调用时，通过 SPI 加载具体的拓展实现类，并调用拓展对象的同名方法。接下来，深入到源码中，探索自适应拓展类生成的过程。  
+&emsp; 上面的示例展示了自适应拓展类的核心实现----在拓展接口的方法被调用时，通过SPI加载具体的拓展实现类，并调用拓展对象的同名方法。接下来，深入到源码中，探索自适应拓展类生成的过程。  
 
 ## 1.2. 源码分析  
 ### 1.2.1. @Adaptive  
@@ -153,15 +153,15 @@ public @interface Adaptive {
 ```
 &emsp; @Adaptive注解，可添加类或方法上，分别代表了两种不同的使用方式。  
 
-* 第一种，标记在类上，代表手动实现它是一个拓展接口的 Adaptive 拓展实现类。目前 Dubbo 项目里，只有 ExtensionFactory 拓展的实现类 AdaptiveExtensionFactory 有这么用。详细解析见 「AdaptiveExtensionFactory」 。
-* 第二种，标记在拓展接口的方法上，代表自动生成代码实现该接口的 Adaptive 拓展实现类。
-    * value ，从 Dubbo URL 获取参数中，使用键名( Key )，获取键值。该值为真正的拓展名。
+* 第一种，标记在类上，代表手动实现它是一个拓展接口的Adaptive拓展实现类。目前Dubbo项目里，只有ExtensionFactory拓展的实现类AdaptiveExtensionFactory有这么用。详细解析见「AdaptiveExtensionFactory」。
+* 第二种，标记在拓展接口的方法上，代表自动生成代码实现该接口的Adaptive拓展实现类。
+    * value ，从Dubbo URL获取参数中，使用键名(Key)，获取键值。该值为真正的拓展名。
         * 自适应拓展实现类，会获取拓展名对应的真正的拓展对象。通过该对象，执行真正的逻辑。
-        * 可以设置多个键名( Key )，顺序获取直到有值。若最终获取不到，使用默认拓展名。
-    * 在 「createAdaptiveExtensionClassCode」 详细解析。
+        * 可以设置多个键名(Key)，顺序获取直到有值。若最终获取不到，使用默认拓展名。
+    * 在 「createAdaptiveExtensionClassCode」详细解析。
  
 ### 1.2.2. getAdaptiveExtension
-&emsp; getAdaptiveExtension 方法是获取自适应拓展的入口方法，因此下面从这个方法进行分析。相关代码如下：  
+&emsp; getAdaptiveExtension方法是获取自适应拓展的入口方法，因此下面从这个方法进行分析。相关代码如下：  
 
 ```java
 public T getAdaptiveExtension() {
@@ -192,7 +192,7 @@ public T getAdaptiveExtension() {
 }
 ```
 
-&emsp; <font color = "red">getAdaptiveExtension 方法首先会检查缓存，缓存未命中，则调用 createAdaptiveExtension 方法创建自适应拓展。</font>下面，看一下 createAdaptiveExtension 方法的代码。  
+&emsp; <font color = "red">getAdaptiveExtension方法首先会检查缓存，缓存未命中，则调用createAdaptiveExtension方法创建自适应拓展。</font>下面，看一下createAdaptiveExtension方法的代码。  
 
 ### 1.2.3. createAdaptiveExtension
 
@@ -206,7 +206,7 @@ private T createAdaptiveExtension() {
     }
 }
 ```
-&emsp; createAdaptiveExtension 方法的代码比较少，但却包含了三个逻辑，分别如下：  
+&emsp; createAdaptiveExtension方法的代码比较少，但却包含了三个逻辑，分别如下：  
 
 1. 调用getAdaptiveExtensionClass方法获取自适应拓展Class对象
 2. 通过反射进行实例化
@@ -228,13 +228,13 @@ private Class<?> getAdaptiveExtensionClass() {
     return cachedAdaptiveClass = createAdaptiveExtensionClass();
 }
 ```
-&emsp; getAdaptiveExtensionClass 方法同样包含了三个逻辑，如下：  
+&emsp; getAdaptiveExtensionClass方法同样包含了三个逻辑，如下：  
 
 1. 调用getExtensionClasses获取所有的拓展类
 2. 检查缓存，若缓存不为空，则返回缓存
-3. 若缓存为空，则调用 createAdaptiveExtensionClass 创建自适应拓展类
+3. 若缓存为空，则调用createAdaptiveExtensionClass创建自适应拓展类
 
-&emsp; 这三个逻辑看起来平淡无奇，似乎没有多讲的必要。但是这些平淡无奇的代码中隐藏了着一些细节，需要说明一下。首先从第一个逻辑说起，getExtensionClasses 这个方法用于获取某个接口的所有实现类。比如该方法可以获取 Protocol 接口的 DubboProtocol、HttpProtocol、InjvmProtocol 等实现类。在获取实现类的过程中，如果某个实现类被 Adaptive 注解修饰了，那么该类就会被赋值给 cachedAdaptiveClass 变量。此时，上面步骤中的第二步条件成立（缓存不为空），直接返回 cachedAdaptiveClass 即可。如果所有的实现类均未被 Adaptive 注解修饰，那么执行第三步逻辑，创建自适应拓展类。相关代码如下：  
+&emsp; 这三个逻辑看起来平淡无奇，似乎没有多讲的必要。但是这些平淡无奇的代码中隐藏了着一些细节，需要说明一下。首先从第一个逻辑说起，getExtensionClasses这个方法用于获取某个接口的所有实现类。比如该方法可以获取Protocol接口的DubboProtocol、HttpProtocol、InjvmProtocol等实现类。在获取实现类的过程中，如果某个实现类被Adaptive注解修饰了，那么该类就会被赋值给cachedAdaptiveClass变量。此时，上面步骤中的第二步条件成立（缓存不为空），直接返回cachedAdaptiveClass即可。如果所有的实现类均未被Adaptive注解修饰，那么执行第三步逻辑，创建自适应拓展类。相关代码如下：  
 
 ```java
 private Class<?> createAdaptiveExtensionClass() {
@@ -247,7 +247,7 @@ private Class<?> createAdaptiveExtensionClass() {
     return compiler.compile(code, classLoader);
 }
 ```
-&emsp; createAdaptiveExtensionClass方法用于生成自适应拓展类，该方法首先会生成自适应拓展类的源码，然后通过Compiler实例（Dubbo默认使用javassist作为编译器）编译源码，得到代理类 Class 实例。接下来，把重点放在代理类代码生成的逻辑上，其他逻辑大家自行分析。  
+&emsp; createAdaptiveExtensionClass方法用于生成自适应拓展类，该方法首先会生成自适应拓展类的源码，然后通过Compiler实例（Dubbo默认使用javassist作为编译器）编译源码，得到代理类Class实例。接下来，把重点放在代理类代码生成的逻辑上，其他逻辑大家自行分析。  
 
 ### 1.2.4. 自适应拓展类代码生成
 &emsp; createAdaptiveExtensionClassCode方法代码略多，约有两百行代码。因此本节将会对该方法的代码进行拆分分析，以帮助大家更好的理解代码逻辑。  
@@ -274,7 +274,7 @@ if (!hasAdaptiveAnnotation)
 ```
 
 #### 1.2.4.2. 生成类
-&emsp; 通过 Adaptive 注解检测后，即可开始生成代码。代码生成的顺序与 Java 文件内容顺序一致，首先会生成 package 语句，然后生成import语句，紧接着生成类名等代码。整个逻辑如下：
+&emsp; 通过Adaptive注解检测后，即可开始生成代码。代码生成的顺序与Java文件内容顺序一致，首先会生成package语句，然后生成import语句，紧接着生成类名等代码。整个逻辑如下：
 
 ```java
 // 生成 package 代码：package + type 所在包
@@ -294,7 +294,7 @@ codeBuilder.append("\npublic class ")
 codeBuilder.append("\n}");
 ```
 
-&emsp; 这里使用 ${...} 占位符代表其他代码的生成逻辑，该部分逻辑将在随后进行分析。上面代码不是很难理解，下面直接通过一个例子展示该段代码所生成的内容。以 Dubbo 的 Protocol 接口为例，生成的代码如下：  
+&emsp; 这里使用${...}占位符代表其他代码的生成逻辑，该部分逻辑将在随后进行分析。上面代码不是很难理解，下面直接通过一个例子展示该段代码所生成的内容。以Dubbo的Protocol接口为例，生成的代码如下：  
 
 ```java
 package com.alibaba.dubbo.rpc;
