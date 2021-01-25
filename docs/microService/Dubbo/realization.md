@@ -15,7 +15,6 @@
 
 # 1. Dubbo运行流程  
 
-
 ## 1.1. 初始化过程细节
 ### 1.1.1. 解析服务  
 &emsp; **<font color = "lime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
@@ -27,8 +26,8 @@
 &emsp; 基于扩展点自适应机制，通过URL的dubbo://协议头识别，直接调用DubboProtocol的export()方法，打开服务端口。  
 2. 向注册中心暴露服务：  
 &emsp; 在有注册中心，需要注册提供者地址的情况下，ServiceConfig 解析出的URL的格式为: registry://registry-host/org.apache.dubbo.registry.RegistryService?export=URL.encode("dubbo://service-host/com.foo.FooService?version=1.0.0")。  
-&emsp; 基于扩展点自适应机制，通过URL的 registry:// 协议头识别，就会调用 RegistryProtocol 的 export() 方法，将 export 参数中的提供者 URL，先注册到注册中心。  
-&emsp; 再重新传给 Protocol 扩展点进行暴露： dubbo://service-host/com.foo.FooService?version=1.0.0，然后基于扩展点自适应机制，通过提供者 URL 的 dubbo:// 协议头识别，就会调用 DubboProtocol 的 export() 方法，打开服务端口。  
+&emsp; 基于扩展点自适应机制，通过URL的registry://协议头识别，就会调用 RegistryProtocol的export()方法，将export参数中的提供者URL，先注册到注册中心。  
+&emsp; 再重新传给Protocol扩展点进行暴露：dubbo://service-host/com.foo.FooService?version=1.0.0，然后基于扩展点自适应机制，通过提供者URL的dubbo://协议头识别，就会调用DubboProtocol的export()方法，打开服务端口。  
 
 ------
 
@@ -81,7 +80,7 @@
 &emsp; 关于每种协议如 RMI/Dubbo/Web service 等它们在调用 refer 方法生成 Invoker 实例的细节和上一章节所描述的类似。  
 
 ### 1.2.3. Invoker  
-&emsp; 由于 Invoker 是 Dubbo 领域模型中非常重要的一个概念，很多设计思路都是向它靠拢。这就使得 Invoker 渗透在整个实现代码里，对于刚开始接触 Dubbo 的人，确实容易给搞混了。 下面用一个精简的图来说明<font color = "lime">最重要的两种 Invoker：服务提供 Invoker 和服务消费 Invoker：</font>  
+&emsp; 由于Invoker是Dubbo领域模型中非常重要的一个概念，很多设计思路都是向它靠拢。这就使得Invoker渗透在整个实现代码里，对于刚开始接触Dubbo的人，确实容易给搞混了。 下面用一个精简的图来说明<font color = "lime">最重要的两种Invoker：服务提供 Invoker和服务消费Invoker：</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-31.png)   
 &emsp; 为了更好的解释上面这张图，结合服务消费和提供者的代码示例来进行说明：  
 &emsp; 服务消费者代码：  
@@ -100,7 +99,7 @@ public class DemoClientAction {
     }
 }
 ```
-&emsp; 上面代码中的 DemoService 就是上图中服务消费端的 proxy，用户代码通过这个 proxy 调用其对应的 Invoker ，而该 Invoker 实现了真正的远程服务调用。  
+&emsp; 上面代码中的DemoService就是上图中服务消费端的proxy，用户代码通过这个proxy调用其对应的Invoker，而该Invoker实现了真正的远程服务调用。  
 &emsp; 服务提供者代码：  
 
 ```java
@@ -111,4 +110,4 @@ public class DemoServiceImpl implements DemoService {
     }
 }
 ```
-&emsp; 上面这个类会被封装成为一个 AbstractProxyInvoker 实例，并新生成一个 Exporter 实例。<font color = "red">这样当网络通讯层收到一个请求后，会找到对应的 Exporter 实例，并调用它所对应的 AbstractProxyInvoker 实例，从而真正调用了服务提供者的代码。Dubbo 里还有一些其他的 Invoker 类，但上面两种是最重要的。</font>  
+&emsp; 上面这个类会被封装成为一个AbstractProxyInvoker实例，并新生成一个Exporter实例。<font color = "red">这样当网络通讯层收到一个请求后，会找到对应的Exporter实例，并调用它所对应的AbstractProxyInvoker实例，从而真正调用了服务提供者的代码。Dubbo里还有一些其他的Invoker类，但上面两种是最重要的。</font>  
