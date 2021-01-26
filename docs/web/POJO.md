@@ -1,5 +1,5 @@
 
-
+# POJO
 
 <!-- 
 PO、VO、DAO、BO、DTO、POJO能分清吗？ 
@@ -13,6 +13,8 @@ Java中 VO、 PO、DO、DTO、 BO、 QO、DAO、POJO的概念
 https://www.cnblogs.com/wang-meng/p/5645405.html
 
 PO,VO,DAO,BO,POJO 之间的区别你懂吗？ 
-  https://mp.weixin.qq.com/s/nRxsB44ibrIhqPCZ9HPQHA	
+https://mp.weixin.qq.com/s/nRxsB44ibrIhqPCZ9HPQHA	
+PO,VO,DAO,BO,POJO 之间的区别你懂吗？ 
+https://mp.weixin.qq.com/s/12WqSC8L17lSmbohK6bzfg
 
 -->

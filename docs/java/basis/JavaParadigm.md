@@ -27,6 +27,10 @@ https://mp.weixin.qq.com/s/oPnJGmw-fNwtgG6ioAJ-ZQ
 精通 Java，却不了解泛型？  精通 Java，却不了解泛型？ 
 https://mp.weixin.qq.com/s/4QqRkHJ4NeZW9EgR4oOwhA
 https://mp.weixin.qq.com/s/kXaXODEZcxSNkALE7Im8Aw
+Java泛型的特点与优缺点，泛型擦除是怎么回事？ 
+https://mp.weixin.qq.com/s/xW9PC88-OCbGSYI_897dow
+Java 中的通配符 T，E，K，V，？，你确定都了解吗？ 
+https://mp.weixin.qq.com/s/0AZY4XFO6AOyuihshKYtzQ
 -->
 
 # 1. Java泛型

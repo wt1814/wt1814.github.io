@@ -1,6 +1,6 @@
 
 
-
+# PageHelper
 <!-- 
 
 SpringBoot项目集成PageHelper使用
@@ -15,5 +15,9 @@ https://www.cnblogs.com/prader6/p/10559969.html
 
 PageHelper 排序踩坑记录
 https://www.jianshu.com/p/c5fa441f6066
+
+
+Mybatis+PageHelper查询结果排序两种方式
+https://blog.csdn.net/kalnon/article/details/79559627
 
 -->

@@ -1,6 +1,11 @@
 
 # 数据建模  
 <!-- 
+按业务将表分成三类：配置表，流水表和状态表
+https://www.cnblogs.com/heyang78/p/12316613.html
+-->
+
+<!-- 
 如何进行数据库设计？
 https://mp.weixin.qq.com/s/YgKknhoqcUnXOjMs6YGvHg
 14 个实用的数据库设计技巧，一次性教给你！ 
