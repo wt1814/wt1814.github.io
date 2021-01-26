@@ -10,10 +10,10 @@
 
 &emsp; 数据库分布式核心内容是数据切分（Sharding），以及切分后对数据的定位、整合。数据切分就是将数据分散存储到多个数据库中，使得单一数据库中的数据量变小，通过扩充主机的数量缓解单一数据库的性能问题，从而达到提升数据库操作性能的目的。数据库拆分过程基本遵循的顺序是：1).垂直拆分（业务拆分）、2).读写分离、3).分库分表(水平拆分)。每个拆分过程都能解决业务上的一些问题，但同时也面临了一些挑战。  
 
-&emsp; [主从复制](/docs/SQL/16.replication.md)  
+&emsp; [主从复制](/docs/SQL/replication.md)  
 &emsp; &emsp; [主从复制的问题](/docs/SQL/replicationProblem.md)  
-&emsp; [分区](/docs/SQL/17.partition.md)  
-&emsp; [分库分表](/docs/SQL/18.sub.md)  
+&emsp; [分区](/docs/SQL/partition.md)  
+&emsp; [分库分表](/docs/SQL/sub.md)  
 &emsp; [数据库分布式实现](/docs/SQL/subRealize.md)  
 &emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md) 
 

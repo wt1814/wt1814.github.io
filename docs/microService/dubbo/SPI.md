@@ -134,8 +134,8 @@ public class DubboSPITest {
 ## 1.3. 扩展点特性  
 &emsp; Dubbo的SPI主要有两种：
 
-* [获得指定拓展对象](/docs/microService/Dubbo/getExtension.md)  
-* [获得自适应的拓展对象](/docs/microService/Dubbo/getAdaptiveExtension.md)  
+* [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
+* [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
 
 ### 1.3.1. 扩展点自动包装，Wrapper机制  
 <!-- 

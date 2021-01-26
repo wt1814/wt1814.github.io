@@ -1,7 +1,7 @@
 
 
 # DNS轮询  
-&emsp; 有关DNS内容参考[DNS](/docs/network/3.DNS.md)。  
+&emsp; 有关DNS内容参考[DNS](/docs/network/DNS.md)。  
 
 ## DNS轮询介绍  
 &emsp; 大多域名注册商都支持多条A记录的解析，其实这就是DNS轮询，DNS服务器将解析请求按照A记录的顺序，逐一分配到不同的IP上，这样就完成了简单的负载均衡。

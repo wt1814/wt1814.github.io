@@ -94,7 +94,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 
 * 原子性：使用[事务日志](/docs/SQL/log.md)undo log，从而达到回滚；  
 * 持久性：使用事务日志redo log，从而达到故障后恢复；  
-* 隔离性：使用[锁](/docs/SQL/15.lock.md)以及[MVCC](/docs/SQL/MVCC.md)，运用的优化思想有读写分离，读读并行，读写并行；  
+* 隔离性：使用[锁](/docs/SQL/lock.md)以及[MVCC](/docs/SQL/MVCC.md)，运用的优化思想有读写分离，读读并行，读写并行；  
 * 一致性：通过回滚，以及恢复，和在并发环境下的隔离做到一致性。  
 
 &emsp; 原子性，持久性，隔离性的目的也是为了保障数据的一致性！  
@@ -137,7 +137,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 
 <!-- 
 &emsp; 可重复读是怎么实现的？  
-&emsp; (1)<font color = "red">利用[间隙锁](/docs/SQL/15.lock.md)，防止幻读的出现，保证了可重复读</font>  
+&emsp; (1)<font color = "red">利用[间隙锁](/docs/SQL/lock.md)，防止幻读的出现，保证了可重复读</font>  
 &emsp; 幻读的问题存在是因为新增或者更新操作，这时如果进行范围查询的时候（加锁查询），会出现不一致的问题，这时使用不同的行锁已经没有办法满足要求，需要对一定范围内的数据进行加锁。  
 &emsp; (2)MVCC的快照生成时机不同  
 &emsp; 在可重复读这个隔离级别下，遇到事务中的第一个SELECT请求才创建read view，因此是无法读到其他事务提交的更改。而在读已提交这个隔离级别下，每个SELECT都会获取最新的read view，因此能读到其他事务提交的数据。 

@@ -1,12 +1,12 @@
 
 
-&emsp; [Dubbo初始化](/docs/microService/Dubbo/dubboSpring.md)  
-&emsp; [服务暴露](/docs/microService/Dubbo/export.md)  
-&emsp; [服务引用](/docs/microService/Dubbo/introduce.md)  
-&emsp; [服务调用](/docs/microService/Dubbo/call.md)  
+&emsp; [Dubbo初始化](/docs/microService/dubbo/dubboSpring.md)  
+&emsp; [服务暴露](/docs/microService/dubbo/export.md)  
+&emsp; [服务引用](/docs/microService/dubbo/introduce.md)  
+&emsp; [服务调用](/docs/microService/dubbo/call.md)  
 
 
-&emsp; [时间轮算法](/docs/microService/Dubbo/timeWheel.md)  
+&emsp; [时间轮算法](/docs/microService/dubbo/timeWheel.md)  
 
 
 <!-- 
