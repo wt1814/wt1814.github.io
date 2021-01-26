@@ -44,8 +44,8 @@ https://www.cnblogs.com/ding-dang/p/13129619.html
 
 [JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM.md)   
 [字节码文件](/docs/java/JVM/Class.md)  
-[JVM类的加载](/docs/java/JVM/JVM类的加载.md)  
-[JVM内存结构](/docs/java/JVM/JVM内存结构.md)  
+[JVM类的加载](/docs/java/JVM/classLoad.md)  
+[JVM内存结构](/docs/java/JVM/JVMMemory.md)  
 [GC垃圾回收](/docs/java/JVM/GC.md)  
 [JVM调优-基础](/docs/java/JVM/TuningBasic.md)  
 [JVM调优](/docs/java/JVM/JVM调优.md)  

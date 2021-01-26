@@ -150,7 +150,7 @@ public class BlackListServiceImpl {
 &emsp; JDK中并没有提供CopyOnWriteMap。JUC容器Map的实现有ConcurrentHashMap，线程安全的哈希表，相当于线程安全的HashMap；ConcurrentSkipListMap，线程安全的有序的哈希表，相当于线程安全的TreeMap。  
 
 ### 1.2.1. ConcurrentHashMap
-&emsp; 详见[ConcurrentHashMap详解](/docs/java/concurrent/5.ConcurrentHashMap.md)  
+&emsp; 详见[ConcurrentHashMap详解](/docs/java/concurrent/ConcurrentHashMap.md)  
 
 ### 1.2.2. ConcurrentSkipListMap
 &emsp; ConcurrentSkipListMap与TreeMap都是有序的哈希表。  

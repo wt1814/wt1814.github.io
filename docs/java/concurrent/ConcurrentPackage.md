@@ -14,11 +14,11 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzAxMjEwMzQ5MA==&action=getalbum&a
 
 &emsp; 本章描述java.util.concurrent的API接口文档，相关方法使用的详情参考：http://www.matools.com/api/java8 。JUC包包括5部分： 
  
-* [locks](/docs/java/concurrent/8.Lock.md)：显式锁相关；  
-* [atomic](/docs/java/concurrent/9.Atmoic.md)：原子变量类相关；  
-* [collections](/docs/java/concurrent/10.Collections.md)：并发容器相关；  
-* [executor](/docs/java/concurrent/3.ThreadPool.md)：线程池相关；  
-* [tools](/docs/java/concurrent/7.tools.md)：同步工具相关，如信号量、闭锁、栅栏等功能；  
+* [locks](/docs/java/concurrent/Lock.md)：显式锁相关；  
+* [atomic](/docs/java/concurrent/Atmoic.md)：原子变量类相关；  
+* [collections](/docs/java/concurrent/Collections.md)：并发容器相关；  
+* [executor](/docs/java/concurrent/ThreadPool.md)：线程池相关；  
+* [tools](/docs/java/concurrent/tools.md)：同步工具相关，如信号量、闭锁、栅栏等功能；  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-1.png)  
 

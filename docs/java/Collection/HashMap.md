@@ -697,7 +697,7 @@ do {
 
 * 使用Hashtable线程安全类；  
 * 使用Collections 包下的线程安全的容器比如Collections.synchronizedMap方法，对方法进行加同步锁；  
-* 使用并发包中的[ConcurrentHashMap](/docs/java/concurrent/5.ConcurrentHashMap.md)类；  
+* 使用并发包中的[ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)类；  
 
 ## 1.6. 如何实现一个自定义的class作为HashMap的key？  
 &emsp; ......

@@ -36,5 +36,5 @@
 &emsp; [ThreadLocal](/docs/java/concurrent/ThreadLocal.md)  
 
 ## 1.3. 线程通信  
-&emsp; [线程通信](/docs/java/concurrent/线程通信.md)   
+&emsp; [线程通信](/docs/java/concurrent/ThreadCommunication.md)   
 

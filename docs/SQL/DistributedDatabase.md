@@ -15,7 +15,7 @@
 &emsp; [分区](/docs/SQL/17.partition.md)  
 &emsp; [分库分表](/docs/SQL/18.sub.md)  
 &emsp; [数据库分布式实现](/docs/SQL/subRealize.md)  
-&emsp; &emsp; [MyCat中间件](/docs/SQL/5.MyCat中间件.md) 
+&emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md) 
 
 
 &emsp; **分表和分区的联系：**  
