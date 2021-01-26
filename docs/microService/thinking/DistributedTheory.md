@@ -51,9 +51,6 @@ https://blog.csdn.net/paincupid/article/details/80610441
 
 &emsp; 分布式系统数据的强一致性、弱一致性和最终一致性可以通过Quorum NRW算法分析。  
 
-
-
-
 ## 1.2. BASE理论  
 &emsp; BASE是Basically Available（基本可用）、Soft state（软状态）和Eventually consistent（最终一致性）三个短语的缩写。BASE理论是对CAP中一致性和可用性权衡的结果，其来源于对大规模互联网系统分布式实践的总结，是基于CAP定理逐步演化而来的。BASE和ACID是相反的，它完全不同于ACID的强一致性模型，而是通过牺牲强一致性来获得可用性，并允许数据在一段时间内是不一致的，但最终达到一致状态。  
 

@@ -121,6 +121,7 @@
         * [主从复制的问题](/docs/SQL/replicationProblem.md)  
         * [分区](/docs/SQL/17.partition.md)  
         * [分库分表](/docs/SQL/18.sub.md)  
+        * [分库分表多维度查询](/docs/SQL/subSelect.md)  
         * [数据库分布式实现](/docs/SQL/subRealize.md)  
         * [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
     * [MySQL监控](/docs/SQL/MySqlMonitor.md)  
@@ -272,9 +273,7 @@
     * [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
         * [一致性哈希](/docs/microService/thinking/consistent.md)  
     * [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
-* 分布式ID  
     * [分布式ID](/docs/microService/thinking/DistributedID.md)  
-    * [分库分表多维度查询](/docs/SQL/subSelect.md)  
 * [分布式事务](/docs/microService/thinking/DistributedTransaction.md)  
     * [DTP](/docs/microService/thinking/DistributedTransaction-1.md)    
     * [消息、事件模式](/docs/microService/thinking/DistributedTransaction-2.md)   
