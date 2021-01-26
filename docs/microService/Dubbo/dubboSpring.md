@@ -67,7 +67,7 @@ public class DubboNamespaceHandler extends NamespaceHandlerSupport {
 &emsp; 启动大致流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-43.png)   
 
-&emsp; 流程如下：  
+&emsp; **流程如下：**  
 
 1. spring容器启动
 2. ServiceBean初始化
@@ -76,7 +76,6 @@ public class DubboNamespaceHandler extends NamespaceHandlerSupport {
 5. 注册中心服务暴露export
 
 ### 1.2.2. ServiceBean执行export  
-
 &emsp; 当Spring容器处理完\<dubbo:service>标签后，会在Spring容器中生成一个ServiceBean，服务的发布也会在ServiceBean中完成。ServiceBean的定义如下：  
 
 ```java
@@ -98,7 +97,7 @@ public void afterPropertiesSet() throws Exception {
 }
 ```
  
-&emsp; ServiceBean 实现了ApplicationListener接口，实现onApplicationEvent方法，该方法在spring容器启动完成后“自动”执行
+&emsp; ServiceBean实现了ApplicationListener接口，实现onApplicationEvent方法，该方法在spring容器启动完成后“自动”执行
 
 ```java	
 public void onApplicationEvent(ApplicationEvent event) {
@@ -119,11 +118,11 @@ public void onApplicationEvent(ApplicationEvent event) {
 Dubbo-服务消费者初始化
 https://www.cnblogs.com/caoxb/p/13140244.html
 -->
-&emsp; 服务消费者初始化过程，即生成RefrenceBean的过程    
+&emsp; 服务消费者初始化过程，即生成RefrenceBean的过程。    
 &emsp; 整体执行流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-44.png)   
 
-    备注：Dubbo 默认使用 Javassist 框架为服务接口生成动态代理类，可以使用使用阿里开源 Java 应用诊断工具 Arthas 反编译代理类。  
+    备注：Dubbo默认使用Javassist框架为服务接口生成动态代理类，可以使用使用阿里开源Java应用诊断工具Arthas反编译代理类。  
 
 &emsp; dubbo官网提供的时序图  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-45.png)  
@@ -131,20 +130,20 @@ https://www.cnblogs.com/caoxb/p/13140244.html
 ### 1.3.1. RefrenceBean生成过程  
 &emsp; RefrenceBean是一个FactoryBean  
 &emsp; spring容器在启动过程中执行  
-&emsp; （1）bean定义注册  
+1. bean定义注册  
 &emsp; 客户端在启动的过程中会注册4种类型的bean定义  
 
-* com.alibaba.dubbo.config.RegistryConfig（注册中心相关）
-* com.alibaba.dubbo.config.ProviderConfig（服务提供者相关）
-* demoService
-* demo-consumer
+    * com.alibaba.dubbo.config.RegistryConfig（注册中心相关）
+    * com.alibaba.dubbo.config.ProviderConfig（服务提供者相关）
+    * demoService
+    * demo-consumer
 
-&emsp; （2）单例非懒加载bean的创建  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-46.png)  
-1. 以demoService的bean创建为例，demoService属于ReferenceBean类型的工厂bean
-2. demoService在实例化后（earlySingletonExposure为true提前暴露）准备开始进行属性注入，即将其所有暴露的method作为属性；
-3. demoService将demoService.sayHello方法当成它的属性，并始对它进行属性注入（emoService.sayHello是一个Method类型的bean）；
-4. 开始创建名为demoService.sayHello的bean，这个Bean属于MethodConfig；
+2. 单例非懒加载bean的创建  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-46.png)  
+    1. 以demoService的bean创建为例，demoService属于ReferenceBean类型的工厂bean
+    2. demoService在实例化后（earlySingletonExposure为true提前暴露）准备开始进行属性注入，即将其所有暴露的method作为属性；
+    3. demoService将demoService.sayHello方法当成它的属性，并始对它进行属性注入（emoService.sayHello是一个Method类型的bean）；
+    4. 开始创建名为demoService.sayHello的bean，这个Bean属于MethodConfig；
 
 ### 1.3.2. 代理bean生成过程  
 &emsp; 当执行context.getBean("demoService") 方法时  

@@ -20,6 +20,10 @@
 
 <!-- /TOC -->
 
+&emsp; **总结：**  
+&emsp; **<font color = "red">Dubbo服务暴露过程始于Spring容器发布刷新事件，Dubbo在接收到事件后，会立即执行服务暴露逻辑。</font>** <font color = "lime">整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装URL。第二部分是导出服务，包含导出服务到本地(JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。</font>本篇文章将会对这三个部分代码进行详细的分析。  
+&emsp; **<font color = "red">服务导出的入口方法是ServiceBean的onApplicationEvent。onApplicationEvent是一个事件响应方法，该方法会在收到Spring上下文刷新事件后执行服务导出操作。</font>**  
+
 # 1. 服务暴露  
 <!-- 
 Dubbo之服务暴露 
@@ -38,7 +42,7 @@ https://mp.weixin.qq.com/s/TK9ZU3Vm4IoTrrwmbvV-uQ
 * Protocol  
 &emsp; 服务协议。这是rpc模块中最核心的一个类，它定义了rpc的最主要的两个行为即：1、provider暴露远程服务，即将调用信息发布到服务器上的某个URL上去，可以供消费者连接调用，一般是将某个service类的全部方法整体发布到服务器上。2、consumer引用远程服务，即根据service的服务类和provider发布服务的URL转化为一个Invoker对象，消费者可以通过该对象调用provider发布的远程服务。这其实概括了rpc的最为核心的职责，提供了多级抽象的实现、包装器实现等。  
 * AbstractProtocol  
-&emsp; Protocol的顶层抽象实现类，它定义了这些属性：1、exporterMap表示发布过的serviceKey和Exporter（远程服务发 布的引用）的映射表；2、invokers是一个Invoker对象的集合，表示层级暴露过远程服务的服务执行体对象集合。还提供了一个通用的服务发布销毁方法destroy，该方法是一个通用方法，它清空了两个集合属性，调用了所有invoker的destroy方法，也调用所有exporter对象的unexport方法。
+&emsp; Protocol的顶层抽象实现类，它定义了这些属性：1、exporterMap表示发布过的serviceKey和Exporter（远程服务发布的引用）的映射表；2、invokers是一个Invoker对象的集合，表示层级暴露过远程服务的服务执行体对象集合。还提供了一个通用的服务发布销毁方法destroy，该方法是一个通用方法，它清空了两个集合属性，调用了所有invoker的destroy方法，也调用所有exporter对象的unexport方法。
 * AbstractProxyProtocol  
 &emsp; 继承自AbstractProtoco的一个抽象代理协议类。它聚合了代理工厂ProxyFactory对象来实现服务的暴露和引用。  
 * ProtocolFilterWrapper  
@@ -46,7 +50,7 @@ https://mp.weixin.qq.com/s/TK9ZU3Vm4IoTrrwmbvV-uQ
 * ProtocolListenerWrapper  
 &emsp; 一个支持监听器特性的Protocal的包装器。支持两种监听器的功能扩展，分别是：ExporterListener是远程服务发布监听器，可以监听服务发布和取消发布两个事件点；InvokerListener是服务消费者引用调用器的监听器，可以监听引用和销毁两个事件方法。支持可扩展的事件监听模型，目前只提供了一些适配器InvokerListenerAdapter、ExporterListenerAdapter以及简单的过期服务调用监听器DeprecatedInvokerListener。开发者可自行扩展自己的监听器。  
 * ProxyFactory  
-&emsp; dubbo的代理工厂。定义了两个接口分别是：getProxy根据invoker目标接口的代理对象，一般是消费者获得代理对  象触发远程调用；getInvoker方法将代理对象proxy、接口类type和远程服务的URL获取执行对象Invoker，往往是提供者获得目标执行对象执行目标实现调用。AbstractProxyFactory是其抽象实现，提供了getProxy的模版方法实现，使得可以支持多接口的映射。dubbo最终内置了两种动态代理的实现，分别是jdkproxy和javassist。默认的实现 使用javassist。  
+&emsp; dubbo的代理工厂。定义了两个接口分别是：getProxy根据invoker目标接口的代理对象，一般是消费者获得代理对象触发远程调用；getInvoker方法将代理对象proxy、接口类type和远程服务的URL获取执行对象Invoker，往往是提供者获得目标执行对象执行目标实现调用。AbstractProxyFactory是其抽象实现，提供了getProxy的模版方法实现，使得可以支持多接口的映射。dubbo最终内置了两种动态代理的实现，分别是jdkproxy和javassist。默认的实现使用javassist。  
 * Invoker  
 &emsp; 该接口是服务的执行体。它有获取服务发布的URL，服务的接口类等关键属性的行为；还有核心的服务执行方法invoke，执行该方法后返回执行结果Result，而传递的参数是调用信息Invocation。该接口有大量的抽象和具体实现类。AbstractProxyInvoker是基于代理的执行器抽象实现，AbstractInvoker是通用的抽象实现。  
 
@@ -68,12 +72,12 @@ https://mp.weixin.qq.com/s/TK9ZU3Vm4IoTrrwmbvV-uQ
 
 &emsp; **服务暴露流程**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-40.png)  
-&emsp; 首先ServiceConfig类拿到对外提供服务的实际类ref(如：HelloWorldImpl),然后通过ProxyFactory类的getInvoker方法使用ref生成一个AbstractProxyInvoker实例，到这一步就完成具体服务到Invoker的转化。接下来就是Invoker转换  到Exporter的过程。  
+&emsp; 首先ServiceConfig类拿到对外提供服务的实际类ref(如：HelloWorldImpl)，然后通过ProxyFactory类的getInvoker方法使用ref生成一个AbstractProxyInvoker实例，到这一步就完成具体服务到Invoker的转化。接下来就是Invoker转换到Exporter的过程。  
 &emsp; Dubbo处理服务暴露的关键就在Invoker转换到Exporter的过程(如上图中的红色部分)。  
 
 ## 1.3. 服务暴露总体流程
-&emsp; **<font color = "red">Dubbo 服务暴露过程始于 Spring 容器发布刷新事件，Dubbo 在接收到事件后，会立即执行服务暴露逻辑。（[服务提供者初始化](/docs/microService/Dubbo/dubboSpring.md)）</font>** <font color = "lime">整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装 URL。第二部分是导出服务，包含导出服务到本地 (JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。</font>本篇文章将会对这三个部分代码进行详细的分析。  
-&emsp; **<font color = "red">服务导出的入口方法是 ServiceBean 的 onApplicationEvent。onApplicationEvent 是一个事件响应方法，该方法会在收到 Spring 上下文刷新事件后执行服务导出操作。</font>** 方法代码如下：  
+&emsp; **<font color = "red">Dubbo服务暴露过程始于Spring容器发布刷新事件，Dubbo在接收到事件后，会立即执行服务暴露逻辑。</font>** <font color = "lime">整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装URL。第二部分是导出服务，包含导出服务到本地(JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。</font>本篇文章将会对这三个部分代码进行详细的分析。  
+&emsp; **<font color = "red">服务导出的入口方法是ServiceBean的onApplicationEvent。onApplicationEvent是一个事件响应方法，该方法会在收到Spring上下文刷新事件后执行服务导出操作。</font>** 方法代码如下：  
 
 ```java
 public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean, DisposableBean, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, BeanNameAware {
@@ -88,7 +92,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
     
 }
 ```
-&emsp; 这个方法首先会根据条件决定是否导出服务，比如有些服务设置了延时导出，那么此时就不应该在此处导出。还有一些服务已经被导出了，或者当前服务被取消导出了，此时也不能再次导出相关服务。注意这里的isDelay方法，这个方法字面意思是“是否延迟导出服务”，返回 true 表示延迟导出，false 表示不延迟导出。但是该方法真实意思却并非如此，当方法返回 true 时，表示无需延迟导出。返回 false 时，表示需要延迟导出。与字面意思恰恰相反，这个需要大家注意一下。下面来看一下这个方法的逻辑。  
+&emsp; 这个方法首先会根据条件决定是否导出服务，比如有些服务设置了延时导出，那么此时就不应该在此处导出。还有一些服务已经被导出了，或者当前服务被取消导出了，此时也不能再次导出相关服务。注意这里的isDelay方法，这个方法字面意思是“是否延迟导出服务”，返回true表示延迟导出，false表示不延迟导出。但是该方法真实意思却并非如此，当方法返回true时，表示无需延迟导出。返回false时，表示需要延迟导出。与字面意思恰恰相反，这个需要大家注意一下。下面来看一下这个方法的逻辑。  
 
 ```java
 // -☆- ServiceBean
@@ -105,18 +109,18 @@ private boolean isDelay() {
 }
 ```
 &emsp; 暂时忽略supportedApplicationListener这个条件，当delay为空，或者等于-1时，该方法返回true，而不是false。  
-&emsp; 现在解释一下supportedApplicationListener变量含义，该变量用于表示当前的 Spring容器是否支持ApplicationListener，这个值初始为false。在Spring容器将自己设置到ServiceBean中时，ServiceBean的setApplicationContext方法会检测Spring容器是否支持ApplicationListener。若支持，则将supportedApplicationListener置为true。ServiceBean是Dubbo与Spring框架进行整合的关键，可以看做是两个框架之间的桥梁。具有同样作用的类还有ReferenceBean。  
+&emsp; 现在解释一下supportedApplicationListener变量含义，该变量用于表示当前的Spring容器是否支持ApplicationListener，这个值初始为false。在Spring容器将自己设置到ServiceBean中时，ServiceBean的setApplicationContext方法会检测Spring容器是否支持ApplicationListener。若支持，则将supportedApplicationListener置为true。ServiceBean是Dubbo与Spring框架进行整合的关键，可以看做是两个框架之间的桥梁。具有同样作用的类还有ReferenceBean。  
 &emsp; 现在知道了Dubbo服务导出过程的起点，接下来对服务导出的前置逻辑进行分析。  
 
 ## 1.4. 前置工作  
-&emsp; 前置工作主要包含两个部分，分别是配置检查，以及 URL 装配。在导出服务之前，Dubbo 需要检查用户的配置是否合理，或者为用户补充缺省配置。配置检查完成后，接下来需要根据这些配置组装URL。**在Dubbo中，URL的作用十分重要。Dubbo使用URL作为配置载体，所有的拓展点都是通过URL获取配置。这一点，官方文档中有所说明。**  
+&emsp; 前置工作主要包含两个部分，分别是配置检查，以及URL装配。在导出服务之前，Dubbo需要检查用户的配置是否合理，或者为用户补充缺省配置。配置检查完成后，接下来需要根据这些配置组装URL。**在Dubbo中，URL的作用十分重要。Dubbo使用URL作为配置载体，所有的拓展点都是通过URL获取配置。这一点，官方文档中有所说明。**  
 
-    采用URL作为配置信息的统一格式，所有扩展点都通过传递 URL 携带配置信息。
+    采用URL作为配置信息的统一格式，所有扩展点都通过传递URL携带配置信息。
 
-&emsp; 接下来，先来分析配置检查部分的源码，随后再来分析 URL 组装部分的源码。  
+&emsp; 接下来，先来分析配置检查部分的源码，随后再来分析URL组装部分的源码。  
 
 ### 1.4.1. 检查配置
-&emsp; 本节接着前面的源码向下分析，前面说过 onApplicationEvent 方法在经过一些判断后，会决定是否调用 export 方法导出服务。那么下面从 export 方法开始进行分析，如下：  
+&emsp; 本节接着前面的源码向下分析，前面说过onApplicationEvent方法在经过一些判断后，会决定是否调用export方法导出服务。那么下面从export方法开始进行分析，如下：  
 
 ```java
 public synchronized void export() {
@@ -149,12 +153,12 @@ public synchronized void export() {
     }
 }
 ```
-&emsp; export 方法对两项配置进行了检查，并根据配置执行相应的动作。首先是 export 配置，这个配置决定了是否导出服务。有时候只是想本地启动服务进行一些调试工作，并不希望把本地启动的服务暴露出去给别人调用。此时，可通过配置 export 禁止服务导出，比如：  
+&emsp; export 方法对两项配置进行了检查，并根据配置执行相应的动作。首先是export配置，这个配置决定了是否导出服务。有时候只是想本地启动服务进行一些调试工作，并不希望把本地启动的服务暴露出去给别人调用。此时，可通过配置export禁止服务导出，比如：  
 
 ```xml
 <dubbo:provider export="false" />
 ```
-&emsp; delay 配置顾名思义，用于延迟导出服务，这个就不分析了。下面，继续分析源码，这次要分析的是 doExport 方法。  
+&emsp; delay配置顾名思义，用于延迟导出服务，这个就不分析了。下面，继续分析源码，这次要分析的是doExport方法。  
 
 ```java
 protected synchronized void doExport() {
@@ -273,7 +277,7 @@ protected synchronized void doExport() {
 4. 检测本地存根配置，并进行相应的处理
 5. 对 ApplicationConfig、RegistryConfig 等配置类进行检测，为空则尝试创建，若无法创建则抛出异常
 
-&emsp; 配置检查并非本文重点，因此这里不打算对doExport方法所调用的方法进行分析（doExportUrls 方法除外）。在这些方法中，除了appendProperties方法稍微复杂一些，其他方法逻辑不是很复杂。因此，大家可自行分析。  
+&emsp; 配置检查并非本文重点，因此这里不打算对doExport方法所调用的方法进行分析(doExportUrls方法除外)。在这些方法中，除了appendProperties方法稍微复杂一些，其他方法逻辑不是很复杂。因此，大家可自行分析。  
 
 ### 1.4.2. 多协议多注册中心导出服务
 &emsp; Dubbo允许使用不同的协议导出服务，也允许向多个注册中心注册服务。Dubbo在 doExportUrls方法中对多协议，多注册中心进行了支持。相关代码如下：  
