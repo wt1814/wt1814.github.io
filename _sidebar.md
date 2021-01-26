@@ -269,7 +269,6 @@
     * [Zookeeper使用](/docs/microService/Dubbo/ZookeeperUse.md)  
 * 分布式理论  
     * [分布式和集群](/docs/system/distributed.md)  
-    * [分布式和集中式](/docs/system/deploy.md)  
     * [分布式算法](/docs/microService/thinking/分布式算法.md)  
         * [一致性哈希](/docs/microService/thinking/分布式算法-consistent.md)  
     * [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
