@@ -48,10 +48,10 @@ https://www.cnblogs.com/aoshicangqiong/p/12173550.html
 &emsp; 分布式锁实现的三个核心要素：1.加锁；2.解锁；3.锁超时。  
 
 ### 1.2.1. 基于Redis的分布式锁  
-&emsp; [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)   
+&emsp; [Redis分布式锁](/docs/microService/thinking/redisLock.md)   
 
 ### 1.2.2. 基于ZooKeeper的分布式锁  
-&emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
+&emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
 
 ### 1.2.3. 基于mysql实现分布式锁  
 <!-- 

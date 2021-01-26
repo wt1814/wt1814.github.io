@@ -59,9 +59,9 @@ https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487531&idx=1&sn=b3fbc4
 * TCC模式-强一致性
 * 事务状态表
 
-[DTP](/docs/microService/thinking/分布式事务-1.md)    
-[消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
-[TCC模式、事务状态表](/docs/microService/thinking/分布式事务-3.md)   
+[DTP](/docs/microService/thinking/DistributedTransaction-1.md)    
+[消息、事件模式](/docs/microService/thinking/DistributedTransaction-2.md)   
+[TCC模式、事务状态表](/docs/microService/thinking/DistributedTransaction-3.md)   
 
 ---
 ## 1.3. 分布式事务具体实现  

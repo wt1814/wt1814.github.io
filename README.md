@@ -175,6 +175,7 @@
 &emsp; &emsp; [主从复制的问题](/docs/SQL/replicationProblem.md)  
 &emsp; [分区](/docs/SQL/17.partition.md)  
 &emsp; [分库分表](/docs/SQL/18.sub.md)  
+&emsp; [分库分表多维度查询](/docs/SQL/subSelect.md)  
 &emsp; [数据库分布式实现](/docs/SQL/subRealize.md)  
 &emsp; &emsp; [MyCat中间件](/docs/SQL/5.MyCat中间件.md)  
 [MySQL监控](/docs/SQL/MySqlMonitor.md)  
@@ -283,7 +284,7 @@
 [kafka生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
 [消息分区](/docs/microService/mq/kafka/topic.md)  
 [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
-[kafka特性](/docs/microService/mq/kafka/kafka特性.md)  
+[kafka特性](/docs/microService/mq/kafka/kafkaCharacteristic.md)  
 &emsp; [kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
 &emsp; [kafka如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
 &emsp; [kafka幂等和事务](/docs/microService/mq/kafka/kafkaTraction.md)  
@@ -350,31 +351,30 @@
 
 ### 分布式理论  
 [分布式和集群](/docs/system/distributed.md)   
-[分布式算法](/docs/microService/thinking/分布式算法.md)  
+[分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
 &emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
 [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
 
 ### 分布式ID
-[分布式ID](/docs/microService/thinking/分布式ID.md)  
-[分库分表多维度查询](/docs/microService/thinking/分库分表多维度查询.md)  
+[分布式ID](/docs/microService/thinking/DistributedID.md)
 
 ### 分布式事务
-[分布式事务](/docs/microService/thinking/分布式事务.md)  
-&emsp; [DTP](/docs/microService/thinking/分布式事务-1.md)    
-&emsp; [消息、事件模式](/docs/microService/thinking/分布式事务-2.md)   
-&emsp; [TCC模式、事务状态表](/docs/microService/thinking/分布式事务-3.md)   
-&emsp; [分布式事务的选型](/docs/microService/thinking/分布式事务的选型.md)  
+[分布式事务](/docs/microService/thinking/DistributedTransaction.md)  
+&emsp; [DTP](/docs/microService/thinking/DistributedTransaction-1.md)    
+&emsp; [消息、事件模式](/docs/microService/thinking/DistributedTransaction-2.md)   
+&emsp; [TCC模式、事务状态表](/docs/microService/thinking/DistributedTransaction-3.md)   
+&emsp; [分布式事务的选型](/docs/microService/thinking/DistributedTransactionSelection.md)  
 
 ### 分布式锁
-[分布式锁](/docs/microService/thinking/分布式锁.md)  
-&emsp; [Redis分布式锁](/docs/microService/thinking/redis分布式锁.md)  
-&emsp; [ZK分布式锁](/docs/microService/thinking/ZK分布式锁.md)  
+[分布式锁](/docs/microService/thinking/DistributedLock.md)  
+&emsp; [Redis分布式锁](/docs/microService/thinking/redisLock.md)  
+&emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
 &emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
 
 ### 限流降级
-[分布式限流](/docs/microService/thinking/分布式限流.md)   
+[分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
 &emsp; [Sentinel](/docs/microService/thinking/Sentinel.md)  
-[服务降级](/docs/microService/thinking/服务降级.md)  
+[服务降级](/docs/microService/thinking/Demotion.md)  
 
 ### 分布式调度
 [延迟队列](/docs/frame/delayQueue.md)  
