@@ -21,17 +21,18 @@ http://dubbo.apache.org/zh/docs/v2.7/dev/source/directory/
 -->
 
 ## 1.1. 简介
-&emsp; 先来了解一下服务目录是什么。服务目录中存储了一些和服务提供者有关的信息，通过服务目录，服务消费者可获取到服务提供者的信息，比如 ip、端口、服务协议等。通过这些信息，服务消费者就可通过 Netty 等客户端进行远程调用。在一个服务集群中，服务提供者数量并不是一成不变的，如果集群中新增了一台机器，相应地在服务目录中就要新增一条服务提供者记录。或者，如果服务提供者的配置修改了，服务目录中的记录也要做相应的更新。如果这样说，服务目录和注册中心的功能不就雷同了吗？确实如此，这里这么说是为了方便大家理解。实际上服务目录在获取注册中心的服务配置信息后，会为每条配置信息生成一个 Invoker 对象，并把这个 Invoker 对象存储起来，这个 Invoker 才是服务目录最终持有的对象。Invoker 有什么用呢？看名字就知道了，这是一个具有远程调用功能的对象。讲到这大家应该知道了什么是服务目录了，它可以看做是 Invoker 集合，且这个集合中的元素会随注册中心的变化而进行动态调整。  
+&emsp; 先来了解一下服务目录是什么。**服务目录中存储了一些和服务提供者有关的信息，通过服务目录，服务消费者可获取到服务提供者的信息，比如 ip、端口、服务协议等。** 通过这些信息，服务消费者就可通过 Netty 等客户端进行远程调用。在一个服务集群中，服务提供者数量并不是一成不变的，如果集群中新增了一台机器，相应地在服务目录中就要新增一条服务提供者记录。或者，如果服务提供者的配置修改了，服务目录中的记录也要做相应的更新。  
+&emsp; 如果这样说，服务目录和注册中心的功能不就雷同了吗？确实如此，这里这么说是为了方便大家理解。 **实际上服务目录在获取注册中心的服务配置信息后，会为每条配置信息生成一个 Invoker 对象，并把这个 Invoker 对象存储起来，这个 Invoker 才是服务目录最终持有的对象。** Invoker 有什么用呢？看名字就知道了，这是一个具有远程调用功能的对象。讲到这大家应该知道了什么是服务目录了，它可以看做是 Invoker 集合，且这个集合中的元素会随注册中心的变化而进行动态调整。  
 
-&emsp; 关于服务目录这里就先介绍这些，大家先有个大致印象。接下来我们通过继承体系图来了解一下服务目录的家族成员都有哪些。  
+&emsp; 关于服务目录这里就先介绍这些，大家先有个大致印象。接下来通过继承体系图来了解一下服务目录的家族成员都有哪些。  
 
 ## 1.2. 继承体系
-&emsp; 服务目录目前内置的实现有两个，分别为 StaticDirectory 和 RegistryDirectory，它们均是 AbstractDirectory 的子类。AbstractDirectory 实现了 Directory 接口，这个接口包含了一个重要的方法定义，即 list(Invocation)，用于列举 Invoker。下面我们来看一下他们的继承体系图。  
+&emsp; 服务目录目前内置的实现有两个，分别为 StaticDirectory 和 RegistryDirectory，它们均是 AbstractDirectory 的子类。AbstractDirectory 实现了 Directory 接口，这个接口包含了一个重要的方法定义，即 list(Invocation)，用于列举 Invoker。下面来看一下它们的继承体系图。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-55.png)   
 &emsp; 如上，Directory 继承自 Node 接口，Node 这个接口继承者比较多，像 Registry、Monitor、Invoker 等均继承了这个接口。这个接口包含了一个获取配置信息的方法 getUrl，实现该接口的类可以向外提供配置信息。另外，大家注意看 RegistryDirectory 实现了 NotifyListener 接口，当注册中心节点信息发生变化后，RegistryDirectory 可以通过此接口方法得到变更信息，并根据变更信息动态调整内部 Invoker 列表。  
 
 ## 1.3. 源码分析
-&emsp; 本章将分析 AbstractDirectory 和它两个子类的源码。AbstractDirectory 封装了 Invoker 列举流程，具体的列举逻辑则由子类实现，这是典型的模板模式。所以，接下来我们先来看一下 AbstractDirectory 的源码。  
+&emsp; 本章将分析 AbstractDirectory 和它两个子类的源码。AbstractDirectory 封装了 Invoker 列举流程，具体的列举逻辑则由子类实现，这是典型的模板模式。所以，接下来先来看一下 AbstractDirectory 的源码。  
 
 ```java
 public List<Invoker<T>> list(Invocation invocation) throws RpcException {
@@ -74,7 +75,7 @@ protected abstract List<Invoker<T>> doList(Invocation invocation) throws RpcExce
 &emsp; 关于 AbstractDirectory 就分析这么多，下面开始分析子类的源码。  
 
 ### 1.3.1. StaticDirectory
-&emsp; StaticDirectory 即静态服务目录，顾名思义，它内部存放的 Invoker 是不会变动的。所以，理论上它和不可变 List 的功能很相似。下面我们来看一下这个类的实现。  
+&emsp; StaticDirectory 即静态服务目录，顾名思义，它内部存放的 Invoker 是不会变动的。所以，理论上它和不可变 List 的功能很相似。下面来看一下这个类的实现。  
 
 ```java
 public class StaticDirectory<T> extends AbstractDirectory<T> {
@@ -179,7 +180,7 @@ public List<Invoker<T>> doList(Invocation invocation) {
 &emsp; 以上代码进行多次尝试，以期从 localMethodInvokerMap 中获取到 Invoker 列表。一般情况下，普通的调用可通过方法名获取到对应的 Invoker 列表，泛化调用可通过 ***** 获取到 Invoker 列表。localMethodInvokerMap 源自 RegistryDirectory 类的成员变量 methodInvokerMap。doList 方法可以看做是对 methodInvokerMap 变量的读操作，至于对 methodInvokerMap 变量的写操作，下一节进行分析。  
 
 #### 1.3.2.2. 接收服务变更通知
-&emsp; RegistryDirectory 是一个动态服务目录，会随注册中心配置的变化进行动态调整。因此 RegistryDirectory 实现了 NotifyListener 接口，通过这个接口获取注册中心变更通知。下面我们来看一下具体的逻辑。  
+&emsp; RegistryDirectory 是一个动态服务目录，会随注册中心配置的变化进行动态调整。因此 RegistryDirectory 实现了 NotifyListener 接口，通过这个接口获取注册中心变更通知。下面来看一下具体的逻辑。  
 
 ```java
 public synchronized void notify(List<URL> urls) {
@@ -232,7 +233,7 @@ public synchronized void notify(List<URL> urls) {
     refreshInvoker(invokerUrls);
 }
 ```
-&emsp; 如上，notify 方法首先是根据 url 的 category 参数对 url 进行分门别类存储，然后通过 toRouters 和 toConfigurators 将 url 列表转成 Router 和 Configurator 列表。最后调用 refreshInvoker 方法刷新 Invoker 列表。这里的 toRouters 和 toConfigurators 方法逻辑不复杂，大家自行分析。接下来，我们把重点放在 refreshInvoker 方法上。  
+&emsp; 如上，notify 方法首先是根据 url 的 category 参数对 url 进行分门别类存储，然后通过 toRouters 和 toConfigurators 将 url 列表转成 Router 和 Configurator 列表。最后调用 refreshInvoker 方法刷新 Invoker 列表。这里的 toRouters 和 toConfigurators 方法逻辑不复杂，大家自行分析。接下来，把重点放在 refreshInvoker 方法上。  
 
 ### 1.3.3. 刷新 Invoker 列表
 &emsp; refreshInvoker 方法是保证 RegistryDirectory 随注册中心变化而变化的关键所在。这一块逻辑比较多，接下来一一进行分析。  
@@ -426,7 +427,7 @@ private Map<String, List<Invoker<T>>> toMethodInvokers(Map<String, Invoker<T>> i
     return Collections.unmodifiableMap(newMethodInvokerMap);
 }
 ```
-&emsp; 上面方法主要做了三件事情， 第一是对入参进行遍历，然后从 Invoker 的 url 成员变量中获取 methods 参数，并切分成数组。随后以方法名为键，Invoker 列表为值，将映射关系存储到 newMethodInvokerMap 中。第二是分别基于类和方法对 Invoker 列表进行路由操作。第三是对 Invoker 列表进行排序，并转成不可变列表。关于 toMethodInvokers 方法就先分析到这，我们继续向下分析，这次要分析的多组服务的合并逻辑。  
+&emsp; 上面方法主要做了三件事情， 第一是对入参进行遍历，然后从 Invoker 的 url 成员变量中获取 methods 参数，并切分成数组。随后以方法名为键，Invoker 列表为值，将映射关系存储到 newMethodInvokerMap 中。第二是分别基于类和方法对 Invoker 列表进行路由操作。第三是对 Invoker 列表进行排序，并转成不可变列表。关于 toMethodInvokers 方法就先分析到这，继续向下分析，这次要分析的多组服务的合并逻辑。  
 
 ```java
 private Map<String, List<Invoker<T>>> toMergeMethodInvokerMap(Map<String, List<Invoker<T>>> methodMap) {
@@ -476,7 +477,7 @@ private Map<String, List<Invoker<T>>> toMergeMethodInvokerMap(Map<String, List<I
 ```
 &emsp; 上面方法首先是生成 group 到 Invoker 列表的映射关系表，若关系表中的映射关系数量大于1，表示有多组服务。此时通过集群类合并每组 Invoker，并将合并结果存储到 groupInvokers 中。之后将方法名与 groupInvokers 存到到 result 中，并返回，整个逻辑结束。  
 
-&emsp; 接下来我们再来看一下 Invoker 列表刷新逻辑的最后一个动作 — 删除无用 Invoker。如下：  
+&emsp; 接下来再来看一下 Invoker 列表刷新逻辑的最后一个动作 — 删除无用 Invoker。如下：  
 
 ```java
 private void destroyUnusedInvokers(Map<String, Invoker<T>> oldUrlInvokerMap, Map<String, Invoker<T>> newUrlInvokerMap) {

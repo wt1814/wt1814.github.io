@@ -16,7 +16,7 @@ http://dubbo.apache.org/zh/docs/v2.7/dev/source/router/#1-%E7%AE%80%E4%BB%8B
 -->
 
 ## 1.1. 简介
-&emsp; 上一篇文章分析了集群容错的第一部分 — 服务目录 Directory。服务目录在刷新 Invoker 列表的过程中，会通过 Router 进行服务路由，筛选出符合路由规则的服务提供者。在详细分析服务路由的源码之前，先来介绍一下服务路由是什么。服务路由包含一条路由规则，路由规则决定了服务消费者的调用目标，即规定了服务消费者可调用哪些服务提供者。Dubbo 目前提供了三种服务路由实现，分别为条件路由 ConditionRouter、脚本路由 ScriptRouter 和标签路由 TagRouter。其中条件路由是我们最常使用的，标签路由是一个新的实现，暂时还未发布，该实现预计会在 2.7.x 版本中发布。本篇文章将分析条件路由相关源码，脚本路由和标签路由这里就不分析了。  
+&emsp; 上一篇文章分析了集群容错的第一部分 — 服务目录 Directory。**服务目录在刷新 Invoker 列表的过程中，会通过 Router 进行服务路由，筛选出符合路由规则的服务提供者。** 在详细分析服务路由的源码之前，先来介绍一下服务路由是什么。服务路由包含一条路由规则，路由规则决定了服务消费者的调用目标，即规定了服务消费者可调用哪些服务提供者。Dubbo 目前提供了三种服务路由实现，分别为条件路由 ConditionRouter、脚本路由 ScriptRouter 和标签路由 TagRouter。其中条件路由是最常使用的，标签路由是一个新的实现，暂时还未发布，该实现预计会在 2.7.x 版本中发布。本篇文章将分析条件路由相关源码，脚本路由和标签路由这里就不分析了。  
 
 ## 1.2. 源码分析
 &emsp; 条件路由规则由两个条件组成，分别用于对服务消费者和提供者进行匹配。比如有这样一条规则：  
@@ -28,7 +28,7 @@ http://dubbo.apache.org/zh/docs/v2.7/dev/source/router/#1-%E7%AE%80%E4%BB%8B
     [服务消费者匹配条件] => [服务提供者匹配条件]
 
 &emsp; 如果服务消费者匹配条件为空，表示不对服务消费者进行限制。如果服务提供者匹配条件为空，表示对某些服务消费者禁用服务。官方文档中对条件路由进行了比较详细的介绍，大家可以参考下，这里就不过多说明了。  
-&emsp; 条件路由实现类 ConditionRouter 在进行工作前，需要先对用户配置的路由规则进行解析，得到一系列的条件。然后再根据这些条件对服务进行路由。本章将分两节进行说明，2.1节介绍表达式解析过程。2.2 节介绍服务路由的过程。下面，我们先从表达式解析过程看起。  
+&emsp; 条件路由实现类 ConditionRouter 在进行工作前，需要先对用户配置的路由规则进行解析，得到一系列的条件。然后再根据这些条件对服务进行路由。本章将分两节进行说明，2.1节介绍表达式解析过程。2.2 节介绍服务路由的过程。下面，先从表达式解析过程看起。  
 
 ### 1.2.1. 表达式解析
 &emsp; 条件路由规则是一条字符串，对于 Dubbo 来说，它并不能直接理解字符串的意思，需要将其解析成内部格式才行。条件表达式的解析过程始于 ConditionRouter 的构造方法，下面一起看一下：  
@@ -67,7 +67,7 @@ public ConditionRouter(URL url) {
     }
 }
 ```
-&emsp; 如上，ConditionRouter 构造方法先是对路由规则做预处理，然后调用 parseRule 方法分别对服务提供者和消费者规则进行解析，最后将解析结果赋值给 whenCondition 和 thenCondition 成员变量。ConditionRouter 构造方法不是很复杂，这里就不多说了。下面我们把重点放在 parseRule 方法上，在详细介绍这个方法之前，我们先来看一个内部类。  
+&emsp; 如上，ConditionRouter 构造方法先是对路由规则做预处理，然后调用 parseRule 方法分别对服务提供者和消费者规则进行解析，最后将解析结果赋值给 whenCondition 和 thenCondition 成员变量。ConditionRouter 构造方法不是很复杂，这里就不多说了。下面把重点放在 parseRule 方法上，在详细介绍这个方法之前，先来看一个内部类。  
 
 ```java
 private static final class MatchPair {
@@ -258,7 +258,7 @@ private boolean matchThen(URL url, URL param) {
         && matchCondition(thenCondition, url, param, null);  // 进行条件匹配
 }
 ```
-&emsp; 这两个方法长的有点像，不过逻辑上还是有差别的，大家注意看。这两个方法均调用了 matchCondition 方法，但它们所传入的参数是不同的。这个需要特别注意一下，不然后面的逻辑不好弄懂。下面我们对这几个参数进行溯源。matchWhen 方法向 matchCondition 方法传入的参数为 [whenCondition, url, null, invocation]，第一个参数 whenCondition 为服务消费者匹配条件，这个前面分析过。第二个参数 url 源自 route 方法的参数列表，该参数由外部类调用 route 方法时传入。比如：  
+&emsp; 这两个方法长的有点像，不过逻辑上还是有差别的，大家注意看。这两个方法均调用了 matchCondition 方法，但它们所传入的参数是不同的。这个需要特别注意一下，不然后面的逻辑不好弄懂。下面对这几个参数进行溯源。matchWhen 方法向 matchCondition 方法传入的参数为 [whenCondition, url, null, invocation]，第一个参数 whenCondition 为服务消费者匹配条件，这个前面分析过。第二个参数 url 源自 route 方法的参数列表，该参数由外部类调用 route 方法时传入。比如：  
 
 ```java
 private List<Invoker<T>> route(List<Invoker<T>> invokers, String method) {
@@ -314,7 +314,7 @@ private boolean matchCondition(Map<String, MatchPair> condition, URL url, URL pa
             }
         } else {
             // sampleValue 为空，表明服务提供者或消费者 url 中不包含相关字段。此时如果 
-            // MatchPair 的 matches 不为空，表示匹配失败，返回 false。比如我们有这样
+            // MatchPair 的 matches 不为空，表示匹配失败，返回 false。比如有这样
             // 一条匹配条件 loadbalance = random，假设 url 中并不包含 loadbalance 参数，
             // 此时 sampleValue = null。既然路由规则里限制了 loadbalance 必须为 random，
             // 但 sampleValue = null，明显不符合规则，因此返回 false
@@ -393,7 +393,7 @@ private boolean isMatch(String value, URL param) {
 |情况三	|matches 非空，mismatches 非空	|优先使用 mismatches 集合元素对入参进行匹配，只要任一元素与入参匹配成功，就立即返回 false，结束方法逻辑。否则再使用 matches 中的集合元素进行匹配，只要有任意一个元素匹配成功，即可返回 true。若全部失配，则返回 false|
 |情况四	|matches 为空，mismatches 为空|	直接返回 false|
 
-&emsp; isMatch 方法是通过 UrlUtils 的 isMatchGlobPattern 方法进行匹配，因此下面我们再来看看 isMatchGlobPattern 方法的逻辑。  
+&emsp; isMatch 方法是通过 UrlUtils 的 isMatchGlobPattern 方法进行匹配，因此下面再来看看 isMatchGlobPattern 方法的逻辑。  
 
 ```java
 public static boolean isMatchGlobPattern(String pattern, String value, URL param) {
