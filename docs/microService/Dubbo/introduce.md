@@ -15,7 +15,7 @@
 Dubbo之服务消费原理 
 https://mp.weixin.qq.com/s/9ibX-46VfTnBLWcSSLpXQg
 -->
-&emsp; 在Dubbo中，可以通过两种方式引用远程服务。第一种是使用服务直连的方式引用服务，第二种方式是基于注册中心进行引用。服务直连的方式仅适合在调试或测试服务的场景下使用，不适合在线上环境使用。因此，本文将重点分析通过注册中心引用服务的过程。从注册中心中获取服务配置只是服务引用过程中的一环，除此之外，服务消费者还需要经历 Invoker 创建、代理类创建等步骤。这些步骤，将在后续章节中一一进行分析。  
+&emsp; 在Dubbo中，可以通过两种方式引用远程服务。第一种是使用服务直连的方式引用服务，第二种方式是基于注册中心进行引用。服务直连的方式仅适合在调试或测试服务的场景下使用，不适合在线上环境使用。因此，本文将重点分析通过注册中心引用服务的过程。从注册中心中获取服务配置只是服务引用过程中的一环，除此之外，服务消费者还需要经历Invoker创建、代理类创建等步骤。  
 
 &emsp; **服务引用流程**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-41.png)  
@@ -27,7 +27,6 @@ https://mp.weixin.qq.com/s/9ibX-46VfTnBLWcSSLpXQg
 &emsp; 以上就是服务引用的大致原理，下面深入到代码中，详细分析服务引用细节。  
 
 ## 1.2. 源码分析  
-&emsp; [服务消费者初始化流程](/docs/microService/Dubbo/dubboSpring.md)  
 &emsp; 服务引用的入口方法为 ReferenceBean 的 getObject 方法，该方法定义在 Spring 的 FactoryBean 接口中，ReferenceBean 实现了这个方法。实现代码如下：  
 
 ```java
@@ -602,7 +601,7 @@ private <T> Invoker<T> doRefer(Cluster cluster, Registry registry, Class<T> type
 &emsp; 如上，doRefer 方法创建一个 RegistryDirectory 实例，然后生成服务者消费者链接，并向注册中心进行注册。注册完毕后，紧接着订阅 providers、configurators、routers 等节点下的数据。完成订阅后，RegistryDirectory 会收到这几个节点下的子节点信息。由于一个服务可能部署在多台服务器上，这样就会在 providers 产生多个节点，这个时候就需要 Cluster 将多个服务节点合并为一个，并生成一个 Invoker。关于 RegistryDirectory 和 Cluster，本文不打算进行分析，相关分析将会在随后的文章中展开。   
 
 #### 1.2.2.2. 创建代理
-&emsp; Invoker 创建完毕后，接下来要做的事情是为服务接口生成代理对象。有了代理对象，即可进行远程调用。代理对象生成的入口方法为 ProxyFactory 的 getProxy，接下来进行分析。  
+&emsp; **<font color = "red">Invoker创建完毕后，接下来要做的事情是为服务接口生成代理对象。有了代理对象，即可进行远程调用。</font>** 代理对象生成的入口方法为 ProxyFactory的getProxy，接下来进行分析。  
 
 ```java
 public <T> T getProxy(Invoker<T> invoker) throws RpcException {
