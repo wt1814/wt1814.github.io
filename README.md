@@ -360,8 +360,8 @@
 ### 分布式事务
 [分布式事务](/docs/microService/thinking/DistributedTransaction.md)  
 &emsp; [DTP](/docs/microService/thinking/DistributedTransaction-1.md)    
+&emsp; [TCC模式](/docs/microService/thinking/DistributedTransaction-3.md)   
 &emsp; [消息、事件模式](/docs/microService/thinking/DistributedTransaction-2.md)   
-&emsp; [TCC模式、事务状态表](/docs/microService/thinking/DistributedTransaction-3.md)   
 &emsp; [分布式事务的选型](/docs/microService/thinking/DistributedTransactionSelection.md)  
 
 ### 分布式锁
