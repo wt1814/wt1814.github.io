@@ -38,7 +38,6 @@
     - [测试](#测试)
     - [计算机网络](#计算机网络)
     - [开发常用工具](#开发常用工具)
-    - [其他工具](#其他工具)
     - [Error](#error)
 
 <!-- /TOC -->
@@ -547,10 +546,6 @@ https://www.jianshu.com/p/2813af4eb0d3
 ## 开发常用工具  
 [idea](/docs/software/idea/idea.md)  
 [抓包Charles](/docs/software/charles.md) 
-
-## 其他工具  
-[tools](/docs/software/tools/tools.md)  
-[MarkDown](/docs/software/tools/MarkDown.md)    
 
 ---
 ## Error  
