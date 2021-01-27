@@ -2,26 +2,22 @@
 <!-- TOC -->
 
 - [1. 分布式理论](#1-分布式理论)
-    - [1.1. CAP理论](#11-cap理论)
-        - [1.1.1. 数据一致性模型](#111-数据一致性模型)
+    - [1.1. CAP理论简介](#11-cap理论简介)
+        - [1.1.1. 什么是网络分区？](#111-什么是网络分区)
+        - [1.1.2. 数据一致性模型](#112-数据一致性模型)
     - [1.2. BASE理论](#12-base理论)
-    - [1.3. 酸碱平衡](#13-酸碱平衡)
+    - [1.3. CAP的实践](#13-cap的实践)
 
 <!-- /TOC -->
 
 # 1. 分布式理论  
-
 <!-- 
-
 CAP和BASE理论
 https://mp.weixin.qq.com/s/0qelIYKkyNVsM29u-3yH1w
-
-一文搞懂注册中心 zookeeper 和 eureka 中的CP和 AP 
-https://mp.weixin.qq.com/s/DrSXZK-sXmdXHYBcnbEDhQ
 -->
 
-## 1.1. CAP理论  
-&emsp; CAP理论，指的是在一个分布式系统中，一致性（Consistency）、可用性（Availability）、分区容错性（Partition tolerance）。  
+## 1.1. CAP理论简介    
+&emsp; **<font color = "red">CAP理论，指的是在一个分布式系统中，一致性(Consistency)、可用性(Availability)、分区容错性(Partition tolerance)。</font>  
 
 * 一致性：在分布式系统中的所有数据备份，在同一时刻是否同样的值。
 * 可用性：在集群中一部分节点故障后，集群整体是否还能响应客户端的读写请求。
@@ -35,12 +31,11 @@ https://mp.weixin.qq.com/s/DrSXZK-sXmdXHYBcnbEDhQ
 
 &emsp; P分区容错性是一个最基本的要求，再根据业务 特点在C（一致性）和A（可用性）之间寻求平衡。  
 
-### 1.1.1. 数据一致性模型  
-<!-- 
+### 1.1.1. 什么是网络分区？  
+&emsp; **分布式系统中，多个节点之前的网络本来是连通的，但是因为某些故障（比如部分节点网络出了问题）某些节点之间不连通了，整个网络就分成了几块区域，这就叫网络分区。**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/theory/theory-1.png)  
 
-https://blog.csdn.net/paincupid/article/details/80610441
--->
-
+### 1.1.2. 数据一致性模型  
 &emsp; 数据的一致性模型可以分成以下几类：  
 
 * 强一致性：数据更新成功后，任意时刻所有副本中的数据都是一致的，一般采用同步的方式实现。    
@@ -58,5 +53,10 @@ https://blog.csdn.net/paincupid/article/details/80610441
 * 软状态（Soft State）：指允许分布式系统存在中间状态，该中间状态不会影响到系统的整体可用性。
 * 最终一致性（Eventual Consistency）：指分布式系统中的所有副本数据经过一定时间后，最终能够达到一致的状态。
 
-## 1.3. 酸碱平衡  
-&emsp; 化学理论中 ACID 是酸、Base 恰好是碱。分布式理论中，ACID能够保证事务的强一致性，即数据是实时一致的。这在本地事务中是没有问题的，在分布式事务中，强一致性会极大影响分布式系统的性能。分布式系统的不同业务场景对一致性的要求不同。如交易场景下，就要求强一致性，此时就需要遵循ACID理论，而在注册成功后发送短信验证码等场景下，并不需要实时一致，因此遵循BASE理论即可。因此在具体的分布式系统架构设计过程中，ACID特性和BASE理论往往又会结合在一起。  
+## 1.3. CAP的实践  
+<!-- 
+一文搞懂注册中心 zookeeper 和 eureka 中的CP和 AP 
+https://mp.weixin.qq.com/s/DrSXZK-sXmdXHYBcnbEDhQ
+ZooKeeper是按照CP原则构建的,不适合做Service服务发现
+https://blog.csdn.net/paincupid/article/details/80610441
+-->

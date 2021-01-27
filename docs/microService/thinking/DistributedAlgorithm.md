@@ -1,6 +1,4 @@
 
-# 1. 分布式算法  
-
 <!-- 
 Paxos算法原理
 https://www.cnblogs.com/rickiyang/p/11074192.html
