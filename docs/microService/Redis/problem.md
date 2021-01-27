@@ -11,12 +11,14 @@
 
 <!-- /TOC -->
 
+
 # 1. Redis常见问题与优化  
 &emsp; 参考《Redis开发与运维》  
 
 
 <!-- 
-
+ 一次线上 Redis 高负载排查经历，步步惊心！ 
+ https://mp.weixin.qq.com/s/a4KhrwLAClnH4ElSlUkt2Q
 Redis 越来越慢？常见延迟问题定位与分析 
 https://mp.weixin.qq.com/s/Abb2muE0GaVRYswqwxfJCw
  线上Redis高并发性能调优实践 

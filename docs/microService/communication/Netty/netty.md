@@ -13,7 +13,7 @@
 &emsp; &emsp; [Netty客户端创建](/docs/microService/communication/Netty/customer.md)  
 &emsp; &emsp; [内存分配byteBuf](/docs/microService/communication/Netty/byteBuf.md)  
 
-<!-- 
+<!--
 Netty知识点
 https://mp.weixin.qq.com/s/I9PGsWo7-ykGf2diKklGtA
 

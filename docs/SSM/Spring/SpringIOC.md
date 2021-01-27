@@ -41,7 +41,9 @@
     13. 重置公共的一些缓存数据。  
 
 # 1. SpringIOC解析
-<!-- 
+<!--
+一文搞懂Spring上下文生命周期 | spring系列第55篇 
+https://mp.weixin.qq.com/s/udo8TI4VPdd5-AYbLJpZgg
 Spring IoC - IoC 容器初始化 源码解析 
 https://juejin.cn/post/6844903967143493640
 -->

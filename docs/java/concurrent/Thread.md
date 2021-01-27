@@ -40,6 +40,10 @@
 <!-- /TOC -->
 
 <!-- 
+***
+阿里面试官问我Java线程和操作系统线程什么关系 
+https://mp.weixin.qq.com/s/1DBqevIIZAzynUzBAeyPXQ
+
 详细分析 Java 中实现多线程的方法有几种?(从本质上出发) 
 https://mp.weixin.qq.com/s/IKU56LMVZeVFVqRf-0N0tw
 

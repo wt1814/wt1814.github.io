@@ -25,6 +25,9 @@
 
 <!-- /TOC -->
 <!-- 
+写入流程
+https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
+
 重做日志缓冲(redo log buffer)
 https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 
