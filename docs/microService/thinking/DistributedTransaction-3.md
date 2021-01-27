@@ -12,7 +12,6 @@
 
 # 1. 分布式事务
 ## 1.1. TCC模式-强一致性 
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-9.png)  
 &emsp; TCC是Try、Commit、Cancel的缩写。TCC是两阶段型、补偿型的事务。TCC采用的补偿机制，其逻辑模式类似于XA两阶段提交。其核心思想是：<font color = "red">针对每个操作，都要注册一个与其对应的确认和补偿（撤销）操作。</font>TCC模型是把锁的粒度完全交给业务处理。业务实现TCC服务之后，该TCC服务将作为分布式事务的其中一个资源，参与到整个分布式事务中；<font color = "lime">事务管理器分两阶段协调的TCC服务，第一阶段调用所有TCC服务的Try方法，在第二阶段执行所有TCC服务的Confirm或者Cancel方法。</font>  
 

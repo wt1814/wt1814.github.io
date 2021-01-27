@@ -4,7 +4,7 @@
     - [算法](#算法)
     - [Java](#java)
         - [设计模式](#设计模式)
-        - [JVM](#jvm)   
+        - [JVM](#jvm)
         - [并发编程](#并发编程)
     - [数据库](#数据库)
     - [SSM](#ssm)
@@ -21,6 +21,7 @@
         - [Dubbo](#dubbo)
         - [Zookeeper](#zookeeper)
         - [分布式理论](#分布式理论)
+        - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
         - [限流降级](#限流降级)
@@ -353,7 +354,9 @@
 [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
 &emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
 [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
-[分布式ID](/docs/microService/thinking/DistributedID.md)
+
+### 分布式ID
+[分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)
 
 ### 分布式事务
 [分布式事务](/docs/microService/thinking/DistributedTransaction.md)  
