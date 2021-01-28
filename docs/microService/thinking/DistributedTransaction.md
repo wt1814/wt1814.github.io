@@ -51,8 +51,8 @@ https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487531&idx=1&sn=b3fbc4
     * 最大努力通知-最终一致性
 * 事件溯源模式(Event Sourcing)，Saga事务模型-最终一致性 
 
-[DTP](/docs/microService/thinking/DistributedTransaction-1.md)    
-[TCC模式](/docs/microService/thinking/DistributedTransaction-3.md)   
+[DTP](/docs/microService/thinking/DTP.md)    
+[TCC模式](/docs/microService/thinking/TCC.md)   
 [消息、事件模式](/docs/microService/thinking/DistributedTransaction-2.md)   
 
 ---

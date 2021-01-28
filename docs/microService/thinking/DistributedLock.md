@@ -13,9 +13,10 @@
 <!-- /TOC -->
 
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-29.png)  
 
 # 1. 分布式锁  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-29.png)  
+
 ## 1.1. 分布式锁使用场景  
 <!-- 
 ***分布式锁使用场景
