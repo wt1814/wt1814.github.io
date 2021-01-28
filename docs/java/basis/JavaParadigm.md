@@ -31,6 +31,10 @@ Java泛型的特点与优缺点，泛型擦除是怎么回事？
 https://mp.weixin.qq.com/s/xW9PC88-OCbGSYI_897dow
 Java 中的通配符 T，E，K，V，？，你确定都了解吗？ 
 https://mp.weixin.qq.com/s/0AZY4XFO6AOyuihshKYtzQ
+
+面试官又来问：List<String>能否转化为List<Object>? 
+https://mp.weixin.qq.com/s/UWeS1F1jCfyBvRlJPazbZA
+
 -->
 
 # 1. Java泛型

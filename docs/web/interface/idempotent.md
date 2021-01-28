@@ -12,6 +12,9 @@
 # 1. 接口幂等  
 
 <!-- 
+ SpringBoot 接口幂等性的实现方案 
+ https://mp.weixin.qq.com/s/uYrjzA4QeZSD_S82w2dNIQ
+
 你的项目是如何处理重复请求/并发请求的？
 https://mp.weixin.qq.com/s/8I8fRoYuTED6S7EcbHllhQ
 接口的幂等性怎么设计接口的幂等性怎么设计

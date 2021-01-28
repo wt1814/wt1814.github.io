@@ -13,6 +13,9 @@
 <!-- 
 全网最详尽的负载均衡原理图解 
 https://mp.weixin.qq.com/s/JUM2W6qtNuZuSGbpAmFXnQ
+不可不知的负载均衡
+https://mp.weixin.qq.com/s/HRfHQm1ihSEs6VFzxoC4rQ
+
 -->
 
 # 1. 负载均衡

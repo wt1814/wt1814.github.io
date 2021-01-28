@@ -120,7 +120,9 @@ https://mp.weixin.qq.com/s/Mvl3OURNurdrJ2o9OyM6KQ
     4. 假如既有单字段索引，又有这几个字段上的联合索引，一般可以删除联合索引；  
 
 ## 1.4. 索引/条件--->下推（ICP）  
-<!-- 
+<!--
+神奇的 SQL 之 ICP → 索引条件下推 
+https://mp.weixin.qq.com/s/nxxblJJY2W6ryCGoqOh0XQ
 神奇的 SQL 之 ICP → 索引条件下推 
 https://mp.weixin.qq.com/s/8e8rz6FFSSNIJLNmh_MoLQ
 https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
