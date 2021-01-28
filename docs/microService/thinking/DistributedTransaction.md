@@ -12,15 +12,12 @@
 
 <!-- /TOC -->
 
-
 <!-- 
-
 
 -->
 
 <!--
-~～～～～～～～～～～～～
-
+～～～～～～～～～～～～
 分布式事务 
 https://mp.weixin.qq.com/s/XknegP66mnYboiBx556Kzw
 
@@ -31,7 +28,6 @@ https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487531&idx=1&sn=b3fbc4
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-33.png)  
 
 # 1. 分布式事务  
-
 ## 1.1. 分布式事务产生的原因  
 * 数据库分库分表：如果一个操作既访问01库，又访问02库，而且要保证数据的一致性，那么就要用到分布式事务。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-1.png)  
@@ -71,6 +67,3 @@ https://seata.io/zh-cn/docs/overview/what-is-seata.html
 https://mp.weixin.qq.com/s/amuBimPo7lnfsfo5Pyzc-w
 -->
 &emsp; Seata一个框架集成了AT、TCC、Saga、XA四种模式。  
-
-
-
