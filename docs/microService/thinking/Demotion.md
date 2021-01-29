@@ -1,5 +1,4 @@
 
-
 <!-- TOC -->
 
 - [1. 服务降级](#1-服务降级)
@@ -14,7 +13,6 @@
     - [1.2. 服务熔断和服务降级比较](#12-服务熔断和服务降级比较)
 
 <!-- /TOC -->
-
 
 # 1. 服务降级
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-36.png)  
