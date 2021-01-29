@@ -17,6 +17,10 @@
 <!-- /TOC -->
 
 # 1. 数组和链表
+<!-- 
+链表反转的姿势
+https://mp.weixin.qq.com/s/YVQvbhO0HJtnrocVg8-qmQ
+-->
 
 ## 1.1. 数组  
 &emsp; 这里讲解下二维数组。二维数组是一个元素为一维数组的数组。  

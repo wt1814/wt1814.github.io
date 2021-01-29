@@ -10,8 +10,8 @@
 # 1. 使用分布式锁的思考  
 
 <!-- 
- Redis——由分布式锁造成的重大事故 
- https://mp.weixin.qq.com/s/38YlgZnxRNX54esQmQoZ0w
+Redis——由分布式锁造成的重大事故 
+https://mp.weixin.qq.com/s/38YlgZnxRNX54esQmQoZ0w
 记一次由Redis分布式锁造成的重大事故，避免以后踩坑！ 
 https://mp.weixin.qq.com/s/70mS50S2hdN_qd-RD4rk2Q
 -->

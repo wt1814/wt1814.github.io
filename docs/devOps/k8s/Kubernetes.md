@@ -7,6 +7,9 @@
 &emsp; [Kuboard介绍](/docs/devOps/k8s/kuboard.md)  
 
 <!-- 
+5分钟让你理解K8S必备架构概念
+https://mp.weixin.qq.com/s/FusUyy-JbjDLTclm5OmPqQ
+
 Kubernetes面试题超详细总结 
 https://mp.weixin.qq.com/s/21au8mbwjxn9uSjbG6F2bg
 详解 k8s 4种类型Service 

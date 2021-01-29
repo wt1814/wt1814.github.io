@@ -4,15 +4,10 @@
 - [1. 分布式锁](#1-分布式锁)
     - [1.1. 分布式锁使用场景](#11-分布式锁使用场景)
     - [1.2. 分布式锁实现](#12-分布式锁实现)
-        - [1.2.1. 基于Redis的分布式锁](#121-基于redis的分布式锁)
-        - [1.2.2. 基于ZooKeeper的分布式锁](#122-基于zookeeper的分布式锁)
-        - [1.2.3. 基于mysql实现分布式锁](#123-基于mysql实现分布式锁)
-        - [1.2.4. 其他框架实现](#124-其他框架实现)
-            - [1.2.4.1. Spring Integration](#1241-spring-integration)
+        - [1.2.1. 基于mysql实现分布式锁](#121-基于mysql实现分布式锁)
+        - [1.2.2. Spring Integration](#122-spring-integration)
 
 <!-- /TOC -->
-
-
 
 # 1. 分布式锁  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-29.png)  
@@ -22,6 +17,15 @@
 ***分布式锁使用场景
 https://www.cnblogs.com/aoshicangqiong/p/12173550.html
 -->
+&emsp; **为什么使用分布式锁？**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-11.png)  
+&emsp; 如上图，在分布式系统中，订单模块为了迎战高并发，订单服务被横向拆分，拆分成了不同的进程，就像上图，两个人同时访问订单服务，然后订单系统1和订单系统2共用一个Mysql当成数据库，经过查询发现仅有一件商品，所以两个系统都认为可以下单。如果不加锁限制，可能会出现库存减为负数的情况。  
+&emsp; 解决方案：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-12.png)  
+&emsp; 如上图。mysql自带行级锁，可以考虑使用它的行级锁，可以保证数据的安全。不足之处：使用MySql的行级锁，系统的压力全部集中在mysql，那么mysql就是系统吞吐量的瓶颈了，系统的吞吐量也会受到mysql的限制。  
+&emsp; 可以使用分布式锁。如下图，分布式锁将系统的压力从mysql上面转移到自身上来。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-13.png)  
+
 &emsp; **分布式锁的使用场景：**  
 1. 避免不同节点重复相同的工作。  
 
@@ -33,33 +37,16 @@ https://www.cnblogs.com/aoshicangqiong/p/12173550.html
         比较敏感的数据比如金额修改，同一时间只能有一个人操作，如果2个人同时修改金额，一个加金额一个减金额，为了防止同时操作造成数据不一致，需要锁，如果是数据库需要的就是行锁或表锁，如果是在集群里，多个客户端同时修改一个共享的数据就需要分布式锁。  
         比如秒杀场景，要求并发量很高，那么同一件商品只能被一个用户抢到，那么就可以使用分布式锁实现。 
 
-&emsp; **为什么使用分布式锁？**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-11.png)  
-&emsp; 如上图，在分布式系统中，订单模块为了迎战高并发，订单服务被横向拆分，拆分成了不同的进程，就像上图，两个人同时访问订单服务，然后订单系统1和订单系统2共用一个Mysql当成数据库，经过查询发现仅有一件商品，所以两个系统都认为可以下单。如果不加锁限制，可能会出现库存减为负数的情况。  
-&emsp; 解决方案：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-12.png)  
-&emsp; 如上图。mysql自带行级锁，可以考虑使用它的行级锁，可以保证数据的安全。不足之处：使用MySql的行级锁，系统的压力全部集中在mysql，那么mysql就是系统吞吐量的瓶颈了，系统的吞吐量也会受到mysql的限制。  
-&emsp; 可以使用分布式锁。如下图，分布式锁将系统的压力从mysql上面转移到自身上来。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-13.png)  
-
 ## 1.2. 分布式锁实现  
-&emsp; 分布式锁一般有三种实现方式：1.数据库悲观锁、乐观锁；2.基于缓存（redis，memcached，tair）的分布式锁；3.基于ZooKeeper临时顺序节点的分布式锁。  
+&emsp; 分布式锁一般有三种基础的实现方式：1.数据库悲观锁、乐观锁；2.[基于缓存(redis，memcached，tair)的分布式锁](/docs/microService/thinking/redisLock.md)；3.[基于ZooKeeper临时顺序节点的分布式锁](/docs/microService/thinking/ZKLock.md)。  
 &emsp; <font color="red">基于Redis的分布式锁是AP模型，基于Zookeeper的分布式锁是CP模型的。</font> 
 
 &emsp; 分布式锁实现的三个核心要素：1.加锁；2.解锁；3.锁超时。  
 
-### 1.2.1. 基于Redis的分布式锁  
-&emsp; [Redis分布式锁](/docs/microService/thinking/redisLock.md)   
-
-### 1.2.2. 基于ZooKeeper的分布式锁  
-&emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
-
-### 1.2.3. 基于mysql实现分布式锁  
+### 1.2.1. 基于mysql实现分布式锁  
 <!-- 
 https://mp.weixin.qq.com/s/WygcVhELp8x6k9Ez_svO9Q
-
 悲观锁：顾名思义很悲观，每次去拿数据的时候都认为别人修改，所以每次在拿数据的时候都会上锁，这样如果中间有人想拿数据就会一直阻塞除非锁被释放获取到锁。传统的关系型数据库里，用到了很多种这种锁机制，比如行锁，表锁，写锁等
- 
 乐观锁：顾名思义很乐观，每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号等机制。乐观锁适用于多读的应用类型，这样可以提高吞吐量
 -->
 
@@ -73,8 +60,7 @@ https://mp.weixin.qq.com/s/WygcVhELp8x6k9Ez_svO9Q
 * 监视锁字段进程对于锁的监视时间周期过长，会造成整个服务卡顿过长，吞吐低下。  
 * 监视锁字段进程间的同步问题。  
 * 当一个jvm持有锁的时候，其余服务会一直访问数据库查看锁，会造成其余jvm的资源浪费。  
-
-### 1.2.4. 其他框架实现  
-#### 1.2.4.1. Spring Integration  
+ 
+### 1.2.2. Spring Integration  
 &emsp; Spring Integration提供的全局锁目前为如下存储提供了实现：Gemfire、JDBC、Redis、Zookeeper。它们使用相同的API抽象。即不论使用哪种存储，编码体验是一样的，若想更换实现，只需要修改依赖和配置，无需修改代码。  
 

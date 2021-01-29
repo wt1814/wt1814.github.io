@@ -44,6 +44,13 @@
 <!-- /TOC -->
 
 # 1. 线程池
+<!-- 
+
+知道线程池中线程复用原理吗？
+https://mp.weixin.qq.com/s/qTMJAP45ON91zjWFLwms5g
+
+
+-->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-1.png)  
 
 ## 1.1. 线程池简介
