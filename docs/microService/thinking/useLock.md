@@ -8,7 +8,6 @@
 
 <!-- /TOC -->
 # 1. 使用分布式锁的思考  
-
 <!-- 
 Redis——由分布式锁造成的重大事故 
 https://mp.weixin.qq.com/s/38YlgZnxRNX54esQmQoZ0w
@@ -54,7 +53,7 @@ if(StringUtil.isBack(token)){
 https://mp.weixin.qq.com/s/70mS50S2hdN_qd-RD4rk2Q  
 
 
+---------
 
-
-
-
+&emsp; 之前跟同事讨论，redis锁是不是要加时间限制。其实redis锁要不要加时间，也就是释放锁的时机问题，最终演变成了finally里要不要释放锁。  
+&emsp; 如果redis锁用于争抢资源（文本、数据库），在finally是要释放锁的；如果redis锁用于幂等，建议还是不要在finally释放锁了，可能程序执行时间比你触发幂等的间隔短，那加不加锁，也就没意义了。  
