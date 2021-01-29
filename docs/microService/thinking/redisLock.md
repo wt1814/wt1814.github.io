@@ -3,59 +3,51 @@
 <!-- TOC -->
 
 - [1. Redis分布式锁](#1-redis分布式锁)
-    - [1.1. 前言：实现分布式锁需要关注哪些细节呢？](#11-前言实现分布式锁需要关注哪些细节呢)
-    - [1.2. 使用Redis分布式锁中的问题](#12-使用redis分布式锁中的问题)
-    - [1.3. Redis Client原生API](#13-redis-client原生api)
-        - [1.3.1. 单实例redis实现分布式锁](#131-单实例redis实现分布式锁)
-            - [1.3.1.1. 加锁](#1311-加锁)
-            - [1.3.1.2. 解锁](#1312-解锁)
-        - [1.3.2. 集群redlock算法实现分布式锁](#132-集群redlock算法实现分布式锁)
-    - [1.4. Redisson实现redis分布式锁](#14-redisson实现redis分布式锁)
-        - [1.4.1. ※※※Redisson解决死锁问题(watch dog自动延期机制)](#141-※※※redisson解决死锁问题watch-dog自动延期机制)
-        - [1.4.2. 重入锁](#142-重入锁)
-            - [1.4.2.1. 重入锁解析](#1421-重入锁解析)
-                - [1.4.2.1.1. 获取锁tryLock](#14211-获取锁trylock)
-                - [1.4.2.1.2. 解锁unlock](#14212-解锁unlock)
-            - [1.4.2.2. 重入锁缺点](#1422-重入锁缺点)
-        - [1.4.3. 公平锁（Fair Lock）](#143-公平锁fair-lock)
-        - [1.4.4. 联锁（MultiLock）](#144-联锁multilock)
-        - [1.4.5. 红锁（RedLock）](#145-红锁redlock)
-        - [1.4.6. 读写锁（ReadWriteLock）](#146-读写锁readwritelock)
-        - [1.4.7. 信号量（Semaphore）](#147-信号量semaphore)
+    - [1.1. 使用Redis分布式锁中的问题](#11-使用redis分布式锁中的问题)
+    - [1.2. Redis Client原生API](#12-redis-client原生api)
+        - [1.2.1. 单实例redis实现分布式锁](#121-单实例redis实现分布式锁)
+            - [1.2.1.1. 加锁](#1211-加锁)
+            - [1.2.1.2. 解锁](#1212-解锁)
+        - [1.2.2. 集群redlock算法实现分布式锁](#122-集群redlock算法实现分布式锁)
+    - [1.3. Redisson实现redis分布式锁](#13-redisson实现redis分布式锁)
+        - [1.3.1. Redisson简介](#131-redisson简介)
+        - [1.3.2. ※※※Redisson解决死锁问题(watch dog自动延期机制)](#132-※※※redisson解决死锁问题watch-dog自动延期机制)
+        - [1.3.3. 重入锁解析](#133-重入锁解析)
+            - [1.3.3.1. 获取锁tryLock](#1331-获取锁trylock)
+            - [1.3.3.2. 解锁unlock](#1332-解锁unlock)
+            - [1.3.3.3. 重入锁缺点](#1333-重入锁缺点)
+        - [1.3.4. Redisson几种锁介绍](#134-redisson几种锁介绍)
+            - [1.3.4.1. 重入锁](#1341-重入锁)
+            - [1.3.4.2. 公平锁（Fair Lock）](#1342-公平锁fair-lock)
+            - [1.3.4.3. 联锁（MultiLock）](#1343-联锁multilock)
+            - [1.3.4.4. 红锁（RedLock）](#1344-红锁redlock)
+            - [1.3.4.5. 读写锁（ReadWriteLock）](#1345-读写锁readwritelock)
+            - [1.3.4.6. 信号量（Semaphore）](#1346-信号量semaphore)
 
 <!-- /TOC -->
 
-# 1. Redis分布式锁  
 &emsp; **<font color = "lime">总结：</font>**  
-&emsp; **<font color = "lime">RedissonLock锁互斥、自动延期机制、可重入加锁。</font>**  
-* 自动延期  
-&emsp; <font color = "lime">只要客户端一旦加锁成功，就会启动一个后台线程，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>  
+&emsp; **<font color = "lime">RedissonLock具有锁互斥、自动延期机制、可重入加锁等特性。</font>** 自动延期：&emsp; <font color = "lime">只要客户端一旦加锁成功，就会启动一个后台线程，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>  
 
 &emsp; RedissonLock加锁流程：  
 1. 执行lock.lock()代码时，<font color = "red">如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。</font>  
-2. 然后发送一段lua脚本，带有三个参数：一个是锁的名字（在代码里指定的）、一个是锁的时常（默认30秒）、一个是加锁的客户端id（每个客户端对应一个id）。<font color = "red">然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。</font>  
+2. 然后发送一段lua脚本，带有三个参数：一个是锁的名字(在代码里指定的)、一个是锁的时常(默认30秒)、一个是加锁的客户端id(每个客户端对应一个id)。<font color = "red">然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。</font>  
 
-    * 锁不存在（exists），则加锁（hset），并设置（pexpire）锁的过期时间；  
-    * 锁存在，检测（hexists）是当前线程持有锁，锁重入（hincrby），并且重新设置（pexpire）该锁的有效时间；
-    * 锁存在，但不是当前线程的，返回（pttl）锁的过期时间。 
+    * 锁不存在(exists)，则加锁(hset)，并设置(pexpire)锁的过期时间；  
+    * 锁存在，检测(hexists)是当前线程持有锁，锁重入(hincrby)，并且重新设置(pexpire)该锁的有效时间；
+    * 锁存在，但不是当前线程的，返回(pttl)锁的过期时间。 
 
-## 1.1. 前言：实现分布式锁需要关注哪些细节呢？  
-
-* 确保互斥：在同一时刻，必须保证锁至多只能被一个客户端持有。  
-* 不能死锁：在一个客户端在持有锁的期间崩溃而没有主动解锁情况下，也能保证后续其他客户端能加锁。    
-* 避免活锁：在获取锁失败的情况下，反复进行重试操作，占用Cpu资源，影响性能。    
-* 实现更多锁特性：锁中断、锁重入、锁超时等。确保客户端只能解锁自己持有的锁。  
-
-## 1.2. 使用Redis分布式锁中的问题  
+# 1. Redis分布式锁  
+## 1.1. 使用Redis分布式锁中的问题  
 1. 超时问题。  
 2. 部署问题：除了要考虑客户端要怎么实现分布式锁之外，还需要考虑Redis的部署问题。Redis有多种部署方式：单机模式；Master-Slave+Sentinel选举模式；Redis Cluster模式。  
     * 如果采用单机部署模式，会存在单点问题。只要 Redis 故障了，加锁就不行了。  
     * 采用Master-Slave 模式，加锁的时候只对一个节点加锁，即使通过 Sentinel做了高可用，但是<font color="lime">如果Master节点故障了，发生主从切换，此时就会有可能出现锁丢失的问题，可能导致多个客户端同时完成加锁</font>。  
 
-## 1.3. Redis Client原生API  
-### 1.3.1. 单实例redis实现分布式锁  
+## 1.2. Redis Client原生API  
+### 1.2.1. 单实例redis实现分布式锁  
 
-#### 1.3.1.1. 加锁  
+#### 1.2.1.1. 加锁  
 &emsp; **加锁代码：**  
 
 ```java
@@ -95,13 +87,13 @@ public class RedisTool {
 ```
 SET KEY value [EX seconds] [PX milliseconds] [NX|XX]
 ``` 
-* EX second:设置键的过期时间为second秒。  
-* PX millisecond:设置键的过期时间为millisecond毫秒。  
+* EX second：设置键的过期时间为second秒。  
+* PX millisecond：设置键的过期时间为millisecond毫秒。  
 * NX：只在键不存在时，才对键进行设置操作。  
 * XX：只在键已经存在时，才对键进行设置操作。  
 
-#### 1.3.1.2. 解锁  
-&emsp; 解锁也涉及获取锁、删除锁两步操作，采用redis和lua脚本实现。lua脚本执行命令具有原子性。  
+#### 1.2.1.2. 解锁  
+&emsp; 解锁涉及获取锁、删除锁两步操作，采用redis和lua脚本实现。lua脚本执行命令具有原子性。  
 &emsp; **解锁代码：**  
 
 ```java
@@ -126,7 +118,7 @@ public class RedisTool {
 }
 ```
 
-### 1.3.2. 集群redlock算法实现分布式锁  
+### 1.2.2. 集群redlock算法实现分布式锁  
 &emsp; Redis分布式锁官网中文地址：http://redis.cn/topics/distlock.html 。 
 
 &emsp; RedLock算法描述：假设Redis的部署模式是Redis Cluster，总共有5个Master节点。客户端通过以下步骤获取一把锁。  
@@ -139,7 +131,9 @@ public class RedisTool {
 
 &emsp; <font color="red">一句话概述：当前线程尝试给每个Master节点加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。</font>  
 
-## 1.4. Redisson实现redis分布式锁  
+## 1.3. Redisson实现redis分布式锁  
+
+### 1.3.1. Redisson简介  
 &emsp; 基于redis的分布式锁实现客户端[Redisson](/docs/microService/Redis/Redisson.md) ，官方网址：https://redisson.org/ 。Redisson支持redis单实例、redis master-slave、redis哨兵、redis cluster等各种部署架构，都可以完美实现。  
 
 &emsp; 使用示例： 
@@ -157,7 +151,7 @@ try{
 }
 ```
 
-### 1.4.1. ※※※Redisson解决死锁问题(watch dog自动延期机制)  
+### 1.3.2. ※※※Redisson解决死锁问题(watch dog自动延期机制)  
 <!-- 
 https://www.cnblogs.com/jklixin/p/13212864.html
 
@@ -166,12 +160,16 @@ https://www.cnblogs.com/jklixin/p/13212864.html
 &emsp; <font color = "lime">在一个分布式环境下，假如一个线程获得锁后，突然服务器宕机了，那么这个时候在一定时间后这个锁会自动释放，也可以设置锁的有效时间(不设置默认30秒），这样的目的主要是业务机器宕机，防止死锁的发生。</font>   
 -->
 
+&emsp; **什么是分布式锁的死锁？**    
+
+
+---
 &emsp; 普通利用Redis实现分布式锁的时候，可能会为某个锁指定某个key，当线程获取锁并执行完业务逻辑代码的时候，将该锁对应的key删除掉来释放锁。
 lock->set(key)，成功->执行业务，业务执行完毕->unlock->del(key)。  
 &emsp; 根据这种操作和实践方式，可以分为下面两个场景：  
 
 1. 业务机器宕机  
-&emsp; 因为业务不知道要执行多久才能结束，所以这个key一般不会设置过期时间。这样如果在执行业务的过程中，业务机器宕机，unlock操作不会执行，所以这个锁不会被释放，其他机器拿不到锁，从而形成了死锁。  
+&emsp; **~~因为业务不知道要执行多久才能结束，所以这个key一般不会设置过期时间。~~** 这样如果在执行业务的过程中，业务机器宕机，unlock操作不会执行，所以这个锁不会被释放，其他机器拿不到锁，从而形成了死锁。  
 &emsp; Redisson为了解决这种情况，设定了一个叫做lockWatchdogTimeout的参数，默认为30秒钟。这样当业务方调用加锁操作的时候，  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-45.png)  
 &emsp; 默认的leaseTime是-1，这个时候会启动一个定时任务，在业务方释放锁之前，会一直不停的增加这个锁的生命周期时间，保证在业务执行完毕之前，这个锁一直不会因为redis的超时而被释放。  
@@ -182,55 +180,14 @@ lock->set(key)，成功->执行业务，业务执行完毕->unlock->del(key)。
     3. Redis是集群模式，而整个集群都宕机，那么就没救了。  
 
 &emsp; **<font color = "lime">redisson锁自动释放，看门狗线程未生效：</font>**  
-&emsp; lockWatchdogTimeout（监控锁的看门狗超时，单位：毫秒），默认值：30000
-&emsp; 监控锁的看门狗超时时间单位为毫秒。该参数只适用于分布式锁的加锁请求中未明确使用leaseTimeout参数的情况。如果该看门口未使用lockWatchdogTimeout去重新调整一个分布式锁的lockWatchdogTimeout超时，那么这个锁将变为失效状态。这个参数可以用来避免由Redisson客户端节点宕机或其他原因造成死锁的情况。
+&emsp; lockWatchdogTimeout（监控锁的看门狗超时，单位：毫秒），默认值：30000  
+&emsp; 监控锁的看门狗超时时间单位为毫秒。该参数只适用于分布式锁的加锁请求中未明确使用leaseTimeout参数的情况。如果该看门口未使用lockWatchdogTimeout去重新调整一个分布式锁的lockWatchdogTimeout超时，那么这个锁将变为失效状态。这个参数可以用来避免由Redisson客户端节点宕机或其他原因造成死锁的情况。  
 &emsp; <font color = "lime">设置了失效时间，所以这个看门狗设置是无效的。</font>  
-      
-### 1.4.2. 重入锁  
-&emsp; Redisson的分布式可重入锁RLock，实现了java.util.concurrent.locks.Lock接口，以及支持自动过期解锁。同时还提供了异步（Async）、反射式（Reactive）和RxJava2标准的接口。  
-
-```java
-// 最常见的使用方法
-RLock lock = redisson.getLock("anyLock");
-lock.lock();
-//...
-lock.unlock();
- 
-//另外Redisson还通过加锁的方法提供了leaseTime的参数来指定加锁的时间。超过这个时间后锁便自动解开了。
- 
-// 加锁以后10秒钟自动解锁
-// 无需调用unlock方法手动解锁
-lock.lock(10, TimeUnit.SECONDS);
- 
-// 尝试加锁，最多等待100秒，上锁以后10秒自动解锁
-boolean res = lock.tryLock(100, 10, TimeUnit.SECONDS);
-if (res) {
-   try {
-     ...
-   } finally {
-       lock.unlock();
-   }
-}
-```
-
-&emsp; 如果负责储存这个分布式锁的Redisson节点宕机以后，而且这个锁正好处于锁住的状态时，这个锁会出现锁死的状态。为了避免这种情况的发生，Redisson内部提供了一个监控锁的看门狗，它的作用是在Redisson实例被关闭前，不断的延长锁的有效期。默认情况下，看门狗的检查锁的超时时间是30秒钟，也可以通过修改Config.lockWatchdogTimeout来另行指定。  
-
-&emsp; Redisson同时还为分布式锁提供了异步执行的相关方法：  
-
-```java
-RLock lock = redisson.getLock("anyLock");
-lock.lockAsync();
-lock.lockAsync(10, TimeUnit.SECONDS);
-Future<Boolean> res = lock.tryLockAsync(100, 10, TimeUnit.SECONDS);
-```
-&emsp; RLock对象完全符合Java的Lock规范。也就是说只有拥有锁的进程才能解锁，其他进程解锁则会抛出IllegalMonitorStateException错误。  
 
 
-#### 1.4.2.1. 重入锁解析
-##### 1.4.2.1.1. 获取锁tryLock  
+### 1.3.3. 重入锁解析
+#### 1.3.3.1. 获取锁tryLock  
 &emsp; **<font color = "lime">RedissonLock锁互斥、自动延期(watchdog看门狗)机制、可重入加锁。</font>**  
-
-
 &emsp; RedissonLock加锁流程：  
 1. 执行lock.lock()代码时，<font color = "red">如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。</font>  
 2. 然后发送一段lua脚本，带有三个参数：一个是锁的名字（在代码里指定的）、一个是锁的时常（默认30秒）、一个是加锁的客户端id（每个客户端对应一个id）。<font color = "red">然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。</font>  
@@ -271,7 +228,7 @@ Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {
 &emsp; 这时系统在业务语义上一定会出现问题，导致各种脏数据的产生。  
 &emsp; 所以这个就是redis cluster，或者是redis master-slave架构的主从异步复制导致的redis分布式锁的最大缺陷：<font color = "lime">在redis master实例宕机的时候，可能导致多个客户端同时完成加锁。</font>  
 
-##### 1.4.2.1.2. 解锁unlock  
+#### 1.3.3.2. 解锁unlock  
 
 ```java
 public void unlock() {
@@ -311,7 +268,7 @@ public void unlock() {
 }
 ```
 
-#### 1.4.2.2. 重入锁缺点  
+#### 1.3.3.3. 重入锁缺点  
 &emsp; Redis分布式锁会有个缺陷，就是在Redis哨兵模式下:  
 &emsp; 客户端1 对某个 master节点写入了redisson锁，此时会异步复制给对应的slave节点。但是这个过程中一旦发生master节点宕机，主备切换，slave节点从变为了 master节点。  
 &emsp; 这时客户端2来尝试加锁的时候，在新的master节点上也能加锁，此时就会导致多个客户端对同一个分布式锁完成了加锁。  
@@ -319,14 +276,61 @@ public void unlock() {
 &emsp; 缺陷在哨兵模式或者主从模式下，如果 master实例宕机的时候，可能导致多个客户端同时完成加锁。  
 
 
-### 1.4.3. 公平锁（Fair Lock）  
+### 1.3.4. Redisson几种锁介绍
+<!-- 
+https://my.oschina.net/u/4277138/blog/3296766
+-->
+
+#### 1.3.4.1. 重入锁  
+&emsp; Redisson的分布式可重入锁RLock，实现了java.util.concurrent.locks.Lock接口，以及支持自动过期解锁。同时还提供了异步（Async）、反射式（Reactive）和RxJava2标准的接口。  
+
+```java
+// 最常见的使用方法
+RLock lock = redisson.getLock("anyLock");
+lock.lock();
+//...
+lock.unlock();
+ 
+//另外Redisson还通过加锁的方法提供了leaseTime的参数来指定加锁的时间。超过这个时间后锁便自动解开了。
+ 
+// 加锁以后10秒钟自动解锁
+// 无需调用unlock方法手动解锁
+lock.lock(10, TimeUnit.SECONDS);
+ 
+// 尝试加锁，最多等待100秒，上锁以后10秒自动解锁
+boolean res = lock.tryLock(100, 10, TimeUnit.SECONDS);
+if (res) {
+   try {
+     ...
+   } finally {
+       lock.unlock();
+   }
+}
+```
+
+&emsp; 如果负责储存这个分布式锁的Redisson节点宕机以后，而且这个锁正好处于锁住的状态时，这个锁会出现锁死的状态。为了避免这种情况的发生，Redisson内部提供了一个监控锁的看门狗，它的作用是在Redisson实例被关闭前，不断的延长锁的有效期。默认情况下，看门狗的检查锁的超时时间是30秒钟，也可以通过修改Config.lockWatchdogTimeout来另行指定。  
+
+&emsp; Redisson同时还为分布式锁提供了异步执行的相关方法：  
+
+```java
+RLock lock = redisson.getLock("anyLock");
+lock.lockAsync();
+lock.lockAsync(10, TimeUnit.SECONDS);
+Future<Boolean> res = lock.tryLockAsync(100, 10, TimeUnit.SECONDS);
+```
+&emsp; RLock对象完全符合Java的Lock规范。也就是说只有拥有锁的进程才能解锁，其他进程解锁则会抛出IllegalMonitorStateException错误。  
+
+
+
+
+#### 1.3.4.2. 公平锁（Fair Lock）  
 &emsp; 它保证了当多个Redisson客户端线程同时请求加锁时，优先分配给先发出请求的线程。所有请求线程会在一个队列中排队，当某个线程出现宕机时，Redisson会等待5秒后继续下一个线程，也就是说如果前面有5个线程都处于等待状态，那么后面的线程会等待至少25秒。使用方式同上，获取的时候使用如下方法：  
 
 ```java
 RLock fairLock = redisson.getFairLock("anyLock");
 ```
 
-### 1.4.4. 联锁（MultiLock）  
+#### 1.3.4.3. 联锁（MultiLock）  
 &emsp; 基于Redis的Redisson分布式联锁RedissonMultiLock对象可以将多个RLock对象关联为一个联锁，每个RLock对象实例可以来自于不同的Redisson实例。  
 
 ```java
@@ -353,7 +357,7 @@ boolean res = lock.tryLock(100, 10, TimeUnit.SECONDS);
 lock.unlock();
 ```
 
-### 1.4.5. 红锁（RedLock）  
+#### 1.3.4.4. 红锁（RedLock）  
 <!-- 
 https://blog.csdn.net/qq_35688140/article/details/103461115
 -->
@@ -537,7 +541,7 @@ public boolean tryLock(long waitTime, long leaseTime, TimeUnit unit) throws Inte
 ```
 
 
-### 1.4.6. 读写锁（ReadWriteLock）  
+#### 1.3.4.5. 读写锁（ReadWriteLock）  
 &emsp; 基于Redis的Redisson分布式可重入读写锁RReadWriteLock Java对象实现了java.util.concurrent.locks.ReadWriteLock接口。其中读锁和写锁都继承了RLock接口。分布式可重入读写锁允许同时有多个读锁和一个写锁处于加锁状态。  
 
 ```java
@@ -563,7 +567,7 @@ boolean res = rwlock.writeLock().tryLock(100, 10, TimeUnit.SECONDS);
 lock.unlock();
 ```
 
-### 1.4.7. 信号量（Semaphore）  
+#### 1.3.4.6. 信号量（Semaphore）  
 &emsp; 基于Redis的Redisson的分布式信号量（Semaphore）Java对象RSemaphore采用了与java.util.concurrent.Semaphore相似的接口和用法。同时还提供了异步（Async）、反射式（Reactive）和RxJava2标准的接口。  
 
 ```java

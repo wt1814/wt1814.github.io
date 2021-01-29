@@ -12,8 +12,8 @@
 <!-- /TOC -->
 
 <!-- 
+~~
 https://mp.weixin.qq.com/s/9whV1nuwfu2hWt8newteTA 
-https://www.cnblogs.com/wang-meng/default.html?page=2
 -->
 
 # 1. 基于ZK实现分布式锁
@@ -23,10 +23,8 @@ https://www.cnblogs.com/wang-meng/default.html?page=2
 &emsp; **<font color = "lime">基于ZooKeeper可以实现分布式的独占锁和读写锁。</font>**  
 &emsp; **zookeeper分布式锁的缺点：**  
 
-* 加锁会频繁地“写”zookeeper，增加zookeeper的压力；  
-* 写zookeeper的时候会在集群进行同步，节点数越多，同步越慢，获取锁的过程越慢；  
-* 需要另外依赖zookeeper，而大部分服务是不会使用zookeeper的，增加了系统的复杂性；  
-* 相对于redis分布式锁，性能要稍微略差一些；  
+* 相对于redis分布式锁，性能要稍微略差一些。加锁会频繁地“写”zookeeper，增加zookeeper的压力；写zookeeper的时候会在集群进行同步，节点数越多，同步越慢，获取锁的过程越慢。
+* 需要另外依赖zookeeper，而部分服务是不会使用zookeeper的，增加了系统的复杂性；  
 
 ### 1.1.1. 独占锁的实现  
 &emsp; 对于ZK来说，实现分布式锁的核心是临时顺序节点和监听机制。  
@@ -67,7 +65,7 @@ https://www.cnblogs.com/wang-meng/default.html?page=2
 1. 自己创建的节点序号排在所有其他子节点前面  
 2. 自己创建的节点前面无写锁节点  
 
-&emsp; **<font color = "red">如果客户端创建的是写锁节点，</font>**由于写锁具有排他性，所以获取锁的条件要简单一些，只需确定自己创建的锁节点是否排在其他子节点前面即可。  
+&emsp; **<font color = "red">如果客户端创建的是写锁节点，</font>** 由于写锁具有排他性，所以获取锁的条件要简单一些，只需确定自己创建的锁节点是否排在其他子节点前面即可。  
 
 &emsp; 不同于独占锁，读写锁的实现稍微复杂一下。读写锁有两种实现方式，各有异同，接下来就来说说这两种实现方式。  
 
