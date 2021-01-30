@@ -2,26 +2,29 @@
 
 <!-- TOC -->
 
-- [1. ~~事件溯源模式(Event Sourcing)~~](#1-事件溯源模式event-sourcing)
-    - [1.1. 事件溯源](#11-事件溯源)
-    - [1.2. saga简介](#12-saga简介)
-    - [1.3. Saga组成](#13-saga组成)
-    - [1.5. Saga相关实现](#15-saga相关实现)
-    - [1.6. Saga协调](#16-saga协调)
-        - [1.6.1. 编排（Choreography）](#161-编排choreography)
-            - [1.6.1.1. 实现流程](#1611-实现流程)
-            - [1.6.1.2. 特点](#1612-特点)
-        - [1.6.2. 控制（Orchestration）](#162-控制orchestration)
-            - [1.6.2.1. 实现流程](#1621-实现流程)
-                - [1.6.2.1.1. 使用状态机建模SAGA ORCHESTRATORS](#16211-使用状态机建模saga-orchestrators)
-                - [1.6.2.1.2. SAGA控制和事务消息](#16212-saga控制和事务消息)
-            - [1.6.2.2. 特点](#1622-特点)
-    - [1.4. Saga的使用条件](#14-saga的使用条件)
+- [1. ~~saga~~](#1-saga)
+    - [1.1. saga简介](#11-saga简介)
+    - [1.2. Saga组成](#12-saga组成)
+    - [1.3. Saga相关实现](#13-saga相关实现)
+    - [1.4. Saga协调](#14-saga协调)
+        - [1.4.1. 编排（Choreography）](#141-编排choreography)
+            - [1.4.1.1. 实现流程](#1411-实现流程)
+            - [1.4.1.2. 特点](#1412-特点)
+        - [1.4.2. 控制（Orchestration）](#142-控制orchestration)
+            - [1.4.2.1. 实现流程](#1421-实现流程)
+                - [1.4.2.1.1. 使用状态机建模SAGA ORCHESTRATORS](#14211-使用状态机建模saga-orchestrators)
+                - [1.4.2.1.2. SAGA控制和事务消息](#14212-saga控制和事务消息)
+            - [1.4.2.2. 特点](#1422-特点)
+    - [1.5. Saga的使用条件](#15-saga的使用条件)
 
 <!-- /TOC -->
 
-# 1. ~~事件溯源模式(Event Sourcing)~~  
+
+
+# 1. ~~saga~~
 <!--
+http://servicecomb.apache.org/cn/docs/distributed-transactions-saga-implementation/
+
 Saga的核心就是补偿，一阶段就是服务的正常顺序调用（数据库事务正常提交），如果都执行成功，则第二阶段则什么都不做；但如果其中有执行发生异常，则依次调用其补偿服务（一般多逆序调用未已执行服务的反交易）来保证整个交易的一致性。应用实施成本一般。
 TCC的特点在于业务资源检查与加锁，一阶段进行校验，资源锁定，如果第一阶段都成功，二阶段对锁定资源进行交易逻辑，否则，对锁定资源进行释放。应用实施成本较高。
 基于可靠消息最终一致，一阶段服务正常调用，同时同事务记录消息表，二阶段则进行消息的投递，消费。应用实施成本较低
@@ -35,11 +38,9 @@ https://www.jianshu.com/p/e4b662407c66?from=timeline&isappinstalled=0
 https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 ~~
 -->
-
-## 1.1. 事件溯源
 ......
 
-## 1.2. saga简介
+## 1.1. saga简介
 &emsp; Saga模型起源于1987年Hector Garcia-Molina，Kenneth Salem发表的论文《Sagas》，是分布式事务相关概念最早出现的。  
 &emsp; <font color = "red">Saga是一个长活事务可被分解成可以交错运行的子事务集合。其中每个子事务都是一个保持数据库一致性的真实事务。</font>  
 
@@ -48,7 +49,7 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 &emsp; <font color = "lime">Saga模型可以将一个分布式事务拆分为多个本地事务，每个本地事务都有相应的执行模块和补偿模块(对应TCC中的Confirm和Cancel)，当Saga事务中任意一个本地事务出错时，可以通过调用相关的补偿方法恢复之前的事务，达到事务最终一致性。</font>  
 &emsp; **<font color = "red">注意：saga也是一种二阶段补偿性协议，每个子事务(本地事务)依次执行提交阶段。如果都提交成功，也就不会有第二阶段的产生。</font>**    
 
-## 1.3. Saga组成
+## 1.2. Saga组成
 &emsp; **Saga的组成：**  
 
 * 每个Saga由一系列sub-transaction Ti组成  
@@ -75,7 +76,7 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
     &emsp; 显然，向前恢复没有必要提供补偿事务，如果业务中，子事务（最终）总会成功，或补偿事务难以定义或不可能，向前恢复更符合你的需求。  
     &emsp; 理论上补偿事务永不失败，然而，在分布式世界中，服务器可能会宕机，网络可能会失败，甚至数据中心也可能会停电。在这种情况下我们能做些什么？ 最后的手段是提供回退措施，比如人工干预。  
 
-## 1.5. Saga相关实现
+## 1.3. Saga相关实现
 **Saga Log**  
 &emsp; Saga保证所有的子事务都得以完成或补偿，但Saga系统本身也可能会崩溃。Saga崩溃时可能处于以下几个状态：  
 
@@ -117,17 +118,17 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 
 &emsp; 对于第1种情况，容易处理。对于第2、3种情况，则要求Ti和Ci是可交换的（commutative)，并且其最终结果都是sub-transaction被撤销。  
 
-## 1.6. Saga协调  
+## 1.4. Saga协调  
 &emsp; 协调saga：saga的实现包含协调saga步骤的逻辑。当系统命令启动saga时，协调逻辑必须选择并告知第一个saga参与者执行本地事务。一旦该事务完成，saga的排序协调选择并调用下一个saga参与者。这个过程一直持续到saga执行了所有步骤。如果任何本地事务失败，则saga必须以相反的顺序执行补偿事务。构建一个saga的协调逻辑有几种不同的方法：
 
 * 编排（Choreography）：在saga参与者中分配决策和排序。saga参与者主要通过交换事件进行沟通。
 * 控制（Orchestration）：在saga控制类中集中saga的协调逻辑。一个saga控制者向saga参与者发送命令消息，告诉sage参与者要执行哪些操作。
 
-### 1.6.1. 编排（Choreography）
+### 1.4.1. 编排（Choreography）
 &emsp; <font color = "red">编排模式没有中央协调器（没有单点风险）时，每个服务产生并聆听其他服务的事件，并决定是否应采取行动。</font>  
 &emsp; 该实现第一个服务执行一个事务，然后发布一个事件。该事件被一个或多个服务进行监听，这些服务再执行本地事务并发布（或不发布）新的事件，当最后一个服务执行本地事务并且不发布任何事件时，意味着分布式事务结束，或者它发布的事件没有被任何Saga参与者听到都意味着事务结束。 
 
-#### 1.6.1.1. 实现流程  
+#### 1.4.1.1. 实现流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-30.png)  
 1. 订单服务保存新订单，将状态设置为pengding挂起状态，并发布名为ORDER_CREATED_EVENT的事件。
 2. 支付服务监听ORDER_CREATED_EVENT，并公布事件BILLED_ORDER_EVENT。
@@ -141,15 +142,15 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
     1. 支付服务会退款给客户。
     2. 订单服务将订单状态设置为失败。  
 
-#### 1.6.1.2. 特点  
+#### 1.4.1.2. 特点  
 * 优点：事件/编排是实现Saga模式的自然方式; 它很简单，容易理解，不需要太多的努力来构建，所有参与者都是松散耦合的，因为它们彼此之间没有直接的耦合。如果事务涉及2至4个步骤，则可能是非常合适的。  
 
-### 1.6.2. 控制（Orchestration）  
+### 1.4.2. 控制（Orchestration）  
 &emsp; 中央协调器负责集中处理事件的决策和业务逻辑排序。  
 &emsp; saga协调器orchestrator以命令/回复的方式与每项服务进行通信，告诉服务应该执行哪些操作。  
 
 
-#### 1.6.2.1. 实现流程  
+#### 1.4.2.1. 实现流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-31.png)  
 1. 订单服务保存pending状态，并要求订单Saga协调器（简称OSO）开始启动订单事务。
 2. OSO向收款服务发送执行收款命令，收款服务回复Payment Executed消息。
@@ -158,7 +159,7 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 
 &emsp; OSO订单Saga协调器必须事先知道执行“创建订单”事务所需的流程(通过读取BPM业务流程XML配置获得)。如果有任何失败，它还负责通过向每个参与者发送命令来撤销之前的操作来协调分布式的回滚。当有一个中央协调器协调一切时，回滚要容易得多，因为协调器默认是执行正向流程，回滚时只要执行反向流程即可。  
 
-##### 1.6.2.1.1. 使用状态机建模SAGA ORCHESTRATORS  
+##### 1.4.2.1.1. 使用状态机建模SAGA ORCHESTRATORS  
 &emsp; 建模saga orchestrator的好方法是作为状态机。状态机由一组状态和一组由事件触发的状态之间的转换组成。每个transition都可以有一个action，对于一个saga来说是一个saga参与者的调用。状态之间的转换由saga参与者执行的本地事务的完成触发。当前状态和本地事务的特定结果决定了状态转换以及执行的操作（如果有的话）。对状态机也有有效的测试策略。因此，使用状态机模型可以更轻松地设计、实施和测试。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-44.png)  
 
@@ -170,11 +171,11 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 * OrderApproved：表示saga成功完成的最终状态。  
 * Order Rejected：最终状态表明该订单被其中一方参与者们拒绝。  
 
-##### 1.6.2.1.2. SAGA控制和事务消息
+##### 1.4.2.1.2. SAGA控制和事务消息
 &emsp; 基于业务流程的saga的每个步骤都包括更新数据库和发布消息的服务。例如，Order Service持久保存Order和Create Order Saga orchestrator，并向第一个saga参与者发送消息。一个saga参与者，例如Kitchen Service，通过更新其数据库并发送回复消息来处理命令消息。 Order Service通过更新saga协调器的状态并向下一个saga参与者发送命令消息来处理参与者的回复消息。服务必须使用事务性消息传递，以便自动更新数据库并发布消息。  
 
 
-#### 1.6.2.2. 特点  
+#### 1.4.2.2. 特点  
 * 优点：
     * 避免服务之间的循环依赖关系，因为saga协调器会调用saga参与者，但参与者不会调用协调器。
     * 集中分布式事务的编排。
@@ -183,7 +184,7 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
     * 如果在第一笔交易还没有执行完，想改变有第二笔事务的目标对象，则可以轻松地将其暂停在协调器上，直到第一笔交易结束。
 * 缺点：协调器中集中太多逻辑的风险。  
 
-## 1.4. Saga的使用条件  
+## 1.5. Saga的使用条件  
 &emsp; 所有长活事务都可以使用Saga吗？这里有一些限制：  
 
 * Saga只允许两个层次的嵌套，顶级的Saga和简单子事务
