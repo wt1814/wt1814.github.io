@@ -13,6 +13,7 @@
     - [分布式](#分布式)
         - [分布式缓存](#分布式缓存)
             - [Redis](#redis)
+        - [限流降级](#限流降级)
         - [分布式消息队列](#分布式消息队列)
             - [kafka](#kafka)
         - [SpringBoot](#springboot)
@@ -24,7 +25,6 @@
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
-        - [限流降级](#限流降级)
         - [分布式调度](#分布式调度)
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式通信](#分布式通信)
@@ -273,6 +273,11 @@
 [Redis运维](/docs/microService/Redis/RedisOperation.md)  
 [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 
+### 限流降级
+[分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
+&emsp; [Sentinel](/docs/microService/thinking/Sentinel.md)  
+[服务降级](/docs/microService/thinking/Demotion.md)  
+
 ### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  
 
@@ -370,11 +375,6 @@
 &emsp; [Redis分布式锁](/docs/microService/thinking/redisLock.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
 &emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
-
-### 限流降级
-[分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
-&emsp; [Sentinel](/docs/microService/thinking/Sentinel.md)  
-[服务降级](/docs/microService/thinking/Demotion.md)  
 
 ### 分布式调度
 [延迟队列](/docs/frame/delayQueue.md)  
