@@ -492,7 +492,7 @@ https://www.jianshu.com/p/2813af4eb0d3
 ### Nginx  
 [Nginx](/docs/system/loadBalance/Nginx/nginx.md)  
 [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
-[Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation%20.md)  
+[Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
 
 ----
 
