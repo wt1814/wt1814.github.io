@@ -369,6 +369,7 @@
 [分布式锁](/docs/microService/thinking/DistributedLock.md)  
 &emsp; [Redis分布式锁](/docs/microService/thinking/redisLock.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
+&emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
 &emsp; [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
 
 ### 限流降级

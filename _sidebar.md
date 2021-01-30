@@ -283,6 +283,7 @@
 * [分布式锁](/docs/microService/thinking/DistributedLock.md)  
     * [Redis分布式锁](/docs/microService/thinking/redisLock.md)  
     * [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
+    * [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
     * [使用分布式锁的思考](/docs/microService/thinking/useLock.md)  
 * [分布式Session](/docs/microService/thinking/DistributedSession.md)  
 * [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
