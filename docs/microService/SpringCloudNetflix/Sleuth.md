@@ -23,10 +23,15 @@
             - [1.5.2.1. 消息中间件收集](#1521-消息中间件收集)
         - [1.5.3. 数据持久化](#153-数据持久化)
         - [1.5.4. API接口](#154-api接口)
+    - [SpringMVC、dubbo集成zipkin](#springmvcdubbo集成zipkin)
 
 <!-- /TOC -->
 
 # 1. Spring Cloud Sleuth
+<!-- 
+一文搞懂全链路监控：方案概述与比较 | 干货
+https://mp.weixin.qq.com/s/CZnVxs0vDMBhhBUiioon3g
+-->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-33.png)  
 
 ## 1.1. 全链路监控功能模块  

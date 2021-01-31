@@ -14,8 +14,17 @@
 
 <!-- /TOC -->
 
+
+&emsp; 本节要点： 
+1. 什么是循环依赖？
+2. 什么情况下循环依赖可以被处理？
+3. Spring是如何解决的循环依赖？ 
+
+# 1. 循环依赖  
 <!-- 
 https://mp.weixin.qq.com/s/p01mrjBwstK74d3D3181og
+ Spring循环依赖三级缓存是否可以减少为二级缓存？ 
+ https://mp.weixin.qq.com/s/gN7m3T8nWP17Xp7B9UVKdw
 -->
 
 <!-- 
@@ -23,12 +32,6 @@ https://mp.weixin.qq.com/s/p01mrjBwstK74d3D3181og
 https://juejin.cn/post/6895753832815394824
 https://mp.weixin.qq.com/s/YQRO2ZTn4T6A-iPUfs5ROg
 -->
-&emsp; 本节要点： 
-1. 什么是循环依赖？
-2. 什么情况下循环依赖可以被处理？
-3. Spring是如何解决的循环依赖？ 
-
-# 1. 循环依赖  
 
 ## 1.1. 前言
 &emsp; **doCreateBean()** 过程中要处理循环依赖。其实循环依赖并不仅仅只是在doCreateBean()中处理，其实在整个加载 bean 的过程中都有涉及。  

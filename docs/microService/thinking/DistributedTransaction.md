@@ -13,7 +13,9 @@
 <!-- /TOC -->
 
 # 1. 分布式事务  
-<!-- 
+<!--
+分布式事务解决方案
+https://mp.weixin.qq.com/s/mSxUXHgcHo5a7VAhvjIpCQ
 -->
 
 <!--
