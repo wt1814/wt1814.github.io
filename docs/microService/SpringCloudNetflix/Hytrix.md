@@ -25,7 +25,9 @@
         - [1.7.2. 与消息代理结合](#172-与消息代理结合)
 
 <!-- /TOC -->
-
+                 
+&emsp; **<font color = "red">小结：</font>**  
+&emsp; 首先熔断的对象是服务之间的请求；熔断策略有根据请求的数量分为信号量和线程池；还有请求的时间(即超时熔断)；请求错误率。  
 
 # 1. Spring Cloud Hytrix
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-30.png)  
@@ -47,7 +49,6 @@
 
 ## 1.3. Hystrix原理  
 ### 1.3.1. Hystrix工作流程  
-
 <!-- 
 用Hystrix保护自己的应用
 https://mp.weixin.qq.com/s/nCifoTiqhBT2Eai2UJinag

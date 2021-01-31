@@ -33,6 +33,12 @@
 <!-- /TOC -->
 
 # 1. GC
+<!-- 
+PLAB
+https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
+
+-->
+
 ## 1.1. GC算法  
 <!-- 
 分代收集算法 

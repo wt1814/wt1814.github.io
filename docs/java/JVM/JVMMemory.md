@@ -31,16 +31,17 @@
 <!-- 
 JVM 内存结构 
 https://mp.weixin.qq.com/s/mWIsVIYkn7ts02mdmvRndA
+https://mp.weixin.qq.com/s/jPIHNsQwiYNCRUQt1qXR6Q
+
 -->
 
 # 1. JVM内存结构/运行时数据区  
 &emsp; **<font color = "lime">1. 检测类是否被加载 2. 为对象分配内存 3. 为分配的内存空间初始化零值 4. 对对象进行其他设置 5.执行init方法。</font>**    
 
-
 &emsp; Java虚拟机在执行Java程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK1.8和之前的版本略有不同。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-7.png)  
 
-&emsp; JVM内存区域主要分为线程私有区域【程序计数器、虚拟机栈、本地方法区】、线程共享区域【Java 堆、方法区、直接内存】。  
+&emsp; JVM内存区域主要分为线程私有区域【程序计数器、虚拟机栈、本地方法区】、线程共享区域【Java堆、方法区、直接内存】。  
 
 * 线程私有数据区域生命周期与线程相同，依赖用户线程的启动/结束而创建/销毁（在 Hotspot VM内，每个线程都与操作系统的本地线程直接映射，因此这部分内存区域的存/否跟随系统本地线程的生/死对应）。  
 * 线程共享区随虚拟机的启动/关闭而创建/销毁。  
@@ -154,7 +155,6 @@ Code:
 ......
 https://mp.weixin.qq.com/s/Tv-0hjIgN9Grqvch1fFUiA -->
 
-
 ## 1.3. 本地方法栈  
 &emsp; 本地方法栈与虚拟机栈作用相似。hotspot虚拟机中，虚拟机栈与本地方法栈是一体的。虚拟机栈为虚拟机执行Java方法服务；本地方法栈为虚拟机执行native方法服务。  
 &emsp; 本地方法堆栈也会出现StackOverFlowError和OutOfMemoryError两种异常。  
@@ -169,7 +169,10 @@ https://mp.weixin.qq.com/s/Tv-0hjIgN9Grqvch1fFUiA -->
 &emsp; **<font color = "red">在Eden区中，JVM 为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
 
 ### 1.4.2. 堆是分配对象存储的唯一选择吗？（逃逸分析）  
-<!-- 
+<!--
+https://www.cnblogs.com/BlueStarWei/p/9358757.html
+
+https://www.jianshu.com/p/e832aa3b8b70
 https://mp.weixin.qq.com/s/BUcFh9ArENu9rlMdmlDNWg
 https://mp.weixin.qq.com/s/jPIHNsQwiYNCRUQt1qXR6Q
 https://mp.weixin.qq.com/s?__biz=Mzg4MjU0OTM1OA==&mid=2247489185&idx=1&sn=63186214b5145a5f6567d9bae6fd34e6&source=41#wechat_redirect
