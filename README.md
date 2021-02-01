@@ -383,10 +383,10 @@
 &emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
 
 ### 分布式搜索引擎  
-[ES搭建](/docs/ES/7.build.md)  
-[ES基本概念](/docs/ES/1.basicConcepts.md)  
-[ES集群](/docs/ES/3.colony.md)  
-[ES使用](/docs/ES/2.useTutorials.md)  
+[ES搭建](/docs/ES/build.md)  
+[ES基本概念](/docs/ES/basicConcepts.md)  
+[ES集群](/docs/ES/colony.md)  
+[ES使用](/docs/ES/useTutorials.md)  
 &emsp; [ES建模](/docs/ES/modeling.md)  
 &emsp; [索引操作](/docs/ES/index.md)  
 &emsp; [文档操作](/docs/ES/document.md)  
@@ -394,9 +394,9 @@
 &emsp; [检索操作](/docs/ES/search.md)  
 &emsp; [多表关联](/docs/ES/multiTable.md)  
 &emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
-[ES原理](/docs/ES/4.principle.md)  
-[ES优化](/docs/ES/5.optimization.md)  
-[ELK与EFK](/docs/ES/6.ELK与EFK.md)    
+[ES原理](/docs/ES/principle.md)  
+[ES优化](/docs/ES/optimization.md)  
+[ELK与EFK](/docs/ES/ELK与EFK.md)    
 &emsp; [Kibana用户手册](/docs/ES/Kibana.md)  
 
 ### 分布式通信  

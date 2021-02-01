@@ -2,7 +2,7 @@
 <!-- TOC -->
 
 - [1. ES基本概念](#1-es基本概念)
-    - [1.1. ES数据架构](#11-es数据架构)
+    - [1.1. ~~ES数据架构~~](#11-es数据架构)
     - [1.2. 倒排索引](#12-倒排索引)
         - [1.2.1. 示例](#121-示例)
         - [1.2.2. 核心组成](#122-核心组成)
@@ -17,9 +17,13 @@
 <!-- /TOC -->
 
 # 1. ES基本概念  
-<!-- 
+<!--
+核心概念介绍
+https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490655&idx=3&sn=c988118763c13d263dfabe745e43cebe&scene=21#wechat_redirect
 一文讲透Elasticsearch倒排索引与分词 
 https://mp.weixin.qq.com/s/81wHAF9b96r08uBCH3TodA
+ES倒排索引结构设计太牛逼
+https://mp.weixin.qq.com/s/4ssGyiK_J2NXwZe4JqnKHQ
 
 &emsp; 特点和优势：  
 
@@ -30,13 +34,14 @@ https://mp.weixin.qq.com/s/81wHAF9b96r08uBCH3TodA
 * 可以扩展到上百台服务器，处理PB级别的结构化或非结构化数据（官网是这么说的）。也可以运行在单台PC上（已测试）。   
 * 支持插件机制，分词插件、同步插件、Hadoop插件、可视化插件等。
 --> 
-&emsp; ES是Elaticsearch简写， Elasticsearch是一个开源的高扩展的分布式全文检索引擎，它可以近乎实时的存储、检索数据；本身扩展性很好，可以扩展到上百台服务器，处理PB级别的数据。  
+&emsp; ES是Elaticsearch简写，Elasticsearch是一个开源的高扩展的分布式全文检索引擎，它可以近乎实时的存储、检索数据；本身扩展性很好，可以扩展到上百台服务器，处理PB级别的数据。  
 &emsp; ES是基于Lucene开发的，ES中的部分概念就是Lucene的概念。   
 
-## 1.1. ES数据架构  
+## 1.1. ~~ES数据架构~~  
 
 &emsp; **与mysql的对比**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-2.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-82.png)  
 
 * Index索引  
 &emsp; ES将数据存储于一个或多个索引中，索引是具有类似特性的文档的集合。  
@@ -73,25 +78,19 @@ https://mp.weixin.qq.com/s/81wHAF9b96r08uBCH3TodA
 * 映射  
 &emsp; 映射是定义文档及其包含的字段如何存储和索引的过程。例如，使用映射来定义：  
 
+    * 哪些字符串字段应该被视为全文字段。
+    * 哪些字段包含数字、日期或地理位置。
+    * 文档中所有字段的值是否应该被索引到catch-all _all字段中。
+    * 日期值的格式。
+    * 用于控制动态添加字段的映射的自定义规则。
 
-  * 哪些字符串字段应该被视为全文字段。
-  * 哪些字段包含数字、日期或地理位置。
-  * 文档中所有字段的值是否应该被索引到catch-all _all字段中。
-  * 日期值的格式。
-  * 用于控制动态添加字段的映射的自定义规则。
-
-  &emsp; <font color = "red">每个索引都有一个映射类型，它决定了文档的索引方式。</font>  
+  &emsp; **<font color = "red">每个索引都有一个映射类型，它决定了文档的索引方式。</font>**  
   &emsp;ES中的数据类型：    
   ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-1.png)  
 
-      注意：在ES中创建一个mapping映射类似于在数据库中定义表结构，即表里面有哪些字段、字段是什么类型、字段的默认值等；也类似于solr里面的模式schema的定义。
-    
+  &emsp; 注意：在ES中创建一个mapping映射类似于在数据库中定义表结构，即表里面有哪些字段、字段是什么类型、字段的默认值等；也类似于solr里面的模式schema的定义。
 
 ## 1.2. 倒排索引  
-<!-- 
-ES倒排索引结构设计太牛逼
-https://mp.weixin.qq.com/s/4ssGyiK_J2NXwZe4JqnKHQ
--->
 &emsp; <font color = "red">在Elasticsearch中倒排索引也是非常重要的“索引”结构。</font>Elasticsearch将写入索引的所有信息组织成倒排索引的结构。该结构是一种<font color = "lime">将文档单词到文档ID的数据结构，其工作方式与传统的关系数据库不同，可以认为倒排索引是面向词项而不是面向文档的。</font>
 
 ### 1.2.1. 示例  
@@ -139,10 +138,10 @@ https://mp.weixin.qq.com/s/4ssGyiK_J2NXwZe4JqnKHQ
 当我们去索引一个文档时，就回建立倒排索引，搜索时，直接根据倒排索引搜索。
 -->
 
-&emsp; **<font color = "red">倒排序索引包含两个部分：</font>**  
+&emsp; **<font color = "red">倒排序索引包含两个部分：单词词典和倒排列表。</font>**  
 
-* 单词词典：记录所有文档单词，记录单词到倒排列表的关联关系。
-* 倒排列表：记录单词与对应文档结合，由倒排索引项组成。  
+* **<font color = "red">单词词典：记录所有文档单词；记录单词到倒排列表的关联关系。</font>**
+* **<font color = "red">倒排列表：记录单词与对应文档结合，由倒排索引项组成。</font>**  
 &emsp; 倒排索引项：  
   * 文档   
   * 词频 TF - 单词在文档中出现的次数，用于相关性评分  
@@ -197,7 +196,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247491016&idx=1&sn=843b7e
 &emsp; 索引期与检索期的文本分析要采用同样的分析器，只有查询分析出来的文档与索引中文档能匹配上，才会返回预期的文档集。  
 
 ### 1.3.2. 分词器
-&emsp; Analysis：即文本分析，是把全文本转化为一系列单词（term/token）的过程，也叫分词；在Elasticsearch 中可通过内置分词器实现分词，也可以按需定制分词器。Elasticsearch中的内置分词器：  
+&emsp; Analysis：即文本分析，是把全文本转化为一系列单词(term/token)的过程，也叫分词；在Elasticsearch中可通过内置分词器实现分词，也可以按需定制分词器。Elasticsearch中的内置分词器：  
 
 * Standard Analyzer：默认分词器，按词切分，小写处理  
 * Simple Analyzer：按照非字母切分(符号被过滤)，小写处理  
@@ -210,9 +209,9 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247491016&idx=1&sn=843b7e
 
 &emsp; **Analyzer由三部分组成：**  
 
-* Character Filters：原始文本处理，如去除 html  
+* Character Filters：原始文本处理，如去除html  
 * Tokenizer：按照规则切分为单词  
-* Token Filters：对切分单词加工、小写、删除 stopwords，增加同义词  
+* Token Filters：对切分单词加工、小写、删除stopwords，增加同义词  
 
 &emsp; **Analyzer分词过程简介**  
 1. 字符过滤器  character filter  
@@ -221,7 +220,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247491016&idx=1&sn=843b7e
 &emsp; 其次，字符串被分词器分为单个的词条。一个whitespace的分词器遇到空格和标点的时候，可能会将文本拆分成词条。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-3.png)  
 3. 令牌过滤器token filter  
-&emsp; 最后，词条按顺序通过每个token过滤器。这个过程可能会改变词条，例如，lowercase token filter小写化（将ES转为es）、stop token filter删除词条（例如，像a，and，the等无用词），或者synonym token filter增加词条（例如，像 jump和leap这种同义词）。  
+&emsp; 最后，词条按顺序通过每个token过滤器。这个过程可能会改变词条，例如，lowercase token filter小写化(将ES转为es)、stop token filter删除词条(例如，像a，and，the等无用词)，或者synonym token filter增加词条(例如，像jump和leap这种同义词)。  
 
 #### 1.3.2.1. ik中文分词器  
 <!--

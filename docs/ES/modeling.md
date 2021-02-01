@@ -213,7 +213,7 @@ actions:
 &emsp; 最常见问题答疑  
 
 #### 1.2.2.1. 问题 1：索引设置多少分片？
-&emsp; Shard 大小官方推荐值为 20-40GB, 具体原理呢？Elasticsearch 员工 Medcl 曾经讨论如下：  
+&emsp; Shard 大小官方推荐值为20-40GB, 具体原理呢？Elasticsearch 员工 Medcl 曾经讨论如下：  
 &emsp; Lucene 底层没有这个大小的限制，20-40GB 的这个区间范围本身就比较大，经验值有时候就是拍脑袋，不一定都好使。  
 &emsp; Elasticsearch 对数据的隔离和迁移是以分片为单位进行的，分片太大，会加大迁移成本。  
 &emsp; 一个分片就是一个 Lucene 的库，一个 Lucene 目录里面包含很多 Segment，每个 Segment 有文档数的上限，Segment 内部的文档 ID 目前使用的是 Java 的整型，也就是 2 的 31 次方，所以能够表示的总的文档数为Integer.MAXVALUE - 128 = 2^31 - 128 = 2147483647 - 1 = 2,147,483,519，也就是21.4亿条。  
@@ -230,20 +230,20 @@ actions:
 
 &emsp; 前三步能得出一个索引的大小。分片数考虑维度：  
 
-* 1）分片数 = 索引大小/分片大小经验值 30GB 。  
-* 2）分片数建议和节点数一致。设计的时候1）、2）两者权衡考虑+rollover 动态更新索引结合。  
+* 1）分片数 = 索引大小/分片大小经验值30GB 。  
+* 2）分片数建议和节点数一致。设计的时候1）、2）两者权衡考虑+rollover动态更新索引结合。  
 
-&emsp; 每个 shard 大小是按照经验值 30G 到 50G，因为在这个范围内查询和写入性能较好。  
+&emsp; 每个 shard 大小是按照经验值30G到50G，因为在这个范围内查询和写入性能较好。  
 
 &emsp; 经验值的探推荐阅读：  
 [Elasticsearch究竟要设置多少分片数？](https://mp.weixin.qq.com/s?__biz=MzI2NDY1MTA3OQ==&mid=2247483700&idx=1&sn=1549fc794f77da2d2194c991e1ce029b&chksm=eaa8291cdddfa00ae765d5fc5298e252a0f848197348123266afb84751d9fe8907aff65d7aea&scene=21#wechat_redirect)  
 [探究 | Elasticsearch集群规模和容量规划的底层逻辑](https://mp.weixin.qq.com/s?__biz=MzI2NDY1MTA3OQ==&mid=2247484628&idx=1&sn=666e416ae28b93e42c26f26b208dea84&chksm=eaa82cfcdddfa5eacfcddb0cf54edcecb3ad86ca2cafd6f4f2d90cf8a4033d83eb16cb2a56f0&scene=21#wechat_redirect)  
 
 #### 1.2.2.2. 问题 2：索引设置多少副本？
-&emsp; 结合集群的规模，对于集群数据节点 >=2 的场景：建议副本至少设置为 1。  
-&emsp; 之前有同学出现过：副本设置为 0，长久以后会出现——数据写入向指定机器倾斜的情况。  
+&emsp; 结合集群的规模，对于集群数据节点 >=2 的场景：建议副本至少设置为1。  
+&emsp; 之前有同学出现过：副本设置为0，长久以后会出现——数据写入向指定机器倾斜的情况。  
 &emsp; 注意：  
-&emsp; 单节点的机器设置了副本也不会生效的。副本数的设计结合数据的安全需要。对于数据安全性要求非常高的业务场景，建议做好：增强备份（结合 ES 官方备份方案）。  
+&emsp; 单节点的机器设置了副本也不会生效的。副本数的设计结合数据的安全需要。对于数据安全性要求非常高的业务场景，建议做好：增强备份（结合ES官方备份方案）。  
 
 ## 1.3. Mapping 如何设计？  
 ### 1.3.1. Mapping 认知  
@@ -278,17 +278,17 @@ PUT new_index
 
 * ES 不支持直接删除字段  
 * ES 不支持直接修改字段  
-* ES 不支持直接修改字段类型 如果非要做灵活设计，ES 有其他方案可以替换，借助reindex。但是数据量大会有性能问题，建议设计阶段综合权衡考虑。    
+* ES 不支持直接修改字段类型。如果非要做灵活设计，ES有其他方案可以替换，借助reindex。但是数据量大会有性能问题，建议设计阶段综合权衡考虑。    
 
 ### 1.3.4. Mapping字段的设置流程
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-73.png)  
 &emsp; 索引分为静态 Mapping（自定义字段）+动态 Mapping（ES 自动根据导入数据适配）。  
-&emsp; 实战业务场景建议：选用静态 Mapping，根据业务类型自己定义字段类型。
+&emsp; 实战业务场景建议：选用静态Mapping，根据业务类型自己定义字段类型。
 
 &emsp; 好处：  
 
 * 可控；
-* 节省存储空间（默认 string 是 text+keyword，实际业务不一定需要）。
+* 节省存储空间（默认string是text+keyword，实际业务不一定需要）。
 
 &emsp; 设置字段的时候，务必过一下如下图示的流程。根据实际业务需要，主要关注点：  
 

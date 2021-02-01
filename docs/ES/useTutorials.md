@@ -52,11 +52,11 @@ POST products/_search?size=0
 
 &emsp; 调用REST API很容易，除了实际的主机名/ IP和端口外，它还包含四个部分：  
 
-* 动词——REST调用的 GET，PUT，POST和DELETE部分。
-&emsp; 在Kibana中，您可以直接指定这些名称，对于cURL，请使用-X选项。  
+* 动词——REST调用的 GET，PUT，POST和DELETE部分。  
+&emsp; 在Kibana中，可以直接指定这些名称，对于cURL，请使用-X选项。  
 &emsp; 对应示例中的：POST  
 * 路径——API和路径。  
-&emsp; 例如：/_cluster / health 或 /logstash-cron-2020.07.03/_mapping-路径的第一部分通常是索引名称，除非它以_开头。 
+&emsp; 例如：/_cluster / health 或 /logstash-cron-2020.07.03/_mapping-路径的第一部分通常是索引名称，除非它以_开头。  
 &emsp; 对应示例中的：products/_search，其中products是索引。  
 * 参数——后面的各种选项？  
 &emsp; 例如？h或？v    
@@ -67,13 +67,13 @@ POST products/_search?size=0
 ### 1.1.2. 常用选项  
 &emsp; 有一些通用选项适用于许多（不是全部）URL。这些是：  
 
-* ?help——帮助选项。
+* ?help——帮助选项。  
 &emsp; 将在列表中提供 API 可用的字段，其中包含短名称和长名称、说明等。  
 &emsp; 举例：  
 &emsp; GET _cat/indices?help  
 * ?h =-“ h”——使用上方“帮助”显示中的短名称或长名称指定要包括在结果中的字段。这些用逗号分隔，没有空格。  
 &emsp; 举例：  
-&emsp; GET _cat/indices?h=docs.count,store.size 
+&emsp; GET _cat/indices?h=docs.count,store.size  
 &emsp; 这样以后返回结果一头雾水，相当于Excel有N列字段，但没有表头一样，很痛苦！  
 * ?v——'v'在回复的顶部包括字段名称。  
 &emsp; GET _cat/indices?h=docs.count,store.size&v  

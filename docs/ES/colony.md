@@ -21,8 +21,6 @@
 <!-- /TOC -->
 
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-21.png)  
-
 # 1. ES集群  
 <!-- 
 elasticsearch集群扩容和容灾
@@ -31,8 +29,8 @@ https://www.cnblogs.com/hello-shf/p/11543468.html
 <!--
 &emsp; 公司es的集群架构，索引数据大小，分片有多少。  
 如实结合自己的实践场景回答即可。比如： ES 集群架构 13 个节点， 索引根据通道不同共 20+索引， 根据日期， 每日递增 20+， 索引： 10 分片， 每日递增 1 亿+数据， 每个通道每天索引大小控制： 150GB 之内。  
-
 -->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-21.png)  
 
 ## 1.1. 基本概念
 &emsp; 在数据库系统中，为了保证高可用性，可能会做主从复制、分库分表等操作。在ES中也有相同的基本操作。以下为ES集群中的一些基本概念：    
@@ -41,10 +39,12 @@ https://www.cnblogs.com/hello-shf/p/11543468.html
 &emsp; 运行了单个实例的ES主机称为节点，它是集群的一个成员，可以存储数据、参与集群索引及搜索操作。节点通过为其配置的ES集群名称确定其所要加入的集群。  
 2. 集群（cluster）  
 &emsp; ES可以作为一个独立的单个搜索服务器。不过，一般为了处理大型数据集，实现容错和高可用性，ES可以运行在许多互相合作的服务器上。这些服务器的集合称为集群。  
+
 &emsp; **<font color = "red">ES集群节点类型：</font>**  
-&emsp; 集群由多个节点构成，每一台主机则称为一台节点，在伪集群中每一个 ES 实例则为一个节点。  
+&emsp; 集群由多个节点构成，每一台主机则称为一台节点，在伪集群中每一个ES实例则为一个节点。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-4.png)  
 &emsp; 上述图中则为一个集群，其中 Node-1 是主节点，主节点有权限控制整个集群，有权限控制整个集群。每个节点都有三个分片，其中P0 P1 P2代表 Primary 为主分片，R开头的则代表为每个主分片对应的副本分片，一共是 3 个主分片，每个主分片有两个对应的副本分片。  
+
 &emsp; **集群中节点分类：**  
 * Master：主节点，每个集群都有且只有一个  
   * 尽量避免Master节点 node.data ＝ true
@@ -53,8 +53,9 @@ https://www.cnblogs.com/hello-shf/p/11543468.html
   * Node.voting_only = true（仅投票节点，即使配置了data.master = true，也不会参选, 但是仍然可以作为数据节点）。  
 * coordinating：协调节点  
   * 每一个节点都隐式的是一个协调节点，如果同时设置了data.master = false和data.data=false，那么此节点将成为仅协调节点。
-4)Master-eligible node（候选节点）：	  
-5)Data node（数据节点）：  
+* Master-eligible node（候选节点）：	  
+* Data node（数据节点）：  
+
 &emsp; **关于集群节点类型的两个配置：node.master和node.data**   
 &emsp; 1)node.master = true	 node.data = true  
 &emsp; 这是ES节点默认配置，既作为候选节点又作为数据节点，这样的节点一旦被选举为Master，压力是比较大的，通常来说Master节点应该只承担较为轻量级的任务，比如创建删除索引，分片均衡等。  
@@ -108,10 +109,10 @@ https://www.cnblogs.com/hello-shf/p/11543468.html
 
 &emsp; master选举过程是自动完成的，有几个参数可以影响选举的过程：  
 
-* discovery.zen.ping_timeout: 选举超时时间，默认3秒，网络状况不好时可以增加超时时间。
-discovery.zen.join_timeout: 有新的node加入集群时，会发送一个join request到master node，同样因为网络原因可以调大，如果一次超时，默认最多重试20次。  
+* discovery.zen.ping_timeout：选举超时时间，默认3秒，网络状况不好时可以增加超时时间。
+discovery.zen.join_timeout：有新的node加入集群时，会发送一个join request到master node，同样因为网络原因可以调大，如果一次超时，默认最多重试20次。  
 * discovery.zen.master_election.ignore_non_master_pings：如果master node意外宕机了，集群进行重新选举，如果此值为true，那么只有master eligible node才有资格被选为master。  
-* discovery.zen.minimum_master_nodes: 新选举master时，要求必须有多少个 master eligible node去连接那个新选举的master。而且还用于设置一个集群中必须拥有的master eligible node。如果这些要求没有被满足，那么master node就会被停止，然后会重新选举一个新的master。这个参数必须设置为master eligible node的quorum数量。一般避免说只有两个master eligible node，因为2的quorum还是2。如果在那个情况下，任何一个master候选节点宕机了，集群就无法正常运作了。  
+* discovery.zen.minimum_master_nodes：新选举master时，要求必须有多少个master eligible node去连接那个新选举的master。而且还用于设置一个集群中必须拥有的master eligible node。如果这些要求没有被满足，那么master node就会被停止，然后会重新选举一个新的master。这个参数必须设置为master eligible node的quorum数量。一般避免说只有两个master eligible node，因为2的quorum还是2。如果在那个情况下，任何一个master候选节点宕机了，集群就无法正常运作了。  
 
 ### 1.2.4. 集群健康状态  
 &emsp; 要检查群集运行状况，可以在 Kibana 控制台中运行以下命令 GET /_cluster/health，得到如下信息：  
@@ -136,7 +137,7 @@ discovery.zen.join_timeout: 有新的node加入集群时，会发送一个join r
 }
 ```
 
-&emsp; <font color = "red">Elasticsearch集群存在三种健康状态</font>（单节点 Elasticsearch 也可以算是一个集群）。  
+&emsp; <font color = "red">Elasticsearch集群存在三种健康状态</font>(单节点 Elasticsearch 也可以算是一个集群)。  
 
 * 绿色：集群健康完好，一切功能齐全正常，所有分片和副本都可以正常工作。  
 * 黄色：预警状态，所有主分片功能正常，但至少有一个副本是不能正常工作的。此时集群是可以正常工作的，但是高可用性在某种程度上会受影响。  
