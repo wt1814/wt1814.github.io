@@ -5,38 +5,30 @@
 - [1. ES集群](#1-es集群)
     - [1.1. ES集群基本概念](#11-es集群基本概念)
         - [1.1.1. 节点(Node)](#111-节点node)
-        - [1.1.2. 集群(cluster)](#112-集群cluster)
-        - [1.1.3. 路由(routing)](#113-路由routing)
-        - [1.1.4. 分片(Shard)](#114-分片shard)
-        - [1.1.5. 副本(Replica)](#115-副本replica)
-    - [1.2. zen discovery集群发现机制](#12-zen-discovery集群发现机制)
+        - [1.1.2. ~~集群(cluster)~~](#112-集群cluster)
+        - [1.1.3. 分片(Shard)](#113-分片shard)
+        - [1.1.4. 副本(Replica)](#114-副本replica)
+        - [1.1.5. 路由(routing)](#115-路由routing)
+    - [1.2. ~~zen discovery集群发现机制~~](#12-zen-discovery集群发现机制)
         - [1.2.1. 集群配置](#121-集群配置)
         - [1.2.2. 集群发现的一般步骤](#122-集群发现的一般步骤)
         - [1.2.3. master选举](#123-master选举)
     - [1.3. 集群健康状态](#13-集群健康状态)
     - [1.4. 集群容错](#14-集群容错)
-        - [1.4.1. ※※※集群故障探查](#141-※※※集群故障探查)
-        - [1.4.2. 集群状态更新](#142-集群状态更新)
-        - [1.4.3. ※※※split-brain(脑分裂问题)](#143-※※※split-brain脑分裂问题)
-    - [1.5. 集群扩容](#15-集群扩容)
-    - [1.6. 集群重启](#16-集群重启)
+        - [1.4.1. 集群容错流程](#141-集群容错流程)
+        - [1.4.2. ※※※split-brain(脑分裂问题)](#142-※※※split-brain脑分裂问题)
+    - [1.5. 集群重启](#15-集群重启)
+    - [1.6. 集群扩容](#16-集群扩容)
 
 <!-- /TOC -->
 
 
 # 1. ES集群  
-<!-- 
-elasticsearch集群扩容和容灾
-https://www.cnblogs.com/hello-shf/p/11543468.html
--->
-<!--
-&emsp; 公司es的集群架构，索引数据大小，分片有多少。  
-如实结合自己的实践场景回答即可。比如： ES 集群架构 13 个节点， 索引根据通道不同共 20+索引， 根据日期， 每日递增 20+， 索引： 10 分片， 每日递增 1 亿+数据， 每个通道每天索引大小控制： 150GB 之内。  
--->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-21.png)  
 
 ## 1.1. ES集群基本概念
-&emsp; 在数据库系统中，为了保证高可用性，可能会做主从复制、分库分表等操作。在ES中也有相同的基本操作。以下为ES集群中的一些基本概念。  
+&emsp; 在数据库系统中，为了保证高可用性，可能会做主从复制、分库分表等操作。在ES中也有相同的基本操作。ES集群架构如下：  
+....
 
 ### 1.1.1. 节点(Node)  
 &emsp; 运行了单个实例的ES主机称为节点，它是集群的一个成员，可以存储数据、参与集群索引及搜索操作。节点通过为其配置的ES集群名称确定其所要加入的集群。  
@@ -46,7 +38,7 @@ https://www.cnblogs.com/hello-shf/p/11543468.html
 想要默认名称，你可以定义任何你想要的节点名。这个名字在管理中很重要，在网络中 Elasticsearch集群通过节点名称进行管理和通信。一个节点可以被配置加入一个特定的集 群。默认情况下，每个节点会加入名为Elasticsearch的集群中，这意味着如果你在网络上启 动多个节点，如果网络畅通，他们能彼此发现并自动加入一个名为Elasticsearch的集群中 在一个集群中，你可以拥有多个你想要的节点。当网络没有集群运行的时候，只要启动任何 —个节点，这个节点会默认生成一个新的集群，这个集群会有一个节点。  
 -->
 
-### 1.1.2. 集群(cluster)  
+### 1.1.2. ~~集群(cluster)~~  
 <!-- 
 4,集群(cluster)
 集群由一个或多个节点组成，对外提供服务，对外提供索引和搜索功能。在所有节点， 一个集群有一个唯一的名称默认为“Elasticsearch”。此名称是很重要的，因为每个节点只 能是集群的一部分，当该节点被设置为相同的集群名称时，就会自动加入集群。当需要有多 个集群的时候，要确保每个集群的名称不能重复，否则，节点可能会加入错误的集群。请注 意，一个节点只能加入一个集群。此外，你还可以拥有多个独立的集群，每个集群都有其不 同的集群名称。例如，在开发过程中，你可以建立开发集群库和测试集群库，分别为开发、 测试服务。  
@@ -55,42 +47,34 @@ https://www.cnblogs.com/hello-shf/p/11543468.html
 
 &emsp; **<font color = "red">ES集群节点类型：</font>**  
 &emsp; 集群由多个节点构成，每一台主机则称为一台节点，在伪集群中每一个ES实例则为一个节点。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-4.png)  
-&emsp; 上述图中则为一个集群，其中Node-1是主节点，主节点有权限控制整个集群，有权限控制整个集群。每个节点都有三个分片，其中P0 P1 P2代表 Primary 为主分片，R开头的则代表为每个主分片对应的副本分片，一共是 3 个主分片，每个主分片有两个对应的副本分片。  
 
 &emsp; **集群中节点分类：**  
 * Master：主节点，每个集群都有且只有一个  
   * 尽量避免Master节点 node.data ＝ true
   * 主节点的主要职责是和集群操作相关的内容，如创建或删除索引，跟踪哪些节点是群集的一部分，并决定哪些分片分配给相关的节点。稳定的主节点对集群的健康是非常重要的，默认情况下任何一个集群中的节点都有可能被选为主节点，索引数据和搜索查询等操作会占用大量的cpu，内存，io资源，为了确保一个集群的稳定，分离主节点和数据节点是一个比较好的选择。
+* Data node（数据节点）： 即 Data 节点。数据节点主要是存储索引数据的节点，主要对文档进行增删改查操作，聚合操作等。数据节点对 CPU、内存、IO 要求较高，在优化的时候需要监控数据节点的状态。
 * voting：投票节点  
   * Node.voting_only = true（仅投票节点，即使配置了data.master = true，也不会参选, 但是仍然可以作为数据节点）。  
 * coordinating：协调节点  
   * 每一个节点都隐式的是一个协调节点，如果同时设置了data.master = false和data.data=false，那么此节点将成为仅协调节点。
 * Master-eligible node（候选节点）：	  
-* Data node（数据节点）：  
+ 
 
 &emsp; **关于集群节点类型的两个配置：node.master和node.data**   
-&emsp; 1)node.master = true	 node.data = true  
+
+* node.master = true	 node.data = true  
 &emsp; 这是ES节点默认配置，既作为候选节点又作为数据节点，这样的节点一旦被选举为Master，压力是比较大的，通常来说Master节点应该只承担较为轻量级的任务，比如创建删除索引，分片均衡等。  
-&emsp; 2)node.master = true	 node.data = false  
+* node.master = true	 node.data = false  
 &emsp; 只作为候选节点，不作为数据节点，可参选Master节点，当选后成为真正的Master节点。  
-&emsp; 3)node.master = false	 node.data = false  
+* node.master = false	 node.data = false  
 &emsp; 既不当候选节点，也不作为数据节点，那就是仅协调节点，负责负载均衡  
-&emsp; 4)node.master=false		node.data=true  
+* node.master=false		node.data=true  
 &emsp; 不作为候选节点，但是作为数据节点，这样的节点主要负责数据存储和查询服务。    
 
-<!-- 
-* **主节点**：即 Master 节点。主节点的主要职责是和集群操作相关的内容，如创建或删除索引，跟踪哪些节点是群集的一部分，并决定哪些分片分配给相关的节点。稳定的主节点对集群的健康是非常重要的。默认情况下任何一个集群中的节点都有可能被选为主节点。索引数据和搜索查询等操作会占用大量的 cpu，内存，io 资源，为了确保一个集群的稳定，分离主节点和数据节点是一个比较好的选择。虽然主节点也可以协调节点，路由搜索和从客户端新增数据到数据节点，但最好不要使用这些专用的主节点。一个重要的原则是，尽可能做尽量少的工作；  
-* **数据节点**：即 Data 节点。数据节点主要是存储索引数据的节点，主要对文档进行增删改查操作，聚合操作等。数据节点对 CPU、内存、IO 要求较高，在优化的时候需要监控数据节点的状态，当资源不够的时候，需要在集群中添加新的节点；  
-* **负载均衡节点**：也称作 Client 节点，也称作客户端节点。当一个节点既不配置为主节点，也不配置为数据节点时，该节点只能处理路由请求，处理搜索，分发索引操作等，从本质上来说该客户节点表现为智能负载平衡器。独立的客户端节点在一个比较大的集群中是非常有用的，它协调主节点和数据节点，客户端节点加入集群可以得到集群的状态，根据集群的状态可以直接路由请求；  
-* **预处理节点**：也称作 Ingest 节点，在索引数据之前可以先对数据做预处理操作，所有节点其实默认都是支持 Ingest 操作的，也可以专门将某个节点配置为 Ingest 节点。以上就是节点几种类型，一个节点其实可以对应不同的类型，如一个节点可以同时成为主节点和数据节点和预处理节点，但如果一个节点既不是主节点也不是数据节点，那么它就是负载均衡节点。具体的类型可以通过具体的配置文件来设置；  
--->
 
-### 1.1.3. 路由(routing)  
-&emsp; 当存储一个文档的时候，它会存储在唯一的主分片中，具体哪个分片是通过散列值进行 选择:默认情况下，这个值是由文档的ID生成。如果文档有一个指定的父文档，则从父文 档ID中生成，该值可以在存储文档的时候进行修改。   
 
-### 1.1.4. 分片(Shard)  
-&emsp; **ES的“分片(shard)”机制可将一个索引内部的数据分布地存储于多个节点，**它通过将一个索引切分为多个底层物理的Lucene索引完成索引数据的分割存储功能，这每一个物理的Lucene索引称为一个分片(shard)。  
+### 1.1.3. 分片(Shard)  
+&emsp; **ES的“分片(shard)”机制可将一个索引内部的数据分布地存储于多个节点，** 它通过将一个索引切分为多个底层物理的Lucene索引完成索引数据的分割存储功能，这每一个物理的Lucene索引称为一个分片(shard)。  
 &emsp; 这样的好处是可以把一个大的索引拆分成多个，分布到不同的节点上。降低单服务器的压力，构成分布式搜索，提高整体检索的效率（分片数的最优值与硬件参数和数据量大小有关）。分片的数量只能在索引创建前指定，并且索引创建后不能更改。  
 <!-- 
 7.分片(shard)
@@ -108,7 +92,7 @@ https://www.cnblogs.com/hello-shf/p/11543468.html
 这些很强大的功能对用户来说是透明的，你不需要做什么操作，系统会自动处理。  
 -->
 
-### 1.1.5. 副本(Replica)  
+### 1.1.4. 副本(Replica)  
 <!--
 10,复制(replica)
 复制是一个非常有用的功能，不然会有单点问题。当网络中的某个节点出现问题的时 候，复制可以对故障进行转移，保证系统的高可用。因此，Elasticsearch允许你创建一个或 多个拷贝，你的索引分片就形成了所谓的副本或副本分片。  
@@ -123,8 +107,11 @@ https://www.cnblogs.com/hello-shf/p/11543468.html
 &emsp; 副本是一个分片的精确复制，每个分片可以有零个或多个副本。<font color = "red">副本的作用：一是提高系统的容错性，当某个节点某个分片损坏或丢失时可以从副本中恢复；二是提高es的查询效率，es会自动对搜索请求进行负载均衡。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-75.png)  
 
-## 1.2. zen discovery集群发现机制  
-&emsp; es的discovery机制：集群中各个节点互相发现然后组成一个集群的机制，同时discovery机制也负责es集群的master选举。  
+### 1.1.5. 路由(routing)  
+&emsp; 当存储一个文档的时候，它会存储在唯一的主分片中，具体哪个分片是通过散列值进行选择：默认情况下，这个值是由文档的ID生成。如果文档有一个指定的父文档，则从父文档ID中生成，该值可以在存储文档的时候进行修改。   
+
+## 1.2. ~~zen discovery集群发现机制~~  
+&emsp; **<font color = "red">es的discovery机制：集群中各个节点互相发现然后组成一个集群的机制，同时discovery机制也负责es集群的master选举。</font>**    
 
 ### 1.2.1. 集群配置  
 &emsp; Zen Discovery是Elasticsearch集群发现机制的默认实现，底层通信依赖transport组件，完成Elasticsearch集群的配置主要有下面几个参数：  
@@ -188,9 +175,9 @@ discovery.zen.join_timeout：有新的node加入集群时，会发送一个join 
 
 &emsp; <font color = "red">当集群状态为红色时，它将会继续从可用的分片提供搜索请求服务，但是需要尽快修复那些未分配的分片。</font>  
 
-
-
 ## 1.4. 集群容错  
+
+### 1.4.1. 集群容错流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-76.png)  
 &emsp; ①第一步：Master选举（假如宕机节点是Master）  
 &emsp; &emsp; 1)脑裂：可能会产生多个Master节点  
@@ -199,39 +186,7 @@ discovery.zen.join_timeout：有新的node加入集群时，会发送一个join 
 &emsp; ③第三步：Master节点会尝试重启故障机  
 &emsp; ④第四步：数据同步，Master会将宕机期间丢失的数据同步到重启机器对应的分片上去  
 
-### 1.4.1. ※※※集群故障探查
-<!-- 
-Elasticsearch 集群故障排查及修复指南 
-https://mp.weixin.qq.com/s/7pWdS_zPDNiXKzrUOCTVfg
--->
-
-&emsp; 有两种集群故障探查机制：  
-
-* master主动对集群中所有的其他node发起ping命令，判断它们是否是存活着的。
-* 每个node向master node发送ping请求，判断master node是否存活，否则就会发起一个选举过程。
-
-&emsp; 有下面三个参数用来配置集群故障的探查过程：  
-
-* ping_interval：ping一次node的间隔时间，默认是1s  
-* ping_timeout：每次ping的timeout等待时长，默认是30s  
-* ping_retries：对node的ping请求失败了，重试次数，默认3次。  
-
-### 1.4.2. 集群状态更新
-&emsp; master node是集群中唯一可以对cluster state进行更新的node。更新的步骤如下：  
-1. master node收到更新事件，如shard移动，可能会有多条事件，但master node一次只处理一个集群状态的更新事件。  
-2. master node将事件更新到本地，并发布publish message到集群所有的node上。  
-3. node接收publish message后，对这个message返回ack响应，但是不会立即更新。  
-4. 如果master没有在指定的时间内（discovery.zen.commit_timeout配置项，默认是30s），从至少N个节点（discovery.zen.minimum_master_nodes配置项）获取ack响应，那么这次cluster state change事件就会被reject，最终不会被提交。  
-5. 如果在指定时间内，指定数量的node都返回了ack消息，那么cluster state就会被commit，然后master node把 commit message发送给所有的node。所有的node接收到那个commit message之后，接着才会将之前接收到的集群状态应用到自己本地的状态副本中去。
-6. master会等待所有node的commit message 的ack消息，在一个等待超时时长内，如果接收到了响应，表示状态更新成功，master node继续处理内存queue中保存的下一个更新事件。  
-
-&emsp; discovery.zen.publish_timeout默认是30s，这个超时等待时长是从plublish cluster state开始计算的。  
-
-&emsp; 可以参照此图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-5.png)  
-
-
-### 1.4.3. ※※※split-brain(脑分裂问题)  
+### 1.4.2. ※※※split-brain(脑分裂问题)  
 <!-- 
 Elasticsearch 中的节点（比如共 20 个），其中的 10 个 选了一个master，另外 10 个选了另一个master，怎么办？  
 1、当集群 master 候选数量不小于 3 个时， 可以通过设置最少投票通过数量 （ discovery.zen.minimum_master_nodes） 超过所有候选节点一半以上来解决脑裂问题；  
@@ -264,7 +219,46 @@ Elasticsearch 中的节点（比如共 20 个），其中的 10 个 选了一个
 
 &emsp; 综上所述：3个节点的集群，全部为master eligible node，配置discovery.zen.minimum_master_nodes: 2，就可以避免脑裂问题的产生。  
 
-## 1.5. 集群扩容  
+## 1.5. 集群重启
+&emsp; 如果Elasticsearch集群做了一些离线的维护操作时，如扩容磁盘，升级版本等，需要对集群进行启动，节点数较多时，从第一个节点开始启动，到最后一个节点启动完成，耗时可能较长，有时候还可能出现某几个节点因故障无法启动，排查问题、修复故障后才能加入到集群中，此时集群会干什么呢？    
+
+&emsp; 假设10个节点的集群，每个节点有1个shard，升级后重启节点，结果有3台节点因故障未能启动，需要耗费时间排查故障，如下图所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-9.png)    
+
+&emsp; 整个过程步骤如下：  
+1. 集群已完成master选举(node6)，master发现未加入集群的node1、node2、node3包含的shard丢失，便立即发出shard恢复的指令。
+2. 在线的7台node，将其中一个replica shard升级为primary shard，并且进行为这些primary shard复制足够的replica shard。
+3. 执行shard rebalance操作。
+4. 故障的3台节点已排除，启动成功后加入集群。
+5. 这3台节点发现自己的shard已经在集群中的其他节点上了，便删除本地的shard数据。
+6. master发现新的3台node没有shard数据，重新执行一次shard rebalance操作。
+
+&emsp; 这个过程可以发现，多做了四次IO操作，shard复制，shard首次移动，shard本地删除，shard再次移动，这样凭空造成大量的IO压力，如果数据量是TB级别的，那费时费力不讨好。  
+
+&emsp; 出现此类问题的原因是节点启动的间隔时间不能确定，并且节点越多，这个问题越容易出现，如果可以设置集群等待多少个节点启动后，再决定是否对shard进行移动，这样IO压力就能小很多。  
+
+&emsp; 针对这个问题，有下面几个参数：  
+
+* gateway.recover_after_nodes：集群必须要有多少个节点时，才开始做shard恢复操作。
+* gateway.expected_nodes: 集群应该有多少个节点
+* gateway.recover_after_time: 集群启动后等待的shard恢复时间
+
+&emsp; 如上面的案例，可以这样设置：  
+
+    gateway.recover_after_nodes: 8
+    gateway.expected_nodes: 10
+    gateway.recover_after_time: 5m
+
+&emsp; 这三个参数的含义：集群总共有10个节点，必须要有8个节点加入集群时，才允许执行shard恢复操作，如果10个节点未全部启动成功，最长的等待时间为5分钟。  
+&emsp; 这几个参数的值可以根据实际的集群规模来设置，并且只能在elasticsearch.yml文件里设置，没有动态修改的入口。  
+&emsp; 上面的参数设置合理的情况，集群启动是没有shard移动的现象，这样集群启动的时候就可以由之前的几小时，变成几秒钟。  
+
+
+## 1.6. 集群扩容  
+<!-- 
+elasticsearch集群扩容和容灾
+https://www.cnblogs.com/hello-shf/p/11543468.html
+-->
 &emsp; 因为集群是可以动态增加和下线节点的，quorum的值也会跟着改变。minimum_master_nodes参数值需要通过api随时修改的，特别是在节点上线和下线的时候，都需要作出对应的修改。而且一旦修改过后，这个配置就会持久化保存下来。  
 
 &emsp; 修改api请求如下：  
@@ -315,40 +309,6 @@ GET /_cluster/settings
 }
 ```
 
-## 1.6. 集群重启
-&emsp; 如果Elasticsearch集群做了一些离线的维护操作时，如扩容磁盘，升级版本等，需要对集群进行启动，节点数较多时，从第一个节点开始启动，到最后一个节点启动完成，耗时可能较长，有时候还可能出现某几个节点因故障无法启动，排查问题、修复故障后才能加入到集群中，此时集群会干什么呢？    
-
-&emsp; 假设10个节点的集群，每个节点有1个shard，升级后重启节点，结果有3台节点因故障未能启动，需要耗费时间排查故障，如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-9.png)    
-
-&emsp; 整个过程步骤如下：  
-1. 集群已完成master选举(node6)，master发现未加入集群的node1、node2、node3包含的shard丢失，便立即发出shard恢复的指令。
-2. 在线的7台node，将其中一个replica shard升级为primary shard，并且进行为这些primary shard复制足够的replica shard。
-3. 执行shard rebalance操作。
-4. 故障的3台节点已排除，启动成功后加入集群。
-5. 这3台节点发现自己的shard已经在集群中的其他节点上了，便删除本地的shard数据。
-6. master发现新的3台node没有shard数据，重新执行一次shard rebalance操作。
-
-&emsp; 这个过程可以发现，多做了四次IO操作，shard复制，shard首次移动，shard本地删除，shard再次移动，这样凭空造成大量的IO压力，如果数据量是TB级别的，那费时费力不讨好。  
-
-&emsp; 出现此类问题的原因是节点启动的间隔时间不能确定，并且节点越多，这个问题越容易出现，如果可以设置集群等待多少个节点启动后，再决定是否对shard进行移动，这样IO压力就能小很多。  
-
-&emsp; 针对这个问题，有下面几个参数：  
-
-* gateway.recover_after_nodes：集群必须要有多少个节点时，才开始做shard恢复操作。
-* gateway.expected_nodes: 集群应该有多少个节点
-* gateway.recover_after_time: 集群启动后等待的shard恢复时间
-
-&emsp; 如上面的案例，可以这样设置：  
-
-    gateway.recover_after_nodes: 8
-    gateway.expected_nodes: 10
-    gateway.recover_after_time: 5m
-
-&emsp; 这三个参数的含义：集群总共有10个节点，必须要有8个节点加入集群时，才允许执行shard恢复操作，如果10个节点未全部启动成功，最长的等待时间为5分钟。  
-&emsp; 这几个参数的值可以根据实际的集群规模来设置，并且只能在elasticsearch.yml文件里设置，没有动态修改的入口。  
-&emsp; 上面的参数设置合理的情况，集群启动是没有shard移动的现象，这样集群启动的时候就可以由之前的几小时，变成几秒钟。  
-
 
 <!-- 
 小结：提高ES分布式系统的可用性以及性能最大化  
@@ -360,4 +320,39 @@ GET /_cluster/settings
 &emsp; （6）由于仅投票节不参与Master竞选，所以和真正的Master节点相比，它需要的内存和CPU较少。但是，所有候选节点以及仅投票节点都可能是数据节点，所以他们都需要快速稳定低延迟的网络。  
 &emsp; （7）高可用性（HA）群集至少需要三个主节点，其中至少两个不是仅投票节点。即使其中一个节点发生故障，这样的群集也将能够选举一个主节点。生产环境最好设置3台仅Master候选节点（node.master = true	 node.data = true）。  
 &emsp; （8）为确保群集仍然可用，集群不能同时停止投票配置中的一半或更多节点。只要有一半以上的投票节点可用，群集仍可以正常工作。这意味着，如果存在三个或四个主节点合格的节点，则群集可以容忍其中一个节点不可用。如果有两个或更少的主机资格节点，则它们必须都保持可用。  
+-->
+
+
+
+<!-- 
+Elasticsearch 集群故障排查及修复指南 
+https://mp.weixin.qq.com/s/7pWdS_zPDNiXKzrUOCTVfg
+
+1.4.1. ※※※集群故障探查
+
+
+&emsp; 有两种集群故障探查机制：  
+
+* master主动对集群中所有的其他node发起ping命令，判断它们是否是存活着的。
+* 每个node向master node发送ping请求，判断master node是否存活，否则就会发起一个选举过程。
+
+&emsp; 有下面三个参数用来配置集群故障的探查过程：  
+
+* ping_interval：ping一次node的间隔时间，默认是1s  
+* ping_timeout：每次ping的timeout等待时长，默认是30s  
+* ping_retries：对node的ping请求失败了，重试次数，默认3次。  
+
+ 1.4.2. 集群状态更新
+&emsp; master node是集群中唯一可以对cluster state进行更新的node。更新的步骤如下：  
+1. master node收到更新事件，如shard移动，可能会有多条事件，但master node一次只处理一个集群状态的更新事件。  
+2. master node将事件更新到本地，并发布publish message到集群所有的node上。  
+3. node接收publish message后，对这个message返回ack响应，但是不会立即更新。  
+4. 如果master没有在指定的时间内（discovery.zen.commit_timeout配置项，默认是30s），从至少N个节点（discovery.zen.minimum_master_nodes配置项）获取ack响应，那么这次cluster state change事件就会被reject，最终不会被提交。  
+5. 如果在指定时间内，指定数量的node都返回了ack消息，那么cluster state就会被commit，然后master node把 commit message发送给所有的node。所有的node接收到那个commit message之后，接着才会将之前接收到的集群状态应用到自己本地的状态副本中去。
+6. master会等待所有node的commit message 的ack消息，在一个等待超时时长内，如果接收到了响应，表示状态更新成功，master node继续处理内存queue中保存的下一个更新事件。  
+
+&emsp; discovery.zen.publish_timeout默认是30s，这个超时等待时长是从plublish cluster state开始计算的。  
+
+&emsp; 可以参照此图：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-5.png)  
 -->
