@@ -297,6 +297,7 @@
     * [ES集群](/docs/ES/colony.md)  
     * [ES使用](/docs/ES/useTutorials.md)  
         * [ES建模](/docs/ES/modeling.md)  
+        * [ElasticsearchREST](/docs/ES/ElasticsearchREST.md)  
         * [索引操作](/docs/ES/index.md)  
         * [文档操作](/docs/ES/document.md)  
         * [映射详解](/docs/ES/mapping.md)  

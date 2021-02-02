@@ -388,6 +388,7 @@
 [ES集群](/docs/ES/colony.md)  
 [ES使用](/docs/ES/useTutorials.md)  
 &emsp; [ES建模](/docs/ES/modeling.md)  
+&emsp; [ElasticsearchREST](/docs/ES/ElasticsearchREST.md)  
 &emsp; [索引操作](/docs/ES/index.md)  
 &emsp; [文档操作](/docs/ES/document.md)  
 &emsp; [映射详解](/docs/ES/mapping.md)  
