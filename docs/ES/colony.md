@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. ES集群](#1-es集群)
+- [1. ~~ES集群~~](#1-es集群)
     - [1.1. ES集群基本概念](#11-es集群基本概念)
         - [1.1.1. 节点(Node)](#111-节点node)
         - [1.1.2. ~~集群(cluster)~~](#112-集群cluster)
@@ -23,7 +23,7 @@
 <!-- /TOC -->
 
 
-# 1. ES集群  
+# 1. ~~ES集群~~  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-21.png)  
 
 ## 1.1. ES集群基本概念
@@ -320,39 +320,4 @@ GET /_cluster/settings
 &emsp; （6）由于仅投票节不参与Master竞选，所以和真正的Master节点相比，它需要的内存和CPU较少。但是，所有候选节点以及仅投票节点都可能是数据节点，所以他们都需要快速稳定低延迟的网络。  
 &emsp; （7）高可用性（HA）群集至少需要三个主节点，其中至少两个不是仅投票节点。即使其中一个节点发生故障，这样的群集也将能够选举一个主节点。生产环境最好设置3台仅Master候选节点（node.master = true	 node.data = true）。  
 &emsp; （8）为确保群集仍然可用，集群不能同时停止投票配置中的一半或更多节点。只要有一半以上的投票节点可用，群集仍可以正常工作。这意味着，如果存在三个或四个主节点合格的节点，则群集可以容忍其中一个节点不可用。如果有两个或更少的主机资格节点，则它们必须都保持可用。  
--->
-
-
-
-<!-- 
-Elasticsearch 集群故障排查及修复指南 
-https://mp.weixin.qq.com/s/7pWdS_zPDNiXKzrUOCTVfg
-
-1.4.1. ※※※集群故障探查
-
-
-&emsp; 有两种集群故障探查机制：  
-
-* master主动对集群中所有的其他node发起ping命令，判断它们是否是存活着的。
-* 每个node向master node发送ping请求，判断master node是否存活，否则就会发起一个选举过程。
-
-&emsp; 有下面三个参数用来配置集群故障的探查过程：  
-
-* ping_interval：ping一次node的间隔时间，默认是1s  
-* ping_timeout：每次ping的timeout等待时长，默认是30s  
-* ping_retries：对node的ping请求失败了，重试次数，默认3次。  
-
- 1.4.2. 集群状态更新
-&emsp; master node是集群中唯一可以对cluster state进行更新的node。更新的步骤如下：  
-1. master node收到更新事件，如shard移动，可能会有多条事件，但master node一次只处理一个集群状态的更新事件。  
-2. master node将事件更新到本地，并发布publish message到集群所有的node上。  
-3. node接收publish message后，对这个message返回ack响应，但是不会立即更新。  
-4. 如果master没有在指定的时间内（discovery.zen.commit_timeout配置项，默认是30s），从至少N个节点（discovery.zen.minimum_master_nodes配置项）获取ack响应，那么这次cluster state change事件就会被reject，最终不会被提交。  
-5. 如果在指定时间内，指定数量的node都返回了ack消息，那么cluster state就会被commit，然后master node把 commit message发送给所有的node。所有的node接收到那个commit message之后，接着才会将之前接收到的集群状态应用到自己本地的状态副本中去。
-6. master会等待所有node的commit message 的ack消息，在一个等待超时时长内，如果接收到了响应，表示状态更新成功，master node继续处理内存queue中保存的下一个更新事件。  
-
-&emsp; discovery.zen.publish_timeout默认是30s，这个超时等待时长是从plublish cluster state开始计算的。  
-
-&emsp; 可以参照此图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-5.png)  
 -->
