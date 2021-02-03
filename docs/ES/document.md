@@ -16,7 +16,9 @@
 
 <!-- 
 ~~
+ElasticSearch 文档的添加、获取以及更新 
 https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490740&idx=1&sn=ba34fcdb40b82361aab3c738bcea2aa9&scene=21#wechat_redirect
+ElasticSearch 文档的删除和批量操作 
 https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490840&idx=2&sn=3bf45591fb8d383c06b49b16331482b3&scene=21#wechat_redirect
 -->
 
@@ -27,9 +29,9 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490840&idx=2&sn=3bf455
 ```text
 PUT blog/_doc/1
 {
-  "title":"6. ElasticSearch 文档基本操作",
+  "title":"ElasticSearch 文档基本操作",
   "date":"2020-11-05",
-  "content":"微信公众号**江南一点雨**后台回复 **elasticsearch06** 下载本笔记。首先新建一个索引。"
+  "content":"首先新建一个索引。"
 }
 ```
 &emsp; 1 表示新建文档的 id。  
@@ -114,7 +116,7 @@ PUT blog/_doc/RuWrl3UByGJWB5WucKtP
 }
 ```
 &emsp; 这种方式，更新的文档会覆盖掉原文档。  
-&emsp; 大多数时候，我们只是想更新文档字段，这个可以通过脚本来实现。  
+&emsp; 大多数时候，只是想更新文档字段，这个可以通过脚本来实现。  
 
 ```text
 POST blog/_update/1
