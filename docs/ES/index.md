@@ -4,15 +4,28 @@
 - [1. 索引详解](#1-索引详解)
     - [1.1. 索引操作](#11-索引操作)
         - [1.1.1. 索引增删改查](#111-索引增删改查)
-        - [1.1.2. ※※※索引模板](#112-※※※索引模板)
-        - [1.1.3. Open/Close Index打开/关闭索引](#113-openclose-index打开关闭索引)
-        - [1.1.4. ※※※Shrink Index收缩索引](#114-※※※shrink-index收缩索引)
-        - [1.1.5. Split Index拆分索引](#115-split-index拆分索引)
-        - [1.1.6. Rollover Index别名滚动指向新创建的索引](#116-rollover-index别名滚动指向新创建的索引)
+        - [1.1.2. Open/Close Index打开/关闭索引](#112-openclose-index打开关闭索引)
+        - [1.1.3. 索引别名](#113-索引别名)
+            - [1.1.3.1. 索引别名操作](#1131-索引别名操作)
+            - [1.1.3.2. Rollover Index别名滚动指向新创建的索引](#1132-rollover-index别名滚动指向新创建的索引)
+        - [1.1.4. 索引配置](#114-索引配置)
+            - [1.1.4.1. 更新索引配置](#1141-更新索引配置)
+            - [1.1.4.2. 获取配置](#1142-获取配置)
+            - [1.1.4.3. 索引分析](#1143-索引分析)
+            - [1.1.4.4. ※※※索引模板](#1144-※※※索引模板)
+            - [1.1.4.5. 重建索引](#1145-重建索引)
+                - [1.1.4.6. ※※※Shrink Index收缩索引](#1146-※※※shrink-index收缩索引)
+                - [1.1.4.7. Split Index拆分索引](#1147-split-index拆分索引)
     - [1.2. 索引监控](#12-索引监控)
+        - [1.2.1. 索引统计](#121-索引统计)
+        - [1.2.1.1. 索引分片](#1211-索引分片)
+        - [1.2.1.2. 索引恢复](#1212-索引恢复)
+        - [1.2.1.3. 索引分片存储](#1213-索引分片存储)
     - [1.3. 索引状态管理](#13-索引状态管理)
 
 <!-- /TOC -->
+
+&emsp; **<font color = "red">部分参考《Elasticsearch技术解析与实战》</font>**  
 
 # 1. 索引详解  
 <!--
@@ -166,57 +179,9 @@ index.blocks.write：设为true，则不可写。
 index.blocks.metadata：设为true，则索引元数据不可读写。
 ```
 
-### 1.1.2. ※※※索引模板
-<!-- 
-https://www.cnblogs.com/shoufeng/p/10641560.html
--->
-&emsp; 在创建索引时，为每个索引写定义信息可能是一件繁琐的事情，ES提供了索引模板功能，可以定义一个索引模板，模板中定义好settings、mapping、以及一个模式定义来匹配创建的索引。  
-&emsp; 注意：模板只在索引创建时被参考，修改模板不会影响已创建的索引。  
 
-&emsp; 新增/修改名为tempae_1的模板，匹配名称为te* 或 bar*的索引创建：  
 
-```text
-PUT _template/template_1
-{
-  "index_patterns": ["te*", "bar*"],
-  "settings": {
-    "number_of_shards": 1
-  },
-  "mappings": {
-    "type1": {
-      "_source": {
-        "enabled": false
-      },
-      "properties": {
-        "host_name": {
-          "type": "keyword"
-        },
-        "created_at": {
-          "type": "date",
-          "format": "EEE MMM dd HH:mm:ss Z YYYY"
-        }
-      }
-    }
-  }
-}
-```
-
-&emsp; 查看索引模板  
-
-```text
-GET /_template/template_1
-GET /_template/temp* 
-GET /_template/template_1,template_2
-GET /_template
-```
-
-&emsp; 删除模板  
-
-```text
-DELETE /_template/template_1
-```
-
-### 1.1.3. Open/Close Index打开/关闭索引  
+### 1.1.2. Open/Close Index打开/关闭索引  
 
 ```text
 POST /my_index/_close
@@ -226,114 +191,11 @@ POST /my_index/_open
 &emsp; 关闭的索引不能进行读写操作，几乎不占集群开销。  
 &emsp; 关闭的索引可以打开，打开走的是正常的恢复流程。
 
-### 1.1.4. ※※※Shrink Index收缩索引
-&emsp; 索引的分片数是不可更改的，如要减少分片数可以通过收缩方式收缩为一个新的索引。新索引的分片数必须是原分片数的因子值，如原分片数是8，则新索引的分片数可以为4、2、1 。  
-&emsp; 什么时候需要收缩索引呢?  
-&emsp; 最初创建索引的时候分片数设置得太大，后面发现用不了那么多分片，这个时候就需要收缩了  
+### 1.1.3. 索引别名  
 
-&emsp; 收缩的流程：  
+#### 1.1.3.1. 索引别名操作
 
-1. 先把所有主分片都转移到一台主机上；
-2. 在这台主机上创建一个新索引，分片数较小，其他设置和原索引一致；
-3. 把原索引的所有分片，复制（或硬链接）到新索引的目录下；
-4. 对新索引进行打开操作恢复分片数据；
-5. (可选)重新把新索引的分片均衡到其他节点上。
-
-&emsp; 收缩前的准备工作：  
-1. 将原索引设置为只读；
-2. 将原索引各分片的一个副本重分配到同一个节点上，并且要是健康绿色状态。
-
-```text
-PUT /my_source_index/_settings
-{
-  "settings": {
-    <!-- 指定进行收缩的节点的名称 -->
-    "index.routing.allocation.require._name": "shrink_node_name",
-    <!-- 阻止写，只读 -->
-     "index.blocks.write": true
-  }
-}
-```
-
-&emsp; 进行收缩：  
-
-```text
-POST my_source_index/_shrink/my_target_index
-{
-  "settings": {
-    "index.number_of_replicas": 1,
-    "index.number_of_shards": 1,
-    "index.codec": "best_compression"
-  }}
-```
-
-&emsp; 监控收缩过程：  
-
-```text
-GET _cat/recovery?v
-GET _cluster/health  
-```
-
-### 1.1.5. Split Index拆分索引
-&emsp; **当索引的分片容量过大时，可以通过拆分操作将索引拆分为一个倍数分片数的新索引。** 能拆分为几倍由创建索引时指定的index.number_of_routing_shards 路由分片数决定。这个路由分片数决定了根据一致性hash路由文档到分片的散列空间。  
-&emsp; 如index.number_of_routing_shards = 30 ，指定的分片数是5，则可按如下倍数方式进行拆分：  
-
-```text
-5 → 10 → 30 (split by 2, then by 3)
-5 → 15 → 30 (split by 3, then by 2)
-5 → 30 (split by 6)
-```
-
-&emsp; 为什么需要拆分索引？  
-&emsp; 当最初设置的索引的分片数不够用时就需要拆分索引了，和压缩索引相反  
-&emsp; 注意：只有在创建时指定了index.number_of_routing_shards 的索引才可以进行拆分，ES7开始将不再有这个限制。  
-
-&emsp; 和solr的区别是，solr是对一个分片进行拆分，es中是整个索引进行拆分。  
-&emsp; 拆分步骤：  
-&emsp; 准备一个索引来做拆分：  
-
-```text
-PUT my_source_index
-{
-    "settings": {
-        "index.number_of_shards" : 1,
-        <!-- 创建时需要指定路由分片数 -->
-        "index.number_of_routing_shards" : 2
-    }
-}
-```
-
-&emsp; 先设置索引只读：  
-
-```text
-PUT /my_source_index/_settings
-{
-  "settings": {
-    "index.blocks.write": true
-  }
-}
-```
-
-&emsp; 做拆分：  
-
-```text
-POST my_source_index/_split/my_target_index
-{
-  "settings": {
-    <!--新索引的分片数需符合拆分规则-->
-    "index.number_of_shards": 2
-  }
-}
-```
-
-&emsp; 监控拆分过程：  
-
-```text
-GET _cat/recovery?v
-GET _cluster/health
-```
-
-### 1.1.6. Rollover Index别名滚动指向新创建的索引
+#### 1.1.3.2. Rollover Index别名滚动指向新创建的索引
 &emsp; **对于有时效性的索引数据，如日志，过一定时间后，老的索引数据就没有用了。可以像数据库中根据时间创建表来存放不同时段的数据一样，在ES中也可用建多个索引的方式来分开存放不同时段的数据。比数据库中更方便的是ES中可以通过别名滚动指向最新的索引的方式，通过别名来操作时总是操作的最新的索引。**  
 &emsp; ES的rollover index API，可以根据满足指定的条件（时间、文档数量、索引大小）创建新的索引，并把别名滚动指向新的索引。  
 &emsp; 注意：这时的别名只能是一个索引的别名。  
@@ -443,7 +305,181 @@ POST /logs_write/_rollover?dry_run
 &emsp; 测试不会创建索引，只是检测条件是否满足  
 &emsp; 注意：rollover是你请求它才会进行操作，并不是自动在后台进行的。你可以周期性地去请求它。  
 
+### 1.1.4. 索引配置  
+<!-- 
+Elasticsearch技术解析与实战 第2.4章
+-->
+&emsp; 在Elasticsearch中索引有很多的配置参数，有些配置是可以在建好索引后重新进行设置 和管理的，比如索引的副本数量、索引的分词等。  
+
+#### 1.1.4.1. 更新索引配置  
+
+#### 1.1.4.2. 获取配置  
+
+#### 1.1.4.3. 索引分析  
+
+
+#### 1.1.4.4. ※※※索引模板
+<!-- 
+https://www.cnblogs.com/shoufeng/p/10641560.html
+-->
+&emsp; 在创建索引时，为每个索引写定义信息可能是一件繁琐的事情，ES提供了索引模板功能，可以定义一个索引模板，模板中定义好settings、mapping、以及一个模式定义来匹配创建的索引。  
+&emsp; 注意：模板只在索引创建时被参考，修改模板不会影响已创建的索引。  
+
+&emsp; 新增/修改名为tempae_1的模板，匹配名称为te* 或 bar*的索引创建：  
+
+```text
+PUT _template/template_1
+{
+  "index_patterns": ["te*", "bar*"],
+  "settings": {
+    "number_of_shards": 1
+  },
+  "mappings": {
+    "type1": {
+      "_source": {
+        "enabled": false
+      },
+      "properties": {
+        "host_name": {
+          "type": "keyword"
+        },
+        "created_at": {
+          "type": "date",
+          "format": "EEE MMM dd HH:mm:ss Z YYYY"
+        }
+      }
+    }
+  }
+}
+```
+
+&emsp; 查看索引模板  
+
+```text
+GET /_template/template_1
+GET /_template/temp* 
+GET /_template/template_1,template_2
+GET /_template
+```
+
+&emsp; 删除模板  
+
+```text
+DELETE /_template/template_1
+```
+
+#### 1.1.4.5. 重建索引   
+
+##### 1.1.4.6. ※※※Shrink Index收缩索引
+&emsp; 索引的分片数是不可更改的，如要减少分片数可以通过收缩方式收缩为一个新的索引。新索引的分片数必须是原分片数的因子值，如原分片数是8，则新索引的分片数可以为4、2、1 。  
+&emsp; 什么时候需要收缩索引呢?  
+&emsp; 最初创建索引的时候分片数设置得太大，后面发现用不了那么多分片，这个时候就需要收缩了  
+
+&emsp; 收缩的流程：  
+
+1. 先把所有主分片都转移到一台主机上；
+2. 在这台主机上创建一个新索引，分片数较小，其他设置和原索引一致；
+3. 把原索引的所有分片，复制（或硬链接）到新索引的目录下；
+4. 对新索引进行打开操作恢复分片数据；
+5. (可选)重新把新索引的分片均衡到其他节点上。
+
+&emsp; 收缩前的准备工作：  
+1. 将原索引设置为只读；
+2. 将原索引各分片的一个副本重分配到同一个节点上，并且要是健康绿色状态。
+
+```text
+PUT /my_source_index/_settings
+{
+  "settings": {
+    <!-- 指定进行收缩的节点的名称 -->
+    "index.routing.allocation.require._name": "shrink_node_name",
+    <!-- 阻止写，只读 -->
+     "index.blocks.write": true
+  }
+}
+```
+
+&emsp; 进行收缩：  
+
+```text
+POST my_source_index/_shrink/my_target_index
+{
+  "settings": {
+    "index.number_of_replicas": 1,
+    "index.number_of_shards": 1,
+    "index.codec": "best_compression"
+  }}
+```
+
+&emsp; 监控收缩过程：  
+
+```text
+GET _cat/recovery?v
+GET _cluster/health  
+```
+
+##### 1.1.4.7. Split Index拆分索引
+&emsp; **当索引的分片容量过大时，可以通过拆分操作将索引拆分为一个倍数分片数的新索引。** 能拆分为几倍由创建索引时指定的index.number_of_routing_shards 路由分片数决定。这个路由分片数决定了根据一致性hash路由文档到分片的散列空间。  
+&emsp; 如index.number_of_routing_shards = 30 ，指定的分片数是5，则可按如下倍数方式进行拆分：  
+
+```text
+5 → 10 → 30 (split by 2, then by 3)
+5 → 15 → 30 (split by 3, then by 2)
+5 → 30 (split by 6)
+```
+
+&emsp; 为什么需要拆分索引？  
+&emsp; 当最初设置的索引的分片数不够用时就需要拆分索引了，和压缩索引相反  
+&emsp; 注意：只有在创建时指定了index.number_of_routing_shards 的索引才可以进行拆分，ES7开始将不再有这个限制。  
+
+&emsp; 和solr的区别是，solr是对一个分片进行拆分，es中是整个索引进行拆分。  
+&emsp; 拆分步骤：  
+&emsp; 准备一个索引来做拆分：  
+
+```text
+PUT my_source_index
+{
+    "settings": {
+        "index.number_of_shards" : 1,
+        <!-- 创建时需要指定路由分片数 -->
+        "index.number_of_routing_shards" : 2
+    }
+}
+```
+
+&emsp; 先设置索引只读：  
+
+```text
+PUT /my_source_index/_settings
+{
+  "settings": {
+    "index.blocks.write": true
+  }
+}
+```
+
+&emsp; 做拆分：  
+
+```text
+POST my_source_index/_split/my_target_index
+{
+  "settings": {
+    <!--新索引的分片数需符合拆分规则-->
+    "index.number_of_shards": 2
+  }
+}
+```
+
+&emsp; 监控拆分过程：  
+
+```text
+GET _cat/recovery?v
+GET _cluster/health
+```
+
+
 ## 1.2. 索引监控
+### 1.2.1. 索引统计  
 &emsp; **查看索引状态信息**  
 &emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-stats.html  
 
@@ -468,12 +504,16 @@ GET /index1,index2/_segments
 GET /_segments
 ```
 
+### 1.2.1.1. 索引分片
+
+### 1.2.1.2. 索引恢复
 &emsp; **查看索引恢复信息**  
 &emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-recovery.html
 
 &emsp; GET index1,index2/_recovery?human  
 &emsp; GET /_recovery?human  
 
+### 1.2.1.3. 索引分片存储
 &emsp; **查看索引分片的存储信息**  
 &emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-shards-stores.html
 

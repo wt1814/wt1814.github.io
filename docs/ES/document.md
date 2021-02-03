@@ -9,11 +9,11 @@
         - [1.3.2. 查询更新](#132-查询更新)
     - [1.4. 删除文档](#14-删除文档)
     - [1.5. 批量操作](#15-批量操作)
+    - [1.6. 索引词频率](#16-索引词频率)
 
 <!-- /TOC -->
 
 # 1. 文档操作  
-
 <!-- 
 ~~
 ElasticSearch 文档的添加、获取以及更新 
@@ -21,6 +21,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490740&idx=1&sn=ba34fc
 ElasticSearch 文档的删除和批量操作 
 https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490840&idx=2&sn=3bf45591fb8d383c06b49b16331482b3&scene=21#wechat_redirect
 -->
+&emsp; 文档是具体的数据，一个文档有点像数据库中的一条记录，文档必须包含在一个索 引中。  
 
 ## 1.1. 新建文档
 &emsp; 首先新建一个索引。  
@@ -244,4 +245,5 @@ curl -XPOST "http://localhost:9200/user/_bulk" -H "content-type:application/json
 &emsp; 执行完成后，就会创建一个名为 user 的索引，同时向该索引中添加一条记录，再修改该记录，最终结果如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-32.png)  
 
-
+## 1.6. 索引词频率  
+&emsp; term vector是在Lucene中的一个概念，就是对于文档的某一列，如title、body这种文 本类型的建立词频的多维向量空间，每一个词就是一个维度，这个维度的值就是这个词在这个列中的频率。在Elasticsearch中termvectors返回在索引中特定文档字段的统计信息， termvectors在Elasticsearch中是实时分析的，如果要想不实时分析，可以设置realtime参数为falseo默认情况下索引词频率统计是关闭的，需要在建索引的时候手工打开。  
