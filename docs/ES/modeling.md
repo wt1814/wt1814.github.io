@@ -15,12 +15,10 @@
         - [1.2.1. 索引设置多少分片？](#121-索引设置多少分片)
         - [1.2.2. 索引设置多少副本？](#122-索引设置多少副本)
     - [1.3. Mapping如何设计？](#13-mapping如何设计)
-        - [1.3.1. Mapping认知](#131-mapping认知)
-        - [1.3.2. ES Mapping设置](#132-es-mapping设置)
-        - [1.3.3. 设计Mapping的注意事项](#133-设计mapping的注意事项)
-        - [1.3.4. Mapping字段的设置流程](#134-mapping字段的设置流程)
-        - [1.3.5. Mapping建议结合模板定义](#135-mapping建议结合模板定义)
-        - [1.3.6. 包含Mapping的template设计万能模板](#136-包含mapping的template设计万能模板)
+        - [1.3.1. Mapping字段的设置流程](#131-mapping字段的设置流程)
+        - [1.3.2. Mapping建议结合模板定义](#132-mapping建议结合模板定义)
+        - [1.3.3. 包含Mapping的template设计万能模板](#133-包含mapping的template设计万能模板)
+        - [1.3.4. 设计Mapping的注意事项](#134-设计mapping的注意事项)
     - [1.4. 分词的选型](#14-分词的选型)
         - [1.4.1. 坑 1：分词选型](#141-坑-1分词选型)
         - [1.4.2. 坑 2：ik 要装集群的所有机器吗？](#142-坑-2ik-要装集群的所有机器吗)
@@ -80,7 +78,6 @@ https://mp.weixin.qq.com/s?__biz=MzI2NDY1MTA3OQ==&mid=2247484159&idx=1&sn=731562
 &emsp; 预处理是通过logstash filter 环节实现？还是 Mysql 视图实现？还是 ingest 管道实现？还是其他？  
 &emsp; ......  
 
-
 ## 1.1. PB级别的大索引如何设计？  
 &emsp; 单纯的普通数据索引，如果不考虑增量数据，基本上普通索引就能够满足性能要求。  
 &emsp; 通常的操作就是：  
@@ -117,7 +114,7 @@ app_index                       0 r UNASSIGNED
 &emsp; **<font color = "red">一旦一个大索引出现故障，相关的数据都会受到影响。而分成滚动索引的话，相当于做了物理隔离。</font>**  
 
 ### 1.1.2. ※※※PB级索引设计实现(动态/滚动索引)
-&emsp; 综上，结合实践经验， **<font color = "clime">大索引设计建议：使用模板+Rollover+Curator动态创建索引。</font>**动态索引使用效果如下：  
+&emsp; 综上，结合实践经验， **<font color = "clime">大索引设计建议：使用模板+Rollover+Curator动态创建索引。</font>** 动态索引使用效果如下：  
 
 ```text
 index_2019-01-01-000001
@@ -273,7 +270,8 @@ ES不允许Primary和它的Replica放在同一个节点中（为了容错），�
 -->
 
 ## 1.3. Mapping如何设计？  
-### 1.3.1. Mapping认知  
+<!-- 
+ Mapping认知  
 &emsp; Mapping 是定义文档及其包含的字段的存储和索引方式的过程。例如，使用映射来定义：  
 
 * 应将哪些字符串字段定义为全文检索字段；  
@@ -281,33 +279,9 @@ ES不允许Primary和它的Replica放在同一个节点中（为了容错），�
 * 定义日期值的格式（时间戳还是日期类型等）；  
 * 用于控制动态添加字段的映射的自定义规则。  
 
-### 1.3.2. ES Mapping设置  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-72.png)  
+-->
 
-### 1.3.3. 设计Mapping的注意事项
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-67.png)  
-&emsp; ES 支持增加字段 //新增字段  
-
-```text
-PUT new_index
-  {
-    "mappings": {
-      "_doc": {
-        "properties": {
-          "status_code": {
-            "type":       "keyword"
-          }
-        }
-      }
-    }
-  }
-```
-
-* ES 不支持直接删除字段  
-* ES 不支持直接修改字段  
-* ES 不支持直接修改字段类型。如果非要做灵活设计，ES有其他方案可以替换，借助reindex。但是数据量大会有性能问题，建议设计阶段综合权衡考虑。    
-
-### 1.3.4. Mapping字段的设置流程
+### 1.3.1. Mapping字段的设置流程
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-73.png)  
 &emsp; 索引分为静态 Mapping（自定义字段）+动态 Mapping（ES 自动根据导入数据适配）。  
 &emsp; 实战业务场景建议：选用静态Mapping，根据业务类型自己定义字段类型。
@@ -328,7 +302,7 @@ PUT new_index
 &emsp; 核心参数的含义，梳理如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-69.png)  
 
-### 1.3.5. Mapping建议结合模板定义
+### 1.3.2. Mapping建议结合模板定义
 &emsp; 索引 Templates——索引模板允许您定义在创建新索引时自动应用的模板。模板包括settings和Mappings以及控制是否应将模板应用于新索引。  
 &emsp; 注意：模板仅在索引创建时应用。更改模板不会对现有索引产生影响。  
 &emsp; 第1部分也有说明，针对大索引，使用模板是必须的。核心需要设置的setting（仅列举了实战中最常用、可以动态修改的）如下：  
@@ -340,7 +314,7 @@ PUT new_index
 &emsp; 写入时候建议设置为 -1，提高写入性能；  
 &emsp; 实战业务如果对实时性要求不高，建议设置为 30s 或者更高。  
 
-### 1.3.6. 包含Mapping的template设计万能模板
+### 1.3.3. 包含Mapping的template设计万能模板
 &emsp; 以下模板已经在 7.2 验证 ok，可以直接拷贝修改后实战项目中使用。  
 
 ```text
@@ -461,6 +435,31 @@ PUT blog_index
   }
 }
 ```
+
+### 1.3.4. 设计Mapping的注意事项
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-67.png)  
+
+* ES支持增加字段   
+
+  ```text
+  //新增字段
+  PUT new_index
+    {
+      "mappings": {
+        "_doc": {
+          "properties": {
+            "status_code": {
+              "type":       "keyword"
+            }
+          }
+        }
+      }
+    }
+  ```
+
+* ES 不支持直接删除字段  
+* ES 不支持直接修改字段  
+* ES 不支持直接修改字段类型。如果非要做灵活设计，ES有其他方案可以替换，借助reindex。但是数据量大会有性能问题，建议设计阶段综合权衡考虑。    
 
 ## 1.4. 分词的选型
 &emsp; 主要以 ik 来说明，最新版本的ik支持两种类型。ik_maxword 细粒度匹配，适用切分非常细的场景。ik_smart 粗粒度匹配，适用切分粗的场景。  
