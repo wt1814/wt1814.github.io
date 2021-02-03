@@ -20,6 +20,20 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490712&idx=1&sn=b10f39
 索引管理  
 https://mp.weixin.qq.com/s/gi9Dxt23chmEgDK9ZWfHLw
 -->
+```mermaid
+graph TD;
+  索引-->索引管理;
+  索引-->索引监控;
+  索引-->状态管理;
+  索引管理-->创建索引;
+  索引管理-->查看、删除索引;
+  索引管理-->修改索引|settings;
+  索引管理-->索引模版;
+  索引管理-->Open / Close Index API;
+  索引管理-->Shrink Index;
+  索引管理-->Split Index;
+  索引管理-->Rollover Index;
+```
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-23.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-24.png)  

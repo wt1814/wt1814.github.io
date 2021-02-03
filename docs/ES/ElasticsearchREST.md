@@ -62,7 +62,6 @@ POST products/_search?size=0
 &emsp; 举例：GET _cat/indices?help  
 * ?h =-“ h”——使用上方“帮助”显示中的短名称或长名称指定要包括在结果中的字段。这些用逗号分隔，没有空格。  
 &emsp; 举例：GET _cat/indices?h=docs.count,store.size  
-&emsp; 这样以后返回结果一头雾水，相当于Excel有N列字段，但没有表头一样，很痛苦！  
 * ?v——'v'在回复的顶部包括字段名称。  
 &emsp; GET _cat/indices?h=docs.count,store.size&v  
 &emsp; -v 参数的妙处主要体现在：加上了表头，直观交互呈现。  
