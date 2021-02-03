@@ -6,8 +6,8 @@
         - [1.1.1. 索引增删改查](#111-索引增删改查)
         - [1.1.2. 索引模板](#112-索引模板)
         - [1.1.3. Open/Close Index打开/关闭索引](#113-openclose-index打开关闭索引)
-        - [1.1.4. Shrink Index 收缩索引](#114-shrink-index-收缩索引)
-        - [1.1.5. Split Index 拆分索引](#115-split-index-拆分索引)
+        - [1.1.4. ※※※Shrink Index收缩索引](#114-※※※shrink-index收缩索引)
+        - [1.1.5. Split Index拆分索引](#115-split-index拆分索引)
         - [1.1.6. Rollover Index别名滚动指向新创建的索引](#116-rollover-index别名滚动指向新创建的索引)
     - [1.2. 索引监控](#12-索引监控)
     - [1.3. 索引状态管理](#13-索引状态管理)
@@ -15,32 +15,16 @@
 <!-- /TOC -->
 
 # 1. 索引详解  
-<!-- 
+<!--
+ ElasticSearch 索引基本操作～ 
 https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490712&idx=1&sn=b10f393152120d2e985b5e550850ad30&scene=21#wechat_redirect 
 索引管理  
 https://mp.weixin.qq.com/s/gi9Dxt23chmEgDK9ZWfHLw
 -->
-```mermaid
-graph TD;
-  索引-->索引管理;
-  索引-->索引监控;
-  索引-->状态管理;
-  索引管理-->创建索引;
-  索引管理-->查看、删除索引;
-  索引管理-->修改索引|settings;
-  索引管理-->索引模版;
-  索引管理-->Open / Close Index API;
-  索引管理-->Shrink Index;
-  索引管理-->Split Index;
-  索引管理-->Rollover Index;
-```
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-23.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-24.png)  
 
 ## 1.1. 索引操作
 ### 1.1.1. 索引增删改查  
-&emsp; 创建一个名为twitter的索引，设置索引的分片数为3，备份数为2。注意：在ES中创建一个索引类似于在数据库中建立一个数据库(ES6.0之后类似于创建一个表)  
+&emsp; 创建一个名为twitter的索引，设置索引的分片数为3，备份数为2。注意：在ES中创建一个索引，类似于在数据库中建立一个数据库(ES6.0之后类似于创建一个表)  
 
 ```text
 PUT twitter
@@ -54,8 +38,7 @@ PUT twitter
 }
 ```
 &emsp; 说明：  
-&emsp; 默认的分片数是5到1024  
-&emsp; 默认的备份数是1  
+&emsp; 默认的分片数是5到1024。默认的备份数是1。  
 &emsp; 索引的名称必须是小写的，不可重名  
 
 &emsp; 创建结果：  
@@ -73,7 +56,7 @@ PUT twitter
 }
 ```
 
-&emsp; 创建mapping映射  
+&emsp; **创建mapping映射：**  
 &emsp; 注意：在ES中创建一个mapping映射类似于在数据库中定义表结构，即表里面有哪些字段、字段是什么类型、字段的默认值等；也类似于solr里面的模式schema的定义  
 
 ```text
@@ -95,7 +78,7 @@ PUT twitter
 }
 ```
 
-&emsp; 创建索引时加入别名定义
+&emsp; **创建索引时加入别名定义：**  
 
 ```text
 PUT twitter
@@ -115,39 +98,38 @@ PUT twitter
 &emsp; 创建索引时返回的结果说明  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-26.png)  
 
-&emsp; Get Index查看索引的定义信息
-&emsp; GET /twitter，可以一次获取多个索引（以逗号间隔） 获取所有索引 _all 或 用通配符*
+&emsp; **Get Index查看索引的定义信息**  
+&emsp; GET /twitter，可以一次获取多个索引(以逗号间隔)获取所有索引_all或用通配符*
 
 ```text
 GET /twitter/_settings
 GET /twitter/_mapping
 ```
  
-&emsp; 删除索引
+&emsp; **删除索引**
 
 ```text
 DELETE /twitter
 ```
 
-&emsp; 说明：  
-&emsp; 可以一次删除多个索引（以逗号间隔） 删除所有索引 _all 或 通配符 *
+&emsp; 说明：可以一次删除多个索引(以逗号间隔)，删除所有索引_all或通配符 *
 
-&emsp; 判断索引是否存在  
+&emsp; **判断索引是否存在**  
 
 ```text
 HEAD twitter
 ```
 
-&emsp; HTTP status code 表示结果 404 不存在 ， 200 存在
+&emsp; HTTP status code表示结果：404 不存在，200 存在
 
-&emsp; 修改索引的settings信息  
+&emsp; **修改索引的settings信息**  
 &emsp; 索引的设置信息分为静态信息和动态信息两部分。静态信息不可更改，如索引的分片数。动态信息可以修改。  
 &emsp; REST 访问端点：  
 &emsp; /_settings 更新所有索引的。  
-&emsp; {index}/_settings 更新一个或多个索引的settings。  
+&emsp; {index}/_settings更新一个或多个索引的settings。  
 &emsp; 详细的设置项请参考：https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html#index-modules-settings
 
-&emsp; 修改备份数
+&emsp; **修改备份数**
 
 ```text
 PUT /twitter/_settings
@@ -158,7 +140,7 @@ PUT /twitter/_settings
 }
 ```
 
-&emsp; 设置回默认值，用null  
+&emsp; **设置回默认值，用null**  
 
 ```text
 PUT /twitter/_settings
@@ -169,7 +151,7 @@ PUT /twitter/_settings
 }
 ```
 
-&emsp; 设置索引的读写  
+&emsp; **设置索引的读写**  
 
 ```text
 index.blocks.read_only：设为true,则索引以及索引的元数据只可读
@@ -183,9 +165,8 @@ index.blocks.metadata：设为true，则索引元数据不可读写。
 <!-- 
 https://www.cnblogs.com/shoufeng/p/10641560.html
 -->
-
-&emsp; 在创建索引时，为每个索引写定义信息可能是一件繁琐的事情，ES提供了索引模板功能，让你可以定义一个索引模板，模板中定义好settings、mapping、以及一个模式定义来匹配创建的索引。  
-&emsp; 注意：模板只在索引创建时被参考，修改模板不会影响已创建的索引
+&emsp; 在创建索引时，为每个索引写定义信息可能是一件繁琐的事情，ES提供了索引模板功能，可以定义一个索引模板，模板中定义好settings、mapping、以及一个模式定义来匹配创建的索引。  
+&emsp; 注意：模板只在索引创建时被参考，修改模板不会影响已创建的索引。  
 
 &emsp; 新增/修改名为tempae_1的模板，匹配名称为te* 或 bar*的索引创建：  
 
@@ -240,7 +221,7 @@ POST /my_index/_open
 &emsp; 关闭的索引不能进行读写操作，几乎不占集群开销。  
 &emsp; 关闭的索引可以打开，打开走的是正常的恢复流程。
 
-### 1.1.4. Shrink Index 收缩索引
+### 1.1.4. ※※※Shrink Index收缩索引
 &emsp; 索引的分片数是不可更改的，如要减少分片数可以通过收缩方式收缩为一个新的索引。新索引的分片数必须是原分片数的因子值，如原分片数是8，则新索引的分片数可以为4、2、1 。  
 &emsp; 什么时候需要收缩索引呢?  
 &emsp; 最初创建索引的时候分片数设置得太大，后面发现用不了那么多分片，这个时候就需要收缩了  
@@ -288,8 +269,8 @@ GET _cat/recovery?v
 GET _cluster/health  
 ```
 
-### 1.1.5. Split Index 拆分索引
-&emsp; 当索引的分片容量过大时，可以通过拆分操作将索引拆分为一个倍数分片数的新索引。能拆分为几倍由创建索引时指定的index.number_of_routing_shards 路由分片数决定。这个路由分片数决定了根据一致性hash路由文档到分片的散列空间。  
+### 1.1.5. Split Index拆分索引
+&emsp; **当索引的分片容量过大时，可以通过拆分操作将索引拆分为一个倍数分片数的新索引。** 能拆分为几倍由创建索引时指定的index.number_of_routing_shards 路由分片数决定。这个路由分片数决定了根据一致性hash路由文档到分片的散列空间。  
 &emsp; 如index.number_of_routing_shards = 30 ，指定的分片数是5，则可按如下倍数方式进行拆分：  
 
 ```text
@@ -507,7 +488,7 @@ GET /_shard_stores
 ```
 
 ## 1.3. 索引状态管理
-&emsp; Clear Cache 清理缓存  
+&emsp; Clear Cache清理缓存  
 
 ```text
 POST /twitter/_cache/clear  
