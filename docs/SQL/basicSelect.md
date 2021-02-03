@@ -35,6 +35,10 @@
 <!-- /TOC -->
 
 # 1. 基本查询语句  
+<!-- 
+Group by 优化 
+https://mp.weixin.qq.com/s/YXVRNQz0HJu_qvJktxQuMw
+-->
 &emsp; 数据库表中的一行叫做一条记录，一列是一个属性。首行是数据库表中字段或自定义别名，对应的列就是其对应的数值。  
 
 ## 1.1. 基本查询结构

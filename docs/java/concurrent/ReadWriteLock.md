@@ -7,6 +7,11 @@
 <!-- /TOC -->
 
 # 1. ReadWriteLock  
+<!-- 
+面试官：读写锁了解吗？它的升降级啥时候用？ 
+https://mp.weixin.qq.com/s/JwEkiH6WlQd-UfyAPbltBA
+-->
+
 ## 1.1. ReentrantReadWriteLock，读写锁
 &emsp; ReentrantReadWriteLock维护了两个锁，读锁和写锁，所以一般称其为读写锁。写锁是独占的（写操作只能由一个线程来操作）。读锁是共享的，如果没有写锁，读锁可以由多个线程共享。  
 &emsp; 优点：与互斥锁相比，虽然一次只能有一个写线程可以修改共享数据，但大量读线程可以同时读取共享数据，所以，读写锁适用于共享数据很大，且读操作远多于写操作的情况。  

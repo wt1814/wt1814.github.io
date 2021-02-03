@@ -23,6 +23,8 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247484705&idx=1&sn=64cac4
 
 Spring中涉及的设计模式总结 
 https://mp.weixin.qq.com/s/ktNs4T_OZ-neWWvtBmC-cA
+@Autowire和@Resource注解使用的正确姿势，别再用错的了！！ 
+https://mp.weixin.qq.com/s/34-DdoNcpMUlZiin6Js0Xg
 
 -->
 

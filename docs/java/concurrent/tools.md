@@ -27,7 +27,11 @@
 
 
 # 1. Tools，工具类  
-<!-- 
+<!--
+并发工具类Phaser、Exchanger使用 
+https://mp.weixin.qq.com/s/6evcGMWJ8VSNh-lmYJEbrQ
+
+
 https://mp.weixin.qq.com/s/JCen6ppvWYNDnB5KCsrNEA
 https://mp.weixin.qq.com/s/Ib8lpezEmfDDh3Dy4Q6iDA
 

@@ -22,6 +22,9 @@
 <!-- /TOC -->
 
 <!-- 
+Zookeeper 怎么保证分布式事务的最终一致性？ 
+https://mp.weixin.qq.com/s/n0UKU7BxPT1r4OCPPKHGaA
+
 ZooKeeper的十二连问，你顶得了嘛？ 
 https://mp.weixin.qq.com/s/dp8jFlTsxTvGuhSAnct1jA
 讲解 Zookeeper 的五个核心知识点 
