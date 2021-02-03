@@ -4,7 +4,7 @@
 - [1. 索引详解](#1-索引详解)
     - [1.1. 索引操作](#11-索引操作)
         - [1.1.1. 索引增删改查](#111-索引增删改查)
-        - [1.1.2. 索引模板](#112-索引模板)
+        - [1.1.2. ※※※索引模板](#112-※※※索引模板)
         - [1.1.3. Open/Close Index打开/关闭索引](#113-openclose-index打开关闭索引)
         - [1.1.4. ※※※Shrink Index收缩索引](#114-※※※shrink-index收缩索引)
         - [1.1.5. Split Index拆分索引](#115-split-index拆分索引)
@@ -161,7 +161,7 @@ index.blocks.write：设为true，则不可写。
 index.blocks.metadata：设为true，则索引元数据不可读写。
 ```
 
-### 1.1.2. 索引模板
+### 1.1.2. ※※※索引模板
 <!-- 
 https://www.cnblogs.com/shoufeng/p/10641560.html
 -->
@@ -329,11 +329,11 @@ GET _cluster/health
 ```
 
 ### 1.1.6. Rollover Index别名滚动指向新创建的索引
-&emsp; 对于有时效性的索引数据，如日志，过一定时间后，老的索引数据就没有用了。我们可以像数据库中根据时间创建表来存放不同时段的数据一样，在ES中也可用建多个索引的方式来分开存放不同时段的数据。比数据库中更方便的是ES中可以通过别名滚动指向最新的索引的方式，让你通过别名来操作时总是操作的最新的索引。  
-&emsp; ES的rollover index API 让我们可以根据满足指定的条件（时间、文档数量、索引大小）创建新的索引，并把别名滚动指向新的索引。  
+&emsp; **对于有时效性的索引数据，如日志，过一定时间后，老的索引数据就没有用了。可以像数据库中根据时间创建表来存放不同时段的数据一样，在ES中也可用建多个索引的方式来分开存放不同时段的数据。比数据库中更方便的是ES中可以通过别名滚动指向最新的索引的方式，通过别名来操作时总是操作的最新的索引。**  
+&emsp; ES的rollover index API，可以根据满足指定的条件（时间、文档数量、索引大小）创建新的索引，并把别名滚动指向新的索引。  
 &emsp; 注意：这时的别名只能是一个索引的别名。  
 
-&emsp; Rollover Index 示例：  
+&emsp; Rollover Index示例：  
 &emsp; 创建一个名字为logs-0000001 、别名为logs_write 的索引：  
 
 ```text
@@ -439,9 +439,8 @@ POST /logs_write/_rollover?dry_run
 &emsp; 注意：rollover是你请求它才会进行操作，并不是自动在后台进行的。你可以周期性地去请求它。  
 
 ## 1.2. 索引监控
-&emsp; 查看索引状态信息  
-&emsp; 官网链接：  
-https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-stats.html  
+&emsp; **查看索引状态信息**  
+&emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-stats.html  
 
 &emsp; 查看所有的索引状态：  
 
@@ -455,10 +454,8 @@ GET /_stats
 GET /index1,index2/_stats  
 ```
 
-&emsp; 查看索引段信息  
-
-&emsp; 官网链接：
-https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-segments.html  
+&emsp; **查看索引段信息**  
+&emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-segments.html  
 
 ```text
 GET /test/_segments 
@@ -466,16 +463,14 @@ GET /index1,index2/_segments
 GET /_segments
 ```
 
-&emsp; 查看索引恢复信息  
-&emsp; 官网链接：
-https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-recovery.html
+&emsp; **查看索引恢复信息**  
+&emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-recovery.html
 
 &emsp; GET index1,index2/_recovery?human  
 &emsp; GET /_recovery?human  
 
-&emsp; 查看索引分片的存储信息  
-&emsp; 官网链接：
-https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-shards-stores.html
+&emsp; **查看索引分片的存储信息**  
+&emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-shards-stores.html
 
 ```text
 # return information of only index test
