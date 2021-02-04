@@ -10,26 +10,16 @@
 
 # 1. 检索操作  
 <!-- 
-ElasticSearch 搜索入门 
-https://mp.weixin.qq.com/s/WVInd3kCciTVa1nzOgeEAQ
-
 检索类型如何选型呢？
 https://mp.weixin.qq.com/s/Fc5LhiLJIeCtstl9OFeqdQ
-
-fuzzy query
-https://mp.weixin.qq.com/s/ReiCivwDINsE8S5kwUWb5w
-
-ElasticSearch 复合查询，理解 Es 中的文档评分策略！ 
-https://mp.weixin.qq.com/s/59D8ouXbTMlh4swb6eY2zA
-
-ElasticSearch 如何像 MySQL 一样做多表联合查询？ 
-https://mp.weixin.qq.com/s/SDRI7GmZmmO7bLvhCgUDCg
-ElasticSearch 搜索高亮与排序 
-https://mp.weixin.qq.com/s/pxHjq0ejT0Fy9v7-dpg0Tw
 Elasticsearch之评分机制
 https://www.jianshu.com/p/2624f61f1d02
-
-
+-->
+<!-- 
+ElasticSearch 搜索入门 
+https://mp.weixin.qq.com/s/WVInd3kCciTVa1nzOgeEAQ
+fuzzy query
+https://mp.weixin.qq.com/s/ReiCivwDINsE8S5kwUWb5w
 -->
 
 ## 1.1. 检索操作  

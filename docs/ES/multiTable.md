@@ -14,6 +14,8 @@
 
 # 1. ES多表关联  
 <!-- 
+ElasticSearch 如何像 MySQL 一样做多表联合查询？ 
+https://mp.weixin.qq.com/s/SDRI7GmZmmO7bLvhCgUDCg
 多表关联设计
 https://mp.weixin.qq.com/s?__biz=MzI2NDY1MTA3OQ==&mid=2247484382&idx=1&sn=da073a257575867b8d979dac850c3f8e&chksm=eaa82bf6dddfa2e0bf920f0a3a63cb635277be2ae286a2a6d3fff905ad913ebf1f43051609e8&scene=21#wechat_redirect
 -->
