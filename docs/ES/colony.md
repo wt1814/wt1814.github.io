@@ -39,6 +39,12 @@
 -->
 
 ### 1.1.2. ~~集群(cluster)~~  
+<!-- 
+集群角色类型
+https://www.cnblogs.com/sanduzxcvbnm/p/12850357.html
+https://zhuanlan.zhihu.com/p/162700652
+https://www.cnblogs.com/37yan/p/9928748.html
+-->
 &emsp; ES可以作为一个独立的单个搜索服务器。不过，一般为了处理大型数据集，实现容错和高可用性，ES可以运行在许多互相合作的服务器上。这些服务器的集合称为集群。  
 
 &emsp; **<font color = "red">ES集群节点类型：</font>**  

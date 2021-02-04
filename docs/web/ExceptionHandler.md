@@ -138,3 +138,54 @@ try{
 
 
 
+
+-------------
+
+<!-- 
+
+
+
+    /**
+     *
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Result handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        BindingResult bindingResult = ex.getBindingResult();
+        StringBuilder sb = new StringBuilder("校验失败:");
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            sb.append(fieldError.getField()).append("：").append(fieldError.getDefaultMessage()).append(", ");
+        }
+        String msg = sb.toString();
+
+        return Result.fail("500", msg);
+    }
+    /**
+     *
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler({ConstraintViolationException.class})
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Result handleConstraintViolationException(ConstraintViolationException ex) {
+        return Result.fail("500", ex.getMessage());
+    }
+
+    /**
+     *
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler({Exception.class})
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Result handleException(Exception ex) {
+        log.error("异常信息：{}",ex);
+        return Result.fail("500", ex.getMessage());
+    }
+
+-->

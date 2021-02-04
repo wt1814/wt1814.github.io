@@ -2,8 +2,8 @@
 
 - [1. 检索操作](#1-检索操作)
     - [1.1. 检索操作](#11-检索操作)
-        - [1.1.1. Searchtimeout](#111-searchtimeout)
-        - [1.1.2. query string search](#112-query-string-search)
+        - [1.1.1. 搜索两种基本方式](#111-搜索两种基本方式)
+        - [1.1.2. query String search](#112-query-string-search)
         - [1.1.3. match分词匹配](#113-match分词匹配)
             - [1.1.3.1. SQL代替DSL](#1131-sql代替dsl)
         - [1.1.4. term精确匹配](#114-term精确匹配)
@@ -15,18 +15,18 @@
         - [1.1.10. Compound queries(组合查询)](#1110-compound-queries组合查询)
         - [1.1.11. highlight search](#1111-highlight-search)
         - [1.1.12. 小结](#1112-小结)
-    - [避免深度分页](#避免深度分页)
-    - [1.2. 检索模板](#12-检索模板)
-        - [1.2.1. template入门案例](#121-template入门案例)
-            - [1.2.1.1. 标准形式](#1211-标准形式)
-            - [1.2.1.2. toJson形式](#1212-tojson形式)
-            - [1.2.1.3. join方法传参](#1213-join方法传参)
-            - [1.2.1.4. default value形式](#1214-default-value形式)
-        - [1.2.2. 记忆template并实现重复调用](#122-记忆template并实现重复调用)
-            - [1.2.2.1. Elasticsearch保存template](#1221-elasticsearch保存template)
-            - [1.2.2.2. 调用template](#1222-调用template)
-            - [1.2.2.3. 查询已定义的template](#1223-查询已定义的template)
-            - [1.2.2.4. 删除已定义的template](#1224-删除已定义的template)
+    - [1.2. 避免深度分页](#12-避免深度分页)
+    - [1.3. 检索模板](#13-检索模板)
+        - [1.3.1. template入门案例](#131-template入门案例)
+            - [1.3.1.1. 标准形式](#1311-标准形式)
+            - [1.3.1.2. toJson形式](#1312-tojson形式)
+            - [1.3.1.3. join方法传参](#1313-join方法传参)
+            - [1.3.1.4. default value形式](#1314-default-value形式)
+        - [1.3.2. 记忆template并实现重复调用](#132-记忆template并实现重复调用)
+            - [1.3.2.1. Elasticsearch保存template](#1321-elasticsearch保存template)
+            - [1.3.2.2. 调用template](#1322-调用template)
+            - [1.3.2.3. 查询已定义的template](#1323-查询已定义的template)
+            - [1.3.2.4. 删除已定义的template](#1324-删除已定义的template)
 
 <!-- /TOC -->
 
@@ -64,14 +64,16 @@ https://mp.weixin.qq.com/s/pOCeltC8nhoFGQtgm8uC0Q
 
 * 当向索引中保存文档时，默认情况下，es 会保存两份内容，一份是 _source  中的数据，另一份则是通过分词、排序等一系列过程生成的倒排索引文件，倒排索引中保存了词项和文档之间的对应关系。  
 * 搜索时，当 es 接收到用户的搜索请求之后，就会去倒排索引中查询，通过的倒排索引中维护的倒排记录表找到关键词对应的文档集合，然后对文档进行评分、排序、高亮等处理，处理完成后返回文档。  
+  
+### 1.1.1. 搜索两种基本方式  
+<!-- 
+ES运行检索两种基本方式
+https://www.bblog.vip/article_detail/1559295979215
+ES实战九、全文检索-ElasticSearch-进阶-两种查询方式
+https://tech.souyunku.com/?p=37521
 
-&emsp; 5.X 版本之后，string 类型不再存在，取代的是text和keyword类型。  
-* text 类型作用：分词，将大段的文字根据分词器切分成独立的词或者词组，以便全文检索。  
-    * 适用于：email 内容、某产品的描述等需要分词全文检索的字段；
-    * 不适用：排序或聚合（Significant Terms 聚合例外）
-* keyword 类型：无需分词、整段完整精确匹配。  
-    * 适用于：email 地址、住址、状态码、分类 tags。  
-
+https://haokan.baidu.com/v?pd=wisenatural&vid=12730932323983835698
+-->
 &emsp; elasticsearch的搜索方式：  
 1. query string search。  
 2. query DSL，DSL(Domain Specific Language特定领域语言)以JSON请求体的形式出现。  
@@ -79,12 +81,7 @@ https://mp.weixin.qq.com/s/pOCeltC8nhoFGQtgm8uC0Q
 &emsp; DSL：Domain Specified Language，特定领域的语言。  
 &emsp; http request body：请求体，可以用json的格式来构建查询语法，比较方便，可以构建各种复杂的语法。  
 
-### 1.1.1. Searchtimeout  
-&emsp; (1)设置：默认没有timeout，如果设置了timeout，那么会执行timeout机制。  
-&emsp; (2)Timeout机制：假设用户查询结果有1W条数据，但是需要10″才能查询完毕，但是用户设置了1″的timeout，那么不管当前一共查询到了多少数据，都会在1″后ES讲停止查询，并返回当前数据。  
-&emsp; (3)用法：GET /_search?timeout=1s/ms/m  
-
-### 1.1.2. query string search
+### 1.1.2. query String search
 &emsp; 示例：  
 &emsp; ①查询所有：GET /product/_search  
 &emsp; ②带参数：GET /product/_search?q=name:xiaomi  
@@ -528,13 +525,13 @@ GET /product/_search
 ### 1.1.12. 小结  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-79.png)  
 
-## 避免深度分页  
+## 1.2. 避免深度分页  
 <!-- 
 https://www.cnblogs.com/hello-shf/p/11543453.html
 -->
 
 
-## 1.2. 检索模板  
+## 1.3. 检索模板  
 <!-- 
 https://blog.csdn.net/miaomiao19971215/article/details/106322234
 -->
@@ -544,13 +541,13 @@ https://blog.csdn.net/miaomiao19971215/article/details/106322234
 &emsp; 模板接受在运行时指定参数。搜索模板存储在服务器端，可以在不更改客户端代码的情况下进行修改。  
 &emsp; 模板使用Mustache模板引擎表示。关于 Mustache 可以访问：http://mustache.github.io/mustache.5.html。
 
-### 1.2.1. template入门案例  
+### 1.3.1. template入门案例  
 &emsp; 本入门案例中定义的搜索模板仅在一次查询调用时生效，没有让Elsticsearch保存(记忆)搜索模板。  
 &emsp; “source” 代表搜索模板，内含要执行的search语句  
 &emsp; "params"是需要向模板中传递的变量。  
 &emsp; {{变量名}}用于定义模板中的变量参数。  
 
-#### 1.2.1.1. 标准形式  
+#### 1.3.1.1. 标准形式  
 &emsp; 可以发现，如果去掉"source"标签，实际上这就是一个标准的搜索条件语句。  
 
 ```text
@@ -571,7 +568,7 @@ GET /index_name/_search/template
 }
 ```
 
-#### 1.2.1.2. toJson形式
+#### 1.3.1.2. toJson形式
 toJSON形式的特点在于，source使用字符串来定义。注意: source内需要用到转义字符。  
 
 ```text
@@ -586,7 +583,7 @@ GET cars/_search/template
 }
 ```
 
-#### 1.2.1.3. join方法传参  
+#### 1.3.1.3. join方法传参  
 join方式传入的是数组，让Elasticsearch来进行数据的拼接。  
 
 ```text
@@ -607,7 +604,7 @@ GET index_name/_search/template
 
 等价于"remark": “大众 标志 奔驰 宝马”。  
 
-#### 1.2.1.4. default value形式  
+#### 1.3.1.4. default value形式  
 以下语句中，^end表示为end这个参数设置了默认值。如果在params中传递了end，则使用传递的数值，如果没有传递end，则使用默认的数值。  
 
 ```text
@@ -629,8 +626,8 @@ GET index_name/_search/template
 }
 ```
 
-### 1.2.2. 记忆template并实现重复调用  
-#### 1.2.2.1. Elasticsearch保存template  
+### 1.3.2. 记忆template并实现重复调用  
+#### 1.3.2.1. Elasticsearch保存template  
 必须指定template的名称，方便后续反复调用。  
 
 ```text
@@ -649,7 +646,7 @@ POST _scripts/my_test_template
 }
 ```
 
-#### 1.2.2.2. 调用template  
+#### 1.3.2.2. 调用template  
 调用template时，通过id来指定具体的template。  
 
 ```text
@@ -662,12 +659,12 @@ GET index_name/_search/template
 }
 ```
 
-#### 1.2.2.3. 查询已定义的template  
+#### 1.3.2.3. 查询已定义的template  
 ```text
 GET _scripts/template_name
 ```
 
-#### 1.2.2.4. 删除已定义的template  
+#### 1.3.2.4. 删除已定义的template  
 
 ```text
 DELETE _scripts/template_name
