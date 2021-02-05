@@ -398,6 +398,7 @@
 &emsp; &emsp; [检索模版](/docs/ES/searchTemplate.md)  
 &emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
 [ES原理](/docs/ES/principle.md)  
+[ES监控](/docs/ES/monitor.md)  
 [ES优化](/docs/ES/optimization.md)  
 [ELK与EFK](/docs/ES/ELK与EFK.md)    
 &emsp; [Kibana用户手册](/docs/ES/Kibana.md)  

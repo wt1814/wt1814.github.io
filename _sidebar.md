@@ -312,6 +312,7 @@
             * [检索模版](/docs/ES/searchTemplate.md)  
         * [Java客户端](/docs/ES/JavaRestClient.md)  
     * [ES原理](/docs/ES/principle.md)  
+    * [ES监控](/docs/ES/monitor.md)  
     * [ES优化](/docs/ES/optimization.md)  
     * [ELK](/docs/ES/ELK与EFK.md)   
 * 分布式通信  
