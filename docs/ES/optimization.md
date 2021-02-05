@@ -23,11 +23,6 @@
 <!-- /TOC -->
 
 # 1. ES优化  
-<!-- 
-你不得不关注的 Elasticsearch Top X 关键指标 
-https://mp.weixin.qq.com/s/ns05CQF_wHysq4HXyMd2MQ
-
--->
 
 ## 1.1. ES优化
 ### 1.1.1. 集群搭建阶段  
