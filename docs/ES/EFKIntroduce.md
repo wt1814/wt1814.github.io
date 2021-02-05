@@ -18,9 +18,11 @@
 
 ## 1.1. ELK/EFK简介
 <!-- 
+
 详解日志采集工具--Logstash、Filebeat、Fluentd、Logagent对比
 https://developer.51cto.com/art/201904/595529.htm
 
+https://www.cnblogs.com/xianglei_/p/12047315.html
 1. Elasticsearch 存储数据
 是一个实时的分布式搜索和分析引擎，它可以用于全文搜索，结构化搜索以及分析。它是一个建立在全文搜索引擎 Apache Lucene 基础上的搜索引擎，使用 Java 语言编写，能对大容量的数据进行接近实时的存储、搜索和分析操作。
 

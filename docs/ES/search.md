@@ -21,6 +21,13 @@ https://mp.weixin.qq.com/s/WVInd3kCciTVa1nzOgeEAQ
 fuzzy query
 https://mp.weixin.qq.com/s/ReiCivwDINsE8S5kwUWb5w
 -->
+<!-- 
+SQL代替DSL
+用SQL代替DSL查询ElasticSearch怎样？ 
+https://mp.weixin.qq.com/s/CJkS3vu2BjUWfWrciwNVJg
+如何用你最熟悉的 SQL 来查询 Elasticsearch 中的数据？ 
+https://mp.weixin.qq.com/s/QQh0M85YqI-sHPnYy3pkBg
+-->
 
 ## 1.1. 检索操作  
 &emsp; 搜索分为两个过程：  
