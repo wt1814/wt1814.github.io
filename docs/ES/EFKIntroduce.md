@@ -30,7 +30,7 @@ https://developer.51cto.com/art/201904/595529.htm
 3. Kibana  展示数据
 数据分析和可视化平台。通常与 Elasticsearch 配合使用，对其中数据进行搜索、分析和以统计图表的方式展示。
 -->
-&emsp; EFK是目前最受欢迎的日志管理系统。 **<font color = "red">EFK是ELK日志分析系统的一个变种，加入了filebeat可以更好的收集到资源日志 来为日志分析做好准备工作。</font>** EFK组件：  
+&emsp; EFK是目前最受欢迎的日志管理系统。 **<font color = "red">EFK是ELK日志分析系统的一个变种，加入了filebeat可以更好的收集到资源日志来为日志分析做好准备工作。</font>** EFK组件：  
 
 * Filebeat:   
 &emsp; **轻量级的开源日志文件数据搜集器。**通常在需要采集数据的客户端安装Filebeat，并指定目录与日志格式，Filebeat就能快速收集数据，并发送给logstash进行解析，或是直接发给Elasticsearch存储。  
@@ -43,7 +43,7 @@ https://developer.51cto.com/art/201904/595529.htm
 * Kibana：展示数据  
 &emsp; 数据分析与可视化平台，对Elasticsearch存储的数据进行可视化分析，通过表格的形式展现出来。  
 
-&emsp; **<font color = "red">EFK的流程：</font>**Filebeat->Logstash->（Elasticsearch<->Kibana）。由程序产生出日志，由Filebeat进行处理，将日志数据输出到Logstash中，Logstash再将数据输出到Elasticsearch中，Elasticsearch再与Kibana相结合展示给用户。
+&emsp; **<font color = "red">EFK的流程：</font>** Filebeat->Logstash->（Elasticsearch<->Kibana）。由程序产生出日志，由Filebeat进行处理，将日志数据输出到Logstash中，Logstash再将数据输出到Elasticsearch中，Elasticsearch再与Kibana相结合展示给用户。
 
 ## 1.2. EFK日志架构的演进  
 <!-- 

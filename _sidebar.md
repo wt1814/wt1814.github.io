@@ -315,6 +315,9 @@
     * [ES监控](/docs/ES/monitor.md)  
     * [ES优化](/docs/ES/optimization.md)  
     * [ELK/EFK](/docs/ES/EFK.md)   
+        * [EFK介绍](/docs/ES/EFKIntroduce.md)  
+        * [EFK使用](/docs/ES/EFKUse.md)  
+        * [Kibana用户手册](/docs/ES/Kibana.md)  
 * 分布式通信  
 * [序列化](/docs/microService/communication/serializbale.md)  
 * [NIO](/docs/microService/communication/NIO.md)  
