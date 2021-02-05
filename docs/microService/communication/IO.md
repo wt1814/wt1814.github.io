@@ -36,7 +36,9 @@
 &emsp; 阻塞和非阻塞：在等待这个函数返回结果之前，当前的线程是处于挂起状态还是运行状态。  
 
 # 1. Linux的五种I/O模型  
-<!-- 
+<!--
+框架篇：见识一下linux高性能网络IO+Reactor模型  
+https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
 「网络IO套路」当时就靠它追到女友 
 https://mp.weixin.qq.com/s/x-AZQO5uiuu5svIvScotzA
 大白话详解5种网络IO模型 
