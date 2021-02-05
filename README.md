@@ -18,14 +18,13 @@
             - [kafka](#kafka)
         - [SpringBoot](#springboot)
         - [SpringCloud](#springcloud)
-        - [微服务](#微服务)
         - [Dubbo](#dubbo)
         - [Zookeeper](#zookeeper)
         - [分布式理论](#分布式理论)
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
-        - [分布式调度](#分布式调度)
+        - [任务调度](#任务调度)
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式通信](#分布式通信)
     - [其他框架](#其他框架)
@@ -325,9 +324,6 @@
 [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
 
-### 微服务
-[Gateway](/docs/microService/microservices/Gateway.md)  
-
 ### Dubbo  
 [RPC](/docs/microService/RPC.md)  
 [Dubbo](/docs/microService/dubbo/Dubbo.md)   
@@ -376,7 +372,7 @@
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
 &emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
 
-### 分布式调度
+### 任务调度
 [延时队列](/docs/frame/delayQueue.md)  
 [时间轮算法](/docs/microService/dubbo/timeWheel.md)  
 [分布式调度](/docs/frame/taskSheduling.md)  
@@ -435,10 +431,7 @@
 ## 项目构建基础  
 [日志系统](/docs/web/log.md)   
 [SpringTest](/docs/web/test.md)  
-[Assert处理异常](/docs/web/Assert.md)  
-<!-- 
 [乱码](/docs/web/garbled.md)  
--->
 [统一格式返回](/docs/web/UnifiedFormat.md)  
 [统一异常处理](/docs/web/ExceptionHandler.md)  
 [统一日志记录](/docs/web/unifiedLog.md)  
@@ -464,28 +457,21 @@
 [生成二维码](/docs/web/QRCode.md)  
 [反爬虫](/docs/web/reptile.md)  
 [加密算法](/docs/web/encryption.md)  
+[短链接](/docs/project/URL.md)  
 [其他](/docs/web/other.md)  
-<!-- 
-Httpclient4.3+ 连接池监控详细介绍
-https://www.jianshu.com/p/2813af4eb0d3
--->
 
 ## 架构设计  
 [架构图](/docs/system/diagram.md)  
-&emsp; [接口文档](/docs/system/document/API.md)  
 [软件架构质量属性](/docs/system/qualityAttributes.md)  
 [软件架构设计模式](/docs/system/designPattern.md)  
 
-[分布式与微服务](/docs/system/serviceSplit.md)  
-[并发系统三高](/docs/system/threeHigh.md)  
-[高可用](/docs/system/highAvailability.md)  
+[分布式高并发](/docs/system/DistributedHighConcurrency.md)   
+&emsp; [分布式与微服务](/docs/system/serviceSplit.md)  
+&emsp; [并发系统三高](/docs/system/threeHigh.md)  
+&emsp; [高可用](/docs/system/highAvailability.md)  
+&emsp; [秒杀系统设计](/docs/system/seckill.md)  
 
-[秒杀系统设计](/docs/system/seckill.md)  
-[订单系统设计](/docs/system/order.md)  
-[支付系统](/docs/system/payment.md)  
-[个别场景](/docs/project/scene.md)  
-
-[短链接](/docs/project/URL.md)  
+[OpenAPI](/docs/system/OpenAPI.md)  
 
 ----
 

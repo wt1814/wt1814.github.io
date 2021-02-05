@@ -15,6 +15,7 @@
 <!-- /TOC -->
 
 # 1. 重要的垃圾收集器  
+
 ## 1.1. CMS  
 &emsp; CMS（Conrrurent Mark Sweep）收集器是以 **<font color = "lime">获取最短回收停顿时间为目标</font>** 的收集器。  
 

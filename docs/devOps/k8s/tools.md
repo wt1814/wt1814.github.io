@@ -19,6 +19,10 @@
 <!-- /TOC -->
 
 # 1. Kubernetes运维指南  
+<!-- 
+应该监控哪些Kubernetes健康指标？ 
+https://mp.weixin.qq.com/s/9MRvBGDlEKKbUabhNsVIHQ
+-->
 &emsp; <font color = "lime">整体参考《Kubernetes权威指南》</font>  
 
 ## 1.1. Kubernetes集群管理指南  

@@ -34,6 +34,9 @@
 
 # 1. GC
 <!-- 
+不如一篇文章搞懂三色标记是如何处理漏标 
+https://mp.weixin.qq.com/s/pswlzZugDhNeZKerTTsCnQ
+
 PLAB
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 

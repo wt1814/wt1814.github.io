@@ -9,4 +9,8 @@ https://mp.weixin.qq.com/s/110HKE16ABxvPM_Ja7igjws
 
 讲讲用户空间和内核空间
 https://mp.weixin.qq.com/s/dK_at5_VSWP2oiIBWowXFQ
+
+Linux内存、Swap、Cache、Buffer详细解析 
+https://mp.weixin.qq.com/s/263OGw93GoWs5Jlqv4VrkA
+
 -->
