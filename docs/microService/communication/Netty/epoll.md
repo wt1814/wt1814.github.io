@@ -1,26 +1,24 @@
 
 <!-- TOC -->
 
-- [1. 多路复用(select poll epoll)](#1-多路复用select-poll-epoll)
-    - [1.2. select](#12-select)
-    - [1.3. poll](#13-poll)
-    - [1.4. epoll](#14-epoll)
-        - [epoll操作过程](#epoll操作过程)
-        - [epoll工作模式](#epoll工作模式)
-    - [1.5. 三者区别联系](#15-三者区别联系)
+- [1. 多路复用(select/poll/epoll)](#1-多路复用selectpollepoll)
+    - [1.1. select](#11-select)
+    - [1.2. poll](#12-poll)
+    - [1.3. epoll](#13-epoll)
+        - [1.3.1. epoll操作过程](#131-epoll操作过程)
+        - [1.3.2. epoll工作模式](#132-epoll工作模式)
+    - [1.4. 三者区别联系](#14-三者区别联系)
 
 <!-- /TOC -->
 
 <!-- 
-
 https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
 -->
 
-# 1. 多路复用(select poll epoll)
-&emsp; 在Linux Socket服务器短编程时，为了处理大量客户的连接请求，需要使用非阻塞I/O和复用，select、poll和epoll是Linux API提供的I/O复用方式。  
+# 1. 多路复用(select/poll/epoll)
 &emsp; select，poll，epoll都是IO多路复用的机制。I/O多路复用就是通过一种机制，一个进程可以监视多个描述符，一旦某个描述符就绪(一般是读就绪或者写就绪)，能够通知程序进行相应的读写操作。但select，poll，epoll本质上都是同步I/O，因为它们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的，而异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间。  
 
-## 1.2. select  
+## 1.1. select  
 &emsp; 下面是select的函数接口：  
 
 ```c
@@ -59,7 +57,7 @@ int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct 
 * 对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低；  
 * 用户空间和内核空间的复制非常消耗资源；  
 
-## 1.3. poll  
+## 1.2. poll  
 &emsp; poll的机制与select类似，与select在本质上没有多大差别，管理多个描述符也是进行轮询，根据描述符的状态进行处理，但是poll没有最大文件描述符数量的限制。也就是说，poll只解决了上面的问题3，并没有解决问题1，2的性能开销问题。  
 &emsp; 不同与select使用三个位图来表示三个fdset的方式，poll使用一个pollfd的指针实现。  
 
@@ -88,10 +86,10 @@ int 函数返回fds集合中就绪的读、写，或出错的描述符数量，�
 &emsp; 时间复杂度:O(n)。  
 &emsp; 其和select不同的地方：采用链表的方式替换原有fd_set数据结构,而使其没有连接数的限制。
 
-## 1.4. epoll
+## 1.3. epoll
 &emsp; epoll是在2.6内核中提出的，是之前的select和poll的增强版本。相对于select和poll来说，epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。  
 
-### epoll操作过程
+### 1.3.1. epoll操作过程
 &emsp; epoll的接口如下：  
 
 ```c
@@ -204,7 +202,7 @@ epoll是Linux内核为处理大批量文件描述符而作了改进的poll，是
 
 &emsp; 时间复杂度：O(1)  
 
-### epoll工作模式
+### 1.3.2. epoll工作模式
 &emsp; **epoll的工作方式**  
 &emsp; epoll有两种工作方式：1.水平触发(LT)2.边缘触发(ET)  
 
@@ -236,7 +234,7 @@ epoll除了提供select/poll那种IO事件的水平触发(Level Triggered)外，
 LT和ET原本应该是用于脉冲信号的，可能用它来解释更加形象。Level和Edge指的就是触发点，Level为只要处于水平，那么就一直触发，而Edge则为上升沿和下降沿的时候触发。比如：0->1 就是Edge，1->1 就是Level。  
 ET模式很大程度上减少了epoll事件的触发次数，因此效率比LT模式下高。  
 
-## 1.5. 三者区别联系  
+## 1.4. 三者区别联系  
 
 &emsp; select 有最大文件描述符的限制，只能监听到有几个文件描述符就绪了，得遍历所有文件描述符获取就绪的IO。  
 &emsp; poll 没有最大文件描述符的限制，与select一样，只能监听到有几个文件描述符就绪了，得遍历所有文件描述符获取就绪的IO。  
@@ -281,4 +279,3 @@ epoll是Linux目前大规模网络并发程序开发的首选模型。在绝大�
 * select出现是1984年在BSD里面实现的
 * 14年之后也就是1997年才实现了poll，其实拖那么久也不是效率问题， 而是那个时代的硬件实在太弱，一台服务器处理1千多个链接简直就是神一样的存在了，select很长段时间已经满足需求
 * 2002, 大神 Davide Libenzi 实现了epoll
-

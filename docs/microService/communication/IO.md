@@ -2,7 +2,7 @@
 <!-- TOC -->
 
 - [1. Linux的五种I/O模型](#1-linux的五种io模型)
-    - [1.1. 概念说明](#11-概念说明)
+    - [1.1. ~~概念说明~~](#11-概念说明)
         - [1.1.1. 用户空间与内核空间](#111-用户空间与内核空间)
         - [1.1.2. 进程切换](#112-进程切换)
         - [1.1.3. 进程的阻塞](#113-进程的阻塞)
@@ -22,18 +22,29 @@
 
 <!-- /TOC -->
 
+<!--
+图解---》流程描述---》概况
+-->
+&emsp; **<font color = "lime">小结：</font>**  
+&emsp; I/O涉及两个对象：用户进程（线程）、内核对象。  
+&emsp; 一次read操作，会经历两个阶段：1. 等待数据准备；2. 数据从内核空间拷贝到用户空间。基于以上两个阶段就产生了五种不同的IO模式，分别是：阻塞I/O模型、非阻塞I/O模型、多路复用I/O模型、异步I/O模型。其中，前四种被称为同步I/O。  
+
+&emsp; 非阻塞IO，第一阶段不阻塞但要轮询，第二阶段阻塞。  
+&emsp; 多路复用I/O模型和阻塞I/O模型并没有太大的不同，事实上，还更差一些，因为这里需要使用两个系统调用(select和recvfrom)，而阻塞I/O模型只有一次系统调用(recvfrom)。但是Selector的优势在于它可以同时处理多个连接。  
+
+&emsp; 异步和同步则是对于请求结果的获取是客户端主动获取结果，还是由服务端来通知结果。    
+&emsp; 阻塞和非阻塞：在等待这个函数返回结果之前，当前的线程是处于挂起状态还是运行状态。  
+
 # 1. Linux的五种I/O模型  
 <!-- 
 「网络IO套路」当时就靠它追到女友 
 https://mp.weixin.qq.com/s/x-AZQO5uiuu5svIvScotzA
--->
-<!-- 
 大白话详解5种网络IO模型 
 https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 -->
 &emsp; 本章讨论的背景是Linux环境下的network IO。  
 
-## 1.1. 概念说明  
+## 1.1. ~~概念说明~~  
 &emsp; 在进行解释之前，首先要说明几个概念：  
 - 用户空间和内核空间   
 - 进程切换  
@@ -68,12 +79,25 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 
 ## 1.2. I/O模式  
 &emsp; I/O交换流程：在操作系统中，应用程序对于一次IO操作(以read举例)，数据会先拷贝到内核空间中，然后再从内核空间拷贝到用户空间中，所以<font color = "red">一次read操作，会经历两个阶段：1. 等待数据准备；2. 数据从内核空间拷贝到用户空间。基于以上两个阶段就产生了五种不同的IO模式，分别是：阻塞I/O模型、非阻塞I/O模型、多路复用I/O模型、异步I/O模型。</font><font color= "lime">其中，前四种被称为同步I/O。</font>  
-<!-- 
-①同步阻塞IO(Blocking IO)：即传统的IO模型。
-②同步非阻塞IO(Non-blocking IO)：默认创建的socket都是阻塞的，非阻塞IO要求socket被设置为NONBLOCK。注意这里所说的NIO并非Java的NIO(New IO)库。
-③多路复用IO(IO Multiplexing)：即经典的Reactor设计模式，有时也称为异步阻塞IO，Java中的Selector和Linux中的epoll都是这种模型(Redis单线程为什么速度还那么快，就是因为用了多路复用IO和缓存操作的原因)
-④异步IO(Asynchronous IO)：即经典的Proactor设计模式，也称为****异步非阻塞IO****。
--->
+
+----
+&emsp; 网络IO的本质就是socket流的读取，通常一次IO读操作会涉及到两个对象和两个阶段。  
+
+&emsp; 两个对象：  
+
+* 用户进程（线程）
+* 内核对象  
+
+&emsp; 两个阶段：  
+
+* 等待数据流准备
+* 从内核像进程复制数据
+
+&emsp; 对于socket流而言：  
+
+* 第一步通常涉及等待网络上的数据分组到达，然后被复制到内核的某个缓冲区。  
+* 第二步把数据从内核缓冲区复制到进程缓冲区。  
+
 ### 1.2.1. 阻塞IO  
 &emsp; 在linux中，默认情况下所有的socket都是blocking。从进程发起IO操作，一直等待上述两个阶段完成。两阶段一起阻塞。  
 &emsp; 一个典型的读操作流程大概是这样：  
@@ -83,11 +107,11 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 &emsp; 所以，blocking IO的特点就是在IO执行的两个阶段都被block了。  
 
 ### 1.2.2. 非阻塞IO  
-&emsp; Linux下，可以通过设置socket使其变为non-blocking。进程一直询问IO准备好了没有，准备好了再发起读取操作，这时才把数据从内核空间拷贝到用户空间。第一阶段不阻塞但要轮询，第二阶段阻塞。  
+&emsp; Linux下，可以通过设置socket使其变为non-blocking。进程一直询问IO准备好了没有，准备好了再发起读取操作，这时才把数据从内核空间拷贝到用户空间。**><font color = "red">第一阶段不阻塞但要轮询，第二阶段阻塞。</font>**  
 &emsp; 当对一个non-blocking socket执行读操作时，流程是这个样子：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-2.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-48.png)  
-&emsp; 当用户进程发出read操作时，如果kernel中的数据还没有准备好，那么它并不会block用户进程，而是立刻返回一个error。从用户进程角度讲，它发起一个read操作后，并不需要等待，而是马上就得到了一个结果。用户进程判断结果是一个error时，它就知道数据还没有准备好，于是它可以再次发送read操作。一旦kernel中的数据准备好了，并且又再次收到了用户进程的system call，那么它马上就将数据拷贝到了用户内存，然后返回。  
+&emsp; 当用户进程发出read操作时，如果kernel中的数据还没有准备好，那么它并不会block用户进程，而是立刻返回一个error。从用户进程角度讲，它发起一个read操作后，并不需要等待，而是马上就得到了一个结果。**用户进程判断结果是一个error时，它就知道数据还没有准备好，于是它可以再次发送read操作。一旦kernel中的数据准备好了，并且又再次收到了用户进程的system call，那么它马上就将数据拷贝到了用户内存，然后返回。**  
 &emsp; 所以，nonblocking IO的特点是用户进程需要不断的主动询问kernel数据好了没有。  
 
 ### 1.2.3. 多路复用IO  
@@ -102,6 +126,10 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 &emsp; 这个图和blocking IO的图其实并没有太大的不同，事实上，还更差一些。因为这里需要使用两个system call (select 和 recvfrom)，而blocking IO只调用了一个system call (recvfrom)。但是，用select的优势在于它可以同时处理多个connection。  
 &emsp; 所以，如果处理的连接数不是很高的话，使用select/epoll的web server不一定比使用multi-threading + blocking IO的web server性能更好，可能延迟还更大。select/epoll的优势并不是对于单个连接能处理得更快，而是在于能处理更多的连接。)  
 &emsp; 在IO multiplexing Model中，实际中，对于每一个socket，一般都设置成为non-blocking，但是，如上图所示，整个用户的process其实是一直被block的。只不过process是被select这个函数block，而不是被socket IO给block。  
+
+------------
+&emsp; 多个进程的I/O可以注册到一个复用器(Selector)上，当用户进程调用该Selector，Selector会监听注册进来的所有I/O，如果Selector监听的所有I/O在内核缓存区都没有可读数据，select调用进程会被阻塞，而当任一I/O在内核缓冲区中有可读数据时，select调用就会返回，而后select调用进程可以自己或通知另外的进程(注册进程)再次发起读取I/O，读取内核中准备好的数据，多个进程注册I/O后，只有一个select调用进程被阻塞。    
+&emsp; 其实多路复用I/O模型和阻塞I/O模型并没有太大的不同，事实上，还更差一些，因为这里需要使用两个系统调用(select和recvfrom)，而阻塞I/O模型只有一次系统调用(recvfrom)。但是Selector的优势在于它可以同时处理多个连接。    
 
 ### 1.2.4. 信号驱动IO  
 &emsp; 进程发起读取操作会立即返回，当数据准备好了会以通知的形式告诉进程，进程再发起读取操作，把数据从内核空间拷贝到用户空间。第一阶段不阻塞，第二阶段阻塞。  
