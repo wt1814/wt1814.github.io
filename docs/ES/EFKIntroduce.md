@@ -1,49 +1,51 @@
 
 <!-- TOC -->
 
-- [1. 日志收集EFK](#1-日志收集efk)
+- [1. EFK介绍](#1-efk介绍)
     - [1.1. ELK/EFK简介](#11-elkefk简介)
-    - [1.2. ELK日志架构的演进](#12-elk日志架构的演进)
+    - [1.2. EFK日志架构的演进](#12-efk日志架构的演进)
         - [1.2.1. Demo版](#121-demo版)
         - [1.2.2. 初级版](#122-初级版)
         - [1.2.3. 中级版](#123-中级版)
         - [1.2.4. 高级版](#124-高级版)
-    - [1.3. ELK原理](#13-elk原理)
+    - [1.3. EFK原理](#13-efk原理)
         - [1.3.1. Filebeat工作原理](#131-filebeat工作原理)
         - [1.3.2. Logstash工作原理](#132-logstash工作原理)
-    - [1.4. EFK的使用](#14-efk的使用)
-        - [1.4.1. EFK搭建](#141-efk搭建)
-        - [1.4.2. 日志收集](#142-日志收集)
-            - [1.4.2.1. fileBeat采集Spring日志](#1421-filebeat采集spring日志)
-            - [1.4.2.2. Spring日志直接输出到logstash](#1422-spring日志直接输出到logstash)
-    - [1.5. EFK监控](#15-efk监控)
 
 <!-- /TOC -->
 
-# 1. 日志收集EFK  
-<!-- 
-快用 Kibana 吧
-https://mp.weixin.qq.com/s/Ky51TVhvDP0Mv1FlhNGycg
--->
+# 1. EFK介绍  
 
 ## 1.1. ELK/EFK简介
 <!-- 
-
 详解日志采集工具--Logstash、Filebeat、Fluentd、Logagent对比
 https://developer.51cto.com/art/201904/595529.htm
--->
-&emsp; EFK就是目前最受欢迎的日志管理系统。ELK/EFK组件：  
 
-* Filebeat: **轻量级的开源日志文件数据搜集器。**通常在需要采集数据的客户端安装Filebeat，并指定目录与日志格式，Filebeat就能快速收集数据，并发送给logstash进行解析，或是直接发给Elasticsearch存储。  
+1. Elasticsearch 存储数据
+是一个实时的分布式搜索和分析引擎，它可以用于全文搜索，结构化搜索以及分析。它是一个建立在全文搜索引擎 Apache Lucene 基础上的搜索引擎，使用 Java 语言编写，能对大容量的数据进行接近实时的存储、搜索和分析操作。
+
+2. Logstash  收集数据
+数据收集引擎。它支持动态的从各种数据源搜集数据，并对数据进行过滤、分析、丰富、统一格式等操作，然后存储到用户指定的位置。
+
+3. Kibana  展示数据
+数据分析和可视化平台。通常与 Elasticsearch 配合使用，对其中数据进行搜索、分析和以统计图表的方式展示。
+-->
+&emsp; EFK是目前最受欢迎的日志管理系统。 **<font color = "red">EFK是ELK日志分析系统的一个变种，加入了filebeat可以更好的收集到资源日志 来为日志分析做好准备工作。</font>** EFK组件：  
+
+* Filebeat:   
+&emsp; **轻量级的开源日志文件数据搜集器。**通常在需要采集数据的客户端安装Filebeat，并指定目录与日志格式，Filebeat就能快速收集数据，并发送给logstash进行解析，或是直接发给Elasticsearch存储。  
 
         常见的日志采集工具有Logstash、Filebeat、Fluentd、Logagent、rsyslog等等。  
-* Logstash：**数据收集引擎。**它支持动态的的从各种数据源获取数据，并对数据进行过滤，分析，丰富，统一格式等操作，然后存储到用户指定的位置。 
-* Elasticsearch: 能对大容量的数据进行接近实时的存储，搜索和分析操作。 
-* Kibana：数据分析与可视化平台，对Elasticsearch存储的数据进行可视化分析，通过表格的形式展现出来。  
+* Logstash：收集数据  
+&emsp; **数据收集引擎。**它支持动态的的从各种数据源获取数据，并对数据进行过滤，分析，丰富，统一格式等操作，然后存储到用户指定的位置。 
+* Elasticsearch: 存储数据  
+&emsp; 能对大容量的数据进行接近实时的存储，搜索和分析操作。 
+* Kibana：展示数据  
+&emsp; 数据分析与可视化平台，对Elasticsearch存储的数据进行可视化分析，通过表格的形式展现出来。  
 
 &emsp; **<font color = "red">EFK的流程：</font>**Filebeat->Logstash->（Elasticsearch<->Kibana）。由程序产生出日志，由Filebeat进行处理，将日志数据输出到Logstash中，Logstash再将数据输出到Elasticsearch中，Elasticsearch再与Kibana相结合展示给用户。
 
-## 1.2. ELK日志架构的演进  
+## 1.2. EFK日志架构的演进  
 <!-- 
 从ELK到EFK演进
 https://www.cnblogs.com/panchanggui/p/10697548.html
@@ -89,7 +91,7 @@ https://www.cnblogs.com/panchanggui/p/10697548.html
 &emsp; 这个高级版，非要说有什么隐患，就是敏感数据没有进行处理，就直接写入日志了。关于这点，其实现在JAVA这边，现成的日志组件，比如log4j都有提供这种日志过滤功能，可以将敏感信息进行脱敏后，再记录日志。  
 
 
-## 1.3. ELK原理  
+## 1.3. EFK原理  
 &emsp; `官方文档：`  
 &emsp; `Filebeat：`  
 
@@ -168,59 +170,3 @@ https://www.cnblogs.com/panchanggui/p/10697548.html
 &emsp; json：使用json格式对数据进行编码/解码。   
 &emsp; multiline：将汇多个事件中数据汇总为一个单一的行。比如：java异常信息和堆栈信息。  
 
-## 1.4. EFK的使用  
-<!-- 
-https://blog.csdn.net/HuaZi_Myth/article/details/102770893?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromBaidu-1.control&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromBaidu-1.control
-
-https://blog.csdn.net/ct1150/article/details/88058345
--->
-&emsp; kubernetes可以实现efk的快速部署和使用，通过statefulset控制器部署elasticsearch组件，用来存储日志数据，还可通过volumenclaimtemplate动态生成pv实现es数据的持久化。通过deployment部署kibana组件，实现日志的可视化管理。通过daemonset控制器部署fluentd组件，来收集各节点和k8s集群的日志。  
-&emsp; ELK可以收集Java服务、MySQL、Nginx等系统的日志。  
-&emsp; Spring Boot整合ELK+Filebear构建日志系统：将Spring Boot应用与Filebeat部署在同一服务器上，使用相同的日志路径。  
-
-### 1.4.1. EFK搭建  
-......
-
-
-### 1.4.2. 日志收集  
-
-#### 1.4.2.1. fileBeat采集Spring日志  
-<!-- 
-https://blog.csdn.net/zimou5581/article/details/90519307
---> 
-......
-
-#### 1.4.2.2. Spring日志直接输出到logstash  
-&emsp; 无fileBeat组件时，日志需要直接输出到logstash。
-
-1. maven  
-
-```xml
-<!--logback日志-->
-<dependency>
-    <groupId>net.logstash.logback</groupId>
-    <artifactId>logstash-logback-encoder</artifactId>
-    <version>4.8</version>
-</dependency>
-```
-
-2. 修改logback.xml配置文件，添加logstash配置，并且使java应用打印出来的日志以json格式来显示，并且一个日志占用一行，这样对于elk处理非常简单方便高效。     
-
-```xml
-<appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-    <param name="Encoding" value="UTF-8"/>
-    <remoteHost>192.168.1.102</remoteHost>
-    <port>10514</port>
-    <!-- <filter class="com.program.interceptor.ELKFilter"/>-->//引入过滤类
-    <!-- encoder is required -->
-    <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" >
-        <customFields>{"appname":"${appName}"}</customFields> // 索引名
-    </encoder>
-</appender>
-```
-
-## 1.5. EFK监控  
-<!-- 
-如何实现对ELK各组件的监控？试试Metricbeat 
-https://mp.weixin.qq.com/s/Bt8_1TPxtKHStmYd_hQD0Q
--->

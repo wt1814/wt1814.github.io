@@ -400,7 +400,9 @@
 [ES原理](/docs/ES/principle.md)  
 [ES监控](/docs/ES/monitor.md)  
 [ES优化](/docs/ES/optimization.md)  
-[ELK与EFK](/docs/ES/ELK与EFK.md)    
+[ELK/EFK](/docs/ES/EFK.md)    
+&emsp; [EFK介绍](/docs/ES/EFKIntroduce.md)  
+&emsp; [EFK使用](/docs/ES/EFKUse.md)  
 &emsp; [Kibana用户手册](/docs/ES/Kibana.md)  
 
 ### 分布式通信  
