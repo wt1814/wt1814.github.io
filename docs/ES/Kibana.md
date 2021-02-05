@@ -2,7 +2,6 @@
 
 
 # 1. Kibana用户手册  
-
 <!-- 
 快用 Kibana 吧
 https://mp.weixin.qq.com/s/Ky51TVhvDP0Mv1FlhNGycg

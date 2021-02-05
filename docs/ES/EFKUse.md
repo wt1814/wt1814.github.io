@@ -34,7 +34,7 @@ https://blog.csdn.net/zimou5581/article/details/90519307
 ......
 
 ### 1.2.2. Spring日志直接输出到logstash  
-&emsp; 无fileBeat组件时，日志需要直接输出到logstash。
+&emsp; **无fileBeat组件时，日志需要直接输出到logstash。**
 
 1. maven  
 
