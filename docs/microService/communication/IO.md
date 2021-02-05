@@ -58,28 +58,28 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 &emsp; 正在执行的进程，由于期待的某些事件未发生，如请求系统资源失败、等待某种操作的完成、新数据尚未到达或无新工作做等，则由系统自动执行阻塞原语(Block)，使自己由运行状态变为阻塞状态。可见，进程的阻塞是进程自身的一种主动行为，也因此只有处于运行态的进程(获得CPU)，才可能将其转为阻塞状态。当进程进入阻塞状态，是不占用CPU资源的。  
 
 ### 1.1.4. 文件描述符fd
-&emsp; 文件描述符（File descriptor）是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。  
+&emsp; 文件描述符(File descriptor)是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。  
 &emsp; 文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。  
 
 ### 1.1.5. 缓存 I/O
-&emsp; 缓存 I/O 又被称作标准I/O，大多数文件系统的默认I/O操作都是缓存I/O。在Linux的缓存 I/O 机制中，操作系统会将 I/O 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。  
+&emsp; 缓存 I/O 又被称作标准I/O，大多数文件系统的默认I/O操作都是缓存I/O。在Linux的缓存 I/O 机制中，操作系统会将 I/O 的数据缓存在文件系统的页缓存( page cache )中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。  
 &emsp; **缓存I/O的缺点：**  
 &emsp; 数据在传输过程中需要在应用程序地址空间和内核进行多次数据拷贝操作，这些数据拷贝操作所带来的 CPU 以及内存开销是非常大的。  
 
 ## 1.2. I/O模式  
-&emsp; I/O交换流程：在操作系统中，应用程序对于一次IO操作（以read举例），数据会先拷贝到内核空间中，然后再从内核空间拷贝到用户空间中，所以<font color = "red">一次read操作，会经历两个阶段：1. 等待数据准备；2. 数据从内核空间拷贝到用户空间。基于以上两个阶段就产生了五种不同的IO模式，分别是：阻塞I/O模型、非阻塞I/O模型、多路复用I/O模型、异步I/O模型。</font><font color= "lime">其中，前四种被称为同步I/O。</font>  
+&emsp; I/O交换流程：在操作系统中，应用程序对于一次IO操作(以read举例)，数据会先拷贝到内核空间中，然后再从内核空间拷贝到用户空间中，所以<font color = "red">一次read操作，会经历两个阶段：1. 等待数据准备；2. 数据从内核空间拷贝到用户空间。基于以上两个阶段就产生了五种不同的IO模式，分别是：阻塞I/O模型、非阻塞I/O模型、多路复用I/O模型、异步I/O模型。</font><font color= "lime">其中，前四种被称为同步I/O。</font>  
 <!-- 
-①同步阻塞IO（Blocking IO）：即传统的IO模型。
-②同步非阻塞IO（Non-blocking IO）：默认创建的socket都是阻塞的，非阻塞IO要求socket被设置为NONBLOCK。注意这里所说的NIO并非Java的NIO（New IO）库。
-③多路复用IO（IO Multiplexing）：即经典的Reactor设计模式，有时也称为异步阻塞IO，Java中的Selector和Linux中的epoll都是这种模型（Redis单线程为什么速度还那么快，就是因为用了多路复用IO和缓存操作的原因）
-④异步IO（Asynchronous IO）：即经典的Proactor设计模式，也称为****异步非阻塞IO****。
+①同步阻塞IO(Blocking IO)：即传统的IO模型。
+②同步非阻塞IO(Non-blocking IO)：默认创建的socket都是阻塞的，非阻塞IO要求socket被设置为NONBLOCK。注意这里所说的NIO并非Java的NIO(New IO)库。
+③多路复用IO(IO Multiplexing)：即经典的Reactor设计模式，有时也称为异步阻塞IO，Java中的Selector和Linux中的epoll都是这种模型(Redis单线程为什么速度还那么快，就是因为用了多路复用IO和缓存操作的原因)
+④异步IO(Asynchronous IO)：即经典的Proactor设计模式，也称为****异步非阻塞IO****。
 -->
 ### 1.2.1. 阻塞IO  
 &emsp; 在linux中，默认情况下所有的socket都是blocking。从进程发起IO操作，一直等待上述两个阶段完成。两阶段一起阻塞。  
 &emsp; 一个典型的读操作流程大概是这样：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-1.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-47.png)  
-&emsp; 当用户进程调用了recvfrom这个系统调用，kernel就开始了IO的第一个阶段：准备数据（对于网络IO来说，很多时候数据在一开始还没有到达。比如，还没有收到一个完整的UDP包。这个时候kernel就要等待足够的数据到来）。这个过程需要等待，也就是说数据被拷贝到操作系统内核的缓冲区中是需要一个过程的。而在用户进程这边，整个进程会被阻塞（当然，是进程自己选择的阻塞）。当kernel一直等到数据准备好了，它就会将数据从kernel中拷贝到用户内存，然后kernel返回结果，用户进程才解除block的状态，重新运行起来。  
+&emsp; 当用户进程调用了recvfrom这个系统调用，kernel就开始了IO的第一个阶段：准备数据(对于网络IO来说，很多时候数据在一开始还没有到达。比如，还没有收到一个完整的UDP包。这个时候kernel就要等待足够的数据到来)。这个过程需要等待，也就是说数据被拷贝到操作系统内核的缓冲区中是需要一个过程的。而在用户进程这边，整个进程会被阻塞(当然，是进程自己选择的阻塞)。当kernel一直等到数据准备好了，它就会将数据从kernel中拷贝到用户内存，然后kernel返回结果，用户进程才解除block的状态，重新运行起来。  
 &emsp; 所以，blocking IO的特点就是在IO执行的两个阶段都被block了。  
 
 ### 1.2.2. 非阻塞IO  
@@ -98,9 +98,9 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-49.png)  
 
 &emsp; 当用户进程调用了select，那么整个进程会被block，而同时，kernel会“监视”所有select负责的socket，当任何一个socket中的数据准备好了，select就会返回。这个时候用户进程再调用read操作，将数据从kernel拷贝到用户进程。  
-&emsp; 所以，I/O 多路复用的特点是通过一种机制一个进程能同时等待多个文件描述符，而这些文件描述符（套接字描述符）其中的任意一个进入读就绪状态，select()函数就可以返回。  
+&emsp; 所以，I/O 多路复用的特点是通过一种机制一个进程能同时等待多个文件描述符，而这些文件描述符(套接字描述符)其中的任意一个进入读就绪状态，select()函数就可以返回。  
 &emsp; 这个图和blocking IO的图其实并没有太大的不同，事实上，还更差一些。因为这里需要使用两个system call (select 和 recvfrom)，而blocking IO只调用了一个system call (recvfrom)。但是，用select的优势在于它可以同时处理多个connection。  
-&emsp; 所以，如果处理的连接数不是很高的话，使用select/epoll的web server不一定比使用multi-threading + blocking IO的web server性能更好，可能延迟还更大。select/epoll的优势并不是对于单个连接能处理得更快，而是在于能处理更多的连接。）  
+&emsp; 所以，如果处理的连接数不是很高的话，使用select/epoll的web server不一定比使用multi-threading + blocking IO的web server性能更好，可能延迟还更大。select/epoll的优势并不是对于单个连接能处理得更快，而是在于能处理更多的连接。)  
 &emsp; 在IO multiplexing Model中，实际中，对于每一个socket，一般都设置成为non-blocking，但是，如上图所示，整个用户的process其实是一直被block的。只不过process是被select这个函数block，而不是被socket IO给block。  
 
 ### 1.2.4. 信号驱动IO  
@@ -123,7 +123,7 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 &emsp; 异步请求，A调用B，B的处理是异步的，B在接到请求后先告诉A已经接到请求了，然后异步去处理，处理完之后通过回调等方式再通知A。  
 &emsp; 所以说，同步和异步最大的区别就是被调用方的执行方式和返回时机。同步指的是被调用方做完事情之后再返回，异步指的是被调用方先返回，然后再做事情，做完之后再想办法通知调用方。
 -->
-&emsp; 同步和异步其实是指获取CPU时间片到利用，**主要看请求发起方对消息结果的获取是主动发起的，还是被动通知的。**如下图所示，如果是请求方主动发起的，一直在等待应答结果（同步阻塞），或者可以先去处理其他事情，但要不断轮询查看发起的请求是否由应答结果（同步非阻塞），因为不管如何都要发起方主动获取消息结果，所以形式上还是同步操作。如果是由服务方通知的，也就是请求方发出请求后，要么一直等待通知（异步阻塞），要么先去干自己的事（异步非阻塞）。当事情处理完成后，服务方会主动通知请求方，它的请求已经完成，这就是异步。异步通知的方式一般通过状态改变、消息通知或者回调函数来完成，大多数时候采用的都是回调函数。  
+&emsp; 同步和异步其实是指获取CPU时间片到利用，**主要看请求发起方对消息结果的获取是主动发起的，还是被动通知的。**如下图所示，如果是请求方主动发起的，一直在等待应答结果(同步阻塞)，或者可以先去处理其他事情，但要不断轮询查看发起的请求是否由应答结果(同步非阻塞)，因为不管如何都要发起方主动获取消息结果，所以形式上还是同步操作。如果是由服务方通知的，也就是请求方发出请求后，要么一直等待通知(异步阻塞)，要么先去干自己的事(异步非阻塞)。当事情处理完成后，服务方会主动通知请求方，它的请求已经完成，这就是异步。异步通知的方式一般通过状态改变、消息通知或者回调函数来完成，大多数时候采用的都是回调函数。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-8.png)  
 
 ### 1.3.2. 阻塞和非阻塞  
@@ -144,12 +144,12 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 &emsp; 从上面的描述中，可以看到<font color = "red">阻塞和非阻塞通常是指在客户端发出请求后，在服务端处理这个请求的过程中，客户端本身是直接挂起等待结果，还是继续做其他的任务。而异步和同步则是对于请求结果的获取是客户端主动获取结果，还是由服务端来通知结果。</font>从这一点来看，<font color = "lime">同步和阻塞其实描述的是两个不同角度的事情，阻塞和非阻塞指的是客户端等待消息处理时本身的状态，是挂起还是继续干别的。同步和异步指的是对于消息结果是客户端主动获取的，还是由服务端间接推送的。</font>  
 
 ## 1.4. 各I/O模型的对比与总结  
-&emsp; 前四种I/O模型都是同步I/O操作，它们的区别在于第一阶段，而第二阶段是一样的：在数据从内核拷贝到应用缓冲期间（用户空间），进程阻塞于recvfrom调用。  
+&emsp; 前四种I/O模型都是同步I/O操作，它们的区别在于第一阶段，而第二阶段是一样的：在数据从内核拷贝到应用缓冲期间(用户空间)，进程阻塞于recvfrom调用。  
 &emsp; 下图是各I/O 模型的阻塞状态对比：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-6.png)  
 <!-- 
 
-通过上面的图片，可以发现non-blocking IO和asynchronous IO的区别还是很明显的。在non-blocking IO中，虽然进程大部分时间都不会被block，但是它仍然要求进程去主动的check，并且当数据准备完成以后，也需要进程主动的再次调用recvfrom来将数据拷贝到用户内存。而asynchronous IO则完全不同。它就像是用户进程将整个IO操作交给了他人（kernel）完成，然后他人做完后发信号通知。在此期间，用户进程不需要去检查IO操作的状态，也不需要主动的去拷贝数据。
+通过上面的图片，可以发现non-blocking IO和asynchronous IO的区别还是很明显的。在non-blocking IO中，虽然进程大部分时间都不会被block，但是它仍然要求进程去主动的check，并且当数据准备完成以后，也需要进程主动的再次调用recvfrom来将数据拷贝到用户内存。而asynchronous IO则完全不同。它就像是用户进程将整个IO操作交给了他人(kernel)完成，然后他人做完后发信号通知。在此期间，用户进程不需要去检查IO操作的状态，也不需要主动的去拷贝数据。
 -->
 &emsp; 从上图可以看出，阻塞程度：阻塞I/O>非阻塞I/O>多路复用I/O>信号驱动I/O>异步I/O，效率是由低到高到。最后，再看一下下表，从多维度总结了各I/O模型之间到差异。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-7.png)  
