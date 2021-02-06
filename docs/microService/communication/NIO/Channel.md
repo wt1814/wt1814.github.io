@@ -129,7 +129,7 @@ public interface Channel{
 &emsp; java nio提供的FileChannel提供了map()方法，该方法可以在一个打开的文件和MappedByteBuffer之间建立一个虚拟内存映射，MappedByteBuffer继承于ByteBuffer，类似于一个基于内存的缓冲区，只不过该对象的数据元素存储在磁盘的一个文件中；  
 
 ### 1.2.1. MappedByteBuffer API  
-&emsp; NIO中内存映射主要用到以下两个类：java.nio.MappedByteBuffer、java.nio.channels.FileChannel。  
+&emsp; **NIO中内存映射主要用到以下两个类：java.nio.MappedByteBuffer、java.nio.channels.FileChannel。**  
 1. 通过FileChannel.map()获取MappedByteBuffer  
 
 ```java
@@ -138,9 +138,9 @@ public abstract MappedByteBuffer map(MapMode mode, long position, long size) thr
 
 &emsp; 调用FileChannel类的map方法进行内存映射，第一个参数设置映射模式，现在支持3种模式：  
 
-* FileChannel.MapMode.READ_ONLY：只读缓冲区，在缓冲区中如果发生写操作则会产生ReadOnlyBufferException；  
-* FileChannel.MapMode.READ_WRITE：读写缓冲区，任何时刻如果通过内存映射的方式修改了文件则立刻会对磁盘上的文件执行相应的修改操作。别的进程如果也共享了同一个映射，则也会同步看到变化。而不是像标准IO那样每个进程有各自的内核缓冲区，比如JAVA代码中，没有执行IO输出流的flush()或者close()操作，那么对文件的修改不会更新到磁盘去，除非进程运行结束；  
-* FileChannel.MapMode.PRIVATE：可写缓冲区，但任何修改是缓冲区私有的，不会回到文件中。  
+    * FileChannel.MapMode.READ_ONLY：只读缓冲区，在缓冲区中如果发生写操作则会产生ReadOnlyBufferException；  
+    * FileChannel.MapMode.READ_WRITE：读写缓冲区，任何时刻如果通过内存映射的方式修改了文件则立刻会对磁盘上的文件执行相应的修改操作。别的进程如果也共享了同一个映射，则也会同步看到变化。而不是像标准IO那样每个进程有各自的内核缓冲区，比如JAVA代码中，没有执行IO输出流的flush()或者close()操作，那么对文件的修改不会更新到磁盘去，除非进程运行结束；  
+    * FileChannel.MapMode.PRIVATE：可写缓冲区，但任何修改是缓冲区私有的，不会回到文件中。  
 
 &emsp; PRIVATE模式表示写时拷贝的映射，意味着通过put()方法所做的任何修改都会导致产生一个私有的数据拷贝并且该拷贝中的数据只有MappedByteBuffer实例可以看到；  
 &emsp; 该过程不会对底层文件做任何修改，而且一旦缓冲区被施以垃圾收集动作(garbage collected)，那些修改都会丢失；  
@@ -496,7 +496,7 @@ this is content from input4.txt
 &emsp; NIO通道提供了一个全新的类似流的I/O隐喻，但是字节流以及字符读写器仍然存在并被广泛使用。一个工具类java.nio.channels.Channels定义了几种静态的工厂方法以使通道可以更加容易地同流和读写器互联。  
 &emsp; java.nio.channels.Channels工具方法汇总：  
 
-|方法	|返回	描述|
+|方法|返回	描述|
 |---|---|---|
 |newChannel (InputStream in)	|ReadableByteChannel	|返回一个将从给定的输入流读取数据的通道。|
 |newChannel (OutputStream out)	|WritableByteChannel	|返回一个将向给定的输出流写入数据的通道。|
