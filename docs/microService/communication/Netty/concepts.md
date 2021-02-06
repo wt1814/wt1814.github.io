@@ -48,7 +48,6 @@
 3. 实现一个即时通讯系统：使用Netty可以实现一个可以聊天类似微信的即时通讯系统，这方面的开源项目还蛮多的，可以自行去Github找一找。  
 4. 实现消息推送系统：市面上有很多消息推送系统都是基于Netty来做的。  
 5. ......
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-18.png)  
 
 ## 1.2. Netty的整体架构  
 &emsp; 官方文档：https://netty.io/3.8/guide/#architecture.5   
