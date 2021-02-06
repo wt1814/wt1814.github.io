@@ -19,7 +19,8 @@
 
 <!-- /TOC -->
 
-
+&emsp; 小结：  
+&emsp; 由netty运行流程可以看出Netty核心组件有Bootstrap、EventLoop、channel相关、byteBuf...  
 
 # 1. Netty核心组件 
 <!--
