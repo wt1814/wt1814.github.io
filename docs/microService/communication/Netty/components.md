@@ -18,11 +18,15 @@
 <!-- /TOC -->
 
 # 1. Netty核心组件 
-<!-- 
-Netty之旅二：口口相传的高性能Netty到底是什么？ 
-https://mp.weixin.qq.com/s?__biz=Mzg5ODA5NDIyNQ==&mid=2247484812&idx=1&sn=52d38717da60683d671136f50009f4fd&chksm=c0668072f71109643fb4697d2ddcec1a1983544dc4e3497f2c2a6aff525c292d3d9f2bd30be0&scene=178&cur_album_id=1486063894363242498#rd
+<!--
+Netty源码
+https://mp.weixin.qq.com/s/I9PGsWo7-ykGf2diKklGtA
+你要的Netty常见面试题总结，敖丙搞来了！
+https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 
 -->
+&emsp; Netty执行流程  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-87.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-44.png)  
 &emsp; Netty的核心组件主要有：  
 

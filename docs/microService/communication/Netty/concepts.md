@@ -10,16 +10,7 @@
 <!-- /TOC -->
 
 # 1. netty核心概念  
-<!-- 
-45 张图深度解析 Netty 架构与原理 
-https://mp.weixin.qq.com/s/insjE_EJRoCOM-1GqgZP9A
-你要的Netty常见面试题总结，敖丙搞来了！
-https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
-Netty网络框架
-https://mp.weixin.qq.com/s?__biz=MzIxNTAwNjA4OQ==&mid=2247486074&idx=2&sn=7f7cf296f4f920f251a66e1857db7f04&chksm=979fa49ca0e82d8a628a4e638dfa89a24d74ce6924ab2f9fe0a8582fea33a4a7a2cd75ada4e0&mpshare=1&scene=1&srcid=&sharer_sharetime=1575464797228&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=ba91437029ffb265b462be29eed847d121d1877a58bddf202764fdbcd61e94a41419579d5bf5bf789bbd3bc854452600fcd9e7cafe71703e577957ee7731613da98d69b2581744c5f666bc4318028a01&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=AVVqSkDHGCNLIElG3PjpXco%3D&pass_ticket=UIzvXMBOSWKDgIz4M7cQoxQ548Mbvo9Oik9jB6kaYK60loRzg3FsHZUpAHYbC4%2By
-掌握Netty，面试怎么回答Netty？ 
- https://mp.weixin.qq.com/s/36jmjy8YoIwULF-UlnwGtg
--->
+
 
 ## 1.1. Netty简介  
 <!-- 
@@ -30,9 +21,13 @@ https://mp.weixin.qq.com/s?__biz=MzIxNTAwNjA4OQ==&mid=2247486074&idx=2&sn=7f7cf2
 4.Netty支持应用层的KeepAlive。
 5.Netty规避了JAVA NIO中的很多BUG，性能更好。
 -->
+&emsp; **Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。**  
+    Netty 是一个 基于 NIO 的 client-server(客户端服务器)框架，使用它可以快速简单地开发网络应用程序。
+    它极大地简化并优化了 TCP 和 UDP 套接字服务器等网络编程,并且性能以及安全性等很多方面甚至都要更好。
+    支持多种协议 如 FTP，SMTP，HTTP 以及各种二进制和基于文本的传统协议。  
 
 &emsp; 为什么要用 Netty？  
-&emsp; **Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。**在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
+&emsp; 在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
 
 * NIO的类库和API繁杂，使用麻烦，需要熟练掌握Selector、ServerSocketChannek、SockctChannek、ByteBuffer等。  
 * 原生API使用单线程模型，不能很好利用多核优势；  
