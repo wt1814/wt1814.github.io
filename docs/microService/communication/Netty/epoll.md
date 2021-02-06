@@ -7,11 +7,13 @@
     - [1.3. epoll](#13-epoll)
         - [1.3.1. epoll操作过程](#131-epoll操作过程)
         - [1.3.2. epoll工作模式](#132-epoll工作模式)
+        - [1.3.3. epoll相比select的优点](#133-epoll相比select的优点)
     - [1.4. 三者区别联系](#14-三者区别联系)
 
 <!-- /TOC -->
 
-<!-- 
+<!--
+~~
 https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
 -->
 
@@ -87,11 +89,19 @@ int 函数返回fds集合中就绪的读、写，或出错的描述符数量，�
 ## 1.3. epoll
 &emsp; epoll是在2.6内核中提出的，是之前的select和poll的增强版本。相对于select和poll来说，epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。  
 
+调用epoll_create，会在内核cache里建个红黑树用于存储以后epoll_ctl传来的socket，同时也会再建立一个rdllist双向链表用于存储准备就绪的事件。当epoll_wait调用时，仅查看这个rdllist双向链表数据即可  
+epoll_ctl在向epoll对象中添加、修改、删除事件时，是在rbr红黑树中操作的，非常快  
+添加到epoll中的事件会与设备(如网卡)建立回调关系，设备上相应事件的发生时会调用回调方法，把事件加进rdllist双向链表中；这个回调方法在内核中叫做ep_poll_callback  
+
 ### 1.3.1. epoll操作过程
 &emsp; epoll的接口如下：  
 
+1. 调用epoll_create，会在内核cache里建个红黑树用于存储以后epoll_ctl传来的socket，同时也会再建立一个rdllist双向链表用于存储准备就绪的事件。当epoll_wait调用时，仅查看这个rdllist双向链表数据即可  
+2. epoll_ctl在向epoll对象中添加、修改、删除事件时，是在rbr红黑树中操作的，非常快  
+3. **<font color = "red">添加到epoll中的事件会与设备(如网卡)建立回调关系，设备上相应事件的发生时会调用回调方法，把事件加进rdllist双向链表中；这个回调方法在内核中叫做ep_poll_callback</font>**  
+
 ```c
-int epoll_create(int size)；  
+int epoll_create(int size)；
 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)；  
             typedef union epoll_data {  
                 void *ptr;  
@@ -103,8 +113,7 @@ int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)；
             struct epoll_event {  
                 __uint32_t events;      /* Epoll events */  
                 epoll_data_t data;      /* User data variable */  
-            };  
-  
+            };
 int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout); 
 ```
 &emsp; 主要是epoll_create,epoll_ctl和epoll_wait三个函数。epoll_create函数创建epoll文件描述符，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。返回是epoll描述符。-1表示创建失败。epoll_ctl控制对指定描述符fd执行op操作，event是与fd关联的监听事件。op操作有三种：添加EPOLL_CTL_ADD，删除EPOLL_CTL_DEL，修改EPOLL_CTL_MOD。分别添加、删除和修改对fd的监听事件。epoll_wait等待epfd上的io事件，最多返回maxevents个事件。  
@@ -214,7 +223,6 @@ epoll除了提供select/poll那种IO事件的水平触发(Level Triggered)外，
 
 * 水平触发(LT)：默认工作模式，即当epoll_wait检测到某描述符事件就绪并通知应用程序时，应用程序可以不立即处理该事件；下次调用epoll_wait时，会再次通知此事件  
 * 边缘触发(ET)：当epoll_wait检测到某描述符事件就绪并通知应用程序时，应用程序必须立即处理该事件。如果不处理，下次调用epoll_wait时，不会再次通知此事件。(直到你做了某些操作导致该描述符变成未就绪状态了，也就是说边缘触发只在状态由未就绪变为就绪时只通知一次)。  
-
 -->
 &emsp; epoll对文件描述符的操作有两种模式：LT(水平触发，level trigger)和ET(边缘触发，edge trigger)。LT模式是默认模式，LT模式与ET模式的区别如下：  
 
@@ -223,6 +231,19 @@ epoll除了提供select/poll那种IO事件的水平触发(Level Triggered)外，
 
 &emsp; LT和ET原本应该是用于脉冲信号的，可能用它来解释更加形象。Level和Edge指的就是触发点，Level为只要处于水平，那么就一直触发，而Edge则为上升沿和下降沿的时候触发。比如：0->1 就是Edge，1->1就是Level。    
 &emsp; ET模式在很大程度上减少了epoll事件被重复触发的次数，因此效率要比LT模式高。epoll工作在ET模式的时候，必须使用非阻塞套接口，以避免由于一个文件句柄的阻塞读/阻塞写操作把处理多个文件描述符的任务饿死。  
+
+### 1.3.3. epoll相比select的优点  
+&emsp; **解决select三个缺点**  
+
+* 对于第一个缺点：epoll的解决方案在epoll_ctl函数中。每次注册新的事件到epoll句柄中时（在epoll_ctl中指定EPOLL_CTL_ADD），会把所有的fd拷贝进内核，而不是在epoll_wait的时候重复拷贝。epoll保证了每个fd在整个过程中只会拷贝一次(epoll_wait不需要复制)  
+* 对于第二个缺点：epoll为每个fd指定一个回调函数，当设备就绪，唤醒等待队列上的等待者时，就会调用这个回调函数，而这个回调函数会把就绪的fd加入一个就绪链表。epoll_wait的工作实际上就是在这个就绪链表中查看有没有就绪的fd(不需要遍历)  
+* 对于第三个缺点：epoll没有这个限制，它所支持的FD上限是最大可以打开文件的数目，这个数字一般远大于2048，举个例子，在1GB内存的机器上大约是10万左右，一般来说这个数目和系统内存关系很大   
+
+&emsp; epoll的高性能  
+
+* epoll使用了红黑树来保存需要监听的文件描述符事件，epoll_ctl增删改操作快速
+epoll不需要遍历就能获取就绪fd，直接返回就绪链表即可
+* linux2.6之后使用了mmap技术，数据不在需要从内核复制到用户空间，零拷贝
 
 ## 1.4. 三者区别联系  
 &emsp; select有最大文件描述符的限制，只能监听到有几个文件描述符就绪了，得遍历所有文件描述符获取就绪的IO。  
