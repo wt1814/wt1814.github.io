@@ -496,9 +496,9 @@ this is content from input4.txt
 &emsp; NIO通道提供了一个全新的类似流的I/O隐喻，但是字节流以及字符读写器仍然存在并被广泛使用。一个工具类java.nio.channels.Channels定义了几种静态的工厂方法以使通道可以更加容易地同流和读写器互联。  
 &emsp; java.nio.channels.Channels工具方法汇总：  
 
-|方法|返回	描述|
+|方法|返回|描述|
 |---|---|---|
-|newChannel (InputStream in)	|ReadableByteChannel	|返回一个将从给定的输入流读取数据的通道。|
+|newChannel (InputStream in)|ReadableByteChannel	|返回一个将从给定的输入流读取数据的通道。|
 |newChannel (OutputStream out)	|WritableByteChannel	|返回一个将向给定的输出流写入数据的通道。|
 |newInputStream (ReadableByteChannel ch)	|InputStream|	返回一个将从给定的通道读取字节的流。|
 |newOutputStream (WritableByteChannel ch)	|OutputStream	|返回一个将向给定的通道写入字节的流。|

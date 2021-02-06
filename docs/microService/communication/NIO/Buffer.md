@@ -81,7 +81,7 @@ public abstract class CharBuffer extends Buffer implements CharSequence, Compara
 }
 ```
 
-&emsp; 创建缓冲区详解：  
+&emsp; **创建缓冲区详解：**  
 &emsp; 新的缓冲区是由分配或包装操作创建的。分配操作创建一个缓冲区对象并分配一个私有的空间来储存容量大小的数据元素。包装操作创建一个缓冲区对象但是不分配任何空间来储存数 据元素。它使用提供的数组作为存储空间来储存缓冲区中的数据元素。  
 &emsp; 要分配一个容量为100个char变量的Charbuffer:  
 
@@ -100,13 +100,13 @@ CharBuffer charbuffer = CharBuffer.wrap (myArray);
 ```java
 CharBuffer charbuffer = CharBuffer.wrap (myArray, 12, 42);
 ```
-&emsp; 创建建了一个position值为12, limit值为54,容量为myArray.length的缓冲区。  
+&emsp; 创建建了一个position值为12，limit值为54，容量为myArray.length的缓冲区。  
 &emsp; 通过allocate()或者wrap()函数创建的缓冲区通常都是间接的。    
 
 ### 1.2.2. 缓冲区基本使用（注意模式切换）  
-&emsp; <font color = "red">使用Buffer读写数据一般遵循以下四个步骤</font>：  
+&emsp; **<font color = "red">使用Buffer读写数据一般遵循以下四个步骤：</font>**  
 1. 写入数据到Buffer；  
-2. 调用flip()方法；  
+2. **调用flip()方法，将缓冲区从写模式切换到读模式；**  
 3. 从Buffer中读取数据；  
 4. 调用clear()方法或者compact()方法。  
 
@@ -152,7 +152,7 @@ buf.put(127);
 
 &emsp; **flip()方法：**  
 &emsp; flip()方法将Buffer从写模式切换到读模式。调用flip()方法会将position设回0，并将limit设置成之前position的值。  
-换句话说，position现在用于标记读的位置，limit表示之前写进了多少个byte、char等 —— 现在能读取多少个byte、char等。   
+&emsp; 换句话说，position现在用于标记读的位置，limit表示之前写进了多少个byte、char等 —— 现在能读取多少个byte、char等。   
 
 &emsp; **从Buffer中读取数据：** 从Buffer中读取数据有两种方式：  
 
