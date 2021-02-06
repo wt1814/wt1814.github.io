@@ -13,6 +13,24 @@
 <!-- /TOC -->
 
 <!--
+IO多路复用的三种机制Select，Poll，Epoll
+https://www.jianshu.com/p/397449cadc9a
+https://www.cnblogs.com/aspirant/p/9166944.html
+https://www.bilibili.com/read/cv6134546?share_medium=android&share_plat=android&share_source=WEIXIN&share_tag=s_i&timestamp=1596386488&unique_k=aZsmwN
+
+
+https://blog.csdn.net/define_us/article/details/81568247
+https://blog.csdn.net/weixin_34111790/article/details/89601839?utm_medium=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase&depth_1-utm_source=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase
+
+
+IO多路复用
+https://mp.weixin.qq.com/s/yCOnNp_1-0_Q1srSO_3Kog
+https://mp.weixin.qq.com/s/i3He95cfzyLF_I4v-X3tCw
+https://mp.weixin.qq.com/s/iVfLZJ89UMtu3Z5IgpoCoQ
+
+https://www.cnblogs.com/Joy-Hu/p/10762239.html
+-->
+<!--
 ~~
 https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
 -->
@@ -275,3 +293,56 @@ epoll的优点主要是一下几个方面：
     如果没有大量的idle -connection或者dead-connection，epoll的效率并不会比select/poll高很多，但是当遇到大量的idle- connection，就会发现epoll的效率大大高于select/poll。
 
 -->
+
+
+
+
+
+-------------------
+
+
+&emsp; <font color = "lime">NIO底层调用的是epoll系统调用。</font>  
+
+        在Linux系统中一切皆可以看成是文件，文件又可分为：普通文件、目录文件、链接文件和设备文件。
+        fd：file descriptor。  
+
+&emsp; IO多路复用是一种同步IO模型，实现一个线程可以监视多个文件句柄；一旦某个文件句柄就绪，就能够通知应用程序进行相应的读写操作；没有文件句柄就绪时会阻塞应用程序，交出cpu。多路是指网络连接，复用指的是同一个线程。  
+&emsp; IO多路复用的三种实现方式：select、poll、epoll。  
+
+* select  
+    &emsp; 它仅仅知道了，有I/O事件发生了，却并不知道是哪几个流（可能有一个，多个，甚至全部），只能无差别轮询所有流，找出能读出数据，或者写入数据的流，对其进行操作。所以select具有O(n)的无差别轮询复杂度，同时处理的流越多，无差别轮询时间就越长。  
+    &emsp; select本质上是通过设置或者检查存放fd标志位的数据结构来进行下一步处理。这样所带来的缺点是：  
+    1. 单个进程可监视的fd数量被限制，即能监听端口的大小有限。  
+    一般来说这个数目和系统内存关系很大，具体数目可以cat /proc/sys/fs/file-max察看。32位机默认是1024个。64位机默认是2048。 
+    2. 对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低：  
+    当套接字比较多的时候，每次select()都要通过遍历FD_SETSIZE个Socket来完成调度,不管哪个Socket是活跃的,都遍历一遍。这会浪费很多CPU时间。如果能给套接字注册某个回调函数，当他们活跃时，自动完成相关操作，那就避免了轮询，这正是epoll与kqueue做的。  
+    3、需要维护一个用来存放大量fd的数据结构，这样会使得用户空间和内核空间在传递该结构时复制开销大。  
+
+* poll    
+    &emsp; poll本质上和select没有区别，它将用户传入的数组拷贝到内核空间，然后查询每个fd对应的设备状态，如果设备就绪则在设备等待队列中加入一项并继续遍历，如果遍历完所有fd后没有发现就绪设备，则挂起当前进程，直到设备就绪或者主动超时，被唤醒后它又要再次遍历fd。这个过程经历了多次无谓的遍历。
+
+    &emsp; 它没有最大连接数的限制，原因是它是基于链表来存储的，但是同样有一个缺点：   
+    
+    * 大量的fd的数组被整体复制于用户态和内核地址空间之间，而不管这样的复制是不是有意义。
+    * poll还有一个特点是“水平触发”，如果报告了fd后，没有被处理，那么下次poll时会再次报告该fd。
+
+* epoll  
+    &emsp; epoll可以理解为event poll，不同于忙轮询和无差别轮询，epoll会通知哪个流发生了怎样的I/O事件。所以说epoll实际上是事件驱动（每个事件关联上fd）的，此时对这些流的操作都是有意义的。（复杂度降低到了O(1)）  
+    &emsp; epoll有EPOLLLT和EPOLLET两种触发模式，LT是默认的模式，ET是“高速”模式。LT模式下，只要这个fd还有数据可读，每次 epoll_wait都会返回它的事件，提醒用户程序去操作，而在ET（边缘触发）模式中，它只会提示一次，直到下次再有数据流入之前都不会再提示了，无 论fd中是否还有数据可读。  
+    &emsp; 所以在ET模式下，read一个fd的时候一定要把它的buffer读光，也就是说一直读到read的返回值小于请求值，或者 遇到EAGAIN错误。还有一个特点是，epoll使用“事件”的就绪通知方式，通过epoll_ctl注册fd，一旦该fd就绪，内核就会采用类似callback的回调机制来激活该fd，epoll_wait便可以收到通知。  
+    <!-- 
+    &emsp; epoll LT 与 ET模式的区别    
+    &emsp; epoll有EPOLLLT和EPOLLET两种触发模式，LT是默认的模式，ET是“高速”模式。  
+    &emsp; LT模式下，只要这个fd还有数据可读，每次 epoll_wait都会返回它的事件，提醒用户程序去操作。  
+    &emsp; ET模式下，它只会提示一次，直到下次再有数据流入之前都不会再提示了，无论fd中是否还有数据可读。所以在ET模式下，read一个fd的时候一定要把它的buffer读完，或者遇到EAGAIN错误。  
+    -->
+&emsp; select/poll/epoll之间的区别：  
+
+| |	select	|poll	|epoll|
+|---|---|---|---|
+|数据结构	|bitmap	|数组	|红黑树|
+|最大连接数	|1024	|无上限	|无上限|
+|fd拷贝|	每次调用select拷贝	|每次调用poll拷贝|fd首次调用epoll_ctl拷贝，每次调用epoll_wait不拷贝|
+|工作效率	|轮询：O(n)	|轮询：O(n)|	回调：O(1)|
+
+------
