@@ -48,31 +48,31 @@ https://mp.weixin.qq.com/s?__biz=Mzg5ODA5NDIyNQ==&mid=2247484812&idx=1&sn=52d387
 * Bootstrap客户端引导只需要一个EventLoopGroup，但是一个ServerBootstrap通常需要两个(上面的boosGroup和workerGroup)。  
 
 ## 1.2. EventLoopGroup && EventLoop  
-&emsp; EventLoop（事件循环）接口可以说是 Netty 中最核心的概念了！  
-&emsp; EventLoop 定义了 Netty 的核心抽象，用于处理连接的生命周期中所发生的事件。  
-&emsp; EventLoop 的主要作用实际就是负责监听网络事件并调用事件处理器进行相关 I/O 操作的处理。  
+&emsp; EventLoop（事件循环）接口可以说是Netty中最核心的概念了！  
+&emsp; EventLoop定义了Netty的核心抽象，用于处理连接的生命周期中所发生的事件。  
+&emsp; EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。  
 
-&emsp; EventLoopGroup是EventLoop的集合，一个EventLoopGroup 包含一个或者多个EventLoop。可以将EventLoop看做EventLoopGroup线程池中的一个个工作线程。  
+&emsp; EventLoopGroup是EventLoop的集合，一个EventLoopGroup包含一个或者多个EventLoop。可以将EventLoop看做EventLoopGroup线程池中的一个个工作线程。  
 
-* 一个 EventLoopGroup 包含一个或多个 EventLoop ，即 EventLoopGroup : EventLoop = 1 : n
-* 一个 EventLoop 在它的生命周期内，只能与一个 Thread 绑定，即 EventLoop : Thread = 1 : 1
-* 所有 EventLoop 处理的 I/O 事件都将在它专有的 Thread 上被处理，从而保证线程安全，即 Thread : EventLoop = 1 : 1
-* 一个 Channel 在它的生命周期内只能注册到一个 EventLoop 上，即 Channel : EventLoop = n : 1
-* 一个 EventLoop 可被分配至一个或多个 Channel ，即 EventLoop : Channel = 1 : n
+* 一个 EventLoopGroup包含一个或多个EventLoop，即EventLoopGroup: EventLoop = 1 : n
+* 一个 EventLoop在它的生命周期内，只能与一个Thread绑定，即EventLoop : Thread = 1 : 1
+* 所有EventLoop处理的I/O事件都将在它专有的Thread上被处理，从而保证线程安全，即Thread : EventLoop = 1 : 1
+* 一个 Channel在它的生命周期内只能注册到一个EventLoop上，即Channel : EventLoop = n : 1
+* 一个EventLoop可被分配至一个或多个Channel，即EventLoop : Channel = 1 : n
 
-&emsp; 当一个连接到达时，Netty 就会创建一个 Channel，然后从 EventLoopGroup 中分配一个 EventLoop 来给这个 Channel 绑定上，在该 Channel 的整个生命周期中都是有这个绑定的 EventLoop 来服务的。
+&emsp; 当一个连接到达时，Netty就会创建一个Channel，然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是有这个绑定的EventLoop来服务的。
 <!-- 
 &emsp; Channel和EventLoop之间的联系：  
 &emsp; Channel为Netty 网络操作(读写等操作)抽象类，EventLoop 负责处理注册到其上的Channel 处理 I/O 操作，两者配合参与 I/O 操作。 
 -->
 ## 1.3. ByteBuf  
-&emsp; 针对于NIO中的Buffer类， Netty 提供了ByteBuf来替代。ByteBuf声明了两个指针：一个读指针，一个写指针，使得读写操作进行分离，简化buffer的操作流程。  
+&emsp; 针对于NIO中的Buffer类，Netty提供了ByteBuf来替代。ByteBuf声明了两个指针：一个读指针，一个写指针，使得读写操作进行分离，简化buffer的操作流程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-52.png)  
 &emsp; 另外Netty提供了几种ByteBuf的实现：  
 
-* Pooled和Unpooled 池化和非池化
-* Heap 和 Direct，堆内存和堆外内存，NIO中创建Buffer也可以指定
-* Safe 和 Unsafe，安全和非安全
+* Pooled和Unpooled池化和非池化
+* Heap和Direct，堆内存和堆外内存，NIO中创建Buffer也可以指定
+* Safe和Unsafe，安全和非安全
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-53.png)  
 &emsp; 对于多种创建Buffer的方式，可以直接使用：  
@@ -89,7 +89,7 @@ ByteBuf buffer = allocator.buffer(length);
 &emsp; 比较常用的Channel接口实现类是NioServerSocketChannel（服务端）和NioSocketChannel（客户端），这两个 Channel 可以和 BIO 编程模型中的ServerSocket以及Socket两个概念对应上。Netty 的 Channel 接口所提供的 API，大大地降低了直接使用 Socket 类的复杂性。  
 -->
 &emsp; 类似于NIO的Channel，Netty提供了自己的Channel和其子类实现，用于异步I/0操作和其他相关的操作。    
-&emsp; 在 Netty 中, Channel 是一个 Socket 连接的抽象, 它为用户提供了关于底层 Socket 状态(是否是连接还是断开) 以及对 Socket 的读写等操作。每当 Netty 建立了一个连接后, 都会有一个对应的 Channel 实例。并且，有父子channel的概念。服务器连接监听的channel ，也叫 parent channel。对应于每一个 Socket 连接的channel，也叫 child channel。  
+&emsp; 在 Netty 中, Channel是一个Socket连接的抽象, 它为用户提供了关于底层 Socket 状态(是否是连接还是断开)以及对Socket的读写等操作。每当 Netty 建立了一个连接后, 都会有一个对应的 Channel 实例。并且，有父子channel的概念。服务器连接监听的channel ，也叫 parent channel。对应于每一个 Socket 连接的channel，也叫 child channel。  
 &emsp; 既然channel 是 Netty 抽象出来的网络 I/O 读写相关的接口，为什么不使用JDK NIO 原生的 Channel 而要另起炉灶呢，主要原因如下：  
 
 * JDK 的SocketChannel 和 ServersocketChannel没有统一的 Channel 接口供业务开发者使用，对于用户而言，没有统一的操作视图，使用起来并不方便。
