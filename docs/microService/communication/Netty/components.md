@@ -6,18 +6,20 @@
     - [1.3. EventLoopGroup && EventLoop](#13-eventloopgroup--eventloop)
     - [1.4. channel相关](#14-channel相关)
         - [1.4.1. channel](#141-channel)
-            - [1.4.1.1. ChannelFuture && ChannelPromise](#1411-channelfuture--channelpromise)
         - [1.4.2. ChannelHandler](#142-channelhandler)
             - [1.4.2.1. ChannelInboundHandler](#1421-channelinboundhandler)
             - [1.4.2.2. ChannelOutboundHandler](#1422-channeloutboundhandler)
-            - [1.4.2.3. ChannelHandlerAdapter](#1423-channelhandleradapter)
-        - [1.4.3. ChannelPipeline](#143-channelpipeline)
-        - [1.4.4. ChannelHandlerContext](#144-channelhandlercontext)
-            - [1.4.4.1. 与ChannelHandler、ChannelPipeline的关联使用](#1441-与channelhandlerchannelpipeline的关联使用)
+        - [1.4.3. ChannelHandlerAdapter](#143-channelhandleradapter)
+        - [1.4.4. ChannelPipeline](#144-channelpipeline)
+        - [1.4.5. ChannelHandlerContext](#145-channelhandlercontext)
+        - [1.4.6. ChannelFuture && ChannelPromise](#146-channelfuture--channelpromise)
+            - [1.4.6.1. 与ChannelHandler、ChannelPipeline的关联使用](#1461-与channelhandlerchannelpipeline的关联使用)
     - [1.5. ByteBuf](#15-bytebuf)
     - [1.6. 总结：核心组件之间的关系](#16-总结核心组件之间的关系)
 
 <!-- /TOC -->
+
+
 
 # 1. Netty核心组件 
 <!--
@@ -36,12 +38,12 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 * Bootstrap && ServerBootstrap
 * EventLoopGroup
 * EventLoop
-* ByteBuf
 * Channel
 * ChannelHandler
 * ChannelFuture
 * ChannelPipeline
 * ChannelHandlerContext
+* ByteBuf
 
 ## 1.2. Bootstrap & ServerBootstrap  
 &emsp; Bootstrap和ServerBootstrap是Netty程序的引导类，主要用于配置各种参数，并启动整个Netty服务。  
@@ -67,10 +69,9 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 * 一个EventLoop可被分配至一个或多个Channel，即EventLoop : Channel = 1 : n
 
 &emsp; 当一个连接到达时，Netty就会创建一个Channel，然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是有这个绑定的EventLoop来服务的。
-<!-- 
-&emsp; Channel和EventLoop之间的联系：  
+
+&emsp; **<font color = "red">Channel与EventLoop：</font>**  
 &emsp; Channel为Netty 网络操作(读写等操作)抽象类，EventLoop 负责处理注册到其上的Channel 处理 I/O 操作，两者配合参与 I/O 操作。 
--->
 
 ## 1.4. channel相关
 ### 1.4.1. channel  
@@ -93,7 +94,80 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 * Channel 接口的定义尽量大而全，统一的视图，由不同子类实现不同的功能，公共功能在抽象父类中实现，最大程度上实现接口的重用。
 * 具体实现采用聚合而非包含的方式，将相关功能的类聚合在 Channel中，由 Channel 统一负责分配和调度，功能实现更加灵活。
 
-#### 1.4.1.1. ChannelFuture && ChannelPromise 
+### 1.4.2. ChannelHandler  
+&emsp; ChannelHandler 是Netty中最常用的组件。ChannelHandler 主要用来处理各种事件，这里的事件很广泛，比如可以是连接、数据接收、异常、数据转换等。  
+&emsp; ChannelHandler 有两个核心子类 ChannelInboundHandler 和 ChannelOutboundHandler，其中 ChannelInboundHandler 用于接收、处理入站( Inbound )的数据和事件，而 ChannelOutboundHandler 则相反，用于接收、处理出站( Outbound )的数据和事件。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-88.png)  
+
+
+#### 1.4.2.1. ChannelInboundHandler  
+&emsp; **ChannelInboundHandler处理入站数据以及各种状态变化，当Channel状态发生改变会调用ChannelInboundHandler中的一些生命周期方法。** 这些方法与Channel的生命密切相关。  
+&emsp; 入站数据，就是进入socket的数据。下面展示一些该接口的生命周期API：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-54.png)  
+&emsp; 当某个 ChannelInboundHandler的实现重写 channelRead()方法时，它将负责显式地释放与池化的 ByteBuf 实例相关的内存。Netty 为此提供了一个实用方法ReferenceCountUtil.release()。  
+
+```java
+@Sharable
+public class DiscardHandler extends ChannelInboundHandlerAdapter {
+ @Override
+ public void channelRead(ChannelHandlerContext ctx, Object msg) {
+  ReferenceCountUtil.release(msg);
+ }
+}
+```
+&emsp; 这种方式还挺繁琐的，Netty提供了一个SimpleChannelInboundHandler，重写channelRead0()方法，就可以在调用过程中会自动释放资源。  
+
+```java
+public class SimpleDiscardHandler
+ extends SimpleChannelInboundHandler<Object> {
+ @Override
+ public void channelRead0(ChannelHandlerContext ctx,
+         Object msg) {
+   // 不用调用ReferenceCountUtil.release(msg)也会释放资源
+ }
+}
+```
+
+#### 1.4.2.2. ChannelOutboundHandler   
+&emsp; 出站操作和数据将由 ChannelOutboundHandler 处理。它的方法将被 Channel、 ChannelPipeline以及 ChannelHandlerContext 调用。ChannelOutboundHandler 的一个强大的功能是可以按需推迟操作或者事件，这使得可以通过一些复杂的方法来处理请求。例如， 如果到远程节点的写入被暂停了， 那么你可以推迟冲刷操作并在稍后继续。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-55.png)  
+&emsp; ChannelPromise与ChannelFuture: ChannelOutboundHandler中的大部分方法都需要一个ChannelPromise参数， 以便在操作完成时得到通知。ChannelPromise是ChannelFuture的一个子类，其定义了一些可写的方法，如setSuccess()和setFailure()，从而使ChannelFuture不可变。  
+
+### 1.4.3. ChannelHandlerAdapter  
+&emsp; ChannelHandlerAdapter顾名思义,就是handler的适配器。你需要知道什么是适配器模式，假设有一个A接口，我们需要A的subclass实现功能,但是B类中正好有我们需要的功能，不想复制粘贴B中的方法和属性了，那么可以写一个适配器类Adpter继承B实现A，这样一来Adapter是A的子类并且能直接使用B中的方法，这种模式就是适配器模式。  
+&emsp; 就比如Netty中的SslHandler类，想使用ByteToMessageDecoder中的方法进行解码，但是必须是ChannelHandler子类对象才能加入到ChannelPipeline中，通过如下签名和其实现细节(SslHandler实现细节就不贴了)就能够作为一个handler去处理消息了。  
+
+```java
+public class SslHandler extends ByteToMessageDecoder implements ChannelOutboundHandler
+```
+
+&emsp; ChannelHandlerAdapter提供了一些实用方法isSharable()如果其对应的实现被标注为Sharable， 那么这个方法将返回 true， 表示它可以被添加到多个 ChannelPipeline中 。如果想在自己的ChannelHandler中使用这些适配器类，只需要扩展他们，重写那些想要自定义的方法即可。  
+
+### 1.4.4. ChannelPipeline  
+&emsp; 每一个新创建的 Channel 都将会被分配一个新的 ChannelPipeline。这项关联是永久性的；Channel 既不能附加另外一个 ChannelPipeline，也不能分离其当前的。在 Netty 组件的生命周期中，这是一项固定的操作，不需要开发人员的任何干预。  
+&emsp; Netty 的 ChannelHandler 为处理器提供了基本的抽象， 目前你可以认为每个 ChannelHandler 的实例都类似于一种为了响应特定事件而被执行的回调。从应用程序开发人员的角度来看， 它充当了所有处理入站和出站数据的应用程序逻辑的拦截载体。ChannelPipeline提供了 ChannelHandler 链的容器，并定义了用于在该链上传播入站和出站事件流的 API。当 Channel 被创建时，它会被自动地分配到它专属的 ChannelPipeline。  
+
+&emsp; ChannelHandler 安装到 ChannelPipeline 中的过程如下所示：  
+
+* 一个ChannelInitializer的实现被注册到了ServerBootstrap中
+* 当 ChannelInitializer.initChannel()方法被调用时，ChannelInitializer将在 ChannelPipeline中安装一组自定义的 ChannelHandler
+* ChannelInitializer 将它自己从 ChannelPipeline中移除  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-56.png)  
+&emsp; 如上图所示：这是一个同时具有入站和出站 ChannelHandler 的 ChannelPipeline的布局，并且印证了我们之前的关于 ChannelPipeline主要由一系列的 ChannelHandler 所组成的说法。ChannelPipeline还提供了通过 ChannelPipeline 本身传播事件的方法。如果一个入站事件被触发，它将被从 ChannelPipeline的头部开始一直被传播到 Channel Pipeline 的尾端。  
+&emsp; 从事件途经 ChannelPipeline的角度来看， ChannelPipeline的头部和尾端取决于该事件是入站的还是出站的。然而 Netty 总是将 ChannelPipeline的入站口（图 的左侧）作为头部，而将出站口（该图的右侧）作为尾端。当你完成了通过调用 ChannelPipeline.add*()方法将入站处理器（ ChannelInboundHandler）和 出 站 处 理 器 （ ChannelOutboundHandler ） 混 合 添 加 到 ChannelPipeline之 后 ， 每 一 个ChannelHandler 从头部到尾端的顺序位置正如同我们方才所定义它们的一样。因此，如果你将图 6-3 中的处理器（ ChannelHandler）从左到右进行编号，那么第一个被入站事件看到的 ChannelHandler 将是1，而第一个被出站事件看到的 ChannelHandler将是 5。  
+&emsp; 在 ChannelPipeline 传播事件时，它会测试 ChannelPipeline 中的下一个 ChannelHandler 的类型是否和事件的运动方向相匹配。如果不匹配， ChannelPipeline 将跳过该ChannelHandler 并前进到下一个，直到它找到和该事件所期望的方向相匹配的为止。（当然， ChannelHandler也可以同时实现ChannelInboundHandler接口和 ChannelOutboundHandler 接口。）  
+
+### 1.4.5. ChannelHandlerContext  
+&emsp; 当 ChannelHandler 被添加到 ChannelPipeline 时，它将会被分配一个 ChannelHandlerContext ，它代表了 ChannelHandler 和 ChannelPipeline 之间的绑定。ChannelHandlerContext 的主要功能是管理它所关联的ChannelHandler和在同一个 ChannelPipeline 中的其他ChannelHandler之间的交互。  
+&emsp; 如果调用Channel或ChannelPipeline上的方法,会沿着整个ChannelPipeline传播,如果调用ChannelHandlerContext上的相同方法,则会从对应的当前ChannelHandler进行传播。  
+&emsp; ChannelHandlerContext API如下表所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-57.png)  
+
+* ChannelHandlerContext 和 ChannelHandler之间的关联（绑定）是永远不会改变的，所以缓存对它的引用是安全的；
+* 如同在本节开头所解释的一样，相对于其他类的同名方法，ChannelHandlerContext的方法将产生更短的事件流， 应该尽可能地利用这个特性来获得最大的性能。  
+
+### 1.4.6. ChannelFuture && ChannelPromise 
 &emsp; Netty 是异步非阻塞的，所有的 I/O 操作都为异步的。因此，不能立刻得到操作是否执行成功，但是，可以通过 ChannelFuture 接口的 addListener() 方法注册一个 ChannelFutureListener，当操作执行成功或者失败时，监听就会自动触发返回结果。  
 &emsp; 并且，还可以通过ChannelFuture 的 channel() 方法获取关联的Channel。  
 
@@ -126,83 +200,7 @@ b.group(eventLoopGroup)
 &emsp; 可以在 ChannelPipeline 上通过 addLast() 方法添加一个或者多个ChannelHandler ，因为一个数据或者事件可能会被多个 Handler 处理。当一个 ChannelHandler 处理完之后就将数据交给下一个 ChannelHandler 。  
 -->
 
-### 1.4.2. ChannelHandler  
-&emsp; **ChannelInboundHandler处理入站数据以及各种状态变化，当Channel状态发生改变会调用ChannelInboundHandler中的一些生命周期方法。** 这些方法与Channel的生命密切相关。  
-&emsp; 入站数据，就是进入socket的数据。下面展示一些该接口的生命周期API：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-54.png)  
-&emsp; 当某个 ChannelInboundHandler的实现重写 channelRead()方法时，它将负责显式地释放与池化的 ByteBuf 实例相关的内存。Netty 为此提供了一个实用方法ReferenceCountUtil.release()。  
-
-```java
-@Sharable
-public class DiscardHandler extends ChannelInboundHandlerAdapter {
- @Override
- public void channelRead(ChannelHandlerContext ctx, Object msg) {
-  ReferenceCountUtil.release(msg);
- }
-}
-```
-&emsp; 这种方式还挺繁琐的，Netty提供了一个SimpleChannelInboundHandler，重写channelRead0()方法，就可以在调用过程中会自动释放资源。  
-
-```java
-public class SimpleDiscardHandler
- extends SimpleChannelInboundHandler<Object> {
- @Override
- public void channelRead0(ChannelHandlerContext ctx,
-         Object msg) {
-   // 不用调用ReferenceCountUtil.release(msg)也会释放资源
- }
-}
-```
-
-#### 1.4.2.1. ChannelInboundHandler  
-&emsp; 出站操作和数据将由 ChannelOutboundHandler 处理。它的方法将被 Channel、 ChannelPipeline以及 ChannelHandlerContext 调用。ChannelOutboundHandler 的一个强大的功能是可以按需推迟操作或者事件，这使得可以通过一些复杂的方法来处理请求。例如， 如果到远程节点的写入被暂停了， 那么你可以推迟冲刷操作并在稍后继续。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-55.png)  
-&emsp; ChannelPromise与ChannelFuture: ChannelOutboundHandler中的大部分方法都需要一个ChannelPromise参数， 以便在操作完成时得到通知。ChannelPromise是ChannelFuture的一个子类，其定义了一些可写的方法，如setSuccess()和setFailure()，从而使ChannelFuture不可变。  
-
-#### 1.4.2.2. ChannelOutboundHandler   
-&emsp; ChannelHandlerAdapter顾名思义，就是handler的适配器。比如Netty中的SslHandler类，想使用ByteToMessageDecoder中的方法进行解码，但是必须是ChannelHandler子类对象才能加入到ChannelPipeline中，通过如下签名和其实现细节(SslHandler实现细节就不贴了)就能够作为一个handler去处理消息了。  
-
-```java
-public class SslHandler extends ByteToMessageDecoder implements ChannelOutboundHandler
-```
-
-&emsp; ChannelHandlerAdapter提供了一些实用方法isSharable()如果其对应的实现被标注为Sharable，那么这个方法将返回true，表示它可以被添加到多个ChannelPipeline中。如果想在自己的ChannelHandler中使用这些适配器类，只需要扩展他们，重写那些想要自定义的方法即可。  
-
-#### 1.4.2.3. ChannelHandlerAdapter  
-&emsp; ChannelHandlerAdapter顾名思义,就是handler的适配器。你需要知道什么是适配器模式，假设有一个A接口，我们需要A的subclass实现功能,但是B类中正好有我们需要的功能，不想复制粘贴B中的方法和属性了，那么可以写一个适配器类Adpter继承B实现A，这样一来Adapter是A的子类并且能直接使用B中的方法，这种模式就是适配器模式。  
-&emsp; 就比如Netty中的SslHandler类，想使用ByteToMessageDecoder中的方法进行解码，但是必须是ChannelHandler子类对象才能加入到ChannelPipeline中，通过如下签名和其实现细节(SslHandler实现细节就不贴了)就能够作为一个handler去处理消息了。  
-
-```java
-public class SslHandler extends ByteToMessageDecoder implements ChannelOutboundHandler
-```
-
-&emsp; ChannelHandlerAdapter提供了一些实用方法isSharable()如果其对应的实现被标注为Sharable， 那么这个方法将返回 true， 表示它可以被添加到多个 ChannelPipeline中 。如果想在自己的ChannelHandler中使用这些适配器类，只需要扩展他们，重写那些想要自定义的方法即可。  
-
-### 1.4.3. ChannelPipeline  
-&emsp; 每一个新创建的 Channel 都将会被分配一个新的 ChannelPipeline。这项关联是永久性的；Channel 既不能附加另外一个 ChannelPipeline，也不能分离其当前的。在 Netty 组件的生命周期中，这是一项固定的操作，不需要开发人员的任何干预。  
-&emsp; Netty 的 ChannelHandler 为处理器提供了基本的抽象， 目前你可以认为每个 ChannelHandler 的实例都类似于一种为了响应特定事件而被执行的回调。从应用程序开发人员的角度来看， 它充当了所有处理入站和出站数据的应用程序逻辑的拦截载体。ChannelPipeline提供了 ChannelHandler 链的容器，并定义了用于在该链上传播入站和出站事件流的 API。当 Channel 被创建时，它会被自动地分配到它专属的 ChannelPipeline。  
-
-&emsp; ChannelHandler 安装到 ChannelPipeline 中的过程如下所示：  
-
-* 一个ChannelInitializer的实现被注册到了ServerBootstrap中
-* 当 ChannelInitializer.initChannel()方法被调用时，ChannelInitializer将在 ChannelPipeline中安装一组自定义的 ChannelHandler
-* ChannelInitializer 将它自己从 ChannelPipeline中移除  
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-56.png)  
-&emsp; 如上图所示：这是一个同时具有入站和出站 ChannelHandler 的 ChannelPipeline的布局，并且印证了我们之前的关于 ChannelPipeline主要由一系列的 ChannelHandler 所组成的说法。ChannelPipeline还提供了通过 ChannelPipeline 本身传播事件的方法。如果一个入站事件被触发，它将被从 ChannelPipeline的头部开始一直被传播到 Channel Pipeline 的尾端。  
-&emsp; 从事件途经 ChannelPipeline的角度来看， ChannelPipeline的头部和尾端取决于该事件是入站的还是出站的。然而 Netty 总是将 ChannelPipeline的入站口（图 的左侧）作为头部，而将出站口（该图的右侧）作为尾端。当你完成了通过调用 ChannelPipeline.add*()方法将入站处理器（ ChannelInboundHandler）和 出 站 处 理 器 （ ChannelOutboundHandler ） 混 合 添 加 到 ChannelPipeline之 后 ， 每 一 个ChannelHandler 从头部到尾端的顺序位置正如同我们方才所定义它们的一样。因此，如果你将图 6-3 中的处理器（ ChannelHandler）从左到右进行编号，那么第一个被入站事件看到的 ChannelHandler 将是1，而第一个被出站事件看到的 ChannelHandler将是 5。  
-&emsp; 在 ChannelPipeline 传播事件时，它会测试 ChannelPipeline 中的下一个 ChannelHandler 的类型是否和事件的运动方向相匹配。如果不匹配， ChannelPipeline 将跳过该ChannelHandler 并前进到下一个，直到它找到和该事件所期望的方向相匹配的为止。（当然， ChannelHandler也可以同时实现ChannelInboundHandler接口和 ChannelOutboundHandler 接口。）  
-
-### 1.4.4. ChannelHandlerContext  
-&emsp; 当 ChannelHandler 被添加到 ChannelPipeline 时，它将会被分配一个 ChannelHandlerContext ，它代表了 ChannelHandler 和 ChannelPipeline 之间的绑定。ChannelHandlerContext 的主要功能是管理它所关联的ChannelHandler和在同一个 ChannelPipeline 中的其他ChannelHandler之间的交互。  
-&emsp; 如果调用Channel或ChannelPipeline上的方法,会沿着整个ChannelPipeline传播,如果调用ChannelHandlerContext上的相同方法,则会从对应的当前ChannelHandler进行传播。  
-&emsp; ChannelHandlerContext API如下表所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-57.png)  
-
-* ChannelHandlerContext 和 ChannelHandler之间的关联（绑定）是永远不会改变的，所以缓存对它的引用是安全的；
-* 如同在本节开头所解释的一样，相对于其他类的同名方法，ChannelHandlerContext的方法将产生更短的事件流， 应该尽可能地利用这个特性来获得最大的性能。
-
-#### 1.4.4.1. 与ChannelHandler、ChannelPipeline的关联使用  
+#### 1.4.6.1. 与ChannelHandler、ChannelPipeline的关联使用  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-58.png)  
 &emsp; 从ChannelHandlerContext访问channel  
 
