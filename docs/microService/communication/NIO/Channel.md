@@ -20,9 +20,9 @@
 <!-- /TOC -->
 
 # 1. NIO通道  
-&emsp; 实体--->通道--->缓冲区。Channel用于在缓冲区和位于通道另一侧的实体（通常是一个文件或套接字）之间有效地传输数据。它从一个实体读取数据，并将其放在缓冲区块中以供消费。  
+&emsp; 实体--->通道--->缓冲区。Channel用于在缓冲区和位于通道另一侧的实体(通常是一个文件或套接字)之间有效地传输数据。它从一个实体读取数据，并将其放在缓冲区块中以供消费。  
 &emsp; Channel(通道)与Stream(流)的不同之处在于通道是双向的，流只能在一个方向上操作(一个流必须是InputStream或者OutputStream的子类)，而通道可以用于读，写或者二者同时进行，最关键的是可以和多路复用器结合起来，提供状态位，多路复用器可识别Channel所处的状态。  
-&emsp; 通道可以以阻塞（Wocfcwg)或非阻塞（wowWochwg)模式运行。非阻塞模式的通道永远不会让调用的线程休眠。请求的操作要么立即完成，要么返回一个结果表明未进行任何操作。只有面向流的（stream-oriented)的通道，如sockets和pipes才能使用非阻塞模式。  
+&emsp; 通道可以以阻塞(Wocfcwg)或非阻塞(wowWochwg)模式运行。非阻塞模式的通道永远不会让调用的线程休眠。请求的操作要么立即完成，要么返回一个结果表明未进行任何操作。只有面向流的(stream-oriented)的通道，如sockets和pipes才能使用非阻塞模式。  
 
 ## 1.1. 通道分类及创建通道  
 &emsp; <font color = "red">I/O可以分为广义的两大类别：File I/O和Stream I/O。相应地有两种类型的通道，它们是文件(file)通道和套接字(socket)通道。包含一个FileChannel类和三个socket通道类：SocketChannel、ServerSocketChannel和DatagramChannel。</font>  
@@ -125,7 +125,7 @@ public interface Channel{
     ```
 
 ## 1.2. 内存映射文件  
-&emsp; 通道映射技术：一种快速读写技术。用户进程将文件数据视为内存，不需要发出read()或write()系统调用；可以映射非常大的文件（文件可能无法全部读入内存），而不消耗大量内存来复制数据。  
+&emsp; 通道映射技术：一种快速读写技术。用户进程将文件数据视为内存，不需要发出read()或write()系统调用；可以映射非常大的文件(文件可能无法全部读入内存)，而不消耗大量内存来复制数据。  
 &emsp; java nio提供的FileChannel提供了map()方法，该方法可以在一个打开的文件和MappedByteBuffer之间建立一个虚拟内存映射，MappedByteBuffer继承于ByteBuffer，类似于一个基于内存的缓冲区，只不过该对象的数据元素存储在磁盘的一个文件中；  
 
 ### 1.2.1. MappedByteBuffer API  
@@ -143,7 +143,7 @@ public abstract MappedByteBuffer map(MapMode mode, long position, long size) thr
 * FileChannel.MapMode.PRIVATE：可写缓冲区，但任何修改是缓冲区私有的，不会回到文件中。  
 
 &emsp; PRIVATE模式表示写时拷贝的映射，意味着通过put()方法所做的任何修改都会导致产生一个私有的数据拷贝并且该拷贝中的数据只有MappedByteBuffer实例可以看到；  
-&emsp; 该过程不会对底层文件做任何修改，而且一旦缓冲区被施以垃圾收集动作（garbage collected），那些修改都会丢失；  
+&emsp; 该过程不会对底层文件做任何修改，而且一旦缓冲区被施以垃圾收集动作(garbage collected)，那些修改都会丢失；  
 2. MappedByteBuffer是ByteBuffer的子类，其扩充了三个方法：  
 &emsp; force()：缓冲区是READ_WRITE模式下，此方法对缓冲区内容的修改强行写入文件；  
 &emsp; load()：将缓冲区的内容载入内存，并返回该缓冲区的引用；  
@@ -253,10 +253,10 @@ public class MemMapReadWrite {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-11.png)  
 
 ## 1.3. 分散Scatter/聚集Gather  
-&emsp; 在Java NIO中，通道提供了称为分散/聚集（或向量I/O）的重要功能。使用单个write()函数将字节从一组缓冲区写入流，并且可以使用单个read()函数将字节从流读取到一组缓冲区中。  
-&emsp; 对于一个write操作而言，数据是从几个缓冲区按顺序抽取（称为gather)并沿着通道发送的。对于read操作而言，从通道读取的数据会按顺序被散布（称为scatter)到多个缓冲区，将每个缓冲区填满直至通道中的数据或者缓冲区的最大空间被消耗完。  
-&emsp; 分散（scatter）从Channel中读取是指在读操作时将读取的数据写入多个buffer中。因此，Channel将从Channel中读取的数据“分散（scatter）”到多个Buffer中。  
-&emsp; 聚集（gather）写入Channel是指在写操作时将多个buffer的数据写入同一个Channel，因此，Channel将多个Buffer中的数据“聚集（gather）”后发送到Channel。  
+&emsp; 在Java NIO中，通道提供了称为分散/聚集(或向量I/O)的重要功能。使用单个write()函数将字节从一组缓冲区写入流，并且可以使用单个read()函数将字节从流读取到一组缓冲区中。  
+&emsp; 对于一个write操作而言，数据是从几个缓冲区按顺序抽取(称为gather)并沿着通道发送的。对于read操作而言，从通道读取的数据会按顺序被散布(称为scatter)到多个缓冲区，将每个缓冲区填满直至通道中的数据或者缓冲区的最大空间被消耗完。  
+&emsp; 分散(scatter)从Channel中读取是指在读操作时将读取的数据写入多个buffer中。因此，Channel将从Channel中读取的数据“分散(scatter)”到多个Buffer中。  
+&emsp; 聚集(gather)写入Channel是指在写操作时将多个buffer的数据写入同一个Channel，因此，Channel将多个Buffer中的数据“聚集(gather)”后发送到Channel。  
 &emsp; 分散scatter/聚集gather经常用于需要将传输的数据分开处理的场合。例如传输一个由消息头和消息体组成的消息，可能会将消息体和消息头分散到不同的buffer中，这样就可以方便的处理消息头和消息体。   
 
 ### 1.3.1. 分散读取   
@@ -280,7 +280,7 @@ ByteBuffer[] bufferArray = { header, body };
 channel.read(bufferArray); 
 ```
 &emsp; 注意buffer首先被插入到数组，然后再将数组作为channel.read() 的输入参数。read()方法按照buffer在数组中的顺序将从channel中读取的数据写入到buffer，当一个buffer被写满后，channel紧接着向另一个buffer中写。  
-&emsp; Scattering Reads在移动下一个buffer前，必须填满当前的buffer，这也意味着它不适用于动态消息(消息大小不固定)。换句话说，如果存在消息头和消息体，消息头必须完成填充（例如 128byte），Scattering Reads才能正常工作。   
+&emsp; Scattering Reads在移动下一个buffer前，必须填满当前的buffer，这也意味着它不适用于动态消息(消息大小不固定)。换句话说，如果存在消息头和消息体，消息头必须完成填充(例如 128byte)，Scattering Reads才能正常工作。   
 
 ### 1.3.2. 聚集写入  
 &emsp; “聚集写入”用于将数据从多个缓冲区写入单个通道。  
@@ -403,7 +403,7 @@ public abstract class Channel extends AbstractChannel{
     public abstract long transferFrom (ReadableByteChannel src, long position, long count);
 }
 ```
-&emsp; 方法的输入参数position表示从position处开始向目标文件写入数据，count表示最多传输的字节数。如果源通道的剩余空间小于count个字节，则所传输的字节数要小于请求的字节数。此外要注意，在SoketChannel的实现中，SocketChannel只会传输此刻准备好的数据（可能不足count字节）。因此，SocketChannel可能不会将请求的所有数据(count个字节)全部传输到FileChannel中。  
+&emsp; 方法的输入参数position表示从position处开始向目标文件写入数据，count表示最多传输的字节数。如果源通道的剩余空间小于count个字节，则所传输的字节数要小于请求的字节数。此外要注意，在SoketChannel的实现中，SocketChannel只会传输此刻准备好的数据(可能不足count字节)。因此，SocketChannel可能不会将请求的所有数据(count个字节)全部传输到FileChannel中。  
 
 &emsp; transferFrom()方法可以将数据从源通道传输到FileChannel中。transferFrom()方法的示例：  
 
@@ -508,5 +508,5 @@ this is content from input4.txt
 |newWriter (WritableByteChannel ch, String csName)|Writer|返回一个writer，它将依据提供的字符集名称对字符编码并写到给定的通道中。|  
 
 &emsp; 常规的流仅传输字节，readers和writers则作用于字符数据。表中前四行描述了用于连接流、通道的方法。因为流和通道都是运行在字节流基础上的，所以这四个方法直接将流封装在通道上，反之亦然。  
-&emsp; Readers和Writers运行在字符的基础上，在Java的世界里字符同字节是完全不同的。将一个通道（仅了解字节）连接到一个reader或writer需要一个中间对话来处理字节/字符（byte/char）阻抗失配。为此，表中的后半部分描述的工厂方法使用了字符集编码器和解码器。  
+&emsp; Readers和Writers运行在字符的基础上，在Java的世界里字符同字节是完全不同的。将一个通道(仅了解字节)连接到一个reader或writer需要一个中间对话来处理字节/字符(byte/char)阻抗失配。为此，表中的后半部分描述的工厂方法使用了字符集编码器和解码器。  
 &emsp; 这些方法返回的包封Channel对象可能会也可能不会实现 InterruptibleChannel 接口，它们也可能不是从SelectableChannel引申而来。因此，可能无法将这些包封通道同java.nio.channels包中定义的其他通道类型交换使用。细节是依赖实现的。如果您的程序依赖这些语义，那么请使用操作器实例测试一下返回的通道对象。  

@@ -15,6 +15,9 @@
 
 <!-- /TOC -->
 
+<!-- 
+https://mp.weixin.qq.com/s/3OtbG6jegOS4m2GbyOF2lQ
+-->
 
 # 1. NIO选择器  
 &emsp; Selector是NIO多路复用的重要组成部分。它负责检查一个或多个Channel(通道)是否是可读、写状态，实现单线程管理多通道，优于使用多线程或线程池产生的系统资源开销。 
