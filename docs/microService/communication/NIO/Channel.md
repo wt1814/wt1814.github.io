@@ -191,7 +191,7 @@ public class MemMap {
 }
 ```
 &emsp; 实验结果为：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-10.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-10.png)  
 
 &emsp; 复制文件的例子：  
 
@@ -250,7 +250,7 @@ public class MemMapReadWrite {
 }
 ```
 &emsp; 结果为：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-11.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-11.png)  
 
 ## 1.3. 分散Scatter/聚集Gather  
 &emsp; 在Java NIO中，通道提供了称为分散/聚集(或向量I/O)的重要功能。使用单个write()函数将字节从一组缓冲区写入流，并且可以使用单个read()函数将字节从流读取到一组缓冲区中。  
@@ -261,7 +261,7 @@ public class MemMapReadWrite {
 
 ### 1.3.1. 分散读取   
 &emsp; “分散读取”用于将数据从单个通道读取多个缓冲区中的数据。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-8.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-8.png)  
 &emsp; Rread()的API：  
 
 ```java
@@ -284,7 +284,7 @@ channel.read(bufferArray);
 
 ### 1.3.2. 聚集写入  
 &emsp; “聚集写入”用于将数据从多个缓冲区写入单个通道。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-9.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-9.png)  
 &emsp; write()的API：  
 
 ```java
