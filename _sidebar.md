@@ -323,7 +323,7 @@
     * [序列化](/docs/microService/communication/serializbale.md)  
     * [Socket](/docs/microService/communication/Socket.md)  
     * [五种I/O模型](/docs/microService/communication/IO.md)  
-    * [多路复用(select/poll/epoll)](/docs/microService/communication/Netty/epoll.md)  
+    * [I/O多路复用详解](/docs/microService/communication/Netty/epoll.md)  
     * [IO性能优化之零拷贝](/docs/microService/communication/Netty/zeroCopy.md)  
 * [NIO](/docs/microService/communication/NIO.md)  
     * [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
