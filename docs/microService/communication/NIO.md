@@ -1,19 +1,13 @@
 
 
-<!-- TOC -->
-
-- [1. NIO简介](#1-nio简介)
-
-<!-- /TOC -->
-
 
 <!-- 
-Netty之旅：你想要的NIO知识点，这里都有！ 
+Java BIO  AIO
 https://mp.weixin.qq.com/s/3OtbG6jegOS4m2GbyOF2lQ
 -->
 
 
-# 1. NIO简介  
+# NIO简介  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/communication/NIO-14.png)  
 
 &emsp; **<font color = "red">NIO基本组件</font>**  
@@ -28,7 +22,7 @@ https://mp.weixin.qq.com/s/3OtbG6jegOS4m2GbyOF2lQ
     |SocketChannel|能通过TCP读写网络中的数据|
     |DatagramChannel|能通过UDP读写网络中的数据|
     |ServerSocketChannel|可以监听新进来的TCP连接，对每一个新进来的连接都会创建一个SocketChannel|
-* Buffer(缓冲区)：高效数据容器。本质上是一块内存区，用于数据的读写，NIO Buffer将其包裹并提供开发时常用的接口，便于数据操作。  
+* Buffer(缓冲区)：高效数据容器。Buffer也被成为内存缓冲区，本质上就是内存中的一块，用于数据的读写，NIO Buffer将其包裹并提供开发时常用的接口，便于数据操作。  
     &emsp; NIO中的所有I/O都是通过一个通道开始的。数据总是从缓冲区写入通道，并从通道读取到缓冲区。从通道读取：创建一个缓冲区，然后请求通道读取数据。通道写入：创建一个缓冲区，填充数据，并要求通道写入数据。  
     &emsp; 在NIO中使用的核心缓冲区有：CharBuffer、DoubleBuffer、IntBuffer、LongBuffer、ByteBuffer、ShortBuffer、FloatBuffer。上述缓冲区覆盖了通过I/O发送的基本数据类型：characters，double，int，long，byte，short和float。
 * Selectors（选择器）  
