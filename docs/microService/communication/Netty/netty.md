@@ -13,6 +13,10 @@
 &emsp; &emsp; [内存分配byteBuf](/docs/microService/communication/Netty/byteBuf.md)  
 
 <!-- 
+很好的视频
+https://www.bilibili.com/video/BV1ft4y1B74d?p=1
+
+
 45 张图深度解析 Netty 架构与原理 
 https://mp.weixin.qq.com/s/insjE_EJRoCOM-1GqgZP9A
 Netty之旅二：口口相传的高性能Netty到底是什么？ 

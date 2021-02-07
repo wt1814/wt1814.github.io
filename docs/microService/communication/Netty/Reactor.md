@@ -74,7 +74,7 @@ Reactor的一般流程
 -->
 
 ## 1.2. Reactor线程模型详解  
-&emsp; 无论是C++ 还是 Java 编写的网络框架，大部分网络框架都是基于 Reactor模式设计开发的。Reactor模式核心组成部分包括Reactor和线程池，其中Reactor负责监听和分配事件，线程池负责处理事件，而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型:
+&emsp; Reactor模式核心组成部分包括Reactor和线程池，其中Reactor负责监听和分配事件，线程池负责处理事件，而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型:
 
 * 单线程模型 (单Reactor单线程)  
 * 多线程模型 (单Reactor多线程)  
