@@ -6,7 +6,7 @@
         - [1.1.1. 内核空间和用户空间](#111-内核空间和用户空间)
         - [1.1.2. 缓冲区](#112-缓冲区)
         - [1.1.3. 虚拟内存](#113-虚拟内存)
-    - [1.2. 数据拷贝过程](#12-数据拷贝过程)
+    - [1.2. 数据拷贝历史演进](#12-数据拷贝历史演进)
         - [1.2.1. 仅CPU方式](#121-仅cpu方式)
         - [1.2.2. CPU&DMA方式](#122-cpudma方式)
             - [1.2.2.1. DMA介绍](#1221-dma介绍)
@@ -41,7 +41,7 @@ https://mp.weixin.qq.com/s/wBqKEWu0gP4TXWUBPsTKpA
 https://mp.weixin.qq.com/s/LAWUHrRSnxKKicHz1FiGVw
 -->
 
-## 1.1. Linux操作系统基本概念  
+## 1.1. Linux操作系统有关I/O的基本概念  
 
 ### 1.1.1. 内核空间和用户空间  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-61.png)  
@@ -58,7 +58,7 @@ https://mp.weixin.qq.com/s/LAWUHrRSnxKKicHz1FiGVw
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-64.png)  
  -->
 
-## 1.2. 数据拷贝过程  
+## 1.2. 数据拷贝历史演进  
 <!-- 
 3、操作系统中谁负责IO拷贝？
 DMA 负责内核间的 IO 传输，CPU 负责内核和应用间的 IO 传输。
