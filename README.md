@@ -448,6 +448,7 @@
 &emsp; [接口安全](/docs/web/interface/security.md)  
 &emsp; [接口超时](/docs/web/interface/timeout.md)  
 [接口耗时(StopWatch)](/docs/frame/StopWatch.md)  
+[数据脱敏](/docs/web/sensitive.md)  
 
 [JavaBean](/docs/web/JavaBean.md)  
 &emsp; [POJO](/docs/web/POJO.md)  
@@ -458,7 +459,6 @@
 [Http重试](/docs/web/httpRetry.md)   
 [格式化](/docs/web/Format.md)  
 [源码安全](/docs/web/codeSecurity.md)  
-[数据脱敏](/docs/web/sensitive.md)  
 [生成二维码](/docs/web/QRCode.md)  
 [反爬虫](/docs/web/reptile.md)  
 [加密算法](/docs/web/encryption.md)  

@@ -18,23 +18,21 @@
             - [1.3.2.2. sendfile方式](#1322-sendfile方式)
             - [1.3.2.3. sendfile+DMA收集](#1323-sendfiledma收集)
             - [1.3.2.4. plice方式](#1324-plice方式)
-        - [1.3.3. 零拷贝实现](#133-零拷贝实现)
-            - [1.3.3.1. Java零拷贝](#1331-java零拷贝)
-                - [1.3.3.1.1. MappedByteBuffer](#13311-mappedbytebuffer)
-                - [1.3.3.1.2. DirectByteBuffer](#13312-directbytebuffer)
-                - [1.3.3.1.3. Channel-to-Channel传输](#13313-channel-to-channel传输)
-            - [1.3.3.2. Netty零拷贝](#1332-netty零拷贝)
+    - [1.4. 零拷贝实现](#14-零拷贝实现)
+        - [1.4.1. Java零拷贝](#141-java零拷贝)
+            - [1.4.1.1. MappedByteBuffer](#1411-mappedbytebuffer)
+            - [1.4.1.2. DirectByteBuffer](#1412-directbytebuffer)
+            - [1.4.1.3. Channel-to-Channel传输](#1413-channel-to-channel传输)
+        - [1.4.2. Netty零拷贝](#142-netty零拷贝)
 
 <!-- /TOC -->
 
 # 1. 零拷贝  
 <!-- 
-
 零拷贝
 https://mp.weixin.qq.com/s/mWPjFbCVzvuAW3Y9lEQbGg
 Java “零拷贝”
 https://mp.weixin.qq.com/s/wBqKEWu0gP4TXWUBPsTKpA
-
 -->
 
 <!-- 
@@ -65,15 +63,15 @@ https://mp.weixin.qq.com/s/LAWUHrRSnxKKicHz1FiGVw
 3、操作系统中谁负责IO拷贝？
 DMA 负责内核间的 IO 传输，CPU 负责内核和应用间的 IO 传输。
 两种拷贝类型：
-（1）CPU COPY
-通过计算机的组成原理我们知道, 内存的读写操作是需要 CPU 的协调数据总线,地址总线和控制总线来完成的因此在"拷贝"发生的时候,往往需要 CPU 暂停现有的处理逻辑,来协助内存的读写，这种我们称为 CPU COPY。CPU COPY 不但占用了 CPU 资源,还占用了总线的带宽。
-（2）DMA COPY
-DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要特点：当需要与外设进行数据交换时, CPU 只需要初始化这个动作便可以继续执行其他指令,剩下的数据传输的动作完全由DMA来完成可以看到 DMA COPY 是可以避免大量的 CPU 中断的。
+(1)CPU COPY
+通过计算机的组成原理我们知道， 内存的读写操作是需要 CPU 的协调数据总线，地址总线和控制总线来完成的因此在"拷贝"发生的时候，往往需要 CPU 暂停现有的处理逻辑，来协助内存的读写，这种我们称为 CPU COPY。CPU COPY 不但占用了 CPU 资源，还占用了总线的带宽。
+(2)DMA COPY
+DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要特点：当需要与外设进行数据交换时， CPU 只需要初始化这个动作便可以继续执行其他指令，剩下的数据传输的动作完全由DMA来完成可以看到 DMA COPY 是可以避免大量的 CPU 中断的。
 4、拷贝过程中会发生什么？
-从内核态到用户态时会发生上下文切换，上下文切换时指由用户态切换到内核态, 以及由内核态切换到用户态。
+从内核态到用户态时会发生上下文切换，上下文切换时指由用户态切换到内核态， 以及由内核态切换到用户态。
 -->
 
-&emsp; 在Linux系统内部缓存和内存容量都是有限的，更多的数据都是存储在磁盘中。对于Web服务器来说，经常需要从磁盘中读取数据到内存，然后再通过网卡传输给用户  
+&emsp; 在Linux系统内部缓存和内存容量都是有限的，更多的数据都是存储在磁盘中。对于Web服务器来说，经常需要从磁盘中读取数据到内存，然后再通过网卡传输给用户。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-65.png)  
 &emsp; 上述数据流转只是概述，接下来看看几种模式。  
 
@@ -86,12 +84,12 @@ DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要
 
 ### 1.2.2. CPU&DMA方式  
 #### 1.2.2.1. DMA介绍
-&emsp; 直接内存访问（Direct Memory Access）（DMA）：DMA允许外设设备和内存存储器之间直接进行IO数据传输，其过程不需要CPU的参与。  
+&emsp; 直接内存访问(Direct Memory Access，DMA)：DMA允许外设设备和内存存储器之间直接进行IO数据传输，其过程不需要CPU的参与。  
 
 <!-- 
 CPU的时间宝贵，让它做杂活就是浪费资源。
 
-直接内存访问（Direct Memory Access），是一种硬件设备绕开CPU独立直接访问内存的机制。所以DMA在一定程度上解放了CPU，把之前CPU的杂活让硬件直接自己做了，提高了CPU效率。
+直接内存访问(Direct Memory Access)，是一种硬件设备绕开CPU独立直接访问内存的机制。所以DMA在一定程度上解放了CPU，把之前CPU的杂活让硬件直接自己做了，提高了CPU效率。
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-63.png)  
 -->
@@ -100,7 +98,7 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-67.png)  
 &emsp; 有了DMA的参与之后的流程发生了一些变化：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-68.png)    
-&emsp; 最主要的变化是，CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，之后的过程类似。  
+&emsp; **<font color = "red">最主要的变化是，CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，之后的过程类似。</font>**  
 
 &emsp; **注：无论从仅CPU方式和DMA&CPU方式，都存在多次冗余数据拷贝和内核态&用户态的切换。**  
 &emsp; 继续思考Web服务器读取本地磁盘文件数据再通过网络传输给用户的详细过程。  
@@ -110,8 +108,8 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-69.png)   
 &emsp; 系统调用syscall是应用程序和内核交互的桥梁，每次进行调用/返回就会产生两次切换：  
 
-* 调用syscall 从用户态切换到内核态
-* syscall返回 从内核态切换到用户态  
+* 调用syscall，从用户态切换到内核态
+* syscall返回，从内核态切换到用户态  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-70.png)   
 
@@ -139,12 +137,12 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 
 &emsp; 可见传统模式下，涉及多次空间切换和数据冗余拷贝，效率并不高  
 
-## 1.3. 零拷贝技术  
+-------------------
 
+## 1.3. 零拷贝技术  
 ### 1.3.1. 出现原因
-&emsp; 如果应用程序不对数据做修改，从内核缓冲区到用户缓冲区，再从用户缓冲区到内核缓冲区。两次数据拷贝都需要CPU的参与，并且涉及用户态与内核态的多次切换，加重了CPU负担。  
-&emsp; 需要降低冗余数据拷贝、解放CPU，这也就是零拷贝Zero-Copy技术。  
-&emsp; "零拷贝"中的"拷贝"是指操作系统在I/O操作中,将数据从一个内存区域复制到另外一个内存区域，而"零"并不是指0次复制, 更多的是指在用户态和内核态之间的复制是0次。  
+&emsp; 如果应用程序不对数据做修改，从内核缓冲区到用户缓冲区，再从用户缓冲区到内核缓冲区。两次数据拷贝都需要CPU的参与，并且涉及用户态与内核态的多次切换，加重了CPU负担。需要降低冗余数据拷贝、解放CPU，这也就是零拷贝Zero-Copy技术。  
+&emsp; "零拷贝"中的"拷贝"是指操作系统在I/O操作中，将数据从一个内存区域复制到另外一个内存区域， **<font color = "red">而"零"并不是指0次复制， 更多的是指在用户态和内核态之间的复制是0次。</font>**  
 
 &emsp; 零拷贝的好处：  
 
@@ -174,13 +172,13 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-73.png)  
 
 include <sys/mman.h>
-void *mmap(void *start, size_t length, int prot, int flags, int fd, off_t offset)  
+void *mmap(void *start， size_t length， int prot， int flags， int fd， off_t offset)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-75.png)   
-    1）发出mmap系统调用，导致用户空间到内核空间的上下文切换。然后通过DMA引擎将磁盘文件中的数据复制到内核空间缓冲区
-    2）mmap系统调用返回，导致内核空间到用户空间的上下文切换
-    3）这里不需要将数据从内核空间复制到用户空间，因为用户空间和内核空间共享了这个缓冲区
-    4）发出write系统调用，导致用户空间到内核空间的上下文切换。将数据从内核空间缓冲区复制到内核空间socket缓冲区；write系统调用返回，导致内核空间到用户空间的上下文切换
-    5）异步，DMA引擎将socket缓冲区中的数据copy到网卡
+    1)发出mmap系统调用，导致用户空间到内核空间的上下文切换。然后通过DMA引擎将磁盘文件中的数据复制到内核空间缓冲区
+    2)mmap系统调用返回，导致内核空间到用户空间的上下文切换
+    3)这里不需要将数据从内核空间复制到用户空间，因为用户空间和内核空间共享了这个缓冲区
+    4)发出write系统调用，导致用户空间到内核空间的上下文切换。将数据从内核空间缓冲区复制到内核空间socket缓冲区；write系统调用返回，导致内核空间到用户空间的上下文切换
+    5)异步，DMA引擎将socket缓冲区中的数据copy到网卡
 
 「通过mmap实现的零拷贝I/O进行了4次用户空间与内核空间的上下文切换，以及3次数据拷贝；其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝」  
 -->
@@ -197,13 +195,13 @@ void *mmap(void *start, size_t length, int prot, int flags, int fd, off_t offset
 <!-- 
 sendfile系统调用在内核版本2.1中被引入，目的是简化通过网络在两个通道之间进行的数据传输过程。sendfile系统调用的引入，不仅减少了数据复制，还减少了上下文切换的次数，大致如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-74.png)  
-数据传送只发生在内核空间，所以减少了一次上下文切换；但是还是存在一次copy，能不能把这一次copy也省略掉，Linux2.4内核中做了改进，将Kernel buffer中对应的数据描述信息（内存地址，偏移量）记录到相应的socket缓冲区当中，这样连内核空间中的一次cpu copy也省掉了；  
+数据传送只发生在内核空间，所以减少了一次上下文切换；但是还是存在一次copy，能不能把这一次copy也省略掉，Linux2.4内核中做了改进，将Kernel buffer中对应的数据描述信息(内存地址，偏移量)记录到相应的socket缓冲区当中，这样连内核空间中的一次cpu copy也省掉了；  
 
 include <sys/sendfile.h>
-ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
+ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-76.png)  
-    1）发出sendfile系统调用，导致用户空间到内核空间的上下文切换，然后通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区中，接着再将数据从内核空间缓冲区复制到socket相关的缓冲区
-    2）sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA异步将内核空间socket缓冲区中的数据传递到网卡
+    1)发出sendfile系统调用，导致用户空间到内核空间的上下文切换，然后通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区中，接着再将数据从内核空间缓冲区复制到socket相关的缓冲区
+    2)sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA异步将内核空间socket缓冲区中的数据传递到网卡
 
 「通过sendfile实现的零拷贝I/O使用了2次用户空间与内核空间的上下文切换，以及3次数据的拷贝。其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝」
 
@@ -211,7 +209,7 @@ ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
 
 #### 1.3.2.3. sendfile+DMA收集  
 &emsp; Linux 2.4 内核对 sendfile 系统调用进行优化，但是需要硬件DMA控制器的配合。  
-&emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。  
+&emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息(文件描述符、地址偏移量等信息)记录到socket缓冲区中。  
 &emsp; DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩1次CPU拷贝。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-33.png)  
 &emsp; 这种方式有2次状态切换、0次CPU拷贝、2次DMA拷贝，但是仍然无法对数据进行修改，并且需要硬件层面DMA的支持，并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。 
@@ -221,9 +219,9 @@ ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
 带有DMA收集拷贝功能的sendfile实现的零拷贝  
 从Linux 2.4版本开始，操作系统提供scatter和gather的SG-DMA方式，直接从内核空间缓冲区中将数据读取到网卡，无需将内核空间缓冲区的数据再复制一份到socket缓冲区  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-77.png)  
-    1）发出sendfile系统调用，导致用户空间到内核空间的上下文切换。通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区
-    2）这里没把数据复制到socket缓冲区；取而代之的是，相应的描述符信息被复制到socket缓冲区。该描述符包含了两种的信息：A)内核缓冲区的内存地址、B)内核缓冲区的偏移量
-    3）sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA根据socket缓冲区的描述符提供的地址和偏移量直接将内核缓冲区中的数据复制到网卡
+    1)发出sendfile系统调用，导致用户空间到内核空间的上下文切换。通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区
+    2)这里没把数据复制到socket缓冲区；取而代之的是，相应的描述符信息被复制到socket缓冲区。该描述符包含了两种的信息：A)内核缓冲区的内存地址、B)内核缓冲区的偏移量
+    3)sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA根据socket缓冲区的描述符提供的地址和偏移量直接将内核缓冲区中的数据复制到网卡
 
 「带有DMA收集拷贝功能的sendfile实现的I/O使用了2次用户空间与内核空间的上下文切换，以及2次数据的拷贝，而且这2次的数据拷贝都是非CPU拷贝。这样一来我们就实现了最理想的零拷贝I/O传输了，不需要任何一次的CPU拷贝，以及最少的上下文切换」
 
@@ -237,9 +235,9 @@ ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
 &emsp; splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。    
 
 
-### 1.3.3. 零拷贝实现  
-#### 1.3.3.1. Java零拷贝  
-##### 1.3.3.1.1. MappedByteBuffer  
+## 1.4. 零拷贝实现  
+### 1.4.1. Java零拷贝  
+#### 1.4.1.1. MappedByteBuffer  
 <!-- 
 java NIO的零拷贝实现是基于mmap+write方式
 
@@ -254,9 +252,9 @@ map方法底层是通过mmap实现的，因此将文件内存从磁盘读取到�
 ```java
    public void main(String[] args){
     try {
-        FileChannel readChannel = FileChannel.open(Paths.get("./cscw.txt"), StandardOpenOption.READ);
-        FileChannel writeChannel = FileChannel.open(Paths.get("./siting.txt"), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
-        MappedByteBuffer data = readChannel.map(FileChannel.MapMode.READ_ONLY, 0, 1024 * 1024 * 40);
+        FileChannel readChannel = FileChannel.open(Paths.get("./cscw.txt")， StandardOpenOption.READ);
+        FileChannel writeChannel = FileChannel.open(Paths.get("./siting.txt")， StandardOpenOption.WRITE， StandardOpenOption.CREATE);
+        MappedByteBuffer data = readChannel.map(FileChannel.MapMode.READ_ONLY， 0， 1024 * 1024 * 40);
         //数据传输
         writeChannel.write(data);
         readChannel.close();
@@ -276,7 +274,7 @@ public class MappedByteBufferTest {
         File file = new File("D://db.txt");
         long len = file.length();
         byte[] ds = new byte[(int) len];
-        MappedByteBuffer mappedByteBuffer = new FileInputStream(file).getChannel().map(FileChannel.MapMode.READ_ONLY, 0,
+        MappedByteBuffer mappedByteBuffer = new FileInputStream(file).getChannel().map(FileChannel.MapMode.READ_ONLY， 0，
                 len);
         for (int offset = 0; offset < len; offset++) {
             byte b = mappedByteBuffer.get();
@@ -293,14 +291,14 @@ public class MappedByteBufferTest {
 &emsp; 主要通过FileChannel提供的map()来实现映射，map()方法如下：  
 
 ```java
-public abstract MappedByteBuffer map(MapMode mode,long position, long size) throws IOException;  
+public abstract MappedByteBuffer map(MapMode mode，long position， long size) throws IOException;  
 ```
 
 &emsp; 分别提供了三个参数，MapMode，Position和size；分别表示：MapMode：映射的模式，可选项包括：READ_ONLY，READ_WRITE，PRIVATE；Position：从哪个位置开始映射，字节数的位置；Size：从position开始向后多少个字节；  
-&emsp; 重点看一下MapMode，请两个分别表示只读和可读可写，当然请求的映射模式受到Filechannel对象的访问权限限制，如果在一个没有读权限的文件上启用READ_ONLY，将抛出NonReadableChannelException；PRIVATE模式表示写时拷贝的映射，意味着通过put()方法所做的任何修改都会导致产生一个私有的数据拷贝并且该拷贝中的数据只有MappedByteBuffer实例可以看到；该过程不会对底层文件做任何修改，而且一旦缓冲区被施以垃圾收集动作（garbage collected），那些修改都会丢失；大致浏览一下map()方法的源码：  
+&emsp; 重点看一下MapMode，请两个分别表示只读和可读可写，当然请求的映射模式受到Filechannel对象的访问权限限制，如果在一个没有读权限的文件上启用READ_ONLY，将抛出NonReadableChannelException；PRIVATE模式表示写时拷贝的映射，意味着通过put()方法所做的任何修改都会导致产生一个私有的数据拷贝并且该拷贝中的数据只有MappedByteBuffer实例可以看到；该过程不会对底层文件做任何修改，而且一旦缓冲区被施以垃圾收集动作(garbage collected)，那些修改都会丢失；大致浏览一下map()方法的源码：  
 
 ```java
-public MappedByteBuffer map(MapMode mode, long position, long size)
+public MappedByteBuffer map(MapMode mode， long position， long size)
     throws IOException
 {
         ...省略...
@@ -308,8 +306,8 @@ public MappedByteBuffer map(MapMode mode, long position, long size)
         long mapPosition = position - pagePosition;
         long mapSize = size + pagePosition;
         try {
-            // If no exception was thrown from map0, the address is valid
-            addr = map0(imode, mapPosition, mapSize);
+            // If no exception was thrown from map0， the address is valid
+            addr = map0(imode， mapPosition， mapSize);
         } catch (OutOfMemoryError x) {
             // An OutOfMemoryError may indicate that we've exhausted memory
             // so force gc and re-attempt map
@@ -320,43 +318,43 @@ public MappedByteBuffer map(MapMode mode, long position, long size)
                 Thread.currentThread().interrupt();
             }
             try {
-                addr = map0(imode, mapPosition, mapSize);
+                addr = map0(imode， mapPosition， mapSize);
             } catch (OutOfMemoryError y) {
-                // After a second OOME, fail
-                throw new IOException("Map failed", y);
+                // After a second OOME， fail
+                throw new IOException("Map failed"， y);
             }
         }
 
-        // On Windows, and potentially other platforms, we need an open
+        // On Windows， and potentially other platforms， we need an open
         // file descriptor for some mapping operations.
         FileDescriptor mfd;
         try {
             mfd = nd.duplicateForMapping(fd);
         } catch (IOException ioe) {
-            unmap0(addr, mapSize);
+            unmap0(addr， mapSize);
             throw ioe;
         }
 
         assert (IOStatus.checkAll(addr));
         assert (addr % allocationGranularity == 0);
         int isize = (int)size;
-        Unmapper um = new Unmapper(addr, mapSize, isize, mfd);
+        Unmapper um = new Unmapper(addr， mapSize， isize， mfd);
         if ((!writable) || (imode == MAP_RO)) {
-            return Util.newMappedByteBufferR(isize,
-                                             addr + pagePosition,
-                                             mfd,
+            return Util.newMappedByteBufferR(isize，
+                                             addr + pagePosition，
+                                             mfd，
                                              um);
         } else {
-            return Util.newMappedByteBuffer(isize,
-                                            addr + pagePosition,
-                                            mfd,
+            return Util.newMappedByteBuffer(isize，
+                                            addr + pagePosition，
+                                            mfd，
                                             um);
         }
  }
 ```
 &emsp; 大致意思就是通过native方法获取内存映射的地址，如果失败，手动gc再次映射；最后通过内存映射的地址实例化出MappedByteBuffer，MappedByteBuffer本身是一个抽象类，其实这里真正实例话出来的是DirectByteBuffer；  
 
-##### 1.3.3.1.2. DirectByteBuffer
+#### 1.4.1.2. DirectByteBuffer
 &emsp; DirectByteBuffer继承于MappedByteBuffer，从名字就可以猜测出开辟了一段直接的内存，并不会占用jvm的内存空间；上一节中通过Filechannel映射出的MappedByteBuffer其实际也是DirectByteBuffer，当然除了这种方式，也可以手动开辟一段空间：  
 
 ```java
@@ -364,7 +362,7 @@ ByteBuffer directByteBuffer = ByteBuffer.allocateDirect(100);
 ```
 &emsp; 如上开辟了100字节的直接内存空间；  
 
-##### 1.3.3.1.3. Channel-to-Channel传输  
+#### 1.4.1.3. Channel-to-Channel传输  
 <!-- 
 
 FileChannel的transferTo、transferFrom 如果操作系统底层支持的话，transferTo、transferFrom也会使用相关的零拷贝技术来实现数据的传输。用法如下
@@ -372,14 +370,14 @@ FileChannel的transferTo、transferFrom 如果操作系统底层支持的话，t
 ```java
 public void main(String[] args) {
     try {
-        FileChannel readChannel = FileChannel.open(Paths.get("./cscw.txt"), StandardOpenOption.READ);
-        FileChannel writeChannel = FileChannel.open(Paths.get("./siting.txt"), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+        FileChannel readChannel = FileChannel.open(Paths.get("./cscw.txt")， StandardOpenOption.READ);
+        FileChannel writeChannel = FileChannel.open(Paths.get("./siting.txt")， StandardOpenOption.WRITE， StandardOpenOption.CREATE);
         long len = readChannel.size();
         long position = readChannel.position();
         //数据传输
-        readChannel.transferTo(position, len, writeChannel);
+        readChannel.transferTo(position， len， writeChannel);
         //效果和transferTo 一样的
-        //writeChannel.transferFrom(readChannel, position, len, );
+        //writeChannel.transferFrom(readChannel， position， len， );
         readChannel.close();
         writeChannel.close();
     } catch (Exception e) {
@@ -395,15 +393,15 @@ public class ChannelTransfer {
     public static void main(String[] argv) throws Exception {
         String files[]=new String[1];
         files[0]="D://db.txt";
-        catFiles(Channels.newChannel(System.out), files);
+        catFiles(Channels.newChannel(System.out)， files);
     }
 
-    private static void catFiles(WritableByteChannel target, String[] files)
+    private static void catFiles(WritableByteChannel target， String[] files)
             throws Exception {
         for (int i = 0; i < files.length; i++) {
             FileInputStream fis = new FileInputStream(files[i]);
             FileChannel channel = fis.getChannel();
-            channel.transferTo(0, channel.size(), target);
+            channel.transferTo(0， channel.size()， target);
             channel.close();
             fis.close();
         }
@@ -413,17 +411,17 @@ public class ChannelTransfer {
 &emsp; 通过FileChannel的transferTo()方法将文件数据传输到System.out通道，接口定义如下：  
 
 ```java
-public abstract long transferTo(long position, long count,WritableByteChannel target)
+public abstract long transferTo(long position， long count，WritableByteChannel target)
   throws IOException;
 ```
 &emsp; 几个参数也比较好理解，分别是开始传输的位置，传输的字节数，以及目标通道；transferTo()允许将一个通道交叉连接到另一个通道，而不需要一个中间缓冲区来传递数据；注：这里不需要中间缓冲区有两层意思：第一层不需要用户空间缓冲区来拷贝内核缓冲区，另外一层两个通道都有自己的内核缓冲区，两个内核缓冲区也可以做到无需拷贝数据；  
 
-#### 1.3.3.2. Netty零拷贝  
+### 1.4.2. Netty零拷贝  
 <!-- 
 &emsp; Netty的零拷贝主要体现在如下三个方面  
-&emsp; （1）Netty接收和发送ByteBuffer采用DirectBuffer，使用堆外直接内存进行Socket读写，不需要进行字节缓冲区的二次拷贝。如果使用传统的堆存（Heap Buffer）进行Socket读写，那么JVM会将堆存拷贝一份到直接内存中，然后才写入Socket。相比于堆外直接内存，消息在发送过程中多了一次缓冲区的内存拷贝。  
-&emsp; （2）Netty提供了组合Buffer对象，可以聚合多个ByteBuffer对象，用户可以像操作一个Buffer那样方便地对组合Buffer进行操作，避免了传统的通过内存拷贝的方式将几个小Buffer合并成一个大Buffer大烦琐操作。  
-&emsp; （3）Netty中文件传输采用了transferTo()方法，它可以直接将文件缓冲区的数据发送到目标Channel，避免了传统通过循环write()方式导致的内存拷贝问题。  
+&emsp; (1)Netty接收和发送ByteBuffer采用DirectBuffer，使用堆外直接内存进行Socket读写，不需要进行字节缓冲区的二次拷贝。如果使用传统的堆存(Heap Buffer)进行Socket读写，那么JVM会将堆存拷贝一份到直接内存中，然后才写入Socket。相比于堆外直接内存，消息在发送过程中多了一次缓冲区的内存拷贝。  
+&emsp; (2)Netty提供了组合Buffer对象，可以聚合多个ByteBuffer对象，用户可以像操作一个Buffer那样方便地对组合Buffer进行操作，避免了传统的通过内存拷贝的方式将几个小Buffer合并成一个大Buffer大烦琐操作。  
+&emsp; (3)Netty中文件传输采用了transferTo()方法，它可以直接将文件缓冲区的数据发送到目标Channel，避免了传统通过循环write()方式导致的内存拷贝问题。  
 
 -->
 
@@ -448,4 +446,3 @@ public class CompositeChannelBuffer extends AbstractChannelBuffer {
 ```
 
 &emsp; components用来保存的就是所有接收到的buffer，indices记录每个buffer的起始位置，lastAccessedComponentId记录上一次访问的ComponentId；CompositeChannelBuffer并不会开辟新的内存并直接复制所有ChannelBuffer内容，而是直接保存了所有ChannelBuffer的引用，并在子ChannelBuffer里进行读写，实现了零拷贝。  
-
