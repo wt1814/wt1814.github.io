@@ -16,6 +16,8 @@
 <!--
 分布式事务解决方案
 https://mp.weixin.qq.com/s/mSxUXHgcHo5a7VAhvjIpCQ
+微服务架构下分布式事务解决方案 
+https://mp.weixin.qq.com/s/T4oGKrOXONl2AuhhKtd_9g
 -->
 
 <!--

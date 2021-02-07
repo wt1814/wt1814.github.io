@@ -21,11 +21,14 @@
 
 # 1. Synchronized  
 <!--
- Synchronized 的 8 种用法，真是绝了！ 
- https://mp.weixin.qq.com/s/TOkDyqAE5TToriOMX6I6tg
+Synchronized 的 8 种用法，真是绝了！ 
+https://mp.weixin.qq.com/s/TOkDyqAE5TToriOMX6I6tg
 
- 
+
 可重入锁，也叫做递归锁，指的是同一线程 外层函数获得锁之后 ，内层递归函数仍然有获取该锁的代码，但不受影响。  
+
+详解synchronized锁的各种用法及注意事项 
+https://mp.weixin.qq.com/s/gKsD1U38h4MJczEFC33ydw
 -->
 ## 1.1. Synchronized
 &emsp; **<font color = "red">Synchronized能够保证在同一时刻最多只有一个线程执行该段代码。</font>**  
