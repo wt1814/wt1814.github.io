@@ -1,12 +1,12 @@
 
 <!-- TOC -->
 
-- [1. 零拷贝](#1-零拷贝)
+- [1. IO性能优化之零拷贝](#1-io性能优化之零拷贝)
     - [1.1. Linux操作系统基本概念](#11-linux操作系统基本概念)
         - [1.1.1. 内核空间和用户空间](#111-内核空间和用户空间)
         - [1.1.2. 缓冲区](#112-缓冲区)
         - [1.1.3. 虚拟内存](#113-虚拟内存)
-    - [1.2. 数据拷贝过程](#12-数据拷贝过程)
+    - [1.2. 传统Linux I/O中数据拷贝过程](#12-传统linux-io中数据拷贝过程)
         - [1.2.1. 仅CPU方式](#121-仅cpu方式)
         - [1.2.2. CPU&DMA方式](#122-cpudma方式)
             - [1.2.2.1. DMA介绍](#1221-dma介绍)
@@ -17,7 +17,7 @@
             - [1.3.2.1. mmap方式](#1321-mmap方式)
             - [1.3.2.2. sendfile方式](#1322-sendfile方式)
             - [1.3.2.3. sendfile+DMA收集](#1323-sendfiledma收集)
-            - [1.3.2.4. plice方式](#1324-plice方式)
+            - [1.3.2.4. splice方式](#1324-splice方式)
     - [1.4. 零拷贝实现](#14-零拷贝实现)
         - [1.4.1. Java零拷贝](#141-java零拷贝)
             - [1.4.1.1. MappedByteBuffer](#1411-mappedbytebuffer)
@@ -26,18 +26,12 @@
 
 <!-- /TOC -->
 
-# 1. 零拷贝
+想理解好零拷贝，重点还在于理解为什么需要拷贝，以及不同零拷贝技术的对比。想理解好 I/O 原理，必须先弄清楚数据结构。  
+
+# 1. IO性能优化之零拷贝
 <!-- 
 零拷贝
 https://mp.weixin.qq.com/s/mWPjFbCVzvuAW3Y9lEQbGg
-Java “零拷贝”
-https://mp.weixin.qq.com/s/wBqKEWu0gP4TXWUBPsTKpA
--->
-
-<!-- 
-~~
-零拷贝Zero-Copy
-https://mp.weixin.qq.com/s/LAWUHrRSnxKKicHz1FiGVw
 -->
 
 ## 1.1. Linux操作系统基本概念
@@ -57,7 +51,7 @@ https://mp.weixin.qq.com/s/LAWUHrRSnxKKicHz1FiGVw
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-64.png)  
  -->
 
-## 1.2. 数据拷贝过程
+## 1.2. 传统Linux I/O中数据拷贝过程
 <!-- 
 3、操作系统中谁负责IO拷贝？
 DMA 负责内核间的 IO 传输，CPU 负责内核和应用间的 IO 传输。
@@ -226,13 +220,12 @@ ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
 
 -->
 
-#### 1.3.2.4. plice方式
+#### 1.3.2.4. splice方式  
 &emsp; splice系统调用是Linux 在 2.6 版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-34.png)  
-&emsp; splice 系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的 CPU 拷贝操作。  
+&emsp; splice 系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-35.png)  
 &emsp; splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。
-
 
 ## 1.4. 零拷贝实现
 ### 1.4.1. Java零拷贝
