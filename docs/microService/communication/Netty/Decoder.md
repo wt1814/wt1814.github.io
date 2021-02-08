@@ -11,10 +11,20 @@
                 - [1.2.2.2.2. LineBasedFrameDecoder与DelimiterBasedFrameDecoder](#12222-linebasedframedecoder与delimiterbasedframedecoder)
                 - [1.2.2.2.3. LengthFieldBasedFrameDecoder与LengthFieldPrepender](#12223-lengthfieldbasedframedecoder与lengthfieldprepender)
                 - [1.2.2.2.4. 自定义粘包与拆包器](#12224-自定义粘包与拆包器)
+    - [参考](#参考)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "lime">总结：</font>** 1.TCP粘包/拆包问题、原因、解决方案；2.Netty解决TCP粘包/拆包问题。  
+
+&emsp; Netty对半包或者粘包的处理其实也很简单。每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。 
+
+&emsp; Netty默认提供了多种解码器来解决，可以进行分包操作。  
+
+* 固定长度的拆包器 FixedLengthFrameDecoder
+* 行拆包器 LineBasedFrameDecoder
+* 分隔符拆包器 DelimiterBasedFrameDecoder
+* 基于数据包长度的拆包器 LengthFieldBasedFrameDecoder
 
 # 1. Netty编解码  
 <!-- 
@@ -502,3 +512,6 @@ public abstract class MessageToByteEncoder<I> extends ChannelOutboundHandlerAdap
         throws Exception;
 }
 ```
+
+## 参考  
+&emsp; 《Netty4核心原理与手写RPC框架实战》  
