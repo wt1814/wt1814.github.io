@@ -8,6 +8,15 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "lime">Netty启动服务端：</font>**  
+1. 创建ServerBootstrap服务端启动对象。  
+2. 配置bossGroup和workerGroup，其中bossGroup负责接收连接，workerGroup负责处理连接的读写就绪事件。
+3. 配置父Channel，一般为NioServerSocketChannel。  
+4. 配置子Channel与Handler之间的关系。
+5. 给父Channel配置参数。
+6. 给子Channel配置参数。
+7. 绑定端口，启动服务。
+
 # 1. Netty服务端创建  
 <!-- 
 高性能 Netty 源码解析之服务端创建 
@@ -19,14 +28,6 @@ https://mp.weixin.qq.com/s/ZvLLSxA42aEWjXvRvot74A
 Netty服务端启动源码分析
 https://mp.weixin.qq.com/s/PKwt7cN1hRbqmEvAmSDcOA
 -->
-&emsp; **<font color = "lime">Netty启动服务端：</font>**  
-1. 创建ServerBootstrap服务端启动对象。  
-2. 配置bossGroup和workerGroup，其中bossGroup负责接收连接，workerGroup负责处理连接的读写就绪事件。
-3. 配置父Channel，一般为NioServerSocketChannel。  
-4. 配置子Channel与Handler之间的关系。
-5. 给父Channel配置参数。
-6. 给子Channel配置参数。
-7. 绑定端口，启动服务。
 
 ## 1.1. ServerBootstrap示例  
 &emsp; 在netty源码包中，执行io.netty.example.echo.EchoServer的#main(args) 方法，启动服务端。EchoServer源码如下：  
@@ -120,7 +121,7 @@ public final class EchoServer {
 &emsp; 在步骤2，核心内容是给 ServerBootstrap 设置并绑定 Reactor 线程池（Reactor 线程池指的是线程模型 Reactor 模式）。ServerBootstrap 通过 group 方法设置单或双线程池。在 Netty 中，所有线程池的父类是 EventLoop，EventLoop 负责处理注册到本线程多路复用 Selector 上面的 Channel，Selector 的轮询操作由绑定的 EventLoop 线程 run 方法驱动，在一个循环体内循环执行。Netty 的 EventLoop 不仅可以处理网络 IO 事件，而且还可以处理用户自定义的 Task 和定时任务 Task。这样个中间都可以由同一个 EventLoop 进行处理。从调度层面看，不存在从 EventLoop 线程中启动其他类型的线程用于异步执行另外的任务，这样避免了多线程并发操作和锁竞争，提升了 IO 线程的处理和调度性能。  
 &emsp; 在步骤3，核心内容是设置 ServerSocketChannel 类型并通过 ServerBootstrap 的方法绑定到服务端。这一步比较简单和关键，Netty 已经封装好了 Channel 的初始化等底层实现细节和工作原理（也就是 Netty 会怎么使用 Channel 工作），所以用户只需要在服务端使用 NIO 模式，那就设置 NioServerSocketChannel.class 即可。通过 ServerBootstrap 的 channel() 方法设置进去后，实际上背后 Netty 会根据 class 反射得到实例对象。由于只在启动时才会进行反射调用，所以对性能的影响并不大。  
 &emsp; 在步骤4，核心内容是EventLoop 会在 TCP 链路建立时创建 ChannelPipeline。  
-&emsp; 在步骤5，核心内容是添加并设置 ChannelHandler。ChannelHandler 之前也说过，其实你可以当它作是 Service 层。当有外部请求进行的时候，最后实际的业务逻辑处理的地方都是在 ChannelHandler 里面的。但是，它不仅仅是限于业务逻辑，它还可以充当“过滤器”（编解码），“拦截器”（安全认证，限流等），可谓是多合一的组合。之所以说 Netty 是简洁好用，那是因为它提供了许多已经实现的 ChannelHandler 供我们使用。例如  
+&emsp; 在步骤5，核心内容是添加并设置 ChannelHandler。当有外部请求进行的时候，最后实际的业务逻辑处理的地方都是在 ChannelHandler 里面的。但是，它不仅仅是限于业务逻辑，它还可以充当“过滤器”（编解码），“拦截器”（安全认证，限流等），可谓是多合一的组合。之所以说 Netty 是简洁好用，那是因为它提供了许多已经实现的 ChannelHandler 供我们使用。例如  
 
 |说明|类名|
 |---|---|
@@ -323,7 +324,7 @@ Handler handler -> ServerBootstrapAccept -> Tail Handler
 			<---- out stream
 ```
 
-&emsp; 到此，Netty 服务器监听的相关资源初始化已经完毕了。但是上面我只是粗略地讲了简单的步骤，还有一步比较重要的我还想细讲一下，那就是 -- 注册 NioServerSocketChannel 到 Reactor 线程上的多路复用器上。  
+&emsp; 到此，Netty 服务器监听的相关资源初始化已经完毕了。但是上面我只是粗略地讲了简单的步骤，还有一步比较重要的需要细讲一下，那就是 -- 注册 NioServerSocketChannel 到 Reactor 线程上的多路复用器上。  
 &emsp; 注册的代码在 initAndRegister() 方法里面的代码
 
 ```java
@@ -612,7 +613,7 @@ public void read() {
 ```
 &emsp; 上面代码拆成两部分走，第一部分是负责监听的 ServerSocketChannel 获取对应的 SocketChannel，第二部分是执行 headChannelHandlerContext 的 fireChannelRead 方法。  
 
-&emsp; 我们先来看第一部分的代码，这部分主要的代码是 doReadMessages 方法  
+&emsp; 先来看第一部分的代码，这部分主要的代码是 doReadMessages 方法  
 
 ```java
 protected int doReadMessages(List<Object> buf) throws Exception {
