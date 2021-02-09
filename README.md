@@ -522,7 +522,7 @@
 &emsp; [Kuboard介绍](/docs/devOps/k8s/kuboard.md)  
 [Jenkins](/docs/devOps/Jenkins.md)  
 [Maven](/docs/devOps/maven.md)  
-[git](/docs/devOps/git/command.md)  
+[GIT](/docs/devOps/git/command.md)  
 
 [灰度发布](/docs/system/grayscalePublishe.md)  
 [监控](/docs/devOps/monitor.md)  
