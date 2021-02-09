@@ -13,3 +13,4 @@ https://mp.weixin.qq.com/s/ROMzeipOwWZWNrVGdVwisg
 &emsp; [接口防刷/反爬虫](/docs/web/interface/brush.md)  
 &emsp; [接口安全](/docs/web/interface/security.md)  
 &emsp; [接口超时](/docs/web/interface/timeout.md)  
+&emsp; [接口耗时统计(StopWatch)](/docs/frame/StopWatch.md)  
