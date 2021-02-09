@@ -2,6 +2,7 @@
 
 # Validation
 <!--
+
 @Validated @RequestBody @RequestParam配合使用校验参数
 https://www.cnblogs.com/cjyboy/p/11465876.html
 
@@ -23,6 +24,6 @@ https://mp.weixin.qq.com/s/UFT97SbygPMaFd7hYPyojg
 https://mp.weixin.qq.com/s/eW8bdeVwgs3AAkMX6CMm4A
 Spring Validation最佳实践及其实现原理，参数校验没那么简单！ 
 https://mp.weixin.qq.com/s/q-Fh_YGPW7s8lyg6o9DXgA
-
+https://mp.weixin.qq.com/s/bmVvqhzWmK2hA2gurYB4wg
 
 -->
