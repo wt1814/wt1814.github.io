@@ -14,7 +14,6 @@
 <!-- /TOC -->
 
 # 1. LVS
-
 <!-- 
 超详细！一文带你了解 LVS 负载均衡集群！
 https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
@@ -22,9 +21,7 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 LVS
 https://www.cnblogs.com/cq146637/p/8517818.html
 https://blog.csdn.net/ghost_leader/article/details/55827729
--->
-&emsp; LVS是Linux Virtual Server的简写，意即Linux虚拟服务器，是一个虚拟的服务器集群系统。  
-<!-- 
+
 LVS 涉及相关的术语及说明
 
 上述内容中涉及到很多术语或缩写，这里简单解释下具体的含义，便于理解。
@@ -49,10 +46,12 @@ LVS 涉及相关的术语及说明
 
     RMAC： 后端真实服务器的 RIP 地址对应的 MAC 地址。
 -->
+&emsp; LVS是Linux Virtual Server的简写，意即Linux虚拟服务器，是一个虚拟的服务器集群系统。  
+
 ## 1.1. LVS 的组成  
-&emsp; LVS 由两部分程序组成，包括 ipvs 和 ipvsadm。  
-1. ipvs(ip virtual server)：LVS 是基于内核态的 netfilter 框架实现的 IPVS 功能，工作在内核态。用户配置 VIP 等相关信息并传递到 IPVS 就需要用到 ipvsadm 工具。  
-2. ipvsadm：ipvsadm 是 LVS 用户态的配套工具，可以实现 VIP 和 RS 的增删改查功能，是基于 netlink 或 raw socket 方式与内核 LVS 进行通信的，如果 LVS 类比于 netfilter，那 ipvsadm 就是类似 iptables 工具的地位。  
+&emsp; LVS由两部分程序组成，包括ipvs和ipvsadm。  
+1. ipvs(ip virtual server)：LVS 是基于内核态的netfilter框架实现的IPVS功能，工作在内核态。用户配置VIP等相关信息并传递到IPVS就需要用到ipvsadm工具。  
+2. ipvsadm：ipvsadm 是 LVS 用户态的配套工具，可以实现VIP和RS的增删改查功能，是基于 netlink 或 raw socket 方式与内核 LVS 进行通信的，如果LVS类比于netfilter，那 ipvsadm就是类似iptables工具的地位。  
 
 ### 1.1.1. ipvsadm用法  
 &emsp; ipvsadm组件定义规则的格式：  

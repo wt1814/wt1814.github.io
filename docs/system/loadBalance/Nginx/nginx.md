@@ -89,7 +89,7 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 &emsp; Nginx的worker进程，包括核心和功能性模块。高度模块化的设计是 Nginx 的架构基础。Nginx 服务器被分解为多个模块 ，每个模块就是一个功能模块 ，只负责自身的功能，模块之间严格遵循 “高内聚，低耦合” 的原则。  
 
 * 核心模块负责维持一个运行循环 ( run-loop )，执行网络请求处理的 不同阶段 的模块功能。比如：网络读写、存储读写、内容传输、外出过滤，以及将请求发往上游服务器等。  
-* 而其代码的模块化设计 ，也使得开发人员可以根据需要对 功能模块 进行适当的 选择 和 修改 ，编译成具有 特定功能的服务器。  
+* 而其代码的模块化设计，也使得开发人员可以根据需要对功能模块进行适当的选择和修改，编译成具有特定功能的服务器。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-8.png)  
 
@@ -97,7 +97,7 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 &emsp; 核心模块是 Nginx 服务器正常运行 必不可少的模块，提供错误日志记录 、 配置文件解析 、 事件驱动机制 、 进程管理 等核心功能。  
 
 ### 1.4.2. 标准HTTP模块  
-&emsp; 标准 HTTP 模块提供 HTTP 协议解析相关的功能，比如： 端口配置 、 网页编码设置 、 HTTP响应头设置 等等。  
+&emsp; 标准HTTP模块提供HTTP协议解析相关的功能，比如：端口配置、网页编码设置、HTTP响应头设置等等。  
 
 ### 1.4.3. 可选HTTP模块  
 &emsp; 可选 HTTP 模块主要用于 扩展 标准的 HTTP 功能，让 Nginx 能处理一些特殊的服务，比如：Flash 多媒体传输 、解析 GeoIP 请求、 网络传输压缩 、 安全协议 SSL 支持等。  

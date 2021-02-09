@@ -66,11 +66,8 @@ https://mp.weixin.qq.com/s/5NIu2fGkr9ZYqBks1UI6Lg
 ## 1.3. 采集Nginx的日志  
 
 <!-- 
- 如何采集Nginx的日志？
+如何采集Nginx的日志？
 https://mp.weixin.qq.com/s/x-IqAk7zTAFf7tpXRE0O5g
-
- 推荐一款日志切割神器！我常用~ 
- https://mp.weixin.qq.com/s/aFbKCQBnrK3GaQsXjIFAOw
-
+推荐一款日志切割神器！我常用~ 
+https://mp.weixin.qq.com/s/aFbKCQBnrK3GaQsXjIFAOw
 -->
-
