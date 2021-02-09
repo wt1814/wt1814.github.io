@@ -435,12 +435,13 @@
 ---
 
 ## 项目构建基础  
-[日志系统](/docs/web/log.md)   
-[SpringTest](/docs/web/test.md)  
-[乱码](/docs/web/garbled.md)  
-[统一格式返回](/docs/web/UnifiedFormat.md)  
-[统一异常处理](/docs/web/ExceptionHandler.md)  
-[统一日志记录](/docs/web/unifiedLog.md)  
+[构建基础](/docs/web/BuildFoundation.md)  
+&emsp; [日志系统](/docs/web/log.md)  
+&emsp; [SpringTest](/docs/web/test.md)  
+&emsp; [乱码](/docs/web/garbled.md)  
+&emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
+&emsp; [统一异常处理](/docs/web/ExceptionHandler.md)  
+&emsp; [统一日志记录](/docs/web/unifiedLog.md)  
 
 [API接口设计](/docs/web/API.md)    
 &emsp; [RESTful风格](/docs/web/interface/RESTful.md)  
@@ -563,4 +564,3 @@
 [redis scan命令](/docs/Error/redisScan.md)  
 [雪花利用ZK生成workId]()  
 <!-- [雪花利用ZK生成workId]()   -->
-
