@@ -366,11 +366,11 @@
         * [BeanUtils](/docs/web/BeanUtils.md)  
         * [参数校验](/docs/web/Validation.md)  
         * [Lombok](/docs/web/Lombok.md)  
-    * [数据脱敏](/docs/web/sensitive.md)  
     * [Http](/docs/web/http.md)   
         * [RestTemplate](/docs/web/Resttemplate.md)  
         * [Http重试](/docs/web/httpRetry.md)   
     * [格式化](/docs/web/Format.md)  
+    * [数据脱敏](/docs/web/sensitive.md)  
     * [源码安全](/docs/web/codeSecurity.md)  
     * [加密算法](/docs/web/encryption.md)  
     * [短链接](/docs/project/URL.md)  
@@ -435,4 +435,3 @@
 * 开发常用工具  
     * [idea](/docs/software/idea/idea.md)  
     * [抓包Charles](/docs/software/charles.md)  
-
