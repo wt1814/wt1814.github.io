@@ -5,9 +5,9 @@
         - [1.1.1. ipvsadm用法](#111-ipvsadm用法)
     - [1.2. LVS的体系结构](#12-lvs的体系结构)
     - [1.3. 三种工作模式](#13-三种工作模式)
-        - [1.3.1. NAT（网络地址转换）](#131-nat网络地址转换)
-        - [1.3.2. DR（直接路由）](#132-dr直接路由)
-        - [1.3.3. TUN（隧道）](#133-tun隧道)
+        - [1.3.1. NAT(网络地址转换)](#131-nat网络地址转换)
+        - [1.3.2. DR(直接路由)](#132-dr直接路由)
+        - [1.3.3. TUN(隧道)](#133-tun隧道)
     - [1.4. LVS的十种负载调度算法](#14-lvs的十种负载调度算法)
     - [1.5. LVS优缺点](#15-lvs优缺点)
 
@@ -88,7 +88,7 @@ ipvsadm -h
 -e --edit-server #编辑一条虚拟服务器记录中的某条真实服务器记录
 -d --delete-server #删除一条虚拟服务器记录中的某条真实服务器记录
 -L|-l --list #显示内核虚拟服务器表
--Z --zero #虚拟服务表计数器清零（清空当前的连接数量等）
+-Z --zero #虚拟服务表计数器清零(清空当前的连接数量等)
 --set tcp tcpfin udp #设置连接超时值
 --start-daemon #启动同步守护进程。他后面可以是master 或backup，用来说明LVS Router 是master 或是backup。在这个功能上也可以采用keepalived 的VRRP 功能。
 --stop-daemon #停止同步守护进程
@@ -102,7 +102,7 @@ ipvsadm -h
 -p --persistent [timeout] #持久稳固的服务。这个选项的意思是来自同一个客户的多次请求，将被同一台真实的服务器处理。timeout 的默认值为300 秒。
 -M --netmask #子网掩码
 -r --real-server server-address #真实的服务器[Real-Server:port]
--g --gatewaying 指定LVS 的工作模式为直接路由模式（也是LVS 默认的模式）
+-g --gatewaying 指定LVS 的工作模式为直接路由模式(也是LVS 默认的模式)
 -i --ipip #指定LVS 的工作模式为隧道模式
 -m --masquerading #指定LVS 的工作模式为NAT 模式
 -w --weight weight #真实服务器的权值
@@ -126,7 +126,7 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 3. 最底端的数据共享存储层，用 Shared Storage 表示
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/lvs/lvs-1.png)  
 &emsp; LVS的各个层次的详细介绍：  
-&emsp; Load Balancer层：位于整个集群系统的最前端，有一台或者多台负载调度器（Director Server）组成，LVS模块就安装在Director Server上，而Director的主要作用类似于一个路由器，它含有完成LVS功能所设定的路由表，通过这些路由表把用户的请求分发给Server Array层的应用服务器（Real Server）上。同时，在Director Server上还要安装对Real Server服务的监控模块Ldirectord，此模块用于监测各个Real Server服务的健康状况。在Real Server不可用时把它从LVS路由表中剔除，恢复时重新加入。  
+&emsp; Load Balancer层：位于整个集群系统的最前端，有一台或者多台负载调度器(Director Server)组成，LVS模块就安装在Director Server上，而Director的主要作用类似于一个路由器，它含有完成LVS功能所设定的路由表，通过这些路由表把用户的请求分发给Server Array层的应用服务器(Real Server)上。同时，在Director Server上还要安装对Real Server服务的监控模块Ldirectord，此模块用于监测各个Real Server服务的健康状况。在Real Server不可用时把它从LVS路由表中剔除，恢复时重新加入。  
 &emsp; Server Array层：由一组实际运行应用服务的机器组成，Real Server可以是Web服务器、Mail服务器、FTP服务器、DNS服务器、视频服务器中的一个或者多个，每个Real Server之间通过高速的LAN或分布在各地的WAN相连接。在实际的应用中，Director Server也可以同时兼任Real Server的角色。  
 &emsp; Shared Storage层：是为所有Real Server提供共享存储空间和内容一致性的存储区域，在物理上一般由磁盘阵列设备组成，为了提供内容的一致性，一般可以通过NFS网络文件系统共享数 据，但NFS在繁忙的业务系统中，性能并不是很好，此时可以采用集群文件系统，例如Red hat的GFS文件系统、Oracle提供的OCFS2文件系统等。  
 
@@ -140,11 +140,11 @@ https://www.cnblogs.com/lixigang/p/5371815.html
 https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 -->
 &emsp; LVS是四层负载均衡，也就是说建立在OSI模型的第四层——传输层之上，LVS支持TCP/UDP的负载均衡。  
-&emsp; LVS 的转发主要通过修改 IP 地址（NAT 模式，分为源地址修改SNAT和目标地址修改 DNAT）、修改目标 MAC（DR 模式）来实现。  
+&emsp; LVS 的转发主要通过修改 IP 地址(NAT 模式，分为源地址修改SNAT和目标地址修改 DNAT)、修改目标 MAC(DR 模式)来实现。  
 
-### 1.3.1. NAT（网络地址转换）  
-&emsp; NAT（Network Address Translation）是一种外网和内网地址映射的技术。  
-&emsp; NAT 模式下，网络数据报的进出都要经过 LVS 的处理。LVS 需要作为 RS（真实服务器）的网关。  
+### 1.3.1. NAT(网络地址转换)  
+&emsp; NAT(Network Address Translation)是一种外网和内网地址映射的技术。  
+&emsp; NAT 模式下，网络数据报的进出都要经过 LVS 的处理。LVS 需要作为 RS(真实服务器)的网关。  
 &emsp; **工作方式：**  
 <!-- 
 1.用户请求VIP(也可以说是CIP请求VIP)
@@ -157,7 +157,7 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 4.当Driector Server收到一个源地址为RealServer1 的IP 目标地址为CIP的数据包,此时Driector Server 会将源地址修改为VIP,然后再将数据包发送给用户
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/lvs/lvs-2.png)  
-&emsp; 当包到达 LVS 时，LVS 做目标地址转换（DNAT），将目标 IP 改为 RS 的 IP。RS 接收到包以后，仿佛是客户端直接发给它的一样。RS 处理完，返回响应时，源 IP 是 RS IP，目标 IP 是客户端的 IP。这时 RS 的包通过网关（LVS）中转，LVS 会做源地址转换（SNAT），将包的源地址改为 VIP，这样，这个包对客户端看起来就仿佛是 LVS 直接返回给它的。  
+&emsp; 当包到达 LVS 时，LVS 做目标地址转换(DNAT)，将目标 IP 改为 RS 的 IP。RS 接收到包以后，仿佛是客户端直接发给它的一样。RS 处理完，返回响应时，源 IP 是 RS IP，目标 IP 是客户端的 IP。这时 RS 的包通过网关(LVS)中转，LVS 会做源地址转换(SNAT)，将包的源地址改为 VIP，这样，这个包对客户端看起来就仿佛是 LVS 直接返回给它的。  
 
 &emsp; **LVS-NAT的性能瓶颈：**  
 &emsp; 在LVS/NAT的集群系统中，请求和响应的数据报文都需要通过负载调度器(Director)，当真实服务器(RealServer)的数目在10台和20台之间时，负载调度器(Director)将成为整个集群系统的新瓶颈。  
@@ -169,26 +169,26 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 https://blog.csdn.net/qq_37165604/article/details/79802390
 -->
 
-### 1.3.2. DR（直接路由）  
-&emsp; DR 模式下需要 LVS 和 RS 集群绑定同一个 VIP（RS 通过将 VIP 绑定在 loopback 实现），但与 NAT 的不同点在于：请求由 LVS 接受，由真实提供服务的服务器（RealServer，RS）直接返回给用户，返回的时候不经过 LVS。  
-&emsp; 详细来看，一个请求过来时，LVS 只需要将网络帧的 MAC 地址修改为某一台 RS 的 MAC，该包就会被转发到相应的 RS 处理，注意此时的源 IP 和目标 IP 都没变，LVS 只是做了一下移花接木。RS 收到 LVS 转发来的包时，链路层发现 MAC 是自己的，到上面的网络层，发现 IP 也是自己的，于是这个包被合法地接受，RS 感知不到前面有 LVS 的存在。而当 RS 返回响应时，只要直接向源 IP（即用户的 IP）返回即可，不再经过 LVS。  
+### 1.3.2. DR(直接路由)  
+&emsp; DR 模式下需要 LVS 和 RS 集群绑定同一个 VIP(RS 通过将 VIP 绑定在 loopback 实现)，但与 NAT 的不同点在于：请求由 LVS 接受，由真实提供服务的服务器(RealServer，RS)直接返回给用户，返回的时候不经过 LVS。  
+&emsp; 详细来看，一个请求过来时，LVS 只需要将网络帧的 MAC 地址修改为某一台 RS 的 MAC，该包就会被转发到相应的 RS 处理，注意此时的源 IP 和目标 IP 都没变，LVS 只是做了一下移花接木。RS 收到 LVS 转发来的包时，链路层发现 MAC 是自己的，到上面的网络层，发现 IP 也是自己的，于是这个包被合法地接受，RS 感知不到前面有 LVS 的存在。而当 RS 返回响应时，只要直接向源 IP(即用户的 IP)返回即可，不再经过 LVS。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/lvs/lvs-4.png)  
 &emsp; DR 负载均衡模式数据分发过程中不修改 IP 地址，只修改 mac 地址，由于实际处理请求的真实物理 IP 地址和数据请求目的 IP 地址一致，所以不需要通过负载均衡服务器进行地址转换，可将响应数据包直接返回给用户浏览器，避免负载均衡服务器网卡带宽成为瓶颈。因此，DR 模式具有较好的性能，也是目前大型网站使用最广泛的一种负载均衡手段。  
 
-&emsp; **编辑DR有三种方式（目的是让用户请求的数据都通过Director Server）**  
+&emsp; **编辑DR有三种方式(目的是让用户请求的数据都通过Director Server)**  
 &emsp; 第一种方式：在路由器上明显说明vip对应的地址一定是Director上的MAC，只要绑定，以后再跟vip通信也不用再请求了，这个绑定是静态的，所以它也不会失效，也不会再次发起请求，但是有个前提，我们的路由设备必须有操作权限能够绑定MAC地址，万一这个路由器是运行商操作的，我们没法操作怎么办？第一种方式固然很简便，但未必可行。  
-&emsp; 第二种方式：在给别主机上（例如：红帽）它们引进的有一种程序arptables,它有点类似于iptables,它肯定是基于arp或基于MAC做访问控制的，很显然我们只需要在每一个real server上定义arptables规则，如果用户arp广播请求的目标地址是本机的vip则不予相应，或者说相应的报文不让出去，很显然网关（gateway）是接受不到的，也就是director相应的报文才能到达gateway，这个也行。第二种方式我们可以基于arptables。  
+&emsp; 第二种方式：在给别主机上(例如：红帽)它们引进的有一种程序arptables,它有点类似于iptables,它肯定是基于arp或基于MAC做访问控制的，很显然我们只需要在每一个real server上定义arptables规则，如果用户arp广播请求的目标地址是本机的vip则不予相应，或者说相应的报文不让出去，很显然网关(gateway)是接受不到的，也就是director相应的报文才能到达gateway，这个也行。第二种方式我们可以基于arptables。  
 &emsp; 第三种方式：在相对较新的版本中新增了两个内核参数(kernelparameter)，第一个是arp_ignore定义接受到ARP请求时的相应级别;第二个是arp_announce定义将自己地址向外通告是的通告级别。【提示：很显然我们现在的系统一般在内核中都是支持这些参数的，我们用参数的方式进行调整更具有朴实性，它还不依赖于额外的条件，像arptables,也不依赖外在路由配置的设置，反而通常我们使用的是第三种配置】  
 
 &emsp; arp_ignore：定义接受到ARP请求时的相应级别。  
 
 ```text
 0：只要本地配置的有相应地址，就给予响应。
-1：仅在请求的目标地址配置请求到达的接口上的时候，才给予响应（当别人的arp请求过来的时候，如果接收的设备上面没有这个ip，就不响应，默认是0，只要这台机器上面任何一个设备上面有这个ip，就响应arp请求，并发送MAC地址应答。）
+1：仅在请求的目标地址配置请求到达的接口上的时候，才给予响应(当别人的arp请求过来的时候，如果接收的设备上面没有这个ip，就不响应，默认是0，只要这台机器上面任何一个设备上面有这个ip，就响应arp请求，并发送MAC地址应答。)
 2：只回答目标IP地址是来访网络接口本地地址的ARP查询请求,且来访IP必须在该网络接口的子网段内
 3：不回应该网络界面的arp请求，而只对设置的唯一和连接地址做出回应
 4-7：保留未使用
-8：不回应所有（本地地址）的arp查询
+8：不回应所有(本地地址)的arp查询
 ```
 
 &emsp; arp_announce：定义将自己地址向外通告是的通告级别。  
@@ -202,13 +202,13 @@ https://blog.csdn.net/qq_37165604/article/details/79802390
 &emsp; **部署：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/lvs/lvs-5.png)  
 
-### 1.3.3. TUN（隧道）  
+### 1.3.3. TUN(隧道)  
 &emsp; **工作方式：**  
-&emsp; TUN的工作机制跟DR一样，只不过在转发的时候，它需要重新包装IP报文。这里的real server（图中为RIP）离得都比较远。  
+&emsp; TUN的工作机制跟DR一样，只不过在转发的时候，它需要重新包装IP报文。这里的real server(图中为RIP)离得都比较远。  
 
 &emsp; 用户请求以后，到director上的VIP上，它跟DR模型一样，每个realserver上既有RIP又有VIP，Director就挑选一个real server进行响应，但director和real server并不在同一个网络上，这时候就用到隧道了，Director进行转发的时候，一定要记得CIP和VIP不能动。  
 &emsp; 转发是这样的，让它的CIP和VIP不动，在它上面再加一个IP首部，再加的IP首部源地址是DIP，目标地址的RIP的IP地址。收到报文的RIP，拆掉报文以后发现了里面还有一个封装，它就知道了，这就是隧道。  
-&emsp; 其实数据转发原理和DR是一样的，不过这个我个人认为主要是位于不同位置（不同机房）；LB是通过隧道进行了信息传输，虽然增加了负载，可是因为地理位置不同的优势，还是可以参考的一种方案；  
+&emsp; 其实数据转发原理和DR是一样的，不过这个我个人认为主要是位于不同位置(不同机房)；LB是通过隧道进行了信息传输，虽然增加了负载，可是因为地理位置不同的优势，还是可以参考的一种方案；  
 
 ```text
 优点：负载均衡器只负责将请求包分发给物理服务器，而物理服务器将应答包直接发给用户。所以，负载均衡器能处理很巨大的请求量，这种方式，一台负载均衡能为超过100台的物理服务器服务，负载均衡器不再是系统的瓶颈。
@@ -228,7 +228,7 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 https://blog.csdn.net/qq_37165604/article/details/79802390
 -->
 
-&emsp; lvs调度算法（不区分大小写）可以分为两大类：  
+&emsp; lvs调度算法(不区分大小写)可以分为两大类：  
 1. Fixed Scheduling Method 静态调服方法  
     * 轮询：Round Robin，将收到的访问请求按顺序轮流分配给群集中的各节点真实服务器中，不管服务器实际的连接数和系统负载。  
     * 加权轮询：Weighted Round Robin，根据真实服务器的处理能力轮流分配收到的访问请求，调度器可自动查询各节点的负载情况，并动态跳转其权重，保证处理能力强的服务器承担更多的访问量。  
@@ -237,10 +237,10 @@ https://blog.csdn.net/qq_37165604/article/details/79802390
 2. Dynamic Scheduling Method 动态调服方法  
     * 最少连接：Least Connections，根据真实服务器已建立的连接数进行分配，将收到的访问请求优先分配给连接数少的节点，如所有服务器节点性能都均衡，可采用这种方式更好的均衡负载。  
     * 加权最少连接：Weighted Least Connections，服务器节点的性能差异较大的情况下，可以为真实服务器自动调整权重，权重较高的节点将承担更大的活动连接负载。  
-    * 基于局部性的最少连接：LBLC，基于局部性的最少连接调度算法用于目标 IP 负载平衡，通常在高速缓存群集中使用。如服务器处于活动状态且处于负载状态，此算法通常会将发往 IP 地址的数据包定向到其服务器。如果服务器超载（其活动连接数大于其权重），并且服务器处于半负载状态，则将加权最少连接服务器分配给该 IP 地址。  
+    * 基于局部性的最少连接：LBLC，基于局部性的最少连接调度算法用于目标 IP 负载平衡，通常在高速缓存群集中使用。如服务器处于活动状态且处于负载状态，此算法通常会将发往 IP 地址的数据包定向到其服务器。如果服务器超载(其活动连接数大于其权重)，并且服务器处于半负载状态，则将加权最少连接服务器分配给该 IP 地址。  
     * 复杂的基于局部性的最少连接：LBLCR，具有复杂调度算法的基于位置的最少连接也用于目标IP负载平衡，通常在高速缓存群集中使用。与 LBLC 调度有以下不同：负载平衡器维护从目标到可以为目标提供服务的一组服务器节点的映射。对目标的请求将分配给目标服务器集中的最少连接节点。如果服务器集中的所有节点都超载，则它将拾取群集中的最少连接节点，并将其添加到目标服务器群中。如果在指定时间内未修改服务器集群，则从服务器集群中删除负载最大的节点，以避免高度负载。  
-    * 最短延迟调度：SED，最短的预期延迟调度算法将网络连接分配给具有最短的预期延迟的服务器。如果将请求发送到第 i 个服务器，则预期的延迟时间为（Ci +1）/ Ui，其中 Ci 是第 i 个服务器上的连接数，而 Ui 是第 i 个服务器的固定服务速率（权重） 。  
-    * 永不排队调度：NQ，从不队列调度算法采用两速模型。当有空闲服务器可用时，请求会发送到空闲服务器，而不是等待快速响应的服务器。如果没有可用的空闲服务器，则请求将被发送到服务器，以使其预期延迟最小化（最短预期延迟调度算法）。  
+    * 最短延迟调度：SED，最短的预期延迟调度算法将网络连接分配给具有最短的预期延迟的服务器。如果将请求发送到第 i 个服务器，则预期的延迟时间为(Ci +1)/ Ui，其中 Ci 是第 i 个服务器上的连接数，而 Ui 是第 i 个服务器的固定服务速率(权重) 。  
+    * 永不排队调度：NQ，从不队列调度算法采用两速模型。当有空闲服务器可用时，请求会发送到空闲服务器，而不是等待快速响应的服务器。如果没有可用的空闲服务器，则请求将被发送到服务器，以使其预期延迟最小化(最短预期延迟调度算法)。  
 
 ## 1.5. LVS优缺点  
 &emsp; **LVS 的优点**  
