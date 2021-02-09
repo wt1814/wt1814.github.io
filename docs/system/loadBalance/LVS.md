@@ -2,14 +2,14 @@
 
 - [1. LVS](#1-lvs)
     - [1.1. LVS 的组成](#11-lvs-的组成)
-        - [1.1.1. ipvsadm用法](#111-ipvsadm用法)
-    - [1.2. LVS的体系结构](#12-lvs的体系结构)
-    - [1.3. 三种工作模式](#13-三种工作模式)
-        - [1.3.1. NAT(网络地址转换)](#131-nat网络地址转换)
-        - [1.3.2. DR(直接路由)](#132-dr直接路由)
-        - [1.3.3. TUN(隧道)](#133-tun隧道)
-    - [1.4. LVS的十种负载调度算法](#14-lvs的十种负载调度算法)
-    - [1.5. LVS优缺点](#15-lvs优缺点)
+    - [1.2. ~~LVS安装使用~~](#12-lvs安装使用)
+    - [1.3. LVS的体系结构](#13-lvs的体系结构)
+    - [1.4. 三种工作模式](#14-三种工作模式)
+        - [1.4.1. NAT(网络地址转换)](#141-nat网络地址转换)
+        - [1.4.2. DR(直接路由)](#142-dr直接路由)
+        - [1.4.3. TUN(隧道)](#143-tun隧道)
+    - [1.5. LVS的十种负载调度算法](#15-lvs的十种负载调度算法)
+    - [1.6. LVS优缺点](#16-lvs优缺点)
 
 <!-- /TOC -->
 
@@ -21,30 +21,6 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 LVS
 https://www.cnblogs.com/cq146637/p/8517818.html
 https://blog.csdn.net/ghost_leader/article/details/55827729
-
-LVS 涉及相关的术语及说明
-
-上述内容中涉及到很多术语或缩写，这里简单解释下具体的含义，便于理解。
-
-    DS： Director Server，前端负载均衡节点服务器。
-
-    RS： Real Server，后端真实服务器。
-
-    CIP： Client IP，客户端 IP 地址。
-
-    VIP： Virtual IP，负载均衡对外提供访问的 IP 地址，一般负载均衡 IP 都会通过 Virtual IP 实现高可用。
-
-    RIP： RealServer IP，负载均衡后端的真实服务器 IP 地址。
-
-    DIP： Director IP，负载均衡与后端服务器通信的 IP 地址。
-
-    CMAC： 客户端 MAC 地址，LVS 连接的路由器的 MAC 地址。
-
-    VMAC： 负载均衡 LVS 的 VIP 对应的 MAC 地址。
-
-    DMAC： 负载均衡 LVS 的 DIP 对应的 MAC 地址。
-
-    RMAC： 后端真实服务器的 RIP 地址对应的 MAC 地址。
 -->
 &emsp; LVS是Linux Virtual Server的简写，意即Linux虚拟服务器，是一个虚拟的服务器集群系统。  
 
@@ -53,7 +29,16 @@ LVS 涉及相关的术语及说明
 1. ipvs(ip virtual server)：LVS 是基于内核态的netfilter框架实现的IPVS功能，工作在内核态。用户配置VIP等相关信息并传递到IPVS就需要用到ipvsadm工具。  
 2. ipvsadm：ipvsadm 是 LVS 用户态的配套工具，可以实现VIP和RS的增删改查功能，是基于 netlink 或 raw socket 方式与内核 LVS 进行通信的，如果LVS类比于netfilter，那 ipvsadm就是类似iptables工具的地位。  
 
-### 1.1.1. ipvsadm用法  
+## 1.2. ~~LVS安装使用~~
+<!--
+
+https://blog.csdn.net/qq_37165604/article/details/79802390
+-->
+linux内核2.4版本以上的基本都支持LVS，要使用lvs，只需要再安装一个lvs的管理工具：ipvsadm  
+
+    yum install ipvsadm
+
+
 &emsp; ipvsadm组件定义规则的格式：  
 
 ```text
@@ -115,7 +100,7 @@ ipvsadm -h
 --numeric -n #输出IP 地址和端口的数字形式
 ```
 
-## 1.2. LVS的体系结构  
+## 1.3. LVS的体系结构  
 <!-- 
 https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 -->
@@ -131,17 +116,17 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 
 &emsp; 从整个LVS结构可以看出，Director Server是整个LVS的核心，目前用于Director Server的操作系统只能是Linux和FreeBSD，Linux2.6内核不用任何设置就可以支持LVS功能，而FreeBSD作为 Director Server的应用还不是很多，性能也不是很好。对于Real Server，几乎可以是所有的系统平台，Linux、windows、Solaris、AIX、BSD系列都能很好地支持。  
 
-## 1.3. 三种工作模式  
+## 1.4. 三种工作模式  
 <!-- 
 https://blog.csdn.net/qq_37165604/article/details/79802390
 
 https://www.cnblogs.com/lixigang/p/5371815.html
 https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 -->
-&emsp; LVS是四层负载均衡，也就是说建立在OSI模型的第四层——传输层之上，LVS支持TCP/UDP的负载均衡。  
+&emsp; LVS是四层(传输层)负载均衡，LVS支持TCP/UDP的负载均衡。  
 &emsp; LVS 的转发主要通过修改 IP 地址(NAT 模式，分为源地址修改SNAT和目标地址修改 DNAT)、修改目标 MAC(DR 模式)来实现。  
 
-### 1.3.1. NAT(网络地址转换)  
+### 1.4.1. NAT(网络地址转换)  
 &emsp; NAT(Network Address Translation)是一种外网和内网地址映射的技术。  
 &emsp; NAT 模式下，网络数据报的进出都要经过 LVS 的处理。LVS 需要作为 RS(真实服务器)的网关。  
 &emsp; **工作方式：**  
@@ -168,7 +153,7 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 https://blog.csdn.net/qq_37165604/article/details/79802390
 -->
 
-### 1.3.2. DR(直接路由)  
+### 1.4.2. DR(直接路由)  
 &emsp; DR 模式下需要 LVS 和 RS 集群绑定同一个 VIP(RS 通过将 VIP 绑定在 loopback 实现)，但与 NAT 的不同点在于：请求由 LVS 接受，由真实提供服务的服务器(RealServer，RS)直接返回给用户，返回的时候不经过 LVS。  
 &emsp; 详细来看，一个请求过来时，LVS 只需要将网络帧的 MAC 地址修改为某一台 RS 的 MAC，该包就会被转发到相应的 RS 处理，注意此时的源 IP 和目标 IP 都没变，LVS 只是做了一下移花接木。RS 收到 LVS 转发来的包时，链路层发现 MAC 是自己的，到上面的网络层，发现 IP 也是自己的，于是这个包被合法地接受，RS 感知不到前面有 LVS 的存在。而当 RS 返回响应时，只要直接向源 IP(即用户的 IP)返回即可，不再经过 LVS。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/lvs/lvs-4.png)  
@@ -201,7 +186,7 @@ https://blog.csdn.net/qq_37165604/article/details/79802390
 &emsp; **部署：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/lvs/lvs-5.png)  
 
-### 1.3.3. TUN(隧道)  
+### 1.4.3. TUN(隧道)  
 &emsp; **工作方式：**  
 &emsp; TUN的工作机制跟DR一样，只不过在转发的时候，它需要重新包装IP报文。这里的real server(图中为RIP)离得都比较远。  
 
@@ -221,7 +206,7 @@ https://blog.csdn.net/qq_37165604/article/details/79802390
 &emsp; **部署：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/lvs/lvs-6.png)  
 
-## 1.4. LVS的十种负载调度算法  
+## 1.5. LVS的十种负载调度算法  
 <!-- 
 https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 https://blog.csdn.net/qq_37165604/article/details/79802390
@@ -241,7 +226,7 @@ https://blog.csdn.net/qq_37165604/article/details/79802390
     * 最短延迟调度：SED，最短的预期延迟调度算法将网络连接分配给具有最短的预期延迟的服务器。如果将请求发送到第 i 个服务器，则预期的延迟时间为(Ci +1)/ Ui，其中 Ci 是第 i 个服务器上的连接数，而 Ui 是第 i 个服务器的固定服务速率(权重) 。  
     * 永不排队调度：NQ，从不队列调度算法采用两速模型。当有空闲服务器可用时，请求会发送到空闲服务器，而不是等待快速响应的服务器。如果没有可用的空闲服务器，则请求将被发送到服务器，以使其预期延迟最小化(最短预期延迟调度算法)。  
 
-## 1.5. LVS优缺点  
+## 1.6. LVS优缺点  
 &emsp; **LVS 的优点**  
 
 * 抗负载能力强、是工作在传输层上仅作分发之用，没有流量的产生，这个特点也决定了它在负载均衡软件里的性能最强的，对内存和 cpu 资源消耗比较低。

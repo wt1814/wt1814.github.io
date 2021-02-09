@@ -31,7 +31,6 @@
     - [项目构建基础](#项目构建基础)
     - [架构设计](#架构设计)
     - [负载均衡](#负载均衡)
-        - [Nginx](#nginx)
     - [Linux](#linux)
     - [DevOps](#devops)
     - [计算机网络](#计算机网络)
@@ -489,8 +488,6 @@
 [CDN](/docs/system/loadBalance/CDN.md)   
 [LVS](/docs/system/loadBalance/LVS.md)  
 [Keepalived](/docs/system/loadBalance/Keepalived.md)  
-
-### Nginx  
 [Nginx](/docs/system/loadBalance/Nginx/nginx.md)  
 [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
 [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  

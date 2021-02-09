@@ -18,10 +18,8 @@
 
 
 # 1. Keepalived  
-
 <!-- 
 http://www.yunweipai.com/35361.html
-    http://www.yunweipai.com/35361.html
 -->
 
 ## 1.1. 介绍  
