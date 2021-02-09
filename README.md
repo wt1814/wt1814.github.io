@@ -445,7 +445,7 @@
 [API接口设计](/docs/web/API.md)    
 &emsp; [RESTful风格](/docs/web/interface/RESTful.md)  
 &emsp; [接口幂等](/docs/web/interface/idempotent.md)  
-&emsp; [接口防刷](/docs/web/interface/brush.md)  
+&emsp; [接口防刷/反爬虫](/docs/web/interface/brush.md)  
 &emsp; [接口安全](/docs/web/interface/security.md)  
 &emsp; [接口超时](/docs/web/interface/timeout.md)  
 [接口耗时(StopWatch)](/docs/frame/StopWatch.md)  
@@ -460,10 +460,9 @@
 &emsp; [Http重试](/docs/web/httpRetry.md)   
 [格式化](/docs/web/Format.md)  
 [源码安全](/docs/web/codeSecurity.md)  
-[生成二维码](/docs/web/QRCode.md)  
-[反爬虫](/docs/web/reptile.md)  
 [加密算法](/docs/web/encryption.md)  
 [短链接](/docs/project/URL.md)  
+[生成二维码](/docs/web/QRCode.md)  
 [其他](/docs/web/other.md)  
 
 ## 架构设计  

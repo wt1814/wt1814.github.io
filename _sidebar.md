@@ -372,10 +372,9 @@
         * [Http重试](/docs/web/httpRetry.md)   
     * [格式化](/docs/web/Format.md)  
     * [源码安全](/docs/web/codeSecurity.md)  
-    * [生成二维码](/docs/web/QRCode.md)  
-    * [反爬虫](/docs/web/reptile.md)  
     * [加密算法](/docs/web/encryption.md)  
     * [短链接](/docs/project/URL.md)  
+    * [生成二维码](/docs/web/QRCode.md)  
     * [其他](/docs/web/other.md)  
 * 架构设计  
     * [架构图](/docs/system/diagram.md)   
