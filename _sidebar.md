@@ -423,15 +423,15 @@
     * [git](/docs/devOps/git/command.md)  
     * [灰度发布](/docs/system/grayscalePublishe.md)  
     * [监控](/docs/devOps/monitor.md)  
-* 测试
-    * [Jmeter](/docs/devOps/Jmeter.md)  
-    * [JMH](/docs/java/JVM/JMH.md)  
 * 计算机网络  
     * [OSI七层网络模型](/docs/network/OSI.md)  
     * [HTTP](/docs/network/HTTP.md)  
     * [HTTPS](/docs/network/HTTPS.md)  
     * [DNS](/docs/network/DNS.md)  
     * [TCP](/docs/network/TCP.md)  
+* 测试工具
+    * [Jmeter](/docs/devOps/Jmeter.md)  
+    * [JMH](/docs/java/JVM/JMH.md)  
 * 开发常用工具  
     * [idea](/docs/software/idea/idea.md)  
     * [抓包Charles](/docs/software/charles.md)  

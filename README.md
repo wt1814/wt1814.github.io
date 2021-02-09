@@ -34,8 +34,8 @@
         - [Nginx](#nginx)
     - [Linux](#linux)
     - [DevOps](#devops)
-    - [测试](#测试)
     - [计算机网络](#计算机网络)
+    - [测试工具](#测试工具)
     - [开发常用工具](#开发常用工具)
     - [Error](#error)
 
@@ -530,9 +530,7 @@
 [灰度发布](/docs/system/grayscalePublishe.md)  
 [监控](/docs/devOps/monitor.md)  
 
-## 测试  
-[Jmeter](/docs/devOps/Jmeter.md)  
-[JMH](/docs/java/JVM/JMH.md)  
+
 
 ----
 
@@ -547,6 +545,10 @@
 [衡量计算机网络的主要标准](/docs/network/standard.md)  
 
 ----
+
+## 测试工具  
+[Jmeter](/docs/devOps/Jmeter.md)  
+[JMH](/docs/java/JVM/JMH.md)  
 
 ## 开发常用工具  
 [idea](/docs/software/idea/idea.md)  
