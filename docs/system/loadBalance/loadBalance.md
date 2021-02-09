@@ -11,7 +11,9 @@
 <!-- /TOC -->
 
 # 1. ~~负载均衡~~
-<!-- 
+<!--
+https://www.jianshu.com/p/e3ac7d42c408
+https://blog.csdn.net/xlgen157387/article/details/78678772
 亿级Web系统负载均衡几种实现方式 
 https://mp.weixin.qq.com/s/cD4_yc9Lp5q76xzeys6N_g
 全网最详尽的负载均衡原理图解 
