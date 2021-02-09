@@ -442,7 +442,6 @@
 &emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
 &emsp; [统一异常处理](/docs/web/ExceptionHandler.md)  
 &emsp; [统一日志记录](/docs/web/unifiedLog.md)  
-
 [API接口设计](/docs/web/API.md)    
 &emsp; [RESTful风格](/docs/web/interface/RESTful.md)  
 &emsp; [接口幂等](/docs/web/interface/idempotent.md)  
@@ -450,13 +449,11 @@
 &emsp; [接口安全](/docs/web/interface/security.md)  
 &emsp; [接口超时](/docs/web/interface/timeout.md)  
 [接口耗时(StopWatch)](/docs/frame/StopWatch.md)  
-[数据脱敏](/docs/web/sensitive.md)  
-
 [JavaBean](/docs/web/JavaBean.md)  
 &emsp; [POJO](/docs/web/POJO.md)  
 &emsp; [BeanUtils](/docs/web/BeanUtils.md)  
 &emsp; [参数校验](/docs/web/Validation.md)  
-
+[数据脱敏](/docs/web/sensitive.md)  
 [RestTemplate](/docs/web/Resttemplate.md)  
 [Http重试](/docs/web/httpRetry.md)   
 [格式化](/docs/web/Format.md)  
