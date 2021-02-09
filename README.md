@@ -505,27 +505,27 @@
 ------
 
 ## DevOps  
-[DevOps与CI/CD](/docs/devOps/devOps.md)  
-[DevOps搭建](/docs/devOps/devOpsPractice.md)  
-[Docker](/docs/devOps/docker/summary.md)  
-&emsp; [Docker架构](/docs/devOps/docker/principle.md)  
-&emsp; [Docker使用](/docs/devOps/docker/command.md)  
-&emsp; [DockerFile](/docs/devOps/docker/file.md)  
-&emsp; [镜像容器详解](/docs/devOps/docker/image.md)  
-&emsp; [Docker工具](/docs/devOps/docker/tools.md)  
-[Kubernetes](/docs/devOps/k8s/Kubernetes.md)      
-&emsp; [k8s原理](/docs/devOps/k8s/principle.md)  
-&emsp; [k8s实践](/docs/devOps/k8s/command.md)  
-&emsp; [k8s重要对象](/docs/devOps/k8s/object.md)  
-&emsp; [Yaml文件配置](/docs/devOps/k8s/yaml.md)  
-&emsp; [k8s运维](/docs/devOps/k8s/tools.md)  
-&emsp; [Kuboard介绍](/docs/devOps/k8s/kuboard.md)  
-[Jenkins](/docs/devOps/Jenkins.md)  
-[Maven](/docs/devOps/maven.md)  
-[GIT](/docs/devOps/git/command.md)  
+[DevOps与CI/CD](/docs/devops/devOps.md)  
+[DevOps搭建](/docs/devops/devOpsPractice.md)  
+[Docker](/docs/devops/docker/summary.md)  
+&emsp; [Docker架构](/docs/devops/docker/principle.md)  
+&emsp; [Docker使用](/docs/devops/docker/command.md)  
+&emsp; [DockerFile](/docs/devops/docker/file.md)  
+&emsp; [镜像容器详解](/docs/devops/docker/image.md)  
+&emsp; [Docker工具](/docs/devops/docker/tools.md)  
+[Kubernetes](/docs/devops/k8s/Kubernetes.md)      
+&emsp; [k8s原理](/docs/devops/k8s/principle.md)  
+&emsp; [k8s实践](/docs/devops/k8s/command.md)  
+&emsp; [k8s重要对象](/docs/devops/k8s/object.md)  
+&emsp; [Yaml文件配置](/docs/devops/k8s/yaml.md)  
+&emsp; [k8s运维](/docs/devops/k8s/tools.md)  
+&emsp; [Kuboard介绍](/docs/devops/k8s/kuboard.md)  
+[Jenkins](/docs/devops/Jenkins.md)  
+[Maven](/docs/devops/maven.md)  
+[GIT](/docs/devops/git/command.md)  
 
 [灰度发布](/docs/system/grayscalePublishe.md)  
-[监控](/docs/devOps/monitor.md)  
+[监控](/docs/devops/monitor.md)  
 
 ----
 
@@ -542,7 +542,7 @@
 ----
 
 ## 测试工具  
-[Jmeter](/docs/devOps/Jmeter.md)  
+[Jmeter](/docs/devops/Jmeter.md)  
 [JMH](/docs/java/JVM/JMH.md)  
 
 ## 开发常用工具  
