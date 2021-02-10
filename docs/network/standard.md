@@ -1,14 +1,11 @@
 
 # 网络的性能指标
 <!-- 
-
 https://jingyan.baidu.com/article/19192ad855674ea43f570744.html
 https://www.cnblogs.com/INtang/p/12553954.html
-
- 带宽、延时、吞吐率、PPS 这些都是啥？ 
+带宽、延时、吞吐率、PPS 这些都是啥？ 
 https://mp.weixin.qq.com/s/MIIRaMOqlrXx_8w3bvJ4nA
-99%的人都不知道内网、外网、宽带、带宽、流量、网速之间的区别与联系 
-https://mp.weixin.qq.com/s/oedxbSMmsw7Lu_q2dmoXgQ
+
 -->
 
 * 比特：比特(bit)是计算机中数据量的单位，也是信息论中使用的信息量的单位。英文单词bit来源于binary digit，意思是一个“二进制数字”。网络技术中的速率指的是连接在计算机网络上的主机在数字信道上传送数据的速率，它也称为数据率(data rate)或比特率(bit rate)。  
