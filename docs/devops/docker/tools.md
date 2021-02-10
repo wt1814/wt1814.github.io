@@ -53,7 +53,7 @@ Docker容器的日志处理
 https://mp.weixin.qq.com/s/1CT1K9UPWN8k2G_JkK3EwA、
 
 -->
-docker容器日志分为两类：docker引擎日志（Docker本身运行的日志）和容器日志（各个容器内产生的日志）。  
+docker容器日志分为两类：docker引擎日志(Docker本身运行的日志)和容器日志(各个容器内产生的日志)。  
 
 ### 1.3.1. Docker引擎日志  
 

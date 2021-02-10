@@ -4,11 +4,16 @@
 - [1. Docker使用教程](#1-docker使用教程)
     - [1.1. Docker安装及使用阿里云Doker镜像加速](#11-docker安装及使用阿里云doker镜像加速)
     - [1.2. 私有仓库搭建](#12-私有仓库搭建)
-    - [1.3. Docker命令](#13-docker命令)
-        - [1.3.1. 镜像操作命令](#131-镜像操作命令)
-        - [1.3.2. 容器操作指令](#132-容器操作指令)
+    - [1.3. Docker守护进程配置](#13-docker守护进程配置)
+    - [1.4. Docker命令](#14-docker命令)
+        - [1.4.1. 镜像操作命令](#141-镜像操作命令)
+        - [1.4.2. 容器操作指令](#142-容器操作指令)
 
 <!-- /TOC -->
+
+&emsp; **<font color = "clime">小结：</font>**  
+&emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi、commit</font>**  
+
 
 # 1. Docker使用教程  
 <!-- 
@@ -31,12 +36,18 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 
 -->
 
-## 1.3. Docker命令  
+## 1.3. Docker守护进程配置
+<!-- 
+bibil
+
+-->
+
+## 1.4. Docker命令  
 &emsp; Docker一般的使用流程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-39.png)  
 
-### 1.3.1. 镜像操作命令  
-&emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi</font>**  
+### 1.4.1. 镜像操作命令  
+&emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi、commit</font>**  
 
 * 获取镜像：  
 &emsp; docker pull centos (默认获取centos最新的镜像)  
@@ -68,7 +79,7 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 * docker rmi <-f> 镜像名:<tags\> - 删除镜像  
 -->
 
-### 1.3.2. 容器操作指令
+### 1.4.2. 容器操作指令
 &emsp; **<font color = "red">容器操作常用命令：run、start、stop、exec</font>**  
 
 * 创建并启动容器：  
@@ -94,14 +105,12 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 * 启动已有的容器：
 
         docker start 容器ID
-        例：  
-        [root@localhost ~]# docker start 802e3623e566
+        例：[root@localhost ~]# docker start 802e3623e566
 
 * 停止运行的容器：  
 
         docker stop 容器ID
-        例：
-        [root@localhost ~]# docker stop 802e3623e566
+        例：[root@localhost ~]# docker stop 802e3623e566
 
 * 删除容器：  
 
@@ -125,5 +134,3 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
         通过docker images命令可以看到增加了个test/centos镜像
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-7.png)  
-
-

@@ -10,7 +10,7 @@
 <!-- /TOC -->
 
 # 1. Docker架构
-&emsp; ***官网：** https://docs.docker.com/get-started/overview/#docker-architecture  
+&emsp; **官网：** https://docs.docker.com/get-started/overview/#docker-architecture  
 
 ## 1.1. Docker体系结构  
 <!-- 
@@ -33,8 +33,8 @@ Docker 提供了一个命令行工具和一整套 RESTful API。可以在同一�
 -->
 ### 1.1.1. C/S模式
 &emsp; Docker使用客户端-服务器(client-server)架构模式。通过下面这个图可以简单清晰看出Server/Client通信。 
-<center>Docker架构图一</center> 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-45.png)  
+<center>Docker架构图一</center>  
 &emsp; Docker整体可以大致分为三部分：  
 
 * 外层：Client通过命令行界面(CLI)向Docker Server发起请求。
