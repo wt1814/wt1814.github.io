@@ -22,7 +22,4 @@
 
 <!-- 
 https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
-Docker容器的启动过程
-https://www.cnblogs.com/chsoul/p/12009068.html
-https://blog.csdn.net/qq_20817327/article/details/108627035s
 -->

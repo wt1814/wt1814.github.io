@@ -1,17 +1,17 @@
 <!-- TOC -->
 
 - [1. Docker架构](#1-docker架构)
-    - [1.1. Docker体系结构](#11-docker体系结构)
+    - [1.1. Docker内部体系结构](#11-docker内部体系结构)
     - [1.2. Docker运行流程](#12-docker运行流程)
 
 <!-- /TOC -->
 
 
 # 1. Docker架构
-## 1.1. Docker体系结构  
+## 1.1. Docker内部体系结构  
 <!-- 
 https://mp.weixin.qq.com/s/RvURRnoSFPywtR8Af7IZ-g
-https://www.cnblogs.com/chsoul/p/12009068.html
+
 -->
 
 <!-- 
@@ -34,12 +34,12 @@ Docker 提供了一个命令行工具和一整套 RESTful API。可以在同一�
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-45.png)  
 &emsp; Docker整体可以大致分为三部分：  
 
-* 内层：Server，可以是本地的也可以时远程的，接收并分发Client端发起的请求。
-* 中间层：REST API，使用HTTP协议简历Client与Server之间的通信。
 * 外层：Client 通过中间层向Docker Server发起请求，执行命令。
+* 中间层：REST API，使用HTTP协议简历Client与Server之间的通信。
+* 内层：Server，可以是本地的也可以时远程的，接收并分发Client端发起的请求。
 
 &emsp; **Docker基本概念**  
-&emsp; 宿主机：运行引擎的操作系统所在服务器。  
+* 宿主机：运行引擎的操作系统所在服务器。  
 &emsp; Docker Daemon 是Docker架构中一个常驻在后台的系统进程，主要功能是在后台启动一个Server接收处理Client发送的请求。Server负载接受Client发送的请求通过路由分发调度，找到相应的Handler来执行请求。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-46.png)  
 <!-- 
@@ -47,7 +47,7 @@ Docker Daemon守护进程：用于接收client的请求并处理请求。
 &emsp; Docker Daemon（或者Docker 服务器）用来监听 Docker API 的请求和管理 Docker 对象，比如镜像、容器、网络和卷。默认情况 docker 客户端和 docker daemon 位于同一主机，此时 daemon 监听 /var/run/docker.sock 这个 Unix 套接字文件，来获取来自客户端的 Docker 请求。当然通过配置，也可以借助网络来实现 Docker Client 和 daemon 之间的通信，默认非 TLS 端口为 2375，TLS 默认端口为 2376。  
 -->
 
-&emsp; docker cli用来管理容器和镜像，客户端提供一个只读镜像，然后通过镜像可以创建多个容器，这些容器可以只是一个RFS（Root file system根文件系统），也可以是一个包含了用户应用的RFS，容器再docker client中只是要给进程，两个进程之间互不可见。  
+* docker cli用来管理容器和镜像，客户端提供一个只读镜像，然后通过镜像可以创建多个容器，这些容器可以只是一个RFS（Root file system根文件系统），也可以是一个包含了用户应用的RFS，容器再docker client中只是要给进程，两个进程之间互不可见。  
 &emsp; 用户不能与server直接交互，但可以通过与容器这个桥梁来交互，由于是操作系统级别的虚拟技术，中间的损耗几乎可以不计。   
 
 * 镜像(Image)
@@ -59,6 +59,9 @@ Docker Daemon守护进程：用于接收client的请求并处理请求。
     * 可以被启动、开始、停止、删除。每个容器都是相互隔离的、保证安全的平台
 
 ## 1.2. Docker运行流程  
+<!-- 
+https://blog.csdn.net/qq_20817327/article/details/108627035
+-->
 &emsp; 客户端Client向服务端Docker Daemon发送各种命令，包括镜像的拉取，构建执行等，服务端由Docker daemon来负责管理Containers和Images，Registry是远程注册中心，用来提供各种各样的官方或者第三方镜像文件。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-16.png) 
 
