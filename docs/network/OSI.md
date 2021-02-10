@@ -3,13 +3,10 @@
 <!-- 
 三天两夜肝完这篇万字长文，终于拿下了TCP/IP 
 https://mp.weixin.qq.com/s/-_wgv7Ipo4Ke3-gtlYcoIg
-
 计算机网络基础知识总结 
 https://mp.weixin.qq.com/s/8u0GTnLkj7pP_Lh67Z1UGQ
-
 一文讲懂什么是vlan、三层交换机、网关、DNS、子网掩码、MAC地址 
 https://mp.weixin.qq.com/s/KM-mWwd5TivJScBVCQyEBQ
-
 -->
 
 # 1. OSI七层网络模型  
@@ -20,7 +17,6 @@ https://mp.weixin.qq.com/s/KM-mWwd5TivJScBVCQyEBQ
 ----
 &emsp; OSI七层网络模型：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/osi-2.png)  
-
 
 &emsp; 7. 应用层  
 &emsp; 与其它计算机进行通讯的一个应用，它是为应用程序的通信服务的。  

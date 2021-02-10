@@ -19,10 +19,10 @@
         - [1.4.2. HTTP方法](#142-http方法)
             - [1.4.2.1. ※※※HTTP中GET与POST的区别](#1421-※※※http中get与post的区别)
         - [1.4.3. HTTP状态码](#143-http状态码)
-    - [HTTP应用](#http应用)
-    - [1.5. HTTP实战](#15-http实战)
-        - [1.5.1. Curl命令](#151-curl命令)
-        - [1.5.2. 抓包](#152-抓包)
+    - [1.5. HTTP应用](#15-http应用)
+    - [1.6. HTTP实战](#16-http实战)
+        - [1.6.1. Curl命令](#161-curl命令)
+        - [1.6.2. 抓包](#162-抓包)
 
 <!-- /TOC -->
 
@@ -125,11 +125,7 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/http-4.png) 
 
 ##### 1.4.1.2.2. 服务器响应消息  
-&emsp; HTTP响应报文也由四部分组成，分别是状态行、响应头、空行以及响应正文，如下：  
-1. 状态行包含三部分内容，分别是HTTP版本、状态码和原因短语  
-2. 响应头信息  
-3. 空行  
-4. 响应数据  
+&emsp; HTTP响应报文也由四部分组成，分别是状态行(含三部分内容，分别是HTTP版本、状态码和原因短语)、响应头、空行以及响应正文，如下：   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/http-5.png) 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/http-6.png) 
 
@@ -272,18 +268,16 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 
 
 -----
-## HTTP应用  
+## 1.5. HTTP应用  
 <!-- 
 https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 -->
 
 -----
-## 1.5. HTTP实战  
+## 1.6. HTTP实战  
 
-### 1.5.1. Curl命令  
+### 1.6.1. Curl命令  
 &emsp; git bush工具默认安装了curl工具，所以安装了git bush工具的朋友可以直接在git bush中输入curl指令。  
 
-### 1.5.2. 抓包  
+### 1.6.2. 抓包  
 .......
-
-

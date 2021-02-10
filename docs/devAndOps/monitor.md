@@ -59,7 +59,5 @@ https://mp.weixin.qq.com/s/LwsR3o0Ze6fQiYXgGVZrqw
 https://mp.weixin.qq.com/s/VAzATGHgYdKZY8Yk2PHKuw
 这5种常用运维监控工具都不会用
 https://mp.weixin.qq.com/s/Z4SGXTqv0u1mzHI-2IZDyg
-自从上了 Prometheus 监控，睡觉真香！ 
-https://mp.weixin.qq.com/s/5ZUg2SkCN7OrDayAfgABUw
 
 -->

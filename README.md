@@ -540,7 +540,7 @@
 [TCP](/docs/network/TCP.md)  
 [TCP粘包](/docs/network/TCPSticking.md)  
 [VPN](/docs/network/VPN.md)  
-[衡量计算机网络的主要标准](/docs/network/standard.md)  
+[网络的性能指标](/docs/network/standard.md)  
 
 ----
 
@@ -560,5 +560,4 @@
 [Redis高并发](/docs/Error/redisConcurrent.md)  
 [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 [redis scan命令](/docs/Error/redisScan.md)  
-[雪花利用ZK生成workId]()  
 <!-- [雪花利用ZK生成workId]()   -->

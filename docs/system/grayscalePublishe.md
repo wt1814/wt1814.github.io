@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. 灰度发布](#1-灰度发布)
+- [1. ~~灰度发布~~](#1-灰度发布)
     - [1.1. 灰度发布简介](#11-灰度发布简介)
     - [1.2. 灰度发布设计的思考](#12-灰度发布设计的思考)
     - [1.3. 微服务网关实现灰度发布](#13-微服务网关实现灰度发布)
@@ -17,9 +17,11 @@ https://mp.weixin.qq.com/s/pzvZoyFG9j4takV6Q0pHWw
 https://www.baidu.com/baidu?tn=monline_7_dg&ie=utf-8&wd=%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83%E5%92%8C%E8%93%9D%E7%BB%BF%E5%8F%91%E5%B8%83https://www.baidu.com/baidu?tn=monline_7_dg&ie=utf-8&wd=%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83%E5%92%8C%E8%93%9D%E7%BB%BF%E5%8F%91%E5%B8%83
 CTO点名要搞个灰度发布系统，不慌！
 https://mp.weixin.qq.com/s/4AhXH5U9dxj2DuOGel9bLg
+
+https://blog.csdn.net/hueason/article/details/81054093
 -->
 
-# 1. 灰度发布  
+# 1. ~~灰度发布~~  
 <!-- 
 网关实现灰度发布
 https://segmentfault.com/a/1190000017894943
@@ -63,7 +65,6 @@ https://segmentfault.com/a/1190000017894943
 &emsp; 【说明】：服务内部执行线程监控待定，sentinel、 pinpoint or other。  
 
 ## 1.3. 微服务网关实现灰度发布  
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/stability/stab-1.png)  
 &emsp; 其中分为几个重要的部分：  
 &emsp; 接入层网关，接入客户端请求，根据下发的配置将符合条件的请求转发到新旧系统上。  
