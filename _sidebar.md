@@ -407,6 +407,8 @@
         * [Docker架构](/docs/devops/docker/principle.md)  
         * [Docker使用及命令](/docs/devops/docker/command.md)  
         * [DockerFile](/docs/devops/docker/file.md)  
+        * [对象标签使用](/docs/devops/docker/objectLabel.md)  
+        * [对象标签](/docs/devops/docker/objectLabel.md)  
         * [镜像详解](/docs/devops/docker/image.md)  
         * [容器详解](/docs/devops/docker/container.md)  
         * [Docker工具](/docs/devops/docker/tools.md)   

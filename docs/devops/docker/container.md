@@ -33,9 +33,13 @@
 &emsp; 单个宿主机的多个容器是隔离的，其依赖于Linux的Namespaces、CGroups，隔离的容器需要通信、文件共享(数据持久化)。  
 
 # 1. 容器详解  
+<!-- 
+容器
+https://docs.docker.com/config/containers/start-containers-automatically/
+-->
 &emsp; 容器是基于镜像启动起来的，是镜像的一个运行实例，容器中可以运行一个或多个进程。同时，用户可以从单个镜像上启动一个或多个容器。  
 &emsp; 一个容器内的一个或多个进程的运行是依靠容器所在宿主机的内核，但是这些进程属于自己的独立的命名空间，拥有自己的root文件系统、自己的网络配置、自己的进程空间和自己的用户ID等等，所以容器内的进程相当于运行在一个隔离的环境里，就相当于运行在一个新的操作系统中一样。容器使用root文件系统大部分是由镜像提供的，还有一些是由Docker为Docker容器生成的。  
-&emsp; 运行的容器是共享宿主机内核的，也就是相当于容器在执行时还是依靠主机的内核代码的。这也就意味着一个基于 Windows 的容器化应用在 Linux 主机上无法运行的。也可以简单地理解为 Windows 容器需要运行在 Windows 宿主机之上，Linux 容器需要运行在 Linux 宿主机上。Docker 推荐单个容器只运行一个应用程序或进程，但是其实也可以运行多个应用程序。  
+&emsp; 运行的容器是共享宿主机内核的，也就是相当于容器在执行时还是依靠主机的内核代码的。这也就意味着一个基于Windows的容器化应用在Linux主机上无法运行的。也可以简单地理解为Windows容器需要运行在Windows宿主机之上，Linux容器需要运行在Linux宿主机上。Docker推荐单个容器只运行一个应用程序或进程，但是其实也可以运行多个应用程序。  
 
 ## 1.1. 容器生命周期  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-4.png)  
@@ -130,7 +134,7 @@ docker create --name webpage -v /webapps:/tomcat/webapps tomcat /bin/true，接�
 Docker学习笔记：Docker 端口映射 
 https://www.docker.org.cn/dockerppt/110.html
 -->
-&emsp; 容器运行在宿主机上，如果外网能够访问容器，才能够使用它提供的服务。Docker容器与宿主机进行通信可以通过映射容器的端口到宿主机上。  
+&emsp; **容器运行在宿主机上，如果外网能够访问容器，才能够使用它提供的服务。Docker容器与宿主机进行通信可以通过映射容器的端口到宿主机上。**  
 
 ### 1.5.1. 自动映射端口  
 &emsp; -P使用时需要指定--expose选项，指定需要对外提供服务的端口

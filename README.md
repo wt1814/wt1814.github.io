@@ -512,6 +512,7 @@
 &emsp; [Docker架构](/docs/devops/docker/principle.md)  
 &emsp; [Docker使用](/docs/devops/docker/command.md)  
 &emsp; [DockerFile](/docs/devops/docker/file.md)  
+&emsp; [对象标签使用](/docs/devops/docker/objectLabel.md)  
 &emsp; [镜像详解](/docs/devops/docker/image.md)  
 &emsp; [容器详解](/docs/devops/docker/container.md)  
 &emsp; [Docker工具](/docs/devops/docker/tools.md)  

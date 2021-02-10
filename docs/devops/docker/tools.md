@@ -16,7 +16,8 @@
 <!-- 
 推荐 5 款超好用的开源 Docker 工具！
 https://mp.weixin.qq.com/s/jxMuLZNsMacKDXoVmooS-A
-
+使用Prometheus收集Docker指标
+https://docs.docker.com/config/daemon/prometheus/
 -->
 
 ## 1.1. Idea中Docker插件  
@@ -45,15 +46,15 @@ Docker 图形化页面管理工具使用
 https://mp.weixin.qq.com/s/wy99yOT3S6g0QLUIDf4DSQ
 -->
 ## 1.3. Docker容器的日志处理  
-
 <!-- 
+https://docs.docker.com/config/formatting/
 docker容器日志管理
 https://www.cnblogs.com/caibao666/p/12084928.html
 Docker容器的日志处理
 https://mp.weixin.qq.com/s/1CT1K9UPWN8k2G_JkK3EwA、
 
 -->
-docker容器日志分为两类：docker引擎日志(Docker本身运行的日志)和容器日志(各个容器内产生的日志)。  
+&emsp; **<font color = "red">docker容器日志分为两类：docker引擎日志(Docker本身运行的日志)和容器日志(各个容器内产生的日志)。**</font>  
 
 ### 1.3.1. Docker引擎日志  
 
@@ -67,11 +68,9 @@ Docker 容器故障排查工具
 https://mp.weixin.qq.com/s/8lOTyNogYRFsqLpE45217w
 -->
 
-
 ## 1.5. Docker Compose  
 &emsp; 跨越多台机器，docker compose就无能为例了：比如如何进行跨越多台机器的增删改查，比如不同机器之间的container如何通信等等。于是开始使用K8s来进行容器的管理维护了。  
 <!-- 
 Docker从入门到掉坑(三)：容器太多，操作好麻烦
 https://mp.weixin.qq.com/s?__biz=MzI4Njc5NjM1NQ==&mid=2247490521&idx=1&sn=c5a1cdf7a574ea3f65fd497a6fde26be&chksm=ebd624f5dca1ade329637e7b93a145d1cc647e06dcc0949037bec468d2a454cd3a0784688e65&mpshare=1&scene=1&srcid=&sharer_sharetime=1574655285118&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2459be73db906624b163fbe0e185474595ab24a36758f15ae0dead160e9db848b8329969966c7c73f110561fa6ba54f1bc940f337a7513baa1301b89953f53c135c5965279b2e798642d23b75fa34c22&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=iTkKo8IrxoXV%2FQ1p1Nm%2FqrCiHRjPcPjIl4dp2uE1rTwZVCMYw8j8RixABOBKh894
 -->
-

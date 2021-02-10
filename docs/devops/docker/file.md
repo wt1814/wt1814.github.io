@@ -6,6 +6,7 @@
     - [1.3. 基于Dockerfile构建](#13-基于dockerfile构建)
         - [1.3.1. Dockerfile命令详解](#131-dockerfile命令详解)
         - [1.3.2. 使用Dockerfile的构建过程](#132-使用dockerfile的构建过程)
+    - [Docker对象标签(将自定义元数据应用于对象)](#docker对象标签将自定义元数据应用于对象)
     - [1.4. 附录：构建jdk的镜像](#14-附录构建jdk的镜像)
 
 <!-- /TOC -->
@@ -86,7 +87,6 @@ https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-26.png)  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-9.png)  
-
 
 <!-- 
 https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
@@ -265,9 +265,6 @@ https://blog.csdn.net/qq_37546891/article/details/90742564
 &emsp; 根据新的镜像层，运行一个新的容器；  
 &emsp; 再执行dockerfile的下一条指令，反复如此，直至所有指令执行完毕；  
 
-
-
-
 <!-- 
 &emsp; 上述的 Dockerfile 编写完成之后，**使用docker image build 指令，会解析 Dockerfile 中的指令并顺序执行。**构建过程是，运行临时容器 -> 在该容器中运行Dockerfile中的指令 -> 将指令运行结果保存为一个新的镜像层(执行类似docker commit的操作)-> 删除容器。  
 
@@ -315,6 +312,13 @@ docker image build -t web:latest .
 &emsp; 之后使用同样的命令(如docker image build -t multi:stage)构建镜像即可。当查看构建出来的镜像时，你会看到其他两个FROM阶段，即storefront阶段和appserver阶段构建出来的镜像，但是这些镜像是没有 REPO 和 TAG 的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-30.png)  
 -->
+
+## Docker对象标签(将自定义元数据应用于对象)
+<!-- 
+Docker对象标签
+https://docs.docker.com/config/labels-custom-metadata/
+-->
+&emsp; ......
 
 ## 1.4. 附录：构建jdk的镜像 
 &emsp; 例：构建一个带有jdk的centos7镜像  

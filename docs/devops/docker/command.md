@@ -13,7 +13,7 @@
 
 &emsp; **<font color = "clime">小结：</font>**  
 &emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi、commit</font>**  
-
+&emsp; **<font color = "red">容器操作常用命令：run、start、stop、exec</font>**  
 
 # 1. Docker使用教程  
 <!-- 
@@ -39,7 +39,7 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 ## 1.3. Docker守护进程配置
 <!-- 
 bibil
-
+https://docs.docker.com/config/daemon/
 -->
 
 ## 1.4. Docker命令  
