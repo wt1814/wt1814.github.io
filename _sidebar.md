@@ -432,7 +432,6 @@
     * [DNS](/docs/network/DNS.md)  
     * [TCP](/docs/network/TCP.md)  
     * [TCP粘包](/docs/network/TCPSticking.md)  
-    * [VPN](/docs/network/VPN.md)  
     * [网络的性能指标](/docs/network/standard.md)  
 * 测试工具
     * [Jmeter](/docs/devAndOps/Jmeter.md)  
