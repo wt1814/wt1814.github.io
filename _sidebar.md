@@ -402,6 +402,9 @@
 * DevOps  
     * [DevOps与CI/CD](/docs/devAndOps/devOps.md)  
     * [DevOps搭建](/docs/devAndOps/devOpsPractice.md)   
+    * [GIT](/docs/devAndOps/git/command.md)  
+    * [Maven](/docs/devAndOps/maven.md)  
+    * [Jenkins](/docs/devAndOps/Jenkins.md)  
     * [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
         * [容器化Docker](/docs/devAndOps/docker/introduce.md)  
         * [Docker架构](/docs/devAndOps/docker/principle.md)  
@@ -420,9 +423,6 @@
         * [Yaml文件配置](/docs/devAndOps/k8s/yaml.md)  
         * [k8s运维](/docs/devAndOps/k8s/tools.md)  
         * [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
-    * [Jenkins](/docs/devAndOps/Jenkins.md)  
-    * [Maven](/docs/devAndOps/maven.md)  
-    * [GIT](/docs/devAndOps/git/command.md)  
     * [灰度发布](/docs/system/grayscalePublishe.md)  
     * [监控](/docs/devAndOps/monitor.md)  
 * 计算机网络  
