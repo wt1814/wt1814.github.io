@@ -330,6 +330,10 @@ public List<user> getUserInformation(@Param("user") User user);
 
 ### 1.3.2. 控制动态sql拼接  
 #### 1.3.2.1. Foreach标签  
+<!-- 
+mybatis之foreach用法
+https://www.cnblogs.com/fnlingnzb-learner/p/10566452.html
+-->
 &emsp; foreach标签主要用于构建in条件，可以在sql中对集合进行迭代。通常可以将之用到批量删除、批量添加等操作中。  
 
 ```xml

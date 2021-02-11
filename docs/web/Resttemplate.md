@@ -4,6 +4,8 @@
 <!-- 
 Httpclient4.3+ 连接池监控详细介绍
 https://www.jianshu.com/p/2813af4eb0d3
+RestTemplate请求的服务实例返回List类型，用数组接收
+https://blog.csdn.net/horse_well/article/details/88879185
 -->
 
 <!-- 
