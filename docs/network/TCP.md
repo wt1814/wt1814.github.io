@@ -22,6 +22,8 @@
 <!--
 大量的 TIME_WAIT 状态 TCP 连接，对业务有什么影响？怎么处理？ 
 https://mp.weixin.qq.com/s/IjMXZ2Lu67UZ1v1EDvDCog
+面试再不怕问TCP了
+https://blog.csdn.net/a159357445566/article/details/106411680/
 -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP-4.png)  
@@ -105,7 +107,6 @@ https://mp.weixin.qq.com/s/IjMXZ2Lu67UZ1v1EDvDCog
 * 流量控制：TCP连接双方都有固定大小的缓冲空间，且只允许发送端发送缓冲空间能够容纳的数据，避免缓冲区溢出；  
 
 ## 1.4. TCP与UDP的区别  
-
 &emsp; UDP 的全称是 User Datagram Protocol，用户数据报协议。它不需要所谓的握手操作，从而加快了通信速度，允许网络上的其他主机在接收方同意通信之前进行数据传输。  
 &emsp; UDP 的特点主要有：  
 * UDP 能够支持容忍数据包丢失的带宽密集型应用程序

@@ -22,9 +22,12 @@
     - [1.5. redo log与bin log的区别](#15-redo-log与bin-log的区别)
     - [1.6. 两阶段提交](#16-两阶段提交)
     - [1.7. 恢复](#17-恢复)
+    - [Mysql insert语句的磁盘写入流程](#mysql-insert语句的磁盘写入流程)
 
 <!-- /TOC -->
 <!-- 
+
+
 事务日志－－崩溃恢复
 https://mp.weixin.qq.com/s/mSxUXHgcHo5a7VAhvjIpCQ
 
@@ -322,4 +325,10 @@ binlog 会记录所有的逻辑操作，并且是采用追加写的形式。当�
 
 ---
 
+
+## Mysql insert语句的磁盘写入流程  
+<!-- 
+insert 语句的磁盘写入之旅
+https://blog.csdn.net/actiontech/article/details/105413821
+-->
 

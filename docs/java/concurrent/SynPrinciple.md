@@ -40,6 +40,10 @@ https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
 -->
 
 ## 1.1. Java对象头与monitor  
+<!-- 
+Java对象头与monitor
+https://blog.csdn.net/kking_edc/article/details/108382333
+-->
 [内存对象](/docs/java/JVM/MemoryObject.md)  
 &emsp; synchronized 的锁是锁在对象上的。  
 

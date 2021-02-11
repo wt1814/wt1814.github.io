@@ -32,6 +32,7 @@
 <!-- 
 零拷贝
 https://mp.weixin.qq.com/s/mWPjFbCVzvuAW3Y9lEQbGg
+https://blog.csdn.net/wufaliang003/article/details/106195984
 -->
 
 ## 1.1. Linux操作系统基本概念
