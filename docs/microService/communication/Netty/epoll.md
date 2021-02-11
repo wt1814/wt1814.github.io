@@ -13,6 +13,9 @@
 <!-- /TOC -->
 
 <!--
+关于epoll与java NIO中select的思考
+https://www.jianshu.com/p/033483c06534?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
+
 IO多路复用的三种机制Select，Poll，Epoll
 https://www.jianshu.com/p/397449cadc9a
 https://www.cnblogs.com/aspirant/p/9166944.html

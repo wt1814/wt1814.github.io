@@ -12,17 +12,16 @@
 # 1. Netty实战  
 <!-- 
 Netty主要应用于以下领域：  
-
-* 高性能的RPC框架：常用于微服务之间的高性能远程调用（如Dubbo）
+* 高性能的RPC框架：常用于微服务之间的高性能远程调用(如Dubbo)
 * 游戏行业：Netty可以很轻松地定制和开发一个私有协议栈，
 * 即时通讯：Netty基于Java NIO，并且做了一些优化，支持高性能的即时通讯
 -->
 
 ## 1.1. Netty常见应用场景
-&emsp; Netty的常见应用场景：(Netty主要用来做网络通信）  
+&emsp; Netty的常见应用场景：(Netty主要用来做网络通信)  
 
 * 作为RPC框架的网络通信工具：在分布式系统中，不同服务节点之间经常需要相互调用，这个时候就需要RPC框架了。不同服务节点之间的通信是如何做的呢？可以使用 Netty 来做。比如我调用另外一个节点的方法的话，至少是要让对方知道我调用的是哪个类中的哪个方法以及相关参数吧！
-* 实现一个自己的 HTTP 服务器 ：通过 Netty 可以自己实现一个简单的 HTTP 服务器。（作为 Java 后端开发，一般使用 Tomcat作为HTTP 服务器 比较多。）一个最基本的 HTTP 服务器可要以处理常见的 HTTP Method 的请求，比如 POST 请求、GET 请求等等。
+* 实现一个自己的 HTTP 服务器 ：通过 Netty 可以自己实现一个简单的 HTTP 服务器(作为 Java 后端开发，一般使用 Tomcat作为HTTP 服务器 比较多)。一个最基本的 HTTP 服务器可要以处理常见的 HTTP Method 的请求，比如 POST 请求、GET 请求等等。
 * 实现一个即时通讯系统 ：使用 Netty 可以实现一个可以聊天类似微信的即时通讯系统。
 * 实现消息推送系统 ：市面上有很多消息推送系统都是基于Netty 来做的。
 
@@ -237,9 +236,6 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 }
 ```
 
-
-
-
 ## 1.3. 使用Netty实现IM聊天  
 <!-- 
 使用 Netty 实现 IM 聊天贼简单，看不懂就锤爆艿艿的狗头~ 
@@ -247,10 +243,7 @@ https://mp.weixin.qq.com/s/5X1znb_G61CV6NxJ_MvmZw
 -->
 
 ## 1.4. 基于Netty搭建消息推送系统  
-
-
-
-
-
-
+<!-- 
+参考《Netty4核心原理与手写RPC框架实战》第4篇
+-->
 

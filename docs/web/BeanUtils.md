@@ -1,6 +1,16 @@
 
 
 # BeanUtils
+<!-- 
+MapStruct
+https://juejin.im/post/6859213877474033672
+ 七种对象复制工具类，阿粉该 Pick 谁？ 
+ https://mp.weixin.qq.com/s/RKeUEztGR-nAc_XemF2pOw
+ 如何优雅的转换Bean对象? 
+https://mp.weixin.qq.com/s/ZLOLhPNwqNtO2gxOiZ5oNA
+
+-->
+
 ## 集合拷贝问题  
 <!-- 
 BeanUtils 如何拷贝 List？
@@ -27,7 +37,7 @@ https://mp.weixin.qq.com/s/Nw4h2KDNvDIsiq89zZUY4Q
 
 -->
 
-拷贝一组UerDO.java，是一个集合的时候就不能这样直接赋值了。如果还按照这种逻辑，如下：  
+&emsp; 拷贝一组UerDO.java，是一个集合的时候就不能这样直接赋值了。如果还按照这种逻辑，如下：  
 
 ```java
 @Test
@@ -41,12 +51,9 @@ public void listCopyFalse() {
 }
 ```
 
-日志打印如下：  
+&emsp; 日志打印如下：  
 
 ```text
 .... userVOList:[]
 ```
-通过日志可以发现，直接拷贝集合是无效的。  
-
-
-
+&emsp; 通过日志可以发现，直接拷贝集合是无效的。  

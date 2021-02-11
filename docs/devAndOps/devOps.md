@@ -22,7 +22,7 @@ https://mp.weixin.qq.com/s/5RpZRJlkypdg4rMAisCYTA
 ## 1.1. DevOps  
 ### 1.1.1. 定义  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-4.png)   
-&emsp; **DevOps: Development和Operations的组合。可以把DevOps看作开发（软件工程）、技术运营和质量保障（QA）三者的交集。**  
+&emsp; **DevOps: Development和Operations的组合。可以把DevOps看作开发(软件工程)、技术运营和质量保障(QA)三者的交集。**  
 &emsp; DevOps并没有被定义成一组最佳实践和流程。尽管如此，一些常用概念的内在关联性仍可被识别出来，如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-8.png)  
 &emsp; 这是其中的一个DevOps框架。这个框架只指出那些被认可的概念和它们在某种程度上的关系。以下是对每个概念的简要说明。  
@@ -32,11 +32,11 @@ https://mp.weixin.qq.com/s/5RpZRJlkypdg4rMAisCYTA
 * DevOps敏捷  
 &emsp; 敏捷开发指的是在 DevOps 中采用敏捷思想进行软件开发，敏捷宣言无疑是很重要的一项。有多种敏捷方法可以采用，比如 Scrum 、看板和极限编程。
 * DevOps持续集成  
-&emsp; 持续集成提供了让多个程序员可以同时运行应用程序的最佳实践，可以频繁合并源代码、验证代码（静态测试用例）、编译和测试代码（动态测试用例〉。  
+&emsp; 持续集成提供了让多个程序员可以同时运行应用程序的最佳实践，可以频繁合并源代码、验证代码(静态测试用例)、编译和测试代码(动态测试用例〉。  
 * DevOps持续交付  
 &emsp; 持续交忖关注从开发、测试、验收到生产环境的高频生产能力。基于高度的自动化，极端的发布上线时间可以达到分钟级
 * DevOps持续监控  
-&emsp; 持续监控是DevOps的重要组成部分，它不仅监控软件（资源），还监控开发人员（人员）和开发过程（方法）。资源在所有环境中被持续地监控，以便尽早发现问题 人员的衡量标准是能力发展（知识、技能和态度），方法层面的衡量则包括速率（处理能力）和效率。  
+&emsp; 持续监控是DevOps的重要组成部分，它不仅监控软件(资源)，还监控开发人员(人员)和开发过程(方法)。资源在所有环境中被持续地监控，以便尽早发现问题 人员的衡量标准是能力发展(知识、技能和态度)，方法层面的衡量则包括速率(处理能力)和效率。  
 * DevOps敏捷流程  
 &emsp; 敏捷流程重点关注在标准管理过程中，需要进行哪些调整改进，才能符合敏捷开发方法的要求。  
 
@@ -78,8 +78,8 @@ https://blog.gitee.com/2020/04/26/tool-chain/
 
 * 版本控制&协作开发：GitHub、GitLab、BitBucket、SubVersion、Coding、Bazaar
 * 自动化构建和测试：Apache Ant、Maven 、Selenium、PyUnit、QUnit、JMeter、Gradle、PHPUnit、Nexus
-* 持续集成&交付:Jenkins、Capistrano、BuildBot、Fabric、Tinderbox、Travis CI、flow.ci Continuum、LuntBuild、CruiseControl、Integrity、Gump、Go
-* 容器平台: Docker、Rocket、Ubuntu（LXC）、第三方厂商如（AWS/阿里云）
+* 持续集成&交付：Jenkins、Capistrano、BuildBot、Fabric、Tinderbox、Travis CI、flow.ci Continuum、LuntBuild、CruiseControl、Integrity、Gump、Go
+* 容器平台：Docker、Rocket、Ubuntu(LXC)、第三方厂商如(AWS/阿里云)
 * 配置管理：Chef、Puppet、CFengine、Bash、Rudder、Powershell、RunDeck、Saltstack、Ansible
 * 微服务平台：OpenShift、Cloud Foundry、Kubernetes、Mesosphere
 * 服务开通：Puppet、Docker Swarm、Vagrant、Powershell、OpenStack Heat
@@ -105,14 +105,12 @@ https://www.redhat.com/zh/topics/devops/what-is-ci-cd
 -->
 &emsp; 软件开发的持续方法基于自动执行脚本，以最大程度地减少在开发应用程序时引入错误的机会。从开发新代码到部署新代码，它们几乎不需要人工干预，甚至根本不需要干预。  
 &emsp; 它涉及到在每次小的迭代中就不断地构建、测试和部署代码更改，从而减少了基于已经存在bug或失败的先前版本开发新代码的机会。  
-&emsp; **Continuous Integration（持续集成）**  
-&emsp; 假设一个应用程序，其代码存储在GitLab的Git仓库中。开发人员每天都要多次推送代码更改。对于每次向仓库的推送，你都可以创建一组脚本来自动构建和测试你的应用程序，从而减少了向应用程序引入错误的机会。这种做法称为持续集成，对于提交给应用程序（甚至是开发分支）的每项更改，它都会自动连续进行构建和测试，以确保所引入的更改通过你为应用程序建立的所有测试，准则和代码合规性标准。  
-&emsp; **Continuous Delivery（持续交付）**  
+&emsp; **Continuous Integration(持续集成)**  
+&emsp; 假设一个应用程序，其代码存储在GitLab的Git仓库中。开发人员每天都要多次推送代码更改。对于每次向仓库的推送，都可以创建一组脚本来自动构建和测试你的应用程序，从而减少了向应用程序引入错误的机会。这种做法称为持续集成，对于提交给应用程序(甚至是开发分支)的每项更改，它都会自动连续进行构建和测试，以确保所引入的更改通过你为应用程序建立的所有测试，准则和代码合规性标准。  
+&emsp; **Continuous Delivery(持续交付)**  
 &emsp; 持续交付是超越持续集成的更进一步的操作。应用程序不仅会在推送到代码库的每次代码更改时进行构建和测试，而且，尽管部署是手动触发的，但作为一个附加步骤，它也可以连续部署。此方法可确保自动检查代码，但需要人工干预才能从策略上手动触发以必输此次变更。  
-&emsp; **Continuous Deployment（持续部署）**  
+&emsp; **Continuous Deployment(持续部署)**  
 &emsp; 与持续交付类似，但不同之处在于，你无需将其手动部署，而是将其设置为自动部署。完全不需要人工干预即可部署你的应用程序。 
 
 ## 1.3. CI/CD、DevOps的关系  
-&emsp; **DevOps是CI、CD思想的延伸，CI、CD是DevOps的基础核心。**如果没有 CI、CD自动化的工具和流程，谈 DevOps是没有意义的。  
-
-
+&emsp; **DevOps是CI、CD思想的延伸，CI、CD是DevOps的基础核心。**如果没有CI、CD自动化的工具和流程，谈DevOps是没有意义的。  

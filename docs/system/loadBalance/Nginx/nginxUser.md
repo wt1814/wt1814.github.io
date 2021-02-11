@@ -16,7 +16,6 @@
         - [1.2.2. 虚拟主机](#122-虚拟主机)
         - [1.2.3. 多个webapp的配置](#123-多个webapp的配置)
         - [1.2.4. 静态资源WEB服务](#124-静态资源web服务)
-            - [1.2.4.1. Nginx搭建图⽚服务器](#1241-nginx搭建图⽚服务器)
         - [1.2.5. 动静分离](#125-动静分离)
         - [1.2.6. 跨域解决](#126-跨域解决)
         - [1.2.7. 地址重定向，Rewrite](#127-地址重定向rewrite)
@@ -93,7 +92,7 @@ server {
 &emsp; 注意：0.8.48版本以后，""是server_name的默认值，所以此处可以省略server_name "";在更早的版本，server_name的默认值为主机的hostname。
 
 &emsp; **基于名称和IP的混合虚拟服务器**  
-&emsp; 前提知识：一台主机可以有多个IP（多网卡），一个IP可以绑定多个域名  
+&emsp; 前提知识：一台主机可以有多个IP(多网卡)，一个IP可以绑定多个域名  
 
 ```
 server {
@@ -145,12 +144,12 @@ https://mp.weixin.qq.com/s/qchaaVoOSJOqnRBlBIU--g
 
 
 ## 1.2. Nginx使用场景  
-&emsp; Nginx基本功能：作为http server、虚拟主机、反向代理服务器（负载均衡）、电子邮件（IMAP/POP3）代理服务器。  
+&emsp; Nginx基本功能：作为http server、虚拟主机、反向代理服务器(负载均衡)、电子邮件(IMAP/POP3)代理服务器。  
 
 ### 1.2.1. 反向代理  
 
 #### 1.2.1.1. 代理服务器简介  
-&emsp; **什么是代理服务器（Proxy Serve）？**  
+&emsp; **什么是代理服务器(Proxy Serve)？**  
 &emsp; 提供代理服务的电脑系统或其它类型的网络终端，代替网络用户去取得网络信息。  
 &emsp; **为什么使用代理服务器？**  
 1. 提高访问速度：由于目标主机返回的数据会存放在代理服务器的硬盘中，因此下一次客户再访问相同的站点数据时，会直接从代理服务器的硬盘中读取，起到了缓存的作用，尤其对于热门网站能明显提高访问速度。  
@@ -163,13 +162,13 @@ https://mp.weixin.qq.com/s/qchaaVoOSJOqnRBlBIU--g
 &emsp; 正向代理主要应用于内网环境中只有某台特定服务器支持连接互联网，而其它同一局域网的服务器IP都不支持直接连接互联网，此时可以在支持连接公网的服务器配置nginx的正向代理，局域网内其它机器可通过此台服务器连接公网。  
 &emsp; 如图，服务器①的IP没有访问公网的权限，nginx服务器同时连接了内网和公网，则服务器①可通过nginx服务器访问公网。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-2.png)   
-&emsp; （1）访问原来无法访问的资源，如google。  
-&emsp; （2）可以做缓存，加速访问资源。  
-&emsp; （3）对客户端访问授权，上网进行认证。  
-&emsp; （4）代理可以记录用户访问记录（上网行为管理），对外隐藏用户信息。  
+&emsp; (1)访问原来无法访问的资源，如google。  
+&emsp; (2)可以做缓存，加速访问资源。  
+&emsp; (3)对客户端访问授权，上网进行认证。  
+&emsp; (4)代理可以记录用户访问记录(上网行为管理)，对外隐藏用户信息。  
 
 ##### 1.2.1.1.2. 反向代理  
-&emsp; 反向代理（Reverse Proxy）指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。  
+&emsp; 反向代理(Reverse Proxy)指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。  
 &emsp; 对反向代理服务器的攻击并不会使得网页信息遭到破坏，这样就增强了Web服务器的安全性。这种方式通过降低了向WEB服务器的请求数从而降低了WEB服务器的负载。  
 &emsp; 当网站的访问量达到一定程度后，单台服务器不能满足用户的请求时，需要用多台服务器集群可以使用nginx做反向代理。并且多台服务器可以平均分担负载，不会因为某台服务器负载高宕机而某台服务器闲置的情况。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-3.png) 
@@ -207,7 +206,7 @@ https://mp.weixin.qq.com/s/qchaaVoOSJOqnRBlBIU--g
 1. 访问原来无法访问的资源   
 2. 用作缓存，加速访问速度   
 3. 对客户端访问授权，上网进行认证  
-4. 代理可以记录用户访问记录（上网行为管理），对外隐藏用户信息  
+4. 代理可以记录用户访问记录(上网行为管理)，对外隐藏用户信息  
 
 &emsp; **反向代理的应用：**  
 1. 保护内网安全 
@@ -222,8 +221,8 @@ https://mp.weixin.qq.com/s/qchaaVoOSJOqnRBlBIU--g
 * **<font color = "red">轮询(默认)</font>** ：接收到的请求按照顺序逐一分配到不同的后端服务器，即使在使用过程中，某一台后端服务器宕机，Nginx会自动将该服务器剔除出队列，请求受理情况不会受到任何影响。 
 * **<font color = "red">weight</font>** ：指定权重。这种方式下，可以给不同的后端服务器设置一个权重值(weight)，用于调整不同的服务器上请求的分配率；权重数据越大，被分配到请求的几率越大；该权重值，主要是针对实际工作环境中不同的后端服务器硬件配置进行调整的。  
 * **<font color = "red">ip_hash</font>** ：每个请求按照发起客户端的ip的hash结果进行匹配，这样的算法下一个固定ip地址的客户端总会访问到同一个后端服务器，这也在一定程度上解决了集群部署环境下session共享的问题。  
-* **<font color = "red">fair（第三方）</font>** ：智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配，<font color = "red">响应时间短处理效率高的服务器分配到请求的概率高，响应时间长处理效率低的服务器分配到的请求少；</font>结合了前两者的优点的一种调度算法。但是需要注意的是Nginx默认不支持fair算法，如果要使用这种调度算法，请安装upstream_fair模块。  
-* **<font color = "red">url_hash（第三方）</font>** ：按照访问的url的hash结果分配请求，每个请求的url会指向后端固定的某个服务器，可以在Nginx作为静态服务器的情况下提高缓存效率。同样要注意Nginx默认不支持这种调度算法，要使用的话需要安装Nginx的hash软件包。  
+* **<font color = "red">fair(第三方)</font>** ：智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配，<font color = "red">响应时间短处理效率高的服务器分配到请求的概率高，响应时间长处理效率低的服务器分配到的请求少；</font>结合了前两者的优点的一种调度算法。但是需要注意的是Nginx默认不支持fair算法，如果要使用这种调度算法，请安装upstream_fair模块。  
+* **<font color = "red">url_hash(第三方)</font>** ：按照访问的url的hash结果分配请求，每个请求的url会指向后端固定的某个服务器，可以在Nginx作为静态服务器的情况下提高缓存效率。同样要注意Nginx默认不支持这种调度算法，要使用的话需要安装Nginx的hash软件包。  
 
 &emsp; **Nginx负载均衡配置：**    
 &emsp; **<font color = "red">Nginx反向代理通过proxy_pass来配置。负载均衡使用Upstream模块实现。</font>**  
@@ -269,9 +268,9 @@ http {
             proxy_connect_timeout 90;          #nginx跟后端服务器连接超时时间(代理连接超时)
             proxy_send_timeout 90;             #后端服务器数据回传时间(代理发送超时)
             proxy_read_timeout 90;             #连接成功后，后端服务器响应时间(代理接收超时)
-            proxy_buffer_size 4k;              #设置代理服务器（nginx）保存用户头信息的缓冲区大小
+            proxy_buffer_size 4k;              #设置代理服务器(nginx)保存用户头信息的缓冲区大小
             proxy_buffers 4 32k;               #proxy_buffers缓冲区，网页平均在32k以下的话，这样设置
-            proxy_busy_buffers_size 64k;       #高负荷下缓冲大小（proxy_buffers*2）
+            proxy_busy_buffers_size 64k;       #高负荷下缓冲大小(proxy_buffers*2)
             proxy_temp_file_write_size 64k;    #设定缓存文件夹大小，大于这个值，将从upstream服务器传
 
             client_max_body_size 10m;          #允许客户端请求的最大单文件字节数
@@ -291,15 +290,13 @@ http {
 ......
 
 ### 1.2.4. 静态资源WEB服务 
-1. 静态资源类型
+1. 静态资源类型  
 &emsp; 非服务器动态运行生成的文件，换句话说，就是可以直接在服务器上找到对应文件的请求  
 
 * 浏览器端渲染：HTML,CSS,JS
 * 图片：JPEG,GIF,PNG
 * 视频：FLV,MPEG
 * 文件：TXT，任意下载文件
-
-#### 1.2.4.1. Nginx搭建图⽚服务器  
 
 ### 1.2.5. 动静分离    
 &emsp; Nginx是一个http服务器，可以独立提供http服务，可以做网页静态服务器。  
@@ -370,7 +367,7 @@ http {                                       # HTTP区块开始
 
 &emsp; Nginx 配置语法：
 * 配置文件由指令和指令块构成   
-* 每条指令以分号（;）结尾，指令和参数间以空格符分隔  
+* 每条指令以分号(;)结尾，指令和参数间以空格符分隔  
 * 指令块以大括号{}将多条指令组织在一起  
 * include 语句允许组合多个配置文件以提高可维护性  
 * 使用 # 添加注释  
@@ -392,7 +389,7 @@ error_log /var/log/nginx/error.log info;
 #进程文件
 pid /var/run/nginx.pid;
 #
-#一个nginx进程打开的最多文件描述符数目,理论值应该是最多打开文件数（系统的值ulimit -n）与nginx进程数相除,但是nginx分配请求并不均匀,所以建议与ulimit -n的值保持一致.
+#一个nginx进程打开的最多文件描述符数目,理论值应该是最多打开文件数(系统的值ulimit -n)与nginx进程数相除,但是nginx分配请求并不均匀,所以建议与ulimit -n的值保持一致.
 worker_rlimit_nofile 65535;
 #
 #工作模式与连接数上限
@@ -400,7 +397,7 @@ events
 {
     #参考事件模型,use [ kqueue | rtsig | epoll | /dev/poll | select | poll ]; epoll模型是Linux 2.6以上版本内核中的高性能网络I/O模型,如果跑在FreeBSD上面,就用kqueue模型.
     use epoll;
-    #单个进程最大连接数（最大连接数=连接数*进程数）
+    #单个进程最大连接数(最大连接数=连接数*进程数)
     worker_connections 65535;
 }
 #
@@ -439,7 +436,7 @@ http
     gzip on; #开启gzip压缩输出
     gzip_min_length 1k; #允许压缩的页面的最小字节数,页面字节数从header偷得content-length中获取.默认是0,不管页面多大都进行压缩.建议设置成大于1k的字节数,小于1k可能会越压越大
     gzip_buffers 4 16k; #表示申请4个单位为16k的内存作为压缩结果流缓存,默认值是申请与原始数据大小相同的内存空间来存储gzip压缩结果
-    gzip_http_version 1.1; #压缩版本（默认1.1,目前大部分浏览器已经支持gzip解压.前端如果是squid2.5请使用1.0）
+    gzip_http_version 1.1; #压缩版本(默认1.1,目前大部分浏览器已经支持gzip解压.前端如果是squid2.5请使用1.0)
     gzip_comp_level 2; #压缩等级.1压缩比最小,处理速度快.9压缩比最大,比较消耗cpu资源,处理速度最慢,但是因为压缩比最大,所以包最小,传输速度快
     gzip_types text/plain application/x-javascript text/css application/xml;
     #压缩类型,默认就已经包含text/html,所以下面就不用再写了,写上去也不会有问题,但是会有一个warn.

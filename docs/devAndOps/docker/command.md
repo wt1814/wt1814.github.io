@@ -4,12 +4,16 @@
 - [1. Docker使用教程](#1-docker使用教程)
     - [1.1. Docker安装及使用阿里云Doker镜像加速](#11-docker安装及使用阿里云doker镜像加速)
     - [1.2. 私有仓库搭建](#12-私有仓库搭建)
-    - [1.3. Docker命令](#13-docker命令)
-        - [1.3.1. 镜像操作命令](#131-镜像操作命令)
-        - [1.3.2. 容器操作指令](#132-容器操作指令)
-    - [1.4. Idea中Docker插件](#14-idea中docker插件)
+    - [1.3. Docker守护进程配置](#13-docker守护进程配置)
+    - [1.4. Docker命令](#14-docker命令)
+        - [1.4.1. 镜像操作命令](#141-镜像操作命令)
+        - [1.4.2. 容器操作指令](#142-容器操作指令)
 
 <!-- /TOC -->
+
+&emsp; **<font color = "clime">小结：</font>**  
+&emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi、commit</font>**  
+&emsp; **<font color = "red">容器操作常用命令：run、start、stop、exec</font>**  
 
 # 1. Docker使用教程  
 <!-- 
@@ -32,12 +36,18 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 
 -->
 
-## 1.3. Docker命令  
+## 1.3. Docker守护进程配置
+<!-- 
+bibil
+https://docs.docker.com/config/daemon/
+-->
+
+## 1.4. Docker命令  
 &emsp; Docker一般的使用流程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-39.png)  
 
-### 1.3.1. 镜像操作命令  
-&emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi</font>**  
+### 1.4.1. 镜像操作命令  
+&emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi、commit</font>**  
 
 * 获取镜像：  
 &emsp; docker pull centos (默认获取centos最新的镜像)  
@@ -69,7 +79,7 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 * docker rmi <-f> 镜像名:<tags\> - 删除镜像  
 -->
 
-### 1.3.2. 容器操作指令
+### 1.4.2. 容器操作指令
 &emsp; **<font color = "red">容器操作常用命令：run、start、stop、exec</font>**  
 
 * 创建并启动容器：  
@@ -95,14 +105,12 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 * 启动已有的容器：
 
         docker start 容器ID
-        例：  
-        [root@localhost ~]# docker start 802e3623e566
+        例：[root@localhost ~]# docker start 802e3623e566
 
 * 停止运行的容器：  
 
         docker stop 容器ID
-        例：
-        [root@localhost ~]# docker stop 802e3623e566
+        例：[root@localhost ~]# docker stop 802e3623e566
 
 * 删除容器：  
 
@@ -126,15 +134,3 @@ https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
         通过docker images命令可以看到增加了个test/centos镜像
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-7.png)  
-
-## 1.4. Idea中Docker插件  
-<!-- 
-https://mp.weixin.qq.com/s?__biz=MzAxNDMwMTMwMw==&mid=2247492037&idx=1&sn=5568994f8c801f56170b14f2d21df31c&chksm=9b97c0ddace049cb57d4396eabc3965532eb128ab83a55d3c8d7dea3d8be675dc8c0c8ebfba3&mpshare=1&scene=1&srcid=&sharer_sharetime=1565841354339&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=a98b434d6faae616ed91d3ea273cb1b2030141b502c3589cff178a48e66b895a407b58f1d6b6ffafcf8c3ced4828833e6652a8869d6d35edddf1f192fe618738afaaa152a55d00024b42ce09a67b0b99&ascene=1&uin=MTE1MTYxNzY2MQ==&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=SNTjToR4G4GRQcv6vbTgQCeljdugS8QdOBuRNyGrRTrVOdRDMoEgnHo3VlytJ0fv
-
-使用 Docker 部署 Spring Boot 项目
-https://mp.weixin.qq.com/s?__biz=MzI4NDY5Mjc1Mg==&mid=2247489662&idx=2&sn=8227bfd4b0b68ddc002dfe451a661688&chksm=ebf6c001dc8149172341b190c9b72700fed794261d67b8648edd2a596019212a742c7b241b90&mpshare=1&scene=1&srcid=&sharer_sharetime=1572833030053&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=6f23511bf9e1c01fc8b70c3e81dbcf33c57a5d08ea0ef51caa9a619fffb3e59ba744ac23ec082bfc8791797c1917e1e4f0290dff6475d1b71f64d8252bf92952180c025b0121995474ac59fe778892a9&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=Lu%2FLBuTxuGaOTLq0CL9dO0ss3p9k%2BNlDhrOCgfGfCUsKTPyuc12lccq3vmkXvxfb
-
-提升10倍生产力：IDEA远程一键部署SpringBoot 
-https://mp.weixin.qq.com/s?__biz=MzAxNDMwMTMwMw==&mid=2247492037&idx=1&sn=5568994f8c801f56170b14f2d21df31c&chksm=9b97c0ddace049cb57d4396eabc3965532eb128ab83a55d3c8d7dea3d8be675dc8c0c8ebfba3&mpshare=1&scene=1&srcid=&sharer_sharetime=1565841354339&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=a98b434d6faae616ed91d3ea273cb1b2030141b502c3589cff178a48e66b895a407b58f1d6b6ffafcf8c3ced4828833e6652a8869d6d35edddf1f192fe618738afaaa152a55d00024b42ce09a67b0b99&ascene=1&uin=MTE1MTYxNzY2MQ==&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=SNTjToR4G4GRQcv6vbTgQCeljdugS8QdOBuRNyGrRTrVOdRDMoEgnHo3VlytJ0fv
--->
-

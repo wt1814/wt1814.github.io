@@ -16,6 +16,10 @@ k8s资源限制
 https://blog.51cto.com/14154700/2453845
 使用Kubernetes进行零停机滚动更新
 https://www.jianshu.com/p/c63c9efaeac3
+kubernetes里的各种port解惑
+https://www.cnblogs.com/tylerzhou/p/11023157.html
+K8S配置中的port、targetPort、nodePort和containerPort区别
+https://blog.51cto.com/wutengfei/2482187
 -->
 
 ## 1.1. k8s的yaml文件配置详解  

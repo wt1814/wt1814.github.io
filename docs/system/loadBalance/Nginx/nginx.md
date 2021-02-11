@@ -32,20 +32,20 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 # 1. Nginx  
 &emsp; Nginx 是一个 高性能 的 Web 服务器。<font color = "red">Nginx工作在应用层，因此nginx又可以称为7层负载均衡</font>。  
 
-* 同时处理大量的并发请求（可以处理2-3万并发连接数，官方监测能支持5万并发）。
+* 同时处理大量的并发请求(可以处理2-3万并发连接数，官方监测能支持5万并发)。
 * 内存消耗小：开启10个nginx才占150M内存 ，nginx处理静态文件好，耗费内存少。  
 * 节省宽带：支持GZIP压缩，可以添加浏览器本地缓存。
 * <font color = "red">Nginx原理：两种进程、多进程单线程、基于异步非阻塞的事件驱动模型、模块化设计。</font>
 
 ## 1.1. 进程模型  
-&emsp; Nginx启动时，会生成两种类型的进程，一个主进程master， 一个 （ windows版本的目前只有一个）或 多个工作进程worker。因此，Nginx 启动以后，查看操作系统的进程列表，就能看到至少有两个Nginx 进程。  
+&emsp; Nginx启动时，会生成两种类型的进程，一个主进程master， 一个 ( windows版本的目前只有一个)或 多个工作进程worker。因此，Nginx 启动以后，查看操作系统的进程列表，就能看到至少有两个Nginx 进程。  
 
 * 主进程并不处理网络请求，主要负责调度工作进程： 加载配置、启动工作进程、非停升级。  
 * 服务器实际处理网络请求及响应的是工作进程worker，在类unix系统上，Nginx可以配置多个worker，而每个worker进程都可以同时处理数以千计的网络请求。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-7.png) 
 
 ## 1.2. 多进程机制  
-&emsp; 服务器每当收到一个客户端请求时，就有服务器主进程（ master process ）生成一个子进程（ worker process ）出来和客户端建立连接进行交互，直到连接断开，该子进程结束。  
+&emsp; 服务器每当收到一个客户端请求时，就有服务器主进程( master process )生成一个子进程( worker process )出来和客户端建立连接进行交互，直到连接断开，该子进程结束。  
 
 &emsp; <font color = "red">多进程的优缺点：</font>  
 1. 使用 进程 的好处是 各个进程之间相互独立 ， 不需要加锁 ，减少了使用锁对性能造成影响，同时降低编程的复杂度，降低开发成本。  
@@ -55,7 +55,7 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 &emsp; 一般推荐 worker 进程数 与 CPU 内核数 一致，这样一来不存在 大量的子进程 生成和管理任务，避免了进程之间 竞争 CPU 资源 和 进程切换 的开销。  
 &emsp; 而且 Nginx 为了更好的利用 多核特性 ，提供了 CPU 亲缘性 的绑定选项，可以将某 一个进程绑定在某一个核上，这样就不会因为 进程的切换 带来 Cache 的失效。  
 
-&emsp; 对于每个请求，有且只有一个 工作进程 对其处理。首先，每个 worker 进程都是从 master进程 fork 过来。在 master 进程里面，先建立好需要 listen 的 socket（listenfd） 之后，然后再 fork 出多个 worker 进程。  
+&emsp; 对于每个请求，有且只有一个 工作进程 对其处理。首先，每个 worker 进程都是从 master进程 fork 过来。在 master 进程里面，先建立好需要 listen 的 socket(listenfd) 之后，然后再 fork 出多个 worker 进程。  
 &emsp; 所有 worker 进程的 listenfd 会在 新连接 到来时变得 可读 ，为保证只有一个进程处理该连接，所有 worker 进程在注册 listenfd 读事件前抢占 accept_mutex。   
 &emsp; 抢到 互斥锁 的那个进程注册 listenfd 读事件 ，在读事件里调用 accept 接受该连接。  
 &emsp; 当一个 worker 进程在 accept 这个连接之后，就开始读取请求 ， 解析请求 ， 处理请求，产生数据后，再返回给客户端 ，最后才断开连接 ，一个完整的请求就是这样。  
@@ -69,7 +69,7 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 
 ### 1.3.1. 异步非阻塞机制  
 &emsp; <font color = "red">每个 工作进程 使用 异步非阻塞方式 ，可以处理多个客户端请求 。</font>  
-&emsp; 当某个 工作进程 接收到客户端的请求以后，调用 IO 进行处理，如果不能立即得到结果，就去处理其他请求 （即为非阻塞 ），而客户端在此期间也无需等待响应 ，可以去处理其他事情（即为异步 ）  
+&emsp; 当某个 工作进程 接收到客户端的请求以后，调用 IO 进行处理，如果不能立即得到结果，就去处理其他请求 (即为非阻塞 )，而客户端在此期间也无需等待响应 ，可以去处理其他事情(即为异步 )  
 &emsp; 当 IO 返回时，就会通知此工作进程，该进程得到通知，暂时挂起当前处理的事务去 响应客户端请求 。  
 
 ### 1.3.2. Nginx事件驱动模型  
@@ -88,8 +88,8 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 ## 1.4. 模块化设计  
 &emsp; Nginx的worker进程，包括核心和功能性模块。高度模块化的设计是 Nginx 的架构基础。Nginx 服务器被分解为多个模块 ，每个模块就是一个功能模块 ，只负责自身的功能，模块之间严格遵循 “高内聚，低耦合” 的原则。  
 
-* 核心模块负责维持一个运行循环 （ run-loop ），执行网络请求处理的 不同阶段 的模块功能。比如：网络读写、存储读写、内容传输、外出过滤，以及将请求发往上游服务器等。  
-* 而其代码的模块化设计 ，也使得开发人员可以根据需要对 功能模块 进行适当的 选择 和 修改 ，编译成具有 特定功能的服务器。  
+* 核心模块负责维持一个运行循环 ( run-loop )，执行网络请求处理的 不同阶段 的模块功能。比如：网络读写、存储读写、内容传输、外出过滤，以及将请求发往上游服务器等。  
+* 而其代码的模块化设计，也使得开发人员可以根据需要对功能模块进行适当的选择和修改，编译成具有特定功能的服务器。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-8.png)  
 
@@ -97,7 +97,7 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 &emsp; 核心模块是 Nginx 服务器正常运行 必不可少的模块，提供错误日志记录 、 配置文件解析 、 事件驱动机制 、 进程管理 等核心功能。  
 
 ### 1.4.2. 标准HTTP模块  
-&emsp; 标准 HTTP 模块提供 HTTP 协议解析相关的功能，比如： 端口配置 、 网页编码设置 、 HTTP响应头设置 等等。  
+&emsp; 标准HTTP模块提供HTTP协议解析相关的功能，比如：端口配置、网页编码设置、HTTP响应头设置等等。  
 
 ### 1.4.3. 可选HTTP模块  
 &emsp; 可选 HTTP 模块主要用于 扩展 标准的 HTTP 功能，让 Nginx 能处理一些特殊的服务，比如：Flash 多媒体传输 、解析 GeoIP 请求、 网络传输压缩 、 安全协议 SSL 支持等。  

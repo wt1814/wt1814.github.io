@@ -9,8 +9,8 @@
         - [1.2.3. 基于NFS文件集群共享](#123-基于nfs文件集群共享)
         - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
     - [1.3. kubectl命令行工具](#13-kubectl命令行工具)
-        - [1.3.1. kubectl用法概述](#131-kubectl用法概述)
-        - [1.3.2. kubectl常用命令](#132-kubectl常用命令)
+        - [1.3.1. ※※※kubectl用法概述](#131-※※※kubectl用法概述)
+        - [1.3.2. ~~kubectl常用命令~~](#132-kubectl常用命令)
     - [1.4. IDE插件](#14-ide插件)
 
 <!-- /TOC -->
@@ -51,7 +51,7 @@ https://mp.weixin.qq.com/s/LA1w7pZAyIpeP3sfQIWqpw
 https://www.cnblogs.com/xiaoyuxixi/p/12142218.html
 https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
 -->
-&emsp; CentOS Linux 7默认启动了防火墙服务（firewalld），而Kubernetes的Master与工作Node之间会有大量的网络通信，安全的做法是在防火墙上配置各组件需要相互通信的端口号，具体要配置的端口号详见「内网中的Kubemetes相关配置」节中各服务监听的端口号说明。在一个安全的内部网络环境中可以关闭防火墙服务：  
+&emsp; CentOS Linux 7默认启动了防火墙服务(firewalld)，而Kubernetes的Master与工作Node之间会有大量的网络通信，安全的做法是在防火墙上配置各组件需要相互通信的端口号，具体要配置的端口号详见「内网中的Kubemetes相关配置」节中各服务监听的端口号说明。在一个安全的内部网络环境中可以关闭防火墙服务：  
 
 ```text
 #systemctl disable firewalld
@@ -65,7 +65,7 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 
 &emsp; **Kubernetes的安装方式：**  
 
-* **（推荐）使用<font color = "red">kubeadmin</font>通过离线镜像安装**  
+* **(推荐)使用<font color = "red">kubeadmin</font>通过离线镜像安装**  
 * 使用阿里公有云平台k8s  
 * 通过yum官方仓库安装  
 * 二进制包的形式进行安装，kubeasz (github)  
@@ -95,7 +95,7 @@ https://www.cnblogs.com/yuezhimi/p/13042037.html
 
 ### 1.2.3. 基于NFS文件集群共享  
 <!-- 
-Kubernetes 集群部署 NFS 网络存储
+Kubernetes 集群部署NFS网络存储
 https://blog.csdn.net/zuozewei/article/details/108165523
 -->
 &emsp; Kubernetes对Pod进行调度时，以当时集群中各节点的可用资源作为主要依据，自动选择某一个可用的节点，并将Pod分配到该节点上。在这种情况下，Pod中容器数据的持久化如果存储在所在节点的磁盘上，就会产生不可预知的问题，例如，当Pod出现故障，Kubernetes 重新调度之后，Pod 所在的新节点上，并不存在上一次 Pod 运行时所在节点上的数据。  
@@ -114,7 +114,7 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
 
 
 <!--   
-1. Docker Private Registry （私有 Docker 镜像库）  
+1. Docker Private Registry (私有 Docker 镜像库)  
 &emsp; 使用Docker提供的Registry镜像创建一个私有镜像仓库。  
 &emsp; 详细的安装步骤请参考Docker的官方文档 https://docs.docker.eom/registry/deploying/o  
 2. kubelet配置  
@@ -150,26 +150,26 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
 ## 1.3. kubectl命令行工具  
 &emsp; <font color = "lime">kubectl作为客户端CLI工具，可以让用户通过命令行的方式对Kubernetes集群进行操作。</font>  
 
-### 1.3.1. kubectl用法概述  
+### 1.3.1. ※※※kubectl用法概述  
 &emsp; kubectl命令行的语法如下：  
 
 ```text
 $ kubectl [command] [TYPE] [NAME] [flags]
 ```
-&emsp; 其中，command、TYPE、NAME> flags的含义如下。  
-1. command：子命令，用于操作Kubemetes集群资源对象的命令，例如create> delete> describe > get> apply等。  
-2. TYPE：资源对象的类型，区分大小写，能以单数形式、复数形式或者简写形式表示。例如以下3种TYPE是等价的。  
+&emsp; 其中，command、TYPE、NAME、flags的含义如下。  
+1. command：子命令，用于操作Kubemetes集群资源对象的命令，例如create、delete、describe、get、apply等。  
+2. **<font color = "red">TYPE：资源对象的类型，区分大小写，能以单数形式、复数形式或者简写形式表示。</font>** 例如以下3种TYPE是等价的。  
 
     ```text
     $ kubectl get pod podl  
     $ kubectl get pods podl  
     $ kubectl get po podl
     ```
-3. NAME：资源对象的名称，区分大小写。如果不指定名称，则系统将返回属于TYPE的全部对象的列表，例如$kubectl get pods将返回所有Pod的列表。
+3. **<font color = "red">NAME：资源对象的名称，区分大小写。</font>** 如果不指定名称，则系统将返回属于TYPE的全部对象的列表，例如$kubectl get pods将返回所有Pod的列表。
 4. flags：kubectl子命令的可选参数，例如使用"-s”指定apiserver的URL地址而不用默认值。  
 
-### 1.3.2. kubectl常用命令
-[kubectl命令表](http://docs.kubernetes.org.cn/683.html)  
+### 1.3.2. ~~kubectl常用命令~~
+&emsp; [kubectl命令表](http://docs.kubernetes.org.cn/683.html)  
 1. 创建资源对象  
     &emsp; 根据yaml配置文件一次性创建service和rc：  
 

@@ -22,14 +22,15 @@
 <!--
 大量的 TIME_WAIT 状态 TCP 连接，对业务有什么影响？怎么处理？ 
 https://mp.weixin.qq.com/s/IjMXZ2Lu67UZ1v1EDvDCog
-
+面试再不怕问TCP了
+https://blog.csdn.net/a159357445566/article/details/106411680/
 -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP-4.png)  
 
 # 1. TCP  
 ## 1.1. TCP简介  
-&emsp; 传输控制协议（TCP，Transmission Control Protocol）是一种面向<font color = "red">连接的、可靠的、基于字节流的</font>传输层通信协议。  
+&emsp; 传输控制协议(TCP，Transmission Control Protocol)是一种面向<font color = "red">连接的、可靠的、基于字节流的</font>传输层通信协议。  
 
 ## 1.2. TCP头部格式  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP-3.png)   
@@ -37,12 +38,12 @@ https://mp.weixin.qq.com/s/IjMXZ2Lu67UZ1v1EDvDCog
 * <font color = "red">序列号seq</font>：在建立连接时由计算机生成的随机数作为其初始值，通过 SYN 包传给接收端主机，每发送一次数据，就「累加」一次该「数据字节数」的大小。用来解决网络包乱序问题。  
 * <font color = "red">确认应答号ack</font>：指下一次「期望」收到的数据的序列号，发送端收到这个确认应答以后可以认为在这个序号以前的数据都已经被正常接收。用来解决不丢包的问题。  
 * 控制位：  
-    * URG（紧急）：指示报文中有紧急数据，应尽快传送（相当于高优先级的数据）。
-    * <font color = "red">ACK（确认）</font>：确认序号标志，为1时表示确认号有效，为0表示报文中不含确认信息，忽略确认号字段。
-    * PSH（传送）：为1表示是带有push标志的数据，指示接收方在接收到该报文段以后，应尽快将这个报文段交给应用程序，而不是在缓冲区排队。
-    * RST（重置）：TCP连接中出现严重差错（如主机崩溃），必须释放连接，在重新建立连接。
-    * <font color = "red">SYN（连接）</font>：同步序号，用于建立连接过程。（Synchronize Sequence Numbers）
-    * <font color = "red">FIN（结束）</font>：发送端已完成数据传输，请求释放连接。 
+    * URG(紧急)：指示报文中有紧急数据，应尽快传送(相当于高优先级的数据)。
+    * <font color = "red">ACK(确认)</font>：确认序号标志，为1时表示确认号有效，为0表示报文中不含确认信息，忽略确认号字段。
+    * PSH(传送)：为1表示是带有push标志的数据，指示接收方在接收到该报文段以后，应尽快将这个报文段交给应用程序，而不是在缓冲区排队。
+    * RST(重置)：TCP连接中出现严重差错(如主机崩溃)，必须释放连接，在重新建立连接。
+    * <font color = "red">SYN(连接)</font>：同步序号，用于建立连接过程。(Synchronize Sequence Numbers)
+    * <font color = "red">FIN(结束)</font>：发送端已完成数据传输，请求释放连接。 
 
 ## 1.3. 工作方式 
 ### 1.3.1. 连接、释放阶段   
@@ -53,9 +54,9 @@ https://mp.weixin.qq.com/s/IjMXZ2Lu67UZ1v1EDvDCog
 ##### 1.3.1.1.1. 流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP.png)  
 &emsp; 初始状态：客户端处于closed(关闭) 状态，服务端处于listen(监听) 状态。  
-&emsp; 第一次握手：建立连接时，客户端发送SYN包（SYN=1，sql=x）到服务器。并进入SYN_SEND发送等待状态，等待服务器确认；  
-&emsp; 第二次握手：服务器收到SYN包，必须确认客户的SYN（ACK=1，ack+1）,同时自己也发送一个SYN包（SYN=1，sql=Y)，即SYN+ACK包，此时服务器进入SYN_RECV确认接收状态；  
-&emsp; 第三次握手：客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ACK=1，ack=y+l)，此包发送完毕,客户端和服务器进入ESTABLISHED确认连接状态，完成三次握手。  
+&emsp; 第一次握手：建立连接时，客户端发送SYN包(SYN=1，sql=x)到服务器。并进入SYN_SEND发送等待状态，等待服务器确认；  
+&emsp; 第二次握手： **<font color = "red">服务器收到SYN包，必须确认客户的SYN(ACK=1，ack+1)，**</font> 同时自己也发送一个SYN包(SYN=1，sql=Y)，即SYN+ACK包，此时服务器进入SYN_RECV确认接收状态；  
+&emsp; 第三次握手：客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ACK=1，ack=y+l)，此包发送完毕，客户端和服务器进入ESTABLISHED确认连接状态，完成三次握手。  
 
 ##### 1.3.1.1.2. 常见问题  
 &emsp; **1. 为什么只有三次握手才能确认双方的接受与发送能力是否正常，而两次却不可以？**  
@@ -73,7 +74,7 @@ https://mp.weixin.qq.com/s/IjMXZ2Lu67UZ1v1EDvDCog
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP-2.png)  
 &emsp; TCP采用四次挥手来释放连接：刚开始双方都处于establised状态。  
 &emsp; 第一次挥手：第一次挥手无论是客户端还是服务端都可以发起，因为TCP是全双工的。假如是客户端先发起关闭请求，Client发送一个FIN，用来关闭Client到Server的数据传送，Client进入FIN_WAIT_1状态；  
-&emsp; 第二次挥手：Server收到FIN后，发送一个ACK给Client，确认序号为收到序号+1 (与SYN相同，一个FIN占用一个序号），<font color = "red">Server进入CLOSE_WAIT状态；</font>  
+&emsp; 第二次挥手：Server收到FIN后，发送一个ACK给Client，确认序号为收到序号+1 (与SYN相同，一个FIN占用一个序号)，<font color = "red">Server进入CLOSE_WAIT状态；</font>  
 &emsp; 第三次挥手：Server发送一个FIN，用来关闭Server到Client的数据传送，Server进入LAST_ACK状态；  
 &emsp; 第四次挥手： **<font color = "lime">Client收到F1N后，Client进入TIME_WAIT状态，</font>** 接着发送一个ACK给Server，确认序号为收到序号+1，Server进入CLOSED状态，完成四次挥手。  
 
@@ -95,18 +96,17 @@ https://mp.weixin.qq.com/s/IjMXZ2Lu67UZ1v1EDvDCog
 &emsp; 客户端如果出现故障，服务器不能一直等下去，白白浪费资源。<font color = "red">在TCP设有一个保活计时器。服务器每收到一次客户端的请求后都会重新复位这个计时器，时间通常是设置为2小时，若两小时还没有收到客户端的任何数据，服务器就会发送一个探测报文段，以后每隔75分钟发送一次。若一连发送10个探测报文仍然没反应，服务器就认为客户端出了故障，接着就关闭连接。</font>  
 
 ### 1.3.2. 传输阶段  
-&emsp; TCP在确保传输层服务的可靠性上，具体举措包括（但不限于）以下：  
+&emsp; TCP在确保传输层服务的可靠性上，具体举措包括(但不限于)以下：  
 
-* 应用数据切割：应用数据被分隔成TCP认为最适合发送的多个报文段（由特定的算法和机制来确认）；  
+* 应用数据切割：应用数据被分隔成TCP认为最适合发送的多个报文段(由特定的算法和机制来确认)；  
 * 接收端确认：接收端收到报文段后，会向发送端发送确认报文；  
 * 超时重传机制：发送端发送一个报文段后，会启动定时器，等待接收端确认收到这个报文；如果没有及时收到确认，发送端会重新发送报文；  
-* 数据校验和：发送端发送的报文首部中，有个叫做校验和(checksum)的特殊字段，它是根据报文的首部、数据计算出来的。这是一个端到端的校验和，用来检测传输过程数据的变化。接收端收到报文后会对校验和进行检查，如果校验和存在差错，则丢弃这个报文，且不确认收到此报文（等待发送端超时重发）；  
+* 数据校验和：发送端发送的报文首部中，有个叫做校验和(checksum)的特殊字段，它是根据报文的首部、数据计算出来的。这是一个端到端的校验和，用来检测传输过程数据的变化。接收端收到报文后会对校验和进行检查，如果校验和存在差错，则丢弃这个报文，且不确认收到此报文(等待发送端超时重发)；  
 * 报文段排序：TCP报文包裹在IP数据包里进行传输，而IP数据包的到达次序是不固定的。接收端会对接收到的报文段重新排序，这个对应用层是无感知的；  
-* 去重复：接收端丢弃重复的报文（比如，因某些原因，虽然接收端已经收到报文，且给发送端发送了接收确认，但接收端没有收到该确认，超时后重新发送了同样的报文）；  
+* 去重复：接收端丢弃重复的报文(比如，因某些原因，虽然接收端已经收到报文，且给发送端发送了接收确认，但接收端没有收到该确认，超时后重新发送了同样的报文)；  
 * 流量控制：TCP连接双方都有固定大小的缓冲空间，且只允许发送端发送缓冲空间能够容纳的数据，避免缓冲区溢出；  
 
 ## 1.4. TCP与UDP的区别  
-
 &emsp; UDP 的全称是 User Datagram Protocol，用户数据报协议。它不需要所谓的握手操作，从而加快了通信速度，允许网络上的其他主机在接收方同意通信之前进行数据传输。  
 &emsp; UDP 的特点主要有：  
 * UDP 能够支持容忍数据包丢失的带宽密集型应用程序
@@ -125,10 +125,10 @@ https://mp.weixin.qq.com/s/IjMXZ2Lu67UZ1v1EDvDCog
     * TCP传输效率慢，所需资源多。
     * UDP传输效率快，所需资源少。
 * 应用场景：  
-    * TCP，要求通信数据可靠（如文件传输、邮件传输、远程登录）
-    * UDP，要求通信速度高（如域名转换、即时通信，如：QQ，直播等）  
+    * TCP，要求通信数据可靠(如文件传输、邮件传输、远程登录)
+    * UDP，要求通信速度高(如域名转换、即时通信，如：QQ，直播等)  
 
 &emsp; **使用TCP的协议有哪些？使用UDP的协议有哪些？**  
-&emsp; 使用TCP的协议：FTP（文件传输协议）、Telnet（远程登录协议）、SMTP（简单邮件传输协议）、POP3（和SMTP相对，用于接收邮件）、HTTP协议等。  
-&emsp; 使用UDP协议包括：TFTP（简单文件传输协议）、SNMP（简单网络管理协议）、DNS（域名解析协议）、NFS、BOOTP。  
+&emsp; 使用TCP的协议：FTP(文件传输协议)、Telnet(远程登录协议)、SMTP(简单邮件传输协议)、POP3(和SMTP相对，用于接收邮件)、HTTP协议等。  
+&emsp; 使用UDP协议包括：TFTP(简单文件传输协议)、SNMP(简单网络管理协议)、DNS(域名解析协议)、NFS、BOOTP。  
 
