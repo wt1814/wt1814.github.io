@@ -27,7 +27,8 @@
 <!-- /TOC -->
 <!-- 
 
-
+Redo log 与 Binlog 
+https://mp.weixin.qq.com/s/XTpoYW--6PTqotcC8tpF2A
 事务日志－－崩溃恢复
 https://mp.weixin.qq.com/s/mSxUXHgcHo5a7VAhvjIpCQ
 

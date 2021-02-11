@@ -14,6 +14,9 @@
 
 # 1. 缓冲池(buffer pool)  
 <!-- 
+什么是数据库的 “缓存池” ？
+https://mp.weixin.qq.com/s/XbvSZ3X6c-tToe-FKsEafA
+
 能说一说Mysql缓存池吗？ 
 https://mp.weixin.qq.com/s/AbiYMbDUJsMWK-_g0mFNwg
 

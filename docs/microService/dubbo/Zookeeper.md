@@ -22,6 +22,13 @@
 <!-- /TOC -->
 
 <!-- 
+Zookeeper工作原理（详细）
+https://blog.csdn.net/yanxilou/article/details/84400562
+
+Zookeeper ZAB协议中的zxid
+https://blog.csdn.net/xu505928168/article/details/105383859
+
+
 Zookeeper 怎么保证分布式事务的最终一致性？ 
 https://mp.weixin.qq.com/s/n0UKU7BxPT1r4OCPPKHGaA
 
