@@ -51,7 +51,7 @@ https://mp.weixin.qq.com/s/LA1w7pZAyIpeP3sfQIWqpw
 https://www.cnblogs.com/xiaoyuxixi/p/12142218.html
 https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
 -->
-&emsp; CentOS Linux 7默认启动了防火墙服务（firewalld），而Kubernetes的Master与工作Node之间会有大量的网络通信，安全的做法是在防火墙上配置各组件需要相互通信的端口号，具体要配置的端口号详见「内网中的Kubemetes相关配置」节中各服务监听的端口号说明。在一个安全的内部网络环境中可以关闭防火墙服务：  
+&emsp; CentOS Linux 7默认启动了防火墙服务(firewalld)，而Kubernetes的Master与工作Node之间会有大量的网络通信，安全的做法是在防火墙上配置各组件需要相互通信的端口号，具体要配置的端口号详见「内网中的Kubemetes相关配置」节中各服务监听的端口号说明。在一个安全的内部网络环境中可以关闭防火墙服务：  
 
 ```text
 #systemctl disable firewalld
@@ -65,7 +65,7 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 
 &emsp; **Kubernetes的安装方式：**  
 
-* **（推荐）使用<font color = "red">kubeadmin</font>通过离线镜像安装**  
+* **(推荐)使用<font color = "red">kubeadmin</font>通过离线镜像安装**  
 * 使用阿里公有云平台k8s  
 * 通过yum官方仓库安装  
 * 二进制包的形式进行安装，kubeasz (github)  
@@ -114,7 +114,7 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
 
 
 <!--   
-1. Docker Private Registry （私有 Docker 镜像库）  
+1. Docker Private Registry (私有 Docker 镜像库)  
 &emsp; 使用Docker提供的Registry镜像创建一个私有镜像仓库。  
 &emsp; 详细的安装步骤请参考Docker的官方文档 https://docs.docker.eom/registry/deploying/o  
 2. kubelet配置  
