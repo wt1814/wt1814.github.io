@@ -156,8 +156,8 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
 ```text
 $ kubectl [command] [TYPE] [NAME] [flags]
 ```
-&emsp; 其中，command、TYPE、NAME> flags的含义如下。  
-1. command：子命令，用于操作Kubemetes集群资源对象的命令，例如create> delete> describe > get> apply等。  
+&emsp; 其中，command、TYPE、NAME、flags的含义如下。  
+1. command：子命令，用于操作Kubemetes集群资源对象的命令，例如create、delete、describe、get、apply等。  
 2. TYPE：资源对象的类型，区分大小写，能以单数形式、复数形式或者简写形式表示。例如以下3种TYPE是等价的。  
 
     ```text
@@ -169,7 +169,7 @@ $ kubectl [command] [TYPE] [NAME] [flags]
 4. flags：kubectl子命令的可选参数，例如使用"-s”指定apiserver的URL地址而不用默认值。  
 
 ### 1.3.2. kubectl常用命令
-[kubectl命令表](http://docs.kubernetes.org.cn/683.html)  
+&emsp; [kubectl命令表](http://docs.kubernetes.org.cn/683.html)  
 1. 创建资源对象  
     &emsp; 根据yaml配置文件一次性创建service和rc：  
 
