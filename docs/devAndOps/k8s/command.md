@@ -95,7 +95,7 @@ https://www.cnblogs.com/yuezhimi/p/13042037.html
 
 ### 1.2.3. 基于NFS文件集群共享  
 <!-- 
-Kubernetes 集群部署 NFS 网络存储
+Kubernetes 集群部署NFS网络存储
 https://blog.csdn.net/zuozewei/article/details/108165523
 -->
 &emsp; Kubernetes对Pod进行调度时，以当时集群中各节点的可用资源作为主要依据，自动选择某一个可用的节点，并将Pod分配到该节点上。在这种情况下，Pod中容器数据的持久化如果存储在所在节点的磁盘上，就会产生不可预知的问题，例如，当Pod出现故障，Kubernetes 重新调度之后，Pod 所在的新节点上，并不存在上一次 Pod 运行时所在节点上的数据。  

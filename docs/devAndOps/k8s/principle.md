@@ -3,7 +3,7 @@
 
 - [1. Kubernetes](#1-kubernetes)
     - [1.1. 走进K8S](#11-走进k8s)
-    - [1.2. Kubernetes的集群组件](#12-kubernetes的集群组件)
+    - [1.2. Kubernetes架构](#12-kubernetes架构)
         - [1.2.1. Master组件](#121-master组件)
         - [1.2.2. Node组件](#122-node组件)
         - [1.2.3. 插件](#123-插件)
@@ -24,7 +24,7 @@ https://kuboard.cn/learning/
  
 ## 1.1. 走进K8S    
 1. K8S是如何对容器编排？  
-&emsp; 在K8S集群中，容器并非最小的单位，K8S集群中最小的调度单位是Pod，容器则被封装在Pod之中。由此可知，**<font color = "red">一个容器或多个容器可以同属于一个Pod之中。</font>**  
+&emsp; 在K8S集群中，容器并非最小的单位，K8S集群中最小的调度单位是Pod，容器则被封装在Pod之中。由此可知， **<font color = "red">一个容器或多个容器可以同属于一个Pod之中。</font>**  
 2. Pod是怎么创建出来的？  
 &emsp; Pod并不是无缘无故跑出来的，它是一个抽象的逻辑概念，那么Pod是如何创建的呢？<font color = "red">Pod是由Pod控制器进行管理控制，</font><font color = "lime">其代表性的Pod控制器有Deployment、StatefulSet等。</font>  
 3. Pod资源组成的应用如何提供外部访问的？  
@@ -32,8 +32,8 @@ https://kuboard.cn/learning/
 4. Service又是怎么关联到Pod呢？  
 &emsp; <font color = "red">在上面说的Pod是由Pod控制器进行管理控制，对Pod资源对象的期望状态进行自动管理。</font> **<font color = "lime">而在Pod控制器是通过一个YAML的文件进行定义Pod资源对象的。在该文件中，还会对Pod资源对象进行打标签，用于Pod的辨识，而Servcie就是通过标签选择器，关联至同一标签类型的Pod资源对象。这样就实现了从service-->pod-->container的一个过程。</font>**  
 
-## 1.2. Kubernetes的集群组件
-&emsp; 当部署完 Kubernetes, 即拥有了一个完整的集群。  
+## 1.2. Kubernetes架构
+&emsp; 当部署完 Kubernetes，即拥有了一个完整的集群。  
 &emsp; **Kubernetes是利用共享网络将多个物理机或者虚拟机组成一个集群，** 在各个服务器之间进行通信，该集群是配置Kubernetes的所有功能和负载的物理平台。 **<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-6.png)  
 <!--
@@ -210,6 +210,8 @@ https://www.cnblogs.com/justmine/p/8684564.html
 5. 主机打分(调度优选)：对第一步筛选出的符合要求的主机进行打分，在主机打分阶段，调度器会考虑一些整体优化策略，比如把容器一个Replication Controller的副本分布到不同的主机上，使用最低负载的主机等。  
 6. 选择主机：选择打分最高的主机，进行binding操作，结果存储到etcd中。  
 7. kubelet根据调度结果执行Pod创建操作：绑定成功后，scheduler会调用APIServer的API在etcd中创建一个boundpod对象，描述在一个工作节点上绑定运行的所有pod信息。运行在每个工作节点上的kubelet也会定期与etcd同步boundpod信息，一旦发现应该在该工作节点上运行的boundpod对象没有更新，则调用Docker API创建并启动pod内的容器。
+
+-----------------
 
 ## 1.5. Kubernetes的网络模型  
 &emsp; K8S为Pod和Service资源对象分别使用了各自的专有网络，Pod网络由K8S的网络插件配置实现，而Service网络则由K8S集群进行指定。如下图：  
