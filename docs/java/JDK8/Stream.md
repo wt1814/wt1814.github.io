@@ -5,7 +5,7 @@
     - [1.1. 简介](#11-简介)
     - [1.2. Stream流的使用详解](#12-stream流的使用详解)
         - [1.2.1. 流的构造与转换](#121-流的构造与转换)
-        - [1.2.2. 流的操作-1](#122-流的操作-1)
+        - [1.2.2. ~~流的操作~~](#122-流的操作)
             - [1.2.2.1. 基本数值流](#1221-基本数值流)
                 - [1.2.2.1.1. 流与数值流的转换](#12211-流与数值流的转换)
                 - [1.2.2.1.2. 数值流方法](#12212-数值流方法)
@@ -14,31 +14,28 @@
                 - [1.2.2.2.2. Reduce聚合操作](#12222-reduce聚合操作)
                 - [1.2.2.2.3. Collect收集结果](#12223-collect收集结果)
             - [1.2.2.3. ParallelStream](#1223-parallelstream)
-                - [1.2.2.3.1. ***parallelStream() 线程安全](#12231-parallelstream-线程安全)
+                - [1.2.2.3.1. ※※※parallelStream() 线程安全](#12231-※※※parallelstream-线程安全)
     - [1.3. intellij debug 技巧:java 8 stream](#13-intellij-debug-技巧java-8-stream)
 
 <!-- /TOC -->
 
-# 1. StreamAPI  
 &emsp; **<font color = "lime">总结：</font>**    
-&emsp; **<font color = "lime">paralleStream使用foreach直接修改变量是非线程安全的。解决方案：1.使用锁； 2.使用collect和reduce操作（Collections框架提供了同步的包装）。</font>**    
+&emsp; **<font color = "lime">paralleStream使用foreach直接修改变量是非线程安全的。解决方案：1.使用锁； 2.使用collect和reduce操作(Collections框架提供了同步的包装)。</font>**  
+
+# 1. StreamAPI  
 
 <!-- 
- Java8 快速实现List转map 、分组、过滤等操作 
- https://mp.weixin.qq.com/s/2idMa7lOzWFy2A8JyM2vtA
-
-
- 天天在用Stream，那你知道如此强大的Stream的实现原理吗？ 
- https://mp.weixin.qq.com/s/QtWKAIRzNAza96MhfH526w
-
- Stream流的这些操作，你得知道，对你工作有很大帮助 
- https://juejin.im/post/6888549645908181005
-
+Java8 快速实现List转map 、分组、过滤等操作 
+https://mp.weixin.qq.com/s/2idMa7lOzWFy2A8JyM2vtA
+天天在用Stream，那你知道如此强大的Stream的实现原理吗？ 
+https://mp.weixin.qq.com/s/QtWKAIRzNAza96MhfH526w
+Stream流的这些操作，你得知道，对你工作有很大帮助 
+https://juejin.im/post/6888549645908181005
 -->
 
 ## 1.1. 简介  
 &emsp; java8中的Stream是对集合对象功能的增强，它专注于对集合对象进行各种聚合操作，或者大批量数据操作。Stream API通过Lambda表达式，极大的提高编程效率和程序可读性。同时它提供串行和并行两种模式进行汇聚操作，并发模式能够充分利用多核处理器的优势，使用fork/join并行方式来拆分任务和加速处理过程。  
-&emsp; Stream和Iterator区别：Stream如同一个迭代器（Iterator），单向，不可往复，数据只能遍历一次。而和迭代器又不同的是，Stream可以并行化操作，迭代器只能命令式地、串行化操作。Stream的并行操作依赖于Java7中引入的Fork/Join框架（JSR166y）来拆分任务和加速处理过程。  
+&emsp; Stream和Iterator区别：Stream如同一个迭代器(Iterator)，单向，不可往复，数据只能遍历一次。而和迭代器又不同的是，Stream可以并行化操作，迭代器只能命令式地、串行化操作。Stream的并行操作依赖于Java7中引入的Fork/Join框架(JSR166y)来拆分任务和加速处理过程。  
 &emsp; lambda表达式是函数式接口的实现，参数行为化；stream流的参数是函数式接口，即lambda表达式的实例。  
 
 ## 1.2. Stream流的使用详解  
@@ -52,20 +49,20 @@
 
 &emsp; 基本数值型对应的Stream：对于基本数值型，目前有三种对应的包装类型 Stream：IntStream、LongStream、DoubleStream。  
 
-### 1.2.2. 流的操作-1  
+### 1.2.2. ~~流的操作~~  
 &emsp; 数据结构包装成Stream，对Stream中元素进行操作。流的操作类型分为三种：  
 
-* Intermediate（中间方法）：一个流可以后面跟随零个或多个intermediate 操作。其目的主要是打开流，做出某种程度的数据映射/过滤，然后返回一个新的流，交给下一个操作使用。这类操作都是惰性化的（lazy），仅仅调用到这类方法，并没有真正开始流的遍历。  
+* Intermediate(中间方法)：一个流可以后面跟随零个或多个intermediate 操作。其目的主要是打开流，做出某种程度的数据映射/过滤，然后返回一个新的流，交给下一个操作使用。这类操作都是惰性化的(lazy)，仅仅调用到这类方法，并没有真正开始流的遍历。  
 分类：map (mapToInt, flatMap等)、filter、distinct、sorted、peek、limit、skip、parallel、sequential、unordered；  
-* short-circuiting：对于一个intermediate操作，如果它接受的是一个无限大（infinite/unbounded）的Stream，但返回一个有限的新Stream。对于一个terminal操作，如果它接受的是一个无限大的Stream，但能在有限的时间计算出结果。当操作一个无限大的Stream，而又希望在有限时间内完成操作，则在管道内拥有一个short-circuiting操作是必要非充分条件。  
+* short-circuiting：对于一个intermediate操作，如果它接受的是一个无限大(infinite/unbounded)的Stream，但返回一个有限的新Stream。对于一个terminal操作，如果它接受的是一个无限大的Stream，但能在有限的时间计算出结果。当操作一个无限大的Stream，而又希望在有限时间内完成操作，则在管道内拥有一个short-circuiting操作是必要非充分条件。  
 分类：anyMatch、allMatch、noneMatch、findFirst、findAny、limit；  
-* Terminal（最终方法）：一个流只能有一个terminal操作，当这个操作执行后，流就被使用“光”了，无法再被操作。所以这必定是流的最后一个操作。Terminal操作的执行，才会真正开始流的遍历，并且会生成一个结果，或者一个side effect。  
+* Terminal(最终方法)：一个流只能有一个terminal操作，当这个操作执行后，流就被使用“光”了，无法再被操作。所以这必定是流的最后一个操作。Terminal操作的执行，才会真正开始流的遍历，并且会生成一个结果，或者一个side effect。  
 分类：forEach、forEachOrdered、toArray、reduce、collect、min、max、count、 anyMatch、allMatch、noneMatch、findFirst、findAny、iterator；  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/java8/java-7.png)  
 
 &emsp; **Intermediate和Terminal联系：**  
-&emsp; 在对于一个Stream进行多次转换操作(Intermediate操作)，每次都对 Stream的每个元素进行转换，而且是执行多次，这样时间复杂度就是N（转换次数）个for循环里把所有操作的总和吗？  
+&emsp; 在对于一个Stream进行多次转换操作(Intermediate操作)，每次都对 Stream的每个元素进行转换，而且是执行多次，这样时间复杂度就是N(转换次数)个for循环里把所有操作的总和吗？  
 &emsp; 其实不是这样的，转换操作都是lazy的，多个转换操作只会在Terminal操作的时候融合起来，一次循环完成。即Stream里有个操作函数的集合，每次转换操作就是把转换函数放入这个集合中，在Terminal操作的时候循环Stream对应的集合，然后对每个元素执行所有的函数。  
 
 #### 1.2.2.1. 基本数值流  
@@ -119,7 +116,7 @@ public static void main(String[] args) {
 ```
 
 ##### 1.2.2.2.2. Reduce聚合操作  
-&emsp; reduce()根据一定的规则将Stream中的元素进行计算后返回一个唯一的值。它提供一个起始值（种子），然后依照运算规则（BinaryOperator），和前面Stream的第一个、第二个、第n个元素组合。在没有起始值时，会将Stream的前面两个元素组合，返回的是Optional。字符串拼接、数值的sum、min、max、average都是特殊的reduce。  
+&emsp; reduce()根据一定的规则将Stream中的元素进行计算后返回一个唯一的值。它提供一个起始值(种子)，然后依照运算规则(BinaryOperator)，和前面Stream的第一个、第二个、第n个元素组合。在没有起始值时，会将Stream的前面两个元素组合，返回的是Optional。字符串拼接、数值的sum、min、max、average都是特殊的reduce。  
 &emsp; reduce()方法有三种形式：  
 
 ```java
@@ -168,7 +165,7 @@ reduce("", String::concat);
     ```java
     <R, A> R collect(Collector<? super T, A, R> collector);  
     ```
-    &emsp; 主要使用Collectors（java.util.stream.Collectors）来进行各种reduction 操作。  Collections是java.util包的一个工具类，内涵各种处理集合的静态方法： 
+    &emsp; 主要使用Collectors(java.util.stream.Collectors)来进行各种reduction 操作。  Collections是java.util包的一个工具类，内涵各种处理集合的静态方法： 
 
         1. 将流中的数据转成集合类型: toList、toSet、toMap、toCollection   
         2. 将流中的数据(字符串)使用分隔符拼接在一起：joining  
@@ -192,7 +189,7 @@ reduce("", String::concat);
 1. 并行流在启动线程上，默认会调用 Runtime.getRuntime().availableProcessors()，获取JVM底层最大设备线程数。  
 2. 如果想设置并行线程启动数量，则需要全局设置System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "12");  
 
-##### 1.2.2.3.1. ***parallelStream() 线程安全  
+##### 1.2.2.3.1. ※※※parallelStream() 线程安全  
 <!-- 
 https://www.jianshu.com/p/e9a36f2802ae?from=timeline&isappinstalled=0
 https://www.jianshu.com/p/32277e84dd1d

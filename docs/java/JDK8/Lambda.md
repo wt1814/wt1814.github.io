@@ -142,7 +142,7 @@ class GenericFunctionalInterfaceDemo {
 &emsp; SomeFunc接口用于提供对两种不同类型的lambda表达式的引用。第一种表达式使用String类型，第二种表达式使用Integer类型。因此，同一个函数式接口可以用于reserve lambda表达式和factorial lambda表达式。区别仅在于传递给SomeFunc的参数类型。  
 
 #### 1.2.3.3. Lambda表达式作为参数传递  
-&emsp; 为了将lambda表达式作为参数传递，接收lambda表达式的参数的类型必须是与该lambda表达式兼容的函数式接口的类型。  
+&emsp; **<font color = "red">为了将lambda表达式作为参数传递，接收lambda表达式的参数的类型必须是与该lambda表达式兼容的函数式接口的类型。</font>**  
 &emsp; 注：Lambda表达式作为方法参数使用。  
 
 ```java
