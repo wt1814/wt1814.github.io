@@ -5,7 +5,7 @@
 - [1. 集合类框架](#1-集合类框架)
     - [1.1. 集合类分类](#11-集合类分类)
         - [1.1.1. Collection和Map](#111-collection和map)
-        - [1.1.2. 集合常见问题](#112-集合常见问题)
+        - [1.1.2. ※※※集合常见问题](#112-※※※集合常见问题)
     - [1.2. 迭代器类Iterator](#12-迭代器类iterator)
         - [1.2.1. Iterator接口](#121-iterator接口)
         - [1.2.2. ListIterator接口](#122-listiterator接口)
@@ -139,7 +139,7 @@
                        不知道，就使用ArrayList
            不知道，就使用ArrayList  
 
-### 1.1.2. 集合常见问题  
+### 1.1.2. ※※※集合常见问题  
 1. List，Set，Map三者的区别？  
 &emsp; **<font color = "red">List：有序，可重复。Set：无序，唯一。Map：存储键值对。</font>**  
 2. ArrayList与Vector的区别？  
@@ -402,8 +402,6 @@ public static void main(String[] args) {
 #### 1.3.2.1. 快速失败(fail—fast)  
 &emsp; fail-fast 是 Java 中的一种快速失败机制，java.util 包下所有的集合都是快速失败的，快速失败会抛出 ConcurrentModificationException 异常，fail-fast可以把它理解为一种快速检测机制，它只能用来检测错误，不会对错误进行恢复，fail-fast 不一定只在多线程环境下存在，ArrayList 也会抛出这个异常，主要原因是由于 modCount 不等于 expectedModCount。    
 
-&emsp; fail-safe 是 Java 中的一种 安全失败 机制，它表示的是在遍历时不是直接在原集合上进行访问，而是先复制原有集合内容，在拷贝的集合上进行遍历。由于迭代时是对原集合的拷贝进行遍历，所以在遍历过程中对原集合所作的修改并不能被迭代器检测到，所以不会触发 ConcurrentModificationException。java.util.concurrent 包下的容器都是安全失败的，可以在多线程条件下使用，并发修改。  
-
 &emsp; **<font color = "lime">原理：迭代器在遍历时直接访问集合中的内容，并且在遍历过程中使用一个modCount变量。集合在被遍历期间如果内容发生变化，就会改变modCount的值。每当迭代器使用 hashNext()/next()遍历下一个元素之前，都会检测modCount变量是否为expectedmodCount值，是的话就返回遍历；否则抛出异常，终止遍历。</font>**  
 
 &emsp; 注意：这里异常的抛出条件是检测到modCount！= expectedmodCount这个条件。如果集合发生变化时修改modCount值刚好又设置为了expectedmodCount值，则异常不会抛出。因此，不能依赖于这个异常是否抛出而进行并发操作的编程，这个异常只建议用于检测并发修改的bug。  
@@ -411,7 +409,10 @@ public static void main(String[] args) {
 &emsp; 场景：java.util包下的集合类都是快速失败的，不能在多线程下发生并发修改(迭代过程中被修改)。  
 
 #### 1.3.2.2. 安全失败(fail—safe)  
-&emsp; 采用安全失败机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，在拷贝的集合上进行遍历。  
+<!-- 
+&emsp; fail-safe 是 Java 中的一种 安全失败 机制，它表示的是在遍历时不是直接在原集合上进行访问，而是先复制原有集合内容，在拷贝的集合上进行遍历。由于迭代时是对原集合的拷贝进行遍历，所以在遍历过程中对原集合所作的修改并不能被迭代器检测到，所以不会触发 ConcurrentModificationException。java.util.concurrent 包下的容器都是安全失败的，可以在多线程条件下使用，并发修改。  
+-->
+&emsp; **<font color = "clime">采用安全失败机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，在拷贝的集合上进行遍历。</font>**  
 
 &emsp; 原理：由于迭代时是对原集合的拷贝进行遍历，所以在遍历过程中对原集合所作的修改并不能被迭代器检测到，所以不会触发 Concurrent Modification Exception。  
 
