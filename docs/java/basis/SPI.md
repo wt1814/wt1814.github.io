@@ -33,7 +33,8 @@ https://mp.weixin.qq.com/s/B17Kvjb66iAAZmxDqBDWsA
 
 &emsp; <font color = "red">SPI接口的定义在调用方，在概念上更依赖调用方；组织上位于调用方所在的包中，实现位于独立的包中。</font>
 
-&emsp; 当服务的提供者提供了一种接口的实现之后，服务的消费者需要在classpath下的META-INF/services/目录里创建一个以服务接口命名的文件，这个文件里的内容就是这个接口的具体的实现类。服务消费者依赖服务提供者。当服务消费者的程序需要这个服务的时候，就可以通过查找这个jar包（一般都是以jar包做依赖）的META-INF/services/中的配置文件，配置文件中有接口的具体实现类名，可以根据这个类名进行加载实例化，就可以使用该服务了。<font color = "lime">JDK中查找服务实现的工具类是：java.util.ServiceLoader。</font>
+&emsp; 当服务的提供者提供了一种接口的实现之后，服务的消费者需要在classpath下的META-INF/services/目录里创建一个以服务接口命名的文件，这个文件里的内容就是这个接口的具体的实现类。服务消费者依赖服务提供者。当服务消费者的程序需要这个服务的时候，就可以通过查找这个jar包（一般都是以jar包做依赖）的META-INF/services/中的配置文件，配置文件中有接口的具体实现类名，可以根据这个类名进行加载实例化，就可以使用该服务了。  
+&emsp; **<font color = "lime">JDK中查找服务实现的工具类是：java.util.ServiceLoader。</font>**
 
 ## 1.2. SPI案例  
 1. JDBC驱动加载案例：利用Java的SPI机制，可以根据不同的数据库厂商来引入不同的JDBC驱动包；  
@@ -41,7 +42,6 @@ https://mp.weixin.qq.com/s/B17Kvjb66iAAZmxDqBDWsA
 3. Dubbo的SPI机制：Dubbo更是把SPI机制应用的淋漓尽致，Dubbo基本上自身的每个功能点都提供了扩展点，比如提供了集群扩展，路由扩展和负载均衡扩展等差不多接近30个扩展点。如果Dubbo的某个内置实现不符合的需求，那么只要利用其SPI机制将我们的实现替换掉Dubbo的实现即可。  
 
 ## 1.3. SPI编码示例  
-
 <!-- 
 你应该了解的 Java SPI 机制 
 https://mp.weixin.qq.com/s/CixQ4fglnonfFoC3A7Mn5g
@@ -345,4 +345,3 @@ https://mp.weixin.qq.com/s/6BhHBtoBlSqHlXduhzg7Pw
 深入理解ServiceLoader类与SPI机制
 https://blog.csdn.net/li_xunhuan/article/details/103017286?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-15.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-15.nonecase
 -->
-
