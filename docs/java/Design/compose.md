@@ -12,9 +12,9 @@
 # 1. 继承和组合  
 <!-- 
 https://mp.weixin.qq.com/s/KksIdVFsh2mr3kZvrNQHgg
-
 https://time.geekbang.org/column/article/169593
-
+https://blog.csdn.net/zymx14/article/details/79605926
+https://blog.csdn.net/weixin_40995778/article/details/83306945
 -->
 
 ## 1.1. 类之间的关系简述
