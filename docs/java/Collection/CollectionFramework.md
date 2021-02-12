@@ -13,25 +13,25 @@
     - [1.3. ConcurrentModificationException与fail-fast](#13-concurrentmodificationexception与fail-fast)
         - [1.3.1. ConcurrentModificationException异常-1](#131-concurrentmodificationexception异常-1)
             - [1.3.1.1. 单线程ArrayList修改元素时，防止抛出ConcurrentModificationException](#1311-单线程arraylist修改元素时防止抛出concurrentmodificationexception)
-        - [1.3.2. ~~快速失败（fail-fast）VS安全失败（fail-safe）-1~~](#132-快速失败fail-fastvs安全失败fail-safe-1)
-            - [1.3.2.1. 快速失败（fail—fast）](#1321-快速失败failfast)
-            - [1.3.2.2. 安全失败（fail—safe）](#1322-安全失败failsafe)
+        - [1.3.2. ~~快速失败(fail-fast)VS安全失败(fail-safe)-1~~](#132-快速失败fail-fastvs安全失败fail-safe-1)
+            - [1.3.2.1. 快速失败(fail—fast)](#1321-快速失败failfast)
+            - [1.3.2.2. 安全失败(fail—safe)](#1322-安全失败failsafe)
     - [1.4. 集合工具类](#14-集合工具类)
         - [1.4.1. 集合工具类Collections](#141-集合工具类collections)
         - [1.4.2. 数组工具类Arrays](#142-数组工具类arrays)
         - [1.4.3. 内存排序，Comparable、Comparator接口](#143-内存排序comparablecomparator接口)
-            - [Comparable接口](#comparable接口)
-            - [Comparator接口](#comparator接口)
+            - [1.4.3.1. Comparable接口](#1431-comparable接口)
+            - [1.4.3.2. Comparator接口](#1432-comparator接口)
 
 <!-- /TOC -->
 
-# 1. 集合类框架
 &emsp; <font color = "lime">List有ArrayList、Vector、LinkedList。Map有HashMap、LinkedHashMap、TreeMap、Hashtable。Set有HashSet、LinkedHashSet、TreeSet。</font>    
 &emsp; <font color = "lime">List：有序，可重复。Set：无序，唯一。Map：存储键值对。</font>  
 &emsp; 排序：  
-* Comparable，自然排序（自身属性，整数（大小排序），字符串（字典序））。  
+* Comparable，自然排序(自身属性，整数(大小排序)，字符串(字典序))。  
 * Comparator，定制排序。  
 
+# 1. 集合类框架
 ## 1.1. 集合类分类  
 ### 1.1.1. Collection和Map
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-1.png)  
@@ -143,23 +143,23 @@
 1. List，Set，Map三者的区别？  
 &emsp; **<font color = "red">List：有序，可重复。Set：无序，唯一。Map：存储键值对。</font>**  
 2. ArrayList与Vector的区别？  
-    1. Vector的方法都是同步的(Synchronized)，是线程安全的（thread-safe）；而ArrayList的方法不是，由于线程的同步必然要影响性能，因此，ArrayList的性能比Vector好。  
+    1. Vector的方法都是同步的(Synchronized)，是线程安全的(thread-safe)；而ArrayList的方法不是，由于线程的同步必然要影响性能，因此，ArrayList的性能比Vector好。  
     2. 当Vector或ArrayList中的元素超过它的初始大小时，Vector会将它的容量翻倍，<font color = "red">而ArrayList只增加大约1.5的大小，这样ArrayList就有利于节约内存空间。</font>  
-    3. <font color = "red">Vector可以设置capacityIncrement（容量增长的参数）</font>，而ArrayList不可以。  
+    3. <font color = "red">Vector可以设置capacityIncrement(容量增长的参数)</font>，而ArrayList不可以。  
 3. ArrayList与LinkedList的区别？  
     1. 是否保证线程安全： ArrayList 和 LinkedList 都是不同步的，也就是不保证线程安全；  
-    2. 底层数据结构： Arraylist 底层使用的是Object数组；<font color = "lime">LinkedList底层使用的是双向链表数据结构（JDK1.6之前为循环链表，JDK1.7取消了循环。）</font>  
+    2. 底层数据结构： Arraylist 底层使用的是Object数组；<font color = "lime">LinkedList底层使用的是双向链表数据结构(JDK1.6之前为循环链表，JDK1.7取消了循环。)</font>  
     3. 插入和删除是否受元素位置的影响：1)ArrayList 采用数组存储，所以插入和删除元素的时间复杂度受元素位置的影响。 2)LinkedList采用链表存储，所以插入，删除元素时间复杂度不受元素位置的影响，都是近似O(1)而数组为近似O(n)。  
     4. 是否支持快速随机访问：LinkedList不支持高效的随机元素访问，而ArrayList支持。快速随机访问就是通过元素的序号快速获取元素对象(对应于get(int index) 方法)。  
-    5. 内存空间占用：ArrayList的空间浪费主要体现在在list列表的结尾会预留一定的容量空间，而LinkedList的空间花费则体现在它的每一个元素都需要消耗比ArrayList更多的空间（因为要存放直接后继和直接前驱以及数据）。  
+    5. 内存空间占用：ArrayList的空间浪费主要体现在在list列表的结尾会预留一定的容量空间，而LinkedList的空间花费则体现在它的每一个元素都需要消耗比ArrayList更多的空间(因为要存放直接后继和直接前驱以及数据)。  
 4. ArrayList的扩容机制？  
     1. 在JKD1.6中，如果通过无参构造的话，初始数组容量为10。每次通过copeOf的方式扩容后容量为原来的1.5倍加1。  
-    2. 在JDK1.7中，如果通过无参构造的话，初始数组容量为0，当真正对数组进行添加时，才真正分配容量，每次按照大约1.5倍（位运算）的比率通过copeOf的方式扩容。  
+    2. 在JDK1.7中，如果通过无参构造的话，初始数组容量为0，当真正对数组进行添加时，才真正分配容量，每次按照大约1.5倍(位运算)的比率通过copeOf的方式扩容。  
     3. 在JKD1.8中，arraylist这个类中，扩容 调用的是grow()方法，通过grow()方法中调用的Arrays.copyof()方法进行对原数组的复制，再通过调用System.arraycopy()方法进行复制，达到扩容的目的。  
 5. **<font color = "lime">HashMap与HashTable的区别？</font>**  
 
     1. 两者父类不同：HashMap和Hashtable都实现了Map接口，但Hashtable继承于Dictionary类，而HashMap是继承于AbstractMap。  
-    2. 底层数据结构：JDK1.8以后的HashMap在解决哈希冲突时有了较大的变化，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少搜索时间。Hashtable没有这样的机制。 
+    2. 底层数据结构：JDK1.8以后的HashMap在解决哈希冲突时有了较大的变化，当链表长度大于阈值(默认为8)时，将链表转化为红黑树，以减少搜索时间。Hashtable没有这样的机制。 
     3. 对Null key 和Null value的支持： **<font color = "lime">HashMap中，null可以作为键，这样的键只有一个，</font>** 可以有一个或多个键所对应的值为 null。 **<font color = "lime">但是在HashTable中put进的键值只要有一个null，直接抛出NullPointerException。</font>**  
     4. 初始容量大小和每次扩充容量大小的不同 ： ①<font color = "red">创建时如果不指定容量初始值，Hashtable 默认的初始大小为11，之后每次扩充，容量变为原来的2n+1。</font>HashMap 默认的初始化大小为16。之后每次扩充，容量变为原来的2倍。②<font color = "red">创建时如果给定了容量初始值，那么 Hashtable 会直接使用给定的大小</font>，而 HashMap 会将其扩充为2的幂次方大小。也就是说 HashMap 总是使用2的幂作为哈希表的大小。  
     5. 线程是否安全： HashMap 是非线程安全的，HashTable 是线程安全的；HashTable 内部的方法基本都经过synchronized 修饰。  
@@ -167,9 +167,9 @@
 <!-- https://mp.weixin.qq.com/s/kZcIsYbQNJ2Cqitg4xoV6g-->
 
 6. Java集合不能存放基本数据类型，只存放对象的引用  
-&emsp; Java集合如Map、Set、List等所有集合只能存放引用类型数据（数组、类，集合类型属于类范畴、接口），它们都是存放引用类型数据的容器。不能存放如int、long、float、double等基础类型的数据。  
+&emsp; Java集合如Map、Set、List等所有集合只能存放引用类型数据(数组、类，集合类型属于类范畴、接口)，它们都是存放引用类型数据的容器。不能存放如int、long、float、double等基础类型的数据。  
 &emsp; 基本类型数据如何解决？  
-&emsp; 可以通过包装类把基本类型转为对象类型，存放引用就可以解决这个问题。由于有了自动拆箱和装箱功能，基本数据类型和其对应对象（包装类）之间的转换变得很方便，直接把基本数据类型存入集合中，系统会自动将其装箱成封装类，然后加入到集合当中。示例代码：  
+&emsp; 可以通过包装类把基本类型转为对象类型，存放引用就可以解决这个问题。由于有了自动拆箱和装箱功能，基本数据类型和其对应对象(包装类)之间的转换变得很方便，直接把基本数据类型存入集合中，系统会自动将其装箱成封装类，然后加入到集合当中。示例代码：  
 
     ```java
     int i = 10;
@@ -178,7 +178,7 @@
     set.add(in);//将包装类对象加入该集合 
     System.out.println(set);//打印结果
     ```
-    &emsp; 同样的效果（自动包装）：  
+    &emsp; 同样的效果(自动包装)：  
 
     ```java
     int i = 10;
@@ -246,7 +246,7 @@ public class ListIteratorDemo {
 
 ## 1.3. ConcurrentModificationException与fail-fast  
 ### 1.3.1. ConcurrentModificationException异常-1  
-1. 在单线程中，集合循环遍历时所使用的迭代器Iterator有一个要求： **<font color = "red">在迭代的过程中，除了使用迭代器（如:Iterator.remove()方法）对集合增删元素外，是不允许直接对集合进行增删操作。否则将会抛出ConcurrentModificationException异常。</font>** 所以，由于集合的<font color = "red">for-Each循环本质上使用的还是Iterator来迭代</font>，因此也要注意这个陷阱。for-Each循环很隐蔽地使用了Iterator，导致程序员很容易忽略掉这个细节，所以一定要注意。看下面的例子，for-Each循环中修改了集合。  
+1. 在单线程中，集合循环遍历时所使用的迭代器Iterator有一个要求： **<font color = "red">在迭代的过程中，除了使用迭代器(如:Iterator.remove()方法)对集合增删元素外，是不允许直接对集合进行增删操作。否则将会抛出ConcurrentModificationException异常。</font>** 所以，由于集合的<font color = "red">for-Each循环本质上使用的还是Iterator来迭代</font>，因此也要注意这个陷阱。for-Each循环很隐蔽地使用了Iterator，导致程序员很容易忽略掉这个细节，所以一定要注意。看下面的例子，for-Each循环中修改了集合。  
 
     ```java
     List<String> list = new LinkedList<String>();
@@ -260,7 +260,7 @@ public class ListIteratorDemo {
     ```  
     &emsp; 运行抛出异常:ConcurrentModificationException。  
     &emsp; 抛出上述异常的主要原因是当调用容器的iterator()方法返回Iterator对象时，把容器中包含对象的个数赋值给了一个变量expectedModCount，在调用next()方法时会比较变量expectedModCount与容器中实际对象的个数modCount的值是否相等，若二者不相等，则会抛出ConcurrentModificationException异常，因此在使用Iterator遍历容器的过程中，如果对容器进行增加或删除操作，就会改变容器中对象的数量，从而导致抛出异常。解决办法如下：在遍历的过程中把需要删除的对象保存到一个集合中，等遍历结束后再调用removeAll()方法来删除，或者使用iterator.remove()方法。  
-2. 在多线程的环境中，线程是交替运行的（时间片轮转调度）。这就意味着，如果有两个线程A、B，线程A对集合使用Iterator迭代遍历，线程B则对集合进行增删操作。线程A、B一旦交替运行，就会出现在迭代的同时对集合增删的效果，也会抛出异常。解决办法就是加锁变成原子操作。  
+2. 在多线程的环境中，线程是交替运行的(时间片轮转调度)。这就意味着，如果有两个线程A、B，线程A对集合使用Iterator迭代遍历，线程B则对集合进行增删操作。线程A、B一旦交替运行，就会出现在迭代的同时对集合增删的效果，也会抛出异常。解决办法就是加锁变成原子操作。  
     &emsp; 多线程访问容器的过程中防止抛出ConcurrentModificationException异常：  
 
     * 在JDK1.5版本引入了线程安全的容器，比如ConcurrentHashMap和CopyOnWriteArrayList等。可以使用这些线程安全的容器来代替非线程安全的容器。  
@@ -397,9 +397,9 @@ public static void main(String[] args) {
 &emsp; **总结：** 如果开发中需要在集合中移除某个元素，如果jdk是1.8的，建议直接使用2.4方法，如果是低版本，那么建议采用迭代器方法，效率高，性能好！  
 
 
-### 1.3.2. ~~快速失败（fail-fast）VS安全失败（fail-safe）-1~~  
+### 1.3.2. ~~快速失败(fail-fast)VS安全失败(fail-safe)-1~~  
 <!-- https://mp.weixin.qq.com/s?__biz=MzIyNDI3MjY0NQ==&mid=2247483920&idx=1&sn=6ea75de92bbcf50e64b5bb6fed9b9b23&source=41#wechat_redirect -->
-#### 1.3.2.1. 快速失败（fail—fast）  
+#### 1.3.2.1. 快速失败(fail—fast)  
 &emsp; fail-fast 是 Java 中的一种快速失败机制，java.util 包下所有的集合都是快速失败的，快速失败会抛出 ConcurrentModificationException 异常，fail-fast可以把它理解为一种快速检测机制，它只能用来检测错误，不会对错误进行恢复，fail-fast 不一定只在多线程环境下存在，ArrayList 也会抛出这个异常，主要原因是由于 modCount 不等于 expectedModCount。    
 
 &emsp; fail-safe 是 Java 中的一种 安全失败 机制，它表示的是在遍历时不是直接在原集合上进行访问，而是先复制原有集合内容，在拷贝的集合上进行遍历。由于迭代时是对原集合的拷贝进行遍历，所以在遍历过程中对原集合所作的修改并不能被迭代器检测到，所以不会触发 ConcurrentModificationException。java.util.concurrent 包下的容器都是安全失败的，可以在多线程条件下使用，并发修改。  
@@ -408,9 +408,9 @@ public static void main(String[] args) {
 
 &emsp; 注意：这里异常的抛出条件是检测到modCount！= expectedmodCount这个条件。如果集合发生变化时修改modCount值刚好又设置为了expectedmodCount值，则异常不会抛出。因此，不能依赖于这个异常是否抛出而进行并发操作的编程，这个异常只建议用于检测并发修改的bug。  
 
-&emsp; 场景：java.util包下的集合类都是快速失败的，不能在多线程下发生并发修改（迭代过程中被修改）。  
+&emsp; 场景：java.util包下的集合类都是快速失败的，不能在多线程下发生并发修改(迭代过程中被修改)。  
 
-#### 1.3.2.2. 安全失败（fail—safe）  
+#### 1.3.2.2. 安全失败(fail—safe)  
 &emsp; 采用安全失败机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，在拷贝的集合上进行遍历。  
 
 &emsp; 原理：由于迭代时是对原集合的拷贝进行遍历，所以在遍历过程中对原集合所作的修改并不能被迭代器检测到，所以不会触发 Concurrent Modification Exception。  
@@ -428,7 +428,7 @@ public static void main(String[] args) {
 &emsp; Collections提供了一些常用的集合框架操作。掌握API中部分常用的方法。  
 
 ### 1.4.2. 数组工具类Arrays  
-&emsp; java.util.Arrays类能方便地操作数组,它提供的所有方法都是静态的。  
+&emsp; java.util.Arrays类能方便地操作数组，它提供的所有方法都是静态的。  
 
 &emsp; Arrays.asList()不能使用其修改集合相关的方法。  
 &emsp; 《阿里巴巴java开发规范》使用工具类Arrays.asList()方法把数组转换成集合时，不能使用其修改集合相关的方法，它的add/remove/clear方法会抛出UnsupportedOperationException()。 
@@ -439,21 +439,21 @@ https://mp.weixin.qq.com/s/T5PlA528bvriev5R_OM5Lw
 https://blog.csdn.net/IT_10/article/details/104747173
 https://blog.csdn.net/weixin_40304387/article/details/81054080
 
-&emsp; <font color = "red">Comparable，自然排序；Comparator ，定制排序。</font>同时存在时采用 Comparator（定制排序）的规则进行比较。    
-&emsp; 对于一些普通的数据类型（比如 String, Integer, Double…），它们默认实现了Comparable 接口，实现了 compareTo 方法，可以直接使用。  
+&emsp; <font color = "red">Comparable，自然排序；Comparator ，定制排序。</font>同时存在时采用 Comparator(定制排序)的规则进行比较。    
+&emsp; 对于一些普通的数据类型(比如 String, Integer, Double…)，它们默认实现了Comparable 接口，实现了 compareTo 方法，可以直接使用。  
 &emsp; 而对于一些自定义类，它们可能在不同情况下需要实现不同的比较策略，可以新创建 Comparator 接口，然后使用特定的 Comparator 实现进行比。  
 -->
 &emsp; Comparable接口和Comparator接口的区别：  
 
 * <font color = "red">Comparable接口位于java.lang包下；Comparator位于java.util包下。</font>  
 * <font color = "red">Comparable接口只提供了一个compareTo()方法；Comparator接口不仅提供了compara()方法，还提供了其他默认方法，如reversed()、thenComparing()，使我们可以按照更多的方式进行排序。</font>  
-* <font color = "lime">如果对象的排序需要基于自然顺序（它本身是可比较的），则使用 Comparable，而如果需要根据业务来对不同属性进行排序，请使用 Comparator。</font>  
+* <font color = "lime">如果对象的排序需要基于自然顺序(它本身是可比较的)，则使用 Comparable，而如果需要根据业务来对不同属性进行排序，请使用 Comparator。</font>  
 * 如果要用Comparable接口，则必须实现这个接口，并重写comparaTo()方法；但是Comparator接口可以在类外部使用，通过将该接口的一个匿名类对象当做参数传递给Collections.sort()方法或者Arrays.sort()方法实现排序。Comparator体现了一种策略模式，即可以不用要把比较方法嵌入到类中，而是可以单独在类外部使用，这样就可有不用改变类本身的代码而实现对类对象进行排序。    
 
-#### Comparable接口  
+#### 1.4.3.1. Comparable接口  
 ......
 
-#### Comparator接口  
+#### 1.4.3.2. Comparator接口  
 ......
  
 <!-- 
@@ -466,7 +466,3 @@ List<People> peoples = new ArrayList<>();
 peoples.sort(Comparator.comparing(People::getAge));
 ```
 -->
-
-
-
-
