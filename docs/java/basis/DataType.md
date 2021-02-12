@@ -7,7 +7,7 @@
             - [1.1.1.1. 自动装箱和拆箱](#1111-自动装箱和拆箱)
             - [1.1.1.2. 装箱和拆箱是如何实现的](#1112-装箱和拆箱是如何实现的)
             - [1.1.1.3. 其他问题](#1113-其他问题)
-            - [1.1.1.4. 常量池](#1114-常量池)
+            - [1.1.1.4. ※※※常量池](#1114-※※※常量池)
     - [1.2. java.lang.Object类](#12-javalangobject类)
         - [1.2.1. 类构造器](#121-类构造器)
         - [1.2.2. 成员方法](#122-成员方法)
@@ -35,18 +35,15 @@
 <!-- /TOC -->
 
 <!-- 
-
 equasl 和 hashcode
 https://mp.weixin.qq.com/s/qfm-Xq1ZNJFJdSZ58qSLLA
 -->
 
 # 1. Java数据类型  
-
-<!-- -->
 &emsp; **<font color = "lime">一句话概述：String不可变，安全；StringBuilder可变，线程不安全；StringBuffer可变，线程安全。 </font>** 
 
 ## 1.1. Java数据类型分类  
-&emsp; Java数据类型分为基本数据类型和引用数据类型。除了8种基本类型外，全是引用类型。引用数据类型分3种：类（包含集合类、8种基本数据类型的封装类），接口，数组（数组一旦实例化，它的长度就固定了）。
+&emsp; Java数据类型分为基本数据类型和引用数据类型。除了8种基本类型外，全是引用类型。引用数据类型分3种：类(包含集合类、8种基本数据类型的封装类)，接口，数组(数组一旦实例化，它的长度就固定了)。
 
 &emsp; 8种基本数据类型：
 1. 6种数字类型：Byte、short、int、long、float、double
@@ -65,7 +62,7 @@ https://mp.weixin.qq.com/s/qfm-Xq1ZNJFJdSZ58qSLLA
 |boolean	|4	|false	| |
 
 &emsp; 注：1Byte有8bit。   
-&emsp; 对于boolean，官方文档未明确定义，它依赖于JVM厂商的具体实现。逻辑上理解是占有1位，但是实际中会考虑计算机高效存储因素。在Java虚拟机中没有任何供boolean值专用的字节码指令，Java语言表达式所操作的boolean值，在编译之后都使用Java虚拟机中的int数据类型来代替，而boolean数组将会被编码成Java虚拟机的byte数组，每个元素boolean元素占8位。这样可以得出boolean类型占了单独使用是4个字节，在数组中又是1个字节。使用int的原因是，对于当下32位的处理器（CPU）来说，一次处理数据是32位（这里不是指的是32/64位系统，而是指CPU硬件层面），具有高效存取的特点。  
+&emsp; 对于boolean，官方文档未明确定义，它依赖于JVM厂商的具体实现。逻辑上理解是占有1位，但是实际中会考虑计算机高效存储因素。在Java虚拟机中没有任何供boolean值专用的字节码指令，Java语言表达式所操作的boolean值，在编译之后都使用Java虚拟机中的int数据类型来代替，而boolean数组将会被编码成Java虚拟机的byte数组，每个元素boolean元素占8位。这样可以得出boolean类型占了单独使用是4个字节，在数组中又是1个字节。使用int的原因是，对于当下32位的处理器(CPU)来说，一次处理数据是32位(这里不是指的是32/64位系统，而是指CPU硬件层面)，具有高效存取的特点。  
 
 &emsp; 基本类型所占的存储空间是不变的。这种不变性也是Java具有可移植性的原因之一。  
 &emsp; 基本类型放在栈中，直接存储值。  
@@ -129,7 +126,7 @@ public class Main {
 &emsp; 其他的也类似，比如Double、Character。  
 
 &emsp; 一句话总结装箱和拆箱的实现过程：  
-&emsp; <font color = "lime">装箱过程是通过调用包装器的valueOf方法实现的，而拆箱过程是通过调用包装器的 xxxValue方法实现的。（xxx代表对应的基本数据类型）。</font>  
+&emsp; <font color = "lime">装箱过程是通过调用包装器的valueOf方法实现的，而拆箱过程是通过调用包装器的 xxxValue方法实现的。(xxx代表对应的基本数据类型)。</font>  
 
 #### 1.1.1.3. 其他问题  
 <!-- 
@@ -137,7 +134,7 @@ https://www.cnblogs.com/dolphin0520/p/3780005.html
 -->
 ...
 
-#### 1.1.1.4. 常量池  
+#### 1.1.1.4. ※※※常量池  
 &emsp; <font color = "lime">Java基本类型的包装类的大部分都实现了常量池技术，</font><font color = "red">即Byte、Short、Integer、Long、Character、Boolean，前面4种包装类默认创建了数值[-128,127]的相应类型的缓存数据，Character创建了数值在[0,127]范围的缓存数据，Boolean直接返回True Or False。如果超出对应范围仍然会去创建新的对象。为什么把缓存设置为[-128,127]区间？是性能和资源之间的权衡。</font>  
 &emsp; 两种浮点数类型的包装类Float、Double并没有实现常量池技术。  
 
@@ -175,7 +172,7 @@ public boolean equals(Object obj) {
     &emsp; equals 用作对象之间的比较具有如下特性：  
 
     * 自反性：对于任何非空引用 x 来说，x.equals(x) 应该返回 true。  
-    * 对称性：对于任何非空引用 x 和 y 来说，若x.equals（y）为 true，则y.equals（x）也为 true。  
+    * 对称性：对于任何非空引用 x 和 y 来说，若x.equals(y)为 true，则y.equals(x)也为 true。  
     * 传递性：对于任何非空引用的值来说，有三个值，x、y 和 z，如果x.equals(y) 返回true，y.equals(z) 返回true，那么x.equals(z) 也应该返回true。  
     * 一致性：对于任何非空引用 x 和 y 来说，如果 x.equals(y) 相等的话，那么它们必须始终相等。  
     * 非空性：对于任何非空引用的值 x 来说，x.equals(null) 必须返回 false。  
@@ -191,11 +188,11 @@ public native int hashCode();
 &emsp; hashCode()是一个用native声明的本地方法，返回对象的散列码，是int类型的数值。  
 &emsp; **<font color = "lime">java中的hashCode有两个作用：</font>**  
 1. Object的hashCode返回对象的内存地址。  
-2. 对象重写的hashCode配合基于散列的集合一起正常运行，这样的散列集合包括HashSet、HashMap以及HashTable等。对于大量的元素比较时直接比较equals效率低下，可先判断hashCode再判断equals，因为不同的对象可能返回相同的hashCode(如"Aa"和"BB"的hashCode就一样),所以比较时有时需要再比较equals。hashCode只是起辅助作用。为了使字符串计算出来的hashCode尽可能的少重复，即降低哈希算法的冲突率，设计者选择了31这个乘数。  
+2. 对象重写的hashCode配合基于散列的集合一起正常运行，这样的散列集合包括HashSet、HashMap以及HashTable等。对于大量的元素比较时直接比较equals效率低下，可先判断hashCode再判断equals，因为不同的对象可能返回相同的hashCode(如"Aa"和"BB"的hashCode就一样)，所以比较时有时需要再比较equals。hashCode只是起辅助作用。为了使字符串计算出来的hashCode尽可能的少重复，即降低哈希算法的冲突率，设计者选择了31这个乘数。  
 
 ##### 1.2.2.2.1. hashCode值是怎么获取的？  
 &emsp; 每个对象都有hashcode，通过对象的内部地址(也就是物理地址)转换成一个整数，然后该整数通过hash函数的算法就得到了hashcode。所以hashcode是在hash表中对应的位置。  
-&emsp; HashCode用来在散列表（如HashSet、HashMap以及HashTable等）中确定对象的存储地址。hashCode仅在散列表中才有用。  
+&emsp; HashCode用来在散列表(如HashSet、HashMap以及HashTable等)中确定对象的存储地址。hashCode仅在散列表中才有用。  
 
 ##### 1.2.2.2.2. 为什么equals方法重写，建议也一起重写hashcode方法？  
 <!-- 
@@ -239,7 +236,7 @@ public void testClass(){
 
 &emsp; **<font color = "red">为什么说System.out.println()输出对象的时候会调用对象的toString方法：</font>**  
 &emsp; 在System类中可以看到有一个out属性，类型是PrintStream：public final static PrintStream out = null;  
-&emsp; 再看PrintStream的println方法,会调用String.valueOf方法将对象转换为String类型：  
+&emsp; 再看PrintStream的println方法，会调用String.valueOf方法将对象转换为String类型：  
 
 ```java
 public void println(Object x) {
@@ -262,9 +259,9 @@ public static String valueOf(Object obj) {
 
 #### 1.2.2.5. notify()/notifyAll()/wait()-1  
 &emsp; **<font color = "red">为什么在Object类中定义wait和notify方法？</font>**  
-1. wait和notify不仅仅是普通方法或同步工具，更重要的是它们是 Java中两个线程之间的通信机制。对语言设计者而言, 如果不能通过Java关键字(例如 synchronized)实现通信此机制，同时又要确保这个机制对每个对象可用, 那么 Object类则是正确声明位置。记住同步和等待通知是两个不同的领域，不要把它们看成是相同的或相关的。同步是提供互斥并确保 Java 类的线程安全，而 wait 和 notify 是两个线程之间的通信机制。    
+1. wait和notify不仅仅是普通方法或同步工具，更重要的是它们是 Java中两个线程之间的通信机制。对语言设计者而言，如果不能通过Java关键字(例如 synchronized)实现通信此机制，同时又要确保这个机制对每个对象可用，那么 Object类则是正确声明位置。记住同步和等待通知是两个不同的领域，不要把它们看成是相同的或相关的。同步是提供互斥并确保 Java 类的线程安全，而 wait 和 notify 是两个线程之间的通信机制。    
 2. 每个对象都可上锁，这是在 Object 类而不是 Thread 类中声明wait和 notify的另一个原因。  
-3. 在Java中为了进入代码的临界区，线程需要锁定并等待锁定，它们不知道哪些线程持有锁，而只是知道锁被某个线程持有，并且它们应该等待取得锁, 而不是去了解哪个线程在同步块内，并请求它们释放锁定。  
+3. 在Java中为了进入代码的临界区，线程需要锁定并等待锁定，它们不知道哪些线程持有锁，而只是知道锁被某个线程持有，并且它们应该等待取得锁，而不是去了解哪个线程在同步块内，并请求它们释放锁定。  
 4. Java是基于Hoare的监视器的思想。在Java中，所有对象都有一个监视器。  
 
 ## 1.3. java.lang.String类  
@@ -276,8 +273,8 @@ public static String valueOf(Object obj) {
 public final class String
    implements java.io.Serializable, Comparable<String>, CharSequence {}
 ```
-&emsp; String是一个用final声明的常量类，不能被任何类所继承，而且一旦<font color = "red">一个String对象被创建, 包含在这个对象中的字符序列是不可改变的, 包括该类后续的所有方法都是不能修改该对象的</font>，直至该对象被销毁，这是需要特别注意的（该类的一些方法看似改变了字符串，其实内部都是创建一个新的字符串）。  
-&emsp; 接着实现了Serializable接口，这是一个序列化标志接口，还实现了Comparable接口，用于比较两个字符串的大小（按顺序比较单个字符的ASCII码）；最后实现了CharSequence接口，表示是一个有序字符的集合。  
+&emsp; String是一个用final声明的常量类，不能被任何类所继承，而且一旦<font color = "red">一个String对象被创建，包含在这个对象中的字符序列是不可改变的，包括该类后续的所有方法都是不能修改该对象的</font>，直至该对象被销毁，这是需要特别注意的(该类的一些方法看似改变了字符串，其实内部都是创建一个新的字符串)。  
+&emsp; 接着实现了Serializable接口，这是一个序列化标志接口，还实现了Comparable接口，用于比较两个字符串的大小(按顺序比较单个字符的ASCII码)；最后实现了CharSequence接口，表示是一个有序字符的集合。  
 
 &emsp; **<font color = "lime">为什么Java字符串是不可变的？</font>** 原因大致有以下三个：  
 
@@ -403,7 +400,7 @@ System.out.println(str1 == str5); //true
 System.out.println(str2 == str6); //false
 ```  
 &emsp; String str1 = "java";创建一个对象放在常量池中。  
-&emsp; String str2 = new String("java");创建两个对象，字面量"java"创建一个对象放在常量池中，new String()又创建一个对象放在堆中。 如果常量池中已经存在，则是创建了一个对象。  
+&emsp; String str2 = new String("java");创建两个对象，字面量"java"创建一个对象放在常量池中，new String()又创建一个对象放在堆中。如果常量池中已经存在，则是创建了一个对象。  
 &emsp; String str3 = "hello "+"java"; 创建了一个对象。  
 &emsp; String str5 = str3 + "java";创建了三个对象。
 

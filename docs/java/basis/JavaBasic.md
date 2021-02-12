@@ -11,7 +11,7 @@
     - [1.2. Java关键字](#12-java关键字)
         - [1.2.1. Java访问控制符](#121-java访问控制符)
         - [1.2.2. static-1](#122-static-1)
-        - [1.2.3. final-1](#123-final-1)
+        - [1.2.3. final](#123-final)
     - [1.3. Java变量](#13-java变量)
         - [1.3.1. 声明、初始化、实例化](#131-声明初始化实例化)
         - [1.3.2. 全局变量、成员变量、局部变量](#132-全局变量成员变量局部变量)
@@ -78,7 +78,7 @@ https://www.cnblogs.com/dudadi/p/Java.html
 
 &emsp; **<font color = "red">for循环和while循环的区别及用法：</font>**   
 1. 使用场景不同：  
-&emsp; 知道执行次数du的时候一般用for，条件循环时一般用while。  
+&emsp; 知道执行次数的时候一般用for，条件循环时一般用while。  
 2. 两种循环在构造死循环时的区别：  
 &emsp; while循环里的条件被看成表达式，因此，当用while构造死循环时，里面的TRUE实际上被看成永远为真的表达式，这种情况容易产生混淆，有些工具软件如PC-Lint就会认为出错了，因此构造死循环时，最好使用for(;;)来进行。  
 3. 两种循环在普通循环时的区别：  
@@ -96,9 +96,9 @@ https://www.cnblogs.com/dudadi/p/Java.html
 
 ## 1.2. Java关键字  
 ### 1.2.1. Java访问控制符  
-&emsp; JAVA语言中有公共的（public），私有的（private），保护的（protacted）和默认的（default）四种访问控制符。　  
+&emsp; JAVA语言中有公共的(public)，私有的(private)，保护的(protacted)和默认的(default)四种访问控制符。　  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/basics/java-2.png)  
-&emsp; 访问属性：在外部类中访问public和default的属性，可以通过类的对象名.属性名直接访问。在外部类中访问private的属性，必须通过对象的get、set方法（get、set方法声明为public）。  
+&emsp; 访问属性：在外部类中访问public和default的属性，可以通过类的对象名.属性名直接访问。在外部类中访问private的属性，必须通过对象的get、set方法(get、set方法声明为public)。  
 &emsp; 访问方法：在外部类中访问private的方法，必须通过反射。  
 
 ### 1.2.2. static-1  
@@ -111,9 +111,9 @@ https://www.cnblogs.com/dudadi/p/Java.html
 * static 可以用于静态导包，通过使用 import static xxx  来实现，这种方式一般不推荐使用。  
 * static 可以和单例模式一起使用，通过双重检查锁来实现线程安全的单例模式。
 
-&emsp; Java中static块执行时机：<font color = "red">static块的执行发生在“初始化”的阶段。</font>类被加载了不一定就会执行静态代码块，只有一个类被主动使用的时候，静态代码才会被执行！   
+&emsp; **Java中static块执行时机：<font color = "red">static块的执行发生在“初始化”的阶段。</font>类被加载了不一定就会执行静态代码块，只有一个类被主动使用的时候，静态代码才会被执行！**   
 
-### 1.2.3. final-1  
+### 1.2.3. final  
 &emsp; final 是 Java 中的关键字，它表示的意思是 <font color="red">不可变的</font>，在 Java 中，final 主要用来  
 
 * 修饰类，final 修饰的类不能被继承，不能被继承的意思就是不能使用 extends 来继承被 final 修饰的类。
@@ -124,7 +124,7 @@ https://www.cnblogs.com/dudadi/p/Java.html
 
 
 ## 1.3. Java变量  
-&emsp; **<font color = "lime">什么是变量？为什么需要变量？使用什么样的变量（全局、成员、局部）？</font>**
+&emsp; **<font color = "lime">什么是变量？为什么需要变量？使用什么样的变量(全局、成员、局部)？</font>**
 
 ### 1.3.1. 声明、初始化、实例化  
 
@@ -135,18 +135,18 @@ a = new A(); //实例化
 ```
 
 ### 1.3.2. 全局变量、成员变量、局部变量  
-1. 全局（静态）变量：在java中可以理解为用static final修饰的变量。  
+1. 全局(静态)变量：在java中可以理解为用static final修饰的变量。  
 &emsp; 生命周期：当类加载的时候，就开始被创建，在类中只有一份；会跟着类的消失而消失，生存时间较长。  
 
-2. 成员变量：写在类声明的大括号中的变量, 称之为成员变量(属性, 实例变量)。      
-&emsp; 初始化：成员变量可以不显式初始化，它们可以由系统设定默认值；（成员变量如果没有实例化那么变量是放在栈中；实例化了对象放在堆中，栈中放的是指向堆中对象的引用地址。）  
+2. 成员变量：写在类声明的大括号中的变量， 称之为成员变量(属性， 实例变量)。      
+&emsp; 初始化：成员变量可以不显式初始化，它们可以由系统设定默认值；(成员变量如果没有实例化那么变量是放在栈中；实例化了对象放在堆中，栈中放的是指向堆中对象的引用地址。)  
 &emsp; 作用域：作用在整个类中(除静态方法不能使用，静态方法没有隐式的this)，被对象调用。  
 &emsp; 生命周期：在对象被创建时而存在，当对象被GC回收的同时，也会消失，生存时间适中。  
 
-3. 局部变量：写在函数或者代码块中的变量, 称之为局部变量。局部变量放在栈中，new的对象放在堆中，8种基本数据类型变量放在栈中，变量所对应的值是放在栈帧中。  
+3. 局部变量：写在函数或者代码块中的变量，称之为局部变量。局部变量放在栈中，new的对象放在堆中，8种基本数据类型变量放在栈中，变量所对应的值是放在栈帧中。  
 &emsp; 作用域：函数体或代码块中。  
-&emsp; 初始化：局部变量可以先定义再初始化, 也可以定义的同时初始化。局部变量没有默认值，所以必须设定初始赋值。   
-&emsp; 修饰符：局部变量不能加static，包括protected, private, public这些也不能加。局部变量保存在栈中。  
+&emsp; 初始化：局部变量可以先定义再初始化， 也可以定义的同时初始化。局部变量没有默认值，所以必须设定初始赋值。   
+&emsp; 修饰符：局部变量不能加static，包括protected， private， public这些也不能加。局部变量保存在栈中。  
 &emsp; 生命周期：当方法被调用时而存在，当方法调用结束而消失，生存时间短。  
 
 ### 1.3.3. Java类创建对象时初始化顺序  
@@ -235,7 +235,7 @@ class Fa{
 ```java
 public void test(Strig str){}
 public void test(int a){}
-public void test(Strig str,double d){}
+public void test(Strig str，double d){}
 ```
 
 ### 1.4.2. 方法重写  
@@ -250,14 +250,14 @@ public void test(Strig str,double d){}
 
 ### 1.4.3. 可变参数  
 &emsp; 在不确定参数的个数时，可以使用可变的参数列表。  
-1. 语法：参数类型…（三个点）。例如：void printArray（Object...）。  
+1. 语法：参数类型…(三个点)。例如：void printArray(Object...)。  
 &emsp; <font color = "red">每个方法最多只有一个可变参数，因为：可变参数必须是方法的最后一个参数。</font>  
 2. 可变参数的类型：可变参数可以设置为任意类型，引用类型、基本类型。  
 3. 参数的个数：0个参数；1个参数：如果是数组，那么就直接将这个数组作为参数传进方法里面，不再填充新的数组；多个参数：参数可以是数组，也可以是单个变量、常量；但是这时候会将这些参数填充进新的数组里面，再将这个数组，传进方法里面；  
 4. 可变参数的使用：可变参数完全可以当作一个数组来使用，或者说本质上可变参数就是一个数组。所以，数组拥有的方法、属性，可变参数一样拥有。  
 
 ```java
-public void varArgMethod(int b,int... arr) {
+public void varArgMethod(int b，int... arr) {
     //和数组一样，拥有属性length
     int lenth = arr.length;
     //索引遍历
@@ -272,10 +272,10 @@ public void varArgMethod(int b,int... arr) {
 ```
 
 &emsp; 上面的例子中，可变参数的使用跟数组的使用是完全一样，也就是说，可变参数是可以等价成数组的。  
-&emsp; 从反编译的结果可以看出，编译器不仅将可变参数处理成数组varArgMethod(int b, int arr[])，还处理了调用可变参数方法处的参数列表，把参数列表封装进一个数组varArgMethod(5, new int[]{7, 8, 9, 10, a})。  
+&emsp; 从反编译的结果可以看出，编译器不仅将可变参数处理成数组varArgMethod(int b， int arr[])，还处理了调用可变参数方法处的参数列表，把参数列表封装进一个数组varArgMethod(5， new int[]{7， 8， 9， 10， a})。  
 
 ```java
-public <T> T underwrite(String platformCode, String uuid, Object... objects) {
+public <T> T underwrite(String platformCode， String uuid， Object... objects) {
     LOG.info("退保核批校验，退保时间");
     UnderWrite underWrite = (UnderWrite) objects[0];
     CancelInfo cancelInfo = (CancelInfo) objects[1];
@@ -388,7 +388,7 @@ class TestDemo2 {
 ### 1.5.1. 抽象类  
 &emsp; 抽象类是为了继承而存在的。  
 &emsp; 抽象类和普通类的主要有三点区别：  
-1. 抽象方法必须为public或者protected（因为如果为private，则不能被子类继承，子类便无法实现该方法），缺省情况下默认为public。  
+1. 抽象方法必须为public或者protected(因为如果为private，则不能被子类继承，子类便无法实现该方法)，缺省情况下默认为public。  
 2. 抽象类不能用来创建对象；  
 3. 如果一个类继承于一个抽象类，则子类必须实现父类的抽象方法。如果子类没有实现父类的抽象方法，则必须将子类也定义为为abstract类。  
 
@@ -424,7 +424,7 @@ class TestDemo2 {
         
         //定义一个方法method，用来接收一个Person类型对象，在方法中调用Person对象的show方法
         public static void method(Person p){//抽象类作为参数
-            //通过p变量调用show方法,这时实际调用的是Student对象中的show方法
+            //通过p变量调用show方法，这时实际调用的是Student对象中的show方法
             p.show();	
         }
     }
@@ -455,7 +455,7 @@ class TestDemo2 {
         public static void main(String[] args) {
             //调用method方法，获取返回的Person对象
             Person p = method();
-            //通过p变量调用show方法,这时实际调用的是Student对象中的show方法
+            //通过p变量调用show方法，这时实际调用的是Student对象中的show方法
             p.show();
         }
         
@@ -468,7 +468,7 @@ class TestDemo2 {
     ```
 
 ### 1.5.2. 接口  
-&emsp; 接口中可以含有 变量和方法。但是要注意，接口中的变量会被隐式地指定为public static final变量（并且只能是public static final变量，用private修饰会报编译错误），而方法会被隐式地指定为public abstract方法且只能是public abstract方法（用其他关键字，比如private、protected、static、 final等修饰会报编译错误），并且接口中所有的方法不能有具体的实现，也就是说，接口中的方法必须都是抽象方法。从这里可以隐约看出接口和抽象类的区别，接口是一种极度抽象的类型，它比抽象类更加“抽象”，并且一般情况下不在接口中定义变量。  
+&emsp; 接口中可以含有 变量和方法。但是要注意，接口中的变量会被隐式地指定为public static final变量(并且只能是public static final变量，用private修饰会报编译错误)，而方法会被隐式地指定为public abstract方法且只能是public abstract方法(用其他关键字，比如private、protected、static、 final等修饰会报编译错误)，并且接口中所有的方法不能有具体的实现，也就是说，接口中的方法必须都是抽象方法。从这里可以隐约看出接口和抽象类的区别，接口是一种极度抽象的类型，它比抽象类更加“抽象”，并且一般情况下不在接口中定义变量。  
 &emsp; 允许一个类遵循多个特定的接口。<font color = "red">如果一个非抽象类遵循了某个接口，就必须实现该接口中的所有方法。对于遵循某个接口的抽象类，可以不实现该接口中的抽象方法。</font>  
 
 #### 1.5.2.1. 接口作为方法参数与返回值
@@ -498,7 +498,7 @@ class TestDemo2 {
         public static void main(String[] args) {
             //调用method方法，获取返回的会吸烟的对象
             Smoke s = method();
-            //通过s变量调用smoking方法,这时实际调用的是Student对象中的smoking方法
+            //通过s变量调用smoking方法，这时实际调用的是Student对象中的smoking方法
             s.smoking();
         }
         
@@ -584,13 +584,13 @@ https://mp.weixin.qq.com/s/eiU_7QUtwgQhAr7nZlFEDQ
 * 子类可以拥有自己的属性和方法，即子类可以对父类进行扩展。  
 * 子类可以用自己的方式实现父类的方法。  
 * Java 的继承是单继承，但是可以多重继承，单继承就是一个子类只能继承一个父类，多重继承就是，例如 A 类继承 B 类，B 类继承 C 类，所以按照关系就是 C 类是 B 类的父类，B 类是 A 类的父类，这是 Java 继承区别于 C++ 继承的一个特性。  
-* 提高了类之间的耦合性（继承的缺点，耦合度高就会造成代码之间的联系越紧密，代码独立性越差）。  
+* 提高了类之间的耦合性(继承的缺点，耦合度高就会造成代码之间的联系越紧密，代码独立性越差)。  
 
 #### 1.6.2.1. super与this关键字  
 &emsp; super关键字：引用当前对象的父类；this关键字：指向自己的引用。  
 &emsp; **<font color = "red">super主要有两种用法：</font>**
 1. **super.成员变量/super.成员方法，主要用来在子类中调用父类的同名成员变量或者方法。**
-2. **super(parameter1,parameter2....)，主要用在（父类中没有无参构造函数）子类的构造器中显示地调用父类的构造器，且必须是子类构造器的第一个语句。**  
+2. **super(parameter1，parameter2....)，主要用在(父类中没有无参构造函数)子类的构造器中显示地调用父类的构造器，且必须是子类构造器的第一个语句。**  
 
 ### 1.6.3. 多态  
 <!-- 
@@ -599,7 +599,7 @@ https://mp.weixin.qq.com/s/a3gS8-rhINeMORRczwKhrg
 -->
 &emsp; <font color = "red">多态是指程序中定义的引用变量所指向的具体类型和通过该引用变量发出的方法调用在编程时并不确定，而是在程序运行期间才确定。</font>即一个引用变量到底会指向哪个类的实例对象，该引用变量发出的方法调用到底是哪个类中实现的方法，必须在程序运行期间才能决定。  
 &emsp; 多态存在的三个必要条件：继承、重写、父类引用指向子类对象。  
-&emsp; 在Java中有两种形式可以实现多态：继承（多个子类对同一方法的重写）和接口（实现接口并覆盖接口中同一方法）。  
+&emsp; 在Java中有两种形式可以实现多态：继承(多个子类对同一方法的重写)和接口(实现接口并覆盖接口中同一方法)。  
 
 &emsp; 多态的定义格式：父类的引用变量指向子类对象  
 
