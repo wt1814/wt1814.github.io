@@ -48,6 +48,7 @@
     * [SPI](/docs/java/basis/SPI.md)  
 * 设计模式  
     * [七大设计原则](/docs/java/Design/1.principles.md)  
+    * [继承和组合](/docs/java/Design/compose.md)  
     * [Java设计模式](/docs/java/Design/2.design.md)  
         * [创建型设计模式](/docs/java/Design/3.establish.md)  
         * [结构型设计模式](/docs/java/Design/4.structure.md)  
