@@ -61,6 +61,7 @@
 &emsp; &emsp; [外部排序](/docs/java/function/sort/externalSort.md)  
 &emsp; [查找算法](/docs/java/function/search.md)  
 [算法方法](/docs/java/function/algorithmicIdea.md)  
+&emsp; [递归、动态规划](/docs/java/function/recursion.md)  
 [其他数据结构](/docs/java/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/java/function/SkipList.md)  
 &emsp; [位图](/docs/java/function/BitMap.md)  

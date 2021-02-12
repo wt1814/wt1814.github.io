@@ -29,7 +29,7 @@ https://mp.weixin.qq.com/s/YVQvbhO0HJtnrocVg8-qmQ
     
     举例： 
     int[][] arr=new int[3][2];定义了一个二维数组arr。
-    这个二维数组有3个一维数组，名称是ar[0],arr[1],arr[2]；每个一维数组有2个元素，可以通过arr[m][n]来获取。
+    这个二维数组有3个一维数组，名称是ar[0]，arr[1]，arr[2]；每个一维数组有2个元素，可以通过arr[m][n]来获取。
 
 &emsp; 二维数组基本操作：遍历一个行列变化的二维数组。  
 
@@ -39,7 +39,7 @@ https://mp.weixin.qq.com/s/YVQvbhO0HJtnrocVg8-qmQ
 */
 public class bianlishuzu2 {
     public static void main(String[] args) {
-        int [][] arr = { {1,2,3},{4,5},{6} };
+        int [][] arr = { {1，2，3}，{4，5}，{6} };
         printArray(arr);
     }
     public static void printArray(int[][] arr){
@@ -193,7 +193,7 @@ public class SingleLinkedList {
 <center>图：翻转链表主要三步骤</center>  
 
 &emsp; 只要按以上步骤定义好这个翻转函数的功能即可， 这样由于子问题与最初的问题具有相同的解决思路，拆分后的子问题持续调用这个翻转函数即可达到目的。  
-&emsp; 注意看上面的步骤1，问题的规模是不是缩小了(如下图)，从翻转整个链表变成了只翻转部分链表！问题与子问题都是从某个结点开始翻转，具有相同的解决思路，另外当缩小到只翻转一个结点时，显然是终止条件，符合递归的条件！之后的翻转 3-->2-->1, 2-->1 持续调用这个定义好的递归函数即可!  
+&emsp; 注意看上面的步骤1，问题的规模是不是缩小了(如下图)，从翻转整个链表变成了只翻转部分链表！问题与子问题都是从某个结点开始翻转，具有相同的解决思路，另外当缩小到只翻转一个结点时，显然是终止条件，符合递归的条件！之后的翻转 3-->2-->1， 2-->1 持续调用这个定义好的递归函数即可!  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-15.png)  
 &emsp; 既然符合递归的条件，那就可以套用递归四步曲来解题了(注意翻转之后 head 的后继节点变了，需要重新设置！别忘了这一步)  
 
@@ -235,7 +235,7 @@ public Node invertLinkedList(Node node) {
 
 public static void main(String[] args) {
     LinkedList linkedList = new LinkedList();
-    int[] arr = {4,3,2,1};
+    int[] arr = {4，3，2，1};
     for (int i = 0; i < arr.length; i++) {
         linkedList.addNode(arr[i]);
     }
@@ -255,9 +255,9 @@ public static void main(String[] args) {
 ##### 1.2.2.1.2. 非递归翻转链表(迭代解法)  
 &emsp; 递归比较容易造成栈溢出，所以如果有其他时间/空间复杂度相近或更好的算法，应该优先选择非递归的解法，那看看如何用迭代来翻转链表，主要思路如下  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-17.png)  
-&emsp; 步骤 1： 定义两个节点：pre, cur ，其中 cur 是 pre 的后继结点，如果是首次定义， 需要把 pre 指向 cur 的指针去掉，否则由于之后链表翻转，cur 会指向 pre， 就进行了一个环(如下)，这一点需要注意  
+&emsp; 步骤 1： 定义两个节点：pre， cur ，其中 cur 是 pre 的后继结点，如果是首次定义， 需要把 pre 指向 cur 的指针去掉，否则由于之后链表翻转，cur 会指向 pre， 就进行了一个环(如下)，这一点需要注意  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-18.png)  
-&emsp; 步骤2：知道了cur 和 pre,翻转就容易了，把 cur 指向 pre 即可，之后把 cur 设置为 pre ，cur 的后继结点设置为 cur 一直往前重复此步骤即可，完整动图如下  
+&emsp; 步骤2：知道了cur 和 pre，翻转就容易了，把 cur 指向 pre 即可，之后把 cur 设置为 pre ，cur 的后继结点设置为 cur 一直往前重复此步骤即可，完整动图如下  
 ![Alt Text](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/640.gif)  
 &emsp; 注意：同递归翻转一样，迭代翻转完了之后 head 的后继结点从 4 变成了 1，记得重新设置一下。  
 
@@ -287,7 +287,7 @@ public void iterationInvertLinkedList() {
     head.next = pre;
 }
 ```
-&emsp; 用迭代的思路来做由于循环了 n 次，显然时间复杂度为 O(n)，另外由于没有额外的空间使用，也未像递归那样调用递归函数不断压栈，所以空间复杂度是 O(1),对比递归，显然应该使用迭代的方式来处理！
+&emsp; 用迭代的思路来做由于循环了 n 次，显然时间复杂度为 O(n)，另外由于没有额外的空间使用，也未像递归那样调用递归函数不断压栈，所以空间复杂度是 O(1)，对比递归，显然应该使用迭代的方式来处理！
 
 ##### 1.2.2.1.3. 变形题  
 ......
@@ -305,7 +305,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247483899&idx=1&sn=ab5b06
 
     LeetCode 876：给定一个带有头结点 head 的非空单链表，返回链表的中间结点。如果有两个中间结点，则返回第二个中间结点。  
 
-&emsp; 这里引入快慢指针，主要有三步 1、 快慢指针同时指向 head 的后继结点 2、 慢指针走一步，快指针走两步 3、 不断地重复步骤2，什么时候停下来呢，这取决于链表的长度是奇数还是偶数  
+&emsp; 这里引入快慢指针，主要有三步 1、 快慢指针同时指向 head 的后继结点 2、 慢指针走一步，快指针走两步 3、 不断地重复步骤2，什么时候停下来呢，这取决于链表的长度是奇数还是偶数。  
 
 * 如果链表长度为奇数，当 fast.next = null 时，slow 为中间结点   
 ![Alt Text](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/641.gif)  
@@ -335,7 +335,7 @@ public Node findMiddleNodeWithSlowFastPointer() {
 
 ##### 1.2.2.2.2. 有关链表环问题的相关解法  
 &emsp; 接下来看如何用快慢指针来判断链表是否有环，这是快慢指针最常见的用法。  
-&emsp; 判断链表是否有环，如果有，找到环的入口位置(下图中的 2)，要求空间复杂度为O(1)  
+&emsp; 判断链表是否有环，如果有，找到环的入口位置，要求空间复杂度为O(1)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-20.png)  
 &emsp; 首先要看如果链表有环有什么规律，如果从 head 结点开始遍历，则这个遍历指针一定会在以上的环中绕圈子，所以可以分别定义快慢指针，慢指针走一步，快指针走两步， 由于最后快慢指针在遍历过程中一直会在圈中里绕，且快慢指针每次的遍历步长不一样，所以它们在里面不断绕圈子的过程一定会相遇，就像 5000 米长跑，一人跑的快，一人快的慢，跑得快的人一定会追上跑得慢的(即套圈)。  
 
@@ -349,7 +349,7 @@ public Node findMiddleNodeWithSlowFastPointer() {
 
 ```java
 /**
- * 判断是否有环,返回快慢指针相遇结点,否则返回空指针
+ * 判断是否有环，返回快慢指针相遇结点，否则返回空指针
  */
 public Node detectCrossNode() {
     Node slow = head;
@@ -372,12 +372,12 @@ public Node detectCrossNode() {
 ```
 &emsp; 判断有环为啥要返回相遇的结点，而不是返回 true 或 false 呢。 因为题目中还有一个要求，判断环的入口位置，就是为了这个做铺垫的，一起来看看怎么找环的入口，需要一些分析的技巧。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-22.png)  
-&emsp; 假设上图中的 7 为快慢指针相遇的结点，不难看出慢指针走了 L + S 步，快指针走得比慢指针更快，它除了走了 L + S 步外，还额外在环里绕了 n  圈，所以快指针走了 L+S+nR 步(R为图中环的长度)，另外每遍历一次，慢指针走了一步，快指针走了两步，所以快指针走的路程是慢指针的两倍,即 2 (L+S) = L+S+nR，即  L+S = nR  
+&emsp; 假设上图中的 7 为快慢指针相遇的结点，不难看出慢指针走了 L + S 步，快指针走得比慢指针更快，它除了走了 L + S 步外，还额外在环里绕了 n  圈，所以快指针走了 L+S+nR 步(R为图中环的长度)，另外每遍历一次，慢指针走了一步，快指针走了两步，所以快指针走的路程是慢指针的两倍，即 2 (L+S) = L+S+nR，即  L+S = nR  
 
-* 当 n = 1 时，则 L+S = R 时,则从相遇点 7 开始遍历走到环入口点 2 的距离为 R - S = L，刚好是环的入口结点,而 head 与环入口点 2 的距离恰好也为 L，所以只要在头结点定义一个指针，在相遇点(7)定义另外一个指针，两个指针同时遍历，每次走一步，必然在环的入口位置 2 相遇
-* 当 n > 1 时，L + S = nR，即 L = nR - S,  nR-S 怎么理解？可以看作是指针从结点  7 出发，走了 n 圈后，回退 S 步，此时刚好指向环入口位置，也就是说如果设置一个指针指向 head(定义为p1), 另设一个指针指向 7(定义为p2)，不断遍历，p2 走了 nR-S 时(即环的入口位置)，p1也刚好走到这里(此时 p1 走了 nR-S =  L步，刚好是环入口位置)，即两者相遇！
+* 当 n = 1 时，则 L+S = R 时，则从相遇点 7 开始遍历走到环入口点 2 的距离为 R - S = L，刚好是环的入口结点，而 head 与环入口点 2 的距离恰好也为 L，所以只要在头结点定义一个指针，在相遇点(7)定义另外一个指针，两个指针同时遍历，每次走一步，必然在环的入口位置 2 相遇
+* 当 n > 1 时，L + S = nR，即 L = nR - S，  nR-S 怎么理解？可以看作是指针从结点  7 出发，走了 n 圈后，回退 S 步，此时刚好指向环入口位置，也就是说如果设置一个指针指向 head(定义为p1)， 另设一个指针指向 7(定义为p2)，不断遍历，p2 走了 nR-S 时(即环的入口位置)，p1也刚好走到这里(此时 p1 走了 nR-S =  L步，刚好是环入口位置)，即两者相遇！
 
-&emsp; 综上所述，要找到入口结点，只需定义两个指针，一个指针指向head, 一个指针指向快慢指向的相遇点，然后这两个指针不断遍历(同时走一步)，当它们指向同一个结点时即是环的入口结点  
+&emsp; 综上所述，要找到入口结点，只需定义两个指针，一个指针指向head， 一个指针指向快慢指向的相遇点，然后这两个指针不断遍历(同时走一步)，当它们指向同一个结点时即是环的入口结点  
 
 ```java
 public Node getRingEntryNode() {
