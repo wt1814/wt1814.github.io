@@ -198,6 +198,7 @@ public class SingleLinkedList {
 &emsp; 既然符合递归的条件，那就可以套用递归四步曲来解题了(注意翻转之后 head 的后继节点变了，需要重新设置！别忘了这一步)  
 
 1. 定义递归函数，明确函数的功能 根据以上分析，这个递归函数的功能显然是翻转某个节点开始的链表，然后返回新的头结点  
+
 ```java
 /**
  * 翻转结点 node 开始的链表
@@ -246,7 +247,7 @@ public static void main(String[] args) {
 ```
         画外音：翻转后由于 head 的后继结点变了，别忘了重新设置！
 
-4. 计算时间/空间复杂度 由于递归调用了 n 次 invertLinkedList 函数，所以时间复杂度显然是 O(n)，空间复杂度呢，没有用到额外的空间，但是由于递归调用了 n 次 invertLinkedList 函数，压了 n 次栈，所以空间复杂度也是 O(n)。  
+4. 计算时间/空间复杂度。由于递归调用了 n 次 invertLinkedList 函数，所以时间复杂度显然是 O(n)，空间复杂度呢，没有用到额外的空间，但是由于递归调用了 n 次 invertLinkedList 函数，压了 n 次栈，所以空间复杂度也是 O(n)。  
 
 &emsp; 递归一定要从函数的功能去理解，从函数的功能看，定义的递归函数清晰易懂，定义好了之后，由于问题与被拆分的子问题具有相同的解决思路，所以子问题只要持续调用定义好的功能函数即可，切勿层层展开子问题，此乃递归常见的陷阱！仔细看函数的功能，其实就是按照下图实现的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-16.png)  
