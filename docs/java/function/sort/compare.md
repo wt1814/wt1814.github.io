@@ -117,7 +117,7 @@ public static void main(String[] args){
 &emsp; 具体如何实现呢？有两种方法：双边循环法、单边循环法。  
 
 ### 1.2.2. 编码  
-&emsp; **递归实现（包含单边循环、双边循环）：**  
+&emsp; **递归实现(包含单边循环、双边循环)：**  
 
 ```java
 public class quickSort {
@@ -149,13 +149,13 @@ public class quickSort {
 
 
     /**
-     * 分治（单边循环法）
+     * 分治(单边循环法)
      * @param arr     待交换的数组
      * @param startIndex    起始下标
      * @param endIndex    结束下标
      */
     private static int partitionV2(int[] arr, int startIndex, int endIndex) {
-        // 取第一个位置的元素作为基准元素（也可以选择随机位置）
+        // 取第一个位置的元素作为基准元素(也可以选择随机位置)
         int pivot = arr[startIndex];
         int mark = startIndex;
 
@@ -174,13 +174,13 @@ public class quickSort {
     }
 
     /**
-     * 分治（双边循环法）
+     * 分治(双边循环法)
      * @param arr     待交换的数组
      * @param startIndex    起始下标
      * @param endIndex    结束下标
      */
     private static int partition(int[] arr, int startIndex, int endIndex) {
-        // 取第一个位置的元素作为基准元素（也可以选择随机位置）
+        // 取第一个位置的元素作为基准元素(也可以选择随机位置)
         int pivot = arr[startIndex];
         int left = startIndex;
         int right = endIndex;
@@ -217,8 +217,8 @@ public class quickSort {
 &emsp; 表现最稳定的排序算法之一，因为无论什么数据进去都是O(n2)的时间复杂度，所以用到它的时候，数据规模越小越好。好处就是不占用额外的内存空间。  
 
 ### 1.3.1. 算法描述  
-1. 首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置
-2. 再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。
+1. 首先在未排序序列中找到最小(大)元素，存放到排序序列的起始位置
+2. 再从剩余未排序元素中继续寻找最小(大)元素，然后放到已排序序列的末尾。
 3. 重复第二步，直到所有元素均排序完毕。  
 
 &emsp; **优化：**  
@@ -312,10 +312,10 @@ https://mp.weixin.qq.com/s?__biz=MzA4NDE4MzY2MA==&mid=2647523648&idx=1&sn=a2c939
 https://mp.weixin.qq.com/s/D_RPGriu3xMGYA11TMzxeA
 -->
 
-&emsp; 首先了解二叉堆。堆（Heap）是一类基于完全二叉树的特殊数据结构。通常将堆分为两种类型：  
+&emsp; 首先了解二叉堆。堆(Heap)是一类基于完全二叉树的特殊数据结构。通常将堆分为两种类型：  
 
-* <font color = "lime">大顶堆（Max Heap）：在大顶堆中，根结点的值必须大于它的孩子结点的值，对于二叉树中所有子树也应递归地满足这一特性。</font> 
-* 小顶堆（Min Heap）：在小顶堆中，根结点的值必须小于它的孩子结点的值，且对于二叉树的所有子树也均递归地满足同一特性。  
+* <font color = "lime">大顶堆(Max Heap)：在大顶堆中，根结点的值必须大于它的孩子结点的值，对于二叉树中所有子树也应递归地满足这一特性。</font> 
+* 小顶堆(Min Heap)：在小顶堆中，根结点的值必须小于它的孩子结点的值，且对于二叉树的所有子树也均递归地满足同一特性。  
 
 &emsp; 二叉堆的构建、删除、自我调整等基本操作是实现堆排序的基础。  
 
@@ -389,7 +389,7 @@ public static void main(String[] args) {
 ### 1.5.1. 算法描述
 1. 从第一个元素开始，该元素可以认为已经被排序；
 2. 取出下一个元素，在已经排序的元素序列中从后向前扫描；
-3. 如果该元素（已排序）大于新元素，将该元素移到下一位置；
+3. 如果该元素(已排序)大于新元素，将该元素移到下一位置；
 4. 重复步骤3，直到找到已排序的元素小于或者等于新元素的位置；
 5. 将新元素插入到该位置后；
 6. 重复步骤2~5。  
@@ -503,7 +503,7 @@ public static void sheelSort(int[] array){
 
 ## 1.7. 归并排序
 &emsp; 归并排序是分治算法的典型应用。  
-&emsp; 归并排序先将一个无序的N长数组切成N个有序子序列（只有一个数据的序列认为是有序序列），然后两两合并，再将合并后的N/2（或者N/2 + 1）个子序列继续进行两两合并，以此类推得到一个完整的有序数组。过程如下图所示：
+&emsp; 归并排序先将一个无序的N长数组切成N个有序子序列(只有一个数据的序列认为是有序序列)，然后两两合并，再将合并后的N/2(或者N/2 + 1)个子序列继续进行两两合并，以此类推得到一个完整的有序数组。过程如下图所示：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-3.png)  
 
 &emsp; 归并排序其实要做两件事：  

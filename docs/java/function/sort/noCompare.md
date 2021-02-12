@@ -30,7 +30,7 @@ https://mp.weixin.qq.com/s?__biz=Mzg2OTAwNDI2NQ==&mid=2247484707&idx=1&sn=9c2a50
 ## 1.2. 桶排序  
 &emsp; 当数列取值范围过大，或者不是整数时，不能适用计数排序。但是可以使用桶排序来解决问题。  
 &emsp; 桶排序同样是一种线性时间的排序算法。类似于计数排序所创建的统计数组，桶排序需要创建若干个桶来协助排序。  
-&emsp; 每一个桶（bucket）代表一个区间范围，里面可以承载一个或多个元素。桶排序的第一步，就是创建这些桶，确定每一个桶的区间范围。具体建立多少个桶，如何确定桶的区间范围，有很多不同的方式。  
+&emsp; 每一个桶(bucket)代表一个区间范围，里面可以承载一个或多个元素。桶排序的第一步，就是创建这些桶，确定每一个桶的区间范围。具体建立多少个桶，如何确定桶的区间范围，有很多不同的方式。  
 &emsp; 示例：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-7.png)  
 
@@ -97,7 +97,7 @@ public static void main(String[] args) {
 ```  
 
 ## 1.3. 基数排序  
-&emsp; 基数排序不但能处理整数排序，也能对字母、汉字进行排序。它把排序工作拆分成多个阶段，每一个阶段只根据一个字符进行计数排序，一共排序k轮（k是元素长度）。  
+&emsp; 基数排序不但能处理整数排序，也能对字母、汉字进行排序。它把排序工作拆分成多个阶段，每一个阶段只根据一个字符进行计数排序，一共排序k轮(k是元素长度)。  
 &emsp; 简单示例：数组中有若干个字符串元素，每个字符串元素都是由三个英文字母组成：  
 
     bda，cfd，qwe，yui，abc，rrr，uee
@@ -112,16 +112,16 @@ public static void main(String[] args) {
 &emsp; 第三轮：在第二轮排序结果的基础上，按照最高位字符排序。   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-10.png)  
 &emsp; 如此一来，这些字符串的顺序就排好了。  
-&emsp; 像这样把字符串元素按位拆分，每一位进行一次计数排序的算法，就是基数排序（Radix Sort）。  
+&emsp; 像这样把字符串元素按位拆分，每一位进行一次计数排序的算法，就是基数排序(Radix Sort)。  
 
-&emsp; 基数排序既可以从高位优先进行排序（Most Significant Digit first，简称MSD），也可以从低位优先进行排序（Least Significant Digit first，简称LSD）。  
+&emsp; 基数排序既可以从高位优先进行排序(Most Significant Digit first，简称MSD)，也可以从低位优先进行排序(Least Significant Digit first，简称LSD)。  
 
 &emsp; 如果排序对字符串长度不规则，则以最长的字符串为准，其他长度不足的字符串，在末尾补0即可。  
 
 ### 1.3.1. 算法描述  
 1. 取得数组中的最大数，并取得位数；
 2. arr为原始数组，从最低位开始取每个位组成radix数组；
-3. 对radix进行计数排序（利用计数排序适用于小范围数的特点）。
+3. 对radix进行计数排序(利用计数排序适用于小范围数的特点)。
 
 ### 1.3.2. 编码  
 
