@@ -14,11 +14,11 @@
 ## 1.1. BitMap介绍  
 &emsp; BitMap是什么?  
 &emsp; BitMap是通过一个bit位来表示某个元素对应的值或者状态，其中的key就是对应元素本身。8个bit可以组成一个Byte，所以bitmap本身会极大的节省储存空间。  
-&emsp; BitMap算法基本描述  
+&emsp; **BitMap算法基本描述：**  
 &emsp; BitMap是使用bit位来标记某个元素对应的value，而key即是该元素，因此对于之前位数存储换成bit位存储数据能大大的节省存储空间。  
 
 ## 1.2. BitMap的实现思想  
-&emsp; 假设要对0-7内的5个元素(4,7,2,5,3)排序(这里假设这些元素没有重复)。那么就可以采用Bit-map的方法来达到排序的目的。要表示8个数，就只需要8个Bit(1Bytes)，首先开辟1Byte的空间，将这些空间的所有Bit位都置为0(如下图：)  
+&emsp; 假设要对0-7内的5个元素(4，7，2，5，3)排序(这里假设这些元素没有重复)。那么就可以采用Bit-map的方法来达到排序的目的。要表示8个数，就只需要8个Bit(1Bytes)，首先开辟1Byte的空间，将这些空间的所有Bit位都置为0(如下图：)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-33.png)  
 &emsp; 然后遍历这5个元素，首先第一个元素是4，那么就把4对应的位置为1(可以这样操作 p+(i/8)|(0×01<<(i%8)) 当然了这里的操作涉及到Big-ending和Little-ending的情况，这里默认为Big-ending。不过计算机一般是小端存储的，如intel。小端的话就是将倒数第5位置1)，因为是从零开始的，所以要把第五位置为一(如下图)：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-34.png)  
