@@ -1,11 +1,18 @@
 
+<!-- TOC -->
 
+- [1. 适配器(Adapter)模式](#1-适配器adapter模式)
+    - [1.1. 简介](#11-简介)
+    - [1.2. 结构](#12-结构)
 
-# 适配器(Adapter)模式  
+<!-- /TOC -->
+
+# 1. 适配器(Adapter)模式  
 <!-- 
  萌新发问：MyBatis日志到底是如何做到兼容所有常用日志框架的？ 
  https://mp.weixin.qq.com/s/hUA-GEbRYH0-qgcEKCUylg
 -->
+## 1.1. 简介
 &emsp; 适配器模式(Adapter Pattern)，将一个类的接口转换成客户端期望的另一种接口，从而使原本因接口不匹配而导致无法在一起工作的两个类能够一起工作。  
 
 &emsp; **使用场景：**  
@@ -21,6 +28,7 @@
 1. 适配器编写过程需要全面考虑，可能会增加系统的复杂性。   
 2. 增加代码阅读难度，降低代码可读性，过多使用适配器会使系统代码变得凌乱。  
 
+## 1.2. 结构  
 &emsp; **模式角色组成：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-13.png)  
 

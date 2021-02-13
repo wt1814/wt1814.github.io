@@ -1,10 +1,18 @@
 
+<!-- TOC -->
 
+- [1. 装饰(Decorator)模式](#1-装饰decorator模式)
+    - [1.1. 简介](#11-简介)
+    - [1.2. 结构](#12-结构)
+    - [1.3. 在JDK中的应用，IO流](#13-在jdk中的应用io流)
 
-# 装饰(Decorator)模式  
+<!-- /TOC -->
+
+# 1. 装饰(Decorator)模式  
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MzUzODU4MjE2MQ==&mid=2247484592&idx=1&sn=42a14aef3707745f570488be2fe77326&chksm=fad4c94ecda34058648b394acca654520e97f080aa156fb281c26eaad6f910c55e67b3063364&scene=21#wechat_redirect
 -->
+## 1.1. 简介
 &emsp; 装饰者模式(Decorator Pattern)是指在不改变原有对象的基础之上，将功能附加到对象上， **<font color = "red">提供了比继承更有弹性的替代方案(扩展原有对象的功能)。</font>**  
 &emsp; <font color = "red">装饰器模式的核心是功能拓展。使用装饰器模式可以透明且动态地扩展类的功能。</font>  
 
@@ -22,6 +30,7 @@ https://mp.weixin.qq.com/s?__biz=MzUzODU4MjE2MQ==&mid=2247484592&idx=1&sn=42a14a
 1. 会出现更多的代码，更多的类，增加程序复杂性。  
 2. 动态装饰时，多层装饰时会更复杂。  
 
+## 1.2. 结构  
 &emsp; **模式角色组成：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-11.png)  
 
@@ -30,7 +39,7 @@ https://mp.weixin.qq.com/s?__biz=MzUzODU4MjE2MQ==&mid=2247484592&idx=1&sn=42a14a
 * Decorator，所有装饰器的父类，是一个abstract class，需要定义一个与组件接口一致的接口(主要是为了实现装饰器功能的复用，即具体的装饰器A可以装饰另外一个具体的装饰器B，因为装饰器类也是一个Component)，并持有一个Component对象，该对象其实就是被装饰的对象。如果不继承组件接口类，则只能为某个组件添加单一的功能，即装饰器对象不能在装饰其他的装饰器对象。  
 * ConcreteDecorator，具体的装饰器类，实现具体要向被装饰对象添加的功能。用来装饰具体的组件对象或者另外一个具体的装饰器对象。  
 
-## 在JDK中的应用，IO流  
+## 1.3. 在JDK中的应用，IO流  
 &emsp; java IO流是典型的装饰器模式。  
 &emsp; FilterInputStream，FilterOutputStream，FilterRead，FilterWriter分别为具体装饰器的父类，相当于Decorator类，它们分别实现了InputStream，OutputStream，Reader，Writer类(这些类相当于Component，是其他组件类的父类，也是Decorator类的父类)。继承自InputStream，OutputStream，Reader，Writer这四个类的其他类是具体的组件类，每个都有相应的功能，相当于ConcreteComponent类。而继承自FilterInputStream，FilterOutputStream，FilterRead，FilterWriter这四个类的其他类就是具体的装饰器对象类，即ConcreteDecorator类。通过这些装饰器类，可以提供更加具体的有用的功能。如FileInputStream是InputStream的一个子类，从文件中读取数据流，BufferedInputStream是继承自FilterInputStream的具体的装饰器类，该类提供一个内存的缓冲区类保存输入流中的数据。使用如下的代码来使用BufferedInputStream装饰FileInputStream，就可以提供一个内存缓冲区来保存从文件中读取的输入流。  
 

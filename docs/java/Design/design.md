@@ -17,6 +17,11 @@ https://mp.weixin.qq.com/s/EnkvEIVTLzOcuVd8s8fJTQ
 
 -->
 
+<!-- 
+
+结构可参考《Java与模式》
+-->
+
 # 1. ~~设计模式~~
 <!-- 
 可参考《设计模式 - 可复用面向对象软件的基础（高清版）》
