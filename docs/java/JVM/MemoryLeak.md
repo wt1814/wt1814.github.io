@@ -28,7 +28,7 @@
 ## 1.2. 内存溢出演示  
 <!--
 ～～
-（内存溢出演示）几种典型的内存溢出案例，都在这儿了！
+(内存溢出演示)几种典型的内存溢出案例，都在这儿了！
 https://mp.weixin.qq.com/s/4SenzIeX9FqsnXAaV6IgLg
  教你写Bug，常见的 OOM 异常分析 
 https://mp.weixin.qq.com/s/gIJvtd8rrZz6ttaoGLddLg

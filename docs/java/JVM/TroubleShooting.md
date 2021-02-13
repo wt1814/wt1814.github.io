@@ -98,7 +98,7 @@ https://www.cnblogs.com/klvchen/p/11089632.html
     注意：  
     这里又分为两种情况：  
     1: 如果是正常的用户线程，则通过该线程的堆栈信息查看其具体是在哪处用户代码处运行比较消耗CPU。  
-    2: 如果该线程是VM Thread（VM Thread 指的就是垃圾回收的线程，一般前面会有 nid=0x.......，这里 nid 的意思就是操作系统线程 id），则通过 jstat -gcutil 命令监控当前系统的 GC 状况。然后通过 jmap dump:format=b,file= 导出系统当前的内存数据。导出之后将内存情况放到Mat 工具中进行分析即可得出内存中主要是什么对象比较消耗内存，进而可以处理相关代码。
+    2: 如果该线程是VM Thread(VM Thread 指的就是垃圾回收的线程，一般前面会有 nid=0x.......，这里 nid 的意思就是操作系统线程 id)，则通过 jstat -gcutil 命令监控当前系统的 GC 状况。然后通过 jmap dump:format=b,file= 导出系统当前的内存数据。导出之后将内存情况放到Mat 工具中进行分析即可得出内存中主要是什么对象比较消耗内存，进而可以处理相关代码。
 
 #### 1.2.2.2. 情况二  
 &emsp; 如果通过top命令看到CPU并不高，并且系统内存占用率也比较低。此时就可以考虑是否是由于另外三种情况导致的问题。  
@@ -153,7 +153,7 @@ Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
 4. 使用内存查看工具动态查看内存快照。 
 
 #### 1.3.2.1. 使用内存查看工具分析堆dump文件  
-1. 保存内存快照（两种方法）：  
+1. 保存内存快照(两种方法)：  
     1. 添加JVM参数，该参数作用是：在程序内存溢出时输出dump文件。参数：-XX:+HeapDumpOnOutOfMemoryError -Xms20m -Xmx20m    
     &emsp; 随后找到项目地址，会发现在Project本目录中出现了个hprof文件，至此就把堆内存快照保存下来了。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-45.png)  

@@ -38,7 +38,7 @@ https://mp.weixin.qq.com/s/znVGpJhtA52UKiekHWqD3w
 
 -->
 
-&emsp; 针对Java应用，性能诊断工具主要分为两层：OS层面和Java应用层面（包括应用代码诊断和GC诊断）。  
+&emsp; 针对Java应用，性能诊断工具主要分为两层：OS层面和Java应用层面(包括应用代码诊断和GC诊断)。  
 
 &emsp; <font color = "red">线上故障主要会包括cpu、磁盘、内存以及网络问题，而大多数故障可能会包含不止一个层面的问题，所以进行排查时候尽量四个方面依次排查一遍。</font>  
 &emsp; <font color = "lime">基本上出问题就是df、free、top 三连，然后依次jstack、jmap伺候，具体问题具体分析即可。</font>  
@@ -54,7 +54,7 @@ https://www.linuxidc.com/Linux/2020-05/163174.htm
 一般来讲我们首先会排查cpu方面的问题。cpu异常往往还是比较好定位的。原因包括业务逻辑问题(死循环)、频繁gc以及上下文切换过多。而最常见的往往是业务逻辑(或者框架逻辑)导致的，可以使用jstack来分析对应的堆栈情况。
 -->
 
-&emsp; 对于CPU主要关注平均负载（Load Average），CPU使用率，上下文切换次数（Context Switch）。  
+&emsp; 对于CPU主要关注平均负载(Load Average)，CPU使用率，上下文切换次数(Context Switch)。  
 &emsp; 通过top命令可以查看系统平均负载和CPU使用率。  
 
 &emsp; PID进程在内核调用情况。  
