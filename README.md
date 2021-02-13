@@ -97,10 +97,14 @@
 &emsp; [继承和组合/复用规则](/docs/java/Design/compose.md)  
 [Java设计模式](/docs/java/Design/design.md)  
 &emsp; [创建型设计模式](/docs/java/Design/establish.md)  
+&emsp; &emsp; [单例模式](/docs/java/Design/singleton.md)  
+&emsp; &emsp; [工厂模式](/docs/java/Design/factory.md)  
+&emsp; &emsp; [建造者模式](/docs/java/Design/build.md)  
+&emsp; &emsp; [原型模式](/docs/java/Design/prototype.md)  
 &emsp; [结构型设计模式](/docs/java/Design/structure.md)  
-&emsp; &emsp; [动态代理](/docs/java/Design/proxy.md)   
+&emsp; &emsp; [代理模式](/docs/java/Design/proxy.md)   
 &emsp; [行为型设计模式](/docs/java/Design/behavior.md)  
-[设计模式讨论](/docs/java/Design/discuss.md)  
+[设计模式大讨论](/docs/java/Design/discuss.md)  
 
 ### JVM  
 [JVM总结](/docs/java/JVM/summary.md)  
