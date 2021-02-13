@@ -12,7 +12,7 @@
             - [Yong GC](#yong-gc)
             - [Major GC](#major-gc)
             - [Full GC](#full-gc)
-        - [1.2.3. Stop the world/安全点](#123-stop-the-world安全点)
+        - [1.2.3. ~~Stop the world~~](#123-stop-the-world)
     - [1.3. 垃圾回收器](#13-垃圾回收器)
         - [1.3.1. 收集器发展过程](#131-收集器发展过程)
         - [1.3.2. 收集器分类](#132-收集器分类)
@@ -213,16 +213,8 @@ full gc 触发条件有哪些？
 5. Concurrent Mode Failure  
 &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足(可能是GC过程中浮动垃圾过多导致暂时性的空间不足)，便会报Concurrent Mode Failure错误，并触发Full GC。  
 
-### 1.2.3. Stop the world/安全点  
-&emsp; Java中Stop-The-World机制简称STW，是在执行垃圾收集时，Java应用程序的其他所有线程都被挂起(除了垃圾收集帮助器之外)。Java中一种全局暂停现象，全局停顿，所有Java代码停止，native代码可以执行，但不能与JVM交互；这些现象多半是由于gc引起。  
-&emsp; GC时的Stop the World(STW)是Java开发最大的敌人。但可能很多人还不清楚，除了GC，JVM下还会发生停顿现象。  
-&emsp; JVM里有一条特殊的线程－－VM Threads，专门用来执行一些特殊的VM Operation，比如分派GC，thread dump等，这些任务都需要整个Heap，以及所有线程的状态是静止的，一致的才能进行。所以JVM引入了安全点(Safe Point)的概念，想办法在需要进行VM Operation时，通知所有的线程进入一个静止的安全点。  
-
-&emsp; 除了GC，其他触发安全点的VM Operation包括：  
-1. JIT相关，比如Code deoptimization， Flushing code cache ；  
-2. Class redefinition(e.g. javaagent，AOP代码植入的产生的instrumentation) ；  
-3. Biased lock revocation 取消偏向锁 ；  
-4. Various debug operation (e.g. thread dump or deadlock check)；  
+### 1.2.3. ~~Stop the world~~  
+&emsp; Java中[Stop-The-World](/docs/java/JVM/stopTheWord.md)机制简称STW，是在执行垃圾收集时，Java应用程序的其他所有线程都被挂起(除了垃圾收集帮助器之外)。Java中一种全局暂停现象，全局停顿，所有Java代码停止，native代码可以执行，但不能与JVM交互；这些现象多半是由于gc引起。  
 
 ## 1.3. 垃圾回收器  
 &emsp; 垃圾收集算法是内存回收的理论基础，而垃圾收集器就是内存回收的具体实现。   
