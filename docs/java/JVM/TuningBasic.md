@@ -118,7 +118,8 @@
             |-XX:-HeapDumpOnOutOfMemoryError	|当首次遭遇OOM时导出此时堆中相关信息|
             |-XX:-PrintGC	|每次GC时打印相关信息|
             |-XX:-PrintGC Details	|每次GC时打印详细信息|
-        
+
+
 ### 1.2.2. 必须掌握的JVM参数  
 #### 1.2.2.1. 设置内存参数  
 

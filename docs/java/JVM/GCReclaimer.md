@@ -9,7 +9,10 @@
     - [1.2. ~~分代收集理论~~](#12-分代收集理论)
         - [1.2.1. 分代收集算法](#121-分代收集算法)
         - [1.2.2. HotSpot GC](#122-hotspot-gc)
-        - [1.2.3. Stop the world](#123-stop-the-world)
+            - [Yong GC](#yong-gc)
+            - [Major GC](#major-gc)
+            - [Full GC](#full-gc)
+        - [1.2.3. Stop the world/安全点](#123-stop-the-world安全点)
     - [1.3. 垃圾回收器](#13-垃圾回收器)
         - [1.3.1. 收集器发展过程](#131-收集器发展过程)
         - [1.3.2. 收集器分类](#132-收集器分类)
@@ -32,14 +35,17 @@
 
 <!-- /TOC -->
 
+&emsp; GC：  
+    1. GC算法
+    2. Young GC与Full GC
+    3. 垃圾回收器  
+    
 # 1. GC
 <!-- 
 不如一篇文章搞懂三色标记是如何处理漏标 
 https://mp.weixin.qq.com/s/pswlzZugDhNeZKerTTsCnQ
-
 PLAB
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
-
 -->
 
 ## 1.1. GC算法  
@@ -80,8 +86,7 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
 
 ### 1.1.3. 标记-整理(Mark-Compact)算法  
 1. 为了解决标记-复制算法的缺陷，充分利用内存空间，提出了标记-整理算法。标记-清除算法与标记-整理算法的本质差异在于前者是一种非移动式的回收算法，而后者是移动式的。该算法标记阶段和Mark-Sweep 一样，但是在完成标记之后，它不是直接清理可回收对象，而是将存活对象都向一端移动，然后清理掉端边界以外的内存。  
-2. 标记-整理算法的标记过程仍然与“标记-清除”算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活的对象都向内存空间一端移动，然后直接清理掉边界以外的内存。  
-&emsp; 标记-整理算法的执行过程：  
+2. 标记-整理算法的标记过程仍然与“标记-清除”算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活的对象都向内存空间一端移动，然后直接清理掉边界以外的内存。标记-整理算法的执行过程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-75.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-78.png)  
 
@@ -89,7 +94,7 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
     * 优点：
         1. 没有碎片，空间连续，方便对象分配。  
         2. 不会产生内存减半
-    * 缺点：<font color = "red">扫描两次，，指针需要调整(移动对象)，效率偏低。</font>  
+    * 缺点：<font color = "red">扫描两次，指针需要调整(移动对象)，效率偏低。</font>  
 
 ## 1.2. ~~分代收集理论~~  
 <!-- 
@@ -124,12 +129,13 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 * 当对象寿命超过阈值时，会晋升至老年代，最大寿命15(4bit)
 * 当老年代空间不足，那么触发full gc，STW的时间更长  
 
-&emsp; **跨代引用：**  
+----
 <!-- 
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 -->
-&emsp; 分代收集并非只是简单划分一下内存区域，它至少存在一个明显的困难：对象之间不是孤立的，对象之间会存在跨代引用。假如现在要进行只局限于新生代的垃圾收集，根据根可达性分析的知识，与GC Roots之间不存在引用链即为可回收，但新生代的对象很有可能会被老年代所引用，那么老年代对象将临时加入 GC Roots 集合中，不得不再额外遍历整个老年代中的所有对象来确保可达性分析结果的正确性，这无疑为内存回收带来很大的性能负担。为了解决这个问题，就需要对分代收集理论添加一条经验法则：跨代引用假说：跨代引用相对于同代引用仅占少数。  
-&emsp; 存在互相引用的两个对象，应该是倾向于同时生存或同时消亡的，举个例子，如果某个新生代对象存在跨代引用，由于老年代对象难以消亡，会使得新生代对象同样在收集时得以存活，进而年龄增长后晋升到老年代，那么跨代引用也随之消除了。既然跨代引用只是少数，那么就没必要去扫描整个老年代，也不必专门记录每一个对象是否存在哪些跨代引用，只需在新生代上建立一个全局的数据结构，称为记忆集(Remembered Set)，这个结构把老年代划分为若干个小块，标识出老年代的哪一块内存会存在跨代引用。此后当发生 Minor GC 时，只有包含了跨代引用的小块内存里的对象才会被加入GC Roots进行扫描。  
+&emsp; **跨代引用：**  
+&emsp; 分代收集并非只是简单划分一下内存区域，它至少存在一个明显的困难：对象之间不是孤立的，对象之间会存在跨代引用。假如现在要进行只局限于新生代的垃圾收集，根据根可达性分析的知识，与GC Roots之间不存在引用链即为可回收，但新生代的对象很有可能会被老年代所引用，那么老年代对象将临时加入 GC Roots 集合中，不得不再额外遍历整个老年代中的所有对象来确保可达性分析结果的正确性，这无疑为内存回收带来很大的性能负担。为了解决这个问题，就需要对分代收集理论添加一条经验法则：跨代引用假说(跨代引用相对于同代引用仅占少数)。  
+&emsp; 存在互相引用的两个对象，应该是倾向于同时生存或同时消亡的，举个例子，如果某个新生代对象存在跨代引用，由于老年代对象难以消亡，会使得新生代对象同样在收集时得以存活，进而年龄增长后晋升到老年代，那么跨代引用也随之消除了。 **既然跨代引用只是少数，那么就没必要去扫描整个老年代，也不必专门记录每一个对象是否存在哪些跨代引用，只需在新生代上建立一个全局的数据结构，称为记忆集(Remembered Set)，这个结构把老年代划分为若干个小块，标识出老年代的哪一块内存会存在跨代引用。此后当发生 Minor GC 时，只有包含了跨代引用的小块内存里的对象才会被加入GC Roots进行扫描。**  
 
 &emsp; **部分垃圾回收器使用的模型：**  
 
@@ -182,17 +188,18 @@ full gc 触发条件有哪些？
 * Full GC：收集整个堆，包括young gen、old gen、perm gen(如果存在的话)等所有部分的模式。  
 &emsp; Major GC通常是跟full GC是等价的，收集整个GC堆。但因为HotSpot VM发展了这么多年，外界对各种名词的解读已经完全混乱了，当有人说“major GC”的时候一定要问清楚指的是上面的full GC还是old GC。
 
-1. Yong GC  
+#### Yong GC  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-99.png)  
 &emsp; 当young gen中的eden区分配满的时候触发。注意young GC中有部分存活对象会晋升到old gen，所以young GC后old gen的占用量通常会有所升高。  
 &emsp; 具体流程：  
 &emsp; 大部分对象在Eden区中生成。当Eden占用完时，垃圾回收器进行回收。回收时先将eden区存活对象复制到一个survivor0区，然后清空eden区，当这个survivor0区也存放满了时，则将eden区和survivor0区(使用的survivor中的对象也可能失去引用)存活对象复制到另一个survivor1区，然后清空eden和这个survivor0区，此时survivor0区是空的，然后将survivor0区和survivor1区交换，即保持survivor1区为空， 如此往复。  
-2. Major GC  
+
+#### Major GC  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-100.png)  
-3. Full GC  
+
+#### Full GC  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-101.png)  
 &emsp; 当准备要触发一次young GC时，如果发现统计数据说之前young GC的平均晋升大小比目前old gen剩余的空间大，则不会触发young GC而是转为触发full GC(因为HotSpot VM的GC里，除了CMS的concurrent collection之外，其它能收集old gen的GC都会同时收集整个GC堆，包括young gen，所以不需要事先触发一次单独的young GC)。  
-
 &emsp; **<font color = "red">Full GC的触发还可能有其他情况：</font>**  
 1. <font color = "red">调用System.gc()</font>  
 &emsp; 只是建议虚拟机执行Full GC，但是虚拟机不一定真正去执行。不建议使用这种方式，而是让虚拟机管理内存。  
@@ -206,14 +213,14 @@ full gc 触发条件有哪些？
 5. Concurrent Mode Failure  
 &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足(可能是GC过程中浮动垃圾过多导致暂时性的空间不足)，便会报Concurrent Mode Failure错误，并触发Full GC。  
 
-### 1.2.3. Stop the world  
+### 1.2.3. Stop the world/安全点  
 &emsp; Java中Stop-The-World机制简称STW，是在执行垃圾收集时，Java应用程序的其他所有线程都被挂起(除了垃圾收集帮助器之外)。Java中一种全局暂停现象，全局停顿，所有Java代码停止，native代码可以执行，但不能与JVM交互；这些现象多半是由于gc引起。  
 &emsp; GC时的Stop the World(STW)是Java开发最大的敌人。但可能很多人还不清楚，除了GC，JVM下还会发生停顿现象。  
 &emsp; JVM里有一条特殊的线程－－VM Threads，专门用来执行一些特殊的VM Operation，比如分派GC，thread dump等，这些任务都需要整个Heap，以及所有线程的状态是静止的，一致的才能进行。所以JVM引入了安全点(Safe Point)的概念，想办法在需要进行VM Operation时，通知所有的线程进入一个静止的安全点。  
 
 &emsp; 除了GC，其他触发安全点的VM Operation包括：  
-1. JIT相关，比如Code deoptimization, Flushing code cache ；  
-2. Class redefinition (e.g. javaagent，AOP代码植入的产生的instrumentation) ；  
+1. JIT相关，比如Code deoptimization， Flushing code cache ；  
+2. Class redefinition(e.g. javaagent，AOP代码植入的产生的instrumentation) ；  
 3. Biased lock revocation 取消偏向锁 ；  
 4. Various debug operation (e.g. thread dump or deadlock check)；  
 
@@ -252,7 +259,6 @@ full gc 触发条件有哪些？
 &emsp; **<font color = "red">多条垃圾收集线程并行工作，但此时用户线程仍然处于等待状态。</font>** 适用于科学计算、后台处理等若交互场景 。  
 * 并发收集器[停顿时间优先]->CMS、G1  
 &emsp; **<font color = "red">用户线程和垃圾收集线程同时执行(但并不一定是并行的，可能是交替执行的)，垃圾收集线程在执行的时候不会停顿用户线程的运行。</font>** 适用于相对时间有要求的场景，比如Web。  
-
 
 ### 1.3.3. 收集器详解
 &emsp; HotSpot虚拟机所包含的所有收集器如图：  
@@ -413,7 +419,7 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
 &emsp; Epsilon(A No-Op Garbage Collector)垃圾回收器控制内存分配，但是不执行任何垃圾回收工作。一旦java的堆被耗尽，jvm就直接关闭。设计的目的是提供一个完全消极的GC实现，分配有限的内存分配，最大限度降低消费内存占用量和内存吞吐时的延迟时间。一个好的实现是隔离代码变化，不影响其他GC，最小限度的改变其他的JVM代码  
 &emsp; 适用场景:  
 
-* Performance testing,什么都不执行的GC非常适合用于差异性分析
+* Performance testing，什么都不执行的GC非常适合用于差异性分析
 * 在测试java代码时，确定分配内存的阈值有助于设置内存压力常量值。这时no-op就很有用，它可以简单地接受一个分配的内存分配上限，当内存超限时就失败。例如：测试需要分配小于1G的内存，就使用-Xmx1g参数来配置no-op GC，然后当内存耗尽的时候就直接crash
 
 &emsp; 相关启动参数

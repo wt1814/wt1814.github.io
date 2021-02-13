@@ -4,7 +4,7 @@
 - [1. 内存中对象](#1-内存中对象)
     - [1.1. 对象的创建过程](#11-对象的创建过程)
     - [1.2. ※※※对象分配内存流程详解(TLAB讲解)](#12-※※※对象分配内存流程详解tlab讲解)
-        - [1.2.1. TLAB的引入](#121-tlab的引入)
+        - [1.2.1. ~~TLAB的引入~~](#121-tlab的引入)
         - [1.2.2. TLAB简介](#122-tlab简介)
         - [1.2.3. 内存分配全流程](#123-内存分配全流程)
     - [1.3. 对象的内存布局](#13-对象的内存布局)
@@ -14,12 +14,16 @@
         - [1.5.2. 大对象直接进入老年代](#152-大对象直接进入老年代)
         - [1.5.3. 长期存活的对象将进入老年代](#153-长期存活的对象将进入老年代)
         - [1.5.4. 动态对象年龄判定](#154-动态对象年龄判定)
-        - [1.5.5. 空间分配担保](#155-空间分配担保)
+        - [1.5.5. ※※※空间分配担保](#155-※※※空间分配担保)
 
 <!-- /TOC -->
 
-&emsp; **总结：**  
-&emsp; **<font color = "lime">1. 检测类是否被加载 2. 为对象分配内存 3. 为分配的内存空间初始化零值 4. 对对象进行其他设置 5.执行init方法。</font>**   
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "lime">对象创建过程：1. 检测类是否被加载 2. 为对象分配内存 3. 为分配的内存空间初始化零值 4. 对对象进行其他设置 5.执行init方法。</font>**   
+&emsp; 为对象分配内存：
+
+* 两种方式：指针碰撞(内存空间绝对规整)；空闲列表（内存空间是不连续的）。   
+* 线程安全问题：采用同步、CAS；本地线程分配缓冲(TLAB)。  
 
 # 1. 内存中对象  
 <!-- 
@@ -39,9 +43,9 @@ https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
     &emsp; 具体的分配内存有两种情况：第一种情况是内存空间绝对规整，第二种情况是内存空间是不连续的。  
 
     * 指针碰撞(Serial、ParNew等带Compact过程的收集器)：  
-    对于内存绝对规整的情况相对简单一些，虚拟机只需要在被占用的内存和可用空间之间移动指针即可，这种方式被称为指针碰撞。  
+    &emsp; 对于内存绝对规整的情况相对简单一些，虚拟机只需要在被占用的内存和可用空间之间移动指针即可，这种方式被称为指针碰撞。  
     * **空闲列表(CMS这种基于Mark-Sweep算法的收集器)**   
-    **<font color = "red">对于内存不规整的情况稍微复杂一点，这时候虚拟机需要维护一个列表，来记录哪些内存是可用的。分配内存的时候需要找到一个可用的内存空间，然后在列表上记录下已被分配，这种方式称为空闲列表。</font>**  
+    &emsp; **<font color = "red">对于内存不规整的情况稍微复杂一点，这时候虚拟机需要维护一个列表，来记录哪些内存是可用的。分配内存的时候需要找到一个可用的内存空间，然后在列表上记录下已被分配，这种方式称为空闲列表。</font>**  
         
     <font color = "red">分配内存的时候也需要考虑线程安全问题，有两种解决方案：</font>  
 
@@ -67,7 +71,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 https://mp.weixin.qq.com/s/jPIHNsQwiYNCRUQt1qXR6Q
 -->
 
-### 1.2.1. TLAB的引入  
+### 1.2.1. ~~TLAB的引入~~  
 <!-- 
 https://www.jianshu.com/p/8be816cbb5ed
 由于对象一般会分配在堆上，而堆是全局共享的。因此在同一时间，可能会有多个线程在堆上申请空间。因此，每次对象分配都必须要进行同步(虚拟机采用CAS配上失败重试的方式保证更新操作的原子性)，而在竞争激烈的场合分配的效率又会进一步下降。JVM使用TLAB来避免多线程冲突，在给对象分配内存时，每个线程使用自己的TLAB，这样可以避免线程同步，提高了对象分配的效率。
@@ -85,27 +89,26 @@ https://www.jianshu.com/p/8be816cbb5ed
 <!-- 
 TLAB本身占用eEden区空间，在开启TLAB的情况下，虚拟机会为每个Java线程分配一块TLAB空间。参数-XX:+UseTLAB开启TLAB，默认是开启的。TLAB空间的内存非常小，缺省情况下仅占有整个Eden空间的1%，当然可以通过选项-XX:TLABWasteTargetPercent设置TLAB空间所占用Eden空间的百分比大小。 
 -->
-&emsp; TLAB，全称Thread Local Allocation Buffer，线程本地分配缓存。，这是一个线程专用的内存分配区域。  
+&emsp; TLAB，全称Thread Local Allocation Buffer，线程本地分配缓存，这是一个线程专用的内存分配区域。  
 &emsp; TLAB是在堆中开辟的内存区域。默认情况下，TLAB 空间的内存非常小，仅占有整个 Eden 空间的 1%，可以通过 -XX:TLABWasteTargetPercent 设置 TLAB 空间所占用 Eden 空间的百分比大小。  
 
 |参数|描述|
 |---|---|
 |-Xx:+UseTLAB|使用TLAB|
 |-XX:+TLABSize|设置TLAB大小|
-|-XX:TLABRefillWasteFraction|	设置维护进入TLAB空间的单个对象大小，他是一个比例值，默认为64，即如果对象大于整个空间的1/64，则在堆创建|
+|-XX:TLABRefillWasteFraction|设置维护进入TLAB空间的单个对象大小，他是一个比例值，默认为64，即如果对象大于整个空间的1/64，则在堆创建|
 |-XX:+PrintTLAB|查看TLAB信息|
 |-Xx:ResizeTLAB|自调整TLABRefillWasteFraction阀值。|
 
-&emsp; ~~一旦对象在 TLAB 空间分配内存失败时，JVM 就会尝试着通过使用加锁机制确保数据操作的原子性，从而直接在 堆空间中分配内存。~~  
 
 &emsp; TLAB的本质其实是三个指针管理的区域：start，top 和 end，每个线程都会从Eden分配一块空间，例如说100KB，作为自己的TLAB，其中 start 和 end 是占位用的，标识出 eden 里被这个 TLAB 所管理的区域，卡住eden里的一块空间不让其它线程来这里分配。  
-&emsp; TLAB只是让每个线程有私有的分配指针，但底下存对象的内存空间还是给所有线程访问的，只是其它线程无法在这个区域分配而已。从这一点看，它被翻译为 线程私有分配区 更为合理一点。  
+&emsp; TLAB只是让每个线程有私有的分配指针，但存对象的内存空间还是给所有线程访问的，只是其它线程无法在这个区域分配而已。从这一点看，它被翻译为 线程私有分配区 更为合理一点。  
 &emsp; 当一个TLAB用满(分配指针top撞上分配极限end了)，就新申请一个TLAB，而在老TLAB里的对象还留在原地什么都不用管——它们无法感知自己是否是曾经从TLAB分配出来的，而只关心自己是在eden里分配的。  
 
 &emsp; 分配策略：  
 &emsp; 一个100KB的TLAB区域，如果已经使用了80KB，当需要分配一个30KB的对象时，TLAB是如何分配的呢？  
 &emsp; 此时，虚拟机有两种选择：第一，废弃当前的TLAB(会浪费20KB的空3.4 间)；第二，将这个30KB的对象直接分配到堆上，保留当前TLAB(当有小于20KB的对象请求TLAB分配时可以直接使用该TLAB区域)。  
-&emsp; JVM选择的策略是：在虚拟机内部维护一个叫refill_waste的值，当请求对象大于refill_waste时，会选择在堆中分配，反之，则会废弃当前TLAB，新建TLAB来分配新对象。
+&emsp; JVM选择的策略是：在虚拟机内部维护一个叫refill_waste的值，当请求对象大于refill_waste时，会选择在堆中分配，反之，则会废弃当前TLAB，新建TLAB来分配新对象。  
 &emsp; 【默认情况下，TLAB和refill_waste都是会在运行时不断调整的，使系统的运行状态达到最优。】  
 
 <!-- 
@@ -123,7 +126,7 @@ TLAB本身占用eEden区空间，在开启TLAB的情况下，虚拟机会为每�
 -->
 
 ### 1.2.3. 内存分配全流程  
-&emsp; 对象分配的大致流程如下:如果JVM开启了栈上分配和标量替换，且经过JIT逃逸分析判定该对象的引用不会逃逸到线程外，则该对象为栈分配候选；如果不满足栈上分配的条件，则尝试TLAB分配；如果TLAB分配不成功，则尝试堆上分配，如果满足进入老年代的条件，则对象直接分配到老年代，否则对象分配在新生代的eden区域。  
+&emsp; 对象分配的大致流程如下：如果JVM开启了栈上分配和标量替换，且经过JIT逃逸分析判定该对象的引用不会逃逸到线程外，则该对象为栈分配候选；如果不满足栈上分配的条件，则尝试TLAB分配；如果TLAB分配不成功，则尝试堆上分配，如果满足进入老年代的条件，则对象直接分配到老年代，否则对象分配在新生代的eden区域。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-106.png)  
 
 
@@ -158,19 +161,19 @@ https://mp.weixin.qq.com/s/wsgxJSpEbY3yrmL9mDC2sw
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-79.png)  
 
 ### 1.5.1. 对象优先在Eden分配  
-&emsp; 在JVM内存模型中，JVM年轻代堆内存可以划分为一块Eden区和两块Survivor区。在大多数情况下, 对象在新生代Eden区中分配, 当Eden区没有足够空间分配时，JVM发起一次Minor GC，将Eden区和其中一块Survivor区内尚存活的对象放入另一块Survivor区域，如果在Minor GC期间发现新生代存活对象无法放入空闲的Survivor区，则会通过空间分配担保机制使对象提前进入老年代。  
+&emsp; 在JVM内存模型中，JVM年轻代堆内存可以划分为一块Eden区和两块Survivor区。在大多数情况下，对象在新生代Eden区中分配， 当Eden区没有足够空间分配时，JVM发起一次Minor GC，将Eden区和其中一块Survivor区内尚存活的对象放入另一块Survivor区域，如果在Minor GC期间发现新生代存活对象无法放入空闲的Survivor区，则会通过空间分配担保机制使对象提前进入老年代。  
 
 ### 1.5.2. 大对象直接进入老年代  
-&emsp; Serial和ParNew两款收集器提供了-XX:PretenureSizeThreshold的参数，令大于该值的大对象直接在老年代分配, 这样做的目的是避免在Eden区和Survivor区之间产生大量的内存复制(大对象一般指需要大量连续内存的Java对象，如很长的字符串和数组), 因此大对象容易导致还有不少空闲内存就提前触发GC以获取足够的连续空间。  
+&emsp; Serial和ParNew两款收集器提供了-XX:PretenureSizeThreshold的参数，令大于该值的大对象直接在老年代分配，这样做的目的是避免在Eden区和Survivor区之间产生大量的内存复制(大对象一般指需要大量连续内存的Java对象，如很长的字符串和数组)，因此大对象容易导致还有不少空闲内存就提前触发GC以获取足够的连续空间。  
 
 ### 1.5.3. 长期存活的对象将进入老年代  
 &emsp; 虚拟机采用了分代收集的思想来管理内存，那么内存回收时就必须能识别哪些对象应放在新生代，哪些对象应放在老年代中。为此，虚拟机为每个对象定义了一个对象年龄(Age)计数器，对象在Eden出生如果经第一次Minor GC后仍然存活，且能被Survivor容纳的话，将被移动到Survivor空间中，并将年龄设为1。以后对象在Survivor区中每经历一次Minor GC，年龄就+1。当增加到一定程度(-XX:MaxTenuringThreshold，默认15)，将会被晋升到老年代。对象晋升老年代的年龄阈值，可以通过参数-XX:MaxTenuringThreshold设置。  
 
 ### 1.5.4. 动态对象年龄判定  
-&emsp; 为了更好地适应不同程序的内存情况，JVM并不总是要求对象的年龄必须达到MaxTenuringThreshold才能晋升老年代: 如果在Survivor空间中相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，而无须等到晋升年龄。  
+&emsp; 为了更好地适应不同程序的内存情况，JVM并不总是要求对象的年龄必须达到MaxTenuringThreshold才能晋升老年代：如果在Survivor空间中相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，而无须等到晋升年龄。  
 
-### 1.5.5. 空间分配担保  
-&emsp; JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的连续空间是否大于新生代所有对象的总空间，如果大于，则此次Minor GC是安全的如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。  
+### 1.5.5. ※※※空间分配担保  
+&emsp; JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的连续空间是否大于新生代所有对象的总空间，如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。  
 
 <!-- 
 2.2. 内存分配方式  

@@ -81,8 +81,8 @@ https://mp.weixin.qq.com/s/dWg5S7m-LUQhxUofHfqb3g
 &emsp; 收集过程：  
 &emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-95.png)  
 &emsp; G1的回收过程主要分为3类：  
-&emsp; (1)G1“年轻代”的垃圾回收，同样叫Minor G1，这个过程和我们前面描述的类似，发生时机就是Eden区满的时候。  
-(2)老年代的垃圾收集，严格上来说其实不算是收集，它是一个“并发标记”的过程，顺便清理了一点点对象。  
+&emsp; (1)G1“年轻代”的垃圾回收，同样叫Minor G1，这个过程和前面描述的类似，发生时机就是Eden区满的时候。  
+&emsp; (2)老年代的垃圾收集，严格上来说其实不算是收集，它是一个“并发标记”的过程，顺便清理了一点点对象。  
 &emsp; (3)真正的清理，发生在“混合模式”，它不止清理年轻代，还会将老年代的一部分区域进行清理。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-96.png)  
 
