@@ -17,7 +17,7 @@
             - [1.4.1.1. Jps：虚拟机进程状况工具](#1411-jps虚拟机进程状况工具)
             - [1.4.1.2. Jstack：java线程堆栈跟踪工具](#1412-jstackjava线程堆栈跟踪工具)
             - [1.4.1.3. Jmap：java内存映像工具](#1413-jmapjava内存映像工具)
-                - [1.4.1.3.1. jmap的几个操作要慎用](#14131-jmap的几个操作要慎用)
+                - [1.4.1.3.1. ※※※jmap的几个操作要慎用](#14131-※※※jmap的几个操作要慎用)
             - [1.4.1.4. Jhat：虚拟机堆转储快照分析工具](#1414-jhat虚拟机堆转储快照分析工具)
             - [1.4.1.5. Jstat：虚拟机统计信息监视工具](#1415-jstat虚拟机统计信息监视工具)
             - [1.4.1.6. Jinfo：java配置信息工具](#1416-jinfojava配置信息工具)
@@ -25,7 +25,6 @@
 
 <!-- /TOC -->
 
-# 1. JVM调优基础  
 &emsp; **<font color = "lime">总结：</font>**  
 &emsp; JVM命令行调优工具：  
 
@@ -35,6 +34,8 @@
 * Jhat：虚拟机堆转储快照分析工具  
 * Jstat：虚拟机统计信息监视工具  
 * Jinfo：java配置信息工具  
+
+# 1. JVM调优基础  
 
 ## 1.1. 性能指标  
 [性能指标](/docs/system/performance.md)  
@@ -77,7 +78,7 @@
     |-Xmn200m|	设置的年轻代大小为 200M|
     |-Xss128k|	设置每个线程的栈大小为 128k|
 
-* 非Stable参数(-XX)，此类参数各个JVM实现会有所不同，将来可能会随时取消，需要慎重使用。
+* 非标准参数(-XX)，此类参数各个JVM实现会有所不同，将来可能会随时取消，需要慎重使用。
     * 分Boolean类型和非Boolean类型：  
         * Boolean类型  
 
@@ -242,7 +243,7 @@ https://mp.weixin.qq.com/s/MC2y6JAbZyjIVp7yTxT7fQ
 
 #### 1.4.1.2. Jstack：java线程堆栈跟踪工具  
 &emsp; jstack用于生成java虚拟机当前时刻的线程快照。线程快照是当前java虚拟机内每一条线程正在执行的方法堆栈的集合。<font color = "red">生成线程快照的主要目的是定位线程出现长时间停顿的原因，如线程间死锁、死循环、请求外部资源导致的长时间等待等都是导致线程长时间停顿的常见原因。</font>  
-&emsp; 线程出现停顿的时候通过jstack来查看各个线程的调用堆栈，就可以知道没有响应的线程到底在后台做什么事情，或者等待什么资源。如果java程序崩溃生成core文件，jstack工具可以用来获得core文件的java stack和native stack的信息，从而可以轻松地知道java程序是如何崩溃和在程序何处发生问题。  
+&emsp; 线程出现停顿的时候通过jstack来查看各个线程的调用堆栈，就可以知道没有响应的线程到底在后台做什么事情，或者等待什么生产环境中最主要的危险操作是下面这三种资源。如果java程序崩溃生成core文件，jstack工具可以用来获得core文件的java stack和native stack的信息，从而可以轻松地知道java程序是如何崩溃和在程序何处发生问题。  
 &emsp; 另外，jstack工具还可以附属到正在运行的java程序中，看到当时运行的java程序的java stack和native stack的信息，如果现在运行的java程序呈现hung的状态，jstack是非常有用的。  
 &emsp; 命令格式：jstack [option] PID。option参数：  
 
@@ -263,12 +264,13 @@ https://mp.weixin.qq.com/s/MC2y6JAbZyjIVp7yTxT7fQ
 * histo：显示堆中对象的统计信息
 * permstat：to print permanent generation statistics
 * F：当-dump没有响应时，强制生成dump快照  
-  
+
+
 &emsp; jmap -dump:format=b,file=heap.hprof PID。  
 &emsp; format指定输出格式，live指明是活着的对象，file指定文件名。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-37.png)  
 
-##### 1.4.1.3.1. jmap的几个操作要慎用  
+##### 1.4.1.3.1. ※※※jmap的几个操作要慎用  
 &emsp; 生产环境中最主要的危险操作是下面这三种：
 1. jmap -dump。这个命令执行，JVM会将整个heap的信息dump写入到一个文件，heap如果比较大的话，就会导致这个过程比较耗时，并且执行的过程中为了保证dump的信息是可靠的，所以会暂停应用。  
 2. jmap -permstat。这个命令执行，JVM会去统计perm区的状况，这整个过程也会比较的耗时，并且同样也会暂停应用。  
