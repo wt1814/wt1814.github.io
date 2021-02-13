@@ -3,14 +3,10 @@
 <!-- TOC -->
 
 - [1. 结构型模式](#1-结构型模式)
-    - [1.1. 动态代理（Proxy）模式](#11-动态代理proxy模式)
-    - [1.2. 装饰（Decorator）模式](#12-装饰decorator模式)
-        - [1.2.1. 在JDK中的应用，IO流](#121-在jdk中的应用io流)
-    - [1.3. 适配器（Adapter）模式](#13-适配器adapter模式)
-    - [1.4. 桥接（Bridge）模式](#14-桥接bridge模式)
-    - [1.5. 门面（Facade）模式](#15-门面facade模式)
-    - [1.6. 享元（Flyweight）模式](#16-享元flyweight模式)
-    - [1.7. 组合（Composite）模式](#17-组合composite模式)
+    - [1.1. 装饰（Decorator）模式](#11-装饰decorator模式)
+        - [1.1.1. 在JDK中的应用，IO流](#111-在jdk中的应用io流)
+    - [1.2. 适配器（Adapter）模式](#12-适配器adapter模式)
+    - [1.3. 门面（Facade）模式](#13-门面facade模式)
 
 <!-- /TOC -->
 
@@ -23,11 +19,8 @@
 这个问题与前面的类似，   适配器模式和代理模式的区别在于他们的意图不同。由于适配器模式和代理模式都是封装真正执行动作的类， 因此结构是一致的， 但是适配器模式用于接口之间的转换， 而代理模式则是增加一个额外的中间层， 以便支持分配、控制或智能访问。
 -->
 
-## 1.1. 动态代理（Proxy）模式  
 
-&emsp; 请查看[动态代理](/docs/java/Design/proxy.md)  
-
-## 1.2. 装饰（Decorator）模式  
+## 1.1. 装饰（Decorator）模式  
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MzUzODU4MjE2MQ==&mid=2247484592&idx=1&sn=42a14aef3707745f570488be2fe77326&chksm=fad4c94ecda34058648b394acca654520e97f080aa156fb281c26eaad6f910c55e67b3063364&scene=21#wechat_redirect
 -->
@@ -56,11 +49,11 @@ https://mp.weixin.qq.com/s?__biz=MzUzODU4MjE2MQ==&mid=2247484592&idx=1&sn=42a14a
 * Decorator，所有装饰器的父类，是一个abstract class，需要定义一个与组件接口一致的接口(主要是为了实现装饰器功能的复用，即具体的装饰器A可以装饰另外一个具体的装饰器B，因为装饰器类也是一个Component)，并持有一个Component对象，该对象其实就是被装饰的对象。如果不继承组件接口类，则只能为某个组件添加单一的功能，即装饰器对象不能在装饰其他的装饰器对象。  
 * ConcreteDecorator，具体的装饰器类，实现具体要向被装饰对象添加的功能。用来装饰具体的组件对象或者另外一个具体的装饰器对象。  
 
-### 1.2.1. 在JDK中的应用，IO流  
+### 1.1.1. 在JDK中的应用，IO流  
 &emsp; java IO流是典型的装饰器模式。  
 &emsp; FilterInputStream，FilterOutputStream，FilterRead，FilterWriter分别为具体装饰器的父类，相当于Decorator类，它们分别实现了InputStream，OutputStream，Reader，Writer类(这些类相当于Component，是其他组件类的父类，也是Decorator类的父类)。继承自InputStream，OutputStream，Reader，Writer这四个类的其他类是具体的组件类，每个都有相应的功能，相当于ConcreteComponent类。而继承自FilterInputStream，FilterOutputStream，FilterRead，FilterWriter这四个类的其他类就是具体的装饰器对象类，即ConcreteDecorator类。通过这些装饰器类，可以提供更加具体的有用的功能。如FileInputStream是InputStream的一个子类，从文件中读取数据流，BufferedInputStream是继承自FilterInputStream的具体的装饰器类，该类提供一个内存的缓冲区类保存输入流中的数据。使用如下的代码来使用BufferedInputStream装饰FileInputStream，就可以提供一个内存缓冲区来保存从文件中读取的输入流。  
 
-## 1.3. 适配器（Adapter）模式  
+## 1.2. 适配器（Adapter）模式  
 <!-- 
  萌新发问：MyBatis日志到底是如何做到兼容所有常用日志框架的？ 
  https://mp.weixin.qq.com/s/hUA-GEbRYH0-qgcEKCUylg
@@ -89,10 +82,7 @@ https://mp.weixin.qq.com/s?__biz=MzUzODU4MjE2MQ==&mid=2247484592&idx=1&sn=42a14a
 
 &emsp; **适配器模式有3种形式：类适配器、对象适配器、接口适配器。**  
 
-## 1.4. 桥接（Bridge）模式  
-......
-
-## 1.5. 门面（Facade）模式  
+## 1.3. 门面（Facade）模式  
 &emsp; 门面模式(Facade Pattern)又叫外观模式，提供了一个统一的接口，用来访问子系统中的一群接口。其主要特征是定义一个高层接口，让子系统更容易使用。  
 &emsp; 在日常编码工作中，有意无意地大量使用门面模式，但凡只要高层模块需要调度多个子系统(2个以上类对象)，都会自觉地创建一个新类封装这些子系统，提供精简接口，让高层模块可以更加容易间接调用这些子系统地功能。尤其是现阶段各种第三方SDK，各种开源类库，很大概率都会使用门面模式。  
 
@@ -117,11 +107,4 @@ https://mp.weixin.qq.com/s?__biz=MzUzODU4MjE2MQ==&mid=2247484592&idx=1&sn=42a14a
 * Facade门面角色：外观模式的核心。它被客户角色调用，它熟悉子系统的功能。门面角色内部根据客户角色的需求预定了几种功能的组合。一般情况下，门面角色会将所有从客户端发来的请求委派到相应的子系统去，也就说该角色没有实际的业务逻辑，只是一个委托类。  
 * subsystem子系统角色：实现了子系统的功能。  
 * 客户角色：通过调用Facede来完成要实现的功能。  
-
-## 1.6. 享元（Flyweight）模式  
-......
-
-
-## 1.7. 组合（Composite）模式  
-......
 
