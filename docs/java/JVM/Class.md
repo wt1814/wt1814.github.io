@@ -4,11 +4,9 @@
 <!-- 
 认识JVM和字节码文件 
 https://mp.weixin.qq.com/s/2g1-YZXRrzBsD1QaKGnnNQ
-
 https://mp.weixin.qq.com/s/z0BmJz6dk9VNHalicgN2rg
-
 -->
-&emsp; 根据 Java 虚其机规范,类文件由单个 ClassFile 结构组成：  
+&emsp; 根据 Java 虚其机规范，类文件由单个 ClassFile 结构组成：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-91.png)  
 &emsp; Class文件字节码结构组织示意图  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-90.png)  

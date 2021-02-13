@@ -20,6 +20,12 @@ JDK为何自己先破坏双亲委派模型?
 https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 -->
 
+&emsp; **<font color = "lime">总结：</font>**  
+&emsp; 类加载器：  
+1. 类加载器分类  
+2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。
+&emsp; 好处：避免类的重复加载；防止核心API被随意篡改。   
+
 # 1. 类加载的方式：类加载器  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-6.png)  
 
@@ -82,13 +88,12 @@ https://mp.weixin.qq.com/s/2iGaiOpxBIM3msAZYPUOnQ
 
 &emsp; **<font color = "red">破坏双亲委派模型的案例：</font>**  
 
-* 双亲委派模型有一个问题：顶层ClassLoader，无法加载底层ClassLoader的类。典型例子JNDI、JDBC，所以加入了线程上下文类加载器(Thread Context ClassLoader),可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
-* Tomcat中使用了自定义ClassLoader，并且也破坏了双亲委托机制。每个应用使用WebAppClassloader进行单独加载，它首先使用WebAppClassloader进行类加载，如果加载不了再委托父加载器去加载，这样可以保证每个应用中的类不冲突。每个tomcat中可以部署多个项目，每个项目中存在很多相同的class文件(很多相同的jar包)，加载到jvm中可以做到互不干扰。  
-* 利用破坏双亲委派来实现代码热替换(每次修改类文件，不需要重启服务)。因为一个Class只能被一个ClassLoader加载一次，否则会报java.lang.LinkageError。当要实现代码热部署时，可以每次都new一个自定义的ClassLoader来加载新的Class文件。JSP的实现动态修改就是使用此特性实现。  
+* 双亲委派模型有一个问题：顶层ClassLoader，无法加载底层ClassLoader的类。典型例子JNDI、JDBC，所以加入了线程上下文类加载器(Thread Context ClassLoader)，可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
+* Tomcat中使用了自定义ClassLoader，并且也破坏了双亲委托机制。每个应用使用WebAppClassloader进行单独加载，它首先使用WebAppClassloader进行类加载，如果加载不了再委托父加载器去加载， **<font color = "red">这样可以保证每个应用中的类不冲突。每个tomcat中可以部署多个项目，每个项目中存在很多相同的class文件(很多相同的jar包)，加载到jvm中可以做到互不干扰。</font>**  
+* **利用破坏双亲委派来实现代码热替换(每次修改类文件，不需要重启服务)。因为一个Class只能被一个ClassLoader加载一次，否则会报java.lang.LinkageError。当要实现代码热部署时，可以每次都new一个自定义的ClassLoader来加载新的Class文件。** JSP的实现动态修改就是使用此特性实现。  
 
 ## 1.3. 类加载器应用  
 ### 1.3.1. 自定义类加载器  
-
 &emsp; <font color = "red">什么情况下需要自定义类加载器？</font>  
 1. **隔离加载类。**在某些框架内进行中间件与应用的模块隔离，把类加载到不同的环境。
 2. **修改类加载方式。**类的加载模型并非强制，除了Bootstrap以外，其他的加载并非一定要引入，或者根据实际情况在某个时间点进行按需进行动态加载。

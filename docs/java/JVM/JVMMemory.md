@@ -9,14 +9,7 @@
     - [1.3. 本地方法栈](#13-本地方法栈)
     - [1.4. 堆(heap)](#14-堆heap)
         - [1.4.1. 堆简介](#141-堆简介)
-        - [1.4.2. 堆是分配对象存储的唯一选择吗？(逃逸分析)](#142-堆是分配对象存储的唯一选择吗逃逸分析)
-            - [1.4.2.1. 逃逸分析的概念-1](#1421-逃逸分析的概念-1)
-            - [1.4.2.2. 对象逃逸示例](#1422-对象逃逸示例)
-            - [1.4.2.3. 逃逸分析原则](#1423-逃逸分析原则)
-            - [1.4.2.4. 逃逸分析优化](#1424-逃逸分析优化)
-                - [1.4.2.4.1. 对象可能分配在栈上](#14241-对象可能分配在栈上)
-                - [1.4.2.4.2. 分离对象或标量替换](#14242-分离对象或标量替换)
-                - [1.4.2.4.3. 同步锁消除](#14243-同步锁消除)
+        - [1.4.2. ※※※堆是分配对象存储的唯一选择吗？(逃逸分析)](#142-※※※堆是分配对象存储的唯一选择吗逃逸分析)
         - [1.4.3. Java堆内存配置项](#143-java堆内存配置项)
         - [1.4.4. 堆和栈的区别是什么？](#144-堆和栈的区别是什么)
         - [1.4.5. 堆和非堆内存](#145-堆和非堆内存)
@@ -26,17 +19,15 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "red">部分参考《深入理解java虚拟机 第3版》第2章 Java内存区域与内存溢出异常</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-51.png)  
 <!-- 
 JVM 内存结构 
 https://mp.weixin.qq.com/s/mWIsVIYkn7ts02mdmvRndA
 https://mp.weixin.qq.com/s/jPIHNsQwiYNCRUQt1qXR6Q
-
 -->
 
 # 1. JVM内存结构/运行时数据区  
-&emsp; **<font color = "lime">1. 检测类是否被加载 2. 为对象分配内存 3. 为分配的内存空间初始化零值 4. 对对象进行其他设置 5.执行init方法。</font>**    
+&emsp; **<font color = "red">部分参考《深入理解java虚拟机 第3版》第2章 Java内存区域与内存溢出异常</font>**   
 
 &emsp; Java虚拟机在执行Java程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK1.8和之前的版本略有不同。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-7.png)  
@@ -166,95 +157,10 @@ https://mp.weixin.qq.com/s/Tv-0hjIgN9Grqvch1fFUiA -->
 &emsp; **<font color = "red">堆分类：从垃圾回收的角度，由于现在收集器基本都采用分代垃圾收集算法，所以Java堆还可以细分为：新生代和老年代。新生代内存又被分成三部分，Eden、From Survivor、To Survivor，默认情况下年轻代按照8 :1 :1的比例来分配。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-10.png)  
 
-&emsp; **<font color = "red">在Eden区中，JVM 为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
+&emsp; **<font color = "clime">在Eden区中，JVM 为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
 
-### 1.4.2. 堆是分配对象存储的唯一选择吗？(逃逸分析)  
-<!--
-https://www.cnblogs.com/BlueStarWei/p/9358757.html
-
-https://www.jianshu.com/p/e832aa3b8b70
-https://mp.weixin.qq.com/s/BUcFh9ArENu9rlMdmlDNWg
-https://mp.weixin.qq.com/s/jPIHNsQwiYNCRUQt1qXR6Q
-https://mp.weixin.qq.com/s?__biz=Mzg4MjU0OTM1OA==&mid=2247489185&idx=1&sn=63186214b5145a5f6567d9bae6fd34e6&source=41#wechat_redirect
-
-Java中的对象不一定是在堆上分配的。  
--->  
-&emsp; 随着JIT编译器的发展和逃逸分析技术的逐渐成熟，栈上分配、标量替换优化技术将会导致一些微妙的变化，所有的对象都分配到堆上也渐渐变得不那么“绝对”了。——《深入理解 Java 虚拟机》  
-&emsp; JVM通过逃逸分析，能够分析出一个新对象的使用范围，并以此确定是否要将这个对象分配到堆上。如果JVM发现某些对象没有逃逸出方法，就很有可能被优化成在栈上分配。  
-
-    执行java程序时，可以通过如下参数开启或者关闭"逃逸分析"
-
-    开启逃逸分析：-XX:+DoEscapeAnalysis
-    关闭逃逸分析：-XX:-DoEscap
-
-#### 1.4.2.1. 逃逸分析的概念-1  
-&emsp; 逃逸分析，一种确定指针动态范围的静态分析，它可以分析在程序的哪些地方可以访问到指针。  
-&emsp; 在JVM的即时编译语境下，逃逸分析将判断新建的对象是否逃逸。即时编译判断对象是否逃逸的依据：一种是对象是否被存入堆中(静态字段或者堆中对象的实例字段)，另一种就是对象是否被传入未知代码。  
-
-&emsp; 通过逃逸分析算法可以分析出某一个方法中的某个对象是否会被其它方法或者线程访问到。如果分析结果显示某对象并不会被其它线程访问，则有可能在编译期间将对象分配在栈上，即时是线程私有的。    
-&emsp; <font color = "red">逃逸指的是逃出当前线程，所以逃逸对象就是可以被其他线程访问的对象，非逃逸对象就是线程私有的对象。</font>  
-
-#### 1.4.2.2. 对象逃逸示例  
-&emsp; 一种典型的对象逃逸就是：对象被复制给成员变量或者静态变量，可能被外部使用，此时变量就发生了逃逸。  
-&emsp; 可以用下面的代码来表示这个现象。  
-
-```java
-/**
- * @description 对象逃逸示例1
- */
-public class ObjectEscape{
-    private User user;
-    public void init(){
-        user = new User();
-    }
-}
-```
-&emsp; 在ObjectEscape类中，存在一个成员变量user，在init()方法中，创建了一个User类的对象，并将其赋值给成员变量user。此时，对象被复制给了成员变量，可能被外部使用，此时的变量就发生了逃逸。  
-&emsp; 另一种典型的场景就是：对象通过return语句返回。如果对象通过return语句返回了，此时的程序并不能确定这个对象后续会不会被使用，外部的线程可以访问到这个变量，此时对象也发生了逃逸。  
-&emsp; 可以用下面的代码来表示这个现象。  
-
-```java
-/**
- * @description 对象逃逸示例2
- */
-public class ObjectReturn{
-    public User createUser(){
-        User user = new User();
-        return user;
-    }
-}
-```
-
-#### 1.4.2.3. 逃逸分析原则
-&emsp; 在HotSpot源码中的src/share/vm/opto/escape.hpp中定义了对象进行逃逸分析后的几种状态：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-94.png)  
-1. 全局逃逸(GlobalEscape)  
-&emsp; 即一个对象的作用范围逃出了当前方法或者当前线程，有以下几种场景：
-
-    * 对象是一个静态变量
-    * 对象作为当前方法的返回值
-    如果复写了类的finalize方法，则此类的实例对象都是全局逃逸状态(因此为了提高性能，* 除非万不得已，不要轻易复写finalize方法)
-
-2. 参数逃逸(ArgEscape)  
-&emsp; 即一个对象被作为方法参数传递或者被参数引用，但在调用过程中不会再被其它方法或者线程访问。
-3. 没有逃逸(NoEscape)  
-
-&emsp; 即方法中的对象没有发生逃逸，这种对象Java即时编译器会做出进一步的优化。
-
-#### 1.4.2.4. 逃逸分析优化  
-&emsp; 经过"逃逸分析"之后，如果一个对象的逃逸状态是 GlobalEscape 或者 ArgEscape，则此对象必须被分配在"堆"内存中，但是对于 NoEscape 状态的对象，则不一定，具体会有这种优化情况：对象可能分配在栈上、分离对象或标量替换、消除同步锁。  
-
-##### 1.4.2.4.1. 对象可能分配在栈上  
-&emsp; JVM通过逃逸分析，分析出新对象的使用范围，就可能将对象在栈上进行分配。栈分配可以快速地在栈帧上创建和销毁对象，不用再将对象分配到堆空间，可以有效地减少 JVM 垃圾回收的压力。  
-
-##### 1.4.2.4.2. 分离对象或标量替换  
-&emsp; 当JVM通过逃逸分析，确定要将对象分配到栈上时，即时编译可以将对象打散，将对象替换为一个个很小的局部变量，我们将这个打散的过程叫做标量替换。将对象替换为一个个局部变量后，就可以非常方便的在栈上进行分配了。  
-
-##### 1.4.2.4.3. 同步锁消除  
-&emsp; 如果JVM通过逃逸分析，发现一个对象只能从一个线程被访问到，则访问这个对象时，可以不加同步锁。如果程序中使用了synchronized锁，则JVM会将synchronized锁消除。  
-&emsp; 这里，需要注意的是：这种情况针对的是synchronized锁，而对于Lock锁，则JVM并不能消除。  
-&emsp; 要开启同步消除，需要加上 -XX:+EliminateLocks 参数。因为这个参数依赖逃逸分析，所以同时要打开 -XX:+DoEscapeAnalysis 选项。  
-&emsp; 所以，并不是所有的对象和数组，都是在堆上进行分配的，由于即时编译的存在，如果JVM发现某些对象没有逃逸出方法，就很有可能被优化成在栈上分配。  
+### 1.4.2. ※※※堆是分配对象存储的唯一选择吗？(逃逸分析)  
+&emsp; 请参考[逃逸分析](/docs/java/JVM/escape.md)  
 
 ### 1.4.3. Java堆内存配置项  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-11.png)  
@@ -333,12 +239,11 @@ public class ObjectReturn{
 1. <font color = "red">因为直接内存，JVM将会在 IO 操作上具有更高的性能，因为它直接作用于本地系统的 IO 操作。</font>而非直接内存，也就是堆内存中的数据，如果要作 IO 操作，会先复制到直接内存，再利用本地 IO 处理。  
 &emsp; 从数据流的角度，非直接内存是下面这样的作用链：本地 IO --> 直接内存 --> 非直接内存 --> 直接内存 --> 本地 IO。  
 &emsp; 而直接内存是：本地 IO --> 直接内存 --> 本地 IO。  
-2. 整个永久代有一个 JVM 本身设置固定大小上线，无法进行调整，<font color = "red">而元空间使用的是直接内存，受本机可用内存的限制，并且永远不会得到 java.lang.OutOfMemoryError。</font>也可以通过JVM参数来指定元空间的大小。  
+2. 整个永久代有一个 JVM 本身设置固定大小上线，无法进行调整，<font color = "red">而元空间使用的是直接内存，受本机可用内存的限制，很难发生java.lang.OutOfMemoryError。</font>也可以通过JVM参数来指定元空间的大小。  
 
 
 <!-- 
 延伸：常量池 
 https://mp.weixin.qq.com/s/391mANG6x1euW2Savj7ltA
 &emsp; 常量池分为三种：class 文件中的常量池、运行时常量池、字符串常量池。
-
 -->

@@ -121,8 +121,10 @@
 [JVM类的加载](/docs/java/JVM/classLoad.md)  
 [JVM类加载器](/docs/java/JVM/classLoader.md)  
 [JVM内存结构](/docs/java/JVM/JVMMemory.md)  
+[逃逸分析](/docs/java/JVM/escape.md)  
 [内存对象](/docs/java/JVM/MemoryObject.md)  
 [内存泄露](/docs/java/JVM/MemoryLeak.md)  
+
 [GC-回收对象](/docs/java/JVM/GCProject.md)  
 [GC-回收器](/docs/java/JVM/GCReclaimer.md)  
 [GC-重要的回收器](/docs/java/JVM/GCReclaimerOne.md)  
