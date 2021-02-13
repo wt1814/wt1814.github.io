@@ -18,6 +18,9 @@
 
 <!-- /TOC -->
 
+&emsp; **总结：**  
+&emsp; **<font color = "lime">1. 检测类是否被加载 2. 为对象分配内存 3. 为分配的内存空间初始化零值 4. 对对象进行其他设置 5.执行init方法。</font>**   
+
 # 1. 内存中对象  
 <!-- 
 https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
