@@ -22,7 +22,7 @@ https://mp.weixin.qq.com/s/RjRzacdmx3DMHlhjj1GM3g
 
 ------
 
-# 1. 动态代理（Proxy）模式  
+# 1. 动态代理(Proxy)模式  
 
 &emsp; 代理模式，是指为其他对象提供一种代理，以控制对这个对象的访问。在某些情况下，一个对象不适合或者不能直接引用另一个对象，而代理对象可以在客户端和目标对象之间起到中介的作用。使用代理模式主要有两个目的：一保护目标对象，二增强目标对象。  
 &emsp; 动态代理实现方式由JDK自带的代理和Cglib提供的类库。这里只讨论JDK代理的使用。  
@@ -36,7 +36,7 @@ https://mp.weixin.qq.com/s/RjRzacdmx3DMHlhjj1GM3g
     protected  Proxy(InvocationHandler h)
     //loader是类装载器，interfaces是真实类所拥有的全部接口的数组。
     static Class<?> getProxyClass(ClassLoader loader, Class<?>... interfaces)
-    //返回代理类的一个实例，返回后的代理类可以当作被代理类使用（可使用被代理类在Subject接口中声明过的方法）。
+    //返回代理类的一个实例，返回后的代理类可以当作被代理类使用(可使用被代理类在Subject接口中声明过的方法)。
     //ClassLoader loader,:指定当前目标对象使用类加载器,获取加载器的方法是固定的
     //Class<?>[] interfaces,:目标对象实现的接口的类型,使用泛型方式确认类型
     //InvocationHandler h:事件处理,执行目标对象的方法时,会触发事件处理器的方法,会把当前执行目标对象的方法作为参数传入
@@ -50,7 +50,7 @@ https://mp.weixin.qq.com/s/RjRzacdmx3DMHlhjj1GM3g
 
     ```java
     Object invoke(Object proxy, Method method, Object[] args) 
-    //参数obj一般是指代理类，method是被代理的方法，args为该方法的参数数组（无参时设置为null）。这个抽象方法在代理类中动态实现。
+    //参数obj一般是指代理类，method是被代理的方法，args为该方法的参数数组(无参时设置为null)。这个抽象方法在代理类中动态实现。
     ```
     &emsp; 每一个动态代理类都必须要实现InvocationHandler这个接口，并且每个代理类的实例都关联到了一个handler，通过代理对象调用一个方法的时候，这个方法的调用就会被转发为由InvocationHandler这个接口的 invoke 方法来进行调用。  
     <!-- 
