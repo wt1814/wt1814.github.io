@@ -103,7 +103,14 @@
 &emsp; &emsp; [原型模式](/docs/java/Design/prototype.md)  
 &emsp; [结构型设计模式](/docs/java/Design/structure.md)  
 &emsp; &emsp; [代理模式](/docs/java/Design/proxy.md)   
+&emsp; &emsp; [装饰者模式](/docs/java/Design/decorator.md)   
+&emsp; &emsp; [适配器模式](/docs/java/Design/adapter.md)   
+&emsp; &emsp; [门面模式](/docs/java/Design/facade.md)   
 &emsp; [行为型设计模式](/docs/java/Design/behavior.md)  
+&emsp; &emsp; [策略模式](/docs/java/Design/strategy.md)   
+&emsp; &emsp; [模板方法模式](/docs/java/Design/template.md)   
+&emsp; &emsp; [观察者模式](/docs/java/Design/observer.md)   
+&emsp; &emsp; [责任链模式](/docs/java/Design/chain.md)   
 [设计模式大讨论](/docs/java/Design/discuss.md)  
 
 ### JVM  
