@@ -14,8 +14,7 @@
 <!-- 
 模板模式：一种体现多态的设计模式
 https://mp.weixin.qq.com/s/EnkvEIVTLzOcuVd8s8fJTQ
-建造者模式 
-https://mp.weixin.qq.com/s/Taja_UD0r0l2BP-mFbwU_Q
+
 -->
 
 # 1. ~~设计模式~~
