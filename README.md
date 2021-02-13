@@ -103,6 +103,7 @@
 &emsp; &emsp; [原型模式](/docs/java/Design/prototype.md)  
 &emsp; [结构型设计模式](/docs/java/Design/structure.md)  
 &emsp; &emsp; [代理模式](/docs/java/Design/proxy.md)   
+&emsp; &emsp; [JDK动态代理](/docs/java/Design/JDKProxy.md)   
 &emsp; &emsp; [装饰者模式](/docs/java/Design/decorator.md)   
 &emsp; &emsp; [适配器模式](/docs/java/Design/adapter.md)   
 &emsp; &emsp; [门面模式](/docs/java/Design/facade.md)   

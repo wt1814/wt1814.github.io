@@ -58,6 +58,7 @@
         * [原型模式](/docs/java/Design/prototype.md)  
     * [结构型设计模式](/docs/java/Design/structure.md)  
         * [代理模式](/docs/java/Design/proxy.md)  
+        * [JDK动态代理](/docs/java/Design/JDKProxy.md)   
         * [装饰者模式](/docs/java/Design/decorator.md)   
         * [适配器模式](/docs/java/Design/adapter.md)   
         * [门面模式](/docs/java/Design/facade.md)   
