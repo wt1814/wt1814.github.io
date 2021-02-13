@@ -16,16 +16,15 @@
 23种经典设计模式的原理、背后的思想、应用场景 
 https://mp.weixin.qq.com/s/DtSb16qCnLWSJ4z4Wj8G_Q
 -->
-
-# 1. 设计模式
 <!-- 
 模板模式：一种体现多态的设计模式
 https://mp.weixin.qq.com/s/EnkvEIVTLzOcuVd8s8fJTQ
 建造者模式 
 https://mp.weixin.qq.com/s/Taja_UD0r0l2BP-mFbwU_Q
 -->
-&emsp; 有关设计模式可参考网址：
-&emsp; [refactoringguru.cn](https://refactoringguru.cn/design-patterns/catalog)  
+
+# 1. 设计模式
+&emsp; 有关设计模式可参考网址：[refactoringguru.cn](https://refactoringguru.cn/design-patterns/catalog)  
 
 &emsp; 常用设计模式有23种（不包含简单工厂模式）。<font color = "red">这23种设计模式的本质是面向对象设计原则的实际运用，是对类的封装性、继承性和多态性，以及类的关联关系和组合关系的充分理解。</font>  
 

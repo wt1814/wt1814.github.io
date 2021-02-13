@@ -92,13 +92,13 @@
 [SPI](/docs/java/basis/SPI.md)  
 
 ### 设计模式  
-[七大设计原则](/docs/java/Design/1.principles.md)  
+[七大设计原则](/docs/java/Design/principles.md)  
 [继承和组合](/docs/java/Design/compose.md)  
-[Java设计模式](/docs/java/Design/2.design.md)  
-&emsp; [创建型设计模式](/docs/java/Design/3.establish.md)  
-&emsp; [结构型设计模式](/docs/java/Design/4.structure.md)  
-&emsp; &emsp; [动态代理](/docs/java/Design/6.proxy.md)   
-&emsp; [行为型设计模式](/docs/java/Design/5.behavior.md)  
+[Java设计模式](/docs/java/Design/design.md)  
+&emsp; [创建型设计模式](/docs/java/Design/establish.md)  
+&emsp; [结构型设计模式](/docs/java/Design/structure.md)  
+&emsp; &emsp; [动态代理](/docs/java/Design/proxy.md)   
+&emsp; [行为型设计模式](/docs/java/Design/behavior.md)  
 [设计模式讨论](/docs/java/Design/discuss.md)  
 
 ### JVM  

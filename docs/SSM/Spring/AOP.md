@@ -42,7 +42,7 @@ https://mp.weixin.qq.com/s/ZC9WMbOZJ6V3RkaFm6UZYQ
 ~~
 https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 -->
-&emsp; 常用的代理有通过接口的[JDK动态代理](/docs/java/Design/6.proxy.md)和通过继承类的CGLIB动态代理。  
+&emsp; 常用的代理有通过接口的[JDK动态代理](/docs/java/Design/proxy.md)和通过继承类的CGLIB动态代理。  
 1. JDK动态代理  
 &emsp; <font color = "red">利用拦截器(拦截器必须实现InvocationHanlder)加上反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理。</font>  
 

@@ -25,7 +25,7 @@
 
 ## 1.1. 动态代理（Proxy）模式  
 
-&emsp; 请查看[动态代理](/docs/java/Design/6.proxy.md)  
+&emsp; 请查看[动态代理](/docs/java/Design/proxy.md)  
 
 ## 1.2. 装饰（Decorator）模式  
 <!-- 
