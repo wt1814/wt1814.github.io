@@ -76,7 +76,7 @@
 final Object[] items;
 // 队头
 int takeIndex;
-// 队尾（为null，等待接收元素）
+// 队尾(为null，等待接收元素)
 int putIndex;
 // 队列中的元素个数
 int count;
@@ -86,7 +86,7 @@ final ReentrantLock lock;
 private final Condition notEmpty;
 // 入队条件
 private final Condition notFull;
-// 记录作用于该队列的迭代器（一个链表）
+// 记录作用于该队列的迭代器(一个链表)
 transient Itrs itrs;
 ```  
 

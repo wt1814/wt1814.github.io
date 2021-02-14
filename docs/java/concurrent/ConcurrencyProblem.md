@@ -27,7 +27,7 @@
 ~~ 
 https://mp.weixin.qq.com/s/DaCTrm8y9vWeaJyHfbRoTw
 -->
-&emsp; **<font color = "lime">总结：并发3个问题，原子性、可见性（缓存一致性）、有序性（重排序）。使用内存屏障来解决。</font>**    
+&emsp; **<font color = "lime">总结：并发3个问题，原子性、可见性(缓存一致性)、有序性(重排序)。使用内存屏障来解决。</font>**    
 
 ## 1.1. 并发问题及含义  
 &emsp; 并发编程存在原子性、可见性、有序性问题。  
@@ -38,7 +38,7 @@ https://mp.weixin.qq.com/s/DaCTrm8y9vWeaJyHfbRoTw
 &emsp; 由于多核CPU，每个CPU核都有高速缓存，会缓存共享变量，某个线程对共享变量的修改会改变高速缓存中的值，但却不会马上写入内存。另一个线程读到的是另一个核缓存的共享变量的值，**出现缓存不一致问题。**  
 * 有序性，即程序执行的顺序按照代码的先后顺序执行。    
 &emsp; 编译器和处理器会对指令进行重排，以优化指令执行性能，重排不会改变单线程执行结果，但在多线程中可能会引起各种各样的问题，包括有序性。  
-&emsp; 关于有序性：如果在本线程内观察，所有的操作都是有序的；如果在一个线程中观察另一个线程，所有的操作都是无序的。前半句是指“线程内似表现为串行的语义”（Within-Thread As-If-Serial Semantics），后半句是指“指令重排序”现象和“工作内存与主内存同步延迟”现象。  
+&emsp; 关于有序性：如果在本线程内观察，所有的操作都是有序的；如果在一个线程中观察另一个线程，所有的操作都是无序的。前半句是指“线程内似表现为串行的语义”(Within-Thread As-If-Serial Semantics)，后半句是指“指令重排序”现象和“工作内存与主内存同步延迟”现象。  
 
 &emsp; **总结： <font color = "red">出现线程安全问题的原因：</font>**  
 
@@ -64,7 +64,7 @@ https://mp.weixin.qq.com/s/DaCTrm8y9vWeaJyHfbRoTw
 
 * 把变量 count 从内存加载到CPU的寄存器中
 * 在寄存器中把变量 count + 1
-* 把变量 count 写入到内存（缓存机制导致可能写入的是CPU缓存而不是内存）
+* 把变量 count 写入到内存(缓存机制导致可能写入的是CPU缓存而不是内存)
 
 &emsp; 操作系统做任务切换，可以发生在任何一条CPU指令执行完，所以并不是高级语言中的一条语句，不要被 count += 1 这个操作蒙蔽了双眼。假设count = 0，线程A执行完 指令1 后 ，做任务切换到线程B执行了 指令1、指令2、指令3后，再做任务切换回线程A。会发现虽然两个线程都执行了 count += 1 操作。但是得到的结果并不是2，而是1。  
 
@@ -94,7 +94,7 @@ https://mp.weixin.qq.com/s/DaCTrm8y9vWeaJyHfbRoTw
 2. 指令重排序：CPU优化行为，也是会对不存在数据依赖关系的指令进行一定程度的重排。  
 3. 内存系统重排序：内存系统没有重排序，但是由于有缓存的存在，使得程序整体上会表现出乱序的行为。  
 
-&emsp; 上面的这些重排序都可能导致多线程程序出现内存可见性问题。对于编译器，JMM的编译器重排序规则会禁止特定类型的编译器重排序（不是所有的编译器重排序都要禁止）。对于处理器重排序，JMM的处理器重排序规则会要求Java编译器在生成指令序列时，插入特定类型的内存屏障指令，通过内存屏障指令来禁止特定类型的处理器重排序（不是所有的处理器重排序都要禁止）。  
+&emsp; 上面的这些重排序都可能导致多线程程序出现内存可见性问题。对于编译器，JMM的编译器重排序规则会禁止特定类型的编译器重排序(不是所有的编译器重排序都要禁止)。对于处理器重排序，JMM的处理器重排序规则会要求Java编译器在生成指令序列时，插入特定类型的内存屏障指令，通过内存屏障指令来禁止特定类型的处理器重排序(不是所有的处理器重排序都要禁止)。  
 &emsp; JMM属于语言级的内存模型，它确保在不同的编译器和不同的处理器平台之上，通过禁止特定类型的编译器重排序和处理器重排序，为程序员提供一致的内存可见性保证。  
 
 ### 1.3.3. 重排序规则  
@@ -134,12 +134,12 @@ class Demo {
 1. 当操作1和操作2重排序时，可能会产生什么效果？  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-4.png)  
 &emsp; 如上图所示，操作1和操作2做了重排序。程序执行时，线程A首先写标记变量flag，随后线程B读这个变量。由于条件判断为真，线程B将读取变量a。此时，变量a还根本没有被线程A写入，在这里多线程程序的语义被重排序破坏了！  
-2. 当操作3和操作4重排序时会产生什么效果（借助这个重排序，可以顺便说明控制依赖性）。  
+2. 当操作3和操作4重排序时会产生什么效果(借助这个重排序，可以顺便说明控制依赖性)。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-5.png)  
-&emsp; 在程序中，操作3和操作4存在控制依赖关系。当代码中存在控制依赖性时，会影响指令序列执行的并行度。为此，编译器和处理器会采用猜测（Speculation）执行来克服控制相关性对并行度的影响。以处理器的猜测执行为例，执行线程B 的处理器可以提前读取并计算a * a，然后把计算结果临时保存到一个名为重排序缓冲（reorder buffer ROB）的硬件缓存中。当接下来操作3的条件判断为真时，就把该计算结果写入变量i中。  
+&emsp; 在程序中，操作3和操作4存在控制依赖关系。当代码中存在控制依赖性时，会影响指令序列执行的并行度。为此，编译器和处理器会采用猜测(Speculation)执行来克服控制相关性对并行度的影响。以处理器的猜测执行为例，执行线程B 的处理器可以提前读取并计算a * a，然后把计算结果临时保存到一个名为重排序缓冲(reorder buffer ROB)的硬件缓存中。当接下来操作3的条件判断为真时，就把该计算结果写入变量i中。  
 
 &emsp; 从图中可以看出，猜测执行实质上对操作3和4做了重排序。重排序在这里破坏了多线程程序的语义！  
-&emsp; 在单线程程序中，对存在控制依赖的操作重排序，不会改变执行结果（这也是as-if-serial语义允许对存在控制依赖的操作做重排序的原因）；但在多线程程序中，对存在控制依赖的操作重排序，可能会改变程序的执行结果。  
+&emsp; 在单线程程序中，对存在控制依赖的操作重排序，不会改变执行结果(这也是as-if-serial语义允许对存在控制依赖的操作做重排序的原因)；但在多线程程序中，对存在控制依赖的操作重排序，可能会改变程序的执行结果。  
 
 ----------
 
@@ -155,26 +155,26 @@ class Demo {
 
 &emsp; 为了方便程序开发，Java 内存模型实现了下述的先行发生关系：  
 
-* 程序次序规则： 在一个单独的线程中，按照程序代码的执行流顺序，（时间上）先执行的操作happen—before（时间上）后执行的操作。  
-（同一个线程中前面的所有写操作对后面的操作可见）
-* 管理锁定规则：一个unlock操作happen—before后面（时间上的先后顺序）对同一个锁的lock操作。  
-（如果线程1解锁了monitor a，接着线程2锁定了a，那么，线程1解锁a之前的写操作都对线程2可见（线程1和线程2可以是同一个线程））  
-* volatile变量规则：对一个volatile变量的写操作happen—before后面（时间上）对该变量的读操作。  
-（如果线程1写入了volatile变量v（临界资源），接着线程2读取了v，那么，线程1写入v及之前的写操作都对线程2可见（线程1和线程2可以是同一个线程）） 
+* 程序次序规则： 在一个单独的线程中，按照程序代码的执行流顺序，(时间上)先执行的操作happen—before(时间上)后执行的操作。  
+(同一个线程中前面的所有写操作对后面的操作可见)
+* 管理锁定规则：一个unlock操作happen—before后面(时间上的先后顺序)对同一个锁的lock操作。  
+(如果线程1解锁了monitor a，接着线程2锁定了a，那么，线程1解锁a之前的写操作都对线程2可见(线程1和线程2可以是同一个线程))  
+* volatile变量规则：对一个volatile变量的写操作happen—before后面(时间上)对该变量的读操作。  
+(如果线程1写入了volatile变量v(临界资源)，接着线程2读取了v，那么，线程1写入v及之前的写操作都对线程2可见(线程1和线程2可以是同一个线程)) 
 
 ---- 
 * <font color = "red">线程启动规则：</font>Thread.start()方法happen—before调用用start的线程前的每一个操作。  
-（假定线程A在执行过程中，通过执行ThreadB.start()来启动线程B，那么线程A对共享变量的修改在接下来线程B开始执行前对线程B可见。注意：线程B启动之后，线程A在对变量修改线程B未必可见。）  
-* <font color = "red">线程终止规则：</font>线程的所有操作都happen—before对此线程的终止检测，可以通过Thread.join（）方法结束、Thread.isAlive（）的返回值等手段检测到线程已经终止执行。  
+(假定线程A在执行过程中，通过执行ThreadB.start()来启动线程B，那么线程A对共享变量的修改在接下来线程B开始执行前对线程B可见。注意：线程B启动之后，线程A在对变量修改线程B未必可见。)  
+* <font color = "red">线程终止规则：</font>线程的所有操作都happen—before对此线程的终止检测，可以通过Thread.join()方法结束、Thread.isAlive()的返回值等手段检测到线程已经终止执行。  
 (线程t1写入的所有变量，在任意其它线程t2调用t1.join()，或者t1.isAlive() 成功返回后，都对t2可见。)  
 * <font color = "red">线程中断规则：</font>对线程interrupt()的调用 happen—before 发生于被中断线程的代码检测到中断时事件的发生。  
 (线程t1写入的所有变量，调用Thread.interrupt()，被打断的线程t2，可以看到t1的全部操作)  
 
 ---
-* 对象终结规则：一个对象的初始化完成（构造函数执行结束）happen—before它的finalize（）方法的开始。  
+* 对象终结规则：一个对象的初始化完成(构造函数执行结束)happen—before它的finalize()方法的开始。  
 (对象调用finalize()方法时，对象初始化完成的任意操作，同步到全部主存同步到全部cache。)  
 * 传递性：如果操作A happen—before操作B，操作B happen—before操作C，那么可以得出A happen—before操作C。  
-（A h-b B， B h-b C 那么可以得到 A h-b C）  
+(A h-b B， B h-b C 那么可以得到 A h-b C)  
 
 &emsp; **<font color = "red">as-if-serial规则和happens-before规则的区别：</font>**  
 
@@ -200,12 +200,12 @@ happens-before：正确同步的 多线程 程序是按happens-before指定的�
 ## 1.5. 内存屏障  
 &emsp; **<font color = "red">Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。</font>**  
 
-&emsp; 什么是内存屏障？硬件层⾯，<font color = "red">内存屏障分两种：读屏障（Load Barrier）和写屏障（Store Barrier）。</font>  
+&emsp; 什么是内存屏障？硬件层⾯，<font color = "red">内存屏障分两种：读屏障(Load Barrier)和写屏障(Store Barrier)。</font>  
 
 &emsp; **<font color = "lime">内存屏障的作用：</font>**  
 
-* **<font color = "lime">（保障有序性）阻⽌屏障两侧的指令重排序。</font>** 它确保指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面；即在执行到内存屏障这句指令时，在它前面的操作已经全部完成；  
-* **<font color = "lime">（保障可见性）它会强制将对缓存的修改操作立即写入主存；</font>** **<font color = "red">如果是写操作，会触发总线嗅探机制（MESI），会导致其他CPU中对应的缓存行无效，</font>** **<font color = "clime">会引发伪共享问题。</font>**  
+* **<font color = "lime">(保障有序性)阻⽌屏障两侧的指令重排序。</font>** 它确保指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面；即在执行到内存屏障这句指令时，在它前面的操作已经全部完成；  
+* **<font color = "lime">(保障可见性)它会强制将对缓存的修改操作立即写入主存；</font>** **<font color = "red">如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，</font>** **<font color = "clime">会引发伪共享问题。</font>**  
 
 <!-- 
 内存屏障有两个作⽤：  
@@ -217,16 +217,16 @@ happens-before：正确同步的 多线程 程序是按happens-before指定的�
 
 |屏障类型 |简称 |指令示例|说明|
 |---|---|---|---|
-|StoreStore Barriers |写-写 屏障|Store1;StoreStore;Store2 |确保Store1数据对其他处理器可见（指刷新到内存）先于Store2及所有后续存储指令的存储。|
-|StoreLoad Barriers |写-读 屏障 |Store1;StoreLoad;Load2 |确保Store1数据对其他处理器变得可见（指刷新到内存）先于Load2及所有后续装载指令的装载。<br/>StoreLoad Barriers会使屏障之前的所有内存访问指令（存储和装载指令）完成之后，才执行该屏障之后的内存访问指令。|
+|StoreStore Barriers |写-写 屏障|Store1;StoreStore;Store2 |确保Store1数据对其他处理器可见(指刷新到内存)先于Store2及所有后续存储指令的存储。|
+|StoreLoad Barriers |写-读 屏障 |Store1;StoreLoad;Load2 |确保Store1数据对其他处理器变得可见(指刷新到内存)先于Load2及所有后续装载指令的装载。<br/>StoreLoad Barriers会使屏障之前的所有内存访问指令(存储和装载指令)完成之后，才执行该屏障之后的内存访问指令。|
 |LoadLoad Barriers|读-读 屏障 |Load1;LoadLoad;Load2 |(Load1代表加载数据，Store1表示刷新数据到内存)确保Load1数据的状态先于Load2及所有后续装载指令的装载。|
 |LoadSotre Barriers|读-写 屏障|Load1;LoadStore;Store2|确保Load1数据装载先于Store2及所有后续的存储指令刷新到内存。| 
 
 <!-- 
-* LoadLoad（LL）屏障：对于这样的语句 Load1; LoadLoad; Load2，<font color = "red">在Load2及后续读取操作要读取的数据被访问前，保证Load1要读取的数据被读取完毕。</font>  
-* StoreStore（SS）屏障：对于这样的语句 Store1; StoreStore; Store2，在Store2及后续写入操作执行前，保证Store1的写入操作对其它处理器可见。  
-* LoadStore（LS）屏障：对于这样的语句Load1; LoadStore; Store2，在Store2及后续写入操作被执行前，保证Load1要读取的数据被读取完毕。  
-* StoreLoad （SL）屏障：对于这样的语句Store1; StoreLoad; Load2，在Load2及后续所有读取操作执行前，保证Store1的写入对所有处理器可见。它的开销是四种屏障中最大的（冲刷写缓冲器，清空无效化队列）。在大多数处理器的实现中，这个屏障也被称为全能屏障，兼具其它三种内存屏障的功能。  
+* LoadLoad(LL)屏障：对于这样的语句 Load1; LoadLoad; Load2，<font color = "red">在Load2及后续读取操作要读取的数据被访问前，保证Load1要读取的数据被读取完毕。</font>  
+* StoreStore(SS)屏障：对于这样的语句 Store1; StoreStore; Store2，在Store2及后续写入操作执行前，保证Store1的写入操作对其它处理器可见。  
+* LoadStore(LS)屏障：对于这样的语句Load1; LoadStore; Store2，在Store2及后续写入操作被执行前，保证Load1要读取的数据被读取完毕。  
+* StoreLoad (SL)屏障：对于这样的语句Store1; StoreLoad; Load2，在Load2及后续所有读取操作执行前，保证Store1的写入对所有处理器可见。它的开销是四种屏障中最大的(冲刷写缓冲器，清空无效化队列)。在大多数处理器的实现中，这个屏障也被称为全能屏障，兼具其它三种内存屏障的功能。  
 -->
 
 &emsp; **Java中对内存屏障的使用，常见的有volatile关键字修饰的代码块，还可以通过Unsafe这个类来使用内存屏障。**  
@@ -241,7 +241,7 @@ happens-before：正确同步的 多线程 程序是按happens-before指定的�
     Load2;
     Load3;
 
-&emsp; 对于上面的一组CPU指令（Store表示写入指令，Load表示读取指令），StoreLoad 屏障之前的Store指令无法与StoreLoad 屏障之后的Load指令进行交换位置，即重排序。但是StoreLoad屏障之前和之后的指令是可以互换位置的，即Store1可以和Store2互换，Load2可以和Load3互换。  
+&emsp; 对于上面的一组CPU指令(Store表示写入指令，Load表示读取指令)，StoreLoad 屏障之前的Store指令无法与StoreLoad 屏障之后的Load指令进行交换位置，即重排序。但是StoreLoad屏障之前和之后的指令是可以互换位置的，即Store1可以和Store2互换，Load2可以和Load3互换。  
 
 ### 1.5.1. 伪共享问题
 <!-- 
@@ -250,7 +250,7 @@ https://blog.csdn.net/qq_28119741/article/details/102815659
 
 #### 1.5.1.1. CPU缓存架构
 &emsp; CPU是计算机的心脏，所有运算和程序最终都要由它来执行。  
-&emsp; 主内存（RAM）是数据存放的地方，CPU 和主内存之间有好几级缓存，因为即使直接访问主内存也是非常慢的。  
+&emsp; 主内存(RAM)是数据存放的地方，CPU 和主内存之间有好几级缓存，因为即使直接访问主内存也是非常慢的。  
 &emsp; 如果对一块数据做相同的运算多次，那么在执行运算的时候把它加载到离 CPU 很近的地方就有意义了，比如一个循环计数，不想每次循环都跑到主内存去取这个数据来增长它吧。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-50.png)  
 &emsp; <font color = "red">越靠近 CPU 的缓存越快也越小。</font>  
@@ -263,7 +263,7 @@ https://blog.csdn.net/qq_28119741/article/details/102815659
 &emsp; 所以如果进行一些很频繁的运算，要确保数据在 L1 缓存中。  
 
 #### 1.5.1.2. CPU缓存行  
-&emsp; 缓存是由缓存行组成的，通常是64字节（常用处理器的缓存行是 64 字节的，比较旧的处理器缓存行是 32 字节），并且它有效地引用主内存中的一块地址。  
+&emsp; 缓存是由缓存行组成的，通常是64字节(常用处理器的缓存行是 64 字节的，比较旧的处理器缓存行是 32 字节)，并且它有效地引用主内存中的一块地址。  
 &emsp; <font color = "red">一个Java的long类型是8字节，因此在一个缓存行中可以存8个long类型的变量。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-51.png)  
 &emsp; <font color = "red">在程序运行的过程中，缓存每次更新都从主内存中加载连续的64个字节。因此，如果访问一个long类型的数组时，当数组中的一个值被加载到缓存中时，另外7个元素也会被加载到缓存中。</font>  
@@ -350,7 +350,7 @@ class Pointer {
     }
     ```
     &emsp; 同时把 pointer.x++; 修改为 pointer.x.value++;，把 pointer.y++; 修改为 pointer.y.value++;，再次运行程序发现时间是724ms。  
-3. **<font color = "lime">使用@sun.misc.Contended注解（java8）</font>**  
+3. **<font color = "lime">使用@sun.misc.Contended注解(java8)</font>**  
     &emsp; 修改MyLong如下：
 
     ```java

@@ -31,11 +31,11 @@
 ## 1.1. 简介  
 &emsp; AQS是AbstractQueuedSynchronizer的简称，翻译成中文就是抽象队列同步器 ，这三个单词分开来看：  
 
-* Abstract （抽象）：AQS 是一个抽象类，只实现一些主要的逻辑，有些方法推迟到子类实现；
-* Queued （队列）：AQS 是用先进先出队列来存储数据的；
-* Synchronizer （同步）：即AQS实现同步功能；
+* Abstract (抽象)：AQS 是一个抽象类，只实现一些主要的逻辑，有些方法推迟到子类实现；
+* Queued (队列)：AQS 是用先进先出队列来存储数据的；
+* Synchronizer (同步)：即AQS实现同步功能；
 
-&emsp; **<font color = "red">AQS是JUC并发包中的核心基础组件。它是构建锁或者其他同步组件（如ReentrantLock、ReentrantReadWriteLock、Semaphore等）的基础框架。</font>**  
+&emsp; **<font color = "red">AQS是JUC并发包中的核心基础组件。它是构建锁或者其他同步组件(如ReentrantLock、ReentrantReadWriteLock、Semaphore等)的基础框架。</font>**  
 1. **<font color = "lime">内部实现的关键是：先进先出的队列、state同步状态</font>**  
 2. **<font color = "lime">拥有两种线程模式：独占模式、共享模式。</font>**  
     * 独占式：有且只有一个线程能获取到锁，如：ReentrantLock。又可分为公平锁和非公平锁：
@@ -92,10 +92,10 @@ protected final boolean compareAndSetState(int expect, int update) {
 /*等待队列的队首结点(懒加载，这里体现为竞争失败的情况下，加入同步队列的线程执行到enq方法的时候会创
 建一个Head结点)。该结点只能被setHead方法修改。并且结点的waitStatus不能为CANCELLED*/
 private transient volatile Node head;
-/**等待队列的尾节点，也是懒加载的。（enq方法）。只在加入新的阻塞结点的情况下修改*/
+/**等待队列的尾节点，也是懒加载的。(enq方法)。只在加入新的阻塞结点的情况下修改*/
 private transient volatile Node tail;
 ```
-&emsp; <font color = "red">CLH同步队列中，一个Node 节点表示一个线程，</font>它保存着线程的引用（thread）、状态（waitStatus）、前驱节点（prev）、后继节点（next），condition队列的后续节点（nextWaiter）如下图：  
+&emsp; <font color = "red">CLH同步队列中，一个Node 节点表示一个线程，</font>它保存着线程的引用(thread)、状态(waitStatus)、前驱节点(prev)、后继节点(next)，condition队列的后续节点(nextWaiter)如下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-16.png)  
 
 ```java
@@ -209,7 +209,7 @@ static final class Node {
 -->
 &emsp; **结点状态waitStatus：** Node结点是对每一个等待获取资源的线程的封装，其包含了需要同步的线程本身及其等待状态，如是否被阻塞、是否等待唤醒、是否已经被取消等。变量waitStatus则表示当前Node结点的等待状态，共有5种取值CANCELLED、SIGNAL、CONDITION、PROPAGATE、0。  
 
-* CANCELLED(1)：表示当前结点已取消调度。当timeout或被中断（响应中断的情况下），会触发变更为此状态，进入该状态后的结点将不会再变化。  
+* CANCELLED(1)：表示当前结点已取消调度。当timeout或被中断(响应中断的情况下)，会触发变更为此状态，进入该状态后的结点将不会再变化。  
 * SIGNAL(-1)：表示后继结点在等待当前结点唤醒。后继结点入队时，会将前继结点的状态更新为SIGNAL。  
 * CONDITION(-2)：表示结点等待在Condition上，当其他线程调用了Condition的signal()方法后，CONDITION状态的结点将从等待队列转移到同步队列中，等待获取同步锁。  
 * PROPAGATE(-3)：共享模式下，前继结点不仅会唤醒其后继结点，同时也可能会唤醒后继的后继结点。  
@@ -222,7 +222,7 @@ static final class Node {
 &emsp; 每个Node是一个线程封装。<font color = "red">在AQS中，当线程在竞争锁失败之后，会封装成Node加入到AQS队列尾部，首节点是获取同步状态成功的节点。</font>  
 
 ##### 1.2.2.2.1. 入列  
-&emsp; 未获取到锁的线程会创建节点，线程安全（CAS算法设置尾节点+死循环自旋）的加入队列尾部。   
+&emsp; 未获取到锁的线程会创建节点，线程安全(CAS算法设置尾节点+死循环自旋)的加入队列尾部。   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-19.png)  
 &emsp; CLH队列入列就是tail指向新节点、新节点的prev指向当前最后的节点，当前最后一个节点的next指向当前节点。addWaiter方法如下：  
 
@@ -276,7 +276,7 @@ private Node enq(final Node node) {
 ```
 
 ##### 1.2.2.2.2. 出列  
-&emsp; 首节点的线程释放同步状态后，将会唤醒它的后继节点（next），而后继节点将会在获取同步状态成功时将自己设置为首节点。  
+&emsp; 首节点的线程释放同步状态后，将会唤醒它的后继节点(next)，而后继节点将会在获取同步状态成功时将自己设置为首节点。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-24.png)  
 
 ```java
@@ -292,7 +292,7 @@ private void unparkSuccessor(Node node) {
     if (ws < 0)
         compareAndSetWaitStatus(node, ws, 0);// 将等待状态waitStatus设置为初始值0
     Node s = node.next;//后继结点
-    if (s == null || s.waitStatus > 0) {//若后继结点为空，或状态为CANCEL（已失效），则从后尾部往前遍历找到一个处于正常阻塞状态的结点进行唤醒
+    if (s == null || s.waitStatus > 0) {//若后继结点为空，或状态为CANCEL(已失效)，则从后尾部往前遍历找到一个处于正常阻塞状态的结点进行唤醒
         s = null;
         for (Node t = tail; t != null && t != node; t = t.prev)
             if (t.waitStatus <= 0)
@@ -343,7 +343,7 @@ https://www.cnblogs.com/waterystone/p/4920797.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-20.png)  
 &emsp; acquire(int arg)是独占模式下线程获取同步状态的顶层入口。  
 &emsp; <font color = "lime">独占模式获取同步状态流程如下：</font>  
-1. 调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回（这里体现了非公平锁，每个线程获取锁时会尝试直接抢占加锁一次，而CLH队列中可能还有别的线程在等待）；  
+1. 调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回(这里体现了非公平锁，每个线程获取锁时会尝试直接抢占加锁一次，而CLH队列中可能还有别的线程在等待)；  
 2. addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；  
 3. acquireQueued()使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
 4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。
@@ -353,7 +353,7 @@ https://www.cnblogs.com/waterystone/p/4920797.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-31.png)  
 <!-- 
 　a.首先，调用使用者重写的tryAcquire方法，若返回true，意味着获取同步状态成功，后面的逻辑不再执行；若返回false，也就是获取同步状态失败，进入b步骤；
-　　　　b.此时，获取同步状态失败，构造独占式同步结点，通过addWatiter将此结点添加到同步队列的尾部（此时可能会有多个线程结点试图加入同步队列尾部，需要以线程安全的方  式添加）；
+　　　　b.此时，获取同步状态失败，构造独占式同步结点，通过addWatiter将此结点添加到同步队列的尾部(此时可能会有多个线程结点试图加入同步队列尾部，需要以线程安全的方  式添加)；
 　　　　c.该结点以在队列中尝试获取同步状态，若获取不到，则阻塞结点线程，直到被前驱结点唤醒或者被中断。
 
 -->
@@ -376,7 +376,7 @@ final boolean acquireQueued(final Node node, int arg) {
         //又是一个“自旋”！
         for (;;) {
             final Node p = node.predecessor();//拿到前驱
-            //如果前驱是head，即该结点已成老二，那么便有资格去尝试获取资源（可能是老大释放完资源唤醒自己的，当然也可能被interrupt了）。
+            //如果前驱是head，即该结点已成老二，那么便有资格去尝试获取资源(可能是老大释放完资源唤醒自己的，当然也可能被interrupt了)。
             if (p == head && tryAcquire(arg)) {
                 setHead(node);//拿到资源后，将head指向该结点。所以head所指的标杆结点，就是当前获取到资源的那个结点或null。
                 p.next = null; // setHead中node.prev已置为null，此处再将head.next置为null，就是为了方便GC回收以前的head结点。也就意味着之前拿完资源的结点出队了！
@@ -390,14 +390,14 @@ final boolean acquireQueued(final Node node, int arg) {
                 interrupted = true;//如果等待过程中被中断过，哪怕只有那么一次，就将interrupted标记为true
         }
     } finally {
-        if (failed) // 如果等待过程中没有成功获取资源（如timeout，或者可中断的情况下被中断了），那么取消结点在队列中的等待。
+        if (failed) // 如果等待过程中没有成功获取资源(如timeout，或者可中断的情况下被中断了)，那么取消结点在队列中的等待。
             cancelAcquire(node);
     }
 }
 ```
 
 #### 1.3.1.2. 释放同步状态--release()
-&emsp; release(int)是独占模式下线程释放共享资源的顶层入口。它会释放指定量的资源，如果彻底释放了（即state=0），它会唤醒等待队列里的其他线程来获取资源。这也正是unlock()的语义，当然不仅仅只限于unlock()。  
+&emsp; release(int)是独占模式下线程释放共享资源的顶层入口。它会释放指定量的资源，如果彻底释放了(即state=0)，它会唤醒等待队列里的其他线程来获取资源。这也正是unlock()的语义，当然不仅仅只限于unlock()。  
 
 &emsp; 源码分析：  
 
@@ -422,7 +422,7 @@ private void unparkSuccessor(Node node) {
     if (ws < 0)
         compareAndSetWaitStatus(node, ws, 0);// 将等待状态waitStatus设置为初始值0
     Node s = node.next;//后继结点
-    if (s == null || s.waitStatus > 0) {//若后继结点为空，或状态为CANCEL（已失效），则从后尾部往前遍历找到一个处于正常阻塞状态的结点　　　　　进行唤醒
+    if (s == null || s.waitStatus > 0) {//若后继结点为空，或状态为CANCEL(已失效)，则从后尾部往前遍历找到一个处于正常阻塞状态的结点　　　　　进行唤醒
         s = null;
         for (Node t = tail; t != null && t != node; t = t.prev)
             if (t.waitStatus <= 0)
@@ -454,7 +454,7 @@ public final boolean releaseShared(int arg) {
     return false;
 }
 ```
-&emsp; 释放掉资源后，唤醒后继。跟独占模式下的release()相似，但有一点稍微需要注意：独占模式下的tryRelease()在完全释放掉资源（state=0）后，才会返回true去唤醒其他线程，这主要是基于独占下可重入的考量；而共享模式下的releaseShared()则没有这种要求，共享模式实质就是控制一定量的线程并发执行，那么拥有资源的线程在释放掉部分资源时就可以唤醒后继等待结点。例如，资源总量是13，A（5）和B（7）分别获取到资源并发运行，C（4）来时只剩1个资源就需要等待。A在运行过程中释放掉2个资源量，然后tryReleaseShared(2)返回true唤醒C，C一看只有3个仍不够继续等待；随后B又释放2个，tryReleaseShared(2)返回true唤醒C，C一看有5个够自己用了，然后C就可以跟A和B一起运行。而ReentrantReadWriteLock读锁的tryReleaseShared()只有在完全释放掉资源（state=0）才返回true，所以自定义同步器可以根据需要决定tryReleaseShared()的返回值。  
+&emsp; 释放掉资源后，唤醒后继。跟独占模式下的release()相似，但有一点稍微需要注意：独占模式下的tryRelease()在完全释放掉资源(state=0)后，才会返回true去唤醒其他线程，这主要是基于独占下可重入的考量；而共享模式下的releaseShared()则没有这种要求，共享模式实质就是控制一定量的线程并发执行，那么拥有资源的线程在释放掉部分资源时就可以唤醒后继等待结点。例如，资源总量是13，A(5)和B(7)分别获取到资源并发运行，C(4)来时只剩1个资源就需要等待。A在运行过程中释放掉2个资源量，然后tryReleaseShared(2)返回true唤醒C，C一看只有3个仍不够继续等待；随后B又释放2个，tryReleaseShared(2)返回true唤醒C，C一看有5个够自己用了，然后C就可以跟A和B一起运行。而ReentrantReadWriteLock读锁的tryReleaseShared()只有在完全释放掉资源(state=0)才返回true，所以自定义同步器可以根据需要决定tryReleaseShared()的返回值。  
 
 &emsp; doReleaseShared()主要用于唤醒后继。  
 
@@ -480,7 +480,7 @@ private void doReleaseShared() {
 ```
 
 ### 1.3.3. AQS的模板方法设计模式，自定义同步器  
-&emsp; AQS的设计是基于模板方法模式的，如果需要自定义同步器一般的方式是这样（模板方法模式很经典的一个应用）：  
+&emsp; AQS的设计是基于模板方法模式的，如果需要自定义同步器一般的方式是这样(模板方法模式很经典的一个应用)：  
 1. 使用者继承AbstractQueuedSynchronizer并重写指定的方法。  
 2. 将AQS组合在自定义同步组件的实现中，并调用其模板方法，而这些模板方法会调用使用者重写的方法。  
 
@@ -494,7 +494,7 @@ tryAcquireShared(int)//共享方式。尝试获取资源。负数表示失败；
 tryReleaseShared(int)//共享方式。尝试释放资源，成功则返回true，失败则返回false。
 ```
 &emsp; 默认情况下，每个方法都抛出UnsupportedOperationException。这些方法的实现必须是内部线程安全的，并且通常应该简短而不是阻塞。AQS类中的其他方法都是final ，所以无法被其他类使用，只有这几个方法可以被其他类使用。  
-&emsp; 以ReentrantLock为例，state初始化为0，表示未锁定状态。A线程lock()时，会调用tryAcquire()独占该锁并将state+1。此后，其他线程再tryAcquire()时就会失败，直到A线程unlock()到state=0（即释放锁）为止，其它线程才有机会获取该锁。  
+&emsp; 以ReentrantLock为例，state初始化为0，表示未锁定状态。A线程lock()时，会调用tryAcquire()独占该锁并将state+1。此后，其他线程再tryAcquire()时就会失败，直到A线程unlock()到state=0(即释放锁)为止，其它线程才有机会获取该锁。  
 
 &emsp; 自定义同步器示例：  
 &emsp; 基于AQS实现的不可重入的独占锁的demo，来自《Java并发编程之美》：  

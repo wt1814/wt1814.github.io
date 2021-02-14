@@ -27,7 +27,7 @@
 
 1. 先用CAS操作，去尝试抢占该锁。如果成功，就把当前线程设置在这个锁上，表示抢占成功。
 2. 如果失败，则调用AbstractQueuedSynchronizer的acquire模板方法，等待抢占。独占模式获取同步状态流程如下：
-    1. 调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回（这里体现了非公平锁，每个线程获取锁时会尝试直接抢占加锁一次，而CLH队列中可能还有别的线程在等待）；
+    1. 调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回(这里体现了非公平锁，每个线程获取锁时会尝试直接抢占加锁一次，而CLH队列中可能还有别的线程在等待)；
     2. addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；
     3. acquireQueued()使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
     4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。
@@ -124,7 +124,7 @@ static final class NonfairSync extends Sync {
     }
 }
 ```
-&emsp; 首先用一个CAS操作，判断state是否是0（表示当前锁未被占用），如果是0则把它置为1，并且设置当前线程为该锁的独占线程，表示获取锁成功。当多个线程同时尝试占用同一个锁时，CAS操作只能保证一个线程操作成功。  
+&emsp; 首先用一个CAS操作，判断state是否是0(表示当前锁未被占用)，如果是0则把它置为1，并且设置当前线程为该锁的独占线程，表示获取锁成功。当多个线程同时尝试占用同一个锁时，CAS操作只能保证一个线程操作成功。  
 
 &emsp; **<font color = "lime">“非公平”即体现在这里，如果占用锁的线程刚释放锁，state置为0，而排队等待锁的线程还未唤醒时，新来的线程就直接抢占了该锁，那么就“插队”了。</font>**  
 
@@ -140,7 +140,7 @@ acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
 }
 ```
 1. 第一步。尝试去获取锁。如果尝试获取锁成功，方法直接返回。  
-&emsp; acquire方法内部先使用tryAcquire这个钩子方法去尝试再次获取锁，这个方法在NonfairSync这个类中其实就是使用了nonfairTryAcquire，具体实现原理是先比较当前锁的状态是否是0，如果是0，则尝试去原子抢占这个锁（设置状态为1，然后把当前线程设置成独占线程），如果当前锁的状态不是0，就去比较当前线程和占用锁的线程是不是一个线程，如果是，会去增加状态变量的值，从这里看出可重入锁之所以可重入，就是同一个线程可以反复使用它占用的锁。如果以上两种情况都不通过，则返回失败false。代码如下：  
+&emsp; acquire方法内部先使用tryAcquire这个钩子方法去尝试再次获取锁，这个方法在NonfairSync这个类中其实就是使用了nonfairTryAcquire，具体实现原理是先比较当前锁的状态是否是0，如果是0，则尝试去原子抢占这个锁(设置状态为1，然后把当前线程设置成独占线程)，如果当前锁的状态不是0，就去比较当前线程和占用锁的线程是不是一个线程，如果是，会去增加状态变量的值，从这里看出可重入锁之所以可重入，就是同一个线程可以反复使用它占用的锁。如果以上两种情况都不通过，则返回失败false。代码如下：  
 
 ```java
 //tryAcquire(arg)
@@ -317,7 +317,7 @@ public final boolean release(int arg) {
     return false;
 }
 ```
-&emsp; 调用unlock方法，其实是直接调用AbstractQueuedSynchronizer的release操作。（再次理解下AQS独占模式下的释放锁过程）  
+&emsp; 调用unlock方法，其实是直接调用AbstractQueuedSynchronizer的release操作。(再次理解下AQS独占模式下的释放锁过程)  
 
 &emsp; 解锁流程大致为先尝试释放锁，若释放成功，那么查看头结点的状态是否为SIGNAL，如果是则唤醒头结点的下个节点关联的线程，如果释放失败那么返回false表示解锁失败。每次都只唤起头结点的下一个节点关联的线程。  
 <!-- 
@@ -361,12 +361,12 @@ protected final boolean tryRelease(int releases) {
 ### 1.1.2. ReentrantLock与synchronized比较 
 &emsp; Java提供了两种锁机制来控制多个线程对共享资源的互斥访问，第一个是JVM实现的synchronized，而另一个是JDK实现的ReentrantLock。  
 &emsp; ReentrantLock与synchronized的联系：Lock接口提供了与synchronized关键字类似的同步功能，但需要在使用时手动获取锁和释放锁。ReentrantLock和synchronized都是可重入的互斥锁。  
-&emsp; **<font color = "red">Lock接口与synchronized关键字的区别（Lock的优势全部体现在构造函数、方法中）：</font>**  
-1. （支持非公平）ReenTrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁。所谓的公平锁就是先等待的线程先获得锁。  
+&emsp; **<font color = "red">Lock接口与synchronized关键字的区别(Lock的优势全部体现在构造函数、方法中)：</font>**  
+1. (支持非公平)ReenTrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁。所谓的公平锁就是先等待的线程先获得锁。  
 2. Lock接口可以尝试非阻塞地获取锁，当前线程尝试获取锁。如果这一时刻锁没有被其他线程获取到，则成功获取并持有锁。  
-3. （可被中断）Lock接口能被中断地获取锁，与synchronized不同，获取到锁的线程能够响应中断，当获取到的锁的线程被中断时，中断异常将会被抛出，同时锁会被释放。 可以使线程在等待锁的时候响应中断；  
-4. （支持超时/限时等待）Lock接口可以在指定的截止时间之前获取锁，如果截止时间到了依旧无法获取锁，则返回。可以让线程尝试获取锁，并在无法获取锁的时候立即返回或者等待一段时间；  
-5. （可实现选择性通知，锁可以绑定多个条件）ReenTrantLock提供了一个Condition（条件）类，用来实现分组唤醒需要唤醒的一些线程，而不是像synchronized要么随机唤醒一个线程要么唤醒全部线程。  
+3. (可被中断)Lock接口能被中断地获取锁，与synchronized不同，获取到锁的线程能够响应中断，当获取到的锁的线程被中断时，中断异常将会被抛出，同时锁会被释放。 可以使线程在等待锁的时候响应中断；  
+4. (支持超时/限时等待)Lock接口可以在指定的截止时间之前获取锁，如果截止时间到了依旧无法获取锁，则返回。可以让线程尝试获取锁，并在无法获取锁的时候立即返回或者等待一段时间；  
+5. (可实现选择性通知，锁可以绑定多个条件)ReenTrantLock提供了一个Condition(条件)类，用来实现分组唤醒需要唤醒的一些线程，而不是像synchronized要么随机唤醒一个线程要么唤醒全部线程。  
   
 &emsp; **什么时候选择用ReentrantLock代替synchronized？**  
 &emsp; 在确实需要一些synchronized所没有的特性的时候，比如时间锁等候、可中断锁等候、无块结构锁、多个条件变量或者锁投票。ReentrantLock还具有可伸缩性的好处，应当在高度争用的情况下使用它，但是请记住，大多数synchronized块几乎从来没有出现过争用，所以可以把高度争用放在一边。建议用synchronized开发，直到确实证明synchronized不合适，而不要仅仅是假设如果使用ReentrantLock“性能会更好”。  

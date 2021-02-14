@@ -78,7 +78,7 @@ private static class Pair<T> {
     }
 }
 ```
-&emsp; 将元素值和版本号绑定在一起，存储在Pair的reference和stamp（邮票、戳的意思）中。  
+&emsp; 将元素值和版本号绑定在一起，存储在Pair的reference和stamp(邮票、戳的意思)中。  
 
 &emsp; **属性：**  
 
@@ -88,7 +88,7 @@ private static final sun.misc.Unsafe UNSAFE = sun.misc.Unsafe.getUnsafe();
 private static final long pairOffset = objectFieldOffset(UNSAFE, "pair", AtomicStampedReference.class);
 ```
 &emsp; 声明一个Pair类型的变量并使用Unsfae获取其偏移量，存储到pairOffset中。  
-&emsp; CAS算法核心类，sun.misc.Unsafe提供了访问底层的机制（native()方法也有访问底层的功能），这种机制仅供java核心类库使用。  
+&emsp; CAS算法核心类，sun.misc.Unsafe提供了访问底层的机制(native()方法也有访问底层的功能)，这种机制仅供java核心类库使用。  
 
 &emsp; **构造方法：** &emsp;  
 
@@ -105,7 +105,7 @@ public AtomicStampedReference(V initialRef, int initialStamp) {
 
 ```java
 public boolean compareAndSet(V expectedReference, V newReference, int expectedStamp, int newStamp) {
-    // 获取当前的（元素值，版本号）对
+    // 获取当前的(元素值，版本号)对
     Pair<V> current = pair;
     return
         // 引用没变
@@ -276,7 +276,7 @@ https://mp.weixin.qq.com/s/rJAIoZLe9lnEcTj3SmgIZw
 &emsp; <font color = "lime">LongAdder，分段锁。</font>  
 &emsp; 阿里《Java开发手册》嵩山版：    
 &emsp; 【参考】volatile 解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，但是如果多写，同样无法解决线程安全问题。  
-&emsp; 说明：如果是count++操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是JDK8，推荐使用 LongAdder对象，比AtomicLong性能更好（减少乐观锁的重试次数）。  
+&emsp; 说明：如果是count++操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是JDK8，推荐使用 LongAdder对象，比AtomicLong性能更好(减少乐观锁的重试次数)。  
 
 &emsp; AtomicInteger 在高并发环境下会有多个线程去竞争一个原子变量，而始终只有一个线程能竞争成功，而其他线程会一直通过CAS自旋尝试获取此原子变量，因此会有一定的性能消耗；<font color = "lime">而LongAdder会将这个原子变量分离成一个Cell数组，每个线程通过Hash获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如 AtomicInteger。</font>  
 
@@ -301,7 +301,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     }
     //递增加detla
     public final int getAndAdd(int delta) {
-        //三个参数，1、当前的实例 2、value实例变量的偏移量 3、当前value要加上的数（value+delta）。
+        //三个参数，1、当前的实例 2、value实例变量的偏移量 3、当前value要加上的数(value+delta)。
         return unsafe.getAndAddInt(this, valueOffset, delta);
     }
     //递增加1

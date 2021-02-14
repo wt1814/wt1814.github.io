@@ -12,7 +12,7 @@
         - [1.4.1. ※※※正确使用](#141-※※※正确使用)
         - [1.4.2. SimpleDateFormat非线程安全问题](#142-simpledateformat非线程安全问题)
         - [1.4.3. ThreadLocal<DecimalFormat>](#143-threadlocaldecimalformat)
-    - [1.5. ThreadLocal局限性（变量不具有传递性）](#15-threadlocal局限性变量不具有传递性)
+    - [1.5. ThreadLocal局限性(变量不具有传递性)](#15-threadlocal局限性变量不具有传递性)
         - [1.5.1. 类InheritableThreadLocal的使用](#151-类inheritablethreadlocal的使用)
         - [1.5.2. 类TransmittableThreadLocal(alibaba)的使用](#152-类transmittablethreadlocalalibaba的使用)
     - [1.6. ThreadLocal和线程池](#16-threadlocal和线程池)
@@ -81,7 +81,7 @@ private void set(ThreadLocal<?> key, Object value) {
             e.value = value;
             return;
         }
-        // key == null，但是存在值（因为此处的e != null），说明之前的ThreadLocal对象已经被回收了
+        // key == null，但是存在值(因为此处的e != null)，说明之前的ThreadLocal对象已经被回收了
         if (k == null) {
             replaceStaleEntry(key, value, i);
             return;
@@ -118,7 +118,7 @@ ThreadLocalMap inheritableThreadLocals = null;
 &emsp; ThradLocal中内部类ThreadLocalMap：  
 <!-- https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-23.png)   
-&emsp; **<font color = "lime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。<font color = "lime">Key是一个ThreadLocal实例，Value是设置的值。Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
+&emsp; **<font color = "lime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。<font color = "lime">Key是一个ThreadLocal实例，Value是设置的值。Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
  
         ThreadLocalMap如何解决Hash冲突？
         ThreadLocalMap虽然是类似Map结构的数据结构，但它并没有实现Map接口。它不支持Map接口中的next方法，这意味着ThreadLocalMap中解决Hash冲突的方式并非拉链表方式。
@@ -181,7 +181,7 @@ private T setInitialValue() {
 ## 1.2. ThreadLocal内存模型  
 &emsp; 通过上一节的分析，其实已经很清楚ThreadLocal的相关设计了，对数据存储的具体分布也会有个比较清晰的概念。下面的图是网上找来的常见到的示意图，可以通过该图对ThreadLocal的存储有个更加直接的印象。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-58.png)  
-&emsp; Thread运行时，线程的的一些局部变量和引用使用的内存属于Stack（栈）区，而普通的对象是存储在Heap（堆）区。根据上图，基本分析如下：  
+&emsp; Thread运行时，线程的的一些局部变量和引用使用的内存属于Stack(栈)区，而普通的对象是存储在Heap(堆)区。根据上图，基本分析如下：  
 
 * 线程运行时，我们定义的TheadLocal对象被初始化，存储在Heap，同时线程运行的栈区保存了指向该实例的引用，也就是图中的ThreadLocalRef
 * 当ThreadLocal的set/get被调用时，虚拟机会根据当前线程的引用也就是CurrentThreadRef找到其对应在堆区的实例，然后查看其对用的TheadLocalMap实例是否被创建，如果没有，则创建并初始化。
@@ -277,7 +277,7 @@ public static String formatAsPerson(Long one){
 }
 ```
 
-## 1.5. ThreadLocal局限性（变量不具有传递性）  
+## 1.5. ThreadLocal局限性(变量不具有传递性)  
 &emsp; <font color = "red">ThreadLocal无法在父子线程之间传递，</font>示例代码如下：  
 
 ```java

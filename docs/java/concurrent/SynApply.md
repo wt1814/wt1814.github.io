@@ -47,7 +47,7 @@ https://mp.weixin.qq.com/s/gKsD1U38h4MJczEFC33ydw
 -->
 &emsp; Synchronized可以禁止指令重排吗？不可以。  
 &emsp; <font color = "red">即然Synchronized无法禁止指令重排，为何可以保证有序性？</font>  
-&emsp; <font color = "red">Synchronized遵守as-if-serial语义（在java中，不管怎么排序，都不能影响单线程程序的执行结果）。</font><font color = "lime">某个线程执行到被Synchronized修饰的代码之前，会先进行加锁。执行完代码后才进行解锁。在这个期间，其他线程无法获得锁。也就是在这段时间，被Synchronized修饰的代码是单线程执行的。满足了as-if-serial语义的一个前提。</font>  
+&emsp; <font color = "red">Synchronized遵守as-if-serial语义(在java中，不管怎么排序，都不能影响单线程程序的执行结果)。</font><font color = "lime">某个线程执行到被Synchronized修饰的代码之前，会先进行加锁。执行完代码后才进行解锁。在这个期间，其他线程无法获得锁。也就是在这段时间，被Synchronized修饰的代码是单线程执行的。满足了as-if-serial语义的一个前提。</font>  
 <!-- 
 https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 -->
@@ -55,7 +55,7 @@ https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-11.png)  
 
 &emsp; Synchronized可以使用在普通方法、静态方法、同步块中。Synchronized使用在同步块中，锁粒度更小。根据锁的具体实例，又可以分为类锁和对象锁。  
-&emsp; 关键字Synchronized取得的锁都是对象锁，而不是把一段代码或方法（函数）当作锁。  
+&emsp; 关键字Synchronized取得的锁都是对象锁，而不是把一段代码或方法(函数)当作锁。  
 <!-- 
 锁非this对象具有一定的优点：如果在一个类中有很多个Synchronized方法，这时虽然能实现同步，但会受到阻塞，所以影响运行效率；但如果使用同步代码块锁非this对象，则Synchronized(非this)代码块中的程序与同步方法是异步的，不与其他锁this同步方法争抢this锁，则可 大大提高运行效率。  
 在大多数的情况下，同步Synchronized代码块都不使用String作为锁对象，而改用其他，比如new Object()实例化一个 Object对象，但它并不放人缓存中。  
@@ -63,11 +63,11 @@ https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
  
 ### 1.2.1. 类锁和对象锁
 &emsp; **Synchronized的范围：类锁和对象锁。** 
-1. 类锁：当Synchronized修饰静态方法或Synchronized修饰代码块传入某个class对象（Synchronized (XXXX.class)）时被称为类锁。某个线程得到了一个类锁之后，其他所有被该类锁加锁方法或代码块是锁定的，其他线程是无法访问的，但是其他线程还是可以访问没有被该类锁加锁的任何代码。  
-2. 对象锁：当Synchronized修饰非静态方法或Synchronized修饰代码块时传入非class对象（Synchronized this)）时被称为对象锁。某个线程得到了对象锁之后，该对象的其他被 Synchronized修饰的方法（同步方法）是锁定的，其他线程是无法访问的。但是其他线程还是可以访问没有进行同步的方法或者代码；当获取到与对象关联的内置锁时，并不能阻止其他线程访问该对象，当某个线程获得对象的锁之后，只能阻止其他线程获得同一个锁。  
+1. 类锁：当Synchronized修饰静态方法或Synchronized修饰代码块传入某个class对象(Synchronized (XXXX.class))时被称为类锁。某个线程得到了一个类锁之后，其他所有被该类锁加锁方法或代码块是锁定的，其他线程是无法访问的，但是其他线程还是可以访问没有被该类锁加锁的任何代码。  
+2. 对象锁：当Synchronized修饰非静态方法或Synchronized修饰代码块时传入非class对象(Synchronized this))时被称为对象锁。某个线程得到了对象锁之后，该对象的其他被 Synchronized修饰的方法(同步方法)是锁定的，其他线程是无法访问的。但是其他线程还是可以访问没有进行同步的方法或者代码；当获取到与对象关联的内置锁时，并不能阻止其他线程访问该对象，当某个线程获得对象的锁之后，只能阻止其他线程获得同一个锁。  
 3. 类锁和对象锁的关系：如同每个类只有一个class对象，而类的实例可以有很多个一样，每个类只有一个类锁，每个实例都有自己的对象锁，所以不同对象实例的对象锁是互不干扰的。但是有一点必须注意的是，其实类锁只是一个概念上的东西，并不是真实存在的，它只是用来理解锁定实例方法和静态方法的区别的。 **<font color = "lime">类锁和对象锁是不一样的锁，是互相独立的，两者不存在竞争关系，不相互阻塞。</font>**  
 
-    * **<font color = "red">类锁与对象锁不相互阻塞。</font> 如果多线程同时访问同一类的 类锁（Synchronized 修饰的静态方法）以及对象锁（Synchronized 修饰的非静态方法）这两个方法执行是异步的，原因：类锁和对象锁是两种不同的锁。<font color = "red">线程获得对象锁的同时，也可以获得该类锁，即同时获得两个锁，这是允许的。</font>**  
+    * **<font color = "red">类锁与对象锁不相互阻塞。</font> 如果多线程同时访问同一类的 类锁(Synchronized 修饰的静态方法)以及对象锁(Synchronized 修饰的非静态方法)这两个方法执行是异步的，原因：类锁和对象锁是两种不同的锁。<font color = "red">线程获得对象锁的同时，也可以获得该类锁，即同时获得两个锁，这是允许的。</font>**  
     * 相同的类锁，相同的对象锁会相互阻塞。
     * 类锁对该类的所有对象都能起作用，而对象锁不能。
 
@@ -109,7 +109,7 @@ private Synchronized static void SynchronizedStaticMethod() {
 ```
 &emsp; 同步静态方法是类级别的锁，一旦任何一个线程进入这个方法，其他所有线程将无法访问这个类的任何同步类锁的方法。  
 &emsp; 对于静态同步方法，锁是当前类的Class对象，进入同步代码前要获得当前类对象的锁。  
-&emsp; 注意：两个线程实例化两个不同的对象，但是访问的方法是静态的，此时获取的锁是同一个锁，两个线程发生了互斥（即一个线程访问，另一个线程只能等着），因为静态方法是依附于类而不是对象的，当Synchronized修饰静态方法时，锁是class对象。  
+&emsp; 注意：两个线程实例化两个不同的对象，但是访问的方法是静态的，此时获取的锁是同一个锁，两个线程发生了互斥(即一个线程访问，另一个线程只能等着)，因为静态方法是依附于类而不是对象的，当Synchronized修饰静态方法时，锁是class对象。  
 
 ### 1.2.4. Synchronized同步语句块  
 &emsp; 对于同步代码块，锁是Synchronized括号里面配置的对象，对给定对象加锁，进入同步代码块前要获得给定对象的锁。  

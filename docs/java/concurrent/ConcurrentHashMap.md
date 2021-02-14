@@ -238,8 +238,8 @@ private final void addCount(long x, int check) {
         /* 这里有几个判断
         1. 计数表为空则直接调用 fullAddCount
         2. 从计数表中随机取出一个数组的位置为空，直接调用 fullAddCount
-        3. 通过 CAS 修改 CounterCell 随机位置的值，如果修改失败说明出现并发情况（这里又
-        用到了一种巧妙的方法），调用 fullAndCount
+        3. 通过 CAS 修改 CounterCell 随机位置的值，如果修改失败说明出现并发情况(这里又
+        用到了一种巧妙的方法)，调用 fullAndCount
         Random 在线程并发的时候会有性能问题以及可能会产生相同的随机
         数,ThreadLocalRandom.getProbe 可以解决这个问题，并且性能要比 Random 高*/
         if (as == null || (m = as.length - 1) < 0 ||
@@ -295,7 +295,7 @@ public V get(Object key) {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-10.png)  
 
 &emsp; 将HashMap进行切割，把HashMap中的哈希数组切分成Segment；每一个 Segment 是一个类似于 HashMap 的结构，包含有若干个HashEntry。  
-1. <font color = "red">Segment继承ReentrantLock（可重入锁），从而实现并发控制。 Segment 的个数一旦初始化就不能改变，默认 Segment 的个数是 16 个，也可以认为 ConcurrentHashMap 默认支持最多 16 个线程并发。 </font> 
+1. <font color = "red">Segment继承ReentrantLock(可重入锁)，从而实现并发控制。 Segment 的个数一旦初始化就不能改变，默认 Segment 的个数是 16 个，也可以认为 ConcurrentHashMap 默认支持最多 16 个线程并发。 </font> 
 2. HashEntry 用来封装映射表的键-值对；  
 
 #### 1.2.1.1. 静态内部类 Segment  
@@ -366,8 +366,8 @@ public V put(K key, V value) {
     if (value == null)
         throw new NullPointerException();
     int hash = hash(key);
-    // hash 值无符号右移 28位（初始化时获得），然后与 segmentMask=15 做与运算
-    // 其实也就是把高4位与segmentMask（1111）做与运算
+    // hash 值无符号右移 28位(初始化时获得)，然后与 segmentMask=15 做与运算
+    // 其实也就是把高4位与segmentMask(1111)做与运算
     int j = (hash >>> segmentShift) & segmentMask;
     if ((s = (Segment<K,V>)UNSAFE.getObject          // nonvolatile; recheck
             (segments, (j << SSHIFT) + SBASE)) == null) //  in ensureSegment

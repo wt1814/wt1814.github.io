@@ -18,16 +18,16 @@
 
 # 1. Collections
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-5.png)  
-&emsp; 14个并发容器按照线程安全模型分类：copy-on-write、CAS（JDK1.8 ConcurrentHashMap）、读写分离（LinkedBlockingQueue）。  
+&emsp; 14个并发容器按照线程安全模型分类：copy-on-write、CAS(JDK1.8 ConcurrentHashMap)、读写分离(LinkedBlockingQueue)。  
 
 ## 1.1. List，CopyOnWriteArrayList  
 ### 1.1.1. CopyOnWrite简介 
 &emsp; CopyOnWrite，简称COW。所谓写时复制，即读操作时不加锁以保证性能不受影响； **<font color = "lime">写操作时加锁，复制资源的一份副本，在副本上执行写操作，写操作完成后将资源的引用指向副本。</font>**  
 
 &emsp; **优点：** 可以对CopyOnWrite容器进行并发的读，而不需要加锁，因为当前容器不会添加任何元素。所以CopyOnWrite容器也是一种读写分离的思想，读和写不同的容器。  
-&emsp; **缺点：** **1.占内存（写时复制，new两个对象）；2.不能保证数据实时一致性。**  
+&emsp; **缺点：** **1.占内存(写时复制，new两个对象)；2.不能保证数据实时一致性。**  
 * 内存占用问题:  
-&emsp; 因为CopyOnWrite的写时复制机制，所以在进行写操作的时候，内存里会同时驻扎两个对象的内存，旧的对象和新写入的对象（注意:在复制的时候只是复制容器里的引用，只是在写的时候会创建新对象添加到新容器里，而旧容器的对象还在使用，所以有两份对象内存）。如果这些对象占用的内存比较大，比如说200M左右，那么再写入100M数据进去，内存就会占用300M，那么这个时候很有可能造成频繁的Yong GC和Full GC。之前系统中使用了一个服务由于每晚使用CopyOnWrite机制更新大对象，造成了每晚15秒的Full GC，应用响应时间也随之变长。  
+&emsp; 因为CopyOnWrite的写时复制机制，所以在进行写操作的时候，内存里会同时驻扎两个对象的内存，旧的对象和新写入的对象(注意:在复制的时候只是复制容器里的引用，只是在写的时候会创建新对象添加到新容器里，而旧容器的对象还在使用，所以有两份对象内存)。如果这些对象占用的内存比较大，比如说200M左右，那么再写入100M数据进去，内存就会占用300M，那么这个时候很有可能造成频繁的Yong GC和Full GC。之前系统中使用了一个服务由于每晚使用CopyOnWrite机制更新大对象，造成了每晚15秒的Full GC，应用响应时间也随之变长。  
 &emsp; 针对内存占用问题，可以通过压缩容器中的元素的方法来减少大对象的内存消耗，比如，如果元素全是10进制的数字，可以考虑把它压缩成36进制或64进制。或者不使用CopyOnWrite容器，而使用其他的并发容器，如ConcurrentHashMap。  
 * 数据一致性问题:  
 &emsp; CopyOnWrite容器只能保证数据的最终一致性，不能保证数据的实时一致性。所以如果希望写入的的数据，马上能读到，不要使用CopyOnWrite容器。 
@@ -40,8 +40,8 @@
 https://mp.weixin.qq.com/s/hEkUIJWEG1mJ1Ya8pa7R4w
 -->
 &emsp; 并发版ArrayList，底层结构也是数组，和ArrayList不同之处在于：当新增和删除元素时会创建一个新的数组，在新的数组中增加或者排除指定对象，最后用新增数组替换原来的数组。  
-&emsp; 适用场景：由于读操作不加锁，写（增、删、改）操作加锁，因此适用于读多写少的场景。但是，在写多读少的场合，CopyOnWriteArrayList的性能可能不如Vector。   
-&emsp; 局限：由于读的时候不会加锁（读的效率高，就和普通ArrayList一样），读取的当前副本，因此可能读取到脏数据。每次对集合结构进行修改时，都需要拷贝数据，占用内存较大；  
+&emsp; 适用场景：由于读操作不加锁，写(增、删、改)操作加锁，因此适用于读多写少的场景。但是，在写多读少的场合，CopyOnWriteArrayList的性能可能不如Vector。   
+&emsp; 局限：由于读的时候不会加锁(读的效率高，就和普通ArrayList一样)，读取的当前副本，因此可能读取到脏数据。每次对集合结构进行修改时，都需要拷贝数据，占用内存较大；  
 &emsp; 总结：CopyOnWriteArrayList基于ReentrantLock保证了增加元素和删除元素动作的互斥。在读上没有做任何锁操作，这样就保证了读的性能，带来的副作用是有些时候可能会读取到脏数据。  
 
 ### 1.1.3. 源码解析  
@@ -155,7 +155,7 @@ public class BlackListServiceImpl {
 ### 1.2.2. ConcurrentSkipListMap
 &emsp; ConcurrentSkipListMap与TreeMap都是有序的哈希表。  
 &emsp; ConcurrentSkipListMap线程安全，TreeMap非线程安全；  
-&emsp; ConcurrentSkipListMap是通过跳表（skip list）实现的，而TreeMap是通过红黑树实现的。
+&emsp; ConcurrentSkipListMap是通过跳表(skip list)实现的，而TreeMap是通过红黑树实现的。
 
 ## 1.3. Set  
 &emsp; <font color = "red">JUC容器Set的实现有CopyOnWriteArraySet与ConcurrentSkipListSet。</font>CopyOnWriteArraySet相当于线程安全的HashSet，CopyOnWriteArraySet的实现依赖于CopyOnWriteArrayList；ConcurrentSkipListSet相当于线程安全的TreeSet，ConcurrentSkipListSet的实现依赖于ConcurrentSkipListMap。  

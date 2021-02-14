@@ -13,7 +13,7 @@ https://mp.weixin.qq.com/s/JwEkiH6WlQd-UfyAPbltBA
 -->
 
 ## 1.1. ReentrantReadWriteLock，读写锁
-&emsp; ReentrantReadWriteLock维护了两个锁，读锁和写锁，所以一般称其为读写锁。写锁是独占的（写操作只能由一个线程来操作）。读锁是共享的，如果没有写锁，读锁可以由多个线程共享。  
+&emsp; ReentrantReadWriteLock维护了两个锁，读锁和写锁，所以一般称其为读写锁。写锁是独占的(写操作只能由一个线程来操作)。读锁是共享的，如果没有写锁，读锁可以由多个线程共享。  
 &emsp; 优点：与互斥锁相比，虽然一次只能有一个写线程可以修改共享数据，但大量读线程可以同时读取共享数据，所以，读写锁适用于共享数据很大，且读操作远多于写操作的情况。  
 &emsp; **<font color = "red">缺点：只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "lime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
 

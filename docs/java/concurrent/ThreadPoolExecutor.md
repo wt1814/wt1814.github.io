@@ -3,7 +3,7 @@
 - [1. ThreadPoolExecutor](#1-threadpoolexecutor)
     - [1.1. 属性](#11-属性)
     - [1.2. 构造函数](#12-构造函数)
-    - [1.3. 线程池工作流程（execute成员方法的源码）](#13-线程池工作流程execute成员方法的源码)
+    - [1.3. 线程池工作流程(execute成员方法的源码)](#13-线程池工作流程execute成员方法的源码)
         - [1.3.1. execute()](#131-execute)
         - [1.3.2. addWorker()，创建新的线程](#132-addworker创建新的线程)
         - [1.3.3. 内部类work()，工作线程的实现](#133-内部类work工作线程的实现)
@@ -22,7 +22,7 @@ https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
 -->
 
 # 1. ThreadPoolExecutor
-**<font color = "lime">1. 线程运行流程：查看execute方法。理解构造函数中参数：[阻塞队列](/docs/java/concurrent/BlockingQueue.md)；拒绝策略默认AbortPolicy（拒绝任务，抛异常），可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。理解线程池状态标志位的设计。   
+**<font color = "lime">1. 线程运行流程：查看execute方法。理解构造函数中参数：[阻塞队列](/docs/java/concurrent/BlockingQueue.md)；拒绝策略默认AbortPolicy(拒绝任务，抛异常)，可以选用CallerRunsPolicy(任务队列满时，不进入线程池，由主线程执行)。理解线程池状态标志位的设计。   
 2. 线程复用机制：runWorker()方法中，有任务时，while循环获取；没有任务时，清除空闲线程。  
 3. 线程池保证核心线程不被销毁？获取任务getTask()方法里allowCoreThreadTimeOut值默认为true，线程take()会一直阻塞，等待任务的添加。   
 </font>**
@@ -186,7 +186,7 @@ public ThreadPoolExecutor(int corePoolSize,
 
 * int  corePoolSize：线程池的核心线程数大小。默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中。默认情况下可以一直存活。可以通过设置allowCoreThreadTimeOut为True，此时核心线程数就是0，此时keepAliveTime控制所有线程的超时时间。  
 * int  maximumPoolSize：线程池允许的最大线程数大小。当workQueue满了，不能添加任务的时候，这个参数才会生效。  
-* long  keepAliveTime：空闲线程（超出corePoolSize的线程）的生存时间。这些线程如果长时间没有执行任务，并且超过了keepAliveTime设定的时间，就会消亡。  
+* long  keepAliveTime：空闲线程(超出corePoolSize的线程)的生存时间。这些线程如果长时间没有执行任务，并且超过了keepAliveTime设定的时间，就会消亡。  
 * TimeUnit unit：参数keepAliveTime的单位。有7种取值，在TimeUnit类中有7种静态属性：TimeUnit.DAYS；TimeUnit.HOURS；  
 * BlockingQueue<Runnable\>  workQueue：任务阻塞队列，是java.util.concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样,如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态,直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition(显示锁Lock及Condition的学习与使用)来实现阻塞和唤醒。  
 * ThreadFactory threadFactory：用户设置创建线程的工厂，可以通过这个工厂来创建有业务意义的线程名字。可以对比下自定义的线程工厂和默认的线程工厂创建的名字。   
@@ -207,7 +207,7 @@ public ThreadPoolExecutor(int corePoolSize,
     |DiscardPolicy|丢弃任务，但是不抛出异常。|
 
 
-## 1.3. 线程池工作流程（execute成员方法的源码）
+## 1.3. 线程池工作流程(execute成员方法的源码)
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-14.png)  
 
 &emsp; 线程池中核心方法调用链路：  
@@ -225,17 +225,17 @@ public ThreadPoolExecutor(int corePoolSize,
 	3. 如果在步骤2中由于任务队列已满导致无法将新任务进行排队，这个时候有两种情况：  
         &emsp; 线程数量[未]达到maximumPoolSize(线程池最大线程数)，立刻启动一个非核心线程来执行任务。  
         &emsp; 线程数量[已]达到maximumPoolSize(线程池最大线程数)，将会执行拒绝策略。  
-3. 当一个线程空闲，超过一定的时间（keepAliveTime）时，线程池会判断，如果当前运行的线程数大于corePoolSize，那么这个线程就被停掉。所以线程池的所有任务完成后，它最终会收缩到corePoolSize的大小。  
+3. 当一个线程空闲，超过一定的时间(keepAliveTime)时，线程池会判断，如果当前运行的线程数大于corePoolSize，那么这个线程就被停掉。所以线程池的所有任务完成后，它最终会收缩到corePoolSize的大小。  
 -->
 &emsp; 整个流程：  
 &emsp; <font color = "lime">线程池创建时没有设置成预启动加载，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
-1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务（任务实例会传入直接用于构造工作线程实例）。  
+1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务(任务实例会传入直接用于构造工作线程实例)。  
 2. 如果当前工作线程总数大于等于corePoolSize，判断线程池是否处于运行中状态，同时尝试用非阻塞方法向任务队列放入任务，这里会二次检查线程池运行状态，如果当前工作线程数量为0，则创建一个非核心线程并且传入的任务对象为null。  
-3. 如果向任务队列投放任务失败（任务队列已经满了），则会尝试创建非核心线程传入任务实例执行。  
+3. 如果向任务队列投放任务失败(任务队列已经满了)，则会尝试创建非核心线程传入任务实例执行。  
 4. 如果创建非核心线程失败，此时需要拒绝执行任务，调用拒绝策略处理任务。  
 
         为什么需要二次检查线程池的运行状态，当前工作线程数量为0，尝试创建一个非核心线程并且传入的任务对象为null？这个可以看API注释：
-        如果一个任务成功加入任务队列，依然需要二次检查是否需要添加一个工作线程（因为所有存活的工作线程有可能在最后一次检查之后已经终结）或者执行当前方法的时候线程池是否已经shutdown了。所以需要二次检查线程池的状态，必须时把任务从任务队列中移除或者在没有可用的工作线程的前提下新建一个工作线程。
+        如果一个任务成功加入任务队列，依然需要二次检查是否需要添加一个工作线程(因为所有存活的工作线程有可能在最后一次检查之后已经终结)或者执行当前方法的时候线程池是否已经shutdown了。所以需要二次检查线程池的状态，必须时把任务从任务队列中移除或者在没有可用的工作线程的前提下新建一个工作线程。
 
 ```java
 public void execute(Runnable command) {
@@ -282,10 +282,10 @@ private boolean addWorker(Runnable firstTask, boolean core) {
     retry:
     // 注意这是一个死循环 - 最外层循环
     for (int c = ctl.get();;) {
-        // 这个是十分复杂的条件，这里先拆分多个与（&&）条件：
+        // 这个是十分复杂的条件，这里先拆分多个与(&&)条件：
         // 1. 线程池状态至少为SHUTDOWN状态，也就是rs >= SHUTDOWN(0)
         // 2. 线程池状态至少为STOP状态，也就是rs >= STOP(1)，或者传入的任务实例firstTask不为null，或者任务队列为空
-        // 其实这个判断的边界是线程池状态为shutdown状态下，不会再接受新的任务，在此前提下如果状态已经到了STOP、或者传入任务不为空、或者任务队列为空（已经没有积压任务）都不需要添加新的线程
+        // 其实这个判断的边界是线程池状态为shutdown状态下，不会再接受新的任务，在此前提下如果状态已经到了STOP、或者传入任务不为空、或者任务队列为空(已经没有积压任务)都不需要添加新的线程
         if (runStateAtLeast(c, SHUTDOWN)
             && (runStateAtLeast(c, STOP)
                 || firstTask != null
@@ -334,7 +334,7 @@ private boolean addWorker(Runnable firstTask, boolean core) {
                 // 1. 如果线程池状态依然为RUNNING，则只需要判断线程实例是否存活，需要添加到工作线程集合和启动新的Worker
                 // 2. 如果线程池状态小于STOP，也就是RUNNING或者SHUTDOWN状态下，同时传入的任务实例firstTask为null，则需要添加到工作线程集合和启动新的Worker
                 // 对于2，换言之，如果线程池处于SHUTDOWN状态下，同时传入的任务实例firstTask不为null，则不会添加到工作线程集合和启动新的Worker
-                // 这一步其实有可能创建了新的Worker实例但是并不启动（临时对象，没有任何强引用），这种Worker有可能成功下一轮GC被收集的垃圾对象
+                // 这一步其实有可能创建了新的Worker实例但是并不启动(临时对象，没有任何强引用)，这种Worker有可能成功下一轮GC被收集的垃圾对象
                 if (isRunning(c) ||
                     (runStateLessThan(c, STOP) && firstTask == null)) {
                     if (t.isAlive()) // precheck that t is startable
@@ -477,17 +477,17 @@ Thread thread = threadFactory.newThread(worker);
 // addWorker()方法中启动
 thread.start();
 ```
-&emsp; Worker继承自AQS，这里使用了AQS的独占模式，有个技巧是构造Worker的时候，把AQS的资源（状态）通过setState(-1)设置为-1，这是因为Worker实例刚创建时AQS中state的默认值为0，此时线程尚未启动，不能在这个时候进行线程中断，见Worker#interruptIfStarted()方法。Worker中两个覆盖AQS的方法tryAcquire()和tryRelease()都没有判断外部传入的变量，前者直接CAS(0,1)，后者直接setState(0)。  
+&emsp; Worker继承自AQS，这里使用了AQS的独占模式，有个技巧是构造Worker的时候，把AQS的资源(状态)通过setState(-1)设置为-1，这是因为Worker实例刚创建时AQS中state的默认值为0，此时线程尚未启动，不能在这个时候进行线程中断，见Worker#interruptIfStarted()方法。Worker中两个覆盖AQS的方法tryAcquire()和tryRelease()都没有判断外部传入的变量，前者直接CAS(0,1)，后者直接setState(0)。  
 
 ### 1.3.4. runWorker()，线程复用机制  
 &emsp; worker中的线程start 后，执行的是worker的run()方法，而run()方法会调用ThreadPoolExecutor类的runWorker()方法，runWorker()方法实现了线程池中的线程复用机制。  
 
 &emsp; runWorker()方法的核心流程：  
 1. Worker先执行一次解锁操作，用于解除不可中断状态。  
-2. <font color = "red">通过while循环调用getTask()方法从任务队列中获取任务（当然，首轮循环也有可能是外部传入的firstTask任务实例）。</font>  
+2. <font color = "red">通过while循环调用getTask()方法从任务队列中获取任务(当然，首轮循环也有可能是外部传入的firstTask任务实例)。</font>  
 3. 如果线程池更变为STOP状态，则需要确保工作线程是中断状态并且进行中断处理，否则要保证工作线程必须不是中断状态。  
-执行任务实例Runnale#run()方法，任务实例执行之前和之后（包括正常执行完毕和异常执行情况）分别会调用钩子方法beforeExecute()和afterExecute()。    
-4. while循环跳出意味着runWorker()方法结束和工作线程生命周期结束（Worker#run()生命周期完结），会调用processWorkerExit()处理工作线程退出的后续工作。  
+执行任务实例Runnale#run()方法，任务实例执行之前和之后(包括正常执行完毕和异常执行情况)分别会调用钩子方法beforeExecute()和afterExecute()。    
+4. while循环跳出意味着runWorker()方法结束和工作线程生命周期结束(Worker#run()生命周期完结)，会调用processWorkerExit()处理工作线程退出的后续工作。  
 
 <!-- 
 
@@ -495,7 +495,7 @@ thread.start();
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-16.png)  
 
-&emsp; 从runWorker()方法的实现可以看出，runWorker()方法中主要调用了getTask()方法（从任务队列中获取任务）和processWorkerExit()方法（处理线程退出的后续工作）。  
+&emsp; 从runWorker()方法的实现可以看出，runWorker()方法中主要调用了getTask()方法(从任务队列中获取任务)和processWorkerExit()方法(处理线程退出的后续工作)。  
 
 ```java
 final void runWorker(Worker w) {
@@ -510,7 +510,7 @@ final void runWorker(Worker w) {
     // 记录线程是否因为用户异常终结，默认是true
     boolean completedAbruptly = true;
     try {
-        // 初始化任务对象不为null，或者从任务队列获取任务不为空（从任务队列获取到的任务会更新到临时变量task中）
+        // 初始化任务对象不为null，或者从任务队列获取任务不为空(从任务队列获取到的任务会更新到临时变量task中)
         // getTask()由于使用了阻塞队列，这个while循环如果命中后半段会处于阻塞或者超时阻塞状态，getTask()返回为null会导致线程跳出死循环使线程终结
         while (task != null || (task = getTask()) != null) {
             // Worker加锁，本质是AQS获取资源并且尝试CAS更新state由0更变为1
@@ -519,7 +519,7 @@ final void runWorker(Worker w) {
             // if not, ensure thread is not interrupted.  This
             // requires a recheck in second case to deal with
             // shutdownNow race while clearing interrupt
-            // 如果线程池正在停止（也就是由RUNNING或者SHUTDOWN状态向STOP状态变更），那么要确保当前工作线程是中断状态
+            // 如果线程池正在停止(也就是由RUNNING或者SHUTDOWN状态向STOP状态变更)，那么要确保当前工作线程是中断状态
             // 否则，要保证当前线程不是中断状态
             if ((runStateAtLeast(ctl.get(), STOP) ||
                     (Thread.interrupted() &&
@@ -577,7 +577,7 @@ private Runnable getTask() {
         int c = ctl.get();
 
         // Check if queue empty only if necessary.
-        // 第一个if：如果线程池状态至少为SHUTDOWN，也就是rs >= SHUTDOWN(0)，则需要判断两种情况（或逻辑）：
+        // 第一个if：如果线程池状态至少为SHUTDOWN，也就是rs >= SHUTDOWN(0)，则需要判断两种情况(或逻辑)：
         // 1. 线程池状态至少为STOP(1)，也就是线程池正在停止，一般是调用了shutdownNow()方法
         // 2. 任务队列为空
         // 如果在线程池至少为SHUTDOWN状态并且满足上面两个条件之一，则工作线程数wc减去1，然后直接返回null
@@ -608,7 +608,7 @@ private Runnable getTask() {
 
         try {
             // 如果timed为true，通过poll()方法做超时拉取，keepAliveTime时间内没有等待到有效的任务，则返回null
-            // 如果timed为false，通过take()做阻塞拉取，会阻塞到有下一个有效的任务时候再返回（一般不会是null）
+            // 如果timed为false，通过take()做阻塞拉取，会阻塞到有下一个有效的任务时候再返回(一般不会是null)
             Runnable r = timed ?
                 workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) :
                 workQueue.take();
@@ -655,7 +655,7 @@ if (r) {
 &emsp; 在一些特定的场景下，配置合理的keepAliveTime能够更好地利用线程池的工作线程资源。
 
 #### 1.3.4.2. processWorkerExit()  
-&emsp; processWorkerExit()方法是为将要终结的Worker做一次清理和数据记录工作（因为processWorkerExit()方法也包裹在runWorker()方法finally代码块中，其实工作线程在执行完processWorkerExit()方法才算真正的终结）。 
+&emsp; processWorkerExit()方法是为将要终结的Worker做一次清理和数据记录工作(因为processWorkerExit()方法也包裹在runWorker()方法finally代码块中，其实工作线程在执行完processWorkerExit()方法才算真正的终结)。 
 
 ```java
 private void processWorkerExit(Worker w, boolean completedAbruptly) {
@@ -697,7 +697,7 @@ private void processWorkerExit(Worker w, boolean completedAbruptly) {
     }
 }
 ```
-&emsp; 代码的后面部分区域，会判断线程池的状态，如果线程池是RUNNING或者SHUTDOWN状态的前提下，如果当前的工作线程由于抛出用户异常被终结，那么会新创建一个非核心线程。如果当前的工作线程并不是抛出用户异常被终结（正常情况下的终结），那么会这样处理：
+&emsp; 代码的后面部分区域，会判断线程池的状态，如果线程池是RUNNING或者SHUTDOWN状态的前提下，如果当前的工作线程由于抛出用户异常被终结，那么会新创建一个非核心线程。如果当前的工作线程并不是抛出用户异常被终结(正常情况下的终结)，那么会这样处理：
 
 * allowCoreThreadTimeOut为true，也就是允许核心线程超时的前提下，如果任务队列空，则会通过创建一个非核心线程保持线程池中至少有一个工作线程。  
 * allowCoreThreadTimeOut为false，如果工作线程总数大于corePoolSize则直接返回，否则创建一个非核心线程，也就是会趋向于保持线程池中的工作线程数量趋向于corePoolSize。  

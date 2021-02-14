@@ -37,7 +37,7 @@
             - [1.3.5.2. ThreadPoolExecutor#awaitTermination](#1352-threadpoolexecutorawaittermination)
             - [1.3.5.3. 总结：优雅关闭线程池](#1353-总结优雅关闭线程池)
         - [1.3.6. SpringBoot整合线程池](#136-springboot整合线程池)
-            - [1.3.6.1. ※※※@Async没有执行的问题分析（@Async线程默认配置）](#1361-※※※async没有执行的问题分析async线程默认配置)
+            - [1.3.6.1. ※※※@Async没有执行的问题分析(@Async线程默认配置)](#1361-※※※async没有执行的问题分析async线程默认配置)
             - [1.3.6.2. 重写spring默认线程池](#1362-重写spring默认线程池)
             - [1.3.6.3. 自定义线程池](#1363-自定义线程池)
 
@@ -64,11 +64,11 @@ https://mp.weixin.qq.com/s/qTMJAP45ON91zjWFLwms5g
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-2.png)   
 &emsp; Executor：所有线程池的接口。  
 &emsp; ExecutorService：扩展了Executor接口。添加了一些用来管理执行器生命周期和任务生命周期的方法。  
-&emsp; ThreadPoolExecutor（创建线程池方式一）：线程池的具体实现类。  
-&emsp; Executors（创建线程池方式二）：提供了一系列静态的工厂方法用于创建线程池，返回的线程池都实现了ExecutorService 接口。  
+&emsp; ThreadPoolExecutor(创建线程池方式一)：线程池的具体实现类。  
+&emsp; Executors(创建线程池方式二)：提供了一系列静态的工厂方法用于创建线程池，返回的线程池都实现了ExecutorService 接口。  
 
 ### 1.2.1. 线程池实现  
-&emsp; 根据返回的对象类型，<font color = "red">创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor（任务调度线程池）、ForkJoinPool、CompletableFuture。</font>  
+&emsp; 根据返回的对象类型，<font color = "red">创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor(任务调度线程池)、ForkJoinPool、CompletableFuture。</font>  
 
 #### 1.2.1.1. ThreadPoolExecutor  
 &emsp; [ThreadPoolExecutor](/docs/java/concurrent/ThreadPoolExecutor.md)  
@@ -119,8 +119,8 @@ public static ExecutorService newCachedThreadPool() {
            new SynchronousQueue<Runnable>());     
 }
 ```
-&emsp; 无界线程池，可以进行自动线程回收。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。线程池为无限大，当执行第二个任务时第一个任务已经完成，会复用执行第一个任务的线程，而不用每次新建线程。  
-&emsp; 此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。阻塞队列SynchronousQueue是一个是缓冲区为1的阻塞队列。  
+&emsp; 无界线程池，可以进行自动线程回收。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲(60秒不执行任务)的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。线程池为无限大，当执行第二个任务时第一个任务已经完成，会复用执行第一个任务的线程，而不用每次新建线程。  
+&emsp; 此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统(或者说JVM)能够创建的最大线程大小。阻塞队列SynchronousQueue是一个是缓冲区为1的阻塞队列。  
 &emsp; 线程池特点：核心线程数为0、最大线程数为Integer.MAX_VALUE、阻塞队列是SynchronousQueue、非核心线程空闲存活时间为60秒。  
 &emsp; 当提交任务的速度大于处理任务的速度时，每次提交一个任务，就必然会创建一个线程。极端情况下会创建过多的线程，耗尽 CPU 和内存资源。由于空闲 60 秒的线程会被终止，长时间保持空闲的CachedThreadPool不会占用任何资源。  
 
@@ -224,14 +224,14 @@ https://www.cnblogs.com/wang-meng/p/10163855.html
 -->
 
 ### 1.3.1. 设置隔离的线程池
-&emsp; 一些业务代码做了Utils类型在整个项目中的各种操作共享使用一个线程池，一些业务代码大量使用parallel stream特性做一些耗时操作，但是没有使用自定义的线程池或是没有设置更大的线程数（没有意识到parallel stream的共享ForkJoinPool问题）。共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。 **<font color = "red">建议根据异步业务类型，合理设置隔离的线程池。</font>**  
+&emsp; 一些业务代码做了Utils类型在整个项目中的各种操作共享使用一个线程池，一些业务代码大量使用parallel stream特性做一些耗时操作，但是没有使用自定义的线程池或是没有设置更大的线程数(没有意识到parallel stream的共享ForkJoinPool问题)。共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。 **<font color = "red">建议根据异步业务类型，合理设置隔离的线程池。</font>**  
 
 ### 1.3.2. 确定线程池的大小
 &emsp; **<font color = "lime">CPU可同时处理线程数量大部分是CPU核数的两倍。</font>**    
 &emsp; **一般做法：**  
 
-* 如果是CPU密集型应用（多线程处理复杂算法），则线程池大小设置为N+1。  
-* 如果是IO密集型应用（多线程用于数据库数据交互、文件上传下载、网络数据传输等），则线程池大小设置为2N。  
+* 如果是CPU密集型应用(多线程处理复杂算法)，则线程池大小设置为N+1。  
+* 如果是IO密集型应用(多线程用于数据库数据交互、文件上传下载、网络数据传输等)，则线程池大小设置为2N。  
 * 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。   
 
 &emsp; N表示CPU数量，可以根据Runtime.availableProcessors方法获取.   
@@ -252,11 +252,11 @@ private static int corePoolSize = Runtime.getRuntime().availableProcessors();
 	
 -->
 ----
-&emsp; Little's Law（利特尔法则）：一个系统请求数等于请求的到达率与平均每个单独请求花费的时间之乘积。使用利特尔法则（Little’s law）来判定线程池大小。只需计算请求到达率和请求处理的平均时间。估算公式如下：    
-&emsp; 线程池大小=（（线程等待IO时间+ 线程CPU时间）/线程CPU时间 ）* CPU数目. 
+&emsp; Little's Law(利特尔法则)：一个系统请求数等于请求的到达率与平均每个单独请求花费的时间之乘积。使用利特尔法则(Little’s law)来判定线程池大小。只需计算请求到达率和请求处理的平均时间。估算公式如下：    
+&emsp; 线程池大小=((线程等待IO时间+ 线程CPU时间)/线程CPU时间 )* CPU数目. 
 &emsp; 通过公式，了解到需要3个具体数值：  
 1. 一个请求所消耗的时间 (线程 IO time + 线程 CPU time)。 
-2. 该请求计算时间 （线程 CPU time） 
+2. 该请求计算时间 (线程 CPU time) 
 3. CPU数目. 
 
 &emsp; 请求消耗时间：Web服务容器中，可以通过Filter来拦截获取该请求前后消耗的时间。  
@@ -301,7 +301,7 @@ public class MoniterFilter implements Filter {
     }
 }
 ```
-&emsp; CPU计算时间：CPU计算时间 = 请求总耗时 - CPU IO time。假设该请求有一个查询 DB 的操作，只要知道这个查询DB的耗时（CPU IO time），计算的时间不就出来了嘛，看一下怎么才能简洁，明了的记录DB查询的耗时。通过（JDK 动态代理/ CGLIB）的方式添加 AOP 切面，来获取线程IO耗时。代码如下，请参考.  
+&emsp; CPU计算时间：CPU计算时间 = 请求总耗时 - CPU IO time。假设该请求有一个查询 DB 的操作，只要知道这个查询DB的耗时(CPU IO time)，计算的时间不就出来了嘛，看一下怎么才能简洁，明了的记录DB查询的耗时。通过(JDK 动态代理/ CGLIB)的方式添加 AOP 切面，来获取线程IO耗时。代码如下，请参考.  
 
 ```java
 public class DaoInterceptor implements MethodInterceptor {
@@ -387,7 +387,7 @@ final void runWorker(Worker w) {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-8.png)  
 
 ##### 1.3.3.3.3. 继承ThreadGroup  
-&emsp; 覆盖uncaughtException方法。（与实现Thread.UncaughtExceptionHandler接口类似，因为ThreadGroup类本身就实现了Thread.UncaughtExceptionHandler接口)  
+&emsp; 覆盖uncaughtException方法。(与实现Thread.UncaughtExceptionHandler接口类似，因为ThreadGroup类本身就实现了Thread.UncaughtExceptionHandler接口)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-9.png)  
 &emsp; 注意：上面三种方式针对的都是通过execute(xx)的方式提交任务，如果提交任务用的是submit()方法，那么上面的三种方式都将不起作用，而应该使用下面的方式。  
 
@@ -572,7 +572,7 @@ try {
 ### 1.3.6. SpringBoot整合线程池
 &emsp; SpringBoot框架提供了@Async注解使用ThreadPoolExecutor。可以重写spring默认的线程池或自定义线程池。  
 
-#### 1.3.6.1. ※※※@Async没有执行的问题分析（@Async线程默认配置）  
+#### 1.3.6.1. ※※※@Async没有执行的问题分析(@Async线程默认配置)  
 <!-- 
 ~~
 https://www.cnblogs.com/kiko2014551511/p/12754927.html
