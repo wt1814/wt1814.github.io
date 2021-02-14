@@ -7,8 +7,7 @@
         - [1.2.1. 线程有哪几种状态？](#121-线程有哪几种状态)
         - [1.2.2. 线程阻塞BLOCKED和等待WAITING的区别](#122-线程阻塞blocked和等待waiting的区别)
         - [1.2.3. 线程状态切换图示](#123-线程状态切换图示)
-            - [1.2.3.1. 代码演示](#1231-代码演示)
-    - [1.3. Thread.java的方法](#13-threadjava的方法)
+    - [1.3. Thread.java的成员方法](#13-threadjava的成员方法)
         - [1.3.1. 线程的start方法和run方法的区别](#131-线程的start方法和run方法的区别)
         - [1.3.2. Thread.sleep()与Object.wait()](#132-threadsleep与objectwait)
         - [1.3.3. yield()，线程让步](#133-yield线程让步)
@@ -54,7 +53,7 @@ System.out.println(thread.getName());
 ```
 &emsp; 注：MyRunnable并非Thread的子类，所以MyRunnable类并没有getName()方法。可以通过以下方式得到当前线程的引用： Thread.currentThread()。因此，通过如下代码可以得到当前线程的名字，此方法可以获取任意方法所在的线程名称。String threadName = Thread.currentThread().getName();
 
-&emsp; 线程组：ThreadGroup并不能提供对线程的管理，其主要功能是对线程进行组织。在构造Thread时，可以显示地指定线程的Group(ThreadGroup)。如果没有显示指定，子线程会被加入父线程所在的线程组(无论如何线程都会被加入某个Thread Group之中)。
+&emsp; **线程组：ThreadGroup并不能提供对线程的管理，其主要功能是对线程进行组织。** 在构造Thread时，可以显示地指定线程的Group(ThreadGroup)。如果没有显示指定，子线程会被加入父线程所在的线程组(无论如何线程都会被加入某个Thread Group之中)。
 
 ## 1.2. ※※※线程状态介绍(线程生命周期)
 ### 1.2.1. 线程有哪几种状态？
@@ -79,7 +78,7 @@ System.out.println(thread.getName());
     * **同步阻塞(lock->锁池)：运行的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则JVM会把该线程放入锁池(lock pool)中。**
     * **其他阻塞状态(sleep/join)：当前线程执行了sleep()方法，或者调用了其他线程的join()方法，或者发出了I/O请求时，就会进入这个状态。**
 
-* **<font color = "red">WAITING (等待)：</font>** **<font color = "lime">一个正在无限期等待另一个线程执行一个特别的动作的线程处于这一状态。</font>**
+* **<font color = "red">WAITING(等待)：</font>** **<font color = "lime">一个正在无限期等待另一个线程执行一个特别的动作的线程处于这一状态。</font>**
 
     * threadA中调用threadB.join()，threadA将Waiting，直到threadB终止。
     * obj.wait() 释放同步监视器obj，并进入阻塞状态。
@@ -103,17 +102,16 @@ System.out.println(thread.getName());
 https://blog.csdn.net/zl18310999566/article/details/87931473
 -->
 &emsp; <font color = "red">阻塞BLOCKED表示线程在等待对象的monitor锁，试图通过synchronized去获取某个锁，但是此时其他线程已经独占了monitor锁，那么当前线程就会进入等待状态WAITING。</font>  
-&emsp; 两者都会暂停线程的执行。两者的区别是: 进入waiting状态是线程主动的，而进入blocked状态是被动的。更进一步的说，进入blocked状态是在同步(synchronized代码之外)，而进入waiting状态是在同步代码之内。
+&emsp; 两者都会暂停线程的执行。两者的区别是：进入waiting状态是线程主动的，而进入blocked状态是被动的。更进一步的说，进入blocked状态是在同步(synchronized代码之外)，而进入waiting状态是在同步代码之内。
 
 ### 1.2.3. 线程状态切换图示
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-1.png)
 
-#### 1.2.3.1. 代码演示
+&emsp; 代码演示：  
 <!-- https://mp.weixin.qq.com/s/L2UqbdZQk7HvZ2r-M3eMlw -->
 ......
 
-
-## 1.3. Thread.java的方法
+## 1.3. Thread.java的成员方法
 
 | 名称 | 作用 |
 | ---- | ---- | 
@@ -193,8 +191,8 @@ public static native void yield();
 * yield()方法仅释放CPU执行权，<font color = "red">锁仍然占用，线程会被放入就绪队列，会在短时间内再次执行</font>。
 
 ### 1.3.4. Join()方法
-&emsp; 在很多情况下，主线程创建并启动子线程，如果子线程中要进行大量的耗时运算，主线 程往往将早于子线程结束之前结束。这时，如果主线程想等待子线程执行完成之后再结束, 比如子线程处理一个数据，主线程要取得这个数据中的值，就要用到join()方法了。方法 join()的作用是等待线程对象销毁。  
-&emsp; 方法join具有使线程排队运行的作用，有些类似同步的运行效果。join与synchronized 的区别是：join在内部使用wait()方法进行等待，而sychronized关键字使用的是“对象监视器”原理做为同步。
+&emsp; 在很多情况下，主线程创建并启动子线程，如果子线程中要进行大量的耗时运算，主线程往往将早于子线程结束之前结束。这时，如果主线程想等待子线程执行完成之后再结束, 比如子线程处理一个数据，主线程要取得这个数据中的值，就要用到join()方法了。方法join()的作用是等待线程对象销毁。  
+&emsp; 方法join具有使线程排队运行的作用，有些类似同步的运行效果。join与synchronized的区别是：join在内部使用wait()方法进行等待，而sychronized关键字使用的是“对象监视器”原理做为同步。
 
 ### 1.3.5. interrupt()与stop()，中断线程
 <!-- 

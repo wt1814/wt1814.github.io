@@ -16,6 +16,10 @@
 
 <!-- /TOC -->
 
+&emsp; **小结：**  
+&emsp; **Future是一个接口，它可以对具体的Runnable或者Callable任务进行取消、判断任务是否已取消、查询任务是否完成、获取任务结果。**  
+&emsp; Java5为Future接口提供了一个实现类FutureTask，表示一个可以取消的异步运算。它有启动和取消运算、查询运算是否完成和取回运算结果等方法。  
+
 # 1. 线程基本操作  
 ## 1.1. 创建并运行java线程
 &emsp; Java使用Thread类代表线程，所有的线程对象都必须是Thread类或其子类的实例。  
@@ -73,7 +77,7 @@ FutureTask 是什么
 这个其实前面有提到过，FutureTask 表示一个异步运算的任务。FutureTask 里面可以传入一个 Callable 的具体实现类， 可以对这个异步运算的任务的结果进行等待获取、判断是否已经完成、取消任务等操作。当然， 由于 FutureTask 也是
 Runnable 接口的实现类， 所以 FutureTask 也可以放入线程池中。
 -->
-&emsp; Future是一个接口，它可以对具体的Runnable或者Callable任务进行取消、判断任务是否已取消、查询任务是否完成、获取任务结果。如果是Runnable的话返回的结果是null(下面会剖析为什么Runnable的任务，Future还能返回结果)。接口里面有以下几个方法。注意两个get方法都会阻塞当前调用get的线程，直到返回结果或者超时才会唤醒当前的线程。
+&emsp; **Future是一个接口，它可以对具体的Runnable或者Callable任务进行取消、判断任务是否已取消、查询任务是否完成、获取任务结果。** 如果是Runnable的话返回的结果是null(下面会剖析为什么Runnable的任务，Future还能返回结果)。接口里面有以下几个方法。注意两个get方法都会阻塞当前调用get的线程，直到返回结果或者超时才会唤醒当前的线程。
 
 &emsp; 在Future接口里定义了几个公共方法来控制它关联的任务。
 
@@ -91,14 +95,13 @@ boolean isCancelled();
 ```
 &emsp; **<font color = "red">注：Future设置方法超时，使用get(long timeout,TimeUnit unit)方法</font>**
 
-
 ### 1.1.5. FutureTask
-<!-- 
 &emsp; Java5为Future接口提供了一个实现类FutureTask，表示一个可以取消的异步运算。它有启动和取消运算、查询运算是否完成和取回运算结果等方法。只有当运算完成的时候结果才能取回，如果运算尚未完成get方法将会阻塞。FutureTask既实现了Future接口，还实现了Runnable接口，因此可以作为Thread类的target。
--->
-&emsp; 因为Future只是一个接口，所以是无法直接用来创建对象使用的，因此就有了下面的FutureTask。  
-&emsp; FutureTask不是接口了，是个class。它实现了RunnableFuture接口
 
+<!-- 
+&emsp; 因为Future只是一个接口，所以是无法直接用来创建对象使用的，因此就有了下面的FutureTask。  
+&emsp; FutureTask不是接口，是个class。它实现了RunnableFuture接口
+-->
 ```java
 public class FutureTask<V> implements RunnableFuture<V>
 ```
