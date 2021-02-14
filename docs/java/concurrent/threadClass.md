@@ -3,22 +3,21 @@
 
 - [1. Thread类详解](#1-thread类详解)
     - [1.1. Thread.java的构造函数](#11-threadjava的构造函数)
-    - [1.2. Thread.java的方法](#12-threadjava的方法)
-        - [1.2.1. 线程的start方法和run方法的区别](#121-线程的start方法和run方法的区别)
-        - [1.2.2. ※※※线程状态介绍(线程生命周期)](#122-※※※线程状态介绍线程生命周期)
-            - [1.2.2.1. 线程有哪几种状态？](#1221-线程有哪几种状态)
-            - [1.2.2.2. 线程阻塞BLOCKED和等待WAITING的区别](#1222-线程阻塞blocked和等待waiting的区别)
-            - [1.2.2.3. 线程状态切换图示](#1223-线程状态切换图示)
-            - [1.2.2.4. 代码演示](#1224-代码演示)
-        - [1.2.3. 相关方法详解](#123-相关方法详解)
-            - [1.2.3.1. Thread.sleep()与Object.wait()](#1231-threadsleep与objectwait)
-            - [1.2.3.2. yield()，线程让步](#1232-yield线程让步)
-            - [1.2.3.3. Join()方法](#1233-join方法)
-            - [1.2.3.4. interrupt()与stop()，中断线程](#1234-interrupt与stop中断线程)
-                - [1.2.3.4.1. Java中对线程中断所提供的API支持](#12341-java中对线程中断所提供的api支持)
-                - [1.2.3.4.2. 线程在不同状态下对于中断所产生的反应](#12342-线程在不同状态下对于中断所产生的反应)
-            - [1.2.3.5. 守护线程](#1235-守护线程)
-            - [1.2.3.6. 线程优先级](#1236-线程优先级)
+    - [1.2. ※※※线程状态介绍(线程生命周期)](#12-※※※线程状态介绍线程生命周期)
+        - [1.2.1. 线程有哪几种状态？](#121-线程有哪几种状态)
+        - [1.2.2. 线程阻塞BLOCKED和等待WAITING的区别](#122-线程阻塞blocked和等待waiting的区别)
+        - [1.2.3. 线程状态切换图示](#123-线程状态切换图示)
+            - [1.2.3.1. 代码演示](#1231-代码演示)
+    - [1.3. Thread.java的方法](#13-threadjava的方法)
+        - [1.3.1. 线程的start方法和run方法的区别](#131-线程的start方法和run方法的区别)
+        - [1.3.2. Thread.sleep()与Object.wait()](#132-threadsleep与objectwait)
+        - [1.3.3. yield()，线程让步](#133-yield线程让步)
+        - [1.3.4. Join()方法](#134-join方法)
+        - [1.3.5. interrupt()与stop()，中断线程](#135-interrupt与stop中断线程)
+            - [1.3.5.1. Java中对线程中断所提供的API支持](#1351-java中对线程中断所提供的api支持)
+            - [1.3.5.2. 线程在不同状态下对于中断所产生的反应](#1352-线程在不同状态下对于中断所产生的反应)
+        - [1.3.6. 守护线程](#136-守护线程)
+        - [1.3.7. 线程优先级](#137-线程优先级)
 
 <!-- /TOC -->
 
@@ -57,55 +56,8 @@ System.out.println(thread.getName());
 
 &emsp; 线程组：ThreadGroup并不能提供对线程的管理，其主要功能是对线程进行组织。在构造Thread时，可以显示地指定线程的Group(ThreadGroup)。如果没有显示指定，子线程会被加入父线程所在的线程组(无论如何线程都会被加入某个Thread Group之中)。
 
-## 1.2. Thread.java的方法
-
-| 名称 | 作用 |
-| ---- | ---- | 
-|currentThread()|返回对当前正在执行的线程对象的引用。静态方法。|
-|getId()|返回此Thread的标识符。|
-|getName()|返回此线程的名称。|
-|getPriority()|返回此线程的优先级。|
-|getState()|返回此线程的状态。|
-|getThreadGroup()|返回此线程所属的线程组。|
-|interrupt()|中断此线程。|
-|join()|等待这个线程死亡。|
-|setDaemon(boolean on)|将此线程标记为守护程序线程或用户线程。|
-|setName(String name)|将此线程的名称更改为等于参数name。|
-|setPriority(int newPriority)|更改此线程的优先级。|
-
-<!-- 
-Thread.join
-https://www.jianshu.com/p/fc51be7e5bc0
--->
-
-### 1.2.1. 线程的start方法和run方法的区别
-&emsp; <font color = "red">调用start方法会创建一个新的线程并启动，run方法只是启动线程后的回调函数。</font>如果调用run方法，那么执行run方法的线程不会是新创建的线程，而如果使用start方法，那么执行run方法的线程就是刚刚启动的那个线程。
-
-&emsp; 程序验证：
-
-```java
-public class Main {
-    public static void main(String[] args) {
-        Thread thread = new Thread(new SubThread());
-        thread.run();
-        thread.start();
-    }
-
-}
-class SubThread implements Runnable{
-
-    @Override
-    public void run() {
-        // TODO Auto-generated method stub
-        System.out.println("执行本方法的线程:"+Thread.currentThread().getName());
-    }
-
-}
-```
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-3.png)
-
-### 1.2.2. ※※※线程状态介绍(线程生命周期)
-#### 1.2.2.1. 线程有哪几种状态？
+## 1.2. ※※※线程状态介绍(线程生命周期)
+### 1.2.1. 线程有哪几种状态？
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-2.png)  
 &emsp; Java线程状态均来自Thread类下的State这一内部枚举类中所定义的状态：
 
@@ -146,22 +98,69 @@ class SubThread implements Runnable{
 
 &emsp; 注意：由于wait()/wait(time)导致线程处于Waiting/TimedWaiting状态，当线程被notify()/notifyAll()/wait等待时间到之后，如果没有获取到同步监视器。会直接进入Blocked阻塞状态。
 
-#### 1.2.2.2. 线程阻塞BLOCKED和等待WAITING的区别
+### 1.2.2. 线程阻塞BLOCKED和等待WAITING的区别
 <!-- 
 https://blog.csdn.net/zl18310999566/article/details/87931473
 -->
 &emsp; <font color = "red">阻塞BLOCKED表示线程在等待对象的monitor锁，试图通过synchronized去获取某个锁，但是此时其他线程已经独占了monitor锁，那么当前线程就会进入等待状态WAITING。</font>  
 &emsp; 两者都会暂停线程的执行。两者的区别是: 进入waiting状态是线程主动的，而进入blocked状态是被动的。更进一步的说，进入blocked状态是在同步(synchronized代码之外)，而进入waiting状态是在同步代码之内。
 
-#### 1.2.2.3. 线程状态切换图示
+### 1.2.3. 线程状态切换图示
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-1.png)
 
-#### 1.2.2.4. 代码演示
+#### 1.2.3.1. 代码演示
 <!-- https://mp.weixin.qq.com/s/L2UqbdZQk7HvZ2r-M3eMlw -->
 ......
 
-### 1.2.3. 相关方法详解
-#### 1.2.3.1. Thread.sleep()与Object.wait()
+
+## 1.3. Thread.java的方法
+
+| 名称 | 作用 |
+| ---- | ---- | 
+|currentThread()|返回对当前正在执行的线程对象的引用。静态方法。|
+|getId()|返回此Thread的标识符。|
+|getName()|返回此线程的名称。|
+|getPriority()|返回此线程的优先级。|
+|getState()|返回此线程的状态。|
+|getThreadGroup()|返回此线程所属的线程组。|
+|interrupt()|中断此线程。|
+|join()|等待这个线程死亡。|
+|setDaemon(boolean on)|将此线程标记为守护程序线程或用户线程。|
+|setName(String name)|将此线程的名称更改为等于参数name。|
+|setPriority(int newPriority)|更改此线程的优先级。|
+
+<!-- 
+Thread.join
+https://www.jianshu.com/p/fc51be7e5bc0
+-->
+
+### 1.3.1. 线程的start方法和run方法的区别
+&emsp; <font color = "red">调用start方法会创建一个新的线程并启动，run方法只是启动线程后的回调函数。</font>如果调用run方法，那么执行run方法的线程不会是新创建的线程，而如果使用start方法，那么执行run方法的线程就是刚刚启动的那个线程。
+
+&emsp; 程序验证：
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Thread thread = new Thread(new SubThread());
+        thread.run();
+        thread.start();
+    }
+
+}
+class SubThread implements Runnable{
+
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        System.out.println("执行本方法的线程:"+Thread.currentThread().getName());
+    }
+
+}
+```
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-3.png)
+
+### 1.3.2. Thread.sleep()与Object.wait()
 &emsp; Thead.sleep()和Object.wait()都可以让线程阻塞，也都可以指定超时时间，甚至还都会抛出中断异常InterruptedException。
 
 &emsp; **<font color = "red">Thead.sleep()和Object.wait()的区别：</font>**
@@ -170,7 +169,7 @@ https://blog.csdn.net/zl18310999566/article/details/87931473
 * 用途不同：wait通常被用于线程间交互/通信，sleep通常被用于暂停执行。
 * 用法不同：wait()方法被调用后，线程不会自动苏醒，需要别的线程调用同一个对象上的notify()或者notifyAll()方法。sleep()方法执行完成后，线程会自动苏醒。或者可以使用wait(long timeout)超时后线程会自动苏醒。
 
-#### 1.2.3.2. yield()，线程让步
+### 1.3.3. yield()，线程让步
 <!-- 
 yield()方法的作用是放弃当前的CPU资源，将它让给其他的任务去占用CPU执行时 间。但放弃的时间不确定，有可能刚刚放弃，马上又获得CPU时间片。
 -->
@@ -193,11 +192,11 @@ public static native void yield();
 * sleep(long)方法仅释放CPU使用权，<font color = "red">锁仍然占用，线程被放入超时等待队列</font>。与yield相比，它会使线程较长时间得不到运行。
 * yield()方法仅释放CPU执行权，<font color = "red">锁仍然占用，线程会被放入就绪队列，会在短时间内再次执行</font>。
 
-#### 1.2.3.3. Join()方法
+### 1.3.4. Join()方法
 &emsp; 在很多情况下，主线程创建并启动子线程，如果子线程中要进行大量的耗时运算，主线 程往往将早于子线程结束之前结束。这时，如果主线程想等待子线程执行完成之后再结束, 比如子线程处理一个数据，主线程要取得这个数据中的值，就要用到join()方法了。方法 join()的作用是等待线程对象销毁。  
 &emsp; 方法join具有使线程排队运行的作用，有些类似同步的运行效果。join与synchronized 的区别是：join在内部使用wait()方法进行等待，而sychronized关键字使用的是“对象监视器”原理做为同步。
 
-#### 1.2.3.4. interrupt()与stop()，中断线程
+### 1.3.5. interrupt()与stop()，中断线程
 <!-- 
 线程中断详解
 https://blog.csdn.net/xinxiaoyong100440105/article/details/80931705
@@ -232,7 +231,7 @@ https://mp.weixin.qq.com/s?__biz=Mzg2ODU1MDkwMw==&mid=2247485086&idx=1&sn=e9bb81
 
 &emsp; 在程序中经常会有一些不达到目的不会退出的线程，例如：有一个下载程序线程，该线程在没有下载成功之前是不会退出的，若此时用户觉得下载速度慢，不想下载了，这时就需要用到线程中断机制了，告诉线程，不要继续执行了，准备好退出吧。当然，线程在不同的状态下遇到中断会产生不同的响应，有点会抛出异常，有的则没有变化，有的则会结束线程。
 
-##### 1.2.3.4.1. Java中对线程中断所提供的API支持
+#### 1.3.5.1. Java中对线程中断所提供的API支持
 &emsp; 在以前的jdk版本中，使用stop方法中断线程，但是现在的jdk版本中已经不再推荐使用该方法了，反而由以下三个方法完成对线程中断的支持。
 
 ```java
@@ -244,10 +243,10 @@ public static boolean interrupted()
 &emsp; interrupt是一个实例方法，该方法用于设置当前线程对象的中断标识位。  
 &emsp; interrupted是一个静态的方法，用于返回当前线程是否被中断。
 
-##### 1.2.3.4.2. 线程在不同状态下对于中断所产生的反应
+#### 1.3.5.2. 线程在不同状态下对于中断所产生的反应
 &emsp; NEW和TERMINATED对于中断操作几乎是屏蔽的，RUNNABLE和BLOCKED类似， **<font color = "clime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中。</font>** WAITING/TIMED_WAITING状态下的线程对于中断操作是敏感的，它们会抛出异常并清空中断标志位。
 
-#### 1.2.3.5. 守护线程
+### 1.3.6. 守护线程
 &emsp; 线程分为用户线程、守护线程。线程初始化默认为用户线程；使用setDaemon()方法将一个线程设置为守护线程。main()属于非守护线程。
 
 ```java
@@ -256,7 +255,7 @@ thread.setDaemon(true);
 ```
 &emsp; 守护线程唯一的用途就是为其他线程提供服务。当所有非守护线程结束时，程序也就终止，同时会杀死所有守护线程。计时线程、JVM的垃圾回收、内存管理等线程都是守护线程。
 
-#### 1.2.3.6. 线程优先级
+### 1.3.7. 线程优先级
 &emsp; 线程的最小优先级，0；线程的最大优先级，10；线程的默认优先级，5。通过调用getPriority()和setPriority(int newPriority)方法来获得和设置线程的优先级。  
 &emsp; 线程优先级特性：
 
