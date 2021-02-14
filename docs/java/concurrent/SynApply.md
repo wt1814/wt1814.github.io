@@ -3,7 +3,7 @@
 <!-- TOC -->
 
 - [1. Synchronized](#1-synchronized)
-    - [1.1. Synchronized](#11-synchronized)
+    - [1.1. Synchronized简介](#11-synchronized简介)
     - [1.2. Synchronized使用](#12-synchronized使用)
         - [1.2.1. 类锁和对象锁](#121-类锁和对象锁)
         - [1.2.2. Synchronized同步普通方法](#122-synchronized同步普通方法)
@@ -30,7 +30,7 @@ https://mp.weixin.qq.com/s/TOkDyqAE5TToriOMX6I6tg
 详解synchronized锁的各种用法及注意事项 
 https://mp.weixin.qq.com/s/gKsD1U38h4MJczEFC33ydw
 -->
-## 1.1. Synchronized
+## 1.1. Synchronized简介
 &emsp; **<font color = "red">Synchronized能够保证在同一时刻最多只有一个线程执行该段代码。</font>**  
 
 &emsp; **Synchronized的特性：**  
