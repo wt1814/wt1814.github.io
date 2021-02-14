@@ -26,7 +26,7 @@
 2. 创建Thread子类的实例；
 3. 启动线程，即调用线程的start()方法；
 
-**匿名类实现：创建一个Thread的匿名子类：**
+&emsp; **匿名类实现：创建一个Thread的匿名子类：**
 
 ```java
 Thread thread = new Thread(){
@@ -108,7 +108,7 @@ public class FutureTask<V> implements RunnableFuture<V>
 ```java
 public interface RunnableFuture<V> extends Runnable, Future<V>
 ```
-&emsp; 因此它可以作为Runnable被线程执行，又可以有Future的那些操作。它的两个构造器如下
+&emsp; 因此它可以作为Runnable被线程执行，又可以有Future的那些操作。它的两个构造器如下：
 
 ```java
 public FutureTask(Callable<V> callable) {
