@@ -140,7 +140,9 @@
 
 ### 并发编程  
 [并发编程总结](/docs/java/concurrent/summary.md)  
-[线程基本概念](/docs/java/concurrent/Thread.md)  
+[线程基本概念](/docs/java/concurrent/threadConcepts.md)  
+[线程基本操作](/docs/java/concurrent/threadOperation.md)  
+[Thread类详解](/docs/java/concurrent/threadClass.md)  
 [并发问题](/docs/java/concurrent/MultiThread.md)  
 &emsp; [JMM](/docs/java/concurrent/JMM.md)  
 &emsp; [并发问题](/docs/java/concurrent/ConcurrencyProblem.md)  
