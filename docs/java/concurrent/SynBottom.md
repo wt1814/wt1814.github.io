@@ -14,6 +14,13 @@
 
 <!-- /TOC -->
 
+&emsp; **总结：**  
+&emsp; Synchronized的底层原理：  
+&emsp; Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联。  
+
+&emsp; Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。 
+&emsp; Synchronized代码块同步：使用monitorenter和monitorexit指令实现。 
+
 # 1. Synchronized底层原理
 <!--
  JOL：分析Java对象的内存布局 
