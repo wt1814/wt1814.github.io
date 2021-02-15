@@ -18,8 +18,8 @@
 &emsp; Synchronized的底层原理：  
 &emsp; Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联。  
 
-&emsp; Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。 
-&emsp; Synchronized代码块同步：使用monitorenter和monitorexit指令实现。 
+&emsp; Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。  
+&emsp; Synchronized代码块同步：使用monitorenter和monitorexit指令实现。  
 
 # 1. Synchronized底层原理
 <!--
@@ -40,6 +40,26 @@ https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
 <!-- 
 Java对象头与monitor
 https://blog.csdn.net/kking_edc/article/details/108382333
+-->
+<!-- 
+ Monitor和Java对象头详解：  
+&emsp; Synchronized用的锁标记是存放在Java对象头的Mark Word中。  
+
+* **Java的对象：**  
+&emsp; java对象在内存中的存储结构如下：    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-12.png)   
+&emsp; 内存中的对象分为三部分：对象头、对象实例数据和对齐填充(数组对象多一个区域：记录数组长度)。  
+&emsp; Java对象头：对象头里的数据主要是一些运行时的数据。  
+&emsp; 在Hotspot虚拟机中，对象头包含2个部分：标记字段(Mark Word)和类型指针(Kass point)。其中Klass Point是是对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例，Mark Word用于存储对象自身的运行时数据，它是实现轻量级锁和偏向锁的关键。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-13.png)   
+&emsp; **Java对象头中的Mark Word：**  
+&emsp; Mark Word用于存储对象自身的运行时数据，如哈希码(Hash Code)、GC分代年龄、锁状态标志、线程持有锁、偏向线程ID、偏向时间戳等，这部分数据在32位和64位虚拟机中分别为32bit和64bit。一个对象头一般用2个机器码存储(在32位虚拟机中，一个机器码为4个字节即32bit),但如果对象是数组类型，则虚拟机用3个机器码来存储对象头，因为JVM虚拟机可以通过Java对象的元数据信息确定Java对象的大小，但是无法从数组的元数据来确认数组的大小，所以用一块来记录数组长度。在32位虚拟机中，Java对象头的Makr Word的默认存储结构如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-14.png)   
+&emsp; 在程序运行期间，对象头中锁表标志位会发生改变。Mark Word可能发生的变化如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-15.png)   
+
+* **Monitor：**  
+&emsp; Monitor是操作系统提出来的一种高级原语，但其具体的实现模式，不同的编程语言都有可能不一样。Monitor有一个重要特点那就是，同一个时刻，只有一个线程能进入到Monitor定义的临界区中，这使得Monitor能够达到互斥的效果。但仅仅有互斥的作用是不够的，无法进入Monitor临界区的线程，它们应该被阻塞，并且在必要的时候会被唤醒。显然，monitor作为一个同步工具，也应该提供这样的机制。  
 -->
 &emsp; Java对象头是实现synchronized的锁对象的基础。  
 
