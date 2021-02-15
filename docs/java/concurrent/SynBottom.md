@@ -148,6 +148,9 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 <!-- 
 https://mp.weixin.qq.com/s/nzEt7_FyOUMPY5wOJ-EeKg
 
+Mutex Lock
+https://www.cnblogs.com/bjlhx/p/10555194.html
+
 &emsp; 任何对象都有一个monitor与之相关联，当且一个monitor被持有之后，它将处于锁定状态。线程执行到monitorenter指令时，将会尝试获取对象所对应的monitor所有权，即尝试获取对象的锁。
 &emsp; monitor对象介绍：  
 &emsp; 每个对象有一个监视器锁(monitor)，monitor本质是基于操作系统互斥(mutex)实现的，操作系统实现线程之间切换需要从用户态到内核态切换，成本非常高。一个monitor只能被一个线程拥有。
