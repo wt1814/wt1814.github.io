@@ -2,6 +2,7 @@
 
 - [1. ThreadPoolExecutor](#1-threadpoolexecutor)
     - [1.1. 属性](#11-属性)
+        - [1.1.1. 线程池状态](#111-线程池状态)
     - [1.2. 构造函数](#12-构造函数)
     - [1.3. 线程池工作流程(execute成员方法的源码)](#13-线程池工作流程execute成员方法的源码)
         - [1.3.1. execute()](#131-execute)
@@ -14,20 +15,20 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "lime">总结：</font>**  
+1. 理解线程池状态标志位的设计。  
+2. 理解构造函数中参数：[阻塞队列](/docs/java/concurrent/BlockingQueue.md)；拒绝策略默认AbortPolicy(拒绝任务，抛异常)，可以选用CallerRunsPolicy(任务队列满时，不进入线程池，由主线程执行)。  
+3. 线程运行流程：查看execute方法。 
+4. 线程复用机制：runWorker()方法中，有任务时，while循环获取；没有任务时，清除空闲线程。  
+5. 线程池保证核心线程不被销毁？获取任务getTask()方法里allowCoreThreadTimeOut值默认为true，线程take()会一直阻塞，等待任务的添加。   
+
+# 1. ThreadPoolExecutor
 <!--
 https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
 https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
 深入分析线程池的实现原理 
 https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
 -->
-
-# 1. ThreadPoolExecutor
-**<font color = "lime">1. 线程运行流程：查看execute方法。理解构造函数中参数：[阻塞队列](/docs/java/concurrent/BlockingQueue.md)；拒绝策略默认AbortPolicy(拒绝任务，抛异常)，可以选用CallerRunsPolicy(任务队列满时，不进入线程池，由主线程执行)。理解线程池状态标志位的设计。   
-2. 线程复用机制：runWorker()方法中，有任务时，while循环获取；没有任务时，清除空闲线程。  
-3. 线程池保证核心线程不被销毁？获取任务getTask()方法里allowCoreThreadTimeOut值默认为true，线程take()会一直阻塞，等待任务的添加。   
-</font>**
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-15.png)  
 
 ## 1.1. 属性
 
@@ -64,12 +65,12 @@ private static final RuntimePermission shutdownPerm = new RuntimePermission("mod
 private final AccessControlContext acc;
 ```
 
-&emsp; **状态控制：**  
+### 1.1.1. 线程池状态
 <!-- 
 https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
 https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
 -->
-&emsp; 状态控制主要围绕原子整型成员变量ctl：  
+&emsp; 线程池状态控制主要围绕原子整型成员变量ctl：  
 
 ```java
 //AtomicInteger是原子类 ctlOf()返回值为RUNNING
@@ -129,7 +130,7 @@ private void decrementWorkerCount() {
 ```
 
 &emsp; **<font color = "red">线程池状态：</font>**  
-&emsp; 整型包装类型Integer实例的大小是4 byte，一共32 bit，也就是一共有32个位用于存放0或者1。在ThreadPoolExecutor实现中，使用32位的整型包装类型存放工作线程数和线程池状态。其中，低29位用于存放工作线程数，而高3位用于存放线程池状态。**<font color = "red">线程池存在5种状态：</font>**  
+&emsp; 整型包装类型Integer实例的大小是4 byte，一共32 bit，也就是一共有32个位用于存放0或者1。在ThreadPoolExecutor实现中，使用32位的整型包装类型存放工作线程数和线程池状态。其中，低29位用于存放工作线程数，而高3位用于存放线程池状态。 **<font color = "red">线程池存在5种状态：</font>**  
 
 * RUNNING：高3位为111，在这个状态的线程池能判断接收新提交的任务，并且也能处理阻塞队列中的任务。  
 * SHUTDOWN：高3位为000，处于关闭的状态，该线程池不能接收新提交的任务，但是可以处理阻塞队列中已经保存的任务，在线程处于RUNNING状态，调用shutdown()方法能切换为该状态。  
@@ -208,11 +209,9 @@ public ThreadPoolExecutor(int corePoolSize,
 
 
 ## 1.3. 线程池工作流程(execute成员方法的源码)
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-14.png)  
-
 &emsp; 线程池中核心方法调用链路：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-17.png)  
-
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-14.png)  
 
 ### 1.3.1. execute()  
 
