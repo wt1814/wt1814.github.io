@@ -21,13 +21,13 @@
 
 <!-- /TOC -->
 
-# 1. AQS  
 &emsp; <font color = "blue">本节重点概况：</font>  
 1. 同步状态
 2. 同步队列
 3. 独占模式下，获取同步状态、释放同步状态
 4. 共享模式下，获取同步状态、释放同步状态
 
+# 1. AQS  
 ## 1.1. 简介  
 &emsp; AQS是AbstractQueuedSynchronizer的简称，翻译成中文就是抽象队列同步器 ，这三个单词分开来看：  
 

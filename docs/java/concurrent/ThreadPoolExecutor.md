@@ -191,12 +191,13 @@ public ThreadPoolExecutor(int corePoolSize,
 * TimeUnit unit：参数keepAliveTime的单位。有7种取值，在TimeUnit类中有7种静态属性：TimeUnit.DAYS；TimeUnit.HOURS；  
 * BlockingQueue<Runnable\>  workQueue：任务阻塞队列，是java.util.concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样,如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态,直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition(显示锁Lock及Condition的学习与使用)来实现阻塞和唤醒。  
 * ThreadFactory threadFactory：用户设置创建线程的工厂，可以通过这个工厂来创建有业务意义的线程名字。可以对比下自定义的线程工厂和默认的线程工厂创建的名字。   
- 
-|默认产生线程的名字	|自定义线程工厂产生名字|
-|---|---|
-|pool-5-thread-1|testPool-1-thread-1|
-&emsp; 阿里开发手册也有明确说到，需要指定有意义的线程名字。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-18.png)  
+    
+    |默认产生线程的名字	|自定义线程工厂产生名字|
+    |---|---|
+    |pool-5-thread-1|testPool-1-thread-1|
+
+    &emsp; 阿里开发手册也有明确说到，需要指定有意义的线程名字。  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-18.png)  
 
 * RejectedExecutionHandler  handler：<font color = "red">当提交任务数超过maxmumPoolSize+workQueue之和时，任务会交给RejectedExecutionHandler来处理，执行拒绝策略。</font>有四种策略，<font color = "lime">默认是AbortPolicy(丢弃任务并抛出RejectedExecutionException异常)</font>。内置拒绝策略均实现了RejectedExecutionHandler接口，若以下策略仍无法满足实际需要，可以扩展RejectedExecutionHandler接口。  
 
