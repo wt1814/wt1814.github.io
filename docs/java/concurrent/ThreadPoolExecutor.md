@@ -16,7 +16,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "lime">总结：</font>**  
-1. 理解线程池状态标志位的设计。  
+1. 理解线程池状态标志位的设计。在ThreadPoolExecutor实现中，使用32位的整型包装类型存放工作线程数和线程池状态。其中，低29位用于存放工作线程数，而高3位用于存放线程池状态。    
 2. 理解构造函数中参数：[阻塞队列](/docs/java/concurrent/BlockingQueue.md)；拒绝策略默认AbortPolicy(拒绝任务，抛异常)，可以选用CallerRunsPolicy(任务队列满时，不进入线程池，由主线程执行)。  
 3. 线程运行流程：查看execute方法。 
 4. 线程复用机制：runWorker()方法中，有任务时，while循环获取；没有任务时，清除空闲线程。  
