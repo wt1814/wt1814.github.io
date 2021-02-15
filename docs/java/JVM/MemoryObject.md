@@ -131,17 +131,8 @@ TLAB本身占用eEden区空间，在开启TLAB的情况下，虚拟机会为每�
 
 
 ## 1.3. 对象的内存布局  
-<!--
- JOL：分析Java对象的内存布局 
-https://mp.weixin.qq.com/s/wsgxJSpEbY3yrmL9mDC2sw
--->
-&emsp; [Synchronized原理](/docs/java/concurrent/SynPrinciple.md)  
-
 &emsp; 对象的内存布局包括三个部分：对象头，实例数据和对齐填充。
-
-* 对象头：对象头包括两部分信息，第一部分是存储对象自身的运行时数据，如哈希码，GC分代年龄，锁状态标志，线程持有的锁等等。第二部分是类型指针，即对象指向类元数据的指针。  
-* 实例数据：就是数据  
-* 对齐填充：不是必然的存在，就是为了对齐  
+&emsp; 请参考[Synchronized原理](/docs/java/concurrent/SynPrinciple.md)  
 
 ## 1.4. 对象的访问定位  
 &emsp; <font color = "red">对象的访问定位有两种：句柄定位和直接指针。</font>  
