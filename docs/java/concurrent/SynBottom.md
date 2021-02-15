@@ -7,7 +7,7 @@
             - [1.1.2.1. Mark Word](#1121-mark-word)
             - [1.1.2.2. class pointer](#1122-class-pointer)
             - [1.1.2.3. array length](#1123-array-length)
-        - [1.1.3. monitor对象](#113-monitor对象)
+        - [1.1.3. XXXmonitor对象XXX](#113-xxxmonitor对象xxx)
     - [1.2. Synchronized底层实现](#12-synchronized底层实现)
         - [1.2.1. 同步代码块](#121-同步代码块)
         - [1.2.2. 同步方法](#122-同步方法)
@@ -144,7 +144,7 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 #### 1.1.2.3. array length  
 &emsp; 如果对象是一个数组，那么对象头还需要有额外的空间用于存储数组的长度，这部分数据的长度也随着JVM架构的不同而不同：32位的JVM上，长度为32位；64位JVM则为64位。64位JVM如果开启+UseCompressedOops选项，该区域长度也将由64位压缩至32位。  
 
-### 1.1.3. monitor对象  
+### 1.1.3. XXXmonitor对象XXX  
 <!-- 
 https://mp.weixin.qq.com/s/nzEt7_FyOUMPY5wOJ-EeKg
 
