@@ -35,11 +35,11 @@ https://mp.weixin.qq.com/s/IklA1Oil9kRh7Z_HwuAnyg
 &emsp; ThreadLocal，用于线程间的数据隔离，主要解决多线程中数据因并发产生不一致问题；Synchonized，多个线程间通信时能够获得数据共享。它们都用于解决多线程并发访问。  
 &emsp; 但是ThreadLocal与synchronized有本质的区别：  
 
-    * 资源共享：  
-        lock的资源是多个线程共享的，所以访问的时候需要加锁。  
-        ThreadLocal为每一个线程都提供了变量的副本，是一个线程的本地变量，也就意味着这个变量是线程独有的，是不能与其他线程共享的。即隔离了多个线程对数据的数据共享，这样就可以避免资源竞争带来的多线程的问题。  
-    * 性能开销：lock是通过时间换空间的做法；ThreadLocal是典型的通过空间换时间的做法。  
-    * 当然它们的使用场景也是不同的，关键看资源是需要多线程之间共享的还是单线程内部共享的。  
+* 资源共享：  
+    * lock的资源是多个线程共享的，所以访问的时候需要加锁。  
+    * ThreadLocal为每一个线程都提供了变量的副本，是一个线程的本地变量，也就意味着这个变量是线程独有的，是不能与其他线程共享的。即隔离了多个线程对数据的数据共享，这样就可以避免资源竞争带来的多线程的问题。  
+* 性能开销：lock是通过时间换空间的做法；ThreadLocal是典型的通过空间换时间的做法。  
+* 当然它们的使用场景也是不同的，关键看资源是需要多线程之间共享的还是单线程内部共享的。  
 
 ## 1.1. ThreadLocal源码  
 &emsp; ThreadLocal接口方法有4个。这些方法为每一个使用这个变量的线程都存有一份独立的副本，因此get总是返回由当前线程在调用set时设置的最新值。  
@@ -183,10 +183,10 @@ private T setInitialValue() {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-58.png)  
 &emsp; Thread运行时，线程的的一些局部变量和引用使用的内存属于Stack(栈)区，而普通的对象是存储在Heap(堆)区。根据上图，基本分析如下：  
 
-* 线程运行时，我们定义的TheadLocal对象被初始化，存储在Heap，同时线程运行的栈区保存了指向该实例的引用，也就是图中的ThreadLocalRef
-* 当ThreadLocal的set/get被调用时，虚拟机会根据当前线程的引用也就是CurrentThreadRef找到其对应在堆区的实例，然后查看其对用的TheadLocalMap实例是否被创建，如果没有，则创建并初始化。
-* Map实例化之后，也就拿到了该ThreadLocalMap的句柄，然后如果将当前ThreadLocal对象作为key，进行存取操作
-* 图中的虚线，表示key对ThreadLocal实例的引用是个弱引用
+* 线程运行时，我们定义的TheadLocal对象被初始化，存储在Heap，同时线程运行的栈区保存了指向该实例的引用，也就是图中的ThreadLocalRef。
+* 当ThreadLocal的set/get被调用时，虚拟机会根据当前线程的引用也就是。CurrentThreadRef找到其对应在堆区的实例，然后查看其对用的TheadLocalMap实例是否被创建，如果没有，则创建并初始化。
+* Map实例化之后，也就拿到了该ThreadLocalMap的句柄，然后如果将当前ThreadLocal对象作为key，进行存取操作。
+* 图中的虚线，表示key对ThreadLocal实例的引用是个弱引用。
 
 ## 1.3. ThreadLocal可能的内存泄漏  
 <!-- 

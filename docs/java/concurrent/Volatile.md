@@ -8,17 +8,18 @@
         - [1.3.1. 如何正确使用Volatile变量](#131-如何正确使用volatile变量)
         - [1.3.2. 状态标志](#132-状态标志)
         - [1.3.3. 单例模式的实现](#133-单例模式的实现)
-    - [1.4. 推荐使用LongAdder](#14-推荐使用longadder)
+    - [1.4. ~~推荐使用LongAdder~~](#14-推荐使用longadder)
 
 <!-- /TOC -->
 
+&emsp; **<font color = "lime">总结：</font>**  
+&emsp; **<font color = "lime">在Volatile写前插入写-写屏障，在Volatile写后插入写-读屏障；在Volatile读后插入读-读屏障、读-写屏障。</font>**  
 
 # 1. Volatile  
 <!-- 
 ~~
 借鉴
 https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
-~~
 -->
 ## 1.1. Volatile的特性
 &emsp; Volatile的特性：  
@@ -31,24 +32,24 @@ https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 
 &emsp; **<font color = "red">总结：Volatile保证了可见性和有序性，同时可以保证单次读/写的原子性。</font>**  
 
-&emsp; **<font color = "red">synchronized和Volatile比较：</font>**  
+&emsp; **<font color = "red">Synchronized和Volatile比较：</font>**  
 
-* 关键字Volatile是线程同步的轻量级实现，Volatile比synchronized执行成本更低，因为它不会引起线程上下文的切换和调度。  
-* Volatile本质是在告诉jvm当前变量在寄存器(工作内存)中的值是不确定的，需要从主存中读取；synchronized则是锁定当前变量，只有当前线程可以访问该变量，其他线程被阻塞住。  
-* Volatile不会造成线程的阻塞；synchronized可能会造成线程的阻塞。  
-* Volatile仅能实现变量的修改可见性，不能保证原子性；而synchronized则可以保证变量的修改可见性和原子性。synchronized可以保证原子性，也可以间接保证可见性，因为它会将私有内存和公共内存中的数据做同步。  
-* Volatile标记的变量不会被编译器优化；synchronized标记的变量可以被编译器优化。  
-* Volatile仅能使用在变量级别；synchronized则可以使用在变量、方法、和类级别的。  
+* 关键字Volatile是线程同步的轻量级实现，Volatile比Synchronized执行成本更低，因为它不会引起线程上下文的切换和调度。  
+* Volatile本质是在告诉jvm当前变量在寄存器(工作内存)中的值是不确定的，需要从主存中读取；Synchronized则是锁定当前变量，只有当前线程可以访问该变量，其他线程被阻塞住。  
+* Volatile不会造成线程的阻塞；Synchronized可能会造成线程的阻塞。  
+* Volatile仅能实现变量的修改可见性，不能保证原子性；而Synchronized则可以保证变量的修改可见性和原子性。Synchronized可以保证原子性，也可以间接保证可见性，因为它会将私有内存和公共内存中的数据做同步。  
+* Volatile标记的变量不会被编译器优化；Synchronized标记的变量可以被编译器优化。  
+* Volatile仅能使用在变量级别；Synchronized则可以使用在变量、方法、和类级别的。  
 
-&emsp; 再次重申一下，关键字Volatile解决的是变量在多个线程之间的可见性；而synchronized解决的是多个线程之间访问资源的同步性，synchronized可以使多个线程访问同一个资源具有同步性，而且它还具有将线程工作内存中的私有变量与公共内存中的变量同步的功能。  
+&emsp; 再次重申一下，关键字Volatile解决的是变量在多个线程之间的可见性；而Synchronized解决的是多个线程之间访问资源的同步性，Synchronized可以使多个线程访问同一个资源具有同步性，而且它还具有将线程工作内存中的私有变量与公共内存中的变量同步的功能。  
 
 &emsp; **Volatile和atomic原子类区别：**  
 
-* Volatile变量可以确保先行关系，即写操作会发生在后续的读操作之前, 但它并不能保证原子性。例如用Volatile修饰i变量，那么i++ 操作就不是原子性的。  
+* Volatile变量可以确保先行关系，即写操作会发生在后续的读操作之前，但它并不能保证原子性。例如用Volatile修饰i变量，那么i++ 操作就不是原子性的。  
 * atomic原子类提供的atomic方法可以让这种操作具有原子性。如getAndIncrement()方法会原子性的进行增量操作把当前值加一，其它数据类型和引用变量也可以进行相似操作，但是atomic原子类一次只能操作一个共享变量，不能同时操作多个共享变量。  
 
 <!--
-除了在i++操作时使用synchronized关键字实现同步外，还可以使用Atomiclnteger原子类进行实现。
+除了在i++操作时使用Synchronized关键字实现同步外，还可以使用Atomiclnteger原子类进行实现。
 原子操作是不能分割的整体，没有其他线程能够中断或检查正在原子操作中的变量。— 个原子(atomic)类型就是一个原子操作可用的类型，它可以在没有锁的情况下做到线程安全 (thread-safe) 。
 -->
 ## 1.2. Volatile原理  
@@ -56,8 +57,6 @@ https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 如何把java文件生成汇编语言
 https://mp.weixin.qq.com/s/DFCh1XE1hbikjBGEpYJguw
 -->
-&emsp; **<font color = "lime">一句话概述：在Volatile写前插入写-写屏障，在Volatile写后插入写-读屏障；在Volatile读后插入读-读屏障、读-写屏障。</font>**
-
 &emsp; 观察加入Volatile关键字和没有加入Volatile关键字时所生成的汇编代码发现，加入Volatile关键字时，会多出一个lock前缀指令，lock前缀指令实际上相当于一个[内存屏障](/docs/java/concurrent/ConcurrencyProblem.md)。
 
 &emsp; **<font color = "lime">内存屏障的作用：</font>**  
@@ -97,7 +96,7 @@ https://mp.weixin.qq.com/s/DFCh1XE1hbikjBGEpYJguw
 <!-- 
 关键字Volatile主要使用的场合是在多个线程中可以感知实例变量 被更改了，并且可以获得最新的值使用，也就是用多线程读取共享变 量时可以获得最新值使用。
 -->
-&emsp; **<font color = "red">Volatile的使用场景：</font>**关键字Volatile用于多线程环境下的单次操作(单次读或者单次写)。即Volatile主要使用的场合是在多个线程中可以感知实例变量被更改了，并且可以获得最新的值使用，也就是用多线程读取共享变量时可以获得最新值使用。  
+&emsp; **<font color = "red">Volatile的使用场景：</font>** 关键字Volatile用于多线程环境下的单次操作(单次读或者单次写)。即Volatile主要使用的场合是在多个线程中可以感知实例变量被更改了，并且可以获得最新的值使用，也就是用多线程读取共享变量时可以获得最新值使用。  
 
 ### 1.3.2. 状态标志
 &emsp; 也许实现Volatile变量的规范使用仅仅是使用一个布尔状态标志，用于指示发生了一个重要的一次性事件，例如完成初始化或请求停机。  
@@ -116,7 +115,7 @@ public void doWork() {
 }
 ```
 &emsp; 线程1执行doWork()的过程中，可能有另外的线程2调用了shutdown，所以boolean变量必须是Volatile。  
-&emsp; 而如果使用synchronized块编写循环要比使用Volatile状态标志编写麻烦很多。由于Volatile简化了编码，并且状态标志并不依赖于程序内任何其他状态，因此此处非常适合使用Volatile。  
+&emsp; 而如果使用Synchronized块编写循环要比使用Volatile状态标志编写麻烦很多。由于Volatile简化了编码，并且状态标志并不依赖于程序内任何其他状态，因此此处非常适合使用Volatile。  
 &emsp; 这种类型的状态标记的一个公共特性是：通常只有一种状态转换；shutdownRequested标志从false 转换为true，然后程序停止。这种模式可以扩展到来回转换的状态标志，但是只有在转换周期不被察觉的情况下才能扩展(从false到true，再转换到false)。此外，还需要某些原子状态转换机制，例如原子变量。  
 
 ### 1.3.3. 单例模式的实现  
@@ -136,7 +135,7 @@ class VolatileSingleton {
         // 第一重检测
         if(instance == null) {
             // 锁定代码块
-            synchronized (VolatileSingleton.class) {
+            Synchronized (VolatileSingleton.class) {
                 // 第二重检测
                 if(instance == null) {
                     // 实例化对象
@@ -159,13 +158,17 @@ c. instance = memory //设置instance指向刚分配的地址
 上面的代码在编译运行时，可能会出现重排序从a-b-c排序为a-c-b。在多线程的情况下会出现以下问题。当线程A在执行第5行代码时，B线程进来执行到第2行代码。假设此时A执行的过程中发生了指令重排序，即先执行了a和c，没有执行b。那么由于A线程执行了c导致instance指向了一段地址，所以B线程判断instance不为null，会直接跳到第6行并返回一个未初始化的对象。
 -->
 
-## 1.4. 推荐使用LongAdder  
+## 1.4. ~~推荐使用LongAdder~~  
 <!-- 
 阿里为什么推荐使用LongAdder，而不是Volatile？ 
 https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
 -->
-&emsp; 阿里《Java开发手册》嵩山版：    
-&emsp; 【参考】Volatile解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，但是如果多写，同样无法解决线程安全问题。  
-&emsp; 说明：如果是count++ 操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是JDK8，推荐使用 LongAdder对象，比AtomicLong性能更好(减少乐观锁的重试次数)。  
+&emsp; 阿里《Java开发手册》嵩山版：  
 
-&emsp; AtomicInteger在高并发环境下会有多个线程去竞争一个原子变量，而始终只有一个线程能竞争成功，而其他线程会一直通过CAS自旋尝试获取此原子变量，因此会有一定的性能消耗；<font color = "lime">而LongAdder会将这个原子变量分离成一个Cell数组，每个线程通过Hash获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如AtomicInteger。</font>  
+        【参考】Volatile解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，但是如果多写，同样无法解决线程安全问题。  
+        说明：如果是count++ 操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是JDK8，推荐使用LongAdder对象，比AtomicLong性能更好(减少乐观锁的重试次数)。  
+
+&emsp; **Volatile、AtomicInteger、LongAdder：**  
+&emsp; volatile 在多写环境下是非线程安全的。  
+&emsp; AtomicInteger在高并发环境下会有多个线程去竞争一个原子变量，而始终只有一个线程能竞争成功，而其他线程会一直通过CAS自旋尝试获取此原子变量，因此会有一定的性能消耗。  
+&emsp; <font color = "lime">而LongAdder会将这个原子变量分离成一个Cell数组，每个线程通过Hash获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；</font>而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如AtomicInteger。  
