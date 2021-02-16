@@ -189,6 +189,7 @@ private Node addWaiter(Node mode) {
     return node;
 }
 ```
+
 &emsp; B、C线程同时尝试入队列，由于队列尚未初始化，tail==null，故至少会有一个线程会走到enq(node)。假设同时走到了enq(node)里。  
 
 ```java
