@@ -11,9 +11,9 @@
             - [1.2.3.1. 基于语句的复制](#1231-基于语句的复制)
             - [1.2.3.2. 基于行的复制](#1232-基于行的复制)
             - [1.2.3.3. 混合模式复制](#1233-混合模式复制)
-    - [1.3. MySql主从复制的高可用](#13-mysql主从复制的高可用)
+    - [1.3. MySql主从复制的高可用实现](#13-mysql主从复制的高可用实现)
         - [1.3.1. 主从复制拓扑结构](#131-主从复制拓扑结构)
-        - [1.3.2. 高可用实现](#132-高可用实现)
+        - [1.3.2. 高可用实现方案](#132-高可用实现方案)
             - [1.3.2.1. MMM架构](#1321-mmm架构)
             - [1.3.2.2. MHA架构](#1322-mha架构)
     - [1.4. MySql主从复制的问题](#14-mysql主从复制的问题)
@@ -22,7 +22,11 @@
 <!-- /TOC -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-64.png)  
+&emsp; **<font color = "red">总结：</font>**  
+1. 对于每一个主从复制的连接，都有三个线程。拥有多个从库的主库为每一个连接到主库的从库创建一个binlog输出线程，每一个从库都有它自己的I/O线程和SQL线程。  
+2. 混合模式复制根据事件的类型实时的改变binlog的格式。当设置为混合模式时，默认为基于语句的格式，但在特定的情况下它会自动转变为基于行的模式。  
 
+# 1. 主从复制 
 &emsp; **<font color = "red">部分参考《高性能MySql》</font>**
 <!-- 
 大厂如何使用binlog解决多机房同步mysql数据（一）？ 
@@ -32,8 +36,6 @@ https://mp.weixin.qq.com/s/d6cjgj8rxqKTw9AkKkpG9A
 基于binlog的canal组件有哪些使用场景（三）？ 
 https://mp.weixin.qq.com/s/X7-V7EQcnE0cK-NCfdsS1w
 -->
-
-# 1. 主从复制  
 ## 1.1. 主从复制简介  
 &emsp; 什么是主从复制?  
 &emsp; 主从复制，是用来建立一个和主数据库完全一样的数据库环境，称为从数据库；主数据库一般是准实时的业务数据库。
@@ -48,17 +50,14 @@ https://mp.weixin.qq.com/s/X7-V7EQcnE0cK-NCfdsS1w
 
 -->
 ### 1.2.1. 复制流程  
-&emsp; 主从复制具体需要三个线程来操作：  
 
-1. 主库binlog输出线程：每当有从库连接到主库的时候，主库都会创建一个线程然后发送binlog内容到从库。  
-``
-&emsp; 在从库里，当复制开始的时候，从库就会创建两个线程进行处理：
-2. 从库I/O线程：当START SLAVE语句在从库开始执行之后，从库创建一个I/O线程，该线程连接到主库并请求主库发送binlog里面的更新记录到从库上。从库I/O线程读取主库的binlog输出线程发送的更新并拷贝这些更新到本地文件，其中包括relay log文件。  
-3. 从库的SQL线程：从库创建一个SQL线程，这个线程读取从库I/O线程写到relay log的更新事件并执行。  
-
-&emsp; 可以知道，对于每一个主从复制的连接，都有三个线程。拥有多个从库的主库为每一个连接到主库的从库创建一个binlog输出线程，每一个从库都有它自己的I/O线程和SQL线程。  
 &emsp; 主从复制如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-129.png)  
+&emsp; 对于每一个主从复制的连接，都有三个线程。拥有多个从库的主库为每一个连接到主库的从库创建一个binlog输出线程，每一个从库都有它自己的I/O线程和SQL线程。  
+
+* 主库binlog输出线程：每当有从库连接到主库的时候，主库都会创建一个线程然后发送binlog内容到从库。  
+* 从库I/O线程：当START SLAVE语句在从库开始执行之后，从库创建一个I/O线程，该线程连接到主库并请求主库发送binlog里面的更新记录到从库上。从库I/O线程读取主库的binlog输出线程发送的更新并拷贝这些更新到本地文件，其中包括relay log文件。  
+* 从库的SQL线程：从库创建一个SQL线程，这个线程读取从库I/O线程写到relay log的更新事件并执行。  
 
 ----
 &emsp; 原理图2，帮助理解!   
@@ -68,7 +67,6 @@ https://mp.weixin.qq.com/s/X7-V7EQcnE0cK-NCfdsS1w
 &emsp; 步骤三：此时主库创建一个binlog dump thread线程，把binlog的内容发送到从库。  
 &emsp; 步骤四：从库启动之后，创建一个I/O线程，读取主库传过来的binlog内容并写入到relay log。  
 &emsp; 步骤五：还会创建一个SQL线程，从relay log里面读取内容，从Exec_Master_Log_Pos位置开始执行读取到的更新事件，将更新内容写入到slave的db。  
-
 
 ### 1.2.2. 复制方式
 &emsp; 同步方式可以划分为：异步、半同步和同步。  
@@ -113,7 +111,7 @@ https://blog.csdn.net/andong154564667/article/details/82117727
 * 语句中使用了服务器变量。
 * 存储引擎不允许使用基于语句复制，如：MySQL Cluster引擎。
 
-## 1.3. MySql主从复制的高可用  
+## 1.3. MySql主从复制的高可用实现  
 ### 1.3.1. 主从复制拓扑结构 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-11.png)  
 
@@ -136,10 +134,12 @@ https://blog.csdn.net/andong154564667/article/details/82117727
 * 双主+级联  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-12.png)  
 
-### 1.3.2. 高可用实现  
+### 1.3.2. 高可用实现方案  
 <!-- 
+https://blog.csdn.net/yzj5208/article/details/81288436
 https://blog.csdn.net/qq_39720208/article/details/102758662
 https://mp.weixin.qq.com/s/RZ7b8IKC7N3E87DaZhWaVA
+
 -->
 #### 1.3.2.1. MMM架构  
 &emsp; Multi_Master Replication Manager，就是mysql**多主复制管理器的简称，它是由一套perl语言开发的用于管理mysql**主主同步架构的工具集，主要作用是监控和管理mysql主主复制拓扑，并在当前的主服务器失效时，进行主和主备服务器之间的主从切换和故障转移等工作。  
