@@ -13,6 +13,7 @@
         - [1.2.1. 构造方法](#121-构造方法)
         - [1.2.2. 变量和方法](#122-变量和方法)
         - [1.2.3. 回调函数](#123-回调函数)
+    - [1.3. CompletableFuture](#13-completablefuture)
 
 <!-- /TOC -->
 
@@ -236,3 +237,7 @@ public class MyThread3 extends Thread{
     }
 }
 ```
+
+## 1.3. CompletableFuture
+&emsp; [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
+
