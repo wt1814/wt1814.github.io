@@ -3,6 +3,8 @@
 
 Spring中涉及的设计模式总结 
 https://mp.weixin.qq.com/s/ktNs4T_OZ-neWWvtBmC-cA
+Spring 中经典的 9 种设计模式，打死也要记住！ 
+https://mp.weixin.qq.com/s/VzBA7DehOwYUAl7xt8KPAw
 -->
 
 &emsp; 之所以要看Spring源码，是因为Spring占据了Java的半边天。（学了Spring源码，咱能装啊。）  
