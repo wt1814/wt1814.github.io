@@ -182,7 +182,6 @@
 &emsp; [基本查询语句](/docs/SQL/basicSelect.md)  
 &emsp; [连接查询](/docs/SQL/joinSelect.md)  
 &emsp; [行列转换](/docs/SQL/trans.md)  
-
 [MySql函数](/docs/SQL/MySQLFunction.md)  
 [数据库对象](/docs/SQL/DatabaseObject.md)  
 [SQL优化](/docs/SQL/SQLOptimization.md)  
@@ -198,7 +197,13 @@
 &emsp; [分库分表多维度查询](/docs/SQL/subSelect.md)  
 &emsp; [数据库分布式实现](/docs/SQL/subRealize.md)  
 &emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md)  
+[数据库连接池](/docs/SQL/connectionPool.md)  
+&emsp; [HikariCPConnectionPool](/docs/SQL/HikariCP.md)   
+&emsp; &emsp; [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
+&emsp; &emsp; [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
 [MySQL监控](/docs/SQL/MySqlMonitor.md)  
+[数据迁移](/docs/projectImplement/implementation.md)  
+[大数据量操作](/docs/SQL/largeData.md)  
 
 [MySql原理](/docs/SQL/MySqlPrinciple.md)   
 &emsp; [MySql架构](/docs/SQL/Framework.md)   
@@ -216,13 +221,6 @@
 &emsp; [MySql锁](/docs/SQL/lock.md)  
 &emsp; [MySql锁造成的问题](/docs/SQL/LockProblem.md)  
 &emsp; [MySql-MVCC](/docs/SQL/MVCC.md)  
-
-[数据库连接池](/docs/SQL/connectionPool.md)  
-&emsp; [HikariCPConnectionPool](/docs/SQL/HikariCP.md)   
-&emsp; &emsp; [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
-&emsp; &emsp; [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
-[数据迁移](/docs/projectImplement/implementation.md)  
-[大数据量操作](/docs/SQL/largeData.md)  
 
 ## SSM  
 ### Spring  
