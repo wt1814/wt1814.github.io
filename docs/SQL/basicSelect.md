@@ -97,19 +97,23 @@ LIMIT < limit_number >
 * ON 过滤  
     &emsp; 然后对FROM连接的结果进行 ON 筛选，创建VT2，把符合记录的条件存在 VT2 中。  
 
-* JOIN 连接
+* JOIN 连接  
     &emsp; 第三步，如果是 OUTER JOIN(left join、right join) ，那么这一步就将添加外部行，如果是 left join 就把 ON 过滤条件的左表添加进来，如果是 right join ，就把右表添加进来，从而生成新的虚拟表 VT3。  
 
-* WHERE 过滤
+* WHERE 过滤  
     &emsp; 第四步，是执行WHERE过滤器，对上一步生产的虚拟表引用WHERE筛选，生成虚拟表VT4。  
 
     &emsp; **WHERE 和 ON 的区别**  
+
     * 如果有外部列，ON针对过滤的是关联表，主表(保留表)会返回所有的列;
     * 如果没有添加外部列，两者的效果是一样的;
 
+
     &emsp; 应用  
+
     * 对主表的过滤应该使用WHERE;
     * 对于关联表，先条件查询后连接则用ON，先连接后条件查询则用 WHERE;
+
 
     &emsp; where 1=1
     <!-- 
@@ -117,22 +121,23 @@ LIMIT < limit_number >
     https://mp.weixin.qq.com/s/tL54fxgT1tY3JpaSjR--Ow
     -->
 
-* GROUP BY
+* GROUP BY  
     &emsp; 根据 group by 字句中的列，会对 VT4 中的记录进行分组操作，产生虚拟机表 VT5。如果应用了group by，那么后面的所有步骤都只能得到的 VT5 的列或者是聚合函数（count、sum、avg等）。  
 
-* HAVING
+* HAVING  
     &emsp; 紧跟着 GROUP BY 字句后面的是 HAVING，使用 HAVING 过滤，会把符合条件的放在 VT6。  
 
-* SELECT
+* SELECT  
     &emsp; 第七步才会执行 SELECT 语句，将 VT6 中的结果按照 SELECT 进行刷选，生成 VT7。  
 
-* DISTINCT
+* DISTINCT  
     &emsp; 在第八步中，会对 TV7 生成的记录进行去重操作，生成 VT8。事实上如果应用了group by 子句，那么 distinct 是多余的，原因同样在于，分组的时候是将列中唯一的值分成一组，同时只为每一组返回一行记录，那么所以的记录都将是不相同的。  
 
-* ORDER BY
+* ORDER BY  
     &emsp; 应用 order by 子句。按照 order_by_condition 排序 VT8，此时返回的一个游标，而不是虚拟表。sql 是基于集合的理论的，集合不会预先对他的行排序，它只是成员的逻辑集合，成员的顺序是无关紧要的。  
 
 ---
+
 ## 1.2. 基本查询详解  
 &emsp; **《MySQL必知必会》**  
 
