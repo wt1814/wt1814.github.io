@@ -23,6 +23,18 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "red">从jdk1.8开始，ConcurrentHashMap类取消了Segment分段锁，采用Node + CAS + Synchronized来保证并发安全。</font>**  
+&emsp; **<font color = "lime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的 ConcurrentHashMap效率又提升了许多。</font>**  
+&emsp; **<font color = "lime">put()流程：</font>**
+1. 根据 key 计算出 hashcode 。  
+2. 整个过程自旋添加节点。  
+2. 判断是否需要进行初始化数组。  
+3. <font color = "red">为当前 key 定位出Node，如果为空表示此数组下无节点，当前位置可以直接写入数据，利用CAS尝试写入，失败则入下一次循环。</font>  
+4. <font color = "lime">如果当前位置的hashcode == MOVED == -1，表示其他线程插入成功正在进行扩容，则当前线程帮助进行扩容。</font>  
+5. <font color = "red">如果都不满足，则利用synchronized锁写入数据。</font>  
+6. 如果数量大于TREEIFY_THRESHOLD则要转换为红黑树。 
+7. 最后通过addCount来增加ConcurrentHashMap的长度，并且还可能触发扩容操作。  
 
 # 1. ConcurrentHashMap   
 <!-- 
@@ -38,7 +50,7 @@ https://www.sohu.com/a/320372210_120176035
 一文看懂ConcurrentHashMap
 https://segmentfault.com/a/1190000022279729
 -->
-&emsp; **<font color = "red">从 jdk1.8 开始，ConcurrentHashMap类取消了Segment分段锁，采用Node + CAS + Synchronized来保证并发安全。</font>**  
+&emsp; **<font color = "red">从jdk1.8开始，ConcurrentHashMap类取消了Segment分段锁，采用Node + CAS + Synchronized来保证并发安全。</font>**  
 &emsp; **<font color = "lime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的 ConcurrentHashMap效率又提升了许多。</font>**  
 
 ### 1.1.1. 存储结构  

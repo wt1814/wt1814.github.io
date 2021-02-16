@@ -6,6 +6,10 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "red">ReentrantReadWriteLock缺点：只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "lime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
+&emsp; **读写锁导致写线程饥饿的原因是读锁和写锁互斥，StampedLock提供了解决这一问题的方案，乐观读锁 Optimistic reading，即一个线程获取的乐观读锁之后，不会阻塞线程获取写锁。**  
+
 # 1. ReadWriteLock  
 <!-- 
 面试官：读写锁了解吗？它的升降级啥时候用？ 

@@ -15,16 +15,19 @@
 
 <!-- /TOC -->
 
-
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; 阻塞队列：当队列是空的时，从队列中获取元素的操作将会被阻塞，或者当队列是满时，往队列里添加元素的操作会被阻塞。  
+&emsp; <font color = "red">ArrayBlockingQueue与LinkedBlockingQueue：</font>** ArrayBlockingQueue预先分配好一段连续内存，更稳定；LinkedBlockingQueue读写锁分离，吞吐量更大。  
 
 # 1. 阻塞队列  
-&emsp; **<font color = "lime">阻塞队列与普通队列的区别在于，当队列是空的时，从队列中获取元素的操作将会被阻塞，或者当队列是满时，往队列里添加元素的操作会被阻塞。</font>** 试图从空的阻塞队列中获取元素的线程将会被阻塞，直到其他的线程往空的队列插入新的元素。同样，试图往已满的阻塞队列中添加新元素的线程同样也会被阻塞，直到其他的线程使队列重新变得空闲起来，如从队列中移除一个或者多个元素，或者完全清空队列，下图展示了如何通过阻塞队列来合作：  
+&emsp; **<font color = "lime">阻塞队列与普通队列的区别在于，</font>** 试图从空的阻塞队列中获取元素的线程将会被阻塞，直到其他的线程往空的队列插入新的元素。同样，试图往已满的阻塞队列中添加新元素的线程同样也会被阻塞，直到其他的线程使队列重新变得空闲起来，如从队列中移除一个或者多个元素，或者完全清空队列，下图展示了如何通过阻塞队列来合作：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-34.png)  
 <!-- 
 阻塞队列是一个在队列基础上又支持了两个附加操作的队列。  
 2个附加操作：  
 支持阻塞的插入方法：队列满时，队列会阻塞插入元素的线程，直到队列不满。  
 支持阻塞的移除方法：队列空时，获取元素的线程会等待队列变为非空。  
+
 -->
 &emsp; <font color = "lime">阻塞队列常用于生产者和消费者的场景，生产者是向队列里添加元素的线程，消费者是从队列里取元素的线程。</font>简而言之，阻塞队列是生产者用来存放元素、消费者获取元素的容器。  
 
@@ -62,7 +65,8 @@
 * SynchronousQueue：一个不存储元素的阻塞队列。  
 * LinkedTransferQueue：一个由链表结构组成的无界阻塞队列。  
 
-&emsp; <font color = "red">ArrayBlockingQueue预先分配好一段连续内存，更稳定；LinkedBlockingQueue 读写锁分离，吞吐量更大。</font>  
+&emsp; <font color = "red">ArrayBlockingQueue与LinkedBlockingQueue：</font>**  
+&emsp; <font color = "red">ArrayBlockingQueue预先分配好一段连续内存，更稳定；LinkedBlockingQueue读写锁分离，吞吐量更大。</font>  
 1. 队列大小有所不同，ArrayBlockingQueue是有界的初始化必须指定大小，而LinkedBlockingQueue可以是有界的也可以是无界的(Integer.MAX_VALUE)，对于LinkedBlockingQueue，当添加速度大于移除速度时，在无界的情况下，可能会造成内存溢出等问题。
 2. 数据存储容器不同，ArrayBlockingQueue采用的是数组作为数据存储容器，而LinkedBlockingQueue采用的则是以Node节点作为连接对象的链表。
 3. 由于ArrayBlockingQueue采用的是数组的存储容器，因此在插入或删除元素时不会产生或销毁任何额外的对象实例，而LinkedBlockingQueue则会生成一个额外的Node对象。这可能在长时间内需要高效并发地处理大批量数据的时，对于GC可能存在较大影响。
