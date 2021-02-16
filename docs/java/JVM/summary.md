@@ -1,6 +1,8 @@
 <!-- 
 JVM超神之路：年后跳槽需要的JVM知识点，周末给你整理了一份！！！ 
 https://mp.weixin.qq.com/s/-ceS7--mpJyk6ILr7EtMXg
+学习JVM是如何从入门到放弃的？
+https://zhuanlan.zhihu.com/p/39536807
 -->
 
 &emsp; **<font color = "lime">加载：</font>**    
