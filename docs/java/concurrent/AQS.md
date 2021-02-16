@@ -2,39 +2,40 @@
 
 - [1. AQS](#1-aqs)
     - [1.1. 简介](#11-简介)
-    - [1.2. 属性](#12-属性)
-        - [1.2.1. 同步状态state](#121-同步状态state)
-        - [1.2.2. 同步队列](#122-同步队列)
-            - [1.2.2.1. 队列描述](#1221-队列描述)
-            - [1.2.2.2. 入列以及出列动作](#1222-入列以及出列动作)
-                - [1.2.2.2.1. 入列](#12221-入列)
-                - [1.2.2.2.2. 出列](#12222-出列)
-        - [1.2.3. 等待队列](#123-等待队列)
-    - [1.3. 成员方法](#13-成员方法)
-        - [1.3.1. 独占模式](#131-独占模式)
-            - [1.3.1.1. 获取同步状态--acquire()](#1311-获取同步状态--acquire)
-            - [1.3.1.2. 释放同步状态--release()](#1312-释放同步状态--release)
-        - [1.3.2. 共享模式](#132-共享模式)
-            - [1.3.2.1. 获取同步状态--acquireShared-1](#1321-获取同步状态--acquireshared-1)
-            - [1.3.2.2. 释放同步状态--releaseShared](#1322-释放同步状态--releaseshared)
-        - [1.3.3. AQS的模板方法设计模式，自定义同步器](#133-aqs的模板方法设计模式自定义同步器)
+    - [1.2. 类图：](#12-类图)
+    - [1.3. 属性](#13-属性)
+        - [1.3.1. 同步状态state](#131-同步状态state)
+        - [1.3.2. 同步队列](#132-同步队列)
+            - [1.3.2.1. 队列描述](#1321-队列描述)
+            - [1.3.2.2. 入列以及出列动作](#1322-入列以及出列动作)
+                - [1.3.2.2.1. 入列](#13221-入列)
+                - [1.3.2.2.2. 出列](#13222-出列)
+        - [1.3.3. 等待队列](#133-等待队列)
+    - [1.4. 成员方法](#14-成员方法)
+        - [1.4.1. 独占模式](#141-独占模式)
+            - [1.4.1.1. 获取同步状态--acquire()](#1411-获取同步状态--acquire)
+            - [1.4.1.2. 释放同步状态--release()](#1412-释放同步状态--release)
+        - [1.4.2. 共享模式](#142-共享模式)
+            - [1.4.2.1. 获取同步状态--acquireShared-1](#1421-获取同步状态--acquireshared-1)
+            - [1.4.2.2. 释放同步状态--releaseShared](#1422-释放同步状态--releaseshared)
+        - [1.4.3. AQS的模板方法设计模式，自定义同步器](#143-aqs的模板方法设计模式自定义同步器)
 
 <!-- /TOC -->
 
 &emsp; <font color = "blue">本节重点概况：</font>  
-1. 同步状态
-2. 同步队列
+1. 同步状态，通过state控制同步状态
+2. 同步队列，双向链表，每个节点代表一个线程，节点有5个状态。入列采用CAS算法设置尾节点+死循环自旋。  
 3. 独占模式下，获取同步状态、释放同步状态
 4. 共享模式下，获取同步状态、释放同步状态
 
 # 1. AQS  
-## 1.1. 简介  
 &emsp; AQS是AbstractQueuedSynchronizer的简称，翻译成中文就是抽象队列同步器 ，这三个单词分开来看：  
 
 * Abstract (抽象)：AQS 是一个抽象类，只实现一些主要的逻辑，有些方法推迟到子类实现；
 * Queued (队列)：AQS 是用先进先出队列来存储数据的；
 * Synchronizer (同步)：即AQS实现同步功能；
 
+## 1.1. 简介  
 &emsp; **<font color = "red">AQS是JUC并发包中的核心基础组件。它是构建锁或者其他同步组件(如ReentrantLock、ReentrantReadWriteLock、Semaphore等)的基础框架。</font>**  
 1. **<font color = "lime">内部实现的关键是：先进先出的队列、state同步状态</font>**  
 2. **<font color = "lime">拥有两种线程模式：独占模式、共享模式。</font>**  
@@ -43,15 +44,15 @@
         * 非公平锁：当线程要获取锁时，无视队列顺序直接去抢锁，谁抢到就是谁的。    
     * 共享式：可以多个线程同时获取到锁，如：Semaphore/CountDownLatch。   
 
-&emsp; 类图：  
+## 1.2. 类图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-14.png)   
 
-## 1.2. 属性  
+## 1.3. 属性  
 &emsp; AQS核心思想是，<font color = "red">如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。</font><font color = "lime">如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制。</font> 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-2.png)   
 &emsp; <font color = "red">AQS使用一个int state成员变量来表示同步状态，通过内置的FIFO队列来完成获取资源线程的排队工作，即将暂时获取不到锁的线程加入到队列中。AQS使用CAS对该同步状态进行原子操作实现对其值的修改。</font>  
 
-### 1.2.1. 同步状态state  
+### 1.3.1. 同步状态state  
 
 ```java
 //AQS使用一个int类型的成员变量state来表示同步状态，是由volatile修饰的。当state>0时表示已经获取了锁，当state = 0时表示释放了锁。
@@ -80,10 +81,10 @@ protected final boolean compareAndSetState(int expect, int update) {
 &emsp; <font color = "red">在独占模式下，可以把state的初始值设置成0，每当某个线程要进行某项独占操作前，都需要判断state的值是不是0，如果不是0的话意味着别的线程已经进入该操作，则本线程需要阻塞等待；如果是0的话就把state的值设置成1，自己进入该操作。这个先判断再设置的过程可以通过CAS操作保证原子性，把这个过程称为尝试获取同步状态。如果一个线程获取同步状态成功了，那么在另一个线程尝试获取同步状态的时候发现state的值已经是1了就一直阻塞等待，直到获取同步状态成功的线程执行完了需要同步的操作后释放同步状态，也就是把state的值设置为0，并通知后续等待的线程。ReentrantLock 允许重入，所以同一个线程多次获得同步锁的时候，state 会递增，比如重入 5 次，那么 state=5。而在释放锁的时候，同样需要释放5次直到state=0其他线程才有资格获得锁。</font>  
 &emsp; 在共享模式下的道理也差不多，比如说某项操作允许10个线程同时进行，超过这个数量的线程就需要阻塞等待。那么就可以把state的初始值设置为10，一个线程尝试获取同步状态的意思就是先判断state的值是否大于0，如果不大于0的话意味着当前已经有10个线程在同时执行该操作，本线程需要阻塞等待；如果state的值大于0，那么可以把state的值减1后进入该操作，每当一个线程完成操作的时候需要释放同步状态，也就是把state的值加1，并通知后续等待的线程。  
 
-### 1.2.2. 同步队列 
+### 1.3.2. 同步队列 
 &emsp; **<font color = "lime">一句话概述：双向链表，每个节点代表一个线程，节点有5个状态。入列采用CAS算法设置尾节点+死循环自旋。</font>**
 
-#### 1.2.2.1. 队列描述  
+#### 1.3.2.1. 队列描述  
 &emsp; <font color = "red">AQS队列在内部维护了一个先进先出FIFO的双向链表，</font>在双向链表中，每个节点都有两个指针，分别指向直接前驱节点和直接后继节点。使用双向链表的优点之一，就是从任意一个节点开始都很容易访问它的前驱节点和后继节点。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-18.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-33.png)  
@@ -218,10 +219,10 @@ static final class Node {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-17.png)  
 &emsp; 注意，负值表示结点处于有效等待状态，而正值表示结点已被取消。所以源码中很多地方用>0、<0来判断结点的状态是否正常。  
 
-#### 1.2.2.2. 入列以及出列动作
+#### 1.3.2.2. 入列以及出列动作
 &emsp; 每个Node是一个线程封装。<font color = "red">在AQS中，当线程在竞争锁失败之后，会封装成Node加入到AQS队列尾部，首节点是获取同步状态成功的节点。</font>  
 
-##### 1.2.2.2.1. 入列  
+##### 1.3.2.2.1. 入列  
 &emsp; 未获取到锁的线程会创建节点，线程安全(CAS算法设置尾节点+死循环自旋)的加入队列尾部。   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-19.png)  
 &emsp; CLH队列入列就是tail指向新节点、新节点的prev指向当前最后的节点，当前最后一个节点的next指向当前节点。addWaiter方法如下：  
@@ -275,7 +276,7 @@ private Node enq(final Node node) {
 }
 ```
 
-##### 1.2.2.2.2. 出列  
+##### 1.3.2.2.2. 出列  
 &emsp; 首节点的线程释放同步状态后，将会唤醒它的后继节点(next)，而后继节点将会在获取同步状态成功时将自己设置为首节点。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-24.png)  
 
@@ -303,7 +304,7 @@ private void unparkSuccessor(Node node) {
 }
 ```
 
-### 1.2.3. 等待队列
+### 1.3.3. 等待队列
 <!-- 
 https://mp.weixin.qq.com/s/WEV7fqPnyurDtSqMF0S2Wg
 -->
@@ -326,7 +327,7 @@ ConditionObject实现了Condition接口，给AQS提供条件变量的支持 。
 
 -->
 
-## 1.3. 成员方法  
+## 1.4. 成员方法  
 <!--
 https://www.cnblogs.com/chengxiao/archive/2017/07/24/7141160.html
 https://www.cnblogs.com/waterystone/p/4920797.html
@@ -337,8 +338,8 @@ https://www.cnblogs.com/waterystone/p/4920797.html
 * 独占式：有且只有一个线程能获取到锁，如：ReentrantLock。  
 * 共享式：可以多个线程同时获取到锁，如：CountDownLatch。  
 
-### 1.3.1. 独占模式
-#### 1.3.1.1. 获取同步状态--acquire()
+### 1.4.1. 独占模式
+#### 1.4.1.1. 获取同步状态--acquire()
 &emsp; **<font color = "red">每个节点自旋观察自己的前一节点是不是Header节点，如果是，就去尝试获取锁。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-20.png)  
 &emsp; acquire(int arg)是独占模式下线程获取同步状态的顶层入口。  
@@ -396,7 +397,7 @@ final boolean acquireQueued(final Node node, int arg) {
 }
 ```
 
-#### 1.3.1.2. 释放同步状态--release()
+#### 1.4.1.2. 释放同步状态--release()
 &emsp; release(int)是独占模式下线程释放共享资源的顶层入口。它会释放指定量的资源，如果彻底释放了(即state=0)，它会唤醒等待队列里的其他线程来获取资源。这也正是unlock()的语义，当然不仅仅只限于unlock()。  
 
 &emsp; 源码分析：  
@@ -434,15 +435,15 @@ private void unparkSuccessor(Node node) {
 ```
 &emsp; release的同步状态相对简单，需要找到头结点的后继结点进行唤醒，若后继结点为空或处于CANCEL状态，从后向前遍历找寻一个正常的结点，唤醒其对应线程。  
 
-### 1.3.2. 共享模式
+### 1.4.2. 共享模式
 &emsp; 共享式与独占式的区别：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-22.png)  
 
-#### 1.3.2.1. 获取同步状态--acquireShared-1　　
+#### 1.4.2.1. 获取同步状态--acquireShared-1　　
 &emsp; 共享锁获取流程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-23.png)  
 
-#### 1.3.2.2. 释放同步状态--releaseShared  
+#### 1.4.2.2. 释放同步状态--releaseShared  
 &emsp; releaseShared()是共享模式下线程释放共享资源的顶层入口。它会释放指定量的资源，如果成功释放且允许唤醒等待线程，它会唤醒等待队列里的其他线程来获取资源。  
 
 ```java
@@ -479,7 +480,7 @@ private void doReleaseShared() {
 }
 ```
 
-### 1.3.3. AQS的模板方法设计模式，自定义同步器  
+### 1.4.3. AQS的模板方法设计模式，自定义同步器  
 &emsp; AQS的设计是基于模板方法模式的，如果需要自定义同步器一般的方式是这样(模板方法模式很经典的一个应用)：  
 1. 使用者继承AbstractQueuedSynchronizer并重写指定的方法。  
 2. 将AQS组合在自定义同步组件的实现中，并调用其模板方法，而这些模板方法会调用使用者重写的方法。  

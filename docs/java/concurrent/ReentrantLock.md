@@ -9,14 +9,6 @@
             - [1.1.1.3. 成员方法](#1113-成员方法)
             - [1.1.1.4. 非公平锁NonfairSync](#1114-非公平锁nonfairsync)
                 - [1.1.1.4.1. 获取锁lock()](#11141-获取锁lock)
-                - [1.1.1.4.2. 释放锁unlock()](#11142-释放锁unlock)
-            - [1.1.1.5. 公平锁FairSync](#1115-公平锁fairsync)
-        - [1.1.2. ReentrantLock与synchronized比较](#112-reentrantlock与synchronized比较)
-        - [1.1.3. 使用示例](#113-使用示例)
-    - [1.2. Condition，等待/通知机制](#12-condition等待通知机制)
-        - [1.2.1. Condition类提供的方法](#121-condition类提供的方法)
-        - [1.2.2. Condition与wait/notify](#122-condition与waitnotify)
-        - [1.2.3. 使用示例](#123-使用示例)
 
 <!-- /TOC -->
 
@@ -170,56 +162,56 @@ final boolean nonfairTryAcquire(int acquires) {
 <!-- 非公平锁tryAcquire的流程是：检查state字段，若为0，表示锁未被占用，那么尝试占用，若不为0，检查当前锁是否被自己占用，若被自己占用，则更新state字段，表示重入锁的次数。如果以上两点都没有成功，则获取锁失败，返回false。-->
 
 2. tryAcquire一旦返回false，就会则进入acquireQueued流程，也就是基于CLH队列的抢占模式：  
-    3. 第二步，入队：由于上文中提到线程A已经占用了锁，所以B和C执行tryAcquire失败，并且入等待队列。如果线程A拿着锁死死不放，那么B和C就会被挂起。    
-    ```java
-    /**
-    * 将新节点和当前线程关联并且入队列
-    * @param mode 独占/共享
-    * @return 新节点
-    */
-    private Node addWaiter(Node mode) {
-        //初始化节点，设置关联线程和模式(独占 or 共享)
-        Node node = new Node(Thread.currentThread(), mode);
-        // 获取尾节点引用
-        Node pred = tail;
-        // 尾节点不为空，说明队列已经初始化过
-        if (pred != null) {
-            node.prev = pred;
-            // 设置新节点为尾节点
-            if (compareAndSetTail(pred, node)) {
-                pred.next = node;
-                return node;
-            }
+3. 第二步，入队：由于上文中提到线程A已经占用了锁，所以B和C执行tryAcquire失败，并且入等待队列。如果线程A拿着锁死死不放，那么B和C就会被挂起。  
+```java
+/**
+* 将新节点和当前线程关联并且入队列
+* @param mode 独占/共享
+* @return 新节点
+*/
+private Node addWaiter(Node mode) {
+    //初始化节点，设置关联线程和模式(独占 or 共享)
+    Node node = new Node(Thread.currentThread(), mode);
+    // 获取尾节点引用
+    Node pred = tail;
+    // 尾节点不为空，说明队列已经初始化过
+    if (pred != null) {
+        node.prev = pred;
+        // 设置新节点为尾节点
+        if (compareAndSetTail(pred, node)) {
+            pred.next = node;
+            return node;
         }
-        // 尾节点为空,说明队列还未初始化，需要初始化head节点并入队新节点
-        enq(node);
-        return node;
     }
-    ```
-    &emsp; B、C线程同时尝试入队列，由于队列尚未初始化，tail==null，故至少会有一个线程会走到enq(node)。假设同时走到了enq(node)里。  
+    // 尾节点为空,说明队列还未初始化，需要初始化head节点并入队新节点
+    enq(node);
+    return node;
+}
+```
+&emsp; B、C线程同时尝试入队列，由于队列尚未初始化，tail==null，故至少会有一个线程会走到enq(node)。假设同时走到了enq(node)里。  
 
-    ```java
-    /**
-    * 初始化队列并且入队新节点
-    */
-    private Node enq(final Node node) {
-        //开始自旋
-        for (;;) {
-            Node t = tail;
-            if (t == null) { // Must initialize
-                // 如果tail为空,则新建一个head节点,并且tail指向head
-                if (compareAndSetHead(new Node()))
-                    tail = head;
-            } else {
-                node.prev = t;
-                // tail不为空,将新节点入队
-                if (compareAndSetTail(t, node)) {
-                    t.next = node;
-                    return t;
-                }
+```java
+/**
+* 初始化队列并且入队新节点
+*/
+private Node enq(final Node node) {
+    //开始自旋
+    for (;;) {
+        Node t = tail;
+        if (t == null) { // Must initialize
+            // 如果tail为空,则新建一个head节点,并且tail指向head
+            if (compareAndSetHead(new Node()))
+                tail = head;
+        } else {
+            node.prev = t;
+            // tail不为空,将新节点入队
+            if (compareAndSetTail(t, node)) {
+                t.next = node;
+                return t;
             }
         }
     }
+}
     ```
     &emsp; 这里体现了经典的自旋+CAS组合来实现非阻塞的原子操作。由于compareAndSetHead的实现使用了unsafe类提供的CAS操作，所以只有一个线程会创建head节点成功。假设线程B成功，之后B、C开始第二轮循环，此时tail已经不为空，两个线程都走到else里面。假设B线程compareAndSetTail成功，那么B就可以返回了，C由于入队失败还需要第三轮循环。最终所有线程都可以成功入队。  
     &emsp; 当B、C入等待队列后，此时AQS队列如下：  

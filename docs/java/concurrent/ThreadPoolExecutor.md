@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [1. ThreadPoolExecutor](#1-threadpoolexecutor)
+- [1. XXXThreadPoolExecutor](#1-xxxthreadpoolexecutor)
     - [1.1. 属性](#11-属性)
         - [1.1.1. 线程池状态](#111-线程池状态)
     - [1.2. 构造函数](#12-构造函数)
@@ -22,12 +22,14 @@
 4. 线程复用机制：runWorker()方法中，有任务时，while循环获取；没有任务时，清除空闲线程。  
 5. 线程池保证核心线程不被销毁？获取任务getTask()方法里allowCoreThreadTimeOut值默认为true，线程take()会一直阻塞，等待任务的添加。   
 
-# 1. ThreadPoolExecutor
+# 1. XXXThreadPoolExecutor
 <!--
 https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
 https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
 深入分析线程池的实现原理 
 https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
+知道线程池中线程复用原理吗？
+https://mp.weixin.qq.com/s/qTMJAP45ON91zjWFLwms5g
 -->
 
 ## 1.1. 属性
