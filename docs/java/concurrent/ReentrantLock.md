@@ -172,31 +172,31 @@ final boolean nonfairTryAcquire(int acquires) {
 2. tryAcquire一旦返回false，就会则进入acquireQueued流程，也就是基于CLH队列的抢占模式：  
 3. 第二步，入队：由于上文中提到线程A已经占用了锁，所以B和C执行tryAcquire失败，并且入等待队列。如果线程A拿着锁死死不放，那么B和C就会被挂起。
   
-```java
-/**
-* 将新节点和当前线程关联并且入队列
-* @param mode 独占/共享
-* @return 新节点
-*/
-private Node addWaiter(Node mode) {
-    //初始化节点，设置关联线程和模式(独占 or 共享)
-    Node node = new Node(Thread.currentThread(), mode);
-    // 获取尾节点引用
-    Node pred = tail;
-    // 尾节点不为空，说明队列已经初始化过
-    if (pred != null) {
-        node.prev = pred;
-        // 设置新节点为尾节点
-        if (compareAndSetTail(pred, node)) {
-            pred.next = node;
-            return node;
+    ```java
+    /**
+    * 将新节点和当前线程关联并且入队列
+    * @param mode 独占/共享
+    * @return 新节点
+    */
+    private Node addWaiter(Node mode) {
+        //初始化节点，设置关联线程和模式(独占 or 共享)
+        Node node = new Node(Thread.currentThread(), mode);
+        // 获取尾节点引用
+        Node pred = tail;
+        // 尾节点不为空，说明队列已经初始化过
+        if (pred != null) {
+            node.prev = pred;
+            // 设置新节点为尾节点
+            if (compareAndSetTail(pred, node)) {
+                pred.next = node;
+                return node;
+            }
         }
+        // 尾节点为空,说明队列还未初始化，需要初始化head节点并入队新节点
+        enq(node);
+        return node;
     }
-    // 尾节点为空,说明队列还未初始化，需要初始化head节点并入队新节点
-    enq(node);
-    return node;
-}
-```
+    ```
 
 &emsp; B、C线程同时尝试入队列，由于队列尚未初始化，tail==null，故至少会有一个线程会走到enq(node)。假设同时走到了enq(node)里。  
 
