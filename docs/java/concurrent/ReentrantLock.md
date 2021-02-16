@@ -162,7 +162,8 @@ final boolean nonfairTryAcquire(int acquires) {
 <!-- 非公平锁tryAcquire的流程是：检查state字段，若为0，表示锁未被占用，那么尝试占用，若不为0，检查当前锁是否被自己占用，若被自己占用，则更新state字段，表示重入锁的次数。如果以上两点都没有成功，则获取锁失败，返回false。-->
 
 2. tryAcquire一旦返回false，就会则进入acquireQueued流程，也就是基于CLH队列的抢占模式：  
-3. 第二步，入队：由于上文中提到线程A已经占用了锁，所以B和C执行tryAcquire失败，并且入等待队列。如果线程A拿着锁死死不放，那么B和C就会被挂起。  
+3. 第二步，入队：由于上文中提到线程A已经占用了锁，所以B和C执行tryAcquire失败，并且入等待队列。如果线程A拿着锁死死不放，那么B和C就会被挂起。
+  
 ```java
 /**
 * 将新节点和当前线程关联并且入队列
