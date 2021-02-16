@@ -11,9 +11,6 @@
 
 # 1. 行列转换  
 <!-- 
-
- 神坑！MySQL中order by与limit不要一起用！ 
- https://mp.weixin.qq.com/s/93rBBFlfTx58OjD5S_OlAw
 -->
 
 ## 1.1. 行列转换  

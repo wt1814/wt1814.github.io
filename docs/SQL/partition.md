@@ -146,4 +146,3 @@ alter table article_key coalesce partition 6
 
 ## 1.4. 分区表使用  
 &emsp; 在where条件带入分区键。  
-

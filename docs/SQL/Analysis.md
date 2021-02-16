@@ -14,8 +14,9 @@
 
 <!-- /TOC -->
 
-# 1. EXPLAIN、PROCEDURE ANALYSE(分析)  
 &emsp; **<font color = "lime">explain：type单表查询类型要达到range级别（只检索给定范围的行，使用一个索引来选择行，非全表扫描），extra包含不在其他属性显示，但是又非常重要的信息，常见的不太友好的值，如下：Using filesort，Using temporary。其他重要字段：key、key_len</font>**  
+
+# 1. EXPLAIN、PROCEDURE ANALYSE(分析)  
 
 ```meimaid
 graph LR
@@ -46,7 +47,6 @@ EXPLAIN SELECT column_name FROM table_name;
 * key_len列，索引长度  
 * rows列，扫描行数。该值是个预估值  
 * extra列，详细说明。注意常见的不太友好的值有：Using filesort, Using temporary  
-
 
 |列名|用途|
 |---|---|
@@ -94,8 +94,8 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
     * DERIVED：导出表的SELECT(FROM子句的子查询)；在FROM列表中包含的子查询被标记为DERIVED（衍生）MySQL会递归执行这些子查询，把结果放在临时表里。  
     * UNION：UNION中的第二个或后面的SELECT语句；若第二个SELECT出现在UNION之后，则被标记为UNION；若UNION包含在FROM子句的子查询中，外层SELECT将被标记为DERIVED  
     * UNION RESULT：UNION的结果；  
-    * DEPENDENT SUBQUERY：子查询中的第一个 SELECT, 取决于外面的查询. 即子查询依赖于外层查询的结果. 出现该值的时候一定要特别注意，可能需要使用join的方式优化子查询。  
-    * DEPENDENT UNION：UNION中的第二个或后面的SELECT语句,取决于外面的查询；  
+    * DEPENDENT SUBQUERY：子查询中的第一个 SELECT，取决于外面的查询. 即子查询依赖于外层查询的结果. 出现该值的时候一定要特别注意，可能需要使用join的方式优化子查询。  
+    * DEPENDENT UNION：UNION中的第二个或后面的SELECT语句，取决于外面的查询；  
 
 * table：（查询涉及的表或衍生表）  
 &emsp; 其值为表名或者表的别名，表示访问哪一个表。  
@@ -106,39 +106,39 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
 * **<font color = "red">type：联接类型，表示访问表的方式。</font>**  
 &emsp; 从最好到最差的结果依次如下:system > const > eq_ref > ref > range > index > ALL。<font color = "red">一个好的SQL语句至少要达到range级别。杜绝出现all级别。</font>下面给出各种联接类型，按照从最佳类型到最坏类型进行排序：  
     * System：表仅有一行(=系统表)。这是const联接类型的一个特例。  
-    * Const：表最多有一个匹配行,它将在查询开始时被读取。因为仅有一行,在这行的列值可被优化器剩余部分认为是常数。const表很快,因为它们只读取一次!  
-    * eq_ref：对于每个来自于前面的表的行组合,从该表中读取一行。这可能是最好的联接类型,除了const类型。  
-    * Ref：对于每个来自于前面的表的行组合,所有有匹配索引值的行将从这张表中读取。  
-    * ref_or_null：该联接类型如同ref,但是添加了MySQL可以专门搜索包含NULL值的行。  
+    * Const：表最多有一个匹配行，它将在查询开始时被读取。因为仅有一行，在这行的列值可被优化器剩余部分认为是常数。const表很快，因为它们只读取一次!  
+    * eq_ref：对于每个来自于前面的表的行组合，从该表中读取一行。这可能是最好的联接类型，除了const类型。  
+    * Ref：对于每个来自于前面的表的行组合，所有有匹配索引值的行将从这张表中读取。  
+    * ref_or_null：该联接类型如同ref，但是添加了MySQL可以专门搜索包含NULL值的行。  
     * index_merge：该联接类型表示使用了索引合并优化方法。  
     * unique_subquery：该类型替换了下面形式的IN子查询的ref: value IN (SELECT primary_key FROM single_table WHERE some_expr) unique_subquery是一个索引查找函数,可以完全替换子查询,效率更高。  
-    * index_subquery：该联接类型类似于unique_subquery。可以替换IN子查询,但只适合下列形式的子查询中的非唯一索引: value IN (SELECT key_column FROM single_table WHERE some_expr)  
-    * <font color = "red">Range：只检索给定范围的行,使用一个索引来选择行。</font>  
-    * Index：该联接类型与ALL相同,除了只有索引树被扫描。这通常比ALL快,因为索引文件通常比数据文件小。  
-    * ALL：对于每个来自于先前的表的行组合,进行完整的表扫描。  
+    * index_subquery：该联接类型类似于unique_subquery。可以替换IN子查询，但只适合下列形式的子查询中的非唯一索引: value IN (SELECT key_column FROM single_table WHERE some_expr)  
+    * <font color = "red">Range：只检索给定范围的行，使用一个索引来选择行。</font>  
+    * Index：该联接类型与ALL相同，除了只有索引树被扫描。这通常比ALL快，因为索引文件通常比数据文件小。  
+    * ALL：对于每个来自于先前的表的行组合，进行完整的表扫描。  
 * possible_keys：指出MySQL能使用哪个索引在该表中找到行。  
-* **<font color = "red">key：显示MySQL实际决定使用的键(索引)。如果没有选择索引,键是NULL。</font><font color = "lime">很少的情况下，MYSQL会选择优化不足的索引。这种情况下，可以在SELECT语句中使用USE INDEX（indexname）来强制使用一个索引或者用IGNORE INDEX（indexname）来强制MYSQL忽略索引。</font>**  
-* **<font color = "red">key_len：索引长度，显示MySQL决定使用的键长度。如果键是NULL,则长度为NULL。</font>**  
+* **<font color = "red">key：显示MySQL实际决定使用的键(索引)。如果没有选择索引，键是NULL。</font><font color = "lime">很少的情况下，MYSQL会选择优化不足的索引。这种情况下，可以在SELECT语句中使用USE INDEX（indexname）来强制使用一个索引或者用IGNORE INDEX（indexname）来强制MYSQL忽略索引。</font>**  
+* **<font color = "red">key_len：索引长度，显示MySQL决定使用的键长度。如果键是NULL，则长度为NULL。</font>**  
 * ref：显示使用哪个列或常数与key一起从表中选择行。  
 * rows：扫描行数。该值是个预估值。显示MySQL认为它执行查询时必须检查的行数。多行之间的数据相乘可以估算要处理的行数。  
 * filtered：显示了通过条件过滤出的行数的百分比估计值。  
 * **<font color = "red">extra：该列包含MySQL解决查询的详细信息。注意，常见的不太友好的值，如下：Using filesort，Using temporary，意思MYSQL根本不能使用索引，常出现在使用order by。</font>**  
-    * Distinct：MySQL发现第1个匹配行后,停止为当前的行组合搜索更多的行。  
-    * Not exists：MySQL能够对查询进行LEFT JOIN优化,发现1个匹配LEFT JOIN标准的行后,不再为前面的的行组合在该表内检查更多的行。  
-    * range checked for each record (index map: #):MySQL没有发现好的可以使用的索引,但发现如果来自前面的表的列值已知,可能部分索引可以使用。  
-    * Using filesort：额外排序。MySQL需要额外的一次传递,以找出如何按排序顺序检索行。  
+    * Distinct：MySQL发现第1个匹配行后，停止为当前的行组合搜索更多的行。  
+    * Not exists：MySQL能够对查询进行LEFT JOIN优化，发现1个匹配LEFT JOIN标准的行后，不再为前面的的行组合在该表内检查更多的行。  
+    * range checked for each record (index map: #):MySQL没有发现好的可以使用的索引，但发现如果来自前面的表的列值已知，可能部分索引可以使用。  
+    * Using filesort：额外排序。MySQL需要额外的一次传递，以找出如何按排序顺序检索行。  
     * Using index:从只使用索引树中的信息而不需要进一步搜索读取实际的行来检索表中的列信息。  
     * Using temporary：使用了临时表。为了解决查询,MySQL需要创建一个临时表来容纳结果。这通常发生在对不同的列集进行ORDER BY上，而不是GROUP BY上。  
     * Using where:WHERE 子句用于限制哪一个行匹配下一个表或发送到客户。  
     * Using sort_union(...), Using union(...), Using intersect(...):这些函数说明如何为index_merge联接类型合并索引扫描。  
-    * Using index for group-by:类似于访问表的Using index方式，Using index for group-by表示MySQL发现了一个索引,可以用来查询GROUP BY或DISTINCT查询的所有列,而不要额外搜索硬盘访问实际的表。  
+    * Using index for group-by:类似于访问表的Using index方式，Using index for group-by表示MySQL发现了一个索引，可以用来查询GROUP BY或DISTINCT查询的所有列,而不要额外搜索硬盘访问实际的表。  
 
 ### 1.1.1. explain extended
 &emsp; <font color = "red">用explain extended查看执行计划会比explain多一列 filtered。filtered列给出了一个百分比的值，这个百分比值和rows列的值一起使用，可以估计出那些将要和explain中的前一个表进行连接的行的数目。前一个表就是指explain 的 id列的值比当前表的id小的表。</font>  
 
 ## 1.2. show warnings
 &emsp; SHOW WARNINGS显示有关由于当前会话中执行最新的非诊断性语句而导致的条件的信息。  
-&emsp; 使用mysql show warnings 避免一些隐式转换。  
+&emsp; 使用mysql show warnings避免一些隐式转换。  
 <!-- 
 explain extended + show warnings
 阿里的程序员也不过如此，竟被一个简单的SQL查询难住 
@@ -146,7 +146,7 @@ https://mp.weixin.qq.com/s/6jjLv2SIBmh2kjHunxJVYA
 -->
 
 ## 1.3. ~~proceduer analyse()取得建议~~  
-&emsp; PROCEDURE ANALYSE() ，在优化表结构时可以辅助参考分析语句。  
+&emsp; PROCEDURE ANALYSE()，在优化表结构时可以辅助参考分析语句。  
 &emsp; 使用proceduer analyse()对当前已有应用的表类型的判断，该函数可以对数据表中的列的数据类型（字段类型）提出优化建议（Optimal_fieldtype）。  
 
 ```sql
@@ -154,7 +154,7 @@ SELECT column_name FROM table_name PROCEDURE ANALYSE();
 ```
 
 ## 1.4. profiling  
-&emsp; 使用 profiling 命令可以了解 SQL 语句消耗资源的详细信息（每个执行步骤的开销）。  
+&emsp; 使用profiling命令可以了解SQL语句消耗资源的详细信息（每个执行步骤的开销）。  
 
 ### 1.4.1. 查看profile开启情况  
 ```
@@ -247,7 +247,7 @@ mysql> show profile for query 9;
 +----------------------+----------+
 15 rows in set, 1 warning (0.00 sec)
 ```
-&emsp; 每行都是状态变化的过程以及它们持续的时间。Status 这一列和 show processlist 的 State 是一致的。因此，需要优化的注意点与上文描述的一样。  
+&emsp; 每行都是状态变化的过程以及它们持续的时间。Status这一列和show processlist的 State是一致的。因此，需要优化的注意点与上文描述的一样。  
 
 ### 1.4.5. 获取CPU、Block IO等信息  
 

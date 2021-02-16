@@ -102,7 +102,7 @@ https://mp.weixin.qq.com/s/Mvl3OURNurdrJ2o9OyM6KQ
 <br/>   
 * 根据需要建立多列联合索引：  
     &emsp; **联合索引最左前缀匹配原则：**  
-    &emsp; mysql查询时索引会一直向右匹配，直到遇到范围查询(>、<、between、like)就停止匹配。mysql从左到右的使用索引中的字段，一个查询可以只使用索引中的一部份，但只能是最左侧部分。例如索引是key index(a,b,c)。可以支持 a|a,b|a,b,c 3种组合进行查找，但不支持b,c进行查找。当最左侧字段是常量引用时，索引就十分有效。  
+    &emsp; mysql查询时索引会一直向右匹配，直到遇到范围查询(>、<、between、like)就停止匹配。mysql从左到右的使用索引中的字段，一个查询可以只使用索引中的一部份，但只能是最左侧部分。例如索引是key index(a,b,c)。可以支持 a|a,b|a,b,c 3种组合进行查找，但不支持b，c进行查找。当最左侧字段是常量引用时，索引就十分有效。  
 
     &emsp; **<font color = "red">WHERE+ 多个字段ORDER BY，满足最左前缀。</font>**  
     &emsp; SELECT * FROM [table] WHERE uid=1 ORDER x,y LIMIT 0,10;  
@@ -162,10 +162,10 @@ SELECT * FROM people WHERE zipcode='95054' AND lastname LIKE '%etrunia%' AND add
 &emsp; 逻辑运算（NOT、OR）；比较运算（=、<>、!=、>、>=、!>、<、<=、!<）、all，some，many关键字；范围查询in，exist关键字、like关键字。  
 &emsp; <font color = "red">用or分割条件，若or前后只要有一个列没有索引，就都不会用索引。</font>  
 4. 对索引进行模糊查询like时可能使索引失效（以%开头）。  
-&emsp; 前导模糊查询不能利用索引(like '%XX'或者like '%XX%')。假如有这样一列code的值为'AAA','AAB','BAA','BAB' ,如果where code like '%AB'条件，由于条件首字母是是模糊%的，所以不能利用索引的顺序，必须一个个去查询。这样会导致全索引扫描或者全表扫描。如果是这样的条件where code like 'A % '，就可以查找CODE中A开头的CODE的位置，当碰到B开头的数据时，就可以停止查找了，因为后面的数据一定不满足要求。这样就可以利用索引了。  
+&emsp; 前导模糊查询不能利用索引(like '%XX'或者like '%XX%')。假如有这样一列code的值为'AAA','AAB','BAA','BAB'，如果where code like '%AB'条件，由于条件首字母是是模糊%的，所以不能利用索引的顺序，必须一个个去查询。这样会导致全索引扫描或者全表扫描。如果是这样的条件where code like 'A % '，就可以查找CODE中A开头的CODE的位置，当碰到B开头的数据时，就可以停止查找了，因为后面的数据一定不满足要求。这样就可以利用索引了。  
 &emsp; 解决办法：可采用在建立索引时用reverse(columnName)这种方法处理。  
 5. 隐式转换导致索引失效。  
-&emsp; 由于表的字段tu_mdn定义为varchar2(20)，但在查询时把该字段作为number类型以where条件传给sql语句,这样会导致索引失效。  
+&emsp; 由于表的字段tu_mdn定义为varchar2(20)，但在查询时把该字段作为number类型以where条件传给sql语句，这样会导致索引失效。  
 &emsp; 错误的例子：select * from test where tu_mdn=13333333333;  
 &emsp; 正确的例子：select * from test where tu_mdn='13333333333';  
 6. 对索引列使用函数导致索引失效。  

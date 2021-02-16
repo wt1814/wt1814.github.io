@@ -100,7 +100,7 @@ select * from student u where major_id not in (select major_id from major);
 
 ## 1.4. 组合查询优化  
 1. MySQL处理UNION的策略是先创建临时表，然后再把各个查询结果插入到临时表中，最后再来做查询。因此很多优化策略在UNION查询中都没有办法很好的时候。经常需要手动将WHERE、LIMIT、ORDER BY等字句“下推”到各个子查询中，以便优化器可以充分利用这些条件先优化。  
-2. 如果结果集允许重复的话,使用UNION ALL代替UNION。  
+2. 如果结果集允许重复的话，使用UNION ALL代替UNION。  
 
 ## 1.5. INSERT的优化  
 1. 尽量使用多个值表的 INSERT 语句，这种方式将大大缩减客户端与数据库之间的连接、关闭等消耗。（同一客户的情况下），即：  

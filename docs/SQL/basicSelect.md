@@ -17,7 +17,7 @@
             - [1.2.4.1. Group By 和 Order By和Top](#1241-group-by-和-order-by和top)
             - [1.2.4.2. Having关键字与Where的区别](#1242-having关键字与where的区别)
             - [1.2.4.3. Group By多字段分组](#1243-group-by多字段分组)
-                - [1.2.4.3.1. ***order by与limit联合使用](#12431-order-by与limit联合使用)
+                - [1.2.4.3.1. ***order by与limit不要一起用](#12431-order-by与limit不要一起用)
         - [1.2.5. Order By关键字](#125-order-by关键字)
         - [1.2.6. Limit，分页](#126-limit分页)
     - [1.3. 其他](#13-其他)
@@ -136,8 +136,6 @@ LIMIT < limit_number >
 * ORDER BY  
     &emsp; 应用 order by 子句。按照 order_by_condition 排序 VT8，此时返回的一个游标，而不是虚拟表。sql 是基于集合的理论的，集合不会预先对他的行排序，它只是成员的逻辑集合，成员的顺序是无关紧要的。  
 
----
-
 ## 1.2. 基本查询详解  
 &emsp; **《MySQL必知必会》**  
 
@@ -226,8 +224,12 @@ select SUM(number)from A where number >8 group by type SUM(number) > 10
 &emsp; GROUP BY X意思是将所有具有相同X字段值的记录放到一个分组里。  
 &emsp; GROUP BY X, Y意思是将所有具有相同X字段值和Y字段值的记录放到一个分组里。   
 
-##### 1.2.4.3.1. ***order by与limit联合使用
-&emsp; [order by与limit联合使用](/docs/SQL/orderLimit.md)  
+##### 1.2.4.3.1. ***order by与limit不要一起用
+<!-- 
+神坑！MySQL中order by与limit不要一起用！ 
+https://mp.weixin.qq.com/s/93rBBFlfTx58OjD5S_OlAw
+
+-->
 
 ### 1.2.5. Order By关键字  
 <!-- 
