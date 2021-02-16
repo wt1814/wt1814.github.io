@@ -178,7 +178,6 @@
 ## 数据库  
 [学习SQL的总结](/docs/SQL/SQLSummary.md)  
 [数据建模](/docs/SQL/modeling.md)  
-[数据类型](/docs/SQL/dataType.md)  
 [SQL语句](/docs/SQL/SQLSentence.md)  
 &emsp; [基本查询语句](/docs/SQL/basicSelect.md)  
 &emsp; [连接查询](/docs/SQL/joinSelect.md)  
