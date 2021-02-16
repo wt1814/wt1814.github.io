@@ -200,97 +200,97 @@ final boolean nonfairTryAcquire(int acquires) {
 
 &emsp; B、C线程同时尝试入队列，由于队列尚未初始化，tail==null，故至少会有一个线程会走到enq(node)。假设同时走到了enq(node)里。  
 
-```java
-/**
-* 初始化队列并且入队新节点
-*/
-private Node enq(final Node node) {
-    //开始自旋
-    for (;;) {
-        Node t = tail;
-        if (t == null) { // Must initialize
-            // 如果tail为空,则新建一个head节点,并且tail指向head
-            if (compareAndSetHead(new Node()))
-                tail = head;
-        } else {
-            node.prev = t;
-            // tail不为空,将新节点入队
-            if (compareAndSetTail(t, node)) {
-                t.next = node;
-                return t;
+    ```java
+    /**
+    * 初始化队列并且入队新节点
+    */
+    private Node enq(final Node node) {
+        //开始自旋
+        for (;;) {
+            Node t = tail;
+            if (t == null) { // Must initialize
+                // 如果tail为空,则新建一个head节点,并且tail指向head
+                if (compareAndSetHead(new Node()))
+                    tail = head;
+            } else {
+                node.prev = t;
+                // tail不为空,将新节点入队
+                if (compareAndSetTail(t, node)) {
+                    t.next = node;
+                    return t;
+                }
             }
         }
     }
-}
-```
+    ```
 &emsp; 这里体现了经典的自旋+CAS组合来实现非阻塞的原子操作。由于compareAndSetHead的实现使用了unsafe类提供的CAS操作，所以只有一个线程会创建head节点成功。假设线程B成功，之后B、C开始第二轮循环，此时tail已经不为空，两个线程都走到else里面。假设B线程compareAndSetTail成功，那么B就可以返回了，C由于入队失败还需要第三轮循环。最终所有线程都可以成功入队。  
 &emsp; 当B、C入等待队列后，此时AQS队列如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-73.png)  
 4. 第三步，挂起。B和C相继执行acquireQueued(final Node node, int arg)。这个方法让已经入队的线程尝试获取锁，若失败则会被挂起。  
 
-```java
-/**
-* 已经入队的线程尝试获取锁
-*/
-final boolean acquireQueued(final Node node, int arg) {
-    boolean failed = true; //标记是否成功获取锁
-    try {
-        boolean interrupted = false; //标记线程是否被中断过
-        for (;;) {
-            final Node p = node.predecessor(); //获取前驱节点
-            //如果前驱是head,即该结点已成老二，那么便有资格去尝试获取锁
-            if (p == head && tryAcquire(arg)) {
-                setHead(node); // 获取成功,将当前节点设置为head节点
-                p.next = null; // 原head节点出队,在某个时间点被GC回收
-                failed = false; //获取成功
-                return interrupted; //返回是否被中断过
+    ```java
+    /**
+    * 已经入队的线程尝试获取锁
+    */
+    final boolean acquireQueued(final Node node, int arg) {
+        boolean failed = true; //标记是否成功获取锁
+        try {
+            boolean interrupted = false; //标记线程是否被中断过
+            for (;;) {
+                final Node p = node.predecessor(); //获取前驱节点
+                //如果前驱是head,即该结点已成老二，那么便有资格去尝试获取锁
+                if (p == head && tryAcquire(arg)) {
+                    setHead(node); // 获取成功,将当前节点设置为head节点
+                    p.next = null; // 原head节点出队,在某个时间点被GC回收
+                    failed = false; //获取成功
+                    return interrupted; //返回是否被中断过
+                }
+                // 判断获取失败后是否可以挂起,若可以则挂起
+                if (shouldParkAfterFailedAcquire(p, node) &&
+                        parkAndCheckInterrupt())
+                    // 线程若被中断,设置interrupted为true
+                    interrupted = true;
             }
-            // 判断获取失败后是否可以挂起,若可以则挂起
-            if (shouldParkAfterFailedAcquire(p, node) &&
-                    parkAndCheckInterrupt())
-                // 线程若被中断,设置interrupted为true
-                interrupted = true;
+        } finally {
+            if (failed)
+                cancelAcquire(node);
         }
-    } finally {
-        if (failed)
-            cancelAcquire(node);
     }
-}
-```
+    ```
 &emsp; 假设B和C在竞争锁的过程中A一直持有锁，那么它们的tryAcquire操作都会失败，因此会走到第2个if语句中。再看下shouldParkAfterFailedAcquire和parkAndCheckInterrupt方法。  
 
-```java
-/**
-* 判断当前线程获取锁失败之后是否需要挂起.
-*/
-private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
-    //前驱节点的状态
-    int ws = pred.waitStatus;
-    if (ws == Node.SIGNAL)
-        // 前驱节点状态为signal,返回true
-        return true;
-    // 前驱节点状态为CANCELLED
-    if (ws > 0) {
-        // 从队尾向前寻找第一个状态不为CANCELLED的节点
-        do {
-            node.prev = pred = pred.prev;
-        } while (pred.waitStatus > 0);
-        pred.next = node;
-    } else {
-        // 将前驱节点的状态设置为SIGNAL
-        compareAndSetWaitStatus(pred, ws, Node.SIGNAL);
+    ```java
+    /**
+    * 判断当前线程获取锁失败之后是否需要挂起.
+    */
+    private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
+        //前驱节点的状态
+        int ws = pred.waitStatus;
+        if (ws == Node.SIGNAL)
+            // 前驱节点状态为signal,返回true
+            return true;
+        // 前驱节点状态为CANCELLED
+        if (ws > 0) {
+            // 从队尾向前寻找第一个状态不为CANCELLED的节点
+            do {
+                node.prev = pred = pred.prev;
+            } while (pred.waitStatus > 0);
+            pred.next = node;
+        } else {
+            // 将前驱节点的状态设置为SIGNAL
+            compareAndSetWaitStatus(pred, ws, Node.SIGNAL);
+        }
+        return false;
     }
-    return false;
-}
 
-/**
-* 挂起当前线程,返回线程中断状态并重置
-*/
-private final boolean parkAndCheckInterrupt() {
-    LockSupport.park(this);
-    return Thread.interrupted();
-}
-```
+    /**
+    * 挂起当前线程,返回线程中断状态并重置
+    */
+    private final boolean parkAndCheckInterrupt() {
+        LockSupport.park(this);
+        return Thread.interrupted();
+    }
+    ```
 &emsp; 线程入队后能够挂起的前提是，它的前驱节点的状态为SIGNAL，它的含义是“Hi，前面的兄弟，如果你获取锁并且出队后，记得把我唤醒！”。所以shouldParkAfterFailedAcquire会先判断当前节点的前驱是否状态符合要求，若符合则返回true，然后调用parkAndCheckInterrupt，将自己挂起。如果不符合，再看前驱节点是否>0(CANCELLED)，若是那么向前遍历直到找到第一个符合要求的前驱，若不是则将前驱节点的状态设置为SIGNAL。  
 &emsp; 整个流程中，如果前驱结点的状态不是SIGNAL，那么自己就不能安心挂起，需要去找个安心的挂起点，同时可以再尝试下看有没有机会去尝试竞争锁。  
 
