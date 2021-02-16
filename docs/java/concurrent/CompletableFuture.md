@@ -1,8 +1,9 @@
 <!-- TOC -->
 
 - [1. CompletableFuture<T>](#1-completablefuturet)
-    - [1.1. ForkJoinPool与CompletableFuture](#11-forkjoinpool与completablefuture)
-    - [1.2. CompletableFuture使用](#12-completablefuture使用)
+    - [1.1. CompletableFuture简介](#11-completablefuture简介)
+    - [1.2. XXXCompletableFuture类分析](#12-xxxcompletablefuture类分析)
+    - [1.3. CompletableFuture使用](#13-completablefuture使用)
 
 <!-- /TOC -->
 
@@ -19,12 +20,8 @@ https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650
 上个礼拜我们线上有个接口比较慢，这个接口在刚开始响应时间是正常的。但随着数据量的增多，响应时间变慢了。
 
 这个接口里面顺序调用了2个服务，且2个服务之间没有数据依赖。我就用CompletableFuture把调用2个服务的过程异步化了一下，响应时间也基本上缩短为原来的一半，问题解决。
--->
-&emsp; CompletableFuture，组合式异步编程，异步回调。  
-&emsp; 使用Future获得异步执行结果时，要么调用阻塞方法get()，要么轮询看isDone()是否为true，这两种方法都不是很好，因为主线程也会被迫等待。  
-&emsp; **从Java 8开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。**  
 
-## 1.1. ForkJoinPool与CompletableFuture  
+
 &emsp; parallelStream和CompletableFuture默认使用的都是ForkJoinPool.commonPool()默认线程池；  
 &emsp; 对集合进行并行计算有两种方式：  
 
@@ -36,8 +33,23 @@ https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650
 
 * 进行计算密集型的操作，并且没有I/O，那么推荐使用Stream接口，因为实现简单，同时效率也可能是最高的(如果所有的线程都是计算密集型的，那就没有必要创建比处理器核数更多的线程)。  
 * 如果并行操作涉及到I/O的操作(网络连接，请求等)，那么使用CompletableFuture灵活性更好，通过控制线程数量来优化程序的运行。  
+-->
+## 1.1. CompletableFuture简介
+&emsp; CompletableFuture，组合式异步编程，异步回调。  
+&emsp; 使用Future获得异步执行结果时，要么调用阻塞方法get()，要么轮询看isDone()是否为true，这两种方法都不是很好，因为主线程也会被迫等待。 **从Java 8开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。**  
 
+&emsp; **<font color = "clime">使用场景：某个接口顺序调用了多个服务，且多个服务之间没有数据依赖。使用CompletableFuture会使响应时间缩短很多。</font>**    
 
+## 1.2. XXXCompletableFuture类分析
+
+```java
+public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {
+
+}
+```
+&emsp; parallelStream和CompletableFuture默认使用的都是ForkJoinPool.commonPool()默认线程池；  
+
+## 1.3. CompletableFuture使用  
 <!-- 
 &emsp; CompletableFuture还提供了了一些非常有用的操作例如，thenApply(),thenCompose(),thenCombine()等。  
 
@@ -45,8 +57,6 @@ https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650
 * thenCompose()是对两个异步操作进行串联，第一个操作完成时，对第一个CompletableFuture对象调用thenCompose，并向其传递一个函数。当第一个* CompletableFuture执行完毕后，它的结果将作为该函数的参数，这个函数的返回值是以第一个CompletableFuture的返回做输入计算出第二个CompletableFuture对象。
 * thenCombine()会异步执行两个CompletableFuture任务，然后等待它们计算出结果后再进行计算。
 -->
-
-## 1.2. CompletableFuture使用  
 <!-- 
 https://www.cnblogs.com/happyliu/p/9462703.html
 -->
