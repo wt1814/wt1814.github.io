@@ -18,18 +18,28 @@
 &emsp; **<font color = "lime">总结：</font>**  
 1. 理解线程池状态标志位的设计。在ThreadPoolExecutor实现中，使用32位的整型包装类型存放工作线程数和线程池状态。其中，低29位用于存放工作线程数，而高3位用于存放线程池状态。    
 2. 理解构造函数中参数：[阻塞队列](/docs/java/concurrent/BlockingQueue.md)；拒绝策略默认AbortPolicy(拒绝任务，抛异常)，可以选用CallerRunsPolicy(任务队列满时，不进入线程池，由主线程执行)。  
-3. 线程运行流程：查看execute方法。 
+3. 线程运行流程：查看execute方法。&emsp; 整个流程：  
+    &emsp; <font color = "lime">线程池创建时没有设置成预启动加载，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
+    1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务(任务实例会传入直接用于构造工作线程实例)。  
+    2. 如果当前工作线程总数大于等于corePoolSize，判断线程池是否处于运行中状态，同时尝试用非阻塞方法向任务队列放入任务，这里会二次检查线程池运行状态，如果当前工作线程数量为0，则创建一个非核心线程并且传入的任务对象为null。  
+    3. 如果向任务队列投放任务失败(任务队列已经满了)，则会尝试创建非核心线程传入任务实例执行。  
+    4. 如果创建非核心线程失败，此时需要拒绝执行任务，调用拒绝策略处理任务。   
 4. 线程复用机制：runWorker()方法中，有任务时，while循环获取；没有任务时，清除空闲线程。  
+&emsp; 线程复用原理：  
+&emsp; 线程池将线程和任务进行解耦，线程是线程，任务是任务，摆脱了之前通过 Thread 创建线程时的一个线程必须对应一个任务的限制。  
+&emsp; 在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对 Thread 进行了封装，并不是每次执行任务都会调用 Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行，如果有则直接执行，也就是调用任务中的 run 方法，将 run 方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的 run 方法串联起来。  
 5. 线程池保证核心线程不被销毁？获取任务getTask()方法里allowCoreThreadTimeOut值默认为true，线程take()会一直阻塞，等待任务的添加。   
 
 # 1. XXXThreadPoolExecutor
 <!--
 https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
 https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
+
+-->
+<!-- 
+~~
 深入分析线程池的实现原理 
 https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
-知道线程池中线程复用原理吗？
-https://mp.weixin.qq.com/s/qTMJAP45ON91zjWFLwms5g
 -->
 
 ## 1.1. 属性
@@ -157,6 +167,23 @@ private void decrementWorkerCount() {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-4.png)  
 
 ## 1.2. 构造函数  
+<!-- 
+一般来说，这里的BlockingQueue有以下三种选择：
+
+
+    SynchronousQueue：
+
+    一个不存储元素的阻塞队列，每个插入操作必须等到另一个线程调用移除操作，否则插入操作一直处于阻塞状态。
+
+    因此，如果线程池中始终没有空闲线程（任务提交的平均速度快于被处理的速度），可能出现无限制的线程增长。
+
+    LinkedBlockingQueue：
+
+    基于链表结构的阻塞队列，如果不设置初始化容量，其容量为Integer.MAX_VALUE，即为无界队列。
+
+    因此，如果线程池中线程数达到了corePoolSize，且始终没有空闲线程（任务提交的平均速度快于被处理的速度），任务缓存队列可能出现无限制的增长。
+    ArrayBlockingQueue：基于数组结构的有界阻塞队列，按FIFO排序任务。
+-->
 &emsp; 在ThreadPoolExecutor类中提供了四个构造方法：   
 
 ```java
@@ -212,6 +239,10 @@ public ThreadPoolExecutor(int corePoolSize,
 
 
 ## 1.3. 线程池工作流程(execute成员方法的源码)
+<!-- 
+提交任务
+https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
+-->
 &emsp; 线程池中核心方法调用链路：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-17.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-14.png)  
@@ -444,16 +475,24 @@ private final class Worker extends AbstractQueuedSynchronizer implements Runnabl
     }
     
     // 加锁
-    public void lock()        { acquire(1); }
+    public void lock() { 
+        acquire(1); 
+    }
 
     // 尝试加锁
-    public boolean tryLock()  { return tryAcquire(1); }
+    public boolean tryLock() { 
+        return tryAcquire(1); 
+    }
 
     // 解锁
-    public void unlock()      { release(1); }
+    public void unlock() { 
+        release(1); 
+    }
 
     // 是否锁定
-    public boolean isLocked() { return isHeldExclusively(); }
+    public boolean isLocked() { 
+        return isHeldExclusively(); 
+    }
     
     // 启动后进行线程中断，注意这里会判断线程实例的中断标志位是否为false，只有中断标志位为false才会中断
     void interruptIfStarted() {
@@ -482,6 +521,12 @@ thread.start();
 &emsp; Worker继承自AQS，这里使用了AQS的独占模式，有个技巧是构造Worker的时候，把AQS的资源(状态)通过setState(-1)设置为-1，这是因为Worker实例刚创建时AQS中state的默认值为0，此时线程尚未启动，不能在这个时候进行线程中断，见Worker#interruptIfStarted()方法。Worker中两个覆盖AQS的方法tryAcquire()和tryRelease()都没有判断外部传入的变量，前者直接CAS(0,1)，后者直接setState(0)。  
 
 ### 1.3.4. runWorker()，线程复用机制  
+
+&emsp; 线程复用原理：  
+&emsp; 线程池将线程和任务进行解耦，线程是线程，任务是任务，摆脱了之前通过 Thread 创建线程时的一个线程必须对应一个任务的限制。  
+&emsp; 在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对 Thread 进行了封装，并不是每次执行任务都会调用 Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行，如果有则直接执行，也就是调用任务中的 run 方法，将 run 方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的 run 方法串联起来。  
+
+-----
 &emsp; worker中的线程start 后，执行的是worker的run()方法，而run()方法会调用ThreadPoolExecutor类的runWorker()方法，runWorker()方法实现了线程池中的线程复用机制。  
 
 &emsp; runWorker()方法的核心流程：  
