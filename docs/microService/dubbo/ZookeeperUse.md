@@ -15,6 +15,11 @@
 <!-- /TOC -->
 
 # 1. Zookeeper使用  
+<!-- 
+acl权限设置 
+https://mp.weixin.qq.com/s/PZPSQcxJEeBFYgN2lJoSRQ
+-->
+
 ## 1.1. Zookeeper的API  
 ### 1.1.1. 原生API  
 ......  

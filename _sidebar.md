@@ -223,7 +223,7 @@
         * [Redis和Lua](/docs/microService/Redis/lua.md)  
         * [Redis持久化](/docs/microService/Redis/RedisPersistence.md)  
         * [Redis淘汰策略](/docs/microService/Redis/RedisEliminate.md)  
-    * [Redis部署](/docs/microService/Redis/RedisDeploy.md)  
+    * [Redis高可用](/docs/microService/Redis/RedisDeploy.md)  
         * [Redis主从复制](/docs/microService/Redis/RedisMasterSlave.md)  
         * [Redis哨兵模式](/docs/microService/Redis/RedisSentry.md)  
         * [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  

@@ -7,6 +7,9 @@ https://mp.weixin.qq.com/s/-_wgv7Ipo4Ke3-gtlYcoIg
 https://mp.weixin.qq.com/s/8u0GTnLkj7pP_Lh67Z1UGQ
 一文讲懂什么是vlan、三层交换机、网关、DNS、子网掩码、MAC地址 
 https://mp.weixin.qq.com/s/KM-mWwd5TivJScBVCQyEBQ
+
+如何系统学习计算机网络？ 
+https://mp.weixin.qq.com/s/wL5YI5TZXl1zRY8qS--awQ
 -->
 
 # 1. OSI七层网络模型  

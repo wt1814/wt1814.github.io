@@ -20,6 +20,9 @@ https://mp.weixin.qq.com/s/3HYOXJZzsQd_AXwB-uLYFw
 MySQL 数据库常用建模工具
 https://mp.weixin.qq.com/s/4qsj9CCPrPggXcB0nLE7Lw
 https://mp.weixin.qq.com/s/9j2xUahddSayS6hjkBbF4g
+
+DBeaver数据库客户端
+https://mp.weixin.qq.com/s/ZQkEhDiv9R49FdAedOVABg
 -->
 
 

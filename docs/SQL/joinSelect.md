@@ -33,6 +33,8 @@
 <!-- 
 MySQL多表联表查询驱动表选择
 https://www.jianshu.com/p/2ddcf4d9f0fe
+ 【223期】面试官：在MySQL查询中，为什么要用小表驱动大表 
+ https://mp.weixin.qq.com/s/k4oPtfDwXfMm91Ms3IHaHw
 -->
 
 

@@ -26,4 +26,5 @@ Spring Validation最佳实践及其实现原理，参数校验没那么简单！
 https://mp.weixin.qq.com/s/q-Fh_YGPW7s8lyg6o9DXgA
 https://mp.weixin.qq.com/s/bmVvqhzWmK2hA2gurYB4wg
 
+https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&__biz=MzI0MTUwOTgyOQ==&scene=1&album_id=1630480921197887488&count=3#wechat_redirect
 -->

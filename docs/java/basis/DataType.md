@@ -30,7 +30,7 @@
         - [1.3.5. String常见面试题](#135-string常见面试题)
         - [1.3.6. String真的不可变吗?](#136-string真的不可变吗)
     - [1.4. StringBuilder与StringBuffer](#14-stringbuilder与stringbuffer)
-    - [1.5. StringJoiner](#15-stringjoiner)
+    - [1.5. StringJoiner，字符串拼接](#15-stringjoiner字符串拼接)
 
 <!-- /TOC -->
 
@@ -499,8 +499,10 @@ System.out.println(str);//Vae
 * 区别3：性能  
     &emsp; 既然StringBuffer是线程安全的，它的所有公开方法都是同步的，StringBuilder 是没有对方法加锁同步的，所以毫无疑问，StringBuilder 的性能要远大于 StringBuffer。  
 
-## 1.5. StringJoiner  
+## 1.5. StringJoiner，字符串拼接  
 <!-- 
- 你只会用 StringBuilder？试试 StringJoiner，真香！ 
- https://mp.weixin.qq.com/s/25PjDDuMKH3qv8LZimyUpg
+你只会用 StringBuilder？试试 StringJoiner，真香！ 
+https://mp.weixin.qq.com/s/25PjDDuMKH3qv8LZimyUpg
+字符串拼接还在用StringBuilder？快试试Java8中的StringJoiner吧，真香！ 
+https://mp.weixin.qq.com/s/Zpyo1OCnAZLV4cwt1lpu9g
 -->

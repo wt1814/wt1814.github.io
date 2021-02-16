@@ -3,6 +3,9 @@
 <!--
 一文把Redis主从复制、哨兵、Cluster三种模式摸透 
 https://mp.weixin.qq.com/s/GlqoafdmC4Xjf7DACN3srQ
+
+Redis官方的高可用性解决方案 
+https://mp.weixin.qq.com/s/8JPBNMGhBsq2jfW9v-H5vQ
 -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-51.png)  

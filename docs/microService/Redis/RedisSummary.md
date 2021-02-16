@@ -1,5 +1,10 @@
 
 # Redis总结  
+<!-- 
+
+redis源码
+https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&__biz=MzAxODc1MzM5Nw==&scene=1&album_id=1340108909599883264&count=3#wechat_redirect
+-->
 
 1. Redis有5种基本数据类型，每种数据类型都有不同的数据结构；
 2. Redis有3(Bitmaps位图、HyperLogLog基数统计、Geospatial地图)+1(Streams消息队列)+1(Redis中的布隆过滤器)种高级数据类型。  
