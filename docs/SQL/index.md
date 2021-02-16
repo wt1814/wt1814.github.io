@@ -60,7 +60,7 @@ https://mp.weixin.qq.com/s/N6chmfcxnm6a3pOQYWAcbA
 -->
 
 ## 1.2. 创建索引的几种方式  
-...
+&emsp; ...
 <!-- 
 https://mp.weixin.qq.com/s/Mvl3OURNurdrJ2o9OyM6KQ
 -->
@@ -139,6 +139,7 @@ https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
 * <font color = "lime">关闭ICP：索引--->回表--->条件过滤。</font>不支持ICP之前，当进行索引查询时，首先根据索引来查找数据，然后再根据where条件来过滤，扫描了大量不必要的数据，增加了数据库IO操作。  
 * <font color = "lime">开启ICP：索引--->条件过滤--->回表。</font>在支持ICP后，MySQL在取出索引数据的同时，判断是否可以进行where条件过滤，将where的部分过滤操作放在存储引擎层提前过滤掉不必要的数据，减少了不必要数据被扫描带来的IO开销。  
   
+
 &emsp; 在某些查询下，可以减少Server层对存储引擎层数据的读取，从而提供数据库的整体性能。  
 
 ### 1.4.2. 示例分析  
@@ -152,7 +153,7 @@ https://www.cnblogs.com/zengkefu/p/5684101.html
 SELECT * FROM people WHERE zipcode='95054' AND lastname LIKE '%etrunia%' AND address LIKE '%Main Street%';
 ```
 &emsp; 如果没有使用索引下推技术，则MySQL会通过zipcode='95054'从存储引擎中查询对应的数据，返回到MySQL服务端，然后MySQL服务端基于lastname LIKE '%etrunia%'和address LIKE '%Main Street%'来判断数据是否符合条件。  
-&emsp; <font color = "lime">如果使用了索引下推技术，则MYSQL首先会返回符合zipcode='95054'的索引，然后根据lastname LIKE '%etrunia%'和address LIKE '%Main Street%'来判断索引是否符合条件。如果符合条件，则根据该索引来定位对应的数据，如果不符合，则直接reject掉。有了索引下推优化，可以在有like条件查询的情况下，减少回表次数。</font>  
+&emsp; <font color = "blue">如果使用了索引下推技术，则MYSQL首先会返回符合zipcode='95054'的索引，然后根据lastname LIKE '%etrunia%'和address LIKE '%Main Street%'来判断索引是否符合条件。如果符合条件，则根据该索引来定位对应的数据，如果不符合，则直接reject掉。有了索引下推优化，可以在有like条件查询的情况下，减少回表次数。</font>  
 
 ## 1.5. 索引失效  
 1. 联合索引最左前缀匹配原则。  
