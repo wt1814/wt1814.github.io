@@ -20,7 +20,7 @@ https://zhuanlan.zhihu.com/p/111958646
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-133.png)  
 
 ## 1.1. 逻辑存储结构  
-&emsp; 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间（tablespace）。表空间又由段（segment），区（extent），页（page）组成。页在一些文档中有时候也称为块（block）。InnoDb逻辑存储结构图如下：  
+&emsp; 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间(tablespace)。表空间又由段(segment)，区(extent)，页(page)组成。页在一些文档中有时候也称为块(block)。InnoDb逻辑存储结构图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-41.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-134.png)  
 
@@ -36,11 +36,11 @@ https://zhuanlan.zhihu.com/p/111958646
 ### 1.1.1. 表空间详解  
 &emsp; Innodb中表空间可以分为以下几种：  
 
-* 系统表空间。系统表空间又包括了InnoDB数据字典，双写缓冲区(Doublewrite Buffer)，修改缓存(Change Buffer），Undo日志等。  
+* 系统表空间。系统表空间又包括了InnoDB数据字典，双写缓冲区(Doublewrite Buffer)，修改缓存(Change Buffer)，Undo日志等。  
 * 独立表空间  
 * undo表空间  
-* 临时表空间（temporary tablespace）  
-* 通用表空间（general tablespace）。通用表空间是InnoDB 使用CREATE TABLESPACE语法创建的共享表空间。    
+* 临时表空间(temporary tablespace)  
+* 通用表空间(general tablespace)。通用表空间是InnoDB 使用CREATE TABLESPACE语法创建的共享表空间。    
 
 &emsp; **共享表空间与独立表空间：**  
 &emsp; 在默认情况下innodb存储引擎有一个共享表空间ibdata*，即所有的数据都存放在这个表空间中。如果启用了innodb_file_per_table参数，则每张表的数据可以存放到独立的.ibd文件的独立表空间。  
@@ -51,7 +51,7 @@ https://zhuanlan.zhihu.com/p/111958646
 
 &emsp; **共享表空间与独立表空间的优缺点：**    
 * 共享表空间：
-    * 优点：可以将表空间分成多个文件存放到各个磁盘上（表空间文件大小不受表大小的限制，如一个表可以分布在不同的文件上）。数据和文件放在一起方便管理。
+    * 优点：可以将表空间分成多个文件存放到各个磁盘上(表空间文件大小不受表大小的限制，如一个表可以分布在不同的文件上)。数据和文件放在一起方便管理。
     * 缺点：所有的数据和索引存放到一个文件中，虽然可以把一个大文件分成多个小文件，但是多个表及索引在表空间中混合存储，这样对于一个表做了大量删除操作后表空间中将会有大量的空隙，特别是对于统计分析，日值系统这类应用最不适合用共享表空间。
 
 * 独立表空间：
@@ -59,7 +59,7 @@ https://zhuanlan.zhihu.com/p/111958646
         * 每个表都有自已独立的表空间。
         * 每个表的数据和索引都会存在自已的表空间中。
         * 可以实现单表在不同的数据库中移动。
-        * 空间可以回收（除drop table操作处，表空不能自已回收）
+        * 空间可以回收(除drop table操作处，表空不能自已回收)
 
             Drop table操作自动回收表空间，如果对于统计分析或是日值表，删除大量数据后可以通过:alter table TableName engine=innodb;回缩不用的空间。
             对于使innodb-plugin的Innodb使用turncate table也会使空间收缩。
@@ -85,14 +85,14 @@ https://zhuanlan.zhihu.com/p/111958646
 https://juejin.cn/post/6844904190477598733#heading-14
 -->
 &emsp; Innodb中数据的实际都是按照行的格式存储的，每个页能存放的行的数量也是有严格的规定，最多可以存放16K / 2 - 200 即7992行。  
-&emsp; mysql支持4种不同类型的行格式：Compact（5.0中引入）、Redundant（比较老）、Dynamic、Compressed。    
+&emsp; mysql支持4种不同类型的行格式：Compact(5.0中引入)、Redundant(比较老)、Dynamic、Compressed。    
 <!-- 
 先说一个结论：页中放的行越多，innodb性能越高。所以在mysql 5.0中引入了compact行记录格式。  
 -->
 ##### 1.1.2.1.1. ompact行记录格式    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-137.png)  
 
-* 变长字段长度列表：变长列中存储多少字节数据是不固定的，所以在存储数据时候也需要把这些数据占用的字节数存储起来。varchar(M) M代表的是存储多少字符（mysql5.0.3之前是字节，之后是字符）。  
+* 变长字段长度列表：变长列中存储多少字节数据是不固定的，所以在存储数据时候也需要把这些数据占用的字节数存储起来。varchar(M) M代表的是存储多少字符(mysql5.0.3之前是字节，之后是字符)。  
 * NULL标志位：bit向量标识的null列  
 * 记录头信息：固定占用5个字节   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-138.png)  
@@ -119,4 +119,4 @@ https://juejin.cn/post/6844904190477598733#heading-14
 
 * .frm文件：与表相关的元数据信息都存放在frm文件，包括表结构的定义信息等。  
 * .ibd文件或.ibdata文件：这两种文件都是存放InnoDB数据的文件，之所以有两种文件形式存放 InnoDB 的数据，是因为InnoDB的数据存储方式能够通过配置来决定是使用共享表空间存放存储数据，还是用独享表空间存放存储数据。  
-&emsp; 独享表空间存储方式使用.ibd文件，并且每个表一个.ibd文件 共享表空间存储方式使用.ibdata文件，所有表共同使用一个.ibdata文件（或多个，可自己配置）。  
+&emsp; 独享表空间存储方式使用.ibd文件，并且每个表一个.ibd文件 共享表空间存储方式使用.ibdata文件，所有表共同使用一个.ibdata文件(或多个，可自己配置)。  

@@ -49,27 +49,27 @@ https://mp.weixin.qq.com/s/rCTJDh3_WbEAbGLZdZiQzg
 
 ### 1.2.1. 前言：预读  
 <!-- 
-预读（read ahead）  
-&emsp; InnoDB 在 I/O 的优化上有个比较重要的特性为预读，<font color = "red">当 InnoDB 预计某些 page 可能很快就会需要用到时，它会异步地将这些 page 提前读取到缓冲池（buffer pool）中，</font>这其实有点像空间局部性的概念。  
-&emsp; 空间局部性（spatial locality）：如果一个数据项被访问，那么与它的址相邻的数据项也可能很快被访问。  
-&emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）。  
-&emsp; 其中，线性预读以 extent（块，1个 extent 等于64个 page）为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
-&emsp; 线性预读（Linear read-ahead）：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64（一个 extend 上限就是64页）的任何值，默认值为56，值越高，访问模式检查越严格。  
-&emsp; 随机预读（Random read-ahead）: 随机预读方式则是表示当同一个 extent 中的一些 page 在 buffer pool 中发现时，Innodb 会将该 extent 中的剩余 page 一并读到 buffer pool中，由于随机预读方式给 Innodb code 带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。  
+预读(read ahead)  
+&emsp; InnoDB 在 I/O 的优化上有个比较重要的特性为预读，<font color = "red">当 InnoDB 预计某些 page 可能很快就会需要用到时，它会异步地将这些 page 提前读取到缓冲池(buffer pool)中，</font>这其实有点像空间局部性的概念。  
+&emsp; 空间局部性(spatial locality)：如果一个数据项被访问，那么与它的址相邻的数据项也可能很快被访问。  
+&emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读(linear read-ahead)和随机预读(randomread-ahead)。  
+&emsp; 其中，线性预读以 extent(块，1个 extent 等于64个 page)为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
+&emsp; 线性预读(Linear read-ahead)：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64(一个 extend 上限就是64页)的任何值，默认值为56，值越高，访问模式检查越严格。  
+&emsp; 随机预读(Random read-ahead): 随机预读方式则是表示当同一个 extent 中的一些 page 在 buffer pool 中发现时，Innodb 会将该 extent 中的剩余 page 一并读到 buffer pool中，由于随机预读方式给 Innodb code 带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。  
 -->
 &emsp; 什么是预读？  
-&emsp; 磁盘读写，并不是按需读取，而是按页读取， **<font color = "lime">一次至少读一页数据（一般是4K），如果未来要读取的数据就在页中，就能够省去后续的磁盘IO，提高效率。</font>**  
+&emsp; 磁盘读写，并不是按需读取，而是按页读取， **<font color = "lime">一次至少读一页数据(一般是4K)，如果未来要读取的数据就在页中，就能够省去后续的磁盘IO，提高效率。</font>**  
 
 &emsp; 预读为什么有效？  
 &emsp; 数据访问，通常都遵循“集中读写”的原则，使用一些数据，大概率会使用附近的数据，这就是所谓的“局部性原理”，它表明提前加载是有效的，确实能够减少磁盘IO。  
 
 &emsp; 按页(4K)读取，和InnoDB的缓冲池设计有什么关系？  
-&emsp; （1）磁盘访问按页读取能够提高性能，所以缓冲池一般也是按页缓存数据；  
-&emsp; （2） **<font color = "lime">预读机制能把一些“可能要访问”的页提前加入缓冲池，避免未来的磁盘IO操作；</font>**  
+&emsp; (1)磁盘访问按页读取能够提高性能，所以缓冲池一般也是按页缓存数据；  
+&emsp; (2) **<font color = "lime">预读机制能把一些“可能要访问”的页提前加入缓冲池，避免未来的磁盘IO操作；</font>**  
 
-&emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）。其中，线性预读以 extent（块，1个 extent 等于64个 page）为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
-&emsp; 线性预读（Linear read-ahead）：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64（一个 extend 上限就是64页）的任何值，默认值为56，值越高，访问模式检查越严格。  
-&emsp; 随机预读（Random read-ahead）: 随机预读方式则是表示当同一个extent中的一些page在buffer pool中发现时，Innodb 会将该 extent 中的剩余page一并读到 buffer pool中，由于随机预读方式给Innodb code带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。 
+&emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读(linear read-ahead)和随机预读(randomread-ahead)。其中，线性预读以 extent(块，1个 extent 等于64个 page)为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
+&emsp; 线性预读(Linear read-ahead)：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64(一个 extend 上限就是64页)的任何值，默认值为56，值越高，访问模式检查越严格。  
+&emsp; 随机预读(Random read-ahead): 随机预读方式则是表示当同一个extent中的一些page在buffer pool中发现时，Innodb 会将该 extent 中的剩余page一并读到 buffer pool中，由于随机预读方式给Innodb code带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。 
 
 ### 1.2.2. LRU算法  
 &emsp; InnoDB是以什么算法，来管理这些缓冲页呢？  
@@ -77,22 +77,22 @@ https://mp.weixin.qq.com/s/rCTJDh3_WbEAbGLZdZiQzg
 
 &emsp; 传统的LRU是如何进行缓冲页管理？  
 &emsp; 最常见的是，把入缓冲池的页放到LRU的头部，作为最近访问的元素，从而最晚被淘汰。这里又分两种情况：  
-&emsp; （1）页已经在缓冲池里，那就只做“移至”LRU头部的动作，而没有页被淘汰；  
-&emsp; （2）页不在缓冲池里，除了做“放入”LRU头部的动作，还要做“淘汰”LRU尾部页的动作；  
+&emsp; (1)页已经在缓冲池里，那就只做“移至”LRU头部的动作，而没有页被淘汰；  
+&emsp; (2)页不在缓冲池里，除了做“放入”LRU头部的动作，还要做“淘汰”LRU尾部页的动作；  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-106.png)  
 &emsp; 如上图，假如管理缓冲池的LRU长度为10，缓冲了页号为1，3，5…，40，7的页。  
 &emsp; 假如，接下来要访问的数据在页号为4的页中：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-107.png)  
-&emsp; （1）页号为4的页，本来就在缓冲池里；  
-&emsp; （2）把页号为4的页，放到LRU的头部即可，没有页被淘汰；  
+&emsp; (1)页号为4的页，本来就在缓冲池里；  
+&emsp; (2)把页号为4的页，放到LRU的头部即可，没有页被淘汰；  
 &emsp; 假如，再接下来要访问的数据在页号为50的页中：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-108.png)  
-&emsp; （1）页号为50的页，原来不在缓冲池里；  
-&emsp; （2）把页号为50的页，放到LRU头部，同时淘汰尾部页号为7的页；  
+&emsp; (1)页号为50的页，原来不在缓冲池里；  
+&emsp; (2)把页号为50的页，放到LRU头部，同时淘汰尾部页号为7的页；  
 &emsp; 传统的LRU缓冲池算法十分直观，OS，memcache等很多软件都在用，MySQL为什么不能直接用呢？  
 &emsp; 这里有两个问题：  
-&emsp; （1）预读失效；  
-&emsp; （2）缓冲池污染；  
+&emsp; (1)预读失效；  
+&emsp; (2)缓冲池污染；  
 
 #### 1.2.2.1. 预读失效  
 &emsp; 什么是预读失效？  
@@ -100,27 +100,27 @@ https://mp.weixin.qq.com/s/rCTJDh3_WbEAbGLZdZiQzg
 
 &emsp; 如何对预读失效进行优化？  
 &emsp; 要优化预读失效，思路是：  
-&emsp; （1）让预读失败的页，停留在缓冲池LRU里的时间尽可能短；  
-&emsp; （2）让真正被读取的页，才挪到缓冲池LRU的头部；  
+&emsp; (1)让预读失败的页，停留在缓冲池LRU里的时间尽可能短；  
+&emsp; (2)让真正被读取的页，才挪到缓冲池LRU的头部；  
 &emsp; 以保证，真正被读取的热数据留在缓冲池里的时间尽可能长。  
 
 &emsp; **<font color = "lime">预读失效进行优化的具体方法是：</font>**  
 1. 将LRU分为两个部分：新生代(new sublist) 和 老生代(old sublist)。  
 2. **<font color = "red">新老生首尾相连，即：新生代的尾(tail)连接着老生代的头(head)；</font>**  
-3. 新页（例如被预读的页）加入缓冲池时，只加入到老生代头部：  
-    * **<font color = "red">如果数据真正被读取（预读成功），才会加入到新生代的头部</font>**  
+3. 新页(例如被预读的页)加入缓冲池时，只加入到老生代头部：  
+    * **<font color = "red">如果数据真正被读取(预读成功)，才会加入到新生代的头部</font>**  
     * **<font color = "red">如果数据没有被读取，则会比新生代里的“热数据页”更早被淘汰出缓冲池</font>**   
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-109.png)  
 &emsp; 举个例子，整个缓冲池LRU如上图：  
-&emsp; （1）整个LRU长度是10；  
-&emsp; （2）前70%是新生代；  
-&emsp; （3）后30%是老生代；  
-&emsp; （4）新老生代首尾相连；  
+&emsp; (1)整个LRU长度是10；  
+&emsp; (2)前70%是新生代；  
+&emsp; (3)后30%是老生代；  
+&emsp; (4)新老生代首尾相连；  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-110.png)  
 &emsp; 假如有一个页号为50的新页被预读加入缓冲池：  
-&emsp; （1）50只会从老生代头部插入，老生代尾部（也是整体尾部）的页会被淘汰掉；  
-&emsp; （2）假设50这一页不会被真正读取，即预读失败，它将比新生代的数据更早淘汰出缓冲池；  
+&emsp; (1)50只会从老生代头部插入，老生代尾部(也是整体尾部)的页会被淘汰掉；  
+&emsp; (2)假设50这一页不会被真正读取，即预读失败，它将比新生代的数据更早淘汰出缓冲池；  
 &emsp; 改进版缓冲池LRU能够很好的解决“预读失败”的问题。不要因为害怕预读失败而取消预读策略，大部分情况下，局部性原理是成立的，预读是有效的。  
 &emsp; 新老生代改进版LRU仍然解决不了缓冲池污染的问题。  
 
@@ -132,10 +132,10 @@ https://mp.weixin.qq.com/s/rCTJDh3_WbEAbGLZdZiQzg
 select * from user where name like "%shenjian%";  
 ```
 &emsp; 虽然结果集可能只有少量数据，但这类like不能命中索引，必须全表扫描，就需要访问大量的页：  
-&emsp; （1）把页加到缓冲池（插入老生代头部）；  
-&emsp; （2）从页里读出相关的row（插入新生代头部）；  
-&emsp; （3）row里的name字段和字符串shenjian进行比较，如果符合条件，加入到结果集中；  
-&emsp; （4）…直到扫描完所有页中的所有row…  
+&emsp; (1)把页加到缓冲池(插入老生代头部)；  
+&emsp; (2)从页里读出相关的row(插入新生代头部)；  
+&emsp; (3)row里的name字段和字符串shenjian进行比较，如果符合条件，加入到结果集中；  
+&emsp; (4)…直到扫描完所有页中的所有row…  
 
 &emsp; 如此一来，所有的数据页都会被加载到新生代的头部，但只会访问一次，真正的热数据被大量换出。  
 &emsp; <font color = "red">怎么解决这类扫码读取大量数据导致的缓冲池污染问题呢？</font>  

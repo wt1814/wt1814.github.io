@@ -14,7 +14,7 @@
         - [1.3.3. 写入流程及刷盘时机](#133-写入流程及刷盘时机)
         - [1.3.4. 记录形式](#134-记录形式)
         - [1.3.5. 对应的物理文件](#135-对应的物理文件)
-    - [1.4. binlog，二进制日志（归档日志）](#14-binlog二进制日志归档日志)
+    - [1.4. binlog，二进制日志(归档日志)](#14-binlog二进制日志归档日志)
         - [1.4.1. 简介](#141-简介)
         - [1.4.2. 写入流程及刷盘时机](#142-写入流程及刷盘时机)
         - [1.4.3. binlog日志格式](#143-binlog日志格式)
@@ -48,13 +48,13 @@ https://mp.weixin.qq.com/s/rQX3AFivFDNIYXE7-r9U_w
 ## 1.1. MySql日志文件简介  
 &emsp; MySql日志文件有：  
 
-* 错误日志（errorlog）：记录出错信息，也记录一些警告信息或者正确的信息。
-* 一般查询日志（general log）：记录所有对数据库请求的信息，不论这些请求是否得到了正确的执行。
-* 慢查询日志（slow query log）：设置一个阈值，将运行时间超过该值的所有SQL语句都记录到慢查询的日志文件中。
-* 二进制日志（binlog）：记录对数据库执行更改的所有操作。
-* 中继日志（relay log）：中继日志也是二进制日志，用来给slave库恢复。
-* 重做日志（redo log）。
-* 回滚日志（undo log）。
+* 错误日志(errorlog)：记录出错信息，也记录一些警告信息或者正确的信息。
+* 一般查询日志(general log)：记录所有对数据库请求的信息，不论这些请求是否得到了正确的执行。
+* 慢查询日志(slow query log)：设置一个阈值，将运行时间超过该值的所有SQL语句都记录到慢查询的日志文件中。
+* 二进制日志(binlog)：记录对数据库执行更改的所有操作。
+* 中继日志(relay log)：中继日志也是二进制日志，用来给slave库恢复。
+* 重做日志(redo log)。
+* 回滚日志(undo log)。
 
 &emsp; 重点需要关注的是二进制日志(binlog)和事务日志(包括redo log和undo log)。  
 
@@ -69,9 +69,9 @@ WAL
 
 ## 1.2. undo log，回滚日志
 <!-- 
-* undo log（回滚日志）  实现原子性  
+* undo log(回滚日志)  实现原子性  
 &emsp; undo log 主要为事务的回滚服务。在事务执行的过程中，除了记录redo log，还会记录一定量的undo log。<font color = "red">undo log记录了数据在每个操作前的状态，如果事务执行过程中需要回滚，就可以根据undo log进行回滚操作。</font>单个事务的回滚，只会回滚当前事务做的操作，并不会影响到其他的事务做的操作。  
-&emsp; Undo记录的是已部分完成并且写入硬盘的未完成的事务，默认情况下回滚日志是记录下表空间中的（共享表空间或者独享表空间）  
+&emsp; Undo记录的是已部分完成并且写入硬盘的未完成的事务，默认情况下回滚日志是记录下表空间中的(共享表空间或者独享表空间)  
 
 &emsp; 二种日志均可以视为一种恢复操作，redo_log是恢复提交事务修改的页操作，而undo_log是回滚行记录到特定版本。二者记录的内容也不同，redo_log是物理日志，记录页的物理修改操作，而undo_log是逻辑日志，根据每行记录进行记录。  
 -->
@@ -138,7 +138,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 
 ### 1.3.2. redo log简介  
 <!--
-* redo log（重做日志） 实现持久化  
+* redo log(重做日志) 实现持久化  
 &emsp; 在innoDB的存储引擎中，事务日志通过重做(redo)日志和innoDB存储引擎的日志缓冲(InnoDB Log Buffer)实现。<font color = "red">事务开启时，事务中的操作，都会先写入存储引擎的日志缓冲中，在事务提交之前，这些缓冲的日志都需要提前刷新到磁盘上持久化，</font>这就是DBA们口中常说的“日志先行”(Write-Ahead Logging)。<font color = "red">当事务提交之后，在Buffer Pool中映射的数据文件才会慢慢刷新到磁盘。</font>此时如果数据库崩溃或者宕机，那么当系统重启进行恢复时，就可以根据redo log中记录的日志，把数据库恢复到崩溃前的一个状态。未完成的事务，可以继续提交，也可以选择回滚，这基于恢复的策略而定。  
 &emsp; 在系统启动的时候，就已经为redo log分配了一块连续的存储空间，以顺序追加的方式记录Redo Log，通过顺序IO来改善性能。所有的事务共享redo log的存储空间，它们的Redo Log按语句的执行顺序，依次交替的记录在一起。  
 -->
@@ -146,7 +146,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 &emsp; **作用：**  
 
 * <font color = "red">确保事务的持久性。</font>防止在发生故障的时间点，尚有脏页未写入磁盘，在重启mysql服务的时候，根据redo log进行重做，从而达到事务的持久性这一特性。  
-* 提高性能：先写Redo log记录更新。当等到有空闲线程、内存不足、Redo log满了时 刷脏。写 Redo log 是顺序写入，刷脏是随机写，节省的是随机写磁盘的 IO 消耗（转成顺序写），所以性能得到提升。此技术称为WAL技术：Write-Ahead Logging，它的关键点就是先写日记磁盘，再写数据磁盘。  
+* 提高性能：先写Redo log记录更新。当等到有空闲线程、内存不足、Redo log满了时 刷脏。写 Redo log 是顺序写入，刷脏是随机写，节省的是随机写磁盘的 IO 消耗(转成顺序写)，所以性能得到提升。此技术称为WAL技术：Write-Ahead Logging，它的关键点就是先写日记磁盘，再写数据磁盘。  
 
 
 ### 1.3.3. 写入流程及刷盘时机
@@ -156,9 +156,9 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 
 |参数值	|含义|
 |---|---|
-|0（延迟写）	|事务提交时不会将redo log buffer中日志写入到os buffer，而是每秒写入os buffer并调用fsync()写入到redo log file中。也就是说设置为0时是(大约)每秒刷新写入到磁盘中的，当系统崩溃，会丢失1秒钟的数据。|
-|1（实时写，实时刷）	|事务每次提交都会将redo log buffer中的日志写入os buffer并调用fsync()刷到redo log file中。这种方式即使系统崩溃也不会丢失任何数据，但是因为每次提交都写入磁盘，IO的性能较差。|
-|2（实时写，延迟刷）	|每次提交都仅写入到os buffer，然后是每秒调用fsync()将os buffer中的日志写入到redo log file。|
+|0(延迟写)	|事务提交时不会将redo log buffer中日志写入到os buffer，而是每秒写入os buffer并调用fsync()写入到redo log file中。也就是说设置为0时是(大约)每秒刷新写入到磁盘中的，当系统崩溃，会丢失1秒钟的数据。|
+|1(实时写，实时刷)	|事务每次提交都会将redo log buffer中的日志写入os buffer并调用fsync()刷到redo log file中。这种方式即使系统崩溃也不会丢失任何数据，但是因为每次提交都写入磁盘，IO的性能较差。|
+|2(实时写，延迟刷)	|每次提交都仅写入到os buffer，然后是每秒调用fsync()将os buffer中的日志写入到redo log file。|
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-142.png)  
 
@@ -172,7 +172,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 &emsp; <font color = "lime">redo log是循环写的，redo log不是记录数据页更新之后的状态，而是记录这个页做了什么改动。</font>  
 &emsp; redo log是固定大小的，比如可以配置为一组4个文件，每个文件的大小是1GB，那么日志总共就可以记录4GB的操作。从头开始写，写到末尾就又回到开头循环写，如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-94.png)  
-&emsp; 图中展示了一组4个文件的redo log日志，checkpoint是当前要擦除的位置，擦除记录前需要先把对应的数据落盘（更新内存页，等待刷脏页）。write pos 到 checkpoint之间的部分可以用来记录新的操作，如果 write pos和checkpoint 相遇，说明 redolog 已满，这个时候数据库停止进行数据库更新语句的执行，转而进行 redo log 日志同步到磁盘中。checkpoint 到 write pos 之间的部分等待落盘（先更新内存页，然后等待刷脏页）。  
+&emsp; 图中展示了一组4个文件的redo log日志，checkpoint是当前要擦除的位置，擦除记录前需要先把对应的数据落盘(更新内存页，等待刷脏页)。write pos 到 checkpoint之间的部分可以用来记录新的操作，如果 write pos和checkpoint 相遇，说明 redolog 已满，这个时候数据库停止进行数据库更新语句的执行，转而进行 redo log 日志同步到磁盘中。checkpoint 到 write pos 之间的部分等待落盘(先更新内存页，然后等待刷脏页)。  
 &emsp; 有了 redo log 日志，那么在数据库进行异常重启的时候，可以根据 redo log 日志进行恢复，也就达到了 crash-safe。  
 &emsp; redo log 用于保证 crash-safe 能力。innodb_flush_log_at_trx_commit 这个参数设置成 1 的时候，表示每次事务的 redo log 都直接持久化到磁盘。这个参数建议设置成 1，这样可以保证 MySQL 异常重启之后数据不丢失。  
 
@@ -201,11 +201,11 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 &emsp; 由此可以看出，重做日志通过不止一种方式写入到磁盘，尤其是对于第一种方式，Innodb_log_buffer到重做日志文件是Master Thread线程的定时任务。  
 &emsp; 因此重做日志的写盘，并不一定是随着事务的提交才写入重做日志文件的，而是随着事务的开始，逐步开始的。  
 
-&emsp; 在 MySQL 中，如果每一次的更新操作都需要写进磁盘，然后磁盘也要找到对应的那条记录，然后再更新，整个过程 IO 成本、查找成本都很高。为了解决这个问题，MySQL 的设计者就采用了日志（redo log）来提升更新效率。  
+&emsp; 在 MySQL 中，如果每一次的更新操作都需要写进磁盘，然后磁盘也要找到对应的那条记录，然后再更新，整个过程 IO 成本、查找成本都很高。为了解决这个问题，MySQL 的设计者就采用了日志(redo log)来提升更新效率。  
 &emsp; 而日志和磁盘配合的整个过程，其实就是 MySQL 里的 WAL 技术，WAL 的全称是 Write-Ahead Logging，它的关键点就是先写日志，再写磁盘。  
-&emsp; 具体来说，<font color = "lime">当有一条记录需要更新的时候，InnoDB 引擎就会先把记录写到 redo log（redolog buffer）里面，并更新内存（buffer pool），这个时候更新就算完成了。同时，InnoDB 引擎会在适当的时候（如系统空闲时），将这个操作记录更新到磁盘里面（刷脏页）。</font>  
+&emsp; 具体来说，<font color = "lime">当有一条记录需要更新的时候，InnoDB 引擎就会先把记录写到 redo log(redolog buffer)里面，并更新内存(buffer pool)，这个时候更新就算完成了。同时，InnoDB 引擎会在适当的时候(如系统空闲时)，将这个操作记录更新到磁盘里面(刷脏页)。</font>  
 
-## 1.4. binlog，二进制日志（归档日志）  
+## 1.4. binlog，二进制日志(归档日志)  
 ### 1.4.1. 简介  
 &emsp; binlog用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。  
 &emsp; binlog是通过追加的方式进行写入的，可以通过max_binlog_size参数设置每个binlog文件的大小，当文件大小达到给定值之后，会生成新的文件来保存日志。  
@@ -253,7 +253,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 ---
 &emsp; <font color = "red">二进制日志的作用之一是还原数据库的，这与redo log很类似，</font>很多人混淆过，但是两者有本质的不同  
 
-* 作用不同：redo log是保证事务的持久性的，是事务层面的，binlog作为还原的功能，是数据库层面的（当然也可以精确到事务层面的），虽然都有还原的意思，但是其保护数据的层次是不一样的。
+* 作用不同：redo log是保证事务的持久性的，是事务层面的，binlog作为还原的功能，是数据库层面的(当然也可以精确到事务层面的)，虽然都有还原的意思，但是其保护数据的层次是不一样的。
 * 内容不同：<font color = "lime">redo log是物理日志，是数据页面的修改之后的物理记录，binlog是逻辑日志，可以简单认为记录的就是sql语句。</font>
 * 另外，两者日志产生的时间，可以释放的时间，在可释放的情况下清理机制，都是完全不同的。
 * 恢复数据时候的效率，基于物理日志的redo log恢复数据的效率要高于语句逻辑日志的binlog。
@@ -308,12 +308,12 @@ Redo log 容灾恢复过程
 
 MySQL的处理过程如下
 
-    判断 redo log 是否完整，如果判断是完整（commit）的，直接用 Redo log 恢复
+    判断 redo log 是否完整，如果判断是完整(commit)的，直接用 Redo log 恢复
     如果 redo log 只是预提交 prepare 但不是 commit 状态，这个时候就会去判断 binlog 是否完整，如果完整就提交 Redo log，用 Redo log 恢复，不完整就回滚事务，丢弃数据。
 
 只有在 redo log 状态为 prepare 时，才会去检查 binlog 是否存在，否则只校验 redo log 是否是 commit 就可以啦。怎么检查 binlog：一个完整事务 binlog 结尾有固定的格式。
 -->
-&emsp; 数据库关闭只有2种情况，正常关闭，非正常关闭（包括数据库实例crash及服务器crash）。正常关闭情况，所有buffer pool里边的脏页都会都会刷新一遍到磁盘，同时记录最新LSN到ibdata文件的第一个page中。而非正常关闭来不及做这些操作，也就是没及时把脏数据flush到磁盘，也没有记录最新LSN到ibdata file。  
+&emsp; 数据库关闭只有2种情况，正常关闭，非正常关闭(包括数据库实例crash及服务器crash)。正常关闭情况，所有buffer pool里边的脏页都会都会刷新一遍到磁盘，同时记录最新LSN到ibdata文件的第一个page中。而非正常关闭来不及做这些操作，也就是没及时把脏数据flush到磁盘，也没有记录最新LSN到ibdata file。  
 &emsp; 当重启数据库实例的时候，数据库做2个阶段性操作：redo log处理，undo log及binlog 处理。(在崩溃恢复中还需要回滚没有提交的事务，提交没有提交成功的事务。<font color = "red">由于回滚操作需要undo日志的支持，undo日志的完整性和可靠性需要redo日志来保证，所以崩溃恢复先做redo前滚，然后做undo回滚。</font>)
 
 <!-- 
