@@ -166,6 +166,7 @@
             * [Double Write](/docs/SQL/DoubleWrite.md)  
             * [MySql事务日志](/docs/SQL/log.md)  
             * [BinLog使用](/docs/SQL/BinLog.md)  
+        * [insert插入流程](/docs/SQL/insert.md)  
         * [索引底层原理](/docs/SQL/IndexPrinciple.md)  
         * [各种索引](/docs/SQL/IndexKnowledge.md)  
         * [MySql事务](/docs/SQL/transaction.md)  
