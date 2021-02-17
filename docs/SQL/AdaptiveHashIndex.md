@@ -1,7 +1,7 @@
 
 
 
-# 1. 自适应哈希索引  
+# 自适应哈希索引  
 <!-- 
  InnoDB到底支不支持哈希索引，为啥不同的人说的不一样？ 
  https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651962875&idx=1&sn=c6b3e7dc8a41609cfe070026bd27b71d&chksm=bd2d08278a5a813108b1f4116341ff31170574b9098e2708cbc212b008a1fac8dfd1ffeabc6b&scene=21#wechat_redirect
