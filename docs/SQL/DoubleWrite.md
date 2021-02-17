@@ -14,10 +14,9 @@
 <!-- 
 InnoDB的Double Write
 https://mp.weixin.qq.com/s?__biz=MzI0MjE4NTM5Mg==&mid=2648976025&idx=1&sn=3ee3d20a3f22528f9ba600dbbd338a64&chksm=f110af46c6672650cca073fd7f6ebd1a87944f98ba40843cdcfaca6ceff8745f1c079555af69&scene=178&cur_album_id=1536468200543027201#rd
- double write buffer，你居然没听过？ 
- https://mp.weixin.qq.com/s/bkoQ9g4cIcFFZBnpVh8ERQ
+double write buffer，你居然没听过？ 
+https://mp.weixin.qq.com/s/bkoQ9g4cIcFFZBnpVh8ERQ
 -->
-&emsp; **<font color = "lime">总结：</font>**  
 &emsp; MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
 &emsp; 在应用(apply)重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。  
 1. 在异常崩溃时，如果不出现“页数据损坏”，能够通过redo恢复数据；
