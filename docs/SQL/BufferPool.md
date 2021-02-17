@@ -46,8 +46,6 @@ https://mp.weixin.qq.com/s/rCTJDh3_WbEAbGLZdZiQzg
 
 ## 1.2. 原理
 &emsp; 如何管理与淘汰缓冲池，使得性能最大化呢？在介绍具体细节之前，先介绍下“预读”的概念。  
-
-### 1.2.1. 前言：预读  
 <!-- 
 预读(read ahead)  
 &emsp; InnoDB 在 I/O 的优化上有个比较重要的特性为预读，<font color = "red">当 InnoDB 预计某些 page 可能很快就会需要用到时，它会异步地将这些 page 提前读取到缓冲池(buffer pool)中，</font>这其实有点像空间局部性的概念。  
@@ -57,6 +55,8 @@ https://mp.weixin.qq.com/s/rCTJDh3_WbEAbGLZdZiQzg
 &emsp; 线性预读(Linear read-ahead)：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64(一个 extend 上限就是64页)的任何值，默认值为56，值越高，访问模式检查越严格。  
 &emsp; 随机预读(Random read-ahead): 随机预读方式则是表示当同一个 extent 中的一些 page 在 buffer pool 中发现时，Innodb 会将该 extent 中的剩余 page 一并读到 buffer pool中，由于随机预读方式给 Innodb code 带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。  
 -->
+
+### 1.2.1. 前言：预读  
 &emsp; 什么是预读？  
 &emsp; 磁盘读写，并不是按需读取，而是按页读取， **<font color = "lime">一次至少读一页数据(一般是4K)，如果未来要读取的数据就在页中，就能够省去后续的磁盘IO，提高效率。</font>**  
 

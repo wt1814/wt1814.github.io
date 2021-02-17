@@ -43,31 +43,31 @@ https://mp.weixin.qq.com/s/StjX9bi-YDANrMX21Pn_Uw
 
 &emsp; MySQL5.5及之后版本默认的存储引擎：InnoDB。  
 
-&emsp; InnoDB的特性：    
+&emsp; **<font color = "red">InnoDB的特性：</font>**    
 
 * 支持事务  
 * 支持行锁，采用MVCC来支持高并发  
 * 支持外键  
 * 支持崩溃后的安全恢复  
 * 不支持全文索引  
-* InnoDB 不保存表的具体行数，执行select count(*) from table 时需要全表扫描。  
+* InnoDB 不保存表的具体行数，执行select count(*) from table时需要全表扫描。  
 
 <!-- 
-    支持事务操作，具有事务 ACID 隔离特性，默认的隔离级别是可重复读(repetable-read)、通过MVCC(并发版本控制)来实现的。能够解决脏读和不可重复读的问题。
-    InnoDB 支持外键操作。
-    InnoDB 默认的锁粒度行级锁，并发性能比较好，会发生死锁的情况。
-    和 MyISAM 一样的是，InnoDB 存储引擎也有 .frm文件存储表结构 定义，但是不同的是，InnoDB 的表数据与索引数据是存储在一起的，都位于 B+ 数的叶子节点上，而 MyISAM 的表数据和索引数据是分开的。
-    InnoDB 有安全的日志文件，这个日志文件用于恢复因数据库崩溃或其他情况导致的数据丢失问题，保证数据的一致性。
-    InnoDB 和 MyISAM 支持的索引类型相同，但具体实现因为文件结构的不同有很大差异。
-    增删改查性能方面，果执行大量的增删改操作，推荐使用 InnoDB 存储引擎，它在删除操作时是对行删除，不会重建表。
+支持事务操作，具有事务 ACID 隔离特性，默认的隔离级别是可重复读(repetable-read)、通过MVCC(并发版本控制)来实现的。能够解决脏读和不可重复读的问题。
+InnoDB 支持外键操作。
+InnoDB 默认的锁粒度行级锁，并发性能比较好，会发生死锁的情况。
+和 MyISAM 一样的是，InnoDB 存储引擎也有 .frm文件存储表结构 定义，但是不同的是，InnoDB 的表数据与索引数据是存储在一起的，都位于 B+ 数的叶子节点上，而 MyISAM 的表数据和索引数据是分开的。
+InnoDB 有安全的日志文件，这个日志文件用于恢复因数据库崩溃或其他情况导致的数据丢失问题，保证数据的一致性。
+InnoDB 和 MyISAM 支持的索引类型相同，但具体实现因为文件结构的不同有很大差异。
+增删改查性能方面，果执行大量的增删改操作，推荐使用 InnoDB 存储引擎，它在删除操作时是对行删除，不会重建表。
 
 InnoDB引擎有几个重点特性，为其带来了更好的性能和可靠性：
 
-    插入缓冲(Insert Buffer)
-    两次写(Double Write)
-    自适应哈希索引(Adaptive Hash Index)
-    异步IO(Async IO)
-    刷新邻接页(Flush Neighbor Page)
+插入缓冲(Insert Buffer)
+两次写(Double Write)
+自适应哈希索引(Adaptive Hash Index)
+异步IO(Async IO)
+刷新邻接页(Flush Neighbor Page)
 -->
 
 ### 1.2.1. ***InnoDB体系结构  
@@ -79,7 +79,7 @@ https://mp.weixin.qq.com/s/nrb0OaiD_QRtPGREpUr0HA
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-131.png)  
 &emsp; Innodb体系结构包含后台线程、内存池和磁盘上的结构。  
 
-&emsp; InnoDB架构图二(来自官方文档https://dev.mysql.com/doc/refman/5.7/en/innodb-architecture.html)：
+&emsp; InnoDB架构图二(来自官方文档 https://dev.mysql.com/doc/refman/5.7/en/innodb-architecture.html )
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-132.png)  
 
 ### 1.2.2. Innodb后台线程 
@@ -93,7 +93,7 @@ https://mp.weixin.qq.com/s/2dUIAot8OKHiWar44qRi-A
 &emsp; 主要负责将缓冲池中的数据异步刷新到磁盘，保证数据的一致性，包括脏页的刷新、合并插入缓冲(INSERT BUFFER)、UNDO页的回收等等。
 * IO Thread  
 &emsp; InnoDB存储引擎中大量使用AIO(Async IO)来处理写IO的请求，而IO Thread的工作主要就是负责这些IO请求的回调。  
-&emsp; InnoDB 1.0版本之前一共有4个IO Thread，分别是write、read、insert buffer和log IO thread。从1.0.x版本开始 ，read和write增加到4个，一共10个IO Thread，阿里云的RDS就是这10个IO Thread。  
+&emsp; **InnoDB 1.0版本之前一共有4个IO Thread，分别是write、read、insert buffer和log IO thread。** 从1.0.x版本开始 ，read和write增加到4个，一共10个IO Thread，阿里云的RDS就是这10个IO Thread。  
 * Purge Thread  
 &emsp; 事务被提交后，其所使用的undolog可能不再需要了，purge thread来回收已经使用并分配的undo页。在InnoDB 1.1版本之前undo页的回收也就是purge操作都是在master thread中进行的，InnoDB1.1版本之后，就分配到单独的线程中执行，也就是purge thread，尽管现阶段使用的阿里云的RDS是基于mysql 5.5版本的，5.5对应的InnoDB就是1.1.x版本，但是配置的purge thread是为0的，目测应该是master thread进行purge操作来回收已经分配并使用的undo页。  
 * Page Cleaner Thread  
