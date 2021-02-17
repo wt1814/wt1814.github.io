@@ -2,9 +2,17 @@
 <!-- TOC -->
 
 - [1. 写缓冲(change buffer)](#1-写缓冲change-buffer)
+    - [1.1. 写缓冲简介](#11-写缓冲简介)
+    - [1.2. 写缓存的流程](#12-写缓存的流程)
+    - [1.3. 使用场景](#13-使用场景)
+    - [1.4. 相关参数](#14-相关参数)
 
 <!-- /TOC -->
 
+
+&emsp; **<font color = "clime">总结：当使用普通索引，修改数据时，没有命中缓冲池时，会使用到写缓冲(写缓冲是缓冲池的一部分)。在写缓冲中记录这个操作，一次内存操作；写入redo log，一次磁盘顺序写操作。</font>**  
+
+# 1. 写缓冲(change buffer)
 <!-- 
 Mysql-Innodb特性之插入缓存 
 https://mp.weixin.qq.com/s/bjKbi0jKXjHUitGuCh-kbg
@@ -13,9 +21,7 @@ https://mp.weixin.qq.com/s/6t0_XByG8-yuyB0YaLuuBA
 https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 -->
 
-# 1. 写缓冲(change buffer)
-&emsp; **<font color = "clime">总结：当使用普通索引，修改数据时，没有命中缓冲池时，会使用到写缓冲(写缓冲是缓冲池的一部分)。在写缓冲中记录这个操作，一次内存操作；写入redo log，一次磁盘顺序写操作。</font>**  
-
+## 1.1. 写缓冲简介
 <!-- 
 在进行数据插入时必然会引起索引的变化，聚集索引不必说，一般都是递增有序的。而非聚集索引就不一定是什么数据了，其离散性导致了在插入时结构的不断变化，从而导致插入性能降低。
 所以为了解决非聚集索引插入性能的问题，InnoDB引擎 创造了Insert Buffer。
@@ -43,7 +49,8 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; <font color = "lime">写缓冲的使用需要满足以下两个条件：</font>1. 索引是辅助索引。2. <font color = "lime">索引不是唯一的。</font>  
 
     辅助索引不能是唯一的，因为在把它写到插入缓冲时，并不去查找索引页的情况。如果去查找肯定又会出现离散读的情况，写缓冲就失去了意义。  
-    
+
+## 1.2. 写缓存的流程
 &emsp; **写缓冲的使用：**  
 &emsp; 对于数据库的写请求。  
 &emsp; 情况一  
@@ -95,6 +102,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; (3)恢复索引页，放到缓冲池LRU里；  
 &emsp; <font color = "lime">可以看到，40这一页，在真正被读取时，才会被加载到缓冲池中。</font>  
 
+## 1.3. 使用场景
 &emsp; **什么业务场景，适合开启InnoDB的写缓冲机制？**  
 * 不适合使用写缓冲  
 &emsp; (1)数据库都是唯一索引；  
@@ -105,6 +113,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; (2)业务是写多读少，或者不是写后立刻读取；  
 &emsp; 可以使用写缓冲，将原本每次写入都需要进行磁盘IO的SQL，优化定期批量写磁盘。  
 
+## 1.4. 相关参数
 &emsp; **有关写缓冲的参数：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-100.png)  
 &emsp; 参数：innodb_change_buffer_max_size  
