@@ -26,7 +26,9 @@
 <!-- /TOC -->
 
 # 1. 复制的问题和解决方案  
-
+1. 复制过程
+2. 错误
+3. 性能
 
 ## 1.1. 《mysql深入浅出开发、优化与管理维护》
 
@@ -42,7 +44,7 @@ https://www.cnblogs.com/gered/p/11388986.html#_label0_7
 
 &emsp; 然后 show master status\G  
 &emsp; 然后 show slave status\G 来查看从库同步状态 或者重新 change master to....  
-&emsp; 然后 select master_pos_wait('mysql-bin.00002','389'); （即刚刚show master status找到的文件及位置），如果为1 表示超时退出 ，如果为0 则标识主从同步。  
+&emsp; 然后 select master_pos_wait('mysql-bin.00002','389'); (即刚刚show master status找到的文件及位置)，如果为1 表示超时退出 ，如果为0 则标识主从同步。  
 &emsp; 最后再主库 unlock tables; 解锁  
 
 ### 1.1.3. 如何查看主从延迟？  
@@ -50,7 +52,7 @@ https://www.cnblogs.com/gered/p/11388986.html#_label0_7
 
 ### 1.1.4. 跳过错误  
 &emsp; 跳过错误有两种方式：
-1. 跳过指定数量的事务：（建议如果已经出现了错误，使用这种办法）
+1. 跳过指定数量的事务：(建议如果已经出现了错误，使用这种办法)
 
 ```
 mysql>slave stop;
@@ -58,22 +60,22 @@ mysql>SET GLOBAL SQL_SLAVE_SKIP_COUNTER = 1        #跳过一个事务
 mysql>slave start
 ```
 
-2. 修改mysql的配置文件，通过slave_skip_errors参数来跳所有错误或指定类型的错误（建议配置时使用这种办法）
+2. 修改mysql的配置文件，通过slave_skip_errors参数来跳所有错误或指定类型的错误(建议配置时使用这种办法)
 vi /etc/my.cnf
 [mysqld]
 
 ```xml
-#slave-skip-errors=1062,1053,1146 #跳过指定error no类型的错误，DDL错误类型包含 1007,1008,1050,1051,1054,1060,1061,1068,1091,1146（5.6可以用这个）
+#slave-skip-errors=1062,1053,1146 #跳过指定error no类型的错误，DDL错误类型包含 1007,1008,1050,1051,1054,1060,1061,1068,1091,1146(5.6可以用这个)
 #slave-skip-errors=ddl_exist_errors #跳过DDL错误，all：跳过所有错误(mysql5.7才有ddl_exist_errors)  
 ```
 
 ### 1.1.5. 如何提高复制性能？  
-&emsp; 并行复制（5.6之后才有）  
+&emsp; 并行复制(5.6之后才有)  
 
 ```xml
 #如果业务正在运行，那么直接在从库运行可能#5.7加入参数
-slave-parallel-type=LOGICAL_CLOCK #5.7新增。这里设置的是基于组条件的（同一数据库内的也可以用多个SQL 重做线程）
-slave-parallel-workers=4　　#默认为4#5.6加入参数#因为5.6的slave-parallel-type 参数，只能为DATABASE，是基于不同数据库之间的（也就是schema）并行，不用设置
+slave-parallel-type=LOGICAL_CLOCK #5.7新增。这里设置的是基于组条件的(同一数据库内的也可以用多个SQL 重做线程)
+slave-parallel-workers=4　　#默认为4#5.6加入参数#因为5.6的slave-parallel-type 参数，只能为DATABASE，是基于不同数据库之间的(也就是schema)并行，不用设置
 slave-parallel-workers=2
 ```
 
@@ -105,8 +107,8 @@ slave-parallel-workers=2
 3. 拆分效率较低的复制 SQL，分离复杂语句中的 SELECT 和 UPDATE 语句，降低复制消耗，提高效率。
 
 #### 1.2.1.1. 并行复制  
-&emsp; 可以使用并行复制（并行是指从库多个SQL线程并行执行relay log），解决从库复制延迟的问题。  
-&emsp; MySQL 5.7中引入基于组提交的并行复制，其核心思想：一个组提交的事务都是可以并行回放，因为这些事务都已进入到事务的prepare阶段，则说明事务之间没有任何冲突（否则就不可能提交）。  
+&emsp; 可以使用并行复制(并行是指从库多个SQL线程并行执行relay log)，解决从库复制延迟的问题。  
+&emsp; MySQL 5.7中引入基于组提交的并行复制，其核心思想：一个组提交的事务都是可以并行回放，因为这些事务都已进入到事务的prepare阶段，则说明事务之间没有任何冲突(否则就不可能提交)。  
 &emsp; 判断事务是否处于一个组是通过last_committed变量，last_committed表示事务提交的时候，上次事务提交的编号，如果事务具有相同的last_committed，则表示这些事务都在一组内，可以进行并行的回放。  
 
 ### 1.2.2. 数据损坏或丢失
@@ -175,16 +177,16 @@ slave-parallel-workers=2
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-62.png)  
 1. 事务 1 使用获取 tab2 数据时，加入共享锁，并插入 tab1；  
 2. 同时，事务 2 更新 tab2 数据时，由于写操作的排它锁机制，无法获取 tab2 的锁，等待；  
-3. 事务 1 插入数据后，删除共享锁，提交事务，写入 binlog（此时 tab1 和 tab2 的记录值 都是 99）；  
-4. 事务 2 获取到锁，更新数据，提交事务，写入 binlog（此时 tab1 的记录值为 99，tab2 的记录值为 100）。  
+3. 事务 1 插入数据后，删除共享锁，提交事务，写入 binlog(此时 tab1 和 tab2 的记录值 都是 99)；  
+4. 事务 2 获取到锁，更新数据，提交事务，写入 binlog(此时 tab1 的记录值为 99，tab2 的记录值为 100)。  
 
-&emsp; 上述过程中，第二步非常重要。事务 2 尝试去更新 tab2 表，这需要在更新的行上加排他锁（写锁）。排他锁与其他锁不相容，包括事务 1 在行记录上加的共享锁。因此事务 2 需要等待事务 1 完成。备库在根据 binlog 进行复制时，会按同样的顺序先执行事务 1，再执行事务 2。主备数据一致。  
+&emsp; 上述过程中，第二步非常重要。事务 2 尝试去更新 tab2 表，这需要在更新的行上加排他锁(写锁)。排他锁与其他锁不相容，包括事务 1 在行记录上加的共享锁。因此事务 2 需要等待事务 1 完成。备库在根据 binlog 进行复制时，会按同样的顺序先执行事务 1，再执行事务 2。主备数据一致。  
 
 &emsp; 同样的过程，如果事务 1 在第一步时没有加共享锁，流程就变成：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-63.png)  
-1. 事务 1 无锁读取 tab2 数据，并插入 tab1（此时 tab1 和 tab2 的记录值 都是 99）；  
-2. 同时，事务 2 更新 tab2 数据，先与事务 1 提交事务，写入 binlog（此时 tab1 的记录值为 99，tab2 的记录值为 100）；  
-3. 事务 1 提交事务，写入 binlog（此时记录值无变化）；  
+1. 事务 1 无锁读取 tab2 数据，并插入 tab1(此时 tab1 和 tab2 的记录值 都是 99)；  
+2. 同时，事务 2 更新 tab2 数据，先与事务 1 提交事务，写入 binlog(此时 tab1 的记录值为 99，tab2 的记录值为 100)；  
+3. 事务 1 提交事务，写入 binlog(此时记录值无变化)；  
 
 &emsp; mysqldump --single-transaction --all-databases --master-data=1 --host=server1 | mysql --host=server2  
 &emsp; 要注意的是，上述过程中，事务 2 先提交，先写入 binlog。在备库复制时，同样先执行事务 2，将 tab2 的记录值更新为 100。然后执行事务 1，读取 tab2 数据，插入 tab1，所以最终的结果是，tab1 的记录值和 tab2 的记录值都是 100。很明显，数据和主库有差异。  

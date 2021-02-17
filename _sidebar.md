@@ -149,7 +149,6 @@
         * [数据库分布式实现](/docs/SQL/subRealize.md)  
         * [MyCat中间件](/docs/SQL/MyCat.md)  
     * [数据库连接池](/docs/SQL/connectionPool.md)  
-        * [HikariCPConnectionPool](/docs/SQL/connectionPool.md)     
         * [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
         * [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
     * [MySQL监控](/docs/SQL/MySqlMonitor.md)  

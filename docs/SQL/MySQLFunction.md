@@ -40,7 +40,7 @@ select case job_level when '1' then '1111' when '2' then '2222' when '3' then '3
 ```sql
 update employee set e_wage = case when job_level = '1' then e_wage*1.97 when job_level = '2' then e_wage*1.07 when job_level = '3' then e_wage*1.06 else e_wage*1.05 end
 ```
-&emsp; 比较：两种格式（列名所在位置不同），可以实现相同的功能。  
+&emsp; 比较：两种格式(列名所在位置不同)，可以实现相同的功能。  
 &emsp; 简单Case函数的写法相对比较简洁，但是和Case搜索函数相比，功能方面会有些限制，比如写判断式。还有一个需要注意的问题，Case函数只返回第一个符合条件的值，剩下的Case部分将会被自动忽略。  
 
 ### 1.1.2. IF函数用法  

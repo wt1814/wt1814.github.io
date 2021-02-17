@@ -29,11 +29,11 @@
 # 1. 主从复制 
 &emsp; **<font color = "red">部分参考《高性能MySql》</font>**
 <!-- 
-大厂如何使用binlog解决多机房同步mysql数据（一）？ 
+大厂如何使用binlog解决多机房同步mysql数据(一)？ 
 https://mp.weixin.qq.com/s/CXJHvTofKix6rR-ZZgeT_w
-大厂如何基于binlog解决多机房同步mysql数据（二）？ 
+大厂如何基于binlog解决多机房同步mysql数据(二)？ 
 https://mp.weixin.qq.com/s/d6cjgj8rxqKTw9AkKkpG9A
-基于binlog的canal组件有哪些使用场景（三）？ 
+基于binlog的canal组件有哪些使用场景(三)？ 
 https://mp.weixin.qq.com/s/X7-V7EQcnE0cK-NCfdsS1w
 -->
 ## 1.1. 主从复制简介  
@@ -91,8 +91,8 @@ https://blog.csdn.net/andong154564667/article/details/82117727
 
 #### 1.2.3.1. 基于语句的复制  
 &emsp; 基于SQL语句的复制(statement-based replication, SBR)，每一条会修改数据的sql语句会记录到binlog中。  
-&emsp; **优点：** 不需要记录每一条SQL语句与每行的数据变化（不记录select操作），这样子binlog的日志也会比较少，减少了磁盘IO，提高性能。  
-&emsp; **缺点：** <font color = "red">并非所有修改数据的语句都可以使用基于语句的复制进行复制。使用基于语句的复制时，任何非确定性行为都难以复制。</font>此类数据修改语言（DML）语句的示例包括以下内容：  
+&emsp; **优点：** 不需要记录每一条SQL语句与每行的数据变化(不记录select操作)，这样子binlog的日志也会比较少，减少了磁盘IO，提高性能。  
+&emsp; **缺点：** <font color = "red">并非所有修改数据的语句都可以使用基于语句的复制进行复制。使用基于语句的复制时，任何非确定性行为都难以复制。</font>此类数据修改语言(DML)语句的示例包括以下内容：  
         
     依赖于UDF或不确定的存储程序的语句，因为这样的UDF或存储程序返回的值取决于提供给它的参数以外的因素。  
     不带ORDER BY的LIMIT子句的DELETE和UPDATE语句是不确定的。 
@@ -116,7 +116,7 @@ https://blog.csdn.net/andong154564667/article/details/82117727
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-11.png)  
 
 * 一主一从：  
-&emsp; 主备架构。只有主库提供读写服务；备库冗余作故障转移，即主库挂了，keepalive（一种工具）会自动切换到备库。  
+&emsp; 主备架构。只有主库提供读写服务；备库冗余作故障转移，即主库挂了，keepalive(一种工具)会自动切换到备库。  
 * 一主多从：  
 &emsp; 一台Slave承受不住读请求压力时，可以添加多台，进行负载均衡，分散读压力。还可以对多台Slave进行分工，服务于不同的系统，例如一部分Slave负责网站前台的读请求，另一部分Slave负责后台统计系统的请求。因为不同系统的查询需求不同，对Slave分工后，可以创建不同的索引，使其更好的服务于目标系统。  
 &emsp; 主库单点，从库高可用。一旦主库挂了，写服务也就无法提供。  
@@ -151,10 +151,10 @@ https://mp.weixin.qq.com/s/RZ7b8IKC7N3E87DaZhWaVA
 &emsp; [主从复制的问题](/docs/SQL/replicationProblem.md)  
 
 ## 1.5. 读写分离  
-&emsp; 读写分离在数据库主从复制技术基础上实现（主从复制针对写入数据，读写分离主要针对读取数据）。  
+&emsp; 读写分离在数据库主从复制技术基础上实现(主从复制针对写入数据，读写分离主要针对读取数据)。  
 &emsp; **读写分离带来的问题：**  
 
-* 数据不一致问题（主从数据同步延迟问题）：当主库的TPS并发较高时，由于主库上面是多线程写入的，而从库的SQL线程是单线程的，导致从库SQL可能会跟不上主库的处理速度。因此有可能出现在master节点中已经插入了数据，但是从slave节点却读取不到的问题。 **<font color = "red">对于一些强一致性的业务场景，要求插入后必须能读取到，对于这种情况，需要提供一种方式，让读请求也可以走主库。</font>**  
+* 数据不一致问题(主从数据同步延迟问题)：当主库的TPS并发较高时，由于主库上面是多线程写入的，而从库的SQL线程是单线程的，导致从库SQL可能会跟不上主库的处理速度。因此有可能出现在master节点中已经插入了数据，但是从slave节点却读取不到的问题。 **<font color = "red">对于一些强一致性的业务场景，要求插入后必须能读取到，对于这种情况，需要提供一种方式，让读请求也可以走主库。</font>**  
 &emsp; 延迟的解决：    
     1. 网络方面：将从库分布在相同局域网内或网络延迟较小的环境中。  
     2. 硬件方面：从库配置更好的硬件，提升随机写的性能。  

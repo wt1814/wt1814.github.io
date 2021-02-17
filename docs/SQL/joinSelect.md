@@ -47,18 +47,18 @@ https://mp.weixin.qq.com/s/u66ll2Rg9mqP4WSfEK8R1g
 --> 
 #### 1.1.1.1. 常用的JOIN  
 &emsp; 内连接、左外连接、右外连接、全外连接。  
-&emsp; <font color = "red" >左外连接</font>：根据两张表的关系（外键关联），笛卡尔过滤，也就是求出两张表的交集，<font color = "red">如果交集中，左边表的行， 在右边表中没有匹配，则该条记录左边表有数据， 右边表所有的字段都为null（如果左表数据，在右表中有多行匹配，则查询结果左表为多行显示）。</font>  
+&emsp; <font color = "red" >左外连接</font>：根据两张表的关系(外键关联)，笛卡尔过滤，也就是求出两张表的交集，<font color = "red">如果交集中，左边表的行， 在右边表中没有匹配，则该条记录左边表有数据， 右边表所有的字段都为null(如果左表数据，在右表中有多行匹配，则查询结果左表为多行显示)。</font>  
 
 1. INNER JOIN  
-&emsp; INNER JOIN 一般被译作内连接。内连接查询能将左表（表 A）和右表（表 B）中能关联起来的数据连接后返回。  
+&emsp; INNER JOIN 一般被译作内连接。内连接查询能将左表(表 A)和右表(表 B)中能关联起来的数据连接后返回。  
 &emsp; 文氏图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-65.png)  
 2. LEFT JOIN  
-&emsp; LEFT JOIN 一般被译作左连接，也写作 LEFT OUTER JOIN。左连接查询会返回左表（表 A）中所有记录，不管右表（表 B）中有没有关联的数据。在右表中找到的关联数据列也会被一起返回。  
+&emsp; LEFT JOIN 一般被译作左连接，也写作 LEFT OUTER JOIN。左连接查询会返回左表(表 A)中所有记录，不管右表(表 B)中有没有关联的数据。在右表中找到的关联数据列也会被一起返回。  
 &emsp; 文氏图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-66.png)  
 3. RIGHT JOIN  
-&emsp; RIGHT JOIN 一般被译作右连接，也写作 RIGHT OUTER JOIN。右连接查询会返回右表（表 B）中所有记录，不管左表（表 A）中有没有关联的数据。在左表中找到的关联数据列也会被一起返回。  
+&emsp; RIGHT JOIN 一般被译作右连接，也写作 RIGHT OUTER JOIN。右连接查询会返回右表(表 B)中所有记录，不管左表(表 A)中有没有关联的数据。在左表中找到的关联数据列也会被一起返回。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-67.png)  
 4. FULL OUTER JOIN  
 &emsp; FULL OUTER JOIN 一般被译作外连接、全连接，实际查询语句中可以写作 FULL OUTER JOIN 或 FULL JOIN。外连接查询能返回左右表里的所有记录，其中左右表里能关联起来的记录被连接后返回。  
@@ -90,7 +90,7 @@ SELECT FIRST.CNumber, SECOND.PCNumber FROM Course FIRST, Course SECOND WHERE FIR
 ```sql
 SELECT FIRST.Num,FIRST Stop,SECOND.Stop FROM Route FIRST, Route SECOND WHERE FIRST.NUM=SECOND.NUM;
 ```
-&emsp; 表Route（Num， Stop），可以表示某一线路的火车的车站线路信息。Num表示该车的车次号，Stop表示该车次停靠的城市名称。上面的代码，可以求出某一线路的火车可以联通的任意两个城市的名称。原来表Route中的每一个元组，只能表示车号和该车的某一站点的信息，实际上，这是“1Vs1”的映射关系。  
+&emsp; 表Route(Num， Stop)，可以表示某一线路的火车的车站线路信息。Num表示该车的车次号，Stop表示该车次停靠的城市名称。上面的代码，可以求出某一线路的火车可以联通的任意两个城市的名称。原来表Route中的每一个元组，只能表示车号和该车的某一站点的信息，实际上，这是“1Vs1”的映射关系。  
 
 &emsp; 对单一的列进行连接处理，示例：  
 
@@ -105,9 +105,9 @@ SELECT FIRST.Num,SECOND.Num,FIRST.Stop FROM Route FIRST, Route SECOND WHERE FRIS
 &emsp; 子查询(嵌套查询)：在一个select语句中，嵌入了另外一个select语句，那么被嵌入的select语句称之为子查询语句，外部那个select语句则称为主查询。子查询是辅助主查询的，要么充当条件，要么充当数据源。  
 
 ### 1.2.1. 子查询的位置  
-1. 子查询能够出现在Where子句中（子查询在where字句中与比较运算符、列表运算符in、存在运算符exists等一起构成查询条件，完成有关操作）；
+1. 子查询能够出现在Where子句中(子查询在where字句中与比较运算符、列表运算符in、存在运算符exists等一起构成查询条件，完成有关操作)；
 2. 也能够出现在From子句中，作为一个临时表使用；
-3. 也能够出现在Select list中，作为一个字段值（select子查询返回的结果集必须是单行）来返回。
+3. 也能够出现在Select list中，作为一个字段值(select子查询返回的结果集必须是单行)来返回。
 
 ### 1.2.2. 子查询的分类  
 #### 1.2.2.1. 标量子查询
@@ -138,7 +138,7 @@ SELECT * FROM students WHERE (height,age) = (SELECT MAX(height),MAX(age) FROM st
 ```
 
 ### 1.2.3. 关键字ALL SOME ANY
-&emsp; 逻辑运算符（NOT、AND、OR），比较运算符（=、<>、!=、>、>=、!>、<、<=、!<）。三者都作用于比较运算符和子查询之间，一般和嵌套查询一起用，some和any等效。  
+&emsp; 逻辑运算符(NOT、AND、OR)，比较运算符(=、<>、!=、>、>=、!>、<、<=、!<)。三者都作用于比较运算符和子查询之间，一般和嵌套查询一起用，some和any等效。  
 
 ### 1.2.4. 关键字In与exists
 &emsp; 示例：一个user和一个order表，具体表的内容如下  
@@ -160,7 +160,7 @@ select * from user where user.id in (select order.user_id from order)
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-3.png)  
 2. 将查询到的结果和原有的user表做一个笛卡尔积，结果如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-4.png)  
-3. 再根据 user.id IN order.user_id的条件，将结果进行筛选（既比较id列和user_id 列的值是否相等，将不相等的删除）。最后，得到两条符合条件的数据。  
+3. 再根据 user.id IN order.user_id的条件，将结果进行筛选(既比较id列和user_id 列的值是否相等，将不相等的删除)。最后，得到两条符合条件的数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-5.png)  
 
 ##### 1.2.4.1.1. 关键字in与关键字or与关键字between  
@@ -188,7 +188,7 @@ select user.* from user where exists(select order.user_id from order where user.
 
 ### 1.2.5. 子查询与连接查询的区别  
 &emsp; 表连接都可以用子查询，但不是所有子查询都能用表连接替换，子查询比较灵活，方便，形式多样，适合用于作为查询的筛选条件，而表连接更适合查看多表的数据  
-&emsp; 子查询不一定需要两个表有关联字段，而连接查询必须有字段关联（所谓的主外键关系）  
+&emsp; 子查询不一定需要两个表有关联字段，而连接查询必须有字段关联(所谓的主外键关系)  
 &emsp; 连接查询的性能优于子查询。  
 
 ----
@@ -197,7 +197,7 @@ select user.* from user where exists(select order.user_id from order where user.
 &emsp; UNION，并集；INTERSECT，交集；EXCEPT，差集。 
 
 ### 1.3.1. UNION运算符，并集  
-&emsp; UNION运算符通过组合其他两个结果表（例如TABLE1和TABLE2）并消去表中任何重复行而派生出一个结果表。当ALL随UNION一起使用时（即UNION ALL），不消除重复行。两种情况下，派生表的每一行不是来自TABLE1就是来自TABLE2。  
+&emsp; UNION运算符通过组合其他两个结果表(例如TABLE1和TABLE2)并消去表中任何重复行而派生出一个结果表。当ALL随UNION一起使用时(即UNION ALL)，不消除重复行。两种情况下，派生表的每一行不是来自TABLE1就是来自TABLE2。  
 &emsp; UNION内部的SELECT语句必须拥有相同数量的列。列也必须拥有相似的数据类型。同时，每条SELECT语句中的列的顺序必须相同。默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用UNION ALL。另外，UNION 结果集中的列名总是等于UNION中第一个SELECT语句中的列名。  
 
 &emsp; UNION：  

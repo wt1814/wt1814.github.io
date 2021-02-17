@@ -9,8 +9,8 @@
     - [1.2. 基本查询详解](#12-基本查询详解)
         - [1.2.1. Distinct关键字](#121-distinct关键字)
             - [1.2.1.1. Distinct多列操作](#1211-distinct多列操作)
-            - [1.2.1.2. Distinct与Count（聚合函数）](#1212-distinct与count聚合函数)
-            - [1.2.1.3. Distinct与group by比较（都能将结果去重）](#1213-distinct与group-by比较都能将结果去重)
+            - [1.2.1.2. Distinct与Count(聚合函数)](#1212-distinct与count聚合函数)
+            - [1.2.1.3. Distinct与group by比较(都能将结果去重)](#1213-distinct与group-by比较都能将结果去重)
         - [1.2.2. TOP关键字](#122-top关键字)
         - [1.2.3. Like关键字-1](#123-like关键字-1)
         - [1.2.4. Group By关键字，分组函数，结合聚合函数](#124-group-by关键字分组函数结合聚合函数)
@@ -122,7 +122,7 @@ LIMIT < limit_number >
     -->
 
 * GROUP BY  
-    &emsp; 根据 group by 字句中的列，会对 VT4 中的记录进行分组操作，产生虚拟机表 VT5。如果应用了group by，那么后面的所有步骤都只能得到的 VT5 的列或者是聚合函数（count、sum、avg等）。  
+    &emsp; 根据 group by 字句中的列，会对 VT4 中的记录进行分组操作，产生虚拟机表 VT5。如果应用了group by，那么后面的所有步骤都只能得到的 VT5 的列或者是聚合函数(count、sum、avg等)。  
 
 * HAVING  
     &emsp; 紧跟着 GROUP BY 字句后面的是 HAVING，使用 HAVING 过滤，会把符合条件的放在 VT6。  
@@ -152,14 +152,14 @@ select distinct expression[,expression...] from tables [where conditions];
 &emsp; select id,name from user group by name;  
 2. DISTINCT表示对后面的所有参数的拼接，取不重复的记录。即distinct作用在多个字段的时候，将所有字段值都相同的记录“去重”。  
 
-#### 1.2.1.2. Distinct与Count（聚合函数）  
+#### 1.2.1.2. Distinct与Count(聚合函数)  
 &emsp; COUNT()会过滤掉为NULL的项。  
 
 ```sql
 select *, count(distinct name) from table group by name; 
 ```
 
-#### 1.2.1.3. Distinct与group by比较（都能将结果去重）  
+#### 1.2.1.3. Distinct与group by比较(都能将结果去重)  
 
 |数据分布|去重方式|原因|
 |---|---|---|
@@ -193,7 +193,7 @@ SELECT * FROM E_MDM_MATERIAL WHERE LONG_DESC LIKE '%\\\\\\\\%';
 
 ### 1.2.4. Group By关键字，分组函数，结合聚合函数  
 &emsp; <font color = "lime">查询结果集中有统计数据时，就需要使用分组函数。</font>  
-&emsp; <font color = "red">Group By分组函数中，查询只能得到组相关的信息。组相关的信息（统计信息）：count,sum,max,min,avg。</font>  
+&emsp; <font color = "red">Group By分组函数中，查询只能得到组相关的信息。组相关的信息(统计信息)：count,sum,max,min,avg。</font>  
 &emsp; select 类别, sum(数量) as 数量之和 from A group by类别order by 类别desc执行出错。在select指定的字段要么包含在Group By语句的后面，作为分组的依据；要么就要被包含在聚合函数中。group by是对结果集分组，而不是查询字段分组。  
 &emsp; Group By含有去重效果。  
 
@@ -205,9 +205,9 @@ SELECT top 1 NAME FROM a1 GROUP BY NAME ORDER BY COUNT(*) DESC;
 ```
 
 #### 1.2.4.2. Having关键字与Where的区别  
-&emsp; 关键字having相当于where条件。当使用了分组查询group by，又要加条件时，使用having非where。（在SQL中增加HAVING子句原因是，WHERE关键字无法与合计函数一起使用）也可以Having和Where的联合使用。  
+&emsp; 关键字having相当于where条件。当使用了分组查询group by，又要加条件时，使用having非where。(在SQL中增加HAVING子句原因是，WHERE关键字无法与合计函数一起使用)也可以Having和Where的联合使用。  
 &emsp; where子句的作用是在对查询结果进行分组前将不符合where条件的行去掉，即在分组之前过滤数据，where条件中不能包含聚组函数，使用where条件过滤出特定的行。having子句的作用是筛选满足条件的组，即在分组之后过滤数据，条件中经常包含聚组函数，使用having条件过滤出特定的组，也可以使用多个分组标准进行分组。  
-* having只能用于group by（分组统计语句中）；
+* having只能用于group by(分组统计语句中)；
 * where是用于在初始表中筛选查询，having用于在where和group by结果分组中查询；
 * having子句中的每一个元素也必须出现在select列表中；
 * having语句可以使用聚合函数，而where不使用；

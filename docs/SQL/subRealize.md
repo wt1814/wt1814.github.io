@@ -76,14 +76,16 @@ https://mp.weixin.qq.com/s/hPJHCKcptRYvKQPZRz6Tdg
 &emsp; 综上，现在其实建议考量的，就是sharding-jdbc和mycat，这两个都可以去考虑使用。  
 &emsp; sharding-jdbc这种client层方案的优点在于不用部署，运维成本低，不需要代理层的二次转发请求，性能很高，但是如果遇到升级啥的需要各个系统都重新升级版本再发布，各个系统都需要耦合sharding-jdbc的依赖；  
 &emsp; mycat这种proxy层方案的缺点在于需要部署，自己运维一套中间件，运维成本高，但是好处在于对于各个项目是透明的，如果遇到升级之类的都是自己中间件那里搞就行了。  
-&emsp; 通常来说，这两个方案其实都可以选用，但是个人建议中小型公司选用 sharding-jdbc，client 层方案轻便，而且维护成本低，不需要额外增派人手，而且中小型公司系统复杂度会低一些，项目也没那么多；但是中大型公司最好还是选用 mycat 这类 proxy 层方案，因为可能大公司系统和项目非常多，团队很大，人员充足，那么最好是专门弄个人来研究和维护 mycat，然后大量项目直接透明使用即可。  
+&emsp; 通常来说，这两个方案其实都可以选用，但是个人建议中小型公司选用sharding-jdbc，client层方案轻便，而且维护成本低，不需要额外增派人手，而且中小型公司系统复杂度会低一些，项目也没那么多；但是中大型公司最好还是选用 mycat 这类 proxy 层方案，因为可能大公司系统和项目非常多，团队很大，人员充足，那么最好是专门弄个人来研究和维护 mycat，然后大量项目直接透明使用即可。  
 
 ---
 ## 1.2. SpringAOP实现分布式数据源   
 1. Spring整合多数据源：  
     1. 静态配置。多个不同的数据源，不同的sessionFactory。不支持分布式事务。  
-    2. 建立动态数据源类（<font color = "red">类继承AbstractRoutingDataSource，且实现方法determineCurrentLookupKey</font>），一个数据源类管理多个数据库。支付分布式事务。  
-    &emsp; 可以使用SpringAOP拦截、自定义注解实现动态切换数据源。
+    2. 建立动态数据源类(<font color = "red">类继承AbstractRoutingDataSource，且实现方法determineCurrentLookupKey</font>)，一个数据源类管理多个数据库。支付分布式事务。  
+    
+    可以使用SpringAOP拦截、自定义注解实现动态切换数据源。  
+    
 2. SpringAOP也可以实现读写分离。  
     1. AOP和注解实现动态数据源切换配置  
     2. AOP实现读写分离  
