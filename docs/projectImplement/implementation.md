@@ -6,7 +6,6 @@
     - [1.1. 从未分库分表动态切换到分库分表](#11-从未分库分表动态切换到分库分表)
         - [1.1.1. 停机迁移方案](#111-停机迁移方案)
         - [1.1.2. 双写迁移方案](#112-双写迁移方案)
-    - [1.2. 插入千万条数据](#12-插入千万条数据)
 
 <!-- /TOC -->
 
@@ -16,12 +15,10 @@
 <!-- 
 数据库迁移神器——Flyway 
 https://mp.weixin.qq.com/s/QJFY46Ku66MwQwkb7AQpNQ
-
- 数据库迁移搞炸了！没用这款开源神器的锅？ 
- https://mp.weixin.qq.com/s/_LJWWHk9E07i1hNQ_D4R9A
-
- 服务化带来的问题---之数据迁移经历 
- https://mp.weixin.qq.com/s?__biz=MzU5MTIyODk1Mg==&mid=2247484005&amp;idx=1&amp;sn=8957f419dfcffc85523aadd0a496ebec&source=41#wechat_redirect
+数据库迁移搞炸了！没用这款开源神器的锅？ 
+https://mp.weixin.qq.com/s/_LJWWHk9E07i1hNQ_D4R9A
+服务化带来的问题---之数据迁移经历 
+https://mp.weixin.qq.com/s?__biz=MzU5MTIyODk1Mg==&mid=2247484005&amp;idx=1&amp;sn=8957f419dfcffc85523aadd0a496ebec&source=41#wechat_redirect
 -->
 ## 1.1. 从未分库分表动态切换到分库分表
 &emsp; 现在有一个未分库分表的系统，未来要分库分表，如何设计才可以让系统从未分库分表**动态切换**到分库分表上？
@@ -30,9 +27,9 @@ https://mp.weixin.qq.com/s/QJFY46Ku66MwQwkb7AQpNQ
 * 双写迁移方案  
 
 ### 1.1.1. 停机迁移方案
-&emsp; 我先给你说一个最 low 的方案，就是很简单，大家伙儿凌晨 12 点开始运维，网站或者 app 挂个公告，说 0 点到早上 6 点进行运维，无法访问。
+&emsp; 我先给你说一个最 low 的方案，就是很简单，大家伙儿凌晨 12 点开始运维，网站或者 app 挂个公告，说 0 点到早上 6 点进行运维，无法访问。  
 &emsp; 接着到 0 点停机，系统停掉，没有流量写入了，此时老的单库单表数据库静止了。然后你之前得写好一个**导数的一次性工具**，此时直接跑起来，然后将单库单表的数据哗哗哗读出来，写到分库分表里面去。  
-&emsp; 导数完了之后，就 ok 了，修改系统的数据库连接配置啥的，包括可能代码和 SQL 也许有修改，那你就用最新的代码，然后直接启动连到新的分库分表上去。
+&emsp; 导数完了之后，就 ok 了，修改系统的数据库连接配置啥的，包括可能代码和 SQL 也许有修改，那你就用最新的代码，然后直接启动连到新的分库分表上去。  
 &emsp; 验证一下，ok了，完美，大家伸个懒腰，看看看凌晨4点钟的北京夜景，打个滴滴回家吧。  
 &emsp; 但是这个方案比较 low，谁都能干，我们来看看高大上一点的方案。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-127.png)  
@@ -47,10 +44,3 @@ https://mp.weixin.qq.com/s/QJFY46Ku66MwQwkb7AQpNQ
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-128.png)  
 
 
-## 1.2. 插入千万条数据  
-
-<!--
-
-如何快速安全的插入千万条数据？ 
-https://mp.weixin.qq.com/s/s-vgBk6vGP6DH4tP5mG2mQ
--->

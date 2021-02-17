@@ -1,14 +1,22 @@
 
+<!-- TOC -->
 
-# 大数据量操作  
-## 在线修改表结构  
+- [1. 大数据量操作](#1-大数据量操作)
+    - [1.1. 在线修改表结构](#11-在线修改表结构)
+    - [1.2. 插入千万条数据](#12-插入千万条数据)
 
+<!-- /TOC -->
+
+# 1. 大数据量操作  
+## 1.1. 在线修改表结构  
 <!-- 
-
+在线修改大表结构pt-online-schema-change
+https://segmentfault.com/a/1190000014924677
+-->
+<!-- 
 http://www.phppan.com/2012/05/online-schema-change/
 在线修改MySQL大表的表结构
 https://www.cnblogs.com/jamesbd/p/3581957.html
-
 -->
 
 &emsp; 在线修改MySQL大表的表结构：  
@@ -32,8 +40,10 @@ https://www.cnblogs.com/jamesbd/p/3581957.html
 5. 方案5、再换一个思路，增加扩展表。  
 &emsp; 不在原有的表的基础上修改了，以增加扩展表的方式，将新字段的数据写入到扩展表中，修改业务逻辑，这些字段从新表中读取。  
 
-### pt-online-schema-change  
-<!-- 
-在线修改大表结构pt-online-schema-change
-https://segmentfault.com/a/1190000014924677
+
+## 1.2. 插入千万条数据  
+
+<!--
+如何快速安全的插入千万条数据？ 
+https://mp.weixin.qq.com/s/s-vgBk6vGP6DH4tP5mG2mQ
 -->
