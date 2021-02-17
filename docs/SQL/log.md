@@ -77,12 +77,12 @@ WAL
 -->
 ### 1.2.1. 简介
 &emsp; 数据库事务四大特性中有一个是原子性，原子性底层就是通过undo log实现的。  
-&emsp; Undo log是逻辑日记。undo log主要记录了数据的逻辑变化，比如一条INSERT语句，对应一条DELETE的undo log，对于每个UPDATE语句，对应一条相反的UPDATE的undo log，这样在发生错误时，就能回滚到事务之前的数据状态。  
+&emsp; **Undo log是逻辑日记。undo log主要记录了数据的逻辑变化，比如一条INSERT语句，对应一条DELETE的undo log，对于每个UPDATE语句，对应一条相反的UPDATE的undo log，这样在发生错误时，就能回滚到事务之前的数据状态。**  
 
 &emsp; Undo log作用：
 
-* 回滚数据：当程序发生异常错误时等，根据执行 Undo log 就可以回滚到事务之前的数据状态，保证原子性，要么成功要么失败。  
-* MVCC 一致性视图：通过 Undo log 找到对应的数据版本号，是保证 MVCC 视图的一致性的必要条件。  
+* 回滚数据：当程序发生异常错误时等，根据执行Undo log就可以回滚到事务之前的数据状态，保证原子性，要么成功要么失败。  
+* MVCC一致性视图：通过Undo log找到对应的数据版本号，是保证 MVCC 视图的一致性的必要条件。  
 
 ### 1.2.2. 写入流程及刷盘时机   
 <!-- 
@@ -142,7 +142,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 &emsp; 在innoDB的存储引擎中，事务日志通过重做(redo)日志和innoDB存储引擎的日志缓冲(InnoDB Log Buffer)实现。<font color = "red">事务开启时，事务中的操作，都会先写入存储引擎的日志缓冲中，在事务提交之前，这些缓冲的日志都需要提前刷新到磁盘上持久化，</font>这就是DBA们口中常说的“日志先行”(Write-Ahead Logging)。<font color = "red">当事务提交之后，在Buffer Pool中映射的数据文件才会慢慢刷新到磁盘。</font>此时如果数据库崩溃或者宕机，那么当系统重启进行恢复时，就可以根据redo log中记录的日志，把数据库恢复到崩溃前的一个状态。未完成的事务，可以继续提交，也可以选择回滚，这基于恢复的策略而定。  
 &emsp; 在系统启动的时候，就已经为redo log分配了一块连续的存储空间，以顺序追加的方式记录Redo Log，通过顺序IO来改善性能。所有的事务共享redo log的存储空间，它们的Redo Log按语句的执行顺序，依次交替的记录在一起。  
 -->
-&emsp; 物理格式的日志，记录的是物理数据页面的修改的信息，这个页 “做了什么改动”。如：add xx记录 to Page1，向数据页Page1增加一个记录。    
+&emsp; **物理格式的日志，记录的是物理数据页面的修改的信息，这个页 “做了什么改动”。如：add xx记录 to Page1，向数据页Page1增加一个记录。**        
 &emsp; **作用：**  
 
 * <font color = "red">确保事务的持久性。</font>防止在发生故障的时间点，尚有脏页未写入磁盘，在重启mysql服务的时候，根据redo log进行重做，从而达到事务的持久性这一特性。  
@@ -150,7 +150,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 
 
 ### 1.3.3. 写入流程及刷盘时机
-**什么时候产生：**  
+&emsp; **什么时候产生：**  
 &emsp; <font color = "lime">事务开始之后就产生redo log，redo log的落盘并不是随着事务的提交才写入的，而是在事务的执行过程中，便开始写入redo log文件中。</font>  
 &emsp; mysql支持三种将redo log buffer写入redo log file的时机，可以通过innodb_flush_log_at_trx_commit参数配置，各参数值含义如下：  
 
@@ -187,6 +187,8 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 * innodb_log_file_size 重做日志文件的大小。  
 * innodb_mirrored_log_groups 指定了日志镜像文件组的数量，默认1  
 
+------
+
 **其他：**  
 &emsp; **<font color = "red">很重要一点，redo log是什么时候写盘的？前面说了是在事物开始之后逐步写盘的。</font>**  
 &emsp; <font color = "lime">之所以说重做日志是在事务开始之后逐步写入重做日志文件，而不一定是事务提交才写入重做日志缓存，原因就是，重做日志有一个缓存区Innodb_log_buffer，Innodb存储引擎先将重做日志写入innodb_log_buffer中。</font>Innodb_log_buffer的默认大小为8M(这里设置的16M)。  
@@ -210,7 +212,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 &emsp; binlog用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。  
 &emsp; binlog是通过追加的方式进行写入的，可以通过max_binlog_size参数设置每个binlog文件的大小，当文件大小达到给定值之后，会生成新的文件来保存日志。  
 
-**<font color = "red">作用：</font>**  
+&emsp; **<font color = "red">作用：</font>**  
 &emsp; 在实际应用中，主要用在两个场景：主从复制和数据恢复  
 
 * 主从复制：在Master端开启binlog，然后将binlog发送到各个Slave端，Slave端重放binlog从而达到主从数据一致。  
@@ -277,12 +279,12 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 
 -----
 
-| |	redo log	|binlog|
+| |redo log|binlog|
 |---|---|---|
-|文件大小	|redo log的大小是固定的。	|binlog可通过配置参数max_binlog_size设置每个binlog文件的大小。|
-|实现方式	|redo log是InnoDB引擎层实现的，并不是所有引擎都有。	binlog是Server层实现的，所有引擎都可以使用 binlog日志|
-|记录方式	|redo log 采用循环写的方式记录，当写到结尾时，会回到开头循环写日志。	binlog 通过追加的方式记录，当文件大小大于给定值后，后续的日志会记录到新的文件上|
-|适用场景	|redo log适用于崩溃恢复(crash-safe)	|binlog适用于主从复制和数据恢复|
+|文件大小|redo log的大小是固定的。	|binlog可通过配置参数max_binlog_size设置每个binlog文件的大小。|
+|实现方式|redo log是InnoDB引擎层实现的，并不是所有引擎都有。	|binlog是Server层实现的，所有引擎都可以使用 binlog日志|
+|记录方式|redo log 采用循环写的方式记录，当写到结尾时，会回到开头循环写日志。|binlog 通过追加的方式记录，当文件大小大于给定值后，后续的日志会记录到新的文件上|
+|适用场景|redo log适用于崩溃恢复(crash-safe)	|binlog适用于主从复制和数据恢复|
 
 &emsp; 由binlog和redo log的区别可知：binlog日志只用于归档，只依靠binlog是没有crash-safe能力的。但只有redo log也不行，因为redo log是InnoDB特有的，且日志上的记录落盘后会被覆盖掉。因此需要binlog和redo log二者同时记录，才能保证当数据库发生宕机重启时，数据不会丢失。  
 

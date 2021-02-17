@@ -113,7 +113,7 @@ mysql InnoDB引擎默认的修改数据语句：update,delete,insert都会自动
 &emsp; **<font color = "red">InnoDB存储引擎的锁的算法有三种</font>**  
 1. Record lock：单个行记录上的锁  
 2. Gap lock：间隙锁，锁定一个范围，不包括记录本身  
-3. Next-key lock：record+gap 锁定一个范围，包含记录本身  
+3. Next-key lock：record+gap锁定一个范围，包含记录本身  
 
 #### 1.3.2.1. 共享/排它锁(行级锁)  
 &emsp; InnoDB 存储引擎行锁，当数据查询时针对索引数据进行时，会使用行级锁。  
@@ -144,7 +144,7 @@ mysql InnoDB引擎默认的修改数据语句：update,delete,insert都会自动
 &emsp; <font color = "red">record lock 是一个在索引行记录的锁。</font>  
 &emsp; 比如，SELECT c1 FROM t WHERE c1 = 10 FOR UPDATE，如果c1 上的索引被使用到。防止任何其他事务变动 c1 = 10 的行。  
 &emsp; record lock 总是会在索引行上加锁。即使一个表并没有设置任何索引，这种时候 innoDB 会创建一个隐式的聚集索引(primary Key),然后在这个聚集索引上加锁。  
-&emsp; 当查询字段没有索引时，比如 update table set columnA="A" where columnB=“B".如果 columnB 字段不存在索引(或者不是组合索引前缀)，这条语句会锁住所有记录也就是锁表。如果语句的执行能够执行一个 columnB 字段的索引，那么仅会锁住满足 where 的行(RecordLock)。  
+&emsp; 当查询字段没有索引时，比如 update table set columnA="A" where columnB=“B"，如果 columnB 字段不存在索引(或者不是组合索引前缀)，这条语句会锁住所有记录也就是锁表。如果语句的执行能够执行一个 columnB 字段的索引，那么仅会锁住满足 where 的行(RecordLock)。  
 
 #### 1.3.2.4. 间隙锁(Gap Lock)，锁定范围  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-123.png)  

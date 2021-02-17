@@ -19,6 +19,12 @@
 <!-- /TOC -->
 
 
+&emsp; **<font color = "lime">总结：</font>**  
+&emsp; MVCC使用无锁并发控制，解决数据库读写问题。数据库会根据回顾指针，形成版本链；MVCC会根据Read View来决定读取版本链中的哪条记录。    
+&emsp; Read View判断：  
+&emsp; 如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。  
+
+# 1. MVCC
 <!-- 
 MVCC机制
 https://mp.weixin.qq.com/s/hrbnpPqNNJszObizYq0Q1w
@@ -32,9 +38,6 @@ https://blog.csdn.net/SnailMann/article/details/94724197
 MVCC是如何实现的？ 
 https://mp.weixin.qq.com/s/JJd0SoZ--JKW0LEtkZONUA
 -->
-
-# 1. MVCC
-&emsp; **<font color = "lime">一句话概述：MVCC使用无锁并发控制，解决数据库读写问题。数据库会根据回顾指针，形成版本链；MVCC会根据Read View来决定读取版本链中的哪条记录。</font>**  
 <!-- 
 MCVV这种读取历史数据的方式称为快照读(snapshot read)，而读取数据库当前版本数据的方式，叫当前读(current read)。
 -->
@@ -67,7 +70,7 @@ MCVV这种读取历史数据的方式称为快照读(snapshot read)，而读取�
     读-写：有线程安全问题，可能会造成事务隔离性问题，可能遇到脏读，幻读，不可重复读
     写-写：有线程安全问题，可能会存在更新丢失问题，比如第一类更新丢失，第二类更新丢失
 
-&emsp; MVCC带来的好处是？
+&emsp; MVCC带来的好处是？  
 &emsp; 多版本并发控制(MVCC)是一种用来解决读-写冲突的无锁并发控制，也就是为事务分配单向增长的时间戳，为每个修改保存一个版本，版本与事务时间戳关联，读操作只读该事务开始前的数据库的快照。 所以MVCC可以为数据库解决以下问题：  
 1. 在并发读写数据库时，可以做到在读操作时不用阻塞写操作，写操作也不用阻塞读操作，提高了数据库并发读写的性能。
 2. 同时还可以解决脏读，幻读，不可重复读等事务隔离问题，但不能解决更新丢失问题。

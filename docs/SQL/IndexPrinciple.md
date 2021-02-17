@@ -37,6 +37,7 @@ https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
     * 叶子结点指针都为null；
     * 非叶子结点的key都是[key,data]二元组，其中key表示作为索引的键，data为键值所在行的数据；
 
+
     &emsp; BTree的结构如下：  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-91.png)  
     &emsp; 在BTree的机构下，就可以使用二分查找的查找方式，查找复杂度为h*log(n)，一般来说树的高度是很小的，一般为3左右，因此BTree是一个非常高效的查找结构。  
@@ -47,6 +48,7 @@ https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
     * B+Tree中的非叶子结点不存储数据，只存储键值；
     * B+Tree的叶子结点没有指针，所有键值都会出现在叶子结点上，且key存储的键值对应data数据的物理地址；
     * <font color = "red">B+Tree的每个非叶子节点由n个键值key和n个指针point组成；</font>  
+    
     
     &emsp; B+Tree的结构如下：  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-92.png)  
@@ -83,8 +85,10 @@ https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
 <!-- 
 https://mp.weixin.qq.com/s/6BoGlaYpdDjzZy19YhInEw
 https://zhuanlan.zhihu.com/p/98818611
--->
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-78.png)  
+
+-->
 &emsp; InnoDB的B+tree的节点：  
 
 * 叶子节点，存储行数据，叫做目录页。  
