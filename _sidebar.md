@@ -157,7 +157,7 @@
     * [MySql原理](/docs/SQL/MySqlPrinciple.md)    
         * [MySql架构](/docs/SQL/Framework.md)  
         * [MySql存储引擎](/docs/SQL/MySqlStorage.md)  
-        * [BufferPool](/docs/SQL/BufferPool.md)  
+        * [BufferPool](/docs/SQL/bufferPoolNew.md)  
         * [ChangeBuffer](/docs/SQL/ChangeBuffer.md)  
         * [AdaptiveHashIndex](/docs/SQL/AdaptiveHashIndex.md)  
         * [表空间](/docs/SQL/TableSpace.md)  

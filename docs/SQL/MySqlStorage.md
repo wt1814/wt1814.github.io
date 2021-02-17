@@ -113,6 +113,10 @@ https://mp.weixin.qq.com/s/nrb0OaiD_QRtPGREpUr0HA
 * [Change Buffer](/docs/SQL/ChangeBuffer.md)  
 * [Adaptive Hash Index](/docs/SQL/AdaptiveHashIndex.md)  
 
+---
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-147.png)  
+&emsp; 目前可以看出，InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。  
+
 ### 1.2.4. InnoDB磁盘上的结构  
 &emsp; 官方文档：https://dev.mysql.com/doc/refman/5.7/en/innodb-on-disk-structures.html  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-133.png)  

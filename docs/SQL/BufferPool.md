@@ -13,49 +13,13 @@
 <!-- /TOC -->
 
 # 1. 缓冲池(buffer pool)  
-<!-- 
-什么是数据库的 “缓存池” ？
-https://mp.weixin.qq.com/s/XbvSZ3X6c-tToe-FKsEafA
 
-能说一说Mysql缓存池吗？ 
-https://mp.weixin.qq.com/s/AbiYMbDUJsMWK-_g0mFNwg
-
-了解InnoDB存储引擎的内存池 
-https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
-MySQL 缓冲池 是什么？ 
-https://mp.weixin.qq.com/s/rCTJDh3_WbEAbGLZdZiQzg
--->
 
 ## 1.1. 简介
-<!-- 
-&emsp; InnoDB 会将那些热点数据和一些 InnoDB 认为即将访问到的数据存在 Buffer Pool 中，以提升数据的读取性能。  
-&emsp; InnoDB 在修改数据时，如果数据的页在 Buffer Pool 中，则会直接修改 Buffer Pool，此时称这个页为脏页，InnoDB 会以一定的频率将脏页刷新到磁盘，这样可以尽量减少磁盘I/O，提升性能。 
--->
-&emsp; 缓冲池是主内存中的一个区域，在InnoDB访问表和索引数据时会在其中进行高速缓存。**在专用服务器上，通常将多达80％的物理内存分配给缓冲池。**  
-&emsp; 为了提高大容量读取操作的效率，缓冲池被分为多个页面，这些页面可能包含多个行。为了提高缓存管理的效率，缓冲池被实现为页面的链接列表。使用LRU算法的变体将很少使用的数据从缓存中老化掉。  
-&emsp; **缓冲池允许直接从内存中处理经常使用的数据，从而加快了处理速度。**  
-
-* 读数据操作：
-    * 首先将从磁盘读到的页存放在缓冲池中，这个过程称为将页“FIX”在缓冲池中
-    * 下一次再读相同的页时，首先判断该页是否在缓冲池中
-    * 若在缓冲池中，称该页在缓冲池中被命中，直接读取该页。否则，读取磁盘上的页
-* 写数据操作：
-    * 如果数据的页在 Buffer Pool 中，首先修改在缓冲池中的页，此时称这个页为脏页。然后再以一定的频率刷新到磁盘上
-    * 页从缓冲池刷新回磁盘的操作并不是在每次页发生更新时触发
-    * 通过一种称为Checkpoint的机制刷新回磁盘
-
 
 ## 1.2. 原理
 &emsp; 如何管理与淘汰缓冲池，使得性能最大化呢？在介绍具体细节之前，先介绍下“预读”的概念。  
-<!-- 
-预读(read ahead)  
-&emsp; InnoDB 在 I/O 的优化上有个比较重要的特性为预读，<font color = "red">当 InnoDB 预计某些 page 可能很快就会需要用到时，它会异步地将这些 page 提前读取到缓冲池(buffer pool)中，</font>这其实有点像空间局部性的概念。  
-&emsp; 空间局部性(spatial locality)：如果一个数据项被访问，那么与它的址相邻的数据项也可能很快被访问。  
-&emsp; InnoDB使用两种预读算法来提高I/O性能：线性预读(linear read-ahead)和随机预读(randomread-ahead)。  
-&emsp; 其中，线性预读以 extent(块，1个 extent 等于64个 page)为单位，而随机预读放到以 extent 中的 page 为单位。线性预读着眼于将下一个extent 提前读取到 buffer pool 中，而随机预读着眼于将当前 extent 中的剩余的 page 提前读取到 buffer pool 中。  
-&emsp; 线性预读(Linear read-ahead)：线性预读方式有一个很重要的变量 innodb_read_ahead_threshold，可以控制 Innodb 执行预读操作的触发阈值。如果一个 extent 中的被顺序读取的 page 超过或者等于该参数变量时，Innodb将会异步的将下一个 extent 读取到 buffer pool中，innodb_read_ahead_threshold 可以设置为0-64(一个 extend 上限就是64页)的任何值，默认值为56，值越高，访问模式检查越严格。  
-&emsp; 随机预读(Random read-ahead): 随机预读方式则是表示当同一个 extent 中的一些 page 在 buffer pool 中发现时，Innodb 会将该 extent 中的剩余 page 一并读到 buffer pool中，由于随机预读方式给 Innodb code 带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置 innodb_random_read_ahead 为ON。  
--->
+
 
 ### 1.2.1. 前言：预读  
 &emsp; 什么是预读？  
@@ -91,9 +55,7 @@ https://mp.weixin.qq.com/s/rCTJDh3_WbEAbGLZdZiQzg
 &emsp; (1)页号为50的页，原来不在缓冲池里；  
 &emsp; (2)把页号为50的页，放到LRU头部，同时淘汰尾部页号为7的页；  
 &emsp; 传统的LRU缓冲池算法十分直观，OS，memcache等很多软件都在用，MySQL为什么不能直接用呢？  
-&emsp; 这里有两个问题：  
-&emsp; (1)预读失效；  
-&emsp; (2)缓冲池污染；  
+&emsp; 这里有两个问题：(1)预读失效；(2)缓冲池污染；  
 
 #### 1.2.2.1. 预读失效  
 &emsp; 什么是预读失效？  
@@ -155,16 +117,6 @@ select * from user where name like "%shenjian%";
 &emsp; 而只有在老生代呆的时间足够久，停留时间大于T，才会被插入新生代头部。  
 
 ## 1.3. 相关参数  
-&emsp; 有三个比较重要的参数。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-105.png)  
-&emsp; 参数：innodb_buffer_pool_size  
-&emsp; 介绍：配置缓冲池的大小，在内存允许的情况下，DBA往往会建议调大这个参数，越多数据和索引放到内存里，数据库的性能会越好。  
-
-&emsp; 参数：innodb_old_blocks_pct  
-&emsp; 介绍：老生代占整个LRU链长度的比例，默认是37，即整个LRU中新生代与老生代长度比例是63:37。如果把这个参数设为100，就退化为普通LRU了。  
-
-&emsp; 参数：innodb_old_blocks_time  
-&emsp; 介绍：老生代停留时间窗口，单位是毫秒，默认是1000，即同时满足“被访问”与“在老生代停留时间超过1秒”两个条件，才会被插入到新生代头部。  
 
 ## 1.4. 总结  
 1. 缓冲池(buffer pool)是一种常见的降低磁盘访问的机制；  
