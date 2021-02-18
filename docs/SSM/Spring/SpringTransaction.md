@@ -48,10 +48,10 @@ https://mp.weixin.qq.com/s/RpA3RvYv4I4zYSzBmZaDiA
 
 ### 1.2.2. 注解@Transactional使用  
 1. 位置：@Transactional可以作用于接口、接口方法、类以及类方法上。Spring建议不要在接口或者接口方法上使用该注解，因为只有在使用基于接口的代理时它才会生效。当作用于类上时，该类的所有public方法将都具有该类型的事务属性，同时也可以在方法级别使用注解来覆盖类级别的定义。  
-&emsp; Spring团队建议在具体的类（或类的方法）上使用@Transactional注解，而不要使用在类所要实现的任何接口上。在接口上使用@Transactional注解，只能当设置了基于接口的代理时它才生效。因为注解是不能继承的，这就意味着如果正在使用基于类的代理时，那么事务的设置将不能被基于类的代理所识别，而且对象也将不会被事务代理所包装。  
+&emsp; Spring团队建议在具体的类(或类的方法)上使用@Transactional注解，而不要使用在类所要实现的任何接口上。在接口上使用@Transactional注解，只能当设置了基于接口的代理时它才生效。因为注解是不能继承的，这就意味着如果正在使用基于类的代理时，那么事务的设置将不能被基于类的代理所识别，而且对象也将不会被事务代理所包装。  
 2. 特性：  
-&emsp; @Transactional注解只被应用到public方法上（Spring AOP的本质决定）。如果在protected、private或者默认可见性的方法上使用 @Transactional注解，注解将被忽略，也不会抛出任何异常。  
-&emsp; SpringAOP声明式事务管理默认对unchecked exception回滚，即默认对RuntimeException()异常或是其子类进行事务回滚；对checked异常（Exception可try{}捕获的，包括自定义异常），不会回滚，需要通过rollbackFor进行设置。  
+&emsp; @Transactional注解只被应用到public方法上(Spring AOP的本质决定)。如果在protected、private或者默认可见性的方法上使用 @Transactional注解，注解将被忽略，也不会抛出任何异常。  
+&emsp; SpringAOP声明式事务管理默认对unchecked exception回滚，即默认对RuntimeException()异常或是其子类进行事务回滚；对checked异常(Exception可try{}捕获的，包括自定义异常)，不会回滚，需要通过rollbackFor进行设置。  
 
 &emsp; 全注解的使用方式：  
 
@@ -67,7 +67,7 @@ https://mp.weixin.qq.com/s/RpA3RvYv4I4zYSzBmZaDiA
 |propagation|该属性用于设置事务的传播行为。例如：@Transactional(propagation=Propagation.NOT_SUPPORTED，readOnly=true)。|
 |isolation|该属性用于设置底层数据库的事务隔离级别，事务隔离级别用于处理多事务并发的情况，通常使用数据库的默认隔离级别即可，基本不需要进行设置。|
 |timeout|该属性用于设置事务的超时秒数，默认值为-1表示永不超时。|
-|readOnly|该属性用于设置当前事务是否为只读事务，默认值为false（可读写）。|
+|readOnly|该属性用于设置当前事务是否为只读事务，默认值为false(可读写)。|
 |rollbackFor|该属性用于设置需要进行回滚的异常类数组，当方法中抛出指定异常数组中的异常时，则进行事务回滚。例如：指定单一异常类：@Transactional(rollbackFor=RuntimeException.class)。可以指定多个异常类：@Transactional(rollbackFor={RuntimeException.class， Exception.class})。|
 |rollbackForClassName|该属性用于设置需要进行回滚的异常类名称数组，当方法中抛出指定异常名称数组中的异常时，则进行事务回滚。例如：指定单一异常类名称@Transactional(rollbackForClassName=”RuntimeException”)。可以指定多个异常类名称：@Transactional(rollbackForClassName={“RuntimeException”，”Exception”})。|
 |noRollbackFor|	该属性用于设置不需要进行回滚的异常类数组，当方法中抛出指定异常数组中的异常时，不进行事务回滚。例如：指定单一异常类：@Transactional(noRollbackFor=RuntimeException.class)指定多个异常类：@Transactional(noRollbackFor={RuntimeException.class， Exception.class})。|
@@ -86,7 +86,7 @@ public interface TransactionDefinition {
 ```
 
 ### 1.3.1. 事务传播行为  
-&emsp; 事务传播行为是多个事务方法相互调用时，事务如何在这些方法间传播。在开始当前事务之前，一个事务上下文已经存在，此时有若干选项可以指定一个事务性方法的执行行为。Spring在TransactionDefinition接口中规定了7种类型的事务传播行为，它们规定了事务方法和事务方法发生嵌套调用时事务如何进行传播，即协调已经有事务标识的方法之间的发生调用时的事务上下文的规则（是否要有独立的事务隔离级别和锁）。  
+&emsp; 事务传播行为是多个事务方法相互调用时，事务如何在这些方法间传播。在开始当前事务之前，一个事务上下文已经存在，此时有若干选项可以指定一个事务性方法的执行行为。Spring在TransactionDefinition接口中规定了7种类型的事务传播行为，它们规定了事务方法和事务方法发生嵌套调用时事务如何进行传播，即协调已经有事务标识的方法之间的发生调用时的事务上下文的规则(是否要有独立的事务隔离级别和锁)。  
 
 &emsp; 传播机制生效条件：因为spring是使用aop来代理事务控制，是针对于接口或类的，所以在同一个service类中两个方法的调用，传播机制是不生效的。  
 
@@ -113,7 +113,7 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
 -->
 
 ### 1.3.2. 事务隔离级别  
-&emsp; 隔离级别是指若干个并发的事务之间的隔离程度。TransactionDefinition接口中定义了5个表示隔离级别的常量，默认值为ISOLATION_DEFAULT（使用数据库的设置），其他四个隔离级别和数据库的隔离级别一致。  
+&emsp; 隔离级别是指若干个并发的事务之间的隔离程度。TransactionDefinition接口中定义了5个表示隔离级别的常量，默认值为ISOLATION_DEFAULT(使用数据库的设置)，其他四个隔离级别和数据库的隔离级别一致。  
 1. <font color = "red">ISOLATION_DEFAULT：默认值，表示使用底层数据库的默认隔离级别。</font>Mysql默认采用的REPEATABLE_READ隔离级别；Oracle默认采用的 READ_COMMITTED隔离级别。   
 2. ISOLATION_READ_UNCOMMITTED：该隔离级别表示一个事务可以读取另一个事务修改但还没有提交的数据。最低的隔离级别，允许读取尚未提交的数据变更，可能会导致脏读、幻读或不可重复读，因此很少使用该隔离级别。比如PostgreSQL实际上并没有此级别。   
 3. ISOLATION_READ_COMMITTED：该隔离级别表示一个事务只能读取另一个事务已经提交的数据。允许读取并发事务已经提交的数据，可以阻止脏读，但是幻读或不可重复读仍有可能发生，这也是大多数情况下的推荐值。   
@@ -128,7 +128,7 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
 &emsp; 只读事务用于客户代码只读但不修改数据的情形，只读事务用于特定情景下的优化，比如使用Hibernate的时候。默认为读写事务。  
 &emsp; @Transactional(propagation=Propagation.NOT_SUPPORTED，readOnly=true)只读标志只在事务启动时应用，否则即使配置也会被忽略。启动事务会增加线程开销，数据库因共享读取而锁定(具体跟数据库类型和事务隔离级别有关)。通常情况下，仅是读取数据时，不必设置只读事务而增加额外的系统开销。  
 
-&emsp; 从这一点设置的时间点开始（时间点a）到这个事务结束的过程中，其他事务所提交的数据，该事务将看不见！（查询中不会出现别人在时间点a之后提交的数据）  
+&emsp; 从这一点设置的时间点开始(时间点a)到这个事务结束的过程中，其他事务所提交的数据，该事务将看不见！(查询中不会出现别人在时间点a之后提交的数据)  
 
 &emsp; 应用场合：  
 
@@ -144,7 +144,7 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
 2. 捕获了异常，未再抛出。  
 3. <font color = "red">同一个类中方法调用。</font>  
 4. @Transactional的类注入失败。  
-5. 多数据源（静态配置）  
+5. 多数据源(静态配置)  
 &emsp; 使用SpringAop解决多数据源事务。事务和数据源绑定，如果不给事务管理器qualifer属性，@Transactional默认会与第一个事务管理器绑定。如果使用第二个数据源，导致Transactional失效。  
 &emsp; 解决方案：
     1. 配置事务管理器时添加value区分字段。  
@@ -159,7 +159,7 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
             ublic HashMap<String， Object> addAppointMent(Map map) {}
 6. 原始SSM项目，重复扫描导致事务失效  
 &emsp; SpringMVC中context:component-scan重复扫描会引起事务失效。  
-&emsp; 在主容器中（applicationContext.xml），将Controller的注解排除掉。  
+&emsp; 在主容器中(applicationContext.xml)，将Controller的注解排除掉。  
 
         <context:component-scan base-package="com">
             <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
@@ -181,7 +181,7 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
 
 ## 1.5. Spring事务其他使用  
 &emsp; **如何通过日志判断事务是否已经被Spring所管理？**  
-1. 在logback或者log4j中对org.springframework.aop、org.springframework.transaction、org.springframework.jdbc、org.mybatis.spring.transaction进行DEBUG级别日志跟踪（开发期）  
+1. 在logback或者log4j中对org.springframework.aop、org.springframework.transaction、org.springframework.jdbc、org.mybatis.spring.transaction进行DEBUG级别日志跟踪(开发期)  
 2. 查看日志中是否有事务管理、开启、提交、回滚等字符，如：
 
         DEBUG o.m.spring.transaction.SpringManagedTransaction - JDBC Connection [com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl@28cfe912] will be managed by Spring  

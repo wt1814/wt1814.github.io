@@ -192,9 +192,9 @@ public class BeanTest implements BeanNameAware{
 
     @Override
     public void setBeanName(String beanName) {
-        // 让Bean获取自己在BeanFactory配置中的名字（根据情况是id或者name）
+        // 让Bean获取自己在BeanFactory配置中的名字(根据情况是id或者name)
         this.beanName=beanName;     
     }
 }
 ```
-&emsp; setBeanName()方法Spring会自动调用。setBeanName()会在Spring自身完成Bean配置之后，且在调用任何Bean生命周期回调（初始化或者销毁）方法之前就调用这个方法。换言之，在程序中使用BeanFactory.getBean(String beanName)之前，Bean的名字就已经设定好了。所以，程序中可以使用BeanName而不用担心它没有被初始化。  
+&emsp; setBeanName()方法Spring会自动调用。setBeanName()会在Spring自身完成Bean配置之后，且在调用任何Bean生命周期回调(初始化或者销毁)方法之前就调用这个方法。换言之，在程序中使用BeanFactory.getBean(String beanName)之前，Bean的名字就已经设定好了。所以，程序中可以使用BeanName而不用担心它没有被初始化。  

@@ -35,11 +35,11 @@
 2. **<font color = "red">处理器映射器HandlerMapping</font>**  
 &emsp; 根据请求的url查找Handler。HandlerMapping负责根据用户请求找到 Handler即处理器(Controller)，SpringMVC提供了不同的映射器实现不同的映射方式，例如：配置文件方式，实现接口方式，注解方式等。  
 3. **<font color = "red">处理器适配器HandlAdapter</font>**  
-&emsp; 按照特定规则（HandlerAdapter 要求的规则）去执行Handler。通过 HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。  
+&emsp; 按照特定规则(HandlerAdapter 要求的规则)去执行Handler。通过 HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。  
 4. **<font color = "red">Handler处理器</font>**  
 &emsp; 编写Handler时按照HandlerAdapter的要求去做，这样适配器才可以去正确执行Handler。Handler是继 DispatcherServlet 前端控制器的后端控制器，在 DispatcherServlet 的控制下Handler对具体的用户请求进行处理。由于 Handler 涉及到具体的用户业务请求，所以一般情况需要工程师根据业务需求开发 Handler。  
 5. **<font color = "red">ViewResolver视图解析器</font>**  
-&emsp; 进行视图解析，根据逻辑视图名解析成真正的视图（View ）。View Resolver 负责将处理结果生成 View 视图，View Resolver 首先根据逻辑视图名解析成物理视图名即具体的页面地址，再生成 View 视图对象，最后对 View 进行渲染将处理结果通过页面展示给用户。SpringMVC 框架提供了很多的 View 视图类型，包括：jstlView、freemarkerView、pdfView 等。一般情况下需要通过页面标签或页面模版技术将模型数据通过页面展示给用户，需要由工程师根据业务需求开发具体的页面。  
+&emsp; 进行视图解析，根据逻辑视图名解析成真正的视图(View )。View Resolver 负责将处理结果生成 View 视图，View Resolver 首先根据逻辑视图名解析成物理视图名即具体的页面地址，再生成 View 视图对象，最后对 View 进行渲染将处理结果通过页面展示给用户。SpringMVC 框架提供了很多的 View 视图类型，包括：jstlView、freemarkerView、pdfView 等。一般情况下需要通过页面标签或页面模版技术将模型数据通过页面展示给用户，需要由工程师根据业务需求开发具体的页面。  
 6. **<font color = "red">视图View</font>**  
 &emsp; View 是一个接口，实现类支持不同的View类型(jsp、freemarker...)。  
 

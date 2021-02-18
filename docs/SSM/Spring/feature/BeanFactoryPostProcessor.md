@@ -83,7 +83,7 @@ public interface BeanPostProcessor {
 * org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor：支持@PersistenceUnit和@PersistenceContext注解的注入  
 * org.springframework.context.support.ApplicationContextAwareProcessor：用来为bean注入ApplicationContext等容器对象  
 
-&emsp; 这些注解类的BeanPostProcessor，在spring配置文件中，可以通过这样的配置 <context:component-scan base-package="*.*" /\> ，自动进行注册。（spring通过ComponentScanBeanDefinitionParser类来解析该标签）  
+&emsp; 这些注解类的BeanPostProcessor，在spring配置文件中，可以通过这样的配置 <context:component-scan base-package="*.*" /\> ，自动进行注册。(spring通过ComponentScanBeanDefinitionParser类来解析该标签)  
 
 &emsp; 如果自定义了多个的BeanPostProcessor的实现类，通过实现Ordered接口，设置order属性，可以按照顺序执行实现类的方法。  
 
@@ -96,7 +96,7 @@ public interface BeanPostProcessor {
 &emsp; 另外，不要将BeanPostProcessor标记为延迟初始化。因为如果这样做，Spring容器将不会注册它们，自定义逻辑也就无法得到应用。假如在<beans/\>元素的定义中使用了'default-lazy-init'属性，请确信各个BeanPostProcessor标记为'lazy-init="false"'。  
 
 ### 1.2.1. InstantiationAwareBeanPostProcessor  
-&emsp; InstantiationAwareBeanPostProcessor是BeanPostProcessor的子接口，可以在Bean生命周期的另外两个时期提供扩展的回调接口，即实例化Bean之前（调用postProcessBeforeInstantiation方法）和实例化Bean之后（调用postProcessAfterInstantiation方法）。  
+&emsp; InstantiationAwareBeanPostProcessor是BeanPostProcessor的子接口，可以在Bean生命周期的另外两个时期提供扩展的回调接口，即实例化Bean之前(调用postProcessBeforeInstantiation方法)和实例化Bean之后(调用postProcessAfterInstantiation方法)。  
 
 ## 1.3. BeanFactoryPostProcessor和BeanPostProcessor的示例  
 &emsp; 1. bean的定义
@@ -204,4 +204,4 @@ public class PostProcessorTest {
     备注：在BeanFactoryPostProcessor中修改之后的备忘信息
 
 *************************************************
-&emsp; 分析以上结果：在bean实例化之前，首先执行BeanFactoryPostProcessor实现类的方法，然后通过调用bean的无参构造函数实例化bean，并调用set方法注入属性值。bean实例化后，执行初始化操作，调用两个初始化方法（两个初始化方法的顺序：先执行afterPropertiesSet，再执行init-method）前后，执行了BeanPostProcessor实现类的两个方法。  
+&emsp; 分析以上结果：在bean实例化之前，首先执行BeanFactoryPostProcessor实现类的方法，然后通过调用bean的无参构造函数实例化bean，并调用set方法注入属性值。bean实例化后，执行初始化操作，调用两个初始化方法(两个初始化方法的顺序：先执行afterPropertiesSet，再执行init-method)前后，执行了BeanPostProcessor实现类的两个方法。  

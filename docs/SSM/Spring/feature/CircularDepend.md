@@ -72,7 +72,7 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 &emsp; 在这两种情况，都有可能出现循环依赖。并非所有循环依赖，Spring都能自动解决。    
 &emsp; <font color = "lime">Spring解决循环依赖的前置条件：</font>  
 1. 出现循环依赖的Bean必须要是单例  
-2. 依赖注入的方式不能全是构造器注入的方式（很多博客上说，只能解决setter方法的循环依赖，这是错误的）  
+2. 依赖注入的方式不能全是构造器注入的方式(很多博客上说，只能解决setter方法的循环依赖，这是错误的)  
 
 &emsp; 否则，抛出BeanCurrentlyInCreationException异常，表示循环依赖。  
 
@@ -134,8 +134,8 @@ https://www.cnblogs.com/leeego-123/p/12165278.html
 ### 1.4.1. 三级缓存概念 
 &emsp; **<font color = "red">Spring通过3级缓存解决。</font>**  
 
-* 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例（经历了完整的Spring Bean初始化生命周期）
-* 二级缓存: Map<String,Object> earlySingletonObjects，早期曝光对象，二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean（尚未经历了完整的Spring Bean初始化生命周期）
+* 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例(经历了完整的Spring Bean初始化生命周期)
+* 二级缓存: Map<String,Object> earlySingletonObjects，早期曝光对象，二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean(尚未经历了完整的Spring Bean初始化生命周期)
 * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
 
 ### 1.4.2. 图解  
@@ -156,7 +156,7 @@ https://www.cnblogs.com/leeego-123/p/12165278.html
 &emsp; 当B创建完后，会将B再注入到A中，此时A再完成它的整个生命周期。  
 
 ----
-&emsp; Spring处理循环依赖的流程（假设对象A和对象B循环依赖），三级缓存存放内容：  
+&emsp; Spring处理循环依赖的流程(假设对象A和对象B循环依赖)，三级缓存存放内容：  
 
 |步骤	|操作|	三级缓存中的内容|
 |---|---|---|
@@ -183,7 +183,7 @@ protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredTy
     final String beanName = transformedBeanName(name);
     Object bean;
 
-    // 方法1）从三个map中获取单例类
+    // 方法1)从三个map中获取单例类
     Object sharedInstance = getSingleton(beanName);
     // ......
 }
@@ -241,13 +241,13 @@ protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 
 ## 1.5. 常见问题  
 1. 为什么使用构造器注入属性的时候不能解决循环依赖问题？  
-&emsp; 原因在于此方式是实例化和初始化分开（在进行实例化的时候不必给属性赋值）操作，将提前实例化好的对象前景暴露出去，供别人调用，而使用构造器的时候，必须要调用构造方法了，没有构造方法无法完成对象的实例化操作，也就无法创建对象的实例化操作，也就无法创建对象，那么永远会陷入到死循环中。   
+&emsp; 原因在于此方式是实例化和初始化分开(在进行实例化的时候不必给属性赋值)操作，将提前实例化好的对象前景暴露出去，供别人调用，而使用构造器的时候，必须要调用构造方法了，没有构造方法无法完成对象的实例化操作，也就无法创建对象的实例化操作，也就无法创建对象，那么永远会陷入到死循环中。   
 
 2. B 中提前注入了一个没有经过初始化的 A 类型对象不会有问题吗？  
 &emsp; 虽然在创建B时会提前给B注入了一个还未初始化的 A 对象，但是在创建 A 的流程中一直使用的是注入到 B 中的 A 对象的引用，之后会根据这个引用对 A 进行初始化，所以这是没有问题的。  
 
 3. 一级缓存能不能解决此问题？  
-&emsp; 不能，在三个级别的缓存中，放置的对象是有区别的，（1、是完成实例化且初始化的对象，2、是实例化但是未初始化的对象），如果只有一级缓存，就有可能取到实例化但未初始化的对象，属性值都为空，肯定有问题。  
+&emsp; 不能，在三个级别的缓存中，放置的对象是有区别的，(1、是完成实例化且初始化的对象，2、是实例化但是未初始化的对象)，如果只有一级缓存，就有可能取到实例化但未初始化的对象，属性值都为空，肯定有问题。  
 
 4. 二级缓存能不能解决？为什么要三级缓存？  
 <!-- Spring循环依赖三级缓存是否可以减少为二级缓存？ 

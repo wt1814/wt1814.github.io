@@ -34,7 +34,7 @@ https://mp.weixin.qq.com/s/34-DdoNcpMUlZiin6Js0Xg
 
 &emsp; **Spring的核心模块：**
 1. Spring Core【核心容器】：核心容器提供Spring框架的基本功能，管理着Spring应用中bean的创建、配置和管理。核心容器的主要组件是BeanFactory，它是工厂模式的实现。BeanFactory使用控制反转(IOC)模式将应用程序的配置和依赖性规范与实际的应用程序代码分开。  
-2. Spring Context【应用上下文】：Spring上下文是一个配置文件，向Spring框架提供上下文信息。提供了一种框架式的对象访问方法，有些像JNDI注册器。Context封装包的特性得自于Beans封装包，并添加了对国际化（I18N）的支持（例如资源绑定），事件传播，资源装载的方式和Context的透明创建，比如说通过Servlet容器。Spring上下文和Bean工厂都是bean容器的实现。  
+2. Spring Context【应用上下文】：Spring上下文是一个配置文件，向Spring框架提供上下文信息。提供了一种框架式的对象访问方法，有些像JNDI注册器。Context封装包的特性得自于Beans封装包，并添加了对国际化(I18N)的支持(例如资源绑定)，事件传播，资源装载的方式和Context的透明创建，比如说通过Servlet容器。Spring上下文和Bean工厂都是bean容器的实现。  
 3. Spring AOP【面向切面】：通过配置管理特性，Spring AOP模块直接将面向方面的编程功能集成到了Spring框架中。所以，可以很容易地使Spring框架管理的任何对象支持AOP。Spring AOP模块为基于Spring的应用程序中的对象提供了事务管理服务。  
 4. Spring ORM【对象实体映射】：Spring框架插入了若干个ORM框架，从而提供了ORM的对象关系工具，其中包括JDO、Hibernate和iBatis SQL Map。所有这些都遵从Spring的通用事务和DAO异常层次结构。  
 5. Spring DAO【持久层模块】：Spring进一步简化DAO开发步骤，能以一致的方式使用数据库访问技术，用统一的方式调用事务管理，避免具体的实现侵入业务逻辑层的代码中。  
@@ -51,7 +51,7 @@ https://mp.weixin.qq.com/s/34-DdoNcpMUlZiin6Js0Xg
 
 &emsp; 依赖注入和控制反转是同一概念吗？  
 &emsp; 依赖注入和控制反转是对同一件事情的不同描述，从某个方面讲，就是它们描述的角度不同。依赖注入是从应用程序的角度在描述，可以把依赖注入描述完整点：应用程序依赖容器创建并注入它所需要的外部资源；而控制反转是从容器的角度在描述，描述完整点：容器控制应用程序，由容器反向的向应用程序注入应用程序所需要的外部资源。  
-&emsp; 控制反转（Spring配置文件中注册Bean），解决对象创建的问题，对象创建交给别人。依赖注入（Java代码中注入Bean），在创建完对象后，对象关系的处理就是依赖注入。  
+&emsp; 控制反转(Spring配置文件中注册Bean)，解决对象创建的问题，对象创建交给别人。依赖注入(Java代码中注入Bean)，在创建完对象后，对象关系的处理就是依赖注入。  
 
 ### 1.2.1. Spring IOC  
 &emsp; Spring IOC配置方式有三种：基于XML的配置、基于注解的配置、基于Java的配置。  
@@ -85,10 +85,10 @@ https://blog.csdn.net/q1937915896/article/details/88178558?utm_medium=distribute
 4. constructor：利用构造函数进行装配，并且构造函数的参数通过byType进行装配。  
 5. autodetect：自动探测，如果有构造方法，通过 construct的方式自动装配，否则使用byType的方式自动装配。  
 
-&emsp; @Autowired默认是按照类型装配注入的，默认情况下它要求依赖对象必须存在（可以设置它required属性为false）。@Autowired 注解提供了更细粒度的控制，包括在何处以及如何完成自动装配。它的用法和@Required一样，修饰setter方法、构造器、属性或者具有任意名称和/或多个参数的PN方法。  
+&emsp; @Autowired默认是按照类型装配注入的，默认情况下它要求依赖对象必须存在(可以设置它required属性为false)。@Autowired 注解提供了更细粒度的控制，包括在何处以及如何完成自动装配。它的用法和@Required一样，修饰setter方法、构造器、属性或者具有任意名称和/或多个参数的PN方法。  
 
 &emsp; **@Autowired和@Resource之间的区别：**  
-1. @Autowired默认是按照类型装配注入的，默认情况下它要求依赖对象必须存在（可以设置它的required属性为false）。
+1. @Autowired默认是按照类型装配注入的，默认情况下它要求依赖对象必须存在(可以设置它的required属性为false)。
 2. @Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入。  
 
 &emsp; **@Qualifier 注解有什么作用？**  
@@ -99,7 +99,7 @@ https://blog.csdn.net/q1937915896/article/details/88178558?utm_medium=distribute
 * singleton：单例模式，Spring IoC 容器中只会存在一个共享的Bean实例，无论有多少个Bean引用它，始终指向同一对象。该模式在多线程下是不安全的。Singleton作用域是Spring中的缺省作用域。  
 * prototype：原型模式，每次通过Spring容器获取prototype定义的bean时，容器都将创建一个新的Bean实例，每个Bean实例都有自己的属性和状态，而 singleton全局只有一个对象。根据经验，对有状态的bean使用prototype作用域，而对无状态的bean使用singleton作用域。  
 
-        无状态的对象即是自身没有状态的对象，自然也就不会因为多个线程的交替调度而破坏自身状态导致线程安全问题。无状态对象包括经常使用的DO、DTO、VO这些只作为数据的实体模型的贫血对象，还有Service、DAO和Controller，这些对象并没有自己的状态，它们只是用来执行某些操作的。例如，每个DAO提供的函数都只是对数据库的CRUD，而且每个数据库Connection都作为函数的局部变量（局部变量是在用户栈中的，而且用户栈本身就是线程私有的内存区域，所以不存在线程安全问题），用完即关（或交还给连接池）。
+        无状态的对象即是自身没有状态的对象，自然也就不会因为多个线程的交替调度而破坏自身状态导致线程安全问题。无状态对象包括经常使用的DO、DTO、VO这些只作为数据的实体模型的贫血对象，还有Service、DAO和Controller，这些对象并没有自己的状态，它们只是用来执行某些操作的。例如，每个DAO提供的函数都只是对数据库的CRUD，而且每个数据库Connection都作为函数的局部变量(局部变量是在用户栈中的，而且用户栈本身就是线程私有的内存区域，所以不存在线程安全问题)，用完即关(或交还给连接池)。
 
 * request：每一次HTTP请求都会产生一个新的bean。在一次 Http请求中，容器会返回该Bean的同一实例。而对不同的Http请求则会产生新的 Bean，而且该bean仅在当前Http Request内有效，当前Http 请求结束，该 bean实例也将会被销毁。  
 * session：在一次Http Session中，容器会返回该Bean的同一实例。而对不同的Session请求则会创建新的实例，该bean实例仅在当前Session内有效。同Http请求相同，每一次session请求创建新的实例，而不同的实例之间不共享属性，且实例仅在自己的session请求内有效，请求结束，则实例将被销毁。  
@@ -117,8 +117,8 @@ https://mp.weixin.qq.com/s/P2GagWGNoMLxA5AuG_I7AA
 2. 减少jvm垃圾回收：由于不会给每个请求都新生成bean实例，所以自然回收的对象少了。  
 3. 可以快速获取到bean：因为单例的获取bean操作除了第一次生成之外其余的都是从缓存里获取的所以很快。  
 
-&emsp; **单例bean的劣势（线程安全问题）：**  
-&emsp; 单例bean存在线程问题，主要是因为当多个线程操作同一个对象的时候，对这个对象的非静态成员变量的写操作会存在线程安全问题。即bean如果是有状态的，可能在并发场景下出现问题。而原型的bean则不会有这样问题（但也有例外，比如它被单例bean依赖），因为给每个请求都新创建实例。  
+&emsp; **单例bean的劣势(线程安全问题)：**  
+&emsp; 单例bean存在线程问题，主要是因为当多个线程操作同一个对象的时候，对这个对象的非静态成员变量的写操作会存在线程安全问题。即bean如果是有状态的，可能在并发场景下出现问题。而原型的bean则不会有这样问题(但也有例外，比如它被单例bean依赖)，因为给每个请求都新创建实例。  
 
 &emsp; **解决办法：**  
 1. 在Bean对象中尽量避免定义可变的成员变量。

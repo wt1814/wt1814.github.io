@@ -432,7 +432,7 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
     * 如果传入了构造参数，则会先检查是否实现了SmartInstantiationAwareBeanPostProcessor接口，如果实现了会调用determineCandidateConstructors获取返回的候选构造器。  
     * 检查4个条件是否满足一个  
         * 构造器不为null，  
-        * 从RootBeanDefinition中获取到的关联的注入方式是构造器注入（没有构造参数就是setter注入，有则是构造器注入）  
+        * 从RootBeanDefinition中获取到的关联的注入方式是构造器注入(没有构造参数就是setter注入，有则是构造器注入)  
         * 含有构造参数  
         * getBean方法传入构造参数不是空  
     

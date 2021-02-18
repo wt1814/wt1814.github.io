@@ -184,7 +184,7 @@ protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) 
     }
 
     //判断是不是基础的Bean(Advice、PointCut、Advisor、AopInfrastructureBean)，是就直接跳过
-    //判断是不是应该跳过（AOP解析直接解析出切面信息（并且把切面信息进行缓存））
+    //判断是不是应该跳过(AOP解析直接解析出切面信息(并且把切面信息进行缓存))
     else if (!this.isInfrastructureClass(bean.getClass()) && !this.shouldSkip(bean.getClass(), beanName)) {
         //TODO 核心方法
         //返回当前bean的所有的advisor、advice、interceptor
@@ -440,7 +440,7 @@ protected Object createProxy(Class<?> beanClass, String beanName, Object[] speci
     //定制代理
     this.customizeProxyFactory(proxyFactory);
     //用来控制代理过程被配置之后，是否还允许修改通知。
-    //默认值为false（即在代理被配置之后，不允许修改代理的配置）
+    //默认值为false(即在代理被配置之后，不允许修改代理的配置)
     proxyFactory.setFrozen(this.freezeProxy);
     //是否跳过ClassFilter检查
     if (this.advisorsPreFiltered()) {

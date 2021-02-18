@@ -30,8 +30,8 @@ https://blog.csdn.net/weixin_39035120/article/details/86225377
 ### 1.2.1. Spring事件机制的流程
 
 &emsp; <font color = "lime">Spring事件机制的流程：</font>   
-1. 事件机制的核心是事件，Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件（继承ApplicationEvent）。  
-2. 确定事件后，要把事件发布出去。在事件发布类的业务代码中调用ApplicationEventPublisher#publishEvent方法（或调用ApplicationEventPublisher的子类，例如调用ApplicationContext#publishEvent）。  
+1. 事件机制的核心是事件，Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件(继承ApplicationEvent)。  
+2. 确定事件后，要把事件发布出去。在事件发布类的业务代码中调用ApplicationEventPublisher#publishEvent方法(或调用ApplicationEventPublisher的子类，例如调用ApplicationContext#publishEvent)。  
 3. 发布完成之后，启动监听器，自动监听。在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
 4. 最后，就是实际场景中触发事件发布，完成一系列任务。  
 
@@ -61,7 +61,7 @@ https://blog.csdn.net/weixin_39035120/article/details/86225377
 vContextClosedEvent|Spring应用上下文关闭事件v
 
 * ContextRefreshedEvent，上下文更新事件  
-    &emsp; **<font color = "lime">ContextRefreshedEvent上下文更新事件发生在刷新容器（refresh()方法）的“完成刷新容器时发布对应的事件”步骤中。</font>**  
+    &emsp; **<font color = "lime">ContextRefreshedEvent上下文更新事件发生在刷新容器(refresh()方法)的“完成刷新容器时发布对应的事件”步骤中。</font>**  
     ```java
     // AbstractApplicationContext.class
     public void refresh() throws BeansException, IllegalStateException {
@@ -117,7 +117,7 @@ public interface ApplicationListener<E extends ApplicationEvent> extends EventLi
     void onApplicationEvent(E event);
 }
 ```
-&emsp; 当事件监听器接收到它可以处理的事件，会调用onApplicationEvent()方法。注意到<font color = "red">ApplicationListener是泛型参数，这样可以实现所有继承了ApplicationEvent的监听。可以尽可能多的注册想要的事件侦听器，但是默认情况下事件监听器同步接收事件。这意味着publishEvent()方法会阻塞直到所有的事件监听器成处理完事件。这种单线程同步方法的一个特点是,当一个监听器接收到一个事件时，它运行在事务上下文的发布者线程上(如果事务上下文可用)。</font>如果事件的发布需要另一种策略（譬如多线程）需要实现ApplicationEventMulticaster接口类。  
+&emsp; 当事件监听器接收到它可以处理的事件，会调用onApplicationEvent()方法。注意到<font color = "red">ApplicationListener是泛型参数，这样可以实现所有继承了ApplicationEvent的监听。可以尽可能多的注册想要的事件侦听器，但是默认情况下事件监听器同步接收事件。这意味着publishEvent()方法会阻塞直到所有的事件监听器成处理完事件。这种单线程同步方法的一个特点是,当一个监听器接收到一个事件时，它运行在事务上下文的发布者线程上(如果事务上下文可用)。</font>如果事件的发布需要另一种策略(譬如多线程)需要实现ApplicationEventMulticaster接口类。  
 
 ### 1.2.4. ApplicationEventMulticaster，事件管理者  
 &emsp; ApplicationEventMulticaster接口方法分为三类，注册事件监听器、移除事件监听器、发布事件。  
@@ -197,7 +197,7 @@ public abstract class AbstractApplicationEventMulticaster
 }
 ```
 
-&emsp; 接口后两个方法由子类实现，可以看到SimpleApplicationEventMulticaster拥有一个Executor和ErrorHandler，分别表示监听器的调用线程池（如果不想使用单线程同步处理则可以设置一个线程池）和监听器处理事件失败的处理者(如果设置了的话)否则抛异常。  
+&emsp; 接口后两个方法由子类实现，可以看到SimpleApplicationEventMulticaster拥有一个Executor和ErrorHandler，分别表示监听器的调用线程池(如果不想使用单线程同步处理则可以设置一个线程池)和监听器处理事件失败的处理者(如果设置了的话)否则抛异常。  
 
 ```java
 public class SimpleApplicationEventMulticaster extends AbstractApplicationEventMulticaster {

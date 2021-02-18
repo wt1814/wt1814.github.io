@@ -7,7 +7,7 @@ Spring 中经典的 9 种设计模式，打死也要记住！
 https://mp.weixin.qq.com/s/VzBA7DehOwYUAl7xt8KPAw
 -->
 
-&emsp; 之所以要看Spring源码，是因为Spring占据了Java的半边天。（学了Spring源码，咱能装啊。）  
+&emsp; 之所以要看Spring源码，是因为Spring占据了Java的半边天。(学了Spring源码，咱能装啊。)  
 
 * 看Spring源码的过程中，可以看看这些顶尖攻城狮是怎么敲代码的。  
 * Spring的运用更加熟练了。Spring的一些高级知识点也知道了部分。  
@@ -21,7 +21,7 @@ https://mp.weixin.qq.com/s/VzBA7DehOwYUAl7xt8KPAw
 3. Spring容器刷新：  
     **<font color = "red">Spring bean容器刷新的核心 12+1个步骤完成IoC容器的创建及初始化工作：</font>**  
     1. 刷新前的准备工作。  
-    2. **<font color = "red">创建IoC容器（DefaultListableBeanFactory），加载和注册BeanDefinition对象。</font>**  
+    2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>**  
         &emsp; **<font color = "lime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
         ```java
         private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
@@ -30,11 +30,11 @@ https://mp.weixin.qq.com/s/VzBA7DehOwYUAl7xt8KPAw
     4. 允许在上下文子类中对bean工厂进行后处理。  
     5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理。</font>**  
     6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
-    7. 初始化一些消息源（比如处理国际化的i18n等消息源）。  
+    7. 初始化一些消息源(比如处理国际化的i18n等消息源)。  
     8. **<font color = "red">初始化应用事件多播器。</font>**  
     9. **<font color = "red">初始化一些特殊的bean。</font>**  
     10. **<font color = "red">注册一些监听器。</font>**  
-    11. **<font color = "red">实例化剩余的单例bean（非懒加载方式）。</font>**  
+    11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font>**  
     12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
     13. 重置公共的一些缓存数据。  
 

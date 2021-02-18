@@ -105,7 +105,7 @@ public void save(String name,String password){
 1. JoinPoint：提供访问当前被通知方法的目标对象、代理对象、方法参数等数据  
 2. ProceedingJoinPoint：只用于环绕通知，使用proceed()方法来执行目标方法  
 
-&emsp; 如参数类型是JoinPoint、ProceedingJoinPoint类型，可以从“argNames”属性省略掉该参数名（可选，写上也对），这些类型对象会自动传入的，但必须作为第一个参数。 
+&emsp; 如参数类型是JoinPoint、ProceedingJoinPoint类型，可以从“argNames”属性省略掉该参数名(可选，写上也对)，这些类型对象会自动传入的，但必须作为第一个参数。 
 
 
 ## 1.2. ※※※SpringAOP使用  

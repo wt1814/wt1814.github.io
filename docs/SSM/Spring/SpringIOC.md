@@ -13,7 +13,7 @@
     - [1.3. 基于Xml的IOC容器ClassPathXmlApplicationContext 的初始化](#13-基于xml的ioc容器classpathxmlapplicationcontext-的初始化)
         - [1.3.1. ClassPathXmlApplicationContext构造函数](#131-classpathxmlapplicationcontext构造函数)
         - [1.3.2. refresh()方法](#132-refresh方法)
-        - [1.3.3. 容器初始化详解（obtainFreshBeanFactory()方法）](#133-容器初始化详解obtainfreshbeanfactory方法)
+        - [1.3.3. 容器初始化详解(obtainFreshBeanFactory()方法)](#133-容器初始化详解obtainfreshbeanfactory方法)
 
 <!-- /TOC -->
 
@@ -23,7 +23,7 @@
 3. Spring容器刷新：  
     **<font color = "red">Spring bean容器刷新的核心 12+1个步骤完成IoC容器的创建及初始化工作：</font>**  
     1. 刷新前的准备工作。  
-    2. **<font color = "red">创建IoC容器（DefaultListableBeanFactory），加载和注册BeanDefinition对象。</font>**  
+    2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>**  
         &emsp; **<font color = "lime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
         ```java
         private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
@@ -32,11 +32,11 @@
     4. 允许在上下文子类中对bean工厂进行后处理。  
     5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理。</font>**  
     6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
-    7. 初始化一些消息源（比如处理国际化的i18n等消息源）。  
+    7. 初始化一些消息源(比如处理国际化的i18n等消息源)。  
     8. **<font color = "red">初始化应用事件多播器。</font>**  
     9. **<font color = "red">初始化一些特殊的bean。</font>**  
     10. **<font color = "red">注册一些监听器。</font>**  
-    11. **<font color = "red">实例化剩余的单例bean（非懒加载方式）。</font>**  
+    11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font>**  
     12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
     13. 重置公共的一些缓存数据。  
 
@@ -49,7 +49,7 @@ https://juejin.cn/post/6844903967143493640
 -->
 
 ## 1.1. IOC容器的设计与实现  
-&emsp; 在Spring IOC容器的设计当中，可以看到两个主要的容器系列（根据命名）。  
+&emsp; 在Spring IOC容器的设计当中，可以看到两个主要的容器系列(根据命名)。  
 
 * 实现了BeanFactory接口的简单容器系列，只实现了容器的最基本功能；  
 * ApplicationContext应用上下文，容器的高级形态，增加了许多面向框架的特性和对应用环境的适配；  
@@ -194,11 +194,11 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 4. 允许在上下文子类中对bean工厂进行后处理。  
 5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理。</font>**  
 6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
-7. 初始化一些消息源（比如处理国际化的i18n等消息源）。  
+7. 初始化一些消息源(比如处理国际化的i18n等消息源)。  
 8. **<font color = "red">初始化应用事件多播器。</font>**  
 9. **<font color = "red">初始化一些特殊的bean。</font>**  
 10. **<font color = "red">注册一些监听器。</font>**  
-11. **<font color = "red">实例化剩余的单例bean（非懒加载方式）。</font>**  
+11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font>**  
 12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
 13. 重置公共的一些缓存数据。  
 
@@ -210,11 +210,11 @@ public void refresh() throws BeansException, IllegalStateException {
     synchronized (this.startupShutdownMonitor) {
 
         // 1： 刷新前的准备工作。
-        // 记录下容器的启动时间、给容器设置同步标识（标记“已启动”状态）、处理配置文件中的占位符
+        // 记录下容器的启动时间、给容器设置同步标识(标记“已启动”状态)、处理配置文件中的占位符
         prepareRefresh();
 
         //  2：告诉子类刷新内部bean 工厂。子类启动 refreshBeanFactory()方法，Bean 定义资源文件的载入从子类的 refreshBeanFactory()方法启动
-        //  内部创建了IoC容器（DefaultListableBeanFactory）,加载解析XML文件，存储到Document对象中。读取Document对象，并完成BeanDefinition对象的加载和注册工作
+        //  内部创建了IoC容器(DefaultListableBeanFactory),加载解析XML文件，存储到Document对象中。读取Document对象，并完成BeanDefinition对象的加载和注册工作
         ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
         //  3： 对IoC容器进行一些预处理
@@ -237,20 +237,20 @@ public void refresh() throws BeansException, IllegalStateException {
             // 两个方法分别在 Bean 初始化之前和初始化之后得到执行。注意，到这里 Bean 还没初始化
             registerBeanPostProcessors(beanFactory);
 
-            //  7： 初始化一些消息源（比如处理国际化的i18n等消息源）， 不详述
+            //  7： 初始化一些消息源(比如处理国际化的i18n等消息源)， 不详述
             initMessageSource();
 
             //  8： 初始化容器事件传播器， 不详述
             initApplicationEventMulticaster();
 
-            //  9： 具体的子类初始化一些特殊的bean在初始化 singleton beans 之前）
+            //  9： 具体的子类初始化一些特殊的bean在初始化 singleton beans 之前)
             //  从方法名就可以知道，典型的模板方法(钩子方法)
             onRefresh();
 
             //  10： 为事件传播器注册事件监听器
             registerListeners();
 
-            //  11： 实例化剩余的单例bean（非懒加载方式）
+            //  11： 实例化剩余的单例bean(非懒加载方式)
             //      注意事项：Bean的IoC、DI和AOP都是发生在此步骤
             finishBeanFactoryInitialization(beanFactory);
 
@@ -267,7 +267,7 @@ public void refresh() throws BeansException, IllegalStateException {
             // 销毁已经创建的单例，避免占用资源
             destroyBeans();
 
-            // 取消 refresh 操作，重置容器的同步标识（'active' 标签）.
+            // 取消 refresh 操作，重置容器的同步标识('active' 标签).
             cancelRefresh(ex);
 
             // 传播异常给调用者
@@ -295,5 +295,5 @@ public void refresh() throws BeansException, IllegalStateException {
 &emsp; 步骤6，BeanPostProcessor，对bean实例在初始化前后做一些增强工作  
 &emsp; 步骤11，对剩余所有的非懒加载的BeanDefinition(bean 定义)执行bean实例化操作  
 
-### 1.3.3. 容器初始化详解（obtainFreshBeanFactory()方法）  
+### 1.3.3. 容器初始化详解(obtainFreshBeanFactory()方法)  
 &emsp; [容器初始化详解](/docs/SSM/Spring/容器初始化详解.md)  

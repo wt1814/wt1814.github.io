@@ -44,24 +44,24 @@ doCreateBean() 方法主要干三件事情：
 
 1. 实例化，可以理解为new一个对象
 2. 属性注入，可以理解为调用setter方法完成属性注入
-3. 初始化，你可以按照Spring的规则配置一些初始化的方法（例如，@PostConstruct注解）
+3. 初始化，你可以按照Spring的规则配置一些初始化的方法(例如，@PostConstruct注解)
 
 &emsp; **生命周期的概念：**  
 &emsp; Bean的生命周期指的就是在上面三个步骤中后置处理器BeanPostprocessor穿插执行的过程  
 
 ----
 &emsp; Bean的生命周期概括起来就是4个阶段：  
-1. 实例化（Instantiation）；
-2. 属性赋值（Populate）；
-3. 初始化（Initialization）；
-4. 销毁（Destruction）---注册Destruction回调函数。  
+1. 实例化(Instantiation)；
+2. 属性赋值(Populate)；
+3. 初始化(Initialization)；
+4. 销毁(Destruction)---注册Destruction回调函数。  
 
 ----
 
 &emsp; spring bean的生命周期：  
 1. 实例化Bean：  
 &emsp; 对于BeanFactory容器，当客户向容器请求一个尚未初始化的bean时，或初始化bean的时候需要注入另一个尚未初始化的依赖时，容器就会调用createBean进行实例化。对于ApplicationContext容器，当容器启动结束后，通过获取BeanDefinition对象中的信息，实例化所有的bean。   
-2. 设置对象属性（依赖注入）：  
+2. 设置对象属性(依赖注入)：  
 &emsp; 实例化后的对象被封装在BeanWrapper对象中，紧接着，Spring根据BeanDefinition中的信息以及通过BeanWrapper提供的设置属性的接口完成依赖注入。  
 3. 处理Aware接口：  
 &emsp; 接着，Spring会检测该对象是否实现了xxxAware接口，并将相关的xxxAware实例注入给Bean：  
@@ -114,7 +114,7 @@ obj, String s)方法；由于这个方法是在Bean初始化结束时调用的�
 1. 实例化：第 1 步，实例化一个 bean 对象；
 2. 属性赋值：第 2 步，为 bean 设置相关属性和依赖；
 3. 初始化：第 3~7 步，步骤较多， **<font color = "lime">其中第 5、6 步为初始化操作，</font>** <font color = "red">第 3、4 步为在初始化前执行，第7步在初始化后执行，该阶段结束，才能被用户使用；</font>
-4. 销毁：第 8~10步，第8步不是真正意义上的销毁（还没使用呢），而是先在使用前注册了销毁的相关调用接口，为了后面第9、10步真正销毁 bean 时再执行相应的方法。
+4. 销毁：第 8~10步，第8步不是真正意义上的销毁(还没使用呢)，而是先在使用前注册了销毁的相关调用接口，为了后面第9、10步真正销毁 bean 时再执行相应的方法。
 
 &emsp; 在doCreateBean()方法中能看到依次执行了这 4 个阶段：  
 
@@ -144,7 +144,7 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
     return exposedObject;
 }
 ```
-&emsp; 初始化包含了第 3~7步，较复杂，所以进到 initializeBean() 方法里具体看下其过程（注释的序号对应图中序号）：  
+&emsp; 初始化包含了第 3~7步，较复杂，所以进到 initializeBean() 方法里具体看下其过程(注释的序号对应图中序号)：  
 
 ```java
 // AbstractAutowireCapableBeanFactory.java

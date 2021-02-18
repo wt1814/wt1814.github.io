@@ -51,7 +51,7 @@ public @interface RequestMapping {
 
 * value: 指定请求的实际地址， 如 /user/details/info；  
 * method：指定请求的method类型， 如GET、POST、PUT、DELETE等；  
-* consumes：指定处理请求的提交内容类型（Content-Type），例如application/json、text/html等；  
+* consumes：指定处理请求的提交内容类型(Content-Type)，例如application/json、text/html等；  
 * produces:  指定返回的内容类型，仅当request请求头中的(Accept)类型中包含该指定类型才返回；  
 * params：指定request中必须包含某些参数值是，才让该方法处理请求；  
 * headers：指定request中必须包含某些指定的header值，才能让该方法处理请求。  
@@ -78,8 +78,8 @@ public @interface RequestMapping {
     application/json ：JSON数据格式
     application/pdf ：pdf格式  
     application/msword  ：Word文档格式
-    application/octet-stream ：二进制流数据（如文件下载）
-    application/x-www-form-urlencoded ：<form encType="">中默认的encType，form表单数据被编码为key/value格式发送到服务器（表单默认的提交数据的格式）
+    application/octet-stream ：二进制流数据(如文件下载)
+    application/x-www-form-urlencoded ：<form encType="">中默认的encType，form表单数据被编码为key/value格式发送到服务器(表单默认的提交数据的格式)
     multipart/form-data ：需要在表单中进行文件上传时，就需要使用multipart/form-data 格式
 &emsp; 以上就是在开发中经常会用到的Content-Type的内容格式。  
 
@@ -92,7 +92,7 @@ public @interface RequestMapping {
 
 #### 1.1.2.1. ※※※自定义转换  
 &emsp; 有些特殊数据类型无法直接进行数据绑定，必须先经过数据转换，例如日期。  
-&emsp; 数据转换方式：1.硬编码（javaBean中日期类型为String）；2.SpringMVC自定义转换(javaBean中日期类型为Date)，需要自定义转换器（Converter）或格式化（Formatter）进行数据绑定。  
+&emsp; 数据转换方式：1.硬编码(javaBean中日期类型为String)；2.SpringMVC自定义转换(javaBean中日期类型为Date)，需要自定义转换器(Converter)或格式化(Formatter)进行数据绑定。  
 
 ##### 1.1.2.1.1. 注解@DateTimeFormat、@JsonFormat  
 &emsp; 在需要由string转Date的字段上加上@DateTimeFormat注解，代码如下：  
@@ -205,7 +205,7 @@ private Date actionDate;
 &emsp; 运行结果和Converter的一样。  
 
 ### 1.1.3. 返回模型和视图  
-&emsp; SpringMVC处理方法支持如下的返回方式：ModelAndView, Model, ModelMap, Map,View, String, void，ResponseEntity（作用比较强大,可以返回文件，字符串等）。无论何种方式都要清楚其返回的视图（或调用另一个controller，即转发和重定向的使用，涉及到怎么向另一个controller传参数）和模型。返回json字符串时使用@responseBody注解。  
+&emsp; SpringMVC处理方法支持如下的返回方式：ModelAndView, Model, ModelMap, Map,View, String, void，ResponseEntity(作用比较强大,可以返回文件，字符串等)。无论何种方式都要清楚其返回的视图(或调用另一个controller，即转发和重定向的使用，涉及到怎么向另一个controller传参数)和模型。返回json字符串时使用@responseBody注解。  
 
 ## 1.2. SpringMVC高级功能  
 ### 1.2.1. SpringMVC中文乱码  
