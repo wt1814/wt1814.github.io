@@ -5,7 +5,7 @@
 - [1. Spring的事件机制](#1-spring的事件机制)
     - [1.1. 从refresh()中说起](#11-从refresh中说起)
     - [1.2. Spring事件机制解析](#12-spring事件机制解析)
-        - [1.2.1. Spring事件机制的流程](#121-spring事件机制的流程)
+        - [1.2.1. ★★★Spring事件机制的流程](#121-★★★spring事件机制的流程)
         - [1.2.2. ApplicationEvent，事件](#122-applicationevent事件)
         - [1.2.3. ApplicationListener，事件监听器](#123-applicationlistener事件监听器)
         - [1.2.4. ApplicationEventMulticaster，事件管理者](#124-applicationeventmulticaster事件管理者)
@@ -27,20 +27,18 @@ https://blog.csdn.net/weixin_39035120/article/details/86225377
 &emsp; ......
 
 ## 1.2. Spring事件机制解析  
-### 1.2.1. Spring事件机制的流程
-
-&emsp; <font color = "lime">Spring事件机制的流程：</font>   
-1. 事件机制的核心是事件，Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件(继承ApplicationEvent)。  
-2. 确定事件后，要把事件发布出去。在事件发布类的业务代码中调用ApplicationEventPublisher#publishEvent方法(或调用ApplicationEventPublisher的子类，例如调用ApplicationContext#publishEvent)。  
-3. 发布完成之后，启动监听器，自动监听。在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
+### 1.2.1. ★★★Spring事件机制的流程
+&emsp; **<font color = "clime">★★★Spring事件机制的流程：</font>**   
+1. **<font color = "clime">事件机制的核心是事件。</font>** Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件(继承ApplicationEvent)。  
+2. **<font color = "clime">确定事件后，要把事件发布出去。</font>** 在事件发布类的业务代码中调用ApplicationEventPublisher#publishEvent方法(或调用ApplicationEventPublisher的子类，例如调用ApplicationContext#publishEvent)。  
+3. **<font color = "clime">发布完成之后，启动监听器，自动监听。</font>** 在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
 4. 最后，就是实际场景中触发事件发布，完成一系列任务。  
 
 
-&emsp; <font color = "lime">Spring事件机制的特性：</font>   
+&emsp; **<font color = "lime">Spring事件机制的特性：</font>**   
 
 * <font color = "lime">Spring的事件默认是同步的，即调用publishEvent方法发布事件后，它会处于阻塞状态，直到onApplicationEvent接收到事件并处理返回之后才继续执行下去，这种单线程同步的好处是可以进行事务管理。</font>  
-* <font color = "red">事件监听是循环往复的，如果确定事件只会发布一次，应该移除事件监听器。</font>  
-
+* <font color = "lime">事件监听是循环往复的，如果确定事件只会发布一次，应该移除事件监听器。</font>  
 
 
 &emsp; **<font color = "red">实现Spring事件机制主要有4个类：</font>**  
