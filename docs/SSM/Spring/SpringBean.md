@@ -37,6 +37,10 @@ doCreateBean() 方法主要干三件事情：
     激活自定义的 init 方法  
 
 -->
+
+
+&emsp; **<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-11.png)  
 &emsp; **Bean创建的三个阶段：**    
 &emsp; Spring在创建一个Bean时是分为三个步骤的：    
 
@@ -47,11 +51,14 @@ doCreateBean() 方法主要干三件事情：
 &emsp; **生命周期的概念：**  
 &emsp; Bean的生命周期指的就是在上面三个步骤中后置处理器BeanPostprocessor穿插执行的过程  
 
-------
+----
+&emsp; Bean的生命周期概括起来就是4个阶段：  
+1. 实例化（Instantiation）；
+2. 属性赋值（Populate）；
+3. 初始化（Initialization）；
+4. 销毁（Destruction）---注册Destruction回调函数。  
 
-&emsp; **<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>**  
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-11.png)  
+----
 
 &emsp; spring bean的生命周期：  
 1. 实例化Bean：  
@@ -104,11 +111,6 @@ obj, String s)方法；由于这个方法是在Bean初始化结束时调用的�
 ......
 
 ## 1.3. 源码解析  
-&emsp; Bean的生命周期概括起来就是4个阶段：  
-1. 实例化（Instantiation）；
-2. 属性赋值（Populate）；
-3. 初始化（Initialization）；
-4. 销毁（Destruction）---注册Destruction回调函数。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-10.png)  
 1. 实例化：第 1 步，实例化一个 bean 对象；
