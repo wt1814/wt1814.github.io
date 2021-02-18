@@ -14,7 +14,11 @@
 
 <!-- /TOC -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-33.png)  
-
+&emsp; MyBatis运行原理：  
+1. 创建SqlSessionFacory；
+2. 从SqlSessionFactory对象中获取SqlSession对象；
+3. 获取Mapper；
+4. 执行操作；
 
 # 1. 整合MyBatis  
 ## 1.1. Spring、SpringBoot整合MyBatis  
@@ -42,11 +46,10 @@
 ## 1.2. Spring整合MyBatis原理  
 &emsp; Spring整合MyBatis并不会对MyBatis内部进行改造，只会进行集成，对其实现进行了包装。  
 &emsp; MyBatis运行原理：  
-
-    1. 创建SqlSessionFacory；
-    2. 从SqlSessionFactory对象中获取 SqlSession对象；
-    3. 获取Mapper；
-    4. 执行操作；
+1. 创建SqlSessionFacory；
+2. 从SqlSessionFactory对象中获取SqlSession对象；
+3. 获取Mapper；
+4. 执行操作；
 
 ### 1.2.1. 创建SqlSessionFacory  
 &emsp; <font color = "red">MyBatis-Spring中创建SqlSessionFacory是由SqlSessionFactoryBean完成的。</font>  
