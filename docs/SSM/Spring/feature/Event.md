@@ -3,43 +3,26 @@
 <!-- TOC -->
 
 - [1. Spring的事件机制](#1-spring的事件机制)
-    - [1.1. 前言](#11-前言)
-    - [1.2. Spring事件机制解析](#12-spring事件机制解析)
-        - [1.2.1. ApplicationEvent，事件](#121-applicationevent事件)
-        - [1.2.2. ApplicationListener，事件监听器](#122-applicationlistener事件监听器)
-        - [1.2.3. ApplicationEventMulticaster，事件管理者](#123-applicationeventmulticaster事件管理者)
-        - [1.2.4. ApplicationEventPublisher，事件发布者](#124-applicationeventpublisher事件发布者)
-    - [1.3. 使用测试](#13-使用测试)
+    - [1.1. Spring事件机制解析](#11-spring事件机制解析)
+        - [1.1.1. Spring事件机制的流程](#111-spring事件机制的流程)
+        - [1.1.2. ApplicationEvent，事件](#112-applicationevent事件)
+        - [1.1.3. ApplicationListener，事件监听器](#113-applicationlistener事件监听器)
+        - [1.1.4. ApplicationEventMulticaster，事件管理者](#114-applicationeventmulticaster事件管理者)
+        - [1.1.5. ApplicationEventPublisher，事件发布者](#115-applicationeventpublisher事件发布者)
+    - [1.2. 使用测试](#12-使用测试)
 
 <!-- /TOC -->
 
-
-
 # 1. Spring的事件机制  
 <!-- 
-
 Spring 与 Spring Boot 中的事件机制 
 https://mp.weixin.qq.com/s/_0QZu5f8XYSsqAzhAcGl2Q
--->
-
-## 1.1. 前言  
-&emsp; 事件监听是一种发布订阅者模式。做完某一件事情以后，需要广播一些消息或者通知，告诉其他的模块进行一些事件处理。相比发送请求，事件监听可以实现接口解耦。   
-&emsp; <font color = "lime">Spring事件机制的流程：</font>   
-1. 事件机制的核心是事件，Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件（继承ApplicationEvent）。  
-2. 确定事件后，要把事件发布出去。在事件发布类的业务代码中调用ApplicationEventPublisher#publishEvent方法（或调用ApplicationEventPublisher的子类，例如调用ApplicationContext#publishEvent）。  
-3. 发布完成之后，启动监听器，自动监听。在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
-4. 最后，就是实际场景中触发事件发布，完成一系列任务。  
-
-&emsp; <font color = "red">注：事件监听是循环往复的，如果确定事件只会发布一次，应该移除事件监听器。</font>  
-
-<!-- 
 Spring事件机制使用
 https://blog.csdn.net/weixin_39035120/article/details/86225377
 -->
 
-
-
-## 1.2. Spring事件机制解析  
+## 1.1. Spring事件机制解析  
+### 1.1.1. Spring事件机制的流程
 &emsp; **<font color = "red">实现Spring事件机制主要有4个类：</font>**  
 
 * ApplicationEvent：事件，每个实现类表示一类事件，可携带数据。
@@ -47,9 +30,19 @@ https://blog.csdn.net/weixin_39035120/article/details/86225377
 * ApplicationEventMulticaster：事件管理者，用于事件监听器的注册和事件的广播。
 * ApplicationEventPublisher：事件发布者，委托ApplicationEventMulticaster完成事件发布。  
 
-&emsp; <font color = "lime">Spring的事件默认是同步的，即调用publishEvent方法发布事件后，它会处于阻塞状态，直到onApplicationEvent接收到事件并处理返回之后才继续执行下去，这种单线程同步的好处是可以进行事务管理。</font>  
 
-### 1.2.1. ApplicationEvent，事件  
+&emsp; 事件监听是一种发布订阅者模式。做完某一件事情以后，需要广播一些消息或者通知，告诉其他的模块进行一些事件处理。相比发送请求，事件监听可以实现接口解耦。   
+&emsp; <font color = "lime">Spring事件机制的流程：</font>   
+1. 事件机制的核心是事件，Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件（继承ApplicationEvent）。  
+2. 确定事件后，要把事件发布出去。在事件发布类的业务代码中调用ApplicationEventPublisher#publishEvent方法（或调用ApplicationEventPublisher的子类，例如调用ApplicationContext#publishEvent）。  
+3. 发布完成之后，启动监听器，自动监听。在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
+4. 最后，就是实际场景中触发事件发布，完成一系列任务。  
+
+
+&emsp; <font color = "lime">Spring的事件默认是同步的，即调用publishEvent方法发布事件后，它会处于阻塞状态，直到onApplicationEvent接收到事件并处理返回之后才继续执行下去，这种单线程同步的好处是可以进行事务管理。</font>  
+&emsp; <font color = "red">注：事件监听是循环往复的，如果确定事件只会发布一次，应该移除事件监听器。</font>  
+
+### 1.1.2. ApplicationEvent，事件  
 &emsp; ApplicationEvent表示事件，每个实现类表示一类事件，可携带数据。<font color = "lime">下面是一些Spring提供的标准事件，都继承了ApplicationEvent。</font>  
 
 |事件名|注释|
@@ -108,7 +101,7 @@ public abstract class ApplicationEvent extends EventObject {
 }
 ```
 
-### 1.2.2. ApplicationListener，事件监听器  
+### 1.1.3. ApplicationListener，事件监听器  
 
 ```java
 @FunctionalInterface
@@ -118,7 +111,7 @@ public interface ApplicationListener<E extends ApplicationEvent> extends EventLi
 ```
 &emsp; 当事件监听器接收到它可以处理的事件，会调用onApplicationEvent()方法。注意到<font color = "red">ApplicationListener是泛型参数，这样可以实现所有继承了ApplicationEvent的监听。可以尽可能多的注册想要的事件侦听器，但是默认情况下事件监听器同步接收事件。这意味着publishEvent()方法会阻塞直到所有的事件监听器成处理完事件。这种单线程同步方法的一个特点是,当一个监听器接收到一个事件时，它运行在事务上下文的发布者线程上(如果事务上下文可用)。</font>如果事件的发布需要另一种策略（譬如多线程）需要实现ApplicationEventMulticaster接口类。  
 
-### 1.2.3. ApplicationEventMulticaster，事件管理者  
+### 1.1.4. ApplicationEventMulticaster，事件管理者  
 &emsp; ApplicationEventMulticaster接口方法分为三类，注册事件监听器、移除事件监听器、发布事件。  
 
 ```java
@@ -266,7 +259,7 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 }
 ```
 
-### 1.2.4. ApplicationEventPublisher，事件发布者  
+### 1.1.5. ApplicationEventPublisher，事件发布者  
 
 ```java
 @FunctionalInterface
@@ -344,7 +337,7 @@ public class AnnotationRegisterListener {
 }
 ```
 
-## 1.3. 使用测试  
+## 1.2. 使用测试  
 &emsp; ApplicationEvent抽象类、ApplicationListener接口是常常搭配使用的：  
 
 * ApplicationEvent：是个抽象类，里面只有一个构造函数和一个长整型的timestamp。  
