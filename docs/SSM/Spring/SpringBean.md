@@ -18,7 +18,6 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 
 ## 1.1. ★★★SpringBean生命周期的概要流程  
 &emsp; **<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-11.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-10.png)  
 
 &emsp; SpringBean的生命周期主要有4个阶段：  
