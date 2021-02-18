@@ -17,7 +17,6 @@
 
 <!-- /TOC -->
 
-&emsp; <font color = "lime">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>因此Spring AOP是在这一步，进行代理增强！  
 
 # 1. SpringAOP解析
 <!-- 
@@ -136,11 +135,11 @@ public interface BeanPostProcessor {
 }
 ```
 
-&emsp; 回顾Spring创建Bean的流程：  
+&emsp; <font color = "clime">回顾Spring创建Bean的流程：</font>  
 1. Step1 创建实例对象createBeanInstance()；
 2. Step2 属性装配populateBean()，得到一个真正的实现类；
-3. <font color = "lime">在Step3 initializeBean()中，IoC容器会处理Bean初始化之后的各种回调事件</font>，然后返回一个“可能经过加工”的bean对象。其中就包括了BeanPostProcessor 的 postProcessBeforeInitialization 回调 和postProcessAfterInitialization 回调。  
-&emsp; **而<font color = "lime">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！
+3. <font color = "blue">在Step3 initializeBean()中，IoC容器会处理Bean初始化之后的各种回调事件</font>，然后返回一个“可能经过加工”的bean对象。其中就包括了BeanPostProcessor 的 postProcessBeforeInitialization 回调 和postProcessAfterInitialization 回调。  
+&emsp; **而<font color = "blue">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！
 
 ## 1.3. 代理类的生成流程  
 &emsp; 在开启AOP自动代理解析阶段中的AnnotationAwareAspectJAutoProxyCreator是一种具体的创建创建AOP代理对象的子类。  
