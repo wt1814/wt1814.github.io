@@ -9,7 +9,9 @@
 
 <!-- /TOC -->
 
-
+&emsp; <font color = "red">总结：</font>**  
+&emsp; <font color = "lime">实现BeanFactoryPostProcessor接口，可以在spring的bean创建之前，修改bean的定义属性。</font>  
+&emsp; <font color = "red">BeanPostProcessor，可以在spring容器实例化bean之后，在执行bean的初始化方法前后，添加一些自己的处理逻辑。</font>  
 
 # 1. BeanFactoryPostProcessor和BeanPostProcessor  
 <!-- 
