@@ -143,7 +143,7 @@ public interface BeanPostProcessor {
 &emsp; <font color = "clime">回顾Spring创建Bean的流程：</font>  
 1. Step1 创建实例对象createBeanInstance()；
 2. Step2 属性装配populateBean()，得到一个真正的实现类；
-3. <font color = "blue">在Step3 initializeBean()中，IoC容器会处理Bean初始化之后的各种回调事件</font>，然后返回一个“可能经过加工”的bean对象。其中就包括了BeanPostProcessor 的 postProcessBeforeInitialization 回调 和postProcessAfterInitialization 回调。  
+3. <font color = "blue">在Step3 initializeBean()中，IoC容器会处理Bean初始化之后的各种回调事件</font>，然后返回一个“可能经过加工”的bean对象。&emsp; 其中就包括了BeanPostProcessor 的 postProcessBeforeInitialization 回调 和postProcessAfterInitialization 回调。  
 **而<font color = "blue">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！
 
 ## 1.3. 代理类的生成流程  
@@ -461,7 +461,7 @@ protected Object createProxy(Class<?> beanClass, String beanName, Object[] speci
 3. 封装Advisor并加入到ProxyFactory中
 4. 设置要代理的类
 5. Spring中为子类提供了定制的函数customizeProxyFactory，子类可以在此函数中6. 对ProxyFactory的进一步封装
-7. ★★★ **获取代理操作**
+7. ★★★**获取代理操作**
 
     ```java
     ProxyFactory#getProxy(..)
