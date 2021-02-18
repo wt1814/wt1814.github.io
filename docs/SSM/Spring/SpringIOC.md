@@ -109,7 +109,7 @@ public interface BeanFactory {
 2. ClassPathXmlApplicationContext：从类路径下的一个或多个xml配置文件中加载上下文定义，适用于xml配置的方式；  
 3. FileSystemXmlApplicationContext：从文件系统下的一个或多个xml配置文件中加载上下文定义，也就是说系统盘符中加载xml配置文件；  
 4. AnnotationConfigWebApplicationContext：专门为web应用准备的，适用于注解方式；  
-5. XmlWebApplicationContext；从web应用下的一个或多个xml配置文件加载上下文定义，适用于xml配置方式。  
+5. XmlWebApplicationContext：从web应用下的一个或多个xml配置文件加载上下文定义，适用于xml配置方式。  
 
 #### 1.1.2.1. BeanFactory和ApplicationContext的区别  
 
@@ -184,7 +184,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 }
 ```
 &emsp; 入参中的configLocations就是XML配置文件的classpath。  
-&emsp; **super(parent);完成了BeanDefinition的resource的定位。** setConfigLocations(configLocations);把一些带有占位符的地址解析成实际的地址。  
+&emsp; **super(parent);完成了BeanDefinition的resource的定位。**setConfigLocations(configLocations);把一些带有占位符的地址解析成实际的地址。  
 
 ### 1.3.2. refresh()方法  
 &emsp; SpringIOC容器对Bean配置资源的载入是从refresh()函数开始的，refresh()是一个模板方法，规定了IOC容器的启动流程，有些逻辑要交给其子类去实现。 **<font color = "red">Spring bean容器刷新的核心 12+1个步骤完成IoC容器的创建及初始化工作：</font>**  
@@ -287,7 +287,7 @@ public void refresh() throws BeansException, IllegalStateException {
 &emsp; 步骤2，初始化 Spring 容器，并构建了BeanDefinition定义  
 
         ClassPathXmlApplicationContext容器的初始化包括BeanDefinition的resource定位、加载和注册这三个基本的过程。  
-        1. BeanDefinition的resource的定位过程，就是找到定义bean的相关的xml文件，是通过继承ResourceLoader 获得的，ResourceLoader代表了加载资源的一种方式，正是策略模式的实现。  
+        1. BeanDefinition的resource的定位过程，就是找到定义bean的相关的xml文件，是通过继承ResourceLoader获得的，ResourceLoader代表了加载资源的一种方式，正是策略模式的实现。  
         2. BeanDifinition的载入，就是把用户在xml中定义好的bean解析成为IoC的内部数据结构，也就是BeanDifinition。  
         3. BeanDifinition的注册，向IoC容器注册这些BeanDifinition，把BeanDifinition注册到一个Map中保存。
     

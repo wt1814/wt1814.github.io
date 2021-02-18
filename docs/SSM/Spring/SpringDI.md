@@ -67,8 +67,8 @@ public <T> T getBean(String name, @Nullable Class<T> requiredType, @Nullable Obj
 
 &emsp; **主要流程：**  
 1. 先处理Bean的名称，因为如果以“&”开头的Bean名称表示获取的是对应的FactoryBean对象；  
-2. 从缓存中获取单例Bean，有则进一步判断这个Bean是不是在创建中，如果是的就等待创建完毕，否则直接返回这个Bean对象；  
-3. 如果不存在单例Bean缓存，则先进行循环依赖的解析；  
+2. 从缓存中获取单例Bean，有则进一步判断这个Bean是不是在创建中，如果是的，就等待创建完毕，否则直接返回这个Bean对象；  
+3. 如果不存在单例Bean缓存， **则先进行循环依赖的解析；**  
 4. 解析完毕之后先获取父类BeanFactory，获取到了则调用父类的getBean方法，不存在则先合并然后创建Bean。  
 
 &emsp; **源码解析：**  
@@ -314,7 +314,7 @@ protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable O
 1. 先检查 instanceWrapper变量是不是null，这里一般是null，除非当前正在创建的Bean在 factoryBeanInstanceCache中存在这个是保存还没创建完成的FactoryBean的集合。  
 2. **<font color = "lime">调用createBeanInstance方法实例化Bean</font>**  
 3. 如果当前 RootBeanDefinition对象还没有调用过实现了的 MergedBeanDefinitionPostProcessor接口的方法，则会进行调用 。  
-4. 当满足这三点：单例Bean、**<font color = "lime">尝试解析bean之间的循环引用</font>**、bean目前正在创建中，则会进一步检查是否实现了 SmartInstantiationAwareBeanPostProcessor接口。如果实现了则调用是实现的 getEarlyBeanReference方法  
+4. 当满足这三点：单例Bean、 **<font color = "lime">尝试解析bean之间的循环引用</font>** 、bean目前正在创建中，则会进一步检查是否实现了 SmartInstantiationAwareBeanPostProcessor接口。如果实现了则调用是实现的 getEarlyBeanReference方法  
 5. **<font color = "lime">调用 populateBean方法进行属性填充</font>**  
 6. **<font color = "lime">调用 initializeBean方法对Bean进行初始化</font>**  
 
