@@ -2,63 +2,37 @@
 
 <!-- TOC -->
 
-- [1. ~~SpringBean生命周期~~](#1-springbean生命周期)
-    - [1.1. SpringBean生命周期的概要流程](#11-springbean生命周期的概要流程)
+- [1. SpringBean生命周期](#1-springbean生命周期)
+    - [1.1. ★★★SpringBean生命周期的概要流程](#11-★★★springbean生命周期的概要流程)
     - [1.2. 实例演示](#12-实例演示)
     - [1.3. 源码解析](#13-源码解析)
     - [1.4. 总结](#14-总结)
 
 <!-- /TOC -->
 
-# 1. ~~SpringBean生命周期~~
+# 1. SpringBean生命周期
 <!-- 
 https://mp.weixin.qq.com/s/DC_PH_PXpbNgDQuGslTTTg
 https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 -->
 
-## 1.1. SpringBean生命周期的概要流程  
-<!-- 
-doCreateBean() 方法主要干三件事情：  
-
-    实例化 bean 对象： createBeanInstance()  
-
-    属性注入： populateBean()  
-
-    初始化 bean 对象： initializeBean()  
-
-而初始化 bean 对象时也是干了三件事情：  
-
-    激活 Aware 方法  
-
-    后置处理器的应用  
-
-    激活自定义的 init 方法  
-
--->
-
-
+## 1.1. ★★★SpringBean生命周期的概要流程  
 &emsp; **<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-11.png)  
-&emsp; **Bean创建的三个阶段：**    
-&emsp; Spring在创建一个Bean时是分为三个步骤的：    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-10.png)  
 
-1. 实例化，可以理解为new一个对象
-2. 属性注入，可以理解为调用setter方法完成属性注入
-3. 初始化，你可以按照Spring的规则配置一些初始化的方法(例如，@PostConstruct注解)
-
-&emsp; **生命周期的概念：**  
-&emsp; Bean的生命周期指的就是在上面三个步骤中后置处理器BeanPostprocessor穿插执行的过程  
-
-----
-&emsp; Bean的生命周期概括起来就是4个阶段：  
-1. 实例化(Instantiation)；
-2. 属性赋值(Populate)；
-3. 初始化(Initialization)；
+&emsp; SpringBean的生命周期主要有4个阶段：  
+1. 实例化(Instantiation)，可以理解为new一个对象；
+2. 属性赋值(Populate)，可以理解为调用setter方法完成属性注入；
+3. 初始化(Initialization)，包含：  
+    * 激活Aware方法  
+    * 后置处理器的应用  
+    * 激活自定义的init方法  
 4. 销毁(Destruction)---注册Destruction回调函数。  
 
 ----
 
-&emsp; spring bean的生命周期：  
+&emsp; spring bean的生命周期流程介绍：  
 1. 实例化Bean：  
 &emsp; 对于BeanFactory容器，当客户向容器请求一个尚未初始化的bean时，或初始化bean的时候需要注入另一个尚未初始化的依赖时，容器就会调用createBean进行实例化。对于ApplicationContext容器，当容器启动结束后，通过获取BeanDefinition对象中的信息，实例化所有的bean。   
 2. 设置对象属性(依赖注入)：  

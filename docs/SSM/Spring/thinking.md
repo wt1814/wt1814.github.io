@@ -26,7 +26,7 @@ https://mp.weixin.qq.com/s/VzBA7DehOwYUAl7xt8KPAw
         ```java
         private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
         ```
-    3. 对IoC容器进行一些预处理。  
+    3. 对IoC容器进行一些预处理。为BeanFactory配置容器特性，例如设置BeanFactory的类加载器，配置了BeanPostProcessor，注册了三个默认bean实例，分别是“environment”、“systemProperties”、“systemEnvironment”。  
     4. 允许在上下文子类中对bean工厂进行后处理。  
     5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理。</font>**  
     6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
@@ -39,7 +39,7 @@ https://mp.weixin.qq.com/s/VzBA7DehOwYUAl7xt8KPAw
     13. 重置公共的一些缓存数据。  
 
 ---
-&emsp;  Spring提供的扩展接口有aware接口、后置处理器、InitializingBean和DisposableBean、事件机制。**这些可扩展的接口主要分两类，一类是针对单个Bean、另一类是针对容器。**s  
+&emsp;  Spring提供的扩展接口有aware接口、后置处理器、InitializingBean和DisposableBean、事件机制。**这些可扩展的接口主要分两类，一类是针对单个Bean、另一类是针对容器。**  
 
 * 针对单个Bean，BeanNameAware、BeanPostProcessor、InitializingBean和DisposableBean。
 * 针对容器，ApplicationContextAware、BeanFactoryPostProcessor、Spring提供的5种标准事件机制。  
@@ -52,7 +52,7 @@ https://mp.weixin.qq.com/s/VzBA7DehOwYUAl7xt8KPAw
 * BeanPostProcessor  
 &emsp;  BeanPostProcessor，可以在spring容器实例化bean之后，在执行bean的初始化方法前后，添加一些自己的处理逻辑。   
 &emsp;  实现BeanFactoryPostProcessor接口，可以在spring的bean创建之前，修改bean的定义属性。
-* InitializingBean和DisposableBean
+* InitializingBean和DisposableBean  
 &emsp;  当需要在bean的全部属性设置成功后做些特殊的处理，可以让该bean实现InitializingBean接口。  
 &emsp;  当需要在bean销毁之前做些特殊的处理，可以让该bean实现DisposableBean接口，该接口也只定义了一个destory方法。  
 

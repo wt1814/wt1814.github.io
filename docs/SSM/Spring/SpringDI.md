@@ -15,6 +15,8 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "lime">Spring DI依赖注入阶段，doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean() 初始化。</font>**  
+
 # 1. SpringDI解析
 ## 1.1. 依赖注入发生的时间  
 &emsp; 当Spring IOC容器完成了Bean定义资源的定位、载入和解析注册以后，IOC容器中已经管理类Bean定义的相关数据，但是此时IOC容器还没有对所管理的Bean进行依赖注入，<font color= "red">依赖注入在以下两种情况发生</font>：  
@@ -318,7 +320,7 @@ protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable O
 5. **<font color = "lime">调用 populateBean方法进行属性填充</font>**  
 6. **<font color = "lime">调用 initializeBean方法对Bean进行初始化</font>**  
 
-&emsp; **<font color = "lime">Spring IoC依赖注入的阶段，创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean() 初始化。</font>**  
+&emsp; **<font color = "lime">Spring DI依赖注入阶段，doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean() 初始化。</font>**  
 
 &emsp; **源码解析：**  
 

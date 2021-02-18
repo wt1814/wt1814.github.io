@@ -28,8 +28,8 @@
         ```java
         private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
         ```
-    3. 对IoC容器进行一些预处理。  
-    4. 允许在上下文子类中对bean工厂进行后处理。  
+    3. 对IoC容器进行一些预处理。 为BeanFactory配置容器特性，例如设置BeanFactory的类加载器，配置了BeanPostProcessor，注册了三个默认bean实例，分别是“environment”、“systemProperties”、“systemEnvironment”。  
+    4. 允许在上下文子类中对bean工厂进行后处理。 本方法没有具体实现，是一个扩展点，开发人员可以根据自己的情况做具体的实现。  
     5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理。</font>**  
     6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
     7. 初始化一些消息源(比如处理国际化的i18n等消息源)。  
@@ -190,8 +190,8 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 &emsp; SpringIOC容器对Bean配置资源的载入是从refresh()函数开始的，refresh()是一个模板方法，规定了IOC容器的启动流程，有些逻辑要交给其子类去实现。 **<font color = "red">Spring bean容器刷新的核心 12+1个步骤完成IoC容器的创建及初始化工作：</font>**  
 1. 刷新前的准备工作。  
 2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>**  
-3. 对IoC容器进行一些预处理。  
-4. 允许在上下文子类中对bean工厂进行后处理。  
+3. 对IoC容器进行一些预处理。为BeanFactory配置容器特性，例如设置BeanFactory的类加载器，配置了BeanPostProcessor，注册了三个默认bean实例，分别是“environment”、“systemProperties”、“systemEnvironment”。  
+4. 允许在上下文子类中对bean工厂进行后处理。 本方法没有具体实现，是一个扩展点，开发人员可以根据自己的情况做具体的实现。  
 5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理。</font>**  
 6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
 7. 初始化一些消息源(比如处理国际化的i18n等消息源)。  
