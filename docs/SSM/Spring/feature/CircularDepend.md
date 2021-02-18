@@ -240,6 +240,11 @@ protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 &emsp; 这个方法是Spring解决循环依赖的关键方法，在这个方法中，使用了三级缓存来查询的方式。这个方法中用到的几个判断逻辑，体现了Spring解决循环依赖的思路，不过实际上对象被放入这三层的顺序是和方法查询的循序相反的，也就是说，在循环依赖出现时，对象往往会先进入singletonFactories，然后earlySingletonObjects，然后singletonObjects。  
 
 ## 1.5. 常见问题  
+<!-- 
+第4个问题：Spring循环依赖三级缓存是否可以减少为二级缓存？ 
+https://mp.weixin.qq.com/s/3ny7oIE89c7mztV0WSAfbA
+https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
+-->
 1. 为什么使用构造器注入属性的时候不能解决循环依赖问题？  
 &emsp; 原因在于此方式是实例化和初始化分开(在进行实例化的时候不必给属性赋值)操作，将提前实例化好的对象前景暴露出去，供别人调用，而使用构造器的时候，必须要调用构造方法了，没有构造方法无法完成对象的实例化操作，也就无法创建对象的实例化操作，也就无法创建对象，那么永远会陷入到死循环中。   
 
@@ -250,10 +255,7 @@ protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 &emsp; 不能，在三个级别的缓存中，放置的对象是有区别的，(1、是完成实例化且初始化的对象，2、是实例化但是未初始化的对象)，如果只有一级缓存，就有可能取到实例化但未初始化的对象，属性值都为空，肯定有问题。  
 
 4. 二级缓存能不能解决？为什么要三级缓存？  
-<!-- Spring循环依赖三级缓存是否可以减少为二级缓存？ 
-https://mp.weixin.qq.com/s/3ny7oIE89c7mztV0WSAfbA
-https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
--->
+
 &emsp; 理论上来说是可以解决循环依赖的问题，但是注意：为什么要在三级缓存中放置匿名内部类？  
 &emsp; 本质在于为了创建代理对象，假如现在有A类，需要生成代理对象，A需要实例化。  
 &emsp; 在三级缓存中放置的是，生成具体对象的一个匿名内部类，这个匿名内部类可能是代理类，也可能是普通的实例对象，而使用三级缓存就保证了不管是否需要代理对象，都保证使用的是一个对象，而不会出现，前面使用普通bean，后面使用代理类。  

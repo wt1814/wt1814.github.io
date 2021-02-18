@@ -9,7 +9,7 @@
 
 <!-- /TOC -->
 
-&emsp; <font color = "red">总结：</font>**  
+&emsp; **<font color = "red">总结：</font>**  
 &emsp; <font color = "lime">实现BeanFactoryPostProcessor接口，可以在spring的bean创建之前，修改bean的定义属性。</font>  
 &emsp; <font color = "red">BeanPostProcessor，可以在spring容器实例化bean之后，在执行bean的初始化方法前后，添加一些自己的处理逻辑。</font>  
 
@@ -59,7 +59,7 @@ public interface BeanPostProcessor {
     }
 }
 ```
-&emsp; <font color = "red">BeanPostProcessor，可以在spring容器实例化bean之后，在执行bean的初始化方法前后，添加一些自己的处理逻辑。</font>这里说的初始化方法，指的是下面两种：  
+&emsp; <font color = "red">BeanPostProcessor，可以在spring容器实例化bean之后，</font> **<font color = "clime">在执行bean的初始化方法前后，</font>** <font color = "red">添加一些自己的处理逻辑。</font>这里说的初始化方法，指的是下面两种：  
 
 * bean实现了InitializingBean接口，对应的方法为afterPropertiesSet
 * 在bean定义的时候，通过init-method设置的方法
@@ -86,7 +86,6 @@ public interface BeanPostProcessor {
 &emsp; 这些注解类的BeanPostProcessor，在spring配置文件中，可以通过这样的配置 <context:component-scan base-package="*.*" /\> ，自动进行注册。(spring通过ComponentScanBeanDefinitionParser类来解析该标签)  
 
 &emsp; 如果自定义了多个的BeanPostProcessor的实现类，通过实现Ordered接口，设置order属性，可以按照顺序执行实现类的方法。  
-
 
 &emsp; **BeanFactory和ApplicationContext加载BeanPostProcessor：**  
 &emsp; BeanFactory和ApplicationContext对待bean后置处理器稍有不同。ApplicationContext会自动检测在配置文件中实现了BeanPostProcessor接口的所有bean，并把它们注册为后置处理器，然后在容器创建bean的适当时候调用它，因此部署一个后置处理器同部署其他的bean并没有什么区别。而使用BeanFactory实现的时候，bean 后置处理器必须通过代码显式地去注册，在IoC容器继承体系中的ConfigurableBeanFactory接口中定义了注册方法  
