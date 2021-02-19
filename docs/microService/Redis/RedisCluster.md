@@ -32,8 +32,10 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "red">参考《Redis开发与运维》</font>**
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-74.png)  
+
+&emsp; **<font color = "red">参考《Redis开发与运维》</font>**
+
 
 # 1. Redis Cluster  
 <!-- 

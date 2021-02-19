@@ -9,7 +9,7 @@
             - [1.2.1.2. 定时任务二](#1212-定时任务二)
             - [1.2.1.3. 定时任务三](#1213-定时任务三)
         - [1.2.2. 主观下线、客观下线](#122-主观下线客观下线)
-        - [1.2.3. 故障转移](#123-故障转移)
+        - [1.2.3. 故障转移(主节点选举)](#123-故障转移主节点选举)
         - [1.2.4. Sentinel选举](#124-sentinel选举)
     - [1.3. 部署及故障转移演示](#13-部署及故障转移演示)
 
@@ -25,12 +25,14 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 
 &emsp; **<font color = "lime">参考《Redis开发与运维》</font>**
 
-
 &emsp; **<font color = "red">总结：</font>**  
+&emsp; <font color="lime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
+&emsp; <font color = "red">Redis哨兵架构中主要包括两个部分：Redis Sentinel集群和Redis数据集群。</font>  
 
+&emsp; **哨兵原理：**  
 * **<font color = "lime">心跳检查：Sentinel通过三个定时任务来完成对各个节点的发现和监控。</font>**
 * **<font color = "lime">主观下线和客观下线：首先单个Sentinel节点认为数据节点主观下线，询问其他Sentinel节点， Sentinel多数节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。</font>**
-* **<font color = "lime">故障转移。</font>**    
+* **<font color = "lime">故障转移/主节点选举。</font>**    
 * **<font color = "lime">Sentinel选举：Sentinel集群是集中式架构，基于raft算法。</font>**  
 
 # 1. 哨兵模式  
@@ -47,7 +49,6 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 
 &emsp; <font color="lime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-89.png)  
-
 
 ## 1.1. 架构  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-28.png)  
@@ -104,7 +105,7 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 &emsp; <font color = "red">当Sentinel节点判定一个主节点为主观下线后，则会通过sentinelis-master-down-by-addr命令询问其他Sentinel节点对该主节点的状态，当有超过<quorunm\>个Sentinel节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。</font>  
 &emsp; 这里有一点需要注意的是，<font color = "lime">客观下线是针对主机节点，如果主观下线的是从节点或者其他Sentinel节点，则不会进行后面的客观下线和故障转移了。</font>  
 
-### 1.2.3. 故障转移  
+### 1.2.3. 故障转移(主节点选举)  
 &emsp; 当某个Sentinel节点通过选举成为了领导者，则它要承担起故障转移的工作，其具体步骤如下：  
 1. <font color = "red">在从节点列表中选择一个节点作为新的主节点，选择的策略如下：</font> 
     * 过滤掉不健康的节点(主观下线、断线)，5秒内没有回复过Sentinel节点ping响应、与主节点失联超过down-after-milliseconds*10秒  

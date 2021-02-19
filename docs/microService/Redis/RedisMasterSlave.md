@@ -27,11 +27,11 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "clime">部分参考《Redis开发与运维》第6章</font>**  
 
 
 # 1. ~~主从复制模式~~  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-76.png)  
-&emsp; **<font color = "clime">部分参考《Redis开发与运维》第6章</font>**  
 <!--
 ~~ 
 Redis的主从复制是如何做的？复制过程中也会产生各种问题 
