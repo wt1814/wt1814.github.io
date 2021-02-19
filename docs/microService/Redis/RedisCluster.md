@@ -64,10 +64,10 @@
 
 ## 1.2. Redis Cluster集群  
 &emsp; Redis Cluster是在3.0版本正式推出的高可用集群方案。  
-&emsp; <font color = "red">Redis Cluster相比Redis Sentinel，Redis Cluster方案不需要额外部署Sentinel集群，而是通过集群内部通信实现集群监控，故障时主从切换；同时，支持内部基于哈希槽实现数据分片，支持动态水平扩容。</font>  
-&emsp; Redis Cluster相比Codis，它是去中心化的，客户端可以连接到任意一个可用节点。  
+1. <font color = "red">Redis Cluster相比Redis Sentinel，Redis Cluster方案不需要额外部署Sentinel集群，而是通过集群内部通信实现集群监控，故障时主从切换；同时，支持内部基于哈希槽实现数据分片，支持动态水平扩容。</font>  
+2. Redis Cluster相比Codis，它是去中心化的，客户端可以连接到任意一个可用节点。  
 
-&emsp; 特点：  
+&emsp; **Redis Cluster集群特点：**  
 *  高性能  
     * **<font color = "lime">采用了异步复制机制，</font>** 向某个节点写入数据时，无需等待其它节点的写数据响应。  
     * **<font color = "lime">去中心化，无中心代理节点，每个节点保存数据和整个集群状态，每个节点都和其他所有节点连接，将客户端直接重定向到拥有数据的节点。</font>**  
@@ -195,7 +195,8 @@ https://mp.weixin.qq.com/s/dfj-_qYdK3emt965hj9_jw
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-48.png)  
 
 ###### 1.2.2.2.1.2. Smart客户端  
-&emsp; 大多数开发语言的Redis客户端都采用Smart客户端支持集群协议，客户端如何选择见：http://redis.io/clients ，从中找出符合自己要求的客户端类库。Smart客户端通过在内部维护slot→node的映射关系，本地就可实现键到节点的查找，从而保证IO效率的最大化，而MOVED重定向负责协助Smart客户端更新slot→node映射。  
+&emsp; 大多数开发语言的Redis客户端都采用Smart客户端支持集群协议。客户端如何选择见：http://redis.io/clients ，从中找出符合自己要求的客户端类库。  
+&emsp; **Smart客户端通过在内部维护slot→node的映射关系，本地就可实现键到节点的查找，从而保证IO效率的最大化，而MOVED重定向负责协助Smart客户端更新slot→node映射。**  
 &emsp; Jedis为Redis Cluster提供了Smart客户端，对应的类是JedisCluster。  
 
 ###### 1.2.2.2.1.3. ASK重定向  
