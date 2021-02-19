@@ -135,8 +135,9 @@ https://stor.51cto.com/art/201904/594773.htm
 |allkeys-lfu|在所有的键中选择最不常用的，不管数据有没有设置超时属性。| 
 |volatile-random|在带有过期时间的键中随机选择。 allkeys-random 随机删除所有键，直到腾出足够内存为止。| 
 |volatile-ttl|根据键值对象的ttl属性，删除最近将要过期数据。如果没有，回退到 noeviction 策略。| 
-|noeviction |默认策略，不会删除任何数据，拒绝所有写入操作并返回客户端错误信息(error)OOM command not allowed when used memory，此时Redis只响应读操作。| 
- 
+|noeviction |默认策略，不会删除任何数据，拒绝所有写入操作并返回客户端错误信息(error)OOM command not allowed when used memory，此时Redis只响应读操作。|
+
+
 &emsp; **<font color = "lime">注：volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
 
 #### 1.3.2.1. ※※※内存淘汰策略选择  
