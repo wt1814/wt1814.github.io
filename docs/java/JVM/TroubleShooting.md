@@ -17,6 +17,7 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
 &emsp; <font color = "red">对于线上系统突然产生的运行缓慢问题，如果该问题导致线上系统不可用，</font><font color = "lime">那么首先需要做的就是，导出线程堆栈和内存信息，然后重启系统，尽快保证系统的可用性。</font>  
 
 * CPU飚高  
