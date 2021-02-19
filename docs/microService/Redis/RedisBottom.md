@@ -123,7 +123,7 @@ struct sdshdr{
     char[] buf;
 };
 ```
-&emsp; 对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。  
+&emsp; **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>**  
 &emsp; <font color = "red">len保存了字符串的长度，free表示buf数组中未使用的字节数量，buf数组则是保存字符串的每一个字符元素。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-77.png)  
 &emsp; Redis的字符串也会遵守C语言的字符串的实现规则，即最后一个字符为空字符。然而这个空字符不会被计算在len里头。  
@@ -160,7 +160,7 @@ struct sdshdr{
             「c语言」中两个字符串拼接，若是没有分配足够长度的内存空间就「会出现缓冲区溢出的情况」。
 
 3. <font color = "lime">降低空间分配次数，提升内存使用效率</font>  
-    &emsp; 字符串的追加、缩减操作会涉及到内存分配问题，然而内存分配问题会牵扯内存划分算法以及系统调用，所以如果频繁发生的话影响性能。所以采取了一下两种优化措施空间预分配、惰性空间回收。  
+    &emsp; 字符串的追加、缩减操作会涉及到内存分配问题，然而内存分配问题会牵扯内存划分算法以及系统调用，所以如果频繁发生的话，会影响性能。所以采取了以下两种优化措施空间预分配、惰性空间回收。  
 
     1. <font color = "lime">空间预分配</font>   
         &emsp; 对于追加操作来说，Redis不仅会开辟空间至够用，<font color = "red">而且还会预分配未使用的空间(free)来用于下一次操作。</font>至于未使用的空间(free)的大小则由修改后的字符串长度决定。
@@ -341,7 +341,7 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 
 
 ### 1.4.4. Set内部编码   
-&emsp; Redis中列表和集合都可以用来存储字符串，但是<font color = "red">「Set是不可重复的集合，而List列表可以存储相同的字符串」，</font>「Set是一个特殊的value为空的Hash」，Set集合是无序的这个和后面讲的ZSet有序集合相对。  
+&emsp; Redis中列表和集合都可以用来存储字符串，但是<font color = "red">「Set是不可重复的集合，而List列表可以存储相同的字符串」，</font> **<font color = "clime">「Set是一个特殊的value为空的Hash」，</font>** Set集合是无序的这个和后面讲的ZSet有序集合相对。  
 
 &emsp; Redis 用intset或dictEntry存储set。当满足如下两个条件的时候，采用整数集合实现；一旦有一个条件不满足时则采用字典来实现。  
 
