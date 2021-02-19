@@ -27,6 +27,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; 很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！  
+&emsp; redis底层8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。  
 &emsp; redis数据类型内部编码：  
 
 * String和Hash都是存储的字符串，Hash由ziplist(压缩列表)或者dictht(字典)组成；  
