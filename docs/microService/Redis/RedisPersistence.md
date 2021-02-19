@@ -18,7 +18,7 @@
             - [1.2.2.2. 重启加载步骤(数据恢复流程)](#1222-重启加载步骤数据恢复流程)
         - [1.2.3. AOF文件损坏](#123-aof文件损坏)
         - [1.2.4. AOF的优势和劣势](#124-aof的优势和劣势)
-    - [1.3. 混合持久化](#13-混合持久化)
+    - [1.3. ~~混合持久化~~](#13-混合持久化)
 
 <!-- /TOC -->
 
@@ -40,7 +40,7 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 &emsp; Redis是一种内存数据库。一旦进程退出，Redis的数据就会丢失。Redis持久化拥有以下三种方式：  
 1. 快照方式(RDB，Redis DataBase)将某一个时刻的内存数据，以二进制的方式写入磁盘，RDB方式是redis默认的持久化方式；  
 2. 文件追加方式(AOF，Append Only File)，记录所有的操作命令，并以文本的形式追加到文件中；  
-3. 混合持久化方式，Redis 4.0之后新增的方式，<font color = "red">混合持久化是结合了RDB和 AOF的优点，在写入的时候，先把当前的数据以RDB的形式写入文件的开头，再将后续的操作命令以AOF的格式存入文件</font>，这样<font color = "lime">既能保证Redis重启时的速度，又能减少数据丢失的风险。</font>  
+3. ~~混合持久化方式，Redis 4.0之后新增的方式，<font color = "red">混合持久化是结合了RDB和 AOF的优点，在写入的时候，先把当前的数据以RDB的形式写入文件的开头，再将后续的操作命令以AOF的格式存入文件</font>，这样<font color = "lime">既能保证Redis重启时的速度，又能减少数据丢失的风险。</font>~~  
 
 ## 1.1. RDB(Redis DataBase)，快照
 &emsp; <font color = "red">RDB持久化是Redis默认的持久化方式。RDB是一种快照存储持久化方式，</font><font color = "lime">将Redis某一时刻的所有内存数据保存到硬盘的文件当中</font>，默认保存的文件名为dump.rdb，dump.rdb文件默认生成在%REDIS_HOME%etc目录下(如/usr/local/redis/etc/)，可以修改redis.conf文件中的dir指定dump.rdb的保存路径。也可以将快照复制到其他服务器从而创建具有相同数据的服务器副本。  
@@ -51,9 +51,10 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 #### 1.1.1.1. 自动触发RDB持久化：
 1. 方式一：修改redis.conf文件，默认配置如下所示：  
 
-    save 900 1 # 表示900秒内如果至少有 1 个 key 的值变化，则触发RDB
-    save 300 10 # 表示300秒内如果至少有 10 个 key 的值变化，则触发RDB
-    save 60 10000 # 表示60秒内如果至少有 10000 个 key 的值变化，则触发RDB  
+        save 900 1 # 表示900秒内如果至少有 1 个 key 的值变化，则触发RDB
+        save 300 10 # 表示300秒内如果至少有 10 个 key 的值变化，则触发RDB
+        save 60 10000 # 表示60秒内如果至少有 10000 个 key 的值变化，则触发RDB  
+
 &emsp; 如果不需要Redis进行持久化，可以注释掉所有的save行来停用保存功能，也可以直接一个空字符串来停用持久化：save ""。  
 &emsp; Redis服务器周期操作函数serverCron默认每个100毫秒就会执行一次，该函数用于正在运行的服务器进行维护，它的一项工作就是检查save选项所设置的条件是否有一项被满足，如果满足的话，就执行bgsave指令。   
 
@@ -75,9 +76,9 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-53.png)  
 1. 执行bgsave命令，Redis父进程判断当前是否存在正在执行的子进程，如RDB/AOF子进程，如果存在bgsave命令直接返回。  
 2. 父进程执行fork操作创建子进程，fork操作过程中父进程会阻塞，通过info stats命令查看latest_fork_usec选项，可以获取最近一个fork操作的耗 时，单位为微秒。  
-3. 父进程fork完成后，bgsave命令返回“Background saving started”信息 并不再阻塞父进程，可以继续响应其他命令。  
-4. 子进程创建RDB文件，根据父进程内存生成临时快照文件，完成后 对原有文件进行原子替换。执行lastsave命令可以获取最后一次生成RDB的 时间，对应info统计的rdb_last_save_time选项。  
-5. 进程发送信号给父进程表示完成，父进程更新统计信息，具体见 info Persistence下的rdb_*相关选项。  
+3. 父进程fork完成后，bgsave命令返回“Background saving started”信息并不再阻塞父进程，可以继续响应其他命令。  
+4. 子进程创建RDB文件，根据父进程内存生成临时快照文件，完成后对原有文件进行原子替换。执行lastsave命令可以获取最后一次生成RDB的时间，对应info统计的rdb_last_save_time选项。  
+5. 进程发送信号给父进程表示完成，父进程更新统计信息，具体见info Persistence下的rdb_*相关选项。  
 
 ### 1.1.3. RDB的优势和劣势  
 &emsp; **优势** 
@@ -152,19 +153,19 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 &emsp; AOF重写过程可以手动触发和自动触发：  
 * 手动触发：直接调用bgrewriteaof命令。 
 * 自动触发：根据auto-aof-rewrite-min-size和auto-aof-rewrite-percentage参数确定自动触发时机。
-    * auto-aof-rewrite-min-size：表示运行AOF重写时文件最小体积，默认 为64MB。
+    * auto-aof-rewrite-min-size：表示运行AOF重写时文件最小体积，默认为64MB。
     * auto-aof-rewrite-percentage：代表当前AOF文件空间 (aof_current_size)和上一次重写后AOF文件空间(aof_base_size)的比值。  
     
-    &emsp; 自动触发时机=aof_current_size>auto-aof-rewrite-min- size&&(aof_current_size-aof_base_size)/aof_base_size>=auto-aof-rewrite- percentage  
-    &emsp; 其中aof_current_size和aof_base_size可以在info Persistence统计信息中查看。  
+    
+    &emsp; 自动触发时机：aof_current_size>auto-aof-rewrite-min- size&&(aof_current_size-aof_base_size)/aof_base_size>=auto-aof-rewrite- percentage。其中aof_current_size和aof_base_size可以在info Persistence统计信息中查看。  
 
-&emsp; 当触发AOF重写时，内部做了哪些事呢？下面结合图5-3介绍它的运行流程。  
+&emsp; 当触发AOF重写时，内部做了哪些事呢？下图介绍它的运行流程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-86.png)  
 
 #### 1.2.2.2. 重启加载步骤(数据恢复流程)  
-&emsp; AOF和RDB文件都可以用于服务器重启时的数据恢复。如下图所示， 表示Redis持久化文件加载流程。  
+&emsp; AOF和RDB文件都可以用于服务器重启时的数据恢复。如下图所示，表示Redis持久化文件加载流程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-54.png)  
-&emsp; 流程说明： 
+&emsp; 流程说明：  
 1. AOF持久化开启且存在AOF文件时，优先加载AOF文件。  
 2. AOF关闭或者AOF文件不存在时，加载RDB文件。  
 3. 加载AOF/RDB文件成功后，Redis启动成功。 
@@ -209,7 +210,7 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 * AOF方式生成的日志文件太大，即使通过AOF重写，文件体积仍然很大。  
 * 恢复数据的速度比RDB慢。  
 -->
-## 1.3. 混合持久化  
+## 1.3. ~~混合持久化~~  
 &emsp; redis4.0引入了混合持久化方式。简单的说就是「内存快照以一定的频率执行，比如1小时一次，在两次快照之间，使用AOF日志记录这期间的所有命令操作。」    
 &emsp; 混合使用的方式使得内存快照不必频繁的执行，并且AOF记录的也不是全部的操作命令，而是两次快照之间的操作命令，不会出现AOF日志文件过大的情况了，避免了AOF重写的开销了。
 这个方案既能够用到的RDB的快速恢复的好处，又能享受都只记录操作命令的简单优势，强烈建议使用  
