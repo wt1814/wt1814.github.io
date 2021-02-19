@@ -2,6 +2,11 @@
 
 
 # insert插入流程  
+<!-- 
+回顾下写流程
+https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
+-->
+
 ## 事务提交前的日志文件写入  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-150.png)  
 

@@ -29,6 +29,9 @@
 # 1. 主从复制 
 &emsp; **<font color = "red">部分参考《高性能MySql》</font>**
 <!-- 
+面试官：Mysql 中主库跑太快，从库追不上怎么整？ 
+https://mp.weixin.qq.com/s/3OBZEYAbP4Yocr1EHoBhuw
+
 大厂如何使用binlog解决多机房同步mysql数据(一)？ 
 https://mp.weixin.qq.com/s/CXJHvTofKix6rR-ZZgeT_w
 大厂如何基于binlog解决多机房同步mysql数据(二)？ 

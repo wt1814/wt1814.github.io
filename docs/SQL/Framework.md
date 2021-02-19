@@ -8,6 +8,12 @@
 <!-- /TOC -->
 
 # 1. MySql架构  
+<!-- 
+ 8张图，5大组件！了解MySQL查询语句执行过程。 
+ https://mp.weixin.qq.com/s/jg0Os6ZhiP7KwFd6LLkZ1A
+
+-->
+
 ## 1.1. MySql Server系统架构  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-44.png)  
 &emsp; MySQL服务器主要分为Server层和存储引擎层。

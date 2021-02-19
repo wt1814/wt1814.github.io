@@ -32,7 +32,9 @@
     * 基数统计是指找出集合中不重复元素，用于去重。  
     * 使用Redis统计集合的基数一般有三种方法，分别是使用Redis的 HashMap，BitMap和HyperLogLog。  
     * HyperLogLog内存空间消耗少，但存在误差0.81%。  
-    
+
+
+
 # 1. Redis扩展数据类型  
 <!-- 
 
