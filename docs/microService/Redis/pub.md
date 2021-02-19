@@ -10,7 +10,7 @@
 
 # 1. Redis发布订阅  
 <!-- 
-Redis 消息队列的三种方案（List、Streams、Pub/Sub） 
+Redis 消息队列的三种方案(List、Streams、Pub/Sub) 
 https://mp.weixin.qq.com/s/_q0bI62iFrG8h-gZ-bCvNQ
 -->
 
@@ -35,7 +35,7 @@ https://mp.weixin.qq.com/s/_q0bI62iFrG8h-gZ-bCvNQ
 &emsp; rabbitmq队列可以被多个消费者同时监控消费，但是每一条消息只能被消费一次，由于rabbitmq的消费确认机制，因此它能够根据消费者的消费能力而调整它的负载；  
 &emsp; redis发布订阅模式，一个队列可以被多个消费者同时订阅，当有消息到达时，会将该消息依次发送给每个订阅者；  
 * 持久性  
-&emsp; redis：redis的持久化是针对于整个redis缓存的内容，它有RDB和AOF两种持久化方式（redis持久化方式，后续更新），可以将整个redis实例持久化到磁盘，以此来做数据备份，防止异常情况下导致数据丢失。  
+&emsp; redis：redis的持久化是针对于整个redis缓存的内容，它有RDB和AOF两种持久化方式(redis持久化方式，后续更新)，可以将整个redis实例持久化到磁盘，以此来做数据备份，防止异常情况下导致数据丢失。  
 &emsp; rabbitmq：队列，消息都可以选择性持久化，持久化粒度更小，更灵活；  
 * 队列监控  
 &emsp; rabbitmq实现了后台监控平台，可以在该平台上看到所有创建的队列的详细情况，良好的后台管理平台可以方面我们更好的使用；  
@@ -87,7 +87,7 @@ https://mp.weixin.qq.com/s/ConI2dcD9F9crSx0qVa7GQ
 https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486105&idx=2&sn=f4b4734951ec262ad67c865be940e5c5&chksm=ec505348db27da5ee9b956e40963b0abb52f739863a82c7d1838ca1a92928f50facc012ccd12&scene=21#wechat_redirect
 -->
 
-&emsp; （1）首先第一步想要操作Redis，再SpringBoot项目中引入jedis的依赖，毕竟jedis是官方推荐使用操作Redis的工具。  
+&emsp; (1)首先第一步想要操作Redis，再SpringBoot项目中引入jedis的依赖，毕竟jedis是官方推荐使用操作Redis的工具。  
 
 ```xml
 <dependency>
@@ -97,7 +97,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247486105&idx=2&sn=f4b473
 </dependency>
 ```
 
-&emsp; （2）然后创建发布者Publisher，用于消息的发布，具体代码如下：  
+&emsp; (2)然后创建发布者Publisher，用于消息的发布，具体代码如下：  
 
 ```java
 package com.ldc.org.myproject.demo.redis;
@@ -148,7 +148,7 @@ public class Publisher extends Thread{
 }
 ```
 
-&emsp; （3）接着创建订阅类Subscriber，并且继承JedisPubSub 类，重写onMessage、onSubscribe、onUnsubscribe三个方法，这三个方法的调用时机在注释上都有说明，具体的实现代码如下：  
+&emsp; (3)接着创建订阅类Subscriber，并且继承JedisPubSub 类，重写onMessage、onSubscribe、onUnsubscribe三个方法，这三个方法的调用时机在注释上都有说明，具体的实现代码如下：  
 
 ```java
 package com.ldc.org.myproject.demo.redis;
@@ -195,7 +195,7 @@ public class Subscriber extends JedisPubSub {
 }
 ```
 
-&emsp; （4）这次创建的才是真正的订阅者SubThread，上面的Subscriber是指为了测试实订阅的时候或者发布消息，能够有信息输出：  
+&emsp; (4)这次创建的才是真正的订阅者SubThread，上面的Subscriber是指为了测试实订阅的时候或者发布消息，能够有信息输出：  
 
 ```java
 package com.ldc.org.myproject.demo.redis;
@@ -243,7 +243,7 @@ public class SubThread extends Thread {
 }
 ```
 
-&emsp; （5）后面就是测试了，分别测试发布与订阅的测试，发布者为TestPublisher，订阅者为TestSubscriber：  
+&emsp; (5)后面就是测试了，分别测试发布与订阅的测试，发布者为TestPublisher，订阅者为TestSubscriber：  
 
 ```java
 package com.ldc.org.myproject.demo.redis;

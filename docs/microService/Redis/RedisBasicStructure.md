@@ -17,9 +17,9 @@
  
 
 -->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-72.png)  
 
 # 1. Redis  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-72.png)  
 &emsp; <font color="red">整体参考《Redis开发与运维》，数据结构参考《Redis深度历险：核心原理和应用实践》</font>  
 
 ## 1.1. Redis简介  
@@ -32,16 +32,16 @@
 &emsp; Redis属于<key,value\>形式的数据结构。key和value的最大长度限制是512M。  
 1. Redis的key是字符串类型，但是key中不能包括边界字符，不能空格和换行。  
 2. Redis的value支持五种基本数据类型<font color = "lime">(注意是数据类型不是数据结构)</font>：String(字符串)，Hash(哈希)，List(列表)，Set(集合)及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
-3. Redis还有几种高级数据类型：bitmaps、HyperLogLog、geo、Streams（5.0最新版本数据结构）。  
+3. Redis还有几种高级数据类型：bitmaps、HyperLogLog、geo、Streams(5.0最新版本数据结构)。  
 4. Redis提供插件功能使用布隆过滤器。  
 5. Redis内部采用对象系统RedisObject构建数据类型。  
-6. RedisObject对象系统内部采用多种数据结构构建数据类型。数据结构有：int、raw、embstr（SDS）、linkedlist、ziplist、skiplist、hashtable、inset。  
+6. RedisObject对象系统内部采用多种数据结构构建数据类型。数据结构有：int、raw、embstr(SDS)、linkedlist、ziplist、skiplist、hashtable、inset。  
 
 &emsp; [5种基本类型的API使用](/docs/microService/Redis/RedisAPI.md)  
 
 ### 1.2.1. String字符串
 &emsp; String可以用来存储字符串、整数、浮点数。最大值不能超过512MB。  
-&emsp; String使用场景: （参考《Redis开发与运维》，书中有使用案例。）  
+&emsp; String使用场景: (参考《Redis开发与运维》，书中有使用案例。)  
 
 * 缓存功能  
 &emsp; 在web服务中，使用MySQL作为数据库，Redis作为缓存。由于Redis具有支撑高并发的特性，通常能起到加速读写和降低后端压力的作用。web端的大多数请求都是从Redis中获取的数据，如果Redis中没有需要的数据，则会从MySQL中去获取，并将获取到的数据写入redis。  
@@ -62,7 +62,7 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-58.png)  
 &emsp; Hash存储键值对的无序散列表。  
 
-&emsp; <font color = "lime">Hash与String同样是存储字符串（存储单个字符串时使用String；存储对象时使用Hash，勿将对象序列化后存String类型），它们的主要区别：</font>  
+&emsp; <font color = "lime">Hash与String同样是存储字符串(存储单个字符串时使用String；存储对象时使用Hash，勿将对象序列化后存String类型)，它们的主要区别：</font>  
 1. 把所有相关的值聚集到一个 key 中，节省内存空间  
 2. 只使用一个 key，减少 key 冲突  
 3. 当需要批量获取值的时候，只需要使用一个命令，减少内存/IO/CPU 的消耗  
@@ -70,7 +70,7 @@
 &emsp; **不适合的场景：** 
 1. Field 不能单独设置过期时间  
 2. 没有bit操作  
-3. 需要考虑数据量分布的问题（value 值非常大的时候，无法分布到多个节点）  
+3. 需要考虑数据量分布的问题(value 值非常大的时候，无法分布到多个节点)  
 
 &emsp; **使用场景：**  
 * 存储对象类型的数据  
@@ -81,7 +81,7 @@
 &emsp; +1：hincr。-1：hdecr。删除：hdel。全选：hgetall。商品数：hlen。  
 
 ### 1.2.3. List列表  
-&emsp; 存储有序的字符串（从左到右），元素可以重复。一个列表最多可以存储2^32-1个元素，列表的两端都可以插入和弹出元素，可以充当队列和栈的角色。  
+&emsp; 存储有序的字符串(从左到右)，元素可以重复。一个列表最多可以存储2^32-1个元素，列表的两端都可以插入和弹出元素，可以充当队列和栈的角色。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-61.png)  
 
 &emsp; 使用场景：  
@@ -111,7 +111,7 @@
 
 &emsp; 使用场景：  
 
-* 抽奖（随机数）  
+* 抽奖(随机数)  
 &emsp; 集合有两个命令支持获取随机数，分别是：
 
     * 随机获取count个元素，集合元素个数不变  
@@ -138,7 +138,7 @@
 &emsp; sadd tags:i5001 流畅至极  
 * 商品筛选  
 &emsp; 获取差集 sdiff set1 set2   
-&emsp; 获取交集（intersection ） sinter set1 set2  
+&emsp; 获取交集(intersection ) sinter set1 set2  
 &emsp; 获取并集 sunion set1 set2  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-68.png)  
 &emsp; iPhone11 上市了。 sadd brand:apple iPhone11  
@@ -161,7 +161,7 @@
 ### 1.2.5. ZSet有序集合  
 &emsp; sorted set，有序的集合，每个元素有个 score。有序集合中的元素不能重复。可以排序，它给每个元素设置一个score作为排序的依据。最多可以存储2^32-1个元素。  
 &emsp; score可以重复。score 相同时，按照 key 的 ASCII 码排序。  
-&emsp; 有序集合(sort set)是在集合类型的基础上为每个元素关联一个分数，不仅可以完成插入，删除和判断元素是否存在等集合操作，还能够获得分数最高（或最低）的前N个元素，获得指定分数范围内的元素等分数有关的操作。虽然集合中每个元素都是不相同的，但是分数可以相同。  
+&emsp; 有序集合(sort set)是在集合类型的基础上为每个元素关联一个分数，不仅可以完成插入，删除和判断元素是否存在等集合操作，还能够获得分数最高(或最低)的前N个元素，获得指定分数范围内的元素等分数有关的操作。虽然集合中每个元素都是不相同的，但是分数可以相同。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-70.png)  
 
 &emsp; 数据结构对比： 

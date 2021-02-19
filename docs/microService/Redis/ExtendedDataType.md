@@ -49,17 +49,17 @@ https://www.yuque.com/happy-coder/qka0of/ekdfzb
 * bitmap：基于bit位的存储，每一个bit存储0或1，一般用来进行海量数据的精准判重。  
 * HyperLogLog：一般用来对海量数据进行基于概率的基数统计，比如说网站的独立访客数、独立IP数等。  
 * Geo：基于地理空间的数据存储，常应用在那些基于位置服务，也就是常说的LBS(Location-Based Service)的应用，比如说打车等生活服务类应用。  
-* Stream：消息流，Redis自5.0版本之后，引入了消息队列的机制，也就是Pub/Sub（发布/订阅）机制。  
+* Stream：消息流，Redis自5.0版本之后，引入了消息队列的机制，也就是Pub/Sub(发布/订阅)机制。  
 * RedisTimeSeries：时间数据库模块，主要存储一些跟时间戳相关，需要范围查询，聚合计算等场景的数据集。    
 
 ## 1.1. 前言：网页流量统计里的PV、UV
-&emsp; PV（Page View）访问量, 即页面浏览量或点击量，衡量网站用户访问的网页数量；在一定统计周期内用户每打开或刷新一个页面就记录1次，多次打开或刷新同一页面则浏览量累计。  
-&emsp; UV（Unique Visitor）独立访客，统计1天内访问某站点的用户数(以cookie为依据)；访问网站的一台电脑客户端为一个访客。可以理解成访问某网站的电脑的数量。网站判断来访电脑的身份是通过来访电脑的cookies实现的。如果更换了IP后但不清除cookies，再访问相同网站，该网站的统计中UV数是不变的。如果用户不保存cookies访问、清除了cookies或者更换设备访问，计数会加1。00:00-24:00内相同的客户端多次访问只计为1个访客。 
+&emsp; PV(Page View)访问量, 即页面浏览量或点击量，衡量网站用户访问的网页数量；在一定统计周期内用户每打开或刷新一个页面就记录1次，多次打开或刷新同一页面则浏览量累计。  
+&emsp; UV(Unique Visitor)独立访客，统计1天内访问某站点的用户数(以cookie为依据)；访问网站的一台电脑客户端为一个访客。可以理解成访问某网站的电脑的数量。网站判断来访电脑的身份是通过来访电脑的cookies实现的。如果更换了IP后但不清除cookies，再访问相同网站，该网站的统计中UV数是不变的。如果用户不保存cookies访问、清除了cookies或者更换设备访问，计数会加1。00:00-24:00内相同的客户端多次访问只计为1个访客。 
  
 --------------
 ## 1.2. Bitmap，位图
 &emsp; **二值状态统计：**  
-&emsp; 二值状态指的是取值0或者1两种；在签到打卡的场景中，只需要记录签到（1）和未签到（0）两种状态，这就是典型的二值状态统计。  
+&emsp; 二值状态指的是取值0或者1两种；在签到打卡的场景中，只需要记录签到(1)和未签到(0)两种状态，这就是典型的二值状态统计。  
 &emsp; 二值状态的统计可以使用Redis的扩展数据类型Bitmap。  
 
 ### 1.2.1. 位图介绍    
@@ -67,14 +67,14 @@ https://www.yuque.com/happy-coder/qka0of/ekdfzb
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-97.png)  
 
 &emsp; **优点与缺点：**  
-&emsp; Bitmaps的最大优点就是存储信息时可以节省大量的空间。例如在一个系统中，不同的用户被一个增长的用户ID表示。40亿（2^32≈40亿）用户只需要512M内存就能记住某种信息，例如用户是否登录过。  
+&emsp; Bitmaps的最大优点就是存储信息时可以节省大量的空间。例如在一个系统中，不同的用户被一个增长的用户ID表示。40亿(2^32≈40亿)用户只需要512M内存就能记住某种信息，例如用户是否登录过。  
 
 ### 1.2.2. Redis Bitmap命令
 
 &emsp; bit操作被分为两组：  
 
 * 恒定时间的单个bit操作，例如把某个bit设置为0或者1。或者获取某bit的值。  
-* 对一组bit的操作。例如给定范围内bit统计（例如人口统计）。  
+* 对一组bit的操作。例如给定范围内bit统计(例如人口统计)。  
 
 1. Bits命令：Bits设置和获取通过SETBIT和GETBIT命令。用法如下：  
 
@@ -89,12 +89,12 @@ https://www.yuque.com/happy-coder/qka0of/ekdfzb
         (integer) 1  
 
     * SETBIT命令第一个参数是位编号，第二个参数是这个位的值，只能是0或者1。如果bit地址超过当前string长度，会自动增大string。  
-    * GETBIT命令指示返回指定位置bit的值。超过范围（寻址地址在目标key的string长度以外的位）的GETBIT总是返回0。  
+    * GETBIT命令指示返回指定位置bit的值。超过范围(寻址地址在目标key的string长度以外的位)的GETBIT总是返回0。  
 
 2. 操作bits组的命令如下：  
     * BITOP执行两个不同string的位操作，包括AND，OR，XOR和NOT。
     * BITCOUNT统计位的值为1的数量。
-    * BITPOS寻址第一个为0或者1的bit的位置（寻址第一个为1的bit的位置：bitpos dupcheck 1；寻址第一个为0的bit的位置：bitpos dupcheck 0）。  
+    * BITPOS寻址第一个为0或者1的bit的位置(寻址第一个为1的bit的位置：bitpos dupcheck 1；寻址第一个为0的bit的位置：bitpos dupcheck 0)。  
 
 ### 1.2.3. 应用场景
 <!-- 

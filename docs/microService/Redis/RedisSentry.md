@@ -40,10 +40,10 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 哨兵是Redis高可用的解决方案，它是一个管理多个Redis实例的服务工具，可以实现对Redis实例的监控、通知、自动故障转移。
 -->
 
-* **监控（Monitoring）：** 哨兵会不断地检查主节点和从节点是否运作正常。  
-* **自动故障转移（Automatic failover）：** 当主节点不能正常工作时，哨兵会开始自动故障转移操作，它会将失效主节点的其中一个从节点升级为新的主节点，并让其他从节点改为复制新的主节点。  
-* 配置提供者（Configuration provider）：客户端在初始化时，通过连接哨兵来获得当前Redis服务的主节点地址。  
-* 通知（Notification）：哨兵可以将故障转移的结果发送给客户端。  
+* **监控(Monitoring)：** 哨兵会不断地检查主节点和从节点是否运作正常。  
+* **自动故障转移(Automatic failover)：** 当主节点不能正常工作时，哨兵会开始自动故障转移操作，它会将失效主节点的其中一个从节点升级为新的主节点，并让其他从节点改为复制新的主节点。  
+* 配置提供者(Configuration provider)：客户端在初始化时，通过连接哨兵来获得当前Redis服务的主节点地址。  
+* 通知(Notification)：哨兵可以将故障转移的结果发送给客户端。  
 
 &emsp; <font color="lime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-89.png)  
@@ -54,7 +54,7 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-29.png)  
 &emsp; <font color = "red">Redis哨兵架构中主要包括两个部分：Redis Sentinel集群和Redis数据集群。</font>  
 
-* 哨兵节点：哨兵系统由若干个哨兵节点组成。其实哨兵节点是一个特殊的 Redis 节点，<font color="red">哨兵节点不存储数据的和仅支持部分命令。配节点数量要满足2n+1（n>=1）的奇数个。</font>  
+* 哨兵节点：哨兵系统由若干个哨兵节点组成。其实哨兵节点是一个特殊的 Redis 节点，<font color="red">哨兵节点不存储数据的和仅支持部分命令。配节点数量要满足2n+1(n>=1)的奇数个。</font>  
 * 数据节点：由主节点和从节点组成的数据节点。  
 
 ## 1.2. 哨兵原理  
@@ -107,22 +107,22 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 ### 1.2.3. 故障转移  
 &emsp; 当某个Sentinel节点通过选举成为了领导者，则它要承担起故障转移的工作，其具体步骤如下：  
 1. <font color = "red">在从节点列表中选择一个节点作为新的主节点，选择的策略如下：</font> 
-    * 过滤掉不健康的节点（主观下线、断线），5秒内没有回复过Sentinel节点ping响应、与主节点失联超过down-after-milliseconds*10秒  
+    * 过滤掉不健康的节点(主观下线、断线)，5秒内没有回复过Sentinel节点ping响应、与主节点失联超过down-after-milliseconds*10秒  
     * 选择优先级最高级别的节点，如果不存在则继续  
-    * 选择复制偏移量最大的节点（数据最完整），存在则返回，不存在则继续  
+    * 选择复制偏移量最大的节点(数据最完整)，存在则返回，不存在则继续  
     * 选择 runid 最小的节点  
 2. <font color = "red">在新的主节点上执行slaveofnoone，让其变成主节点</font>  
 3. <font color = "red">向剩余的从节点发送命令，让它们成为新主节点的从节点</font>  
 
 <!-- 
- 3.4. Sentinel（哨兵）进程的工作方式：  
-1. 每个Sentinel（哨兵）进程以每秒钟一次的频率向整个集群中的Master主服务器，Slave从服务器以及其他Sentinel（哨兵）进程发送一个 PING 命令。  
-2. 如果一个实例（instance）距离最后一次有效回复 PING 命令的时间超过 down-after-milliseconds 选项所指定的值， 则这个实例会被 Sentinel（哨兵）进程标记为主观下线（SDOWN）。  
-3. 如果一个Master主服务器被标记为主观下线（SDOWN），则正在监视这个Master主服务器的所有 Sentinel（哨兵）进程要以每秒一次的频率确认Master主服务器的确进入了主观下线状态。  
-4. 当有足够数量的 Sentinel（哨兵）进程（大于等于配置文件指定的值）在指定的时间范围内确认Master主服务器进入了主观下线状态（SDOWN）， 则Master主服务器会被标记为客观下线（ODOWN）。  
-5. 在一般情况下， 每个 Sentinel（哨兵）进程会以每 10 秒一次的频率向集群中的所有Master主服务器、Slave从服务器发送 INFO 命令。
-6. 当Master主服务器被 Sentinel（哨兵）进程标记为客观下线（ODOWN）时，Sentinel（哨兵）进程向下线的 Master主服务器的所有 Slave从服务器发送 INFO 命令的频率会从 10 秒一次改为每秒一次。  
-7. 若没有足够数量的 Sentinel（哨兵）进程同意 Master主服务器下线， Master主服务器的客观下线状态就会被移除。若 Master主服务器重新向 Sentinel（哨兵）进程发送 PING 命令返回有效回复，Master主服务器的主观下线状态就会被移除。  
+ 3.4. Sentinel(哨兵)进程的工作方式：  
+1. 每个Sentinel(哨兵)进程以每秒钟一次的频率向整个集群中的Master主服务器，Slave从服务器以及其他Sentinel(哨兵)进程发送一个 PING 命令。  
+2. 如果一个实例(instance)距离最后一次有效回复 PING 命令的时间超过 down-after-milliseconds 选项所指定的值， 则这个实例会被 Sentinel(哨兵)进程标记为主观下线(SDOWN)。  
+3. 如果一个Master主服务器被标记为主观下线(SDOWN)，则正在监视这个Master主服务器的所有 Sentinel(哨兵)进程要以每秒一次的频率确认Master主服务器的确进入了主观下线状态。  
+4. 当有足够数量的 Sentinel(哨兵)进程(大于等于配置文件指定的值)在指定的时间范围内确认Master主服务器进入了主观下线状态(SDOWN)， 则Master主服务器会被标记为客观下线(ODOWN)。  
+5. 在一般情况下， 每个 Sentinel(哨兵)进程会以每 10 秒一次的频率向集群中的所有Master主服务器、Slave从服务器发送 INFO 命令。
+6. 当Master主服务器被 Sentinel(哨兵)进程标记为客观下线(ODOWN)时，Sentinel(哨兵)进程向下线的 Master主服务器的所有 Slave从服务器发送 INFO 命令的频率会从 10 秒一次改为每秒一次。  
+7. 若没有足够数量的 Sentinel(哨兵)进程同意 Master主服务器下线， Master主服务器的客观下线状态就会被移除。若 Master主服务器重新向 Sentinel(哨兵)进程发送 PING 命令返回有效回复，Master主服务器的主观下线状态就会被移除。  
 -->
 
 ### 1.2.4. Sentinel选举  

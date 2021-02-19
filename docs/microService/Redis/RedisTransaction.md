@@ -30,7 +30,7 @@ https://mp.weixin.qq.com/s/v2Ob6gZjmoJW1cEKb1Om0Q
 * 没有隔离级别的概念：队列中的命令没有提交之前都不会实际的被执行，因为事务提交前任何指令都不会被实际执行，也就不存在”事务内的查询要看到事务里的更新，在事务外查询不能看到”这个让人万分头痛的问题
 * 不保证原子性：Redis 同一个事务中如果有一条命令执行失败，其后的命令仍然会被执行，没有回滚  
 
-&emsp; 在传统的关系式数据库中，常常用 ACID 性质来检验事务功能的安全性。Redis 事务保证了其中的一致性（C）和隔离性（I），但并不保证原子性（A）和持久性（D）。  
+&emsp; 在传统的关系式数据库中，常常用 ACID 性质来检验事务功能的安全性。Redis 事务保证了其中的一致性(C)和隔离性(I)，但并不保证原子性(A)和持久性(D)。  
 
 <!-- 
 
@@ -62,7 +62,7 @@ QUEUED
 
 &emsp; 上面的指令演示了一个完整的事务过程，所有的指令在 exec 之前不执行，而是缓存在服务器的一个事务队列中，服务器一旦收到 exec 指令，才开执行整个事务队列，执行完毕后一次性返回所有指令的运行结果。  
 &emsp; Redis事务可以一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，按顺序地串行化执行而不会被其它命令插入，不许加塞。  
-&emsp; 可以保证一个队列中，一次性、顺序性、排他性的执行一系列命令（Redis 事务的主要作用其实就是串联多个命令防止别的命令插队）。  
+&emsp; 可以保证一个队列中，一次性、顺序性、排他性的执行一系列命令(Redis 事务的主要作用其实就是串联多个命令防止别的命令插队)。  
 
 &emsp; 官方文档是这么说的  
 
@@ -73,8 +73,8 @@ QUEUED
 
 &emsp; **Redis事务相关命令：**  
 
-* multi：标记一个事务块的开始（queued）
-* exec：执行所有事务块的命令（一旦执行exec后，之前加的监控锁都会被取消掉 ）　
+* multi：标记一个事务块的开始(queued)
+* exec：执行所有事务块的命令(一旦执行exec后，之前加的监控锁都会被取消掉 )　
 * discard：取消事务，放弃事务块中的所有命令
 * watch key1 key2 ...：<font color = "red">监视一或多个key，如果在事务执行之前，被监视的key被其他命令改动，则事务被打断(类似乐观锁)</font>
 * unwatch: 取消watch对所有key的监控
@@ -82,9 +82,9 @@ QUEUED
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-99.png)  
 
 ## 1.3. Redis事务使用案例  
-&emsp; （1）正常执行。  
+&emsp; (1)正常执行。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-91.png)  
-&emsp; （2）放弃事务。  
+&emsp; (2)放弃事务。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-92.png)  
 
 ## 1.4. 事务中的错误
@@ -94,19 +94,19 @@ https://mp.weixin.qq.com/s/v2Ob6gZjmoJW1cEKb1Om0Q
 
 -->
 
-&emsp; （3）<font color = "lime">若在事务队列中存在命令性错误（类似于java编译性错误），</font><font color = "red">则执行EXEC命令时，所有命令都不会执行。</font>  
+&emsp; (3)<font color = "lime">若在事务队列中存在命令性错误(类似于java编译性错误)，</font><font color = "red">则执行EXEC命令时，所有命令都不会执行。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-93.png)  
-&emsp; （4）<font color = "lime">若在事务队列中存在语法性错误（类似于java的1/0的运行时异常），</font><font color = "red">则执行EXEC命令时，其他正确命令会被执行，错误命令抛出异常。</font>  
+&emsp; (4)<font color = "lime">若在事务队列中存在语法性错误(类似于java的1/0的运行时异常)，</font><font color = "red">则执行EXEC命令时，其他正确命令会被执行，错误命令抛出异常。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-94.png)  
 
 ---
 
 &emsp; 使用Redis事务的时候，可能会遇上以下两种错误：
 
-* 事务在执行 EXEC 之前，入队的命令可能会出错。比如说，命令可能会产生语法错误（参数数量错误，参数名错误等等），或者其他更严重的错误，比如内存不足（如果服务器使用 maxmemory 设置了最大内存限制的话）。  
+* 事务在执行 EXEC 之前，入队的命令可能会出错。比如说，命令可能会产生语法错误(参数数量错误，参数名错误等等)，或者其他更严重的错误，比如内存不足(如果服务器使用 maxmemory 设置了最大内存限制的话)。  
 * 命令可能在 EXEC 调用之后失败。举个例子，事务中的命令可能处理了错误类型的键，比如将列表命令用在了字符串键上面，诸如此类。  
 
-1. Redis 针对如上两种错误采用了不同的处理策略，对于发生在 EXEC 执行之前的错误，服务器会对命令入队失败的情况进行记录，并在客户端调用 EXEC 命令时，拒绝执行并自动放弃这个事务（Redis 2.6.5 之前的做法是检查命令入队所得的返回值：如果命令入队时返回 QUEUED ，那么入队成功；否则，就是入队失败）  
+1. Redis 针对如上两种错误采用了不同的处理策略，对于发生在 EXEC 执行之前的错误，服务器会对命令入队失败的情况进行记录，并在客户端调用 EXEC 命令时，拒绝执行并自动放弃这个事务(Redis 2.6.5 之前的做法是检查命令入队所得的返回值：如果命令入队时返回 QUEUED ，那么入队成功；否则，就是入队失败)  
 2. 对于那些在 EXEC 命令执行之后所产生的错误， 并没有对它们进行特别处理：即使事务中有某个/某些命令在执行时产生了错误，事务中的其他命令仍然会继续执行。  
 
 ----
@@ -125,7 +125,7 @@ https://blog.csdn.net/csdn18740599042/article/details/109268025
 &emsp; 如果你有使用关系式数据库的经验，那么 “Redis 在事务失败时不进行回滚，而是继续执行余下的命令”，这种做法可能会让人觉得有点奇怪。  
 &emsp; 以下是官方的自夸：  
 
-        Redis 命令只会因为错误的语法而失败（并且这些问题不能在入队时发现），或是命令用在了错误类型的键上面：这也就是说，从实用性的角度来说，失败的命令是由编程错误造成的，而这些错误应该在开发的过程中被发现，而不应该出现在生产环境中。
+        Redis 命令只会因为错误的语法而失败(并且这些问题不能在入队时发现)，或是命令用在了错误类型的键上面：这也就是说，从实用性的角度来说，失败的命令是由编程错误造成的，而这些错误应该在开发的过程中被发现，而不应该出现在生产环境中。
         因为不需要对回滚进行支持，所以 Redis 的内部可以保持简单且快速。
 
 &emsp; 有种观点认为Redis处理事务的做法会产生bug，然而需要注意的是，在通常情况下，回滚并不能解决编程错误带来的问题。举个例子，如果本来想通过INCR命令将键的值加上1，却不小心加上了2，又或者对错误类型的键执行了INCR，回滚是没有办法处理这些情况的。  
@@ -148,10 +148,10 @@ OK
 
 -----
 
-&emsp; （5）使用watch  
+&emsp; (5)使用watch  
 &emsp; 案例一：使用watch检测balance，事务期间balance数据未变动，事务执行成功  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-95.png)  
-&emsp; 案例二：使用watch检测balance，在开启事务后（标注1处），在新窗口执行标注2中的操作，更改balance的值，模拟其他客户端在事务执行期间更改watch监控的数据，然后再执行标注1后命令，执行EXEC后，事务未成功执行。  
+&emsp; 案例二：使用watch检测balance，在开启事务后(标注1处)，在新窗口执行标注2中的操作，更改balance的值，模拟其他客户端在事务执行期间更改watch监控的数据，然后再执行标注1后命令，执行EXEC后，事务未成功执行。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-96.png)  
 &emsp; 一但执行EXEC开启事务的执行后，无论事务使用执行成功，WARCH对变量的监控都将被取消。  
 &emsp; 故当事务执行失败后，需重新执行WATCH命令对变量进行监控，并开启新的事务进行操作。  
@@ -165,7 +165,7 @@ OK
 2. 不会受到其他客户端的请求影响。  
 
 1.1. Redis事务的使用  
-&emsp; Redis 的事务涉及到四个命令：multi（开启事务），exec（执行事务），discard （取消事务），watch（监视）。  
+&emsp; Redis 的事务涉及到四个命令：multi(开启事务)，exec(执行事务)，discard (取消事务)，watch(监视)。  
 1. 使用Multi命令表示开启一个事务；  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-36.png)  
 2. 开启一个事务过后中间输入的所有命令都不会被立即执行，而是被加入到队列中缓存起来，当收到Exec命令的时候Redis服务会按入队顺序依次执行命令。  
@@ -186,11 +186,11 @@ OK
 2. Redis的内部是简单的快速的，所以不需要支持回滚的能力。  
 
 1.3. Redis的乐观锁Watch  
-&emsp; 在 Redis 中提供了一个 watch 命令，它可以为 Redis 事务提供 CAS 乐观锁行为（Check and Set / Compare and Swap），也就是多个线程更新变量的时候，会跟原值做比较，只有它没有被其他线程修 改的情况下，才更新成新的值。  
+&emsp; 在 Redis 中提供了一个 watch 命令，它可以为 Redis 事务提供 CAS 乐观锁行为(Check and Set / Compare and Swap)，也就是多个线程更新变量的时候，会跟原值做比较，只有它没有被其他线程修 改的情况下，才更新成新的值。  
 
 &emsp; Watch会在事务开始之前盯住1个或多个关键变量。  
 &emsp; 当事务执行时，也就是服务器收到了exec指令要顺序执行缓存的事务队列时，Redis会检查关键变量自Watch 之后，是否被修改了。  
-&emsp; 如果开启事务之后，至少有一个被监视 key 键在 exec 执行之前被修改了， 那么整个事务都会被取消（key 提前过期除外）。  
+&emsp; 如果开启事务之后，至少有一个被监视 key 键在 exec 执行之前被修改了， 那么整个事务都会被取消(key 提前过期除外)。  
 &emsp; 可以用 unwatch 取消。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-39.png)  
 -->

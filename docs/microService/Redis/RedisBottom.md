@@ -50,7 +50,7 @@ https://blog.csdn.net/u014563989/article/details/81066074?utm_medium=distribute.
 -->
 
 ## 1.2. 对象系统RedisObject  
-&emsp; **<font color = "lime">（很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！）</font>**  
+&emsp; **<font color = "lime">(很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！)</font>**  
 &emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。 **<font color = "lime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
 
 <!-- 
@@ -78,11 +78,11 @@ typedef struct redisObject {
 
 |Redis数据结构	|底层数据结构|
 |---|---|
-|String	|int、embstr（即SDS）、raw|
-|Hash	|ziplist（压缩列表）或者dictht（字典）|
-|List	|quicklist（快速列表，是ziplist压缩列表和linkedlist双端链表的组合）|
-|Set	|intset（整数集合）或者dictht（字典）|
-|ZSet	|ziplist（压缩列表）或者skiplist（跳跃表）|
+|String	|int、embstr(即SDS)、raw|
+|Hash	|ziplist(压缩列表)或者dictht(字典)|
+|List	|quicklist(快速列表，是ziplist压缩列表和linkedlist双端链表的组合)|
+|Set	|intset(整数集合)或者dictht(字典)|
+|ZSet	|ziplist(压缩列表)或者skiplist(跳跃表)|
 
 ## 1.3. 数据结构介绍  
 <!-- 
@@ -94,10 +94,10 @@ https://mp.weixin.qq.com/s/VY31lBOSggOHvVf54GzvYw
 https://mp.weixin.qq.com/s/f71rakde6KBJ_ilRf1M8xQ
 -->
 <!-- 
-1. 什么是 SDS？ Redis中字符串的实现。在 3.2 以后的版本中，SDS 又有多种结构（sds.h）：sdshdr5、sdshdr8、sdshdr16、sdshdr32、sdshdr64，用于存储不同的长度的字符串，分别代表 2^5=32byte， 2^8=256byte，2^16=65536byte=64KB，2^32byte=4GB。  
+1. 什么是 SDS？ Redis中字符串的实现。在 3.2 以后的版本中，SDS 又有多种结构(sds.h)：sdshdr5、sdshdr8、sdshdr16、sdshdr32、sdshdr64，用于存储不同的长度的字符串，分别代表 2^5=32byte， 2^8=256byte，2^16=65536byte=64KB，2^32byte=4GB。  
 
 2. 为什么 Redis 要用 SDS 实现字符串？  
-&emsp; C 语言本身没有字符串类型（只能用字符数组 char[]实现）。 
+&emsp; C 语言本身没有字符串类型(只能用字符数组 char[]实现)。 
     1. 使用字符数组必须先给目标变量分配足够的空间，否则可能会溢出。  
     2. 如果要获取字符长度，必须遍历字符数组，时间复杂度是 O(n)。  
     3. C 字符串长度的变更会对字符数组做内存重分配。  
@@ -106,10 +106,10 @@ https://mp.weixin.qq.com/s/f71rakde6KBJ_ilRf1M8xQ
     &emsp; SDS的特点：  
     1. <font color = "red">不用担心内存溢出问题，如果需要，会对SDS进行扩容。</font>  
     2. <font color = "red">获取字符串长度时间复杂度为 O(1)，因为定义了 len 属性。</font>  
-    3. 通过“空间预分配”（ sdsMakeRoomFor）和“惰性空间释放”，防止多次重分配内存。  
-    4. 判断是否结束的标志是 len 属性（它同样以'\0'结尾是因为这样就可以使用 C语言中函数库操作字符串的函数了），可以包含'\0'。 
+    3. 通过“空间预分配”( sdsMakeRoomFor)和“惰性空间释放”，防止多次重分配内存。  
+    4. 判断是否结束的标志是 len 属性(它同样以'\0'结尾是因为这样就可以使用 C语言中函数库操作字符串的函数了)，可以包含'\0'。 
 -->
-&emsp; Redis是C语言开发的，C语言有字符类型，但是Redis却没直接采用C语言的字符串类型，而是自己构建了动态字符串（SDS）的抽象类型。  
+&emsp; Redis是C语言开发的，C语言有字符类型，但是Redis却没直接采用C语言的字符串类型，而是自己构建了动态字符串(SDS)的抽象类型。  
  
 #### 1.3.1.1. SDS代码结构  
 
@@ -241,7 +241,7 @@ SDS还提供「空间预分配」和「惰性空间释放」两种策略。在�
 &emsp; 各部分作用说明：  
 
 * 每个listNode 存储一个指向 ZipList 的指针，ZipList 用来真正存储元素的数据。
-* ZipList 中存储的元素数据总大小超过 8kb（默认大小，通过 list-max-ziplist-size 参数可以进行配置）的时候，就会重新创建出来一个 ListNode 和 ZipList，然后将其通过指针关联起来。
+* ZipList 中存储的元素数据总大小超过 8kb(默认大小，通过 list-max-ziplist-size 参数可以进行配置)的时候，就会重新创建出来一个 ListNode 和 ZipList，然后将其通过指针关联起来。
 
 
 ### 1.3.5. Dictht字典  
@@ -288,7 +288,7 @@ https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
 -->
 &emsp; SkipList分为两部分，dict部分是由字典实现，Zset部分使用跳跃表实现，从图中可以看出，dict和跳跃表都存储了数据，实际上dict和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
 
-&emsp; 在跳跃表的结构中有head和tail表示指向头节点和尾节点的指针，能快速的实现定位。level表示层数，len表示跳跃表的长度，BW表示后退指针，在从尾向前遍历的时候使用。BW下面还有两个值分别表示分值（score）和成员对象（各个节点保存的成员对象）。  
+&emsp; 在跳跃表的结构中有head和tail表示指向头节点和尾节点的指针，能快速的实现定位。level表示层数，len表示跳跃表的长度，BW表示后退指针，在从尾向前遍历的时候使用。BW下面还有两个值分别表示分值(score)和成员对象(各个节点保存的成员对象)。  
 
 &emsp; skiplist有如下几个特点：  
 1. 有很多层组成，由上到下节点数逐渐密集，最上层的节点最稀疏，跨度也最大。  
@@ -309,20 +309,20 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 -->
 &emsp; **<font color = "red">字符串类型的内部编码有三种：</font>**  
 
-*  int，存储8个字节的长整型（long，2^63-1）。   
-*  embstr，代表 embstr 格式的 SDS（Simple Dynamic String 简单动态字符串），存储小于44个字节的字符串。   
-*  raw，存储大于 44 个字节的字符串（3.2 版本之前是 39 字节）。  
+*  int，存储8个字节的长整型(long，2^63-1)。   
+*  embstr，代表 embstr 格式的 SDS(Simple Dynamic String 简单动态字符串)，存储小于44个字节的字符串。   
+*  raw，存储大于 44 个字节的字符串(3.2 版本之前是 39 字节)。  
 
 &emsp; <font color = "red">Redis会根据当前值的类型和长度决定使用哪种内部编码实现。</font>  
 
 1. embstr和raw的区别？  
-&emsp; embstr的使用只分配一次内存空间（因为RedisObject和SDS是连续的），而raw需要分配两次内存空间(分别为RedisObject和SDS分配空间)。因此与raw相比，<font color = "red">embstr的好处在于创建时少分配一次空间，删除时少释放一次空间，以及对象的所有数据连在一起，寻找方便。而embstr的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个RedisObject和SDS都需要重新分配空间，</font>因此Redis中的embstr实现为只读。  
+&emsp; embstr的使用只分配一次内存空间(因为RedisObject和SDS是连续的)，而raw需要分配两次内存空间(分别为RedisObject和SDS分配空间)。因此与raw相比，<font color = "red">embstr的好处在于创建时少分配一次空间，删除时少释放一次空间，以及对象的所有数据连在一起，寻找方便。而embstr的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个RedisObject和SDS都需要重新分配空间，</font>因此Redis中的embstr实现为只读。  
 2. int和embstr什么时候转化为raw?  
 &emsp; 当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
 3. embstr没有超过阈值，为什么变成raw了？  
 &emsp; 对于embstr，由于其实现是只读的，因此在对embstr对象进行修改时，都会先转化为raw再进行修改。因此，只要是修改embstr对象，修改后的对象一定是raw的，无论是否达到了44个字节。  
 4. 当长度小于阈值时，会还原吗？  
-&emsp; 关于Redis内部编码的转换，都符合以下规律：编码转换在Redis写入数据时完成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新 set）。  
+&emsp; 关于Redis内部编码的转换，都符合以下规律：编码转换在Redis写入数据时完成，且转换过程不可逆，只能从小内存编码向大内存编码转换(但是不包括重新 set)。  
 
 
 ### 1.4.2. Hash内部编码  
@@ -346,14 +346,14 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 &emsp; Redis 用intset或dictEntry存储set。当满足如下两个条件的时候，采用整数集合实现；一旦有一个条件不满足时则采用字典来实现。  
 
 * Set 集合中的所有元素都为整数
-* Set 集合中的元素个数不大于 512（默认 512，可以通过修改 set-max-intset-entries 配置调整集合大小） 
+* Set 集合中的元素个数不大于 512(默认 512，可以通过修改 set-max-intset-entries 配置调整集合大小) 
 
 
 ### 1.4.5. Zset内部编码   
 &emsp; ZSet的底层实现是ziplist和skiplist实现的，由ziplist转换为skiplist。当同时满足以下两个条件时，采用ZipList实现；反之采用SkipList实现。
 
-* Zset中保存的元素个数小于128。（通过修改zset-max-ziplist-entries配置来修改）  
-* Zset中保存的所有元素长度小于64byte。（通过修改zset-max-ziplist-values配置来修改）  
+* Zset中保存的元素个数小于128。(通过修改zset-max-ziplist-entries配置来修改)  
+* Zset中保存的所有元素长度小于64byte。(通过修改zset-max-ziplist-values配置来修改)  
 
 &emsp; 和List的底层实现有些相似，对于Zset不同的是，其存储是以键值对的方式依次排列，键存储的是实际 value，值存储的是value对应的分值。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-84.png)  
