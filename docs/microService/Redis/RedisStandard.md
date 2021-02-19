@@ -2,21 +2,46 @@
 
 <!-- TOC -->
 
-- [1. 阿里官方Redis开发规范](#1-阿里官方redis开发规范)
-    - [1.1. 键值设计](#11-键值设计)
-        - [1.1.1. key名设计](#111-key名设计)
-        - [1.1.2. value设计](#112-value设计)
-    - [1.2. 命令使用](#12-命令使用)
-    - [1.3. 客户端使用](#13-客户端使用)
-    - [1.4. 相关工具](#14-相关工具)
-    - [1.5. 删除 bigkey](#15-删除-bigkey)
+- [1. Redis客户端使用及开发规范](#1-redis客户端使用及开发规范)
+    - [1.1. Redis客户端介绍](#11-redis客户端介绍)
+    - [1.2. 阿里官方Redis开发规范](#12-阿里官方redis开发规范)
+        - [1.2.1. 键值设计](#121-键值设计)
+            - [1.2.1.1. key名设计](#1211-key名设计)
+            - [1.2.1.2. value设计](#1212-value设计)
+        - [1.2.2. 命令使用](#122-命令使用)
+        - [1.2.3. 客户端使用](#123-客户端使用)
+        - [1.2.4. 相关工具](#124-相关工具)
+        - [1.2.5. 删除 bigkey](#125-删除-bigkey)
 
 <!-- /TOC -->
 
+# 1. Redis客户端使用及开发规范
+## 1.1. Redis客户端介绍
+&emsp; **官网推荐的 Java 客户端有 3 个 Jedis，[Redisson](https://github.com/redisson/redisson/wiki/%E7%9B%AE%E5%BD%95) 和 Luttuce。**  
 
-# 1. 阿里官方Redis开发规范
-## 1.1. 键值设计
-### 1.1.1. key名设计
+* Jedis，轻量，简洁，便于集成和改造。  
+* Lettuce   
+&emsp; 与 Jedis 相比，Lettuce 则完全克服了其线程不安全的缺点：Lettuce 是一个可伸缩 的线程安全的 Redis 客户端，支持同步、异步和响应式模式(Reactive)。多个线程可 以共享一个连接实例，而不必担心多线程并发问题。  
+&emsp; 同步调用：com.gupaoedu.lettuce.LettuceSyncTest。  
+&emsp; 异步的结果使用 RedisFuture 包装，提供了大量回调的方法。  
+&emsp; 异步调用：com.gupaoedu.lettuce.LettuceASyncTest。   
+
+    &emsp; 它基于 Netty 框架构建，支持 Redis 的高级功能，如 Pipeline、发布订阅，事务、 Sentinel，集群，支持连接池。  
+
+* Redisson  
+&emsp; Redisson 是一个在 Redis 的基础上实现的 Java 驻内存数据网格(In-Memory Data Grid)，提供了分布式和可扩展的 Java 数据结构。  
+&emsp; 特点：  
+
+    * 基于 Netty 实现，采用非阻塞 IO，性能高。  
+    * 支持异步请求。  
+    * 支持连接池、pipeline、LUA Scripting、Redis Sentinel、Redis Cluster。  
+    * 不支持事务，官方建议以 LUA Scripting 代替事务。  
+    * 主从、哨兵、集群都支持。Spring 也可以配置和注入 RedissonClient。  
+
+
+## 1.2. 阿里官方Redis开发规范
+### 1.2.1. 键值设计
+#### 1.2.1.1. key名设计
 
 * 可读性和可管理性  
 &emsp; 以业务名 (或数据库名) 为前缀(防止 key 冲突)，用冒号分隔，比如业务名: 表名: id  
@@ -35,7 +60,7 @@
 * 不要包含特殊字符  
 &emsp; 反例：包含空格、换行、单双引号以及其他转义字符
 
-### 1.1.2. value设计  
+#### 1.2.1.2. value设计  
 
 * 拒绝 bigkey  
 &emsp; 防止网卡流量、慢查询，string 类型控制在 10KB 以内，hash、list、set、zset 元素个数不要超过 5000。  
@@ -57,7 +82,7 @@
 * 控制 key 的生命周期  
 &emsp; redis不是垃圾桶，建议使用 expire 设置过期时间 (条件允许可以打散过期时间，防止集中过期)，不过期的数据重点关注 idletime。  
 
-## 1.2. 命令使用
+### 1.2.2. 命令使用
 1. O(N) 命令关注 N 的数量  
 &emsp; 例如 hgetall、lrange、smembers、zrange、sinter 等并非不能使用，但是需要明确 N 的值。有遍历的需求可以使用 hscan、sscan、zscan 代替。  
 2. 禁用命令  
@@ -83,7 +108,7 @@
 7. monitor 命令  
 &emsp; 必要情况下使用 monitor 命令时，要注意不要长时间使用。  
 
-## 1.3. 客户端使用
+### 1.2.3. 客户端使用
 1. 避免多个应用使用一个 Redis 实例  
 &emsp; 不相干的业务拆分，公共数据做服务化。  
 2. 使用连接池  
@@ -120,7 +145,7 @@
         volatile-ttl：根据键值对象的 ttl 属性，删除最近将要过期数据。如果没有，回退到 noeviction 策略。  
         noeviction：不会剔除任何数据，拒绝所有写入操作并返回客户端错误信息 "(error) OOM command not allowed when used memory"，此时 Redis 只响应读操作。  
 
-## 1.4. 相关工具
+### 1.2.4. 相关工具
 1. 数据同步  
 &emsp; redis 间数据同步可以使用：redis-port  
 2. big key 搜索  
@@ -128,7 +153,7 @@
 3. 热点 key 寻找  
 &emsp; 内部实现使用 monitor，所以建议短时间使用 facebook 的 redis-faina 阿里云 Redis 已经在内核层面解决热点 key 问题   
 
-## 1.5. 删除 bigkey
+### 1.2.5. 删除 bigkey
 
 &emsp; 下面操作可以使用 pipeline 加速。  
 &emsp; redis 4.0 已经支持 key 的异步删除，欢迎使用。  
@@ -228,5 +253,3 @@ public void delBigZset(String host, int port, String password, String bigZsetKey
     jedis.del(bigZsetKey);
 }
 ```
-
-

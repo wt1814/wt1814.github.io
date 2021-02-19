@@ -280,7 +280,7 @@
 &emsp; [Redis的API](/docs/microService/Redis/RedisAPI.md)  
 &emsp; [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
 &emsp; [Redis底层实现](/docs/microService/Redis/RedisBottom.md)  
-[Redis开发规范](/docs/microService/Redis/RedisStandard.md)  
+[Redis客户端使用及开发规范](/docs/microService/Redis/RedisStandard.md)  
 [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
 [Redis内置功能](/docs/microService/Redis/BuiltIn.md)    
 &emsp; [Redis发布订阅](/docs/microService/Redis/pub.md)  

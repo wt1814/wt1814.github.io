@@ -32,7 +32,7 @@
 
 * String和Hash都是存储的字符串，Hash由ziplist(压缩列表)或者dictht(字典)组成；  
 * List，「有序」可重复集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  
-* Set，无序不可重复集合，是特殊的Hash结构(value为null)，由intset(整数集合)或者dictht(字典)组成；
+* Set，无序不可重复集合， **是特殊的Hash结构(value为null)，** 由intset(整数集合)或者dictht(字典)组成；
 * ZSet，「有序」不可重复集合，由skiplist(跳跃表)或者ziplist(压缩列表)组成。  
 
 # 1. Redis底层实现  
