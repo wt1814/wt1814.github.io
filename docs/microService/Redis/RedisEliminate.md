@@ -12,7 +12,7 @@
         - [1.1.3. Redis使用的过期键删除策略](#113-redis使用的过期键删除策略)
     - [1.2. 内存设置](#12-内存设置)
     - [1.3. 内存淘汰策略](#13-内存淘汰策略)
-        - [1.3.1. redis内存淘汰使用的算法(淘汰机制)](#131-redis内存淘汰使用的算法淘汰机制)
+        - [1.3.1. Redis内存淘汰使用的算法(淘汰机制)](#131-redis内存淘汰使用的算法淘汰机制)
             - [1.3.1.1. TTL](#1311-ttl)
             - [1.3.1.2. Redis中的LRU算法](#1312-redis中的lru算法)
             - [1.3.1.3. Redis中的LFU算法](#1313-redis中的lfu算法)
@@ -23,15 +23,42 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">一句话概述：redis的key有3种删除策略；内存淘汰有4种算法、8种淘汰策略。注意内存淘汰策略的选择。</font>**  
-&emsp; **<font color = "lime">注：volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
+&emsp; **<font color = "red">总结：</font>**  
+
+&emsp; 常见的删除策略有3种：定时删除、惰性删除、定期删除。<font color = "red">Redis服务器使用的是惰性删除策略和定期删除策略。</font>  
+
+* 在设置键的过期时间的同时，创建一个定时器，让定时器在键的过期时间来临时，立即执行对键的删除操作。  
+* <font color = "clime">只有当访问一个key时，才会判断该key是否已过期，过期则清除。</font>  
+* <font color = "red"> **定期删除策略每隔一段时间执行一次删除过期键操作**</font>，并通过<font color = "lime">限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响</font>，同时，通过定期删除过期键，也有效地减少了因为过期键而带来的内存浪费。  
+
+
+&emsp; **Redis内存淘汰使用的算法有：**  
+* random，随机删除。  
+* TTL，删除过期时间最少的键。  
+* <font color = "lime">LRU，Least Recently Used：最近最少使用。</font>判断最近被使用的时间，离目前最远的数据优先被淘汰。  
+* <font color = "lime">LFU，Least Frequently Used，最不常用，4.0版本新增。</font>  
+
+&emsp; **<font color = "lime">volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
+
+&emsp; **内存淘汰策略选择：**  
+1. 如果数据呈现幂律分布，也就是一部分数据访问频率高，一部分数据访问频率低，或者无法预测数据的使用频率时，则使用allkeys-lru/allkeys-lfu。  
+2. 如果数据呈现平等分布，也就是所有的数据访问频率都相同，则使用allkeys-random。
+3. 如果研发者需要通过设置不同的ttl来判断数据过期的先后顺序，此时可以选择volatile-ttl策略。
+4. 如果希望一些数据能长期被保存，而一些数据可以被淘汰掉，选择volatile-lru/volatile-lfu或volatile-random都是比较不错的。
+5. 由于设置expire会消耗额外的内存，如果计划避免Redis内存在此项上的浪费，可以选用allkeys-lru/volatile-lfu策略，这样就可以不再设置过期时间，高效利用内存了。  
+
+&emsp; volatile-xxx策略只会针对带过期时间的key进行淘汰，allkeys-xxx策略会对所有的key进行淘汰。  
+
+* 如果只是拿Redis做缓存，那应该使用allkeys-xxx，客户端写缓存时不必携带过期时间。  
+* 如果还想同时使用Redis的持久化功能，那就使用volatile-xxx策略，这样可以保留没有设置过期时间的key，它们是永久的key不会被LRU算法淘汰。  
+
 
 # 1. Redis内存  
 ## 1.1. Redis过期键删除策略
 ### 1.1.1. Key生存期  
 &emsp; 在Redis当中，有生存期的key被称为volatile。在创建缓存时，要为给定的key设置生存期，当key过期的时候(生存期为0)，它可能会被删除。  
 1. 影响生存时间的一些操作：  
-&emsp; 生存时间可以通过使用DEL命令来删除整个key来移除，或者被SET和GETSET命令覆盖原来的数据。也就是说，修改key对应value和使用另外相同key和value来覆盖以后，当前数据的生存时间不同。  
+&emsp; 生存时间可以通过使用DEL命令来删除整个key从而进行移除，或者被SET和GETSET命令覆盖原来的数据。也就是说，修改key对应value和使用另外相同key和value来覆盖以后，当前数据的生存时间不同。  
 &emsp; 比如说，对一个key执行INCR命令，对一个列表进行LPUSH命令，或者对一个哈希表执行HSET命令，这类操作都不会修改key 本身的生存时间。另一方面，如果使用RENAME对一个key进行改名，那么改名后的key的生存时间和改名前一样。  
 &emsp; RENAME命令的另一种可能是，尝试将一个带生存时间的key改名成另一个带生存时间的another_key，这时旧的another_key(以及它的生存时间)会被删除，然后旧的key会改名为another_key，因此，新的another_key的生存时间也和原本的key一样。使用PERSIST命令可以在不删除key的情况下，移除key的生存时间，让key重新成为一个persistent key。  
 
@@ -39,7 +66,7 @@
 &emsp; 可以对一个已经带有生存时间的key执行EXPIRE命令，新指定的生存时间会取代旧的生存时间。过期时间的精度已经被控制在1ms之内，主键失效的时间复杂度是O(1)，EXPIRE和TTL命令搭配使用，TTL可以查看key的当前生存时间。设置成功返回1；当key不存在或者不能为key设置生存时间时，返回0。  
 
 ### 1.1.2. 常见的删除策略  
-&emsp; 常见的删除策略有3种：定时删除、惰性删除、定期删除。  
+&emsp; **<font color = "red">常见的删除策略有3种：定时删除、惰性删除、定期删除。</font>**  
 
 #### 1.1.2.1. 定时删除策略(主动淘汰)  
 &emsp; <font color = "red">在设置键的过期时间的同时，创建一个定时器，让定时器在键的过期时间来临时，立即执行对键的删除操作。</font>  
@@ -51,7 +78,7 @@
 &emsp; 也就是说，如果服务器创建大量的定时器，服务器处理命令请求的性能就会降低，因此Redis目前并没有使用定时删除策略。  
 
 #### 1.1.2.2. 惰性删除策略(被动淘汰)  
-&emsp; <font color = "red">只有当访问一个key时，才会判断该key是否已过期，过期则清除。</font>  
+&emsp; <font color = "clime">只有当访问一个key时，才会判断该key是否已过期，过期则清除。</font>  
 
 &emsp; 优点：对CPU时间非常友好，可以最大化地节省 CPU 资源。  
 &emsp; 缺点：<font color = "red">对内存非常不友好，极端情况可能出现大量的过期key没有再次被访问，从而不会被清除，占用大量内存。</font>  
@@ -67,8 +94,10 @@
 
 ## 1.2. 内存设置  
 &emsp; <font color = "red">如果大量非过期key堆积在内存里，导致redis内存块耗尽了。redis会采用内存淘汰机制。</font>Redis的内存淘汰策略，是指当内存使用达到最大内存极限时，需要使用淘汰算法来决定清理掉哪些数据，以保证新数据的存入。  
-&emsp; 默认情况下，在32位OS中，Redis最大使用3GB的内存，在64位OS中则没有限制。  
+&emsp; 默认情况下，在32位OS中，Redis最大使用3GB的内存；在64位OS中则没有限制。  
 &emsp; **在使用Redis时，应该对数据占用的最大空间有一个基本准确的预估，并为Redis设定最大使用的内存。否则在64位OS中Redis会无限制地占用内存(当物理内存被占满后会使用swap空间)，容易引发各种各样的问题。**  
+
+&emsp; **Redis内存设置：**  
 1. 通过配置文件配置  
 &emsp; 通过在Redis安装目录下面的redis.conf配置文件中添加以下配置设置内存大小  
 
@@ -87,8 +116,8 @@
 ## 1.3. 内存淘汰策略  
 &emsp; 官网描述：https://redis.io/topics/lru-cache  
 
-### 1.3.1. redis内存淘汰使用的算法(淘汰机制) 
-&emsp; redis内存淘汰使用的算法有：  
+### 1.3.1. Redis内存淘汰使用的算法(淘汰机制) 
+&emsp; Redis内存淘汰使用的算法有：  
 * random，随机删除。  
 * TTL，删除过期时间最少的键。  
 * <font color = "lime">LRU，Least Recently Used：最近最少使用。</font>判断最近被使用的时间，离目前最远的数据优先被淘汰。  
@@ -141,13 +170,12 @@ https://stor.51cto.com/art/201904/594773.htm
 &emsp; **<font color = "lime">注：volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
 
 #### 1.3.2.1. ※※※内存淘汰策略选择  
-&emsp; **使用策略规则：**  
+&emsp; **内存淘汰策略选择：**  
 1. 如果数据呈现幂律分布，也就是一部分数据访问频率高，一部分数据访问频率低，或者无法预测数据的使用频率时，则使用allkeys-lru/allkeys-lfu。  
 2. 如果数据呈现平等分布，也就是所有的数据访问频率都相同，则使用allkeys-random。
 3. 如果研发者需要通过设置不同的ttl来判断数据过期的先后顺序，此时可以选择volatile-ttl策略。
 4. 如果希望一些数据能长期被保存，而一些数据可以被淘汰掉，选择volatile-lru/volatile-lfu或volatile-random都是比较不错的。
 5. 由于设置expire会消耗额外的内存，如果计划避免Redis内存在此项上的浪费，可以选用allkeys-lru/volatile-lfu策略，这样就可以不再设置过期时间，高效利用内存了。  
-
 
 &emsp; volatile-xxx策略只会针对带过期时间的key进行淘汰，allkeys-xxx策略会对所有的key进行淘汰。  
 

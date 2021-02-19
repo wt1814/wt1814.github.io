@@ -51,8 +51,7 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
         2.实现了InitializingBean接口后复写的afterPropertiesSet方法
         3. XML中自定义的初始化方法
 7. BeanPostProcessor后置处理：  
-&emsp; 如果这个Bean实现了BeanPostProcessor接口，将会调用postProcessAfterInitialization(Object
-obj, String s)方法；由于这个方法是在Bean初始化结束时调用的，所以可以被应用于内存或缓存技术；  
+&emsp; 如果这个Bean实现了BeanPostProcessor接口，将会调用postProcessAfterInitialization(Object obj, String s)方法；由于这个方法是在Bean初始化结束时调用的，所以可以被应用于内存或缓存技术；  
 8. 注册Destruction  
 
     以上几个步骤完成后，Bean就已经被正确创建了，之后就可以使用这个Bean了。  
