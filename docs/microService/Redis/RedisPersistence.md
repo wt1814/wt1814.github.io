@@ -3,19 +3,19 @@
 <!-- TOC -->
 
 - [1. Redis持久化](#1-redis持久化)
-    - [1.1. RDB(Redis DataBase），快照](#11-rdbredis-database快照)
+    - [1.1. RDB(Redis DataBase)，快照](#11-rdbredis-database快照)
         - [1.1.1. RDB的触发](#111-rdb的触发)
             - [1.1.1.1. 自动触发RDB持久化：](#1111-自动触发rdb持久化)
             - [1.1.1.2. 手动触发RDB持久化](#1112-手动触发rdb持久化)
         - [1.1.2. RDB的流程](#112-rdb的流程)
         - [1.1.3. RDB的优势和劣势](#113-rdb的优势和劣势)
-    - [1.2. AOF(Append-only file）](#12-aofappend-only-file)
+    - [1.2. AOF(Append-only file)](#12-aofappend-only-file)
         - [1.2.1. 开启AOF，写入策略选择](#121-开启aof写入策略选择)
         - [1.2.2. AOF持久化流程](#122-aof持久化流程)
             - [1.2.2.1. ※※※重写机制](#1221-※※※重写机制)
                 - [1.2.2.1.1. 重写机制简介](#12211-重写机制简介)
                 - [1.2.2.1.2. 重写机制触发](#12212-重写机制触发)
-            - [1.2.2.2. 重启加载步骤(数据恢复流程）](#1222-重启加载步骤数据恢复流程)
+            - [1.2.2.2. 重启加载步骤(数据恢复流程)](#1222-重启加载步骤数据恢复流程)
         - [1.2.3. AOF文件损坏](#123-aof文件损坏)
         - [1.2.4. AOF的优势和劣势](#124-aof的优势和劣势)
     - [1.3. 混合持久化](#13-混合持久化)
@@ -25,7 +25,7 @@
 &emsp; **<font color = "red">部分参考《Redis开发与运维》</font>**  
 
 **<font color = "lime">&emsp; 一句话概述：  
-&emsp; RDB，快照；保存某一时刻的全部数据；缺点是间隔长(配置文件中默认最少60s）。  
+&emsp; RDB，快照；保存某一时刻的全部数据；缺点是间隔长(配置文件中默认最少60s)。  
 &emsp; AOF，文件追加；记录所有操作命令；优点是默认间隔1s，丢失数据少；缺点是文件比较大，通过重写机制来压缩文件体积。  
 &emsp; Redis4.0混合持久化，先RDB，后AOF。  
 </font>**  
@@ -38,12 +38,12 @@ AOF和RDB混合使用
 https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 -->
 &emsp; Redis是一种内存数据库。一旦进程退出，Redis的数据就会丢失。Redis持久化拥有以下三种方式：  
-1. 快照方式(RDB，Redis DataBase）将某一个时刻的内存数据，以二进制的方式写入磁盘，RDB方式是redis默认的持久化方式；  
-2. 文件追加方式(AOF，Append Only File），记录所有的操作命令，并以文本的形式追加到文件中；  
+1. 快照方式(RDB，Redis DataBase)将某一个时刻的内存数据，以二进制的方式写入磁盘，RDB方式是redis默认的持久化方式；  
+2. 文件追加方式(AOF，Append Only File)，记录所有的操作命令，并以文本的形式追加到文件中；  
 3. 混合持久化方式，Redis 4.0之后新增的方式，<font color = "red">混合持久化是结合了RDB和 AOF的优点，在写入的时候，先把当前的数据以RDB的形式写入文件的开头，再将后续的操作命令以AOF的格式存入文件</font>，这样<font color = "lime">既能保证Redis重启时的速度，又能减少数据丢失的风险。</font>  
 
-## 1.1. RDB(Redis DataBase），快照
-&emsp; <font color = "red">RDB持久化是Redis默认的持久化方式。RDB是一种快照存储持久化方式，</font><font color = "lime">将Redis某一时刻的所有内存数据保存到硬盘的文件当中</font>，默认保存的文件名为dump.rdb，dump.rdb文件默认生成在%REDIS_HOME%etc目录下(如/usr/local/redis/etc/），可以修改redis.conf文件中的dir指定dump.rdb的保存路径。也可以将快照复制到其他服务器从而创建具有相同数据的服务器副本。  
+## 1.1. RDB(Redis DataBase)，快照
+&emsp; <font color = "red">RDB持久化是Redis默认的持久化方式。RDB是一种快照存储持久化方式，</font><font color = "lime">将Redis某一时刻的所有内存数据保存到硬盘的文件当中</font>，默认保存的文件名为dump.rdb，dump.rdb文件默认生成在%REDIS_HOME%etc目录下(如/usr/local/redis/etc/)，可以修改redis.conf文件中的dir指定dump.rdb的保存路径。也可以将快照复制到其他服务器从而创建具有相同数据的服务器副本。  
 
 ### 1.1.1. RDB的触发  
 &emsp; RDB触发机制分为使用指令手动触发和自动触发。  
@@ -68,7 +68,7 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 2. Bgsave命令：  
 &emsp; 与Save命令不同，Bgsave命令是一个异步操作。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-32.png)  
-&emsp; bgsave，执行该命令时，Redis会在后台异步执行快照操作，此时Redis仍然可以相应客户端请求。具体操作是当客户端发服务发出Bgsave命令时，Redis服务器主进程会Forks操作创建一个子进程来数据同步问题，在将数据保存到RDB文件之后，子进程会退出。新RDB文件就会原子地替换旧的RDB文件。所以，与Save命令相比，Redis服务器在处理Bgsave采用子线程进行IO写入。而主进程仍然可以接收其他请求，但Forks子进程是同步的，所以Forks子进程时，一样不能接收其他请求。这意味着，如果Forks一个子进程花费的时间太久(一般是很快的），而且占用内存会加倍，Bgsave命令仍然有阻塞其他客户的请求的情况发生。  
+&emsp; bgsave，执行该命令时，Redis会在后台异步执行快照操作，此时Redis仍然可以相应客户端请求。具体操作是当客户端发服务发出Bgsave命令时，Redis服务器主进程会Forks操作创建一个子进程来数据同步问题，在将数据保存到RDB文件之后，子进程会退出。新RDB文件就会原子地替换旧的RDB文件。所以，与Save命令相比，Redis服务器在处理Bgsave采用子线程进行IO写入。而主进程仍然可以接收其他请求，但Forks子进程是同步的，所以Forks子进程时，一样不能接收其他请求。这意味着，如果Forks一个子进程花费的时间太久(一般是很快的)，而且占用内存会加倍，Bgsave命令仍然有阻塞其他客户的请求的情况发生。  
 
 ### 1.1.2. RDB的流程  
 &emsp; bgsave是主流的触发RDB持久化方式。它的运行流程如下：  
@@ -87,11 +87,11 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 
 &emsp; **劣势**  
 1. RDB方式数据没办法做到实时持久化/秒级持久化。因为 bgsave 每次运行都要 执行 fork 操作创建子进程，频繁执行成本过高。 
-2. <font color = "red">在一定间隔时间做一次备份，所以如果redis意外down掉的话，就会丢失最后一次快照之后的所有修改(数据有丢失）。</font>如果数据相对来说比较重要，希望将损失降到最小，则可以使用AOF方式进行持久化。  
+2. <font color = "red">在一定间隔时间做一次备份，所以如果redis意外down掉的话，就会丢失最后一次快照之后的所有修改(数据有丢失)。</font>如果数据相对来说比较重要，希望将损失降到最小，则可以使用AOF方式进行持久化。  
 
 -----
 
-## 1.2. AOF(Append-only file）  
+## 1.2. AOF(Append-only file)  
 &emsp; AOF持久化机制是<font color = "red">以日志的形式记录Redis中的每一次的写操作</font>，不会记录查询操作，以文本的形式记录，打开记录的日志文件就可以查看操作记录。  
 <!-- &emsp; AOF持久化方式会记录客户端对服务器的每一次写操作命令，并将这些写操作以Redis协议追加保存到后缀为AOF文件末尾。-->  
 
@@ -120,10 +120,10 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 * no：Redis 服务器不负责写入AOF，而是交由操作系统来处理什么时候写入AOF文件。更快，但也是最不安全的选择，不推荐使用。 
 
 ### 1.2.2. AOF持久化流程  
-&emsp; **<font color = "red">AOF的工作流程操作：命令写入 (append）、文件同步(sync）、文件重写(rewrite）、重启加载 (load）。</font>**  
+&emsp; **<font color = "red">AOF的工作流程操作：命令写入 (append)、文件同步(sync)、文件重写(rewrite)、重启加载 (load)。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-52.png)  
 &emsp; 流程如下：  
-1. 所有的写入命令会追加到aof_buf(缓冲区）中。   
+1. 所有的写入命令会追加到aof_buf(缓冲区)中。   
 2. AOF缓冲区根据对应的策略向硬盘做同步操作。   
 3. <font color = "red">随着AOF文件越来越大，需要定期对AOF文件进行重写，达到压缩的目的。</font>  
 4. 当Redis服务器重启时，可以加载AOF文件进行数据恢复。  
@@ -153,15 +153,15 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 * 手动触发：直接调用bgrewriteaof命令。 
 * 自动触发：根据auto-aof-rewrite-min-size和auto-aof-rewrite-percentage参数确定自动触发时机。
     * auto-aof-rewrite-min-size：表示运行AOF重写时文件最小体积，默认 为64MB。
-    * auto-aof-rewrite-percentage：代表当前AOF文件空间 (aof_current_size）和上一次重写后AOF文件空间(aof_base_size）的比值。  
+    * auto-aof-rewrite-percentage：代表当前AOF文件空间 (aof_current_size)和上一次重写后AOF文件空间(aof_base_size)的比值。  
     
-    &emsp; 自动触发时机=aof_current_size>auto-aof-rewrite-min- size&&(aof_current_size-aof_base_size）/aof_base_size>=auto-aof-rewrite- percentage  
+    &emsp; 自动触发时机=aof_current_size>auto-aof-rewrite-min- size&&(aof_current_size-aof_base_size)/aof_base_size>=auto-aof-rewrite- percentage  
     &emsp; 其中aof_current_size和aof_base_size可以在info Persistence统计信息中查看。  
 
 &emsp; 当触发AOF重写时，内部做了哪些事呢？下面结合图5-3介绍它的运行流程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-86.png)  
 
-#### 1.2.2.2. 重启加载步骤(数据恢复流程）  
+#### 1.2.2.2. 重启加载步骤(数据恢复流程)  
 &emsp; AOF和RDB文件都可以用于服务器重启时的数据恢复。如下图所示， 表示Redis持久化文件加载流程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-54.png)  
 &emsp; 流程说明： 
@@ -185,7 +185,7 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 1. AOF 持久化的方法提供了多种的同步频率，即使使用默认的同步频率每秒同步 一次，Redis 最多也就丢失 1 秒的数据而已。  
 
 &emsp; **劣势：** 
-1. 对于具有相同数据的的 Redis，<font color = "red">AOF文件通常会比RDF文件体积更大</font>(RDB存的是数据快照）。  
+1. 对于具有相同数据的的 Redis，<font color = "red">AOF文件通常会比RDF文件体积更大</font>(RDB存的是数据快照)。  
 2. 虽然AOF提供了多种同步的频率，默认情况下，每秒同步一次的频率也具有较高的性能。在高并发的情况下，RDB比AOF具好更好的性能保证。  
 
 <!-- 
