@@ -8,11 +8,12 @@
         - [1.3.2. 服务端Unclear Leader选举](#132-服务端unclear-leader选举)
     - [1.4. ~~服务端副本消息的同步(LEO和HW)~~](#14-服务端副本消息的同步leo和hw)
         - [1.4.1. LEO和HW概念](#141-leo和hw概念)
-        - [1.4.2. Follower副本上LEO和HW的更新](#142-follower副本上leo和hw的更新)
-        - [1.4.3. Leader副本上LEO和HW的更新](#143-leader副本上leo和hw的更新)
-        - [1.4.4. 示例](#144-示例)
-        - [1.4.5. 数据丢失和数据不一致场景](#145-数据丢失和数据不一致场景)
-        - [1.4.6. Leader Epoch](#146-leader-epoch)
+        - [1.4.2. 副本上LEO和HW的更新](#142-副本上leo和hw的更新)
+            - [1.4.2.1. Follower副本上LEO和HW的更新](#1421-follower副本上leo和hw的更新)
+            - [1.4.2.2. Leader副本上LEO和HW的更新](#1422-leader副本上leo和hw的更新)
+        - [1.4.3. 示例](#143-示例)
+        - [1.4.4. 数据丢失和数据不一致场景](#144-数据丢失和数据不一致场景)
+        - [1.4.5. Leader Epoch](#145-leader-epoch)
 
 <!-- /TOC -->
 
@@ -21,6 +22,22 @@
 
 &emsp; 客户端数据请求：  
 &emsp; 集群中的每个broker都会缓存所有主题的分区副本信息，客户端会定期发送元数据请求，然后将获取的集群元数据信息进行缓存。  
+
+&emsp; 服务端Leader的选举：从ISR集合副本中选取。  
+
+&emsp; 服务端副本消息的同步：  
+&emsp; LEO，低水位，记录了日志的下一条消息偏移量，即当前最新消息的偏移量加一；HW，高水位，界定了消费者可见的消息，是ISR队列中最小的LEO。  
+
+&emsp; Follower副本更新LEO和HW：Follower副本会在向Leader拉取了消息之后，会用当前的偏移量加1来更新LEO，并且用Leader的HW值和当前LEO的最小值来更新HW。  
+&emsp; Leader副本上LEO和HW的更新：  
+* 正常情况下Leader副本的更新时机有两个：一、收到生产者的消息；二、被Follower拉取消息。  
+	* 当收到生产者消息时，会用当前偏移量加1来更新LEO，然后取LEO和远程ISR副本中LEO的最小值更新HW。 
+	* 当Follower拉取消息时，会更新Leader上存储的Follower副本LEO，然后判断是否需要更新HW，更新的方式和上述相同。 
+*  除了这两种正常情况，而当发生故障时，例如Leader宕机，Follower被选为新的Leader，会尝试更新HW。还有副本被踢出ISR时，也会尝试更新HW。 
+
+&emsp; 在Leader切换时，会存在数据丢失和数据不一致的问题。  
+&emsp; **<font color = "blue">为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制。</font>** 
+
 
 # 1. Kafka副本机制  
 <!--~~ 
@@ -35,7 +52,7 @@ https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 * 提供扩展性，增加读操作吞吐量；
 * 改善数据局部，降低系统延时。
 
-&emsp; 但并不是每个好处都能获得，这还是和具体的设计有关，比如Kafka只具有第一个好处，即提高可用性。这是因为**<font color = "blue">Kafka副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。</font>**  
+&emsp; 但并不是每个好处都能获得，这还是和具体的设计有关，比如Kafka只具有第一个好处，即提高可用性。这是因为 **<font color = "blue">Kafka副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。</font>**  
 
 * 副本的定义是在分区(Partition)层下定义的，每个分区有多个副本。  
 * **副本可分布于多台机器上。**
@@ -69,7 +86,7 @@ https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 -->
 
 ## 1.2. 客户端数据请求  
-&emsp; 在所有副本中，只有领导副本才能进行消息的读写处理。**<font color = "red">由于不同分区的领导副本可能在不同的broker上，如果某个broker收到了一个分区请求，但是该分区的领导副本并不在该broker上，那么它就会向客户端返回一个Not a Leader for Partition的错误响应。为了解决这个问题，Kafka提供了元数据请求机制。</font>**  
+&emsp; 在所有副本中，只有领导副本才能进行消息的读写处理。 **<font color = "red">由于不同分区的领导副本可能在不同的broker上，如果某个broker收到了一个分区请求，但是该分区的领导副本并不在该broker上，那么它就会向客户端返回一个Not a Leader for Partition的错误响应。为了解决这个问题，Kafka提供了元数据请求机制。</font>**  
 &emsp; **<font color = "red">首先集群中的每个broker都会缓存所有主题的分区副本信息，客户端会定期发送元数据请求，然后将获取的集群元数据信息进行缓存。</font>** 定时刷新元数据的时间间隔可以通过为客户端配置metadata.max.age.ms来进行指定。有了元数据信息后，客户端就知道了领导副本所在的broker，之后直接将读写请求发送给对应的broker即可。  
 &emsp; 如果在定时请求的时间间隔内发生的分区副本的选举，则意味着原来缓存的信息可能已经过时了，此时还有可能会收到Not a Leader  for Partition的错误响应，这种情况下客户端会再次求发出元数据请求，然后刷新本地缓存，之后再去正确的broker上执行对应的操作，过程如下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-94.png)  
@@ -171,26 +188,27 @@ kafka数据一致性，通过HW来保证
 &emsp; 副本的本质其实是一个消息日志，为了让副本正常同步，需要通过一些变量记录副本的状态，如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-75.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-112.png)  
-&emsp; **其中LEO(Last End Offset)记录了日志的下一条消息偏移量，即当前最新消息的偏移量加一。<font color = "red">**  
-&emsp; **而HW(High Watermark)界定了消费者可见的消息，消费者可以消费小于HW的消息，而大于等于HW的消息将无法消费。</font>**  
+&emsp; **其中LEO(Last End Offset，低水位)记录了日志的下一条消息偏移量，即当前最新消息的偏移量加一。<font color = "red">**  
+&emsp; **而HW(High Watermark，高水位)界定了消费者可见的消息，消费者可以消费小于HW的消息，而大于等于HW的消息将无法消费。</font>** 是ISR队列中最小的LEO。  
 
-&emsp; 下面介绍下HW的概念，其可翻译为高水位或高水印，这一概念通常用于在流式处理领域(如Flink、Spark等)，流式系统将保证在HW为t时刻时，创建时间小于等于t时刻的所有事件都已经到达或可被观测到。而在Kafka中，HW的概念和时间无关，而是和偏移量有关，主要目的是为了保证一致性。  
-&emsp; 试想如果一个消息到达了Leader，而Follower副本还未来得及同步，但该消息能已被消费者消费了，这时候Leader宕机，Follower副本中选出新的Leader，消息将丢失，出现不一致的现象。所以Kafka引入HW的概念，当消息被同步副本同步完成时，才让消息可被消费。  
+&emsp; ~~下面介绍下HW的概念，其可翻译为高水位或高水印，这一概念通常用于在流式处理领域(如Flink、Spark等)，流式系统将保证在HW为t时刻时，创建时间小于等于t时刻的所有事件都已经到达或可被观测到。而在Kafka中，HW的概念和时间无关，而是和偏移量有关，主要目的是为了保证一致性。~~  
+&emsp; ~~试想如果一个消息到达了Leader，而Follower副本还未来得及同步，但该消息能已被消费者消费了，这时候Leader宕机，Follower副本中选出新的Leader，消息将丢失，出现不一致的现象。所以Kafka引入HW的概念，当消息被同步副本同步完成时，才让消息可被消费。~~  
 
-### 1.4.2. Follower副本上LEO和HW的更新
+### 1.4.2. 副本上LEO和HW的更新
 &emsp; 上述即是LEO和HW的基本概念，下面看下具体是如何工作的。  
 &emsp; 在每个副本中都存有LEO和HW，而Leader副本中除了存有自身的LEO和HW，还存储了其他Follower副本的LEO和HW值，为了区分把Leader上存储的Follower副本的LEO和HW值叫做远程副本的LEO和HW值，如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-76.png)  
 &emsp; 之所以这么设计，是为了HW的更新，Leader需保证HW是ISR副本集合中LEO的最小值。关于具体的更新，分为Follower副本和Leader副本来看。  
 
-&emsp; Follower副本更新LEO和HW的时机只有向Leader拉取了消息之后，会用当前的偏移量加1来更新LEO，并且用Leader的HW值和当前LEO的最小值来更新HW：  
+#### 1.4.2.1. Follower副本上LEO和HW的更新
+&emsp; Follower副本更新LEO和HW的时机：只有向Leader拉取了消息之后。会用当前的偏移量加1来更新LEO，并且用Leader的HW值和当前LEO的最小值来更新HW。  
 
     CurrentOffset + 1 -> LEO
     min(LEO, LeaderHW) -> HW
 
 &emsp; LEO的更新，很好理解。那为什么HW要取LEO和LeaderHW的最小值，为什么不直接取LeaderHW，LeaderHW不是一定大于LEO吗？LeaderHW是根据同步副本来决定，所以LeaderHW一定小于所有同步副本的LEO，而并不一定小于非同步副本的LEO，所以如果一个非同步副本在拉取消息，那LEO是会小于LeaderHW的，则应用当前LEO值来更新HW。  
 
-### 1.4.3. Leader副本上LEO和HW的更新
+#### 1.4.2.2. Leader副本上LEO和HW的更新
 &emsp; 说完了Follower副本上LEO和HW的更新，下面看Leader副本。   
 &emsp; 正常情况下Leader副本的更新时机有两个：一、收到生产者的消息；二、被Follower拉取消息。  
 &emsp; 当收到生产者消息时，会用当前偏移量加1来更新LEO，然后取LEO和远程ISR副本中LEO的最小值更新HW。  
@@ -207,18 +225,21 @@ kafka数据一致性，通过HW来保证
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-113.png)  
 
-### 1.4.4. 示例  
+### 1.4.3. 示例  
 <!-- 
 https://my.oschina.net/u/3379856/blog/4388543
 -->
+&emsp; 下面看下更新LEO和HW的示例，假设分区中有两个副本，min.insync.replica=1。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-77.png)  
 
-### 1.4.5. 数据丢失和数据不一致场景
+### 1.4.4. 数据丢失和数据不一致场景
 <!-- 
 https://my.oschina.net/u/3379856/blog/4388538
 -->
-&emsp; 下面看下更新LEO和HW的示例，假设分区中有两个副本，min.insync.replica=1。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-77.png)  
-&emsp; 从上述过程中，可以看到remoteLEO、LeaderHW和FollowerHW的更新发生于Follower更新LEO后的第二轮Fetch请求，而这也意味着，更新需要额外一次Fetch请求。而这也将导致在Leader切换时，会存在数据丢失和数据不一致的问题。下面是数据丢失的示例：  
+
+&emsp; 从上述过程中，可以看到remoteLEO、LeaderHW和FollowerHW的更新发生于Follower更新LEO后的第二轮Fetch请求，而这也意味着，更新需要额外一次Fetch请求。  
+&emsp; **而这也将导致在Leader切换时，会存在数据丢失和数据不一致的问题。**  
+&emsp; 下面是数据丢失的示例：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-78.png)  
 &emsp; 当B作为Follower已经Fetch了最新的消息，但是在发送第二轮Fetch时，未来得及处理响应，宕机了。当重启时，会根据HW更新LEO，将发生日志截断，消息m1被丢弃。  
 &emsp; 这时再发送Fetch请求给A，A宕机了，则B未能同步到消息m1，同时B被选为Leader，而当A重启时，作为Follower同步B的消息时，会根据A的HW值更新HW和LEO，因此由2变成了1，也将发生日志截断，而已发送成功的消息m1将永久丢失。  
@@ -239,15 +260,15 @@ https://my.oschina.net/u/3379856/blog/4388538
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-115.png)  
 
-### 1.4.6. Leader Epoch 
-&emsp; 为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制，在每个副本日志目录下都有一个leader-epoch-checkpoint文件，用于保存Leader Epoch信息，其内容示例如下：  
+### 1.4.5. Leader Epoch 
+&emsp; **<font color = "blue">为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制。</font>** 在每个副本日志目录下都有一个leader-epoch-checkpoint文件，用于保存Leader Epoch信息，其内容示例如下：  
 
     0 0
     1 300
     2 500
 
 &emsp; 上面每一行为一个Leader Epoch，分为两部分，前者Epoch，表示Leader版本号，是一个单调递增的正整数，每当Leader变更时，都会加1，后者StartOffset，为每一代Leader写入的第一条消息的位移。  
-&emsp; 例如第0代Leader写的第一条消息位移为0，而第1代Leader写的第一条消息位移为300，也意味着第0代Leader在写了0-299号消息后挂了，重新选出了新的Leader。下面我们看下Leader Epoch如何工作：  
+&emsp; 例如第0代Leader写的第一条消息位移为0，而第1代Leader写的第一条消息位移为300，也意味着第0代Leader在写了0-299号消息后挂了，重新选出了新的Leader。下面看下Leader Epoch如何工作：  
 
 1. 当副本成为Leader时：  
 &emsp; 当收到生产者发来的第一条消息时，会将新的epoch和当前LEO添加到leader-epoch-checkpoint文件中。  
@@ -268,4 +289,3 @@ https://my.oschina.net/u/3379856/blog/4388538
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-81.png)  
 &emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有消息m0，且HW为1，A、B同时宕机。B重启，被选为Leader，将写入新的LeaderEpoch(1, 1)。B开始工作，收到消息m2时。这是A重启，将作为Follower将发送LeaderEpochRequert(FollowerLastEpoch=0)，B返回大于FollowerLastEpoch的第一个LeaderEpoch的StartOffset，即1，小于当前LEO值，所以将发生日志截断，并发送Fetch请求，同步消息m2，避免了消息不一致问题。  
 &emsp; 你可能会问，m2消息那岂不是丢失了？是的，m2消息丢失了，但这种情况的发送的根本原因在于min.insync.replicas的值设置为1，即没有任何其他副本同步的情况下，就认为m2消息为已提交状态。LeaderEpoch不能解决min.insync.replicas为1带来的数据丢失问题，但是可以解决其所带来的数据不一致问题。而我们之前所说能解决的数据丢失问题，是指消息已经成功同步到Follower上，但因HW未及时更新引起的数据丢失问题。  
-
