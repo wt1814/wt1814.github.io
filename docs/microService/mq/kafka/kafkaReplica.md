@@ -6,7 +6,7 @@
     - [1.3. 服务端Leader的选举(ISR副本)](#13-服务端leader的选举isr副本)
         - [1.3.1. ISR副本](#131-isr副本)
         - [1.3.2. 服务端Unclear Leader选举](#132-服务端unclear-leader选举)
-    - [1.4. ~~服务端副本消息的同步(LEO和HW) ~~](#14-服务端副本消息的同步leo和hw-)
+    - [1.4. ~~服务端副本消息的同步(LEO和HW)~~](#14-服务端副本消息的同步leo和hw)
         - [1.4.1. LEO和HW概念](#141-leo和hw概念)
         - [1.4.2. Follower副本上LEO和HW的更新](#142-follower副本上leo和hw的更新)
         - [1.4.3. Leader副本上LEO和HW的更新](#143-leader副本上leo和hw的更新)
@@ -142,7 +142,7 @@ unclean领导者选举。再回去看看刚刚我们说Leader挂了怎么办，�
 -->
 &emsp; ISR是一个动态调整的集合，而非静态不变的。当ISR集合为空时，即没有同步副本(Leader也挂了)，无法选出下一个Leader，Kafka集群将会失效。而为了提高可用性，Kafka提供了unclean.leader.election.enable参数，当设置为true且ISR集合为空时，会进行Unclear Leader选举，允许在非同步副本中选出新的Leader，从而提高Kafka集群的可用性，但这样会造成消息丢失。在允许消息丢失的场景中，是可以开启此参数来提高可用性的。而其他情况，则不建议开启，而是通过其他手段来提高可用性。  
 
-## 1.4. ~~服务端副本消息的同步(LEO和HW) ~~ 
+## 1.4. ~~服务端副本消息的同步(LEO和HW)~~ 
 <!-- 
 kafka数据一致性，通过HW来保证  
 &emsp; 由于并不能保证 Kafka 集群中每时每刻 follower 的长度都和 leader 一致(即数据同步是有时延的)，那么当leader 挂掉选举某个 follower 为新的 leader 的时候(原先挂掉的 leader 恢复了成为了 follower)，可能会出现leader 的数据比 follower 还少的情况。为了解决这种数据量不一致带来的混乱情况，Kafka 提出了以下概念：  
@@ -227,7 +227,9 @@ https://my.oschina.net/u/3379856/blog/4388538
     集群处于上述这种状态有两种情况可能导致，一、宕机前，B不在ISR中，因此A未待B同步，即更新了HW，且unclear leader为true，允许B成为Leader；二、宕机前，B同步了消息m1，且发送了第二轮Fetch请求，Leader更新HW，但B未将消息m1落地到磁盘，宕机了，当再重启时，消息m1丢失，只剩m0。
 
 &emsp; 在B重启作为Leader之后，收到消息m2。A宕机重启后向成为Leader的B发送Fetch请求，发现自己的HW和B的HW一致，都是2，因此不会进行消息截断，而这也造成了数据不一致。  
+
 ---
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-115.png)  
 
 ### 1.4.6. Leader Epoch 
