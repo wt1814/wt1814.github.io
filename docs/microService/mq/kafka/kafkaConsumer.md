@@ -133,7 +133,7 @@ private ConsumerRecords<K, V> poll(final Timer timer, final boolean includeMetad
 wakeupDisabled，线程在执行不可中断的方法；wakeup，线程中断请求。  
 &emsp; 如果wakeupDisabled 为 0 并且 wakeup 是 1，则把 wakeup置为 0 并抛出异常，中断该线程。  
 3. 获取消费的数据，如果不为空，发送下一轮获取数据的请求（异步）。
-4. 将获取的数据经过拦截器j加工后，返回结果数据。
+4. 将获取的数据经过拦截器加工后，返回结果数据。
 
 ### 1.2.1. pollForFetches()  
 

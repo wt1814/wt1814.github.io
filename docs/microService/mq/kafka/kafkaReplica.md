@@ -16,6 +16,12 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; Kafka副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。  
+
+&emsp; 客户端数据请求：  
+&emsp; 集群中的每个broker都会缓存所有主题的分区副本信息，客户端会定期发送元数据请求，然后将获取的集群元数据信息进行缓存。  
+
 # 1. Kafka副本机制  
 <!--~~ 
 Kafka中副本机制的设计和原理 
@@ -220,6 +226,7 @@ https://my.oschina.net/u/3379856/blog/4388538
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-114.png)  
 
 ---
+
 &emsp; 数据不一致的情况如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-79.png)  
 &emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有m0消息，且HW为1。若A、B同时宕机，且B重启时，A还未恢复，则B被选为Leader。  
