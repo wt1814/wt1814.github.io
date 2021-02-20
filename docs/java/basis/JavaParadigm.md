@@ -20,6 +20,7 @@
 <!-- /TOC -->
 
 <!-- 
+https://mp.weixin.qq.com/s/skxnaaPz2eN1YASUlfwMDA
 https://mp.weixin.qq.com/s/ilqFpf5kE0XzJnOv9SsX7Q
 https://www.cnblogs.com/lihaoyang/p/7104293.html
 Java-TypeToken原理及泛型擦除

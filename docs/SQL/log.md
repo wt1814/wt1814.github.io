@@ -25,8 +25,11 @@
 
 <!-- /TOC -->
 <!-- 
- Mysql 中写操作时保驾护航的三兄弟！ 
+Mysql 中写操作时保驾护航的三兄弟！ 
 https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
+
+重做日志缓冲(redo log buffer)
+https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 Redo log 与 Binlog 
 https://mp.weixin.qq.com/s/XTpoYW--6PTqotcC8tpF2A
 事务日志－－崩溃恢复

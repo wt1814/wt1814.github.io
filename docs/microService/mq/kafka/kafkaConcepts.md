@@ -2,7 +2,7 @@
 
 - [1. kafka](#1-kafka)
     - [1.1. kafka介绍](#11-kafka介绍)
-    - [1.2. kafka拓扑结构及相关概念-1](#12-kafka拓扑结构及相关概念-1)
+    - [1.2. ~~kafka拓扑结构及相关概念~~](#12-kafka拓扑结构及相关概念)
     - [1.3. kafka使用场景](#13-kafka使用场景)
 
 <!-- /TOC -->
@@ -24,8 +24,8 @@ https://mp.weixin.qq.com/s/QPHPugWlbfeh8HhQvELSSQ
 * 可以储存流式的记录，并且有较好的容错性。
 * 可以在流式记录产生时就进行处理。 
 
-## 1.2. kafka拓扑结构及相关概念-1  
-&emsp; 一个典型的Kafka包含若干Producer、Broker集群、若干 Consumer 以及一个 Zookeeper 集群。Kafka体系结构如下所示：  
+## 1.2. ~~kafka拓扑结构及相关概念~~  
+&emsp; 一个典型的Kafka包含若干Producer、Broker集群、若干 Consumer 以及一个 Zookeeper 集群。Kafka体系结构图如下所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-3.png)  
 
 1. producer：  
