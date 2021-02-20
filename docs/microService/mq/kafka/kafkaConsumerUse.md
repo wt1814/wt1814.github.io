@@ -94,12 +94,12 @@ public class ConsumerDemo {
 &emsp; Kafka为Java消费者提供的[配置](https://kafka.apachecn.org/documentation.html#configuration)如下：  
 
 ## 1.2. 消费者与消费组  
-&emsp; kafka消费者分为两类：  
+&emsp; **<font color = "red">kafka消费者分为两类：</font>**  
 
 * 消费者组(consumer group)：由多个消费者实例构成一个整体进行消费
 * 独立消费者(standalone consumer)：单独执行消费操作
 
-&emsp; Kafka消费端确保一个Partition在一个消费者组内只能被一个消费者消费。   
+&emsp; **<font color = "blue">Kafka消费端确保一个Partition在一个消费者组内只能被一个消费者消费。</font>   
 
 * 在同一个消费者组内，一个Partition只能被一个消费者消费。
 * 在同一个消费者组内，所有消费者组合起来必定可以消费一个Topic下的所有 Partition。
@@ -113,13 +113,9 @@ public class ConsumerDemo {
 * 对于同一个group而言，topic的每条消息只能发送到group下一个consumer实例上  
 * topic消息可以发送到多个group中  
 -->
-&emsp; **Kafka通过消费者组，可以实现基于队列和基于发布/订阅的两种消息引擎：**  
-
-* 如果所有的消费者都隶属于同一个消费组，那么所有的消息都会被均衡地投递给每一 个消费者，即每条消息只会被一个消费者处理，这就相当于点对点模式的应用。  
-* 如果所有的消费者都隶属于不同的消费组，那么所有的消息都会被广播给所有的消费者，即每条消息会被所有的消费者处理，这就相当于发布/订阅模式的应用。
 
 &emsp; **消费组示例：**  
-&emsp; 如下图所示，某个主题中共有4个分区（Partition） : PO、Pl、P2、P3。有两个消费组A和B都订阅了这个主题，消费组A中有4个消费者（CO、Cl、C2和C3），消费组B中有2个消费者（C4和C5）。按照Kafka默认的规则，最后的分配结果是消费组A中的每一个消费者分配到1个分区，消费组B中的每一个消费者分配到2个分区，两个消费组之间互不影响。每个消费者只能消费所分配到的分区中的消息。换言之，每一个分区只能被一个消费组中的一个消费者所消费。  
+&emsp; 如下图所示，某个主题中共有4个分区（Partition）：PO、Pl、P2、P3。有两个消费组A和B都订阅了这个主题，消费组A中有4个消费者（CO、Cl、C2和C3），消费组B中有2个消费者（C4和C5）。按照Kafka默认的规则，最后的分配结果是消费组A中的每一个消费者分配到1个分区，消费组B中的每一个消费者分配到2个分区，两个消费组之间互不影响。每个消费者只能消费所分配到的分区中的消息。换言之，每一个分区只能被一个消费组中的一个消费者所消费。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-65.png)  
 &emsp; 再来看一下消费组内的消费者个数变化时所对应的分区分配的演变。假设目前某消费组内只有一个消费者CO，订阅了一个主题，这个主题包含7个分区：PO、Pl、P2、P3、P4、 P5、P6。也就是说，这个消费者CO订阅了7个分区，具体分配情形参考下图。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-66.png)  
@@ -272,6 +268,12 @@ kafka_test      0          7399            7399            0               consu
 
 --------------
 ## 1.5. 订阅topic
+&emsp; **Kafka通过消费者组，可以实现基于队列和基于发布/订阅的两种消息引擎：**  
+
+* 如果所有的消费者都隶属于同一个消费组，那么所有的消息都会被均衡地投递给每一 个消费者，即每条消息只会被一个消费者处理，这就相当于点对点模式的应用。  
+* 如果所有的消费者都隶属于不同的消费组，那么所有的消息都会被广播给所有的消费者，即每条消息会被所有的消费者处理，这就相当于发布/订阅模式的应用。
+
+
 &emsp; **两种订阅topic的方式：直接订阅topic列表，基于正则表达订阅topic。**  
 
 ### 1.5.1. 订阅topic列表
