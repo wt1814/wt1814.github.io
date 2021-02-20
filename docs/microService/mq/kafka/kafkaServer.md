@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [1. kafka服务端](#1-kafka服务端)
+- [1. ~~kafka服务端~~](#1-kafka服务端)
     - [1.1. Kafka控制器](#11-kafka控制器)
         - [1.1.1. 控制器的选举](#111-控制器的选举)
         - [1.1.2. 控制器的异常选举](#112-控制器的异常选举)
@@ -15,7 +15,7 @@
 <!-- /TOC -->
 
 
-# 1. kafka服务端
+# 1. ~~kafka服务端~~
 <!-- 
 zookeeper
 https://blog.csdn.net/lwglwg32719/article/details/86510029
