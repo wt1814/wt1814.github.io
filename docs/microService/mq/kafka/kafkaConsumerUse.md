@@ -34,9 +34,9 @@
 &emsp; **<font color = "red">总结：</font>**  
 
 1. 消费者/消费者组/费者组重平衡  
-    &emsp; **消费者组重平衡：**
+    &emsp; **消费者组重平衡：**  
     &emsp; **<font color = "red">假设组内某个实例挂掉了，Kafka能够自动检测到，然后把这个Failed实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。</font>**  
-    &emsp; 重平衡流程：  
+    &emsp; **重平衡流程：**  
     2. **<font color = "red">消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；</font>**  
     3. **<font color = "red">当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，</font>**  
 2. 消费者位移管理  

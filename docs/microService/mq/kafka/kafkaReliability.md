@@ -1,6 +1,7 @@
 <!-- TOC -->
 
 - [1. kafka如何保证消息队列不丢失?](#1-kafka如何保证消息队列不丢失)
+    - [1.7. ★★★无消息丢失配置](#17-★★★无消息丢失配置)
     - [1.1. Kafka消息传递过程概述](#11-kafka消息传递过程概述)
     - [1.2. Producer端丢失消息](#12-producer端丢失消息)
         - [1.2.1. 发送消息的流程](#121-发送消息的流程)
@@ -26,6 +27,30 @@ Kafka消息中间件到底会不会丢消息
 https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 
 -->
+
+## 1.7. ★★★无消息丢失配置  
+1. 采用同步发送，但是性能会很差，并不推荐在实际场景中使用。因此最好能有一份配置，既使用异步方式还能有效地避免数据丢失，即使出现producer崩溃的情况也不会有问题。 
+2. **做producer端的无消息丢失配置**  
+    * producer端配置
+
+            max.block.ms=3000   控制block的时长,当buffer空间不够或者metadata丢失时产生block
+            acks=all or -1   所有follower都响应了发送消息才能认为提交成功
+            retries=Integer.MAX_VALUE   producer开启无限重试，只会重试那些可恢复的异常情况
+            max.in.flight.requests.per.connection=1   限制了producer在单个broker连接上能够发送的未响应请求的数量，为了防止topic同分区下的消息乱序问题
+            使用带回调机制的send发送消息，即KafkaProducer.send(record,callback)   
+            会返回消息发送的结果信息Callback的失败处理逻辑中显式地立即关闭producer，使用close(0)。目的是为了处理消息的乱序问题，将不允许将未完成的消息发送出去
+
+    * broker端配置
+
+            unclean.leader.election.enable=false   不允许非ISR中的副本被选举为leader
+            replication.factor=3   强调一定要使用多个副本来保存分区的消息
+            min.insync.replicas=2   控制某条消息至少被写入到ISR中的多少个副本才算成功，只有在producer端的acks设置成all或-1时，这个参数才有意义
+            确保replication.factor>min.insync.replicas   
+
+    * consumer端配置
+
+            enable.auto.commit=false   设置不能自动提交位移，需要用户手动提交位移
+
 
 ## 1.1. Kafka消息传递过程概述  
 &emsp; **消息传递语义介绍：**  

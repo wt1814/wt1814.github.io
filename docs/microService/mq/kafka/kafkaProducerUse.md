@@ -170,7 +170,7 @@ https://blog.csdn.net/lwglwg32719/article/details/86510029
     
 &emsp; 显然，这两种方式各有优劣，如下表所示。   
 
-|说 明	|优 势|劣 势|
+|说 明|优 势|劣 势|
 |---|---|---|---|
 |单 KafkaProducer 实例|	所有线程共享一个KafkaProducer 实例|实现简单，性能好|①所有线程共享一个内存缓冲区，可能需要较多内存；</br>②一旦producer某个线程崩溃导致KafkaProducer实例被“破坏”，则所有用户线程都无法工作|
 |多 KafkaProducer 实例|	每个线程维护自己专属的 KafkaProducer 实例|①每个用户线程拥有专属的 KafkaProducer 实例、缓冲 区空间及一组对应的配置参数，可以进行细粒度的调 优；</br>②单个 KafkaProducer崩溃不会影响其他producer线程工作 |需要较大的内存分配开销|

@@ -3,17 +3,15 @@
 <!-- TOC -->
 
 - [1. kafka特性](#1-kafka特性)
-    - [1.1. 高性能（读写机制）](#11-高性能读写机制)
+    - [1.1. 高性能(读写机制)](#11-高性能读写机制)
         - [1.1.1. 顺序读写](#111-顺序读写)
             - [1.1.1.1. 顺序写入](#1111-顺序写入)
             - [1.1.1.2. Memory Mapped Files](#1112-memory-mapped-files)
-        - [1.1.2. 基于 Sendfile 实现零拷贝（Zero Copy）](#112-基于-sendfile-实现零拷贝zero-copy)
-    - [1.2. 如何让 Kafka 的消息有序？](#12-如何让-kafka-的消息有序)
-    - [1.3. 高可用性（副本机制）](#13-高可用性副本机制)
-    - [1.4. 可靠性（如何保证消息队列不丢失?）](#14-可靠性如何保证消息队列不丢失)
-    - [1.5. 消息重复消费](#15-消息重复消费)
-    - [1.6. 幂等和事务](#16-幂等和事务)
-    - [1.7. ★★★无消息丢失配置](#17-★★★无消息丢失配置)
+        - [1.1.2. ~~基于Sendfile实现零拷贝(Zero Copy)~~](#112-基于sendfile实现零拷贝zero-copy)
+    - [1.2. 高可用性(副本机制)](#12-高可用性副本机制)
+    - [1.3. 可靠性(如何保证消息队列不丢失?)](#13-可靠性如何保证消息队列不丢失)
+    - [1.4. 幂等和事务](#14-幂等和事务)
+    - [1.5. 如何让Kafka的消息有序？](#15-如何让kafka的消息有序)
 
 <!-- /TOC -->
 
@@ -25,7 +23,7 @@
 https://mp.weixin.qq.com/s/LEmybNmD5XwkBtcTPHcaEA
 -->
 
-## 1.1. 高性能（读写机制）  
+## 1.1. 高性能(读写机制)  
 <!--
 Kafka的特性之一就是高吞吐率，但是Kafka的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，但是Kafka即使是普通的服务器，Kafka也可以轻松支持每秒百万级的写入请求，超过了大部分的消息中间件，这种特性也使得Kafka在日志处理等海量数据场景广泛应用。Kafka会把收到的消息都写入到硬盘中，防止丢失数据。为了优化写入速度Kafka采用了两个技术顺序写入和MMFile 。
 
@@ -47,14 +45,14 @@ Kafka服务器在响应客户端读取的时候，底层使用ZeroCopy技术，�
     顺序读写不需要硬盘磁头的寻道时间，只需很少的扇区旋转时间，所以速度远快于随机读写。
 
 #### 1.1.1.2. Memory Mapped Files  
-&emsp; 这个和Java NIO中的内存映射基本相同，mmf （Memory Mapped Files）直接利用操作系统的Page来实现文件到物理内存的映射，完成之后对物理内存的操作会直接同步到硬盘。**mmf通过内存映射的方式大大提高了IO速率，省去了用户空间到内核空间的复制。它的缺点显而易见，不可靠，当发生宕机而数据未同步到硬盘时，数据会丢失。**  
+&emsp; 这个和Java NIO中的内存映射基本相同，mmf (Memory Mapped Files)直接利用操作系统的Page来实现文件到物理内存的映射，完成之后对物理内存的操作会直接同步到硬盘。**mmf通过内存映射的方式大大提高了IO速率，省去了用户空间到内核空间的复制。它的缺点显而易见，不可靠，当发生宕机而数据未同步到硬盘时，数据会丢失。**  
 <!-- Kafka 提供了produce.type参数来控制是否主动的进行刷新，如果 Kafka 写入到 mmf 后立即flush再返回给生产者则为同步模式，反之为异步模式。 --> 
 &emsp; Kafka 提供了一个参数 producer.type 来控制是不是主动 Flush：  
 
 * 如果 Kafka 写入到 mmf 之后就立即 Flush，然后再返回 Producer 叫同步 (Sync)。  
 * 如果 Kafka 写入 mmf 之后立即返回 Producer 不调用 Flush 叫异步 (Async)。  
 
-### 1.1.2. 基于 Sendfile 实现零拷贝（Zero Copy）  
+### 1.1.2. ~~基于Sendfile实现零拷贝(Zero Copy)~~  
 <!-- 
 在这之前先来了解一下零拷贝(直接让操作系统的 Cache 中的数据发送到网卡后传输给下游的消费者)：平时从服务器读取静态文件时，服务器先将文件从复制到内核空间，再复制到用户空间，最后再复制到内核空间并通过网卡发送出去，而零拷贝则是直接从内核到内核再到网卡，省去了用户空间的复制。
 
@@ -72,65 +70,21 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 
     硬盘—>内核 buf—>用户 buf—>Socket 相关缓冲区—>协议引擎  
     
-&emsp; 而 Sendfile 系统调用则提供了一种减少以上多次 Copy，提升文件传输性能的方法。<font color = "red">在内核版本 2.1 中，引入了 Sendfile 系统调用，以简化网络上和两个本地文件之间的数据传输。</font>Sendfile 的引入不仅减少了数据复制，还减少了上下文切换。相较传统 Read/Write 方式，2.1 版本内核引进的 Sendfile 已经减少了内核缓冲区到 User 缓冲区，再由 User 缓冲区到 Socket 相关缓冲区的文件 Copy。而在内核版本 2.4 之后，文件描述符结果被改变，Sendfile 实现了更简单的方式，再次减少了一次 Copy 操作。  
+
+&emsp; 而 Sendfile 系统调用则提供了一种减少以上多次 Copy，提升文件传输性能的方法。<font color = "red">在内核版本 2.1 中，引入了Sendfile系统调用，以简化网络上和两个本地文件之间的数据传输。</font>Sendfile 的引入不仅减少了数据复制，还减少了上下文切换。相较传统 Read/Write 方式，2.1 版本内核引进的Sendfile已经减少了内核缓冲区到 User 缓冲区，再由 User 缓冲区到 Socket 相关缓冲区的文件Copy。而在内核版本 2.4 之后，文件描述符结果被改变，Sendfile 实现了更简单的方式，再次减少了一次 Copy 操作。  
 &emsp; Kafka 把所有的消息都存放在一个一个的文件中，当消费者需要数据的时候 Kafka 直接把文件发送给消费者，配合 mmap 作为文件读写方式，直接把它传给 Sendfile。  
 
-## 1.2. 如何让 Kafka 的消息有序？  
-&emsp; Kafka 无法做到消息全局有序，只能做到 Partition 维度的有序。所以如果想要消息有序，就需要从 Partition 维度入手。一般有两种解决方案。
-
-* 单 Partition，单 Consumer。通过此种方案强制消息全部写入同一个 Partition 内，但是同时也牺牲掉了 Kafka 高吞吐的特性了，所以一般不会采用此方案。  
-* **多 Partition，多 Consumer，指定 key 使用特定的 Hash 策略，使其消息落入指定的 Partition 中，从而保证相同的 key 对应的消息是有序的。** 此方案也是有一些弊端，比如当 Partition 个数发生变化时，相同的 key 对应的消息会落入到其他的 Partition 上，所以一旦确定 Partition 个数后就不能在修改 Partition 个数了。  
-
-## 1.3. 高可用性（副本机制）
+## 1.2. 高可用性(副本机制)
 [kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
 
-## 1.4. 可靠性（如何保证消息队列不丢失?）  
+## 1.3. 可靠性(如何保证消息队列不丢失?)  
 [kafka如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
 
-## 1.5. 消息重复消费
-<!-- 
-
-有哪些情形会造成重复消费？
-Rebalance
-一个consumer正在消费一个分区的一条消息，还没有消费完，发生了rebalance(加入了一个consumer)，从而导致这条消息没有消费成功，rebalance后，另一个consumer又把这条消息消费一遍。
-消费者端手动提交
-如果先消费消息，再更新offset位置，导致消息重复消费。
-消费者端自动提交
-设置offset为自动提交，关闭kafka时，如果在close之前，调用 consumer.unsubscribe() 则有可能部分offset没提交，下次重启会重复消费。
-生产者端
-生产者因为业务问题导致的宕机，在重启之后可能数据会重发
-
--->
-&emsp; 有遇到过消息重复消费的情况吗？是怎么解决的？  
-&emsp; 有，发生过两次重复消费的情况。发现用户的"xx"计数偶现大于实际情况，排查日志发现大概意思是心跳检测异常导致 commit 还没有来得及提交，对应的 Partition 被重新分配给其他的 Consumer 消费导致消息被重复消费。   
-
-1. 解决方式 1：调整降低消费端的消费速率、提高心跳检测周期。  
-&emsp; 通过方案 1 调整参数后，还是会出现重复消费的情况，只是出现的概率降低了。  
-2. 解决方案 2：在业务层增加 Redis，在一定周期内，相同 key 对应的消息认为是同一条，如果 Redis 内不存在则正常消费消费，反之直接抛弃。  
-
-## 1.6. 幂等和事务
+## 1.4. 幂等和事务
 [kafka幂等和事务](/docs/microService/mq/kafka/kafkaTraction.md)
 
+## 1.5. 如何让Kafka的消息有序？  
+&emsp; Kafka无法做到消息全局有序，只能做到 Partition 维度的有序。所以如果想要消息有序，就需要从Partition维度入手。一般有两种解决方案。
 
-## 1.7. ★★★无消息丢失配置  
-1. 采用同步发送，但是性能会很差，并不推荐在实际场景中使用。因此最好能有一份配置，既使用异步方式还能有效地避免数据丢失，即使出现producer崩溃的情况也不会有问题。 
-2. **做producer端的无消息丢失配置**  
-    * producer端配置
-
-            max.block.ms=3000   控制block的时长,当buffer空间不够或者metadata丢失时产生block
-            acks=all or -1   所有follower都响应了发送消息才能认为提交成功
-            retries=Integer.MAX_VALUE   producer开启无限重试，只会重试那些可恢复的异常情况
-            max.in.flight.requests.per.connection=1   限制了producer在单个broker连接上能够发送的未响应请求的数量，为了防止topic同分区下的消息乱序问题
-            使用带回调机制的send发送消息，即KafkaProducer.send(record,callback)   
-            会返回消息发送的结果信息Callback的失败处理逻辑中显式地立即关闭producer，使用close(0)。目的是为了处理消息的乱序问题，将不允许将未完成的消息发送出去
-
-    * broker端配置
-
-            unclean.leader.election.enable=false   不允许非ISR中的副本被选举为leader
-            replication.factor=3   强调一定要使用多个副本来保存分区的消息
-            min.insync.replicas=2   控制某条消息至少被写入到ISR中的多少个副本才算成功，只有在producer端的acks设置成all或-1时，这个参数才有意义
-            确保replication.factor>min.insync.replicas   
-
-    * consumer端配置
-
-            enable.auto.commit=false   设置不能自动提交位移，需要用户手动提交位移
+* 单 Partition，单Consumer。通过此种方案强制消息全部写入同一个Partition内，但是同时也牺牲掉了Kafka高吞吐的特性了，所以一般不会采用此方案。  
+* **多Partition，多Consumer，指定key使用特定的Hash策略，使其消息落入指定的Partition 中，从而保证相同的key对应的消息是有序的。** 此方案也是有一些弊端，比如当Partition个数发生变化时，相同的 key 对应的消息会落入到其他的 Partition 上，所以一旦确定 Partition 个数后就不能在修改 Partition 个数了。  

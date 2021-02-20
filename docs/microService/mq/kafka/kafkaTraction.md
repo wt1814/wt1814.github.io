@@ -1,31 +1,32 @@
 <!-- TOC -->
 
 - [1. kafka幂等和事务](#1-kafka幂等和事务)
-    - [1.1. 幂等性](#11-幂等性)
-        - [1.1.1. 幂等性介绍](#111-幂等性介绍)
-        - [1.1.2. 幂等性实现原理](#112-幂等性实现原理)
-            - [1.1.2.1. 幂等性引入之前的问题？](#1121-幂等性引入之前的问题)
-            - [1.1.2.2. 幂等性引入之后解决了什么问题？](#1122-幂等性引入之后解决了什么问题)
-            - [1.1.2.3. ProducerID是如何生成的？](#1123-producerid是如何生成的)
-        - [1.1.3. 幂等性的应用实例](#113-幂等性的应用实例)
-    - [1.2. 事务性](#12-事务性)
-        - [1.2.1. Kafka事务概述](#121-kafka事务概述)
-            - [1.2.1.1. kafka事务简介](#1211-kafka事务简介)
-            - [1.2.1.2. Kafka事务特性](#1212-kafka事务特性)
-                - [1.2.1.2.1. 原子写](#12121-原子写)
-                - [1.2.1.2.2. 拒绝僵尸实例](#12122-拒绝僵尸实例)
-                - [1.2.1.2.3. 读事务消息](#12123-读事务消息)
-            - [1.2.1.3. Kafka事务使用场景](#1213-kafka事务使用场景)
-        - [1.2.2. 幂等性和事务性的关系](#122-幂等性和事务性的关系)
-        - [1.2.3. ~~kafka事务原理~~](#123-kafka事务原理)
-            - [1.2.3.1. 基本概念](#1231-基本概念)
-            - [1.2.3.2. 事务流程](#1232-事务流程)
-        - [1.2.4. kafka事务使用](#124-kafka事务使用)
-            - [1.2.4.1. 事务相关配置](#1241-事务相关配置)
-            - [1.2.4.2. Java API](#1242-java-api)
-                - [1.2.4.2.1. “只有写”应用程序示例](#12421-只有写应用程序示例)
-                - [1.2.4.2.2. 消费-生产并存（consume-Transform-Produce）](#12422-消费-生产并存consume-transform-produce)
-        - [1.2.5. 总结](#125-总结)
+    - [1.1. 消息重复消费](#11-消息重复消费)
+    - [1.2. 幂等性](#12-幂等性)
+        - [1.2.1. 幂等性介绍](#121-幂等性介绍)
+        - [1.2.2. 幂等性实现原理](#122-幂等性实现原理)
+            - [1.2.2.1. 幂等性引入之前的问题？](#1221-幂等性引入之前的问题)
+            - [1.2.2.2. 幂等性引入之后解决了什么问题？](#1222-幂等性引入之后解决了什么问题)
+            - [1.2.2.3. ProducerID是如何生成的？](#1223-producerid是如何生成的)
+        - [1.2.3. 幂等性的应用实例](#123-幂等性的应用实例)
+    - [1.3. 事务性](#13-事务性)
+        - [1.3.1. Kafka事务概述](#131-kafka事务概述)
+            - [1.3.1.1. kafka事务简介](#1311-kafka事务简介)
+            - [1.3.1.2. Kafka事务特性](#1312-kafka事务特性)
+                - [1.3.1.2.1. 原子写](#13121-原子写)
+                - [1.3.1.2.2. 拒绝僵尸实例](#13122-拒绝僵尸实例)
+                - [1.3.1.2.3. 读事务消息](#13123-读事务消息)
+            - [1.3.1.3. Kafka事务使用场景](#1313-kafka事务使用场景)
+        - [1.3.2. 幂等性和事务性的关系](#132-幂等性和事务性的关系)
+        - [1.3.3. ~~kafka事务原理~~](#133-kafka事务原理)
+            - [1.3.3.1. 基本概念](#1331-基本概念)
+            - [1.3.3.2. 事务流程](#1332-事务流程)
+        - [1.3.4. kafka事务使用](#134-kafka事务使用)
+            - [1.3.4.1. 事务相关配置](#1341-事务相关配置)
+            - [1.3.4.2. Java API](#1342-java-api)
+                - [1.3.4.2.1. “只有写”应用程序示例](#13421-只有写应用程序示例)
+                - [1.3.4.2.2. 消费-生产并存（consume-Transform-Produce）](#13422-消费-生产并存consume-transform-produce)
+        - [1.3.5. 总结](#135-总结)
 
 <!-- /TOC -->
 
@@ -36,8 +37,29 @@ Kafka的幂等性和事务是比较重要的特性，特别是在数据丢失和
 <!-- 
 https://blog.csdn.net/BeiisBei/article/details/104737298
 -->
-## 1.1. 幂等性   
-### 1.1.1. 幂等性介绍
+## 1.1. 消息重复消费
+<!-- 
+
+有哪些情形会造成重复消费？
+Rebalance
+一个consumer正在消费一个分区的一条消息，还没有消费完，发生了rebalance(加入了一个consumer)，从而导致这条消息没有消费成功，rebalance后，另一个consumer又把这条消息消费一遍。
+消费者端手动提交
+如果先消费消息，再更新offset位置，导致消息重复消费。
+消费者端自动提交
+设置offset为自动提交，关闭kafka时，如果在close之前，调用 consumer.unsubscribe() 则有可能部分offset没提交，下次重启会重复消费。
+生产者端
+生产者因为业务问题导致的宕机，在重启之后可能数据会重发
+
+-->
+&emsp; 有遇到过消息重复消费的情况吗？是怎么解决的？  
+&emsp; 有，发生过两次重复消费的情况。发现用户的"xx"计数偶现大于实际情况，排查日志发现大概意思是心跳检测异常导致 commit 还没有来得及提交，对应的 Partition 被重新分配给其他的 Consumer 消费导致消息被重复消费。   
+
+1. 解决方式 1：调整降低消费端的消费速率、提高心跳检测周期。  
+&emsp; 通过方案 1 调整参数后，还是会出现重复消费的情况，只是出现的概率降低了。  
+2. 解决方案 2：在业务层增加 Redis，在一定周期内，相同 key 对应的消息认为是同一条，如果 Redis 内不存在则正常消费消费，反之直接抛弃。  
+
+## 1.2. 幂等性   
+### 1.2.1. 幂等性介绍
 &emsp; **幂等又称为exactly once（精确传递一次。消息被处理且只会被处理一次。不丢失不重复就一次）。**Kafka在0.11.0.0之前的版本中只支持At Least Once和At Most Once语义，尚不支持Exactly Once语义。  
 &emsp; 但是在很多要求严格的场景下，如使用Kafka处理交易数据，Exactly Once语义是必须的。可以通过让下游系统具有幂等性来配合Kafka的At Least Once语义来间接实现Exactly Once。但是：  
 
@@ -53,7 +75,7 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 &emsp; 幂等性结合At Least Once语义，就构成了Kafka的Exactily Once语义，即：At Least Once + 幂等性 = Exactly Once。  
 -->
   
-### 1.1.2. 幂等性实现原理  
+### 1.2.2. 幂等性实现原理  
 &emsp; **<font color = "lime">Kafka幂等是针对生产者角度的特性。幂等可以保证生产者发送的消息，不会丢失，而且不会重复。</font>** **<font color = "red">实现幂等的关键点就是服务端可以区分请求是否重复，过滤掉重复的请求。</font>** 要区分请求是否重复的有两点：  
 
 * 唯一标识：要想区分请求是否重复，请求中就得有唯一标识。例如支付请求中，订单号就是唯一标识  
@@ -64,21 +86,21 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 * ProducerID：在每个新的Producer初始化时，会被分配一个唯一的ProducerID，这个ProducerID对客户端使用者是不可见的。  
 * SequenceNumber：对于每个ProducerID，Producer发送数据的每个Topic和Partition都对应一个从0开始单调递增的SequenceNumber值。  
 
-#### 1.1.2.1. 幂等性引入之前的问题？  
+#### 1.2.2.1. 幂等性引入之前的问题？  
 &emsp; Kafka在引入幂等性之前，Producer向Broker发送消息，然后Broker将消息追加到消息流中后给Producer返回Ack信号值。实现流程如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-100.png)  
 &emsp; 上图的实现流程是一种理想状态下的消息发送情况，但是实际情况中，会出现各种不确定的因素，比如在Producer在发送给Broker的时候出现网络异常。比如以下这种异常情况的出现：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-101.png)  
 &emsp; 上图这种情况，当Producer第一次发送消息给Broker时，Broker将消息(x2,y2)追加到了消息流中，但是在返回Ack信号给Producer时失败了（比如网络异常） 。此时，Producer端触发重试机制，将消息(x2,y2)重新发送给Broker，Broker接收到消息后，再次将该消息追加到消息流中，然后成功返回Ack信号给Producer。这样下来，消息流中就被重复追加了两条相同的(x2,y2)的消息。  
 
-#### 1.1.2.2. 幂等性引入之后解决了什么问题？  
+#### 1.2.2.2. 幂等性引入之后解决了什么问题？  
 &emsp; 面对这样的问题，Kafka引入了幂等性。那么幂等性是如何解决这类重复发送消息的问题的呢？下面先来看看流程图：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-102.png)  
 &emsp; 同样，这是一种理想状态下的发送流程。实际情况下，会有很多不确定的因素，比如Broker在发送Ack信号给Producer时出现网络异常，导致发送失败。异常情况如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-103.png)  
 &emsp; 当Producer发送消息(x2,y2)给Broker时，Broker接收到消息并将其追加到消息流中。此时，Broker返回Ack信号给Producer时，发生异常导致Producer接收Ack信号失败。对于Producer来说，会触发重试机制，将消息(x2,y2)再次发送，但是，由于引入了幂等性，在每条消息中附带了PID（ProducerID）和SequenceNumber。相同的PID和SequenceNumber发送给Broker，而之前Broker缓存过之前发送的相同的消息，那么在消息流中的消息就只有一条(x2,y2)，不会出现重复发送的情况。  
 
-#### 1.1.2.3. ProducerID是如何生成的？  
+#### 1.2.2.3. ProducerID是如何生成的？  
 <!-- 
 &emsp; 客户端在生成Producer时，会实例化如下代码：
 
@@ -118,7 +140,7 @@ private void maybeWaitForPid() {
 }
 ```
 
-### 1.1.3. 幂等性的应用实例  
+### 1.2.3. 幂等性的应用实例  
 &emsp; **开启幂等性：** 要启用幂等性，只需要将Producer的参数中enable.idompotence设置为true即可。此时会默认把acks设置为all，所以不需要再设置acks属性。  
 &emsp; **编码示例：**  
 
@@ -145,26 +167,26 @@ private Producer buildIdempotProducer(){
 }
 ```
 
-## 1.2. 事务性  
-### 1.2.1. Kafka事务概述
-#### 1.2.1.1. kafka事务简介  
+## 1.3. 事务性  
+### 1.3.1. Kafka事务概述
+#### 1.3.1.1. kafka事务简介  
 &emsp; **Kafka的幂等性，只能保证一条记录的在分区发送的原子性，但是如果要保证多条记录（多分区）之间的完整性，这个时候就需要开启kafk的事务操作。**  
 &emsp; 在Kafka0.11.0.0除了引入的幂等性的概念，同时也引入了事务的概念。 **Kafka中的事务与数据库的事务类似，Kafka中的事务属性是指一系列的Producer生产消息和消费消息提交Offsets的操作在一个事务中，即原子性操作。对应的结果是同时成功或者同时失败。**  
 
-#### 1.2.1.2. Kafka事务特性  
+#### 1.3.1.2. Kafka事务特性  
 &emsp; Kafka的事务特性本质上代表了三个功能：原子写操作，拒绝僵尸实例（Zombie fencing）和读事务消息。  
 
-##### 1.2.1.2.1. 原子写
+##### 1.3.1.2.1. 原子写
 &emsp; Kafka的事务特性本质上是支持了Kafka跨分区和Topic的原子写操作。在同一个事务中的消息要么同时写入成功，要么同时写入失败。Kafka中的Offset信息存储在一个名为_consumed_offsets的Topic中，因此read-process-write模式，除了向目标Topic写入消息，还会向_consumed_offsets中写入已经消费的Offsets数据。因此read-process-write本质上就是跨分区和Topic的原子写操作。Kafka的事务特性就是要确保跨分区的多个写操作的原子性。   
 
-##### 1.2.1.2.2. 拒绝僵尸实例
+##### 1.3.1.2.2. 拒绝僵尸实例
 &emsp; 在分布式系统中，一个实例的宕机或失联，集群往往会自动启动一个新的实例来代替它的工作。此时若原实例恢复了，那么集群中就产生了两个具有相同职责的实例，此时前一个instance就被称为“僵尸实例（Zombie Instance）”。在Kafka中，两个相同的producer同时处理消息并生产出重复的消息（read-process-write模式），这样就严重违反了Exactly Once Processing的语义。这就是僵尸实例问题。  
 &emsp; Kafka事务特性通过transaction-id属性来解决僵尸实例问题。所有具有相同transaction-id的Producer都会被分配相同的pid，同时每一个Producer还会被分配一个递增的epoch。Kafka收到事务提交请求时，如果检查当前事务提交者的epoch不是最新的，那么就会拒绝该Producer的请求。从而达成拒绝僵尸实例的目标。
 
-##### 1.2.1.2.3. 读事务消息  
+##### 1.3.1.2.3. 读事务消息  
 &emsp; 为了保证事务特性，Consumer如果设置了isolation.level = read_committed，那么它只会读取已经提交了的消息。在Producer成功提交事务后，Kafka会将所有该事务中的消息的Transaction Marker从uncommitted标记为committed状态，从而所有的Consumer都能够消费。  
 
-#### 1.2.1.3. Kafka事务使用场景  
+#### 1.3.1.3. Kafka事务使用场景  
 &emsp; Kafka中的事务特性主要用于以下两种场景：  
 
 * 生产者发送多条消息可以封装在一个事务中，形成一个原子操作。多条消息要么都发送成功，要么都发送失败。  
@@ -183,7 +205,7 @@ private Producer buildIdempotProducer(){
 
 -->
 
-### 1.2.2. 幂等性和事务性的关系  
+### 1.3.2. 幂等性和事务性的关系  
 &emsp; **两者关系**：事务属性实现前提是幂等性，即在配置事务属性transaction id时，必须还得配置幂等性；但是幂等性是可以独立使用的，不需要依赖事务属性。  
 
 * 幂等性引入了Porducer ID  
@@ -200,7 +222,7 @@ private Producer buildIdempotProducer(){
 &emsp; 一个app有一个tid，同一个应用的不同实例PID是一样的，只是epoch的值不同。如：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-82.png)  
 s
-### 1.2.3. ~~kafka事务原理~~
+### 1.3.3. ~~kafka事务原理~~
 <!-- 
 事务工作原理
 https://www.cnblogs.com/wangzhuxing/p/10125437.html#_label4
@@ -208,7 +230,7 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 https://www.cnblogs.com/middleware/p/9477133.html
 -->
 
-#### 1.2.3.1. 基本概念
+#### 1.3.3.1. 基本概念
 &emsp; 为了支持事务，Kafka 0.11.0版本引入以下概念：  
 1. 事务协调者：类似于消费组负载均衡的协调者，每一个实现事务的生产端都被分配到一个事务协调者(Transaction Coordinator)。
 2. 引入一个内部Kafka Topic作为事务Log：类似于消费管理Offset的Topic，事务Topic本身也是持久化的，日志信息记录事务状态信息，由事务协调者写入。
@@ -222,7 +244,7 @@ https://www.cnblogs.com/middleware/p/9477133.html
 3. 引入控制消息(Control Messages)：这些消息是客户端产生的并写入到主题的特殊消息，但对于使用者来说不可见。它们是用来让broker告知消费者之前拉取的消息是否被原子性提交。
 -->
 
-#### 1.2.3.2. 事务流程  
+#### 1.3.3.2. 事务流程  
 <!-- 
 https://www.cnblogs.com/middleware/p/9477133.html
 -->
@@ -366,12 +388,12 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
 另外，如果事务特性未开启，InitPidRequest可发送至任意Broker，并且会得到一个全新的唯一的PID。该Producer将只能使用幂等特性以及单一Session内的事务特性，而不能使用跨Session的事务特性。
 -->
 
-### 1.2.4. kafka事务使用  
+### 1.3.4. kafka事务使用  
 &emsp; 通常Kafka的事务分为 生产者事务Only、消费者&生产者事务。一般来说默认消费者消费的消息的级别是read_uncommited数据，这有可能读取到事务失败的数据，所有在开启生产者事务之后，需要用户设置消费者的事务隔离级别。    
 &emsp; isolation.level	=  read_uncommitted 默认。该选项有两个值read_committed|read_uncommitted，如果开始事务控制，消费端必须将事务的隔离级别设置为read_committed  
 &emsp; 开启的生产者事务的时候，只需要指定transactional.id属性即可，一旦开启了事务，默认生产者就已经开启了幂等性。但是要求"transactional.id"的取值必须是唯一的，同一时刻只能有一个"transactional.id"存储在，其他的将会被关闭。  
 
-#### 1.2.4.1. 事务相关配置  
+#### 1.3.4.1. 事务相关配置  
 1. Broker configs
     1. transactional.id.timeout.ms：在ms中，事务协调器在生产者TransactionalId提前过期之前等待的最长时间，并且没有从该生产者TransactionalId接收到任何事务状态更新。默认是604800000(7天)。这允许每周一次的生产者作业维护它们的id
     2. max.transaction.timeout.ms：事务允许的最大超时。如果客户端请求的事务时间超过此时间，broke将在InitPidRequest中返回InvalidTransactionTimeout错误。这可以防止客户机超时过大，从而导致用户无法从事务中包含的主题读取内容。  
@@ -393,7 +415,7 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
     &emsp; read_uncommitted:以偏移顺序使用已提交和未提交的消息。  
     &emsp; read_committed:仅以偏移量顺序使用非事务性消息或已提交事务性消息。为了维护偏移排序，这个设置意味着我们必须在使用者中缓冲消息，直到看到给定事务中的所有消息。  
 
-#### 1.2.4.2. Java API
+#### 1.3.4.2. Java API
 <!-- 
 ~~
 https://blog.csdn.net/mlljava1111/article/details/81180351
@@ -416,7 +438,7 @@ void abortTransaction() throws ProducerFencedException;
 
 &emsp; 消费者代码，将配置中的自动提交属性（auto.commit）进行关闭，而且在代码里面也不能使用手动提交commitSync( )或者commitAsync( )。  
 
-##### 1.2.4.2.1. “只有写”应用程序示例  
+##### 1.3.4.2.1. “只有写”应用程序示例  
 
 ```java
 package com.example.demo.transaction;
@@ -465,7 +487,7 @@ public class TransactionProducer {
 }
 ```
 
-##### 1.2.4.2.2. 消费-生产并存（consume-Transform-Produce）  
+##### 1.3.4.2.2. 消费-生产并存（consume-Transform-Produce）  
 &emsp; 在一个事务中，既有生产消息操作又有消费消息操作，即常说的Consume-tansform-produce模式。如下实例代码  
 
 ```java
@@ -557,7 +579,7 @@ public class consumeTransformProduce {
 }
 ```
 
-### 1.2.5. 总结  
+### 1.3.5. 总结  
 * PID与Sequence Number的引入实现了写操作的幂等性
 * 写操作的幂等性结合At Least Once语义实现了单一Session内的Exactly Once语义
 * Transaction Marker与PID提供了识别消息是否应该被读取的能力，从而实现了事务的隔离性
