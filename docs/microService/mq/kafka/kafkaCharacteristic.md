@@ -84,5 +84,5 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 ## 1.5. 如何让Kafka的消息有序？  
 &emsp; Kafka无法做到消息全局有序，只能做到 Partition 维度的有序。所以如果想要消息有序，就需要从Partition维度入手。一般有两种解决方案。
 
-* 单 Partition，单Consumer。通过此种方案强制消息全部写入同一个Partition内，但是同时也牺牲掉了Kafka高吞吐的特性了，所以一般不会采用此方案。  
-* **多Partition，多Consumer，指定key使用特定的Hash策略，使其消息落入指定的Partition 中，从而保证相同的key对应的消息是有序的。** 此方案也是有一些弊端，比如当Partition个数发生变化时，相同的 key 对应的消息会落入到其他的 Partition 上，所以一旦确定 Partition 个数后就不能在修改 Partition 个数了。  
+* 单Partition，单Consumer。通过此种方案强制消息全部写入同一个Partition内，但是同时也牺牲掉了Kafka高吞吐的特性了，所以一般不会采用此方案。  
+* **多Partition，多Consumer，指定key使用特定的Hash策略，使其消息落入指定的Partition 中，从而保证相同的key对应的消息是有序的。** 此方案也是有一些弊端，比如当Partition个数发生变化时，相同的key对应的消息会落入到其他的Partition上，所以一旦确定Partition个数后就不能在修改Partition个数了。  
