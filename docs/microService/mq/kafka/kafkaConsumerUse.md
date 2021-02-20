@@ -33,16 +33,15 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 
-1. 消费者/消费者组/费者组重平衡
+1. 消费者/消费者组/费者组重平衡  
     &emsp; **消费者组重平衡：**
+    &emsp; **<font color = "red">假设组内某个实例挂掉了，Kafka能够自动检测到，然后把这个Failed实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。</font>**  
+    &emsp; 重平衡流程：  
     2. **<font color = "red">消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；</font>**  
     3. **<font color = "red">当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，</font>**  
 2. 消费者位移管理  
-    &emsp; **消费者位移提交：** Kafka消费者通过自动提交/手动提交位移信息到位移主题(__consumer_offsets)。  
-
+    &emsp; **<font color = "red">位移提交有两种方式：</font><font color = "lime">自动提交、手动提交。</font>**  
 3. 怎样消费  
-
-
 
 
 # 1. kafka消费者开发
@@ -109,7 +108,7 @@ public class ConsumerDemo {
 * 消费者组(consumer group)：由多个消费者实例构成一个整体进行消费
 * 独立消费者(standalone consumer)：单独执行消费操作
 
-&emsp; **<font color = "blue">Kafka消费端确保一个Partition在一个消费者组内只能被一个消费者消费。</font>   
+&emsp; **<font color = "blue">Kafka消费端确保一个Partition在一个消费者组内只能被一个消费者消费。</font>**   
 
 * 在同一个消费者组内，一个Partition只能被一个消费者消费。
 * 在同一个消费者组内，所有消费者组合起来必定可以消费一个Topic下的所有 Partition。
@@ -220,13 +219,13 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 &emsp; 心跳机制都有阈值和频率的概念。阈值是 Coordinator 最长能接受的心跳间隔，默认10s，即超过10s还没收到心跳才认定consumer死亡，从而将其从Group中移除，然后开启新一轮Rebalance。频率是指Consumer发送心跳的频率。它俩对应的参数分为叫做session.timeout.ms，heartbeat.interval.ms，因此需要合理的设置这两个参数。  
 &emsp; 千万不要无脑的觉得把频率调高点，阈值也调高点，比如1s 发一次心跳，并设置超过 1 分钟才可以认定为死亡，就完美避免了未能及时收到心跳请求而误认为死亡。发送心跳的目的就是为了及时通知协调者自己是否健康。所以session.timeout.ms这个参数，不宜最长。heartbeat.interval.ms这个值也不宜过短，频繁地发送心跳请求会额外消耗带宽资源。  
 
-* 推荐设置 session.timeout.ms = 6s。
-* 推荐设置 heartbeat.interval.ms = 2s。
+        推荐设置 session.timeout.ms = 6s。
+        推荐设置 heartbeat.interval.ms = 2s。
 
-&emsp; 保证Consumer实例在被判定为“dead”之前，能够发送至少 3 轮的心跳请求，因此上面推荐的配置是一个三倍的关系。  
+&emsp; 保证Consumer实例在被判定为“dead”之前，能够发送至少3轮的心跳请求，因此上面推荐的配置是一个三倍的关系。  
 
 2. 消费时间过长    
-&emsp; Consumer因为处理消息的时间太长而引发Rebalance 。
+&emsp; Consumer因为处理消息的时间太长而引发Rebalance。  
 &emsp; Consumer端有一个参数，用于控制Consumer实际消费能力对Rebalance的影响，即 max.poll.interval.ms 参数。它限定了Consumer 端应用程序两次调用 poll 方法的最大时间间隔。它的默认值是 5 分钟，表示Consumer 程序如果在 5 分钟之内无法消费完 poll 方法返回的消息，那么 Consumer 会主动发起“离开组”的请求，Coordinator 也会开启新一轮 Rebalance。因此你最好将该参数值设置得大一点，比下游最大处理时间稍长一点。还可以配置一个参数max.poll.records，它代表批量消费的 size，如果一次性 poll 的数据量过多，导致一次 poll 的处理无法在指定时间内完成，则会 Rebalance。因此，需要预估你的业务处理时间，并正确的设置这两个参数。  
 
 ----------
