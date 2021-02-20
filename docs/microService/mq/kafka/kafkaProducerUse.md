@@ -14,7 +14,6 @@
         - [1.3.2. Acks & Retries](#132-acks--retries)
         - [1.3.3. 批量发送](#133-批量发送)
         - [1.3.4. 多线程处理](#134-多线程处理)
-    - [1.4. ★★★无消息丢失配置](#14-★★★无消息丢失配置)
     - [1.5. 消息压缩](#15-消息压缩)
 
 <!-- /TOC -->
@@ -178,29 +177,6 @@ https://blog.csdn.net/lwglwg32719/article/details/86510029
 |多 KafkaProducer 实例|	每个线程维护自己专属的 KafkaProducer 实例|①每个用户线程拥有专属的 KafkaProducer 实例、缓冲 区空间及一组对应的配置参数，可以进行细粒度的调 优；</br>②单个 KafkaProducer崩溃不会影响其他producer线程工作 |需要较大的内存分配开销|
 
 &emsp; 如果是对分区数不多的Kafka集群而言，比较推荐使用第一种方法，即在多个producer用户线程中共享一个KafkaProducer实例。若是对那些拥有超多分区的集群而言，釆用第二种方法具有较高的可控性，方便producer的后续管理。  
-
-## 1.4. ★★★无消息丢失配置  
-1. 采用同步发送，但是性能会很差，并不推荐在实际场景中使用。因此最好能有一份配置，既使用异步方式还能有效地避免数据丢失，即使出现producer崩溃的情况也不会有问题。 
-2. **做producer端的无消息丢失配置**  
-    * producer端配置
-
-            max.block.ms=3000   控制block的时长,当buffer空间不够或者metadata丢失时产生block
-            acks=all or -1   所有follower都响应了发送消息才能认为提交成功
-            retries=Integer.MAX_VALUE   producer开启无限重试，只会重试那些可恢复的异常情况
-            max.in.flight.requests.per.connection=1   限制了producer在单个broker连接上能够发送的未响应请求的数量，为了防止topic同分区下的消息乱序问题
-            使用带回调机制的send发送消息，即KafkaProducer.send(record,callback)   
-            会返回消息发送的结果信息Callback的失败处理逻辑中显式地立即关闭producer，使用close(0)。目的是为了处理消息的乱序问题，将不允许将未完成的消息发送出去
-
-    * broker端配置
-
-            unclean.leader.election.enable=false   不允许非ISR中的副本被选举为leader
-            replication.factor=3   强调一定要使用多个副本来保存分区的消息
-            min.insync.replicas=2   控制某条消息至少被写入到ISR中的多少个副本才算成功，只有在producer端的acks设置成all或-1时，这个参数才有意义
-            确保replication.factor>min.insync.replicas   
-
-    * consumer端配置
-
-            enable.auto.commit=false   设置不能自动提交位移，需要用户手动提交位移
 
 ## 1.5. 消息压缩  
 &emsp; 数据压缩显著地降低了磁盘占用或带宽占用，从而有效地提升了I/O密集型应用的性能。不过引用压缩同时会消耗额外的CPU时钟周期，因此压缩是I/O性能和CPU资源的平衡。  

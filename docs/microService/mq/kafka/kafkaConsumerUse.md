@@ -6,35 +6,43 @@
         - [1.1.1. consumer程序实例](#111-consumer程序实例)
         - [1.1.2. consumer配置](#112-consumer配置)
     - [1.2. 消费者与消费组](#12-消费者与消费组)
-    - [1.3. ※※※消费者组重平衡(rebalance)](#13-※※※消费者组重平衡rebalance)
-        - [1.3.1. 重平衡简介](#131-重平衡简介)
-        - [1.3.2. 重平衡触发条件](#132-重平衡触发条件)
-        - [1.3.3. 重平衡流程](#133-重平衡流程)
-            - [1.3.3.1. 协调者](#1331-协调者)
-            - [1.3.3.2. 交互方式](#1332-交互方式)
-            - [1.3.3.3. 流程](#1333-流程)
-            - [1.3.3.4. 分配策略](#1334-分配策略)
-        - [1.3.4. 重平衡劣势](#134-重平衡劣势)
-        - [1.3.5. 如何避免重平衡？](#135-如何避免重平衡)
-    - [1.4. ※※※消费者位移(offset)管理](#14-※※※消费者位移offset管理)
-        - [1.4.1. 位移提交方式](#141-位移提交方式)
-        - [1.4.2. 位移主题(__consumer_offsets) ，(位移提交地址)](#142-位移主题__consumer_offsets-位移提交地址)
-        - [1.4.3. 消费组消费进度查看的命令](#143-消费组消费进度查看的命令)
-    - [1.5. 订阅topic](#15-订阅topic)
-        - [1.5.1. 订阅topic列表](#151-订阅topic列表)
-        - [1.5.2. 基于正则表达订阅topic](#152-基于正则表达订阅topic)
-    - [1.6. 消息轮询](#16-消息轮询)
-    - [1.7. 消费语义](#17-消费语义)
-    - [1.8. 多线程消费实例](#18-多线程消费实例)
+        - [1.2.1. 消费者与消费组简介](#121-消费者与消费组简介)
+        - [1.2.2. ※※※消费者组重平衡(rebalance)](#122-※※※消费者组重平衡rebalance)
+            - [1.2.2.1. 重平衡简介](#1221-重平衡简介)
+            - [1.2.2.2. 重平衡触发条件](#1222-重平衡触发条件)
+            - [1.2.2.3. 重平衡流程](#1223-重平衡流程)
+                - [1.2.2.3.1. 协调者](#12231-协调者)
+                - [1.2.2.3.2. 交互方式](#12232-交互方式)
+                - [1.2.2.3.3. 流程](#12233-流程)
+                - [1.2.2.3.4. 分配策略](#12234-分配策略)
+            - [1.2.2.4. 重平衡劣势](#1224-重平衡劣势)
+            - [1.2.2.5. 如何避免重平衡？](#1225-如何避免重平衡)
+    - [1.3. ※※※消费者位移(offset)管理](#13-※※※消费者位移offset管理)
+        - [1.3.1. 位移提交方式](#131-位移提交方式)
+        - [1.3.2. 位移主题(__consumer_offsets) ，(位移提交地址)](#132-位移主题__consumer_offsets-位移提交地址)
+        - [1.3.3. 消费组消费进度查看的命令](#133-消费组消费进度查看的命令)
+    - [1.4. 订阅topic](#14-订阅topic)
+        - [1.4.1. 订阅topic列表](#141-订阅topic列表)
+        - [1.4.2. 基于正则表达订阅topic](#142-基于正则表达订阅topic)
+    - [1.5. 消息轮询](#15-消息轮询)
+    - [1.6. 消费语义](#16-消费语义)
+    - [1.7. 多线程消费实例](#17-多线程消费实例)
 
 <!-- /TOC -->
 
-&emsp; 总结：  
-&emsp; **消费者组重平衡：**
-2. **<font color = "red">消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；</font>**  
-3. **<font color = "red">当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，</font>**
+&emsp; **<font color = "red">总结：</font>**  
 
-&emsp; **消费者位移提交：** Kafka消费者通过自动提交/手动提交位移信息到位移主题(__consumer_offsets)。  
+1. 消费者/消费者组/费者组重平衡
+    &emsp; **消费者组重平衡：**
+    2. **<font color = "red">消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；</font>**  
+    3. **<font color = "red">当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，</font>**  
+2. 消费者位移管理  
+    &emsp; **消费者位移提交：** Kafka消费者通过自动提交/手动提交位移信息到位移主题(__consumer_offsets)。  
+
+3. 怎样消费  
+
+
+
 
 # 1. kafka消费者开发
 &emsp; **<font color = "lime">参考《kafka实战》</font>**  
@@ -94,6 +102,7 @@ public class ConsumerDemo {
 &emsp; Kafka为Java消费者提供的[配置](https://kafka.apachecn.org/documentation.html#configuration)如下：  
 
 ## 1.2. 消费者与消费组  
+### 1.2.1. 消费者与消费组简介
 &emsp; **<font color = "red">kafka消费者分为两类：</font>**  
 
 * 消费者组(consumer group)：由多个消费者实例构成一个整体进行消费
@@ -131,19 +140,19 @@ public class ConsumerDemo {
 * 实现基于发布/订阅模型：consumer实例都属于不同group，这样kafka消息会被广播到所有consumer实例上。  
 -->
 
-## 1.3. ※※※消费者组重平衡(rebalance)
+### 1.2.2. ※※※消费者组重平衡(rebalance)
 <!-- 
 消费者组重平衡全流程解析
 https://www.kancloud.cn/nicefo71/kafka/1473378
 -->
-### 1.3.1. 重平衡简介  
+#### 1.2.2.1. 重平衡简介  
 &emsp; **什么是重平衡？**  
 &emsp; **<font color = "red">假设组内某个实例挂掉了，Kafka能够自动检测到，然后把这个Failed实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。</font>** 可以保障高可用性。  
 &emsp; 除此之外，它协调着消费组中的消费者分配和订阅topic分区，比如某个Group下有20个Consumer实例，它订阅了一个具有100个分区的Topic。正常情况下，Kafka平均会为每个Consumer分配5个分区。这个分配的过程也叫 Rebalance。再比如此刻新增了消费者，得分一些分区给它吧，这样才可以负载均衡以及利用好资源，那么这个过程也是Rebalance来完成的。  
 
 &emsp; rebalance本质上是一组协议，它规定了一个consumer group是如何达成一致来分配订阅topic的所有分区的。在Rebalance过程中，所有Consumer实例共同参与，在协调者组件（Coordinator，专门为Consumer Group服务，负责为Group执行Rebalance以及提供位移管理和组成员管理）的帮助下，完成订阅主题分区的分配。  
 
-### 1.3.2. 重平衡触发条件  
+#### 1.2.2.2. 重平衡触发条件  
 &emsp; **消费者组rebalance触发的条件，满足其一即可：**  
 1. 组成员发生变更，比如新consumer加入组，或已有consumer主动离开组，再或是已有consumer崩溃时则触rebalance。（consumer崩溃的情况，有可能是consumer进程“挂掉”或consumer进程所在的机器宕机，也有可能是consumer无法在指定的时间内完成消息的处理。）
     * 消费组内某消费者宕机，触发 Repartition 操作，如下图所示。  
@@ -154,11 +163,11 @@ https://www.kancloud.cn/nicefo71/kafka/1473378
 3. 组订阅topic的分区数发生变更，比如使用命令行脚本增加了订阅topic的分区数。如下图所示。一般这种调整 Partition 个数的情况也是为了提高消费端消费速度的，因为当消费者个数大于等于 Partition 个数时，在增加消费者个数是没有用的（原因是：在一个消费组内，消费者:Partition = 1:N，当 N 小于 1 时，相当于消费者过剩了），所以一方面增加 Partition 个数同时增加消费者个数可以提高消费端的消费速度。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-90.png)    
 
-### 1.3.3. 重平衡流程
+#### 1.2.2.3. 重平衡流程
 <!-- 
 https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 -->
-#### 1.3.3.1. 协调者
+##### 1.2.2.3.1. 协调者
 &emsp; 重均衡，将分区所属权分配给消费者。因此需要和所有消费者通信，这就需要引进一个协调者的概念，由协调者为消费组服务，为消费者们做好协调工作。在Kafka中，每一台Broker上都有一个协调者组件，负责组成员管理、再均衡和提交位移管理等工作。如果有N台Broker，那就有N个协调者组件，而一个消费组只需一个协调者进行服务，那该**由哪个Broker为其服务？** 确定Broker需要两步：  
 1. 计算分区号  
 &emsp;partition = Math.abs(groupID.hashCode() % offsetsTopicPartitionCount)  
@@ -168,11 +177,11 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 
 &emsp;这个算法通常用于帮助定位问题。当一个消费组出现问题时，可以先确定协调者的Broker，然后查看Broker端的日志来定位问题。  
 
-#### 1.3.3.2. 交互方式  
+##### 1.2.2.3.2. 交互方式  
 &emsp; 协调者和消费者之间是如何交互的？协调者如何掌握消费者的状态，又如何通知再均衡。这里使用了心跳机制。在消费者端有一个专门的心跳线程负责以heartbeat.interval.ms的间隔频率发送心跳给协调者，告诉协调者自己还活着。同时协调者会返回一个响应。而当需要开始再均衡时，协调者则会在响应中加入REBALANCE_IN_PROGRESS，当消费者收到响应时，便能知道再均衡要开始了。  
 &emsp; 由于再平衡的开始依赖于心跳的响应，所以heartbeat.interval.ms除了决定心跳的频率，也决定了再均衡的通知频率。  
 
-#### 1.3.3.3. 流程  
+##### 1.2.2.3.3. 流程  
 1. 当消费者收到协调者的再均衡开始通知时，需要立即提交偏移量；  
 2. **<font color = "red">消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；</font>**  
 3. **<font color = "red">当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，</font>** 同时等待rebalance.timeout.ms，在收集其他消费者的JoinGroup请求中的订阅信息后，将订阅信息放在JoinGroup响应中发送给Leader消费者，并告知它成为了Leader，同时也会发送成功入组的JoinGroup响应给其他消费者；  
@@ -181,7 +190,7 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 6. 当所有消费者收到分配方案后，就意味着再均衡的结束，可以正常开始消费工作了。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-70.png)  
 
-#### 1.3.3.4. 分配策略  
+##### 1.2.2.3.4. 分配策略  
 &emsp; kafka新版本consumer默认提供了3种分配策略，分别是range策略、round-robin策略和sticky策略。
 
 * range策略：基于范围的思想，将单个topic的所有分区按照顺序排列，然后把这些分区划分成固定大小的分区段并依次分配给每个consumer。
@@ -191,13 +200,13 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 &emsp; 如果group下所有consumer实例的订阅是相同的，那么使用round-robin会带来更公平的分配方案，否则使用range策略的效果更好。  
 &emsp; 新版本consumer默认的分配策略是range，用户根据consumer参数partition.assingment.strategy来进行配置。另外kafka支持自定义的分配策略，用户可以创建自己的consumer分配器assignor。  
 
-### 1.3.4. 重平衡劣势
+#### 1.2.2.4. 重平衡劣势
 &emsp; **重平衡的劣势：**  
 &emsp; 第一：Rebalance影响Consumer端TPS，对Consumer Group消费过程有极大的影响。类似JVM的stop the world，在Rebalance期间，Consumer会停下手头的事情，什么也干不了。  
 &emsp; 第二：Rebalance很慢。如果Group下成员很多，就一定会有这样的痛点。某真实案例：Group 下有几百个Consumer实例，Rebalance 一次要几个小时。  
 &emsp; 为什么会这么慢呢？因为目前Rebalance的设计是让所有Consumer实例共同参与，全部重新分配所有分区。其实应该尽量保持之前的分配，目前 kafka 社区也在对此进行优化，在0.11版本提出了StickyAssignor，即有粘性的分区分配策略。所谓的有粘性，是指每次Rebalance时，该策略会尽可能地保留之前的分配方案。不过不够完善，有bug，暂时不建议使用。  
 
-### 1.3.5. 如何避免重平衡？
+#### 1.2.2.5. 如何避免重平衡？
 <!-- 
 &emsp; **如何避免 Rebalances？**  
 &emsp; 由于目前一次rebalance操作的开销很大，生产环境中用户一定要结合自身业务特点仔细调优consumer参数：request.timeout.ms、max.poll.records和max.poll.interval.ms，以避免不必要的rebalance出现。  
@@ -219,13 +228,15 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 &emsp; Consumer因为处理消息的时间太长而引发Rebalance 。
 &emsp; Consumer端有一个参数，用于控制Consumer实际消费能力对Rebalance的影响，即 max.poll.interval.ms 参数。它限定了Consumer 端应用程序两次调用 poll 方法的最大时间间隔。它的默认值是 5 分钟，表示Consumer 程序如果在 5 分钟之内无法消费完 poll 方法返回的消息，那么 Consumer 会主动发起“离开组”的请求，Coordinator 也会开启新一轮 Rebalance。因此你最好将该参数值设置得大一点，比下游最大处理时间稍长一点。还可以配置一个参数max.poll.records，它代表批量消费的 size，如果一次性 poll 的数据量过多，导致一次 poll 的处理无法在指定时间内完成，则会 Rebalance。因此，需要预估你的业务处理时间，并正确的设置这两个参数。  
 
-## 1.4. ※※※消费者位移(offset)管理
+----------
+
+## 1.3. ※※※消费者位移(offset)管理
 <!-- 
 -->
 &emsp; 需要明确指出的是，这里的offset指代的是consumer端的offset，与分区日志中的offset是不同的含义。每个consumer实例都会为它消费的分区维护属于自己的位置信息来记录当前消费了多少条消息。这在Kafka中有一个特有的术语：位移(offset)。  
 &emsp; kafka consumer在内部使用一个map来保存其订阅topic所属分区的offset，key是group.id、topic和分区的元组，value就是位移值。Kafka同时还引入了检查点机制定期对位移进行持久化。  
 
-### 1.4.1. 位移提交方式  
+### 1.3.1. 位移提交方式  
 <!-- 
 https://blog.csdn.net/haogenmin/article/details/109488571
 https://www.kancloud.cn/nicefo71/kafka/1471593
@@ -242,7 +253,7 @@ https://www.kancloud.cn/nicefo71/kafka/1471593
     &emsp; commitAsync：异步手动提交，这里的异步不是开启一个线程提交，而是指不会阻塞，consumer在后续poll调用时轮询该位移提交的结果。  
     &emsp; commitSync和commitAsync都有带参数的重载方法，目的是实现更加细粒度化的位移提交策略，指定一个Map显示地告诉kafka为哪些分区提交位移，consumer.commitSync(Collections.singletonMap(partition,new OffsetAndMetadata(lastOffset + 1)))。  
 
-### 1.4.2. 位移主题(__consumer_offsets) ，(位移提交地址) 
+### 1.3.2. 位移主题(__consumer_offsets) ，(位移提交地址) 
 <!-- 
 https://www.kancloud.cn/nicefo71/kafka/1471591
 -->
@@ -252,7 +263,7 @@ https://www.kancloud.cn/nicefo71/kafka/1471591
 &emsp; 当consumer运行了一段时间之后，它必须要提交自己的位移值。consumer提交位移的主要机制是通过向所属的coordinator发送位移提交请求来实现的。**consumer把位移提交到kafka的一个内部topic（__consumer_offsets）上。**通常不能直接操作该topic，特别注意不要擅自删除或搬移该topic的日志文件。每个位移提交请求都会往内部topic（__consumer_offsets）对应分区上追加写入一条消息。  
 &emsp; 消息的key是group.id、topic和分区的元组，value就是位移值。  
 
-### 1.4.3. 消费组消费进度查看的命令
+### 1.3.3. 消费组消费进度查看的命令
 &emsp; 通过消费组消费进度查看的命令，可以知道当前消费组消费了哪些 topic，每个分区的消费进度如何，以及每个分区是由哪个消费者进行消费的。从下面的信息也可以得出，一个分区只会被一个消费者消费。  
 
 ```text
@@ -267,7 +278,7 @@ kafka_test      0          7399            7399            0               consu
 ```
 
 --------------
-## 1.5. 订阅topic
+## 1.4. 订阅topic
 &emsp; **Kafka通过消费者组，可以实现基于队列和基于发布/订阅的两种消息引擎：**  
 
 * 如果所有的消费者都隶属于同一个消费组，那么所有的消息都会被均衡地投递给每一 个消费者，即每条消息只会被一个消费者处理，这就相当于点对点模式的应用。  
@@ -276,7 +287,7 @@ kafka_test      0          7399            7399            0               consu
 
 &emsp; **两种订阅topic的方式：直接订阅topic列表，基于正则表达订阅topic。**  
 
-### 1.5.1. 订阅topic列表
+### 1.4.1. 订阅topic列表
 1. 消费者组订阅topic列表
 
     ```java
@@ -296,7 +307,7 @@ kafka_test      0          7399            7399            0               consu
         * 进程自己维护分区的状态，它就可以固定消费某些分区而不用担心消费状态丢失的问题。
         * 进程本身就是高可用且能够自动重启恢复错误（比如使用YARN和Mesos等容器调度框架），就不需要让kafka来帮它完成错误检测和状态恢复。
 
-### 1.5.2. 基于正则表达订阅topic
+### 1.4.2. 基于正则表达订阅topic
 &emsp; 基于正则表达式订阅topic
 * enable.auto.commit=true
     ```java
@@ -308,13 +319,13 @@ kafka_test      0          7399            7399            0               consu
     //ConsumerRebalanceListener是一个回调接口，用户需要通过实现这个接口来实现consumer分区分配方案发生变更时的逻辑。
     ```
 
-## 1.6. 消息轮询
+## 1.5. 消息轮询
 &emsp; **consumer 采用 pull（拉）模式从 broker 中读取数据。**  
 &emsp; push（推）模式很难适应消费速率不同的消费者，因为消息发送速率是由 broker 决定的。 它的目标是尽可能以最快速度传递消息，但是这样很容易造成 consumer 来不及处理消息，典型的表现就是拒绝服务以及网络拥塞。而 pull 模式则可以根据 consumer 的消费能力以适当的速率消费消息。  
 &emsp; 对于 Kafka 而言，pull 模式更合适，它可简化 broker 的设计，consumer 可自主控制消费消息的速率，同时consumer可以自己控制消费方式——即可批量消费也可逐条消费，同时还能选择不同的提交方式从而实现不同的传输语义。  
 &emsp; pull 模式不足之处是，如果 kafka 没有数据，消费者可能会陷入循环中，一直等待数据到达。为了避免这种情况，在拉取请求中有参数，允许消费者请求在等待数据到达 的“长轮询”中进行阻塞（并且可选地等待到给定的字节数，以确保大的传输大小）。  
 
-## 1.7. 消费语义  
+## 1.6. 消费语义  
 &emsp; 消费者从服务端的 Partition 上拉取到消息，消费消息有三种情况，分别如下：  
 
 * 至少一次。即一条消息至少被消费一次，消息不可能丢失，但是可能会被重复消费。  
@@ -335,7 +346,7 @@ kafka_test      0          7399            7399            0               consu
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-89.png)  
 <center>正好消费一次</center>
 
-## 1.8. 多线程消费实例  
+## 1.7. 多线程消费实例  
 <!-- 
 多线程 Consumer Instance
 https://www.kancloud.cn/nicefo71/kafka/1471595
