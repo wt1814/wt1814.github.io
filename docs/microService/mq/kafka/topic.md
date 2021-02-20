@@ -2,7 +2,7 @@
 
 - [1. 分区](#1-分区)
     - [1.2. 为什么分区？](#12-为什么分区)
-    - [1.3. 物理分区分配](#13-物理分区分配)
+    - [1.3. ★★★物理分区分配](#13-★★★物理分区分配)
     - [1.4. 如何选择合适的分区数？](#14-如何选择合适的分区数)
     - [1.5. ~~分区存储数据(日志存储) ~~](#15-分区存储数据日志存储-)
 
@@ -20,10 +20,10 @@
 &emsp;而每个分区可以分布到不同的机器上，这样一来，从服务端来说，分区可以实现高伸缩性，以及负载均衡，动态调节的能力。  
 -->
 
-## 1.3. 物理分区分配
-&emsp; 在创建主题时，Kafka 会首先决定如何在broker间分配分区副本，它遵循以下原则：  
+## 1.3. ★★★物理分区分配
+&emsp; **在创建主题时，Kafka 会首先决定如何在broker间分配分区副本，** 它遵循以下原则：  
 
-* 在所有 broker 上均匀地分配分区副本；
+* 在所有broker上均匀地分配分区副本；
 * 确保分区的每个副本分布在不同的broker上；
 * 如果使用了broker.rack 参数为broker 指定了机架信息，那么会尽可能的把每个分区的副本分配到不同机架的broker上，以避免一个机架不可用而导致整个分区不可用。
 
@@ -33,7 +33,6 @@
 Error while executing topic command : org.apache.kafka.common.errors.InvalidReplicationFactor   
 Exception: Replication factor: 3 larger than available brokers: 1.
 ```
-
 
 ## 1.4. 如何选择合适的分区数？  
 &emsp; 在Kafka中，性能与分区数有着必然的关系，在设定分区数时一般也需要考虑性能的因素。对不同的硬件而言，其对应的性能也会不太一样。**可以使用Kafka 本身提供的用于生产者性能测试的kafka-producer-perf-test.sh和用于消费者性能测试的kafka-consumer-perf-test.sh来进行测试。**  
@@ -53,16 +52,14 @@ Exception: Replication factor: 3 larger than available brokers: 1.
 &emsp; **总结一下 Partition、Replica、Log 和 LogSegment 之间的关系。** 消息是以 Partition 维度进行管理的，为了提高系统的可用性，每个 Partition 都可以设置相应的 Replica 副本数，一般在创建 Topic 的时候同时指定 Replica 的个数；Partition 和 Replica 的实际物理存储形式是通过 Log 文件展现的，为了防止消息不断写入，导致 Log 文件大小持续增长，所以将 Log 切割成一个一个的 LogSegment 文件。  
 &emsp; 注意： 在同一时刻，每个主 Partition 中有且只有一个 LogSegment 被标识为可写入状态，当一个 LogSegment 文件大小超过一定大小后（比如当文件大小超过 1G，这个就类似于 HDFS 存储的数据文件，HDFS 中数据文件达到 128M 的时候就会被分出一个新的文件来存储数据），就会新创建一个 LogSegment 来继续接收新写入的消息。  
 -->
-&emsp; Kafka系统存储有关的六个概念：  
-  
-* 代理节点(Broker)：Kafka集群组建的最小单位，消息中间件的代理节点。  
+
+&emsp; 在Kafka系统中，消息以主题作为基本单位。不同的主题之间是相互独立、互不干扰的。每个主题又可以分为若干个分区，每个分区用来存储一部分的消息。  
+
 * 主题(Topic)：用来区分不同的业务消息，类似于数据库中的表。  
 * 分区(Partition)：是主题物理意义上的分组。一个主题可以分为多个分区，每个分区是一个有序的队列。  
 * 片段(Segment)：每个分区又可以分为多个片段文件。  
 * 偏移量(Offset)：每个分区都由一系列有序的、不可修改的消息组成，这些消息被持续追加到分区中，分区中的每条消息记录都有一个连续的序号，即Offset值，Offset值用来标识这条消息的唯一性。  
-* 消息(Message)：是Kafka系统中文件的最小存储单位。  
 
-&emsp; 在Kafka系统中，消息以主题作为基本单位。不同的主题之间是相互独立、互不干扰的。每个主题又可以分为若干个分区，每个分区用来存储一部分的消息。  
 
 ----
 
