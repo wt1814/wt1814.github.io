@@ -15,8 +15,8 @@
 3. 控制台打印SpringBoot的bannner标志；  
 4. <font color = "red">创建容器。</font>根据不同类型环境创建不同类型的applicationcontext容器，如果是servlet环境，所以创建的是AnnotationConfigServletWebServerApplicationContext容器对象；  
 5. 准备异常报告器。从spring.factories配置文件中加载FailureAnalyzers对象，用来报告SpringBoot启动过程中的异常；  
-6. <font color = "red">准备容器。</font>为刚创建的容器对象做一些初始化工作，准备一些容器属性值等，对ApplicationContext应用一些相关的后置处理和调用各个ApplicationContextInitializer的初始化方法来执行一些初始化逻辑等；  
-7. <font color = "red">刷新容器。</font>比如调用bean factory的后置处理器，注册BeanPostProcessor后置处理器，初始化事件广播器且广播事件，初始化剩下的单例bean和SpringBoot创建内嵌的Tomcat服务器等等重要且复杂的逻辑都在这里实现；  
+6. <font color = "red">容器准备。</font><font color = "blue">为刚创建的容器对象做一些初始化工作，准备一些容器属性值等，</font>对ApplicationContext应用一些相关的后置处理和调用各个ApplicationContextInitializer的初始化方法来执行一些初始化逻辑等；  
+7. <font color = "red">刷新容器。</font><font color = "blue">比如调用bean factory的后置处理器，注册BeanPostProcessor后置处理器，初始化事件广播器且广播事件，初始化剩下的单例bean和SpringBoot创建内嵌的Tomcat服务器等等重要且复杂的逻辑都在这里实现；</font>  
 8. <font color = "red">执行刷新容器后的后置处理逻辑；</font>  
 9. <font color = "red">调用ApplicationRunner和CommandLineRunner的run方法，实现这两个接口可以在spring容器启动后需要的一些东西，比如加载一些业务数据等; </font> 
 10. 报告启动异常，即若启动过程中抛出异常，此时用FailureAnalyzers来报告异常;  
@@ -82,7 +82,7 @@ public ConfigurableApplicationContext run(String... args) {
 		exceptionReporters = getSpringFactoriesInstances(
 				SpringBootExceptionReporter.class,
 				new Class[] { ConfigurableApplicationContext.class }, context); // ConfigurableApplicationContext是AnnotationConfigServletWebServerApplicationContext的父接口
-		// 【6】准备容器
+		// 【6】容器准备
         //为刚创建的AnnotationConfigServletWebServerApplicationContext容器对象做一些初始化工作，准备一些容器属性值等
 		// 1）为AnnotationConfigServletWebServerApplicationContext的属性AnnotatedBeanDefinitionReader和ClassPathBeanDefinitionScanner设置environgment属性
 		// 2）根据情况对ApplicationContext应用一些相关的后置处理，比如设置resourceLoader属性等

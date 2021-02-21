@@ -54,7 +54,7 @@ kafka事务的应用场景
 
 
 2. read-process-write模式：将消息生产和消费封装在一个事务中，形成一个原子操作。在一个流式处理的应用中，常常一个服务需要从上游接收消息，然后经过处理后送达到下游，这就对应着消息的消费和生成。  
-
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-120.png)  
 
 3. 当事务中仅仅存在Consumer消费消息的操作时，它和Consumer手动提交Offset并没有区别。因此单纯的消费消息并不是Kafka引入事务机制的原因，单纯的消费消息也没有必要存在于一个事务中。  
 
@@ -72,6 +72,7 @@ kafka事务的应用场景
 #### 1.1.3.3. 读事务消息  
 &emsp; 为了保证事务特性，Consumer如果设置了isolation.level = read_committed，那么它只会读取已经提交了的消息。在Producer成功提交事务后，Kafka会将所有该事务中的消息的Transaction Marker从uncommitted标记为committed状态，从而所有的Consumer都能够消费。  
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-121.png)  
 
 ## 1.2. ~~kafka事务原理~~
 <!-- 
@@ -152,7 +153,7 @@ https://www.cnblogs.com/middleware/p/9477133.html
     &emsp; 这个请求是事务协调者向事务中每个TopicPartition的Leader发送的。每个Broker收到请求后会写入COMMIT(PID)或者ABORT(PID)控制信息到数据日志中(5.2a)。  
     &emsp; 这个信息用于告知消费者当前消息是哪个事务，消息是否应该接受或者丢弃。而对于未提交消息，消费者会缓存该事务的消息直到提交或者回滚。  
     &emsp; 这里要注意，如果事务也涉及到__consumer_offsets，即该事务中有消费数据的操作且将该消费的Offset存于__consumer_offsets中，Transaction Coordinator也需要向该内部Topic的各Partition的Leader发送WriteTxnMarkerRequest从而写入COMMIT(PID)或COMMIT(PID)控制信息(5.2a 左边)。  
-    * 写入最终提交或回滚信息
+    * 写入最终提交或回滚信息  
     &emsp; 当提交和回滚信息写入数据日子后，事务协调者会往事务日志中写入最终的提交或者终止信息以表示事务已经完成(图5.3)，此时大部分于事务有关系的消息都可以被删除(通过标记后面在日志压缩时会被移除)，只需要保留事务ID以及其时间戳即可。
 
 <!--
