@@ -3,13 +3,16 @@
 <!-- TOC -->
 
 - [1. SpringBoot内置Tomcat](#1-springboot内置tomcat)
-    - [1.1. 内置Tomcat应用](#11-内置tomcat应用)
-    - [1.2. 嵌入式Tomcat](#12-嵌入式tomcat)
-    - [1.3. 内置Tomcat原理](#13-内置tomcat原理)
+    - [1.1. 怎么内嵌Tomcat？](#11-怎么内嵌tomcat)
+    - [1.2. SpringBoot内置Tomcat应用使用](#12-springboot内置tomcat应用使用)
+    - [1.3. SpringBoot内置Tomcat原理](#13-springboot内置tomcat原理)
         - [1.3.1. Tomcat的自动装配](#131-tomcat的自动装配)
         - [1.3.2. Tomcat的启动](#132-tomcat的启动)
 
 <!-- /TOC -->
+
+1. Tomcat的自动装配：自动装配过程中，Web容器所对应的自动配置类为ServletWebServerFactoryAutoConfiguration，该类导入了EmbeddedTomcat，EmbeddedJetty，EmbeddedUndertow三个类，可以根据用户的需求去选择使用哪一个web服务器，默认情况下使用的是tomcat。  
+2. Tomcat的启动：在容器刷新refreshContext(context)步骤完成。  
 
 # 1. SpringBoot内置Tomcat
 <!--
@@ -25,17 +28,17 @@ Spring Boot 内嵌Tomcat启动原理
 https://blog.csdn.net/weixin_42440154/article/details/104943010
 -->
 
-## 1.1. 内置Tomcat应用  
-<!-- 
-https://www.cnblogs.com/sword-successful/p/11383723.html
--->
-
-## 1.2. 嵌入式Tomcat  
+## 1.1. 怎么内嵌Tomcat？    
 <!-- 
 https://blog.csdn.net/the_one_and_only/article/details/105177506
 -->
 
-## 1.3. 内置Tomcat原理  
+## 1.2. SpringBoot内置Tomcat应用使用  
+<!-- 
+https://www.cnblogs.com/sword-successful/p/11383723.html
+-->
+
+## 1.3. SpringBoot内置Tomcat原理  
 ### 1.3.1. Tomcat的自动装配  
 &emsp; 自动装配过程中，查找classpath上所有jar包中的META-INF/spring.factories，找出其中的自动配置类并导入到容器中，其中Web容器所对应的自动配置类为ServletWebServerFactoryAutoConfiguration。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/boot/boot-1.png)  
