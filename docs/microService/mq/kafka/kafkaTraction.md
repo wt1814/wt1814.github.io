@@ -4,8 +4,8 @@
     - [1.2. 幂等性](#12-幂等性)
         - [1.2.1. 幂等性介绍](#121-幂等性介绍)
         - [1.2.2. 幂等性实现原理](#122-幂等性实现原理)
-            - [1.2.2.1. 幂等性引入之前的问题？](#1221-幂等性引入之前的问题)
-            - [1.2.2.2. 幂等性引入之后解决了什么问题？](#1222-幂等性引入之后解决了什么问题)
+            - [1.2.2.1. ~~幂等性引入之前的问题？~~](#1221-幂等性引入之前的问题)
+            - [1.2.2.2. ~~幂等性引入之后解决了什么问题？~~](#1222-幂等性引入之后解决了什么问题)
             - [1.2.2.3. ProducerID是如何生成的？](#1223-producerid是如何生成的)
         - [1.2.3. 幂等性的应用实例](#123-幂等性的应用实例)
     - [1.3. 事务性](#13-事务性)
@@ -45,7 +45,7 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 * 对于Kafka Stream而言，Kafka本身即是自己的下游系统，但Kafka在0.11.0.0版本之前不具有幂等发送能力
 
 &emsp; 因此，Kafka本身对Exactly Once语义的支持就非常必要。  
-&emsp; **影响Kafka幂等性的因素：**在分布式系统中，一些不可控因素有很多，比如网络、OOM、FullGC等。在Kafka Broker确认Ack时，出现网络异常、FullGC、OOM等问题时导致Ack超时，Producer会进行重复发送。可能出现的情况如下：  
+&emsp; ~~**影响Kafka幂等性的因素：**在分布式系统中，一些不可控因素有很多，比如网络、OOM、FullGC等。在Kafka Broker确认Ack时，出现网络异常、FullGC、OOM等问题时导致Ack超时，Producer会进行重复发送。可能出现的情况如下：~~  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-99.png)  
 <!-- 
 &emsp; 生产者进行retry重试，会重复产生消息。Kafka在0.11版本引入幂等性，brocker只持久化一条。  
@@ -63,14 +63,26 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 * ProducerID：在每个新的Producer初始化时，会被分配一个唯一的ProducerID，这个ProducerID对客户端使用者是不可见的。  
 * SequenceNumber：对于每个ProducerID，Producer发送数据的每个Topic和Partition都对应一个从0开始单调递增的SequenceNumber值。  
 
-#### 1.2.2.1. 幂等性引入之前的问题？  
+&emsp; **<font color = "red">Kafka幂等性实现机制：</font>**  
+
+1. 每一个producer在初始化时会生成一个producer_id，并为每个目标partition维护一个"一个序列号"；
+2. producer每发送一条消息，会将\<producer_id，分区\>对应的“序列号”加1；  
+3. broker端会为每一对\<producer_id，分区\>维护一个序列号，对于每收到的一条消息，会判断服务端的SN_old和接收到的消息中的SN_new进行对比：  
+
+    * 如果SN_old < SN_new+1，说明是重复写入的数据，直接丢弃。    
+    * 如果SN_old > SN_new+1，说明中间有数据尚未写入，或者是发生了乱序，或者是数据丢失，将抛出严重异常：OutOfOrderSeqenceException。 
+
+
+&emsp; **<font color = "red">注意：kafka只保证producer单个会话中的单个分区幂等；</font>**    
+
+#### 1.2.2.1. ~~幂等性引入之前的问题？~~  
 &emsp; Kafka在引入幂等性之前，Producer向Broker发送消息，然后Broker将消息追加到消息流中后给Producer返回Ack信号值。实现流程如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-100.png)  
 &emsp; 上图的实现流程是一种理想状态下的消息发送情况，但是实际情况中，会出现各种不确定的因素，比如在Producer在发送给Broker的时候出现网络异常。比如以下这种异常情况的出现：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-101.png)  
 &emsp; 上图这种情况，当Producer第一次发送消息给Broker时，Broker将消息(x2,y2)追加到了消息流中，但是在返回Ack信号给Producer时失败了（比如网络异常） 。此时，Producer端触发重试机制，将消息(x2,y2)重新发送给Broker，Broker接收到消息后，再次将该消息追加到消息流中，然后成功返回Ack信号给Producer。这样下来，消息流中就被重复追加了两条相同的(x2,y2)的消息。  
 
-#### 1.2.2.2. 幂等性引入之后解决了什么问题？  
+#### 1.2.2.2. ~~幂等性引入之后解决了什么问题？~~  
 &emsp; 面对这样的问题，Kafka引入了幂等性。那么幂等性是如何解决这类重复发送消息的问题的呢？下面先来看看流程图：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-102.png)  
 &emsp; 同样，这是一种理想状态下的发送流程。实际情况下，会有很多不确定的因素，比如Broker在发送Ack信号给Producer时出现网络异常，导致发送失败。异常情况如下图所示：  
@@ -393,6 +405,16 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
     &emsp; read_committed:仅以偏移量顺序使用非事务性消息或已提交事务性消息。为了维护偏移排序，这个设置意味着我们必须在使用者中缓冲消息，直到看到给定事务中的所有消息。  
 
 #### 1.3.4.2. Java API
+<!-- 
+https://blog.csdn.net/weixin_38251332/article/details/106279744
+kafka事务的应用场景
+在Kafka事务中，一个原子性操作，根据操作类型可以分为3种情况。情况如下：
+
+只有Producer生产消息，这种场景需要事务的介入；
+消费消息和生产消息并存，比如Consumer&Producer模式，这种场景是一般Kafka项目中比较常见的模式，需要事务介入。Kafka的事务主要用来处理consume-process-produce场景的原子性问题；
+只有Consumer消费消息，这种操作在实际项目中意义不大，和手动Commit Offsets的结果一样，而且这种场景不是事务的引入目的。
+-->
+
 <!-- 
 ~~
 https://blog.csdn.net/mlljava1111/article/details/81180351
