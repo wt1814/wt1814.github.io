@@ -1,15 +1,14 @@
 <!-- TOC -->
 
 - [1. kafka如何保证消息队列不丢失?](#1-kafka如何保证消息队列不丢失)
-    - [1.7. ~~无消息丢失配置~~](#17-无消息丢失配置)
     - [1.1. Kafka消息传递过程概述](#11-kafka消息传递过程概述)
     - [1.2. Producer端丢失消息](#12-producer端丢失消息)
         - [1.2.1. 发送消息的流程](#121-发送消息的流程)
         - [1.2.2. Producer的ACK应答机制](#122-producer的ack应答机制)
-        - [1.2.3. 丢失消息的情况](#123-丢失消息的情况)
+        - [1.2.3. 丢失消息的情况及解决方案](#123-丢失消息的情况及解决方案)
     - [1.3. Broker端丢失消息](#13-broker端丢失消息)
         - [1.3.1. 消息持久化](#131-消息持久化)
-        - [1.3.2. 丢失消息的情况](#132-丢失消息的情况)
+        - [1.3.2. 丢失消息的情况及解决方案](#132-丢失消息的情况及解决方案)
     - [1.4. Consumer端丢失消息](#14-consumer端丢失消息)
         - [1.4.1. 消息消费流程](#141-消息消费流程)
         - [1.4.2. 丢失消息情况一（自动提交）](#142-丢失消息情况一自动提交)
@@ -17,50 +16,31 @@
         - [1.4.4. 丢失消息情况三（多线程消费消息）](#144-丢失消息情况三多线程消费消息)
         - [1.4.5. 丢失消息情况四（增加分区）](#145-丢失消息情况四增加分区)
         - [1.4.6. 使用Low level API，严格控制位移](#146-使用low-level-api严格控制位移)
-    - [1.5. 最佳实践](#15-最佳实践)
+    - [1.5. ~~最佳实践~~](#15-最佳实践)
 
 <!-- /TOC -->
+
+&emsp; **<font color = "red">总结：</font>**
+
+&emsp; 在Producer端、Broker端、Consumer端都有可能会丢失消息。  
+
+* Producer端：  
+&emsp; 为防止Producer端丢失消息，除了将ack设置为all，还可以使用带有回调通知的发送 API，即producer.send(msg, callback)。  
+* Broker端:  
+&emsp; Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不丢失消息是做不到的，只能通过调整刷盘机制的参数缓解该情况。  
+&emsp; 为了解决该问题，kafka通过producer和broker协同处理单个broker丢失参数的情况。一旦producer发现broker消息丢失，即可自动进行retry。除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。  
+* ~~Consumer端：~~  
+&emsp; 采用手动提交位移。  
+
 
 # 1. kafka如何保证消息队列不丢失?
 <!-- 
 Kafka消息中间件到底会不会丢消息 
 https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
-
 -->
 
-## 1.7. ~~无消息丢失配置~~  
-1. 采用同步发送，但是性能会很差，并不推荐在实际场景中使用。因此最好能有一份配置，既使用异步方式还能有效地避免数据丢失，即使出现producer崩溃的情况也不会有问题。 
-2. **做producer端的无消息丢失配置**  
-    * producer端配置
-
-            max.block.ms=3000   控制block的时长,当buffer空间不够或者metadata丢失时产生block
-            acks=all or -1   所有follower都响应了发送消息才能认为提交成功
-            retries=Integer.MAX_VALUE   producer开启无限重试，只会重试那些可恢复的异常情况
-            max.in.flight.requests.per.connection=1   限制了producer在单个broker连接上能够发送的未响应请求的数量，为了防止topic同分区下的消息乱序问题
-            使用带回调机制的send发送消息，即KafkaProducer.send(record,callback)   
-            会返回消息发送的结果信息Callback的失败处理逻辑中显式地立即关闭producer，使用close(0)。目的是为了处理消息的乱序问题，将不允许将未完成的消息发送出去
-
-    * broker端配置
-
-            unclean.leader.election.enable=false   不允许非ISR中的副本被选举为leader
-            replication.factor=3   强调一定要使用多个副本来保存分区的消息
-            min.insync.replicas=2   控制某条消息至少被写入到ISR中的多少个副本才算成功，只有在producer端的acks设置成all或-1时，这个参数才有意义
-            确保replication.factor>min.insync.replicas   
-
-    * consumer端配置
-
-            enable.auto.commit=false   设置不能自动提交位移，需要用户手动提交位移
-
-
 ## 1.1. Kafka消息传递过程概述  
-&emsp; **消息传递语义介绍：**  
-&emsp; 消息传递语义message delivery semantic，简单说就是消息传递过程中消息传递的保证性。主要分为三种：  
 
-* at most once：最多一次。消息可能丢失也可能被处理，但最多只会被处理一次。
-* at least once：至少一次。消息不会丢失，但可能被处理多次。可能重复，不会丢失。
-* exactly once：精确传递一次。消息被处理且只会被处理一次。不丢失不重复就一次。
-
-&emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。kafka 通过 ack 的配置来实现前两种。  
 
 &emsp; **Kafka有三次消息传递的过程：**  
 
@@ -68,17 +48,7 @@ https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 * Kafka Broker消息同步和持久化
 * Kafka Broker将消息传递给消费者。
 
-&emsp; **在这三步中每一步都有可能会丢失消息。**    
-
-<!--
-&emsp; Kafka在producer和consumer之间提供的语义保证。显然，Kafka可以提供的消息交付语义保证有多种：  
-
-* At most once——消息可能会丢失但绝不重传。
-* At least once——消息可以重传但绝不丢失。
-* Exactly once——每一条消息只被传递一次。
-
-&emsp; 值得注意的是，这个问题被分成了两部分：发布消息的持久性保证和消费消息的保证。 
--->
+&emsp; **<font color = "blue">在这三步中每一步都有可能会丢失消息。</font>**    
 
 ## 1.2. Producer端丢失消息  
 ### 1.2.1. 发送消息的流程
@@ -128,7 +98,7 @@ https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 
 &emsp; 上面这个过程看似已经很完美了，但是假设如果消息在同步到部分从Partition 上时，主 Partition 宕机，此时消息会重传，虽然消息不会丢失，但是会造成同一条消息会存储多次。在新版本中 Kafka 提出了幂等性的概念，通过给每条消息设置一个唯一 ID，并且该 ID 可以唯一映射到 Partition 的一个固定位置，从而避免消息重复存储的问题。 
 
-### 1.2.3. 丢失消息的情况  
+### 1.2.3. 丢失消息的情况及解决方案  
 
 * 如果acks配置为0，发生网络抖动消息丢了，生产者不校验ACK自然就不知道丢了。
 * 如果acks配置为1保证leader不丢，但是如果leader挂了，恰好选了一个没有ACK的follower，那也丢了。
@@ -170,8 +140,10 @@ https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 &emsp; 操作系统本身有一层缓存，叫做 Page Cache，当往磁盘文件写入的时候，系统会先将数据流写入缓存中，至于什么时候将缓存的数据写入文件中是由操作系统自行决定。  
 &emsp; Kafka提供了一个参数 producer.type 来控制是不是主动flush，如果Kafka写入到mmap之后就立即 flush 然后再返回 Producer 叫同步 (sync)；写入mmap之后立即返回 Producer 不调用 flush 叫异步 (async)。  
 
-### 1.3.2. 丢失消息的情况   
-&emsp; Kafka通过多分区多副本机制中已经能最大限度保证数据不会丢失，如果数据已经写入系统 cache 中但是还没来得及刷入磁盘，此时突然机器宕机或者掉电那就丢了，当然这种情况很极端。  
+### 1.3.2. 丢失消息的情况及解决方案   
+&emsp; Kafka通过多分区多副本机制中已经能最大限度保证数据不会丢失，如果数据已经写入系统 cache 中，但是还没来得及刷入磁盘，此时突然机器宕机或者掉电那就丢了，当然这种情况很极端。  
+
+&emsp; **<font color = "red">解决方案：</font>**  
 &emsp; Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不丢失消息是做不到的，只能通过调整刷盘机制的参数缓解该情况。  
 &emsp; 为了解决该问题，kafka通过producer和broker协同处理单个broker丢失参数的情况。一旦producer发现broker消息丢失，即可自动进行retry。除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。  
 
@@ -288,7 +260,7 @@ while (true) {
  }
 ```
 
-## 1.5. 最佳实践  
+## 1.5. ~~最佳实践~~  
 * 不要使用 producer.send(msg)，而是 producer.send(msg, callback) 
 * 设置 acks = all  
     * acks 是 Producer 的一个参数，代表了你对“已提交“消息的定义。  
@@ -311,3 +283,30 @@ while (true) {
 * 确保消息消费完再提交  
     * Consumer 端参数 enable.auto.commit 设置成 false，采用手动提交位移  
     * 这对于单 Consumer 多线程处理很重要  
+
+
+<!-- 
+
+
+1. 采用同步发送，但是性能会很差，并不推荐在实际场景中使用。因此最好能有一份配置，既使用异步方式还能有效地避免数据丢失，即使出现producer崩溃的情况也不会有问题。 
+2. **做producer端的无消息丢失配置**  
+    * producer端配置
+
+            max.block.ms=3000   控制block的时长,当buffer空间不够或者metadata丢失时产生block
+            acks=all or -1   所有follower都响应了发送消息才能认为提交成功
+            retries=Integer.MAX_VALUE   producer开启无限重试，只会重试那些可恢复的异常情况
+            max.in.flight.requests.per.connection=1   限制了producer在单个broker连接上能够发送的未响应请求的数量，为了防止topic同分区下的消息乱序问题
+            使用带回调机制的send发送消息，即KafkaProducer.send(record,callback)   
+            会返回消息发送的结果信息Callback的失败处理逻辑中显式地立即关闭producer，使用close(0)。目的是为了处理消息的乱序问题，将不允许将未完成的消息发送出去
+
+    * broker端配置
+
+            unclean.leader.election.enable=false   不允许非ISR中的副本被选举为leader
+            replication.factor=3   强调一定要使用多个副本来保存分区的消息
+            min.insync.replicas=2   控制某条消息至少被写入到ISR中的多少个副本才算成功，只有在producer端的acks设置成all或-1时，这个参数才有意义
+            确保replication.factor>min.insync.replicas   
+
+    * consumer端配置
+
+            enable.auto.commit=false   设置不能自动提交位移，需要用户手动提交位移
+-->
