@@ -3,15 +3,15 @@
 - [1. 事务性](#1-事务性)
     - [1.1. Kafka事务概述](#11-kafka事务概述)
         - [1.1.1. kafka事务简介](#111-kafka事务简介)
-        - [1.1.2. Kafka事务特性](#112-kafka事务特性)
-            - [1.1.2.1. 原子写](#1121-原子写)
-            - [1.1.2.2. 拒绝僵尸实例](#1122-拒绝僵尸实例)
-            - [1.1.2.3. 读事务消息](#1123-读事务消息)
-        - [1.1.3. Kafka事务使用场景](#113-kafka事务使用场景)
+        - [1.1.2. Kafka事务使用场景](#112-kafka事务使用场景)
+        - [1.1.3. Kafka事务特性](#113-kafka事务特性)
+            - [1.1.3.1. 原子写](#1131-原子写)
+            - [1.1.3.2. 拒绝僵尸实例](#1132-拒绝僵尸实例)
+            - [1.1.3.3. 读事务消息](#1133-读事务消息)
     - [1.2. 幂等性和事务性的关系](#12-幂等性和事务性的关系)
     - [1.3. ~~kafka事务原理~~](#13-kafka事务原理)
         - [1.3.1. 基本概念](#131-基本概念)
-        - [1.3.2. 事务流程](#132-事务流程)
+        - [1.3.2. ★★★事务流程](#132-★★★事务流程)
     - [1.4. kafka事务使用](#14-kafka事务使用)
         - [1.4.1. 事务相关配置](#141-事务相关配置)
         - [1.4.2. Java API](#142-java-api)
@@ -29,28 +29,16 @@
 ### 1.1.1. kafka事务简介  
 &emsp; **在Kafka0.11.0.0除了引入的幂等性的概念，同时也引入了事务的概念。Kafka的幂等性，只能保证一条记录的在分区发送的原子性，但是如果要保证多条记录（多分区）之间的完整性，这个时候就需要开启kafk的事务操作。**  
 
+### 1.1.2. Kafka事务使用场景  
+<!-- 
+https://blog.csdn.net/weixin_38251332/article/details/106279744
+kafka事务的应用场景
+在Kafka事务中，一个原子性操作，根据操作类型可以分为3种情况。情况如下：
 
-### 1.1.2. Kafka事务特性  
-&emsp; Kafka的事务特性本质上代表了三个功能：原子写操作，拒绝僵尸实例（Zombie fencing）和读事务消息。  
-
-#### 1.1.2.1. 原子写
-&emsp; Kafka的事务特性本质上是支持了Kafka跨分区和Topic的原子写操作。在同一个事务中的消息要么同时写入成功，要么同时写入失败。Kafka中的Offset信息存储在一个名为_consumed_offsets的Topic中，因此read-process-write模式，除了向目标Topic写入消息，还会向_consumed_offsets中写入已经消费的Offsets数据。因此read-process-write本质上就是跨分区和Topic的原子写操作。Kafka的事务特性就是要确保跨分区的多个写操作的原子性。   
-
-#### 1.1.2.2. 拒绝僵尸实例
-&emsp; 在分布式系统中，一个实例的宕机或失联，集群往往会自动启动一个新的实例来代替它的工作。此时若原实例恢复了，那么集群中就产生了两个具有相同职责的实例，此时前一个instance就被称为“僵尸实例（Zombie Instance）”。在Kafka中，两个相同的producer同时处理消息并生产出重复的消息（read-process-write模式），这样就严重违反了Exactly Once Processing的语义。这就是僵尸实例问题。  
-&emsp; Kafka事务特性通过transaction-id属性来解决僵尸实例问题。所有具有相同transaction-id的Producer都会被分配相同的pid，同时每一个Producer还会被分配一个递增的epoch。Kafka收到事务提交请求时，如果检查当前事务提交者的epoch不是最新的，那么就会拒绝该Producer的请求。从而达成拒绝僵尸实例的目标。
-
-#### 1.1.2.3. 读事务消息  
-&emsp; 为了保证事务特性，Consumer如果设置了isolation.level = read_committed，那么它只会读取已经提交了的消息。在Producer成功提交事务后，Kafka会将所有该事务中的消息的Transaction Marker从uncommitted标记为committed状态，从而所有的Consumer都能够消费。  
-
-### 1.1.3. Kafka事务使用场景  
-&emsp; Kafka中的事务特性主要用于以下两种场景：  
-
-* 生产者发送多条消息可以封装在一个事务中，形成一个原子操作。多条消息要么都发送成功，要么都发送失败。  
-* read-process-write模式：将消息生产和消费封装在一个事务中，形成一个原子操作。在一个流式处理的应用中，常常一个服务需要从上游接收消息，然后经过处理后送达到下游，这就对应着消息的消费和生成。  
-
-&emsp; 当事务中仅仅存在Consumer消费消息的操作时，它和Consumer手动提交Offset并没有区别。因此单纯的消费消息并不是Kafka引入事务机制的原因，单纯的消费消息也没有必要存在于一个事务中。  
-
+只有Producer生产消息，这种场景需要事务的介入；
+消费消息和生产消息并存，比如Consumer&Producer模式，这种场景是一般Kafka项目中比较常见的模式，需要事务介入。Kafka的事务主要用来处理consume-process-produce场景的原子性问题；
+只有Consumer消费消息，这种操作在实际项目中意义不大，和手动Commit Offsets的结果一样，而且这种场景不是事务的引入目的。
+-->
 <!-- 
 &emsp; **<font color= "red">Kafka事务的场景</font>**  
 
@@ -61,6 +49,31 @@
 * 流式处理的拓扑可能会比较深，如果下游只有等上游消息事务提交以后才能读到，可能会导致rt非常长吞吐量也随之下降很多，所以需要实现read committed和read uncommitted两种事务隔离级别。
 
 -->
+&emsp; Kafka中的事务特性主要用于以下场景：  
+
+1. 生产者发送多条消息可以封装在一个事务中，形成一个原子操作。多条消息要么都发送成功，要么都发送失败。  
+
+
+2. read-process-write模式：将消息生产和消费封装在一个事务中，形成一个原子操作。在一个流式处理的应用中，常常一个服务需要从上游接收消息，然后经过处理后送达到下游，这就对应着消息的消费和生成。  
+
+
+3. 当事务中仅仅存在Consumer消费消息的操作时，它和Consumer手动提交Offset并没有区别。因此单纯的消费消息并不是Kafka引入事务机制的原因，单纯的消费消息也没有必要存在于一个事务中。  
+
+
+### 1.1.3. Kafka事务特性  
+&emsp; Kafka的事务特性本质上代表了三个功能：原子写操作，拒绝僵尸实例（Zombie fencing）和读事务消息。  
+
+#### 1.1.3.1. 原子写
+&emsp; Kafka的事务特性本质上是支持了Kafka跨分区和Topic的原子写操作。在同一个事务中的消息要么同时写入成功，要么同时写入失败。Kafka中的Offset信息存储在一个名为_consumed_offsets的Topic中，因此read-process-write模式，除了向目标Topic写入消息，还会向_consumed_offsets中写入已经消费的Offsets数据。因此read-process-write本质上就是跨分区和Topic的原子写操作。Kafka的事务特性就是要确保跨分区的多个写操作的原子性。   
+
+#### 1.1.3.2. 拒绝僵尸实例
+&emsp; 在分布式系统中，一个实例的宕机或失联，集群往往会自动启动一个新的实例来代替它的工作。此时若原实例恢复了，那么集群中就产生了两个具有相同职责的实例，此时前一个instance就被称为“僵尸实例（Zombie Instance）”。在Kafka中，两个相同的producer同时处理消息并生产出重复的消息（read-process-write模式），这样就严重违反了Exactly Once Processing的语义。这就是僵尸实例问题。  
+&emsp; Kafka事务特性通过transaction-id属性来解决僵尸实例问题。所有具有相同transaction-id的Producer都会被分配相同的pid，同时每一个Producer还会被分配一个递增的epoch。Kafka收到事务提交请求时，如果检查当前事务提交者的epoch不是最新的，那么就会拒绝该Producer的请求。从而达成拒绝僵尸实例的目标。
+
+#### 1.1.3.3. 读事务消息  
+&emsp; 为了保证事务特性，Consumer如果设置了isolation.level = read_committed，那么它只会读取已经提交了的消息。在Producer成功提交事务后，Kafka会将所有该事务中的消息的Transaction Marker从uncommitted标记为committed状态，从而所有的Consumer都能够消费。  
+
+
 
 ## 1.2. 幂等性和事务性的关系  
 &emsp; **两者关系**：事务属性实现前提是幂等性，即在配置事务属性transaction id时，必须还得配置幂等性；但是幂等性是可以独立使用的，不需要依赖事务属性。  
@@ -101,7 +114,7 @@ https://www.cnblogs.com/middleware/p/9477133.html
 3. 引入控制消息(Control Messages)：这些消息是客户端产生的并写入到主题的特殊消息，但对于使用者来说不可见。它们是用来让broker告知消费者之前拉取的消息是否被原子性提交。
 -->
 
-### 1.3.2. 事务流程  
+### 1.3.2. ★★★事务流程  
 <!-- 
 https://www.cnblogs.com/middleware/p/9477133.html
 -->
@@ -216,9 +229,6 @@ Consume-Transform-Produce
 &emsp; 补充说明，如果参与该事务的某些\<Topic, Partition>在被写入Transaction Marker前不可用，它对READ_COMMITTED的Consumer不可见，但不影响其它可用\<Topic, Partition>的COMMIT或ABORT。在该\<Topic, Partition>恢复可用后，Transaction Coordinator会重新根据PREPARE_COMMIT或PREPARE_ABORT向该\<Topic, Partition>发送Transaction Marker。  
 
 
-
-
-
 获取produce ID  
 在知道事务协调者后，生产者需要往协调者发送初始化pid请求(initPidRequest)。这个请求分两种情况：  
 
@@ -273,15 +283,7 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
     &emsp; read_committed:仅以偏移量顺序使用非事务性消息或已提交事务性消息。为了维护偏移排序，这个设置意味着我们必须在使用者中缓冲消息，直到看到给定事务中的所有消息。  
 
 ### 1.4.2. Java API
-<!-- 
-https://blog.csdn.net/weixin_38251332/article/details/106279744
-kafka事务的应用场景
-在Kafka事务中，一个原子性操作，根据操作类型可以分为3种情况。情况如下：
 
-只有Producer生产消息，这种场景需要事务的介入；
-消费消息和生产消息并存，比如Consumer&Producer模式，这种场景是一般Kafka项目中比较常见的模式，需要事务介入。Kafka的事务主要用来处理consume-process-produce场景的原子性问题；
-只有Consumer消费消息，这种操作在实际项目中意义不大，和手动Commit Offsets的结果一样，而且这种场景不是事务的引入目的。
--->
 
 <!-- 
 ~~
