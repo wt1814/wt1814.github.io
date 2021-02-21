@@ -15,7 +15,7 @@
         - [1.3.1. 事务相关配置](#131-事务相关配置)
         - [1.3.2. Java API](#132-java-api)
             - [1.3.2.1. “只有写”应用程序示例](#1321-只有写应用程序示例)
-            - [1.3.2.2. 消费-生产并存（consume-Transform-Produce）](#1322-消费-生产并存consume-transform-produce)
+            - [1.3.2.2. 消费-生产并存(consume-Transform-Produce)](#1322-消费-生产并存consume-transform-produce)
     - [1.4. 总结](#14-总结)
 
 <!-- /TOC -->
@@ -26,7 +26,7 @@
 # 1. 事务性  
 ## 1.1. Kafka事务概述
 ### 1.1.1. kafka事务简介  
-&emsp; **在Kafka0.11.0.0除了引入的幂等性的概念，同时也引入了事务的概念。Kafka的幂等性，只能保证一条记录的在分区发送的原子性，但是如果要保证多条记录（多分区）之间的完整性，这个时候就需要开启kafk的事务操作。**  
+&emsp; **在Kafka0.11.0.0除了引入的幂等性的概念，同时也引入了事务的概念。Kafka的幂等性，只能保证一条记录的在分区发送的原子性，但是如果要保证多条记录(多分区)之间的完整性，这个时候就需要开启kafk的事务操作。**  
 
 ### 1.1.2. Kafka事务使用场景  
 <!-- 
@@ -60,13 +60,13 @@ kafka事务的应用场景
 
 
 ### 1.1.3. Kafka事务特性  
-&emsp; Kafka的事务特性本质上代表了三个功能：原子写操作，拒绝僵尸实例（Zombie fencing）和读事务消息。  
+&emsp; Kafka的事务特性本质上代表了三个功能：原子写操作，拒绝僵尸实例(Zombie fencing)和读事务消息。  
 
 #### 1.1.3.1. 原子写
 &emsp; Kafka的事务特性本质上是支持了Kafka跨分区和Topic的原子写操作。在同一个事务中的消息要么同时写入成功，要么同时写入失败。Kafka中的Offset信息存储在一个名为_consumed_offsets的Topic中，因此read-process-write模式，除了向目标Topic写入消息，还会向_consumed_offsets中写入已经消费的Offsets数据。因此read-process-write本质上就是跨分区和Topic的原子写操作。Kafka的事务特性就是要确保跨分区的多个写操作的原子性。   
 
 #### 1.1.3.2. 拒绝僵尸实例
-&emsp; 在分布式系统中，一个实例的宕机或失联，集群往往会自动启动一个新的实例来代替它的工作。此时若原实例恢复了，那么集群中就产生了两个具有相同职责的实例，此时前一个instance就被称为“僵尸实例（Zombie Instance）”。在Kafka中，两个相同的producer同时处理消息并生产出重复的消息（read-process-write模式），这样就严重违反了Exactly Once Processing的语义。这就是僵尸实例问题。  
+&emsp; 在分布式系统中，一个实例的宕机或失联，集群往往会自动启动一个新的实例来代替它的工作。此时若原实例恢复了，那么集群中就产生了两个具有相同职责的实例，此时前一个instance就被称为“僵尸实例(Zombie Instance)”。在Kafka中，两个相同的producer同时处理消息并生产出重复的消息(read-process-write模式)，这样就严重违反了Exactly Once Processing的语义。这就是僵尸实例问题。  
 &emsp; Kafka事务特性通过transaction-id属性来解决僵尸实例问题。所有具有相同transaction-id的Producer都会被分配相同的pid，同时每一个Producer还会被分配一个递增的epoch。Kafka收到事务提交请求时，如果检查当前事务提交者的epoch不是最新的，那么就会拒绝该Producer的请求。从而达成拒绝僵尸实例的目标。
 
 #### 1.1.3.3. 读事务消息  
@@ -87,14 +87,14 @@ https://www.cnblogs.com/middleware/p/9477133.html
 2. 引入一个内部Kafka Topic作为事务Log：类似于消费管理Offset的Topic，事务Topic本身也是持久化的，日志信息记录事务状态信息，由事务协调者写入。
 4. 引入TransactionId：不同生产实例使用同一个TransactionId表示是同一个事务，可以跨Session的数据幂等发送。当具有相同Transaction ID的新的Producer实例被创建且工作时，旧的且拥有相同Transaction ID的Producer将不再工作，避免事务僵死。
 5. 每个生产者增加一个epoch：用于标识同一个事务Id在一次事务中的epoch，每次初始化事务时会递增，从而让服务端可以知道生产者请求是否旧的请求。
+
 <!-- 
 8. 幂等性：保证发送单个分区的消息只会发送一次，不会出现重复消息。增加一个幂等性的开关enable.idempotence，可以独立与事务使用，即可以只开启幂等但不开启事务。  
 5. Producer ID：每个新的Producer在初始化的时候会被分配一个唯一的PID，这个PID对用户是不可见的。主要是为提供幂等性时引入的。
-6. Sequence Numbler。（对于每个PID，该Producer发送数据的每个\<Topic, Partition>都对应一个从0开始单调递增的Sequence Number。
+6. Sequence Numbler。(对于每个PID，该Producer发送数据的每个\<Topic, Partition>都对应一个从0开始单调递增的Sequence Number。
 
 3. 引入控制消息(Control Messages)：这些消息是客户端产生的并写入到主题的特殊消息，但对于使用者来说不可见。它们是用来让broker告知消费者之前拉取的消息是否被原子性提交。
 -->
-
 
 &emsp; **幂等性和事务性的关系：**    
 &emsp; **两者关系**：事务属性实现前提是幂等性，即在配置事务属性transaction id时，必须还得配置幂等性；但是幂等性是可以独立使用的，不需要依赖事务属性。  
@@ -113,6 +113,7 @@ https://www.cnblogs.com/middleware/p/9477133.html
 &emsp; 一个app有一个tid，同一个应用的不同实例PID是一样的，只是epoch的值不同。如：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-82.png)  
 
+
 ### 1.2.2. ★★★事务流程  
 <!-- 
 https://www.cnblogs.com/middleware/p/9477133.html
@@ -128,14 +129,14 @@ https://www.cnblogs.com/middleware/p/9477133.html
     * 不带transactionID   
     &emsp; 这种情况下直接生成一个新的produce ID即可，返回给客户端
     * 带transactionID  
-    &emsp; 这种情况下，kafka根据transactionalId获取对应的PID，这个对应关系是保存在事务日志中（上图2a）。这样可以确保相同的TransactionId返回相同的PID，用于恢复或者终止之前未完成的事务。  
+    &emsp; 这种情况下，kafka根据transactionalId获取对应的PID，这个对应关系是保存在事务日志中(上图2a)。这样可以确保相同的TransactionId返回相同的PID，用于恢复或者终止之前未完成的事务。  
 
 3. 启动事务  
 &emsp; 生产者通过调用beginTransaction接口启动事务，此时只是内部的状态记录为事务开始，但是事务协调者认为事务开始只有当生产者开始发送第一条消息才开始。  
 4. 消费和生产配合过程  
 &emsp; 这一步是消费和生成互相配合完成事务的过程，其中涉及多个请求：  
     * 增加分区到事务请求  
-    当生产者有新分区要写入数据，则会发送AddPartitionToTxnRequest到事务协调者。协调者会处理请求，主要做的事情是更新事务元数据信息，并把信息写入到事务日志中（事务Topic）。  
+    当生产者有新分区要写入数据，则会发送AddPartitionToTxnRequest到事务协调者。协调者会处理请求，主要做的事情是更新事务元数据信息，并把信息写入到事务日志中(事务Topic)。  
     * 生产请求  
     生产者通过调用send接口发送数据到分区，这些请求新增pid，epoch和sequence number字段。
     * 增加消费offset到事务  
@@ -152,7 +153,7 @@ https://www.cnblogs.com/middleware/p/9477133.html
     &emsp; 这个信息用于告知消费者当前消息是哪个事务，消息是否应该接受或者丢弃。而对于未提交消息，消费者会缓存该事务的消息直到提交或者回滚。  
     &emsp; 这里要注意，如果事务也涉及到__consumer_offsets，即该事务中有消费数据的操作且将该消费的Offset存于__consumer_offsets中，Transaction Coordinator也需要向该内部Topic的各Partition的Leader发送WriteTxnMarkerRequest从而写入COMMIT(PID)或COMMIT(PID)控制信息(5.2a 左边)。  
     * 写入最终提交或回滚信息
-    &emsp; 当提交和回滚信息写入数据日子后，事务协调者会往事务日志中写入最终的提交或者终止信息以表示事务已经完成(图5.3)，此时大部分于事务有关系的消息都可以被删除（通过标记后面在日志压缩时会被移除），只需要保留事务ID以及其时间戳即可。
+    &emsp; 当提交和回滚信息写入数据日子后，事务协调者会往事务日志中写入最终的提交或者终止信息以表示事务已经完成(图5.3)，此时大部分于事务有关系的消息都可以被删除(通过标记后面在日志压缩时会被移除)，只需要保留事务ID以及其时间戳即可。
 
 <!--
 查找事务协调者Tranaction Corordinator 
@@ -164,7 +165,7 @@ https://www.cnblogs.com/middleware/p/9477133.html
 &emsp; Producer发送InitpidRequest给事务协调器，获取一个Pid。InitpidRequest的处理过程是同步阻塞的，一旦该调用正确返回，Producer就可以开始新的事务。TranactionalId通过InitpidRequest发送给Tranciton Corordinator，然后在Tranaciton Log中记录这\<TranacionalId,pid>的映射关系。除了返回PID之外，还具有如下功能：  
 
     对PID对应的epoch进行递增，这样可以保证同一个app的不同实例对应的PID是一样的，但是epoch是不同的。
-    回滚之前的Producer未完成的事务（如果有）。  
+    回滚之前的Producer未完成的事务(如果有)。  
 
 开始事务 beginTransaction
 &emsp; 执行Producer的beginTransacion()，它的作用是Producer在本地记录下这个transaction的状态为开始状态。这个操作并没有通知Transaction Coordinator，因为Transaction Coordinator只有在Producer发送第一条消息后才认为事务已经开启。
@@ -174,8 +175,8 @@ Consume-Transform-Produce
 
 &emsp; **AddPartitionsToTxnRequest**  
 &emsp; 一个Producer可能会给多个\<Topic, Partition>发送数据，给一个新的\<Topic, Partition>发送数据前，它需要先向Transaction Coordinator发送AddPartitionsToTxnRequest。  
-&emsp; **Transaction Coordinator会将该\<Transaction, Topic, Partition>存于Transaction Log内，并将其状态置为BEGIN，** 如上图中步骤4.1所示。有了该信息后，才可以在后续步骤中为每个Topic, Partition>设置COMMIT或者ABORT标记（如上图中步骤5.2所示）。  
-&emsp; 另外，如果该\<Topic, Partition>为该事务中第一个\<Topic, Partition>，Transaction Coordinator还会启动对该事务的计时（每个事务都有自己的超时时间）。  
+&emsp; **Transaction Coordinator会将该\<Transaction, Topic, Partition>存于Transaction Log内，并将其状态置为BEGIN，** 如上图中步骤4.1所示。有了该信息后，才可以在后续步骤中为每个Topic, Partition>设置COMMIT或者ABORT标记(如上图中步骤5.2所示)。  
+&emsp; 另外，如果该\<Topic, Partition>为该事务中第一个\<Topic, Partition>，Transaction Coordinator还会启动对该事务的计时(每个事务都有自己的超时时间)。  
 
 &emsp; **ProduceRequest**  
 &emsp; Producer通过一个或多个ProduceRequest发送一系列消息。除了应用数据外，该请求还包含了PID，epoch，和Sequence Number。该过程如上图中步骤4.2所示。  
@@ -196,7 +197,7 @@ Consume-Transform-Produce
 &emsp; 在Producer执行commitTransaction/abortTransaction时，Transaction Coordinator会执行一个两阶段提交：  
 
 * 第一阶段，将Transaction Log内的该事务状态设置为PREPARE_COMMIT或PREPARE_ABORT
-* 第二阶段，将Transaction Marker写入该事务涉及到的所有消息（即将消息标记为committed或aborted）。这一步骤Transaction Coordinator会发送给当前事务涉及到的每个\<Topic, Partition>的Leader，Broker收到该请求后，会将对应的Transaction Marker控制信息写入日志。
+* 第二阶段，将Transaction Marker写入该事务涉及到的所有消息(即将消息标记为committed或aborted)。这一步骤Transaction Coordinator会发送给当前事务涉及到的每个\<Topic, Partition>的Leader，Broker收到该请求后，会将对应的Transaction Marker控制信息写入日志。
 
 &emsp; 一旦Transaction Marker写入完成，Transaction Coordinator会将最终的COMPLETE_COMMIT或COMPLETE_ABORT状态写入Transaction Log中以标明该事务结束。  
 
@@ -212,7 +213,7 @@ Consume-Transform-Produce
 2. 通过WriteTxnMarker请求以Transaction Marker的形式将COMMIT或ABORT信息写入用户数据日志以及Offset Log中，如上图中步骤5.2所示
 3. 最后将COMPLETE_COMMIT或COMPLETE_ABORT信息写入Transaction Log中，如上图中步骤5.3所示
 
-&emsp; 补充说明：对于commitTransaction方法，它会在发送EndTxnRequest之前先调用flush方法以确保所有发送出去的数据都得到相应的ACK。对于abortTransaction方法，在发送EndTxnRequest之前直接将当前Buffer中的事务性消息（如果有）全部丢弃，但必须等待所有被发送但尚未收到ACK的消息发送完成。  
+&emsp; 补充说明：对于commitTransaction方法，它会在发送EndTxnRequest之前先调用flush方法以确保所有发送出去的数据都得到相应的ACK。对于abortTransaction方法，在发送EndTxnRequest之前直接将当前Buffer中的事务性消息(如果有)全部丢弃，但必须等待所有被发送但尚未收到ACK的消息发送完成。  
 &emsp; 上述第二步是实现将一组读操作与写操作作为一个事务处理的关键。因为Producer写入的数据Topic以及记录Comsumer Offset的Topic会被写入相同的Transactin Marker，所以这一组读操作与写操作要么全部COMMIT要么全部ABORT。  
 
 **WriteTxnMarkerRequest**  
@@ -234,7 +235,7 @@ Consume-Transform-Produce
 * 不带transactionID
 这种情况下直接生成一个新的produce ID即可，返回给客户端  
 * 带transactionID
-这种情况下，kafka根据transactionalId获取对应的PID，这个对应关系是保存在事务日志中（上图2a）。这样可以确保相同的TransactionId返回相同的PID，用于恢复或者终止之前未完成的事务。
+这种情况下，kafka根据transactionalId获取对应的PID，这个对应关系是保存在事务日志中(上图2a)。这样可以确保相同的TransactionId返回相同的PID，用于恢复或者终止之前未完成的事务。
 
 ---
 找到Transaction Coordinator后，具有幂等特性的Producer必须发起InitPidRequest请求以获取PID。
@@ -246,8 +247,8 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
 
 除了返回PID外，InitPidRequest还会执行如下任务：
 
-    增加该PID对应的epoch。具有相同PID但epoch小于该epoch的其它Producer（如果有）新开启的事务将被拒绝。
-    恢复（Commit或Abort）之前的Producer未完成的事务（如果有）。
+    增加该PID对应的epoch。具有相同PID但epoch小于该epoch的其它Producer(如果有)新开启的事务将被拒绝。
+    恢复(Commit或Abort)之前的Producer未完成的事务(如果有)。
 
 注意：InitPidRequest的处理过程是同步阻塞的。一旦该调用正确返回，Producer即可开始新的事务。
 
@@ -304,7 +305,7 @@ void commitTransaction() throws ProducerFencedException;
 void abortTransaction() throws ProducerFencedException;
 ```
 
-&emsp; 消费者代码，将配置中的自动提交属性（auto.commit）进行关闭，而且在代码里面也不能使用手动提交commitSync( )或者commitAsync( )。  
+&emsp; 消费者代码，将配置中的自动提交属性(auto.commit)进行关闭，而且在代码里面也不能使用手动提交commitSync( )或者commitAsync( )。  
 
 #### 1.3.2.1. “只有写”应用程序示例  
 
@@ -355,7 +356,7 @@ public class TransactionProducer {
 }
 ```
 
-#### 1.3.2.2. 消费-生产并存（consume-Transform-Produce）  
+#### 1.3.2.2. 消费-生产并存(consume-Transform-Produce)  
 &emsp; 在一个事务中，既有生产消息操作又有消费消息操作，即常说的Consume-tansform-produce模式。如下实例代码  
 
 ```java
@@ -451,6 +452,6 @@ public class consumeTransformProduce {
 * PID与Sequence Number的引入实现了写操作的幂等性
 * 写操作的幂等性结合At Least Once语义实现了单一Session内的Exactly Once语义
 * Transaction Marker与PID提供了识别消息是否应该被读取的能力，从而实现了事务的隔离性
-* Offset的更新标记了消息是否被读取，从而将对读操作的事务处理转换成了对写（Offset）操作的事务处理
-* Kafka事务的本质是，将一组写操作（如果有）对应的消息与一组读操作（如果有）对应的Offset的更新进行同样的标记（即Transaction Marker）来实现事务中涉及的所有读写操作同时对外可见或同时对外不可见
+* Offset的更新标记了消息是否被读取，从而将对读操作的事务处理转换成了对写(Offset)操作的事务处理
+* Kafka事务的本质是，将一组写操作(如果有)对应的消息与一组读操作(如果有)对应的Offset的更新进行同样的标记(即Transaction Marker)来实现事务中涉及的所有读写操作同时对外可见或同时对外不可见
 * Kafka只提供对Kafka本身的读写操作的事务性，不提供包含外部系统的事务性
