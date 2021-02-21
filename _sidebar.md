@@ -257,6 +257,7 @@
     * [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
     * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md) 
 * SpringBoot  
+    * [学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
     * [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
     * [SpringBoot源码](/docs/microService/SpringBoot/SpringBootSource.md)  
         * [SpringBoot启动过程-SpringApplication初始化](/docs/microService/SpringBoot/SpringApplicationInit.md)  

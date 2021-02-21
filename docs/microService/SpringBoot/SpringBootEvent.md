@@ -17,6 +17,9 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "lime">SpringBoot内置的7种生命周期事件</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-7.png)  
+
 # 1. SpringBoot内置生命周期事件详解  
 &emsp; SpringBoot的生命周期事件，类结构图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-6.png)  
@@ -137,6 +140,16 @@ public abstract class SpringApplicationEvent extends ApplicationEvent {
 ## 1.4. ※※※SpringBoot具体的生命周期事件类  
 &emsp; **<font color = "lime">SpringBoot内置的7种生命周期事件</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-7.png)  
+
+|发布顺序|事件|用途|
+|---|---|---|
+|1|ApplicationStartingEvent||
+|2|ApplicationEnvironmentPreparedEvent||
+|3|ApplicationContextInitializedEvent||
+|4|ApplicationPreparedEvent||
+|5|ApplicationStaredEvent||
+|6|ApplicationReadyEvent||
+|7|ApplicationFailedEvent||
 
 ### 1.4.1. ApplicationStartingEvent  
 
