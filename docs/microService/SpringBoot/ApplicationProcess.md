@@ -1,6 +1,7 @@
 
 
-
+1. 启动对象的注入：在容器准备阶段prepareContext()会将@SpringBootApplication--->@Component对象注册到容器中。  
+2. 自动装配入口，从刷新容器refresh()开始 
 
 # 自动装配原理
 ​&emsp; 自动装配是在启动过程中完成。  
@@ -169,7 +170,7 @@ public ConfigurableApplicationContext run(String... args) {
 	}
 ```
 
-&emsp; 5、下面方法判断启动类中是否包含@Component注解，但是会神奇的发现我们的启动类中并没有该注解，继续更进发现MergedAnnotations类传入了一个参数SearchStrategy.TYPE_HIERARCHY，会查找继承关系中是否包含这个注解，@SpringBootApplication-->@SpringBootConfiguration-->@Configuration-->@Component,当找到@Component注解之后，会把该对象注册到AnnotatedBeanDefinitionReader对象中  
+&emsp; 5、下面方法判断启动类中是否包含@Component注解，但是在启动类中并没有该注解，继续更进发现MergedAnnotations类传入了一个参数SearchStrategy.TYPE_HIERARCHY，会查找继承关系中是否包含这个注解，@SpringBootApplication-->@SpringBootConfiguration-->@Configuration-->@Component，当找到@Component注解之后，会把该对象注册到AnnotatedBeanDefinitionReader对象中  
 
 ```java
 private boolean isComponent(Class<?> type) {
@@ -184,71 +185,73 @@ private boolean isComponent(Class<?> type) {
          && type.getConstructors() != null && type.getConstructors().length != 0;
 }
 
-	/**
-	 * Register a bean from the given bean class, deriving its metadata from
-	 * class-declared annotations.
-	 * 从给定的bean class中注册一个bean对象，从注解中找到相关的元数据
-	 */
-	private <T> void doRegisterBean(Class<T> beanClass, @Nullable String name,
-			@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
-			@Nullable BeanDefinitionCustomizer[] customizers) {
+/**
+	* Register a bean from the given bean class, deriving its metadata from
+	* class-declared annotations.
+	* 从给定的bean class中注册一个bean对象，从注解中找到相关的元数据
+	*/
+private <T> void doRegisterBean(Class<T> beanClass, @Nullable String name,
+		@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
+		@Nullable BeanDefinitionCustomizer[] customizers) {
 
-		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
-		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
-			return;
-		}
-
-		abd.setInstanceSupplier(supplier);
-		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
-		abd.setScope(scopeMetadata.getScopeName());
-		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
-
-		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
-		if (qualifiers != null) {
-			for (Class<? extends Annotation> qualifier : qualifiers) {
-				if (Primary.class == qualifier) {
-					abd.setPrimary(true);
-				}
-				else if (Lazy.class == qualifier) {
-					abd.setLazyInit(true);
-				}
-				else {
-					abd.addQualifier(new AutowireCandidateQualifier(qualifier));
-				}
-			}
-		}
-		if (customizers != null) {
-			for (BeanDefinitionCustomizer customizer : customizers) {
-				customizer.customize(abd);
-			}
-		}
-
-		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
-		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
-		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
+	AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
+	if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
+		return;
 	}
 
-	/**
-	 * Register the given bean definition with the given bean factory.
-	 * 注册主类，如果有别名可以设置别名
-	 */
-	public static void registerBeanDefinition(
-			BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)
-			throws BeanDefinitionStoreException {
+	abd.setInstanceSupplier(supplier);
+	ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
+	abd.setScope(scopeMetadata.getScopeName());
+	String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
-		// Register bean definition under primary name.
-		String beanName = definitionHolder.getBeanName();
-		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
-
-		// Register aliases for bean name, if any.
-		String[] aliases = definitionHolder.getAliases();
-		if (aliases != null) {
-			for (String alias : aliases) {
-				registry.registerAlias(beanName, alias);
+	AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
+	if (qualifiers != null) {
+		for (Class<? extends Annotation> qualifier : qualifiers) {
+			if (Primary.class == qualifier) {
+				abd.setPrimary(true);
+			}
+			else if (Lazy.class == qualifier) {
+				abd.setLazyInit(true);
+			}
+			else {
+				abd.addQualifier(new AutowireCandidateQualifier(qualifier));
 			}
 		}
 	}
+	if (customizers != null) {
+		for (BeanDefinitionCustomizer customizer : customizers) {
+			customizer.customize(abd);
+		}
+	}
 
+	BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
+	definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
+	BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
+}
+
+/**
+	* Register the given bean definition with the given bean factory.
+	* 注册主类，如果有别名可以设置别名
+	*/
+public static void registerBeanDefinition(
+		BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)
+		throws BeanDefinitionStoreException {
+
+	// Register bean definition under primary name.
+	String beanName = definitionHolder.getBeanName();
+	registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
+
+	// Register aliases for bean name, if any.
+	String[] aliases = definitionHolder.getAliases();
+	if (aliases != null) {
+		for (String alias : aliases) {
+			registry.registerAlias(beanName, alias);
+		}
+	}
+}
+```
+
+```java
 //@SpringBootApplication
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -277,29 +280,29 @@ public @interface Configuration {}
 
 &emsp; 当看完上述代码之后，只是完成了启动对象的注入，自动装配还没有开始，下面开始进入到自动装配。  
 
-&emsp; 6、自动装配入口，从刷新容器开始  
+&emsp; 6、**自动装配入口，从刷新容器开始**    
 
 ```java
 @Override
-	public void refresh() throws BeansException, IllegalStateException {
-		synchronized (this.startupShutdownMonitor) {
-			// Prepare this context for refreshing.
-			prepareRefresh();
+public void refresh() throws BeansException, IllegalStateException {
+	synchronized (this.startupShutdownMonitor) {
+		// Prepare this context for refreshing.
+		prepareRefresh();
 
-			// Tell the subclass to refresh the internal bean factory.
-			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+		// Tell the subclass to refresh the internal bean factory.
+		ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-			// Prepare the bean factory for use in this context.
-			prepareBeanFactory(beanFactory);
+		// Prepare the bean factory for use in this context.
+		prepareBeanFactory(beanFactory);
 
-			try {
-				// Allows post-processing of the bean factory in context subclasses.
-				postProcessBeanFactory(beanFactory);
+		try {
+			// Allows post-processing of the bean factory in context subclasses.
+			postProcessBeanFactory(beanFactory);
 
-				// Invoke factory processors registered as beans in the context.
-                // 此处是自动装配的入口
-				invokeBeanFactoryPostProcessors(beanFactory);
-            }
+			// Invoke factory processors registered as beans in the context.
+			// 此处是自动装配的入口
+			invokeBeanFactoryPostProcessors(beanFactory);
+		}
 ```
 
 &emsp; 7、在invokeBeanFactoryPostProcessors方法中完成bean的实例化和执行  
