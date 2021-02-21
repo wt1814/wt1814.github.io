@@ -8,16 +8,15 @@
             - [1.1.3.1. 原子写](#1131-原子写)
             - [1.1.3.2. 拒绝僵尸实例](#1132-拒绝僵尸实例)
             - [1.1.3.3. 读事务消息](#1133-读事务消息)
-    - [1.2. 幂等性和事务性的关系](#12-幂等性和事务性的关系)
-    - [1.3. ~~kafka事务原理~~](#13-kafka事务原理)
-        - [1.3.1. 基本概念](#131-基本概念)
-        - [1.3.2. ★★★事务流程](#132-★★★事务流程)
-    - [1.4. kafka事务使用](#14-kafka事务使用)
-        - [1.4.1. 事务相关配置](#141-事务相关配置)
-        - [1.4.2. Java API](#142-java-api)
-            - [1.4.2.1. “只有写”应用程序示例](#1421-只有写应用程序示例)
-            - [1.4.2.2. 消费-生产并存（consume-Transform-Produce）](#1422-消费-生产并存consume-transform-produce)
-    - [1.5. 总结](#15-总结)
+    - [1.2. ~~kafka事务原理~~](#12-kafka事务原理)
+        - [1.2.1. 基本概念](#121-基本概念)
+        - [1.2.2. ★★★事务流程](#122-★★★事务流程)
+    - [1.3. kafka事务使用](#13-kafka事务使用)
+        - [1.3.1. 事务相关配置](#131-事务相关配置)
+        - [1.3.2. Java API](#132-java-api)
+            - [1.3.2.1. “只有写”应用程序示例](#1321-只有写应用程序示例)
+            - [1.3.2.2. 消费-生产并存（consume-Transform-Produce）](#1322-消费-生产并存consume-transform-produce)
+    - [1.4. 总结](#14-总结)
 
 <!-- /TOC -->
 
@@ -74,8 +73,30 @@ kafka事务的应用场景
 &emsp; 为了保证事务特性，Consumer如果设置了isolation.level = read_committed，那么它只会读取已经提交了的消息。在Producer成功提交事务后，Kafka会将所有该事务中的消息的Transaction Marker从uncommitted标记为committed状态，从而所有的Consumer都能够消费。  
 
 
+## 1.2. ~~kafka事务原理~~
+<!-- 
+事务工作原理
+https://www.cnblogs.com/wangzhuxing/p/10125437.html#_label4
+https://blog.csdn.net/BeiisBei/article/details/104737298
+https://www.cnblogs.com/middleware/p/9477133.html
+-->
 
-## 1.2. 幂等性和事务性的关系  
+### 1.2.1. 基本概念
+&emsp; 为了支持事务，Kafka 0.11.0版本引入以下概念：  
+1. 事务协调者：类似于消费组负载均衡的协调者，每一个实现事务的生产端都被分配到一个事务协调者(Transaction Coordinator)。
+2. 引入一个内部Kafka Topic作为事务Log：类似于消费管理Offset的Topic，事务Topic本身也是持久化的，日志信息记录事务状态信息，由事务协调者写入。
+4. 引入TransactionId：不同生产实例使用同一个TransactionId表示是同一个事务，可以跨Session的数据幂等发送。当具有相同Transaction ID的新的Producer实例被创建且工作时，旧的且拥有相同Transaction ID的Producer将不再工作，避免事务僵死。
+5. 每个生产者增加一个epoch：用于标识同一个事务Id在一次事务中的epoch，每次初始化事务时会递增，从而让服务端可以知道生产者请求是否旧的请求。
+<!-- 
+8. 幂等性：保证发送单个分区的消息只会发送一次，不会出现重复消息。增加一个幂等性的开关enable.idempotence，可以独立与事务使用，即可以只开启幂等但不开启事务。  
+5. Producer ID：每个新的Producer在初始化的时候会被分配一个唯一的PID，这个PID对用户是不可见的。主要是为提供幂等性时引入的。
+6. Sequence Numbler。（对于每个PID，该Producer发送数据的每个\<Topic, Partition>都对应一个从0开始单调递增的Sequence Number。
+
+3. 引入控制消息(Control Messages)：这些消息是客户端产生的并写入到主题的特殊消息，但对于使用者来说不可见。它们是用来让broker告知消费者之前拉取的消息是否被原子性提交。
+-->
+
+
+&emsp; **幂等性和事务性的关系：**    
 &emsp; **两者关系**：事务属性实现前提是幂等性，即在配置事务属性transaction id时，必须还得配置幂等性；但是幂等性是可以独立使用的，不需要依赖事务属性。  
 
 * 幂等性引入了Porducer ID  
@@ -92,29 +113,7 @@ kafka事务的应用场景
 &emsp; 一个app有一个tid，同一个应用的不同实例PID是一样的，只是epoch的值不同。如：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-82.png)  
 
-## 1.3. ~~kafka事务原理~~
-<!-- 
-事务工作原理
-https://www.cnblogs.com/wangzhuxing/p/10125437.html#_label4
-https://blog.csdn.net/BeiisBei/article/details/104737298
-https://www.cnblogs.com/middleware/p/9477133.html
--->
-
-### 1.3.1. 基本概念
-&emsp; 为了支持事务，Kafka 0.11.0版本引入以下概念：  
-1. 事务协调者：类似于消费组负载均衡的协调者，每一个实现事务的生产端都被分配到一个事务协调者(Transaction Coordinator)。
-2. 引入一个内部Kafka Topic作为事务Log：类似于消费管理Offset的Topic，事务Topic本身也是持久化的，日志信息记录事务状态信息，由事务协调者写入。
-4. 引入TransactionId：不同生产实例使用同一个TransactionId表示是同一个事务，可以跨Session的数据幂等发送。当具有相同Transaction ID的新的Producer实例被创建且工作时，旧的且拥有相同Transaction ID的Producer将不再工作，避免事务僵死。
-5. 每个生产者增加一个epoch：用于标识同一个事务Id在一次事务中的epoch，每次初始化事务时会递增，从而让服务端可以知道生产者请求是否旧的请求。
-<!-- 
-8. 幂等性：保证发送单个分区的消息只会发送一次，不会出现重复消息。增加一个幂等性的开关enable.idempotence，可以独立与事务使用，即可以只开启幂等但不开启事务。  
-5. Producer ID：每个新的Producer在初始化的时候会被分配一个唯一的PID，这个PID对用户是不可见的。主要是为提供幂等性时引入的。
-6. Sequence Numbler。（对于每个PID，该Producer发送数据的每个\<Topic, Partition>都对应一个从0开始单调递增的Sequence Number。
-
-3. 引入控制消息(Control Messages)：这些消息是客户端产生的并写入到主题的特殊消息，但对于使用者来说不可见。它们是用来让broker告知消费者之前拉取的消息是否被原子性提交。
--->
-
-### 1.3.2. ★★★事务流程  
+### 1.2.2. ★★★事务流程  
 <!-- 
 https://www.cnblogs.com/middleware/p/9477133.html
 -->
@@ -255,12 +254,12 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
 另外，如果事务特性未开启，InitPidRequest可发送至任意Broker，并且会得到一个全新的唯一的PID。该Producer将只能使用幂等特性以及单一Session内的事务特性，而不能使用跨Session的事务特性。
 -->
 
-## 1.4. kafka事务使用  
+## 1.3. kafka事务使用  
 &emsp; 通常Kafka的事务分为 生产者事务Only、消费者&生产者事务。一般来说默认消费者消费的消息的级别是read_uncommited数据，这有可能读取到事务失败的数据，所有在开启生产者事务之后，需要用户设置消费者的事务隔离级别。    
 &emsp; isolation.level	=  read_uncommitted 默认。该选项有两个值read_committed|read_uncommitted，如果开始事务控制，消费端必须将事务的隔离级别设置为read_committed  
 &emsp; 开启的生产者事务的时候，只需要指定transactional.id属性即可，一旦开启了事务，默认生产者就已经开启了幂等性。但是要求"transactional.id"的取值必须是唯一的，同一时刻只能有一个"transactional.id"存储在，其他的将会被关闭。  
 
-### 1.4.1. 事务相关配置  
+### 1.3.1. 事务相关配置  
 1. Broker configs
     1. transactional.id.timeout.ms：在ms中，事务协调器在生产者TransactionalId提前过期之前等待的最长时间，并且没有从该生产者TransactionalId接收到任何事务状态更新。默认是604800000(7天)。这允许每周一次的生产者作业维护它们的id
     2. max.transaction.timeout.ms：事务允许的最大超时。如果客户端请求的事务时间超过此时间，broke将在InitPidRequest中返回InvalidTransactionTimeout错误。这可以防止客户机超时过大，从而导致用户无法从事务中包含的主题读取内容。  
@@ -282,7 +281,7 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
     &emsp; read_uncommitted:以偏移顺序使用已提交和未提交的消息。  
     &emsp; read_committed:仅以偏移量顺序使用非事务性消息或已提交事务性消息。为了维护偏移排序，这个设置意味着我们必须在使用者中缓冲消息，直到看到给定事务中的所有消息。  
 
-### 1.4.2. Java API
+### 1.3.2. Java API
 
 
 <!-- 
@@ -307,7 +306,7 @@ void abortTransaction() throws ProducerFencedException;
 
 &emsp; 消费者代码，将配置中的自动提交属性（auto.commit）进行关闭，而且在代码里面也不能使用手动提交commitSync( )或者commitAsync( )。  
 
-#### 1.4.2.1. “只有写”应用程序示例  
+#### 1.3.2.1. “只有写”应用程序示例  
 
 ```java
 package com.example.demo.transaction;
@@ -356,7 +355,7 @@ public class TransactionProducer {
 }
 ```
 
-#### 1.4.2.2. 消费-生产并存（consume-Transform-Produce）  
+#### 1.3.2.2. 消费-生产并存（consume-Transform-Produce）  
 &emsp; 在一个事务中，既有生产消息操作又有消费消息操作，即常说的Consume-tansform-produce模式。如下实例代码  
 
 ```java
@@ -448,7 +447,7 @@ public class consumeTransformProduce {
 }
 ```
 
-## 1.5. 总结  
+## 1.4. 总结  
 * PID与Sequence Number的引入实现了写操作的幂等性
 * 写操作的幂等性结合At Least Once语义实现了单一Session内的Exactly Once语义
 * Transaction Marker与PID提供了识别消息是否应该被读取的能力，从而实现了事务的隔离性
