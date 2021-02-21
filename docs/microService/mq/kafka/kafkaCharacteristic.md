@@ -79,6 +79,7 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 [kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
 
 ## 1.3. 可靠性
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-118.png)  
 
 ### 1.3.1. exactly once
 
@@ -101,7 +102,9 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 
 
 at most once，最多一次，可以理解为可能发生消息丢失；at least once，至少一次，可以理解为可能发生重复消费。kafka 通过 ack 的配置来实现这两种。  
-&emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。exactly once也被称为幂等性。    
+&emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。exactly once也被称为幂等性。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-119.png)  
 
 #### 1.3.1.2. ~~消息重复消费~~  
 <!-- 

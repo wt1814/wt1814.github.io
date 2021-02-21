@@ -92,6 +92,8 @@ https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-94.png)  
 
 ## 1.3. 服务端Leader的选举(ISR副本)
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-117.png)  
+
 ### 1.3.1. ISR副本
 <!-- 
 只有 Leader 可以对外提供读服务，那如何选举 Leader

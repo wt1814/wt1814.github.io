@@ -145,6 +145,9 @@ private void maybeWaitForPid() {
 
 ### 1.2.3. 幂等性的应用实例  
 &emsp; **开启幂等性：** 要启用幂等性，只需要将Producer的参数中enable.idompotence设置为true即可。此时会默认把acks设置为all，所以不需要再设置acks属性。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-116.png)  
+
 &emsp; **编码示例：**  
 
 ```java
