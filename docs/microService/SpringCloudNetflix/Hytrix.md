@@ -7,22 +7,22 @@
     - [1.3. Hystrix原理](#13-hystrix原理)
         - [1.3.1. Hystrix工作流程](#131-hystrix工作流程)
         - [1.3.2. 熔断与降级](#132-熔断与降级)
-            - [1.3.2.1. 熔断触发降级（断路器原理）](#1321-熔断触发降级断路器原理)
+            - [1.3.2.1. 熔断触发降级(断路器原理)](#1321-熔断触发降级断路器原理)
             - [1.3.2.2. 请求超时触发降级](#1322-请求超时触发降级)
             - [1.3.2.3. 资源隔离触发降级（依赖隔离）](#1323-资源隔离触发降级依赖隔离)
-    - [1.4. Hystrix配置信息](#14-hystrix配置信息)
-    - [1.5. Hystrix使用详解](#15-hystrix使用详解)
-        - [1.5.1. 创建请求命令](#151-创建请求命令)
-        - [1.5.2. ~~定义服务降级~~](#152-定义服务降级)
-        - [1.5.3. 异常处理](#153-异常处理)
-            - [1.5.3.1. 异常获取](#1531-异常获取)
-        - [1.5.4. 命令名称、分组及线程池划分](#154-命令名称分组及线程池划分)
-        - [1.5.5. 请求缓存](#155-请求缓存)
-        - [1.5.6. 请求合并](#156-请求合并)
-    - [1.6. Hystrix仪表盘](#16-hystrix仪表盘)
-    - [1.7. Turbine集群监控](#17-turbine集群监控)
-        - [1.7.1. 构建监控聚合服务](#171-构建监控聚合服务)
-        - [1.7.2. 与消息代理结合](#172-与消息代理结合)
+    - [1.4. Hystrix使用教程](#14-hystrix使用教程)
+        - [1.4.1. Hystrix配置信息](#141-hystrix配置信息)
+        - [1.4.2. 创建请求命令](#142-创建请求命令)
+        - [1.4.3. ~~定义服务降级~~](#143-定义服务降级)
+        - [1.4.4. 异常处理](#144-异常处理)
+            - [1.4.4.1. 异常获取](#1441-异常获取)
+        - [1.4.5. 命令名称、分组及线程池划分](#145-命令名称分组及线程池划分)
+        - [1.4.6. 请求缓存](#146-请求缓存)
+        - [1.4.7. 请求合并](#147-请求合并)
+        - [1.4.8. Hystrix仪表盘](#148-hystrix仪表盘)
+    - [1.5. Turbine集群监控](#15-turbine集群监控)
+        - [1.5.1. 构建监控聚合服务](#151-构建监控聚合服务)
+        - [1.5.2. 与消息代理结合](#152-与消息代理结合)
 
 <!-- /TOC -->
                  
@@ -90,7 +90,7 @@ https://mp.weixin.qq.com/s/nCifoTiqhBT2Eai2UJinag
 ### 1.3.2. 熔断与降级  
 &emsp; 熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。 Hystrix中有三种降级方案(fallback，回退方案/降级处理方案)。
 
-#### 1.3.2.1. 熔断触发降级（断路器原理）
+#### 1.3.2.1. 熔断触发降级(断路器原理)
 <!-- 
 https://mp.weixin.qq.com/s/mVQUek3m7F-9rpqpHIGrGA
 -->
@@ -184,7 +184,16 @@ publicStringqueryOrderTimeout(){
     
 &emsp; **<font color = "red">信号量的开销比线程池的开销小，但是它不能设置超时和实现异步访问。所以只有在依赖服务是足够可靠的情况下才使用信号量。</font>**   
 
-## 1.4. Hystrix配置信息  
+## 1.4. Hystrix使用教程  
+&emsp; 参考<font color = "red">**《Spring Cloud微服务实战》** </font>  
+
+&emsp; 可以使用Hystrix 中的核心注解@HystrixCommand, 通过它创建HystrixCommand 的实现。同时利用 fallback 属性指定服务降级的实现方法。  
+&emsp; 然而这些还只是 Hystrix 使用的一小部分，在实现一个大型分布式系统时，往往还需要更多高级的配置功能。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-41.png)  
+
+
+### 1.4.1. Hystrix配置信息  
 
 * command属性  
 * collapser属性  
@@ -222,41 +231,33 @@ hystrix:
       coreSize: 10
 ```
 
-## 1.5. Hystrix使用详解  
-&emsp; 参考<font color = "red">**《Spring Cloud微服务实战》** </font>  
 
-&emsp; 可以使用Hystrix 中的核心注解@HystrixCommand, 通过它创建HystrixCommand 的实现。同时利用 fallback 属性指定服务降级的实现方法。  
-&emsp; 然而这些还只是 Hystrix 使用的一小部分，在实现一个大型分布式系统时，往往还需要更多高级的配置功能。  
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-41.png)  
-
-
-### 1.5.1. 创建请求命令  
+### 1.4.2. 创建请求命令  
 &emsp; Hystrix命令是指HystrixCommand，它可以用来封装具体的依赖服务调用逻辑。  
 
-### 1.5.2. ~~定义服务降级~~  
+### 1.4.3. ~~定义服务降级~~  
 &emsp; fallback 是Hystrix 命令执行失败时使用的后备方法， 用来实现服务的降级处理逻辑。  
 &emsp; 若熔断方法实现的并不是一个稳定逻辑，它依然可能会发生异常， 那么也可以为它添加@HystrixCommand注解以生成 Hystrix 命令， 同时使用 fallbackMethod来指定服务降级逻辑。  
 
-### 1.5.3. 异常处理  
+### 1.4.4. 异常处理  
 
-#### 1.5.3.1. 异常获取  
+#### 1.4.4.1. 异常获取  
 &emsp; 注解配置方式可以实现异常的获取。 它的实现也非常简单，只需要在 fallback实现方法的参数中增加Throwable e 对象的定义， 这样在方法内部就可以获取触发服务降级的具体异常内容了。  
 
 
-### 1.5.4. 命令名称、分组及线程池划分  
+### 1.4.5. 命令名称、分组及线程池划分  
 &emsp; 通过设置命令组， Hystix会根据组来组织和统计命令的告警、仪表盘等信息。  
 &emsp; 如果 Hystrix 的线程池分配仅仅依靠命令组来划分， 那么它就显得不够灵活了， 所以Hystrix 还提供了 HystrixThreadPoolKey 来对线程池进行设置， 通过它可以实现更细粒度的线程池划分。  
 
-### 1.5.5. 请求缓存  
+### 1.4.6. 请求缓存  
 &emsp; 在高并发的场景之下， Hystrix 中提供了请求缓存的功能， 可以方便地开启和使用请求缓存来优化系统， 达到减轻高并发时的请求线程消耗、 降低请求响应时间的效果。  
 
-### 1.5.6. 请求合并  
+### 1.4.7. 请求合并  
 &emsp; 微服务架构中的依赖通常通过远程调用实现，而远程调用中最常见的问题就是通信消耗与连接数占用。在高并发的情况之下，因通信次数的增加，总的通信时间消耗将会变得不那么理想。同时，因为依赖服务的线程池资源有限， 将出现排队等待与响应延迟的清况。为了优化这两个问题，Hystrix提供了HystrixCollapser来实现请求的合并， 以减少通信消耗和线程数的占用。  
 &emsp; HystrixCollapser 实现 了在 HystrixCommand 之前放置一个合并处理器， 将处于一个很短的时间窗（默认10毫秒）内对同一依赖服务的多个请求进行整合并以批量方式发起请求的功能（服务提供方也需要提供相应的批量实现接口）。 通过 HystrixCollapser的封装，开发者不需要关注线程合并的细节过程， 只需关注批量化服务和处理。  
 
-----
-## 1.6. Hystrix仪表盘  
+
+### 1.4.8. Hystrix仪表盘  
 &emsp; Hystrix Dashboard主要用来实时监控Hystrix的各项指标信息。Hystrix的数据统计是采用的滑动窗口。  
 &emsp; 访问Hystrix仪表盘地址：http://ip:port/hystrix  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-5.png)  
@@ -277,10 +278,10 @@ hystrix:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-6.png)  
 
 -----
-## 1.7. Turbine集群监控  
-### 1.7.1. 构建监控聚合服务  
+## 1.5. Turbine集群监控  
+### 1.5.1. 构建监控聚合服务  
 &emsp; 微服务集群中，Hystrix的度量信息通过Turbine来汇集监控信息，并将聚合后的信息提供给Hystrix Dashboard来集中展示和监控。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-7.png)  
 
-### 1.7.2. 与消息代理结合  
+### 1.5.2. 与消息代理结合  
 &emsp; Spring Cloud在封装Turbine的时候， 还封装了基于消息代理的收集实现。 所以， 可以将所有需要收集的监控信息都输出到消息代理中，然后Turbine服务再从消息代理中异步获取这些监控信息， 最后将这些监控信息聚合并输出到Hystrix Dashboard中。 通过引入消息代理。  
