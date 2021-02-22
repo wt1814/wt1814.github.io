@@ -24,7 +24,7 @@ https://mp.weixin.qq.com/s/hR8hlJyGxnn3wIfBhlNbuQ
 
 ## 1.1. SPI简介  
 &emsp; **<font color = "red">SPI全称为Service Provider Interface，是一种服务发现机制。SPI的本质是将接口实现类的全限定名配置在文件中，并由服务加载器读取配置文件，加载实现类。这样可以在运行时，动态的为接口替换实现类。</font>** 正因此特性，可以很容易的通过SPI机制为程序提供拓展功能。  
-&emsp; SPI机制在第三方框架中也有所应用，比如Dubbo就是通过SPI机制加载所有的组件。不过，Dubbo并未使用Java原生的SPI机制，而是对其进行了增强，使其能够更好的满足需求。Dubbo 改进了 JDK 标准的 SPI 的以下问题：  
+&emsp; SPI机制在第三方框架中也有所应用，比如Dubbo就是通过SPI机制加载所有的组件。不过，Dubbo并未使用Java原生的SPI机制，而是对其进行了增强，使其能够更好的满足需求。**<font color = "blue">Dubbo改进了JDK标准的SPI的以下问题：</font>**  
 
 * JDK 标准的SPI会一次性实例化扩展点所有实现，如果有扩展实现初始化很耗时，但如果没用上也加载，会很浪费资源。
 * 如果扩展点加载失败，连扩展点的名称都拿不到了。比如：JDK标准的ScriptEngine，通过getName()获取脚本类型的名称，但如果RubyScriptEngine因为所依赖的jruby.jar 不存在，导致RubyScriptEngine类加载失败，这个失败原因被吃掉了，和ruby对应不起来，当用户执行ruby脚本时，会报不支持ruby，而不是真正失败的原因。  

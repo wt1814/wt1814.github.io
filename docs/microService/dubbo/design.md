@@ -32,6 +32,10 @@ http://dubbo.apache.org/zh/docs/v2.7/dev/design/
 * 图中蓝色虚线为初始化过程，即启动时组装链，红色实线为方法调用过程，即运行时调时链，紫色三角箭头为继承，可以把子类看作父类的同一个节点，线上的文字为调用的方法。  
 
 ## 1.2. 各层说明  
+&emsp; 从大的范围来说，dubbo分为三层，business业务逻辑层由开发人员来提供接口和实现还有一些配置信息，RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理，remoting则是对网络传输协议和数据转换的封装。  
+&emsp; 划分到更细的层面，就是图中的10层模式，整个分层依赖由上至下，除开business业务逻辑之外，其他的几层都是SPI机制。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-51.png)  
+
 &emsp; **各层说明：**  
 
 * config 配置层：对外配置接口，以 ServiceConfig, ReferenceConfig 为中心，可以直接初始化配置类，也可以通过 spring 解析配置生成配置类
@@ -53,12 +57,6 @@ http://dubbo.apache.org/zh/docs/v2.7/dev/design/
 * Proxy 层封装了所有接口的透明化代理，而在其它层都以 Invoker 为中心，只有到了暴露给用户使用时，才用 Proxy 将 Invoker 转成接口，或将接口实现转成 Invoker，也就是去掉 Proxy 层 RPC 是可以 Run 的，只是不那么透明，不那么看起来像调本地服务一样调远程服务。  
 &emsp; 而Remoting实现是Dubbo协议的实现，如果选择RMI协议，整个Remoting都不会用上，Remoting内部再划为Transport传输层和Exchange信息交换层，Transport 层只负责单向消息传输，是对 Mina, Netty, Grizzly 的抽象，它也可以扩展 UDP 传输，而 Exchange 层是在传输层之上封装了 Request-Response 语义。
 * Registry 和 Monitor 实际上不算一层，而是一个独立的节点，只是为了全局概览，用层的方式画在一起。  
-
-----
-&emsp; 从大的范围来说，dubbo分为三层，business业务逻辑层由我们自己来提供接口和实现还有一些配置信息，RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理，remoting则是对网络传输协议和数据转换的封装。  
-&emsp; 划分到更细的层面，就是图中的10层模式，整个分层依赖由上至下，除开business业务逻辑之外，其他的几层都是SPI机制。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-51.png)  
-
 
 ## 1.4. 模块分包  
 <!-- 

@@ -88,7 +88,7 @@
 |协议名称|实现描述|连接|适用范围|使用场景|
 |---|---|---|---|---|
 |dubbo	|传输：mina、netty、grizzy <br/>序列化：dubbo、hessian2、java、json|dubbo缺省，采用单一长连接和NIO异步通讯，传输协议TCP|1.传入传出参数数据包较小<br/>2.消费者比提供者多<br/>3.常规远程服务方法调用<br/>4.不适合传送大数据量的服务，比如文件、传视频|常规远程服务方法调用|
-|rmi|传输：java  rmi<br/>序列化：java 标准序列化（实现ser接口）|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：TCP/IP<br/>4.传输方式：BIO|1.常规RPC调用<br/>2.与原RMI客户端互操作<br/>3.可传文件<br/>4.不支持防火墙穿|常规远程服务方法调用，与原生RMI服务互操作|
+|rmi|传输：java  rmi<br/>序列化：java 标准序列化(实现ser接口)|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：TCP/IP<br/>4.传输方式：BIO|1.常规RPC调用<br/>2.与原RMI客户端互操作<br/>3.可传文件<br/>4.不支持防火墙穿|常规远程服务方法调用，与原生RMI服务互操作|
 |hessian|传输：Serverlet容器<br/>序列化：hessian二进制序列化|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|1.提供者比消费者多<br/>2.可传文件<br/>3.跨语言传输| 需同时给应用程序和浏览器JS使用的服务。|
 |http|传输：Servlet容器<br/>序列化：表单序列化|	1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|1.提供者多余消费者<br/>2.数据包混合	|需同时给应用程序和浏览器JS使用的服务。|
 |webservice	|传输：HTTP<br/>序列化：SOAP文件序列化|1.连接个数：多连接<br/>2.连接方式：短连接<br/>3.传输协议：HTTP<br/>4.传输方式：同步传输|	1.系统集成<br/>2.跨语言调用|系统集成，跨语言调用|
@@ -105,7 +105,7 @@
 
 ### 1.1.8. ※※※负载均衡  
 <!-- https://mp.weixin.qq.com/s/xkwwAUV9ziabPNUMEr5DPQ -->
-* <font color = "red">Random（缺省），随机，按权重设置随机概率。</font>在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。  
+* <font color = "red">Random(缺省)，随机，按权重设置随机概率。</font>在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。  
 * <font color = "red">RoundRobin，轮循，按公约后的权重设置轮循比率。</font>  
 &emsp; 轮询负载均衡算法的不足：存在慢的提供者累积请求的问题，比如：第二台机器很慢，但没挂，当请求调到第二台时就卡在那，久而久之，所有请求都卡在调到第二台上。  
 * <font color = "red">LeastActive，最少活跃调用数，活跃数指调用前后计数差。</font>相同活跃数的随机。使慢的提供者收到更少请求，因为越慢的提供者的调用前后计数差会越大。  
@@ -118,7 +118,7 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-13.png)   
 &emsp; <font color = "red">在集群调用失败时，Dubbo 提供了多种容错方案，缺省为 failover 重试。</font>下面列举dubbo支持的容错策略：  
 
-* Failover（默认） - 失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过 retries="2" 来设置重试次数(不含第一次)  
+* Failover(默认) - 失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过 retries="2" 来设置重试次数(不含第一次)。  
 * Failfast - 快速失败，只发起一次调用，失败立即报错。通常用于非幂等性的写操作，比如新增记录。
 * Failsafe - 失败安全，出现异常时，直接忽略。通常用于写入审计日志等操作。  
 * Failback - 失败自动恢复，后台记录失败请求，定时重发。通常用于消息通知操作。  
@@ -147,7 +147,7 @@ Broadcast Cluster广播模式：逐个调用每个provider，如果其中一台�
 &emsp; Dubbo是SOA时代的产物，它的关注点主要在于服务的调用，流量分发、流量监控和熔断。  
 &emsp; Spring Cloud诞生于微服务架构时代，考虑的是微服务治理的方方面面，另外由于依托了Spirng、Spirng Boot的优势之上。  
 
-* 两个框架在开始目标就不一致：<font color = "red">Dubbo 定位服务治理；Spirng Cloud是一个生态。</font>  
+* 两个框架在开始目标就不一致：<font color = "red">Dubbo定位服务治理；Spirng Cloud是一个生态。</font>  
 * <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "lime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-14.png)  
 

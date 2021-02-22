@@ -73,7 +73,7 @@
         <dubbo:registry check="false" />
 
 ## 1.3. 延迟暴露  
-&emsp; 如果服务需要预热时间，比如初始化缓存，等待相关资源就位等，可以使用 delay进行延迟暴露。  
+&emsp; 如果服务需要预热时间，比如初始化缓存，等待相关资源就位等，可以使用delay进行延迟暴露。  
 
 * 延迟5秒暴露服务
 
@@ -282,7 +282,7 @@
 
 ## 1.15. 回声测试  
 &emsp; 回声测试用于检测服务是否可用，回声测试按照正常请求流程执行，能够测试整个调用是否通畅，可用于监控。  
-&emsp; 所有服务自动实现 EchoService 接口，只需将任意服务引用强制转型为 EchoService，即可使用。  
+&emsp; 所有服务自动实现 EchoService 接口，只需将任意服务引用强制转型为EchoService，即可使用。  
 
     <dubbo:reference id="memberService" interface="com.xxx.MemberService" />
 
