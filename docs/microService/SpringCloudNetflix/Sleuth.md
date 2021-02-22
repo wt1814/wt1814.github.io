@@ -23,7 +23,7 @@
             - [1.5.2.1. 消息中间件收集](#1521-消息中间件收集)
         - [1.5.3. 数据持久化](#153-数据持久化)
         - [1.5.4. API接口](#154-api接口)
-    - [SpringMVC、dubbo集成zipkin](#springmvcdubbo集成zipkin)
+    - [1.6. SpringMVC、dubbo集成zipkin](#16-springmvcdubbo集成zipkin)
 
 <!-- /TOC -->
 
@@ -361,7 +361,7 @@ Client Sent
 |/trace/{traceid}|GET|根据Trace ID获取指定跟踪信息的Span列表|
 |/traces/|GET|根据指定条件查询并返回符合条件的trace清单|
 
-## SpringMVC、dubbo集成zipkin   
+## 1.6. SpringMVC、dubbo集成zipkin   
 <!-- 
 springMVC、boot、dubbo集成zipkin做链路追踪
 https://www.jianshu.com/p/6f0b7b12893f?spm=a2c6h.13066369.0.0.71523c5at7UtnA&from=timeline&isappinstalled=0
