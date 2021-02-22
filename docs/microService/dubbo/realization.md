@@ -14,6 +14,8 @@
 &emsp; **<font color = "lime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
 &emsp; 在ServiceConfig.export()或ReferenceConfig.get()初始化时，将Bean对象转换 URL格式，所有Bean属性转成URL的参数。然后将URL传给协议扩展点，基于扩展点的扩展点自适应机制，根据URL的协议头，进行不同协议的服务暴露或引用。  
 
+&emsp; 注意：URL是[Dubbo公共契约](https://dubbo.apache.org/zh/docs/v2.7/dev/contract/)之一。    
+
 ## 1.2. 暴露服务  
 &emsp; 下图是服务提供者暴露服务的主过程：(包含3个步骤)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-29.png)   

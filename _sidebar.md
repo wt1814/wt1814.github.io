@@ -285,7 +285,6 @@
     * [Dubbo详解](/docs/microService/dubbo/DubboExplanate.md)  
         * [Dubbo框架设计](/docs/microService/dubbo/design.md)  
         * [Dubbo实现细节](/docs/microService/dubbo/realization.md)  
-        * [公共契约](/docs/microService/dubbo/PublicContract.md)  
         * [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
             * [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
             * [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
