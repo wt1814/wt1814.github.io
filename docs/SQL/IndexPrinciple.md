@@ -16,6 +16,11 @@
 <!-- /TOC -->
 
 # 1. 索引底层原理  
+<!-- 
+ 再有人问你MySQL索引原理，就把这篇文章甩给他！ 
+ https://mp.weixin.qq.com/s/9yeModGuGvDu5S0bW9sU6w
+-->
+
 &emsp; 不同的存储引擎支持的索引类型不一样：  
 
 * InnoDB支持事务，支持行级别锁定，支持B-tree、Full-text等索引，不支持Hash索引；  

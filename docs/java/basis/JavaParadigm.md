@@ -35,6 +35,8 @@ https://mp.weixin.qq.com/s/0AZY4XFO6AOyuihshKYtzQ
 
 面试官又来问：List<String>能否转化为List<Object>? 
 https://mp.weixin.qq.com/s/UWeS1F1jCfyBvRlJPazbZA
+Java的“泛型”特性，你以为自己会了？
+https://mp.weixin.qq.com/s/skxnaaPz2eN1YASUlfwMDA
 
 -->
 

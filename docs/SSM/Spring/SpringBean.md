@@ -14,6 +14,9 @@
 <!-- 
 https://mp.weixin.qq.com/s/DC_PH_PXpbNgDQuGslTTTg
 https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
+ Spring Bean生命周期 
+ https://mp.weixin.qq.com/s/ruSkC0K7bWXuciHFPNiupg
+
 -->
 
 ## 1.1. ★★★SpringBean生命周期的概要流程  
