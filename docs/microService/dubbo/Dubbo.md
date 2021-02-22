@@ -29,11 +29,11 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-11.png)   
 &emsp; Dubbo中5个角色：Provider、Consumer、Registry、Monitor、Container。  
 
-* Provider暴露服务方称之为“服务提供者”。服务提供者向注册中心注册其提供的服务，并汇报调用时间到监控中心，此时间不包含网络开销。  
-* Consumer调用远程服务方称之为“服务消费者”。服务消费者向注册中心获取服务提供者地址列表，并根据负载算法直接调用提供者，同时汇报调用时间到监控中心，此时间包含网络开销。  
-* Registry服务注册与发现的中心目录服务称之为“服务注册中心”。注册中心负责服务地址的注册与查找，相当于目录服务。服务提供者和消费者只在启动时与注册中心交互，注册中心不转发请求，压力较小。  
-* Monitor统计服务的调用次数和调用时间的日志服务称之为“服务监控中心”。监控中心负责统计各服务调用次数，调用时间等，统计先在内存汇总后每分钟一次发送到监控中心服务器，并以报表展示。  
-* Container服务运行容器。 
+* Provider，暴露服务方称之为“服务提供者”。服务提供者向注册中心注册其提供的服务，并汇报调用时间到监控中心，此时间不包含网络开销。  
+* Consumer，调用远程服务方称之为“服务消费者”。服务消费者向注册中心获取服务提供者地址列表，并根据负载算法直接调用提供者，同时汇报调用时间到监控中心，此时间包含网络开销。  
+* Registry，服务注册与发现的中心目录服务称之为“服务注册中心”。注册中心负责服务地址的注册与查找，相当于目录服务。服务提供者和消费者只在启动时与注册中心交互，注册中心不转发请求，压力较小。  
+* Monitor，统计服务的调用次数和调用时间的日志服务称之为“服务监控中心”。监控中心负责统计各服务调用次数，调用时间等，统计先在内存汇总后每分钟一次发送到监控中心服务器，并以报表展示。  
+* Container，服务运行容器。 
 
 &emsp; **调用关系：**  
 1. (start)服务容器Container负责启动，加载，运行服务提供者。  
@@ -51,11 +51,11 @@
 
 -----
 &emsp; Dubbo的工作原理：  
-1. 服务启动的时候，provider和consumer根据配置信息，连接到注册中心register，分别向注册中心注册和订阅服务  
-2. register根据服务订阅关系，返回provider信息到consumer，同时consumer会把provider信息缓存到本地。如果信息有变更，consumer会收到来自register的推送  
-3. consumer生成代理对象，同时根据负载均衡策略，选择一台provider，同时定时向monitor记录接口的调用次数和时间信息  
-4. 拿到代理对象之后，consumer通过代理对象发起接口调用  
-5. provider收到请求后对数据进行反序列化，然后通过代理调用具体的接口实现  
+1. 服务启动的时候，provider和consumer根据配置信息，连接到注册中心register，分别向注册中心注册和订阅服务。  
+2. register根据服务订阅关系，返回provider信息到consumer，同时consumer会把provider信息缓存到本地。如果信息有变更，consumer会收到来自register的推送。  
+3. consumer生成代理对象，同时根据负载均衡策略，选择一台provider，同时定时向monitor记录接口的调用次数和时间信息。  
+4. 拿到代理对象之后，consumer通过代理对象发起接口调用。  
+5. provider收到请求后对数据进行反序列化，然后通过代理调用具体的接口实现。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-52.png)   
 

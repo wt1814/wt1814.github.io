@@ -11,7 +11,7 @@
         - [1.5.2. 序列化](#152-序列化)
         - [1.5.3. 通信](#153-通信)
             - [1.5.3.1. RPC中的通信协议](#1531-rpc中的通信协议)
-        - [1.5.4. 服务暴露（服务注册中心）](#154-服务暴露服务注册中心)
+        - [1.5.4. 服务暴露(服务注册中心)](#154-服务暴露服务注册中心)
     - [1.6. 流行的RPC框架](#16-流行的rpc框架)
 
 <!-- /TOC -->
@@ -47,7 +47,7 @@
 <!--
 https://blog.csdn.net/u013474436/article/details/105059839
 
-RPC（三）《Implementing Remote Procedure Calls》译文
+RPC(三)《Implementing Remote Procedure Calls》译文
 https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&utm_source=weixin
 -->
 &emsp; Nelson的论文中指出 **<font color = "red">实现RPC的程序包括5个部分：1. User、2. User-stub、3. RPCRuntime(RPC通信包)、4. Server-stub、5. Server。</font>**  
@@ -83,7 +83,7 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 &emsp; 完整的RPC过程，如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-10.png)  
 
-* 服务调用方（Client）调用以本地调用方式调用服务；
+* 服务调用方(Client)调用以本地调用方式调用服务；
 * Client stub负责将方法名、参数组装成消息体并进行序列化，找到服务地址，将消息发送到服务端；
 * Server stub收到消息后进行反序列化后调用本地的服务；
 * 本地服务执行，将结果返回给Server stub；
@@ -101,8 +101,8 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 
 &emsp; 如下是各个部分的详细职责：  
 
-1. RpcServer：负责导出（export）远程接口  
-2. RpcClient：负责导入（import）远程接口的代理实现  
+1. RpcServer：负责导出(export)远程接口  
+2. RpcClient：负责导入(import)远程接口的代理实现  
 3. RpcProxy：远程接口的代理实现  
 4. RpcInvoker：  
     * 客户方实现：负责编码调用信息和发送调用请求到服务方并等待调用结果返回  
@@ -113,16 +113,16 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 8. RpcProcessor：负责在服务方控制调用过程，包括管理调用线程池、超时时间等  
 9. RpcChannel：数据传输通道  
 
-&emsp; RPC的设计由Client，Client stub，Network，Server stub，Server构成。其中Client就是用来调用服务的，Cient stub是用来把调用的方法和参数序列化的（因为要在网络中传输，必须要把对象转变成字节），Network用来传输这些信息到Server stub，Server stub用来把这些信息反序列化的，Server就是服务的提供者，最终调用的就是Server提供的方法。  
+&emsp; RPC的设计由Client，Client stub，Network，Server stub，Server构成。其中Client就是用来调用服务的，Cient stub是用来把调用的方法和参数序列化的(因为要在网络中传输，必须要把对象转变成字节)，Network用来传输这些信息到Server stub，Server stub用来把这些信息反序列化的，Server就是服务的提供者，最终调用的就是Server提供的方法。  
 
 1. Client像调用本地服务似的调用远程服务；
 2. Client stub接收到调用后，将方法、参数序列化
 3. 客户端通过sockets将消息发送到服务端
-4. Server stub 收到消息后进行解码（将消息对象反序列化）
+4. Server stub 收到消息后进行解码(将消息对象反序列化)
 5. Server stub 根据解码结果调用本地的服务本地服务执行(对于服务端来说是本地执行)并将结果返回给Server stub
-6. Server stub将返回结果打包成消息（将结果消息对象序列化）
+6. Server stub将返回结果打包成消息(将结果消息对象序列化)
 7. 服务端通过sockets将消息发送到客户端
-8. Client stub接收到结果消息，并进行解码（将结果消息发序列化）
+8. Client stub接收到结果消息，并进行解码(将结果消息发序列化)
 9. 客户端得到最终结果。
 
 ## 1.4. RPC框架需要解决的问题？  
@@ -189,7 +189,7 @@ RESTful：面向资源，这里的资源可以是一段文字、一个文件、�
 
 HTTP 和 RPC 并不是两个并行的概念，虽然很多书或文章，都介绍 HTTP 和 RPC 是在“应用层”，但实际上可以把应用层细分成多层，RPC 的所处的位置是高于 HTTP 的；HTTP 是网络协议，而RPC 可以看做是一种编程模式或实现方案；
 
-RPC 通常包含传输协议和序列化协议，单说传输协议，RPC 可以建立在 TCP 协议之上（比如 Dubbo），也可以建立在 HTTP 协议之上（比如 gRPC）；如果是基于数据形式分类，RPC 又可以分成基于二进制、XML 和 JSON 三种；
+RPC 通常包含传输协议和序列化协议，单说传输协议，RPC 可以建立在 TCP 协议之上(比如 Dubbo)，也可以建立在 HTTP 协议之上(比如 gRPC)；如果是基于数据形式分类，RPC 又可以分成基于二进制、XML 和 JSON 三种；
 
 而现在非常流行的开源 RPC 框架，比如上文中提到的Dubbo 和 gRPC 分别出身于阿里和谷歌，它们更多地是封装了服务注册发现、负载均衡、链路跟踪等功能，也可以这么理解，RPC 框架是对服务更高级的封装。
 
@@ -210,7 +210,7 @@ RESTful：面向资源，这里的资源可以是一段文字、一个文件、�
 当然，对于遵守接口风格这一点，我个人是保留意见的，在实际的项目开发过程中，很多时候这些接口风格过于理想化；有些东西借鉴一下可以，更多的还需要结合项目实际使用。
 -->
 
-### 1.5.4. 服务暴露（服务注册中心）
+### 1.5.4. 服务暴露(服务注册中心)
 &emsp; 可选：Redis、Zookeeper、Consul、Etcd。  
 &emsp; 一般使用ZooKeeper提供服务注册与发现功能，解决单点故障以及分布式部署的问题(注册中心)。  
 
@@ -249,14 +249,14 @@ Apache Thrift ：https://thrift.apache.org/
 
     &emsp; RPC的特点：  
     &emsp; 同步调用，对于要等待返回结果/处理结果的场景，RPC是可以非常自然直觉的使用方式(RPC也可以是异步调用)。  
-    &emsp; 由于等待结果，Consumer（Client）会有线程消耗。如果以异步RPC的方式使用，Consumer（Client）线程消耗可以去掉。但不能做到像消息一样暂存消息/请求，压力会直接传导到服务Provider。  
+    &emsp; 由于等待结果，Consumer(Client)会有线程消耗。如果以异步RPC的方式使用，Consumer(Client)线程消耗可以去掉。但不能做到像消息一样暂存消息/请求，压力会直接传导到服务Provider。  
 2. 适用场合差异  
     1. 希望同步得到结果的场合，RPC合适。  
     2. 希望使用简单，则RPC；RPC操作基于接口，使用简单，使用方式模拟本地调用。异步的方式编程比较复杂。  
-    3. 不希望发送端（RPC Consumer、Message Sender）受限于处理端（RPC Provider、Message Receiver）的速度时，使用Message Queue。  
+    3. 不希望发送端(RPC Consumer、Message Sender)受限于处理端(RPC Provider、Message Receiver)的速度时，使用Message Queue。  
     随着业务增长，有的处理端处理量会成为瓶颈，会进行同步调用到异步消息的改造。这样的改造实际上有调整业务的使用方式。比如原来一个操作页面提交后就下一个页面会看到处理结果；改造后异步消息后，下一个页面就会变成“操作已提交，完成后会得到通知”。  
 3. 不适用场合说明  
     1. RPC同步调用使用Message Queue来传输调用信息。上面分析可以知道，这样的做法，发送端是在等待，同时占用一个中间点的资源。变得复杂了，但没有对等的收益。  
-    2. 对于返回值是void的调用，可以这样做，因为实际上这个调用业务上往往不需要同步得到处理结果的，只要保证会处理即可。（RPC的方式可以保证调用返回即处理完成，使用消息方式后这一点不能保证了。）  
-    3. 返回值是void的调用，使用消息，效果上是把消息的使用方式Wrap成了服务调用（服务调用使用方式成简单，基于业务接口）。  
+    2. 对于返回值是void的调用，可以这样做，因为实际上这个调用业务上往往不需要同步得到处理结果的，只要保证会处理即可。(RPC的方式可以保证调用返回即处理完成，使用消息方式后这一点不能保证了。)  
+    3. 返回值是void的调用，使用消息，效果上是把消息的使用方式Wrap成了服务调用(服务调用使用方式成简单，基于业务接口)。  
 -->
