@@ -26,7 +26,7 @@ https://mp.weixin.qq.com/s/zYfhJDyHji58Skw3IqIWzg
 -->
 
 ## 1.1. Feign使用教程  
-1. Feign包括服务端、客户端：  
+1. Feign包括服务端、客户端。  
   1. 服务提供者就是一个controller，通过服务注册中心Eureka暴露服务。  
   2. 在服务消费者中有一个Feign接口类和服务提供者一一映射。  
 2. 服务提供者的Controller类和服务消费者的FeignClient接口类必须使用@RequestParam、@RequestHeader等注解进行传参数。  
@@ -76,7 +76,7 @@ public @interface FeignClient {
     boolean primary() default true;
 }
 ```
-&emsp; 在代码中 ，value()和 name()一样，是被调用的服务的Serviceld 。 url()直接填写硬编码的Url地址 。 decode404()即 404 是被解码，还是抛异常。 configuration()指明 FeignClient的配置类，默认的配置类为 FeignClientsConfiguration类，在缺省的情况下，这个类注入了默认的 Decoder、Encoder 和 Contract 等配置的 Bean。 fallback()为配置熔断器的处理类。
+&emsp; 在代码中，value()和name()一样，是被调用的服务的Serviceld。url()直接填写硬编码的Url地址。decode404()即404是被解码，还是抛异常。configuration()指明FeignClient的配置类，默认的配置类为FeignClientsConfiguration类，在缺省的情况下，这个类注入了默认的Decoder、Encoder和Contract等配置的Bean。fallback()为配置熔断器的处理类。
 
 ## 1.2. Feign配置  
 
@@ -118,7 +118,7 @@ hystrix:
       #设置并发最大的核心线程数，默认值为10。
       coreSize: 10
 ```
-&emsp; feign超时配置：  
+&emsp; **<font color = "red">feign超时配置：</font>**  
 &emsp; 由于feign中引用了ribbon，feign的connectTimeout和readTimeout建议不要设置。不设置的情况，feign超时时间将默认取ribbon的超时时间；feign的http请求重试次数将会受到ribbon中的MaxAutoRetries和MaxAutoRetriesNextServer影响。  
 &emsp; 如果feign的配置中启用了hystrix，还要考虑feign超时时间和hystrix的超时时间是否协调。Feign与hystrix的超时任何一个先到就会发生超时。Hystrix超时要大于ribbon超时设置中的(ribbonReadTimeout + ribbonConnectTimeout) * (maxAutoRetries + 1) * (maxAutoRetriesNextServer + 1)。  
 &emsp; 配置示例如下：  

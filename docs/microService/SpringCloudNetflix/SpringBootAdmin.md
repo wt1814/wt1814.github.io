@@ -20,7 +20,7 @@
 ......
 
 ## 1.2. Spring boot Admin依赖
-&emsp; Spring Boot Admin依赖了spring-boot-starter-actuator，引入该依赖能够自动为 Spring Boot构建的应用提供 一系列用于监控的端点。在Spring Boot工程中新增spring-boot-starter-actuator依赖。具体如下：  
+&emsp; Spring Boot Admin依赖了spring-boot-starter-actuator，引入该依赖能够自动为Spring Boot构建的应用提供一系列用于监控的端点。在Spring Boot工程中新增spring-boot-starter-actuator依赖。具体如下：  
 
 ```xml
 <dependency>
@@ -37,15 +37,15 @@ management.security.enabled=false
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-26.png)  
 
 ### 1.2.1. actuator原生端点  
-&emsp; spring-boot-starter-actuator依赖中已经实现的一些原生端点。 根据端点的作用，<font color = "lime">可以将原生端点分为以下三大类。</font>  
+&emsp; spring-boot-starter-actuator依赖中已经实现的一些原生端点。根据端点的作用，<font color = "lime">可以将原生端点分为以下三大类。</font>  
 
-* 应用配置类：获取应用程序中加载的应用配置、 环境变量、 自动化配置报告等与 Spring Boot应用密切相关的配置类信息。  
-* 度量指标类：获取应用程序运行过程中用于监控的度量指标， 比如内存信息、 线程池信息、 HTTP请求统计等。  
+* 应用配置类：获取应用程序中加载的应用配置、环境变量、自动化配置报告等与Spring Boot应用密切相关的配置类信息。  
+* 度量指标类：获取应用程序运行过程中用于监控的度量指标，比如内存信息、线程池信息、HTTP请求统计等。  
 * 操作控制类：提供了对应用的关闭等操作类功能。  
 
-注意：  
+&emsp; 注意：  
 1. 每一个端点都可以通过配置来单独禁用或者启动  
-2. 不同于Actuator 1.x，Actuator 2.x 的大多数端点默认被禁掉。Actuator 2.x 中的默认端点增加了 /actuator前缀。默认暴露的两个端点为 /actuator/health和 /actuator/info  
+2. 不同于Actuator 1.x，Actuator 2.x 的大多数端点默认被禁掉。Actuator 2.x中的默认端点增加了/actuator前缀。默认暴露的两个端点为/actuator/health和/actuator/info  
 
 #### 1.2.1.1. 度量指标类详解  
 &emsp; 度量指标类端点提供的报告内容则是动态变化的，这些端点提供了应用程序在运行过程中的一些快照信息，比如：内存使用情况、HTTP请求统计、外部资源指标等。  

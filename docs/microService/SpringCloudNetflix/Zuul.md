@@ -26,6 +26,11 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; Spring Cloud Zuul，微服务网关，包含hystrix、ribbon、actuator。主要有路由转发、请求过滤功能。  
+&emsp; **<font color = "red">Zuul提供了四种过滤器的API，分别为前置（Pre）、路由（Route）、后置（Post）和错误（Error）四种处理方式。</font>**  
+
+
 # 1. Spring Cloud Zuul
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-31.png)  
 

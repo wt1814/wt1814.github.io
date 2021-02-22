@@ -3,13 +3,13 @@
 <!-- TOC -->
 
 - [1. Spring Cloud Sleuth](#1-spring-cloud-sleuth)
-    - [1.1. 全链路监控功能模块](#11-全链路监控功能模块)
+    - [1.1. 全链路监控功能](#11-全链路监控功能)
     - [1.2. Sleuth实现追踪](#12-sleuth实现追踪)
     - [1.3. 跟踪原理](#13-跟踪原理)
     - [1.4. spring-cloud-starter-sleuth功能点](#14-spring-cloud-starter-sleuth功能点)
         - [1.4.1. 抽样收集](#141-抽样收集)
-        - [1.4.2. 获取当前traceId](#142-获取当前traceid)
-        - [1.4.3. 日志获取traceId](#143-日志获取traceid)
+        - [1.4.2. ★★★获取当前traceId](#142-★★★获取当前traceid)
+        - [1.4.3. ★★★日志获取traceId](#143-★★★日志获取traceid)
         - [1.4.4. 传递traceId到异步线程池](#144-传递traceid到异步线程池)
         - [1.4.5. 子线程或线程池中获取 Zipkin traceId 并打印](#145-子线程或线程池中获取-zipkin-traceid-并打印)
         - [1.4.6. 监控本地方法](#146-监控本地方法)
@@ -34,18 +34,8 @@ https://mp.weixin.qq.com/s/CZnVxs0vDMBhhBUiioon3g
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-33.png)  
 
-## 1.1. 全链路监控功能模块  
-&emsp; 一般的全链路监控系统，大致可分为四大功能模块：
-1. 埋点与生成日志。  
-&emsp; 埋点即系统在当前节点的上下文信息，可以分为客户端埋点、服务端埋点，以及客户端和服务端双向型埋点。埋点日志通常要包含以下内容traceId、spanId、调用的开始时间，协议类型、调用方ip和端口，请求的服务名、调用耗时，调用结果，异常信息等，同时预留可扩展字段，为下一步扩展做准备；  
-2. 收集和存储日志。  
-&emsp; 主要支持分布式日志采集的方案，同时增加MQ作为缓冲；  
-3. 分析和统计调用链路数据以及时效性。  
-&emsp; 调用链跟踪分析：把同一TraceID的Span收集起来，按时间排序就是timeline。把ParentID串起来就是调用栈。  
-&emsp; 抛异常或者超时，在日志里打印TraceID。利用TraceID查询调用链情况，定位问题。  
-4. 展现以及决策支持。  
-
-&emsp; 全链路监控的作用：  
+## 1.1. 全链路监控功能  
+&emsp; **全链路监控的作用：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-42.png)  
 &emsp; 微服务分层架构之后，系统架构变得越来越复杂：  
 &emsp; （1）站点层会调用业务服务层；  
@@ -54,10 +44,20 @@ https://mp.weixin.qq.com/s/CZnVxs0vDMBhhBUiioon3g
 &emsp; 一个请求，会经历多台服务器，多个进程。  
 
 &emsp; 如此这般，一些棘手的问题如期而至：  
-&emsp; **<font color = "red">（1）如何快速定位请求异常；</font>**    
-&emsp; **<font color = "red">（2）如何快速定位性能瓶颈；</font>**  
-&emsp; **<font color = "red">（3）如何快速定位不合理调用；</font>**  
+&emsp; **<font color = "red">(1) 如何快速定位请求异常；</font>**    
+&emsp; **<font color = "red">(2) 如何快速定位性能瓶颈；</font>**  
+&emsp; **<font color = "red">(3) 如何快速定位不合理调用；</font>**  
 &emsp; 这些，是分布式调用链追踪系统，要解决的问题。  
+
+&emsp; **一般的全链路监控系统，大致可分为四大功能模块：**
+1. 埋点与生成日志。  
+&emsp; 埋点即系统在当前节点的上下文信息，可以分为客户端埋点、服务端埋点，以及客户端和服务端双向型埋点。埋点日志通常要包含以下内容traceId、spanId、调用的开始时间，协议类型、调用方ip和端口，请求的服务名、调用耗时，调用结果，异常信息等，同时预留可扩展字段，为下一步扩展做准备；  
+2. 收集和存储日志。  
+&emsp; 主要支持分布式日志采集的方案，同时增加MQ作为缓冲；  
+3. 分析和统计调用链路数据以及时效性。  
+&emsp; 调用链跟踪分析：把同一TraceID的Span收集起来，按时间排序就是timeline。把ParentID串起来就是调用栈。  
+&emsp; 抛异常或者超时，在日志里打印TraceID。利用TraceID查询调用链情况，定位问题。  
+4. 展现以及决策支持。  
 
 ## 1.2. Sleuth实现追踪  
 &emsp; 在服务提供者和服务消费者引入spring-cloud-starter-sleuth依赖。  
@@ -81,9 +81,9 @@ https://mp.weixin.qq.com/s/CZnVxs0vDMBhhBUiioon3g
 ```
 &emsp; INFO[]标签中为链路追踪信息。每个值的含义如下所述：  
 
-* 第一个值: springcloud-consumer-sleuth，它记录了应用的名称，也就是application properties 中spring.application.name参数配置的属性  
+* 第一个值: springcloud-consumer-sleuth，它记录了应用的名称，也就是application properties中spring.application.name参数配置的属性  
 * 第二个值:f6fb983680aab32b, Spring Cloud Sleuth生成的一个ID，称为Trace ID，它用来标识一条请求链路。一条请求链路中包含一个Trace ID，多个Span ID  
-* 第三个值:c70932279d3b3a54，Spring Cloud Sleuth生成的另外一个ID，称为Span ID，它表示一个基本的工作单元,比如发送一个HTTP请求  
+* 第三个值:c70932279d3b3a54，Spring Cloud Sleuth生成的另外一个ID，称为Span ID，它表示一个基本的工作单元，比如发送一个HTTP请求  
 * 第四个值: false，表示是否要将该信息输出到Zipkin等服务中来收集和展示。
   
 &emsp; 上面四个值中的Trace ID和Span ID是Spring Cloud Sleuth实现分布式服务跟踪的核心，在一次服务请求链路的调用过程中，会保持并传递同一个Trace ID，从而将整个分布于不同微服务进程中的请求跟踪信息串联起来。以上面输出内容为例springcloud-consumer-sleuth和springcloud-provider-sleuth同属于一个前端服务请求资源，所以他们的Trace ID是相同的，处于同一条请求链路中。  
@@ -91,8 +91,8 @@ https://mp.weixin.qq.com/s/CZnVxs0vDMBhhBUiioon3g
 ## 1.3. 跟踪原理  
 &emsp; 分布式系统服务跟踪原理主要包括下面两个关键点：  
 
-* 为了实现请求跟踪，当请求发送到分布式系统的入口端点时，只需要服务跟踪框架为该请求创建一个唯一的跟踪标识，同时在分布式系统内部流转的时候，框架始终保持传递该唯一标识，直到返回给请求方为止，这个唯一标识就是前文中提到的Trace ID。通过Trace ID的记录,就能将所有请求过程的日志关联起来。  
-* 为了统计各处理单元的时间延迟,当请求到达各个服务组件时，或是处理逻辑到达某个状态时,也通过一个唯一标识来标记它的开始、具体过程以及结束，该标识就是前面提到的Span ID。对于每个Span来说，它必须有开始和结束两个节点，通过记录开始Span和结束Span的时间戳，就能统计出该Span的时间延迟，除了时间 戳记录之外，它还可以包含一些其他元数据,比如事件名称、请求信息等。  
+* 为了实现请求跟踪，当请求发送到分布式系统的入口端点时，只需要服务跟踪框架为该请求创建一个唯一的跟踪标识，同时在分布式系统内部流转的时候，框架始终保持传递该唯一标识，直到返回给请求方为止，这个唯一标识就是前文中提到的Trace ID。通过Trace ID的记录，就能将所有请求过程的日志关联起来。  
+* 为了统计各处理单元的时间延迟，当请求到达各个服务组件时，或是处理逻辑到达某个状态时，也通过一个唯一标识来标记它的开始、具体过程以及结束，该标识就是前面提到的Span ID。对于每个Span来说，它必须有开始和结束两个节点，通过记录开始Span和结束Span的时间戳，就能统计出该Span的时间延迟，除了时间戳记录之外，它还可以包含一些其他元数据，比如事件名称、请求信息等。  
 
 &emsp; 在SpringBoot应用中引入spring-cloud-starter-sleuth依赖之后，<font color = "red">sleuth会自动为当前应用构建起各通信通道的跟踪机制</font>，比如： 
 
@@ -102,7 +102,7 @@ https://mp.weixin.qq.com/s/CZnVxs0vDMBhhBUiioon3g
 
 ## 1.4. spring-cloud-starter-sleuth功能点  
 ### 1.4.1. 抽样收集  
-&emsp; 如果服务的流量很大，全部采集对传输、存储压力比较大。这个时候可以设置采样率，sleuth可以通过配置 spring.sleuth.sampler.probability=X.Y(如配置为1.0，则采样率为100%，采集服务的全部追踪数据)，若不配置默认采样率是0.1(即10%)。也可以通过实现bean的方式来设置采样为全部采样(AlwaysSampler)或者不采样(NeverSampler)：如  
+&emsp; 如果服务的流量很大，全部采集对传输、存储压力比较大。这个时候可以设置采样率，sleuth可以通过配置spring.sleuth.sampler.probability=X.Y(如配置为1.0，则采样率为100%，采集服务的全部追踪数据)，若不配置默认采样率是0.1(即10%)。也可以通过实现bean的方式来设置采样为全部采样(AlwaysSampler)或者不采样(NeverSampler)。如  
 
 ```java
 @Bean 
@@ -111,7 +111,7 @@ public Sampler defaultSampler() {
 }
 ```
 
-### 1.4.2. 获取当前traceId  
+### 1.4.2. ★★★获取当前traceId  
 &emsp; 在项目中获取traceId，可以参考下述的方式  
 
 ```java
@@ -129,7 +129,7 @@ public class Breadcrumb {
 }
 ```
 
-### 1.4.3. 日志获取traceId  
+### 1.4.3. ★★★日志获取traceId  
 &emsp; 如果日志文件是有做过格式设置的，可能看不到traceId的输出，可以使用下述的日志格式。  
 
 ```xml
@@ -172,7 +172,7 @@ public class Breadcrumb {
 ### 1.4.4. 传递traceId到异步线程池  
 
 1. Sleuth对异步任务是支持的，使用@Async开启一个异步任务后，Sleuth会为这个调用新创建一个Span。  
-2. <font color = "lime">如果自定义了异步任务的线程池，会导致无法新创建一个 Span，需要使用 Sleuth提供的LazyTraceExecutor来包装下。代码如下所示。</font>  
+2. <font color = "lime">如果自定义了异步任务的线程池，会导致无法新创建一个Span，需要使用Sleuth提供的LazyTraceExecutor来包装下。代码如下所示。</font>  
 
 ```java
 @Configuration
@@ -192,7 +192,7 @@ public class CustomExecutorConfig extends AsyncConfigurerSupport {
     }
 }
 ```
-&emsp; 如果直接return executor就不会新Span，也就不会有save-log这个 Span。如下图所示。  
+&emsp; 如果直接return executor就不会有新Span，也就不会有save-log这个 Span。如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-21.png)  
 
 ### 1.4.5. 子线程或线程池中获取 Zipkin traceId 并打印  
