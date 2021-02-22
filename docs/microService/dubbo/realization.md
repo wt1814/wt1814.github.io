@@ -69,7 +69,8 @@
 &emsp; 包括监控在内，所有附加功能，全部通过 Filter 拦截实现。  
 
 ## 1.5. Invoker  
-&emsp; 由于Invoker是Dubbo领域模型中非常重要的一个概念，很多设计思路都是向它靠拢。这就使得Invoker渗透在整个实现代码里，对于刚开始接触Dubbo的人，确实容易给搞混了。 下面用一个精简的图来说明<font color = "lime">最重要的两种Invoker：服务提供 Invoker和服务消费Invoker：</font>  
+&emsp; Invoker是Dubbo的核心模型，代表一个可执行体。在服务提供方，Invoker用于调用服务提供类。在服务消费方，Invoker用于执行远程调用。Invoker是由Protocol实现类构建而来。  
+&emsp; 下面用一个精简的图来说明<font color = "lime">最重要的两种Invoker：服务提供 Invoker和服务消费Invoker：</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-31.png)   
 &emsp; 为了更好的解释上面这张图，结合服务消费和提供者的代码示例来进行说明：  
 &emsp; 服务消费者代码：  
