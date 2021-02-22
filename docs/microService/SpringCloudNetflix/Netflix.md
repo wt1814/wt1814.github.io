@@ -21,11 +21,11 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkwMzE3MDY0Ng==&action=getalbum&a
 -->
 
 &emsp; **<font color = "lime">总结：</font>**  
-1. 服务注册发现，注册中心（Eureka）  
-2. 服务分发（Ribbon）：客户端负载均衡，Ribbon中提供了多种负载均衡策略：轮询、随机、重试、权重等。  
-3. 声明式调用（OpenFeign）
-3. 服务熔断（Hystrix）  
-4. 链路监控（Sleuth）：如何快速定位请求异常；如何快速定位性能瓶颈；如何快速定位不合理调用。  
+1. 服务注册发现，注册中心(Eureka)  
+2. 服务分发(Ribbon)：客户端负载均衡，Ribbon中提供了多种负载均衡策略：轮询、随机、重试、权重等。  
+3. 声明式调用(OpenFeign)
+3. 服务熔断(Hystrix)  
+4. 链路监控(Sleuth)：如何快速定位请求异常；如何快速定位性能瓶颈；如何快速定位不合理调用。  
 5. 服务网关
 
 
@@ -35,12 +35,10 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkwMzE3MDY0Ng==&action=getalbum&a
 &emsp; **SpringCloud子项目：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-27.png)  
 &emsp; Spring Cloud各组件运行流程：  
-1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关（Zuul）来访问内部服务。客户端的请求首先经过负载均衡（Ngnix），再到达服务网关（Zuul集群）；  
-2. 网关接收到请求后，从注册中心（Eureka）获取可用服务；  
+1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关(Zuul)来访问内部服务。客户端的请求首先经过负载均衡(Ngnix)，再到达服务网关(Zuul集群)；  
+2. 网关接收到请求后，从注册中心(Eureka)获取可用服务；  
 3. 由Ribbon进行均衡负载后，分发到后端的具体实例；  
 4. 微服务之间也可通过Feign进行通信处理业务；  
 5. Hystrix负责处理服务超时熔断；Hystrix dashboard，Turbine负责监控Hystrix的熔断情况，并给予图形化的展示；  
 6. Turbine监控服务间的调用和熔断相关指标；  
 7. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
-
-  
