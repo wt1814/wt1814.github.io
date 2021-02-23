@@ -3,9 +3,9 @@
 
 - [1. Zookeeper](#1-zookeeper)
     - [1.1. Zookeeper是什么](#11-zookeeper是什么)
-    - [1.2. ZooKeeper分层命名空间](#12-zookeeper分层命名空间)
-    - [1.3. Zookeeper的运行原理](#13-zookeeper的运行原理)
-        - [1.3.1. ※※※Watcher机制](#131-※※※watcher机制)
+    - [1.2. ZooKeeper分层命名空间(逻辑内存结构)](#12-zookeeper分层命名空间逻辑内存结构)
+    - [1.3. ★★★Zookeeper的运行原理](#13-★★★zookeeper的运行原理)
+        - [1.3.1. C/S之间的Watcher机制](#131-cs之间的watcher机制)
         - [1.3.2. ※※※ZAB协议(保证主从节点数据一致性)](#132-※※※zab协议保证主从节点数据一致性)
             - [1.3.2.1. 选举流程，恢复模式](#1321-选举流程恢复模式)
             - [1.3.2.2. 数据同步，广播模式](#1322-数据同步广播模式)
@@ -53,20 +53,17 @@ ZooKeeper = 文件系统 + 监听通知机制。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-2.png)  
 
 ## 1.1. Zookeeper是什么  
-&emsp; Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题，例如怎样避免同时操作同一数据造成脏读的问题。  
+&emsp; **<font color = "blue">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题，</font>** 例如怎样避免同时操作同一数据造成脏读的问题。  
 &emsp; **Zookeeper集群特性：**  
 
-* 全局数据一致：每个 server 保存一份相同的数据副本，client 无论连 接到哪个server，展示的数据都是一致的，这是最重要的特征。  
+* 全局数据一致：每个server保存一份相同的数据副本，client无论连接到哪个server，展示的数据都是一致的，这是最重要的特征。  
 * 可靠性：如果消息被其中一台服务器接受，那么将被所有的服务器接受。  
-* 顺序性：包括全局有序和偏序两种。全局有序是指如果在一台服务器上消息 a 在消息b前发布，则在所有Server上消息a都将在消息b前被发布；偏序是指如果一个消息b在消息a后被同一个发送者发布，a必将排在b前面。  
-
-        如何保证事务的顺序一致性的？  
-        zookeeper采用了递增的事务Id来标识，所有的proposal（提议）都在被提出的时候加上了zxid。zxid实际上是一个64位的数字，高32位是epoch（时期; 纪元; 世; 新时代）用来标识leader是否发生改变，如果有新的leader产生出来，epoch会自增；低32位用来递增计数。当新产生proposal的时候，会依据数据库的两阶段过程，首先会向其他的server发出事务执行请求，如果超过半数的机器都能执行并且能够成功，那么就会开始执行。  
+* **<font color = "blue">顺序性：</font>** 包括全局有序和偏序两种。全局有序是指如果在一台服务器上消息a在消息b前发布，则在所有Server上消息a都将在消息b前被发布；偏序是指如果一个消息b在消息a后被同一个发送者发布，a必将排在b前面。  
 * 数据更新原子性：一次数据更新要么成功（半数以上节点成功），要么失败，不存在中间状态。  
-* 实时性：Zookeeper 保证客户端将在一个时间间隔范围内获得服务器的更新信息，或者服务器失效的信息。  
+* 实时性：Zookeeper保证客户端将在一个时间间隔范围内获得服务器的更新信息，或者服务器失效的信息。  
 
-## 1.2. ZooKeeper分层命名空间  
-&emsp; Zookeeper提供一个多层级的节点命名空间（节点称为znode），这些节点都可以设置关联的数据。Zookeeper为了保证高吞吐和低延迟，在内存中维护了这个树状的目录结构，这种特性使得Zookeeper不能用于存放大量的数据，每个节点的存放数据上限为1M。  
+## 1.2. ZooKeeper分层命名空间(逻辑内存结构)  
+&emsp; Zookeeper提供一个多层级的节点命名空间(节点称为znode)，这些节点都可以设置关联的数据。Zookeeper为了保证高吞吐和低延迟，在内存中维护了这个树状的目录结构，这种特性使得Zookeeper不能用于存放大量的数据，每个节点的存放数据上限为1M。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-1.png)  
 &emsp; znode的类型在创建时确定，并且之后不能再修改。  
 
@@ -86,12 +83,14 @@ ZooKeeper = 文件系统 + 监听通知机制。
 * 顺序号是一个单调递增的计数器，由父节点维护。  
 * 在分布式系统中，顺序号可以被用于为所有的事件进行全局排序，这样客户端可以通过顺序号推断事件的顺序。  
 
-## 1.3. Zookeeper的运行原理  
-### 1.3.1. ※※※Watcher机制  
-&emsp; 在ZooKeeper中，引入Watcher机制来实现分布式数据的发布/订阅功能。Zookeeper客户端向服务端的某个Znode 注册一个 Watcher 监听，当服务端的一些指定事件触发了这个 Watcher，服务端会向指定客户端发送一个事件通知来实现分布式的通知功能，然后客户端根据 Watcher 通知状态和事件类型做出业务上的改变。  
+## 1.3. ★★★Zookeeper的运行原理  
+~~架构图~~
+
+### 1.3.1. C/S之间的Watcher机制  
+&emsp; 在ZooKeeper中，引入Watcher机制来实现分布式数据的发布/订阅功能。Zookeeper客户端向服务端的某个Znode注册一个Watcher监听，当服务端的一些指定事件触发了这个Watcher，服务端会向指定客户端发送一个事件通知来实现分布式的通知功能，然后客户端根据Watcher通知状态和事件类型做出业务上的改变。  
 &emsp; 触发watch事件种类很多，如：节点创建，节点删除，节点改变，子节点改变等。  
 
-&emsp; <font color = "red">Watcher机制运行流程：客户端注册 Watcher、服务器处理 Watcher 和客户端回调 Watcher。</font>  
+&emsp; <font color = "red">Watcher机制运行流程：客户端注册 Watcher、服务器处理Watcher和客户端回调Watcher。</font>  
 
 &emsp; **watch的重要特性：**  
 
