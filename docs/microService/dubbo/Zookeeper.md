@@ -7,13 +7,16 @@
     - [1.3. ★★★Zookeeper的运行原理](#13-★★★zookeeper的运行原理)
         - [1.3.1. C/S之间的Watcher机制](#131-cs之间的watcher机制)
         - [1.3.2. ※※※服务端通过ZAB协议，保证主从节点数据一致性](#132-※※※服务端通过zab协议保证主从节点数据一致性)
-            - [ZAB协议概述](#zab协议概述)
-            - [ZAB协议中的ZXid](#zab协议中的zxid)
-            - [1.3.2.1. ZAB协议](#1321-zab协议)
-                - [1.3.2.1.1. 选举流程，恢复模式](#13211-选举流程恢复模式)
-                - [1.3.2.1.2. 数据同步，广播模式](#13212-数据同步广播模式)
-            - [1.3.2.2. Zookeeper的CP模型(保证数据顺序一致性)](#1322-zookeeper的cp模型保证数据顺序一致性)
-            - [1.3.2.3. 脑裂](#1323-脑裂)
+            - [1.3.2.1. ZAB协议概述](#1321-zab协议概述)
+            - [1.3.2.2. ZAB协议中的ZXid](#1322-zab协议中的zxid)
+            - [1.3.2.3. ZAB协议](#1323-zab协议)
+                - [1.3.2.3.1. 选举流程，恢复模式](#13231-选举流程恢复模式)
+                    - [1.3.2.3.1.1. 选举流程中几个重要参数](#132311-选举流程中几个重要参数)
+                    - [1.3.2.3.1.2. 服务器启动时的leader选举](#132312-服务器启动时的leader选举)
+                    - [1.3.2.3.1.3. 运行过程中的leader选举](#132313-运行过程中的leader选举)
+                - [1.3.2.3.2. 数据同步，广播模式](#13232-数据同步广播模式)
+            - [1.3.2.4. Zookeeper的CP模型(保证数据顺序一致性)](#1324-zookeeper的cp模型保证数据顺序一致性)
+            - [1.3.2.5. 脑裂](#1325-脑裂)
     - [1.4. Zookeeper应用场景](#14-zookeeper应用场景)
         - [1.4.1. 集群管理，HA高可用性](#141-集群管理ha高可用性)
         - [1.4.2. 元数据/配置信息管理](#142-元数据配置信息管理)
@@ -49,11 +52,13 @@ ZooKeeper = 文件系统 + 监听通知机制。
 &emsp; **<font color = "blue">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
 1. C/S之间的Watcher机制。
 2. ZK服务端通过ZAB协议保证数据顺序一致性。  
-    1. ZAB协议：崩溃恢复、
-    2. 
-&emsp; <font color = "lime">Zookeeper的CP模型：</font>  
-1. 为什么不满足AP模型？Zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。  
-2. Zookeeper的CP模型：Zookeeper提供的只是单调一致性。  
+    1. ZAB协议：消息广播、崩溃恢复
+        * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>**  
+        * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态
+    2.  数据一致性
+        * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>。
+        * Zookeeper的CP模型：非强一致性、而是单调一致性/顺序一致性。  
+
 
 # 1. Zookeeper
 &emsp; Zookeeper官网文档：https://zookeeper.apache.org/doc/current
@@ -113,18 +118,18 @@ ZooKeeper = 文件系统 + 监听通知机制。
 https://www.cnblogs.com/zz-ksw/p/12786067.html
 -->
 
-#### ZAB协议概述  
+#### 1.3.2.1. ZAB协议概述  
 &emsp; Zab 协议的具体实现可以分为以下两部分：  
 
-* 消息广播阶段：Leader 节点接受事务提交，并且将新的 Proposal 请求广播给 Follower 节点，收集各个节点的反馈，决定是否进行 Commit，在这个过程中，也会使用上一课时提到的 Quorum 选举机制。  
+* 消息广播阶段：Leader节点接受事务提交，并且将新的Proposal请求广播给Follower节点，收集各个节点的反馈，决定是否进行Commit。  
 * 崩溃恢复阶段：如果在同步过程中出现 Leader 节点宕机，会进入崩溃恢复阶段，重新进行 Leader 选举，崩溃恢复阶段还包含数据同步操作，同步集群中最新的数据，保持集群的数据一致性。   
 
 &emsp; 整个ZooKeeper集群的一致性保证就是在上面两个状态之前切换，当 Leader 服务正常时，就是正常的消息广播模式；当 Leader 不可用时，则进入崩溃恢复模式，崩溃恢复阶段会进行数据同步，完成以后，重新进入消息广播阶段。  
 
-#### ZAB协议中的ZXid  
+#### 1.3.2.2. ZAB协议中的ZXid  
 
 
-#### 1.3.2.1. ZAB协议
+#### 1.3.2.3. ZAB协议
 &emsp; ZAB(Zookeeper Atomic Broadcast)，崩溃可恢复的的原子消息广播协议。ZAB协议包括两种基本模式：崩溃恢复(选主)和消息广播(同步)。整个Zookeeper集群就是在这两个模式之间切换。  
 
 &emsp; Zookeeper集群角色：  
@@ -142,10 +147,10 @@ https://www.cnblogs.com/zz-ksw/p/12786067.html
     * OBSERVING：observer角色；  
 -->
 
-##### 1.3.2.1.1. 选举流程，恢复模式  
+##### 1.3.2.3.1. 选举流程，恢复模式  
 &emsp; 当整个集群在启动时，或者当leader节点出现网络中断、崩溃等情况时，ZAB协议就会进入恢复模式并选举产生新的 Leader，当leader服务器选举出来后，并且集群中有过半的机器和该 leader 节点完成数据同步后(同步指的是数据同步，用来保证集群中过半的机器能够和leader服务器的数据状态保持一致)，ZAB协议就会退出恢复模式。  
 
-&emsp; **选举流程中几个重要参数：**  
+###### 1.3.2.3.1.1. 选举流程中几个重要参数 
 &emsp; 服务器ID：即配置的myId。id越大，选举时权重越高。  
 &emsp; <font color = "red">事务ID，zkid(Zookeeper Transaction Id)：服务器在运行时产生的数据id，即zkid，这里指本地最新snapshot的id。id越大说明数据越新，选举时权重越高。</font>  
 &emsp; 选举轮数：Epoch，即逻辑时钟。随着选举的轮数++。  
@@ -154,7 +159,8 @@ https://www.cnblogs.com/zz-ksw/p/12786067.html
 ZooKeeper状态的每次变化都接收一个ZXID(ZooKeeper事务id)形式的标记。ZXID是一个64位的数字，由Leader统一分配，全局唯一，不断递增。
 ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一的zxid，如果zxid1小于zxid2说明zxid1在zxid2之前发生。
 -->
-* **服务器启动时的leader选举：**  
+
+###### 1.3.2.3.1.2. 服务器启动时的leader选举 
 &emsp; 每个节点启动的时候状态都是LOOKING，处于观望状态，接下来就开始进行选主流程。  
 &emsp; 若进行 Leader 选举，则至少需要两台机器，这里选取 3 台机器组成的服务器集群为例。在集群初始化阶段，当有一台服务器 Server1 启动时，其单独无法进行和完成 Leader 选举，当第二台服务器 Server2 启动时，此时两台机器可以相互通信，每台机器都试图找到 Leader，于是进入 Leader选举过程。选举过程如下：  
 1. 每个 Server 发出一个投票。由于是初始情况， Server1 和 Server2 都会将自己作为 Leader 服务器来进行投票，每次投票会包含所推举的服务器的 myid 和 ZXID、 epoch，使用(myid, ZXID,epoch)来表示，此时 Server1 的投票为(1, 0)， Server2 的投票为(2, 0)，然后各自将这个投票发给集群中其他机器。  
@@ -169,7 +175,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 
 &emsp; **<font color = "red">一句话概述：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>**
 
-* **运行过程中的leader选举：**  
+###### 1.3.2.3.1.3. 运行过程中的leader选举  
 &emsp; 当集群中的 leader 服务器出现宕机或者不可用的情况时，那么整个集群将无法对外提供服务，而是进入新一轮的 Leader 选举，服务器运行期间的 Leader 选举和启动时期的 Leader 选举基本过程是一致的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-3.png)  
 1. 变更状态。 Leader挂后，余下的非Observer服务器都会将自己的服务器状态变更为LOOKING，然后开始进入Leader选举过程。  
@@ -178,7 +184,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 4. 统计投票。与启动时过程相同。  
 5. 改变服务器的状态。与启动时过程相同。  
 
-##### 1.3.2.1.2. 数据同步，广播模式  
+##### 1.3.2.3.2. 数据同步，广播模式  
 &emsp; 当集群中已经有过半的 Follower 节点完成了和 Leader 状态同步以后，那么整个集群就进入了消息广播模式。这个时候，在 Leader 节点正常工作时，启动一台新的服务器加入到集群，那这个服务器会直接进入数据恢复模式，和leader 节点进行数据同步。同步完成后即可正常对外提供非事务请求的处理。  
 &emsp; 注：leader节点可以处理事务请求和非事务请求， follower 节点只能处理非事务请求，如果 follower 节点接收到非事务请求，会把这个请求转发给 Leader 服务器。  
 
@@ -196,7 +202,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 &emsp; 这里需要注意的是leader的投票过程，不需要Observer的ack，也就是Observer不需要参与投票过程，但是Observer必须要同步Leader的数据从而在处理请求的时候保证数据的一致性。  
 
 
-#### 1.3.2.2. Zookeeper的CP模型(保证数据顺序一致性)  
+#### 1.3.2.4. Zookeeper的CP模型(保证数据顺序一致性)  
 
 1. 为什么不满足AP模型？  
 
@@ -214,12 +220,11 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
     &emsp; <font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务，</font>这个时候就说明了服务不可用，但是在选举成功之后，因为一主多从的结构，zookeeper在这时还是一个高可用注册中心，只是在优先保证一致性的前提下，zookeeper才会顾及到可用性
 
 2. Zookeeper的CP模型：  
-&emsp; 很多文章和博客里提到，zookeeper是一种提供强一致性的服务，在分区容错性和可用性上做了一定折中，这和CAP理论是吻合的。但实际上<font color = "lime">zookeeper提供的只是单调一致性。</font>  
+&emsp; 很多文章和博客里提到，zookeeper是一种提供强一致性的服务，在分区容错性和可用性上做了一定折中，这和CAP理论是吻合的。但实际上<font color = "lime">zookeeper提供的只是单调一致性/顺序一致性。</font>  
     1. 假设有2n+1个server，在同步流程中，leader向follower同步数据，当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。<font color = "red">如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。</font>  
     2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数(n+1)的server认同后，将对整个集群进行同步，超过半数(n+1)的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
 
-
-#### 1.3.2.3. 脑裂  
+#### 1.3.2.5. 脑裂  
 &emsp; 脑裂问题是集群部署必须考虑的一点，比如在Hadoop跟Spark集群中。而ZAB为解决脑裂问题，要求集群内的节点数量为2N+1。当网络分裂后，始终有一个集群的节点数量过半数，而另一个节点数量小于N+1, 因为选举Leader需要过半数的节点同意，所以可以得出如下结论：  
 &emsp; 有了过半机制，对于一个Zookeeper集群，要么没有Leader，要没只有1个Leader，这样就避免了脑裂问题  
 
