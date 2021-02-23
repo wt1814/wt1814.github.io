@@ -17,6 +17,9 @@
 &emsp; **总结：**  
 &emsp; Synchronized的底层原理：  
 &emsp; Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联。  
+&emsp; **<font color = "red">monitor运行的机制过程如下：(_WaitSet队列和 _EntryList队列)</font>**  
+1. 当多个线程同时访问一段同步代码时，首先会进入_EntryList集合，当线程获取到对象的monitor后进入_Owner区域并把monitor中的owner变量(_owner指向持有ObjectMonitor对象的线程)设置为当前线程，同时monitor中的计数器count加1。  
+2. 若线程调用wait()方法，将释放当前持有的monitor，owner变量恢复为null，count自减1，同时该线程进入_WaitSet集合中等待被唤醒。若当前线程执行完毕也将释放monitor(锁)并复位变量的值，以便其他线程进入获取monitor(锁)。  
 
 &emsp; Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。  
 &emsp; Synchronized代码块同步：使用monitorenter和monitorexit指令实现。  
@@ -180,12 +183,14 @@ ObjectMonitor() {
 ```
 &emsp; ObjectMonitor中有两个队列，_WaitSet 和 _EntryList，用来保存ObjectWaiter对象列表( 每个等待锁的线程都会被封装成ObjectWaiter对象)。  
 
-&emsp; **<font color = "red">_WaitSet和 _EntryList的区别：</font>**    
-​&emsp; 当多个线程同时访问同步代码时，首先进入的就是_EntryList 。当获得对象的monitor时，_owner 指向当前线程，_count进行加1。  
-​&emsp; 若持有monitor的线程调用wait()，则释放持有的monitor，_owner变为null，_count减1。同时该线程进入_WaitSet等待被唤醒。如果执行完毕，也释放monitor。  
+&emsp; **<font color = "red">~~_WaitSet和 _EntryList的区别：~~</font>**    
+​&emsp; ~~当多个线程同时访问同步代码时，首先进入的就是_EntryList 。当获得对象的monitor时，_owner 指向当前线程，_count进行加1。~~  
+​&emsp; ~~若持有monitor的线程调用wait()，则释放持有的monitor，_owner变为null，_count减1。同时该线程进入_WaitSet等待被唤醒。如果执行完毕，也释放monitor。~~  
 
-&emsp; **<font color = "red">整个monitor运行的机制过程如下：</font>**  
-&emsp; _owner指向持有ObjectMonitor对象的线程，当多个线程同时访问一段同步代码时，首先会进入_EntryList集合，当线程获取到对象的monitor后进入_Owner区域并把monitor中的owner变量设置为当前线程同时monitor中的计数器count加1，若线程调用 wait() 方法，将释放当前持有的monitor，owner变量恢复为null，count自减1，同时该线程进入 WaitSe t集合中等待被唤醒。若当前线程执行完毕也将释放monitor(锁)并复位变量的值，以便其他线程进入获取monitor(锁)。  
+&emsp; **<font color = "red">monitor运行的机制过程如下：(_WaitSet队列和 _EntryList队列)</font>**  
+1. 当多个线程同时访问一段同步代码时，首先会进入_EntryList集合，当线程获取到对象的monitor后进入_Owner区域并把monitor中的owner变量(_owner指向持有ObjectMonitor对象的线程)设置为当前线程，同时monitor中的计数器count加1。  
+2. 若线程调用wait()方法，将释放当前持有的monitor，owner变量恢复为null，count自减1，同时该线程进入_WaitSet集合中等待被唤醒。若当前线程执行完毕也将释放monitor(锁)并复位变量的值，以便其他线程进入获取monitor(锁)。  
+
 &emsp; 具体见下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
 &emsp; 因此，monitor对象存在于每个Java对象的对象头中(存储的指针的指向)，Synchronized锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因，同时也是notify/notifyAll/wait等方法存在于顶级对象Object中的原因。  
