@@ -58,7 +58,7 @@ ZooKeeper = 文件系统 + 监听通知机制。
     2.  数据一致性
         * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>。
         * Zookeeper的CP模型：非强一致性、而是单调一致性/顺序一致性。  
-
+    3. 服务端脑裂：脑裂问题。  
 
 # 1. Zookeeper
 &emsp; Zookeeper官网文档：https://zookeeper.apache.org/doc/current
@@ -226,7 +226,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 
 #### 1.3.2.5. 脑裂  
 &emsp; 脑裂问题是集群部署必须考虑的一点，比如在Hadoop跟Spark集群中。而ZAB为解决脑裂问题，要求集群内的节点数量为2N+1。当网络分裂后，始终有一个集群的节点数量过半数，而另一个节点数量小于N+1, 因为选举Leader需要过半数的节点同意，所以可以得出如下结论：  
-&emsp; 有了过半机制，对于一个Zookeeper集群，要么没有Leader，要没只有1个Leader，这样就避免了脑裂问题  
+&emsp; 有了过半机制，对于一个Zookeeper集群，要么没有Leader，要没只有1个Leader，这样就避免了脑裂问题。  
 
 ----
 
