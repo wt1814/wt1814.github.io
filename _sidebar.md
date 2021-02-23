@@ -316,7 +316,6 @@
     * [Redis分布式锁](/docs/microService/thinking/redisLock.md)  
     * [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
     * [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
-* [分布式Session](/docs/microService/thinking/DistributedSession.md)  
 * 任务调度
     * [延时队列](/docs/frame/delayQueue.md)  
     * [时间轮算法](/docs/microService/dubbo/timeWheel.md)  
