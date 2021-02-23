@@ -272,6 +272,7 @@
 [缓存](/docs/cache/Cache.md)  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
+[双缓存](/docs/cache/DoubleCache.md)  
 
 #### Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
