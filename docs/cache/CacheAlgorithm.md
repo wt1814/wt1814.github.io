@@ -225,7 +225,6 @@ public class LRUCache<k, v> {
 }
 ```
 
-
 ## 1.3. LFU
 &emsp; LFU（Least Frequently Used）最近最少使用算法。它是基于“如果一个数据在最近一段时间内使用次数很少，那么在将来一段时间内被使用的可能性也很小”的思路。  
 &emsp; 注意LFU和LRU算法的不同之处，LRU的淘汰规则是基于访问时间，而LFU是基于访问次数的。  

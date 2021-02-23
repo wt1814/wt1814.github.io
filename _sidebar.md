@@ -211,7 +211,7 @@
         * [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
         * [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
 * 分布式缓存
-    * [分布式缓存](/docs/cache/DistributedCache.md) 
+    * [分布式缓存问题](/docs/cache/DistributedCache.md) 
     * [缓存算法](/docs/cache/CacheAlgorithm.md)  
     * [Redis](/docs/microService/Redis/RedisSummary.md)   
     * [Redis数据类型](/docs/microService/Redis/RedisStructure.md)  
