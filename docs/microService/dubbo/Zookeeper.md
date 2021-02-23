@@ -3,10 +3,12 @@
 
 - [1. Zookeeper](#1-zookeeper)
     - [1.1. Zookeeper是什么](#11-zookeeper是什么)
-    - [1.2. ZooKeeper分层命名空间(逻辑内存结构)](#12-zookeeper分层命名空间逻辑内存结构)
+    - [1.2. ZooKeeper分层命名空间(逻辑存储结构)](#12-zookeeper分层命名空间逻辑存储结构)
     - [1.3. ★★★Zookeeper的运行原理](#13-★★★zookeeper的运行原理)
         - [1.3.1. C/S之间的Watcher机制](#131-cs之间的watcher机制)
         - [1.3.2. ※※※服务端通过ZAB协议，保证主从节点数据一致性](#132-※※※服务端通过zab协议保证主从节点数据一致性)
+            - [ZAB协议概述](#zab协议概述)
+            - [ZAB协议中的ZXid](#zab协议中的zxid)
             - [1.3.2.1. ZAB协议](#1321-zab协议)
                 - [1.3.2.1.1. 选举流程，恢复模式](#13211-选举流程恢复模式)
                 - [1.3.2.1.2. 数据同步，广播模式](#13212-数据同步广播模式)
@@ -42,9 +44,13 @@ https://time.geekbang.org/column/article/239261
 ZooKeeper = 文件系统 + 监听通知机制。
 -->
 
-&emsp; **<font color = "lime">总结：Watcher机制、ZAB协议、应用(配置信息、分布式锁、集群管理、分布式协调...)</font>**  
-&emsp; <font color = "lime">在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，</font>然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交(类2PC事务)。  
+&emsp; **<font color = "red">总结：</font>**  
 
+&emsp; **<font color = "blue">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
+1. C/S之间的Watcher机制。
+2. ZK服务端通过ZAB协议保证数据顺序一致性。  
+    1. ZAB协议：崩溃恢复、
+    2. 
 &emsp; <font color = "lime">Zookeeper的CP模型：</font>  
 1. 为什么不满足AP模型？Zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。  
 2. Zookeeper的CP模型：Zookeeper提供的只是单调一致性。  
@@ -63,7 +69,7 @@ ZooKeeper = 文件系统 + 监听通知机制。
 * 数据更新原子性：一次数据更新要么成功(半数以上节点成功)，要么失败，不存在中间状态。  
 * 实时性：Zookeeper保证客户端将在一个时间间隔范围内获得服务器的更新信息，或者服务器失效的信息。  
 
-## 1.2. ZooKeeper分层命名空间(逻辑内存结构)  
+## 1.2. ZooKeeper分层命名空间(逻辑存储结构)  
 &emsp; Zookeeper提供一个多层级的节点命名空间(节点称为znode)，这些节点都可以设置关联的数据。Zookeeper为了保证高吞吐和低延迟，在内存中维护了这个树状的目录结构，这种特性使得Zookeeper不能用于存放大量的数据，每个节点的存放数据上限为1M。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-1.png)  
 &emsp; znode的类型在创建时确定，并且之后不能再修改。  
@@ -102,6 +108,21 @@ ZooKeeper = 文件系统 + 监听通知机制。
 &emsp; 客户端先得到watch通知才可查看节点变化结果。  
 
 ### 1.3.2. ※※※服务端通过ZAB协议，保证主从节点数据一致性
+<!-- 
+
+https://www.cnblogs.com/zz-ksw/p/12786067.html
+-->
+
+#### ZAB协议概述  
+&emsp; Zab 协议的具体实现可以分为以下两部分：  
+
+* 消息广播阶段：Leader 节点接受事务提交，并且将新的 Proposal 请求广播给 Follower 节点，收集各个节点的反馈，决定是否进行 Commit，在这个过程中，也会使用上一课时提到的 Quorum 选举机制。  
+* 崩溃恢复阶段：如果在同步过程中出现 Leader 节点宕机，会进入崩溃恢复阶段，重新进行 Leader 选举，崩溃恢复阶段还包含数据同步操作，同步集群中最新的数据，保持集群的数据一致性。   
+
+&emsp; 整个ZooKeeper集群的一致性保证就是在上面两个状态之前切换，当 Leader 服务正常时，就是正常的消息广播模式；当 Leader 不可用时，则进入崩溃恢复模式，崩溃恢复阶段会进行数据同步，完成以后，重新进入消息广播阶段。  
+
+#### ZAB协议中的ZXid  
+
 
 #### 1.3.2.1. ZAB协议
 &emsp; ZAB(Zookeeper Atomic Broadcast)，崩溃可恢复的的原子消息广播协议。ZAB协议包括两种基本模式：崩溃恢复(选主)和消息广播(同步)。整个Zookeeper集群就是在这两个模式之间切换。  
