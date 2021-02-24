@@ -2,7 +2,7 @@
 <!-- TOC -->
 
 - [1. 分布式锁](#1-分布式锁)
-    - [1.1. ※※※分布式锁使用场景](#11-※※※分布式锁使用场景)
+    - [1.1. 分布式锁使用场景](#11-分布式锁使用场景)
     - [1.2. 实现分布式锁需要关注哪些细节呢？](#12-实现分布式锁需要关注哪些细节呢)
     - [1.3. 分布式锁实现](#13-分布式锁实现)
     - [1.4. 分布式锁选型](#14-分布式锁选型)
@@ -11,23 +11,14 @@
 <!-- /TOC -->
 
 # 1. 分布式锁  
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-29.png)  
 
-## 1.1. ※※※分布式锁使用场景  
+## 1.1. 分布式锁使用场景  
 <!-- 
 ***分布式锁使用场景
 https://www.cnblogs.com/aoshicangqiong/p/12173550.html
 -->
-&emsp; **为什么使用分布式锁？**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-11.png)  
-&emsp; 如上图，在分布式系统中，订单模块为了迎战高并发，订单服务被横向拆分，拆分成了不同的进程，就像上图，两个人同时访问订单服务，然后订单系统1和订单系统2共用一个Mysql当成数据库，经过查询发现仅有一件商品，所以两个系统都认为可以下单。如果不加锁限制，可能会出现库存减为负数的情况。  
-&emsp; 解决方案：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-12.png)  
-&emsp; 如上图。mysql自带行级锁，可以考虑使用它的行级锁，可以保证数据的安全。不足之处：使用MySql的行级锁，系统的压力全部集中在mysql，那么mysql就是系统吞吐量的瓶颈了，系统的吞吐量也会受到mysql的限制。  
-&emsp; 可以使用分布式锁。如下图，分布式锁将系统的压力从mysql上面转移到自身上来。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-13.png)  
-
-----
 &emsp; **分布式锁的使用场景：**  
 1. 避免不同节点重复相同的工作。  
 
@@ -52,8 +43,8 @@ https://www.cnblogs.com/aoshicangqiong/p/12173550.html
 ## 1.2. 实现分布式锁需要关注哪些细节呢？  
 
 * 确保互斥：在同一时刻，必须保证锁至多只能被一个客户端持有。  
-* **不能死锁：在一个客户端在持有锁的期间崩溃而没有主动解锁情况下，也能保证后续其他客户端能加锁。**    
-* **避免活锁：在获取锁失败的情况下，反复进行重试操作，占用Cpu资源，影响性能。**    
+* **<font color = "blue">不能死锁：在一个客户端在持有锁的期间崩溃而没有主动解锁情况下，也能保证后续其他客户端能加锁。**</font>    
+* **<font color = "blue">避免活锁：在获取锁失败的情况下，反复进行重试操作，占用Cpu资源，影响性能。**</font>    
 * 实现更多锁特性：锁中断、锁重入、锁超时等。确保客户端只能解锁自己持有的锁。  
 
 ## 1.3. 分布式锁实现  
@@ -61,12 +52,11 @@ https://www.cnblogs.com/aoshicangqiong/p/12173550.html
 &emsp; 分布式锁一般有三种基础的实现方式：1.数据库悲观锁、乐观锁；2.[基于缓存(redis，memcached，tair)的分布式锁](/docs/microService/thinking/redisLock.md)；3.[基于ZooKeeper临时顺序节点的分布式锁](/docs/microService/thinking/ZKLock.md)。  
 &emsp; <font color="red">基于Redis的分布式锁是AP模型，基于Zookeeper的分布式锁是CP模型的。</font> 
 
-
 &emsp; **Spring Integration**    
 &emsp; Spring Integration提供的全局锁目前为如下存储提供了实现：Gemfire、JDBC、Redis、Zookeeper。它们使用相同的API抽象。即不论使用哪种存储，编码体验是一样的，若想更换实现，只需要修改依赖和配置，无需修改代码。  
 
 ## 1.4. 分布式锁选型  
-&emsp; 分布式中间件的选型无非就是AP、CP模型（CAP原理）中的一种。针对常用的分布式锁，redis是AP模型、zookeeper是CP模型。具体选择哪一种看使用场景对数据一致性的要求。  
+&emsp; 分布式中间件的选型无非就是AP、CP模型(CAP原理)中的一种。针对常用的分布式锁，redis是AP模型、zookeeper是CP模型。具体选择哪一种看使用场景对数据一致性的要求。  
 &emsp; 现在针对这两种锁做一些具体分析：  
 &emsp; 目前使用比较多的是redis锁，但是redis单机会有宕机风险；主从复制、Redisson实现锁，都有节点宕机，锁丢失，多个线程同时抢到锁的问题。  
 &emsp; 由RedLock、ZK实现的锁，相对安全，但是又有性能问题。  
@@ -77,7 +67,7 @@ https://www.cnblogs.com/aoshicangqiong/p/12173550.html
 记一次由Redis分布式锁造成的重大事故，避免以后踩坑！ 
 https://mp.weixin.qq.com/s/70mS50S2hdN_qd-RD4rk2Q
 -->
-&emsp; 对于锁的使用，编码问题，小编认为可以参考DCL（双重校验锁）的使用。例如过期Token：  
+&emsp; 对于锁的使用，编码问题，小编认为可以参考DCL(双重校验锁)的使用。例如过期Token：  
 
 ```java
 private volatile static token;
@@ -101,4 +91,4 @@ https://mp.weixin.qq.com/s/70mS50S2hdN_qd-RD4rk2Q
 ---------
 
 &emsp; 之前跟同事讨论，redis锁是不是要加时间限制。其实redis锁要不要加时间，也就是释放锁的时机问题，最终演变成了finally里要不要释放锁。  
-&emsp; 如果redis锁用于争抢资源（文本、数据库），在finally是要释放锁的；如果redis锁用于幂等，建议还是不要在finally释放锁了，可能程序执行时间比你触发幂等的间隔短，那加不加锁，也就没意义了。  
+&emsp; 如果redis锁用于争抢资源(文本、数据库)，在finally是要释放锁的；如果redis锁用于幂等，建议还是不要在finally释放锁了，可能程序执行时间比你触发幂等的间隔短，那加不加锁，也就没意义了。  

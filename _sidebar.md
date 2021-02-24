@@ -314,6 +314,7 @@
     * [分布式事务的选型](/docs/microService/thinking/DistributedTransactionSelection.md)  
 * [分布式锁](/docs/microService/thinking/DistributedLock.md)  
     * [Redis分布式锁](/docs/microService/thinking/redisLock.md)  
+    * [Redisson](/docs/microService/thinking/Redisson.md)  
     * [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
     * [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
 * 任务调度

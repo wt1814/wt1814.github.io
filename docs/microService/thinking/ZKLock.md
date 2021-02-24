@@ -11,23 +11,34 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+1. **<font color = "blue">基于ZooKeeper可以实现分布式的独占锁和读写锁。对于ZK来说，实现分布式锁的核心是临时顺序节点和监听机制。</font>**  
+2. **zookeeper分布式锁的缺点：** 1). 需要依赖zookeeper；2). 性能低。频繁地“写”zookeeper。集群节点数越多，同步越慢，获取锁的过程越慢。  
+3. **使用ZK实现分布式独占锁：**<font color="red">在某一节点下，建立临时顺序节点。最小节点获取到锁。非最小节点监听上一节点，上一节点释放锁，唤醒当前节点。</font>  
+4. **使用ZK实现分布式读写锁：<font color = "red">客户端从 Zookeeper 端获取 /share_lock下所有的子节点，并判断自己能否获取锁。</font>**  
+    1. **<font color = "red">如果客户端创建的是读锁节点，获取锁的条件（满足其中一个即可）如下：</font>**  
+
+        * 自己创建的节点序号排在所有其他子节点前面  
+        * 自己创建的节点前面无写锁节点  
+        
+    2. **<font color = "red">如果客户端创建的是写锁节点，</font>** 由于写锁具有排他性，所以获取锁的条件要简单一些，只需确定自己创建的锁节点是否排在其他子节点前面即可。  
+
+
+# 1. 基于ZK实现分布式锁
 <!-- 
 ~~
 https://mp.weixin.qq.com/s/9whV1nuwfu2hWt8newteTA 
 -->
-
-# 1. 基于ZK实现分布式锁
 &emsp; **<font color = "red">参考《ZooKeeper 分布式过程协同技术详解》和《从Paxos到Zookeeper 分布式一致性原理与实践》</font>**  
 
 ## 1.1. ZK分布式锁实现原理
-&emsp; **<font color = "lime">基于ZooKeeper可以实现分布式的独占锁和读写锁。</font>**  
+&emsp; **<font color = "blue">基于ZooKeeper可以实现分布式的独占锁和读写锁。对于ZK来说，实现分布式锁的核心是临时顺序节点和监听机制。</font>**  
 &emsp; **zookeeper分布式锁的缺点：**  
 
-* 相对于redis分布式锁，性能要稍微略差一些。加锁会频繁地“写”zookeeper，增加zookeeper的压力；写zookeeper的时候会在集群进行同步，节点数越多，同步越慢，获取锁的过程越慢。
 * 需要另外依赖zookeeper，而部分服务是不会使用zookeeper的，增加了系统的复杂性；  
+* 相对于redis分布式锁，性能要稍微略差一些。加锁会频繁地“写”zookeeper，增加zookeeper的压力；写zookeeper的时候会在集群进行同步，节点数越多，同步越慢，获取锁的过程越慢。
 
 ### 1.1.1. 独占锁的实现  
-&emsp; 对于ZK来说，实现分布式锁的核心是临时顺序节点和监听机制。  
 &emsp; **使用ZK实现分布式独占锁：**  
 1. 使用ZK的临时节点和有序节点，每个线程获取锁就是在ZK创建一个临时有序的节点，比如在/lock/目录下。  
 2. 创建节点成功后，获取/lock目录下的所有临时节点，再判断当前线程创建的节点是否是所有的节点的序号最小的节点。  
@@ -60,7 +71,7 @@ https://mp.weixin.qq.com/s/9whV1nuwfu2hWt8newteTA
 ### 1.1.2. 读写锁的实现  
 &emsp; 读写锁包含一个读锁和写锁，操作 O1 对资源 R1 加读锁，且获得了锁，其他操作可同时对资源 R1 设置读锁，进行共享读操作。如果操作 O1 对资源 R1 加写锁，且获得了锁，其他操作再对资源 R1 设置不同类型的锁都会被阻塞。总结来说，读锁具有共享性，而写锁具有排他性。那么在 Zookeeper 中，可以用怎样的节点结构实现上面的操作呢？  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-37.png)  
-&emsp; 在 Zookeeper 中，由于读写锁和独占锁的节点结构不同，读写锁的客户端不用再去竞争创建 lock 节点。所以在一开始，所有的客户端都会创建自己的锁节点。之后， **<font color = "red">客户端从 Zookeeper 端获取 /share_lock下所有的子节点，并判断自己能否获取锁。</font>**  
+&emsp; 在Zookeeper中，由于读写锁和独占锁的节点结构不同，读写锁的客户端不用再去竞争创建lock节点。所以在一开始，所有的客户端都会创建自己的锁节点。之后， **<font color = "red">客户端从 Zookeeper 端获取 /share_lock下所有的子节点，并判断自己能否获取锁。</font>**  
 &emsp; **<font color = "red">如果客户端创建的是读锁节点，获取锁的条件（满足其中一个即可）如下：</font>**  
 1. 自己创建的节点序号排在所有其他子节点前面  
 2. 自己创建的节点前面无写锁节点  
