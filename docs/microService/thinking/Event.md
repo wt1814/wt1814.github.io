@@ -2,8 +2,8 @@
 
 <!-- TOC -->
 
-- [1. ~~saga~~](#1-saga)
-    - [1.1. saga简介](#11-saga简介)
+- [1. ~~Saga~~](#1-saga)
+    - [1.1. Saga简介](#11-saga简介)
     - [1.2. Saga组成](#12-saga组成)
     - [1.3. Saga相关实现](#13-saga相关实现)
     - [1.4. Saga协调](#14-saga协调)
@@ -21,7 +21,7 @@
 
 
 
-# 1. ~~saga~~
+# 1. ~~Saga~~
 <!--
 http://servicecomb.apache.org/cn/docs/distributed-transactions-saga-implementation/
 https://zhuanlan.zhihu.com/p/95852045
@@ -41,7 +41,7 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 -->
 ......
 
-## 1.1. saga简介
+## 1.1. Saga简介
 &emsp; Saga模型起源于1987年Hector Garcia-Molina，Kenneth Salem发表的论文《Sagas》，是分布式事务相关概念最早出现的。  
 &emsp; <font color = "red">Saga是一个长活事务可被分解成可以交错运行的子事务集合。其中每个子事务都是一个保持数据库一致性的真实事务。</font>  
 
@@ -74,7 +74,7 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 * 在应用层加锁
 * 应用层预先冻结资源等
 
-&emsp; **<font color = "clime">Saga定义了两种恢复策略：**  
+&emsp; **<font color = "clime">Saga定义了两种恢复策略：** </font>** 
 
 * <font color = "red">backward recovery，向后恢复，补偿所有已完成的事务，如果任一子事务失败。</font>即上面提到的第二种执行顺序，其中j是发生错误的sub-transaction，这种做法的效果是撤销掉之前所有成功的sub-transation，使得整个Saga的执行结果撤销。  
 * <font color = "red">forward recovery，向前恢复，重试失败的事务，假设每个子事务最终都会成功。</font><font color = "clime">适用于必须要成功的场景。</font> 执行顺序是类似于这样的：T1, T2, ..., Tj(失败), Tj(重试),..., Tn，其中j是发生错误的sub-transaction。该情况下不需要Ci。  

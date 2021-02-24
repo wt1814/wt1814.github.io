@@ -309,7 +309,7 @@
 * [分布式事务](/docs/microService/thinking/DistributedTransaction.md)  
     * [分布式事务模型DTP及XA](/docs/microService/thinking/DTP.md)  
     * [TCC](/docs/microService/thinking/TCC.md)   
-    * [saga](/docs/microService/thinking/Event.md)  
+    * [Saga](/docs/microService/thinking/Event.md)  
     * [消息模式](/docs/microService/thinking/news.md)   
     * [分布式事务的选型](/docs/microService/thinking/DistributedTransactionSelection.md)  
 * [分布式锁](/docs/microService/thinking/DistributedLock.md)  

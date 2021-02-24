@@ -12,7 +12,7 @@
 &emsp; **<font color = "red">TCC就是一种业务层面或者是应用层的两阶段提交。</font>**  
 &emsp; TCC是Try(检测及资源锁定或者预留)、Commit(确认)、Cancel(取消)的缩写，业务层面需要写对应的三个方法。TCC是两阶段型、补偿型的事务。  
 
-**<font color = "blue">TCC的数据最终一致性：基于Confirm和Cancel的幂等性，保证事务最终完成确认或者取消，保证数据的一致性。</font>**  
+&emsp; **<font color = "blue">TCC的数据最终一致性：基于Confirm和Cancel的幂等性，保证事务最终完成确认或者取消，保证数据的一致性。</font>**  
 
 &emsp; TCC的问题： **<font color = "blue">TCC两个阶段都由业务代码控制，由于网络阻塞等原因，可能导致两个阶段执行顺序相反，引发问题：1.空回滚()；2.资源悬挂(TC回滚事务调用二阶段完成空回滚后，一阶段执行成功)。解决方案：使用一张事务状态控制表。</font>**    
 
