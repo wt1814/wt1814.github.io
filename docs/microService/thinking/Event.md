@@ -228,3 +228,5 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 * Saga 的补偿操作通常可以异步执行，TCC的Cancel和Confirm可以根据需要是否异步化。
 * Saga 对业务侵入较小，只需要提供一个逆向操作的Cancel即可；而TCC需要对业务进行全局性的流程改造。
 * TCC最少通信次数为2n，而Saga为n（n=子事务的数量）。 
+
+
