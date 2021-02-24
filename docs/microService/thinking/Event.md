@@ -39,7 +39,6 @@ https://www.jianshu.com/p/e4b662407c66?from=timeline&isappinstalled=0
 https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 ~~
 -->
-......
 
 ## 1.1. Saga简介
 &emsp; Saga模型起源于1987年Hector Garcia-Molina，Kenneth Salem发表的论文《Sagas》，是分布式事务相关概念最早出现的。  
