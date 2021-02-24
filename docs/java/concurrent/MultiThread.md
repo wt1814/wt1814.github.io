@@ -42,9 +42,9 @@
 &emsp; [线程安全解决方案](/docs/java/concurrent/ThreadSafety.md)
   
 ### 1.3.2. Synchronized  
-&emsp; &emsp; [Synchronized应用](/docs/java/concurrent/SynApply.md)  
-&emsp; &emsp; [Synchronized底层原理](/docs/java/concurrent/SynBottom.md)  
-&emsp; &emsp; [Synchronized优化](/docs/java/concurrent/SynOptimize.md) 
+&emsp; [Synchronized应用](/docs/java/concurrent/SynApply.md)  
+&emsp; [Synchronized底层原理](/docs/java/concurrent/SynBottom.md)  
+&emsp; [Synchronized优化](/docs/java/concurrent/SynOptimize.md) 
 
 ### 1.3.3. Volatile  
 &emsp; [Volatile](/docs/java/concurrent/Volatile.md)  
