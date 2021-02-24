@@ -27,7 +27,12 @@
 
 <!-- /TOC -->
 
-<!-- 
+<!--
+消息广播、Zab 与 Paxos 算法的联系与区别
+https://www.cnblogs.com/zz-ksw/p/12786067.html
+Zookeeper数据一致性中顺序一致性和最终一致性的区别
+https://blog.csdn.net/weixin_47727457/article/details/106439452
+
 Zookeeper工作原理(详细)
 https://blog.csdn.net/yanxilou/article/details/84400562
 
@@ -158,7 +163,7 @@ https://www.cnblogs.com/zz-ksw/p/12786067.html
 -->
 
 ##### 1.3.2.3.1. 选举流程，恢复模式  
-&emsp; 当整个集群在启动时，或者当leader节点出现网络中断、崩溃等情况时，ZAB协议就会进入恢复模式并选举产生新的 Leader，当leader服务器选举出来后，并且集群中有过半的机器和该 leader 节点完成数据同步后(同步指的是数据同步，用来保证集群中过半的机器能够和leader服务器的数据状态保持一致)，ZAB协议就会退出恢复模式。  
+&emsp; 当整个集群在启动时，或者当leader节点出现网络中断、崩溃等情况时，ZAB协议就会进入恢复模式并选举产生新的Leader，当leader服务器选举出来后，并且集群中有过半的机器和该leader节点完成数据同步后(同步指的是数据同步，用来保证集群中过半的机器能够和leader服务器的数据状态保持一致)，ZAB协议就会退出恢复模式。  
 
 ###### 1.3.2.3.1.1. 选举流程中几个重要参数 
 &emsp; 服务器ID：即配置的myId。id越大，选举时权重越高。  
