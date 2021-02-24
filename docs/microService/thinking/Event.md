@@ -77,7 +77,7 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 &emsp; **<font color = "clime">Saga定义了两种恢复策略：**  
 
 * <font color = "red">backward recovery，向后恢复，补偿所有已完成的事务，如果任一子事务失败。</font>即上面提到的第二种执行顺序，其中j是发生错误的sub-transaction，这种做法的效果是撤销掉之前所有成功的sub-transation，使得整个Saga的执行结果撤销。  
-* <font color = "red">forward recovery，向前恢复，重试失败的事务，假设每个子事务最终都会成功。</font><font color = "clime">适用于必须要成功的场景。</font>执行顺序是类似于这样的：T1, T2, ..., Tj(失败), Tj(重试),..., Tn，其中j是发生错误的sub-transaction。该情况下不需要Ci。  
+* <font color = "red">forward recovery，向前恢复，重试失败的事务，假设每个子事务最终都会成功。</font><font color = "clime">适用于必须要成功的场景。</font> 执行顺序是类似于这样的：T1, T2, ..., Tj(失败), Tj(重试),..., Tn，其中j是发生错误的sub-transaction。该情况下不需要Ci。  
 
     &emsp; 显然，向前恢复没有必要提供补偿事务，如果业务中，子事务（最终）总会成功，或补偿事务难以定义或不可能，向前恢复更符合你的需求。  
     &emsp; 理论上补偿事务永不失败，然而，在分布式世界中，服务器可能会宕机，网络可能会失败，甚至数据中心也可能会停电。在这种情况下我们能做些什么？ 最后的手段是提供回退措施，比如人工干预。  
