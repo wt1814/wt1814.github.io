@@ -7,7 +7,7 @@
     - [1.2. UUID](#12-uuid)
     - [1.3. 利用数据库生成](#13-利用数据库生成)
         - [1.3.1. MySql主键自增](#131-mysql主键自增)
-        - [1.3.2. Flink方案（基于主键自增）](#132-flink方案基于主键自增)
+        - [1.3.2. Flink方案(基于主键自增)](#132-flink方案基于主键自增)
         - [1.3.3. 基于数据库的号段模式](#133-基于数据库的号段模式)
     - [1.4. 利用中间件生成](#14-利用中间件生成)
         - [1.4.1. 基于Redis实现](#141-基于redis实现)
@@ -21,7 +21,7 @@
 
 <!-- /TOC -->
 
-**<font color = "red">&emsp; 总结：分布式ID的基本生成方式有：UUID、数据库方式(主键自增、Flink(基于自增主键，似序列)、</font><font color = "lime">号段模式</font><font color = "red">）、redis等中间件、雪花算法。</font>**  
+**<font color = "red">&emsp; 总结：分布式ID的基本生成方式有：UUID、数据库方式(主键自增、Flink(基于自增主键，似序列)、</font><font color = "lime">号段模式</font><font color = "red">)、redis等中间件、雪花算法。</font>**  
 
 &emsp; 号段模式可以理解为从数据库批量的获取自增ID，每次从数据库取出一个号段范围。  
 
@@ -87,14 +87,8 @@ https://mp.weixin.qq.com/s/x1gVtnKh2OEAzSwv0sFDxg
 ### 1.3.1. MySql主键自增  
 1. MySQL单节点主键自增   
     &emsp; 这个方案利用了<font color = "red">MySQL的主键自增auto_increment</font>，默认每次ID加1。  
-    &emsp; **优点：**  
-    * 数字化，id递增；  
-    * 查询效率高；  
-    * 具有一定的业务可读。  
-
-    **缺点：**  
-    * 存在单点问题，如果mysql挂了，就无法生成ID；  
-    * 数据库压力大，高并发抗不住。  
+    &emsp; **优点：** 1. 数字化，id递增；2. 查询效率高；3. 具有一定的业务可读。  
+    &emsp; **缺点：** 1. 存在单点问题，如果mysql挂了，就无法生成ID；2. 数据库压力大，高并发抗不住。  
 
 2. MySQL多实例主键自增   
     &emsp; 这个方案解决了mysql的单点问题，在auto_increment基础上，设置step步长。  
@@ -104,7 +98,7 @@ https://mp.weixin.qq.com/s/x1gVtnKh2OEAzSwv0sFDxg
     &emsp; **缺点：** 一旦把步长定好后，就无法扩容；而且单个数据库的压力大，数据库自身性能无法满足高并发。  
     &emsp; **应用场景：** 数据不需要扩容的场景。  
 
-### 1.3.2. Flink方案（基于主键自增）  
+### 1.3.2. Flink方案(基于主键自增)  
 &emsp; 这个方案是由Flickr团队提出，主要思路采用了MySQL自增长ID的机制(auto_increment + replace into) 。  
 
     个人理解：伪序列  
@@ -161,7 +155,7 @@ select LAST_INSERT_ID();
 commit;
 ```
 
-        注：replace into 跟 insert 功能类似，不同点在于：replace into 首先尝试插入数据到表中， 1. 如果发现表中已经有此行数据（根据主键或者唯一索引判断）则先删除此行数据，然后插入新的数据。 2. 否则，直接插入新数据。  
+        注：replace into 跟 insert 功能类似，不同点在于：replace into 首先尝试插入数据到表中， 1. 如果发现表中已经有此行数据(根据主键或者唯一索引判断)则先删除此行数据，然后插入新的数据。 2. 否则，直接插入新数据。  
  -->
 <!-- 
 https://www.cnblogs.com/c-961900940/p/6197878.html
@@ -213,7 +207,7 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 &emsp; 整个结构是64位，所以在Java中可以使用long来进行存储。该算法实现基本就是二进制操作，单机每秒内理论上最多可以生成1024*(2^12)，也就是409.6万个ID(1024 X 4096 = 4194304)  
 
 * 1位标识符：由于long基本类型在Java中是带符号的，最高位是符号位，正数是0，负数是1，所以id一般是正数，最高位是0。  
-* 41位时间戳(毫秒级)：41位时间截不是存储当前时间的时间截，而是存储时间截的差值（当前时间截 - 开始时间截 )得到的值，这里的的开始时间截，一般是id生成器开始使用的时间，由程序来指定。  
+* 41位时间戳(毫秒级)：41位时间截不是存储当前时间的时间截，而是存储时间截的差值(当前时间截 - 开始时间截 )得到的值，这里的的开始时间截，一般是id生成器开始使用的时间，由程序来指定。  
 * 10位机器标识码：可以部署在1024个节点，如果机器分机房(IDC)s部署，这10位可以由5位机房ID (datacenterId)和5位机器ID(workerId)组成。  
 * 12位序列：毫秒内的计数，12位的计数顺序号支持每个节点每毫秒(同一机器，同一时间截)产生4096个ID序号。  
 
@@ -233,9 +227,9 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
  * SnowFlake的结构如下(每部分用-分开):
  * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000 <br>
  * 1位标识，由于long基本类型在Java中是带符号的，最高位是符号位，正数是0，负数是1，所以id一般是正数，最高位是0<br>
- * 41位时间截(毫秒级)，注意，41位时间截不是存储当前时间的时间截，而是存储时间截的差值（当前时间截 - 开始时间截)
- * 得到的值），这里的的开始时间截，一般是我们的id生成器开始使用的时间，由我们程序来指定的（如下下面程序IdWorker类的
- startTime属性）。41位的时间截，可以使用69年，年T = (1L << 41) / (1000L * 60 * 60 * 24 * 365) = 69<br>
+ * 41位时间截(毫秒级)，注意，41位时间截不是存储当前时间的时间截，而是存储时间截的差值(当前时间截 - 开始时间截)
+ * 得到的值)，这里的的开始时间截，一般是我们的id生成器开始使用的时间，由我们程序来指定的(如下下面程序IdWorker类的
+ startTime属性)。41位的时间截，可以使用69年，年T = (1L << 41) / (1000L * 60 * 60 * 24 * 365) = 69<br>
  * 10位的数据机器位，可以部署在1024个节点，包括5位datacenterId和5位workerId<br>
  * 12位序列，毫秒内的计数，12位的计数顺序号支持每个节点每毫秒(同一机器，同一时间截)产生4096个ID序号<br>
  * 加起来刚好64位，为一个Long型。<br>
@@ -392,7 +386,7 @@ public class SnowflakeIdWorker {
   
 ### 1.6.1. 百度uid-generator  
 <!-- 
-UidGenerator：百度开源的分布式ID服务（解决了时钟回拨问题） 
+UidGenerator：百度开源的分布式ID服务(解决了时钟回拨问题) 
 https://mp.weixin.qq.com/s/8NsTXexf03wrT0tsW24EHA
 -->
 &emsp; uid-generator是由百度技术部开发，解决了时钟回拨问题。项目GitHub地址 https://github.com/baidu/uid-generator 。  
@@ -441,13 +435,12 @@ public void testSerialGenerate() {
 <!-- 
 leaf：美团开源的分布式ID生成系统剖析 
 https://mp.weixin.qq.com/s/A56iqJh-04vyVI7k22uvAA
-9种分布式ID生成之美团（Leaf）实战
+9种分布式ID生成之美团(Leaf)实战
 https://mp.weixin.qq.com/s/F1m877H-GbI-YMT-hF-w8w
- 美团（Leaf）分布式ID生成器，好用的一批！ 
+ 美团(Leaf)分布式ID生成器，好用的一批！ 
  https://mp.weixin.qq.com/s/s9pXbnMZvxwb3Lstxgb8WA
 -->
 ......
 
 ### 1.6.3. 滴滴Tinyid  
-......
-
+&emsp; ......

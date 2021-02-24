@@ -307,7 +307,7 @@
     * [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
 * [分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
 * [分布式事务](/docs/microService/thinking/DistributedTransaction.md)  
-    * [DTP](/docs/microService/thinking/DTP.md)  
+    * [分布式事务模型DTP及XA](/docs/microService/thinking/DTP.md)  
     * [TCC](/docs/microService/thinking/TCC.md)   
     * [saga](/docs/microService/thinking/Event.md)  
     * [消息模式](/docs/microService/thinking/news.md)   

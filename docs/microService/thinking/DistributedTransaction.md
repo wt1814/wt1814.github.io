@@ -30,17 +30,16 @@ https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487531&idx=1&sn=b3fbc4
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-33.png)  
 
-
 ## 1.1. 分布式事务产生的原因  
 * 数据库分库分表：如果一个操作既访问01库，又访问02库，而且要保证数据的一致性，那么就要用到分布式事务。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-1.png)  
 * 应用SOA化：所谓的SOA化，就是业务的服务化。将一个整体的系统拆分为多个子系统，每个子系统都有自己的数据库，为了保证数据一致性，就需要用到分布式事务。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-2.png)  
 
-----
+
 ## 1.2. 分布式事务解决方案  
 
-* 分布式事务模型[DTP](/docs/microService/thinking/DTP.md)     
+* [[分布式事务模型DTP及XA](/docs/microService/thinking/DTP.md)     
     * 一致性协议-XA两阶段提交
     * 一致性协议-XA三阶段提交
 * [TCC模式](/docs/microService/thinking/TCC.md)-强一致性
@@ -50,7 +49,6 @@ https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487531&idx=1&sn=b3fbc4
     * 事务消息-最终一致性
     * 最大努力通知-最终一致性
 
----
 ## 1.3. 分布式事务具体实现  
 ### 1.3.1. JTA  
 
