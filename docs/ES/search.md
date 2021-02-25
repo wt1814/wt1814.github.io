@@ -30,25 +30,24 @@ https://mp.weixin.qq.com/s/CJkS3vu2BjUWfWrciwNVJg
 https://mp.weixin.qq.com/s/QQh0M85YqI-sHPnYy3pkBg
 -->
 
-<!-- 
 
-1.1.1 章
-ES运行检索两种基本方式
-https://www.bblog.vip/article_detail/1559295979215
-ES实战九、全文检索-ElasticSearch-进阶-两种查询方式
-https://tech.souyunku.com/?p=37521
-https://haokan.baidu.com/v?pd=wisenatural&vid=12730932323983835698
--->
 
 ## 1.1. 检索操作  
 &emsp; 搜索分为两个过程：  
 
 * 当向索引中保存文档时，默认情况下，es 会保存两份内容，一份是 _source  中的数据，另一份则是通过分词、排序等一系列过程生成的倒排索引文件，倒排索引中保存了词项和文档之间的对应关系。  
 * 搜索时，当 es 接收到用户的搜索请求之后，就会去倒排索引中查询，通过的倒排索引中维护的倒排记录表找到关键词对应的文档集合，然后对文档进行评分、排序、高亮等处理，处理完成后返回文档。  
+
+
   
 ### 1.1.1. 搜索两种基本方式  
-
-
+<!-- 
+ES运行检索两种基本方式
+https://www.bblog.vip/article_detail/1559295979215
+ES实战九、全文检索-ElasticSearch-进阶-两种查询方式
+https://tech.souyunku.com/?p=37521
+https://haokan.baidu.com/v?pd=wisenatural&vid=12730932323983835698
+-->
 &emsp; elasticsearch的搜索方式：  
 1. query string search。  
 2. query DSL，DSL(Domain Specific Language特定领域语言)以JSON请求体的形式出现。  
