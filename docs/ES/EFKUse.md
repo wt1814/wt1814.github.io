@@ -31,7 +31,7 @@ https://blog.csdn.net/ct1150/article/details/88058345
 <!-- 
 https://blog.csdn.net/zimou5581/article/details/90519307
 --> 
-......
+&emsp; <font color = "red">无需修改项目工程文件。</font>  
 
 ### 1.2.2. Spring日志直接输出到logstash  
 &emsp; **无fileBeat组件时，日志需要直接输出到logstash。**

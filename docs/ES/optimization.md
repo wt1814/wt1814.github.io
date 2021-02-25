@@ -26,15 +26,15 @@
 ### 1.1.1.2. JVM设置  
 &emsp; ElasticSearch是基于Lucene开发的，而Lucene是使用Java开发的，所以也需要针对JVM进行调优。
 
-* 确保堆内存最小值（ Xms ）与最大值（ Xmx ）的大小是相同的，防止程序在运行时改变堆内存大小。  
+* 确保堆内存最小值(Xms)与最大值(Xmx)的大小是相同的，防止程序在运行时改变堆内存大小。  
 * **Elasticsearch 默认安装后设置的堆内存是 1GB。可通过 ../config/jvm.option 文件进行配置，但是最好不要超过物理内存的50%和超过 32GB。**  
 * GC 默认采用 CMS 的方式，并发但是有 STW 的问题，可以考虑使用 G1 收集器。  
 
 <!-- 
-由于ES构建基于lucene, 而lucene设计强大之处在于lucene能够很好的利用操作系统内存来缓存索引数据，以提供快速的查询性能。lucene的索引文件segements是存储在单文件中的，并且不可变，对于OS来说，能够很友好地将索引文件保持在cache中，以便快速访问；因此，我们很有必要将一半的物理内存留给lucene ; 另一半的物理内存留给ES（JVM heap )。所以， 在ES内存设置方面，可以遵循以下原则：
+由于ES构建基于lucene, 而lucene设计强大之处在于lucene能够很好的利用操作系统内存来缓存索引数据，以提供快速的查询性能。lucene的索引文件segements是存储在单文件中的，并且不可变，对于OS来说，能够很友好地将索引文件保持在cache中，以便快速访问；因此，我们很有必要将一半的物理内存留给lucene ; 另一半的物理内存留给ES(JVM heap )。所以， 在ES内存设置方面，可以遵循以下原则：
 1. 当机器内存小于64G时，遵循通用的原则，50%给ES，50%留给lucene。
 2.  当机器内存大于64G时，遵循以下原则：
-a. 如果主要的使用场景是全文检索, 那么建议给ES Heap分配 4~32G的内存即可；其它内存留给操作系统, 供lucene使用（segments cache), 以提供更快的查询性能。
+a. 如果主要的使用场景是全文检索, 那么建议给ES Heap分配 4~32G的内存即可；其它内存留给操作系统, 供lucene使用(segments cache), 以提供更快的查询性能。
 b.  如果主要的使用场景是聚合或排序， 并且大多数是numerics, dates, geo_points 以及not_analyzed的字符类型， 建议分配给ES Heap分配 4~32G的内存即可，其它内存留给操作系统，供lucene使用(doc values cache)，提供快速的基于文档的聚类、排序性能。
 c.  如果使用场景是聚合或排序，并且都是基于analyzed 字符数据，这时需要更多的 heap size, 建议机器上运行多ES实例，每个实例保持不超过50%的ES heap设置(但不超过32G，堆内存设置32G以下时，JVM使用对象指标压缩技巧节省空间)，50%以上留给lucene。
 3. 禁止swap，一旦允许内存与磁盘的交换，会引起致命的性能问题。 通过： 在elasticsearch.yml 中 bootstrap.memory_lock: true， 以保持JVM锁定内存，保证ES的性能。
@@ -44,8 +44,8 @@ c.  如果使用场景是聚合或排序，并且都是基于analyzed 字符数�
 1. 设置refresh_interval 为-1，同时设置number_of_replicas 为0，通过关闭refresh间隔周期，同时不设置副本来提高写性能。  
 2. 修改index_buffer_size 的设置，可以设置成百分数，也可设置成具体的大小，大小可根据集群的规模做不同的设置测试。  
 
-        indices.memory.index_buffer_size：10%（默认）
-        indices.memory.min_index_buffer_size： 48mb（默认）
+        indices.memory.index_buffer_size：10%(默认)
+        indices.memory.min_index_buffer_size： 48mb(默认)
         indices.memory.max_index_buffer_size
 3. 修改translog相关的设置：
     1. 控制数据从内存到硬盘的操作频率，以减少硬盘IO。可将sync_interval的时间设置大一些。  
@@ -62,9 +62,9 @@ c.  如果使用场景是聚合或排序，并且都是基于analyzed 字符数�
 
 ### 1.1.2.2. 查询优化
 1. query_string 或 multi_match的查询字段越多， 查询越慢。可以在mapping阶段，利用copy_to属性将多字段的值索引到一个新字段，multi_match时，用新的字段查询。
-2. 日期字段的查询， 尤其是用now 的查询实际上是不存在缓存的，因此， 可以从业务的角度来考虑是否一定要用now, 毕竟利用query cache 是能够大大提高查询效率的。
-3. 查询结果集的大小不能随意设置成大得离谱的值， 如query.setSize不能设置成 Integer.MAX_VALUE， 因为ES内部需要建立一个数据结构来放指定大小的结果集数据。
-4. 尽量避免使用script，万不得已需要使用的话，选择painless & experssions 引擎。一旦使用script查询，一定要注意控制返回，千万不要有死循环（如下错误的例子），因为ES没有脚本运行的超时控制，只要当前的脚本没执行完，该查询会一直阻塞。  
+2. 日期字段的查询，尤其是用now的查询实际上是不存在缓存的，因此，可以从业务的角度来考虑是否一定要用now, 毕竟利用query cache是能够大大提高查询效率的。
+3. 查询结果集的大小不能随意设置成大得离谱的值，如query.setSize不能设置成Integer.MAX_VALUE，因为ES内部需要建立一个数据结构来放指定大小的结果集数据。
+4. 尽量避免使用script，万不得已需要使用的话，选择painless & experssions引擎。一旦使用script查询，一定要注意控制返回，千万不要有死循环(如下错误的例子)，因为ES没有脚本运行的超时控制，只要当前的脚本没执行完，该查询会一直阻塞。  
 如：  
 
 ```json
@@ -72,22 +72,22 @@ c.  如果使用场景是聚合或排序，并且都是基于analyzed 字符数�
     “script_fields”：{
         “test1”：{
             “lang”：“groovy”，
-            “script”：“while（true）{print 'don’t use script'}”
+            “script”：“while(true){print 'don’t use script'}”
         }
     }
 }
 ```
 5. 避免层级过深的聚合查询，层级过深的group by , 会导致内存、CPU消耗，建议在服务层通过程序来组装业务，也可以通过pipeline的方式来优化。  
 6. 复用预索引数据方式来提高AGG性能：  
-&emsp; 如通过 terms aggregations 替代 range aggregations， 如要根据年龄来分组，分组目标是: 少年（14岁以下） 青年（14-28） 中年（29-50） 老年（51以上）， 可以在索引的时候设置一个age_group字段，预先将数据进行分类。从而不用按age来做range aggregations, 通过age_group字段就可以了。
+&emsp; 如通过 terms aggregations 替代 range aggregations， 如要根据年龄来分组，分组目标是: 少年(14岁以下) 青年(14-28) 中年(29-50) 老年(51以上)， 可以在索引的时候设置一个age_group字段，预先将数据进行分类。从而不用按age来做range aggregations, 通过age_group字段就可以了。
 7. Cache的设置及使用：  
     1. QueryCache: ES查询的时候，使用filter查询会使用query cache, 如果业务场景中的过滤查询比较多，建议将querycache设置大一些，以提高查询速度。  
-    &emsp; indices.queries.cache.size： 10%（默认），可设置成百分比，也可设置成具体值，如256mb。  
-    &emsp; 当然也可以禁用查询缓存（默认是开启）， 通过index.queries.cache.enabled：false设置。  
+    &emsp; indices.queries.cache.size： 10%(默认)，可设置成百分比，也可设置成具体值，如256mb。  
+    &emsp; 当然也可以禁用查询缓存(默认是开启)， 通过index.queries.cache.enabled：false设置。  
     2. FieldDataCache: 在聚类或排序时，field data cache会使用频繁，因此，设置字段数据缓存的大小，在聚类或排序场景较多的情形下很有必要，可&emsp; 通过indices.fielddata.cache.size：30% 或具体值10GB来设置。但是如果场景或数据变更比较频繁，设置cache并不是好的做法，因为缓存加载的开销也是特别大的。
     3. ShardRequestCache: 查询请求发起后，每个分片会将结果返回给协调节点(Coordinating Node), 由协调节点将结果整合。   
     &emsp; 如果有需求，可以设置开启;  通过设置index.requests.cache.enable: true来开启。  
-    &emsp; 不过，shard request cache只缓存hits.total, aggregations, suggestions类型的数据，并不会缓存hits的内容。也可以通过设置indices.requests.cache.size: 1%（默认）来控制缓存空间大小。  
+    &emsp; 不过，shard request cache只缓存hits.total, aggregations, suggestions类型的数据，并不会缓存hits的内容。也可以通过设置indices.requests.cache.size: 1%(默认)来控制缓存空间大小。  
 
 ## 1.1.3. 其他优化
 ### 1.1.3.1. Filesystem Cache  
@@ -99,7 +99,7 @@ https://www.cnblogs.com/huanglog/p/9021073.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-14.png)  
 &emsp; ES 的搜索引擎严重依赖于底层的 Filesystem Cache，如果给 Filesystem Cache 更多的内存，尽量让内存可以容纳所有的 IDX Segment File 索引数据文件，那么搜索的时候就基本都是走内存的，性能会非常高。  
 &emsp; 真实的案例：某个公司 ES 节点有 3 台机器，每台机器看起来内存很多 64G，总内存就是 64 * 3 = 192G。  
-每台机器给 ES JVM Heap 是 32G，那么剩下来留给 Filesystem Cache 的就是每台机器才 32G，总共集群里给 Filesystem Cache 的就是 32 * 3 = 96G 内存。  
+&emsp; 每台机器给ES JVM Heap是 32G，那么剩下来留给Filesystem Cache的就是每台机器才32G，总共集群里给Filesystem Cache 的就是 32 * 3 = 96G 内存。  
 &emsp; 而此时，整个磁盘上索引数据文件，在 3 台机器上一共占用了 1T 的磁盘容量，ES 数据量是 1T，那么每台机器的数据量是 300G。这样性能好吗？  
 &emsp; Filesystem Cache 的内存才 100G，十分之一的数据可以放内存，其他的都在磁盘，然后执行搜索操作，大部分操作都是走磁盘，性能肯定差。  
 &emsp; 归根结底，要让 ES 性能好，最佳的情况下，就是机器的内存，至少可以容纳总数据量的一半。  
@@ -114,7 +114,7 @@ https://www.cnblogs.com/huanglog/p/9021073.html
 &emsp; 从 ES 中根据 name 和 age 去搜索，拿到的结果可能就 20 个 doc id，然后根据 doc id 到 HBase 里去查询每个 doc id 对应的完整的数据，给查出来，再返回给前端。  
 &emsp; 写入 ES 的数据最好小于等于，或者是略微大于 ES 的 Filesystem Cache 的内存容量。  
 &emsp; 然后从 ES 检索可能就花费 20ms，然后再根据 ES 返回的 id 去 HBase 里查询，查 20 条数据，可能也就耗费 30ms。  
-&emsp; 设置 ES 集群内存的时候，还有一点就是**避免交换内存**，可以在配置文件中对内存进行锁定，以避免交换内存（也可以在操作系统层面进行关闭内存交换）。对应的参数：bootstrap.mlockall: true。  
+&emsp; 设置 ES 集群内存的时候，还有一点就是**避免交换内存**，可以在配置文件中对内存进行锁定，以避免交换内存(也可以在操作系统层面进行关闭内存交换)。对应的参数：bootstrap.mlockall: true。  
 
 ### 1.1.3.2. 数据预热  
 &emsp; 假如说，哪怕是按照上述的方案去做了，ES 集群中每个机器写入的数据量还是超过了 Filesystem Cache 一倍。  
@@ -134,9 +134,9 @@ https://www.cnblogs.com/huanglog/p/9021073.html
 &emsp; 如果有人访问冷数据，可能大量数据是在磁盘上的，此时性能差点，就 10% 的人去访问冷数据，90% 的人在访问热数据，也无所谓了。  
 
 ### 1.1.3.4. 重建索引  
-&emsp; 在重建索引之前，首先要考虑一下重建索引的必要性，因为重建索引是非常耗时的。ES 的 reindex api 不会去尝试设置目标索引，不会复制源索引的设置，所以应该在运行_reindex 操作之前设置目标索引，包括设置映射（mapping），分片，副本等。  
+&emsp; 在重建索引之前，首先要考虑一下重建索引的必要性，因为重建索引是非常耗时的。ES 的 reindex api 不会去尝试设置目标索引，不会复制源索引的设置，所以应该在运行_reindex 操作之前设置目标索引，包括设置映射(mapping)，分片，副本等。  
 
-&emsp; 第一步，和创建普通索引一样创建新索引。当数据量很大的时候，需要设置刷新时间间隔，把 refresh_intervals 设置为-1，即不刷新,number_of_replicas 副本数设置为 0（因为副本数可以动态调整，这样有助于提升速度）。  
+&emsp; 第一步，和创建普通索引一样创建新索引。当数据量很大的时候，需要设置刷新时间间隔，把 refresh_intervals 设置为-1，即不刷新,number_of_replicas 副本数设置为 0(因为副本数可以动态调整，这样有助于提升速度)。  
 
 ```json
 {
