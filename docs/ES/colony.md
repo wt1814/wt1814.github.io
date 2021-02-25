@@ -13,12 +13,13 @@
         - [1.2.1. 集群配置](#121-集群配置)
         - [1.2.2. 集群发现的一般步骤](#122-集群发现的一般步骤)
         - [1.2.3. master选举](#123-master选举)
-    - [1.3. 集群健康状态](#13-集群健康状态)
-    - [1.4. 集群容错](#14-集群容错)
-        - [1.4.1. 集群容错流程](#141-集群容错流程)
-        - [1.4.2. ※※※split-brain(脑分裂问题)](#142-※※※split-brain脑分裂问题)
-    - [1.5. 集群重启](#15-集群重启)
-    - [1.6. 集群扩容](#16-集群扩容)
+    - [1.3. 集群容错](#13-集群容错)
+        - [1.3.1. 集群容错流程](#131-集群容错流程)
+        - [1.3.2. ※※※split-brain(脑分裂问题)](#132-※※※split-brain脑分裂问题)
+    - [1.4. 集群操作](#14-集群操作)
+        - [1.4.1. 集群健康状态检查](#141-集群健康状态检查)
+        - [1.4.2. 集群重启](#142-集群重启)
+        - [1.4.3. 集群扩容](#143-集群扩容)
 
 <!-- /TOC -->
 
@@ -28,7 +29,7 @@
 ## 1.1. ES集群基本概念
 &emsp; 在数据库系统中，为了保证高可用性，可能会做主从复制、分库分表等操作。在ES中也有相同的基本操作。ES集群架构如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-4.png)  
-&emsp; 上述图中则为一个集群，其中Node-1是主节点，主节点有权限控制整个集群，有权限控制整个集群。每个节点都有三个分片，其中P0 P1 P2代表 Primary 为主分片，R开头的则代表为每个主分片对应的副本分片，一共是 3 个主分片，每个主分片有两个对应的副本分片。  
+&emsp; 上述图中则为一个集群，其中Node-1是主节点，主节点有权限控制整个集群，有权限控制整个集群。每个节点都有三个分片，其中P0 P1 P2代表Primary为主分片，R开头的则代表为每个主分片对应的副本分片，一共是3个主分片，每个主分片有两个对应的副本分片。  
 
 ### 1.1.1. 节点(Node)  
 &emsp; 运行了单个实例的ES主机称为节点，它是集群的一个成员，可以存储数据、参与集群索引及搜索操作。节点通过为其配置的ES集群名称确定其所要加入的集群。  
@@ -144,40 +145,10 @@ discovery.zen.join_timeout：有新的node加入集群时，会发送一个join 
 * discovery.zen.master_election.ignore_non_master_pings：如果master node意外宕机了，集群进行重新选举，如果此值为true，那么只有master eligible node才有资格被选为master。  
 * discovery.zen.minimum_master_nodes：新选举master时，要求必须有多少个master eligible node去连接那个新选举的master。而且还用于设置一个集群中必须拥有的master eligible node。如果这些要求没有被满足，那么master node就会被停止，然后会重新选举一个新的master。这个参数必须设置为master eligible node的quorum数量。一般避免说只有两个master eligible node，因为2的quorum还是2。如果在那个情况下，任何一个master候选节点宕机了，集群就无法正常运作了。  
 
-## 1.3. 集群健康状态  
-&emsp; 要检查群集运行状况，可以在 Kibana 控制台中运行以下命令 GET /_cluster/health，得到如下信息：  
 
-```json
-{
-  "cluster_name" : "xxxBug",
-  "status" : "yellow",
-  "timed_out" : false,
-  "number_of_nodes" : 1,
-  "number_of_data_nodes" : 1,
-  "active_primary_shards" : 9,
-  "active_shards" : 9,
-  "relocating_shards" : 0,
-  "initializing_shards" : 0,
-  "unassigned_shards" : 5,
-  "delayed_unassigned_shards" : 0,
-  "number_of_pending_tasks" : 0,
-  "number_of_in_flight_fetch" : 0,
-  "task_max_waiting_in_queue_millis" : 0,
-  "active_shards_percent_as_number" : 64.28571428571429
-}
-```
+## 1.3. 集群容错  
 
-&emsp; <font color = "red">Elasticsearch集群存在三种健康状态</font>(单节点 Elasticsearch 也可以算是一个集群)。  
-
-* 绿色：集群健康完好，一切功能齐全正常，所有分片和副本都可以正常工作。  
-* 黄色：预警状态，所有主分片功能正常，但至少有一个副本是不能正常工作的。此时集群是可以正常工作的，但是高可用性在某种程度上会受影响。  
-* **红色：集群不可正常使用。某个或某些分片及其副本异常不可用，这时集群的查询操作还能执行，但是返回的结果会不准确。对于分配到这个分片的写入请求将会报错，最终会导致数据的丢失。**  
-
-&emsp; <font color = "red">当集群状态为红色时，它将会继续从可用的分片提供搜索请求服务，但是需要尽快修复那些未分配的分片。</font>  
-
-## 1.4. 集群容错  
-
-### 1.4.1. 集群容错流程  
+### 1.3.1. 集群容错流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-76.png)  
 &emsp; ①第一步：Master选举(假如宕机节点是Master)  
 &emsp; &emsp; 1)脑裂：可能会产生多个Master节点  
@@ -186,7 +157,7 @@ discovery.zen.join_timeout：有新的node加入集群时，会发送一个join 
 &emsp; ③第三步：Master节点会尝试重启故障机  
 &emsp; ④第四步：数据同步，Master会将宕机期间丢失的数据同步到重启机器对应的分片上去  
 
-### 1.4.2. ※※※split-brain(脑分裂问题)  
+### 1.3.2. ※※※split-brain(脑分裂问题)  
 <!-- 
 Elasticsearch 中的节点(比如共 20 个)，其中的 10 个 选了一个master，另外 10 个选了另一个master，怎么办？  
 1、当集群 master 候选数量不小于 3 个时， 可以通过设置最少投票通过数量 ( discovery.zen.minimum_master_nodes) 超过所有候选节点一半以上来解决脑裂问题；  
@@ -219,7 +190,39 @@ Elasticsearch 中的节点(比如共 20 个)，其中的 10 个 选了一个mast
 
 &emsp; 综上所述：3个节点的集群，全部为master eligible node，配置discovery.zen.minimum_master_nodes: 2，就可以避免脑裂问题的产生。  
 
-## 1.5. 集群重启
+## 1.4. 集群操作
+### 1.4.1. 集群健康状态检查  
+&emsp; 要检查群集运行状况，可以在 Kibana 控制台中运行以下命令 GET /_cluster/health，得到如下信息：  
+
+```json
+{
+  "cluster_name" : "xxxBug",
+  "status" : "yellow",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 9,
+  "active_shards" : 9,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 5,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 64.28571428571429
+}
+```
+
+&emsp; <font color = "red">Elasticsearch集群存在三种健康状态</font>(单节点 Elasticsearch 也可以算是一个集群)。  
+
+* 绿色：集群健康完好，一切功能齐全正常，所有分片和副本都可以正常工作。  
+* 黄色：预警状态，所有主分片功能正常，但至少有一个副本是不能正常工作的。此时集群是可以正常工作的，但是高可用性在某种程度上会受影响。  
+* **红色：集群不可正常使用。某个或某些分片及其副本异常不可用，这时集群的查询操作还能执行，但是返回的结果会不准确。对于分配到这个分片的写入请求将会报错，最终会导致数据的丢失。**  
+
+&emsp; <font color = "red">当集群状态为红色时，它将会继续从可用的分片提供搜索请求服务，但是需要尽快修复那些未分配的分片。</font>  
+
+### 1.4.2. 集群重启
 &emsp; 如果Elasticsearch集群做了一些离线的维护操作时，如扩容磁盘，升级版本等，需要对集群进行启动，节点数较多时，从第一个节点开始启动，到最后一个节点启动完成，耗时可能较长，有时候还可能出现某几个节点因故障无法启动，排查问题、修复故障后才能加入到集群中，此时集群会干什么呢？    
 
 &emsp; 假设10个节点的集群，每个节点有1个shard，升级后重启节点，结果有3台节点因故障未能启动，需要耗费时间排查故障，如下图所示：  
@@ -254,7 +257,7 @@ Elasticsearch 中的节点(比如共 20 个)，其中的 10 个 选了一个mast
 &emsp; 上面的参数设置合理的情况，集群启动是没有shard移动的现象，这样集群启动的时候就可以由之前的几小时，变成几秒钟。  
 
 
-## 1.6. 集群扩容  
+### 1.4.3. 集群扩容  
 <!-- 
 elasticsearch集群扩容和容灾
 https://www.cnblogs.com/hello-shf/p/11543468.html
