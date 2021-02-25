@@ -331,6 +331,7 @@
         * [ES集群操作](/docs/ES/ClusterOperation.md)  
     * [ES使用](/docs/ES/useTutorials.md)  
         * [ES建模](/docs/ES/modeling.md)  
+        * [PB级别的大索引如何设计？](/docs/ES/IndexDesign.md)  
         * [ElasticsearchREST](/docs/ES/ElasticsearchREST.md)  
         * [索引操作](/docs/ES/index.md)  
         * [文档操作](/docs/ES/document.md)  
