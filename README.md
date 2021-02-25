@@ -434,6 +434,7 @@
 [ES原理](/docs/ES/principle.md)  
 [ES监控](/docs/ES/monitor.md)  
 [ES优化](/docs/ES/optimization.md)  
+[使用ES中的一些问题](/docs/ES/problem.md)  
 [ELK/EFK](/docs/ES/EFK.md)    
 &emsp; [EFK介绍](/docs/ES/EFKIntroduce.md)  
 &emsp; [EFK使用](/docs/ES/EFKUse.md)  

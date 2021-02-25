@@ -7,7 +7,6 @@
     - [1.2. Mapping如何设计？](#12-mapping如何设计)
     - [1.3. 分词的选型](#13-分词的选型)
     - [1.4. 文档document设计](#14-文档document设计)
-    - [1.5. 多表关联如何设计？](#15-多表关联如何设计)
     - [1.6. 冷热集群架构](#16-冷热集群架构)
 
 <!-- /TOC -->
@@ -227,45 +226,7 @@ Elasticsearch系列---数据建模实战
 https://mp.weixin.qq.com/s/hTGqpCl4KYXlvD74fj8l5Q
 -->
 &emsp; es更类似面向对象的数据模型，将所有关联的数据放在一个document里。  
-
-
-## 1.5. 多表关联如何设计？  
-&emsp; 主要原因：常规基于关系型数据库开发，多多少少都会遇到关联查询。而关系型数据库设计的思维很容易带到ES的设计中。  
-&emsp; **多表关联如何实现？**    
-&emsp; **方案一：多表关联视图，视图同步ES**  
-&emsp; MySQL宽表导入ES，使用ES查询+检索。适用场景：基础业务都在MySQL，存在几十张甚至几百张表，准备同步到ES，使用ES做全文检索。  
-&emsp; 将数据整合成一个宽表后写到ES，宽表的实现可以借助关系型数据库的视图实现。  
-&emsp; 宽表处理在处理一对多、多对多关系时，会有字段冗余问题，如果借助：logstash_input_jdbc，关系型数据库如MySQL中的每一个字段都会自动帮你转成ES中对应索引下的对应document下的某个相同字段下的数据。  
-
-* 步骤 1：提前关联好数据，将关联的表建立好视图，一个索引对应你的一个视图，并确认视图中数据的正确性。
-* 步骤 2：ES 中针对每个视图定义好索引名称及 Mapping。
-* 步骤 3：以视图为单位通过 logstash_input_jdbc 同步到 ES 中。
-
-&emsp; **方案二：1 对 1 同步 ES**  
-&emsp; MySQL+ES结合，各取所长。适用场景：关系型数据库全量同步到ES存储，没有做冗余视图关联。  
-&emsp; ES擅长的是检索，而MySQL才擅长关系管理。所以可以考虑二者结合，使用ES多索引建立相同的别名，针对别名检索到对应ID后再回MySQL通过关联ID join出需要的数据。  
-
-&emsp; **方案三：使用 Nested 做好关联**  
-&emsp; 适用场景：1 对少量的场景。举例：有一个文档描述了一个帖子和一个包含帖子上所有评论的内部对象评论。可以借助 Nested 实现。  
-&emsp; Nested 类型选型——如果需要索引对象数组并保持数组中每个对象的独立性，则应使用嵌套 Nested 数据类型而不是对象 Oject 数据类型。  
-&emsp; 当使用嵌套文档时，使用通用的查询方式是无法访问到的，必须使用合适的查询方式(nested query、nested filter、nested facet等)，很多场景下，使用嵌套文档的复杂度在于索引阶段对关联关系的组织拼装。  
-
-&emsp; **方案四：使用 ES6.X+ 父子关系 Join 做关联**   
-&emsp; 适用场景：1 对多量的场景。举例：1个产品和供应商之间是1对N的关联关系。  
-&emsp; Join 类型：join数据类型是一个特殊字段，用于在同一索引的文档中创建父/子关系。关系部分定义文档中的一组可能关系，每个关系是父名称和子名称。  
-&emsp; 当使用父子文档时，使用has_child 或者has_parent做父子关联查询。  
-
-&emsp; **方案三、方案四选型对比：**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-70.png)  
-&emsp; 注意：方案三&方案四选型必须考虑性能问题。文档应该尽量通过合理的建模来提升检索效率。  
-&emsp; Join类型应该尽量避免使用。nested 类型检索使得检索效率慢几倍，父子Join类型检索会使得检索效率慢几百倍。  
-&emsp; 尽量将业务转化为没有关联关系的文档形式，在文档建模处多下功夫，以提升检索效率。  
-
-&emsp; [干货 | 论Elasticsearch数据建模的重要性](https://mp.weixin.qq.com/s?__biz=MzI2NDY1MTA3OQ==&mid=2247484159&idx=1&sn=731562a8bb89c9c81b4fd6a8e92e1a99&chksm=eaa82ad7dddfa3c11e5b63a41b0e8bc10d12f1b8439398e490086ddc6b4107b7864dbb9f891a&scene=21#wechat_redirect)  
-&emsp; [干货 | Elasticsearch多表关联设计指南](https://mp.weixin.qq.com/s?__biz=MzI2NDY1MTA3OQ==&mid=2247484382&idx=1&sn=da073a257575867b8d979dac850c3f8e&chksm=eaa82bf6dddfa2e0bf920f0a3a63cb635277be2ae286a2a6d3fff905ad913ebf1f43051609e8&scene=21#wechat_redirect)  
-
-&emsp; 小结  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-71.png)  
+&emsp; [多表关联](/docs/ES/multiTable.md)  
 
 
 ----

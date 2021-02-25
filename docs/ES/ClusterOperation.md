@@ -11,7 +11,7 @@
 
 # 1. ES集群操作
 ## 1.1. 集群健康状态检查  
-&emsp; 要检查群集运行状况，可以在 Kibana 控制台中运行以下命令 GET /_cluster/health，得到如下信息：  
+&emsp; 要检查群集运行状况，可以在Kibana控制台中运行以下命令 GET /_cluster/health，得到如下信息：  
 
 ```json
 {

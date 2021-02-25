@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. ES 机制原理](#1-es-机制原理)
+- [1. ES机制原理](#1-es机制原理)
     - [1.1. 写数据](#11-写数据)
         - [1.1.1. 写数据过程](#111-写数据过程)
         - [1.1.2. 写数据的底层原理](#112-写数据的底层原理)
@@ -11,7 +11,13 @@
 
 <!-- /TOC -->
 
-# 1. ES 机制原理
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **数据先写入内存buffer，然后每隔1s，将数据refresh到os cache，到了os cache数据就能被搜索到(所以说es从写入到能被搜索到，中间有1s的延迟)。每隔5s，将数据写入translog文件(这样如果机器宕机，内存数据全没，最多会有5s的数据丢失)，translog大到一定程度，或者默认每隔30mins，会触发commit操作，将缓冲区的数据都flush到segment file磁盘文件中。数据写入segment file之后，同时就建立好了倒排索引。**  
+
+&emsp; es丢数据？  
+&emsp; es第一是准实时的，数据写入1秒后可以搜索到；可能会丢失数据的。有5秒的数据，停留在buffer、translog os cache、segment file os cache中，而不在磁盘上，此时如果宕机，会导致5秒的数据丢失。  
+
+# 1. ES机制原理
 <!--
 http://blog.itpub.net/31545820/viewspace-2656265/
 https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
@@ -21,23 +27,17 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 
 ## 1.1. 写数据  
 ### 1.1.1. 写数据过程  
-* 客户端选择一个 node 发送请求过去，这个 node 就是 coordinating node （协调节点）。  
-* coordinating node 对 document 进行路由，将请求转发给对应的 node（有 primary shard）。  
-* 实际的 node 上的 primary shard 处理请求，然后将数据同步到replica node 。  
-* coordinating node 如果发现 primary node 和所有 replica node 都搞定之后，就返回响应结果给客户端。  
+* 客户端选择一个node发送请求过去，这个node就是coordinating node(协调节点)。  
+* coordinating node对document进行路由，将请求转发给对应的node(有primary shard)。  
+* 实际的node上的primary shard处理请求，然后将数据同步到replica node。  
+* coordinating node如果发现primary node和所有replica node都搞定之后，就返回响应结果给客户端。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-80.png)  
 
 ### 1.1.2. 写数据的底层原理
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-81.png)  
 
-&emsp; **<font color = "red">小结：</font>**  
-&emsp; **数据先写入内存buffer，然后每隔1s，将数据refresh到os cache，到了os cache数据就能被搜索到（所以说es从写入到能被搜索到，中间有1s的延迟）。每隔5s，将数据写入translog文件（这样如果机器宕机，内存数据全没，最多会有5s的数据丢失），translog大到一定程度，或者默认每隔30mins，会触发commit操作，将缓冲区的数据都flush到segment file磁盘文件中。数据写入segment file之后，同时就建立好了倒排索引。**  
 
-&emsp; es 丢数据？  
-&emsp; es 第一是准实时的，数据写入 1 秒后可以搜索到；可能会丢失数据的。有 5 秒的数据，停留在 buffer、translog os cache、segment file os cache 中，而不在磁盘上，此时如果宕机，会导致 5 秒的数据丢失。  
-
------
 
 &emsp; 先写入内存 buffer，在 buffer 里的时候数据是搜索不到的；同时将数据写入 translog 日志文件。  
 &emsp; 如果 buffer 快满了，或者到一定时间，就会将内存 buffer 数据 refresh 到一个新的 segment file 中，但是此时数据不是直接进入 segment file 磁盘文件，而是先进入 os cache 。这个过程就是 refresh 。  
@@ -69,7 +69,7 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 
 * 客户端发送请求到一个 coordinate node 。  
 * 协调节点将搜索请求转发到所有的 shard 对应的 primary shard 或 replica shard ，都可以。  
-* query phase：每个 shard 将自己的搜索结果（其实就是一些 doc id ）返回给协调节点，由协调节点进行数据的合并、排序、分页等操作，产出最终结果。  
+* query phase：每个 shard 将自己的搜索结果(其实就是一些 doc id )返回给协调节点，由协调节点进行数据的合并、排序、分页等操作，产出最终结果。  
 * fetch phase：接着由协调节点根据 doc id 去各个节点上拉取实际的 document 数据，最终返回给客户端。  
 
 
@@ -89,7 +89,7 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
     以及 Elasticsearch 是怎样保证更新被持久化在断电时也不丢失数据？
 
  1.1. 写索引原理  
-&emsp; 下图描述了 3 个节点的集群，共拥有 12 个分片，其中有 4 个主分片（S0、S1、S2、S3）和 8 个副本分片（R0、R1、R2、R3），每个主分片对应两个副本分片，节点 1 是主节点（Master 节点）负责整个集群的状态。  
+&emsp; 下图描述了 3 个节点的集群，共拥有 12 个分片，其中有 4 个主分片(S0、S1、S2、S3)和 8 个副本分片(R0、R1、R2、R3)，每个主分片对应两个副本分片，节点 1 是主节点(Master 节点)负责整个集群的状态。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-10.png)  
 &emsp; 写索引是只能写在主分片上，然后同步到副本分片。这里有四个主分片，一条数据 ES 是根据什么规则写到特定分片上的呢？
 这条索引数据为什么被写到 S0 上而不写到 S1 或 S2 上？那条数据为什么又被写到 S3 上而不写到 S0 上了？  
@@ -97,7 +97,7 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 
     shard = hash(routing) % number_of_primary_shards  
 
-&emsp; Routing 是一个可变值，默认是文档的 _id ，也可以设置成一个自定义的值。Routing 通过 Hash 函数生成一个数字，然后这个数字再除以 number_of_primary_shards （主分片的数量）后得到余数。这个在 0 到 number_of_primary_shards-1 之间的余数，就是所寻求的文档所在分片的位置。  
+&emsp; Routing 是一个可变值，默认是文档的 _id ，也可以设置成一个自定义的值。Routing 通过 Hash 函数生成一个数字，然后这个数字再除以 number_of_primary_shards (主分片的数量)后得到余数。这个在 0 到 number_of_primary_shards-1 之间的余数，就是所寻求的文档所在分片的位置。  
 &emsp; 这就解释了为什么要在创建索引的时候就确定好主分片的数量并且永远不会改变这个数量：因为如果数量变化了，那么所有之前路由的值都会无效，文档也再也找不到了。  
 &emsp; 由于在ES集群中每个节点通过上面的计算公式都知道集群中的文档的存放位置，所以每个节点都有处理读写请求的能力。
 在一个写请求被发送到某个节点后，该节点即为前面说过的协调节点，协调节点会根据路由公式计算出需要写到哪个分片上，再将请求转发到该分片的主分片节点上。   
@@ -105,7 +105,7 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 &emsp; 假如此时数据通过路由计算公式取余后得到的值是 shard=hash(routing)%4=0。  
 &emsp; 则具体流程如下：  
 
-* 客户端向 ES1 节点（协调节点）发送写请求，通过路由计算公式得到值为 0，则当前数据应被写到主分片 S0 上。  
+* 客户端向 ES1 节点(协调节点)发送写请求，通过路由计算公式得到值为 0，则当前数据应被写到主分片 S0 上。  
 * ES1 节点将请求转发到 S0 主分片所在的节点 ES3，ES3 接受请求并写入到磁盘。  
 * 并发将数据复制到两个副本分片 R0 上，其中通过乐观并发控制数据的冲突。一旦所有的副本分片都报告成功，则节点 ES3 将向协调节点报告成功，协调节点向客户端报告成功。  
 
@@ -143,10 +143,10 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
  **1.2.2. 延迟写策略**  
 &emsp; 介绍完了存储的形式，那么索引写入到磁盘的过程是怎样的？是否是直接调 Fsync 物理性地写入磁盘？   
 &emsp; 为了提升写的性能，ES 并没有每新增一条数据就增加一个段到磁盘上，而是采用延迟写的策略。  
-&emsp; 每当有新增的数据时，就将其先写入到内存中，在内存和磁盘之间是文件系统缓存。当达到默认的时间（1 秒钟）或者内存的数据达到一定量时，会触发一次刷新（Refresh），将内存中的数据生成到一个新的段上并缓存到文件缓存系统 上，稍后再被刷新到磁盘中并生成提交点。这里的内存使用的是 ES 的 JVM 内存，而文件缓存系统使用的是操作系统的内存。  
+&emsp; 每当有新增的数据时，就将其先写入到内存中，在内存和磁盘之间是文件系统缓存。当达到默认的时间(1 秒钟)或者内存的数据达到一定量时，会触发一次刷新(Refresh)，将内存中的数据生成到一个新的段上并缓存到文件缓存系统 上，稍后再被刷新到磁盘中并生成提交点。这里的内存使用的是 ES 的 JVM 内存，而文件缓存系统使用的是操作系统的内存。  
 &emsp; 新的数据会继续的被写入内存，但内存中的数据并不是以段的形式存储的，因此不能提供检索功能。  
 &emsp; 由内存刷新到文件缓存系统的时候会生成新的段，并将段打开以供搜索使用，而不需要等到被刷新到磁盘。  
-&emsp; 在 Elasticsearch 中，写入和打开一个新段的轻量的过程叫做 Refresh （即内存刷新到文件缓存系统）。  
+&emsp; 在 Elasticsearch 中，写入和打开一个新段的轻量的过程叫做 Refresh (即内存刷新到文件缓存系统)。  
 &emsp; 默认情况下每个分片会每秒自动刷新一次。这就是为什么我们说 Elasticsearch 是近实时搜索，因为文档的变化并不是立即对搜索可见，但会在一秒之内变为可见。  
 &emsp; 也可以手动触发 Refresh，POST /_refresh 刷新所有索引，POST /nba/_refresh 刷新指定的索引。  
 
@@ -155,7 +155,7 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 &emsp; 可能正在使用 Elasticsearch 索引大量的日志文件， 可能想优化索引速度而不是>近实时搜索。  
 &emsp; 这时可以在创建索引时在 Settings 中通过调大 refresh_interval = "30s" 的值 ， 降低每个索引的刷新频率，设值时需要注意后面带上时间单位，否则默认是毫秒。当 refresh_interval=-1 时表示关闭索引的自动刷新。  
 &emsp; 虽然通过延时写的策略可以减少数据往磁盘上写的次数提升了整体的写入能力，但是文件缓存系统也是内存空间，属于操作系统的内存，只要是内存都存在断电或异常情况下丢失数据的危险。  
-&emsp; 为了避免丢失数据，Elasticsearch 添加了事务日志（Translog），事务日志记录了所有还没有持久化到磁盘的数据。  
+&emsp; 为了避免丢失数据，Elasticsearch 添加了事务日志(Translog)，事务日志记录了所有还没有持久化到磁盘的数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-12.png)  
 
 &emsp; 添加了事务日志后整个写索引的流程如上图所示：  

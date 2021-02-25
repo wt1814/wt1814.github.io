@@ -1,10 +1,9 @@
 <!-- TOC -->
 
 - [1. 检索操作](#1-检索操作)
-    - [1.1. 检索操作](#11-检索操作)
-        - [1.1.1. 搜索两种基本方式](#111-搜索两种基本方式)
-        - [1.1.2. 回顾：sql查询](#112-回顾sql查询)
-        - [1.1.3. 检索操作](#113-检索操作)
+    - [1.1. 搜索两种基本方式](#11-搜索两种基本方式)
+    - [1.2. 回顾：sql查询](#12-回顾sql查询)
+    - [1.3. 检索操作](#13-检索操作)
 
 <!-- /TOC -->
 
@@ -30,17 +29,8 @@ https://mp.weixin.qq.com/s/CJkS3vu2BjUWfWrciwNVJg
 https://mp.weixin.qq.com/s/QQh0M85YqI-sHPnYy3pkBg
 -->
 
-
-
-## 1.1. 检索操作  
-&emsp; 搜索分为两个过程：  
-
-1. 当向索引中保存文档时，默认情况下，es会保存两份内容，一份是 _source  中的数据，另一份则是通过分词、排序等一系列过程生成的倒排索引文件，倒排索引中保存了词项和文档之间的对应关系。  
-2. 搜索时，当es接收到用户的搜索请求之后，就会去倒排索引中查询，通过的倒排索引中维护的倒排记录表找到关键词对应的文档集合，然后对文档进行评分、排序、高亮等处理，处理完成后返回文档。  
-
-
   
-### 1.1.1. 搜索两种基本方式  
+## 1.1. 搜索两种基本方式  
 <!-- 
 ES运行检索两种基本方式
 https://www.bblog.vip/article_detail/1559295979215
@@ -55,7 +45,7 @@ https://haokan.baidu.com/v?pd=wisenatural&vid=12730932323983835698
 &emsp; DSL：Domain Specified Language，特定领域的语言。  
 &emsp; http request body：请求体，可以用json的格式来构建查询语法，比较方便，可以构建各种复杂的语法。  
 
-### 1.1.2. 回顾：sql查询  
+## 1.2. 回顾：sql查询  
 &emsp; 基本查询，SELECT语句有哪几部分构成？作用分别是什么？  
 1. SELECT关键字；  
 2. 谓词：DISTINCT，TOP n；  
@@ -69,7 +59,7 @@ https://haokan.baidu.com/v?pd=wisenatural&vid=12730932323983835698
 
 &emsp; 复杂查询，有关联查询。  
 
-### 1.1.3. 检索操作  
+## 1.3. 检索操作  
 &emsp; [基本查询](/docs/ES/basicSearch.md)  
 &emsp; [聚合查询](/docs/ES/togetherSearch.md)  
 &emsp; [分页查询](/docs/ES/limitSearch.md)  
