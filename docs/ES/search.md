@@ -9,6 +9,7 @@
 <!-- /TOC -->
 
 # 1. 检索操作  
+
 <!-- 
 检索类型如何选型呢？
 https://mp.weixin.qq.com/s/Fc5LhiLJIeCtstl9OFeqdQ
@@ -41,7 +42,6 @@ ES运行检索两种基本方式
 https://www.bblog.vip/article_detail/1559295979215
 ES实战九、全文检索-ElasticSearch-进阶-两种查询方式
 https://tech.souyunku.com/?p=37521
-
 https://haokan.baidu.com/v?pd=wisenatural&vid=12730932323983835698
 -->
 
