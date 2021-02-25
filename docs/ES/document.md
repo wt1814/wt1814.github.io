@@ -13,9 +13,10 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "red">部分参考《Elasticsearch技术解析与实战》</font>**  
 
 # 1. 文档操作  
+&emsp; **<font color = "red">部分参考《Elasticsearch技术解析与实战》</font>**  
+
 <!-- 
 ~~
 ElasticSearch 文档的添加、获取以及更新 

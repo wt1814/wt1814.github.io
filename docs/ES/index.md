@@ -26,9 +26,10 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "red">部分参考《Elasticsearch技术解析与实战》</font>**  
 
 # 1. 索引详解  
+&emsp; **<font color = "red">部分参考《Elasticsearch技术解析与实战》</font>**  
+
 <!--
 
 -->
