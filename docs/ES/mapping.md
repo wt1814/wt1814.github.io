@@ -199,7 +199,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490923&idx=2&sn=ce4983
 ES中支持手动定义映射，动态映射两种方式。
 https://mp.weixin.qq.com/s/gi9Dxt23chmEgDK9ZWfHLw
 -->
-&emsp; 当没有事先定义好 Mapping，添加数据时，ElasticSearch 会自动根据字段进行换算出对应的类型，但是换算出来的类型并不一定是我们想要的字段类型，还是需要人为的干预进行修改成想要的 Mapping。  
+&emsp; 当没有事先定义好 Mapping，添加数据时，ElasticSearch 会自动根据字段进行换算出对应的类型，但是换算出来的类型并不一定是开发人员想要的字段类型，还是需要人为的干预进行修改成想要的 Mapping。  
 
 &emsp; 动态映射：ES中提供的重要特性，让我们可以快速使用ES，而不需要先创建索引、定义映射。如直接向ES提交文档进行索引：  
 
@@ -208,13 +208,13 @@ PUT data/_doc/1
 { "count": 5 }
 ```
 &emsp; ES将自动为创建data索引、_doc 映射、类型为 long 的字段 count  
-&emsp; 索引文档时，当有新字段时， ES将根据我们字段的json的数据类型为我们自动加人字段定义到mapping中。  
+&emsp; 索引文档时，当有新字段时 ES将根据字段的json的数据类型自动加入字段定义到mapping中。  
 
 ### 1.6.1. 字段动态映射规则(字段类型)  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-34.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-35.png)  
-&emsp; JSON 数据类型映射到 ElasticSearch 定义的类型，常用的简单类型有：  
+&emsp; JSON数据类型映射到 ElasticSearch 定义的类型，常用的简单类型有：  
 
 JSON类型	ElasticSearch 类型  
 文本类型	Text/Keyword  
@@ -224,11 +224,11 @@ JSON类型	ElasticSearch 类型
 布尔值	boolean  
 数组	Text/Keyword  
 
-&emsp; 上面要注意的是时间类型，JSON 中并没有时间类型，这里主要指时间格式数据的类型。  
+&emsp; 上面要注意的是时间类型，JSON中并没有时间类型，这里主要指时间格式数据的类型。  
 
 ### 1.6.2. 自动识别日期类型  
 &emsp; Date detection 时间侦测  
-&emsp; 所谓时间侦测是指我们往ES里面插入数据的时候会去自动检测我们的数据是不是日期格式的，是的话就会给我们自动转为设置的格式  
+&emsp; 所谓时间侦测是指往ES里面插入数据的时候会去自动检测数据是不是日期格式的，是的话就会自动转为设置的格式。  
 &emsp; date_detection 默认是开启的，默认的格式dynamic_date_formats为：  
 
 ```text

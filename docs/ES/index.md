@@ -8,14 +8,14 @@
         - [1.1.3. 索引映射管理](#113-索引映射管理)
         - [1.1.4. 索引别名](#114-索引别名)
             - [1.1.4.1. 索引别名操作](#1141-索引别名操作)
-            - [1.1.4.2. Rollover Index别名滚动指向新创建的索引](#1142-rollover-index别名滚动指向新创建的索引)
+            - [1.1.4.2. ★★★Rollover Index别名滚动指向新创建的索引](#1142-★★★rollover-index别名滚动指向新创建的索引)
         - [1.1.5. 索引配置](#115-索引配置)
             - [1.1.5.1. 更新索引配置](#1151-更新索引配置)
             - [1.1.5.2. 获取配置](#1152-获取配置)
             - [1.1.5.3. 索引分析](#1153-索引分析)
             - [1.1.5.4. ★★★索引模板](#1154-★★★索引模板)
             - [1.1.5.5. 重建索引](#1155-重建索引)
-                - [1.1.5.5.1. ※※※Shrink Index收缩索引](#11551-※※※shrink-index收缩索引)
+                - [1.1.5.5.1. ★★★Shrink Index收缩索引](#11551-★★★shrink-index收缩索引)
                 - [1.1.5.5.2. Split Index拆分索引](#11552-split-index拆分索引)
     - [1.2. 索引监控](#12-索引监控)
         - [1.2.1. 索引统计](#121-索引统计)
@@ -143,9 +143,7 @@ HEAD twitter
 
 &emsp; **修改索引的settings信息**  
 &emsp; 索引的设置信息分为静态信息和动态信息两部分。静态信息不可更改，如索引的分片数。动态信息可以修改。  
-&emsp; REST 访问端点：  
-&emsp; /_settings 更新所有索引的。  
-&emsp; {index}/_settings更新一个或多个索引的settings。  
+&emsp; REST访问端点：/_settings，更新所有索引的； {index}/_settings更新一个或多个索引的settings。  
 &emsp; 详细的设置项请参考：https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html#index-modules-settings
 
 &emsp; **修改备份数**
@@ -198,7 +196,7 @@ POST /my_index/_open
 ### 1.1.4. 索引别名  
 #### 1.1.4.1. 索引别名操作
 
-#### 1.1.4.2. Rollover Index别名滚动指向新创建的索引
+#### 1.1.4.2. ★★★Rollover Index别名滚动指向新创建的索引
 &emsp; **对于有时效性的索引数据，如日志，过一定时间后，老的索引数据就没有用了。可以像数据库中根据时间创建表来存放不同时段的数据一样，在ES中也可用建多个索引的方式来分开存放不同时段的数据。比数据库中更方便的是ES中可以通过别名滚动指向最新的索引的方式，通过别名来操作时总是操作的最新的索引。**  
 &emsp; ES的rollover index API，可以根据满足指定的条件（时间、文档数量、索引大小）创建新的索引，并把别名滚动指向新的索引。  
 &emsp; 注意：这时的别名只能是一个索引的别名。  
@@ -325,10 +323,10 @@ Elasticsearch技术解析与实战 第2.4章
 <!-- 
 https://www.cnblogs.com/shoufeng/p/10641560.html
 -->
-&emsp; 在创建索引时，为每个索引写定义信息可能是一件繁琐的事情，ES提供了索引模板功能，可以定义一个索引模板，模板中定义好settings、mapping、以及一个模式定义来匹配创建的索引。  
-&emsp; 注意：模板只在索引创建时被参考，修改模板不会影响已创建的索引。  
+&emsp; 在创建索引时，为每个索引写定义信息可能是一件繁琐的事情，ES提供了索引模板功能，可以定义一个索引模板， **模板中定义好settings、mapping、以及一个模式定义来匹配创建的索引。**  
+&emsp; <font color = "clime">注意：模板只在索引创建时被参考，修改模板不会影响已创建的索引。</font>  
 
-&emsp; 新增/修改名为tempae_1的模板，匹配名称为te* 或 bar*的索引创建：  
+&emsp; 新增/修改名为tempae_1的模板，匹配名称为te*或bar*的索引创建：  
 
 ```text
 PUT _template/template_1
@@ -509,12 +507,12 @@ PUT blog_index
 
 #### 1.1.5.5. 重建索引   
 
-##### 1.1.5.5.1. ※※※Shrink Index收缩索引
+##### 1.1.5.5.1. ★★★Shrink Index收缩索引
 &emsp; 索引的分片数是不可更改的，如要减少分片数可以通过收缩方式收缩为一个新的索引。新索引的分片数必须是原分片数的因子值，如原分片数是8，则新索引的分片数可以为4、2、1 。  
 &emsp; 什么时候需要收缩索引呢?  
-&emsp; 最初创建索引的时候分片数设置得太大，后面发现用不了那么多分片，这个时候就需要收缩了  
+&emsp; 最初创建索引的时候分片数设置得太大，后面发现用不了那么多分片，这个时候就需要收缩了。  
 
-&emsp; 收缩的流程：  
+&emsp; **收缩的流程：**  
 
 1. 先把所有主分片都转移到一台主机上；
 2. 在这台主机上创建一个新索引，分片数较小，其他设置和原索引一致；
@@ -522,7 +520,7 @@ PUT blog_index
 4. 对新索引进行打开操作恢复分片数据；
 5. (可选)重新把新索引的分片均衡到其他节点上。
 
-&emsp; 收缩前的准备工作：  
+&emsp; **收缩前的准备工作：**  
 1. 将原索引设置为只读；
 2. 将原索引各分片的一个副本重分配到同一个节点上，并且要是健康绿色状态。
 
@@ -568,8 +566,8 @@ GET _cluster/health
 ```
 
 &emsp; 为什么需要拆分索引？  
-&emsp; 当最初设置的索引的分片数不够用时就需要拆分索引了，和压缩索引相反  
-&emsp; 注意：只有在创建时指定了index.number_of_routing_shards 的索引才可以进行拆分，ES7开始将不再有这个限制。  
+&emsp; 当最初设置的索引的分片数不够用时就需要拆分索引了，和压缩索引相反。  
+&emsp; 注意：只有在创建时指定了index.number_of_routing_shards的索引才可以进行拆分，ES7开始将不再有这个限制。  
 
 &emsp; 和solr的区别是，solr是对一个分片进行拆分，es中是整个索引进行拆分。  
 &emsp; 拆分步骤：  
@@ -663,7 +661,7 @@ GET /test/_shard_stores
 GET /test1,test2/_shard_stores
 # return information of all indices
 GET /_shard_stores
-  GET /_shard_stores?status=green
+GET /_shard_stores?status=green
 ```
 
 ## 1.3. 索引状态管理
@@ -673,7 +671,7 @@ GET /_shard_stores
 POST /twitter/_cache/clear  
 ```
 
-&emsp; 默认会清理所有缓存，可指定清理query, fielddata or request 缓存  
+&emsp; 默认会清理所有缓存，可指定清理query, fielddata or request缓存  
 
 ```text
 POST /kimchy,elasticsearch/_cache/clear

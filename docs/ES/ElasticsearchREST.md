@@ -47,15 +47,15 @@ POST products/_search?size=0
 
 * 动词——REST调用的 GET，PUT，POST和DELETE部分。在Kibana中，可以直接指定这些名称，对于cURL，请使用-X选项。  
 &emsp; 对应示例中的：POST  
-* 路径——API和路径。例如：/_cluster / health 或 /logstash-cron-2020.07.03/_mapping-路径的第一部分通常是索引名称，除非它以_开头。  
+* 路径——API和路径。例如：/_cluster/health或/logstash-cron-2020.07.03/_mapping-路径的第一部分通常是索引名称，除非它以_开头。  
 &emsp; 对应示例中的：products/_search，其中products是索引。  
-* 参数——后面的各种选项。例如？h或？v    
+* 参数——后面的各种选项。例如?h或?v    
 &emsp; 对应示例中的：?size=0。参数设定部分。  
-* 正文——某些调用需要JSON正文（例如设置选项），并将包含在{}中  
+* 正文——某些调用需要JSON正文(例如设置选项)，并将包含在{}中  
 &emsp; 对应示例中的：检索语句部分。  
 
 ### 1.1.2. 常用选项  
-&emsp; 有一些通用选项适用于许多（不是全部）URL。这些是：  
+&emsp; 有一些通用选项适用于许多(不是全部)URL。这些是：  
 
 * ?help——帮助选项。  
 &emsp; 将在列表中提供 API 可用的字段，其中包含短名称和长名称、说明等。  
@@ -68,7 +68,7 @@ POST products/_search?size=0
 * ?s——'s'用于排序，使用列出的字段作为排序键。  
 &emsp; 如下所示：可能会看到节点列表。包括：返回字段名称，字段名称要显示并按名称name排序：  
 &emsp; GET /_cat/nodes?v&h=heap.percent,diskUsedPercent,cpu,master,name&s=name
-&emsp; 另外，Kibana 会将Dev Tools查询保存在cookie中。  
+
 
 ## 1.1.3. 状态 & 统计相关命令清单  
 &emsp; 最有用的 API 调用通常与集群的运行状况，状态和统计信息有关，例如：  

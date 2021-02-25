@@ -59,14 +59,14 @@ PUT blog/_doc/1
     _index 表示文档索引。
     _type 表示文档的类型。
     _id 表示文档的 id。
-    _version 表示文档的版本（更新文档，版本会自动加 1，针对一个文档的）。
+    _version 表示文档的版本(更新文档，版本会自动加 1，针对一个文档的)。
     result 表示执行结果。
     _shards 表示分片信息。
-    _seq_no 和 _primary_term 这两个也是版本控制用的（针对当前 index）。
+    _seq_no 和 _primary_term 这两个也是版本控制用的(针对当前 index)。
 
 &emsp; 添加成功后，可以查看添加的文档：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-27.png)  
-&emsp; 当然，添加文档时，也可以不指定 id，此时系统会默认给出一个 id，如果不指定 id，则需要使用 POST 请求，而不能使用 PUT 请求。  
+&emsp; 当然，添加文档时，也可以不指定id，此时系统会默认给出一个id，如果不指定id，则需要使用POST请求，而不能使用PUT请求。  
 
 ```text
 POST blog/_doc
@@ -79,7 +79,8 @@ POST blog/_doc
 
 ## 1.2. 获取文档
 &emsp; Es 中提供了 GET API 来查看存储在 es 中的文档。使用方式如下：  
-&emsp; GET blog/_doc/RuWrl3UByGJWB5WucKtP  
+  
+  GET blog/_doc/RuWrl3UByGJWB5WucKtP  
 &emsp; 上面这个命令表示获取一个 id 为 RuWrl3UByGJWB5WucKtP 的文档。  
 &emsp; 如果获取不存在的文档，会返回如下信息：  
 
@@ -229,11 +230,11 @@ POST blog/_delete_by_query
 ```
 
 ## 1.5. 批量操作
-&emsp; es 中通过 Bulk API 可以执行批量索引、批量删除、批量更新等操作。 
-&emsp; 首先需要将所有的批量操作写入一个 JSON 文件中，然后通过 POST 请求将该 JSON 文件上传并执行。  
+&emsp; es 中通过Bulk API可以执行批量索引、批量删除、批量更新等操作。 
+&emsp; 首先需要将所有的批量操作写入一个JSON文件中，然后通过POST请求将该JSON文件上传并执行。    
 &emsp; 例如新建一个名为 aaa.json 的文件，内容如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-31.png)  
-&emsp; 首先第一行：index 表示要执行一个索引操作（这个表示一个 action，其他的 action 还有 create，delete，update）。_index 定义了索引名称，这里表示要创建一个名为 user 的索引，_id 表示新建文档的 id 为 666。  
+&emsp; 首先第一行：index表示要执行一个索引操作(这个表示一个action，其他的action还有create，delete，update)。_index 定义了索引名称，这里表示要创建一个名为 user 的索引，_id 表示新建文档的 id 为 666。  
 &emsp; 第二行是第一行操作的参数。  
 &emsp; 第三行的 update 则表示要更新。  
 &emsp; 第四行是第三行的参数。  
