@@ -8,10 +8,12 @@
     - [1.4. prefix 前缀匹配](#14-prefix-前缀匹配)
     - [1.5. wildcard模糊匹配](#15-wildcard模糊匹配)
     - [1.6. query_string类型](#16-query_string类型)
-    - [1.7. 小结](#17-小结)
-    - [1.8. 查询结果过滤](#18-查询结果过滤)
+    - [1.7. 查询结果过滤](#17-查询结果过滤)
 
 <!-- /TOC -->
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-79.png)  
+
 
 # 1. 基本查询
 
@@ -200,9 +202,9 @@ POST zz_test/_search
 
 ## 1.6. query_string类型
 
-    核心功能：支持与或非表达式+其他N多配置参数。
-    应用场景：业务系统需要支持自定义表达式检索。
-    适用类型：text。
+* 核心功能：支持与或非表达式+其他N多配置参数。
+* 应用场景：业务系统需要支持自定义表达式检索。
+* 适用类型：text。
 
 ```text
 POST zz_test/_search
@@ -216,12 +218,6 @@ POST zz_test/_search
 }
 ```
 
-
-## 1.7. 小结  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-79.png)  
-
------
-
-## 1.8. 查询结果过滤 
+## 1.7. 查询结果过滤 
 ......
 

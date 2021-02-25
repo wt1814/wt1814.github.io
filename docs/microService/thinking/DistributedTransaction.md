@@ -18,6 +18,8 @@
 https://mp.weixin.qq.com/s/mSxUXHgcHo5a7VAhvjIpCQ
 微服务架构下分布式事务解决方案 
 https://mp.weixin.qq.com/s/T4oGKrOXONl2AuhhKtd_9g
+分布式事务场景  
+https://blog.csdn.net/lyb9292/article/details/106526156
 -->
 
 <!--
