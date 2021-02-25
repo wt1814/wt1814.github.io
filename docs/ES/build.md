@@ -15,8 +15,8 @@ https://mp.weixin.qq.com/s/QnBqoaptV5-xKIpOBKSfHQ
 
 ## HEAD插件安装
 
-## 分布式安装  
+## 集群安装  
 
-## Kibana 安装
+## Kibana安装
 
 
