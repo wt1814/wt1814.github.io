@@ -12,8 +12,7 @@
 <!-- 
 检索类型如何选型呢？
 https://mp.weixin.qq.com/s/Fc5LhiLJIeCtstl9OFeqdQ
-Elasticsearch之评分机制
-https://www.jianshu.com/p/2624f61f1d02
+
 -->
 <!-- 
 ElasticSearch 搜索入门 

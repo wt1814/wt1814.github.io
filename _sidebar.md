@@ -344,6 +344,7 @@
             * [多表关联](/docs/ES/multiTable.md)  
             * [高亮显示](/docs/ES/highLight.md)  
             * [检索模版](/docs/ES/searchTemplate.md)  
+            * [评分机制](/docs/ES/score.md)  
         * [Java客户端](/docs/ES/JavaRestClient.md)  
     * [ES原理](/docs/ES/principle.md)  
     * [ES监控](/docs/ES/monitor.md)  
