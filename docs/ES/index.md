@@ -13,7 +13,7 @@
             - [1.1.5.1. 更新索引配置](#1151-更新索引配置)
             - [1.1.5.2. 获取配置](#1152-获取配置)
             - [1.1.5.3. 索引分析](#1153-索引分析)
-            - [1.1.5.4. ※※※索引模板](#1154-※※※索引模板)
+            - [1.1.5.4. ★★★索引模板](#1154-★★★索引模板)
             - [1.1.5.5. 重建索引](#1155-重建索引)
                 - [1.1.5.5.1. ※※※Shrink Index收缩索引](#11551-※※※shrink-index收缩索引)
                 - [1.1.5.5.2. Split Index拆分索引](#11552-split-index拆分索引)
@@ -321,7 +321,7 @@ Elasticsearch技术解析与实战 第2.4章
 #### 1.1.5.3. 索引分析  
 
 
-#### 1.1.5.4. ※※※索引模板
+#### 1.1.5.4. ★★★索引模板
 <!-- 
 https://www.cnblogs.com/shoufeng/p/10641560.html
 -->
@@ -370,6 +370,142 @@ GET /_template
 ```text
 DELETE /_template/template_1
 ```
+
+------------
+
+&emsp; 索引模版Templates——允许定义在创建新索引时自动应用模板。模板包括settings和Mappings以及控制是否应将模板应用于新索引。  
+&emsp; 注意：模板仅在索引创建时应用。更改模板不会对现有索引产生影响。  
+&emsp; 针对大索引，使用模板是必须的。核心需要设置的setting(仅列举了实战中最常用、可以动态修改的)如下：  
+
+* index.numberofreplicas 每个主分片具有的副本数。默认为 1(7.X 版本，低于 7.X 为 5)。
+* index.maxresultwindow 深度分页 rom + size 的最大值—— 默认为 10000。
+* index.refresh_interval 默认 1s：代表最快 1s 搜索可见；
+
+&emsp; 写入时候建议设置为 -1，提高写入性能；  
+&emsp; 实战业务如果对实时性要求不高，建议设置为 30s 或者更高。  
+
+&emsp; **包含Mapping的template设计万能模板**  
+&emsp; 以下模板已经在 7.2 验证 ok，可以直接拷贝修改后实战项目中使用。  
+
+```text
+PUT _template/test_template
+{
+  "index_patterns": [
+    "test_index_*",
+    "test_*"
+  ],
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1,
+    "max_result_window": 100000,
+    "refresh_interval": "30s"
+  },
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "long"
+      },
+      "title": {
+        "type": "keyword"
+      },
+      "content": {
+        "analyzer": "ik_max_word",
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "ignore_above": 256,
+            "type": "keyword"
+          }
+        }
+      },
+      "available": {
+        "type": "boolean"
+      },
+      "review": {
+        "type": "nested",
+        "properties": {
+          "nickname": {
+            "type": "text"
+          },
+          "text": {
+            "type": "text"
+          },
+          "stars": {
+            "type": "integer"
+          }
+        }
+      },
+      "publish_time": {
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+      },
+      "expected_attendees": {
+        "type": "integer_range"
+      },
+      "ip_addr": {
+        "type": "ip"
+      },
+      "suggest": {
+        "type": "completion"
+      }
+    }
+  }
+}
+```
+
+----
+&emsp; 以下的索引 Mapping中，_source设置为false，同时各个字段的store根据需求设置了true和false。  
+&emsp; url的doc_values设置为false，该字段url不用于聚合和排序操作。  
+
+```text
+PUT blog_index
+{
+  "mappings": {
+    "doc": {
+      "_source": {
+        "enabled": false
+      },
+      "properties": {
+        "title": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 100
+            }
+          },
+          "store": true
+        },
+        "publish_date": {
+          "type": "date",
+          "store": true
+        },
+        "author": {
+          "type": "keyword",
+          "ignore_above": 100, 
+          "store": true
+        },
+        "abstract": {
+          "type": "text",
+          "store": true
+        },
+        "content": {
+          "type": "text",
+          "store": true
+        },
+        "url": {
+          "type": "keyword",
+          "doc_values":false,
+          "norms":false,
+          "ignore_above": 100, 
+          "store": true
+        }
+      }
+    }
+  }
+}
+```
+
 
 #### 1.1.5.5. 重建索引   
 
