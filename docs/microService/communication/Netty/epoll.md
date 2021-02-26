@@ -339,13 +339,13 @@ epoll的优点主要是一下几个方面：
     &emsp; LT模式下，只要这个fd还有数据可读，每次 epoll_wait都会返回它的事件，提醒用户程序去操作。  
     &emsp; ET模式下，它只会提示一次，直到下次再有数据流入之前都不会再提示了，无论fd中是否还有数据可读。所以在ET模式下，read一个fd的时候一定要把它的buffer读完，或者遇到EAGAIN错误。  
     -->
+
+
 &emsp; select/poll/epoll之间的区别：  
 
-| |	select	|poll	|epoll|
+| |select|poll|epoll|
 |---|---|---|---|
-|数据结构	|bitmap	|数组	|红黑树|
-|最大连接数	|1024	|无上限	|无上限|
-|fd拷贝|	每次调用select拷贝	|每次调用poll拷贝|fd首次调用epoll_ctl拷贝，每次调用epoll_wait不拷贝|
-|工作效率	|轮询：O(n)	|轮询：O(n)|	回调：O(1)|
-
-------
+|数据结构|bitmap|数组|红黑树|
+|最大连接数|1024|无上限	|无上限|
+|fd拷贝|每次调用select拷贝	|每次调用poll拷贝|fd首次调用epoll_ctl拷贝，每次调用epoll_wait不拷贝|
+|工作效率|轮询：O(n)|轮询：O(n)|	回调：O(1)|

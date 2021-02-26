@@ -22,10 +22,8 @@
 
 <!-- /TOC -->
 
-<!--
-图解---》流程描述---》概况
--->
-&emsp; **<font color = "lime">小结：</font>**  
+
+&emsp; **<font color = "lime">总结：</font>**  
 &emsp; **<font color = "clime">网络IO的本质就是socket流的读取，通常一次IO读操作会涉及到两个对象和两个阶段。**  
 * **<font color = "clime">两个对象：用户进程(线程)、内核对象(内核态和用户态)。</font>** 用户进程请求内核。  
 * **<font color = "clime">内核中涉及两个阶段：1. 等待数据准备；2. 数据从内核空间拷贝到用户空间。</font>** 基于以上两个阶段就产生了五种不同的IO模式，分别是：阻塞I/O模型、非阻塞I/O模型、多路复用I/O模型、信号驱动I/O模型、异步I/O模型。其中，前四种被称为同步I/O。  
@@ -47,10 +45,12 @@
 	2. 内核等待I/O数据返回，无数据返回时，select进程【阻塞】，进程也受阻于select调用
 	2. I/O数据返回后，内核将数据从内核空间拷贝到用户空间，Selector通知哪个进程哪个事件；
 	4. 进程发起recvfrom系统调用
-
  
 
 # 1. Linux的五种I/O模型  
+<!--
+图解---》流程描述---》概况
+-->
 <!--
 框架篇：见识一下linux高性能网络IO+Reactor模型  
 https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
