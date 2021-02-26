@@ -9,6 +9,7 @@
     - [1.4. 索引/条件--->下推(ICP)](#14-索引条件---下推icp)
         - [1.4.1. 概念](#141-概念)
         - [1.4.2. 示例分析](#142-示例分析)
+        - [★★★示例二](#★★★示例二)
     - [1.5. 索引失效](#15-索引失效)
     - [1.6. 索引维护、索引工具的使用](#16-索引维护索引工具的使用)
 
@@ -153,7 +154,22 @@ https://www.cnblogs.com/zengkefu/p/5684101.html
 SELECT * FROM people WHERE zipcode='95054' AND lastname LIKE '%etrunia%' AND address LIKE '%Main Street%';
 ```
 &emsp; 如果没有使用索引下推技术，则MySQL会通过zipcode='95054'从存储引擎中查询对应的数据，返回到MySQL服务端，然后MySQL服务端基于lastname LIKE '%etrunia%'和address LIKE '%Main Street%'来判断数据是否符合条件。  
-&emsp; <font color = "blue">如果使用了索引下推技术，则MYSQL首先会返回符合zipcode='95054'的索引，然后根据lastname LIKE '%etrunia%'和address LIKE '%Main Street%'来判断索引是否符合条件。如果符合条件，则根据该索引来定位对应的数据，如果不符合，则直接reject掉。有了索引下推优化，可以在有like条件查询的情况下，减少回表次数。</font>  
+&emsp; <font color = "blue">如果使用了索引下推技术，则MYSQL首先会返回符合zipcode='95054'的索引，然后根据lastname LIKE '%etrunia%'和address LIKE '%Main Street%'来判断索引是否符合条件。如果符合条件，则根据该索引来定位对应的数据，如果不符合，则直接reject掉。有了索引下推优化，可以在有like条件查询的情况下，减少回表次数。</font> 
+
+### ★★★示例二  
+&emsp; 居于组合索引 idx_name_age，以下这个SQL执行几次树搜索呢？  
+
+```sql
+select * from employee where name like '小%' and age=28 and sex='0';
+```
+
+&emsp; 「解析：」 这里考察索引下推的知识点，如果是「Mysql5.6之前」，在idx_name_age索引树，找出所有名字第一个字是“小”的人，拿到它们的主键id，然后回表找出数据行，再去对比年龄和性别等其他字段。如图：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-152.png)  
+&emsp; 有些朋友可能觉得奇怪，（name,age)不是联合索引嘛？为什么选出包含“小”字后，不再顺便看下年龄age再回表呢，不是更高效嘛？所以呀，MySQL 5.6 就引入了「索引下推优化」，可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。  
+
+&emsp; 因此，MySQL5.6版本之后，选出包含“小”字后，顺表过滤age=28，所以就只需一次回表。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-153.png)  
+
 
 ## 1.5. 索引失效  
 1. 联合索引最左前缀匹配原则。  
