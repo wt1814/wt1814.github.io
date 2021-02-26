@@ -22,7 +22,7 @@
 # 1. NIO通道  
 &emsp; 实体--->通道--->缓冲区。Channel用于在缓冲区和位于通道另一侧的实体(通常是一个文件或套接字)之间有效地传输数据。它从一个实体读取数据，并将其放在缓冲区块中以供消费。  
 &emsp; Channel(通道)与Stream(流)的不同之处在于通道是双向的，流只能在一个方向上操作(一个流必须是InputStream或者OutputStream的子类)，而通道可以用于读，写或者二者同时进行，最关键的是可以和多路复用器结合起来，提供状态位，多路复用器可识别Channel所处的状态。  
-&emsp; 通道可以以阻塞(Wocfcwg)或非阻塞(wowWochwg)模式运行。非阻塞模式的通道永远不会让调用的线程休眠。请求的操作要么立即完成，要么返回一个结果表明未进行任何操作。只有面向流的(stream-oriented)的通道，如sockets和pipes才能使用非阻塞模式。  
+&emsp; 通道可以以阻塞(Wocfcwg)或非阻塞(wowWochwg)模式运行。 **<font color = "red">非阻塞模式的通道永远不会让调用的线程休眠。请求的操作要么立即完成，要么返回一个结果表明未进行任何操作。</font><font color = "clime">只有面向流的(stream-oriented)的通道，如sockets和pipes才能使用非阻塞模式。</font>** 
 
 ## 1.1. 通道分类及创建通道  
 &emsp; <font color = "red">I/O可以分为广义的两大类别：File I/O和Stream I/O。相应地有两种类型的通道，它们是文件(file)通道和套接字(socket)通道。包含一个FileChannel类和三个socket通道类：SocketChannel、ServerSocketChannel和DatagramChannel。</font>  

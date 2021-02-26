@@ -21,9 +21,9 @@
 -->
 &emsp; **Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。**  
 
-1. Netty 是一个 基于 NIO 的 client-server(客户端服务器)框架，使用它可以快速简单地开发网络应用程序。
-2. 它极大地简化并优化了 TCP 和 UDP 套接字服务器等网络编程,并且性能以及安全性等很多方面甚至都要更好。
-3. 支持多种协议 如 FTP，SMTP，HTTP 以及各种二进制和基于文本的传统协议。  
+1. Netty是一个基于NIO的client-server(客户端服务器)框架，使用它可以快速简单地开发网络应用程序。
+2. 它极大地简化并优化了TCP和UDP套接字服务器等网络编程，并且性能以及安全性等很多方面甚至都要更好。
+3. 支持多种协议 如FTP，SMTP，HTTP以及各种二进制和基于文本的传统协议。  
 
 &emsp; 为什么要用 Netty？  
 &emsp; 在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
@@ -53,11 +53,11 @@
 &emsp; 官方文档：https://netty.io/3.8/guide/#architecture.5   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-25.png)  
 
-* Core ：核心部分，是底层的网络通用抽象和部分实现。
+* Core：核心部分，是底层的网络通用抽象和部分实现。
     * Extensible Event Model：可拓展的事件模型。Netty是基于事件模型的网络应用框架。
     * Universal Communication API：通用的通信API层。Netty定义了一套抽象的通用通信层的API。  
     * Zero-Copy-Capable Rich Byte Buffer：支持零拷贝特性的Byte Buffer 实现。
-* Transport Services ：传输(通信)服务，具体的网络传输的定义与实现。
+* Transport Services：传输(通信)服务，具体的网络传输的定义与实现。
     * Socket & Datagram：TCP和UDP的传输实现。
     * HTTP Tunnel：HTTP通道的传输实现。
     * In-VM Piple：JVM内部的传输实现。  
