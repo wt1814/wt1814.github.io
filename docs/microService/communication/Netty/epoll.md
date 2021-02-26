@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. 多路复用(select/poll/epoll)](#1-多路复用selectpollepoll)
+- [1. ~~多路复用(select/poll/epoll)~~](#1-多路复用selectpollepoll)
     - [1.1. select](#11-select)
     - [1.2. poll](#12-poll)
     - [1.3. epoll](#13-epoll)
@@ -13,8 +13,20 @@
 <!-- /TOC -->
 
 
+&emsp; **<font color = "red">总结：</font>**  
+* select()：  
+&emsp; 入参中有文件描述符集合fd_set(实际上是一个long类型的数组)  
+&emsp; 问题：  
+    * 每次调用select，都需要把fd_set集合从用户态拷贝到内核态，如果fd_set集合很大时，那这个开销也很大  
+    * 同时每次调用select都需要在内核遍历传递进来的所有fd_set，如果fd_set集合很大时，那这个开销也很大。 ~~对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低。~~  
+    * 为了减少数据拷贝带来的性能损坏，内核对被监控的fd_set集合大小做了限制，并且这个是通过宏控制的，大小不可改变(限制为1024)  
+* poll()：  
+&emsp; 运行机制与select()相似。只是将fd_set数组采用链表方式，因此没有连接数的限制。  
 
-# 1. 多路复用(select/poll/epoll)
+
+
+
+# 1. ~~多路复用(select/poll/epoll)~~
 <!--
 关于epoll与java NIO中select的思考
 https://www.jianshu.com/p/033483c06534?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
@@ -119,14 +131,7 @@ int 函数返回fds集合中就绪的读、写，或出错的描述符数量，�
 1. 调用epoll_create，会在内核cache里建个红黑树用于存储以后epoll_ctl传来的socket，同时也会再建立一个rdllist双向链表用于存储准备就绪的事件。当epoll_wait调用时，仅查看这个rdllist双向链表数据即可  
 2. epoll_ctl在向epoll对象中添加、修改、删除事件时，是在rbr红黑树中操作的，非常快  
 3. **<font color = "red">添加到epoll中的事件会与设备(如网卡)建立回调关系，设备上相应事件的发生时会调用回调方法，把事件加进rdllist双向链表中；这个回调方法在内核中叫做ep_poll_callback</font>**  
-
-
------
-
-
-* 调用epoll_create，会在内核cache里建个红黑树用于存储以后epoll_ctl传来的socket，同时也会再建立一个rdllist双向链表用于存储准备就绪的事件。当epoll_wait调用时，仅查看这个rdllist双向链表数据即可  
-* epoll_ctl在向epoll对象中添加、修改、删除事件时，是在rbr红黑树中操作的，非常快  
-* 添加到epoll中的事件会与设备(如网卡)建立回调关系，设备上相应事件的发生时会调用回调方法，把事件加进rdllist双向链表中；这个回调方法在内核中叫做ep_poll_callback  
+ 
 
 ```c
 int epoll_create(int size)；
