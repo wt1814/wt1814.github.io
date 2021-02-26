@@ -42,11 +42,11 @@ https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
 -->
 &emsp; select,poll,epoll都是IO多路复用的机制。I/O多路复用就是通过一种机制，一个进程可以监视多个描述符，一旦某个描述符就绪(一般是读就绪或者写就绪)，能够通知程序进行相应的读写操作。但select,poll,epoll本质上都是同步I/O，因为它们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的。  
 
-&emsp; select,poll,epoll之所以现在同时存在，其实它们也是不同历史时期的产物。  
+&emsp; select,poll,epoll之所以现在同时存在，其实它们也是不同历史时期的产物：  
 
-* select出现是1984年在BSD里面实现的
-* 14年之后也就是1997年才实现了poll，其实拖那么久也不是效率问题，而是那个时代的硬件实在太弱，一台服务器处理1千多个链接简直就是神一样的存在了，select很长段时间已经满足需求
-* 2002, 大神Davide Libenzi实现了epoll
+* select出现是1984年在BSD里面实现的。  
+* 14年之后也就是1997年才实现了poll，其实拖那么久也不是效率问题，而是那个时代的硬件实在太弱，一台服务器处理1000多个连接简直就是神一样的存在了，select很长段时间已经满足需求。  
+* 2002, 大神Davide Libenzi实现了epoll。  
 
 ## 1.1. select  
 &emsp; 下面是select的函数接口：  
@@ -111,9 +111,7 @@ int 函数返回fds集合中就绪的读、写，或出错的描述符数量，�
 ## 1.3. epoll
 &emsp; epoll是在2.6内核中提出的，是之前的select和poll的增强版本。相对于select和poll来说，epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。  
 
-调用epoll_create，会在内核cache里建个红黑树用于存储以后epoll_ctl传来的socket，同时也会再建立一个rdllist双向链表用于存储准备就绪的事件。当epoll_wait调用时，仅查看这个rdllist双向链表数据即可  
-epoll_ctl在向epoll对象中添加、修改、删除事件时，是在rbr红黑树中操作的，非常快  
-添加到epoll中的事件会与设备(如网卡)建立回调关系，设备上相应事件的发生时会调用回调方法，把事件加进rdllist双向链表中；这个回调方法在内核中叫做ep_poll_callback  
+
 
 ### 1.3.1. epoll操作过程
 &emsp; epoll的接口如下：  
@@ -121,6 +119,14 @@ epoll_ctl在向epoll对象中添加、修改、删除事件时，是在rbr红黑
 1. 调用epoll_create，会在内核cache里建个红黑树用于存储以后epoll_ctl传来的socket，同时也会再建立一个rdllist双向链表用于存储准备就绪的事件。当epoll_wait调用时，仅查看这个rdllist双向链表数据即可  
 2. epoll_ctl在向epoll对象中添加、修改、删除事件时，是在rbr红黑树中操作的，非常快  
 3. **<font color = "red">添加到epoll中的事件会与设备(如网卡)建立回调关系，设备上相应事件的发生时会调用回调方法，把事件加进rdllist双向链表中；这个回调方法在内核中叫做ep_poll_callback</font>**  
+
+
+-----
+
+
+* 调用epoll_create，会在内核cache里建个红黑树用于存储以后epoll_ctl传来的socket，同时也会再建立一个rdllist双向链表用于存储准备就绪的事件。当epoll_wait调用时，仅查看这个rdllist双向链表数据即可  
+* epoll_ctl在向epoll对象中添加、修改、删除事件时，是在rbr红黑树中操作的，非常快  
+* 添加到epoll中的事件会与设备(如网卡)建立回调关系，设备上相应事件的发生时会调用回调方法，把事件加进rdllist双向链表中；这个回调方法在内核中叫做ep_poll_callback  
 
 ```c
 int epoll_create(int size)；
