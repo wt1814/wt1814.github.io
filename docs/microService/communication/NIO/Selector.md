@@ -4,7 +4,7 @@
 
 - [1. NIO选择器](#1-nio选择器)
     - [1.1. 多路复用(关于epoll与java NIO中select的思考)](#11-多路复用关于epoll与java-nio中select的思考)
-    - [1.2. 选择器基础：选择器、可选择通道、选择键类](#12-选择器基础选择器可选择通道选择键类)
+    - [1.2. 选择器基础：选择器、可选择通道、选择键](#12-选择器基础选择器可选择通道选择键)
     - [1.3. 选择器教程](#13-选择器教程)
         - [1.3.1. 建立选择器(选择器、通道、选择键建立连接)](#131-建立选择器选择器通道选择键建立连接)
         - [1.3.2. 选择键的使用，SelectionKey类的API](#132-选择键的使用selectionkey类的api)
@@ -16,6 +16,19 @@
 <!-- 
 https://mp.weixin.qq.com/s/3OtbG6jegOS4m2GbyOF2lQ
 -->
+&emsp; **<font color = "clime">总结：</font>**  
+&emsp; 选择器基础：选择器、可选择通道、选择键。  
+&emsp; **<font color = "clime">Selector的基本使用流程：</font>**  
+1. 通过Selector.open() 打开一个 Selector。
+2. 将Channel注册到Selector中, 并设置需要监听的事件(interest set)
+3. 不断重复:
+    1. 调用select()方法
+    2. 调用selector.selectedKeys() 获取selected keys
+    3. 迭代每个 selected key:
+        * 从selected key中获取对应的Channel和附加信息(如果有的话)。
+        * 判断是哪些IO事件已经就绪, 然后处理它们。如果是OP_ACCEPT事件, 则调用"SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept()" 获取SocketChannel, 并将它设置为 非阻塞的, 然后将这个Channel注册到Selector中。
+        * 根据需要更改selected key的监听事件。
+        * 将已经处理过的key从selected keys集合中删除。
 
 # 1. NIO选择器  
 &emsp; Selector是NIO多路复用的重要组成部分。它负责检查一个或多个Channel(通道)是否是可读、写状态，实现单线程管理多通道，优于使用多线程或线程池产生的系统资源开销。 
@@ -23,12 +36,11 @@ https://mp.weixin.qq.com/s/3OtbG6jegOS4m2GbyOF2lQ
 ## 1.1. 多路复用(关于epoll与java NIO中select的思考)  
 <!-- 
 https://www.jianshu.com/p/033483c06534?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
--->
-&emsp; ~~<font color = "red">Java NIO是多路复用 IO。在多路复用 IO模型中，会有一个线程不断去轮询多个 socket 的状态，只有当 socket 真正有读写事件时，才真正调用实际的 IO 读写操作。</font>因为在多路复用 IO 模型中，只需要使用一个线程就可以管理多个socket，系统不需要建立新的进程或者线程，也不必维护这些线程和进程，并且只有在真正有socket 读写事件进行时，才会使用 IO 资源，所以它大大减少了资源占用。~~  
-&emsp; 在 Java NIO 中，是通过 selector.select()去查询每个通道是否有到达事件，如果没有事件，则一直阻塞在那里，因此这种方式会导致用户线程的阻塞。多路复用 IO 模式，通过一个线程就可以管理多个 socket，只有当socket 真正有读写事件发生才会占用资源来进行实际的读写操作。因此，多路复用 IO 比较适合连接数比较多的情况。  
+--> 
+&emsp; **在Java NIO中，是通过selector.select()去查询每个通道是否有到达事件，如果没有事件，则一直阻塞在那里，因此这种方式会导致用户线程的阻塞。** 多路复用IO模式，通过一个线程就可以管理多个socket，只有当socket真正有读写事件发生才会占用资源来进行实际的读写操作。因此，多路复用IO比较适合连接数比较多的情况。  
 
-## 1.2. 选择器基础：选择器、可选择通道、选择键类   
-&emsp; 选择器(Selector)使用单个线程处理多个通道。 流程结构如图：  
+## 1.2. 选择器基础：选择器、可选择通道、选择键   
+&emsp; 选择器(Selector)使用单个线程处理多个通道。流程结构如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-12.png)  
 
 * 选择器(Selector)：在Java NIO中，选择器(Selector)是可选择通道的多路复用器。选择器类管理着一个被注册的通道集合的信息和它们的就绪状态。通道是和选择器一起被注册的，并且使用选择器来更新通道的就绪状态。当这样使用的时候，可以选择将被激发的线程挂起，直到有就绪的的通道。  
@@ -126,7 +138,7 @@ readyCount = selector.select (10000);
         * 从selected key中获取对应的Channel和附加信息(如果有的话)。
         * 判断是哪些IO事件已经就绪, 然后处理它们。如果是OP_ACCEPT事件, 则调用"SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept()" 获取SocketChannel, 并将它设置为 非阻塞的, 然后将这个Channel注册到Selector中。
         * 根据需要更改selected key的监听事件。
-        * 将已经处理过的key从selected keys 集合中删除。
+        * 将已经处理过的key从selected keys集合中删除。
 
 ### 1.3.4. Selector完整实例  
 
