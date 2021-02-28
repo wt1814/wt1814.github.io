@@ -61,7 +61,7 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 &emsp; EventLoop（事件循环）接口可以说是Netty中最核心的概念了！  
 &emsp; **EventLoop定义了Netty的核心抽象，用于处理连接的生命周期中所发生的事件。EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。**  
 
-&emsp; EventLoopGroup是EventLoop的集合，一个EventLoopGroup包含一个或者多个EventLoop。可以将EventLoop看做EventLoopGroup线程池中的一个个工作线程。  
+&emsp; EventLoopGroup是EventLoop的集合，一个EventLoopGroup包含一个或者多个EventLoop。可以将EventLoop看做EventLoopGroup线程池中的一个工作线程。  
 
 * 一个 EventLoopGroup包含一个或多个EventLoop，即EventLoopGroup: EventLoop = 1 : n
 * 一个 EventLoop在它的生命周期内，只能与一个Thread绑定，即EventLoop : Thread = 1 : 1
@@ -85,11 +85,11 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 &emsp; 既然channel 是 Netty 抽象出来的网络 I/O 读写相关的接口，为什么不使用JDK NIO 原生的 Channel 而要另起炉灶呢，主要原因如下：  
 
 * JDK 的SocketChannel 和 ServersocketChannel没有统一的 Channel 接口供业务开发者使用，对于用户而言，没有统一的操作视图，使用起来并不方便。
-* JDK 的 SocketChannel和 ScrversockctChannel的主要职责就是网络 I/O 操作，由于他们是SPI 类接口，由具体的虚拟机厂家来提供，所以通过继承 SPI 功能直接实现 ServersocketChannel 和 SocketChannel 来扩展其工作量和重新Channel 功类是差不多的。
+* JDK 的 SocketChannel和 ScrversockctChannel的主要职责就是网络 I/O 操作，由于它们是SPI类接口，由具体的虚拟机厂家来提供，所以通过继承 SPI 功能直接实现 ServersocketChannel 和 SocketChannel 来扩展其工作量和重新Channel 功类是差不多的。
 * Netty 的 ChannelPipeline Channel 需要够跟 Netty 的整体架构融合在一起，例如 I/O 模型、基的定制模型，以及基于元数据描述配置化的 TCP 参数等，这些JDK SocketChannel 和ServersocketChannel都没有提供，需要重新封装。
 * 自定义的 Channel ，功实现更加灵活。
 
-&emsp; 基于上述 4 原因，它的设计原理比较简单， Netty 重新设计了 Channel 接口，并且给予了很多不同的实现。但是功能却比较繁杂，主要的设计理念如下：
+&emsp; 基于上述4原因，它的设计原理比较简单，Netty重新设计了Channel接口，并且给予了很多不同的实现。但是功能却比较繁杂，主要的设计理念如下：
 
 * 在 Channel 接口层，相关联的其他操作封装起来，采用 Facade 模式进行统一封装，将网络 I/O 操作、网络 I/O 统一对外提供。
 * Channel 接口的定义尽量大而全，统一的视图，由不同子类实现不同的功能，公共功能在抽象父类中实现，最大程度上实现接口的重用。
@@ -130,7 +130,7 @@ public class SimpleDiscardHandler
 ```
 
 #### 1.4.2.2. ChannelOutboundHandler   
-&emsp; 出站操作和数据将由 ChannelOutboundHandler 处理。它的方法将被 Channel、 ChannelPipeline以及 ChannelHandlerContext 调用。ChannelOutboundHandler 的一个强大的功能是可以按需推迟操作或者事件，这使得可以通过一些复杂的方法来处理请求。例如， 如果到远程节点的写入被暂停了， 那么你可以推迟冲刷操作并在稍后继续。  
+&emsp; 出站操作和数据将由ChannelOutboundHandler处理。它的方法将被Channel、ChannelPipeline以及 ChannelHandlerContext调用。ChannelOutboundHandler的一个强大的功能是可以按需推迟操作或者事件，这使得可以通过一些复杂的方法来处理请求。例如，如果到远程节点的写入被暂停了，那么可以推迟冲刷操作并在稍后继续。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-55.png)  
 &emsp; ChannelPromise与ChannelFuture: ChannelOutboundHandler中的大部分方法都需要一个ChannelPromise参数， 以便在操作完成时得到通知。ChannelPromise是ChannelFuture的一个子类，其定义了一些可写的方法，如setSuccess()和setFailure()，从而使ChannelFuture不可变。  
 

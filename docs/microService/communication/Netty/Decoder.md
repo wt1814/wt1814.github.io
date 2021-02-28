@@ -15,9 +15,9 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">总结：</font>** 1.TCP粘包/拆包问题、原因、解决方案；2.Netty解决TCP粘包/拆包问题。  
-
-&emsp; Netty对半包或者粘包的处理其实也很简单。每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。 
+&emsp; **<font color = "lime">总结：</font>**  
+&emsp; [TCP的粘包和拆包问题描述](/docs/network/TCPSticking.md)  
+&emsp; **<font color = "clime">Netty对半包或者粘包的处理：</font>** **<font color = "red">每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。</font>** 
 
 &emsp; Netty默认提供了多种解码器来解决，可以进行分包操作。  
 
@@ -124,7 +124,6 @@ public class NettyClient {
 <!-- Netty为了找出消息的边界，采用封帧方式： 
 注意到，Netty提供了对应的解码器来解决对应的问题，有了这些解码器，用户不需要自己对读取的报文进行人工解码，也不需要考虑TCP的粘包和半包问题。-->
 &emsp; Netty对半包或者粘包的处理其实也很简单。每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。   
-&emsp; **~~针对粘包和拆包的解决方案，对于拆包问题比较简单，用户可以自己定义自己的编码器进行处理，Netty并没有提供相应的组件。对于粘包的问题，由于拆包比较复杂，代码比较处理比较繁琐，Netty提供了4种解码器来解决。~~**  
 
 #### 1.2.2.1. 编解码技术  
 &emsp; **编解码技术：**通常习惯将编码(Encode)称为序列化(serialization)，它将对象序列化为字节数组，用于网络传输、数据持久化或者其它用途。反之，解码(Decode)/反序列化(deserialization)把从网络、磁盘等读取的字节数组还原成原始对象(通常是原始对象的拷贝)，以方便后续的业务逻辑操作。进行远程跨进程服务调用时(例如RPC调用)，需要使用特定的编解码技术，对需要进行网络传输的对象做编码或者解码，以便完成远程调用。  
@@ -137,12 +136,12 @@ public class NettyClient {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-41.png)  
 
 #### 1.2.2.2. Netty提供的解码器
-&emsp; Netty默认提供了多种解码器来解决，可以进行分包操作，满足99%的编码需求。分别如下：
+&emsp; **<font color = "red">Netty默认提供了多种解码器来解决，可以进行分包操作，满足99%的编码需求。</font>**分别如下：  
 
-* 固定长度的拆包器 FixedLengthFrameDecoder，每个应用层数据包的都拆分成都是固定长度的大小
-* 行拆包器 LineBasedFrameDecoder，每个应用层数据包，都以换行符作为分隔符，进行分割拆分
-* 分隔符拆包器 DelimiterBasedFrameDecoder，每个应用层数据包，都通过自定义的分隔符，进行分割拆分
-* 基于数据包长度的拆包器 LengthFieldBasedFrameDecoder，将应用层数据包的长度，作为接收端应用层数据包的拆分依据。按照应用层数据包的大小，拆包。这个拆包器，有一个要求，就是应用层协议中包含数据包的长度  
+* 固定长度的拆包器FixedLengthFrameDecoder，每个应用层数据包的都拆分成都是固定长度的大小
+* 行拆包器LineBasedFrameDecoder，每个应用层数据包，都以换行符作为分隔符，进行分割拆分
+* 分隔符拆包器DelimiterBasedFrameDecoder，每个应用层数据包，都通过自定义的分隔符，进行分割拆分
+* 基于数据包长度的拆包器LengthFieldBasedFrameDecoder，将应用层数据包的长度，作为接收端应用层数据包的拆分依据。按照应用层数据包的大小，拆包。这个拆包器，有一个要求，就是应用层协议中包含数据包的长度  
 
 &emsp; 以上解码器在使用时只需要添加到Netty的责任链中即可，大多数情况下这4种解码器都可以满足了，当然除了以上4种解码器，用户也可以自定义解码器进行处理。
 
