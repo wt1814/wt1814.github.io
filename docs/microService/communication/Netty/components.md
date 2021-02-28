@@ -1,7 +1,6 @@
 <!-- TOC -->
 
 - [1. Netty核心组件](#1-netty核心组件)
-    - [1.1. Netty核心组件介绍(Netty运行流程概述)](#11-netty核心组件介绍netty运行流程概述)
     - [1.2. Bootstrap & ServerBootstrap](#12-bootstrap--serverbootstrap)
     - [1.3. EventLoopGroup && EventLoop](#13-eventloopgroup--eventloop)
     - [1.4. channel相关](#14-channel相关)
@@ -30,10 +29,7 @@ https://mp.weixin.qq.com/s/I9PGsWo7-ykGf2diKklGtA
 https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 
 -->
-## 1.1. Netty核心组件介绍(Netty运行流程概述)
-&emsp; **Netty执行流程：**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-87.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-44.png)  
+
 &emsp; 涉及的Netty核心组件主要有：  
 
 * Bootstrap && ServerBootstrap
@@ -58,7 +54,14 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 * Bootstrap客户端引导只需要一个EventLoopGroup，但是一个ServerBootstrap通常需要两个(上面的boosGroup和workerGroup)。  
 
 ## 1.3. EventLoopGroup && EventLoop  
-&emsp; EventLoop（事件循环）接口可以说是Netty中最核心的概念了！  
+NioEventLoop
+<!-- 
+https://www.jianshu.com/p/5c6466510d3b
+https://www.jianshu.com/p/23820270e30a
+https://www.jianshu.com/p/9acf36f7e025
+
+-->
+&emsp; EventLoop(事件循环)接口可以说是Netty中最核心的概念了！  
 &emsp; **EventLoop定义了Netty的核心抽象，用于处理连接的生命周期中所发生的事件。EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。**  
 
 &emsp; EventLoopGroup是EventLoop的集合，一个EventLoopGroup包含一个或者多个EventLoop。可以将EventLoop看做EventLoopGroup线程池中的一个工作线程。  
@@ -78,7 +81,7 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 ### 1.4.1. channel  
 <!-- 
 &emsp; Channel接口是Netty对网络操作抽象类，它除了包括基本的I/O 操作，如 bind()、connect()、read()、write()等。  
-&emsp; 比较常用的Channel接口实现类是NioServerSocketChannel（服务端）和NioSocketChannel（客户端），这两个 Channel 可以和 BIO 编程模型中的ServerSocket以及Socket两个概念对应上。Netty 的 Channel 接口所提供的 API，大大地降低了直接使用 Socket 类的复杂性。  
+&emsp; 比较常用的Channel接口实现类是NioServerSocketChannel(服务端)和NioSocketChannel(客户端)，这两个 Channel 可以和 BIO 编程模型中的ServerSocket以及Socket两个概念对应上。Netty 的 Channel 接口所提供的 API，大大地降低了直接使用 Socket 类的复杂性。  
 -->
 &emsp; 类似于NIO的Channel，Netty提供了自己的Channel和其子类实现，用于异步I/0操作和其他相关的操作。    
 &emsp; **在Netty中, Channel是一个Socket连接的抽象, 它为用户提供了关于底层 Socket 状态(是否是连接还是断开)以及对Socket的读写等操作。** 每当Netty建立了一个连接后, 都会有一个对应的Channel实例。并且，有父子channel的概念。服务器连接监听的channel ，也叫 parent channel。对应于每一个 Socket 连接的channel，也叫 child channel。  
@@ -156,8 +159,8 @@ public class SslHandler extends ByteToMessageDecoder implements ChannelOutboundH
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-56.png)  
 &emsp; 如上图所示：这是一个同时具有入站和出站 ChannelHandler 的 ChannelPipeline的布局，并且印证了我们之前的关于 ChannelPipeline主要由一系列的 ChannelHandler 所组成的说法。ChannelPipeline还提供了通过 ChannelPipeline 本身传播事件的方法。如果一个入站事件被触发，它将被从 ChannelPipeline的头部开始一直被传播到 Channel Pipeline 的尾端。  
-&emsp; 从事件途经 ChannelPipeline的角度来看， ChannelPipeline的头部和尾端取决于该事件是入站的还是出站的。然而 Netty 总是将 ChannelPipeline的入站口（图 的左侧）作为头部，而将出站口（该图的右侧）作为尾端。当你完成了通过调用 ChannelPipeline.add*()方法将入站处理器（ ChannelInboundHandler）和 出 站 处 理 器 （ ChannelOutboundHandler ） 混 合 添 加 到 ChannelPipeline之 后 ， 每 一 个ChannelHandler 从头部到尾端的顺序位置正如同我们方才所定义它们的一样。因此，如果你将图 6-3 中的处理器（ ChannelHandler）从左到右进行编号，那么第一个被入站事件看到的 ChannelHandler 将是1，而第一个被出站事件看到的 ChannelHandler将是 5。  
-&emsp; 在 ChannelPipeline 传播事件时，它会测试 ChannelPipeline 中的下一个 ChannelHandler 的类型是否和事件的运动方向相匹配。如果不匹配， ChannelPipeline 将跳过该ChannelHandler 并前进到下一个，直到它找到和该事件所期望的方向相匹配的为止。（当然， ChannelHandler也可以同时实现ChannelInboundHandler接口和 ChannelOutboundHandler 接口。）  
+&emsp; 从事件途经 ChannelPipeline的角度来看， ChannelPipeline的头部和尾端取决于该事件是入站的还是出站的。然而 Netty 总是将 ChannelPipeline的入站口(图 的左侧)作为头部，而将出站口(该图的右侧)作为尾端。当你完成了通过调用 ChannelPipeline.add*()方法将入站处理器( ChannelInboundHandler)和 出 站 处 理 器 ( ChannelOutboundHandler ) 混 合 添 加 到 ChannelPipeline之 后 ， 每 一 个ChannelHandler 从头部到尾端的顺序位置正如同我们方才所定义它们的一样。因此，如果你将图 6-3 中的处理器( ChannelHandler)从左到右进行编号，那么第一个被入站事件看到的 ChannelHandler 将是1，而第一个被出站事件看到的 ChannelHandler将是 5。  
+&emsp; 在 ChannelPipeline 传播事件时，它会测试 ChannelPipeline 中的下一个 ChannelHandler 的类型是否和事件的运动方向相匹配。如果不匹配， ChannelPipeline 将跳过该ChannelHandler 并前进到下一个，直到它找到和该事件所期望的方向相匹配的为止。(当然， ChannelHandler也可以同时实现ChannelInboundHandler接口和 ChannelOutboundHandler 接口。)  
 
 ### 1.4.5. ChannelHandlerContext  
 &emsp; 当 ChannelHandler 被添加到 ChannelPipeline 时，它将会被分配一个 ChannelHandlerContext ，它代表了 ChannelHandler 和 ChannelPipeline 之间的绑定。ChannelHandlerContext 的主要功能是管理它所关联的ChannelHandler和在同一个 ChannelPipeline 中的其他ChannelHandler之间的交互。  
@@ -165,7 +168,7 @@ public class SslHandler extends ByteToMessageDecoder implements ChannelOutboundH
 &emsp; ChannelHandlerContext API如下表所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-57.png)  
 
-* ChannelHandlerContext 和 ChannelHandler之间的关联（绑定）是永远不会改变的，所以缓存对它的引用是安全的；
+* ChannelHandlerContext 和 ChannelHandler之间的关联(绑定)是永远不会改变的，所以缓存对它的引用是安全的；
 * 如同在本节开头所解释的一样，相对于其他类的同名方法，ChannelHandlerContext的方法将产生更短的事件流， 应该尽可能地利用这个特性来获得最大的性能。  
 
 ### 1.4.6. ChannelFuture && ChannelPromise 
@@ -259,5 +262,5 @@ ByteBuf buffer = allocator.buffer(length);
 * 一个 ChannelPipeline 包含一条双向的 ChannelHandlerContext链
 * 一个 ChannelHandlerContext中包含一个ChannelHandler
 * 一个 Channel会绑定到一个EventLoop上
-* 一个 NioEventLoop 维护了一个 Selector（使用的是 Java 原生的 Selector）
+* 一个 NioEventLoop 维护了一个 Selector(使用的是 Java 原生的 Selector)
 * 一个 NioEventLoop 相当于一个线程

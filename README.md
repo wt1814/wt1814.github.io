@@ -456,6 +456,7 @@
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 [Netty](/docs/microService/communication/Netty/netty.md)   
 &emsp; [Netty介绍及架构剖析](/docs/microService/communication/Netty/concepts.md)  
+&emsp; [Netty执行流程](/docs/microService/communication/Netty/Execution.md)  
 &emsp; [Netty核心组件](/docs/microService/communication/Netty/components.md)    
 &emsp; [Netty高性能](/docs/microService/communication/Netty/performance.md)  
 &emsp; &emsp; [~~Netty中的零拷贝~~](/docs/microService/communication/Netty/nettyZeroCopy.md)  

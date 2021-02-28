@@ -32,7 +32,7 @@ https://mp.weixin.qq.com/s/54wmqi2Y3_E6o_hCLxsJKw
 * 客户端连接超时
 
 ## 1.1. ServerBootstrap使用示例  
-&emsp; 在netty源码包中，EchoClient 示例如下：  
+&emsp; 在netty源码包中，EchoClient示例如下：  
 
 ```java
 public final class EchoClient {
