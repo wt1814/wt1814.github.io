@@ -101,6 +101,7 @@ public final class EchoClient {
 ## 1.2. Netty客户端创建时序图  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-29.png)  
 
+<!-- 
 &emsp; <font color = "lime">**客户端创建的流程有以下步骤：**</font>
 
 1. 创建 Bootstrap 实例，通过API设置客户端的参数，异步发起连接  
@@ -112,6 +113,7 @@ public final class EchoClient {
 7. 由多路复用器在 IO 轮询各 Channel，处理连接结果  
 8. 如果来连接成功，设置 Future 结果，发送连接成功事件，触发 ChannelPipileline  
 9. 由 ChannelPipileline 调度执行系统和用户的 ChannelHandler 执行业务逻辑  
+-->
 
 ## 1.3. Netty客户端创建源码分析  
 &emsp; 第一步是设置 IO 线程组的接口。由于客户端相对于服务端来说，只需要一个处理 IO 的读写线程组。

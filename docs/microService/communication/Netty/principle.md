@@ -8,16 +8,6 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">Netty启动服务端：</font>**  
-1. 创建ServerBootstrap服务端启动对象。  
-2. 配置bossGroup和workerGroup，其中bossGroup负责接收连接，workerGroup负责处理连接的读写就绪事件。
-3. 配置父Channel，一般为NioServerSocketChannel。  
-4. 配置子Channel与Handler之间的关系。
-5. 给父Channel配置参数。
-6. 给子Channel配置参数。
-7. 绑定端口，启动服务。
-
 # 1. Netty服务端创建  
 <!-- 
 高性能 Netty 源码解析之服务端创建 
@@ -107,17 +97,11 @@ public final class EchoServer {
 * 第 48 行：先调用 #closeFuture() 方法，监听服务器关闭，后调用 ChannelFuture#sync() 方法，阻塞等待成功。注意，此处不是关闭服务器，而是“监听”关闭。
 * 第 49 至 54 行：执行到此处，说明服务端已经关闭，所以调用 EventLoopGroup#shutdownGracefully() 方法，分别关闭两个 EventLoopGroup 对象。
 
-&emsp; **<font color = "lime">Netty启动服务端：</font>**  
-1. 创建ServerBootstrap服务端启动对象。  
-2. 配置bossGroup和workerGroup，其中bossGroup负责接收连接，workerGroup负责处理连接的读写就绪事件。
-3. 配置父Channel，一般为NioServerSocketChannel。  
-4. 配置子Channel与Handler之间的关系。
-5. 给父Channel配置参数。
-6. 给子Channel配置参数。
-7. 绑定端口，启动服务。
 
 ## 1.2. Netty服务端创建时序图  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-28.png)  
+
+<!-- 
 &emsp; 上面是关于启动一个Netty的客户端或服务端的一个流程时序图。从步骤1可以看到，ServerBootstrap 是直接面对用户的，用户通过 ServerBootstrap 来进行设置的。ServerBootstrap 是 Netty 的启动辅助类。它的功能就是提供方法来配置启动的参数。底层是通过门面模式对各种能力进行抽象和封装，这样避免了像原生那样，需要认识并操作多个类才能启动一个应用，这是降低开发难度的途径之一。同时因为这样而引起需要配置或可以配置参数过多，ServerBootstrap 使用了 Builder 模式来解决了这个问题。  
 &emsp; 在步骤2，核心内容是给 ServerBootstrap 设置并绑定 Reactor 线程池(Reactor 线程池指的是线程模型 Reactor 模式)。ServerBootstrap 通过 group 方法设置单或双线程池。在 Netty 中，所有线程池的父类是 EventLoop，EventLoop 负责处理注册到本线程多路复用 Selector 上面的 Channel，Selector 的轮询操作由绑定的 EventLoop 线程 run 方法驱动，在一个循环体内循环执行。Netty 的 EventLoop 不仅可以处理网络 IO 事件，而且还可以处理用户自定义的 Task 和定时任务 Task。这样个中间都可以由同一个 EventLoop 进行处理。从调度层面看，不存在从 EventLoop 线程中启动其他类型的线程用于异步执行另外的任务，这样避免了多线程并发操作和锁竞争，提升了 IO 线程的处理和调度性能。  
 &emsp; 在步骤3，核心内容是设置 ServerSocketChannel 类型并通过 ServerBootstrap 的方法绑定到服务端。这一步比较简单和关键，Netty 已经封装好了 Channel 的初始化等底层实现细节和工作原理(也就是 Netty 会怎么使用 Channel 工作)，所以用户只需要在服务端使用 NIO 模式，那就设置 NioServerSocketChannel.class 即可。通过 ServerBootstrap 的 channel() 方法设置进去后，实际上背后 Netty 会根据 class 反射得到实例对象。由于只在启动时才会进行反射调用，所以对性能的影响并不大。  
@@ -135,16 +119,17 @@ public final class EchoServer {
 |Base64 编解码|Base64Decoder 和 Base64Encoder|
 
 &emsp; 在步骤6，步骤7，核心都是组件内部已经开始启动运行内部代码了，剩下只需要等待客户端请求和业务逻辑处理了。
+-->
 
 ## 1.3. Netty服务端创建源码分析  
-&emsp; 首先是步骤2，服务端使用的 Reactor 模型，所以需要创建两个 NioEventLoopGroup，它们都是属于 EventLoopGroup 的子类。  
+&emsp; 首先是步骤2，服务端使用的Reactor模型，所以需要创建两个 NioEventLoopGroup，它们都是属于 EventLoopGroup 的子类。  
 
 ```java
 EventLoopGroup bossGroup = new NioEventLoopGroup();
 EventLoopGroup workerGroup = new NioEventLoopGroup();
 ```
 
-&emsp; bossGroup负责的是接受请求，workerGroup负责的是处理请求。通过 ServerBootstrap 的方法 group() 传入之后，会设置成为 ServerBootstrap 的 parentGroup 和 childGroup  
+&emsp; **<font color = "red">bossGroup负责的是接受请求，workerGroup负责的是处理请求。通过 ServerBootstrap 的方法 group() 传入之后，会设置成为 ServerBootstrap 的 parentGroup 和 childGroup</font>**  
 
 ```java
 public ServerBootstrap group(EventLoopGroup parentGroup, EventLoopGroup childGroup) {
