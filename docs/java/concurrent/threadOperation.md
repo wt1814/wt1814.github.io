@@ -181,7 +181,7 @@ public class MyThread extends Thread{
 &emsp; 向对象中传入数据一般有两次机会，第一次机会是在建立对象时通过构造方法将数据传入，另外一次机会就是在类中定义一系列的public的方法或变量。然后在建立完对象后，通过对象实例逐个赋值。
 
 ```java
-public class MyThread2 {
+public class MyThread2 extends Thread{
     private String name;
     public void setName(String name){
         this.name = name;

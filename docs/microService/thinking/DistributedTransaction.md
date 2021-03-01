@@ -14,6 +14,9 @@
 
 # 1. 分布式事务  
 <!--
+聊一下分布式事务
+https://mp.weixin.qq.com/s/2cmZTDTtFDBogxlUFKtpLQ
+
 分布式事务解决方案
 https://mp.weixin.qq.com/s/mSxUXHgcHo5a7VAhvjIpCQ
 微服务架构下分布式事务解决方案 
