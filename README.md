@@ -27,6 +27,7 @@
         - [任务调度](#任务调度)
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式通信](#分布式通信)
+    - [~~软件工程~~](#软件工程)
     - [项目构建基础](#项目构建基础)
     - [架构设计](#架构设计)
     - [负载均衡](#负载均衡)
@@ -472,6 +473,8 @@
 
 ---
 
+## ~~软件工程~~
+
 ## 项目构建基础  
 [构建基础](/docs/web/BuildFoundation.md)  
 &emsp; [日志系统](/docs/web/log.md)  
@@ -517,6 +520,8 @@
 [OpenAPI](/docs/system/OpenAPI.md)  
 <!-- 
 [Gateway](/docs/microService/microservices/Gateway.md)  
+
+软件工程
 -->
 
 ----
