@@ -410,8 +410,6 @@
         * [数据脱敏](/docs/web/sensitive.md)  
         * [加密算法](/docs/web/encryption.md)  
     * [源码安全](/docs/web/codeSecurity.md)  
-    * [短链接](/docs/project/URL.md)  
-    * [生成二维码](/docs/web/QRCode.md)  
     * [其他](/docs/web/other.md)  
 * 架构设计  
     * [架构图](/docs/system/diagram.md)   
