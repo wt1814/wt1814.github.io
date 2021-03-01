@@ -29,8 +29,16 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-11.png) 
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在应用层，因此nginx又可以称为7层负载均衡</font>。  
+&emsp; **多进程：**    
+&emsp; Nginx启动时，会生成两种类型的进程，一个主进程master，一个(windows版本的目前只有一个)或多个工作进程worker。  
+
+* 主进程并不处理网络请求，主要负责调度工作进程：加载配置、启动工作进程、非停升级。  
+* **<font color = "red">一般推荐worker进程数与CPU内核数一致，这样一来不存在大量的子进程生成和管理任务，避免了进程之间竞争CPU资源和进程切换的开销。</font>**  
+
 # 1. Nginx  
-&emsp; Nginx 是一个 高性能 的 Web 服务器。<font color = "red">Nginx工作在应用层，因此nginx又可以称为7层负载均衡</font>。  
+&emsp; Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在应用层，因此nginx又可以称为7层负载均衡</font>。  
 
 * 同时处理大量的并发请求(可以处理2-3万并发连接数，官方监测能支持5万并发)。
 * 内存消耗小：开启10个nginx才占150M内存 ，nginx处理静态文件好，耗费内存少。  
@@ -38,22 +46,22 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 * <font color = "red">Nginx原理：两种进程、多进程单线程、基于异步非阻塞的事件驱动模型、模块化设计。</font>
 
 ## 1.1. 进程模型  
-&emsp; Nginx启动时，会生成两种类型的进程，一个主进程master， 一个 ( windows版本的目前只有一个)或 多个工作进程worker。因此，Nginx 启动以后，查看操作系统的进程列表，就能看到至少有两个Nginx 进程。  
+&emsp; Nginx启动时，会生成两种类型的进程，一个主进程master， 一个(windows版本的目前只有一个)或多个工作进程worker。因此，Nginx启动以后，查看操作系统的进程列表，就能看到至少有两个Nginx进程。  
 
-* 主进程并不处理网络请求，主要负责调度工作进程： 加载配置、启动工作进程、非停升级。  
+* 主进程并不处理网络请求，主要负责调度工作进程：加载配置、启动工作进程、非停升级。  
 * 服务器实际处理网络请求及响应的是工作进程worker，在类unix系统上，Nginx可以配置多个worker，而每个worker进程都可以同时处理数以千计的网络请求。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-7.png) 
 
 ## 1.2. 多进程机制  
-&emsp; 服务器每当收到一个客户端请求时，就有服务器主进程( master process )生成一个子进程( worker process )出来和客户端建立连接进行交互，直到连接断开，该子进程结束。  
+&emsp; 服务器每当收到一个客户端请求时，就有服务器主进程(master process)生成一个子进程(worker process)出来和客户端建立连接进行交互，直到连接断开，该子进程结束。  
 
 &emsp; <font color = "red">多进程的优缺点：</font>  
-1. 使用 进程 的好处是 各个进程之间相互独立 ， 不需要加锁 ，减少了使用锁对性能造成影响，同时降低编程的复杂度，降低开发成本。  
-2. 采用独立的进程，可以让 进程互相之间不会影响 ，如果一个进程发生异常退出时，其它进程正常工作， master 进程则很快启动新的 worker 进程，确保服务不会中断，从而将风险降到最低。     
-3. 缺点是操作系统生成一个 子进程 需要进行 内存复制 等操作，在 资源 和 时间 上会产生一定的开销。当有 大量请求 时，会导致 系统性能下降 。   
+1. 使用进程的好处是各个进程之间相互独立，不需要加锁，减少了使用锁对性能造成影响，同时降低编程的复杂度，降低开发成本。  
+2. 采用独立的进程，可以让进程互相之间不会影响，如果一个进程发生异常退出时，其它进程正常工作，master进程则很快启动新的worker进程，确保服务不会中断，从而将风险降到最低。     
+3. 缺点是操作系统生成一个子进程需要进行内存复制等操作，在资源和时间上会产生一定的开销。当有大量请求 时，会导致系统性能下降。   
 
-&emsp; 一般推荐 worker 进程数 与 CPU 内核数 一致，这样一来不存在 大量的子进程 生成和管理任务，避免了进程之间 竞争 CPU 资源 和 进程切换 的开销。  
-&emsp; 而且 Nginx 为了更好的利用 多核特性 ，提供了 CPU 亲缘性 的绑定选项，可以将某 一个进程绑定在某一个核上，这样就不会因为 进程的切换 带来 Cache 的失效。  
+&emsp; **<font color = "red">一般推荐worker进程数与CPU内核数一致，这样一来不存在大量的子进程生成和管理任务，避免了进程之间竞争CPU资源和进程切换的开销。</font>**  
+&emsp; 而且Nginx为了更好的利用多核特性，提供了CPU亲缘性的绑定选项，可以将某一个进程绑定在某一个核上，这样就不会因为进程的切换带来Cache的失效。  
 
 &emsp; 对于每个请求，有且只有一个 工作进程 对其处理。首先，每个 worker 进程都是从 master进程 fork 过来。在 master 进程里面，先建立好需要 listen 的 socket(listenfd) 之后，然后再 fork 出多个 worker 进程。  
 &emsp; 所有 worker 进程的 listenfd 会在 新连接 到来时变得 可读 ，为保证只有一个进程处理该连接，所有 worker 进程在注册 listenfd 读事件前抢占 accept_mutex。   

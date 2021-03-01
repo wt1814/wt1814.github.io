@@ -83,8 +83,10 @@ https://mp.weixin.qq.com/s/HRfHQm1ihSEs6VFzxoC4rQ
 ## 1.5. 常用负载均衡工具
 &emsp; 常用的软件负载均衡软件有[Nginx](/docs/system/loadBalance/Nginx/nginx.md)、[LVS](/docs/system/loadBalance/LVS.md)、HaProxy等。  
 
+
+
 ## 1.6. ★★★负载均衡方案选择  
 &emsp; 小于3000万pv的，DNS轮询+监控；
-&emsp; 3000万以上的，nginx+监控；
+&emsp; **3000万以上的，nginx+监控；**
 &emsp; 5000万PV的，HAProxy+Keepalived,nginx，HAPROXY负责TCP的负载均衡，nginx负责7层调度；
-&emsp; 1亿以上的，LVS-DR+keepalived,nginx，LVS-DR负责TCP的负载均衡，nginx负责7层调度。
+&emsp; **1亿以上的，LVS-DR+keepalived,nginx，LVS-DR负责TCP的负载均衡，nginx负责7层调度。**

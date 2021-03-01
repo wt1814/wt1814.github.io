@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. Nginx使用场景](#1-nginx使用场景)
+- [1. Nginx使用](#1-nginx使用)
     - [1.1. 基于配置文件的Nginx处理请求流程](#11-基于配置文件的nginx处理请求流程)
         - [1.1.1. IP和域名部分的处理](#111-ip和域名部分的处理)
         - [1.1.2. Location详解](#112-location详解)
@@ -40,8 +40,12 @@ https://mp.weixin.qq.com/s/kIIGCq_oN66nt4MMYaCJpQ
  https://mp.weixin.qq.com/s/XEN_6Xz8Ayk1Z3qKugePjA
 
 -->
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; <font color = "red">Nginx服务器处理一个请求是按照两部分进行的。第一部分是IP和域名，由listen和server_name指令匹配server模块；第二部分是URL，匹配server模块里的location；最后就是location里的具体处理。</font>  
+&emsp; <font color = "red">Nginx使用场景：反向代理、虚拟主机、静态资源WEB服务、缓存、限流、黑白名单、防盗链、流量复制...</font>
 
-# 1. Nginx使用场景  
+
+# 1. Nginx使用  
 ## 1.1. 基于配置文件的Nginx处理请求流程  
 &emsp; <font color = "red">Nginx服务器处理一个请求是按照两部分进行的。第一部分是IP和域名，由listen和server_name指令匹配server模块；第二部分是URL，匹配server模块里的location；最后就是location里的具体处理。</font>  
 
