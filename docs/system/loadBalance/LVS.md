@@ -108,6 +108,7 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 1. 最前端的负载均衡层，用 Load Balancer 表示
 2. 中间的服务器集群层，用 Server Array 表示
 3. 最底端的数据共享存储层，用 Shared Storage 表示
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/lvs/lvs-1.png)  
 &emsp; LVS的各个层次的详细介绍：  
 &emsp; Load Balancer层：位于整个集群系统的最前端，有一台或者多台负载调度器(Director Server)组成，LVS模块就安装在Director Server上，而Director的主要作用类似于一个路由器，它含有完成LVS功能所设定的路由表，通过这些路由表把用户的请求分发给Server Array层的应用服务器(Real Server)上。同时，在Director Server上还要安装对Real Server服务的监控模块Ldirectord，此模块用于监测各个Real Server服务的健康状况。在Real Server不可用时把它从LVS路由表中剔除，恢复时重新加入。  
