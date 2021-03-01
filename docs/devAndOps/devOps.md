@@ -12,7 +12,10 @@
 <!-- /TOC -->
 
 # 1. Devops与CI/CD
-<!-- 
+<!--
+***一文弄懂什么是DevOps
+https://mp.weixin.qq.com/s/-AFFoCs8hidM9vwzZ4iYjg
+ 
 云原生
 https://mp.weixin.qq.com/s/fVGTtXlurMfJV1gp93jUIQ
 CI/CD 工具选型：Jenkins 还是 GitLab CI/CD？ 

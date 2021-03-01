@@ -8,6 +8,8 @@ https://www.cnblogs.com/zjfjava/p/10392150.html
 
 git书籍  
 https://mp.weixin.qq.com/s/bT7VXffqHuzUZUY5c4ce7A
+ 如何自动同步博客到 Github 主页？ 
+ https://mp.weixin.qq.com/s/J2sIku38WxL4ge4W5DP2hw
 -->
 
 ## Git分支命名  

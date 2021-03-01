@@ -37,6 +37,8 @@
 <!-- 
 Kafka消息中间件到底会不会丢消息 
 https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
+面试官问：Kafka 会不会丢消息？怎么处理的? 
+https://mp.weixin.qq.com/s/0eotlFBTSl-HxInb4Xg1Iw
 -->
 
 ## 1.1. Kafka消息传递过程概述  

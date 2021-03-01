@@ -38,6 +38,7 @@
 <!-- 
 想理解好零拷贝，重点还在于理解为什么需要拷贝，以及不同零拷贝技术的对比。想理解好 I/O 原理，必须先弄清楚数据结构。  
 零拷贝
+https://www.jianshu.com/p/2581342317ce
 http://baijiahao.baidu.com/s?id=1664128784220450138&wfr=spider&for=pc
 https://mp.weixin.qq.com/s/mWPjFbCVzvuAW3Y9lEQbGg
 https://blog.csdn.net/wufaliang003/article/details/106195984

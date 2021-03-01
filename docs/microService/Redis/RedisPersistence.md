@@ -31,7 +31,11 @@
 </font>**  
 
 # 1. Redis持久化  
-<!-- 
+<!--
+(视频)Redis的持久化混合模式详解
+https://www.zhihu.com/zvideo/1302268580432392192
+Redis 持久化之AOF持久化&混合持久化
+https://cloud.tencent.com/developer/article/1476667
 redis系列--redis4.0深入持久化
 https://www.cnblogs.com/wdliu/p/9377278.html
 AOF和RDB混合使用

@@ -495,17 +495,17 @@
 [Http](/docs/web/http.md)   
 &emsp; [RestTemplate](/docs/web/Resttemplate.md)  
 &emsp; [Http重试](/docs/web/httpRetry.md)   
-[格式化](/docs/web/Format.md)  
-[数据脱敏](/docs/web/sensitive.md)  
+[数据相关](/docs/web/Data.md)  
+&emsp; [格式化](/docs/web/Format.md)  
+&emsp; [数据脱敏](/docs/web/sensitive.md)  
+&emsp; [加密算法](/docs/web/encryption.md)  
 [源码安全](/docs/web/codeSecurity.md)  
-[加密算法](/docs/web/encryption.md)  
 [短链接](/docs/project/URL.md)  
 [生成二维码](/docs/web/QRCode.md)  
 [其他](/docs/web/other.md)  
 
 ## 架构设计  
 [架构图](/docs/system/diagram.md)  
-[软件架构质量属性](/docs/system/qualityAttributes.md)  
 [软件架构设计模式](/docs/system/designPattern.md)  
 
 [分布式高并发](/docs/system/DistributedHighConcurrency.md)   

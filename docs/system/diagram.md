@@ -1,11 +1,21 @@
 
 
+# 架构图
+
+<!-- 
+软件架构质量属性（一）
+https://blog.csdn.net/trecn001/article/details/93721030
+-->
+
+
 <!-- 
 亿级流量架构之资源隔离思路与方法
 https://mp.weixin.qq.com/s/Gd6l0YWUQCD4cDpN1q80ig
 
 架构图
 https://mp.weixin.qq.com/s/trmQjxfshsnnIJqNY7szqQ
+ 工作两三年了，整不明白架构图都画啥？ 
+ https://mp.weixin.qq.com/s/50574gVPP8dcvzVheXCgMw
 
 
 部署多可用区异地灾备
