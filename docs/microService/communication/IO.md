@@ -98,7 +98,7 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 &emsp; I/O交换流程：在操作系统中，应用程序对于一次IO操作(以read举例)，数据会先拷贝到内核空间中，然后再从内核空间拷贝到用户空间中，所以<font color = "red">一次read操作，会经历两个阶段：1. 等待数据准备；2. 数据从内核空间拷贝到用户空间。基于以上两个阶段就产生了五种不同的IO模式，分别是：阻塞I/O模型、非阻塞I/O模型、多路复用I/O模型、异步I/O模型。</font><font color= "lime">其中，前四种被称为同步I/O。</font>  
 
 ----
-&emsp; **<font color = "clime">网络IO的本质就是socket流的读取，通常一次IO读操作会涉及到两个对象和两个阶段。**  
+&emsp; **<font color = "clime">网络IO的本质就是socket流的读取，通常一次IO读操作会涉及到两个对象和两个阶段。</font>**  
 
 &emsp; 两个对象：  
 
