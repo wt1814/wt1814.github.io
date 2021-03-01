@@ -16,7 +16,7 @@
 
 &emsp; **总结：**  
 &emsp; Synchronized的底层原理：  
-&emsp; Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联。  
+&emsp; **<font color = "clime">Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联。</font>**  
 &emsp; **<font color = "red">monitor运行的机制过程如下：(_WaitSet队列和 _EntryList队列)</font>**  
 1. 当多个线程同时访问一段同步代码时，首先会进入_EntryList集合，当线程获取到对象的monitor后进入_Owner区域并把monitor中的owner变量(_owner指向持有ObjectMonitor对象的线程)设置为当前线程，同时monitor中的计数器count加1。  
 2. 若线程调用wait()方法，将释放当前持有的monitor，owner变量恢复为null，count自减1，同时该线程进入_WaitSet集合中等待被唤醒。若当前线程执行完毕也将释放monitor(锁)并复位变量的值，以便其他线程进入获取monitor(锁)。  
