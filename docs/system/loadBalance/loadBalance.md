@@ -1,16 +1,17 @@
 
 <!-- TOC -->
 
-- [1. ~~负载均衡~~](#1-负载均衡)
+- [1. 负载均衡](#1-负载均衡)
     - [1.1. 均衡技术](#11-均衡技术)
     - [1.2. 主要应用](#12-主要应用)
-    - [1.3. 基于网络的负载均衡的分类](#13-基于网络的负载均衡的分类)
+    - [1.3. ★★★基于网络的负载均衡的分类](#13-★★★基于网络的负载均衡的分类)
     - [1.4. 负载均衡算法](#14-负载均衡算法)
     - [1.5. 常用负载均衡工具](#15-常用负载均衡工具)
+    - [1.6. ★★★负载均衡方案选择](#16-★★★负载均衡方案选择)
 
 <!-- /TOC -->
 
-# 1. ~~负载均衡~~
+# 1. 负载均衡
 <!--
 https://www.jianshu.com/p/e3ac7d42c408
 https://blog.csdn.net/xlgen157387/article/details/78678772
@@ -50,7 +51,7 @@ https://mp.weixin.qq.com/s/HRfHQm1ihSEs6VFzxoC4rQ
 7. 混合型负载均衡    
 &emsp; 在有些大型网络，由于多个服务器群内硬件设备、各自的规模、提供的服务等的差异，可以考虑给每个服务器群采用最合适的负载均衡方式，然后又在这多个服务器群间再一次负载均衡或群集起来以一个整体向外界提供服务(即把这多个服务器群当做一个新的服务器群)，从而达到最佳的性能。将这种方式称之为混合型负载均衡。此种方式有时也用于单台均衡设备的性能不能满足大量连接请求的情况下。  
 
-## 1.3. 基于网络的负载均衡的分类  
+## 1.3. ★★★基于网络的负载均衡的分类  
 &emsp; OSI模型有7层结构，每层都可以有几个子层。OSI的7层从上到下分别是物理层、数据链路层、网络层、传输层、会话层、表示层、应用层：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/load-1.png)  
 &emsp; 根据负载均衡技术实现在OSI七层模型的不同层次，是可以给负载均衡分类的。大致可以分为以下几种，其中最常用的是四层和七层负载均衡：  
@@ -60,7 +61,6 @@ https://mp.weixin.qq.com/s/HRfHQm1ihSEs6VFzxoC4rQ
 &emsp; **七层负载均衡：**七层负载均衡工作在OSI模型的应用层，应用层协议较多，常用http、radius、DNS等。七层负载就可以基于这些协议来负载。这些应用层协议中会包含很多有意义的内容。比如同一个Web服务器的负载均衡，除了根据IP加端口进行负载外，还可根据七层的URL、浏览器类别、语言来决定是否要进行负载均衡。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/load-2.png)  
 &emsp; 对于一般的应用来说，有了Nginx就够了。Nginx可以用于七层负载均衡。但是对于一些大的网站，一般会采用DNS+四层负载+七层负载的方式进行多层次负载均衡。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/load-3.png)  
 
 <!-- 
 七层负载均衡
@@ -82,3 +82,9 @@ https://mp.weixin.qq.com/s/HRfHQm1ihSEs6VFzxoC4rQ
 
 ## 1.5. 常用负载均衡工具
 &emsp; 常用的软件负载均衡软件有[Nginx](/docs/system/loadBalance/Nginx/nginx.md)、[LVS](/docs/system/loadBalance/LVS.md)、HaProxy等。  
+
+## 1.6. ★★★负载均衡方案选择  
+&emsp; 小于3000万pv的，DNS轮询+监控；
+&emsp; 3000万以上的，nginx+监控；
+&emsp; 5000万PV的，HAProxy+Keepalived,nginx，HAPROXY负责TCP的负载均衡，nginx负责7层调度；
+&emsp; 1亿以上的，LVS-DR+keepalived,nginx，LVS-DR负责TCP的负载均衡，nginx负责7层调度。

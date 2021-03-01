@@ -13,6 +13,11 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **LVS是四层(传输层)负载均衡，LVS支持TCP/UDP的负载均衡。**  
+&emsp; LVS 的转发主要通过修改 IP 地址(NAT 模式，分为源地址修改SNAT和目标地址修改 DNAT)、修改目标 MAC(DR 模式)来实现。  
+
+
 # 1. LVS
 <!-- 
 超详细！一文带你了解 LVS 负载均衡集群！
@@ -25,7 +30,7 @@ https://blog.csdn.net/ghost_leader/article/details/55827729
 &emsp; LVS是Linux Virtual Server的简写，意即Linux虚拟服务器，是一个虚拟的服务器集群系统。  
 
 ## 1.1. LVS 的组成  
-&emsp; LVS由两部分程序组成，包括ipvs和ipvsadm。  
+&emsp; **LVS由两部分程序组成，包括ipvs和ipvsadm。**  
 1. ipvs(ip virtual server)：LVS 是基于内核态的netfilter框架实现的IPVS功能，工作在内核态。用户配置VIP等相关信息并传递到IPVS就需要用到ipvsadm工具。  
 2. ipvsadm：ipvsadm 是 LVS 用户态的配套工具，可以实现VIP和RS的增删改查功能，是基于 netlink 或 raw socket 方式与内核 LVS 进行通信的，如果LVS类比于netfilter，那 ipvsadm就是类似iptables工具的地位。  
 
@@ -39,7 +44,7 @@ linux内核2.4版本以上的基本都支持LVS，要使用lvs，只需要再安
     yum install ipvsadm
 
 
-&emsp; ipvsadm组件定义规则的格式：  
+&emsp; &emsp; ipvsadm组件定义规则的格式：  
 
 ```text
 #virtual-service-address:是指虚拟服务器的ip 地址
@@ -124,8 +129,8 @@ https://blog.csdn.net/qq_37165604/article/details/79802390
 https://www.cnblogs.com/lixigang/p/5371815.html
 https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 -->
-&emsp; LVS是四层(传输层)负载均衡，LVS支持TCP/UDP的负载均衡。  
-&emsp; LVS 的转发主要通过修改 IP 地址(NAT 模式，分为源地址修改SNAT和目标地址修改 DNAT)、修改目标 MAC(DR 模式)来实现。  
+&emsp; **LVS是四层(传输层)负载均衡，LVS支持TCP/UDP的负载均衡。**  
+&emsp; LVS 的转发主要通过修改IP地址(NAT模式，分为源地址修改SNAT和目标地址修改DNAT)、修改目标MAC(DR模式)来实现。  
 
 ### 1.4.1. NAT(网络地址转换)  
 &emsp; NAT(Network Address Translation)是一种外网和内网地址映射的技术。  
