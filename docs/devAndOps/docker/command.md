@@ -11,7 +11,7 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "clime">小结：</font>**  
+&emsp; **<font color = "clime">总结：</font>**  
 &emsp; **<font color = "red">镜像操作常用命令：pull、images、inspect、rmi、commit</font>**  
 &emsp; **<font color = "red">容器操作常用命令：run、start、stop、exec</font>**  
 
@@ -59,11 +59,11 @@ https://docs.docker.com/config/daemon/
 * 查看镜像历史：  
 &emsp; docker history centos:7  
 * 删除镜像：  
-&emsp; A:使用标签删除：docker rmi centos  
-&emsp; B:使用ID删除：docker rimi
+    * 使用标签删除：docker rmi centos  
+    * 使用ID删除：docker rimi
 * 构建镜像：    
-&emsp; A:使用docker commit命令  
-&emsp; B:使用Dockerfile构建
+    * 使用docker commit命令  
+    * 使用Dockerfile构建
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-8.png)  
 

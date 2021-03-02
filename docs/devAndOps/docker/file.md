@@ -11,7 +11,16 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">Dockerfile中包含：基础镜像(FROM)、镜像元信息、镜像操作指令(RUN、COPY、ADD、EXPOSE、WORKDIR、ONBUILD、USER、VOLUME等)和容器启动时执行指令(CMD、ENTRYPOINT)，# 为 Dockerfile中的注释。</font>**  
+&emsp; **<font color = "red">总结：</font>**  
+一般来说， **<font color = "clime">完成应用的容器化过程主要分为以下几个步骤：</font>**  
+
+1. 编写应用代码；
+2. 创建一个Dockerfile，其中包括当前应用的描述、依赖以及该如何运行这个应用；
+3. 对该Dockerfile执行docker image build命令
+4. 等待Docker将应用程序和依赖等构建到Docker镜像中。
+
+
+&emsp; **<font color = "clime">Dockerfile中包含：基础镜像(FROM)、镜像元信息、镜像操作指令(RUN、COPY、ADD、EXPOSE、WORKDIR、ONBUILD、USER、VOLUME等)和容器启动时执行指令(CMD、ENTRYPOINT)，# 为 Dockerfile中的注释。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-9.png)  
 
 # 1. DockerFile
@@ -57,7 +66,7 @@ Unpacking JAR files...
 镜像的定制实际上就是定制每一层所添加的配置、文件。我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，这个脚本就是Dockerfile。  
 Dockerfile是一个文本文件，其内包含了一条条的指令，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。 
 -->
-&emsp; 将应用整合到容器中并且运行起来的这个过程，称为“容器化”(Containerizing )。一般来说，完成应用的容器化过程主要分为以下几个步骤：  
+&emsp; 将应用整合到容器中并且运行起来的这个过程，称为“容器化”(Containerizing )。一般来说， **<font color = "clime">完成应用的容器化过程主要分为以下几个步骤：</font>**  
 
 1. 编写应用代码；
 2. 创建一个Dockerfile，其中包括当前应用的描述、依赖以及该如何运行这个应用；
