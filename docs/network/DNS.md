@@ -4,18 +4,29 @@
 - [1. DNS](#1-dns)
     - [1.1. DNS域名的层次结构](#11-dns域名的层次结构)
     - [1.2. 域名服务器](#12-域名服务器)
-    - [1.3. ※※※DNS解析流程](#13-※※※dns解析流程)
+    - [1.3. ★★★DNS解析流程](#13-★★★dns解析流程)
 
 <!-- /TOC -->
 
-<!-- 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "clime">DNS解析流程：</font>** (前两步都是在本机上完成的，从第三步开始，才向远程DNS服务器发起解析域名的请求)    
+1. <font color = "red">检查浏览器缓存中是否缓存过该域名对应的IP地址。</font>  
+2. <font color = "red">如果在浏览器缓存中没有找到IP，那么将继续查找本机系统是否缓存过IP。</font>  
+3. <font color = "red">向本地域名解析服务系统发起域名解析的请求。</font>  
+4. <font color = "red">本地域名解析服务器向根域名解析服务器发起域名解析请求。</font> 此时，DNS涉及两种查询方式：一种是递归查询(Recursive query) ，一种是迭代查询(Iteration query)。</font>递归查询和迭代查询的区别：    
+	* 如果根域名服务器无法告知本地 DNS 服务器下一步需要访问哪个顶级域名服务器，就会使用递归查询；
+	* 如果根域名服务器能够告知 DNS 服务器下一步需要访问的顶级域名服务器，就会使用迭代查询。   
+5.  <font color = "red">返回解析结果给用户。</font>  
+
+
+# 1. DNS  
+<!--
+Linux下DNS服务关于单区域,子域授权,轮询,泛域名的使用方法
 https://blog.csdn.net/ck784101777/article/details/97152814?utm_medium=distribute.wap_relevant.none-task-blog-title-10
 
 泛域名解析
 https://m.baike.so.com/doc/5750133-5962891.html
 -->
-
-# 1. DNS  
 &emsp; 访问网站的时候会输入域名，而<font color = "red">在真实网络中主机通信是通过IP地址进行通信的</font>。  
 &emsp; DNS，英文全写为Domain Name System，中文意思为域名系统，是互联网中提供域名与IP地址互相映射的分布式数据库。DNS运行在UDP上，使用53端口。  
 
@@ -34,10 +45,10 @@ https://m.baike.so.com/doc/5750133-5962891.html
 
 ## 1.2. 域名服务器
 &emsp; 域名服务器的层次结构主要是以上域名层次树状结构。  
-1. 除此之外，还有另一类重要的DNS服务器，它是 本地 DNS 服务器(local DNS server)。严格来说，本地 DNS 服务器并不属于上述层次结构，但是本地 DNS 服务器又是至关重要的。每个 ISP(Internet Service Provider) 比如居民区的 ISP 或者一个机构的 ISP 都有一台本地 DNS 服务器。当主机和 ISP 进行连接时，该 ISP 会提供一台主机的 IP 地址，该主机会具有一台或多台其本地 DNS 服务器的 IP地址。通过访问网络连接，用户能够容易的确定 DNS 服务器的 IP地址。当主机发出 DNS 请求后，该请求被发往本地 DNS 服务器，它起着代理的作用，并将该请求转发到 DNS 服务器层次系统中。  
-2. 除了域名服务器之外，DNS也有本地缓存：计算机会将解析到的域名和 IP 地址等缓存到本地上，windows 可以通过 ipconfig /displaydns 查看。  
+1. 除此之外，还有另一类重要的DNS服务器，它是 本地 DNS 服务器(local DNS server)。严格来说，本地 DNS 服务器并不属于上述层次结构，但是本地 DNS 服务器又是至关重要的。每个 ISP(Internet Service Provider) 比如居民区的 ISP 或者一个机构的 ISP 都有一台本地 DNS 服务器。当主机和 ISP 进行连接时，该 ISP 会提供一台主机的 IP 地址，该主机会具有一台或多台其本地 DNS 服务器的 IP地址。通过访问网络连接，用户能够容易的确定DNS服务器的IP地址。当主机发出 DNS请求后，该请求被发往本地DNS服务器，它起着代理的作用，并将该请求转发到DNS服务器层次系统中。  
+2. 除了域名服务器之外，DNS也有本地缓存：计算机会将解析到的域名和IP地址等缓存到本地上，windows可以通过ipconfig /displaydns查看。  
 
-## 1.3. ※※※DNS解析流程   
+## 1.3. ★★★DNS解析流程   
 &emsp; 当用户在地址栏键入www.baidu.com 并敲下回车键之后，域名解析就开始了。  
 1. <font color = "red">检查浏览器缓存中是否缓存过该域名对应的IP地址。</font>  
 &emsp; 用户通过浏览器浏览过某网站之后，浏览器就会自动缓存该网站域名对应的IP地址，当用户再次访问的时候，浏览器就会从缓存中查找该域名对应的IP地址，因为缓存不仅是有大小限制，而且还有时间限制(域名被缓存的时间通过TTL属性来设置)，所以存在域名对应的IP找不到的情况。当浏览器从缓存中找到了该网站域名对应的IP地址，那么整个DNS解析过程结束，如果没有找到，将进行下一步骤。  
