@@ -96,6 +96,7 @@
     * [线程Thread](/docs/java/concurrent/thread.md)  
         * [线程基本知识](/docs/java/concurrent/threadConcepts.md)  
         * [线程基本操作](/docs/java/concurrent/threadOperation.md)  
+        * [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
         * [Thread类详解](/docs/java/concurrent/threadClass.md)  
     * [并发编程](/docs/java/concurrent/MultiThread.md)  
         * [JMM](/docs/java/concurrent/JMM.md)  
@@ -124,7 +125,6 @@
         * [ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)  
         * [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
         * [tools](/docs/java/concurrent/tools.md)
-    * [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
     * [并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
     * [多线程处理大数据量](/docs/java/concurrent/bigData.md)  
 * 数据库  
