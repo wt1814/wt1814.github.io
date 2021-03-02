@@ -20,26 +20,27 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "clime">总结：</font>**
+&emsp; **<font color = "clime">grep是一款强大的文本搜索工具，支持正则表达式。</font>**    
+&emsp; **<font color = "clime">sed是一种流编辑器(增、删、改、查)，是一款处理文本比较优秀的工具，可以结合正则表达式一起使用。</font>**  
+
 
 # 1. Linux文本处理  
 <!--
- 五分钟入门文本处理三剑客grep awk sed 
- https://mp.weixin.qq.com/s/_s0xIVsB6Zz0PYrgeBurxw
-
+五分钟入门文本处理三剑客grep awk sed 
+https://mp.weixin.qq.com/s/_s0xIVsB6Zz0PYrgeBurxw
 Shell文本处理三剑客：grep、sed、awk 
 https://mp.weixin.qq.com/s/2qLACYURVLEvWmobOG36fQ
-
- 史上最全的 Linux Shell 文本处理工具集锦，快收藏！ 
- https://mp.weixin.qq.com/s/5rUZKKdjvPWGJEvptYjp_Q
-
+史上最全的 Linux Shell 文本处理工具集锦，快收藏！ 
+https://mp.weixin.qq.com/s/5rUZKKdjvPWGJEvptYjp_Q
+Linux 三剑客之 grep 教程详解 
+https://mp.weixin.qq.com/s/vYmOk2fWRHu6HQWPSt1XAg
 -->
 &emsp; grep、sed、awk是Linux处理文本常用的命令。  
 
 ## 1.1. grep  
-
-
 ### 1.1.1. 简介  
-&emsp; <font color = "lime">grep是一款强大的文本搜索工具，支持正则表达式。</font>    
+&emsp; <font color = "clime">grep是一款强大的文本搜索工具，支持正则表达式。</font>    
 &emsp; 全称（ global search regular expression(RE) and print out the line）  
 &emsp; 语法：grep \[option]... PATTERN \[FILE]...  
 &emsp; 常用：  
@@ -172,19 +173,13 @@ Just before they reach the moon,the oldest monkey raises his head and happens to
 ```
 
 ## 1.2. sed  
+&emsp; **<font color = "clime">sed是一种流编辑器，是一款处理文本比较优秀的工具，可以结合正则表达式一起使用。</font>**  
+&emsp; **sed执行过程：**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/linux/linux-4.png)   
 
-sed是一种流编辑器，是一款处理文本比较优秀的工具，可以结合正则表达式一起使用。  
-
-**sed执行过程**  
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Linux/linux-4.png)   
-
-**sed命令**  
-命令: sed  
-
-语法 :  sed \[选项]... {命令集} \[输入文件]...  
-
-常用命令:  
+&emsp; **sed命令**  
+&emsp; 语法 :  sed \[选项]... {命令集} \[输入文件]...  
+&emsp; 常用命令:  
 
 ```text
     d  删除选择的行    
@@ -195,7 +190,7 @@ sed是一种流编辑器，是一款处理文本比较优秀的工具，可以�
     p  打印行       
     q  退出     
 
-替换符:
+&emsp; 替换符:
 
     数字 ：替换第几处    
     g :  全局替换    
@@ -203,11 +198,11 @@ sed是一种流编辑器，是一款处理文本比较优秀的工具，可以�
     &:  保留搜索刀的字符用来替换其他字符
 ```
 
-操作:  
+&emsp; 操作:  
 
-**替换**  
+&emsp; **替换**  
 
-查看文件:  
+&emsp; 查看文件:  
 
 ```text
 ➜  happy cat word
@@ -218,8 +213,7 @@ Like a diamond in the sky
 When the blazing sun is gone
 ```
 
-
-替换：
+&emsp; 替换：
 
 ```text
 ➜  happy sed 's/little/big/' word
@@ -230,7 +224,7 @@ Like a diamond in the sky
 When the blazing sun is gone
 ```
 
-查看文本:  
+&emsp; 查看文本:  
 
 ```text
 ➜  happy cat word1
@@ -242,7 +236,7 @@ I know you'll always jump in
 'Cause we don't know how to quit
 ```
 
-全局替换:  
+&emsp; 全局替换:  
 
 ```text
 ➜  happy sed 's/to/can/g' word1
@@ -254,7 +248,7 @@ I know you'll always jump in
 'Cause we don't know how can quit
 ```
 
-按行替换（替换2到最后一行)  
+&emsp; 按行替换（替换2到最后一行)  
 
 ```text
 ➜  happy sed '2,$s/to/can/' word1
@@ -266,9 +260,9 @@ I know you'll always jump in
 'Cause we don't know how can quit
 ```
 
-**删除:**  
+&emsp; **删除:**  
 
-查看文本:  
+&emsp; 查看文本:  
 
 ```text
 ➜  happy cat word
@@ -279,7 +273,7 @@ Like a diamond in the sky
 When the blazing sun is gone
 ```
 
-删除:  
+&emsp; 删除:  
 
 ```text
 ➜  happy sed '2d' word
@@ -289,7 +283,7 @@ Like a diamond in the sky
 When the blazing sun is gone
 ```
 
-显示行号:  
+&emsp; 显示行号:  
 
 ```text
 ➜  happy sed '=;2d' word
@@ -304,7 +298,7 @@ Like a diamond in the sky
 When the blazing sun is gone
 ```
 
-删除第2行到第四行:  
+&emsp; 删除第2行到第四行:  
 
 ```text
 ➜  happy sed '=;2,4d' word
@@ -317,9 +311,9 @@ Twinkle, twinkle, little star
 When the blazing sun is gone
 ```
 
-**添加行：**  
+&emsp; **添加行：**  
 
-向前插入:  
+&emsp; 向前插入:  
 
 ```text
 ➜  happy echo "hello" | sed 'i\kitty'
@@ -327,7 +321,7 @@ kitty
 hello
 ```
 
-向后插入:  
+&emsp; 向后插入:  
 
 ```text
 ➜  happy echo "kitty" | sed 'i\hello'
@@ -335,9 +329,9 @@ hello
 kitty
 ```
 
-**修改行:**  
+&emsp; **修改行:**  
 
-替换第二行为hello kitty  
+&emsp; 替换第二行为hello kitty  
 
 ```text
 ➜  happy sed '2c\hello kitty' word
@@ -348,7 +342,7 @@ Like a diamond in the sky
 When the blazing sun is gone
 ```
 
-替换第二行到最后一行为hello kitty  
+&emsp; 替换第二行到最后一行为hello kitty  
 
 ```text
 ➜  happy sed '2,$c\hello kitty' word
@@ -356,8 +350,7 @@ Twinkle, twinkle, little star
 hello kitty
 ```
 
-
-**写入行**  
+&emsp; **写入行**  
 
 ```text
 把带star的行写入c文件中,c提前创建  
@@ -367,9 +360,9 @@ hello kitty
 Twinkle, twinkle, little star
 ```
 
-退出  
+&emsp; 退出  
 
-打印3行后，退出sed  
+&emsp; 打印3行后，退出sed  
 
 ```text
 ➜  happy sed '3q' word
@@ -380,7 +373,6 @@ Up above the world so high
 
 
 ## 1.3. awk
-
 &emsp; 比起sed和grep，awk不仅仅是一个小工具，也可以算得上一种小型的编程语言了，支持if判断分支和while循环语句还有它的内置函数等，是一个要比grep和sed更强大的文本处理工具，但也就意味着要学习的东西更多了。  
 
 ### 1.3.1. 语法  
@@ -393,8 +385,7 @@ Usage: awk [POSIX or GNU style options] [--] 'program' file ...
 ```
 
 ### 1.3.2. 域  
-
-&emsp; 类似数据库列的概念，但它是按照序号来指定的，比如第一个列就是1，第二列就是2，依此类推。$0就是输出整个文本的内容。默认用空格作为分隔符，当然你可以自己通过-F设置适合自己情况的分隔符。  
+&emsp; 类似数据库列的概念，但它是按照序号来指定的，比如第一个列就是1，第二列就是2，依此类推。$0就是输出整个文本的内容。默认用空格作为分隔符，当然可以自己通过-F设置适合自己情况的分隔符。  
 &emsp; 提前自己编了一段数据，学生以及学生成绩数据表。  
 
 |列数	|名称|	描述|
@@ -407,7 +398,7 @@ Usage: awk [POSIX or GNU style options] [--] 'program' file ...
 |6	|Sport	|体育|
 |8	|Grade	|班级|
 
-"Name  Math  Chinese  English History  Sport grade 输出整个文本   
+&emsp; "Name  Math  Chinese  English History  Sport grade 输出整个文本   
 
 ```text
 [root@iz2ze76ybn73dvwmdij06zz ~]# awk '{print $0}' students_store
@@ -417,7 +408,7 @@ kerwin          80    90   60    70   60  class-2
 Fengzheng       90    78    62   40   62  class-2
 ```
 
-输出第一列（姓名列)  
+&emsp; 输出第一列（姓名列)  
 
 ```text
 [root@iz2ze76ybn73dvwmdij06zz ~]# awk '{print $1}' students_store
@@ -431,25 +422,21 @@ Fengzheng
 
     awk '{[pattern] action}' {filenames}    
 
-**模式**  
-pattern 可以是  
+&emsp; **模式**  
+&emsp; pattern 可以是 条件语句、正则。  
 
-* 条件语句
-* 正则
-
-模式的两个特殊字段 BEGIN 和 END (不指定时匹配或打印行数)  
+&emsp; 模式的两个特殊字段 BEGIN 和 END (不指定时匹配或打印行数)  
 
 * BEGIN ：一般用来打印列名称。
 * END : 一般用来打印总结性质的字符。
 
-**动作**
+&emsp; **动作**
 
-action 在{}内指定，一般用来打印，也可以是一个代码段。  
+&emsp; action 在{}内指定，一般用来打印，也可以是一个代码段。  
 
+&emsp; **示例**  
 
-**示例**  
-
-给上面的文本加入标题头:  
+&emsp; 给上面的文本加入标题头:  
 
 ```text
 [root@iz2ze76ybn73dvwmdij06zz ~]#  awk 'BEGIN {print "Name     Math  Chinese  English History  Sport grade\n----------------------------------------------"} {print $0}' students_store
@@ -576,7 +563,6 @@ xman         -     -     -     -   -    class-3 php
 ```
 
 ### 1.3.5. 复合表达式  
-
 &emsp; && AND  
 &emsp; 查询数学成绩大于60并且语文成绩也大于60的童鞋。  
 
@@ -596,7 +582,7 @@ Fengzheng    90    78    62     40  62 class-2  java
 ```
 
 ### 1.3.6. printf格式化输出  
-&emsp; 除了能达到功能以外，一个好看的格式也是必不可少的，因此格式化的输出看起来会更舒服哦～  
+&emsp; 除了能达到功能以外，一个好看的格式也是必不可少的，因此格式化的输出看起来会更舒服。  
 &emsp; 语法  
 
     printf ([格式]，参数)
@@ -624,7 +610,7 @@ Fengzheng    90    78    62     40  62 class-2  java
 |%s	|字符串|
 |%g	|决定使用浮点转化e/f|
 
-**具体操作示例**  
+&emsp; **具体操作示例**  
 &emsp; ASCII码  
 
     [root@iz2ze76ybn73dvwmdij06zz ~]# echo "66" | awk '{printf "%c\n",$0}'
@@ -740,7 +726,3 @@ length
 
     [root@iz2ze76ybn73dvwmdij06zz ~]# ./printname.awk
     my name is 姓名
-
-
-  
-

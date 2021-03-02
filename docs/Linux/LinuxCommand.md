@@ -3,6 +3,7 @@
 <!-- TOC -->
 
 - [1. Linux命令](#1-linux命令)
+    - [命令行通配符](#命令行通配符)
     - [1.1. 文件管理](#11-文件管理)
     - [1.2. 文档编辑](#12-文档编辑)
     - [1.3. 文件传输](#13-文件传输)
@@ -14,14 +15,24 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; Linux常用命令：  
+1. 命令行通配符
+2. 文件管理：管道命令 |、重定向 >  
+3. 进程管理：free，查看内存使用状况、top，查看实时刷新的系统进程信息。  
+
+
 # 1. Linux命令  
+<!-- 
+
+-->
+
+## 命令行通配符  
+&emsp; shell提供了特殊字符来帮助快速指定一组文件名。这些特殊字符叫做通配符。  
 <!-- 
 Linux命令行通配符 
 https://www.cnblogs.com/tdcqma/p/5853020.html
-Linux 三剑客之 grep 教程详解 
-https://mp.weixin.qq.com/s/vYmOk2fWRHu6HQWPSt1XAg
 -->
-&emsp; shell提供了特殊字符来帮助快速指定一组文件名。这些特殊字符叫做通配符。  
 
 ## 1.1. 文件管理
 
@@ -42,8 +53,8 @@ https://mp.weixin.qq.com/s/vYmOk2fWRHu6HQWPSt1XAg
 * find，查找文件  
 * file/stat，查看文件类型或文件属性信息  
 * echo，把内容重定向到指定的文件中 ，有则打开，无则创建  
-* <font color = "lime">管道命令 |，将前面的结果给后面的命令，例如：\`ls -la | wc `，将ls的结果加油wc命令来统计字数</font>  
-* <font color = "lime">重定向， > 是覆盖模式，>> 是追加模式，例如：\`echo "Java3y,zhen de hen xihuan ni" > qingshu.txt `把左边的输出放到右边的文件里去</font>  
+* <font color = "clime">管道命令 |，将前面的结果给后面的命令，例如：\`ls -la | wc `，将ls的结果加油wc命令来统计字数</font>  
+* <font color = "clime">重定向， > 是覆盖模式，>> 是追加模式，例如：\`echo "Java3y,zhen de hen xihuan ni" > qingshu.txt `把左边的输出放到右边的文件里去</font>  
 
 &emsp; 查看文件  
 
@@ -150,8 +161,8 @@ https://mp.weixin.qq.com/s?__biz=MzU3NTgyODQ1Nw==&mid=2247487056&idx=2&sn=d84364
 * ps，查找出进程的信息
 * nice和renice，调整进程的优先级
 * kill，杀死进程
-* <font color = "lime">free，查看内存使用状况</font>
-* <font color = "lime">top，查看实时刷新的系统进程信息</font>
+* <font color = "clime">free，查看内存使用状况</font>
+* <font color = "clime">top，查看实时刷新的系统进程信息</font>
 * 作业管理  
 	* jobs，列举作业号码和名称
 	* bg，在后台恢复运行
