@@ -8,7 +8,7 @@
         - [1.1.2. 休眠和销毁](#112-休眠和销毁)
         - [1.1.3. 重启策略](#113-重启策略)
     - [1.2. 容器隔离原理](#12-容器隔离原理)
-        - [1.2.1. Namespaces](#121-namespaces)
+        - [1.2.1. Namespaces，命名空间](#121-namespaces命名空间)
         - [1.2.2. CGroups](#122-cgroups)
     - [1.3. 容器的文件系统](#13-容器的文件系统)
     - [1.4. 数据卷(Volume)](#14-数据卷volume)
@@ -29,8 +29,8 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "red">小结：</font>**  
-&emsp; 单个宿主机的多个容器是隔离的，其依赖于Linux的Namespaces、CGroups，隔离的容器需要通信、文件共享(数据持久化)。  
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "clime">单个宿主机的多个容器是隔离的，其依赖于Linux的Namespaces、CGroups，隔离的容器需要通信、文件共享(数据持久化)。</font>**  
 
 # 1. 容器详解  
 <!-- 
@@ -43,37 +43,37 @@ https://docs.docker.com/config/containers/start-containers-automatically/
 
 ## 1.1. 容器生命周期  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-4.png)  
-&emsp; <font color = "lime">容器的生命周期大致可分为 4 个：创建、运行、休眠和销毁。</font>  
+&emsp; <font color = "lime">容器的生命周期大致可分为4个：创建、运行、休眠和销毁。</font>  
 
 ### 1.1.1. 创建和运行
-&emsp; 容器的创建和运行主要使用 docker container run 命名，比如下面的命令会从 Ubuntu:latest 这个镜像中启动 /bin/bash 这个程序。那么 /bin/bash 成为了容器中唯一运行的进程。  
+&emsp; 容器的创建和运行主要使用docker container run命名，比如下面的命令会从Ubuntu:latest这个镜像中启动/bin/bash这个程序。那么/bin/bash成为了容器中唯一运行的进程。  
 
     docker container run -it ubuntu:latest /bin/bash
 
-&emsp; 当运行上述的命令之后，Docker 客户端会选择合适的 API 来调用 Docker daemon 接收到命令并搜索 Docker 本地缓存，观察是否有命令所请求的镜像。如果没有，就去查询 Docker Hub 是否存在相应镜像。找到镜像后，就将其拉取到本地，并存储在本地。一旦镜像拉取到本地之后，Docker daemon 就会创建容器并在其中运行指定应用。  
+&emsp; 当运行上述的命令之后，Docker客户端会选择合适的API来调用Docker daemon接收到命令并搜索Docker本地缓存，观察是否有命令所请求的镜像。如果没有，就去查询Docker Hub是否存在相应镜像。找到镜像后，就将其拉取到本地，并存储在本地。一旦镜像拉取到本地之后，Docker daemon就会创建容器并在其中运行指定应用。  
 
-&emsp; ps -elf命令可以看到会显示两个，那么其中一个是运行ps -elf 产生的。  
+&emsp; ps -elf命令可以看到会显示两个，那么其中一个是运行ps -elf产生的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-22.png)  
 
 &emsp; 假如，此时输入exit退出Bash Shell之后，那么容器也会退出(休眠)。因为容器如果不运行任何进程则无法存在，上面将容器的唯一进程杀死之后，容器也就没了。其实，当把进程的PID为1的进程杀死就会杀死容器。  
 
 ### 1.1.2. 休眠和销毁
-&emsp; docker container stop命令可以让容器进入休眠状态，使用docker container rm可以删除容器。删除容器的最佳方式就是先停止容器，然后再删除容器，这样可以给容器中运行的应用/进程一个停止运行并清理残留数据的机会。因为先stop的话，docker container stop命令会像容器内的PID 1进程发送 SIGTERM 信号，这样会给进程预留一个清理并优雅停止的机会。如果进程在10s的时间内没有终止，那么会发送SIGKILL信号强制停止该容器。但是docker container rm命令不会友好地发送 SIGTERM，而是直接发送SIGKILL信号。
+&emsp; docker container stop命令可以让容器进入休眠状态，使用docker container rm可以删除容器。删除容器的最佳方式就是先停止容器，然后再删除容器，这样可以给容器中运行的应用/进程一个停止运行并清理残留数据的机会。因为先stop的话，docker container stop命令会像容器内的PID 1进程发送SIGTERM信号，这样会给进程预留一个清理并优雅停止的机会。如果进程在10s的时间内没有终止，那么会发送SIGKILL信号强制停止该容器。但是docker container rm命令不会友好地发送 SIGTERM，而是直接发送SIGKILL信号。  
 
 ### 1.1.3. 重启策略
-&emsp; 容器还可以配置重启策略，这是容器的一种自我修复能力，可以在指定事件或者错误后重启来完成自我修复。配置重启策略有两种方式，一种是命令中直接传入参数，另一种是在 Compose 文件中声明。下面阐述命令中传入参数的方式，也就是在命令中加入 --restart 标志，该标志会检查容器的退出代码，并根据退出码已经重启策略来决定。Docker 支持的重启策略包括 always、unless-stopped 和 on-failed 四种。
+&emsp; 容器还可以配置重启策略，这是容器的一种自我修复能力，可以在指定事件或者错误后重启来完成自我修复。配置重启策略有两种方式，一种是命令中直接传入参数，另一种是在Compose文件中声明。下面阐述命令中传入参数的方式，也就是在命令中加入--restart标志，该标志会检查容器的退出代码，并根据退出码已经重启策略来决定。Docker 支持的重启策略包括 always、unless-stopped 和 on-failed 四种。
 
 * always策略会一直尝试重启处于停止状态的容器，除非通过docker container stop命令明确将容器停止。另外，当daemon重启的时候，被docker container stop停止的设置了 always策略的容器也会被重启。
 
         $ docker container run --it --restart always apline sh 
         # 过几秒之后，在终端中输入 exit，过几秒之后再来看一下。照理来说应该会处于stop状态，但是会发现又处于运行状态了。
 
-* unless-stopped 策略和 always 策略是差不多的，最大的区别是，docker container stop停止的容器在daemon重启之后不会被重启。
-* on-failure 策略会在退出容器并且返回值不会 0 的时候，重启容器。如果容器处于 stopped 状态，那么 daemon 重启的时候也会被重启。另外，on-failure 还接受一个可选的重启次数参数，如--restart=on-failure:5 表示最多重启 5 次。
+* unless-stopped策略和always策略是差不多的，最大的区别是，docker container stop停止的容器在daemon重启之后不会被重启。
+* on-failure策略会在退出容器并且返回值不会0的时候，重启容器。如果容器处于stopped状态，那么daemon重启的时候也会被重启。另外，on-failure还接受一个可选的重启次数参数，如--restart=on-failure:5表示最多重启5次。
 
 ## 1.2. 容器隔离原理  
-### 1.2.1. Namespaces  
-&emsp; <font color = "lime">命名空间(namespaces)是 Linux 提供的用于分离进程树、网络接口、挂载点以及进程间通信等资源的方法。</font>在日常使用 Linux 或者 macOS 时，并没有运行多个完全分离的服务器的需要，但是如果在服务器上启动了多个服务，这些服务其实会相互影响的，每一个服务都能看到其他服务的进程，也可以访问宿主机器上的任意文件，这是很多时候不愿意看到的，更希望运行在同一台机器上的不同服务能做到完全隔离，就像运行在多台不同的机器上一样。 
+### 1.2.1. Namespaces，命名空间  
+&emsp; <font color = "lime">命名空间(namespaces)是Linux提供的用于分离进程树、网络接口、挂载点以及进程间通信等资源的方法。</font>在日常使用Linux或者macOS时，并没有运行多个完全分离的服务器的需要，但是如果在服务器上启动了多个服务，这些服务其实会相互影响的，每一个服务都能看到其他服务的进程，也可以访问宿主机器上的任意文件，这是很多时候不愿意看到的，更希望运行在同一台机器上的不同服务能做到完全隔离，就像运行在多台不同的机器上一样。 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-34.png)  
 &emsp; 在这种情况下，一旦服务器上的某一个服务被入侵，那么入侵者就能够访问当前机器上的所有服务和文件，这也是不想看到的，而 Docker 其实就通过 Linux 的 Namespaces 对不同的容器实现了隔离。  
 &emsp; Linux 的命名空间机制提供了以下七种不同的命名空间，包括 CLONE_NEWCGROUP、CLONE_NEWIPC、CLONE_NEWNET、CLONE_NEWNS、CLONE_NEWPID、CLONE_NEWUSER 和 CLONE_NEWUTS，通过这七个选项能在创建新的进程时设置新进程应该在哪些资源上与宿主机器进行隔离。  
