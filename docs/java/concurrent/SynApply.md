@@ -54,7 +54,7 @@ https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 ## 1.2. Synchronized使用  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-11.png)  
 
-&emsp; Synchronized可以使用在普通方法、静态方法、同步块中。Synchronized使用在同步块中，锁粒度更小。根据锁的具体实例，又可以分为类锁和对象锁。  
+&emsp; Synchronized可以使用在普通方法、静态方法、同步块中。**<font color = "clime">Synchronized作用的对象应该是唯一的。</font>**Synchronized使用在同步块中，锁粒度更小。根据锁的具体实例，又可以分为类锁和对象锁。  
 &emsp; 关键字Synchronized取得的锁都是对象锁，而不是把一段代码或方法(函数)当作锁。  
 <!-- 
 锁非this对象具有一定的优点：如果在一个类中有很多个Synchronized方法，这时虽然能实现同步，但会受到阻塞，所以影响运行效率；但如果使用同步代码块锁非this对象，则Synchronized(非this)代码块中的程序与同步方法是异步的，不与其他锁this同步方法争抢this锁，则可 大大提高运行效率。  

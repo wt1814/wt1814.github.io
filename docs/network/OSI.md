@@ -1,5 +1,7 @@
 
 
+
+# 1. OSI七层网络模型  
 <!-- 
 三天两夜肝完这篇万字长文，终于拿下了TCP/IP 
 https://mp.weixin.qq.com/s/-_wgv7Ipo4Ke3-gtlYcoIg
@@ -7,13 +9,12 @@ https://mp.weixin.qq.com/s/-_wgv7Ipo4Ke3-gtlYcoIg
 https://mp.weixin.qq.com/s/8u0GTnLkj7pP_Lh67Z1UGQ
 一文讲懂什么是vlan、三层交换机、网关、DNS、子网掩码、MAC地址 
 https://mp.weixin.qq.com/s/KM-mWwd5TivJScBVCQyEBQ
-
 如何系统学习计算机网络？ 
 https://mp.weixin.qq.com/s/wL5YI5TZXl1zRY8qS--awQ
 -->
 
-# 1. OSI七层网络模型  
-&emsp; 为了使不同计算机厂家生产的计算机能够相互通信，以便在更大的范围内建立计算机网络，国际标准化组织（ISO）在1978年提出了“开放系统互联参考模型”，即著名的OSI/RM模型（Open System Interconnection/Reference Model）。  
+
+&emsp; 为了使不同计算机厂家生产的计算机能够相互通信，以便在更大的范围内建立计算机网络，国际标准化组织(ISO)在1978年提出了“开放系统互联参考模型”，即著名的OSI/RM模型(Open System Interconnection/Reference Model)。  
 &emsp; 除了标准的OSI七层模型以外，常见的网络层次划分还有TCP/IP四层协议以及TCP/IP五层协议，它们之间的对应关系如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/osi-1.png)  
 
