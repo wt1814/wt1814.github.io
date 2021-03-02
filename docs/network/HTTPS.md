@@ -20,14 +20,14 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">小结：</font>**  
-&emsp; HTTPS的整体过程分为证书验证和数据传输阶段。  
+&emsp; **<font color = "clime">HTTPS的整体过程分为证书验证和数据传输阶段。</font>**  
 &emsp; 1. 证书验证阶段，一次交互，客户端发送请求，获取到服务端的证书，并进行校验。  
 &emsp; 2. 数据传输阶段，首先采取非对称加密，客户端用公钥对随机数进行加密和传输；服务端用私钥解密随机数，获取到随机数，完成连接。  
 &emsp; 3. 完成连接后，采用对称加密进行数据传输。  
 
 
 # 1. HTTPS  
-&emsp; HTTPS (Secure Hypertext Transfer Protocol)安全超文本传输协议，是一个安全通信通道，它基于HTTP开发用于在客户计算机和服务器之间交换信息。它使用安全套接字层(SSL)进行信息交换，简单来说它是HTTP的安全版，是使用TLS/SSL加密的HTTP协议。HTTP协议采用明文传输信息，存在信息窃听、信息篡改和信息劫持的风险，而协议TLS/SSL具有身份验证、信息加密和完整性校验的功能，可以避免此类问题发生。  
+&emsp; HTTPS(Secure Hypertext Transfer Protocol)安全超文本传输协议，是一个安全通信通道，它基于HTTP开发用于在客户计算机和服务器之间交换信息。它使用安全套接字层(SSL)进行信息交换，简单来说它是HTTP的安全版，是使用TLS/SSL加密的HTTP协议。HTTP协议采用明文传输信息，存在信息窃听、信息篡改和信息劫持的风险，而协议TLS/SSL具有身份验证、信息加密和完整性校验的功能，可以避免此类问题发生。  
 
 <!-- 
 主要有三个原因：
@@ -37,6 +37,7 @@
 -->
 
 ---
+
 ## 1.1. SSL/TLS  
 &emsp; SSL(Secure Sockets Layer安全套接层)，及其继任者传输层安全(Transport Layer Security，TLS)是为网络通信提供安全及数据完整性的一种安全协议。TLS/SSL在传输层与应用层之间对网络连接进行加密。  
 &emsp; **<font color = "red">TLS/SSL是介于TCP和HTTP之间的一层安全协议，</font>** 不影响原有的TCP协议和HTTP协议，所以使用HTTPS基本上不需要对HTTP页面进行太多的改造。  
@@ -121,4 +122,3 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 1. http是超文本传输协议，信息是明文传输；https则是具有安全性的ssl加密传输协议。  
 2. https协议需要CA证书。  
 3. http和https使用的是完全不同的连接方式，用的端口也不一样，前者是80，后者是443。  
-
