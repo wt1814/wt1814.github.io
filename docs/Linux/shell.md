@@ -8,20 +8,20 @@
     - [1.3. Shell脚本语法](#13-shell脚本语法)
         - [1.3.1. Shell变量](#131-shell变量)
         - [1.3.2. Shell注释](#132-shell注释)
-        - [1.3.3. Shell向脚本传递参数](#133-shell向脚本传递参数)
-        - [1.3.4. Shell基本运算符](#134-shell基本运算符)
-        - [1.3.5. Shell流程控制语句](#135-shell流程控制语句)
-        - [1.3.6. Shell函数](#136-shell函数)
-        - [1.3.9. Shell中的一些命令](#139-shell中的一些命令)
-            - [1.3.9.1. echo命令](#1391-echo命令)
-            - [1.3.9.2. printf命令](#1392-printf命令)
-            - [1.3.9.3. test命令](#1393-test命令)
-        - [1.3.7. Shell输入/输出重定向](#137-shell输入输出重定向)
-        - [1.3.8. Shell文件包含外部脚本](#138-shell文件包含外部脚本)
+        - [1.3.3. Shell基本运算符](#133-shell基本运算符)
+        - [1.3.4. Shell流程控制语句](#134-shell流程控制语句)
+        - [1.3.5. Shell函数](#135-shell函数)
+        - [1.3.6. Shell中的一些命令](#136-shell中的一些命令)
+            - [1.3.6.1. echo命令](#1361-echo命令)
+            - [1.3.6.2. printf命令](#1362-printf命令)
+            - [1.3.6.3. test命令](#1363-test命令)
+        - [1.3.7. Shell向脚本传递参数](#137-shell向脚本传递参数)
+        - [1.3.8. Shell输入/输出重定向](#138-shell输入输出重定向)
+        - [1.3.9. Shell文件包含外部脚本](#139-shell文件包含外部脚本)
 
 <!-- /TOC -->
 
-shell编程：变量、函数、命令、向脚本传递参数......
+&emsp; Shell编程：变量、函数、命令、向脚本传递参数......  
 
 # 1. Shell编程  
 
@@ -107,36 +107,10 @@ https://www.runoob.com/linux/linux-shell-variable.html
 * 单行注释使用#
 * 多行注释使用：<\<EOF 注释内容 EOF
 
-### 1.3.3. Shell向脚本传递参数  
-&emsp; 可以在执行 Shell脚本时，向脚本传递参数，脚本内获取参数的格式为：$n。n 代表一个数字，1 为执行脚本的第一个参数，2 为执行脚本的第二个参数，以此类推……  
-
-<!-- 
-https://www.runoob.com/linux/linux-shell-passing-arguments.html
--->
-
-&emsp; **实例**  
-&emsp; 以下实例向脚本传递三个参数，并分别输出，其中 $0 为执行的文件名（包含文件路径）：  
-
-    #!/bin/bash
-
-    echo "Shell 传递参数实例！";
-    echo "执行的文件名：$0";
-    echo "第一个参数为：$1";
-    echo "第二个参数为：$2";
-    echo "第三个参数为：$3";
-
-&emsp; 为脚本设置可执行权限，并执行脚本，输出结果如下所示：  
-
-    $ chmod +x test.sh 
-    $ ./test.sh 1 2 3
-    Shell 传递参数实例！
-    执行的文件名：./test.sh
-    第一个参数为：1
-    第二个参数为：2
-    第三个参数为：3
 
 
-### 1.3.4. Shell基本运算符
+
+### 1.3.3. Shell基本运算符
 
 &emsp; Shell 和其他编程语言一样，支持多种运算符，包括：  
 
@@ -150,7 +124,7 @@ https://www.runoob.com/linux/linux-shell-passing-arguments.html
 &emsp; expr是一款表达式计算工具，使用它能完成表达式的求值操作。  
 
 
-### 1.3.5. Shell流程控制语句  
+### 1.3.4. Shell流程控制语句  
 
 &emsp; if else、for 循环 、while 语句......  
 
@@ -177,7 +151,7 @@ https://www.runoob.com/linux/linux-shell-passing-arguments.html
     done
 
 
-### 1.3.6. Shell函数
+### 1.3.5. Shell函数
 
 &emsp; linux shell 可以用户定义函数，然后在shell脚本中可以随便调用。  
 
@@ -212,13 +186,13 @@ https://www.runoob.com/linux/linux-shell-passing-arguments.html
 
 &emsp; 注意，$10不能获取第十个参数，获取第十个参数需要${10}。当n>=10时，需要使用${n}来获取参数。  
 
-### 1.3.9. Shell中的一些命令  
-#### 1.3.9.1. echo命令  
+### 1.3.6. Shell中的一些命令  
+#### 1.3.6.1. echo命令  
 &emsp; Shell的echo指令用于字符串的输出。命令格式：
 
     echo string
 
-#### 1.3.9.2. printf命令  
+#### 1.3.6.2. printf命令  
 &emsp; Shell的另一个输出命令printf。  
 &emsp; printf使用引用文本或空格分隔的参数，外面可以在printf中使用格式化字符串，还可以制定字符串的宽度、左右对齐方式等。默认printf不会像echo自动添加换行符，可以手动添加 \n。  
 
@@ -232,16 +206,45 @@ https://www.runoob.com/linux/linux-shell-passing-arguments.html
     arguments: 为参数列表。
 
 
-#### 1.3.9.3. test命令  
+#### 1.3.6.3. test命令  
 &emsp; Shell中的test命令用于检查某个条件是否成立，它可以进行数值、字符和文件三个方面的测试。  
 
 
+
+### 1.3.7. Shell向脚本传递参数  
+&emsp; 可以在执行 Shell脚本时，向脚本传递参数，脚本内获取参数的格式为：$n。n 代表一个数字，1 为执行脚本的第一个参数，2 为执行脚本的第二个参数，以此类推……  
+
+<!-- 
+https://www.runoob.com/linux/linux-shell-passing-arguments.html
+-->
+
+&emsp; **实例**  
+&emsp; 以下实例向脚本传递三个参数，并分别输出，其中 $0 为执行的文件名（包含文件路径）：  
+
+    #!/bin/bash
+
+    echo "Shell 传递参数实例！";
+    echo "执行的文件名：$0";
+    echo "第一个参数为：$1";
+    echo "第二个参数为：$2";
+    echo "第三个参数为：$3";
+
+&emsp; 为脚本设置可执行权限，并执行脚本，输出结果如下所示：  
+
+    $ chmod +x test.sh 
+    $ ./test.sh 1 2 3
+    Shell 传递参数实例！
+    执行的文件名：./test.sh
+    第一个参数为：1
+    第二个参数为：2
+    第三个参数为：3
+
 -----
 
-### 1.3.7. Shell输入/输出重定向  
+### 1.3.8. Shell输入/输出重定向  
 &emsp; 大多数 UNIX 系统命令从终端接受输入并将所产生的输出发送回​​到终端。一个命令通常从一个叫标准输入的地方读取输入，默认情况下，这恰好是终端。同样，一个命令通常将其输出写入到标准输出，默认情况下，这也是终端。  
 
-### 1.3.8. Shell文件包含外部脚本  
+### 1.3.9. Shell文件包含外部脚本  
 &emsp; 和其他语言一样，Shell也可以包含外部脚本。这样可以很方便的封装一些公用的代码作为一个独立的文件。  
 &emsp; Shell文件包含的语法格式如下：  
 
@@ -253,6 +256,3 @@ https://www.runoob.com/linux/linux-shell-passing-arguments.html
 ```text
 source filename
 ```
-
-
-
