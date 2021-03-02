@@ -8,25 +8,25 @@
     - [1.3. Shell脚本语法](#13-shell脚本语法)
         - [1.3.1. Shell变量](#131-shell变量)
         - [1.3.2. Shell注释](#132-shell注释)
-        - [1.3.3. Shell传递参数](#133-shell传递参数)
+        - [1.3.3. Shell向脚本传递参数](#133-shell向脚本传递参数)
         - [1.3.4. Shell基本运算符](#134-shell基本运算符)
         - [1.3.5. Shell流程控制语句](#135-shell流程控制语句)
         - [1.3.6. Shell函数](#136-shell函数)
-        - [1.3.7. Shell输入/输出重定向](#137-shell输入输出重定向)
-        - [1.3.8. Shell文件包含](#138-shell文件包含)
         - [1.3.9. Shell中的一些命令](#139-shell中的一些命令)
             - [1.3.9.1. echo命令](#1391-echo命令)
             - [1.3.9.2. printf命令](#1392-printf命令)
             - [1.3.9.3. test命令](#1393-test命令)
+        - [1.3.7. Shell输入/输出重定向](#137-shell输入输出重定向)
+        - [1.3.8. Shell文件包含外部脚本](#138-shell文件包含外部脚本)
 
 <!-- /TOC -->
 
-
+shell编程：变量、函数、命令、向脚本传递参数......
 
 # 1. Shell编程  
 
 ## 1.1. Shell环境  
-&emsp; Shell编程跟JavaScript、php 编程一样，只要有一个能编写代码的文本编辑器和一个能解释执行的脚本解释器就可以了。  
+&emsp; Shell编程跟JavaScript、php编程一样，只要有一个能编写代码的文本编辑器和一个能解释执行的脚本解释器就可以了。  
 
 &emsp; Linux的Shell种类众多，常见的有：  
 
@@ -45,14 +45,14 @@
 &emsp; 运行Shell脚本有两种方法：  
 
 1. 作为可执行程序  
-    &emsp; 将上面的代码保存为 test.sh，并 cd 到相应目录：  
+    &emsp; 将上面的代码保存为test.sh，并cd到相应目录：  
 
     ```text
     chmod +x ./test.sh  #使脚本具有执行权限
     ./test.sh  #执行脚本
     ```
 
-    &emsp; 注意，一定要写成 ./test.sh，而不是 test.sh，运行其它二进制的程序也一样，直接写 test.sh，linux 系统会去 PATH 里寻找有没有叫 test.sh 的，而只有 /bin, /sbin, /usr/bin，/usr/sbin 等在 PATH 里，当前目录通常不在 PATH 里，所以写成 test.sh 是会找不到命令的，要用 ./test.sh 告诉系统说，就在当前目录找。  
+    &emsp; 注意，一定要写成./test.sh，而不是test.sh，运行其它二进制的程序也一样，直接写 test.sh，linux 系统会去 PATH 里寻找有没有叫 test.sh 的，而只有/bin, /sbin, /usr/bin，/usr/sbin 等在PATH里，当前目录通常不在PATH里，所以写成 test.sh 是会找不到命令的，要用 ./test.sh 告诉系统说，就在当前目录找。  
 
 2. 作为解释器参数  
     &emsp; 这种运行方式是，直接运行解释器，其参数就是 shell 脚本的文件名，如：  
@@ -67,7 +67,6 @@
 ## 1.3. Shell脚本语法  
 
 ### 1.3.1. Shell变量  
-
 &emsp; **使用变量**  
 &emsp; 使用一个定义过的变量，只要在变量名前面加美元符号即可，如：  
 
@@ -106,17 +105,16 @@ echo files: $files
 https://www.runoob.com/linux/linux-shell-variable.html
 -->
 * 单行注释使用#
-* 多行注释使用:<\<EOF 注释内容 EOF
+* 多行注释使用：<\<EOF 注释内容 EOF
 
-### 1.3.3. Shell传递参数  
-&emsp; 可以在执行 Shell 脚本时，向脚本传递参数，脚本内获取参数的格式为：$n。n 代表一个数字，1 为执行脚本的第一个参数，2 为执行脚本的第二个参数，以此类推……  
+### 1.3.3. Shell向脚本传递参数  
+&emsp; 可以在执行 Shell脚本时，向脚本传递参数，脚本内获取参数的格式为：$n。n 代表一个数字，1 为执行脚本的第一个参数，2 为执行脚本的第二个参数，以此类推……  
 
 <!-- 
 https://www.runoob.com/linux/linux-shell-passing-arguments.html
 -->
 
 &emsp; **实例**  
-
 &emsp; 以下实例向脚本传递三个参数，并分别输出，其中 $0 为执行的文件名（包含文件路径）：  
 
     #!/bin/bash
@@ -214,23 +212,6 @@ https://www.runoob.com/linux/linux-shell-passing-arguments.html
 
 &emsp; 注意，$10不能获取第十个参数，获取第十个参数需要${10}。当n>=10时，需要使用${n}来获取参数。  
 
-### 1.3.7. Shell输入/输出重定向  
-&emsp; 大多数 UNIX 系统命令从终端接受输入并将所产生的输出发送回​​到终端。一个命令通常从一个叫标准输入的地方读取输入，默认情况下，这恰好是终端。同样，一个命令通常将其输出写入到标准输出，默认情况下，这也是终端。  
-
-
-### 1.3.8. Shell文件包含  
-&emsp; 和其他语言一样，Shell 也可以包含外部脚本。这样可以很方便的封装一些公用的代码作为一个独立的文件。  
-&emsp; Shell文件包含的语法格式如下：  
-
-```text
-. filename   # 注意点号(.)和文件名中间有一空格
-```
-&emsp; 或
-    
-```text
-source filename
-```
-
 ### 1.3.9. Shell中的一些命令  
 #### 1.3.9.1. echo命令  
 &emsp; Shell的echo指令用于字符串的输出。命令格式：
@@ -253,5 +234,25 @@ source filename
 
 #### 1.3.9.3. test命令  
 &emsp; Shell中的test命令用于检查某个条件是否成立，它可以进行数值、字符和文件三个方面的测试。  
+
+
+-----
+
+### 1.3.7. Shell输入/输出重定向  
+&emsp; 大多数 UNIX 系统命令从终端接受输入并将所产生的输出发送回​​到终端。一个命令通常从一个叫标准输入的地方读取输入，默认情况下，这恰好是终端。同样，一个命令通常将其输出写入到标准输出，默认情况下，这也是终端。  
+
+### 1.3.8. Shell文件包含外部脚本  
+&emsp; 和其他语言一样，Shell也可以包含外部脚本。这样可以很方便的封装一些公用的代码作为一个独立的文件。  
+&emsp; Shell文件包含的语法格式如下：  
+
+```text
+. filename   # 注意点号(.)和文件名中间有一空格
+```
+&emsp; 或
+    
+```text
+source filename
+```
+
 
 
