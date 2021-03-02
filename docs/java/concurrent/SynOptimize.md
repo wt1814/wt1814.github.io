@@ -204,13 +204,13 @@ https://zhuanlan.zhihu.com/p/127884116
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-30.png)  
 
 1. <font color = "red">偏向锁升级为轻量级锁之后，对象的Markword也会进行相应的的变化。</font>  
-    1. <font color = "lime">线程在自己的栈桢中创建锁记录LockRecord。</font>  
+    1. <font color = "clime">线程在自己的栈桢中创建锁记录LockRecord。</font>  
     2. 将锁对象的对象头中的MarkWord复制到线程刚刚创建的锁记录中。  
-    3. <font color = "lime">将锁记录中的Owner指针指向锁对象。</font>  
+    3. <font color = "clime">将锁记录中的Owner指针指向锁对象。</font>  
     4. 将锁对象的对象头的MarkWord替换为指向锁记录的指针。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-32.png)  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-33.png)  
-2. <font color = "red">自旋锁</font>  
+2. <font color = "red">自旋锁：</font>  
 &emsp; 轻量级锁在加锁过程中，用到了自旋锁。自旋锁分为固定次数自旋锁和自适应自旋锁。轻量级锁是针对竞争锁对象线程不多且线程持有锁时间不长的场景，因为阻塞线程需要CPU从用户态转到内核态，代价很大，如果一个刚刚阻塞不久就被释放代价有大。  
 &emsp;  自旋锁与自适应自旋：    
 &emsp; <font color = "red">为了让线程等待，只需要让线程执行一个忙循环(自旋)，这项技术就是所谓的自旋锁。</font>引入自旋锁的原因是互斥同步对性能最大的影响是阻塞的实现，管钱线程和恢复线程的操作都需要转入内核态中完成，给并发带来很大压力。自旋锁让物理机器有一个以上的处理器的时候，能让两个或以上的线程同时并行执行。就可以让后面请求锁的那个线程 “稍等一下” ，但不放弃处理器的执行时间，看看持有锁的线程是否很快就会释放锁。为了让线程等待，只需让线程执行一个忙循环(自旋)，这项技术就是所谓的自旋锁。  
@@ -221,7 +221,7 @@ https://zhuanlan.zhihu.com/p/127884116
 &emsp; 轻量级锁的锁释放逻辑其实就是获得锁的逆向逻辑，通过CAS操作把线程栈帧中的LockRecord替换回到锁对象的MarkWord中，如果成功表示没有竞争。如果失败，表示当前锁存在竞争，那么轻量级锁就会膨胀成为重量级锁。  
 4. 新线程获取轻量级锁：  
 &emsp; **<font color = "red">1. 获取轻量锁过程当中会当在前线程的虚拟机栈中创建一个Lock Record的内存区域去存储获取锁的记录DisplacedMarkWord，</font>  
-&emsp; <font color = "lime">2. 然后使用CAS操作将锁对象的Mark Word更新成指向刚刚创建的Lock Record的内存区域DisplacedMarkWord的地址，</font>** 如果这个操作成功，就说明线程获取了该对象的锁，把对象的Mark Word 标记成 00，表示该对象处于轻量级锁状态。失败时，会判断是否是该线程之前已经获取到锁对象了，如果是就进入同步块执行。如果不是，那就是有多个线程竞争这个锁对象，那轻量锁就不适用于这个情况了，要膨胀成重量级锁。  
+&emsp; <font color = "clime">2. 然后使用CAS操作将锁对象的Mark Word更新成指向刚刚创建的Lock Record的内存区域DisplacedMarkWord的地址，</font>** 如果这个操作成功，就说明线程获取了该对象的锁，把对象的Mark Word 标记成 00，表示该对象处于轻量级锁状态。失败时，会判断是否是该线程之前已经获取到锁对象了，如果是就进入同步块执行。如果不是，那就是有多个线程竞争这个锁对象，那轻量锁就不适用于这个情况了，要膨胀成重量级锁。  
 
         线程A获取轻量级锁时会把对象头中的MarkWord复制一份到线程A的栈帧中创建用于存储锁记录的空间DisplacedMarkWord，然后使用CAS将对象头中的内容替换成线程A存储DisplacedMarkWord的地址。如果这时候出现线程B来获取锁，线程B也跟线程A同样复制对象头的MarkWord到自己的DisplacedMarkWord中，如果线程A锁还没释放，这时候那么线程B的CAS操作会失败，会继续自旋，当然不可能让线程B一直自旋下去，自旋到一定次数(固定次数/自适应)就会升级为重量级锁。 
 
@@ -247,16 +247,9 @@ https://zhuanlan.zhihu.com/p/127884116
 &emsp; JDK 1.6 引入了偏向锁和轻量级锁，从而让锁拥有了四个状态： **无锁状态(unlocked)(MarkWord标志位01，没有线程执行同步方法/代码块时的状态)** 、偏向锁状态(biasble)、轻量级锁状态(lightweight locked)和重量级锁状态(inflated)。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-66.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-70.png)  
-&emsp; **<font color = "lime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时如果发现有闲置的monitor(重量级锁对象)，会进行锁降级。</font>
-
-&emsp; **<font color = "lime">Synchronized锁对比：</font>**  
-&emsp; 用户空间锁VS重量级锁：  
-
-* 偏向锁、自旋锁都是用户空间完成。  
-* 重量级锁是需要向内核申请。  
 
 |状态|标志位|描述|优点|缺点|应用场景|
 |---|---|---|---|---|---|
-|偏向锁	|010|<font color = "red">无实际竞争，让一个线程一直持有锁，在其他线程需要竞争锁(只cas一次)的时候，再释放锁</font>|加锁解锁不需要额外消耗	|如果线程间存在竞争，会有撤销锁的消耗	|只有一个线程进入临界区|
+|偏向锁	|010|<font color = "red">无实际竞争，让一个线程一直持有锁，在其他线程需要竞争锁(只cas一次)的时候，再释放锁</font>|加锁解锁不需要额外消耗|如果线程间存在竞争，会有撤销锁的消耗|只有一个线程进入临界区|
 |轻量级|00|<font color = "red">无实际竞争，多个线程交替使用锁；允许短时间的锁竞争</font>|竞争的线程不会阻塞|如果线程一直得不到锁，会一直自旋，消耗CPU|多个线程交替进入临界区|
 |重量级	|10|<font color = "lime">有实际竞争，且锁竞争时间长</font>|线程竞争不使用自旋，不消耗CPU|线程阻塞，响应时间长|多个线程同时进入临界区| 
