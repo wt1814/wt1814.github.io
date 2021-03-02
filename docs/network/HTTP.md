@@ -31,7 +31,7 @@
  
 # 1. HTTP  
 ## 1.1. HTTP简介  
-&emsp; HTTP（HyperText Transfer Protocol，超文本传输协议）是一个简单的请求-响应协议，它运行在TCP之上。它指定了客户端可能发送给服务器什么样的消息以及得到什么样的响应。请求和响应消息的头以ASCII码形式给出；而消息内容则具有一个类似MIME的格式。  
+&emsp; HTTP(HyperText Transfer Protocol，超文本传输协议)是一个简单的请求-响应协议，它运行在TCP之上。它指定了客户端可能发送给服务器什么样的消息以及得到什么样的响应。请求和响应消息的头以ASCII码形式给出；而消息内容则具有一个类似MIME的格式。  
 
 * HTTP是基于TCP/IP的关于数据如何在万维网中如何通信的协议。HTTP的底层是TCP/IP。  
 * <font color = "red">HTTP是无连接的：</font> 客户与服务器之间的HTTP连接是一种一次性连接，限制每次连接只处理一个请求。服务器处理完客户的请求，并收到客户的应答后，即断开连接。采用这种方式可以节省传输时间。  
@@ -48,7 +48,7 @@ https://mp.weixin.qq.com/s/81ZGJ_HdUIcYX6F6GEi0Nw
 &emsp; HTTP1.1新改动：  
 * 持久连接  
 * 请求管道化  
-* 增加缓存处理（新的字段如cache-control）  
+* 增加缓存处理(新的字段如cache-control)  
 * 增加Host字段、支持断点传输等  
 
 &emsp; HTTP2新改动：  
@@ -64,15 +64,15 @@ https://mp.weixin.qq.com/s/81ZGJ_HdUIcYX6F6GEi0Nw
 ----
 ## 1.3. Http与TCP  
 1. 现代浏览器在与服务器建立了一个TCP连接后是否会在一个HTTP请求完成后断开？什么情况下会断开？  
-&emsp; 在HTTP/1.0中，一个服务器在发送完一个HTTP响应后，会断开TCP链接。HTTP/1.1将Connection头写进标准，并且默认开启持久连接（除非请求中写明Connection: close），那么浏览器和服务器之间是会维持一段时间的TCP连接，不会一个请求结束就断掉。  
+&emsp; 在HTTP/1.0中，一个服务器在发送完一个HTTP响应后，会断开TCP链接。HTTP/1.1将Connection头写进标准，并且默认开启持久连接(除非请求中写明Connection: close)，那么浏览器和服务器之间是会维持一段时间的TCP连接，不会一个请求结束就断掉。  
 &emsp; 即默认情况下建立TCP连接不会断开，只有在请求报头中声明Connection: close才会在请求完成后关闭连接。  
 
 2. 一个TCP连接可以对应几个HTTP请求？  
 &emsp; 如果维持连接，一个TCP连接是可以发送多个HTTP请求的。  
 
-3. 一个TCP连接中HTTP请求发送可以一起发送么（比如一起发三个请求，再三个响应一起接收）？  
+3. 一个TCP连接中HTTP请求发送可以一起发送么(比如一起发三个请求，再三个响应一起接收)？  
 &emsp; HTTP/1.1存在一个问题，单个TCP连接在同一时刻只能处理一个请求，意思是说：两个请求的生命周期不能重叠，任意两个HTTP请求从开始到结束的时间在同一个 TCP 连接里不能重叠。  
-&emsp; 虽然 HTTP/1.1 规范中规定了Pipelining来试图解决这个问题，但是这个功能在浏览器中默认是关闭的。（Pipelining：一个支持持久连接的客户端可以在一个连接中发送多个请求（不需要等待任意请求的响应）。收到请求的服务器必须按照请求收到的顺序发送响应。）  
+&emsp; 虽然 HTTP/1.1 规范中规定了Pipelining来试图解决这个问题，但是这个功能在浏览器中默认是关闭的。(Pipelining：一个支持持久连接的客户端可以在一个连接中发送多个请求(不需要等待任意请求的响应)。收到请求的服务器必须按照请求收到的顺序发送响应。)  
 &emsp; HTTP2 提供了Multiplexing多路传输特性，可以在一个TCP连接中同时完成多个HTTP请求。  
 &emsp; 总结：在 HTTP/1.1存在Pipelining技术可以完成这个多个请求同时发送，但是由于浏览器默认关闭，所以可以认为这是不可行的。在HTTP2中由于 Multiplexing特点的存在，多个HTTP请求可以在同一个TCP连接中并行进行。  
 &emsp; 那么在 HTTP/1.1时代，浏览器是如何提高页面加载效率的呢？主要有下面两点：  
@@ -84,7 +84,7 @@ https://mp.weixin.qq.com/s/81ZGJ_HdUIcYX6F6GEi0Nw
 &emsp; 所以答案是：有。Chrome最多允许对同一个Host建立六个TCP连接。不同的浏览器有一些区别。  
 &emsp; 那么回到最开始的问题，收到的HTML如果包含几十个图片标签，这些图片是以什么方式、什么顺序、建立了多少连接、使用什么协议被下载下来的呢？  
 &emsp; 如果图片都是 HTTPS 连接并且在同一个域名下，那么浏览器在SSL握手之后会和服务器商量能不能用HTTP2，如果能的话就使用Multiplexing功能在这个连接上进行多路传输。不过也未必会所有挂在这个域名的资源都会使用一个 TCP 连接去获取，但是可以确定的是 Multiplexing 很可能会被用到。  
-&emsp; 如果发现用不了HTTP2呢？或者用不了HTTPS（现实中的HTTP2都是在 HTTPS 上实现的，所以也就是只能使用 HTTP/1.1）。那浏览器就会在一个 HOST 上建立多个 TCP 连接，连接数量的最大限制取决于浏览器设置，这些连接会在空闲的时候被浏览器用来发送新的请求，如果所有的连接都正在发送请求呢？那其他的请求就只能等等了。  
+&emsp; 如果发现用不了HTTP2呢？或者用不了HTTPS(现实中的HTTP2都是在 HTTPS 上实现的，所以也就是只能使用 HTTP/1.1)。那浏览器就会在一个 HOST 上建立多个 TCP 连接，连接数量的最大限制取决于浏览器设置，这些连接会在空闲的时候被浏览器用来发送新的请求，如果所有的连接都正在发送请求呢？那其他的请求就只能等等了。  
 
 ------------------------------------------
 
@@ -95,7 +95,7 @@ https://mp.weixin.qq.com/s/81ZGJ_HdUIcYX6F6GEi0Nw
 https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 -->
 
-&emsp; HTTP使用统一资源标识符（Uniform Resource Identifiers, URI）来传输数据和建立连接。URI包含URL和URN。  
+&emsp; HTTP使用统一资源标识符(Uniform Resource Identifiers, URI)来传输数据和建立连接。URI包含URL和URN。  
 &emsp; URI，是uniform resource identifier，统一资源标识符，用来唯一的标识一个资源。Web上可用的每种资源如HTML文档、图像、视频片段、程序等都是一个来URI来定位的。  
 &emsp; URI一般由三部组成：1).访问资源的命名机制2).存放资源的主机名3).资源自身的名称，由路径表示，着重强调于资源。 
 
@@ -110,7 +110,7 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 &emsp; 这其中用户名、密码和端口号都可以省略，在浏览器拿到这样一个URI之后，首先会对其进行解析，比如上面这个地址，浏览器经过解析之后，知道要去获取 www.baidu.com 服务器上的/folder/index.html文件。不过，在实际应用中，有的时候URI并不是这么清晰，比如下面这个：http://wwww.baidu.com 。这种URI并没有直接指定要访问哪个文件，像这种没有路径的情况，就代表访问根目录下预先设置的默认文件，一般就是/index.html，/default.html一类的文件，在Java中，可以在web.xml中来配置这个默认文件。  
 &emsp; 有的时候还有可能遇到下面这种地址：http://www.baidu.com/folder/ 。这个URI 以一个 / 结尾，表示folder是一个目录，访问的是这个目录下的文件，但是又没有说明是这个目录下的哪个文件，此时依然是采用该目录下index.html或者 default.html一类的文件。  
 &emsp; 有的时候，还可以看到下面这种URI：http://www.baidu.com/folder 。即folder后面没有 /，此时会先将folder当作一个资源去访问(比如一个名为 folder 的 Servlet )，如果没有名为folder的资源，那么浏览器会自动在folder后面加上一个 / ，此时地址变为http://www.baidu.com/folder/ ，folder 是一个目录，然后就会去尝试访问folder目录下的 index.html或者default.html。  
-&emsp; 注意这种自动调整只在浏览器中存在，如果项目是一个手机App或者是一个 Ajax请求，则不会有这种调整，即没写 / 就当做具体资源来对待，如果该资源不存在，就会报404，写了/ 就当目录来对待。（OkHtpp3中是这样）  
+&emsp; 注意这种自动调整只在浏览器中存在，如果项目是一个手机App或者是一个 Ajax请求，则不会有这种调整，即没写 / 就当做具体资源来对待，如果该资源不存在，就会报404，写了/ 就当目录来对待。(OkHtpp3中是这样)  
 &emsp; 有的时候还可能见到下面这种URI：http://www.baidu.com/ 。这个和第一种情况很类似，只是后面多了一个 / ，这个 / 表示要访问的是根目录，但是没有指定根目录下的文件，默认就是根目录下的 index.html 或者 default.html。  
 
 #### 1.4.1.2. 请求和响应报文  
@@ -136,19 +136,19 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 #### 1.4.1.3. HTTP具体头信息  
 &emsp; 有4种类型的首部字段：通用信息头、请求头、响应头和实体头。HTTP/1.1规范定义了如下47个头信息。  
 
-* 通用信息头（9个）：适用于请求和响应消息的头字段。  
-* 请求头（19个）：用于表示请求信息的附加信息的头字段。  
-* 响应头（9个）：用于表示响应信息的附加信息的头字段。  
-* 实体头（10个）：用于表示实体（消息体）的附加信息的头字段。  
+* 通用信息头(9个)：适用于请求和响应消息的头字段。  
+* 请求头(19个)：用于表示请求信息的附加信息的头字段。  
+* 响应头(9个)：用于表示响应信息的附加信息的头字段。  
+* 实体头(10个)：用于表示实体(消息体)的附加信息的头字段。  
 
-&emsp; **通用首部字段（请求报文与响应报文都会使用的首部字段）**  
+&emsp; **通用首部字段(请求报文与响应报文都会使用的首部字段)**  
 
 * Date：创建报文时间  
 * Connection：连接的管理  
 * Cache-Control：缓存的控制  
 * Transfer-Encoding：报文主体的传输编码方式  
 
-&emsp; **请求首部字段（请求报文会使用的首部字段）**  
+&emsp; **请求首部字段(请求报文会使用的首部字段)**  
 
 * Host：请求资源所在服务器  
 * Accept：可处理的媒体类型  
@@ -156,13 +156,13 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 * Accept-Encoding：可接受的内容编码  
 * Accept-Language：可接受的自然语言  
 
-&emsp; **响应首部字段（响应报文会使用的首部字段）**  
+&emsp; **响应首部字段(响应报文会使用的首部字段)**  
 
 * Accept-Ranges：可接受的字节范围
 * Location：令客户端重新定向到的URI
 * Server：HTTP服务器的安装信息
 
-&emsp; **实体首部字段（请求报文与响应报文的的实体部分使用的首部字段）**  
+&emsp; **实体首部字段(请求报文与响应报文的的实体部分使用的首部字段)**  
 
 * Allow：资源可支持的HTTP方法  
 * Content-Type：实体主类的类型  
@@ -191,8 +191,8 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 |application/json	|JSON数据格式|
 |application/pdf	|pdf格式|
 |application/msword	|Word文档格式|
-|application/octet-stream	|二进制流数据（如常见的文件下载）|
-|application/x-www-form-urlencoded	|form表单数据被编码为key/value格式发送到服务器（表单默认的提交数据的格式）|
+|application/octet-stream	|二进制流数据(如常见的文件下载)|
+|application/x-www-form-urlencoded	|form表单数据被编码为key/value格式发送到服务器(表单默认的提交数据的格式)|
 |multipart/form-data	|需要在表单中进行文件上传时，就需要使用该格式|  
 
 ------------------------------------------
@@ -201,10 +201,10 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 |方法|描述|
 |---|---|
 |GET|GET请求会显示请求指定的资源。一般来说GET方法应该只用于数据的读取，而不应当用于会产生副作用的非幂等的操作中。它期望的应该是而且应该是安全的和幂等的。这里的安全指的是，请求不会影响到资源的状态。|
-|POST|向指定资源提交数据进行处理请求（例如提交表单或者上传文件）。数据被包含在请求体中。POST请求可能会导致新的资源的建立和/或已有资源的修改。|
+|POST|向指定资源提交数据进行处理请求(例如提交表单或者上传文件)。数据被包含在请求体中。POST请求可能会导致新的资源的建立和/或已有资源的修改。|
 |PUT|传输文件，报文主体中包含文件内容，保存到对应URI位置。    PUT请求会身向指定资源位置上传其最新内容，PUT方法是幂等的方法。通过该方法客户端可以将指定资源的最新数据传送给服务器取代指定的资源的内容。|
 |PATCH|PATCH方法出现的较晚，它在2010年的RFC 5789标准中被定义。PATCH请求与PUT请求类似，同样用于资源的更新。二者有以下两点不同：1.PATCH一般用于资源的部分更新，而PUT一般用于资源的整体更新。2.当资源不存在时，PATCH会创建一个新的资源，而PUT只会对已在资源进行更新。|
-|DELETE|删除文件，与PUT方法相反，删除对应URI位置的文件。     DELETE请求用于请求服务器删除所请求URI（统一资源标识符，Uniform Resource Identifier）所标识的资源。DELETE请求后指定资源会被删除，DELETE方法也是幂等的。|
+|DELETE|删除文件，与PUT方法相反，删除对应URI位置的文件。     DELETE请求用于请求服务器删除所请求URI(统一资源标识符，Uniform Resource Identifier)所标识的资源。DELETE请求后指定资源会被删除，DELETE方法也是幂等的。|
 |OPTIONS|允许客户端查看服务器的性能。|
 |CONNECT|HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器。|
 |HEAD|类似于get请求，只不过返回的响应中没有具体的内容，用于获取报头。一般用于验证URI是否有效。|
@@ -222,8 +222,8 @@ https://mp.weixin.qq.com/s/FZddWurb4uXo-vbTidmVzQ
     1. GET将请求信息放在URL , POST放在报文体中。  
     2. Get传送的数据量小，不能大于2KB；Post传送的数据量较大，一般被默认为不受限制；  
 * 传输过程中：  
-    1. get 请求在发送过程中会产生一个 TCP 数据包。对于 get 方式的请求，浏览器会把 http header 和 data 一并发送出去，服务器响应 200（返回数据）。
-    2. post 在发送过程中会产生两个 TCP 数据包。对于 post，浏览器先发送 header，服务器响应 100 continue，浏览器再发送 data，服务器响应 200 ok（返回数据）。  
+    1. get 请求在发送过程中会产生一个 TCP 数据包。对于 get 方式的请求，浏览器会把 http header 和 data 一并发送出去，服务器响应 200(返回数据)。
+    2. post 在发送过程中会产生两个 TCP 数据包。对于 post，浏览器先发送 header，服务器响应 100 continue，浏览器再发送 data，服务器响应 200 ok(返回数据)。  
 * 数据库层面：<font color = "red">CET符合幂等性和安全性，POST不符合；</font>  
     1. 所谓安全的意味着该操作用于获取信息而非修改信息。换句话说，GET请求一般不应产生副作用。就是说，它仅仅是获取资源信息，就像数据库查询一样，不会修改，增加数据，不会影响资源的状态。  
     2. 幂等的意味着对同一URL的多个请求应该返回同样的结果。  
@@ -260,7 +260,7 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 |4XX|客户端错误|
 |---|---|
 |400|Bad Request：请求报文中存在语法错误。|
-|401|Unauthorized：该状态码表示发送的请求需要有认证信息（BASIC 认证、DIGEST 认证）。如果之前已进行过一次请求，则表示用户认证失败。|
+|401|Unauthorized：该状态码表示发送的请求需要有认证信息(BASIC 认证、DIGEST 认证)。如果之前已进行过一次请求，则表示用户认证失败。|
 |403|Forbidden：请求被拒绝。|
 |404|Not Found|  
 

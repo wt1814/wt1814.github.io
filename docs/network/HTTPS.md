@@ -38,7 +38,7 @@
 
 ---
 ## 1.1. SSL/TLS  
-&emsp; SSL(Secure Sockets Layer 安全套接层)，及其继任者传输层安全(Transport Layer Security，TLS)是为网络通信提供安全及数据完整性的一种安全协议。TLS/SSL在传输层与应用层之间对网络连接进行加密。  
+&emsp; SSL(Secure Sockets Layer安全套接层)，及其继任者传输层安全(Transport Layer Security，TLS)是为网络通信提供安全及数据完整性的一种安全协议。TLS/SSL在传输层与应用层之间对网络连接进行加密。  
 &emsp; **<font color = "red">TLS/SSL是介于TCP和HTTP之间的一层安全协议，</font>** 不影响原有的TCP协议和HTTP协议，所以使用HTTPS基本上不需要对HTTP页面进行太多的改造。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/https-1.png)  
 &emsp; **<font color = "lime">SSL协议提供的服务主要有：</font>**  
