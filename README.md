@@ -577,13 +577,13 @@
 ----
 
 ## 计算机网络  
+[网络的性能指标](/docs/network/standard.md)  
 [OSI七层网络模型](/docs/network/OSI.md)  
 [HTTP](/docs/network/HTTP.md)  
 [HTTPS](/docs/network/HTTPS.md)  
 [DNS](docs/network/DNS.md)  
 [TCP](/docs/network/TCP.md)  
 [TCP粘包](/docs/network/TCPSticking.md)  
-[网络的性能指标](/docs/network/standard.md)  
 
 ----
 

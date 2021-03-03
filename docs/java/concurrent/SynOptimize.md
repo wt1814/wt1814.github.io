@@ -23,6 +23,10 @@
 
 # 1. Synchronized锁优化
 <!-- 
+且听我一个故事讲透一个锁原理之synchronized 
+https://mp.weixin.qq.com/s/i1jtqQcP7kz5uS86GZ6Lgg
+轻量级锁到底是怎么回事啊啊啊啊
+https://mp.weixin.qq.com/s/ds78cpv8Yv5CdrNsLI9sYg
 偏向锁的降级
 https://blog.csdn.net/zxx901221/article/details/83022095
 Synchronized

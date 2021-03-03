@@ -461,13 +461,13 @@
     * [灰度发布](/docs/system/grayscalePublishe.md)  
     * [监控](/docs/devAndOps/monitor.md)  
 * 计算机网络  
+    * [网络的性能指标](/docs/network/standard.md)  
     * [OSI七层网络模型](/docs/network/OSI.md)  
     * [HTTP](/docs/network/HTTP.md)  
     * [HTTPS](/docs/network/HTTPS.md)  
     * [DNS](/docs/network/DNS.md)  
     * [TCP](/docs/network/TCP.md)  
     * [TCP粘包](/docs/network/TCPSticking.md)  
-    * [网络的性能指标](/docs/network/standard.md)  
 * 测试工具
     * [Jmeter](/docs/devAndOps/Jmeter.md)  
     * [JMH](/docs/java/JVM/JMH.md)  
