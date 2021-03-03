@@ -1,7 +1,5 @@
 
 <!-- 
-阿里大神的算法笔记
-https://mp.weixin.qq.com/s/3s5PuX-CP2prDoxg2niSEw
 一个快速排序这么多细节？ 
 https://mp.weixin.qq.com/s/-jhXzU3RzMWMWtmkFxknEQ
 -->
