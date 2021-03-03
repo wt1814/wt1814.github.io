@@ -16,4 +16,8 @@ https://mp.weixin.qq.com/s/-IkHNAM4B0R_j50LkQunig
 
 芋道源码
 http://www.iocoder.cn/Dubbo/good-collection/
+
+Dubbo原理简述四：服务暴露、服务引用和调用流程
+https://blog.csdn.net/qq_33404395/article/details/86498060
+
 -->

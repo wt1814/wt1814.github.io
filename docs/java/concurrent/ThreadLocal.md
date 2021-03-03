@@ -8,6 +8,7 @@
         - [1.1.2. get()](#112-get)
     - [1.2. ThreadLocal内存模型](#12-threadlocal内存模型)
     - [1.3. ThreadLocal可能的内存泄漏](#13-threadlocal可能的内存泄漏)
+    - [ThreadLocal泄露-2](#threadlocal泄露-2)
     - [1.4. ThreadLocal使用](#14-threadlocal使用)
         - [1.4.1. ※※※正确使用](#141-※※※正确使用)
         - [1.4.2. SimpleDateFormat非线程安全问题](#142-simpledateformat非线程安全问题)
@@ -222,6 +223,13 @@ https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig
 &emsp; **<font color = "lime">ThreadLocal可能的内存泄漏</font>**  
 &emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key(ThreadLocal实例)会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
 &emsp; **<font color = "lime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  
+
+
+## ThreadLocal泄露-2
+<!-- 
+什么，你的ThreadLocal内存泄漏了？ 
+https://mp.weixin.qq.com/s/mH1jRiZTiHdlMBSwu3f2zg
+-->
 
 ## 1.4. ThreadLocal使用  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-54.png)   

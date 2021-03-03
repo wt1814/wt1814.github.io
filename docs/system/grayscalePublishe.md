@@ -22,6 +22,9 @@ https://mp.weixin.qq.com/s/4AhXH5U9dxj2DuOGel9bLg
 https://blog.csdn.net/hueason/article/details/81054093
 基于 Nginx+lua+Memcache 实现灰度发布 
 https://mp.weixin.qq.com/s/BCuKFIrVAqS4SGo6Cxk0MQ
+灰度发布
+https://baike.baidu.com/item/%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/7100322
+
 
 -->
 
