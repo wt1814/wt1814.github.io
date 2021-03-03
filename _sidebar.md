@@ -171,7 +171,7 @@
         * [各种索引](/docs/SQL/IndexKnowledge.md)  
         * [MySql事务](/docs/SQL/transaction.md)  
         * [MySql锁](/docs/SQL/lock.md)  
-        * [MySql锁造成的问题](/docs/SQL/LockProblem.md)  
+        * [MySql锁表和死锁](/docs/SQL/LockProblem.md)  
         * [MySql-MVCC](/docs/SQL/MVCC.md)  
 * Spring  
     * [Spring](/docs/SSM/Spring/Spring.md)  

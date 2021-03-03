@@ -19,6 +19,13 @@
 
 # 1. MySql锁造成的问题
 
+<!-- 
+★★★mysql死锁的情况问题分析 gap间隙锁
+https://blog.csdn.net/u010325193/article/details/88366707
+MySQL间隙锁问题
+https://www.cnblogs.com/jing99/p/11489510.html
+-->
+
 ## 1.1. 锁表  
 1. 锁表发生在insert、update、delete中。  
 2. 锁表的原理是数据库使用独占式封锁机制，当执行上面的语句时，对表进行锁住，直到发生commite 或者 回滚 或者 退出数据库用户。  

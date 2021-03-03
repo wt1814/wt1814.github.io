@@ -221,7 +221,7 @@
 &emsp; [各种索引](/docs/SQL/IndexKnowledge.md)  
 &emsp; [MySql事务](/docs/SQL/transaction.md)  
 &emsp; [MySql锁](/docs/SQL/lock.md)  
-&emsp; [MySql锁造成的问题](/docs/SQL/LockProblem.md)  
+&emsp; [MySql锁表和死锁](/docs/SQL/LockProblem.md)  
 &emsp; [MySql-MVCC](/docs/SQL/MVCC.md)  
 
 ## SSM  

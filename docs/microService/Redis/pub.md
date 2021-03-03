@@ -17,6 +17,9 @@
 <!-- 
 Redis 消息队列的三种方案(List、Streams、Pub/Sub) 
 https://mp.weixin.qq.com/s/_q0bI62iFrG8h-gZ-bCvNQ
+Redis源码学习(59)-Redis可持久化的消息队列（3） 
+https://mp.weixin.qq.com/s/i9e_JHng_etzJcLkHCBiEQ
+
 -->
 
 ## 1.1. 发布订阅简介  
