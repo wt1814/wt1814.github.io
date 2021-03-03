@@ -6,12 +6,20 @@
     - [1.3. 基于Dockerfile构建](#13-基于dockerfile构建)
         - [1.3.1. Dockerfile命令详解](#131-dockerfile命令详解)
         - [1.3.2. 使用Dockerfile的构建过程](#132-使用dockerfile的构建过程)
-    - [Docker对象标签(将自定义元数据应用于对象)](#docker对象标签将自定义元数据应用于对象)
     - [1.4. 附录：构建jdk的镜像](#14-附录构建jdk的镜像)
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">Dockerfile中包含：基础镜像(FROM)、镜像元信息、镜像操作指令(RUN、COPY、ADD、EXPOSE、WORKDIR、ONBUILD、USER、VOLUME等)和容器启动时执行指令(CMD、ENTRYPOINT)，# 为 Dockerfile中的注释。</font>**  
+&emsp; **<font color = "red">总结：</font>**  
+一般来说， **<font color = "clime">完成应用的容器化过程主要分为以下几个步骤：</font>**  
+
+1. 编写应用代码；
+2. 创建一个Dockerfile，其中包括当前应用的描述、依赖以及该如何运行这个应用；
+3. 对该Dockerfile执行docker image build命令；
+4. 等待Docker将应用程序和依赖等构建到Docker镜像中。
+
+
+&emsp; **<font color = "clime">Dockerfile中包含：基础镜像(FROM)、镜像元信息、镜像操作指令(RUN、COPY、ADD、EXPOSE、WORKDIR、ONBUILD、USER、VOLUME等)和容器启动时执行指令(CMD、ENTRYPOINT)，# 为 Dockerfile中的注释。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-9.png)  
 
 # 1. DockerFile
@@ -57,11 +65,11 @@ Unpacking JAR files...
 镜像的定制实际上就是定制每一层所添加的配置、文件。我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，这个脚本就是Dockerfile。  
 Dockerfile是一个文本文件，其内包含了一条条的指令，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。 
 -->
-&emsp; 将应用整合到容器中并且运行起来的这个过程，称为“容器化”(Containerizing )。一般来说，完成应用的容器化过程主要分为以下几个步骤：  
+&emsp; 将应用整合到容器中并且运行起来的这个过程，称为“容器化”(Containerizing )。一般来说， **<font color = "clime">完成应用的容器化过程主要分为以下几个步骤：</font>**  
 
 1. 编写应用代码；
 2. 创建一个Dockerfile，其中包括当前应用的描述、依赖以及该如何运行这个应用；
-3. 对该Dockerfile执行docker image build命令
+3. 对该Dockerfile执行docker image build命令；
 4. 等待Docker将应用程序和依赖等构建到Docker镜像中。
 
 &emsp; 一旦应用及其依赖被打包成一个Docker镜像，就能以镜像的形式交付并以容器的方式运行了。当然还可以将镜像推送到镜像仓库服务。  
@@ -75,7 +83,7 @@ https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
 
 &emsp; Dockerfile中的注释行都是以 # 开始的，除注释之外，每一行都是一条指令(使用基本的基于DSL语法的指令)，指令及其使用的参数格式如下。指令是不区分大小写的，但是通常都采用大写的方式(可读性会更高)。  
 -->
-&emsp; **<font color = "lime">Dockerfile中包含：基础镜像(FROM)、镜像元信息、镜像操作指令(RUN、COPY、ADD、EXPOSE、WORKDIR、ONBUILD、USER、VOLUME等)和容器启动时执行指令(CMD、ENTRYPOINT)，# 为 Dockerfile中的注释。</font>**  
+&emsp; **<font color = "clime">Dockerfile中包含：基础镜像(FROM)、镜像元信息、镜像操作指令(RUN、COPY、ADD、EXPOSE、WORKDIR、ONBUILD、USER、VOLUME等)和容器启动时执行指令(CMD、ENTRYPOINT)，# 为 Dockerfile中的注释。</font>**  
 
 |部分|命令|
 |---|---|
@@ -99,7 +107,7 @@ https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
 
         FROM <image>:<tag>  
 
-    &emsp; 其中tag或digest是可选的，如果不使用这两个值时，会使用latest版本的基础镜像。  
+    &emsp; **<font color = "red">其中tag或digest是可选的，如果不使用这两个值时，会使用latest版本的基础镜像。</font>**  
     &emsp; 示例：FROM mysql:5.6  
 
 2. MAINTAINER指令  
@@ -108,11 +116,14 @@ https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
         MAINTAINER <name>  
 
 3. LABEL指令  
-    &emsp; LABEL：用于为镜像添加元数据,多用于声明构建信息，作者、机构、组织等。格式：  
+    &emsp; LABEL：用于为镜像添加元数据，多用于声明构建信息，作者、机构、组织等。格式：  
 
         LABEL <key>=<value> <key>=<value> <key>=<value> ...  
 
-    &emsp; 示例： LABEL version="1.0" description="felord.cn" by="Felordcn"  
+    &emsp; 示例：  
+
+        LABEL version="1.0" description="felord.cn" by="Felordcn"  
+        
     &emsp; 使用LABEL 指定元数据时，一条LABEL指定可以指定一或多条元数据，指定多条元数据时不同元数据之间通过空格分隔。推荐将所有的元数据通过一条LABEL指令指定，以免生成过多的中间镜像。  
 
 4. RUN命令  
@@ -181,7 +192,7 @@ https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
         ---《THE DOCKER BOOK》
 
 9. ADD命令  
-    &emsp; ADD指令和COPY的格式和性质基本一致。但是在COPY基础上增加了一些功能。比如<源路径>可以是一个URL,这种情况下，Docker引擎会试图去下载这个链接的文件放到<目标路径>去。  
+    &emsp; ADD指令和COPY的格式和性质基本一致。但是在COPY基础上增加了一些功能。比如<源路径>可以是一个URL，这种情况下，Docker引擎会试图去下载这个链接的文件放到<目标路径>去。  
 
         在Docker官方的Dockerfile最佳实践文档中要求，尽可能的使用COPY，因为COPY的语义很明确，就是复制文件而已，没有必要使用ADD高级的命令。
 
@@ -217,7 +228,7 @@ https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
 
         CMD命令是容器运行时执行的命令，命令和run有本质的区别：CMD 用于指定在容器启动docker run时所要执行的命令，而RUN用于指定镜像构建docker build时所要执行的命令。     
 
-    格式：  
+    &emsp; 格式：  
 
     <!-- 
     CMD ["<可执行文件或命令>","","",...] CMD ["","",...] # 写法是为 ENTRYPOINT指令指定的程序提供默认参数  
@@ -312,13 +323,6 @@ docker image build -t web:latest .
 &emsp; 之后使用同样的命令(如docker image build -t multi:stage)构建镜像即可。当查看构建出来的镜像时，你会看到其他两个FROM阶段，即storefront阶段和appserver阶段构建出来的镜像，但是这些镜像是没有 REPO 和 TAG 的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-30.png)  
 -->
-
-## Docker对象标签(将自定义元数据应用于对象)
-<!-- 
-Docker对象标签
-https://docs.docker.com/config/labels-custom-metadata/
--->
-&emsp; ......
 
 ## 1.4. 附录：构建jdk的镜像 
 &emsp; 例：构建一个带有jdk的centos7镜像  
