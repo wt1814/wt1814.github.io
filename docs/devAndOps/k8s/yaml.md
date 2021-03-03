@@ -64,7 +64,7 @@ spec:                      #设置该资源的内容
         cpu: 0.5  
         memory: 32Mi  
     ports:  
-    - containerPort: 8080    #容器开发对外的端口
+    - containerPort: 8080  #容器开发对外的端口
       name: uwsgi          #名称
       protocol: TCP  
     livenessProbe:         #pod内容器健康检查的设置

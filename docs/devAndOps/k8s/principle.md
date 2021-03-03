@@ -2,7 +2,7 @@
 <!-- TOC -->
 
 - [1. Kubernetes](#1-kubernetes)
-    - [1.1. 走进K8S](#11-走进k8s)
+    - [1.1. ★★★走进K8S](#11-★★★走进k8s)
     - [1.2. Kubernetes架构](#12-kubernetes架构)
         - [1.2.1. Master组件](#121-master组件)
         - [1.2.2. Node组件](#122-node组件)
@@ -13,6 +13,14 @@
 
 <!-- /TOC -->
 
+
+**<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
+
+**<font color = "clime">Master的组件包括：apiserver、controller-manager、scheduler和etcd等几个组件。</font>**  
+**<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
+
+
+
 # 1. Kubernetes  
 <!--
 ~~
@@ -22,15 +30,15 @@ https://kuboard.cn/learning/
 -->
 &emsp; 在Kubernetes统治容器编排这一领域之前，其实也有很多容器编排方案，例如Compose和Swarm，但是在运维大规模、复杂的集群时，这些方案基本已经都被[Kubernetes](https://kubernetes.io/zh/docs/home/)替代了。 
  
-## 1.1. 走进K8S    
+## 1.1. ★★★走进K8S    
 1. K8S是如何对容器编排？  
 &emsp; 在K8S集群中，容器并非最小的单位，K8S集群中最小的调度单位是Pod，容器则被封装在Pod之中。由此可知， **<font color = "red">一个容器或多个容器可以同属于一个Pod之中。</font>**  
 2. Pod是怎么创建出来的？  
-&emsp; Pod并不是无缘无故跑出来的，它是一个抽象的逻辑概念，那么Pod是如何创建的呢？<font color = "red">Pod是由Pod控制器进行管理控制，</font><font color = "lime">其代表性的Pod控制器有Deployment、StatefulSet等。</font>  
+&emsp; Pod并不是无缘无故跑出来的，它是一个抽象的逻辑概念，那么Pod是如何创建的呢？<font color = "red">Pod是由Pod控制器进行管理控制，</font><font color = "clime">其代表性的Pod控制器有Deployment、StatefulSet等。</font>  
 3. Pod资源组成的应用如何提供外部访问的？  
 &emsp; **<font color = "red">Pod组成的应用是通过Service这类抽象资源提供内部和外部访问的，</font>** 但是service的外部访问需要端口的映射，带来的是端口映射的麻烦和操作的繁琐。为此还有一种提供外部访问的资源叫做Ingress。  
 4. Service又是怎么关联到Pod呢？  
-&emsp; <font color = "red">在上面说的Pod是由Pod控制器进行管理控制，对Pod资源对象的期望状态进行自动管理。</font> **<font color = "lime">而在Pod控制器是通过一个YAML的文件进行定义Pod资源对象的。在该文件中，还会对Pod资源对象进行打标签，用于Pod的辨识，而Servcie就是通过标签选择器，关联至同一标签类型的Pod资源对象。这样就实现了从service-->pod-->container的一个过程。</font>**  
+&emsp; <font color = "red">在上面说的Pod是由Pod控制器进行管理控制，对Pod资源对象的期望状态进行自动管理。</font> **<font color = "clime">而在Pod控制器是通过一个YAML的文件进行定义Pod资源对象的。在该文件中，还会对Pod资源对象进行打标签，用于Pod的辨识，而Servcie就是通过标签选择器，关联至同一标签类型的Pod资源对象。这样就实现了从service-->pod-->container的一个过程。</font>**  
 
 ## 1.2. Kubernetes架构
 &emsp; 当部署完 Kubernetes，即拥有了一个完整的集群。  
@@ -43,7 +51,7 @@ Master 节点主要负责存储集群的状态并为 Kubernetes 对象分配和�
 -->  
 
 ### 1.2.1. Master组件
-&emsp; 作为管理集群状态的Master节点，它主要负责接收客户端的请求，安排容器的执行并且运行控制循环，将集群的状态向目标状态进行迁移。 **<font color = "lime">Master的组件包括：apiserver、controller-manager、scheduler和etcd等几个组件。</font>** 
+&emsp; 作为管理集群状态的Master节点，它主要负责接收客户端的请求，安排容器的执行并且运行控制循环，将集群的状态向目标状态进行迁移。 **<font color = "clime">Master的组件包括：apiserver、controller-manager、scheduler和etcd等几个组件。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-17.png)   
 <!-- 
 &emsp; 其中API Server负责处理来自用户的请求，其主要作用就是对外提供RESTful的接口，包括用于查看集群状态的读请求以及改变集群状态的写请求，也是唯一一个与 etcd集群通信的组件。  
@@ -68,7 +76,7 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 &emsp; 资源调度，负责决定将Pod放到哪个Node上运行。Scheduler在调度时会对集群的结构进行分析，当前各个节点的负载，以及应用对高可用、性能等方面的需求。
 
 ### 1.2.2. Node组件
-&emsp; Node是Kubernetes的工作节点，负责接收来自Master的工作指令，并根据指令相应地创建和销毁Pod对象，以及调整网络规则进行合理路由和流量转发。生产环境中，Node节点可以有N个。 **<font color = "lime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
+&emsp; Node是Kubernetes的工作节点，负责接收来自Master的工作指令，并根据指令相应地创建和销毁Pod对象，以及调整网络规则进行合理路由和流量转发。生产环境中，Node节点可以有N个。 **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-18.png)  
 <!-- 
 &emsp; kubelet是K8S集群的工作与节点上的代理组件。kubelet是一个节点上的主要服务，它周期性地从API Server接受新的或者修改的Pod规范并且保证节点上的Pod和其中容器的正常运行，还会保证节点会向目标状态迁移，该节点仍然会向Master节点发送宿主机的健康状况。  
@@ -80,7 +88,7 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 2. Container Runtime  
 &emsp; 每个Node都需要提供一个容器运行时(Container Runtime)环境，它负责下载镜像并运行容器。目前K8S支持的容器运行环境至少包括Docker、RKT、cri-o、Fraki等。
 3. Kube-proxy  
-&emsp; service在逻辑上代表了后端的多个Pod，外借通过service访问Pod。service接收到请求就需要kube-proxy完成转发到Pod的。每个Node都会运行kube-proxy服务，负责将访问的service的TCP/UDP数据流转发到后端的容器，如果有多个副本，kube-proxy会实现负载均衡，有2种方式：LVS或者Iptables
+&emsp; service在逻辑上代表了后端的多个Pod，外借通过service访问Pod。service接收到请求就需要kube-proxy完成转发到Pod的。每个Node都会运行kube-proxy服务，负责将访问的service的TCP/UDP数据流转发到后端的容器，如果有多个副本，kube-proxy会实现负载均衡，有2种方式：LVS或者Iptables。  
 
 ### 1.2.3. 插件  
 <!-- 
@@ -149,9 +157,9 @@ https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-19.png)  
 &emsp; Kubernetes service背后是通过一个叫做kube-proxy的组件实现。kube-proxy实例运行在每个节点上，并提供了三种代理模式：userspace，iptables和IPVS。目前的默认值是iptables。   
 * **Ingress**  
-&emsp; K8S将Pod对象和外部的网络环境进行了隔离，Pod和Service等对象之间的通信需要通过内部的专用地址进行，如果需要将某些Pod对象提供给外部用户访问，则需要给这些Pod对象打开一个端口进行引入外部流量，除了Service以外，Ingress也是实现提供外部访问的一种方式。  
+&emsp; K8S将Pod对象和外部的网络环境进行了隔离，Pod和Service等对象之间的通信需要通过内部的专用地址进行，如果需要将某些Pod对象提供给外部用户访问，则需要给这些Pod对象打开一个端口进行引入外部流量， **除了Service以外，Ingress也是实现提供外部访问的一种方式。**  
 * **存储卷(Volume)**  
-&emsp; 在使用容器时，我们知道，当数据存放于容器之中，容器销毁后，数据也会随之丢失。这就是需要一个外部存储，以保证数据的持久化存储。而存储卷就是这样的一个东西。  
+&emsp; 在使用容器时，当数据存放于容器之中，容器销毁后，数据也会随之丢失。这就是需要一个外部存储，以保证数据的持久化存储。而存储卷就是这样的一个东西。  
 &emsp; 存储卷(Volume)是独立于容器文件系统之外的存储空间，常用于扩展容器的存储空间并为其提供持久存储能力。存储卷在K8S中的分类为：临时卷、本地卷和网络卷。临时卷和本地卷都位于Node本地，一旦Pod被调度至其他Node节点，此类型的存储卷将无法被访问，因为临时卷和本地卷通常用于数据缓存，持久化的数据通常放置于持久卷(persistent volume)之中。  
 &emsp; **持久存储卷(Persistent Volume，PV)和持久存储卷声明(Persistent Volume Claim，PVC)**  
 &emsp; PV和PVC使得K8s集群具备了存储的逻辑抽象能力，使得在配置Pod的逻辑里可以忽略对实际后台存储技术的配置，而把这项配置的工作交给PV的配置者，即集群的管理者。存储的PV和PVC的这种关系，跟计算的Node和Pod的关系是非常类似的；PV和Node是资源的提供者，根据集群的基础设施变化而变化，由K8s集群管理员配置；而PVC和Pod是资源的使用者，根据业务服务的需求变化而变化，有K8s集群的使用者即服务的管理员来配置。  
@@ -202,7 +210,7 @@ https://www.cnblogs.com/justmine/p/8684564.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-5.png)  
 &emsp; Kubernetes遵循非常传统的客户端服务端架构，客户端通过RESTful接口或者直接使用kubectl与Kubernetes集群进行通信，这两者在实际上并没有太多的区别，后者也只是对Kubernetes提供的RESTful API进行封装并提供出来。  
 
-&emsp; **<font color = "lime">Pod的创建逻辑流程是怎样的？</font>**  
+&emsp; **<font color = "clime">Pod的创建逻辑流程是怎样的？</font>**  
 1. 客户端提交创建请求，可以通过API Server的Restful API，也可以使用kubectl命令行工具。支持的数据类型包括JSON和YAML。  
 2. API Server处理用户请求，存储Pod数据到etcd。  
 3. 调度器通过API Server查看未绑定的Pod。尝试为Pod分配主机。  
@@ -217,9 +225,9 @@ https://www.cnblogs.com/justmine/p/8684564.html
 &emsp; K8S为Pod和Service资源对象分别使用了各自的专有网络，Pod网络由K8S的网络插件配置实现，而Service网络则由K8S集群进行指定。如下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-14.png)  
 &emsp; K8S使用的网络插件需要为每个Pod配置至少一个特定的地址，即Pod IP。Pod IP地址实际存在于某个网卡(可以是虚拟机设备)上。  
-&emsp; <font color = "lime">而Service的地址却是一个虚拟IP地址，没有任何网络接口配置在此地址上，它由Kube-proxy借助iptables规则或ipvs规则重定向到本地端口，再将其调度到后端的Pod对象。</font>Service的IP地址是集群提供服务的接口，也称为Cluster IP。  
+&emsp; <font color = "clime">而Service的地址却是一个虚拟IP地址，没有任何网络接口配置在此地址上，它由Kube-proxy借助iptables规则或ipvs规则重定向到本地端口，再将其调度到后端的Pod对象。</font>Service的IP地址是集群提供服务的接口，也称为Cluster IP。  
 &emsp; Pod网络和IP由K8S的网络插件负责配置和管理，具体使用的网络地址可以在管理配置网络插件时进行指定，如10.244.0.0/16网络。而Cluster网络和IP是由K8S集群负责配置和管理，如10.96.0.0/12网络。  
-&emsp; 从上图进行总结起来，一个K8S集群包含是三个网络。  
+&emsp; 从上图进行总结起来， **<font color = "clime">一个K8S集群包含是三个网络：</font>**  
 
 * 节点网络：各主机(Master、Node、ETCD等)自身所属的网络，地址配置在主机的网络接口，用于各主机之间的通信，又称为节点网络。  
 * Pod网络：专用于Pod资源对象的网络，它是一个虚拟网络，用于为各Pod对象设定IP地址等网络参数，其地址配置在Pod中容器的网络接口上。Pod网络需要借助kubenet插件或CNI插件实现。  

@@ -15,6 +15,12 @@
 
 <!-- /TOC -->
 
+
+
+&emsp; kubectl命令行的语法如下： $ kubectl [command] [TYPE] [NAME] [flags]  
+&emsp; [command]：子命令，用于操作Kubemetes集群资源对象的命令，例如create、delete、describe、get、exec等。  
+
+
 # 1. Kubemetes实践  
 <!-- 
 k8s的快速使用手册
@@ -148,16 +154,16 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
 
 
 ## 1.3. kubectl命令行工具  
-&emsp; <font color = "lime">kubectl作为客户端CLI工具，可以让用户通过命令行的方式对Kubernetes集群进行操作。</font>  
+&emsp; <font color = "clime">kubectl作为客户端CLI工具，可以让用户通过命令行的方式对Kubernetes集群进行操作。</font>  
 
 ### 1.3.1. ※※※kubectl用法概述  
-&emsp; kubectl命令行的语法如下：  
+&emsp; **<font color = "clime">kubectl命令行的语法如下：</font>**  
 
 ```text
 $ kubectl [command] [TYPE] [NAME] [flags]
 ```
 &emsp; 其中，command、TYPE、NAME、flags的含义如下。  
-1. command：子命令，用于操作Kubemetes集群资源对象的命令，例如create、delete、describe、get、apply等。  
+1. <font color = "clime">command：子命令，用于操作Kubemetes集群资源对象的命令，例如create、delete、describe、get、exec等。</font>**  
 2. **<font color = "red">TYPE：资源对象的类型，区分大小写，能以单数形式、复数形式或者简写形式表示。</font>** 例如以下3种TYPE是等价的。  
 
     ```text
