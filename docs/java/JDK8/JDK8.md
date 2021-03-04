@@ -30,7 +30,7 @@ public interface DefaultFunctionInterface {
     }
 }
 ```
-&emsp; <font color = "lime">default方法被子接口继承，也可以被其实现类所调用。default方法被继承时，可以被子接口覆写。</font>  
+&emsp; <font color = "clime">default方法被子接口继承，也可以被其实现类所调用。default方法被继承时，可以被子接口覆写。</font>  
 &emsp; 如果一个类实现了多个接口，且这些接口中无继承关系，这些接口中若有相同的(同名，同参数)的default方法，则接口实现类会报错。接口实现类必须通过特殊语法指定该实现类要实现哪个接口的default方法，\<接口\>.super.\<方法名\>([参数])。  
 
 ### 1.1.2. 接口中静态方法  
@@ -43,25 +43,20 @@ public interface StaticFunctionInterface {
     }
 }
 ```
-&emsp; <font color = "lime">接口中的static方法不能被继承，也不能被实现类调用，只能被自身调用。但是静态变量会被继承。</font>  
+&emsp; <font color = "clime">接口中的static方法不能被继承，也不能被实现类调用，只能被自身调用。但是静态变量会被继承。</font>  
 
 ## 1.2. Lambda表达式  
-[Lambda](/docs/java/JDK8/Lambda.md)  
-
-------
+&emsp; [Lambda](/docs/java/JDK8/Lambda.md)  
 
 ## 1.3. StreamAPI  
-[Stream](/docs/java/JDK8/Stream.md)  
+&emsp; [Stream](/docs/java/JDK8/Stream.md)  
 
------
 ## 1.4. Optional类  
-[Optional](/docs/java/JDK8/Optional.md)  
+&emsp; [Optional](/docs/java/JDK8/Optional.md)  
 
------
 ## 1.5. Date/Time API  
-[DateTime](/docs/java/JDK8/DateTime.md)  
+&emsp; [DateTime](/docs/java/JDK8/DateTime.md)  
 
------
 ## 1.6. 异常捕获的改变   
 &emsp; 新的try…cache可以自动关闭在try表达式中打开的对象，而无需开发者手动关闭。  
 &emsp; 多个流对象打开语句，用分号分隔，不是逗号。  

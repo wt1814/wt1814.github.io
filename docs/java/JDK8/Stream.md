@@ -14,13 +14,13 @@
                 - [1.2.2.2.2. Reduce聚合操作](#12222-reduce聚合操作)
                 - [1.2.2.2.3. Collect收集结果](#12223-collect收集结果)
             - [1.2.2.3. ParallelStream](#1223-parallelstream)
-                - [1.2.2.3.1. ※※※parallelStream() 线程安全](#12231-※※※parallelstream-线程安全)
+                - [1.2.2.3.1. ★★★parallelStream() 线程安全](#12231-★★★parallelstream-线程安全)
     - [1.3. intellij debug 技巧:java 8 stream](#13-intellij-debug-技巧java-8-stream)
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">总结：</font>**    
-&emsp; **<font color = "lime">paralleStream使用foreach直接修改变量是非线程安全的。解决方案：1.使用锁； 2.使用collect和reduce操作(Collections框架提供了同步的包装)。</font>**  
+&emsp; **<font color = "red">总结：</font>**    
+&emsp; **<font color = "clime">使用并行流parallelStream()有线程安全问题。例如：parallelStream().forEach()内部修改集合会有问题。解决方案：1.使用锁； 2.使用collect和reduce操作(Collections框架提供了同步的包装)。</font>**  
 
 # 1. StreamAPI  
 
@@ -50,14 +50,6 @@ https://juejin.im/post/6888549645908181005
 &emsp; 基本数值型对应的Stream：对于基本数值型，目前有三种对应的包装类型 Stream：IntStream、LongStream、DoubleStream。  
 
 ### 1.2.2. ~~流的操作~~  
-&emsp; 数据结构包装成Stream，对Stream中元素进行操作。流的操作类型分为三种：  
-
-* Intermediate(中间方法)：一个流可以后面跟随零个或多个intermediate 操作。其目的主要是打开流，做出某种程度的数据映射/过滤，然后返回一个新的流，交给下一个操作使用。这类操作都是惰性化的(lazy)，仅仅调用到这类方法，并没有真正开始流的遍历。  
-分类：map (mapToInt, flatMap等)、filter、distinct、sorted、peek、limit、skip、parallel、sequential、unordered；  
-* short-circuiting：对于一个intermediate操作，如果它接受的是一个无限大(infinite/unbounded)的Stream，但返回一个有限的新Stream。对于一个terminal操作，如果它接受的是一个无限大的Stream，但能在有限的时间计算出结果。当操作一个无限大的Stream，而又希望在有限时间内完成操作，则在管道内拥有一个short-circuiting操作是必要非充分条件。  
-分类：anyMatch、allMatch、noneMatch、findFirst、findAny、limit；  
-* Terminal(最终方法)：一个流只能有一个terminal操作，当这个操作执行后，流就被使用“光”了，无法再被操作。所以这必定是流的最后一个操作。Terminal操作的执行，才会真正开始流的遍历，并且会生成一个结果，或者一个side effect。  
-分类：forEach、forEachOrdered、toArray、reduce、collect、min、max、count、 anyMatch、allMatch、noneMatch、findFirst、findAny、iterator；  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/java8/java-7.png)  
 
@@ -182,19 +174,19 @@ reduce("", String::concat);
     &emsp; 参数supplier是一个生成目标类型实例的方法，代表着目标容器是什么；accumulator是将操作的目标数据填充到supplier 生成的目标类型实例中去的方法，代表着如何将元素添加到容器中；而combiner是将多个supplier生成的实例整合到一起的方法，代表着规约操作，将多个结果合并。  
 
 #### 1.2.2.3. ParallelStream   
-&emsp; 数据并行处理，只需要在原来的基础上加一个parallel()就可以开启， **<font color = "lime">parallel()开启的底层并行框架是[fork/join](/docs/java/concurrent/ForkJoinPool.md)。</font>**  
+&emsp; 数据并行处理，只需要在原来的基础上加一个parallel()就可以开启， **<font color = "clime">parallel()开启的底层并行框架是[fork/join](/docs/java/concurrent/ForkJoinPool.md)。</font>**  
 &emsp; parallelStream是什么，它是一个集合的并发处理流。其作用是把一个集合中的数据分片，进行一个多线程的处理，增快运行速度。  
 
 &emsp; 默认的并行数是Ncpu个。并行线程数量：   
 1. 并行流在启动线程上，默认会调用 Runtime.getRuntime().availableProcessors()，获取JVM底层最大设备线程数。  
 2. 如果想设置并行线程启动数量，则需要全局设置System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "12");  
 
-##### 1.2.2.3.1. ※※※parallelStream() 线程安全  
+##### 1.2.2.3.1. ★★★parallelStream() 线程安全  
 <!-- 
 https://www.jianshu.com/p/e9a36f2802ae?from=timeline&isappinstalled=0
 https://www.jianshu.com/p/32277e84dd1d
 -->
-&emsp; **<font color = "lime">使用parallelStream()有线程安全问题。例如：parallelStream().forEach()内部修改集合会有问题。解决方案：使用锁Syschronize或Lock或其他方案保障线程安全。</font>**  
+&emsp; **<font color = "clime">使用并行流parallelStream()有线程安全问题。例如：parallelStream().forEach()内部修改集合会有问题。解决方案：使用锁Syschronize或Lock或其他方案保障线程安全。</font>**  
 &emsp; 示例：非安全代码  
 
 ```java
