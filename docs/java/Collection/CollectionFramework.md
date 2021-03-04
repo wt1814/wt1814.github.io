@@ -25,9 +25,10 @@
 
 <!-- /TOC -->
 
-&emsp; <font color = "lime">List有ArrayList、Vector、LinkedList。Map有HashMap、LinkedHashMap、TreeMap、Hashtable。Set有HashSet、LinkedHashSet、TreeSet。</font>    
-&emsp; <font color = "lime">List：有序，可重复。Set：无序，唯一。Map：存储键值对。</font>  
+&emsp; <font color = "clime">List有ArrayList、Vector、LinkedList。Map有HashMap、LinkedHashMap、TreeMap、Hashtable。Set有HashSet、LinkedHashSet、TreeSet。</font>    
+&emsp; <font color = "clime">List：有序，可重复。Set：无序，唯一。Map：存储键值对。</font>  
 
+&emsp; 快速失败机制：单线程迭代器中直接删除元素或多线程使用非安全的容器都会抛出ConcurrentModificationException异常。  
 &emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，在拷贝的集合上进行遍历。</font>**  
 
 &emsp; 排序：  
@@ -157,22 +158,23 @@
     5. 内存空间占用：ArrayList的空间浪费主要体现在在list列表的结尾会预留一定的容量空间，而LinkedList的空间花费则体现在它的每一个元素都需要消耗比ArrayList更多的空间(因为要存放直接后继和直接前驱以及数据)。  
 4. ArrayList的扩容机制？  
     1. 在JKD1.6中，如果通过无参构造的话，初始数组容量为10。每次通过copeOf的方式扩容后容量为原来的1.5倍加1。  
-    2. 在JDK1.7中，如果通过无参构造的话，初始数组容量为0，当真正对数组进行添加时，才真正分配容量，每次按照大约1.5倍(位运算)的比率通过copeOf的方式扩容。  
-    3. 在JKD1.8中，arraylist这个类中，扩容 调用的是grow()方法，通过grow()方法中调用的Arrays.copyof()方法进行对原数组的复制，再通过调用System.arraycopy()方法进行复制，达到扩容的目的。  
+    2. **在JDK1.7中，如果通过无参构造的话，初始数组容量为0，当真正对数组进行添加时，才真正分配容量。** 每次按照大约1.5倍(位运算)的比率通过copeOf的方式扩容。  
+    3. 在JKD1.8中，arraylist这个类中，扩容调用的是grow()方法，通过grow()方法中调用的Arrays.copyof()方法进行对原数组的复制，再通过调用System.arraycopy()方法进行复制，达到扩容的目的。  
 5. **<font color = "lime">HashMap与HashTable的区别？</font>**  
 
     1. 两者父类不同：HashMap和Hashtable都实现了Map接口，但Hashtable继承于Dictionary类，而HashMap是继承于AbstractMap。  
     2. 底层数据结构：JDK1.8以后的HashMap在解决哈希冲突时有了较大的变化，当链表长度大于阈值(默认为8)时，将链表转化为红黑树，以减少搜索时间。Hashtable没有这样的机制。 
-    3. 对Null key 和Null value的支持： **<font color = "lime">HashMap中，null可以作为键，这样的键只有一个，</font>** 可以有一个或多个键所对应的值为 null。 **<font color = "lime">但是在HashTable中put进的键值只要有一个null，直接抛出NullPointerException。</font>**  
-    4. 初始容量大小和每次扩充容量大小的不同 ： ①<font color = "red">创建时如果不指定容量初始值，Hashtable 默认的初始大小为11，之后每次扩充，容量变为原来的2n+1。</font>HashMap 默认的初始化大小为16。之后每次扩充，容量变为原来的2倍。②<font color = "red">创建时如果给定了容量初始值，那么 Hashtable 会直接使用给定的大小</font>，而 HashMap 会将其扩充为2的幂次方大小。也就是说 HashMap 总是使用2的幂作为哈希表的大小。  
-    5. 线程是否安全： HashMap 是非线程安全的，HashTable 是线程安全的；HashTable 内部的方法基本都经过synchronized 修饰。  
-    6. 效率： 因为线程安全的问题，HashMap 要比 HashTable 效率高一点。另外，HashTable基本被淘汰，不要在代码中使用它。
+    3. 对Null key 和Null value的支持： **<font color = "lime">HashMap中，null可以作为键，这样的键只有一个，</font>** 可以有一个或多个键所对应的值为null。 **<font color = "lime">但是在HashTable中put进的键值只要有一个null，直接抛出NullPointerException。</font>**  
+    4. 初始容量大小和每次扩充容量大小的不同 ： ①<font color = "red">创建时如果不指定容量初始值，Hashtable 默认的初始大小为11，之后每次扩充，容量变为原来的2n+1。</font>HashMap 默认的初始化大小为16。之后每次扩充，容量变为原来的2倍。②<font color = "red">创建时如果给定了容量初始值，那么 Hashtable会直接使用给定的大小</font>，而HashMap会将其扩充为2的幂次方大小。也就是说HashMap总是使用2的幂作为哈希表的大小。  
+    5. 线程是否安全：HashMap是非线程安全的，HashTable是线程安全的；HashTable内部的方法基本都经过synchronized修饰。  
+    6. 效率：因为线程安全的问题，HashMap要比HashTable效率高一点。另外，HashTable基本被淘汰，不要在代码中使用它。
 <!-- https://mp.weixin.qq.com/s/kZcIsYbQNJ2Cqitg4xoV6g-->
 
 6. Java集合不能存放基本数据类型，只存放对象的引用  
 &emsp; Java集合如Map、Set、List等所有集合只能存放引用类型数据(数组、类，集合类型属于类范畴、接口)，它们都是存放引用类型数据的容器。不能存放如int、long、float、double等基础类型的数据。  
 &emsp; 基本类型数据如何解决？  
-&emsp; 可以通过包装类把基本类型转为对象类型，存放引用就可以解决这个问题。由于有了自动拆箱和装箱功能，基本数据类型和其对应对象(包装类)之间的转换变得很方便，直接把基本数据类型存入集合中，系统会自动将其装箱成封装类，然后加入到集合当中。示例代码：  
+&emsp; 可以通过包装类把基本类型转为对象类型，存放引用就可以解决这个问题。由于有了自动拆箱和装箱功能，基本数据类型和其对应对象(包装类)之间的转换变得很方便，直接把基本数据类型存入集合中，系统会自动将其装箱成封装类，然后加入到集合当中。  
+&emsp; 示例代码：  
 
     ```java
     int i = 10;
@@ -397,15 +399,14 @@ public static void main(String[] args) {
     原始list元素：[11, 11, 12, 13, 14, 15, 16]
     通过迭代器移除后的list元素：[12, 13, 14, 15, 16]  
 
-&emsp; **总结：** 如果开发中需要在集合中移除某个元素，如果jdk是1.8的，建议直接使用2.4方法，如果是低版本，那么建议采用迭代器方法，效率高，性能好！  
-
+&emsp; **总结：** 如果开发中需要在集合中移除某个元素，如果jdk是1.8的，建议直接使用JDK1.8的写法，如果是低版本，那么建议采用迭代器方法，效率高，性能好！  
 
 ### 1.3.2. ~~快速失败(fail-fast)VS安全失败(fail-safe)-1~~  
 <!-- https://mp.weixin.qq.com/s?__biz=MzIyNDI3MjY0NQ==&mid=2247483920&idx=1&sn=6ea75de92bbcf50e64b5bb6fed9b9b23&source=41#wechat_redirect -->
 #### 1.3.2.1. 快速失败(fail—fast)  
-&emsp; fail-fast 是 Java 中的一种快速失败机制，java.util 包下所有的集合都是快速失败的，快速失败会抛出 ConcurrentModificationException 异常，fail-fast可以把它理解为一种快速检测机制，它只能用来检测错误，不会对错误进行恢复，fail-fast 不一定只在多线程环境下存在，ArrayList 也会抛出这个异常，主要原因是由于 modCount 不等于 expectedModCount。    
+&emsp; fail-fast 是 Java 中的一种快速失败机制，java.util包下所有的集合都是快速失败的，快速失败会抛出 ConcurrentModificationException 异常，fail-fast可以把它理解为一种快速检测机制，它只能用来检测错误，不会对错误进行恢复，fail-fast不一定只在多线程环境下存在，ArrayList 也会抛出这个异常，主要原因是由于 modCount 不等于 expectedModCount。    
 
-&emsp; **<font color = "lime">原理：迭代器在遍历时直接访问集合中的内容，并且在遍历过程中使用一个modCount变量。集合在被遍历期间如果内容发生变化，就会改变modCount的值。每当迭代器使用 hashNext()/next()遍历下一个元素之前，都会检测modCount变量是否为expectedmodCount值，是的话就返回遍历；否则抛出异常，终止遍历。</font>**  
+&emsp; **<font color = "clime">原理：迭代器在遍历时直接访问集合中的内容，并且在遍历过程中使用一个modCount变量。集合在被遍历期间如果内容发生变化，就会改变modCount的值。每当迭代器使用 hashNext()/next()遍历下一个元素之前，都会检测modCount变量是否为expectedmodCount值，是的话就返回遍历；否则抛出异常，终止遍历。</font>**  
 
 &emsp; 注意：这里异常的抛出条件是检测到modCount！= expectedmodCount这个条件。如果集合发生变化时修改modCount值刚好又设置为了expectedmodCount值，则异常不会抛出。因此，不能依赖于这个异常是否抛出而进行并发操作的编程，这个异常只建议用于检测并发修改的bug。  
 
@@ -417,7 +418,7 @@ public static void main(String[] args) {
 -->
 &emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，在拷贝的集合上进行遍历。</font>**  
 
-&emsp; 原理：由于迭代时是对原集合的拷贝进行遍历，所以在遍历过程中对原集合所作的修改并不能被迭代器检测到，所以不会触发 Concurrent Modification Exception。  
+&emsp; 原理：由于迭代时是对原集合的拷贝进行遍历，所以在遍历过程中对原集合所作的修改并不能被迭代器检测到，所以不会触发Concurrent Modification Exception。  
 
 &emsp; 缺点：基于拷贝内容的优点是避免了Concurrent Modification Exception，但同样地，迭代器并不能访问到修改后的内容，即：迭代器遍历的是开始遍历那一刻拿到的集合拷贝，在遍历期间原集合发生的修改迭代器是不知道的。  
 
@@ -455,10 +456,10 @@ https://blog.csdn.net/weixin_40304387/article/details/81054080
 * 如果要用Comparable接口，则必须实现这个接口，并重写comparaTo()方法；但是Comparator接口可以在类外部使用，通过将该接口的一个匿名类对象当做参数传递给Collections.sort()方法或者Arrays.sort()方法实现排序。Comparator体现了一种策略模式，即可以不用要把比较方法嵌入到类中，而是可以单独在类外部使用，这样就可有不用改变类本身的代码而实现对类对象进行排序。    
 
 #### 1.4.3.1. Comparable接口  
-......
+&emsp; ......
 
 #### 1.4.3.2. Comparator接口  
-......
+&emsp; ......
  
 <!-- 
 &emsp; 用JDK1.8中Stream流进行排序。  
