@@ -225,6 +225,77 @@ public class LRUCache<k, v> {
 }
 ```
 
+
+---------
+
+<!-- 
+https://mp.weixin.qq.com/s/pGNIEOGvOYDM5yiyMM8bRQ
+-->
+LRU算法  
+&emsp; LinkedHashMap的accessOrder字段，其为true可以将被访问的数据移动到链表的表尾。可以基于此特性来实现一个应用LRU策略的缓存。重载removeEldestEntry方法，当发现缓存空间已满时，即删除表头数据来释放空间。  
+
+```java
+/**
+ * 基于LinkedHashMap的 LRU Cache 实现
+ */
+public class LRUCache<K,V> extends LinkedHashMap<K,V> {
+    private int cacheSize;  // 缓存容量
+
+    public LRUCache(int cacheSize) {
+        super(16,0.75f, true);
+        this.cacheSize = cacheSize;
+    }
+
+    /**
+     * 超过Cache容量即会移除最近最少被使用的元素
+     * @param eldest
+     * @return
+     */
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+        return this.size() > cacheSize;
+    }
+}
+```
+&emsp; 测试用例：  
+
+```java
+public class LRUCacheTest {
+
+    public static void testLRUCache() {
+        // 建立一个容量为3基于LRU算法的缓存Map
+        LRUCache<String, Integer> lruCache = new LRUCache<>(3);
+
+        lruCache.put("Bob",37);
+        lruCache.put("Tony",27);
+        lruCache.put("Aaron",23);
+
+        System.out.println("LRU Cache:");
+        lruCache.forEach( (k,v) -> System.out.println("K : " + k + " V : " + v ) );
+
+        lruCache.put("Cat", 3);
+        System.out.println("add new entry LRU Cache:");
+        lruCache.forEach( (k,v) -> System.out.println("K : " + k + " V : " + v ) );
+
+        lruCache.put("Aaron", 24);
+        System.out.println("access \"Aaron\" , LRU Cache:");
+        lruCache.forEach( (k,v) -> System.out.println("K : " + k + " V : " + v ) );
+
+        lruCache.get("Cat");
+        lruCache.put("David", 30);
+        System.out.println("access \"Cat\", add new entry, LRU Cache:");
+        lruCache.forEach( (k,v) -> System.out.println("K : " + k + " V : " + v ) );
+    }
+}
+```
+&emsp; 测试结果如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-10.png)  
+
+
+
+
+
+
 ## 1.3. LFU
 &emsp; LFU(Least Frequently Used)最近最少使用算法。它是基于“如果一个数据在最近一段时间内使用次数很少，那么在将来一段时间内被使用的可能性也很小”的思路。  
 &emsp; 注意LFU和LRU算法的不同之处，LRU的淘汰规则是基于访问时间，而LFU是基于访问次数的。  

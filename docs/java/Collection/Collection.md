@@ -24,11 +24,20 @@
 
 <!-- /TOC -->
 
+
+&emsp; HashSet基于HashMap实现： **<font color = "clime">存储在HashSet中的数据作为Map的key，而Map的value统一为PRESENT。</font>**  
+&emsp; 添加元素(如何保证值不重复？)  
+1. Hashset#add通过 map.put() 方法来添加元素。 **<font color = "clime">HashMap#put方法中如果新插入的key不存在，则返回null；如果新插入的key存在，则返回原key对应的value值（注意新插入的value会覆盖原value值）。</font>**  
+2. HashSet的add(E e)方法，会将e作为key，PRESENT 作为value插入到map集合中。  
+    1. 如果e存在，HashMap#put返回原key对应的value值，Hashset#add返回false，表示插入值重复，插入失败。  
+    2. 如果e不存在，HashMap#put返回null值，Hashset#add返回true，表示插入值不重复，插入成功。  
+
+
 # 1. Collection
 ## 1.1. List  
 ### 1.1.1. ArrayList  
-&emsp; ArrayList可以简单的认为是一个动态数组，<font color = "red">长度不够时，调用Arrays.copyOf方法，拷贝当前数组到一个新的长度更大的数组；</font>  
-&emsp; ArrayList特点：随机访问速度快，插入和移除性能较差(数组的特点)；支持null元素；有顺序；元素可以重复；线程不安全；  
+&emsp; ArrayList可以简单的认为是一个动态数组，<font color = "red">长度不够时，调用Arrays.copyOf方法，拷贝当前数组到一个新的长度更大的数组。</font>  
+&emsp; ArrayList特点：随机访问速度快，插入和移除性能较差(数组的特点)；支持null元素；有顺序；元素可以重复；线程不安全。  
 
 #### 1.1.1.1. 如何去掉list集合中重复的元素?   
 <!-- 
@@ -177,16 +186,16 @@ public boolean remove(Object o) {
 
 * HashSet：基于HashMap实现，一个性能相对较好的Set；
 * LinkedHashSet：基于LinkedHashMap实现，一个保存了插入顺序的Set；  
-* TreeSet；基于TreeSet实现，一个实现了排序的Set；  
+* TreeSet：基于TreeMap实现，一个实现了排序的Set；  
 
 ### 1.2.1. HashSet  
-&emsp; HashSet元素无序且不能重复。<font color = "red">HashSet的实现依赖于HashMap，HashSet的值存储在HashMap中。</font>在HashSet的构造法中会初始化一个HashMap对象，HashSet不允许值重复，因此， **<font color = "lime">HashSet的值是作为HashMap的key存储在HashMap中的，</font>** 当存储的值已经存在时返回false。<font color = "red">而HashMap的value则存储了一个PRESENT，它是一个静态的Object对象。</font>  
+&emsp; HashSet元素无序且不能重复。<font color = "red">HashSet的实现依赖于HashMap，HashSet的值存储在HashMap中。</font>在HashSet的构造法中会初始化一个HashMap对象，HashSet不允许值重复，因此， **<font color = "clime">HashSet的值是作为HashMap的key存储在HashMap中的，</font>** 当存储的值已经存在时返回false。<font color = "red">而HashMap的value则存储了一个PRESENT，它是一个静态的Object对象。</font>  
 
 #### 1.2.1.1. HashSet 定义  
 ```java
 public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable, java.io.Serializable
 ```
-&emsp; HashSet 实现了 Cloneable 接口和 Serializable 接口，分别用来支持克隆以及支持序列化。还实现了 Set 接口，该接口定义了 Set 集合类型的一套规范。
+&emsp; HashSet实现了Cloneable接口和Serializable接口，分别用来支持克隆以及支持序列化。还实现了Set 接口，该接口定义了Set集合类型的一套规范。
 
 #### 1.2.1.2. 字段属性  
 ```java
@@ -195,7 +204,7 @@ private transient HashMap<E,Object> map;
 //向HashSet中添加数据，数据在上面的 map 结构是作为 key 存在的，而value统一都是 PRESENT
 private static final Object PRESENT = new Object();
 ```
-&emsp; 第一个定义一个HashMap，作为实现HashSet的数据结构；第二个PRESENT对象。 **<font color = "lime">存储在HashSet中的数据作为Map的key，而Map的value统一为PRESENT。</font>**
+&emsp; 1)定义一个HashMap，作为实现HashSet的数据结构；2)定义一个PRESENT对象。 **<font color = "clime">存储在HashSet中的数据作为Map的key，而Map的value统一为PRESENT。</font>**  
 
 #### 1.2.1.3. 构造函数  
 
@@ -314,10 +323,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
     return null;
 }
 ```
-1. Hashset#add通过 map.put() 方法来添加元素。 **<font color = "lime">HashMap#put方法中如果新插入的key不存在，则返回null；如果新插入的key存在，则返回原key对应的value值（注意新插入的value会覆盖原value值）。</font>**  
-2. HashSet 的 add(E e) 方法，会将 e 作为 key，PRESENT 作为 value 插入到 map 集合中。  
+1. Hashset#add通过 map.put() 方法来添加元素。 **<font color = "clime">HashMap#put方法中如果新插入的key不存在，则返回null；如果新插入的key存在，则返回原key对应的value值（注意新插入的value会覆盖原value值）。</font>**  
+2. HashSet的add(E e)方法，会将e作为key，PRESENT 作为value插入到map集合中。  
     1. 如果e存在，HashMap#put返回原key对应的value值，Hashset#add返回false，表示插入值重复，插入失败。  
     2. 如果e不存在，HashMap#put返回null值，Hashset#add返回true，表示插入值不重复，插入成功。  
-
-
-

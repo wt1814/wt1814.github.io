@@ -2,23 +2,29 @@
 <!-- TOC -->
 
 - [1. HashMap](#1-hashmap)
-    - [1.1. Map集合遍历](#11-map集合遍历)
-    - [1.2. HashMap源码](#12-hashmap源码)
-        - [1.2.1. HashMap类定义](#121-hashmap类定义)
-        - [1.2.2. 属性(数据结构)](#122-属性数据结构)
-            - [1.2.2.1. Hash表数据结构](#1221-hash表数据结构)
-            - [1.2.2.2. 树形化结构](#1222-树形化结构)
-            - [HashMap的内部类](#hashmap的内部类)
-        - [1.2.3. 构造函数](#123-构造函数)
-        - [1.2.4. 成员方法](#124-成员方法)
-            - [1.2.4.1. hash()函数(扰动函数)](#1241-hash函数扰动函数)
-            - [1.2.4.2. put()，插入](#1242-put插入)
-            - [1.2.4.3. resize()，扩容机制](#1243-resize扩容机制)
-    - [1.3. HashMap在JDK1.7和JDK1.8中的区别总结](#13-hashmap在jdk17和jdk18中的区别总结)
-    - [1.4. HashMap的线程安全问题](#14-hashmap的线程安全问题)
-        - [1.4.1. JDK1.8](#141-jdk18)
-        - [1.4.2. 线程安全的map](#142-线程安全的map)
-    - [1.5. 如何实现一个自定义的class作为HashMap的key？](#15-如何实现一个自定义的class作为hashmap的key)
+    - [1.1. Map介绍](#11-map介绍)
+    - [1.2. Map集合遍历](#12-map集合遍历)
+    - [1.3. HashMap源码](#13-hashmap源码)
+        - [1.3.1. HashMap类定义](#131-hashmap类定义)
+        - [1.3.2. 属性(数据结构)](#132-属性数据结构)
+        - [1.3.3. 源码](#133-源码)
+            - [1.3.3.1. Hash表数据结构](#1331-hash表数据结构)
+            - [1.3.3.2. 树形化结构](#1332-树形化结构)
+            - [1.3.3.3. HashMap的内部类](#1333-hashmap的内部类)
+        - [1.3.4. 构造函数](#134-构造函数)
+        - [1.3.5. 成员方法](#135-成员方法)
+            - [1.3.5.1. hash()函数(扰动函数)](#1351-hash函数扰动函数)
+            - [1.3.5.2. put()，插入](#1352-put插入)
+                - [1.3.5.2.1. 时序图及说明](#13521-时序图及说明)
+                - [1.3.5.2.2. 具体源码](#13522-具体源码)
+            - [1.3.5.3. resize()，扩容机制](#1353-resize扩容机制)
+                - [1.3.5.3.1. 时序图及说明](#13531-时序图及说明)
+                - [1.3.5.3.2. 具体源码](#13532-具体源码)
+    - [1.4. HashMap在JDK1.7和JDK1.8中的区别总结](#14-hashmap在jdk17和jdk18中的区别总结)
+    - [1.5. HashMap的线程安全问题](#15-hashmap的线程安全问题)
+        - [1.5.1. JDK1.8](#151-jdk18)
+        - [1.5.2. 线程安全的map](#152-线程安全的map)
+    - [1.6. 如何实现一个自定义的class作为HashMap的key？](#16-如何实现一个自定义的class作为hashmap的key)
 
 <!-- /TOC -->
 
@@ -31,27 +37,45 @@ https://mp.weixin.qq.com/s/VpcgoV9JJWZz6tLagsIYnQ
 https://mp.weixin.qq.com/s/yijuwQuuOBE8x1VKk6lhCQ
 -->
 
-
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-4.png)  
 &emsp; 总结：  
 
-1. 数据结构
+1. 数据结构  
     1. Hash表数据结构：  
-    &emsp; 初始容量为16
-    &emsp; loadFactor加载因子0.75f
-    &emsp; HashMap在发生hash冲突的时候用的是链地址法。 JDK1.7中使用头插法，JDK1.8使用尾插法。  
+    &emsp; 初始容量为16  
+    &emsp; loadFactor加载因子0.75f  
+    &emsp; HashMap在发生hash冲突的时候用的是链地址法。JDK1.7中使用头插法，JDK1.8使用尾插法。  
 
     2. 树形化结构：  
-    &emsp; 树形化：把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于 8；table 数组长度大于等于 64。  
+    &emsp; 树形化：把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于8；table数组长度大于等于64。  
     &emsp; 解除树形化：阈值6。
-2. 常用函数：  
-    1. 扰动函数/HashMap的Hash规则：(hash 函数会根据传递的 key 值进行计算，首先计算 key 的 hashCode 值，然后再对 hashcode 进行无符号右移操作，最后再和 hashCode 进行异或 ^ 操作)  
+2. 成员方法：  
+    1. hash()函数/扰动函数：hash函数会根据传递的key值进行计算，首先计算key的hashCode值，然后再对hashcode进行无符号右移操作，最后再和hashCode进行异或 ^ 操作。  
+    2. put()函数：<font color = "clime">在put的时候，首先对key做hash运算，计算出该key所在的index。如果没碰撞，直接放到数组中，如果碰撞了，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。假设key是相同的，则替换到原来的值。最后判断哈希表是否满了(当前哈希表大小*负载因子)，如果满了，则扩容。</font>  
     2. 扩容机制：JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。对链表进行迁移。会对链表中的节点，进行分组()，进行迁移后，一类的节点位置在愿索引，一类在原索引+旧数组长度。 ~~通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度~~
+3. HashMap的线程安全问题：在jdk1.8中，在多线程环境下，会发生数据覆盖的情况。
+    1. 假设两个线程A、B都在进行put操作，并且hash函数计算出的插入下标是相同的，当线程A执行完第六行代码后由于时间片耗尽导致被挂起，而线程B得到时间片后在该下标处插入了元素，完成了正常的插入，然后线程A获得时间片，由于之前已经进行了hash碰撞的判断，所有此时不会再进行判断，而是直接进行插入，这就导致了线程B插入的数据被线程A覆盖了，从而线程不安全。  
 
-# 1. HashMap  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-4.png)  
 
-## 1.1. Map集合遍历  
+# 1. HashMap
+
+## 1.1. Map介绍
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-3.png)  
+
+* LikedHashMap  
+&emsp; LinkedHashMap 是 HashMap 的一个子类，保存了记录的插入顺序，在用 Iterator 遍历LinkedHashMap 时，先得到的记录肯定是先插入的，也可以在构造时带参数，按照访问次序排序。  
+
+&emsp; LinkedHashMap怎么实现有序的？  
+&emsp; LinkedHashMap内部维护了一个单链表，有头尾节点，同时LinkedHashMap节点Entry内部除了继承HashMap的Node属性，还有before 和 after用于标识前置节点和后置节点。可以实现按插入的顺序或访问顺序排序。  
+
+* TreeMap(可排序)  
+&emsp; TreeMap实现SortedMap接口，能够把它保存的记录根据键排序，默认是按键值的升序排序，也可以指定排序的比较器，当用Iterator遍历TreeMap时，得到的记录是排过序的。  
+&emsp; 如果使用排序的映射，建议使用TreeMap。  
+&emsp; 在使用TreeMap时，key必须实现Comparable接口或者在构造TreeMap传入自定义的Comparator，否则会在运行时抛出java.lang.ClassCastException类型的异常。  
+
+
+## 1.2. Map集合遍历  
 
 1. map.keySet()  
 2. map.values()  
@@ -100,22 +124,24 @@ public void testHashMap() {
     });
 }
 ```
-&emsp; 推荐：<font color = "lime">使用 entrySet 遍历 Map 类集合 KV，而不是 keySet 方式进行遍历。</font>  
+&emsp; 推荐：<font color = "clime">使用 entrySet 遍历 Map 类集合 KV，而不是 keySet 方式进行遍历。</font>  
 &emsp; 说明：keySet 其实是遍历了 2 次，一次是转为 Iterator 对象，另一次是从 hashMap 中取出key 所对应的 value。而 entrySet 只是遍历了一次就把 key 和 value 都放到了 entry 中，效率更高。  
 &emsp; <font color = "red">如果是 JDK8，使用 Map.foreach 方法。</font>  
 
-## 1.2. HashMap源码  
+## 1.3. HashMap源码  
 https://gitee.com/wt1814/  
 
-### 1.2.1. HashMap类定义  
+### 1.3.1. HashMap类定义  
 
 ```java
 public class HashMap<K,V> extends AbstractMap<K,V> implements Map<K,V>, Cloneable, Serializable
 ```
 &emsp; Cloneable空接口，表示可以克隆； Serializable序列化； AbstractMap，提供Map实现接口。  
 
-### 1.2.2. 属性(数据结构)  
+### 1.3.2. 属性(数据结构)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-5.png)  
 
+### 1.3.3. 源码
 ```java
 //默认的初始化容量为16，必须是2的n次幂
 static final int DEFAULT_INITIAL_CAPACITY = 1 << 4; // aka 16
@@ -192,24 +218,23 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
     }
 }
 ```
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-5.png)  
 
-#### 1.2.2.1. Hash表数据结构
+#### 1.3.3.1. Hash表数据结构
 &emsp; **HashMap中hash函数设计：** 参考下文成员方法hash()章节。    
 &emsp; **HashMap在发生hash冲突的时候用的是链地址法。** **<font color = "red">JDK1.7中使用头插法，JDK1.8使用尾插法。</font>**  
 &emsp; **在HashMap的数据结构中，有两个参数可以影响HashMap的性能：初始容量(inital capacity)和负载因子(load factor)。** 初始容量和负载因子也可以修改，具体实现方式，可以在对象初始化的时候，指定参数。  
 
 * initialCapacity数组的初始容量为16。可以在构造方法中指定。
 
-    &emsp; static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;HashMap 的默认初始容量是 1 << 4 = 16， << 是一个左移操作，它相当于是   
+    &emsp; static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;HashMap的默认初始容量是1 << 4 = 16， << 是一个左移操作，它相当于是   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-11.png)  
     &emsp; <font color = "red">HashMap的数组长度为什么一定是2的幂次方？</font>  
-    &emsp; HashMap是通过一个名为tableSizeFor的方法来确保HashMap数组长度永远为2的幂次方的。源码查看构造函数部分。  
-    &emsp; 为什么要把数组长度设计为 2 的幂次方呢？  
+    &emsp; **HashMap是通过一个名为tableSizeFor的方法来确保HashMap数组长度永远为2的幂次方的。源码查看构造函数部分。**  
+    &emsp; 为什么要把数组长度设计为2的幂次方呢？  
     &emsp; 当数组长度为2的幂次方时，可以使用位运算来计算元素在数组中的下标。  
-* loadFactor加载因子0.75f。所谓的加载因子就是HashMap的容量达到0.75时的时候会自动扩容并重新哈希resize(), 扩容后的HashMap容量是之前容量的两倍，所以数组的长度总是2的n次方。(例：假设有一个HashMap的初始容量为16，那么扩容的阀值就是0.75 * 16 = 12。也就是说，在打算存入第13个值的时候，HashMap会先执行扩容)。  
+* loadFactor加载因子0.75f。所谓的加载因子就是HashMap的容量达到0.75时的时候会自动扩容并重新哈希resize()，扩容后的HashMap容量是之前容量的两倍，所以数组的长度总是2的n次方。(例：假设有一个HashMap的初始容量为16，那么扩容的阀值就是0.75 * 16 = 12。也就是说，在打算存入第13个值的时候，HashMap会先执行扩容)。  
 
-    <font color = "lime">哈希因子为什么默认为0.75？</font>“哈希冲突”和“空间利用率”矛盾的一个折衷。  
+    <font color = "clime">哈希因子为什么默认为0.75？</font>“哈希冲突”和“空间利用率”矛盾的一个折衷。  
     &emsp; 如果loadFactor太小如0.5：1.则数组长度达到一半大小就需要扩容，空间使用率大大降低。2. map中的table需要不断的扩容，扩容是个耗时的过程。  
     &emsp; 如果loadFactor太大如0.8，那么map中table放满了也不不会扩容，导致冲突越来越多，解决冲突而起的链表越来越长，查询效率越来越低。  
     &emsp; 而0.75这是一个折中的值，是一个比较理想的值，这是一个在时间和空间上的一个折中。
@@ -222,10 +247,10 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
         threshold 除了用于存放扩容阈值还有其他作用吗？
         在新建HashMap对象时，threshold还会被用来存初始化时的容量。HashMap直到第一次插入节点时，才会对table进行初始化，避免不必要的空间浪费。
 
-#### 1.2.2.2. 树形化结构
+#### 1.3.3.2. 树形化结构
 &emsp; 在JDK1.8中，HashMap是由数组+链表+红黑树构成，新增了红黑树作为底层数据结构。链表长度大于8的时候，链表会转成红黑树；当红黑树的节点数小于6时，会转化成链表。  
-&emsp; **<font color = "lime">为什么使用红黑树？</font>**  
-&emsp; JDK 1.7 中，<font color = "red">如果哈希碰撞过多，拉链过长，</font>极端情况下，所有值都落入了同一个桶内，这就退化成了一个链表。<font color = "red">通过key值查找要遍历链表，效率较低。</font>JDK1.8在解决哈希冲突时，当链表长度大于阈值(默认为8)时，将链表转化为红黑树，以减少搜索时间。  
+&emsp; **<font color = "clime">为什么使用红黑树？</font>**  
+&emsp; JDK1.7中，<font color = "red">如果哈希碰撞过多，拉链过长，</font>极端情况下，所有值都落入了同一个桶内，这就退化成了一个链表。<font color = "red">通过key值查找要遍历链表，效率较低。</font>JDK1.8在解决哈希冲突时，当链表长度大于阈值(默认为8)时，将链表转化为红黑树，以减少搜索时间。  
 
 * TREEIFY_THRESHOLD树形化阈值。当链表的节点个数大于等于这个值时，会将链表转化为红黑树。  
 
@@ -236,19 +261,18 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
     &emsp; 为什么在少于6的时候而不是8的时候才将红黑树转换为链表呢？  
     &emsp; 假设设计成大于8时链表转换为红黑树，小于8的时候又转换为链表。如果一个hashmap不停的插入、删除。 **<font color = "red">hashmap中的个数不停地在8徘徊，那么就会频繁的发生链表和红黑树之间转换，效率非常低。</font>** 因此，6和8之间来一个过渡值可以减缓这种情况造成的影响。
 
-* **<font color = "lime">MIN_TREEIFY_CAPACITY树形化阈值的第二条件，数组扩容临界值。当数组的长度小于这个值时，当树形化阈值达标时，链表也不会转化为红黑树，而是优先扩容数组resize()。</font>**  
+* **<font color = "clime">MIN_TREEIFY_CAPACITY树形化阈值的第二条件，数组扩容临界值。当数组的长度小于这个值时，当树形化阈值达标时，链表也不会转化为红黑树，而是优先扩容数组resize()。</font>**  
 
     &emsp; **<font color = "red">为什么 table 数组容量大于等于 64 才树化？</font>**  
     &emsp; 因为当 table 数组容量比较小时，键值对节点 hash 的碰撞率可能会比较高，进而导致链表长度较长。这个时候应该优先扩容，而不是立马树化。
 
-&emsp; 小结：<font color = "lime">把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于 8；table 数组长度大于等于 64。</font>  
+&emsp; 小结：<font color = "clime">把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于 8；table 数组长度大于等于 64。</font>  
 
-#### HashMap的内部类
-&emsp; **<font color = "red">3. HashMap的内部类：</font>**  
+#### 1.3.3.3. HashMap的内部类
 &emsp; HashMap 内部有很多内部类，扩展了 HashMap 的一些功能，EntrySet类就是其中一种，该类较为简单，无内部属性，可以理解为一个工具类，对HashMap进行了简单的封装，提供了方便的遍历、删除等操作。  
 &emsp; 调用HashMap的entrySet()方法就可以返回EntrySet实例对象，为了不至于每次调用该方法都返回新的EntrySet对象，所以设置该属性，缓存EntrySet实例  。  
 
-### 1.2.3. 构造函数  
+### 1.3.4. 构造函数  
 
 ```java
 //默认构造函数，初始化加载因子loadFactor = 0.75
@@ -256,7 +280,7 @@ public HashMap() {
     this.loadFactor = DEFAULT_LOAD_FACTOR;
 }
 /**
- *传入初始容量大小，使用默认负载因子值 来初始化HashMap对象
+ *传入初始容量大小，使用默认负载因子值来初始化HashMap对象
  */
 public HashMap(int initialCapacity) {
     this(initialCapacity, DEFAULT_LOAD_FACTOR);
@@ -304,15 +328,15 @@ static final int tableSizeFor(int cap) {
 -->
 1. cap - 1 是为了处理 cap 本身就是 2 的N次方的情况。让cap-1再赋值给n的目的是使得找到的目标值大于或等于原值。例如二进制 1000，十进制数值为 8。如果不对它减1而直接操作，将得到答案 10000，即 16。显然不是结果。减 1 后二进制为 111，再进行操作则会得到原来的数值 1000，即 8。通过一系列位运算大大提高效率。  
 2. \>>>(无符号右移)：例如 a >>> b 指的是将 a 向右移动 b 指定的位数，右移后左边空出的位用零来填充，移出右边的位被丢弃。  
-3. <font color = "lime">运算符 |= ，它表示的是按位或，双方都转换为二进制，来进行与操作。</font>(「a+=b 的意思是 a=a+b」，那么同理：a |= b 就是 a = a | b。)  
+3. <font color = "clime">运算符 |= ，它表示的是按位或，双方都转换为二进制，来进行与操作。</font>(「a+=b 的意思是 a=a+b」，那么同理：a |= b 就是 a = a | b。)  
 
 &emsp; 完整示例：  
 &emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-12.png)  
 &emsp; 上面采用了一个比较大的数字进行扩容，由上图可知 2^29 次方的数组经过一系列的或操作后，会算出来结果是 2^30 次方。所以扩容后的数组长度是原来的 2 倍。  
 
-### 1.2.4. 成员方法  
-#### 1.2.4.1. hash()函数(扰动函数)  
-&emsp; 无论增加、删除还是查找键值对，定位到数组的位置都是很关键的第一步。在 HashMap 中并不是直接通过 key 的 hashcode 方法获取哈希值，而是通过内部自定义的 hash 方法计算哈希值。
+### 1.3.5. 成员方法  
+#### 1.3.5.1. hash()函数(扰动函数)  
+&emsp; **<font color = "red">无论增加、删除还是查找键值对，定位到数组的位置都是很关键的第一步。</font>** 在HashMap中并不是直接通过key的hashcode方法获取哈希值，而是通过内部自定义的hash方法计算哈希值。  
 ```java
 static final int hash(Object key) {
     int h;
@@ -324,50 +348,52 @@ static final int hash(Object key) {
 }
 ```
 
-    1. \>>>: 无符号右移操作，它指的是 「无符号右移，也叫逻辑右移，即若该数为正，则高位补0，而若该数为负数，则右移后高位同样补0」 ，也就是不管是正数还是负数，右移都会在空缺位补 0 。  
+    1. \>>>: 无符号右移操作，它指的是「无符号右移，也叫逻辑右移，即若该数为正，则高位补0，而若该数为负数，则右移后高位同样补0」，也就是不管是正数还是负数，右移都会在空缺位补0。  
     2. ^：布尔运算符，异或运算。
 
 &emsp; HashMap的Hash规则：(hash函数会根据传递的key值进行计算，首先计算key的hashCode值，然后再对hashcode进行无符号右移操作，最后再和hashCode进行异或^操作)
-1. 计算 hash 值 ，得到一个 int 类型的值(32 位)，int hash = key.hashCode()。
+1. 计算hash值，得到一个int类型的值(32 位)，int hash = key.hashCode()。
 2. 异或上 hash值无符号右移16位后的值(让hashcode的高16位和低16位进行异或操作)。hash = hash ^ (hash >>> 16)。
 3. 注：如果是计算数组下标(插入/查找的时候，计算 key 应该被映射到散列表的什么位置)，还需位置计算公式 index = (n - 1) & hash ，其中 n 是容量。
 
 &emsp; **<font color = "red">hash函数称为“扰动函数”。目的是为了减少哈希碰撞，使table里的数据分布的更均匀。并且采用位运算，比较高效。</font>**  
 &emsp; 为什么获取hashcode()，还需要将自己右移16位与自己进行异或呢？  
-&emsp; **<font color = "lime">先算出正常的哈希值，然后与高16位做异或运算，产生最终的哈希值。这样做的好处可以增加了随机性，减少了碰撞冲突的可能性。</font>**  
+&emsp; **<font color = "clime">先算出正常的哈希值，然后与高16位做异或运算，产生最终的哈希值。这样做的好处可以增加了随机性，减少了碰撞冲突的可能性。</font>**  
 
 <!-- 
 &emsp; <font color = "red">因为容量较小的时候，在计算 index 时，真正用到的其实就只有低几位，假如不融合高低位，那么假设 hashcode() 返回的值都是高位的变动的话，那么很容易造成散列的值都是同一个。</font>但是，假如将高位和低位融合之后，高位的数据变动会最终影响到 index 的变换，所以依然可以保持散列的随机性。  
 -->
 
 &emsp; 在计算 index 的时候，为什么不使用 hash(key) % capacity ，而使用index = (n - 1) & hash ？  
-&emsp; 这是因为移位运算相比取余运算会更快。那么为什么 hash(key) & (capacity - 1) 也可以呢？这是因为在 B 是 2 的幂情况下：A % B = A & (B - 1)。如果 A 和 B 进行取余，其实相当于把 A 那些不能被 B 整除的部分保留下来。从二进制的方式来看，其实就是把 A 的低位给保留了下来。B-1 相当于一个“低位掩码”，而与的操作结果就是散列值的高位全部置为 0 ，只保留低位，而低位正好是取余之后的值。取个例子，A = 24，B =16，那么 A%B=8，从二进制角度来看 A =11000 ，B = 10000。A 中不能被 B 整除的部分其实就是 1000 这个部分。接下去，需要将这部分保留下来的话，其实就是使用 01111 这个掩码并跟 A 进行与操作，即可将1000 保留下来，作为 index 的值。而 01111 这个值又等于 B-1。所以 A &(B-1)= A%B。但是这个前提是 B 的容量是 2 的幂，那么如何保证呢？可以看到，在设置初始大小的时候，无论设置了多少，都会被转换为 2 的幂的一个数。之外，扩容的时候也是按照 2 倍进行扩容的。所以 B 的值是 2 的幂是没问题的。  
+&emsp; ~~这是因为移位运算相比取余运算会更快。那么为什么 hash(key) & (capacity - 1) 也可以呢？这是因为在 B 是 2 的幂情况下：A % B = A & (B - 1)。如果 A 和 B 进行取余，其实相当于把 A 那些不能被 B 整除的部分保留下来。从二进制的方式来看，其实就是把 A 的低位给保留了下来。B-1 相当于一个“低位掩码”，而与的操作结果就是散列值的高位全部置为 0 ，只保留低位，而低位正好是取余之后的值。取个例子，A = 24，B =16，那么 A%B=8，从二进制角度来看 A =11000 ，B = 10000。A 中不能被 B 整除的部分其实就是 1000 这个部分。接下去，需要将这部分保留下来的话，其实就是使用 01111 这个掩码并跟 A 进行与操作，即可将1000 保留下来，作为 index 的值。而 01111 这个值又等于 B-1。所以 A &(B-1)= A%B。但是这个前提是 B 的容量是 2 的幂，那么如何保证呢？可以看到，在设置初始大小的时候，无论设置了多少，都会被转换为 2 的幂的一个数。之外，扩容的时候也是按照 2 倍进行扩容的。所以 B 的值是 2 的幂是没问题的。~~  
 
 <!-- 
 &emsp; hash函数是先得到key 的hashcode(32位的int值)，然后让hashcode的高16位和低16位进行异或操作。  
 &emsp; (h = key.hashCode()) ^ (h >>> 16) 是为了让高位数据与低位数据进行异或，变相的让高位数据参与到计算中，int 有 32 位，右移 16 位就能让低 16 位和高 16 位进行异或，也是为了增加 hash 值的随机性。  
 -->
 
-#### 1.2.4.2. put()，插入 
-&emsp; **<font color = "lime">插入元素方法：</font>**   
-&emsp; <font color = "lime">在put的时候，首先对key做hash运算，计算出该key所在的index。如果没碰撞，直接放到数组中，如果碰撞了，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。假设key是相同的，则替换到原来的值。最后判断哈希表是否满了(当前哈希表大小*负载因子)，如果满了，则扩容。</font>  
+#### 1.3.5.2. put()，插入 
+##### 1.3.5.2.1. 时序图及说明
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-18.png)  
+
+&emsp; **<font color = "clime">插入元素方法：</font>**   
+&emsp; <font color = "clime">在put的时候，首先对key做hash运算，计算出该key所在的index。如果没碰撞，直接放到数组中，如果碰撞了，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。假设key是相同的，则替换到原来的值。最后判断哈希表是否满了(当前哈希表大小*负载因子)，如果满了，则扩容。</font>  
 
 1. 计算 key 的 hash 值。  
 &emsp; 计算方式是 (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);  
 2. 检查当前数组是否为空，为空需要进行初始化，初始化容量是 16 ，负载因子默认 0.75。  
 3. 计算 key 在数组中的坐标。计算方式：(容量 - 1) & hash。 
-4. 如果计算出的坐标元素为空，创建节点加入，put 结束。  
+4. 如果计算出的坐标元素为空，创建节点加入，put结束。  
     1. 如果当前数组容量大于负载因子设置的容量，进行扩容。  
 5. 如果计算出的坐标元素有值。  
     1. 如果准备插入节点和要插入节点的hash和参数key相等，记录插入位置，后面会覆盖value。  
     2. 如果要插入的节点是红黑树节点，则调用红黑树的插入操作。
     3. 否则插入的节点是链表节点。循环遍历：
-        1. 如果 next 节点为空，把要加入的值和 key 加入 next 节点。插入节点超过8层，转换红黑树。  
+        1. 如果 next 节点为空，把要加入的值和key加入next节点。插入节点超过8层，转换红黑树。  
         2. 可能还会出现准备插入节点和要插入节点的hash和参数key相等，直接返回。
 6. 判断是否需要扩容。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-18.png)  
-
+##### 1.3.5.2.2. 具体源码
 &emsp; JDK1.8put()方法源码部分：  
 
 ```java
@@ -506,7 +532,7 @@ final TreeNode<K,V> putTreeVal(HashMap<K,V> map, Node<K,V>[] tab,
 }
 ```
 
-#### 1.2.4.3. resize()，扩容机制  
+#### 1.3.5.3. resize()，扩容机制  
 <!-- 
 https://www.jianshu.com/p/87d2ef48e645
 -->
@@ -514,7 +540,7 @@ https://www.jianshu.com/p/87d2ef48e645
 &emsp; **<font color = "red">~~JDK1.8 优化成直接把链表拆成高位和低位两部分，通过位运算来决定放在原索引处或者原索引加原数组长度的偏移量处。~~</font>**  
 
 &emsp; HashMap在什么条件下扩容？  
-&emsp; **<font color = "lime">JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。</font>**  
+&emsp; **<font color = "clime">JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时，在首次插入值的时候也会进行扩容。</font>**  
 
 ```java
 //数组长度大于阈值，就扩容
@@ -526,6 +552,9 @@ if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY)
 resize();
 ```
 
+##### 1.3.5.3.1. 时序图及说明   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-15.png)  
+
 &emsp; <font color = "red">HashMap每次扩容都是建立一个新的table数组，长度和容量阈值都变为原来的两倍，然后把原数组元素重新映射到新数组上。</font>  
 &emsp; 具体步骤如下：  
 1. 首先会判断table数组长度，如果大于0说明已被初始化过，那么按当前table数组长度的2倍进行扩容，阈值也变为原来的2倍。  
@@ -536,7 +565,7 @@ resize();
     2. 如果节点是红黑树类型的话则需要进行红黑树的拆分。  
     3. <font color = "red">对链表进行迁移。会对链表中的节点，进行分组，进行迁移后，一类的节点位置在愿索引，一类在原索引+旧数组长度。</font>
 
-    &emsp; <font color = "lime">对链表进行迁移的注意点：</font>JDK1.8HashMap扩容阶段重新映射元素时不需要像1.7版本那样重新去一个个计算元素的 hash 值，<font color = "lime">而是通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度，</font>为什么呢？具体原因如下：  
+    &emsp; <font color = "clime">对链表进行迁移的注意点：</font>JDK1.8HashMap扩容阶段重新映射元素时不需要像1.7版本那样重新去一个个计算元素的 hash 值，<font color = "clime">而是通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度，</font>为什么呢？具体原因如下：  
     &emsp; 因为使用的是2次幂的扩展(指长度扩为原来2倍)，所以，元素的位置要么是在原位置，要么是在原位置再移动2次幂的位置。因此，在扩充 HashMap 的时候，不需要像 JDK1.7 的实现那样重新计算 hash，只需要看看原来的 hash 值新增的那个 bit 是 1 还是 0 就好了，是 0 的话索引没变，是 1 的话索引变成“原索引 +oldCap。  
     &emsp; 这点其实也可以看做长度为 2 的幂次方的一个好处，也是 HashMap 1.7 和 1.8 之间的一个区别。  
     &emsp; 示例：  
@@ -547,9 +576,7 @@ resize();
     &emsp; 因为 2 个节点在老表是同一个索引位置，因此计算新表的索引位置时，只取决于新表在高位多出来的这一位(图中标红)，而这一位的值刚好等于 oldCap。  
     &emsp; 因为只取决于这一位，所以只会存在两种情况：1)  (e.hash & oldCap) == 0 ，则新表索引位置为“原索引位置” ；2)(e.hash & oldCap) == 1，则新表索引位置为“原索引 + oldCap 位置”。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-15.png)  
-
-&emsp; 具体源码如下： 
+##### 1.3.5.3.2. 具体源码
 
 ```java
 final Node<K,V>[] resize() {
@@ -646,14 +673,14 @@ rehash时，红黑树怎么处理？
 
 -->
 
-## 1.3. HashMap在JDK1.7和JDK1.8中的区别总结  
+## 1.4. HashMap在JDK1.7和JDK1.8中的区别总结  
 
 * 数组+链表改成了数组+链表或红黑树；  
 * 链表的插入方式从头插法改成了尾插法，简单说就是插入时，如果数组位置上已经有元素，1.7将新元素放到数组中，原始节点作为新节点的后继节点，1.8遍历链表，将元素放置到链表的最后；  
 * 扩容的时候1.7需要对原数组中的元素进行重新hash定位在新数组的位置，1.8采用更简单的判断逻辑，位置不变或索引+旧容量大小；  
 * 在插入时，1.7先判断是否需要扩容，再插入，1.8先进行插入，插入完成再判断是否需要扩容；  
 
-## 1.4. HashMap的线程安全问题  
+## 1.5. HashMap的线程安全问题  
 <!-- 
 
 踩坑！JDK8中HashMap依然会死循环！ 
@@ -667,9 +694,7 @@ https://blog.csdn.net/swpu_ocean/article/details/88917958
 
 &emsp; HashMap在数组的元素过多时会进行扩容操作，扩容之后会把原数组中的元素拿到新的数组中，这时候在多线程情况下就有可能出现多个线程搬运一个元素。或者说一个线程正在进行扩容，但是另一个线程还想进来存或者读元素，这也可会出现线程安全问题。   
 
-
-
-### 1.4.1. JDK1.8
+### 1.5.1. JDK1.8
 <!-- 
 https://blog.csdn.net/swpu_ocean/article/details/88917958
 -->
@@ -677,9 +702,9 @@ https://blog.csdn.net/swpu_ocean/article/details/88917958
 &emsp;  **<font color = "red">在jdk1.8中，在多线程环境下，会发生数据覆盖的情况。</font>**  
 &emsp; 在jdk1.8中对HashMap进行了优化，在发生hash碰撞，不再采用头插法方式，而是直接插入链表尾部，因此不会出现JDK1.7环形链表的情况。  
 
-&emsp; <font color = "red">其中putVal()的第6行代码(if ((p = tab[i = (n - 1) & hash]) == null) // 如果没有hash碰撞则直接插入元素)是判断是否出现hash碰撞，</font>假设两个线程A、B都在进行put操作，并且hash函数计算出的插入下标是相同的，<font color = "red">当线程A执行完第六行代码后由于时间片耗尽导致被挂起，而线程B得到时间片后在该下标处插入了元素，完成了正常的插入，</font>然后线程A获得时间片，由于之前已经进行了hash碰撞的判断，所有此时不会再进行判断，而是直接进行插入，这就导致了线程B插入的数据被线程A覆盖了，从而线程不安全。  
+&emsp; <font color = "red">其中putVal()的第6行代码（if ((p = tab[i = (n - 1) & hash]) == null) // 如果没有hash碰撞则直接插入元素）是判断是否出现hash碰撞，</font>假设两个线程A、B都在进行put操作，并且hash函数计算出的插入下标是相同的，<font color = "red">当线程A执行完第六行代码后由于时间片耗尽导致被挂起，而线程B得到时间片后在该下标处插入了元素，完成了正常的插入，</font>然后线程A获得时间片，由于之前已经进行了hash碰撞的判断，所有此时不会再进行判断，而是直接进行插入，这就导致了线程B插入的数据被线程A覆盖了，从而线程不安全。  
 
-&emsp; 除此之外，还有就是putVal()的第38行处有个++size，还是线程A、B，这两个线程同时进行put操作时，假设当前HashMap的zise大小为10，当线程A执行到第38行代码时，从主内存中获得size的值为10后准备进行+1操作，但是由于时间片耗尽只好让出CPU，线程B拿到CPU还是从主内存中拿到size的值10进行+1操作，完成了put操作并将size=11写回主内存，然后线程A再次拿到CPU并继续执行(此时size的值仍为10)，当执行完put操作后，还是将size=11写回内存，此时，线程A、B都执行了一次put操作，但是size的值只增加了1，所有说还是由于数据覆盖又导致了线程不安全。  
+&emsp; 除此之外，还有就是putVal()的第38行处有个++size，还是线程A、B，这两个线程同时进行put操作时，假设当前HashMap的zise大小为10，当线程A执行到第38行代码时，从主内存中获得size的值为10后准备进行+1操作，但是由于时间片耗尽只好让出CPU，线程B拿到CPU还是从主内存中拿到size的值10进行+1操作，完成了put操作并将size=11写回主内存，然后线程A再次拿到CPU并继续执行(此时size的值仍为10)，当执行完put操作后，还是将size=11写回内存，此时，线程A、B都执行了一次put操作，但是size的值只增加了1，所以说还是由于数据覆盖又导致了线程不安全。  
 
 
 <!--
@@ -707,13 +732,13 @@ do {
 &emsp; 这是 JDK1.7 的 rehash 代码片段，在并发的场景下会形成环。  
 -->
 
-### 1.4.2. 线程安全的map
+### 1.5.2. 线程安全的map
 &emsp; 在多线程下安全的操作map，主要有以下解决方法：  
 
 * 使用Hashtable线程安全类；  
 * 使用Collections 包下的线程安全的容器比如Collections.synchronizedMap方法，对方法进行加同步锁；  
 * 使用并发包中的[ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)类；  
 
-## 1.5. 如何实现一个自定义的class作为HashMap的key？  
+## 1.6. 如何实现一个自定义的class作为HashMap的key？  
 &emsp; ......
 
