@@ -7,7 +7,7 @@
             - [1.1.1.1. 自动装箱和拆箱](#1111-自动装箱和拆箱)
             - [1.1.1.2. 装箱和拆箱是如何实现的](#1112-装箱和拆箱是如何实现的)
             - [1.1.1.3. 其他问题](#1113-其他问题)
-            - [1.1.1.4. ※※※常量池](#1114-※※※常量池)
+            - [1.1.1.4. ★★★常量池](#1114-★★★常量池)
     - [1.2. java.lang.Object类](#12-javalangobject类)
         - [1.2.1. 类构造器](#121-类构造器)
         - [1.2.2. 成员方法](#122-成员方法)
@@ -15,7 +15,7 @@
                 - [1.2.2.1.1. 为什么重写equals方法？](#12211-为什么重写equals方法)
             - [1.2.2.2. hashCode方法](#1222-hashcode方法)
                 - [1.2.2.2.1. hashCode值是怎么获取的？](#12221-hashcode值是怎么获取的)
-                - [1.2.2.2.2. 为什么equals方法重写，建议也一起重写hashcode方法？](#12222-为什么equals方法重写建议也一起重写hashcode方法)
+                - [1.2.2.2.2. ★★★为什么equals方法重写，建议也一起重写hashcode方法？](#12222-★★★为什么equals方法重写建议也一起重写hashcode方法)
             - [1.2.2.3. getClass方法](#1223-getclass方法)
             - [1.2.2.4. toString方法](#1224-tostring方法)
             - [1.2.2.5. notify()/notifyAll()/wait()-1](#1225-notifynotifyallwait-1)
@@ -27,7 +27,7 @@
         - [1.3.4. 成员方法](#134-成员方法)
             - [1.3.4.1. equals()方法](#1341-equals方法)
             - [1.3.4.2. hashCode()方法](#1342-hashcode方法)
-        - [1.3.5. String常见面试题](#135-string常见面试题)
+        - [1.3.5. ★★★String常见面试题](#135-★★★string常见面试题)
         - [1.3.6. String真的不可变吗?](#136-string真的不可变吗)
     - [1.4. StringBuilder与StringBuffer](#14-stringbuilder与stringbuffer)
     - [1.5. StringJoiner，字符串拼接](#15-stringjoiner字符串拼接)
@@ -39,9 +39,13 @@ equasl 和 hashcode
 https://mp.weixin.qq.com/s/qfm-Xq1ZNJFJdSZ58qSLLA
 -->
 
-# 1. Java数据类型  
-&emsp; **<font color = "lime">一句话概述：String不可变，安全；StringBuilder可变，线程不安全；StringBuffer可变，线程安全。 </font>** 
+&emsp; **<font color = "lime">总结：</font>**  
+&emsp; String不可变，安全；StringBuilder可变，线程不安全；StringBuffer可变，线程安全。  
 
+&emsp; <font color = "clime">Java基本类型的包装类的大部分都实现了常量池技术，</font><font color = "red">即Byte、Short、Integer、Long、Character、Boolean，前面4种包装类默认创建了数值[-128,127]的相应类型的缓存数据，Character创建了数值在[0,127]范围的缓存数据，Boolean直接返回True Or False。如果超出对应范围仍然会去创建新的对象。为什么把缓存设置为[-128,127]区间？是性能和资源之间的权衡。</font>  
+&emsp; 两种浮点数类型的包装类Float、Double并没有实现常量池技术。  
+
+# 1. Java数据类型  
 ## 1.1. Java数据类型分类  
 &emsp; Java数据类型分为基本数据类型和引用数据类型。除了8种基本类型外，全是引用类型。引用数据类型分3种：类(包含集合类、8种基本数据类型的封装类)，接口，数组(数组一旦实例化，它的长度就固定了)。
 
@@ -134,8 +138,8 @@ https://www.cnblogs.com/dolphin0520/p/3780005.html
 -->
 ...
 
-#### 1.1.1.4. ※※※常量池  
-&emsp; <font color = "lime">Java基本类型的包装类的大部分都实现了常量池技术，</font><font color = "red">即Byte、Short、Integer、Long、Character、Boolean，前面4种包装类默认创建了数值[-128,127]的相应类型的缓存数据，Character创建了数值在[0,127]范围的缓存数据，Boolean直接返回True Or False。如果超出对应范围仍然会去创建新的对象。为什么把缓存设置为[-128,127]区间？是性能和资源之间的权衡。</font>  
+#### 1.1.1.4. ★★★常量池  
+&emsp; <font color = "clime">Java基本类型的包装类的大部分都实现了常量池技术，</font><font color = "red">即Byte、Short、Integer、Long、Character、Boolean，前面4种包装类默认创建了数值[-128,127]的相应类型的缓存数据，Character创建了数值在[0,127]范围的缓存数据，Boolean直接返回True Or False。如果超出对应范围仍然会去创建新的对象。为什么把缓存设置为[-128,127]区间？是性能和资源之间的权衡。</font>  
 &emsp; 两种浮点数类型的包装类Float、Double并没有实现常量池技术。  
 
 ## 1.2. java.lang.Object类  
@@ -194,7 +198,7 @@ public native int hashCode();
 &emsp; 每个对象都有hashcode，通过对象的内部地址(也就是物理地址)转换成一个整数，然后该整数通过hash函数的算法就得到了hashcode。所以hashcode是在hash表中对应的位置。  
 &emsp; HashCode用来在散列表(如HashSet、HashMap以及HashTable等)中确定对象的存储地址。hashCode仅在散列表中才有用。  
 
-##### 1.2.2.2.2. 为什么equals方法重写，建议也一起重写hashcode方法？  
+##### 1.2.2.2.2. ★★★为什么equals方法重写，建议也一起重写hashcode方法？  
 <!-- 
 重写equals就必须重写hashCode的原理分析
 https://www.cnblogs.com/wang-meng/p/7501378.html
@@ -265,7 +269,7 @@ public static String valueOf(Object obj) {
 4. Java是基于Hoare的监视器的思想。在Java中，所有对象都有一个监视器。  
 
 ## 1.3. java.lang.String类  
-&emsp; String对象一旦被创建就是固定不变的了，对String对象的任何改变都不影响到原对象，相关的任何change操作都会生成新的对象。  
+&emsp; **<font color = "clime">String对象一旦被创建就是固定不变的了，对String对象的任何改变都不影响到原对象，相关的任何change操作都会生成新的对象。</font>**  
 
 ### 1.3.1. String类的定义  
 
@@ -385,7 +389,7 @@ public int hashCode() {
 2. <font color = "red">使用的质数越大，哈希冲突的概率越小，但是计算的速度也越慢；31是哈希冲突和性能的折中，实际上是实验观测的结果。</font>  
 3. <font color = "red">JVM会自动对31进行优化：31 * i == (i << 5) - i</font>  
 
-### 1.3.5. String常见面试题  
+### 1.3.5. ★★★String常见面试题  
 
 ```java
 String str1 = "java";

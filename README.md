@@ -1,6 +1,7 @@
 <!-- TOC -->
 
 - [wt1814-note](#wt1814-note)
+    - [侃侃Java](#侃侃java)
     - [算法](#算法)
     - [Java](#java)
         - [设计模式](#设计模式)
@@ -41,6 +42,11 @@
 <!-- /TOC -->
 
 # wt1814-note  
+
+## 侃侃Java  
+[学习不要学的片面](/docs/life/oneSided.md)  
+
+
 ## 算法  
 [总结](/docs/java/function/summary.md)  
 [算法基本概念](/docs/java/function/notion.md)  
