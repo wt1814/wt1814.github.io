@@ -77,7 +77,7 @@ https://mp.weixin.qq.com/s/EnkvEIVTLzOcuVd8s8fJTQ
 &emsp; **创建型模式有5种：**  
 
 * [简单工厂模式 /工厂(FactoryMethod)模式](/docs/java/Design/factory.md)：让子类来决定要创建哪个对象。  
-* 抽象工厂(AbstractFactory)模式：创建多个产品族中的产品对象。  
+* [抽象工厂(AbstractFactory)模式](/docs/java/Design/AbstractFactory.md)：创建多个产品族中的产品对象。  
 * [单例(Singleton)模式](/docs/java/Design/singleton.md)：确保某一个类只有一个实例，并且提供一个全局访问点。  
 * [建造者(Builder)模式](/docs/java/Design/build.md)：用来创建复杂的复合对象。  
 * [原型(Prototype)模式](/docs/java/Design/prototype.md)：通过复制原型来创建新对象。  
