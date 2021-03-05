@@ -423,8 +423,8 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
 &emsp; 一款只有OpenJDK才会包含的收集器，最开始由RedHat公司独立发展后来贡献给了OpenJDK  
 &emsp; Shenandoah与G1类似，也是使用基于Region的堆内存布局，同样有着用于存放大对象的Humongous Region，默认的回收策略也同样是优先处理回收价值最大的Region  
 &emsp; 但是管理堆内存方面，与G1至少有三个明显的不同之处：  
-1. Shenandoah 支持并发的整理算法;G1支持并行整理算法。
-2. Shenandoah(目前)是默认不使用分代收集的；G1 有专门的新生代Region或者老年代Region的存在;
+1. Shenandoah 支持并发的整理算法；G1支持并行整理算法。
+2. Shenandoah(目前)是默认不使用分代收集的；G1有专门的新生代Region或者老年代Region的存在;
 3. Shenandoah摒弃了在G1中耗费大量内存和计算资源去维护的记忆集，改用名为“连接矩阵”(Connection Matrix)的全局数据结构来记录跨Region的引用关系，降低了处理跨代指针时的记忆集维护消耗，也降低了伪共享问题的发生概率
 
 * 优点：延迟低
@@ -491,4 +491,3 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
 &emsp; -XX:+UseConcMarkSweepGC：新生代使用并行收集器，老年代使用CMS+串行收集器  
 &emsp; -XX:ParallelCMSThreads：设定CMS的线程数量  
 &emsp; -XX:+UseG1GC：启用G1垃圾回收器  
-

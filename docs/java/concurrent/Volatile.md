@@ -121,6 +121,10 @@ public void doWork() {
 ### 1.3.3. 单例模式的实现  
 <!-- 
 https://www.cnblogs.com/jackson0714/p/java_Volatile.html
+
+
+DCL为什么要用volatile关键字？
+https://blog.csdn.net/weixin_38106322/article/details/105753241
 -->
 &emsp; 单例模式的实现，典型的双重检查锁定(DCL)  
 

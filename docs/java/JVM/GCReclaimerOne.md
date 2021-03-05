@@ -110,6 +110,3 @@ https://mp.weixin.qq.com/s/dWg5S7m-LUQhxUofHfqb3g
 ```java
 java -Xmx1g -Xms1g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -jar demo.jar
 ```
-
-
-
