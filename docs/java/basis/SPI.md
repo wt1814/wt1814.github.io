@@ -13,33 +13,31 @@
 
 <!-- /TOC -->
 
-<!--
+&emsp; **<font color = "clime">JDK提供的SPI机制：提供一个接口；服务提供方实现接口，并在META-INF/services/中暴露实现类地址；服务调用方使用java.util.ServiceLoader类调用。</font>**  
 
+# 1. Java SPI机制详解
+<!--
 https://blog.csdn.net/sigangjun/article/details/79071850
 在java中使用SPI创建可扩展的应用程序 
 https://mp.weixin.qq.com/s/B17Kvjb66iAAZmxDqBDWsA
-
 -->
-
-# 1. Java SPI机制详解
-&emsp; **<font color = "lime">JDK提供的SPI机制：提供一个接口；服务提供方实现接口，并在META-INF/services/中暴露实现类地址；服务调用方使用java.util.ServiceLoader类调用。</font>**  
 
 ## 1.1. 什么是SPI？
 
-&emsp; SPI 全称为 (Service Provider Interface，服务提供发现接口) ，是JDK内置的一种服务提供发现机制。SPI是一种动态替换发现的机制， 比如有个接口，想运行时动态的给它添加实现，只需要添加一个实现。经常遇到的就是java.sql.Driver接口，其他不同厂商可以针对同一接口做出不同的实现，mysql和postgresql都有不同的实现提供给用户，而Java的SPI机制可以为某个接口寻找服务实现。
+&emsp; SPI 全称为 (Service Provider Interface，服务提供发现接口) ，是JDK内置的一种服务提供发现机制。SPI是一种动态替换发现的机制，比如有个接口，想运行时动态的给它添加实现，只需要添加一个实现。经常遇到的就是java.sql.Driver接口，其他不同厂商可以针对同一接口做出不同的实现，mysql和postgresql都有不同的实现提供给用户，而Java的SPI机制可以为某个接口寻找服务实现。
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/basics/java-5.png)  
 &emsp; 如上图所示：接口对应的抽象SPI接口；实现方实现SPI接口；调用方依赖SPI接口。
 
 &emsp; <font color = "red">SPI接口的定义在调用方，在概念上更依赖调用方；组织上位于调用方所在的包中，实现位于独立的包中。</font>
 
-&emsp; 当服务的提供者提供了一种接口的实现之后，服务的消费者需要在classpath下的META-INF/services/目录里创建一个以服务接口命名的文件，这个文件里的内容就是这个接口的具体的实现类。服务消费者依赖服务提供者。当服务消费者的程序需要这个服务的时候，就可以通过查找这个jar包（一般都是以jar包做依赖）的META-INF/services/中的配置文件，配置文件中有接口的具体实现类名，可以根据这个类名进行加载实例化，就可以使用该服务了。  
-&emsp; **<font color = "lime">JDK中查找服务实现的工具类是：java.util.ServiceLoader。</font>**
+&emsp; 当服务的提供者提供了一种接口的实现之后，服务的消费者需要在classpath下的META-INF/services/目录里创建一个以服务接口命名的文件，这个文件里的内容就是这个接口的具体的实现类。服务消费者依赖服务提供者。当服务消费者的程序需要这个服务的时候，就可以通过查找这个jar包(一般都是以jar包做依赖)的META-INF/services/中的配置文件，配置文件中有接口的具体实现类名，可以根据这个类名进行加载实例化，就可以使用该服务了。  
+&emsp; **<font color = "clime">JDK中查找服务实现的工具类是：java.util.ServiceLoader。</font>**
 
 ## 1.2. SPI案例  
 1. JDBC驱动加载案例：利用Java的SPI机制，可以根据不同的数据库厂商来引入不同的JDBC驱动包；  
 2. SpringBoot的SPI机制：可以在spring.factories中加上自定义的自动配置类，事件监听器或初始化器等；  
-3. Dubbo的SPI机制：Dubbo更是把SPI机制应用的淋漓尽致，Dubbo基本上自身的每个功能点都提供了扩展点，比如提供了集群扩展，路由扩展和负载均衡扩展等差不多接近30个扩展点。如果Dubbo的某个内置实现不符合的需求，那么只要利用其SPI机制将我们的实现替换掉Dubbo的实现即可。  
+3. Dubbo的SPI机制：Dubbo更是把SPI机制应用的淋漓尽致，Dubbo基本上自身的每个功能点都提供了扩展点，比如提供了集群扩展，路由扩展和负载均衡扩展等差不多接近30个扩展点。如果Dubbo的某个内置实现不符合的需求，那么只要利用其SPI机制将自定义的实现替换掉Dubbo的实现即可。  
 
 ## 1.3. SPI编码示例  
 <!-- 
@@ -155,7 +153,7 @@ private static void loadInitialDrivers() {
         }
 ```
 
-&emsp; 先查找jdbc.drivers属性的值，然后通过SPI机制查找驱动
+&emsp; 先查找jdbc.drivers属性的值，然后通过SPI机制查找驱动。  
 
 ```java
 public final class ServiceLoader<S>
@@ -192,9 +190,9 @@ private boolean hasNextService() {
         }
 ```
 
-&emsp; 可以看到加载META-INF/services/ 文件夹下类名为文件名（这里相当于Driver.class.getName()）的资源，然后将其加载到虚拟机。
+&emsp; 可以看到加载META-INF/services/ 文件夹下类名为文件名(这里相当于Driver.class.getName())的资源，然后将其加载到虚拟机。
 
-&emsp; 注释有这么一句“Load these drivers, so that they can be instantiated.” 意思是加载SPI扫描到的驱动来触发它们的初始化。即触发它们的static代码块
+&emsp; 注释有这么一句“Load these drivers, so that they can be instantiated.” 意思是加载SPI扫描到的驱动来触发它们的初始化。即触发它们的static代码块。  
 
 ```java
 /**
@@ -229,7 +227,7 @@ public static synchronized void registerDriver(java.sql.Driver driver,
 }
 ```
 
-&emsp; 将自己注册到驱动管理器的驱动列表中
+&emsp; 将自己注册到驱动管理器的驱动列表中。  
 
 ```java
 public class DriverManager {
@@ -340,7 +338,6 @@ private static boolean isDriverAllowed(Driver driver, ClassLoader classLoader) {
 
 ## 1.5. JDK中SPI解析  
 <!-- 
-
 https://mp.weixin.qq.com/s/6BhHBtoBlSqHlXduhzg7Pw
 深入理解ServiceLoader类与SPI机制
 https://blog.csdn.net/li_xunhuan/article/details/103017286?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-15.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-15.nonecase
