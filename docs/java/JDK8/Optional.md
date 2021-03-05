@@ -10,7 +10,6 @@
 
 <!-- /TOC -->
 
-&emsp; <font color = "lime">Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败")); </font> 
 
 # 1. Optional类  
 <!-- 
@@ -20,7 +19,7 @@ Java 8 中使用 Optional 处理 null 对象，超全指南
 https://mp.weixin.qq.com/s/Fq-dOg78VMyEfNFjCJ7Krw
 -->
 &emsp; Java8引入Optional类，是一个可以为null的容器对象，是一个包含有可选值的包装类，可以保存类型T的值，或者保存null。Optional类的引入解决空指针异常。防止编写不必要的null检查。快速定位NullPointException。  
-&emsp; public final class Optional<T\>，<font color = "lime">构造函数私有化；不能new实例；不能被继承。</font>  
+&emsp; public final class Optional<T\>，<font color = "clime">构造函数私有化；不能new实例；不能被继承。</font>  
 
 ## 1.1. 常用API  
 
@@ -145,3 +144,7 @@ maybeUSB.filter(usb -> "3.0".equals(usb.getVersion()).ifPresent(() -> System.out
 ```
 &emsp; 使用isPresent()处理NullPointerException不叫优雅；使用orElse, orElseGet等, 特别是map方法才叫优雅。其他几个，filter()把不符合条件的值变为empty()，flatMap()总是与map()方法成对的，orElseThrow()在有值时直接返回，无值时抛出想要的异常。   
 &emsp; 小结：使用Optional时尽量不直接调用Optional.get()方法, Optional.isPresent()更应该被视为一个私有方法，应依赖于其他像Optional.orElse()，Optional.orElseGet()，Optional.map()等这样的方法。
+
+
+&emsp; 抛出异常可以使用：  
+&emsp; <font color = "clime">Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败")); </font> 

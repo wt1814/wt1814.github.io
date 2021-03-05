@@ -5,15 +5,16 @@
     - [1.1. Java异常基本概念](#11-java异常基本概念)
     - [1.2. 常见异常](#12-常见异常)
         - [1.2.1. NullPointerException](#121-nullpointerexception)
-    - [1.3. 异常处理](#13-异常处理)
-        - [1.3.1. try、catch、finally](#131-trycatchfinally)
-            - [1.3.1.1. 使用 try...with...resources 优雅关闭资源](#1311-使用-trywithresources-优雅关闭资源)
-        - [1.3.2. throws和throw](#132-throws和throw)
-        - [1.3.3. 异常处理原则](#133-异常处理原则)
-    - [1.4. Exception的API](#14-exception的api)
-    - [1.5. 自定义异常](#15-自定义异常)
-    - [1.6. 统一异常处理](#16-统一异常处理)
-    - [Assert处理异常](#assert处理异常)
+    - [1.3. Exception的API](#13-exception的api)
+    - [1.4. 异常使用教程](#14-异常使用教程)
+        - [1.4.1. 异常处理](#141-异常处理)
+            - [1.4.1.1. try、catch、finally](#1411-trycatchfinally)
+                - [1.4.1.1.1. 使用 try...with...resources 优雅关闭资源](#14111-使用-trywithresources-优雅关闭资源)
+            - [1.4.1.2. throws和throw](#1412-throws和throw)
+            - [1.4.1.3. 异常处理原则](#1413-异常处理原则)
+        - [1.4.2. 自定义异常](#142-自定义异常)
+        - [1.4.3. 统一异常处理](#143-统一异常处理)
+        - [1.4.4. Assert处理异常](#144-assert处理异常)
 
 <!-- /TOC -->
 
@@ -64,28 +65,7 @@ https://www.hangge.com/blog/cache/detail_2519.html
 5. 在需要抛出一个异常对象，而该对象为null时。  
 
 
-## 1.3. 异常处理  
-### 1.3.1. try、catch、finally  
-
-#### 1.3.1.1. 使用 try...with...resources 优雅关闭资源  
-
-
-### 1.3.2. throws和throw  
-&emsp; Throw和throws的区别：  
-&emsp; 位置不同：  
-
-        1. throws 用在函数上，后面跟的是异常类，可以跟多个；而 throw 用在函数内，后面跟的是异常对象。  
-
-&emsp; 功能不同：  
-
-        2. throws 用来声明异常，让调用者只知道该功能可能出现的问题，可以给出预先的处理方式；throw 抛出具体的问题对象，执行到 throw，功能就已经结束了，跳转到调用者，并将具体的问题对象抛给调用者。也就是说 throw 语句独立存在时，下面不要定义其他语句，因为执行不到。  
-        3. throws 表示出现异常的一种可能性，并不一定会发生这些异常；throw 则是抛出了异常，执行 throw 则一定抛出了某种异常对象。  
-        4. 两者都是消极处理异常的方式，只是抛出或者可能抛出异常，但是不会由函数去处理异常，真正的处理异常由函数的上层调用处理。  
-
-### 1.3.3. 异常处理原则  
-&emsp; ......
-
-## 1.4. Exception的API  
+## 1.3. Exception的API  
 
 ```java
 Exception e; 
@@ -95,10 +75,31 @@ e.printStackTrace();//void类型，在命令行打印异常信息在程序中出
 ```
 &emsp; **<font color = "red">e.printStackTrace();只在控制台打印信息，不会将异常堆栈输出到日志文件中。</font>**  
 
-## 1.5. 自定义异常 
+## 1.4. 异常使用教程  
+### 1.4.1. 异常处理  
+#### 1.4.1.1. try、catch、finally  
+
+##### 1.4.1.1.1. 使用 try...with...resources 优雅关闭资源  
+
+
+#### 1.4.1.2. throws和throw  
+&emsp; Throw和throws的区别：  
+&emsp; 位置不同：  
+1. throws 用在函数上，后面跟的是异常类，可以跟多个；而 throw 用在函数内，后面跟的是异常对象。  
+
+&emsp; 功能不同：  
+2. throws 用来声明异常，让调用者只知道该功能可能出现的问题，可以给出预先的处理方式；throw 抛出具体的问题对象，执行到 throw，功能就已经结束了，跳转到调用者，并将具体的问题对象抛给调用者。也就是说 throw 语句独立存在时，下面不要定义其他语句，因为执行不到。  
+3. throws 表示出现异常的一种可能性，并不一定会发生这些异常；throw 则是抛出了异常，执行 throw 则一定抛出了某种异常对象。  
+4. 两者都是消极处理异常的方式，只是抛出或者可能抛出异常，但是不会由函数去处理异常，真正的处理异常由函数的上层调用处理。  
+
+#### 1.4.1.3. 异常处理原则  
+&emsp; ......
+
+
+### 1.4.2. 自定义异常 
 ......
 
-## 1.6. 统一异常处理  
+### 1.4.3. 统一异常处理  
 <!-- 
 
 SpringBoot优雅的全局异常处理 
@@ -107,7 +108,6 @@ https://mp.weixin.qq.com/s/r_HjHi92owNwh5VULiaKcQ
 
 &emsp; 异常处理器注解@ExceptionHandler：若在某个Controller类定义一个异常处理方法，并在方法上添加该注解，那么当出现指定的异常时，会执行该处理异常的方法，其可以使用springmvc提供的数据绑定，比如注入HttpServletRequest等，还可以接受一个当前抛出的Throwable对象。  
 &emsp; @ExceptionHandler结合@ControllerAdvice，可以提供全局的统一异常处理器。  
-&emsp; 实现HandlerExceptionResolver接口或继承其抽象实现 AbstractHandlerExceptionResolver，也可以实现统一异常处理。  
+&emsp; 实现HandlerExceptionResolver接口或继承其抽象实现AbstractHandlerExceptionResolver，也可以实现统一异常处理。  
 
-
-## Assert处理异常  
+### 1.4.4. Assert处理异常  

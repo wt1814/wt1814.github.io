@@ -174,7 +174,7 @@ reduce("", String::concat);
     &emsp; 参数supplier是一个生成目标类型实例的方法，代表着目标容器是什么；accumulator是将操作的目标数据填充到supplier 生成的目标类型实例中去的方法，代表着如何将元素添加到容器中；而combiner是将多个supplier生成的实例整合到一起的方法，代表着规约操作，将多个结果合并。  
 
 #### 1.2.2.3. ParallelStream   
-&emsp; 数据并行处理，只需要在原来的基础上加一个parallel()就可以开启， **<font color = "clime">parallel()开启的底层并行框架是[fork/join](/docs/java/concurrent/ForkJoinPool.md)。</font>**  
+&emsp; 数据并行处理，只需要在原来的基础上加一个parallel()就可以开启， **<font color = "clime">并行流底层使用[fork/join](/docs/java/concurrent/ForkJoinPool.md)。</font>**  
 &emsp; parallelStream是什么，它是一个集合的并发处理流。其作用是把一个集合中的数据分片，进行一个多线程的处理，增快运行速度。  
 
 &emsp; 默认的并行数是Ncpu个。并行线程数量：   
