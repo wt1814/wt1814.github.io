@@ -14,7 +14,7 @@
 <!-- 
 可参考《设计模式 - 可复用面向对象软件的基础(高清版)》
 结构可参考《Java与模式》
-
+https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzA4MTk3MjI0Mw==&action=getalbum&album_id=1612455701786787847&scene=173&from_msgid=2247491293&from_itemidx=1&count=3#wechat_redirect
 -->
 <!-- 
 模板模式：一种体现多态的设计模式

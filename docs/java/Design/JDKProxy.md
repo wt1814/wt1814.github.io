@@ -4,11 +4,14 @@
 
 - [1. JDK动态代理](#1-jdk动态代理)
     - [1.1. 编码](#11-编码)
-    - [1.2. ※※※源码分析-1](#12-※※※源码分析-1)
+    - [1.2. 源码分析-1](#12-源码分析-1)
 
 <!-- /TOC -->
 
-&emsp; **<font color = "red">总结：代理设计模式，在目标对象实现的基础上，增强额外的功能操作。JDK动态代理中，Proxy.newProxyInstance()生成代理对象；通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。</font>**
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; Java动态代理类位于java.lang.reflect包下，一般主要涉及到以下两个重要的类或接口，一个是InvocationHandler(Interface)、另一个则是Proxy(Class)。  
+&emsp; Proxy类，该类即为动态代理类。Proxy.newProxyInstance()生成代理对象；  
+&emsp; InvocationHandler接口，在使用动态代理时，需要定义一个位于代理类与委托类之间的中介类，中介类被要求实现InvocationHandler接口。通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。
 
 # 1. JDK动态代理
 &emsp; 动态代理实现方式由JDK自带的代理和Cglib提供的类库。这里只讨论JDK代理的使用。  
@@ -52,6 +55,7 @@ public interface UserService {
     void query();
 }
 ```
+
 &emsp; 然后实现这个接口：  
 
 ```java
@@ -61,6 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 }
 ```
+
 &emsp; 定义一个类，需要实现InvocationHandler：  
 
 ```java
@@ -80,6 +85,7 @@ public class MyInvocationHandler implements InvocationHandler {
     }
 }
 ```
+
 &emsp; 然后就是Main方法了： 
 
 ```java
@@ -93,13 +99,14 @@ public class Main {
     }
 }
 ```
+
 &emsp; 运行：  
 
     进入了invoke
     查询用户信息
     执行了invoke
 
-## 1.2. ※※※源码分析-1
+## 1.2. 源码分析-1
 <!-- 
 https://mp.weixin.qq.com/s/RoPuIgGlZg6h-Zk1YMwroA
 
@@ -185,7 +192,7 @@ public static Object newProxyInstance(ClassLoader loader, Class<?>[] interfaces,
 * 根据代理类的构造器创建代理类
 * 返回动态创建生成的代理类
 
-&emsp; newProxyInstance方法调用getProxyClass0方法生成代理类的字节码文件。getProxyClass0()源码  
+&emsp; newProxyInstance方法调用getProxyClass0方法生成代理类的字节码文件。getProxyClass0()源码：  
 
 ```java
 private static Class<?> getProxyClass0(ClassLoader loader, Class<?>... interfaces) {
