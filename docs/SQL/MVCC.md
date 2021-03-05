@@ -33,6 +33,9 @@ https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
 https://blog.csdn.net/SnailMann/article/details/94724197
  关于MVCC
  https://mp.weixin.qq.com/s/VJlBQTg_MHWXnw_z0i8F1A
+
+ MVCC机制了解吗 
+ https://mp.weixin.qq.com/s/hrbnpPqNNJszObizYq0Q1w
 -->
 
 <!-- 

@@ -465,7 +465,8 @@
     * [HTTPS](/docs/network/HTTPS.md)  
     * [DNS](/docs/network/DNS.md)  
     * [TCP](/docs/network/TCP.md)  
-    * [TCP粘包](/docs/network/TCPSticking.md)  
+        * [TCP粘包](/docs/network/TCPSticking.md)  
+        * [TIME_WAIT问题](/docs/network/timewait.md)  
 * 测试工具
     * [Jmeter](/docs/devAndOps/Jmeter.md)  
     * [JMH](/docs/java/JVM/JMH.md)  

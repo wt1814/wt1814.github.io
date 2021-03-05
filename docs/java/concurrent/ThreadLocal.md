@@ -26,6 +26,11 @@
 
 # 1. ThreadLocal  
 <!-- 
+ 比较好： 什么，你的ThreadLocal内存泄漏了？ 
+ https://mp.weixin.qq.com/s/mH1jRiZTiHdlMBSwu3f2zg
+  为何每次用完 ThreadLocal 都要调用 remove() 
+    https://mp.weixin.qq.com/s/bF4T2t9Y7fr3XN8vkAG03Q
+
 ThreadLocal的最牛辨析！
 https://mp.weixin.qq.com/s/IklA1Oil9kRh7Z_HwuAnyg
 -->

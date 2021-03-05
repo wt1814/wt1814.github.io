@@ -14,6 +14,9 @@
 
 # 1. Optional类  
 <!-- 
+求求你，别再用 “ ! = null " 做判空了！ 
+https://mp.weixin.qq.com/s/NXUWZjt2kYRG301CXehp0A
+Java 8 中使用 Optional 处理 null 对象，超全指南 
 https://mp.weixin.qq.com/s/Fq-dOg78VMyEfNFjCJ7Krw
 -->
 &emsp; Java8引入Optional类，是一个可以为null的容器对象，是一个包含有可选值的包装类，可以保存类型T的值，或者保存null。Optional类的引入解决空指针异常。防止编写不必要的null检查。快速定位NullPointException。  

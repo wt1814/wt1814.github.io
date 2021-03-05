@@ -35,11 +35,14 @@
 https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
 https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
 
+
 -->
 <!-- 
 ~~
 深入分析线程池的实现原理 
 https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
+线程池源码解析系列：为什么要使用位运算表示线程池状态 
+https://mp.weixin.qq.com/s/5gvBukbh1dfa1lzsoWq8xA
 -->
 
 ## 1.1. 属性

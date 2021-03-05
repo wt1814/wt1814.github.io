@@ -176,8 +176,12 @@
 &emsp; &emsp; [ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)  
 &emsp; &emsp; [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
 &emsp; [tools](/docs/java/concurrent/tools.md)  
-[并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
+
 [多线程处理大数据量](/docs/java/concurrent/bigData.md)  
+<!-- 
+[并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
+
+-->
 
 ## 数据库  
 [学习SQL的总结](/docs/SQL/SQLSummary.md)  
@@ -204,7 +208,7 @@
 [数据库连接池](/docs/SQL/connectionPool.md)  
 &emsp; [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
 &emsp; [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
-[MySQL监控](/docs/SQL/MySqlMonitor.md)  
+[MySQL运维](/docs/SQL/MySqlMonitor.md)  
 [数据迁移](/docs/projectImplement/implementation.md)  
 [大数据量操作](/docs/SQL/largeData.md)  
 
@@ -587,7 +591,8 @@
 [HTTPS](/docs/network/HTTPS.md)  
 [DNS](docs/network/DNS.md)  
 [TCP](/docs/network/TCP.md)  
-[TCP粘包](/docs/network/TCPSticking.md)  
+&emsp; [TCP粘包](/docs/network/TCPSticking.md)  
+&emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
 
 ----
 

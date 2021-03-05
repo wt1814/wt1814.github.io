@@ -18,6 +18,11 @@
 <!-- /TOC -->
 
 # 1. Atomic，原子类  
+<!-- 
+ 原子类Atomic家族，细看成员还不少 
+ https://mp.weixin.qq.com/s/PWxKLmyyfdqWu0Y-mJpTsg
+-->
+
 &emsp; 原子更新基本类型、原子更新引用类型、原子更新数组、原子更新对象中的字段、高性能原子类  
 
 ## 1.1. atomic类简介  

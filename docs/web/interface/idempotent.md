@@ -21,6 +21,8 @@ https://mp.weixin.qq.com/s/uYrjzA4QeZSD_S82w2dNIQ
 https://mp.weixin.qq.com/s/8I8fRoYuTED6S7EcbHllhQ
 接口的幂等性怎么设计接口的幂等性怎么设计
 https://mp.weixin.qq.com/s/6kcfTke9TciYOhcrUqq4rA
+ 8 种幂等性解决重复提交的方案 
+ https://mp.weixin.qq.com/s/2nxU5smcf2j8okQG5RJeEQ
 -->
 
 <!-- 

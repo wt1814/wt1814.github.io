@@ -16,8 +16,10 @@
 
 # 1. 重要的垃圾收集器  
 <!-- 
- 深入理解G1垃圾收集器 
- https://mp.weixin.qq.com/s/4qx9btw0ITmH0Nao8FYFvQ
+深入理解G1垃圾收集器 
+https://mp.weixin.qq.com/s/4qx9btw0ITmH0Nao8FYFvQ
+深入理解JVM - ZGC垃圾收集器 
+https://mp.weixin.qq.com/s/q4JeoI47eWBaViNDBCfnuQ
 
 -->
 
