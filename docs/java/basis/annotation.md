@@ -30,8 +30,8 @@ https://docs.oracle.com/javase/tutorial/java/annotations/index.html
 ## 1.1. 引入注解(注解和xml)  
 &emsp; 使用Annotation之前(甚至在使用之后)，XML被广泛的应用于描述元数据。不知何时开始一些应用开发人员和架构师发现XML的维护越来越糟糕了。他们希望使用一些和代码紧耦合的东西，而不是像XML那样和代码是松耦合的(在某些情况下甚至是完全分离的)代码描述。  
 &emsp; 如果在Google中搜索“XML vs. annotations”，会看到许多关于这个问题的辩论。最有趣的是XML配置其实就是为了分离代码和配置而引入的。上述两种观点可能会让你很疑惑，两者观点似乎构成了一种循环，但各有利弊。下面我们通过一个例子来理解这两者的区别。  
-&emsp; 假如想为应用设置很多的常量或参数，这种情况下，XML是一个很好的选择，因为它不会同特定的代码相连。如果你想把某个方法声明为服务，那么使用Annotation会更好一些，因为这种情况下需要注解和方法紧密耦合起来，开发人员也必须认识到这点。  
-&emsp; 另一个很重要的因素是Annotation定义了一种标准的描述元数据的方式。在这之前，开发人员通常使用他们自己的方式定义元数据。例如，使用标记interfaces，注释，transient关键字等等。每个程序员按照自己的方式定义元数据，而不像Annotation这种标准的方式。  
+&emsp; 假如想为应用设置很多的常量或参数，这种情况下，XML是一个很好的选择，因为它不会同特定的代码相连。如果想把某个方法声明为服务，那么使用Annotation会更好一些，因为这种情况下需要注解和方法紧密耦合起来，开发人员也必须认识到这点。  
+&emsp; 另一个很重要的因素是Annotation定义了一种标准的描述元数据的方式。在这之前，开发人员通常使用自己的方式定义元数据。例如，使用标记interfaces，注释，transient关键字等等。每个程序员按照自己的方式定义元数据，而不像Annotation这种标准的方式。  
 &emsp; 目前，许多框架将XML和Annotation两种方式结合使用，平衡两者之间的利弊。  
 
 ## 1.3. 注解简介  
@@ -39,8 +39,7 @@ https://docs.oracle.com/javase/tutorial/java/annotations/index.html
 &emsp; Java注解是附加在代码中的一些元信息，用于一些工具在编译、运行时进行解析和使用，起到说明、配置的功能。  
 &emsp; 注解不会也不能影响代码的实际逻辑，仅仅起到辅助性的作用。包含在java.lang.annotation包中。  
 
-&emsp; java注解是JDK1.5引入的一种注释机制，java语言的类、方法、变量、参数和包都可以被注解标注。  
-&emsp; 和Javadoc不同，java注解可以通过反射获取标注内容。  
+&emsp; java注解是JDK1.5引入的一种注释机制，java语言的类、方法、变量、参数和包都可以被注解标注。和Javadoc不同， **<font color = "red">java注解可以通过反射获取标注内容。</font>**  
 &emsp; 在编译器生成.class文件时，注解可以被嵌入字节码中，而jvm也可以保留注解的内容，在运行时获取注解标注的内容信息。  
 &emsp; java提供的注解可以有两类：功能注解和元注解。  
 
@@ -191,7 +190,7 @@ public abstract @interface com/ATest implements java/lang/annotation/Annotation 
 ## 1.7. 和代码关联
 &emsp; 注解信息怎么和代码关联在一起，java所有事物都是类，注解也不例外，加入代码System.setProperty("sum.misc.ProxyGenerator.saveGeneratedFiles","true"); 可生成注解相应的代理类  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/basics/java-8.png)  
-在代码里定义的注解，会被jvm利用反射技术生成一个代理类，然后和被注释的代码（类，方法，属性等）关联起来    
+&emsp; 在代码里定义的注解，会被jvm利用反射技术生成一个代理类，然后和被注释的代码（类，方法，属性等）关联起来    
 
 ## 1.8. 使用动态代理机制处理注解  
 <!-- 

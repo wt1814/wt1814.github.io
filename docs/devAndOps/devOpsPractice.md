@@ -13,4 +13,6 @@ https://mp.weixin.qq.com/s?__biz=MzU0NjEwMTg4Mg==&mid=2247483962&idx=1&sn=595eac
 https://zhuanlan.zhihu.com/p/62284485
 手把手教你使用 Jenkins 配合 Github hook 持续集成 
 https://mp.weixin.qq.com/s/vqCpsTTm1p7-KvGp-9y2Aw
+GitLab持续集成 
+https://mp.weixin.qq.com/s/lS6BZ9PvyReTleJ_CuQrsA
 -->
