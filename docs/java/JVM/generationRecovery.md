@@ -7,18 +7,18 @@
         - [1.1.2. 标记-复制(Copying)算法](#112-标记-复制copying算法)
         - [1.1.3. 标记-整理(Mark-Compact)算法](#113-标记-整理mark-compact算法)
     - [1.2. ~~分代收集理论~~](#12-分代收集理论)
-        - [1.2.1. ~~分代收集算法~~](#121-分代收集算法)
-        - [1.2.2. HotSpot GC](#122-hotspot-gc)
-            - [1.2.2.1. Yong GC](#1221-yong-gc)
-                - [1.2.2.1.1. YGC触发时机](#12211-ygc触发时机)
-                - [1.2.2.1.2. YGC执行流程](#12212-ygc执行流程)
-            - [1.2.2.2. Major GC](#1222-major-gc)
-            - [1.2.2.3. ~Full GC~~](#1223-full-gc)
-                - [1.2.2.3.1. FGC的触发时机](#12231-fgc的触发时机)
+    - [1.3. HotSpot GC分类](#13-hotspot-gc分类)
+        - [1.3.1. Yong GC](#131-yong-gc)
+            - [1.3.1.1. YGC触发时机](#1311-ygc触发时机)
+            - [1.3.1.2. YGC执行流程](#1312-ygc执行流程)
+        - [1.3.2. Major GC](#132-major-gc)
+        - [1.3.3. ~Full GC~~](#133-full-gc)
+            - [1.3.3.1. FGC的触发时机](#1331-fgc的触发时机)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**   
+&emsp; **<font color = "clime">标记清除和标记整理都需要扫描两次。</font>**  
 &emsp; **<font color = "clime">跨代引用假说(跨代引用相对于同代引用仅占少数)：</font>**   
 &emsp; **既然跨代引用只是少数，那么就没必要去扫描整个老年代，也不必专门记录每一个对象是否存在哪些跨代引用，只需在新生代上建立一个全局的数据结构，称为记忆集(Remembered Set)，这个结构把老年代划分为若干个小块，标识出老年代的哪一块内存会存在跨代引用。此后当发生Minor GC时，只有包含了跨代引用的小块内存里的对象才会被加入GC Roots进行扫描。**  
 
@@ -75,6 +75,9 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
         2. 不会产生内存减半
     * 缺点：<font color = "red">扫描两次，指针需要调整(移动对象)，效率偏低。</font>  
 
+
+&emsp; **<font color = "clime">标记清除和标记整理都需要扫描两次。</font>**  
+
 ## 1.2. ~~分代收集理论~~  
 <!-- 
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
@@ -93,7 +96,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 
 
 -->
-### 1.2.1. ~~分代收集算法~~  
+
 <!-- https://mp.weixin.qq.com/s/dWg5S7m-LUQhxUofHfqb3g -->
 &emsp; 分代收集算法(Generational Collection)严格来说并不是一种思想或理论，是融合上述3种基础的算法思想，产生的针对不同情况所采用不同算法的一套组合。  
 &emsp; 大多数对象都是朝生夕死的，所以把堆分为了新生代、老年代，以及永生代(JDK8 里面叫做元空间)，方便按照不同的代进行不同的垃圾回收。新生代又被进一步划分为Eden(伊甸园)和 Survivor(幸存者)区，它们的比例是8：1：1。  
@@ -113,7 +116,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 * G1是逻辑分代，物理不分代
 * 除此之外不仅逻辑分代，而且物理分代  
 
-### 1.2.2. HotSpot GC  
+## 1.3. HotSpot GC分类  
 <!-- 
 其实 GC 分为两大类，分别是 Partial GC 和 Full GC。
 
@@ -158,13 +161,13 @@ full gc 触发条件有哪些？
 * Full GC：收集整个堆，包括young gen、old gen、perm gen(如果存在的话)等所有部分的模式。  
 &emsp; Major GC通常是跟full GC是等价的，收集整个GC堆。但因为HotSpot VM发展了这么多年，外界对各种名词的解读已经完全混乱了，当有人说“major GC”的时候一定要问清楚指的是上面的full GC还是old GC。
 
-#### 1.2.2.1. Yong GC  
+### 1.3.1. Yong GC  
 <!-- 
 https://www.cnblogs.com/williamjie/p/9516367.html
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-99.png)  
 
-##### 1.2.2.1.1. YGC触发时机
+#### 1.3.1.1. YGC触发时机
 &emsp; **YGC触发时机：**  
 &emsp; 虚拟机在进行minorGC之前会判断老年代最大的可用连续空间是否大于新生代的所有对象总空间  
 &emsp; 1、如果大于的话，直接执行minorGC  
@@ -172,22 +175,22 @@ https://www.cnblogs.com/williamjie/p/9516367.html
 &emsp; 3、如果开启了HanlerPromotionFailure, JVM会判断老年代的最大连续内存空间是否大于历次晋升的大小，如果小于直接执行FullGC
 &emsp; 4、如果大于的话，执行minorGC  
 
-##### 1.2.2.1.2. YGC执行流程
+#### 1.3.1.2. YGC执行流程
 &emsp; **YGC执行流程：(young GC中有部分存活对象会晋升到old gen，所以young GC后old gen的占用量通常会有所升高)**  
 &emsp; 大部分对象在Eden区中生成。当Eden占用完时，垃圾回收器进行回收。回收时先将eden区存活对象复制到一个survivor0区，然后清空eden区，当这个survivor0区也存放满了时，则将eden区和survivor0区(使用的survivor中的对象也可能失去引用)存活对象复制到另一个survivor1区，然后清空eden和这个survivor0区，此时survivor0区是空的，然后将survivor0区和survivor1区交换，即保持survivor1区为空， 如此往复。  
 &emsp; 每经过一次YGC，对象年龄加1，当对象寿命超过阈值时，会晋升至老年代，最大寿命15(4bit)。  
 
-#### 1.2.2.2. Major GC  
+### 1.3.2. Major GC  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-100.png)  
 
-#### 1.2.2.3. ~Full GC~~  
+### 1.3.3. ~Full GC~~  
 <!-- 
 https://zhidao.baidu.com/question/717236418134267765.html
 https://blog.csdn.net/qq_38384440/article/details/81710887
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-101.png)  
 
-##### 1.2.2.3.1. FGC的触发时机
+#### 1.3.3.1. FGC的触发时机
 &emsp; **<font color = "red">Full GC的触发时机：</font>**  
 1. <font color = "red">调用System.gc()</font>  
 &emsp; 只是建议虚拟机执行Full GC，但是虚拟机不一定真正去执行。不建议使用这种方式，而是让虚拟机管理内存。  

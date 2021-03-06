@@ -6,14 +6,14 @@
     - [1.2. CPU飚高](#12-cpu飚高)
         - [1.2.1. 现象](#121-现象)
         - [1.2.2. 排查步骤](#122-排查步骤)
-            - [1.2.2.1. ※※※FGC过高情况](#1221-※※※fgc过高情况)
-    - [1.3. 内存溢出排查实战](#13-内存溢出排查实战)
-        - [1.3.1. 堆溢出演示](#131-堆溢出演示)
-        - [1.3.2. 内存溢出的解决方案](#132-内存溢出的解决方案)
-            - [1.3.2.1. 使用内存查看工具分析堆dump文件](#1321-使用内存查看工具分析堆dump文件)
-            - [1.3.2.2. jvm内存快照dump文件太大，怎么分析](#1322-jvm内存快照dump文件太大怎么分析)
-    - [1.4. 线程死锁](#14-线程死锁)
-    - [1.5. 其他情况](#15-其他情况)
+    - [1.3. FGC过高](#13-fgc过高)
+    - [1.4. 内存溢出排查实战](#14-内存溢出排查实战)
+        - [1.4.1. 堆溢出演示](#141-堆溢出演示)
+        - [1.4.2. 内存溢出的解决方案](#142-内存溢出的解决方案)
+            - [1.4.2.1. 使用内存查看工具分析堆dump文件](#1421-使用内存查看工具分析堆dump文件)
+            - [1.4.2.2. jvm内存快照dump文件太大，怎么分析](#1422-jvm内存快照dump文件太大怎么分析)
+    - [1.5. 线程死锁](#15-线程死锁)
+    - [1.6. 其他情况](#16-其他情况)
 
 <!-- /TOC -->
 
@@ -22,7 +22,7 @@
 
 * CPU飚高  
 &emsp; **<font color = "red">CPU过高可能是系统频繁的进行Full GC，导致系统缓慢。</font><font color = "clime">而平常也可能遇到比较耗时的计算，导致CPU过高的情况。</font>**  
-&emsp; **<font color = "clime">怎么区分导致CPU过高的原因具体是Full GC次数过多还是代码中有比较耗时的计算？</font>**  
+&emsp; **<font color = "clime">怎么区分导致CPU过高的原因具体是Full GC次数过多还是代码中有比较耗时的计算？</font>** 如果是Full GC次数过多，那么通过jstack得到的线程信息会是类似于VM Thread之类的线程，而如果是代码中有比较耗时的计算，那么得到的就是一个线程的具体堆栈信息。  
 
 
 
@@ -67,7 +67,7 @@ https://www.cnblogs.com/klvchen/p/11089632.html
     5. 通过刚刚转换的16进制数字从堆栈信息里找到对应的线程堆栈。就可以从该堆栈中看出端倪。  
 
 1. 查找消耗cpu最高的进程PID  
-&emsp; 执行top -c ，显示进程运行信息列表。按下P，进程按照cpu使用率排序。  
+&emsp; 执行top -c，显示进程运行信息列表。按下P，进程按照cpu使用率排序。  
 &emsp; 如下图所示，PID为3033的进程耗费cpu最高。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-42.png)  
 2. 查找该进程下消耗cpu最高的线程号  
@@ -92,8 +92,8 @@ https://www.cnblogs.com/klvchen/p/11089632.html
     cat 3033.stack |grep 'bda' -C 8
     ```
 
-    输出如下：  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-44.png)  
+&emsp; 输出如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-44.png)  
 
 
 &emsp; **<font color = "cclime">注意，这里又分为两种情况：</font>**    
@@ -101,14 +101,12 @@ https://www.cnblogs.com/klvchen/p/11089632.html
 * 如果是正常的用户线程，则通过该线程的堆栈信息查看其具体是在哪处用户代码处运行比较消耗CPU。  
 * 如果该线程是VM Thread(VM Thread 指的就是垃圾回收的线程，一般前面会有 nid=0x.......，这里 nid 的意思就是操作系统线程 id)，则通过 jstat -gcutil 命令监控当前系统的 GC 状况。然后通过 jmap dump:format=b,file= 导出系统当前的内存数据。导出之后将内存情况放到Mat工具中进行分析即可得出内存中主要是什么对象比较消耗内存，进而可以处理相关代码。
 
-#### 1.2.2.1. ※※※FGC过高情况  
-&emsp; 使用jstack来分析GC是不是太频繁， **<font color = "clime">使用jstat -gc pid 1000命令来对gc分代变化情况进行观察，</font>** 1000表示采样间隔(ms)，S0C/S1C、S0U/S1U、EC/EU、OC/OU、MC/MU分别代表两个Survivor区、Eden区、老年代、元数据区的容量和使用量。YGC/YGT、FGC/FGCT、GCT则代表YoungGc、FullGc的耗时和次数以及总耗时。如果看到gc比较频繁，再针对gc方面做进一步分析。   
+## 1.3. FGC过高  
+&emsp; ~~使用jstack来分析GC是不是太频繁， **<font color = "clime">使用jstat -gc pid 1000命令来对gc分代变化情况进行观察，</font>** 1000表示采样间隔(ms)，S0C/S1C、S0U/S1U、EC/EU、OC/OU、MC/MU分别代表两个Survivor区、Eden区、老年代、元数据区的容量和使用量。YGC/YGT、FGC/FGCT、GCT则代表YoungGc、FullGc的耗时和次数以及总耗时。如果看到gc比较频繁，再针对gc方面做进一步分析。~~   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-81.png)  
 
-&emsp; **<font color = "clime">FGC过高可能是内存参数设置不合理，也有可能是代码中某个位置读取数据量较大导致系统内存耗尽。FGC过高可能导致CPU飚高。</font>**  
-
-    FGC过高，会导致CPU飚高；但CPU飚高不一定是FGC过高。
-&emsp; 解决思路：打印线程堆栈信息。查看线程堆栈是用户线程，还是GC线程。如果是GC线程，打印内存快照进行分析。  
+&emsp; **<font color = "clime">FGC过高可能是内存参数设置不合理，也有可能是代码中某个位置读取数据量较大导致系统内存耗尽。FGC过高可能导致CPU飚高。</font>** ⚠注意：FGC过高，会导致CPU飚高；但CPU飚高不一定是FGC过高。  
+&emsp; **<font color = "clime">解决思路：打印线程堆栈信息。查看线程堆栈是用户线程，还是GC线程。如果是GC线程，打印内存快照进行分析。</font>**  
 
 1. 如果FGC后还有大量对象，说明Old区过小，应该扩大Old区；  
 2. 如果FGC后效果很好，说明Old区存在了大量短命的对象，优化的点应该是让这些对象在新生代就被YGC掉，通常的做法是增大新生代；  
@@ -127,8 +125,8 @@ https://www.cnblogs.com/klvchen/p/11089632.html
 &emsp; <font color = "red">FGC过高，内存参数设置不合理，一般是Old区内存不够导致 FGC。</font>  
 -->
 
-## 1.3. 内存溢出排查实战  
-### 1.3.1. 堆溢出演示  
+## 1.4. 内存溢出排查实战  
+### 1.4.1. 堆溢出演示  
 
 ```java
 /**
@@ -157,7 +155,7 @@ Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
 	at jvm.HeapOOMTest.main(HeapOOMTest.java:18)
 ```
 
-### 1.3.2. 内存溢出的解决方案  
+### 1.4.2. 内存溢出的解决方案  
 1. **<font color = "clime">修改JVM启动参数，直接增加内存。</font>**  
 2. 检查错误日志，查看“OutOfMemory”错误前是否有其它异常或错误。  
 3. **<font color = "clime">对代码进行走查和分析，找出可能发生内存溢出的位置。</font>** 重点排查以下几点：  
@@ -167,7 +165,7 @@ Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
     * 检查List、Map等集合对象是否有使用后，未清除的问题。List、Map等集合对象会始终存有对对象的引用，使得这些对象不能被GC回收。  
 4. 使用内存查看工具动态查看内存快照。 
 
-#### 1.3.2.1. 使用内存查看工具分析堆dump文件  
+#### 1.4.2.1. 使用内存查看工具分析堆dump文件  
 1. 保存内存快照(两种方法)：  
     1. 添加JVM参数，该参数作用是：在程序内存溢出时输出dump文件。参数：-XX:+HeapDumpOnOutOfMemoryError -Xms20m -Xmx20m    
     &emsp; 随后找到项目地址，会发现在Project本目录中出现了个hprof文件，至此就把堆内存快照保存下来了。  
@@ -183,14 +181,16 @@ Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
 2. 使用内存工具分析  
 &emsp; 有了dump文件，就可以通过dump分析工具进行分析，比如常用的MAT，Jprofile，jvisualvm等工具都可以分析，这些工具都能够看出到底是哪里溢出，哪里创建了大量的对象等等信息。  
 
-#### 1.3.2.2. jvm内存快照dump文件太大，怎么分析  
+#### 1.4.2.2. jvm内存快照dump文件太大，怎么分析  
 <!-- 
 https://www.cnblogs.com/liangzs/p/8489321.html
+jhat -J-Xmx512M a1.log
+https://www.cnblogs.com/baihuitestsoftware/articles/6406271.html
 -->
 * 如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。
 * 如果dump文件太大，使用linux下的mat，既Memory Analyzer Tools。   
 
-## 1.4. 线程死锁  
+## 1.5. 线程死锁  
 &emsp; 死循环、死锁、阻塞、页面打开慢等问题，打印线程dump是最好的解决问题的途径。  
 <!-- 
 一文学会Java死锁和CPU 100% 问题的排查技巧
@@ -198,7 +198,7 @@ https://club.perfma.com/article/2073508
 -->
 
 
-## 1.5. 其他情况  
+## 1.6. 其他情况  
 &emsp; 如果通过top命令看到CPU并不高，并且系统内存占用率也比较低。此时就可以考虑是否是由于另外三种情况导致的问题。  
 &emsp; 具体的可以根据具体情况分析：  
 1. 如果是接口调用比较耗时，并且是不定时出现，则可以通过压测的方式加大阻塞点出现的频率，从而通过 jstack 查看堆栈信息，找到阻塞点。
