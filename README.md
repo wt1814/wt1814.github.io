@@ -132,7 +132,6 @@
 &emsp; [内存对象](/docs/java/JVM/MemoryObject.md)  
 &emsp; [内存泄露](/docs/java/JVM/MemoryLeak.md)  
 [JVM类的运行机制](/docs/java/JVM/run.md)  
-
 [GC-回收对象](/docs/java/JVM/GCProject.md)   
 &emsp; [安全点](/docs/java/JVM/safePoint.md)  
 [GC-回收器](/docs/java/JVM/GCReclaimer.md)  
