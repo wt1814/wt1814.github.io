@@ -5,7 +5,7 @@
     - [1.1. 性能指标](#11-性能指标)
     - [1.2. JVM参数](#12-jvm参数)
         - [1.2.1. JVM参数分类](#121-jvm参数分类)
-        - [1.2.2. 必须掌握的JVM参数](#122-必须掌握的jvm参数)
+        - [1.2.2. 需要掌握的JVM参数](#122-需要掌握的jvm参数)
             - [1.2.2.1. 设置内存参数](#1221-设置内存参数)
             - [1.2.2.2. GC打印参数](#1222-gc打印参数)
             - [1.2.2.3. 垃圾回收器设置参数](#1223-垃圾回收器设置参数)
@@ -49,7 +49,6 @@
 * 通过jinfo实时调整某个java进程的参数(参数只有被标记为manageable的flags可以被实时修改)  
 
 &emsp; **<font color = "red">平时⼯作⽤过的JVM常⽤基本配置参数</font>**  
-&emsp; -Xms-Xmx-Xmn  
 
     -Xms128m-Xmx4096m-Xss1024K-XX:MetaspaceSize=512m-XX:+PrintCommandLineFlags-XX:+PrintGCDetails-XX:+UseSerialGC  
 
@@ -121,7 +120,7 @@
             |-XX:-PrintGC Details	|每次GC时打印详细信息|
 
 
-### 1.2.2. 必须掌握的JVM参数  
+### 1.2.2. 需要掌握的JVM参数  
 #### 1.2.2.1. 设置内存参数  
 
 |参数|描述|
@@ -219,7 +218,7 @@ https://mp.weixin.qq.com/s/XBB2IJf8ODkcjZiU423J4Q
 JVM 常用命令行工具 
 https://mp.weixin.qq.com/s/MC2y6JAbZyjIVp7yTxT7fQ
 -->
-&emsp; **<font color = "clime">注意如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。</font>**  
+&emsp; **<font color = "clime">~~注意如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。~~</font>**  
 
 |名称|主要作用|
 |---|---|

@@ -38,30 +38,31 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 &emsp; 垃圾收集算法是内存回收的理论基础，而垃圾收集器就是内存回收的具体实现。   
 
 ## 1.1. 收集器发展过程
-&emsp; 可以把收集器发展简单划分成四个阶段：  
+&emsp; 可以把收集器发展简单划分成以下几个阶段：  
 1. 单线程阶段，对应收集器：Serial、Serial Old；
 2. 并行阶段，多条收集器线程，对应收集器：ParNew、Parallel Scavenge、Parallel Old；
 3. 并发阶段，收集器线程与用户线程同时运行，对应收集器：CMS(Concurrent Mark Sweep)；
 4. 并行+并发+分区阶段，堆内存划分成多个小块进行收集，对应收集器：G1(Garbage First)；
+5. .....
 
-&emsp; GC过程一定会发生STW(Stop The World)，而一旦发生STW必然会影响用户使用，所以GC的发展都是在围绕减少STW时间这一目的。通过并行与并发已经极大的减少了STW的时间，但是STW的时间还是会因为各种原因不可控，而G1提供的一个最大功能就是可控的STW时间。  
+&emsp; GC过程一定会发生STW(Stop The World)，而一旦发生STW必然会影响用户使用，所以GC的发展都是在围绕减少STW时间这一目的。通过并行与并发已经极大的减少了STW的时间，但是STW的时间还是会因为各种原因不可控，G1提供的一个最大功能就是可控的STW时间。  
 
 ## 1.2. 收集器分类  
-<font color = "lime">1. 根据收集器的指标分类(两个关键指标，停顿时间和吞吐量)：</font>  
+<font color = "clime">1. 根据收集器的指标分类(两个关键指标，停顿时间和吞吐量)：</font>  
 &emsp; 收集器性能考虑因素：  
 
-* 吞吐量：运行用户代码时间/(运行用户代码时间+垃圾收集时间)。  
+* **<font color = "clime">吞吐量：运行用户代码时间/(运行用户代码时间+垃圾收集时间)。</font>**  
 * 停顿时间：执行垃圾收集时，程序的工作线程被暂停的时间。  
-* 内存占有(堆空间)： Java 堆区所占的内存大小。  
+* 内存占有(堆空间)：Java堆区所占的内存大小。  
 * 垃圾收集开销：吞吐量的补数，垃圾收集器所占时间与总时间的比例。  
 * 收集频率：相对于应用程序的执行，收集操作发生的频率。  
-* 快速： 一个对象从诞生到被回收所经历的时间。  
+* 快速：一个对象从诞生到被回收所经历的时间。  
 
 &emsp; <font color  = "red">其中内存占用、吞吐量和停顿时间，三者共同构成了一个“不可能三角”。</font>    
 &emsp; 停顿时间越短就越适合需要和用户交互的程序，良好的响应速度能提升用户体验；  
 &emsp; 高吞吐量则可以高效地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。  
 
-<font color = "lime">2. 根据运行时，线程执行方式分类：</font>  
+<font color = "clime">2. 根据运行时，线程执行方式分类：</font>  
 
 * 串行收集器->Serial和Serial Old  
 &emsp; **<font color = "red">只能有一个垃圾回收线程执行，用户线程暂停。</font>** 适用于内存比较小的嵌入式设备 。  
@@ -76,26 +77,16 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 &emsp; 上图展示了多种作用于不同分代的收集器。如果两个收集器之间存在连线，那说明它们可以搭配使用。虚拟机所处的区域说明它是属于新生代收集器还是老年代收集器。选择对具体应用最合适的收集器。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-67.png)  
 
-* Serial 串行收集器  
-    新生代收集器、最基本、发展历史最久(jdk1.3之前)、单线程、基于复制算法  
-* Serial Old 串行老年代收集器  
-    老年代版本的Serial收集器、单线程、基于标记-整理算法  
-* ParNew 收集器  
-    Serial的多线程版本、新生代收集器、多线程、基于复制算法、关注用户停顿时间  
-* Parallel Scavenge 收集器  
-    新生代收集器，基于复制算法，并行的多线程、关注吞吐量  
-* Parallel Old收集器  
-    Parallel Scavenge的老年代版本，使用多线程和“标记-整理”算法  
-* CMS(Conturrent Mark Sweep)收集器  
-   并发、基于标记-清除算法  
-* G1(Garbage-First)收集器  
-    并行与并发、分代收集、空间整合  
-* Shenandoah  
-    支持并发的整理算法、基于读写屏障、旋转指针  
-* ZGC  
-     支持并发收集、基于动态Region、染色指针、虚拟内存映射  
-* Epsilon垃圾收集器  
-     没有操作的垃圾收集器、处理内存分配但不实现任何实际内存回收机制的GC  
+* Serial串行收集器： 新生代收集器、最基本、发展历史最久(jdk1.3之前)、单线程、基于复制算法。  
+* Serial Old串行老年代收集器： 老年代版本的Serial收集器、单线程、基于标记-整理算法。  
+* ParNew收集器： Serial的多线程版本、新生代收集器、多线程、基于复制算法、关注用户停顿时间。  
+* Parallel Scavenge收集器： 新生代收集器，基于复制算法，并行的多线程、关注吞吐量。  
+* Parallel Old收集器： Parallel Scavenge的老年代版本，使用多线程和“标记-整理”算法。  
+* CMS(Conturrent Mark Sweep)收集器： 并发、基于标记-清除算法。  
+* G1(Garbage-First)收集器： 并行与并发、分代收集、空间整合。  
+* Shenandoah： 支持并发的整理算法、基于读写屏障、旋转指针。  
+* ZGC： 支持并发收集、基于动态Region、染色指针、虚拟内存映射。  
+* Epsilon垃圾收集器： 没有操作的垃圾收集器、处理内存分配但不实现任何实际内存回收机制的GC。  
 
 ### 1.3.1. 新生代收集器  
 #### 1.3.1.1. Serial收集器  
@@ -127,14 +118,14 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 
 #### 1.3.1.3. Parallel Scavenge收集器  
 &emsp; Parallel Scavenge收集器也是一个新生代收集器，也是用复制算法的收集器，也是并行的多线程收集器。Parallel Scavenge收集器是虚拟机运行在Server模式下的默认垃圾收集器。   
-&emsp; 它的特点是它的关注点和其他收集器不同。<font color = "lime">Parallel Scavenge收集器的目标则是达到一个可控制的吞吐量(吞吐量=运行用户代码时间/(运行用户代码时间+垃圾收集时间)))。</font> 高吞吐量可以最高效率地利用 CPU 时间，尽快地完成程序的运算任务，主要适用于在后台运算而不需要太多交互的任务。<font color = "red">自适应调节策略也是 ParallelScavenge 收集器与 ParNew 收集器的一个重要区别。</font>   
+&emsp; 它的特点是它的关注点和其他收集器不同。<font color = "clime">Parallel Scavenge收集器的目标则是达到一个可控制的吞吐量(吞吐量=运行用户代码时间/(运行用户代码时间+垃圾收集时间)))。</font> 高吞吐量可以最高效率地利用 CPU 时间，尽快地完成程序的运算任务，主要适用于在后台运算而不需要太多交互的任务。<font color = "red">自适应调节策略也是 ParallelScavenge 收集器与 ParNew 收集器的一个重要区别。</font>   
 &emsp; 参数控制：    
 
         -XX:+UseParallelGC 使用Parallel收集器+ 老年代串行。  
         Parallel Scavenge收集器提供了两个参数用于精确控制吞吐量，分别是控制最大垃圾收集停顿时间的-XX：MaxGCPauseMillis参数以及直接设置吞吐量大小的-XX：GCTimeRatio参数。  
         Parallel Scavenge收集器还有一个参数-XX：+UseAdaptiveSizePolicy值得我们关注。这是一个开关参数，当这个参数被激活之后，就不需要人工指定新生代的大小(-Xmn)、Eden与Survivor区的比例(-XX：SurvivorRatio)、晋升老年代对象大小(-XX：PretenureSizeThreshold)等细节参数 了，虚拟机会根据当前系统的运行情况收集性能监控信息，动态调整这些参数以提供最合适的停顿时间或者最大的吞吐量。这种调节方式称为垃圾收集的自适应的调节策略(GC Ergonomics)。  
 
-&emsp; **<font color = "red"> Parallel Scavenge收集器，也是采用复制算法的并行的多线程收集器，Server模式下的默认垃圾收集器</font>，<font color = "lime">目标是达到一个可控制的吞吐量。</font>**
+&emsp; **<font color = "red"> Parallel Scavenge收集器，也是采用复制算法的并行的多线程收集器，Server模式下的默认垃圾收集器</font>，<font color = "clime">目标是达到一个可控制的吞吐量。</font>**
 
 ### 1.3.2. 老年代收集器  
 #### 1.3.2.1. Serial Old收集器  
@@ -142,7 +133,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 
 ##### 1.3.2.1.1. Parallel Old收集器  
 &emsp; Parallel Scavenge收集器的老年代版本，使用多线程和“标记-整理”算法。这个收集器在JDK 1.6之后的出现，“吞吐量优先收集器”终于有了比较名副其实的应用组合，在注重吞吐量以及CPU资源敏感的场合，都可以优先考虑Parallel Scavenge收集器+Parallel Old收集器的组合。  
-&emsp; 数控制：  
+&emsp; 参数控制：  
 
     -XX:+UseParallelOldGC 使用Parallel收集器+ 老年代并行
 
@@ -175,6 +166,8 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 https://mp.weixin.qq.com/s/5trCK-KlwikKO-R6kaTEAg
 一文读懂Java 11的ZGC为何如此高效 
 https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
+深入理解JVM - ZGC垃圾收集器 
+https://mp.weixin.qq.com/s/q4JeoI47eWBaViNDBCfnuQ
 
 -->
 &emsp; 一款由Oracle公司研发的，以低延迟为首要目标的一款垃圾收集器。它是基于动态Region内存布局，(暂时)不设年龄分代，使用了读屏障、染色指针和内存多重映射等技术来实现可并发的标记-整理算法的收集器。在JDK 11新加入，还在实验阶段，主要特点是：回收TB级内存(最大4T)，停顿时间不超过10ms  
