@@ -19,7 +19,7 @@ https://blog.csdn.net/baichoufei90/article/details/85097727
 -->
 
 ## 1.1. 什么是安全点  
-&emsp; 在 JVM 中如何判断对象可以被回收 一文中，我们知道 HotSpot 虚拟机采取的是可达性分析算法。即通过 GC Roots 枚举判定待回收的对象。  
+&emsp; 在 JVM 中如何判断对象可以被回收 一文中，知道 HotSpot 虚拟机采取的是可达性分析算法。即通过 GC Roots 枚举判定待回收的对象。  
 
 &emsp; 那么，首先要找到哪些是 GC Roots。有两种查找 GC Roots 的方法：  
 

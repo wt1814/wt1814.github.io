@@ -134,7 +134,7 @@
 [编译执行](/docs/java/JVM/run.md)  
 [GC](/docs/java/JVM/GC.md)  
 &emsp; [GC-回收对象](/docs/java/JVM/GCProject.md)   
-&emsp; &emsp; [安全点](/docs/java/JVM/safePoint.md)  
+&emsp; [GC-回收位置/安全点](/docs/java/JVM/safePoint.md)  
 &emsp; [GC-回收器](/docs/java/JVM/GCReclaimer.md)  
 &emsp; &emsp; [StopTheWord](/docs/java/JVM/stopTheWord.md)  
 &emsp; [GC-重要的回收器](/docs/java/JVM/GCReclaimerOne.md)  
