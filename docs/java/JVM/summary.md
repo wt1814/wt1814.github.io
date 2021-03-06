@@ -1,21 +1,10 @@
 <!-- 
 Java类的生命周期
 https://mp.weixin.qq.com/s/t2XP9s4HOu3LrE_g7G1VWA
-
-从JVM设计者的角度来看.class文件结构，一文弄懂.class文件的身份地位 
-https://mp.weixin.qq.com/s/BVoqaDn7HUNtdB5vZa0zug
- 手把手教你 javap 反编译分解代码，授人以鱼不如授人以渔 
-https://mp.weixin.qq.com/s/o0MFrSVS7fYLDo6UnfmA-A
-
-虚拟机字节码执行引擎，JVM的马达图，是爱情呀 
-https://mp.weixin.qq.com/s/d_AqDygFgKbdHTfz--Dy-A
-
 JVM超神之路：年后跳槽需要的JVM知识点，周末给你整理了一份！！！ 
 https://mp.weixin.qq.com/s/-ceS7--mpJyk6ILr7EtMXg
 学习JVM是如何从入门到放弃的？
 https://zhuanlan.zhihu.com/p/39536807
-
-
 -->
 
 &emsp; **<font color = "lime">加载：</font>**    
@@ -56,17 +45,5 @@ jvm全套 链接: https://pan.baidu.com/s/1PcaER6cNiDt6teawLOwpgQ 提取码: c5f
 JVM学习目录
 https://www.cnblogs.com/ding-dang/p/13129619.html
 -->
-
-[JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM.md)   
-[字节码文件](/docs/java/JVM/Class.md)  
-[JVM类的加载](/docs/java/JVM/classLoad.md)  
-[JVM内存结构](/docs/java/JVM/JVMMemory.md)  
-[GC垃圾回收](/docs/java/JVM/GC.md)  
-[JVM调优-基础](/docs/java/JVM/TuningBasic.md)  
-[JVM调优](/docs/java/JVM/JVM调优.md)  
-&emsp; [JVM排查案例](/docs/java/JVM/case.md)  
-[JAVA线上故障排查](/docs/Linux/problem.md)  
-[Arthas](/docs/java/JVM/Arthas.md)  
-[JMH](/docs/java/JVM/JMH.md)  
 
 

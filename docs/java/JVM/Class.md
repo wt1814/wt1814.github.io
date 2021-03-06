@@ -5,6 +5,11 @@
 认识JVM和字节码文件 
 https://mp.weixin.qq.com/s/2g1-YZXRrzBsD1QaKGnnNQ
 https://mp.weixin.qq.com/s/z0BmJz6dk9VNHalicgN2rg
+
+从JVM设计者的角度来看.class文件结构，一文弄懂.class文件的身份地位 
+https://mp.weixin.qq.com/s/BVoqaDn7HUNtdB5vZa0zug
+ 手把手教你 javap 反编译分解代码，授人以鱼不如授人以渔 
+https://mp.weixin.qq.com/s/o0MFrSVS7fYLDo6UnfmA-A
 -->
 &emsp; 根据 Java 虚其机规范，类文件由单个 ClassFile 结构组成：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-91.png)  

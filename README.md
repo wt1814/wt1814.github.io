@@ -131,7 +131,7 @@
 &emsp; [逃逸分析](/docs/java/JVM/escape.md)  
 &emsp; [内存中的对象](/docs/java/JVM/MemoryObject.md)  
 &emsp; [内存泄露](/docs/java/JVM/MemoryLeak.md)  
-[JVM类的运行机制](/docs/java/JVM/run.md)  
+[编译执行](/docs/java/JVM/run.md)  
 [GC](/docs/java/JVM/GC.md)  
 &emsp; [GC-回收对象](/docs/java/JVM/GCProject.md)   
 &emsp; &emsp; [安全点](/docs/java/JVM/safePoint.md)  
