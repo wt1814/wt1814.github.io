@@ -4,6 +4,8 @@
 - [1. CMS](#1-cms)
     - [1.1. 简介](#11-简介)
     - [1.2. ~~回收流程~~](#12-回收流程)
+        - [1.2.1. 《深入理解Java虚拟机》](#121-深入理解java虚拟机)
+        - [1.2.2. 《实战JAVA虚拟机  JVM故障诊断与性能优化》](#122-实战java虚拟机--jvm故障诊断与性能优化)
     - [1.3. 优点与缺点](#13-优点与缺点)
     - [1.4. ~~concurrent mode failure & promotion failed问题~~](#14-concurrent-mode-failure--promotion-failed问题)
         - [1.4.1. 简介](#141-简介)
@@ -47,6 +49,7 @@ https://zhuanlan.zhihu.com/p/139785849
 https://www.bilibili.com/read/cv6830986/
 https://itdiandi.net/view/1548
 -->
+### 1.2.1. 《深入理解Java虚拟机》
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-122.png)  
 &emsp; 使用标记-清除算法，收集过程分为如下四步：  
@@ -56,6 +59,8 @@ https://itdiandi.net/view/1548
 4. 并发清除，删除掉标记阶段判断的已经死亡的对象，由于不需要移动存活对象，所以这个阶段也是可以与用户线程同时并发的。  
 
 &emsp; **<font color = "red">由于在整个过程中耗时最长的并发标记和并发清除阶段中，垃圾收集器线程都可以与用户线程一起工作，所以从总体上来说，CMS收集器的内存回收过程是与用户线程一起并发执行的。</font>**  
+
+### 1.2.2. 《实战JAVA虚拟机  JVM故障诊断与性能优化》
 
 ## 1.3. 优点与缺点  
 &emsp; CMS是一款优秀的收集器，它最主要的优点在名字上已经体现出来： **<font color = "clime">并发收集、低停顿。</font>** 但是也有以下 **<font color = "red">三个明显的缺点：</font>**  
