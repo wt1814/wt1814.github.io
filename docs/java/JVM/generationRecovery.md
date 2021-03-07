@@ -96,6 +96,7 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
 ## 1.2. ~~分代收集理论~~  
 <!-- 
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
+https://mp.weixin.qq.com/s/dWg5S7m-LUQhxUofHfqb3g
 
 视频
 https://www.bilibili.com/video/BV1Jy4y1p7t8
