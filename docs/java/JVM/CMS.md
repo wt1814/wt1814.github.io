@@ -3,7 +3,7 @@
 
 - [1. CMS](#1-cms)
     - [1.1. 简介](#11-简介)
-    - [1.2. 回收流程](#12-回收流程)
+    - [1.2. ~~回收流程~~](#12-回收流程)
     - [1.3. 优点与缺点](#13-优点与缺点)
     - [1.4. ~~concurrent mode failure & promotion failed问题~~](#14-concurrent-mode-failure--promotion-failed问题)
         - [1.4.1. 简介](#141-简介)
@@ -17,12 +17,15 @@
 &emsp; CMS缺点：1).吞吐量低。并发执行，线程切换。2).并发执行，产生浮动垃圾。3).使用"标记-清除"算法，产生碎片空间。  
 
 &emsp; 晋升失败(promotion failed)：当新生代发生垃圾回收，老年代有足够的空间可以容纳晋升的对象，但是由于空闲空间的碎片化，导致晋升失败。此时会触发单线程且带压缩动作的Full GC。  
-&emsp; 并发模式失败(concurrent mode failure)：当CMS在执行回收时，新生代发生垃圾回收，同时老年代又没有足够的空间容纳晋升的对象时。CMS 垃圾回收会退化成单线程的Full GC。所有的应用线程都会被暂停，老年代中所有的无效对象都被回收。  
+&emsp; 并发模式失败(concurrent mode failure)：当CMS在执行回收时，新生代发生垃圾回收，同时老年代又没有足够的空间容纳晋升的对象时。CMS垃圾回收会退化成单线程的Full GC。所有的应用线程都会被暂停，老年代中所有的无效对象都被回收。  
 
 
 
 # 1. CMS  
 <!--
+CMS GC
+https://mp.weixin.qq.com/s/WqfzZRlk2NMkNc5a_Yjpdw
+
 好视频推荐：   
 https://www.bilibili.com/video/BV1Jy4y127tb?from=search&seid=14273060492345757864
 -->
@@ -36,12 +39,20 @@ https://www.bilibili.com/video/BV1Jy4y127tb?from=search&seid=1427306049234575786
     -XX:+ UseCMSCompactAtFullCollection，Full GC后，进行一次碎片整理；整理过程是独占的，会引起停顿时间变长
     -XX:+CMSFullGCsBeforeCompaction，设置进行几次Full GC后，进行一次碎片整理-XX:ParallelCMSThreads设定CMS的线程数量(一般情况约等于可用CPU数量)
 
-## 1.2. 回收流程  
+## 1.2. ~~回收流程~~
+<!-- 
+https://www.jianshu.com/p/86e358afdf17
+https://blog.csdn.net/zqz_zqz/article/details/70568819
+https://zhuanlan.zhihu.com/p/139785849
+https://www.bilibili.com/read/cv6830986/
+https://itdiandi.net/view/1548
+-->
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-122.png)  
 &emsp; 使用标记-清除算法，收集过程分为如下四步：  
 1. 初始标记，标记GCRoots能直接关联到的对象，时间很短。  
 2. 并发标记，进行GCRoots Tracing(可达性分析)过程，过程耗时较长但是不需要停顿用户线程，可以与垃圾收集线程一起并发运行。  
-3. 重新标记，**修正并发标记期间，因用户程序继续运作而导致标记产生变动的那一部分对象的标记记录，** 停顿时间通常会比初始标记阶段稍长一些，但也远比并发标记阶段的时间短。  
+3. 重新标记，**修正并发标记期间，因用户程序继续运作而导致标记产生变动的那一部分对象的标记记录(漏标或错标)，** 停顿时间通常会比初始标记阶段稍长一些，但也远比并发标记阶段的时间短。  
 4. 并发清除，删除掉标记阶段判断的已经死亡的对象，由于不需要移动存活对象，所以这个阶段也是可以与用户线程同时并发的。  
 
 &emsp; **<font color = "red">由于在整个过程中耗时最长的并发标记和并发清除阶段中，垃圾收集器线程都可以与用户线程一起工作，所以从总体上来说，CMS收集器的内存回收过程是与用户线程一起并发执行的。</font>**  
@@ -61,6 +72,7 @@ https://www.bilibili.com/video/BV1Jy4y127tb?from=search&seid=1427306049234575786
 <!-- 
 https://www.jianshu.com/p/ca1b0d4107c5
 https://www.cnblogs.com/fswhq/p/11767439.html
+https://my.oschina.net/hosee/blog/674181
 
 concurrent mode failure影响
 老年代的垃圾收集器从CMS退化为Serial Old，所有应用线程被暂停，停顿时间变长。

@@ -97,6 +97,9 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
 <!-- 
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 
+视频
+https://www.bilibili.com/video/BV1Jy4y1p7t8
+
 分代收集理论
 
 当前商业虚拟机的垃圾收集器大多数都遵循了“分代收集”的设计理论，分代收集理论其实是一套符合大多数程序运行实际情况的经验法则，主要建立在两个分代假说之上：
