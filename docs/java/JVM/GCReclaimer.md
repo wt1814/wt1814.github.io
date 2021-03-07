@@ -142,7 +142,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 
 
 ### 1.3.3. CMS收集器  
-&emsp; [GC-重要的回收器](/docs/java/JVM/GCReclaimerOne.md)  
+&emsp; [CMS回收器](/docs/java/JVM/CMS.md)  
   
 ### 1.3.4. 常用的收集器组合  
 
@@ -156,7 +156,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 |组合6|Parallel Scavenge|Parallel Old|Parallel Old是Serial Old的并行版本|
 
 ### 1.3.5. G1收集器  
-&emsp; [GC-重要的回收器](/docs/java/JVM/GCReclaimerOne.md)  
+&emsp; [G1回收器](/docs/java/JVM/G1.md)  
 
 ### 1.3.6. ZGC  
 <!-- 
