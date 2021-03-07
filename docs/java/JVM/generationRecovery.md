@@ -12,7 +12,7 @@
             - [1.3.1.1. YGC触发时机](#1311-ygc触发时机)
             - [1.3.1.2. YGC执行流程](#1312-ygc执行流程)
         - [1.3.2. Major GC](#132-major-gc)
-        - [1.3.3. ~Full GC~~](#133-full-gc)
+        - [1.3.3. Full GC](#133-full-gc)
             - [1.3.3.1. FGC的触发时机](#1331-fgc的触发时机)
 
 <!-- /TOC -->
@@ -22,10 +22,22 @@
 &emsp; **<font color = "clime">跨代引用假说(跨代引用相对于同代引用仅占少数)：</font>**   
 &emsp; **既然跨代引用只是少数，那么就没必要去扫描整个老年代，也不必专门记录每一个对象是否存在哪些跨代引用，只需在新生代上建立一个全局的数据结构，称为记忆集(Remembered Set)，这个结构把老年代划分为若干个小块，标识出老年代的哪一块内存会存在跨代引用。此后当发生Minor GC时，只有包含了跨代引用的小块内存里的对象才会被加入GC Roots进行扫描。**  
 
-&emsp; **YGC触发时机：**  
-
-&emsp; **FGC触发时机：**  
-
+&emsp; **<font color = "red">Full GC的触发时机：( 系统调用---> 回收器(例如CMS) ---> 执行GC时 ---> 老年代或永久代不足)</font>**  
+1. <font color = "red">系统调用System.gc()</font>  
+&emsp; 只是建议虚拟机执行Full GC，但是虚拟机不一定真正去执行。不建议使用这种方式，而是让虚拟机管理内存。  
+2. CMS GC时出现promotion failed和concurrent mode failure  
+&emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足(可能是GC过程中浮动垃圾过多导致暂时性的空间不足)，便会报Concurrent Mode Failure错误，并触发Full GC。  
+3. 执行GC时  
+    1. 统计得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间  
+    &emsp; Hotspot为了避免由于新生代对象晋升到旧生代导致旧生代空间不足的现象，在进行Minor GC时，做了一个判断，如果之前统计所得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间，那么就直接触发Full GC。  
+    2. 空间分配担保失败  
+    &emsp; **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的连续空间是否大于新生代所有对象的总空间，</font>** 如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。    
+4. 老年代或永久的不足
+    1. 老年代空间不足(92%)  
+    &emsp; 老年代空间不足的常见场景为大对象直接进入老年代、长期存活的对象进入老年代等。  
+    &emsp; 为了避免以上原因引起的Full GC，应当尽量不要创建过大的对象以及数组。除此之外，可以通过-Xmn虚拟机参数调大新生代的大小，让对象尽量在新生代被回收掉，不进入老年代。还可以通过 -XX:MaxTenuringThreshold调大对象进入老年代的年龄，让对象在新生代多存活一段时间。  
+    2. JDK 1.7及以前的永久代空间不足  
+    &emsp; 为避免以上原因引起的Full GC，可采用的方法为增大永久代空间或转为使用CMS GC。  
 
 # 1. GC算法与分代回收
 ## 1.1. GC算法  
@@ -93,8 +105,6 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 这两个分代假说共同奠定了多款常用垃圾收集器的一致设计原则：收集器应该将 Java 堆划分出不同的区域，将回收对象依据年龄(即对象熬过垃圾收集过程的次数)分配到不同的区域之中存储，把存活时间短的对象集中在一起，每次回收只关注如何保留少量存活的对象，即新生代(Young Generation)；把难以消亡的对象集中在一起，虚拟机就可以使用较低的频率来回收这个区域，即老年代(Old Generation)
 
 正因为划出了不同的区域，垃圾收集器才可以每次只回收其中一个或多个区域，因此才有了“Minor GC”、“Major GC”、“Full GC”这样的回收类型划分，也才能够针对不同的区域采用不同的垃圾收集算法，因而有了“标记-复制”算法、“标记-清除”算法、“标记-整理”算法
-
-
 -->
 
 <!-- https://mp.weixin.qq.com/s/dWg5S7m-LUQhxUofHfqb3g -->
@@ -168,12 +178,8 @@ https://www.cnblogs.com/williamjie/p/9516367.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-99.png)  
 
 #### 1.3.1.1. YGC触发时机
-&emsp; **YGC触发时机：**  
-&emsp; 虚拟机在进行minorGC之前会判断老年代最大的可用连续空间是否大于新生代的所有对象总空间  
-&emsp; 1、如果大于的话，直接执行minorGC  
-&emsp; 2、如果小于，判断是否开启HandlerPromotionFailure，没有开启直接FullGC  
-&emsp; 3、如果开启了HanlerPromotionFailure, JVM会判断老年代的最大连续内存空间是否大于历次晋升的大小，如果小于直接执行FullGC
-&emsp; 4、如果大于的话，执行minorGC  
+1. Eden区空间满；  
+2. 空间分配担保成功
 
 #### 1.3.1.2. YGC执行流程
 &emsp; **YGC执行流程：(young GC中有部分存活对象会晋升到old gen，所以young GC后old gen的占用量通常会有所升高)**  
@@ -183,7 +189,7 @@ https://www.cnblogs.com/williamjie/p/9516367.html
 ### 1.3.2. Major GC  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-100.png)  
 
-### 1.3.3. ~Full GC~~  
+### 1.3.3. Full GC  
 <!-- 
 https://zhidao.baidu.com/question/717236418134267765.html
 https://blog.csdn.net/qq_38384440/article/details/81710887
@@ -191,16 +197,19 @@ https://blog.csdn.net/qq_38384440/article/details/81710887
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-101.png)  
 
 #### 1.3.3.1. FGC的触发时机
-&emsp; **<font color = "red">Full GC的触发时机：</font>**  
-1. <font color = "red">调用System.gc()</font>  
+&emsp; **<font color = "red">Full GC的触发时机：( 系统调用---> 回收器(例如CMS) ---> 执行GC时 ---> 老年代或永久代不足)</font>**  
+1. <font color = "red">系统调用System.gc()</font>  
 &emsp; 只是建议虚拟机执行Full GC，但是虚拟机不一定真正去执行。不建议使用这种方式，而是让虚拟机管理内存。  
-2. 老年代空间不足(92%)  
-&emsp; 老年代空间不足的常见场景为大对象直接进入老年代、长期存活的对象进入老年代等。  
-&emsp; 为了避免以上原因引起的Full GC，应当尽量不要创建过大的对象以及数组。除此之外，可以通过-Xmn虚拟机参数调大新生代的大小，让对象尽量在新生代被回收掉，不进入老年代。还可以通过 -XX:MaxTenuringThreshold调大对象进入老年代的年龄，让对象在新生代多存活一段时间。  
-3. 统计得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间  
-4. 空间分配担保失败  
-&emsp; 使用复制算法的Minor GC需要老年代的内存空间作担保，如果担保失败会执行一次Full GC。  
-5. JDK 1.7及以前的永久代空间不足  
-&emsp; 为避免以上原因引起的Full GC，可采用的方法为增大永久代空间或转为使用CMS GC。  
-6. CMS GC时出现promotion failed和concurrent mode failure  
+2. CMS GC时出现promotion failed和concurrent mode failure  
 &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足(可能是GC过程中浮动垃圾过多导致暂时性的空间不足)，便会报Concurrent Mode Failure错误，并触发Full GC。  
+3. 执行GC时  
+    1. 统计得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间  
+    &emsp; Hotspot为了避免由于新生代对象晋升到旧生代导致旧生代空间不足的现象，在进行Minor GC时，做了一个判断，如果之前统计所得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间，那么就直接触发Full GC。  
+    2. 空间分配担保失败  
+    &emsp; **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的连续空间是否大于新生代所有对象的总空间，</font>** 如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。    
+4. 老年代或永久的不足
+    1. 老年代空间不足(92%)  
+    &emsp; 老年代空间不足的常见场景为大对象直接进入老年代、长期存活的对象进入老年代等。  
+    &emsp; 为了避免以上原因引起的Full GC，应当尽量不要创建过大的对象以及数组。除此之外，可以通过-Xmn虚拟机参数调大新生代的大小，让对象尽量在新生代被回收掉，不进入老年代。还可以通过 -XX:MaxTenuringThreshold调大对象进入老年代的年龄，让对象在新生代多存活一段时间。  
+    2. JDK 1.7及以前的永久代空间不足  
+    &emsp; 为避免以上原因引起的Full GC，可采用的方法为增大永久代空间或转为使用CMS GC。  

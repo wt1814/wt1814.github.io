@@ -15,7 +15,7 @@
         - [1.5.2. 大对象直接进入老年代](#152-大对象直接进入老年代)
         - [1.5.3. 长期存活的对象将进入老年代](#153-长期存活的对象将进入老年代)
         - [1.5.4. 动态对象年龄判定](#154-动态对象年龄判定)
-        - [1.5.5. ~~空间分配担保~~](#155-空间分配担保)
+        - [1.5.5. 空间分配担保](#155-空间分配担保)
         - [1.5.6. ~~小结：对象何时进入老年代？~~](#156-小结对象何时进入老年代)
 
 <!-- /TOC -->
@@ -180,8 +180,8 @@ https://www.bilibili.com/video/BV15U4y1p75L?from=search&seid=1575814593543225406
 ### 1.5.4. 动态对象年龄判定  
 &emsp; 为了更好地适应不同程序的内存情况，JVM并不总是要求对象的年龄必须达到MaxTenuringThreshold才能晋升老年代：如果在Survivor空间中相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，而无须等到晋升年龄。  
 
-### 1.5.5. ~~空间分配担保~~  
-&emsp; JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的连续空间是否大于新生代所有对象的总空间，如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。  
+### 1.5.5. 空间分配担保  
+&emsp; **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的连续空间是否大于新生代所有对象的总空间，</font>** 如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。  
 
 ### 1.5.6. ~~小结：对象何时进入老年代？~~  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-79.png)  
