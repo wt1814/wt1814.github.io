@@ -113,6 +113,22 @@ https://www.cnblogs.com/dudadi/p/Java.html
 
 &emsp; **Java中static块执行时机：<font color = "red">static块的执行发生在“初始化”的阶段。</font>类被加载了不一定就会执行静态代码块，只有一个类被主动使用的时候，静态代码才会被执行！**   
 
+&emsp; 使用案例：  
+
+```java
+private static String localIP;
+
+static{
+    try {
+        InetAddress inetAddress = InetAddress.getLocalHost();
+        localIP = inetAddress.getHostAddress();
+    } catch (UnknownHostException e) {
+        e.printStackTrace();
+        log.error("未获取到本机的IP地址，发送给财务系统的IP为空");
+    }
+}
+```
+
 ### 1.2.3. final  
 &emsp; final 是 Java 中的关键字，它表示的意思是 <font color="red">不可变的</font>，在 Java 中，final 主要用来  
 

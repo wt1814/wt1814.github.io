@@ -56,12 +56,8 @@ https://www.bilibili.com/video/BV1Jy4y127tb?from=search&seid=1427306049234575786
 <!-- 
 https://blog.csdn.net/zqz_zqz/article/details/70568819
 https://www.jianshu.com/p/86e358afdf17
-
 https://www.bilibili.com/read/cv6830986/
-
-
 https://segmentfault.com/a/1190000020625913?utm_source=tag-newest
-https://zhuanlan.zhihu.com/p/139785849
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-126.png)  
 CMS垃圾回收过程：  
