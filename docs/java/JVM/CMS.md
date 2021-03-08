@@ -6,7 +6,14 @@
     - [1.2. ~~回收流程~~](#12-回收流程)
         - [1.2.1. 《深入理解Java虚拟机》](#121-深入理解java虚拟机)
         - [1.2.2. 《实战JAVA虚拟机  JVM故障诊断与性能优化》](#122-实战java虚拟机--jvm故障诊断与性能优化)
-    - [1.3. 优点与缺点](#13-优点与缺点)
+            - [1.2.2.1. 初始标记](#1221-初始标记)
+            - [1.2.2.2. 并发标记](#1222-并发标记)
+            - [1.2.2.3. 预清理阶段](#1223-预清理阶段)
+            - [1.2.2.4. 可终止的预处理](#1224-可终止的预处理)
+            - [1.2.2.5. 重新标记](#1225-重新标记)
+            - [1.2.2.6. 并发清理](#1226-并发清理)
+            - [1.2.2.7. 并发重置](#1227-并发重置)
+    - [1.3. ~~优点与缺点~~](#13-优点与缺点)
     - [1.4. ~~concurrent mode failure & promotion failed问题~~](#14-concurrent-mode-failure--promotion-failed问题)
         - [1.4.1. 简介](#141-简介)
         - [1.4.2. 可能原因及解决方案](#142-可能原因及解决方案)
@@ -54,25 +61,65 @@ https://www.bilibili.com/video/BV1Jy4y127tb?from=search&seid=1427306049234575786
 
 ### 1.2.2. 《实战JAVA虚拟机  JVM故障诊断与性能优化》
 <!-- 
-https://blog.csdn.net/zqz_zqz/article/details/70568819
-https://www.jianshu.com/p/86e358afdf17
 https://www.bilibili.com/read/cv6830986/
 https://segmentfault.com/a/1190000020625913?utm_source=tag-newest
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-126.png)  
-CMS垃圾回收过程：  
+&emsp; CMS垃圾回收过程：  
 
-初始化标记(CMS-initial-mark)，标记root，会导致stw；  
-并发标记(CMS-concurrent-mark)，与用户线程同时运行；  
-预清理（CMS-concurrent-preclean），与用户线程同时运行；  
-重新标记(CMS-remark)，会导致stw；  
-并发清除(CMS-concurrent-sweep)，与用户线程同时运行；  
-调整堆大小，设置CMS在清理之后进行内存压缩，目的是清理内存中的碎片；  
-并发重置状态等待下次CMS的触发(CMS-concurrent-reset)，与用户线程同时运行；  
+1. 初始化标记(CMS-initial-mark)，标记root，会导致stw；  
+2. 并发标记(CMS-concurrent-mark)，与用户线程同时运行；  
+3. 预清理（CMS-concurrent-preclean），与用户线程同时运行；  
+4. 重新标记(CMS-remark)，会导致stw；  
+5. 并发清除(CMS-concurrent-sweep)，与用户线程同时运行；  
+6. 调整堆大小，设置CMS在清理之后进行内存压缩，目的是清理内存中的碎片；  
+7. 并发重置状态等待下次CMS的触发(CMS-concurrent-reset)，与用户线程同时运行；  
+
+#### 1.2.2.1. 初始标记  
+&emsp; 这是CMS中两次stop-the-world事件中的一次。这一步的作用是标记存活的对象，有两部分：  
+1. 标记老年代中所有的GC Roots对象，如下图节点1；  
+2. 标记年轻代中活着的对象引用到的老年代的对象（指的是年轻带中还存活的引用类型对象，引用指向老年代中的对象）如下图节点2、3；  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-127.png)  
+
+#### 1.2.2.2. 并发标记
+&emsp; 从“初始标记”阶段标记的对象开始找出所有存活的对象;  
+&emsp; 因为是并发运行的，在运行期间会发生新生代的对象晋升到老年代、或者是直接在老年代分配对象、或者更新老年代对象的引用关系等等，对于这些对象，都是需要进行重新标记的，否则有些对象就会被遗漏，发生漏标的情况。为了提高重新标记的效率，该阶段会把上述对象所在的Card标识为Dirty，后续只需扫描这些Dirty Card的对象，避免扫描整个老年代；  
+&emsp; 并发标记阶段只负责将引用发生改变的Card标记为Dirty状态，不负责处理；  
+&emsp; 如下图所示，也就是节点1、2、3，最终找到了节点4和5。并发标记的特点是和应用程序线程同时运行。并不是老年代的所有存活对象都会被标记，因为标记的同时应用程序会改变一些对象的引用等。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-128.png)  
+&emsp; 这个阶段因为是并发的容易导致concurrent mode failure。  
+
+#### 1.2.2.3. 预清理阶段
+&emsp; 前一个阶段已经说明，不能标记出老年代全部的存活对象，是因为标记的同时应用程序会改变一些对象引用，这个阶段就是用来处理前一个阶段因为引用关系改变导致没有标记到的存活对象的，它会扫描所有标记为Direty的Card  
+&emsp; 如下图所示，在并发清理阶段，节点3的引用指向了6；则会把节点3的card标记为Dirty；  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-129.png)  
+&emsp; 最后将6标记为存活,如下图所示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-130.png)  
+
+#### 1.2.2.4. 可终止的预处理
+&emsp; 这个阶段尝试着去承担下一个阶段Final Remark阶段足够多的工作。这个阶段持续的时间依赖好多的因素，由于这个阶段是重复的做相同的事情直到发生aboart的条件（比如：重复的次数、多少量的工作、持续的时间等等）之一才会停止。  
+&emsp; ps:此阶段最大持续时间为5秒，之所以可以持续5秒，另外一个原因也是为了期待这5秒内能够发生一次ygc，清理年轻带的引用，是的下个阶段的重新标记阶段，扫描年轻带指向老年代的引用的时间减少；  
+
+#### 1.2.2.5. 重新标记
+&emsp; 这个阶段会导致第二次stop the word，该阶段的任务是完成标记整个年老代的所有的存活对象。  
+&emsp; 这个阶段，重新标记的内存范围是整个堆，包含_young_gen和_old_gen。为什么要扫描新生代呢，因为对于老年代中的对象，如果被新生代中的对象引用，那么就会被视为存活对象，即使新生代的对象已经不可达了，也会使用这些不可达的对象当做cms的“gc root”，来扫描老年代； 因此对于老年代来说，引用了老年代中对象的新生代的对象，也会被老年代视作“GC ROOTS”:当此阶段耗时较长的时候，可以加入参数-XX:+CMSScavengeBeforeRemark，在重新标记之前，先执行一次ygc，回收掉年轻带的对象无用的对象，并将对象放入幸存带或晋升到老年代，这样再进行年轻带扫描时，只需要扫描幸存区的对象即可，一般幸存带非常小，这大大减少了扫描时间。  
+&emsp; 由于之前的预处理阶段是与用户线程并发执行的，这时候可能年轻带的对象对老年代的引用已经发生了很多改变，这个时候，remark阶段要花很多时间处理这些改变，会导致很长stop the word，所以通常CMS尽量运行Final Remark阶段在年轻代是足够干净的时候。  
+&emsp; 另外，还可以开启并行收集：-XX:+CMSParallelRemarkEnabled  
+
+#### 1.2.2.6. 并发清理
+&emsp; 通过以上5个阶段的标记，老年代所有存活的对象已经被标记并且现在要通过Garbage Collector采用清扫的方式回收那些不能用的对象了。  
+&emsp; 这个阶段主要是清除那些没有标记的对象并且回收空间；  
+&emsp; 由于CMS并发清理阶段用户线程还在运行着，伴随程序运行自然就还会有新的垃圾不断产生，这一部分垃圾出现在标记过程之后，CMS无法在当次收集中处理掉它们，只好留待下一次GC时再清理掉。这一部分垃圾就称为“浮动垃圾”。  
+
+#### 1.2.2.7. 并发重置
+&emsp; 这个阶段并发执行，重新设置CMS算法内部的数据结构，准备下一个CMS生命周期的使用。  
 
 
-
-## 1.3. 优点与缺点  
+## 1.3. ~~优点与缺点~~  
+<!-- 
+https://blog.csdn.net/zqz_zqz/article/details/70568819
+https://www.jianshu.com/p/86e358afdf17
+-->
 &emsp; CMS是一款优秀的收集器，它最主要的优点在名字上已经体现出来： **<font color = "clime">并发收集、低停顿。</font>** 但是也有以下 **<font color = "red">三个明显的缺点：</font>**  
 
 * **<font color = "clime">吞吐量低</font>**    
