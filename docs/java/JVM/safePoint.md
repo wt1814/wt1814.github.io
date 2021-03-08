@@ -19,7 +19,7 @@ https://blog.csdn.net/baichoufei90/article/details/85097727
 -->
 
 ## 1.1. 什么是安全点  
-&emsp; 在 JVM 中如何判断对象可以被回收 一文中，我们知道 HotSpot 虚拟机采取的是可达性分析算法。即通过 GC Roots 枚举判定待回收的对象。  
+&emsp; 在 JVM 中如何判断对象可以被回收 一文中，知道 HotSpot 虚拟机采取的是可达性分析算法。即通过 GC Roots 枚举判定待回收的对象。  
 
 &emsp; 那么，首先要找到哪些是 GC Roots。有两种查找 GC Roots 的方法：  
 
@@ -64,6 +64,6 @@ GC STW、偏向锁释放.....
 * 对于解释执行的代码，JVM会设置一个2字节的dispatch tables。解释器执行的时候会经常去检查这个dispatch tables，当有安全点请求的时候，就会让线程去进行安全点检查。
 
 ## 1.6. 安全区域又是什么？  
-&emsp; Safe Point 是对正在执行的线程设定的。如果一个线程处于 Sleep 或中断状态，它就不能响应 JVM 的中断请求，再运行到 Safe Point 上。因此 JVM 引入了 Safe Region。  
+&emsp; **Safe Point是对正在执行的线程设定的。如果一个线程处于 Sleep 或中断状态，它就不能响应 JVM 的中断请求，再运行到 Safe Point 上。因此 JVM 引入了 Safe Region。**  
 &emsp; Safe Region 是指在一段代码片段中，引用关系不会发生变化。在这个区域内的任意地方开始 GC 都是安全的。  
 &emsp; 线程在进入 Safe Region 的时候先标记自己已进入了 Safe Region，等到被唤醒时准备离开 Safe Region 时，先检查能否离开，如果 GC 完成了，那么线程可以离开，否则它必须等待直到收到安全离开的信号为止。  

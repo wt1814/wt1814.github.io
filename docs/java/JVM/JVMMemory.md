@@ -9,24 +9,36 @@
     - [1.3. 本地方法栈](#13-本地方法栈)
     - [1.4. 堆(heap)](#14-堆heap)
         - [1.4.1. 堆简介](#141-堆简介)
-        - [1.4.2. ※※※堆是分配对象存储的唯一选择吗？(逃逸分析)](#142-※※※堆是分配对象存储的唯一选择吗逃逸分析)
+        - [1.4.2. ★★★堆是分配对象存储的唯一选择吗？(逃逸分析)](#142-★★★堆是分配对象存储的唯一选择吗逃逸分析)
         - [1.4.3. Java堆内存配置项](#143-java堆内存配置项)
         - [1.4.4. 堆和栈的区别是什么？](#144-堆和栈的区别是什么)
         - [1.4.5. 堆和非堆内存](#145-堆和非堆内存)
     - [1.5. ~~方法区(永久代)~~](#15-方法区永久代)
-        - [1.5.1. ~~运行常量池~~](#151-运行常量池)
-    - [1.6. 元空间(直接内存)](#16-元空间直接内存)
+        - [1.5.1. ~~运行时常量池~~](#151-运行时常量池)
+    - [1.6. ~~元空间(直接内存)~~](#16-元空间直接内存)
 
 <!-- /TOC -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-51.png)  
+
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "clime">在Eden区中，JVM为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
+&emsp; 堆是分配对象存储的唯一选择吗？[逃逸分析](/docs/java/JVM/escape.md)  
+
+
+&emsp; <font color = "lime">方法区的演进：</font>  
+
+* jdk1.6及之前：有永久代(permanent generation) ，静态变量存放在永久代上  
+* jdk1.7：有永久代，但已经逐步“去永久代”，<font color = "red">字符串常量池、静态变量</font>移除，保存在堆中。  
+* jdk1.8及之后：无永久代，类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "lime">但字符串常量池、静态变量仍在堆。</font>  
+
+
+# 1. JVM内存结构/运行时数据区  
 <!-- 
 JVM 内存结构 
 https://mp.weixin.qq.com/s/mWIsVIYkn7ts02mdmvRndA
 https://mp.weixin.qq.com/s/jPIHNsQwiYNCRUQt1qXR6Q
 -->
-
-# 1. JVM内存结构/运行时数据区  
 &emsp; **<font color = "red">部分参考《深入理解java虚拟机 第3版》第2章 Java内存区域与内存溢出异常</font>**   
 
 &emsp; Java虚拟机在执行Java程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK1.8和之前的版本略有不同。  
@@ -157,9 +169,9 @@ https://mp.weixin.qq.com/s/Tv-0hjIgN9Grqvch1fFUiA -->
 &emsp; **<font color = "red">堆分类：从垃圾回收的角度，由于现在收集器基本都采用分代垃圾收集算法，所以Java堆还可以细分为：新生代和老年代。新生代内存又被分成三部分，Eden、From Survivor、To Survivor，默认情况下年轻代按照8 :1 :1的比例来分配。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-10.png)  
 
-&emsp; **<font color = "clime">在Eden区中，JVM 为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
+&emsp; **<font color = "clime">在Eden区中，JVM为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
 
-### 1.4.2. ※※※堆是分配对象存储的唯一选择吗？(逃逸分析)  
+### 1.4.2. ★★★堆是分配对象存储的唯一选择吗？(逃逸分析)  
 &emsp; 请参考[逃逸分析](/docs/java/JVM/escape.md)  
 
 ### 1.4.3. Java堆内存配置项  
@@ -207,9 +219,9 @@ https://mp.weixin.qq.com/s/Tv-0hjIgN9Grqvch1fFUiA -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-69.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-70.png)  
 
-&emsp; <font color = "red">Java 8 中 PermGen 为什么被移出 HotSpot JVM 了？</font>(详见：JEP 122: Remove the Permanent Generation)：  
-1. 由于 PermGen 内存经常会溢出，引发java.lang.OutOfMemoryError: PermGen，因此 JVM 的开发者希望这一块内存可以更灵活地被管理，不要再经常出现这样的 OOM。  
-2. 移除 PermGen 可以促进 HotSpot JVM 与 JRockit VM 的融合，因为 JRockit 没有永久代。  
+&emsp; <font color = "red">Java 8中PermGen为什么被移出HotSpot JVM了？</font>(详见：JEP 122: Remove the Permanent Generation)：  
+1. 由于PermGen内存经常会溢出，引发java.lang.OutOfMemoryError: PermGen，因此JVM的开发者希望这一块内存可以更灵活地被管理，不要再经常出现这样的OOM。  
+2. 移除PermGen可以促进HotSpot JVM与JRockit VM的融合，因为JRockit没有永久代。  
 
 <!-- 
 1. 为永久代设置空间大小是很难确定的。 在某些场景下，如果动态加载类过多，容易产生Perm区的O0M。比如某个实际Web工程中，因为功能点比较多，在运行过程中，要不断动态加载很多类，经常出现致命错误。 "Exception in thread' dubbo client x.x connector’java.lang.OutOfMemoryError： PermGenspace" 而元空间和永久代之间最大的区别在于：元空间并不在虚拟机中，而是使用本地内存。因此，默认情况下，元空间的大小仅受本地内存限制
@@ -217,33 +229,33 @@ https://mp.weixin.qq.com/s/Tv-0hjIgN9Grqvch1fFUiA -->
 2. 对永久代进行调优是很困难的
 -->
 
-&emsp; <font color = "red">StringTable 为什么要调整?</font>   
-&emsp; jdk7中将StringTable放到了堆空间中。因为永久代的回收效率很低，在Full GC的时候才会触发，而Full GC 是老年代的空间不足、永久代不足时才会触发，这就导致了StringTable回收效率不高。而<font color = "red">开发中会有大量的字符串被创建，回收效率低，导致永久代内存不足，放到堆里，能及时回收内存。</font>   
+&emsp; <font color = "red">~~StringTable 为什么要调整?~~</font>   
+&emsp; jdk7中将StringTable放到了堆空间中。因为永久代的回收效率很低，在Full GC的时候才会触发，而Full GC是老年代的空间不足、永久代不足时才会触发，这就导致了StringTable回收效率不高。而<font color = "red">开发中会有大量的字符串被创建，回收效率低，导致永久代内存不足，放到堆里，能及时回收内存。</font>   
 
 &emsp; 永久代的GC是和老年代(old generation)捆绑在一起的，无论谁满了，都会触发永久代和老年代的垃圾收集。  
 
-### 1.5.1. ~~运行常量池~~  
-&emsp; <font color = "red">运行时常量池：是方法区的一部分，用于存放编译器生成的各种字面量和符号引用。</font>一般来说，除了保存 Class 文件中描述的符号引用外，还会把翻译出来的直接引用也存储在运行时常量池中。  
-&emsp; 运行时常量池相对于 Class 文件常量池的另外一个重要特征是具备动态性，Java 语言并不要求常量一定只有编译期才能产生，也就是并非预置入Class文件中常量池的内容才能进入方法区运行时常量池，运行期间也可能将新的常量放入池中，这种特性被开发人员利用得比较多的便是String类的 intern()方法。  
-&emsp; 既然运行时常量池是方法区的一部分，自然受到方法区内存的限制，当常量池无法再申请到内存时会抛出 OutOfMemoryError 异常。 
-
-&emsp; <font color = "red">JDK1.7及之后版本的JVM已经将运行时常量池从方法区中移了出来，在 Java堆(Heap)中开辟了一块区域存放运行时常量池。</font>  
-
-## 1.6. 元空间(直接内存)  
-&emsp; JDK1.8 版本中移除了方法区并使用 MetaSpace(元空间)作为替代实现。  
-&emsp; MetaSpace 存储类的元数据信息。  
-&emsp; 元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。元空间的内存大小受本地内存限制。  
-&emsp; 元空间也可能导致OutOfMemoryError异常出现。  
-
-&emsp; **<font color = "red">为什么要用元空间替代方法区？</font>**  
-1. <font color = "red">因为直接内存，JVM将会在 IO 操作上具有更高的性能，因为它直接作用于本地系统的 IO 操作。</font>而非直接内存，也就是堆内存中的数据，如果要作 IO 操作，会先复制到直接内存，再利用本地 IO 处理。  
-&emsp; 从数据流的角度，非直接内存是下面这样的作用链：本地 IO --> 直接内存 --> 非直接内存 --> 直接内存 --> 本地 IO。  
-&emsp; 而直接内存是：本地 IO --> 直接内存 --> 本地 IO。  
-2. 整个永久代有一个 JVM 本身设置固定大小上线，无法进行调整，<font color = "red">而元空间使用的是直接内存，受本机可用内存的限制，很难发生java.lang.OutOfMemoryError。</font>也可以通过JVM参数来指定元空间的大小。  
-
-
+### 1.5.1. ~~运行时常量池~~  
 <!-- 
 延伸：常量池 
 https://mp.weixin.qq.com/s/391mANG6x1euW2Savj7ltA
 &emsp; 常量池分为三种：class 文件中的常量池、运行时常量池、字符串常量池。
 -->
+&emsp; <font color = "red">运行时常量池：是方法区的一部分，用于存放编译器生成的各种字面量和符号引用。</font>一般来说，除了保存 Class 文件中描述的符号引用外，还会把翻译出来的直接引用也存储在运行时常量池中。  
+&emsp; 运行时常量池相对于 Class 文件常量池的另外一个重要特征是具备动态性，Java语言并不要求常量一定只有编译期才能产生，也就是并非预置入Class文件中常量池的内容才能进入方法区运行时常量池，运行期间也可能将新的常量放入池中，这种特性被开发人员利用得比较多的便是String类的 intern()方法。  
+&emsp; 既然运行时常量池是方法区的一部分，自然受到方法区内存的限制，当常量池无法再申请到内存时会抛出 OutOfMemoryError 异常。 
+
+&emsp; <font color = "red">JDK1.7及之后版本的JVM已经将运行时常量池从方法区中移了出来，在 Java堆(Heap)中开辟了一块区域存放运行时常量池。</font>  
+
+## 1.6. ~~元空间(直接内存)~~  
+<!-- 
+https://blog.csdn.net/qq_33591903/article/details/105634782
+https://www.cnblogs.com/duanxz/p/3520829.html
+-->
+&emsp; JDK1.8版本中移除了方法区并使用 MetaSpace(元空间)作为替代实现。  
+&emsp; MetaSpace存储类的元数据信息。  
+&emsp; 元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。元空间的内存大小受本地内存限制。  
+&emsp; 元空间也可能导致OutOfMemoryError异常出现。  
+
+&emsp; **<font color = "red">~~为什么要用元空间替代方法区？~~</font>**  
+1. 整个永久代有一个 JVM 本身设置固定大小上线，无法进行调整。字符串常量池存在于永久代中，在大量使用字符串的情况下，非常容易出现OOM的异常。此外，JVM加载的class的总数，方法的大小等都很难确定，因此对永久代大小的指定难以确定。太小的永久代容易导致永久代内存溢出，太大的永久代则容易导致虚拟机内存紧张。  
+&emsp; <font color = "red">而元空间使用的是直接内存，受本机可用内存的限制，很难发生java.lang.OutOfMemoryError。</font>也可以通过JVM参数来指定元空间的大小。  

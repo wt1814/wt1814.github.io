@@ -20,7 +20,7 @@ JDK为何自己先破坏双亲委派模型?
 https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 -->
 
-&emsp; **<font color = "lime">总结：</font>**  
+&emsp; **<font color = "red">总结：</font>**  
 &emsp; 类加载器：  
 1. 类加载器分类  
 2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。

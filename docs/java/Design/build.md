@@ -26,7 +26,7 @@ https://mp.weixin.qq.com/s/Taja_UD0r0l2BP-mFbwU_Q
 3. 产品类非常复杂，或者产品类中的调用顺序不同产生不同的作用。  
 4. 当初始化一个对象特别复杂，参数多，而且很多参数都具有默认值时。  
 
-&emsp; **<font color = "red">JDK中的StringBuilder#append()、Spring中BeanDefinitionBuilder#getBeanDefinition()方法获得一个BeanDefinition对象、Mybatis中CacheBuilder#build()获得一个Cache、Mybatis中SqlSessionFactoryBuilder#build()方法获得一个SqlSessionFactory。</font>**  
+&emsp; **<font color = "clime">JDK中的StringBuilder#append()、Spring中BeanDefinitionBuilder#getBeanDefinition()方法获得一个BeanDefinition对象、Mybatis中CacheBuilder#build()获得一个Cache、Mybatis中SqlSessionFactoryBuilder#build()方法获得一个SqlSessionFactory。</font>**  
 
 &emsp; **建造者模式的优点：**  
 1. 封装性好，创建和使用分离；  

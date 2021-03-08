@@ -8,6 +8,9 @@
 <!-- /TOC -->
 
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "clime">JVM各组件的作用(JVM执行程序的过程)：</font>** 首先通过类加载器(ClassLoader)会把Java代码转换成字节码，运行时数据区(Runtime Data Area)再把字节码加载到内存中，<font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此需要特定的命令解析器执行引擎(Execution Engine)，将字节码翻译成底层系统指令，再交由CPU去执行，</font>而这个过程中需要调用其他语言的本地库接口(Native Interface)来实现整个程序的功能。  
+
 # 1. JDK、JRE、JVM  
 <!-- 
 JDK、JRE、JVM，是什么关系？
@@ -75,12 +78,12 @@ https://mp.weixin.qq.com/s/-CbNU5uPH1cpMuZ-eQQgFw
 本地方法调用(Native Interface)，是负责调用本地接口的。作用是调用不同语言的接口给JAVA用，会在Native Method Stack中记录对应的本地方法，然后调用该方法时就通过Execution Engine加载对应的本地lib。原本多用于一些专业领域，如JAVA驱动，地图制作引擎等，现在关于这种本地方法接口的调用已经被类似于Socket通信，WebService等方式取代。  
 -->
 
-* 类加载器，在 JVM 启动时或者类运行时将需要的class加载到JVM中  
-* 执行引擎，执行引擎的任务是负责执行 class 文件中包含的字节码指令，相当于实际机器上的CPU  
-* 运行时数据区，将内存划分成若干个区以模拟实际机器上的存储、记录和调度功能模块，如实际机器上的各种功能的寄存器或者 PC 指针的记录器等  
-* 本地方法调用，调用C或C++实现的本地方法的代码返回结果  
+* 类加载器，在JVM启动时或者类运行时将需要的class加载到JVM中。  
+* 运行时数据区，将内存划分成若干个区以模拟实际机器上的存储、记录和调度功能模块，如实际机器上的各种功能的寄存器或者 PC 指针的记录器等。  
+* 执行引擎，执行引擎的任务是负责执行 class 文件中包含的字节码指令，相当于实际机器上的CPU。  
+* 本地方法调用，调用C或C++实现的本地方法的代码返回结果。  
   
 
-&emsp; **<font color = "red">各组件的作用(JVM执行程序的过程)：</font>** 首先通过类加载器(ClassLoader)会把Java代码转换成字节码，运行时数据区(Runtime Data Area)再把字节码加载到内存中，而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此需要特定的命令解析器执行引擎(Execution Engine)，将字节码翻译成底层系统指令，再交由CPU去执行，而这个过程中需要调用其他语言的本地库接口(Native Interface)来实现整个程序的功能。  
+&emsp; **<font color = "clime">各组件的作用(JVM执行程序的过程)：</font>** 首先通过类加载器(ClassLoader)会把Java代码转换成字节码，运行时数据区(Runtime Data Area)再把字节码加载到内存中，<font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此需要特定的命令解析器执行引擎(Execution Engine)，将字节码翻译成底层系统指令，再交由CPU去执行，</font>而这个过程中需要调用其他语言的本地库接口(Native Interface)来实现整个程序的功能。  
 
 &emsp; **JVM与不同系统(JVM的平台无关性)：** java能跨平台，实现一次编写，多处运行。Java能够跨平台运行的核心在于JVM 。不是Java能够跨平台，而是它的jvm能够跨平台。Java虚拟机屏蔽了与具体操作系统平台相关的信息，只要为不同平台实现了相应的虚拟机，编译后的Java字节码就可以在该平台上运行。  

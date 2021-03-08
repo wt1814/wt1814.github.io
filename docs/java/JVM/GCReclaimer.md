@@ -1,46 +1,30 @@
 
 <!-- TOC -->
 
-- [1. GC](#1-gc)
-    - [1.1. GC算法](#11-gc算法)
-        - [1.1.1. 标记-清除(Mark-Sweep)算法](#111-标记-清除mark-sweep算法)
-        - [1.1.2. 标记-复制(Copying)算法](#112-标记-复制copying算法)
-        - [1.1.3. 标记-整理(Mark-Compact)算法](#113-标记-整理mark-compact算法)
-    - [1.2. ~~分代收集理论~~](#12-分代收集理论)
-        - [1.2.1. 分代收集算法](#121-分代收集算法)
-        - [1.2.2. HotSpot GC](#122-hotspot-gc)
-            - [Yong GC](#yong-gc)
-            - [Major GC](#major-gc)
-            - [Full GC](#full-gc)
-        - [1.2.3. ~~Stop the world~~](#123-stop-the-world)
-    - [1.3. 垃圾回收器](#13-垃圾回收器)
-        - [1.3.1. 收集器发展过程](#131-收集器发展过程)
-        - [1.3.2. 收集器分类](#132-收集器分类)
-        - [1.3.3. 收集器详解](#133-收集器详解)
-            - [1.3.3.1. 新生代收集器](#1331-新生代收集器)
-                - [1.3.3.1.1. Serial收集器](#13311-serial收集器)
-                - [1.3.3.1.2. ParNew收集器](#13312-parnew收集器)
-                - [1.3.3.1.3. Parallel Scavenge收集器](#13313-parallel-scavenge收集器)
-            - [1.3.3.2. 老年代收集器](#1332-老年代收集器)
-                - [1.3.3.2.1. Serial Old收集器](#13321-serial-old收集器)
-                - [1.3.3.2.2. Parallel Old收集器](#13322-parallel-old收集器)
-            - [1.3.3.3. CMS收集器](#1333-cms收集器)
-            - [1.3.3.4. 常用的收集器组合](#1334-常用的收集器组合)
-            - [1.3.3.5. G1收集器](#1335-g1收集器)
-            - [1.3.3.6. ZGC](#1336-zgc)
-            - [1.3.3.7. Epsilon](#1337-epsilon)
-            - [1.3.3.8. Shenandoah](#1338-shenandoah)
-        - [1.3.4. 选择合适的垃圾收集器](#134-选择合适的垃圾收集器)
-        - [1.3.5. ~~垃圾收集器常用参数~~](#135-垃圾收集器常用参数)
+- [1. 垃圾回收器](#1-垃圾回收器)
+    - [1.1. 收集器发展过程](#11-收集器发展过程)
+    - [1.2. 收集器分类](#12-收集器分类)
+    - [1.3. 收集器详解](#13-收集器详解)
+        - [1.3.1. 新生代收集器](#131-新生代收集器)
+            - [1.3.1.1. Serial收集器](#1311-serial收集器)
+            - [1.3.1.2. ParNew收集器](#1312-parnew收集器)
+            - [1.3.1.3. Parallel Scavenge收集器](#1313-parallel-scavenge收集器)
+        - [1.3.2. 老年代收集器](#132-老年代收集器)
+            - [1.3.2.1. Serial Old收集器](#1321-serial-old收集器)
+                - [1.3.2.1.1. Parallel Old收集器](#13211-parallel-old收集器)
+        - [1.3.3. CMS收集器](#133-cms收集器)
+        - [1.3.4. 常用的收集器组合](#134-常用的收集器组合)
+        - [1.3.5. G1收集器](#135-g1收集器)
+        - [1.3.6. ZGC](#136-zgc)
+        - [1.3.7. Epsilon](#137-epsilon)
+        - [1.3.8. Shenandoah](#138-shenandoah)
+    - [1.4. 选择合适的垃圾收集器](#14-选择合适的垃圾收集器)
+    - [1.5. 垃圾收集器常用参数](#15-垃圾收集器常用参数)
 
 <!-- /TOC -->
 
-&emsp; GC：  
-    1. GC算法
-    2. Young GC与Full GC
-    3. 垃圾回收器  
+
     
-# 1. GC
 <!-- 
 不如一篇文章搞懂三色标记是如何处理漏标 
 https://mp.weixin.qq.com/s/pswlzZugDhNeZKerTTsCnQ
@@ -48,202 +32,37 @@ PLAB
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 -->
 
-## 1.1. GC算法  
-<!-- 
-分代收集算法 
-https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
--->
-&emsp; GC常用的算法：标记-清除(Mark-Sweep)、复制(Copying)、标记-整理(Mark-Compact)、分代收集(新生用复制，老年用标记-整理)。  
-
-### 1.1.1. 标记-清除(Mark-Sweep)算法  
-1. <font color = "red">标记-清除算法是最基础的收集算法，是因为后续的收集算法大多都是以标记-清除算法为基础，对其缺点进行改进而得到的。</font>  
-2. 标记-清除算法分为两个阶段：标记阶段和清除阶段。标记阶段是标记出所有需要被回收的对象，清除阶段就是回收被标记的对象所占用的空间。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-73.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-76.png)  
-3. 特点：  
-    * 优点：  
-        1. 算法相对简单
-        2. 存活对象比较多的情况下效率比较高
-    * 缺点：
-        1. (效率偏低，两遍扫描，标记和清除都比较耗时)执行效率不稳定，如果Java堆中包含大量对象，而且其中大部分是需要被回收的，这时必须进行大量标记和清除的动作，导致标记和清除两个过程的执行效率都随对象数量增长而降低；  
-        2. (位置不连续，产生碎片)<font color = "lime">内存空间的碎片化问题，</font>清除后产生大量不连续的内存碎片。如果有大对象会出现空间不够的现象，从而不得不提前触发另一次垃圾收集动作。 
-
-### 1.1.2. 标记-复制(Copying)算法 
-1. 标记-复制算法常被简称为复制算法。<font color = "red">为了解决标记-清除算法面对大量可回收对象时执行效率低的问题。</font>  
-2. 标记-复制算法的执行过程：  
-&emsp; 将可用内存按容量划分为大小相等的两块，每次只使用其中的一块。当这一块的内存用完了，就将还存活着的对象复制到另外一块上面，然后再把已使用过的内存空间一次清理掉。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-74.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-77.png)  
-&emsp; <font color = "red">如果内存中多数对象都是存活的，这种算法将会产生大量的内存间复制的开销</font>，但对于多数对象都是可回收的情况，算法需要复制的就是占少数的存活对象，而且每次都是针对整个半区进行内存回收，分配内存时也就不用考虑有空间碎片的复杂情况，只要移动堆顶指针，按顺序分配即可。这样实现简单，运行高效，不过其缺陷也显而易见，这种复制回收算法的代价是<font color = "red">将可用内存缩小为了原来的一半</font>，空间浪费多了一点。 
-3. 特点：  
-    * 适用于存活对象较少的情况  
-    * 优点：  
-        1. 只扫描一次，效率提高。  
-        2. 没有碎片，空间连续。
-    * 缺点：  
-        1. 移动复制对象，需要调整对象引用。  
-        2. 50%的内存空间始终空闲浪费，存活对象越多效率越低。
-
-### 1.1.3. 标记-整理(Mark-Compact)算法  
-1. 为了解决标记-复制算法的缺陷，充分利用内存空间，提出了标记-整理算法。标记-清除算法与标记-整理算法的本质差异在于前者是一种非移动式的回收算法，而后者是移动式的。该算法标记阶段和Mark-Sweep 一样，但是在完成标记之后，它不是直接清理可回收对象，而是将存活对象都向一端移动，然后清理掉端边界以外的内存。  
-2. 标记-整理算法的标记过程仍然与“标记-清除”算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活的对象都向内存空间一端移动，然后直接清理掉边界以外的内存。标记-整理算法的执行过程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-75.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-78.png)  
-
-3. 特点：  
-    * 优点：
-        1. 没有碎片，空间连续，方便对象分配。  
-        2. 不会产生内存减半
-    * 缺点：<font color = "red">扫描两次，指针需要调整(移动对象)，效率偏低。</font>  
-
-## 1.2. ~~分代收集理论~~  
-<!-- 
-https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
-
-分代收集理论
-
-当前商业虚拟机的垃圾收集器大多数都遵循了“分代收集”的设计理论，分代收集理论其实是一套符合大多数程序运行实际情况的经验法则，主要建立在两个分代假说之上：
-
-    弱分代假说：绝大多数对象都是朝生夕灭的
-
-    强分代假说：熬过越多次垃圾收集过程的对象就越难以消亡
-
-这两个分代假说共同奠定了多款常用垃圾收集器的一致设计原则：收集器应该将 Java 堆划分出不同的区域，将回收对象依据年龄(即对象熬过垃圾收集过程的次数)分配到不同的区域之中存储，把存活时间短的对象集中在一起，每次回收只关注如何保留少量存活的对象，即新生代(Young Generation)；把难以消亡的对象集中在一起，虚拟机就可以使用较低的频率来回收这个区域，即老年代(Old Generation)
-
-正因为划出了不同的区域，垃圾收集器才可以每次只回收其中一个或多个区域，因此才有了“Minor GC”、“Major GC”、“Full GC”这样的回收类型划分，也才能够针对不同的区域采用不同的垃圾收集算法，因而有了“标记-复制”算法、“标记-清除”算法、“标记-整理”算法
 
 
--->
-### 1.2.1. 分代收集算法  
-&emsp; 分代收集算法(Generational Collection)严格来说并不是一种思想或理论，是融合上述3种基础的算法思想，产生的针对不同情况所采用不同算法的一套组合。  
-&emsp; 大多数对象都是朝生夕死的，所以把堆分为了新生代、老年代，以及永生代(JDK8 里面叫做元空间)，方便按照不同的代进行不同的垃圾回收。新生代又被进一步划分为 Eden(伊甸园)和 Survivor(幸存者)区，它们的比例是8：1：1。  
-
-&emsp; 新生代采用复制算法、老年代采用标记-整理算法。  
-
-&emsp; <font color = "lime">~~分代收集流程：~~</font>  
-<!-- https://mp.weixin.qq.com/s/dWg5S7m-LUQhxUofHfqb3g -->
-
-* 对象首先分配在伊甸园区域
-* 新生代空间不足时，触发minor gc，伊甸园和from存活的对象使用copy复制到to中，存活的对象年龄加1并且交换from to
-* minor gc 会引发stop the word，暂停其它用户线程，等垃圾回收结束，用户线程才恢复运行
-* 当对象寿命超过阈值时，会晋升至老年代，最大寿命15(4bit)
-* 当老年代空间不足，那么触发full gc，STW的时间更长  
-
-----
-<!-- 
-https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
--->
-&emsp; **跨代引用：**  
-&emsp; 分代收集并非只是简单划分一下内存区域，它至少存在一个明显的困难：对象之间不是孤立的，对象之间会存在跨代引用。假如现在要进行只局限于新生代的垃圾收集，根据根可达性分析的知识，与GC Roots之间不存在引用链即为可回收，但新生代的对象很有可能会被老年代所引用，那么老年代对象将临时加入 GC Roots 集合中，不得不再额外遍历整个老年代中的所有对象来确保可达性分析结果的正确性，这无疑为内存回收带来很大的性能负担。为了解决这个问题，就需要对分代收集理论添加一条经验法则：跨代引用假说(跨代引用相对于同代引用仅占少数)。  
-&emsp; 存在互相引用的两个对象，应该是倾向于同时生存或同时消亡的，举个例子，如果某个新生代对象存在跨代引用，由于老年代对象难以消亡，会使得新生代对象同样在收集时得以存活，进而年龄增长后晋升到老年代，那么跨代引用也随之消除了。 **既然跨代引用只是少数，那么就没必要去扫描整个老年代，也不必专门记录每一个对象是否存在哪些跨代引用，只需在新生代上建立一个全局的数据结构，称为记忆集(Remembered Set)，这个结构把老年代划分为若干个小块，标识出老年代的哪一块内存会存在跨代引用。此后当发生 Minor GC 时，只有包含了跨代引用的小块内存里的对象才会被加入GC Roots进行扫描。**  
-
-&emsp; **部分垃圾回收器使用的模型：**  
-
-* 除Epsilon ZGC Shenandoah之外的GC都是使用逻辑分代模型  
-* G1是逻辑分代，物理不分代
-* 除此之外不仅逻辑分代，而且物理分代  
-
-### 1.2.2. HotSpot GC  
-<!-- 
-其实 GC 分为两大类，分别是 Partial GC 和 Full GC。
-
-Partial GC 即部分收集，分为 young gc、old gc、mixed gc。
-
-    young gc：指的是单单收集年轻代的 GC。
-    old gc：指的是单单收集老年代的 GC。
-    mixed gc：这个是 G1 收集器特有的，指的是收集整个年轻代和部分老年代的 GC。
-
-Full GC 即整堆回收，指的是收取整个堆，包括年轻代、老年代，如果有永久代的话还包括永久代。
-
-其实还有 Major GC 这个名词，在《深入理解Java虚拟机》中这个名词指代的是单单老年代的 GC，也就是和 old gc 等价的，不过也有很多资料认为其是和 full gc 等价的。
-
-还有 Minor GC，其指的就是年轻代的 gc。
-young gc 触发条件是什么？
-
-大致上可以认为在年轻代的 eden 快要被占满的时候会触发 young gc。
-
-为什么要说大致上呢？因为有一些收集器的回收实现是在 full gc 前会让先执行以下 young gc。
-
-比如 Parallel Scavenge，不过有参数可以调整让其不进行 young gc。
-
-可能还有别的实现也有这种操作，不过正常情况下就当做 eden 区快满了即可。
-
-eden 快满的触发因素有两个，一个是为对象分配内存不够，一个是为 TLAB 分配内存不够。
-full gc 触发条件有哪些？
-
-这个触发条件稍微有点多，我们来看下。
-
-    在要进行 young gc 的时候，根据之前统计数据发现年轻代平均晋升大小比现在老年代剩余空间要大，那就会触发 full gc。
-    有永久代的话如果永久代满了也会触发 full gc。
-    老年代空间不足，大对象直接在老年代申请分配，如果此时老年代空间不足则会触发 full gc。
-    担保失败即 promotion failure，新生代的 to 区放不下从 eden 和 from 拷贝过来对象，或者新生代对象 gc 年龄到达阈值需要晋升这两种情况，老年代如果放不下的话都会触发 full gc。
-    执行 System.gc()、jmap -dump 等命令会触发 full gc。
--->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-98.png)  
-&emsp; 针对HotSpot VM的实现，它里面的GC其实准确分类只有两大种：  
-* Partial GC：并不收集整个GC堆的模式  
-    * Young GC：只收集young gen的GC  
-    * Old GC：只收集old gen的GC。只有CMS的concurrent collection是这个模式  
-    * Mixed GC：收集整个young gen以及部分old gen的GC。只有G1有这个模式  
-* Full GC：收集整个堆，包括young gen、old gen、perm gen(如果存在的话)等所有部分的模式。  
-&emsp; Major GC通常是跟full GC是等价的，收集整个GC堆。但因为HotSpot VM发展了这么多年，外界对各种名词的解读已经完全混乱了，当有人说“major GC”的时候一定要问清楚指的是上面的full GC还是old GC。
-
-#### Yong GC  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-99.png)  
-&emsp; 当young gen中的eden区分配满的时候触发。注意young GC中有部分存活对象会晋升到old gen，所以young GC后old gen的占用量通常会有所升高。  
-&emsp; 具体流程：  
-&emsp; 大部分对象在Eden区中生成。当Eden占用完时，垃圾回收器进行回收。回收时先将eden区存活对象复制到一个survivor0区，然后清空eden区，当这个survivor0区也存放满了时，则将eden区和survivor0区(使用的survivor中的对象也可能失去引用)存活对象复制到另一个survivor1区，然后清空eden和这个survivor0区，此时survivor0区是空的，然后将survivor0区和survivor1区交换，即保持survivor1区为空， 如此往复。  
-
-#### Major GC  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-100.png)  
-
-#### Full GC  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-101.png)  
-&emsp; 当准备要触发一次young GC时，如果发现统计数据说之前young GC的平均晋升大小比目前old gen剩余的空间大，则不会触发young GC而是转为触发full GC(因为HotSpot VM的GC里，除了CMS的concurrent collection之外，其它能收集old gen的GC都会同时收集整个GC堆，包括young gen，所以不需要事先触发一次单独的young GC)。  
-&emsp; **<font color = "red">Full GC的触发还可能有其他情况：</font>**  
-1. <font color = "red">调用System.gc()</font>  
-&emsp; 只是建议虚拟机执行Full GC，但是虚拟机不一定真正去执行。不建议使用这种方式，而是让虚拟机管理内存。  
-2. 老年代空间不足(92%)  
-&emsp; 老年代空间不足的常见场景为大对象直接进入老年代、长期存活的对象进入老年代等。  
-&emsp; 为了避免以上原因引起的Full GC，应当尽量不要创建过大的对象以及数组。除此之外，可以通过-Xmn虚拟机参数调大新生代的大小，让对象尽量在新生代被回收掉，不进入老年代。还可以通过 -XX:MaxTenuringThreshold调大对象进入老年代的年龄，让对象在新生代多存活一段时间。  
-3. 空间分配担保失败  
-&emsp; 使用复制算法的Minor GC需要老年代的内存空间作担保，如果担保失败会执行一次Full GC。  
-4. JDK 1.7及以前的永久代空间不足  
-&emsp; 为避免以上原因引起的Full GC，可采用的方法为增大永久代空间或转为使用CMS GC。  
-5. Concurrent Mode Failure  
-&emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足(可能是GC过程中浮动垃圾过多导致暂时性的空间不足)，便会报Concurrent Mode Failure错误，并触发Full GC。  
-
-### 1.2.3. ~~Stop the world~~  
-&emsp; Java中[Stop-The-World](/docs/java/JVM/stopTheWord.md)机制简称STW，是在执行垃圾收集时，Java应用程序的其他所有线程都被挂起(除了垃圾收集帮助器之外)。Java中一种全局暂停现象，全局停顿，所有Java代码停止，native代码可以执行，但不能与JVM交互；这些现象多半是由于gc引起。  
-
-## 1.3. 垃圾回收器  
+# 1. 垃圾回收器  
 &emsp; 垃圾收集算法是内存回收的理论基础，而垃圾收集器就是内存回收的具体实现。   
 
-### 1.3.1. 收集器发展过程
-&emsp; 可以把收集器发展简单划分成四个阶段：  
+## 1.1. 收集器发展过程
+&emsp; 可以把收集器发展简单划分成以下几个阶段：  
 1. 单线程阶段，对应收集器：Serial、Serial Old；
 2. 并行阶段，多条收集器线程，对应收集器：ParNew、Parallel Scavenge、Parallel Old；
 3. 并发阶段，收集器线程与用户线程同时运行，对应收集器：CMS(Concurrent Mark Sweep)；
 4. 并行+并发+分区阶段，堆内存划分成多个小块进行收集，对应收集器：G1(Garbage First)；
+5. .....
 
-&emsp; GC过程一定会发生STW(Stop The World)，而一旦发生STW必然会影响用户使用，所以GC的发展都是在围绕减少STW时间这一目的。通过并行与并发已经极大的减少了STW的时间，但是STW的时间还是会因为各种原因不可控，而G1提供的一个最大功能就是可控的STW时间。  
+&emsp; GC过程一定会发生STW(Stop The World)，而一旦发生STW必然会影响用户使用，所以GC的发展都是在围绕减少STW时间这一目的。通过并行与并发已经极大的减少了STW的时间，但是STW的时间还是会因为各种原因不可控，G1提供的一个最大功能就是可控的STW时间。  
 
-### 1.3.2. 收集器分类  
-<font color = "lime">1. 根据收集器的指标分类(两个关键指标，停顿时间和吞吐量)：</font>  
+## 1.2. 收集器分类  
+<font color = "clime">1. 根据收集器的指标分类(两个关键指标，停顿时间和吞吐量)：</font>  
 &emsp; 收集器性能考虑因素：  
 
-* 吞吐量：运行用户代码时间/(运行用户代码时间+垃圾收集时间)。  
+* **<font color = "clime">吞吐量：运行用户代码时间/(运行用户代码时间+垃圾收集时间)。</font>**  
 * 停顿时间：执行垃圾收集时，程序的工作线程被暂停的时间。  
-* 内存占有(堆空间)： Java 堆区所占的内存大小。  
+* 内存占有(堆空间)：Java堆区所占的内存大小。  
 * 垃圾收集开销：吞吐量的补数，垃圾收集器所占时间与总时间的比例。  
 * 收集频率：相对于应用程序的执行，收集操作发生的频率。  
-* 快速： 一个对象从诞生到被回收所经历的时间。  
+* 快速：一个对象从诞生到被回收所经历的时间。  
 
 &emsp; <font color  = "red">其中内存占用、吞吐量和停顿时间，三者共同构成了一个“不可能三角”。</font>    
 &emsp; 停顿时间越短就越适合需要和用户交互的程序，良好的响应速度能提升用户体验；  
 &emsp; 高吞吐量则可以高效地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。  
 
-<font color = "lime">2. 根据运行时，线程执行方式分类：</font>  
+<font color = "clime">2. 根据运行时，线程执行方式分类：</font>  
 
 * 串行收集器->Serial和Serial Old  
 &emsp; **<font color = "red">只能有一个垃圾回收线程执行，用户线程暂停。</font>** 适用于内存比较小的嵌入式设备 。  
@@ -252,35 +71,25 @@ full gc 触发条件有哪些？
 * 并发收集器[停顿时间优先]->CMS、G1  
 &emsp; **<font color = "red">用户线程和垃圾收集线程同时执行(但并不一定是并行的，可能是交替执行的)，垃圾收集线程在执行的时候不会停顿用户线程的运行。</font>** 适用于相对时间有要求的场景，比如Web。  
 
-### 1.3.3. 收集器详解
+## 1.3. 收集器详解
 &emsp; HotSpot虚拟机所包含的所有收集器如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-55.png)  
 &emsp; 上图展示了多种作用于不同分代的收集器。如果两个收集器之间存在连线，那说明它们可以搭配使用。虚拟机所处的区域说明它是属于新生代收集器还是老年代收集器。选择对具体应用最合适的收集器。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-67.png)  
 
-* Serial 串行收集器  
-    新生代收集器、最基本、发展历史最久(jdk1.3之前)、单线程、基于复制算法  
-* Serial Old 串行老年代收集器  
-    老年代版本的Serial收集器、单线程、基于标记-整理算法  
-* ParNew 收集器  
-    Serial的多线程版本、新生代收集器、多线程、基于复制算法、关注用户停顿时间  
-* Parallel Scavenge 收集器  
-    新生代收集器，基于复制算法，并行的多线程、关注吞吐量  
-* Parallel Old收集器  
-    Parallel Scavenge的老年代版本，使用多线程和“标记-整理”算法  
-* CMS(Conturrent Mark Sweep)收集器  
-   并发、基于标记-清除算法  
-* G1(Garbage-First)收集器  
-    并行与并发、分代收集、空间整合  
-* Shenandoah  
-    支持并发的整理算法、基于读写屏障、旋转指针  
-* ZGC  
-     支持并发收集、基于动态Region、染色指针、虚拟内存映射  
-* Epsilon垃圾收集器  
-     没有操作的垃圾收集器、处理内存分配但不实现任何实际内存回收机制的GC  
+* Serial串行收集器： 新生代收集器、最基本、发展历史最久(jdk1.3之前)、单线程、基于复制算法。  
+* Serial Old串行老年代收集器： 老年代版本的Serial收集器、单线程、基于标记-整理算法。  
+* ParNew收集器： Serial的多线程版本、新生代收集器、多线程、基于复制算法、关注用户停顿时间。  
+* Parallel Scavenge收集器： 新生代收集器，基于复制算法，并行的多线程、关注吞吐量。  
+* Parallel Old收集器： Parallel Scavenge的老年代版本，使用多线程和“标记-整理”算法。  
+* CMS(Conturrent Mark Sweep)收集器： 并发、基于标记-清除算法。  
+* G1(Garbage-First)收集器： 并行与并发、分代收集、空间整合。  
+* Shenandoah： 支持并发的整理算法、基于读写屏障、旋转指针。  
+* ZGC： 支持并发收集、基于动态Region、染色指针、虚拟内存映射。  
+* Epsilon垃圾收集器： 没有操作的垃圾收集器、处理内存分配但不实现任何实际内存回收机制的GC。  
 
-#### 1.3.3.1. 新生代收集器  
-##### 1.3.3.1.1. Serial收集器  
+### 1.3.1. 新生代收集器  
+#### 1.3.1.1. Serial收集器  
 &emsp; 最基本、发展历史最久的收集器，这个收集器是一个采用复制算法的单线程的收集器。  
 &emsp; 迄今为止，Serial收集器依然是虚拟机运行在Client模式下的默认新生代收集器，因为它简单而高效。用户桌面应用场景中，分配给虚拟机管理的内存一般来说不会很大，收集几十兆甚至一两百兆的新生代停顿时间在几十毫秒最多一百毫秒，只要不是频繁发生，这点停顿是完全可以接受的。  
 &emsp; 参数控制：
@@ -293,7 +102,7 @@ full gc 触发条件有哪些？
 
 &emsp; **<font color = "red">一句话概括：Serial收集器，采用复制算法的单线程的收集器，运行在Client模式下的默认新生代收集器，适用于用户桌面应用中。</font>**
 
-##### 1.3.3.1.2. ParNew收集器  
+#### 1.3.1.2. ParNew收集器  
 &emsp; (相同)ParNew收集器是Serial收集器的多线程版本，除了使用多条线程进行垃圾收集外，其余行为和Serial收集器完全一样，包括使用的也是复制算法。  
 &emsp; (不同)ParNew收集器除了多线程以外和Serial收集器并没有太多创新的地方，但是它却是JDK7之前Server模式下的虚拟机首选的新生代收集器，其中有一个很重要的和性能无关的原因是，除了Serial收集器外，目前只有它能与CMS收集器配合工作。  
 &emsp; (对比)ParNew收集器在单CPU的环境中绝对不会有比Serial收集器更好的效果，甚至由于线程交互的开销，该收集器在两个CPU的环境中都不能百分之百保证可以超越Serial收集器。当然，随着可用CPU数量的增加，它对于GC时系统资源的有效利用还是很有好处的。它默认开启的收集线程数与CPU数量相同，在CPU数量非常多的情况下，可以使用-XX:ParallelGCThreads参数来限制垃圾收集的线程数。  
@@ -307,24 +116,24 @@ full gc 触发条件有哪些？
 
 &emsp; **<font color = "red">一句话概括：Serial收集器的多线程版本，降低停顿时间，JDK7之前Server模式下的虚拟机首选的新生代收集器，能与CMS收集器配合。</font>**
 
-##### 1.3.3.1.3. Parallel Scavenge收集器  
+#### 1.3.1.3. Parallel Scavenge收集器  
 &emsp; Parallel Scavenge收集器也是一个新生代收集器，也是用复制算法的收集器，也是并行的多线程收集器。Parallel Scavenge收集器是虚拟机运行在Server模式下的默认垃圾收集器。   
-&emsp; 它的特点是它的关注点和其他收集器不同。<font color = "lime">Parallel Scavenge收集器的目标则是达到一个可控制的吞吐量(吞吐量=运行用户代码时间/(运行用户代码时间+垃圾收集时间)))。</font> 高吞吐量可以最高效率地利用 CPU 时间，尽快地完成程序的运算任务，主要适用于在后台运算而不需要太多交互的任务。<font color = "red">自适应调节策略也是 ParallelScavenge 收集器与 ParNew 收集器的一个重要区别。</font>   
+&emsp; 它的特点是它的关注点和其他收集器不同。<font color = "clime">Parallel Scavenge收集器的目标则是达到一个可控制的吞吐量(吞吐量=运行用户代码时间/(运行用户代码时间+垃圾收集时间)))。</font> 高吞吐量可以最高效率地利用 CPU 时间，尽快地完成程序的运算任务，主要适用于在后台运算而不需要太多交互的任务。<font color = "red">自适应调节策略也是 ParallelScavenge 收集器与 ParNew 收集器的一个重要区别。</font>   
 &emsp; 参数控制：    
 
         -XX:+UseParallelGC 使用Parallel收集器+ 老年代串行。  
         Parallel Scavenge收集器提供了两个参数用于精确控制吞吐量，分别是控制最大垃圾收集停顿时间的-XX：MaxGCPauseMillis参数以及直接设置吞吐量大小的-XX：GCTimeRatio参数。  
         Parallel Scavenge收集器还有一个参数-XX：+UseAdaptiveSizePolicy值得我们关注。这是一个开关参数，当这个参数被激活之后，就不需要人工指定新生代的大小(-Xmn)、Eden与Survivor区的比例(-XX：SurvivorRatio)、晋升老年代对象大小(-XX：PretenureSizeThreshold)等细节参数 了，虚拟机会根据当前系统的运行情况收集性能监控信息，动态调整这些参数以提供最合适的停顿时间或者最大的吞吐量。这种调节方式称为垃圾收集的自适应的调节策略(GC Ergonomics)。  
 
-&emsp; **<font color = "red"> Parallel Scavenge收集器，也是采用复制算法的并行的多线程收集器，Server模式下的默认垃圾收集器</font>，<font color = "lime">目标是达到一个可控制的吞吐量。</font>**
+&emsp; **<font color = "red"> Parallel Scavenge收集器，也是采用复制算法的并行的多线程收集器，Server模式下的默认垃圾收集器</font>，<font color = "clime">目标是达到一个可控制的吞吐量。</font>**
 
-#### 1.3.3.2. 老年代收集器  
-##### 1.3.3.2.1. Serial Old收集器  
+### 1.3.2. 老年代收集器  
+#### 1.3.2.1. Serial Old收集器  
 &emsp; Serial收集器的老年代版本，同样是一个单线程收集器，使用“标记-整理算法”，这个收集器的主要意义也是在于给Client模式下的虚拟机使用。 
 
-##### 1.3.3.2.2. Parallel Old收集器  
+##### 1.3.2.1.1. Parallel Old收集器  
 &emsp; Parallel Scavenge收集器的老年代版本，使用多线程和“标记-整理”算法。这个收集器在JDK 1.6之后的出现，“吞吐量优先收集器”终于有了比较名副其实的应用组合，在注重吞吐量以及CPU资源敏感的场合，都可以优先考虑Parallel Scavenge收集器+Parallel Old收集器的组合。  
-&emsp; 数控制：  
+&emsp; 参数控制：  
 
     -XX:+UseParallelOldGC 使用Parallel收集器+ 老年代并行
 
@@ -332,11 +141,10 @@ full gc 触发条件有哪些？
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-31.png)  
 
 
-
-#### 1.3.3.3. CMS收集器  
-&emsp; [GC-重要的回收器](/docs/java/JVM/GCReclaimerOne.md)  
+### 1.3.3. CMS收集器  
+&emsp; [CMS回收器](/docs/java/JVM/CMS.md)  
   
-#### 1.3.3.4. 常用的收集器组合  
+### 1.3.4. 常用的收集器组合  
 
 | |新生代GC策略	|老年代GC策略	|说明|
 |---|---|---|---|
@@ -347,10 +155,10 @@ full gc 触发条件有哪些？
 |组合5|Parallel Scavenge|Serial Old	|Parallel Scavenge策略主要是关注一个可控的吞吐量：应用程序运行时间 / (应用程序运行时间 + GC时间)，可见这会使得CPU的利用率尽可能的高，适用于后台持久运行的应用程序，而不适用于交互较多的应用程序。|
 |组合6|Parallel Scavenge|Parallel Old|Parallel Old是Serial Old的并行版本|
 
-#### 1.3.3.5. G1收集器  
-&emsp; [GC-重要的回收器](/docs/java/JVM/GCReclaimerOne.md)  
+### 1.3.5. G1收集器  
+&emsp; [G1回收器](/docs/java/JVM/G1.md)  
 
-#### 1.3.3.6. ZGC  
+### 1.3.6. ZGC  
 <!-- 
  新一代垃圾回收器ZGC的探索与实践 
  https://mp.weixin.qq.com/s/ag5u2EPObx7bZr7hkcrOTg
@@ -358,6 +166,8 @@ full gc 触发条件有哪些？
 https://mp.weixin.qq.com/s/5trCK-KlwikKO-R6kaTEAg
 一文读懂Java 11的ZGC为何如此高效 
 https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
+深入理解JVM - ZGC垃圾收集器 
+https://mp.weixin.qq.com/s/q4JeoI47eWBaViNDBCfnuQ
 
 -->
 &emsp; 一款由Oracle公司研发的，以低延迟为首要目标的一款垃圾收集器。它是基于动态Region内存布局，(暂时)不设年龄分代，使用了读屏障、染色指针和内存多重映射等技术来实现可并发的标记-整理算法的收集器。在JDK 11新加入，还在实验阶段，主要特点是：回收TB级内存(最大4T)，停顿时间不超过10ms  
@@ -407,7 +217,7 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
 * 并发重分配：重分配是ZGC执行过程中的核心阶段，这个过程要把重分配集中的存活对象复制到新的Region上，并为重分配集中的每个Region维护一个转发表(Forward Table)，记录从旧对象到新对象的转向关系。ZGC收集器能仅从引用上就明确得知一个对象是否处于重分配集之中，如果用户线程此时并发访问了位于重分配集中的对象，这次访问将会被预置的内存屏障所截获，然后立即根据Region上的转发表记录将访问转发到新复制的对象上，并同时修正更新该引用的值，使其直接指向新对象，ZGC将这种行为称为指针的“自愈”(Self-Healing)能力  
 * 并发重映射(Concurrent Remap)：重映射所做的就是修正整个堆中指向重分配集中旧对象的所有引用，但是ZGC中对象引用存在“自愈”功能，所以这个重映射操作并不是很迫切。ZGC很巧妙地把并发重映射阶段要做的工作，合并到了下一次垃圾收集循环中的并发标记阶段里去完成，反正它们都是要遍历所有对象的，这样合并就节省了一次遍历对象图的开销
 
-#### 1.3.3.7. Epsilon  
+### 1.3.7. Epsilon  
 &emsp; Epsilon(A No-Op Garbage Collector)垃圾回收器控制内存分配，但是不执行任何垃圾回收工作。一旦java的堆被耗尽，jvm就直接关闭。设计的目的是提供一个完全消极的GC实现，分配有限的内存分配，最大限度降低消费内存占用量和内存吞吐时的延迟时间。一个好的实现是隔离代码变化，不影响其他GC，最小限度的改变其他的JVM代码  
 &emsp; 适用场景:  
 
@@ -419,7 +229,7 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
     UnlockExperimentalVMOptions：解锁隐藏的虚拟机参数
     -XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC -Xms100m -Xmx100m
 
-#### 1.3.3.8. Shenandoah  
+### 1.3.8. Shenandoah  
 &emsp; 一款只有OpenJDK才会包含的收集器，最开始由RedHat公司独立发展后来贡献给了OpenJDK  
 &emsp; Shenandoah与G1类似，也是使用基于Region的堆内存布局，同样有着用于存放大对象的Humongous Region，默认的回收策略也同样是优先处理回收价值最大的Region  
 &emsp; 但是管理堆内存方面，与G1至少有三个明显的不同之处：  
@@ -446,7 +256,7 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
 &emsp; Brooks形式的转发指针在设计上决定了它是必然会出现多线程竞争问题的，如果收集器线程与用户线程发生的只是并发读取，那无论读到旧对象还是新对象上的字段，返回的结果都应该是一样的，这个场景还可以有一些“偷懒”的处理余地；但如果发生的是并发写入，就一定必须保证写操作只能发生在新复制的对象上，而不是写入旧对象的内存中  
 &emsp; 解决方案：Shenandoah不得不同时设置读、写屏障去拦截  
 
-### 1.3.4. 选择合适的垃圾收集器  
+## 1.4. 选择合适的垃圾收集器  
 &emsp; 官网：https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/collectors.html#sthref28
 
 * 优先调整堆的大小让服务器自己来选择  
@@ -482,7 +292,7 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
 从上面这些出发点来看，我们平常的 Web 服务器，都是对响应性要求非常高的。选择性其实就集中在 CMS、G1、ZGC上。而对于某些定时任务，使用并行收集器，是一个比较好的选择。
 -->
 
-### 1.3.5. ~~垃圾收集器常用参数~~  
+## 1.5. 垃圾收集器常用参数  
 &emsp; -XX:+UseSerialGC：在新生代和老年代使用串行收集器  
 &emsp; -XX:+UseParNewGC：在新生代使用并行收集器  
 &emsp; -XX:+UseParallelGC：新生代使用并行回收收集器，更加关注吞吐量  

@@ -126,6 +126,10 @@ https://www.cnblogs.com/jackson0714/p/java_Volatile.html
 DCL为什么要用volatile关键字？
 https://blog.csdn.net/weixin_38106322/article/details/105753241
 -->
+<!-- 
+说说双重检查加锁单例模式为什么两次判断？
+https://mp.weixin.qq.com/s/OG2_Iq0Xe1DD_ghtMYX2Ow
+-->
 &emsp; 单例模式的实现，典型的双重检查锁定(DCL)  
 
 ```java

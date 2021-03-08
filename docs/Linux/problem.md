@@ -41,7 +41,7 @@ https://mp.weixin.qq.com/s/znVGpJhtA52UKiekHWqD3w
 &emsp; 针对Java应用，性能诊断工具主要分为两层：OS层面和Java应用层面(包括应用代码诊断和GC诊断)。  
 
 &emsp; <font color = "red">线上故障主要会包括cpu、磁盘、内存以及网络问题，而大多数故障可能会包含不止一个层面的问题，所以进行排查时候尽量四个方面依次排查一遍。</font>  
-&emsp; <font color = "lime">基本上出问题就是df、free、top 三连，然后依次jstack、jmap伺候，具体问题具体分析即可。</font>  
+&emsp; <font color = "clime">基本上出问题就是df、free、top 三连，然后依次jstack、jmap伺候，具体问题具体分析即可。</font>  
 
 ## 1.1. OS诊断  
 <!-- 

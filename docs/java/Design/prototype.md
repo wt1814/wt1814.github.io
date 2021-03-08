@@ -25,7 +25,7 @@
 3. 构造函数比较复杂。
 4. 循环体中生产大量对象时。
 
-&emsp; **在 Spring 中，原型模式应用得非常广泛，例如 scope=“prototype”。JSON.parseObject()也是一种原型模式。**  
+&emsp; **<font color = "clime">在Spring中，原型模式应用得非常广泛，例如 scope=“prototype”。JSON.parseObject()也是一种原型模式。</font>**  
 
 &emsp; **原型模式的优点：**  
 1. 性能优良，Java自带的原型模式是基于内存二进制流的拷贝，比直接new一个对象性能上提升了许多。  

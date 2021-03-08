@@ -10,7 +10,7 @@
 
 # 1. 观察者(Observer)模式  
 ## 1.1. 简介
-&emsp; 观察者模式(Observer Pattern) ，又叫发布-订阅模式。定义一种一对多的依赖关系，一个主题对象可被多个观察者对象同时监听，使得每当主题对象状态变化时，所有依赖于它的对象都会得到通知并被自动更新。  
+&emsp; 观察者模式(Observer Pattern)，又叫发布-订阅模式。定义一种一对多的依赖关系，一个主题对象可被多个观察者对象同时监听，使得每当主题对象状态变化时，所有依赖于它的对象都会得到通知并被自动更新。  
 &emsp; 观察者模式的核心是将观察者与被观察者接耦，以类似于消息/广播发送的机制联动两者，使被观察者的变动能通知到感兴趣的观察者们，从而做出相应的响应。  
 
 &emsp; **使用场景：**  
@@ -19,7 +19,7 @@
 3. 实现类似广播机制的功能，无需知道具体收听者，只需分发广播，系统中感兴趣的对象自动接收该广播；  
 4. 多层级嵌套使用，形成一种链式触发机制，使得事件具备跨域(跨越两种观察者类型)通知。  
 
-&emsp; **<font color = "red">Spring 中的 ContextLoaderListener 实现了 ServletContextListener 接口， ServletContextListener 接口又继承了 EventListener。EventListener就是典型的观察者模式接口。</font>**  
+&emsp; **<font color = "red">Spring 中的ContextLoaderListener实现了ServletContextListener接口，ServletContextListener接口又继承了EventListener。EventListener就是典型的观察者模式接口。</font>**  
 
 &emsp; **优点：**  
 1. 观察者和被观察者之间建立了一个抽象的耦合。
