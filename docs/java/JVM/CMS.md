@@ -40,15 +40,9 @@ https://www.bilibili.com/video/BV1Jy4y127tb?from=search&seid=1427306049234575786
     -XX:+CMSFullGCsBeforeCompaction，设置进行几次Full GC后，进行一次碎片整理-XX:ParallelCMSThreads设定CMS的线程数量(一般情况约等于可用CPU数量)
 
 ## 1.2. ~~回收流程~~
-<!-- 
-https://www.jianshu.com/p/86e358afdf17
-https://blog.csdn.net/zqz_zqz/article/details/70568819
-https://zhuanlan.zhihu.com/p/139785849
-https://www.bilibili.com/read/cv6830986/
-https://itdiandi.net/view/1548
--->
-### 1.2.1. 《深入理解Java虚拟机》
+&emsp; CMS回收老年代，能与CMS搭配使用的新生代垃圾收集器有Serial收集器和ParNew收集器。  
 
+### 1.2.1. 《深入理解Java虚拟机》
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-122.png)  
 &emsp; 使用标记-清除算法，收集过程分为如下四步：  
 1. 初始标记，标记GCRoots能直接关联到的对象，时间很短。  
@@ -60,10 +54,27 @@ https://itdiandi.net/view/1548
 
 ### 1.2.2. 《实战JAVA虚拟机  JVM故障诊断与性能优化》
 <!-- 
-https://segmentfault.com/a/1190000020625913?utm_source=tag-newest
+https://blog.csdn.net/zqz_zqz/article/details/70568819
 https://www.jianshu.com/p/86e358afdf17
-https://zhuanlan.zhihu.com/p/139785849s
+
+https://www.bilibili.com/read/cv6830986/
+
+
+https://segmentfault.com/a/1190000020625913?utm_source=tag-newest
+https://zhuanlan.zhihu.com/p/139785849
 -->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-126.png)  
+CMS垃圾回收过程：  
+
+初始化标记(CMS-initial-mark)，标记root，会导致stw；  
+并发标记(CMS-concurrent-mark)，与用户线程同时运行；  
+预清理（CMS-concurrent-preclean），与用户线程同时运行；  
+重新标记(CMS-remark)，会导致stw；  
+并发清除(CMS-concurrent-sweep)，与用户线程同时运行；  
+调整堆大小，设置CMS在清理之后进行内存压缩，目的是清理内存中的碎片；  
+并发重置状态等待下次CMS的触发(CMS-concurrent-reset)，与用户线程同时运行；  
+
+
 
 ## 1.3. 优点与缺点  
 &emsp; CMS是一款优秀的收集器，它最主要的优点在名字上已经体现出来： **<font color = "clime">并发收集、低停顿。</font>** 但是也有以下 **<font color = "red">三个明显的缺点：</font>**  

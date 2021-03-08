@@ -48,7 +48,7 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-14.png)   
 
 ## 1.3. 属性  
-&emsp; AQS核心思想是，<font color = "red">如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。</font><font color = "lime">如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制。</font> 
+&emsp; AQS核心思想是，<font color = "red">如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。</font><font color = "lime">如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-2.png)   
 &emsp; <font color = "red">AQS使用一个int state成员变量来表示同步状态，通过内置的FIFO队列来完成获取资源线程的排队工作，即将暂时获取不到锁的线程加入到队列中。AQS使用CAS对该同步状态进行原子操作实现对其值的修改。</font>  
 
