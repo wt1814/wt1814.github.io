@@ -140,6 +140,7 @@
 &emsp; [GC-垃圾回收器](/docs/java/JVM/GCReclaimer.md)  
 &emsp; [CMS回收器](/docs/java/JVM/CMS.md)  
 &emsp; [G1回收器](/docs/java/JVM/G1.md)  
+&emsp; [三色标记](/docs/java/JVM/TriMark.md)  
 [调优](/docs/java/JVM/tuning.md)  
 &emsp; [JVM调优-基础](/docs/java/JVM/TuningBasic.md)  
 &emsp; [性能指标](/docs/system/performance.md)  
