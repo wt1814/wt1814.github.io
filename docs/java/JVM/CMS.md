@@ -22,14 +22,10 @@
 &emsp; 并发模式失败(concurrent mode failure)：当CMS在执行回收时，新生代发生垃圾回收，同时老年代又没有足够的空间容纳晋升的对象时。CMS垃圾回收会退化成单线程的Full GC。所有的应用线程都会被暂停，老年代中所有的无效对象都被回收。  
 
 
-
 # 1. CMS  
 <!--
-
 CMS GC
 https://mp.weixin.qq.com/s/WqfzZRlk2NMkNc5a_Yjpdw
-
-
 好视频推荐：   
 https://www.bilibili.com/video/BV1Jy4y127tb?from=search&seid=14273060492345757864
 -->

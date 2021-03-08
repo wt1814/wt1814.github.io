@@ -143,11 +143,11 @@ https://www.jianshu.com/p/8be816cbb5ed
 
 ### 1.2.4. ~~内存分配全流程~~  
 <!-- 
+好看视频
 https://www.bilibili.com/video/BV15U4y1p75L?from=search&seid=15758145935432254065
 -->
-
-&emsp; 对象分配的大致流程如下：如果JVM开启了栈上分配和标量替换，且经过JIT逃逸分析判定该对象的引用不会逃逸到线程外，则该对象为栈分配候选；如果不满足栈上分配的条件，则尝试TLAB分配；如果TLAB分配不成功，则尝试堆上分配，如果满足进入老年代的条件，则对象直接分配到老年代，否则对象分配在新生代的eden区域。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-106.png)  
+&emsp; ~~对象分配的大致流程如下：如果JVM开启了栈上分配和标量替换，且经过JIT逃逸分析判定该对象的引用不会逃逸到线程外，则该对象为栈分配候选；如果不满足栈上分配的条件，则尝试TLAB分配；如果TLAB分配不成功，则尝试堆上分配，如果满足进入老年代的条件，则对象直接分配到老年代，否则对象分配在新生代的eden区域。~~  
 
 ## 1.3. 对象的内存布局  
 &emsp; 对象的内存布局包括三个部分：对象头，实例数据和对齐填充。 请参考[Synchronized原理](/docs/java/concurrent/SynPrinciple.md)  
@@ -172,7 +172,7 @@ https://www.bilibili.com/video/BV15U4y1p75L?from=search&seid=1575814593543225406
 &emsp; 在JVM内存模型中，JVM年轻代堆内存可以划分为一块Eden区和两块Survivor区。在大多数情况下，对象在新生代Eden区中分配， 当Eden区没有足够空间分配时，JVM发起一次Minor GC，将Eden区和其中一块Survivor区内尚存活的对象放入另一块Survivor区域，如果在Minor GC期间发现新生代存活对象无法放入空闲的Survivor区，则会通过空间分配担保机制使对象提前进入老年代。  
 
 ### 1.5.2. 大对象直接进入老年代  
-&emsp; Serial和ParNew两款收集器提供了-XX:PretenureSizeThreshold的参数，令大于该值的大对象直接在老年代分配，这样做的目的是避免在Eden区和Survivor区之间产生大量的内存复制(大对象一般指需要大量连续内存的Java对象，如很长的字符串和数组)，因此大对象容易导致还有不少空闲内存就提前触发GC以获取足够的连续空间。  
+&emsp; **Serial和ParNew两款收集器提供了-XX:PretenureSizeThreshold的参数，令大于该值的大对象直接在老年代分配，** 这样做的目的是避免在Eden区和Survivor区之间产生大量的内存复制(大对象一般指需要大量连续内存的Java对象，如很长的字符串和数组)，因此大对象容易导致还有不少空闲内存就提前触发GC以获取足够的连续空间。  
 
 ### 1.5.3. 长期存活的对象将进入老年代  
 &emsp; 虚拟机采用了分代收集的思想来管理内存，那么内存回收时就必须能识别哪些对象应放在新生代，哪些对象应放在老年代中。为此，虚拟机为每个对象定义了一个对象年龄(Age)计数器，对象在Eden出生如果经第一次Minor GC后仍然存活，且能被Survivor容纳的话，将被移动到Survivor空间中，并将年龄设为1。以后对象在Survivor区中每经历一次Minor GC，年龄就+1。当增加到一定程度(-XX:MaxTenuringThreshold，默认15)，将会被晋升到老年代。对象晋升老年代的年龄阈值，可以通过参数-XX:MaxTenuringThreshold设置。  
