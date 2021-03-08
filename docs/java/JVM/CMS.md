@@ -25,8 +25,10 @@
 
 # 1. CMS  
 <!--
+
 CMS GC
 https://mp.weixin.qq.com/s/WqfzZRlk2NMkNc5a_Yjpdw
+
 
 好视频推荐：   
 https://www.bilibili.com/video/BV1Jy4y127tb?from=search&seid=14273060492345757864
@@ -61,6 +63,11 @@ https://itdiandi.net/view/1548
 &emsp; **<font color = "red">由于在整个过程中耗时最长的并发标记和并发清除阶段中，垃圾收集器线程都可以与用户线程一起工作，所以从总体上来说，CMS收集器的内存回收过程是与用户线程一起并发执行的。</font>**  
 
 ### 1.2.2. 《实战JAVA虚拟机  JVM故障诊断与性能优化》
+<!-- 
+https://segmentfault.com/a/1190000020625913?utm_source=tag-newest
+https://www.jianshu.com/p/86e358afdf17
+https://zhuanlan.zhihu.com/p/139785849s
+-->
 
 ## 1.3. 优点与缺点  
 &emsp; CMS是一款优秀的收集器，它最主要的优点在名字上已经体现出来： **<font color = "clime">并发收集、低停顿。</font>** 但是也有以下 **<font color = "red">三个明显的缺点：</font>**  

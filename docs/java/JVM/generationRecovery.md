@@ -9,7 +9,7 @@
     - [1.2. ~~分代收集理论~~](#12-分代收集理论)
     - [1.3. HotSpot GC分类](#13-hotspot-gc分类)
         - [1.3.1. Yong GC](#131-yong-gc)
-            - [1.3.1.1. YGC触发时机](#1311-ygc触发时机)
+            - [1.3.1.1. ~~YGC触发时机~~](#1311-ygc触发时机)
             - [1.3.1.2. YGC执行流程](#1312-ygc执行流程)
         - [1.3.2. Major GC](#132-major-gc)
         - [1.3.3. Full GC](#133-full-gc)
@@ -184,8 +184,13 @@ https://www.cnblogs.com/williamjie/p/9516367.html
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-99.png)  
 
-#### 1.3.1.1. YGC触发时机
-1. Eden区空间满；  
+#### 1.3.1.1. ~~YGC触发时机~~
+<!-- 
+
+***** https://blog.csdn.net/weixin_28901327/article/details/114427714
+-->
+
+1. Eden区空间满；<font color = "red">Survivor区中From和To区域默认使用率都是50%，Survivor区使用率设置使用命令-XX:TargetSurvivorRatio=80。</font>  
 2. 空间分配担保成功
 
 #### 1.3.1.2. YGC执行流程

@@ -16,6 +16,9 @@
 <!--
 http://www.mamicode.com/info-detail-2913659.html
 https://blog.csdn.net/baichoufei90/article/details/85097727
+https://blog.csdn.net/qian_348840260/article/details/88819502
+聊聊JVM（九）理解进入safepoint时如何让Java线程全部阻塞
+https://blog.csdn.net/ITer_ZC/article/details/41892567?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-5.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-5.control
 -->
 
 ## 1.1. 什么是安全点  

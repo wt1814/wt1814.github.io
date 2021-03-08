@@ -14,6 +14,8 @@
 
 # 1. 分布式事务  
 <!--
+如何选择分布式事务解决方案？
+https://mp.weixin.qq.com/s/2AL3uJ5BG2X3Y2Vxg0XqnQ
 聊一下分布式事务
 https://mp.weixin.qq.com/s/2cmZTDTtFDBogxlUFKtpLQ
 

@@ -118,7 +118,7 @@ public void doWork() {
 &emsp; 而如果使用Synchronized块编写循环要比使用Volatile状态标志编写麻烦很多。由于Volatile简化了编码，并且状态标志并不依赖于程序内任何其他状态，因此此处非常适合使用Volatile。  
 &emsp; 这种类型的状态标记的一个公共特性是：通常只有一种状态转换；shutdownRequested标志从false 转换为true，然后程序停止。这种模式可以扩展到来回转换的状态标志，但是只有在转换周期不被察觉的情况下才能扩展(从false到true，再转换到false)。此外，还需要某些原子状态转换机制，例如原子变量。  
 
-### 1.3.3. 单例模式的实现  
+### 1.3.3. ~~单例模式的实现~~  
 <!-- 
 https://www.cnblogs.com/jackson0714/p/java_Volatile.html
 

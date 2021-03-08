@@ -216,8 +216,8 @@ https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig
 -->
 &emsp; **<font color = "lime">ThreadLocalMap为什么使用ThreadLocal的弱引用而不是强引用？</font>**  
 
-* key使用强引用  
-&emsp; 当threadLocalMap的key为强引用，<font color = "red">回收ThreadLocal时，因为ThreadLocalMap还持有ThreadLocal的强引用，如果没有手动删除，ThreadLocal不会被回收，导致Entry内存泄漏。</font>  
+* 如果key使用强引用  
+&emsp; 如果当threadLocalMap的key为强引用，<font color = "red">回收ThreadLocal时，因为ThreadLocalMap还持有ThreadLocal的强引用，如果没有手动删除，ThreadLocal不会被回收，导致Entry内存泄漏。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-53.png)   
 * key使用弱引用  
 &emsp; <font color = "lime">当ThreadLocalMap的key为弱引用，回收ThreadLocal时，由于ThreadLocalMap持有ThreadLocal的弱引用，即使没有手动删除，ThreadLocal也会被回收。</font>

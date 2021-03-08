@@ -1,4 +1,11 @@
 
+
+<!-- 
+
+《死磕 Elasticsearch 方法论》：普通程序员高效精进的 10 大狠招！（完整版）
+https://blog.csdn.net/laoyang360/article/details/79293493#comments_15296602
+-->
+
 # ElasticSearch安装 
 <!-- 
 Elasticsearch 缓存深入详解 
