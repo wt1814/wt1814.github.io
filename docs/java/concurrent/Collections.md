@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. Collections](#1-collections)
+- [1. Collection](#1-collections)
     - [1.1. List，CopyOnWriteArrayList](#11-listcopyonwritearraylist)
         - [1.1.1. CopyOnWrite简介](#111-copyonwrite简介)
         - [1.1.2. CopyOnWriteArrayList简介](#112-copyonwritearraylist简介)

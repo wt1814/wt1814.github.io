@@ -101,7 +101,7 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 
 ### 1.1.2. 对象头详解  
 #### 1.1.2.1. Mark Word  
-&emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "lime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
+&emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "clime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
 
 &emsp; 这部分主要用来存储对象自身的运行时数据，如hashcode、gc分代年龄等。mark word的位长度为JVM的一个Word大小，也就是说32位JVM的Mark word为32位，64位JVM为64位。
 为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位，不同标记位下的Mark Word示意如下：  
@@ -125,7 +125,7 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 * thread：持有偏向锁的线程ID。  
 * epoch：偏向时间戳。  
 * ptr_to_lock_record：指向栈中锁记录的指针。  
-* **<font color = "lime">ptr_to_heavyweight_monitor：指向monitor对象(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联，对象与其monitor之间的关系有存在多种实现方式，如monitor对象可以与对象一起创建销毁或当前线程试图获取对象锁时自动生，但当一个monitor被某个线程持有后，它便处于锁定状态。</font>**  
+* **<font color = "clime">ptr_to_heavyweight_monitor：指向monitor对象(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联，对象与其monitor之间的关系有存在多种实现方式，如monitor对象可以与对象一起创建销毁或当前线程试图获取对象锁时自动生，但当一个monitor被某个线程持有后，它便处于锁定状态。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-56.png)   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-76.png)   
 

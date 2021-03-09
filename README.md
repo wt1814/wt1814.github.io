@@ -183,7 +183,7 @@
 &emsp; &emsp; [ReadWriteLock](/docs/java/concurrent/ReadWriteLock.md)  
 &emsp; &emsp; [LocLockSupport](/docs/java/concurrent/LockSupport.md)         
 &emsp; [Atmoic](/docs/java/concurrent/Atmoic.md)  
-&emsp; [Collections](/docs/java/concurrent/Collections.md)  
+&emsp; [Collection](/docs/java/concurrent/Collections.md)  
 &emsp; &emsp; [ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)  
 &emsp; &emsp; [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
 &emsp; [tools](/docs/java/concurrent/tools.md)  
