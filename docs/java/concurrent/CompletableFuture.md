@@ -2,7 +2,7 @@
 
 - [1. CompletableFuture<T>](#1-completablefuturet)
     - [1.1. CompletableFuture简介](#11-completablefuture简介)
-    - [1.2. XXXCompletableFuture类分析](#12-xxxcompletablefuture类分析)
+    - [1.2. ~~CompletableFuture类分析~~](#12-completablefuture类分析)
     - [1.3. CompletableFuture使用](#13-completablefuture使用)
 
 <!-- /TOC -->
@@ -40,7 +40,7 @@ https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650
 
 &emsp; **<font color = "clime">使用场景：某个接口顺序调用了多个服务，且多个服务之间没有数据依赖。使用CompletableFuture会使响应时间缩短很多。</font>**    
 
-## 1.2. XXXCompletableFuture类分析
+## 1.2. ~~CompletableFuture类分析~~
 
 ```java
 public class CompletableFuture<T> implements Future<T>, CompletionStage<T> {

@@ -14,9 +14,11 @@
 
 # 1. 通信
 ## 1.1. 线程通信  
-&emsp; 分布式系统中说的两种通信机制：共享内存机制和消息通信机制。单机中实现线程通信的方式：  
-1. 等待、通知机制。wait/notify\notifyAll(synchronized同步方法或同步块中使用)实现内存可见性，及生产消费模式的相互唤醒机制；  
-2. 等待、通知机制。同步锁(Lock)的Condition(await\signal\signalAll)；  
+&emsp; 分布式系统中说的两种通信机制：共享内存机制和消息通信机制。  
+
+&emsp; 单机中实现线程通信的方式：  
+1. 等待、通知机制。wait/notify\notifyAll（synchronized同步方法或同步块中使用）实现内存可见性，及生产消费模式的相互唤醒机制；  
+2. 等待、通知机制。同步锁（Lock）的Condition（await\signal\signalAll）；  
 3. Thread#join()；  
 4. 管道，共享内存，实现数据的共享，满足读写模式。管道通信就是使用java.io.PipedInputStream和java.io.PipedOutputStream进行通信。  
 

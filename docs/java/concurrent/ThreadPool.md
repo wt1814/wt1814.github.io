@@ -42,7 +42,7 @@
 &emsp; Executors(创建线程池方式二)：提供了一系列静态的工厂方法用于创建线程池，返回的线程池都实现了ExecutorService 接口。  
 
 ### 1.2.1. 线程池实现  
-&emsp; 根据返回的对象类型，<font color = "red">创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor(任务调度线程池)、ForkJoinPool、CompletableFuture。</font>  
+&emsp; 根据返回的对象类型，<font color = "red">创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor(任务调度线程池)、ForkJoinPool。</font>  
 
 #### 1.2.1.1. ThreadPoolExecutor  
 &emsp; [ThreadPoolExecutor](/docs/java/concurrent/ThreadPoolExecutor.md)  
