@@ -17,11 +17,16 @@
 
 <!-- /TOC -->
 
-&emsp; **小结：**  
+&emsp; **<font color = "red">总结：</font>**  
 &emsp; **Future是一个接口，它可以对具体的Runnable或者Callable任务进行取消、判断任务是否已取消、查询任务是否完成、获取任务结果。**  
 &emsp; Java5为Future接口提供了一个实现类FutureTask，表示一个可以取消的异步运算。它有启动和取消运算、查询运算是否完成和取回运算结果等方法。  
 
 # 1. 线程基本操作  
+<!-- 
+详细分析 Java 中实现多线程的方法有几种?(从本质上出发) 
+https://mp.weixin.qq.com/s/IKU56LMVZeVFVqRf-0N0tw
+-->
+
 ## 1.1. 创建并运行java线程
 &emsp; Java使用Thread类代表线程，所有的线程对象都必须是Thread类或其子类的实例。  
 &emsp; Java创建线程方式：1.继承Thread类；2.实现Runnable接口；3.使用Callable和Future；4.使用线程池；

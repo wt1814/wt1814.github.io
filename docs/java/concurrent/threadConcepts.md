@@ -13,21 +13,18 @@
 阿里面试官问我Java线程和操作系统线程什么关系 
 https://mp.weixin.qq.com/s/1DBqevIIZAzynUzBAeyPXQ
 
-详细分析 Java 中实现多线程的方法有几种?(从本质上出发) 
-https://mp.weixin.qq.com/s/IKU56LMVZeVFVqRf-0N0tw
+
 
 线程基本知识
 https://mp.weixin.qq.com/s/bpg0GyaqeLZyTk_UA0Ngcg
 -->
-&emsp; **<font color = "lime">总结：</font>**  
-1. 多线程带来的风险：安全性问题、活跃性问题、性能问题。
-2. **<font color = "lime">线程生命周期(6种状态)：新建、就绪、阻塞()、等待、计时等待、终止。阻塞和等待的区别：进入waiting状态是线程主动的，而进入blocked状态是被动的。更进一步的说，进入blocked状态是在同步(synchronized代码之外)，而进入waiting状态是在同步代码之内。</font>**  
 
-&emsp; 线程中断。  
 
 # 1. 线程基本概念  
+&emsp; <font color = "red">~~操作系统熟悉一波...~~</font>  
+
 ## 1.1. 线程
-&emsp; **1. 线程的一些基本概念：**    
+&emsp; **线程的一些基本概念：**    
 &emsp; 进程是一个“执行中的程序”，是系统进行资源分配和调度的一个独立单位；  
 &emsp; 线程是进程的一个实体，一个进程中拥有多个线程，线程之间共享地址空间和其它资源(所以通信和同步等操作线程比进程更加容易)；  
 
@@ -56,8 +53,7 @@ Java采用单线程编程模型，程序会自动创建主线程 。
 2. 抢占式调度模型，优先让优先级高的线程使用CPU，如果线程的优先级相同，那么会随机选择一个，优先级高的线程获取的CPU时间片相对多一些。   
 
 ## 1.2. 多线程
-
-&emsp; **2. 多线程的一些基本概念：**    
+&emsp; **多线程的一些基本概念：**    
 <!--
 https://mp.weixin.qq.com/s/CvVgjixJxiyEoxJN5UfMSg
 

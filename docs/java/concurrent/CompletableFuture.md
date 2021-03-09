@@ -93,7 +93,7 @@ https://www.cnblogs.com/happyliu/p/9462703.html
     ```
     &emsp; 这些方法只是针对结果进行消费，入参是Consumer，没有返回值
 
-4. 结合两个CompletionStage的结果，进行转化后返回  
+4. <font color = "red">结合两个CompletionStage的结果，进行转化后返回</font>  
 
     ```java
     public <U,V> CompletionStage<V> thenCombine(CompletionStage<? extends U> other,BiFunction<? super T,? super U,? extends V> fn);
@@ -103,7 +103,7 @@ https://www.cnblogs.com/happyliu/p/9462703.html
     &emsp; 需要上一阶段的返回值，并且other代表的CompletionStage也要返回值之后，把这两个返回值，进行转换后返回指定类型的值。  
     &emsp; 说明：同样，也存在对两个CompletionStage结果进行消耗的一组方法，例如thenAcceptBoth，这里不再进行示例。  
 
-5. 两个CompletionStage，谁计算的快，就用那个CompletionStage的结果进行下一步的处理  
+5. <font color = "red">两个CompletionStage，谁计算的快，就用那个CompletionStage的结果进行下一步的处理</font>  
 
     ```java
     public <U> CompletionStage<U> applyToEither(CompletionStage<? extends T> other,Function<? super T, U> fn);

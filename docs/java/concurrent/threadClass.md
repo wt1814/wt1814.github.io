@@ -3,10 +3,9 @@
 
 - [1. Thread类详解](#1-thread类详解)
     - [1.1. Thread.java的构造函数](#11-threadjava的构造函数)
-    - [1.2. ※※※线程状态介绍(线程生命周期)](#12-※※※线程状态介绍线程生命周期)
+    - [1.2. ★★★线程状态介绍(线程生命周期)](#12-★★★线程状态介绍线程生命周期)
         - [1.2.1. 线程有哪几种状态？](#121-线程有哪几种状态)
-        - [1.2.2. 线程阻塞BLOCKED和等待WAITING的区别](#122-线程阻塞blocked和等待waiting的区别)
-        - [1.2.3. 线程状态切换图示](#123-线程状态切换图示)
+        - [1.2.2. 线程状态切换](#122-线程状态切换)
     - [1.3. Thread.java的成员方法](#13-threadjava的成员方法)
         - [1.3.1. 线程的start方法和run方法的区别](#131-线程的start方法和run方法的区别)
         - [1.3.2. Thread.sleep()与Object.wait()](#132-threadsleep与objectwait)
@@ -14,11 +13,20 @@
         - [1.3.4. Join()方法](#134-join方法)
         - [1.3.5. interrupt()与stop()，中断线程](#135-interrupt与stop中断线程)
             - [1.3.5.1. Java中对线程中断所提供的API支持](#1351-java中对线程中断所提供的api支持)
-            - [1.3.5.2. 线程在不同状态下对于中断所产生的反应](#1352-线程在不同状态下对于中断所产生的反应)
+            - [1.3.5.2. ★★★线程在不同状态下对于中断所产生的反应](#1352-★★★线程在不同状态下对于中断所产生的反应)
         - [1.3.6. 守护线程](#136-守护线程)
         - [1.3.7. 线程优先级](#137-线程优先级)
 
 <!-- /TOC -->
+
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; 线程状态：新建、就绪、阻塞(等待阻塞(o.wait-);同步阻塞(lock);其他阻塞(sleep/join))、等待、计时等待、终止。  
+
+&emsp; **<font color = "red">线程在不同状态下对于中断所产生的反应：</font>**    
+&emsp; NEW和TERMINATED对于中断操作几乎是屏蔽的；  
+&emsp; RUNNABLE和BLOCKED类似， **<font color = "cclime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中；</font>**  
+&emsp; WAITING/TIMED_WAITING状态下的线程对于中断操作是敏感的，它们会抛出异常并清空中断标志位。
+
 
 # 1. Thread类详解  
 <!-- 
@@ -61,7 +69,7 @@ System.out.println(thread.getName());
 
 &emsp; **线程组：ThreadGroup并不能提供对线程的管理，其主要功能是对线程进行组织。** 在构造Thread时，可以显示地指定线程的Group(ThreadGroup)。如果没有显示指定，子线程会被加入父线程所在的线程组(无论如何线程都会被加入某个Thread Group之中)。
 
-## 1.2. ※※※线程状态介绍(线程生命周期)
+## 1.2. ★★★线程状态介绍(线程生命周期)
 ### 1.2.1. 线程有哪几种状态？
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-2.png)  
 &emsp; Java线程状态均来自Thread类下的State这一内部枚举类中所定义的状态：
@@ -78,13 +86,13 @@ System.out.println(thread.getName());
     * obj.notifyAll()唤醒线程。
     * obj.wait(time), thread.join(time)等待时间time耗尽。
 
-* **<font color = "red">阻塞状态(BLOCKED)</font>：** **<font color = "lime">阻塞状态是指线程因为某些原因放弃CPU，暂时停止运行。</font>** 当线程处于阻塞状态时，Java虚拟机不会给线程分配CPU。直到线程重新进入就绪状态(获取监视器锁)，它才有机会转到运行状态。可分为以下3种：
+* **<font color = "red">阻塞状态(BLOCKED)</font>：** **<font color = "clime">阻塞状态是指线程因为某些原因放弃CPU，暂时停止运行。</font>** 当线程处于阻塞状态时，Java虚拟机不会给线程分配CPU。直到线程重新进入就绪状态(获取监视器锁)，它才有机会转到运行状态。可分为以下3种：
 
     * **等待阻塞(o.wait->等待对列)：运行的线程执行wait()方法，JVM会把该线程放入等待池中。(wait会释放持有的锁)**
     * **同步阻塞(lock->锁池)：运行的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则JVM会把该线程放入锁池(lock pool)中。**
     * **其他阻塞状态(sleep/join)：当前线程执行了sleep()方法，或者调用了其他线程的join()方法，或者发出了I/O请求时，就会进入这个状态。**
 
-* **<font color = "red">WAITING(等待)：</font>** **<font color = "lime">一个正在无限期等待另一个线程执行一个特别的动作的线程处于这一状态。</font>**
+* **<font color = "red">WAITING(等待)：</font>** **<font color = "clime">一个正在无限期等待另一个线程执行一个特别的动作的线程处于这一状态。</font>**
 
     * threadA中调用threadB.join()，threadA将Waiting，直到threadB终止。
     * obj.wait() 释放同步监视器obj，并进入阻塞状态。
@@ -103,15 +111,16 @@ System.out.println(thread.getName());
 
 &emsp; 注意：由于wait()/wait(time)导致线程处于Waiting/TimedWaiting状态，当线程被notify()/notifyAll()/wait等待时间到之后，如果没有获取到同步监视器。会直接进入Blocked阻塞状态。
 
-### 1.2.2. 线程阻塞BLOCKED和等待WAITING的区别
+&emsp; ~~**线程阻塞BLOCKED和等待WAITING的区别**~~  
 <!-- 
 https://blog.csdn.net/zl18310999566/article/details/87931473
--->
 &emsp; <font color = "red">阻塞BLOCKED表示线程在等待对象的monitor锁，试图通过synchronized去获取某个锁，但是此时其他线程已经独占了monitor锁，那么当前线程就会进入等待状态WAITING。</font>  
+-->
 &emsp; 两者都会暂停线程的执行。两者的区别是：进入waiting状态是线程主动的，而进入blocked状态是被动的。更进一步的说，进入blocked状态是在同步(synchronized代码之外)，而进入waiting状态是在同步代码之内。
 
-### 1.2.3. 线程状态切换图示
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-1.png)
+### 1.2.2. 线程状态切换
+&emsp; 线程状态切换图示  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-1.png)  
 
 &emsp; 代码演示：  
 <!-- https://mp.weixin.qq.com/s/L2UqbdZQk7HvZ2r-M3eMlw -->
@@ -165,7 +174,7 @@ class SubThread implements Runnable{
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-3.png)
 
 ### 1.3.2. Thread.sleep()与Object.wait()
-&emsp; Thead.sleep()和Object.wait()都可以让线程阻塞，也都可以指定超时时间，甚至还都会抛出中断异常InterruptedException。
+&emsp; Thead.sleep()和Object.wait()都可以让线程阻塞，也都可以指定超时时间，**甚至还都会抛出中断异常InterruptedException。**
 
 &emsp; **<font color = "red">Thead.sleep()和Object.wait()的区别：</font>**
 
@@ -190,7 +199,7 @@ public static native void yield();
 &emsp; yield() 这个方法从以上注释可以看出，也是一个休眠自身线程的方法，同样不会释放自身锁的标识，yield()方法只是使当前线程重新回到可执行状态，  
 &emsp; 所以执行yield()的线程有可能在进入到可执行状态后马上又被执行，另外yield()方法只能使同优先级或者高优先级的线程得到执行机会，这也和sleep()方法不同。
 
-&emsp; **<font color = "lime">wait()、sleep(long)、yield()的区别：</font>**
+&emsp; **<font color = "clime">wait()、sleep(long)、yield()的区别：</font>**
 
 * wait()方法会释放CPU执行权和占有的锁。
 * sleep(long)方法仅释放CPU使用权，<font color = "red">锁仍然占用，线程被放入超时等待队列</font>。与yield相比，它会使线程较长时间得不到运行。
@@ -247,8 +256,11 @@ public static boolean interrupted()
 &emsp; interrupt是一个实例方法，该方法用于设置当前线程对象的中断标识位。  
 &emsp; interrupted是一个静态的方法，用于返回当前线程是否被中断。
 
-#### 1.3.5.2. 线程在不同状态下对于中断所产生的反应
-&emsp; NEW和TERMINATED对于中断操作几乎是屏蔽的，RUNNABLE和BLOCKED类似， **<font color = "clime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中。</font>** WAITING/TIMED_WAITING状态下的线程对于中断操作是敏感的，它们会抛出异常并清空中断标志位。
+#### 1.3.5.2. ★★★线程在不同状态下对于中断所产生的反应
+&emsp; 线程在不同状态下对于中断所产生的反应：  
+&emsp; NEW和TERMINATED对于中断操作几乎是屏蔽的；  
+&emsp; RUNNABLE和BLOCKED类似， **<font color = "cclime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中；</font>**  
+&emsp; WAITING/TIMED_WAITING状态下的线程对于中断操作是敏感的，它们会抛出中断异常InterruptedException并清空中断标志位。
 
 ### 1.3.6. 守护线程
 &emsp; 线程分为用户线程、守护线程。线程初始化默认为用户线程；使用setDaemon()方法将一个线程设置为守护线程。main()属于非守护线程。
