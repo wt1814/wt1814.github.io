@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. Collection](#1-collections)
+- [1. Collection](#1-collection)
     - [1.1. List，CopyOnWriteArrayList](#11-listcopyonwritearraylist)
         - [1.1.1. CopyOnWrite简介](#111-copyonwrite简介)
         - [1.1.2. CopyOnWriteArrayList简介](#112-copyonwritearraylist简介)
@@ -16,7 +16,7 @@
 
 <!-- /TOC -->
 
-# 1. Collections
+# 1. Collection
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-5.png)  
 &emsp; 14个并发容器按照线程安全模型分类：copy-on-write、CAS(JDK1.8 ConcurrentHashMap)、读写分离(LinkedBlockingQueue)。  
 

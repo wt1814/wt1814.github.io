@@ -4,7 +4,7 @@
 
 - [1. Synchronized](#1-synchronized)
     - [1.1. Synchronized简介](#11-synchronized简介)
-    - [1.2. Synchronized使用](#12-synchronized使用)
+    - [1.2. ~~Synchronized使用~~](#12-synchronized使用)
         - [1.2.1. 类锁和对象锁](#121-类锁和对象锁)
         - [1.2.2. Synchronized同步普通方法](#122-synchronized同步普通方法)
         - [1.2.3. Synchronized同步静态方法](#123-synchronized同步静态方法)
@@ -21,11 +21,8 @@
 
 # 1. Synchronized  
 <!--
-Synchronized 的 8 种用法，真是绝了！ 
+***Synchronized 的 8 种用法，真是绝了！ 
 https://mp.weixin.qq.com/s/TOkDyqAE5TToriOMX6I6tg
-
-可重入锁，也叫做递归锁，指的是同一线程 外层函数获得锁之后 ，内层递归函数仍然有获取该锁的代码，但不受影响。  
-
 详解synchronized锁的各种用法及注意事项 
 https://mp.weixin.qq.com/s/gKsD1U38h4MJczEFC33ydw
 -->
@@ -50,7 +47,7 @@ https://mp.weixin.qq.com/s/gKsD1U38h4MJczEFC33ydw
 <!-- 
 https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 -->
-## 1.2. Synchronized使用  
+## 1.2. ~~Synchronized使用~~  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-11.png)  
 
 &emsp; Synchronized可以使用在普通方法、静态方法、同步块中。 **<font color = "clime">Synchronized作用的对象应该是唯一的。</font>** Synchronized使用在同步块中，锁粒度更小。根据锁的具体实例，又可以分为类锁和对象锁。  
@@ -199,7 +196,7 @@ private void SynchronizedInstance() {
 
 ## 1.4. Synchronized与Object#wait()  
 &emsp; 为什么线程通信的方法wait()，notify()和notifyAll()被定义在Object类里？  
-&emsp; Java的每个对象中都有一个锁(monitor，也可以成为监视器) 并且wait()，notify()等方法用于等待对象的锁或者通知其他线程对象的监视器可用。在Java的线程中并没有可供任何对象使用的锁和同步器。这就是为什么这些方法是Object类的一部分，这样Java的每一个类都有用于线程间通信的基本方法。  
+&emsp; Java的每个对象中都有一个锁(monitor，也可以成为监视器)，并且wait()，notify()等方法用于等待对象的锁或者通知其他线程对象的监视器可用。在Java的线程中并没有可供任何对象使用的锁和同步器。这就是为什么这些方法是Object类的一部分，这样Java的每一个类都有用于线程间通信的基本方法。  
 
 &emsp; **<font color = "clime">为什么wait(), notify()和notifyAll ()必须在同步方法或者同步块中被调用？</font>**  
 &emsp; <font color = "red">当一个线程需要调用对象的wait()方法的时候，这个线程必须拥有该对象的锁</font>，接着它就会释放这个对象锁并进入等待状态直到其他线程调用这个对象上的notify()方法。同样的，当一个线程需要调用对象的notify()方法时，它会释放这个对象的锁，以便其他在等待的线程就可以得到这个对象锁。由于所有的这些方法都需要线程持有对象的锁，这样就只能通过同步来实现，所以它们只能在同步方法或者同步块中被调用。  
