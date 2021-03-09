@@ -3,21 +3,14 @@
 <!-- TOC -->
 
 - [1. ThreadLocal](#1-threadlocal)
-    - [1.1. ThreadLocal源码](#11-threadlocal源码)
-        - [1.1.1. set()](#111-set)
-        - [1.1.2. get()](#112-get)
-    - [1.2. ThreadLocal内存模型](#12-threadlocal内存模型)
-    - [1.3. ThreadLocal可能的内存泄漏](#13-threadlocal可能的内存泄漏)
-    - [ThreadLocal泄露-2](#threadlocal泄露-2)
-    - [1.4. ThreadLocal使用](#14-threadlocal使用)
-        - [1.4.1. ※※※正确使用](#141-※※※正确使用)
-        - [1.4.2. SimpleDateFormat非线程安全问题](#142-simpledateformat非线程安全问题)
-        - [1.4.3. ThreadLocal<DecimalFormat>](#143-threadlocaldecimalformat)
-    - [1.5. ThreadLocal局限性(变量不具有传递性)](#15-threadlocal局限性变量不具有传递性)
-        - [1.5.1. 类InheritableThreadLocal的使用](#151-类inheritablethreadlocal的使用)
-        - [1.5.2. 类TransmittableThreadLocal(alibaba)的使用](#152-类transmittablethreadlocalalibaba的使用)
-    - [1.6. ThreadLocal和线程池](#16-threadlocal和线程池)
-    - [1.7. FastThreadLocal](#17-fastthreadlocal)
+    - [1.1. ThreadLocal简介](#11-threadlocal简介)
+    - [1.2. ThreadLocal源码](#12-threadlocal源码)
+        - [1.2.1. set()](#121-set)
+        - [1.2.2. get()](#122-get)
+    - [1.3. ThreadLocal内存泄露](#13-threadlocal内存泄露)
+        - [1.3.1. ThreadLocal内存模型](#131-threadlocal内存模型)
+        - [1.3.2. ThreadLocal可能的内存泄漏](#132-threadlocal可能的内存泄漏)
+        - [1.3.3. ThreadLocalMap的key被回收后，如何获取值](#133-threadlocalmap的key被回收后如何获取值)
 
 <!-- /TOC -->
 
@@ -26,14 +19,15 @@
 
 # 1. ThreadLocal  
 <!-- 
- 比较好： 什么，你的ThreadLocal内存泄漏了？ 
- https://mp.weixin.qq.com/s/mH1jRiZTiHdlMBSwu3f2zg
-  为何每次用完 ThreadLocal 都要调用 remove() 
-    https://mp.weixin.qq.com/s/bF4T2t9Y7fr3XN8vkAG03Q
-
+比较好： 什么，你的ThreadLocal内存泄漏了？ 
+https://mp.weixin.qq.com/s/mH1jRiZTiHdlMBSwu3f2zg
+为何每次用完 ThreadLocal 都要调用 remove() 
+https://mp.weixin.qq.com/s/bF4T2t9Y7fr3XN8vkAG03Q
 ThreadLocal的最牛辨析！
 https://mp.weixin.qq.com/s/IklA1Oil9kRh7Z_HwuAnyg
 -->
+
+## 1.1. ThreadLocal简介
 &emsp; 首先说明，ThreadLocal与线程同步无关。ThreadLocal虽然提供了一种解决多线程环境下成员变量的问题，但是它并不是解决多线程共享变量的问题。  
 &emsp; <font color = "red">ThreadLocal，很多地方叫做线程本地变量，也有些地方叫做线程本地存储。</font>每一个线程都会保存一份变量副本，每个线程都可以独立地修改自己的变量副本，而不会影响到其他线程，<font color = "red">是一种线程隔离的思想。</font>  
 
@@ -47,7 +41,7 @@ https://mp.weixin.qq.com/s/IklA1Oil9kRh7Z_HwuAnyg
 * 性能开销：lock是通过时间换空间的做法；ThreadLocal是典型的通过空间换时间的做法。  
 * 当然它们的使用场景也是不同的，关键看资源是需要多线程之间共享的还是单线程内部共享的。  
 
-## 1.1. ThreadLocal源码  
+## 1.2. ThreadLocal源码  
 &emsp; ThreadLocal接口方法有4个。这些方法为每一个使用这个变量的线程都存有一份独立的副本，因此get总是返回由当前线程在调用set时设置的最新值。  
 
 ```java
@@ -57,7 +51,7 @@ public void remove() { }  //删除数据。将当前线程局部变量的值删�
 protected T initialValue() { } // 初始化的数据，用于子类自定义初始化值。返回该线程局部变量的初始值，该方法是一个protected的方法，显然是为了让子类覆盖而设计的。这个方法是一个延迟调用方法，在线程第1次调用get()或set(Object)时才执行，并且仅执行1次。ThreadLocal中的缺省实现直接返回一个null。
 ```
 
-### 1.1.1. set()  
+### 1.2.1. set()  
 ```java
 public void set(T value) {
     Thread t = Thread.currentThread();
@@ -87,8 +81,10 @@ private void set(ThreadLocal<?> key, Object value) {
             e.value = value;
             return;
         }
+        //todo
         // key == null，但是存在值(因为此处的e != null)，说明之前的ThreadLocal对象已经被回收了
         if (k == null) {
+            //todo 
             replaceStaleEntry(key, value, i);
             return;
         }
@@ -124,7 +120,7 @@ ThreadLocalMap inheritableThreadLocals = null;
 &emsp; ThradLocal中内部类ThreadLocalMap：  
 <!-- https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-23.png)   
-&emsp; **<font color = "lime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。<font color = "lime">Key是一个ThreadLocal实例，Value是设置的值。Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
+&emsp; **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。<font color = "clime">Key是一个ThreadLocal实例，Value是设置的值。Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
  
         ThreadLocalMap如何解决Hash冲突？
         ThreadLocalMap虽然是类似Map结构的数据结构，但它并没有实现Map接口。它不支持Map接口中的next方法，这意味着ThreadLocalMap中解决Hash冲突的方式并非拉链表方式。
@@ -133,7 +129,7 @@ ThreadLocalMap inheritableThreadLocals = null;
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-24.png)   、
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-59.png)   、
 
-### 1.1.2. get()  
+### 1.2.2. get()  
 &emsp; get是获取当前线程的对应的私有变量，是之前set或者通过initialValue指定的变量，其代码如下：  
 
 ```java
@@ -184,7 +180,8 @@ private T setInitialValue() {
 * 将value放入到当前线程对应的ThreadLocalMap中  
 * 如果map为空，先实例化一个map，然后赋值KV  
 
-## 1.2. ThreadLocal内存模型  
+## 1.3. ThreadLocal内存泄露
+### 1.3.1. ThreadLocal内存模型  
 &emsp; 通过上一节的分析，其实已经很清楚ThreadLocal的相关设计了，对数据存储的具体分布也会有个比较清晰的概念。下面的图是网上找来的常见到的示意图，可以通过该图对ThreadLocal的存储有个更加直接的印象。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-58.png)  
 &emsp; Thread运行时，线程的的一些局部变量和引用使用的内存属于Stack(栈)区，而普通的对象是存储在Heap(堆)区。根据上图，基本分析如下：  
@@ -194,10 +191,12 @@ private T setInitialValue() {
 * Map实例化之后，也就拿到了该ThreadLocalMap的句柄，然后如果将当前ThreadLocal对象作为key，进行存取操作。
 * 图中的虚线，表示key对ThreadLocal实例的引用是个弱引用。
 
-## 1.3. ThreadLocal可能的内存泄漏  
+### 1.3.2. ThreadLocal可能的内存泄漏  
 <!-- 
 这4种ThreadLocal你都知道吗？ 
 https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig
+什么，你的ThreadLocal内存泄漏了？ 
+https://mp.weixin.qq.com/s/mH1jRiZTiHdlMBSwu3f2zg
 -->
 <!-- 
 &emsp; <font color = "red">ThreadLocalMap的key为ThreadLocal实例，是一个弱引用，弱引用有利于GC的回收，当key == null时，GC就会回收这部分空间，但value不一定能被回收，因为它和Current Thread之间还存在一个强引用的关系。</font>  
@@ -214,132 +213,47 @@ https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig
 
 &emsp; 也就是说，如果Thread实例还在，但是ThreadLocal实例却不在了，则ThreadLocal实例作为key所关联的value无法被外部访问，却还被强引用着，因此出现了内存泄露。  
 -->
-&emsp; **<font color = "lime">ThreadLocalMap为什么使用ThreadLocal的弱引用而不是强引用？</font>**  
+&emsp; **<font color = "clime">ThreadLocalMap为什么使用ThreadLocal的弱引用而不是强引用？</font>**  
 
 * 如果key使用强引用  
 &emsp; 如果当threadLocalMap的key为强引用，<font color = "red">回收ThreadLocal时，因为ThreadLocalMap还持有ThreadLocal的强引用，如果没有手动删除，ThreadLocal不会被回收，导致Entry内存泄漏。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-53.png)   
 * key使用弱引用  
-&emsp; <font color = "lime">当ThreadLocalMap的key为弱引用，回收ThreadLocal时，由于ThreadLocalMap持有ThreadLocal的弱引用，即使没有手动删除，ThreadLocal也会被回收。</font>
+&emsp; <font color = "clime">当ThreadLocalMap的key为弱引用，回收ThreadLocal时，由于ThreadLocalMap持有ThreadLocal的弱引用，即使没有手动删除，ThreadLocal也会被回收。</font>
 
 <!-- 
 当key为null，在下一次ThreadLocalMap调用set()，get()，remove()方法的时候会清除value值。
 -->
-&emsp; **<font color = "lime">ThreadLocal可能的内存泄漏</font>**  
+&emsp; **<font color = "clime">ThreadLocal可能的内存泄漏</font>**  
 &emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key(ThreadLocal实例)会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
-&emsp; **<font color = "lime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  
+&emsp; **<font color = "clime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  
 
-
-## ThreadLocal泄露-2
+### 1.3.3. ThreadLocalMap的key被回收后，如何获取值  
 <!-- 
-什么，你的ThreadLocal内存泄漏了？ 
-https://mp.weixin.qq.com/s/mH1jRiZTiHdlMBSwu3f2zg
+https://blog.csdn.net/weixin_40318210/article/details/105885700
 -->
 
-## 1.4. ThreadLocal使用  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-54.png)   
-
-&emsp; 常见的ThreadLocal用法主要有两种：
-1. 在线程级别传递变量。  
-&emsp; 在日常Web开发中会遇到需要把一个参数层层的传递到最内层，然后中间层根本不需要使用这个参数，或者是仅仅在特定的工具类中使用，这样完全没有必要在每一个方法里面都传递这样一个通用的参数。如果有一个办法能够在任何一个类里面想用的时候直接拿来使用就太好了。Java Web项目大部分都是基于Tomcat，每次访问都是一个新的线程，可以使用ThreadLocal，每一个线程都独享一个ThreadLocal，在接收请求的时候set特定内容，在需要的时候get这个值。  
-&emsp; 最常见的ThreadLocal使用场景为用来解决数据库连接、Session管理等。  
-2. 保证线程安全。  
-&emsp; ThreadLocal为解决多线程程序的并发问题提供了一种新的思路。但是ThreadLocal也有局限性，阿里规范中  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-19.png)   
-&emsp; 每个线程往ThreadLocal中读写数据是线程隔离，互相之间不会影响的，所以ThreadLocal无法解决共享对象的更新问题！  
-&emsp; 由于不需要共享信息，自然就不存在竞争问题了，从而保证了某些情况下线程的安全，以及避免了某些情况需要考虑线程安全必须同步带来的性能损失！  
-
-### 1.4.1. ※※※正确使用  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-20.png)   
-
-1. **<font color = "red">使用static定义threadLocal变量，是为了确保全局只有一个保存Integer对象的ThreadLocal实例。</font>**  
-2. **<font color = "lime">finally语句里调用threadLocal.remove()。</font>**
-
-### 1.4.2. SimpleDateFormat非线程安全问题  
+ThreadLocal在执行set()方法的时候，实际执行set()逻辑的是其内部类ThreadLocalMap。  
 
 ```java
-public class Foo{
-    // SimpleDateFormat is not thread-safe, so give one to each thread
-    private static final ThreadLocal<SimpleDateFormat> formatter = newThreadLocal<SimpleDateFormat>(){
-        @Override
-        protected SimpleDateFormat initialValue(){
-            return new SimpleDateFormat("yyyyMMdd HHmm");
-        }
-    };
-
-    public String formatIt(Date date){
-        return formatter.get().format(date);
+int i = key.threadLocalHashCode & (len-1);
+//采用线性探测法寻找合适位置
+for (Entry e = tab[i]; e != null; e = tab[i = nextIndex(i, len)]) {
+    ThreadLocal<?> k = e.get();
+    //key存在，直接覆盖
+    if (k == key) {
+        e.value = value;
+        return;
     }
-}
-```
-&emsp; final确保ThreadLocal的实例不可更改，防止被意外改变，导致放入的值和取出来的不一致，另外还能防止ThreadLocal的内存泄漏。  
-
-### 1.4.3. ThreadLocal<DecimalFormat>
-
-```java
-private static ThreadLocal<DecimalFormat> df = ThreadLocal.withInitial(()->new DecimalFormat("0.00"));
-
-public static String formatAsPerson(Long one){
-    if (null == one){
-        return null;
-    }
-    //亿
-    if (one >= 1_0000_0000L){
-        return String.format("%s亿",df.get().format(one * 1.00d / 1_0000_0000.00d));
+    //todo
+    // key == null，但是存在值(因为此处的e != null)，说明之前的ThreadLocal对象已经被回收了
+    if (k == null) {
+        //todo 
+        replaceStaleEntry(key, value, i);
+        return;
     }
 }
 ```
 
-## 1.5. ThreadLocal局限性(变量不具有传递性)  
-&emsp; <font color = "red">ThreadLocal无法在父子线程之间传递，</font>示例代码如下：  
+&emsp; 通过nextIndex()不断获取table上得槽位，直到遇到第一个为null的地方，此处也将是存放具体entry的位置，在线性探测法的不断冲突中，如果遇到非空entry中的key为null，可以表明key的弱引用已经被回收，但是由于线程仍未结束生命周期被回收而导致该entry仍未从table中被回收，那么则会在这里尝试通过replaceStaleEntry()方法，将null key的entry回收掉并set相应的值。  
 
-```java
-public class Service {
-    private static ThreadLocal<Integer> requestIdThreadLocal = new ThreadLocal<>();
-    public static void main(String[] args) {
-        Integer reqId = new Integer(5);
-        Service a = new Service();
-        a.setRequestId(reqId);
-    }
-
-    public void setRequestId(Integer requestId) {
-        requestIdThreadLocal.set(requestId);
-        doBussiness();
-    }
-
-    public void doBussiness() {
-        System.out.println("首先打印requestId:" + requestIdThreadLocal.get());
-        (new Thread(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("子线程启动");
-                System.out.println("在子线程中访问requestId:" + requestIdThreadLocal.get());
-            }
-        })).start();
-    }
-}
-```
-&emsp; 运行结果如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-25.png)   
-
-### 1.5.1. 类InheritableThreadLocal的使用  
-&emsp; 使用类InheritableThreadLocal可以在子线程中取得父线程继承下来的值。  
-&emsp; InheritableThreadLocal主要用于子线程创建时，需要自动继承父线程的ThreadLocal变量，实现子线程访问父线程的threadlocal变量。  
-&emsp; InheritableThreadLocal继承了ThreadLocal，并重写了childValue、getMap、createMap三个方法。  
-
-### 1.5.2. 类TransmittableThreadLocal(alibaba)的使用  
-&emsp; InheritableThreadLocal支持子线程访问在父线程中设置的线程上下文环境的实现原理是在创建子线程时将父线程中的本地变量值复制到子线程，即复制的时机为创建子线程时。  
-&emsp; 但并发、多线程就离不开线程池的使用，因为线程池能够复用线程，减少线程的频繁创建与销毁，如果使用InheritableThreadLocal，那么线程池中的线程拷贝的数据来自于第一个提交任务的外部线程，即后面的外部线程向线程池中提交任务时，子线程访问的本地变量都来源于第一个外部线程，造成线程本地变量混乱。  
-&emsp; TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
-
-## 1.6. ThreadLocal和线程池
-&emsp; **ThreadLocal和线程池一起使用？**  
-&emsp; ThreadLocal对象的生命周期跟线程的生命周期一样长，那么如果将ThreadLocal对象和线程池一起使用，就可能会遇到这种情况：一个线程的ThreadLocal对象会和其他线程的ThreadLocal对象串掉，一般不建议将两者一起使用。  
-
-## 1.7. FastThreadLocal  
-&emsp; Netty对ThreadLocal进行了优化，优化方式是继承了Thread类，实现了自己的FastThreadLocal。FastThreadLocal的吞吐量是jdk的ThreadLocal的3倍左右。 
-
-<!-- 
- FastThreadLocal 是什么鬼？吊打 ThreadLocal 的存在！！ 
- https://mp.weixin.qq.com/s/aItosqUu1aMvWqJ2ZMqy5Q
--->

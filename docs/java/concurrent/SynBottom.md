@@ -7,7 +7,7 @@
             - [1.1.2.1. Mark Word](#1121-mark-word)
             - [1.1.2.2. class pointer](#1122-class-pointer)
             - [1.1.2.3. array length](#1123-array-length)
-        - [1.1.3. XXXmonitor对象XXX](#113-xxxmonitor对象xxx)
+        - [1.1.3. monitor对象](#113-monitor对象)
     - [1.2. Synchronized底层实现](#12-synchronized底层实现)
         - [1.2.1. 同步代码块](#121-同步代码块)
         - [1.2.2. 同步方法](#122-同步方法)
@@ -18,8 +18,14 @@
 &emsp; Synchronized的底层原理：  
 &emsp; **<font color = "clime">Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联。</font>**  
 &emsp; **<font color = "red">monitor运行的机制过程如下：(_WaitSet队列和 _EntryList队列)</font>**  
-1. 当多个线程同时访问一段同步代码时，首先会进入_EntryList集合，当线程获取到对象的monitor后，进入_Owner区域并把monitor中的owner变量(_owner指向持有ObjectMonitor对象的线程)设置为当前线程，同时monitor中的计数器count加1。  
-2. 若线程调用wait()方法，将释放当前持有的monitor，owner变量恢复为null，count自减1，同时该线程进入_WaitSet集合中等待被唤醒。若当前线程执行完毕，也将释放monitor(锁)并复位变量的值，以便其他线程进入获取monitor(锁)。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
+
+* 想要获取monitor的线程,首先会进入_EntryList队列。  
+* 当某个线程获取到对象的monitor后,进入Owner区域，设置为当前线程,同时计数器count加1。  
+* 如果线程调用了wait()方法，则会进入WaitSet队列。它会释放monitor锁，即将owner赋值为null,count自减1,进入WaitSet队列阻塞等待。  
+* 如果其他线程调用 notify() / notifyAll()，会唤醒WaitSet中的某个线程，该线程再次尝试获取monitor锁，成功即进入Owner区域。  
+* 同步方法执行完毕了，线程退出临界区，会将monitor的owner设为null，并释放监视锁。  
+
 
 &emsp; Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。  
 &emsp; Synchronized代码块同步：使用monitorenter和monitorexit指令实现。  
@@ -147,10 +153,8 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 #### 1.1.2.3. array length  
 &emsp; 如果对象是一个数组，那么对象头还需要有额外的空间用于存储数组的长度，这部分数据的长度也随着JVM架构的不同而不同：32位的JVM上，长度为32位；64位JVM则为64位。64位JVM如果开启+UseCompressedOops选项，该区域长度也将由64位压缩至32位。  
 
-### 1.1.3. XXXmonitor对象XXX  
+### 1.1.3. monitor对象  
 <!-- 
-https://mp.weixin.qq.com/s/nzEt7_FyOUMPY5wOJ-EeKg
-
 Mutex Lock
 https://www.cnblogs.com/bjlhx/p/10555194.html
 
@@ -181,18 +185,17 @@ ObjectMonitor() {
     _previous_owner_tid = 0;
   }
 ```
-&emsp; ObjectMonitor中有两个队列，_WaitSet 和 _EntryList，用来保存ObjectWaiter对象列表( 每个等待锁的线程都会被封装成ObjectWaiter对象)。  
-
-&emsp; **<font color = "red">~~_WaitSet和 _EntryList的区别：~~</font>**    
-​&emsp; ~~当多个线程同时访问同步代码时，首先进入的就是_EntryList 。当获得对象的monitor时，_owner 指向当前线程，_count进行加1。~~  
-​&emsp; ~~若持有monitor的线程调用wait()，则释放持有的monitor，_owner变为null，_count减1。同时该线程进入_WaitSet等待被唤醒。如果执行完毕，也释放monitor。~~  
+&emsp; ObjectMonitor中有两个队列，_WaitSet和_EntryList，用来保存ObjectWaiter对象列表(每个等待锁的线程都会被封装成ObjectWaiter对象)。  
 
 &emsp; **<font color = "red">monitor运行的机制过程如下：(_WaitSet队列和 _EntryList队列)</font>**  
-1. 当多个线程同时访问一段同步代码时，首先会进入_EntryList集合，当线程获取到对象的monitor后，进入_Owner区域并把monitor中的owner变量(_owner指向持有ObjectMonitor对象的线程)设置为当前线程，同时monitor中的计数器count加1。  
-2. 若线程调用wait()方法，将释放当前持有的monitor，owner变量恢复为null，count自减1，同时该线程进入_WaitSet集合中等待被唤醒。若当前线程执行完毕也将释放monitor(锁)并复位变量的值，以便其他线程进入获取monitor(锁)。  
-
-&emsp; 具体见下图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
+
+* 想要获取monitor的线程,首先会进入_EntryList队列。  
+* 当某个线程获取到对象的monitor后,进入Owner区域，设置为当前线程,同时计数器count加1。  
+* 如果线程调用了wait()方法，则会进入WaitSet队列。它会释放monitor锁，即将owner赋值为null,count自减1,进入WaitSet队列阻塞等待。  
+* 如果其他线程调用 notify() / notifyAll()，会唤醒WaitSet中的某个线程，该线程再次尝试获取monitor锁，成功即进入Owner区域。  
+* 同步方法执行完毕了，线程退出临界区，会将monitor的owner设为null，并释放监视锁。  
+
 &emsp; 因此，monitor对象存在于每个Java对象的对象头中(存储的指针的指向)，Synchronized锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因，同时也是notify/notifyAll/wait等方法存在于顶级对象Object中的原因。  
 <!-- 
 &emsp; 那你能说说看monitor吗，到底是怎么实现了加锁和锁释放的呢？  
@@ -212,7 +215,7 @@ ObjectMonitor() {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-69.png)  
 
 -->
-&emsp; 下面在看一下加锁的代码：  
+&emsp; 下面再看一下加锁的代码：  
 
 ```text
 void ATTR ObjectMonitor::enter(TRAPS) {

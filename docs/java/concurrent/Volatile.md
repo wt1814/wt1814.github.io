@@ -7,13 +7,19 @@
     - [1.3. Volatile使用](#13-volatile使用)
         - [1.3.1. 如何正确使用Volatile变量](#131-如何正确使用volatile变量)
         - [1.3.2. 状态标志](#132-状态标志)
-        - [1.3.3. 单例模式的实现](#133-单例模式的实现)
-    - [1.4. ~~推荐使用LongAdder~~](#14-推荐使用longadder)
+        - [1.3.3. ~~单例模式的实现~~](#133-单例模式的实现)
+    - [1.4. Volatile、AtomicInteger与LongAdder](#14-volatileatomicinteger与longadder)
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">总结：</font>**  
-&emsp; **<font color = "lime">在Volatile写前插入写-写屏障，在Volatile写后插入写-读屏障；在Volatile读后插入读-读屏障、读-写屏障。</font>**  
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "clime">Volatile的特性：</font>**  
+1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>    
+2. <font color = "red">实现了有序性，禁止进行指令重排序。</font>  
+3. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**变量被修改后，会立即保存在主存中，并清除工作内存中的值。这个变量不会在多个线程中存在复本，直接从内存读取。新值对其他线程来说是立即可见的。  
+
+
+&emsp; **<font color = "clime">在Volatile写前插入写-写屏障，在Volatile写后插入写-读屏障；在Volatile读后插入读-读屏障、读-写屏障。</font>**  
 
 # 1. Volatile  
 <!-- 
@@ -23,7 +29,7 @@ https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 -->
 ## 1.1. Volatile的特性
 &emsp; Volatile的特性：  
-1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "lime">但是对于类似i++这样的复合操作不能保证原子性。</font>  
+1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>  
 
         i++在虚拟机内部有3条指令(读取－修改－写入)执行。表达式i++的操作步骤分解如下：1)从内存中取出i的值；2)计算i的值；3)将i的值写到内存中。    
 2. <font color = "red">实现了有序性，禁止进行指令重排序。</font>
@@ -57,21 +63,8 @@ https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 如何把java文件生成汇编语言
 https://mp.weixin.qq.com/s/DFCh1XE1hbikjBGEpYJguw
 -->
-&emsp; 观察加入Volatile关键字和没有加入Volatile关键字时所生成的汇编代码发现，加入Volatile关键字时，会多出一个lock前缀指令，lock前缀指令实际上相当于一个[内存屏障](/docs/java/concurrent/ConcurrencyProblem.md)。
+&emsp; 观察加入Volatile关键字和没有加入Volatile关键字时所生成的汇编代码发现，加入Volatile关键字时，会多出一个lock前缀指令，lock前缀指令实际上相当于一个[内存屏障](/docs/java/concurrent/ConcurrencySolve.md)。
 
-&emsp; **<font color = "lime">内存屏障的作用：</font>**  
-
-1. **<font color = "lime">(保障有序性)阻⽌屏障两侧的指令重排序。</font>** 它确保指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面；即在执行到内存屏障这句指令时，在它前面的操作已经全部完成；  
-2. **<font color = "lime">(保障可见性)它会强制将对缓存的修改操作立即写入主存；</font>** **<font color = "red">如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，会引发伪共享问题。</font>**  
-
-&emsp; 有如下四种内存屏障：  
-
-|屏障类型  |简称  |指令示例 |  说明|
-|---|---|---|---|
-|StoreStore Barriers |写-写 屏障 |Store1;StoreStore;Store2 |&emsp; 确保Store1数据对其他处理器可见(指刷新到内存)先于Store2及所有后续存储指令的存储。|
-|StoreLoad Barriers |写-读 屏障 |Store1;StoreLoad;Load2 |&emsp; 确保Store1数据对其他处理器变得可见(指刷新到内存)先于Load2及所有后续装载指令的装载。<br/>&emsp; StoreLoad Barriers会使屏障之前的所有内存访问指令(存储和装载指令)完成之后，才执行该屏障之后的内存访问指令。|
-|LoadLoad Barriers|读-读 屏障 |Load1;LoadLoad;Load2 |&emsp; (Load1代表加载数据，Store1表示刷新数据到内存)确保Load1数据的状态先于Load2及所有后续装载指令的装载。|
-|LoadSotre Barriers |读-写 屏障 |Load1;LoadStore;Store2 |&emsp; 确保Load1数据装载先于Store2及所有后续的存储指令刷新到内存。|  
 <!-- 
 &emsp; StoreStore屏障可以保证在Volatile写(flag赋值操作flag=true)之前，其前面的所有普通写(num的赋值操作num=1) 操作已经对任意处理器可见了，保障所有普通写在Volatile写之前刷新到主内存。  
 &emsp; LoadStore屏障可以保证其后面的所有普通写(num的赋值操作num=num+5) 操作必须在Volatile读(if(flag))之后执行。  
@@ -166,7 +159,9 @@ c. instance = memory //设置instance指向刚分配的地址
 上面的代码在编译运行时，可能会出现重排序从a-b-c排序为a-c-b。在多线程的情况下会出现以下问题。当线程A在执行第5行代码时，B线程进来执行到第2行代码。假设此时A执行的过程中发生了指令重排序，即先执行了a和c，没有执行b。那么由于A线程执行了c导致instance指向了一段地址，所以B线程判断instance不为null，会直接跳到第6行并返回一个未初始化的对象。
 -->
 
-## 1.4. ~~推荐使用LongAdder~~  
+## 1.4. Volatile、AtomicInteger与LongAdder  
+
+
 <!-- 
 阿里为什么推荐使用LongAdder，而不是Volatile？ 
 https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
@@ -179,4 +174,4 @@ https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
 &emsp; **Volatile、AtomicInteger、LongAdder：**  
 &emsp; volatile 在多写环境下是非线程安全的。  
 &emsp; AtomicInteger在高并发环境下会有多个线程去竞争一个原子变量，而始终只有一个线程能竞争成功，而其他线程会一直通过CAS自旋尝试获取此原子变量，因此会有一定的性能消耗。  
-&emsp; <font color = "lime">而LongAdder会将这个原子变量分离成一个Cell数组，每个线程通过Hash获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；</font>而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如AtomicInteger。  
+&emsp; <font color = "clime">而LongAdder会将这个原子变量分离成一个Cell数组，每个线程通过Hash获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；</font>而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如AtomicInteger。  
