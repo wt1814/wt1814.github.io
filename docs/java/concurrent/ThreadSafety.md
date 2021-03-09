@@ -28,7 +28,8 @@ https://mp.weixin.qq.com/s/3PfvkKKtH48XbMEtab2Z_g
 &emsp; <font color = "red">不可变的类型：final关键字修饰的基本数据类型、String、枚举类型</font>、Number 部分子类，如Long和Double等数值包装类型，BigInteger和BigDecimal等大数据类型。但同为Number的原子类AtomicInteger和AtomicLong则是可变的。    
 
 
-&emsp; **java并发原语：**Java内存模型，除了定义了一套规范，还提供了一系列原语，封装了底层实现后，供开发者直接使用。  
+&emsp; **java并发原语：**  
+&emsp; Java内存模型，除了定义了一套规范，还提供了一系列原语，封装了底层实现后，供开发者直接使用。  
 
 * 原子性可以通过synchronized和Lock来实现。  
 * 可见性可以通过Volatile、synchronized、final来实现。  

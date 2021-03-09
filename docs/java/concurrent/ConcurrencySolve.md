@@ -1,11 +1,23 @@
 
+<!-- TOC -->
 
+- [1. 并发安全解决底层](#1-并发安全解决底层)
+    - [1.1. ~~CPU的缓存一致性协议MESI~~](#11-cpu的缓存一致性协议mesi)
+        - [1.1.1. 缓存失效/缓存不一致/缓存可见性](#111-缓存失效缓存不一致缓存可见性)
+        - [1.1.2. 总线锁(性能低)](#112-总线锁性能低)
+        - [1.1.3. MESI缓存一致性协议](#113-mesi缓存一致性协议)
+            - [1.1.3.1. 总线嗅探](#1131-总线嗅探)
+            - [1.1.3.2. 总线风暴](#1132-总线风暴)
+    - [1.2. JMM中的happens-before原则](#12-jmm中的happens-before原则)
+    - [1.3. 内存屏障](#13-内存屏障)
 
-# 并发安全解决底层
-## 1.5. CPU的缓存一致性协议MESI
+<!-- /TOC -->
+
+# 1. 并发安全解决底层
+## 1.1. ~~CPU的缓存一致性协议MESI~~
 &emsp; 当多个CPU持有的缓存都来自同一个主内存的拷贝，当有某个CPU修改了这个主内存数据后，而其他CPU并不知道，那拷贝的内存将会和主内存不一致，这就是缓存不一致。那如何来保证缓存一致呢？这里就需要操作系统来共同制定一个同步规则来保证。 
 
-### 1.5.1. 缓存失效/缓存不一致/缓存可见性  
+### 1.1.1. 缓存失效/缓存不一致/缓存可见性  
 &emsp; 当CPU写数据时，如果发现操作的变量是共享变量，即在其它CPU中也存在该变量的副本，系统会发出信号通知其它CPU将该内存变量的缓存行设置为无效。如下图所示，CPU1和CPU3 中num=1已经失效了。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-44.png)  
 &emsp; 当其它CPU读取这个变量的时，发现自己缓存该变量的缓存行是无效的，那么它就会从内存中重新读取。  
@@ -17,12 +29,12 @@
 
 &emsp; 怎么解决缓存一致性问题呢？使用总线锁或缓存锁。  
 
-### 1.5.2. 总线锁(性能低)  
+### 1.1.2. 总线锁(性能低)  
 &emsp; 早期，cpu从主内存读取数据到高速缓存，会在总线对这个数据加锁，这样其他cpu无法去读或写这个数据，直到这个cpu使用完数据释放锁之后其他cpu才能读取该数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-103.png)  
 
 
-### 1.5.3. MESI缓存一致性协议  
+### 1.1.3. MESI缓存一致性协议  
 <!-- 
 ~~
 https://mp.weixin.qq.com/s/yWifJmirZNnBrAIZrpJwyg
@@ -35,19 +47,17 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-47.png)  
 
-#### 1.5.3.1. 总线嗅探  
+#### 1.1.3.1. 总线嗅探  
 &emsp; **<font color = "red">每个CPU不断嗅探总线上传播的数据来检查自己缓存值是否过期了，如果处理器发现自己的缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置为无效状态，当处理器对这个数据进行修改操作的时候，会重新从内存中把数据读取到处理器缓存中。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-46.png)  
 
-#### 1.5.3.2. 总线风暴
+#### 1.1.3.2. 总线风暴
 &emsp; 总线嗅探技术有哪些缺点？  
 &emsp; 由于MESI缓存一致性协议，需要不断对主线进行内存嗅探，大量的交互会导致总线带宽达到峰值。   
 &emsp; 因此不要滥用volatile，可以用锁来替代，看使用场景。  
 
 
-
-
-## 1.6. JMM中的happens-before原则
+## 1.2. JMM中的happens-before原则
 &emsp; JSR-133内存模型 **<font color = "red">使用happens-before的概念来阐述操作之间的内存可见性。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
 <!-- 
 &emsp; Happens-before规则主要用来约束两个操作，两个操作之间具有 happens-before关系, 并不意味着前一个操作必须要在后一个操作之前执行，happens-before 仅仅要求前一个操作(执行的结果)对后一个操作可见, (the first is visible to and ordered before the second，前一个操作的结果可以被后续的操作获取)。  
@@ -101,15 +111,15 @@ happens-before：正确同步的 多线程 程序是按happens-before指定的�
 
 ----
 
-## 1.7. 内存屏障  
+## 1.3. 内存屏障  
 &emsp; **<font color = "red">Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。</font>**  
 
 &emsp; 什么是内存屏障？硬件层⾯，<font color = "red">内存屏障分两种：读屏障(Load Barrier)和写屏障(Store Barrier)。</font>  
 
-&emsp; **<font color = "lime">内存屏障的作用：</font>**  
+&emsp; **<font color = "clime">内存屏障的作用：</font>**  
 
-* **<font color = "lime">(保障有序性)阻⽌屏障两侧的指令重排序。</font>** 它确保指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面；即在执行到内存屏障这句指令时，在它前面的操作已经全部完成；  
-* **<font color = "lime">(保障可见性)它会强制将对缓存的修改操作立即写入主存；</font>** **<font color = "red">如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，</font>** **<font color = "clime">也有伪共享问题。</font>**  
+* **<font color = "clime">(保障有序性)阻⽌屏障两侧的指令重排序。</font>** 它确保指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面；即在执行到内存屏障这句指令时，在它前面的操作已经全部完成；  
+* **<font color = "clime">(保障可见性)它会强制将对缓存的修改操作立即写入主存；</font>** **<font color = "red">如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，</font>** **<font color = "clime">也有伪共享问题。</font>**  
 
 <!-- 
 内存屏障有两个作⽤：  
