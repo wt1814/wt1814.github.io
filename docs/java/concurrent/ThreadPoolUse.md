@@ -2,21 +2,21 @@
 <!-- TOC -->
 
 - [1. 线程池正确用法](#1-线程池正确用法)
-    - [1.1. 设置隔离的线程池](#11-设置隔离的线程池)
-    - [1.2. 确定线程池的大小](#12-确定线程池的大小)
-    - [1.3. 线程池异常处理](#13-线程池异常处理)
-        - [1.3.1. 异常处理问题](#131-异常处理问题)
-        - [1.3.2. 直接catch](#132-直接catch)
-        - [1.3.3. 线程池实现](#133-线程池实现)
-            - [1.3.3.1. 自定义线程池](#1331-自定义线程池)
-            - [1.3.3.2. 实现Thread.UncaughtExceptionHandler接口](#1332-实现threaduncaughtexceptionhandler接口)
-            - [1.3.3.3. 继承ThreadGroup](#1333-继承threadgroup)
-            - [1.3.3.4. 采用Future模式](#1334-采用future模式)
-    - [1.4. ※※※线程池的监控](#14-※※※线程池的监控)
+    - [1.1. 线程池异常处理](#11-线程池异常处理)
+        - [1.1.1. 异常处理问题](#111-异常处理问题)
+        - [1.1.2. 直接catch](#112-直接catch)
+        - [1.1.3. 线程池实现](#113-线程池实现)
+            - [1.1.3.1. 自定义线程池](#1131-自定义线程池)
+            - [1.1.3.2. 实现Thread.UncaughtExceptionHandler接口](#1132-实现threaduncaughtexceptionhandler接口)
+            - [1.1.3.3. 继承ThreadGroup](#1133-继承threadgroup)
+            - [1.1.3.4. 采用Future模式](#1134-采用future模式)
+    - [1.2. 设置隔离的线程池](#12-设置隔离的线程池)
+    - [1.3. 确定线程池的大小](#13-确定线程池的大小)
+    - [1.4. ★★★线程池的监控](#14-★★★线程池的监控)
     - [1.5. 线程池关闭](#15-线程池关闭)
-            - [1.5.0.5. ThreadPoolExecutor的shutdown()与shutdownNow()源码](#1505-threadpoolexecutor的shutdown与shutdownnow源码)
-        - [1.5.1. ThreadPoolExecutor#awaitTermination](#151-threadpoolexecutorawaittermination)
-        - [1.5.2. 总结：优雅关闭线程池](#152-总结优雅关闭线程池)
+        - [1.5.1. ThreadPoolExecutor的shutdown()与shutdownNow()源码](#151-threadpoolexecutor的shutdown与shutdownnow源码)
+        - [1.5.2. ThreadPoolExecutor#awaitTermination](#152-threadpoolexecutorawaittermination)
+        - [1.5.3. 总结：优雅关闭线程池](#153-总结优雅关闭线程池)
     - [1.6. SpringBoot整合线程池](#16-springboot整合线程池)
         - [1.6.1. ※※※@Async没有执行的问题分析(@Async线程默认配置)](#161-※※※async没有执行的问题分析async线程默认配置)
         - [1.6.2. 重写spring默认线程池](#162-重写spring默认线程池)
@@ -24,17 +24,92 @@
 
 <!-- /TOC -->
 
+
+&emsp; **<font color = "red">总结：</font>**  
+
+&emsp; **<font color = "clime">线程池异常处理：</font>**  
+&emsp; ThreadPoolExecutor中将异常传递给afterExecute()方法，而afterExecute()没有做任何处理。  
+&emsp; 这种处理方式能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。 即使感知到了，也无法查看异常信息。
+&emsp; 解决方案：在提交的任务中将异常捕获并处理，不抛给线程池； 异常抛给线程池，但是要及时处理抛出的异常。  
+
+&emsp; **<font color = "clime">线程池的监控：</font>**  
+&emsp; 通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。  
+
+
 # 1. 线程池正确用法
 <!-- 
 论如何优雅的自定义ThreadPoolExecutor线程池
 https://www.cnblogs.com/wang-meng/p/10163855.html
 -->
 
-## 1.1. 设置隔离的线程池
+## 1.1. 线程池异常处理
+### 1.1.1. 异常处理问题  
+&emsp; java线程池ThreadPoolExecutor，真正执行代码的部分是runWorker()方法。  
+
+```java
+final void runWorker(Worker w) {
+    //...
+    try {
+        beforeExecute(wt, task);
+        Throwable thrown = null;
+        try {
+            task.run();//执行程序逻辑
+        } catch (RuntimeException x) {//捕获RuntimeException
+            thrown = x; throw x; //抛出异常
+        } catch (Error x) {
+            thrown = x; throw x;
+        } catch (Throwable x) {
+            thrown = x; throw new Error(x);
+        } finally {
+            afterExecute(task, thrown);//执行后续逻辑
+        }
+    } finally {
+        task = null;
+        w.completedTasks++;
+        w.unlock();
+    }
+    //...
+}
+```
+&emsp; 程序会捕获包括Error在内的所有异常，并且在程序最后，将出现过的异常和当前任务传递给afterExecute方法。而ThreadPoolExecutor中的afterExecute方法是没有任何实现的。  
+
+&emsp; ThreadPoolExecutor这种处理方式会有什么问题？  
+&emsp; 这样做能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。 即使感知到了，也无法查看异常信息。  
+&emsp; 解决方案：  
+
+* 在提交的任务中将异常捕获并处理，不抛给线程池。  
+* 异常抛给线程池，但是要及时处理抛出的异常。  
+
+### 1.1.2. 直接catch  
+&emsp; 提交的任务，将所有可能的异常都Catch住，并且自行处理。  
+
+### 1.1.3. 线程池实现  
+&emsp; 有以下四种实现方式。  
+
+#### 1.1.3.1. 自定义线程池  
+&emsp; 自定义线程池，继承ThreadPoolExecutor并复写其afterExecute(Runnable r, Throwable t)方法。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-7.png)  
+
+#### 1.1.3.2. 实现Thread.UncaughtExceptionHandler接口  
+&emsp; 实现Thread.UncaughtExceptionHandler接口，实现void uncaughtException(Thread t, Throwable e)方法，并将该handler传递给线程池的ThreadFactory。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-8.png)  
+
+#### 1.1.3.3. 继承ThreadGroup  
+&emsp; 覆盖uncaughtException方法。(与实现Thread.UncaughtExceptionHandler接口类似，因为ThreadGroup类本身就实现了Thread.UncaughtExceptionHandler接口)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-9.png)  
+&emsp; 注意：上面三种方式针对的都是通过execute(xx)的方式提交任务，如果提交任务用的是submit()方法，那么上面的三种方式都将不起作用，而应该使用下面的方式。  
+
+#### 1.1.3.4. 采用Future模式  
+&emsp; <font color = "red">如果提交任务的时候使用的方法是submit，那么该方法将返回一个Future对象，所有的异常以及处理结果都可以通过future对象获取。</font>  
+&emsp; 采用Future模式，将返回结果以及异常放到Future中，在Future中处理  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-11.png)  
+
+
+## 1.2. 设置隔离的线程池
 &emsp; 一些业务代码做了Utils类型在整个项目中的各种操作共享使用一个线程池，一些业务代码大量使用parallel stream特性做一些耗时操作，但是没有使用自定义的线程池或是没有设置更大的线程数(没有意识到parallel stream的共享ForkJoinPool问题)。共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。 **<font color = "red">建议根据异步业务类型，合理设置隔离的线程池。</font>**  
 
-## 1.2. 确定线程池的大小
-&emsp; **<font color = "lime">CPU可同时处理线程数量大部分是CPU核数的两倍。</font>**    
+## 1.3. 确定线程池的大小
+&emsp; **<font color = "clime">CPU可同时处理线程数量大部分是CPU核数的两倍。</font>**    
 &emsp; **一般做法：**  
 
 * 如果是CPU密集型应用(多线程处理复杂算法)，则线程池大小设置为N+1。  
@@ -64,7 +139,7 @@ private static int corePoolSize = Runtime.getRuntime().availableProcessors();
 &emsp; 通过公式，了解到需要3个具体数值：  
 1. 一个请求所消耗的时间 (线程 IO time + 线程 CPU time)。 
 2. 该请求计算时间 (线程 CPU time) 
-3. CPU数目. 
+3. CPU数目 
 
 &emsp; 请求消耗时间：Web服务容器中，可以通过Filter来拦截获取该请求前后消耗的时间。  
 
@@ -108,7 +183,7 @@ public class MoniterFilter implements Filter {
     }
 }
 ```
-&emsp; CPU计算时间：CPU计算时间 = 请求总耗时 - CPU IO time。假设该请求有一个查询 DB 的操作，只要知道这个查询DB的耗时(CPU IO time)，计算的时间不就出来了嘛，看一下怎么才能简洁，明了的记录DB查询的耗时。通过(JDK 动态代理/ CGLIB)的方式添加 AOP 切面，来获取线程IO耗时。代码如下，请参考.  
+&emsp; CPU计算时间：CPU计算时间 = 请求总耗时 - CPU IO time。假设该请求有一个查询 DB 的操作，只要知道这个查询DB的耗时（CPU IO time），计算的时间不就出来了嘛，看一下怎么才能简洁，明了的记录DB查询的耗时。通过（JDK 动态代理/ CGLIB）的方式添加AOP切面，来获取线程IO耗时。代码如下，请参考.  
 
 ```java
 public class DaoInterceptor implements MethodInterceptor {
@@ -141,69 +216,7 @@ public class DaoInterceptor implements MethodInterceptor {
 
 &emsp; 总结：合适的配置线程池大小其实很不容易，但是通过上述的公式和具体代码，就能快速、落地的算出这个线程池该设置的多大。不过还是需要通过压力测试来进行微调，只有经过压测测试的检验，才能最终保证的配置大小是准确的。 
 
-## 1.3. 线程池异常处理
-### 1.3.1. 异常处理问题  
-&emsp; java线程池ThreadPoolExecutor，真正执行代码的部分是runWorker()方法。  
-
-```java
-final void runWorker(Worker w) {
-    //...
-    try {
-        beforeExecute(wt, task);
-        Throwable thrown = null;
-        try {
-            task.run();//执行程序逻辑
-        } catch (RuntimeException x) {//捕获RuntimeException
-            thrown = x; throw x; //抛出异常
-        } catch (Error x) {
-            thrown = x; throw x;
-        } catch (Throwable x) {
-            thrown = x; throw new Error(x);
-        } finally {
-            afterExecute(task, thrown);//执行后续逻辑
-        }
-    } finally {
-        task = null;
-        w.completedTasks++;
-        w.unlock();
-    }
-    //...
-}
-```
-&emsp; 程序会捕获包括Error在内的所有异常，并且在程序最后，将出现过的异常和当前任务传递给afterExecute方法。而ThreadPoolExecutor中的afterExecute方法是没有任何实现的。  
-
-&emsp; ThreadPoolExecutor这种处理方式会有什么问题？  
-&emsp; 这样做能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。 即使感知到了，也无法查看异常信息。  
-&emsp; 解决方案：  
-
-* 在提交的任务中将异常捕获并处理，不抛给线程池。  
-* 异常抛给线程池，但是要及时处理抛出的异常。  
-
-### 1.3.2. 直接catch  
-&emsp; 提交的任务，将所有可能的异常都Catch住，并且自行处理。  
-
-### 1.3.3. 线程池实现  
-&emsp; 有以下四种实现方式。  
-
-#### 1.3.3.1. 自定义线程池  
-&emsp; 自定义线程池，继承ThreadPoolExecutor并复写其afterExecute(Runnable r, Throwable t)方法。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-7.png)  
-
-#### 1.3.3.2. 实现Thread.UncaughtExceptionHandler接口  
-&emsp; 实现Thread.UncaughtExceptionHandler接口，实现void uncaughtException(Thread t, Throwable e)方法，并将该handler传递给线程池的ThreadFactory。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-8.png)  
-
-#### 1.3.3.3. 继承ThreadGroup  
-&emsp; 覆盖uncaughtException方法。(与实现Thread.UncaughtExceptionHandler接口类似，因为ThreadGroup类本身就实现了Thread.UncaughtExceptionHandler接口)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-9.png)  
-&emsp; 注意：上面三种方式针对的都是通过execute(xx)的方式提交任务，如果提交任务用的是submit()方法，那么上面的三种方式都将不起作用，而应该使用下面的方式。  
-
-#### 1.3.3.4. 采用Future模式  
-&emsp; <font color = "red">如果提交任务的时候使用的方法是submit，那么该方法将返回一个Future对象，所有的异常以及处理结果都可以通过future对象获取。</font>  
-&emsp; 采用Future模式，将返回结果以及异常放到Future中，在Future中处理  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-11.png)  
-
-## 1.4. ※※※线程池的监控  
+## 1.4. ★★★线程池的监控  
 &emsp; 如果在项目中大规模的使用了线程池，那么必须要有一套监控体系，来指导当前线程池的状态，当出现问题的时候可以快速定位到问题。而线程池提供了相应的扩展方法，**通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。**  
 
 ```java
@@ -287,7 +300,7 @@ public class Test implements Runnable{
 &emsp; 线程池总共存在5种状态，分别为：RUNNING、SHUTDOWN、STOP、TIDYING、TERMINATED。    
 &emsp; 当执行ThreadPoolExecutor#shutdown方法将会使线程池状态从 RUNNING 转变为 SHUTDOWN。而调用 ThreadPoolExecutor#shutdownNow 之后线程池状态将会从 RUNNING 转变为 STOP。从上面的图上还可以看到，当线程池处于 SHUTDOWN，还是可以继续调用 ThreadPoolExecutor#shutdownNow 方法，将其状态转变为 STOP 。    
 
-#### 1.5.0.5. ThreadPoolExecutor的shutdown()与shutdownNow()源码
+### 1.5.1. ThreadPoolExecutor的shutdown()与shutdownNow()源码
 &emsp; ThreadPoolExecutor#shutdown()方法源码：  
 
 ```java
@@ -309,8 +322,8 @@ public void shutdown() {
     tryTerminate();
 }
 ```
-&emsp; shutdown 方法首先加锁，其次先检查系统安装状态。接着就会将线程池状态变为 SHUTDOWN，在这之后线程池不再接受提交的新任务。此时如果还继续往线程池提交任务，将会使用线程池拒绝策略响应，默认情况下将会使用 ThreadPoolExecutor.AbortPolicy，抛出 RejectedExecutionException 异常。  
-&emsp; interruptIdleWorkers 方法只会中断空闲的线程，不会中断正在执行任务的的线程。空闲的线程将会阻塞在线程池的阻塞队列上。  
+&emsp; shutdown方法首先加锁，其次先检查系统安装状态。接着就会将线程池状态变为SHUTDOWN，在这之后线程池不再接受提交的新任务。此时如果还继续往线程池提交任务，将会使用线程池拒绝策略响应，默认情况下将会使用ThreadPoolExecutor.AbortPolicy，抛出RejectedExecutionException异常。  
+&emsp; interruptIdleWorkers方法只会中断空闲的线程，不会中断正在执行任务的的线程。空闲的线程将会阻塞在线程池的阻塞队列上。  
 
 &emsp; ThreadPoolExecutor#shutdownNow()源码如下：  
 
@@ -338,7 +351,7 @@ public List<Runnable> shutdownNow() {
 &emsp; shutdownNow 方法将会把线程池状态设置为 STOP，然后中断所有线程，最后取出工作队列中所有未完成的任务返回给调用者。  
 &emsp; 对比 shutdown 方法，shutdownNow 方法比较粗暴，直接中断工作线程。不过这里需要注意，中断线程并不代表线程立刻结束。这里需要线程主动配合线程中断响应。  
 
-### 1.5.1. ThreadPoolExecutor#awaitTermination   
+### 1.5.2. ThreadPoolExecutor#awaitTermination   
 &emsp; 线程池 shutdown 与 shutdownNow 方法都不会主动等待执行任务的结束，如果需要等到线程池任务执行结束，需要调用 awaitTermination 主动等待任务调用结束。  
 &emsp; 调用方法如下：  
 
@@ -355,7 +368,7 @@ try {
 &emsp; 如果线程池任务执行结束，awaitTermination方法将会返回true，否则当等待时间超过指定时间后将会返回false。  
 &emsp; 如果需要使用这种进制，建议在上面的基础上增加一定重试次数。这个真的很重要！！！  
 
-### 1.5.2. 总结：优雅关闭线程池  
+### 1.5.3. 总结：优雅关闭线程池  
 &emsp; 处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合 shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
 
 ```java
@@ -458,7 +471,7 @@ public class NativeAsyncTaskExecutePool implements AsyncConfigurer{
 
 ### 1.6.3. 自定义线程池
 &emsp; 创建线程池配置类TaskExecutePool.java。使用@Configuration和@EnableAsync这两个注解，表示这是个配置类，并且是线程池的配置类。  
-&emsp; <font color = "lime">SpringCloud如果自定义了异步任务的线程池，会导致无法新创建一个 Span，需要使用 Sleuth提供的LazyTraceExecutor来包装下。</font>   
+&emsp; <font color = "clime">SpringCloud如果自定义了异步任务的线程池，会导致无法新创建一个 Span，需要使用 Sleuth提供的LazyTraceExecutor来包装下。</font>   
 
 ```java
  @Configuration

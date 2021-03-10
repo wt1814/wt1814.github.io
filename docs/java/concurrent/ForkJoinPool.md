@@ -13,6 +13,17 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; <font color = "clime">ForkJoinPool的两大核心是分而治之(Divide and conquer)和工作窃取(Work Stealing)算法。</font>  
+
+&emsp; <font color = "red">ForkJoinPool的计算方式是大任务拆中任务，中任务拆小任务，最后再汇总。</font>  
+
+&emsp; 工作窃取(Work Stealing)算法  
+&emsp; <font color = "clime">每个工作线程都有自己的工作队列WorkQueue。这是一个双端队列，它是线程私有的。</font>双端队列的操作：push、pop、poll。push/pop只能被队列的所有者线程调用，而poll是由其它线程窃取任务时调用的。  
+1. ForkJoinTask中fork的子任务，将放入运行该任务的工作线程的队头，工作线程将以LIFO的顺序来处理工作队列中的任务；  
+2. **<font color = "clime">为了最大化地利用CPU，空闲的线程将随机从其它线程的队列中“窃取”任务来执行。从工作队列的尾部窃取任务，以减少竞争；</font>**  
+3. **<font color = "clime">当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；</font>**    
+
 
 # 1. ForkJoinPool  
 <!-- 
@@ -24,7 +35,7 @@ http://ifeve.com/talk-concurrency-forkjoin/
 &emsp; ForkJoinPool就是用来解决这种问题的：将一个大任务拆分成多个小任务后，使用fork可以将小任务分发给其他线程同时处理，使用join可以将多个线程处理的结果进行汇总；这实际上就是分治思想的并行版本。  
 
 ## 1.1. ForkJoinPool内部原理，工作窃取算法
-&emsp; <font color = "lime">ForkJoinPool的两大核心是分而治之(Divide and conquer)和工作窃取(Work Stealing)算法。</font>  
+&emsp; <font color = "clime">ForkJoinPool的两大核心是分而治之(Divide and conquer)和工作窃取(Work Stealing)算法。</font>  
 
 ### 1.1.1. 分而治之  
 &emsp; <font color = "red">ForkJoinPool的计算方式是大任务拆中任务，中任务拆小任务，最后再汇总。</font>  
@@ -40,10 +51,10 @@ public class ForkJoinWorkerThread extends Thread {
     final ForkJoinPool.WorkQueue workQueue; // 线程的工作队列
 }
 ```
-&emsp; <font color = "lime">每个工作线程都有自己的工作队列WorkQueue。这是一个双端队列，它是线程私有的。</font>双端队列的操作：push、pop、poll。push/pop只能被队列的所有者线程调用，而poll是由其它线程窃取任务时调用的。  
+&emsp; <font color = "clime">每个工作线程都有自己的工作队列WorkQueue。这是一个双端队列，它是线程私有的。</font>双端队列的操作：push、pop、poll。push/pop只能被队列的所有者线程调用，而poll是由其它线程窃取任务时调用的。  
 1. ForkJoinTask中fork的子任务，将放入运行该任务的工作线程的队头，工作线程将以LIFO的顺序来处理工作队列中的任务；  
-2. **<font color = "lime">为了最大化地利用CPU，空闲的线程将随机从其它线程的队列中“窃取”任务来执行。从工作队列的尾部窃取任务，以减少竞争；</font>**  
-3. 当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；  
+2. **<font color = "clime">为了最大化地利用CPU，空闲的线程将随机从其它线程的队列中“窃取”任务来执行。从工作队列的尾部窃取任务，以减少竞争；</font>**  
+3. **<font color = "clime">当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；</font>**    
 
 ## 1.2. API 描述
 &emsp; ForkJoinPool继承体系  
@@ -62,7 +73,8 @@ public class ForkJoinWorkerThread extends Thread {
 
 * fork()：fork()方法类似于线程的Thread.start()方法，但是它不是真的启动一个线程，而是将任务放入到工作队列中。  
 * join()：join()方法类似于线程的Thread.join()方法，但是它不是简单地阻塞线程，而是利用工作线程运行其它任务。当一个工作线程中调用了join()方法，它将处理其它任务，直到注意到目标子任务已经完成了。  
-  
+
+
 ### 1.2.3. 相关使用  
 &emsp; <font color = "red">在JDK8中lamdba有个stream操作parallelStream，底层是使用ForkJoinPool实现的；</font>  
 &emsp; <font color = "red">可以通过Executors.newWorkStealingPool(int parallelism)快速创建ForkJoinPool线程池，无参默认使用CPU数量的线程数执行任务；</font>  

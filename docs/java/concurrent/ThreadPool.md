@@ -8,7 +8,6 @@
         - [1.2.1. 线程池实现](#121-线程池实现)
             - [1.2.1.1. ThreadPoolExecutor](#1211-threadpoolexecutor)
             - [1.2.1.2. ForkJoinPool](#1212-forkjoinpool)
-            - [1.2.1.3. CompletableFuture](#1213-completablefuture)
             - [1.2.1.4. Executors](#1214-executors)
                 - [1.2.1.4.1. SingleThreadExecutor](#12141-singlethreadexecutor)
                 - [1.2.1.4.2. FixedThreadPool](#12142-fixedthreadpool)
@@ -46,12 +45,9 @@
 
 #### 1.2.1.1. ThreadPoolExecutor  
 &emsp; [ThreadPoolExecutor](/docs/java/concurrent/ThreadPoolExecutor.md)  
-  
+
 #### 1.2.1.2. ForkJoinPool  
 &emsp; [ForkJoinPool](F/docs/java/concurrent/ForkJoinPool.md)  
-
-#### 1.2.1.3. CompletableFuture  
-&emsp; [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
 
 #### 1.2.1.4. Executors
 &emsp; Java通过Executors提供四种线程池。Executors将ThreadPoolExecutor的属性已经声明定义好了。  
@@ -130,7 +126,7 @@ public static ExecutorService newScheduledThreadPool(int corePoolSize) {
 
 ##### 1.2.1.4.6. newWorkStealingPool  
 &emsp; <font color = "red">在JDK8中lamdba有个stream操作parallelStream，底层是使用ForkJoinPool实现的；</font>  
-&emsp; <font color = "red">可以通过Executors.newWorkStealingPool(int parallelism)快速创建ForkJoinPool线程池，无参默认使用CPU数量的线程数执行任务；</font>  
+&emsp; <font color = "clime">可以通过Executors.newWorkStealingPool(int parallelism)快速创建ForkJoinPool线程池，无参默认使用CPU数量的线程数执行任务；</font>  
 
 #### 1.2.1.5. Java8使用lamda表达式创建线程池方式
 
