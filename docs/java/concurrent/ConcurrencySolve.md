@@ -14,6 +14,15 @@
 <!-- /TOC -->
 
 # 1. 并发安全解决底层
+<!-- 
+
+https://www.cnblogs.com/Courage129/p/14401680.html
+https://zhuanlan.zhihu.com/p/260081868
+https://mp.weixin.qq.com/s?__biz=MzI0MjE4NTM5Mg==&mid=2648975640&idx=1&sn=a8e85ae9ae8d17013490cf09ff92c54e&chksm=f110acc7c66725d19ca1c743fb721434e48ee028804a808493e959aa4196625e246ae772a965&scene=21#wechat_redirect
+http://www.360doc.cn/mip/760841759.html
+https://blog.csdn.net/breakout_alex/article/details/94379895
+-->
+
 ## 1.1. ~~CPU的缓存一致性协议MESI~~
 &emsp; 当多个CPU持有的缓存都来自同一个主内存的拷贝，当有某个CPU修改了这个主内存数据后，而其他CPU并不知道，那拷贝的内存将会和主内存不一致，这就是缓存不一致。那如何来保证缓存一致呢？这里就需要操作系统来共同制定一个同步规则来保证。 
 

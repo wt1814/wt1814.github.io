@@ -2,7 +2,7 @@
 
 - [1. AQS](#1-aqs)
     - [1.1. 简介](#11-简介)
-    - [1.2. 类图：](#12-类图)
+    - [1.2. 类图](#12-类图)
     - [1.3. 属性](#13-属性)
         - [1.3.1. 同步状态state](#131-同步状态state)
         - [1.3.2. 同步队列](#132-同步队列)
@@ -22,35 +22,37 @@
 
 <!-- /TOC -->
 
-&emsp; <font color = "blue">本节重点概况：</font>  
-1. 同步状态，通过state控制同步状态
-2. 同步队列，双向链表，每个节点代表一个线程，节点有5个状态。入列采用CAS算法设置尾节点+死循环自旋。  
+&emsp; **<font color = "red">总结：</font>**  
+1. 同步状态，通过state控制同步状态。  
+2. 同步队列，双向链表，每个节点代表一个线程，节点有5个状态。
+    * 入列：采用CAS算法设置尾节点+死循环自旋。  
+    * 出列：首节点的线程释放同步状态后，将会唤醒它的后继节点(next)，而后继节点将会在获取同步状态成功时将自己设置为首节点。  
 3. 独占模式下，获取同步状态、释放同步状态
 4. 共享模式下，获取同步状态、释放同步状态
 
 # 1. AQS  
+## 1.1. 简介  
 &emsp; AQS是AbstractQueuedSynchronizer的简称，翻译成中文就是抽象队列同步器 ，这三个单词分开来看：  
 
-* Abstract (抽象)：AQS 是一个抽象类，只实现一些主要的逻辑，有些方法推迟到子类实现；
-* Queued (队列)：AQS 是用先进先出队列来存储数据的；
-* Synchronizer (同步)：即AQS实现同步功能；
+* Abstract(抽象)： **<font color = "red">AQS是一个抽象类，只实现一些主要的逻辑，有些方法推迟到子类实现；</font>**
+* Queued(队列)：AQS是用先进先出队列来存储数据的；
+* Synchronizer(同步)：即AQS实现同步功能；
 
-## 1.1. 简介  
+
 &emsp; **<font color = "red">AQS是JUC并发包中的核心基础组件。它是构建锁或者其他同步组件(如ReentrantLock、ReentrantReadWriteLock、Semaphore等)的基础框架。</font>**  
-1. **<font color = "lime">内部实现的关键是：先进先出的队列、state同步状态</font>**  
-2. **<font color = "lime">拥有两种线程模式：独占模式、共享模式。</font>**  
-    * 独占式：有且只有一个线程能获取到锁，如：ReentrantLock。又可分为公平锁和非公平锁：
-        * 公平锁：按照线程在队列中的排队顺序，先到者先拿到锁。  
-        * 非公平锁：当线程要获取锁时，无视队列顺序直接去抢锁，谁抢到就是谁的。    
+&emsp; **<font color = "clime">AQS的核心内容：</font>**  
+1. **<font color = "clime">内部实现的关键是：先进先出的队列、state同步状态</font>**  
+2. **<font color = "clime">拥有两种线程模式：独占模式、共享模式。</font>**  
+    * 独占式：有且只有一个线程能获取到锁，如：ReentrantLock。   
     * 共享式：可以多个线程同时获取到锁，如：Semaphore/CountDownLatch。   
 
-## 1.2. 类图：  
+## 1.2. 类图  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-14.png)   
 
 ## 1.3. 属性  
-&emsp; AQS核心思想是，<font color = "red">如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。</font><font color = "lime">如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制。</font>  
+&emsp; AQS核心思想是，<font color = "red">如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。</font><font color = "clime">如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制。</font>  
+&emsp; <font color = "clime">AQS使用一个int state成员变量来表示同步状态，通过内置的FIFO队列来完成获取资源线程的排队工作，即将暂时获取不到锁的线程加入到队列中。AQS使用CAS对该同步状态进行原子操作实现对其值的修改。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-2.png)   
-&emsp; <font color = "red">AQS使用一个int state成员变量来表示同步状态，通过内置的FIFO队列来完成获取资源线程的排队工作，即将暂时获取不到锁的线程加入到队列中。AQS使用CAS对该同步状态进行原子操作实现对其值的修改。</font>  
 
 ### 1.3.1. 同步状态state  
 
@@ -76,13 +78,13 @@ protected final boolean compareAndSetState(int expect, int update) {
 * 是由volatile修饰的，保证多线程中的可见性。  
 * 并且提供了几个访问这个字段的方法：getState()、setState、compareAndSetState。这几个方法都是final修饰的，说明子类中无法重写它们。另外它们都是protected修饰的，说明只能在子类中使用这些方法。  
 
-&emsp; **<font color = "red">怎么通过state控制同步状态？</font>**  
+&emsp; **<font color = "clime">怎么通过字段state控制同步状态？</font>**  
 &emsp; 通过修改state字段代表的同步状态来实现多线程的独占模式或者共享模式。例如：当state=0时，则说明没有任何线程占有共享资源的锁，当state=1时，则说明有线程目前正在使用共享变量，其他线程必须加入同步队列进行等待。  
-&emsp; <font color = "red">在独占模式下，可以把state的初始值设置成0，每当某个线程要进行某项独占操作前，都需要判断state的值是不是0，如果不是0的话意味着别的线程已经进入该操作，则本线程需要阻塞等待；如果是0的话就把state的值设置成1，自己进入该操作。这个先判断再设置的过程可以通过CAS操作保证原子性，把这个过程称为尝试获取同步状态。如果一个线程获取同步状态成功了，那么在另一个线程尝试获取同步状态的时候发现state的值已经是1了就一直阻塞等待，直到获取同步状态成功的线程执行完了需要同步的操作后释放同步状态，也就是把state的值设置为0，并通知后续等待的线程。ReentrantLock 允许重入，所以同一个线程多次获得同步锁的时候，state 会递增，比如重入 5 次，那么 state=5。而在释放锁的时候，同样需要释放5次直到state=0其他线程才有资格获得锁。</font>  
+&emsp; <font color = "red">在独占模式下，可以把state的初始值设置成0，每当某个线程要进行某项独占操作前，都需要判断state的值是不是0，如果不是0的话意味着别的线程已经进入该操作，则本线程需要阻塞等待；如果是0的话就把state的值设置成1，自己进入该操作。这个先判断再设置的过程可以通过CAS操作保证原子性，把这个过程称为尝试获取同步状态。如果一个线程获取同步状态成功了，那么在另一个线程尝试获取同步状态的时候发现state的值已经是1了就一直阻塞等待，直到获取同步状态成功的线程执行完了需要同步的操作后释放同步状态，也就是把state的值设置为0，并通知后续等待的线程。ReentrantLock允许重入，所以同一个线程多次获得同步锁的时候，state 会递增，比如重入 5 次，那么 state=5。而在释放锁的时候，同样需要释放5次直到state=0其他线程才有资格获得锁。</font>  
 &emsp; 在共享模式下的道理也差不多，比如说某项操作允许10个线程同时进行，超过这个数量的线程就需要阻塞等待。那么就可以把state的初始值设置为10，一个线程尝试获取同步状态的意思就是先判断state的值是否大于0，如果不大于0的话意味着当前已经有10个线程在同时执行该操作，本线程需要阻塞等待；如果state的值大于0，那么可以把state的值减1后进入该操作，每当一个线程完成操作的时候需要释放同步状态，也就是把state的值加1，并通知后续等待的线程。  
 
 ### 1.3.2. 同步队列 
-&emsp; **<font color = "lime">一句话概述：双向链表，每个节点代表一个线程，节点有5个状态。入列采用CAS算法设置尾节点+死循环自旋。</font>**
+&emsp; **<font color = "clime">一句话概述：双向链表，每个节点代表一个线程，节点有5个状态。入列采用CAS算法设置尾节点+死循环自旋。</font>**
 
 #### 1.3.2.1. 队列描述  
 &emsp; <font color = "red">AQS队列在内部维护了一个先进先出FIFO的双向链表，</font>在双向链表中，每个节点都有两个指针，分别指向直接前驱节点和直接后继节点。使用双向链表的优点之一，就是从任意一个节点开始都很容易访问它的前驱节点和后继节点。  
@@ -96,8 +98,8 @@ private transient volatile Node head;
 /**等待队列的尾节点，也是懒加载的。(enq方法)。只在加入新的阻塞结点的情况下修改*/
 private transient volatile Node tail;
 ```
-&emsp; <font color = "red">CLH同步队列中，一个Node 节点表示一个线程，</font>它保存着线程的引用(thread)、状态(waitStatus)、前驱节点(prev)、后继节点(next)，condition队列的后续节点(nextWaiter)如下图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-16.png)  
+
+&emsp; <font color = "red">CLH同步队列中，一个Node 节点表示一个线程，</font>它保存着线程的引用(thread)、状态(waitStatus)、前驱节点(prev)、后继节点(next)，condition队列的后续节点(nextWaiter)。  
 
 ```java
 static final class Node {
@@ -223,13 +225,13 @@ static final class Node {
 &emsp; 每个Node是一个线程封装。<font color = "red">在AQS中，当线程在竞争锁失败之后，会封装成Node加入到AQS队列尾部，首节点是获取同步状态成功的节点。</font>  
 
 ##### 1.3.2.2.1. 入列  
-&emsp; 未获取到锁的线程会创建节点，线程安全(CAS算法设置尾节点+死循环自旋)的加入队列尾部。   
+&emsp; **<font color = "clime">未获取到锁的线程会创建节点，线程安全（CAS算法设置尾节点+死循环自旋）的加入队列尾部。</font>**   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-19.png)  
 &emsp; CLH队列入列就是tail指向新节点、新节点的prev指向当前最后的节点，当前最后一个节点的next指向当前节点。addWaiter方法如下：  
 
 1. 将当前线程封装成Node  
-2. <font color = "lime">当前链表中的tail节点是否为空，如果不为空，则通过cas操作把当前线程的node添加到AQS队列</font>  
-3. <font color = "lime">如果为空或者cas失败，调用enq将节点添加到AQS队列</font>  
+2. <font color = "clime">当前链表中的tail节点是否为空，如果不为空，则通过cas操作把当前线程的node添加到AQS队列</font>  
+3. <font color = "clime">如果为空或者cas失败，调用enq将节点添加到AQS队列</font>  
 
 ```java
 /**
@@ -333,23 +335,27 @@ https://www.cnblogs.com/chengxiao/archive/2017/07/24/7141160.html
 https://www.cnblogs.com/waterystone/p/4920797.html
 -->
 
-&emsp; AQS定义两种资源共享方式：独占Exclusive和共享Share。独占模式和共享模式下在什么情况下会往CLH同步队列里添加节点，什么情况下会从CLH同步队列里移除节点，以及线程阻塞和恢复的实现细节？  
+&emsp; AQS定义两种资源共享方式：独占Exclusive和共享Share。  
 
 * 独占式：有且只有一个线程能获取到锁，如：ReentrantLock。  
 * 共享式：可以多个线程同时获取到锁，如：CountDownLatch。  
+
+
+    独占模式和共享模式下在什么情况下会往CLH同步队列里添加节点，什么情况下会从CLH同步队列里移除节点，以及线程阻塞和恢复的实现细节？  
 
 ### 1.4.1. 独占模式
 #### 1.4.1.1. 获取同步状态--acquire()
 &emsp; **<font color = "red">每个节点自旋观察自己的前一节点是不是Header节点，如果是，就去尝试获取锁。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-20.png)  
 &emsp; acquire(int arg)是独占模式下线程获取同步状态的顶层入口。  
-&emsp; <font color = "lime">独占模式获取同步状态流程如下：</font>  
+&emsp; <font color = "clime">独占模式获取同步状态流程如下：</font>  
 1. 调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回(这里体现了非公平锁，每个线程获取锁时会尝试直接抢占加锁一次，而CLH队列中可能还有别的线程在等待)；  
 2. addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；  
 3. acquireQueued()使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
 4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。
 
-        如果获取到资源，线程直接返回，否则进入等待队列，直到获取到资源为止，且整个过程忽略中断的影响。这也正是lock()的语义，当然不仅仅只限于lock()。获取到资源后，线程就可以去执行其临界区代码了。 
+
+&emsp; 如果获取到资源，线程直接返回，否则进入等待队列，直到获取到资源为止，且整个过程忽略中断的影响。这也正是lock()的语义，当然不仅仅只限于lock()。获取到资源后，线程就可以去执行其临界区代码了。 
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-31.png)  
 <!-- 
