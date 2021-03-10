@@ -7,7 +7,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "red">ReentrantReadWriteLock缺点：只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "lime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
+&emsp; **<font color = "red">ReentrantReadWriteLock缺点：只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "clime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
 &emsp; **读写锁导致写线程饥饿的原因是读锁和写锁互斥，StampedLock提供了解决这一问题的方案，乐观读锁 Optimistic reading，即一个线程获取的乐观读锁之后，不会阻塞线程获取写锁。**  
 
 # 1. ReadWriteLock  
@@ -19,7 +19,7 @@ https://mp.weixin.qq.com/s/JwEkiH6WlQd-UfyAPbltBA
 ## 1.1. ReentrantReadWriteLock，读写锁
 &emsp; ReentrantReadWriteLock维护了两个锁，读锁和写锁，所以一般称其为读写锁。写锁是独占的(写操作只能由一个线程来操作)。读锁是共享的，如果没有写锁，读锁可以由多个线程共享。  
 &emsp; 优点：与互斥锁相比，虽然一次只能有一个写线程可以修改共享数据，但大量读线程可以同时读取共享数据，所以，读写锁适用于共享数据很大，且读操作远多于写操作的情况。  
-&emsp; **<font color = "red">缺点：只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "lime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
+&emsp; **<font color = "red">缺点：只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "clime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
 
 
 &emsp; 编码示例：  
@@ -55,7 +55,7 @@ https://mp.weixin.qq.com/s/vwvcgBPOnW7M2GrgVDDdGg
 -->
 
 &emsp; **读写锁导致写线程饥饿的原因是读锁和写锁互斥，StampedLock提供了解决这一问题的方案，乐观读锁 Optimistic reading，即一个线程获取的乐观读锁之后，不会阻塞线程获取写锁。**  
-&emsp; <font color = "lime">StampedLock提供了三种模式来控制读写操作：写锁 writeLock、悲观读锁readLock、乐观读锁Optimistic reading。</font>
+&emsp; <font color = "clime">StampedLock提供了三种模式来控制读写操作：写锁 writeLock、悲观读锁readLock、乐观读锁Optimistic reading。</font>
 
 * 写锁 writeLock  
 &emsp; 类似ReentrantReadWriteLock的写锁，独占锁，当一个线程获取该锁后，其它请求的线程必须等待。  
