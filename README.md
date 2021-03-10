@@ -183,8 +183,6 @@
 &emsp; &emsp; [ReentrantLock](/docs/java/concurrent/ReentrantLock.md)  
 &emsp; &emsp; [Condition](/docs/java/concurrent/Condition.md)  
 &emsp; &emsp; [ReadWriteLock](/docs/java/concurrent/ReadWriteLock.md)  
-<!-- &emsp; &emsp; [LocLockSupport](/docs/java/concurrent/LockSupport.md)         
--->
 &emsp; [Atmoic](/docs/java/concurrent/Atmoic.md)  
 &emsp; &emsp; [AtomicStampedReference与AtomicMarkableReference](/docs/java/concurrent/AtomicStampedReference.md)  
 &emsp; &emsp; [LongAdder](/docs/java/concurrent/LongAdder.md)  
@@ -192,9 +190,14 @@
 &emsp; &emsp; [ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)  
 &emsp; &emsp; [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
 &emsp; [tools](/docs/java/concurrent/tools.md)  
+&emsp; &emsp; [CountDownLatch](/docs/java/concurrent/CountDownLatch.md)  
+&emsp; &emsp; [CyclicBarrier](/docs/java/concurrent/CyclicBarrier.md)  
+&emsp; &emsp; [Semaphore](/docs/java/concurrent/Semaphore.md)  
+&emsp; &emsp; [Exchanger](/docs/java/concurrent/Exchanger.md)  
 [多线程处理大数据量](/docs/java/concurrent/bigData.md)  
 <!-- 
 [并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
+&emsp; &emsp; [LocLockSupport](/docs/java/concurrent/LockSupport.md)  
 -->
 
 ## 数据库  

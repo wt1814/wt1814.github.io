@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. Collection](#1-collection)
+- [1. collections](#1-collections)
     - [1.1. List，CopyOnWriteArrayList](#11-listcopyonwritearraylist)
         - [1.1.1. CopyOnWrite简介](#111-copyonwrite简介)
         - [1.1.2. CopyOnWriteArrayList简介](#112-copyonwritearraylist简介)
@@ -16,13 +16,13 @@
 
 <!-- /TOC -->
 
-# 1. Collection
+# 1. collections
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-5.png)  
 &emsp; 14个并发容器按照线程安全模型分类：copy-on-write、CAS(JDK1.8 ConcurrentHashMap)、读写分离(LinkedBlockingQueue)。  
 
 ## 1.1. List，CopyOnWriteArrayList  
 ### 1.1.1. CopyOnWrite简介 
-&emsp; CopyOnWrite，简称COW。所谓写时复制，即读操作时不加锁以保证性能不受影响； **<font color = "lime">写操作时加锁，复制资源的一份副本，在副本上执行写操作，写操作完成后将资源的引用指向副本。</font>**  
+&emsp; CopyOnWrite，简称COW。所谓写时复制，即读操作时不加锁以保证性能不受影响； **<font color = "clime">写操作时加锁，复制资源的一份副本，在副本上执行写操作，写操作完成后将资源的引用指向副本。</font>**  
 
 &emsp; **优点：** 可以对CopyOnWrite容器进行并发的读，而不需要加锁，因为当前容器不会添加任何元素。所以CopyOnWrite容器也是一种读写分离的思想，读和写不同的容器。  
 &emsp; **缺点：** **1.占内存(写时复制，new两个对象)；2.不能保证数据实时一致性。**  
@@ -32,7 +32,7 @@
 * 数据一致性问题:  
 &emsp; CopyOnWrite容器只能保证数据的最终一致性，不能保证数据的实时一致性。所以如果希望写入的的数据，马上能读到，不要使用CopyOnWrite容器。 
 
-&emsp; **使用场景：** <font color = "lime">CopyOnWrite并发容器用于读多写少的并发场景。比如白名单，黑名单，商品类目的访问和更新场景。</font><font color = "red">假如有一个搜索网站，用户在这个网站的搜索框中，输入关键字搜索内容，但是某些关键字不允许被搜索。这些不能被搜索的关键字会被放在一个黑名单当中，黑名单每天晚上更新一次。当用户搜索时，会检查当前关键字在不在黑名单当中，如果在，则提示不能搜索。</font>  
+&emsp; **使用场景：** <font color = "clime">CopyOnWrite并发容器用于读多写少的并发场景。比如白名单，黑名单，商品类目的访问和更新场景。</font><font color = "red">假如有一个搜索网站，用户在这个网站的搜索框中，输入关键字搜索内容，但是某些关键字不允许被搜索。这些不能被搜索的关键字会被放在一个黑名单当中，黑名单每天晚上更新一次。当用户搜索时，会检查当前关键字在不在黑名单当中，如果在，则提示不能搜索。</font>  
 
 ### 1.1.2. CopyOnWriteArrayList简介  
 <!-- 

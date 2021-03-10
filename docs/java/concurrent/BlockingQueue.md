@@ -17,10 +17,10 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; 阻塞队列：当队列是空的时，从队列中获取元素的操作将会被阻塞，或者当队列是满时，往队列里添加元素的操作会被阻塞。  
-&emsp; <font color = "red">ArrayBlockingQueue与LinkedBlockingQueue：</font>** ArrayBlockingQueue预先分配好一段连续内存，更稳定；LinkedBlockingQueue读写锁分离，吞吐量更大。  
+&emsp; <font color = "red">ArrayBlockingQueue与LinkedBlockingQueue：</font> ArrayBlockingQueue预先分配好一段连续内存，更稳定；LinkedBlockingQueue读写锁分离，吞吐量更大。  
 
 # 1. 阻塞队列  
-&emsp; **<font color = "lime">阻塞队列与普通队列的区别在于，</font>** 试图从空的阻塞队列中获取元素的线程将会被阻塞，直到其他的线程往空的队列插入新的元素。同样，试图往已满的阻塞队列中添加新元素的线程同样也会被阻塞，直到其他的线程使队列重新变得空闲起来，如从队列中移除一个或者多个元素，或者完全清空队列，下图展示了如何通过阻塞队列来合作：  
+&emsp; **<font color = "clime">阻塞队列与普通队列的区别在于，</font>** 试图从空的阻塞队列中获取元素的线程将会被阻塞，直到其他的线程往空的队列插入新的元素。同样，试图往已满的阻塞队列中添加新元素的线程同样也会被阻塞，直到其他的线程使队列重新变得空闲起来，如从队列中移除一个或者多个元素，或者完全清空队列，下图展示了如何通过阻塞队列来合作：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-34.png)  
 <!-- 
 阻塞队列是一个在队列基础上又支持了两个附加操作的队列。  
@@ -29,7 +29,7 @@
 支持阻塞的移除方法：队列空时，获取元素的线程会等待队列变为非空。  
 
 -->
-&emsp; <font color = "lime">阻塞队列常用于生产者和消费者的场景，生产者是向队列里添加元素的线程，消费者是从队列里取元素的线程。</font>简而言之，阻塞队列是生产者用来存放元素、消费者获取元素的容器。  
+&emsp; <font color = "clime">阻塞队列常用于生产者和消费者的场景，生产者是向队列里添加元素的线程，消费者是从队列里取元素的线程。</font>简而言之，阻塞队列是生产者用来存放元素、消费者获取元素的容器。  
 
 ## 1.1. BlockingQueue接口  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-35.png)  
@@ -40,7 +40,7 @@
     * put(e)：将元素添加到队列末尾，<font color = "red">如果队列已满，队列会一直阻塞生产者线程直到成功。</font>  
     * offer(e,time,unit)：将元素添加到队列末尾，<font color = "red">如果队列已满，则等待一定的时间，当时间期限达到时，如果还没有插入成功，则返回false；否则返回true。</font>  
 * 获取数据方法：  
-    * remove()：删除队首元素，成功则返回true;如果队列为空，则删除失败，抛出异常。
+    * remove()：删除队首元素，成功则返回true；如果队列为空，则删除失败，抛出异常。
     * poll()：删除队首元素，若成功则返回则返回队首元素，若队列为空，则返回null。
     * take()：从队首取元素，若队列为空，队列会一直阻塞消费者线程。
     * poll(time,unit)：从队首取元素，如果队列为空，则等待一定的时间，当时间期限达到时，如果还没有取出元素，则返回null；否则返回队首元素。
@@ -65,7 +65,7 @@
 * SynchronousQueue：一个不存储元素的阻塞队列。  
 * LinkedTransferQueue：一个由链表结构组成的无界阻塞队列。  
 
-&emsp; <font color = "red">ArrayBlockingQueue与LinkedBlockingQueue：</font>**  
+&emsp; **<font color = "red">ArrayBlockingQueue与LinkedBlockingQueue：</font>**  
 &emsp; <font color = "red">ArrayBlockingQueue预先分配好一段连续内存，更稳定；LinkedBlockingQueue读写锁分离，吞吐量更大。</font>  
 1. 队列大小有所不同，ArrayBlockingQueue是有界的初始化必须指定大小，而LinkedBlockingQueue可以是有界的也可以是无界的(Integer.MAX_VALUE)，对于LinkedBlockingQueue，当添加速度大于移除速度时，在无界的情况下，可能会造成内存溢出等问题。
 2. 数据存储容器不同，ArrayBlockingQueue采用的是数组作为数据存储容器，而LinkedBlockingQueue采用的则是以Node节点作为连接对象的链表。
