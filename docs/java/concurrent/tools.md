@@ -1,18 +1,17 @@
 
 
 
-<!-- TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-9.png)  
+&emsp; Java提供了同步工具类：[CountDownLatch(计数器)](/docs/java/concurrent/CountDownLatch.md)、[CyclicBarrier(栅栏)](/docs/java/concurrent/CyclicBarrier.md)、[Semaphore(信号量)](/docs/java/concurrent/Semaphore.md)、[Exchanger，交换器](/docs/java/concurrent/Exchanger.md)。这几个工具类是为了能够更好控制线程之间的通讯问题。  
 
-<!-- /TOC -->
-
-&emsp; **<font color = "red">总结：</font>**  
 
 * Semaphore，计数信号量，用于控制访问共享资源的线程的数目。  
 * 多个线程间相互协作完成任务：  
     * CountDownLatch，线程计数器，主线程等待辅线程完成各自的工作后再执行。  
     * CyclicBarrier，回环栅栏，多个线程互相等待，直到到达某个公共屏障点之后，再全部同时执行。  
-* Exchanger，交换器  
+
+
 
 <!--
 并发工具类Phaser、Exchanger使用 
@@ -29,5 +28,3 @@ https://www.cnblogs.com/yougewe/p/9745198.html
    https://mp.weixin.qq.com/s/odsutVotjJjXFX4nAhb54w
 
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-9.png)  
-&emsp; Java提供了同步工具类：[CountDownLatch(计数器)](/docs/java/concurrent/CountDownLatch.md)、[CyclicBarrier(栅栏)](/docs/java/concurrent/CyclicBarrier.md)、[Semaphore(信号量)](/docs/java/concurrent/Semaphore.md)、[Exchanger，交换器](/docs/java/concurrent/Exchanger.md)。这几个工具类是为了能够更好控制线程之间的通讯问题。  

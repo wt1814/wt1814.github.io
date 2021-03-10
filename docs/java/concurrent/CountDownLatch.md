@@ -5,13 +5,16 @@
     - [1.1. API](#11-api)
     - [1.2. 使用示例](#12-使用示例)
     - [1.3. CountDownLatch源码分析](#13-countdownlatch源码分析)
-            - [1.3.0.1. 类结构](#1301-类结构)
+        - [1.3.0.1. 类结构](#1301-类结构)
         - [1.3.1. await()](#131-await)
         - [1.3.2. countDown()](#132-countdown)
     - [1.4. 总结](#14-总结)
 
 <!-- /TOC -->
 
+&emsp; **总结：**  
+&emsp; <font color = "red">CountDownLatch对象不能被重复利用，也就是不能修改计数器的值。</font>CountDownLatch是一次性的，计数器的值只能在构造方法中初始化一次，之后没有任何机制再次对其设置值，当CountDownLatch使用完毕后，它不能再次被使用。    
+&emsp; <font color = "clime">CountDownLatch是由AQS实现的，创建CountDownLatch时设置计数器count其实就是设置AQS.state=count，也就是重入次数。await()方法调用获取锁的方法，由于AQS.state=count表示锁被占用且重入次数为count，所以获取不到锁线程被阻塞并进入AQS队列。countDown()方法调用释放锁的方法，每释放一次AQS.state减1，当AQS.state变为0时表示处于无锁状态了，就依次唤醒AQS队列中阻塞的线程来获取锁，继续执行逻辑代码。</font>  
 
 # 1. CountDownLatch，线程计数器  
 <!-- 
@@ -33,14 +36,11 @@ CountDownLatch是一种灵活的闭锁实现，可以在上述各种情况中使
 FutureTask也可以用做闭锁。  
 FutureTask在Executor框架中表示异步任务，此外还可以用来表示一些时间较长的计算， 这些计算可以在使用计算结果之前启动。  
 -->
-
-&emsp; <font color = "lime">CountDownLatch是由AQS实现的，创建CountDownLatch时设置计数器count其实就是设置AQS.state=count，也就是重入次数。await()方法调用获取锁的方法，由于AQS.state=count表示锁被占用且重入次数为count，所以获取不到锁线程被阻塞并进入AQS队列。countDown()方法调用释放锁的方法，每释放一次AQS.state减1，当AQS.state变为0时表示处于无锁状态了，就依次唤醒AQS队列中阻塞的线程来获取锁，继续执行逻辑代码。</font>  
-
 &emsp; java.util.concurrent.CountDownLatch类， **<font color = "red">能够使一个线程等待其他线程完成各自的工作后再执行。</font>** <font color = "red">利用它可以实现类似计数器的功能。比如有一个任务A，它要等待其他4个任务执行完毕之后才能执行，此时就可以利用CountDownLatch来实现这种功能了。</font>  
-&emsp; **<font color = "lime">CountDownLatch的操作是原子操作，同时只能有一个线程去操作这个计数器，也就是同时只能有一个线程去减这个计数器里面的值。</font>** 可以向CountDownLatch对象设置一个初始的数字作为计数值，任何调用这个对象上的await()方法都会阻塞，直到这个计数器的计数值被其他的线程减为0为止。所以在当前计数到达零之前，await方法会一直受阻塞。之后，会释放所有等待的线程，await的所有后续调用都将立即返回。这种现象只出现一次——计数无法被重置。如果需要重置计数，请考虑使用CyclicBarrier。  
+&emsp; **<font color = "clime">CountDownLatch的操作是原子操作，同时只能有一个线程去操作这个计数器，也就是同时只能有一个线程去减这个计数器里面的值。</font>** 可以向CountDownLatch对象设置一个初始的数字作为计数值，任何调用这个对象上的await()方法都会阻塞，直到这个计数器的计数值被其他的线程减为0为止。所以在当前计数到达零之前，await方法会一直受阻塞。之后，会释放所有等待的线程，await的所有后续调用都将立即返回。这种现象只出现一次——计数无法被重置。如果需要重置计数，请考虑使用CyclicBarrier。  
     
 &emsp; **注意：**  
-1. <font color = "red">CountDownLatch对象不能被重复利用，也就是不能修改计数器的值。</font>  
+1. <font color = "red">CountDownLatch对象不能被重复利用，也就是不能修改计数器的值。</font>CountDownLatch是一次性的，计数器的值只能在构造方法中初始化一次，之后没有任何机制再次对其设置值，当CountDownLatch使用完毕后，它不能再次被使用。    
 2. CountDownLatch代表的计数器的大小可以为0，意味着在一个线程调用await方法时会立即返回。  
 3. 如果某些线程中有阻塞操作的话，最好使用带有超时时间的await方法，以免该线程调用await方法之后永远得不到执行。  
 
@@ -148,7 +148,7 @@ public class CountDownLatchTest {
 
 &emsp; 控制台输出：  
 
-```java
+```text
 Boss进入会议室准备材料...
 Boss在会议室等待...
 员工Thread-2，到达会议室....
@@ -172,7 +172,7 @@ https://mp.weixin.qq.com/s/m60Tq18Vbp5ml-qAp505VQ
 -->
 &emsp; CountDownLatch是通过一个计数器来实现的，在new 一个CountDownLatch对象的时候需要带入该计数器值，该值就表示了线程的数量。<font color = "red">每当一个线程完成自己的任务后，计数器的值就会减1。当计数器的值变为0时，就表示所有的线程均已经完成了任务，然后就可以恢复等待的线程继续执行了。</font>  
 
-#### 1.3.0.1. 类结构  
+### 1.3.0.1. 类结构  
 &emsp; CountDownLatch只有一个属性Sync，Sync是继承了AQS的内部类。  
 &emsp; 创建CountDownLatch时传入一个count值，count值被赋值给AQS.state。  
 &emsp; CountDownLatch是通过AQS共享锁实现的，AQS共享锁和独占锁原理只有很细微的区别，这里大致介绍下：  
@@ -201,7 +201,7 @@ public class CountDownLatch {
 &emsp; await()是将当前线程阻塞，理解await()的原理就是要弄清楚await()是如何将线程阻塞的。  
 &emsp; await()调用的就是AQS获取共享锁的方法。当AQS.state=0时才能获取到锁，由于创建CountDownLatch时设置了state=count，此时是获取不到锁的，所以调用await()的线程挂起并构造成结点进入AQS阻塞队列。  
 
-&emsp; <font color = "lime">创建CountDownLatch时设置AQS.state=count，可以理解成锁被重入了count次。await()方法获取锁时锁被占用了，只能阻塞。</font>  
+&emsp; <font color = "clime">创建CountDownLatch时设置AQS.state=count，可以理解成锁被重入了count次。await()方法获取锁时锁被占用了，只能阻塞。</font>  
 
 ```java
 /**
@@ -281,4 +281,4 @@ protected boolean tryReleaseShared(int releases) {
 ## 1.4. 总结  
 &emsp; CountDownLatch用于一个线程A需要等待另外多个线程(B、C)执行后再执行的情况。  
 &emsp; 创建CountDownLatch时设置一个计数器count，表示要等待的线程数量。线程A调用await()方法后将被阻塞，线程B和线程C调用countDown()之后计数器count减1。当计数器的值变为0时，就表示所有的线程均已经完成了任务，然后就可以恢复等待的线程A继续执行了。  
-&emsp; <font color = "lime">CountDownLatch是由AQS实现的，创建CountDownLatch时设置计数器count其实就是设置AQS.state=count，也就是重入次数。await()方法调用获取锁的方法，由于AQS.state=count表示锁被占用且重入次数为count，所以获取不到锁线程被阻塞并进入AQS队列。countDown()方法调用释放锁的方法，每释放一次AQS.state减1，当AQS.state变为0时表示处于无锁状态了，就依次唤醒AQS队列中阻塞的线程来获取锁，继续执行逻辑代码。</font>  
+&emsp; <font color = "clime">CountDownLatch是由AQS实现的，创建CountDownLatch时设置计数器count其实就是设置AQS.state=count，也就是重入次数。await()方法调用获取锁的方法，由于AQS.state=count表示锁被占用且重入次数为count，所以获取不到锁线程被阻塞并进入AQS队列。countDown()方法调用释放锁的方法，每释放一次AQS.state减1，当AQS.state变为0时表示处于无锁状态了，就依次唤醒AQS队列中阻塞的线程来获取锁，继续执行逻辑代码。</font>  

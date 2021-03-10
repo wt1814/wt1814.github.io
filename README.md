@@ -194,7 +194,6 @@
 &emsp; &emsp; [CyclicBarrier](/docs/java/concurrent/CyclicBarrier.md)  
 &emsp; &emsp; [Semaphore](/docs/java/concurrent/Semaphore.md)  
 &emsp; &emsp; [Exchanger](/docs/java/concurrent/Exchanger.md)  
-[多线程处理大数据量](/docs/java/concurrent/bigData.md)  
 <!-- 
 [并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
 &emsp; &emsp; [LocLockSupport](/docs/java/concurrent/LockSupport.md)  

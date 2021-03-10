@@ -7,7 +7,6 @@
     - [1.2. 实际使用场景](#12-实际使用场景)
     - [1.3. 使用示例](#13-使用示例)
     - [1.4. CycliBarriar和CountdownLatch有什么区别？](#14-cyclibarriar和countdownlatch有什么区别)
-    - [1.5. ※※※CycliBarriar和CountdownLatch具体使用](#15-※※※cyclibarriar和countdownlatch具体使用)
 
 <!-- /TOC -->
 
@@ -22,7 +21,7 @@ JUC并发编程之CyclicBarrier源码
 https://mp.weixin.qq.com/s/qfJy9hre0_Ax6444nn2XTQ
 -->
 &emsp; CyclicBarrier字面意思是回环栅栏， **<font color = "red">允许一组线程互相等待，直到到达某个公共屏障点 (common barrier point)之后，再全部同时执行。</font>** 叫做回环是因为当所有等待线程都被释放以后，CyclicBarrier可以被重用。  
-&emsp; 应用场景： **<font color = "red"> CyclicBarrier适用于多线程结果合并的操作，用于多线程计算数据，最后合并计算结果的应用场景。</font>** <font color = "lime">比如需要统计多个Excel中的数据，然后等到一个总结果。</font>可以通过多线程处理每一个Excel，执行完成后得到相应的结果，最后通过barrierAction来计算这些线程的计算结果，得到所有Excel的总和。  
+&emsp; 应用场景： **<font color = "red"> CyclicBarrier适用于多线程结果合并的操作，用于多线程计算数据，最后合并计算结果的应用场景。</font>** <font color = "clime">比如需要统计多个Excel中的数据，然后等到一个总结果。</font>可以通过多线程处理每一个Excel，执行完成后得到相应的结果，最后通过barrierAction来计算这些线程的计算结果，得到所有Excel的总和。  
 
 ## 1.1. API  
 &emsp; **构造函数：**  
@@ -107,5 +106,4 @@ public class CyclicBarrierExample {
 * CountDownLatch的计数器无法被重置；CyclicBarrier的计数器可以被重置后使用，因此它被称为是循环的barrier。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/tools-1.png)
 
-## 1.5. ※※※CycliBarriar和CountdownLatch具体使用  
-&emsp; [多线程处理大数据量](/docs/java/concurrent/bigData.md)    
+

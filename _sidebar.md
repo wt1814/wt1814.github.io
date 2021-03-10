@@ -140,7 +140,6 @@
             * [CyclicBarrier](/docs/java/concurrent/CyclicBarrier.md)  
             * [Semaphore](/docs/java/concurrent/Semaphore.md)  
             * [Exchanger](/docs/java/concurrent/Exchanger.md)  
-    * [多线程处理大数据量](/docs/java/concurrent/bigData.md)  
 * 数据库  
     * [数据建模](/docs/SQL/modeling.md)  
     * [SQL语句](/docs/SQL/SQLSentence.md)  
