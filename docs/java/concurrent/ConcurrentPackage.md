@@ -20,7 +20,9 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzAxMjEwMzQ5MA==&action=getalbum&a
 2、java 中的 Compare and Swap 即 CAS ， 当多个线程尝试使用 CAS 同时更新同一个变量时， 只有其中一个线程能更新变量的值， 而其它线程都失败， 失败的线程并不会被挂起， 而是被告知这次竞争中失败， 并可以再次尝试。	CAS 操 作中包含三个操作数 —— 需要读写的内存位置( V)、进行比较的预期原值( A) 和拟写入的新值(B)。如果内存位置 V 的值与预期原值 A 相匹配，那么处理器会自动将该位置值更新为新值 B。否则处理器不做任何操作。
 -->
 
-&emsp; 本章描述java.util.concurrent的API接口文档，相关方法使用的详情参考：http://www.matools.com/api/java8 。JUC包包括5部分： 
+&emsp; 本章描述java.util.concurrent的API接口文档，相关方法使用的详情参考：http://www.matools.com/api/java8 。  
+&emsp; JUC基于[CAS](/docs/java/concurrent/CAS.md)和[AQS](/docs/java/concurrent/AQS.md)实现。  
+&emsp; JUC包包括5部分： 
  
 * [locks](/docs/java/concurrent/Lock.md)：显式锁相关；  
 * [atomic](/docs/java/concurrent/Atmoic.md)：原子变量类相关；  
@@ -29,5 +31,3 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzAxMjEwMzQ5MA==&action=getalbum&a
 * [tools](/docs/java/concurrent/tools.md)：同步工具相关，如信号量、闭锁、栅栏等功能；  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-1.png)  
-
-&emsp; JUC基于[CAS](/docs/java/concurrent/CAS.md)和[AQS](/docs/java/concurrent/AQS.md)实现。  

@@ -25,7 +25,9 @@
 
 <!-- /TOC -->
 <!--
-    
+MySQL中的7种日志你都知道是干啥的吗
+https://mp.weixin.qq.com/s/oeKTX-E6W40IjLy5TJewLg
+
 https://mp.weixin.qq.com/s/voW6T241-00DAPpgrh-STw
 Mysql 中写操作时保驾护航的三兄弟！ 
 https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw

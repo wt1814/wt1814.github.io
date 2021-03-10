@@ -4,6 +4,10 @@
 
 《死磕 Elasticsearch 方法论》：普通程序员高效精进的 10 大狠招！（完整版）
 https://blog.csdn.net/laoyang360/article/details/79293493#comments_15296602
+
+ Elasticsearch 生产环境集群部署最佳实践 
+ https://mp.weixin.qq.com/s/RVaR0U-CVAmLOewYse7HKA
+
 -->
 
 # ElasticSearch安装 

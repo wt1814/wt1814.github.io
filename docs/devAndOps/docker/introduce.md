@@ -14,6 +14,12 @@
 &emsp; **<font color = "clime">物理机部署不能充分利用资源，造成资源浪费。虚拟机方式部署，虚拟机本身会占用大量资源，导致资源浪费，另外虚拟机性能也很差。而容器化部署比较灵活，且轻量级，性能较好。</font>**    
 
 # 1. Docker
+<!--
+***容器or虚拟机？
+https://mp.weixin.qq.com/s/oeKTX-E6W40IjLy5TJewLg
+
+-->
+
 &emsp; **<font color = "clime">Docker中文社区：</font>** https://www.docker.org.cn/dockershuji.html  
 
 ## 1.1. 虚拟化技术  

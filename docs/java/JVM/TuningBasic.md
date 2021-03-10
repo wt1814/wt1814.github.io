@@ -326,3 +326,13 @@ jinfo -flags PID
 3. 第三方分析内存日志工具  
 4. MAT分析堆内存快照工具  
 5. Arthas  
+
+
+
+<!-- 
+HSDB（Hotspot Debugger），JDK自带的工具，用于查看JVM运行时的状态。  
+
+HSDB入门介绍
+https://blog.csdn.net/weixin_37152234/article/details/99775593
+-->
+

@@ -16,6 +16,10 @@
 -->
 
 <!-- 
+
+***二分题
+https://mp.weixin.qq.com/s/smqRexJNmEbqmNuuJ3Zziw
+
 三款经典的查找算法
 https://mp.weixin.qq.com/s/3RvYUaAL8xAQQvT88WAJ7g
 
