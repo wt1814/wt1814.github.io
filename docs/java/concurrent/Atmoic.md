@@ -6,13 +6,9 @@
     - [1.1. atomic类简介](#11-atomic类简介)
     - [1.2. atomic分类](#12-atomic分类)
         - [1.2.1. 原子更新基本类型或引用类型](#121-原子更新基本类型或引用类型)
-            - [1.2.1.1. AtomicStampedReference类详解](#1211-atomicstampedreference类详解)
-                - [1.2.1.1.1. 源码分析](#12111-源码分析)
-                - [1.2.1.1.2. 示例](#12112-示例)
         - [1.2.2. 原子更新数组中的元素](#122-原子更新数组中的元素)
         - [1.2.3. 原子更新对象中的字段](#123-原子更新对象中的字段)
         - [1.2.4. 高性能原子类](#124-高性能原子类)
-            - [1.2.4.1. ★★★~~LongAdder~~](#1241-★★★longadder)
     - [1.3. ~~atomic分析~~](#13-atomic分析)
 
 <!-- /TOC -->
@@ -23,7 +19,7 @@
  https://mp.weixin.qq.com/s/PWxKLmyyfdqWu0Y-mJpTsg
 -->
 
-&emsp; 原子更新基本类型、原子更新引用类型、原子更新数组、原子更新对象中的字段、高性能原子类  
+
 
 ## 1.1. atomic类简介  
 &emsp; 原子操作定义：原子操作是指不会被线程调度机制打断的操作，这种操作一旦开始，就一直运行到结束，中间不会有任何线程上下文切换。原子操作是在多线程环境下避免数据不一致必须的手段。  
@@ -35,9 +31,11 @@
 &emsp; 原子类和java.lang.Integer等类的区别：原子类不提供诸如hashCode和compareTo之类的方法。因为原子变量是可变的。  
 
 ## 1.2. atomic分类  
+&emsp; 原子更新基本类型、原子更新引用类型、原子更新数组、原子更新对象中的字段、高性能原子类  
+
 ### 1.2.1. 原子更新基本类型或引用类型  
 &emsp; 原子更新基本类型：AtomicBoolean、AtomicInteger、AtomicLong。  
-&emsp; 原子更新引用类型：AtomicReference、AtomicStampedRerence、AtomicMarkableReference。  
+&emsp; 原子更新引用类型：AtomicReference、[AtomicStampedRerence](/docs/java/concurrent/AtomicStampedReference.md)、AtomicMarkableReference。  
 &emsp; 这几个类的操作基本类似，底层都是调用Unsafe的compareAndSwapXxx()来实现，基本用法如下：  
 
 ```java
@@ -57,151 +55,6 @@ private static void testAtomicReference() {
 }
 ```
 
-#### 1.2.1.1. AtomicStampedReference类详解 
-<!-- 
-
-CAS底层原理与ABA问题
-https://mp.weixin.qq.com/s/FaM3jCJeLQYIcfZZlpZXeA
-
---> 
-&emsp; <font color = "red">Java1.5中提供了AtomicStampedReference这个类，通过包装[E,int]的元组来对对象标记版本戳stamp，从而避免ABA问题。</font>这个类的compareAndSet方法作用是首先检查当前引用是否等于预期引用，并且当前标志是否等于预期标志，如果全部相等，则以原子方式将该引用和该标志的值设置为给定的更新值。 
-
-##### 1.2.1.1.1. 源码分析  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-28.png)  
-&emsp; **内部类**  
-
-```java
-private static class Pair<T> {
-    final T reference;
-    final int stamp;
-    private Pair(T reference, int stamp) {
-        this.reference = reference;
-        this.stamp = stamp;
-    }
-    static <T> Pair<T> of(T reference, int stamp) {
-        return new Pair<T>(reference, stamp);
-    }
-}
-```
-&emsp; 将元素值和版本号绑定在一起，存储在Pair的reference和stamp(邮票、戳的意思)中。  
-
-&emsp; **属性：**  
-
-```java
-private volatile Pair<V> pair;
-private static final sun.misc.Unsafe UNSAFE = sun.misc.Unsafe.getUnsafe();
-private static final long pairOffset = objectFieldOffset(UNSAFE, "pair", AtomicStampedReference.class);
-```
-&emsp; 声明一个Pair类型的变量并使用Unsfae获取其偏移量，存储到pairOffset中。  
-&emsp; CAS算法核心类，sun.misc.Unsafe提供了访问底层的机制(native()方法也有访问底层的功能)，这种机制仅供java核心类库使用。  
-
-&emsp; **构造方法：** &emsp;  
-
-```java
-/**
- * @param initialRef 初始值
- * @param initialStamp 初始版本号
- */
-public AtomicStampedReference(V initialRef, int initialStamp) {
-    pair = Pair.of(initialRef, initialStamp);
-}
-```
-&emsp; **compareAndSet()方法**  
-
-```java
-public boolean compareAndSet(V expectedReference, V newReference, int expectedStamp, int newStamp) {
-    // 获取当前的(元素值，版本号)对
-    Pair<V> current = pair;
-    return
-        // 引用没变
-        expectedReference == current.reference &&
-                // 版本号没变
-                expectedStamp == current.stamp &&
-                // 新引用等于旧引用
-                ((newReference == current.reference &&
-                        // 新版本号等于旧版本号
-                        newStamp == current.stamp) ||
-                        // 构造新的Pair对象并CAS更新
-                        casPair(current, Pair.of(newReference, newStamp)));
-}
-
-private boolean casPair(Pair<V> cmp, Pair<V> val) {
-    // 调用Unsafe的compareAndSwapObject()方法CAS更新pair的引用为新引用
-    return UNSAFE.compareAndSwapObject(this, pairOffset, cmp, val);
-}
-```
-
-* 如果元素值和版本号都没有变化，并且和新的也相同，返回true；  
-* 如果元素值和版本号都没有变化，并且和新的不完全相同，就构造一个新的Pair对象并执行CAS更新pair。 
-
-##### 1.2.1.1.2. 示例  
-&emsp; 示例代码：分别用AtomicInteger和AtomicStampedReference来对初始值为100的原子整型变量进行更新，AtomicInteger会成功执行CAS操作，而加上版本戳的AtomicStampedReference对于ABA问题会执行CAS失败：  
-
-```java
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicStampedReference;
-
-public class ABA {
-    private static AtomicInteger atomicInt = new AtomicInteger(100);
-    private static AtomicStampedReference atomicStampedRef = new AtomicStampedReference(100, 0);
-
-    public static void main(String[] args) throws InterruptedException {
-        Thread intT1 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                atomicInt.compareAndSet(100, 101);
-                atomicInt.compareAndSet(101, 100);
-            }
-        });
-
-        Thread intT2 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                }
-                boolean c3 = atomicInt.compareAndSet(100, 101);
-                System.out.println(c3); // true
-            }
-        });
-
-        intT1.start();
-        intT2.start();
-        intT1.join();
-        intT2.join();
-
-        Thread refT1 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                }
-                atomicStampedRef.compareAndSet(100, 101, atomicStampedRef.getStamp(), atomicStampedRef.getStamp() + 1);
-                atomicStampedRef.compareAndSet(101, 100, atomicStampedRef.getStamp(), atomicStampedRef.getStamp() + 1);
-            }
-        });
-
-        Thread refT2 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int stamp = atomicStampedRef.getStamp();
-                try {
-                    TimeUnit.SECONDS.sleep(2);
-                } catch (InterruptedException e) {
-                }
-                boolean c3 = atomicStampedRef.compareAndSet(100, 101, stamp, stamp + 1);
-                System.out.println(c3); // false
-            }
-        });
-
-        refT1.start();
-        refT2.start();
-    }
-}
-```
 
 ### 1.2.2. 原子更新数组中的元素  
 &emsp; 原子更新数组：AtomicIntegerArray、AtomicLongArray、AtomicReferenceArray。  
@@ -240,11 +93,11 @@ private static void testAtomicReferenceField() {
 ```
 
 ### 1.2.4. 高性能原子类  
-&emsp; <font color = "lime">高性能原子类，是java8中增加的原子类，它们使用分段的思想，把不同的线程hash到不同的段上去更新，最后再把这些段的值相加得到最终的值，</font>这些类主要有：  
+&emsp; <font color = "clime">高性能原子类，是java8中增加的原子类，它们使用分段的思想，把不同的线程hash到不同的段上去更新，最后再把这些段的值相加得到最终的值，</font>这些类主要有：  
 
 * Striped64是下面四个类的父类。  
 * LongAccumulator，long类型的聚合器，需要传入一个long类型的二元操作，可以用来计算各种聚合操作，包括加乘等。  
-* LongAdder，long类型的累加器，LongAccumulator的特例，只能用来计算加法，且从0开始计算。  
+* [LongAdder](/docs/java/concurrent/LongAdder.md)，long类型的累加器，LongAccumulator的特例，只能用来计算加法，且从0开始计算。  
 * DoubleAccumulator，double类型的聚合器，需要传入一个double类型的二元操作，可以用来计算各种聚合操作，包括加乘等。  
 * DoubleAdder，double类型的累加器，DoubleAccumulator的特例，只能用来计算加法，且从0开始计算。  
 
@@ -265,77 +118,6 @@ private static void testNewAtomic() {
     longAccumulator.accumulate(-4);
     System.out.println(longAccumulator.get());
     //666
-}
-```
-
-#### 1.2.4.1. ★★★~~LongAdder~~  
-<!-- 
-阿里为什么推荐使用LongAdder，而不是volatile？ 
-https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
-
-比AtomicLong更优秀的LongAdder确定不来了解一下吗？ 
-https://mp.weixin.qq.com/s/rJAIoZLe9lnEcTj3SmgIZw
-
--->
-
-&emsp; <font color = "lime">LongAdder，分段锁。</font>  
-
-    &emsp; 阿里《Java开发手册》嵩山版：    
-    &emsp; 【参考】volatile 解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，但是如果多写，同样无法解决线程安全问题。  
-    &emsp; 说明：如果是count++操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是JDK8，推荐使用 LongAdder对象，比AtomicLong性能更好(减少乐观锁的重试次数)。  
-
-&emsp; AtomicInteger在高并发环境下会有多个线程去竞争一个原子变量，而始终只有一个线程能竞争成功，而其他线程会一直通过CAS自旋尝试获取此原子变量，因此会有一定的性能消耗；<font color = "lime">而LongAdder会将这个原子变量分离成一个Cell数组，每个线程通过Hash获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如AtomicInteger。</font>  
-
-
-------------------
-
-&emsp; 在Java中提供了多个原子变量的操作类，就是比如AtomicLong、AtomicInteger这些，通过CAS的方式去更新变量，但是失败会无限自旋尝试，导致CPU资源的浪费。  
-&emsp; 为了解决高并发下的这个缺点，JDK8中新增了LongAdder类，它的使用就是对解决伪共享的实际应用。  
-&emsp; LongAdder继承自Striped64，内部维护了一个Cell数组，核心思想就是把单个变量的竞争拆分，多线程下如果一个Cell竞争失败，转而去其他Cell再次CAS重试。  
-
-```java
-/**
-    * Table of cells. When non-null, size is a power of 2.
-    */
-transient volatile Cell[] cells;
-
-/**
-    * Base value, used mainly when there is no contention, but also as
-    * a fallback during table initialization races. Updated via CAS.
-    */
-transient volatile long base;
-
-/**
-    * Spinlock (locked via CAS) used when resizing and/or creating Cells.
-    */
-transient volatile int cellsBusy;
-```
-
-&emsp; 解决伪共享的真正的核心就在Cell数组，可以看到，Cell数组使用了Contented注解。  
-&emsp; 在上面提到数组的内存地址都是连续的，所以数组内的元素经常会被放入一个缓存行，这样的话就会带来伪共享的问题，影响性能。  
-&emsp; 这里使用Contented进行填充，就避免了伪共享的问题，使得数组中的元素不再共享一个缓存行。  
-
-```java
-@sun.misc.Contended static final class Cell {
-    volatile long value;
-    Cell(long x) { value = x; }
-    final boolean cas(long cmp, long val) {
-        return UNSAFE.compareAndSwapLong(this, valueOffset, cmp, val);
-    }
-
-    // Unsafe mechanics
-    private static final sun.misc.Unsafe UNSAFE;
-    private static final long valueOffset;
-    static {
-        try {
-            UNSAFE = sun.misc.Unsafe.getUnsafe();
-            Class<?> ak = Cell.class;
-            valueOffset = UNSAFE.objectFieldOffset
-                (ak.getDeclaredField("value"));
-        } catch (Exception e) {
-            throw new Error(e);
-        }
-    }
 }
 ```
 

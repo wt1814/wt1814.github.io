@@ -7,8 +7,12 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "red">ReentrantReadWriteLock缺点：只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "clime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
-&emsp; **读写锁导致写线程饥饿的原因是读锁和写锁互斥，StampedLock提供了解决这一问题的方案，乐观读锁 Optimistic reading，即一个线程获取的乐观读锁之后，不会阻塞线程获取写锁。**  
+&emsp; **<font color = "red">ReentrantReadWriteLock缺点：读写锁互斥，只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "clime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
+&emsp; StampedLock有3种模式：写锁 writeLock、悲观读锁 readLock、乐观读锁 tryOptimisticRead。  
+StampedLock通过乐观读锁 tryOptimisticRead解决ReentrantReadWriteLock的写锁饥饿问题。乐观读锁模式下，一个线程获取的乐观读锁之后，不会阻塞线程获取写锁。    
+&emsp; 同时允许多个乐观读和一个先线程同时进入临界资源操作，那读取的数据可能是错的怎么办？  
+&emsp; 通过版本号控制。乐观读不能保证读取到的数据是最新的，所以将数据读取到局部变量的时候需要通过 lock.validate(stamp) 校验是否被写线程修改过，若是修改过则需要上悲观读锁，再重新读取数据到局部变量。  
+
 
 # 1. ReadWriteLock  
 <!-- 
@@ -19,7 +23,7 @@ https://mp.weixin.qq.com/s/JwEkiH6WlQd-UfyAPbltBA
 ## 1.1. ReentrantReadWriteLock，读写锁
 &emsp; ReentrantReadWriteLock维护了两个锁，读锁和写锁，所以一般称其为读写锁。写锁是独占的(写操作只能由一个线程来操作)。读锁是共享的，如果没有写锁，读锁可以由多个线程共享。  
 &emsp; 优点：与互斥锁相比，虽然一次只能有一个写线程可以修改共享数据，但大量读线程可以同时读取共享数据，所以，读写锁适用于共享数据很大，且读操作远多于写操作的情况。  
-&emsp; **<font color = "red">缺点：只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "clime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
+&emsp; **<font color = "red">缺点：读写锁互斥，只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "clime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
 
 
 &emsp; 编码示例：  
@@ -54,7 +58,6 @@ StampedLock
 https://mp.weixin.qq.com/s/vwvcgBPOnW7M2GrgVDDdGg
 -->
 
-&emsp; **读写锁导致写线程饥饿的原因是读锁和写锁互斥，StampedLock提供了解决这一问题的方案，乐观读锁 Optimistic reading，即一个线程获取的乐观读锁之后，不会阻塞线程获取写锁。**  
 &emsp; <font color = "clime">StampedLock提供了三种模式来控制读写操作：写锁 writeLock、悲观读锁readLock、乐观读锁Optimistic reading。</font>
 
 * 写锁 writeLock  
@@ -69,7 +72,9 @@ https://mp.weixin.qq.com/s/vwvcgBPOnW7M2GrgVDDdGg
 &emsp; 获取：不需要通过 CAS 设置锁的状态，如果当前没有线程持有写锁，直接简单的返回一个非 0 的 stamp 版本信息，表示获取锁成功。  
 &emsp; 释放：并没有使用 CAS 设置锁状态所以不需要显示的释放该锁。  
 
-&emsp; **乐观读锁如何保证数据一致性呢？**  
+
+&emsp; **StampedLock通过乐观读锁Optimistic reading解决ReentrantReadWriteLock的写锁解饿问题，即一个线程获取乐观读锁之后，不会阻塞线程获取写锁。**  
+&emsp; **乐观读锁如何保证数据一致性呢？** 使用版本号。  
 &emsp; 乐观读锁在获取 stamp 时，会将需要的数据拷贝一份出来。在真正进行读取操作时，验证 stamp 是否可用。如何验证 stamp 是否可用呢？从获取 stamp 到真正进行读取操作这段时间内，如果有线程获取了写锁，stamp 就失效了。如果 stamp 可用就可以直接读取原来拷贝出来的数据，如果 stamp 不可用，就重新拷贝一份出来用。操作的是方法栈里面的数据，也就是一个快照，所以最多返回的不是最新的数据，但是一致性还是得到保障的。  
 
 &emsp; StampedLock特点：  

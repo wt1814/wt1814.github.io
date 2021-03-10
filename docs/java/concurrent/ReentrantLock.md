@@ -10,34 +10,29 @@
         - [1.3.3. 成员方法](#133-成员方法)
         - [1.3.4. 非公平锁NonfairSync解析](#134-非公平锁nonfairsync解析)
             - [1.3.4.1. 获取锁lock()](#1341-获取锁lock)
+                - [1.3.4.1.1. 时序图](#13411-时序图)
+                - [1.3.4.1.2. ~~源码解析~~](#13412-源码解析)
             - [1.3.4.2. 释放锁unlock()](#1342-释放锁unlock)
         - [1.3.5. 公平锁FairSync](#135-公平锁fairsync)
 
 <!-- /TOC -->
 
-
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; lock方法描述：  
-&emsp; 在初始化ReentrantLock的时候，如果不传参数是否公平，那么默认使用非公平锁，也就是NonfairSync。  
-&emsp; 调用ReentrantLock的lock方法的时候，实际上是调用了NonfairSync的lock方法，这个方法先用CAS操作，去尝试抢占该锁。如果成功，就把当前线程设置在这个锁上，表示抢占成功。如果失败，则调用acquire模板方法，等待抢占。   
+&emsp; **<font color = "red">lock()方法描述：</font>**  
+1. 在初始化ReentrantLock的时候，如果不传参数是否公平，那么默认使用非公平锁，也就是NonfairSync。  
+2. 调用ReentrantLock的lock方法的时候，实际上是调用了NonfairSync的lock方法，这个方法先用CAS操作，去尝试抢占该锁。如果成功，就把当前线程设置在这个锁上，表示抢占成功。如果失败，则调用acquire模板方法，等待抢占。   
+&emsp; **<font color = "red">“非公平”体现在，如果占用锁的线程刚释放锁，state置为0，而排队等待锁的线程还未唤醒时，新来的线程就直接抢占了该锁，那么就“插队”了。</font>**   
+3. AQS的acquire模板方法：  
+    1. AQS#acquire()调用子类NonfairSync#tryAcquire()#nonfairTryAcquire()。如果锁状态是0，再次CAS抢占锁。再次锁状态不是0，判断是否当前线程。    
+    2. acquireQueued(addWaiter(Node.EXCLUSIVE), arg) )，其中addWaiter(Node.EXCLUSIVE)入等待队列。  
+    3. acquireQueued(final Node node, int arg)，使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
+    4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。  
 
-&emsp; “非公平”体现在，如果占用锁的线程刚释放锁，state置为0，而排队等待锁的线程还未唤醒时，新来的线程就直接抢占了该锁，那么就“插队”了。   
 
 &emsp; 用一张流程图总结一下非公平锁的获取锁的过程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-75.png)  
 
 # 1. ReentrantLock，重入锁  
-<!-- 
-&emsp; **<font color = "clime">一句话概述：</font>**  
-&emsp; ReentrantLock默认使用非公平锁NonfairSync，调用ReentrantLock.lock()也是调用NonfairSync.lock()。流程：  
-
-1. 先用CAS操作，去尝试抢占该锁。如果成功，就把当前线程设置在这个锁上，表示抢占成功。
-2. 如果失败，则调用AbstractQueuedSynchronizer的acquire模板方法，等待抢占。独占模式获取同步状态流程如下：
-    1. 调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回(这里体现了非公平锁，每个线程获取锁时会尝试直接抢占加锁一次，而CLH队列中可能还有别的线程在等待)；
-    2. addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；
-    3. acquireQueued()使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
-    4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。
--->
 &emsp; ReentrantLock(Re-Entrant-Lock)，可重入互斥锁，具有与synchronized隐式锁相同的基本行为和语义，但扩展了功能。  
 
 ## 1.1. ReentrantLock与synchronized比较 
@@ -49,7 +44,8 @@
 3. (可被中断)Lock接口能被中断地获取锁，与synchronized不同，获取到锁的线程能够响应中断，当获取到的锁的线程被中断时，中断异常将会被抛出，同时锁会被释放。 可以使线程在等待锁的时候响应中断；  
 4. (支持超时/限时等待)Lock接口可以在指定的截止时间之前获取锁，如果截止时间到了依旧无法获取锁，则返回。可以让线程尝试获取锁，并在无法获取锁的时候立即返回或者等待一段时间；  
 5. (可实现选择性通知，锁可以绑定多个条件)ReenTrantLock提供了一个Condition(条件)类，用来实现分组唤醒需要唤醒的一些线程，而不是像synchronized要么随机唤醒一个线程要么唤醒全部线程。  
-  
+
+
 &emsp; **什么时候选择用ReentrantLock代替synchronized？**  
 &emsp; 在确实需要一些synchronized所没有的特性的时候，比如时间锁等候、可中断锁等候、无块结构锁、多个条件变量或者锁投票。ReentrantLock还具有可伸缩性的好处，应当在高度争用的情况下使用它，但是请记住，大多数synchronized块几乎从来没有出现过争用，所以可以把高度争用放在一边。建议用synchronized开发，直到确实证明synchronized不合适，而不要仅仅是假设如果使用ReentrantLock“性能会更好”。  
 
@@ -135,14 +131,32 @@ public Condition newCondition() {
 
 ### 1.3.4. 非公平锁NonfairSync解析  
 #### 1.3.4.1. 获取锁lock()  
-&emsp; lock方法描述：  
+##### 1.3.4.1.1. 时序图
+<!-- 
+&emsp; **<font color = "clime">一句话概述：</font>**  
+&emsp; ReentrantLock默认使用非公平锁NonfairSync，调用ReentrantLock.lock()也是调用NonfairSync.lock()。流程：  
 
-1. 在初始化ReentrantLock的时候，如果不传参数是否公平，那么默认使用非公平锁，也就是NonfairSync。  
-2. <font color = "clime">调用ReentrantLock的lock方法的时候，实际上是调用了NonfairSync的lock方法，这个方法先用CAS操作，去尝试抢占该锁。如果成功，就把当前线程设置在这个锁上，表示抢占成功。如果失败，则调用acquire模板方法，等待抢占。</font>    
+1. 先用CAS操作，去尝试抢占该锁。如果成功，就把当前线程设置在这个锁上，表示抢占成功。
+2. 如果失败，则调用AbstractQueuedSynchronizer的acquire模板方法，等待抢占。独占模式获取同步状态流程如下：
+    1. 调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回(这里体现了非公平锁，每个线程获取锁时会尝试直接抢占加锁一次，而CLH队列中可能还有别的线程在等待)；
+    2. addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；
+    3. acquireQueued()使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
+    4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。
+-->
 
 &emsp; 调用ReentrantLock中的lock()方法，源码的调用过程时序图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-27.png)   
 
+&emsp; lock()方法描述：  
+
+1. 在初始化ReentrantLock的时候，如果不传参数是否公平，那么默认使用非公平锁，也就是NonfairSync。  
+2. <font color = "clime">调用ReentrantLock的lock方法的时候，实际上是调用了NonfairSync的lock方法，这个方法先用CAS操作`compareAndSetState(0, 1)`，去尝试抢占该锁。如果成功，就把当前线程设置在这个锁上，表示抢占成功。如果失败，则调用acquire模板方法，等待抢占。</font>    
+    1. AQS#acquire()调用子类NonfairSync#tryAcquire()#nonfairTryAcquire()。如果锁状态是0，再次CAS抢占锁。再次锁状态不是0，判断是否当前线程。    
+    2. acquireQueued(addWaiter(Node.EXCLUSIVE), arg) )，其中addWaiter(Node.EXCLUSIVE)入等待队列。  
+    3. acquireQueued(final Node node, int arg)，使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
+    4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。  
+
+##### 1.3.4.1.2. ~~源码解析~~
 ```java
 static final class NonfairSync extends Sync {
     private static final long serialVersionUID = 7316153563782823691L;
@@ -161,22 +175,20 @@ static final class NonfairSync extends Sync {
 }
 ```
 &emsp; `if (compareAndSetState(0, 1)) `首先用一个CAS操作，判断state是否是0(表示当前锁未被占用)，如果是0则把它置为1，并且设置当前线程为该锁的独占线程，表示获取锁成功。当多个线程同时尝试占用同一个锁时，CAS操作只能保证一个线程操作成功。  
-
 &emsp; **<font color = "clime">“非公平”即体现在这里，如果占用锁的线程刚释放锁，state置为0，而排队等待锁的线程还未唤醒时，新来的线程就直接抢占了该锁，那么就“插队”了。</font>**  
 
-&emsp; 如果CAS失败，会执行acquire(1)方法。acquire(1)实际上使用的是AbstractQueuedSynchronizer的acquire方法。(再次理解下AQS独占模式下的获取锁过程)  
-
-&emsp; 若当前有三个线程去竞争锁，假设线程A的CAS操作成功，返回。那么线程B和C则设置state失败，走到了else里面。  
+&emsp; **<font color = "red">如果CAS失败，会执行acquire(1)方法。acquire(1)实际上使用的是AbstractQueuedSynchronizer的acquire方法。(再次理解下AQS独占模式下的获取锁过程)</font>**  
 
 ```java
 public final void acquire(int arg) {
-        if (!tryAcquire(arg) &&
-acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
-            selfInterrupt();
+    if (!tryAcquire(arg) && // 第1步
+        acquireQueued(addWaiter(Node.EXCLUSIVE), arg) ) // 第2步、3步
+        selfInterrupt(); 
+}
 }
 ```
-1. 第一步。尝试去获取锁。如果尝试获取锁成功，方法直接返回。  
-&emsp; acquire方法内部先使用tryAcquire这个钩子方法去尝试再次获取锁，这个方法在NonfairSync这个类中其实就是使用了nonfairTryAcquire，具体实现原理是先比较当前锁的状态是否是0，如果是0，则尝试去原子抢占这个锁(设置状态为1，然后把当前线程设置成独占线程)，如果当前锁的状态不是0，就去比较当前线程和占用锁的线程是不是一个线程，如果是，会去增加状态变量的值，从这里看出可重入锁之所以可重入，就是同一个线程可以反复使用它占用的锁。如果以上两种情况都不通过，则返回失败false。代码如下：  
+1. 第一步，`!tryAcquire(arg)` ，尝试去获取锁。如果尝试获取锁成功，方法直接返回。  
+&emsp; acquire方法内部先使用tryAcquire这个钩子方法去尝试再次获取锁，这个方法在NonfairSync这个类中其实就是使用了nonfairTryAcquire()。  
 
 ```java
 //tryAcquire(arg)
@@ -203,10 +215,12 @@ final boolean nonfairTryAcquire(int acquires) {
     return false;
 }
 ```
-<!-- 非公平锁tryAcquire的流程是：检查state字段，若为0，表示锁未被占用，那么尝试占用，若不为0，检查当前锁是否被自己占用，若被自己占用，则更新state字段，表示重入锁的次数。如果以上两点都没有成功，则获取锁失败，返回false。-->
 
-2. tryAcquire一旦返回false，就会则进入acquireQueued流程，也就是基于CLH队列的抢占模式：  
-3. 第二步，入队：由于上文中提到线程A已经占用了锁，所以B和C执行tryAcquire失败，并且入等待队列。如果线程A拿着锁死死不放，那么B和C就会被挂起。
+&emsp; nonfairTryAcquire(int acquires)：先比较当前锁的状态是否是0，如果是0，则尝试去原子抢占这个锁(设置状态为1，然后把当前线程设置成独占线程)，如果当前锁的状态不是0，就去比较当前线程和占用锁的线程是不是一个线程，如果是，会去增加状态变量的值，从这里看出可重入锁之所以可重入，就是同一个线程可以反复使用它占用的锁。如果以上两种情况都不通过，则返回失败false。  
+
+<!-- 非公平锁tryAcquire的流程是：检查state字段，若为0，表示锁未被占用，那么尝试占用，若不为0，检查当前锁是否被自己占用，若被自己占用，则更新state字段，表示重入锁的次数。如果以上两点都没有成功，则获取锁失败，返回false。-->  
+&emsp; 假设当前有三个线程去竞争锁，假设线程A的CAS操作成功，返回。那么线程B和C则设置state失败，返回false，就会则进入acquireQueued流程，也就是基于CLH队列的抢占模式。   
+2. 第二步，线程B和线程C执行tryAcquire失败，入等待队列`addWaiter(Node mode)`。如果线程A拿着锁死死不放，那么B和C就会被挂起。  
   
     ```java
     /**
@@ -236,33 +250,34 @@ final boolean nonfairTryAcquire(int acquires) {
 
 &emsp; B、C线程同时尝试入队列，由于队列尚未初始化，tail==null，故至少会有一个线程会走到enq(node)。假设同时走到了enq(node)里。  
 
-```java
-/**
-* 初始化队列并且入队新节点
-*/
-private Node enq(final Node node) {
-    //开始自旋
-    for (;;) {
-        Node t = tail;
-        if (t == null) { // Must initialize
-            // 如果tail为空,则新建一个head节点,并且tail指向head
-            if (compareAndSetHead(new Node()))
-                tail = head;
-        } else {
-            node.prev = t;
-            // tail不为空,将新节点入队
-            if (compareAndSetTail(t, node)) {
-                t.next = node;
-                return t;
+    ```java
+    /**
+    * 初始化队列并且入队新节点
+    */
+    private Node enq(final Node node) {
+        //开始自旋
+        for (;;) {
+            Node t = tail;
+            if (t == null) { // Must initialize
+                // 如果tail为空,则新建一个head节点,并且tail指向head
+                if (compareAndSetHead(new Node()))
+                    tail = head;
+            } else {
+                node.prev = t;
+                // tail不为空,将新节点入队
+                if (compareAndSetTail(t, node)) {
+                    t.next = node;
+                    return t;
+                }
             }
         }
     }
-}
-```
+    ```
+
 &emsp; 这里体现了经典的自旋+CAS组合来实现非阻塞的原子操作。由于compareAndSetHead的实现使用了unsafe类提供的CAS操作，所以只有一个线程会创建head节点成功。假设线程B成功，之后B、C开始第二轮循环，此时tail已经不为空，两个线程都走到else里面。假设B线程compareAndSetTail成功，那么B就可以返回了，C由于入队失败还需要第三轮循环。最终所有线程都可以成功入队。  
 &emsp; 当B、C入等待队列后，此时AQS队列如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-73.png)  
-4. 第三步，挂起。B和C相继执行acquireQueued(final Node node, int arg)。这个方法让已经入队的线程尝试获取锁，若失败则会被挂起。  
+4. 第三步，B和C相继执行acquireQueued(final Node node, int arg)。这个方法让已经入队的线程尝试获取锁，若失败则会被挂起。  
 
 ```java
 /**
