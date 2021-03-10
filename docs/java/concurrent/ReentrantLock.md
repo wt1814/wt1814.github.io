@@ -22,7 +22,7 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; lock方法描述： 
+&emsp; lock方法描述：  
 &emsp; 在初始化ReentrantLock的时候，如果不传参数是否公平，那么默认使用非公平锁，也就是NonfairSync。  
 &emsp; 调用ReentrantLock的lock方法的时候，实际上是调用了NonfairSync的lock方法，这个方法先用CAS操作，去尝试抢占该锁。如果成功，就把当前线程设置在这个锁上，表示抢占成功。如果失败，则调用acquire模板方法，等待抢占。   
 
@@ -128,14 +128,15 @@ static final class NonfairSync extends Sync {
         * acquire on failure.
         */
     final void lock() {
-        if (compareAndSetState(0, 1))
+        
+        if (compareAndSetState(0, 1)) //todo 插队操作
             setExclusiveOwnerThread(Thread.currentThread());
         else
             acquire(1);
     }
 }
 ```
-&emsp; 首先用一个CAS操作，判断state是否是0(表示当前锁未被占用)，如果是0则把它置为1，并且设置当前线程为该锁的独占线程，表示获取锁成功。当多个线程同时尝试占用同一个锁时，CAS操作只能保证一个线程操作成功。  
+&emsp; `if (compareAndSetState(0, 1)) `首先用一个CAS操作，判断state是否是0(表示当前锁未被占用)，如果是0则把它置为1，并且设置当前线程为该锁的独占线程，表示获取锁成功。当多个线程同时尝试占用同一个锁时，CAS操作只能保证一个线程操作成功。  
 
 &emsp; **<font color = "clime">“非公平”即体现在这里，如果占用锁的线程刚释放锁，state置为0，而排队等待锁的线程还未唤醒时，新来的线程就直接抢占了该锁，那么就“插队”了。</font>**  
 
