@@ -9,16 +9,25 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 在函数CAS(V,E,N)中有3个参数。1. 读取当前值E，2. 计算结果值V，<font color = "clime">3. 将读取的当前值E和当前新值N作比较，如果相等，更新为V；</font>4. 如果不相等，再次读取当前值E计算结果V，将E再和新的当前值N比较，直到相等。  
+&emsp; **<font color = "clime">在函数CAS(V,E,N)中有3个参数：从内存中读取的值E，计算的结果值V，内存中的当前值N(可能已经被其他线程改变)。</font>** 
+&emsp; **<font color = "clime">函数流程：</font>** s1. 读取当前值E，2. 计算结果值V，<font color = "clime">3. 将读取的当前值E和当前新值N作比较，如果相等，更新为V；</font>4. 如果不相等，再次读取当前值E计算结果V，将E再和新的当前值N比较，直到相等。 
 
 &emsp; **CAS缺点：**  
 
 * 循环时间长开销大。自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。  
 * 只能保证一个共享变量的原子操作。 **<font color = "clime">从Java1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个对象里来进行CAS操作。</font>**  
 * ABA问题。  
-&emsp; **<font color = "red">ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。</font>**   
-&emsp; **<font color = "clime">从Java1.5开始JDK的atomic包里提供了[AtomicStampedReference](/docs/java/concurrent/6.AtomicStampedReference.md)和AtomicMarkableReference类来解决ABA问题。</font>**  
-
+    1. 什么是ABA问题？  
+    &emsp; ABA示例：  
+    &emsp; 1).在多线程的环境中，线程a从共享的地址X中读取到了对象A。  
+    &emsp; 2).在线程a准备对地址X进行更新之前，线程a挂起。线程b将地址X中的值修改为了B。  
+    &emsp; 3).接着线程b或者线程c将地址X中的值又修改回了A。  
+    &emsp; 4).线程a恢复，接着对地址X执行CAS，发现X中存储的还是对象A，对象匹配，CAS成功。  
+    2. ABA问题需不需要解决？   
+    &emsp; ~~如果依赖中间变化的状态，需要解决。如果不是依赖中间变化的状态，对业务结果无影响。~~  
+    3. 解决ABA问题。  
+    &emsp; **<font color = "red">ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。</font>**   
+    &emsp; **<font color = "clime">从Java1.5开始JDK的atomic包里提供了[AtomicStampedReference](/docs/java/concurrent/6.AtomicStampedReference.md)和AtomicMarkableReference类来解决ABA问题。</font>**  
 
 # 1. CAS算法  
 <!-- 
@@ -32,7 +41,8 @@ CAS包含了 3个操作数：需要读写的内存位置V、进行比较的值A�
 -->
 &emsp; **<font color = "clime">CAS，Compare And Swap，即比较并交换。一种无锁原子算法，CAS是一种乐观锁。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-29.png)   
-&emsp; 在函数CAS(V,E,N)中有3个参数。1. 读取当前值E，2. 计算结果值V，<font color = "clime">3. 将读取的当前值E和当前新值N作比较，如果相等，更新为V；</font>4. 如果不相等，再次读取当前值E计算结果V，将E再和新的当前值N比较，直到相等。  
+&emsp; **<font color = "clime">在函数CAS(V,E,N)中有3个参数：从内存中读取的值E，计算的结果值V，内存中的当前值N(可能已经被其他线程改变)。</font>** 
+&emsp; **<font color = "clime">函数流程：</font>** s1. 读取当前值E，2. 计算结果值V，<font color = "clime">3. 将读取的当前值E和当前新值N作比较，如果相等，更新为V；</font>4. 如果不相等，再次读取当前值E计算结果V，将E再和新的当前值N比较，直到相等。  
 &emsp; 注：当多个线程同时使用CAS操作一个变量时，只有一个会胜出，并成功更新，其余均会失败。**一般，失败的线程不会挂起，仅是被告知失败，并且允许再次尝试，当然也允许实现的线程放弃操作(一般情况下，这是一个自旋操作，即不断的重试)。**基于这样的原理，CAS操作即使没有锁，也可以发现其他线程对当前线程的干扰。  
 
 ## 1.2. CAS缺点  
@@ -44,11 +54,17 @@ CAS包含了 3个操作数：需要读写的内存位置V、进行比较的值A�
 &emsp; 当对一个共享变量执行操作时，可以使用循环CAS的方式来保证原子操作，但是对多个共享变量操作时，循环CAS就无法保证操作的原子性，这个时候就可以用锁，或者有一个取巧的办法，就是把多个共享变量合并成一个共享变量来操作。比如有两个共享变量i＝2，j=a，合并一下ij=2a，然后用CAS来操作ij。  
 &emsp; **<font color = "clime">从Java1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个对象里来进行CAS操作。</font>**    
 * **<font color = "red">ABA问题(A修改为B，再修改为A)：其他线程修改数次后的值和原值相同。</font>**  
-&emsp; 因为CAS需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是A，变成了B，又变成了A，那么使用CAS进行检查时会发现它的值没有发生变化，但是实际上却变化了。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-30.png)  
-&emsp; 示例：线程1要将当前值5修改为7，线程2已经将5修改为3，可是线程3又将当前3修改为5。  
-&emsp; **<font color = "red">ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。</font>**   
-&emsp; **<font color = "clime">从Java1.5开始JDK的atomic包里提供了[AtomicStampedReference](/docs/java/concurrent/6.AtomicStampedReference.md)和AtomicMarkableReference类来解决ABA问题。</font>**  
+    1. 什么是ABA问题？  
+    &emsp; ABA示例：  
+    &emsp; 1).在多线程的环境中，线程a从共享的地址X中读取到了对象A。  
+    &emsp; 2).在线程a准备对地址X进行更新之前，线程a挂起。线程b将地址X中的值修改为了B。  
+    &emsp; 3).接着线程b或者线程c将地址X中的值又修改回了A。  
+    &emsp; 4).线程a恢复，接着对地址X执行CAS，发现X中存储的还是对象A，对象匹配，CAS成功。   
+    2. ABA问题需不需要解决？   
+    &emsp; ~~如果依赖中间变化的状态，需要解决。如果不是依赖中间变化的状态，对业务结果无影响。~~  
+    3. 解决ABA问题。
+    &emsp; **<font color = "red">ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。</font>**   
+    &emsp; **<font color = "clime">从Java1.5开始JDK的atomic包里提供了[AtomicStampedReference](/docs/java/concurrent/6.AtomicStampedReference.md)和AtomicMarkableReference类来解决ABA问题。</font>**  
 
 ## 1.3. Unsafe类  
 <!-- 

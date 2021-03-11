@@ -11,6 +11,8 @@
                 - [1.1.2.1.2. treeifyBin](#11212-treeifybin)
                 - [1.1.2.1.3. addCount](#11213-addcount)
             - [1.1.2.2. get()方法](#1122-get方法)
+                - [1.1.2.2.1. get()流程](#11221-get流程)
+                - [1.1.2.2.2. get()为什么不需要加锁？](#11222-get为什么不需要加锁)
     - [1.2. Java7 ConcurrentHashMap](#12-java7-concurrenthashmap)
         - [1.2.1. 存储结构](#121-存储结构)
             - [1.2.1.1. 静态内部类 Segment](#1211-静态内部类-segment)
@@ -25,33 +27,31 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; **<font color = "red">从jdk1.8开始，ConcurrentHashMap类取消了Segment分段锁，采用Node + CAS + Synchronized来保证并发安全。</font>**  
-&emsp; **<font color = "clime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的 ConcurrentHashMap效率又提升了许多。</font>**  
-&emsp; **<font color = "clime">put()流程：</font>**
-1. 根据 key 计算出 hashcode 。  
-2. 整个过程自旋添加节点。  
-2. 判断是否需要进行初始化数组。  
-3. <font color = "red">为当前key定位出Node，如果为空表示此数组下无节点，当前位置可以直接写入数据，利用CAS尝试写入，失败则入下一次循环。</font>  
-4. <font color = "lime">如果当前位置的hashcode == MOVED == -1，表示其他线程插入成功正在进行扩容，则当前线程帮助进行扩容。</font>  
-5. <font color = "red">如果都不满足，则利用synchronized锁写入数据。</font>  
-6. 如果数量大于TREEIFY_THRESHOLD则要转换为红黑树。 
-7. 最后通过addCount来增加ConcurrentHashMap的长度，并且还可能触发扩容操作。  
+&emsp; **<font color = "clime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的ConcurrentHashMap效率又提升了许多。</font>**  
+1. **<font color = "clime">put()流程：</font>**
+    1. 根据 key 计算出 hashcode 。  
+    2. 整个过程自旋添加节点。  
+    2. 判断是否需要进行初始化数组。  
+    3. <font color = "red">为当前key定位出Node，如果为空表示此数组下无节点，当前位置可以直接写入数据，利用CAS尝试写入，失败则进入下一次循环。</font>  
+    4. **<font color = "blue">如果当前位置的hashcode == MOVED == -1，表示其他线程插入成功正在进行扩容，则当前线程帮助进行扩容。</font>**  
+    5. <font color = "red">如果都不满足，则利用synchronized锁写入数据。</font>  
+    6. 如果数量大于TREEIFY_THRESHOLD则要转换为红黑树。 
+    7. 最后通过addCount来增加ConcurrentHashMap的长度，并且还可能触发扩容操作。  
+    
+2. **<font color = "clime">get()流程：为什么ConcurrentHashMap的读操作不需要加锁？</font>**  
 
-&emsp; **<font color = "lime">get()流程：为什么ConcurrentHashMap的读操作不需要加锁？</font>**  
-
-* 在1.8中ConcurrentHashMap的get操作全程不需要加锁，这也是它比其他并发集合比如hashtable、用Collections.synchronizedMap()包装的hashmap;安全效率高的原因之一。  
-* get操作全程不需要加锁是因为Node的成员val是用volatile修饰的和数组用volatile修饰没有关系。  
-* 数组用volatile修饰主要是保证在数组扩容的时候保证可见性。
+    * 在1.8中ConcurrentHashMap的get操作全程不需要加锁，这也是它比其他并发集合（比如hashtable、用Collections.synchronizedMap()包装的hashmap）安全效率高的原因之一。  
+    * get操作全程不需要加锁是因为Node的成员val是用volatile修饰的，和数组用volatile修饰没有关系。  
+    * 数组用volatile修饰主要是保证在数组扩容的时候保证可见性。
 
 
 # 1. ConcurrentHashMap   
 <!-- 
- ★★★为什么ConcurrentHashMap的读操作不需要加锁？ 
- https://mp.weixin.qq.com/s/3FCg-9kPjSAR0tN6xLW6tw
+
 
 ConcurrentHashMap线程安全吗 
 https://mp.weixin.qq.com/s/ZCQPrgW6iv2IP_3RKk016g
 --> 
-&emsp; 详细解析请看https://gitee.com/wt1814/ 。 
 
 ## 1.1. Java8 ConcurrentHashMap  
 <!-- 
@@ -61,7 +61,7 @@ https://www.sohu.com/a/320372210_120176035
 https://segmentfault.com/a/1190000022279729
 -->
 &emsp; **<font color = "red">从jdk1.8开始，ConcurrentHashMap类取消了Segment分段锁，采用Node + CAS + Synchronized来保证并发安全。</font>**  
-&emsp; **<font color = "lime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的 ConcurrentHashMap效率又提升了许多。</font>**  
+&emsp; **<font color = "clime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的ConcurrentHashMap效率又提升了许多。</font>**  
 
 ### 1.1.1. 存储结构  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-11.png)  
@@ -72,19 +72,19 @@ https://segmentfault.com/a/1190000022279729
 * HashMap初始化是在第一次put元素的时候进行的，而不是init  
 * HashMap的底层数组长度总是为2的整次幂  
 * 默认树化的阈值为 8，而链表化的阈值为 6  
-* hash算法也很类似，但多了一步& HASH_BITS，该步是为了消除最高位上的负符号，hash的负在ConcurrentHashMap中有特殊意义表示在扩容或者是树节点  
+* hash算法也很类似，但多了一步& HASH_BITS，该步是为了消除最高位上的负符号。hash的负在ConcurrentHashMap中有特殊意义，表示在扩容或者是树节点。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-12.png)  
 
 ### 1.1.2. 成员方法  
 #### 1.1.2.1. put()方法  
 
-&emsp; **<font color = "lime">put()流程：</font>**
+&emsp; **<font color = "clime">put()流程：</font>**
 1. 根据 key 计算出 hashcode 。  
 2. 整个过程自旋添加节点。  
 2. 判断是否需要进行初始化数组。  
 3. <font color = "red">为当前 key 定位出Node，如果为空表示此数组下无节点，当前位置可以直接写入数据，利用 CAS 尝试写入，失败则入下一次循环。</font>  
-4. <font color = "lime">如果当前位置的 hashcode == MOVED == -1，表示其他线程插入成功正在进行扩容，则当前线程帮助进行扩容。</font>  
+4. **<font color = "blue">如果当前位置的 hashcode == MOVED == -1，表示其他线程插入成功正在进行扩容，则当前线程帮助进行扩容。</font>**  
 5. <font color = "red">如果都不满足，则利用 synchronized 锁写入数据。</font>  
 6. 如果数量大于 TREEIFY_THRESHOLD 则要转换为红黑树。 
 7. 最后通过addCount来增加ConcurrentHashMap的长度，并且还可能触发扩容操作。  
@@ -278,11 +278,17 @@ private final void addCount(long x, int check) {
 ```
 
 #### 1.1.2.2. get()方法  
-&emsp; **<font color = "lime">get()流程：</font>**<font color = "red">get方法无需加锁。由于其中涉及到的共享变量都使用 volatile 修饰，volatile 可以保证内存可见性，所以不会读取到过期数据。</font>
+<!-- 
+★★★为什么ConcurrentHashMap的读操作不需要加锁？ 
+https://mp.weixin.qq.com/s/3FCg-9kPjSAR0tN6xLW6tw
+ 
+-->
+##### 1.1.2.2.1. get()流程
+&emsp; **<font color = "clime">get()流程：</font>**  
 1. 根据 hash 值计算位置。  
 2. 查找到指定位置，如果头节点就是要找的，直接返回它的 value。  
-3. 如果头节点 hash 值小于 0 ，说明正在扩容或者是红黑树，查找之。  
-4. 如果是链表，遍历查找之。    
+3. 如果头节点 hash 值小于 0 ，说明正在扩容或者是红黑树，进行查找。  
+4. 如果是链表，遍历查找。    
 
 ```java
 public V get(Object key) {
@@ -311,17 +317,31 @@ public V get(Object key) {
 }
 ```
 
+##### 1.1.2.2.2. get()为什么不需要加锁？  
+&emsp; 用volatile修饰的Node。  
+&emsp; get操作可以无锁是由于Node的元素val和指针next是用volatile修饰的，在多线程环境下线程A修改结点的val或者新增节点的时候是对线程B可见的。    
+
+```java
+static class Node<K,V> implements Map.Entry<K,V> {
+    final int hash;
+    final K key;
+    volatile V val;
+    volatile Node<K,V> next;
+```
+
+&emsp; 用volatile修饰的table属性`transient volatile Node<K,V>[] table;` ，是为了使得Node数组在扩容的时候对其他线程具有可见性而加的volatile。  
+
 ## 1.2. Java7 ConcurrentHashMap  
 ### 1.2.1. 存储结构  
 &emsp; 在 JDK1.7 中，ConcurrentHashMap 类采用了分段锁的思想，Segment(段) + HashEntry(哈希条目) + ReentrantLock。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-10.png)  
 
-&emsp; 将HashMap进行切割，把HashMap中的哈希数组切分成Segment；每一个 Segment 是一个类似于 HashMap 的结构，包含有若干个HashEntry。  
-1. <font color = "red">Segment继承ReentrantLock(可重入锁)，从而实现并发控制。 Segment 的个数一旦初始化就不能改变，默认 Segment 的个数是 16 个，也可以认为 ConcurrentHashMap 默认支持最多 16 个线程并发。 </font> 
-2. HashEntry 用来封装映射表的键-值对；  
+&emsp; 将HashMap进行切割，把HashMap中的哈希数组切分成Segment；每一个Segment是一个类似于HashMap的结构，包含有若干个HashEntry。  
+1. <font color = "red">Segment继承ReentrantLock(可重入锁)，从而实现并发控制。 Segment的个数一旦初始化就不能改变，默认Segment的个数是16个，也可以认为ConcurrentHashMap默认支持最多16个线程并发。 </font> 
+2. HashEntry用来封装映射表的键-值对；  
 
 #### 1.2.1.1. 静态内部类 Segment  
-&emsp; Segment 类继承于 ReentrantLock 类，从而使得 Segment 对象能充当可重入锁的角色。一个 Segment 就是一个子哈希表，Segment 里维护了一个 HashEntry 数组，并发环境下，对于不同 Segment 的数据进行操作是不用考虑锁竞争的。  
+&emsp; Segment 类继承于ReentrantLock类，从而使得Segment对象能充当可重入锁的角色。一个 Segment 就是一个子哈希表，Segment 里维护了一个 HashEntry 数组，并发环境下，对于不同 Segment 的数据进行操作是不用考虑锁竞争的。  
 
 #### 1.2.1.2. 静态内部类HashEntry  
 &emsp; HashEntry 是目前最小的逻辑处理单元。一个ConcurrentHashMap 维护一个 Segment 数组，一个Segment维护一个 HashEntry 数组。  
@@ -546,4 +566,3 @@ public V get(Object key) {
     return null;
 }
 ```
-

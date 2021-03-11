@@ -145,7 +145,7 @@
     * [SQL语句](/docs/SQL/SQLSentence.md)  
         * [基本查询语句](/docs/SQL/basicSelect.md)  
         * [连接查询](/docs/SQL/joinSelect.md)  
-        * [行列转换](/docs/SQL/trans.md)  
+        * [一些比较特殊的查询](/docs/SQL/trans.md)  
     * [MySql函数](/docs/SQL/MySQLFunction.md)  
     * [数据库对象](/docs/SQL/DatabaseObject.md)  
     * [SQL优化](/docs/SQL/SQLOptimization.md)  
