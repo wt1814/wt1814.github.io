@@ -74,7 +74,13 @@ https://segmentfault.com/a/1190000022279729
 * 默认树化的阈值为 8，而链表化的阈值为 6  
 * hash算法也很类似，但多了一步& HASH_BITS，该步是为了消除最高位上的负符号。hash的负在ConcurrentHashMap中有特殊意义，表示在扩容或者是树节点。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-12.png)  
+    ```java
+    static final int HASH_BITS = 0x7fffffff; // usable bits of normal node hash
+
+    static final int spread(int h) {
+            return (h ^ (h >>> 16)) & HASH_BITS;
+    }
+    ```
 
 ### 1.1.2. 成员方法  
 #### 1.1.2.1. put()方法  
@@ -303,6 +309,11 @@ public V get(Object key) {
                 // key hash 值相等，key值相同，直接返回元素 value
                 return e.val;
         }
+        //hash值为负值表示正在扩容，这个时候查的是ForwardingNode的find方法来定位到nextTable来
+        //eh=-1，说明该节点是一个ForwardingNode，正在迁移，此时调用ForwardingNode的find方法去nextTable里找。
+        //eh=-2，说明该节点是一个TreeBin，此时调用TreeBin的find方法遍历红黑树，由于红黑树有可能正在旋转变色，所以find里会有读写锁。
+        //eh>=0，说明该节点下挂的是一个链表，直接遍历该链表即可。
+        
         else if (eh < 0)
             // 头结点hash值小于0，说明正在扩容或者是红黑树，find查找
             return (p = e.find(h, key)) != null ? p.val : null;
