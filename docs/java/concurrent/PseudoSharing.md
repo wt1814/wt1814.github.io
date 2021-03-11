@@ -124,7 +124,5 @@ class Pointer {
 &emsp; 注意，以上三种方式中的前两种是通过加字段的形式实现的，加的字段又没有地方使用，可能会被jvm优化掉，所以建议使用第三种方式。  
 
 ## 1.5. 实际应用(LongAdder类)
-&emsp; 在Java中提供了多个原子变量的操作类，就是比如AtomicLong、AtomicInteger这些，通过CAS的方式去更新变量，但是失败会无限自旋尝试，导致CPU资源的浪费。  
-&emsp; 为了解决高并发下的这个缺点，JDK8中新增了LongAdder类，它的使用就是对解决伪共享的实际应用。  
-
+&emsp; 高性能原子类[LongAdder](/docs/java/concurrent/LongAdder.md)也解决类伪共享问题。  
 

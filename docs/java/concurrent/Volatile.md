@@ -161,4 +161,5 @@ c. instance = memory //设置instance指向刚分配的地址
 
 ## 1.4. Volatile、AtomicInteger与LongAdder  
 
+&emsp; &emsp; [LongAdder](/docs/java/concurrent/LongAdder.md)  
 

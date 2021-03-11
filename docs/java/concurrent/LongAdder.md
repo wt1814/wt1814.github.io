@@ -1,29 +1,38 @@
 
+<!-- TOC -->
 
+- [LongAdder](#longadder)
 
-# 1.2.4.1. ★★★~~LongAdder~~  
+<!-- /TOC -->
+
+# LongAdder 
 <!-- 
 阿里为什么推荐使用LongAdder，而不是volatile？ 
 https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
 
 比AtomicLong更优秀的LongAdder确定不来了解一下吗？ 
 https://mp.weixin.qq.com/s/rJAIoZLe9lnEcTj3SmgIZw
-
+阿里为什么推荐使用LongAdder，而不是Volatile？ 
+https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
 -->
 
-&emsp; <font color = "lime">LongAdder，分段锁。</font>  
 
-    &emsp; 阿里《Java开发手册》嵩山版：    
-    &emsp; 【参考】volatile 解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，但是如果多写，同样无法解决线程安全问题。  
-    &emsp; 说明：如果是count++操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是JDK8，推荐使用 LongAdder对象，比AtomicLong性能更好(减少乐观锁的重试次数)。  
-
-&emsp; AtomicInteger在高并发环境下会有多个线程去竞争一个原子变量，而始终只有一个线程能竞争成功，而其他线程会一直通过CAS自旋尝试获取此原子变量，因此会有一定的性能消耗；<font color = "lime">而LongAdder会将这个原子变量分离成一个Cell数组，每个线程通过Hash获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如AtomicInteger。</font>  
+&emsp; 阿里《Java开发手册》嵩山版：    
+&emsp; 【参考】volatile 解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，但是如果多写，同样无法解决线程安全问题。  
+&emsp; 说明：如果是count++操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是JDK8，推荐使用 LongAdder对象，比AtomicLong性能更好(减少乐观锁的重试次数)。  
 
 
-------------------
+&emsp; **Volatile、AtomicInteger、LongAdder：**  
+1. volatile 在多写环境下是非线程安全的。  
+2. AtomicInteger在高并发环境下会有多个线程去竞争一个原子变量，而始终只有一个线程能竞争成功，而其他线程会一直通过CAS自旋尝试获取此原子变量，因此会有一定的性能消耗。  
+3. <font color = "clime">而LongAdder会将这个原子变量分离成一个Cell数组，每个线程通过Hash获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；</font>而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如AtomicInteger。  
+&emsp; <font color = "clime">同时LongAdder也解决了[伪共享问题](/docs/java/concurrent/PseudoSharing.md)。</font>  
 
-&emsp; 在Java中提供了多个原子变量的操作类，就是比如AtomicLong、AtomicInteger这些，通过CAS的方式去更新变量，但是失败会无限自旋尝试，导致CPU资源的浪费。  
-&emsp; 为了解决高并发下的这个缺点，JDK8中新增了LongAdder类，它的使用就是对解决伪共享的实际应用。  
+
+
+
+
+ 
 &emsp; LongAdder继承自Striped64，内部维护了一个Cell数组，核心思想就是把单个变量的竞争拆分，多线程下如果一个Cell竞争失败，转而去其他Cell再次CAS重试。  
 
 ```java
@@ -72,19 +81,3 @@ transient volatile int cellsBusy;
 }
 ```
 
-
-----------
-
-<!-- 
-阿里为什么推荐使用LongAdder，而不是Volatile？ 
-https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
--->
-&emsp; 阿里《Java开发手册》嵩山版：  
-
-        【参考】Volatile解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，但是如果多写，同样无法解决线程安全问题。  
-        说明：如果是count++ 操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是JDK8，推荐使用LongAdder对象，比AtomicLong性能更好(减少乐观锁的重试次数)。  
-
-&emsp; **Volatile、AtomicInteger、LongAdder：**  
-&emsp; volatile 在多写环境下是非线程安全的。  
-&emsp; AtomicInteger在高并发环境下会有多个线程去竞争一个原子变量，而始终只有一个线程能竞争成功，而其他线程会一直通过CAS自旋尝试获取此原子变量，因此会有一定的性能消耗。  
-&emsp; <font color = "clime">而LongAdder会将这个原子变量分离成一个Cell数组，每个线程通过Hash获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；</font>而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如AtomicInteger。  
