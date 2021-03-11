@@ -5,7 +5,7 @@
     - [1.1. Volatile、AtomicInteger、LongAdder比较](#11-volatileatomicintegerlongadder比较)
     - [1.2. LongAdder和AtomicLong性能测试](#12-longadder和atomiclong性能测试)
     - [1.3. LongAdder为什么这么快？](#13-longadder为什么这么快)
-    - [1.4. 源码分析](#14-源码分析)
+    - [1.4. ~~源码分析~~](#14-源码分析)
 
 <!-- /TOC -->
 
@@ -66,7 +66,7 @@ https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-37.png)   
 -->
 
-## 1.4. 源码分析  
+## 1.4. ~~源码分析~~  
 <!--
 https://www.bilibili.com/video/BV1KE411K7Ts?p=2&spm_id_from=pageDriver
 https://www.bilibili.com/video/BV1KE411K7Ts?p=3&spm_id_from=pageDriver
