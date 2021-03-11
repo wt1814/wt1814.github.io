@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [1. XXXThreadPoolExecutor](#1-xxxthreadpoolexecutor)
+- [1. ThreadPoolExecutor](#1-threadpoolexecutor)
     - [1.1. 属性](#11-属性)
         - [1.1.1. 线程池状态](#111-线程池状态)
     - [1.2. 构造函数](#12-构造函数)
@@ -15,29 +15,30 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">总结：</font>**  
-1. 理解线程池状态标志位的设计。在ThreadPoolExecutor实现中，使用32位的整型包装类型存放工作线程数和线程池状态。其中，低29位用于存放工作线程数，而高3位用于存放线程池状态。    
-2. 理解构造函数中参数：[阻塞队列](/docs/java/concurrent/BlockingQueue.md)；拒绝策略默认AbortPolicy(拒绝任务，抛异常)，可以选用CallerRunsPolicy(任务队列满时，不进入线程池，由主线程执行)。  
-3. 线程运行流程：查看execute方法。&emsp; 整个流程：  
-    &emsp; <font color = "lime">线程池创建时没有设置成预启动加载，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
-    1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务(任务实例会传入直接用于构造工作线程实例)。  
+&emsp; **<font color = "red">总结：</font>**  
+1. 理解构造函数中参数：[阻塞队列](/docs/java/concurrent/BlockingQueue.md)；拒绝策略默认AbortPolicy(拒绝任务，抛异常)，可以选用CallerRunsPolicy(任务队列满时，不进入线程池，由主线程执行)。  
+
+2. 线程运行流程：查看execute方法。  
+    &emsp; <font color = "clime">线程池创建时没有设置成预启动加载，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
+    1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务（任务实例会传入直接用于构造工作线程实例）。  
     2. 如果当前工作线程总数大于等于corePoolSize，判断线程池是否处于运行中状态，同时尝试用非阻塞方法向任务队列放入任务，这里会二次检查线程池运行状态，如果当前工作线程数量为0，则创建一个非核心线程并且传入的任务对象为null。  
     3. 如果向任务队列投放任务失败(任务队列已经满了)，则会尝试创建非核心线程传入任务实例执行。  
-    4. 如果创建非核心线程失败，此时需要拒绝执行任务，调用拒绝策略处理任务。   
-4. 线程复用机制：runWorker()方法中，有任务时，while循环获取；没有任务时，清除空闲线程。  
+    4. 如果创建非核心线程失败，此时需要拒绝执行任务，调用拒绝策略处理任务。  
+ 
+3. 线程复用机制：runWorker()方法中，有任务时，while循环获取；没有任务时，清除空闲线程。  
 &emsp; 线程复用原理：  
-&emsp; 线程池将线程和任务进行解耦，线程是线程，任务是任务，摆脱了之前通过 Thread 创建线程时的一个线程必须对应一个任务的限制。  
-&emsp; 在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对 Thread 进行了封装，并不是每次执行任务都会调用 Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行，如果有则直接执行，也就是调用任务中的 run 方法，将 run 方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的 run 方法串联起来。  
+&emsp; 线程池将线程和任务进行解耦，线程是线程，任务是任务，摆脱了之前通过Thread创建线程时的一个线程必须对应一个任务的限制。  
+&emsp; 在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对Thread进行了封装，并不是每次执行任务都会调用 Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行。如果有则直接执行，也就是调用任务中的 run 方法，将 run 方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的run方法串联起来。  
+
 5. 线程池保证核心线程不被销毁？获取任务getTask()方法里allowCoreThreadTimeOut值默认为true，线程take()会一直阻塞，等待任务的添加。   
 
-# 1. XXXThreadPoolExecutor
+
+# 1. ThreadPoolExecutor
 <!--
 https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
 https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
 面试官：线程池是如何重复利用空闲的线程来执行任务的？ 
 https://mp.weixin.qq.com/s/aKv2bRUQ-0rnaSUud84VEw
-
-
 -->
 <!-- 
 ~~
@@ -174,23 +175,14 @@ private void decrementWorkerCount() {
 ## 1.2. 构造函数  
 <!-- 
 一般来说，这里的BlockingQueue有以下三种选择：
-
-
     SynchronousQueue：
-
     一个不存储元素的阻塞队列，每个插入操作必须等到另一个线程调用移除操作，否则插入操作一直处于阻塞状态。
-
     因此，如果线程池中始终没有空闲线程（任务提交的平均速度快于被处理的速度），可能出现无限制的线程增长。
-
     LinkedBlockingQueue：
-
     基于链表结构的阻塞队列，如果不设置初始化容量，其容量为Integer.MAX_VALUE，即为无界队列。
-
     因此，如果线程池中线程数达到了corePoolSize，且始终没有空闲线程（任务提交的平均速度快于被处理的速度），任务缓存队列可能出现无限制的增长。
     ArrayBlockingQueue：基于数组结构的有界阻塞队列，按FIFO排序任务。
 -->
-&emsp; 在ThreadPoolExecutor类中提供了四个构造方法：   
-
 ```java
 public ThreadPoolExecutor(int corePoolSize,
                         int maximumPoolSize,
@@ -217,14 +209,20 @@ public ThreadPoolExecutor(int corePoolSize,
     this.handler = handler;
 }
 ```
-&emsp; ThreadPoolExecutor继承了AbstractExecutorService类，并提供了四个构造器。前面三个构造器都是调用的第四个构造器进行的初始化工作。下面解释一下构造器中各个参数的含义：  
+&emsp; ThreadPoolExecutor构造函数中各个参数的含义：  
 
-* int  corePoolSize：线程池的核心线程数大小。默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中。默认情况下可以一直存活。可以通过设置allowCoreThreadTimeOut为True，此时核心线程数就是0，此时keepAliveTime控制所有线程的超时时间。  
-* int  maximumPoolSize：线程池允许的最大线程数大小。当workQueue满了，不能添加任务的时候，这个参数才会生效。  
-* long  keepAliveTime：空闲线程(超出corePoolSize的线程)的生存时间。这些线程如果长时间没有执行任务，并且超过了keepAliveTime设定的时间，就会消亡。  
-* TimeUnit unit：参数keepAliveTime的单位。有7种取值，在TimeUnit类中有7种静态属性：TimeUnit.DAYS；TimeUnit.HOURS；  
-* BlockingQueue<Runnable\>  workQueue：任务阻塞队列，是java.util.concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样,如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态,直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition(显示锁Lock及Condition的学习与使用)来实现阻塞和唤醒。  
-* ThreadFactory threadFactory：用户设置创建线程的工厂，可以通过这个工厂来创建有业务意义的线程名字。可以对比下自定义的线程工厂和默认的线程工厂创建的名字。   
+* int  corePoolSize：  
+&emsp; 线程池的核心线程数大小。默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中。默认情况下可以一直存活。可以通过设置allowCoreThreadTimeOut为True，此时核心线程数就是0，此时keepAliveTime控制所有线程的超时时间。  
+* int  maximumPoolSize：  
+&emsp; 线程池允许的最大线程数大小。当workQueue满了，不能添加任务的时候，这个参数才会生效。  
+* long  keepAliveTime：  
+&emsp; 空闲线程(超出corePoolSize的线程)的生存时间。这些线程如果长时间没有执行任务，并且超过了keepAliveTime设定的时间，就会消亡。  
+* TimeUnit unit：  
+&emsp; 参数keepAliveTime的单位。有7种取值，在TimeUnit类中有7种静态属性：TimeUnit.DAYS；TimeUnit.HOURS；  
+* BlockingQueue<Runnable\>  workQueue：  
+&emsp; 任务阻塞队列，是java.util.concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样,如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态,直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition(显示锁Lock及Condition的学习与使用)来实现阻塞和唤醒。  
+* ThreadFactory threadFactory：  
+&emsp; 用户设置创建线程的工厂，可以通过这个工厂来创建有业务意义的线程名字。可以对比下自定义的线程工厂和默认的线程工厂创建的名字。   
     
     |默认产生线程的名字	|自定义线程工厂产生名字|
     |---|---|
@@ -233,12 +231,13 @@ public ThreadPoolExecutor(int corePoolSize,
     &emsp; 阿里开发手册也有明确说到，需要指定有意义的线程名字。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-18.png)  
 
-* RejectedExecutionHandler  handler：<font color = "red">当提交任务数超过maxmumPoolSize+workQueue之和时，任务会交给RejectedExecutionHandler来处理，执行拒绝策略。</font>有四种策略，<font color = "lime">默认是AbortPolicy(丢弃任务并抛出RejectedExecutionException异常)</font>。内置拒绝策略均实现了RejectedExecutionHandler接口，若以下策略仍无法满足实际需要，可以扩展RejectedExecutionHandler接口。  
+* RejectedExecutionHandler handler：  
+&emsp; <font color = "red">当提交任务数超过maxmumPoolSize+workQueue之和时，任务会交给RejectedExecutionHandler来处理，执行拒绝策略。</font>有四种策略，<font color = "clime">默认是AbortPolicy(丢弃任务并抛出RejectedExecutionException异常)</font>。内置拒绝策略均实现了RejectedExecutionHandler接口，若以下策略仍无法满足实际需要，可以扩展RejectedExecutionHandler接口。  
 
     | 名称 | Condition |  
     |----|----|  
     |AbortPolicy (默认)|丢弃任务并抛出RejectedExecutionException异常。| 
-    |<font color = "lime">CallerRunsPolicy</font>|<font color = "lime">在线程池当前正在运行的Thread线程池中处理被拒绝的任务。主线程会被阻塞，其余任务只能在被拒绝的任务执行完之后才会继续被提交到线程池执行。</font>|
+    |<font color = "clime">CallerRunsPolicy</font>|<font color = "clime">在线程池当前正在运行的Thread线程池中处理被拒绝的任务。主线程会被阻塞，其余任务只能在被拒绝的任务执行完之后才会继续被提交到线程池执行。</font>|
     |DiscardOldestPolicy|丢弃队列最前面的任务，将被拒绝的任务添加到等待队列中。|
     |DiscardPolicy|丢弃任务，但是不抛出异常。|
 
@@ -251,6 +250,16 @@ https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
 &emsp; 线程池中核心方法调用链路：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-17.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-14.png)  
+&emsp; 流程概述：  
+&emsp; <font color = "clime">线程池创建时没有设置成预启动加载，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
+1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务(任务实例会传入直接用于构造工作线程实例)。  
+2. 如果当前工作线程总数大于等于corePoolSize，判断线程池是否处于运行中状态，同时尝试用非阻塞方法向任务队列放入任务，这里会二次检查线程池运行状态，如果当前工作线程数量为0，则创建一个非核心线程并且传入的任务对象为null。  
+3. 如果向任务队列投放任务失败(任务队列已经满了)，则会尝试创建非核心线程传入任务实例执行。  
+4. 如果创建非核心线程失败，此时需要拒绝执行任务，调用拒绝策略处理任务。  
+
+        为什么需要二次检查线程池的运行状态，当前工作线程数量为0，尝试创建一个非核心线程并且传入的任务对象为null？这个可以看API注释：
+        如果一个任务成功加入任务队列，依然需要二次检查是否需要添加一个工作线程(因为所有存活的工作线程有可能在最后一次检查之后已经终结)或者执行当前方法的时候线程池是否已经shutdown了。所以需要二次检查线程池的状态，必须时把任务从任务队列中移除或者在没有可用的工作线程的前提下新建一个工作线程。
+
 
 ### 1.3.1. execute()  
 
@@ -265,15 +274,6 @@ https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
         &emsp; 线程数量[已]达到maximumPoolSize(线程池最大线程数)，将会执行拒绝策略。  
 3. 当一个线程空闲，超过一定的时间(keepAliveTime)时，线程池会判断，如果当前运行的线程数大于corePoolSize，那么这个线程就被停掉。所以线程池的所有任务完成后，它最终会收缩到corePoolSize的大小。  
 -->
-&emsp; 整个流程：  
-&emsp; <font color = "lime">线程池创建时没有设置成预启动加载，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
-1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务(任务实例会传入直接用于构造工作线程实例)。  
-2. 如果当前工作线程总数大于等于corePoolSize，判断线程池是否处于运行中状态，同时尝试用非阻塞方法向任务队列放入任务，这里会二次检查线程池运行状态，如果当前工作线程数量为0，则创建一个非核心线程并且传入的任务对象为null。  
-3. 如果向任务队列投放任务失败(任务队列已经满了)，则会尝试创建非核心线程传入任务实例执行。  
-4. 如果创建非核心线程失败，此时需要拒绝执行任务，调用拒绝策略处理任务。  
-
-        为什么需要二次检查线程池的运行状态，当前工作线程数量为0，尝试创建一个非核心线程并且传入的任务对象为null？这个可以看API注释：
-        如果一个任务成功加入任务队列，依然需要二次检查是否需要添加一个工作线程(因为所有存活的工作线程有可能在最后一次检查之后已经终结)或者执行当前方法的时候线程池是否已经shutdown了。所以需要二次检查线程池的状态，必须时把任务从任务队列中移除或者在没有可用的工作线程的前提下新建一个工作线程。
 
 ```java
 public void execute(Runnable command) {
