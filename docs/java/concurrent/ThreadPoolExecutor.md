@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [1. ThreadPoolExecutor](#1-threadpoolexecutor)
+- [1. ~~ThreadPoolExecutor~~](#1-threadpoolexecutor)
     - [1.1. 属性](#11-属性)
         - [1.1.1. 线程池状态](#111-线程池状态)
     - [1.2. 构造函数](#12-构造函数)
@@ -27,13 +27,13 @@
  
 3. 线程复用机制：runWorker()方法中，有任务时，while循环获取；没有任务时，清除空闲线程。  
 &emsp; 线程复用原理：  
-&emsp; 线程池将线程和任务进行解耦，线程是线程，任务是任务，摆脱了之前通过Thread创建线程时的一个线程必须对应一个任务的限制。  
+&emsp; **线程池将线程和任务进行解耦，线程是线程，任务是任务，摆脱了之前通过Thread创建线程时的一个线程必须对应一个任务的限制。**  
 &emsp; 在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对Thread进行了封装，并不是每次执行任务都会调用 Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行。如果有则直接执行，也就是调用任务中的 run 方法，将 run 方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的run方法串联起来。  
 
 5. 线程池保证核心线程不被销毁？获取任务getTask()方法里allowCoreThreadTimeOut值默认为true，线程take()会一直阻塞，等待任务的添加。   
 
 
-# 1. ThreadPoolExecutor
+# 1. ~~ThreadPoolExecutor~~
 <!--
 https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
 https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
