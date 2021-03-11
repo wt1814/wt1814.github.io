@@ -6,9 +6,6 @@
     - [1.2. 对象系统RedisObject](#12-对象系统redisobject)
     - [1.3. 数据结构介绍](#13-数据结构介绍)
         - [1.3.1. SDS字符串](#131-sds字符串)
-            - [1.3.1.1. SDS代码结构](#1311-sds代码结构)
-            - [1.3.1.2. ※※※SDS动态扩展特点](#1312-※※※sds动态扩展特点)
-            - [1.3.1.3. Redis字符串的性能优势](#1313-redis字符串的性能优势)
         - [1.3.2. 双端链表LinkedList](#132-双端链表linkedlist)
         - [1.3.3. 压缩列表Ziplist](#133-压缩列表ziplist)
         - [1.3.4. 快速列表Quicklist](#134-快速列表quicklist)
@@ -102,97 +99,8 @@ typedef struct redisObject {
 https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 -->
 ### 1.3.1. SDS字符串  
-<!-- 
-https://mp.weixin.qq.com/s/VY31lBOSggOHvVf54GzvYw
-https://mp.weixin.qq.com/s/f71rakde6KBJ_ilRf1M8xQ
--->
-<!-- 
-1. 什么是 SDS？ Redis中字符串的实现。在 3.2 以后的版本中，SDS 又有多种结构(sds.h)：sdshdr5、sdshdr8、sdshdr16、sdshdr32、sdshdr64，用于存储不同的长度的字符串，分别代表 2^5=32byte， 2^8=256byte，2^16=65536byte=64KB，2^32byte=4GB。  
+&emsp; [SDS](/docs/microService/Redis/SDS.md)  
 
-2. 为什么 Redis 要用 SDS 实现字符串？  
-&emsp; C 语言本身没有字符串类型(只能用字符数组 char[]实现)。 
-    1. 使用字符数组必须先给目标变量分配足够的空间，否则可能会溢出。  
-    2. 如果要获取字符长度，必须遍历字符数组，时间复杂度是 O(n)。  
-    3. C 字符串长度的变更会对字符数组做内存重分配。  
-    4. 通过从字符串开始到结尾碰到的第一个'\0'来标记字符串的结束，因此不能保 存图片、音频、视频、压缩文件等二进制(bytes)保存的内容，二进制不安全。  
-
-    &emsp; SDS的特点：  
-    1. <font color = "red">不用担心内存溢出问题，如果需要，会对SDS进行扩容。</font>  
-    2. <font color = "red">获取字符串长度时间复杂度为 O(1)，因为定义了 len 属性。</font>  
-    3. 通过“空间预分配”( sdsMakeRoomFor)和“惰性空间释放”，防止多次重分配内存。  
-    4. 判断是否结束的标志是 len 属性(它同样以'\0'结尾是因为这样就可以使用 C语言中函数库操作字符串的函数了)，可以包含'\0'。 
--->
-&emsp; Redis是C语言开发的，C语言有字符类型，但是Redis却没直接采用C语言的字符串类型，而是自己构建了动态字符串(SDS)的抽象类型。  
- 
-#### 1.3.1.1. SDS代码结构  
-
-```c
-struct sdshdr{
-    // 记录已使用长度
-    int len;
-    // 记录空闲未使用的长度
-    int free;
-    // 字符数组
-    char[] buf;
-};
-```
-&emsp; **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>**  
-&emsp; <font color = "red">len保存了字符串的长度，free表示buf数组中未使用的字节数量，buf数组则是保存字符串的每一个字符元素。</font>  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-77.png)  
-&emsp; Redis的字符串也会遵守C语言的字符串的实现规则，即最后一个字符为空字符。然而这个空字符不会被计算在len里头。  
-
-#### 1.3.1.2. ※※※SDS动态扩展特点
-&emsp; SDS的最厉害最奇妙之处在于它的Dynamic，动态变化长度。举个例子：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-78.png)  
-
-&emsp; 如上图所示刚开始s1 只有5个空闲位子，后面需要追加' world' 6个字符，很明显是不够的。 
-
-&emsp; Redis会做一下三个操作：  
-1. 计算出大小是否足够  
-2. 开辟空间至满足所需大小  
-3. **<font color = "red">开辟与已使用大小len相同长度的空闲free空间(如果len < 1M)；开辟1M长度的空闲free空间(如果len >= 1M)。</font>**  
-
-#### 1.3.1.3. Redis字符串的性能优势  
-
-* 动态扩展
-* 快速获取字符串长度  
-* 避免缓冲区溢出  
-* 降低空间分配次数提升内存使用效率  
-* 二进制安全
-
-1. <font color = "lime">快速获取字符串长度</font>  
-
-        c语言中的字符串并不会记录自己的长度，因此「每次获取字符串的长度都会遍历得到，时间的复杂度是O(n)」，而Redis中获取字符串只要读取len的值就可，时间复杂度变为O(1)。
-
-2. <font color = "lime">避免缓冲区溢出</font>  
-&emsp; 对于Redis而言由于每次追加字符串时，<font color = "red">「SDS」会先根据len属性判断空间是否满足要求，若是空间不够，就会进行相应的空间扩展，所以「不会出现缓冲区溢出的情况」。</font>每次追加操作前都会做如下操作：  
-    1. 计算出大小是否足够  
-    2. 开辟空间至满足所需大小  
-    3. 降低空间分配次数提升内存使用效率  
-
-            「c语言」中两个字符串拼接，若是没有分配足够长度的内存空间就「会出现缓冲区溢出的情况」。
-
-3. <font color = "lime">降低空间分配次数，提升内存使用效率</font>  
-    &emsp; 字符串的追加、缩减操作会涉及到内存分配问题，然而内存分配问题会牵扯内存划分算法以及系统调用，所以如果频繁发生的话，会影响性能。所以采取了以下两种优化措施空间预分配、惰性空间回收。  
-
-    1. <font color = "lime">空间预分配</font>   
-        &emsp; 对于追加操作来说，Redis不仅会开辟空间至够用，<font color = "red">而且还会预分配未使用的空间(free)来用于下一次操作。</font>至于未使用的空间(free)的大小则由修改后的字符串长度决定。
-        
-        * 当修改后的字符串长度len < 1M，则会分配与len相同长度的未使用的空间(free)
-        * 当修改后的字符串长度len >= 1M，则会分配1M长度的未使用的空间(free)
-
-        有了这个预分配策略之后会减少内存分配次数，因为分配之前会检查已有的free空间是否够，如果够则不开辟了。
-    2. <font color = "lime">惰性空间回收</font>  
-        &emsp; 与上面情况相反，<font color = "red">惰性空间回收适用于字符串缩减操作。</font>比如有个字符串s1="hello world"，对s1进行sdstrim(s1," world")操作，<font color = "red">执行完该操作之后Redis不会立即回收减少的部分，而是会分配给下一个需要内存的程序。</font>
-
-<!-- 
-SDS还提供「空间预分配」和「惰性空间释放」两种策略。在为字符串分配空间时，分配的空间比实际要多，这样就能「减少连续的执行字符串增长带来内存重新分配的次数」。
-当字符串被缩短的时候，SDS也不会立即回收不适用的空间，而是通过free属性将不使用的空间记录下来，等后面使用的时候再释放。
-具体的空间预分配原则是：「当修改字符串后的长度len小于1MB，就会预分配和len一样长度的空间，即len=free；若是len大于1MB，free分配的空间大小就为1MB」。
--->
-
-4. <font color = "lime">二进制安全</font>  
-&emsp; SDS是二进制安全的，除了可以储存字符串以外还可以储存二进制文件(如图片、音频，视频等文件的二进制数据)；而c语言中的字符串是以空字符串作为结束符，一些图片中含有结束符，因此不是二进制安全的。  
 
 ### 1.3.2. 双端链表LinkedList  
 &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
@@ -258,28 +166,7 @@ SDS还提供「空间预分配」和「惰性空间释放」两种策略。在�
 
 
 ### 1.3.5. 字典Dictht  
-<!-- 
-Redis 字典
-https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
--->
-&emsp; 字典类型的底层是hashtable实现的，明白了字典的底层实现原理也就是明白了hashtable的实现原理，hashtable的实现原理可以与HashMap的是底层原理相类比。它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。  
-&emsp; dictEntry与HashMap两者在新增时都会通过key计算出数组下标，不同的是计算法方式不同，HashMap中是以hash函数的方式，而hashtable中计算出hash值后，还要通过sizemask 属性和哈希值再次得到数组下标。结构如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-81.png)  
-
-**rehash：**  
-&emsp; 在字典的底层实现中，value对象以每一个dictEntry的对象进行存储，当hash表中的存放的键值对不断的增加或者减少时，需要对hash表进行一个扩展或者收缩。  
-&emsp; 这里就会和HashMap一样，也会就进行rehash操作，进行重新散列排布。从上图中可以看到有ht[0]和ht[1]两个对象，先来看看对象中的属性是干嘛用的。  
-&emsp; 在hash表结构定义中有四个属性分别是table、unsigned long size、unsigned long sizemask、unsigned long used，分别表示的含义就是「哈希表数组、hash表大小、用于计算索引值，总是等于size-1、hash表中已有的节点数」。  
-&emsp; ht[0]是用来最开始存储数据的，当要进行扩展或者收缩时，ht[0]的大小就决定了ht[1]的大小，ht[0]中的所有的键值对就会重新散列到ht[1]中。  
-&emsp; 扩展操作：ht[1]扩展的大小是比当前 ht[0].used 值的二倍大的第一个 2 的整数幂；收缩操作：ht[0].used 的第一个大于等于的 2 的整数幂。  
-&emsp; 当ht[0]上的所有的键值对都rehash到ht[1]中，会重新计算所有的数组下标值，当数据迁移完后ht[0]就会被释放，然后将ht[1]改为ht[0]，并新创建ht[1]，为下一次的扩展和收缩做准备。  
-
-**渐进式rehash：**  
-&emsp; 假如在rehash的过程中数据量非常大，Redis不是一次性把全部数据rehash成功，这样会导致Redis对外服务停止，Redis内部为了处理这种情况采用「渐进式的rehash」。  
-&emsp; Redis将所有的rehash的操作分成多步进行，直到都rehash完成，具体的实现与对象中的rehashindex属性相关，「若是rehashindex 表示为-1表示没有rehash操作」。  
-&emsp; 当rehash操作开始时会将该值改成0，在渐进式rehash的过程「更新、删除、查询会在ht[0]和ht[1]中都进行」，比如更新一个值先更新ht[0]，然后再更新ht[1]。  
-&emsp; 而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，这样保证「ht[0]只减不增，直到最后的某一个时刻变成空表」，这样rehash操作完成。  
-
+&emsp; [Dictht](/docs/microService/Redis/Dictht.md)  
 
 ### 1.3.6. 整数集合inset  
 &emsp; inset的数据结构：  

@@ -230,6 +230,8 @@
         * [Redis基本数据类型](/docs/microService/Redis/RedisBasicStructure.md)  
         * [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
         * [Redis底层实现](/docs/microService/Redis/RedisBottom.md)  
+            * [SDS](/docs/microService/Redis/SDS.md)  
+            * [Dictht](/docs/microService/Redis/Dictht.md)  
     * [Redis客户端使用及开发规范](/docs/microService/Redis/RedisStandard.md)  
     * [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
     * [Redis内置功能](/docs/microService/Redis/BuiltIn.md)  
