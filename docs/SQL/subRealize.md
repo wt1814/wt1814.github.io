@@ -23,10 +23,10 @@ https://mp.weixin.qq.com/s/hPJHCKcptRYvKQPZRz6Tdg
 ## 1.1. 数据库中间件  
 &emsp; 数据库中间件的主要作用是向应用程序开发人员屏蔽读写分离和分库分表面临的挑战，并隐藏底层实现细节，使得开发人员可以像操作单库单表那样去操作数据。  
 
-&emsp; **<font color = "lime">除了数据库中间件之外还可以使用SpringAOP、ORM框架代理来实现多数据源读写分离。</font>**  
+&emsp; **<font color = "clime">除了数据库中间件之外还可以使用SpringAOP、ORM框架代理来实现多数据源读写分离。</font>**  
 
 ### 1.1.1. 设计方案  
-&emsp; 典型的数据库中间件设计方案有2种：代理proxy、客户端分片smart-client。下图演示了这两种方案的架构：  
+&emsp; **<font color = "red">典型的数据库中间件设计方案有2种：代理proxy、客户端分片smart-client。</font>** 下图演示了这两种方案的架构：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-25.png)  
 &emsp; 不论是proxy还是smart-client，底层都操作了多个数据库实例。不论是分库分表，还是读写分离，都是在数据库中间件层面对业务开发同学进行屏蔽。  
 

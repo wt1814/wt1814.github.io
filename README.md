@@ -214,6 +214,7 @@
 &emsp; [~~SQL语句优化~~](/docs/SQL/SQLStatement.md)  
 &emsp; [索引优化](/docs/SQL/index.md)  
 &emsp; [优化案例](/docs/SQL/case.md)  
+&emsp; [大数据量操作](/docs/SQL/largeData.md)  
 [数据库分布式](/docs/SQL/DistributedDatabase.md)  
 &emsp; [主从复制](/docs/SQL/replication.md)  
 &emsp; &emsp; [主从复制的问题](/docs/SQL/replicationProblem.md)  
@@ -223,11 +224,8 @@
 &emsp; [数据库分布式实现](/docs/SQL/subRealize.md)  
 &emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md)  
 [数据库连接池](/docs/SQL/connectionPool.md)  
-&emsp; [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
-&emsp; [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
 [MySQL运维](/docs/SQL/MySqlMonitor.md)  
 [数据迁移](/docs/projectImplement/implementation.md)  
-[大数据量操作](/docs/SQL/largeData.md)  
 
 [MySql原理](/docs/SQL/MySqlPrinciple.md)   
 &emsp; [MySql架构](/docs/SQL/Framework.md)   
@@ -248,6 +246,11 @@
 &emsp; [MySql锁](/docs/SQL/lock.md)  
 &emsp; [MySql锁表和死锁](/docs/SQL/LockProblem.md)  
 &emsp; [MySql-MVCC](/docs/SQL/MVCC.md)  
+
+<!-- 
+&emsp; [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
+&emsp; [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
+-->
 
 ## SSM  
 ### Spring  

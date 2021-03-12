@@ -1,8 +1,11 @@
 
 
 # 分库分表  
-## 分库分表及多维度查询  
-**<font color = "lime">1. 方案一：以第一维度进行拆分，第二维度拼接第一维度。2. 方案二：数据冗余。</font>**
+## 分库分表及多维度查询 
+<!-- 
+https://www.jianshu.com/p/11d10910247b
+--> 
+**<font color = "clime">1. 方案一：以第一维度进行拆分，第二维度拼接第一维度。2. 方案二：数据冗余。</font>**
 
 &emsp; 以电商模型订单库为目标问题。  
 1. 以用户id为分片键，订单号尾部拼接用户id后四位。根据后四位取模分片。  
@@ -12,7 +15,7 @@
 
 ## 历史订单  
 <!-- 
-https://www.jianshu.com/p/11d10910247b
+
 
 https://blog.csdn.net/jokemqc/article/details/82834748
 

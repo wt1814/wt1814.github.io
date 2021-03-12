@@ -89,7 +89,7 @@ slave-parallel-workers=2
 &emsp; **<font color = "red">《高性能MySql》第10章</font>**
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-61.png)  
 
-&emsp; 中断MySQL的复制并不是件难事。因为实现简单，配置相当容易，但也意味着有很多 方式会导致复制停止，陷入混乱并中断。  
+&emsp; 中断MySQL的复制并不是件难事。因为实现简单，配置相当容易，但也意味着有很多方式会导致复制停止，陷入混乱并中断。  
 
 ### 1.2.1. 复制延迟过大  
 &emsp; 产生延迟的两种方式：  
