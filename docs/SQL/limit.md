@@ -1,8 +1,14 @@
 
+<!-- TOC -->
 
+- [1. limit](#1-limit)
+    - [1.1. limit分页](#11-limit分页)
+    - [1.2. 神坑！MySQL中order by与limit一起用的问题](#12-神坑mysql中order-by与limit一起用的问题)
 
-# limit
-## limit分页
+<!-- /TOC -->
+
+# 1. limit
+## 1.1. limit分页
 
 <!-- 
 ~~
@@ -52,7 +58,7 @@
     ```
 
 
-## 神坑！MySQL中order by与limit一起用的问题 
+## 1.2. 神坑！MySQL中order by与limit一起用的问题 
 <!-- 
 神坑！MySQL中order by与limit不要一起用！ 
 https://mp.weixin.qq.com/s/93rBBFlfTx58OjD5S_OlAw
