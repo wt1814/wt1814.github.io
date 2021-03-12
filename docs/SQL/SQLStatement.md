@@ -36,6 +36,10 @@
         如果表只有一个字段，则 select count(*)最优。
 
 ### 1.1.2. group by优化 
+<!-- 
+Group by 优化 
+https://mp.weixin.qq.com/s/YXVRNQz0HJu_qvJktxQuMw
+-->
 1. 优化GROUP BY：提高GROUP BY语句的效率，<font color = "red">可以通过将不需要的记录在GROUP BY之前过滤掉。即联合使用where子句和having子句。</font>  
 2. 在默认情况下，MySQL中的GROUP BY语句会对其后出现的字段进行默认排序(非主键情况)，就好比使用ORDER BY col1,col2,col3…所以在后面跟上具有相同列(与GROUP BY后出现的col1,col2,col3…相同)ORDER BY子句并没有影响该SQL的实际执行性能。  
 
@@ -95,7 +99,9 @@ select * from student u where major_id not in (select major_id from major);
 ```
 
 ## 1.3. 关联查询优化  
-1. 在进行多表关联时，多用Where语句把单个表的结果集最小化，多用聚合函数汇总结果集后再与其它表做关联，以使结果集数据量最小化  
+1. 在进行多表关联时，多用Where语句把单个表的结果集最小化，多用聚合函数汇总结果集后再与其它表做关联，以使结果集数据量最小化。  
+
+
 ......
 
 ## 1.4. 组合查询优化  

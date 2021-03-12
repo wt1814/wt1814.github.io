@@ -5,7 +5,7 @@
 
 - [1. SQL优化](#1-sql优化)
     - [1.1. MySql性能(最大数据量、最大并发数、查询耗时)](#11-mysql性能最大数据量最大并发数查询耗时)
-    - [1.2. ※※※SQL优化维度](#12-※※※sql优化维度)
+    - [1.2. ★★★SQL优化维度](#12-★★★sql优化维度)
     - [1.3. 慢查询(监控)](#13-慢查询监控)
         - [1.3.1. 慢查询简介](#131-慢查询简介)
         - [1.3.2. 慢查询使用](#132-慢查询使用)
@@ -39,7 +39,7 @@ https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
 
 * 最大并发数：  
 &emsp; 并发数是指同一时刻数据库能处理多少个请求，由max_connections和max_user_connections决定。max_connections是指MySQL实例的最大连接数，上限值是16384，max_user_connections是指每个数据库用户的最大连接数。  
-&emsp; MySQL会为每个连接提供缓冲区，意味着消耗更多的内存。如果连接数设置太高，硬件吃不消，太低又不能充分利用硬件。一般要求两者比值超过10%，计算方法如下：  
+&emsp; **MySQL会为每个连接提供缓冲区，意味着消耗更多的内存。** 如果连接数设置太高，硬件吃不消，太低又不能充分利用硬件。一般要求两者比值超过10%，计算方法如下：  
         
         max_used_connections / max_connections * 100% = 3/100 *100% ≈ 3%
  
@@ -64,8 +64,7 @@ https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-28.png)  
 &emsp; <font color = "red">《阿里巴巴Java开发手册》提出单表行数超过500万行或者单表容量超过2GB，才推荐分库分表。</font>500万仅供参考，并非铁律。  
 
-## 1.2. ※※※SQL优化维度  
-
+## 1.2. ★★★SQL优化维度  
 1. 服务器的优化。  
 2. 表结构设计： **<font color = "red">单库单表无法满足时，可以拆分表结构(主从复制、分库分表)，或者使用ES搜索引擎。</font>**  
 3. SQL语句的优化。  

@@ -15,8 +15,10 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结</font>**  
+&emsp; **<font color = "clime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling。</font>**  
 
 * explain：  
+&emsp; expain出来的信息列分别是id、select_type、table、partitions、 **<font color = "red">type</font>** 、possible_keys、 **<font color = "red">key</font>** 、 **<font color = "red">key_len</font>** 、ref、rows、filtered、 **<font color = "red">Extra</font>** 。  
 &emsp; **<font color = "clime">type单表查询类型要达到range级别(只检索给定范围的行，使用一个索引来选择行，非全表扫描)，extra额外的信息，常见的不太友好的值，如下：Using filesort，Using temporary。其他重要字段：key、key_len</font>**  
 * profiling  
 &emsp; 使用 profiling 命令可以了解 SQL 语句消耗资源的详细信息(每个执行步骤的开销)。 
@@ -30,7 +32,7 @@ A --> C(proceduer analyse)
 A --> D(profiling)
 ```
 
-&emsp; **<font color = "lime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling。</font>**  
+&emsp; **<font color = "clime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling。</font>**  
 
 ## 1.1. explain与explain extended
 <!-- 
@@ -45,13 +47,15 @@ EXPLAIN SELECT column_name FROM table_name;
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-29.png)  
 &emsp; expain出来的信息列分别是id、select_type、table、partitions、 **<font color = "red">type</font>** 、possible_keys、 **<font color = "red">key</font>** 、 **<font color = "red">key_len</font>** 、ref、rows、filtered、 **<font color = "red">Extra</font>** 。  
 
-&emsp; ~~标注(1,2,3,4,5)是要重点关注的数据  
+<!-- 
+~~标注(1,2,3,4,5)是要重点关注的数据  
 
 * type列，连接类型。一个好的sql语句至少要达到range级别。杜绝出现all级别  
 * key列，使用到的索引名。如果没有选择索引，值是NULL。可以采取强制索引方式  
 * key_len列，索引长度  
 * rows列，扫描行数。该值是个预估值  
 * extra列，详细说明。注意常见的不太友好的值有：Using filesort, Using temporary~~  
+-->
 
 |列名|用途|
 |---|---|
@@ -93,16 +97,16 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
         &emsp; 分析结果可看出，先走id最大的2，也就是先走括号里面的查t3表的语句。走完查t3后，顺序执行，有一个，derived是衍生的意思，意思是在执行完t3查询后的s1虚表基础上，结果中的2，就是id为2的。最后执行的查t2表。  
 
 * select_type：常见的有如下6种SIMPLE、PRIMARY、SUBQUERY、DERIVED、UNION、UNION RESULT，指出查询的类型：普通查询、联合查询、子查询等复杂的查询。  
-    * SIMPLE：最简单的查询，查询中不包含子查询或者UNION。  
-    * PRIMARY：查询中若包含任何复杂的子查询，最外层查询则被标记为PRIMARY，也就是最后被执行的语句。  
-    * SUBQUERY：在SELECT from或者WHERE列表中包含了子查询  
-    * DERIVED：导出表的SELECT(FROM子句的子查询)；在FROM列表中包含的子查询被标记为DERIVED(衍生)MySQL会递归执行这些子查询，把结果放在临时表里。  
-    * UNION：UNION中的第二个或后面的SELECT语句；若第二个SELECT出现在UNION之后，则被标记为UNION；若UNION包含在FROM子句的子查询中，外层SELECT将被标记为DERIVED  
+    * SIMPLE：最简单的查询，查询中不包含子查询或者UNION；  
+    * PRIMARY：查询中若包含任何复杂的子查询，最外层查询则被标记为PRIMARY，也就是最后被执行的语句；  
+    * SUBQUERY：在SELECT from或者WHERE列表中包含了子查询；  
+    * DERIVED：导出表的SELECT(FROM子句的子查询)；在FROM列表中包含的子查询被标记为DERIVED(衍生)MySQL会递归执行这些子查询，把结果放在临时表里；  
+    * UNION：UNION中的第二个或后面的SELECT语句；若第二个SELECT出现在UNION之后，则被标记为UNION；若UNION包含在FROM子句的子查询中，外层SELECT将被标记为DERIVED；  
     * UNION RESULT：UNION的结果；  
-    * DEPENDENT SUBQUERY：子查询中的第一个 SELECT，取决于外面的查询. 即子查询依赖于外层查询的结果. 出现该值的时候一定要特别注意，可能需要使用join的方式优化子查询。  
+    * DEPENDENT SUBQUERY：子查询中的第一个 SELECT，取决于外面的查询. 即子查询依赖于外层查询的结果. 出现该值的时候一定要特别注意，可能需要使用join的方式优化子查询；  
     * DEPENDENT UNION：UNION中的第二个或后面的SELECT语句，取决于外面的查询；  
 
-* table：(查询涉及的表或衍生表)  
+* table：(查询涉及的表或衍生表)。  
 &emsp; 其值为表名或者表的别名，表示访问哪一个表。  
 &emsp; 当from中有子查询的时候，表名是derivedN的形式，其中N指向子查询，也就是explain结果中的下一列  
 &emsp; 当有union result的时候，表名是union 1,2等的形式，1,2表示参与union的query id  
@@ -122,7 +126,7 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
     * Index：该联接类型与ALL相同，除了只有索引树被扫描。这通常比ALL快，因为索引文件通常比数据文件小。  
     * ALL：对于每个来自于先前的表的行组合，进行完整的表扫描。  
 * possible_keys：指出MySQL能使用哪个索引在该表中找到行。  
-* **<font color = "red">key：显示MySQL实际决定使用的键(索引)。如果没有选择索引，键是NULL。</font><font color = "lime">很少的情况下，MYSQL会选择优化不足的索引。这种情况下，可以在SELECT语句中使用USE INDEX(indexname)来强制使用一个索引或者用IGNORE INDEX(indexname)来强制MYSQL忽略索引。</font>**  
+* **<font color = "red">key：显示MySQL实际决定使用的键(索引)。如果没有选择索引，键是NULL。</font><font color = "clime">很少的情况下，MYSQL会选择优化不足的索引。这种情况下，可以在SELECT语句中使用USE INDEX(indexname)来强制使用一个索引或者用IGNORE INDEX(indexname)来强制MYSQL忽略索引。</font>**  
 * **<font color = "red">key_len：索引长度，显示MySQL决定使用的键长度。如果键是NULL，则长度为NULL。</font>**  
 * ref：显示使用哪个列或常数与key一起从表中选择行。  
 * rows：扫描行数。该值是个预估值。显示MySQL认为它执行查询时必须检查的行数。多行之间的数据相乘可以估算要处理的行数。  
@@ -139,11 +143,11 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
     * Using index for group-by：类似于访问表的Using index方式，Using index for group-by表示MySQL发现了一个索引，可以用来查询GROUP BY或DISTINCT查询的所有列,而不要额外搜索硬盘访问实际的表。  
 
 ### 1.1.1. explain extended
-&emsp; <font color = "red">用explain extended查看执行计划会比explain多一列 filtered。filtered列给出了一个百分比的值，这个百分比值和rows列的值一起使用，可以估计出那些将要和explain中的前一个表进行连接的行的数目。前一个表就是指explain 的 id列的值比当前表的id小的表。</font>  
+&emsp; <font color = "red">用explain extended查看执行计划会比explain多一列filtered。filtered列给出了一个百分比的值，这个百分比值和rows列的值一起使用，可以估计出那些将要和explain中的前一个表进行连接的行的数目。前一个表就是指explain的id列的值比当前表的id小的表。</font>  
 
 ## 1.2. show warnings
 &emsp; SHOW WARNINGS显示有关由于当前会话中执行最新的非诊断性语句而导致的条件的信息。  
-&emsp; 使用mysql show warnings避免一些隐式转换。  
+&emsp; 可以使用mysql show warnings避免一些隐式转换等。  
 <!-- 
 explain extended + show warnings
 阿里的程序员也不过如此，竟被一个简单的SQL查询难住 
@@ -196,7 +200,7 @@ mysql> select @@profiling;
 +-------------+
 1 row in set, 1 warning (0.00 sec)
 ```
-&emsp; 在连接关闭后，profiling 状态自动设置为关闭状态。  
+&emsp; 在连接关闭后，profiling状态自动设置为关闭状态。  
 
 ### 1.4.3. 查看执行的SQL列表  
 ```

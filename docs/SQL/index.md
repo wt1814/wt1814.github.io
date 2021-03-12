@@ -1,19 +1,20 @@
 
-
 <!-- TOC -->
 
 - [1. Sql索引优化](#1-sql索引优化)
     - [1.1. 索引简介](#11-索引简介)
     - [1.2. 创建索引的几种方式](#12-创建索引的几种方式)
-    - [1.3. 创建索引原则](#13-创建索引原则)
-    - [1.4. 索引/条件--->下推(ICP)](#14-索引条件---下推icp)
+    - [1.3. ★★★索引使用](#13-★★★索引使用)
+        - [1.3.1. 创建索引原则](#131-创建索引原则)
+        - [1.3.2. 索引失效](#132-索引失效)
+    - [1.4. ★★★索引条件下推(ICP)](#14-★★★索引条件下推icp)
         - [1.4.1. 概念](#141-概念)
         - [1.4.2. 示例分析](#142-示例分析)
-        - [★★★示例二](#★★★示例二)
-    - [1.5. 索引失效](#15-索引失效)
-    - [1.6. 索引维护、索引工具的使用](#16-索引维护索引工具的使用)
+        - [1.4.3. ★★★示例二](#143-★★★示例二)
+    - [1.5. 索引维护](#15-索引维护)
 
 <!-- /TOC -->
+
 
 # 1. Sql索引优化  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-56.png)  
@@ -46,7 +47,7 @@ https://mp.weixin.qq.com/s/N6chmfcxnm6a3pOQYWAcbA
     * 普通索引和唯一索引  
     &emsp; 普通索引可以重复，唯一索引和主键一样不能重复。     
 
-    * 全文(Fulltext)：针对比较大的数据，比如存放的是消息内容，有几 KB 的数 据的这种情况，如果要解决 like 查询效率低的问题，可以创建全文索引。只有文本类型 的字段才可以创建全文索引，比如 char、varchar、text。  
+    * 全文(Fulltext)：针对比较大的数据，比如存放的是消息内容，有几KB的数据的这种情况，如果要解决like查询效率低的问题，可以创建全文索引。只有文本类型 的字段才可以创建全文索引，比如char、varchar、text。  
 
 <!-- 
 1.主键索引: 数据列不允许重复，不允许为NULL，一个表只能有一个主键。
@@ -66,7 +67,9 @@ https://mp.weixin.qq.com/s/N6chmfcxnm6a3pOQYWAcbA
 https://mp.weixin.qq.com/s/Mvl3OURNurdrJ2o9OyM6KQ
 -->
 
-## 1.3. 创建索引原则  
+
+## 1.3. ★★★索引使用
+### 1.3.1. 创建索引原则  
 &emsp; 为了使索引的使用效率更高，<font color = "red">在创建索引时，必须考虑在哪些字段上创建索引和创建什么类型的索引。</font>  
 
 &emsp; **创建索引的位置：**  
@@ -120,7 +123,28 @@ https://mp.weixin.qq.com/s/Mvl3OURNurdrJ2o9OyM6KQ
     3. 假如联合索引所包含的字段超过3个，那么仔细考虑其必要性，考虑减少联合的字段；  
     4. 假如既有单字段索引，又有这几个字段上的联合索引，一般可以删除联合索引；  
 
-## 1.4. 索引/条件--->下推(ICP)  
+
+### 1.3.2. 索引失效  
+1. 联合索引最左前缀匹配原则。  
+2. 对索引列进行null值运算。  
+&emsp; 索引无法存储null值。B-tree索引is null不会走，is not null会走。  
+3. 对索引列进行运算导致索引失效。  
+&emsp; 逻辑运算(NOT、OR)；比较运算(=、<>、!=、>、>=、!>、<、<=、!<)、all，some，many关键字；范围查询in，exist关键字、like关键字。  
+&emsp; <font color = "red">用or分割条件，若or前后只要有一个列没有索引，就都不会用索引。</font>  
+4. 对索引进行模糊查询like时可能使索引失效(以%开头)。  
+&emsp; 前导模糊查询不能利用索引(like '%XX'或者like '%XX%')。假如有这样一列code的值为'AAA','AAB','BAA','BAB'，如果where code like '%AB'条件，由于条件首字母是是模糊%的，所以不能利用索引的顺序，必须一个个去查询。这样会导致全索引扫描或者全表扫描。如果是这样的条件where code like 'A % '，就可以查找CODE中A开头的CODE的位置，当碰到B开头的数据时，就可以停止查找了，因为后面的数据一定不满足要求。这样就可以利用索引了。  
+&emsp; 解决办法：可采用在建立索引时用reverse(columnName)这种方法处理。  
+5. 隐式转换导致索引失效。  
+&emsp; 由于表的字段tu_mdn定义为varchar2(20)，但在查询时把该字段作为number类型以where条件传给sql语句，这样会导致索引失效。  
+&emsp; 错误的例子：select * from test where tu_mdn=13333333333;  
+&emsp; 正确的例子：select * from test where tu_mdn='13333333333';  
+6. 对索引列使用函数导致索引失效。  
+&emsp; 对于这样情况应当创建基于函数的索引。  
+&emsp; 错误的例子：select * from test where round(id)=10; 此时id的索引已经不起作用了。  
+&emsp; 正确的例子：首先建立函数索引，create index test_id_fbi_idx on test(round(id));然后 select * from test where round(id)=10; 这时函数索引起作用了。
+
+
+## 1.4. ★★★索引条件下推(ICP)  
 <!--
 神奇的 SQL 之 ICP → 索引条件下推 
 https://mp.weixin.qq.com/s/nxxblJJY2W6ryCGoqOh0XQ
@@ -156,7 +180,7 @@ SELECT * FROM people WHERE zipcode='95054' AND lastname LIKE '%etrunia%' AND add
 &emsp; 如果没有使用索引下推技术，则MySQL会通过zipcode='95054'从存储引擎中查询对应的数据，返回到MySQL服务端，然后MySQL服务端基于lastname LIKE '%etrunia%'和address LIKE '%Main Street%'来判断数据是否符合条件。  
 &emsp; <font color = "blue">如果使用了索引下推技术，则MYSQL首先会返回符合zipcode='95054'的索引，然后根据lastname LIKE '%etrunia%'和address LIKE '%Main Street%'来判断索引是否符合条件。如果符合条件，则根据该索引来定位对应的数据，如果不符合，则直接reject掉。有了索引下推优化，可以在有like条件查询的情况下，减少回表次数。</font> 
 
-### ★★★示例二  
+### 1.4.3. ★★★示例二  
 &emsp; 居于组合索引 idx_name_age，以下这个SQL执行几次树搜索呢？  
 
 ```sql
@@ -171,26 +195,7 @@ select * from employee where name like '小%' and age=28 and sex='0';
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-153.png)  
 
 
-## 1.5. 索引失效  
-1. 联合索引最左前缀匹配原则。  
-2. 对索引列进行null值运算。  
-&emsp; 索引无法存储null值。B-tree索引is null不会走，is not null会走。  
-3. 对索引列进行运算导致索引失效。  
-&emsp; 逻辑运算(NOT、OR)；比较运算(=、<>、!=、>、>=、!>、<、<=、!<)、all，some，many关键字；范围查询in，exist关键字、like关键字。  
-&emsp; <font color = "red">用or分割条件，若or前后只要有一个列没有索引，就都不会用索引。</font>  
-4. 对索引进行模糊查询like时可能使索引失效(以%开头)。  
-&emsp; 前导模糊查询不能利用索引(like '%XX'或者like '%XX%')。假如有这样一列code的值为'AAA','AAB','BAA','BAB'，如果where code like '%AB'条件，由于条件首字母是是模糊%的，所以不能利用索引的顺序，必须一个个去查询。这样会导致全索引扫描或者全表扫描。如果是这样的条件where code like 'A % '，就可以查找CODE中A开头的CODE的位置，当碰到B开头的数据时，就可以停止查找了，因为后面的数据一定不满足要求。这样就可以利用索引了。  
-&emsp; 解决办法：可采用在建立索引时用reverse(columnName)这种方法处理。  
-5. 隐式转换导致索引失效。  
-&emsp; 由于表的字段tu_mdn定义为varchar2(20)，但在查询时把该字段作为number类型以where条件传给sql语句，这样会导致索引失效。  
-&emsp; 错误的例子：select * from test where tu_mdn=13333333333;  
-&emsp; 正确的例子：select * from test where tu_mdn='13333333333';  
-6. 对索引列使用函数导致索引失效。  
-&emsp; 对于这样情况应当创建基于函数的索引。  
-&emsp; 错误的例子：select * from test where round(id)=10; 此时id的索引已经不起作用了。  
-&emsp; 正确的例子：首先建立函数索引，create index test_id_fbi_idx on test(round(id));然后 select * from test where round(id)=10; 这时函数索引起作用了。  
-
-## 1.6. 索引维护、索引工具的使用  
+## 1.5. 索引维护
 1. 冗余和重复索引：冗余索引是指在相同的列上按照相同的顺序创建的相同类型的索引，应当尽量避免这种索引，发现后立即删除。比如有一个索引(A,B)，再创建索引(A)就是冗余索引。冗余索引经常发生在为表添加新索引时，比如有人新建了索引(A,B)，但这个索引不是扩展已有的索引(A)。
 2. 大多数情况下都应该尽量扩展已有的索引而不是创建新索引。但有极少情况下出现性能方面的考虑需要冗余索引，比如扩展已有索引而导致其变得过大，从而影响到其他使用该索引的查询。
 3. 删除长期未使用的索引。
