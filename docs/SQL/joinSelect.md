@@ -7,9 +7,7 @@
         - [1.1.1. 各种JOIN](#111-各种join)
             - [1.1.1.1. 常用的JOIN](#1111-常用的join)
             - [1.1.1.2. 延伸用法](#1112-延伸用法)
-        - [1.1.2. 自连接](#112-自连接)
-            - [1.1.2.1. 用SQL自连接查询处理列之间的关系](#1121-用sql自连接查询处理列之间的关系)
-            - [1.1.2.2. SQL自连接查询表示其它关系](#1122-sql自连接查询表示其它关系)
+        - [1.1.2. ★★★自连接](#112-★★★自连接)
     - [1.2. 子查询](#12-子查询)
         - [1.2.1. 子查询的位置](#121-子查询的位置)
         - [1.2.2. 子查询的分类](#122-子查询的分类)
@@ -28,6 +26,18 @@
         - [1.3.1. UNION运算符，并集](#131-union运算符并集)
 
 <!-- /TOC -->
+
+
+
+&emsp; **<font color = "red">总结：</font>**  
+
+&emsp; **关键字in：**  
+&emsp; **<font color = "clime">in查询里面的数量最大只能1000。</font>**  
+&emsp; **<font color = "red">确定给定的值是否与子查询或列表中的值相匹配。in在查询的时候，首先查询子查询的表，然后将内表和外表做一个笛卡尔积，然后按照条件进行筛选。所以相对内表比较小的时候，in的速度较快。</font>**  
+
+&emsp; **<font color = "clime">in和exists的区别：</font><font color = "red">如果子查询得出的结果集记录较少，主查询中的表较大且又有索引时应该用in，反之如果外层的主查询记录较少，子查询中的表大，又有索引时使用exists。</font>**  
+
+
 
 # 1. 联合查询
 <!-- 
@@ -72,34 +82,9 @@ https://mp.weixin.qq.com/s/u66ll2Rg9mqP4WSfEK8R1g
 --> 
 
 
-### 1.1.2. 自连接  
-&emsp; 处理列与列之间的逻辑关系；  
+### 1.1.2. ★★★自连接  
+&emsp; [一些比较特殊的查询](/docs/SQL/trans.md)  
 
-#### 1.1.2.1. 用SQL自连接查询处理列之间的关系  
-&emsp; <font color = "red">SQL自连接解决了列与列之间的逻辑关系之层次关系。</font>当所要查询的信息都出于同一个表，而又不能直接通过该表的各个列的直接层次关系得到最终结果的时候，那么应该考虑使用表的自连接查询。  
-
-```sql
-SELECT FIRST.CNumber, SECOND.PCNumber FROM Course FIRST, Course SECOND WHERE FIRST.PCNumber=SECOND.CNumber;  
-```
-&emsp; 在这个代码中，只涉及到一个表，即课程信息表COURSE(CNumber，CName， PCNumber)，其中CNumber是该课程的课程号，PCNumber是该课程的先修课课程号。查询结果集是FIRST表中的课程号CNumber和该课程号所对应的间接先修课课程号。  
-
-#### 1.1.2.2. SQL自连接查询表示其它关系  
-&emsp; <font color = "red">SQL自连接查询还可用于处理列之间的顺序关系、因果关系等多种逻辑关系。</font>此外，SQL自身查询还可以用于处理单列本身的逻辑关系。  
-&emsp; 对单列的逻辑关系的处理，示例：  
-
-```sql
-SELECT FIRST.Num,FIRST Stop,SECOND.Stop FROM Route FIRST, Route SECOND WHERE FIRST.NUM=SECOND.NUM;
-```
-&emsp; 表Route(Num， Stop)，可以表示某一线路的火车的车站线路信息。Num表示该车的车次号，Stop表示该车次停靠的城市名称。上面的代码，可以求出某一线路的火车可以联通的任意两个城市的名称。原来表Route中的每一个元组，只能表示车号和该车的某一站点的信息，实际上，这是“1Vs1”的映射关系。  
-
-&emsp; 对单一的列进行连接处理，示例：  
-
-```sql
-SELECT FIRST.Num,SECOND.Num,FIRST.Stop FROM Route FIRST, Route SECOND WHERE FRIST.Stop=SECOND.Stop;
-```
-&emsp; 上面的SQL代码，求出了路经相同城市的车次的信息。原表中的车次和车站是“1Vs1”关系，通过自连接后，得到了车次和车站的“多Vs1”关系。  
-
----
 
 ## 1.2. 子查询  
 &emsp; 子查询(嵌套查询)：在一个select语句中，嵌入了另外一个select语句，那么被嵌入的select语句称之为子查询语句，外部那个select语句则称为主查询。子查询是辅助主查询的，要么充当条件，要么充当数据源。  
@@ -122,7 +107,7 @@ SELECT * FROM students WHERE age > (SELECT AVG(age) FROM students);
 
 #### 1.2.2.2. 列子查询  
 &emsp; 返回的结果是一列(一列多行)。格式：主查询where条件in(列子查询)  
-&emsp; 示例：查询还有学生在班的所有班级名字  
+&emsp; 示例：查询还有学生在班的所有班级名字。  
 
 ```sql
 --1.找出学生表中所有的班级id，2.找出班级表中对应的名字
@@ -131,7 +116,7 @@ SELECT NAME FROM classes WHERE id IN (SELECT cls_id FROM students);
 
 #### 1.2.2.3. 行子查询
 &emsp; 返回的结果是一行(一行多列)。格式：主查询 where (字段1,2,...) = (行子查询)。行元素: 将多个字段合成一个行元素，在行级子查询中会使用到行元素。  
-&emsp; 示例：查找班级年龄最大，身高最高的学生  
+&emsp; 示例：查找班级年龄最大，身高最高的学生。  
 
 ```sql
 SELECT * FROM students WHERE (height,age) = (SELECT MAX(height),MAX(age) FROM students);
@@ -148,8 +133,8 @@ SELECT * FROM students WHERE (height,age) = (SELECT MAX(height),MAX(age) FROM st
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-2.png)  
 
 #### 1.2.4.1. 关键字In
-&emsp; in查询里面的数量最大只能1000。  
-&emsp; **确定给定的值是否与子查询或列表中的值相匹配。in在查询的时候，首先查询子查询的表，然后将内表和外表做一个笛卡尔积，然后按照条件进行筛选。所以相对内表比较小的时候，in的速度较快。**  
+&emsp; **<font color = "clime">in查询里面的数量最大只能1000。</font>**  
+&emsp; **<font color = "red">确定给定的值是否与子查询或列表中的值相匹配。in在查询的时候，首先查询子查询的表，然后将内表和外表做一个笛卡尔积，然后按照条件进行筛选。所以相对内表比较小的时候，in的速度较快。</font>**  
 &emsp; 具体sql语句如下：  
 
 ```sql
@@ -160,7 +145,7 @@ select * from user where user.id in (select order.user_id from order)
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-3.png)  
 2. 将查询到的结果和原有的user表做一个笛卡尔积，结果如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-4.png)  
-3. 再根据 user.id IN order.user_id的条件，将结果进行筛选(既比较id列和user_id 列的值是否相等，将不相等的删除)。最后，得到两条符合条件的数据。  
+3. 再根据user.id IN order.user_id的条件，将结果进行筛选（既比较id列和user_id 列的值是否相等，将不相等的删除）。最后，得到两条符合条件的数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-5.png)  
 
 ##### 1.2.4.1.1. 关键字in与关键字or与关键字between  
@@ -184,7 +169,7 @@ select user.* from user where exists(select order.user_id from order where user.
 &emsp; 2.然后，根据表的每一条记录，执行exists(select order.user_id from order where user.id = order.user_id)，依次去判断where后面的条件是否成立。如果成立则返回true不成立则返回false。如果返回的是true的话，则该行结果保留，如果返回的是false的话，则删除该行，最后将得到的结果返回。  
 
 #### 1.2.4.3. In与Exists区别  
-&emsp; in和exists的区别: 如果子查询得出的结果集记录较少，主查询中的表较大且又有索引时应该用in，反之如果外层的主查询记录较少，子查询中的表大，又有索引时使用exists。  
+&emsp; **<font color = "clime">in和exists的区别：</font><font color = "red">如果子查询得出的结果集记录较少，主查询中的表较大且又有索引时应该用in，反之如果外层的主查询记录较少，子查询中的表大，又有索引时使用exists。</font>**  
 
 ### 1.2.5. 子查询与连接查询的区别  
 &emsp; 表连接都可以用子查询，但不是所有子查询都能用表连接替换，子查询比较灵活，方便，形式多样，适合用于作为查询的筛选条件，而表连接更适合查看多表的数据  

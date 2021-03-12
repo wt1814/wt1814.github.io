@@ -5,7 +5,7 @@
 * 数据定义语言DDL(Data Ddefinition Language)  
 &emsp; CREATE,DROP,ALTER。即对逻辑结构等有操作的，其中包括表结构，视图和索引。  
 * 数据查询语言DQL(Data Query Language)  
-&emsp; SELECT。即查询操作，以select关键字。各种简单查询，连接查询等 都属于DQL。  
+&emsp; SELECT。即查询操作，以select关键字。各种简单查询，连接查询等都属于DQL。  
 * 数据操纵语言DML(Data Manipulation Language)  
 &emsp; INSERT,UPDATE,DELETE。即对数据进行操作的，对应上面所说的查询操作 DQL与DML共同构建了多数初级程序员常用的增删改查操作。而查询是较为特殊的一种 被划分到DQL中。  
 * 数据控制功能DCL(Data Control Language)  

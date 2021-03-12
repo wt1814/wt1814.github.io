@@ -204,6 +204,7 @@
 [数据建模](/docs/SQL/modeling.md)  
 [SQL语句](/docs/SQL/SQLSentence.md)  
 &emsp; [基本查询语句](/docs/SQL/basicSelect.md)  
+&emsp; &emsp; [limit](/docs/SQL/limit.md)  
 &emsp; [连接查询](/docs/SQL/joinSelect.md)  
 &emsp; [一些比较特殊的查询](/docs/SQL/trans.md)  
 [MySql函数](/docs/SQL/MySQLFunction.md)  

@@ -144,6 +144,7 @@
     * [数据建模](/docs/SQL/modeling.md)  
     * [SQL语句](/docs/SQL/SQLSentence.md)  
         * [基本查询语句](/docs/SQL/basicSelect.md)  
+            * [limit](/docs/SQL/limit.md)
         * [连接查询](/docs/SQL/joinSelect.md)  
         * [一些比较特殊的查询](/docs/SQL/trans.md)  
     * [MySql函数](/docs/SQL/MySQLFunction.md)  

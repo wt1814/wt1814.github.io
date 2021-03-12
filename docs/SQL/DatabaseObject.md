@@ -53,7 +53,7 @@ create sequence myseq start with 1 increment by 2 maxvalue 10 minvalue 1 cycle c
 ```
 
 ### 1.1.2. 使用序列  
-&emsp; NEXTVAL：返回序列中下一个有效的值，任何用户都可以引用。CURRVAL：存放序列的当前值，第一次使用时CURRVAL不能用。使用时需要指定序列的对象名。  
+&emsp; **NEXTVAL：返回序列中下一个有效的值，任何用户都可以引用。** CURRVAL：存放序列的当前值，第一次使用时CURRVAL不能用。使用时需要指定序列的对象名。  
 
 ```sql
 select myseq.currval from dual;

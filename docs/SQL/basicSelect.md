@@ -5,7 +5,7 @@
 - [1. 基本查询语句](#1-基本查询语句)
     - [1.1. 基本查询结构](#11-基本查询结构)
         - [1.1.1. SQL语句的组成部分](#111-sql语句的组成部分)
-        - [1.1.2. 查询SQL的执行顺序](#112-查询sql的执行顺序)
+        - [1.1.2. ★★★查询SQL的执行顺序](#112-★★★查询sql的执行顺序)
     - [1.2. 基本查询详解](#12-基本查询详解)
         - [1.2.1. Distinct关键字](#121-distinct关键字)
             - [1.2.1.1. Distinct多列操作](#1211-distinct多列操作)
@@ -17,12 +17,17 @@
             - [1.2.4.1. Group By 和 Order By和Top](#1241-group-by-和-order-by和top)
             - [1.2.4.2. Having关键字与Where的区别](#1242-having关键字与where的区别)
             - [1.2.4.3. Group By多字段分组](#1243-group-by多字段分组)
-                - [1.2.4.3.1. ***order by与limit不要一起用](#12431-order-by与limit不要一起用)
         - [1.2.5. Order By关键字](#125-order-by关键字)
         - [1.2.6. Limit，分页](#126-limit分页)
     - [1.3. 其他](#13-其他)
 
 <!-- /TOC -->
+
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; 基本查询SQL执行顺序：from -> on -> join -> where -> group by ->  avg,sum.... ->having -> select -> distinct -> order by -> top，limit。 
+&emsp; **<font color = "clime">查询结果集中有统计数据时，就需要使用分组函数。</font>**  
+&emsp; **<font color = "red">Group By分组函数中，查询只能得到组相关的信息。组相关的信息(统计信息)：count,sum,max,min,avg。</font> 在select指定的字段要么包含在Group By语句的后面，作为分组的依据；要么就要被包含在聚合函数中。group by是对结果集分组，而不是查询字段分组。**  
+&emsp; **<font color = "red">Group By含有去重效果。</font>**  
 
 # 1. 基本查询语句  
 <!-- 
@@ -45,18 +50,18 @@ https://mp.weixin.qq.com/s/YXVRNQz0HJu_qvJktxQuMw
 &emsp; group by必须放在order by和limit之前。  
 
 ### 1.1.1. SQL语句的组成部分  
-&emsp; SELECT语句有哪几部分构成？作用分别是什么？  
+&emsp; **<font color = "red">SELECT语句有哪几部分构成？作用分别是什么？</font>**  
 1. SELECT关键字；  
 2. 谓词：DISTINCT，TOP n；  
 3. 查询字段：*或用逗号分隔的字段列表；  
-4. FROM子句：用，分隔的表或视图列表；  
+4. FROM子句：用逗号分隔的表或视图列表；  
 5. WHERE子句：查询条件；  
 6. GROUP BY子句：分组字段；  
 7. HAVING子句：针对分组字段的查询条件；  
 8. ORDER BY子句：排序字段列表；  
 9. limit子句：分页。  
 
-### 1.1.2. 查询SQL的执行顺序  
+### 1.1.2. ★★★查询SQL的执行顺序  
 <!-- 
 &emsp; 执行顺序：from -> on -> join -> where -> group by ->  avg,sum.... ->having -> select -> distinct -> order by -> top，limit，下文讲解。 
 -->
@@ -103,26 +108,8 @@ LIMIT < limit_number >
 * WHERE 过滤  
     &emsp; 第四步，是执行WHERE过滤器，对上一步生产的虚拟表引用WHERE筛选，生成虚拟表VT4。  
 
-    &emsp; **WHERE 和 ON 的区别**  
-
-    * 如果有外部列，ON针对过滤的是关联表，主表(保留表)会返回所有的列;
-    * 如果没有添加外部列，两者的效果是一样的;
-
-
-    &emsp; 应用  
-
-    * 对主表的过滤应该使用WHERE;
-    * 对于关联表，先条件查询后连接则用ON，先连接后条件查询则用 WHERE;
-
-
-    &emsp; where 1=1
-    <!-- 
-    SQL 语句中 where 条件后 写上1=1 是什么意思 
-    https://mp.weixin.qq.com/s/tL54fxgT1tY3JpaSjR--Ow
-    -->
-
 * GROUP BY  
-    &emsp; 根据 group by 字句中的列，会对 VT4 中的记录进行分组操作，产生虚拟机表 VT5。如果应用了group by，那么后面的所有步骤都只能得到的 VT5 的列或者是聚合函数(count、sum、avg等)。  
+    &emsp; 根据 group by字句中的列，会对 VT4 中的记录进行分组操作，产生虚拟机表 VT5。如果应用了group by，那么后面的所有步骤都只能得到的 VT5 的列或者是聚合函数(count、sum、avg等)。  
 
 * HAVING  
     &emsp; 紧跟着 GROUP BY 字句后面的是 HAVING，使用 HAVING 过滤，会把符合条件的放在 VT6。  
@@ -138,6 +125,11 @@ LIMIT < limit_number >
 
 ## 1.2. 基本查询详解  
 &emsp; **《MySQL必知必会》**  
+<!-- 
+where 1=1
+SQL 语句中 where 条件后 写上1=1 是什么意思 
+https://mp.weixin.qq.com/s/tL54fxgT1tY3JpaSjR--Ow
+-->
 
 ### 1.2.1. Distinct关键字  
 ```sql
@@ -176,7 +168,7 @@ select *, count(distinct name) from table group by name;
 &emsp; 例：从select结果中显示前4行，select top 4 * from Employee;  
 
 ### 1.2.3. Like关键字-1  
-&emsp; Sql模糊查询like条件中特殊字符需要转义后才能搜索到结果：  
+&emsp; **Sql模糊查询like条件中特殊字符需要转义后才能搜索到结果。**  
 
 |字符|作用|转义字符|
 |---|---|---|
@@ -192,10 +184,9 @@ SELECT * FROM E_MDM_MATERIAL WHERE LONG_DESC LIKE '%\\\\\\\\%';
 ```
 
 ### 1.2.4. Group By关键字，分组函数，结合聚合函数  
-&emsp; <font color = "lime">查询结果集中有统计数据时，就需要使用分组函数。</font>  
-&emsp; <font color = "red">Group By分组函数中，查询只能得到组相关的信息。组相关的信息(统计信息)：count,sum,max,min,avg。</font>  
-&emsp; select 类别, sum(数量) as 数量之和 from A group by类别order by 类别desc执行出错。在select指定的字段要么包含在Group By语句的后面，作为分组的依据；要么就要被包含在聚合函数中。group by是对结果集分组，而不是查询字段分组。  
-&emsp; Group By含有去重效果。  
+&emsp; **<font color = "clime">查询结果集中有统计数据时，就需要使用分组函数。</font>**  
+&emsp; **<font color = "red">Group By分组函数中，查询只能得到组相关的信息。组相关的信息(统计信息)：count,sum,max,min,avg。</font> 在select指定的字段要么包含在Group By语句的后面，作为分组的依据；要么就要被包含在聚合函数中。group by是对结果集分组，而不是查询字段分组。**  
+&emsp; **<font color = "red">Group By含有去重效果。</font>**  
 
 #### 1.2.4.1. Group By 和 Order By和Top  
 &emsp; SQL语句查询记录中重复最多的记录。  
@@ -224,66 +215,15 @@ select SUM(number)from A where number >8 group by type SUM(number) > 10
 &emsp; GROUP BY X意思是将所有具有相同X字段值的记录放到一个分组里。  
 &emsp; GROUP BY X, Y意思是将所有具有相同X字段值和Y字段值的记录放到一个分组里。   
 
-##### 1.2.4.3.1. ***order by与limit不要一起用
-<!-- 
-神坑！MySQL中order by与limit不要一起用！ 
-https://mp.weixin.qq.com/s/93rBBFlfTx58OjD5S_OlAw
-
--->
 
 ### 1.2.5. Order By关键字  
 <!-- 
 ORDER BY中混合ASC和DESC
 -->
 
-
 ### 1.2.6. Limit，分页  
-<!-- 
-~~
- 多数人都曾遇到过的 limit 问题，深入浅出 MySQL 优先队列 
- https://mp.weixin.qq.com/s/ejZ4f828dQnXyNE6dcLxOw
--->
-1. 直接使用数据库提供的SQL语句  
-&emsp; 语句样式: MySQL中，可用如下方法: SELECT * FROM 表名称 LIMIT M,N  
-&emsp; 适应场景: 适用于数据量较少的情况(元组百/千级)  
-&emsp; 原因/缺点: 全表扫描，速度会很慢 且 有的数据库结果集返回不稳定(如某次返回1,2,3，另外的一次返回2,1,3)。Limit限制的是从结果集的M位置处取出N条输出，其余抛弃。  
+&emsp; [limit](/docs/SQL/limit.md)  
 
-2. <font color = "red">建立主键或唯一索引，利用索引</font>  
-&emsp; 语句样式: MySQL中，可用如下方法: SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) LIMIT M  
-&emsp; 适应场景: 适用于数据量多的情况(元组数上万)  
-&emsp; 原因: 索引扫描，速度会很快. 有朋友提出: 因为数据查询出来并不是按照pk_id排序的，所以会有漏掉数据的情况，只能方法3  
-
-3. <font color = "red">基于索引再排序</font>  
-&emsp; 语句样式: MySQL中，可用如下方法: SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) ORDER BY id_pk ASC LIMIT M  
-&emsp; 适应场景: 适用于数据量多的情况(元组数上万)。最好ORDER BY后的列对象是主键或唯一所以，使得ORDERBY操作能利用索引被消除但结果集是稳定的(稳定的含义，参见方法1)  
-&emsp; 原因: 索引扫描，速度会很快. 但MySQL的排序操作，只有ASC没有DESC(DESC是假的，未来会做真正的DESC，期待...).  
-
-4. 基于索引使用prepare  
-&emsp; 第一个问号表示pageNum，第二个？表示每页元组数  
-&emsp; 语句样式: MySQL中，可用如下方法: PREPARE stmt_name FROM SELECT * FROM 表名称 WHERE id_pk > (？* ？) ORDER BY id_pk ASC LIMIT M  
-&emsp; 适应场景: 大数据量  
-&emsp; 原因: 索引扫描，速度会很快。prepare语句又比一般的查询语句快一点。  
-
-5. 利用MySQL支持ORDER操作可以利用索引快速定位部分元组，避免全表扫描  
-&emsp; 比如: 读第1000到1019行元组(pk是主键/唯一键)。  
-&emsp; SELECT * FROM your_table WHERE pk>=1000 ORDER BY pk ASC LIMIT 0,20  
-
-6. 利用"子查询/连接+索引"快速定位元组的位置，然后再读取元组。  
-&emsp; 比如(id是主键/唯一键，蓝色字体时变量)  
-&emsp; 利用子查询示例：  
-
-    ```java
-    SELECT * FROM your_table WHERE id <= 
-    (SELECT id FROM your_table ORDER BY id desc LIMIT ($page-1)*$pagesize ORDER BY id desc 
-    LIMIT $pagesize
-    ```
-    &emsp; 利用连接示例:    
-
-    ```sql
-    SELECT * FROM your_table AS t1 
-    JOIN (SELECT id FROM your_table ORDER BY id desc LIMIT ($page-1)*$pagesize AS t2 
-    WHERE t1.id <= t2.id ORDER BY t1.id desc LIMIT $pagesize;
-    ```
 
 ## 1.3. 其他  
 <!-- 
