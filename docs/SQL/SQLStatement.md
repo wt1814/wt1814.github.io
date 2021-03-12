@@ -10,8 +10,6 @@
     - [1.2. 子查询优化](#12-子查询优化)
     - [1.3. 关联查询优化](#13-关联查询优化)
     - [1.4. 组合查询优化](#14-组合查询优化)
-    - [1.5. INSERT的优化](#15-insert的优化)
-    - [1.6. 快速删除大量(百万级)数据](#16-快速删除大量百万级数据)
 
 <!-- /TOC -->
 
@@ -108,17 +106,4 @@ select * from student u where major_id not in (select major_id from major);
 1. MySQL处理UNION的策略是先创建临时表，然后再把各个查询结果插入到临时表中，最后再来做查询。因此很多优化策略在UNION查询中都没有办法很好的时候。经常需要手动将WHERE、LIMIT、ORDER BY等字句“下推”到各个子查询中，以便优化器可以充分利用这些条件先优化。  
 2. 如果结果集允许重复的话，使用UNION ALL代替UNION。  
 
-## 1.5. INSERT的优化  
-1. 尽量使用多个值表的 INSERT 语句，这种方式将大大缩减客户端与数据库之间的连接、关闭等消耗。(同一客户的情况下)，即：  
 
-    INSERT INTO tablename values(1,2),(1,3),(1,4)  
-2. 如果在不同客户端插入很多行，可使用INSERT DELAYED语句得到更高的速度，DELLAYED含义是让INSERT语句马上执行，其实数据都被放在内存的队列中。并没有真正写入磁盘。LOW_PRIORITY刚好相反。  
-3. 将索引文件和数据文件分在不同的磁盘上存放(InnoDB引擎是在同一个表空间的)。  
-4. 如果批量插入，则可以增加bluk_insert_buffer_size变量值提供速度(只对MyISAM有用)  
-5. 当从一个文本文件装载一个表时，使用LOAD DATA INFILE，通常比INSERT语句快20倍。  
-
-## 1.6. 快速删除大量(百万级)数据  
-
-<!-- 
-https://jingyan.baidu.com/article/48b37f8d2e0cad1a65648879.html
--->
