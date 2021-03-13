@@ -18,12 +18,7 @@
 <!-- 
 
 -->
-<!-- 
-https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
 
-MySQL中事务和锁的重点和难点，一次性讲清楚！
-https://mp.weixin.qq.com/s/DbhiRTZYn7aHIaRT5juZ4w
--->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-57.png)  
 &emsp; **<font color = "red">总结：</font>**  
@@ -37,6 +32,12 @@ https://mp.weixin.qq.com/s/DbhiRTZYn7aHIaRT5juZ4w
 * **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的 update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。   
 
 # 1. MySql的事务  
+<!-- 
+https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
+
+MySQL中事务和锁的重点和难点，一次性讲清楚！
+https://mp.weixin.qq.com/s/DbhiRTZYn7aHIaRT5juZ4w
+-->
 &emsp; MySql的事务基于InnoDB存储引擎讲解。  
 
 ## 1.1. 事务简介  

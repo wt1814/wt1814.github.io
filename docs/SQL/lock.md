@@ -21,6 +21,19 @@
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-58.png)  
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; InnoDB共有七种类型的锁：共享/排它锁、意向锁、记录锁、间隙锁、临键锁、插入意向锁、自增锁。  
+&emsp; **<font color = "red">InnoDB存储引擎的锁的算法有三种</font>**  
+1. Record lock：单个行记录上的锁。  
+2. Gap lock：间隙锁，锁定一个范围，不包括记录本身。  
+&emsp; **<font color = "red">当使用范围条件(> 、< 、between......)检索数据，InnoDB会给符合条件的已有数据记录的索引项加锁。对于键值在条件范围内但并不存在的记录，叫做“间隙(GAP)”，InnoDB也会对这个“间隙”加锁，这就是间隙锁。</font>**  
+&emsp; **<font color = "red">InnoDB除了通过范围条件加锁时使用间隙锁外，如果使用相等条件请求给一个不存在的记录加锁，InnoDB 也会使用间隙锁。</font>**  
+3. Next-key lock：record+gap锁定一个范围，包含记录本身。  
+&emsp; 临键锁，是记录锁与间隙锁的组合，它的封锁范围，既包含索引记录，又包含索引区间。  
+&emsp; <font color = "red">默认情况下，innodb使用next-key locks来锁定记录。</font><font color = "clime">但当查询的索引含有唯一属性的时候，Next-Key Lock会进行优化，将其降级为Record Lock，即仅锁住索引本身，不是范围。</font>  
+
+
+
 # 1. MySql的锁  
 <!-- 
 隔离级别与锁的关系
@@ -34,9 +47,9 @@ SERIALIZABLE 是限制性最强的隔离级别，因为该级别锁定整个范�
 -->
 
 ## 1.1. 数据库锁简介  
-&emsp; **~~存储引擎与锁~~：**  
+&emsp; **存储引擎与锁：**  
 
-* InnoDB：对于UPDATE、DELETE、INSERT语句，InnoDB会自动给涉及数据集加排他锁(X)。  
+* **<font color = "clime">InnoDB：对于UPDATE、DELETE、INSERT语句，InnoDB会自动给涉及数据集加排他锁(X)。</font>**  
 * MyISAM：MyISAM在执行查询语句SELECT前，会自动给涉及的所有表加读锁，在执行更新操作(UPDATE、DELETE、INSERT)前，会自动给涉及的表加写锁，这个过程并不需要用户干预。  
 
 &emsp; **事务和锁的关联：**  
@@ -78,7 +91,7 @@ SERIALIZABLE 是限制性最强的隔离级别，因为该级别锁定整个范�
 
 &emsp; 不同的存储引擎支持的锁粒度是不一样的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-43.png)  
-&emsp; **<font color = "red">InnoDB实现了行级锁，页级锁，表级锁。InnoDB只有通过索引条件检索数据才使用行级锁，否则，InnoDB将使用表锁。即InnoDB的行锁是基于索引的！</font><font color = "lime">这些锁的粒度之间也是会发生升级的，锁升级的意思就是将当前锁的粒度降低，数据库可以把一个表的1000个行锁升级为一个页锁，或者将页锁升级为表锁。</font>**  
+&emsp; **<font color = "red">InnoDB实现了行级锁，页级锁，表级锁。InnoDB只有通过索引条件检索数据才使用行级锁，否则，InnoDB将使用表锁。即InnoDB的行锁是基于索引的！</font><font color = "clime">这些锁的粒度之间也是会发生升级的，锁升级的意思就是将当前锁的粒度降低，数据库可以把一个表的1000个行锁升级为一个页锁，或者将页锁升级为表锁。</font>**  
 &emsp; MyISAM只支持表锁！  
 
 ## 1.3. 锁的类别  
@@ -111,9 +124,9 @@ mysql InnoDB引擎默认的修改数据语句：update,delete,insert都会自动
 * 自增锁(Auto-inc Locks)  
 
 &emsp; **<font color = "red">InnoDB存储引擎的锁的算法有三种</font>**  
-1. Record lock：单个行记录上的锁  
-2. Gap lock：间隙锁，锁定一个范围，不包括记录本身  
-3. Next-key lock：record+gap锁定一个范围，包含记录本身  
+1. Record lock：单个行记录上的锁。  
+2. Gap lock：间隙锁，锁定一个范围，不包括记录本身。  
+3. Next-key lock：record+gap锁定一个范围，包含记录本身。  
 
 #### 1.3.2.1. 共享/排它锁(行级锁)  
 &emsp; InnoDB 存储引擎行锁，当数据查询时针对索引数据进行时，会使用行级锁。  
@@ -142,15 +155,15 @@ mysql InnoDB引擎默认的修改数据语句：update,delete,insert都会自动
 #### 1.3.2.3. 记录锁(Record Locks) ，锁定记录 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-124.png)  
 &emsp; <font color = "red">record lock 是一个在索引行记录的锁。</font>  
-&emsp; 比如，SELECT c1 FROM t WHERE c1 = 10 FOR UPDATE，如果c1 上的索引被使用到。防止任何其他事务变动 c1 = 10 的行。  
-&emsp; record lock 总是会在索引行上加锁。即使一个表并没有设置任何索引，这种时候 innoDB 会创建一个隐式的聚集索引(primary Key),然后在这个聚集索引上加锁。  
-&emsp; 当查询字段没有索引时，比如 update table set columnA="A" where columnB=“B"，如果 columnB 字段不存在索引(或者不是组合索引前缀)，这条语句会锁住所有记录也就是锁表。如果语句的执行能够执行一个 columnB 字段的索引，那么仅会锁住满足 where 的行(RecordLock)。  
+&emsp; 比如，SELECT c1 FROM t WHERE c1 = 10 FOR UPDATE，如果c1上的索引被使用到。防止任何其他事务变动 c1 = 10 的行。  
+&emsp; record lock总是会在索引行上加锁。即使一个表并没有设置任何索引，这种时候 innoDB 会创建一个隐式的聚集索引(primary Key)，然后在这个聚集索引上加锁。  
+&emsp; 当查询字段没有索引时，比如 update table set columnA="A" where columnB=“B"，如果columnB字段不存在索引(或者不是组合索引前缀)，这条语句会锁住所有记录也就是锁表。如果语句的执行能够执行一个columnB字段的索引，那么仅会锁住满足where的行(RecordLock)。  
 
 #### 1.3.2.4. 间隙锁(Gap Lock)，锁定范围  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-123.png)  
 
 &emsp; **<font color = "red">当使用范围条件(> 、< 、between......)检索数据，InnoDB会给符合条件的已有数据记录的索引项加锁。对于键值在条件范围内但并不存在的记录，叫做“间隙(GAP)”，InnoDB也会对这个“间隙”加锁，这就是间隙锁。</font>**  
-&emsp; **<font color = "red">InnoDB 除了通过范围条件加锁时使用间隙锁外，如果使用相等条件请求给一个不存在的记录加锁，InnoDB 也会使用间隙锁。</font>**  
+&emsp; **<font color = "red">InnoDB除了通过范围条件加锁时使用间隙锁外，如果使用相等条件请求给一个不存在的记录加锁，InnoDB 也会使用间隙锁。</font>**  
 
 &emsp; 假如emp表中只有101条记录，其empid的值分别是1,2,...,100,101，下面的 SQL：  
 
@@ -159,8 +172,8 @@ select * from emp where empid > 100 for update;
 ```  
 &emsp; 这是一个范围条件的检索，InnoDB 不仅会对符合条件的empid值为101的记录加锁，也会对empid大于101(这些记录并不存在)的“间隙”加锁。  
 
-&emsp; **<font color = "lime">InnoDB 使用间隙锁的目的：</font>**  
-&emsp; 一方面是为了防止幻读。对于上例，如果不使用间隙锁，其他事务插入了 empid大于 100的任何记录，本事务再次执行 select 语句，就会发生幻读。  
+&emsp; **<font color = "clime">InnoDB 使用间隙锁的目的：</font>**  
+&emsp; 一方面是为了防止幻读。对于上例，如果不使用间隙锁，其他事务插入了empid大于100的任何记录，本事务再次执行 select 语句，就会发生幻读。  
 &emsp; 另一方面，也是为了满足恢复和复制的需要。    
 
 &emsp; **<font color = "red">InnoDB使用间隙锁的危害：</font>**  
@@ -172,7 +185,7 @@ select * from emp where empid > 100 for update;
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-122.png)  
 
 &emsp; 临键锁，是记录锁与间隙锁的组合，它的封锁范围，既包含索引记录，又包含索引区间。  
-&emsp; <font color = "red">默认情况下，innodb使用next-key locks来锁定记录。</font><font color = "lime">但当查询的索引含有唯一属性的时候，Next-Key Lock 会进行优化，将其降级为Record Lock，即仅锁住索引本身，不是范围。</font>  
+&emsp; <font color = "red">默认情况下，innodb使用next-key locks来锁定记录。</font><font color = "clime">但当查询的索引含有唯一属性的时候，Next-Key Lock会进行优化，将其降级为Record Lock，即仅锁住索引本身，不是范围。</font>  
 
 ---
 

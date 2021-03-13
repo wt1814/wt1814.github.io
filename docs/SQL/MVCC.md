@@ -10,7 +10,7 @@
         - [1.3.2. Read View，一致读快照](#132-read-view一致读快照)
         - [1.3.3. 不同隔离级别下的MVCC](#133-不同隔离级别下的mvcc)
             - [1.3.3.1. READ UNCOMMITTED](#1331-read-uncommitted)
-            - [1.3.3.2. READ COMMITTED](#1332-read-committed)
+            - [1.3.3.2. READ COMMITTED，读取已提交](#1332-read-committed读取已提交)
             - [1.3.3.3. REPEATABLE READ，可重复读](#1333-repeatable-read可重复读)
             - [1.3.3.4. SERIALIZABLE](#1334-serializable)
             - [1.3.3.5. 总结](#1335-总结)
@@ -19,10 +19,20 @@
 <!-- /TOC -->
 
 
-&emsp; **<font color = "lime">总结：</font>**  
-&emsp; MVCC使用无锁并发控制，解决数据库读写问题。数据库会根据回顾指针，形成版本链；MVCC会根据Read View来决定读取版本链中的哪条记录。    
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "clime">多版本并发控制(MVCC)是一种用来解决读-写冲突的无锁并发控制。</font>**  
+&emsp; <font color = "clime">MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
+&emsp; **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC，一个是undo log，用于记录数据的变化轨迹(版本链)，用于数据回滚；另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。</font>**   
+&emsp; 版本链的生成：在数据库中的每一条记录实际都会存在三个隐藏列：事务ID、行ID、回滚指针，指向undo log记录。  
+&emsp; **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
 &emsp; Read View判断：  
 &emsp; 如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。  
+
+&emsp; 在读取已提交、可重复读两种隔离级别下会使用MVCC。  
+
+* 读取已提交READ COMMITTED 是在每次执行 select 操作时都会生成一次 Read View。
+* 可重复读REPEATABLE READ 只有在第一次执行 select 操作时才会生成 Read View，后续的 select 操作都将使用第一次生成的 Read View。
+
 
 # 1. MVCC
 <!-- 
@@ -76,11 +86,11 @@ MCVV这种读取历史数据的方式称为快照读(snapshot read)，而读取�
     写-写：有线程安全问题，可能会存在更新丢失问题，比如第一类更新丢失，第二类更新丢失
 
 &emsp; MVCC带来的好处是？  
-&emsp; 多版本并发控制(MVCC)是一种用来解决读-写冲突的无锁并发控制，也就是为事务分配单向增长的时间戳，为每个修改保存一个版本，版本与事务时间戳关联，读操作只读该事务开始前的数据库的快照。 所以MVCC可以为数据库解决以下问题：  
+&emsp; **<font color = "clime">多版本并发控制(MVCC)是一种用来解决读-写冲突的无锁并发控制，</font>** 也就是为事务分配单向增长的时间戳，为每个修改保存一个版本，版本与事务时间戳关联，读操作只读该事务开始前的数据库的快照。 所以MVCC可以为数据库解决以下问题：  
 1. 在并发读写数据库时，可以做到在读操作时不用阻塞写操作，写操作也不用阻塞读操作，提高了数据库并发读写的性能。
 2. 同时还可以解决脏读，幻读，不可重复读等事务隔离问题，但不能解决更新丢失问题。
 
-&emsp; <font color = "lime">MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
+&emsp; <font color = "clime">MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
 
 &emsp; <font color = "red">MVCC就是为了实现读-写冲突不加锁，而这个读指的就是快照读，而非当前读，当前读实际上是一种加锁的操作，是悲观锁的实现。</font>  
 
@@ -95,7 +105,7 @@ MCVV这种读取历史数据的方式称为快照读(snapshot read)，而读取�
 -->
 
 ## 1.3. MVCC的实现
-&emsp; InnoDB有两个非常重要的模块来实现MVCC，<font color = "lime">一个是undo log，用于记录数据的变化轨迹(版本链)，用于数据回滚；另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。</font>   
+&emsp; **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC，一个是undo log，用于记录数据的变化轨迹(版本链)，用于数据回滚；另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。</font>**   
 
 ### 1.3.1. 版本链的生成  
 &emsp; 在数据库中的每一条记录实际都会存在三个隐藏列：  
@@ -104,9 +114,9 @@ trx_id：用来标识最近一次对本行记录做修改(insert|update)的事�
 roll_pointer：每次有修改的时候，都会把老版本写入undo日志中。这个roll_pointer就是存了一个指针，它指向这条聚簇索引记录的上一个版本的位置，通过它来获得上一个版本的记录信息。(注意插入操作的undo日志没有这个属性，因为它没有老版本)。  
 -->
 
-* DB_TRX_ID：该列表示此记录的事务 ID。  
+* DB_TRX_ID：该列表示此记录的事务ID。  
 * DB_ROW_ID：行ID，如果有指定主键，那么该值就是主键。如果没有主键，那么就会使用定义的第一个唯一索引。如果没有唯一索引，那么就会默认生成一个值。  
-* DB_ROLL_PTR：回滚指针，指向 undo log 记录。每次对某条记录进行改动时，该列会存一个指针，可以通过这个指针找到该记录修改前的信息 。<font color = "lime">当某条记录被多次修改时，该行记录会存在多个版本，通过回滚指针DB_ROLL_PTR链接形成一个类似版本链的概念。</font>    
+* DB_ROLL_PTR：回滚指针，指向undo log记录。每次对某条记录进行改动时，该列会存一个指针，可以通过这个指针找到该记录修改前的信息 。<font color = "clime">当某条记录被多次修改时，该行记录会存在多个版本，通过回滚指针DB_ROLL_PTR链接形成一个类似版本链的概念。</font>    
 
 &emsp; 执行sql：  
 
@@ -134,8 +144,8 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
 &emsp; Read View的结构如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-75.png)  
 * rw_trx_ids：表示在生成 Read View 时，<font color = "red">当前活跃的读写事务数组。</font>
-* up_limit_id：表示在生成 Read View 时，当前已提交的事务号 + 1，也就是在 rw_trx_ids 中的最小事务号。<font color = "lime">trx_id 小于该值都能看到。</font>
-* low_limit_id：表示在生成 Read View 时，当前已分配的事务号 + 1，也就是将要分配给下一个事务的事务号。<font color = "lime">trx_id 大于等于该值都不能看到。</font>
+* up_limit_id：表示在生成 Read View 时，当前已提交的事务号 + 1，也就是在 rw_trx_ids 中的最小事务号。<font color = "clime">trx_id 小于该值都能看到。</font>
+* low_limit_id：表示在生成 Read View 时，当前已分配的事务号 + 1，也就是将要分配给下一个事务的事务号。<font color = "clime">trx_id 大于等于该值都不能看到。</font>
 * curr_trx_id：创建 Read View 的当前事务id。
 
 &emsp; <font color = "red">有了ReadView，在访问某条记录时，MySQL会根据以下规则来判断版本链中的哪个版本(记录)是在本次事务中可见的：</font>  
@@ -146,9 +156,9 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
 1. 如果被访问版本的trx_id与ReadView中的creator_trx_id值相同，意味着当前事务在访问它自己修改过的记录，所以该版本可以被当前事务访问。  
 2. 如果被访问版本的trx_id小于ReadView中的up_limit_id值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  
 3. 如果被访问版本的trx_id大于ReadView中的low_limit_id值，表明生成该版本的事务在当前事务生成ReadView后才开启，所以该版本不可以被当前事务访问。  
-4. <font color = "red">如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。</font>如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；<font color = "lime">如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。</font>  
+4. <font color = "red">如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。</font>如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；<font color = "clime">如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。</font>  
 
-&emsp; 在进行判断时，首先会拿记录的最新版本来比较， **<font color = "lime">如果该版本无法被当前事务看到，则通过记录的DB_ROLL_PTR找到上一个版本，重新进行比较，直到找到一个能被当前事务看到的版本。</font>**   
+&emsp; 在进行判断时，首先会拿记录的最新版本来比较， **<font color = "clime">如果该版本无法被当前事务看到，则通过记录的DB_ROLL_PTR找到上一个版本，重新进行比较，直到找到一个能被当前事务看到的版本。</font>**   
 &emsp; 而对于删除，其实就是一种特殊的更新，InnoDB用一个额外的标记位delete_bit标识是否删除。在进行判断时，会检查下delete_bit是否被标记，如果是，则跳过该版本，通过 DB_ROLL_PTR拿到下一个版本进行判断。
 
 <!-- 
@@ -236,7 +246,7 @@ Empty set (0.00 sec)
 #### 1.3.3.1. READ UNCOMMITTED
 &emsp; 该隔离级别不会使用 MVCC。它只要执行 select，那么就会获取 B+ 树上最新的记录。而不管该记录的事务是否已经提交。  
 
-#### 1.3.3.2. READ COMMITTED  
+#### 1.3.3.2. READ COMMITTED，读取已提交  
 &emsp; 在READ COMMITTED隔离级别下，会使用 MVCC。在开启一个读取事务之后，它会在每一个 select 操作之前都生成一个Read View。  
 
 #### 1.3.3.3. REPEATABLE READ，可重复读  
@@ -258,8 +268,8 @@ MVCC在MySQL InnoDB中的实现主要是为了提高数据库并发性能，用�
 &emsp; 在 READ COMMITTED 和 REPEATABLE READ 隔离等级之下才会使用 MVCC。  
 &emsp; 但是 READ COMMITTED 和 REPEATABLE READ 使用MVCC的方式各不相同：  
 
-* READ COMMITTED 是在每次执行 select 操作时都会生成一次 Read View。
-* REPEATABLE READ 只有在第一次执行 select 操作时才会生成 Read View，后续的 select 操作都将使用第一次生成的 Read View。
+* 读取已提交READ COMMITTED 是在每次执行 select 操作时都会生成一次 Read View。
+* 可重复读REPEATABLE READ 只有在第一次执行 select 操作时才会生成 Read View，后续的 select 操作都将使用第一次生成的 Read View。
 
 &emsp; 而 READ UNCOMMITTED 和 SERIALIZABLE 隔离级别不会使用 MVCC。它们的读取操作也不相同：  
 
@@ -274,12 +284,12 @@ MVCC在MySQL InnoDB中的实现主要是为了提高数据库并发性能，用�
 3. 事务1使用同样的语句第二次查询时，查到了 id = 1、id = 2 的数据，出现了幻读。  
 
 &emsp; MVCC解决了快照读的幻读：  
-&emsp; <font color = "lime">对于快照读，MVCC 因为从 ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
-&emsp; <font color = "lime">而对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update，当使用了 Gap Lock 时，Gap 锁会锁住 id < 10 的整个范围，因此其他事务无法插入 id < 10 的数据，从而防止了幻读。  
+&emsp; <font color = "clime">对于快照读，MVCC 因为从 ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
+&emsp; <font color = "clime">而对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update，当使用了 Gap Lock 时，Gap 锁会锁住 id < 10 的整个范围，因此其他事务无法插入 id < 10 的数据，从而防止了幻读。  
 
 <!-- 
 
-1. 每种存储引擎对MVCC的实现方式不同。<font color = "lime">InnoDB 的 MVCC，是通过在每行记录后面保存两个隐藏的列来实现。</font>这两个列，一个保存了行的创建时间，一个保存行的过期时间(删除时间)。当然存储的并不是真实的时间，而是系统版本号(system version number)。每开始一个新的事务，系统版本号都会自动递增。事务开始时刻的系统版本号会作为事务的版本号，用来和查询到的每行记录的版本号进行比较。  
+1. 每种存储引擎对MVCC的实现方式不同。<font color = "clime">InnoDB 的 MVCC，是通过在每行记录后面保存两个隐藏的列来实现。</font>这两个列，一个保存了行的创建时间，一个保存行的过期时间(删除时间)。当然存储的并不是真实的时间，而是系统版本号(system version number)。每开始一个新的事务，系统版本号都会自动递增。事务开始时刻的系统版本号会作为事务的版本号，用来和查询到的每行记录的版本号进行比较。  
 2. InnoDB有两个非常重要的模块来实现MVCC，一个是undo日志，用于记录数据的变化轨迹，用于数据回滚，另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。  
 &emsp; Read View：它用于控制数据的可见性。Read View是事务开启时，当前所有事务的一个集合，这个数据结构中存储了当前Read View中最大的ID及最小的ID。    
 &emsp; 在InnoDB中，只有读查询才会去构建ReadView视图，对于类似DML这样的数据更改，无需判断可见性，而是单纯的发现事务锁冲突，直接堵塞操作。  
