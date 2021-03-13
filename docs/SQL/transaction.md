@@ -26,6 +26,15 @@ https://mp.weixin.qq.com/s/DbhiRTZYn7aHIaRT5juZ4w
 -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-57.png)  
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; 事务的四大特性(ACID)：原子性(Atomicity)、一致性(Consistency)、隔离性(Isolation)、持久性(Durability)。  
+&emsp; 并发事务处理带来的问题：脏读、丢失修改、不可重复读、幻读。  
+&emsp; SQL标准定义了四个隔离级别：读取未提交、读取已提交、可重复读(可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读)、可串行化。  
+&emsp; 在MySQL中，默认的隔离级别是REPEATABLE-READ(可重复读)，阻止脏读和不可重复读，并且解决了幻读问题。  
+&emsp; 隔离性(事务的隔离级别)的实现，利用的是锁和MVCC机制。 
+
+* **<font color = "blue">快照读：生成一个事务快照(ReadView)，之后都从这个快照获取数据。** 普通select语句就是快照读。<font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
+* **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的 update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。   
 
 # 1. MySql的事务  
 &emsp; MySql的事务基于InnoDB存储引擎讲解。  
@@ -74,7 +83,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 
 * READ-UNCOMMITTED(读取未提交)：最低的隔离级别，允许读取尚未提交的数据变更，可能会导致脏读、幻读或不可重复读。  
 * READ-COMMITTED(读取已提交)：允许读取并发事务已经提交的数据，可以阻止脏读，但是幻读或不可重复读仍有可能发生。  
-* REPEATABLE-READ(可重复读)：对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，<font color = "red">可以阻止脏读和不可重复读，但幻读仍有可能发生</font>。  
+* REPEATABLE-READ(可重复读)：对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，<font color = "red">可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读</font>。  
 * SERIALIZABLE(可串行化)：最高的隔离级别，完全服从ACID的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。  
 
 |隔离级别 |读数据一致性 |脏读|不可重复读|幻读|
@@ -84,7 +93,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 |可重复读(Repeatable read)|事务级 |不可能|不可能|可能|
 |可序列化(Serializable) |最高级别，事务级|不可能|不可能|不可能| 
 
-&emsp; **<font color = "lime">以上是SQL-92标准中定义的四种隔离级别。在MySQL中，默认的隔离级别是REPEATABLE-READ(可重复读)，并且解决了幻读问题。</font>** 简单的来说，mysql的默认隔离级别解决了脏读、幻读、不可重复读问题。  
+&emsp; **<font color = "clime">以上是SQL-92标准中定义的四种隔离级别。在MySQL中，默认的隔离级别是REPEATABLE-READ(可重复读)，并且解决了幻读问题。</font>** 简单的来说，mysql的默认隔离级别解决了脏读、幻读、不可重复读问题。  
 
 &emsp; RR和RC区别：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-121.png)  
@@ -101,6 +110,9 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 &emsp; 总之，ACID只是个概念，事务最终目的是要保障数据的可靠性，一致性。  
 
 ### 1.4.1. 原子性的实现  
+&emsp; 采用[undo log][MySql事务日志](/docs/SQL/log.md)实现。  
+
+<!-- 
 &emsp; 利用Innodb的undo log。undo log名为回滚日志，是实现原子性的关键，当事务回滚时能够撤销所有已经成功执行的sql语句，它需要记录要回滚的相应日志信息。例如：  
 
 * 当delete一条数据的时候，就需要记录这条数据的信息，回滚的时候，insert这条旧数据  
@@ -108,19 +120,26 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 * 当insert一条数据的时候，就需要这条记录的主键，回滚的时候，根据主键执行delete操作  
 
 &emsp; undo log记录了这些回滚需要的信息，当事务执行失败或调用了rollback，导致事务需要回滚，便可以利用undo log中的信息将数据回滚到修改之前的样子。  
+-->
+
 
 ### 1.4.2. 持久性的实现  
-&emsp; 利用Innodb的redo log。当做数据修改的时候，不仅在内存中操作，还会在redo log中记录这次操作。<font color = "red">当事务提交的时候，会将redo log日志进行刷盘(redo log一部分在内存中，一部分在磁盘上)。</font><font color = "lime">当数据库宕机重启的时候，会将redo log中的内容恢复到数据库中，再根据undo log和binlog内容决定回滚数据还是提交数据。</font>  
+&emsp; 采用[redoLog](/docs/SQL/redoLog.md)实现。  
+<!-- 
+&emsp; 利用Innodb的redo log。当做数据修改的时候，不仅在内存中操作，还会在redo log中记录这次操作。<font color = "red">当事务提交的时候，会将redo log日志进行刷盘(redo log一部分在内存中，一部分在磁盘上)。</font><font color = "clime">当数据库宕机重启的时候，会将redo log中的内容恢复到数据库中，再根据undo log和binlog内容决定回滚数据还是提交数据。</font>  
 
 &emsp; 采用redo log的好处？其实好处就是将redo log进行刷盘比对数据页刷盘效率高，具体表现如下  
 
 * redo log体积小，毕竟只记录了哪一页修改了啥，因此体积小，刷盘快。
 * redo log是一直往末尾进行追加，属于顺序IO。效率显然比随机IO来的快。
+-->
+
+
 
 ### 1.4.3. 隔离性(事务的隔离级别)的实现  
 &emsp; 隔离性(事务的隔离级别)的实现，利用的是锁和MVCC机制。  
 
-&emsp; **<font color = "lime">RR可重复读是怎么解决幻读的？</font>**  
+&emsp; **<font color = "clime">RR可重复读是怎么解决幻读的？</font>**  
 &emsp; 幻读：在一个事务中使用相同的 SQL 两次读取，第二次读取到了其他事务新插入的行，则称为发生了幻读。  
 &emsp; 例如：  
 1. 事务1第一次查询：select * from user where id < 10 时查到了 id = 1 的数据；  
@@ -128,11 +147,11 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 3. 事务1使用同样的语句第二次查询时，查到了 id = 1、id = 2 的数据，出现了幻读。  
 
 &emsp; 谈到幻读，首先要引入“当前读”和“快照读”的概念：  
-* 快照读：生成一个事务快照(ReadView)，之后都从这个快照获取数据。普通 select 语句就是快照读。  
-* 当前读：读取数据的最新版本。常见的 update/insert/delete、还有 select ... for update、select ... lock in share mode 都是当前读。  
+* **<font color = "blue">快照读：生成一个事务快照(ReadView)，之后都从这个快照获取数据。** 普通select语句就是快照读。  
+* **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的 update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
 
-&emsp; <font color = "lime">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
-&emsp; <font color = "lime">而对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。</font>  
+&emsp; <font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
+&emsp; <font color = "clime">而对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。</font>  
 &emsp; 其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update，当使用了Gap Lock时，Gap锁会锁住id < 10 的整个范围，因此其他事务无法插入id < 10 的数据，从而防止了幻读。  
 
 <!-- 
