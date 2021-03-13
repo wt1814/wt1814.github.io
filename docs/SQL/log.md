@@ -18,9 +18,12 @@
 
 <!-- /TOC -->
 
+**<font color = "red">总结：</font>**  
+&emsp; **<font color = "clime">Undo log是逻辑日记。undo log主要记录了数据的逻辑变化，比如一条INSERT语句，对应一条DELETE的undo log，对于每个UPDATE语句，对应一条相反的UPDATE的undo log，这样在发生错误时，就能回滚到事务之前的数据状态。</font>**  
+
 
 # 1. MySql日志文件  
-**<font color = "red">参考《MySQL技术内幕：InnoDB存储引擎》</font>** 
+**<font color = "red">参考《MySQL技术内幕：InnoDB存储引擎》</font>**  
 <!--
 MySQL中的7种日志你都知道是干啥的吗
 https://mp.weixin.qq.com/s/oeKTX-E6W40IjLy5TJewLg
@@ -88,10 +91,9 @@ https://guobinhit.blog.csdn.net/article/details/79345359
 
 ### 1.2.3. 对应的物理文件    
 &emsp; MySQL5.6之前，undo表空间位于共享表空间的回滚段中，共享表空间的默认的名称是ibdata，位于数据文件目录中。  
-
 &emsp; MySQL5.6之后，undo表空间可以配置成独立的文件，但是提前需要在配置文件中配置，完成数据库初始化后生效且不可改变undo log文件的个数，如果初始化数据库之前没有进行相关配置，那么就无法配置成独立的表空间了。  
 
-&emsp; 关于MySQL5.7之后的独立undo 表空间配置参数如下
+&emsp; 关于MySQL5.7之后的独立undo表空间配置参数如下：
 
     innodb_undo_directory = /data/undospace/ --undo独立表空间的存放目录
     innodb_undo_logs = 128 --回滚段为128KB
@@ -108,10 +110,9 @@ https://guobinhit.blog.csdn.net/article/details/79345359
 -->
 
 
-
 ## 1.3. binlog，二进制日志(归档日志)  
 ### 1.3.1. 简介  
-&emsp; binlog用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。  
+&emsp; binlog用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。 **<font color = "red">binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。</font>**  
 &emsp; binlog是通过追加的方式进行写入的，可以通过max_binlog_size参数设置每个binlog文件的大小，当文件大小达到给定值之后，会生成新的文件来保存日志。  
 
 &emsp; **<font color = "red">作用：</font>**  
@@ -121,10 +122,8 @@ https://guobinhit.blog.csdn.net/article/details/79345359
 * 数据恢复：通过使用mysqlbinlog工具来恢复数据。  
 
 ### 1.3.2. 写入流程及刷盘时机   
-&emsp; **写入流程：**  
-&emsp; SQL修改语句先写 Binlog Buffer，事务提交时，按照一定的格式刷到磁盘中。  
-&emsp; **binlog刷盘时机**  
-&emsp; 对于InnoDB存储引擎而言，mysql通过sync_binlog参数控制biglog的刷盘时机，取值范围是0-N：  
+&emsp; **写入流程：** **<font color = "clime">SQL修改语句先写Binlog Buffer，事务提交时，按照一定的格式刷到磁盘中。</font>**  
+&emsp; **binlog刷盘时机：** **<font color = "clime">对于InnoDB存储引擎而言，mysql通过sync_binlog参数控制biglog的刷盘时机，取值范围是0-N：</font>**  
 
     0：不去强制要求，由系统自行判断何时写入磁盘；
     1：每次commit的时候都要将binlog写入磁盘；
@@ -133,11 +132,9 @@ https://guobinhit.blog.csdn.net/article/details/79345359
 &emsp; 从上面可以看出，sync_binlog最安全的是设置是1，这也是MySQL 5.7.7之后版本的默认值。但是设置一个大一些的值可以提升数据库性能，因此实际情况下也可以将值适当调大，牺牲一定的一致性来获取更好的性能。  
 
 ### 1.3.3. binlog日志格式  
-&emsp; binlog日志有三种格式，分别为STATMENT、ROW和MIXED。  
+&emsp; binlog日志有三种格式，分别为STATMENT、ROW和MIXED。在 MySQL 5.7.7之前，默认的格式是STATEMENT， **MySQL 5.7.7之后，默认值是ROW。** 日志格式通过binlog-format指定。
 
-    在 MySQL 5.7.7之前，默认的格式是STATEMENT，MySQL 5.7.7之后，默认值是ROW。日志格式通过binlog-format指定。
-
-* STATMENT 基于SQL语句的复制(statement-based replication, SBR)，每一条会修改数据的sql语句会记录到binlog中。优点：不需要记录每一行的变化，减少了binlog日志量，节约了IO, 从而提高了性能；缺点：在某些情况下会导致主从数据不一致，比如执行sysdate()、slepp()等。  
+* STATMENT 基于SQL语句的复制(statement-based replication, SBR)，每一条会修改数据的sql语句会记录到binlog中。优点：不需要记录每一行的变化，减少了binlog日志量，节约了IO， 从而提高了性能；缺点：在某些情况下会导致主从数据不一致，比如执行sysdate()、slepp()等。  
 * ROW 基于行的复制(row-based replication, RBR)，不记录每条sql语句的上下文信息，仅需记录哪条数据被修改了。优点：不会出现某些特定情况下的存储过程、或function、或trigger的调用和触发无法被正确复制的问题；缺点：会产生大量的日志，尤其是alter table的时候会让日志暴涨  
 * MIXED 基于STATMENT和ROW两种模式的混合复制(mixed-based replication, MBR)，一般的复制使用STATEMENT模式保存binlog，对于STATEMENT模式无法复制的操作使用ROW模式保存binlog  
 
@@ -149,27 +146,4 @@ https://guobinhit.blog.csdn.net/article/details/79345359
 
 ## 1.4. redo log  
 &emsp; [redoLog](/docs/SQL/redoLog.md)  
-
-## 1.5. 恢复
-<!-- 
-https://www.jianshu.com/p/d0e16db410e4
-Redo log 容灾恢复过程
-
-MySQL的处理过程如下
-
-    判断 redo log 是否完整，如果判断是完整(commit)的，直接用 Redo log 恢复
-    如果 redo log 只是预提交 prepare 但不是 commit 状态，这个时候就会去判断 binlog 是否完整，如果完整就提交 Redo log，用 Redo log 恢复，不完整就回滚事务，丢弃数据。
-
-只有在 redo log 状态为 prepare 时，才会去检查 binlog 是否存在，否则只校验 redo log 是否是 commit 就可以啦。怎么检查 binlog：一个完整事务 binlog 结尾有固定的格式。
--->
-&emsp; 数据库关闭只有2种情况，正常关闭，非正常关闭(包括数据库实例crash及服务器crash)。正常关闭情况，所有buffer pool里边的脏页都会都会刷新一遍到磁盘，同时记录最新LSN到ibdata文件的第一个page中。而非正常关闭来不及做这些操作，也就是没及时把脏数据flush到磁盘，也没有记录最新LSN到ibdata file。  
-&emsp; 当重启数据库实例的时候，数据库做2个阶段性操作：redo log处理，undo log及binlog 处理。(在崩溃恢复中还需要回滚没有提交的事务，提交没有提交成功的事务。<font color = "red">由于回滚操作需要undo日志的支持，undo日志的完整性和可靠性需要redo日志来保证，所以崩溃恢复先做redo前滚，然后做undo回滚。</font>)
-
-<!-- 
-怎么进行数据恢复？
-binlog 会记录所有的逻辑操作，并且是采用追加写的形式。当需要恢复到指定的某一秒时，比如今天下午二点发现中午十二点有一次误删表，需要找回数据，那你可以这么做：
-•首先，找到最近的一次全量备份，从这个备份恢复到临时库•然后，从备份的时间点开始，将备份的 binlog 依次取出来，重放到中午误删表之前的那个时刻。
-这样你的临时库就跟误删之前的线上库一样了，然后你可以把表数据从临时库取出来，按需要恢复到线上库去。
--->
-&emsp; 启动innodb的时候，不管上次是正常关闭还是异常关闭，总是会进行恢复操作。因为redo log记录的是数据页的物理变化，因此恢复的时候速度比逻辑日志(如binlog)要快很多。重启innodb时，首先会检查磁盘中数据页的LSN，如果数据页的LSN小于日志中的LSN，则会从checkpoint开始恢复。还有一种情况，在宕机前正处于checkpoint的刷盘过程，且数据页的刷盘进度超过了日志页的刷盘进度，此时会出现数据页中记录的LSN大于日志中的LSN，这时超出日志进度的部分将不会重做，因为这本身就表示已经做过的事情，无需再重做。  
 

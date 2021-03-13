@@ -3,6 +3,8 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-133.png)  
 
 &emsp; [表空间](/docs/SQL/TableSpace.md)  
-&emsp; [Double Write](/docs/SQL/DoubleWrite.md)  
 &emsp; [MySql事务日志](/docs/SQL/log.md)  
-&emsp; [BinLog使用](/docs/SQL/BinLog.md)  
+&emsp; &emsp; [redoLog](/docs/SQL/redoLog.md)  
+&emsp; &emsp; [binLog使用](/docs/SQL/Binlog.md)  
+&emsp; [崩溃恢复](/docs/SQL/CrashRecovery.md)  
+&emsp; [Double Write](/docs/SQL/DoubleWrite.md)  
