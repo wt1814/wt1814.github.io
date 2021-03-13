@@ -14,6 +14,8 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
+&emsp; **redo log：**  
+......
 &emsp; **两阶段提交保证解决binlog和redo log的数据一致性：**    
 1. 记录redolog，并将这行记录状态设置为prepare；
 2. 写入binlog；
