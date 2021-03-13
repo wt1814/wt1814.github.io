@@ -16,7 +16,7 @@
 
 ## 1.1. MySql Server系统架构  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-44.png)  
-&emsp; MySQL服务器主要分为Server层和存储引擎层。
+&emsp; **<font color = "clime">MySQL服务器主要分为Server层和存储引擎层。</font>**  
 1. <font color = "red">Server层包括连接器、查询缓存、分析器、优化器、执行器等。</font>涵盖MySQL的大多数核心服务功能，以及所有的内置函数(如日期、时间、数学和加密函数等)，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等，还有一个通用的日志模块binglog日志模块。     
 2. 存储引擎：主要负责数据的存储和读取，采用可以替换的插件式架构，支持 InnoDB、MyISAM、Memory等多个存储引擎，其中InnoDB引擎有自有的日志模块 redolog模块。  
 &emsp; <font color = "red">InnoDB从MySQL5.5.5版本开始成为了默认存储引擎。即执行create table建表的时候，如果不指定引擎类型，默认使用的就是InnoDB。</font>也可以通过指定存储引擎的类型来选择别的引擎，比如在create table语句中使用engine=memory，来指定使用内存引擎创建表。不同存储引擎的表数据存取方式不同，支持的功能也不同。  
@@ -30,7 +30,7 @@ https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
 &emsp; 当向MySQL发送一个请求的时候，MySQL到底做了些什么呢？  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-51.png)  
 &emsp; MySQL整个查询执行过程，总的来说分为5个步骤：  
-1. 客户端向MySQL服务器发送一条查询请求。  
+1. 客户端向MySQL服务器发送一条查询请求，进行连接。服务端进行验证。    
 2. 服务器首先检查查询缓存，如果命中缓存，则立刻返回存储在缓存中的结果。否则进入下一阶段。  
 3. 服务器进行SQL解析、预处理、再由优化器生成对应的执行计划。  
 4. MySQL根据执行计划，调用存储引擎的API来执行查询。  

@@ -1,13 +1,19 @@
 
+<!-- TOC -->
 
+- [1. insert插入流程](#1-insert插入流程)
+    - [1.1. 事务提交前的日志文件写入](#11-事务提交前的日志文件写入)
+    - [1.2. 事务提交后的数据文件写入](#12-事务提交后的数据文件写入)
 
-# insert插入流程  
+<!-- /TOC -->
+
+# 1. insert插入流程  
 <!-- 
 回顾下写流程
 https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
 -->
 
-## 事务提交前的日志文件写入  
+## 1.1. 事务提交前的日志文件写入  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-150.png)  
 
 1. 首先 insert 进入 server 层后，会进行一些必要的检查，检查的过程中并不会涉及到磁盘的写入。
@@ -20,7 +26,7 @@ https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
 
 &emsp; 综上（在 InnoDB buffer pool 足够大且上述的两个参数设置为双一时），insert 语句成功提交时，真正发生磁盘数据写入的，并不是 MySQL 的数据文件，而是 redo log 和 binlog 文件。然而，InnoDB buffer pool 不可能无限大，redo log 也需要定期轮换，很难容下所有的数据，下面我们就来看看 buffer pool 与磁盘数据文件的交互方式。
 
-## 事务提交后的数据文件写入  
+## 1.2. 事务提交后的数据文件写入  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-151.png)  
 1. 当 buffer pool 中的数据页达到一定量的脏页或 InnoDB 的 IO 压力较小 时，都会触发脏页的刷盘操作。
 2. 当开启 double write 时，InnoDB 刷脏页时首先会复制一份刷入 double write，在这个过程中，由于double write的页是连续的，对磁盘的写入也是顺序操作，性能消耗不大。
