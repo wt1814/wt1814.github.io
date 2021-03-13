@@ -5,11 +5,16 @@
         - [1.1.1. 表空间详解](#111-表空间详解)
         - [1.1.2. InnoDB数据页结构](#112-innodb数据页结构)
             - [1.1.2.1. InnoDB行格式](#1121-innodb行格式)
-                - [1.1.2.1.1. ompact行记录格式](#11211-ompact行记录格式)
+                - [1.1.2.1.1. Compact行记录格式](#11211-compact行记录格式)
                 - [1.1.2.1.2. 行溢出数据](#11212-行溢出数据)
     - [1.2. InnoDB表数据文件](#12-innodb表数据文件)
 
 <!-- /TOC -->
+
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间(tablespace)。表空间又由段(segment)，区(extent)，页(page)组成。  
+&emsp; **<font color = "clime">相比较之下，使用独占表空间的效率以及性能会更高一点。</font>**  
+&emsp; **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB(在操作系统中默认页大小是4KB)。</font>**  
 
 
 # 1. 表空间  
@@ -18,8 +23,6 @@ innodb使用手册
 https://zhuanlan.zhihu.com/p/111958646
 -->
 
-&emsp; 官方文档：https://dev.mysql.com/doc/refman/5.7/en/innodb-on-disk-structures.html  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-133.png)  
 
 ## 1.1. 逻辑存储结构  
 &emsp; 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间(tablespace)。表空间又由段(segment)，区(extent)，页(page)组成。页在一些文档中有时候也称为块(block)。InnoDb逻辑存储结构图如下：  
@@ -48,8 +51,8 @@ https://zhuanlan.zhihu.com/p/111958646
 &emsp; 在默认情况下innodb存储引擎有一个共享表空间ibdata*，即所有的数据都存放在这个表空间中。如果启用了innodb_file_per_table参数，则每张表的数据可以存放到独立的.ibd文件的独立表空间。  
 &emsp; 共享表空间以及独立表空间都是针对数据的存储方式而言的。
 
-* 共享表空间: 某一个数据库的所有的表数据，索引文件全部放在一个文件中，默认这个共享表空间的文件路径在data目录下。 默认的文件名为:ibdata1 初始化为10M。  
-* 独立表空间: 每一个表都将会生成以独立的文件方式来进行存储，每一个表都有一个.frm表描述文件，还有一个.ibd文件。 其中这个文件包括了单独一个表的数据内容以及索引内容，默认情况下它的存储位置也是在表的位置之中。  
+* 共享表空间：某一个数据库的所有的表数据，索引文件全部放在一个文件中，默认这个共享表空间的文件路径在data目录下。 默认的文件名为:ibdata1 初始化为10M。  
+* 独立表空间：每一个表都将会生成以独立的文件方式来进行存储，每一个表都有一个.frm表描述文件，还有一个.ibd文件。 其中这个文件包括了单独一个表的数据内容以及索引内容，默认情况下它的存储位置也是在表的位置之中。  
 
 &emsp; **共享表空间与独立表空间的优缺点：**    
 * 共享表空间：
@@ -63,18 +66,18 @@ https://zhuanlan.zhihu.com/p/111958646
         * 可以实现单表在不同的数据库中移动。
         * 空间可以回收(除drop table操作处，表空不能自已回收)
 
-            Drop table操作自动回收表空间，如果对于统计分析或是日值表，删除大量数据后可以通过:alter table TableName engine=innodb;回缩不用的空间。
+            &emsp; Drop table操作自动回收表空间，如果对于统计分析或是日值表，删除大量数据后可以通过:alter table TableName engine=innodb;回缩不用的空间。
             对于使innodb-plugin的Innodb使用turncate table也会使空间收缩。
             对于使用独立表空间的表，不管怎么删除，表空间的碎片不会太严重的影响性能，而且还有机会处理。
     * 缺点：单表增加过大，如超过100个G。
 
-&emsp; **相比较之下，使用独占表空间的效率以及性能会更高一点。**  
+&emsp; **<font color = "clime">相比较之下，使用独占表空间的效率以及性能会更高一点。</font>**  
 
 ### 1.1.2. InnoDB数据页结构  
 <!-- 
 https://zhuanlan.zhihu.com/p/111958646
 -->
-&emsp; 页是InnoDB磁盘管理的最小单位，每次读取数据都会读取一个页大小的数据。在InnoDB存储引擎中，默认每个页的大小为16KB。 (在操作系统中默认页大小是4KB。) 可以使用命令SHOW GLOBAL STATUS LIKE 'Innodb_page_size' 查看。  
+&emsp; 页是InnoDB磁盘管理的最小单位，每次读取数据都会读取一个页大小的数据。 **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB(在操作系统中默认页大小是4KB)。</font>** 可以使用命令SHOW GLOBAL STATUS LIKE 'Innodb_page_size' 查看。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-99.png)  
 
 &emsp; 页结构如下：  
@@ -91,7 +94,7 @@ https://juejin.cn/post/6844904190477598733#heading-14
 <!-- 
 先说一个结论：页中放的行越多，innodb性能越高。所以在mysql 5.0中引入了compact行记录格式。  
 -->
-##### 1.1.2.1.1. ompact行记录格式    
+##### 1.1.2.1.1. Compact行记录格式    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-137.png)  
 
 * 变长字段长度列表：变长列中存储多少字节数据是不固定的，所以在存储数据时候也需要把这些数据占用的字节数存储起来。varchar(M) M代表的是存储多少字符(mysql5.0.3之前是字节，之后是字符)。  
@@ -121,4 +124,6 @@ https://juejin.cn/post/6844904190477598733#heading-14
 
 * .frm文件：与表相关的元数据信息都存放在frm文件，包括表结构的定义信息等。  
 * .ibd文件或.ibdata文件：这两种文件都是存放InnoDB数据的文件，之所以有两种文件形式存放 InnoDB 的数据，是因为InnoDB的数据存储方式能够通过配置来决定是使用共享表空间存放存储数据，还是用独享表空间存放存储数据。  
+
+
 &emsp; 独享表空间存储方式使用.ibd文件，并且每个表一个.ibd文件 共享表空间存储方式使用.ibdata文件，所有表共同使用一个.ibdata文件(或多个，可自己配置)。  
