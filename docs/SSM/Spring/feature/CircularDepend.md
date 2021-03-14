@@ -2,13 +2,15 @@
 
 <!-- TOC -->
 
-- [1. 循环依赖](#1-循环依赖)
+- [1. ~~循环依赖~~](#1-循环依赖)
     - [1.1. 前言](#11-前言)
     - [1.2. 什么是循环依赖？](#12-什么是循环依赖)
     - [1.3. Spring循环依赖的场景](#13-spring循环依赖的场景)
     - [1.4. Spring如何解决循环依赖的问题?](#14-spring如何解决循环依赖的问题)
         - [1.4.1. 三级缓存概念](#141-三级缓存概念)
         - [1.4.2. 图解](#142-图解)
+            - [1.4.2.1. 未发生依赖](#1421-未发生依赖)
+            - [1.4.2.2. 发生循环依赖](#1422-发生循环依赖)
         - [1.4.3. ~~解决单例循环依赖源码解析~~](#143-解决单例循环依赖源码解析)
     - [1.5. 常见问题](#15-常见问题)
 
@@ -19,6 +21,7 @@
 &emsp; Spring循环依赖的场景：均采用setter方法(属性注入)注入方式，可被解决；采用构造器和setter方法(属性注入)混合注入方式可能被解决。
 
 &emsp; **<font color = "red">Spring通过3级缓存解决。</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
 
 * 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
 * 二级缓存: Map<String,Object> earlySingletonObjects，早期曝光对象，二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。尚未经历了完整的Spring Bean初始化生命周期。
@@ -40,11 +43,15 @@
 &emsp; 当B创建完后，会将B再注入到A中，此时A再完成它的整个生命周期。  
 
 
-# 1. 循环依赖  
+# 1. ~~循环依赖~~  
 <!-- 
+
+★★★https://stor.51cto.com/art/202101/643646.htm
 https://mp.weixin.qq.com/s/p01mrjBwstK74d3D3181og
  Spring循环依赖三级缓存是否可以减少为二级缓存？ 
  https://mp.weixin.qq.com/s/gN7m3T8nWP17Xp7B9UVKdw
+ https://www.cnblogs.com/semi-sub/p/13548479.html
+ https://blog.csdn.net/weixin_42228338/article/details/97163101
 -->
 
 <!-- 
@@ -169,7 +176,15 @@ https://www.cnblogs.com/leeego-123/p/12165278.html
 * 二级缓存: Map<String,Object> earlySingletonObjects，早期曝光对象，二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。尚未经历了完整的Spring Bean初始化生命周期。
 * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
 
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
+
 ### 1.4.2. 图解  
+#### 1.4.2.1. 未发生依赖
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-21.png)  
+
+#### 1.4.2.2. 发生循环依赖
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-22.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-16.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-17.png)  
 
@@ -251,7 +266,9 @@ protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredTy
 
 ```java
 protected Object getSingleton(String beanName, boolean allowEarlyReference) {
+    //
     Object singletonObject = this.singletonObjects.get(beanName);
+    //
     if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
         synchronized (this.singletonObjects) {
             singletonObject = this.earlySingletonObjects.get(beanName);
@@ -283,10 +300,25 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 &emsp; 虽然在创建B时会提前给B注入了一个还未初始化的 A 对象，但是在创建 A 的流程中一直使用的是注入到 B 中的 A 对象的引用，之后会根据这个引用对 A 进行初始化，所以这是没有问题的。  
 
 3. 一级缓存能不能解决此问题？  
+<!-- 
+https://www.cnblogs.com/grey-wolf/p/13034371.html
+-->
 &emsp; 不能，在三个级别的缓存中，放置的对象是有区别的，(1、是完成实例化且初始化的对象，2、是实例化但是未初始化的对象)，如果只有一级缓存，就有可能取到实例化但未初始化的对象，属性值都为空，肯定有问题。  
 
-4. **~~二级缓存能不能解决？为什么要三级缓存？~~**  
+----
+&emsp; 一级缓存的问题在于，就1个map，里面既有完整的已经ready的bean，也有不完整的，尚未设置field的bean。  
+&emsp; 如果这时候，有其他线程去这个map里获取bean来用怎么办？拿到的bean，不完整，怎么办呢？属性都是null，直接空指针了。  
+&emsp; 所以，就要加一个map，这个map，用来存放那种不完整的bean。  
 
+
+4. **~~二级缓存能不能解决？为什么要三级缓存？~~**  
+<!-- 
+Spring循环依赖，二级缓存能解决嘛？  
+可以解决。但是只能解决IOC(原始对象)下的，并不能解决AOP（代理对象）下的。究其原因是初始化后，只往map里放入了一个实例对象。  
+那如果往map里即放入原始对象，又放入代理对象，那是不是二级缓存也能解决？  
+-->
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
 &emsp; 理论上来说是可以解决循环依赖的问题，但是注意：为什么要在三级缓存中放置匿名内部类？  
 &emsp; 本质在于为了创建代理对象，假如现在有A类，需要生成代理对象，A需要实例化。  
 &emsp; 在三级缓存中放置的是，生成具体对象的一个匿名内部类，这个匿名内部类可能是代理类，也可能是普通的实例对象，而使用三级缓存就保证了不管是否需要代理对象，都保证使用的是一个对象，而不会出现，前面使用普通bean，后面使用代理类。  

@@ -6,23 +6,40 @@
     - [1.2. Spring事务实现](#12-spring事务实现)
         - [1.2.1. Spring Boot开启事务](#121-spring-boot开启事务)
         - [1.2.2. 注解@Transactional使用](#122-注解transactional使用)
-    - [1.3. ※※※Spring事务属性详解](#13-※※※spring事务属性详解)
+    - [1.3. ★★★Spring事务属性详解](#13-★★★spring事务属性详解)
         - [1.3.1. 事务传播行为](#131-事务传播行为)
             - [1.3.1.1. 传播行为编码示例](#1311-传播行为编码示例)
         - [1.3.2. 事务隔离级别](#132-事务隔离级别)
         - [1.3.3. 事务超时](#133-事务超时)
         - [1.3.4. 事务只读属性](#134-事务只读属性)
-    - [1.4. ※※※Spring事务失效](#14-※※※spring事务失效)
+    - [1.4. ★★★Spring事务失效](#14-★★★spring事务失效)
     - [1.5. Spring事务其他使用](#15-spring事务其他使用)
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "red">Spring事务属性通常由事务的传播行为、事务的隔离级别、事务的超时值、事务只读标志组成。</font>**  
+
+* 事务的传播行为主要分为支持当前事务和不支持当前事务。  
+* 事务的隔离级别，默认使用底层数据库的默认隔离级别。  
+* 事务只读，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。  
+
+
+&emsp; Spring事务失效：  
+
+* 使用在了非public方法上。
+* 捕获了异常，未再抛出。
+* 同一个类中方法调用。
+* @Transactional的类注入失败。
+* 多数据源(静态配置)
+* 原始SSM项目，重复扫描导致事务失效  
+
+
+# 1. Spring事务   
 <!-- 
 https://mp.weixin.qq.com/s/RpA3RvYv4I4zYSzBmZaDiA
  
 -->
-
-# 1. Spring事务   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/aop-8.png)  
 
 ## 1.1. Spring事务简介  
@@ -44,7 +61,7 @@ https://mp.weixin.qq.com/s/RpA3RvYv4I4zYSzBmZaDiA
 &emsp; 声明式事务最大的优点就是不需要通过编程的方式管理事务。不在业务逻辑代码中掺杂事务管理的代码，只需在配置文件中做相关的事务规则声明(或通过基于@Transactional注解的方式)，便可以将事务规则应用到业务逻辑中。声明式事务管理也有两种常用的方式，一种是基于tx和aop名字空间的xml配置文件，另一种就是基于@Transactional注解。  
 
 ### 1.2.1. Spring Boot开启事务  
-......
+&emsp; ......
 
 ### 1.2.2. 注解@Transactional使用  
 1. 位置：@Transactional可以作用于接口、接口方法、类以及类方法上。Spring建议不要在接口或者接口方法上使用该注解，因为只有在使用基于接口的代理时它才会生效。当作用于类上时，该类的所有public方法将都具有该类型的事务属性，同时也可以在方法级别使用注解来覆盖类级别的定义。  
@@ -73,7 +90,7 @@ https://mp.weixin.qq.com/s/RpA3RvYv4I4zYSzBmZaDiA
 |noRollbackFor|	该属性用于设置不需要进行回滚的异常类数组，当方法中抛出指定异常数组中的异常时，不进行事务回滚。例如：指定单一异常类：@Transactional(noRollbackFor=RuntimeException.class)指定多个异常类：@Transactional(noRollbackFor={RuntimeException.class， Exception.class})。|
 |noRollbackForClassName	|该属性用于设置不需要进行回滚的异常类名称数组，当方法中抛出指定异常名称数组中的异常时，不进行事务回滚。例如：指定单一异常类名称：@Transactional(noRollbackForClassName=”RuntimeException”)指定多个异常类名称：@Transactional(noRollbackForClassName={“RuntimeException”，”Exception”})|  
 
-## 1.3. ※※※Spring事务属性详解  
+## 1.3. ★★★Spring事务属性详解  
 &emsp; **<font color = "red">Spring事务属性通常由事务的传播行为、事务的隔离级别、事务的超时值、事务只读标志组成。在进行事务划分时，须要进行事务定义，也就是配置事务的属性。</font>** Spring框架中PlatfromTransactionManager是spring事务管理的核心接口，TransactionDefinition接口定义事务属性。  
 
 ```java
@@ -133,12 +150,12 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
 &emsp; 应用场合：  
 
 * 如果一次执行单条查询语句，则没有必要启用事务支持，数据库默认支持SQL执行期间的读一致性；   
-* **<font color = "lime">如果一次执行多条查询语句，例如统计查询，报表查询，在这种场景下，多条查询SQL必须保证整体的读一致性，否则，在前条SQL查询之后，后条SQL查询之前，数据被其他用户改变，则该次整体的统计查询将会出现读数据不一致的状态，此时，应该启用事务支持。</font>**  
+* **<font color = "clime">如果一次执行多条查询语句，例如统计查询，报表查询，在这种场景下，多条查询SQL必须保证整体的读一致性，否则，在前条SQL查询之后，后条SQL查询之前，数据被其他用户改变，则该次整体的统计查询将会出现读数据不一致的状态，此时，应该启用事务支持。</font>**  
 &emsp; 【注意是一次执行多次查询来统计某些信息，这时为了保证数据整体的一致性，要用只读事务】  
 
-&emsp; **※※※<font color = "lime">在将事务设置成只读后，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。</font>**  
+&emsp; **★★★<font color = "clime">在将事务设置成只读后，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。</font>**  
 
-## 1.4. ※※※Spring事务失效  
+## 1.4. ★★★Spring事务失效  
 
 1. 使用在了非public方法上。  
 2. 捕获了异常，未再抛出。  
@@ -161,27 +178,31 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
 &emsp; SpringMVC中context:component-scan重复扫描会引起事务失效。  
 &emsp; 在主容器中(applicationContext.xml)，将Controller的注解排除掉。  
 
-        <context:component-scan base-package="com">
-            <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
-        </context:component-scan>
- 
-    &emsp; 而在springMVC配置文件中将Service注解给去掉。  
+    ```xml
+    <context:component-scan base-package="com">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
+    ```
 
+    &emsp; 而在springMVC配置文件中将Service注解给去掉。 
+
+        ```xml
         <context:component-scan base-package="com">
             <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
             <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
         </context:component-scan>
+        ```
 
     &emsp; 使用springMVC，并且使用其扫描器组件，对项目中加入servcie /ctroller注解的bean进行注册交给srping容器管理，在springMVC配置文件中只扫描ctroller对所有的service进行过滤掉，因为按照spring配置文件的加载顺序来讲，先加载springmvc配置文件，再加载spring配置文件，事物一般在spring配置文件中进行配置，如果此时在加载srpingMVC配置文件的时候，把service也给注册了，但是此时事物还没加载，也就导致后面的事物无法成功注入到service中。所以把对service的扫描放在spring配置文件中或是其他配置文件中。  
-7. 底层数据库引擎不支持事务。  
-&emsp; Mysql引擎。MyISAM不支持事务；InnoDB支持事务。检查表的属性：  
+    7. 底层数据库引擎不支持事务。  
+    &emsp; Mysql引擎。MyISAM不支持事务；InnoDB支持事务。检查表的属性：  
 
-        SHOW TABLE STATUS LIKE 'tbl_name';
-        SHOW CREATE TABLE tbl_name; 
+            SHOW TABLE STATUS LIKE 'tbl_name';
+            SHOW CREATE TABLE tbl_name; 
 
 ## 1.5. Spring事务其他使用  
-&emsp; **如何通过日志判断事务是否已经被Spring所管理？**  
-1. 在logback或者log4j中对org.springframework.aop、org.springframework.transaction、org.springframework.jdbc、org.mybatis.spring.transaction进行DEBUG级别日志跟踪(开发期)  
+&emsp; **一、如何通过日志判断事务是否已经被Spring所管理？**  
+1. 在logback或者log4j中对org.springframework.aop、org.springframework.transaction、org.springframework.jdbc、org.mybatis.spring.transaction进行DEBUG级别日志跟踪(开发期)。  
 2. 查看日志中是否有事务管理、开启、提交、回滚等字符，如：
 
         DEBUG o.m.spring.transaction.SpringManagedTransaction - JDBC Connection [com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl@28cfe912] will be managed by Spring  
@@ -189,7 +210,9 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
 
         DEBUG o.m.spring.transaction.SpringManagedTransaction - JDBC Connection [com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl@28cfe912] will not be managed by Spring
 
-&emsp; **如何通过程序判断是否存在事务？**  
+
+
+&emsp; **二、如何通过程序判断是否存在事务？**  
 
         boolean flag = TransactionSynchronizationManager.isActualTransactionActive();  
 

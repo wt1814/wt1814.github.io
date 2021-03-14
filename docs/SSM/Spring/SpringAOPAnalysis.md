@@ -19,9 +19,25 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 
-1. Spring DI发生在initializeBean()的BeanPostProcessor阶段。  
-2. 代理类的生成流程包含 1)获取当前的Spring Bean 适配的advisors；2)创建代理类   
+&emsp; **<font color = "blue">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
 
+&emsp; 代理类的生成流程：1). 获取当前的Spring Bean 适配的advisors；2). 创建代理类。   
+
+1. Spring AOP获取对应 Bean 适配的Advisors 链的核心逻辑：
+	1. 获取当前 IoC 容器中所有的 Aspect 类
+	2. 给 每个Aspect 类的advice 方法创建一个 Spring Advisor，这一步又能细分为 
+		1. 遍历所有advice 方法
+		2. 解析方法的注解和pointcut
+		3. 实例化 Advisor 对象
+	3. 获取到 候选的 Advisors，并且缓存起来，方便下一次直接获取
+	4. 从候选的Advisors中筛选出与目标类适配的Advisor 
+		1. 获取到Advisor的切入点 pointcut
+		2. 获取到 当前 target 类 所有的 public 方法
+		3. 遍历方法，通过 切入点 的 methodMatcher 匹配当前方法，只有有一个匹配成功就相当于当前的Advisor 适配
+	5. 对筛选之后的 Advisor 链进行排序  
+2. 创建代理类
+    1. 创建AopProxy。根据ProxyConfig 获取到了对应的AopProxy的实现类，分别是JdkDynamicAopProxy和ObjenesisCglibAopProxy。 
+    2. 获取代理类
 
 # 1. SpringAOP解析
 <!-- 
@@ -140,11 +156,12 @@ public interface BeanPostProcessor {
 }
 ```
 
-&emsp; <font color = "clime">回顾Spring创建Bean的流程：</font>  
+&emsp; <font color = "cclime">回顾Spring创建Bean的流程：</font>  
 1. Step1 创建实例对象createBeanInstance()；
 2. Step2 属性装配populateBean()，得到一个真正的实现类；
-3. <font color = "blue">在Step3 initializeBean()中，IoC容器会处理Bean初始化之后的各种回调事件</font>，然后返回一个“可能经过加工”的bean对象。&emsp; 其中就包括了BeanPostProcessor 的 postProcessBeforeInitialization 回调 和postProcessAfterInitialization 回调。  
-**而<font color = "blue">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！
+3. <font color = "blue">在Step3 initializeBean()中，IoC容器会处理Bean初始化之后的各种回调事件</font>，然后返回一个“可能经过加工”的bean对象。  
+&emsp; 其中就包括了BeanPostProcessor 的 postProcessBeforeInitialization 回调 和postProcessAfterInitialization 回调。  
+&emsp; **而<font color = "blue">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！
 
 ## 1.3. 代理类的生成流程  
 &emsp; 在开启AOP自动代理解析阶段中的AnnotationAwareAspectJAutoProxyCreator是一种具体的创建创建AOP代理对象的子类。  
@@ -211,8 +228,8 @@ protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) 
     }
 }
 ```
-&emsp; **<font color = "lime">这个方法里有两个核心点：</font>**  
-1. 获取当前的Spring Bean 适配的advisors  
+&emsp; **<font color = "clime">这个方法里有两个核心点：</font>**  
+1. 获取当前的Spring Bean适配的advisors  
 2. 创建代理类  
 
 ### 1.3.1. 获取对应Bean适配的Advisors链  
@@ -400,8 +417,8 @@ public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasInt
     2. 解析方法的注解和pointcut
     3. 实例化 Advisor 对象
 3. 获取到 候选的 Advisors，并且缓存起来，方便下一次直接获取
-4. 从候选的 Advisors 中筛选出与目标类 适配的Advisor 
-    1. 获取到 Advisor 的 切入点 pointcut
+4. 从候选的Advisors中筛选出与目标类适配的Advisor 
+    1. 获取到Advisor的切入点 pointcut
     2. 获取到 当前 target 类 所有的 public 方法
     3. 遍历方法，通过 切入点 的 methodMatcher 匹配当前方法，只有有一个匹配成功就相当于当前的Advisor 适配
 5. 对筛选之后的 Advisor 链进行排序
@@ -460,7 +477,7 @@ protected Object createProxy(Class<?> beanClass, String beanName, Object[] speci
 2. 添加代理接口
 3. 封装Advisor并加入到ProxyFactory中
 4. 设置要代理的类
-5. Spring中为子类提供了定制的函数customizeProxyFactory，子类可以在此函数中6. 对ProxyFactory的进一步封装
+5. Spring中为子类提供了定制的函数customizeProxyFactory，子类可以在此函数中对ProxyFactory的进一步封装
 7. ★★★**获取代理操作**
 
     ```java
@@ -509,7 +526,7 @@ public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException 
     }
 }
 ```
-&emsp; 这一步之后根据ProxyConfig 获取到了对应的AopProxy的实现类，分别是JdkDynamicAopProxy和ObjenesisCglibAopProxy。  
+&emsp; **<font color = "clime">这一步之后根据ProxyConfig 获取到了对应的AopProxy的实现类，分别是JdkDynamicAopProxy和ObjenesisCglibAopProxy。</font>  
 
 &emsp; JdkDynamicAopProxy  
 

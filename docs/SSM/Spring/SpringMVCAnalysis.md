@@ -13,9 +13,19 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 前端控制器DispatcherServlet ---> 处理器映射器HandlerMapping ---> 找到处理器Handler  
-2. 前端控制器DispatcherServlet ---> 处理器适配器HandlerAdapter ---> 处理器Handler ---> 执行处理器Controller ---> Controller执行完成返回ModelAndView  
-3. 前端控制器DispatcherServlet ---> 视图解析器ViewReslover  
+&emsp; **SpringMVC的工作流程：**  
+1. 找到处理器：前端控制器DispatcherServlet ---> 处理器映射器HandlerMapping ---> 找到处理器Handler  
+2. 处理器处理：前端控制器DispatcherServlet ---> 处理器适配器HandlerAdapter ---> 处理器Handler ---> 执行处理器Controller ---> Controller执行完成返回ModelAndView  
+3. 返回前端控制器DispatcherServlet ---> 视图解析器ViewReslover  
+
+
+&emsp; **SpringMVC解析：**  
+1. 在SpringMVC.xml中定义一个DispatcherServlet和一个监听器ContextLoaderListener。  
+2. 上下文在web容器中的启动：<font color = "red">由ContextLoaderListener启动的上下文为根上下文。在根上下文的基础上，还有一个与Web MVC相关的上下文用来保存控制器(DispatcherServlet)需要的MVC对象，作为根上下文的子上下文，构成一个层次化的上下文体系。</font>  
+3. DispatcherServlet初始化和使用：  
+    1. 完成Spring MVC的组件的初始化。  
+    2. 调用阶段。这一步是由请求触发的。~~参考SPring MVC流程~~  
+
 
 # 1. SpringMVC解析
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/SpringMVC/mvc-6.png)  
@@ -137,8 +147,8 @@ public class ContextLoaderListener extends ContextLoader implements ServletConte
     }
 }
 ```
-1. 继承ContextLoader类，ContextLoader 可以在启动时载入 IOC 容器；
-2. 实现ServletContextListener接口，ServletContextListener 接口有两个抽象方法，contextInitialized和contextDestroyed。
+1. 继承ContextLoader类，ContextLoader可以在启动时载入IOC容器；
+2. 实现ServletContextListener接口，ServletContextListener接口有两个抽象方法，contextInitialized和contextDestroyed。
 
 &emsp; ContextLoaderListener加载并初始化Spring容器的开始，是在contextInitialized()方法中。  
 
@@ -283,7 +293,7 @@ protected final void initServletBean() throws ServletException {
 
 }
 ```
-&emsp; <font color = "lime">这段代码中最主要的逻辑就是初始化IOC容器。IOC 容器初始化之后，最后又调用了onRefresh()方法。</font>  
+&emsp; <font color = "clime">这段代码中最主要的逻辑就是初始化IOC容器。IOC 容器初始化之后，最后又调用了onRefresh()方法。</font>  
 
 ```java
 protected void onRefresh(ApplicationContext context) {
@@ -315,7 +325,7 @@ protected void initStrategies(ApplicationContext context) {
 &emsp; 其中在initHandlerMappings()中，保存urls和beanName的对应关系到Map中。  
 
 #### 1.2.2.2. 调用阶段  
-&emsp; <font color = "lime">这一步是由请求触发的，所以入口为 DispatcherServlet的核心方法为 doService()， doService()中的核心逻辑由 doDispatch()实现，</font>源代码如下：  
+&emsp; <font color = "clime">这一步是由请求触发的，所以入口为 DispatcherServlet的核心方法为 doService()， doService()中的核心逻辑由 doDispatch()实现，</font>源代码如下：  
 
 ```java
 /** 中央控制器,控制请求的转发 **/

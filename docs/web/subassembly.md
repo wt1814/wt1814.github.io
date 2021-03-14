@@ -26,7 +26,7 @@ https://mp.weixin.qq.com/s/zMnQL2xXzQ8R4Zw4lGfYUg
 &emsp; 加载顺序: listener -> filter -> servlet。  
 
 ### 1.1.1. Servlet  
-......
+&emsp; ......
 
 ### 1.1.2. 过滤器  
 &emsp; 过滤器Filter，是 JavaEE 的标准，依赖于Servlet容器，使用的时候是配置在 web.xml 文件中的。  

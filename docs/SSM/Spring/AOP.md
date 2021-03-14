@@ -19,8 +19,8 @@ https://mp.weixin.qq.com/s/ZC9WMbOZJ6V3RkaFm6UZYQ
 -->
 &emsp; 通知定义了切面要发生的“故事”和时间；切入点定义了“故事”发生的地点；通知和切入点共同组成了切面：时间、地点和要发生的“故事”。
 1. 连接点(join point)：连接点是应用程序执行过程中能够插入切面的地点。这些点可以是方法被调用时、异常抛出时、甚至字段被编辑时。
-2. 切点(pointcut)：如果说通知定义了切面的"什么"和"何时"，那么切入点就定义了"何地"。切入点是连接点的集合。
-3. 通知(Advice)：通知定义了切面是什么以及何时使用。除了描述切面要完成的工作，通知还解决了何时执行这个工作的问题。应该在一个方法被调用之前、之后或者抛出异常时。  
+2. 切点(pointcut)：切入点定义了"何地"。切入点是连接点的集合。
+3. 通知(Advice)：通知定义了切面是“什么”以及“何时使用”。除了描述切面要完成的工作，通知还解决了何时执行这个工作的问题。应该在一个方法被调用之前、之后或者抛出异常时。  
 
         通知类型：
         前置通知(Before advice)，方法开始之前执行一段代码。
@@ -32,9 +32,7 @@ https://mp.weixin.qq.com/s/ZC9WMbOZJ6V3RkaFm6UZYQ
 4. 切面(aspect)：切面是要实现的交叉功能。就是通知和切入点的结合。通知和切入点共同定义了关于切面的全部内容：它的功能、在何时和何地完成功能。  
 &emsp; Spring中的切面类型：  
     * Advisor：都是有一个切点和一个通知组合。Spring中传统切面。  
-    * Aspect：多个切点和多个通知组合。  
-    
-    &emsp; 多个切面的情况下，可以通过@Order指定先后顺序，数字越小，优先级越高。  
+    * Aspect：多个切点和多个通知组合。多个切面的情况下，可以通过@Order指定先后顺序，数字越小，优先级越高。  
 5. 引入(Intrduction)：**引入允许为已经存在的类添加新方法和属性**。比如一个Auditable通知类，记录对象在最后一次被修改时的状态。只需要一个setLastModified(Date)方法，和一个实例变量来保存这个状态。这个新方法和实例变量就可以被引入到现有的类，从而在不修改它们的情况下，让他们具有新的行为和状态。  
 6. 织入(weaving)：织入是将切面应用到目标对象从而创建一个新的代理对象的过程。在目标对象的生命周期里有多个机会发生织入过程。比如编译时、类加载时、运行时。  
 
@@ -71,11 +69,6 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
     1. 当Bean实现接口时，Spring就会用JDK的动态代理。  
     2. 当Bean没有实现接口时，Spring使用CGlib是实现。  
     3. 可以强制使用CGlib(在spring配置中加入<aop:aspectj-autoproxy proxy-target-class="true"/>)。  
-
-4. 如何强制使用CGLIB实现AOP？  
-    1. 添加CGLIB库(aspectjrt-xxx.jar、aspectjweaver-xxx.jar、cglib-nodep-xxx.jar)  
-    2. 在Spring配置文件中加入<aop:aspectj-autoproxy proxy-target-class="true"/>  
-
 6. CGlib比JDK快？  
     1. 使用CGLib实现动态代理，<font color = "red">CGLib底层采用ASM字节码生成框架，使用字节码技术生成代理类</font>，在jdk6之前比使用Java反射效率要高。唯一需要注意的是，CGLib不能对声明为final的方法进行代理，因为CGLib原理是动态生成被代理类的子类。  
     2. 在jdk6、jdk7、jdk8逐步对JDK动态代理优化之后，在调用次数较少的情况下，JDK代理效率高于CGLIB代理效率，只有当进行大量调用的时候，jdk6和jdk7比CGLIB代理效率低一点，但是到jdk8的时候，jdk代理效率高于CGLIB代理，总之，每一次jdk版本升级，jdk代理效率都得到提升，而CGLIB代理消息确有点跟不上步伐。  

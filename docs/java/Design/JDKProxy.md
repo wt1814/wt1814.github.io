@@ -14,6 +14,9 @@
 &emsp; InvocationHandler接口，在使用动态代理时，需要定义一个位于代理类与委托类之间的中介类，中介类被要求实现InvocationHandler接口。通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。
 
 # 1. JDK动态代理
+<!-- 
+  利用拦截器(拦截器必须实现InvocationHanlder)加上反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理。
+-->
 &emsp; 动态代理实现方式由JDK自带的代理和Cglib提供的类库。这里只讨论JDK代理的使用。  
 
 &emsp; Java动态代理类位于java.lang.reflect包下，一般主要涉及到以下两个重要的类或接口，一个是 InvocationHandler(Interface)、另一个则是 Proxy(Class)。  

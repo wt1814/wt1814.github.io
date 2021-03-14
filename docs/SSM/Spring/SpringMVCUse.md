@@ -6,7 +6,7 @@
         - [1.1.1. 地址映射](#111-地址映射)
             - [1.1.1.1. Content-Type介绍](#1111-content-type介绍)
         - [1.1.2. 绑定参数](#112-绑定参数)
-            - [1.1.2.1. ※※※自定义转换](#1121-※※※自定义转换)
+            - [1.1.2.1. ★★★自定义转换](#1121-★★★自定义转换)
                 - [1.1.2.1.1. 注解@DateTimeFormat、@JsonFormat](#11211-注解datetimeformatjsonformat)
                 - [1.1.2.1.2. Converter，转换器](#11212-converter转换器)
                 - [1.1.2.1.3. Formatter，格式化](#11213-formatter格式化)
@@ -19,6 +19,8 @@
         - [1.2.5. SpringMVC解决跨域问题](#125-springmvc解决跨域问题)
 
 <!-- /TOC -->
+
+&emsp; 有些特殊数据类型无法直接进行数据绑定，必须先经过数据转换，例如日期。  
 
 
 # 1. SpringMVC教程
@@ -90,7 +92,7 @@ public @interface RequestMapping {
 4. @ModelAttribute； 
 5. @SessionAttributes；  
 
-#### 1.1.2.1. ※※※自定义转换  
+#### 1.1.2.1. ★★★自定义转换  
 &emsp; 有些特殊数据类型无法直接进行数据绑定，必须先经过数据转换，例如日期。  
 &emsp; 数据转换方式：1.硬编码(javaBean中日期类型为String)；2.SpringMVC自定义转换(javaBean中日期类型为Date)，需要自定义转换器(Converter)或格式化(Formatter)进行数据绑定。  
 
@@ -229,8 +231,7 @@ private Date actionDate;
 &emsp; 参考[过滤器、拦截器、监听器](docs/web/subassembly.md)  
 
 ### 1.2.4. SpringMVC上传图片  
-....
+&emsp; ....
 
 ### 1.2.5. SpringMVC解决跨域问题  
-...
-
+&emsp; ...
