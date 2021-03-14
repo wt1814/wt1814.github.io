@@ -33,6 +33,11 @@
 <!-- 
 【对线面试官】 CAS 
 https://mp.weixin.qq.com/s/rdMsqbawKSC86AXlcWfkCg
+传说中的并发编程ABA问题
+https://blog.csdn.net/u012813201/article/details/72841801
+ABA问题的本质及其解决办法
+http://www.flydean.com/aba-cas-stamp/
+
 -->
 
 ## 1.1. CAS算法思想  

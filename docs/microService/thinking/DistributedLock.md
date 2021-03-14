@@ -13,6 +13,12 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-29.png)  
 
 # 1. 分布式锁  
+<!-- 
+分布式锁需要满足的特性有这么几点：
+https://mp.weixin.qq.com/s/1IIKb3Uitdd_wHcq7pKdxg
+-->
+
+
 ## 1.1. 分布式锁使用场景  
 <!-- 
 ***分布式锁使用场景

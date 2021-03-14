@@ -33,6 +33,11 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-75.png)  
 
 # 1. ReentrantLock，重入锁  
+<!-- 
+重入锁的核心功能委托给内部类Sync实现，并且根据是否是公平锁有FairSync和NonfairSync两种实现。这是一种典型的策略模式。
+https://mp.weixin.qq.com/s/GDno-X1N8zc98h9MZ8_KoA
+-->
+
 &emsp; ReentrantLock(Re-Entrant-Lock)，可重入互斥锁，具有与synchronized隐式锁相同的基本行为和语义，但扩展了功能。  
 
 ## 1.1. ReentrantLock与synchronized比较 

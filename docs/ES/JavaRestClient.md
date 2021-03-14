@@ -28,6 +28,10 @@
 ```
 
 ## 1.2. SpringBoot集成ElasticSearch
+<!-- 
+SpringBoot整合ES
+https://mp.weixin.qq.com/s/R0PNWF7NmFfjnFljIKG6Vg
+-->
 
 ### 1.2.1. spring-boot-starter-data-elasticsearch  
 ......

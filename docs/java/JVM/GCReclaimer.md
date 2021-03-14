@@ -159,6 +159,13 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 &emsp; [G1回收器](/docs/java/JVM/G1.md)  
 
 ### 1.3.6. ZGC  
+&emsp; 一款由Oracle公司研发的，以低延迟为首要目标的一款垃圾收集器。它是基于动态Region内存布局，(暂时)不设年龄分代，使用了读屏障、染色指针和内存多重映射等技术来实现可并发的标记-整理算法的收集器。在JDK 11新加入，还在实验阶段，主要特点是：回收TB级内存(最大4T)，停顿时间不超过10ms  
+
+* 优点：低停顿，高吞吐量，ZGC收集过程中额外耗费的内存小  
+* 缺点：浮动垃圾  
+
+&emsp; ZGC目前只在Linux/x64上可用，如果有足够的需求，将来可能会增加对其他平台的支持  
+&emsp; 启动参数: -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xmx10g -Xlog:gc  
 <!-- 
  新一代垃圾回收器ZGC的探索与实践 
  https://mp.weixin.qq.com/s/ag5u2EPObx7bZr7hkcrOTg
@@ -169,7 +176,9 @@ https://mp.weixin.qq.com/s/nAjPKSj6rqB_eaqWtoJsgw
 深入理解JVM - ZGC垃圾收集器 
 https://mp.weixin.qq.com/s/q4JeoI47eWBaViNDBCfnuQ
 
--->
+【241期】面试官：你了解JVM中的ZGC垃圾收集器吗？ 
+https://mp.weixin.qq.com/s/r9TSqka8y1qV4QIiD3qXKw
+
 &emsp; 一款由Oracle公司研发的，以低延迟为首要目标的一款垃圾收集器。它是基于动态Region内存布局，(暂时)不设年龄分代，使用了读屏障、染色指针和内存多重映射等技术来实现可并发的标记-整理算法的收集器。在JDK 11新加入，还在实验阶段，主要特点是：回收TB级内存(最大4T)，停顿时间不超过10ms  
 
 * 优点：低停顿，高吞吐量，ZGC收集过程中额外耗费的内存小  
@@ -216,6 +225,8 @@ https://mp.weixin.qq.com/s/q4JeoI47eWBaViNDBCfnuQ
 * 并发预备重分配：这个阶段需要根据特定的查询条件统计得出本次收集过程要清理哪些Region，将这些Region组成重分配集(Relocation Set)。ZGC每次回收都会扫描所有的Region，用范围更大的扫描成本换取省去G1中记忆集的维护成本  
 * 并发重分配：重分配是ZGC执行过程中的核心阶段，这个过程要把重分配集中的存活对象复制到新的Region上，并为重分配集中的每个Region维护一个转发表(Forward Table)，记录从旧对象到新对象的转向关系。ZGC收集器能仅从引用上就明确得知一个对象是否处于重分配集之中，如果用户线程此时并发访问了位于重分配集中的对象，这次访问将会被预置的内存屏障所截获，然后立即根据Region上的转发表记录将访问转发到新复制的对象上，并同时修正更新该引用的值，使其直接指向新对象，ZGC将这种行为称为指针的“自愈”(Self-Healing)能力  
 * 并发重映射(Concurrent Remap)：重映射所做的就是修正整个堆中指向重分配集中旧对象的所有引用，但是ZGC中对象引用存在“自愈”功能，所以这个重映射操作并不是很迫切。ZGC很巧妙地把并发重映射阶段要做的工作，合并到了下一次垃圾收集循环中的并发标记阶段里去完成，反正它们都是要遍历所有对象的，这样合并就节省了一次遍历对象图的开销
+-->
+
 
 ### 1.3.7. Epsilon  
 &emsp; Epsilon(A No-Op Garbage Collector)垃圾回收器控制内存分配，但是不执行任何垃圾回收工作。一旦java的堆被耗尽，jvm就直接关闭。设计的目的是提供一个完全消极的GC实现，分配有限的内存分配，最大限度降低消费内存占用量和内存吞吐时的延迟时间。一个好的实现是隔离代码变化，不影响其他GC，最小限度的改变其他的JVM代码  
