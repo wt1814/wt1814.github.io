@@ -35,10 +35,10 @@ https://blog.csdn.net/weixin_39035120/article/details/86225377
 4. 最后，就是实际场景中触发事件发布，完成一系列任务。  
 
 
-&emsp; **<font color = "lime">Spring事件机制的特性：</font>**   
+&emsp; **<font color = "clime">Spring事件机制的特性：</font>**   
 
-* <font color = "lime">Spring的事件默认是同步的，即调用publishEvent方法发布事件后，它会处于阻塞状态，直到onApplicationEvent接收到事件并处理返回之后才继续执行下去，这种单线程同步的好处是可以进行事务管理。</font>  
-* <font color = "lime">事件监听是循环往复的，如果确定事件只会发布一次，应该移除事件监听器。</font>  
+* <font color = "clime">Spring的事件默认是同步的，即调用publishEvent方法发布事件后，它会处于阻塞状态，直到onApplicationEvent接收到事件并处理返回之后才继续执行下去，这种单线程同步的好处是可以进行事务管理。</font>  
+* <font color = "clime">事件监听是循环往复的，如果确定事件只会发布一次，应该移除事件监听器。</font>  
 
 
 &emsp; **<font color = "red">实现Spring事件机制主要有4个类：</font>**  
@@ -49,17 +49,17 @@ https://blog.csdn.net/weixin_39035120/article/details/86225377
 * ApplicationEventPublisher：事件发布者，委托ApplicationEventMulticaster完成事件发布。  
 
 ### 1.2.2. ApplicationEvent，事件  
-&emsp; ApplicationEvent表示事件，每个实现类表示一类事件，可携带数据。<font color = "lime">下面是一些Spring提供的标准事件，都继承了ApplicationEvent。</font>  
+&emsp; ApplicationEvent表示事件，每个实现类表示一类事件，可携带数据。<font color = "clime">下面是一些Spring提供的标准事件，都继承了ApplicationEvent。</font>  
 
 |事件名|注释|
 |---|---|
 |ContextRefreshedEvent|Spring应用上下文就绪事件|
 |ContextStartedEvent|Spring应用上下文启动事件|
 |ContextStopedEvent|Spring应用上下文停止事件|
-vContextClosedEvent|Spring应用上下文关闭事件v
+|ContextClosedEvent|Spring应用上下文关闭事件|
 
 * ContextRefreshedEvent，上下文更新事件  
-    &emsp; **<font color = "lime">ContextRefreshedEvent上下文更新事件发生在刷新容器(refresh()方法)的“完成刷新容器时发布对应的事件”步骤中。</font>**  
+    &emsp; **<font color = "clime">ContextRefreshedEvent上下文更新事件发生在刷新容器(refresh()方法)的“完成刷新容器时发布对应的事件”步骤中。</font>**  
     ```java
     // AbstractApplicationContext.class
     public void refresh() throws BeansException, IllegalStateException {
@@ -115,10 +115,10 @@ public interface ApplicationListener<E extends ApplicationEvent> extends EventLi
     void onApplicationEvent(E event);
 }
 ```
-&emsp; 当事件监听器接收到它可以处理的事件，会调用onApplicationEvent()方法。注意到<font color = "red">ApplicationListener是泛型参数，这样可以实现所有继承了ApplicationEvent的监听。可以尽可能多的注册想要的事件侦听器，但是默认情况下事件监听器同步接收事件。这意味着publishEvent()方法会阻塞直到所有的事件监听器成处理完事件。这种单线程同步方法的一个特点是,当一个监听器接收到一个事件时，它运行在事务上下文的发布者线程上(如果事务上下文可用)。</font>如果事件的发布需要另一种策略(譬如多线程)需要实现ApplicationEventMulticaster接口类。  
+&emsp; 当事件监听器接收到它可以处理的事件，会调用onApplicationEvent()方法。注意到<font color = "red">ApplicationListener是泛型参数，这样可以实现所有继承了ApplicationEvent的监听。可以尽可能多的注册想要的事件侦听器，但是默认情况下事件监听器同步接收事件。这意味着publishEvent()方法会阻塞直到所有的事件监听器成处理完事件。这种单线程同步方法的一个特点是，当一个监听器接收到一个事件时，它运行在事务上下文的发布者线程上(如果事务上下文可用)。</font>如果事件的发布需要另一种策略(譬如多线程)需要实现ApplicationEventMulticaster接口类。  
 
 ### 1.2.4. ApplicationEventMulticaster，事件管理者  
-&emsp; ApplicationEventMulticaster接口方法分为三类，注册事件监听器、移除事件监听器、发布事件。  
+&emsp; **<font color = "red">ApplicationEventMulticaster接口方法分为三类，注册事件监听器、移除事件监听器、发布事件。</font>**  
 
 ```java
 public interface ApplicationEventMulticaster {

@@ -70,7 +70,7 @@ public <T> T getBean(String name, @Nullable Class<T> requiredType, @Nullable Obj
 &emsp; **主要流程：**  
 1. 先处理Bean的名称，因为如果以“&”开头的Bean名称表示获取的是对应的FactoryBean对象；  
 2. 从缓存中获取单例Bean，有则进一步判断这个Bean是不是在创建中，如果是的，就等待创建完毕，否则直接返回这个Bean对象；  
-3. 如果不存在单例Bean缓存， **则先进行循环依赖的解析；**  
+3. **<font color = "clime">如果不存在单例Bean缓存， 则先进行循环依赖的解析；</font>**  
 4. 解析完毕之后先获取父类BeanFactory，获取到了则调用父类的getBean方法，不存在则先合并然后创建Bean。  
 
 &emsp; **源码解析：**  
@@ -250,12 +250,14 @@ protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredTy
 &emsp; **主要流程：**  
 1. 这里会先获取 RootBeanDefinition对象中的Class对象并确保已经关联了要创建的Bean的Class。  
 2. 这里会检查3个条件  
+
     * Bean的属性中的 beforeInstantiationResolved字段是否为true，默认是false。  
     * Bean是否是原生的Bean  
     * Bean的 hasInstantiationAwareBeanPostProcessors属性是否为true。这个属性在Spring准备刷新容器前准备BeanPostProcessors的时候会设置，如果当前Bean实现了 InstantiationAwareBeanPostProcessor则这个就会是true。  
     
-    &emsp; 当三个条件都存在的时候，就会调用实现的InstantiationAwareBeanPostProcessor接口的postProcessBeforeInstantiation方法，然后获取返回的Bean，如果返回的Bean不是null还会调用实现的 BeanPostProcessor接口的postProcessAfterInitialization方法。  
-3. 如果上面3个条件其中一个不满足就不会调用实现的方法。默认这里都不会调用的这些BeanPostProcessors的实现方法。然后继续执行后面的doCreateBean方法。  
+    
+&emsp; 当三个条件都存在的时候，就会调用实现的InstantiationAwareBeanPostProcessor接口的postProcessBeforeInstantiation方法，然后获取返回的Bean，如果返回的Bean不是null还会调用实现的 BeanPostProcessor接口的postProcessAfterInitialization方法。  
+3. 如果上面3个条件其中一个不满足就不会调用实现的方法。默认这里都不会调用这些BeanPostProcessors的实现方法。然后继续执行后面的doCreateBean方法。  
 
 &emsp; **源码解析：**  
 

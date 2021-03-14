@@ -15,6 +15,31 @@
 <!-- /TOC -->
 
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; Spring循环依赖的场景：均采用setter方法(属性注入)注入方式，可被解决；采用构造器和setter方法(属性注入)混合注入方式可能被解决。
+
+&emsp; **<font color = "red">Spring通过3级缓存解决。</font>**  
+
+* 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
+* 二级缓存: Map<String,Object> earlySingletonObjects，早期曝光对象，二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。尚未经历了完整的Spring Bean初始化生命周期。
+* 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
+
+
+&emsp; **<font color = "clime">单例模式下Spring解决循环依赖的流程：</font>**  
+1. Spring 创建bean主要分为两个步骤，创建原始 bean 对象，接着去填充对象属性和初始化  
+2. 每次创建bean之前，都会从缓存中查下有没有该 bean，因为是单例，只能有一个  
+3. 当创建beanA的原始对象后，并把它放到三级缓存中，接下来就该填充对象属性了，这时候发现依赖了 beanB，接着就又去创建 beanB，同样的流程，创建完 beanB 填充属性时又发现它依赖了 beanA，又是同样的流程，不同的是，这时候可以在三级缓存中查到刚放进去的原始对象 beanA，所以不需要继续创建，用它注入 beanB，完成 beanB 的创建 
+4. 既然 beanB 创建好了，所以 beanA 就可以完成填充属性的步骤了，接着执行剩下的逻辑，闭环完成  
+
+---
+&emsp; 当A、B两个类发生循环引用时，在A完成实例化后，就使用实例化后的对象去创建一个对象工厂，并添加到三级缓存中，如果A被AOP代理，那么通过这个工厂获取到的就是A代理后的对象，如果A没有被AOP代理，那么这个工厂获取到的就是A实例化的对象。当A进行属性注入时，会去创建B，同时B又依赖了A，所以创建B的同时又会去调用getBean(a)来获取需要的依赖，此时的getBean(a)会从缓存中获取：  
+
+* 第一步，先获取到三级缓存中的工厂。  
+* 第二步，调用对象工工厂的getObject方法来获取到对应的对象，得到这个对象后将其注入到B中。紧接着B会走完它的生命周期流程，包括初始化、后置处理器等。  
+
+&emsp; 当B创建完后，会将B再注入到A中，此时A再完成它的整个生命周期。  
+
+
 # 1. 循环依赖  
 <!-- 
 https://mp.weixin.qq.com/s/p01mrjBwstK74d3D3181og
@@ -61,20 +86,26 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 -->
 &emsp; Spring创建bean主要的几个步骤(参考SpringBean生命周期)：  
 
-* 步骤1：实例化bean，即调用构造器创建bean实例  
-* 步骤2：填充属性，注入依赖的bean，比如通过set方式、@Autowired注解的方式注入依赖的bean  
+* 步骤1：实例化bean，即调用构造器创建bean实例。  
+* 步骤2：填充属性，注入依赖的bean，比如通过set方式、@Autowired注解的方式注入依赖的bean。  
 * 步骤3：bean的初始化，比如调用init方法等。    
 
 &emsp; 从上面3个步骤中可以看出，<font color = "lime">注入依赖的对象，有2种情况：</font>  
 1. **<font color = "red">通过步骤1中构造器的方式注入依赖</font>**  
-2. **<font color = "red">通过步骤2填充field属性注入依赖</font>**  
+2. **<font color = "red">通过步骤2填充field属性注入（set方法）依赖</font>**  
 
-&emsp; 在这两种情况，都有可能出现循环依赖。并非所有循环依赖，Spring都能自动解决。    
+&emsp; 在这两种情况，都有可能出现循环依赖。并非所有循环依赖，Spring都能自动解决。如果不能自动解决，抛出BeanCurrentlyInCreationException异常，表示循环依赖。      
 &emsp; <font color = "lime">Spring解决循环依赖的前置条件：</font>  
 1. 出现循环依赖的Bean必须要是单例  
-2. 依赖注入的方式不能全是构造器注入的方式(很多博客上说，只能解决setter方法的循环依赖，这是错误的)  
+2. 依赖注入的方式不能全是构造器注入的方式。(很多博客上说，只能解决setter方法的循环依赖，这是错误的)  
 
-&emsp; 否则，抛出BeanCurrentlyInCreationException异常，表示循环依赖。  
+
+|依赖情况|	|依赖注入方式	|循环依赖是否被解决|
+|---|---|---|
+|AB相互依赖（循环依赖）|	均采用setter方法注入	|是|
+|AB相互依赖（循环依赖）|	均采用构造器注入|	否|
+|AB相互依赖（循环依赖）|	A中注入B的方式为setter方法，B中注入A的方式为构造器|	是|
+|AB相互依赖（循环依赖）|	B中注入A的方式为setter方法，A中注入B的方式为构造器|	否|
 
 <!-- 
 
@@ -134,15 +165,15 @@ https://www.cnblogs.com/leeego-123/p/12165278.html
 ### 1.4.1. 三级缓存概念 
 &emsp; **<font color = "red">Spring通过3级缓存解决。</font>**  
 
-* 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例(经历了完整的Spring Bean初始化生命周期)
-* 二级缓存: Map<String,Object> earlySingletonObjects，早期曝光对象，二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean(尚未经历了完整的Spring Bean初始化生命周期)
+* 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
+* 二级缓存: Map<String,Object> earlySingletonObjects，早期曝光对象，二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。尚未经历了完整的Spring Bean初始化生命周期。
 * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
 
 ### 1.4.2. 图解  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-16.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-17.png)  
 
-&emsp; 单例模式下Spring解决循环依赖的流程：  
+&emsp; **<font color = "clime">单例模式下Spring解决循环依赖的流程：</font>**  
 1. Spring 创建bean主要分为两个步骤，创建原始 bean 对象，接着去填充对象属性和初始化  
 2. 每次创建bean之前，都会从缓存中查下有没有该 bean，因为是单例，只能有一个  
 3. 当创建beanA的原始对象后，并把它放到三级缓存中，接下来就该填充对象属性了，这时候发现依赖了 beanB，接着就又去创建 beanB，同样的流程，创建完 beanB 填充属性时又发现它依赖了 beanA，又是同样的流程，不同的是，这时候可以在三级缓存中查到刚放进去的原始对象 beanA，所以不需要继续创建，用它注入 beanB，完成 beanB 的创建 
@@ -254,7 +285,7 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 3. 一级缓存能不能解决此问题？  
 &emsp; 不能，在三个级别的缓存中，放置的对象是有区别的，(1、是完成实例化且初始化的对象，2、是实例化但是未初始化的对象)，如果只有一级缓存，就有可能取到实例化但未初始化的对象，属性值都为空，肯定有问题。  
 
-4. 二级缓存能不能解决？为什么要三级缓存？  
+4. **~~二级缓存能不能解决？为什么要三级缓存？~~**  
 
 &emsp; 理论上来说是可以解决循环依赖的问题，但是注意：为什么要在三级缓存中放置匿名内部类？  
 &emsp; 本质在于为了创建代理对象，假如现在有A类，需要生成代理对象，A需要实例化。  
@@ -262,7 +293,7 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 
 ---
 
-&emsp; 跟踪源代码过程中注意区别下有AOP的依赖跟没有AOP的依赖两种情况，跟踪后你会发现三级缓存的功能是只有真正发生循环依赖的时候，才去提前生成代理对象，否则只会创建一个工厂并将其放入到三级缓存中，但是不会去通过这个工厂去真正创建对象。  
+&emsp; 跟踪源代码过程中注意区别下有AOP的依赖跟没有AOP的依赖两种情况，跟踪后会发现三级缓存的功能是只有真正发生循环依赖的时候，才去提前生成代理对象，否则只会创建一个工厂并将其放入到三级缓存中，但是不会去通过这个工厂去真正创建对象。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-18.png)  
 &emsp; 如上图所示，如果使用二级缓存解决循环依赖，意味着所有Bean在实例化后就要完成AOP代理，这样违背了Spring设计的原则，Spring在设计之初就是通过AnnotationAwareAspectJAutoProxyCreator这个后置处理器来在Bean生命周期的最后一步来完成AOP代理，而不是在实例化后就立马进行AOP代理。  
 

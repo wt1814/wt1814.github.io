@@ -8,17 +8,17 @@
     - [1.3. 载入配置路径](#13-载入配置路径)
     - [1.4. 分配路径处理策略](#14-分配路径处理策略)
     - [1.5. 将配置载入内存](#15-将配置载入内存)
-    - [1.6. 载入<bean>元素](#16-载入bean元素)
-    - [1.7. 载入<property>元素](#17-载入property元素)
-    - [1.8. 载入<property>的子元素](#18-载入property的子元素)
-    - [1.9. 载入<list>的子元素](#19-载入list的子元素)
+    - [1.6. 载入\<bean>元素](#16-载入\bean元素)
+    - [1.7. 载入\<property>元素](#17-载入\property元素)
+    - [1.8. 载入\<property>的子元素](#18-载入\property的子元素)
+    - [1.9. 载入\<list>的子元素](#19-载入\list的子元素)
     - [1.10. 分配注册策略](#110-分配注册策略)
     - [1.11. 向容器注册](#111-向容器注册)
 
 <!-- /TOC -->
 
 # 1. 容器初始化详解  
-&emsp; **<font color = "lime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
+&emsp; **<font color = "clime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
 
 ```java
 private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
@@ -364,16 +364,16 @@ protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate d
 &emsp; 通过上述SpringIOC容器对载入的Bean定义Document解析可以看出，使用Spring时，在Spring配置文件中可以使用<import\>元素来导入IOC容器所需要的其他资源，Spring IOC容器在解析时会首先将指定导入的资源加载进容器中。使用<ailas\>别名时，Spring IOC容器首先将别名元素所定义的别名注册到容器中。  
 &emsp; 对于既不是<import\>元素，又不是<alias\>元素的元素，即Spring配置文件中普通的<bean\>元素的解析由BeanDefinitionParserDelegate类的 parseBeanDefinitionElement()方法来实现。  
 
-## 1.6. 载入<bean>元素
+## 1.6. 载入\<bean>元素
 ......
 
-## 1.7. 载入<property>元素  
+## 1.7. 载入\<property>元素  
 ......
 
-## 1.8. 载入<property>的子元素  
+## 1.8. 载入\<property>的子元素  
 ......
 
-## 1.9. 载入<list>的子元素  
+## 1.9. 载入\<list>的子元素  
 ......
 
 ## 1.10. 分配注册策略  

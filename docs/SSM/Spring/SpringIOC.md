@@ -19,12 +19,12 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. BeanFactory与ApplicationContext
-2. BeanDefinition：BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。  
-3. Spring容器刷新：  
+2. BeanDefinition： **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
+3. Spring容器刷新：刷新前的准备 ---> 创建容器 ---> 预处理 ---> 后置处理器 ---> 注册事件 ---> 特殊bean ---> 监听器 ---> 非懒加载Bean ---> 发布事件 
     **<font color = "red">Spring bean容器刷新的核心 12+1个步骤完成IoC容器的创建及初始化工作：</font>**  
     1. 刷新前的准备工作。  
     2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>**  
-        &emsp; **<font color = "lime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
+        &emsp; **<font color = "clime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
         ```java
         private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
         ```
@@ -97,10 +97,10 @@ public interface BeanFactory {
 &emsp; 而要知道工厂是如何产生对象的，需要看具体的IOC容器实现，Spring提供了许多IOC容器的实现。 比如GenericApplicationContext，ClasspathXmlApplicationContext等。   
 
 ### 1.1.2. ApplicationContext  
-&emsp; <font color = "lime">ApplicationContext接口是BeanFactory的扩展，它除了具备BeanFactory接口所拥有的全部功能外，还有应用程序上下文的一层含义</font>，主要包括：  
-1. 继承自ListableBeanFactory接口，<font color = "lime">可以访问Bean工厂上下文的组件；</font>  
+&emsp; <font color = "clime">ApplicationContext接口是BeanFactory的扩展，它除了具备BeanFactory接口所拥有的全部功能外，还有应用程序上下文的一层含义</font>，主要包括：  
+1. 继承自ListableBeanFactory接口，<font color = "clime">可以访问Bean工厂上下文的组件；</font>  
 2. 继承自ResourceLoader接口，以通用的方式加载文件资源；  
-3. 继承自ApplicationContextPublisher接口，<font color = "lime">拥有发布事件注册监听的能力；</font>  
+3. 继承自ApplicationContextPublisher接口，<font color = "clime">拥有发布事件注册监听的能力；</font>  
 4. 继承自 MessageSource 接口，解析消息支持国际化。  
 
 &emsp; 它最主要的实现是ClassPathXmlApplicationContext，用来读取XML配置文件，现在使用更多的是ClassPathXmlApplicationContext而不是 XMLBeanFactory。  
@@ -122,10 +122,10 @@ public interface BeanFactory {
 
 &emsp; 选用哪个？  
 &emsp; <font color = "red">BeanFactory是延迟加载，如果Bean的某一个属性没有注入，BeanFactory加载后，直至第一次使用调用getBean方法才会抛出异常。</font>  
-&emsp; <font color = "red">ApplicationContext则在初始化自身时校验，这样有利于检查所依赖属性是否注入；所以通常情况下选择使用ApplicationContext。</font>  
+&emsp; <font color = "red">ApplicationContext即时加载，在初始化自身时校验，这样有利于检查所依赖属性是否注入；所以通常情况下选择使用ApplicationContext。</font>  
 
 ### 1.1.3. BeanDefinition  
-&emsp; 在这些Spring提供的基本IoC容器的接口定义和实现的基础上， **<font color = "lime">Spring通过定义BeanDefinition来管理基于Spring的应用中的各种对象以及它们之间的相互依赖关系。BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
+&emsp; 在这些Spring提供的基本IoC容器的接口定义和实现的基础上， **<font color = "clime">Spring通过定义BeanDefinition来管理基于Spring的应用中的各种对象以及它们之间的相互依赖关系。BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-4.png)  
 &emsp; BeanDefinition抽象了Bean的定义，是让容器起作用的主要数据类型。对IoC容器来说，BeanDefinition就是对依赖反转模式中管理的对象依赖关系的数据抽象，也是容器实现依赖反转功能的核心数据结构，依赖反转功能都是围绕对这个BeanDefinition的处理来完成的。  
 
@@ -159,7 +159,7 @@ public class BeanDemoConfig {
 ----
 ## 1.3. 基于Xml的IOC容器ClassPathXmlApplicationContext 的初始化  
 ### 1.3.1. ClassPathXmlApplicationContext构造函数
-&emsp; 启动 IoC 容器，即实例化ClassPathXmlApplicationContext 上下文，首先查看其构造函数：  
+&emsp; 启动 IoC 容器，即实例化ClassPathXmlApplicationContext上下文，首先查看其构造函数：  
 
 ```java
 public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContext {

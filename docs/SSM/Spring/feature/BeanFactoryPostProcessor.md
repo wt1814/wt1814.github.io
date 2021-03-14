@@ -10,8 +10,8 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; <font color = "lime">实现BeanFactoryPostProcessor接口，可以在spring的bean创建之前，修改bean的定义属性。</font>  
-&emsp; <font color = "red">BeanPostProcessor，可以在spring容器实例化bean之后，在执行bean的初始化方法前后，添加一些自己的处理逻辑。</font>  
+&emsp; <font color = "clime">实现BeanFactoryPostProcessor接口，可以在spring的bean创建之前，修改bean的定义属性。</font>  
+&emsp; <font color = "red">实现BeanPostProcessor接口，可以在spring容器实例化bean之后，在执行bean的初始化方法前后，添加一些自己的处理逻辑。</font>  
 
 # 1. BeanFactoryPostProcessor和BeanPostProcessor  
 <!-- 
@@ -30,7 +30,7 @@ public interface BeanFactoryPostProcessor {
 
 }
 ```
-&emsp; <font color = "lime">实现BeanFactoryPostProcessor接口，可以在spring的bean创建之前，修改bean的定义属性。</font>也就是说，Spring允许BeanFactoryPostProcessor在容器实例化任何其它bean之前读取配置元数据，并可以根据需要进行修改，例如可以把bean的scope从singleton改为prototype，也可以把property的值给修改掉。可以同时配置多个BeanFactoryPostProcessor，并通过设置'order'属性来控制各个BeanFactoryPostProcessor的执行次序。  
+&emsp; <font color = "clime">实现BeanFactoryPostProcessor接口，可以在spring的bean创建之前，修改bean的定义属性。</font>也就是说，Spring允许BeanFactoryPostProcessor在容器实例化任何其它bean之前读取配置元数据，并可以根据需要进行修改，例如可以把bean的scope从singleton改为prototype，也可以把property的值给修改掉。可以同时配置多个BeanFactoryPostProcessor，并通过设置'order'属性来控制各个BeanFactoryPostProcessor的执行次序。  
 &emsp; 注意：BeanFactoryPostProcessor是在spring容器加载了bean的定义文件之后，在bean实例化之前执行的。接口方法的入参是ConfigurrableListableBeanFactory，使用该参数，可以获取到相关bean的定义信息。  
 
 &emsp; <font color = "red">Spring中有内置的一些BeanFactoryPostProcessor实现类</font>，常用的有：  
@@ -59,21 +59,22 @@ public interface BeanPostProcessor {
     }
 }
 ```
-&emsp; <font color = "red">BeanPostProcessor，可以在spring容器实例化bean之后，</font> **<font color = "clime">在执行bean的初始化方法前后，</font>** <font color = "red">添加一些自己的处理逻辑。</font>这里说的初始化方法，指的是下面两种：  
+&emsp; <font color = "red">BeanPostProcessor，可以在spring容器实例化bean之后，</font> **<font color = "cclime">在执行bean的初始化方法前后，</font>** <font color = "red">添加一些自己的处理逻辑。</font>这里说的初始化方法，指的是下面两种：  
 
 * bean实现了InitializingBean接口，对应的方法为afterPropertiesSet
 * 在bean定义的时候，通过init-method设置的方法
+
 
         实例化和初始化的区别
         1. 实例化----实例化的过程是一个创建Bean的过程，即调用Bean的构造函数，单例的Bean放入单例池中。
         2. 初始化----初始化的过程是一个赋值的过程，即调用Bean的setter，设置Bean的属性。
         BeanPostProcessor作用于过程(1)前后
 
+
 &emsp; Spring中Bean的实例化过程图示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-7.png)  
 
 &emsp; 注意：BeanPostProcessor是在spring容器加载了bean的定义文件并且实例化bean之后执行的。BeanPostProcessor的执行顺序是在BeanFactoryPostProcessor之后。  
-
 
 &emsp; **<font color = "red">Spring中有内置的一些BeanPostProcessor实现类，</font>** 例如：  
 
@@ -88,7 +89,7 @@ public interface BeanPostProcessor {
 &emsp; 如果自定义了多个的BeanPostProcessor的实现类，通过实现Ordered接口，设置order属性，可以按照顺序执行实现类的方法。  
 
 &emsp; **BeanFactory和ApplicationContext加载BeanPostProcessor：**  
-&emsp; BeanFactory和ApplicationContext对待bean后置处理器稍有不同。ApplicationContext会自动检测在配置文件中实现了BeanPostProcessor接口的所有bean，并把它们注册为后置处理器，然后在容器创建bean的适当时候调用它，因此部署一个后置处理器同部署其他的bean并没有什么区别。而使用BeanFactory实现的时候，bean 后置处理器必须通过代码显式地去注册，在IoC容器继承体系中的ConfigurableBeanFactory接口中定义了注册方法  
+&emsp; BeanFactory和ApplicationContext对待bean后置处理器稍有不同。ApplicationContext会自动检测在配置文件中实现了BeanPostProcessor接口的所有bean，并把它们注册为后置处理器，然后在容器创建bean的适当时候调用它，因此部署一个后置处理器同部署其他的bean并没有什么区别。而使用BeanFactory实现的时候，bean后置处理器必须通过代码显式地去注册，在IoC容器继承体系中的ConfigurableBeanFactory接口中定义了注册方法  
 
     void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 

@@ -10,6 +10,16 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; SpringBean的生命周期主要有4个阶段：  
+1. 实例化(Instantiation)，可以理解为new一个对象；
+2. 属性赋值(Populate)，可以理解为调用setter方法完成属性注入；
+3. 初始化(Initialization)，包含：  
+    * 激活Aware方法  
+    * 后置处理器的应用  
+    * 激活自定义的init方法  
+4. 销毁(Destruction)---注册Destruction回调函数。  
+
 # 1. SpringBean生命周期
 <!-- 
 https://mp.weixin.qq.com/s/DC_PH_PXpbNgDQuGslTTTg
@@ -41,9 +51,9 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 &emsp; 实例化后的对象被封装在BeanWrapper对象中，紧接着，Spring根据BeanDefinition中的信息以及通过BeanWrapper提供的设置属性的接口完成依赖注入。  
 3. 处理Aware接口：  
 &emsp; 接着，Spring会检测该对象是否实现了xxxAware接口，并将相关的xxxAware实例注入给Bean：  
-&emsp; &emsp; ①如果这个Bean已经实现了BeanNameAware接口，会调用它实现的setBeanName(String beanId)方法，此处传递的就是Spring配置文件中Bean的id值；  
-&emsp; &emsp; ②如果这个Bean已经实现了BeanFactoryAware接口，会调用它实现的setBeanFactory()方法，传递的是Spring工厂自身。  
-&emsp; &emsp; ③如果这个Bean已经实现了ApplicationContextAware接口，会调用setApplicationContext(ApplicationContext)方法，传入Spring上下文；  
+&emsp; ①如果这个Bean已经实现了BeanNameAware接口，会调用它实现的setBeanName(String beanId)方法，此处传递的就是Spring配置文件中Bean的id值；  
+&emsp; ②如果这个Bean已经实现了BeanFactoryAware接口，会调用它实现的setBeanFactory()方法，传递的是Spring工厂自身。  
+&emsp; ③如果这个Bean已经实现了ApplicationContextAware接口，会调用setApplicationContext(ApplicationContext)方法，传入Spring上下文；  
 4. BeanPostProcessor前置处理：  
 &emsp; 如果想对Bean进行一些自定义的处理，那么可以让Bean实现了BeanPostProcessor接口，那将会调用postProcessBeforeInitialization(Object obj, String s)方法。  
 5. @PostConstruct、InitializingBean 与 init-method：  
