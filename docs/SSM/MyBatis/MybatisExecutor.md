@@ -87,7 +87,7 @@ public static void main(String[] args) throws Exception {
 }
 ```
 
-&emsp; **<font color = "climes">sqlSession.getMapper()方法获取DemoMapper对象，实际上这里是获取了DemoMapper接口的代理类，然后再由代理类执行方法。</font>**  
+&emsp; **<font color = "clime">sqlSession.getMapper()方法获取DemoMapper对象，实际上这里是获取了DemoMapper接口的代理类，然后再由代理类执行方法。</font>**  
 
 ## 1.2. 配置文件加载  
 &emsp; Resources.getResourceAsStream(resource)解读：  
@@ -133,7 +133,7 @@ InputStream getResourceAsStream(String resource, ClassLoader[] classLoader) {
 ```
 
 ## 1.3. 解析配置文件，创建SqlSessionFactory  
-&emsp; **<font color = "lime">SqlSessionFactory对象的生成使用了建造者模式。</font>**  
+&emsp; **<font color = "clime">SqlSessionFactory对象的生成使用了建造者模式。</font>**  
 
 ```java
 public SqlSessionFactory build(InputStream inputStream) {

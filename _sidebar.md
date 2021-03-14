@@ -227,7 +227,6 @@
         * [Spring整合MyBatis原理](/docs/SSM/MyBatis/SpringMybatisPrinciple.md)  
         * [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
         * [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
-        * [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
 * 分布式缓存
     * [分布式缓存问题](/docs/cache/DistributedCache.md) 
     * [Redis](/docs/microService/Redis/RedisSummary.md)   

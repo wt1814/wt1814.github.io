@@ -21,8 +21,8 @@
 6. 提交与事务。
 
 ## 1.2. MyBatis架构分层与模块划分  
-&emsp; 在 MyBatis 的主要工作流程里，不同的功能是由很多不同的类协作完成的，它们分布在MyBatis jar包的不同的 package里面。  
-&emsp; MyBatis(基于3.5.1)jar 包结构（21 个包）：  
+&emsp; 在MyBatis的主要工作流程里，不同的功能是由很多不同的类协作完成的，它们分布在MyBatis jar包的不同的package里面。  
+&emsp; MyBatis(基于3.5.1)jar 包结构(21个包)：  
 
     └── org  
         └── apache   
@@ -59,7 +59,7 @@
 * 基础支持层：负责最基础的功能支撑，包括连接管理、事务管理、配置加载和缓存处理，这些都是共用的东西，将它们抽取出来作为最基础的组件。为上层的数据处理层提供最基础的支撑。  
 
 ### 1.2.1. API接口层  
-&emsp; 在不与Spring 集成的情况下，使用 MyBatis 执行数据库的操作主要如下：  
+&emsp; 在不与Spring集成的情况下，使用MyBatis执行数据库的操作主要如下：  
 
 ```java
 InputStream is = Resources.getResourceAsStream("myBatis-config.xml");
@@ -67,7 +67,7 @@ SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
 SqlSessionFactory factory = builder.build(is);
 sqlSession = factory.openSession();
 ```
-&emsp; 其中的SqlSessionFactory，SqlSession是 MyBatis 接口的核心类。SqlSession是上层应用和 MyBatis 打交道的桥梁，SqlSession 上定义了非常多的对数据库的操作方法。  
+&emsp; 其中的SqlSessionFactory，SqlSession是MyBatis接口的核心类。SqlSession是上层应用和MyBatis打交道的桥梁，SqlSession上定义了非常多的对数据库的操作方法。  
 &emsp; 接口层在接收到调用请求的时候，会调用核心处理层的相应模块来完成具体的数据库操作。  
 
 ### 1.2.2. 核心处理层  
@@ -80,7 +80,7 @@ sqlSession = factory.openSession();
 &emsp; Mybatis 中 scripting 模块会根据用户传入的参数，解析映射文件中定义的动态 SQL 节点，形成数据库能执行的SQL 语句。  
 * SQL 执行  
 &emsp; 执行 SQL 语句；处理结果集，并映射成 Java 对象。  
-&emsp; <font color = "red">SQL语句的执行涉及多个组件Configuration 、 SqlSessionFactory 、 Session 、 Executor 、 MappedStatement 、StatementHandler、ResultSetHandler。</font> **<font color = "lime">包括 MyBatis 的四大核心，它们是: Executor、StatementHandler、ParameterHandler、ResultSetHandler。</font>**  
+&emsp; <font color = "red">SQL语句的执行涉及多个组件Configuration 、 SqlSessionFactory 、 Session 、 Executor 、 MappedStatement 、StatementHandler、ResultSetHandler。</font> **<font color = "clime">包括 MyBatis 的四大核心，它们是: Executor、StatementHandler、ParameterHandler、ResultSetHandler。</font>**  
 
     |名称 |意义 |
     |---|---|

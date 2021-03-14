@@ -12,7 +12,7 @@ mybatis 中 if-test 判断大坑
 https://www.cnblogs.com/grasp/p/11268049.html
 -->
 &emsp; \<if test="takeWay == '0'"> mybatis的if判断  
-&emsp; 单个的字符要写到双引号里面才行，改为\<if test='takeWay == "1"'>或者改为<if test="takeWay == '1'.toString() ">  
+&emsp; 单个的字符要写到双引号里面才行，改为\<if test='takeWay == "1"'>或者改为\<if test="takeWay == '1'.toString() ">  
 
 ## 流式查询  
 <!--

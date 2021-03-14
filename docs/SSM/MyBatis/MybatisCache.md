@@ -164,10 +164,10 @@ public void testSqlSession(){
 ```
 
 ### 1.2.3. 开启二级缓存的时机（优缺点）  
-&emsp; 一级缓存默认是打开的，二级缓存需要配置才可以开启。 **<font color = "lime">在什么情况下才有必要去开启二级缓存？</font>**   
-1. **<font color = "red">因为所有的增删改都会刷新二级缓存，导致二级缓存失效，</font><font color = "lime">所以适合在查询为主的应用中使用，比如历史交易、历史订单的查询。</font>** 否则缓存就失去了意义。
+&emsp; 一级缓存默认是打开的，二级缓存需要配置才可以开启。 **<font color = "clime">在什么情况下才有必要去开启二级缓存？</font>**   
+1. **<font color = "red">因为所有的增删改都会刷新二级缓存，导致二级缓存失效，</font><font color = "clime">所以适合在查询为主的应用中使用，比如历史交易、历史订单的查询。</font>** 否则缓存就失去了意义。
 2. 如果多个namespace中有针对于同一个表的操作，比如Blog表，如果在一个namespace中刷新了缓存，另一个 namespace 中没有刷新，就会出现读到脏数据的情况。所以，推荐在一个Mapper里面只操作单表的情况使用。  
-    &emsp; <font color = "lime">如果要让多个namespace共享一个二级缓存，应该怎么做？</font>   
+    &emsp; <font color = "clime">如果要让多个namespace共享一个二级缓存，应该怎么做？</font>   
     &emsp; 跨namespace的缓存共享的问题，可以使用<cache-ref\>来解决：  
 
     ```xml
@@ -176,12 +176,12 @@ public void testSqlSession(){
     &emsp; cache-ref 代表引用别的命名空间的 Cache 配置，两个命名空间的操作使用的是同 一个 Cache。在关联的表比较少，或者按照业务可以对表进行分组的时候可以使用。  
     &emsp; 注意：在这种情况下，多个 Mapper 的操作都会引起缓存刷新，缓存的意义已经不大了。  
 
-&emsp; 二级缓存不足  
+&emsp; **<font color = "red">二级缓存不足：</font>**  
 1. 二级缓存不能存在一直增多的数据  
 &emsp; 由于二级缓存的影响范围不是SqlSession而是namespace，所以二级缓存会在应用启动时一直存在直到应用关闭，所以二级缓存中不能存在随着时间数据量越来越大的数据，这样有可能会造成内存空间被占满。  
 2. 二级缓存有可能存在脏读的问题（可避免）  
 &emsp; 由于二级缓存的作用域为namespace，那么就可以假设这么一个场景，有两个namespace操作一张表，第一个namespace查询该表并回写到内存中，第二个namespace往表中插一条数据，那么第一个namespace的二级缓存是不会清空这个缓存的内容的，在下一次查询中，还会通过缓存去查询，这样会造成数据的不一致。  
-&emsp; 所以当项目里有多个命名空间操作同一张表的时候，最好不要用二级缓存，或者<font color = "lime">使用二级缓存时避免用两个namespace操作一张表。</font>  
+&emsp; 所以当项目里有多个命名空间操作同一张表的时候，最好不要用二级缓存，或者<font color = "clime">使用二级缓存时避免用两个namespace操作一张表。</font>  
 
 
 ### 1.2.4. 使用第三方缓存做二级缓存  

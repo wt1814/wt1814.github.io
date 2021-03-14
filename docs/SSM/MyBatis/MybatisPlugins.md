@@ -2,28 +2,37 @@
 <!-- TOC -->
 
 - [1. Mybatis插件](#1-mybatis插件)
-    - [xxx新的理解xxx](#xxx新的理解xxx)
     - [1.1. Mybatis插件简介](#11-mybatis插件简介)
     - [1.2. Mybatis插件编码示例](#12-mybatis插件编码示例)
     - [1.3. Mybatis插件运行机制](#13-mybatis插件运行机制)
-        - [1.3.1. 插件的加载](#131-插件的加载)
-        - [1.3.2. 拦截链](#132-拦截链)
-        - [1.3.3. 动态代理](#133-动态代理)
+        - [1.3.1. 拦截器](#131-拦截器)
+        - [1.3.2. 被拦截的对象](#132-被拦截的对象)
+    - [1.4. Mybatis插件运行解析](#14-mybatis插件运行解析)
+        - [1.4.1. 插件的加载](#141-插件的加载)
+        - [1.4.2. 拦截链](#142-拦截链)
+        - [1.4.3. 动态代理](#143-动态代理)
 
 <!-- /TOC -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-32.png)  
 
+&emsp; **<font color = "red">总结：</font>**   
+&emsp; **<font color = "clime">其实mybatis扩展性很强，基于插件机制，基本上可以控制SQL执行的各个阶段，如执行阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。</font>**  
+
+&emsp; **<font color="clime">Mybaits插件的实现主要用了拦截器、责任链和动态代理。</font>** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
+
+&emsp; 有哪些对象允许被代理？有哪些方法可以被拦截？  
+* 执行器Executor（update、query、commit、rollback等方法）；  
+* 参数处理器ParameterHandler（getParameterObject、setParameters方法）；  
+* 结果集处理器ResultSetHandler（handleResultSets、handleOutputParameters等方法）；  
+* SQL语法构建器StatementHandler（prepare、parameterize、batch、update、query等方法）；    
+
+
 # 1. Mybatis插件  
 <!-- 
-★★★手把手教你开发 MyBatis 插件 
-https://mp.weixin.qq.com/s/qcVSVeKIQA4RD4vlrzut7w
+
+http://www.mybatis.cn/726.html
 -->
-
-## xxx新的理解xxx  
-
-
-------------
 
 ## 1.1. Mybatis插件简介   
 &emsp; <font color="red">编写Mybatis插件前，需要对Mybatis的运行原理、Mybatis插件原理有一定的了解。</font>  
@@ -92,8 +101,15 @@ select id, role_name as roleName, note from role where id = ?, cost is 35
 ```
 
 ## 1.3. Mybatis插件运行机制  
-&emsp; **<font color="clime">Mybaits插件的实现主要用了责任链模式和动态代理。</font>** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
+&emsp; **<font color="clime">Mybaits插件的实现主要用了拦截器、责任链和动态代理。</font>** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
 
+### 1.3.1. 拦截器  
+<!-- 
+★★★手把手教你开发 MyBatis 插件 
+https://mp.weixin.qq.com/s/qcVSVeKIQA4RD4vlrzut7w
+-->
+
+### 1.3.2. 被拦截的对象
 &emsp; 有哪些对象允许被代理？有哪些方法可以被拦截？在 MyBatis官网有参考，www.mybatis.org/mybatis-3/zh/configuration.html#plugins 。  
 &emsp; 支持拦截的方法：  
 
@@ -102,7 +118,9 @@ select id, role_name as roleName, note from role where id = ?, cost is 35
 * 结果集处理器ResultSetHandler（handleResultSets、handleOutputParameters等方法）；  
 * SQL语法构建器StatementHandler（prepare、parameterize、batch、update、query等方法）；    
 
-### 1.3.1. 插件的加载  
+
+## 1.4. Mybatis插件运行解析
+### 1.4.1. 插件的加载  
 &emsp; Mybatis初始化中，会解析mybatis配置文件。Mybatis配置文件的解析在XMLConfigBuilder的parseConfiguration方法中，里面有插件的解析过程。  
 
 ```java
@@ -136,7 +154,7 @@ public class Configuration {
 ```
 &emsp; 实例化好的Interceptor对象，会被放到InterceptorChain对象的interceptors属性中。  
 
-### 1.3.2. 拦截链  
+### 1.4.2. 拦截链  
 
 ```java
 public class InterceptorChain {
@@ -171,7 +189,7 @@ statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandle
 executor = (Executor) interceptorChain.pluginAll(executor);
 ```
 
-### 1.3.3. 动态代理  
+### 1.4.3. 动态代理  
 &emsp; Mybatis是通过动态代理的方式来额外增加功能的，因此调用目标对象的方法后，走的是代理对象的方法而不是原方法。  
 
 &emsp; 拦截器编码中@Intercepts注解里面主要放多个@Signature注解，而@Signature注解则定义了要拦截的类和方法，并且提供了Interceptor接口和Plugin类方便实现动态代理。  

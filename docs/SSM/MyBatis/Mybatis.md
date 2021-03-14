@@ -7,7 +7,7 @@
         - [1.1.1. 取值引用](#111-取值引用)
             - [1.1.1.1. #{}方式](#1111-方式)
             - [1.1.1.2. ${}方式](#1112-方式)
-        - [1.1.2. ※※※SQL注入](#112-※※※sql注入)
+        - [1.1.2. ★★★SQL注入](#112-★★★sql注入)
         - [1.1.3. 适用场景](#113-适用场景)
             - [1.1.3.1. #{} 和 ${} 均适用场景](#1131--和--均适用场景)
             - [1.1.3.2. 只能使用${}的场景](#1132-只能使用的场景)
@@ -92,7 +92,7 @@ https://mp.weixin.qq.com/s/JkdszV7Oy9E9cITNebY2NA
 
     SELECT * FROM user WHERE username='Amy'
 
-### 1.1.2. ※※※SQL注入  
+### 1.1.2. ★★★SQL注入  
 &emsp; **<font color = "red"> ${}方式是将形参和SQL语句直接拼接形成完整的SQL命令后，再进行编译，所以可以通过精心设计的形参变量的值，来改变原SQL语句的使用意图从而产生安全隐患，即为SQL注入攻击。</font>**  
 &emsp; 现有Mapper映射文件如下：  
 
@@ -108,11 +108,11 @@ https://mp.weixin.qq.com/s/JkdszV7Oy9E9cITNebY2NA
 
 &emsp; 显而易见，上述语句将把整个数据库内容直接暴露出来了。  
 
-&emsp; <font color = "color">#{}方式则是先用占位符代替参数将SQL语句先进行预编译，然后再将参数中的内容替换进来。由于SQL语句已经被预编译过，其SQL意图将无法通过非法的参数内容实现更改，其参数中的内容，无法变为SQL命令的一部分。故，</font> **<font color = "lime">#{}可以防止SQL注入而${}却不行。</font>**   
+&emsp; <font color = "red">#{}方式则是先用占位符代替参数将SQL语句先进行预编译，然后再将参数中的内容替换进来。由于SQL语句已经被预编译过，其SQL意图将无法通过非法的参数内容实现更改，其参数中的内容，无法变为SQL命令的一部分。故，</font> **<font color = "clime">#{}可以防止SQL注入而${}却不行。</font>**   
 
 ### 1.1.3. 适用场景  
 #### 1.1.3.1. #{} 和 ${} 均适用场景  
-&emsp; 由于SQL注入的原因，${}和#{}在都可以使用的场景下，推荐使用#{}。这里除了上文的WHERE语句例子，再介绍一个LIKE模糊查询的场景(username = "Amy"):  
+&emsp; 由于SQL注入的原因，${}和#{}在都可以使用的场景下，推荐使用#{}。这里除了上文的WHERE语句例子，再介绍一个LIKE模糊查询的场景(username = "Amy")：  
 
 ```xml
 <select id="findAddByName" parameterType="String" resultMap="studentResultMap">
@@ -137,7 +137,7 @@ https://mp.weixin.qq.com/s/JkdszV7Oy9E9cITNebY2NA
     SELECT * FROM USER WHERE username LIKE CONCAT('%', 'Amy','%');  
 
 #### 1.1.3.2. 只能使用${}的场景  
-&emsp; <font color = "red">由于#{}会给参数内容自动加上引号，会在有些需要表示字段名、表名的场景下，SQL将无法正常执行。例如：期望查询结果按sex字段升序排列。</font>参数String orderCol = "sex",mapper映射文件使用#{}：  
+&emsp; <font color = "red">由于#{}会给参数内容自动加上引号，会在有些需要表示字段名、表名的场景下，SQL将无法正常执行。例如：期望查询结果按sex字段升序排列。</font>参数String orderCol = "sex"，mapper映射文件使用#{}：  
 
 ```sql
 <select id="findAddByName3" parameterType="String" resultMap="studentResultMap">
