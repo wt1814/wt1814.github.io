@@ -9,8 +9,8 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">redis：轻量级，低延迟，高并发，低可靠性。</font>**  
-&emsp; 常见使用场景：实时聊天、博客的粉丝文章推送......
+&emsp; **<font color = "clime">redis与其他mq相比：轻量级，低延迟，高并发，低可靠性。</font>**  
+&emsp; &emsp; **<font color = "clime">常见使用场景：实时聊天、博客的粉丝文章推送......</font>**  
   
 
 # 1. Redis发布订阅  
@@ -49,7 +49,7 @@ https://mp.weixin.qq.com/s/i9e_JHng_etzJcLkHCBiEQ
 &emsp; rabbitmq实现了后台监控平台，可以在该平台上看到所有创建的队列的详细情况，良好的后台管理平台可以方面我们更好的使用；  
 &emsp; redis没有所谓的监控平台。  
 
-&emsp; **<font color = "lime">总结：</font>**  
+&emsp; **<font color = "clime">总结：</font>**  
 &emsp; redis：轻量级，低延迟，高并发，低可靠性；  
 &emsp; rabbitmq：重量级，高可靠，异步，不保证实时；  
 &emsp; rabbitmq是一个专门的AMQP协议队列，它的优势就在于提供可靠的队列服务，并且可做到异步，而redis主要是用于缓存的，redis的发布订阅模块，可用于实现及时性，且可靠性低的功能。  
@@ -299,5 +299,3 @@ public class TestSubscriber1 {
 ```
 
 &emsp; 这里为了测试方便就直接创建线程的方式，更好的话可以使用线程池的方式通过线程池的submit方法来执行线程，若是不用了可以使用shutdown方式关闭。  
-
-

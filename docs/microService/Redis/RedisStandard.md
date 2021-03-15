@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. Redis客户端使用及开发规范](#1-redis客户端使用及开发规范)
+- [1. ~~Redis客户端使用及开发规范~~](#1-redis客户端使用及开发规范)
     - [1.1. Redis客户端介绍](#11-redis客户端介绍)
     - [1.2. 阿里官方Redis开发规范](#12-阿里官方redis开发规范)
         - [1.2.1. 键值设计](#121-键值设计)
@@ -15,24 +15,37 @@
 
 <!-- /TOC -->
 
-# 1. Redis客户端使用及开发规范
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "clime">以业务名 (或数据库名) 为前缀(防止 key 冲突)，用冒号分隔，比如业务名: 表名: id</font>**  
+
+&emsp; **使用批量操作提高效率。**  
+&emsp; 1).原生命令：例如 mget、mset。2).非原生命令：可以使用 pipeline提高效率。  
+&emsp; 但要注意控制一次批量操作的元素个数 (例如 500 以内，实际也和元素字节数有关)。  
+&emsp; 注意两者不同：  
+    * 原生是原子操作，pipeline 是非原子操作。  
+    * pipeline 可以打包不同的命令，原生做不到。  
+    * pipeline 需要客户端和服务端同时支持。  
+
+
+
+# 1. ~~Redis客户端使用及开发规范~~
 ## 1.1. Redis客户端介绍
 &emsp; **官网推荐的 Java 客户端有 3 个 Jedis，[Redisson](https://github.com/redisson/redisson/wiki/%E7%9B%AE%E5%BD%95) 和 Luttuce。**  
 
 * Jedis，轻量，简洁，便于集成和改造。  
 * Lettuce   
-&emsp; 与 Jedis 相比，Lettuce 则完全克服了其线程不安全的缺点：Lettuce 是一个可伸缩 的线程安全的 Redis 客户端，支持同步、异步和响应式模式(Reactive)。多个线程可 以共享一个连接实例，而不必担心多线程并发问题。  
+&emsp; 与Jedis相比，Lettuce则完全克服了其线程不安全的缺点：Lettuce是一个可伸缩 的线程安全的Redis客户端，支持同步、异步和响应式模式(Reactive)。多个线程可以共享一个连接实例，而不必担心多线程并发问题。  
 &emsp; 同步调用：com.gupaoedu.lettuce.LettuceSyncTest。  
-&emsp; 异步的结果使用 RedisFuture 包装，提供了大量回调的方法。  
+&emsp; 异步的结果使用RedisFuture包装，提供了大量回调的方法。  
 &emsp; 异步调用：com.gupaoedu.lettuce.LettuceASyncTest。   
 
-    &emsp; 它基于 Netty 框架构建，支持 Redis 的高级功能，如 Pipeline、发布订阅，事务、 Sentinel，集群，支持连接池。  
+    &emsp; 它基于Netty框架构建，支持 Redis 的高级功能，如 Pipeline、发布订阅，事务、 Sentinel，集群，支持连接池。  
 
 * Redisson  
-&emsp; Redisson 是一个在 Redis 的基础上实现的 Java 驻内存数据网格(In-Memory Data Grid)，提供了分布式和可扩展的 Java 数据结构。  
+&emsp; Redisson是一个在Redis的基础上实现的Java驻内存数据网格(In-Memory Data Grid)，提供了分布式和可扩展的Java数据结构。  
 &emsp; 特点：  
 
-    * 基于 Netty 实现，采用非阻塞 IO，性能高。  
+    * 基于Netty实现，采用非阻塞 IO，性能高。  
     * 支持异步请求。  
     * 支持连接池、pipeline、LUA Scripting、Redis Sentinel、Redis Cluster。  
     * 不支持事务，官方建议以 LUA Scripting 代替事务。  
@@ -89,19 +102,15 @@
 &emsp; 禁止线上使用 keys、flushall、flushdb 等，通过 redis 的 rename 机制禁掉命令，或者使用 scan 的方式渐进式处理。  
 3. 合理使用 select  
 &emsp; redis的多数据库较弱，使用数字进行区分，很多客户端支持较差，同时多业务用多数据库实际还是单线程处理，会有干扰。  
-4. 使用批量操作提高效率  
-    * 原生命令：例如 mget、mset。
-    * 非原生命令：可以使用 pipeline 提高效率。
-
-    &emsp; 但要注意控制一次批量操作的元素个数 (例如 500 以内，实际也和元素字节数有关)。  
-    &emsp; 注意两者不同：  
-
+4. 使用批量操作提高效率。1).原生命令：例如 mget、mset。2).非原生命令：可以使用 pipeline提高效率。  
+&emsp; 但要注意控制一次批量操作的元素个数 (例如 500 以内，实际也和元素字节数有关)。  
+&emsp; 注意两者不同：  
     * 原生是原子操作，pipeline 是非原子操作。  
     * pipeline 可以打包不同的命令，原生做不到。  
     * pipeline 需要客户端和服务端同时支持。  
 
-5. 不建议过多使用 Redis 事务功能  
-&emsp; Redis 的事务功能较弱 (不支持回滚)，而且集群版本(自研和官方) 要求一次事务操作的 key 必须在一个 slot 上(可以使用 hashtag 功能解决)  
+5. **<font color = "clime">不建议过多使用 Redis 事务功能</font>**  
+&emsp; Redis 的事务功能较弱 (不支持回滚)，而且集群版本(自研和官方) 要求一次事务操作的 key 必须在一个 slot 上。可以使用 hashtag 功能解决。   
 6. Redis 集群版本在使用 Lua 上有特殊要求  
     1. 所有 key 都应该由 KEYS 数组来传递，redis.call/pcall 里面调用的 redis 命令，key 的位置，必须是 KEYS array, 否则直接返回 error，"-ERR bad lua script for redis cluster, all the keys that the script uses should be passed using the KEYS arrayrn"
     2. 所有 key，必须在 1 个 slot 上，否则直接返回 error, "-ERR eval/evalsha command keys must in same slotrn"

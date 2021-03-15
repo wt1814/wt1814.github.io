@@ -29,4 +29,4 @@ https://www.cnblogs.com/DreamDrive/p/5772198.html
 &emsp; Redis中有删除单个Key的指令 DEL，但似乎没有批量删除 Key 的指令。   
 
 1. 借助 Linux 的 xargs 指令来完成这个动作。   
-2. 使用管道命令。
+2. 可以使用 pipeline 加速。  

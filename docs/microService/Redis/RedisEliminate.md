@@ -25,20 +25,20 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 
-&emsp; 常见的删除策略有3种：定时删除、惰性删除、定期删除。<font color = "red">Redis服务器使用的是惰性删除策略和定期删除策略。</font>  
+&emsp; 常见的删除策略有3种：定时删除(主动)、惰性删除(被动)、(主动)。<font color = "red">Redis服务器使用的是惰性删除策略和定期删除策略。</font>  
 
-* 在设置键的过期时间的同时，创建一个定时器，让定时器在键的过期时间来临时，立即执行对键的删除操作。  
-* <font color = "clime">只有当访问一个key时，才会判断该key是否已过期，过期则清除。</font>  
-* <font color = "red"> **定期删除策略每隔一段时间执行一次删除过期键操作**</font>，并通过<font color = "lime">限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响</font>，同时，通过定期删除过期键，也有效地减少了因为过期键而带来的内存浪费。  
+* 定时删除策略，在设置键的过期时间的同时，创建一个定时器，让定时器在键的过期时间来临时，立即执行对键的删除操作。  
+* <font color = "clime">惰性删除策略，只有当访问一个key时，才会判断该key是否已过期，过期则清除。</font>  
+* <font color = "red"> **定期删除策略，每隔一段时间执行一次删除过期键操作**</font>，并通过<font color = "clime">限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响</font>，同时，通过定期删除过期键，也有效地减少了因为过期键而带来的内存浪费。  
 
 
 &emsp; **Redis内存淘汰使用的算法有：**  
 * random，随机删除。  
 * TTL，删除过期时间最少的键。  
-* <font color = "lime">LRU，Least Recently Used：最近最少使用。</font>判断最近被使用的时间，离目前最远的数据优先被淘汰。  
-* <font color = "lime">LFU，Least Frequently Used，最不常用，4.0版本新增。</font>  
+* <font color = "clime">LRU，Least Recently Used：最近最少使用。</font>判断最近被使用的时间，离目前最远的数据优先被淘汰。  
+* <font color = "clime">LFU，Least Frequently Used，最不常用，4.0版本新增。</font>  
 
-&emsp; **<font color = "lime">volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
+&emsp; **<font color = "clime">volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
 
 &emsp; **内存淘汰策略选择：**  
 1. 如果数据呈现幂律分布，也就是一部分数据访问频率高，一部分数据访问频率低，或者无法预测数据的使用频率时，则使用allkeys-lru/allkeys-lfu。  
@@ -57,12 +57,12 @@
 ## 1.1. Redis过期键删除策略
 ### 1.1.1. Key生存期  
 &emsp; 在Redis当中，有生存期的key被称为volatile。在创建缓存时，要为给定的key设置生存期，当key过期的时候(生存期为0)，它可能会被删除。  
-1. 影响生存时间的一些操作：  
+1. **影响生存时间的一些操作：**  
 &emsp; 生存时间可以通过使用DEL命令来删除整个key从而进行移除，或者被SET和GETSET命令覆盖原来的数据。也就是说，修改key对应value和使用另外相同key和value来覆盖以后，当前数据的生存时间不同。  
 &emsp; 比如说，对一个key执行INCR命令，对一个列表进行LPUSH命令，或者对一个哈希表执行HSET命令，这类操作都不会修改key 本身的生存时间。另一方面，如果使用RENAME对一个key进行改名，那么改名后的key的生存时间和改名前一样。  
 &emsp; RENAME命令的另一种可能是，尝试将一个带生存时间的key改名成另一个带生存时间的another_key，这时旧的another_key(以及它的生存时间)会被删除，然后旧的key会改名为another_key，因此，新的another_key的生存时间也和原本的key一样。使用PERSIST命令可以在不删除key的情况下，移除key的生存时间，让key重新成为一个persistent key。  
 
-2. 如何更新生存时间：  
+2. **如何更新生存时间：**  
 &emsp; 可以对一个已经带有生存时间的key执行EXPIRE命令，新指定的生存时间会取代旧的生存时间。过期时间的精度已经被控制在1ms之内，主键失效的时间复杂度是O(1)，EXPIRE和TTL命令搭配使用，TTL可以查看key的当前生存时间。设置成功返回1；当key不存在或者不能为key设置生存时间时，返回0。  
 
 ### 1.1.2. 常见的删除策略  
@@ -87,7 +87,7 @@
 
 #### 1.1.2.3. 定期删除策略(主动淘汰)  
 &emsp; 定期删除策略是定时删除策略和惰性删除策略的一种整合折中方案。  
-&emsp; <font color = "red"> **定期删除策略每隔一段时间执行一次删除过期键操作**</font>，并通过<font color = "lime">限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响</font>，同时，通过定期删除过期键，也有效地减少了因为过期键而带来的内存浪费。  
+&emsp; <font color = "red"> **定期删除策略每隔一段时间执行一次删除过期键操作**</font>，并通过<font color = "clime">限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响</font>，同时，通过定期删除过期键，也有效地减少了因为过期键而带来的内存浪费。  
 
 ### 1.1.3. Redis使用的过期键删除策略  
 &emsp; <font color = "red">Redis服务器使用的是惰性删除策略和定期删除策略。</font>  
@@ -120,8 +120,8 @@
 &emsp; Redis内存淘汰使用的算法有：  
 * random，随机删除。  
 * TTL，删除过期时间最少的键。  
-* <font color = "lime">LRU，Least Recently Used：最近最少使用。</font>判断最近被使用的时间，离目前最远的数据优先被淘汰。  
-* <font color = "lime">LFU，Least Frequently Used，最不常用，4.0版本新增。</font>  
+* <font color = "clime">LRU，Least Recently Used：最近最少使用。</font>判断最近被使用的时间，离目前最远的数据优先被淘汰。  
+* <font color = "clime">LFU，Least Frequently Used，最不常用，4.0版本新增。</font>  
 
 #### 1.3.1.1. TTL  
 &emsp; Redis数据集数据结构中保存了键值对过期时间的表。与LRU数据淘汰机制类似，<font color = "red">TTL数据淘汰机制中会先从过期时间的表中随机挑选几个键值对，取出其中ttl ***的键值对淘汰。</font>同样，TTL淘汰策略并不是面向所有过期时间的表中最快过期的键值对，而只是随机挑选的几个键值对。  
@@ -167,7 +167,7 @@ https://stor.51cto.com/art/201904/594773.htm
 |noeviction |默认策略，不会删除任何数据，拒绝所有写入操作并返回客户端错误信息(error)OOM command not allowed when used memory，此时Redis只响应读操作。|
 
 
-&emsp; **<font color = "lime">注：volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
+&emsp; **<font color = "clime">注：volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
 
 #### 1.3.2.1. ※※※内存淘汰策略选择  
 &emsp; **内存淘汰策略选择：**  
