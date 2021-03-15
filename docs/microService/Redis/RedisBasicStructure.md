@@ -6,8 +6,6 @@
     - [1.2. Redis的数据类型](#12-redis的数据类型)
         - [1.2.1. Key操作命令](#121-key操作命令)
             - [1.2.1.1. expire命令和ttl命令](#1211-expire命令和ttl命令)
-            - [1.2.1.2. 使用scan代替keys指令](#1212-使用scan代替keys指令)
-            - [1.2.1.3. ~~Redis中的批量删除数据库中的Key~~](#1213-redis中的批量删除数据库中的key)
         - [1.2.2. String字符串](#122-string字符串)
             - [1.2.2.1. 常用操作](#1221-常用操作)
             - [1.2.2.2. 使用场景](#1222-使用场景)
@@ -28,11 +26,16 @@
 
 <!-- /TOC -->
 
-<!--
- 
 
--->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-72.png)  
+
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "clime">Redis各个数据类型的使用场景：分析存储类型和可用的操作。</font>**  
+
+* 有序列表list：列表不但是有序的，同时支持按照索引范围获取元素。可以用作栈、文章列表。  
+* 无序集合set：集合内操作，可以用作标签、点赞、签到；spop/srandmember命令生成随机数；集合间操作，可以用作社交需求。  
+* 有序集合ZSet：可以用作排行榜功能。  
+
 
 # 1. Redis  
 &emsp; <font color="red">整体参考《Redis开发与运维》，数据结构参考《Redis深度历险：核心原理和应用实践》</font>  
@@ -83,7 +86,7 @@
 
 |命令|描述|
 |---|---|
-|SET key value    |设置指定key的值|
+|SET key value |设置指定key的值|
 |GET key |   获取指定key的值|
 |GETRANGE key start end| 返回key中字符串值的子字符|
 |GETSET key value   |将给定key的值设为value，并返回key的旧值(old value)。设新值，取旧值|
@@ -111,6 +114,9 @@
 &emsp; 在web服务中，使用MySQL作为数据库，Redis作为缓存。由于Redis具有支撑高并发的特性，通常能起到加速读写和降低后端压力的作用。web端的大多数请求都是从Redis中获取的数据，如果Redis中没有需要的数据，则会从MySQL中去获取，并将获取到的数据写入redis。  
 * 共享Session  
 &emsp; 在分布式系统中，用户的每次请求会访问到不同的服务器，这就会导致session不同步的问题，假如一个用来获取用户信息的请求落在A服务器上，获取到用户信息后存入session。下一个请求落在B服务器上，想要从session中获取用户信息就不能正常获取了，因为用户信息的session在服务器A上，为了解决这个问题，使用redis集中管理这些session，将session存入redis，使用的时候直接从redis中获取就可以了。  
+
+-----
+
 * 全局ID
 * 计数  
 &emsp; Redis中有一个字符串相关的命令incr key，incr命令对值做自增操作，返回结果分为以下三种情况：  
@@ -177,7 +183,17 @@
 &emsp; 由于列表存储的是有序字符串，满足队列的特点，也就能满足栈先进后出的特点，使用lpush+lpop或者rpush+rpop实现栈。  
 * 文章列表  
 &emsp; <font color = "clime">每个用户有属于自己的文章列表，现需要分页展示文章列表。此时可以考虑使用列表，因为列表不但是有序的，同时支持按照索引范围获取元素。</font>  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-111.png)  
 &emsp; 使用列表类型保存和获取文章列表会存在两个问题。第一，如果每次分页获取的文章个数较多，需要执行多次hgetall操作，此时可以考虑使用Pipeline批量获取，或者考虑将文章数据序列化为字符串类型，使用mget批量获取。第二，分页获取文章列表时，lrange命令在列表两端性能较好，但是如果列表较大，获取列表中间范围的元素性能会变差，此时可以考虑将列表做二级拆分，或者使用Redis3.2的quicklist内部编码实现，它结合ziplist和linkedlist的特点，获取列表中间范围的元素时也可以高效完成。  
+
+
+&emsp; 列表的使用场景很多，在选择时可以参考以下口诀：  
+
+    lpush+lpop=Stack（栈）
+    lpush+rpop=Queue（队列） 
+    lpsh+ltrim=Capped Collection（有限集合） 
+    lpush+brpop=Message Queue（消息队列）
+
 
 ### 1.2.5. Set集合
 &emsp; 集合类型也可以保存多个字符串元素，与列表不同的是，**集合中不允许有重复元素并且集合中的元素是无序的。**一个集合最多可以存储2^32-1个元素。    
@@ -195,8 +211,29 @@
 &emsp; 可以分为集合内操作、集合间操作。  
 
 #### 1.2.5.2. 使用场景
-&emsp; **使用场景：**  
+&emsp; 集合类型的应用场景通常为以下几种：  
 
+* sadd=Tagging（标签） 
+* spop/srandmember=Random item（生成随机数，比如抽奖） 
+* sadd+sinter=Social Graph（社交需求）
+
+----------
+ 
+* 商品标签  
+&emsp; 用 tags:i5001 来维护商品所有的标签。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-67.png)  
+&emsp; sadd tags:i5001 画面清晰细腻  
+&emsp; sadd tags:i5001 真彩清晰显示屏  
+&emsp; sadd tags:i5001 流畅至极  
+* 点赞、签到  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-66.png)  
+&emsp; 这条微博的 ID 是 t1001，用户 ID 是 u3001。 用 like:t1001 来维护 t1001 这条微博的所有点赞用户。   
+&emsp; 点赞了这条微博：sadd like:t1001 u3001  
+&emsp; 取消点赞：srem like:t1001 u3001  
+&emsp; 是否点赞：sismember like:t1001 u3001  
+&emsp; 点赞的所有用户：smembers like:t1001  
+&emsp; 点赞数：scard like:t1001   
+&emsp; 比关系型数据库简单许多。 
 * 抽奖(随机数)  
 &emsp; 集合有两个命令支持获取随机数，分别是：
 
@@ -206,23 +243,7 @@
     * 随机弹出count个元素，元素从集合弹出，集合元素个数改变  
     &emsp; spop key [count]  
     
-    &emsp; 用户点击抽奖按钮，参数抽奖，将用户编号放入集合，然后抽奖，分别抽一等奖、二等奖，如果已经抽中一等奖的用户不能参数抽二等奖则使用spop，反之使用srandmember。  
-* 点赞、签到、打卡  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-66.png)  
-&emsp; 这条微博的 ID 是 t1001，用户 ID 是 u3001。  
-&emsp; 用 like:t1001 来维护 t1001 这条微博的所有点赞用户。   
-&emsp; 点赞了这条微博：sadd like:t1001 u3001  
-&emsp; 取消点赞：srem like:t1001 u3001  
-&emsp; 是否点赞：sismember like:t1001 u3001  
-&emsp; 点赞的所有用户：smembers like:t1001  
-&emsp; 点赞数：scard like:t1001   
-&emsp; 比关系型数据库简单许多。  
-* 商品标签  
-&emsp; 用 tags:i5001 来维护商品所有的标签。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-67.png)  
-&emsp; sadd tags:i5001 画面清晰细腻  
-&emsp; sadd tags:i5001 真彩清晰显示屏  
-&emsp; sadd tags:i5001 流畅至极  
+    &emsp; 用户点击抽奖按钮，参数抽奖，将用户编号放入集合，然后抽奖，分别抽一等奖、二等奖，如果已经抽中一等奖的用户不能参数抽二等奖则使用spop，反之使用srandmember。 
 * 商品筛选  
 &emsp; 获取差集 sdiff set1 set2   
 &emsp; 获取交集(intersection ) sinter set1 set2  
@@ -235,7 +256,11 @@
 
     &emsp; 筛选商品，苹果的，iOS的，屏幕在6.0-6.24之间的，屏幕材质是LCD屏幕  
     &emsp; sinter brand:apple brand:ios screensize:6.0-6.24 screentype:lcd  
-* 用户关注、推荐模型  
+
+
+
+
+
 
 ### 1.2.6. ZSet有序集合  
 <!-- 

@@ -25,14 +25,13 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">总结：</font>**  
-1. <font color = "lime">Bitmap、HyperLogLog都是作为Redis的Value值。</font>  
-2. <font color = "lime">Redis中的Bitmap：key可以为某一天、某一ID，Bitmap中bit可以存储用户的任意信息。所以Redis Bitmap可以用作统计信息。</font>  
-3. <font color = "lime">HyperLogLog用于基数统计。</font>  
+&emsp; **<font color = "red">总结：</font>**  
+1. <font color = "clime">Bitmap、HyperLogLog都是作为Redis的Value值。</font>  
+2. <font color = "clime">Bitmap：二值状态统计。Redis中的Bitmap，key可以为某一天或某一ID，Bitmap中bit可以存储用户的任意信息。所以Redis Bitmap可以用作统计信息。</font>  
+3. <font color = "clime">HyperLogLog用于基数统计，例如UV（独立访客数）。</font>  
     * 基数统计是指找出集合中不重复元素，用于去重。  
-    * 使用Redis统计集合的基数一般有三种方法，分别是使用Redis的 HashMap，BitMap和HyperLogLog。  
+    * 使用Redis统计集合的基数一般有三种方法，分别是使用Redis的Hash，BitMap和HyperLogLog。  
     * HyperLogLog内存空间消耗少，但存在误差0.81%。  
-
 
 
 # 1. Redis扩展数据类型  
@@ -61,8 +60,7 @@ https://www.yuque.com/happy-coder/qka0of/ekdfzb
  
 --------------
 ## 1.2. Bitmap，位图
-&emsp; **二值状态统计：**  
-&emsp; 二值状态指的是取值0或者1两种；在签到打卡的场景中，只需要记录签到(1)和未签到(0)两种状态，这就是典型的二值状态统计。  
+&emsp; **二值状态统计：** 二值状态指的是取值0或者1两种；在签到打卡的场景中，只需要记录签到(1)和未签到(0)两种状态，这就是典型的二值状态统计。  
 &emsp; 二值状态的统计可以使用Redis的扩展数据类型Bitmap。  
 
 ### 1.2.1. 位图介绍    
@@ -92,7 +90,7 @@ https://www.yuque.com/happy-coder/qka0of/ekdfzb
         (integer) 1  
 
     * SETBIT命令第一个参数是位编号，第二个参数是这个位的值，只能是0或者1。如果bit地址超过当前string长度，会自动增大string。  
-    * GETBIT命令指示返回指定位置bit的值。超过范围(寻址地址在目标key的string长度以外的位)的GETBIT总是返回0。  
+    * GETBIT命令指示返回指定位置bit的值。超过范围（寻址地址在目标key的string长度以外的位）的GETBIT总是返回0。  
 
 2. 操作bits组的命令如下：  
     * BITOP执行两个不同string的位操作，包括AND，OR，XOR和NOT。
@@ -242,8 +240,8 @@ echo "总活跃用户：" . $redis->bitCount('stat2') . PHP_EOL;
 
 ## 1.3. HyperLogLog，基数统计  
 <!-- 
-&emsp; <font color = "lime">如果统计 PV(浏览量，用户没点一次记录一次)，给每个页面配置一个独立的Redis计数器就可以了，把这个计数器的key后缀加上当天的日期。</font>这样每来一个请求，就执行INCRBY指令一次，最终就可以统计出所有的PV数据了。  
-&emsp; 但是UV不同，它要去重，<font color = "lime">UV要求同一个用户一天之内的多次访问请求只能计数一次。</font>这就要求了每一个网页请求都需要带上用户的ID，无论是登录用户还是未登录的用户，都需要一个唯一ID来标识。<font color = "lime">对于统计UV数据需要基数统计。</font>  
+&emsp; <font color = "clime">如果统计 PV(浏览量，用户没点一次记录一次)，给每个页面配置一个独立的Redis计数器就可以了，把这个计数器的key后缀加上当天的日期。</font>这样每来一个请求，就执行INCRBY指令一次，最终就可以统计出所有的PV数据了。  
+&emsp; 但是UV不同，它要去重，<font color = "clime">UV要求同一个用户一天之内的多次访问请求只能计数一次。</font>这就要求了每一个网页请求都需要带上用户的ID，无论是登录用户还是未登录的用户，都需要一个唯一ID来标识。<font color = "clime">对于统计UV数据需要基数统计。</font>  
 -->
 &emsp; HyperLogLog是一种概率数据结构，用来估算数据的基数。    
 &emsp; 精确的计算数据集的基数需要消耗大量的内存来存储数据集。在遍历数据集时，判断当前遍历值是否已经存在唯一方法就是将这个值与已经遍历过的值进行一一对比。当数据集的数量越来越大，内存消耗就无法忽视，甚至成了问题的关键。
@@ -251,13 +249,13 @@ echo "总活跃用户：" . $redis->bitCount('stat2') . PHP_EOL;
 ### 1.3.1. 基数统计  
 &emsp; 什么是基数?  
 &emsp; 比如数据集 {1, 3, 5, 7, 5, 7, 8}，那么这个数据集的基数集为 {1, 3, 5 ,7, 8}，基数(不重复元素)为5。基数估计就是在误差可接受的范围内，快速计算基数。  
-&emsp; **<font color = "clime">基数统计(Cardinality Counting) 通常是用来统计一个集合中不重复的元素个数。</font>** 例如： **<font color = "red">统计每个网页的UV(独立访客，每个用户每天只记录一次，需要对每天对浏览去重) 。</font>**   
+&emsp; **<font color = "cclime">基数统计(Cardinality Counting) 通常是用来统计一个集合中不重复的元素个数。</font>** 例如： **<font color = "red">统计每个网页的UV(独立访客，每个用户每天只记录一次，需要对每天对浏览去重) 。</font>**   
 <!-- 
 数据集可以是网站访客的 IP 地址，E-mail邮箱或者用户ID。
 -->
 
 ### 1.3.2. Redis中的基数统计方式  
-&emsp; 使用Redis统计集合的基数一般有三种方法，分别是使用 Redis 的 HashMap，BitMap 和 HyperLogLog。前两个数据结构在集合的数量级增长时，所消耗的内存会大大增加，但是 HyperLogLog 则不会。  
+&emsp; 使用Redis统计集合的基数一般有三种方法，分别是使用 Redis 的 Hash，BitMap 和 HyperLogLog。前两个数据结构在集合的数量级增长时，所消耗的内存会大大增加，但是 HyperLogLog 则不会。  
 &emsp; Redis的HyperLogLog 通过牺牲准确率来减少内存空间的消耗，只需要12K内存，在标准误差0.81%的前提下，能够统计2^64个数据。所以 HyperLogLog 是否适合在比如统计日活月活此类的对精度要不不高的场景。
 
 ### 1.3.3. HyperLogLog用作基数统计  

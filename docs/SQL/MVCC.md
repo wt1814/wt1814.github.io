@@ -152,6 +152,8 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-85.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-86.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-154.png)  
+
 
 1. 如果被访问版本的trx_id与ReadView中的creator_trx_id值相同，意味着当前事务在访问它自己修改过的记录，所以该版本可以被当前事务访问。  
 2. 如果被访问版本的trx_id小于ReadView中的up_limit_id值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  

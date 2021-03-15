@@ -28,13 +28,17 @@
 &emsp; redis数据类型内部编码：  
 
 * String和Hash都是存储的字符串，Hash由ziplist(压缩列表)或者dictht(字典)组成；  
-* List，「有序」可重复集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  
-* Set，无序不可重复集合， **是特殊的Hash结构(value为null)，** 由intset(整数集合)或者dictht(字典)组成；
-* ZSet，「有序」不可重复集合，由skiplist(跳跃表)或者ziplist(压缩列表)组成。  
+* List，「有序」「可重复」集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  
+* Set，「无序」「不可重复」集合， **<font color = "cclime">是特殊的Hash结构(value为null)，</font>** 由intset(整数集合)或者dictht(字典)组成；
+* ZSet，「有序」「不可重复」集合，由skiplist(跳跃表)或者ziplist(压缩列表)组成。  
+
+
+&emsp; **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
+
 
 # 1. Redis底层实现  
 
-**参考《Redis设计与实现》、《Redis深度历险：核心原理和应用实践》、《Redis开发与运维》**  
+**~~参考《Redis设计与实现》、《Redis深度历险：核心原理和应用实践》、《Redis开发与运维》~~**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-106.png)  
 
@@ -54,8 +58,8 @@ https://blog.csdn.net/u014563989/article/details/81066074?utm_medium=distribute.
 -->
 
 ## 1.2. 对象系统RedisObject  
-&emsp; **<font color = "lime">(很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！)</font>**  
-&emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。 **<font color = "lime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
+&emsp; **<font color = "clime">(很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！)</font>**  
+&emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。 **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
 
 <!-- 
 Redis这样设计有两个好处：
@@ -78,7 +82,7 @@ typedef struct redisObject {
 * Type：是对象类型，代表一个value对象具体是何种数据类型，包括REDISSTRING，REDISLIST，REDISHASH，REDISSET和REDIS_ZSET。  
 * encoding是指对象使用的数据结构，是不同数据类型在redis内部的存储方式。<font color = "red">目前有8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。</font>  
 
-&emsp; **<font color = "lime">Redis数据类型的底层实现如下：</font>**  
+&emsp; **<font color = "clime">Redis数据类型的底层实现如下：</font>**  
 
 |Redis数据结构|底层数据结构|
 |---|---|
@@ -201,6 +205,9 @@ https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 &emsp; 如下图所示，红线是查找10的过程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-83.png)  
 
+
+------------------------------------
+
 ## 1.4. 数据类型
 ### 1.4.1. String内部编码  
 <!-- 
@@ -226,7 +233,7 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 
 
 ### 1.4.2. Hash内部编码  
-&emsp; <font color = "lime">Redis的Hash可以使用两种数据结构实现：ziplist、dictht。</font>Hash结构当同时满足如下两个条件时底层采用了ZipList实现，一旦有一个条件不满足时，就会被转码为dictht进行存储。  
+&emsp; <font color = "clime">Redis的Hash可以使用两种数据结构实现：ziplist、dictht。</font>Hash结构当同时满足如下两个条件时底层采用了ZipList实现，一旦有一个条件不满足时，就会被转码为dictht进行存储。  
 
 * Hash中存储的所有元素的key和value的长度都小于64byte。(通过修改hash-max-ziplist-value配置调节大小)
 * Hash中存储的元素个数小于512。(通过修改hash-max-ziplist-entries配置调节大小)  
@@ -241,7 +248,7 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 
 
 ### 1.4.4. Set内部编码   
-&emsp; Redis中列表和集合都可以用来存储字符串，但是<font color = "red">「Set是不可重复的集合，而List列表可以存储相同的字符串」，</font> **<font color = "clime">「Set是一个特殊的value为空的Hash」，</font>** Set集合是无序的这个和后面讲的ZSet有序集合相对。  
+&emsp; Redis中列表和集合都可以用来存储字符串，但是<font color = "red">「Set是不可重复的集合，而List列表可以存储相同的字符串」，</font> **<font color = "cclime">「Set是一个特殊的value为空的Hash」，</font>** Set集合是无序的这个和后面讲的ZSet有序集合相对。  
 
 &emsp; Redis 用intset或dictEntry存储set。当满足如下两个条件的时候，采用整数集合实现；一旦有一个条件不满足时则采用字典来实现。  
 
@@ -257,6 +264,8 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 
 &emsp; 和List的底层实现有些相似，对于Zset不同的是，其存储是以键值对的方式依次排列，键存储的是实际 value，值存储的是value对应的分值。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-84.png)  
+
+-------------
 
 ## 1.5. 查看redis内部存储的操作  
 &emsp; ......
