@@ -7,7 +7,7 @@
         - [1.2.1. Key操作命令](#121-key操作命令)
             - [1.2.1.1. expire命令和ttl命令](#1211-expire命令和ttl命令)
             - [1.2.1.2. 使用scan代替keys指令](#1212-使用scan代替keys指令)
-            - [1.2.1.3. Redis中的批量删除数据库中的Key](#1213-redis中的批量删除数据库中的key)
+            - [1.2.1.3. ~~Redis中的批量删除数据库中的Key~~](#1213-redis中的批量删除数据库中的key)
         - [1.2.2. String字符串](#122-string字符串)
             - [1.2.2.1. 常用操作](#1221-常用操作)
             - [1.2.2.2. 使用场景](#1222-使用场景)
@@ -46,7 +46,7 @@
 ## 1.2. Redis的数据类型  
 &emsp; Redis属于<key,value\>形式的数据结构。key和value的最大长度限制是512M。  
 1. Redis的key是字符串类型，但是key中不能包括边界字符，不能空格和换行。  
-2. Redis的value支持五种基本数据类型<font color = "lime">(注意是数据类型不是数据结构)</font>：String(字符串)，Hash(哈希)，List(列表)，Set(集合)及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
+2. Redis的value支持五种基本数据类型<font color = "clime">（注意是数据类型不是数据结构）</font>：String(字符串)，Hash(哈希)，List(列表)，Set(集合)及Zset(sorted set，有序集合)。每个数据类型最多能处理2^32个key。  
 3. Redis还有几种高级数据类型：bitmaps、HyperLogLog、geo、Streams(5.0最新版本数据结构)。  
 4. Redis提供插件功能使用布隆过滤器。  
 5. Redis内部采用对象系统RedisObject构建数据类型。  
@@ -70,26 +70,11 @@
 
 2. ttl  
 &emsp; **TTL key，<font color = "red">以秒为单位，返回给定 key 的剩余生存时间(TTL, time to live)。</font>**  
-
 &emsp; **返回值：**  
 &emsp; 当 key 不存在时，返回 -2 。  
 &emsp; 当 key 存在但没有设置剩余生存时间时，返回 -1 。  
 &emsp; 否则，以秒为单位，返回 key 的剩余生存时间。  
 
-#### 1.2.1.2. 使用scan代替keys指令  
-......
-<!-- 
-在RedisTemplate中使用scan代替keys指令 
-https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
--->
-
-#### 1.2.1.3. Redis中的批量删除数据库中的Key  
-&emsp; Redis中有删除单个Key的指令 DEL，但似乎没有批量删除 Key 的指令，不过可以借助 Linux 的 xargs 指令来完成这个动作。  
-<!-- 
-https://www.cnblogs.com/DreamDrive/p/5772198.html
- 熬了一个通宵终于把Key删完了 
- https://mp.weixin.qq.com/s/xb6USb3FLIDDloUPoqBnMw
--->
 
 ### 1.2.2. String字符串
 &emsp; String可以用来存储字符串、整数、浮点数。最大值不能超过512MB。  
@@ -141,7 +126,7 @@ https://www.cnblogs.com/DreamDrive/p/5772198.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-58.png)  
 &emsp; Hash存储键值对的无序散列表。  
 
-&emsp; <font color = "lime">Hash与String同样是存储字符串(存储单个字符串时使用String；存储对象时使用Hash，勿将对象序列化后存String类型)，它们的主要区别：</font>  
+&emsp; <font color = "clime">Hash与String同样是存储字符串(存储单个字符串时使用String；存储对象时使用Hash，勿将对象序列化后存String类型)，它们的主要区别：</font>  
 1. 把所有相关的值聚集到一个 key 中，节省内存空间  
 2. 只使用一个 key，减少 key 冲突  
 3. 当需要批量获取值的时候，只需要使用一个命令，减少内存/IO/CPU 的消耗  
@@ -191,7 +176,7 @@ https://www.cnblogs.com/DreamDrive/p/5772198.html
 * 栈  
 &emsp; 由于列表存储的是有序字符串，满足队列的特点，也就能满足栈先进后出的特点，使用lpush+lpop或者rpush+rpop实现栈。  
 * 文章列表  
-&emsp; <font color = "lime">每个用户有属于自己的文章列表，现需要分页展示文章列表。此时可以考虑使用列表，因为列表不但是有序的，同时支持按照索引范围获取元素。</font>  
+&emsp; <font color = "clime">每个用户有属于自己的文章列表，现需要分页展示文章列表。此时可以考虑使用列表，因为列表不但是有序的，同时支持按照索引范围获取元素。</font>  
 &emsp; 使用列表类型保存和获取文章列表会存在两个问题。第一，如果每次分页获取的文章个数较多，需要执行多次hgetall操作，此时可以考虑使用Pipeline批量获取，或者考虑将文章数据序列化为字符串类型，使用mget批量获取。第二，分页获取文章列表时，lrange命令在列表两端性能较好，但是如果列表较大，获取列表中间范围的元素性能会变差，此时可以考虑将列表做二级拆分，或者使用Redis3.2的quicklist内部编码实现，它结合ziplist和linkedlist的特点，获取列表中间范围的元素时也可以高效完成。  
 
 ### 1.2.5. Set集合
@@ -300,7 +285,7 @@ https://zhuanlan.zhihu.com/p/147912757
 
 #### 1.2.6.3. 实现多维排序  
 &emsp; 排行榜榜单的维度可能是多个方面的：按照时间、按照播 放数量、按照获得的赞数。  
-&emsp; **<font color = "lime">如何借助ZSet实现多维排序? </font>**  
+&emsp; **<font color = "clime">如何借助ZSet实现多维排序? </font>**  
 &emsp; ZSet默认情况下只能根据一个因子score进行排序。如此一来，局限性就很大，举个例子：热门排行榜需要按照下载量&最近更新时间排序，即类似数据库中的ORDER BY download_count, update_time DESC。那这样的需求如果用Redis的ZSet实现呢？  
 &emsp; 事实上很简单，思路就是<font color = "red">将涉及排序的多个维度的列通过一定的方式转换成一个特殊的列</font>，即result = function(x, y, z)，即x，y，z是三个排序因子，例如下载量、时间等，通过自定义函数function()计算得到result，将result作为ZSet中的score的值，就能实现任意维度的排序需求了。  
 

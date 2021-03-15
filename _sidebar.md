@@ -232,6 +232,7 @@
     * [Redis](/docs/microService/Redis/RedisSummary.md)   
     * [Redis数据类型](/docs/microService/Redis/RedisStructure.md)  
         * [Redis基本数据类型](/docs/microService/Redis/RedisBasicStructure.md)  
+        * [Redis批量操作数据](/docs/microService/Redis/batch.md)  
         * [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
         * [Redis底层实现](/docs/microService/Redis/RedisBottom.md)  
             * [SDS](/docs/microService/Redis/SDS.md)  
