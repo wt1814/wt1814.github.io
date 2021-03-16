@@ -6,6 +6,7 @@
     - [1.2. Redis的数据类型](#12-redis的数据类型)
         - [1.2.1. Key操作命令](#121-key操作命令)
             - [1.2.1.1. expire命令和ttl命令](#1211-expire命令和ttl命令)
+            - [1.2.1.2. 使用scan代替keys指令](#1212-使用scan代替keys指令)
         - [1.2.2. String字符串](#122-string字符串)
             - [1.2.2.1. 常用操作](#1221-常用操作)
             - [1.2.2.2. 使用场景](#1222-使用场景)
@@ -77,6 +78,13 @@
 &emsp; 当 key 不存在时，返回 -2 。  
 &emsp; 当 key 存在但没有设置剩余生存时间时，返回 -1 。  
 &emsp; 否则，以秒为单位，返回 key 的剩余生存时间。  
+
+#### 1.2.1.2. 使用scan代替keys指令  
+&emsp; ......
+<!-- 
+在RedisTemplate中使用scan代替keys指令 
+https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
+-->
 
 
 ### 1.2.2. String字符串
