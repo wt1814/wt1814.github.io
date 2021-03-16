@@ -23,19 +23,23 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-75.png)  
 
-&emsp; **<font color = "lime">参考《Redis开发与运维》</font>**
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; <font color="lime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
-&emsp; <font color = "red">Redis哨兵架构中主要包括两个部分：Redis Sentinel集群和Redis数据集群。</font>  
+&emsp; <font color="clime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
+&emsp; <font color = "clime">Redis哨兵架构中主要包括两个部分：Redis Sentinel集群和Redis数据集群。</font>  
 
-&emsp; **哨兵原理：**  
-* **<font color = "lime">心跳检查：Sentinel通过三个定时任务来完成对各个节点的发现和监控。</font>**
-* **<font color = "lime">主观下线和客观下线：首先单个Sentinel节点认为数据节点主观下线，询问其他Sentinel节点， Sentinel多数节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。</font>**
-* **<font color = "lime">故障转移/主节点选举。</font>**    
-* **<font color = "lime">Sentinel选举：Sentinel集群是集中式架构，基于raft算法。</font>**  
+&emsp; **<font color = "clime">哨兵原理：</font>**  
+* **<font color = "red">心跳检查：Sentinel通过三个定时任务来完成对各个节点的发现和监控，这是保证Redis高可用的重要机制。</font>**  
+    * 每隔10秒，每个Sentinel节点会向主节点和从节点发送info命令获取最新的拓扑结构。  
+    * 每隔2秒，每个Sentinel节点会向Redis数据节点的__sentinel__：hello 频道上发送该Sentinel节点对于主节点的判断以及当前Sentinel节点的信息，同时每个Sentinel节点也会订阅该频道，来了解其他 Sentinel节点以及它们对主节点的判断。  
+    * 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令 **<font color = "clime">做一次心跳检测，</font>**  
+* **<font color = "red">主观下线和客观下线：首先单个Sentinel节点认为数据节点主观下线，询问其他Sentinel节点， Sentinel多数节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。</font>**
+* **<font color = "red">故障转移/主节点选举。</font>**    
+* **<font color = "red">Sentinel选举：Sentinel集群是集中式架构，基于raft算法。</font>**  
 
 # 1. 哨兵模式  
+&emsp; **<font color = "red">参考《Redis开发与运维》</font>**
+
 &emsp; 主从模式弊端：当Master宕机后，Redis集群将不能对外提供写入操作，需要手动将一个从节点晋升为主节点，同时需要修改应用方的主节点地址， 还需要命令其他从节点去复制新的主节点， 整个过程都需要人工干预。在 Redis 2.8 提供比较完善的解决方案：Redis Sentinel。  
 &emsp; Redis Sentinel 是一个能够自动完成故障发现和故障转移并通知应用方，从而实现真正的高可用的分布式架构。下面是Redis官方文档对于哨兵功能的描述：  
 <!-- 哨兵，英文名 Sentinel，是一个分布式系统，用于对主从结构中的每一台服务器进行监控，当主节点出现故障后通过投票机制来挑选新的主节点，并且将所有的从节点连接到新的主节点上。
@@ -47,7 +51,7 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 * 配置提供者(Configuration provider)：客户端在初始化时，通过连接哨兵来获得当前Redis服务的主节点地址。  
 * 通知(Notification)：哨兵可以将故障转移的结果发送给客户端。  
 
-&emsp; <font color="lime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
+&emsp; <font color="clime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-89.png)  
 
 ## 1.1. 架构  
@@ -94,16 +98,16 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 #### 1.2.1.3. 定时任务三  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-109.png)  
 <center>Sentinel节点向其余节点发送ping命令</center>  
-&emsp; 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令做一次心跳检测，来确认这些节点当前是否可达。如上图所示。通过上面的定时任务，Sentinel节点对主节点、从节点、其余 Sentinel节点都建立起连接，实现了对每个节点的监控，这个定时任务是节 点失败判定的重要依据。  
+&emsp; 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令 **<font color = "clime">做一次心跳检测，</font>** 来确认这些节点当前是否可达。如上图所示。通过上面的定时任务，Sentinel节点对主节点、从节点、其余 Sentinel节点都建立起连接，实现了对每个节点的监控，这个定时任务是节 点失败判定的重要依据。  
 
 ### 1.2.2. 主观下线、客观下线  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-88.png)  
 
 * 主观下线  
-&emsp; 在第三个定时任务(Sentinel通过三个定时任务来完成对各个节点的发现和监控)中，每隔一秒Sentinel节点会向每个Redis数据节点发送PING命令，若超过down-after-milliseconds设定的时间没有收到响应，<font color = "lime">则会对该节点做失败判定，这种行为叫做主观下线。因为该行为是当前节点的一家之言，所以会存在误判的可能。</font>  
+&emsp; 在第三个定时任务(Sentinel通过三个定时任务来完成对各个节点的发现和监控)中，每隔一秒Sentinel节点会向每个Redis数据节点发送PING命令，若超过down-after-milliseconds设定的时间没有收到响应，<font color = "clime">则会对该节点做失败判定，这种行为叫做主观下线。因为该行为是当前节点的一家之言，所以会存在误判的可能。</font>  
 * 客观下线  
 &emsp; <font color = "red">当Sentinel节点判定一个主节点为主观下线后，则会通过sentinelis-master-down-by-addr命令询问其他Sentinel节点对该主节点的状态，当有超过<quorunm\>个Sentinel节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。</font>  
-&emsp; 这里有一点需要注意的是，<font color = "lime">客观下线是针对主机节点，如果主观下线的是从节点或者其他Sentinel节点，则不会进行后面的客观下线和故障转移了。</font>  
+&emsp; 这里有一点需要注意的是，<font color = "clime">客观下线是针对主机节点，如果主观下线的是从节点或者其他Sentinel节点，则不会进行后面的客观下线和故障转移了。</font>  
 
 ### 1.2.3. 故障转移(主节点选举)  
 &emsp; 当某个Sentinel节点通过选举成为了领导者，则它要承担起故障转移的工作，其具体步骤如下：  
