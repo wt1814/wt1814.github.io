@@ -26,7 +26,8 @@
 1. 同步状态，通过state控制同步状态。  
 2. 同步队列，双向链表，每个节点代表一个线程，节点有5个状态。
     * 入列：采用CAS算法设置尾节点+死循环自旋。  
-    * 出列：首节点的线程释放同步状态后，将会唤醒它的后继节点(next)，而后继节点将会在获取同步状态成功时将自己设置为首节点。  
+    * 出列：首节点的线程释放同步状态后，将会唤醒(LockSupport.unpark)它的后继节点(next)，而后继节点将会在获取同步状态成功时将自己设置为首节点。
+    * 入列或出列都会使用到[LockSupport](/docs/java/concurrent/LockSupport.md)工具类来阻塞、唤醒线程。    
 3. 独占模式：  
     * 获取同步状态  
         1. 调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回(这里体现了非公平锁，每个线程获取锁时会尝试直接抢占加锁一次，而CLH队列中可能还有别的线程在等待)；
@@ -265,7 +266,7 @@ private Node addWaiter(Node mode) {
 &emsp; enq方法如下：  
 
 ```java
-private Node enq(final Node node) {
+private Node (final Node node) {
     //死循环尝试，直到成功为止
     for (;;) {
         Node t = tail;
@@ -283,6 +284,8 @@ private Node enq(final Node node) {
     }
 }
 ```
+
+&emsp; ⚠️注：acquire() ---> acquireQueued() ---> parkAndCheckInterrupt()中会使用`LockSupport.park(this);`阻塞线程。  
 
 ##### 1.3.2.2.2. 出列  
 &emsp; 首节点的线程释放同步状态后，将会唤醒它的后继节点(next)，而后继节点将会在获取同步状态成功时将自己设置为首节点。  
@@ -311,6 +314,8 @@ private void unparkSuccessor(Node node) {
         LockSupport.unpark(s.thread);//使用LockSupprot唤醒结点对应的线程
 }
 ```
+
+&emsp; 使用到了[LockSupport.unpark()](/docs/java/concurrent/LockSupport.md)方法。  
 
 ### 1.3.3. 等待队列
 <!-- 
