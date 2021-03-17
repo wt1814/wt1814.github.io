@@ -88,6 +88,13 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 * ZGC： 支持并发收集、基于动态Region、染色指针、虚拟内存映射。  
 * Epsilon垃圾收集器： 没有操作的垃圾收集器、处理内存分配但不实现任何实际内存回收机制的GC。  
 
+
+&emsp; 在JDK 7U4之前UserParallelGC用的是ParallelScavenge+SerialOld，在这个版本后Parallel已经很成熟了，所以直接替换了旧的收集器，所以 **<font color = "clime">JDK 7u4后的7和JDK8默认使用的都是ParallelScavenge+ParallelOld。</font>**  
+
+<!-- 
+https://blog.csdn.net/wszb2012/article/details/109075575?utm_medium=distribute.pc_relevant_download.none-task-blog-baidujs-1.nonecase&depth_1-utm_source=distribute.pc_relevant_download.none-task-blog-baidujs-1.nonecase
+-->
+
 ### 1.3.1. 新生代收集器  
 #### 1.3.1.1. Serial收集器  
 &emsp; 最基本、发展历史最久的收集器，这个收集器是一个采用复制算法的单线程的收集器。  

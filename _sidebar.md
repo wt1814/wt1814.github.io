@@ -147,7 +147,7 @@
         * [基本查询语句](/docs/SQL/basicSelect.md)  
             * [limit](/docs/SQL/limit.md)
         * [连接查询](/docs/SQL/joinSelect.md)  
-        * [一些比较特殊的查询](/docs/SQL/trans.md)  
+        * [高级查询](/docs/SQL/trans.md)  
     * [MySql函数](/docs/SQL/MySQLFunction.md)  
     * [数据库对象](/docs/SQL/DatabaseObject.md)  
     * [SQL优化](/docs/SQL/SQLOptimization.md)  

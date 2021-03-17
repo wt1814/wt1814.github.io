@@ -207,7 +207,7 @@
 &emsp; [基本查询语句](/docs/SQL/basicSelect.md)  
 &emsp; &emsp; [limit](/docs/SQL/limit.md)  
 &emsp; [连接查询](/docs/SQL/joinSelect.md)  
-&emsp; [一些比较特殊的查询](/docs/SQL/trans.md)  
+&emsp; [高级查询](/docs/SQL/trans.md)  
 [MySql函数](/docs/SQL/MySQLFunction.md)  
 [数据库对象](/docs/SQL/DatabaseObject.md)  
 [SQL优化](/docs/SQL/SQLOptimization.md)  
@@ -556,8 +556,8 @@
 &emsp; [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; [高可用](/docs/system/highAvailability.md)  
 &emsp; [秒杀系统设计](/docs/system/seckill.md)  
-
 [OpenAPI](/docs/system/OpenAPI.md)  
+&emsp; [容灾和备份](/docs/system/backups.md)  
 <!-- 
 [Gateway](/docs/microService/microservices/Gateway.md)  
 

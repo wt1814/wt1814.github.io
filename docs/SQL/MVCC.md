@@ -36,6 +36,15 @@
 
 # 1. MVCC
 <!-- 
+https://www.codercto.com/a/88775.html
+https://zhuanlan.zhihu.com/p/147372839
+https://www.jianshu.com/p/8845ddca3b23
+https://baijiahao.baidu.com/s?id=1629409989970483292&wfr=spider&for=pc&searchword=mvcc
+https://blog.csdn.net/weixin_35554306/article/details/113432616
+https://www.cnblogs.com/jmliao/p/13204946.html
+https://baike.baidu.com/item/MVCC/6298019?ivk_sa=1022817p
+
+
 MVCC机制
 https://mp.weixin.qq.com/s/hrbnpPqNNJszObizYq0Q1w
 MySQL事务与MVCC如何实现的隔离级别 

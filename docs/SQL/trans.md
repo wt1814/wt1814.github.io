@@ -7,7 +7,9 @@
         - [1.1.1. 行列转换](#111-行列转换)
         - [1.1.2. 列转行](#112-列转行)
         - [1.1.3. 行转列(将原表字段名转为结果集中字段值)](#113-行转列将原表字段名转为结果集中字段值)
-    - [1.2. 层级查询](#12-层级查询)
+    - [1.2. 树状图](#12-树状图)
+        - [层次化查询](#层次化查询)
+        - [递归查询](#递归查询)
     - [1.3. 自连接](#13-自连接)
         - [1.3.1. 用SQL自连接查询处理列之间的关系](#131-用sql自连接查询处理列之间的关系)
         - [1.3.2. SQL自连接查询表示其它关系](#132-sql自连接查询表示其它关系)
@@ -18,7 +20,6 @@
 # 1. 一些特殊查询
 ## 1.1. 行列转换  
 <!-- 
-
 
 -->
 
@@ -51,7 +52,75 @@ order by 姓名 desc
 ```
 
 
-## 1.2. 层级查询  
+## 1.2. 树状图  
+<!-- 
+SQL 高级查询 ——（层次化查询，递归）
+https://cloud.tencent.com/developer/article/1559389?from=information.detail.%E5%B1%82%E6%AC%A1%E5%8C%96%E6%9F%A5%E8%AF%A2
+-->
+### 层次化查询  
+&emsp; **<font color = "clime">用到CONNECT BY和START WITH语法。</font>**   
+
+&emsp; 层次化结构可以理解为树状数据结构，由节点构成。比如常见的组织结构由一个总经理，多个副总经理，多个部门部长组成。再比如在生产制造中一件产品会有多个子零件组成。举个简单的例子，如下图所示  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-155.png)  
+
+汽车作为根节点，下面包含发动机和车身两个子节点，而子节点又是由其他叶节点构成。(叶节点表示没有子节点的节点)  
+假如要把这些产品信息存储到数据库中，会形成如下数据表。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-156.png)  
+
+
+表结构.png
+
+我们用 parent_product_id 列表示当前产品的父产品是哪一个。
+
+那么用 SQL 语句如何进行层次化查询呢？这里就要用到 CONNECT BY 和 START WITH 语法。
+我们先把 SQL 写出来，再来解释其中的含义。
+
+```sql
+SELECT
+  level,
+  id,
+  parent_product_id,
+  name
+FROM
+  product
+  START WITH id  = 1
+  CONNECT BY prior id = parent_product_id
+ORDER BY
+  level
+```
+
+查询结果如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-157.png)  
+解释一下：LEVEL 列表示当前产品属于第几层级。START WITH 表示从哪一个产品开始查询,CONNECT BY PRIOR 表示父节点与子节点的关系，每一个产品的 ID 指向一个父产品。  
+如果把 START WITH 的查询起点改为 id = 2,重新运行上面的 SQL 语句将会得到如下结果：  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-158.png)  
+
+
+因为 id=2 的产品是车身，就只能查到车身下面的子产品。  
+
+当然，我们可以把查询结果美化一下，使其更有层次感，我们让根节点下面的 LEVEL 前面加几个空格即可。把上面的 SQL 稍微修改一下。为每个 LEVEL 前面增加 2*(LEVEL-1)个空格，这样第二层就会增加两个空格，第三层会增加四个空格。  
+
+SELECT
+  level,
+  id,
+  parent_product_id,
+  LPAD(' ', 2 * (level - 1)) || name AS name
+FROM
+  product
+  START WITH id  = 1
+  CONNECT BY prior id = parent_product_id
+
+查询结果已经有了层次感，如下图：  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-159.png)  
+
+
+
+
+### 递归查询  
+
+
 
 
 ## 1.3. 自连接  
