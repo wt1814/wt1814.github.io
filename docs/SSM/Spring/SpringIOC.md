@@ -36,9 +36,13 @@
     8. **<font color = "red">初始化应用事件多播器。</font>**  
     9. **<font color = "red">初始化一些特殊的bean。</font>**  
     10. **<font color = "red">注册一些监听器。</font>**  
-    11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font>**  
+    11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。<font color = "clime">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font></font>**  
     12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
     13. 重置公共的一些缓存数据。  
+
+
+
+
 
 # 1. SpringIOC解析
 <!--
@@ -53,6 +57,8 @@ https://juejin.cn/post/6844903967143493640
 
 * 实现了BeanFactory接口的简单容器系列，只实现了容器的最基本功能；  
 * ApplicationContext应用上下文，容器的高级形态，增加了许多面向框架的特性和对应用环境的适配；  
+
+&emsp; ⚠️注：在servlet中初始化的，用的是`WebApplicationContext extends ApplicationContext`。    
 
 ### 1.1.1. BeanFactory  
 <!--  
@@ -93,7 +99,7 @@ public interface BeanFactory {
 
 }
 ```  
-&emsp; 在 BeanFactory 里只对 IOC 容器的基本行为作了定义，根本不关心Bean是如何定义怎样加载的。正如只关心工厂里得到什么的产品对象，至于工厂是怎么生产这些对象的，这个基本的接口不关心。  
+&emsp; 在 BeanFactory 里只对IOC容器的基本行为作了定义，根本不关心Bean是如何定义怎样加载的。正如只关心工厂里得到什么的产品对象，至于工厂是怎么生产这些对象的，这个基本的接口不关心。  
 &emsp; 而要知道工厂是如何产生对象的，需要看具体的IOC容器实现，Spring提供了许多IOC容器的实现。 比如GenericApplicationContext，ClasspathXmlApplicationContext等。   
 
 ### 1.1.2. ApplicationContext  
@@ -157,6 +163,7 @@ public class BeanDemoConfig {
 ```
 
 ----
+
 ## 1.3. 基于Xml的IOC容器ClassPathXmlApplicationContext 的初始化  
 ### 1.3.1. ClassPathXmlApplicationContext构造函数
 &emsp; 启动 IoC 容器，即实例化ClassPathXmlApplicationContext上下文，首先查看其构造函数：  
@@ -293,7 +300,8 @@ public void refresh() throws BeansException, IllegalStateException {
     
 &emsp; 步骤5，BeanFactoryPostProcessor，对BeanFactory做一些后置操作  
 &emsp; 步骤6，BeanPostProcessor，对bean实例在初始化前后做一些增强工作  
-&emsp; 步骤11，对剩余所有的非懒加载的BeanDefinition(bean 定义)执行bean实例化操作  
+&emsp; 步骤10，注册一些监听器。  
+&emsp; 步骤11，对剩余所有的非懒加载的BeanDefinition(bean 定义)执行bean实例化操作。<font color = "clime">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font>    
 
 ### 1.3.3. 容器初始化详解(obtainFreshBeanFactory()方法)  
 &emsp; [容器初始化详解](/docs/SSM/Spring/容器初始化详解.md)  

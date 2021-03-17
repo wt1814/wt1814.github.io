@@ -3,7 +3,7 @@
 <!-- TOC -->
 
 - [1. SpringDI解析](#1-springdi解析)
-    - [1.1. 依赖注入发生的时间](#11-依赖注入发生的时间)
+    - [1.1. ~~依赖注入发生的时间(懒加载相关) ~~](#11-依赖注入发生的时间懒加载相关-)
     - [1.2. SpringDI时序图](#12-springdi时序图)
     - [1.3. AbstractBeanFactory#getBean()，获取Bean](#13-abstractbeanfactorygetbean获取bean)
         - [1.3.1. AbstractBeanFactory#doGetBean()，获取Bean](#131-abstractbeanfactorydogetbean获取bean)
@@ -18,20 +18,66 @@
 &emsp; **<font color = "lime">Spring DI依赖注入阶段，doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean() 初始化。</font>**  
 
 # 1. SpringDI解析
-## 1.1. 依赖注入发生的时间  
+## 1.1. ~~依赖注入发生的时间(懒加载相关) ~~ 
 &emsp; 当Spring IOC容器完成了Bean定义资源的定位、载入和解析注册以后，IOC容器中已经管理类Bean定义的相关数据，但是此时IOC容器还没有对所管理的Bean进行依赖注入，<font color= "red">依赖注入在以下两种情况发生</font>：  
 
 * 用户第一次调用getBean()方法时，IOC容器触发依赖注入。  
 * 当用户在配置文件中将<bean\>元素配置了lazy-init=false属性，即让容器在解析注册Bean定义时进行预实例化，触发依赖注入。  
 
+
+---------
+
+
+&emsp; 懒加载：对象使用的时候才去创建，节省资源，但是不利于提前发现错误。  
+&emsp; 非懒加载：容器启动的时候立刻创建对象。消耗资源。利于提前发现错误。  
+&emsp; 当scope=“prototype” (多例)时，默认以懒加载的方式产生对象。  
+&emsp; 当scope=“singleton” (单例)时，默认以非懒加载的方式产生对象。
+
+
+------
+
+&emsp; 在servlet中初始化的，用的是`WebApplicationContext extends ApplicationContext`  
+&emsp; Spring什么时候实例化bean，首先要分2种情况  
+&emsp;   第一：如果你使用BeanFactory作为Spring Bean的工厂类，则所有的bean都是在第一次使用该Bean的时候实例化  
+&emsp;   第二：如果你使用ApplicationContext作为Spring Bean的工厂类，则又分为以下几种情况：  
+&emsp;        （1）：如果bean的scope是singleton的，并且lazy-init为false（默认是false，所以可以不用设置），则ApplicationContext启动的时候就实例化该Bean，并且将实例化的Bean放在一个map结构的缓存中，下次再使用该Bean的时候，直接从这个缓存中取  
+&emsp;        （2）：如果bean的scope是singleton的，并且lazy-init为true，则该Bean的实例化是在第一次使用该Bean的时候进行实例化  
+&emsp;        （3）：如果bean的scope是prototype的，则该Bean的实例化是在第一次使用该Bean的时候进行实例化   
+
+------
+&emsp; 查看AbstractApplicationContext.refresh()方法中实例化所有非懒加载的bean过程即
+这个方法finishBeanFactoryInitialization查看此方法最后一行beanFactory.preInstantiateSingletons();实际调用此方法我们来看此单例实例化过程
+为DefaultListBeanFactory.preInstantiateSingletons源码如下  
+
+```java
+public void preInstantiateSingletons() throws BeansException {
+//此处省略无数行代码。。。。。
+		for (String beanName : beanNames) {
+			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+			//此处做出了判断必须是非抽象的并且必须是单例的并且必须是非懒加载的。
+			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
+				//此处省略无数行代码
+		}
+
+	}
+	//此处省略无数行代码
+}
+```
+&emsp; 从以上代码的循环中的条件我们不难看出容器启动过程中会实例化的bean只有满足以下三个条件的bean：非抽象的、单例的、非懒加载的。  
+
+
+
+
+
+## 1.2. SpringDI时序图  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/Spring/SpringDI-1.png)  
+
+## 1.3. AbstractBeanFactory#getBean()，获取Bean  
 &emsp; getBean()方法定义在BeanFactory接口中，可以通过分析其子类的具体实现，理解Spring IOC容器在用户索取 Bean时如何完成依赖注入。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/Spring/SpringDI-2.png)  
 &emsp; 在BeanFactory中可以看到getBean(String...)方法，但它具体实现在AbstractBeanFactory中。  
 
-## 1.2. SpringDI时序图  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/Spring/SpringDI-1.png)  
-
-## 1.3. AbstractBeanFactory#getBean()，获取Bean  
 &emsp; AbstractBeanFactory的getBean()相关方法的源码如下：  
 
 ```java
