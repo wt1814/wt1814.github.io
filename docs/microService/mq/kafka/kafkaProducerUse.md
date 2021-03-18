@@ -9,24 +9,25 @@
         - [1.2.1. producer拦截器](#121-producer拦截器)
         - [1.2.2. 消息序列化](#122-消息序列化)
         - [1.2.3. 消息分区机制](#123-消息分区机制)
-    - [1.3. 发送方式(怎样发送)](#13-发送方式怎样发送)
-        - [1.3.1. 同步/异步](#131-同步异步)
-        - [1.3.2. Acks & Retries](#132-acks--retries)
-        - [1.3.3. 批量发送](#133-批量发送)
-        - [1.3.4. 多线程处理](#134-多线程处理)
-    - [1.5. 消息压缩(提升性能)](#15-消息压缩提升性能)
+    - [1.3. 可靠性，Acks & Retries](#13-可靠性acks--retries)
+    - [1.4. 提升性能](#14-提升性能)
+        - [1.4.1. 同步/异步](#141-同步异步)
+        - [1.4.2. ~~批量发送~~](#142-批量发送)
+        - [1.4.3. 消息压缩](#143-消息压缩)
+    - [1.5. 多线程处理](#15-多线程处理)
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">总结：</font>**  
-&emsp; Producer发送消息的过程：需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。  
+&emsp; **<font color = "clime">总结：</font>**  
+1. Producer发送消息的过程：需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。  
 &emsp; Kafka提供了默认的分区策略（轮询、随机、按key顺序），同时支持自定义分区策略。  
-&emsp; 两种不同的发布方式：同步和异步；Acks & Retries；批量发送；多线程池处理；    
-&emsp; 无消息丢失配置。  
-&emsp; 消息压缩。  
+2. **<font color = "clime">如何提升Producer的性能？异步，批量，压缩。</font>**  
+3. 多线程处理。  
+&emsp; 多线程单KafkaProducer实例（可以理解为单例模式）、多线程多KafkaProducer实例（可以理解为多例，原型模式）。  
+&emsp; **<font color = "clime">如果是对分区数不多的Kafka集群而言，比较推荐使用第一种方法，即在多个producer用户线程中共享一个KafkaProducer实例。若是对那些拥有超多分区的集群而言，釆用第二种方法具有较高的可控性，方便producer的后续管理。</font>**   
 
 # 1. kafka生产者
-&emsp; **<font color = "lime">参考《kafka实战》</font>**  
+&emsp; **<font color = "clime">参考《kafka实战》</font>**  
 
 ## 1.1. 构造Producer
 ### 1.1.1. Producer程序实例
@@ -130,15 +131,8 @@ public int partition(String topic, Object key, byte[] keyBytes, Object value, by
 2. 如果没有key，会采用轮询策略，也称 Round-robin 策略，即顺序分配。比如一个主题下有 3 个分区，那么第一条消息被发送到分区 0，第二条被发送到分区 1，第三条被发送到分区 2，以此类推。当生产第 4 条消息时又会重新开始上述轮询。轮询策略有非常优秀的负载均衡表现，它总是能保证消息最大限度地被平均分配到所有分区上，故默认情况下它是最合理的分区策略。  
 3. 如果有key，那么就按消息键策略，这样可以保证同一个 Key 的所有消息都进入到相同的分区里面，这样就保证了顺序性。  
 
-## 1.3. 发送方式(怎样发送)
-### 1.3.1. 同步/异步  
-<!-- 
-https://blog.csdn.net/lwglwg32719/article/details/86510029
--->
-&emsp; Kafka系统支持两种不同的发送方式----同步模式（sync）和异步模式（async）。  
-
-### 1.3.2. Acks & Retries  
-&emsp; Kafka生产者在发送完一个的消息之后，要求Broker在规定的额时间Ack应答，如果没有在规定时间内应答，Kafka生产者会尝试n次重新发送消息。  
+## 1.3. 可靠性，Acks & Retries
+&emsp; Kafka生产者在发送完一个的消息之后，要求Broker在规定的时间Ack应答，如果没有在规定时间内应答，Kafka生产者会尝试n次重新发送消息。  
 
     acks=1(默认) - Leader会将Record写到其本地日志中，但会在不等待所有Follower的完全确认的情况下做出响应。在这种情况下，如果Leader在确认记录后立即失败，但在Follower复制记录之前失败，则记录将丢失。
     acks=0 - 生产者根本不会等待服务器的任何确认。该记录将立即添加到套接字缓冲区中并视为已发送。在这种情况下，不能保证服务器已收到记录。
@@ -149,37 +143,30 @@ https://blog.csdn.net/lwglwg32719/article/details/86510029
     request.timeout.ms = 30000  默认  
     retries = 2147483647 默认  
 
-&emsp; Kafka的Retries机制会导致幂等性问题。  
+&emsp; Kafka的Retries机制会导致幂等性问题。 
 
-### 1.3.3. 批量发送  
-&emsp; **如何提升Producer的性能？异步，批量，压缩。**  
+## 1.4. 提升性能  
+&emsp; **<font color = "clime">如何提升Producer的性能？异步，批量，压缩。</font>**  
+
+### 1.4.1. 同步/异步  
+<!-- 
+https://blog.csdn.net/lwglwg32719/article/details/86510029
+-->
+&emsp; Kafka系统支持两种不同的发送方式----同步模式(sync)和异步模式(async)。  
+
+### 1.4.2. ~~批量发送~~  
+<!-- 
+https://www.it610.com/article/1281259146699620352.htm
+-->
 
 &emsp; Kafka允许进行批量发送消息，producter发送消息的时候，可以将消息缓存在本地，等到了固定条件发送到Kafka 。  
 
 * 等消息条数到固定条数。  
 * 一段时间发送一次。  
 
-### 1.3.4. 多线程处理  
-&emsp; 实际环境中只使用一个用户主线程通常无法满足所需的吞吐量目标，因此需要构造多个线程或多个进程来同时给Kafka集群发送消息。这样在使用过程中就存在着两种基本的使用方法。  
 
-* 多线程单KafkaProducer实例  
-&emsp; 这种方法就是在全局构造一个KafkaProducer实例，然后在多个线程中共享使 用。由于KafkaProducer是线程安全的，所以这种使用方式也是线程安全的。  
-* 多线程多KafkaProducer实例  
-&emsp; 除了上面的用法，还可以在每个producer主线程中都构造一个KafkaProducer实例，并且保证此实例在该线程中封闭（thread confinement，线程封闭是实现线程安全的重要手段之一）。   
-
-
-&emsp; 显然，这两种方式各有优劣，如下表所示。   
-
-
-|说 明|优 势|劣 势|
-|---|---|---|
-|单 KafkaProducer 实例|所有线程共享一个KafkaProducer 实例|实现简单，性能好|①所有线程共享一个内存缓冲区，可能需要较多内存；</br>②一旦producer某个线程崩溃导致KafkaProducer实例被“破坏”，则所有用户线程都无法工作|
-|多 KafkaProducer 实例|	每个线程维护自己专属的 KafkaProducer 实例|①每个用户线程拥有专属的 KafkaProducer 实例、缓冲 区空间及一组对应的配置参数，可以进行细粒度的调 优；</br>②单个 KafkaProducer崩溃不会影响其他producer线程工作 |需要较大的内存分配开销|
-
-&emsp; 如果是对分区数不多的Kafka集群而言，比较推荐使用第一种方法，即在多个producer用户线程中共享一个KafkaProducer实例。若是对那些拥有超多分区的集群而言，釆用第二种方法具有较高的可控性，方便producer的后续管理。  
-
-## 1.5. 消息压缩(提升性能)  
-&emsp; 数据压缩显著地降低了磁盘占用或带宽占用，从而有效地提升了I/O密集型应用的性能。不过引用压缩同时会消耗额外的CPU时钟周期，因此压缩是I/O性能和CPU资源的平衡。  
+### 1.4.3. 消息压缩
+&emsp; **<font color = "red">数据压缩显著地降低了磁盘占用或带宽占用，从而有效地提升了I/O密集型应用的性能。不过引用压缩同时会消耗额外的CPU时钟周期，因此压缩是I/O性能和CPU资源的平衡。</font>**  
 &emsp; kafka自0.7.x版本便开始支持压缩特性。producer端能够将一批消息压缩成一条消息发送，而broker端将这条压缩消息写入本地日志文件，consumer端获取到这条压缩消息时会自动对消息进行解压缩。即producer端压缩，broker保持，consumer解压缩。  
 &emsp; 如果有些前置条件不满足，比如需要进行消息格式的转换等，那么broker端就需要对消息进行解压缩然后再重新压缩。  
 &emsp; kafka支持三种压缩算法：GZIP、Snappy和LZ4，性能LZ4>> Snappy>>GZIP，batch越大，压缩时间越长。
@@ -191,3 +178,23 @@ props .put (ncompressiont. typ,"snappy");
 props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");  
 ```
 &emsp; 如果发现压缩很慢，说明系统的瓶颈在用户主线程而不是I/O发送线程，因此可以考虑增加多个用户线程同时发送消息，这样通常能显著地提升producer吞吐量。
+
+
+## 1.5. 多线程处理  
+&emsp; 实际环境中只使用一个用户主线程通常无法满足所需的吞吐量目标，因此需要构造多个线程或多个进程来同时给Kafka集群发送消息。这样在使用过程中就存在着两种基本的使用方法。  
+
+* 多线程单KafkaProducer实例（可以理解为单例模式）  
+&emsp; 这种方法就是在全局构造一个KafkaProducer实例，然后在多个线程中共享使用。由于KafkaProducer是线程安全的，所以这种使用方式也是线程安全的。  
+* 多线程多KafkaProducer实例（可以理解为多例，原型模式）    
+&emsp; 除了上面的用法，还可以在每个producer主线程中都构造一个KafkaProducer实例，并且保证此实例在该线程中封闭（thread confinement，线程封闭是实现线程安全的重要手段之一）。   
+
+
+&emsp; 显然，这两种方式各有优劣，如下表所示：   
+
+
+|说 明|优 势|劣 势|
+|---|---|---|
+|单 KafkaProducer 实例|所有线程共享一个KafkaProducer 实例|实现简单，性能好|①所有线程共享一个内存缓冲区，可能需要较多内存；</br>②一旦producer某个线程崩溃导致KafkaProducer实例被“破坏”，则所有用户线程都无法工作|
+|多 KafkaProducer 实例|	每个线程维护自己专属的 KafkaProducer 实例|①每个用户线程拥有专属的 KafkaProducer 实例、缓冲 区空间及一组对应的配置参数，可以进行细粒度的调优；</br>②单个 KafkaProducer崩溃不会影响其他producer线程工作 |需要较大的内存分配开销|
+
+&emsp; **<font color = "clime">如果是对分区数不多的Kafka集群而言，比较推荐使用第一种方法，即在多个producer用户线程中共享一个KafkaProducer实例。若是对那些拥有超多分区的集群而言，釆用第二种方法具有较高的可控性，方便producer的后续管理。</font>**    

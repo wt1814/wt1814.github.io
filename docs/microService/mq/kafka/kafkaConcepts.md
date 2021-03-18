@@ -18,22 +18,22 @@ https://mp.weixin.qq.com/s/QPHPugWlbfeh8HhQvELSSQ
 &emsp; **kafka中文文档：** https://kafka.apachecn.org/  
 
 ## 1.1. kafka介绍  
-&emsp; Apache Kafka是 一个分布式流处理平台。流处理平台有以下三种特性:
+&emsp; Apache Kafka是一个分布式流处理平台。流处理平台有以下三种特性:
 
 * 可以发布和订阅流式的记录。这一方面与消息队列或者企业消息系统类似。
 * 可以储存流式的记录，并且有较好的容错性。
 * 可以在流式记录产生时就进行处理。 
 
 ## 1.2. ~~kafka拓扑结构及相关概念~~  
-&emsp; 一个典型的Kafka包含若干Producer、Broker集群、若干 Consumer 以及一个 Zookeeper 集群。Kafka体系结构图如下所示：  
+&emsp; 一个典型的Kafka包含若干Producer、Broker集群、若干Consumer以及一个Zookeeper集群。Kafka体系结构图如下所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-3.png)  
 
 1. producer：  
-&emsp; 消息生产者，发布消息到 kafka 集群的终端或服务。  
+&emsp; 消息生产者，发布消息到kafka集群的终端或服务。  
 2. broker：  
 &emsp; kafka 集群中包含的服务器。
 3. topic：  
-&emsp; 每条发布到 kafka 集群的消息属于的类别，即 kafka 是面向 topic 的。主题，表示一类消息，consumer 通过订阅 Topic 来消费消息，一个 Broker 节点可以有多个 Topic，每个 Topic 又包含 N 个 partition(分区或者分片)。    
+&emsp; 每条发布到 kafka 集群的消息属于的类别，即kafka是面向topic的。主题，表示一类消息，consumer通过订阅Topic来消费消息，一个Broker节点可以有多个Topic，每个Topic又包含N个partition(分区或者分片)。    
 4. partition：  
 &emsp; 每个 topic 包含一个或多个 partition。partition 是一个有序且不可变的消息序列，它是以 append log 文件形式存储的，partition 用于存放 Producer 生产的消息，然后 Consumer 消费 partition 上的消息，每个 partition 只能被一个 Consumer 消费。partition 还有副本的概念。    
 5. consumer：  

@@ -19,7 +19,7 @@ https://www.cnblogs.com/smartloli/p/12950761.html
 -->
 
 ## 1.1. kafka安装  
-......
+&emsp; ......
 
 ## 1.2. kafka配置文件  
 &emsp; 在kafka/config/目录下面有3个配置文件：  
