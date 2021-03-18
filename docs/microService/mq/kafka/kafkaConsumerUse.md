@@ -11,7 +11,7 @@
             - [1.2.2.1. 重平衡简介](#1221-重平衡简介)
             - [1.2.2.2. 重平衡触发条件](#1222-重平衡触发条件)
             - [1.2.2.3. 重平衡流程](#1223-重平衡流程)
-                - [1.2.2.3.1. 协调者](#12231-协调者)
+                - [1.2.2.3.1. 引入协调者](#12231-引入协调者)
                 - [1.2.2.3.2. 交互方式](#12232-交互方式)
                 - [1.2.2.3.3. 流程](#12233-流程)
                 - [1.2.2.3.4. 分配策略](#12234-分配策略)
@@ -34,11 +34,17 @@
 &emsp; **<font color = "red">总结：</font>**  
 
 1. 消费者/消费者组/费者组重平衡  
-    1. **<font color = "red">消费者组重平衡：</font>**  
+    1. 消费者组：Kafka消费端确保一个Partition在一个消费者组内只能被一个消费者消费。  
+    2. **<font color = "red">消费者组重平衡：</font>**  
     &emsp; **假设组内某个实例挂掉了，Kafka能够自动检测到，然后把这个Failed实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。**  
-    2.  **重平衡流程：**  
-    &emsp;  **<font color = "red">2. 消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；</font>**  
-    &emsp;  **<font color = "red">3. 当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，</font>**  
+    3.  **重平衡流程：**  
+    &emsp; 引入协调者(每一台Broker上都有一个协调者组件)，由协调者为消费组服务，为消费者们做好协调工作。一个消费组只需一个协调者进行服务。  
+    &emsp; **<font color = "red">2. 消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；</font>**  
+    &emsp; **<font color = "red">3. 当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，</font>**  
+    &emsp; **<font color = "red">4. Leader消费者收到JoinGroup响应后，根据消费者的订阅信息制定分配方案，把方案放在SyncGroup请求中，发送给协调者。</font>**  
+    &emsp; **<font color = "red">5. 协调者收到分配方案后，再通过SyncGroup响应把分配方案发给所有消费组。</font>**  
+    4. **如何避免重平衡？**  
+    &emsp; **<font color = "clime">其实只需要避免实例减少的情况就行了。</font>** ~~消费时间过长~~  
 2. 消费者位移管理  
     &emsp; **<font color = "red">位移提交有两种方式：</font><font color = "clime">自动提交、手动提交。</font>**  
 3. 怎样消费  
@@ -167,8 +173,8 @@ https://www.kancloud.cn/nicefo71/kafka/1473378
 <!-- 
 https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 -->
-##### 1.2.2.3.1. 协调者
-&emsp; 重均衡，将分区所属权分配给消费者。因此需要和所有消费者通信，这就需要引进一个协调者的概念，由协调者为消费组服务，为消费者们做好协调工作。在Kafka中，每一台Broker上都有一个协调者组件，负责组成员管理、再均衡和提交位移管理等工作。如果有N台Broker，那就有N个协调者组件，而一个消费组只需一个协调者进行服务，那该**由哪个Broker为其服务？** 确定Broker需要两步：  
+##### 1.2.2.3.1. 引入协调者
+&emsp; 重均衡，将分区所属权分配给消费者。因此需要和所有消费者通信，这就需要引进一个协调者的概念，由协调者为消费组服务，为消费者们做好协调工作。在Kafka中，每一台Broker上都有一个协调者组件，负责组成员管理、再均衡和提交位移管理等工作。如果有N台Broker，那就有N个协调者组件， **<font color = "clime">而一个消费组只需一个协调者进行服务，</font>** 那该**由哪个Broker为其服务？** 确定Broker需要两步：  
 1. 计算分区号  
 &emsp;partition = Math.abs(groupID.hashCode() % offsetsTopicPartitionCount)  
 &emsp;根据groupID的哈希值，取余offsetsTopicPartitionCount（内部主题__consumer_offsets的分区数，默认50）的绝对值，其意思就是把消费组哈希散列到内部主题__consumer_offsets的一个分区上。确定协调者为什么要和内部主题扯上关系。这就跟协调者的作用有关了。协调者不仅是负责组成员管理和再均衡，在协调者中还需要负责处理消费者的偏移量提交，而偏移量提交则正是提交到__consumer_offsets的一个分区上。所以这里需要取余offsetsTopicPartitionCount来确定偏移量提交的分区。  
@@ -185,8 +191,8 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 1. 当消费者收到协调者的再均衡开始通知时，需要立即提交偏移量；  
 2. **<font color = "red">消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；</font>**  
 3. **<font color = "red">当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，</font>** 同时等待rebalance.timeout.ms，在收集其他消费者的JoinGroup请求中的订阅信息后，将订阅信息放在JoinGroup响应中发送给Leader消费者，并告知它成为了Leader，同时也会发送成功入组的JoinGroup响应给其他消费者；  
-4. Leader消费者收到JoinGroup响应后，根据消费者的订阅信息制定分配方案，把方案放在SyncGroup请求中，发送给协调者。普通消费者在收到响应后，则直接发送SyncGroup请求，等待Leader的分配方案；  
-5. 协调者收到分配方案后，再通过SyncGroup响应把分配方案发给所有消费组。  
+4. **<font color = "red">Leader消费者收到JoinGroup响应后，根据消费者的订阅信息制定分配方案，把方案放在SyncGroup请求中，发送给协调者。</font>** 普通消费者在收到响应后，则直接发送SyncGroup请求，等待Leader的分配方案；  
+5. **<font color = "red">协调者收到分配方案后，再通过SyncGroup响应把分配方案发给所有消费组。</font>**  
 6. 当所有消费者收到分配方案后，就意味着再均衡的结束，可以正常开始消费工作了。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-70.png)  
 
@@ -211,7 +217,7 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 &emsp; **如何避免 Rebalances？**  
 &emsp; 由于目前一次rebalance操作的开销很大，生产环境中用户一定要结合自身业务特点仔细调优consumer参数：request.timeout.ms、max.poll.records和max.poll.interval.ms，以避免不必要的rebalance出现。  
 -->
-&emsp; 刚刚说到三个触发机制，后面两者一般是用户主动操作，这不可避免，所以应该重点关注第一个场景，当然消费实例增加也是出于伸缩性的需求，所以其实只需要避免实例减少的情况就行了。  
+&emsp; ~~刚刚说到三个触发机制，后面两者一般是用户主动操作，这不可避免，所以应该重点关注第一个场景，~~ 当然消费实例增加也是出于伸缩性的需求，所以 **<font color = "clime">其实只需要避免实例减少的情况就行了。</font>**  
 &emsp; 实际中，不是主动kill消费成员，或者机器宕机那种情况，才算是被踢出组，消费时间过长，也是会被踢的。不仅如此，某些情况会让Coordinator错误地认为 Consumer 实例“已停止”从而被“踢出”Group。  
 &emsp; 以下情景会让协调者认为消费者实例已经死亡并把它们踢出组。  
 1. 未能及时发送心跳  
@@ -222,11 +228,11 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
         推荐设置 session.timeout.ms = 6s。
         推荐设置 heartbeat.interval.ms = 2s。
 
-&emsp; 保证Consumer实例在被判定为“dead”之前，能够发送至少3轮的心跳请求，因此上面推荐的配置是一个三倍的关系。  
+&emsp; &emsp; 保证Consumer实例在被判定为“dead”之前，能够发送至少3轮的心跳请求，因此上面推荐的配置是一个三倍的关系。  
 
 2. 消费时间过长    
 &emsp; Consumer因为处理消息的时间太长而引发Rebalance。  
-&emsp; Consumer端有一个参数，用于控制Consumer实际消费能力对Rebalance的影响，即 max.poll.interval.ms 参数。它限定了Consumer 端应用程序两次调用 poll 方法的最大时间间隔。它的默认值是 5 分钟，表示Consumer 程序如果在 5 分钟之内无法消费完 poll 方法返回的消息，那么 Consumer 会主动发起“离开组”的请求，Coordinator 也会开启新一轮 Rebalance。因此你最好将该参数值设置得大一点，比下游最大处理时间稍长一点。还可以配置一个参数max.poll.records，它代表批量消费的 size，如果一次性 poll 的数据量过多，导致一次 poll 的处理无法在指定时间内完成，则会 Rebalance。因此，需要预估你的业务处理时间，并正确的设置这两个参数。  
+&emsp; Consumer端有一个参数，用于控制Consumer实际消费能力对Rebalance的影响，即 max.poll.interval.ms 参数。它限定了Consumer 端应用程序两次调用 poll 方法的最大时间间隔。它的默认值是 5 分钟，表示Consumer 程序如果在 5 分钟之内无法消费完 poll 方法返回的消息，那么 Consumer 会主动发起“离开组”的请求，Coordinator 也会开启新一轮 Rebalance。因此最好将该参数值设置得大一点，比下游最大处理时间稍长一点。还可以配置一个参数max.poll.records，它代表批量消费的 size，如果一次性 poll 的数据量过多，导致一次 poll 的处理无法在指定时间内完成，则会 Rebalance。因此，需要预估业务处理时间，并正确的设置这两个参数。  
 
 ----------
 
@@ -322,10 +328,10 @@ kafka_test      0          7399            7399            0               consu
     ```
 
 ### 1.4.2. 消息轮询
-&emsp; **consumer 采用 pull（拉）模式从 broker 中读取数据。**  
-&emsp; push（推）模式很难适应消费速率不同的消费者，因为消息发送速率是由 broker 决定的。 它的目标是尽可能以最快速度传递消息，但是这样很容易造成 consumer 来不及处理消息，典型的表现就是拒绝服务以及网络拥塞。而 pull 模式则可以根据 consumer 的消费能力以适当的速率消费消息。  
+&emsp; **consumer 采用 pull（拉）模式从broker中读取数据。**  
+&emsp; push(推)模式很难适应消费速率不同的消费者，因为消息发送速率是由broker决定的。它的目标是尽可能以最快速度传递消息，但是这样很容易造成 consumer 来不及处理消息，典型的表现就是拒绝服务以及网络拥塞。而pull模式则可以根据consumer的消费能力以适当的速率消费消息。  
 &emsp; 对于 Kafka 而言，pull 模式更合适，它可简化 broker 的设计，consumer 可自主控制消费消息的速率，同时consumer可以自己控制消费方式——即可批量消费也可逐条消费，同时还能选择不同的提交方式从而实现不同的传输语义。  
-&emsp; pull 模式不足之处是，如果 kafka 没有数据，消费者可能会陷入循环中，一直等待数据到达。为了避免这种情况，在拉取请求中有参数，允许消费者请求在等待数据到达 的“长轮询”中进行阻塞（并且可选地等待到给定的字节数，以确保大的传输大小）。  
+&emsp; pull 模式不足之处是，如果 kafka 没有数据，消费者可能会陷入循环中，一直等待数据到达。为了避免这种情况，在拉取请求中有参数，允许消费者请求在等待数据到达的“长轮询”中进行阻塞（并且可选地等待到给定的字节数，以确保大的传输大小）。  
 
 ### 1.4.3. 消费语义  
 &emsp; 消费者从服务端的 Partition 上拉取到消息，消费消息有三种情况，分别如下：  
@@ -339,12 +345,11 @@ kafka_test      0          7399            7399            0               consu
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-87.png)  
 <center>先消费后保存消费进度</center>
 2. 至多一次  
-&emsp; 消费者读取消息，先保存消费进度，在处理消息。消费者拉取到消息，先保存了偏移量，当保存了偏移量后还没消费完消息，消费者挂了，则会造成未消费的消息丢失。如下图所示：
-&emsp; 先保存消费进度后消费消息  
+&emsp; 消费者读取消息，先保存消费进度，在处理消息。消费者拉取到消息，先保存了偏移量，当保存了偏移量后还没消费完消息，消费者挂了，则会造成未消费的消息丢失。如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-88.png)  
 <center>先保存消费进度后消费消息</center>
 3. 正好一次  
-&emsp; 正好消费一次的办法可以通过将消费者的消费进度和消息处理结果保存在一起。只要能保证两个操作是一个原子操作，就能达到正好消费一次的目的。通常可以将两个操作保存在一起，比如 HDFS 中。正好消费一次流程如下图所示。  
+&emsp; 正好消费一次的办法可以通过将消费者的消费进度和消息处理结果保存在一起。只要能保证两个操作是一个原子操作，就能达到正好消费一次的目的。通常可以将两个操作保存在一起，比如HDFS中。正好消费一次流程如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-89.png)  
 <center>正好消费一次</center>
 
