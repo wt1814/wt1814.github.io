@@ -8,12 +8,11 @@
         - [1.1.2. ~~基于Sendfile实现零拷贝(Zero Copy)~~](#112-基于sendfile实现零拷贝zero-copy)
     - [1.2. 高可用与数据一致性(副本机制)](#12-高可用与数据一致性副本机制)
     - [1.3. 可靠性](#13-可靠性)
-        - [1.3.1. exactly once](#131-exactly-once)
-            - [1.3.1.1. ★★★消费语义介绍](#1311-★★★消费语义介绍)
-            - [1.3.1.2. ~~消息重复消费~~](#1312-消息重复消费)
-            - [1.3.1.3. 可靠性(如何保证消息队列不丢失?)](#1313-可靠性如何保证消息队列不丢失)
-            - [1.3.1.4. 幂等和事务](#1314-幂等和事务)
-        - [1.3.2. 如何让Kafka的消息有序？](#132-如何让kafka的消息有序)
+        - [1.3.1. ★★★消费语义介绍](#131-★★★消费语义介绍)
+        - [1.3.2. ~~消息重复消费~~](#132-消息重复消费)
+        - [1.3.3. 可靠性(如何保证消息队列不丢失?)](#133-可靠性如何保证消息队列不丢失)
+        - [1.3.4. 幂等和事务](#134-幂等和事务)
+    - [1.4. 如何让Kafka的消息有序？](#14-如何让kafka的消息有序)
 
 <!-- /TOC -->
 
@@ -35,7 +34,7 @@ Kafka充分利用了现代操作系统分页存储来利用内存提高I/O效率
 Kafka服务器在响应客户端读取的时候，底层使用ZeroCopy技术，直接将磁盘无需拷贝到用户空间，而是直接将数据通过内核空间传递输出，数据并没有抵达用户空间。
 
 -->
-&emsp; Kafka 的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，因为寻址会比较消耗时间，但是实际上，Kafka 的特性之一就是高吞吐率。 **Kafka 之所以能这么快，是因为：「顺序写磁盘、大量使用内存页、零拷贝技术的使用」..**  
+&emsp; Kafka的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，因为寻址会比较消耗时间，但是实际上，Kafka的特性之一就是高吞吐率。 **Kafka之所以能这么快，是因为：「顺序写磁盘、大量使用内存页、零拷贝技术的使用」..**  
 
 &emsp; ~~数据写入Kafka会把收到的消息都写入到硬盘中。为了优化写入速度，Kafka使用了：顺序写入和Memory Mapped File 。~~  
 
@@ -61,19 +60,22 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 * 如果 Kafka 写入到 mmf 之后就立即 Flush，然后再返回 Producer 叫同步 (Sync)。  
 * 如果 Kafka 写入 mmf 之后立即返回 Producer 不调用 Flush 叫异步 (Async)。  
 -->
-&emsp; 作为一个消息系统，不可避免的便是消息的拷贝，常规的操作，一条消息，需要从创建者的socket到应用，再到操作系统内核，然后才能落盘。同样，一条消息发送给消费者也要从磁盘到内核到应用再到接收者的socket，中间经过了多次不是很有必要的拷贝。  
-&emsp; 传统 Read/Write 方式进行网络文件传输，在传输过程中，文件数据实际上是经过了四次 Copy 操作，其具体流程细节如下：  
 
-* 调用 Read 函数，文件数据被 Copy 到内核缓冲区。  
-* Read 函数返回，文件数据从内核缓冲区 Copy 到用户缓冲区。
-* Write 函数调用，将文件数据从用户缓冲区 Copy 到内核与 Socket 相关的缓冲区。
-* 数据从 Socket 缓冲区 Copy 到相关协议引擎。
+&emsp; [IO性能优化之零拷贝](/docs/microService/communication/Netty/zeroCopy.md)  
 
-    硬盘—>内核 buf—>用户 buf—>Socket 相关缓冲区—>协议引擎  
-    
+&emsp; Kafka 的数据传输通过TransportLayer来完成，其子类 PlaintextTransportLayer 通过Java NIO的FileChannel的transferTo和transferFrom方法实现零拷贝。  
 
-&emsp; 而 Sendfile 系统调用则提供了一种减少以上多次 Copy，提升文件传输性能的方法。<font color = "red">在内核版本 2.1 中，引入了Sendfile系统调用，以简化网络上和两个本地文件之间的数据传输。</font>Sendfile 的引入不仅减少了数据复制，还减少了上下文切换。相较传统 Read/Write 方式，2.1 版本内核引进的Sendfile已经减少了内核缓冲区到 User 缓冲区，再由 User 缓冲区到 Socket 相关缓冲区的文件Copy。而在内核版本 2.4 之后，文件描述符结果被改变，Sendfile 实现了更简单的方式，再次减少了一次 Copy 操作。  
-&emsp; Kafka 把所有的消息都存放在一个一个的文件中，当消费者需要数据的时候 Kafka 直接把文件发送给消费者，配合 mmap 作为文件读写方式，直接把它传给 Sendfile。  
+```java
+@Override
+public long transferFrom(FileChannel fileChannel, long position, long count) throws IOException {
+   return fileChannel.transferTo(position, count, socketChannel);
+}
+```
+
+&emsp; Java NIO 的 FileChannel 的 transferTo 和 transferFrom 方法是基于sendfile方式实现零拷贝。  
+
+&emsp; 注： transferTo 和 transferFrom 并不保证一定能使用零拷贝。实际上是否能使用零拷贝与操作系统相关，如果操作系统提供 sendfile 这样的零拷贝系统调用，则这两个方法会通过这样的系统调用充分利用零拷贝的优势，否则并不能通过这两个方法本身实现零拷贝。  
+
 
 ## 1.2. 高可用与数据一致性(副本机制)
 [kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
@@ -81,9 +83,7 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 ## 1.3. 可靠性
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-118.png)  
 
-### 1.3.1. exactly once
-
-#### 1.3.1.1. ★★★消费语义介绍  
+### 1.3.1. ★★★消费语义介绍  
 <!--
 &emsp; Kafka在producer和consumer之间提供的语义保证。显然，Kafka可以提供的消息交付语义保证有多种：  
 
@@ -106,7 +106,7 @@ Kafka把所有的消息存放到一个文件中，当消费者需要数据的时
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-119.png)  
 
-#### 1.3.1.2. ~~消息重复消费~~  
+### 1.3.2. ~~消息重复消费~~  
 <!-- 
 
 有哪些情形会造成重复消费？
@@ -130,13 +130,13 @@ Rebalance
 &emsp; 通过方案 1 调整参数后，还是会出现重复消费的情况，只是出现的概率降低了。  
 2. 解决方案 2：在业务层增加 Redis，在一定周期内，相同 key 对应的消息认为是同一条，如果 Redis 内不存在则正常消费消费，反之直接抛弃。  
 
-#### 1.3.1.3. 可靠性(如何保证消息队列不丢失?)  
+### 1.3.3. 可靠性(如何保证消息队列不丢失?)  
 [kafka如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
 
-#### 1.3.1.4. 幂等和事务
+### 1.3.4. 幂等和事务
 [kafka幂等和事务](/docs/microService/mq/kafka/kafkaTraction.md)
 
-### 1.3.2. 如何让Kafka的消息有序？  
+## 1.4. 如何让Kafka的消息有序？  
 &emsp; Kafka无法做到消息全局有序，只能做到 Partition 维度的有序。所以如果想要消息有序，就需要从Partition维度入手。一般有两种解决方案。
 
 * 单Partition，单Consumer。通过此种方案强制消息全部写入同一个Partition内，但是同时也牺牲掉了Kafka高吞吐的特性了，所以一般不会采用此方案。  

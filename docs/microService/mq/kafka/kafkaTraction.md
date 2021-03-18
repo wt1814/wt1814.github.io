@@ -50,8 +50,7 @@ kafka事务的应用场景
 &emsp; Kafka中的事务特性主要用于以下场景：  
 
 1. 生产者发送多条消息可以封装在一个事务中，形成一个原子操作。多条消息要么都发送成功，要么都发送失败。  
-
-2. read-process-write模式：将消息生产和消费封装在一个事务中，形成一个原子操作。在一个流式处理的应用中，常常一个服务需要从上游接收消息，然后经过处理后送达到下游，这就对应着消息的消费和生成。  
+2. **<font color = "clime">read-process-write模式(消费消息-业务处理-生产消息)</font>** ：将消息生产和消费封装在一个事务中，形成一个原子操作。在一个流式处理的应用中，常常一个服务需要从上游接收消息，然后经过处理后送达到下游，这就对应着消息的消费和生成。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-120.png)  
 &emsp; 在此场景中，往往需要实现，从读取source数据，至业务处理，至处理结果写入kafka的整个流程，具备原子性(要么全流程成功，要么全部失败)  
 &emsp; 也就是说，处理且输出结果成功，才会提交消费端偏移量；如果处理或输出结果失败，则消费偏移量也不会提交。  
@@ -66,8 +65,8 @@ kafka事务的应用场景
 &emsp; Kafka的事务特性本质上是支持了Kafka跨分区和Topic的原子写操作。在同一个事务中的消息要么同时写入成功，要么同时写入失败。Kafka中的Offset信息存储在一个名为_consumed_offsets的Topic中，因此read-process-write模式，除了向目标Topic写入消息，还会向_consumed_offsets中写入已经消费的Offsets数据。因此read-process-write本质上就是跨分区和Topic的原子写操作。Kafka的事务特性就是要确保跨分区的多个写操作的原子性。   
 
 #### 1.1.3.2. 拒绝僵尸实例
-&emsp; 在分布式系统中，一个实例的宕机或失联，集群往往会自动启动一个新的实例来代替它的工作。此时若原实例恢复了，那么集群中就产生了两个具有相同职责的实例，此时前一个instance就被称为“僵尸实例(Zombie Instance)”。在Kafka中，两个相同的producer同时处理消息并生产出重复的消息(read-process-write模式)，这样就严重违反了Exactly Once Processing的语义。这就是僵尸实例问题。  
-&emsp; Kafka事务特性通过transaction-id属性来解决僵尸实例问题。所有具有相同transaction-id的Producer都会被分配相同的pid，同时每一个Producer还会被分配一个递增的epoch。Kafka收到事务提交请求时，如果检查当前事务提交者的epoch不是最新的，那么就会拒绝该Producer的请求。从而达成拒绝僵尸实例的目标。
+&emsp; 在分布式系统中，一个实例的宕机或失联，集群往往会自动启动一个新的实例来代替它的工作。 **<font color = "red">此时若原实例恢复了，那么集群中就产生了两个具有相同职责的实例，此时前一个instance就被称为“僵尸实例(Zombie Instance)”。</font>** 在Kafka中，两个相同的producer同时处理消息并生产出重复的消息(read-process-write模式)，这样就严重违反了Exactly Once Processing的语义。这就是僵尸实例问题。  
+&emsp; **Kafka事务特性通过transaction-id属性来解决僵尸实例问题。** 所有具有相同transaction-id的Producer都会被分配相同的pid，同时每一个Producer还会被分配一个递增的epoch。Kafka收到事务提交请求时，如果检查当前事务提交者的epoch不是最新的，那么就会拒绝该Producer的请求。从而达成拒绝僵尸实例的目标。
 
 #### 1.1.3.3. 读事务消息  
 &emsp; 为了保证事务特性，Consumer如果设置了isolation.level = read_committed，那么它只会读取已经提交了的消息。在Producer成功提交事务后，Kafka会将所有该事务中的消息的Transaction Marker从uncommitted标记为committed状态，从而所有的Consumer都能够消费。  
@@ -111,7 +110,7 @@ https://www.cnblogs.com/middleware/p/9477133.html
 * enable.idempotence = false，transactional.id设置：无法获取到PID，此时会报错
 
 &emsp; **tranaction id 、productid 和 epoch**  
-&emsp; 一个app有一个tid，同一个应用的不同实例PID是一样的，只是epoch的值不同。如：
+&emsp; 一个app有一个tid，同一个应用的不同实例PID是一样的，只是epoch的值不同。如：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-82.png)  
 
 
@@ -127,10 +126,8 @@ https://www.cnblogs.com/middleware/p/9477133.html
 2. 获取produce ID  
 &emsp; 在知道事务协调者后，生产者需要往协调者发送初始化pid请求(initPidRequest)。这个请求分两种情况：  
 
-    * 不带transactionID   
-    &emsp; 这种情况下直接生成一个新的produce ID即可，返回给客户端
-    * 带transactionID  
-    &emsp; 这种情况下，kafka根据transactionalId获取对应的PID，这个对应关系是保存在事务日志中(上图2a)。这样可以确保相同的TransactionId返回相同的PID，用于恢复或者终止之前未完成的事务。  
+    * 不带transactionID：这种情况下直接生成一个新的produce ID即可，返回给客户端。
+    * 带transactionID：这种情况下，kafka根据transactionalId获取对应的PID，这个对应关系是保存在事务日志中(上图2a)。这样可以确保相同的TransactionId返回相同的PID，用于恢复或者终止之前未完成的事务。  
 
 3. 启动事务  
 &emsp; 生产者通过调用beginTransaction接口启动事务，此时只是内部的状态记录为事务开始，但是事务协调者认为事务开始只有当生产者开始发送第一条消息才开始。  

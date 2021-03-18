@@ -25,10 +25,10 @@
 &emsp; 在Producer端、Broker端、Consumer端都有可能会丢失消息。  
 
 * Producer端：  
-&emsp; 为防止Producer端丢失消息，除了将ack设置为all，还可以使用带有回调通知的发送 API，即producer.send(msg, callback)。  
+&emsp; 为防止Producer端丢失消息， **<font color = "red">除了将ack设置为all，还可以使用带有回调通知的发送 API，即producer.send(msg, callback)。</font>**  
 * Broker端:  
 &emsp; Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不丢失消息是做不到的，只能通过调整刷盘机制的参数缓解该情况。  
-&emsp; 为了解决该问题，kafka通过producer和broker协同处理单个broker丢失参数的情况。一旦producer发现broker消息丢失，即可自动进行retry。除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。  
+&emsp; 为了解决该问题，kafka通过producer和broker协同处理单个broker丢失参数的情况。 **<font color = "red">一旦producer发现broker消息丢失，即可自动进行retry。</font>** 除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。  
 * ~~Consumer端：~~  
 &emsp; 采用手动提交位移。  
 
@@ -96,7 +96,7 @@ https://mp.weixin.qq.com/s/0eotlFBTSl-HxInb4Xg1Iw
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-62.png)  
 &emsp; 设置为 0 时代表 Producer 发送消息后就认为成功，消息有可能丢失。    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-63.png)  
-&emsp; 设置为-1 时，代表 ISR 列表中的所有 Replica 将消息同步完成后才认为消息发送成功；但是如果只存在主 Partition 的时候，Broker 异常时同样会导致消息丢失。所以此时就需要min.insync.replicas参数的配合，该参数需要设定值大于等于 2，当 Partition 的个数小于设定的值时，Producer 发送消息会直接报错。  
+&emsp; 设置为-1 时，代表 ISR 列表中的所有 Replica 将消息同步完成后才认为消息发送成功；但是如果只存在主 Partition 的时候，Broker 异常时同样会导致消息丢失。所以此时就需要min.insync.replicas参数的配合，该参数需要设定值大于等于 2，当 Partition 的个数小于设定的值时，Producer发送消息会直接报错。  
 
 &emsp; 上面这个过程看似已经很完美了，但是假设如果消息在同步到部分从Partition 上时，主 Partition 宕机，此时消息会重传，虽然消息不会丢失，但是会造成同一条消息会存储多次。在新版本中 Kafka 提出了幂等性的概念，通过给每条消息设置一个唯一 ID，并且该 ID 可以唯一映射到 Partition 的一个固定位置，从而避免消息重复存储的问题。 
 
@@ -106,7 +106,7 @@ https://mp.weixin.qq.com/s/0eotlFBTSl-HxInb4Xg1Iw
 * 如果acks配置为1保证leader不丢，但是如果leader挂了，恰好选了一个没有ACK的follower，那也丢了。
 * all：保证leader和follower不丢，但是如果网络拥塞，没有收到ACK，会有重复发的问题。
 
-&emsp; 为防止Producer端丢失消息，除了将ack设置为all，还可以使用带有回调通知的发送 API，即producer.send(msg, callback)。  
+&emsp; 为防止Producer端丢失消息，除了将ack设置为all，还可以使用带有回调通知的发送API，即producer.send(msg, callback)。  
 
 ## 1.3. Broker端丢失消息
 <!-- 

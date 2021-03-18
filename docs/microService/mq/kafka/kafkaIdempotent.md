@@ -14,11 +14,11 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; Kafka幂等是针对生产者角度的特性。kafka只保证producer单个会话中的单个分区幂等。  
-&emsp; **<font color = "red">Kafka幂等性实现机制：</font>**  
+&emsp; **<font color = "red">Kafka幂等性实现机制：(分区消息维护一个序列号，进行比较)</font>**  
 
 1. 每一个producer在初始化时会生成一个producer_id，并为每个目标partition维护一个"一个序列号"；
-2. producer每发送一条消息，会将\<producer_id，分区\>对应的“序列号”加1；  
-3. broker端会为每一对\<producer_id，分区\>维护一个序列号，对于每收到的一条消息，会判断服务端的SN_old和接收到的消息中的SN_new进行对比：  
+2. producer每发送一条消息，会将 \<producer_id,分区\> 对应的“序列号”加1；  
+3. broker端会为每一对 \<producer_id,分区\> 维护一个序列号，对于每收到的一条消息，会判断服务端的SN_old和接收到的消息中的SN_new进行对比：  
 
     * 如果SN_old < SN_new+1，说明是重复写入的数据，直接丢弃。    
     * 如果SN_old > SN_new+1，说明中间有数据尚未写入，或者是发生了乱序，或者是数据丢失，将抛出严重异常：OutOfOrderSeqenceException。 
@@ -34,9 +34,9 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 &emsp; **幂等又称为exactly once（精确传递一次。消息被处理且只会被处理一次。不丢失不重复就一次）。**Kafka在0.11.0.0之前的版本中只支持At Least Once和At Most Once语义，尚不支持Exactly Once语义。  
 &emsp; 但是在很多要求严格的场景下，如使用Kafka处理交易数据，Exactly Once语义是必须的。可以通过让下游系统具有幂等性来配合Kafka的At Least Once语义来间接实现Exactly Once。但是：  
 
-* 该方案要求下游系统支持幂等操作，限制了Kafka的适用场景
-* 实现门槛相对较高，需要用户对Kafka的工作机制非常了解
-* 对于Kafka Stream而言，Kafka本身即是自己的下游系统，但Kafka在0.11.0.0版本之前不具有幂等发送能力
+* 该方案要求下游系统支持幂等操作，限制了Kafka的适用场景。
+* 实现门槛相对较高，需要用户对Kafka的工作机制非常了解。
+* 对于Kafka Stream而言，Kafka本身即是自己的下游系统，但Kafka在0.11.0.0版本之前不具有幂等发送能力。
 
 &emsp; 因此，Kafka本身对Exactly Once语义的支持就非常必要。  
 &emsp; ~~**影响Kafka幂等性的因素：**在分布式系统中，一些不可控因素有很多，比如网络、OOM、FullGC等。在Kafka Broker确认Ack时，出现网络异常、FullGC、OOM等问题时导致Ack超时，Producer会进行重复发送。可能出现的情况如下：~~  
@@ -47,9 +47,9 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 -->
   
 ## 1.2. 幂等性实现原理  
-&emsp; **<font color = "lime">Kafka幂等是针对生产者角度的特性。幂等可以保证生产者发送的消息，不会丢失，而且不会重复。</font>** **<font color = "red">实现幂等的关键点就是服务端可以区分请求是否重复，过滤掉重复的请求。</font>** 要区分请求是否重复的有两点：  
+&emsp; **<font color = "clime">Kafka幂等是针对生产者角度的特性。幂等可以保证生产者发送的消息，不会丢失，而且不会重复。</font>** **<font color = "red">实现幂等的关键点就是服务端可以区分请求是否重复，过滤掉重复的请求。</font>** 要区分请求是否重复的有两点：  
 
-* 唯一标识：要想区分请求是否重复，请求中就得有唯一标识。例如支付请求中，订单号就是唯一标识  
+* 唯一标识：要想区分请求是否重复，请求中就得有唯一标识。例如支付请求中，订单号就是唯一标识。  
 * 记录下已处理过的请求标识：光有唯一标识还不够，还需要记录下那些请求是已经处理过的，这样当收到新的请求时，用新请求中的标识和处理记录进行比较，如果处理记录中有相同的标识，说明是重复记录，拒绝掉。  
 
 &emsp; **<font color = "clime">Kafka为了实现幂等性，它在底层设计架构中引入了ProducerID和SequenceNumber。</font>**  
@@ -57,17 +57,17 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 * ProducerID：在每个新的Producer初始化时，会被分配一个唯一的ProducerID，这个ProducerID对客户端使用者是不可见的。  
 * SequenceNumber：对于每个ProducerID，Producer发送数据的每个Topic和Partition都对应一个从0开始单调递增的SequenceNumber值。  
 
-&emsp; **<font color = "red">Kafka幂等性实现机制：</font>**  
+&emsp; **<font color = "red">Kafka幂等性实现机制：(分区消息维护一个序列号，进行比较)</font>**  
 
 1. 每一个producer在初始化时会生成一个producer_id，并为每个目标partition维护一个"一个序列号"；
-2. producer每发送一条消息，会将\<producer_id，分区\>对应的“序列号”加1；  
-3. broker端会为每一对\<producer_id，分区\>维护一个序列号，对于每收到的一条消息，会判断服务端的SN_old和接收到的消息中的SN_new进行对比：  
+2. producer每发送一条消息，会将 \<producer_id，分区\> 对应的“序列号”加1；  
+3. broker端会为每一对 \<producer_id，分区\> 维护一个序列号，对于每收到的一条消息，会判断服务端的SN_old和接收到的消息中的SN_new进行对比：  
 
     * 如果SN_old < SN_new+1，说明是重复写入的数据，直接丢弃。    
     * 如果SN_old > SN_new+1，说明中间有数据尚未写入，或者是发生了乱序，或者是数据丢失，将抛出严重异常：OutOfOrderSeqenceException。 
 
 
-&emsp; **<font color = "red">注意：kafka只保证producer单个会话中的单个分区幂等；</font>**    
+&emsp; **<font color = "red">注意：kafka只保证producer单个会话中的单个分区幂等。</font>**    
 
 ### 1.2.1. ~~幂等性引入之前的问题？~~  
 &emsp; Kafka在引入幂等性之前，Producer向Broker发送消息，然后Broker将消息追加到消息流中后给Producer返回Ack信号值。实现流程如下：  
