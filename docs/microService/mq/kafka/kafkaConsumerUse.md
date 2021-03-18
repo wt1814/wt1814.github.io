@@ -7,7 +7,7 @@
         - [1.1.2. consumer配置](#112-consumer配置)
     - [1.2. 消费者与消费组](#12-消费者与消费组)
         - [1.2.1. 消费者与消费组简介](#121-消费者与消费组简介)
-        - [1.2.2. ※※※消费者组重平衡(rebalance)](#122-※※※消费者组重平衡rebalance)
+        - [1.2.2. ★★★消费者组重平衡(rebalance)](#122-★★★消费者组重平衡rebalance)
             - [1.2.2.1. 重平衡简介](#1221-重平衡简介)
             - [1.2.2.2. 重平衡触发条件](#1222-重平衡触发条件)
             - [1.2.2.3. 重平衡流程](#1223-重平衡流程)
@@ -17,7 +17,7 @@
                 - [1.2.2.3.4. 分配策略](#12234-分配策略)
             - [1.2.2.4. 重平衡劣势](#1224-重平衡劣势)
             - [1.2.2.5. 如何避免重平衡？](#1225-如何避免重平衡)
-    - [1.3. ※※※消费者位移(offset)管理](#13-※※※消费者位移offset管理)
+    - [1.3. ★★★消费者位移(offset)管理](#13-★★★消费者位移offset管理)
         - [1.3.1. 位移提交方式](#131-位移提交方式)
         - [1.3.2. 位移主题(__consumer_offsets) ，(位移提交地址)](#132-位移主题__consumer_offsets-位移提交地址)
         - [1.3.3. 消费组消费进度查看的命令](#133-消费组消费进度查看的命令)
@@ -34,18 +34,18 @@
 &emsp; **<font color = "red">总结：</font>**  
 
 1. 消费者/消费者组/费者组重平衡  
-    &emsp; **消费者组重平衡：**  
-    &emsp; **<font color = "red">假设组内某个实例挂掉了，Kafka能够自动检测到，然后把这个Failed实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。</font>**  
-    &emsp; **重平衡流程：**  
-    2. **<font color = "red">消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；</font>**  
-    3. **<font color = "red">当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，</font>**  
+    1. **<font color = "red">消费者组重平衡：</font>**  
+    &emsp; **假设组内某个实例挂掉了，Kafka能够自动检测到，然后把这个Failed实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。**  
+    2.  **重平衡流程：**  
+    &emsp;  **<font color = "red">2. 消费者在收到提交偏移量成功的响应后，再发送JoinGroup请求，重新申请加入组，请求中会含有订阅的主题信息；</font>**  
+    &emsp;  **<font color = "red">3. 当协调者收到第一个JoinGroup请求时，会把发出请求的消费者指定为Leader消费者，</font>**  
 2. 消费者位移管理  
-    &emsp; **<font color = "red">位移提交有两种方式：</font><font color = "lime">自动提交、手动提交。</font>**  
+    &emsp; **<font color = "red">位移提交有两种方式：</font><font color = "clime">自动提交、手动提交。</font>**  
 3. 怎样消费  
 
 
 # 1. kafka消费者开发
-&emsp; **<font color = "lime">参考《kafka实战》</font>**  
+&emsp; **<font color = "clime">参考《kafka实战》</font>**  
 <!-- 
 https://blog.csdn.net/lwglwg32719/article/details/86510029
 -->
@@ -140,7 +140,7 @@ public class ConsumerDemo {
 * 实现基于发布/订阅模型：consumer实例都属于不同group，这样kafka消息会被广播到所有consumer实例上。  
 -->
 
-### 1.2.2. ※※※消费者组重平衡(rebalance)
+### 1.2.2. ★★★消费者组重平衡(rebalance)
 <!-- 
 消费者组重平衡全流程解析
 https://www.kancloud.cn/nicefo71/kafka/1473378
@@ -230,7 +230,7 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 
 ----------
 
-## 1.3. ※※※消费者位移(offset)管理
+## 1.3. ★★★消费者位移(offset)管理
 <!-- 
 -->
 &emsp; 需要明确指出的是，这里的offset指代的是consumer端的offset，与分区日志中的offset是不同的含义。每个consumer实例都会为它消费的分区维护属于自己的位置信息来记录当前消费了多少条消息。这在Kafka中有一个特有的术语：位移(offset)。  
@@ -242,7 +242,7 @@ https://blog.csdn.net/haogenmin/article/details/109488571
 https://www.kancloud.cn/nicefo71/kafka/1471593
 -->
 &emsp; consumer客户端需要定期地向Kafka集群汇报自己消费数据的进度，这一过程被称为位移提交(offset commit)。位移提交这件事情对于consumer而言非常重要，它不仅保证了consumer端的消费进度，同时也直接决定了consumer端的消费语义保证。  
-&emsp; **<font color = "red">位移提交有两种方式：</font><font color = "lime">自动提交、手动提交。</font>**  
+&emsp; **<font color = "red">位移提交有两种方式：</font><font color = "clime">自动提交、手动提交。</font>**  
 * 自动提交  
     &emsp; 使用方法：默认不用配置，或者显示配置enable.auto.commit=true，用auto.commit.interval.ms参数控制自动提交的间隔。  
     &emsp; 使用场景：对消息交付语义无需求，容忍一定的消息丢失。自动提交的问题是用户不能细粒度地处理位移的提交，特别是在有较强的精确一次的处理语义。  
