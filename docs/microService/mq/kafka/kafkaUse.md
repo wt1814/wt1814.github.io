@@ -27,18 +27,18 @@ https://blog.csdn.net/BeiisBei/article/details/104264144
 &emsp; Kafka的命令行工具在Kafka包的/bin目录下，主要包括服务和集群管理脚本，配置脚本，信息查看脚本，Topic脚本，客户端脚本等。
 
 * kafka-configs.sh：配置管理脚本
-* kafka-console-consumer.sh：kafka 消费者控制台
-* kafka-console-producer.sh：kafka 生产者控制台
-* kafka-consumer-groups.sh：kafka 消费者组相关信息
+* kafka-console-consumer.sh：kafka消费者控制台
+* kafka-console-producer.sh：kafka生产者控制台
+* kafka-consumer-groups.sh：kafka消费者组相关信息
 * kafka-delete-records.sh：删除低水位的日志文件
 * kafka-log-dirs.sh：kafka 消息日志目录信息
-* kafka-mirror-maker.sh：不同数据中心 kafka 集群复制工具
-* kafka-preferred-replica-election.sh：触发 preferred replica 选举
-* kafka-producer-perf-test.sh：kafka 生产者性能测试脚本
+* kafka-mirror-maker.sh：不同数据中心kafka集群复制工具
+* kafka-preferred-replica-election.sh：触发preferred replica选举
+* kafka-producer-perf-test.sh：kafka生产者性能测试脚本
 * kafka-reassign-partitions.sh：分区重分配脚本
 * kafka-replica-verification.sh：复制进度验证脚本
-* kafka-server-start.sh：启动 kafka 服务
-* kafka-server-stop.sh：停止 kafka 服务
+* kafka-server-start.sh：启动kafka服务
+* kafka-server-stop.sh：停止kafka服务
 * kafka-topics.sh：topic 管理脚本
 * kafka-verifiable-consumer.sh：可检验的kafka消费者
 * kafka-verifiable-producer.sh：可检验的kafka生产者
@@ -46,7 +46,7 @@ https://blog.csdn.net/BeiisBei/article/details/104264144
 * zookeeper-server-stop.sh：停止zk服务
 * zookeeper-shell.sh：zk客户端
 
-&emsp; 通常可以使用kafka-console-consumer.sh和kafka-console-producer.sh脚本来测试Kafka生产和消费，kafka-consumer-groups.sh可以查看和管理集群中的Topic，kafka-topics.sh通常用于查看 Kafka 的消费组情况。  
+&emsp; 通常可以使用kafka-console-consumer.sh和kafka-console-producer.sh脚本来测试Kafka生产和消费，kafka-consumer-groups.sh可以查看和管理集群中的Topic，kafka-topics.sh通常用于查看Kafka的消费组情况。  
 
 ## 1.2. MirrorMaker，镜像操作
 &emsp; <font color = "red">Kafka提供了一个镜像操作的工具kafka-mirror-marker.sh，用于将一个集群的数据同步到另外一个集群。通过这个工具可以方便的实现两个集群之间的数据迁移。</font>  

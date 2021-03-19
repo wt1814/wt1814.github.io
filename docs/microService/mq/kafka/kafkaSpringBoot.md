@@ -19,6 +19,10 @@
 
 <!-- /TOC -->
 
+
+&emsp; **<font color = "clime">通过异常处理器，可以处理consumer在消费时发生的异常。</font>**  
+
+
 # 1. SpringBoot集成kafka
 <!-- 
 Java人应该知道的SpringBoot For Kafka (下) 
@@ -136,7 +140,7 @@ public class KafkaConsumer {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-37.png)  
 
 ## 1.3. topic管理  
-......
+&emsp; ......
 <!-- 
 
 https://blog.csdn.net/yuanlong122716/article/details/105160545/
@@ -187,7 +191,7 @@ public void sendMessage3(@PathVariable("message") String callbackMessage) {
 &emsp; ② 若发送消息时未指定 patition，但指定了 key（kafka允许为每条消息设置一个key），则对key值进行hash计算，根据计算结果路由到指定分区，这种情况下可以保证同一个 Key 的所有消息都进入到相同的分区；  
 &emsp; ③ patition 和 key 都未指定，则使用kafka默认的分区策略，轮询选出一个 patition；  
 
-&emsp; ※ 来自定义一个分区策略，将消息发送到指定的partition，首先新建一个分区器类实现Partitioner接口，重写方法，其中partition方法的返回值就表示将消息发送到几号分区，  
+&emsp; 自定义一个分区策略，将消息发送到指定的partition，首先新建一个分区器类实现Partitioner接口，重写方法，其中partition方法的返回值就表示将消息发送到几号分区，  
 
 ```java
 public class CustomizePartitioner implements Partitioner {
@@ -288,7 +292,7 @@ public void onMessage3(List<ConsumerRecord<?, ?>> records) {
 ```
 
 ### 1.5.3. ConsumerAwareListenerErrorHandler 异常处理器
-&emsp; 通过异常处理器，可以处理consumer在消费时发生的异常。  
+&emsp; **<font color = "clime">通过异常处理器，可以处理consumer在消费时发生的异常。</font>**  
 &emsp; 新建一个ConsumerAwareListenerErrorHandler类型的异常处理方法，用@Bean注入，BeanName默认就是方法名，然后将这个异常处理器的BeanName放到@KafkaListener注解的errorHandler属性里面，当监听抛出异常的时候，则会自动调用异常处理器。  
 
 ```java

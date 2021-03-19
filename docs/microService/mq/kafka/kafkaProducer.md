@@ -62,13 +62,13 @@ public class KafkaProducerTest {
 &emsp; **<font color = "red">Kafka的生产者有如下三个必选的属性：</font>**  
 
 * bootstrap.servers，指定broker的地址清单。  
-* key.serializer（key 序列化器），必须是一个实现org.apache.kafka.common.serialization.Serializer接口的类，将key序列化成字节数组。注意：key.serializer必须被设置，即使消息中没有指定key。  
-* value.serializer（value 序列化器），将value序列化成字节数组。  
+* key.serializer(key 序列化器)，必须是一个实现org.apache.kafka.common.serialization.Serializer接口的类，将key序列化成字节数组。注意：key.serializer必须被设置，即使消息中没有指定key。  
+* value.serializer(value 序列化器)，将value序列化成字节数组。  
 
 &emsp; **同步方式：**  
 &emsp; send()方法，创建完生产者与消息之后就可以发送了，发送消息分为三种：  
 
-* 发送并忘记（send and forget）：producer.send()，默认为异步发送，并不关心消息是否达到服务端，会存在消息丢失的问题。
+* 发送并忘记(send and forget)：producer.send()，默认为异步发送，并不关心消息是否达到服务端，会存在消息丢失的问题。
 * 同步：producer.send()返回一个Future对象，调用get()方法变回进行同步等待，就知道消息是否发送成功。
 * 异步发送：如果消息都进行同步发送，要发送这次的消息需要等到上次的消息成功发送到服务端，这样整个消息发送的效率就很低了。kafka支持producer.send()传入一个回调函数，消息不管成功或者失败都会调用这个回调函数，这样就算是异步发送，也知道消息的发送情况，然后再回调函数中选择记录日志还是重试都取决于调用方。Future\<RecordMetadata> send(ProducerRecord\<K, V> record, Callback callback);  
 
@@ -199,7 +199,7 @@ private Future<RecordMetadata> doSend(ProducerRecord<K, V> record, Callback call
 
 #### 1.3.1.1. RecordAccumulator#append方法详解  
 &emsp; 接下来将重点介绍step8如何将消息追加到生产者的发送缓存区，其实现类为：RecordAccumulator。  
-&emsp; 纵观 RecordAccumulator append 的流程，基本上就是从双端队列获取一个未填充完毕的 ProducerBatch（消息批次），然后尝试将其写入到该批次中（缓存、内存中），如果追加失败，则尝试创建一个新的ProducerBatch然后继续追加。Kafka双端队列的存储结构：  
+&emsp; 纵观 RecordAccumulator append 的流程，基本上就是从双端队列获取一个未填充完毕的 ProducerBatch(消息批次)，然后尝试将其写入到该批次中(缓存、内存中)，如果追加失败，则尝试创建一个新的ProducerBatch然后继续追加。Kafka双端队列的存储结构：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-11.png)  
 
 &emsp; RecordAccumulator#append  
@@ -306,7 +306,7 @@ public FutureRecordMetadata tryAppend(long timestamp, byte[] key, byte[] value, 
     }
 }
 ```
-&emsp; 流程执行到这里，KafkaProducer 的 send 方法就执行完毕了，返回给调用方的就是一个 FutureRecordMetadata 对象。  
+&emsp; 流程执行到这里，KafkaProducer 的 send 方法就执行完毕了，返回给调用方的就是一个FutureRecordMetadata对象。  
 &emsp; 源码的阅读比较枯燥，接下来用一个流程图简单的阐述一下消息追加的关键要素，重点关注一下各个 Future。  
 
 ### 1.3.2. Kafka 消息追加流程图与总结  
@@ -318,8 +318,8 @@ public FutureRecordMetadata tryAppend(long timestamp, byte[] key, byte[] value, 
 &emsp; 消息追加流程就介绍到这里了，消息被追加到缓存区后，什么是会被发送到 broker 端呢？将在下一节中详细介绍。  
 
 ## 1.4. Sender 线程详解  
-&emsp; KafkaProducer send 方法的流程，该方法只是将消息追加到 KafKaProducer 的缓存中，并未真正的向 broker 发送消息，本节将探讨 Kafka 的 Sender 线程。  
-&emsp; Sender 线程：在 KafkaProducer 中会启动一个单独的线程，其名称为 “kafka-producer-network-thread | clientID”，其中 clientID 为生产者的 id 。   
+&emsp; KafkaProducer send方法的流程，该方法只是将消息追加到KafKaProducer的缓存中，并未真正的向broker发送消息，本节将探讨Kafka的Sender线程。  
+&emsp; Sender线程：在KafkaProducer中会启动一个单独的线程，其名称为 “kafka-producer-network-thread | clientID”，其中 clientID 为生产者的 id 。   
 
 <!-- 
  属性含义  
@@ -424,7 +424,7 @@ void runOnce() {
     RecordAccumulator.ReadyCheckResult result = this.accumulator.ready(cluster, now);
  
     // if there are any partitions whose leaders are not known yet, force metadata update
-    // 2. 如果存在未知的 leader 副本对应的节点（对应的 topic 分区正在执行 leader 选举，或者对应的 topic 已经失效），
+    // 2. 如果存在未知的 leader 副本对应的节点(对应的 topic 分区正在执行 leader 选举，或者对应的 topic 已经失效)，
     // 标记需要更新缓存的集群元数据信息
     if (!result.unknownLeaderTopics.isEmpty()) {
         // The set of topics with unknown leader contains topics with leader election pending as well as
@@ -512,8 +512,8 @@ void runOnce() {
 ```
 
 ###### 1.4.1.1.1.1. RecordAccumulator#ready
-&emsp; 消息发送的过程（ 步骤 7 ），位于 Sender#sendProduceRequests 方法中：  
-&emsp; 这一步主要逻辑就是创建客户端请求 ClientRequest 对象，并通过 NetworkClient#send 方法将请求加入到网络 I/O 通道（KafkaChannel）中。同时将该对象缓存到 InFlightRequests 中，等接收到服务端响应时会通过缓存的 ClientRequest 对象调用对应的 callback 方法。最后调用 NetworkClient#poll 方法执行具体的网络请求和响应。  
+&emsp; 消息发送的过程( 步骤 7 )，位于 Sender#sendProduceRequests 方法中：  
+&emsp; 这一步主要逻辑就是创建客户端请求 ClientRequest 对象，并通过 NetworkClient#send 方法将请求加入到网络 I/O 通道(KafkaChannel)中。同时将该对象缓存到 InFlightRequests 中，等接收到服务端响应时会通过缓存的 ClientRequest 对象调用对应的 callback 方法。最后调用 NetworkClient#poll 方法执行具体的网络请求和响应。  
 
 ```java
 private void sendProduceRequests(Map<Integer, List<ProducerBatch>> collated, long now) {
@@ -574,7 +574,7 @@ private void sendProduceRequest(long now, int destination, short acks, int timeo
     // 创建 ClientRequest 请求对象，如果 acks 不等于 0 则表示期望获取服务端响应
     ClientRequest clientRequest = client.newClientRequest(nodeId, requestBuilder, now, acks != 0,
             requestTimeoutMs, callback);
-    // 将请求加入到网络 I/O 通道（KafkaChannel）中。同时将该对象缓存到 InFlightRequests 中
+    // 将请求加入到网络 I/O 通道(KafkaChannel)中。同时将该对象缓存到 InFlightRequests 中
     client.send(clientRequest, now);
     log.trace("Sent produce request to {}: {}", nodeId, requestBuilder);
 }
@@ -685,8 +685,8 @@ private List<ProducerBatch> drainBatchesForOneNode(Cluster cluster, Node node, i
 ```
 
 ###### 1.4.1.1.1.3. Sender#sendProduceRequests
-&emsp; 消息发送的过程（ 步骤 7 ），位于 Sender#sendProduceRequests 方法中：  
-&emsp; 这一步主要逻辑就是创建客户端请求 ClientRequest 对象，并通过 NetworkClient#send 方法将请求加入到网络 I/O 通道（KafkaChannel）中。同时将该对象缓存到 InFlightRequests 中，等接收到服务端响应时会通过缓存的 ClientRequest 对象调用对应的 callback 方法。最后调用 NetworkClient#poll 方法执行具体的网络请求和响应。  
+&emsp; 消息发送的过程( 步骤 7 )，位于 Sender#sendProduceRequests 方法中：  
+&emsp; 这一步主要逻辑就是创建客户端请求 ClientRequest 对象，并通过 NetworkClient#send 方法将请求加入到网络 I/O 通道(KafkaChannel)中。同时将该对象缓存到 InFlightRequests 中，等接收到服务端响应时会通过缓存的 ClientRequest 对象调用对应的 callback 方法。最后调用 NetworkClient#poll 方法执行具体的网络请求和响应。  
 
 ```java
 private void sendProduceRequests(Map<Integer, List<ProducerBatch>> collated, long now) {
@@ -747,7 +747,7 @@ private void sendProduceRequest(long now, int destination, short acks, int timeo
     // 创建 ClientRequest 请求对象，如果 acks 不等于 0 则表示期望获取服务端响应
     ClientRequest clientRequest = client.newClientRequest(nodeId, requestBuilder, now, acks != 0,
             requestTimeoutMs, callback);
-    // 将请求加入到网络 I/O 通道（KafkaChannel）中。同时将该对象缓存到 InFlightRequests 中
+    // 将请求加入到网络 I/O 通道(KafkaChannel)中。同时将该对象缓存到 InFlightRequests 中
     client.send(clientRequest, now);
     log.trace("Sent produce request to {}: {}", nodeId, requestBuilder);
 }
@@ -880,7 +880,7 @@ boolean sendable
 是否可发送。其满足下面的任意一个条件即可：
 
     该批次已写满。(full = true)。
-    已等待系统规定的时长。（expired = true）
+    已等待系统规定的时长。(expired = true)
     发送者内部缓存区已耗尽并且有新的线程需要申请(exhausted = true)。
     该发送者的 close 方法被调用(close = true)。
     该发送者的 flush 方法被调用。  
@@ -974,7 +974,7 @@ private List<ProducerBatch> drainBatchesForOneNode(Cluster cluster, Node node, i
 
 代码@3：循环从缓存区抽取对应分区中累积的数据。
 代码@4：根据 topic + 分区号从生产者发送缓存区中获取已累积的双端Queue。
-代码@5：从双端队列的头部获取一个元素。（消息追加时是追加到队列尾部）。
+代码@5：从双端队列的头部获取一个元素。(消息追加时是追加到队列尾部)。
 代码@6：如果当前批次是重试，并且还未到阻塞时间，则跳过该分区。
 代码@7：如果当前已抽取的消息总大小 加上新的消息已超过 maxRequestSize，则结束抽取。
 代码@8：将当前批次加入到已准备集合中，并关闭该批次，即不在允许向该批次中追加消息。  
