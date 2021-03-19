@@ -8,11 +8,14 @@
         - [1.3.2. 服务端Unclear Leader选举](#132-服务端unclear-leader选举)
     - [1.4. ~~服务端副本消息的同步(LEO和HW)~~](#14-服务端副本消息的同步leo和hw)
         - [1.4.1. LEO和HW概念](#141-leo和hw概念)
-        - [1.4.2. 副本上LEO和HW的更新](#142-副本上leo和hw的更新)
+        - [1.4.2. ★★★~~副本上LEO和HW的更新~~](#142-★★★副本上leo和hw的更新)
             - [1.4.2.1. Follower副本上LEO和HW的更新](#1421-follower副本上leo和hw的更新)
             - [1.4.2.2. Leader副本上LEO和HW的更新](#1422-leader副本上leo和hw的更新)
         - [1.4.4. 数据丢失和数据不一致场景](#144-数据丢失和数据不一致场景)
         - [1.4.5. Leader Epoch](#145-leader-epoch)
+            - [简介](#简介)
+            - [工作流程](#工作流程)
+            - [如何解决数据丢失和数据不一致](#如何解决数据丢失和数据不一致)
 
 <!-- /TOC -->
 
@@ -25,14 +28,17 @@
 2. 服务端Leader的选举：从ISR集合副本中选取。  
 3. 服务端副本消息的同步：  
 &emsp; LEO，低水位，记录了日志的下一条消息偏移量，即当前最新消息的偏移量加一；HW，高水位，界定了消费者可见的消息，是ISR队列中最小的LEO。  
-&emsp; Follower副本更新LEO和HW：Follower副本会在向Leader拉取了消息之后，会用当前的偏移量加1来更新LEO，并且用Leader的HW值和当前LEO的最小值来更新HW。  
-&emsp; Leader副本上LEO和HW的更新：  
-    * 正常情况下Leader副本的更新时机有两个：一、收到生产者的消息；二、被Follower拉取消息。  
-        * 当收到生产者消息时，会用当前偏移量加1来更新LEO，然后取LEO和远程ISR副本中LEO的最小值更新HW。 
-        * 当Follower拉取消息时，会更新Leader上存储的Follower副本LEO，然后判断是否需要更新HW，更新的方式和上述相同。 
-    *  除了这两种正常情况，当发生故障时，例如Leader宕机，Follower被选为新的Leader，会尝试更新HW。还有副本被踢出ISR时，也会尝试更新HW。 
+    1. Follower副本更新LEO和HW：  
+    &emsp; 更新LEO和HW的时机： **<font color = "clime">Follower向Leader拉取了消息之后。(⚠注意：Follower副本只和Leader副本交互。)</font>**  
+    &emsp; **<font color = "red">会用获取的偏移量加1来更新LEO，并且用Leader的HW值和当前LEO的最小值来更新HW。</font>**  
+    2. Leader副本上LEO和HW的更新：  
+        * 正常情况下Leader副本的更新时机有两个：一、收到生产者的消息；二、被Follower拉取消息。(⚠注意：Leader副本即和Leader副本交互，也和生产者交互。)  
+            * 当收到生产者消息时，会用当前偏移量加1来更新LEO，然后取LEO和远程ISR副本中LEO的最小值更新HW。 
+            * 当Follower拉取消息时，会更新Leader上存储的Follower副本LEO，然后判断是否需要更新HW，更新的方式和上述相同。 
+        * 除了这两种正常情况，当发生故障时，例如Leader宕机，Follower被选为新的Leader，会尝试更新HW。还有副本被踢出ISR时，也会尝试更新HW。 
 4. 在Leader切换时，会存在数据丢失和数据不一致的问题。  
-&emsp; **<font color = "blue">为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制。</font>** 
+&emsp; **<font color = "blue">为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制。</font>**  
+    1. Leader Epoch，分为两部分，前者Epoch，表示Leader版本号，是一个单调递增的正整数，每当Leader变更时，都会加1；后者StartOffset，为每一代Leader写入的第一条消息的位移。 
 
 
 # 1. Kafka副本机制  
@@ -50,7 +56,7 @@ https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 
 &emsp; 但并不是每个好处都能获得，这还是和具体的设计有关，比如Kafka只具有第一个好处，即提高可用性。这是因为 **<font color = "blue">Kafka副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。</font>**  
 
-&emsp; 副本的定义是在分区(Partition)层下定义的，每个分区有多个副本。 **副本可分布于多台机器上。**
+&emsp; 副本的定义是在分区(Partition)层下定义的，每个分区有多个副本。 **副本可分布于多台机器上。**  
 &emsp; **Kafka中副本分为领导者副本(Leader Replica) & 追随者副本(Follower Replica)。每个 Partition创建时都要选举一个副本，称为 Leader Replica，其余副本为 Follower Replica。** 只有Leader副本会读写数据。其他则作为Follower副本，负责同步Leader的数据，当Leader宕机时，从Follower选举出新的Leader，从而解决分区单点问题。  
 
 &emsp; 这种副本机制设计的优势：
@@ -190,34 +196,34 @@ kafka数据一致性，通过HW来保证
 &emsp; **其中LEO(Last End Offset，低水位)记录了日志的下一条消息偏移量，即当前最新消息的偏移量加一。<font color = "red">**  
 &emsp; **而HW(High Watermark，高水位)界定了消费者可见的消息，消费者可以消费小于HW的消息，而大于等于HW的消息将无法消费。</font>** 是ISR队列中最小的LEO。  
 
-### 1.4.2. 副本上LEO和HW的更新
+### 1.4.2. ★★★~~副本上LEO和HW的更新~~
 &emsp; 上述即是LEO和HW的基本概念，下面看下具体是如何工作的。  
 &emsp; 在每个副本中都存有LEO和HW，而 **<font color = "clime">Leader副本中除了存有自身的LEO和HW，还存储了其他Follower副本的LEO和HW值，</font>** 为了区分把Leader上存储的Follower副本的LEO和HW值叫做远程副本的LEO和HW值，如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-76.png)  
 &emsp; 之所以这么设计，是为了HW的更新，Leader需保证HW是ISR副本集合中LEO的最小值。关于具体的更新，分为Follower副本和Leader副本来看。  
 
 #### 1.4.2.1. Follower副本上LEO和HW的更新
-&emsp; Follower副本更新LEO和HW的时机：只有向Leader拉取了消息之后。会用当前的偏移量加1来更新LEO，并且用Leader的HW值和当前LEO的最小值来更新HW。  
+1. Follower副本更新LEO和HW的时机： **<font color = "clime">Follower向Leader拉取了消息之后。(⚠注意：Follower副本只和Leader副本交互。)</font>**  
+2. **<font color = "red">会用获取的偏移量加1来更新LEO，并且用Leader的HW值和当前LEO的最小值来更新HW。</font>**  
 
-    CurrentOffset + 1 -> LEO
-    min(LEO, LeaderHW) -> HW
+        CurrentOffset + 1 -> LEO
+        min(LEO, LeaderHW) -> HW
 
 &emsp; LEO的更新，很好理解。那为什么HW要取LEO和LeaderHW的最小值，为什么不直接取LeaderHW，LeaderHW不是一定大于LEO吗？LeaderHW是根据同步副本来决定，所以LeaderHW一定小于所有同步副本的LEO，而并不一定小于非同步副本的LEO，所以如果一个非同步副本在拉取消息，那LEO是会小于LeaderHW的，则应用当前LEO值来更新HW。  
 
 #### 1.4.2.2. Leader副本上LEO和HW的更新
-&emsp; 说完了Follower副本上LEO和HW的更新，下面看Leader副本。   
-&emsp; 正常情况下Leader副本的更新时机有两个：一、收到生产者的消息；二、被Follower拉取消息。  
-&emsp; 当收到生产者消息时，会用当前偏移量加1来更新LEO，然后取LEO和远程ISR副本中LEO的最小值更新HW。  
+1. **<font color = "clime">正常情况下Leader副本的更新时机有两个：一、收到生产者的消息；二、被Follower拉取消息。(⚠注意：Leader副本即和Leader副本交互，也和生产者交互。)</font>**  
+    1. 当收到生产者消息时，会用当前偏移量加1来更新LEO，然后取LEO和远程ISR副本中LEO的最小值更新HW。  
 
-    CurrentOffset + 1 -> LEO
-    min(LEO, RemoteIsrLEO) -> HW
+        CurrentOffset + 1 -> LEO
+        min(LEO, RemoteIsrLEO) -> HW
 
-&emsp; 而当Follower拉取消息时，会更新Leader上存储的Follower副本LEO，然后判断是否需要更新HW，更新的方式和上述相同。  
+    2. 当Follower拉取消息时，follower同步过来的数据会带上LEO的值，会更新Leader上存储的Follower副本LEO，然后判断是否需要更新HW，更新的方式和上述相同。  
 
-    FollowerLEO -> RemoteLEO
-    min(LEO, RemoteIsrLEO) -> HW
+        FollowerLEO -> RemoteLEO
+        min(LEO, RemoteIsrLEO) -> HW
 
-&emsp; 除了这两种正常情况，当发生故障时，例如Leader宕机，Follower被选为新的Leader，会尝试更新HW。还有副本被踢出ISR时，也会尝试更新HW。  
+2. 除了这两种正常情况，当发生故障时，例如Leader宕机，Follower被选为新的Leader，会尝试更新HW。还有副本被踢出ISR时，也会尝试更新HW。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-113.png)  
 
@@ -250,15 +256,19 @@ https://my.oschina.net/u/3379856/blog/4388538
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-115.png)  
 
 ### 1.4.5. Leader Epoch 
+#### 简介
 &emsp; **<font color = "blue">为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制。</font>** 在每个副本日志目录下都有一个leader-epoch-checkpoint文件，用于保存Leader Epoch信息，其内容示例如下：  
 
     0 0
     1 300
     2 500
 
-&emsp; 上面每一行为一个Leader Epoch，分为两部分，前者Epoch，表示Leader版本号，是一个单调递增的正整数，每当Leader变更时，都会加1，后者StartOffset，为每一代Leader写入的第一条消息的位移。  
-&emsp; 例如第0代Leader写的第一条消息位移为0，而第1代Leader写的第一条消息位移为300，也意味着第0代Leader在写了0-299号消息后挂了，重新选出了新的Leader。下面看下Leader Epoch如何工作：  
+&emsp; 上面每一行为一个Leader Epoch，分为两部分，前者Epoch，表示Leader版本号，是一个单调递增的正整数，每当Leader变更时，都会加1；后者StartOffset，为每一代Leader写入的第一条消息的位移。  
 
+&emsp; 例如第0代Leader写的第一条消息位移为0，而第1代Leader写的第一条消息位移为300，也意味着第0代Leader在写了0-299号消息后挂了，重新选出了新的Leader。  
+
+#### 工作流程
+&emsp; 下面看下Leader Epoch如何工作：  
 1. 当副本成为Leader时：  
 &emsp; 当收到生产者发来的第一条消息时，会将新的epoch和当前LEO添加到leader-epoch-checkpoint文件中。  
 2. 当副本成为Follower时：
@@ -269,6 +279,7 @@ https://my.oschina.net/u/3379856/blog/4388538
     3. Follower在拿到LastOffset后，若LastOffset < LEO，将截断日志；
     4. Follower开始正常工作，发送Fetch请求；
 
+#### 如何解决数据丢失和数据不一致
 &emsp; 再回顾看下数据丢失和数据不一致的场景，在应用了LeaderEpoch后发生什么改变：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-80.png)  
 &emsp; 当B作为Follower已经Fetch了最新的消息，但是发送第二轮Fetch时，未来得及处理响应，宕机了。当重启时，会向A发送LeaderEpochRequest请求。如果A没宕机，由于 FollowerLastEpoch = LeaderLastEpoch，所以将LeaderLEO，即2作为LastOffset给A，又因为LastOffset=LEO，所以不会截断日志。  

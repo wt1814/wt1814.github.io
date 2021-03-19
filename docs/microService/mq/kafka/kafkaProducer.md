@@ -276,7 +276,7 @@ public RecordAppendResult append(TopicPartition tp,
 ```
 
 ##### 1.3.1.1.1. ProducerBatch tryAppend方法详解  
-&emsp; 接下来继续探究如何向 ProducerBatch 中写入消息。  
+&emsp; 接下来继续探究如何向ProducerBatch中写入消息。  
 &emsp; ProducerBatch #tryAppend  
 
 ```java
