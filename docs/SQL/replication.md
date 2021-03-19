@@ -144,6 +144,8 @@ https://blog.csdn.net/andong154564667/article/details/82117727
 
 ### 1.3.2. 高可用实现方案  
 <!-- 
+五大常见的MySQL高可用方案
+https://www.douban.com/note/706714492/
 https://blog.csdn.net/yzj5208/article/details/81288436
 https://blog.csdn.net/qq_39720208/article/details/102758662
 https://mp.weixin.qq.com/s/RZ7b8IKC7N3E87DaZhWaVA

@@ -46,7 +46,8 @@
 
 # 1. 多路复用(select/poll/epoll)
 <!--
-
+深入Hotspot源码与Linux内核理解NIO与Epoll 
+https://mp.weixin.qq.com/s/WhfnTtMpY4EgT65UezKjtw
 IO多路复用的三种机制Select，Poll，Epoll
 https://www.jianshu.com/p/397449cadc9a
 https://www.cnblogs.com/aspirant/p/9166944.html

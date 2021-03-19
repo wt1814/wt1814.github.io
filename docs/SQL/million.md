@@ -2,6 +2,10 @@
 
 # ~~亿级订单系统分库分表~~
 <!-- 
+
+亿级订单表数据存储
+https://blog.csdn.net/ThreeAspects/article/details/103414095
+
 https://blog.csdn.net/jokemqc/article/details/82834748
 https://mp.weixin.qq.com/s/Sfs8HtkL1C_pckkzLG--2g
 

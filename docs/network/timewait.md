@@ -2,6 +2,9 @@
 
 # TIME_WAIT问题
 <!-- 
+timeawit主要是确保客户端发送的ack包能让服务端收到
+https://www.jianshu.com/p/a2938fc35573
+https://blog.csdn.net/weixin_39636176/article/details/110800124
 
 运维同学说：服务端 TCP 连接的 TIME_WAIT 问题，大家都“疯”了，该怎么办？ 
 https://mp.weixin.qq.com/s/dXpcXa_DZgJ-0PwaKdWr3g

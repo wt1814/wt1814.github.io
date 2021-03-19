@@ -22,6 +22,9 @@
 
 # 1. ~~Saga~~
 <!--
+10分钟说透Saga分布式事务 
+https://mp.weixin.qq.com/s/NVKtxuud2ARFw5S89ty35w
+
 http://servicecomb.apache.org/cn/docs/distributed-transactions-saga-implementation/
 
 Saga的核心就是补偿，一阶段就是服务的正常顺序调用(数据库事务正常提交)，如果都执行成功，则第二阶段则什么都不做；但如果其中有执行发生异常，则依次调用其补偿服务(一般多逆序调用未已执行服务的反交易)来保证整个交易的一致性。应用实施成本一般。

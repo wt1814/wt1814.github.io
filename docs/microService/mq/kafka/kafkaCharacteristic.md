@@ -21,6 +21,8 @@
 <!-- 
 面试官：说说Kafka处理请求的全流程 
 https://mp.weixin.qq.com/s/LEmybNmD5XwkBtcTPHcaEA
+kafka——高效读写数据
+https://www.jianshu.com/p/ce8253609b6b
 -->
 
 ## 1.1. 高性能(读写机制)  

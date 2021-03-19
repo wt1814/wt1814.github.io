@@ -25,7 +25,8 @@
 # 1. Linux命令  
 <!--
 
-
+学会这21条，你离 Vim 大神就不远了！ 
+https://mp.weixin.qq.com/s/1HTanfvxXAUzWJwCHWbfFg
 Linux中ACL权限的学习 
 https://mp.weixin.qq.com/s/Uh0uQWc386eixNcGsE2qeg
 史上最全的高可用服务系统线上问题排查工具单
