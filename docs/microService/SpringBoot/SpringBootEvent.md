@@ -6,7 +6,7 @@
     - [1.1. JDK的事件基类EventObject](#11-jdk的事件基类eventobject)
     - [1.2. Spring的事件基类ApplicationEvent](#12-spring的事件基类applicationevent)
     - [1.3. SpringBoot的事件基类SpringApplicationEvent](#13-springboot的事件基类springapplicationevent)
-    - [1.4. ※※※SpringBoot具体的生命周期事件类](#14-※※※springboot具体的生命周期事件类)
+    - [1.4. ★★★SpringBoot具体的生命周期事件类](#14-★★★springboot具体的生命周期事件类)
         - [1.4.1. ApplicationStartingEvent](#141-applicationstartingevent)
         - [1.4.2. ApplicationEnvironmentPreparedEvent](#142-applicationenvironmentpreparedevent)
         - [1.4.3. ApplicationContextInitializedEvent](#143-applicationcontextinitializedevent)
@@ -17,8 +17,18 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">SpringBoot内置的7种生命周期事件</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-7.png)  
+&emsp; **<font color = "clime">SpringBoot内置的7种生命周期事件</font>**  
+
+|发布顺序|事件|用途|
+|---|---|---|
+|1|ApplicationStartingEvent|在SpringApplication启动时但在环境变量Environment或容器ApplicationContext创建前触发，标志SpringApplication开始启动。|
+|2|ApplicationEnvironmentPreparedEvent|在SpringApplication已经开始启动且环境变量Environment已经准备好时触发，标志环境变量已经准备好。|
+|3|ApplicationContextInitializedEvent|ApplicationContextInitilizers的初始化方法已经被调用即从spring.factories中加载的initializers已经执行ApplicationContext初始化逻辑但在bean定义加载前触发，标志Application已经初始化完毕。|
+|4|ApplicationPreparedEvent|在Spring容器刷新refresh前触发。|
+|5|ApplicationStaredEvent|在Spring容器刷新后触发，但在调用ApplicationRunner和CommandLineRunner的run方法调用前触发，标志Spring容器已经刷新，此时所有的bean实例等都已经加载了。|
+|6|ApplicationReadyEvent|只要SpringApplication可以接收服务请求时即调用完ApplicationRunner和CommandLineRunner的run方法后触发，此时标志SpringApplication已经正在运行，即成功启动。|
+|7|ApplicationFailedEvent|若SpringApplicaton未能成功启动时则会catch住异常发布ApplicationFailedEvent事件，标志ApplicationFailedEvent启动失败。|
+
 
 # 1. SpringBoot内置生命周期事件详解  
 &emsp; SpringBoot的生命周期事件，类结构图如下：  
@@ -137,19 +147,19 @@ public abstract class SpringApplicationEvent extends ApplicationEvent {
 ```
 &emsp; SpringApplicationEvent有且仅有一个属性args，该属性就是SpringBoot启动时的命令行参数即标注@SpringBootApplication启动类中main函数的参数。  
 
-## 1.4. ※※※SpringBoot具体的生命周期事件类  
-&emsp; **<font color = "lime">SpringBoot内置的7种生命周期事件</font>**  
+## 1.4. ★★★SpringBoot具体的生命周期事件类  
+&emsp; **<font color = "clime">SpringBoot内置的7种生命周期事件</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-7.png)  
 
 |发布顺序|事件|用途|
 |---|---|---|
-|1|ApplicationStartingEvent||
-|2|ApplicationEnvironmentPreparedEvent||
-|3|ApplicationContextInitializedEvent||
-|4|ApplicationPreparedEvent||
-|5|ApplicationStaredEvent||
-|6|ApplicationReadyEvent||
-|7|ApplicationFailedEvent||
+|1|ApplicationStartingEvent|在SpringApplication启动时但在环境变量Environment或容器ApplicationContext创建前触发，标志SpringApplication开始启动。|
+|2|ApplicationEnvironmentPreparedEvent|在SpringApplication已经开始启动且环境变量Environment已经准备好时触发，标志环境变量已经准备好。|
+|3|ApplicationContextInitializedEvent|ApplicationContextInitilizers的初始化方法已经被调用即从spring.factories中加载的initializers已经执行ApplicationContext初始化逻辑但在bean定义加载前触发，标志Application已经初始化完毕。|
+|4|ApplicationPreparedEvent|在Spring容器刷新refresh前触发。|
+|5|ApplicationStaredEvent|在Spring容器刷新后触发，但在调用ApplicationRunner和CommandLineRunner的run方法调用前触发，标志Spring容器已经刷新，此时所有的bean实例等都已经加载了。|
+|6|ApplicationReadyEvent|只要SpringApplication可以接收服务请求时即调用完ApplicationRunner和CommandLineRunner的run方法后触发，此时标志SpringApplication已经正在运行，即成功启动。|
+|7|ApplicationFailedEvent|若SpringApplicaton未能成功启动时则会catch住异常发布ApplicationFailedEvent事件，标志ApplicationFailedEvent启动失败。|
 
 ### 1.4.1. ApplicationStartingEvent  
 

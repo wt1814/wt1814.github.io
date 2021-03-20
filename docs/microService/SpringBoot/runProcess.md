@@ -1,10 +1,10 @@
 
 
 
-&emsp; **<font color = "lime">总结：</font>**  
-&emsp; **<font color = "lime">运行流程：准备环境变量、创建容器、准备容器、刷新容器、执行刷新容器后的后置处理逻辑、</font>** **<font color = "clime">调用ApplicationRunner和CommandLineRunner的run方法。</font>**  
-&emsp; **<font color = "lime">内置生命周期事件</font>**  
-&emsp; **<font color = "lime">事件回调机制</font>** 
+&emsp; **<font color = "red">总结：</font>**  
+1. **<font color = "clime">运行流程：准备环境变量、创建容器、准备容器、刷新容器、执行刷新容器后的后置处理逻辑、</font>** **<font color = "clime">调用ApplicationRunner和CommandLineRunner的run方法。</font>**  
+2. **<font color = "clime">内置生命周期事件：</font>** <font color = "red">在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件。</font>  
+3. **<font color = "clime">事件回调机制：</font>** <font color = "red">run()阶段涉及了比较重要的[事件回调机制](/docs/microService/SpringBoot/eventCallback.md)，回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到IOC容器中。</font>
 
 # 1. SpringApplication实例run()方法运行过程
 &emsp; 进入SpringApplication#run方法中，一路点击#run方法。  
@@ -22,7 +22,7 @@
 10. 报告启动异常，即若启动过程中抛出异常，此时用FailureAnalyzers来报告异常;  
 11. 最终返回容器对象，这里调用方法没有声明对象来接收。  
 
-&emsp; **<font color = "lime">将关键步骤再浓缩总结下：</font>**  
+&emsp; **<font color = "clime">将关键步骤再浓缩总结下：</font>**  
 1. 构建SpringApplication对象，用于启动SpringBoot；  
 2. 从spring.factories配置文件中加载EventPublishingRunListener对象用于在不同的启动阶段发布不同的生命周期事件；  
 3. 准备环境变量，包括系统变量，环境变量，命令行参数及配置文件（比如application.properties）等；  
@@ -37,7 +37,7 @@
 &emsp; 在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件，然后相应的监听器会监听这些事件来执行一些初始化逻辑工作比如ConfigFileApplicationListener会监听onApplicationEnvironmentPreparedEvent事件来加载环境变量等。  
 -->
 &emsp; **<font color = "red">事件回调机制：</font>**  
-&emsp; **<font color = "red">run()阶段涉及了比较重要的[事件回调机制](/docs/microService/SpringBoot/eventCallback.md)，回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到IOC容器中，而所有需要回调的监听器都是从类路径下的META/INF/Spring.factories中获取，从而达到启动前后的各种定制操作。</font>**  
+&emsp; <font color = "red">run()阶段涉及了比较重要的[事件回调机制](/docs/microService/SpringBoot/eventCallback.md)，回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到IOC容器中，而所有需要回调的监听器都是从类路径下的META/INF/Spring.factories中获取，从而达到启动前后的各种定制操作。</font>  
 
 ```java
 // SpringApplication.java

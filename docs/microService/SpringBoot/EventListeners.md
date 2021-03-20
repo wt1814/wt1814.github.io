@@ -21,7 +21,7 @@
 &emsp; <font color = "red">在SpringBoot启动过程中，每个不同的启动阶段会分别广播不同的内置生命周期事件，然后相应的监听器会监听这些事件来执行一些初始化逻辑工作。</font>比如ConfigFileApplicationListener会监听onApplicationEnvironmentPreparedEvent事件，来加载配置文件application.properties的环境变量等。  
 
 ## 1.2. SpringBoot事件监听机制分析  
-&emsp; **<font color = "lime">SpringBoot启动时广播生命周期事件步骤：</font>**    
+&emsp; **<font color = "clime">SpringBoot启动时广播生命周期事件步骤：</font>**    
 1. 为广播SpringBoot内置生命周期事件做前期准备：    
     1. 首先加载ApplicationListener监听器实现类；  
     2. 其次加载SPI扩展类EventPublishingRunListener。  
@@ -317,7 +317,7 @@ public ConfigurableApplicationContext run(String... args) {
  return context;
 }
 ```
-&emsp; <font color = "lime">在SpringBoot的启动过程中总共会发布7种不同类型的生命周期事件，来标志SpringBoot的不同启动阶段，</font>同时，这些生命周期事件的监听器们也会执行一些启动过程中的初始化逻辑，关于这些监听器的初始化逻辑将在下一篇内容中会分析。以下是SpringBoot启动过程中要发布的事件类型，其中ApplicationFailedEvent在SpringBoot启动过程中遇到异常才会发布：  
+&emsp; <font color = "clime">在SpringBoot的启动过程中总共会发布7种不同类型的生命周期事件，来标志SpringBoot的不同启动阶段，</font>同时，这些生命周期事件的监听器们也会执行一些启动过程中的初始化逻辑，关于这些监听器的初始化逻辑将在下一篇内容中会分析。以下是SpringBoot启动过程中要发布的事件类型，其中ApplicationFailedEvent在SpringBoot启动过程中遇到异常才会发布：  
 
     ApplicationStartingEvent
     ApplicationEnvironmentPreparedEvent

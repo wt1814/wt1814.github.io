@@ -9,7 +9,7 @@
 -->
 
 ## 前言  
-&emsp; SpringBoot基本上是Spring框架的扩展，它消除了设置Spring应用程序所需的 XML配置，为更快，更高效的开发生态系统铺平了道路。  
+&emsp; SpringBoot基本上是Spring框架的扩展，它消除了设置Spring应用程序所需的XML配置，为更快，更高效的开发生态系统铺平了道路。  
 
 * SpringBoot简化了Spring的配置；
 * SpringBoot提供了起步依赖、自动配置；
