@@ -4,26 +4,28 @@
 
 - [1. Spring Cloud Sleuth](#1-spring-cloud-sleuth)
     - [1.1. 全链路监控功能](#11-全链路监控功能)
-    - [1.2. Sleuth实现追踪](#12-sleuth实现追踪)
-    - [1.3. 跟踪原理](#13-跟踪原理)
-    - [1.4. spring-cloud-starter-sleuth功能点](#14-spring-cloud-starter-sleuth功能点)
-        - [1.4.1. 抽样收集](#141-抽样收集)
-        - [1.4.2. ★★★获取当前traceId](#142-★★★获取当前traceid)
-        - [1.4.3. ★★★日志获取traceId](#143-★★★日志获取traceid)
-        - [1.4.4. 传递traceId到异步线程池](#144-传递traceid到异步线程池)
-        - [1.4.5. 子线程或线程池中获取 Zipkin traceId 并打印](#145-子线程或线程池中获取-zipkin-traceid-并打印)
-        - [1.4.6. 监控本地方法](#146-监控本地方法)
-        - [1.4.7. 计划任务](#147-计划任务)
-        - [1.4.8. TracingFilter](#148-tracingfilter)
-        - [1.4.9. 过滤不想跟踪的请求](#149-过滤不想跟踪的请求)
-        - [1.4.10. 用RabbitMq代替Http发送调用链数据](#1410-用rabbitmq代替http发送调用链数据)
-    - [1.5. 与Zipkin整合](#15-与zipkin整合)
-        - [1.5.1. 在Zipkin中图形化展示分布式链接监控数据](#151-在zipkin中图形化展示分布式链接监控数据)
-        - [1.5.2. 链路信息收集](#152-链路信息收集)
-            - [1.5.2.1. 消息中间件收集](#1521-消息中间件收集)
-        - [1.5.3. 数据持久化](#153-数据持久化)
-        - [1.5.4. API接口](#154-api接口)
-    - [1.6. SpringMVC、dubbo集成zipkin](#16-springmvcdubbo集成zipkin)
+    - [1.2. Spring Cloud Sleuth](#12-spring-cloud-sleuth)
+        - [1.2.1. Sleuth实现追踪](#121-sleuth实现追踪)
+        - [1.2.2. 跟踪原理](#122-跟踪原理)
+        - [1.2.3. spring-cloud-starter-sleuth功能点](#123-spring-cloud-starter-sleuth功能点)
+            - [1.2.3.1. 抽样收集](#1231-抽样收集)
+            - [1.2.3.2. ★★★获取当前traceId](#1232-★★★获取当前traceid)
+            - [1.2.3.3. ★★★日志获取traceId](#1233-★★★日志获取traceid)
+            - [1.2.3.4. 传递traceId到异步线程池](#1234-传递traceid到异步线程池)
+            - [1.2.3.5. 子线程或线程池中获取 Zipkin traceId 并打印](#1235-子线程或线程池中获取-zipkin-traceid-并打印)
+            - [1.2.3.6. 监控本地方法](#1236-监控本地方法)
+            - [1.2.3.7. 计划任务](#1237-计划任务)
+            - [1.2.3.8. TracingFilter](#1238-tracingfilter)
+            - [1.2.3.9. 过滤不想跟踪的请求](#1239-过滤不想跟踪的请求)
+            - [1.2.3.10. 用RabbitMq代替Http发送调用链数据](#12310-用rabbitmq代替http发送调用链数据)
+    - [1.3. Zipkin](#13-zipkin)
+        - [1.3.1. 与Zipkin整合](#131-与zipkin整合)
+            - [1.3.1.1. 在Zipkin中图形化展示分布式链接监控数据](#1311-在zipkin中图形化展示分布式链接监控数据)
+            - [1.3.1.2. 链路信息收集](#1312-链路信息收集)
+                - [1.3.1.2.1. 消息中间件收集](#13121-消息中间件收集)
+            - [1.3.1.3. 数据持久化](#1313-数据持久化)
+            - [1.3.1.4. API接口](#1314-api接口)
+        - [1.3.2. SpringMVC、dubbo集成zipkin](#132-springmvcdubbo集成zipkin)
 
 <!-- /TOC -->
 
@@ -37,7 +39,6 @@ https://mp.weixin.qq.com/s/WfTEQagsRntOpMVIZZS_Rw
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-33.png)  
 
 ## 1.1. 全链路监控功能  
-&emsp; **全链路监控的作用：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-42.png)  
 &emsp; 微服务分层架构之后，系统架构变得越来越复杂：  
 &emsp; （1）站点层会调用业务服务层；  
@@ -61,7 +62,8 @@ https://mp.weixin.qq.com/s/WfTEQagsRntOpMVIZZS_Rw
 &emsp; 抛异常或者超时，在日志里打印TraceID。利用TraceID查询调用链情况，定位问题。  
 4. 展现以及决策支持。  
 
-## 1.2. Sleuth实现追踪  
+## 1.2. Spring Cloud Sleuth
+### 1.2.1. Sleuth实现追踪  
 &emsp; 在服务提供者和服务消费者引入spring-cloud-starter-sleuth依赖。  
 
 ```xml
@@ -87,10 +89,11 @@ https://mp.weixin.qq.com/s/WfTEQagsRntOpMVIZZS_Rw
 * 第二个值:f6fb983680aab32b, Spring Cloud Sleuth生成的一个ID，称为Trace ID，它用来标识一条请求链路。一条请求链路中包含一个Trace ID，多个Span ID  
 * 第三个值:c70932279d3b3a54，Spring Cloud Sleuth生成的另外一个ID，称为Span ID，它表示一个基本的工作单元，比如发送一个HTTP请求  
 * 第四个值: false，表示是否要将该信息输出到Zipkin等服务中来收集和展示。
-  
+
+
 &emsp; 上面四个值中的Trace ID和Span ID是Spring Cloud Sleuth实现分布式服务跟踪的核心，在一次服务请求链路的调用过程中，会保持并传递同一个Trace ID，从而将整个分布于不同微服务进程中的请求跟踪信息串联起来。以上面输出内容为例springcloud-consumer-sleuth和springcloud-provider-sleuth同属于一个前端服务请求资源，所以他们的Trace ID是相同的，处于同一条请求链路中。  
 
-## 1.3. 跟踪原理  
+### 1.2.2. 跟踪原理  
 &emsp; 分布式系统服务跟踪原理主要包括下面两个关键点：  
 
 * 为了实现请求跟踪，当请求发送到分布式系统的入口端点时，只需要服务跟踪框架为该请求创建一个唯一的跟踪标识，同时在分布式系统内部流转的时候，框架始终保持传递该唯一标识，直到返回给请求方为止，这个唯一标识就是前文中提到的Trace ID。通过Trace ID的记录，就能将所有请求过程的日志关联起来。  
@@ -102,9 +105,9 @@ https://mp.weixin.qq.com/s/WfTEQagsRntOpMVIZZS_Rw
 * 通过Zuul代理传递的请求  
 * 通过RestTemplate发起的请求  
 
-## 1.4. spring-cloud-starter-sleuth功能点  
-### 1.4.1. 抽样收集  
-&emsp; 如果服务的流量很大，全部采集对传输、存储压力比较大。这个时候可以设置采样率，sleuth可以通过配置spring.sleuth.sampler.probability=X.Y(如配置为1.0，则采样率为100%，采集服务的全部追踪数据)，若不配置默认采样率是0.1(即10%)。也可以通过实现bean的方式来设置采样为全部采样(AlwaysSampler)或者不采样(NeverSampler)。如  
+### 1.2.3. spring-cloud-starter-sleuth功能点  
+#### 1.2.3.1. 抽样收集  
+&emsp; 如果服务的流量很大，全部采集对传输、存储压力比较大。这个时候可以设置采样率，sleuth可以通过配置spring.sleuth.sampler.probability=X.Y（如配置为1.0，则采样率为100%，采集服务的全部追踪数据），若不配置默认采样率是0.1(即10%)。也可以通过实现bean的方式来设置采样为全部采样(AlwaysSampler)或者不采样(NeverSampler)。如  
 
 ```java
 @Bean 
@@ -113,7 +116,7 @@ public Sampler defaultSampler() {
 }
 ```
 
-### 1.4.2. ★★★获取当前traceId  
+#### 1.2.3.2. ★★★获取当前traceId  
 &emsp; 在项目中获取traceId，可以参考下述的方式  
 
 ```java
@@ -131,7 +134,7 @@ public class Breadcrumb {
 }
 ```
 
-### 1.4.3. ★★★日志获取traceId  
+#### 1.2.3.3. ★★★日志获取traceId  
 &emsp; 如果日志文件是有做过格式设置的，可能看不到traceId的输出，可以使用下述的日志格式。  
 
 ```xml
@@ -171,10 +174,10 @@ public class Breadcrumb {
 </configuration>
 ```
 
-### 1.4.4. 传递traceId到异步线程池  
+#### 1.2.3.4. 传递traceId到异步线程池  
 
 1. Sleuth对异步任务是支持的，使用@Async开启一个异步任务后，Sleuth会为这个调用新创建一个Span。  
-2. <font color = "lime">如果自定义了异步任务的线程池，会导致无法新创建一个Span，需要使用Sleuth提供的LazyTraceExecutor来包装下。代码如下所示。</font>  
+2. <font color = "clime">如果自定义了异步任务的线程池，会导致无法新创建一个Span，需要使用Sleuth提供的LazyTraceExecutor来包装下。代码如下所示。</font>  
 
 ```java
 @Configuration
@@ -197,10 +200,10 @@ public class CustomExecutorConfig extends AsyncConfigurerSupport {
 &emsp; 如果直接return executor就不会有新Span，也就不会有save-log这个 Span。如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-21.png)  
 
-### 1.4.5. 子线程或线程池中获取 Zipkin traceId 并打印  
+#### 1.2.3.5. 子线程或线程池中获取 Zipkin traceId 并打印  
 ......
 
-### 1.4.6. 监控本地方法  
+#### 1.2.3.6. 监控本地方法  
 &emsp; 异步执行和远程调用都会新开启一个Span，如果想监控本地的方法耗时时间，可以采用埋点的方式监控本地方法，也就是开启一个新的Span。代码如下所示。   
 
 ```java
@@ -227,19 +230,20 @@ public void saveLog2(String log) {
 @NewSpan(name = "saveLog2")
 ```  
 
-### 1.4.7. 计划任务  
+#### 1.2.3.7. 计划任务  
 ......  
 
-### 1.4.8. TracingFilter  
+#### 1.2.3.8. TracingFilter  
 ......  
 
-### 1.4.9. 过滤不想跟踪的请求  
+#### 1.2.3.9. 过滤不想跟踪的请求  
 ......  
 
-### 1.4.10. 用RabbitMq代替Http发送调用链数据  
+#### 1.2.3.10. 用RabbitMq代替Http发送调用链数据  
 ......
 
-## 1.5. 与Zipkin整合  
+## 1.3. Zipkin
+### 1.3.1. 与Zipkin整合  
 &emsp; 为了实现对分布式系统做延迟监控等与时间消耗相关等需求，引入了Zipkin。  
 &emsp; Zipkin的基础架构主要由4个核心组件构成。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-13.png)  
@@ -287,12 +291,12 @@ public void saveLog2(String log) {
     ```
 * Annotation：它用来及时地记录一个事件的存在。对于一个HTTP请求来说， **<font color = "red">在Sleuth中定义了下面四个核心Annotation来标识一个请求的开始和结束：</font>**  
   * cs（Client Send）：<font color = "red">该Annotation用来记录客户端发起了一个请求，同时它也标识了这个HTTP请求的开始。</font>  
-  * sr（Server Received）：<font color = "red">该Annotation用来记录服务端接收到了请求，并准备开始处理它。</font><font color = "lime">通过计算sr与cs两个Annotation的时间戳之差，可以得到当前HTTP请求的网络延迟。</font>  
-  * ss（Server Send）：该Annotation用来记录服务端处理完请求后准备发送请求响应信息。通过计算ss与sr两个Annotation的时间戳之差，<font color = "lime">可以得到当前服务端处理请求的时间消耗。</font>  
-  * cr（Client Received）：该Annotation用来记录客户端接收到服务端的回复，同时它也标识了这个HTTP请求的结束。通过计算cr与cs两个Annotation的时间戳之差，<font color = "lime">可以得到该HTTP请求从客户端发起开始到接收服务端响应的总时间消耗。</font> 
+  * sr（Server Received）：<font color = "red">该Annotation用来记录服务端接收到了请求，并准备开始处理它。</font><font color = "clime">通过计算sr与cs两个Annotation的时间戳之差，可以得到当前HTTP请求的网络延迟。</font>  
+  * ss（Server Send）：该Annotation用来记录服务端处理完请求后准备发送请求响应信息。通过计算ss与sr两个Annotation的时间戳之差，<font color = "clime">可以得到当前服务端处理请求的时间消耗。</font>  
+  * cr（Client Received）：该Annotation用来记录客户端接收到服务端的回复，同时它也标识了这个HTTP请求的结束。通过计算cr与cs两个Annotation的时间戳之差，<font color = "clime">可以得到该HTTP请求从客户端发起开始到接收服务端响应的总时间消耗。</font> 
 * BinaryAnnotation：它用来对跟踪信息添加一些额外的补充说明，一般以键值对方式出现。比如：在记录HTTP请求接收后执行具体业务逻辑时，此时并没有默认的Annotation来标识该事件状态，但是有BinaryAnnotation信息对其进行补充。  
 
-### 1.5.1. 在Zipkin中图形化展示分布式链接监控数据
+#### 1.3.1.1. 在Zipkin中图形化展示分布式链接监控数据
 &emsp; 访问zipkin服务端http://ip:port ，即可展示微服务链路。  
 &emsp; 如果一个服务的调用关系如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-14.png)  
@@ -339,17 +343,17 @@ Client Sent
 &emsp; 点击红色的span，可以看到详细的失败信息：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-20.png)  
 
-### 1.5.2. 链路信息收集  
-#### 1.5.2.1. 消息中间件收集  
+#### 1.3.1.2. 链路信息收集  
+##### 1.3.1.2.1. 消息中间件收集  
 &emsp; Spring Cloud Sleuth 在整合 Zipkin 时，不仅实现了以 HTTP 的方式收集跟踪信息，还实现了通过消息中间件来对跟踪信息进行异步收集的封装。 通过结合 Spring Cloud Stream, 可以非常轻松地让应用客户端将跟踪信息输出到消息中间件上， 同时 Zipkin 服务端从消息中间件上异步地消费这些跟踪信息。  
 
-### 1.5.3. 数据持久化  
+#### 1.3.1.3. 数据持久化  
 &emsp; 默认情况下， Zipkin Server会将跟踪信息存储在内存中，每次重启 Zipkin Server都会使之前收集的跟踪信息丢失， 并且当有大量跟踪信息时，内存存储也会成为瓶颈，所以通常情况下需要将跟踪信息对接到外部存储组件中去。  
 
 * 存储在Mysql数据库  
 * 存储在ElasticSearch  
 
-### 1.5.4. API接口  
+#### 1.3.1.4. API接口  
 &emsp; Zipkin不仅提供了UI模块让用户可以使用Web页面来方便地查看跟踪信息，它还提供了丰富的RESTful API接口供用户在第三方系统中调用来定制自己的跟踪信息展示或监控。可以在ZipkinServer启动时的控制台或日志中找到Zipkin服务端提供的RESTful API定义  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-32.png)  
 &emsp; 可以看到Zipkin Server提供的API接口都以/api/vl路径作为前缀，它们的具体功能整理如下：  
@@ -363,7 +367,7 @@ Client Sent
 |/trace/{traceid}|GET|根据Trace ID获取指定跟踪信息的Span列表|
 |/traces/|GET|根据指定条件查询并返回符合条件的trace清单|
 
-## 1.6. SpringMVC、dubbo集成zipkin   
+### 1.3.2. SpringMVC、dubbo集成zipkin   
 <!-- 
 springMVC、boot、dubbo集成zipkin做链路追踪
 https://www.jianshu.com/p/6f0b7b12893f?spm=a2c6h.13066369.0.0.71523c5at7UtnA&from=timeline&isappinstalled=0
