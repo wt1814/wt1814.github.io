@@ -11,8 +11,8 @@
         - [1.1.5. 通信协议](#115-通信协议)
         - [1.1.6. 服务提供者能实现失效踢出是什么原理？](#116-服务提供者能实现失效踢出是什么原理)
         - [1.1.7. Dubbo服务之间的调用是阻塞的吗？](#117-dubbo服务之间的调用是阻塞的吗)
-        - [1.1.8. ※※※负载均衡](#118-※※※负载均衡)
-        - [1.1.9. ※※※集群容错策略](#119-※※※集群容错策略)
+        - [1.1.8. ★★★负载均衡](#118-★★★负载均衡)
+        - [1.1.9. ★★★集群容错策略](#119-★★★集群容错策略)
         - [1.1.10. 服务降级](#1110-服务降级)
     - [1.2. Dubbo和Spring Cloud](#12-dubbo和spring-cloud)
     - [1.3. Dubbo生态](#13-dubbo生态)
@@ -39,7 +39,7 @@
 1. (start)服务容器Container负责启动，加载，运行服务提供者。  
 2. (register)服务提供者Provider在启动时，向注册中心注册服务。  
 3. (subscribe)服务消费者Consumer在启动时，向注册中心订阅服务。  
-4. <font color = "red">(notify)注册中心Registry返回服务提供者地址列表给消费者，</font><font color = "lime">如果有变更，注册中心将基于长连接推送变更数据给消费者。</font>  
+4. <font color = "red">(notify)注册中心Registry返回服务提供者地址列表给消费者，</font><font color = "clime">如果有变更，注册中心将基于长连接推送变更数据给消费者。</font>  
 5. <font color = "red">(invoke)服务消费者Consumer，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。</font>  
 6. (count)服务消费者Consumer和提供者Provider，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。  
 
@@ -54,7 +54,7 @@
 1. 服务启动的时候，provider和consumer根据配置信息，连接到注册中心register，分别向注册中心注册和订阅服务。  
 2. register根据服务订阅关系，返回provider信息到consumer，同时consumer会把provider信息缓存到本地。如果信息有变更，consumer会收到来自register的推送。  
 3. consumer生成代理对象，同时根据负载均衡策略，选择一台provider，同时定时向monitor记录接口的调用次数和时间信息。  
-4. 拿到代理对象之后，consumer通过代理对象发起接口调用。  
+4. 拿到代理对象之后，consumer通过`代理对象`发起接口调用。  
 5. provider收到请求后对数据进行反序列化，然后通过代理调用具体的接口实现。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-52.png)   
@@ -103,18 +103,18 @@
 &emsp; 异步调用流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-12.png)   
 
-### 1.1.8. ※※※负载均衡  
+### 1.1.8. ★★★负载均衡  
 <!-- https://mp.weixin.qq.com/s/xkwwAUV9ziabPNUMEr5DPQ -->
 * <font color = "red">Random(缺省)，随机，按权重设置随机概率。</font>在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。  
 * <font color = "red">RoundRobin，轮循，按公约后的权重设置轮循比率。</font>  
 &emsp; 轮询负载均衡算法的不足：存在慢的提供者累积请求的问题，比如：第二台机器很慢，但没挂，当请求调到第二台时就卡在那，久而久之，所有请求都卡在调到第二台上。  
 * <font color = "red">LeastActive，最少活跃调用数，活跃数指调用前后计数差。</font>相同活跃数的随机。使慢的提供者收到更少请求，因为越慢的提供者的调用前后计数差会越大。  
-* <font color = "lime">ConsistentHash，[分布式一致性哈希算法](/docs/microService/thinking/分布式算法-consistent.md)。</font>相同参数的请求总是发到同一提供者；当某一台提供者崩溃时，原本发往该提供者的请求，基于虚拟节点，平摊到其它提供者，不会引起剧烈变动。  
+* <font color = "clime">ConsistentHash，[分布式一致性哈希算法](/docs/microService/thinking/分布式算法-consistent.md)。</font>相同参数的请求总是发到同一提供者；当某一台提供者崩溃时，原本发往该提供者的请求，基于虚拟节点，平摊到其它提供者，不会引起剧烈变动。  
 
     * 缺省只对第一个参数Hash，如果要修改，请配置<dubbo:parameter key="hash.arguments" value="0,1" /\>  
     * 缺省用160份虚拟节点，如果要修改，请配置<dubbo:parameter key="hash.nodes" value="320" /\>  
 
-### 1.1.9. ※※※集群容错策略  
+### 1.1.9. ★★★集群容错策略  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-13.png)   
 &emsp; <font color = "red">在集群调用失败时，Dubbo 提供了多种容错方案，缺省为 failover 重试。</font>下面列举dubbo支持的容错策略：  
 
@@ -148,7 +148,7 @@ Broadcast Cluster广播模式：逐个调用每个provider，如果其中一台�
 &emsp; Spring Cloud诞生于微服务架构时代，考虑的是微服务治理的方方面面，另外由于依托了Spirng、Spirng Boot的优势之上。  
 
 * 两个框架在开始目标就不一致：<font color = "red">Dubbo定位服务治理；Spirng Cloud是一个生态。</font>  
-* <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "lime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。  
+* <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "clime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-14.png)  
 
 ## 1.3. Dubbo生态

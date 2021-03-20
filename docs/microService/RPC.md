@@ -1,12 +1,12 @@
  
 <!-- TOC -->
 
-- [1. RPC](#1-rpc)
+- [1. ~~RPC~~](#1-rpc)
     - [1.1. 本地调用和远程调用](#11-本地调用和远程调用)
     - [1.2. RPC起源](#12-rpc起源)
-    - [1.3. ※※※RPC调用过程](#13-※※※rpc调用过程)
+    - [1.3. ★★★RPC调用过程](#13-★★★rpc调用过程)
     - [1.4. RPC框架需要解决的问题？](#14-rpc框架需要解决的问题)
-    - [1.5. ※※※使用了哪些技术？](#15-※※※使用了哪些技术)
+    - [1.5. ★★★使用了哪些技术？](#15-★★★使用了哪些技术)
         - [1.5.1. 远程代理对象(动态代理)](#151-远程代理对象动态代理)
         - [1.5.2. 序列化](#152-序列化)
         - [1.5.3. 通信](#153-通信)
@@ -18,7 +18,7 @@
 
 
 
-# 1. RPC  
+# 1. ~~RPC~~  
 &emsp; RPC，远程过程调用，屏蔽了传输协议，像本地调用一样进行远程通信。  
 
 ## 1.1. 本地调用和远程调用 
@@ -43,7 +43,7 @@
 
 &emsp; 通俗一点说，就是一般程序员对于本地的过程调用很熟悉，那么把RPC作成和本地调用完全类似，那么就更容易被接受，使用起来毫无障碍。Nelson的论文其观点今天看来确实高瞻远瞩，今天使用的RPC框架基本就是按这个目标来实现的。  
 
-## 1.3. ※※※RPC调用过程
+## 1.3. ★★★RPC调用过程
 <!--
 https://blog.csdn.net/u013474436/article/details/105059839
 
@@ -133,12 +133,12 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 4. 客户端如何发现这些暴露的服务？  
 5. 如何更高效地对请求对象和响应结果进行序列化和反序列化操作？  
 
-## 1.5. ※※※使用了哪些技术？  
+## 1.5. ★★★使用了哪些技术？  
 &emsp; 一个比较完善的RPC框架  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-7.png)  
 
 ### 1.5.1. 远程代理对象(动态代理)
-&emsp; **服务调用者用的服务实际是远程服务的本地代理。生成Client Stub(客户端存根)和Server Stub(服务端存根)的时候需要用到java动态代理技术，可以使用jdk提供的原生的动态代理机制，也可以使用开源的：Cglib代理，Javassist字节码生成技术。**   
+&emsp; **服务调用者调用的服务实际是远程服务的本地代理。生成Client Stub(客户端存根)和Server Stub(服务端存根)的时候需要用到java动态代理技术，可以使用jdk提供的原生的动态代理机制，也可以使用开源的：Cglib代理，Javassist字节码生成技术。**   
 
 ### 1.5.2. 序列化
 &emsp; 在网络中，所有的数据都将会被转化为字节进行传送，所以为了能够使参数对象在网络中进行传输，需要对这些参数进行序列化和反序列化操作。
@@ -154,7 +154,7 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 &emsp; Java提供了NIO的解决方案，Java 7也提供了更优秀的NIO.2支持。可以选择Netty或者mina来解决NIO数据传输的问题。
  
 &emsp; **通信协议：**  
-&emsp; <font color = "lime">RPC框架与具体的协议无关。RPC 可基于HTTP或TCP协议。</font>Web Service就是基于HTTP协议的RPC，它具有良好的跨平台性，但其性能却不如基于TCP协议的RPC。  
+&emsp; <font color = "clime">RPC框架与具体的协议无关。RPC 可基于HTTP或TCP协议。</font>Web Service就是基于HTTP协议的RPC，它具有良好的跨平台性，但其性能却不如基于TCP协议的RPC。  
 
 #### 1.5.3.1. RPC中的通信协议  
 <!-- 
@@ -233,7 +233,8 @@ Apache Thrift ：https://thrift.apache.org/
 1. Thrift：thrift是一个软件框架，用来进行可扩展且跨语言的服务的开发。它结合了功能强大的软件堆栈和代码生成引擎，以构建在C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, JavaScript, Node.js, Smalltalk, and OCaml这些编程语言间无缝结合的、高效的服务。  
 2. Dubbo：Dubbo是一个分布式服务框架，以及SOA治理方案。其功能主要包括：高性能NIO通讯及多协议集成，服务动态寻址与路由，软负载均衡与容错，依赖分析与降级等。 Dubbo是阿里巴巴内部的SOA服务化治理方案的核心框架，Dubbo自2011年开源后，已被许多非阿里系公司使用。  
 3. gRPC是Google开发的高性能、通用的开源RPC框架，其由Google主要面向移动应用开发并基于HTTP/2协议标准而设计，基于ProtoBuf(Protocol Buffers)序列化协议开发，且支持众多开发语言。本身它不是分布式的，所以要实现上面的框架的功能需要进一步的开发。  
- 
+
+
 &emsp; SPringCloud与RPC：  
 &emsp; Spring Cloud中feign的远程调用和rpc调用非常契合。但spring cloud更是一个微服务全家桶框架。    
 

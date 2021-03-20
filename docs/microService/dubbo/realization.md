@@ -2,44 +2,66 @@
 
 - [1. Dubbo运行流程](#1-dubbo运行流程)
     - [1.1. 解析服务](#11-解析服务)
-    - [1.2. 暴露服务](#12-暴露服务)
+    - [1.2. ~~暴露服务~~](#12-暴露服务)
     - [1.3. 引用服务](#13-引用服务)
     - [1.4. 拦截服务](#14-拦截服务)
     - [1.5. Invoker](#15-invoker)
 
 <!-- /TOC -->
 
+
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **服务提供者暴露服务的主过程：(包含3个步骤)**  
+1. ServiceConfig解析dubbo标签成URL格式。  
+2. 通过ProxyFactory类的getInvoker方法使用ref(实际类)生成一个AbstractProxyInvoker实例。  
+3. 通过Protocol类的export方法暴露服务。  
+	1. 本地各种协议暴露。  
+	2. 注册中心暴露。  
+
+
+&emsp; **服务消费者引用服务的主过程：(包含3个步骤)**  
+1. ReferenceConfig解析引用的服务。  
+2. ReferenceConfig 类的 init 方法调用 Protocol 的 refer 方法生成 Invoker 实例。  
+3. 把Invoker转换为客户端需要的接口。  
+
+
+
 # 1. Dubbo运行流程  
 ## 1.1. 解析服务  
-&emsp; **<font color = "lime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
+&emsp; **<font color = "clime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
 &emsp; 在ServiceConfig.export()或ReferenceConfig.get()初始化时，将Bean对象转换 URL格式，所有Bean属性转成URL的参数。然后将URL传给协议扩展点，基于扩展点的扩展点自适应机制，根据URL的协议头，进行不同协议的服务暴露或引用。  
 
 &emsp; 注意：URL是[Dubbo公共契约](https://dubbo.apache.org/zh/docs/v2.7/dev/contract/)之一。    
 
-## 1.2. 暴露服务  
+## 1.2. ~~暴露服务~~  
 &emsp; 下图是服务提供者暴露服务的主过程：(包含3个步骤)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-29.png)   
+
+
+1. ServiceConfig解析dubbo标签成URL格式。  
+2. 通过ProxyFactory类的getInvoker方法使用ref(实际类)生成一个AbstractProxyInvoker实例
+3. 通过Protocol类的export方法暴露服务。  
+	1. 本地各种协议暴露。
+	2. 注册中心暴露。  
+
+
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-53.png)   
 
-1. 首先ServiceConfig类拿到对外提供服务的实际类 ref(如：HelloWorldImpl)； ~~在容器启动的时候，通过ServiceConfig解析标签，创建dubbo标签解析器来解析dubbo的标签，容器创建完成之后，触发ContextRefreshEvent事件回调开始暴露服务~~ 
+1. 首先ServiceConfig类拿到对外提供服务的实际类 ref(如：HelloWorldImpl)； ~~在容器启动的时候，通过ServiceConfig解析标签，创建dubbo标签解析器来解析dubbo的标签，容器创建完成之后，触发ContextRefreshEvent事件回调开始暴露服务~~  
+    * 在没有注册中心，直接暴露提供者的情况下，ServiceConfig解析出的URL的格式为：dubbo://service-host/com.foo.FooService?version=1.0.0。
+    * 在有注册中心，需要注册提供者地址的情况下，ServiceConfig 解析出的URL的格式为: registry://registry-host/org.apache.dubbo.registry.RegistryService?export=URL.encode("dubbo://service-host/com.foo.FooService?version=1.0.0")。  
 2. 然后通过ProxyFactory类的getInvoker方法使用ref生成一个AbstractProxyInvoker实例，到这一步就完成具体服务到Invoker的转化； ~~通过ProxyFactory获取到invoker，invoker包含了需要执行的方法的对象信息和具体的URL地址~~   
 3. 接下来就是Invoker转换到Exporter的过程。~~再通过DubboProtocol的实现把包装后的invoker转换成exporter，然后启动服务器server，监听端口~~  
     &emsp; Dubbo处理服务暴露的关键就在Invoker转换到Exporter的过程，上图中的红色部分。下面以Dubbo和RMI这两种典型协议的实现来进行说明：  
 
     * **Dubbo 的实现**  
-    &emsp; Dubbo 协议的 Invoker 转为 Exporter 发生在 DubboProtocol 类的 export 方法，它主要是打开 socket 侦听服务，并接收客户端发来的各种请求，通讯细节由 Dubbo 自己实现。  
+    &emsp; Dubbo协议的Invoker转为Exporter发生在DubboProtocol 类的 export 方法，它主要是打开 socket 侦听服务，并接收客户端发来的各种请求，通讯细节由 Dubbo 自己实现。  
     * **RMI 的实现**  
     &emsp; RMI 协议的 Invoker 转为 Exporter 发生在 RmiProtocol类的 export 方法，它通过 Spring 或 Dubbo 或 JDK 来实现 RMI 服务，通讯细节这一块由 JDK 底层来实现，这就省了不少工作量。  
-4. 最后RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心
-
-
-1. 只暴露服务端口：  
-&emsp; 在没有注册中心，直接暴露提供者的情况下，ServiceConfig解析出的URL的格式为：dubbo://service-host/com.foo.FooService?version=1.0.0。  
-&emsp; 基于扩展点自适应机制，通过URL的dubbo://协议头识别，直接调用DubboProtocol的export()方法，打开服务端口。  
-2. 向注册中心暴露服务：  
-&emsp; 在有注册中心，需要注册提供者地址的情况下，ServiceConfig 解析出的URL的格式为: registry://registry-host/org.apache.dubbo.registry.RegistryService?export=URL.encode("dubbo://service-host/com.foo.FooService?version=1.0.0")。  
-&emsp; 基于扩展点自适应机制，通过URL的registry://协议头识别，就会调用 RegistryProtocol的export()方法，将export参数中的提供者URL，先注册到注册中心。  
-&emsp; 再重新传给Protocol扩展点进行暴露：dubbo://service-host/com.foo.FooService?version=1.0.0，然后基于扩展点自适应机制，通过提供者URL的dubbo://协议头识别，就会调用DubboProtocol的export()方法，打开服务端口。  
+4. 如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心
+    &emsp; ~~基于扩展点自适应机制，通过URL的registry://协议头识别，就会调用 RegistryProtocol的export()方法，将export参数中的提供者URL，先注册到注册中心。~~  
+    &emsp; ~~再重新传给Protocol扩展点进行暴露：dubbo://service-host/com.foo.FooService?version=1.0.0，然后基于扩展点自适应机制，通过提供者URL的dubbo://协议头识别，就会调用DubboProtocol的export()方法，打开服务端口。~~  
 
 
 ## 1.3. 引用服务
@@ -70,7 +92,7 @@
 
 ## 1.5. Invoker  
 &emsp; Invoker是Dubbo的核心模型，代表一个可执行体。在服务提供方，Invoker用于调用服务提供类。在服务消费方，Invoker用于执行远程调用。Invoker是由Protocol实现类构建而来。  
-&emsp; 下面用一个精简的图来说明<font color = "lime">最重要的两种Invoker：服务提供 Invoker和服务消费Invoker：</font>  
+&emsp; 下面用一个精简的图来说明<font color = "clime">最重要的两种Invoker：服务提供 Invoker和服务消费Invoker：</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-31.png)   
 &emsp; 为了更好的解释上面这张图，结合服务消费和提供者的代码示例来进行说明：  
 &emsp; 服务消费者代码：  

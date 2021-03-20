@@ -314,11 +314,6 @@
         * [服务暴露源码解析](/docs/microService/dubbo/export.md)  
         * [服务引用源码解析](/docs/microService/dubbo/introduce.md)  
         * [服务调用源码解析](/docs/microService/dubbo/call.md)  
-    * [Dubbo集群容错源码解析](/docs/microService/dubbo/DubboColonySource.md)  
-        * [服务目录源码解析](/docs/microService/dubbo/Directory.md)  
-        * [服务路由源码解析](/docs/microService/dubbo/Router.md)  
-        * [集群源码解析](/docs/microService/dubbo/Cluster.md)  
-        * [负载均衡源码解析](/docs/microService/dubbo/LoadBalance.md)  
 * Zookeeper
     * [Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
     * [Zookeeper使用](/docs/microService/dubbo/ZookeeperUse.md)  

@@ -13,6 +13,15 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "clime">Dubbo改进了JDK标准的SPI的以下问题：</font>**  
+
+* JDK标准的SPI会一次性实例化扩展点所有实现。  
+* 如果扩展点加载失败，连扩展点的名称都拿不到了。  
+* 增加了对扩展点IoC和AOP的支持，一个扩展点可以直接setter注入其它扩展点。  
+
+
+
 # 1. Dubbo SPI  
 &emsp; **<font color = "red">官网：http://dubbo.apache.org/</font>** 
 <!-- 
@@ -24,11 +33,11 @@ https://mp.weixin.qq.com/s/hR8hlJyGxnn3wIfBhlNbuQ
 
 ## 1.1. SPI简介  
 &emsp; **<font color = "red">SPI全称为Service Provider Interface，是一种服务发现机制。SPI的本质是将接口实现类的全限定名配置在文件中，并由服务加载器读取配置文件，加载实现类。这样可以在运行时，动态的为接口替换实现类。</font>** 正因此特性，可以很容易的通过SPI机制为程序提供拓展功能。  
-&emsp; SPI机制在第三方框架中也有所应用，比如Dubbo就是通过SPI机制加载所有的组件。不过，Dubbo并未使用Java原生的SPI机制，而是对其进行了增强，使其能够更好的满足需求。**<font color = "blue">Dubbo改进了JDK标准的SPI的以下问题：</font>**  
+&emsp; SPI机制在第三方框架中也有所应用，比如Dubbo就是通过SPI机制加载所有的组件。不过，Dubbo并未使用Java原生的SPI机制，而是对其进行了增强，使其能够更好的满足需求。 **<font color = "clime">Dubbo改进了JDK标准的SPI的以下问题：</font>**  
 
-* JDK 标准的SPI会一次性实例化扩展点所有实现，如果有扩展实现初始化很耗时，但如果没用上也加载，会很浪费资源。
+* JDK标准的SPI会一次性实例化扩展点所有实现，如果有扩展实现初始化很耗时，但如果没用上也加载，会很浪费资源。
 * 如果扩展点加载失败，连扩展点的名称都拿不到了。比如：JDK标准的ScriptEngine，通过getName()获取脚本类型的名称，但如果RubyScriptEngine因为所依赖的jruby.jar 不存在，导致RubyScriptEngine类加载失败，这个失败原因被吃掉了，和ruby对应不起来，当用户执行ruby脚本时，会报不支持ruby，而不是真正失败的原因。  
-* 增加了对扩展点 IoC 和 AOP 的支持，一个扩展点可以直接 setter 注入其它扩展点。  
+* 增加了对扩展点IoC和AOP的支持，一个扩展点可以直接setter注入其它扩展点。  
 
 <!-- 
 
@@ -76,7 +85,7 @@ public class Bumblebee implements Robot {
     }
 }
 ```
-&emsp; 接下来META-INF/services文件夹下创建一个文件，名称为 Robot 的全限定名 org.apache.spi.Robot。文件内容为实现类的全限定的类名，如下：  
+&emsp; 接下来META-INF/services文件夹下创建一个文件，名称为Robot的全限定名 org.apache.spi.Robot。文件内容为实现类的全限定的类名，如下：  
 
 ```text
 org.apache.spi.OptimusPrime
@@ -100,7 +109,7 @@ public class JavaSPITest {
 &emsp; 从测试结果可以看出，两个实现类被成功的加载，并输出了相应的内容。关于Java SPI的演示先到这里，接下来演示Dubbo SPI。  
 
 ### 1.2.2. Dubbo SPI示例  
-&emsp; <font color = "red">Dubbo SPI的相关逻辑被封装在了ExtensionLoader类中，通过ExtensionLoader，可以加载指定的实现类。Dubbo SPI所需的配置文件需放置在 META-INF/dubbo 路径下，</font>配置内容如下。  
+&emsp; <font color = "red">Dubbo SPI的相关逻辑被封装在了ExtensionLoader类中，通过ExtensionLoader，可以加载指定的实现类。Dubbo SPI所需的配置文件需放置在META-INF/dubbo路径下，</font>配置内容如下。  
 
 ```properties
 optimusPrime = org.apache.spi.OptimusPrime
@@ -163,7 +172,7 @@ public class XxxProtocolWrapper implements Protocol {
     // ...
 }
 ```
-&emsp; **Wrapper类同样实现了扩展点接口，但是Wrapper不是扩展点的真正实现。它的用途主要是用于从ExtensionLoader返回扩展点时，包装在真正的扩展点实现外。即从 ExtensionLoader中返回的实际上是Wrapper类的实例，Wrapper持有了实际的扩展点实现类。**  
+&emsp; **Wrapper类同样实现了扩展点接口，但是Wrapper不是扩展点的真正实现。它的用途主要是用于从ExtensionLoader返回扩展点时，包装在真正的扩展点实现外。即从ExtensionLoader中返回的实际上是Wrapper类的实例，Wrapper持有了实际的扩展点实现类。**  
 &emsp; 扩展点的Wrapper类可以有多个，也可以根据需要新增。  
 &emsp; 通过Wrapper类可以把所有扩展点公共逻辑移至Wrapper中。新加的Wrapper在所有的扩展点上添加了逻辑，有些类似AOP，即Wrapper代理了扩展点。  
 

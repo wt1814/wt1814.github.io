@@ -37,7 +37,7 @@
 &emsp; Dubbo SPI的相关逻辑被封装在了ExtensionLoader 类(拓展加载器)中，通过ExtensionLoader，可以加载指定的实现类。  
 
 ## 1.2. 获得指定拓展对象  
-&emsp; <font color = "lime">Dubbo SPI获得指定拓展对象，首先通过ExtensionLoader的getExtensionLoader方法获取一个ExtensionLoader实例，然后再通过ExtensionLoader的getExtension方法获取拓展类对象。</font>  
+&emsp; <font color = "clime">Dubbo SPI获得指定拓展对象，首先通过ExtensionLoader的getExtensionLoader方法获取一个ExtensionLoader实例，然后再通过ExtensionLoader的getExtension方法获取拓展类对象。</font>  
 
 ### 1.2.1. 获得拓展加载器  
 &emsp; 在Dubbo SPI示例代码中：  
@@ -196,14 +196,14 @@ private T createExtension(String name) {
     }
 }
 ```
-&emsp; <font color = "lime">createExtension 方法包含了如下的步骤：</font>  
+&emsp; <font color = "clime">createExtension 方法包含了如下的步骤：</font>  
 
 1. 通过getExtensionClasses获取所有的拓展类
 2. 通过反射创建拓展对象
 3. 向拓展对象中注入依赖
 4. 将拓展对象包裹在相应的Wrapper对象中
 
-&emsp; 以上步骤中，第一个步骤是加载拓展类的关键，<font color = "lime">第三和第四个步骤是Dubbo IOC与AOP的具体实现。</font>在接下来的章节中，将会重点分析getExtensionClasses方法的逻辑，以及简单介绍Dubbo IOC的具体实现。  
+&emsp; 以上步骤中，第一个步骤是加载拓展类的关键，<font color = "clime">第三和第四个步骤是Dubbo IOC与AOP的具体实现。</font>在接下来的章节中，将会重点分析getExtensionClasses方法的逻辑，以及简单介绍Dubbo IOC的具体实现。  
 
 ##### 1.2.2.2.1. 获取所有的拓展类  
 ###### 1.2.2.2.1.1. getExtensionClasses  

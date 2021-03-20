@@ -412,11 +412,14 @@
 &emsp; [服务暴露源码解析](/docs/microService/dubbo/export.md)  
 &emsp; [服务引用源码解析](/docs/microService/dubbo/introduce.md)  
 &emsp; [服务调用源码解析](/docs/microService/dubbo/call.md)  
+
+<!-- 
 [Dubbo集群容错源码解析](/docs/microService/dubbo/DubboColonySource.md)  
 &emsp; [服务目录源码解析](/docs/microService/dubbo/Directory.md)  
 &emsp; [服务路由源码解析](/docs/microService/dubbo/Router.md)  
 &emsp; [集群源码解析](/docs/microService/dubbo/Cluster.md)  
 &emsp; [负载均衡源码解析](/docs/microService/dubbo/LoadBalance.md)  
+-->
 
 ### Zookeeper
 [Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
