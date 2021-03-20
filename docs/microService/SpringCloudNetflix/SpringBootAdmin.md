@@ -4,8 +4,7 @@
 
 - [1. Spring Cloud Admin](#1-spring-cloud-admin)
     - [1.1. 在Spring Cloud中基于Eureka的Spring Boot Admin的搭建](#11-在spring-cloud中基于eureka的spring-boot-admin的搭建)
-    - [1.2. Spring boot Admin依赖](#12-spring-boot-admin依赖)
-        - [1.2.1. actuator原生端点](#121-actuator原生端点)
+    - [1.2.1. actuator原生端点](#121-actuator原生端点)
             - [1.2.1.1. 度量指标类详解](#1211-度量指标类详解)
     - [1.3. 监控通知](#13-监控通知)
     - [1.4. 集成spring security](#14-集成spring-security)
@@ -14,12 +13,21 @@
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-34.png)  
 
+&emsp; **<font color = "red">总结：</font>**  
+1. spring-boot-starter-actuator依赖中已经实现的一些原生端点。根据端点的作用，<font color = "clime">可以将原生端点分为以下三大类。</font>  
+    * 应用配置类：获取应用程序中加载的应用配置、环境变量、自动化配置报告等与Spring Boot应用密切相关的配置类信息。  
+    * 度量指标类：获取应用程序运行过程中用于监控的度量指标，比如内存信息、线程池信息、HTTP请求统计等。  
+    * 操作控制类：提供了对应用的关闭等操作类功能。  
+2. 监控通知
+3. 集成spring security
+
+
 # 1. Spring Cloud Admin
 
 ## 1.1. 在Spring Cloud中基于Eureka的Spring Boot Admin的搭建  
-......
+&emsp; ......
 
-## 1.2. Spring boot Admin依赖
+&emsp; Spring boot Admin依赖
 &emsp; Spring Boot Admin依赖了spring-boot-starter-actuator，引入该依赖能够自动为Spring Boot构建的应用提供一系列用于监控的端点。在Spring Boot工程中新增spring-boot-starter-actuator依赖。具体如下：  
 
 ```xml
@@ -36,8 +44,8 @@ management.security.enabled=false
 &emsp; 重新启动应用。此时，可以在控制台中看到如下图所示的输出：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-26.png)  
 
-### 1.2.1. actuator原生端点  
-&emsp; spring-boot-starter-actuator依赖中已经实现的一些原生端点。根据端点的作用，<font color = "lime">可以将原生端点分为以下三大类。</font>  
+## 1.2.1. actuator原生端点  
+&emsp; spring-boot-starter-actuator依赖中已经实现的一些原生端点。根据端点的作用，<font color = "clime">可以将原生端点分为以下三大类。</font>  
 
 * 应用配置类：获取应用程序中加载的应用配置、环境变量、自动化配置报告等与Spring Boot应用密切相关的配置类信息。  
 * 度量指标类：获取应用程序运行过程中用于监控的度量指标，比如内存信息、线程池信息、HTTP请求统计等。  
@@ -176,16 +184,15 @@ management.security.enabled=false
     ```
 
 ## 1.3. 监控通知  
-
 <!-- 
 Spring Cloud Admin健康检查 邮件、钉钉群通知 
 https://mp.weixin.qq.com/s/9hDOrd5POPgeaf3lbHHWFA
 
 -->
-......
+&emsp; Spring Cloud Admin健康检查，发送邮件、钉钉群通知。   
+
 
 ## 1.4. 集成spring security  
-
 &emsp; 引入依赖：  
 
 ```xml
@@ -227,32 +234,30 @@ public class ActuatorSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // version1
-//        http
-//                .authorizeRequests()
-//                    .requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
-//                        .hasRole("ACTUATOR_ADMIN")
-//                .requestMatchers(EndpointRequest.toAnyEndpoint())
-//                    .permitAll()
-//                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-//                    .permitAll()
-//                .antMatchers("/")
-//                    .permitAll()
-//                .antMatchers("/**")
-//                    .authenticated()
-//                .and()
-//                .httpBasic();
+/*        http.authorizeRequests()
+                .requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
+                .hasRole("ACTUATOR_ADMIN")
+                .requestMatchers(EndpointRequest.toAnyEndpoint())
+                .permitAll()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                .permitAll()
+                .antMatchers("/")
+                .permitAll()
+                .antMatchers("/**")
+                .authenticated()
+                .and()
+                .httpBasic();*/
 
         // version2
-        http
-                .authorizeRequests()
+        http.authorizeRequests()
                 .requestMatchers(EndpointRequest.toAnyEndpoint())
-                    .hasRole("ACTUATOR_ADMIN")
+                .hasRole("ACTUATOR_ADMIN")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                    .permitAll()
+                .permitAll()
                 .antMatchers("/")
-                    .permitAll()
+                .permitAll()
                 .antMatchers("/**")
-                    .authenticated()
+                .authenticated()
                 .and()
                 .httpBasic();
     }

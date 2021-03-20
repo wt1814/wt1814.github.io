@@ -43,7 +43,7 @@
 zuul.routes.user-service.path=/user-service/**  
 zuul.routes.user-service.serviceid=user-service
 ```
-&emsp; 还可以更简洁的配置方式：zuul.routes.<serviceid\>=<path\>, 其中<serviceid\> 用来指定路由的具体服务名，<path\>用来配置匹配的请求表达式。  
+&emsp; 还可以更简洁的配置方式：zuul.routes.<serviceid\>=<path\>，其中<serviceid\> 用来指定路由的具体服务名，<path\>用来配置匹配的请求表达式。  
 
 ### 1.1.1. 服务路由的默认规则  
 &emsp; 为Spring Cloud Zuul构建的API网关服务引入Spring Cloud Eureka之后，<font color = "red">zuul为Eureka中的每个服务都自动创建一个默认路由规则，这些默认规则的path会使用service Id配置的服务名作为请求前缀。</font>如上所示。  

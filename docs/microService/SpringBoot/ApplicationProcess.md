@@ -1,9 +1,19 @@
 
+<!-- TOC -->
 
+- [1. 自动装配原理](#1-自动装配原理)
+    - [1.1. 启动对象的注入](#11-启动对象的注入)
+    - [1.2. 自动装配](#12-自动装配)
+
+<!-- /TOC -->
+
+
+&emsp; **<font color = "red">总结：</font>**  
 1. 启动对象的注入：在容器准备阶段prepareContext()会将@SpringBootApplication--->@Component对象注册到容器中。  
-2. 自动装配入口，从刷新容器refresh()开始 
+2. 自动装配入口，从刷新容器refresh()开始。 
 
-# 自动装配原理
+# 1. 自动装配原理
+## 1.1. 启动对象的注入
 ​&emsp; 自动装配是在启动过程中完成。  
 
 &emsp; 1、在springboot的启动过程中，有一个步骤是创建上下文，如果不记得可以看下面的代码：  
@@ -170,7 +180,7 @@ public ConfigurableApplicationContext run(String... args) {
 	}
 ```
 
-&emsp; 5、下面方法判断启动类中是否包含@Component注解，但是在启动类中并没有该注解，继续更进发现MergedAnnotations类传入了一个参数SearchStrategy.TYPE_HIERARCHY，会查找继承关系中是否包含这个注解，@SpringBootApplication-->@SpringBootConfiguration-->@Configuration-->@Component，当找到@Component注解之后，会把该对象注册到AnnotatedBeanDefinitionReader对象中  
+&emsp; 5、下面方法判断启动类中是否包含@Component注解，但是在启动类中并没有该注解，继续更进发现MergedAnnotations类传入了一个参数SearchStrategy.TYPE_HIERARCHY，会查找继承关系中是否包含这个注解，@SpringBootApplication --> @SpringBootConfiguration --> @Configuration --> @Component，当找到@Component注解之后，会把该对象注册到AnnotatedBeanDefinitionReader对象中  
 
 ```java
 private boolean isComponent(Class<?> type) {
@@ -279,6 +289,8 @@ public @interface Configuration {}
 ```
 
 &emsp; 当看完上述代码之后，只是完成了启动对象的注入，自动装配还没有开始，下面开始进入到自动装配。  
+
+## 1.2. 自动装配
 
 &emsp; 6、**自动装配入口，从刷新容器开始**    
 

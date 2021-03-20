@@ -25,7 +25,7 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkwMzE3MDY0Ng==&action=getalbum&a
 
 -->
 
-&emsp; **<font color = "lime">总结：</font>**  
+&emsp; **<font color = "red">总结：</font>**  
 1. 服务注册发现，注册中心(Eureka)  
 2. 服务分发(Ribbon)：客户端负载均衡，Ribbon中提供了多种负载均衡策略：轮询、随机、重试、权重等。  
 3. 声明式调用(OpenFeign)

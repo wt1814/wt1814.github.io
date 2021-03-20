@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. SpringBoot自动配置-@SpringBootApplication注解](#1-springboot自动配置-springbootapplication注解)
+- [1. SpringBoot自动配置](#1-springboot自动配置)
     - [1.1. @SpringBootApplication](#11-springbootapplication)
     - [1.2. @ComponentScan](#12-componentscan)
     - [1.3. @SpringBootConfiguration](#13-springbootconfiguration)
@@ -12,7 +12,7 @@
 
 <!-- /TOC -->
 
-* @SpringBootApplication注解  
+* @SpringBootApplication  
     * @ComponentScan  
     * @SpringBootConfiguration  
     * @EnableAutoConfiguration  
@@ -21,7 +21,7 @@
                 * loadSpringFactories()
 
 
-# 1. SpringBoot自动配置-@SpringBootApplication注解
+# 1. SpringBoot自动配置
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-3.png)  
 
 &emsp; SpringBoot的自动配置，指的是只需要引用功能的包，相关的配置完全不用管，SpringBoot会自动将一些配置类的bean注册进ioc容器，在需要的地方使用@autowired或者@resource等注解来使用它。  
@@ -47,7 +47,7 @@ public @interface SpringBootApplication {
 
 ## 1.2. @ComponentScan  
 &emsp; @ComponentScan，开启组件扫描，用于指定当前应用所要扫描的包，默认扫描SpringApplication的run方法里的Booter.class所在的包路径下文件，所以最好将该启动类放到根包路径下。  
-&emsp; 注意，<font color = "red">@ComponentScan其仅仅是指定包，而并没有扫描这些包，更没有装配其中的类，这个真正扫描并装配这些类是@EnableAutoConfiguration完成的。</font>  
+&emsp; 注意，<font color = "clime">@ComponentScan其仅仅是指定包，</font><font color = "red">而并没有扫描这些包，更没有装配其中的类，这个真正扫描并装配这些类是@EnableAutoConfiguration完成的。</font>  
 &emsp; 源码：  
 
 ```java
@@ -93,7 +93,7 @@ public @interface EnableAutoConfiguration {
 }
 ```
 &emsp; <font color = "red">@AutoConfigurationPackage注解将主配置类(@SpringBootConfiguration标注的类)的所在包及下面所有子包里面的所有组件扫描到Spring容器中。</font>  
-&emsp; <font color = "lime">@Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。AutoConfigurationImportSelector类中存在一个方法可以获取所有的配置。</font>源码如下：  
+&emsp; <font color = "clime">@Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。AutoConfigurationImportSelector类中存在一个方法可以获取所有的配置。</font>源码如下：  
 
 ```java
 /*
@@ -105,7 +105,7 @@ List<String> configurations = getCandidateConfigurations(annotationMetadata, att
 ```
 
 ### 1.4.1. getCandidateConfigurations()方法  
-&emsp; <font color = "red">AutoConfigurationImportSelector#getCandidateConfigurations()方法获取所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude掉的配置，才得到最终的配置类名集合。</font>源码如下：  
+&emsp; <font color = "red">AutoConfigurationImportSelector#getCandidateConfigurations()方法获取所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。</font>源码如下：  
 
 ```java
 //*获取候选的配置*/
@@ -167,7 +167,7 @@ private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoad
 &emsp; 里面包含了很多自动配置属性。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-2.png)  
 
-&emsp; <font color = "red">spring.factories中的配置，不是全量加载。例如：查看WebMvcAutoConfiguration源码，</font> <font color = "lime">是否加载是通过@ConditionalOnClass注解进行判断条件是否成立来判断。</font>  
+&emsp; <font color = "red">spring.factories中的配置，不是全量加载。例如：查看WebMvcAutoConfiguration源码，</font> <font color = "clime">是否加载是通过@ConditionalOnClass注解进行判断条件是否成立来判断。</font>  
 
 ```java
 @Configuration(

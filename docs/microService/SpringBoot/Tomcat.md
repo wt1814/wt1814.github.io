@@ -11,6 +11,7 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
 1. Tomcat的自动装配：自动装配过程中，Web容器所对应的自动配置类为ServletWebServerFactoryAutoConfiguration，该类导入了EmbeddedTomcat，EmbeddedJetty，EmbeddedUndertow三个类，可以根据用户的需求去选择使用哪一个web服务器，默认情况下使用的是tomcat。  
 2. Tomcat的启动：在容器刷新refreshContext(context)步骤完成。  
 
