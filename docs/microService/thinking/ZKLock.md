@@ -12,7 +12,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "blue">基于ZooKeeper可以实现分布式的独占锁和读写锁。对于ZK来说，实现分布式锁的核心是临时顺序节点和监听机制。</font>**  
+1. **<font color = "clime">基于ZooKeeper可以实现分布式的独占锁和读写锁。对于ZK来说，实现分布式锁的核心是临时顺序节点和监听机制。</font>**  
 2. **zookeeper分布式锁的缺点：** 1). 需要依赖zookeeper；2). 性能低。频繁地“写”zookeeper。集群节点数越多，同步越慢，获取锁的过程越慢。  
 3. **使用ZK实现分布式独占锁：**<font color="red">在某一节点下，建立临时顺序节点。最小节点获取到锁。非最小节点监听上一节点，上一节点释放锁，唤醒当前节点。</font>  
 4. **使用ZK实现分布式读写锁：<font color = "red">客户端从 Zookeeper 端获取 /share_lock下所有的子节点，并判断自己能否获取锁。</font>**  
@@ -32,7 +32,7 @@ https://mp.weixin.qq.com/s/9whV1nuwfu2hWt8newteTA
 &emsp; **<font color = "red">参考《ZooKeeper 分布式过程协同技术详解》和《从Paxos到Zookeeper 分布式一致性原理与实践》</font>**  
 
 ## 1.1. ZK分布式锁实现原理
-&emsp; **<font color = "blue">基于ZooKeeper可以实现分布式的独占锁和读写锁。对于ZK来说，实现分布式锁的核心是临时顺序节点和监听机制。</font>**  
+&emsp; **<font color = "clime">基于ZooKeeper可以实现分布式的独占锁和读写锁。对于ZK来说，实现分布式锁的核心是临时顺序节点和监听机制。</font>**  
 &emsp; **zookeeper分布式锁的缺点：**  
 
 * 需要另外依赖zookeeper，而部分服务是不会使用zookeeper的，增加了系统的复杂性；  

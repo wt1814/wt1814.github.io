@@ -6,7 +6,7 @@
     - [1.2. ZooKeeper分层命名空间(逻辑存储结构)](#12-zookeeper分层命名空间逻辑存储结构)
     - [1.3. ★★★Zookeeper的运行原理](#13-★★★zookeeper的运行原理)
         - [1.3.1. C/S之间的Watcher机制](#131-cs之间的watcher机制)
-        - [1.3.2. ※※※服务端通过ZAB协议，保证主从节点数据一致性](#132-※※※服务端通过zab协议保证主从节点数据一致性)
+        - [1.3.2. ★★★服务端通过ZAB协议，保证主从节点数据一致性](#132-★★★服务端通过zab协议保证主从节点数据一致性)
             - [1.3.2.1. ZAB协议概述](#1321-zab协议概述)
             - [1.3.2.2. ~~ZAB协议中的ZXid~~](#1322-zab协议中的zxid)
             - [1.3.2.3. ZAB协议](#1323-zab协议)
@@ -16,7 +16,7 @@
                     - [1.3.2.3.1.3. 运行过程中的leader选举](#132313-运行过程中的leader选举)
                 - [1.3.2.3.2. 数据同步，广播模式](#13232-数据同步广播模式)
             - [1.3.2.4. Zookeeper的CP模型(保证读取数据顺序一致性)](#1324-zookeeper的cp模型保证读取数据顺序一致性)
-            - [1.3.2.5. 脑裂](#1325-脑裂)
+            - [1.3.2.5. ~~脑裂~~](#1325-脑裂)
     - [1.4. Zookeeper应用场景](#14-zookeeper应用场景)
         - [1.4.1. 集群管理，HA高可用性](#141-集群管理ha高可用性)
         - [1.4.2. 元数据/配置信息管理](#142-元数据配置信息管理)
@@ -54,29 +54,31 @@ ZooKeeper = 文件系统 + 监听通知机制。
 
 &emsp; **<font color = "red">总结：</font>**  
 
-&emsp; **<font color = "blue">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
-1. C/S之间的Watcher机制。
+&emsp; **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
+1. C/S之间的Watcher机制。特性：一次性触发、有序性(客户端先得到watch通知才可查看节点变化结果)。  
 2. ZK服务端通过ZAB协议保证数据顺序一致性。  
-    1. ZAB协议：消息广播、崩溃恢复
-        * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>**  
-        * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态
-    2.  数据一致性
+    1. ZAB协议：
+        1. 崩溃恢复
+            * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>  
+            * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态
+        2. 消息广播
+    2.  数据一致性  
         &emsp; **<font color = "red">Zookeeper保证的是CP，即一致性(Consistency)和分区容错性(Partition-Tolerance)，而牺牲了部分可用性(Available)。</font>**  
-        * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>。
-        * Zookeeper的CP模型：非强一致性、而是单调一致性/顺序一致性。  
-    3. 服务端脑裂：脑裂问题。  
+        * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>
+        * Zookeeper的CP模型：非强一致性， **<font color = "clime">而是单调一致性/顺序一致性。</font>**  
+    3. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
 
 # 1. Zookeeper
 &emsp; Zookeeper官网文档：https://zookeeper.apache.org/doc/current
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-2.png)  
 
 ## 1.1. Zookeeper是什么  
-&emsp; **<font color = "blue">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题，</font>** 例如怎样避免同时操作同一数据造成脏读的问题。  
+&emsp; **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题，</font>** 例如怎样避免同时操作同一数据造成脏读的问题。  
 &emsp; **Zookeeper集群特性：**  
 
 * 全局数据一致：每个server保存一份相同的数据副本，client无论连接到哪个server，展示的数据都是一致的，这是最重要的特征。  
 * 可靠性：如果消息被其中一台服务器接受，那么将被所有的服务器接受。  
-* **<font color = "blue">顺序性：</font>** 包括全局有序和偏序两种。全局有序是指如果在一台服务器上消息a在消息b前发布，则在所有Server上消息a都将在消息b前被发布；偏序是指如果一个消息b在消息a后被同一个发送者发布，a必将排在b前面。  
+* **<font color = "red">顺序性：</font>** 包括全局有序和偏序两种。全局有序是指如果在一台服务器上消息a在消息b前发布，则在所有Server上消息a都将在消息b前被发布；偏序是指如果一个消息b在消息a后被同一个发送者发布，a必将排在b前面。  
 * 数据更新原子性：一次数据更新要么成功(半数以上节点成功)，要么失败，不存在中间状态。  
 * 实时性：Zookeeper保证客户端将在一个时间间隔范围内获得服务器的更新信息，或者服务器失效的信息。  
 
@@ -118,9 +120,8 @@ ZooKeeper = 文件系统 + 监听通知机制。
 * 有序性：  
 &emsp; 客户端先得到watch通知才可查看节点变化结果。  
 
-### 1.3.2. ※※※服务端通过ZAB协议，保证主从节点数据一致性
+### 1.3.2. ★★★服务端通过ZAB协议，保证主从节点数据一致性
 <!-- 
-
 https://www.cnblogs.com/zz-ksw/p/12786067.html
 -->
 
@@ -203,11 +204,11 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 &emsp; 当集群中已经有过半的 Follower 节点完成了和 Leader 状态同步以后，那么整个集群就进入了消息广播模式。这个时候，在 Leader 节点正常工作时，启动一台新的服务器加入到集群，那这个服务器会直接进入数据恢复模式，和leader 节点进行数据同步。同步完成后即可正常对外提供非事务请求的处理。  
 &emsp; 注：leader节点可以处理事务请求和非事务请求， follower 节点只能处理非事务请求，如果 follower 节点接收到非事务请求，会把这个请求转发给 Leader 服务器。  
 
-&emsp; <font color = "lime">在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，</font>然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交(类2PC事务)。  
+&emsp; <font color = "clime">在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，</font>然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交(类2PC事务)。  
 
 &emsp; **消息广播流程：**  
 1. leader接收到消息请求后，将消息赋予一个全局唯一的64 位自增 id，zxid，通过 zxid 的大小比较既可以实现因果有序这个特征。  
-2. <font color = "red">leader 为每个 follower 准备了一个 FIFO 队列(通过 TCP协议来实现，以实现了全局有序这一个特点)将带有 zxid的消息作为一个提案( proposal)分发给所有的 follower。</font>  
+2. <font color = "red">leader 为每个 follower 准备了一个 FIFO 队列(通过 TCP协议来实现，以实现了全局有序这一个特点)将带有 zxid的消息作为一个提案(proposal)分发给所有的 follower。</font>  
 3. 当 follower 接收到 proposal，先把 proposal 写到磁盘，写入成功以后再向 leader 回复一个 ack。  
 4. 当 leader 接收到合法数量(超过半数节点)的 ACK 后，leader 就会向这些 follower 发送 commit 命令，同时会在本地执行该消息。  
 5. 当 follower 收到消息的 commit 命令以后，会提交该消息。  
@@ -240,13 +241,12 @@ https://blog.csdn.net/weixin_47727457/article/details/106439452
     &emsp; <font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务，</font>这个时候就说明了服务不可用，但是在选举成功之后，因为一主多从的结构，zookeeper在这时还是一个高可用注册中心，只是在优先保证一致性的前提下，zookeeper才会顾及到可用性
 
 2. Zookeeper的CP模型：  
-&emsp; 很多文章和博客里提到，zookeeper是一种提供强一致性的服务，在分区容错性和可用性上做了一定折中，这和CAP理论是吻合的。但实际上<font color = "lime">zookeeper提供的只是单调一致性/顺序一致性。</font>  
+&emsp; 很多文章和博客里提到，zookeeper是一种提供强一致性的服务，在分区容错性和可用性上做了一定折中，这和CAP理论是吻合的。但实际上<font color = "clime">zookeeper提供的只是单调一致性/顺序一致性。</font>  
     1. 假设有2n+1个server，在同步流程中，leader向follower同步数据，当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。<font color = "red">如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。</font>  
     2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数(n+1)的server认同后，将对整个集群进行同步，超过半数(n+1)的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
 
-#### 1.3.2.5. 脑裂  
-&emsp; 脑裂问题是集群部署必须考虑的一点，比如在Hadoop跟Spark集群中。而ZAB为解决脑裂问题，要求集群内的节点数量为2N+1。当网络分裂后，始终有一个集群的节点数量过半数，而另一个节点数量小于N+1, 因为选举Leader需要过半数的节点同意，所以可以得出如下结论：  
-&emsp; 有了过半机制，对于一个Zookeeper集群，要么没有Leader，要没只有1个Leader，这样就避免了脑裂问题。  
+#### 1.3.2.5. ~~脑裂~~  
+&emsp; 过半机制，要求集群内的节点数量为2N+1。  
 
 ----
 
@@ -277,8 +277,8 @@ https://blog.csdn.net/weixin_47727457/article/details/106439452
 ZooKeeper的典型应用场景之分布式协调/通知
 https://blog.csdn.net/en_joker/article/details/78799737
 -->  
-&emsp; 分布式协调/通知服务是分布式系统中不可缺少的一个环节，是将不同的分布式组件有机结合起来的关键所在。对于一个在多台机器上部署运行的应用而言，通常需要一个协调者(Coordinator)来控制整个系统的运行流程，例如分布式事务的处理、机器间的互相协调等。同时，引入这样一个协调者，便于将分布式协调的职责从应用中分离出来，从而可以大大减少系统之间的耦合性，而且能够显著提高系统的可扩展性。  
-&emsp; <font color = "lime">ZooKeeper中特有的Watcher注册与异步通知机制，能够很好的实现分布式环境下不同机器，甚至是不同系统之间的协调与通知，从而实现对数据变更的实时处理。基于ZooKeeper实现分布式协调与通知功能，从而实现对数据变更的实时处理。</font><font color = "red">基于ZooKeeper实现分布式协调与通知功能，通常的做法是不同的客户端都对ZooKeeper上同一个数据节点进行Watcher注册，监听数据节点的变化(包括数据节点本身及其子节点)，如果数据节点发生变化，那么所有订阅的客户端都能够接收到相应的Watcher通知，并做出相应的处理。</font>  
+&emsp; 分布式协调/通知服务是分布式系统中不可缺少的一个环节，是将不同的分布式组件有机结合起来的关键所在。 **<font color = "clime">对于一个在多台机器上部署运行的应用而言，通常需要一个协调者(Coordinator)来控制整个系统的运行流程，例如分布式事务的处理、机器间的互相协调等。</font>** 同时，引入这样一个协调者，便于将分布式协调的职责从应用中分离出来，从而可以大大减少系统之间的耦合性，而且能够显著提高系统的可扩展性。  
+&emsp; <font color = "clime">ZooKeeper中特有的Watcher注册与异步通知机制，能够很好的实现分布式环境下不同机器，甚至是不同系统之间的协调与通知，从而实现对数据变更的实时处理。基于ZooKeeper实现分布式协调与通知功能，从而实现对数据变更的实时处理。</font><font color = "red">基于ZooKeeper实现分布式协调与通知功能，通常的做法是不同的客户端都对ZooKeeper上同一个数据节点进行Watcher注册，监听数据节点的变化(包括数据节点本身及其子节点)，如果数据节点发生变化，那么所有订阅的客户端都能够接收到相应的Watcher通知，并做出相应的处理。</font>  
 
 &emsp; 这个其实是zookeeper很经典的一个用法，简单来说，就好比，A系统发送个请求到mq，然后B系统消息消费之后处理了。那A系统如何知道B系统的处理结果？用zookeeper就可以实现分布式系统之间的协调工作。A系统发送请求之后可以在zookeeper上对某个节点的值注册个监听器，一旦B系统处理完了就修改zookeeper那个节点的值，A系统立马就可以收到通知，完美解决。  
 

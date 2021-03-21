@@ -2,15 +2,14 @@
 
 <!-- TOC -->
 
-- [Redis分布式锁](#redis分布式锁)
-    - [使用Redis分布式锁中的问题](#使用redis分布式锁中的问题)
-    - [Redis Client原生API](#redis-client原生api)
-        - [单实例redis实现分布式锁](#单实例redis实现分布式锁)
-            - [加锁](#加锁)
-            - [解锁](#解锁)
-            - [使用Set()加锁的注意点](#使用set加锁的注意点)
-        - [集群RedLock算法实现分布式锁](#集群redlock算法实现分布式锁)
-    - [Redisson实现redis分布式锁](#redisson实现redis分布式锁)
+- [1. Redis分布式锁](#1-redis分布式锁)
+    - [1.1. Redis部署方式](#11-redis部署方式)
+    - [1.2. Redis Client原生API](#12-redis-client原生api)
+        - [1.2.1. 单实例redis实现分布式锁](#121-单实例redis实现分布式锁)
+            - [1.2.1.1. 加锁](#1211-加锁)
+            - [1.2.1.2. 解锁](#1212-解锁)
+        - [1.2.2. 集群RedLock算法实现分布式锁](#122-集群redlock算法实现分布式锁)
+    - [1.3. Redisson实现redis分布式锁](#13-redisson实现redis分布式锁)
 
 <!-- /TOC -->
 
@@ -18,16 +17,15 @@
 &emsp; RedLock：当前线程尝试给每个Master节点加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。  
 
 # 1. Redis分布式锁  
-## 1.1. 使用Redis分布式锁中的问题  
-1. 超时问题。  
-2. 部署问题：除了要考虑客户端要怎么实现分布式锁之外，还需要考虑Redis的部署问题。Redis有多种部署方式：单机模式；Master-Slave+Sentinel选举模式；Redis Cluster模式。  
-    * 如果采用单机部署模式，会存在单点问题。只要 Redis 故障了，加锁就不行了。  
-    * 采用Master-Slave 模式，加锁的时候只对一个节点加锁，即使通过 Sentinel做了高可用，但是<font color="lime">如果Master节点故障了，发生主从切换，此时就会有可能出现锁丢失的问题，可能导致多个客户端同时完成加锁</font>。  
+## 1.1. Redis部署方式 
+&emsp; 使用Redis分布式锁需要考虑Redis的部署问题。Redis有多种部署方式：单机模式；Master-Slave+Sentinel选举模式；Redis Cluster模式。  
+* 如果采用单机部署模式，会存在单点问题。 **<font color = "clime">只要Redis故障了，可能存在死锁问题。</font>**  
+* 采用Master-Slave模式，加锁的时候只对一个节点加锁，即使通过Sentinel做了高可用，但是<font color="clime">如果Master节点故障了，发生主从切换，此时就会有可能出现锁丢失的问题，可能导致多个客户端同时完成加锁</font>。  
 
 ## 1.2. Redis Client原生API  
 ### 1.2.1. 单实例redis实现分布式锁  
 #### 1.2.1.1. 加锁  
-&emsp; 加锁中使用了redis的set命令。加锁涉及获取锁、加锁两步操作**最初分布式锁借助于setnx和expire命令**，但是这两个命令不是原子操作，如果执行setnx之后获取锁，但是此时客户端挂掉，这样无法执行expire设置过期时间就导致锁一直无法被释放，因此**在2.8版本中Antirez为setnx增加了参数扩展，使得setnx和expire具备原子操作性**。  
+&emsp; 加锁中使用了redis的set命令。加锁涉及获取锁、加锁两步操作，**最初分布式锁借助于setnx和expire命令**，但是这两个命令不是原子操作，如果执行setnx之后获取锁，但是此时客户端挂掉，这样无法执行expire设置过期时间，就导致锁一直无法被释放，因此**在2.8版本中Antirez为setnx增加了参数扩展，使得setnx和expire具备原子操作性**。  
 
 &emsp; **加锁代码：**  
 
@@ -97,8 +95,6 @@ public class RedisTool {
 }
 ```
 
-#### 1.2.1.3. 使用Set()加锁的注意点  
-&emsp; ....
 
 ### 1.2.2. 集群RedLock算法实现分布式锁  
 &emsp; Redis分布式锁官网中文地址：http://redis.cn/topics/distlock.html 。 

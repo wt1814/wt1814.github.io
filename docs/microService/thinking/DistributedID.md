@@ -7,8 +7,8 @@
     - [1.2. UUID](#12-uuid)
     - [1.3. 利用数据库生成](#13-利用数据库生成)
         - [1.3.1. MySql主键自增](#131-mysql主键自增)
-        - [1.3.2. Flink方案(基于主键自增)](#132-flink方案基于主键自增)
-        - [1.3.3. 基于数据库的号段模式](#133-基于数据库的号段模式)
+        - [序列号](#序列号)
+        - [1.3.2. 基于数据库的号段模式](#132-基于数据库的号段模式)
     - [1.4. 利用中间件生成](#14-利用中间件生成)
         - [1.4.1. 基于Redis实现](#141-基于redis实现)
     - [1.5. 雪花SnowFlake算法](#15-雪花snowflake算法)
@@ -21,7 +21,7 @@
 
 <!-- /TOC -->
 
-**<font color = "red">&emsp; 总结：分布式ID的基本生成方式有：UUID、数据库方式(主键自增、Flink(基于自增主键，似序列)、</font><font color = "lime">号段模式</font><font color = "red">)、redis等中间件、雪花算法。</font>**  
+**<font color = "red">&emsp; 总结：分布式ID的基本生成方式有：UUID、数据库方式(主键自增、</font><font color = "clime">号段模式</font><font color = "red">)、redis等中间件、雪花算法。</font>**  
 
 &emsp; 号段模式可以理解为从数据库批量的获取自增ID，每次从数据库取出一个号段范围。  
 
@@ -39,8 +39,8 @@ https://mp.weixin.qq.com/s/x1gVtnKh2OEAzSwv0sFDxg
 
 &emsp; 分布式ID需要满足的条件：  
 
-* <font color = "lime">全局唯一：</font>必须保证ID是全局性唯一的，基本要求。  
-* <font color = "lime">趋势递增：</font>根据具体业务场景，一般不严格要求。<!-- <font color = "red">部分方案，单机系统递增，分布式部署后，就不能递增了，例如雪花算法生成的id。</font>--> 
+* <font color = "clime">全局唯一：</font>必须保证ID是全局性唯一的，基本要求。  
+* <font color = "clime">趋势递增：</font>根据具体业务场景，一般不严格要求。<!-- <font color = "red">部分方案，单机系统递增，分布式部署后，就不能递增了，例如雪花算法生成的id。</font>--> 
 * 可反解：一个ID生成之后，就会伴随着信息终身。排错分析的时候，需要查验，这时候一个可反解的ID可以帮上很多忙。  
 * 高性能：高可用低延时，ID生成响应要块，否则反而会成为业务瓶颈。  
 * 高可用。  
@@ -51,7 +51,7 @@ https://mp.weixin.qq.com/s/x1gVtnKh2OEAzSwv0sFDxg
 * UUID
 * 数据库自增ID
 * Flink方案
-* <font color = "lime">数据库号段模式</font>
+* <font color = "clime">数据库号段模式</font>
 * Redis
 * 雪花算法(SnowFlake)
 * 百度(Uidgenerator)
@@ -98,7 +98,12 @@ https://mp.weixin.qq.com/s/x1gVtnKh2OEAzSwv0sFDxg
     &emsp; **缺点：** 一旦把步长定好后，就无法扩容；而且单个数据库的压力大，数据库自身性能无法满足高并发。  
     &emsp; **应用场景：** 数据不需要扩容的场景。  
 
-### 1.3.2. Flink方案(基于主键自增)  
+### 序列号  
+&emsp; ......
+<!-- 
+
+
+Flink方案(基于主键自增)  
 &emsp; 这个方案是由Flickr团队提出，主要思路采用了MySQL自增长ID的机制(auto_increment + replace into) 。  
 
     个人理解：伪序列  
@@ -119,7 +124,7 @@ REPLACE INTO Tickets64 (stub) VALUES ('a');
 SELECT LAST_INSERT_ID();
 ```
 
-&emsp; replace into跟insert功能类似，不同点在于：replace into首先尝试插入数据到表中，如果发现表中已经有此行数据(根据主键或者唯-索引判断)则先删除此行数据，然后插入新的数据，否则直接插入新数据。  
+&emsp; replace into跟insert功能类似，不同点在于：replace into首先尝试插入数据到表中，如果发现表中已经有此行数据(根据主键或者唯-索引判断)则先删除此行数据，然后插入新的数据；否则直接插入新数据。  
 
 &emsp; 为了避免单点故障，最少需要两个数据库实例，通过区分auto_increment的起始值和步长来生成奇偶数的ID。  
 
@@ -138,7 +143,7 @@ auto-increment-offset = 2
 * 缺点：  
     * ID生成性能依赖单台数据库读写性能。  
     * 依赖数据库，当数据库异常时整个系统不可用。  
-
+-->
 
 <!--
 2.2.3. 数据库序列号  
@@ -161,8 +166,8 @@ commit;
 https://www.cnblogs.com/c-961900940/p/6197878.html
 -->
 
-### 1.3.3. 基于数据库的号段模式  
-&emsp; 号段模式是当下分布式ID生成器的主流实现方式之一，<font color = "lime">号段模式可以理解为从数据库批量的获取自增ID，每次从数据库取出一个号段范围，</font>例如 (1,1000]代表1000个ID，具体的业务服务将本号段，生成1~1000的自增ID并加载到内存。表结构如下：  
+### 1.3.2. 基于数据库的号段模式  
+&emsp; 号段模式是当下分布式ID生成器的主流实现方式之一，<font color = "clime">号段模式可以理解为从数据库批量的获取自增ID，每次从数据库取出一个号段范围，</font>例如 (1,1000]代表1000个ID，具体的业务服务将本号段，生成1~1000的自增ID并加载到内存。表结构如下：  
 
 ```sql
 CREATE TABLE id_generator (

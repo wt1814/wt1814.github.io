@@ -12,6 +12,8 @@
 
 <!-- /TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-33.png)  
+
 # 1. 分布式事务  
 <!--
 如何选择分布式事务解决方案？
@@ -35,7 +37,6 @@ https://mp.weixin.qq.com/s/XknegP66mnYboiBx556Kzw
 https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487531&idx=1&sn=b3fbc4dee7cea4a78db062a4a656afdf&chksm=eca4296fdbd3a079a8e328ec7946ced7d1f94c0f105463743a8bee569bae6da00bf2133c3e1a&mpshare=1&scene=1&srcid=&sharer_sharetime=1564202929646&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=ecc4386bb884a7b134f7967009b30d8850e84095233bdb465a9d85c893c9d20f24ac5d5c020310846ccee37aa2e8173504c6cfc1df58512d821d0e4576cf5551069f7159d6583c1ffafa2c3922d85c13&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060834&lang=zh_CN&pass_ticket=FpawTdCfFbNulIqKIET55TinFCVk8qXp4EKE58T1l6zm9idpTXvh4%2BicV3hbPZAB
 ~~
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-33.png)  
 
 ## 1.1. 分布式事务产生的原因  
 * 数据库分库分表：如果一个操作既访问01库，又访问02库，而且要保证数据的一致性，那么就要用到分布式事务。  
@@ -46,7 +47,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487531&idx=1&sn=b3fbc4
 
 ## 1.2. 分布式事务解决方案  
 
-* [[分布式事务模型DTP及XA](/docs/microService/thinking/DTP.md)     
+* [分布式事务模型DTP及XA](/docs/microService/thinking/DTP.md)     
     * 一致性协议-XA两阶段提交
     * 一致性协议-XA三阶段提交
 * [TCC模式](/docs/microService/thinking/TCC.md)-强一致性
@@ -66,7 +67,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487531&idx=1&sn=b3fbc4
 <!-- 
 https://mp.weixin.qq.com/s/xe0M5GsmtNWbWEygIFFfig
 -->
-......
+&emsp; ......
 
 ### 1.3.4. Seata  
 <!-- 

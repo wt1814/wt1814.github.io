@@ -3,7 +3,7 @@
 
 - [1. Redisson实现redis分布式锁](#1-redisson实现redis分布式锁)
     - [1.1. Redisson简介](#11-redisson简介)
-    - [1.2. ※※※Redisson解决死锁问题(watch dog自动延期机制)](#12-※※※redisson解决死锁问题watch-dog自动延期机制)
+    - [1.2. ★★★Redisson解决死锁问题(watch dog自动延期机制)](#12-★★★redisson解决死锁问题watch-dog自动延期机制)
     - [1.3. 重入锁解析](#13-重入锁解析)
         - [1.3.1. 获取锁tryLock](#131-获取锁trylock)
         - [1.3.2. 解锁unlock](#132-解锁unlock)
@@ -19,13 +19,12 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "blue">1. RedissonLock解决死锁问题(自动延期)：</font>**  
-&emsp; <font color = "blue">如果加锁未设置失效时间，只要客户端一旦加锁成功，就会启动一个后台线程(看门狗线程)，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>  
+&emsp; **<font color = "clime">1. RedissonLock解决客户端死锁问题(自动延期)：</font>**  
+&emsp; <font color = "clime">如果加锁未设置失效时间，只要客户端一旦加锁成功，就会启动一个后台线程(看门狗线程)，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>  
 
 &emsp; 2. Redisson实现了多种锁：重入锁、公平锁、联锁、红锁、读写锁、信号量...  
 
 &emsp; **3. Redisson重入锁：**  
-&emsp; Redisson重入锁缺陷：在哨兵模式或者主从模式下，如果master实例宕机的时候，可能导致多个客户端同时完成加锁。  
 
 &emsp; Redisson重入锁加锁流程：  
 1. 执行lock.lock()代码时，<font color = "red">如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。</font>  
@@ -35,9 +34,13 @@
     * 锁存在，检测(hexists)是当前线程持有锁，锁重入(hincrby)，并且重新设置(pexpire)该锁的有效时间；
     * 锁存在，但不是当前线程的，返回(pttl)锁的过期时间。 
 
+
+&emsp; **<font color = "red">Redisson重入锁缺陷：</font>** 在哨兵模式或者主从模式下，如果master实例宕机的时候，可能导致多个客户端同时完成加锁。  
+
+
 # 1. Redisson实现redis分布式锁 
 ## 1.1. Redisson简介  
-&emsp; 基于redis的分布式锁实现客户端[Redisson](/docs/microService/Redis/Redisson.md) ，官方网址：https://redisson.org/ 。Redisson支持redis单实例、redis master-slave、redis哨兵、redis cluster等各种部署架构，都可以完美实现。  
+&emsp; 基于redis的分布式锁实现客户端[Redisson](/docs/microService/Redis/Redisson.md) ，官方网址：https://redisson.org/ 。Redisson支持redis单实例、redis master-slave、redis哨兵、redis cluster等各种部署架构。  
 
 &emsp; 使用示例： 
  
@@ -54,28 +57,27 @@ try{
 }
 ```
 
-## 1.2. ※※※Redisson解决死锁问题(watch dog自动延期机制)  
+## 1.2. ★★★Redisson解决死锁问题(watch dog自动延期机制)  
 <!-- 
 https://www.cnblogs.com/jklixin/p/13212864.html
 
 * 自动延期  
-&emsp; <font color = "lime">只要客户端一旦加锁成功，就会启动一个守护线程，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>   
-&emsp; <font color = "lime">在一个分布式环境下，假如一个线程获得锁后，突然服务器宕机了，那么这个时候在一定时间后这个锁会自动释放，也可以设置锁的有效时间(不设置默认30秒)，这样的目的主要是业务机器宕机，防止死锁的发生。</font>   
--->
+&emsp; <font color = "clime">只要客户端一旦加锁成功，就会启动一个守护线程，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>   
+&emsp; <font color = "clime">在一个分布式环境下，假如一个线程获得锁后，突然服务器宕机了，那么这个时候在一定时间后这个锁会自动释放，也可以设置锁的有效时间(不设置默认30秒)，这样的目的主要是业务机器宕机，防止死锁的发生。</font>   
 
 &emsp; **什么是分布式锁的死锁？**  
 &emsp; 在一个客户端在持有锁的期间崩溃，而没有主动解锁情况。  
+-->
 
-&emsp; **<font color = "blue">Redisson是怎么解决死锁的？</font>**  
 &emsp; 普通利用Redis实现分布式锁的时候，可能会为某个锁指定某个key，当线程获取锁并执行完业务逻辑代码的时候，将该锁对应的key删除掉来释放锁。
 lock->set(key)，成功->执行业务，业务执行完毕->unlock->del(key)。  
 &emsp; 根据这种操作和实践方式，可以分为下面两个场景：  
 
 1. 业务机器宕机  
-&emsp; **因为业务不知道要执行多久才能结束，所以这个key一般不会设置过期时间。** 这样如果在执行业务的过程中，业务机器宕机，unlock操作不会执行，所以这个锁不会被释放，其他机器拿不到锁，从而形成了死锁。  
-&emsp; **<font color = "blue">Redisson为了解决这种情况，设定了一个叫做lockWatchdogTimeout的参数，默认为30秒钟。</font>** 这样当业务方调用加锁操作的时候，  
+&emsp; **因为业务不知道要执行多久才能结束，所以这个key一般不会设置过期时间。** 这样如果在执行业务的过程中， **<font color = "clime">业务机器宕机，unlock操作不会执行，所以这个锁不会被释放，其他机器拿不到锁，从而形成了死锁。</font>**  
+&emsp; **<font color = "clime">Redisson为了解决这种情况，设定了一个叫做lockWatchdogTimeout的参数，默认为30秒钟。</font>** 这样当业务方调用加锁操作的时候，  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-45.png)  
-&emsp; **<font color = "blue">默认的leaseTime是-1，这个时候会启动一个定时任务，在业务方释放锁之前，会一直不停的增加这个锁的生命周期时间，保证在业务执行完毕之前，这个锁一直不会因为redis的超时而被释放。</font>**  
+&emsp; **<font color = "clime">默认的leaseTime是-1，这个时候会启动一个定时任务，在业务方释放锁之前，会一直不停的增加这个锁的生命周期时间，保证在业务执行完毕之前，这个锁一直不会因为redis的超时而被释放。</font>**  
 
 &emsp; **<font color = "clime">注意：看门狗线程是针对未设置过期时间的情况，如果设置了失效时间，看门狗设置是无效的。</font>**  
 
@@ -87,7 +89,7 @@ lock->set(key)，成功->执行业务，业务执行完毕->unlock->del(key)。
 
 ## 1.3. 重入锁解析
 ### 1.3.1. 获取锁tryLock  
-&emsp; **<font color = "lime">RedissonLock锁互斥、自动延期(watchdog看门狗)机制、可重入加锁。</font>**  
+&emsp; **<font color = "clime">RedissonLock锁互斥、可重入加锁、自动延期(watchdog看门狗)机制。</font>**  
 &emsp; RedissonLock加锁流程：  
 1. 执行lock.lock()代码时，<font color = "red">如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。</font>  
 2. 然后发送一段lua脚本，带有三个参数：一个是锁的名字(在代码里指定的)、一个是锁的时常(默认30秒)、一个是加锁的客户端id(每个客户端对应一个id)。<font color = "red">然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。</font>  
@@ -121,12 +123,6 @@ Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {
             Collections.<Object>singletonList(getName()), internalLockLeaseTime, getLockName(threadId));
 }
 ```
-
-&emsp; 缺点：  
-&emsp; 其实上面那种方案最大的问题，就是如果对某个redis master实例，写入了myLock这种锁key的value，此时会异步复制给对应的master slave实例。  
-&emsp; 但是这个过程中一旦发生redis master宕机，主备切换，redis slave变为了redis master。接着就会导致，客户端2来尝试加锁的时候，在新的redis master上完成了加锁，而客户端1也以为自己成功加了锁。此时就会导致多个客户端对一个分布式锁完成了加锁。  
-&emsp; 这时系统在业务语义上一定会出现问题，导致各种脏数据的产生。  
-&emsp; 所以这个就是redis cluster，或者是redis master-slave架构的主从异步复制导致的redis分布式锁的最大缺陷：<font color = "lime">在redis master实例宕机的时候，可能导致多个客户端同时完成加锁。</font>  
 
 ### 1.3.2. 解锁unlock  
 
@@ -175,6 +171,15 @@ public void unlock() {
 &emsp; 这时系统在业务语义上一定会出现问题，导致各种脏数据的产生。  
 
 &emsp; **小结：缺陷在哨兵模式或者主从模式下，如果 master实例宕机的时候，可能导致多个客户端同时完成加锁。**  
+
+
+<!-- 
+&emsp; 缺点：  
+&emsp; 其实上面那种方案最大的问题，就是如果对某个redis master实例，写入了myLock这种锁key的value，此时会异步复制给对应的master slave实例。  
+&emsp; 但是这个过程中一旦发生redis master宕机，主备切换，redis slave变为了redis master。接着就会导致，客户端2来尝试加锁的时候，在新的redis master上完成了加锁，而客户端1也以为自己成功加了锁。此时就会导致多个客户端对一个分布式锁完成了加锁。  
+&emsp; 这时系统在业务语义上一定会出现问题，导致各种脏数据的产生。  
+&emsp; 所以这个就是redis cluster，或者是redis master-slave架构的主从异步复制导致的redis分布式锁的最大缺陷：<font color = "clime">在redis master实例宕机的时候，可能导致多个客户端同时完成加锁。</font>  
+-->
 
 ## 1.4. Redisson几种锁介绍
 <!-- 

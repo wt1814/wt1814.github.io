@@ -10,7 +10,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 一致性哈希简称DHT，可以<font color = "red">有效解决分布式存储结构下动态增加和删除节点所带来的问题。</font>  
+&emsp; 一致性哈希简称DHT，可以<font color = "clime">有效解决分布式存储结构下动态增加和删除节点所带来的问题。</font>  
 
 1. 函数流程：  
     1. 假设把环形区域分成n等份(相当于hash函数的数组)，然后会产生n个node，及n-1个区域； 
@@ -23,11 +23,11 @@
 
 3. 缺点：  
 &emsp; **<font color = "clime">如果节点太少或分布不均匀的时候，都会造成数据倾斜。</font>**  
-&emsp; <font color = "red">为了优化这种节点太少而产生的不均衡情况，一致性哈希算法引入了“虚拟节点”的概念。</font>  
+&emsp; <font color = "red">为了优化这种节点太少而产生的不均衡情况，一致性哈希算法引入了“虚拟节点”的概念。</font>所谓虚拟节点，就是<font color = "red">基于原来的物理节点映射出N个子节点</font>，最好把所有的子节点映射到环形空间上。    
 
 # 1. 一致性哈希  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-12.png)  
-&emsp; 一致性哈希简称DHT，可以<font color = "red">有效解决分布式存储结构下动态增加和删除节点所带来的问题。</font>  
+&emsp; 一致性哈希简称DHT，可以<font color = "clime">有效解决分布式存储结构下动态增加和删除节点所带来的问题。</font>  
 &emsp; 一致性哈希算法依赖于普通的哈希算法。原理中node相当于普通哈希算法中数组的值；key会缓存到环形存储结构里，属于顺时针顺序到下一个节点。  
 
 ## 1.1. 一致性哈希函数  

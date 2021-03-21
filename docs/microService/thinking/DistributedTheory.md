@@ -8,12 +8,17 @@
         - [1.1.3. CP或AP](#113-cp或ap)
     - [1.2. BASE理论](#12-base理论)
     - [1.3. CAP的实践](#13-cap的实践)
+    - [1.4. ★★★无处不在的CAP的A](#14-★★★无处不在的cap的a)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; CAP：一致性(Consistency)、可用性(Availability)、分区容错性(Partition tolerance)。  
-&emsp; BASE：**BASE是Basically Available(基本可用)、Soft state(软状态)和Eventually consistent(最终一致性)三个短语的缩写。** **<font color = "red">BASE理论是对CAP中一致性和可用性权衡的结果(BASE是对CAP中AP的一个扩展)。</font>**  
+1. CAP：一致性(Consistency)、可用性(Availability)、分区容错性(Partition tolerance)。  
+&emsp; 一致性模型：强一致性、弱一致性、>最终一致性、单调一致性/顺序一致性、会话一致性。  
+2. BASE：**BASE是Basically Available(基本可用)、Soft state(软状态)和Eventually consistent(最终一致性)三个短语的缩写。** **<font color = "red">BASE是对CAP中AP的一个扩展，是对CAP中一致性和可用性权衡的结果。</font>**  
+3. **<font color = "clime">无处不在的CAP的A</font>**  
+&emsp; 只要是分布式或集群，甚至一个接口中处在不同事务的调用，都会有数据一致性的问题。  
+&emsp; 例如Mysql主从复制、binlog和redolog的两阶段提交......
 
 # 1. 分布式理论  
 <!-- 
@@ -23,7 +28,7 @@ https://mp.weixin.qq.com/s/0qelIYKkyNVsM29u-3yH1w
 -->
 
 ## 1.1. CAP理论简介    
-&emsp; **<font color = "red">CAP理论，指的是在一个分布式系统中，一致性(Consistency)、可用性(Availability)、分区容错性(Partition tolerance)。</font>**  
+&emsp; **<font color = "red">CAP理论，指的是在一个分布式系统中存在一致性(Consistency)、可用性(Availability)、分区容错性(Partition tolerance)。</font>**  
 
 * 一致性：在分布式系统中的所有数据备份，在同一时刻是否同样的值。
 * 可用性：在集群中一部分节点故障后，集群整体是否还能响应客户端的读写请求。
@@ -38,10 +43,10 @@ https://mp.weixin.qq.com/s/0qelIYKkyNVsM29u-3yH1w
 &emsp; 数据的一致性模型可以分成以下几类：  
 
 * 强一致性：数据更新成功后，任意时刻所有副本中的数据都是一致的，一般采用同步的方式实现。    
-* 单调一致性(monotonic consistency)/顺序一致性。任何时刻，任何用户一旦读到某个数据在某次更新后的值，那么就不会再读到比这个值更旧的值。也就是说，可获取的数据顺序必是单调递增的。
-* 会话一致性(session consistency)。任何用户在某次会话中，一旦读到某个数据在某次更新后的值，那么在本次会话中就不会再读到比这值更旧的值会话一致性是在单调一致性的基础上进一步放松约束，只保证单个用户单个会话内的单调性，在不同用户或同一用户不同会话间则没有保障。示例case：php的session概念。
 * 弱一致性：数据更新成功后，系统不承诺立即可以读到最新写入的值，也不承诺具体多久之后可以读到。    
-* 最终一致性：弱一致性的一种形式，数据更新成功后，系统不承诺立即可以返回最新写入的值，但是保证最终会返回上一次更新操作的值。  
+* **<font color = "clime">最终一致性：弱一致性的一种形式，数据更新成功后，系统不承诺立即可以返回最新写入的值，但是保证最终会返回上一次更新操作的值。</font>**  
+* 单调一致性(monotonic consistency)/顺序一致性。任何时刻，任何用户一旦读到某个数据在某次更新后的值，那么就不会再读到比这个值更旧的值。也就是说，可获取的数据顺序必是单调递增的。
+* 会话一致性(session consistency)。任何用户在某次会话中，一旦读到某个数据在某次更新后的值，那么在本次会话中就不会再读到比这值更旧的值。会话一致性是在单调一致性的基础上进一步放松约束，只保证单个用户单个会话内的单调性，在不同用户或同一用户不同会话间则没有保障。示例case：php的session概念。
 
 &emsp; 分布式系统数据的强一致性、弱一致性和最终一致性可以通过Quorum NRW算法分析。  
 
@@ -55,7 +60,7 @@ https://mp.weixin.qq.com/s/0qelIYKkyNVsM29u-3yH1w
 &emsp; P分区容错性是一个最基本的要求，再根据业务特点在C(一致性)和A(可用性)之间寻求平衡。 
 
 ## 1.2. BASE理论  
-&emsp; **BASE是Basically Available(基本可用)、Soft state(软状态)和Eventually consistent(最终一致性)三个短语的缩写。** **<font color = "red">BASE理论是对CAP中一致性和可用性权衡的结果(BASE是对CAP中AP的一个扩展)，</font>** 其来源于对大规模互联网系统分布式实践的总结，是基于CAP定理逐步演化而来的。BASE和ACID是相反的，它完全不同于ACID的强一致性模型，而是通过牺牲强一致性来获得可用性，并允许数据在一段时间内是不一致的，但最终达到一致状态。  
+&emsp; **BASE是Basically Available(基本可用)、Soft state(软状态)和Eventually consistent(最终一致性)三个短语的缩写。** **<font color = "red">BASE是对CAP中AP的一个扩展，是对CAP中一致性和可用性权衡的结果。，</font>** 其来源于对大规模互联网系统分布式实践的总结，是基于CAP定理逐步演化而来的。BASE和ACID是相反的，它完全不同于ACID的强一致性模型，而是通过牺牲强一致性来获得可用性，并允许数据在一段时间内是不一致的，但最终达到一致状态。  
 
 * 基本可用(Basically Available)：指分布式系统在出现故障时，允许损失部分的可用性来保证核心可用。
 * 软状态(Soft State)：指允许分布式系统存在中间状态，该中间状态不会影响到系统的整体可用性。
@@ -68,3 +73,10 @@ https://mp.weixin.qq.com/s/DrSXZK-sXmdXHYBcnbEDhQ
 ZooKeeper是按照CP原则构建的,不适合做Service服务发现
 https://blog.csdn.net/paincupid/article/details/80610441
 -->
+
+
+-----------------------
+
+## 1.4. ★★★无处不在的CAP的A  
+&emsp; 只要是分布式或集群，甚至一个接口中处在不同事务的调用，都会有数据一致性的问题。  
+&emsp; 例如Mysql主从复制、binlog和redolog的两阶段提交......
