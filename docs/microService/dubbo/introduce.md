@@ -10,24 +10,35 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; <font color = "clime">Dubbo服务引用的时机有两个，第一个是在 Spring 容器调用 ReferenceBean 的 afterPropertiesSet 方法时引用服务，第二个是在 ReferenceBean 对应的服务被注入到其他类中时引用。</font>  
+&emsp; 服务引用的入口方法为 ReferenceBean 的 getObject 方法，该方法定义在 Spring 的 FactoryBean 接口中。  
+
+&emsp; **<font color = "red">服务引用流程：</font>**  
+1. 处理配置
+2. 引用服务  
+	1. 创建Invoker
+	2. 创建代理。有了代理对象，即可进行远程调用。  
+
+
 # 1. 服务引用   
 <!-- 
 Dubbo之服务消费原理 
 https://mp.weixin.qq.com/s/9ibX-46VfTnBLWcSSLpXQg
 -->
-&emsp; 在Dubbo中，可以通过两种方式引用远程服务。第一种是使用服务直连的方式引用服务，第二种方式是基于注册中心进行引用。服务直连的方式仅适合在调试或测试服务的场景下使用，不适合在线上环境使用。因此，本文将重点分析通过注册中心引用服务的过程。从注册中心中获取服务配置只是服务引用过程中的一环，除此之外，服务消费者还需要经历Invoker创建、代理类创建等步骤。  
+&emsp; **<font color = "red">在Dubbo中，可以通过两种方式引用远程服务。第一种是使用服务直连的方式引用服务，第二种方式是基于注册中心进行引用。</font>** 服务直连的方式仅适合在调试或测试服务的场景下使用，不适合在线上环境使用。因此，本文将重点分析通过注册中心引用服务的过程。从注册中心中获取服务配置只是服务引用过程中的一环，除此之外，服务消费者还需要经历Invoker创建、代理类创建等步骤。  
 
 &emsp; **服务引用流程**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-41.png)  
 &emsp; 首先ReferenceConfig类的init方法调用Protocol的refer方法生成Invoker实例(如上图中的红色部分)，这是服务消费的关键。接下来把Invoker转换为客户端需要的接口。 
 
 ## 1.1. 服务引用原理  
-&emsp; <font color = "lime">Dubbo服务引用的时机有两个，第一个是在 Spring 容器调用 ReferenceBean 的 afterPropertiesSet 方法时引用服务，第二个是在 ReferenceBean 对应的服务被注入到其他类中时引用。这两个引用服务的时机区别在于，第一个是饿汉式的，第二个是懒汉式的。默认情况下，Dubbo 使用懒汉式引用服务。如果需要使用饿汉式，可通过配置 \<dubbo:reference> 的 init 属性开启。</font>  
-&emsp; 下面按照Dubbo默认配置进行分析，<font color = "red">整个服务引用过程从 ReferenceBean的getObject方法开始。当服务被注入到其他类中时，Spring会第一时间调用 getObject方法，并由该方法执行服务引用逻辑。</font>按照惯例，在进行具体工作之前，需先进行配置检查与收集工作。接着根据收集到的信息决定服务用的方式，有三种，第一种是引用本地(JVM)服务，第二是通过直连方式引用远程服务，第三是通过注册中心引用远程服务。不管是哪种引用方式，最后都会得到一个Invoker实例。如果有多个注册中心，多个服务提供者，这个时候会得到一组Invoker实例，此时需要通过集群管理类Cluster将多个Invoker合并成一个实例。合并后的Invoker实例已经具备调用本地或远程服务的能力了，但并不能将此实例暴露给用户使用，这会对用户业务代码造成侵入。此时框架还需要通过代理工厂类(ProxyFactory)为服务接口生成代理类，并让代理类去调用Invoker逻辑。避免了Dubbo框架代码对业务代码的侵入，同时也让框架更容易使用。  
+&emsp; <font color = "clime">Dubbo服务引用的时机有两个，第一个是在 Spring 容器调用 ReferenceBean 的 afterPropertiesSet 方法时引用服务，第二个是在 ReferenceBean 对应的服务被注入到其他类中时引用。</font>这两个引用服务的时机区别在于，第一个是饿汉式的，第二个是懒汉式的。默认情况下，Dubbo 使用懒汉式引用服务。如果需要使用饿汉式，可通过配置 \<dubbo:reference> 的 init 属性开启。</font>  
+&emsp; 下面按照Dubbo默认配置进行分析，<font color = "red">整个服务引用过程从 ReferenceBean的getObject方法开始。当服务被注入到其他类中时，Spring会第一时间调用 getObject方法，并由该方法执行服务引用逻辑。</font>按照惯例，在进行具体工作之前，需先进行配置检查与收集工作。接着 **<font color = "clime">根据收集到的信息决定服务用的方式，有三种，第一种是引用本地(JVM)服务，第二是通过直连方式引用远程服务，第三是通过注册中心引用远程服务。</font>** 不管是哪种引用方式，最后都会得到一个Invoker实例。如果有多个注册中心，多个服务提供者，这个时候会得到一组Invoker实例，此时需要通过集群管理类Cluster将多个Invoker合并成一个实例。合并后的Invoker实例已经具备调用本地或远程服务的能力了，但并不能将此实例暴露给用户使用，这会对用户业务代码造成侵入。此时框架还需要通过代理工厂类(ProxyFactory)为服务接口生成代理类，并让代理类去调用Invoker逻辑。避免了Dubbo框架代码对业务代码的侵入，同时也让框架更容易使用。  
 &emsp; 以上就是服务引用的大致原理，下面深入到代码中，详细分析服务引用细节。  
 
 ## 1.2. 源码分析  
-&emsp; 服务引用的入口方法为 ReferenceBean 的 getObject 方法，该方法定义在 Spring 的 FactoryBean 接口中，ReferenceBean 实现了这个方法。实现代码如下：  
+&emsp; 服务引用的入口方法为ReferenceBean的getObject方法，该方法定义在Spring的FactoryBean接口中，ReferenceBean实现了这个方法。实现代码如下：  
 
 ```java
 public Object getObject() throws Exception {
@@ -46,7 +57,7 @@ public synchronized T get() {
     return ref;
 }
 ```
-&emsp; 以上两个方法的代码比较简短，并不难理解。这里需要特别说明一下，如果对 2.6.4 及以下版本的 getObject 方法进行调试时，会碰到比较奇怪的的问题。这里假设你使用 IDEA，且保持了 IDEA 的默认配置。当调试到 get 方法的if (ref == null)时，你会发现 ref 不为空，导致无法进入到 init 方法中继续调试。导致这个现象的原因是 Dubbo 框架本身有一些小问题。该问题已经在 pull request #2754 修复了此问题，并跟随 2.6.5 版本发布了。如果正在学习 2.6.4 及以下版本，可通过修改 IDEA 配置规避这个问题。首先 IDEA 配置弹窗中搜索 toString，然后取消Enable 'toString' object view勾选。具体如下：  
+&emsp; 以上两个方法的代码比较简短，并不难理解。这里需要特别说明一下，如果对2.6.4及以下版本的 getObject方法进行调试时，会碰到比较奇怪的的问题。这里假设使用IDEA，且保持了IDEA的默认配置。当调试到get方法的if(ref == null)时，会发现ref不为空，导致无法进入到init方法中继续调试。导致这个现象的原因是 Dubbo 框架本身有一些小问题。该问题已经在 pull request #2754 修复了此问题，并跟随 2.6.5 版本发布了。如果正在学习 2.6.4 及以下版本，可通过修改 IDEA 配置规避这个问题。首先 IDEA 配置弹窗中搜索 toString，然后取消Enable 'toString' object view勾选。具体如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-32.png)   
 
 ### 1.2.1. 处理配置
@@ -377,7 +388,7 @@ private T createProxy(Map<String, String> map) {
 &emsp; 上面代码很多，不过逻辑比较清晰。首先根据配置检查是否为本地调用，若是，则调用 InjvmProtocol 的 refer 方法生成InjvmInvoker 实例。若不是，则读取直连配置项，或注册中心 url，并将读取到的 url 存储到 urls 中。然后根据 urls 元素数量进行后续操作。若 urls 元素数量为1，则直接通过 Protocol 自适应拓展类构建 Invoker 实例接口。若 urls 元素数量大于1，即存在多个注册中心或服务直连 url，此时先根据 url 构建 Invoker。然后再通过 Cluster 合并多个 Invoker，最后调用 ProxyFactory 生成代理类。Invoker 的构建过程以及代理类的过程比较重要，因此接下来将分两小节对这两个过程进行分析。  
 
 #### 1.2.2.1. 创建 Invoker
-&emsp; <font color = "lime">Invoker是Dubbo的核心模型，代表一个可执行体。在服务提供方，Invoker用于调用服务提供类。在服务消费方，Invoker用于执行远程调用。Invoker是由Protocol实现类构建而来。</font>Protocol实现类有很多，本节会分析最常用的两个，分别是RegistryProtocol和DubboProtocol，其他的大家自行分析。下面先来分析 DubboProtocol的refer方法源码。如下：  
+&emsp; <font color = "clime">Invoker是Dubbo的核心模型，代表一个可执行体。在服务提供方，Invoker用于调用服务提供类。在服务消费方，Invoker用于执行远程调用。Invoker是由Protocol实现类构建而来。</font>Protocol实现类有很多，本节会分析最常用的两个，分别是RegistryProtocol和DubboProtocol，其他的大家自行分析。下面先来分析 DubboProtocol的refer方法源码。如下：  
 
 ```java
 public <T> Invoker<T> refer(Class<T> serviceType, URL url) throws RpcException {

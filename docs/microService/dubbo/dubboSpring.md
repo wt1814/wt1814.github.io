@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. Dubbo初始化](#1-dubbo初始化)
+- [1. ~~Dubbo初始化~~](#1-dubbo初始化)
     - [1.1. Dubbo中对Spring配置标签扩展](#11-dubbo中对spring配置标签扩展)
     - [1.2. 服务提供者初始化](#12-服务提供者初始化)
         - [1.2.1. 解析配置文件](#121-解析配置文件)
@@ -14,7 +14,7 @@
 <!-- /TOC -->
 
 
-# 1. Dubbo初始化  
+# 1. ~~Dubbo初始化~~  
 
 ## 1.1. Dubbo中对Spring配置标签扩展  
 <!-- 
@@ -23,7 +23,7 @@ https://blog.csdn.net/weixin_33769207/article/details/86361060
 -->
 &emsp; Spring提供了可扩展Schema的支持，完成一个自定义配置一般需要以下步骤：
 
-* 设计配置属性和JavaBean(dubbo的ServiceBean定义了dubbo每个服务的信息)
+* 设计配置属性和JavaBean（dubbo的ServiceBean定义了dubbo每个服务的信息）
 * 编写XSD文件
 * 编写NamespaceHandler和BeanDefinitionParser完成解析工作
 * 编写spring.handlers和spring.schemas串联起所有部件

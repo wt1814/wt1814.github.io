@@ -3,7 +3,7 @@
 - [1. Dubbo运行流程](#1-dubbo运行流程)
     - [1.1. 解析服务](#11-解析服务)
     - [1.2. ~~暴露服务~~](#12-暴露服务)
-    - [1.3. 引用服务](#13-引用服务)
+    - [1.3. ~~引用服务~~](#13-引用服务)
     - [1.4. 拦截服务](#14-拦截服务)
     - [1.5. Invoker](#15-invoker)
 
@@ -34,6 +34,8 @@
 &emsp; 注意：URL是[Dubbo公共契约](https://dubbo.apache.org/zh/docs/v2.7/dev/contract/)之一。    
 
 ## 1.2. ~~暴露服务~~  
+&emsp; [服务暴露源码解析](/docs/microService/dubbo/export.md)  
+
 &emsp; 下图是服务提供者暴露服务的主过程：(包含3个步骤)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-29.png)   
 
@@ -64,7 +66,9 @@
     &emsp; ~~再重新传给Protocol扩展点进行暴露：dubbo://service-host/com.foo.FooService?version=1.0.0，然后基于扩展点自适应机制，通过提供者URL的dubbo://协议头识别，就会调用DubboProtocol的export()方法，打开服务端口。~~  
 
 
-## 1.3. 引用服务
+## 1.3. ~~引用服务~~
+&emsp; [服务引用源码解析](/docs/microService/dubbo/introduce.md)  
+
 &emsp; 服务暴露之后，客户端就要引用服务，最后才是调用的过程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-30.png)   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-54.png)   

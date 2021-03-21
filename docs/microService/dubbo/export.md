@@ -1,9 +1,9 @@
 <!-- TOC -->
 
 - [1. 服务暴露](#1-服务暴露)
-    - [1.1. dubbo-rpc模块简介](#11-dubbo-rpc模块简介)
+    - [1.1. ~~dubbo-rpc模块简介~~](#11-dubbo-rpc模块简介)
         - [1.1.1. dubbo-­rpc-­api模块](#111-dubbo-­rpc-­api模块)
-        - [1.1.2. dubbo­-rpc­-default模块](#112-dubbo­-rpc­-default模块)
+        - [1.1.2. ~~dubbo­-rpc­-default模块~~](#112-dubbo­-rpc­-default模块)
     - [1.2. 服务暴露时序](#12-服务暴露时序)
     - [1.3. 服务暴露总体流程](#13-服务暴露总体流程)
     - [1.4. 前置工作](#14-前置工作)
@@ -11,9 +11,10 @@
         - [1.4.2. 多协议多注册中心导出服务](#142-多协议多注册中心导出服务)
         - [1.4.3. 组装 URL](#143-组装-url)
     - [1.5. 导出Dubbo服务](#15-导出dubbo服务)
+        - [★★★导出Dubbo服务总览](#★★★导出dubbo服务总览)
         - [1.5.1. Invoker创建过程](#151-invoker创建过程)
         - [1.5.2. 导出服务到本地](#152-导出服务到本地)
-        - [1.5.3. 导出服务到远程](#153-导出服务到远程)
+        - [1.5.3. ★★★导出服务到远程](#153-★★★导出服务到远程)
     - [1.6. 服务注册](#16-服务注册)
         - [1.6.1. 创建注册中心](#161-创建注册中心)
         - [1.6.2. 节点创建](#162-节点创建)
@@ -21,8 +22,22 @@
 <!-- /TOC -->
 
 &emsp; **总结：**  
-&emsp; **<font color = "red">Dubbo服务暴露过程始于Spring容器发布刷新事件，Dubbo在接收到事件后，会立即执行服务暴露逻辑。</font>** <font color = "lime">整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装URL。第二部分是导出服务，包含导出服务到本地(JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。</font>本篇文章将会对这三个部分代码进行详细的分析。  
-&emsp; **<font color = "red">服务导出的入口方法是ServiceBean的onApplicationEvent。onApplicationEvent是一个事件响应方法，该方法会在收到Spring上下文刷新事件后执行服务导出操作。</font>**  
+&emsp; **<font color = "red">Dubbo服务暴露过程始于Spring容器发布刷新事件，Dubbo在接收到事件后，会立即执行服务暴露逻辑。</font>**  
+&emsp; <font color = "clime">整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装URL。第二部分是导出服务，包含导出服务到本地(JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。</font>本篇文章将会对这三个部分代码进行详细的分析。  
+
+
+1. **<font color = "red">服务导出的入口方法是ServiceBean的onApplicationEvent。onApplicationEvent是一个事件响应方法，该方法会在收到Spring上下文刷新事件后执行服务导出操作。</font>**  
+2. 前置工作主要包含两个部分，分别是配置检查，以及URL装配。  
+3. 导出Dubbo服务：  
+    1. 导出到本地
+    2. 导出到远程：其包含了服务导出与服务注册两个过程。  
+        1. 服务导出：
+            1. 为服务提供类(ref)生成 Invoker  
+            2. 导出服务，并生成 Exporter
+        2. 服务注册(以Zookeeper为例)：  
+            1. createRegistry，创建Zookeeper客户端
+            2. 服务注册，本质上是将服务配置数据写入到Zookeeper的某个路径的节点下。
+    3. 导出到远程但无注册中心。  
 
 # 1. 服务暴露  
 <!-- 
@@ -30,7 +45,7 @@ Dubbo之服务暴露
 https://mp.weixin.qq.com/s/TK9ZU3Vm4IoTrrwmbvV-uQ
 -->
 
-## 1.1. dubbo-rpc模块简介  
+## 1.1. ~~dubbo-rpc模块简介~~  
 ### 1.1.1. dubbo-­rpc-­api模块  
 &emsp; dubbo­-rpc-­api模块是dubbo最为核心的一个模块，它定义了dubbo作为一个rpc框架最核心的一些接口和抽象实现。  
 
@@ -54,7 +69,7 @@ https://mp.weixin.qq.com/s/TK9ZU3Vm4IoTrrwmbvV-uQ
 * Invoker  
 &emsp; 该接口是服务的执行体。它有获取服务发布的URL，服务的接口类等关键属性的行为；还有核心的服务执行方法invoke，执行该方法后返回执行结果Result，而传递的参数是调用信息Invocation。该接口有大量的抽象和具体实现类。AbstractProxyInvoker是基于代理的执行器抽象实现，AbstractInvoker是通用的抽象实现。  
 
-### 1.1.2. dubbo­-rpc­-default模块  
+### 1.1.2. ~~dubbo­-rpc­-default模块~~  
 &emsp; dubbo-­rpc-­default模块是dubbo­-rpc-­api模块的默认实现，提供了默认的dubbo协议的实现，它是所有模块中最为复杂的一个模块，因为底层的协议都是它自己实现的。  
 &emsp; **简化类图**    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-39.png)  
@@ -76,7 +91,7 @@ https://mp.weixin.qq.com/s/TK9ZU3Vm4IoTrrwmbvV-uQ
 &emsp; Dubbo处理服务暴露的关键就在Invoker转换到Exporter的过程(如上图中的红色部分)。  
 
 ## 1.3. 服务暴露总体流程
-&emsp; **<font color = "red">Dubbo服务暴露过程始于Spring容器发布刷新事件，Dubbo在接收到事件后，会立即执行服务暴露逻辑。</font>** <font color = "lime">整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装URL。第二部分是导出服务，包含导出服务到本地(JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。</font>本篇文章将会对这三个部分代码进行详细的分析。  
+&emsp; **<font color = "red">Dubbo服务暴露过程始于Spring容器发布刷新事件，Dubbo在接收到事件后，会立即执行服务暴露逻辑。</font>** <font color = "clime">整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装URL。第二部分是导出服务，包含导出服务到本地(JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。</font>本篇文章将会对这三个部分代码进行详细的分析。  
 &emsp; **<font color = "red">服务导出的入口方法是ServiceBean的onApplicationEvent。onApplicationEvent是一个事件响应方法，该方法会在收到Spring上下文刷新事件后执行服务导出操作。</font>** 方法代码如下：  
 
 ```java
@@ -556,6 +571,7 @@ for (遍历 ArgumentConfig 列表) {
 &emsp; 在本节分析的源码中，appendParameters 这个方法出现的次数比较多，该方法用于将对象字段信息添加到 map 中。实现上则是通过反射获取目标对象的 getter 方法，并调用该方法获取属性值。然后再通过 getter 方法名解析出属性名，比如从方法名 getName 中可解析出属性 name。如果用户传入了属性名前缀，此时需要将属性名加入前缀内容。最后将 <属性名，属性值> 键值对存入到 map 中就行了。限于篇幅原因，这里就不分析 appendParameters 方法的源码了，大家请自行分析。   
 
 ## 1.5. 导出Dubbo服务
+### ★★★导出Dubbo服务总览
 &emsp; 前置工作做完，接下来就可以进行服务导出了。服务导出分为导出到本地(JVM)，和导出到远程。在深入分析服务导出的源码前，先来从宏观层面上看一下服务导出逻辑。如下：  
 
 ```java
@@ -944,8 +960,8 @@ public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
 ```
 &emsp; 如上，InjvmProtocol 的 export 方法仅创建了一个 InjvmExporter，无其他逻辑。到此导出服务到本地就分析完了，接下来，继续分析导出服务到远程的过程。  
 
-### 1.5.3. 导出服务到远程
-&emsp; <font color = "lime">与导出服务到本地相比，导出服务到远程的过程要复杂不少，其包含了服务导出与服务注册两个过程。</font>这两个过程涉及到了大量的调用，比较复杂。按照代码执行顺序，本节先来分析服务导出逻辑，服务注册逻辑将在下一节进行分析。下面开始分析，把目光移动到 RegistryProtocol 的 export 方法上。  
+### 1.5.3. ★★★导出服务到远程
+&emsp; <font color = "clime">与导出服务到本地相比，导出服务到远程的过程要复杂不少，其包含了服务导出与服务注册两个过程。</font>这两个过程涉及到了大量的调用，比较复杂。按照代码执行顺序，本节先来分析服务导出逻辑，服务注册逻辑将在下一节进行分析。下面开始分析，把目光移动到 RegistryProtocol 的 export 方法上。  
 
 ```java
 public <T> Exporter<T> export(final Invoker<T> originInvoker) throws RpcException {
@@ -988,14 +1004,14 @@ public <T> Exporter<T> export(final Invoker<T> originInvoker) throws RpcExceptio
     return new DestroyableExporter<T>(exporter, originInvoker, overrideSubscribeUrl, registeredProviderUrl);
 }
 ```
-&emsp; 上面代码看起来比较复杂，主要做如下一些操作：
-
-1. 调用 doLocalExport 导出服务
+&emsp; 上面代码看起来比较复杂， **<font color = "clime">主要做如下一些操作：</font>**  
+1. 调用doLocalExport导出服务
 2. 向注册中心注册服务
 3. 向注册中心进行订阅 override 数据
 4. 创建并返回 DestroyableExporter
 
-&emsp; 在以上操作中，除了创建并返回 DestroyableExporter 没什么难度外，其他几步操作都不是很简单。这其中，导出服务和注册服务是本章要重点分析的逻辑。 订阅 override 数据并非本文重点内容，后面会简单介绍一下。下面先来分析 doLocalExport 方法的逻辑，如下：  
+&emsp; 在以上操作中，除了创建并返回DestroyableExporter没
+什么难度外，其他几步操作都不是很简单。这其中，导出服务和注册服务是本章要重点分析的逻辑。订阅override数据并非本文重点内容，后面会简单介绍一下。下面先来分析doLocalExport方法的逻辑，如下：  
 
 ```java
 private <T> ExporterChangeableWrapper<T> doLocalExport(final Invoker<T> originInvoker) {
@@ -1285,7 +1301,7 @@ public void register(URL registryUrl, URL registedProviderUrl) {
     registry.register(registedProviderUrl);
 }
 ```
-&emsp; <font color = "lime">register 方法包含两步操作，第一步是获取注册中心实例，第二步是向注册中心注册服务。</font>接下来分两节内容对这两步操作进行分析。  
+&emsp; <font color = "clime">register 方法包含两步操作，第一步是获取注册中心实例，第二步是向注册中心注册服务。</font>接下来分两节内容对这两步操作进行分析。  
 
 ### 1.6.1. 创建注册中心
 &emsp; 本节内容以 Zookeeper 注册中心为例进行分析。下面先来看一下 getRegistry 方法的源码，这个方法由 AbstractRegistryFactory 实现。如下：  
@@ -1428,7 +1444,7 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
 &emsp; 本节分析了 ZookeeperRegistry 实例的创建过程，整个过程并不是很复杂。大家在看完分析后，可以自行调试，以加深理解。现在注册中心实例创建好了，接下来要做的事情是向注册中心注册服务，继续往下看。  
 
 ### 1.6.2. 节点创建
-&emsp; 以 Zookeeper 为例，所谓的服务注册，本质上是将服务配置数据写入到 Zookeeper 的某个路径的节点下。为了让大家有一个直观的了解，下面将 Dubbo 的 demo 跑起来，然后通过 Zookeeper 可视化客户端 ZooInspector 查看节点数据。如下：   
+&emsp;  **<font color = "clime">以 Zookeeper 为例，所谓的服务注册，本质上是将服务配置数据写入到 Zookeeper 的某个路径的节点下。</font>** 为了让大家有一个直观的了解，下面将 Dubbo 的 demo 跑起来，然后通过 Zookeeper 可视化客户端 ZooInspector 查看节点数据。如下：   
 
 &emsp; 从上图中可以看到 com.alibaba.dubbo.demo.DemoService 这个服务对应的配置信息（存储在 URL 中）最终被注册到了 /dubbo/com.alibaba.dubbo.demo.DemoService/providers/ 节点下。搞懂了服务注册的本质，那么接下来就可以去阅读服务注册的代码了。服务注册的接口为 register(URL)，这个方法定义在 FailbackRegistry 抽象类中。代码如下：  
 
