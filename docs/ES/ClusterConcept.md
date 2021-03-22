@@ -8,6 +8,8 @@
     - [1.4. 路由(routing)](#14-路由routing)
 
 <!-- /TOC -->
+
+
  
 # 1. ES集群基本概念
 &emsp; 在数据库系统中，为了保证高可用性，可能会做主从复制、分库分表等操作。在ES中也有相同的基本操作。ES集群架构如下：  
@@ -38,7 +40,7 @@ https://www.cnblogs.com/37yan/p/9928748.html
   * Node.voting_only = true(仅投票节点，即使配置了data.master = true，也不会参选, 但是仍然可以作为数据节点)。  
 * coordinating：协调节点  
   * 每一个节点都隐式的是一个协调节点，如果同时设置了data.master = false和data.data=false，那么此节点将成为仅协调节点。
-* Master-eligible node：Master候选节点。	  
+* Master-eligible node：Master候选节点，只有Master候选节点会升级为Master节点。	  
  
 
 &emsp; **关于集群节点类型的两个配置：node.master和node.data**   
