@@ -82,7 +82,7 @@ https://mp.weixin.qq.com/s/qfm-Xq1ZNJFJdSZ58qSLLA
 ### 1.1.1. 8种基本数据类型和其包装类  
 &emsp; **<font color = "red">这八种基本类型都有对应的包装类，分别为：Byte、Short、Integer、Long、Float、Double、Character、Boolean。</font>**  
 
-**基本数据类型和其包装类的区别：**   
+&emsp; **基本数据类型和其包装类的区别：**   
 1. 在类中，一般使用基本数据包装类。方法中，一般使用基本数据类型。   
 2. 基本数据类型计算的效率高，可以使用“==”比较大小；  
 3. 包装类型的初始值为null，用方法equals比较大小。

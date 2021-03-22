@@ -5,7 +5,7 @@
 - [1. JDK1.8](#1-jdk18)
     - [1.1. 接口的默认方法与静态方法](#11-接口的默认方法与静态方法)
         - [1.1.1. 接口中默认方法](#111-接口中默认方法)
-        - [1.1.2. 接口中静态方法](#112-接口中静态方法)
+        - [1.1.2. ~~接口中静态方法~~](#112-接口中静态方法)
     - [1.2. Lambda表达式](#12-lambda表达式)
     - [1.3. StreamAPI](#13-streamapi)
     - [1.4. Optional类](#14-optional类)
@@ -14,6 +14,12 @@
     - [1.7. Base64](#17-base64)
 
 <!-- /TOC -->
+
+&emsp; **<font color = "red">总结：</font>**  
+1. 接口的默认方法与静态方法
+&emsp; <font color = "clime">default方法被子接口继承，也可以被其实现类所调用。default方法被继承时，可以被子接口覆写。</font>  
+&emsp; <font color = "clime">接口中的static方法不能被继承，也不能被实现类调用，只能被自身调用。即不能通过接口实现类的方法调用静态方法，直接通过接口名称调用。但是静态变量会被继承。</font>  
+
 
 # 1. JDK1.8
 ## 1.1. 接口的默认方法与静态方法  
@@ -33,7 +39,10 @@ public interface DefaultFunctionInterface {
 &emsp; <font color = "clime">default方法被子接口继承，也可以被其实现类所调用。default方法被继承时，可以被子接口覆写。</font>  
 &emsp; 如果一个类实现了多个接口，且这些接口中无继承关系，这些接口中若有相同的(同名，同参数)的default方法，则接口实现类会报错。接口实现类必须通过特殊语法指定该实现类要实现哪个接口的default方法，\<接口\>.super.\<方法名\>([参数])。  
 
-### 1.1.2. 接口中静态方法  
+### 1.1.2. ~~接口中静态方法~~
+<!-- 
+https://blog.csdn.net/tangshuai96/article/details/101264446
+-->  
 &emsp; 在接口中定义静态方法。  
 
 ```java
@@ -43,7 +52,7 @@ public interface StaticFunctionInterface {
     }
 }
 ```
-&emsp; <font color = "clime">接口中的static方法不能被继承，也不能被实现类调用，只能被自身调用。但是静态变量会被继承。</font>  
+&emsp; <font color = "clime">接口中的static方法不能被继承，也不能被实现类调用，只能被自身调用。即不能通过接口实现类的方法调用静态方法，直接通过接口名称调用。但是静态变量会被继承。</font>  
 
 ## 1.2. Lambda表达式  
 &emsp; [Lambda](/docs/java/JDK8/Lambda.md)  
@@ -99,7 +108,7 @@ finally{
 |Encoder| | 
 |getEncoder()|返回Base64.Encoder，编码使用基本型base64编码方案。|
 |getMimeEncoder()|返回Base64.Encoder，编码使用MIME型base64编码方案。|
-|getMimeEncoder(int lineLength, byte[] lineSeparator)	|返回Base64.Encoder，编码使用MIME型base64编码方案，可以通过参数指定每行的长度及行的分隔符。|
+|getMimeEncoder(int lineLength, byte[] lineSeparator)|返回Base64.Encoder，编码使用MIME型base64编码方案，可以通过参数指定每行的长度及行的分隔符。|
 |getUrlEncoder()|返回Base64.Encoder，编码使用URL和文件名安全型 base64 编码方案。|
 
 ```java
@@ -110,4 +119,3 @@ System.out.println("Base64 编码字符串 (基本) :" + base64encodedString);
 byte[] base64decodedBytes = Base64.getDecoder().decode(base64encodedString);
 System.out.println("原始字符串: " + new String(base64decodedBytes, "utf-8"));
 ```
-

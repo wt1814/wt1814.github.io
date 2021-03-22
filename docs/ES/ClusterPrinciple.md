@@ -8,7 +8,7 @@
         - [1.1.3. master选举](#113-master选举)
     - [1.2. 集群容错](#12-集群容错)
         - [1.2.1. 集群容错流程](#121-集群容错流程)
-        - [1.2.2. ※※※split-brain(脑分裂问题)](#122-※※※split-brain脑分裂问题)
+        - [1.2.2. ★★★split-brain(脑分裂问题)](#122-★★★split-brain脑分裂问题)
 
 <!-- /TOC -->
 
@@ -59,7 +59,7 @@ discovery.zen.join_timeout：有新的node加入集群时，会发送一个join 
 &emsp; ③第三步：Master节点会尝试重启故障机  
 &emsp; ④第四步：数据同步，Master会将宕机期间丢失的数据同步到重启机器对应的分片上去  
 
-### 1.2.2. ※※※split-brain(脑分裂问题)  
+### 1.2.2. ★★★split-brain(脑分裂问题)  
 <!-- 
 Elasticsearch 中的节点(比如共 20 个)，其中的 10 个 选了一个master，另外 10 个选了另一个master，怎么办？  
 1、当集群 master 候选数量不小于 3 个时， 可以通过设置最少投票通过数量 ( discovery.zen.minimum_master_nodes) 超过所有候选节点一半以上来解决脑裂问题；  
