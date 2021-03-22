@@ -24,6 +24,9 @@
 
 # 1. 逃逸分析 
 <!--
+***  Java对象竟然会在栈上分配内存？
+https://mp.weixin.qq.com/s/GcdlQ0ipXlTj7AVV3cd7Ug
+
 https://mp.weixin.qq.com/s/BUcFh9ArENu9rlMdmlDNWg
 https://mp.weixin.qq.com/s/jPIHNsQwiYNCRUQt1qXR6Q
 Java中的对象不一定是在堆上分配的。  

@@ -138,7 +138,7 @@ https://mp.weixin.qq.com/s/Mvl3OURNurdrJ2o9OyM6KQ
 4. 对索引进行模糊查询like时可能使索引失效(以%开头)。  
 &emsp; 前导模糊查询不能利用索引(like '%XX'或者like '%XX%')。假如有这样一列code的值为'AAA','AAB','BAA','BAB'，如果where code like '%AB'条件，由于条件首字母是是模糊%的，所以不能利用索引的顺序，必须一个个去查询。这样会导致全索引扫描或者全表扫描。如果是这样的条件where code like 'A % '，就可以查找CODE中A开头的CODE的位置，当碰到B开头的数据时，就可以停止查找了，因为后面的数据一定不满足要求。这样就可以利用索引了。  
 &emsp; 解决办法：可采用在建立索引时用reverse(columnName)这种方法处理。  
-5. 隐式转换导致索引失效。  
+5. 隐式转换导致索引失效。**<font color = "clime">⚠️注：包含类型转换和字符集转换。</font>**    
 &emsp; 由于表的字段tu_mdn定义为varchar2(20)，但在查询时把该字段作为number类型以where条件传给sql语句，这样会导致索引失效。  
 &emsp; 错误的例子：select * from test where tu_mdn=13333333333;  
 &emsp; 正确的例子：select * from test where tu_mdn='13333333333';  
@@ -147,6 +147,10 @@ https://mp.weixin.qq.com/s/Mvl3OURNurdrJ2o9OyM6KQ
 &emsp; 错误的例子：select * from test where round(id)=10; 此时id的索引已经不起作用了。  
 &emsp; 正确的例子：首先建立函数索引，create index test_id_fbi_idx on test(round(id));然后 select * from test where round(id)=10; 这时函数索引起作用了。
 
+<!-- 
+字符编码，原来是SQL不走索引的元凶之一！ 
+https://mp.weixin.qq.com/s/xIdglQdGvgeDHdGCb5KUpg
+-->
 
 ## 1.4. ★★★索引条件下推(ICP)  
 <!--

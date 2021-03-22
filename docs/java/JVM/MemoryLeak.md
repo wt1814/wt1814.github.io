@@ -13,6 +13,8 @@
 <!-- 
 JAVA内存泄漏和内存溢出的区别和联系 
 https://mp.weixin.qq.com/s/QwY0PAHO_oyELPlxRuHbOQ
+Java中七个潜在的内存泄露风险，你知道几个？ 
+https://mp.weixin.qq.com/s/rJ-YSpHy9SVnJQ6UHUKZvQ
 -->
 
 ## 1.1. 简介

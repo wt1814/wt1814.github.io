@@ -35,6 +35,10 @@ https://mp.weixin.qq.com/s/zKrpKLo1S2e0LuPJRDSiiQ
 https://mp.weixin.qq.com/s/wIjAj4rAAZccAl-yhmj_TA
 https://mp.weixin.qq.com/s/VpcgoV9JJWZz6tLagsIYnQ
 https://mp.weixin.qq.com/s/yijuwQuuOBE8x1VKk6lhCQ
+HashMap
+https://mp.weixin.qq.com/s/50opoIzy--aGCDZPNvg7RA
+
+记录插入顺序的LinkHashMap、给key排序的TreeMap。
 -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-4.png)  

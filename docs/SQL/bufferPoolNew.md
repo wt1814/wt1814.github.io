@@ -41,6 +41,7 @@
 # 1. 缓冲池(buffer pool)  
 <!--
 mysql-缓冲池
+https://mp.weixin.qq.com/s/3CR8EUXaHRmUbi055Siiqg
 https://blog.csdn.net/jaylaozhou/article/details/103921807
 
 mysql缓冲池_详解MySQL中的缓冲池（buffer pool）

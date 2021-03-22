@@ -141,8 +141,10 @@ https://blog.csdn.net/huangyu1985/article/details/53449776
 <!-- 
 如何使用SpringBoot AOP 记录操作日志、异常日志？ 
 https://mp.weixin.qq.com/s/hqRm9veJk4eUrzWrCI_Vlg
--->
+写了个牛逼的日志切面，甩锅更方便了！ 
+https://mp.weixin.qq.com/s/mWiVsBk_7uUv15H4wVadAg
 
+-->
 
 
 ## 1.3. ★★★SpringAOP失效  
