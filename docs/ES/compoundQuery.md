@@ -1,13 +1,80 @@
 
 
 
-# 1. ~~复合查询~~ 
+# 1. ~~bool复合查询~~ 
 <!-- 
 ElasticSearch 复合查询，理解 Es 中的文档评分策略！ 
 https://mp.weixin.qq.com/s/59D8ouXbTMlh4swb6eY2zA
+
+
+
+&emsp; ①想要一台带NFC功能的 或者 小米的手机 但是不要耳机  
+
+```sql
+SELECT * from product 
+where (`name` like "%xiaomi%" or `name` like '%nfc%')
+AND `name` not LIKE '%erji%'
+```
+```text
+GET /product/_search
+{
+  "query": {
+    "constant_score":{
+      "filter": {
+        "bool": {
+          "should":[
+            {"term":{"name":"xiaomi"}},
+            {"term":{"name":"nfc"}}
+            ],
+          "must_not":[
+            {"term":{"name":"erji"}}
+            ]
+        }
+      },
+      "boost": 1.2
+    }
+  }
+}
+```
+&emsp; ②搜索一台xiaomi nfc phone或者一台满足 是一台手机 并且 价格小于等于2999  
+
+```sql
+SELECT * FROM product 
+WHERE NAME LIKE '%xiaomi nfc phone%' 
+OR (
+NAME LIKE '%erji%' 
+AND price > 399 
+AND price <=999);
+```
+```text
+GET /product/_search
+{
+  "query": {
+    "constant_score": {
+      "filter": { 
+        "bool":{
+          "should":[
+            {"match_phrase":{"name":"xiaomi nfc phone"}},
+            {
+              "bool":{
+                "must":[
+                  {"term":{"name":"phone"}},
+                  {"range":{"price":{"lte":"2999"}}}
+                  ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+
+
 -->
 
-## 1.1. Query and filter(查询和过滤)
 &emsp; bool 组合匹配  
 
 * 核心功能：多条件组合综合查询。
@@ -147,68 +214,3 @@ GET /product/_search
 }
 ```
  
-## 1.2. Compound queries(组合查询)
-&emsp; ①想要一台带NFC功能的 或者 小米的手机 但是不要耳机  
-
-```sql
-SELECT * from product 
-where (`name` like "%xiaomi%" or `name` like '%nfc%')
-AND `name` not LIKE '%erji%'
-```
-```text
-GET /product/_search
-{
-  "query": {
-    "constant_score":{
-      "filter": {
-        "bool": {
-          "should":[
-            {"term":{"name":"xiaomi"}},
-            {"term":{"name":"nfc"}}
-            ],
-          "must_not":[
-            {"term":{"name":"erji"}}
-            ]
-        }
-      },
-      "boost": 1.2
-    }
-  }
-}
-```
-&emsp; ②搜索一台xiaomi nfc phone或者一台满足 是一台手机 并且 价格小于等于2999  
-
-```sql
-SELECT * FROM product 
-WHERE NAME LIKE '%xiaomi nfc phone%' 
-OR (
-NAME LIKE '%erji%' 
-AND price > 399 
-AND price <=999);
-```
-```text
-GET /product/_search
-{
-  "query": {
-    "constant_score": {
-      "filter": { 
-        "bool":{
-          "should":[
-            {"match_phrase":{"name":"xiaomi nfc phone"}},
-            {
-              "bool":{
-                "must":[
-                  {"term":{"name":"phone"}},
-                  {"range":{"price":{"lte":"2999"}}}
-                  ]
-              }
-            }
-          ]
-        }
-      }
-    }
-  }
-}
-```
-
-

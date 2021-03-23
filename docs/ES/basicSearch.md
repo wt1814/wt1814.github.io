@@ -45,31 +45,14 @@ GET /product/_search
   }
 }
 ```
-&emsp; ③sort：按照价格倒序排序  
+
+&emsp; ④multi_match：根据多个字段查询一个关键词，name和desc中包含“nfc”的doc  
 
 &emsp; multi_match 多组匹配   
 
 * 核心功能：match query 针对多字段的升级版本。
 * 应用场景：多字段检索。
 * 适用类型：text。
-
-```text
-GET /product/_search
-{
-  "query": {
-    "multi_match": {
-      "query": "nfc",
-      "fields": ["name","desc"]
-    }
-  },
-  "sort": [
-    {
-      "price": "desc"
-    }
-  ]
-}
-```
-&emsp; ④multi_match：根据多个字段查询一个关键词，name和desc中包含“nfc”的doc  
 
 ```text
 GET /product/_search
@@ -100,6 +83,26 @@ GET /product/_search
   "_source": ["name","price"]
 }
 ```
+
+&emsp; ③sort：按照价格倒序排序  
+
+```text
+GET /product/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "nfc",
+      "fields": ["name","desc"]
+    }
+  },
+  "sort": [
+    {
+      "price": "desc"
+    }
+  ]
+}
+```
+
 &emsp; ⑥分页（deep-paging）：查询第一页（每页两条数据）  
 
 ```text
@@ -149,7 +152,7 @@ GET /product/_search
 <!-- 
 https://mp.weixin.qq.com/s/Fc5LhiLJIeCtstl9OFeqdQ
 -->
-&emsp; 短语搜索，和match相反，match会将输入的搜索串拆解开来，去倒排索引里面一一匹配，只要能匹配上任意一个拆解后的单词，就可以作为结果返回，phrase search，要求输入的搜索串必须在指定的字段文本中完全包含一模一样的，才可以算匹配，才能作为结果返回。  
+&emsp; 短语搜索，和match相反，match会将输入的搜索串拆解开来，去倒排索引里面一一匹配，只要能匹配上任意一个拆解后的单词，就可以作为结果返回。phrase search，要求输入的搜索串必须在指定的字段文本中完全包含一模一样的，才可以算匹配，才能作为结果返回。  
 &emsp; “nfc phone”会作为一个短语去检索。    
 
 ```text

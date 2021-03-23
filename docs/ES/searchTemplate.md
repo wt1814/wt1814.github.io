@@ -20,16 +20,14 @@
 https://blog.csdn.net/miaomiao19971215/article/details/106322234
 -->
 &emsp; 什么是搜索模板？  
-&emsp; 检索模板(search template)，在实战业务场景中：每次业务请求都要构造 DSL，比如：这次查title、下次查content，除此之外的DSL部分都一样，但两次请求：后端代码那里就要有相应的修改和适配。有没有不修改、拼接DSL使用检索的方案？这就引出了搜索模板。  
+&emsp; 在实战业务场景中：每次业务请求都要构造 DSL，比如：这次查title、下次查content，除此之外的DSL部分都一样，但两次请求：后端代码那里就要有相应的修改和适配。有没有不修改、拼接DSL使用检索的方案？这就引出了搜索模板。  
 &emsp; 搜索模板与关系数据库中的存储过程非常相似。可以将常用查询定义为模板，并且使用Elasticsearch的应用程序可以简单地通过其ID引用查询。  
 &emsp; 模板接受在运行时指定参数。搜索模板存储在服务器端，可以在不更改客户端代码的情况下进行修改。  
 &emsp; 模板使用Mustache模板引擎表示。关于Mustache可以访问：http://mustache.github.io/mustache.5.html。
 
 ## 1.1. template入门案例  
 &emsp; 本入门案例中定义的搜索模板仅在一次查询调用时生效，没有让Elsticsearch保存(记忆)搜索模板。  
-&emsp; “source” 代表搜索模板，内含要执行的search语句  
-&emsp; "params"是需要向模板中传递的变量。  
-&emsp; {{变量名}}用于定义模板中的变量参数。  
+&emsp; “source” 代表搜索模板，内含要执行的search语句；"params"是需要向模板中传递的变量；{{变量名}}用于定义模板中的变量参数。  
 
 ### 1.1.1. 标准形式  
 &emsp; 可以发现，如果去掉"source"标签，实际上这就是一个标准的搜索条件语句。  

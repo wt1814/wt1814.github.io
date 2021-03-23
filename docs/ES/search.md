@@ -60,7 +60,11 @@ https://haokan.baidu.com/v?pd=wisenatural&vid=12730932323983835698
 &emsp; [基本查询](/docs/ES/basicSearch.md)  
 &emsp; [聚合查询](/docs/ES/togetherSearch.md)  
 &emsp; [分页查询](/docs/ES/limitSearch.md)  
+
+---
 &emsp; [复合查询](/docs/ES/compoundQuery.md)  
 &emsp; [多表关联](/docs/ES/multiTable.md)  
+
+---
 &emsp; [高亮显示](/docs/ES/highLight.md)  
 &emsp; [检索模版](/docs/ES/searchTemplate.md)  
