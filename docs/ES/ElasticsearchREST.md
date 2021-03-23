@@ -45,13 +45,17 @@ POST products/_search?size=0
 
 &emsp; 调用REST API很容易，除了实际的主机名/ IP和端口外，它还包含四个部分：  
 
-* 动词——REST调用的 GET，PUT，POST和DELETE部分。在Kibana中，可以直接指定这些名称，对于cURL，请使用-X选项。  
+* 动词  
+&emsp; REST调用的 GET，PUT，POST和DELETE部分。在Kibana中，可以直接指定这些名称，对于cURL，请使用-X选项。  
 &emsp; 对应示例中的：POST  
-* 路径——API和路径。例如：/_cluster/health或/logstash-cron-2020.07.03/_mapping-路径的第一部分通常是索引名称，除非它以_开头。  
+* 路径  
+&emsp; API和路径。例如：/_cluster/health或/logstash-cron-2020.07.03/_mapping-路径的第一部分通常是索引名称，除非它以_开头。  
 &emsp; 对应示例中的：products/_search，其中products是索引。  
-* 参数——后面的各种选项。例如?h或?v    
+* 参数  
+&emsp; 后面的各种选项。例如?h或?v    
 &emsp; 对应示例中的：?size=0。参数设定部分。  
-* 正文——某些调用需要JSON正文(例如设置选项)，并将包含在{}中  
+* 正文  
+&emsp; 某些调用需要JSON正文(例如设置选项)，并将包含在{}中。  
 &emsp; 对应示例中的：检索语句部分。  
 
 ### 1.1.2. 常用选项  
@@ -74,7 +78,7 @@ POST products/_search?size=0
 &emsp; 最有用的 API 调用通常与集群的运行状况，状态和统计信息有关，例如：  
 
 * 获取版本和集群名称等信息。  
-GET /   
+&emsp; GET /   
 * 获取集群健康状态等信息，包括集群名称、节点数、数据节点数、分片等的一些统计信息。  
 &emsp; GET /_cluster/health  
 * 获取节点列表信息。显示了堆内存、磁盘使用情况，CPU 、负载和主机角色。  
@@ -86,6 +90,6 @@ GET /
 &emsp; GET /_cluster/health?level=shards&pretty  
 * 获取索引，文档，缓存，段，节点等的集群统计信息的更深入概述。  
 &emsp; 用途：有助于基本故障排除。  
-GET /_cluster/stats   
+&emsp; GET /_cluster/stats   
 * 获取节点级别的更多统计信息，包括堆使用情况等。  
 &emsp; GET /_nodes/stats   

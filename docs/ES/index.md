@@ -44,7 +44,7 @@ https://mp.weixin.qq.com/s/gi9Dxt23chmEgDK9ZWfHLw
 
 ## 1.1. 索引操作
 ### 1.1.1. 索引增删改查  
-&emsp; 创建一个名为twitter的索引，设置索引的分片数为3，备份数为2。注意：在ES中创建一个索引，类似于在数据库中建立一个数据库(ES6.0之后类似于创建一个表)  
+&emsp; 创建一个名为twitter的索引，设置索引的分片数为3，备份数为2。  
 
 ```text
 PUT twitter
@@ -59,12 +59,12 @@ PUT twitter
 ```
 &emsp; 说明：  
 &emsp; 默认的分片数是5到1024。默认的备份数是1。  
-&emsp; 索引的名称必须是小写的，不可重名  
+&emsp; 索引的名称必须是小写的，不可重名。  
 
 &emsp; 创建结果：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-25.png)  
 
-&emsp; 创建的命令还可以简写为  
+&emsp; 创建的命令还可以简写为：  
 
 ```text
 PUT twitter
@@ -180,7 +180,6 @@ index.blocks.metadata：设为true，则索引元数据不可读写。
 ```
 
 
-
 ### 1.1.2. Open/Close Index打开/关闭索引  
 
 ```text
@@ -228,7 +227,7 @@ POST /logs_write/_rollover
 ```
 &emsp; 说明：  
 &emsp; 如果别名logs_write指向的索引是7天前（含）创建的或索引的文档数>=1000或索引的大小>= 5gb，则会创建一个新索引 logs-000002，并把别名logs_writer指向新创建的logs-000002索引  
-&emsp; Rollover Index 新建索引的命名规则：  
+&emsp; Rollover Index新建索引的命名规则：  
 &emsp; 如果索引的名称是-数字结尾，如logs-000001，则新建索引的名称也会是这个模式，数值增1。  
 &emsp; 如果索引的名称不是-数值结尾，则在请求rollover api时需指定新索引的名称
 
@@ -327,7 +326,7 @@ https://www.cnblogs.com/shoufeng/p/10641560.html
 &emsp; 在创建索引时，为每个索引写定义信息可能是一件繁琐的事情，ES提供了索引模板功能，可以定义一个索引模板， **模板中定义好settings、mapping、以及一个模式定义来匹配创建的索引。**  
 &emsp; <font color = "clime">注意：模板只在索引创建时被参考，修改模板不会影响已创建的索引。</font>  
 
-&emsp; 新增/修改名为tempae_1的模板，匹配名称为te*或bar*的索引创建：  
+&emsp; 新增/修改名为tempae_1的模板，匹配名称为te\*或bar\*的索引创建：  
 
 ```text
 PUT _template/template_1
@@ -453,7 +452,7 @@ PUT _template/test_template
 ```
 
 ----
-&emsp; 以下的索引 Mapping中，_source设置为false，同时各个字段的store根据需求设置了true和false。  
+&emsp; 以下的索引Mapping中，_source设置为false，同时各个字段的store根据需求设置了true和false。  
 &emsp; url的doc_values设置为false，该字段url不用于聚合和排序操作。  
 
 ```text
@@ -557,8 +556,8 @@ GET _cluster/health
 ```
 
 ##### 1.1.5.5.2. Split Index拆分索引
-&emsp; **当索引的分片容量过大时，可以通过拆分操作将索引拆分为一个倍数分片数的新索引。** 能拆分为几倍由创建索引时指定的index.number_of_routing_shards 路由分片数决定。这个路由分片数决定了根据一致性hash路由文档到分片的散列空间。  
-&emsp; 如index.number_of_routing_shards = 30 ，指定的分片数是5，则可按如下倍数方式进行拆分：  
+&emsp; **当索引的分片容量过大时，可以通过拆分操作将索引拆分为一个倍数分片数的新索引。** 能拆分为几倍由创建索引时指定的index.number_of_routing_shards路由分片数决定。这个路由分片数决定了根据一致性hash路由文档到分片的散列空间。  
+&emsp; 如index.number_of_routing_shards = 30，指定的分片数是5，则可按如下倍数方式进行拆分：  
 
 ```text
 5 → 10 → 30 (split by 2, then by 3)

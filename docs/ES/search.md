@@ -39,10 +39,8 @@ https://haokan.baidu.com/v?pd=wisenatural&vid=12730932323983835698
 -->
 &emsp; elasticsearch的搜索方式：  
 1. query string search。  
-2. query DSL，DSL(Domain Specific Language特定领域语言)以JSON请求体的形式出现。  
-
-&emsp; DSL：Domain Specified Language，特定领域的语言。  
-&emsp; http request body：请求体，可以用json的格式来构建查询语法，比较方便，可以构建各种复杂的语法。  
+2. query DSL，DSL（Domain Specific Language特定领域语言），可以用json的格式来构建查询语法，比较方便，可以构建各种复杂的语法。   
+ 
 
 ## 1.2. 回顾：sql查询  
 &emsp; 基本查询，SELECT语句有哪几部分构成？作用分别是什么？  

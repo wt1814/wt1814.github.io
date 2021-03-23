@@ -24,7 +24,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490740&idx=1&sn=ba34fc
 ElasticSearch 文档的删除和批量操作 
 https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490840&idx=2&sn=3bf45591fb8d383c06b49b16331482b3&scene=21#wechat_redirect
 -->
-&emsp; 文档是具体的数据，一个文档有点像数据库中的一条记录，文档必须包含在一个索 引中。  
+&emsp; 文档是具体的数据，一个文档有点像数据库中的一条记录，文档必须包含在一个索引中。  
 
 ## 1.1. 新建文档
 &emsp; 首先新建一个索引。  
@@ -81,8 +81,9 @@ POST blog/_doc
 ## 1.2. 获取文档
 &emsp; Es 中提供了 GET API 来查看存储在 es 中的文档。使用方式如下：  
   
-  GET blog/_doc/RuWrl3UByGJWB5WucKtP  
-&emsp; 上面这个命令表示获取一个 id 为 RuWrl3UByGJWB5WucKtP 的文档。  
+    GET blog/_doc/RuWrl3UByGJWB5WucKtP  
+
+&emsp; 上面这个命令表示获取一个id为RuWrl3UByGJWB5WucKtP的文档。  
 &emsp; 如果获取不存在的文档，会返回如下信息：  
 
 ```text
@@ -193,8 +194,7 @@ POST blog/_update_by_query
 ```
 
 ## 1.4. 删除文档
-&emsp; 根据 id 删除  
-&emsp; 从索引中删除一个文档。  
+&emsp; 根据 id 删除，从索引中删除一个文档。  
 &emsp; 删除一个 id 为 TuUpmHUByGJWB5WuMasV 的文档。  
 
 ```text
@@ -203,7 +203,6 @@ DELETE blog/_doc/TuUpmHUByGJWB5WuMasV
 &emsp; 如果在添加文档时指定了路由，则删除文档时也需要指定路由，否则删除失败。  
 
 &emsp; 查询删除  
-&emsp; 查询删除是 POST 请求。  
 &emsp; 例如删除 title 中包含 666 的文档：  
 
 ```text
@@ -231,9 +230,9 @@ POST blog/_delete_by_query
 ```
 
 ## 1.5. 批量操作
-&emsp; es 中通过Bulk API可以执行批量索引、批量删除、批量更新等操作。 
+&emsp; es 中通过Bulk API可以执行批量索引、批量删除、批量更新等操作。  
 &emsp; 首先需要将所有的批量操作写入一个JSON文件中，然后通过POST请求将该JSON文件上传并执行。    
-&emsp; 例如新建一个名为 aaa.json 的文件，内容如下：  
+&emsp; 例如新建一个名为 aaa.json的文件，内容如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-31.png)  
 &emsp; 首先第一行：index表示要执行一个索引操作(这个表示一个action，其他的action还有create，delete，update)。_index 定义了索引名称，这里表示要创建一个名为 user 的索引，_id 表示新建文档的 id 为 666。  
 &emsp; 第二行是第一行操作的参数。  
