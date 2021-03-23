@@ -174,9 +174,6 @@ Mapping建模:
 &emsp; 设置字段的时候，务必过一下如下图示的流程。根据实际业务需要，主要关注点：数据类型选型 ---> 是否需要检索 ---> 是否需要排序+聚合分析 ---> 是否需要另行存储。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-73.png)  
 
-&emsp; 核心参数的含义，梳理如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-69.png)  
-
 &emsp; ⚠️ **<font color = "red">设计Mapping的注意事项：</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-67.png)  
 
@@ -198,9 +195,9 @@ Mapping建模:
     }
   ```
 
-* ES 不支持直接删除字段  
-* ES 不支持直接修改字段  
-* ES 不支持直接修改字段类型。如果非要做灵活设计，ES有其他方案可以替换，借助reindex。但是数据量大会有性能问题，建议设计阶段综合权衡考虑。    
+* ES不支持直接删除字段  
+* ES不支持直接修改字段  
+* ES不支持直接修改字段类型。如果非要做灵活设计，ES有其他方案可以替换，借助reindex。但是数据量大会有性能问题，建议设计阶段综合权衡考虑。    
 
 
 ## 1.3. 分词的选型

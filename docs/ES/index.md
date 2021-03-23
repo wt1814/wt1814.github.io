@@ -62,7 +62,7 @@ PUT twitter
 &emsp; 索引的名称必须是小写的，不可重名。  
 
 &emsp; 创建结果：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-25.png)  
+&emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-25.png)  
 
 &emsp; 创建的命令还可以简写为：  
 
@@ -119,7 +119,7 @@ PUT twitter
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-26.png)  
 
 &emsp; **Get Index查看索引的定义信息**  
-&emsp; GET /twitter，可以一次获取多个索引(以逗号间隔)获取所有索引_all或用通配符*
+&emsp; GET /twitter，可以一次获取多个索引(以逗号间隔)，获取所有索引_all或用通配符 *
 
 ```text
 GET /twitter/_settings
@@ -191,14 +191,14 @@ POST /my_index/_open
 &emsp; 关闭的索引可以打开，打开走的是正常的恢复流程。
 
 ### 1.1.3. 索引映射管理  
-
+&emsp; ......
 
 ### 1.1.4. 索引别名  
 #### 1.1.4.1. 索引别名操作
 
 #### 1.1.4.2. ★★★Rollover Index别名滚动指向新创建的索引
 &emsp; **对于有时效性的索引数据，如日志，过一定时间后，老的索引数据就没有用了。可以像数据库中根据时间创建表来存放不同时段的数据一样，在ES中也可用建多个索引的方式来分开存放不同时段的数据。比数据库中更方便的是ES中可以通过别名滚动指向最新的索引的方式，通过别名来操作时总是操作的最新的索引。**  
-&emsp; ES的rollover index API，可以根据满足指定的条件（时间、文档数量、索引大小）创建新的索引，并把别名滚动指向新的索引。  
+&emsp; **<font color = "clime">ES的rollover index API，可以根据满足指定的条件（时间、文档数量、索引大小）创建新的索引，并把别名滚动指向新的索引。</font>**  
 &emsp; 注意：这时的别名只能是一个索引的别名。  
 
 &emsp; Rollover Index示例：  
@@ -304,7 +304,7 @@ POST /logs_write/_rollover?dry_run
 
 &emsp; 说明：  
 &emsp; 测试不会创建索引，只是检测条件是否满足  
-&emsp; 注意：rollover是你请求它才会进行操作，并不是自动在后台进行的。你可以周期性地去请求它。  
+&emsp; 注意：rollover是请求它才会进行操作，并不是自动在后台进行的。可以周期性地去请求它。  
 
 ### 1.1.5. 索引配置  
 <!-- 

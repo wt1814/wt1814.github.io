@@ -3,7 +3,7 @@
 - [1. 检索操作](#1-检索操作)
     - [1.1. 搜索两种基本方式](#11-搜索两种基本方式)
     - [1.2. 回顾：sql查询](#12-回顾sql查询)
-    - [1.3. 检索操作](#13-检索操作)
+    - [1.3. 检索分类](#13-检索分类)
 
 <!-- /TOC -->
 
@@ -56,15 +56,27 @@ https://haokan.baidu.com/v?pd=wisenatural&vid=12730932323983835698
 
 &emsp; 复杂查询，有关联查询。  
 
-## 1.3. 检索操作  
-&emsp; [基本查询](/docs/ES/basicSearch.md)  
-&emsp; [聚合查询](/docs/ES/togetherSearch.md)  
-&emsp; [分页查询](/docs/ES/limitSearch.md)  
+## 1.3. 检索分类  
+&emsp; &emsp; [结构化检索](/docs/ES/Structured.md)  
+&emsp; &emsp; [全文检索](/docs/ES/fullText.md)  
+&emsp; &emsp; [聚合查询](/docs/ES/togetherSearch.md)  
+&emsp; &emsp; [分页查询](/docs/ES/limitSearch.md)  
 
----
-&emsp; [复合查询](/docs/ES/compoundQuery.md)  
-&emsp; [多表关联](/docs/ES/multiTable.md)  
+-----
 
----
-&emsp; [高亮显示](/docs/ES/highLight.md)  
-&emsp; [检索模版](/docs/ES/searchTemplate.md)  
+&emsp; &emsp; [多表关联](/docs/ES/multiTable.md)  
+
+-----
+
+&emsp; &emsp; [高亮显示](/docs/ES/highLight.md)  
+&emsp; &emsp; [评分机制](/docs/ES/score.md)  
+
+-----
+
+&emsp; &emsp; [检索模版](/docs/ES/searchTemplate.md)  
+
+-----
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-83.png)  
+
+
