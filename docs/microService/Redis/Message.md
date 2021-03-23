@@ -1,6 +1,10 @@
 
 
 # Redis实现消息队列  
+<!-- 
+
+https://mp.weixin.qq.com/s/C3RyQMLLnABPcchV4_C8-A
+-->
 
 &emsp; redis中实现消息队列的几种方案：  
 

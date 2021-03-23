@@ -298,8 +298,12 @@
 &emsp; [Spring整合MyBatis原理](/docs/SSM/MyBatis/SpringMybatisPrinciple.md)  
 &emsp; [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
 &emsp; [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
+&emsp; [MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)   
 
 <!-- 
+适配器模式在Mybatis中的妙用 
+https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
+
 &emsp; [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
 -->
 

@@ -37,7 +37,7 @@
 
 &emsp; **<font color = "clime">in和exists的区别：</font><font color = "red">如果子查询得出的结果集记录较少，主查询中的表较大且又有索引时应该用in，反之如果外层的主查询记录较少，子查询中的表大，又有索引时使用exists。</font>**  
 
-
+&emsp; **UNION与UNION ALL：** 默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用UNION ALL。  
 
 # 1. 联合查询
 <!-- 
@@ -182,8 +182,8 @@ select user.* from user where exists(select order.user_id from order where user.
 &emsp; UNION，并集；INTERSECT，交集；EXCEPT，差集。 
 
 ### 1.3.1. UNION运算符，并集  
-&emsp; UNION运算符通过组合其他两个结果表(例如TABLE1和TABLE2)并消去表中任何重复行而派生出一个结果表。当ALL随UNION一起使用时(即UNION ALL)，不消除重复行。两种情况下，派生表的每一行不是来自TABLE1就是来自TABLE2。  
-&emsp; UNION内部的SELECT语句必须拥有相同数量的列。列也必须拥有相似的数据类型。同时，每条SELECT语句中的列的顺序必须相同。默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用UNION ALL。另外，UNION 结果集中的列名总是等于UNION中第一个SELECT语句中的列名。  
+<!-- 
+当ALL随UNION一起使用时(即UNION ALL)，不消除重复行。两种情况下，派生表的每一行不是来自TABLE1就是来自TABLE2。 
 
 &emsp; UNION：  
 1. 其目的是将两个SQL语句的结果合并起来；  
@@ -195,5 +195,6 @@ select user.* from user where exists(select order.user_id from order where user.
 1. 这个指令的目的也是要将两个 SQL 语句的结果合并在一起；  
 2. UNION ALL 和 UNION 不同之处在于 UNION ALL 会将每一个符合条件的资料都列出来，无论资料值有无重复；  
 3. UNION ALL只是简单的将两个结果合并后就返回。这样，如果返回的两个结果集中有重复的数据，那么返回的结果集就会包含重复的数据了。  
-
-&emsp; 从效率上说，sql union all的执行效率要比sql union效率要高很多，这是因为使用sql union需要进行排重，而sql union all是不需要排重的，这一点非常重要，因为对于一些单纯地使用分表来提高效率的查询，完全可以使用sql union all。  
+-->
+&emsp; UNION运算符通过组合其他两个结果表(例如TABLE1和TABLE2)并消去表中任何重复行而派生出一个结果表。UNION内部的SELECT语句必须拥有相同数量的列。列也必须拥有相似的数据类型。同时，每条SELECT语句中的列的顺序必须相同。UNION 结果集中的列名总是等于UNION中第一个SELECT语句中的列名。    
+&emsp; **UNION与UNION ALL：** 默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用UNION ALL。从效率上说，sql union all的执行效率要比sql union效率要高很多，这是因为使用sql union需要进行排重，而sql union all是不需要排重的，这一点非常重要，因为对于一些单纯地使用分表来提高效率的查询，完全可以使用sql union all。  

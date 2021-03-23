@@ -18,6 +18,10 @@
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; **<font color = "clime">以业务名 (或数据库名) 为前缀(防止 key 冲突)，用冒号分隔，比如业务名: 表名: id</font>**  
 
+&emsp; **<font color = "clime">bigkey</font>**  
+&emsp; 如果无法避免存储 bigkey，那么我建议你开启 Redis 的 lazy-free 机制。（4.0+版本支持）  
+&emsp; 当开启这个机制后，Redis 在删除一个 bigkey 时，释放内存的耗时操作，将会放到后台线程中去执行，这样可以在最大程度上，避免对主线程的影响。  
+
 &emsp; **使用批量操作提高效率。**  
 &emsp; 1).原生命令：例如 mget、mset。2).非原生命令：可以使用 pipeline提高效率。  
 &emsp; 但要注意控制一次批量操作的元素个数 (例如 500 以内，实际也和元素字节数有关)。  
@@ -29,6 +33,12 @@
 
 
 # 1. ~~Redis客户端使用及开发规范~~
+
+<!-- 
+bigkey
+https://mp.weixin.qq.com/s/-ydAQL077bz7yuKDw3d_Qw
+-->
+
 ## 1.1. Redis客户端介绍
 &emsp; **官网推荐的 Java 客户端有 3 个 Jedis，[Redisson](https://github.com/redisson/redisson/wiki/%E7%9B%AE%E5%BD%95) 和 Luttuce。**  
 

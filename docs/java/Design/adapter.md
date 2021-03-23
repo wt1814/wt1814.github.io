@@ -4,13 +4,16 @@
 - [1. 适配器(Adapter)模式](#1-适配器adapter模式)
     - [1.1. 简介](#11-简介)
     - [1.2. 结构](#12-结构)
+    - [适配器模式在Mybatis中的应用](#适配器模式在mybatis中的应用)
 
 <!-- /TOC -->
 
 # 1. 适配器(Adapter)模式  
 <!-- 
- 萌新发问：MyBatis日志到底是如何做到兼容所有常用日志框架的？ 
- https://mp.weixin.qq.com/s/hUA-GEbRYH0-qgcEKCUylg
+萌新发问：MyBatis日志到底是如何做到兼容所有常用日志框架的？ 
+https://mp.weixin.qq.com/s/hUA-GEbRYH0-qgcEKCUylg
+适配器模式在Mybatis中的妙用 
+https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 -->
 ## 1.1. 简介
 &emsp; 适配器模式(Adapter Pattern)，将一个类的接口转换成客户端期望的另一种接口，从而使原本因接口不匹配而导致无法在一起工作的两个类能够一起工作。  
@@ -44,3 +47,7 @@
 * Adapter，适配器类，即实现目标接口Target，又继承Adaptee类。适配器模式的核心角色，其他两个角色都是已经存在的角色，而适配器角色是需要新建立的，它的职责非常简单：把源角色转换为目标角色。转换的方式有：通过继承或者类关联的方式。  
 
 &emsp; **适配器模式有3种形式：类适配器、对象适配器、接口适配器。**  
+
+
+## 适配器模式在Mybatis中的应用
+&emsp; 参考[MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)  
