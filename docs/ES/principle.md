@@ -21,7 +21,7 @@
 &emsp; es第一是准实时的，数据写入1秒后可以搜索到；可能会丢失数据的。有5秒的数据，停留在buffer、translog os cache、segment file os cache中，而不在磁盘上，此时如果宕机，会导致5秒的数据丢失。  
 
 # 1. ES机制原理
-
+&emsp; **<font color = "red">参考中华石衫老师的视频</font>**  
 
 <!--
 http://blog.itpub.net/31545820/viewspace-2656265/
