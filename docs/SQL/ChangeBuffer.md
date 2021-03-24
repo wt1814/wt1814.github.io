@@ -61,7 +61,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 ---------
 
 &emsp; **<font color = "cclime">如果辅助索引页已经在缓冲区了，则直接修改即可；如果不在，则先将修改保存到 Change Buffer。Change Buffer的数据在对应辅助索引页读取到缓冲区时合并到真正的辅助索引页中。Change Buffer 内部实现也是使用的 B+ 树。</font>**  
----
+
 
 
 -----------------

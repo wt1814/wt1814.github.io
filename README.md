@@ -247,6 +247,7 @@
 &emsp; &emsp; [崩溃恢复](/docs/SQL/CrashRecovery.md)  
 &emsp; &emsp; [Double Write](/docs/SQL/DoubleWrite.md)  
 &emsp; [小结：insert插入流程](/docs/SQL/insert.md)  
+
 &emsp; [索引底层原理](/docs/SQL/IndexPrinciple.md)  
 &emsp; [各种索引](/docs/SQL/IndexKnowledge.md)  
 &emsp; [MySql事务](/docs/SQL/transaction.md)  
@@ -467,6 +468,7 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 &emsp; [ES集群基本概念](/docs/ES/ClusterConcept.md)  
 &emsp; [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
 &emsp; [ES集群操作](/docs/ES/ClusterOperation.md)  
+[ES增删改原理](/docs/ES/principle.md)  
 [ES使用](/docs/ES/useTutorials.md)  
 &emsp; [ES建模](/docs/ES/modeling.md)  
 &emsp; [PB级别的大索引如何设计？](/docs/ES/IndexDesign.md)  
@@ -484,7 +486,6 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 &emsp; &emsp; [评分机制](/docs/ES/score.md)  
 &emsp; &emsp; [检索模版](/docs/ES/searchTemplate.md)  
 &emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
-[ES原理](/docs/ES/principle.md)  
 [ES监控](/docs/ES/monitor.md)  
 [ES优化](/docs/ES/optimization.md)  
 [使用ES中的一些问题](/docs/ES/problem.md)  

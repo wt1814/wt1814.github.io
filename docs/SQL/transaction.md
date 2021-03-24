@@ -148,7 +148,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 3. 事务1使用同样的语句第二次查询时，查到了 id = 1、id = 2 的数据，出现了幻读。  
 
 &emsp; 谈到幻读，首先要引入“当前读”和“快照读”的概念：  
-* **<font color = "blue">快照读：生成一个事务快照(ReadView)，之后都从这个快照获取数据。** 普通select语句就是快照读。  
+* **<font color = "blue">快照读：生成一个事务快照(ReadView)，之后都从这个快照获取数据。</font>** 普通select语句就是快照读。  
 * **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的 update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
 
 &emsp; <font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  

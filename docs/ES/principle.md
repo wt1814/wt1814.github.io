@@ -4,20 +4,25 @@
 - [1. ES机制原理](#1-es机制原理)
     - [1.1. 写数据](#11-写数据)
         - [1.1.1. 写数据过程](#111-写数据过程)
-        - [1.1.2. 写数据的底层原理](#112-写数据的底层原理)
-    - [1.2. 读数据(根据doc id来查询)](#12-读数据根据doc-id来查询)
-    - [1.3. 搜索数据过程](#13-搜索数据过程)
+        - [1.1.2. ★★★写数据的底层原理](#112-★★★写数据的底层原理)
+            - [1.1.2.1. 写入流程](#1121-写入流程)
+            - [1.1.2.2. 崩溃恢复](#1122-崩溃恢复)
+    - [1.2. 根据doc id搜索流程](#12-根据doc-id搜索流程)
+    - [1.3. 全文搜索流程](#13-全文搜索流程)
     - [1.4. 删除/更新数据](#14-删除更新数据)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **数据先写入内存buffer，然后每隔1s，将数据refresh到os cache，到了os cache数据就能被搜索到(所以说es从写入到能被搜索到，中间有1s的延迟)。每隔5s，将数据写入translog文件(这样如果机器宕机，内存数据全没，最多会有5s的数据丢失)，translog大到一定程度，或者默认每隔30mins，会触发commit操作，将缓冲区的数据都flush到segment file磁盘文件中。数据写入segment file之后，同时就建立好了倒排索引。**  
+&emsp; **数据先写入内存buffer，然后每隔1s，将数据refresh到os cache，到了os cache数据就能被搜索到(所以说es从写入到能被搜索到，中间有1s的延迟)。**    
+&emsp; **每隔5s，将数据写入translog文件(这样如果机器宕机，内存数据全没，最多会有5s的数据丢失)，translog大到一定程度，或者默认每隔30mins，会触发commit操作，将缓冲区的数据都flush到segment file磁盘文件中。数据写入segment file之后，同时就建立好了倒排索引。**  
 
 &emsp; es丢数据？  
 &emsp; es第一是准实时的，数据写入1秒后可以搜索到；可能会丢失数据的。有5秒的数据，停留在buffer、translog os cache、segment file os cache中，而不在磁盘上，此时如果宕机，会导致5秒的数据丢失。  
 
 # 1. ES机制原理
+
+
 <!--
 http://blog.itpub.net/31545820/viewspace-2656265/
 https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
@@ -40,23 +45,55 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-80.png)  
 
-### 1.1.2. 写数据的底层原理
+### 1.1.2. ★★★写数据的底层原理
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-84.png)  
+
+#### 1.1.2.1. 写入流程
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-81.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-85.png)  
+
+
+&emsp; **写入流程：**  
+1. 数据写入buffer缓冲和translog日志文件  
+2. 每隔一秒钟，buffer中的数据被写入新的seament file，并进入os cache，此时segment被打开并供search使用。 
+
+        操作系统里面，磁盘文件其实都有一个东西，叫做 os cache ，即操作系统缓存，就是说数据写入磁盘文件之前，会先进入 os cache ，先进入操作系统级别的一个内存缓存中去。只要 buffer 中的数据被 refresh 操作刷入 os cache 中，这个数据就可以被搜索到了。  
+        为什么叫 es 是准实时的？NRT ，全称 near real-time 。默认是每隔 1 秒 refresh 一次的，所以 es 是准实时的，因为写入的数据 1 秒之后才能被看到。可以通过 es 的 restful api 或者 java api ，手动执行一次 refresh 操作，就是手动将 buffer 中的数据刷入 os cache 中，让数据立马就可以被搜索到。只要数据被输入 os cache 中，buffer 就会被清空了，因为不需要保留 buffer 了，数据在 translog 里面已经持久化到磁盘去一份了。  
+
+3. buffer被清空。
+4. 重复1-3，新的segment不断添加，buffer不断清空，而translog中的数据不断累加。  
+5. 当translog长度达到一定程度的时候，commit操作发生。  
+	1. buffer中的所有数据写入一个新的segment，并写入os cache，打开供使用。  
+	2. buffer被清空。
+	3. 一个commit point被写入磁盘，标明了所有的index segment。
+	4. filesystem cache中的所有index segment file缓存数据，被fsync强行刷到磁盘上。  
+	4. 现有的translog被清空，创建一个新的translog。  
+
+&emsp; ~~这个 commit 操作叫做flush。默认 30 分钟自动执行一次 flush ，但如果 translog 过大，也会触发 flush 。flush 操作就对应着 commit 的全过程，可以通过 es api，手动执行 flush 操作，手动将 os cache 中的数据 fsync 强刷到磁盘上去。~~  
+
+---------
+
+
+1. 先写入内存 buffer，在 buffer 里的时候数据是搜索不到的；同时将数据写入 translog 日志文件。  
+2. 如果 buffer 快满了，或者到一定时间，就会将内存 buffer 数据 refresh 到一个新的 segment file 中，但是此时数据不是直接进入 segment file 磁盘文件，而是先进入 os cache 。这个过程就是 refresh 。  
+3. buffer被清空
+4. 重复上面的步骤，新的数据不断进入 buffer 和 translog，不断将 buffer 数据写入一个又一个新的 segment file 中去，每次 refresh 完 buffer 清空，translog 保留。随着这个过程推进，translog 会变得越来越大。当 translog 达到一定长度的时候，就会触发 commit 操作。  
+    1. commit 操作发生第一步，就是将 buffer 中现有数据 refresh 到 os cache 中去，清空 buffer。  
+    2. 然后，将一个 commit point 写入磁盘文件，里面标识着这个 commit point 对应的所有 segment file ，同时强行将 os cache 中目前所有的数据都 fsync 到磁盘文件中去。  
+    3. 最后清空 现有 translog 日志文件，重启一个 translog，此时 commit 操作完成。  
 
 
 
-&emsp; 先写入内存 buffer，在 buffer 里的时候数据是搜索不到的；同时将数据写入 translog 日志文件。  
-&emsp; 如果 buffer 快满了，或者到一定时间，就会将内存 buffer 数据 refresh 到一个新的 segment file 中，但是此时数据不是直接进入 segment file 磁盘文件，而是先进入 os cache 。这个过程就是 refresh 。  
+#### 1.1.2.2. 崩溃恢复
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-86.png)  
 
-    操作系统里面，磁盘文件其实都有一个东西，叫做 os cache ，即操作系统缓存，就是说数据写入磁盘文件之前，会先进入 os cache ，先进入操作系统级别的一个内存缓存中去。只要 buffer 中的数据被 refresh 操作刷入 os cache 中，这个数据就可以被搜索到了。  
-    为什么叫 es 是准实时的？NRT ，全称 near real-time 。默认是每隔 1 秒 refresh 一次的，所以 es 是准实时的，因为写入的数据 1 秒之后才能被看到。可以通过 es 的 restful api 或者 java api ，手动执行一次 refresh 操作，就是手动将 buffer 中的数据刷入 os cache 中，让数据立马就可以被搜索到。只要数据被输入 os cache 中，buffer 就会被清空了，因为不需要保留 buffer 了，数据在 translog 里面已经持久化到磁盘去一份了。  
-&emsp; 重复上面的步骤，新的数据不断进入 buffer 和 translog，不断将 buffer 数据写入一个又一个新的 segment file 中去，每次 refresh 完 buffer 清空，translog 保留。随着这个过程推进，translog 会变得越来越大。当 translog 达到一定长度的时候，就会触发 commit 操作。  
-&emsp; commit 操作发生第一步，就是将 buffer 中现有数据 refresh 到 os cache 中去，清空 buffer。然后，将一个 commit point 写入磁盘文件，里面标识着这个 commit point 对应的所有 segment file ，同时强行将 os cache 中目前所有的数据都 fsync 到磁盘文件中去。最后清空 现有 translog 日志文件，重启一个 translog，此时 commit 操作完成。  
-&emsp; 这个 commit 操作叫做 flush 。默认 30 分钟自动执行一次 flush ，但如果 translog 过大，也会触发 flush 。flush 操作就对应着 commit 的全过程，可以通过 es api，手动执行 flush 操作，手动将 os cache 中的数据 fsync 强刷到磁盘上去。  
-&emsp; translog 日志文件的作用是什么？你执行 commit 操作之前，数据要么是停留在 buffer 中，要么是停留在 os cache 中，无论是 buffer 还是 os cache 都是内存，一旦这台机器死了，内存中的数据就全丢了。所以需要将数据对应的操作写入一个专门的日志文件 translog 中，一旦此时机器宕机，再次重启的时候，es 会自动读取 translog 日志文件中的数据，恢复到内存 buffer 和 os cache 中去。  
+&emsp; **崩溃恢复：**  
+&emsp; translog 日志文件的作用是什么？执行 commit 操作之前，数据要么是停留在 buffer 中，要么是停留在 os cache 中，无论是 buffer 还是 os cache 都是内存，一旦这台机器死了，内存中的数据就全丢了。所以需要将数据对应的操作写入一个专门的日志文件 translog 中，一旦此时机器宕机，再次重启的时候，es 会自动读取 translog 日志文件中的数据，恢复到内存 buffer 和 os cache 中去。  
 &emsp; translog 其实也是先写入 os cache 的，默认每隔 5 秒刷一次到磁盘中去，所以默认情况下，可能有 5 秒的数据会仅仅停留在 buffer 或者 translog 文件的 os cache 中，如果此时机器挂了，会丢失 5 秒钟的数据。但是这样性能比较好，最多丢 5 秒的数据。也可以将 translog 设置成每次写操作必须是直接 fsync 到磁盘，但是性能会差很多。  
 
-## 1.2. 读数据(根据doc id来查询)  
+
+
+## 1.2. 根据doc id搜索流程  
 &emsp; 可以通过doc id 来查询，会根据 doc id 进行 hash，判断出来当时把 doc id 分配到了哪个 shard 上面去，从那个 shard 去查询。  
 
 * 客户端发送请求到任意一个 node，成为 coordinate node 。  
@@ -64,7 +101,7 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 * 接收请求的 node 返回 document 给 coordinate node 。  
 * coordinate node 返回 document 给客户端。  
 
-## 1.3. 搜索数据过程  
+## 1.3. 全文搜索流程  
 &emsp; es 最强大的是做全文检索，就是比如有三条数据：
 
     java真好玩儿啊

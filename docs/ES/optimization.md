@@ -84,7 +84,7 @@ c.  如果使用场景是聚合或排序，并且都是基于analyzed 字符数�
     1. QueryCache: ES查询的时候，使用filter查询会使用query cache, 如果业务场景中的过滤查询比较多，建议将querycache设置大一些，以提高查询速度。  
     &emsp; indices.queries.cache.size： 10%(默认)，可设置成百分比，也可设置成具体值，如256mb。  
     &emsp; 当然也可以禁用查询缓存(默认是开启)， 通过index.queries.cache.enabled：false设置。  
-    2. FieldDataCache: 在聚类或排序时，field data cache会使用频繁，因此，设置字段数据缓存的大小，在聚类或排序场景较多的情形下很有必要，可&emsp; 通过indices.fielddata.cache.size：30% 或具体值10GB来设置。但是如果场景或数据变更比较频繁，设置cache并不是好的做法，因为缓存加载的开销也是特别大的。
+    2. FieldDataCache: 在聚类或排序时，field data cache会使用频繁，因此，设置字段数据缓存的大小，在聚类或排序场景较多的情形下很有必要，可通过indices.fielddata.cache.size：30% 或具体值10GB来设置。但是如果场景或数据变更比较频繁，设置cache并不是好的做法，因为缓存加载的开销也是特别大的。
     3. ShardRequestCache: 查询请求发起后，每个分片会将结果返回给协调节点(Coordinating Node), 由协调节点将结果整合。   
     &emsp; 如果有需求，可以设置开启;  通过设置index.requests.cache.enable: true来开启。  
     &emsp; 不过，shard request cache只缓存hits.total, aggregations, suggestions类型的数据，并不会缓存hits的内容。也可以通过设置indices.requests.cache.size: 1%(默认)来控制缓存空间大小。  
@@ -102,7 +102,7 @@ https://www.cnblogs.com/huanglog/p/9021073.html
 &emsp; 每台机器给ES JVM Heap是 32G，那么剩下来留给Filesystem Cache的就是每台机器才32G，总共集群里给Filesystem Cache 的就是 32 * 3 = 96G 内存。  
 &emsp; 而此时，整个磁盘上索引数据文件，在 3 台机器上一共占用了 1T 的磁盘容量，ES 数据量是 1T，那么每台机器的数据量是 300G。这样性能好吗？  
 &emsp; Filesystem Cache 的内存才 100G，十分之一的数据可以放内存，其他的都在磁盘，然后执行搜索操作，大部分操作都是走磁盘，性能肯定差。  
-&emsp; 归根结底，要让 ES 性能好，最佳的情况下，就是机器的内存，至少可以容纳总数据量的一半。  
+&emsp; 归根结底，要让 ES 性能好， **<font color = "red">最佳的情况下，就是机器的内存，至少可以容纳总数据量的一半。</font>**  
 &emsp; 根据实践经验，最佳的情况下，是仅仅在 ES 中就存少量的数据，就是要用来搜索的那些索引，如果内存留给 Filesystem Cache 的是 100G，那么就将索引数据控制在 100G 以内。  
 &emsp; 这样的话，数据几乎全部走内存来搜索，性能非常之高，一般可以在1秒以内。  
 &emsp; 比如说现在有一行数据：id，name，age .... 30 个字段。但是现在搜索，只需要根据 id，name，age 三个字段来搜索。
@@ -120,7 +120,7 @@ https://www.cnblogs.com/huanglog/p/9021073.html
 &emsp; 假如说，哪怕是按照上述的方案去做了，ES 集群中每个机器写入的数据量还是超过了 Filesystem Cache 一倍。  
 &emsp; 比如说写入一台机器 60G 数据，结果 Filesystem Cache 就 30G，还是有 30G 数据留在了磁盘上。  
 &emsp; 其实可以做数据预热。举个例子，拿微博来说，可以把一些大 V，平时看的人很多的数据，提前在后台搞个系统。  
-&emsp; 每隔一会儿，自己的后台系统去搜索一下热数据，刷到 Filesystem Cache 里去，后面用户实际上来看这个热数据的时候，他们就是直接从内存里搜索了，很快。  
+&emsp; 每隔一会儿，自己的后台系统去搜索一下热数据，刷到 Filesystem Cache 里去，后面用户实际上来看这个热数据的时候，就是直接从内存里搜索了，很快。  
 &emsp; 或者是电商，可以将平时查看最多的一些商品，比如说 iPhone 8，热数据提前后台搞个程序，每隔 1 分钟自己主动访问一次，刷到 Filesystem Cache 里去。  
 &emsp; 对于那些觉得比较热的、经常会有人访问的数据，最好做一个专门的缓存预热子系统。  
 &emsp; 就是对热数据每隔一段时间，就提前访问一下，让数据进入 Filesystem Cache 里面去。这样下次别人访问的时候，性能一定会好很多。  
