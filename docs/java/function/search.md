@@ -29,6 +29,8 @@ https://mp.weixin.qq.com/s/3RvYUaAL8xAQQvT88WAJ7g
 https://blog.csdn.net/u010412301/article/details/67704530
 寻找第K大数的方法
 https://blog.csdn.net/csl13/article/details/6056522
+几乎刷完了力扣所有的二分题，我发现了这些东西。。。（下） 
+https://mp.weixin.qq.com/s/zteJKZ6jy5RdhWUTM10kdQ
 -->
 
 # 1. 查找算法  

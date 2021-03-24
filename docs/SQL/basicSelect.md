@@ -215,6 +215,10 @@ select SUM(number)from A where number >8 group by type SUM(number) > 10
 ### 1.2.5. Order By关键字  
 <!-- 
 ORDER BY中混合ASC和DESC
+
+MySQL中order by的实现原理 
+https://mp.weixin.qq.com/s/xSjHiixbt2JODUedSSwWUg
+
 -->
 
 ### 1.2.6. Limit，分页  
