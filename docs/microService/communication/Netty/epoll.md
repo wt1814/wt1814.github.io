@@ -11,7 +11,7 @@
         - [1.3.1. ~~epoll()操作函数~~](#131-epoll操作函数)
         - [1.3.2. 调用epoll()函数](#132-调用epoll函数)
         - [1.3.3. epoll工作模式](#133-epoll工作模式)
-    - [1.4. 三者区别联系](#14-三者区别联系)
+    - [1.4. ~~三者区别联系~~](#14-三者区别联系)
 
 <!-- /TOC -->
 
@@ -32,6 +32,7 @@
 &emsp; 运行机制与select()相似。将fd_set数组改为采用链表方式pollfds，没有连接数的限制，并且pollfds可重用。  
 
 3. **epoll()：**  
+    &emsp; 调用epoll_create，会在内核cache里建个红黑树，epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改；同时也会再建立一个rdllist双向链表，用于存储准备就绪的事件，当epoll_wait调用时，仅查看这个rdllist双向链表数据即可。epoll_wait阻塞等待注册的事件发生，返回事件的数目，并将触发的事件写入events数组中。    
     &emsp; **epoll机制的工作模式：**  
     
     * LT模式(默认，水平触发，level trigger)：当epoll_wait检测到某描述符事件就绪并通知应用程序时，应用程序可以不立即处理该事件；下次调用epoll_wait时，会再次响应应用程序并通知此事件。    
@@ -65,6 +66,9 @@ https://mp.weixin.qq.com/s/i3He95cfzyLF_I4v-X3tCw
 https://mp.weixin.qq.com/s/iVfLZJ89UMtu3Z5IgpoCoQ
 
 https://www.cnblogs.com/Joy-Hu/p/10762239.html
+
+视频
+https://ke.qq.com/webcourse/index.html#cid=398381&term_id=100475149&taid=9526675549590573&type=1024&vid=5285890803916888161
 -->
 <!--
 ~~
@@ -98,6 +102,7 @@ int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct 
 &emsp; int 若有就绪描述符返回其数目，若超时则为0，若出错则为-1。  
 
 &emsp; 【运行机制】  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-103.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-94.png)  
 &emsp; select()运行时会将fd_set集合从用户态拷贝到内核态。在内核态中线性扫描socket，即采用轮询。如果有事件返回，会将内核态的数组相应的FD置位。最后再将内核态的数据返回用户态。  
 
@@ -146,56 +151,27 @@ int 函数返回fds集合中就绪的读、写，或出错的描述符数量，�
 &emsp; epoll是在2.6内核中提出的，是之前的select和poll的增强版本。相对于select和poll来说，epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。  
 
 ### 1.3.1. ~~epoll()操作函数~~
+<!-- 
+★★★
+https://zhuanlan.zhihu.com/p/159135478
+-->
+
 &emsp; epoll主要有epoll_create,epoll_ctl和epoll_wait三个函数。  
-* epoll_create函数创建epoll文件描述符，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。返回是epoll描述符。-1表示创建失败。  
-* epoll_ctl控制对指定描述符fd执行op操作，event是与fd关联的监听事件。op操作有三种：添加EPOLL_CTL_ADD，删除EPOLL_CTL_DEL，修改EPOLL_CTL_MOD。分别添加、删除和修改对fd的监听事件。  
-* epoll_wait等待epfd上的io事件，最多返回maxevents个事件。  
+* int epoll_create(int size)  
+&emsp; 函数创建epoll文件描述符，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。返回是epoll描述符。-1表示创建失败。  
+&emsp; 调用epoll_create，会在内核cache里建个红黑树，epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改；同时也会再建立一个rdllist双向链表，用于存储准备就绪的事件，当epoll_wait调用时，仅查看这个rdllist双向链表数据即可。     
+* int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)  
+&emsp; 控制对指定描述符fd执行op操作，event是与fd关联的监听事件。op操作有三种：添加EPOLL_CTL_ADD，删除EPOLL_CTL_DEL，修改EPOLL_CTL_MOD。分别添加、删除和修改对fd的监听事件。  
+&emsp; 即epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改。  
+&emsp; 对于需要监视的文件描述符集合，epoll_ctl对红黑树进行管理，红黑树中每个成员由描述符值和所要监控的文件描述符指向的文件表项的引用等组成。  
+* int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout)  
+&emsp; 等待epfd上的io事件，最多返回maxevents个事件。  
+&emsp; 参数events用来从内核得到事件的集合，maxevents告之内核这个events有多大，这个maxevents的值不能大于创建epoll_create()时的size，参数timeout是超时时间(毫秒，0会立即返回，-1将不确定，也有说法说是永久阻塞)。该函数返回需要处理的事件数目，如返回0表示已超时。  
 
 
 &emsp; 在select/poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描，而epoll事先通过epoll_ctl()来注册一个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait()时便得到通知。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-104.png)  
 
-----------
-
-&emsp; epoll操作过程需要三个接口，分别如下：  
-1. int epoll_create(int size);  
-&emsp; 创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大，这个参数不同于select()中的第一个参数，给出最大监听的fd+1的值，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。  
-&emsp; 当创建好epoll句柄后，它就会占用一个fd值，在linux下如果查看/proc/进程id/fd/，是能够看到这个fd的，所以在使用完epoll后，必须调用close()关闭，否则可能导致fd被耗尽。  
-    
-        调用epoll_create，会在内核cache里建个红黑树用于存储以后epoll_ctl传来的socket，同时也会再建立一个rdllist双向链表用于存储准备就绪的事件。当epoll_wait调用时，仅查看这个rdllist双向链表数据即可  
-2. int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)；  
-
-    epoll_ctl在向epoll对象中添加、修改、删除事件时，是在rbr红黑树中操作的，非常快  
-
-    &emsp; 函数是对指定描述符fd执行op操作。  
-    - epfd：是epoll_create()的返回值。  
-    - op：表示op操作，用三个宏来表示：添加EPOLL_CTL_ADD，删除EPOLL_CTL_DEL，修改EPOLL_CTL_MOD。分别添加、删除和修改对fd的监听事件。  
-    - fd：是需要监听的fd(文件描述符)  
-    - epoll_event：是告诉内核需要监听什么事，struct epoll_event结构如下：  
-
-    ```c
-    struct epoll_event {
-    __uint32_t events;  /* Epoll events */
-    epoll_data_t data;  /* User data variable */
-    };
-
-    //events可以是以下几个宏的集合：
-    EPOLLIN ：表示对应的文件描述符可以读(包括对端SOCKET正常关闭)；
-    EPOLLOUT：表示对应的文件描述符可以写；
-    EPOLLPRI：表示对应的文件描述符有紧急的数据可读(这里应该表示有带外数据到来)；
-    EPOLLERR：表示对应的文件描述符发生错误；
-    EPOLLHUP：表示对应的文件描述符被挂断；
-    EPOLLET： 将EPOLL设为边缘触发(Edge Triggered)模式，这是相对于水平触发(Level Triggered)来说的。
-    EPOLLONESHOT：只监听一次事件，当监听完这次事件之后，如果还需要继续监听这个socket的话，需要再次把这个socket加入到EPOLL队列里
-    ```
-3. int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);  
-&emsp; 等待epfd上的io事件，最多返回maxevents个事件。  
-&emsp; 参数events用来从内核得到事件的集合，maxevents告之内核这个events有多大，这个maxevents的值不能大于创建epoll_create()时的size，参数timeout是超时时间(毫秒，0会立即返回，-1将不确定，也有说法说是永久阻塞)。该函数返回需要处理的事件数目，如返回0表示已超时。  
-3. epoll_wait 函数等待事件的就绪，成功时返回就绪的事件数目，调用失败时返回 -1，等待超时返回 0。
-
-    * epfd是epoll句柄
-    * events表示从内核得到的就绪事件集合
-    * maxevents告诉内核events的大小
-    * timeout表示等待的超时事件
 
 ### 1.3.2. 调用epoll()函数
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-97.png)  
@@ -218,7 +194,7 @@ int 函数返回fds集合中就绪的读、写，或出错的描述符数量，�
     
     LT和ET原本应该是用于脉冲信号的，可能用它来解释更加形象。Level和Edge指的就是触发点，Level为只要处于水平，那么就一直触发，而Edge则为上升沿和下降沿的时候触发。比如：0->1 就是Edge，1->1就是Level。    
 
-## 1.4. 三者区别联系  
+## 1.4. ~~三者区别联系~~  
 &emsp; select有最大文件描述符的限制，只能监听到有几个文件描述符就绪了，得遍历所有文件描述符获取就绪的IO。  
 &emsp; poll没有最大文件描述符的限制，与select一样，只能监听到有几个文件描述符就绪了，得遍历所有文件描述符获取就绪的IO。  
 &emsp; epoll没有最大文件描述符的限制，它通过回调的机制，一旦某个文件描述符就绪了，迅速激活这个文件描述符，当进程下一次调用epoll_wait()的时候便得到通知。  

@@ -8,11 +8,11 @@
             - [1.1.2.1. DMA介绍](#1121-dma介绍)
             - [1.1.2.2. 加入DMA后的读数据read流程](#1122-加入dma后的读数据read流程)
             - [1.1.2.3. ★★★一次读取数据read、传输数据write交互详解](#1123-★★★一次读取数据read传输数据write交互详解)
-    - [1.2. CPU&DMA-2](#12-cpudma-2)
+        - [1.2. CPU&DMA-2](#12-cpudma-2)
     - [1.3. 零拷贝技术](#13-零拷贝技术)
         - [1.3.1. 零拷贝简介](#131-零拷贝简介)
         - [1.3.2. 零拷贝技术实现技术](#132-零拷贝技术实现技术)
-            - [1.3.2.1. mmap方式](#1321-mmap方式)
+            - [1.3.2.1. mmap+write方式](#1321-mmapwrite方式)
             - [1.3.2.2. sendfile方式](#1322-sendfile方式)
             - [1.3.2.3. ~~sendfile+DMA收集~~](#1323-sendfiledma收集)
             - [1.3.2.4. splice方式](#1324-splice方式)
@@ -23,10 +23,41 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 
-&emsp; **mmap+write：**  
-&emsp; 使用mmap+write方式代替原来的read+write方式，mmap是一种内存映射文件的方法，即将一个文件或者其它对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对映关系；这样就可以省掉原来内核read缓冲区copy数据到用户缓冲区，但是还是需要内核read缓冲区将数据copy到内核socket缓冲区。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-100.png)  
-&emsp; **<font color = "clime">「通过mmap实现的零拷贝I/O进行了4次用户空间与内核空间的上下文切换，以及3次数据拷贝；其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝」。</font>**  
+&emsp; 比较常见的I/O流程是读取磁盘文件传输到网络中。  
+
+&emsp; I/O传输中的一些基本概念：  
+
+* 状态切换：内核态和用户态之间的切换。  
+* CPU拷贝：内核态和用户态之间的复制。  
+* DMA拷贝：设备(或网络)和内核态之间的复制。  
+
+
+&emsp; 零拷贝："零"并不是指0次复制，更多的是指在用户态和内核态之间的复制是0次。  
+
+1. 仅CPU方式：  
+&emsp; 仅CPU方式有4次状态切换，4次CPU拷贝。  
+1. **CPU&DMA方式：**    
+    * 读过程涉及2次空间切换(需要CPU参与)、1次DMA拷贝、1次CPU拷贝；
+    * 写过程涉及2次空间切换、1次DMA拷贝、1次CPU拷贝；
+
+    CPU&DMA与仅CPU方式相比少了2次CPU拷贝，多了2次DMA拷贝。  
+
+2. mmap+write方式：  
+&emsp; **<font color = "clime">mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享。</font>**  
+&emsp; 使用mmap+write方式相比CPU&DMA方式又少了一次CPU拷贝。即进行了4次用户空间与内核空间的上下文切换，以及3次数据拷贝；其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝。  
+
+3. sendfile方式：  
+&emsp; **<font color = "red">它建立了两个文件之间的传输通道。</font>**  
+&emsp; 应用程序只需要调用sendfile函数即可完成。数据不经过用户缓冲区，该数据无法被修改。但减少了2次状态切换，即只有2次状态切换、1次CPU拷贝、2次DMA拷贝。   
+4. sendfile+DMA：  
+&emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息(文件描述符、地址偏移量等信息)记录到socket缓冲区中。  
+&emsp; DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩的1次CPU拷贝。  
+&emsp; 这种方式又减少了1次CPU拷贝，即有2次状态切换、0次CPU拷贝、2次DMA拷贝。  
+&emsp; 但是仍然无法对数据进行修改，并且需要硬件层面DMA的支持，并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。   
+5. splice方式：  
+&emsp; splice系统调用是Linux在2.6版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
+&emsp; splice系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
+&emsp; **<font color = "clime">splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。</font>**  
 
 
 # 1. IO性能优化之零拷贝
@@ -39,7 +70,11 @@ https://mp.weixin.qq.com/s/mWPjFbCVzvuAW3Y9lEQbGg
 https://blog.csdn.net/wufaliang003/article/details/106195984
 -->
 
+&emsp; I/O传输中的一些基本概念：  
 
+* 状态切换：内核态和用户态之间的切换。  
+* CPU拷贝：内核态和用户态之间的复制。  
+* DMA拷贝：设备(或网络)和内核态之间的复制。  
 
 ## 1.1. 传统Linux I/O中数据拷贝过程
 <!-- 
@@ -67,7 +102,7 @@ DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要
 * 磁盘将数据放到磁盘缓冲区之后，向CPU发起I/O中断，报告CPU数据已经Ready了；
 * CPU收到磁盘控制器的I/O中断之后，开始拷贝数据，完成之后read()返回，再从内核态切换到用户态；  
 
-&emsp; ~~缺点：~~ CPU操作数据与磁盘操作数据的速度不是一个量级。  
+&emsp; ~~缺点：~~ CPU操作数据与磁盘操作数据的速度不是一个量级。 **CPU是很珍贵的资源。**  
 
 ### 1.1.2. CPU&DMA方式
 #### 1.1.2.1. DMA介绍
@@ -89,7 +124,6 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-68.png)    
 &emsp; **<font color = "red">最主要的变化是，CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，之后的过程类似。</font>**
 
-&emsp; **注：无论从仅CPU方式和DMA&CPU方式，都存在多次冗余数据拷贝和内核态&用户态的切换。**  
 
 #### 1.1.2.3. ★★★一次读取数据read、传输数据write交互详解
 &emsp; 继续思考Web服务器读取本地磁盘文件数据再通过网络传输给用户的详细过程。  
@@ -118,9 +152,12 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 * 读过程涉及2次空间切换(需要CPU参与)、1次DMA拷贝、1次CPU拷贝；
 * 写过程涉及2次空间切换、1次DMA拷贝、1次CPU拷贝；
 
-&emsp; 可见传统模式下，涉及多次空间切换和数据冗余拷贝，效率并不高。  
 
-## 1.2. CPU&DMA-2 
+&emsp; CPU&DMA与仅CPU方式少了2次CPU拷贝，多了2次DMA拷贝。
+&emsp; **注：无论从仅CPU方式和DMA&CPU方式，都存在多次冗余数据拷贝和内核态&用户态的切换。**  
+
+
+### 1.2. CPU&DMA-2 
 &emsp;总结所有系统中，不管是WEB应用服务器，FTP服务器，数据库服务器，静态文件服务器等等，所有涉及到数据传输的场景，无非就一种：——从硬盘上读取文件数据, 发送到网络上去。  
 
 &emsp;这个场景简化为一个模型：  
@@ -191,16 +228,17 @@ DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要
 &emsp; 目前，零拷贝技术的几个实现手段包括：mmap+write、sendfile、sendfile+DMA收集、splice等。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-72.png)
 
-#### 1.3.2.1. mmap方式
-&emsp; mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享。  
+#### 1.3.2.1. mmap+write方式
+&emsp; **<font color = "clime">mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享。</font>**  
 &emsp; 使用mmap+write方式代替原来的read+write方式，mmap是一种内存映射文件的方法，即将一个文件或者其它对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对映关系；这样就可以省掉原来内核read缓冲区copy数据到用户缓冲区，但是还是需要内核read缓冲区将数据copy到内核socket缓冲区。大致如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-100.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-73.png)   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-30.png)  
 &emsp; 这样就减少了一次用户态和内核态的CPU拷贝，但是在内核空间内仍然有一次CPU拷贝。  
+&emsp; **<font color = "clime">「通过mmap实现的零拷贝I/O进行了4次用户空间与内核空间的上下文切换，以及3次数据拷贝；其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝」。</font>**  
+
 &emsp; mmap对大文件传输有一定优势，但是小文件可能出现碎片，并且在多个进程同时操作文件时可能产生引发coredump的signal。  
 
-&emsp; **<font color = "clime">「通过mmap实现的零拷贝I/O进行了4次用户空间与内核空间的上下文切换，以及3次数据拷贝；其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝」。</font>**  
 <!-- 
 include <sys/mman.h>
 void *mmap(void *start， size_t length， int prot， int flags， int fd， off_t offset)  
@@ -214,11 +252,15 @@ void *mmap(void *start， size_t length， int prot， int flags， int fd， of
 
 #### 1.3.2.2. sendfile方式
 &emsp; mmap+write方式有一定改进，但是由系统调用引起的状态切换并没有减少。  
-&emsp; sendfile系统调用是在Linux内核2.1版本中被引入，它建立了两个文件之间的传输通道。  
-&emsp; sendfile方式只使用一个函数就可以完成之前的read+write 和 mmap+write的功能，这样就少了2次状态切换，由于数据不经过用户缓冲区，因此该数据无法被修改。  
+&emsp; sendfile系统调用是在Linux内核2.1版本中被引入， **<font color = "red">它建立了两个文件之间的传输通道。</font>**  
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-31.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-32.png)  
-&emsp; 从图中可以看到，应用程序只需要调用sendfile函数即可完成，只有2次状态切换、1次CPU拷贝、2次DMA拷贝。  
+1. 发出sendfile系统调用，导致用户空间到内核空间的上下文切换，然后通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区中，接着再将数据从内核空间缓冲区复制到socket相关的缓冲区。    
+2. sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA异步将内核空间socket缓冲区中的数据传递到网卡。    
+
+
+&emsp; sendfile方式中，应用程序只需要调用sendfile函数即可完成。数据不经过用户缓冲区，该数据无法被修改。但减少了2次状态切换，即只有2次状态切换、1次CPU拷贝、2次DMA拷贝。    
 &emsp; 但是sendfile在内核缓冲区和socket缓冲区仍然存在一次CPU拷贝，或许这个还可以优化。
 
 <!-- 
@@ -229,8 +271,8 @@ sendfile系统调用在内核版本2.1中被引入，目的是简化通过网络
 include <sys/sendfile.h>
 ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-76.png)  
-    1)发出sendfile系统调用，导致用户空间到内核空间的上下文切换，然后通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区中，接着再将数据从内核空间缓冲区复制到socket相关的缓冲区
-    2)sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA异步将内核空间socket缓冲区中的数据传递到网卡
+    1)发出sendfile系统调用，导致用户空间到内核空间的上下文切换，然后通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区中，接着再将数据从内核空间缓冲区复制到socket相关的缓冲区  
+    2)sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA异步将内核空间socket缓冲区中的数据传递到网卡  
 
 「通过sendfile实现的零拷贝I/O使用了2次用户空间与内核空间的上下文切换，以及3次数据的拷贝。其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝」
 -->
@@ -238,9 +280,10 @@ ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
 #### 1.3.2.3. ~~sendfile+DMA收集~~
 &emsp; Linux 2.4内核对sendfile系统调用进行优化，但是需要硬件DMA控制器的配合。  
 &emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息(文件描述符、地址偏移量等信息)记录到socket缓冲区中。  
-&emsp; DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩1次CPU拷贝。  
+&emsp; DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩的1次CPU拷贝。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-33.png)  
-&emsp; 这种方式有2次状态切换、0次CPU拷贝、2次DMA拷贝，但是仍然无法对数据进行修改，并且需要硬件层面DMA的支持，并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。
+&emsp; 这种方式又减少了1次CPU拷贝，即有2次状态切换、0次CPU拷贝、2次DMA拷贝。  
+&emsp; 但是仍然无法对数据进行修改，并且需要硬件层面DMA的支持，并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。
 
 <!-- 
 带有DMA收集拷贝功能的sendfile实现的零拷贝  
@@ -257,6 +300,7 @@ ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
 &emsp; splice系统调用是Linux在2.6版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
 &emsp; splice系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-35.png)  
-&emsp; splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。
+&emsp; **<font color = "clime">splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。</font>**  
 
-## 1.4. 零拷贝实现
+## 1.4. 零拷贝实现  
+
