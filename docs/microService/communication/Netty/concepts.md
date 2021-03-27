@@ -31,7 +31,7 @@
 * NIO的类库和API繁杂，使用麻烦，需要熟练掌握Selector、ServerSocketChannek、SockctChannek、ByteBuffer等。  
 * **原生API使用单线程模型，不能很好利用多核优势；**  
 * 原生API是直接使用的IO数据，没有做任何封装处理，对数据的编解码、TCP的粘包和拆包、客户端断连、网络的可靠性和安全性方面没有做处理；  
-* **<fong color = "red">JDK NIO的BUG，例如臭名昭著的epoll bug，它会导致Selector空轮询，最终导致CPU100%。官方声称在JDK1.6版本的update18修复了该问题，但是直到JDK 1.7版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有得到根本性解决。该BUG以及与该BUG相关的问题单可以参见以下链接内容。</font>**  
+* **<font color = "red">JDK NIO的BUG，例如臭名昭著的epoll bug，它会导致Selector空轮询，最终导致CPU100%。</font>官方声称在JDK1.6版本的update18修复了该问题，但是直到JDK 1.7版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有得到根本性解决。该BUG以及与该BUG相关的问题单可以参见以下链接内容。** 
     * http://bugs.java.com/bugdatabase/viewbug.do?bug_id=6403933  
     * http://bugs.java.com/bugdalabase/viewbug.do?bug_id=21477l9  
 
@@ -85,8 +85,8 @@
 
 &emsp; **各个项目作用：**  
 
-* common 项目，该项目是一个通用的工具类项目，几乎被所有的其它项目依赖使用，它提供了一些数据类型处理工具类，并发编程以及多线程的扩展，计数器等等通用的工具类。  
-* buffer 项目，该项目下是Netty自行实现的一个Byte Buffer字节缓冲区。该包的实现相对于JDK自带的ByteBuffer有很多优点：无论是 API 的功能，使用体验，性能都要更加优秀。它提供了一系列(多种)的抽象定义以及实现，以满足不同场景下的需要。  
+* common项目，该项目是一个通用的工具类项目，几乎被所有的其它项目依赖使用，它提供了一些数据类型处理工具类，并发编程以及多线程的扩展，计数器等等通用的工具类。  
+* buffer项目，该项目下是Netty自行实现的一个Byte Buffer字节缓冲区。该包的实现相对于JDK自带的ByteBuffer有很多优点：无论是 API 的功能，使用体验，性能都要更加优秀。它提供了一系列(多种)的抽象定义以及实现，以满足不同场景下的需要。  
 
         该项目实现了Netty架构图中的Zero-Copy-Capable Rich Byte Buffer。
 

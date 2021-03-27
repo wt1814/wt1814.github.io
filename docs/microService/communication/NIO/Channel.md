@@ -9,7 +9,7 @@
         - [1.3.1. 分散读取](#131-分散读取)
         - [1.3.2. 聚集写入](#132-聚集写入)
         - [1.3.3. 基本散点/聚集示例](#133-基本散点聚集示例)
-    - [1.4. 通道之间的数据传输](#14-通道之间的数据传输)
+    - [1.4. ★★★通道之间的数据传输](#14-★★★通道之间的数据传输)
         - [1.4.1. FileChannel.transferFrom()方法](#141-filechanneltransferfrom方法)
         - [1.4.2. FileChannel.transferTo()方法](#142-filechanneltransferto方法)
         - [1.4.3. 基本通道到通道数据传输示例](#143-基本通道到通道数据传输示例)
@@ -33,7 +33,7 @@ public interface Channel{
     public void Open() throws IOException;
 }
 ```
-&emsp; <font color = "lime">所有通道只有两个常用操作：检查通道是否关闭(isclose())、打开关闭通道(close())。</font>  
+&emsp; <font color = "clime">所有通道只有两个常用操作：检查通道是否关闭(isclose())、打开关闭通道(close())。</font>  
 
 1. FileChannel：文件通道用于从文件读取数据。  
     &emsp; jdk1.7通过使用一个InputStream、OutputStream或RandomAccessFile来获取一个FileChannel实例。  
@@ -267,7 +267,7 @@ public class ScatterGatherIO {
     420
     Scattering and Gathering example shown  
 
-## 1.4. 通道之间的数据传输  
+## 1.4. ★★★通道之间的数据传输  
 &emsp; 在Java NIO中，<font color = "red">如果两个通道中有一个是FileChannel，那可以直接将数据从一个channel传输到另外一个channel。</font>通道之间的数据传输在FileChannel类中的两种方法是：FileChannel.transferTo()方法、FileChannel.transferFrom()方法。  
 
 ### 1.4.1. FileChannel.transferFrom()方法  

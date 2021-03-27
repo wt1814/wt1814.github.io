@@ -1,8 +1,22 @@
 
+<!-- TOC -->
+
+- [1. Java中的零拷贝](#1-java中的零拷贝)
+    - [1.1. MappedByteBuffer，直接内存](#11-mappedbytebuffer直接内存)
+    - [1.2. DirectByteBuffer](#12-directbytebuffer)
+    - [1.3. Channel-to-Channel，零拷贝](#13-channel-to-channel零拷贝)
+
+<!-- /TOC -->
 
 
-# Java中的零拷贝  
-## 1.5.1.1. MappedByteBuffer
+&emsp; **<font color = "red">总结：</font>**  
+1. Java中提供了MappedByteBuffe、DirectByteBuffer类来实现内存映射技术。基于mmap+write方式。  
+2. Java中FileChannel类提供了transferFrom、transferTo()方法，来实现零拷贝。  
+
+# 1. Java中的零拷贝  
+
+
+## 1.1. MappedByteBuffer，直接内存
 <!-- 
 java NIO的零拷贝实现是基于mmap+write方式
 
@@ -30,7 +44,8 @@ map方法底层是通过mmap实现的，因此将文件内存从磁盘读取到�
 }
 ```
 -->
-&emsp; java nio提供的FileChannel提供了map()方法，该方法可以在一个打开的文件和MappedByteBuffer之间建立一个虚拟内存映射，MappedByteBuffer继承于ByteBuffer，类似于一个基于内存的缓冲区，只不过该对象的数据元素存储在磁盘的一个文件中；调用get()方法会从磁盘中获取数据，此数据反映该文件当前的内容，调用put()方法会更新磁盘上的文件，并且对文件做的修改对其他阅读者也是可见的；下面看一个简单的读取实例，然后在对MappedByteBuffer进行分析：
+&emsp; java nio提供的FileChannel提供了map()方法，该方法可以在一个打开的文件和MappedByteBuffer之间建立一个虚拟内存映射。 **<font color = "clime">基于mmap+write方式。</font>**  
+&emsp; MappedByteBuffer继承于ByteBuffer，类似于一个基于内存的缓冲区，只不过该对象的数据元素存储在磁盘的一个文件中；调用get()方法会从磁盘中获取数据，此数据反映该文件当前的内容，调用put()方法会更新磁盘上的文件，并且对文件做的修改对其他阅读者也是可见的；下面看一个简单的读取实例，然后在对MappedByteBuffer进行分析：
 
 ```java
 public class MappedByteBufferTest {
@@ -119,15 +134,16 @@ public MappedByteBuffer map(MapMode mode， long position， long size)
 ```
 &emsp; 大致意思就是通过native方法获取内存映射的地址，如果失败，手动gc再次映射；最后通过内存映射的地址实例化出MappedByteBuffer，MappedByteBuffer本身是一个抽象类，其实这里真正实例话出来的是DirectByteBuffer；
 
-## 1.5.1.2. DirectByteBuffer
+## 1.2. DirectByteBuffer
+&emsp; 字节是操作系统及其I/O设备使用的基本数据类型。ByteBuffer提供了两种实现堆内存HeapByteBuffer和直接内存DirectByteBuffer。  
 &emsp; DirectByteBuffer继承于MappedByteBuffer，从名字就可以猜测出开辟了一段直接的内存，并不会占用jvm的内存空间；上一节中通过Filechannel映射出的MappedByteBuffer其实际也是DirectByteBuffer，当然除了这种方式，也可以手动开辟一段空间：
 
 ```java
 ByteBuffer directByteBuffer = ByteBuffer.allocateDirect(100);
 ```
-&emsp; 如上开辟了100字节的直接内存空间；
+&emsp; 如上开辟了100字节的直接内存空间。  
 
-## 1.5.1.3. Channel-to-Channel传输
+## 1.3. Channel-to-Channel，零拷贝
 <!-- 
 
 FileChannel的transferTo、transferFrom 如果操作系统底层支持的话，transferTo、transferFrom也会使用相关的零拷贝技术来实现数据的传输。用法如下
@@ -151,7 +167,7 @@ public void main(String[] args) {
 }
 ```
 -->
-&emsp; 经常需要从一个位置将文件传输到另外一个位置，FileChannel提供了transferTo()方法用来提高传输的效率，首先看一个简单的实例：
+&emsp; 经常需要从一个位置将文件传输到另外一个位置，FileChannel提供了transferFrom、transferTo()方法。如果操作系统底层支持的话，transferTo、transferFrom也会使用相关的零拷贝技术来实现数据的传输。使用示例：  
 
 ```java
 public class ChannelTransfer {

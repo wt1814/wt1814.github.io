@@ -3,6 +3,11 @@
 # 构建devops平台  
 &emsp; jenkins+kubernetes+harbor+gitlab构建企业级devops平台   
 
+<!-- 
+牛批！全自动发布jar到Maven中央仓库 
+https://mp.weixin.qq.com/s/nvAwhdDEhXyyeaKd3N-gGQ
+-->
+
 <!--
 https://blog.csdn.net/zbbkeepgoing/category_7969146.html
 使用Jenkins Pipeline插件和Docker打造容器化构建环境

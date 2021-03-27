@@ -15,7 +15,7 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">总结：</font>**  
+&emsp; **<font color = "red">总结：</font>**  
 &emsp; [TCP的粘包和拆包问题描述](/docs/network/TCPSticking.md)  
 &emsp; **<font color = "clime">Netty对半包或者粘包的处理：</font>** **<font color = "red">每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。</font>** 
 
@@ -136,7 +136,7 @@ public class NettyClient {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-41.png)  
 
 #### 1.2.2.2. Netty提供的解码器
-&emsp; **<font color = "red">Netty默认提供了多种解码器来解决，可以进行分包操作，满足99%的编码需求。</font>**分别如下：  
+&emsp; **<font color = "red">Netty默认提供了多种解码器来解决，可以进行分包操作，满足99%的编码需求。</font>** 分别如下：  
 
 * 固定长度的拆包器FixedLengthFrameDecoder，每个应用层数据包的都拆分成都是固定长度的大小
 * 行拆包器LineBasedFrameDecoder，每个应用层数据包，都以换行符作为分隔符，进行分割拆分

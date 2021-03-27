@@ -9,6 +9,9 @@
 
 # 1. insert插入流程  
 <!-- 
+ MySQL不会丢失数据的秘密，就藏在它的 7种日志里 
+ https://mp.weixin.qq.com/s/S9dQd1hgYzMBoDqV5bPuiQ
+
 回顾下写流程
 https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
 -->

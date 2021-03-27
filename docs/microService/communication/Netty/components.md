@@ -18,11 +18,14 @@
 
 <!-- /TOC -->
 
-&emsp; 小结：  
+&emsp; **<font color = "red">总结：</font>**  
 &emsp; 由netty运行流程可以看出Netty核心组件有Bootstrap、EventLoop、channel相关、byteBuf...  
 
 # 1. Netty核心组件 
 <!--
+
+Netty架构原理 
+https://www.sohu.com/a/372108949_268033
 Netty源码
 https://mp.weixin.qq.com/s/I9PGsWo7-ykGf2diKklGtA
 你要的Netty常见面试题总结，敖丙搞来了！
@@ -43,8 +46,7 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 * ByteBuf
 
 ## 1.1. Bootstrap & ServerBootstrap  
-&emsp; Bootstrap和ServerBootstrap是Netty程序的引导类，主要用于配置各种参数，并启动整个Netty服务。  
-&emsp; Bootstrap和ServerBootstrap是针对于Client和Server端定义的两套启动类，区别如下：  
+&emsp; Bootstrap和ServerBootstrap是针对于Client和Server端定义的引导类，主要用于配置各种参数，并启动整个Netty服务。区别如下：  
 
 * Bootstrap是客户端引导类，而ServerBootstrap是服务端引导类。
 * Bootstrap通常使用connect()方法连接到远程的主机和端口，作为一个TCP客户端。
@@ -54,11 +56,12 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 * Bootstrap客户端引导只需要一个EventLoopGroup，但是一个ServerBootstrap通常需要两个(上面的boosGroup和workerGroup)。  
 
 ## 1.2. EventLoopGroup && EventLoop  
+&emsp; **EventLoop定义了Netty的核心抽象，用于处理连接的生命周期中所发生的事件。<font color = "clime">EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。</font>**  
 
+&emsp; **<font color = "red">Channel与EventLoop：</font>**  
+&emsp; 当一个连接到达时，Netty就会创建一个Channel，然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
 
-&emsp; EventLoop(事件循环)接口可以说是Netty中最核心的概念了！  
-&emsp; **EventLoop定义了Netty的核心抽象，用于处理连接的生命周期中所发生的事件。EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。**  
-
+&emsp; **<font color = "red">EventLoopGroup与EventLoop：</font>**  
 &emsp; EventLoopGroup是EventLoop的集合，一个EventLoopGroup包含一个或者多个EventLoop。可以将EventLoop看做EventLoopGroup线程池中的一个工作线程。  
 
 * 一个 EventLoopGroup包含一个或多个EventLoop，即EventLoopGroup: EventLoop = 1 : n
@@ -67,10 +70,6 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 * 一个 Channel在它的生命周期内只能注册到一个EventLoop上，即Channel : EventLoop = n : 1
 * 一个EventLoop可被分配至一个或多个Channel，即EventLoop : Channel = 1 : n
 
-&emsp; 当一个连接到达时，Netty就会创建一个Channel，然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是有这个绑定的EventLoop来服务的。
-
-&emsp; **<font color = "red">Channel与EventLoop：</font>**  
-&emsp; Channel为Netty网络操作(读写等操作)抽象类，EventLoop负责处理注册到其上的Channel 处理 I/O 操作，两者配合参与 I/O 操作。 
 
 ## 1.3. channel相关
 ### 1.3.1. channel  
@@ -79,8 +78,8 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 &emsp; 比较常用的Channel接口实现类是NioServerSocketChannel(服务端)和NioSocketChannel(客户端)，这两个 Channel 可以和 BIO 编程模型中的ServerSocket以及Socket两个概念对应上。Netty 的 Channel 接口所提供的 API，大大地降低了直接使用 Socket 类的复杂性。  
 -->
 &emsp; 类似于NIO的Channel，Netty提供了自己的Channel和其子类实现，用于异步I/0操作和其他相关的操作。    
-&emsp; **在Netty中, Channel是一个Socket连接的抽象, 它为用户提供了关于底层 Socket 状态(是否是连接还是断开)以及对Socket的读写等操作。** 每当Netty建立了一个连接后, 都会有一个对应的Channel实例。并且，有父子channel的概念。服务器连接监听的channel ，也叫 parent channel。对应于每一个 Socket 连接的channel，也叫 child channel。  
-&emsp; 既然channel 是 Netty 抽象出来的网络 I/O 读写相关的接口，为什么不使用JDK NIO 原生的 Channel 而要另起炉灶呢，主要原因如下：  
+
+&emsp; **<font color = "red">既然channel是Netty抽象出来的网络I/O读写相关的接口，为什么不使用JDK NIO原生的Channel而要另起炉灶呢，主要原因如下：</font>**  
 
 * JDK 的SocketChannel 和 ServersocketChannel没有统一的 Channel 接口供业务开发者使用，对于用户而言，没有统一的操作视图，使用起来并不方便。
 * JDK 的 SocketChannel和 ScrversockctChannel的主要职责就是网络 I/O 操作，由于它们是SPI类接口，由具体的虚拟机厂家来提供，所以通过继承 SPI 功能直接实现 ServersocketChannel 和 SocketChannel 来扩展其工作量和重新Channel 功类是差不多的。
@@ -93,9 +92,12 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 * Channel 接口的定义尽量大而全，统一的视图，由不同子类实现不同的功能，公共功能在抽象父类中实现，最大程度上实现接口的重用。
 * 具体实现采用聚合而非包含的方式，将相关功能的类聚合在 Channel中，由 Channel 统一负责分配和调度，功能实现更加灵活。
 
+
+&emsp; **在Netty中，Channel是一个Socket连接的抽象，它为用户提供了关于底层Socket状态(是否是连接还是断开)以及对Socket的读写等操作。** 每当Netty建立了一个连接后, 都会有一个对应的Channel实例。并且，有父子channel的概念。服务器连接监听的channel ，也叫 parent channel。对应于每一个 Socket 连接的channel，也叫 child channel。  
+
 ### 1.3.2. ChannelHandler  
-&emsp; ChannelHandler 是Netty中最常用的组件。ChannelHandler 主要用来处理各种事件，这里的事件很广泛，比如可以是连接、数据接收、异常、数据转换等。  
-&emsp; ChannelHandler 有两个核心子类 ChannelInboundHandler 和 ChannelOutboundHandler，其中 ChannelInboundHandler 用于接收、处理入站( Inbound )的数据和事件，而 ChannelOutboundHandler 则相反，用于接收、处理出站( Outbound )的数据和事件。  
+&emsp; ChannelHandler是Netty中最常用的组件。ChannelHandler 主要用来处理各种事件，这里的事件很广泛，比如可以是连接、数据接收、异常、数据转换等。  
+&emsp; ChannelHandler有两个核心子类ChannelInboundHandler和ChannelOutboundHandler，其中ChannelInboundHandler用于接收、处理入站( Inbound )的数据和事件，而ChannelOutboundHandler则相反，用于接收、处理出站( Outbound )的数据和事件。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-88.png)  
 
 

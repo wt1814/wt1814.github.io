@@ -3,41 +3,35 @@
 <!-- TOC -->
 
 - [1. NIO选择器](#1-nio选择器)
-    - [1.1. 多路复用(关于epoll与java NIO中select的思考)](#11-多路复用关于epoll与java-nio中select的思考)
     - [1.2. 选择器基础：选择器、可选择通道、选择键](#12-选择器基础选择器可选择通道选择键)
-    - [1.3. 选择器教程](#13-选择器教程)
+    - [1.3. 选择器使用教程](#13-选择器使用教程)
         - [1.3.1. 建立选择器(选择器、通道、选择键建立连接)](#131-建立选择器选择器通道选择键建立连接)
         - [1.3.2. 选择键的使用，SelectionKey类的API](#132-选择键的使用selectionkey类的api)
         - [1.3.3. 选择器的使用，selector类的API](#133-选择器的使用selector类的api)
         - [1.3.4. Selector完整实例](#134-selector完整实例)
+    - [1.1. ~~selector实现多路复用的原理~~](#11-selector实现多路复用的原理)
 
 <!-- /TOC -->
 
 <!-- 
 https://mp.weixin.qq.com/s/3OtbG6jegOS4m2GbyOF2lQ
 -->
-&emsp; **<font color = "clime">总结：</font>**  
-&emsp; 选择器基础：选择器、可选择通道、选择键。  
-&emsp; **<font color = "clime">Selector的基本使用流程：</font>**  
-1. 通过Selector.open() 打开一个 Selector。
-2. 将Channel注册到Selector中, 并设置需要监听的事件(interest set)
-3. 不断重复:
-    1. 调用select()方法
-    2. 调用selector.selectedKeys() 获取selected keys
-    3. 迭代每个 selected key:
-        * 从selected key中获取对应的Channel和附加信息(如果有的话)。
-        * 判断是哪些IO事件已经就绪, 然后处理它们。如果是OP_ACCEPT事件, 则调用"SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept()" 获取SocketChannel, 并将它设置为 非阻塞的, 然后将这个Channel注册到Selector中。
-        * 根据需要更改selected key的监听事件。
-        * 将已经处理过的key从selected keys集合中删除。
+&emsp; **<font color = "red">总结：</font>**  
+1. 选择器基础：选择器、可选择通道、选择键。  
+2. **<font color = "clime">Selector的基本使用流程：</font>**  
+    1. 通过Selector.open() 打开一个 Selector。
+    2. 将Channel注册到Selector中，并设置需要监听的事件(interest set)。
+    3. 不断重复:
+        1. 调用select()方法
+        2. 调用selector.selectedKeys()获取selected keys
+        3. 迭代每个 selected key:
+            * 从selected key中获取对应的Channel和附加信息(如果有的话)。
+            * 判断是哪些IO事件已经就绪，然后处理它们。如果是OP_ACCEPT事件, 则调用"SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept()" 获取SocketChannel，并将它设置为 非阻塞的，然后将这个Channel注册到Selector中。
+            * 根据需要更改selected key的监听事件。
+            * 将已经处理过的key从selected keys集合中删除。
 
 # 1. NIO选择器  
 &emsp; Selector是NIO多路复用的重要组成部分。它负责检查一个或多个Channel(通道)是否是可读、写状态，实现单线程管理多通道，优于使用多线程或线程池产生的系统资源开销。 
-
-## 1.1. 多路复用(关于epoll与java NIO中select的思考)  
-<!-- 
-https://www.jianshu.com/p/033483c06534?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
---> 
-&emsp; **在Java NIO中，是通过selector.select()去查询每个通道是否有到达事件，如果没有事件，则一直阻塞在那里，因此这种方式会导致用户线程的阻塞。** 多路复用IO模式，通过一个线程就可以管理多个socket，只有当socket真正有读写事件发生才会占用资源来进行实际的读写操作。因此，多路复用IO比较适合连接数比较多的情况。  
 
 ## 1.2. 选择器基础：选择器、可选择通道、选择键   
 &emsp; 选择器(Selector)使用单个线程处理多个通道。流程结构如图：  
@@ -48,7 +42,7 @@ https://www.jianshu.com/p/033483c06534?utm_campaign=maleskine&utm_content=note&u
 * 可选择通道(SelectableChannel)：这个抽象类提供了实现通道的可选择性所需要的公共方法。它是所有支持就绪检查的通道类的父类。FileChannel对象不是可选择的，因为它们没有继承SelectableChannel。所有socket通道都是可选择的，包括从管道(Pipe)对象中获得的通道。SelectableChannel可以被注册到Selector对象上，同时可以指定对那个选择器而言，那种操作是感兴趣的。一个通道可以被注册到多个选择器上，但对每个选择器而言只能被注册一次。  
 * 选择键(SelectionKey)：选择键封装了特定的通道与特定的选择器的注册关系。选择键对象被SelectableChannel.register()返回并提供一个表示这种注册关系的标记。选择键包含了两个比特集(以整数的形式进行编码)，指示了该注册关系所关心的通道操作，以及通道己经准备好的操作。每个channel对应一个 SelectionKey。  
 
-## 1.3. 选择器教程  
+## 1.3. 选择器使用教程  
 ### 1.3.1. 建立选择器(选择器、通道、选择键建立连接)  
 &emsp; selector的API：  
 
@@ -110,7 +104,7 @@ readyCount = selector.select (10000);
     Selector：选择器，管理此 channel 的 Selector
     Attach：附加对象，向SelectionKey中添加更多的信息，方便之后的数据操作判断或获取
 
-&emsp; SelectionKey还有几个重要的方法，用于检测Channel中什么事件或操作已经就绪，它们都会返回一个布尔类型：selectionKey.isAcceptable();selectionKey.isConnectable();selectionKey.isReadable();selectionKey.isWritable();   
+&emsp; SelectionKey还有几个重要的方法，用于检测Channel中什么事件或操作已经就绪，它们都会返回一个布尔类型：selectionKey.isAcceptable();selectionKey.isConnectable();...   
 
 ### 1.3.3. 选择器的使用，selector类的API  
 &emsp; selector的API：  
@@ -128,15 +122,15 @@ readyCount = selector.select (10000);
 |Selector wakeup()	|使尚未返回的第一个选择操作立即返回|
 |void close()	|关闭此选择器|
 
-&emsp; **<font color = "lime">Selector的基本使用流程：</font>**  
+&emsp; **<font color = "clime">Selector的基本使用流程：</font>**  
 1. 通过Selector.open() 打开一个 Selector。
 2. 将Channel注册到Selector中, 并设置需要监听的事件(interest set)
 3. 不断重复:
     1. 调用select()方法
     2. 调用selector.selectedKeys() 获取selected keys
-    3. 迭代每个 selected key:
+    3. 迭代每个selected key:
         * 从selected key中获取对应的Channel和附加信息(如果有的话)。
-        * 判断是哪些IO事件已经就绪, 然后处理它们。如果是OP_ACCEPT事件, 则调用"SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept()" 获取SocketChannel, 并将它设置为 非阻塞的, 然后将这个Channel注册到Selector中。
+        * 判断是哪些IO事件已经就绪，然后处理它们。如果是OP_ACCEPT事件, 则调用"SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept()" 获取SocketChannel, 并将它设置为 非阻塞的，然后将这个Channel注册到Selector中。
         * 根据需要更改selected key的监听事件。
         * 将已经处理过的key从selected keys集合中删除。
 
@@ -304,3 +298,10 @@ public class NIO_Learning{
 &emsp; 如从上述实例所示，可以将多个 Channel 注册到同一个Selector对象上，实现一个线程同时监控多个Channel的请求状态，但有一个不容忽视的缺陷：所有读/写请求以及对新连接请求的处理都在同一个线程中处理，无法充分利用多CPU的优势，同时读/写操作也会阻塞对新连接请求的处理。因此，有必要进行优化，可以引入多线程，并行处理多个读/写操作。  
 &emsp; 一种优化策略是：将Selector进一步分解为Reactor，从而将不同的感兴趣事件分开，每一个Reactor只负责一种感兴趣的事件。这样做的好处是：分离阻塞级别，减少了轮询的时间；线程无需遍历set以找到自己感兴趣的事件，因为得到的set中仅包含自己感兴趣的事件。  
 
+## 1.1. ~~selector实现多路复用的原理~~ 
+<!-- 
+https://www.jianshu.com/p/033483c06534?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
+
+视频
+https://ke.qq.com/webcourse/index.html#cid=398381&term_id=100475149&taid=9526675549590573&type=1024&vid=5285890803916888161
+--> 

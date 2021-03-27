@@ -2,6 +2,9 @@
 # 统一格式返回
 <!-- 
 
+★★★API 响应增加 traceId
+https://mp.weixin.qq.com/s?__biz=MzIwMDY0Nzk2Mw==&mid=2650325282&idx=1&sn=49bdfb4acb903783031b7dc7e7164a27&fileGuid=Ty8hqrvhtDydKt8V&scene=21#wechat_redirect
+
 Spring Boot 无侵入式 实现API接口统一JSON格式返回 
 https://mp.weixin.qq.com/s/7FYi2HTzY_XmuI_HtHWMFA
 

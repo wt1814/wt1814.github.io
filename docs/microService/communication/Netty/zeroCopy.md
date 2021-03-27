@@ -12,9 +12,9 @@
     - [1.3. 零拷贝技术](#13-零拷贝技术)
         - [1.3.1. 零拷贝简介](#131-零拷贝简介)
         - [1.3.2. 零拷贝技术实现技术](#132-零拷贝技术实现技术)
-            - [1.3.2.1. mmap+write方式](#1321-mmapwrite方式)
+            - [1.3.2.1. mmap+write方式，内存映射](#1321-mmapwrite方式内存映射)
             - [1.3.2.2. sendfile方式](#1322-sendfile方式)
-            - [1.3.2.3. ~~sendfile+DMA收集~~](#1323-sendfiledma收集)
+            - [1.3.2.3. ~~sendfile+DMA收集，零拷贝~~](#1323-sendfiledma收集零拷贝)
             - [1.3.2.4. splice方式](#1324-splice方式)
     - [1.4. 零拷贝实现](#14-零拷贝实现)
 
@@ -228,7 +228,7 @@ DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要
 &emsp; 目前，零拷贝技术的几个实现手段包括：mmap+write、sendfile、sendfile+DMA收集、splice等。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-72.png)
 
-#### 1.3.2.1. mmap+write方式
+#### 1.3.2.1. mmap+write方式，内存映射
 &emsp; **<font color = "clime">mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享。</font>**  
 &emsp; 使用mmap+write方式代替原来的read+write方式，mmap是一种内存映射文件的方法，即将一个文件或者其它对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对映关系；这样就可以省掉原来内核read缓冲区copy数据到用户缓冲区，但是还是需要内核read缓冲区将数据copy到内核socket缓冲区。大致如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-100.png)  
@@ -277,7 +277,7 @@ ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
 「通过sendfile实现的零拷贝I/O使用了2次用户空间与内核空间的上下文切换，以及3次数据的拷贝。其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝」
 -->
 
-#### 1.3.2.3. ~~sendfile+DMA收集~~
+#### 1.3.2.3. ~~sendfile+DMA收集，零拷贝~~
 &emsp; Linux 2.4内核对sendfile系统调用进行优化，但是需要硬件DMA控制器的配合。  
 &emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息(文件描述符、地址偏移量等信息)记录到socket缓冲区中。  
 &emsp; DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩的1次CPU拷贝。  
@@ -304,3 +304,4 @@ ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
 
 ## 1.4. 零拷贝实现  
 
+&emsp; [Java中的零拷贝](/docs/microService/communication/NIO/JavaZeroCopy.md)  

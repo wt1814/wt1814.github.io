@@ -5,7 +5,7 @@
     - [1.1. Reactor是什么](#11-reactor是什么)
         - [1.1.1. thread-based architecture(基于线程)](#111-thread-based-architecture基于线程)
         - [1.1.2. event-driven architecture(事件驱动)](#112-event-driven-architecture事件驱动)
-        - [1.1.3. ~~Reactor(反应堆)介绍~~](#113-reactor反应堆介绍)
+    - [1.1.3. ~~Reactor模式架构~~](#113-reactor模式架构)
     - [1.2. Reactor线程模型详解](#12-reactor线程模型详解)
         - [1.2.1. 单线程模型](#121-单线程模型)
             - [1.2.1.1. 单线程模型简介](#1211-单线程模型简介)
@@ -26,35 +26,32 @@
 Reactor的一般流程、3种线程模型、Netty中的Reactor
 -->
 
-&emsp; **<font color = "lime">总结：</font>**  
-&emsp; Reactor线程模型跟NIO中Selctor类似，多路复用，事件分发。 **<font color = "red">Reactor模式核心组成部分包括Reactor和线程池，其中Reactor负责监听和分发事件，线程池负责处理事件。</font>** **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; Reactor线程模型跟NIO中Selctor类似，多路复用，事件分发。  
+&emsp; **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，其中Reactor负责监听和分发事件，线程池负责处理事件。</font>** **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
 
-* Reactor单线程模型，指的是所有的IO操作都在同一个NIO线程上面完成。单个NIO线程会成为系统瓶颈，并且会又节点故障问题。  
-* Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作。在极个别特殊场景中，一个NIO线程负责监听和处理所有的客户端连接可能会存在性能问题。  
-* 利用主从NIO线程模型，可以解决1个服务端监听线程无法有效处理所有客户端连接的性能不足问题。  
+1. **<font color = "red">Reactor单线程模型，指的是所有的IO操作都在同一个NIO线程上面完成。</font>** 单个NIO线程会成为系统瓶颈，并且会有节点故障问题。  
+&emsp; NIO线程的职责如下：  
+    * 作为NIO服务端，接收客户端的TCP请求；  
+    * 作为NIO客户端，向服务端发起TCP请求；  
+    * 读取通信对端的请求或者应答消息；  
+    * 向通信对端发送消息请求或者应答消息。  
 
+2. Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作。在极个别特殊场景中，一个NIO线程负责监听和处理所有的客户端连接可能会存在性能问题。  
+    1. 有专门一个NIO线程(Acceptor线程)用于监听服务端，接收客户端的TCP连接请求；  
+    2. 网络IO操作(读、写等)由一个NIO线程池负责，线程池可以采用标准的JDK线程池实现，它包含一个任务队列和N个可用的线程，由这些NIO线程负责消息的读取、解码、编码和发送；    
+    3. 1个NIO线程可以同时处理N条链路，但是1个链路只对应1个NIO线程，防止发生并发操作问题。    
 
-
-&emsp; **<font color = "red">Reactor单线程模型，指的是所有的IO操作都在同一个NIO线程上面完成，</font>** NIO线程的职责如下：  
-
-&emsp; 1)作为NIO服务端，接收客户端的TCP请求；  
-&emsp; 2)作为NIO客户端，向服务端发起TCP请求；  
-&emsp; 3)读取通信对端的请求或者应答消息；  
-&emsp; 4)向通信对端发送消息请求或者应答消息。  
-
-&emsp; Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作。  
-
-1. 有专门一个NIO线程(Acceptor线程)用于监听服务端，接收客户端的TCP连接请求；  
-2. 网络IO操作(读、写等)由一个NIO线程池负责，线程池可以采用标准的JDK线程池实现，它包含一个任务队列和N个可用的线程，由这些NIO线程负责消息的读取、解码、编码和发送；    
-3. 1个NIO线程可以同时处理N条链路，但是1个链路只对应1个NIO线程，防止发生并发操作问题。    
-
-&emsp; Reactor主从多线程模型中，一个连接accept专门用一个线程处理。  
+3. 利用主从NIO线程模型，可以解决1个服务端监听线程无法有效处理所有客户端连接的性能不足问题。Reactor主从多线程模型中，一个连接accept专门用一个线程处理。  
 &emsp; 主从Reactor线程模型的特点是：服务端用于接收客户端连接的不再是个1个单独的NIO线程，而是一个独立的NIO线程池。Acceptor接收到客户端TCP连接请求处理完成后(可能包含接入认证等)，将新创建的SocketChannel注册到IO线程池(sub reactor线程池)的某个IO线程上，由它负责SocketChannel的读写和编解码工作。Acceptor线程池仅仅只用于客户端的登陆、握手和安全认证，一旦链路建立成功，就将链路注册到后端subReactor线程池的IO线程上，由IO线程负责后续的IO操作。  
 &emsp; 利用主从NIO线程模型，可以解决1个服务端监听线程无法有效处理所有客户端连接的性能不足问题。  
 
-&emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "lime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
+
+&emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
 
 # 1. Reactor线程模型  
+&emsp; **<font color = "clime">《Reactor论文》</font>**  
+
 ## 1.1. Reactor是什么
 &emsp; 在处理web请求时，通常有两种体系结构，分别为：thread-based architecture(基于线程)、event-driven architecture(事件驱动)。  
 
@@ -65,25 +62,33 @@ Reactor的一般流程、3种线程模型、Netty中的Reactor
 ### 1.1.2. event-driven architecture(事件驱动)
 &emsp; 事件驱动体系结构是目前比较广泛使用的一种。这种方式会定义一系列的事件处理器来响应事件的发生，并且将服务端接受连接与对事件的处理分离。其中，事件是一种状态的改变。比如，tcp中socket的new incoming connection、ready for read、ready for write。  
 
-### 1.1.3. ~~Reactor(反应堆)介绍~~  
+## 1.1.3. ~~Reactor模式架构~~  
+<!-- 
+http://www.360doc.com/content/18/0427/15/11253639_749194481.shtml
+-->
+<!-- 
+https://www.jianshu.com/p/eef7ebe28673
+-->
 &emsp; Reactor设计模式是event-driven architecture的一种实现方式，处理多个客户端并发的向服务端请求服务的场景。每种服务在服务端可能由多个方法组成。reactor会解耦并发请求的服务并分发给对应的事件处理器来处理。目前，许多流行的开源框架都用到了reactor模式，如：netty、node.js等，包括java的nio。  
 
         维基百科上的定义：“反应堆设计模式是一种事件处理模式，用于处理由一个或多个输入同时发送的服务请求。然后，服务处理程序将传入的请求多路分解，并同步地将其分发到关联的请求处理程序。”。
 
 &emsp; 总体图示如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-37.png)  
-<!-- 
-https://www.jianshu.com/p/eef7ebe28673
--->
-&emsp; **Reactor主要由以下几个角色构成：**handle、Synchronous Event Demultiplexer、Initiation Dispatcher、Event Handler、Concrete Event Handler  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-105.png)  
+<center>Reactor网络模型</center>  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-106.png)  
 
+&emsp; **Reactor主要由以下几个角色构成：**handle、Synchronous Event Demultiplexer、Initiation Dispatcher、Event Handler、Concrete Event Handler  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-107.png)  
 * Handle，在linux中一般称为文件描述符，而在window称为句柄，两者的含义一样。handle是事件的发源地。比如一个网络socket、磁盘文件等。而发生在handle上的事件可以有connection、ready for read、ready for write等。  
 * Synchronous Event Demultiplexer，同步事件分离器，本质上是系统调用。比如linux中的select、poll、epoll等。比如，select方法会一直阻塞直到handle上有事件发生时才会返回。  
 * **Event Handler，事件处理器，**其会定义一些回调方法或者称为钩子函数，当handle上有事件发生时，回调方法便会执行，一种事件处理机制。  
 * **Concrete Event Handler，具体的事件处理器，**实现了Event Handler。在回调方法中会实现具体的业务逻辑。  
 * Initiation Dispatcher，初始分发器，也是reactor角色，提供了注册、删除与转发event handler的方法。当Synchronous Event Demultiplexer检测到handle上有事件发生时，便会通知initiation dispatcher调用特定的event handler的回调方法。  
 
-&emsp; **<font color = "lime">Reactor的一般处理流程：</font>**  
+&emsp; **<font color = "clime">Reactor的一般处理流程：</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-108.png)  
 1. 当应用向Initiation Dispatcher注册Concrete Event Handler时，应用会标识出该事件处理器希望Initiation Dispatcher在某种类型的事件发生发生时向其通知，事件与handle关联。  
 2. Initiation Dispatcher要求注册在其上面的Concrete Event Handler传递内部关联的handle，该handle会向操作系统标识。
 3. 当所有的Concrete Event Handler都注册到Initiation Dispatcher上后，应用会调用handle_events方法来启动Initiation Dispatcher的事件循环，这时Initiation Dispatcher会将每个Concrete Event Handler关联的handle合并，并使用Synchronous Event Demultiplexer来等待这些handle上事件的发生。
@@ -103,7 +108,8 @@ Reactor的一般流程
 ## 1.2. Reactor线程模型详解  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-90.png)  
 
-&emsp; **<font color = "red">Reactor线程模型跟NIO中Selctor类似，多路复用，事件分发。Reactor模式核心组成部分包括Reactor和线程池，</font><font color = "clime">其中Reactor负责监听和分发事件，线程池负责处理事件。</font><font color = "red">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型：</font>**
+&emsp; Reactor线程模型跟NIO中Selctor类似，多路复用，事件分发。  
+&emsp; **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font><font color = "clime">其中Reactor负责监听和分发事件，线程池负责处理事件。</font><font color = "red">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型：</font>**
 
 * 单线程模型(单Reactor单线程)  
 * 多线程模型(单Reactor多线程)  
@@ -122,7 +128,7 @@ Reactor的一般流程
 &emsp; 3)读取通信对端的请求或者应答消息；  
 &emsp; 4)向通信对端发送消息请求或者应答消息。  
 
-&emsp; 由于Reactor模式使用的是同步步非阻塞IO，所有的IO操作都不会导致阻塞(或者是短暂的阻塞)，理论上一个线程可以独立处理所有IO相关的操作。从架构层面看，一个NIO线程确实可以完成其承担的职责。例如，通过Acceptor类接收客户端的TCP连接请求消息，链路建立成功之后，通过Dispatch将对应的ByteBuffer派发到指定的Handler上进行消息解码。用户线程可以通过消息编码通过NIO线程将消息发送给客户端。  
+&emsp; 由于Reactor模式使用的是同步非阻塞IO，所有的IO操作都不会导致阻塞(或者是短暂的阻塞)，理论上一个线程可以独立处理所有IO相关的操作。从架构层面看，一个NIO线程确实可以完成其承担的职责。例如，通过Acceptor类接收客户端的TCP连接请求消息，链路建立成功之后，通过Dispatch将对应的ByteBuffer派发到指定的Handler上进行消息解码。用户线程可以通过消息编码通过NIO线程将消息发送给客户端。  
 
 #### 1.2.1.2. 单线程模型缺点
 &emsp; 对于一些小容量应用场景，可以使用单线程模型。但是对于高负载、大并发的应用场景却不合适，主要原因如下：  
@@ -214,7 +220,7 @@ https://mp.weixin.qq.com/s/rqzzHAhntBJpEHpzz1o5HA
 《Netty权威指南》第18章
 -->
 &emsp; Netty框架的主要线程就是I/O线程，线程模型设计的好坏，决定了系统的吞吐量、并发性和安全性等架构质量属性。  
-&emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "lime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
+&emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
 
 ### 1.3.1. 单线程模型  
 &emsp; 单线程模型就是只指定一个线程执行客户端连接和读写操作，也就是在一个Reactor中完成，对应在Netty中的实现就是将NioEventLoopGroup线程数设置为1，核心代码是：  
@@ -291,3 +297,4 @@ bootstrap.group(bossGroup，workerGroup)
 
 ## 1.5. 参考  
 &emsp; https://www.bilibili.com/video/BV1ft4y1B74d?p=2  
+&emsp; https://www.bilibili.com/video/BV17t41137su?p=61  

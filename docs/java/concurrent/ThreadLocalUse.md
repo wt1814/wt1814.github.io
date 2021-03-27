@@ -4,8 +4,14 @@
 - [1. ThreadLocal应用](#1-threadlocal应用)
     - [1.1. ThreadLocal使用](#11-threadlocal使用)
         - [1.1.1. ※※※正确使用](#111-※※※正确使用)
-        - [1.1.2. SimpleDateFormat非线程安全问题](#112-simpledateformat非线程安全问题)
-        - [1.1.3. ThreadLocal<DecimalFormat>](#113-threadlocaldecimalformat)
+        - [1.1.2. 线程安全问题](#112-线程安全问题)
+            - [1.1.2.1. SimpleDateFormat非线程安全问题](#1121-simpledateformat非线程安全问题)
+            - [1.1.2.2. ThreadLocal<DecimalFormat>](#1122-threadlocaldecimalformat)
+        - [1.1.3. 业务中变量传递](#113-业务中变量传递)
+            - [1.1.3.1. ThreadLocal实现同一线程下多个类之间的数据传递](#1131-threadlocal实现同一线程下多个类之间的数据传递)
+            - [1.1.3.2. ThreadLocal实现线程内的缓存，避免重复调用](#1132-threadlocal实现线程内的缓存避免重复调用)
+        - [1.1.4. ThreadLocal+MDC实现链路日志增强](#114-threadlocalmdc实现链路日志增强)
+        - [1.1.5. ThreadLocal 实现数据库读写分离下强制读主库](#115-threadlocal-实现数据库读写分离下强制读主库)
     - [1.2. ThreadLocal局限性(变量不具有传递性)](#12-threadlocal局限性变量不具有传递性)
         - [1.2.1. 类InheritableThreadLocal的使用](#121-类inheritablethreadlocal的使用)
         - [1.2.2. 类TransmittableThreadLocal(alibaba)的使用](#122-类transmittablethreadlocalalibaba的使用)
@@ -14,7 +20,21 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+1. ThreadLocal使用场景  
+    1. 线程安全问题
+    2. 业务中变量传递。1)ThreadLocal实现同一线程下多个类之间的数据传递；2)ThreadLocal实现线程内的缓存，避免重复调用。
+    3. ThreadLocal+MDC实现链路日志增强
+    4. ThreadLocal 实现数据库读写分离下强制读主库
+
+
 # 1. ThreadLocal应用  
+
+<!-- 
+
+面试官再问你 ThreadLocal，就这样狠狠 “怼” 回去！ 
+https://mp.weixin.qq.com/s/9gXSrw6llYy29OPH-rQuxQ
+-->
 
 ## 1.1. ThreadLocal使用  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-54.png)   
@@ -35,7 +55,9 @@
 1. **<font color = "red">使用static定义threadLocal变量，是为了确保全局只有一个保存Integer对象的ThreadLocal实例。</font>**  
 2. **<font color = "clime">finally语句里调用threadLocal.remove()。</font>**
 
-### 1.1.2. SimpleDateFormat非线程安全问题  
+
+### 1.1.2. 线程安全问题
+#### 1.1.2.1. SimpleDateFormat非线程安全问题  
 
 ```java
 public class Foo{
@@ -54,7 +76,7 @@ public class Foo{
 ```
 &emsp; final确保ThreadLocal的实例不可更改，防止被意外改变，导致放入的值和取出来的不一致，另外还能防止ThreadLocal的内存泄漏。  
 
-### 1.1.3. ThreadLocal<DecimalFormat>
+#### 1.1.2.2. ThreadLocal<DecimalFormat>
 
 ```java
 private static ThreadLocal<DecimalFormat> df = ThreadLocal.withInitial(()->new DecimalFormat("0.00"));
@@ -69,6 +91,19 @@ public static String formatAsPerson(Long one){
     }
 }
 ```
+
+### 1.1.3. 业务中变量传递
+#### 1.1.3.1. ThreadLocal实现同一线程下多个类之间的数据传递  
+&emsp; ......
+
+#### 1.1.3.2. ThreadLocal实现线程内的缓存，避免重复调用  
+&emsp; ......
+
+### 1.1.4. ThreadLocal+MDC实现链路日志增强  
+&emsp; ......
+
+### 1.1.5. ThreadLocal 实现数据库读写分离下强制读主库  
+&emsp; ......
 
 ## 1.2. ThreadLocal局限性(变量不具有传递性)  
 &emsp; <font color = "red">ThreadLocal无法在父子线程之间传递，</font>示例代码如下：  

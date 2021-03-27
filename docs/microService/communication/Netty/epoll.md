@@ -149,13 +149,14 @@ int 函数返回fds集合中就绪的读、写，或出错的描述符数量，�
 
 ## 1.3. epoll
 &emsp; epoll是在2.6内核中提出的，是之前的select和poll的增强版本。相对于select和poll来说，epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。  
-
-### 1.3.1. ~~epoll()操作函数~~
 <!-- 
 ★★★
 https://zhuanlan.zhihu.com/p/159135478
+一举拿下 I/O 多路复用！
+https://mp.weixin.qq.com/s/qVUXY7t515xmXIL8gQ1nBQ
 -->
 
+### 1.3.1. ~~epoll()操作函数~~
 &emsp; epoll主要有epoll_create,epoll_ctl和epoll_wait三个函数。  
 * int epoll_create(int size)  
 &emsp; 函数创建epoll文件描述符，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。返回是epoll描述符。-1表示创建失败。  

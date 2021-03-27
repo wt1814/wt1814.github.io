@@ -8,6 +8,11 @@
 
 <!-- /TOC -->
 
+<!-- 
+ 手动实现Redis的LRU缓存机制 
+ https://mp.weixin.qq.com/s/NTWv_jDVKaPspoWOZC_5uQ  
+-->
+
 # 1. 缓存算法  
 &emsp; 先进先出策略 FIFO(First In，First Out)、最少使用策略 LFU(Least Frequently Used)、最近最少使用策略 LRU(Least Recently Used)。  
 
