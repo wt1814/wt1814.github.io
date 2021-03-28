@@ -523,7 +523,11 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 &emsp; &emsp; [Netty服务端创建](/docs/microService/communication/Netty/principle.md)  
 &emsp; &emsp; [Netty客户端创建](/docs/microService/communication/Netty/customer.md)  
 &emsp; &emsp; [NioEventLoop](/docs/microService/communication/Netty/NioEventLoop.md)  
+&emsp; &emsp; [NioEventLoop的执行](/docs/microService/communication/Netty/NioEventLoopRun.md)  
+
+<!--
 &emsp; &emsp; [内存分配byteBuf](/docs/microService/communication/Netty/byteBuf.md)    
+-->
 
 
 ---

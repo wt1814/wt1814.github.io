@@ -172,7 +172,7 @@ public final void channelRegistered(ChannelHandlerContext ctx) throws Exception 
         // 调用完 initChannel 后就调用 pipeline 中的每一个 Channel
         ctx.pipeline().fireChannelRegistered();
 
-        // 同时我们就可以移除这个作用是为了初始化的 Channel
+        // 同时就可以移除这个作用是为了初始化的 Channel
         removeState(ctx);
     } else {
         // Called initChannel(...) before which is the expected behavior, so just forward the event.
@@ -187,7 +187,7 @@ private boolean initChannel(ChannelHandlerContext ctx) throws Exception {
     if (initMap.add(ctx)) { // 这里是防止重复初始化
         try { 
             //这里才是真正调用 initChannel 方法
-            //这里是我们示例里面初始化的 channelHandler
+            //这里是示例里面初始化的 channelHandler
             initChannel((C) ctx.channel());
         } catch (Throwable cause) {
             // 如果发生异常就传递异常
@@ -208,7 +208,7 @@ private boolean initChannel(ChannelHandlerContext ctx) throws Exception {
 ```java
 ChannelFuture f = b.connect(host,port).sync();
 ```
-&emsp; 前面基本上的步骤都是进行客户端的设置。现在我们要去看 connect 的代码究竟做了什么。  
+&emsp; 前面基本上的步骤都是进行客户端的设置。现在去看看 connect 的代码究竟做了什么。  
 
 ```java
 private ChannelFuture doResolveAndConnect(final SocketAddress remoteAddress, final SocketAddress localAddress) {
@@ -246,7 +246,7 @@ private ChannelFuture doResolveAndConnect(final SocketAddress remoteAddress, fin
 }
 ```
 ### 1.3.1. doConnect 连接服务端  
-&emsp; 上面的流程跟服务端差不多，主要区别在于 doResolveAndConnect0 方法。我们进去看看  
+&emsp; 上面的流程跟服务端差不多，主要区别在于 doResolveAndConnect0 方法。进去看看  
 
 ```java
 private ChannelFuture doResolveAndConnect0(final Channel channel, SocketAddress remoteAddress,
@@ -355,10 +355,10 @@ protected boolean doConnect(SocketAddress remoteAddress, SocketAddress localAddr
     }
 }
 ```
-&emsp; 目前为止，客户端的已经完成了“发起连接”这个动作了。如果成功还好，如果是第二种情况返回 false，后面成功了怎么处理呢？我们继续往下走~  
+&emsp; 目前为止，客户端的已经完成了“发起连接”这个动作了。如果成功还好，如果是第二种情况返回 false，后面成功了怎么处理呢？继续往下走~  
 
 ### 1.3.2. 异步连接结果通知  
-&emsp; 由于上面再NioSocketChannel如果暂时不能成功注册的话，就返回继续将 selectionKey设为OP_CONNECT。那么后续交给了“线程池” NioEventLoopGroup继续去监听实行。NioEventLoopGroup是一个线程池集合。而里面每一个线程池其实是NioEventLoop。所以后续异步连接结果还是由 NioEventLoop 继续处理。我们去看看它的源码。  
+&emsp; 由于上面再NioSocketChannel如果暂时不能成功注册的话，就返回继续将 selectionKey设为OP_CONNECT。那么后续交给了“线程池” NioEventLoopGroup继续去监听实行。NioEventLoopGroup是一个线程池集合。而里面每一个线程池其实是NioEventLoop。所以后续异步连接结果还是由 NioEventLoop 继续处理。去看看它的源码。  
 
 ```java
 private void processSelectedKey(SelectionKey k, AbstractNioChannel ch) {

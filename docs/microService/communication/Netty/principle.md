@@ -82,10 +82,10 @@ public final class EchoServer {
 }
 ```
 
-* 第 7 至 15 行：配置 SSL ，暂时可以忽略。
-* 第 17 至 20 行：创建两个 EventLoopGroup 对象。
+* 第 7 至 15 行：配置SSL ，暂时可以忽略。
+* 第 17 至 20 行：创建两个EventLoopGroup对象。
     * boss 线程组：用于服务端接受客户端的连接。
-    * worker 线程组：用于进行客户端的 SocketChannel 的数据读写。
+    * worker 线程组：用于进行客户端的SocketChannel的数据读写。
 * 第 22 行：创建 io.netty.example.echo.EchoServerHandler 对象。
 * 第 24 行：创建 ServerBootstrap 对象，用于设置服务端的启动配置。
     * 第 26 行：调用 #group(EventLoopGroup parentGroup, EventLoopGroup childGroup) 方法，设置使用的 EventLoopGroup 。
@@ -540,7 +540,7 @@ if ((readyOps & (SelectionKey.OP_READ | SelectionKey.OP_ACCEPT)) != 0 || readyOp
     unsafe.read();
 }
 ```
-&emsp; 我们完整看到了在 NioEventLoop 如何处理四种事件。来看看读事件。我们可以发现读事件是使用 unsafe 来实现的。unsafe 有两种实现，分别为 NioByteUnsafe 和 NioMessageUnsafe。由于是 NioEventLoop，所以使用 NioByteUnsafe。我们来看看它的 read() 方法。  
+&emsp; 已经完整看到了在 NioEventLoop 如何处理四种事件。来看看读事件。可以发现读事件是使用 unsafe 来实现的。unsafe 有两种实现，分别为 NioByteUnsafe 和 NioMessageUnsafe。由于是 NioEventLoop，所以使用 NioByteUnsafe。现在来看看它的 read() 方法。  
 
 ```java
 public void read() {
@@ -632,9 +632,9 @@ public void channelRead(ChannelHandlerContext ctx, Object msg) {
     设置客户端 SocketChannel 的 TCP 参数
     注册 SocketChannel 到多路复用器上
 
-&emsp; 以上三个步骤执行完之后，我们看一下 NioServerSocketChannel 的 register 方法。  
+&emsp; 以上三个步骤执行完之后，看一下 NioServerSocketChannel 的 register 方法。  
 &emsp; NioServerSocketChannel 注册方法与 ServerSocketChannel 的一致，也是 Channel 注册到 Reactor线程的多路复用器上。由于注册的操作位是 0，所以，此时的 NioserverSocketChannel 还不能读取客户端发送的消息。  
-&emsp; 执行完注册操作之后，紧接着会触发 ChannelReadComplete 事件。我们继续分析 ChannelReadComplete 在 ChannelPipeline 中的处理流程：Netty 的 Header 和 Tail 本身不关注 ChannelReadComplete 事件直接透传，执行完 ChannelReadComplete 后，接着执行 PipeLine 的 read() 方法，最终执行 HeadHandler() 的 read() 方法。  
+&emsp; 执行完注册操作之后，紧接着会触发 ChannelReadComplete 事件。继续分析 ChannelReadComplete 在 ChannelPipeline 中的处理流程：Netty 的 Header 和 Tail 本身不关注 ChannelReadComplete 事件直接透传，执行完 ChannelReadComplete 后，接着执行 PipeLine 的 read() 方法，最终执行 HeadHandler() 的 read() 方法。  
 &emsp; HeadHandler read() 方法是用来将网络操作位修改读操作。创建 NioSocketChannel 的时候已经将 AbstractNioChannel 的 readInterestOp 设置为 OP_READ。这样，执行 selectionKey.interestOps(interestOps | readInterestOp) 操作时就会把操作位设置为 OP_READ。  
 
 ```java

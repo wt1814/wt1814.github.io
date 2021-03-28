@@ -399,7 +399,8 @@
     * [Netty源码](/docs/microService/communication/Netty/source.md)  
         * [Netty服务端创建](/docs/microService/communication/Netty/principle.md)  
         * [Netty客户端创建](/docs/microService/communication/Netty/customer.md)  
-        * [内存分配byteBuf](/docs/microService/communication/Netty/byteBuf.md)  
+        * [NioEventLoop](/docs/microService/communication/Netty/NioEventLoop.md)  
+        * [NioEventLoop的执行](/docs/microService/communication/Netty/NioEventLoopRun.md)  
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [接口响应时间](/docs/Error/responseTime.md)  
