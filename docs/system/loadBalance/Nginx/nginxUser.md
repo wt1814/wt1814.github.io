@@ -12,7 +12,7 @@
                 - [1.2.1.1.1. 正向代理](#12111-正向代理)
                 - [1.2.1.1.2. 反向代理](#12112-反向代理)
                 - [1.2.1.1.3. 正向代理和反向代理对比](#12113-正向代理和反向代理对比)
-            - [1.2.1.2. ※※※Nginx负载均衡](#1212-※※※nginx负载均衡)
+            - [1.2.1.2. ★★★Nginx负载均衡](#1212-★★★nginx负载均衡)
         - [1.2.2. 虚拟主机](#122-虚拟主机)
         - [1.2.3. 多个webapp的配置](#123-多个webapp的配置)
         - [1.2.4. 静态资源WEB服务](#124-静态资源web服务)
@@ -41,9 +41,14 @@ https://mp.weixin.qq.com/s/kIIGCq_oN66nt4MMYaCJpQ
 
 -->
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; <font color = "red">Nginx服务器处理一个请求是按照两部分进行的。第一部分是IP和域名，由listen和server_name指令匹配server模块；第二部分是URL，匹配server模块里的location；最后就是location里的具体处理。</font>  
-&emsp; <font color = "red">Nginx使用场景：反向代理、虚拟主机、静态资源WEB服务、缓存、限流、黑白名单、防盗链、流量复制...</font>
-
+1. <font color = "red">Nginx服务器处理一个请求是按照两部分进行的。第一部分是IP和域名，由listen和server_name指令匹配server模块；第二部分是URL，匹配server模块里的location；最后就是location里的具体处理。</font>  
+2. <font color = "red">Nginx使用场景：反向代理、虚拟主机、静态资源WEB服务、缓存、限流、黑白名单、防盗链、流量复制...</font>
+3. **<font color = "red">Nginx支持的负载均衡调度算法方式如下：</font>**  
+    * **<font color = "red">轮询(默认)</font>** 
+    * **<font color = "red">weight</font>** ：指定权重。  
+    * **<font color = "red">ip_hash</font>**  
+    * **<font color = "red">fair(第三方)</font>** ：智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配。  
+    * **<font color = "red">url_hash(第三方)</font>**  
 
 # 1. Nginx使用  
 ## 1.1. 基于配置文件的Nginx处理请求流程  
@@ -217,7 +222,7 @@ https://mp.weixin.qq.com/s/qchaaVoOSJOqnRBlBIU--g
 2. 负载均衡 
 3. 缓存，减少服务器的压力 
 
-#### 1.2.1.2. ※※※Nginx负载均衡  
+#### 1.2.1.2. ★★★Nginx负载均衡  
 &emsp; 负载均衡功能即是反向代理的应用，只不过负载均衡是代理多台服务器，更注重其均衡转发功能。    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-5.png) 
 

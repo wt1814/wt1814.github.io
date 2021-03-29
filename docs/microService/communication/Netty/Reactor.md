@@ -52,6 +52,11 @@ Reactor的一般流程、3种线程模型、Netty中的Reactor
 # 1. Reactor线程模型  
 &emsp; **<font color = "clime">《Reactor论文》</font>**  
 
+<!-- 
+
+https://zhuanlan.zhihu.com/p/264355987?utm_source=wechat_session
+-->
+
 ## 1.1. Reactor是什么
 &emsp; 在处理web请求时，通常有两种体系结构，分别为：thread-based architecture(基于线程)、event-driven architecture(事件驱动)。  
 
@@ -282,6 +287,10 @@ bootstrap.group(bossGroup，workerGroup)
 &emsp; **注意：其实在Netty中，bossGroup线程池最终还是只会随机选择一个线程用于处理客户端连接，与此同时，NioServerSocetChannel绑定到bossGroup的线程中，NioSocketChannel绑定到workGroup的线程中。**  
 
 ## 1.4. Proactor介绍  
+<!-- 
+Proactor
+http://www.yeolar.com/note/2012/12/10/proactor/
+-->
 &emsp; **Proactor和Reactor的区别：**  
 
 * Proactor是基于异步I/O的概念，而Reactor一般则是基于多路复用I/O的概念  

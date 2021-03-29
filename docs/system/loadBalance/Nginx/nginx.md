@@ -19,25 +19,24 @@
 <!-- /TOC -->
 
 
-<!-- 
-Nginx 的配置文件
-https://mp.weixin.qq.com/s/iYvNHkWaQ8CyuPQJQbidlA
-Nginx如何工作？
-https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 
--->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-11.png) 
 
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在应用层，因此nginx又可以称为7层负载均衡</font>。  
-&emsp; **多进程：**    
-&emsp; Nginx启动时，会生成两种类型的进程，一个主进程master，一个(windows版本的目前只有一个)或多个工作进程worker。  
+&emsp; **多进程：** Nginx启动时，会生成两种类型的进程，一个主进程master，一个(windows版本的目前只有一个)或多个工作进程worker。  
 
 * 主进程并不处理网络请求，主要负责调度工作进程：加载配置、启动工作进程、非停升级。  
 * **<font color = "red">一般推荐worker进程数与CPU内核数一致，这样一来不存在大量的子进程生成和管理任务，避免了进程之间竞争CPU资源和进程切换的开销。</font>**  
 
 # 1. Nginx  
+<!-- 
+Nginx 的配置文件
+https://mp.weixin.qq.com/s/iYvNHkWaQ8CyuPQJQbidlA
+Nginx如何工作？
+https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
+-->
 &emsp; Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在应用层，因此nginx又可以称为7层负载均衡</font>。  
 
 * 同时处理大量的并发请求(可以处理2-3万并发连接数，官方监测能支持5万并发)。
@@ -73,18 +72,18 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 &emsp; 在 Nginx 服务器的运行过程中， 主进程 和 工作进程 需要进程交互。交互依赖于 Socket 实现的管道来实现。  
 
 ## 1.3. 基于异步及非阻塞的事件驱动模型  
-&emsp; 基于 异步及非阻塞的事件驱动模型 ，可以说是 Nginx 得以获得高并发、高性能的关键因素，同时也得益于对Linux、 Solaris及类BSD等操作系统内核中 事件通知及I/O 性能增强功能 的采用，如kqueue、epoll及event ports 。  
+&emsp; 基于 异步及非阻塞的事件驱动模型 ，可以说是 Nginx 得以获得高并发、高性能的关键因素，同时也得益于对Linux、Solaris及类BSD等操作系统内核中 事件通知及I/O性能增强功能的采用，如kqueue、epoll及event ports。  
 
 ### 1.3.1. 异步非阻塞机制  
-&emsp; <font color = "red">每个 工作进程 使用 异步非阻塞方式 ，可以处理多个客户端请求 。</font>  
-&emsp; 当某个 工作进程 接收到客户端的请求以后，调用 IO 进行处理，如果不能立即得到结果，就去处理其他请求 (即为非阻塞 )，而客户端在此期间也无需等待响应 ，可以去处理其他事情(即为异步 )  
-&emsp; 当 IO 返回时，就会通知此工作进程，该进程得到通知，暂时挂起当前处理的事务去 响应客户端请求 。  
+&emsp; <font color = "red">每个工作进程使用异步非阻塞方式，可以处理多个客户端请求。</font>  
+&emsp; 当某个工作进程接收到客户端的请求以后，调用IO进行处理，如果不能立即得到结果，就去处理其他请求 (即为非阻塞 )，而客户端在此期间也无需等待响应，可以去处理其他事情(即为异步 )  
+&emsp; 当 IO 返回时，就会通知此工作进程，该进程得到通知，暂时挂起当前处理的事务去响应客户端请求 。  
 
 ### 1.3.2. Nginx事件驱动模型  
-&emsp; 在 Nginx 的 异步非阻塞机制 中， 工作进程在调用 IO 后，就去处理其他的请求，当 IO 调用返回后，会通知该工作进程 。  
-&emsp; 对于这样的系统调用，主要使用 Nginx 服务器的事件驱动模型来实现，如下图所示：  
+&emsp; 在Nginx的异步非阻塞机制中，工作进程在调用IO后，就去处理其他的请求，当IO调用返回后，会通知该工作进程。  
+&emsp; 对于这样的系统调用，主要使用Nginx服务器的事件驱动模型来实现。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-9.png)   
-&emsp; 如上图所示， <font color = "red">Nginx 的 事件驱动模型 由 事件收集器 、 事件发送器 和 事件处理器 三部分基本单元组成。</font>  
+&emsp; 如上图所示，<font color = "red">Nginx的事件驱动模型由事件收集器、事件发送器和事件处理器三部分基本单元组成。</font>  
 
 * 事件收集器：负责收集 worker 进程的各种 IO 请求；  
 * 事件发送器：负责将 IO 事件发送到 事件处理器 ；  

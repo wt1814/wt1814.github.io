@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. Java关键字](#1-java关键字)
+- [1. Java基础](#1-java基础)
     - [1.1. 流程控制语句](#11-流程控制语句)
         - [1.1.1. 顺序语句](#111-顺序语句)
         - [1.1.2. 条件语句](#112-条件语句)
@@ -37,7 +37,14 @@
 
 <!-- /TOC -->
 
-# 1. Java关键字  
+# 1. Java基础
+<!-- 
+Java四种内部类总结
+https://blog.csdn.net/sinat_37003267/article/details/80058544
+https://www.runoob.com/java/java-inner-class.html
+https://www.zhihu.com/question/26954130/answer/708467570
+
+-->  
 
 ## 1.1. 流程控制语句  
 <!-- 

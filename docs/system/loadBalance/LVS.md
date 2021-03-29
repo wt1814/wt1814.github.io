@@ -118,7 +118,7 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 &emsp; LVS的各个层次的详细介绍：  
 &emsp; Load Balancer层：位于整个集群系统的最前端，有一台或者多台负载调度器(Director Server)组成，LVS模块就安装在Director Server上，而Director的主要作用类似于一个路由器，它含有完成LVS功能所设定的路由表，通过这些路由表把用户的请求分发给Server Array层的应用服务器(Real Server)上。同时，在Director Server上还要安装对Real Server服务的监控模块Ldirectord，此模块用于监测各个Real Server服务的健康状况。在Real Server不可用时把它从LVS路由表中剔除，恢复时重新加入。  
 &emsp; Server Array层：由一组实际运行应用服务的机器组成，Real Server可以是Web服务器、Mail服务器、FTP服务器、DNS服务器、视频服务器中的一个或者多个，每个Real Server之间通过高速的LAN或分布在各地的WAN相连接。在实际的应用中，Director Server也可以同时兼任Real Server的角色。  
-&emsp; Shared Storage层：是为所有Real Server提供共享存储空间和内容一致性的存储区域，在物理上一般由磁盘阵列设备组成，为了提供内容的一致性，一般可以通过NFS网络文件系统共享数 据，但NFS在繁忙的业务系统中，性能并不是很好，此时可以采用集群文件系统，例如Red hat的GFS文件系统、Oracle提供的OCFS2文件系统等。  
+&emsp; Shared Storage层：是为所有Real Server提供共享存储空间和内容一致性的存储区域，在物理上一般由磁盘阵列设备组成，为了提供内容的一致性，一般可以通过NFS网络文件系统共享数据，但NFS在繁忙的业务系统中，性能并不是很好，此时可以采用集群文件系统，例如Red hat的GFS文件系统、Oracle提供的OCFS2文件系统等。  
 
 &emsp; 从整个LVS结构可以看出，Director Server是整个LVS的核心，目前用于Director Server的操作系统只能是Linux和FreeBSD，Linux2.6内核不用任何设置就可以支持LVS功能，而FreeBSD作为 Director Server的应用还不是很多，性能也不是很好。对于Real Server，几乎可以是所有的系统平台，Linux、windows、Solaris、AIX、BSD系列都能很好地支持。  
 
@@ -130,7 +130,7 @@ https://www.cnblogs.com/lixigang/p/5371815.html
 https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 -->
 &emsp; **LVS是四层(传输层)负载均衡，LVS支持TCP/UDP的负载均衡。**  
-&emsp; LVS 的转发主要通过修改IP地址(NAT模式，分为源地址修改SNAT和目标地址修改DNAT)、修改目标MAC(DR模式)来实现。  
+&emsp; **<font color = "clime">LVS 的转发主要通过修改IP地址(NAT模式，分为源地址修改SNAT和目标地址修改DNAT)、修改目标MAC(DR模式)来实现。</font>**  
 
 ### 1.4.1. NAT(网络地址转换)  
 &emsp; NAT(Network Address Translation)是一种外网和内网地址映射的技术。  
@@ -166,9 +166,9 @@ https://blog.csdn.net/qq_37165604/article/details/79802390
 &emsp; DR 负载均衡模式数据分发过程中不修改 IP 地址，只修改 mac 地址，由于实际处理请求的真实物理 IP 地址和数据请求目的 IP 地址一致，所以不需要通过负载均衡服务器进行地址转换，可将响应数据包直接返回给用户浏览器，避免负载均衡服务器网卡带宽成为瓶颈。因此，DR 模式具有较好的性能，也是目前大型网站使用最广泛的一种负载均衡手段。  
 
 &emsp; **编辑DR有三种方式(目的是让用户请求的数据都通过Director Server)**  
-&emsp; 第一种方式：在路由器上明显说明vip对应的地址一定是Director上的MAC，只要绑定，以后再跟vip通信也不用再请求了，这个绑定是静态的，所以它也不会失效，也不会再次发起请求，但是有个前提，我们的路由设备必须有操作权限能够绑定MAC地址，万一这个路由器是运行商操作的，我们没法操作怎么办？第一种方式固然很简便，但未必可行。  
-&emsp; 第二种方式：在给别主机上(例如：红帽)它们引进的有一种程序arptables,它有点类似于iptables,它肯定是基于arp或基于MAC做访问控制的，很显然我们只需要在每一个real server上定义arptables规则，如果用户arp广播请求的目标地址是本机的vip则不予相应，或者说相应的报文不让出去，很显然网关(gateway)是接受不到的，也就是director相应的报文才能到达gateway，这个也行。第二种方式我们可以基于arptables。  
-&emsp; 第三种方式：在相对较新的版本中新增了两个内核参数(kernelparameter)，第一个是arp_ignore定义接受到ARP请求时的相应级别;第二个是arp_announce定义将自己地址向外通告是的通告级别。【提示：很显然我们现在的系统一般在内核中都是支持这些参数的，我们用参数的方式进行调整更具有朴实性，它还不依赖于额外的条件，像arptables,也不依赖外在路由配置的设置，反而通常我们使用的是第三种配置】  
+&emsp; 第一种方式：在路由器上明显说明vip对应的地址一定是Director上的MAC，只要绑定，以后再跟vip通信也不用再请求了，这个绑定是静态的，所以它也不会失效，也不会再次发起请求，但是有个前提，路由设备必须有操作权限能够绑定MAC地址，万一这个路由器是运行商操作的，没法操作怎么办？第一种方式固然很简便，但未必可行。  
+&emsp; 第二种方式：在给别主机上(例如：红帽)它们引进的有一种程序arptables,它有点类似于iptables,它肯定是基于arp或基于MAC做访问控制的，很显然只需要在每一个real server上定义arptables规则，如果用户arp广播请求的目标地址是本机的vip则不予相应，或者说相应的报文不让出去，很显然网关(gateway)是接受不到的，也就是director相应的报文才能到达gateway，这个也行。第二种方式可以基于arptables。  
+&emsp; 第三种方式：在相对较新的版本中新增了两个内核参数(kernelparameter)，第一个是arp_ignore定义接受到ARP请求时的相应级别;第二个是arp_announce定义将自己地址向外通告是的通告级别。【提示：很显然现在的系统一般在内核中都是支持这些参数的，用参数的方式进行调整更具有朴实性，它还不依赖于额外的条件，像arptables,也不依赖外在路由配置的设置，反而通常使用的是第三种配置】  
 
 &emsp; arp_ignore：定义接受到ARP请求时的相应级别。  
 
@@ -198,7 +198,7 @@ https://blog.csdn.net/qq_37165604/article/details/79802390
 
 &emsp; 用户请求以后，到director上的VIP上，它跟DR模型一样，每个realserver上既有RIP又有VIP，Director就挑选一个real server进行响应，但director和real server并不在同一个网络上，这时候就用到隧道了，Director进行转发的时候，一定要记得CIP和VIP不能动。  
 &emsp; 转发是这样的，让它的CIP和VIP不动，在它上面再加一个IP首部，再加的IP首部源地址是DIP，目标地址的RIP的IP地址。收到报文的RIP，拆掉报文以后发现了里面还有一个封装，它就知道了，这就是隧道。  
-&emsp; 其实数据转发原理和DR是一样的，不过这个我个人认为主要是位于不同位置(不同机房)；LB是通过隧道进行了信息传输，虽然增加了负载，可是因为地理位置不同的优势，还是可以参考的一种方案；  
+&emsp; 其实数据转发原理和DR是一样的，不过这个个人认为主要是位于不同位置(不同机房)；LB是通过隧道进行了信息传输，虽然增加了负载，可是因为地理位置不同的优势，还是可以参考的一种方案；  
 
 ```text
 优点：负载均衡器只负责将请求包分发给物理服务器，而物理服务器将应答包直接发给用户。所以，负载均衡器能处理很巨大的请求量，这种方式，一台负载均衡能为超过100台的物理服务器服务，负载均衡器不再是系统的瓶颈。

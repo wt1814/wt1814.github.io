@@ -2,14 +2,20 @@
 <!-- TOC -->
 
 - [1. 负载均衡](#1-负载均衡)
-    - [1.1. 均衡技术](#11-均衡技术)
-    - [1.2. 主要应用](#12-主要应用)
+    - [1.1. ~~前言：一次网络请求~~](#11-前言一次网络请求)
+    - [1.2. ~~均衡技术~~](#12-均衡技术)
     - [1.3. ★★★基于网络的负载均衡的分类](#13-★★★基于网络的负载均衡的分类)
     - [1.4. 负载均衡算法](#14-负载均衡算法)
     - [1.5. 常用负载均衡工具](#15-常用负载均衡工具)
-    - [1.6. ★★★负载均衡方案选择](#16-★★★负载均衡方案选择)
 
 <!-- /TOC -->
+
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **负载均衡方案选择：**  
+* 5000万PV的，HAProxy+Keepalived,nginx，HAPROXY负责TCP的负载均衡，nginx负责7层调度； 
+* **1亿以上的，LVS-DR+keepalived,nginx，LVS-DR负责TCP的负载均衡，nginx负责7层调度。**  
+
+
 
 # 1. 负载均衡
 <!--
@@ -24,7 +30,11 @@ https://mp.weixin.qq.com/s/HRfHQm1ihSEs6VFzxoC4rQ
 -->
 &emsp; 负载均衡(Load Balance)是集群技术(Cluster)的一种应用技术。负载均衡建立在现有网络结构之上，它提供了一种廉价有效透明的方法扩展网络设备和服务器的带宽、增加吞吐量、加强网络数据处理能力、提高网络的灵活性和可用性。 目前最常见的负载均衡应用是Web负载均衡。  
 
-## 1.1. 均衡技术   
+## 1.1. ~~前言：一次网络请求~~
+&emsp; 客户端 ---> 网络链路 ---> 服务端
+
+
+## 1.2. ~~均衡技术~~   
 &emsp;常见的软件负载均衡技术有以下几种：  
 1. 基于DNS的负载均衡  
 &emsp; 由于在DNS服务器中，可以为多个不同的地址配置相同的名字，最终查询这个名字的客户机将在解析这个名字时得到其中一个地址，所以这种代理方式是通过DNS服务中的随机名字解析域名和IP来实现负载均衡。  
@@ -35,7 +45,10 @@ https://mp.weixin.qq.com/s/HRfHQm1ihSEs6VFzxoC4rQ
 
 &emsp; 除了软件负载均衡技术，常见的还有CDN(Content Delivery Network，内容分发网络)。通过发布机制将内容同步到大量的缓存节点，并在DNS服务器上进行扩展，找到里用户最近的缓存节点作为服务提供节点。  
 
-## 1.2. 主要应用
+--------------------
+
+
+&emsp;  ~~主要应用~~
 1. DNS负载均衡   
 &emsp; 最早的负载均衡技术是通过DNS来实现的，在DNS中为多个地址配置同一个名字，因而查询这个名字的客户机将得到其中一个地址，从而使得不同的客户访问不同的服务器，达到负载均衡的目的。DNS负载均衡是一种简单而有效的方法，但是它不能区分服务器的差异，也不能反映服务器的当前运行状态。  
 2. 代理服务器负载均衡  
@@ -43,7 +56,7 @@ https://mp.weixin.qq.com/s/HRfHQm1ihSEs6VFzxoC4rQ
 3. 地址转换网关负载均衡    
 &emsp; 支持负载均衡的地址转换网关，可以将一个外部IP地址映射为多个内部IP地址，对每次TCP连接请求动态使用其中一个内部地址，达到负载均衡的目的。  
 4. 协议内部支持负载均衡    
-&emsp; 除了这三种负载均衡方式之外，有的协议内部支持与负载均衡相关的功能，例如HTTP协议中的重定向能力等，HTTP运行于TCP连接的最高层。  
+&emsp; 除了这三种负载均衡方式之外，有的协议内部支持与负载均衡相关的功能， **<font color = "clime">例如HTTP协议中的重定向能力等，</font>** HTTP运行于TCP连接的最高层。  
 5. NAT负载均衡NAT(Network Address Translation网络地址转换)   
 &emsp; 简单地说就是将一个IP地址转换为另一个IP地址，一般用于未经注册的内部地址与合法的、已获注册的Internet IP地址间进行转换。适用于解决Internet IP地址紧张、不想让网络外部知道内部网络结构等的场合下。  
 6. 反向代理负载均衡    
@@ -83,10 +96,8 @@ https://mp.weixin.qq.com/s/HRfHQm1ihSEs6VFzxoC4rQ
 ## 1.5. 常用负载均衡工具
 &emsp; 常用的软件负载均衡软件有[Nginx](/docs/system/loadBalance/Nginx/nginx.md)、[LVS](/docs/system/loadBalance/LVS.md)、HaProxy等。  
 
-
-
-## 1.6. ★★★负载均衡方案选择  
-&emsp; 小于3000万pv的，DNS轮询+监控；
-&emsp; **3000万以上的，nginx+监控；**
-&emsp; 5000万PV的，HAProxy+Keepalived,nginx，HAPROXY负责TCP的负载均衡，nginx负责7层调度；
-&emsp; **1亿以上的，LVS-DR+keepalived,nginx，LVS-DR负责TCP的负载均衡，nginx负责7层调度。**
+&emsp; **<font color = "clime">★★★负载均衡方案选择</font>**  
+&emsp; 小于3000万pv的，DNS轮询+监控；  
+&emsp; **3000万以上的，nginx+监控；**  
+&emsp; 5000万PV的，HAProxy+Keepalived,nginx，HAPROXY负责TCP的负载均衡，nginx负责7层调度；  
+&emsp; **1亿以上的，LVS-DR+keepalived,nginx，LVS-DR负责TCP的负载均衡，nginx负责7层调度。**  

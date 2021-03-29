@@ -37,7 +37,8 @@
 
 # 1. Netty核心组件 
 <!--
-
+★★★
+https://www.sohu.com/a/372108949_268033
 Netty架构原理 
 https://www.sohu.com/a/372108949_268033
 Netty源码

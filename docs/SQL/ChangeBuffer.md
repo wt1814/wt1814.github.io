@@ -16,6 +16,7 @@
 
 # 1. 写缓冲(change buffer)
 <!-- 
+https://blog.csdn.net/qq_42046105/article/details/109505273
 Mysql-Innodb特性之插入缓存 
 https://mp.weixin.qq.com/s/bjKbi0jKXjHUitGuCh-kbg
 InnoDB的插入缓冲 

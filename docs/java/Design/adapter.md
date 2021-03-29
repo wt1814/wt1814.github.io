@@ -9,7 +9,9 @@
 <!-- /TOC -->
 
 # 1. 适配器(Adapter)模式  
-<!-- 
+<!--
+适配器模式在Java日志体系中的应用 
+https://mp.weixin.qq.com/s/Tvo0C1ptPMyoNaggCjphuQ
 萌新发问：MyBatis日志到底是如何做到兼容所有常用日志框架的？ 
 https://mp.weixin.qq.com/s/hUA-GEbRYH0-qgcEKCUylg
 适配器模式在Mybatis中的妙用 
