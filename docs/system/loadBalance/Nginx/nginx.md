@@ -24,20 +24,26 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-11.png) 
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在应用层，因此nginx又可以称为7层负载均衡</font>。  
+&emsp; Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在4层或7层。</font>  
 &emsp; **多进程：** Nginx启动时，会生成两种类型的进程，一个主进程master，一个(windows版本的目前只有一个)或多个工作进程worker。  
 
 * 主进程并不处理网络请求，主要负责调度工作进程：加载配置、启动工作进程、非停升级。  
 * **<font color = "red">一般推荐worker进程数与CPU内核数一致，这样一来不存在大量的子进程生成和管理任务，避免了进程之间竞争CPU资源和进程切换的开销。</font>**  
 
 # 1. Nginx  
-<!-- 
+<!--
+nginx四层和七层负载均衡的区别
+https://blog.csdn.net/friends99/article/details/79803638
+nginx4层是哪四层
+https://m.php.cn/nginx/434192.html
+
+
 Nginx 的配置文件
 https://mp.weixin.qq.com/s/iYvNHkWaQ8CyuPQJQbidlA
 Nginx如何工作？
 https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 -->
-&emsp; Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在应用层，因此nginx又可以称为7层负载均衡</font>。  
+&emsp; Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在在4层或7层。</font>  
 
 * 同时处理大量的并发请求(可以处理2-3万并发连接数，官方监测能支持5万并发)。
 * 内存消耗小：开启10个nginx才占150M内存 ，nginx处理静态文件好，耗费内存少。  

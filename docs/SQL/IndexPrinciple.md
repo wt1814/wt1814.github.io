@@ -31,6 +31,11 @@
 <!-- 
  再有人问你MySQL索引原理，就把这篇文章甩给他！ 
  https://mp.weixin.qq.com/s/9yeModGuGvDu5S0bW9sU6w
+数据库索引，终于懂了 
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651967146&idx=1&sn=e11b8613a0d18bab4bd2abcb63175ad6&chksm=bd2d7b768a5af26073e275fd6556f35b48098576bb69304f04d4b28066e0bc7eb10a948a79ee&scene=21#wechat_redirect
+InnoDB索引，终于懂了 
+https://mp.weixin.qq.com/s/39XgTTC2VUVGq0EIlpb3WA
+ 
 -->
 
 &emsp; 不同的存储引擎支持的索引类型不一样：  

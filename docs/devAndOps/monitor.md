@@ -2,6 +2,9 @@
 # 监控  
 
 <!-- 
+如何快速深入理解监控知识？ 
+https://mp.weixin.qq.com/s/q4QxJi5KZKNNIvWMjfdM1A
+
 Prometheus完整的部署方案+实战实例 
 https://mp.weixin.qq.com/s/mFczwFdtO1eWzXAfKQ1Wfw
 

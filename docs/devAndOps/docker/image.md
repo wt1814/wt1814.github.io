@@ -43,7 +43,7 @@ COPY . /app
 RUN make /app
 CMD python /app/app.py
 ```
-&emsp; 以上四条指令会创建四层，分别对应基础镜像、复制文件、编译文件以及入口文件，每层只记录本层所做的更改，而这些层都是只读层。**<font color = "red">当启动一个容器，Docker会在最顶部添加读写层，在容器内做的所有更改，如写日志、修改、删除文件等，都保存到了读写层内，一般称该层为容器层，</font>**如下图所示：  
+&emsp; 以上四条指令会创建四层，分别对应基础镜像、复制文件、编译文件以及入口文件，每层只记录本层所做的更改，而这些层都是只读层。 **<font color = "red">当启动一个容器，Docker会在最顶部添加读写层，在容器内做的所有更改，如写日志、修改、删除文件等，都保存到了读写层内，一般称该层为容器层，</font>** 如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-15.png)  
 &emsp; 每个镜像可依赖其他镜像进行构建，每一层的镜像可被多个镜像引用，下图的镜像依赖关系，K8S镜像其实是CentOS+GCC+GO+K8S这四个软件结合的镜像。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-19.png)  
@@ -52,7 +52,7 @@ CMD python /app/app.py
 &emsp; 下图形象的表现出了镜像和容器的关系：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-20.png)  
 &emsp; 上图中Apache应用基于emacs镜像构建，emacs基于Debian系统镜像构建，在启动为容器时，在Apache镜像层之上构造了一个可写层，对容器本身的修改操作都在可写层中进行。Debian是该镜像的基础镜像(Base Image)，它提供了内核Kernel的更高级的封装。同时其他的镜像也是基于同一个内核来构建的。  
-&emsp; 事实上，<font color = "lime">容器(container)和镜像(image)的最主要区别就是容器加上了顶层的读写层。</font>所有对容器的修改都发生在此层，镜像并不会被修改。容器需要读取某个文件时，直接从底部只读层去读即可，而如果需要修改某文件，则将该文件拷贝到顶部读写层进行修改，只读层保持不变。  
+&emsp; 事实上，<font color = "clime">容器(container)和镜像(image)的最主要区别就是容器加上了顶层的读写层。</font>所有对容器的修改都发生在此层，镜像并不会被修改。容器需要读取某个文件时，直接从底部只读层去读即可，而如果需要修改某文件，则将该文件拷贝到顶部读写层进行修改，只读层保持不变。  
 &emsp; **每个容器都有自己的读写层，因此多个容器可以使用同一个镜像，**另外容器被删除时，其对应的读写层也会被删除(如果希望多个容器共享或者持久化数据，可以使用Docker volume)。  
 &emsp; 最后，执行命令 docker ps -s，可以看到最后有两列 size 和 virtual size。其中 size就是容器读写层占用的磁盘空间，而 virtual size 就是读写层加上对应只读层所占用的磁盘空间。如果两个容器是从同一个镜像创建，那么只读层就是100%共享，即使不是从同一镜像创建，其镜像仍然可能共享部分只读层(如一个镜像是基于另一个创建)。因此，docker 实际占用的磁盘空间远远小于virtual size 的总和。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-14.png)  

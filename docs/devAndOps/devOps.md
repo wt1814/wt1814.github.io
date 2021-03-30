@@ -50,7 +50,7 @@ https://mp.weixin.qq.com/s/5RpZRJlkypdg4rMAisCYTA
 &emsp; 深色部分表示开发流程，浅色部分表示运维流程。这两个流程构成了 DevOps 方法的核心。    
 &emsp; 这两部分流程的每一部分又可以进一步细分为一系列阶段、过程，或被称作另一系列流程，它们都是由反复出现的步骤组成的。这些步骤都是为了达到同一个结果，实现相同的目的。  
 
-&emsp; DevOps框架结构关系  
+&emsp; DevOps框架结构关系：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-2.png)  
 &emsp; 上图是指示性的。图中没有画出清晰的线条，但它展示了其连贯性。以下是对上图的简要解释，需要说明的是这种关系不是纯粹的一对一的关系。  
 
@@ -114,7 +114,7 @@ https://www.redhat.com/zh/topics/devops/what-is-ci-cd
 &emsp; **Continuous Delivery(持续交付)**  
 &emsp; 持续交付是超越持续集成的更进一步的操作。应用程序不仅会在推送到代码库的每次代码更改时进行构建和测试，而且，尽管部署是手动触发的，但作为一个附加步骤，它也可以连续部署。此方法可确保自动检查代码，但需要人工干预才能从策略上手动触发以必输此次变更。  
 &emsp; **Continuous Deployment(持续部署)**  
-&emsp; 与持续交付类似，但不同之处在于，你无需将其手动部署，而是将其设置为自动部署。完全不需要人工干预即可部署你的应用程序。 
+&emsp; 与持续交付类似，但不同之处在于，你无需将其手动部署，而是将其设置为自动部署。完全不需要人工干预即可部署应用程序。 
 
 ## 1.3. CI/CD、DevOps的关系  
 &emsp; **DevOps是CI、CD思想的延伸，CI、CD是DevOps的基础核心。**如果没有CI、CD自动化的工具和流程，谈DevOps是没有意义的。  

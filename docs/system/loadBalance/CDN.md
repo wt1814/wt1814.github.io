@@ -97,6 +97,10 @@ CDN 可以缓存什么
 <!-- 
 https://blog.csdn.net/hetoto/article/details/90509328
 https://mp.weixin.qq.com/s/VIjHRl5GogichFnf66Wi3g
+
+
+CDN 基本工作过程
+https://blog.csdn.net/u014209205/article/details/89892359
 -->
 &emsp; 考虑没有CDN的情况，发布了一些静态资源服务，然后来自世界各地的用户开始请求资源。  
 &emsp; 假设静态资源服务接入的是浙江移动的ISP，而世界各地的用户接入的ISP是各种各样的。同样假设北京到杭州之间的通信延时是3ms，对于一次web请求就至少是6ms的延时(请求+响应)，因此ISP之间的通信互联成为影响静态资源加载速度的一个重要瓶颈！

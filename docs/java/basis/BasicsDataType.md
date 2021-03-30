@@ -9,13 +9,14 @@
         - [1.2.1. 自动装箱和拆箱](#121-自动装箱和拆箱)
         - [1.2.2. 装箱和拆箱是如何实现的](#122-装箱和拆箱是如何实现的)
     - [1.3. ★★★常量池](#13-★★★常量池)
+    - [Long类型返回精度丢失](#long类型返回精度丢失)
 
 <!-- /TOC -->
 
 
 
-
 &emsp; **<font color = "red">总结：</font>**  
+
 
 
 # 1. Java基本数据类型  
@@ -121,6 +122,20 @@ public class Main {
 
 
 ## 1.3. ★★★常量池  
+<!-- 
+基本数据类型对常量池的使用
+https://blog.csdn.net/jitianyu123/article/details/73555198
+-->
 &emsp; <font color = "clime">Java基本类型的包装类的大部分都实现了常量池技术，</font><font color = "red">即Byte、Short、Integer、Long、Character、Boolean，前面4种包装类默认创建了数值[-128,127]的相应类型的缓存数据，Character创建了数值在[0,127]范围的缓存数据，Boolean直接返回True Or False。如果超出对应范围仍然会去创建新的对象。为什么把缓存设置为[-128,127]区间？是性能和资源之间的权衡。</font>  
 &emsp; 两种浮点数类型的包装类Float、Double并没有实现常量池技术。  
+
+
+## Long类型返回精度丢失  
+
+```java
+@JsonFormat(shape = JsonFormat.Shape.STRING)
+private Long zkShopId;
+```
+
+&emsp; **<font color = "clime">在字段上面添加：@JsonFormat(shape = JsonFormat.Shape.STRING)</font>**  
 

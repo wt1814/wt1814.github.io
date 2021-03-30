@@ -43,7 +43,7 @@ https://docs.docker.com/config/containers/start-containers-automatically/
 
 ## 1.1. 容器生命周期  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-4.png)  
-&emsp; <font color = "lime">容器的生命周期大致可分为4个：创建、运行、休眠和销毁。</font>  
+&emsp; <font color = "clime">容器的生命周期大致可分为4个：创建、运行、休眠和销毁。</font>  
 
 ### 1.1.1. 创建和运行
 &emsp; 容器的创建和运行主要使用docker container run命名，比如下面的命令会从Ubuntu:latest这个镜像中启动/bin/bash这个程序。那么/bin/bash成为了容器中唯一运行的进程。  
@@ -61,7 +61,9 @@ https://docs.docker.com/config/containers/start-containers-automatically/
 &emsp; docker container stop命令可以让容器进入休眠状态，使用docker container rm可以删除容器。删除容器的最佳方式就是先停止容器，然后再删除容器，这样可以给容器中运行的应用/进程一个停止运行并清理残留数据的机会。因为先stop的话，docker container stop命令会像容器内的PID 1进程发送SIGTERM信号，这样会给进程预留一个清理并优雅停止的机会。如果进程在10s的时间内没有终止，那么会发送SIGKILL信号强制停止该容器。但是docker container rm命令不会友好地发送 SIGTERM，而是直接发送SIGKILL信号。  
 
 ### 1.1.3. 重启策略
-&emsp; 容器还可以配置重启策略，这是容器的一种自我修复能力，可以在指定事件或者错误后重启来完成自我修复。配置重启策略有两种方式，一种是命令中直接传入参数，另一种是在Compose文件中声明。下面阐述命令中传入参数的方式，也就是在命令中加入--restart标志，该标志会检查容器的退出代码，并根据退出码已经重启策略来决定。Docker 支持的重启策略包括 always、unless-stopped 和 on-failed 四种。
+&emsp; 容器还可以配置重启策略，这是容器的一种自我修复能力，可以在指定事件或者错误后重启来完成自我修复。  
+&emsp; 配置重启策略有两种方式，一种是命令中直接传入参数，另一种是在Compose文件中声明。下面阐述命令中传入参数的方式，也就是在命令中加入--restart标志，该标志会检查容器的退出代码，并根据退出码已经重启策略来决定。  
+&emsp; Docker支持的重启策略包括always、unless-stopped和on-failed四种。
 
 * always策略会一直尝试重启处于停止状态的容器，除非通过docker container stop命令明确将容器停止。另外，当daemon重启的时候，被docker container stop停止的设置了 always策略的容器也会被重启。
 
@@ -73,28 +75,28 @@ https://docs.docker.com/config/containers/start-containers-automatically/
 
 ## 1.2. 容器隔离原理  
 ### 1.2.1. Namespaces，命名空间  
-&emsp; <font color = "lime">命名空间(namespaces)是Linux提供的用于分离进程树、网络接口、挂载点以及进程间通信等资源的方法。</font>在日常使用Linux或者macOS时，并没有运行多个完全分离的服务器的需要，但是如果在服务器上启动了多个服务，这些服务其实会相互影响的，每一个服务都能看到其他服务的进程，也可以访问宿主机器上的任意文件，这是很多时候不愿意看到的，更希望运行在同一台机器上的不同服务能做到完全隔离，就像运行在多台不同的机器上一样。 
+&emsp; <font color = "clime">命名空间(namespaces)是Linux提供的用于分离进程树、网络接口、挂载点以及进程间通信等资源的方法。</font>在日常使用Linux或者macOS时，并没有运行多个完全分离的服务器的需要，但是如果在服务器上启动了多个服务，这些服务其实会相互影响的，每一个服务都能看到其他服务的进程，也可以访问宿主机器上的任意文件，这是很多时候不愿意看到的，更希望运行在同一台机器上的不同服务能做到完全隔离，就像运行在多台不同的机器上一样。 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-34.png)  
 &emsp; 在这种情况下，一旦服务器上的某一个服务被入侵，那么入侵者就能够访问当前机器上的所有服务和文件，这也是不想看到的，而 Docker 其实就通过 Linux 的 Namespaces 对不同的容器实现了隔离。  
-&emsp; Linux 的命名空间机制提供了以下七种不同的命名空间，包括 CLONE_NEWCGROUP、CLONE_NEWIPC、CLONE_NEWNET、CLONE_NEWNS、CLONE_NEWPID、CLONE_NEWUSER 和 CLONE_NEWUTS，通过这七个选项能在创建新的进程时设置新进程应该在哪些资源上与宿主机器进行隔离。  
+&emsp; Linux 的命名空间机制提供了以下七种不同的命名空间，包括CLONE_NEWCGROUP、CLONE_NEWIPC、CLONE_NEWNET、CLONE_NEWNS、CLONE_NEWPID、CLONE_NEWUSER和CLONE_NEWUTS，通过这七个选项能在创建新的进程时设置新进程应该在哪些资源上与宿主机器进行隔离。  
 
 ### 1.2.2. CGroups  
-&emsp; Linux的命名空间为新创建的进程隔离了文件系统、网络并与宿主机器之间的进程相互隔离，但是命名空间并不能够提供物理资源上的隔离，比如 CPU 或者内存，如果在同一台机器上运行了多个对彼此以及宿主机器一无所知的『容器』，这些容器却共同占用了宿主机器的物理资源。  
+&emsp; Linux的命名空间为新创建的进程隔离了文件系统、网络并与宿主机器之间的进程相互隔离，但是命名空间并不能够提供物理资源上的隔离，比如CPU或者内存，如果在同一台机器上运行了多个对彼此以及宿主机器一无所知的『容器』，这些容器却共同占用了宿主机器的物理资源。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-35.png)  
-&emsp; 如果其中的某一个容器正在执行 CPU 密集型的任务，那么就会影响其他容器中任务的性能与执行效率，导致多个容器相互影响并且抢占资源。如何对多个容器的资源使用进行限制就成了解决进程虚拟资源隔离之后的主要问题，<font color = "red">而Control Groups(简称 CGroups)就是能够隔离宿主机器上的物理资源，例如 CPU、内存、磁盘 I/O 和网络带宽。</font>  
+&emsp; 如果其中的某一个容器正在执行CPU密集型的任务，那么就会影响其他容器中任务的性能与执行效率，导致多个容器相互影响并且抢占资源。如何对多个容器的资源使用进行限制就成了解决进程虚拟资源隔离之后的主要问题，<font color = "red">而Control Groups(简称 CGroups)就是能够隔离宿主机器上的物理资源，例如 CPU、内存、磁盘I/O和网络带宽。</font>  
 &emsp; 每一个CGroup都是一组被相同的标准和参数限制的进程，不同的CGroup之间是有层级关系的，也就是说它们之间可以从父类继承一些用于限制资源使用的标准和参数。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-36.png)  
-&emsp; Linux 的 CGroup 能够为一组进程分配资源，也就是在上面提到的 CPU、内存、网络带宽等资源，通过对资源的分配，CGroup 能够提供以下的几种功能：  
+&emsp; Linux的CGroup能够为一组进程分配资源，也就是在上面提到的CPU、内存、网络带宽等资源，通过对资源的分配，CGroup能够提供以下的几种功能：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-37.png)  
 
     在CGroup中，所有的任务就是一个系统的一个进程，而CGroup就是一组按照某种标准划分的进程，在CGroup这种机制中，所有的资源控制都是以CGroup作为单位实现的，每一个进程都可以随时加入一个CGroup也可以随时退出一个CGroup。
 
 ## 1.3. 容器的文件系统   
 &emsp; 容器会共享其所在主机的操作系统/内核(容器执行使用共享主机的内核代码)，<font color = "red">但是容器内运行的进程所使用的是容器自己的文件系统，也就是容器内部的进程访问数据时访问的是容器的文件系统。</font>当从一个镜像启动容器的时候，除了把镜像当成容器的文件系统一部分之外，Docker还会在该镜像的最顶层加载一个可读写文件系统，容器中运行的程序就是在这个读写层中执行的。  
-&emsp; 使用Docker，启动容器，会新建两层内容。这两层分别为 Docker 容器的初始层(Init Layer)与可读写层(Read-Write Layer)：  
+&emsp; 使用Docker，启动容器，会新建两层内容。这两层分别为Docker容器的初始层(Init Layer)与可读写层(Read-Write Layer)：  
 
-* 初始层中大多是初始化容器环境时，与容器相关的环境信息，如容器主机名，主机 host 信息以及域名服务文件等。  
-* 再来看可读写层，这一层的作用非常大，Docker 的镜像层以及顶上的两层加起来，Docker 容器内的进程只对可读写层拥有写权限，其他层对进程而言都是只读的(Read-Only)。比如想修改一个文件，这个文件会从该读写层下面的只读层复制到该读写层，该文件的只读版本仍然存在，但是已经被读写层中的该文件副本所隐藏了。这种机制被称为写时复制(copy on write)(在 AUFS 等文件系统下，写下层镜像内容就会涉及 COW (Copy-on-Write)技术)。另外，关于 VOLUME 以及容器的 hosts、hostname 、resolv.conf 文件等都会挂载到这里。需要额外注意的是，虽然Docker容器有能力在可读写层看到 VOLUME 以及 hosts 文件等内容，但那都仅仅是挂载点，真实内容位于宿主机上。  
+* 初始层中大多是初始化容器环境时，与容器相关的环境信息，如容器主机名，主机host信息以及域名服务文件等。  
+* 再来看可读写层，这一层的作用非常大，Docker的镜像层以及顶上的两层加起来，Docker容器内的进程只对可读写层拥有写权限，其他层对进程而言都是只读的(Read-Only)。比如想修改一个文件，这个文件会从该读写层下面的只读层复制到该读写层，该文件的只读版本仍然存在，但是已经被读写层中的该文件副本所隐藏了。这种机制被称为写时复制(copy on write)(在 AUFS 等文件系统下，写下层镜像内容就会涉及COW(Copy-on-Write)技术)。另外，关于VOLUME以及容器的hosts、hostname、resolv.conf文件等都会挂载到这里。需要额外注意的是，虽然Docker容器有能力在可读写层看到VOLUME以及hosts文件等内容，但那都仅仅是挂载点，真实内容位于宿主机上。  
 
 &emsp; 在运行阶段时，容器产生的新文件、文件的修改都会在可读写层上，当停止容器(stop)运行之后并不会被损毁，但是删除容器会丢弃其中的数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-23.png)  
@@ -146,7 +148,7 @@ https://www.docker.org.cn/dockerppt/110.html
 ```text
 $ sudo docker run -t -P --expose 22 --name server  ubuntu:14.04
 ```
-&emsp; 使用docker run -P自动绑定所有对外提供服务的容器端口，映射的端口将会从没有使用的端口池中 (49000..49900) 自动选择，你可以通过docker ps、docker inspect \<container_id>或者docker port \<container_id> \<port>确定具体的绑定信息。 
+&emsp; 使用docker run -P自动绑定所有对外提供服务的容器端口，映射的端口将会从没有使用的端口池中 (49000..49900) 自动选择，可以通过docker ps、docker inspect \<container_id>或者docker port \<container_id> \<port>确定具体的绑定信息。 
 
 ### 1.5.2. 绑定端口到指定接口  
 &emsp; 基本语法  
@@ -235,13 +237,13 @@ https://www.docker.org.cn/docker/187.html
 #### 1.6.3.1. Docker中的虚拟网桥  
 &emsp; docker网桥组件概览图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-41.png)  
-&emsp; Docker中的网桥也是虚拟出来的，网桥的主要用途是用来实现docker环境和外部的通信。我们在某个容器内部ping外部的ip例如百度。是可以ping通的。实际上是容器发出的数据包，通过虚拟网桥，发送给宿主机的物理网卡，实际上是借助物理网卡与外界通信的，反之物理网卡也会通过虚拟网桥把相应的数据包送回给相应的容器。  
+&emsp; Docker中的网桥也是虚拟出来的，网桥的主要用途是用来实现docker环境和外部的通信。在某个容器内部ping外部的ip例如百度。是可以ping通的。实际上是容器发出的数据包，通过虚拟网桥，发送给宿主机的物理网卡，实际上是借助物理网卡与外界通信的，反之物理网卡也会通过虚拟网桥把相应的数据包送回给相应的容器。  
 
 #### 1.6.3.2. 借助网桥进行容器间通信
 &emsp; 可以借助网桥实现容器间的双向通信。docker虚拟网桥的另一个作用是为容器在网络层面上进行分组，把不同容器都绑定到网桥上，这样容器间就可以天然互联互通。  
 
 * docker run -d --name myweb tomcat运行myweb容器；docker run -d -it --name mydatabases centos sh交互模式挂起一个databases容器(这里用一个linux容器模拟数据库服务器)。由于没配置网桥，此时容器间无法通过名称互相通信  
-* docker network ls列出docker网络服务明细，其中bridge的条目就是docker默认的网桥。接着我们新建立一个网桥docker network create -d bridge my-bridge命名为my-bridge  
+* docker network ls列出docker网络服务明细，其中bridge的条目就是docker默认的网桥。接着新建立一个网桥docker network create -d bridge my-bridge命名为my-bridge  
 * 把容器与新建立的my-bridge网桥进行绑定: docker network connect my-bridge myweb,同理: docker network connect my-bridge mydatabases。需要让哪些容器互联互通，就把容器绑定到该网桥上,用来标识这些容器同处在my-bridge网桥的分组中。至此容器间可以通过名称互相访问  
 
 ```text

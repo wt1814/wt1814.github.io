@@ -32,20 +32,20 @@ https://mp.weixin.qq.com/s/bT7VXffqHuzUZUY5c4ce7A
 <!-- 
 https://jingyan.baidu.com/article/a17d52854e164dc098c8f2b0.html
 -->
+&emsp; 查看分支：  
 * 查看本地分支：git branch
 * 查看远程分支：git branch -r
 
 
-*删除本地分支tmp：git branch -D tmp  
-*删除远程分支tmp：git push origin --delete tmp 
+&emsp; 删除分支：  
+* 删除本地分支tmp：git branch -D tmp  
+* 删除远程分支tmp：git push origin --delete tmp 
 * Git删除在本地有但在远程库中已经不存在的分支，两种方式：  
     * 方式一：  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/git/git-1.png)  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/git/git-2.png)  
     * 方式二：  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/git/git-3.png)  
-
-
 
 
 ## git clone 文件大

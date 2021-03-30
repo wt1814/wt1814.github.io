@@ -20,7 +20,7 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "clime">总结：</font>**
+&emsp; **<font color = "red">总结：</font>**  
 &emsp; **<font color = "clime">grep是一款强大的文本搜索工具，支持正则表达式。</font>**    
 &emsp; **<font color = "clime">sed是一种流编辑器(增、删、改、查)，是一款处理文本比较优秀的工具，可以结合正则表达式一起使用。</font>**  
 
@@ -189,6 +189,7 @@ Just before they reach the moon,the oldest monkey raises his head and happens to
     a  当前行后面插入一行
     p  打印行       
     q  退出     
+```
 
 &emsp; 替换符:
 
@@ -196,7 +197,6 @@ Just before they reach the moon,the oldest monkey raises his head and happens to
     g :  全局替换    
     \1:  子串匹配标记，前面搜索可以用元字符集\(..\)
     &:  保留搜索刀的字符用来替换其他字符
-```
 
 &emsp; 操作:  
 
@@ -630,12 +630,12 @@ Fengzheng    90    78    62     40  62 class-2  java
 
 &emsp; **频率较高常用内置变量**  
 
-&emsp; NF ：记录浏览域的个数，在记录被读后设置。  
-&emsp; NR ：已读的记录数。  
-&emsp; FS : 设置输入域分隔符  
-&emsp; A R G C ：命令行参数个数，支持命令行传入。  
-&emsp; RS : 控制记录分隔符  
-&emsp; FIlENAME : awk当前读文件的名称  
+&emsp; NF：记录浏览域的个数，在记录被读后设置。  
+&emsp; NR：已读的记录数。  
+&emsp; FS：设置输入域分隔符  
+&emsp; ARGC：命令行参数个数，支持命令行传入。  
+&emsp; RS：控制记录分隔符  
+&emsp; FIlENAME：awk当前读文件的名称  
 
 &emsp; **操作**  
 &emsp; 输出学生成绩表和域个数以及已读记录数。  
@@ -662,7 +662,7 @@ xman         -     -     -     -   -   class-3  php  8 5
 * substr(s,p,n) 返回字符串s从第p个位置开始后面n个字符串的部分  
 
 &emsp; 操作  
-length  
+&emsp; length  
 
     [root@iz2ze76ybn73dvwmdij06zz ~]# awk 'BEGIN {print length(" hello,im xiaoka")}'
     16

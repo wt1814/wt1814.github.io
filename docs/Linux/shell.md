@@ -22,8 +22,8 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "red">Shell编程：</font>**  
-&emsp; 变量、自定义函数、命令、向脚本传递参数......  
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; Shell编程：变量、自定义函数、命令、向脚本传递参数......  
 
 # 1. Shell编程  
 

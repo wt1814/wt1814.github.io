@@ -20,6 +20,9 @@
 # 1. 负载均衡
 <!--
 https://www.jianshu.com/p/e3ac7d42c408
+一文概括6种负载均衡技术的实现方式！
+https://developer.51cto.com/art/201905/596538.htm?pc
+
 https://blog.csdn.net/xlgen157387/article/details/78678772
 亿级Web系统负载均衡几种实现方式 
 https://mp.weixin.qq.com/s/cD4_yc9Lp5q76xzeys6N_g
@@ -27,6 +30,9 @@ https://mp.weixin.qq.com/s/cD4_yc9Lp5q76xzeys6N_g
 https://mp.weixin.qq.com/s/JUM2W6qtNuZuSGbpAmFXnQ
 不可不知的负载均衡
 https://mp.weixin.qq.com/s/HRfHQm1ihSEs6VFzxoC4rQ
+几种负载均衡技术的实现
+https://blog.csdn.net/mengdonghui123456/article/details/53981976
+
 -->
 &emsp; 负载均衡(Load Balance)是集群技术(Cluster)的一种应用技术。负载均衡建立在现有网络结构之上，它提供了一种廉价有效透明的方法扩展网络设备和服务器的带宽、增加吞吐量、加强网络数据处理能力、提高网络的灵活性和可用性。 目前最常见的负载均衡应用是Web负载均衡。  
 

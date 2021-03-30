@@ -16,7 +16,7 @@
 
 **<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
 
-**<font color = "clime">Master的组件包括：apiserver、controller-manager、scheduler和etcd等几个组件。</font>**  
+**<font color = "clime">Master的组件包括：API Server、controller-manager、scheduler和etcd等几个组件。</font>**  
 **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
 
 
@@ -51,7 +51,7 @@ Master 节点主要负责存储集群的状态并为 Kubernetes 对象分配和�
 -->  
 
 ### 1.2.1. Master组件
-&emsp; 作为管理集群状态的Master节点，它主要负责接收客户端的请求，安排容器的执行并且运行控制循环，将集群的状态向目标状态进行迁移。 **<font color = "clime">Master的组件包括：apiserver、controller-manager、scheduler和etcd等几个组件。</font>**  
+&emsp; 作为管理集群状态的Master节点，它主要负责接收客户端的请求，安排容器的执行并且运行控制循环，将集群的状态向目标状态进行迁移。 **<font color = "clime">Master的组件包括：API Server、controller-manager、scheduler和etcd等几个组件。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-17.png)   
 <!-- 
 &emsp; 其中API Server负责处理来自用户的请求，其主要作用就是对外提供RESTful的接口，包括用于查看集群状态的读请求以及改变集群状态的写请求，也是唯一一个与 etcd集群通信的组件。  
@@ -63,9 +63,6 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 -->
 1. API Server  
 &emsp; K8S对外的唯一接口，提供HTTP/HTTPS RESTful API，即kubernetes API。所有的请求都需要经过这个接口进行通信。主要负责接收、校验并响应所有的REST请求，结果状态被持久存储在etcd当中，所有资源增删改查的唯一入口。
-2. etcd  
-&emsp; 负责保存k8s集群的配置信息和各种资源的状态信息，当数据发生变化时，etcd会快速地通知k8s相关组件。etcd是一个独立的服务组件，并不隶属于K8S集群。生产环境当中etcd应该以集群方式运行，以确保服务的可用性。  
-&emsp; etcd不仅仅用于提供键值数据存储，而且还为其提供了监听(watch)机制，用于监听和推送变更。在K8S集群系统中，etcd的键值发生变化会通知倒API Server，并由其通过watch API向客户端输出。
 3. Controller Manager  
 &emsp; 负责管理集群各种资源，保证资源处于预期的状态。Controller Manager由多种controller组成，包括replication controller、endpoints controller、namespace controller、serviceaccounts controller等 。由控制器完成的主要功能主要包括生命周期功能和API业务逻辑，具体如下：
 
@@ -73,7 +70,10 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
     * API业务逻辑：例如，由ReplicaSet执行的Pod扩展等。
 
 4. 调度器(Schedule)  
-&emsp; 资源调度，负责决定将Pod放到哪个Node上运行。Scheduler在调度时会对集群的结构进行分析，当前各个节点的负载，以及应用对高可用、性能等方面的需求。
+&emsp; 资源调度，负责决定将Pod放到哪个Node上运行。Scheduler在调度时会对集群的结构进行分析，当前各个节点的负载，以及应用对高可用、性能等方面的需求。  
+2. etcd  
+&emsp; 负责保存k8s集群的配置信息和各种资源的状态信息，当数据发生变化时，etcd会快速地通知k8s相关组件。etcd是一个独立的服务组件，并不隶属于K8S集群。生产环境当中etcd应该以集群方式运行，以确保服务的可用性。  
+&emsp; etcd不仅仅用于提供键值数据存储，而且还为其提供了监听(watch)机制，用于监听和推送变更。在K8S集群系统中，etcd的键值发生变化会通知倒API Server，并由其通过watch API向客户端输出。  
 
 ### 1.2.2. Node组件
 &emsp; Node是Kubernetes的工作节点，负责接收来自Master的工作指令，并根据指令相应地创建和销毁Pod对象，以及调整网络规则进行合理路由和流量转发。生产环境中，Node节点可以有N个。 **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
@@ -83,12 +83,12 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 &emsp; 另一个运行在各个节点上的代理服务kube-proxy负责宿主机的子网管理，同时也能将服务暴露给外部，其原理就是在多个隔离的网络中把请求转发给正确的Pod或者容器。  
 &emsp; Node主要负责提供容器的各种依赖环境，并接受Master管理。每个Node有以下几个组件构成。 
 -->
-1. Kubelet  
-&emsp; kubelet是node的agent，当Scheduler确定在某个Node上运行Pod后，会将Pod的具体配置信息(image、volume等)发送给该节点的kubelet，kubelet会根据这些信息创建和运行容器，并向master报告运行状态。
 2. Container Runtime  
 &emsp; 每个Node都需要提供一个容器运行时(Container Runtime)环境，它负责下载镜像并运行容器。目前K8S支持的容器运行环境至少包括Docker、RKT、cri-o、Fraki等。
-3. Kube-proxy  
-&emsp; service在逻辑上代表了后端的多个Pod，外借通过service访问Pod。service接收到请求就需要kube-proxy完成转发到Pod的。每个Node都会运行kube-proxy服务，负责将访问的service的TCP/UDP数据流转发到后端的容器，如果有多个副本，kube-proxy会实现负载均衡，有2种方式：LVS或者Iptables。  
+1. Kubelet，Node与master交互  
+&emsp; kubelet是node的agent，当Scheduler确定在某个Node上运行Pod后，会将Pod的具体配置信息(image、volume等)发送给该节点的kubelet，kubelet会根据这些信息创建和运行容器，并向master报告运行状态。  
+3. Kube-proxy，Node与外部交互  
+&emsp; service在逻辑上代表了后端的多个Pod，外界通过service访问Pod。service接收到请求就需要kube-proxy完成转发到Pod。每个Node都会运行kube-proxy服务，负责将访问的service的TCP/UDP数据流转发到后端的容器，如果有多个副本，kube-proxy会实现负载均衡，有2种方式：LVS或者Iptables。  
 
 ### 1.2.3. 插件  
 <!-- 

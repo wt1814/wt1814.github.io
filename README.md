@@ -4,6 +4,7 @@
     - [侃侃Java](#侃侃java)
     - [算法](#算法)
     - [Java](#java)
+        - [Java基础](#java基础)
         - [设计模式](#设计模式)
         - [JVM](#jvm)
         - [并发编程](#并发编程)
@@ -77,6 +78,7 @@
 [海量数据应用](/docs/java/function/bigdata.md)  
 
 ## Java  
+### Java基础
 [Java基础](/docs/java/basis/JavaBasic.md)  
 [Java基本数据类型](/docs/java/basis/DataType.md)  
 &emsp; [Object](/docs/java/basis/Object.md)  
@@ -586,6 +588,7 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 [负载均衡](/docs/system/loadBalance/loadBalance.md)  
 [DNS轮询](/docs/system/loadBalance/DNS.md)  
 [CDN](/docs/system/loadBalance/CDN.md)   
+[http重定向](/docs/system/loadBalance/redirect.md)  
 [LVS](/docs/system/loadBalance/LVS.md)  
 [Keepalived](/docs/system/loadBalance/Keepalived.md)  
 [Nginx](/docs/system/loadBalance/Nginx/nginx.md)  

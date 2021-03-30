@@ -22,6 +22,9 @@
 &emsp; 队列通常用于对“历史”的回放，也就是按照“历史”顺序，把“历史”重演一遍。 
 
 # 1. 栈与队列
+&emsp; **<font color = "clime">栈、队列与数组一样，都是顺序存储方式。</font>**    
+
+
 ## 1.1. 栈Stack  
 <!-- https://www.cnblogs.com/ysocean/p/7911910.html 
 &emsp; **栈与递归：**用非递归写递归，都需要用到栈。  

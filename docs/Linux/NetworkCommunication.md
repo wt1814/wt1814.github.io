@@ -19,7 +19,7 @@ https://mp.weixin.qq.com/s/uMK6QnJKK2MFERkfx6b-QA
 
 * ping命令  
 &emsp; ping命令用来测试主机之间网络的连通性。执行ping指令会使用ICMP传输协议，发出要求回应的信息，若远端主机的网络功能没有问题，就会回应该信息，因而得知该主机运作正常。  
-* telnet  
+* **<font color = "clime">telnet</font>**  
 &emsp; telnet命令用于登录远程主机，对远程主机进行管理。telnet因为采用明文传送报文，安全性不好，很多Linux服务器都不开放telnet服务，而改用更安全的ssh方式了。  
 * netstat  
 &emsp; netstat命令用来打印Linux中网络系统的状态信息，可得知整个Linux系统的网络情况。  
@@ -30,7 +30,7 @@ https://mp.weixin.qq.com/s/uMK6QnJKK2MFERkfx6b-QA
 * arp  
 &emsp; arp命令用于操作主机arp缓冲区，可以显示arp缓冲区的所有条目、删除指定条目或增加静态IP地址与MAC地址的对应关系。  
 * traceroute  
-&emsp; traceroute命令用于追踪数据包在网络上传输时的全部路径，它默认发送的数据包大小是40字节通过traceroute我们可以知道信息从你的计算机到互联网另一端的主机是走的什么路径。当然每次数据包由某一同样的出发点（source）到达某一同样的目的地(destination)走的路径可能会不一样，但基本上来说大部分时候所走的路由是相同的。traceroute通过发送小的数据包到目的设备直到其返回，来测量其需要多长时间。一条路径上的每个设备traceroute要测3次。输出结果中包括每次测试的时间(ms)和设备的名称（如有的话）及其ip地址。  
+&emsp; traceroute命令用于追踪数据包在网络上传输时的全部路径，它默认发送的数据包大小是40字节通过traceroute，可以知道信息从计算机到互联网另一端的主机是走的什么路径。当然每次数据包由某一同样的出发点（source）到达某一同样的目的地(destination)走的路径可能会不一样，但基本上来说大部分时候所走的路由是相同的。traceroute通过发送小的数据包到目的设备直到其返回，来测量其需要多长时间。一条路径上的每个设备traceroute要测3次。输出结果中包括每次测试的时间(ms)和设备的名称（如有的话）及其ip地址。  
 * host  
 &emsp; host命令是常用的分析域名查询工具，可以检测域名系统工作是否正常。  
 * tcpdump  
