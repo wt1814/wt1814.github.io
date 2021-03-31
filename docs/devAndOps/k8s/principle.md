@@ -14,11 +14,11 @@
 <!-- /TOC -->
 
 
-**<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
-
-**<font color = "clime">Master的组件包括：API Server、controller-manager、scheduler和etcd等几个组件。</font>**  
-**<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
-
+&emsp; **<font color = "red">总结：</font>**  
+1. 1). 一个容器或多个容器可以同属于一个Pod之中。 2). Pod是由Pod控制器进行管理控制，其代表性的Pod控制器有Deployment、StatefulSet等。 3). Pod组成的应用是通过Service或Ingress提供外部访问。  
+2. **<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
+    1. **<font color = "clime">Master的组件包括：API Server、controller-manager、scheduler和etcd等几个组件。</font>**  
+    2. **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
 
 
 # 1. Kubernetes  
@@ -76,18 +76,18 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 &emsp; etcd不仅仅用于提供键值数据存储，而且还为其提供了监听(watch)机制，用于监听和推送变更。在K8S集群系统中，etcd的键值发生变化会通知倒API Server，并由其通过watch API向客户端输出。  
 
 ### 1.2.2. Node组件
-&emsp; Node是Kubernetes的工作节点，负责接收来自Master的工作指令，并根据指令相应地创建和销毁Pod对象，以及调整网络规则进行合理路由和流量转发。生产环境中，Node节点可以有N个。 **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-18.png)  
 <!-- 
 &emsp; kubelet是K8S集群的工作与节点上的代理组件。kubelet是一个节点上的主要服务，它周期性地从API Server接受新的或者修改的Pod规范并且保证节点上的Pod和其中容器的正常运行，还会保证节点会向目标状态迁移，该节点仍然会向Master节点发送宿主机的健康状况。  
 &emsp; 另一个运行在各个节点上的代理服务kube-proxy负责宿主机的子网管理，同时也能将服务暴露给外部，其原理就是在多个隔离的网络中把请求转发给正确的Pod或者容器。  
 &emsp; Node主要负责提供容器的各种依赖环境，并接受Master管理。每个Node有以下几个组件构成。 
 -->
-2. Container Runtime  
+&emsp; Node是Kubernetes的工作节点，负责接收来自Master的工作指令，并根据指令相应地创建和销毁Pod对象，以及调整网络规则进行合理路由和流量转发。生产环境中，Node节点可以有N个。 **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-18.png)  
+1. Container Runtime  
 &emsp; 每个Node都需要提供一个容器运行时(Container Runtime)环境，它负责下载镜像并运行容器。目前K8S支持的容器运行环境至少包括Docker、RKT、cri-o、Fraki等。
-1. Kubelet，Node与master交互  
+2. Kubelet， **Node与master交互**  
 &emsp; kubelet是node的agent，当Scheduler确定在某个Node上运行Pod后，会将Pod的具体配置信息(image、volume等)发送给该节点的kubelet，kubelet会根据这些信息创建和运行容器，并向master报告运行状态。  
-3. Kube-proxy，Node与外部交互  
+3. Kube-proxy， **Node与外部交互**  
 &emsp; service在逻辑上代表了后端的多个Pod，外界通过service访问Pod。service接收到请求就需要kube-proxy完成转发到Pod。每个Node都会运行kube-proxy服务，负责将访问的service的TCP/UDP数据流转发到后端的容器，如果有多个副本，kube-proxy会实现负载均衡，有2种方式：LVS或者Iptables。  
 
 ### 1.2.3. 插件  

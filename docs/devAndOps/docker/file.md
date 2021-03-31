@@ -5,7 +5,7 @@
     - [1.2. 基于本地模板导入(docker import)](#12-基于本地模板导入docker-import)
     - [1.3. 基于Dockerfile构建](#13-基于dockerfile构建)
         - [1.3.1. Dockerfile命令详解](#131-dockerfile命令详解)
-        - [1.3.2. ~~使用Dockerfile的构建过程~~](#132-使用dockerfile的构建过程)
+        - [1.3.2. 使用Dockerfile的构建过程](#132-使用dockerfile的构建过程)
     - [1.4. 附录：构建jdk的镜像](#14-附录构建jdk的镜像)
 
 <!-- /TOC -->
@@ -275,18 +275,19 @@ https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
         ONBUILD ADD . /application/src
         ONBUILD RUN /usr/local/bin/python-build --dir /app/src
 
-### 1.3.2. ~~使用Dockerfile的构建过程~~  
+### 1.3.2. 使用Dockerfile的构建过程  
 <!-- 
 DockerFile构建过程解析
 https://www.cnblogs.com/my-program-life/p/12238016.html
 https://blog.csdn.net/qq_37546891/article/details/90742564
 -->
 &emsp; **Docker通过Dockerfile构建镜像过程：**  
-1. docker从基础镜像运行一个容器  
-2. 执行一条指令并对容器作出修改  
-3. 执行类似docker commit的操作提交一个新的镜像层  
-4. docker再基于刚提交的镜像运行一个新容器  
-5. 执行dockerfile中的下一条指令直到所有指令都执行完成    
+1. 从基础镜像中运行一个容器
+2. 执行一条指令，对容器做出修改
+3. 对2中修改后的容器，执行类似与docker commit的操作，提交一个新的镜像层。
+4. 基于3中的中间层镜像，运行一个新的容器。
+5. 反复2、3、4的操作，直至所有的指令执行完毕。
+
 
 <!-- 
 &emsp; 上述的 Dockerfile 编写完成之后，**使用docker image build 指令，会解析 Dockerfile 中的指令并顺序执行。**构建过程是，运行临时容器 -> 在该容器中运行Dockerfile中的指令 -> 将指令运行结果保存为一个新的镜像层(执行类似docker commit的操作)-> 删除容器。  

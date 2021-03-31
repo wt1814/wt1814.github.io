@@ -481,7 +481,8 @@
         * [Service详解](/docs/devAndOps/k8s/service.md)  
         * [k8s运维](/docs/devAndOps/k8s/tools.md)  
         * [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
-    * [灰度发布](/docs/system/grayscalePublishe.md)  
+    * [多种发布方式](/docs/system/publishe.md)  
+        * [灰度发布](/docs/system/grayscalePublishe.md)  
     * [监控](/docs/devAndOps/monitor.md)  
 * 计算机网络  
     * [网络的性能指标](/docs/network/standard.md)  
@@ -490,8 +491,8 @@
     * [HTTPS](/docs/network/HTTPS.md)  
     * [DNS](/docs/network/DNS.md)  
     * [TCP](/docs/network/TCP.md)  
-        * [TCP粘包](/docs/network/TCPSticking.md)  
         * [TIME_WAIT问题](/docs/network/timewait.md)  
+        * [TCP粘包](/docs/network/TCPSticking.md)  
 * 测试工具
     * [Jmeter](/docs/devAndOps/Jmeter.md)  
     * [JMH](/docs/java/JVM/JMH.md)  

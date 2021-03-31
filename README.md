@@ -632,7 +632,8 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 &emsp; [Service详解](/docs/devAndOps/k8s/service.md)  
 &emsp; [k8s运维](/docs/devAndOps/k8s/tools.md)  
 &emsp; [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
-[灰度发布](/docs/system/grayscalePublishe.md)  
+[多种发布方式](/docs/system/publishe.md)  
+&emsp; [灰度发布](/docs/system/grayscalePublishe.md)  
 [监控](/docs/devAndOps/monitor.md)  
 
 ----
@@ -644,8 +645,9 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 [HTTPS](/docs/network/HTTPS.md)  
 [DNS](docs/network/DNS.md)  
 [TCP](/docs/network/TCP.md)  
-&emsp; [TCP粘包](/docs/network/TCPSticking.md)  
 &emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
+&emsp; [TCP粘包](/docs/network/TCPSticking.md)  
+
 
 ----
 

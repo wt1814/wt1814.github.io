@@ -9,16 +9,17 @@
         - [1.2.3. 基于NFS文件集群共享](#123-基于nfs文件集群共享)
         - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
     - [1.3. kubectl命令行工具](#13-kubectl命令行工具)
-        - [1.3.1. ※※※kubectl用法概述](#131-※※※kubectl用法概述)
+        - [1.3.1. ★★★kubectl用法概述](#131-★★★kubectl用法概述)
         - [1.3.2. ~~kubectl常用命令~~](#132-kubectl常用命令)
     - [1.4. IDE插件](#14-ide插件)
 
 <!-- /TOC -->
 
 
+&emsp; **<font color = "red">总结：</font>**  
 
 &emsp; kubectl命令行的语法如下： $ kubectl [command] [TYPE] [NAME] [flags]  
-&emsp; [command]：子命令，用于操作Kubemetes集群资源对象的命令，例如create、delete、describe、get、exec等。  
+* [command]：子命令，用于操作Kubemetes集群资源对象的命令，例如create、delete、describe、get、exec等。  
 
 
 # 1. Kubemetes实践  
@@ -45,7 +46,7 @@ k8s微服务
 https://www.cnblogs.com/jasonminghao/p/12617313.html
 -->
 
-&emsp; <font color = "lime">整体参考《Kubernetes权威指南》</font>  
+&emsp; <font color = "red">整体参考《Kubernetes权威指南》</font>  
 
 ## 1.1. Kubernetes的安装
 <!-- 
@@ -108,7 +109,7 @@ https://blog.csdn.net/zuozewei/article/details/108165523
 &emsp; 为了使 Pod 在任何节点上都能够使用同一份持久化存储数据，需要使用网络存储的解决方案为Pod提供数据卷。常用的网络存储方案有：NFS/cephfs/glusterfs。  
 
 &emsp; **Kubernetes集群网络存储与Pod挂载点的区别：**  
-&emsp; <font color = "lime">Kubernetes集群网络存储是不同宿主机实现文件共享；Pod挂载点是容器与宿主机实现文件共享。</font>  
+&emsp; <font color = "clime">Kubernetes集群网络存储是不同宿主机实现文件共享；Pod挂载点是容器与宿主机实现文件共享。</font>  
 
 
 ### 1.2.4. 内网中搭建私有仓库  
@@ -156,14 +157,14 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
 ## 1.3. kubectl命令行工具  
 &emsp; <font color = "clime">kubectl作为客户端CLI工具，可以让用户通过命令行的方式对Kubernetes集群进行操作。</font>  
 
-### 1.3.1. ※※※kubectl用法概述  
+### 1.3.1. ★★★kubectl用法概述  
 &emsp; **<font color = "clime">kubectl命令行的语法如下：</font>**  
 
 ```text
 $ kubectl [command] [TYPE] [NAME] [flags]
 ```
 &emsp; 其中，command、TYPE、NAME、flags的含义如下。  
-1. <font color = "clime">command：子命令，用于操作Kubemetes集群资源对象的命令，例如create、delete、describe、get、exec等。</font>**  
+1. **<font color = "clime">command：子命令，用于操作Kubemetes集群资源对象的命令，例如create、delete、describe、get、exec等。</font>**  
 2. **<font color = "red">TYPE：资源对象的类型，区分大小写，能以单数形式、复数形式或者简写形式表示。</font>** 例如以下3种TYPE是等价的。  
 
     ```text
