@@ -25,8 +25,10 @@
 
 <!-- /TOC -->
 
+
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; <font color = "clime">List：有序，可重复。Set：无序，不可重复(唯一)。Map：存储键值对。</font>  
 &emsp; <font color = "clime">List有ArrayList、Vector、LinkedList。Map有HashMap、LinkedHashMap、TreeMap、Hashtable。Set有HashSet、LinkedHashSet、TreeSet。</font>    
-&emsp; <font color = "clime">List：有序，可重复。Set：无序，唯一。Map：存储键值对。</font>  
 
 &emsp; 快速失败机制：单线程迭代器中直接删除元素或多线程使用非安全的容器都会抛出ConcurrentModificationException异常。  
 &emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，在拷贝的集合上进行遍历。</font>**  
@@ -151,8 +153,8 @@
     2. 当Vector或ArrayList中的元素超过它的初始大小时，Vector会将它的容量翻倍，<font color = "red">而ArrayList只增加大约1.5的大小，这样ArrayList就有利于节约内存空间。</font>  
     3. <font color = "red">Vector可以设置capacityIncrement(容量增长的参数)</font>，而ArrayList不可以。  
 3. ArrayList与LinkedList的区别？  
-    1. 是否保证线程安全： ArrayList 和 LinkedList 都是不同步的，也就是不保证线程安全；  
-    2. 底层数据结构： Arraylist 底层使用的是Object数组；<font color = "lime">LinkedList底层使用的是双向链表数据结构(JDK1.6之前为循环链表，JDK1.7取消了循环。)</font>  
+    1. 是否保证线程安全：ArrayList和LinkedList都是不同步的，也就是不保证线程安全；  
+    2. 底层数据结构：Arraylist底层使用的是Object数组；<font color = "clime">LinkedList底层使用的是双向链表数据结构(JDK1.6之前为循环链表，JDK1.7取消了循环。)</font>  
     3. 插入和删除是否受元素位置的影响：1)ArrayList 采用数组存储，所以插入和删除元素的时间复杂度受元素位置的影响。 2)LinkedList采用链表存储，所以插入，删除元素时间复杂度不受元素位置的影响，都是近似O(1)而数组为近似O(n)。  
     4. 是否支持快速随机访问：LinkedList不支持高效的随机元素访问，而ArrayList支持。快速随机访问就是通过元素的序号快速获取元素对象(对应于get(int index) 方法)。  
     5. 内存空间占用：ArrayList的空间浪费主要体现在在list列表的结尾会预留一定的容量空间，而LinkedList的空间花费则体现在它的每一个元素都需要消耗比ArrayList更多的空间(因为要存放直接后继和直接前驱以及数据)。  
@@ -160,11 +162,11 @@
     1. 在JKD1.6中，如果通过无参构造的话，初始数组容量为10。每次通过copeOf的方式扩容后容量为原来的1.5倍加1。  
     2. **在JDK1.7中，如果通过无参构造的话，初始数组容量为0，当真正对数组进行添加时，才真正分配容量。** 每次按照大约1.5倍(位运算)的比率通过copeOf的方式扩容。  
     3. 在JKD1.8中，arraylist这个类中，扩容调用的是grow()方法，通过grow()方法中调用的Arrays.copyof()方法进行对原数组的复制，再通过调用System.arraycopy()方法进行复制，达到扩容的目的。  
-5. **<font color = "lime">HashMap与HashTable的区别？</font>**  
+5. **<font color = "clime">HashMap与HashTable的区别？</font>**  
 
     1. 两者父类不同：HashMap和Hashtable都实现了Map接口，但Hashtable继承于Dictionary类，而HashMap是继承于AbstractMap。  
     2. 底层数据结构：JDK1.8以后的HashMap在解决哈希冲突时有了较大的变化，当链表长度大于阈值(默认为8)时，将链表转化为红黑树，以减少搜索时间。Hashtable没有这样的机制。 
-    3. 对Null key 和Null value的支持： **<font color = "lime">HashMap中，null可以作为键，这样的键只有一个，</font>** 可以有一个或多个键所对应的值为null。 **<font color = "lime">但是在HashTable中put进的键值只要有一个null，直接抛出NullPointerException。</font>**  
+    3. 对Null key 和Null value的支持： **<font color = "clime">HashMap中，null可以作为键，这样的键只有一个，</font>** 可以有一个或多个键所对应的值为null。 **<font color = "clime">但是在HashTable中put进的键值只要有一个null，直接抛出NullPointerException。</font>**  
     4. 初始容量大小和每次扩充容量大小的不同 ： ①<font color = "red">创建时如果不指定容量初始值，Hashtable 默认的初始大小为11，之后每次扩充，容量变为原来的2n+1。</font>HashMap 默认的初始化大小为16。之后每次扩充，容量变为原来的2倍。②<font color = "red">创建时如果给定了容量初始值，那么 Hashtable会直接使用给定的大小</font>，而HashMap会将其扩充为2的幂次方大小。也就是说HashMap总是使用2的幂作为哈希表的大小。  
     5. 线程是否安全：HashMap是非线程安全的，HashTable是线程安全的；HashTable内部的方法基本都经过synchronized修饰。  
     6. 效率：因为线程安全的问题，HashMap要比HashTable效率高一点。另外，HashTable基本被淘汰，不要在代码中使用它。
@@ -210,7 +212,7 @@
 ### 1.2.2. ListIterator接口  
 &emsp; ListIterator是个迭代器，它是Iterator的子接口，它比Iterator更加的强大，提供了更多在迭代过程中使用的方法。  
 
-&emsp; <font color = "lime">Iterator和ListIterator的区别是什么？</font>  
+&emsp; <font color = "clime">Iterator和ListIterator的区别是什么？</font>  
 
 * Iterator可用来遍历Set和List集合，但是ListIterator只能用来遍历List。   
 * ListIterator实现了Iterator接口，并包含其他的功能，比如：增加元素，替换元 素，获取前一个和后一个元素的索引，等等。  
@@ -452,7 +454,7 @@ https://blog.csdn.net/weixin_40304387/article/details/81054080
 
 * <font color = "red">Comparable接口位于java.lang包下；Comparator位于java.util包下。</font>  
 * <font color = "red">Comparable接口只提供了一个compareTo()方法；Comparator接口不仅提供了compara()方法，还提供了其他默认方法，如reversed()、thenComparing()，使我们可以按照更多的方式进行排序。</font>  
-* <font color = "lime">如果对象的排序需要基于自然顺序(它本身是可比较的)，则使用 Comparable，而如果需要根据业务来对不同属性进行排序，请使用 Comparator。</font>  
+* <font color = "clime">如果对象的排序需要基于自然顺序(它本身是可比较的)，则使用 Comparable，而如果需要根据业务来对不同属性进行排序，请使用 Comparator。</font>  
 * 如果要用Comparable接口，则必须实现这个接口，并重写comparaTo()方法；但是Comparator接口可以在类外部使用，通过将该接口的一个匿名类对象当做参数传递给Collections.sort()方法或者Arrays.sort()方法实现排序。Comparator体现了一种策略模式，即可以不用要把比较方法嵌入到类中，而是可以单独在类外部使用，这样就可有不用改变类本身的代码而实现对类对象进行排序。    
 
 #### 1.4.3.1. Comparable接口  

@@ -12,7 +12,7 @@
 <!-- /TOC -->
 
 # 1. 设计模式讨论
-&emsp; **<font color = "clime">参考《设计模式之蝉》</font>**  
+&emsp; **<font color = "red">参考《设计模式之蝉》</font>**  
 
 <!-- 
  设计模式在工作中的实践 

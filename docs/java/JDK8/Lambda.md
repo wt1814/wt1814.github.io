@@ -22,7 +22,7 @@
 
 &emsp; Lambda表达式作用域，访问外层作用域定义的局部变量、类的属性：  
 
-* <font color = "clime">访问局部变量：lambda表达式若访问了局部变量，则局部变量必须是final的。若局部变量没有加final关键字，系统会自动添加，此后在修改该局部变量，会编译错误。</font>  
+* <font color = "clime">访问局部变量：lambda表达式若访问了局部变量，则局部变量必须是final的。若局部变量没有加final关键字，系统会自动添加，此后再修改该局部变量，会编译错误。</font>  
 * <font color = "clime">访问类的属性：lambda内部使用this关键字(或不使用)访问或修改全局变量、实例方法。</font>    
 
 # 1. Lambda表达式  

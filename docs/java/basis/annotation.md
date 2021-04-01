@@ -1,21 +1,25 @@
 
 <!-- TOC -->
 
-- [1. 自定义注解](#1-自定义注解)
+- [1. ~~自定义注解~~](#1-自定义注解)
     - [1.1. 引入注解(注解和xml)](#11-引入注解注解和xml)
-    - [1.3. 注解简介](#13-注解简介)
-    - [1.2. JDK的注解描述](#12-jdk的注解描述)
-    - [1.4. 自定义注解示例](#14-自定义注解示例)
-    - [1.5. 元注解(和关键字@interface配合使用的注解)](#15-元注解和关键字interface配合使用的注解)
-    - [1.6. Annotation接口](#16-annotation接口)
-    - [1.7. 和代码关联](#17-和代码关联)
-    - [1.8. 使用动态代理机制处理注解](#18-使用动态代理机制处理注解)
-    - [1.10. 自定义注解加AOP](#110-自定义注解加aop)
+    - [1.2. ~~注解简介~~](#12-注解简介)
+    - [1.3. 注解使用](#13-注解使用)
+        - [1.3.1. JDK的注解描述](#131-jdk的注解描述)
+        - [1.3.2. 自定义注解示例](#132-自定义注解示例)
+        - [1.3.3. 元注解(和关键字@interface配合使用的注解)](#133-元注解和关键字interface配合使用的注解)
+        - [1.3.4. 自定义注解加AOP](#134-自定义注解加aop)
+    - [1.4. 注解原理](#14-注解原理)
+        - [1.4.1. Annotation接口](#141-annotation接口)
+        - [1.4.2. 和代码关联](#142-和代码关联)
+        - [1.4.3. 使用动态代理机制处理注解](#143-使用动态代理机制处理注解)
 
 <!-- /TOC -->
 
 
-# 1. 自定义注解  
+# 1. ~~自定义注解~~  
+&emsp; **<font color = "clime">大概知识点： 注解作用 ---> 元注解 ---> 自定义注解 ---> 注解原理</font>**  
+&emsp; 代码注释是面向程序员的，而注解是面向程序的...  
 
 <!--
 https://blog.51cto.com/14230003/2440990
@@ -25,6 +29,12 @@ https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&mid=2247484113&idx=1&sn=f5fd35
 https://mp.weixin.qq.com/s/fWeWHceRqNEEmi-O3GnV0A
 
 https://docs.oracle.com/javase/tutorial/java/annotations/index.html
+
+
+
+注解作用
+https://www.zhihu.com/question/47449512/answer/658228092
+https://wenku.baidu.com/view/327fbce90408763231126edb6f1aff00bed570be.html
 -->
 
 ## 1.1. 引入注解(注解和xml)  
@@ -34,8 +44,8 @@ https://docs.oracle.com/javase/tutorial/java/annotations/index.html
 &emsp; 另一个很重要的因素是Annotation定义了一种标准的描述元数据的方式。在这之前，开发人员通常使用自己的方式定义元数据。例如，使用标记interfaces，注释，transient关键字等等。每个程序员按照自己的方式定义元数据，而不像Annotation这种标准的方式。  
 &emsp; 目前，许多框架将XML和Annotation两种方式结合使用，平衡两者之间的利弊。  
 
-## 1.3. 注解简介  
-&emsp; 注解其实就是代码中的特殊标记，这些标记可以在编译、类加载、运行时被读取，并执行相对应的处理。  
+## 1.2. ~~注解简介~~  
+&emsp; **注解其实就是代码中的特殊标记，这些标记可以在编译、类加载、运行时被读取，并执行相对应的处理。**  
 &emsp; Java注解是附加在代码中的一些元信息，用于一些工具在编译、运行时进行解析和使用，起到说明、配置的功能。  
 &emsp; 注解不会也不能影响代码的实际逻辑，仅仅起到辅助性的作用。包含在java.lang.annotation包中。  
 
@@ -43,7 +53,9 @@ https://docs.oracle.com/javase/tutorial/java/annotations/index.html
 &emsp; 在编译器生成.class文件时，注解可以被嵌入字节码中，而jvm也可以保留注解的内容，在运行时获取注解标注的内容信息。  
 &emsp; java提供的注解可以有两类：功能注解和元注解。  
 
-## 1.2. JDK的注解描述
+
+## 1.3. 注解使用
+### 1.3.1. JDK的注解描述
 <!-- 
 https://mp.weixin.qq.com/s/fWeWHceRqNEEmi-O3GnV0A
 -->
@@ -58,9 +70,9 @@ https://mp.weixin.qq.com/s/QoJnf2vPCWR5ClCjSkiPsQ
 3. @SuppressWarnings：表示关闭编译器警告信息
 ```
 
-## 1.4. 自定义注解示例
+### 1.3.2. 自定义注解示例
 
-## 1.5. 元注解(和关键字@interface配合使用的注解)  
+### 1.3.3. 元注解(和关键字@interface配合使用的注解)  
 
 |元注解名称	|功能描述|
 |---|---|
@@ -154,7 +166,14 @@ https://mp.weixin.qq.com/s/QoJnf2vPCWR5ClCjSkiPsQ
     ```
 
 
-## 1.6. Annotation接口  
+
+### 1.3.4. 自定义注解加AOP  
+<!-- 
+https://mp.weixin.qq.com/s?__biz=Mzg3NDA4MjYyOQ==&mid=2247484180&idx=1&sn=eaf6841dd6fb5fa439939cb22eb7943d&chksm=ced77b3ef9a0f228fa1a1c02e0b10bc001074330d5bf7347ce4db77f93d969d579105f17421b&mpshare=1&scene=1&srcid=&sharer_sharetime=1576454959142&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=9ad84b8c73b256ab454ff3236e2adf563fd05891f9621b66002a4801c5cc07b7e42942bfc51b52be96e8411a42ca4093bed4af07d23a41f342d4ddd3d657cb1560993b71be5599ddc57c97c22fc1ecb7&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=ASj2f7syqgSgV3RMqH7GQoQ%3D&pass_ticket=bfh6Om%2FZtKWXqMXmAUqyFIYCxvpcWFuUU%2FsESm2I4eWOoa6HSoky8oPs67hVAuPg
+-->
+
+## 1.4. 注解原理
+### 1.4.1. Annotation接口  
 &emsp; Annotation是所有注解类的共同接口，不用显示实现。注解类使用@interface定义（代表它实现Annotation接口），搭配元注解使用，如下  
 
 ```java
@@ -187,12 +206,12 @@ public abstract @interface com/ATest implements java/lang/annotation/Annotation 
 }
 ```
 
-## 1.7. 和代码关联
+### 1.4.2. 和代码关联
 &emsp; 注解信息怎么和代码关联在一起，java所有事物都是类，注解也不例外，加入代码System.setProperty("sum.misc.ProxyGenerator.saveGeneratedFiles","true"); 可生成注解相应的代理类  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/basics/java-8.png)  
 &emsp; 在代码里定义的注解，会被jvm利用反射技术生成一个代理类，然后和被注释的代码（类，方法，属性等）关联起来    
 
-## 1.8. 使用动态代理机制处理注解  
+### 1.4.3. 使用动态代理机制处理注解  
 <!-- 
 https://blog.csdn.net/baidu_36385172/article/details/79953410
 把自定义注解的基本信息注入到方法上
@@ -439,8 +458,3 @@ public class Main<@AnTest("parameter") T > extends @AnTest("parent") PTest {
 修饰package注解value: com-package-info
 hello
 ```
-
-## 1.10. 自定义注解加AOP  
-<!-- 
-https://mp.weixin.qq.com/s?__biz=Mzg3NDA4MjYyOQ==&mid=2247484180&idx=1&sn=eaf6841dd6fb5fa439939cb22eb7943d&chksm=ced77b3ef9a0f228fa1a1c02e0b10bc001074330d5bf7347ce4db77f93d969d579105f17421b&mpshare=1&scene=1&srcid=&sharer_sharetime=1576454959142&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=9ad84b8c73b256ab454ff3236e2adf563fd05891f9621b66002a4801c5cc07b7e42942bfc51b52be96e8411a42ca4093bed4af07d23a41f342d4ddd3d657cb1560993b71be5599ddc57c97c22fc1ecb7&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=ASj2f7syqgSgV3RMqH7GQoQ%3D&pass_ticket=bfh6Om%2FZtKWXqMXmAUqyFIYCxvpcWFuUU%2FsESm2I4eWOoa6HSoky8oPs67hVAuPg
--->

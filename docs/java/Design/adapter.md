@@ -4,7 +4,7 @@
 - [1. 适配器(Adapter)模式](#1-适配器adapter模式)
     - [1.1. 简介](#11-简介)
     - [1.2. 结构](#12-结构)
-    - [适配器模式在Mybatis中的应用](#适配器模式在mybatis中的应用)
+    - [1.3. Mybatis日志的适配器](#13-mybatis日志的适配器)
 
 <!-- /TOC -->
 
@@ -29,13 +29,13 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 1. 用电器做例子，笔记本电脑的插头一般都是三相的，即除了阳极、阴极外，还有一个地极。而有些地方的电源插座却只有两极，没有地极。电源插座与笔记本电脑的电源插头不匹配使得笔记本电脑无法使用。这时候一个三相到两相的转换器（适配器）就能解决此问题，而这正像是本模式所做的事情。  
 2. 有一个 MediaPlayer 接口和一个实现了 MediaPlayer 接口的实体类 AudioPlayer。默认情况下，AudioPlayer 可以播放 mp3 格式的音频文件。  
 &emsp; 还有另一个接口 AdvancedMediaPlayer 和实现了 AdvancedMediaPlayer 接口的实体类。该类可以播放 vlc 和 mp4 格式的文件。  
-&emsp; 想要让 AudioPlayer 播放其他格式的音频文件。为了实现这个功能，我们需要创建一个实现了 MediaPlayer 接口的适配器类 MediaAdapter，并使用 AdvancedMediaPlayer 对象来播放所需的格式。  
+&emsp; 想要让AudioPlayer播放其他格式的音频文件。为了实现这个功能，需要创建一个实现了MediaPlayer接口的适配器类MediaAdapter，并使用AdvancedMediaPlayer对象来播放所需的格式。  
 
 &emsp; **优点：**   
 1. 能提高类的透明性和复用，现有的类复用但不需要改变。   
 2. 目标类和适配器类解耦，提高程序的扩展性。   
 3. 在很多业务场景中符合开闭原则。  
-   	
+
 &emsp; **缺点：**   
 1. 适配器编写过程需要全面考虑，可能会增加系统的复杂性。   
 2. 增加代码阅读难度，降低代码可读性，过多使用适配器会使系统代码变得凌乱。  
@@ -51,5 +51,5 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 &emsp; **适配器模式有3种形式：类适配器、对象适配器、接口适配器。**  
 
 
-## 适配器模式在Mybatis中的应用
+## 1.3. Mybatis日志的适配器
 &emsp; 参考[MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)  

@@ -5,7 +5,7 @@
     - [1.1. 简介](#11-简介)
     - [1.2. 设计安全的单例模式](#12-设计安全的单例模式)
         - [1.2.1. 懒汉式单例(非线程安全)](#121-懒汉式单例非线程安全)
-        - [1.2.2. 双重校验锁的形式](#122-双重校验锁的形式)
+        - [1.2.2. ★★★双重校验锁的形式](#122-★★★双重校验锁的形式)
         - [1.2.3. 静态内部类法](#123-静态内部类法)
         - [1.2.4. 枚举方法](#124-枚举方法)
 
@@ -46,7 +46,7 @@ public class LazySimpleSingleton {
 &emsp; 懒汉式也是通过一个类的静态变量实现的。但是并没有直接初始化。而是在函数getInstance()中实例化的，也就是每次想用这个实例的时候初始化的；如果已经初始化了，那么就不用初始化了。  
 &emsp; 但是懒汉式，其实也有一个小缺点，就是第一次使用的时候，需要进行初始化操作，可能会有比较高的耗时。如果是已知某一个对象一定会使用到的话，其实可以采用一种饿汉的实现方式。  
 
-### 1.2.2. 双重校验锁的形式   
+### 1.2.2. ★★★双重校验锁的形式   
 
 ```java
 public class LazyDoubleCheckSingleton {
@@ -75,9 +75,9 @@ public class LazyDoubleCheckSingleton {
     }
 }
 ```
-&emsp; <font color = "red">只有在singleton == null的情况下再进行加锁创建对象，如果singleton!=null，就直接返回就行了，并没有进行并发控制。大大的提升了效率。  
-&emsp; 从上面的代码中可以看到，其实整个过程中进行了两次singleton == null的判断，所以这种方法被称之为"双重校验锁"。   
-&emsp; 还有值得注意的是，双重校验锁的实现方式中，静态成员变量singleton必须通过volatile来修饰，保证其初始化不被重排，否则可能被引用到一个未初始化完成的对象。</font>  
+&emsp; <font color = "red">只有在singleton == null的情况下再进行加锁创建对象，如果singleton!=null，就直接返回就行了，并没有进行并发控制。大大的提升了效率。</font>   
+&emsp; <font color = "clime">从上面的代码中可以看到，其实整个过程中进行了两次singleton == null的判断，所以这种方法被称之为"双重校验锁"。</font>   
+&emsp; <font color = "clime">还有值得注意的是，双重校验锁的实现方式中，静态成员变量singleton必须通过volatile来修饰，保证其初始化不被重排，否则可能被引用到一个未初始化完成的对象。</font>   
 
 &emsp; **<font color = "clime">详见[Volatile](/docs/java/concurrent/Volatile.md)中双重校验锁的解释。</font>**  
 

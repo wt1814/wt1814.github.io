@@ -19,12 +19,14 @@
 
 <!-- /TOC -->
 
-&emsp; I/O读写大文件解决方案：  
-
-* 使用BufferedInputStream进行包装；
-* 逐行读取；
-* 并发读取：1)逐行批次打包；2)大文件拆分成小文件
-* 零拷贝方案：
+&emsp; **<font color = "red">总结：</font>**  
+1. **<font color = "clime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>** I/O读写大文件解决方案：  
+    * 使用BufferedInputStream进行包装；
+    * 逐行读取；
+    * 并发读取：1)逐行批次打包；2)大文件拆分成小文件
+    * 零拷贝方案：
+        * FileChannel，分配读取到已分配固定长度的 java.nio.ByteBuffer。
+        * 内存文件映射，MappedByteBuffer。采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。
 
 # 1. I/O读写大批量数据  
 <!--
@@ -38,7 +40,7 @@ https://mp.weixin.qq.com/s/h3M2wiJU-QYONi4ewJnVyA
 -->
 
 ## 1.1. Java 读写大文本文件  
-&emsp; **<font color = "lime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>**  
+&emsp; **<font color = "clime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>**  
 
 ### 1.1.1. java读取大文件的困难  
 &emsp; java读取文件的一般操作是将文件数据全部读取到内存中，然后再对数据进行操作。例如：  
@@ -259,12 +261,12 @@ public class MappedFileReader {
 ```
 &emsp; 采用内存文件映射的方法去处理大文件，不能读取超过2GB的文件，明明 FileChannel.map() 方法传递的文件长度是 long 类型的，怎么和 Integer.MAX_VALUE 有关系？  
 
-&emsp; **<font color = "lime">采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。</font>**  
+&emsp; **<font color = "clime">采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。</font>**  
 
 ```java
 Exception in thread "main" java.lang.IllegalArgumentException: Size exceeds Integer.MAX_VALUE at sun.nio.ch.FileChannelImpl.map(FileChannelImpl.java:868)
 ```
-&emsp; 这可以归结到一些历史原因，还有 int 类型在 java 中的深入程度，但是本质上由于 java.nio.MappedByteBuffer 是直接继承自 java.nio.ByteBuffer 的，而后者的索引变量是 int 类型的，所以前者也只能最大索引到 Integer.MAX_VALUE 的位置。  
+&emsp; 这可以归结到一些历史原因，还有 int 类型在 java 中的深入程度，但是本质上由于java.nio.MappedByteBuffer是直接继承自java.nio.ByteBuffer的，而后者的索引变量是int类型的，所以前者也只能最大索引到Integer.MAX_VALUE 的位置。  
 
 &emsp; **解决方案：多次内存映射。**  
 

@@ -94,7 +94,7 @@ https://mp.weixin.qq.com/s/EnkvEIVTLzOcuVd8s8fJTQ
 * 桥接(Bridge)模式：将两个能够独立变化的部分分离开来。  
 * 组合(Composite)模式：将整体与局部(树形结构)进行递归组合，让客户端能够以一种的方式对其进行处理。  
 * [外观/门面(Facade)模式](/docs/java/Design/facade.md)：对外提供一个统一的接口用来访问子系统。  
-* 享元(Flyweight)模式：使用对象池来减少重复对象的创建。  
+* 享元(Flyweight)模式： **使用对象池来减少重复对象的创建。**  
 
 
 &emsp; **行为型模式有11种：**  
@@ -111,5 +111,4 @@ https://mp.weixin.qq.com/s/EnkvEIVTLzOcuVd8s8fJTQ
 * 状态(State)模式：根据不同的状态做出不同的行为。  
 * 访问者(Visitor)模式：基于稳定数据结构，定义新的操作行为。  
 
-&emsp; **创建型、行为型、结构型联系：**  
-&emsp; ......
+

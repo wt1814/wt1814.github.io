@@ -42,7 +42,7 @@ https://mp.weixin.qq.com/s/skxnaaPz2eN1YASUlfwMDA
 
 # 1. Java泛型
 ## 1.1. 泛型简介
-&emsp; 泛型：把类型明确的工作推迟到创建对象或调用方法的时候才去明确的特殊的类型  
+&emsp; 泛型：把类型明确的工作推迟到创建对象或调用方法的时候，才去明确的特殊的类型  
 
 &emsp; 参数化类型:  
 

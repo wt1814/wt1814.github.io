@@ -12,7 +12,7 @@
 https://mp.weixin.qq.com/s?__biz=MzUzODU4MjE2MQ==&mid=2247484592&idx=1&sn=42a14aef3707745f570488be2fe77326&chksm=fad4c94ecda34058648b394acca654520e97f080aa156fb281c26eaad6f910c55e67b3063364&scene=21#wechat_redirect
 -->
 ## 1.1. 简介
-&emsp; 装饰者模式(Decorator Pattern)是指在不改变原有对象的基础之上，将功能附加到对象上， **<font color = "red">提供了比继承更有弹性的替代方案(扩展原有对象的功能)。</font>**  
+&emsp; 装饰者模式(Decorator Pattern)是指在不改变原有对象的基础之上，将功能附加到对象上， **<font color = "clime">提供了比继承更有弹性的替代方案(扩展原有对象的功能)。</font>**  
 &emsp; <font color = "red">装饰器模式的核心是功能拓展。使用装饰器模式可以透明且动态地扩展类的功能。</font>  
 
 &emsp; **使用场景：**  

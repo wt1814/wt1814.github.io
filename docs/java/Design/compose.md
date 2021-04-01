@@ -2,23 +2,22 @@
 <!-- TOC -->
 
 - [1. 复用规则](#1-复用规则)
-    - [1.1. 继承和组合](#11-继承和组合)
-        - [1.1.1. 类之间的关系简述](#111-类之间的关系简述)
-        - [1.1.2. 继承和组合](#112-继承和组合)
-        - [1.1.3. 组合与继承的区别](#113-组合与继承的区别)
-        - [1.1.4. 两者的选择，组合优于继承](#114-两者的选择组合优于继承)
-    - [1.2. 委托](#12-委托)
-    - [1.3. 继承和参数化类型的比较](#13-继承和参数化类型的比较)
+    - [1.1. 类之间的关系简述](#11-类之间的关系简述)
+    - [1.2. 继承和组合](#12-继承和组合)
+        - [1.2.1. 继承](#121-继承)
+        - [1.2.2. 组合](#122-组合)
+        - [1.2.3. 组合与继承的区别](#123-组合与继承的区别)
+        - [1.2.4. 两者的选择，组合优于继承](#124-两者的选择组合优于继承)
+    - [1.3. 委托](#13-委托)
+    - [1.4. 继承和参数化类型的比较](#14-继承和参数化类型的比较)
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; 类和类之间的关系有三种：is-a(继承或泛化)、has-a(关联或聚合)和use-a(依赖)。  
+
 # 1. 复用规则  
 <!-- 
-https://mp.weixin.qq.com/s/KksIdVFsh2mr3kZvrNQHgg
-https://time.geekbang.org/column/article/169593
-https://blog.csdn.net/zymx14/article/details/79605926
-https://blog.csdn.net/weixin_40995778/article/details/83306945
-
 可参考《设计模式 - 可复用面向对象软件的基础（高清版）》1.6.5 复用规则
 理解对象、接口、类和继承之类的概念对大多数人来说并不难，问题的关键在于如何运用它们写出灵活的、可复用的软件。设计模式将告诉你怎样去做。  
 1. 继承和组合的比较  
@@ -85,25 +84,187 @@ B r i d g e ( 4 . 2 )将实现和抽象分离开，如果抽象和一个特定�
 
 -->
 
-## 1.1. 继承和组合
-### 1.1.1. 类之间的关系简述
-&emsp; 简单地说，类和类之间的关系有三种：is-a、has-a 和 use-a。  
+## 1.1. 类之间的关系简述
+&emsp; 简单地说，类和类之间的关系有三种：is-a(继承或泛化)、has-a(关联或聚合)和use-a(依赖)。  
 
 * is-a 关系也叫继承或泛化，比如学生和人的关系、手机和电子产品的关系都属于继承关系；
-* has-a 关系通常称之为关联，比如部门和员工的关系、汽车和引擎的关系都属于关联关系；关联关系如果是整体和部分的关联，那么称之为 聚合关系；如果整体进一步负责了部分的生命周期 (整体和部分是不可分割的，同时同在也同时消亡)，那么这种就是最强的关联关系，称之为 合成 关系。
-* use-a 关系通常称之为依赖，比如司机有一个驾驶的行为 (方法)，其中 (的参数) 使用到了汽车，那么司机和汽车的关系就是依赖关系。
+* has-a 关系通常称之为关联，比如部门和员工的关系、汽车和引擎的关系都属于关联关系；关联关系如果是整体和部分的关联， **那么称之为聚合关系；** 如果整体进一步负责了部分的生命周期 (整体和部分是不可分割的，同时同在也同时消亡)，那么这种就是最强的关联关系，称之为 合成 关系。
+* use-a 关系通常称之为依赖，比如司机有一个驾驶的行为(方法)，其中 (的参数) 使用到了汽车，那么司机和汽车的关系就是依赖关系。
 
-&emsp; 利用类之间的这些关系，可以在已有类的基础上来完成某些操作，也可以在已有类的基础上创建新的类，这些都是实现代码复用的重要手段。复用现有的代码不仅可以减少开发的工作量，也有利于代码的管理和维护，这是我们在日常工作中都会使用到的技术手段。  
+&emsp; 利用类之间的这些关系，可以在已有类的基础上来完成某些操作，也可以在已有类的基础上创建新的类，这些都是实现代码复用的重要手段。复用现有的代码不仅可以减少开发的工作量，也有利于代码的管理和维护，这是开发在日常工作中都会使用到的技术手段。  
 
-### 1.1.2. 继承和组合
-......
+## 1.2. 继承和组合
+<!-- 
+https://mp.weixin.qq.com/s/KksIdVFsh2mr3kZvrNQHgg
+https://time.geekbang.org/column/article/169593
 
-### 1.1.3. 组合与继承的区别 
-......
+-->
 
-### 1.1.4. 两者的选择，组合优于继承  
 
-## 1.2. 委托  
 
-## 1.3. 继承和参数化类型的比较
+### 1.2.1. 继承
+&emsp; 继承是面向对象三大基本特征之一(继承，封装，多态)，继承就是子类继承父类的特征和行为，使得子类对象（实例）具有父类的实例域和方法，或子类从父类继承方法，使得子类具有父类相同的行为。在java中通过关键字extends实现继承，java中所有类默认都是java.lang.Object的子类。继承强调的是is-a关系。  
+&emsp; 直接通过例子来了解继承：  
+
+```java
+/**
+ * 动物
+ */
+public class Animal {
+    public void breathing() {
+        System.out.println("呼气...吸气...");
+    }
+}
+```
+
+```java
+/**
+ * 飞行动物
+ * 继承
+ */
+public class FlyingAnimals extends Animal{
+    public void filying() {
+        System.out.println("飞行...");
+    }
+
+    public static void main(String[] args) {
+        FlyingAnimals flyingAnimals = new FlyingAnimals();
+        flyingAnimals.breathing();
+        flyingAnimals.filying();
+    }
+}
+```
+
+&emsp; 运行结果：  
+
+```
+呼气…吸气…
+飞行…
+```
+&emsp; 继承是代码复用的一种方式。在继承中，父类的方法内部实现细节对子类可见，是‘白盒式’的代码复用。  
+
+
+### 1.2.2. 组合
+&emsp; 组合是通过对现有对象进行拼装即组合产生新的具有更复杂的功能。如：  
+
+```java
+/**
+ * 动物
+ */
+public class Animal {
+    public void breathing() {
+        System.out.println("呼气...吸气...");
+    }
+}
+```
+
+```java
+/**
+ * 爬行动物
+ * 组合
+ */
+public class Reptilia {
+
+    private Animal animal;
+
+    public Reptilia(Animal animal) {
+        this.animal = animal;
+    }
+
+    public void crawling() {
+        System.out.println("爬行...");
+    }
+    public void breathing() {
+        animal.breathing();
+    }
+
+
+    public static void main(String[] args) {
+        Animal animal = new Animal();
+        Reptilia reptilia = new Reptilia(animal);
+        reptilia.breathing();;
+        reptilia.crawling();
+    }
+}
+```
+
+&emsp; 运行结果：  
+
+```
+呼气…吸气…
+爬行…
+```
+
+&emsp; 组合体现的是整体和部分，强调的是has-a的关系。所以组合更多的用于下面这样的场景：  
+
+```java
+/**
+ * 轮胎
+ */
+class Tire {
+    public void run() {
+        System.out.println("轮胎转动...");
+    }
+}
+/**
+ * 车灯
+ */
+class Light {
+    public void light() {
+        System.out.println("灯亮...");
+    }
+}
+```
+
+```java
+/**
+ * 交通工具
+ * 组合
+ */
+public class Vehicle {
+    private Tire tire;
+    private Light light;
+
+    public Vehicle(Tire tire,Light light) {
+        this.tire = tire;
+        this.light = light;
+    }
+
+    public void operation() {
+        light.light();
+        tire.run();
+    }
+
+    public static void main(String[] args) {
+        Tire tire = new Tire();
+        Light light = new Light();
+        Vehicle vehicle = new Vehicle(tire,light);
+        vehicle.operation();
+    }
+}
+```
+
+
+&emsp; 运行结果：  
+
+```
+灯亮…
+轮胎转动…
+```
+
+### 1.2.3. 组合与继承的区别 
+<!-- 
+https://blog.csdn.net/zymx14/article/details/79605926
+-->
+&emsp; 继承与组合都是面向对象中代码复用的方式。父类的内部细节对子类可见，其代码属于白盒式的复用，而组合中，对象之间的内部细节不可见，其代码属于黑盒式复用。继承在编码过程中就要指定具体的父类，其关系在编译期就确定，而组合的关系一般在运行时确定。继承强调的是is-a的关系，而组合强调的是has-a的关系。  
+
+
+### 1.2.4. 两者的选择，组合优于继承  
+&emsp; 除非两个类之间是“is-a”的关系，否则不要轻易的使用继承，不要单纯的为了实现代码的重用而使用继承，因为过多的使用继承会破坏代码的可维护性，当父类被修改时，会影响到所有继承自它的子类，从而增加程序的维护难度和成本。  
+&emsp; 不要仅仅为了实现多态而使用继承，如果类之间没有“is-a”的关系，可以通过实现接口与组合的方式来达到相同的目的。设计模式中的策略模式可以很好的说明这一点，采用接口与组合的方式比采用继承的方式具有更好的可扩展性。  
+&emsp; 在Java语言中，能使用组合就尽量不要使用继承。  
+
+## 1.3. 委托  
+
+## 1.4. 继承和参数化类型的比较
 

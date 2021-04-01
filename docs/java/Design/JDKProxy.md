@@ -9,9 +9,14 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; Java动态代理类位于java.lang.reflect包下，一般主要涉及到以下两个重要的类或接口，一个是InvocationHandler(Interface)、另一个则是Proxy(Class)。  
-&emsp; Proxy类，该类即为动态代理类。Proxy.newProxyInstance()生成代理对象；  
-&emsp; InvocationHandler接口，在使用动态代理时，需要定义一个位于代理类与委托类之间的中介类，中介类被要求实现InvocationHandler接口。通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。
+1. Java动态代理类位于java.lang.reflect包下，一般主要涉及到以下两个重要的类或接口，一个是InvocationHandler(Interface)、另一个则是Proxy(Class)。  
+    * Proxy类。该类即为动态代理类。Proxy.newProxyInstance()生成代理对象；  
+    * InvocationHandler接口。在使用动态代理时，需要定义一个位于代理类与委托类之间的中介类，中介类被要求实现InvocationHandler接口。通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。  
+
+2. <font color = "clime">JDK动态代理的实现，大致流程：</font>  
+    1. <font color = "red">为接口创建代理类的字节码文件。</font>使用反射来创建代理类。  
+    2. <font color = "red">使用ClassLoader将字节码文件加载到JVM。</font>  
+    3. <font color = "red">创建代理类实例对象，执行对象的目标方法。</font>  
 
 # 1. JDK动态代理
 <!-- 
@@ -49,6 +54,7 @@
     &emsp; 实现这个接口的中介类用做“调用处理器”。当调用代理类对象的方法时，这个“调用”会转送到invoke方法中，代理类对象作为proxy参数传入，参数method标识了具体调用的是代理类的哪个方法，args为这个方法的参数。因此对代理类中的所有方法的调用都会变为对invoke的调用，这样可以在invoke方法中添加统一的处理逻辑(也可以根据method参数对不同的代理类方法做不同的处理)。  
     -->
  
+
 ## 1.1. 编码  
 &emsp; 代码示例：  
 &emsp; 首先需要定义一个接口：  
@@ -122,10 +128,10 @@ https://blog.csdn.net/yhl_jxy/article/details/80586785
 -->
 
 &emsp; 基于JDK1.8.0_65  
-&emsp; <font color = "lime">JDK动态代理的实现，大致流程：</font>  
-1. <font color = "red">为接口创建代理类的字节码文件</font>  
-2. <font color = "red">使用ClassLoader将字节码文件加载到JVM</font>  
-3. <font color = "red">创建代理类实例对象，执行对象的目标方法</font>  
+&emsp; <font color = "clime">JDK动态代理的实现，大致流程：</font>  
+1. <font color = "red">为接口创建代理类的字节码文件。</font>使用反射来创建代理类。  
+2. <font color = "red">使用ClassLoader将字节码文件加载到JVM。</font>  
+3. <font color = "red">创建代理类实例对象，执行对象的目标方法。</font>  
 
 &emsp; 动态代理涉及到的主要类：  
 
@@ -195,6 +201,7 @@ public static Object newProxyInstance(ClassLoader loader, Class<?>[] interfaces,
 * 根据代理类的构造器创建代理类
 * 返回动态创建生成的代理类
 
+
 &emsp; newProxyInstance方法调用getProxyClass0方法生成代理类的字节码文件。getProxyClass0()源码：  
 
 ```java
@@ -208,7 +215,7 @@ private static Class<?> getProxyClass0(ClassLoader loader, Class<?>... interface
 }
 ```
 &emsp; 其中缓存使用的是WeakCache实现的，此处主要关注使用ProxyClassFactory创建代理的情况。ProxyClassFactory是Proxy类的静态内部类，实现了BiFunction接口，实现了BiFunction接口中的apply方法。  
-&emsp; 当WeakCache中没有缓存相应接口的代理类，则会调用ProxyClassFactory类的 **<font color = "lime">apply方法使用反射来创建代理类。</font>**  
+&emsp; 当WeakCache中没有缓存相应接口的代理类，则会调用ProxyClassFactory类的 **<font color = "clime">apply方法使用反射来创建代理类。</font>**  
 
 ```java
 private static final class ProxyClassFactory

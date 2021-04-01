@@ -33,8 +33,8 @@ https://mp.weixin.qq.com/s/Fq-dOg78VMyEfNFjCJ7Krw
 |filter(Predicate<? super <T> predicate)|如果值存在，并且这个值匹配给定的 predicate，返回一个Optional用以描述这个值，否则返回一个空的Optional|
 |flatMap(Function<? super T,Optional<U>> mapper)|如果值存在，返回基于Optional包含的映射方法的值，否则返回一个空的Optional|
 |get()|如果在这个Optional中包含这个值，返回值，否则抛出异常：NoSuchElementException|
-|hashCode()	|返回存在值的哈希码，如果值不存在 返回0|
-|ifPresent(Consumer<? super T> consumer)|如果值存在则使用该值调用consumer, 否则不做任何事情|
+|hashCode()	|返回存在值的哈希码，如果值不存在，返回0|
+|ifPresent(Consumer<? super T> consumer)|如果值存在则使用该值调用consumer，否则不做任何事情|
 |isPresent()|如果值存在则方法会返回true，否则返回 false|
 |map(Function<? super T,? extends U> mapper)|如果存在该值，提供的映射方法，如果返回非null，返回一个Optional描述结果|
 |orElse(T other)|如果存在该值，返回值，否则返回 other|
@@ -142,8 +142,8 @@ String version = computer.flatMap(Computer::getSoundcard)
 Optional<USB> maybeUSB = ...;
 maybeUSB.filter(usb -> "3.0".equals(usb.getVersion()).ifPresent(() -> System.out.println("ok"));
 ```
-&emsp; 使用isPresent()处理NullPointerException不叫优雅；使用orElse, orElseGet等, 特别是map方法才叫优雅。其他几个，filter()把不符合条件的值变为empty()，flatMap()总是与map()方法成对的，orElseThrow()在有值时直接返回，无值时抛出想要的异常。   
-&emsp; 小结：使用Optional时尽量不直接调用Optional.get()方法, Optional.isPresent()更应该被视为一个私有方法，应依赖于其他像Optional.orElse()，Optional.orElseGet()，Optional.map()等这样的方法。
+&emsp; 使用isPresent()处理NullPointerException不叫优雅；使用orElse, orElseGet等，特别是map方法才叫优雅。其他几个，filter()把不符合条件的值变为empty()，flatMap()总是与map()方法成对的，orElseThrow()在有值时直接返回，无值时抛出想要的异常。   
+&emsp; 小结：使用Optional时尽量不直接调用Optional.get()方法，Optional.isPresent()更应该被视为一个私有方法，应依赖于其他像Optional.orElse()，Optional.orElseGet()，Optional.map()等这样的方法。
 
 
 &emsp; 抛出异常可以使用：  

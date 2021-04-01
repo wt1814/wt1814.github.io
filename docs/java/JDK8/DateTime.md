@@ -226,7 +226,7 @@ protected LocalDateTime gmtModified;
 protected LocalDateTime gmtModified;
 ```
 
-&emsp; 对前端传入的日期进行格式化在LocalDateTime字段上添加@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")注解即可，如下：  
+&emsp; 对前端传入的日期进行格式化在LocalDateTime字段上添加@DateTimeFormat(pattern = "yyyy-MM-dd HH: mm: ss")注解即可，如下：  
 
 ```java
 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

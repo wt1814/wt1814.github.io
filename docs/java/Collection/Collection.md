@@ -24,10 +24,10 @@
 
 <!-- /TOC -->
 
-
+&emsp; **<font color = "red">总结：</font>**  
 &emsp; HashSet基于HashMap实现： **<font color = "clime">存储在HashSet中的数据作为Map的key，而Map的value统一为PRESENT。</font>**  
 &emsp; 添加元素(如何保证值不重复？)  
-1. Hashset#add通过 map.put() 方法来添加元素。 **<font color = "clime">HashMap#put方法中如果新插入的key不存在，则返回null；如果新插入的key存在，则返回原key对应的value值（注意新插入的value会覆盖原value值）。</font>**  
+1. HashSet#add通过 map.put() 方法来添加元素。 **<font color = "clime">HashMap#put方法中如果新插入的key不存在，则返回null；如果新插入的key存在，则返回原key对应的value值（注意新插入的value会覆盖原value值）。</font>**  
 2. HashSet的add(E e)方法，会将e作为key，PRESENT 作为value插入到map集合中。  
     1. 如果e存在，HashMap#put返回原key对应的value值，Hashset#add返回false，表示插入值重复，插入失败。  
     2. 如果e不存在，HashMap#put返回null值，Hashset#add返回true，表示插入值不重复，插入成功。  

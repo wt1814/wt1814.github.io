@@ -34,11 +34,9 @@ https://mp.weixin.qq.com/s/TqSLUWYWfhHjpfI_srETJg
 * 缺点：性能瓶颈，反射相当于一系列解释操作，通知JVM要做的事情，性能比直接的java代码要慢很多。  
 
 ## 1.2. 应用场景  
-
-&emsp; **平常开发中使用反射的实际场景有：动态代理、JDBC中的加载数据库驱动程序、Spring框架中加载bean对象。** 
 <!-- https://mp.weixin.qq.com/s/_2VVj3AN-mAuguUIk9-8xg -->
-
-&emsp; 使用反射机制能够大大的增强程序的扩展性。程序执行时，(根据配置文件等条件)要动态加载某个类并执行方法。相当于switch判断。  
+&emsp; **<font color = "clime">平常开发中使用反射的实际场景有：动态代理、JDBC中的加载数据库驱动程序、Spring框架中加载bean对象。</font>** 
+&emsp; **<font color = "clime">使用反射机制能够大大的增强程序的扩展性。程序执行时，(根据配置文件等条件)要动态加载某个类并执行方法。相当于switch判断。</font>**  
 
 &emsp; 示例：工程有一个配置文件，配置文件里有个renderType设置了实现类调用哪个RenderHandler来完成动作。(RenderHandler：一个接口，有一个render方法，HighRenderHandler、LowRenderHandler、MiddleRenderHandler等一共10个实现类)。  
 
