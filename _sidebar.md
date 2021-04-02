@@ -79,6 +79,7 @@
         * [JVM类加载器](/docs/java/JVM/classLoader.md)  
     * [内存结构](/docs/java/JVM/Memory.md)  
         * [JVM内存结构](/docs/java/JVM/JVMMemory.md)  
+        * [常量池详解](/docs/java/JVM/ConstantPool.md)  
         * [逃逸分析](/docs/java/JVM/escape.md)  
         * [内存中的对象](/docs/java/JVM/MemoryObject.md)  
         * [内存泄露](/docs/java/JVM/MemoryLeak.md)  

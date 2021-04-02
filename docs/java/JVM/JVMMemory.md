@@ -35,20 +35,7 @@
 
 
 # 1. JVM内存结构/运行时数据区  
-<!--
- 终于搞懂了Java8的内存结构，再也不纠结方法区和常量池了！ 
- https://mp.weixin.qq.com/s/WvdPQ8JsR9qqWMlvX7ockA
-JAVA常量池，一篇文章就足够入门了。（含图解）
-https://blog.csdn.net/qq_41376740/article/details/80338158
-常量池 
-https://baike.baidu.com/item/%E5%B8%B8%E9%87%8F%E6%B1%A0/3855836?fr=aladdin
-Java中的几种常量池
-https://blog.csdn.net/luzhensmart/article/details/86565496
-常量池详解
-https://zhuanlan.zhihu.com/p/64839455
-JVM常量池浅析
-https://www.jianshu.com/p/cf78e68e3a99
--->
+
 
 <!--
 Metaspace 之一：Metaspace整体介绍（永久代被替换原因、元空间特点、元空间内存查看分析方法）

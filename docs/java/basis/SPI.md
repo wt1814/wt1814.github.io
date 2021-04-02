@@ -14,7 +14,10 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">JDK提供的SPI机制：提供一个接口；服务提供方实现接口，并在META-INF/services/中暴露实现类地址；服务调用方依赖接口，使用java.util.ServiceLoader类调用。</font>**  
+&emsp; **<font color = "clime">JDK提供的SPI机制：</font>**  
+1. 提供一个接口；  
+2. 服务提供方实现接口，并在META-INF/services/中暴露实现类地址；  
+3. 服务调用方依赖接口，使用java.util.ServiceLoader类调用。  
 
 # 1. Java SPI机制详解
 <!--
