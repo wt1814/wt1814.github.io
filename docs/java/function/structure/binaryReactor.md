@@ -42,7 +42,7 @@ https://mp.weixin.qq.com/s?__biz=MzA4NDE4MzY2MA==&mid=2647523614&idx=1&sn=cf4ee3
 ......
 
 ## 1.3. 堆的应用  
-1. 堆排序(Heap Sort)：堆排序可以使用二叉堆在O(nlogn)的时间内对数组完成排序，这也是今天先讲二叉堆的原因。  
+1. 堆排序(Heap Sort)：堆排序可以使用二叉堆在O(nlogn)的时间内对数组完成排序。  
 2. 优先队列(Priority Queue)：使用二叉堆，可以实现一个高效的优先队列，因为二叉堆的各类操作的时间复杂度均为O(nlogn)。  
 3. 图算法(Graph Algorithms)：优先队列广泛应用于像迪杰斯特拉算法和普里姆算法的图算法当中。  
 

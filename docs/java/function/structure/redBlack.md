@@ -21,6 +21,14 @@ https://mp.weixin.qq.com/s?__biz=MzU3NzczMTAzMg==&mid=2247485642&idx=1&sn=87686a
 如果面试被问“红黑树”，可以这样回答 
 https://mp.weixin.qq.com/s/2_G9dKF033_suehS0Fer1w
 
+
+什么是红黑树？
+https://mp.weixin.qq.com/s/DXh93cQaKRgsKccmoQOAjQ
+什么是红黑树？
+https://mp.weixin.qq.com/s/tnbbvgPyqz0pEpA76rn_1g
+什么是红黑树？
+https://mp.weixin.qq.com/s/oAyiRC_O-N5CHqAjt2va9w
+
 在树的结构发生改变时(插入或者删除操作)，往往会破坏上述条件3或条件 4，需要通过调整使得查找树重新满足红黑树的条件。
 
 红黑树主要有以下几个特性：
@@ -31,12 +39,6 @@ https://mp.weixin.qq.com/s/2_G9dKF033_suehS0Fer1w
 5. 所有的叶节点都是是黑色的(注意这里说叶子节点其实是上图中的 NIL 节点)；
 
 
-什么是红黑树？
-https://mp.weixin.qq.com/s/DXh93cQaKRgsKccmoQOAjQ
-什么是红黑树？
-https://mp.weixin.qq.com/s/tnbbvgPyqz0pEpA76rn_1g
-什么是红黑树？
-https://mp.weixin.qq.com/s/oAyiRC_O-N5CHqAjt2va9w
 -->
 
 ## 1.1. 红黑树介绍
@@ -59,7 +61,7 @@ https://mp.weixin.qq.com/s/oAyiRC_O-N5CHqAjt2va9w
 &emsp; 例如，Java集合中的TreeSet和TreeMap，C++ STL中的set、map，以及Linux虚拟内存的管理，都是通过红黑树去实现的。  
 
 &emsp; **红黑树与平衡二叉树的区别：**
-1. 红黑树放弃了追求完全平衡，<font color = "red">追求大致平衡</font>，在与平衡二叉树的时间复杂度相差不大的情况下，<font color = "lime">保证每次插入最多只需要三次旋转就能达到平衡</font>，实现起来也更为简单。  
+1. 红黑树放弃了追求完全平衡，<font color = "red">追求大致平衡</font>，在与平衡二叉树的时间复杂度相差不大的情况下，<font color = "clime">保证每次插入最多只需要三次旋转就能达到平衡</font>，实现起来也更为简单。  
 2. 平衡二叉树追求绝对平衡，条件比较苛刻，实现起来比较麻烦，每次插入新节点之后需要旋转的次数不能预知。  
 3. 红黑树和AVL树的区别在于它使用颜色来标识结点的高度，它所追求的是局部平衡而不是AVL树中的非常严格的平衡。  
 4. 红黑树是牺牲了严格的高度平衡的优越条件为代价，红黑树能够以O(log2 n)的时间复杂度进行搜索、插入、删除操作。  

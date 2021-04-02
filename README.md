@@ -55,7 +55,7 @@
 &emsp; [数组和链表](/docs/java/function/structure/array.md)  
 &emsp; [栈与队列](/docs/java/function/structure/stack.md)  
 &emsp; [二叉树](/docs/java/function/structure/tree.md)  
-&emsp; [二叉排序树](/docs/java/function/structure/binarySort.md)  
+&emsp; [二叉排序(查找)树](/docs/java/function/structure/binarySort.md)  
 &emsp; [平衡二叉树](/docs/java/function/structure/AVL.md)  
 &emsp; [红黑树](/docs/java/function/structure/redBlack.md)  
 &emsp; [B树](/docs/java/function/structure/BTree.md)  

@@ -9,7 +9,13 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">JVM各组件的作用(JVM执行程序的过程)：</font>** 首先通过类加载器(ClassLoader)会把Java代码转换成字节码，运行时数据区(Runtime Data Area)再把字节码加载到内存中，<font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此需要特定的命令解析器执行引擎(Execution Engine)，将字节码翻译成底层系统指令，再交由CPU去执行，</font>而这个过程中需要调用其他语言的本地库接口(Native Interface)来实现整个程序的功能。  
+&emsp; <font color = "red">JVM由4大部分组成：类加载器ClassLoader，运行时数据区Runtime Data Area，执行引擎Execution Engine，本地方法调用Native Interface。</font>  
+&emsp; **<font color = "clime">JVM各组件的作用(JVM执行程序的过程)：</font>**   
+1. 首先通过类加载器(ClassLoader)会把Java代码转换成字节码；  
+2. 运行时数据区(Runtime Data Area)再把字节码加载到内存中；  
+2. <font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此需要特定的命令解析器执行引擎(Execution Engine)，将字节码翻译成底层系统指令，再交由CPU去执行；</font>  
+3. 而这个过程中需要调用其他语言的本地库接口(Native Interface)来实现整个程序的功能。  
+
 
 # 1. JDK、JRE、JVM  
 <!-- 
@@ -21,17 +27,17 @@ https://mp.weixin.qq.com/s/-CbNU5uPH1cpMuZ-eQQgFw
 &emsp; 下图是JDK的安装目录：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-1.png)  
 
-* bin：一堆 EXE 可执行文件，java.exe、javac.exe、javadoc.exe，已经密钥管理工具等。  
+* bin：一堆EXE可执行文件，java.exe、javac.exe、javadoc.exe，以及密钥管理工具等。  
 * db：内置了Derby数据库，体积小，免安装。  
-* include：Java 和 JVM 交互的头文件，例如JVMTI 写的 C++ 工程时，就需要把这个 include 包引入进去jvmti.h。例如：基于jvmti设计非入侵监控  
-* jre：Java 运行环境，包含了运行时需要的可执行文件，以及运行时需要依赖的Java类库和动态链接库.so .dll .dylib  
-* lib：Java 类库，例如 dt.jar、tools.jar  
+* include：Java和JVM交互的头文件，例如JVMTI写的C++工程时，就需要把这个include包引入进去jvmti.h。例如：基于jvmti设计非入侵监控  
+* jre：Java运行环境，包含了运行时需要的可执行文件，以及运行时需要依赖的Java类库和动态链接库.so .dll .dylib  
+* lib：Java类库，例如dt.jar、tools.jar  
 
-&emsp; JDK 是 JRE 的超集，JDK 包含了 JRE 所有的开发、调试以及监视应用程序的工具。以及如下重要的组件：  
+&emsp; JDK是JRE的超集，JDK包含了JRE所有的开发、调试以及监视应用程序的工具。以及如下重要的组件：  
 
 * java – 运行工具，运行 .class 的字节码
-* javac– 编译器，将后缀名为.java的源代码编译成后缀名为.class的字节码
-* javap – 反编译程序
+* **javac– 编译器，将后缀名为.java的源代码编译成后缀名为.class的字节码**
+* **javap – 反编译程序**
 * javadoc – 文档生成器，从源码注释中提取文档，注释需符合规范
 * jar – 打包工具，将相关的类文件打包成一个文件
 * jdb – debugger，调试工具
@@ -84,6 +90,11 @@ https://mp.weixin.qq.com/s/-CbNU5uPH1cpMuZ-eQQgFw
 * 本地方法调用，调用C或C++实现的本地方法的代码返回结果。  
   
 
-&emsp; **<font color = "clime">各组件的作用(JVM执行程序的过程)：</font>** 首先通过类加载器(ClassLoader)会把Java代码转换成字节码，运行时数据区(Runtime Data Area)再把字节码加载到内存中，<font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此需要特定的命令解析器执行引擎(Execution Engine)，将字节码翻译成底层系统指令，再交由CPU去执行，</font>而这个过程中需要调用其他语言的本地库接口(Native Interface)来实现整个程序的功能。  
+&emsp; **<font color = "clime">各组件的作用(JVM执行程序的过程)：</font>**  
+1. 首先通过类加载器(ClassLoader)会把Java代码转换成字节码；  
+2. 运行时数据区(Runtime Data Area)再把字节码加载到内存中；  
+2. <font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此需要特定的命令解析器执行引擎(Execution Engine)，将字节码翻译成底层系统指令，再交由CPU去执行；</font>  
+3. 而这个过程中需要调用其他语言的本地库接口(Native Interface)来实现整个程序的功能。  
+
 
 &emsp; **JVM与不同系统(JVM的平台无关性)：** java能跨平台，实现一次编写，多处运行。Java能够跨平台运行的核心在于JVM 。不是Java能够跨平台，而是它的jvm能够跨平台。Java虚拟机屏蔽了与具体操作系统平台相关的信息，只要为不同平台实现了相应的虚拟机，编译后的Java字节码就可以在该平台上运行。  

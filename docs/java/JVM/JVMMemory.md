@@ -22,15 +22,16 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-51.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
+
+1. 运行时数据区。线程独享：程序计数器、JVM栈、本地方法栈；线程共享区：堆、方法区(元空间)。  
+2. Java虚拟机栈是由一个个栈帧组成，每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法出口信息。局部变量表存储八大原始类型、对象引用、returnAddress。 
+3. 堆  
 &emsp; **<font color = "clime">在Eden区中，JVM为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
 &emsp; 堆是分配对象存储的唯一选择吗？[逃逸分析](/docs/java/JVM/escape.md)  
-
-
-&emsp; <font color = "lime">方法区的演进：</font>  
-
-* jdk1.6及之前：有永久代(permanent generation) ，静态变量存放在永久代上  
-* jdk1.7：有永久代，但已经逐步“去永久代”，<font color = "red">字符串常量池、静态变量</font>移除，保存在堆中。  
-* jdk1.8及之后：无永久代，类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "lime">但字符串常量池、静态变量仍在堆。</font>  
+4. <font color = "clime">方法区的演进：</font>  
+    * jdk1.6及之前：有永久代(permanent generation) ，静态变量存放在永久代上  
+    * jdk1.7：有永久代，但已经逐步“去永久代”，<font color = "red">字符串常量池、静态变量</font>移除，保存在堆中。  
+    * jdk1.8及之后：无永久代，类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
 
 
 # 1. JVM内存结构/运行时数据区  
@@ -64,7 +65,7 @@ https://mp.weixin.qq.com/s/jPIHNsQwiYNCRUQt1qXR6Q
 
 &emsp; JVM内存区域主要分为线程私有区域【程序计数器、虚拟机栈、本地方法区】、线程共享区域【Java堆、方法区、直接内存】。  
 
-* 线程私有数据区域生命周期与线程相同，依赖用户线程的启动/结束而创建/销毁(在 Hotspot VM内，每个线程都与操作系统的本地线程直接映射，因此这部分内存区域的存/否跟随系统本地线程的生/死对应)。  
+* 线程私有数据区域生命周期与线程相同，依赖用户线程的启动/结束而创建/销毁（在 Hotspot VM内，每个线程都与操作系统的本地线程直接映射，因此这部分内存区域的存/否跟随系统本地线程的生/死对应）。  
 * 线程共享区随虚拟机的启动/关闭而创建/销毁。  
 
 ## 1.1. 程序计数器(Program Counter Register)  
@@ -228,11 +229,11 @@ https://mp.weixin.qq.com/s/Tv-0hjIgN9Grqvch1fFUiA -->
 &emsp; **<font color = "lime">JDK1.7开始了方法区的部分移除：符号引用(Symbols)移至native heap，字面量(interned strings)和静态变量(class statics)移至java heap。从JDK 1.8开始，移除永久代，并把方法区(主要是类型信息)移至元空间，它位于本地内存中，而不是虚拟机内存中。</font>**   
 -->
 
-&emsp; <font color = "lime">方法区的演进：</font>  
+&emsp; <font color = "clime">方法区的演进：</font>  
 
 * jdk1.6及之前：有永久代(permanent generation) ，静态变量存放在永久代上  
 * jdk1.7：有永久代，但已经逐步“去永久代”，<font color = "red">字符串常量池、静态变量</font>移除，保存在堆中。  
-* jdk1.8及之后：无永久代，类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "lime">但字符串常量池、静态变量仍在堆。</font>  
+* jdk1.8及之后：无永久代，类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-68.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-69.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-70.png)  

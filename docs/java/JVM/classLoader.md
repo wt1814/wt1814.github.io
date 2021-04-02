@@ -23,8 +23,13 @@ https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; 类加载器：  
 1. 类加载器分类  
-2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。
+2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。  
 &emsp; 好处：避免类的重复加载；防止核心API被随意篡改。   
+3. 破坏双亲委派模型的案例：  
+    1. 顶层ClassLoader无法加载底层ClassLoader的类。加入线程上下文类加载器(Thread Context ClassLoader)，解决JDBC等问题。  
+    2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。  
+    3. ......  
+
 
 # 1. 类加载的方式：类加载器  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-6.png)  
@@ -38,7 +43,7 @@ https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 &emsp; 三个类加载器的联系：除了BootStrap ClassLoader之外的另外两个默认加载器都是继承自java.lang.ClassLoader。BootStrap ClassLoader不是一个普通的Java类，它底层由C++编写，已嵌入到了JVM的内核当中，当JVM启动后，BootStrap ClassLoader也随之启动，负责加载完核心类库后，并构造Extension ClassLoader和App ClassLoader类加载器。  
 
 ## 1.2. 类加载器的加载机制  
-&emsp; 类加载器之间的层级关系如上图所示。这种层次关系被称作为双亲委派模型。  
+&emsp; 类加载器之间的层级关系如上图所示。这种层次关系被称作双亲委派模型。  
 
 ### 1.2.1. 双亲委派模型  
 &emsp; 如果一个类加载器收到了加载类的请求，它会先把请求委托给上层加载器去完成，上层加载器又会委托上上层加载器，一直到最顶层的类加载器；如果上层加载器无法完成类的加载工作时，当前类加载器才会尝试自己去加载这个类。如果都没加载到，则会抛出ClassNotFoundException异常。例子：父加载器已经加载了JDK中的String.class文件，所以不能定义同名的 String.java文件。  
@@ -76,8 +81,8 @@ protected synchronized Class<?> loadClass(String name, boolean resolve)throws Cl
 ```
 &emsp; <font color = "red">双亲委派模型的好处：</font>  
 
-* <font color = "lime">避免类的重复加载。</font> JVM中区分不同类，不仅仅是根据类名，相同的class文件被不同的ClassLoader加载就属于两个不同的类(比如，Java中的Object类，无论哪一个类加载器要加载这个类，最终都是委派给处于模型最顶端的启动类加载器进行加载，如果不采用双亲委派模型，由各个类加载器自己去加载的话，系统中会存在多种不同的Object类)。  
-* <font color = "lime">防止核心API被随意篡改，</font>避免用户自己编写的类动态替换Java的一些核心类，比如自定义类：java.lang.String。  
+* <font color = "clime">避免类的重复加载。</font> JVM中区分不同类，不仅仅是根据类名，相同的class文件被不同的ClassLoader加载就属于两个不同的类(比如，Java中的Object类，无论哪一个类加载器要加载这个类，最终都是委派给处于模型最顶端的启动类加载器进行加载，如果不采用双亲委派模型，由各个类加载器自己去加载的话，系统中会存在多种不同的Object类)。  
+* <font color = "clime">防止核心API被随意篡改，</font>避免用户自己编写的类动态替换Java的一些核心类，比如自定义类：java.lang.String。  
 
 ### 1.2.2. 破坏双亲委派模型  
 <!-- 
@@ -88,7 +93,7 @@ https://mp.weixin.qq.com/s/2iGaiOpxBIM3msAZYPUOnQ
 
 &emsp; **<font color = "red">破坏双亲委派模型的案例：</font>**  
 
-* 双亲委派模型有一个问题：顶层ClassLoader，无法加载底层ClassLoader的类。典型例子JNDI、JDBC，所以加入了线程上下文类加载器(Thread Context ClassLoader)，可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
+* 双亲委派模型有一个问题：顶层ClassLoader无法加载底层ClassLoader的类。典型例子JNDI、JDBC，所以加入了线程上下文类加载器(Thread Context ClassLoader)，可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
 * Tomcat中使用了自定义ClassLoader，并且也破坏了双亲委托机制。每个应用使用WebAppClassloader进行单独加载，它首先使用WebAppClassloader进行类加载，如果加载不了再委托父加载器去加载， **<font color = "red">这样可以保证每个应用中的类不冲突。每个tomcat中可以部署多个项目，每个项目中存在很多相同的class文件(很多相同的jar包)，加载到jvm中可以做到互不干扰。</font>**  
 * **利用破坏双亲委派来实现代码热替换(每次修改类文件，不需要重启服务)。因为一个Class只能被一个ClassLoader加载一次，否则会报java.lang.LinkageError。当要实现代码热部署时，可以每次都new一个自定义的ClassLoader来加载新的Class文件。** JSP的实现动态修改就是使用此特性实现。  
 

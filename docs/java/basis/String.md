@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. String](#1-string)
+- [1. ~~String~~](#1-string)
     - [1.1. java.lang.String类](#11-javalangstring类)
         - [1.1.1. String类的定义](#111-string类的定义)
             - [1.1.1.1. ★★★为什么Java字符串是不可变的？](#1111-★★★为什么java字符串是不可变的)
@@ -13,6 +13,8 @@
             - [1.1.4.1. equals()方法](#1141-equals方法)
             - [1.1.4.2. hashCode()方法](#1142-hashcode方法)
         - [1.1.5. ★★★String常见面试题](#115-★★★string常见面试题)
+            - [1.1.5.1. String创建了几个对象？](#1151-string创建了几个对象)
+            - [1.1.5.2. String是常量，为什么给字符串重新赋值，值却改变了呢？](#1152-string是常量为什么给字符串重新赋值值却改变了呢)
         - [1.1.6. String真的不可变吗?](#116-string真的不可变吗)
     - [1.2. StringBuilder与StringBuffer](#12-stringbuilder与stringbuffer)
     - [1.3. StringJoiner，字符串拼接](#13-stringjoiner字符串拼接)
@@ -23,7 +25,7 @@
 &emsp; String不可变，安全；StringBuilder可变，线程不安全；StringBuffer可变，线程安全。  
 
 
-# 1. String
+# 1. ~~String~~
 ## 1.1. java.lang.String类  
 &emsp; **<font color = "clime">String对象一旦被创建就是固定不变的了，对String对象的任何改变都不影响到原对象，相关的任何change操作都会生成新的对象。</font>**  
 
@@ -149,6 +151,7 @@ public int hashCode() {
 
 ### 1.1.5. ★★★String常见面试题  
 
+#### 1.1.5.1. String创建了几个对象？
 ```java
 String str1 = "java";
 String str2 = new String("java");
@@ -165,6 +168,11 @@ System.out.println(str2 == str6); //false
 &emsp; String str2 = new String("java");创建两个对象，字面量"java"创建一个对象放在常量池中，new String()又创建一个对象放在堆中。如果常量池中已经存在，则是创建了一个对象。  
 &emsp; String str3 = "hello "+"java"; 创建了一个对象。  
 &emsp; String str5 = str3 + "java";创建了三个对象。
+
+#### 1.1.5.2. String是常量，为什么给字符串重新赋值，值却改变了呢？  
+<!-- https://baijiahao.baidu.com/s?id=1692401311615162256&wfr=spider&for=pc -->
+&emsp; 字符串s只是一个 String 对象的引用，并不是对象本身，当执行 s = “123”; 创建了一个新的对象 “123”，而原来的 “abc” 还存在于内存中，所以只是s的引用地址发生了变化。  
+
 
 ### 1.1.6. String真的不可变吗?   
 &emsp; String 类是用 final 关键字修饰的，所以认为其是不可变对象。但是真的不可变吗？  
