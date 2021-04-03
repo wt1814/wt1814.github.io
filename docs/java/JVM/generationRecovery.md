@@ -6,7 +6,7 @@
         - [1.1.1. 标记-清除(Mark-Sweep)算法](#111-标记-清除mark-sweep算法)
         - [1.1.2. 标记-复制(Copying)算法](#112-标记-复制copying算法)
         - [1.1.3. 标记-整理(Mark-Compact)算法](#113-标记-整理mark-compact算法)
-    - [1.2. ~~分代收集理论~~](#12-分代收集理论)
+    - [1.2. ~~分代收集理论，卡表与Remembered Set~~](#12-分代收集理论卡表与remembered-set)
     - [1.3. HotSpot GC分类](#13-hotspot-gc分类)
         - [1.3.1. Yong GC](#131-yong-gc)
             - [1.3.1.1. ~~YGC触发时机~~](#1311-ygc触发时机)
@@ -93,8 +93,11 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
 
 &emsp; **<font color = "clime">标记清除和标记整理都需要扫描两次。</font>**  
 
-## 1.2. ~~分代收集理论~~  
-<!-- 
+## 1.2. ~~分代收集理论，卡表与Remembered Set~~  
+<!--
+卡表与Remembered Set
+★★★ https://blog.csdn.net/Sqdmn/article/details/103978643/
+
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 https://mp.weixin.qq.com/s/dWg5S7m-LUQhxUofHfqb3g
 
