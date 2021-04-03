@@ -17,7 +17,8 @@
             - [1.4.1.1. Jps：虚拟机进程状况工具](#1411-jps虚拟机进程状况工具)
             - [1.4.1.2. Jstack：java线程堆栈跟踪工具](#1412-jstackjava线程堆栈跟踪工具)
             - [1.4.1.3. Jmap：java内存映像工具](#1413-jmapjava内存映像工具)
-                - [1.4.1.3.1. ※※※jmap的几个操作要慎用](#14131-※※※jmap的几个操作要慎用)
+                - [1.4.1.3.1. ★★★jmap的几个操作要慎用](#14131-★★★jmap的几个操作要慎用)
+                - [★★★live参数](#★★★live参数)
             - [1.4.1.4. Jhat：虚拟机堆转储快照分析工具](#1414-jhat虚拟机堆转储快照分析工具)
             - [1.4.1.5. Jstat：虚拟机统计信息监视工具](#1415-jstat虚拟机统计信息监视工具)
             - [1.4.1.6. Jinfo：java配置信息工具](#1416-jinfojava配置信息工具)
@@ -25,15 +26,14 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">总结：</font>**  
-&emsp; JVM命令行调优工具：  
-
-* Jps：虚拟机进程状况工具  
-* Jstack：java线程堆栈跟踪工具  
-* Jmap：java内存映像工具  
-* Jhat：虚拟机堆转储快照分析工具  
-* Jstat：虚拟机统计信息监视工具  
-* Jinfo：java配置信息工具  
+&emsp; **<font color = "red">总结：</font>**  
+1. JVM命令行调优工具：  
+    * Jps：虚拟机进程状况工具  
+    * Jstack：java线程堆栈跟踪工具  
+    * Jmap：java内存映像工具  
+    * Jhat：虚拟机堆转储快照分析工具  
+    * Jstat：虚拟机统计信息监视工具  
+    * Jinfo：java配置信息工具  
 
 # 1. JVM调优基础  
 
@@ -43,7 +43,7 @@
 ## 1.2. JVM参数  
 &emsp; **<font color = "red">设置参数的方式：</font>**  
 
-* 开发工具中设置比如IDEA，eclipse  
+* 开发工具中设置，比如IDEA，eclipse  
 * 运行jar包的时候：java -XX:+UseG1GC xxx.jar  
 * web容器比如tomcat，可以在脚本中的进行设置  
 * 通过jinfo实时调整某个java进程的参数(参数只有被标记为manageable的flags可以被实时修改)  
@@ -241,8 +241,8 @@ https://mp.weixin.qq.com/s/MC2y6JAbZyjIVp7yTxT7fQ
 * -v 输出传入JVM的参数  
 
 #### 1.4.1.2. Jstack：java线程堆栈跟踪工具  
-&emsp; jstack用于生成java虚拟机当前时刻的线程快照。线程快照是当前java虚拟机内每一条线程正在执行的方法堆栈的集合。<font color = "red">生成线程快照的主要目的是定位线程出现长时间停顿的原因，如线程间死锁、死循环、请求外部资源导致的长时间等待等都是导致线程长时间停顿的常见原因。</font>  
-&emsp; 线程出现停顿的时候通过jstack来查看各个线程的调用堆栈，就可以知道没有响应的线程到底在后台做什么事情，或者等待什么生产环境中最主要的危险操作是下面这三种资源。如果java程序崩溃生成core文件，jstack工具可以用来获得core文件的java stack和native stack的信息，从而可以轻松地知道java程序是如何崩溃和在程序何处发生问题。  
+&emsp; jstack用于生成java虚拟机当前时刻的线程快照。线程快照是当前java虚拟机内每一条线程正在执行的方法堆栈的集合。 **<font color = "clime">生成线程快照的主要目的是定位线程出现长时间停顿的原因，如线程间死锁、死循环、请求外部资源导致的长时间等待等都是导致线程长时间停顿的常见原因。</font>**  
+&emsp; **线程出现停顿的时候，通过jstack来查看各个线程的调用堆栈，就可以知道没有响应的线程到底在后台做什么事情，或者等待什么生产环境中最主要的危险操作是下面这三种资源。** 如果java程序崩溃生成core文件，jstack工具可以用来获得core文件的java stack和native stack的信息，从而可以轻松地知道java程序是如何崩溃和在程序何处发生问题。  
 &emsp; 另外，jstack工具还可以附属到正在运行的java程序中，看到当时运行的java程序的java stack和native stack的信息，如果现在运行的java程序呈现hung的状态，jstack是非常有用的。  
 &emsp; 命令格式：jstack [option] PID。option参数：  
 
@@ -269,7 +269,7 @@ https://mp.weixin.qq.com/s/MC2y6JAbZyjIVp7yTxT7fQ
 &emsp; format指定输出格式，live指明是活着的对象，file指定文件名。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-37.png)  
 
-##### 1.4.1.3.1. ※※※jmap的几个操作要慎用  
+##### 1.4.1.3.1. ★★★jmap的几个操作要慎用  
 &emsp; 生产环境中最主要的危险操作是下面这三种：
 1. jmap -dump。这个命令执行，JVM会将整个heap的信息dump写入到一个文件，heap如果比较大的话，就会导致这个过程比较耗时，并且执行的过程中为了保证dump的信息是可靠的，所以会暂停应用。  
 2. jmap -permstat。这个命令执行，JVM会去统计perm区的状况，这整个过程也会比较的耗时，并且同样也会暂停应用。  
@@ -277,8 +277,14 @@ https://mp.weixin.qq.com/s/MC2y6JAbZyjIVp7yTxT7fQ
 
 &emsp; 上面的这三个操作都将对应用的执行产生影响，所以建议如果不是很有必要的话，不要去执行。
 
+##### ★★★live参数  
+<!-- 
+
+https://blog.csdn.net/shenzhenhair/article/details/8607366
+-->
+
 #### 1.4.1.4. Jhat：虚拟机堆转储快照分析工具  
-&emsp; jhat(JVM Heap Analysis Tool)命令是与jmap搭配使用，用来分析jmap生成的dump，jhat内置了一个微型的HTTP/HTML服务器，生成dump的分析结果后，可以在浏览器中查看。在此要注意，一般不会直接在服务器上进行分析，因为jhat是一个耗时并且耗费硬件资源的过程，一般把服务器生成的dump文件复制到本地或其他机器上进行分析。    
+&emsp; **<font color = "clime">jhat(JVM Heap Analysis Tool)命令是与jmap搭配使用，用来分析jmap生成的dump，</font>** jhat内置了一个微型的HTTP/HTML服务器，生成dump的分析结果后，可以在浏览器中查看。在此要注意，一般不会直接在服务器上进行分析，因为jhat是一个耗时并且耗费硬件资源的过程，一般把服务器生成的dump文件复制到本地或其他机器上进行分析。    
 
 #### 1.4.1.5. Jstat：虚拟机统计信息监视工具
 &emsp; jstat(JVM statistics Monitoring)是用于监视虚拟机运行时状态信息的命令，它可以显示出虚拟机进程中的类装载、内存、垃圾收集、JIT编译等运行数据。  

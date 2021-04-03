@@ -87,7 +87,6 @@
     * [GC](/docs/java/JVM/GC.md)  
         * [GC-回收对象](/docs/java/JVM/GCProject.md)   
         * [GC-回收位置/安全点](/docs/java/JVM/safePoint.md)  
-        * [StopTheWord](/docs/java/JVM/stopTheWord.md)  
         * [回收算法与分代回收](/docs/java/JVM/generationRecovery.md)  
         * [GC-垃圾回收器](/docs/java/JVM/GCReclaimer.md)  
         * [CMS回收器](/docs/java/JVM/CMS.md)  
@@ -98,7 +97,6 @@
         * [JVM调优](/docs/java/JVM/tuningProblem.md)  
         * [JVM问题排查](/docs/java/JVM/TroubleShooting.md)  
         * [JAVA线上故障排查](/docs/Linux/problem.md)   
-        * [JVM排查案例](/docs/java/JVM/case.md)  
         * [Arthas工具](/docs/java/JVM/Arthas.md)  
 * 并发编程  
     * [并发编程总结](/docs/java/concurrent/summary.md)  

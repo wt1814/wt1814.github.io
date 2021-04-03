@@ -26,8 +26,8 @@
 &emsp; GC回收对象：  
 1. 存活标准：引用计数法、根可达性分析法  
 2. 四种引用  
-&emsp; **<font color = "red">当堆使用率临近阈值时，才会去回收软引用的对象。</font>**  
-&emsp; **<font color = "red">只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>**  
+&emsp; **<font color = "red">软引用：当堆使用率临近阈值时，才会去回收软引用的对象。</font>**  
+&emsp; **<font color = "red">弱引用：只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>**  
 &emsp; **软引用和弱引用的使用：**  
 &emsp; **<font color = "red">软引用，弱引用都非常适合来保存那些可有可无的缓存数据，如果这么做，当系统内存不足时，这些缓存数据会被回收，不会导致内存溢出。而当内存资源充足时，这些缓存数据又可以存在相当长的时间，从而起到加速系统的作用。</font>**  
 &emsp; **<font color = "clime">假如⼀个应⽤需要读取⼤量的本地图⽚，如果每次读取图⽚都从硬盘读取会严重影响性能，如果⼀次性全部加载到内存⼜可能造成内存溢出，这时可以⽤软引⽤解决这个问题。</font>**  
@@ -59,7 +59,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 -->
 &emsp; GC主要解决下面的三个问题：  
 
-* 哪些内存需要回收？&emsp; GC回收的主要区域是堆、方法区。  
+* 哪些内存需要回收？ GC回收的主要区域是堆、方法区。  
 * 什么时候回收？  
 * 如何回收？  
 
@@ -91,7 +91,7 @@ https://juejin.im/post/5e151b38f265da5d495c8025
 &emsp; 在JDK中提供了四个级别的引用：强引用，软引用，弱引用和虚引用。在这四个引用类型中，只有强引用Final Reference类是包内可见，其他三种引用类型均为public，可以在应用程序中直接使用。引用类型的类结构如图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-22.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-18.png)  
-&emsp; <font color = "clime">Java中引入四种引用的目的是让程序自己决定对象的生命周期，JVM是通过垃圾回收器对这四种引用做不同的处理，来实现对象生命周期的改变。</font>  
+&emsp; **<font color = "clime">Java中引入四种引用的目的是让程序自己决定对象的生命周期，JVM是通过垃圾回收器对这四种引用做不同的处理，来实现对象生命周期的改变。</font>**  
 
 <!-- 
 Java设计这四种引用的主要目的有两个：

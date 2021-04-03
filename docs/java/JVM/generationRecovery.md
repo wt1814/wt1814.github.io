@@ -18,19 +18,19 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**   
+1. 复制算法  
 &emsp; **<font color = "clime">标记清除和标记整理都需要扫描两次。</font>**  
-
+&emsp; **<font color = "clime">标记-清除算法分为两个阶段：标记阶段和清除阶段。</font>** 不足：清除过程中，扫描两次，效率不高；清楚后，产生空间碎片。   
 &emsp; 新生代采用复制算法；老年代采用标记-整理算法。注意：CMS回收老年代，但采用标记-清除算法。  
-
-&emsp; **<font color = "clime">跨代引用假说(跨代引用相对于同代引用仅占少数)：</font>**   
+2. 跨代引用假说(跨代引用相对于同代引用仅占少数)  
 &emsp; **既然跨代引用只是少数，那么就没必要去扫描整个老年代，也不必专门记录每一个对象是否存在哪些跨代引用，只需在新生代上建立一个全局的数据结构，称为记忆集(Remembered Set)，这个结构把老年代划分为若干个小块，标识出老年代的哪一块内存会存在跨代引用。此后当发生Minor GC时，只有包含了跨代引用的小块内存里的对象才会被加入GC Roots进行扫描。**  
-
-&emsp; **<font color = "red">Full GC的触发时机：( 系统调用---> 回收器(例如CMS) ---> 执行GC时 ---> 老年代或永久代不足)</font>**  
+3. Full GC  
+&emsp; **<font color = "red">Full GC的触发时机：( 系统调用---> 回收器(例如CMS) ---> 老年代不满足年轻代晋升 ---> 老年代或永久代不足)</font>**  
 1. <font color = "red">系统调用System.gc()</font>  
 &emsp; 只是建议虚拟机执行Full GC，但是虚拟机不一定真正去执行。不建议使用这种方式，而是让虚拟机管理内存。  
 2. CMS GC时出现promotion failed和concurrent mode failure  
 &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足(可能是GC过程中浮动垃圾过多导致暂时性的空间不足)，便会报Concurrent Mode Failure错误，并触发Full GC。  
-3. 执行GC时  
+3. 老年代不满足年轻代晋升  
     1. 统计得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间  
     &emsp; Hotspot为了避免由于新生代对象晋升到旧生代导致旧生代空间不足的现象，在进行Minor GC时，做了一个判断，如果之前统计所得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间，那么就直接触发Full GC。  
     2. 空间分配担保失败  
@@ -52,7 +52,7 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
 
 ### 1.1.1. 标记-清除(Mark-Sweep)算法  
 1. <font color = "red">标记-清除算法是最基础的收集算法，是因为后续的收集算法大多都是以标记-清除算法为基础，对其缺点进行改进而得到的。</font>  
-2. 标记-清除算法分为两个阶段：标记阶段和清除阶段。标记阶段是标记出所有需要被回收的对象，清除阶段就是回收被标记的对象所占用的空间。  
+2. **<font color = "clime">标记-清除算法分为两个阶段：标记阶段和清除阶段。</font>** 标记阶段是标记出所有需要被回收的对象，清除阶段就是回收被标记的对象所占用的空间。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-73.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-76.png)  
 3. 特点：  
@@ -60,8 +60,8 @@ https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
         1. 算法相对简单
         2. 存活对象比较多的情况下效率比较高
     * 缺点：
-        1. (效率偏低，两遍扫描，标记和清除都比较耗时)执行效率不稳定，如果Java堆中包含大量对象，而且其中大部分是需要被回收的，这时必须进行大量标记和清除的动作，导致标记和清除两个过程的执行效率都随对象数量增长而降低；  
-        2. (位置不连续，产生碎片)<font color = "lime">内存空间的碎片化问题，</font>清除后产生大量不连续的内存碎片。如果有大对象会出现空间不够的现象，从而不得不提前触发另一次垃圾收集动作。 
+        1. **<font color = "red">执行过程中：</font>** 效率偏低，两遍扫描，标记和清除都比较耗时。执行效率不稳定，如果Java堆中包含大量对象，而且其中大部分是需要被回收的，这时必须进行大量标记和清除的动作，导致标记和清除两个过程的执行效率都随对象数量增长而降低；  
+        2. **<font color = "red">执行后：</font>** (位置不连续，产生碎片)<font color = "clime">内存空间的碎片化问题，</font>清除后产生大量不连续的内存碎片。如果有大对象会出现空间不够的现象，从而不得不提前触发另一次垃圾收集动作。 
 
 ### 1.1.2. 标记-复制(Copying)算法 
 1. 标记-复制算法常被简称为复制算法。<font color = "red">为了解决标记-清除算法面对大量可回收对象时执行效率低的问题。</font>  
@@ -195,8 +195,10 @@ https://www.cnblogs.com/williamjie/p/9516367.html
 
 #### 1.3.1.2. YGC执行流程
 &emsp; **YGC执行流程：(young GC中有部分存活对象会晋升到old gen，所以young GC后old gen的占用量通常会有所升高)**  
-&emsp; 大部分对象在Eden区中生成。当Eden占用完时，垃圾回收器进行回收。回收时先将eden区存活对象复制到一个survivor0区，然后清空eden区，当这个survivor0区也存放满了时，则将eden区和survivor0区(使用的survivor中的对象也可能失去引用)存活对象复制到另一个survivor1区，然后清空eden和这个survivor0区，此时survivor0区是空的，然后将survivor0区和survivor1区交换，即保持survivor1区为空， 如此往复。  
-&emsp; 每经过一次YGC，对象年龄加1，当对象寿命超过阈值时，会晋升至老年代，最大寿命15(4bit)。  
+1. 大部分对象在Eden区中生成。当Eden占用完时，垃圾回收器进行回收。  
+2. 回收时先将eden区存活对象复制到一个survivor0区，然后清空eden区。   
+3. 当这个survivor0区也存放满了时，则将eden区和survivor0区(使用的survivor中的对象也可能失去引用)存活对象复制到另一个survivor1区，然后清空eden和这个survivor0区，此时survivor0区是空的，然后将survivor0区和survivor1区交换，即保持survivor1区为空， 如此往复。  
+4. 每经过一次YGC，对象年龄加1，当对象寿命超过阈值时，会晋升至老年代，最大寿命15(4bit)。  
 
 ### 1.3.2. Major GC  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-100.png)  
@@ -214,9 +216,9 @@ https://blog.csdn.net/qq_38384440/article/details/81710887
 &emsp; 只是建议虚拟机执行Full GC，但是虚拟机不一定真正去执行。不建议使用这种方式，而是让虚拟机管理内存。  
 2. CMS GC时出现promotion failed和concurrent mode failure  
 &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足(可能是GC过程中浮动垃圾过多导致暂时性的空间不足)，便会报Concurrent Mode Failure错误，并触发Full GC。  
-3. 执行GC时  
-    1. 统计得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间  
-    &emsp; Hotspot为了避免由于新生代对象晋升到旧生代导致旧生代空间不足的现象，在进行Minor GC时，做了一个判断，如果之前统计所得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间，那么就直接触发Full GC。  
+3. 老年代不满足年轻代的晋升  
+    1. 统计得到的Minor GC晋升到老年代的平均大小大于旧生代的剩余空间  
+    &emsp; Hotspot为了避免由于新生代对象晋升到旧生代导致老年代空间不足的现象，在进行Minor GC时，做了一个判断，如果之前统计所得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间，那么就直接触发Full GC。  
     2. 空间分配担保失败  
     &emsp; **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的连续空间是否大于新生代所有对象的总空间，</font>** 如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。    
 4. 老年代或永久的不足

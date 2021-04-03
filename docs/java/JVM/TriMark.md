@@ -10,6 +10,8 @@ https://www.bilibili.com/video/BV1Uz4y1S798
 https://mp.weixin.qq.com/s/4qx9btw0ITmH0Nao8FYFvQ
 https://www.bilibili.com/read/cv6830986/
 https://www.cnblogs.com/fourther/p/12676575.html
+不如一篇文章搞懂三色标记是如何处理漏标 
+https://mp.weixin.qq.com/s/pswlzZugDhNeZKerTTsCnQ
 
 SATB
 全称是Snapshot-At-The-Beginning，由字面理解，是GC开始时活着的对象的一个快照。它是通过Root Tracing得到的，作用是维持并发GC的正确性。 那么它是怎么维持并发GC的正确性的呢？根据三色标记算法，我们知道对象存在三种状态： * 白：对象没有被标记到，标记阶段结束后，会被当做垃圾回收掉。 * 灰：对象被标记了，但是它的field还没有被标记或标记完。 * 黑：对象被标记了，且它的所有field也被标记完了。
