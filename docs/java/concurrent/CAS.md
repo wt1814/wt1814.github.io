@@ -30,7 +30,9 @@
     &emsp; **<font color = "clime">从Java1.5开始JDK的atomic包里提供了[AtomicStampedReference](/docs/java/concurrent/6.AtomicStampedReference.md)和AtomicMarkableReference类来解决ABA问题。</font>**  
 
 # 1. CAS算法  
-<!-- 
+<!--
+ 由浅入深CAS
+ https://mp.weixin.qq.com/s/rEMsPcLuIExM3cITJZVvFQ
 【对线面试官】 CAS 
 https://mp.weixin.qq.com/s/rdMsqbawKSC86AXlcWfkCg
 传说中的并发编程ABA问题

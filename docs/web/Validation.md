@@ -27,4 +27,7 @@ https://mp.weixin.qq.com/s/q-Fh_YGPW7s8lyg6o9DXgA
 https://mp.weixin.qq.com/s/bmVvqhzWmK2hA2gurYB4wg
 
 https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&__biz=MzI0MTUwOTgyOQ==&scene=1&album_id=1630480921197887488&count=3#wechat_redirect
+
+ 参数验证 @Validated 和 @Valid 的区别，Java Web 开发必备。 
+ https://mp.weixin.qq.com/s/opK88MLb4he2IoV2Xa4wKA
 -->

@@ -242,6 +242,13 @@ process_method(dataId,userDataDtoList){
 
 
 ## 1.3. 锁表  
+<!--
+
+https://blog.csdn.net/cai519678181/article/details/105475504
+数据库为什么会锁表
+http://www.360doc.com/content/18/0414/07/48169514_745495475.shtml
+-->
+
 1. 锁表发生在insert、update、delete中。  
 2. 锁表的原理是数据库使用独占式封锁机制，当执行上面的语句时，对表进行锁住，直到发生commite 或者 回滚 或者 退出数据库用户。  
 3. 锁表的原因  

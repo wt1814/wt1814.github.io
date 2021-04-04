@@ -5,6 +5,8 @@
 <!-- 
 软件架构质量属性（一）
 https://blog.csdn.net/trecn001/article/details/93721030
+怎么画架构图？
+https://mp.weixin.qq.com/s/-PUjF1-7brmyUznCXkM06g
 -->
 
 
