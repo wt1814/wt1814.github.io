@@ -18,18 +18,17 @@
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-26.png)   
 
-&emsp; **总结：**  
-&emsp; ThreadLocal#set()#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，而是将值存储在每个Thread实例的threadLocals属性中。  
-
+&emsp; **<font color = "red">总结：</font>**  
+1. ThreadLocal源码/内存模型  
+&emsp; **<font color = "red">ThreadLocal#set()#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>**  
 &emsp; 当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
-
 &emsp; **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。<font color = "clime">Key是一个ThreadLocal实例，Value是设置的值。Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
 
-&emsp; **ThreadLocal内存泄露：**  
+2. **ThreadLocal内存泄露：**  
 &emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key(ThreadLocal实例)会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
 &emsp; **<font color = "clime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  
 
-&emsp; **ThreadLocalMap的key被回收后，如何获取值？**  
+3. **ThreadLocalMap的key被回收后，如何获取值？**  
 &emsp; ThreadLocal#get() ---> setInitialValue() ---> ThreadLocalMap.set(this, value); 。  
 &emsp; 通过nextIndex()不断获取table上得槽位，直到遇到第一个为null的地方，此处也将是存放具体entry的位置，在线性探测法的不断冲突中，如果遇到非空entry中的key为null，可以表明key的弱引用已经被回收，但是由于线程仍未结束生命周期被回收而导致该entry仍未从table中被回收，那么则会在这里尝试通过replaceStaleEntry()方法，将null key的entry回收掉并set相应的值。  
 
@@ -120,7 +119,7 @@ private void set(ThreadLocal<?> key, Object value) {
 }
 ```
 
-&emsp; **<font color = "red">ThreadLocal#set()#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，而是将值存储在每个Thread实例的threadLocals属性中。</font>** Thread.java相关源码如下：  
+&emsp; **<font color = "red">ThreadLocal#set()#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** Thread.java相关源码如下：  
 
 ```java
 //与此线程有关的ThreadLocal值。由ThreadLocal类维护
@@ -143,6 +142,7 @@ ThreadLocalMap inheritableThreadLocals = null;
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-24.png)   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-59.png)   
+&emsp; ⚠注： **<font color = "clime">一个线程可能存在多个ThreadLocal实例，即存在多个Entry节点。</font>**  
 
 ### 1.2.3. get()  
 &emsp; get是获取当前线程的对应的私有变量，是之前set或者通过initialValue指定的变量，其代码如下：  
@@ -230,7 +230,7 @@ https://mp.weixin.qq.com/s/mH1jRiZTiHdlMBSwu3f2zg
 -->
 &emsp; <font color = "clime">当ThreadLocalMap的key为弱引用，回收ThreadLocal时，由于ThreadLocalMap持有ThreadLocal的弱引用，即使没有手动删除，ThreadLocal也会被回收。</font>
 
-&emsp; **<font color = "clime">ThreadLocal可能的内存泄漏</font>**  
+&emsp; **<font color = "clime">ThreadLocal可能的内存泄漏：</font>**  
 &emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key(ThreadLocal实例)会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
 &emsp; **<font color = "clime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  
 

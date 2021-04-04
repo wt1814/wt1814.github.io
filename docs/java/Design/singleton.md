@@ -47,6 +47,7 @@ public class LazySimpleSingleton {
 &emsp; 但是懒汉式，其实也有一个小缺点，就是第一次使用的时候，需要进行初始化操作，可能会有比较高的耗时。如果是已知某一个对象一定会使用到的话，其实可以采用一种饿汉的实现方式。  
 
 ### 1.2.2. ★★★双重校验锁的形式   
+&emsp; DCL详解参考[Volatile](/docs/java/concurrent/Volatile.md)  
 
 ```java
 public class LazyDoubleCheckSingleton {

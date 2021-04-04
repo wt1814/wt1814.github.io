@@ -7,19 +7,25 @@
     - [1.3. Volatile使用](#13-volatile使用)
         - [1.3.1. 如何正确使用Volatile变量](#131-如何正确使用volatile变量)
         - [1.3.2. 状态标志](#132-状态标志)
-        - [1.3.3. ~~单例模式的实现~~](#133-单例模式的实现)
+        - [1.3.3. ★★★单例模式的实现](#133-★★★单例模式的实现)
+            - [1.3.3.1. 为什么两次判断？](#1331-为什么两次判断)
+            - [1.3.3.2. 为什么要加volatile关键字？](#1332-为什么要加volatile关键字)
     - [1.4. Volatile、AtomicInteger与LongAdder](#14-volatileatomicinteger与longadder)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">Volatile的特性：</font>**  
-1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>    
-2. <font color = "red">实现了有序性，禁止进行指令重排序。</font>  
-3. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**变量被修改后，会立即保存在主存中，并清除工作内存中的值。这个变量不会在多个线程中存在复本，直接从内存读取。新值对其他线程来说是立即可见的。  
-
-
+1. **<font color = "clime">Volatile的特性：</font>**  
+    1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>    
+    2. <font color = "red">实现了有序性，禁止进行指令重排序。</font>  
+    3. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**  
+2. Volatile底层原理：  
 &emsp; **<font color = "clime">在Volatile写前插入写-写屏障，在Volatile写后插入写-读屏障；在Volatile读后插入读-读屏障、读-写屏障。</font>**  
+3. DCL详解：  
+	1. 为什么两次判断？ 线程1调用第一个if（singleton==null），可能会被挂起  
+	2. 为什么要加volatile关键字？  
+	&emsp; singleton = new Singleton()非原子性操作，包含3个步骤：分配内存 ---> 初始化对象 ---> 将singleton对象指向分配的内存空间(这步一旦执行了，那singleton对象就不等于null了)。
+	&emsp; 因为指令重排序，可能编程1->3->2。如果是这种顺序，会导致别的线程拿到半成品的实例。  
 
 # 1. Volatile  
 <!-- 
@@ -109,46 +115,16 @@ public void doWork() {
 ```
 &emsp; 线程1执行doWork()的过程中，可能有另外的线程2调用了shutdown，所以boolean变量必须是Volatile。  
 &emsp; 而如果使用Synchronized块编写循环要比使用Volatile状态标志编写麻烦很多。由于Volatile简化了编码，并且状态标志并不依赖于程序内任何其他状态，因此此处非常适合使用Volatile。  
-&emsp; 这种类型的状态标记的一个公共特性是：通常只有一种状态转换；shutdownRequested标志从false 转换为true，然后程序停止。这种模式可以扩展到来回转换的状态标志，但是只有在转换周期不被察觉的情况下才能扩展(从false到true，再转换到false)。此外，还需要某些原子状态转换机制，例如原子变量。  
+&emsp; 这种类型的状态标记的一个公共特性是： **<font color = "clime">通常只有一种状态转换；</font>** shutdownRequested标志从false 转换为true，然后程序停止。这种模式可以扩展到来回转换的状态标志，但是只有在转换周期不被察觉的情况下才能扩展(从false到true，再转换到false)。此外，还需要某些原子状态转换机制，例如原子变量。  
 
-### 1.3.3. ~~单例模式的实现~~  
+### 1.3.3. ★★★单例模式的实现  
 <!-- 
-https://www.cnblogs.com/jackson0714/p/java_Volatile.html
-
 
 DCL为什么要用volatile关键字？
 https://blog.csdn.net/weixin_38106322/article/details/105753241
--->
-<!-- 
 说说双重检查加锁单例模式为什么两次判断？
 https://mp.weixin.qq.com/s/OG2_Iq0Xe1DD_ghtMYX2Ow
 -->
-&emsp; 单例模式的实现，典型的双重检查锁定(DCL)  
-
-```java
-class VolatileSingleton {
-    private static Volatile VolatileSingleton instance = null;
-
-    private VolatileSingleton() {
-        System.out.println(Thread.currentThread().getName() + "\t 我是构造方法SingletonDemo");
-    }
-    public static VolatileSingleton getInstance() {
-        // 第一重检测
-        if(instance == null) {
-            // 锁定代码块
-            Synchronized (VolatileSingleton.class) {
-                // 第二重检测
-                if(instance == null) {
-                    // 实例化对象
-                    instance = new VolatileSingleton();
-                }
-            }
-        }
-        return instance;
-    }
-}
-```
-&emsp; 这是一种懒汉的单例模式，使用时才创建对象，而且为了避免初始化操作的指令重排序，给instance加上了Volatile。
 
 <!-- 
 单例模式的双重锁为什么要加Volatile
@@ -159,7 +135,53 @@ c. instance = memory //设置instance指向刚分配的地址
 上面的代码在编译运行时，可能会出现重排序从a-b-c排序为a-c-b。在多线程的情况下会出现以下问题。当线程A在执行第5行代码时，B线程进来执行到第2行代码。假设此时A执行的过程中发生了指令重排序，即先执行了a和c，没有执行b。那么由于A线程执行了c导致instance指向了一段地址，所以B线程判断instance不为null，会直接跳到第6行并返回一个未初始化的对象。
 -->
 
+&emsp; 单例模式的实现，典型的双重检查锁定(DCL)  
+
+```java
+public class Singleton {
+
+    //Singleton对象属性,加上volatile关键字是为了防止指定重排序,要知道singleton = new Singleton()拆分成cpu指令的话，有足足3个步骤
+    private volatile static Singleton singleton;
+
+    //对外提供的获取实例的方法
+    public static Singleton getInstance() {
+        // 第一重检测
+        if (singleton == null) {
+            // 锁定代码块
+            synchronized (Singleton.class) {
+                // 第二重检测
+                if (singleton == null) {
+                    // 实例化对象
+                    singleton = new Singleton();
+                    //1.分配内存给这个对象
+                    //2.初始化对象
+                    //3.设置 lazy 指向刚分配的内存地址
+                }
+            }
+        }
+        return singleton;
+    }
+}
+
+```
+&emsp; 这是一种懒汉的单例模式，使用时才创建对象，而且为了避免初始化操作的指令重排序，给instance加上了Volatile。
+
+#### 1.3.3.1. 为什么两次判断？  
+&emsp; 第一次校验： 也就是第一个if（singleton==null），这个是为了代码提高代码执行效率，由于单例模式只要一次创建实例即可，所以当创建了一个实例之后，再次调用getInstance方法就不必要进入同步代码块，不用竞争锁。直接返回前面创建的实例即可。  
+&emsp; 第二次校验： 也就是第二个if（singleton==null），这个校验是防止二次创建实例，假如有一种情况，当singleton还未被创建时，线程t1调用getInstance方法，由于第一次判断singleton==null，此时线程t1准备继续执行，但是由于资源被线程t2抢占了，此时t2页调用getInstance方法。  
+&emsp; 同样的，由于singleton并没有实例化，t2同样可以通过第一个if，然后继续往下执行，同步代码块，第二个if也通过，然后t2线程创建了一个实例singleton。  
+&emsp; 此时t2线程完成任务，资源又回到t1线程，t1此时也进入同步代码块，如果没有这个第二个if，那么，t1就也会创建一个singleton实例，那么，就会出现创建多个实例的情况，但是加上第二个if，就可以完全避免这个多线程导致多次创建实例的问题。  
+&emsp; 所以说：两次校验都必不可少。  
+
+#### 1.3.3.2. 为什么要加volatile关键字？  
+&emsp; 了解下singleton = new Singleton()这段代码其实不是原子性的操作，它至少分为以下3个步骤：  
+
+1. 给singleton对象分配内存空间  
+2. 调用Singleton类的构造函数等，初始化singleton对象  
+3. 将singleton对象指向分配的内存空间，这步一旦执行了，那singleton对象就不等于null了  
+
+&emsp; 这里还需要知道一点，就是有时候JVM会为了优化，而做指令重排序的操作，这里的指令，指的是CPU层面的。  
+&emsp; 正常情况下，singleton = new Singleton()的步骤是按照1->2->3这种步骤进行的，但是一旦JVM做了指令重排序，那么顺序很可能编程1->3->2，如果是这种顺序，可以发现，在3步骤执行完singleton对象就不等于null，但是它其实还没做步骤二的初始化工作，但是另一个线程进来时发现，singleton不等于null了，就这样把半成品的实例返回去，调用是会报错的。  
+
 ## 1.4. Volatile、AtomicInteger与LongAdder  
-
 &emsp; &emsp; [LongAdder](/docs/java/concurrent/LongAdder.md)  
-

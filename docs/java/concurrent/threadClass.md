@@ -20,8 +20,8 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 线程状态：新建、就绪、阻塞(等待阻塞(o.wait-);同步阻塞(lock);其他阻塞(sleep/join))、等待、计时等待、终止。  
-
+1. 线程状态：新建、就绪、阻塞（等待阻塞(o.wait-)、同步阻塞(lock)、其他阻塞(sleep/join)）、等待、计时等待、终止。  
+2. 中断  
 &emsp; **<font color = "red">线程在不同状态下对于中断所产生的反应：</font>**    
 &emsp; NEW和TERMINATED对于中断操作几乎是屏蔽的；  
 &emsp; RUNNABLE和BLOCKED类似， **<font color = "cclime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中；</font>**  
@@ -64,7 +64,7 @@ Thread thread = new Thread(runnable, "New Thread");
 thread.start();
 System.out.println(thread.getName());
 ```
-&emsp; 注：MyRunnable并非Thread的子类，所以MyRunnable类并没有getName()方法。可以通过以下方式得到当前线程的引用： Thread.currentThread()。因此，通过如下代码可以得到当前线程的名字，此方法可以获取任意方法所在的线程名称。String threadName = Thread.currentThread().getName();
+&emsp; 注：MyRunnable并非Thread的子类，所以MyRunnable类并没有getName()方法。可以通过以下方式得到当前线程的引用：Thread.currentThread()。因此，通过如下代码可以得到当前线程的名字，此方法可以获取任意方法所在的线程名称。String threadName = Thread.currentThread().getName();
 
 &emsp; **线程组：ThreadGroup并不能提供对线程的管理，其主要功能是对线程进行组织。** 在构造Thread时，可以显示地指定线程的Group(ThreadGroup)。如果没有显示指定，子线程会被加入父线程所在的线程组(无论如何线程都会被加入某个Thread Group之中)。
 
@@ -205,7 +205,7 @@ public static native void yield();
 * yield()方法仅释放CPU执行权，<font color = "red">锁仍然占用，线程会被放入就绪队列，会在短时间内再次执行</font>。
 
 ### 1.3.4. Join()方法
-&emsp; 在很多情况下，主线程创建并启动子线程，如果子线程中要进行大量的耗时运算，主线程往往将早于子线程结束之前结束。这时，如果主线程想等待子线程执行完成之后再结束, 比如子线程处理一个数据，主线程要取得这个数据中的值，就要用到join()方法了。方法join()的作用是等待线程对象销毁。  
+&emsp; 在很多情况下，主线程创建并启动子线程，如果子线程中要进行大量的耗时运算，主线程往往将早于子线程结束之前结束。这时，如果主线程想等待子线程执行完成之后再结束，比如子线程处理一个数据，主线程要取得这个数据中的值，就要用到join()方法了。方法join()的作用是等待线程对象销毁。  
 &emsp; 方法join具有使线程排队运行的作用，有些类似同步的运行效果。join与synchronized的区别是：join在内部使用wait()方法进行等待，而sychronized关键字使用的是“对象监视器”原理做为同步。
 
 ### 1.3.5. interrupt()与stop()，中断线程

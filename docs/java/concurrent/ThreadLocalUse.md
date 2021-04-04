@@ -14,8 +14,8 @@
         - [1.1.5. ThreadLocal 实现数据库读写分离下强制读主库](#115-threadlocal-实现数据库读写分离下强制读主库)
     - [1.2. ThreadLocal局限性(变量不具有传递性)](#12-threadlocal局限性变量不具有传递性)
         - [1.2.1. 类InheritableThreadLocal的使用](#121-类inheritablethreadlocal的使用)
-        - [1.2.2. 类TransmittableThreadLocal(alibaba)的使用](#122-类transmittablethreadlocalalibaba的使用)
     - [1.3. ThreadLocal和线程池](#13-threadlocal和线程池)
+        - [1.3.1. 类TransmittableThreadLocal(alibaba)的使用](#131-类transmittablethreadlocalalibaba的使用)
     - [1.4. FastThreadLocal](#14-fastthreadlocal)
 
 <!-- /TOC -->
@@ -26,6 +26,9 @@
     2. 业务中变量传递。1)ThreadLocal实现同一线程下多个类之间的数据传递；2)ThreadLocal实现线程内的缓存，避免重复调用。
     3. ThreadLocal+MDC实现链路日志增强
     4. ThreadLocal 实现数据库读写分离下强制读主库
+2. ThreadLocal无法在父子线程之间传递。使用类InheritableThreadLocal可以在子线程中取得父线程继承下来的值。   
+3. ThreadLocal和线程池。TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
+4. FastThreadLocal
 
 
 # 1. ThreadLocal应用  
@@ -142,14 +145,15 @@ public class Service {
 &emsp; InheritableThreadLocal主要用于子线程创建时，需要自动继承父线程的ThreadLocal变量，实现子线程访问父线程的threadlocal变量。  
 &emsp; InheritableThreadLocal继承了ThreadLocal，并重写了childValue、getMap、createMap三个方法。  
 
-### 1.2.2. 类TransmittableThreadLocal(alibaba)的使用  
-&emsp; InheritableThreadLocal支持子线程访问在父线程中设置的线程上下文环境的实现原理是在创建子线程时将父线程中的本地变量值复制到子线程，即复制的时机为创建子线程时。  
-&emsp; 但并发、多线程就离不开线程池的使用，因为线程池能够复用线程，减少线程的频繁创建与销毁，如果使用InheritableThreadLocal，那么线程池中的线程拷贝的数据来自于第一个提交任务的外部线程，即后面的外部线程向线程池中提交任务时，子线程访问的本地变量都来源于第一个外部线程，造成线程本地变量混乱。  
-&emsp; TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
 
 ## 1.3. ThreadLocal和线程池
 &emsp; **ThreadLocal和线程池一起使用？**  
 &emsp; ThreadLocal对象的生命周期跟线程的生命周期一样长，那么如果将ThreadLocal对象和线程池一起使用，就可能会遇到这种情况：一个线程的ThreadLocal对象会和其他线程的ThreadLocal对象串掉，一般不建议将两者一起使用。  
+
+### 1.3.1. 类TransmittableThreadLocal(alibaba)的使用  
+&emsp; InheritableThreadLocal支持子线程访问在父线程中设置的线程上下文环境的实现，原理是在创建子线程时将父线程中的本地变量值复制到子线程，即复制的时机为创建子线程时。  
+&emsp; 但并发、多线程就离不开线程池的使用，因为线程池能够复用线程，减少线程的频繁创建与销毁，如果使用InheritableThreadLocal，那么线程池中的线程拷贝的数据来自于第一个提交任务的外部线程，即后面的外部线程向线程池中提交任务时，子线程访问的本地变量都来源于第一个外部线程，造成线程本地变量混乱。  
+&emsp; TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
 
 ## 1.4. FastThreadLocal  
 &emsp; Netty对ThreadLocal进行了优化，优化方式是继承了Thread类，实现了自己的FastThreadLocal。FastThreadLocal的吞吐量是jdk的ThreadLocal的3倍左右。 

@@ -131,8 +131,8 @@ public FutureTask(Runnable runnable, V result) {
 
 &emsp; 使用步骤：
 1. 创建Callable接口的实现类，并实现call()方法，该call()方法将作为线程执行体，并且有返回值。
-2. 创建Callable实现类的实例，使用FutureTask类来包装Callable对象，该FutureTask对象封装了该Callable对象的call()方法的返回值(从java8开始可以直接使用Lambda表达式创建Callable对象)。
-3. 使用FutureTask对象作为Thread对象的target创建并启动新线程。
+2. 创建Callable实现类的实例，使用FutureTask类来包装Callable对象，该FutureTask对象封装了该Callable对象的call()方法的返回值（从java8开始可以直接使用Lambda表达式创建Callable对象）。
+3. **使用FutureTask对象作为Thread对象的target创建并启动新线程。**
 4. 调用FutureTask对象的get()方法来获得子线程执行结束后的返回值。
 
 &emsp; 匿名类实现：

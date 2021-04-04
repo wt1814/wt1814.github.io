@@ -15,18 +15,15 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; Synchronized的底层原理：  
-&emsp; **<font color = "clime">Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联。</font>**  
-&emsp; **<font color = "red">monitor运行的机制过程如下：(_WaitSet队列和 _EntryList队列)</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
-
-* 想要获取monitor的线程,首先会进入_EntryList队列。  
-* 当某个线程获取到对象的monitor后,进入Owner区域，设置为当前线程,同时计数器count加1。  
-* 如果线程调用了wait()方法，则会进入WaitSet队列。它会释放monitor锁，即将owner赋值为null,count自减1,进入WaitSet队列阻塞等待。  
-* 如果其他线程调用 notify() / notifyAll()，会唤醒WaitSet中的某个线程，该线程再次尝试获取monitor锁，成功即进入Owner区域。  
-* 同步方法执行完毕了，线程退出临界区，会将monitor的owner设为null，并释放监视锁。  
-
-
+1. **<font color = "clime">Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联。</font>**  
+2. **<font color = "red">monitor运行的机制过程如下：(_EntryList队列、_Owner区域、_WaitSet队列)</font>**  
+  ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
+  * 想要获取monitor的线程，首先会进入_EntryList队列。  
+  * 当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程,同时计数器count加1。  
+  * **如果线程调用了wait()方法，则会进入WaitSet队列。** 它会释放monitor锁，即将owner赋值为null，count自减1，进入WaitSet队列阻塞等待。  
+  * 如果其他线程调用 notify() / notifyAll()，会唤醒WaitSet中的某个线程，该线程再次尝试获取monitor锁，成功即进入Owner区域。  
+  * 同步方法执行完毕了，线程退出临界区，会将monitor的owner设为null，并释放监视锁。  
+3. Synchronized修饰方法、代码块  
 &emsp; Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。  
 &emsp; Synchronized代码块同步：使用monitorenter和monitorexit指令实现。  
 
@@ -190,9 +187,9 @@ ObjectMonitor() {
 &emsp; **<font color = "red">monitor运行的机制过程如下：(_WaitSet队列和 _EntryList队列)</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
 
-* 想要获取monitor的线程,首先会进入_EntryList队列。  
-* 当某个线程获取到对象的monitor后,进入Owner区域，设置为当前线程,同时计数器count加1。  
-* 如果线程调用了wait()方法，则会进入WaitSet队列。它会释放monitor锁，即将owner赋值为null,count自减1,进入WaitSet队列阻塞等待。  
+* 想要获取monitor的线程，首先会进入_EntryList队列。  
+* 当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程,同时计数器count加1。  
+* **如果线程调用了wait()方法，则会进入WaitSet队列。** 它会释放monitor锁，即将owner赋值为null，count自减1，进入WaitSet队列阻塞等待。  
 * 如果其他线程调用 notify() / notifyAll()，会唤醒WaitSet中的某个线程，该线程再次尝试获取monitor锁，成功即进入Owner区域。  
 * 同步方法执行完毕了，线程退出临界区，会将monitor的owner设为null，并释放监视锁。  
 
