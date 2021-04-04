@@ -8,6 +8,9 @@
 
 # 1. B树  
 <!-- 
+用动图讲解 MySQL 索引底层B+树，清晰明了多了 
+https://mp.weixin.qq.com/s/IfiYbWd-YLxO2TvLB8_jcQ
+
 https://mp.weixin.qq.com/s?__biz=MjM5ODI5Njc2MA==&mid=2655825290&idx=1&sn=455202c916d0a7bd9e3fbbef95ddde76&chksm=bd74e05d8a03694b028c2276d3ddda70e9e966ac98962d503e0c8c5c30bf5f4b6042165387d0&mpshare=1&scene=1&srcid=&key=cc7d6364edc5eb3e38ee4b8744025c5b8304677bd8a7197d95df3a0b3b4ad88320f3d2d20bb52f598836b6b9eb5a197c509b3269acb2b0b364a3284d20b55e6d00cf3e09b4c852e6e24530514e5810d6&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060834&lang=zh_CN&pass_ticket=%2BsFXjUmklNmvFptz4WXQ6M2h%2BrUqyTCeblH3SKK7yV7hbPgMA1x9kiOqCmMdYFI5
 
 https://mp.weixin.qq.com/s?__biz=MzUxNDA1NDI3OA==&mid=2247485500&idx=1&sn=5bc6205dd0c33a4db668ac10de582ae9&chksm=f94a89d5ce3d00c38578fe9e2929515fb5c0a34b803dfd1a5ab8bce9596882fa82a1730e9159&scene=0&xtrack=1&key=cc7d6364edc5eb3e44037378c313b78dfd6436acac192ebc6bf3673892f7a9c2e44750f425f9e51f51231c87215c8358667ad6f8090b0df5ade6e57eb18e715cc5c81c206390ed5cec8151788d6536fa&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060833&lang=zh_CN&pass_ticket=WvQRNfXTbzo8YbNsaaP3bvOrF4WWy2nhzya3QiHsgSx6qD6EFNaOiTxgL7MHqDsT

@@ -38,5 +38,6 @@ https://mp.weixin.qq.com/s/JHP6mXWv7TlWPOBEkS_mHg
 前后端分离开发，RESTful 接口应该这样设计
 https://mp.weixin.qq.com/s/b40DHr0Wfc6t51M4lfi_Cw
 
-
+Restful 架构 API 接口经典设计误区 
+https://mp.weixin.qq.com/s/6EqfaiIwaYjEQS2F3ej-Lw
 -->

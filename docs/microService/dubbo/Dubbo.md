@@ -24,6 +24,11 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo.png)   
 
 # 1. Dubbo  
+<!--
+面试官从Dubbo泛化调用问到设计模式，我们聊了三十分钟 
+https://mp.weixin.qq.com/s/2Wm2SsRa1xOMX6pV9NyCrA
+-->
+
 ## 1.1. Dubbo介绍
 ### 1.1.1. Dubbo工作流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-11.png)   
