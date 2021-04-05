@@ -3,8 +3,9 @@
 <!-- 
 什么是二叉排序树？ 
 https://mp.weixin.qq.com/s/9-M9V12JBl41PiygZUgJ_w
--->
 
+-->
+&emsp; 二叉查找树（英语：Binary Search Tree），也称为二叉搜索树、有序二叉树（ordered binary tree）或排序二叉树（sorted binary tree）。  
 &emsp; 二叉排序树(Binary Sort Tree)或者是一颗空树；或者是具有如下性质的二叉树：  
 
 &emsp; (1) 若它的左子树不空，则 左子树 上所有结点的值 均小于 它的根结点的值；  

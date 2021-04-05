@@ -2,7 +2,7 @@
 <!-- TOC -->
 
 - [1. LongAdder](#1-longadder)
-    - [1.1. Volatile、AtomicInteger、LongAdder比较](#11-volatileatomicintegerlongadder比较)
+    - [1.1. Volatile、AtomicInteger](#11-volatileatomicinteger)
     - [1.2. LongAdder和AtomicLong性能测试](#12-longadder和atomiclong性能测试)
     - [1.3. LongAdder为什么这么快？](#13-longadder为什么这么快)
     - [1.4. ~~源码分析~~](#14-源码分析)
@@ -10,29 +10,32 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">LongAdder有一个全局变量volatile long base值，当并发不高的情况下都是通过CAS来直接操作base值，如果CAS失败，则针对LongAdder中的Cell[]数组中的Cell进行CAS操作，减少失败的概率。</font>**  
-&emsp; 在 LongAdder 的父类 Striped64 中存在一个 volatile Cell[] cells; 数组，其长度是2 的幂次方，每个Cell都使用 @Contended 注解进行修饰，而@Contended注解可以进行缓存行填充，从而解决伪共享问题。  
+1. **<font color = "clime">LongAdder有一个全局变量volatile long base值，当并发不高的情况下都是通过CAS来直接操作base值，如果CAS失败，则针对LongAdder中的Cell[]数组中的Cell进行CAS操作，减少失败的概率。</font>**  
+2. 在LongAdder的父类Striped64中存在一个`volatile Cell[] cells;`数组，其长度是2 的幂次方，每个Cell都使用 @Contended注解进行修饰，而@Contended注解可以进行缓存行填充，从而解决伪共享问题。  
 
 # 1. LongAdder 
-## 1.1. Volatile、AtomicInteger、LongAdder比较
-&emsp; 阿里《Java开发手册》嵩山版：    
-&emsp; 【参考】volatile 解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，但是如果多写，同样无法解决线程安全问题。  
-&emsp; 说明：如果是count++操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是JDK8，推荐使用 LongAdder对象，比AtomicLong性能更好(减少乐观锁的重试次数)。  
+## 1.1. Volatile、AtomicInteger
+&emsp; 阿里《Java开发手册》嵩山版：   
+
+    【参考】volatile 解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，但是如果多写，同样无法解决线程安全问题。  
+    说明：如果是count++操作，使用如下类实现：AtomicInteger count = new AtomicInteger(); count.addAndGet(1); 如果是JDK8，推荐使用 LongAdder对象，比AtomicLong性能更好(减少乐观锁的重试次数)。  
 
 
 &emsp; **Volatile、AtomicInteger、LongAdder：**  
 1. volatile在多写环境下是非线程安全的。  
 2. AtomicInteger循环时间长开销大。  
-3. <font color = "clime">LongAdder会将这个原子变量分离成一个Cell数组，每个线程通过Hash获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；</font>而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如AtomicInteger。  
-&emsp; <font color = "clime">同时LongAdder也解决了[伪共享问题](/docs/java/concurrent/PseudoSharing.md)。</font>  
 
 ## 1.2. LongAdder和AtomicLong性能测试  
+
 <!-- 
 阿里为什么推荐使用LongAdder，而不是volatile？ 
 https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
 -->
 
 ## 1.3. LongAdder为什么这么快？ 
+&emsp; <font color = "clime">~~LongAdder会将这个原子变量分离成一个Cell数组，每个线程通过Hash获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；</font>而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如AtomicInteger。~~  
+&emsp; <font color = "clime">~~同时LongAdder也解决了[伪共享问题](/docs/java/concurrent/PseudoSharing.md)。~~</font>  
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-35.png)   
 1. 设计思想上，LongAdder采用"分段"的方式降低CAS失败的频次。(以空间换时间)  
 &emsp; 这里先简单的说下LongAdder的思路，后面还会详述LongAdder的原理。  

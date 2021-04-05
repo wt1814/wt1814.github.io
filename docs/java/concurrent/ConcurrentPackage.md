@@ -6,14 +6,13 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzAxMjEwMzQ5MA==&action=getalbum&a
 -->
 
 &emsp; 本章描述java.util.concurrent的API接口文档，相关方法使用的详情参考：http://www.matools.com/api/java8 。  
-&emsp; JUC基于[CAS](/docs/java/concurrent/CAS.md)和[AQS](/docs/java/concurrent/AQS.md)实现。  
-&emsp; JUC包括5部分： 
- 
-* [locks](/docs/java/concurrent/Lock.md)：显式锁相关；  
-* [atomic](/docs/java/concurrent/Atmoic.md)：原子变量类相关；  
-* [collections](/docs/java/concurrent/Collections.md)：并发容器相关；  
-* [executor](/docs/java/concurrent/ThreadPool.md)：线程池相关；  
-* [tools](/docs/java/concurrent/tools.md)：同步工具相关，如信号量、闭锁、栅栏等功能；  
+1. JUC基于[CAS](/docs/java/concurrent/CAS.md)和[AQS](/docs/java/concurrent/AQS.md)实现。  
+2. JUC包括5部分： 
+    * [locks](/docs/java/concurrent/Lock.md)：显式锁相关；  
+    * [atomic](/docs/java/concurrent/Atmoic.md)：原子变量类相关；  
+    * [collections](/docs/java/concurrent/Collections.md)：并发容器相关；  
+    * [executor](/docs/java/concurrent/ThreadPool.md)：线程池相关；  
+    * [tools](/docs/java/concurrent/tools.md)：同步工具相关，如信号量、闭锁、栅栏等功能；  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-1.png)  
 

@@ -17,7 +17,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 理解构造函数中参数：  
-&emsp; [阻塞队列](/docs/java/concurrent/BlockingQueue.md)；拒绝策略默认AbortPolicy（拒绝任务，抛异常），可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。  
+&emsp; [阻塞队列](/docs/java/concurrent/BlockingQueue.md)；拒绝策略，默认AbortPolicy（拒绝任务，抛异常），可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。  
 
 2. 线程运行流程：查看execute方法。  
     &emsp; <font color = "clime">线程池创建时没有设置成预启动加载，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
@@ -221,7 +221,7 @@ public ThreadPoolExecutor(int corePoolSize,
 * TimeUnit unit：  
 &emsp; 参数keepAliveTime的单位。有7种取值，在TimeUnit类中有7种静态属性：TimeUnit.DAYS；TimeUnit.HOURS；  
 * BlockingQueue<Runnable\>  workQueue：  
-&emsp; 任务阻塞队列，是java.util.concurrent下的主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样,如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态，直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition来实现阻塞和唤醒。  
+&emsp; 任务阻塞队列，是java.util.concurrent下主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样，如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态，直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition来实现阻塞和唤醒。  
 * ThreadFactory threadFactory：  
 &emsp; 用户设置创建线程的工厂，可以通过这个工厂来创建有业务意义的线程名字。可以对比下自定义的线程工厂和默认的线程工厂创建的名字。   
     
@@ -424,7 +424,7 @@ private void addWorkerFailed(Worker w) {
 ```
 
 ### 1.3.3. 内部类work()，工作线程的实现  
-&emsp; 线程池中的每一个具体的工作线程被包装为内部类Worker实例，Worker继承于AbstractQueuedSynchronizer(AQS)，实现了Runnable接口：  
+&emsp; **线程池中的每一个具体的工作线程被包装为内部类Worker实例，** Worker继承于AbstractQueuedSynchronizer(AQS)，实现了Runnable接口：  
 
 ```java
 private final class Worker extends AbstractQueuedSynchronizer implements Runnable{
@@ -533,7 +533,7 @@ thread.start();
 &emsp; 在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对 Thread 进行了封装，并不是每次执行任务都会调用 Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行，如果有则直接执行，也就是调用任务中的 run 方法，将 run 方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的 run 方法串联起来。  
 
 -----
-&emsp; **worker中的线程start 后，执行的是worker的run()方法，而run()方法会调用ThreadPoolExecutor类的runWorker()方法，runWorker()方法实现了线程池中的线程复用机制。** runWorker()方法的核心流程：  
+&emsp; **<font color = "clime">worker中的线程start 后，执行的是worker的run()方法，而run()方法会调用ThreadPoolExecutor类的runWorker()方法，runWorker()方法实现了线程池中的线程复用机制。</font>** runWorker()方法的核心流程：  
 1. Worker先执行一次解锁操作，用于解除不可中断状态。  
 2. <font color = "red">通过while循环调用getTask()方法从任务队列中获取任务(当然，首轮循环也有可能是外部传入的firstTask任务实例)。</font>  
 3. 如果线程池更变为STOP状态，则需要确保工作线程是中断状态并且进行中断处理，否则要保证工作线程必须不是中断状态。  
@@ -707,7 +707,7 @@ if (r) {
 &emsp; 在一些特定的场景下，配置合理的keepAliveTime能够更好地利用线程池的工作线程资源。
 
 #### 1.3.4.2. processWorkerExit()  
-&emsp; processWorkerExit()方法是为将要终结的Worker做一次清理和数据记录工作(因为processWorkerExit()方法也包裹在runWorker()方法finally代码块中，其实工作线程在执行完processWorkerExit()方法才算真正的终结)。 
+&emsp; processWorkerExit()方法是为将要终结的Worker做一次清理和数据记录工作（因为processWorkerExit()方法也包裹在runWorker()方法finally代码块中，其实工作线程在执行完processWorkerExit()方法才算真正的终结）。 
 
 ```java
 private void processWorkerExit(Worker w, boolean completedAbruptly) {

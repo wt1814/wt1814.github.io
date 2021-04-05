@@ -22,9 +22,17 @@
     - [1.3. 线程池正确用法](#13-线程池正确用法)
 
 <!-- /TOC -->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-1.png)  
+
+&emsp; **<font color = "red">总结：</font>**  
+1. 根据返回的对象类型，创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor(任务调度线程池)、ForkJoinPool。  
+2. **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
+	* FixedThreadPool和SingleThreadExecutor：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。
+	* CachedThreadPool和ScheduledThreadPool：允许创建的线程数量为Integer.MAX_VALUE，可能会创建大量线程，从而导致OOM。
+3. execute()，提交不需要返回值的任务；submit()，提交需要返回值的任务。    
+
 
 # 1. 线程池
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-1.png)  
 
 ## 1.1. 线程池简介
 &emsp; **线程池通过线程复用机制，并对线程进行统一管理，** 具有以下优点：  
@@ -117,9 +125,9 @@ public static ExecutorService newScheduledThreadPool(int corePoolSize) {
 
 ##### 1.2.1.4.5. 阿里巴巴禁用Executors创建线程池
 &emsp; 使用无界队列的线程池会导致内存飙升吗？  
-&emsp; 使用无界队列的线程池会导致内存飙升。newFixedThreadPool使用了无界的阻塞队列LinkedBlockingQueue，如果线程获取一个任务后，任务的执行时间比较长(比如，上面demo设置了10秒)，会导致队列的任务越积越多，导致机器内存使用不停飙升，最终导致OOM。  
+&emsp; 使用无界队列的线程池会导致内存飙升。FixedThreadPool使用了无界的阻塞队列LinkedBlockingQueue，如果线程获取一个任务后，任务的执行时间比较长(比如，上面demo设置了10秒)，会导致队列的任务越积越多，导致机器内存使用不停飙升，最终导致OOM。  
 
-&emsp; Executors返回线程池对象的弊端如下：  
+&emsp; **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
 
 * FixedThreadPool和SingleThreadExecutor：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。
 * CachedThreadPool和ScheduledThreadPool：允许创建的线程数量为Integer.MAX_VALUE，可能会创建大量线程，从而导致OOM。

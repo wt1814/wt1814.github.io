@@ -26,15 +26,18 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-
-&emsp; **<font color = "clime">线程池异常处理：</font>**  
-&emsp; ThreadPoolExecutor中将异常传递给afterExecute()方法，而afterExecute()没有做任何处理。  
-&emsp; 这种处理方式能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。 即使感知到了，也无法查看异常信息。
-&emsp; 解决方案：在提交的任务中将异常捕获并处理，不抛给线程池； 异常抛给线程池，但是要及时处理抛出的异常。  
-
-&emsp; **<font color = "clime">线程池的监控：</font>**  
+1. **<font color = "clime">线程池异常处理：</font>**  
+&emsp; ThreadPoolExecutor中将异常传递给afterExecute()方法，而afterExecute()没有做任何处理。这种处理方式能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。 即使感知到了，也无法查看异常信息。  
+&emsp; 解决方案：在提交的任务中将异常捕获并处理，不抛给线程池； 异常抛给线程池，但是要及时处理抛出的异常。如果提交任务的时候使用的方法是submit，那么该方法将返回一个Future对象，所有的异常以及处理结果都可以通过future对象获取。    
+2. **<font color = "red">建议根据异步业务类型，合理设置隔离的线程池。</font>**  
+3. 确定线程池的大小（CPU可同时处理线程数量大部分是CPU核数的两倍）  
+    * 如果是CPU密集型应用(多线程处理复杂算法)，则线程池大小设置为N+1。
+    * 如果是IO密集型应用(多线程用于数据库数据交互、文件上传下载、网络数据传输等)，则线程池大小设置为2N。
+    * 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。 
+4. **<font color = "clime">线程池的监控：</font>**  
 &emsp; 通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。  
-
+5. @Async方法没有执行的问题分析：  
+&emsp; @Async异步方法默认使用Spring创建ThreadPoolTaskExecutor(参考TaskExecutionAutoConfiguration)，其中默认核心线程数为8，默认最大队列和默认最大线程数都是Integer.MAX_VALUE，队列使用LinkedBlockingQueue，容量是：Integet.MAX_VALUE，空闲线程保留时间：60s，线程池拒绝策略：AbortPolicy。创建新线程的条件是队列填满时，而这样的配置队列永远不会填满，如果有@Async注解标注的方法长期占用线程(比如HTTP长连接等待获取结果)，在核心8个线程数占用满了之后，新的调用就会进入队列，外部表现为没有执行。  
 
 # 1. 线程池正确用法
 <!-- 
@@ -106,7 +109,7 @@ final void runWorker(Worker w) {
 
 
 ## 1.2. 设置隔离的线程池
-&emsp; 一些业务代码做了Utils类型在整个项目中的各种操作共享使用一个线程池，一些业务代码大量使用parallel stream特性做一些耗时操作，但是没有使用自定义的线程池或是没有设置更大的线程数(没有意识到parallel stream的共享ForkJoinPool问题)。共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。 **<font color = "red">建议根据异步业务类型，合理设置隔离的线程池。</font>**  
+&emsp; 一些业务代码做了Utils类型在整个项目中的各种操作共享使用一个线程池，一些业务代码大量使用parallel stream特性做一些耗时操作，但是没有使用自定义的线程池或是没有设置更大的线程数（没有意识到parallel stream的共享ForkJoinPool问题）。共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。 **<font color = "red">建议根据异步业务类型，合理设置隔离的线程池。</font>**  
 
 ## 1.3. 确定线程池的大小
 &emsp; **<font color = "clime">CPU可同时处理线程数量大部分是CPU核数的两倍。</font>**    
@@ -183,7 +186,7 @@ public class MoniterFilter implements Filter {
     }
 }
 ```
-&emsp; CPU计算时间：CPU计算时间 = 请求总耗时 - CPU IO time。假设该请求有一个查询 DB 的操作，只要知道这个查询DB的耗时（CPU IO time），计算的时间不就出来了嘛，看一下怎么才能简洁，明了的记录DB查询的耗时。通过（JDK 动态代理/ CGLIB）的方式添加AOP切面，来获取线程IO耗时。代码如下，请参考.  
+&emsp; CPU计算时间：CPU计算时间 = 请求总耗时 - CPU IO time。假设该请求有一个查询 DB 的操作，只要知道这个查询DB的耗时（CPU IO time），计算的时间不就出来了嘛，看一下怎么才能简洁明了的记录DB查询的耗时。通过（JDK 动态代理/ CGLIB）的方式添加AOP切面，来获取线程IO耗时。代码如下，请参考.  
 
 ```java
 public class DaoInterceptor implements MethodInterceptor {
@@ -217,7 +220,7 @@ public class DaoInterceptor implements MethodInterceptor {
 &emsp; 总结：合适的配置线程池大小其实很不容易，但是通过上述的公式和具体代码，就能快速、落地的算出这个线程池该设置的多大。不过还是需要通过压力测试来进行微调，只有经过压测测试的检验，才能最终保证的配置大小是准确的。 
 
 ## 1.4. ★★★线程池的监控  
-&emsp; 如果在项目中大规模的使用了线程池，那么必须要有一套监控体系，来指导当前线程池的状态，当出现问题的时候可以快速定位到问题。而线程池提供了相应的扩展方法，**通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。**  
+&emsp; 如果在项目中大规模的使用了线程池，那么必须要有一套监控体系，来指导当前线程池的状态，当出现问题的时候可以快速定位到问题。而线程池提供了相应的扩展方法，**<font color = "clime">通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。</font>**  
 
 ```java
 public class Demo1 extends ThreadPoolExecutor {
@@ -401,8 +404,8 @@ https://www.cnblogs.com/kiko2014551511/p/12754927.html
 &emsp; 可以手动配置相应属性：  
 
 &emsp; 现象：  
-1. 表面现象: 方法中输出的日志，日志文件中找不到，也没有任何报错(即@Async标注的方法没有执行，也没有报错)。 
-2. 分析现象: 日志中某个时刻之后没有了task-xxx线程的日志  
+1. 表面现象：方法中输出的日志，日志文件中找不到，也没有任何报错(即@Async标注的方法没有执行，也没有报错)。 
+2. 分析现象：日志中某个时刻之后没有了task-xxx线程的日志  
 
 &emsp; 原因:   
 &emsp; @Async异步方法默认使用Spring创建ThreadPoolTaskExecutor(参考TaskExecutionAutoConfiguration)，其中默认核心线程数为8，默认最大队列和默认最大线程数都是Integer.MAX_VALUE，队列使用LinkedBlockingQueue，容量是：Integet.MAX_VALUE，空闲线程保留时间：60s，线程池拒绝策略：AbortPolicy。创建新线程的条件是队列填满时，而这样的配置队列永远不会填满，如果有@Async注解标注的方法长期占用线程(比如HTTP长连接等待获取结果)，在核心8个线程数占用满了之后，新的调用就会进入队列，外部表现为没有执行。  
