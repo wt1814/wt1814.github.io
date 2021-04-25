@@ -27,6 +27,26 @@
 
 <!-- /TOC -->
 
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-2.png)  
+
+&emsp; **<font color = "red">总结：</font>**  
+1. **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
+2. C/S之间的Watcher机制。特性：一次性触发、有序性（客户端先得到watch通知才可查看节点变化结果）。  
+3. ZK服务端通过ZAB协议保证数据顺序一致性。  
+    1. ZAB协议：
+        1. 崩溃恢复
+            * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>  
+            * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态。
+        2. 消息广播：<font color = "clime">在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，</font>然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交(类2PC事务)。 
+    2.  数据一致性  
+        &emsp; **<font color = "red">Zookeeper保证的是CP，即一致性(Consistency)和分区容错性(Partition-Tolerance)，而牺牲了部分可用性(Available)。</font>**  
+        * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>
+        * Zookeeper的CP模型：非强一致性， **<font color = "clime">而是单调一致性/顺序一致性。</font>**  
+    3. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
+
+# 1. Zookeeper
+&emsp; Zookeeper官网文档：https://zookeeper.apache.org/doc/current
 <!--
 消息广播、Zab 与 Paxos 算法的联系与区别
 https://www.cnblogs.com/zz-ksw/p/12786067.html
@@ -51,26 +71,6 @@ ZooKeeper的顺序一致性[1]
 https://time.geekbang.org/column/article/239261
 ZooKeeper = 文件系统 + 监听通知机制。
 -->
-
-&emsp; **<font color = "red">总结：</font>**  
-
-&emsp; **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
-1. C/S之间的Watcher机制。特性：一次性触发、有序性(客户端先得到watch通知才可查看节点变化结果)。  
-2. ZK服务端通过ZAB协议保证数据顺序一致性。  
-    1. ZAB协议：
-        1. 崩溃恢复
-            * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>  
-            * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态
-        2. 消息广播
-    2.  数据一致性  
-        &emsp; **<font color = "red">Zookeeper保证的是CP，即一致性(Consistency)和分区容错性(Partition-Tolerance)，而牺牲了部分可用性(Available)。</font>**  
-        * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>
-        * Zookeeper的CP模型：非强一致性， **<font color = "clime">而是单调一致性/顺序一致性。</font>**  
-    3. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
-
-# 1. Zookeeper
-&emsp; Zookeeper官网文档：https://zookeeper.apache.org/doc/current
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-2.png)  
 
 ## 1.1. Zookeeper是什么  
 &emsp; **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题，</font>** 例如怎样避免同时操作同一数据造成脏读的问题。  

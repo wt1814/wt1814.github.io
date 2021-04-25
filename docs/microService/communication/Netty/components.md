@@ -2,7 +2,7 @@
 
 - [1. Netty核心组件](#1-netty核心组件)
     - [1.1. Bootstrap & ServerBootstrap](#11-bootstrap--serverbootstrap)
-    - [1.2. EventLoopGroup && EventLoop](#12-eventloopgroup--eventloop)
+    - [1.2. ~~线程模型之EventLoop~~](#12-线程模型之eventloop)
     - [1.3. channel相关](#13-channel相关)
         - [1.3.1. channel](#131-channel)
         - [1.3.2. ChannelHandler](#132-channelhandler)
@@ -19,20 +19,19 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 由netty运行流程可以看出Netty核心组件有Bootstrap、EventLoop、channel相关、byteBuf...  
-
-1. EventLoop  
-    1. <font color = "clime">EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。</font>  
-    2. 当一个连接到达时，Netty就会创建一个Channel，然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
-2. Channel  
-&emsp; **在Netty中，Channel是一个Socket连接的抽象，它为用户提供了关于底层Socket状态(是否是连接还是断开)以及对Socket的读写等操作。**  
-3. ChannelHandler  
-&emsp; **ChannelHandler主要用来处理各种事件，这里的事件很广泛，比如可以是连接、数据接收、异常、数据转换等。**  
-4. ChannelPipeline  
-&emsp; Netty 的 ChannelHandler 为处理器提供了基本的抽象， 目前可以认为每个 ChannelHandler 的实例都类似于一种为了响应特定事件而被执行的回调。从应用程序开发人员的角度来看， 它充当了所有处理入站和出站数据的应用程序逻辑的拦截载体。ChannelPipeline提供了 ChannelHandler 链的容器，并定义了用于在该链上传播入站和出站事件流的 API。当 Channel 被创建时，它会被自动地分配到它专属的 ChannelPipeline。  
-5. ChannelHandlerContext  
-&emsp; 当 ChannelHandler 被添加到 ChannelPipeline 时，它将会被分配一个 ChannelHandlerContext ，它代表了 ChannelHandler 和 ChannelPipeline 之间的绑定。ChannelHandlerContext 的主要功能是管理它所关联的ChannelHandler和在同一个 ChannelPipeline 中的其他ChannelHandler之间的交互。  
-
+1. 由netty运行流程可以看出Netty核心组件有Bootstrap、EventLoop、channel相关、byteBuf...  
+2. Bootstrap和ServerBootstrap是针对于Client和Server端定义的引导类，主要用于配置各种参数，并启动整个Netty服务。  
+3. 线程模型之EventLoop  
+    1. 当一个连接到达时，Netty就会创建一个Channel，然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
+    2. <font color = "clime">EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。</font>  
+4. Channel  
+    1. **在Netty中，Channel是一个Socket连接的抽象，它为用户提供了关于底层Socket状态(是否是连接还是断开)以及对Socket的读写等操作。**  
+    2. ChannelHandler  
+    &emsp; **ChannelHandler主要用来处理各种事件，这里的事件很广泛，比如可以是连接、数据接收、异常、数据转换等。**  
+    3. ChannelPipeline  
+    &emsp; Netty的ChannelHandler为处理器提供了基本的抽象，目前可以认为每个ChannelHandler的实例都类似于一种为了响应特定事件而被执行的回调。从应用程序开发人员的角度来看，它充当了所有处理入站和出站数据的应用程序逻辑的拦截载体。ChannelPipeline提供了ChannelHandler链的容器，并定义了用于在该链上传播入站和出站事件流的 API。当Channel被创建时，它会被自动地分配到它专属的 ChannelPipeline。  
+    4. ChannelHandlerContext  
+    &emsp; 当 ChannelHandler 被添加到 ChannelPipeline 时，它将会被分配一个ChannelHandlerContext，它代表了ChannelHandler和 ChannelPipeline之间的绑定。ChannelHandlerContext 的主要功能是管理它所关联的ChannelHandler和在同一个ChannelPipeline中的其他ChannelHandler之间的交互。  
 
 
 # 1. Netty核心组件 
@@ -70,8 +69,8 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-51.png)  
 * Bootstrap客户端引导只需要一个EventLoopGroup，但是一个ServerBootstrap通常需要两个(上面的boosGroup和workerGroup)。  
 
-## 1.2. EventLoopGroup && EventLoop  
-&emsp; **EventLoop定义了Netty的核心抽象，用于处理连接的生命周期中所发生的事件。<font color = "clime">EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。</font>**  
+## 1.2. ~~线程模型之EventLoop~~  
+&emsp; **EventLoop定义了Netty的核心抽象，用于处理连接（一个channel）的生命周期中所发生的事件。<font color = "clime">EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。</font>**  
 
 &emsp; **<font color = "red">Channel与EventLoop：</font>**  
 &emsp; 当一个连接到达时，Netty就会创建一个Channel，然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
@@ -158,7 +157,7 @@ public class SslHandler extends ByteToMessageDecoder implements ChannelOutboundH
 &emsp; ChannelHandlerAdapter提供了一些实用方法isSharable()如果其对应的实现被标注为Sharable， 那么这个方法将返回 true， 表示它可以被添加到多个 ChannelPipeline中 。如果想在自己的ChannelHandler中使用这些适配器类，只需要扩展他们，重写那些想要自定义的方法即可。  
 
 ### 1.3.4. ChannelPipeline  
-&emsp; Netty 的 ChannelHandler 为处理器提供了基本的抽象， 目前可以认为每个 ChannelHandler 的实例都类似于一种为了响应特定事件而被执行的回调。从应用程序开发人员的角度来看， 它充当了所有处理入站和出站数据的应用程序逻辑的拦截载体。ChannelPipeline提供了 ChannelHandler 链的容器，并定义了用于在该链上传播入站和出站事件流的 API。当 Channel 被创建时，它会被自动地分配到它专属的 ChannelPipeline。  
+&emsp; Netty 的 ChannelHandler 为处理器提供了基本的抽象，目前可以认为每个ChannelHandler的实例都类似于一种为了响应特定事件而被执行的回调。从应用程序开发人员的角度来看，它充当了所有处理入站和出站数据的应用程序逻辑的拦截载体。ChannelPipeline提供了ChannelHandler链的容器，并定义了用于在该链上传播入站和出站事件流的 API。当Channel被创建时，它会被自动地分配到它专属的ChannelPipeline。  
 &emsp; 每一个新创建的 Channel 都将会被分配一个新的 ChannelPipeline。这项关联是永久性的；Channel 既不能附加另外一个 ChannelPipeline，也不能分离其当前的。在 Netty 组件的生命周期中，这是一项固定的操作，不需要开发人员的任何干预。  
 &emsp; ChannelHandler 安装到 ChannelPipeline 中的过程如下所示：  
 

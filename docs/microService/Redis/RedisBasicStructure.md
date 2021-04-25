@@ -22,7 +22,7 @@
         - [1.2.6. ZSet有序集合](#126-zset有序集合)
             - [1.2.6.1. 常用操作](#1261-常用操作)
             - [1.2.6.2. 使用场景](#1262-使用场景)
-            - [1.2.6.3. 实现多维排序](#1263-实现多维排序)
+            - [1.2.6.3. ★★★实现多维排序](#1263-★★★实现多维排序)
         - [1.2.7. 数据结构对比](#127-数据结构对比)
 
 <!-- /TOC -->
@@ -31,12 +31,12 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-72.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">Redis各个数据类型的使用场景：分析存储类型和可用的操作。</font>**  
-
-* 有序列表list：列表不但是有序的，同时支持按照索引范围获取元素。可以用作栈、文章列表。  
-* 无序集合set：集合内操作，可以用作标签、点赞、签到；spop/srandmember命令生成随机数；集合间操作，可以用作社交需求。  
-* 有序集合ZSet：可以用作排行榜功能。  
-
+1.  **<font color = "clime">Redis各个数据类型的使用场景：分析存储类型和可用的操作。</font>**  
+    * 有序列表list：列表不但是有序的，同时支持按照索引范围获取元素。可以用作栈、文章列表。  
+    * 无序集合set：集合内操作，可以用作标签、点赞、签到；spop/srandmember命令生成随机数；集合间操作，可以用作社交需求。  
+    * 有序集合ZSet：可以用作排行榜功能。  
+2. **ZSet实现多维排序：**  
+&emsp; <font color = "red">将涉及排序的多个维度的列通过一定的方式转换成一个特殊的列</font>，即result = function(x, y, z)，即x，y，z是三个排序因子，例如下载量、时间等，通过自定义函数function()计算得到result，将result作为ZSet中的score的值，就能实现任意维度的排序需求了。 
 
 # 1. Redis  
 &emsp; <font color="red">整体参考《Redis开发与运维》，数据结构参考《Redis深度历险：核心原理和应用实践》</font>  
@@ -208,7 +208,7 @@ https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-65.png)  
 
 
-&emsp; **Set集合的交差并的计算复杂度很高，如果数据量很大的情况下，可能会造成Redis的阻塞。**  
+&emsp; **<font color = "red">Set集合的交差并的计算复杂度很高，如果数据量很大的情况下，可能会造成Redis的阻塞。</font>**  
 &emsp; 那么如何规避阻塞呢？建议如下：  
 
 * 在Redis集群中选一个从库专门负责聚合统计，这样就不会阻塞主库和其他的从库了
@@ -266,17 +266,13 @@ https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
     &emsp; sinter brand:apple brand:ios screensize:6.0-6.24 screentype:lcd  
 
 
-
-
-
-
 ### 1.2.6. ZSet有序集合  
 <!-- 
 &emsp; 命令：  
 Redis 数据类型及应用场景——zset
 https://www.jianshu.com/p/0cccf031da00
 -->
-&emsp; sorted set，有序的集合，每个元素有个 score。有序集合中的元素不能重复。可以排序，它给每个元素设置一个score作为排序的依据。最多可以存储2^32-1个元素。  
+&emsp; **<font color = "red">sorted set，有序的集合，每个元素有个 score。</font>** 有序集合中的元素不能重复。可以排序，它给每个元素设置一个score作为排序的依据。最多可以存储2^32-1个元素。  
 &emsp; score可以重复。score 相同时，按照 key 的 ASCII 码排序。  
 &emsp; 有序集合(sort set)是在集合类型的基础上为每个元素关联一个分数，不仅可以完成插入，删除和判断元素是否存在等集合操作，还能够获得分数最高(或最低)的前N个元素，获得指定分数范围内的元素等分数有关的操作。虽然集合中每个元素都是不相同的，但是分数可以相同。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-70.png)  
@@ -316,11 +312,11 @@ https://zhuanlan.zhihu.com/p/147912757
 * 延迟消息队列  
 &emsp; 下单系统，下单后需要在15分钟内进行支付，如果15分钟未支付则自动取消订单。将下单后的十五分钟后时间作为score，订单作为value存入redis，消费者轮询去消费，如果消费的大于等于这笔记录的score，则将这笔记录移除队列，取消订单。  
 
-#### 1.2.6.3. 实现多维排序  
-&emsp; 排行榜榜单的维度可能是多个方面的：按照时间、按照播 放数量、按照获得的赞数。  
+#### 1.2.6.3. ★★★实现多维排序  
+&emsp; 排行榜榜单的维度可能是多个方面的：按照时间、按照播放数量、按照获得的赞数。  
 &emsp; **<font color = "clime">如何借助ZSet实现多维排序? </font>**  
 &emsp; ZSet默认情况下只能根据一个因子score进行排序。如此一来，局限性就很大，举个例子：热门排行榜需要按照下载量&最近更新时间排序，即类似数据库中的ORDER BY download_count, update_time DESC。那这样的需求如果用Redis的ZSet实现呢？  
-&emsp; 事实上很简单，思路就是<font color = "red">将涉及排序的多个维度的列通过一定的方式转换成一个特殊的列</font>，即result = function(x, y, z)，即x，y，z是三个排序因子，例如下载量、时间等，通过自定义函数function()计算得到result，将result作为ZSet中的score的值，就能实现任意维度的排序需求了。  
+&emsp; 事实上很简单，思路就是<font color = "red">将涉及排序的多个维度的列通过一定的方式转换成一个特殊的列</font>，即result = function(x, y, z)，即x，y，z是三个排序因子，例如下载量、时间等，通过自定义函数function()计算得到result，将result作为ZSet中的score的值，就能实现任意维度的排序需求了。   
 
 
 ### 1.2.7. 数据结构对比

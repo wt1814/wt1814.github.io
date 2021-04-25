@@ -3,8 +3,8 @@
 
 - [1. InnoDB体系结构](#1-innodb体系结构)
     - [1.1. Innodb后台线程](#11-innodb后台线程)
-    - [1.2. InnoDB内存中的结构](#12-innodb内存中的结构)
-    - [1.3. InnoDB磁盘上的结构](#13-innodb磁盘上的结构)
+    - [1.2. InnoDB内存中的结构-性能](#12-innodb内存中的结构-性能)
+    - [1.3. InnoDB磁盘上的结构-稳定性](#13-innodb磁盘上的结构-稳定性)
 
 <!-- /TOC -->
 
@@ -37,15 +37,14 @@ https://mp.weixin.qq.com/s/2dUIAot8OKHiWar44qRi-A
 * Page Cleaner Thread  
 &emsp; page cleaner thread是在InnoDB1.2.x版本之后加入的，将原本放在master thread中进行的脏页刷新操作放到了单独的线程中来完成。  
 
-## 1.2. InnoDB内存中的结构  
+## 1.2. InnoDB内存中的结构-性能  
 <!-- 
 https://mp.weixin.qq.com/s/nrb0OaiD_QRtPGREpUr0HA
 -->
 &emsp; 官网：https://dev.mysql.com/doc/refman/5.7/en/innodb-in-memory-structures.html  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-141.png)  
 
-&emsp; 内存中的结构主要包括Buffer Pool，Change Buffer、Adaptive Hash Index以及Log Buffer四部分。  
-&emsp; **<font color = "clime">如果从内存上来看，Change Buffer和Adaptive Hash Index占用的内存都属于Buffer Pool，Log Buffer占用的内存与 Buffer Pool独立。**</font>  
+&emsp; 内存中的结构主要包括Buffer Pool，Change Buffer、Adaptive Hash Index以及Log Buffer四部分。 **<font color = "clime">如果从内存上来看，Change Buffer和Adaptive Hash Index占用的内存都属于Buffer Pool，Log Buffer占用的内存与 Buffer Pool独立。</font>**  
 
 * [Buffer Pool](/docs/SQL/BufferPool.md)  
 * [Change Buffer](/docs/SQL/ChangeBuffer.md)  
@@ -55,7 +54,7 @@ https://mp.weixin.qq.com/s/nrb0OaiD_QRtPGREpUr0HA
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-147.png)  
 &emsp; 目前可以看出，InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。  
 
-## 1.3. InnoDB磁盘上的结构  
+## 1.3. InnoDB磁盘上的结构-稳定性  
 &emsp; 官方文档：https://dev.mysql.com/doc/refman/5.7/en/innodb-on-disk-structures.html  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-133.png)  
 

@@ -308,7 +308,7 @@ public class Protocol$Adaptive implements com.alibaba.dubbo.rpc.Protocol {
 &emsp; 一个方法可以被 Adaptive 注解修饰，也可以不被修饰。这里将未被 Adaptive 注解修饰的方法称为“无 Adaptive 注解方法”，下面先来看看此种方法的代码生成逻辑是怎样的。  
 
 ##### 1.2.4.3.1. 无 Adaptive 注解方法代码生成逻辑
-&emsp; 对于接口方法，可以按照需求标注 Adaptive 注解。以 Protocol 接口为例，该接口的 destroy 和 getDefaultPort 未标注 Adaptive 注解，其他方法均标注了 Adaptive 注解。Dubbo 不会为没有标注 Adaptive 注解的方法生成代理逻辑，对于该种类型的方法，仅会生成一句抛出异常的代码。生成逻辑如下：  
+&emsp; 对于接口方法，可以按照需求标注Adaptive注解。以Protocol接口为例，该接口的destroy和getDefaultPort未标注Adaptive注解，其他方法均标注了Adaptive注解。Dubbo不会为没有标注Adaptive注解的方法生成代理逻辑，对于该种类型的方法，仅会生成一句抛出异常的代码。生成逻辑如下：  
 
 ```java
 for (Method method : methods) {

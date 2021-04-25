@@ -11,14 +11,13 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; <font color = "clime">Dubbo服务引用的时机有两个，第一个是在 Spring 容器调用 ReferenceBean 的 afterPropertiesSet 方法时引用服务，第二个是在 ReferenceBean 对应的服务被注入到其他类中时引用。</font>  
+1. <font color = "clime">Dubbo服务引用的时机有两个，第一个是在Spring容器调用ReferenceBean的afterPropertiesSet方法时引用服务，第二个是在ReferenceBean对应的服务被注入到其他类中时引用。</font>  
 &emsp; 服务引用的入口方法为 ReferenceBean 的 getObject 方法，该方法定义在 Spring 的 FactoryBean 接口中。  
-
-&emsp; **<font color = "red">服务引用流程：</font>**  
-1. 处理配置
-2. 引用服务  
-	1. 创建Invoker
-	2. 创建代理。有了代理对象，即可进行远程调用。  
+2. **<font color = "red">服务引用流程：</font>**  
+    1. 处理配置
+    2. 引用服务  
+        1. 创建Invoker。Invoker是由Protocol实现类构建而来。
+        2. 创建代理。有了代理对象，即可进行远程调用。  
 
 
 # 1. 服务引用   
@@ -389,7 +388,7 @@ private T createProxy(Map<String, String> map) {
 &emsp; 上面代码很多，不过逻辑比较清晰。首先根据配置检查是否为本地调用，若是，则调用 InjvmProtocol 的 refer 方法生成InjvmInvoker 实例。若不是，则读取直连配置项，或注册中心 url，并将读取到的 url 存储到 urls 中。然后根据 urls 元素数量进行后续操作。若 urls 元素数量为1，则直接通过 Protocol 自适应拓展类构建 Invoker 实例接口。若 urls 元素数量大于1，即存在多个注册中心或服务直连 url，此时先根据 url 构建 Invoker。然后再通过 Cluster 合并多个 Invoker，最后调用 ProxyFactory 生成代理类。Invoker 的构建过程以及代理类的过程比较重要，因此接下来将分两小节对这两个过程进行分析。  
 
 #### 1.2.2.1. 创建 Invoker
-&emsp; <font color = "clime">Invoker是Dubbo的核心模型，代表一个可执行体。在服务提供方，Invoker用于调用服务提供类。在服务消费方，Invoker用于执行远程调用。Invoker是由Protocol实现类构建而来。</font>Protocol实现类有很多，本节会分析最常用的两个，分别是RegistryProtocol和DubboProtocol，其他的大家自行分析。下面先来分析 DubboProtocol的refer方法源码。如下：  
+&emsp; <font color = "clime">Invoker是Dubbo的核心模型，代表一个可执行体。在服务提供方，Invoker用于调用服务提供类。在服务消费方，Invoker用于执行远程调用。Invoker是由Protocol实现类构建而来。</font>Protocol实现类有很多，本节会分析最常用的两个，分别是RegistryProtocol和DubboProtocol，其他的大家自行分析。下面先来分析DubboProtocol的refer方法源码。如下：  
 
 ```java
 public <T> Invoker<T> refer(Class<T> serviceType, URL url) throws RpcException {

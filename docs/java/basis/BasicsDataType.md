@@ -9,7 +9,7 @@
         - [1.2.1. 自动装箱和拆箱](#121-自动装箱和拆箱)
         - [1.2.2. 装箱和拆箱是如何实现的](#122-装箱和拆箱是如何实现的)
     - [1.3. ★★★常量池](#13-★★★常量池)
-    - [Long类型返回精度丢失](#long类型返回精度丢失)
+    - [1.4. Long类型返回精度丢失](#14-long类型返回精度丢失)
 
 <!-- /TOC -->
 
@@ -26,7 +26,11 @@
 <!-- float和double的区别 https://www.runoob.com/w3cnote/float-and-double-different.html -->
 <!-- 
 单精度
-https://baike.baidu.com/item/%E5%8D%95%E7%B2%BE%E5%BA%A6 -->
+https://baike.baidu.com/item/%E5%8D%95%E7%B2%BE%E5%BA%A6 
+
+ 【265期】面试官：为什么Integer用==比较时127相等而128不相等？ 
+ https://mp.weixin.qq.com/s/fBaYxLnR9gOoQUQpUrsMBA
+-->
 
 
 
@@ -129,8 +133,103 @@ https://blog.csdn.net/jitianyu123/article/details/73555198
 &emsp; <font color = "clime">Java基本类型的包装类的大部分都实现了常量池技术，</font><font color = "red">即Byte、Short、Integer、Long、Character、Boolean，前面4种包装类默认创建了数值[-128,127]的相应类型的缓存数据，Character创建了数值在[0,127]范围的缓存数据，Boolean直接返回True Or False。如果超出对应范围仍然会去创建新的对象。为什么把缓存设置为[-128,127]区间？是性能和资源之间的权衡。</font>  
 &emsp; 两种浮点数类型的包装类Float、Double并没有实现常量池技术。  
 
+-------
 
-## Long类型返回精度丢失  
+&emsp; 包装类的对象池(也有称常量池)和JVM的静态/运行时常量池没有任何关系。静态/运行时常量池有点类似于符号表的概念，与对象池相差甚远。  
+&emsp; 包装类的对象池是池化技术的应用，并非是虚拟机层面的东西，而是 Java 在类封装里实现的。打开 Integer 的源代码，找到 cache 相关的内容：  
+
+```java
+/**
+    * Cache to support the object identity semantics of autoboxing for values between
+    * -128 and 127 (inclusive) as required by JLS.
+    * <p>
+    * The cache is initialized on first usage. The size of the cache
+    * may be controlled by the {@code -XX:AutoBoxCacheMax=<size>} option.
+    * During VM initialization, java.lang.Integer.IntegerCache.high property
+    * may be set and saved in the private system properties in the
+    * sun.misc.VM class.
+    */
+
+private static class IntegerCache {
+    static final int low = -128;
+    static final int high;
+    static final Integer cache[];
+
+    static {
+// high value may be configured by property
+        int h = 127;
+        String integerCacheHighPropValue =
+                sun.misc.VM.getSavedProperty("java.lang.Integer.IntegerCache.high");
+        if (integerCacheHighPropValue != null) {
+            try {
+                int i = parseInt(integerCacheHighPropValue);
+                i = Math.max(i, 127);
+// Maximum array size is Integer.MAX_VALUE
+                h = Math.min(i, Integer.MAX_VALUE - (-low) - 1);
+            } catch (NumberFormatException nfe) {
+// If the property cannot be parsed into an int, ignore it.
+            }
+        }
+        high = h;
+
+        cache = new Integer[(high - low) + 1];
+        int j = low;
+        for (int k = 0; k < cache.length; k++)
+            cache[k] = new Integer(j++);
+
+// range [-128, 127] must be interned (JLS7 5.1.7)
+        assert IntegerCache.high >= 127;
+    }
+
+    private IntegerCache() {
+    }
+}
+
+/**
+    * Returns an {@code Integer} instance representing the specified
+    * {@code int} value. If a new {@code Integer} instance is not
+    * required, this method should generally be used in preference to
+    * the constructor {@link #Integer(int)}, as this method is likely
+    * to yield significantly better space and time performance by
+    * caching frequently requested values.
+    * <p>
+    * This method will always cache values in the range -128 to 127,
+    * inclusive, and may cache other values outside of this range.
+    *
+    * @param i an {@code int} value.
+    * @return an {@code Integer} instance representing {@code i}.
+    * @since 1.5
+    */
+public static Integer valueOf(int i) {
+    if (i >= IntegerCache.low && i <= IntegerCache.high)
+        return IntegerCache.cache[i + (-IntegerCache.low)];
+    return new Integer(i);
+}
+```
+
+&emsp; IntegerCache 是 Integer 在内部维护的一个静态内部类，用于对象缓存。通过源码知道，Integer 对象池在底层实际上就是一个变量名为 cache 的数组，里面包含了 -128 ～ 127 的 Integer 对象实例。  
+&emsp; 使用对象池的方法就是通过 Integer.valueOf() 返回 cache 中的对象，像 Integer i = 10 这种自动装箱实际上也是调用 Integer.valueOf() 完成的。  
+&emsp; 如果使用的是 new 构造器，则会跳过 valueOf()，所以不会使用对象池中的实例。  
+
+```java
+Integer i1 = 10;
+Integer i2 = 10;
+Integer i3 = new Integer(10);
+Integer i4 = new Integer(10);
+Integer i5 = Integer.valueOf(10);
+ 
+System.out.println(i1 == i2); // true
+System.out.println(i2 == i3); // false
+System.out.println(i3 == i4); // false
+System.out.println(i1 == i5); // true
+```
+
+&emsp; 注意到注释中的一句话 “The cache is initialized on first usage”，缓存池的初始化在第一次使用的时候已经全部完成，这涉及到设计模式的一些应用。这和常量池中字面量的保存有很大区别，Integer 不需要显示地出现在代码中才添加到池中，初始化时它已经包含了所有需要缓存的对象。  
+
+
+
+
+## 1.4. Long类型返回精度丢失  
 
 ```java
 @JsonFormat(shape = JsonFormat.Shape.STRING)

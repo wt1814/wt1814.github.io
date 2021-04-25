@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. 写缓冲(change buffer)](#1-写缓冲change-buffer)
+- [1. ~~写缓冲(change buffer)~~](#1-写缓冲change-buffer)
     - [1.1. 写缓冲简介](#11-写缓冲简介)
     - [1.2. 写缓存的流程](#12-写缓存的流程)
     - [1.3. 使用场景](#13-使用场景)
@@ -11,10 +11,10 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 在非唯一普通索引页不在缓冲池中，对页进行了写操作，并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更，等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中的技术。  
-&emsp; **<font color = "clime">如果辅助索引页已经在缓冲区了，则直接修改即可；如果不在，则先将修改保存到 Change Buffer。Change Buffer的数据在对应辅助索引页读取到缓冲区时合并到真正的辅助索引页中。Change Buffer 内部实现也是使用的 B+ 树。</font>**  
+1. 在「非唯一」「普通」索引页不在缓冲池中，对页进行了写操作， 1). 并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更， 2).等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中的技术。  
+2. **~~<font color = "red">如果辅助索引页已经在缓冲区了，则直接修改即可；如果不在，则先将修改保存到 Change Buffer。</font><font color = "blue">Change Buffer的数据在对应辅助索引页读取到缓冲区时合并到真正的辅助索引页中。Change Buffer 内部实现也是使用的 B+ 树。</font>~~**  
 
-# 1. 写缓冲(change buffer)
+# 1. ~~写缓冲(change buffer)~~
 <!-- 
 https://blog.csdn.net/qq_42046105/article/details/109505273
 Mysql-Innodb特性之插入缓存 
@@ -45,9 +45,9 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 -->
  
 &emsp; 索引是存储在磁盘上的，所以对于索引的操作需要涉及磁盘操作。 **<font color = "red">如果使用自增主键，那么在插入主键索引(聚簇索引)时，只需不断追加即可，不需要磁盘的随机 I/O。</font><font color = "clime">但是如果使用的是普通索引，大概率是无序的，此时就涉及到磁盘的随机 I/O，而随机I/O的性能是比较差的(Kafka 官方数据：磁盘顺序I/O的性能是磁盘随机I/O的4000~5000倍)。</font>**  
-&emsp; 因此，InnoDB 存储引擎设计了 Insert Buffer ，对于非聚集索引的插入或更新操作，不是每一次直接插入到索引页中，而是先判断插入的非聚集索引页是否在缓冲池(Buffer pool)中，若在，则直接插入；若不在，则先放入到一个 Insert Buffer 对象中，然后再以一定的频率和情况进行 Insert Buffer 和辅助索引页子节点的 merge(合并)操作，这时通常能将多个插入合并到一个操作中(因为在一个索引页中)，这就大大提高了对于非聚集索引插入的性能。  
-&emsp; 插入缓冲的使用需要满足以下两个条件：1)索引是辅助索引；2)索引不是唯一的。  
-&emsp; 因为在插入缓冲时，数据库不会去查找索引页来判断插入的记录的唯一性。如果去查找肯定又会有随机读取的情况发生，从而导致 Insert Buffer 失去了意义。  
+&emsp; 因此，InnoDB存储引擎设计了Insert Buffer，对于非聚集索引的插入或更新操作，不是每一次直接插入到索引页中，而是先判断插入的非聚集索引页是否在缓冲池(Buffer pool)中，若在，则直接插入；若不在，则先放入到一个Insert Buffer对象中，然后再以一定的频率和情况进行Insert Buffer和辅助索引页子节点的 merge(合并)操作，这时通常能将多个插入合并到一个操作中（因为在一个索引页中），这就大大提高了对于非聚集索引插入的性能。  
+&emsp; **<font color = "clime">插入缓冲的使用需要满足以下两个条件：1)索引是辅助索引；2)索引不是唯一的。</font>**  
+&emsp; 因为在插入缓冲时，数据库不会去查找索引页来判断插入的记录的唯一性。如果去查找肯定又会有随机读取的情况发生，从而导致Insert Buffer失去了意义。  
 
 ----
 
@@ -61,7 +61,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 
 ---------
 
-&emsp; **<font color = "cclime">如果辅助索引页已经在缓冲区了，则直接修改即可；如果不在，则先将修改保存到 Change Buffer。Change Buffer的数据在对应辅助索引页读取到缓冲区时合并到真正的辅助索引页中。Change Buffer 内部实现也是使用的 B+ 树。</font>**  
+&emsp; **<font color = "red">如果辅助索引页已经在缓冲区了，则直接修改即可；如果不在，则先将修改保存到 Change Buffer。</font><font color = "blue">Change Buffer的数据在对应辅助索引页读取到缓冲区时合并到真正的辅助索引页中。Change Buffer 内部实现也是使用的 B+ 树。</font>**  
 
 
 
@@ -79,7 +79,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; 是否会出现一致性问题呢？并不会。  
 &emsp; (1)读取，会命中缓冲池的页；  
 &emsp; (2)缓冲池LRU数据淘汰，会将“脏页”刷回磁盘；  
-&emsp; (3)数据库异常奔溃，能够从redo log中恢复数据；  
+&emsp; (3)数据库异常崩溃，能够从redo log中恢复数据；  
 
 &emsp; **<font color = "clime">什么时候缓冲池中的页，会刷到磁盘上呢？</font>**  
 &emsp; **<font color = "red">定期刷磁盘，而不是每次刷磁盘，能够降低磁盘IO，提升MySQL的性能。</font>**

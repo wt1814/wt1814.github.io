@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [1. ReadWriteLock](#1-readwritelock)
+- [1. 读写锁](#1-读写锁)
     - [1.1. ReentrantReadWriteLock，读写锁](#11-reentrantreadwritelock读写锁)
     - [1.2. StampedLock，读写锁的升级](#12-stampedlock读写锁的升级)
 
@@ -16,7 +16,7 @@
     &emsp; **<font color = "clime">通过版本号控制。</font>** 乐观读不能保证读取到的数据是最新的，所以将数据读取到局部变量的时候需要通过 lock.validate(stamp) 校验是否被写线程修改过，若是修改过则需要上悲观读锁，再重新读取数据到局部变量。 **<font color = "clime">即乐观读失败后，再次使用悲观读锁。</font>**    
 
 
-# 1. ReadWriteLock  
+# 1. 读写锁  
 <!-- 
 面试官：读写锁了解吗？它的升降级啥时候用？ 
 https://mp.weixin.qq.com/s/JwEkiH6WlQd-UfyAPbltBA
@@ -58,6 +58,7 @@ public Object handleRead() throws InterruptedException {
 <!-- 
 StampedLock
 https://mp.weixin.qq.com/s/vwvcgBPOnW7M2GrgVDDdGg
+https://juejin.cn/post/6944872312843960356#heading-6
 -->
 
 &emsp; <font color = "clime">StampedLock提供了三种模式来控制读写操作：写锁 writeLock、悲观读锁readLock、乐观读锁Optimistic reading。</font>

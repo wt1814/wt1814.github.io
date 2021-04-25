@@ -21,7 +21,7 @@
     * **<font color = "clime">两个对象：用户进程(线程)、内核对象(内核态和用户态)。</font>** 用户进程请求内核。  
     * **<font color = "clime">内核中涉及两个阶段：1. 等待数据准备；2. 数据从内核空间拷贝到用户空间。</font>** 基于以上两个阶段就产生了五种不同的IO模式，分别是：阻塞I/O模型、非阻塞I/O模型、多路复用I/O模型、信号驱动I/O模型、异步I/O模型。其中，前四种被称为同步I/O。  
 
-2. **<font color = "red">同步(结果)和阻塞(线程)：</font>**  
+2. **<font color = "blue">同步(结果)和阻塞(线程)：</font>**  
     * 异步和同步：对于请求结果的获取是客户端主动获取结果，还是由服务端来通知结果。    
     * 阻塞和非阻塞：在等待这个函数返回结果之前，当前的线程是处于挂起状态还是运行状态。 
 
@@ -44,9 +44,9 @@
     * 多路复用I/O：  
     &emsp; 多路复用I/O模型和阻塞I/O模型并没有太大的不同，事实上，还更差一些，因为它需要使用两个系统调用(select和recvfrom)，而阻塞I/O模型只有一次系统调用(recvfrom)。但是Selector的优势在于它可以同时处理多个连接。   
         1. 用户多进程或多线程发起select系统调用，复用器Selector会监听注册进来的进程事件。用户进程【同步】等待结果；
-        2. 内核等待I/O数据返回，无数据返回时，select进程【阻塞】，进程也受阻于select调用
+        2. 内核等待I/O数据返回，无数据返回时，select进程【阻塞】，进程也受阻于select调用；
         2. I/O数据返回后，内核将数据从内核空间拷贝到用户空间，Selector通知哪个进程哪个事件；
-        4. 进程发起recvfrom系统调用
+        4. 进程发起recvfrom系统调用。
     * 信号驱动IO  
     &emsp; 进程发起读取操作会立即返回，当数据准备好了会以通知的形式告诉进程，进程再发起读取操作，把数据从内核空间拷贝到用户空间。  
     &emsp; 特点：第一阶段不阻塞，第二阶段阻塞。  
@@ -178,9 +178,9 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 
 
 1. 用户多进程或多线程发起select系统调用，复用器Selector会监听注册进来的进程事件。用户进程【同步】等待结果；
-2. 内核等待I/O数据返回，无数据返回时，select进程【阻塞】，进程也受阻于select调用
+2. 内核等待I/O数据返回，无数据返回时，select进程【阻塞】，进程也受阻于select调用；
 2. I/O数据返回后，内核将数据从内核空间拷贝到用户空间，Selector通知哪个进程哪个事件；
-4. 进程发起recvfrom系统调用
+4. 进程发起recvfrom系统调用。
 
 <!-- 
 &emsp; 当用户进程调用了select，那么整个进程会被block，而同时，kernel会“监视”所有select负责的socket，当任何一个socket中的数据准备好了，select就会返回。这个时候用户进程再调用read操作，将数据从kernel拷贝到用户进程。  
@@ -206,10 +206,10 @@ https://blog.csdn.net/uestcprince/article/details/90734564
 &emsp; 特点：第一阶段不阻塞，第二阶段阻塞。  
 
 ## 1.2.5. ~~异步IO~~
-&emsp; 进程发起读取操作会立即返回，等到数据准备好且已经拷贝到用户空间了再通知进程拿数据。两个阶段都不阻塞。  
+&emsp; **进程发起读取操作会立即返回，等到数据准备好且已经拷贝到用户空间了再通知进程拿数据。两个阶段都不阻塞。**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-5.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-50.png)  
-&emsp; 用户进程发起read操作之后，立刻就可以开始去做其它的事。而另一方面，从kernel的角度，当它受到一个asynchronous read之后，首先它会立刻返回，所以不会对用户进程产生任何block。然后，kernel会等待数据准备完成，然后将数据拷贝到用户内存，当这一切都完成之后，kernel会给用户进程发送一个signal，告诉它read操作完成了。  
+&emsp; 用户进程发起read操作之后，立刻就可以开始去做其它的事。而另一方面，从kernel的角度，当它接收到一个asynchronous read之后，首先它会立刻返回，所以不会对用户进程产生任何block。然后，kernel会等待数据准备完成，然后将数据拷贝到用户内存，当这一切都完成之后，kernel会给用户进程发送一个signal，告诉它read操作完成了。  
 
 ## 1.3. 同步/异步、阻塞/非阻塞  
 ### 1.3.1. 同步和异步
@@ -248,7 +248,7 @@ https://blog.csdn.net/uestcprince/article/details/90734564
 
 通过上面的图片，可以发现non-blocking IO和asynchronous IO的区别还是很明显的。在non-blocking IO中，虽然进程大部分时间都不会被block，但是它仍然要求进程去主动的check，并且当数据准备完成以后，也需要进程主动的再次调用recvfrom来将数据拷贝到用户内存。而asynchronous IO则完全不同。它就像是用户进程将整个IO操作交给了他人(kernel)完成，然后他人做完后发信号通知。在此期间，用户进程不需要去检查IO操作的状态，也不需要主动的去拷贝数据。
 -->
-&emsp; 从上图可以看出，阻塞程度：阻塞I/O>非阻塞I/O>多路复用I/O>信号驱动I/O>异步I/O，效率是由低到高到。  
+&emsp; 从上图可以看出，阻塞程度：阻塞I/O > 非阻塞I/O > 多路复用I/O > 信号驱动I/O > 异步I/O，效率是由低到高到。  
 
 <!-- 
 最后，再看一下下表，从多维度总结了各I/O模型之间到差异。  

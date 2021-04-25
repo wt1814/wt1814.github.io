@@ -186,7 +186,6 @@ public class SingleLinkedList {
 &emsp; 什么是链表的翻转：给定链表 head-->4--->3-->2-->1，将其翻转成 head-->1-->2-->3-->4。翻转链表可以用非递归和递归这两种方式来解题。  
 
 ##### 1.2.2.1.1. 递归翻转链表  
-<!-- https://mp.weixin.qq.com/s/lGBg6AQk6G1iCR6LNgy4dg -->
 &emsp; 首先要查看翻转链表是否符合递归规律：问题可以分解成具有相同解决思路的子问题，子子问题...，直到最终的子问题再也无法分解。  
 &emsp; 要翻转 head--->4--->3-->2-->1 链表，不考虑 head 结点，分析 4--->3-->2-->1，仔细观察，发现只要先把 3-->2-->1 翻转成 3<----2<----1，之后再把 3 指向 4 即可(如下图示)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-14.png)  

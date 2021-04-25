@@ -72,10 +72,10 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 
 &emsp; **Kubernetes的安装方式：**  
 
-* **(推荐)使用<font color = "red">kubeadmin</font>通过离线镜像安装**  
-* 使用阿里公有云平台k8s  
-* 通过yum官方仓库安装  
-* 二进制包的形式进行安装，kubeasz (github)  
+* **(推荐)使用<font color = "red">kubeadmin</font>通过离线镜像安装；**  
+* 使用阿里公有云平台k8s；  
+* 通过yum官方仓库安装；  
+* 二进制包的形式进行安装，kubeasz (github)；  
 
 
         kubeadm/kubelet/kubectl区别？  

@@ -2,7 +2,7 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "clime">运行流程：准备环境变量、创建容器、准备容器、刷新容器、执行刷新容器后的后置处理逻辑、</font>** **<font color = "clime">调用ApplicationRunner和CommandLineRunner的run方法。</font>**  
+1. **<font color = "clime">运行流程：创建事件监听器并发布事件、准备环境变量、创建容器、容器准备（为刚创建的容器对象做一些初始化工作，准备一些容器属性值等）、刷新容器、执行刷新容器后的后置处理逻辑、调用ApplicationRunner和CommandLineRunner的run方法。</font>**  
 2. **<font color = "clime">内置生命周期事件：</font>** <font color = "red">在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件。</font>  
 3. **<font color = "clime">事件回调机制：</font>** <font color = "red">run()阶段涉及了比较重要的[事件回调机制](/docs/microService/SpringBoot/eventCallback.md)，回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到IOC容器中。</font>
 
@@ -10,7 +10,7 @@
 &emsp; 进入SpringApplication#run方法中，一路点击#run方法。  
 
 &emsp; **<font color = "red">主要步骤总结如下：</font>**  
-1. 创建所有Spring运行监听器并发布应用启动事件。从spring.factories配置文件中加载EventPublishingRunListener对象，该对象拥有SimpleApplicationEventMulticaster属性，即在SpringBoot启动过程的不同阶段用来发布内置的生命周期事件;  
+1. **<font color = "clime">创建所有Spring运行监听器并发布应用启动事件。</font>** 从spring.factories配置文件中加载EventPublishingRunListener对象，该对象拥有SimpleApplicationEventMulticaster属性，即在SpringBoot启动过程的不同阶段用来发布内置的生命周期事件;  
 2. <font color = "red">准备环境变量，</font>包括系统变量，环境变量，命令行参数，默认变量，servlet相关配置变量，随机值以及配置文件(比如application.properties)等;
 3. 控制台打印SpringBoot的bannner标志；  
 4. <font color = "red">创建容器。</font>根据不同类型环境创建不同类型的applicationcontext容器，如果是servlet环境，所以创建的是AnnotationConfigServletWebServerApplicationContext容器对象；  
@@ -31,6 +31,9 @@
 6. 刷新容器，这一步至关重要，是重点中的重点，太多复杂逻辑在这里实现；  
 7. 调用ApplicationRunner和CommandLineRunner的run方法，可以实现这两个接口在容器启动后来加载一些业务数据等;  
 
+
+&emsp; **<font color = "red">事件监听：</font>**  
+&emsp; 在SpringBoot启动过程中，每个不同的启动阶段会分别广播不同的内置生命周期事件，然后相应的监听器会监听这些事件来执行一些初始化逻辑工作。  
 &emsp; **<font color = "red">内置生命周期事件：</font>**  
 &emsp; <font color = "red">在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件。</font>比如在准备environment前会发布ApplicationStartingEvent事件，在environment准备好后会发布ApplicationEnvironmentPreparedEvent事件，在刷新容器前会发布ApplicationPreparedEvent事件等，总之SpringBoot总共内置了7个生命周期事件，除了标志SpringBoot的不同启动阶段外。<font color = "red">同时一些监听器也会监听相应的生命周期事件从而执行一些启动初始化逻辑。</font>比如ConfigFileApplicationListener会监听onApplicationEnvironmentPreparedEvent事件来加载环境变量等。  
 <!-- 

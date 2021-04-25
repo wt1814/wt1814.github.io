@@ -25,7 +25,9 @@
         - [1.5.2. 与消息代理结合](#152-与消息代理结合)
 
 <!-- /TOC -->
-                 
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-30.png)  
+
 &emsp; **<font color = "red">总结：</font>**  
 1. 服务雪崩：在微服务架构中，存在着那么多的服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统的瘫痪。  
 2. Hytrix：~~<font color = "clime">首先熔断的对象是服务之间的请求；熔断策略有根据请求的数量分为信号量和线程池；还有请求的时间(即超时熔断)；请求错误率。</font>~~  
@@ -36,8 +38,6 @@
 
 
 # 1. Spring Cloud Hytrix
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-30.png)  
-
 ## 1.1. 服务雪崩  
 &emsp; 在微服务架构中，将系统拆分成了很多服务单元，各单元的应用间通过服务注册与订阅的方式互相依赖。由于每个单元都在不同的进程中运行，依赖通过远程调用的方式执行，这样就有可能因为网络原因或是依赖服务自身间题出现调用故障或延迟，而这些问题会直接导致调用方的对外服务也出现延迟，若此时调用方的请求不断增加，最后就会因等待出现故障的依赖方响应形成任务积压，最终导致自身服务的瘫痪。  
 &emsp; **<font color = "clime">在微服务架构中，存在着那么多的服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统的瘫痪，</font>** 这样的架构相较传统架构更加不稳定。为了解决这样的问题，产生了断路器等一系列的服务保护机制。  
@@ -73,8 +73,7 @@ https://mp.weixin.qq.com/s/nCifoTiqhBT2Eai2UJinag
     Observable<K> ocValue = command.toObservable();    //cold observable
     ```
     &emsp; 如上图所示：  
-    &emsp; 执行同步调用execute方法，会调用queue().get()方法，queue()又会调用toObservable().toBlocking().toFuture()；  
-    &emsp; 所以，所有的方法调用都依赖Observable的方法调用，只是取决于是需要同步还是异步调用；  
+    &emsp; 执行同步调用execute方法，会调用queue().get()方法，queue()又会调用toObservable().toBlocking().toFuture()；所以，所有的方法调用都依赖Observable的方法调用，只是取决于是需要同步还是异步调用；  
 3. <font color = "red">缓存处理：</font>  
 &emsp; 当请求来到后，会判断请求是否启用了缓存（默认是启用的），再判断当前请求是否携带了缓存Key；  
 &emsp; 如果命中缓存就直接返回；否则进入剩下的逻辑；  
@@ -128,7 +127,7 @@ public String queryOrder(@PathVariable("num")int num){
 2. 当熔断器开关打开时, 请求被禁止通过。  
 3. 当熔断器开关处于打开状态，经过一段时间后（默认5s），熔断器会自动进入半开状态，这时熔断器允许有且仅一个请求通过。当请求调用成功时，熔断器恢复到关闭状态。若该请求失败，熔断器继续保持打开状态, 接下来的请求被禁止通过。  
 
-&emsp; **<font color = "red">熔断器的开关能保证服务调用者在调用异常服务时, 快速返回结果, 避免大量的同步等待。</font>** 并且熔断器能在一段时间后继续侦测请求执行结果, 提供恢复服务调用的可能。  
+&emsp; **<font color = "red">熔断器的开关能保证服务调用者在调用异常服务时，快速返回结果，避免大量的同步等待。</font>** 并且熔断器能在一段时间后继续侦测请求执行结果, 提供恢复服务调用的可能。  
 
 #### 1.3.2.2. 请求超时触发降级  
 
@@ -194,8 +193,8 @@ publicStringqueryOrderTimeout(){
 ## 1.4. Hystrix使用教程  
 &emsp; 参考<font color = "red">**《Spring Cloud微服务实战》** </font>  
 
-&emsp; 可以使用Hystrix 中的核心注解@HystrixCommand, 通过它创建HystrixCommand 的实现。同时利用 fallback 属性指定服务降级的实现方法。  
-&emsp; 然而这些还只是 Hystrix 使用的一小部分，在实现一个大型分布式系统时，往往还需要更多高级的配置功能。  
+&emsp; 可以使用Hystrix中的核心注解@HystrixCommand，通过它创建HystrixCommand的实现。同时利用fallback属性指定服务降级的实现方法。  
+&emsp; 然而这些还只是Hystrix使用的一小部分，在实现一个大型分布式系统时，往往还需要更多高级的配置功能。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-41.png)  
 
@@ -257,11 +256,11 @@ hystrix:
 &emsp; 如果Hystrix的线程池分配仅仅依靠命令组来划分，那么它就显得不够灵活了，所以Hystrix还提供了HystrixThreadPoolKey来对线程池进行设置，通过它可以实现更细粒度的线程池划分。  
 
 ### 1.4.6. 请求缓存  
-&emsp; 在高并发的场景之下， Hystrix 中提供了请求缓存的功能， 可以方便地开启和使用请求缓存来优化系统， 达到减轻高并发时的请求线程消耗、 降低请求响应时间的效果。  
+&emsp; 在高并发的场景之下，Hystrix中提供了请求缓存的功能，可以方便地开启和使用请求缓存来优化系统，达到减轻高并发时的请求线程消耗、 降低请求响应时间的效果。  
 
 ### 1.4.7. 请求合并  
-&emsp; 微服务架构中的依赖通常通过远程调用实现，而远程调用中最常见的问题就是通信消耗与连接数占用。在高并发的情况之下，因通信次数的增加，总的通信时间消耗将会变得不那么理想。同时，因为依赖服务的线程池资源有限， 将出现排队等待与响应延迟的清况。为了优化这两个问题，Hystrix提供了HystrixCollapser来实现请求的合并， 以减少通信消耗和线程数的占用。  
-&emsp; HystrixCollapser 实现 了在 HystrixCommand 之前放置一个合并处理器， 将处于一个很短的时间窗（默认10毫秒）内对同一依赖服务的多个请求进行整合并以批量方式发起请求的功能（服务提供方也需要提供相应的批量实现接口）。 通过 HystrixCollapser的封装，开发者不需要关注线程合并的细节过程， 只需关注批量化服务和处理。  
+&emsp; 微服务架构中的依赖通常通过远程调用实现，而远程调用中最常见的问题就是通信消耗与连接数占用。在高并发的情况之下，因通信次数的增加，总的通信时间消耗将会变得不那么理想。同时，因为依赖服务的线程池资源有限，将出现排队等待与响应延迟的清况。为了优化这两个问题，Hystrix提供了HystrixCollapser来实现请求的合并，以减少通信消耗和线程数的占用。  
+&emsp; HystrixCollapser实现了在HystrixCommand之前放置一个合并处理器，将处于一个很短的时间窗（默认10毫秒）内对同一依赖服务的多个请求进行整合并以批量方式发起请求的功能（服务提供方也需要提供相应的批量实现接口）。通过HystrixCollapser的封装，开发者不需要关注线程合并的细节过程，只需关注批量化服务和处理。  
 
 
 ### 1.4.8. Hystrix仪表盘  
@@ -270,16 +269,16 @@ hystrix:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-5.png)  
 &emsp; Hystrix Dashboard共支持三种不同的监控方式， 如下所示。
 
-* 默认的集群监控：通过URL http://turbine-hostname:port/turbine.stream 开启， 实现对默认集群的监控。  
+* 默认的集群监控：通过URL http://turbine-hostname:port/turbine.stream 开启，实现对默认集群的监控。  
 * 指定的集群监控：通过URL http://turbine-hostname:port/turbine.strearn?cluster= [clusterName] 开启，实现对clusterName集群的监控。  
-* 单体应用的监控：通过URL http://hystrix-app:port/hystrix.stream 开启， 实现对具体某个服务实例的监控。  
+* 单体应用的监控：通过URL http://hystrix-app:port/hystrix.stream 开启，实现对具体某个服务实例的监控。  
 
 &emsp; 前两者都是对集群的监控，需要整合Turbine才能实现。  
 
 &emsp; 仪表盘其余两个参数：  
 
-* Delay: 该参数用来控制服务器上轮询监控信息的延迟时间，默认为2000毫秒， 可以通过配置该属性来降低客户端的网络和CPU消耗。  
-* Title: 该参数对应了上图头部标题Hystrix Stream之后的内容，默认会使用具体监控实例的URL, 可以通过配置该信息来展示更合适的标题。  
+* Delay：该参数用来控制服务器上轮询监控信息的延迟时间，默认为2000毫秒，可以通过配置该属性来降低客户端的网络和CPU消耗。  
+* Title：该参数对应了上图头部标题Hystrix Stream之后的内容，默认会使用具体监控实例的URL，可以通过配置该信息来展示更合适的标题。  
 
 &emsp; 输入URL，单击单击Monitor Stream按钮。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-6.png)  
@@ -291,4 +290,4 @@ hystrix:
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-7.png)  
 
 ### 1.5.2. 与消息代理结合  
-&emsp; Spring Cloud在封装Turbine的时候， 还封装了基于消息代理的收集实现。 所以， 可以将所有需要收集的监控信息都输出到消息代理中，然后Turbine服务再从消息代理中异步获取这些监控信息， 最后将这些监控信息聚合并输出到Hystrix Dashboard中。 通过引入消息代理。  
+&emsp; Spring Cloud在封装Turbine的时候，还封装了基于消息代理的收集实现。所以，可以将所有需要收集的监控信息都输出到消息代理中，然后Turbine服务再从消息代理中异步获取这些监控信息，最后将这些监控信息聚合并输出到Hystrix Dashboard中。通过引入消息代理。  

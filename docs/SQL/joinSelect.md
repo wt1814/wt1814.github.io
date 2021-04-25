@@ -28,16 +28,14 @@
 <!-- /TOC -->
 
 
-
 &emsp; **<font color = "red">总结：</font>**  
 
-&emsp; **关键字in：**  
+1. **关键字in：**  
 &emsp; **<font color = "clime">in查询里面的数量最大只能1000。</font>**  
-&emsp; **<font color = "red">确定给定的值是否与子查询或列表中的值相匹配。in在查询的时候，首先查询子查询的表，然后将内表和外表做一个笛卡尔积，然后按照条件进行筛选。所以相对内表比较小的时候，in的速度较快。</font>**  
-
+&emsp; **<font color = "red">确定给定的值是否与子查询或列表中的值相匹配。in在查询的时候，首先查询子查询的表，然后将内表和外表做一个笛卡尔积，然后按照条件进行筛选。所以</font><font color = "clime">相对内表比较小的时候，in的速度较快。</font>**  
+2. exists指定一个子查询，检测行的存在。<font color = "clime">遍历循环外表，然后看外表中的记录有没有和内表的数据一样的。匹配上就将结果放入结果集中。</font><font color = "red">exists内层查询语句不返回查询的记录，而是返回一个真假值。</font>  
 &emsp; **<font color = "clime">in和exists的区别：</font><font color = "red">如果子查询得出的结果集记录较少，主查询中的表较大且又有索引时应该用in，反之如果外层的主查询记录较少，子查询中的表大，又有索引时使用exists。</font>**  
-
-&emsp; **UNION与UNION ALL：** 默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用UNION ALL。  
+3. **UNION与UNION ALL：** 默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用UNION ALL。  
 
 # 1. 联合查询
 <!-- 
@@ -115,7 +113,7 @@ SELECT NAME FROM classes WHERE id IN (SELECT cls_id FROM students);
 ```
 
 #### 1.2.2.3. 行子查询
-&emsp; 返回的结果是一行(一行多列)。格式：主查询 where (字段1,2,...) = (行子查询)。行元素: 将多个字段合成一个行元素，在行级子查询中会使用到行元素。  
+&emsp; 返回的结果是一行(一行多列)。格式：主查询 where (字段1,2,...) = (行子查询)。行元素：将多个字段合成一个行元素，在行级子查询中会使用到行元素。  
 &emsp; 示例：查找班级年龄最大，身高最高的学生。  
 
 ```sql
@@ -155,7 +153,7 @@ select * from user where user.id in (select order.user_id from order)
 ......
 
 #### 1.2.4.2. 关键字Exists  
-&emsp; exists指定一个子查询，检测行的存在。<font color = "lime">遍历循环外表，然后看外表中的记录有没有和内表的数据一样的。匹配上就将结果放入结果集中。</font><font color = "red">exists内层查询语句不返回查询的记录，而是返回一个真假值。</font>  
+&emsp; exists指定一个子查询，检测行的存在。<font color = "clime">遍历循环外表，然后看外表中的记录有没有和内表的数据一样的。匹配上就将结果放入结果集中。</font><font color = "red">exists内层查询语句不返回查询的记录，而是返回一个真假值。</font>  
 
 ```sql
 select user.* from user where exists(select order.user_id from order where user.id = order.user_id);
@@ -163,17 +161,16 @@ select user.* from user where exists(select order.user_id from order where user.
 &emsp; 这条sql语句的执行结果和上面的in的执行结果是一样的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-6.png)  
 &emsp; 但是，不一样的是它们的执行流程完全不一样：  
-&emsp; 1.使用exists关键字进行查询的时候，首先查询的不是子查询的内容，而是查主查询的表，即先执行的sql语句是：select user.* from user;  
-&emsp; 得到的结果如下：  
+1. 使用exists关键字进行查询的时候，首先查询的不是子查询的内容，而是查主查询的表，即先执行的sql语句是：`select user.* from user;`。得到的结果如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-7.png)  
-&emsp; 2.然后，根据表的每一条记录，执行exists(select order.user_id from order where user.id = order.user_id)，依次去判断where后面的条件是否成立。如果成立则返回true不成立则返回false。如果返回的是true的话，则该行结果保留，如果返回的是false的话，则删除该行，最后将得到的结果返回。  
+2. 然后，根据表的每一条记录，执行exists(select order.user_id from order where user.id = order.user_id)，依次去判断where后面的条件是否成立。如果成立则返回true不成立则返回false。如果返回的是true的话，则该行结果保留，如果返回的是false的话，则删除该行，最后将得到的结果返回。  
 
 #### 1.2.4.3. In与Exists区别  
 &emsp; **<font color = "clime">in和exists的区别：</font><font color = "red">如果子查询得出的结果集记录较少，主查询中的表较大且又有索引时应该用in，反之如果外层的主查询记录较少，子查询中的表大，又有索引时使用exists。</font>**  
 
 ### 1.2.5. 子查询与连接查询的区别  
-&emsp; 表连接都可以用子查询，但不是所有子查询都能用表连接替换，子查询比较灵活，方便，形式多样，适合用于作为查询的筛选条件，而表连接更适合查看多表的数据  
-&emsp; 子查询不一定需要两个表有关联字段，而连接查询必须有字段关联(所谓的主外键关系)  
+&emsp; 表连接都可以用子查询，但不是所有子查询都能用表连接替换，子查询比较灵活，方便，形式多样，适合用于作为查询的筛选条件，而表连接更适合查看多表的数据。  
+&emsp; 子查询不一定需要两个表有关联字段，而连接查询必须有字段关联(所谓的主外键关系)。  
 &emsp; 连接查询的性能优于子查询。  
 
 ----

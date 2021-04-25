@@ -46,12 +46,12 @@
 
 ### 1.2.1. 集群容错整体流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-76.png)  
-&emsp; ①第一步：Master选举(假如宕机节点是Master)  
-&emsp; &emsp; 1)脑裂：可能会产生多个Master节点  
-&emsp; &emsp; 2)解决：discovery.zen.minimum_master_nodes=N/2+1  
-&emsp; ②第二步：Replica容错，新的(或者原有)Master节点会将丢失的Primary对应的某个副本提升为Primary  
-&emsp; ③第三步：Master节点会尝试重启故障机  
-&emsp; ④第四步：数据同步，Master会将宕机期间丢失的数据同步到重启机器对应的分片上去  
+&emsp; ①第一步：Master选举(假如宕机节点是Master)。  
+&emsp; &emsp; 1)脑裂：可能会产生多个Master节点。  
+&emsp; &emsp; 2)解决：discovery.zen.minimum_master_nodes=N/2+1。  
+&emsp; ②第二步：Replica容错，新的(或者原有)Master节点会将丢失的Primary对应的某个副本提升为Primary。  
+&emsp; ③第三步：Master节点会尝试重启故障机。  
+&emsp; ④第四步：数据同步，Master会将宕机期间丢失的数据同步到重启机器对应的分片上去。  
 
 &emsp; 如果宕机节点不是Master，将省去Master选举的步骤。  
 
@@ -90,7 +90,7 @@ Elasticsearch 中的节点(比如共 20 个)，其中的 10 个 选了一个mast
 &emsp; B区两个master eligible node，满足quorum条件，成功选举出master。  
 &emsp; 此时集群还是只有一个master，待网络故障恢复后，集群数据正常。  
 
-&emsp; 场景二：A区一个node，为master eligible node，B区2个node，其中一个是master  
+&emsp; 场景二：A区一个node，为master eligible node，B区2个node，其中一个是master。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-8.png)    
 &emsp; A区只有一个master eligible node，不满足quorum的条件，无法进行选举。  
 &emsp; B区原本的master存在，不需要进行选举，并且满quorum的条件，master角色可以保留。  

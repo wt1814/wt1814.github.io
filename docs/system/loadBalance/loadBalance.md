@@ -12,6 +12,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; **负载均衡方案选择：**  
+* **3000万以上的，nginx+监控；**  
 * 5000万PV的，HAProxy+Keepalived,nginx，HAPROXY负责TCP的负载均衡，nginx负责7层调度； 
 * **1亿以上的，LVS-DR+keepalived,nginx，LVS-DR负责TCP的负载均衡，nginx负责7层调度。**  
 
@@ -41,6 +42,8 @@ https://blog.csdn.net/mengdonghui123456/article/details/53981976
 
 
 ## 1.2. ~~均衡技术~~   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/load-3.png)  
+
 &emsp;常见的软件负载均衡技术有以下几种：  
 1. 基于DNS的负载均衡  
 &emsp; 由于在DNS服务器中，可以为多个不同的地址配置相同的名字，最终查询这个名字的客户机将在解析这个名字时得到其中一个地址，所以这种代理方式是通过DNS服务中的随机名字解析域名和IP来实现负载均衡。  

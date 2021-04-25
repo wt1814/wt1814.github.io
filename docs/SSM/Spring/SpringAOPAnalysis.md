@@ -19,25 +19,24 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 
-&emsp; **<font color = "blue">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
+1. **<font color = "blue">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
+2. 代理类的生成流程：1). 获取当前的Spring Bean适配的advisors；2). 创建代理类。   
+    1. Spring AOP获取对应Bean适配的Advisors链的核心逻辑：
+        1. 获取当前IoC容器中所有的Aspect类
+        2. 给每个 Aspect 类的 advice 方法创建一个Spring Advisor，这一步又能细分为 
+            1. 遍历所有 advice 方法
+            2. 解析方法的注解和pointcut
+            3. 实例化 Advisor 对象
+        3. 获取到候选的 Advisors，并且缓存起来，方便下一次直接获取
+        4. 从候选的Advisors中筛选出与目标类适配的Advisor 
+            1. 获取到Advisor的切入点 pointcut
+            2. 获取到当前 target 类 所有的 public 方法
+            3. 遍历方法，通过切入点的 methodMatcher 匹配当前方法，只有有一个匹配成功就相当于当前的Advisor 适配
+        5. 对筛选之后的 Advisor 链进行排序  
+    2. 创建代理类
+        1. 创建AopProxy。根据ProxyConfig 获取到了对应的AopProxy的实现类，分别是JdkDynamicAopProxy和ObjenesisCglibAopProxy。 
+        2. 获取代理类
 
-&emsp; 代理类的生成流程：1). 获取当前的Spring Bean 适配的advisors；2). 创建代理类。   
-
-1. Spring AOP获取对应 Bean 适配的Advisors 链的核心逻辑：
-	1. 获取当前 IoC 容器中所有的 Aspect 类
-	2. 给 每个Aspect 类的advice 方法创建一个 Spring Advisor，这一步又能细分为 
-		1. 遍历所有advice 方法
-		2. 解析方法的注解和pointcut
-		3. 实例化 Advisor 对象
-	3. 获取到 候选的 Advisors，并且缓存起来，方便下一次直接获取
-	4. 从候选的Advisors中筛选出与目标类适配的Advisor 
-		1. 获取到Advisor的切入点 pointcut
-		2. 获取到 当前 target 类 所有的 public 方法
-		3. 遍历方法，通过 切入点 的 methodMatcher 匹配当前方法，只有有一个匹配成功就相当于当前的Advisor 适配
-	5. 对筛选之后的 Advisor 链进行排序  
-2. 创建代理类
-    1. 创建AopProxy。根据ProxyConfig 获取到了对应的AopProxy的实现类，分别是JdkDynamicAopProxy和ObjenesisCglibAopProxy。 
-    2. 获取代理类
 
 # 1. SpringAOP解析
 <!-- 

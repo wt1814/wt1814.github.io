@@ -173,7 +173,7 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 }
 ```
 
-&emsp; 作为依赖注入的一部分，postProcessBeforelnitialization会在initializeBean的实现过程 中被调用，从而实现对aware接口的相关注入。  
+&emsp; 作为依赖注入的一部分，postProcessBeforelnitialization会在initializeBean的实现过程中被调用，从而实现对aware接口的相关注入。  
 
 ## 1.2. BeanNameAware接口  
 &emsp; BeanNameAware接口可以在Bean中得到它在IOC容器中的Bean实例名称。  

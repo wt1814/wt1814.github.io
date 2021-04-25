@@ -23,14 +23,16 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-50.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
+1. 类加载流程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-5.png)  
-* 准备(Preparation)  
+2. 准备(Preparation)  
 &emsp; 为类的静态变量分配内存，并将其初始化为默认值</font>**<font color = "red">，这些内存都将在方法区中分配。</font>对于该阶段有以下几点需要注意：  
-    1. <font color = "red">这时候进行内存分配的仅包括类变量(static)，而不包括实例变量，实例变量会在对象实例化时随着对象一块分配在 Java 堆中。</font>  
+    1. <font color = "red">这时候进行内存分配的仅包括类变量(static)，而不包括实例变量，实例变量会在对象实例化时随着对象一块分配在Java堆中。</font>  
     2. <font color = "red">这里所设置的初始值"通常情况"下是数据类型默认的零值(如0、0L、null、false等)，比如定义了public static int value=111 ，那么 value 变量在准备阶段的初始值就是 0 而不是111(初始化阶段才会复制)。</font>  
-    * <font color = "red">特殊情况：比如给 value 变量加上了 fianl 关键字public static final int value=111 ，那么准备阶段 value 的值就被赋值为 111。</font>  
-* 解析(Resolution)  
-&emsp; **<font color = "clime">解析过程在某些情况下可以在初始化阶段之后再开始，这是为了支持 Java 的动态绑定。</font>**   
+    * <font color = "red">特殊情况：比如给value变量加上了fianl关键字public static final int value=111，那么准备阶段value的值就被赋值为 111。</font>  
+3. 解析(Resolution)  
+&emsp; 为什么要用符号引用呢？ **<font color = "red">这是因为类加载之前，javac会将源代码编译成.class文件，这个时候javac是不知道被编译的类中所引用的类、方法或者变量它们的引用地址在哪里，所以只能用符号引用来表示。</font>** 
+&emsp; **<font color = "clime">解析过程在某些情况下可以在初始化阶段之后再开始，这是为了支持Java的动态绑定。</font>**   
 
 # 1. JVM类的加载  
 &emsp; **<font color = "red">部分参考《深入理解java虚拟机 第3版》第7章 虚拟机类加载机制</font>**  
@@ -99,21 +101,18 @@
 #### 1.2.2.3. 解析  
 &emsp; **<font color = "red">解析：将常量池内的符号引用转换为直接引用</font>** ，得到类或者字段、方法在内存中的指针或者偏移量，确保类与类之间相互引用正确性，完成内存结构布局，以便直接调用该方法。</font>  
 
-* 符号引用：以一组符号来描述所引用的目标。 **符号引用与虚拟机实现的布局无关，引用的目标并不一定要已经加载到内存中。各种虚拟机实现的内存布局可以各不相同，但是它们能接受的符号引用必须是一致的，** 因为符号引用的字面量形式明确定义在Java虚拟机规范的Class文件格式中。符号引用是class文件中CONSTANT_Class_info、CONSTANT_Field_info、CONSTANT_Method_info等类型的常量。使用符号引用来描述所引用的目标。  
-* 直接引用，通过对符号引用进行解析，找到引用的实际内存地址。可以是指向目标的指针，相对偏移量或是一个能间接定位到目标的句柄。如果有了直接引用，那引用的目标必定已经在内存中存在。
+1. 符号引用与直接引用：  
+    * 符号引用：以一组符号来描述所引用的目标。 **符号引用与虚拟机实现的布局无关，引用的目标并不一定要已经加载到内存中。各种虚拟机实现的内存布局可以各不相同，但是它们能接受的符号引用必须是一致的，** 因为符号引用的字面量形式明确定义在Java虚拟机规范的Class文件格式中。符号引用是class文件中CONSTANT_Class_info、CONSTANT_Field_info、CONSTANT_Method_info等类型的常量。使用符号引用来描述所引用的目标。  
+    * 直接引用，通过对符号引用进行解析，找到引用的实际内存地址。可以是指向目标的指针，相对偏移量或是一个能间接定位到目标的句柄。如果有了直接引用，那引用的目标必定已经在内存中存在。
+
+2. 为什么要使用符号引用？  
+&emsp; 符号引用要转换成直接引用才有效，这也说明直接引用的效率要比符号引用高。那为什么要用符号引用呢？ **<font color = "red">这是因为类加载之前，javac会将源代码编译成.class文件，这个时候javac是不知道被编译的类中所引用的类、方法或者变量它们的引用地址在哪里，所以只能用符号引用来表示。</font>** 当然，符号引用是要遵循java虚拟机规范的。  
 
 
-```text
-为什么要使用符号引用？  
-符号引用要转换成直接引用才有效，这也说明直接引用的效率要比符号引用高。那为什么要用符号引用呢？这是因为类加载之前，javac会将源代码编译成.class文件，这个时候javac是不知道被编译的类中所引用的类、方法或者变量它们的引用地址在哪里，所以只能用符号引用来表示。当然，符号引用是要遵循java虚拟机规范的。  
-```
-
-&emsp; 解析主要有四种：类或接口的解析、字段解析、类方法解析、接口方法解析。在解析的过程中可能会抛出以下异常：  
-
-* java.lang.NoSuchFieldError：找不到字段  
-* java.lang.IllegalAccessError：不具有访问权限  
-* java.lang.NoSuchMethodError：找不到方法  
-
+3. 解析主要有四种：类或接口的解析、字段解析、类方法解析、接口方法解析。在解析的过程中可能会抛出以下异常：  
+    * java.lang.NoSuchFieldError：找不到字段  
+    * java.lang.IllegalAccessError：不具有访问权限  
+    * java.lang.NoSuchMethodError：找不到方法  
 
 
 &emsp; **<font color = "clime">解析过程在某些情况下可以在初始化阶段之后再开始，这是为了支持 Java 的动态绑定。</font>**   
@@ -132,7 +131,7 @@
 1. **<font color = "red">主动引用执行初始化。</font>**<font color = "red">对于初始化阶段，虚拟机规范则是严格规定了有且只有5种情况必须立即对类进行“初始化”。</font>  
   
     * 显式字节码指令集：遇到new、getstatic、putstatic或invokestatic这4条字节码指令时，如果类没有进行过初始化，则需要先触发其初始化。显式字节码指令集(new/getstatic/putstatic/invokestatic)：对应的场景就是创建对象或者调用到类文件的静态变量/静态方法/静态代码块。  
-    * 反射：使用java.lang.reflect包的方法对类进行反射调用的时候，如果类没存进行过初始化，则需要先触发其初始化。  
+    * 反射：使用java.lang.reflect包的方法对类进行反射调用的时候，如果类没进行过初始化，则需要先触发其初始化。  
     * 继承：当初始化一个类的时候，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化。  
     * 入口：当虚拟机启动时，用户需要指定一个要执行的主类(包含main()方法的那个类)，虚拟机会先初始化这个主类。  
     * 当使用JDK 1.7的动态语言支持时，如果一个java.lang.invoke.MethodHandle实例最后的解析结果REF_getStatic、REF_putStatic、REF_invokeStatic的方法句柄，并且这个方法句柄所对应的类没有进行过初始化，则需要先触发其初始化。  

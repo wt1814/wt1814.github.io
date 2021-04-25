@@ -15,7 +15,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; **LVS是四层(传输层)负载均衡，LVS支持TCP/UDP的负载均衡。**  
-&emsp; LVS 的转发主要通过修改 IP 地址(NAT 模式，分为源地址修改SNAT和目标地址修改 DNAT)、修改目标 MAC(DR 模式)来实现。  
+&emsp; LVS的转发主要通过修改 IP 地址（NAT 模式，分为源地址修改SNAT和目标地址修改 DNAT）、修改目标 MAC（DR 模式）来实现。  
 
 
 # 1. LVS
@@ -110,9 +110,9 @@ ipvsadm -h
 https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 -->
 &emsp; LVS 架设的服务器集群系统有三个部分组成：  
-1. 最前端的负载均衡层，用 Load Balancer 表示
-2. 中间的服务器集群层，用 Server Array 表示
-3. 最底端的数据共享存储层，用 Shared Storage 表示
+1. 最前端的负载均衡层，用 Load Balancer 表示。
+2. 中间的服务器集群层，用 Server Array 表示。
+3. 最底端的数据共享存储层，用 Shared Storage 表示。
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/lvs/lvs-1.png)  
 &emsp; LVS的各个层次的详细介绍：  
@@ -130,10 +130,10 @@ https://www.cnblogs.com/lixigang/p/5371815.html
 https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 -->
 &emsp; **LVS是四层(传输层)负载均衡，LVS支持TCP/UDP的负载均衡。**  
-&emsp; **<font color = "clime">LVS 的转发主要通过修改IP地址(NAT模式，分为源地址修改SNAT和目标地址修改DNAT)、修改目标MAC(DR模式)来实现。</font>**  
+&emsp; **<font color = "clime">LVS 的转发主要通过修改IP地址（NAT模式，分为源地址修改SNAT和目标地址修改DNAT）、修改目标MAC（DR模式）来实现。</font>**  
 
 ### 1.4.1. NAT(网络地址转换)  
-&emsp; NAT(Network Address Translation)是一种外网和内网地址映射的技术。  
+&emsp; **NAT(Network Address Translation)是一种外网和内网地址映射的技术。**  
 &emsp; NAT 模式下，网络数据报的进出都要经过 LVS 的处理。LVS 需要作为 RS(真实服务器)的网关。  
 &emsp; **工作方式：**  
 <!-- 
@@ -245,5 +245,3 @@ https://blog.csdn.net/qq_37165604/article/details/79802390
 
 * 软件本身不支持正则表达式处理，不能做动静分离；而现在许多网站在这方面都有较强的需求，这个是 Nginx、HAProxy + Keepalived 的优势所在。
 * 如果是网站应用比较庞大的话，LVS/DR + Keepalived 实施起来就比较复杂了，相对而言，Nginx / HAProxy + Keepalived 就简单多了。
-
-

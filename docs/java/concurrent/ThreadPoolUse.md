@@ -18,7 +18,7 @@
         - [1.5.2. ThreadPoolExecutor#awaitTermination](#152-threadpoolexecutorawaittermination)
         - [1.5.3. 总结：优雅关闭线程池](#153-总结优雅关闭线程池)
     - [1.6. SpringBoot整合线程池](#16-springboot整合线程池)
-        - [1.6.1. ※※※@Async没有执行的问题分析(@Async线程默认配置)](#161-※※※async没有执行的问题分析async线程默认配置)
+        - [1.6.1. ★★★@Async没有执行的问题分析(@Async线程默认配置)](#161-★★★async没有执行的问题分析async线程默认配置)
         - [1.6.2. 重写spring默认线程池](#162-重写spring默认线程池)
         - [1.6.3. 自定义线程池](#163-自定义线程池)
 
@@ -112,6 +112,10 @@ final void runWorker(Worker w) {
 &emsp; 一些业务代码做了Utils类型在整个项目中的各种操作共享使用一个线程池，一些业务代码大量使用parallel stream特性做一些耗时操作，但是没有使用自定义的线程池或是没有设置更大的线程数（没有意识到parallel stream的共享ForkJoinPool问题）。共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。 **<font color = "red">建议根据异步业务类型，合理设置隔离的线程池。</font>**  
 
 ## 1.3. 确定线程池的大小
+<!-- 
+ 别再纠结线程池大小/线程数量了，没有固定公式的 
+ https://mp.weixin.qq.com/s/caiVVZwU883WjuYwO9jfng
+-->
 &emsp; **<font color = "clime">CPU可同时处理线程数量大部分是CPU核数的两倍。</font>**    
 &emsp; **一般做法：**  
 
@@ -395,7 +399,7 @@ try {
 ## 1.6. SpringBoot整合线程池
 &emsp; SpringBoot框架提供了@Async注解使用ThreadPoolExecutor。可以重写spring默认的线程池或自定义线程池。  
 
-### 1.6.1. ※※※@Async没有执行的问题分析(@Async线程默认配置)  
+### 1.6.1. ★★★@Async没有执行的问题分析(@Async线程默认配置)  
 <!-- 
 ~~
 https://www.cnblogs.com/kiko2014551511/p/12754927.html

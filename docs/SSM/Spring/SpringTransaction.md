@@ -17,30 +17,27 @@
 
 <!-- /TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/aop-8.png)  
+
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "red">Spring事务属性通常由事务的传播行为、事务的隔离级别、事务的超时值、事务只读标志组成。</font>**  
+1. **<font color = "red">Spring事务属性通常由事务的传播行为、事务的隔离级别、事务的超时值、事务只读标志组成。</font>**  
+    * 事务的传播行为主要分为支持当前事务和不支持当前事务。  
+    * 事务的隔离级别，默认使用底层数据库的默认隔离级别。  
+    * 事务只读，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。  
 
-* 事务的传播行为主要分为支持当前事务和不支持当前事务。  
-* 事务的隔离级别，默认使用底层数据库的默认隔离级别。  
-* 事务只读，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。  
-
-
-&emsp; Spring事务失效：  
-
-* 使用在了非public方法上。
-* 捕获了异常，未再抛出。
-* 同一个类中方法调用。
-* @Transactional的类注入失败。
-* 多数据源(静态配置)
-* 原始SSM项目，重复扫描导致事务失效  
+2. Spring事务失效：  
+    * 使用在了非public方法上。
+    * 捕获了异常，未再抛出。
+    * 同一个类中方法调用。
+    * @Transactional的类注入失败。
+    * 多数据源（静态配置）
+    * 原始SSM项目，重复扫描导致事务失效  
 
 
 # 1. Spring事务   
 <!-- 
 https://mp.weixin.qq.com/s/RpA3RvYv4I4zYSzBmZaDiA
- 
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/aop-8.png)  
 
 ## 1.1. Spring事务简介  
 &emsp; 事务分为业务事务和系统事务。业务事务也就是业务逻辑上操作的一致性，系统事务指真正的数据库事务。  
@@ -58,7 +55,7 @@ https://mp.weixin.qq.com/s/RpA3RvYv4I4zYSzBmZaDiA
 * 编程式事务管理：编程式事务管理使用TransactionTemplate或者直接使用底层的PlatformTransactionManager。对于编程式事务管理，Spring推荐使用TransactionTemplate。  
 * <font color = "red">声明式事务管理：基于AOP配置的通知性事务管理。其本质是对方法前后进行拦截，然后在目标方法开始之前创建或者加入一个事务，在执行完目标方法之后根据执行情况提交或者回滚事务。</font>  
 
-&emsp; 声明式事务最大的优点就是不需要通过编程的方式管理事务。不在业务逻辑代码中掺杂事务管理的代码，只需在配置文件中做相关的事务规则声明(或通过基于@Transactional注解的方式)，便可以将事务规则应用到业务逻辑中。声明式事务管理也有两种常用的方式，一种是基于tx和aop名字空间的xml配置文件，另一种就是基于@Transactional注解。  
+&emsp; 声明式事务最大的优点就是不需要通过编程的方式管理事务。不在业务逻辑代码中掺杂事务管理的代码，只需在配置文件中做相关的事务规则声明（或通过基于@Transactional注解的方式），便可以将事务规则应用到业务逻辑中。声明式事务管理也有两种常用的方式，一种是基于tx和aop名字空间的xml配置文件，另一种就是基于@Transactional注解。  
 
 ### 1.2.1. Spring Boot开启事务  
 &emsp; ......
@@ -194,28 +191,25 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
     ```
 
     &emsp; 使用springMVC，并且使用其扫描器组件，对项目中加入servcie /ctroller注解的bean进行注册交给srping容器管理，在springMVC配置文件中只扫描ctroller对所有的service进行过滤掉，因为按照spring配置文件的加载顺序来讲，先加载springmvc配置文件，再加载spring配置文件，事物一般在spring配置文件中进行配置，如果此时在加载srpingMVC配置文件的时候，把service也给注册了，但是此时事物还没加载，也就导致后面的事物无法成功注入到service中。所以把对service的扫描放在spring配置文件中或是其他配置文件中。  
-    7. 底层数据库引擎不支持事务。  
-    &emsp; Mysql引擎。MyISAM不支持事务；InnoDB支持事务。检查表的属性：  
+7. 底层数据库引擎不支持事务。  
+&emsp; Mysql引擎。MyISAM不支持事务；InnoDB支持事务。检查表的属性：  
 
-            SHOW TABLE STATUS LIKE 'tbl_name';
-            SHOW CREATE TABLE tbl_name; 
+        SHOW TABLE STATUS LIKE 'tbl_name';
+        SHOW CREATE TABLE tbl_name; 
 
 ## 1.5. Spring事务其他使用  
-&emsp; **一、如何通过日志判断事务是否已经被Spring所管理？**  
-1. 在logback或者log4j中对org.springframework.aop、org.springframework.transaction、org.springframework.jdbc、org.mybatis.spring.transaction进行DEBUG级别日志跟踪(开发期)。  
-2. 查看日志中是否有事务管理、开启、提交、回滚等字符，如：
+1. **如何通过日志判断事务是否已经被Spring所管理？**  
+    1. 在logback或者log4j中对org.springframework.aop、org.springframework.transaction、org.springframework.jdbc、org.mybatis.spring.transaction进行DEBUG级别日志跟踪(开发期)。  
+    2. 查看日志中是否有事务管理、开启、提交、回滚等字符，如：
 
-        DEBUG o.m.spring.transaction.SpringManagedTransaction - JDBC Connection [com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl@28cfe912] will be managed by Spring  
-3. 没有被控制的时候，日志如下：
+            DEBUG o.m.spring.transaction.SpringManagedTransaction - JDBC Connection [com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl@28cfe912] will be managed by Spring  
+    3. 没有被控制的时候，日志如下：
 
-        DEBUG o.m.spring.transaction.SpringManagedTransaction - JDBC Connection [com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl@28cfe912] will not be managed by Spring
+            DEBUG o.m.spring.transaction.SpringManagedTransaction - JDBC Connection [com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl@28cfe912] will not be managed by Spring
 
-
-
-&emsp; **二、如何通过程序判断是否存在事务？**  
+2.**如何通过程序判断是否存在事务？**  
 
         boolean flag = TransactionSynchronizationManager.isActualTransactionActive();  
-
 &emsp; 返回true，则在事务控制下，否则不在控制下。  
 
 <!-- 

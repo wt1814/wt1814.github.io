@@ -14,7 +14,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; RedLock：当前线程尝试给每个Master节点加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。  
+&emsp; RedLock：当前线程尝试给每个Master节点`顺序`加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。  
 
 # 1. Redis分布式锁  
 ## 1.1. Redis部署方式 
@@ -107,7 +107,7 @@ public class RedisTool {
 5. 要是锁建立失败了，那么就依次删除这个锁。  
 6. 只要别的线程建立了一把分布式锁，当前线程就得不断轮询去尝试获取锁。  
 
-&emsp; <font color="red">一句话概述：当前线程尝试给每个Master节点加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。</font>  
+&emsp; **<font color="red">一句话概述：当前线程尝试给每个Master节点`顺序`加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。</font>**  
 
 ## 1.3. Redisson实现redis分布式锁  
 &emsp; [Redisson](/docs/microService/thinking/Redisson.md)  

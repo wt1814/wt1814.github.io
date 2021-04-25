@@ -6,7 +6,7 @@
     - [1.1. 冒泡排序](#11-冒泡排序)
         - [1.1.1. 算法描述](#111-算法描述)
         - [1.1.2. 编码](#112-编码)
-    - [1.2. 快速排序](#12-快速排序)
+    - [1.2. ★★★快速排序](#12-★★★快速排序)
         - [1.2.1. 算法描述](#121-算法描述)
         - [1.2.2. 编码](#122-编码)
     - [1.3. 直接选择排序](#13-直接选择排序)
@@ -100,7 +100,7 @@ public static void main(String[] args){
 ```
 
 
-## 1.2. 快速排序  
+## 1.2. ★★★快速排序  
 &emsp; 快速排序的基本思想：通过一趟排序将待排记录分隔成独立的两部分，其中一部分记录的关键字均比另一部分的关键字小，则可分别对这两部分记录继续进行排序，以达到整个序列有序。  
 
 ### 1.2.1. 算法描述  
@@ -142,36 +142,10 @@ public class quickSort {
         }
         // 得到基准元素位置
         //TODO 可以替换两种循环法
-        int pivotIndex = partitionV2(arr, startIndex, endIndex);
+        int pivotIndex = partitionV(arr, startIndex, endIndex);
         // 根据基准元素，分成两部分递归排序
         quickSort(arr, startIndex, pivotIndex - 1);
         quickSort(arr, pivotIndex + 1, endIndex);
-    }
-
-
-    /**
-     * 分治(单边循环法)
-     * @param arr     待交换的数组
-     * @param startIndex    起始下标
-     * @param endIndex    结束下标
-     */
-    private static int partitionV2(int[] arr, int startIndex, int endIndex) {
-        // 取第一个位置的元素作为基准元素(也可以选择随机位置)
-        int pivot = arr[startIndex];
-        int mark = startIndex;
-
-        for(int i=startIndex+1; i<=endIndex; i++){
-            if(arr[i]<pivot){
-                mark ++;
-                int p = arr[mark];
-                arr[mark] = arr[i];
-                arr[i] = p;
-            }
-        }
-
-        arr[startIndex] = arr[mark];
-        arr[mark] = pivot;
-        return mark;
     }
 
     /**
@@ -208,6 +182,31 @@ public class quickSort {
         arr[left] = pivot;
 
         return left;
+    }
+
+    /**
+     * 分治(单边循环法)
+     * @param arr     待交换的数组
+     * @param startIndex    起始下标
+     * @param endIndex    结束下标
+     */
+    private static int partitionV2(int[] arr, int startIndex, int endIndex) {
+        // 取第一个位置的元素作为基准元素(也可以选择随机位置)
+        int pivot = arr[startIndex];
+        int mark = startIndex;
+
+        for(int i=startIndex+1; i<=endIndex; i++){
+            if(arr[i]<pivot){
+                mark ++;
+                int p = arr[mark];
+                arr[mark] = arr[i];
+                arr[i] = p;
+            }
+        }
+
+        arr[startIndex] = arr[mark];
+        arr[mark] = pivot;
+        return mark;
     }
 
 }

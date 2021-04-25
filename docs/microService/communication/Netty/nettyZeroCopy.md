@@ -8,10 +8,12 @@ netty源码书
 https://segmentfault.com/a/1190000007560884
 -->
 
+&emsp; 前言：[IO性能优化之零拷贝](/docs/microService/communication/Netty/zeroCopy.md)  
+
 &emsp; Netty的零拷贝主要体现在如下几个方面  
-&emsp; (1)Netty接收和发送ByteBuffer采用DirectBuffer，使用堆外直接内存进行Socket读写，不需要进行字节缓冲区的二次拷贝。如果使用传统的堆存(Heap Buffer)进行Socket读写，那么JVM会将堆存拷贝一份到直接内存中，然后才写入Socket。相比于堆外直接内存，消息在发送过程中多了一次缓冲区的内存拷贝。  
+&emsp; **(1)Netty接收和发送ByteBuffer采用DirectBuffer，使用堆外直接内存进行Socket读写，不需要进行字节缓冲区的二次拷贝。** 如果使用传统的堆存(Heap Buffer)进行Socket读写，那么JVM会将堆存拷贝一份到直接内存中，然后才写入Socket。相比于堆外直接内存，消息在发送过程中多了一次缓冲区的内存拷贝。  
 &emsp; (2)Netty提供了组合Buffer对象，可以聚合多个ByteBuffer对象，用户可以像操作一个Buffer那样方便地对组合Buffer进行操作，避免了传统的通过内存拷贝的方式将几个小Buffer合并成一个大Buffer大烦琐操作。  
-&emsp; (3)Netty中文件传输采用了transferTo()方法，它可以直接将文件缓冲区的数据发送到目标Channel，避免了传统通过循环write()方式导致的内存拷贝问题。  
+&emsp; **(3)Netty中文件传输采用了transferTo()方法，它可以直接将文件缓冲区的数据发送到目标Channel，** 避免了传统通过循环write()方式导致的内存拷贝问题。  
 
 -----
 

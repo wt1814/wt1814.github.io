@@ -14,6 +14,9 @@
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-33.png)  
 
+
+
+
 # 1. 分布式事务  
 <!--
 如何选择分布式事务解决方案？
@@ -47,7 +50,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487531&idx=1&sn=b3fbc4
 
 ## 1.2. 分布式事务解决方案  
 
-* [分布式事务模型DTP及XA](/docs/microService/thinking/DTP.md)     
+* [DTP及XA](/docs/microService/thinking/DTPAndXA.md)     
     * 一致性协议-XA两阶段提交
     * 一致性协议-XA三阶段提交
 * [TCC模式](/docs/microService/thinking/TCC.md)-强一致性

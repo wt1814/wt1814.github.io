@@ -54,11 +54,11 @@ https://jingyan.baidu.com/article/19192ad855674ea43f570744.html
 
 ## 1.2. 查看  
 ### 1.2.1. 网络吞吐率和 PPS 如何查看？ 
-&emsp; 可以使用 sar 命令当前网络的吞吐率和 PPS，用法是给 sar 增加 -n 参数就可以查看网络的统计信息，比如  
+&emsp; 可以使用sar命令当前网络的吞吐率和 PPS，用法是给 sar 增加 -n 参数就可以查看网络的统计信息，比如：  
 
 * sar -n DEV，显示网口的统计数据；
 * sar -n EDEV，显示关于网络错误的统计数据；
-* sar -n TCP，显示 TCP 的统计数据；
+* sar -n TCP，显示TCP的统计数据；
 
 &emsp; 比如，通过 sar 命令获取了网口的统计信息：   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/network-1.png)  
@@ -79,5 +79,5 @@ $ ethtool eth0 | grep Speed
 &emsp; 要测试本机与远程主机的连通性和延时，通常是使用 ping 命令，它是基于 ICMP 协议的，工作在网络层。  
 &emsp; 比如，如果要测试本机到 192.168.12.20 IP 地址的连通性和延时：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/network-2.png)  
-&emsp; 显示的内容主要包含  icmp_seq（ICMP 序列号）、TTL（生存时间，或者跳数）以及 time （往返延时），而且最后会汇总本次测试的情况，如果网络没有丢包，packet loss 的百分比就是 0。  
-&emsp; 不过，需要注意的是，ping 不通服务器并不代表 HTTP 请求也不通，因为有的服务器的防火墙是会禁用 ICMP 协议的。  
+&emsp; 显示的内容主要包含icmp_seq（ICMP 序列号）、TTL（生存时间，或者跳数）以及 time（往返延时），而且最后会汇总本次测试的情况，如果网络没有丢包，packet loss的百分比就是0。  
+&emsp; 不过，需要注意的是，ping不通服务器并不代表HTTP请求也不通，因为有的服务器的防火墙是会禁用ICMP协议的。  

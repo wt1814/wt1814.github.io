@@ -52,7 +52,7 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 3. 处理Aware接口：  
 &emsp; 接着，Spring会检测该对象是否实现了xxxAware接口，并将相关的xxxAware实例注入给Bean：  
 &emsp; ①如果这个Bean已经实现了BeanNameAware接口，会调用它实现的setBeanName(String beanId)方法，此处传递的就是Spring配置文件中Bean的id值；  
-&emsp; ②如果这个Bean已经实现了BeanFactoryAware接口，会调用它实现的setBeanFactory()方法，传递的是Spring工厂自身。  
+&emsp; ②如果这个Bean已经实现了BeanFactoryAware接口，会调用它实现的setBeanFactory()方法，传递的是Spring工厂自身；  
 &emsp; ③如果这个Bean已经实现了ApplicationContextAware接口，会调用setApplicationContext(ApplicationContext)方法，传入Spring上下文；  
 4. BeanPostProcessor前置处理：  
 &emsp; 如果想对Bean进行一些自定义的处理，那么可以让Bean实现了BeanPostProcessor接口，那将会调用postProcessBeforeInitialization(Object obj, String s)方法。  
@@ -98,7 +98,7 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-10.png)  
 1. 实例化：第 1 步，实例化一个 bean 对象；
 2. 属性赋值：第 2 步，为 bean 设置相关属性和依赖；
-3. 初始化：第 3~7 步，步骤较多， **<font color = "lime">其中第 5、6 步为初始化操作，</font>** <font color = "red">第 3、4 步为在初始化前执行，第7步在初始化后执行，该阶段结束，才能被用户使用；</font>
+3. 初始化：第 3~7 步，步骤较多， **<font color = "clime">其中第 5、6 步为初始化操作，</font>** <font color = "red">第 3、4 步为在初始化前执行，第7步在初始化后执行，该阶段结束，才能被用户使用；</font>
 4. 销毁：第 8~10步，第8步不是真正意义上的销毁(还没使用呢)，而是先在使用前注册了销毁的相关调用接口，为了后面第9、10步真正销毁 bean 时再执行相应的方法。
 
 &emsp; 在doCreateBean()方法中能看到依次执行了这 4 个阶段：  
@@ -206,7 +206,7 @@ public void destroy() {
 &emsp; 从Spring的源码可以直观的看到其执行过程，而记忆其过程便可以从这 4 个阶段出发，实例化、属性赋值、初始化、销毁。其中细节较多的便是初始化，涉及了Aware、BeanPostProcessor、InitializingBean、init-method 的概念。这些都是Spring提供的扩展点。    
 
 ## 1.4. 总结
-&emsp; **<font color = "lime">最后总结下如何记忆 Spring Bean 的生命周期：</font>**  
+&emsp; **<font color = "clime">最后总结下如何记忆 Spring Bean 的生命周期：</font>**  
 
 * 首先是实例化、属性赋值、初始化、销毁这 4 个大阶段；
 * 再是初始化的具体操作，有 Aware 接口的依赖注入、BeanPostProcessor 在初始化前后的处理以及 InitializingBean 和 init-method 的初始化操作；

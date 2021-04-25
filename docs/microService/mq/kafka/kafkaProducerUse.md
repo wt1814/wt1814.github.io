@@ -18,7 +18,7 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "clime">总结：</font>**  
+&emsp; **<font color = "red">总结：</font>**  
 1. Producer发送消息的过程：需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。  
 &emsp; Kafka提供了默认的分区策略（轮询、随机、按key顺序），同时支持自定义分区策略。  
 2. **<font color = "clime">如何提升Producer的性能？异步，批量，压缩。</font>**  

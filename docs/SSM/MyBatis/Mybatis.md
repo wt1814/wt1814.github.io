@@ -42,14 +42,10 @@
 
 <!-- /TOC -->
 
-<!-- 
-mybatis日志功能是如何设计的？ 
-https://mp.weixin.qq.com/s/JkdszV7Oy9E9cITNebY2NA
 
--->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-29.png)  
 
 # 1. MyBatis使用教程  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-29.png)  
 
 ## 1.1. #和$的区别  
 ### 1.1.1. 取值引用  
@@ -222,12 +218,12 @@ Public User selectUser(@param(“userName”)String name,@param(“userArea”)S
     select  *  from user_user_t   where user_name = #{userName，jdbcType=VARCHAR} and user_area=#{userArea,jdbcType=VARCHAR}
 </select>
 ```
-&emsp; 映射器注解@Param：简化xml配置（使用了@pram注解时，在mapper.xml不加parameterType），作用是给参数命名,参数命名后就能根据名字得到参数值，正确的将参数传入sql语句中。  
+&emsp; 映射器注解@Param：简化xml配置（使用了@pram注解时，在mapper.xml不加parameterType），作用是给参数命名，参数命名后就能根据名字得到参数值，正确的将参数传入sql语句中。  
 
 ```java
 public Student select(@Param("aaaa") String name,@Param("bbbb")int class_id);
 ```
-&emsp; 给入参String name命名为aaaa,然后sql语句..where s_name= #{aaaa}中就可以根据aaaa得到参数值了。  
+&emsp; 给入参String name命名为aaaa，然后sql语句..where s_name= #{aaaa}中就可以根据aaaa得到参数值了。  
 &emsp; 自定义对象也使用@param注解。在mapper.xml中使用时，#{对象别名.属性名}，如#{user.id}。  
 &emsp; @Param注解JavaBean对象：  
 
@@ -325,7 +321,7 @@ public List<user> getUserInformation(@Param("user") User user);
 ### 1.3.1. 定义sql语句  
 * select标签：  
     * id：唯一的标识符。  
-    * parameterType：传给此语句的参数的全路径名或别名。 例：com.test.poso.User或user  
+    * parameterType：传给此语句的参数的全路径名或别名。 例：com.test.poso.User或user。  
     * resultType：语句返回值类型或别名。注意，如果是集合，那么这里填写的是集合的泛型，而不是集合本身。 
 
 ### 1.3.2. 控制动态sql拼接  

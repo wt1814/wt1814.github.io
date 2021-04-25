@@ -12,9 +12,9 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间(tablespace)。表空间又由段(segment)，区(extent)，页(page)组成。  
-&emsp; **<font color = "clime">相比较之下，使用独占表空间的效率以及性能会更高一点。</font>**  
-&emsp; **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB(在操作系统中默认页大小是4KB)。</font>**  
+1. 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间(tablespace)。表空间又由段(segment)，区(extent)，页(page)组成。  
+2. **<font color = "clime">相比较之下，使用独占表空间的效率以及性能会更高一点。</font>**  
+3. **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB(在操作系统中默认页大小是4KB)。</font>**  
 
 
 # 1. 表空间  
@@ -119,7 +119,7 @@ https://juejin.cn/post/6844904190477598733#heading-14
 &emsp; 数据页中只存放20字节的Off Page指针，实际数据都在溢出页。  
 
 ## 1.2. InnoDB表数据文件  
-&emsp; <font color = "red">在InnoDB中，数据和索引文件是合起来储存的，如图所示，InnoDB 的存储文件有两个，后缀名分别是 .frm 和 .idb，其中 .frm 是表的定义文件，</font> **<font color = "lime">而idb是数据文件/索引文件。</font>**   
+&emsp; <font color = "red">在InnoDB中，数据和索引文件是合起来储存的，如图所示，InnoDB 的存储文件有两个，后缀名分别是 .frm 和 .idb，其中 .frm 是表的定义文件，</font> **<font color = "clime">而idb是数据文件/索引文件。</font>**   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-33.png)  
 
 * .frm文件：与表相关的元数据信息都存放在frm文件，包括表结构的定义信息等。  

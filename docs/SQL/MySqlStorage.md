@@ -19,7 +19,7 @@ https://www.cnblogs.com/geaozhang/category/1326927.html
 1. MySQL常见的存储引擎有InnoDB、MyISAM、Memory、NDB。<font color = "red">InnoDB现在是MySQL默认的存储引擎，支持事务、行级锁定和外键。</font>  
 2. MySQL的存储引擎是针对表的，不是针对库的。也就是说在一个数据库中可以使用不同的存储引擎。但是不建议这样做。 
 3. MySQL是插件式的存储引擎，其中存储引擎分很多种。只要实现符合mysql存储引擎的接口，可以开发自己的存储引擎! 
-4. 所有跨存储引擎的功能都是在服务层实现的。  
+4. **<font color = "red">所有跨存储引擎的功能都是在服务层实现的。</font>**  
 
 ## 1.1. 存储引擎操作  
 &emsp; ......
@@ -39,8 +39,8 @@ https://mp.weixin.qq.com/s/StjX9bi-YDANrMX21Pn_Uw
 
 &emsp; **<font color = "red">InnoDB的特性：</font>**    
 
-* 支持事务  
-* 支持行锁，采用MVCC来支持高并发  
+* [支持事务](/docs/SQL/transaction.md)  
+* [支持行锁](/docs/SQL/lock.md)，采用[MVCC](/docs/SQL/MVCC.md)来支持高并发  
 * 支持外键  
 * 支持崩溃后的安全恢复  
 * 不支持全文索引  
@@ -79,13 +79,13 @@ InnoDB引擎有几个重点特性，为其带来了更好的性能和可靠性�
 * 支持BLOB和TEXT的前500个字符索引，支持全文索引  
 * 支持延迟更新索引，极大提升写入性能  
 * 对于不会进行修改的表，支持压缩表，极大减少磁盘空间占用  
-* MyISAM 用一个变量保存了整个表的行数，执行select count(*) from table时只需要读出该变量即可，速度很快；  
+* MyISAM 用一个变量保存了整个表的行数，执行`select count(*) from tale`时只需要读出该变量即可，速度很快；  
 
 &emsp; <font color = "red">一张表，里面有ID自增主键，当insert了17条记录之后，删除了第15,16,17条记录，再把Mysql重启，再insert一条记录，这条记录的ID是18还是15 ？</font>  
-&emsp; 如果表的类型是MyISAM，那么是18。因为MyISAM表会把自增主键的最大ID 记录到数据文件中，重启MySQL自增主键的最大ID也不会丢失；  
+&emsp; 如果表的类型是MyISAM，那么是18。因为MyISAM表会把自增主键的最大ID记录到数据文件中，重启MySQL自增主键的最大ID也不会丢失；  
 &emsp; 如果表的类型是InnoDB，那么是15。因为InnoDB 表只是把自增主键的最大ID记录到内存中，所以重启数据库或对表进行OPTION操作，都会导致最大ID丢失。  
 
-&emsp; <font color = "red">哪个存储引擎执行 select count(*) 更快，为什么? </font>   
+&emsp; <font color = "red">哪个存储引擎执行select count(*) 更快，为什么? </font>   
 &emsp; MyISAM更快，因为MyISAM内部维护了一个计数器，可以直接调取。  
 
 * 在 MyISAM 存储引擎中，把表的总行数存储在磁盘上，当执行 select count(*) from t 时，直接返回总数据。  

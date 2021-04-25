@@ -64,3 +64,11 @@ git commit -m "msg"
 
 ## git tag  
 &emsp; 常常在代码封板时，使用git 创建一个tag，这样一个不可修改的历史代码版本就像被封存起来一样，不论是运维发布拉取，或者以后的代码版本管理，都是十分方便的。  
+
+
+## 基于Gitlab Issues为导向的分支管理
+<!--
+基于Gitlab Issues为导向的分支管理
+https://blog.csdn.net/u011423145/article/details/107860812
+-->
+

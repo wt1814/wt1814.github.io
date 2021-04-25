@@ -11,20 +11,18 @@
                 - [1.2.2.2.2. LineBasedFrameDecoder与DelimiterBasedFrameDecoder](#12222-linebasedframedecoder与delimiterbasedframedecoder)
                 - [1.2.2.2.3. LengthFieldBasedFrameDecoder与LengthFieldPrepender](#12223-lengthfieldbasedframedecoder与lengthfieldprepender)
                 - [1.2.2.2.4. 自定义粘包与拆包器](#12224-自定义粘包与拆包器)
-    - [参考](#参考)
+    - [1.3. 参考](#13-参考)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; [TCP的粘包和拆包问题描述](/docs/network/TCPSticking.md)  
-&emsp; **<font color = "clime">Netty对半包或者粘包的处理：</font>** **<font color = "red">每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。</font>** 
-
-&emsp; Netty默认提供了多种解码器来解决，可以进行分包操作。  
-
-* 固定长度的拆包器 FixedLengthFrameDecoder
-* 行拆包器 LineBasedFrameDecoder
-* 分隔符拆包器 DelimiterBasedFrameDecoder
-* 基于数据包长度的拆包器 LengthFieldBasedFrameDecoder
+1. [TCP的粘包和拆包问题描述](/docs/network/TCPSticking.md)  
+2. **<font color = "clime">Netty对半包或者粘包的处理：</font>** **<font color = "red">每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。</font>** 
+3. Netty默认提供了多种解码器来解决，可以进行分包操作。  
+    * 固定长度的拆包器 FixedLengthFrameDecoder
+    * 行拆包器 LineBasedFrameDecoder
+    * 分隔符拆包器 DelimiterBasedFrameDecoder
+    * 基于数据包长度的拆包器 LengthFieldBasedFrameDecoder
 
 # 1. Netty编解码  
 <!-- 
@@ -114,11 +112,11 @@ public class NettyClient {
 
 &emsp; 以上代码中，第一反应理解的是，如果非异常情况下客户端所有数据发送成功，并且服务端全部接收到。那么从打印信息中可以看到客户端的发送次数i和服务端的接收消息计数i应该是相同的数。那么下面通过运行程序，查看打印结果。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-39.png)  
-&emsp; 如上图所示，【】中的最后一个数字与 []中数字对上的是已独立完整的包接收到(粘包/拆包示意图中的情况 I)。但是 【】中为 37和 38的出现了粘包情况(粘包/拆包示意图中的情况 II)，两条数据粘合在一起。  
+&emsp; 如上图所示，【】中的最后一个数字与 []中数字对上的是已独立完整的包接收到(粘包/拆包示意图中的情况 I)。但是【】中为37和38的出现了粘包情况（粘包/拆包示意图中的情况 II），两条数据粘合在一起。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-40.png)  
-&emsp; 上图中可以看到 【】中 167的数据被拆分为了两部分(图中画绿线数据)，该情况为拆包(粘包/拆包示意图中的情况 III)。  
+&emsp; 上图中可以看到【】中 167的数据被拆分为了两部分(图中画绿线数据)，该情况为拆包(粘包/拆包示意图中的情况 III)。  
 
-&emsp; 上面程序没有考虑到 TCP 的粘包/拆包问题，所以如果是实际应用的程序的话，不能保证数据的正常情况，就会导致程序异常。  
+&emsp; 上面程序没有考虑到TCP的粘包/拆包问题，所以如果是实际应用的程序的话，不能保证数据的正常情况，就会导致程序异常。  
 
 ### 1.2.2. Netty解决粘包/拆包问题-编解码器
 <!-- Netty为了找出消息的边界，采用封帧方式： 
@@ -512,5 +510,5 @@ public abstract class MessageToByteEncoder<I> extends ChannelOutboundHandlerAdap
 }
 ```
 
-## 参考  
+## 1.3. 参考  
 &emsp; 《Netty4核心原理与手写RPC框架实战》  

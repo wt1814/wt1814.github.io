@@ -3,7 +3,7 @@
 <!-- TOC -->
 
 - [1. SpringDI解析](#1-springdi解析)
-    - [1.1. ~~依赖注入发生的时间(懒加载相关) ~~](#11-依赖注入发生的时间懒加载相关-)
+    - [1.1. ~~依赖注入发生的时间(懒加载相关)~~](#11-依赖注入发生的时间懒加载相关)
     - [1.2. SpringDI时序图](#12-springdi时序图)
     - [1.3. AbstractBeanFactory#getBean()，获取Bean](#13-abstractbeanfactorygetbean获取bean)
         - [1.3.1. AbstractBeanFactory#doGetBean()，获取Bean](#131-abstractbeanfactorydogetbean获取bean)
@@ -15,10 +15,11 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "lime">Spring DI依赖注入阶段，doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean() 初始化。</font>**  
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "clime">Spring DI依赖注入阶段，doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean() 初始化。</font>**  
 
 # 1. SpringDI解析
-## 1.1. ~~依赖注入发生的时间(懒加载相关) ~~ 
+## 1.1. ~~依赖注入发生的时间(懒加载相关)~~  
 &emsp; 当Spring IOC容器完成了Bean定义资源的定位、载入和解析注册以后，IOC容器中已经管理类Bean定义的相关数据，但是此时IOC容器还没有对所管理的Bean进行依赖注入，<font color= "red">依赖注入在以下两种情况发生</font>：  
 
 * 用户第一次调用getBean()方法时，IOC容器触发依赖注入。  
@@ -38,8 +39,8 @@
 
 &emsp; 在servlet中初始化的，用的是`WebApplicationContext extends ApplicationContext`  
 &emsp; Spring什么时候实例化bean，首先要分2种情况  
-&emsp;   第一：如果你使用BeanFactory作为Spring Bean的工厂类，则所有的bean都是在第一次使用该Bean的时候实例化  
-&emsp;   第二：如果你使用ApplicationContext作为Spring Bean的工厂类，则又分为以下几种情况：  
+&emsp;   第一：如果使用BeanFactory作为Spring Bean的工厂类，则所有的bean都是在第一次使用该Bean的时候实例化  
+&emsp;   第二：如果使用ApplicationContext作为Spring Bean的工厂类，则又分为以下几种情况：  
 &emsp;        （1）：如果bean的scope是singleton的，并且lazy-init为false（默认是false，所以可以不用设置），则ApplicationContext启动的时候就实例化该Bean，并且将实例化的Bean放在一个map结构的缓存中，下次再使用该Bean的时候，直接从这个缓存中取  
 &emsp;        （2）：如果bean的scope是singleton的，并且lazy-init为true，则该Bean的实例化是在第一次使用该Bean的时候进行实例化  
 &emsp;        （3）：如果bean的scope是prototype的，则该Bean的实例化是在第一次使用该Bean的时候进行实例化   
@@ -362,13 +363,13 @@ protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable O
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/Spring/SpringDI-5.png)  
 &emsp; **主要流程：**  
 1. 先检查 instanceWrapper变量是不是null，这里一般是null，除非当前正在创建的Bean在 factoryBeanInstanceCache中存在这个是保存还没创建完成的FactoryBean的集合。  
-2. **<font color = "lime">调用createBeanInstance方法实例化Bean</font>**  
+2. **<font color = "clime">调用createBeanInstance方法实例化Bean</font>**  
 3. 如果当前 RootBeanDefinition对象还没有调用过实现了的 MergedBeanDefinitionPostProcessor接口的方法，则会进行调用 。  
 4. 当满足这三点：单例Bean、 **<font color = "lime">尝试解析bean之间的循环引用</font>** 、bean目前正在创建中，则会进一步检查是否实现了 SmartInstantiationAwareBeanPostProcessor接口。如果实现了则调用是实现的 getEarlyBeanReference方法  
-5. **<font color = "lime">调用 populateBean方法进行属性填充</font>**  
-6. **<font color = "lime">调用 initializeBean方法对Bean进行初始化</font>**  
+5. **<font color = "clime">调用 populateBean方法进行属性填充</font>**  
+6. **<font color = "clime">调用 initializeBean方法对Bean进行初始化</font>**  
 
-&emsp; **<font color = "lime">Spring DI依赖注入阶段，doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean() 初始化。</font>**  
+&emsp; **<font color = "clime">Spring DI依赖注入阶段，doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean() 初始化。</font>**  
 
 &emsp; **源码解析：**  
 
@@ -655,7 +656,7 @@ protected void populateBean(String beanName, RootBeanDefinition mbd, @Nullable B
 #### 1.4.1.3. initializeBean  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/Spring/SpringDI-9.png)  
 &emsp; **流程解析：**  
-1. **<font color = "lime">如果Bean实现了BeanNameAware，BeanClassLoaderAware，BeanFactoryAware则调用对应实现的方法</font>**  
+1. **<font color = "clime">如果Bean实现了BeanNameAware，BeanClassLoaderAware，BeanFactoryAware则调用对应实现的方法</font>**  
 2. Bean不为null并且bean不是合成的，如果实现了BeanPostProcessor的postProcessBeforeInitialization则会调用实现的postProcessBeforeInitialization方法。在ApplicationContextAwareProcessor类中实现了postProcessBeforeInitialization方法。而这个类会在Spring刷新容器准备beanFactory的时候会加进去，这里就会被调用，而调用里面会检查Bean是不是EnvironmentAware,EmbeddedValueResolverAware,ResourceLoaderAware,ApplicationEventPublisherAware,MessageSourceAware,ApplicationContextAware的实现类。这里就会调用对应的实现方法。  
     * 实例化Bean然后，检查是否实现了InitializingBean的afterPropertiesSet方法，如果实现了就会调用  
     * Bean不为null并且bean不是合成的，如果实现了BeanPostProcessor的postProcessBeforeInitialization则会调用实现的postProcessAfterInitialization方法。  

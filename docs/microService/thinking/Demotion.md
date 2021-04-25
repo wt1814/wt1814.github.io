@@ -14,9 +14,10 @@
 
 <!-- /TOC -->
 
-# 1. 服务降级
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-36.png)  
 
+
+# 1. 服务降级
 ## 1.1. 服务降级  
 ### 1.1.1. 服务降级简介  
 &emsp; 什么是服务降级？当服务器压力剧增的情况下，根据实际业务情况及流量，对一些服务和页面有策略的不处理或换种简单的方式处理，从而释放服务器资源以保证核心交易正常运作或高效运作。  

@@ -11,7 +11,7 @@
 
 # 1. ES集群操作
 ## 1.1. 集群健康状态检查  
-&emsp; 要检查群集运行状况，可以在Kibana控制台中运行以下命令 GET /_cluster/health，得到如下信息：  
+&emsp; 要检查集群运行状况，可以在Kibana控制台中运行以下命令 GET /_cluster/health，得到如下信息：  
 
 ```json
 {
@@ -33,7 +33,7 @@
 }
 ```
 
-&emsp; <font color = "red">Elasticsearch集群存在三种健康状态</font>(单节点 Elasticsearch 也可以算是一个集群)。  
+&emsp; <font color = "red">Elasticsearch集群存在三种健康状态</font>(单节点Elasticsearch也可以算是一个集群)。  
 
 * 绿色：集群健康完好，一切功能齐全正常，所有分片和副本都可以正常工作。  
 * 黄色：预警状态，所有主分片功能正常，但至少有一个副本是不能正常工作的。此时集群是可以正常工作的，但是高可用性在某种程度上会受影响。  

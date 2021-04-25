@@ -67,7 +67,7 @@
 <!-- 
 《Netty权威指南》第20章
 -->
-&emsp; Netty采用了典型的三层网络架构进行设计和开发，逻辑架构如下图所示：  
+&emsp; **<font color = "red">Netty采用了典型的三层网络架构进行设计和开发，逻辑架构如下图所示：</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-27.png)  
 
 * Reactor通信调度层  
@@ -104,5 +104,4 @@
 &emsp; 另外，它提供了一个子项目handler-proxy，实现对HTTP、Socks4、Socks5的代理转发。   
 * example项目，该项目是提供各种Netty使用示例。  
 
-&emsp; **Netty中开发者最经常打交道的五个组件：ByteBuf，Channel，pipeline，ChannelHandler、EventLoop。**  
-
+&emsp; **<font color = "clime">Netty中开发者最经常打交道的五个组件：ByteBuf，Channel，pipeline，ChannelHandler、EventLoop。</font>**  

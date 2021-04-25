@@ -11,7 +11,7 @@
 
 # 1. Spring整合MyBatis原理  
 &emsp; Spring整合MyBatis并不会对MyBatis内部进行改造，只会进行集成，对其实现进行了包装。  
-&emsp; MyBatis运行原理：  
+&emsp; **MyBatis运行原理：**  
 1. 创建SqlSessionFacory；
 2. 从SqlSessionFactory对象中获取SqlSession对象；
 3. 获取Mapper；
@@ -85,12 +85,12 @@ public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
     scanner.scan(StringUtils.tokenizeToStringArray(this.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
 }
 ```
-&emsp; 这个方法中创建了一个ClassPathMapperScanner扫描器，这个扫描器继承了spring的ClassPathBeanDefinitionScanner。  
+&emsp; 这个方法中创建了一个ClassPathMapperScanner扫描器，这个扫描器继承了Spring的ClassPathBeanDefinitionScanner。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-27.png)  
 
 &emsp; ClassPathMapperScanner这个扫描器的主要的作用有以下几个：  
-&emsp; 第一扫描basePackage包下面所有的class类  
-&emsp; 第二将所有的class类封装成为spring的ScannedGenericBeanDefinition sbd对象  
+&emsp; 第一扫描basePackage包下面所有的class类。  
+&emsp; 第二将所有的class类封装成为spring的ScannedGenericBeanDefinition sbd对象。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-28.png)  
 &emsp; 第三过滤sbd对象，只接受接口类，从下面的代码中可以看出。  
 

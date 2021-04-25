@@ -15,13 +15,12 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结</font>**  
-&emsp; **<font color = "clime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling。</font>**  
-
-* explain：  
+1. **<font color = "clime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling。</font>**  
+2. explain：  
 &emsp; expain出来的信息列分别是id、select_type、table、partitions、 **<font color = "red">type</font>** 、possible_keys、 **<font color = "red">key</font>** 、 **<font color = "red">key_len</font>** 、ref、rows、filtered、 **<font color = "red">Extra</font>** 。  
 &emsp; **<font color = "clime">type单表查询类型要达到range级别(只检索给定范围的行，使用一个索引来选择行，非全表扫描)，extra额外的信息，常见的不太友好的值，如下：Using filesort，Using temporary。其他重要字段：key、key_len</font>**  
-* profiling  
-&emsp; 使用 profiling 命令可以了解 SQL 语句消耗资源的详细信息(每个执行步骤的开销)。 
+3. profiling  
+&emsp; 使用profiling命令可以了解SQL语句消耗资源的详细信息(每个执行步骤的开销)。 
 
 # 1. EXPLAIN、PROCEDURE ANALYSE(分析)  
 
@@ -88,7 +87,7 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-31.png)  
     &emsp; 从结果来看，id为2那一行的子查询先被执行。然后再去访问id=1中a表。  
     * id包含了相同和不同的情况。  
-    &emsp; 该情况一般是先有2个表或者子查询和表join，然后再和第三个表关联查询。比如  
+    &emsp; 该情况一般是先有2个表或者子查询和表join，然后再和第三个表关联查询。比如：  
     
         ```sql
         EXPLAIN SELECT t2.* FROM(SELECT t3.id FROM t3 WHERE t3.other_column = '') s1,t2 WHERE s1.id = t2.id;
@@ -103,7 +102,7 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
     * DERIVED：导出表的SELECT(FROM子句的子查询)；在FROM列表中包含的子查询被标记为DERIVED(衍生)MySQL会递归执行这些子查询，把结果放在临时表里；  
     * UNION：UNION中的第二个或后面的SELECT语句；若第二个SELECT出现在UNION之后，则被标记为UNION；若UNION包含在FROM子句的子查询中，外层SELECT将被标记为DERIVED；  
     * UNION RESULT：UNION的结果；  
-    * DEPENDENT SUBQUERY：子查询中的第一个 SELECT，取决于外面的查询. 即子查询依赖于外层查询的结果. 出现该值的时候一定要特别注意，可能需要使用join的方式优化子查询；  
+    * DEPENDENT SUBQUERY：子查询中的第一个 SELECT，取决于外面的查询，即子查询依赖于外层查询的结果。出现该值的时候一定要特别注意，可能需要使用join的方式优化子查询；  
     * DEPENDENT UNION：UNION中的第二个或后面的SELECT语句，取决于外面的查询；  
 
 * table：(查询涉及的表或衍生表)。  
@@ -120,8 +119,8 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
     * Ref：对于每个来自于前面的表的行组合，所有有匹配索引值的行将从这张表中读取。  
     * ref_or_null：该联接类型如同ref，但是添加了MySQL可以专门搜索包含NULL值的行。  
     * index_merge：该联接类型表示使用了索引合并优化方法。  
-    * unique_subquery：该类型替换了下面形式的IN子查询的ref: value IN (SELECT primary_key FROM single_table WHERE some_expr) unique_subquery是一个索引查找函数,可以完全替换子查询,效率更高。  
-    * index_subquery：该联接类型类似于unique_subquery。可以替换IN子查询，但只适合下列形式的子查询中的非唯一索引: value IN (SELECT key_column FROM single_table WHERE some_expr)  
+    * unique_subquery：该类型替换了下面形式的IN子查询的ref：value IN (SELECT primary_key FROM single_table WHERE some_expr) unique_subquery是一个索引查找函数，可以完全替换子查询，效率更高。  
+    * index_subquery：该联接类型类似于unique_subquery。可以替换IN子查询，但只适合下列形式的子查询中的非唯一索引：value IN (SELECT key_column FROM single_table WHERE some_expr)  
     * <font color = "red">Range：只检索给定范围的行，使用一个索引来选择行。</font>  
     * Index：该联接类型与ALL相同，除了只有索引树被扫描。这通常比ALL快，因为索引文件通常比数据文件小。  
     * ALL：对于每个来自于先前的表的行组合，进行完整的表扫描。  

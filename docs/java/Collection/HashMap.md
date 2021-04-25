@@ -37,6 +37,7 @@ https://mp.weixin.qq.com/s/VpcgoV9JJWZz6tLagsIYnQ
 https://mp.weixin.qq.com/s/yijuwQuuOBE8x1VKk6lhCQ
 HashMap
 https://mp.weixin.qq.com/s/50opoIzy--aGCDZPNvg7RA
+https://mp.weixin.qq.com/s/sCbhQolu_BXBXsQwlFC81g
 
 记录插入顺序的LinkHashMap、给key排序的TreeMap。
 -->

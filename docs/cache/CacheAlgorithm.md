@@ -4,6 +4,9 @@
     - [1.1. FIFO](#11-fifo)
     - [1.2. LRU](#12-lru)
         - [1.2.1. 基于哈希链表的LRU实现](#121-基于哈希链表的lru实现)
+            - [1.2.1.1. LinkedHashMap介绍](#1211-linkedhashmap介绍)
+            - [1.2.1.2. 方式一(简单)，不重写removeEldestEntry](#1212-方式一简单不重写removeeldestentry)
+            - [1.2.1.3. 方式二，重写removeEldestEntry](#1213-方式二重写removeeldestentry)
     - [1.3. LFU](#13-lfu)
 
 <!-- /TOC -->
@@ -26,7 +29,7 @@
 
 ## 1.2. LRU  
 &emsp; LRU是Least Recently Used的缩写，选择最近最久未使用的数据删除。  
-&emsp; LRU Cache具备的操作：  
+&emsp; **<font color = "clime">LRU Cache具备的操作：</font>**  
 1. put(key, val) 方法插入新的或更新已有键值对，如果缓存已满的话，要删除那个最久没用过的键值对以腾出位置插入。  
 2. get(key) 方法获取 key 对应的 val，如果 key 不存在则返回 -1。  
 
@@ -52,58 +55,96 @@ LRU Cache具备的操作：
 LRU 缓存算法的核心数据结构就是哈希链表，双向链表和哈希表的结合体。哈希表查找快，但是数据无固定顺序；链表有顺序之分，插入删除快，但是查找慢。
 
 
-LRU算法实现：
-方式一：https://mp.weixin.qq.com/s/8vtFLx6yH-2epvmKXrDiqg
 
 方式二：
 
 方式三：基于JDK的haxi 
 -->
 
-### 1.2.1. 基于哈希链表的LRU实现    
-&emsp; **<font color = "red">LRU缓存算法的核心数据结构就是哈希链表，双向链表和哈希表的结合体。哈希表查找快，但是数据无固定顺序；链表有顺序之分，插入删除快，但是查找慢。</font>**  
+### 1.2.1. 基于哈希链表的LRU实现 
+#### 1.2.1.1. LinkedHashMap介绍
+<!-- 
+https://mp.weixin.qq.com/s/pGNIEOGvOYDM5yiyMM8bRQ
+-->   
+&emsp; **<font color = "red">哈希链表，双向链表和哈希表的结合体。哈希表查找快，但是数据无固定顺序；链表有顺序之分，插入删除快，但是查找慢。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-4.png)  
 
-&emsp; LRU算法实现：  
-&emsp; 方式一：  
+&emsp; LinkedHashMap是如何记录保存插入顺序的。LinkedHashMap重载了HashMap的newNode、newTreeNode方法，在每次添加一个新的条目entry时，通过linkNodeLast()方法将其添加到双向链表的尾部来记录保存插入顺序。  
+
+#### 1.2.1.2. 方式一(简单)，不重写removeEldestEntry  
 
 ```java
-import java.util.LinkedHashMap;
-import java.util.Map;
+public class LRUCache {
 
-public class LRUCache3<K, V> {
-    /**
-     * 最大缓存大小
-     */
-    private int cacheSize;
-    private LinkedHashMap<K, V> cacheMap;
+    int capacity;
+    Map<Integer,Integer> map;
 
-    public LRUCache3(int cacheSize) {
-        this.cacheSize = cacheSize;
-        cacheMap = new LinkedHashMap(16, 0.75F, true) {
-            @Override
-            protected boolean removeEldestEntry(Map.Entry eldest) {
-                if (cacheSize + 1 == cacheMap.size()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
+    public LRUCache(int capacity){
+        this.capacity = capacity;
+        map = new LinkedHashMap<>();
     }
 
-    public void put(K key, V value) {
-        cacheMap.put(key, value);
+    public int get(int key){
+        //如果没有找到
+        if (!map.containsKey(key)){
+            return -1;
+        }
+        //找到了就刷新数据
+        Integer value = map.remove(key);
+        map.put(key,value);
+        return value;
     }
 
-    public V get(K key) {
-        return cacheMap.get(key);
+    public void put(int key,int value){
+        if (map.containsKey(key)){
+            map.remove(key);
+            map.put(key,value);
+            return;
+        }
+        map.put(key,value);
+        //超出capacity，删除最久没用的即第一个,或者可以复写removeEldestEntry方法
+        if (map.size() > capacity){
+            map.remove(map.entrySet().iterator().next().getKey());
+        }
+    }
+
+    public static void main(String[] args) {
+        LRUCache lruCache = new LRUCache(10);
+        for (int i = 0; i < 10; i++) {
+            lruCache.map.put(i,i);
+            System.out.println(lruCache.map.size());
+        }
+        System.out.println(lruCache.map);
+        lruCache.put(10,200);
+        System.out.println(lruCache.map);
     }
 }
-```  
+```
 
-&emsp; 手写LRU算法    
-&emsp; 基于LinkedHashMap实现一个简单版本的LRU算法。  
+&emsp; 输出：  
+
+```text
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+{0=0, 1=1, 2=2, 3=3, 4=4, 5=5, 6=6, 7=7, 8=8, 9=9}
+{1=1, 2=2, 3=3, 4=4, 5=5, 6=6, 7=7, 8=8, 9=9, 10=10}
+```
+
+#### 1.2.1.3. 方式二，重写removeEldestEntry
+&emsp; LinkedHashMap的accessOrder字段，其为true可以将被访问的数据移动到链表的表尾。可以基于此特性来实现一个应用LRU策略的缓存。重载removeEldestEntry方法，当发现缓存空间已满时，即删除表头数据来释放空间。  
+
+ 
+---------
+   
+&emsp; ~~基于LinkedHashMap实现一个简单版本的LRU算法。~~  
 
 ```java
 class LRUCache<K, V> extends LinkedHashMap<K, V> {
@@ -125,119 +166,62 @@ class LRUCache<K, V> extends LinkedHashMap<K, V> {
 }
 ```
 
+-----------
+
 ```java
-public class LRUCache<k, v> {
-    //容量
-    private int capacity;
-    //当前有多少节点的统计
-    private int count;
-    //缓存节点
-    private Map<k, node> nodeMap;
-    private Node head;
-    private Node tail;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-    public LRUCache(int capacity) {
-        if (capacity < 1) {
-            throw new IllegalArgumentException(String.valueOf(capacity));
-        }
-        this.capacity = capacity;
-        this.nodeMap = new HashMap<>();
-        //初始化头节点和尾节点，利用哨兵模式减少判断头结点和尾节点为空的代码
-        Node headNode = new Node(null, null);
-        Node tailNode = new Node(null, null);
-        headNode.next = tailNode;
-        tailNode.pre = headNode;
-        this.head = headNode;
-        this.tail = tailNode;
-    }
+public class LRUCache3<K, V> {
+    /**
+     * 最大缓存大小
+     */
+    private int cacheSize;
+    private LinkedHashMap<K, V> cacheMap;
 
-    public void put(k key, v value) {
-        Node node = nodeMap.get(key);
-        if (node == null) {
-            if (count >= capacity) {
-                //先移除一个节点
-                removeNode();
+    public LRUCache3(int cacheSize) {
+        this.cacheSize = cacheSize;
+        cacheMap = new LinkedHashMap(16, 0.75F, true) {
+            // todo
+            @Override
+            protected boolean removeEldestEntry(Map.Entry eldest) {
+                // return this.size() > cacheSize;
+                if (cacheSize + 1 == cacheMap.size()) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
-            node = new Node<>(key, value);
-            //添加节点
-            addNode(node);
-        } else {
-            //移动节点到头节点
-            moveNodeToHead(node);
+        };
+    }
+
+    public void put(K key, V value) {
+        cacheMap.put(key, value);
+    }
+
+    public V get(K key) {
+        return cacheMap.get(key);
+    }
+
+    public static void main(String[] args) {
+        LRUCache3 lruCache = new LRUCache3(10);
+        for (int i = 0; i < 10; i++) {
+            lruCache.cacheMap.put(i,i);
+            System.out.println(lruCache.cacheMap.size());
         }
-    }
-
-    public Node get(k key) {
-        Node node = nodeMap.get(key);
-        if (node != null) {
-            moveNodeToHead(node);
-        }
-        return node;
-    }
-
-    private void removeNode() {
-        Node node = tail.pre;
-        //从链表里面移除
-        removeFromList(node);
-        nodeMap.remove(node.key);
-        count--;
-    }
-
-    private void removeFromList(Node node) {
-        Node pre = node.pre;
-        Node next = node.next;
-
-        pre.next = next;
-        next.pre = pre;
-
-        node.next = null;
-        node.pre = null;
-    }
-
-    private void addNode(Node node) {
-        //添加节点到头部
-        addToHead(node);
-        nodeMap.put(node.key, node);
-        count++
-    }
-
-    private void addToHead(Node node) {
-        Node next = head.next;
-        next.pre = node;
-        node.next = next;
-        node.pre = head;
-        head.next = node;
-    }
-
-    public void moveNodeToHead(Node node) {
-        //从链表里面移除
-        removeFromList(node);
-        //添加节点到头部
-        addToHead(node);
-    }
-
-    class Node<k, v> {
-        k key;
-        v value;
-        Node pre;
-        Node next;
-
-        public Node(k key, v value) {
-            this.key = key;
-            this.value = value;
-        }
+        System.out.println(lruCache.cacheMap);
+        lruCache.put(10,10);
+        System.out.println(lruCache.cacheMap);
     }
 }
-```
+```  
+
 
 
 ---------
 
-<!-- 
-https://mp.weixin.qq.com/s/pGNIEOGvOYDM5yiyMM8bRQ
--->
-LRU算法  
-&emsp; LinkedHashMap的accessOrder字段，其为true可以将被访问的数据移动到链表的表尾。可以基于此特性来实现一个应用LRU策略的缓存。重载removeEldestEntry方法，当发现缓存空间已满时，即删除表头数据来释放空间。  
+
+&emsp; 不同写法：    
 
 ```java
 /**
@@ -293,12 +277,6 @@ public class LRUCacheTest {
     }
 }
 ```
-&emsp; 测试结果如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-10.png)  
-
-
-
-
 
 
 ## 1.3. LFU

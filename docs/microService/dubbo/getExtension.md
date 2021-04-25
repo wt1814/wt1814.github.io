@@ -21,7 +21,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; Dubbo SPI获得指定拓展对象，首先通过ExtensionLoader的getExtensionLoader方法获取一个ExtensionLoader实例，然后再通过ExtensionLoader的getExtension方法(调用createExtension方法)获取拓展类对象。createExtension方法包含了如下的步骤：
+&emsp; Dubbo SPI获得指定拓展对象，首先通过ExtensionLoader的getExtensionLoader方法获取一个ExtensionLoader实例，然后再通过ExtensionLoader的getExtension方法（调用createExtension方法）获取拓展类对象。createExtension方法包含了如下的步骤：  
 
 * 通过getExtensionClasses获取所有的拓展类
 * 通过反射创建拓展对象
@@ -207,7 +207,7 @@ private T createExtension(String name) {
 
 ##### 1.2.2.2.1. 获取所有的拓展类  
 ###### 1.2.2.2.1.1. getExtensionClasses  
-&emsp; 在通过名称获取拓展类之前，首先需要根据配置文件解析出拓展项名称到拓展类的映射关系表(Map<名称,拓展类>)，之后再根据拓展项名称从映射关系表中取出相应的拓展类即可。相关过程的代码分析如下：  
+&emsp; 在通过名称获取拓展类之前，首先需要根据配置文件解析出拓展项名称到拓展类的映射关系表（Map<名称,拓展类>），之后再根据拓展项名称从映射关系表中取出相应的拓展类即可。相关过程的代码分析如下：  
 
 ```java
 private Map<String, Class<?>> getExtensionClasses() {

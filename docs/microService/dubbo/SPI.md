@@ -36,7 +36,7 @@ https://mp.weixin.qq.com/s/hR8hlJyGxnn3wIfBhlNbuQ
 &emsp; SPI机制在第三方框架中也有所应用，比如Dubbo就是通过SPI机制加载所有的组件。不过，Dubbo并未使用Java原生的SPI机制，而是对其进行了增强，使其能够更好的满足需求。 **<font color = "clime">Dubbo改进了JDK标准的SPI的以下问题：</font>**  
 
 * JDK标准的SPI会一次性实例化扩展点所有实现，如果有扩展实现初始化很耗时，但如果没用上也加载，会很浪费资源。
-* 如果扩展点加载失败，连扩展点的名称都拿不到了。比如：JDK标准的ScriptEngine，通过getName()获取脚本类型的名称，但如果RubyScriptEngine因为所依赖的jruby.jar 不存在，导致RubyScriptEngine类加载失败，这个失败原因被吃掉了，和ruby对应不起来，当用户执行ruby脚本时，会报不支持ruby，而不是真正失败的原因。  
+* 如果扩展点加载失败，连扩展点的名称都拿不到了。比如：JDK标准的ScriptEngine，通过getName()获取脚本类型的名称，但如果RubyScriptEngine因为所依赖的jruby.jar不存在，导致RubyScriptEngine类加载失败，这个失败原因被吃掉了，和ruby对应不起来，当用户执行ruby脚本时，会报不支持ruby，而不是真正失败的原因。  
 * 增加了对扩展点IoC和AOP的支持，一个扩展点可以直接setter注入其它扩展点。  
 
 <!-- 
@@ -85,7 +85,7 @@ public class Bumblebee implements Robot {
     }
 }
 ```
-&emsp; 接下来META-INF/services文件夹下创建一个文件，名称为Robot的全限定名 org.apache.spi.Robot。文件内容为实现类的全限定的类名，如下：  
+&emsp; 接下来META-INF/services文件夹下创建一个文件，名称为Robot的全限定名org.apache.spi.Robot。文件内容为实现类的全限定的类名，如下：  
 
 ```text
 org.apache.spi.OptimusPrime
@@ -134,7 +134,7 @@ public class DubboSPITest {
 &emsp; 测试结果如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-22.png)   
 
-&emsp; Dubbo SPI中常用的注解  
+&emsp; Dubbo SPI中常用的注解：  
 
 * @SPI标记为扩展接口  
 * @Adaptive自适应拓展实现类标志  
@@ -314,5 +314,5 @@ public class XxxFilter implements Filter {
 }
 ```
 
-1. 注意：这里的配置文件是放在程序中的jar包内，不是dubbo本身的jar包内，Dubbo会全 ClassPath扫描所有jar包内同名的这个文件，然后进行合并
-2. 注意：扩展点使用单一实例加载（请确保扩展实现的线程安全性），缓存在 ExtensionLoader中
+1. 注意：这里的配置文件是放在程序中的jar包内，不是dubbo本身的jar包内，Dubbo会全 ClassPath扫描所有jar包内同名的这个文件，然后进行合并。
+2. 注意：扩展点使用单一实例加载（请确保扩展实现的线程安全性），缓存在 ExtensionLoader中。

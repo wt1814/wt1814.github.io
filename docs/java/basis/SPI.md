@@ -19,6 +19,17 @@
 2. 服务提供方实现接口，并在META-INF/services/中暴露实现类地址；  
 3. 服务调用方依赖接口，使用java.util.ServiceLoader类调用。  
 
+
+-----
+
+&emsp; 个人的简单理解：  
+&emsp; SPI（Service Provider Interface），服务提供发现接口。热插拔、动态替换。  
+&emsp; 多态，一个接口在一个包中有多个实现；而SPI提供的接口的实现一般在多个包中，例如JDBC的实现mysql、oracle，web容器有tomcat、jetty等。  
+&emsp; 一个接口在b、c包中有实现，在a包中可替换所依赖的包（b或c），动态实现某一个功能。  
+
+&emsp; 如果理解有误，见谅。 
+
+
 # 1. Java SPI机制详解
 <!--
 https://blog.csdn.net/sigangjun/article/details/79071850

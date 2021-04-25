@@ -29,6 +29,9 @@
 
 <!-- /TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-33.png)  
+
+
 # 1. Spring Cloud Sleuth
 <!-- 
 链路日志
@@ -39,7 +42,6 @@ https://mp.weixin.qq.com/s/CZnVxs0vDMBhhBUiioon3g
 主流微服务全链路监控系统之战 
 https://mp.weixin.qq.com/s/WfTEQagsRntOpMVIZZS_Rw
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-33.png)  
 
 ## 1.1. 全链路监控功能  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-42.png)  
@@ -88,10 +90,10 @@ https://mp.weixin.qq.com/s/WfTEQagsRntOpMVIZZS_Rw
 ```
 &emsp; INFO[]标签中为链路追踪信息。每个值的含义如下所述：  
 
-* 第一个值: springcloud-consumer-sleuth，它记录了应用的名称，也就是application properties中spring.application.name参数配置的属性  
-* 第二个值:f6fb983680aab32b, Spring Cloud Sleuth生成的一个ID，称为Trace ID，它用来标识一条请求链路。一条请求链路中包含一个Trace ID，多个Span ID  
-* 第三个值:c70932279d3b3a54，Spring Cloud Sleuth生成的另外一个ID，称为Span ID，它表示一个基本的工作单元，比如发送一个HTTP请求  
-* 第四个值: false，表示是否要将该信息输出到Zipkin等服务中来收集和展示。
+* 第一个值：springcloud-consumer-sleuth，它记录了应用的名称，也就是application properties中spring.application.name参数配置的属性  
+* 第二个值：f6fb983680aab32b, Spring Cloud Sleuth生成的一个ID，称为Trace ID，它用来标识一条请求链路。一条请求链路中包含一个Trace ID，多个Span ID  
+* 第三个值：c70932279d3b3a54，Spring Cloud Sleuth生成的另外一个ID，称为Span ID，它表示一个基本的工作单元，比如发送一个HTTP请求  
+* 第四个值：false，表示是否要将该信息输出到Zipkin等服务中来收集和展示。
 
 
 &emsp; 上面四个值中的Trace ID和Span ID是Spring Cloud Sleuth实现分布式服务跟踪的核心，在一次服务请求链路的调用过程中，会保持并传递同一个Trace ID，从而将整个分布于不同微服务进程中的请求跟踪信息串联起来。以上面输出内容为例springcloud-consumer-sleuth和springcloud-provider-sleuth同属于一个前端服务请求资源，所以他们的Trace ID是相同的，处于同一条请求链路中。  
@@ -251,10 +253,10 @@ public void saveLog2(String log) {
 &emsp; Zipkin的基础架构主要由4个核心组件构成。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-13.png)  
 
-* Collector: 收集器组件，它主要处理从外部系统发送过来的跟踪信息， 将这些信息转换为Zipkin内部处理的Span格式，以支待后续的存储、分析、展示等功能。  
-* Storage: 存储组件，它主要处理收集器接收到的跟踪信息，默认会将这些信息存储在内存中。也可以修改此存储策略，通过使用其他存储组件将跟踪信息存储到数据库中。  
-* RESTful API: API组件，它主要用来提供外部访问接口。比如给客户端展示跟踪信息，或是外接系统访问以实现监控等。  
-* Web UI: UI组件， 基于API组件实现的上层应用。通过UI组件，用户可以方便而又直观地查询和分析跟踪信息。  
+* Collector：收集器组件，它主要处理从外部系统发送过来的跟踪信息，将这些信息转换为Zipkin内部处理的Span格式，以支待后续的存储、分析、展示等功能。  
+* Storage：存储组件，它主要处理收集器接收到的跟踪信息，默认会将这些信息存储在内存中。也可以修改此存储策略，通过使用其他存储组件将跟踪信息存储到数据库中。  
+* RESTful API：API组件，它主要用来提供外部访问接口。比如给客户端展示跟踪信息，或是外接系统访问以实现监控等。  
+* Web UI：UI组件， 基于API组件实现的上层应用。通过UI组件，用户可以方便而又直观地查询和分析跟踪信息。  
 
 &emsp; Zipkin的设计基于Google Dapper论文。核心术语如下：  
 * Trace，Zipkin使用Trace结构表示对一次请求的跟踪，一次请求可能由后台的若干服务负责处理，每个服务的处理是一个Span，Span之间有依赖关系，Trace就是树结构的Span集合；  
@@ -348,16 +350,16 @@ Client Sent
 
 #### 1.3.1.2. 链路信息收集  
 ##### 1.3.1.2.1. 消息中间件收集  
-&emsp; Spring Cloud Sleuth 在整合 Zipkin 时，不仅实现了以 HTTP 的方式收集跟踪信息，还实现了通过消息中间件来对跟踪信息进行异步收集的封装。 通过结合 Spring Cloud Stream, 可以非常轻松地让应用客户端将跟踪信息输出到消息中间件上， 同时 Zipkin 服务端从消息中间件上异步地消费这些跟踪信息。  
+&emsp; Spring Cloud Sleuth在整合Zipkin时，不仅实现了以HTTP的方式收集跟踪信息，还实现了通过消息中间件来对跟踪信息进行异步收集的封装。通过结合Spring Cloud Stream, 可以非常轻松地让应用客户端将跟踪信息输出到消息中间件上，同时Zipkin服务端从消息中间件上异步地消费这些跟踪信息。  
 
 #### 1.3.1.3. 数据持久化  
-&emsp; 默认情况下， Zipkin Server会将跟踪信息存储在内存中，每次重启 Zipkin Server都会使之前收集的跟踪信息丢失， 并且当有大量跟踪信息时，内存存储也会成为瓶颈，所以通常情况下需要将跟踪信息对接到外部存储组件中去。  
+&emsp; 默认情况下，Zipkin Server会将跟踪信息存储在内存中，每次重启Zipkin Server都会使之前收集的跟踪信息丢失，并且当有大量跟踪信息时，内存存储也会成为瓶颈，所以通常情况下需要将跟踪信息对接到外部存储组件中去。  
 
 * 存储在Mysql数据库  
 * 存储在ElasticSearch  
 
 #### 1.3.1.4. API接口  
-&emsp; Zipkin不仅提供了UI模块让用户可以使用Web页面来方便地查看跟踪信息，它还提供了丰富的RESTful API接口供用户在第三方系统中调用来定制自己的跟踪信息展示或监控。可以在ZipkinServer启动时的控制台或日志中找到Zipkin服务端提供的RESTful API定义  
+&emsp; Zipkin不仅提供了UI模块让用户可以使用Web页面来方便地查看跟踪信息，它还提供了丰富的RESTful API接口供用户在第三方系统中调用来定制自己的跟踪信息展示或监控。可以在ZipkinServer启动时的控制台或日志中找到Zipkin服务端提供的RESTful API定义。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-32.png)  
 &emsp; 可以看到Zipkin Server提供的API接口都以/api/vl路径作为前缀，它们的具体功能整理如下：  
 

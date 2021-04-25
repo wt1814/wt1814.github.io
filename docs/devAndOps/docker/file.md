@@ -11,13 +11,14 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">Dockerfile中包含：</font>** (# 为 Dockerfile中的注释)  
+1. **<font color = "clime">Dockerfile中包含：</font>** (# 为 Dockerfile中的注释)  
 * 基础镜像(FROM)    
 * 镜像元信息   
 * 镜像操作指令(RUN、COPY、ADD、EXPOSE、WORKDIR、ONBUILD、USER、VOLUME等)    
-    * RUN命令： **run 是在 docker build 构建镜像时, 会执行的命令，** 比如安装一些软件、配置一些基础环境。  
+    * RUN命令：**run是在docker build构建镜像时，会执行的命令，** 比如安装一些软件、配置一些基础环境。  
 * 容器启动时执行指令(CMD、ENTRYPOINT)  
-    * CMD命令： **cmd 是在 docker run 启动容器时，会执行的命令，为启动的容器指定默认要运行的程序。** CMD指令指定的程序可被docker run命令行参数中指定要运行的程序所覆盖。 **<font color = "clime">注意：如果Dockerfile中如果存在多个CMD指令，仅最后一个生效。</font>**    
+    * CMD命令： **cmd是在docker run启动容器时，会执行的命令，为启动的容器指定默认要运行的程序。** CMD指令指定的程序可被docker run命令行参数中指定要运行的程序所覆盖。 **<font color = "clime">注意：如果Dockerfile中如果存在多个CMD指令，仅最后一个生效。</font>**    
+
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-9.png)  
 
@@ -139,7 +140,7 @@ https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
     &emsp; 使用LABEL 指定元数据时，一条LABEL指定可以指定一或多条元数据，指定多条元数据时不同元数据之间通过空格分隔。推荐将所有的元数据通过一条LABEL指令指定，以免生成过多的中间镜像。  
 
 4. RUN命令  
-    &emsp; run 是在 docker build 构建镜像时, 会执行的命令，比如安装一些软件、配置一些基础环境。其格式有两种：
+    &emsp; run是在docker build构建镜像时，会执行的命令，比如安装一些软件、配置一些基础环境。其格式有两种：
 
     1. shell 格式：RUN <命令行命令>  
 
@@ -162,7 +163,7 @@ https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
         ENV <key>=<value> ... #可以设置多个变量，每个变量为一个"="的键值对，如果中包含空格，可以使用\来进行转义，也可以通过""来进行标识；另外，\ 也可以用于续行。  
 
     &emsp; 示例：ENV version 1.0.0或者ENV version=1.0.0  
-    &emsp; 可以通过${key}在其它指令中来引用变量，如 ${version}。也可以通过docker run中的-e \<ENV>来动态赋值  
+    &emsp; 可以通过${key}在其它指令中来引用变量，如 ${version}。也可以通过docker run中的-e \<ENV>来动态赋值。  
 
     <!-- 
     这个指令很简单，就是设置环境变量而已，无论是后面的其它指令，如RUN，还是运行时的应用，都可以直接使用这里定义的环境变量。通过${key1}方式引用即可。  
@@ -236,7 +237,7 @@ https://mp.weixin.qq.com/s/whWxIflM807JCLLzQl726g
     &emsp; 因此如果需要改变以后各层的工作目录的位置，那么应该使用WORKIDR指令。  
 
 12. CMD命令  
-    &emsp; cmd 是在 docker run 启动容器时，会执行的命令，为启动的容器指定默认要运行的程序。CMD指令指定的程序可被docker run命令行参数中指定要运行的程序所覆盖。 **<font color = "clime">注意：如果 Dockerfile 中如果存在多个 CMD 指令，仅最后一个生效。</font>**    
+    &emsp; cmd 是在 docker run 启动容器时，会执行的命令，为启动的容器指定默认要运行的程序。CMD指令指定的程序可被docker run命令行参数中指定要运行的程序所覆盖。 **<font color = "clime">注意：如果Dockerfile中如果存在多个CMD 指令，仅最后一个生效。</font>**    
 
         CMD命令是容器运行时执行的命令，命令和run有本质的区别：CMD用于指定在容器启动docker run时所要执行的命令，而RUN用于指定镜像构建docker build时所要执行的命令。     
 
@@ -282,8 +283,8 @@ https://www.cnblogs.com/my-program-life/p/12238016.html
 https://blog.csdn.net/qq_37546891/article/details/90742564
 -->
 &emsp; **Docker通过Dockerfile构建镜像过程：**  
-1. 从基础镜像中运行一个容器
-2. 执行一条指令，对容器做出修改
+1. 从基础镜像中运行一个容器。
+2. 执行一条指令，对容器做出修改。
 3. 对2中修改后的容器，执行类似与docker commit的操作，提交一个新的镜像层。
 4. 基于3中的中间层镜像，运行一个新的容器。
 5. 反复2、3、4的操作，直至所有的指令执行完毕。

@@ -22,14 +22,16 @@
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-57.png)  
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 事务的四大特性(ACID)：原子性(Atomicity)、一致性(Consistency)、隔离性(Isolation)、持久性(Durability)。  
-&emsp; 并发事务处理带来的问题：脏读、丢失修改、不可重复读、幻读。  
+1. 事务的四大特性(ACID)：原子性(Atomicity)、一致性(Consistency)、隔离性(Isolation)、持久性(Durability)。  
+2. 并发事务处理带来的问题：脏读、丢失修改、不可重复读、幻读。  
 &emsp; SQL标准定义了四个隔离级别：读取未提交、读取已提交、可重复读(可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读)、可串行化。  
-&emsp; 在MySQL中，默认的隔离级别是REPEATABLE-READ(可重复读)，阻止脏读和不可重复读，并且解决了幻读问题。  
+3. 在MySQL中，默认的隔离级别是REPEATABLE-READ(可重复读)，阻止脏读和不可重复读，并且解决了幻读问题。  
 &emsp; 隔离性(事务的隔离级别)的实现，利用的是锁和MVCC机制。 
+    * **<font color = "blue">快照读：生成一个事务快照(ReadView)，之后都从这个快照获取数据。</font>** 普通select语句就是快照读。  
+    &emsp; <font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
+    * **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的 update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
+    &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。  
 
-* **<font color = "blue">快照读：生成一个事务快照(ReadView)，之后都从这个快照获取数据。</font>** 普通select语句就是快照读。<font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
-* **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的 update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。   
 
 # 1. MySql的事务  
 <!-- 
@@ -56,13 +58,13 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 -->
 &emsp; 多事务的并发进行一般会造成以下几个问题： 
 
-* <font color = "red">脏读(Dirty read)：(一个事务读了另一个事务未提交的数据。)</font>  
+* <font color = "red">脏读(Dirty read)：(一个事务读了另一个事务未提交的数据)</font>  
 &emsp; 当一个事务正在访问数据并且对数据进行了修改，而这种修改还没有提交到数据库中，这时另外一个事务也访问了这个数据，然后使用了这个数据。因为这个数据是还没有提交的数据，那么另外一个事务读到的这个数据是“脏数据”，依据“脏数据”所做的操作可能是不正确的。  
-* <font color = "red">丢失修改(Lost to modify)：(一个事务覆盖了另一个事务的数据。)</font>  
+* <font color = "red">丢失修改(Lost to modify)：(一个事务覆盖了另一个事务的数据)</font>  
 &emsp; 指在一个事务读取一个数据时，另外一个事务也访问了该数据，那么在第一个事务中修改了这个数据后，第二个事务也修改了这个数据。这样第一个事务内的修改结果就被丢失，因此称为丢失修改。例如：事务1读取某表中的数据A=20，事务2也读取A=20，事务1修改A=A-1，事务2也修改A=A-1，最终结果A=19，事务1的修改被丢失。  
-* <font color = "red">不可重复读(Unrepeatableread)：(一个事务多次读，另一事务中间修改了数据。)</font>  
+* <font color = "red">不可重复读(Unrepeatableread)：(一个事务多次读，另一事务中间修改了数据)</font>  
 &emsp; 指在一个事务内多次读同一数据。在这个事务还没有结束时，另一个事务也访问该数据。那么，在第一个事务中的两次读数据之间，由于第二个事务的修改导致第一个事务两次读取的数据可能不太一样。这就发生了在一个事务内两次读到的数据是不一样的情况，因此称为不可重复读。  
-* <font color = "red">幻读(Phantom read)：(一个事务多次读，另一事务中间新增了数据。)</font>  
+* <font color = "red">幻读(Phantom read)：(一个事务多次读，另一事务中间新增了数据)</font>  
 &emsp; 幻读与不可重复读类似。它发生在一个事务(T1)读取了几行数据，接着另一个并发事务(T2)插入了一些数据时。在随后的查询中，第一个事务(T1)就会发现多了一些原本不存在的记录，就好像发生了幻觉一样，所以称为幻读。  
 
         不可重复度和幻读区别：   
@@ -111,7 +113,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 &emsp; 总之，ACID只是个概念，事务最终目的是要保障数据的可靠性，一致性。  
 
 ### 1.4.1. 原子性的实现  
-&emsp; 采用[undo log][MySql事务日志](/docs/SQL/log.md)实现。  
+&emsp; 采用[undo log](/docs/SQL/log.md)实现。  
 
 <!-- 
 &emsp; 利用Innodb的undo log。undo log名为回滚日志，是实现原子性的关键，当事务回滚时能够撤销所有已经成功执行的sql语句，它需要记录要回滚的相应日志信息。例如：  

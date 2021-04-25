@@ -17,21 +17,20 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">select,poll,epoll只是I/O多路复用模型中第一阶段，即获取网络数据、用户态和内核态之间的拷贝。</font>** 此阶段会阻塞线程。  
-1. **select()：**  
+1. **<font color = "clime">select,poll,epoll只是I/O多路复用模型中第一阶段，即获取网络数据、用户态和内核态之间的拷贝。</font>** 此阶段会阻塞线程。  
+2. **select()：**  
     &emsp; **select运行流程：**  
     &emsp; select()运行时会将fd_set集合从用户态拷贝到内核态。在内核态中线性扫描socket，即采用轮询。如果有事件返回，会将内核态的数组相应的FD置位。最后再将内核态的数据返回用户态。  
     &emsp; **select机制的问题：**  
     * 为了减少数据拷贝带来的性能损坏，内核对被监控的fd_set集合大小做了限制，并且这个是通过宏控制的，大小不可改变(限制为1024)  
     * 每次调用select， **<font color = "red">1)需要把fd_set集合从用户态拷贝到内核态，</font>** **<font color = "clime">2)需要在内核遍历传递进来的所有fd_set(对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低)，</font>** **<font color = "red">3)如果有数据返回还需要从内核态拷贝到用户态。</font>** 如果fd_set集合很大时，开销比较大。 
     * 由于运行时，需要将FD置位，导致fd_set集合不可重用。  
-    * **<font color = "clime">select()函数返回后，</font>** 调用函数并不知道是哪几个流(可能有一个，多个，甚至全部)， **<font color = "clime">还得再次遍历fd_set集合处理数据，即采用无差别轮询。</font>**   
+    * **<font color = "clime">select()函数返回后，</font>** 调用函数并不知道是哪几个流（可能有一个，多个，甚至全部）， **<font color = "clime">还得再次遍历fd_set集合处理数据，即采用无差别轮询。</font>**   
     * ~~惊群~~   
 
-2. **poll()：**  
+3. **poll()：**  
 &emsp; 运行机制与select()相似。将fd_set数组改为采用链表方式pollfds，没有连接数的限制，并且pollfds可重用。  
-
-3. **epoll()：**  
+4. **epoll()：**  
     &emsp; 调用epoll_create，会在内核cache里建个红黑树，epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改；同时也会再建立一个rdllist双向链表，用于存储准备就绪的事件，当epoll_wait调用时，仅查看这个rdllist双向链表数据即可。epoll_wait阻塞等待注册的事件发生，返回事件的数目，并将触发的事件写入events数组中。    
     &emsp; **epoll机制的工作模式：**  
     
@@ -48,16 +47,15 @@
 
 # 1. 多路复用(select/poll/epoll)
 <!--
+★★★ 你管这破玩意叫 IO 多路复用？ 
+https://mp.weixin.qq.com/s/Ok7SIROXu1THUbWsFu-UYw
+
 深入Hotspot源码与Linux内核理解NIO与Epoll 
 https://mp.weixin.qq.com/s/WhfnTtMpY4EgT65UezKjtw
 IO多路复用的三种机制Select，Poll，Epoll
 https://www.jianshu.com/p/397449cadc9a
-https://www.cnblogs.com/aspirant/p/9166944.html
 https://www.bilibili.com/read/cv6134546?share_medium=android&share_plat=android&share_source=WEIXIN&share_tag=s_i&timestamp=1596386488&unique_k=aZsmwN
 
-
-https://blog.csdn.net/define_us/article/details/81568247
-https://blog.csdn.net/weixin_34111790/article/details/89601839?utm_medium=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase&depth_1-utm_source=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase
 
 
 IO多路复用
@@ -96,10 +94,10 @@ int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct 
 &emsp; 【参数说明】  
 &emsp; int maxfdp1，指定待测试的文件描述字个数，它的值是待测试的最大描述字加1。  
 &emsp; fd_set \*readset, fd_set \*writeset, fd_set \*exceptset，fd_set可以理解为一个集合(**<font color = "red">实际上是一个long类型的数组，最高1024位</font>**)，这个集合中存放的是文件描述符(file descriptor)，即文件句柄。中间的三个参数指定要让内核测试读、写和异常条件的文件描述符集合。如果对某一个的条件不感兴趣，就可以把它设为空指针。  
-&emsp; const struct timeval *timeout timeout， 告知内核等待所指定文件描述符集合中的任何一个就绪可花多少时间。其timeval结构用于指定这段时间的秒数和微秒数。  
+&emsp; const struct timeval *timeout timeout，告知内核等待所指定文件描述符集合中的任何一个就绪可花多少时间。其timeval结构用于指定这段时间的秒数和微秒数。  
 
 &emsp; 【返回值】  
-&emsp; int 若有就绪描述符返回其数目，若超时则为0，若出错则为-1。  
+&emsp; int，若有就绪描述符返回其数目，若超时则为0，若出错则为-1。  
 
 &emsp; 【运行机制】  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-103.png)  
@@ -148,7 +146,7 @@ int 函数返回fds集合中就绪的读、写，或出错的描述符数量，�
 &emsp; **<font color = "red">在内核中只将revents字段置位，pollfds链表可重用。</font>**   
 
 ## 1.3. epoll
-&emsp; epoll是在2.6内核中提出的，是之前的select和poll的增强版本。相对于select和poll来说，epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。  
+&emsp; epoll是在2.6内核中提出的，是之前的select和poll的增强版本。相对于select和poll来说，epoll更加灵活，没有描述符限制。 **epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。**  
 <!-- 
 ★★★
 https://zhuanlan.zhihu.com/p/159135478
@@ -158,6 +156,8 @@ https://mp.weixin.qq.com/s/qVUXY7t515xmXIL8gQ1nBQ
 
 ### 1.3.1. ~~epoll()操作函数~~
 &emsp; epoll主要有epoll_create,epoll_ctl和epoll_wait三个函数。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-119.png)  
+
 * int epoll_create(int size)  
 &emsp; 函数创建epoll文件描述符，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。返回是epoll描述符。-1表示创建失败。  
 &emsp; 调用epoll_create，会在内核cache里建个红黑树，epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改；同时也会再建立一个rdllist双向链表，用于存储准备就绪的事件，当epoll_wait调用时，仅查看这个rdllist双向链表数据即可。     

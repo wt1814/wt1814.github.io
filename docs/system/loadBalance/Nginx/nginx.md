@@ -24,11 +24,10 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-11.png) 
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在4层或7层。</font>  
-&emsp; **多进程：** Nginx启动时，会生成两种类型的进程，一个主进程master，一个(windows版本的目前只有一个)或多个工作进程worker。  
-
-* 主进程并不处理网络请求，主要负责调度工作进程：加载配置、启动工作进程、非停升级。  
-* **<font color = "red">一般推荐worker进程数与CPU内核数一致，这样一来不存在大量的子进程生成和管理任务，避免了进程之间竞争CPU资源和进程切换的开销。</font>**  
+1. Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在4层或7层。</font>  
+2. **多进程：** Nginx启动时，会生成两种类型的进程，一个主进程master，一个（windows版本的目前只有一个）或多个工作进程worker。  
+    * 主进程并不处理网络请求，主要负责调度工作进程：加载配置、启动工作进程、非停升级。  
+    * **<font color = "red">一般推荐worker进程数与CPU内核数一致，这样一来不存在大量的子进程生成和管理任务，避免了进程之间竞争CPU资源和进程切换的开销。</font>**  
 
 # 1. Nginx  
 <!--
@@ -82,7 +81,7 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 
 ### 1.3.1. 异步非阻塞机制  
 &emsp; <font color = "red">每个工作进程使用异步非阻塞方式，可以处理多个客户端请求。</font>  
-&emsp; 当某个工作进程接收到客户端的请求以后，调用IO进行处理，如果不能立即得到结果，就去处理其他请求 (即为非阻塞 )，而客户端在此期间也无需等待响应，可以去处理其他事情(即为异步 )  
+&emsp; 当某个工作进程接收到客户端的请求以后，调用IO进行处理，如果不能立即得到结果，就去处理其他请求 (即为非阻塞 )，而客户端在此期间也无需等待响应，可以去处理其他事情（即为异步）。  
 &emsp; 当 IO 返回时，就会通知此工作进程，该进程得到通知，暂时挂起当前处理的事务去响应客户端请求 。  
 
 ### 1.3.2. Nginx事件驱动模型  
