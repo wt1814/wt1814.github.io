@@ -3,6 +3,8 @@
 
 - [1. ~~RPC~~](#1-rpc)
     - [1.1. 本地调用和远程调用](#11-本地调用和远程调用)
+        - [1.1.1. 本地调用和远程调用](#111-本地调用和远程调用)
+        - [1.1.2. RPC](#112-rpc)
     - [1.2. RPC起源](#12-rpc起源)
     - [1.3. ★★★RPC调用过程](#13-★★★rpc调用过程)
     - [1.4. RPC框架需要解决的问题？](#14-rpc框架需要解决的问题)
@@ -22,13 +24,14 @@
 &emsp; RPC，远程过程调用，屏蔽了传输协议，像本地调用一样进行远程通信。  
 
 ## 1.1. 本地调用和远程调用 
-&emsp; **本地调用：**  
+### 1.1.1. 本地调用和远程调用
 &emsp; 远程是相对于本地来说的，有远程调用就有本地调用，那么先说说本地调用是什么。    
 &emsp; 比如下图，代码在同一个进程中(或者说同一个地址空间)调用另外一个方法，得到需要的结果，这就是本地调用。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-8.png)   
 &emsp; 那么想象一下，如果这里的add方法是一个很复杂的方法，很多系统都想用这个方法，那么可以把这个方法单独拆成一个服务，提供给各个系统进行调用，那么本地就会变成远程，就会变成这样：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-9.png)   
 
+### 1.1.2. RPC
 &emsp; **RPC：让远程调用变得和本地调用一样**  
 &emsp; 那么在 Server_A中怎么调用Server_B中的add方法呢？  
 &emsp; 很多人都会想到Server_B封装一个接口，通过服务把这个方法暴露出去，比如通过HTTP请求，那么Server_A就可以调用Server_B中的add方法了。  
@@ -50,35 +53,38 @@ https://blog.csdn.net/u013474436/article/details/105059839
 RPC(三)《Implementing Remote Procedure Calls》译文
 https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&utm_source=weixin
 -->
+&emsp; 一个基本的RPC架构里面应该至少包含以下4个组件：  
+1. 客户端(Client)：服务调用方(服务消费者)。  
+2. <font color = "red">客户端存根(Client Stub)：存放服务端地址信息，将客户端的请求参数数据信息打包成网络消息，再通过网络传输发送给服务端。</font>  
+3. <font color = "red">服务端存根(Server Stub)：接收客户端发送过来的请求消息并进行解包，然后再调用本地服务进行处理。</font>  
+4. 服务端(Server)：服务的真正提供者。  
+
+&emsp; 具体的调用过程如下：  
+1. 服务消费者(client客户端)通过本地调用的方式调用服务。  
+2. **客户端存根(client stub)接收到调用请求后负责将方法、入参等信息序列化(组装)成能够进行网络传输的消息体。**  
+3. 客户端存根(client stub)找到远程的服务地址，并且将消息通过网络发送给服务端。  
+4. 服务端存根(server stub)收到消息后进行解码(反序列化操作)。  
+5. 服务端存根(server stub)根据解码结果调用本地的服务进行相关处理。  
+6. 本地服务执行具体业务逻辑。
+7. 并将处理结果返回给服务端存根(server stub)。   
+8. **服务端存根(server stub)将返回结果重新打包成消息(序列化)并通过网络发送至消费方。**  
+9. 服务端(server)通过sockets将消息发送到客户端。
+10. 客户端存根(client stub)接收到消息，并进行解码(反序列化)。  
+11. 服务消费方得到最终结果。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-6.png)  
+&emsp; 而RPC框架的实现目标则是将上面的第2-10步完好地封装起来，也就是把调用、编码/解码的过程给封装起来，让用户感觉上像调用本地服务一样的调用远程服务。  
+
+
+-----------
+
 &emsp; Nelson的论文中指出 **<font color = "red">实现RPC的程序包括5个部分：1. User、2. User-stub、3. RPCRuntime(RPC通信包)、4. Server-stub、5. Server。</font>**  
 &emsp; 这5个部分的关系如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-1.png)   
 &emsp; 这里user就是client端，当user发起一个远程调用时，它实际是通过本地调用user-stub。user-stub负责将调用的接口、方法和参数通过约定的协议规范进行编码并通过本地的RPCRuntime实例传输到远端的实例。远端RPCRuntime实例收到请求后交给server-stub进行解码后发起本地端调用，调用结果再返回给user端。  
 
------
-&emsp; 一个基本的RPC架构里面应该至少包含以下4个组件：  
-1. 客户端(Client)：服务调用方(服务消费者)  
-2. <font color = "red">客户端存根(Client Stub)：存放服务端地址信息，将客户端的请求参数数据信息打包成网络消息，再通过网络传输发送给服务端</font>  
-3. <font color = "red">服务端存根(Server Stub)：接收客户端发送过来的请求消息并进行解包，然后再调用本地服务进行处理</font>  
-4. 服务端(Server)：服务的真正提供者  
 
-&emsp; 具体的调用过程如下：  
-1. 服务消费者(client客户端)通过本地调用的方式调用服务  
-2. **客户端存根(client stub)接收到调用请求后负责将方法、入参等信息序列化(组装)成能够进行网络传输的消息体**  
-3. 客户端存根(client stub)找到远程的服务地址，并且将消息通过网络发送给服务端  
-4. 服务端存根(server stub)收到消息后进行解码(反序列化操作)  
-5. 服务端存根(server stub)根据解码结果调用本地的服务进行相关处理  
-6. 本地服务执行具体业务逻辑
-7. 并将处理结果返回给服务端存根(server stub)   
-8. **服务端存根(server stub)将返回结果重新打包成消息(序列化)并通过网络发送至消费方**  
-9. 服务端(server)通过sockets将消息发送到客户端；
-10. 客户端存根(client stub)接收到消息，并进行解码(反序列化)  
-11. 服务消费方得到最终结果  
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-6.png)  
-&emsp; 而RPC框架的实现目标则是将上面的第2-10步完好地封装起来，也就是把调用、编码/解码的过程给封装起来，让用户感觉上像调用本地服务一样的调用远程服务。  
-
------
+--------
 
 &emsp; 完整的RPC过程，如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-10.png)  
@@ -93,7 +99,7 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 &emsp; 总结来说，RPC用于服务之间的调用问题，特别是分布式环境；RPC让远程调用时，像调用本地方法一样方便和无感知；RPC框架屏蔽了很多底层的细节，不需要开发人员关注这些细节，比如序列化和反序列化、网络传输协议的细节。  
 
 ----
-~~RPC结构拆解~~
+~~RPC结构拆解~~  
 &emsp; 如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-3.png)   
 &emsp; RPC服务方通过RpcServer去导出(export)远程接口方法，而客户方通过RpcClient去引入(import)远程接口方法。客户方像调用本地方法一样去调用远程接口方法，RPC框架提供接口的代理实现，实际的调用将委托给代理RpcProxy。代理封装调用信息并将调用转交给RpcInvoker 去实际执行。在客户端的RpcInvoker通过连接器RpcConnector去维持与服务端的通道RpcChannel，并使用RpcProtocol执行协议编码(encode)并将编码后的请求消息通过通道发送给服务方。  
@@ -231,7 +237,7 @@ Apache Thrift ：https://thrift.apache.org/
 -->
 &emsp; 目前常用的RPC框架如下：  
 1. Thrift：thrift是一个软件框架，用来进行可扩展且跨语言的服务的开发。它结合了功能强大的软件堆栈和代码生成引擎，以构建在C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, JavaScript, Node.js, Smalltalk, and OCaml这些编程语言间无缝结合的、高效的服务。  
-2. Dubbo：Dubbo是一个分布式服务框架，以及SOA治理方案。其功能主要包括：高性能NIO通讯及多协议集成，服务动态寻址与路由，软负载均衡与容错，依赖分析与降级等。 Dubbo是阿里巴巴内部的SOA服务化治理方案的核心框架，Dubbo自2011年开源后，已被许多非阿里系公司使用。  
+2. Dubbo：Dubbo是一个分布式服务框架，以及SOA治理方案。其功能主要包括：高性能NIO通讯及多协议集成，服务动态寻址与路由，软负载均衡与容错，依赖分析与降级等。Dubbo是阿里巴巴内部的SOA服务化治理方案的核心框架，Dubbo自2011年开源后，已被许多非阿里系公司使用。  
 3. gRPC是Google开发的高性能、通用的开源RPC框架，其由Google主要面向移动应用开发并基于HTTP/2协议标准而设计，基于ProtoBuf(Protocol Buffers)序列化协议开发，且支持众多开发语言。本身它不是分布式的，所以要实现上面的框架的功能需要进一步的开发。  
 
 

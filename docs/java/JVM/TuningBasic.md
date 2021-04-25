@@ -18,7 +18,7 @@
             - [1.4.1.2. Jstack：java线程堆栈跟踪工具](#1412-jstackjava线程堆栈跟踪工具)
             - [1.4.1.3. Jmap：java内存映像工具](#1413-jmapjava内存映像工具)
                 - [1.4.1.3.1. ★★★jmap的几个操作要慎用](#14131-★★★jmap的几个操作要慎用)
-                - [★★★live参数](#★★★live参数)
+                - [1.4.1.3.2. ★★★live参数](#14132-★★★live参数)
             - [1.4.1.4. Jhat：虚拟机堆转储快照分析工具](#1414-jhat虚拟机堆转储快照分析工具)
             - [1.4.1.5. Jstat：虚拟机统计信息监视工具](#1415-jstat虚拟机统计信息监视工具)
             - [1.4.1.6. Jinfo：java配置信息工具](#1416-jinfojava配置信息工具)
@@ -29,8 +29,12 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. JVM命令行调优工具：  
     * Jps：虚拟机进程状况工具  
-    * Jstack：java线程堆栈跟踪工具  
+    * Jstack：java线程堆栈跟踪工具。  
+    &emsp; **<font color = "clime">生成线程快照的主要目的是定位线程出现长时间停顿的原因，如线程间死锁、死循环、请求外部资源导致的长时间等待等都是导致线程长时间停顿的常见原因。</font>**  
+    &emsp; **线程出现停顿的时候，通过jstack来查看各个线程的调用堆栈，就可以知道没有响应的线程到底在后台做什么事情，或者等待什么生产环境中最主要的危险操作是下面这三种资源。**  
     * Jmap：java内存映像工具  
+    &emsp; <font color = "red">jmap(JVM Memory Map)命令用于生成heap dump文件，如果不使用这个命令，**还可以使用-XX:+HeapDumpOnOutOfMemoryError参数来让虚拟机出现OOM的时候自动生成dump文件** 。</font>  
+    &emsp; jmap -dump:live,format=b,file=path pid。参数lime表示需要抓取目前在生命周期内的内存对象。  
     * Jhat：虚拟机堆转储快照分析工具  
     * Jstat：虚拟机统计信息监视工具  
     * Jinfo：java配置信息工具  
@@ -43,26 +47,26 @@
 ## 1.2. JVM参数  
 &emsp; **<font color = "red">设置参数的方式：</font>**  
 
-* 开发工具中设置，比如IDEA，eclipse  
-* 运行jar包的时候：java -XX:+UseG1GC xxx.jar  
-* web容器比如tomcat，可以在脚本中的进行设置  
-* 通过jinfo实时调整某个java进程的参数(参数只有被标记为manageable的flags可以被实时修改)  
+* 开发工具中设置，比如IDEA，eclipse。  
+* 运行jar包的时候：java -XX:+UseG1GC xxx.jar。  
+* web容器比如tomcat，可以在脚本中进行设置。  
+* 通过jinfo实时调整某个java进程的参数（参数只有被标记为manageable的flags可以被实时修改）。  
 
-&emsp; **<font color = "red">平时⼯作⽤过的JVM常⽤基本配置参数</font>**  
+&emsp; **<font color = "red">平时⼯作⽤过的JVM常⽤基本配置参数：</font>**  
 
     -Xms128m-Xmx4096m-Xss1024K-XX:MetaspaceSize=512m-XX:+PrintCommandLineFlags-XX:+PrintGCDetails-XX:+UseSerialGC  
 
-1. -Xms。初始⼤⼩内存，默认为物理内存1/64，等价于-XX:InitialHeapSize
-2. -Xmx。最⼤分配内存，默认物理内存1/4，等价于-XX:MaxHeapSize
-3. -Xss。设置单个线程栈的⼤⼩，默认542K~1024K ，等价于-XX:ThreadStackSize
-4. -Xmn。设置年轻代的⼤⼩  
-5. -XX:MetaspaceSize。设置元空间⼤⼩元空间的本质和永久代类似，都是对JVM规范中⽅法区的实现，不过元空间与永久代最⼤的区别在于：==元空间并不在虚拟机中，⽽是在本地内存中。==因此，默认元空间的⼤⼩仅受本地内存限制  
-6. -XX:+PrintGCDetails。输出详细GC收集⽇志信息[名称：GC前内存占⽤->GC后内存占⽤(该区内存总⼤⼩)]  
+1. -Xms。初始⼤⼩内存，默认为物理内存1/64，等价于-XX:InitialHeapSize。
+2. -Xmx。最⼤分配内存，默认物理内存1/4，等价于-XX:MaxHeapSize。
+3. -Xss。设置单个线程栈的⼤⼩，默认542K~1024K ，等价于-XX:ThreadStackSize。
+4. -Xmn。设置年轻代的⼤⼩。  
+5. -XX:MetaspaceSize。设置元空间⼤⼩元空间的本质和永久代类似，都是对JVM规范中⽅法区的实现，不过元空间与永久代最⼤的区别在于：==元空间并不在虚拟机中，⽽是在本地内存中。==因此，默认元空间的⼤⼩仅受本地内存限制。  
+6. -XX:+PrintGCDetails。输出详细GC收集⽇志信息\[名称：GC前内存占⽤->GC后内存占⽤(该区内存总⼤⼩)]。  
 7. -XX:SurvivorRatio。设置新⽣代中Eden和S0/S1空间的⽐例，默认-XX:SurvivorRatio=8，Eden :S0 :S1=8 :1 :1。  
 8. -XX:NewRatio。设置年轻代与⽼年代在堆结构的占⽐。默认-XX:NewRatio=2 新⽣代在1，⽼年代2，年轻代占整个堆的1/3。NewRatio值⼏句诗设置⽼年代的占⽐，剩下的1给新⽣代。  
 9. -XX:MaxTenuringThreshold。设置垃圾的最⼤年龄默认-XX:MaxTenuringThreshold=15。如果设置为0，年轻代对象不经过Survivor区，直接进⼊年⽼代。对于年⽼代⽐较多的应⽤，可以提⾼效率。如果将此值设置为⼀个较⼤的值，则年轻代对象回在Survivor区进⾏多次复制，这样可以增加对对象在年轻代的存活时间，增加在年轻代即被回收的概率。  
-10. -XX:+UseSerialGC。串⾏垃圾回收器
-11. -XX:+UseParallelGC。并⾏垃圾回收器  
+10. -XX:+UseSerialGC。串⾏垃圾回收器。
+11. -XX:+UseParallelGC。并⾏垃圾回收器。  
 
 ### 1.2.1. JVM参数分类  
 &emsp; JVM参数主要可以分为以下三类：  
@@ -277,7 +281,7 @@ https://mp.weixin.qq.com/s/MC2y6JAbZyjIVp7yTxT7fQ
 
 &emsp; 上面的这三个操作都将对应用的执行产生影响，所以建议如果不是很有必要的话，不要去执行。
 
-##### ★★★live参数  
+##### 1.4.1.3.2. ★★★live参数  
 <!-- 
 
 https://blog.csdn.net/shenzhenhair/article/details/8607366

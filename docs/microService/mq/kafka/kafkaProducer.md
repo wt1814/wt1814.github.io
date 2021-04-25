@@ -20,6 +20,10 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+1. **在消息发送的过程中，涉及到了两个线程：Main线程和Sender线程，以及一个线程共享变量RecordAccumulator(消息累加器)。 <font color = "clime">main线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。</font><font color = "red">其中主线程发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。</font>**  
+
+
 
 # 1. kafka生产者
 <!-- 
@@ -199,7 +203,7 @@ private Future<RecordMetadata> doSend(ProducerRecord<K, V> record, Callback call
 
 #### 1.3.1.1. RecordAccumulator#append方法详解  
 &emsp; 接下来将重点介绍step8如何将消息追加到生产者的发送缓存区，其实现类为：RecordAccumulator。  
-&emsp; 纵观 RecordAccumulator append 的流程，基本上就是从双端队列获取一个未填充完毕的 ProducerBatch(消息批次)，然后尝试将其写入到该批次中(缓存、内存中)，如果追加失败，则尝试创建一个新的ProducerBatch然后继续追加。Kafka双端队列的存储结构：  
+&emsp; 纵观RecordAccumulator append 的流程，基本上就是从双端队列获取一个未填充完毕的ProducerBatch(消息批次)，然后尝试将其写入到该批次中(缓存、内存中)，如果追加失败，则尝试创建一个新的ProducerBatch然后继续追加。Kafka双端队列的存储结构：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-11.png)  
 
 &emsp; RecordAccumulator#append  
@@ -311,10 +315,10 @@ public FutureRecordMetadata tryAppend(long timestamp, byte[] key, byte[] value, 
 
 ### 1.3.2. Kafka 消息追加流程图与总结  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-12.png)  
-&emsp; 上面的消息发送，其实用消息追加来表达更加贴切，因为 Kafka 的 send 方法，并不会直接向 broker 发送消息，而是首先先追加到生产者的内存缓存中，其内存存储结构如下：ConcurrentMap< TopicPartition, Deque< ProducerBatch>> batches，Kafka 的生产者为会每一个 topic 的每一个 分区单独维护一个队列，即 ArrayDeque，内部存放的元素为 ProducerBatch，即代表一个批次，即 Kafka 消息发送是按批发送的。其缓存结果图如下：  
+&emsp; 上面的消息发送，其实用消息追加来表达更加贴切，因为Kafka的send方法，并不会直接向broker发送消息，而是首先先追加到生产者的内存缓存中，其内存存储结构如下：ConcurrentMap< TopicPartition, Deque< ProducerBatch>> batches，Kafka的生产者为会每一个topic的每一个分区单独维护一个队列，即ArrayDeque，内部存放的元素为ProducerBatch，即代表一个批次，即Kafka消息发送是按批发送的。其缓存结果图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-13.png)  
-&emsp; KafkaProducer 的 send 方法最终返回的 FutureRecordMetadata ，是 Future 的子类，即 Future 模式。那 kafka 的消息发送怎么实现异步发送、同步发送的呢？  
-&emsp; 其实答案也就蕴含在 send 方法的返回值，如果项目方需要使用同步发送的方式，只需要拿到 send 方法的返回结果后，调用其 get() 方法，此时如果消息还未发送到 Broker 上，该方法会被阻塞，等到 broker 返回消息发送结果后该方法会被唤醒并得到消息发送结果。如果需要异步发送，则建议使用 send(ProducerRecord< K, V > record, Callback callback)，但不能调用 get 方法即可。Callback 会在收到 broker 的响应结果后被调用，并且支持拦截器。  
+&emsp; KafkaProducer的send方法最终返回的FutureRecordMetadata，是Future的子类，即Future模式。那kafka的消息发送怎么实现异步发送、同步发送的呢？  
+&emsp; 其实答案也就蕴含在send方法的返回值，如果项目方需要使用同步发送的方式，只需要拿到 send 方法的返回结果后，调用其get()方法，此时如果消息还未发送到 Broker 上，该方法会被阻塞，等到 broker 返回消息发送结果后该方法会被唤醒并得到消息发送结果。如果需要异步发送，则建议使用send(ProducerRecord< K, V > record, Callback callback)，但不能调用get方法即可。Callback会在收到broker的响应结果后被调用，并且支持拦截器。  
 &emsp; 消息追加流程就介绍到这里了，消息被追加到缓存区后，什么是会被发送到 broker 端呢？将在下一节中详细介绍。  
 
 ## 1.4. Sender 线程详解  
@@ -581,7 +585,7 @@ private void sendProduceRequest(long now, int destination, short acks, int timeo
 ```
 
 ###### 1.4.1.1.1.2. RecordAccumulator#drain       
-&emsp; 知道了需要向哪些节点投递消息，接下来自然而然就需要获取发往每个节点的数据， 步骤 4 的实现位于 RecordAccumulator#drain 方法中：  
+&emsp; 知道了需要向哪些节点投递消息，接下来自然而然就需要获取发往每个节点的数据， 步骤4的实现位于 RecordAccumulator#drain方法中：  
 
 ```java
 public Map<Integer, List<ProducerBatch>> drain(Cluster cluster, Set<Node> nodes, int maxSize, long now) {

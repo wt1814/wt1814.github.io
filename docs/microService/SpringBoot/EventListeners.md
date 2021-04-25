@@ -90,7 +90,7 @@ public ConfigurableApplicationContext run(String... args) {
 }
 ```
 &emsp; <font color = "red">SpringBoot在启动过程中首先会先新建一个SpringApplicationRunListeners对象用于发布SpringBoot启动过程中的各种生命周期事件</font>，比如发布ApplicationStartingEvent,ApplicationEnvironmentPreparedEvent和ApplicationContextInitializedEvent等事件，<font color = "red">然后相应的监听器会执行一些SpringBoot启动过程中的初始化逻辑。</font>  
-&emsp; 监听这些SpringBoot的生命周期事件的监听器是何时被加载实例化的呢？<font color = "red">这些执行初始化逻辑的监听器是在SpringApplication的构建过程中根据ApplicationListener接口去spring.factories配置文件中加载并实例化的。</font>  
+&emsp; 监听这些SpringBoot的生命周期事件的监听器是何时被加载实例化的呢？<font color = "red">这些执行初始化逻辑的监听器是在SpringApplication的构建过程中，根据ApplicationListener接口去spring.factories配置文件中加载并实例化的。</font>  
 
 ### 1.3.1. 为广播SpringBoot内置生命周期事件做前期准备  
 #### 1.3.1.1. 加载ApplicationListener监听器实现类  
@@ -219,7 +219,7 @@ public class EventPublishingRunListener implements SpringApplicationRunListener,
  // ...省略非关键代码
 }
 ```
-&emsp; EventPublishingRunListener类实现了SpringApplicationRunListener接口，SpringApplicationRunListener接口定义了SpringBoot启动时发布生命周期事件的接口方法，而EventPublishingRunListener类正是通过实现SpringApplicationRunListener接口的starting,environmentPrepared和contextPrepared等方法来广播SpringBoot不同的生命周期事件，SpringApplicationRunListener接口源码如下：  
+&emsp; EventPublishingRunListener类实现了SpringApplicationRunListener接口，SpringApplicationRunListener接口定义了SpringBoot启动时发布生命周期事件的接口方法，而EventPublishingRunListener类正是通过实现SpringApplicationRunListener接口的starting，environmentPrepared和contextPrepared等方法来广播SpringBoot不同的生命周期事件，SpringApplicationRunListener接口源码如下：  
 
 ```java
 // SpringApplicationRunListener.java
@@ -236,7 +236,7 @@ public interface SpringApplicationRunListener {
  
 }
 ```
-&emsp; EventPublishingRunListener类中有一个重要的成员属性initialMulticaster，该成员属性是SimpleApplicationEventMulticaster类对象，该类正是承担了广播SpringBoot启动时生命周期事件的职责,即EventPublishingRunListener对象没有承担广播事件的职责，而最终是委托SimpleApplicationEventMulticaster来广播事件的。 从EventPublishingRunListener的源码中也可以看到在starting,environmentPrepared和contextPrepared等方法中也正是通过调用SimpleApplicationEventMulticaster类对象的multicastEvent方法来广播事件的。  
+&emsp; EventPublishingRunListener类中有一个重要的成员属性initialMulticaster，该成员属性是SimpleApplicationEventMulticaster类对象，该类正是承担了广播SpringBoot启动时生命周期事件的职责，即EventPublishingRunListener对象没有承担广播事件的职责，而最终是委托SimpleApplicationEventMulticaster来广播事件的。 从EventPublishingRunListener的源码中也可以看到在starting,environmentPrepared和contextPrepared等方法中也正是通过调用SimpleApplicationEventMulticaster类对象的multicastEvent方法来广播事件的。  
 
 
 &emsp; 从spring.factories中加载出EventPublishingRunListener类后会实例化，而实例化必然会通过EventPublishingRunListener的构造函数来进行实例化。EventPublishingRunListener的构造函数源码：  
@@ -353,7 +353,7 @@ public void starting() {
    new ApplicationStartingEvent(this.application, this.args));
 }
 ```
-&emsp; EventPublishingRunListener对象将发布ApplicationStartingEvent这件事情委托给了SimpleApplicationEventMulticaster对象initialMulticaster, 而initialMulticaster对象最终会调用其multicastEvent方法来发布ApplicationStartingEvent事件。  
+&emsp; EventPublishingRunListener对象将发布ApplicationStartingEvent这件事情委托给了SimpleApplicationEventMulticaster对象initialMulticaster，而initialMulticaster对象最终会调用其multicastEvent方法来发布ApplicationStartingEvent事件。  
 
 ## 1.4. SpringBoot内置生命周期事件详解  
 [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/SpringBootEvent.md)  

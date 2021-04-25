@@ -29,7 +29,7 @@
 &emsp; **<font color = "clime">在Eden区中，JVM为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
 &emsp; 堆是分配对象存储的唯一选择吗？[逃逸分析](/docs/java/JVM/escape.md)  
 4. <font color = "clime">方法区的演进：</font>  
-    * jdk1.6及之前：有永久代(permanent generation) ，静态变量存放在永久代上  
+    * jdk1.6及之前：有永久代(permanent generation) ，静态变量存放在永久代上。  
     * jdk1.7：有永久代，但已经逐步“去永久代”，<font color = "red">字符串常量池、静态变量</font>移除，保存在堆中。  
     * jdk1.8及之后：无永久代，类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
 

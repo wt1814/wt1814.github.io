@@ -18,6 +18,11 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-27.png)  
 
 # 1. 并发编程  
+<!-- 
+10张图告诉你多线程那些破事 
+https://mp.weixin.qq.com/s/FE2492BG9vag6_sPF7K_Rw
+-->
+
 ## 1.1. 多线程带来的风险  
 &emsp; **<font color = "red">多线程带来的风险：</font>**  
 1. 安全性问题  

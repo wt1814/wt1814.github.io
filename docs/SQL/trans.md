@@ -90,7 +90,7 @@ ORDER BY
 &emsp; 如果把 START WITH 的查询起点改为 id = 2,重新运行上面的 SQL 语句将会得到如下结果：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-158.png)  
 &emsp; 因为 id=2 的产品是车身，就只能查到车身下面的子产品。  
-&emsp; 当然，可以把查询结果美化一下，使其更有层次感，我们让根节点下面的 LEVEL 前面加几个空格即可。把上面的 SQL 稍微修改一下。为每个 LEVEL 前面增加 2*(LEVEL-1)个空格，这样第二层就会增加两个空格，第三层会增加四个空格。  
+&emsp; 当然，可以把查询结果美化一下，使其更有层次感，让根节点下面的 LEVEL 前面加几个空格即可。把上面的 SQL 稍微修改一下。为每个 LEVEL 前面增加 2*(LEVEL-1)个空格，这样第二层就会增加两个空格，第三层会增加四个空格。  
 
 ```sql
 SELECT
@@ -108,7 +108,7 @@ FROM
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-159.png)  
 
 ### 1.2.2. 递归查询  
-&emsp; 除了使用上面我们说的方法，还可以使用递归查询得到同样的结果。递归会用到 WITH 语句。普通的 WITH 语句可以看作一个子查询，我们在 WITH 外部可以直接使用这个子查询的内容。  
+&emsp; 除了使用上面说的方法，还可以使用递归查询得到同样的结果。递归会用到 WITH 语句。普通的 WITH 语句可以看作一个子查询，在 WITH 外部可以直接使用这个子查询的内容。  
 &emsp; 当递归查询时，是在 WITH 语句内部来引用这个子查询。还是上面的例子，使用 WITH 语句来查询。  
 
 ```sql
@@ -142,7 +142,7 @@ FROM
   temp_product
 ```
 
-&emsp; 第一条 SELECT 语句我们查询出来了根节点，并且设置为 level = 0,第二条SELECT 语句关联上 WITH 语句自身，并且 level 每层加 1 进行递归。   
+&emsp; 第一条 SELECT 语句查询出来了根节点，并且设置为 level = 0，第二条SELECT 语句关联上 WITH 语句自身，并且 level 每层加 1 进行递归。   
 &emsp; 查询结果如下：   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-160.png)  
 &emsp; 可以看到第一列是展示的产品层级，和上面查询出来的结果是一致的。  
@@ -192,4 +192,3 @@ SELECT FIRST.Num,SECOND.Num,FIRST.Stop FROM Route FIRST, Route SECOND WHERE FRIS
 ```
 &emsp; 上面的SQL代码，求出了路经相同城市的车次的信息。原表中的车次和车站是“1Vs1”关系，通过自连接后，得到了车次和车站的“多Vs1”关系。  
 
----

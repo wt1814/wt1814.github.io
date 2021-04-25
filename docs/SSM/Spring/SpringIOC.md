@@ -34,9 +34,9 @@
     6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
     7. 初始化一些消息源(比如处理国际化的i18n等消息源)。  
     8. **<font color = "red">初始化应用事件多播器。</font>**  
-    9. **<font color = "red">初始化一些特殊的bean。</font>**  
+    9. **<font color = "red">具体的子类初始化一些特殊的bean在初始化。典型的模板方法(钩子方法)。</font>**  
     10. **<font color = "red">注册一些监听器。</font>**  
-    11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。<font color = "clime">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font></font>**  
+    11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font><font color = "clime">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font>**  
     12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
     13. 重置公共的一些缓存数据。  
 
@@ -56,7 +56,7 @@ https://juejin.cn/post/6844903967143493640
 -->
 
 ## 1.1. IOC容器的设计与实现  
-&emsp; 在Spring IOC容器的设计当中，可以看到两个主要的容器系列(根据命名)。  
+&emsp; 在Spring IOC容器的设计当中，可以看到两个主要的容器系列(根据命名)： 
 
 * 实现了BeanFactory接口的简单容器系列，只实现了容器的最基本功能；  
 * ApplicationContext应用上下文，容器的高级形态，增加了许多面向框架的特性和对应用环境的适配；  
@@ -206,9 +206,9 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
 7. 初始化一些消息源(比如处理国际化的i18n等消息源)。  
 8. **<font color = "red">初始化应用事件多播器。</font>**  
-9. **<font color = "red">初始化一些特殊的bean。</font>**  
+9. **<font color = "red">具体的子类初始化一些特殊的bean在初始化。典型的模板方法(钩子方法)。</font>**  
 10. **<font color = "red">注册一些监听器。</font>**  
-11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font>**  
+11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font><font color = "clime">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font>**    
 12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
 13. 重置公共的一些缓存数据。  
 
@@ -294,7 +294,7 @@ public void refresh() throws BeansException, IllegalStateException {
 ```
 &emsp; **refresh()方法主要为IOC容器Bean的生命周期管理提供条件。**  
 &emsp; Spring 容器初始化，共经历了 13 步；其中尤其需要重点关注的是：  
-&emsp; 步骤2，初始化 Spring 容器，并构建了BeanDefinition定义  
+&emsp; 步骤2，初始化Spring容器，并构建了BeanDefinition定义  
 
         ClassPathXmlApplicationContext容器的初始化包括BeanDefinition的resource定位、加载和注册这三个基本的过程。  
         1. BeanDefinition的resource的定位过程，就是找到定义bean的相关的xml文件，是通过继承ResourceLoader获得的，ResourceLoader代表了加载资源的一种方式，正是策略模式的实现。  

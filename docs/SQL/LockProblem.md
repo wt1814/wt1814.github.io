@@ -18,8 +18,10 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">1. MySql如何处理死锁？1). 发起死锁检测，主动回滚其中一条事务，让其他事务继续执行。2). 设置超时时间，超时后自动释放。</font>**   
-&emsp; **<font color = "clime">2. 如果出现死锁？除了以上两种方案外，开发人员还需要检查代码。</font>**
+1. **<font color = "clime">1. MySql如何处理死锁？  
+    1. 发起死锁检测，主动回滚其中一条事务，让其他事务继续执行。  
+    2. 设置超时时间，超时后自动释放。</font>**   
+2. **<font color = "clime">2. 如果出现死锁？除了以上两种方案外，开发人员还需要检查代码。</font>**  
 
 
 # 1. MySql锁造成的问题
@@ -61,10 +63,10 @@ https://mp.weixin.qq.com/s/F3IPSiKzabuDd8S5UKI-WQ
 &emsp; **<font color = "red">InnoDB避免死锁：</font>**   
 
 * 为了在单个InnoDB表上执行多个并发写入操作时避免死锁，可以在事务开始时通过为预期要修改的每个元祖(行)使用SELECT ... FOR UPDATE语句来获取必要的锁，即使这些行的更改语句是在之后才执行的。  
-* 在事务中，如果要更新记录，应该直接申请足够级别的锁，即排他锁，而不应先申请共享锁、更新时再申请排他锁，因为这时候当用户再申请排他锁时，其他事务可能又已经获得了相同记录的共享锁，从而造成锁冲突，甚至死锁  
-* 如果事务需要修改或锁定多个表，则应在每个事务中以相同的顺序使用加锁语句。在应用中，如果不同的程序会并发存取多个表，应尽量约定以相同的顺序来访问表，这样可以大大降低产生死锁的机会  
+* 在事务中，如果要更新记录，应该直接申请足够级别的锁，即排他锁，而不应先申请共享锁、更新时再申请排他锁，因为这时候当用户再申请排他锁时，其他事务可能又已经获得了相同记录的共享锁，从而造成锁冲突，甚至死锁。  
+* 如果事务需要修改或锁定多个表，则应在每个事务中以相同的顺序使用加锁语句。在应用中，如果不同的程序会并发存取多个表，应尽量约定以相同的顺序来访问表，这样可以大大降低产生死锁的机会。  
 * 通过SELECT ... LOCK IN SHARE MODE获取行的读锁后，如果当前事务再需要对该记录进行更新操作，则很有可能造成死锁。  
-* 改变事务隔离级别  
+* 改变事务隔离级别。  
 
 ### 1.1.4. 解决死锁
 &emsp; **<font color = "clime">如果出现死锁</font>** ，<font color = "clime">可以用show engine innodb status;命令来确定最后一个死锁产生的原因。</font>返回结果中包括死锁相关事务的详细信息，如引发死锁的SQL语句，事务已经获得的锁，正在等待什么锁，以及被回滚的事务等。据此可以分析死锁产生的原因和改进措施。  
@@ -192,8 +194,8 @@ Record lock, heap no 1 PHYSICAL RECORD: n_fields 1; compact format; info bits 0
 
 |lock_id	|lock_tx_id	|lock_mode	|lock_type	|lock_table	|lock_index	|lock_space|lock_page|lock_rec|lock_data|
 |---|---|---|---|---|---|---|---|---|---|
-|3882:33:6:1	|3882|	X|	RECORD|	test.t_user_data|	idx_data_id	|33|	6	|1|	supremum pseudo-record|
-|3883:33:6:1	3883	|X	|RECORD	|test.t_user_data	|idx_data_id	|33	|6	|1	|supremum pseudo-record|
+|3882 :33 :6 :1	|3882|	X|	RECORD|	test.t_user_data|	idx_data_id	|33|	6	|1|	supremum pseudo-record|
+|3883 :33 :6 :1	3883	|X	|RECORD	|test.t_user_data	|idx_data_id	|33	|6	|1	|supremum pseudo-record|
 
     DELETE FROM t_user_data WHERE data_id = '不存在的索引值';   
 

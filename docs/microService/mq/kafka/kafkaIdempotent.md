@@ -13,15 +13,15 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; Kafka幂等是针对生产者角度的特性。kafka只保证producer单个会话中的单个分区幂等。  
-&emsp; **<font color = "red">Kafka幂等性实现机制：(分区消息维护一个序列号，进行比较)</font>**  
+1. Kafka幂等是针对生产者角度的特性。kafka只保证producer单个会话中的单个分区幂等。  
+2. **<font color = "red">Kafka幂等性实现机制：(分区消息维护一个序列号，进行比较)</font>**  
+    1. 每一个producer在初始化时会生成一个producer_id，并为每个目标partition维护一个"一个序列号"；
+    2. producer每发送一条消息，会将 \<producer_id,分区\> 对应的“序列号”加1；  
+    3. broker端会为每一对 \<producer_id,分区\> 维护一个序列号，对于每收到的一条消息，会判断服务端的SN_old和接收到的消息中的SN_new进行对比：  
 
-1. 每一个producer在初始化时会生成一个producer_id，并为每个目标partition维护一个"一个序列号"；
-2. producer每发送一条消息，会将 \<producer_id,分区\> 对应的“序列号”加1；  
-3. broker端会为每一对 \<producer_id,分区\> 维护一个序列号，对于每收到的一条消息，会判断服务端的SN_old和接收到的消息中的SN_new进行对比：  
+        * 如果SN_old < SN_new+1，说明是重复写入的数据，直接丢弃。    
+        * 如果SN_old > SN_new+1，说明中间有数据尚未写入，或者是发生了乱序，或者是数据丢失，将抛出严重异常：OutOfOrderSeqenceException。 
 
-    * 如果SN_old < SN_new+1，说明是重复写入的数据，直接丢弃。    
-    * 如果SN_old > SN_new+1，说明中间有数据尚未写入，或者是发生了乱序，或者是数据丢失，将抛出严重异常：OutOfOrderSeqenceException。 
 
 
 # 1. 幂等性   

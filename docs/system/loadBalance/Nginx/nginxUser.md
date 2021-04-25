@@ -42,13 +42,15 @@ https://mp.weixin.qq.com/s/kIIGCq_oN66nt4MMYaCJpQ
 -->
 &emsp; **<font color = "red">总结：</font>**  
 1. <font color = "red">Nginx服务器处理一个请求是按照两部分进行的。第一部分是IP和域名，由listen和server_name指令匹配server模块；第二部分是URL，匹配server模块里的location；最后就是location里的具体处理。</font>  
-2. <font color = "red">Nginx使用场景：反向代理、虚拟主机、静态资源WEB服务、缓存、限流、黑白名单、防盗链、流量复制...</font>
-3. **<font color = "red">Nginx支持的负载均衡调度算法方式如下：</font>**  
-    * **<font color = "red">轮询(默认)</font>** 
-    * **<font color = "red">weight</font>** ：指定权重。  
-    * **<font color = "red">ip_hash</font>**  
-    * **<font color = "red">fair(第三方)</font>** ：智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配。  
-    * **<font color = "red">url_hash(第三方)</font>**  
+2. <font color = "red">Nginx使用场景：反向代理、虚拟主机、静态资源WEB服务、缓存、限流、黑白名单、防盗链、流量复制...</font>  
+3. 负载均衡：  
+    1. **<font color = "red">Nginx反向代理通过proxy_pass来配置；负载均衡使用Upstream模块实现。</font>**  
+    2. **<font color = "red">Nginx支持的负载均衡调度算法方式如下：</font>**  
+        * **<font color = "red">轮询(默认)</font>** 
+        * **<font color = "red">weight：</font>** 指定权重。  
+        * **<font color = "red">ip_hash</font>**  
+        * **<font color = "red">fair(第三方)：</font>** 智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配。  
+        * **<font color = "red">url_hash(第三方)</font>**  
 
 # 1. Nginx使用  
 ## 1.1. 基于配置文件的Nginx处理请求流程  
@@ -98,10 +100,10 @@ server {
     return      444;
 }
 ```
-&emsp; 注意：0.8.48版本以后，""是server_name的默认值，所以此处可以省略server_name "";在更早的版本，server_name的默认值为主机的hostname。
+&emsp; 注意：0.8.48版本以后，""是server_name的默认值，所以此处可以省略server_name ""，在更早的版本，server_name的默认值为主机的hostname。
 
 &emsp; **基于名称和IP的混合虚拟服务器**  
-&emsp; 前提知识：一台主机可以有多个IP(多网卡)，一个IP可以绑定多个域名  
+&emsp; 前提知识：一台主机可以有多个IP(多网卡)，一个IP可以绑定多个域名。  
 
 ```
 server {
@@ -212,10 +214,10 @@ https://mp.weixin.qq.com/s/qchaaVoOSJOqnRBlBIU--g
         反向代理都对外都是透明的，访问者并不知道自己访问的是哪一个代理。
 
 &emsp; **正向代理的应用：**  
-1. 访问原来无法访问的资源   
-2. 用作缓存，加速访问速度   
-3. 对客户端访问授权，上网进行认证  
-4. 代理可以记录用户访问记录(上网行为管理)，对外隐藏用户信息  
+1. 访问原来无法访问的资源。   
+2. 用作缓存，加速访问速度。   
+3. 对客户端访问授权，上网进行认证。  
+4. 代理可以记录用户访问记录(上网行为管理)，对外隐藏用户信息。  
 
 &emsp; **反向代理的应用：**  
 1. 保护内网安全 
@@ -306,7 +308,7 @@ http {
 
 ### 1.2.4. 静态资源WEB服务 
 1. 静态资源类型  
-&emsp; 非服务器动态运行生成的文件，换句话说，就是可以直接在服务器上找到对应文件的请求  
+&emsp; 非服务器动态运行生成的文件，换句话说，就是可以直接在服务器上找到对应文件的请求。  
 
 * 浏览器端渲染：HTML,CSS,JS
 * 图片：JPEG,GIF,PNG

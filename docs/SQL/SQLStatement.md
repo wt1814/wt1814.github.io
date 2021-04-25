@@ -9,9 +9,13 @@
         - [1.1.4. like优化](#114-like优化)
     - [1.2. 子查询优化](#12-子查询优化)
     - [1.3. 关联查询优化](#13-关联查询优化)
+        - [1.3.1. ★★★条件谓词下推](#131-★★★条件谓词下推)
     - [1.4. 组合查询优化](#14-组合查询优化)
 
 <!-- /TOC -->
+
+&emsp; **<font color = "red">总结：</font>**  
+1. 关联查询优化：使用索引、驱动表选择、条件谓词下推......
 
 # 1. SQL语句优化
 &emsp; MySql官网提供的优化方案：https://dev.mysql.com/doc/refman/5.7/en/optimization.html  
@@ -65,7 +69,7 @@ https://mp.weixin.qq.com/s/FykC_mfqJH5oics3wIzBQA
 
     SELECT*FROM user ORDER BY key_part1 DESC, key_part2 DESC;
 
-&emsp; 但<font color = "lime">以下几种情况则不使用索引</font>：  
+&emsp; 但<font color = "clime">以下几种情况则不使用索引</font>：  
 1. ORDER BY中混合ASC和DESC：  
 
     SELECT*FROM user ORDER BY key_part1 DESC, key_part2 ASC;
@@ -97,13 +101,16 @@ select * from student u where major_id not in (select major_id from major);
 ```
 
 ## 1.3. 关联查询优化  
-1. 在进行多表关联时，多用Where语句把单个表的结果集最小化，多用聚合函数汇总结果集后再与其它表做关联，以使结果集数据量最小化。  
+&emsp; 使用索引、驱动表选择、条件谓词下推...
 
+### 1.3.1. ★★★条件谓词下推
+<!-- 
+sql优化中join 条件谓词下推
+https://zhuanlan.zhihu.com/p/129026235
+-->
+&emsp; 谓词下推，就是在将过滤条件下推到离数据源更近的地方，最好就是在table_scan时就能过滤掉不需要的数据。  
 
-......
 
 ## 1.4. 组合查询优化  
 1. MySQL处理UNION的策略是先创建临时表，然后再把各个查询结果插入到临时表中，最后再来做查询。因此很多优化策略在UNION查询中都没有办法很好的时候。经常需要手动将WHERE、LIMIT、ORDER BY等字句“下推”到各个子查询中，以便优化器可以充分利用这些条件先优化。  
 2. 如果结果集允许重复的话，使用UNION ALL代替UNION。  
-
-

@@ -14,11 +14,11 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. CAP：一致性(Consistency)、可用性(Availability)、分区容错性(Partition tolerance)。  
-&emsp; 一致性模型：强一致性、弱一致性、>最终一致性、单调一致性/顺序一致性、会话一致性。  
-2. BASE：**BASE是Basically Available(基本可用)、Soft state(软状态)和Eventually consistent(最终一致性)三个短语的缩写。** **<font color = "red">BASE是对CAP中AP的一个扩展，是对CAP中一致性和可用性权衡的结果。</font>**  
+&emsp; 一致性模型：强一致性、弱一致性、最终一致性、单调一致性/顺序一致性、会话一致性。  
+2. BASE：**BASE是Basically Available(基本可用)、Soft state(软状态)和Eventually consistent(最终一致性)三个短语的缩写。<font color = "red">BASE是对CAP中AP的一个扩展，是对CAP中一致性和可用性权衡的结果。</font>**  
 3. **<font color = "clime">无处不在的CAP的A</font>**  
 &emsp; 只要是分布式或集群，甚至一个接口中处在不同事务的调用，都会有数据一致性的问题。  
-&emsp; 例如Mysql主从复制、binlog和redolog的两阶段提交......
+&emsp; 例如Mysql主从复制、binlog和redolog的两阶段提交......  
 
 # 1. 分布式理论  
 <!-- 
@@ -32,8 +32,7 @@ https://mp.weixin.qq.com/s/0qelIYKkyNVsM29u-3yH1w
 
 * 一致性：在分布式系统中的所有数据备份，在同一时刻是否同样的值。
 * 可用性：在集群中一部分节点故障后，集群整体是否还能响应客户端的读写请求。
-* 分区容错性：以实际效果而言，分区相当于对通信的时限要求。系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在C和A之间做出选择。
-
+* 分区容错性：以实际效果而言，分区相当于对通信的时限要求。系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在C和A之间做出选择。  
 
 ### 1.1.1. 什么是网络分区？  
 &emsp; **分布式系统中，多个节点之前的网络本来是连通的，但是因为某些故障(比如部分节点网络出了问题)某些节点之间不连通了，整个网络就分成了几块区域，这就叫网络分区。**  

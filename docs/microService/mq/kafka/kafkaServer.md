@@ -5,7 +5,7 @@
         - [1.1.1. 控制器的选举](#111-控制器的选举)
         - [1.1.2. 控制器的异常选举](#112-控制器的异常选举)
         - [1.1.3. 控制器的功能](#113-控制器的功能)
-            - [1.1.3.1. kafka在ZK的目录分布](#1131-kafka在zk的目录分布)
+            - [1.1.3.1. ~~kafka在ZK的目录分布~~](#1131-kafka在zk的目录分布)
             - [1.1.3.2. 控制器功能](#1132-控制器功能)
         - [1.1.4. 控制器设计原理](#114-控制器设计原理)
         - [1.1.5. 优雅关闭](#115-优雅关闭)
@@ -17,6 +17,8 @@
 
 # 1. ~~kafka服务端~~
 <!-- 
+
+
 zookeeper
 https://blog.csdn.net/lwglwg32719/article/details/86510029
 https://www.cnblogs.com/yogoup/p/12000545.html
@@ -47,8 +49,11 @@ https://www.kancloud.cn/nicefo71/kafka/1473379
 &emsp; 当/controller节点被删除时，每个broker都会进行选举，如果broker在节点被删除前是控制器，那么在选举前还需要有一个“退位”的动作。如果有特殊需要，则可以手动删除/controller节点来触发新一轮的选举。当然关闭控制器所对应的broker，以及手动向/controller节点写入新的brokerid的所对应的数据，同样可以触发新一轮的选举。 
 
 ### 1.1.3. 控制器的功能  
-#### 1.1.3.1. kafka在ZK的目录分布  
+#### 1.1.3.1. ~~kafka在ZK的目录分布~~  
 <!-- 
+抛弃ZooKeeper，Kafka 2.8支持独立运行！ 
+https://mp.weixin.qq.com/s/CzU6jkMUtGGPHRjKXMiIoQ
+
 Zookeeper 是 Kafka 用来负责集群元数据管理、控制器选举等操作的。Producer 是负责将消息发送到 Broker 的，Broker 负责将消息持久化到磁盘，而 Consumer 是负责从Broker 订阅并消费消息。
 -->
 &emsp; kafka在zookeeper中的存储结构如下图所示：  
@@ -92,5 +97,3 @@ Zookeeper 是 Kafka 用来负责集群元数据管理、控制器选举等操作
 
 ## 1.3. 时间轮与延时操作    
 《深入理解kafka》第6章   
-
-

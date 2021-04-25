@@ -8,10 +8,10 @@
     - [1.3. 解析配置文件，创建SqlSessionFactory](#13-解析配置文件创建sqlsessionfactory)
         - [1.3.1. 解析配置文件](#131-解析配置文件)
             - [1.3.1.1. 解析mapper映射文件](#1311-解析mapper映射文件)
-                - [1.3.1.1.1. ***第一步，bindMapperForNamespace()，存放mapper信息](#13111-第一步bindmapperfornamespace存放mapper信息)
+                - [1.3.1.1.1. ★★★bindMapperForNamespace()，存放mapper信息](#13111-★★★bindmapperfornamespace存放mapper信息)
     - [1.4. 创建SqlSession](#14-创建sqlsession)
     - [1.5. 执行具体的sql请求](#15-执行具体的sql请求)
-        - [1.5.1. 第二步：获取Mapper接口，创建动态代理类](#151-第二步获取mapper接口创建动态代理类)
+        - [1.5.1. ★★★获取Mapper接口，创建动态代理类](#151-★★★获取mapper接口创建动态代理类)
         - [1.5.2. 查询语句执行逻辑](#152-查询语句执行逻辑)
         - [1.5.3. SQL执行（二级缓存）](#153-sql执行二级缓存)
         - [1.5.4. SQL查询（一级缓存）](#154-sql查询一级缓存)
@@ -23,30 +23,35 @@
 
 <!-- /TOC -->
 
-&emsp; <font color = "clime">概括总结：  
-1. sql执行流程。    
-2. Mapper接口动态代理类的生成。</font>  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-30.png)  
+
+&emsp; **<font color = "red">总结：</font>**   
+1. sql执行流程：   
+    1. 读取核心配置文件并返回InputStream流对象。
+    2. 根据InputStream流对象解析出Configuration对象，然后创建SqlSessionFactory工厂对象。
+    3. 根据一系列属性从SqlSessionFactory工厂中创建SqlSession。
+    4. 从SqlSession中调用Executor执行数据库操作和生成具体SQL指令。
+    5. 对执行结果进行二次封装。
+    6. 提交与事务。   
+2. Mapper接口动态代理类的生成： 
+    * 解析配置文件生成sqlSessionFactory时，会调用bindMapperForNamespace() ---> addMapper方法，根据mapper文件中的namespace属性值，将接口生成动态代理类的工厂，存储在MapperRegistry对象中。    
+    * 在调用getMapper，根据type类型，从MapperRegistry对象中的knownMappers获取到当前类型对应的代理工厂类，然后通过代理工厂类生成对应Mapper的代理类。  
 
 # 1. MyBatis解析
 <!-- 
 ※※※MyBatis 的执行流程
 https://mp.weixin.qq.com/s/9eJ-xQyIdu-qx2ePUv1bEw
- 面试官：说说MyBatis的执行流程！ 
- https://mp.weixin.qq.com/s/9KHSQyblcEfLBm7Ca-nS_g
 
-超全MyBatis动态代理详解！
-https://mp.weixin.qq.com/s/RjRzacdmx3DMHlhjj1GM3g
 -->
 <!--
 ～～
  浅析MyBatis的动态代理原理 
  https://mp.weixin.qq.com/s/U1Mgoe7XUEzY0wshjkzx7g
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-30.png)  
 
 ## 1.1. Mybatis工作流程概述  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-13.png)  
-&emsp; Mybatis工作流程概述：  
+&emsp; **<font color = "clime">Mybatis工作流程概述：</font>**  
 1. 读取核心配置文件并返回InputStream流对象。
 2. 根据InputStream流对象解析出Configuration对象，然后创建SqlSessionFactory工厂对象。
 3. 根据一系列属性从SqlSessionFactory工厂中创建SqlSession。
@@ -60,7 +65,7 @@ https://mp.weixin.qq.com/s/RjRzacdmx3DMHlhjj1GM3g
  
 &emsp; MyBatis的初始化可以有两种方式：  
 
-* 基于XML配置文件：基于XML配置文件的方式是将MyBatis的所有配置信息放在XML文件中，MyBatis通过加载并XML配置文件，将配置文信息组装成内部的Configuration对象。  
+* 基于XML配置文件：基于XML配置文件的方式是将MyBatis的所有配置信息放在XML文件中，MyBatis通过加载并XML配置文件，将配置文件信息组装成内部的Configuration对象。  
 * 基于Java API：这种方式不使用XML配置文件，需要MyBatis使用者在Java代码中，手动创建Configuration对象，然后将配置参数set 进入Configuration对象中。  
 
 &emsp; 本文基于XML配置文件方式的MyBatis初始化。示例如下：  
@@ -365,8 +370,8 @@ parseStatementNode()主要是对xml的节点进行解析。假设有这样一段
 &emsp; MyBatis需要做的就是，先判断这个节点是用来干什么的，然后再获取这个节点的id、parameterType、resultType等属性，封装成一个MappedStatement对象，由于这个对象很复杂，所以MyBatis使用了构造者模式来构造这个对象，最后当MappedStatement对象构造完成后，将其封装到Configuration对象中。   
 <!-- 还有没看的 -->
 
-##### 1.3.1.1.1. ***第一步，bindMapperForNamespace()，存放mapper信息
-&emsp; 该方法是核心方法，它会根据mapper文件中的namespace属性值，为接口生成动态代理类。  
+##### 1.3.1.1.1. ★★★bindMapperForNamespace()，存放mapper信息
+&emsp; 该方法是核心方法，它会 **<font color = "clime">根据mapper文件中的namespace属性值，为接口生成动态代理类的工厂。</font>**  
 
 ```java
 private void bindMapperForNamespace() {
@@ -395,7 +400,7 @@ private void bindMapperForNamespace() {
 }
 ```
 
-&emsp; 调用Configuration的addMapper方法，Configuration将addMapper方法委托给MapperRegistry的addMapper进行的，MapperRegistry对象维护了所有要生成动态代理类的XxxMapper接口信息。  
+&emsp; 调用Configuration的addMapper方法，Configuration将addMapper方法委托给MapperRegistry的addMapper进行的， **<font color = "clime">MapperRegistry对象维护了所有要生成动态代理类的XxxMapper接口信息。</font>**  
 
 ```java
 public <T> void addMapper(Class<T> type) {
@@ -475,7 +480,7 @@ public DefaultSqlSession(Configuration configuration, Executor executor, boolean
 &emsp; executor在这一步得到创建，具体的使用在下一步。  
 
 ## 1.5. 执行具体的sql请求  
-### 1.5.1. 第二步：获取Mapper接口，创建动态代理类    
+### 1.5.1. ★★★获取Mapper接口，创建动态代理类    
 &emsp; 平时使用MyBatis的时候，DAO层编码：  
 
 ```java

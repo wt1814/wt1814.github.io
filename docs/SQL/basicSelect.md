@@ -24,10 +24,12 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 基本查询SQL执行顺序：from -> on -> join -> where -> group by ->  avg,sum.... ->having -> select -> distinct -> order by -> top，limit。 
+1. 基本查询SQL执行顺序：from -> on -> join -> where -> group by ->  avg,sum.... ->having -> select -> distinct -> order by -> top，limit。 
+2. 分组函数  
 &emsp; **<font color = "clime">查询结果集中有统计数据时，就需要使用分组函数。</font>**  
 &emsp; **<font color = "red">Group By分组函数中，查询只能得到组相关的信息。组相关的信息(统计信息)：count,sum,max,min,avg。</font> 在select指定的字段要么包含在Group By语句的后面，作为分组的依据；要么就要被包含在聚合函数中。group by是对结果集分组，而不是查询字段分组。**  
 &emsp; **<font color = "red">Group By含有去重效果。</font>**  
+
 
 # 1. 基本查询语句  
 &emsp; 数据库表中的一行叫做一条记录，一列是一个属性。首行是数据库表中字段或自定义别名，对应的列就是其对应的数值。  
@@ -131,13 +133,16 @@ https://mp.weixin.qq.com/s/tL54fxgT1tY3JpaSjR--Ow
 ```sql
 select distinct expression[,expression...] from tables [where conditions];
 ```
-&emsp; 针对NULL的处理：distinct对NULL不进行过滤，即返回的结果中是包含NULL值的。  
+&emsp; 针对NULL的处理： **<font color = "clime">distinct对NULL不进行过滤，即返回的结果中是包含NULL值的。</font>**  
 
 #### 1.2.1.1. Distinct多列操作  
 1. DISTINCT必须放在第一个参数前。  
-&emsp; distinct name,id 过滤掉name和id两个字段都重复的记录。select id,distinct name from user，sql语句会报错，因为distinct必须放在要查询字段的开头。所以一般distinct用来查询不重复记录的条数。  
-&emsp; 如果要查询不重复的记录，可以使用group by：  
-&emsp; select id,name from user group by name;  
+&emsp; distinct name,id 过滤掉name和id两个字段都重复的记录。select id,distinct name from user，sql语句会报错，因为distinct必须放在要查询字段的开头。所以 **<font color = "clime">一般distinct用来查询不重复记录的条数。</font>**  
+&emsp; **<font color = "clime">如果要查询不重复的记录，可以使用group by：</font>**   
+
+    ```sql
+    select id,name from user group by name;
+    ```  
 2. DISTINCT表示对后面的所有参数的拼接，取不重复的记录。即distinct作用在多个字段的时候，将所有字段值都相同的记录“去重”。  
 
 #### 1.2.1.2. Distinct与Count(聚合函数)  
@@ -193,7 +198,7 @@ SELECT top 1 NAME FROM a1 GROUP BY NAME ORDER BY COUNT(*) DESC;
 
 #### 1.2.4.2. Having关键字与Where的区别  
 &emsp; 关键字having相当于where条件。当使用了分组查询group by，又要加条件时，使用having非where。(在SQL中增加HAVING子句原因是，WHERE关键字无法与合计函数一起使用)也可以Having和Where的联合使用。  
-&emsp; where子句的作用是在对查询结果进行分组前将不符合where条件的行去掉，即在分组之前过滤数据，where条件中不能包含聚组函数，使用where条件过滤出特定的行。having子句的作用是筛选满足条件的组，即在分组之后过滤数据，条件中经常包含聚组函数，使用having条件过滤出特定的组，也可以使用多个分组标准进行分组。  
+&emsp; where子句的作用是在对查询结果进行分组前，将不符合where条件的行去掉，即在分组之前过滤数据，where条件中不能包含聚组函数，使用where条件过滤出特定的行。having子句的作用是筛选满足条件的组，即在分组之后过滤数据，条件中经常包含聚组函数，使用having条件过滤出特定的组，也可以使用多个分组标准进行分组。  
 * having只能用于group by(分组统计语句中)；
 * where是用于在初始表中筛选查询，having用于在where和group by结果分组中查询；
 * having子句中的每一个元素也必须出现在select列表中；

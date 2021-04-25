@@ -35,6 +35,8 @@
 图文详解 树的DFS 和 BFS 
 https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247484022&idx=1&sn=9890a47b9a08809c9a66e613aa8fe311&scene=21#wechat_redirect
 https://mp.weixin.qq.com/s?__biz=MzUyNjQxNjYyMg==&mid=2247483881&idx=1&sn=3b1de7f74aaaade96ee0f71960a80609&chksm=fa0e6e68cd79e77e45633b52731e83262dd7ad70a0fd4d97e3c1e44170cc69a62f870526568e&scene=21#wechat_redirect
+
+https://mp.weixin.qq.com/s/VwjaMs4g2cxydt8dXNdS0g
 -->
 &emsp; 二叉树都有哪些遍历方式呢？  
 &emsp; 从节点之间位置关系的角度来看，二叉树的遍历分为4种。1. 前序遍历。2. 中序遍历。3. 后序遍历。4. 层序遍历。  

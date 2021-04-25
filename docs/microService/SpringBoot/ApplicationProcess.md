@@ -62,7 +62,7 @@ public ConfigurableApplicationContext run(String... args) {
 	}
 ```
 
-&emsp; 2、在prepareContext方法中查找load方法，一层一层向内点击，找到最终的load方法  
+&emsp; 2、在prepareContext方法中查找load方法，一层一层向内点击，找到最终的load方法。  
 
 ```java
 //prepareContext方法
@@ -486,7 +486,7 @@ public void refresh() throws BeansException, IllegalStateException {
 	}
 ```
 
-&emsp; 9、开始执行自动配置逻辑（启动类指定的配置，非默认配置），可以通过debug的方式一层层向里进行查找，会发现最终会在ConfigurationClassParser类中，此类是所有配置类的解析类，所有的解析逻辑在parser.parse(candidates)中  
+&emsp; 9、开始执行自动配置逻辑（启动类指定的配置，非默认配置），可以通过debug的方式一层层向里进行查找，会发现最终会在ConfigurationClassParser类中，此类是所有配置类的解析类，所有的解析逻辑在parser.parse(candidates)中。  
 
 ```java
 public void parse(Set<BeanDefinitionHolder> configCandidates) {
@@ -554,7 +554,7 @@ public void parse(Set<BeanDefinitionHolder> configCandidates) {
 	}
 ```
 
-&emsp; 10、继续跟进doProcessConfigurationClass方法，此方式是支持注解配置的核心逻辑  
+&emsp; 10、继续跟进doProcessConfigurationClass方法，此方式是支持注解配置的核心逻辑。  
 
 ```java
 /**
@@ -701,7 +701,7 @@ processImports(configClass, sourceClass, getImports(sourceClass), true);
 	}
 ```
 
-&emsp; 12、继续回到ConfigurationClassParser中的parse方法中的最后一行,继续跟进该方法：  
+&emsp; 12、继续回到ConfigurationClassParser中的parse方法中的最后一行，继续跟进该方法：  
 
 ```java
 this.deferredImportSelectorHandler.process()

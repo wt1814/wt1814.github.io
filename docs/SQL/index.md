@@ -15,13 +15,17 @@
 
 <!-- /TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-56.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 索引条件下推：  
-
+1. 为了使索引的使用效率更高，在创建索引时，必须考虑在哪些字段上创建索引和创建什么类型的索引。  
+2. 索引失效。  
+3. 索引条件下推：  
+&emsp; 索引下推简而言之就是在复合索引由于某些条件(比如 like %aa)失效的情况下，当存在失效的过滤字段在索引覆盖范围内，使用比较的方式在不回表的情况下进一步缩小查询的范围。其实就是对索引失效的进一步修复。  
+    * 关闭ICP：索引--->回表--->条件过滤。  
+    * 开启ICP：索引--->条件过滤--->回表。  
 
 # 1. Sql索引优化  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-56.png)  
 
 ## 1.1. 索引简介  
 &emsp; 索引(Index)是帮助MySQL高效获取数据的数据结构。  
@@ -95,7 +99,7 @@ https://mp.weixin.qq.com/s/Mvl3OURNurdrJ2o9OyM6KQ
 * 尽量使用前缀来索引  
 &emsp; 如果索引字段的值很长，最好使用值的前缀来索引。例如，TEXT和BLOG类型的字段，进行全文检索会很浪费时间。如果只检索字段的前面的若干个字符，这样可以提高检索速度。  
 * 使用基于函数的索引  
-&emsp; 任何对列的操作都可能导致全表扫描，例如：select * from emp where substr(ename,1,2)=’SM’；但是这种查询在客服系统又经常使用。可以创建一个带有substr函数的基于函数的索引，create index emp_ename_substr on eemp (substr(ename,1,2));这样在执行上面的查询语句时，会使用基于函数的索引。  
+&emsp; 任何对列的操作都可能导致全表扫描，例如：`select * from emp where substr(ename,1,2)=’SM’；`但是这种查询在客服系统又经常使用。可以创建一个带有substr函数的基于函数的索引，`create index emp_ename_substr on eemp (substr(ename,1,2));`这样在执行上面的查询语句时，会使用基于函数的索引。  
 * 根据业务场景建立<font color = "red">覆盖索引</font>  
 &emsp; 覆盖索引(covering index)指一个查询语句的执行只用从索引中就能够取得，不必从数据表中读取。也可以称之为实现了索引覆盖。  
 &emsp; 当一条查询语句符合覆盖索引条件时，MySQL只需要通过索引就可以返回查询所需要的数据，这样避免了查到索引后再返回表操作，减少I/O提高效率。  
@@ -138,7 +142,7 @@ https://mp.weixin.qq.com/s/Mvl3OURNurdrJ2o9OyM6KQ
 4. 对索引进行模糊查询like时可能使索引失效(以%开头)。  
 &emsp; 前导模糊查询不能利用索引(like '%XX'或者like '%XX%')。假如有这样一列code的值为'AAA','AAB','BAA','BAB'，如果where code like '%AB'条件，由于条件首字母是是模糊%的，所以不能利用索引的顺序，必须一个个去查询。这样会导致全索引扫描或者全表扫描。如果是这样的条件where code like 'A % '，就可以查找CODE中A开头的CODE的位置，当碰到B开头的数据时，就可以停止查找了，因为后面的数据一定不满足要求。这样就可以利用索引了。  
 &emsp; 解决办法：可采用在建立索引时用reverse(columnName)这种方法处理。  
-5. 隐式转换导致索引失效。**<font color = "clime">⚠️注：包含类型转换和字符集转换。</font>**    
+5. 隐式转换导致索引失效。 **<font color = "clime">⚠️注：包含类型转换和字符集转换。</font>**    
 &emsp; 由于表的字段tu_mdn定义为varchar2(20)，但在查询时把该字段作为number类型以where条件传给sql语句，这样会导致索引失效。  
 &emsp; 错误的例子：select * from test where tu_mdn=13333333333;  
 &emsp; 正确的例子：select * from test where tu_mdn='13333333333';  

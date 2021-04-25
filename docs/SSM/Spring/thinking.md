@@ -1,6 +1,5 @@
 
 <!-- 
-
 Spring中涉及的设计模式总结 
 https://mp.weixin.qq.com/s/ktNs4T_OZ-neWWvtBmC-cA
 Spring 中经典的 9 种设计模式，打死也要记住！ 
@@ -22,7 +21,7 @@ https://mp.weixin.qq.com/s/VzBA7DehOwYUAl7xt8KPAw
     **<font color = "red">Spring bean容器刷新的核心 12+1个步骤完成IoC容器的创建及初始化工作：</font>**  
     1. 刷新前的准备工作。  
     2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>**  
-        &emsp; **<font color = "lime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
+        &emsp; **<font color = "clime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
         ```java
         private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
         ```
@@ -32,9 +31,9 @@ https://mp.weixin.qq.com/s/VzBA7DehOwYUAl7xt8KPAw
     6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
     7. 初始化一些消息源(比如处理国际化的i18n等消息源)。  
     8. **<font color = "red">初始化应用事件多播器。</font>**  
-    9. **<font color = "red">初始化一些特殊的bean。</font>**  
+    9. **<font color = "red">具体的子类初始化一些特殊的bean在初始化。典型的模板方法(钩子方法)。</font>**  
     10. **<font color = "red">注册一些监听器。</font>**  
-    11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font>**  
+    11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font><font color = "clime">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font>**  
     12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
     13. 重置公共的一些缓存数据。  
 
@@ -58,13 +57,9 @@ https://mp.weixin.qq.com/s/VzBA7DehOwYUAl7xt8KPAw
 
 ---
 &emsp;  在最后，还是需要知道这些接口的加载顺序。在SpringBean生命周期里，doCreateBean() 方法主要干三件事情：  
-1. 实例化 bean 对象： createBeanInstance()  
-2. 属性注入： populateBean()  
-3. 初始化 bean 对象： initializeBean()  
-&emsp; 而初始化 bean 对象时也是干了三件事情：  
-    1. 激活 Aware 方法  
+1. 实例化bean对象：createBeanInstance()  
+2. 属性注入：populateBean()  
+3. 初始化bean对象：initializeBean()。而初始化bean对象时也是干了三件事情：  
+    1. 激活Aware方法  
     2. 后置处理器的应用  
-    3. 激活自定义的 init 方法
-
----
-
+    3. 激活自定义的init方法

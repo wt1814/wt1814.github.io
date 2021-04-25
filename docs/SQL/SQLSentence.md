@@ -11,10 +11,4 @@
 * 数据控制功能DCL(Data Control Language)  
 &emsp; GRANT,REVOKE,COMMIT,ROLLBACK。即对数据库安全性完整性等有操作的，可以简单的理解为权限控制等。  
 
-<!-- 
-MySQL中order by与limit不要一起用！
-https://mp.weixin.qq.com/s/93rBBFlfTx58OjD5S_OlAw
 
-面试官：谈谈MySQL的limit用法、逻辑分页和物理分页 
-https://mp.weixin.qq.com/s/KcaLyboO0MltR6out67_DA
--->

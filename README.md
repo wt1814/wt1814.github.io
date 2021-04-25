@@ -51,6 +51,10 @@
 ## 算法  
 [总结](/docs/java/function/summary.md)  
 [算法基本概念](/docs/java/function/notion.md)  
+&emsp; [时间复杂度](/docs/java/function/TimeComplexity.md)  
+[算法方法](/docs/java/function/algorithmicIdea.md)  
+&emsp; [递归](/docs/java/function/recursion.md)  
+&emsp; [动态规划](/docs/java/function/dynamic.md)  
 [基本数据结构](/docs/java/function/structure/structure.md)  
 &emsp; [数组和链表](/docs/java/function/structure/array.md)  
 &emsp; [栈与队列](/docs/java/function/structure/stack.md)  
@@ -67,8 +71,6 @@
 &emsp; &emsp; [非比较排序](/docs/java/function/sort/noCompare.md)  
 &emsp; &emsp; [外部排序](/docs/java/function/sort/externalSort.md)  
 &emsp; [查找算法](/docs/java/function/search.md)  
-[算法方法](/docs/java/function/algorithmicIdea.md)  
-&emsp; [递归、动态规划](/docs/java/function/recursion.md)  
 [其他数据结构](/docs/java/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/java/function/SkipList.md)  
 &emsp; [位图](/docs/java/function/BitMap.md)  
@@ -243,15 +245,15 @@
 &emsp; [MySql架构](/docs/SQL/Framework.md)   
 &emsp; [MySql存储引擎](/docs/SQL/MySqlStorage.md)  
 &emsp; [InnoDB体系结构](/docs/SQL/InnoDB.md)  
-&emsp; [InnoDB内存结构](/docs/SQL/memory.md)  
+&emsp; [InnoDB内存结构-性能](/docs/SQL/memory.md)  
 &emsp; &emsp; [BufferPool](/docs/SQL/bufferPoolNew.md)  
 &emsp; &emsp; [ChangeBuffer](/docs/SQL/ChangeBuffer.md)  
 &emsp; &emsp; [AdaptiveHashIndex](/docs/SQL/AdaptiveHashIndex.md)  
-&emsp; [InnoDB磁盘结构](/docs/SQL/disk.md)  
+&emsp; [InnoDB磁盘结构-可靠性](/docs/SQL/disk.md)  
 &emsp; &emsp; [表空间](/docs/SQL/TableSpace.md)  
 &emsp; &emsp; [MySql事务日志](/docs/SQL/log.md)  
 &emsp; &emsp; &emsp; [redoLog](/docs/SQL/redoLog.md)  
-&emsp; &emsp; &emsp; [binLog使用](/docs/SQL/Binlog.md)  
+&emsp; &emsp; &emsp; [binLog使用](/docs/SQL/binlog.md)  
 &emsp; &emsp; [崩溃恢复](/docs/SQL/CrashRecovery.md)  
 &emsp; &emsp; [Double Write](/docs/SQL/DoubleWrite.md)  
 &emsp; [小结：insert插入流程](/docs/SQL/insert.md)  
@@ -297,10 +299,9 @@
 
 ### MyBatis  
 [MyBatis使用](/docs/SSM/MyBatis/MybatisUse.md)  
-&emsp; [MyBatis教程](/docs/SSM/MyBatis/Mybatis.md)  
-&emsp; [MyBatis使用注意点](/docs/SSM/MyBatis/MybatisSenior.md)  
+&emsp; [MyBatis使用教程](/docs/SSM/MyBatis/Mybatis.md)  
+&emsp; [MyBatis高级使用](/docs/SSM/MyBatis/MybatisSenior.md)  
 &emsp; [PageHelper](/docs/SSM/MyBatis/PageHelper.md)  
-&emsp; [Spring和MyBatis整合](/docs/SSM/MyBatis/SpringMybatis.md)  
 [MyBatis解析](/docs/SSM/MyBatis/MybatisAnalysis.md)  
 &emsp; [MyBatis架构](/docs/SSM/MyBatis/MybatisFramework.md)  
 &emsp; [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
@@ -310,9 +311,6 @@
 &emsp; [MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)   
 
 <!-- 
-适配器模式在Mybatis中的妙用 
-https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
-
 &emsp; [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
 -->
 
@@ -323,10 +321,8 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 [缓存](/docs/cache/Cache.md)  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
 [双缓存](/docs/cache/DoubleCache.md)  
-
-<!--
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
--->
+
 
 #### Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
@@ -425,6 +421,8 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 &emsp; [服务暴露源码解析](/docs/microService/dubbo/export.md)  
 &emsp; [服务引用源码解析](/docs/microService/dubbo/introduce.md)  
 &emsp; [服务调用源码解析](/docs/microService/dubbo/call.md)  
+&emsp; [再次理解dubbo-rpc包](/docs/microService/dubbo/dubboRPC.md)  
+[Dubbo常见问题](/docs/microService/dubbo/problem.md)  
 
 <!-- 
 [Dubbo集群容错源码解析](/docs/microService/dubbo/DubboColonySource.md)  
@@ -437,6 +435,7 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 ### Zookeeper
 [Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
 [Zookeeper使用](/docs/microService/dubbo/ZookeeperUse.md)  
+[如何理解分布式协调技术](/docs/microService/dubbo/coordinate.md)  
 
 ### 分布式理论  
 [分布式和集群](/docs/system/distributed.md)   
@@ -448,8 +447,8 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 [分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
 
 ### 分布式事务
-[分布式事务](/docs/microService/thinking/DistributedTransaction.md)  
-&emsp; [分布式事务模型DTP及XA](/docs/microService/thinking/DTP.md)  
+[分布式事务](/docs/microService/thinking/DistriTransaction.md)  
+&emsp; [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
 &emsp; [TCC](/docs/microService/thinking/TCC.md)   
 &emsp; [Saga](/docs/microService/thinking/Event.md)  
 &emsp; [消息模式](/docs/microService/thinking/news.md)   
@@ -472,11 +471,6 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 <!-- &emsp; &emsp; [基本查询](/docs/ES/basicSearch.md)   -->
 [ES搭建](/docs/ES/build.md)  
 [ES基本概念](/docs/ES/basicConcepts.md)  
-[ES集群](/docs/ES/colony.md)  
-&emsp; [ES集群基本概念](/docs/ES/ClusterConcept.md)  
-&emsp; [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
-&emsp; [ES集群操作](/docs/ES/ClusterOperation.md)  
-[ES增删改原理](/docs/ES/principle.md)  
 [ES使用](/docs/ES/useTutorials.md)  
 &emsp; [ES建模](/docs/ES/modeling.md)  
 &emsp; [PB级别的大索引如何设计？](/docs/ES/IndexDesign.md)  
@@ -487,13 +481,19 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 &emsp; [检索操作](/docs/ES/search.md)  
 &emsp; &emsp; [结构化检索](/docs/ES/Structured.md)  
 &emsp; &emsp; [全文检索](/docs/ES/fullText.md)  
+&emsp; &emsp; [排序/相关度/评分机制](/docs/ES/score.md)  
+&emsp; &emsp; [多字段搜索](/docs/ES/MultiField.md)  
 &emsp; &emsp; [聚合查询](/docs/ES/togetherSearch.md)  
 &emsp; &emsp; [分页查询](/docs/ES/limitSearch.md)  
 &emsp; &emsp; [多表关联](/docs/ES/multiTable.md)  
 &emsp; &emsp; [高亮显示](/docs/ES/highLight.md)  
-&emsp; &emsp; [评分机制](/docs/ES/score.md)  
 &emsp; &emsp; [检索模版](/docs/ES/searchTemplate.md)  
 &emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
+[ES集群](/docs/ES/colony.md)  
+&emsp; [ES集群基本概念](/docs/ES/ClusterConcept.md)  
+&emsp; [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
+&emsp; [ES集群操作](/docs/ES/ClusterOperation.md)  
+[ES增删改原理](/docs/ES/principle.md)  
 [ES监控](/docs/ES/monitor.md)  
 [ES优化](/docs/ES/optimization.md)  
 [使用ES中的一些问题](/docs/ES/problem.md)  
@@ -529,11 +529,10 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 &emsp; &emsp; [Netty客户端创建](/docs/microService/communication/Netty/customer.md)  
 &emsp; &emsp; [NioEventLoop](/docs/microService/communication/Netty/NioEventLoop.md)  
 &emsp; &emsp; [NioEventLoop的执行](/docs/microService/communication/Netty/NioEventLoopRun.md)  
-
-<!--
-&emsp; &emsp; [内存分配byteBuf](/docs/microService/communication/Netty/byteBuf.md)    
--->
-
+&emsp; &emsp; [内存分配-ByteBuf](/docs/microService/communication/Netty/byteBuf.md)    
+&emsp; &emsp; [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)    
+&emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
+&emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
 
 ---
 

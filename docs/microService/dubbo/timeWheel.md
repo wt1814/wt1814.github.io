@@ -39,8 +39,7 @@ https://blog.csdn.net/mindfloating/article/details/8033340
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-47.png)   
 &emsp; **时间轮的运行逻辑：**  
 &emsp; 首先，时间轮在启动的时候，会记录一下当前启动时间，并赋值给一个叫startTime的变量。然后当需要添加任务的时候，首先会计算延迟时间(deadline)，比如一个任务的延迟时间是24ms，那么在添加任务时，会将当前时间(currentTime)+24ms-时间轮的启动时间(startTime)，然后把这个任务封装成HashedWheelTimeout加入到链表中。  
-&emsp; 那么这个任务应该放在哪个时间格里面呢？ 通过  deadline%wheel.length 计算。时间轮在运行的时候，会从任务队列中取出10W个进行遍历处理。  
-
+&emsp; 那么这个任务应该放在哪个时间格里面呢？ 通过 deadline%wheel.length 计算。时间轮在运行的时候，会从任务队列中取出10W个进行遍历处理。  
 
 ## 1.3. Dubbo中时间轮  
 <!--

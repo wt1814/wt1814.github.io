@@ -11,7 +11,7 @@
 
 <!-- /TOC -->
 
-&emsp; **总结：**  
+&emsp; **<font color = "red">总结：</font>**  
 
 &emsp; **<font color = "red">使用Buffer读写数据一般遵循以下四个步骤：</font>**  
 1. 写入数据到Buffer；  
@@ -92,13 +92,13 @@ public abstract class CharBuffer extends Buffer implements CharSequence, Compara
 
 &emsp; **创建缓冲区详解：**  
 &emsp; **<font color = "red">新的缓冲区是由分配或包装操作创建的。</font>** 分配操作创建一个缓冲区对象并分配一个私有的空间来储存容量大小的数据元素。包装操作创建一个缓冲区对象但是不分配任何空间来储存数据元素。它使用提供的数组作为存储空间来储存缓冲区中的数据元素。  
-&emsp; 要分配一个容量为100个char变量的Charbuffer:  
+&emsp; 要分配一个容量为100个char变量的Charbuffer：  
 
 ```java
 CharBuffer charBuffer = CharBuffer.allocate (100);
 ```
 &emsp; 这段代码隐含地从堆空间中分配了一个char型数组作为备份存储器来储存100个char变量。  
-&emsp; 如果想提供数组用做缓冲区的备份存储器，调用wrap()函数:   
+&emsp; 如果想提供数组用做缓冲区的备份存储器，调用wrap()函数：   
 
 ```java
 char [] myArray = new char [100];  

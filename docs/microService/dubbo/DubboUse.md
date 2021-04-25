@@ -58,7 +58,7 @@
 -----------
 
 ## 1.2. 启动时检查  
-&emsp; **<font color = "red">Dubbo缺省会在启动时检查依赖的服务是否可用，不可用时会抛出异常，阻止Spring初始化完成，默认check=”true”，懒加载或通过API编程延迟引用服务时可check。</font>**  
+&emsp; **<font color = "red">Dubbo缺省会在启动时检查依赖的服务是否可用，不可用时会抛出异常，阻止Spring初始化完成，默认check="true"，懒加载或通过API编程延迟引用服务时可check。</font>**  
 
 * 关闭某个服务的启动时检查(没有提供者时报错)：  
 
@@ -157,7 +157,7 @@
         <dubbo:protocol name="dubbo" token="123456" />  
 
 ## 1.8. 日志适配 
-&emsp; 缺省自动查找：log4j、slf4j、jcl、jdk。可以通过以下方式配置日志输出策略：<dubbo:application logger="log4j"/>  
+&emsp; 缺省自动查找：log4j、slf4j、jcl、jdk。可以通过以下方式配置日志输出策略：`<dubbo:application logger="log4j"/>`  
 &emsp; 访问日志：如果想记录每一次请求信息，可开启访问日志，类似于apache的访问日志。此日志量比较大，请注意磁盘容量。  
 &emsp; 将访问日志输出到当前应用的log4j日志：  
 
@@ -334,7 +334,7 @@ assert(status.equals("OK"));
 &emsp; 消费方需从每种group中调用一次返回结果，合并结果返回，实现聚合菜单项。  
 &emsp; 搜索所有分组：  
 
-    <dubbo:reference interface="com.xxx.MenuService"    group="*" merger="true" />
+    <dubbo:reference interface="com.xxx.MenuService" group="*" merger="true" />
     
 &emsp; 合并指定分组：  
 
@@ -471,7 +471,7 @@ Bar bar = barFuture.get();
 &emsp; 同步无回调：async=false；  
 
 ## 1.25. 本地存根  
-&emsp; 远程服务后，客户端通常只剩下接口，而实现全在服务器端， **<font color = "lime">但提供方有时候想在客户端也执行部分逻辑，</font>** 比如：做ThreadLocal缓存，提前验证参数，调用失败后伪造容错数据等等，此时就需要在API中带上Stub，客户端生成Proxy实例，会把Proxy通过构造函数传给Stub，然后把Stub暴露给用户，Stub可以决定要不要去调Proxy。  
+&emsp; 远程服务后，客户端通常只剩下接口，而实现全在服务器端， **<font color = "clime">但提供方有时候想在客户端也执行部分逻辑，</font>** 比如：做ThreadLocal缓存，提前验证参数，调用失败后伪造容错数据等等，此时就需要在API中带上Stub，客户端生成Proxy实例，会把Proxy通过构造函数传给Stub，然后把Stub暴露给用户，Stub可以决定要不要去调Proxy。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-9.png)   
 
     <dubbo:service interface="com.foo.BarService" stub="true" />
@@ -535,7 +535,7 @@ public class BarServiceMock implements BarService {
 &emsp; 在集群调用失败时，Dubbo提供了多种容错方案，缺省为failover重试。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-10.png)  
 
-* Failover Cluster：失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过retries=”2”来设置重试次数(不含第一次)。  
+* Failover Cluster：失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过retries="2"来设置重试次数(不含第一次)。  
 
         <dubbo:service retries="2" />
     

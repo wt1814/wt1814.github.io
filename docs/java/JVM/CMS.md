@@ -26,18 +26,22 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "clime">CMS在某些阶段是并发，即CMS GC时并不是全部并发执行。大部分并发，但也有停顿(STW)，只是停顿时间更少。因为CMS是并发收集器，为了不影响用户线程使用，所以采用标记-清除算法。</font>**   
 2. CMS GC执行流程：(**<font color = "clime">3次标记、2次清除</font>**)  
-    1. 初始标记(标记GCRoots能直接关联到的对象)    
-    2. 并发标记(进行GCRoots Tracing(可达性分析)过程，GC与用户线程并发执行) 
+    1. 初始标记：标记GCRoots能直接关联到的对象。   
+    2. 并发标记：进行GCRoots Tracing(可达性分析)过程，GC与用户线程并发执行。
     3. 预清理。
     4. 可终止的预处理。
-    5. 重新标记(修正并发标记期间，因用户程序继续运作而导致标记产生变动的那一部分对象的标记记录)
-    6. 并发清除(并发、标记-清除，GC与用户线程并发执行)。   
-    7. 并发重置
-
-3. CMS缺点：1).吞吐量低。并发执行，线程切换。2).并发执行，产生浮动垃圾。3).使用"标记-清除"算法，产生碎片空间。  
-
-4. 晋升失败(promotion failed)：当新生代发生垃圾回收，老年代有足够的空间可以容纳晋升的对象，但是由于空闲空间的碎片化，导致晋升失败。此时会触发单线程且带压缩动作的Full GC。  
-&emsp; 并发模式失败(concurrent mode failure)：当CMS在执行回收时，新生代发生垃圾回收，同时老年代又没有足够的空间容纳晋升的对象时。CMS垃圾回收会退化成单线程的Full GC。所有的应用线程都会被暂停，老年代中所有的无效对象都被回收。  
+    5. 重新标记：修正并发标记期间，因用户程序继续运作而导致标记产生变动的那一部分对象的标记记录。
+    6. 并发清除：并发、标记-清除，GC与用户线程并发执行。   
+    7. 并发重置。
+3. CMS的特点：  
+    1. 划时代的并发收集器。  
+    2. 吞吐量低。并发执行，线程切换。  
+    3. 并发执行，产生浮动垃圾(参考三色标记法中“错标”)。  
+    4. 使用"标记-清除"算法，产生碎片空间。
+    5. 晋升失败与并发模式失败：都会退化成单线程的Full GC。  
+        * 晋升失败(promotion failed)：当新生代发生垃圾回收，老年代有足够的空间可以容纳晋升的对象，但是由于空闲空间的碎片化，导致晋升失败。~此时会触发单线程且带压缩动作的Full GC。~  
+        * 并发模式失败(concurrent mode failure)：当CMS在执行回收时，新生代发生垃圾回收，同时老年代又没有足够的空间容纳晋升的对象时。CMS垃圾回收会退化成单线程的Full GC。所有的应用线程都会被暂停，老年代中所有的无效对象都被回收。  
+    6. 减少remark阶段停顿：在执行并发操作之前先做一次Young GC。  
 
 
 # 1. ~~CMS~~  
@@ -96,7 +100,7 @@ https://segmentfault.com/a/1190000020625913?utm_source=tag-newest
 #### 1.2.2.1. 初始标记  
 &emsp; **<font color = "clime">这是CMS中两次stop-the-world事件中的一次。</font>** 这一步的作用是标记存活的对象，有两部分：  
 1. 标记老年代中所有的GC Roots对象，如下图节点1；  
-2. 标记年轻代中活着的对象引用到的老年代的对象（指的是年轻带中还存活的引用类型对象，引用指向老年代中的对象）如下图节点2、3；  
+2. 标记年轻代中活着的对象引用到的老年代的对象（指的是年轻代中还存活的引用类型对象，引用指向老年代中的对象）如下图节点2、3；  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-127.png)  
 
 #### 1.2.2.2. 并发标记
@@ -121,7 +125,7 @@ https://segmentfault.com/a/1190000020625913?utm_source=tag-newest
 -->
 
 ##### 1.2.2.3.1. 预清理阶段
-&emsp; 前一个阶段已经说明，不能标记出老年代全部的存活对象，是因为标记的同时应用程序会改变一些对象引用， **<font color = "red">这个阶段就是用来</font><font color = "lime">处理</font><font color = "red">前一个阶段因为引用关系改变导致没有标记到的存活对象的，它会扫描所有标记为Direty的Card。</font>**  
+&emsp; 前一个阶段已经说明，不能标记出老年代全部的存活对象，是因为标记的同时应用程序会改变一些对象引用， **<font color = "red">这个阶段就是用来</font><font color = "clime">处理</font><font color = "red">前一个阶段因为引用关系改变导致没有标记到的存活对象的，它会扫描所有标记为Direty的Card。</font>**  
 &emsp; 如下图所示，在并发清理阶段，节点3的引用指向了6；则会把节点3的card标记为Dirty；  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-129.png)  
 &emsp; 最后将6标记为存活，如下图所示：  
@@ -233,6 +237,11 @@ https://www.jianshu.com/p/86e358afdf17
 &emsp; 由于CMS使用了"标记-清除"算法，因此清除之后会产生大量的碎片空间，不利于空间利用率。不过CMS提供了应对策略：开启-XX:+UseCMSCompactAtFullCollection，开启该参数后，每次FullGC完成后都会进行一次内存压缩整理，将零散在各处的对象整理到一块儿。但每次都整理效率不高，因此提供了另外一个参数，设置参数-XX:CMSFullGCsBeforeCompaction，本参数告诉CMS，经过了N次Full GC过后再进行一次内存整理。  
 
 ### 1.3.1. 减少remark阶段停顿
+<!-- 
+★★★ cms remark
+https://mp.weixin.qq.com/s/5czSnGFi_PdOAsM-Iqqmww
+-->
+
 &emsp;一般CMS的GC耗时80%都在remark阶段，如果发现remark阶段停顿时间很长，可以尝试添加该参数：`-XX:+CMSScavengeBeforeRemark`。  
 &emsp;在执行remark操作之前先做一次Young GC，目的在于减少年轻代对老年代的无效引用，降低remark时的开销。  
 

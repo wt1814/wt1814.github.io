@@ -48,7 +48,8 @@
 
 # 1. ConcurrentHashMap   
 <!-- 
-
+ConcurrentHashMap中有十个提升性能的细节，你都知道吗？
+https://mp.weixin.qq.com/s/vZZQeWaKQ2pbUDyyqpzunQ
 
 ConcurrentHashMap线程安全吗 
 https://mp.weixin.qq.com/s/ZCQPrgW6iv2IP_3RKk016g

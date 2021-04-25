@@ -26,7 +26,7 @@
 # 1. 事务性  
 ## 1.1. Kafka事务概述
 ### 1.1.1. kafka事务简介  
-&emsp; **在Kafka0.11.0.0除了引入的幂等性的概念，同时也引入了事务的概念。Kafka的幂等性，只能保证一条记录的在分区发送的原子性，但是如果要保证多条记录(多分区)之间的完整性，这个时候就需要开启kafk的事务操作。**  
+&emsp; **在Kafka0.11.0.0除了引入的幂等性的概念，同时也引入了事务的概念。Kafka的幂等性，只能保证一条记录在分区发送的原子性，但是如果要保证多条记录(多分区)之间的完整性，这个时候就需要开启kafk的事务操作。**  
 
 ### 1.1.2. Kafka事务使用场景  
 <!-- 
@@ -52,7 +52,7 @@ kafka事务的应用场景
 1. 生产者发送多条消息可以封装在一个事务中，形成一个原子操作。多条消息要么都发送成功，要么都发送失败。  
 2. **<font color = "clime">read-process-write模式(消费消息-业务处理-生产消息)</font>** ：将消息生产和消费封装在一个事务中，形成一个原子操作。在一个流式处理的应用中，常常一个服务需要从上游接收消息，然后经过处理后送达到下游，这就对应着消息的消费和生成。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-120.png)  
-&emsp; 在此场景中，往往需要实现，从读取source数据，至业务处理，至处理结果写入kafka的整个流程，具备原子性(要么全流程成功，要么全部失败)  
+&emsp; 在此场景中，往往需要实现，从读取source数据，至业务处理，至处理结果写入kafka的整个流程，具备原子性(要么全流程成功，要么全部失败)。  
 &emsp; 也就是说，处理且输出结果成功，才会提交消费端偏移量；如果处理或输出结果失败，则消费偏移量也不会提交。  
 &emsp; 要实现上述的需求，可以利用Kafka中的事务机制：它可以使应用程序消费消息、生产消息、提交消费位移当作原子操作来处理。即使该生产或消费跨多个分区。    
 3. 当事务中仅仅存在Consumer消费消息的操作时，它和Consumer手动提交Offset并没有区别。因此单纯的消费消息并不是Kafka引入事务机制的原因，单纯的消费消息也没有必要存在于一个事务中。  
@@ -255,18 +255,18 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
 
 ## 1.3. kafka事务使用  
 &emsp; 通常Kafka的事务分为 生产者事务Only、消费者&生产者事务。一般来说默认消费者消费的消息的级别是read_uncommited数据，这有可能读取到事务失败的数据，所有在开启生产者事务之后，需要用户设置消费者的事务隔离级别。    
-&emsp; isolation.level	=  read_uncommitted 默认。该选项有两个值read_committed|read_uncommitted，如果开始事务控制，消费端必须将事务的隔离级别设置为read_committed  
+&emsp; isolation.level	=  read_uncommitted 默认。该选项有两个值read_committed|read_uncommitted，如果开始事务控制，消费端必须将事务的隔离级别设置为read_committed。  
 &emsp; 开启的生产者事务的时候，只需要指定transactional.id属性即可，一旦开启了事务，默认生产者就已经开启了幂等性。但是要求"transactional.id"的取值必须是唯一的，同一时刻只能有一个"transactional.id"存储在，其他的将会被关闭。  
 
 ### 1.3.1. 事务相关配置  
 1. Broker configs
-    1. transactional.id.timeout.ms：在ms中，事务协调器在生产者TransactionalId提前过期之前等待的最长时间，并且没有从该生产者TransactionalId接收到任何事务状态更新。默认是604800000(7天)。这允许每周一次的生产者作业维护它们的id
+    1. transactional.id.timeout.ms：在ms中，事务协调器在生产者TransactionalId提前过期之前等待的最长时间，并且没有从该生产者TransactionalId接收到任何事务状态更新。默认是604800000(7天)。这允许每周一次的生产者作业维护它们的id。
     2. max.transaction.timeout.ms：事务允许的最大超时。如果客户端请求的事务时间超过此时间，broke将在InitPidRequest中返回InvalidTransactionTimeout错误。这可以防止客户机超时过大，从而导致用户无法从事务中包含的主题读取内容。  
     &emsp; 默认值为900000(15分钟)。这是消息事务需要发送的时间的保守上限。
-    3. transaction.state.log.replication.factor：事务状态topic的副本数量。默认值:3
-    4. transaction.state.log.num.partitions：事务状态主题的分区数。默认值:50
-    5. transaction.state.log.min.isr：事务状态主题的每个分区ISR最小数量。默认值:2
-    6. transaction.state.log.segment.bytes：事务状态主题的segment大小。默认值:104857600字节
+    3. transaction.state.log.replication.factor：事务状态topic的副本数量。默认值:3。
+    4. transaction.state.log.num.partitions：事务状态主题的分区数。默认值:50。
+    5. transaction.state.log.min.isr：事务状态主题的每个分区ISR最小数量。默认值:2。
+    6. transaction.state.log.segment.bytes：事务状态主题的segment大小。默认值:104857600字节。
 2. Producer configs
     1. enable.idempotence：开启幂等
     2. transaction.timeout.ms：事务超时时间  
@@ -277,12 +277,10 @@ InitPidRequest会发送给Transaction Coordinator。如果Transaction Coordinato
     &emsp; 用于事务性交付的TransactionalId。这支持跨多个生产者会话的可靠性语义，因为它允许客户端确保使用相同TransactionalId的事务在启动任何新事务之前已经完成。如果没有提供TransactionalId，则生产者仅限于幂等交付。  
 3. Consumer configs  
     1. isolation.level  
-    &emsp; read_uncommitted:以偏移顺序使用已提交和未提交的消息。  
-    &emsp; read_committed:仅以偏移量顺序使用非事务性消息或已提交事务性消息。为了维护偏移排序，这个设置意味着我们必须在使用者中缓冲消息，直到看到给定事务中的所有消息。  
+    &emsp; read_uncommitted：以偏移顺序使用已提交和未提交的消息。  
+    &emsp; read_committed：仅以偏移量顺序使用非事务性消息或已提交事务性消息。为了维护偏移排序，这个设置意味着我们必须在使用者中缓冲消息，直到看到给定事务中的所有消息。  
 
 ### 1.3.2. Java API
-
-
 <!-- 
 ~~
 https://blog.csdn.net/mlljava1111/article/details/81180351

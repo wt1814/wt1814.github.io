@@ -20,18 +20,16 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">多版本并发控制(MVCC)是一种用来解决读-写冲突的无锁并发控制。</font>**  
+1. **<font color = "clime">多版本并发控制(MVCC)是一种用来解决读-写冲突的无锁并发控制。</font>**  
 &emsp; <font color = "clime">MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
-&emsp; **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC，一个是undo log，用于记录数据的变化轨迹(版本链)，用于数据回滚；另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。</font>**   
-&emsp; 版本链的生成：在数据库中的每一条记录实际都会存在三个隐藏列：事务ID、行ID、回滚指针，指向undo log记录。  
-&emsp; **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
-&emsp; Read View判断：  
+2. **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC，一个是undo log，用于记录数据的变化轨迹(版本链)，用于数据回滚；另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。</font>**   
+    * 版本链的生成：在数据库中的每一条记录实际都会存在三个隐藏列：事务ID、行ID、回滚指针，指向undo log记录。  
+    *  **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
+3. Read View判断：  
 &emsp; 如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。  
-
-&emsp; 在读取已提交、可重复读两种隔离级别下会使用MVCC。  
-
-* 读取已提交READ COMMITTED 是在每次执行 select 操作时都会生成一次 Read View。
-* 可重复读REPEATABLE READ 只有在第一次执行 select 操作时才会生成 Read View，后续的 select 操作都将使用第一次生成的 Read View。
+4. 在读取已提交、可重复读两种隔离级别下会使用MVCC。  
+    * 读取已提交READ COMMITTED 是在每次执行 select 操作时都会生成一次 Read View。
+    * 可重复读REPEATABLE READ 只有在第一次执行 select 操作时才会生成 Read View，后续的 select 操作都将使用第一次生成的 Read View。
 
 
 # 1. MVCC
@@ -72,7 +70,7 @@ MCVV这种读取历史数据的方式称为快照读(snapshot read)，而读取�
 * 当前读  
 &emsp; 像select lock in share mode(共享锁)，select for update；update，insert，delete(排他锁)这些操作都是一种当前读，为什么叫当前读？就是它读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加锁。  
 * 快照读  
-&emsp; 像不加锁的select操作就是快照读，即不加锁的非阻塞读；快照读的前提是隔离级别不是串行级别，串行级别下的快照读会退化成当前读；之所以出现快照读的情况，是基于提高并发性能的考虑，快照读的实现是基于多版本并发控制，即MVCC,可以认为MVCC是行锁的一个变种，但它在很多情况下，避免了加锁操作，降低了开销；既然是基于多版本，即快照读可能读到的并不一定是数据的最新版本，而有可能是之前的历史版本。
+&emsp; 像不加锁的select操作就是快照读，即不加锁的非阻塞读；快照读的前提是隔离级别不是串行级别，串行级别下的快照读会退化成当前读；之所以出现快照读的情况，是基于提高并发性能的考虑，快照读的实现是基于多版本并发控制，即MVCC，可以认为MVCC是行锁的一个变种，但它在很多情况下，避免了加锁操作，降低了开销；既然是基于多版本，即快照读可能读到的并不一定是数据的最新版本，而有可能是之前的历史版本。
 
 <!-- 
 &emsp; 谈到幻读，首先要引入“当前读”和“快照读”的概念：  
@@ -148,7 +146,7 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
 -->
 &emsp; **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
     
-    在事务中，只有执行插入、更新、删除操作时才会分配到一个事务 id。如果事务只是一个单纯的读取事务，那么它的事务 id 就是默认的 0。
+    在事务中，只有执行插入、更新、删除操作时才会分配到一个事务id。如果事务只是一个单纯的读取事务，那么它的事务 id 就是默认的 0。
 
 &emsp; Read View的结构如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-75.png)  
@@ -198,11 +196,11 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-146.png)  
 &emsp; 执行过程如下：  
 1. 如果被访问版本的trx_id=creator_id，意味着当前事务在访问它自己修改过的记录，所以该版本可以被当前事务访问  
-2. 如果被访问版本的trx_id<min_trx_id，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问
+2. 如果被访问版本的trx_id\<min_trx_id，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问
 3. 被访问版本的trx_id>=max_trx_id，表明生成该版本的事务在当前事务生成ReadView后才开启，该版本不可以被当前事务访问  
 4. 被访问版本的trx_id是否在m_ids列表中
-    1. 是，创建ReadView时，该版本还是活跃的，该版本不可以被访问。顺着版本链找下一个版本的数据，继续执行上面的步骤判断可见性，如果最后一个版本还不可见，意味着记录对当前事务完全不可见  
-    2. 否，创建ReadView时，生成该版本的事务已经被提交，该版本可以被访问  
+    1. 是，创建ReadView时，该版本还是活跃的，该版本不可以被访问。顺着版本链找下一个版本的数据，继续执行上面的步骤判断可见性，如果最后一个版本还不可见，意味着记录对当前事务完全不可见。  
+    2. 否，创建ReadView时，生成该版本的事务已经被提交，该版本可以被访问。  
 
 ----
 

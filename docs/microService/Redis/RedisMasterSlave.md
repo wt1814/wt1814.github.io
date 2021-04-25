@@ -30,23 +30,18 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-76.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; <font color = "red">主从复制过程大体可以分为3个阶段：连接建立阶段(即准备阶段)、数据同步阶段、命令传播阶段。</font>  
+1. <font color = "red">主从复制过程大体可以分为3个阶段：连接建立阶段(即准备阶段)、数据同步阶段、命令传播阶段。</font>  
 &emsp; 一、连接建立阶段：1. 保存主节点(master)信息。2. 从节点(slave)内部通过每秒运行的定时任务维护复制相关逻辑，当定时任务发现存在新的主节点后，会尝试与该节点建立网络连接。</font>3. 发送 ping 命令。  
 &emsp; 二、数据同步阶段：5. 同步数据集。有两种复制方式：全量复制和部分复制。  
 &emsp; 三、命令传播阶段：6. 命令持续复制。  
-
-&emsp; redis 2.8之前使用sync [runId] [offset]同步命令，redis2.8之后使用psync [runId] [offset]命令。两者不同在于，sync命令仅支持全量复制过程，psync支持全量和部分复制。    
-
-&emsp; **主从复制应用与问题：**
-  
-* 传输延迟，提供了repl-disable-tcp-nodelay参数用于控制是否关闭 TCP_NODELAY，默认关闭。    
-
-	* 当关闭时，主节点产生的命令数据无论大小都会及时地发送给从节点，这样主从之间延迟会变小，但增加了网络带宽的消耗。适用于主从之间的网络环境良好的场景，如同机架或同机房部署。
-	* 当开启时，主节点会合并较小的TCP数据包从而节省带宽。默认发送时间间隔取决于Linux的内核，一般默认为40毫秒。这种配置节省了带宽但增大主从之间的延迟。适用于主从网络环境复杂或带宽紧张的场景，如跨机房部署。 
-
-* 规避全量复制
-    * 节点运行ID不匹配。提供故障转移的功能；如果修改了主节点的配置，需要重启才能够生效，可以选择安全重启的方式(debug reload)。  
-    * 复制偏移量offset不在复制积压缓冲区中。需要根据中断时长来调整复制积压缓冲区的大小
+2. redis 2.8之前使用sync [runId] [offset]同步命令，redis2.8之后使用psync [runId] [offset]命令。两者不同在于，sync命令仅支持全量复制过程，psync支持全量和部分复制。    
+3. **主从复制应用与问题：**
+    * 传输延迟，提供了repl-disable-tcp-nodelay参数用于控制是否关闭TCP_NODELAY，默认关闭。    
+        * 当关闭时，主节点产生的命令数据无论大小都会及时地发送给从节点，这样主从之间延迟会变小，但增加了网络带宽的消耗。适用于主从之间的网络环境良好的场景，如同机架或同机房部署。
+        * 当开启时，主节点会合并较小的TCP数据包从而节省带宽。默认发送时间间隔取决于Linux的内核，一般默认为40毫秒。这种配置节省了带宽但增大主从之间的延迟。适用于主从网络环境复杂或带宽紧张的场景，如跨机房部署。 
+    * 规避全量复制
+        * 节点运行ID不匹配。提供故障转移的功能；如果修改了主节点的配置，需要重启才能够生效，可以选择安全重启的方式(debug reload)。  
+        * 复制偏移量offset不在复制积压缓冲区中。需要根据中断时长来调整复制积压缓冲区的大小。
 
 # 1. ~~主从复制模式~~  
 &emsp; **<font color = "clime">部分参考《Redis开发与运维》第6章</font>**  
@@ -71,8 +66,8 @@ https://mp.weixin.qq.com/s/XUmmwykpiO8r5-FDt4XyYw
 ## 1.2. 主从复制使用
 &emsp; 在Redis客户端通过info replication可以查看与复制相关的状态。  
 &emsp; 开启主从复制：    
-&emsp; 临时配置：redis-cli进入redis从节点后，使用 --slaveof [masterIP] [masterPort]  
-&emsp; 永久配置：进入从节点的配置文件redis.conf，增加slaveof [masterIP] [masterPort]  
+* 临时配置：redis-cli进入redis从节点后，使用 --slaveof [masterIP] [masterPort]  
+* 永久配置：进入从节点的配置文件redis.conf，增加slaveof [masterIP] [masterPort]  
 
 ## 1.3. 复制流程  
 ### 1.3.1. 复制流程概述  
@@ -169,10 +164,10 @@ https://mp.weixin.qq.com/s/XUmmwykpiO8r5-FDt4XyYw
 
 &emsp; 从上面过程可以看出，全量复制是一个非常重的操作过程，它的开销主要有：  
 
-* 主节点执行 bgsave 过程，该过程是非常消耗 CPU、内存(页表复制)、硬盘 IO 的  
-* 主节点发送 RDB 给从节点的网络开销  
-* 从节点清空 RBD 文件(如果有)和加载 RDB 文件，同时该过程是阻塞的，无法响应客户端命令  
-* 如果从节点开启了 AOF，则还有 bgrewriteaof 的开销  
+* 主节点执行 bgsave 过程，该过程是非常消耗 CPU、内存(页表复制)、硬盘 IO 的。  
+* 主节点发送 RDB 给从节点的网络开销。  
+* 从节点清空 RBD 文件(如果有)和加载 RDB 文件，同时该过程是阻塞的，无法响应客户端命令。  
+* 如果从节点开启了 AOF，则还有 bgrewriteaof 的开销。  
 
 &emsp; 所以，需要尽可能避免全量复制，当然第一次建立连接数据同步是必不可免的，但是其他的情况是可以避免的。  
 
@@ -219,13 +214,13 @@ https://mp.weixin.qq.com/s/XUmmwykpiO8r5-FDt4XyYw
 
 &emsp; 主从节点在初次建立连接进行全量复制时(从节点发送 psync?-1)，主节点会将自己的 runid 告知给从节点，从节点将其保存起来。当主从节点断开重连时，从节点会将这个 runid 发送给主节点，主节点会根据从节点发送的 runid 来判断选择何种复制：  
 
-* 如果从节点发送的 runid 与当前主节点的 runid 一致时，主节点则尝试进行部分复制，当然能不能进行部分复制还要看偏移量是否在复制积压缓冲区  
-* 如果从节点发送的 runid 与当前主节点的 runid 不一致时，则进行全量复制  
+* 如果从节点发送的 runid 与当前主节点的 runid 一致时，主节点则尝试进行部分复制，当然能不能进行部分复制还要看偏移量是否在复制积压缓冲区。  
+* 如果从节点发送的 runid 与当前主节点的 runid 不一致时，则进行全量复制。  
 
 ##### 1.3.2.2.2. 部分复制流程  
 &emsp; 当主从节点在命令传播节点发生了网络中断，出现数据丢失情况，则从节点会向主节点请求发送丢失的数据，如果请求的偏移量在复制积压缓冲区中，则主节点就将剩余的数据补发给从节点，保持主从节点数据一致，由于补发的数据一般都会比较小，所以开销相当于全量复制而言也会很小，流程如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-43.png)  
-&emsp; 1. 当主从节点出现网络闪退时，如果超过了 repl-timeout 时间，主节点会认为从节点出现故障不可达，打印日志如下：  
+&emsp; 1. 当主从节点出现网络闪退时，如果超过了repl-timeout 时间，主节点会认为从节点出现故障不可达，打印日志如下：  
 
     -- master
     2496:M 19 May 2019 10:06:02.970 # Connection with replica 127.0.0.1:6391 lost.
@@ -243,7 +238,7 @@ https://mp.weixin.qq.com/s/XUmmwykpiO8r5-FDt4XyYw
     2655:S 19 May 2019 10:22:00.528 * Non blocking connect for SYNC fired the event.
     2655:S 19 May 2019 10:22:00.528 * Master replied to PING, replication can continue...
 
-&emsp; 这里一定要注意：不要关闭从节点然后启动，这样是模拟不出来的，一定是要执行 slaveof no one 命令，因为重启从节点，它的 master_replid 会丢失，在请求的时候因为 runid 不一致而导致全量复制，当然也选择将 slaveof 写入到配置文件中再重启，这样也可以进行部分复制。
+&emsp; 这里一定要注意：不要关闭从节点然后启动，这样是模拟不出来的，一定是要执行slaveof no one 命令，因为重启从节点，它的 master_replid 会丢失，在请求的时候因为 runid 不一致而导致全量复制，当然也选择将 slaveof 写入到配置文件中再重启，这样也可以进行部分复制。
 
 &emsp; 3. 当主从建立连接后，由于从节点保存了主节点的 runid 和 offset ，所以只需要发送命令 psync{runid}{offset}即可，从节点打印日志如下：  
 
@@ -279,7 +274,7 @@ https://mp.weixin.qq.com/s/XUmmwykpiO8r5-FDt4XyYw
 &emsp; **<font color = "red">参考《Redis开发与运维》第6章</font>**    
 
 ### 1.4.1. 传输延迟    
-&emsp; 主从节点一般部署在不同机器上，复制时的网络延迟就成为需要考虑的 问题，Redis提供了repl-disable-tcp-nodelay参数用于控制是否关闭 TCP_NODELAY，默认关闭，说明如下：  
+&emsp; 主从节点一般部署在不同机器上，复制时的网络延迟就成为需要考虑的问题，Redis提供了repl-disable-tcp-nodelay参数用于控制是否关闭 TCP_NODELAY，默认关闭，说明如下：  
 
 * **当关闭时，** 主节点产生的命令数据无论大小都会及时地发送给从节 点，这样主从之间延迟会变小，但增加了网络带宽的消耗。**适用于主从之间的网络环境良好的场景，如同机架或同机房部署。**  
 * 当开启时，主节点会合并较小的TCP数据包从而节省带宽。默认发送 时间间隔取决于Linux的内核，一般默认为40毫秒。这种配置节省了带宽但 增大主从之间的延迟。适用于主从网络环境复杂或带宽紧张的场景，如跨机房部署。  

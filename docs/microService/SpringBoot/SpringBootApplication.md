@@ -21,6 +21,10 @@
                 * loadSpringFactories()
 
 
+* @Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。AutoConfigurationImportSelector类中存在getCandidateConfigurations()方法可以获取所有的配置。  
+* AutoConfigurationImportSelector#getCandidateConfigurations()方法获取所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
+
+
 # 1. SpringBoot自动配置
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-3.png)  
 
@@ -92,8 +96,8 @@ public @interface EnableAutoConfiguration {
     //...
 }
 ```
-&emsp; <font color = "red">@AutoConfigurationPackage注解将主配置类(@SpringBootConfiguration标注的类)的所在包及下面所有子包里面的所有组件扫描到Spring容器中。</font>  
-&emsp; <font color = "clime">@Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。AutoConfigurationImportSelector类中存在一个方法可以获取所有的配置。</font>源码如下：  
+&emsp; <font color = "red">@AutoConfigurationPackage注解将主配置类（@SpringBootConfiguration标注的类）的所在包及下面所有子包里面的所有组件扫描到Spring容器中。</font>  
+&emsp; <font color = "clime">@Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。AutoConfigurationImportSelector类中存在getCandidateConfigurations()方法可以获取所有的配置。</font>源码如下：  
 
 ```java
 /*
@@ -115,7 +119,7 @@ protected List<String> getCandidateConfigurations(AnnotationMetadata metadata, A
     return configurations;
 }
 ```
-&emsp; SpringFactoriesLoader.loadFactoryNames()方法，调用了本类中loadSpringFactories()方法来获取配置信息。  
+&emsp; 方法调用链：SpringFactoriesLoader#loadFactoryNames ---> SpringFactoriesLoader#loadSpringFactories()。  
 
 #### 1.4.1.1. loadSpringFactories()方法  
 

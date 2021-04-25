@@ -19,12 +19,12 @@ https://mp.weixin.qq.com/s/3OtbG6jegOS4m2GbyOF2lQ
 &emsp; **<font color = "red">总结：</font>**  
 1. 选择器基础：选择器、可选择通道、选择键。  
 2. **<font color = "clime">Selector的基本使用流程：</font>**  
-    1. 通过Selector.open() 打开一个 Selector。
+    1. 通过Selector.open()打开一个 Selector。
     2. 将Channel注册到Selector中，并设置需要监听的事件(interest set)。
-    3. 不断重复:
-        1. 调用select()方法
-        2. 调用selector.selectedKeys()获取selected keys
-        3. 迭代每个 selected key:
+    3. 不断重复：
+        1. 调用select()方法。
+        2. 调用selector.selectedKeys()获取selected keys。
+        3. 迭代每个 selected key：
             * 从selected key中获取对应的Channel和附加信息(如果有的话)。
             * 判断是哪些IO事件已经就绪，然后处理它们。如果是OP_ACCEPT事件, 则调用"SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept()" 获取SocketChannel，并将它设置为 非阻塞的，然后将这个Channel注册到Selector中。
             * 根据需要更改selected key的监听事件。

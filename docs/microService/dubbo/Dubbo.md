@@ -23,6 +23,8 @@
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo.png)   
 
+&emsp; dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级......  
+
 # 1. Dubbo  
 <!--
 面试官从Dubbo泛化调用问到设计模式，我们聊了三十分钟 

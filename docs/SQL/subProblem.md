@@ -48,7 +48,7 @@
 
 
 ## 1.3. 分库数量  
-&emsp; 分库数量首先和单库能处理的记录数有关，一般来说，Mysql单库超过5000万条记录，Oracle单库超过1亿条记录，DB压力就很大(当然处理能力和字段数量/访问模式/记录长度有进一步关系)。  
+&emsp; 分库数量首先和单库能处理的记录数有关，一般来说，Mysql单库超过5000万条记录，Oracle单库超过1亿条记录，DB压力就很大（当然处理能力和字段数量/访问模式/记录长度有进一步关系）。  
 &emsp; 在满足上述前提下，如果分库数量少，达不到分散存储和减轻DB性能压力的目的；如果分库的数量多，好处是每个库记录少，单库访问性能好，但对于跨多个库的访问，应用程序需要访问多个库，如果是并发模式，要消耗宝贵的线程资源；如果是串行模式，执行时间会急剧增加。  
 &emsp; 最后分库数量还直接影响硬件的投入，一般每个分库跑在单独物理机上，多一个库意味多一台设备。所以具体分多少个库，要综合评估，一般初次分库建议分4-8个库。  
 
@@ -83,25 +83,24 @@ insert into user3(id,name) values (3,"wanghanao");
 &emsp; 查看[分库分表多维度查询](/docs/SQL/subSelect.md)章节。  
 
 ### 1.6.5. 非partition key的查询问题  
-&emsp; 水平分库分表，基于拆分策略为常用的hash法。    
-1. 端上除了partition key只有一个非partition key作为条件查询  
-  * 映射法  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-19.png)  
-  * 基因法  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-20.png)  
-&emsp; 注：写入时，基因法生成user_id，如图。关于xbit基因，例如要分8张表，23=8，故x取3，即3bit基因。根据user_id查询时可直接取模路由到对应的分库或分表。根据user_name查询时，先通过user_name_code生成函数生成user_name_code再对其取模路由到对应的分库或分表。id生成常用snowflake算法。  
-2. 端上除了partition key不止一个非partition key作为条件查询  
-  * 映射法  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-21.png)  
-  * 冗余法    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-22.png)  
-&emsp; 注：按照order_id或buyer_id查询时路由到db_o_buyer库中，按照seller_id查询时路由到db_o_seller库中。感觉有点本末倒置！有其他好的办法吗？改变技术栈呢？  
-
-3. 后台除了partition key还有各种非partition key组合条件查询  
-* NoSQL法  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-23.png)  
-* 冗余法  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-24.png)  
+&emsp; 水平分库分表，基于拆分策略为常用的hash法。  
+1. **端上除了partition key只有一个非partition key作为条件查询**  
+    * 映射法  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-19.png)  
+    * 基因法  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-20.png)  
+    &emsp; 注：写入时，基因法生成user_id，如图。关于xbit基因，例如要分8张表，23=8，故x取3，即3bit基因。根据user_id查询时可直接取模路由到对应的分库或分表。根据user_name查询时，先通过user_name_code生成函数生成user_name_code再对其取模路由到对应的分库或分表。id生成常用snowflake算法。  
+2. **端上除了partition key不止一个非partition key作为条件查询**  
+    * 映射法  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-21.png)  
+    * 冗余法    
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-22.png)  
+    &emsp; 注：按照order_id或buyer_id查询时路由到db_o_buyer库中，按照seller_id查询时路由到db_o_seller库中。感觉有点本末倒置！有其他好的办法吗？改变技术栈呢？  
+3. **后台除了partition key还有各种非partition key组合条件查询**  
+    * NoSQL法  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-23.png)  
+    * 冗余法  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-24.png)  
 
 ### 1.6.2. 跨分片的排序order by、分组group by以及聚合count等函数问题  
 &emsp; 这些是一类问题，因为它们<font color = "red">都需要基于全部数据集合进行计算。多数的代理都不会自动处理合并工作，部分支持聚合函数MAX、MIN、COUNT、SUM。</font>  

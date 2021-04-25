@@ -14,17 +14,18 @@
         - [1.3.3. binlog日志格式](#133-binlog日志格式)
         - [1.3.4. 物理文件](#134-物理文件)
     - [1.4. redo log](#14-redo-log)
-    - [1.5. 恢复](#15-恢复)
 
 <!-- /TOC -->
 
 **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">Undo log是逻辑日记。undo log主要记录了数据的逻辑变化，比如一条INSERT语句，对应一条DELETE的undo log，对于每个UPDATE语句，对应一条相反的UPDATE的undo log，这样在发生错误时，就能回滚到事务之前的数据状态。</font>**  
+1. **<font color = "clime">Undo log是逻辑日记。undo log主要记录了数据的逻辑变化，比如一条INSERT语句，对应一条DELETE的undo log，对于每个UPDATE语句，对应一条相反的UPDATE的undo log，这样在发生错误时，就能回滚到事务之前的数据状态。</font>**  
 
 
 # 1. MySql日志文件  
 **<font color = "red">参考《MySQL技术内幕：InnoDB存储引擎》</font>**  
 <!--
+
+https://mp.weixin.qq.com/s/1FOL7E--rQ9_QUN-dO_4pQ
 MySQL中的7种日志你都知道是干啥的吗
 https://mp.weixin.qq.com/s/oeKTX-E6W40IjLy5TJewLg
 

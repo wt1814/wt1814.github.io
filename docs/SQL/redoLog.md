@@ -6,20 +6,23 @@
     - [1.2. redo log简介](#12-redo-log简介)
     - [1.3. redo log详解](#13-redo-log详解)
         - [1.3.1. 记录形式](#131-记录形式)
-        - [1.3.2. 写入流程及刷盘时机](#132-写入流程及刷盘时机)
-        - [1.3.3. 对应的物理文件](#133-对应的物理文件)
+        - [1.3.2. 写入流程，Write-Ahead Logging](#132-写入流程write-ahead-logging)
+        - [1.3.3. 刷盘时机](#133-刷盘时机)
+        - [1.3.4. 对应的物理文件](#134-对应的物理文件)
     - [1.4. redo log与bin log的区别](#14-redo-log与bin-log的区别)
     - [1.5. 两阶段提交](#15-两阶段提交)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **redo log：**  
-......  
-&emsp; **两阶段提交保证解决binlog和redo log的数据一致性：**    
-1. 记录redolog，并将这行记录状态设置为prepare；
-2. 写入binlog；
-3. 将redolog这个事务相关的记录状态设置为commit状态。
+1. **redo log：**  
+    1. 物理格式的日志，记录的是物理数据页面的修改的信息。  
+    2. 写入流程：当有一条记录需要更新的时候，InnoDB 引擎就会先把记录写到 redo log(redolog buffer)里面，并更新内存(buffer pool)，这个时候更新就算完成了。同时，InnoDB 引擎会在适当的时候，将这个操作记录更新到磁盘里面(刷脏页)。
+    3. 刷盘时机：
+2. **两阶段提交保证解决binlog和redo log的数据一致性：**    
+    1. 记录redolog，InnoDB事务进入prepare状态；
+    2. 写入binlog；
+    3. 将redolog这个事务相关的记录状态设置为commit状态。
 
 # 1. redo log，重做日志
 <!-- 
@@ -58,11 +61,14 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 &emsp; 在innoDB的存储引擎中，事务日志通过重做(redo)日志和innoDB存储引擎的日志缓冲(InnoDB Log Buffer)实现。<font color = "red">事务开启时，事务中的操作，都会先写入存储引擎的日志缓冲中，在事务提交之前，这些缓冲的日志都需要提前刷新到磁盘上持久化，</font>这就是DBA们口中常说的“日志先行”(Write-Ahead Logging)。<font color = "red">当事务提交之后，在Buffer Pool中映射的数据文件才会慢慢刷新到磁盘。</font>此时如果数据库崩溃或者宕机，那么当系统重启进行恢复时，就可以根据redo log中记录的日志，把数据库恢复到崩溃前的一个状态。未完成的事务，可以继续提交，也可以选择回滚，这基于恢复的策略而定。  
 &emsp; 在系统启动的时候，就已经为redo log分配了一块连续的存储空间，以顺序追加的方式记录Redo Log，通过顺序IO来改善性能。所有的事务共享redo log的存储空间，它们的Redo Log按语句的执行顺序，依次交替的记录在一起。  
 -->
-&emsp; **物理格式的日志，记录的是物理数据页面的修改的信息，这个页 “做了什么改动”。如：add xx记录 to Page1，向数据页Page1增加一个记录。**        
+&emsp; **物理格式的日志，记录的是物理数据页面的修改的信息，这个页 “做了什么改动”。如：add xx记录 to Page1，向数据页Page1增加一个记录。**    
+
+<!-- 
 &emsp; **作用：**  
 
 * <font color = "red">确保事务的持久性。</font>防止在发生故障的时间点，尚有脏页未写入磁盘，在重启mysql服务的时候，根据redo log进行重做，从而达到事务的持久性这一特性。  
-* 提高性能：先写Redo log记录更新。当等到有空闲线程、内存不足、Redo log满了时刷脏。写 Redo log是顺序写入，刷脏是随机写，节省的是随机写磁盘的 IO 消耗(转成顺序写)，所以性能得到提升。此技术称为WAL技术：Write-Ahead Logging，它的关键点就是先写日记磁盘，再写数据磁盘。  
+* 提高性能：先写Redo log记录更新。当等到有空闲线程、内存不足、Redo log满了时刷脏。写 Redo log是顺序写入，刷脏是随机写，所以性能得到提升。此技术称为WAL技术：Write-Ahead Logging，它的关键点就是先写日记磁盘，再写数据磁盘。  
+-->
 
 ## 1.3. redo log详解
 ### 1.3.1. 记录形式
@@ -80,16 +86,19 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 
 
 
-### 1.3.2. 写入流程及刷盘时机
+### 1.3.2. 写入流程，Write-Ahead Logging
+
+&emsp; <font color = "clime">~~事务开始之后就产生redo log，redo log的落盘并不是随着事务的提交才写入的，而是在事务的执行过程中，便开始写入redo log文件中。~~</font>  
+
 
 &emsp; 在 MySQL 中，如果每一次的更新操作都需要写进磁盘，然后磁盘也要找到对应的那条记录，然后再更新，整个过程 IO 成本、查找成本都很高。为了解决这个问题，MySQL 的设计者就采用了日志(redo log)来提升更新效率。  
 &emsp; 而日志和磁盘配合的整个过程，其实就是 MySQL 里的 WAL 技术，WAL 的全称是 Write-Ahead Logging，它的关键点就是先写日志，再写磁盘。  
-&emsp; 具体来说，<font color = "clime">当有一条记录需要更新的时候，InnoDB 引擎就会先把记录写到 redo log(redolog buffer)里面，并更新内存(buffer pool)，这个时候更新就算完成了。同时，InnoDB 引擎会在适当的时候(如系统空闲时)，将这个操作记录更新到磁盘里面(刷脏页)。</font>  
+&emsp; 具体来说，<font color = "clime">当有一条记录需要更新的时候，InnoDB 引擎就会先把记录写到 redo log(redolog buffer)里面，并更新内存(buffer pool)，这个时候更新就算完成了。同时，InnoDB 引擎会在适当的时候，将这个操作记录更新到磁盘里面(刷脏页)。</font>  
 
 
----------
 
-&emsp; <font color = "clime">事务开始之后就产生redo log，redo log的落盘并不是随着事务的提交才写入的，而是在事务的执行过程中，便开始写入redo log文件中。</font>  
+### 1.3.3. 刷盘时机
+
 &emsp; mysql支持三种将redo log buffer写入redo log file的时机，可以通过innodb_flush_log_at_trx_commit参数配置，各参数值含义如下：  
 
 |参数值	|含义|
@@ -100,6 +109,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-142.png)  
 
+-----
 
 &emsp; **<font color = "red">很重要一点，redo log是什么时候写盘的？前面说了是在事物开始之后逐步写盘的。</font>**  
 &emsp; <font color = "clime">之所以说重做日志是在事务开始之后逐步写入重做日志文件，而不一定是事务提交才写入重做日志缓存，原因就是，重做日志有一个缓存区Innodb_log_buffer，Innodb存储引擎先将重做日志写入innodb_log_buffer中。</font>Innodb_log_buffer的默认大小为8M(这里设置的16M)。  
@@ -117,7 +127,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 
 
 
-### 1.3.3. 对应的物理文件  
+### 1.3.4. 对应的物理文件  
 
 * 默认情况下，对应的物理文件位于数据库的data目录下的ib_logfile1&ib_logfile2  
 * innodb_log_group_home_dir 指定日志文件组所在的路径，默认./ ，表示在数据库的数据目录下。  
@@ -156,7 +166,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 5. binlog可以作为恢复数据使用，主从复制搭建，redo log作为异常宕机或者介质故障后的数据恢复使用。  
 -->
 
-&emsp; redo log 和 binlog 是怎么关联起来的?  
+&emsp; redo log 和 binlog 是怎么关联起来的？  
 &emsp; redo log 和 binlog 有一个共同的数据字段，叫XID。崩溃恢复的时候，会按顺序扫描 redo log：  
 
 * 如果碰到既有 prepare、又有commit的redo log，就直接提交；  

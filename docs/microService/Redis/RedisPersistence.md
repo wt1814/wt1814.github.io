@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. Redis持久化](#1-redis持久化)
+- [1. ~~Redis持久化~~](#1-redis持久化)
     - [1.1. RDB(Redis DataBase)，快照](#11-rdbredis-database快照)
         - [1.1.1. RDB的触发](#111-rdb的触发)
             - [1.1.1.1. 自动触发RDB持久化：](#1111-自动触发rdb持久化)
@@ -14,7 +14,8 @@
         - [1.2.2. AOF持久化流程](#122-aof持久化流程)
             - [1.2.2.1. ★★★重写机制](#1221-★★★重写机制)
                 - [1.2.2.1.1. 重写机制简介](#12211-重写机制简介)
-                - [1.2.2.1.2. 重写机制触发及流程](#12212-重写机制触发及流程)
+                - [1.2.2.1.2. ~~~~重写机制触发及流程~~~~](#12212-重写机制触发及流程)
+                - [1.2.2.1.3. bgrewriteaof](#12213-bgrewriteaof)
             - [1.2.2.2. 重启加载步骤(数据恢复流程)](#1222-重启加载步骤数据恢复流程)
         - [1.2.3. AOF文件损坏](#123-aof文件损坏)
         - [1.2.4. AOF的优势和劣势](#124-aof的优势和劣势)
@@ -33,17 +34,18 @@
     2. <font color = "red">旧的AOF文件含有无效命令，</font>如del key1、hdel key2、srem keys、set a111、set a222等。重写使用进程内数据直接生成，这样新的AOF文件只保留最终数据的写入命令。  
     3. <font color = "red">多条写命令可以合并为一个，</font>如：lpush list a、lpush list b、lpush list c可以转化为：lpush list a b c。为了防止单条命令过大造成客户端缓冲区溢出，对于list、set、hash、zset等类型操作，以64个元素为界拆分为多条。  
 
-    &emsp; **<font color = "red">AOF重写降低了文件占用空间，除此之外，另一个目的是：更小的AOF 文件可以更快地被Redis加载。</font>**  
-    &emsp; 在写入AOF日志文件时，如果Redis服务器宕机，则AOF日志文件文件会出格式错误。在重启Redis服务器时，Redis服务器会拒绝载入这个AOF文件，可以通过以下步骤修复AOF 并恢复数据： 
+        **<font color = "red">AOF重写降低了文件占用空间，除此之外，另一个目的是：更小的AOF 文件可以更快地被Redis加载。</font>**  
+        在写入AOF日志文件时，如果Redis服务器宕机，则AOF日志文件文件会出格式错误。在重启Redis服务器时，Redis服务器会拒绝载入这个AOF文件，可以通过以下步骤修复AOF 并恢复数据： 
     * 备份现在AOF文件，以防万一。
     * <font color = "red">使用redis-check-aof命令修复AOF文件</font>  
     * 重启Redis服务器，加载已经修复的AOF文件，恢复数据。  
 
 
 3. Redis4.0混合持久化，先RDB，后AOF。  
+4. ~~**<font color = "clime">RDB方式bgsave指令中fork子进程、AOF方式重写bgrewriteaof都会造成阻塞。</font>**~~  
 
 
-# 1. Redis持久化  
+# 1. ~~Redis持久化~~  
 &emsp; **<font color = "red">部分参考《Redis开发与运维》</font>**  
 
 <!--
@@ -168,7 +170,10 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 
 &emsp; **<font color = "red">AOF重写降低了文件占用空间，除此之外，另一个目的是：更小的AOF 文件可以更快地被Redis加载。</font>**  
 
-##### 1.2.2.1.2. 重写机制触发及流程
+##### 1.2.2.1.2. ~~~~重写机制触发及流程~~~~
+<!-- 
+https://www.cnblogs.com/wdliu/p/9377278.html
+-->
 &emsp; AOF重写过程可以手动触发和自动触发：  
 * 手动触发：直接调用bgrewriteaof命令。 
 * 自动触发：根据auto-aof-rewrite-min-size和auto-aof-rewrite-percentage参数确定自动触发时机。
@@ -177,6 +182,9 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
     
     
 &emsp; 自动触发时机：aof_current_size>auto-aof-rewrite-min- size&&(aof_current_size-aof_base_size)/aof_base_size>=auto-aof-rewrite- percentage。其中aof_current_size和aof_base_size可以在info Persistence统计信息中查看。  
+
+##### 1.2.2.1.3. bgrewriteaof 
+&emsp; ......
 
 &emsp; 当触发AOF重写时，内部做了哪些事呢？下图介绍它的运行流程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-86.png)  
@@ -233,8 +241,7 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 &emsp; redis4.0引入了混合持久化方式。简单的说就是「内存快照以一定的频率执行，比如1小时一次，在两次快照之间，使用AOF日志记录这期间的所有命令操作。」    
 &emsp; 混合使用的方式使得内存快照不必频繁的执行，并且AOF记录的也不是全部的操作命令，而是两次快照之间的操作命令，不会出现AOF日志文件过大的情况了，避免了AOF重写的开销了。
 这个方案既能够用到的RDB的快速恢复的好处，又能享受都只记录操作命令的简单优势，强烈建议使用  
-&emsp; **开启混合持久化**  
-&emsp; 4.0版本的混合持久化默认关闭的，通过aof-use-rdb-preamble配置参数控制，yes则表示开启，no表示禁用，默认是禁用的，可通过config set修改。  
+&emsp; **开启混合持久化：** 4.0版本的混合持久化默认关闭的，通过aof-use-rdb-preamble配置参数控制，yes则表示开启，no表示禁用，默认是禁用的，可通过config set修改。  
 &emsp; **混合持久化过程**    
 &emsp; 混合持久化也是通过bgrewriteaof来完成的，不同的是当开启混合持久化时，fork出的子进程先将共享内存的数据以RDB方式写入aof文件中，然后再将重写缓冲区的增量命令以AOF方式写入文件中。  
 &emsp; 写入完成后通知主进程统计信息，并将新的含有RDB格式和AOF格式的AOF文件替换旧的AOF文件。简单的说：新的AOF文件前半段是以RDB格式的全量数据后半段是AOF格式的增量数据。  

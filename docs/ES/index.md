@@ -77,7 +77,7 @@ PUT twitter
 ```
 
 &emsp; **创建mapping映射：**  
-&emsp; 注意：在ES中创建一个mapping映射类似于在数据库中定义表结构，即表里面有哪些字段、字段是什么类型、字段的默认值等；也类似于solr里面的模式schema的定义  
+&emsp; 注意：在ES中创建一个mapping映射类似于在数据库中定义表结构，即表里面有哪些字段、字段是什么类型、字段的默认值等；也类似于solr里面的模式schema的定义。  
 
 ```text
 PUT twitter
@@ -226,10 +226,10 @@ POST /logs_write/_rollover
 }
 ```
 &emsp; 说明：  
-&emsp; 如果别名logs_write指向的索引是7天前（含）创建的或索引的文档数>=1000或索引的大小>= 5gb，则会创建一个新索引 logs-000002，并把别名logs_writer指向新创建的logs-000002索引  
+&emsp; 如果别名logs_write指向的索引是7天前（含）创建的或索引的文档数>=1000或索引的大小>= 5gb，则会创建一个新索引 logs-000002，并把别名logs_writer指向新创建的logs-000002索引。  
 &emsp; Rollover Index新建索引的命名规则：  
 &emsp; 如果索引的名称是-数字结尾，如logs-000001，则新建索引的名称也会是这个模式，数值增1。  
-&emsp; 如果索引的名称不是-数值结尾，则在请求rollover api时需指定新索引的名称
+&emsp; 如果索引的名称不是-数值结尾，则在请求rollover api时需指定新索引的名称。
 
 ```text
 POST /my_alias/_rollover/my_new_index_name
@@ -310,7 +310,7 @@ POST /logs_write/_rollover?dry_run
 <!-- 
 Elasticsearch技术解析与实战 第2.4章
 -->
-&emsp; 在Elasticsearch中索引有很多的配置参数，有些配置是可以在建好索引后重新进行设置 和管理的，比如索引的副本数量、索引的分词等。  
+&emsp; 在Elasticsearch中索引有很多的配置参数，有些配置是可以在建好索引后重新进行设置和管理的，比如索引的副本数量、索引的分词等。  
 
 #### 1.1.5.1. 更新索引配置  
 

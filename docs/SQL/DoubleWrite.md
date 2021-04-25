@@ -10,15 +10,15 @@
 
 <!-- /TOC -->
 
-&emsp; MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
-&emsp; 在应用(apply)重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。  
-1. 在异常崩溃时，如果不出现“页数据损坏”，能够通过redo恢复数据；
-2. 在出现“页数据损坏”时，能够通过double write buffer恢复页数据； 
-
-&emsp; doublewrite分为内存和磁盘的两层架构。当有页数据要刷盘时：  
-1. 第一步：页数据先memcopy到doublewrite buffer的内存里；
-2. 第二步：doublewrite buffe的内存里，会先刷到doublewrite buffe的磁盘上；
-3. 第三步：doublewrite buffe的内存里，再刷到数据磁盘存储上； 
+&emsp; **<font color = "red">总结：</font>**  
+1. MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
+2.  在应用(apply)重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。  
+    1. 在异常崩溃时，如果不出现“页数据损坏”，能够通过redo恢复数据；
+    2. 在出现“页数据损坏”时，能够通过double write buffer恢复页数据； 
+3. doublewrite分为内存和磁盘的两层架构。当有页数据要刷盘时：  
+    1. 第一步：页数据先memcopy到doublewrite buffer的内存里；
+    2. 第二步：doublewrite buffe的内存里，会先刷到doublewrite buffe的磁盘上；
+    3. 第三步：doublewrite buffe的内存里，再刷到数据磁盘存储上； 
 
 # 1. 两次写  
 <!-- 
@@ -66,11 +66,8 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 3. 第三步：doublewrite buffe的内存里，再刷到数据磁盘存储上；  
 
 &emsp; **DWB为什么能解决“页数据损坏”问题呢？**  
-&emsp; 假设步骤2掉电，磁盘里依然是1+2+3+4的完整数据。  
-&emsp; &emsp; 只要有页数据完整，就能通过redo还原数据。  
-&emsp; 假如步骤3掉电，doublewrite buffe里存储着完整的数据。  
-&emsp; 所以，一定不会出现“页数据损坏”问题。  
-&emsp; &emsp; 写了2次，总有一个地方的数据是OK的。  
+&emsp; 假设步骤2掉电，磁盘里依然是1+2+3+4的完整数据。只要有页数据完整，就能通过redo还原数据；假如步骤3掉电，doublewrite buffe里存储着完整的数据。所以，一定不会出现“页数据损坏”问题。  
+&emsp; 写了2次，总有一个地方的数据是OK的。  
 
 <!-- 
 **<font color = "clime">1. 当缓冲池的脏页刷新时，并不直接写磁盘，而是会通过memcpy函数将脏页先拷贝到内存中的doublewrite buffer，</font>**     

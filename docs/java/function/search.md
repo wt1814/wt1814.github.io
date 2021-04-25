@@ -6,39 +6,23 @@
         - [1.1.1. 二分查找模版](#111-二分查找模版)
         - [1.1.2. 二分查找实现](#112-二分查找实现)
         - [1.1.3. 二分查找题型](#113-二分查找题型)
+            - [1.1.3.1. 寻找元素](#1131-寻找元素)
+            - [1.1.3.2. “旋转数组”中的二分查找](#1132-旋转数组中的二分查找)
 
 <!-- /TOC -->
 
 
-<!-- 
-
-
--->
-
-<!-- 
-
-***二分题
-https://mp.weixin.qq.com/s/smqRexJNmEbqmNuuJ3Zziw
-二分查找团灭力扣旋转排序数组系列
-https://mp.weixin.qq.com/s/DBl8lOoKj18SnbTUSfE6Dg
-
-三款经典的查找算法
-https://mp.weixin.qq.com/s/3RvYUaAL8xAQQvT88WAJ7g
-
-在N个乱序数字中查找第k大的数字
-https://blog.csdn.net/u010412301/article/details/67704530
-寻找第K大数的方法
-https://blog.csdn.net/csl13/article/details/6056522
-几乎刷完了力扣所有的二分题，我发现了这些东西。。。（下） 
-https://mp.weixin.qq.com/s/zteJKZ6jy5RdhWUTM10kdQ
--->
 
 # 1. 查找算法  
+<!--
+三款经典的查找算法
+https://mp.weixin.qq.com/s/3RvYUaAL8xAQQvT88WAJ7g
+-->
 &emsp; 顺序查找、二分查找、分块查找、哈希表查找  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-32.png)  
 
 ## 1.1. 二分查找  
-&emsp; 要在 **<font color = "lime">有序数组</font>** 中进行查找，最好的解决方法是使用二分查找算法。  
+&emsp; 要在 **<font color = "red">有序数组</font>** 中进行查找，最好的解决方法是使用二分查找算法。  
 
 ### 1.1.1. 二分查找模版   
 
@@ -60,34 +44,6 @@ while (start + 1 < end) {
 &emsp; 二分查找可以有递归和非递归两种方式来实现。  
 
 ```java
-/**
- * 非递归实现，while循环
- * @param array
- * @param target
- * @return
- */
-public static int binarySearch(int []array,int target){
-
-    //查找范围起点
-    int start=0;
-    //查找范围终点
-    int end=array.length-1;
-    //查找范围中位数
-    int mid;
-
-    while(start<=end){
-        //mid=(start+end)/2 有可能溢出
-        mid=start+(end-start)/2;
-        if(array[mid]==target){
-            return mid;
-        }else if(array[mid]<target){
-            start=mid+1;
-        }else{
-            end=mid-1;
-        }
-    }
-    return -1;
-}
 
 /**
  * 递归实现
@@ -98,17 +54,18 @@ public static int binarySearch(int []array,int target){
  * @return
  */
 public static int recursionBinarySearch(int[] array,int start,int end,int target){
-    if (start <= end) {
-        int mid=start+(end-start)/2;
-        if (target == array[mid]) {
-            return mid;
-        } else if (target < array[mid]) { //比关键字大则关键字在左区域
-            return recursionBinarySearch(array, start, mid - 1, target);
-        } else { //比关键字小则关键字在右区域
-            return recursionBinarySearch(array, mid + 1, end, target);
-        }
-    } else {
+
+    if (start +1 > end){
         return -1;
+    }
+
+    int mid=start+(end-start)/2;
+    if (target == array[mid]) {
+        return mid;
+    } else if (target < array[mid]) { //比关键字大则关键字在左区域
+        return recursionBinarySearch(array, start, mid - 1, target);
+    } else { //比关键字小则关键字在右区域
+        return recursionBinarySearch(array, mid + 1, end, target);
     }
 }
 
@@ -117,12 +74,18 @@ public static void main(String[] args) {
     for(int i=0; i<1000;i++){
         array[i] = i;
     }
-    System.out.println(binarySearch(array, 173));
     System.out.println(recursionBinarySearch(array, 0,array.length,173));
 }
 ```  
 
 ### 1.1.3. 二分查找题型  
+<!-- 
+
+几乎刷完了力扣所有的二分题，我发现了这些东西。。。（下） 
+https://mp.weixin.qq.com/s/zteJKZ6jy5RdhWUTM10kdQ
+-->
+
+#### 1.1.3.1. 寻找元素
 &emsp; 很多的时候，应用二分查找的地方都不是直接的查找和key相等的元素，而是使用下面提到的二分查找的各个变种。  
 
 1. 找出第一个与key相等的元素  
@@ -240,4 +203,51 @@ First Equal or Larger :  3
 First Larger          : 13
 Last Equal or Smaller : 12
 Last Smaller          :  2
+```
+
+#### 1.1.3.2. “旋转数组”中的二分查找  
+<!--
+★★★“旋转数组”中的二分查找
+https://blog.csdn.net/bjweimengshu/article/details/90826510
+二分查找团灭力扣旋转排序数组系列
+https://mp.weixin.qq.com/s/DBl8lOoKj18SnbTUSfE6Dg
+https://blog.csdn.net/whutshiliu/article/details/107290257
+-->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-48.png)  
+
+```java
+public static int rotatedBinarySearch(int[] array, int target){	
+    int start = 0, end = array.length-1;	
+    while(start<=end)	
+    {	
+        int mid = start + (end-start)/2;	
+        if(array[mid]==target){	
+            return mid;	
+        }	
+        //情况A：旋转点在中位数右侧	
+        if(array[mid]>=array[start])	
+        {	
+            //最左侧元素 <= 查找目标 < 中位数	
+            if(array[mid]>target && array[start]<=target){	
+                end = mid - 1;	
+            } else {	
+                start = mid + 1;	
+            }	
+        }	
+        //情况B：旋转点在中位数左侧，或与中位数重合	
+        else {	
+            //中位数 < 查找目标 <= 最右侧元素	
+            if(array[mid]<target && target<=array[end]){	
+                start = mid + 1;	
+            } else {	
+                end = mid - 1;	
+            }	
+        }	
+    }	
+    return -1;	
+}	
+public static void main(String[] args) {	
+    int[] array = new int[]{9,10,11,12,13,1,3,4,5,8};	
+    System.out.println(rotatedBinarySearch(array, 12));	
+}
 ```

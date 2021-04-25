@@ -61,7 +61,7 @@ public void testSqlSession() throws Exception{
 ```
 &emsp; 运行一下代码。查看控制台，有一下输出。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-21.png)  
-&emsp; 这说明<font color = "red">在同一个方法，Mybatis 多次请求数据库且没有事务的情况下，创建了多个 SqlSession 会话！</font>  
+&emsp; 这说明<font color = "red">在同一个方法，Mybatis多次请求数据库且没有事务的情况下，创建了多个 SqlSession 会话！</font>  
 
 &emsp; 然后，在 testSqlSession 方法上加上 @Transactional 注解看看效果。  
 
@@ -152,7 +152,7 @@ public void testSqlSession(){
 
 &emsp; Mapper.xml 配置了<cache>之后，select()会被缓存。update()、delete()、insert() 会刷新缓存。  
 
-&emsp; 如果 cacheEnabled=true，Mapper.xml 没有配置标签，还有二级缓存吗？ 还会出现 CachingExecutor 包装对象吗？ 只要 cacheEnabled=true 基本执行器就会被装饰。有没有配置<cache>，决定了在 启动的时候会不会创建这个 mapper 的 Cache 对象，最终会影响到 CachingExecutor query 方法里面的判断：  
+&emsp; 如果cacheEnabled=true，Mapper.xml没有配置标签，还有二级缓存吗？还会出现CachingExecutor包装对象吗？只要cacheEnabled=true基本执行器就会被装饰。有没有配置<cache>，决定了在启动的时候会不会创建这个mapper的Cache对象，最终会影响到CachingExecutor query方法里面的判断：  
 
     if (cache != null) {  
 

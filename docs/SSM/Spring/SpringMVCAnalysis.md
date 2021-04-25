@@ -13,18 +13,16 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **SpringMVC的工作流程：**  
-1. 找到处理器：前端控制器DispatcherServlet ---> 处理器映射器HandlerMapping ---> 找到处理器Handler  
-2. 处理器处理：前端控制器DispatcherServlet ---> 处理器适配器HandlerAdapter ---> 处理器Handler ---> 执行处理器Controller ---> Controller执行完成返回ModelAndView  
-3. 返回前端控制器DispatcherServlet ---> 视图解析器ViewReslover  
-
-
-&emsp; **SpringMVC解析：**  
-1. 在SpringMVC.xml中定义一个DispatcherServlet和一个监听器ContextLoaderListener。  
-2. 上下文在web容器中的启动：<font color = "red">由ContextLoaderListener启动的上下文为根上下文。在根上下文的基础上，还有一个与Web MVC相关的上下文用来保存控制器(DispatcherServlet)需要的MVC对象，作为根上下文的子上下文，构成一个层次化的上下文体系。</font>  
-3. DispatcherServlet初始化和使用：  
-    1. 完成Spring MVC的组件的初始化。  
-    2. 调用阶段。这一步是由请求触发的。~~参考SPring MVC流程~~  
+1. **SpringMVC的工作流程：**  
+    1. 找到处理器：前端控制器DispatcherServlet ---> 处理器映射器HandlerMapping ---> 找到处理器Handler；  
+    2. 处理器处理：前端控制器DispatcherServlet ---> 处理器适配器HandlerAdapter ---> 处理器Handler ---> 执行处理器Controller(也叫后端控制器) ---> Controller执行完成返回ModelAndView；  
+    3. 返回前端控制器DispatcherServlet ---> 视图解析器ViewReslover。  
+2. **SpringMVC解析：**  
+    1. 在SpringMVC.xml中定义一个DispatcherServlet和一个监听器ContextLoaderListener。  
+    2. 上下文在web容器中的启动：<font color = "red">由ContextLoaderListener启动的上下文为根上下文。在根上下文的基础上，还有一个与Web MVC相关的上下文用来保存控制器(DispatcherServlet)需要的MVC对象，作为根上下文的子上下文，构成一个层次化的上下文体系。</font>  
+    3. DispatcherServlet初始化和使用：  
+        1. 完成Spring MVC的组件的初始化。  
+        2. 调用阶段。这一步是由请求触发的。~~参考SPring MVC流程~~  
 
 
 # 1. SpringMVC解析
@@ -38,14 +36,14 @@ https://mp.weixin.qq.com/s/0x7_OXPDFX5BqF0jGxN2Vg
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/SpringMVC/springmvc-2.png)  
 1. 用户发送请求至前端控制器DispatcherServlet。  
 2. 前端控制器DispatcherServlet收到请求调用处理器映射器HandlerMapping。  
-3. <font color = "red">处理器映射器HandlerMapping根据请求url找到具体的处理器Handler，生成处理器对象及处理器拦截器(如果有则生成)一并返回给DispatcherServlet。</font>  
+3. <font color = "red">处理器映射器HandlerMapping根据请求url找到具体的处理器Handler，生成处理器对象及处理器拦截器（如果有则生成）一并返回给DispatcherServlet。</font>  
 4. <font color = "red">前端控制器DispatcherServlet通过处理器适配器HandlerAdapter调用处理器Handler。</font>  
-5. 执行处理器(Controller，也叫后端控制器)。  
+5. 执行处理器（Controller，也叫后端控制器）。  
 6. Controller执行完成返回ModelAndView。  
 7. 处理器适配器HandlerAdapter将controller执行结果ModelAndView返回给DispatcherServlet。  
 8. DispatcherServlet将ModelAndView传给视图解析器ViewReslover。  
 9. 视图解析器ViewReslover解析后返回具体View。  
-10. DispatcherServlet对View进行渲染视图(即将模型数据填充至视图中)。  
+10. DispatcherServlet对View进行渲染视图（即将模型数据填充至视图中）。  
 11. DispatcherServlet响应用户。  
 
 &emsp; **核心组件：**  

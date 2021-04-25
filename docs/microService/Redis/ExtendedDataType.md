@@ -25,6 +25,8 @@
 
 <!-- /TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-73.png)  
+
 &emsp; **<font color = "red">总结：</font>**  
 1. <font color = "clime">Bitmap、HyperLogLog都是作为Redis的Value值。</font>  
 2. <font color = "clime">Bitmap：二值状态统计。Redis中的Bitmap，key可以为某一天或某一ID，Bitmap中bit可以存储用户的任意信息。所以Redis Bitmap可以用作统计信息。</font>  
@@ -32,6 +34,7 @@
     * 基数统计是指找出集合中不重复元素，用于去重。  
     * 使用Redis统计集合的基数一般有三种方法，分别是使用Redis的Hash，BitMap和HyperLogLog。  
     * HyperLogLog内存空间消耗少，但存在误差0.81%。  
+4. [布隆过滤器](/docs/java/function/otherStructure.md)作为一个插件加载到Redis Server中，就会给Redis提供了强大的布隆去重功能。  
 
 
 # 1. Redis扩展数据类型  
@@ -43,7 +46,6 @@
 RedisTimeSeries
 https://www.yuque.com/happy-coder/qka0of/ekdfzb
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-73.png)  
 
 &emsp; ~~参考《Redis开发与运维》、《Redis深度历险》~~  
 &emsp; Redis提供了一些扩展数据类型和时序数据库模块：  
@@ -55,7 +57,7 @@ https://www.yuque.com/happy-coder/qka0of/ekdfzb
 * RedisTimeSeries：时间数据库模块，主要存储一些跟时间戳相关，需要范围查询，聚合计算等场景的数据集。    
 
 ## 1.1. 前言：网页流量统计里的PV、UV
-&emsp; PV(Page View)访问量, 即页面浏览量或点击量，衡量网站用户访问的网页数量；在一定统计周期内用户每打开或刷新一个页面就记录1次，多次打开或刷新同一页面则浏览量累计。  
+&emsp; PV(Page View)访问量，即页面浏览量或点击量，衡量网站用户访问的网页数量；在一定统计周期内用户每打开或刷新一个页面就记录1次，多次打开或刷新同一页面则浏览量累计。  
 &emsp; UV(Unique Visitor)独立访客，统计1天内访问某站点的用户数(以cookie为依据)；访问网站的一台电脑客户端为一个访客。可以理解成访问某网站的电脑的数量。网站判断来访电脑的身份是通过来访电脑的cookies实现的。如果更换了IP后但不清除cookies，再访问相同网站，该网站的统计中UV数是不变的。如果用户不保存cookies访问、清除了cookies或者更换设备访问，计数会加1。00:00-24:00内相同的客户端多次访问只计为1个访客。 
  
 --------------
@@ -176,7 +178,7 @@ echo $redis->bitCount($cacheKey, 0, 20) . PHP_EOL;
 ```
 
 #### 1.2.3.2. 使用场景二：统计活跃用户  
-&emsp; 使用时间作为cacheKey，然后用户ID为offset，如果当日活跃过就设置为1  
+&emsp; 使用时间作为cacheKey，然后用户ID为offset，如果当日活跃过就设置为1。  
 &emsp; 那么如果计算某几天/月/年的活跃用户呢(暂且约定，统计时间内只有有一天在线就称为活跃)，使用redis的命令   
 &emsp; 命令 BITOP operation destkey key [key ...]  
 &emsp; 说明：对一个或多个保存二进制位的字符串 key 进行位元操作，并将结果保存到 destkey 上。  

@@ -16,12 +16,12 @@
 &emsp; 通过配置文件定义自动配置开关：  
 1. 编写业务逻辑  
 2. 定义配置文件对应类  
-    * @ConfigurationProperties配置属性文件，需要指定前缀prefix
-    * @EnableConfigurationProperties启用配置，需要指定启用的配置类
-    * @NestedConfigurationProperty当一个类中引用了外部类，需要在该属性上加该注解
+    * @ConfigurationProperties配置属性文件，需要指定前缀prefix。
+    * @EnableConfigurationProperties启用配置，需要指定启用的配置类。
+    * @NestedConfigurationProperty当一个类中引用了外部类，需要在该属性上加该注解。
 3. 定义自动配置类，该类自动暴露功能接口。  
     * @Configuration注解。
-    * @EnableConfigurationProperties注解。该注解是用来开启对配置文件对应类中@ConfigurationProperties注解配置Bean的支持。也就是@EnableConfigurationProperties注解告诉Spring Boot能支持@ConfigurationProperties。 当然了，也可以在 @ConfigurationProperties注解的类上添加@Configuration或者@Component注解
+    * @EnableConfigurationProperties注解。该注解是用来开启对配置文件对应类中@ConfigurationProperties注解配置Bean的支持。也就是@EnableConfigurationProperties注解告诉Spring Boot能支持@ConfigurationProperties。 当然了，也可以在 @ConfigurationProperties注解的类上添加@Configuration或者@Component注解。
     * @ConditionalOnProperty注解控制@Configuration是否生效。简单来说也就是可以通过在yml配置文件中控制@Configuration注解的配置类是否生效。
 
 ## 1.1. 场景  
@@ -63,9 +63,9 @@ https://www.cnblogs.com/hello-shf/p/10864977.html
 ### 1.2.2. 第二步，写自动配置逻辑  
 1. 编写业务逻辑  
 2. 定义配置文件对应类  
-    * @ConfigurationProperties 配置属性文件，需要指定前缀 prefix
-    * @EnableConfigurationProperties 启用配置，需要指定启用的配置类
-    * @NestedConfigurationProperty 当一个类中引用了外部类，需要在该属性上加该注解
+    * @ConfigurationProperties 配置属性文件，需要指定前缀 prefix。
+    * @EnableConfigurationProperties 启用配置，需要指定启用的配置类。
+    * @NestedConfigurationProperty 当一个类中引用了外部类，需要在该属性上加该注解。
 3. 定义自动配置类  
 &emsp; 自动配置类自动暴露功能接口。  
 

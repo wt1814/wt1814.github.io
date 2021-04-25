@@ -97,7 +97,7 @@ public void afterPropertiesSet() throws Exception {
 }
 ```
  
-&emsp; ServiceBean实现了ApplicationListener接口，实现onApplicationEvent方法，该方法在spring容器启动完成后“自动”执行
+&emsp; ServiceBean实现了ApplicationListener接口，实现onApplicationEvent方法，该方法在spring容器启动完成后“自动”执行。
 
 ```java	
 public void onApplicationEvent(ApplicationEvent event) {
@@ -118,7 +118,7 @@ public void onApplicationEvent(ApplicationEvent event) {
 Dubbo-服务消费者初始化
 https://www.cnblogs.com/caoxb/p/13140244.html
 -->
-&emsp; 服务消费者初始化过程，即生成RefrenceBean的过程。    
+&emsp; **服务消费者初始化过程，即生成RefrenceBean的过程。**    
 &emsp; 整体执行流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-44.png)   
 
@@ -128,8 +128,7 @@ https://www.cnblogs.com/caoxb/p/13140244.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-45.png)  
 
 ### 1.3.1. RefrenceBean生成过程  
-&emsp; RefrenceBean是一个FactoryBean  
-&emsp; spring容器在启动过程中执行  
+&emsp; RefrenceBean是一个FactoryBean。spring容器在启动过程中执行。  
 1. bean定义注册  
 &emsp; 客户端在启动的过程中会注册4种类型的bean定义  
 

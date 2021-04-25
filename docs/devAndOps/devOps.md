@@ -26,15 +26,15 @@ https://mp.weixin.qq.com/s/5RpZRJlkypdg4rMAisCYTA
 ## 1.1. DevOps  
 ### 1.1.1. 定义  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-4.png)   
-&emsp; **DevOps: Development和Operations的组合。可以把DevOps看作开发(软件工程)、技术运营和质量保障(QA)三者的交集。**  
-&emsp; DevOps并没有被定义成一组最佳实践和流程。尽管如此，一些常用概念的内在关联性仍可被识别出来，如下图所示。  
+&emsp; **DevOps：Development和Operations的组合。可以把DevOps看作开发(软件工程)、技术运营和质量保障(QA)三者的交集。**  
+&emsp; DevOps并没有被定义成一组最佳实践和流程。尽管如此，一些常用概念的内在关联性仍可被识别出来，如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-8.png)  
 &emsp; 这是其中的一个DevOps框架。这个框架只指出那些被认可的概念和它们在某种程度上的关系。以下是对每个概念的简要说明。  
 
 * DevOps持续测试  
 &emsp; 持续测试是在整个开发过程中协助测试管理的一个测试方法，包括单元测试、集成测试、系统测试和验收测试。测试用例最好在软件开发之前编写，而且除了执行常规测试类型外，测试管理也是高度自动化的。要达到这一点，就需要把需求管理、软件配置管理和测试管理高度集成起来。  
 * DevOps敏捷  
-&emsp; 敏捷开发指的是在 DevOps 中采用敏捷思想进行软件开发，敏捷宣言无疑是很重要的一项。有多种敏捷方法可以采用，比如 Scrum 、看板和极限编程。
+&emsp; 敏捷开发指的是在 DevOps 中采用敏捷思想进行软件开发，敏捷宣言无疑是很重要的一项。有多种敏捷方法可以采用，比如Scrum、看板和极限编程。
 * DevOps持续集成  
 &emsp; 持续集成提供了让多个程序员可以同时运行应用程序的最佳实践，可以频繁合并源代码、验证代码(静态测试用例)、编译和测试代码(动态测试用例〉。  
 * DevOps持续交付  
@@ -46,8 +46,8 @@ https://mp.weixin.qq.com/s/5RpZRJlkypdg4rMAisCYTA
 
 ### 1.1.2. 流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-1.png)  
-&emsp; 上图显示了一个DevOps流程。它不是 DevOps 流程的正式定义，而是表述了在大多数组织机构中，为了实现一个服务而会被循环执行的合乎逻辑顺序的一系列阶段。  
-&emsp; 深色部分表示开发流程，浅色部分表示运维流程。这两个流程构成了 DevOps 方法的核心。    
+&emsp; 上图显示了一个DevOps流程。它不是DevOps流程的正式定义，而是表述了在大多数组织机构中，为了实现一个服务而会被循环执行的合乎逻辑顺序的一系列阶段。  
+&emsp; 深色部分表示开发流程，浅色部分表示运维流程。这两个流程构成了DevOps方法的核心。    
 &emsp; 这两部分流程的每一部分又可以进一步细分为一系列阶段、过程，或被称作另一系列流程，它们都是由反复出现的步骤组成的。这些步骤都是为了达到同一个结果，实现相同的目的。  
 
 &emsp; DevOps框架结构关系：  

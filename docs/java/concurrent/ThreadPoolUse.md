@@ -18,7 +18,7 @@
         - [1.5.2. ThreadPoolExecutor#awaitTermination](#152-threadpoolexecutorawaittermination)
         - [1.5.3. 总结：优雅关闭线程池](#153-总结优雅关闭线程池)
     - [1.6. SpringBoot整合线程池](#16-springboot整合线程池)
-        - [1.6.1. ※※※@Async没有执行的问题分析(@Async线程默认配置)](#161-※※※async没有执行的问题分析async线程默认配置)
+        - [1.6.1. ★★★@Async没有执行的问题分析(@Async线程默认配置)](#161-★★★async没有执行的问题分析async线程默认配置)
         - [1.6.2. 重写spring默认线程池](#162-重写spring默认线程池)
         - [1.6.3. 自定义线程池](#163-自定义线程池)
 
@@ -395,7 +395,7 @@ try {
 ## 1.6. SpringBoot整合线程池
 &emsp; SpringBoot框架提供了@Async注解使用ThreadPoolExecutor。可以重写spring默认的线程池或自定义线程池。  
 
-### 1.6.1. ※※※@Async没有执行的问题分析(@Async线程默认配置)  
+### 1.6.1. ★★★@Async没有执行的问题分析(@Async线程默认配置)  
 <!-- 
 ~~
 https://www.cnblogs.com/kiko2014551511/p/12754927.html

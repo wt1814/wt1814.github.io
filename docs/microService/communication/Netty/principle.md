@@ -129,7 +129,7 @@ EventLoopGroup bossGroup = new NioEventLoopGroup();
 EventLoopGroup workerGroup = new NioEventLoopGroup();
 ```
 
-&emsp; **<font color = "red">bossGroup负责的是接受请求，workerGroup负责的是处理请求。通过 ServerBootstrap 的方法 group() 传入之后，会设置成为 ServerBootstrap 的 parentGroup 和 childGroup</font>**  
+&emsp; **<font color = "red">bossGroup负责的是接受请求，workerGroup负责的是处理请求。通过 ServerBootstrap 的方法 group() 传入之后，会设置成为 ServerBootstrap 的 parentGroup 和 childGroup。</font>**  
 
 ```java
 public ServerBootstrap group(EventLoopGroup parentGroup, EventLoopGroup childGroup) {
@@ -162,7 +162,7 @@ public B channel(Class<? extends C> channelClass) {
 ```java
 b.option(ChannelOption.SO_BACKLOG, 100)
 ```
-&emsp; 作为服务端，主要是设置 TCP 的 backlog 参数，这个设置之后主要是调用底层 C 对应的接口
+&emsp; 作为服务端，主要是设置 TCP 的 backlog 参数，这个设置之后主要是调用底层 C 对应的接口。
 
 ```java
 int listen(int fd, int backlog);
@@ -337,7 +337,7 @@ public EventLoop next() {
 |PowerOfTwoEventExecutorChooser	|按位与(&)操作符|
 |GenericEventExecutorChooser	|取模(%)运算符|
 
-&emsp; chooserFactory 最后会选择出 EventExecutor 后，就可以将 Channel 进行注册了。在 Netty 的 NioEventLoopGroup 中 EventExecutor 都是 SingleThreadEventLoop 来承担的(如果继续跟进代码的话，会发现其实 EventExecutor 实际上就是一个 Java 原生的线程池，最后实现的是一个 ExecutorService )。  
+&emsp; chooserFactory 最后会选择出EventExecutor后，就可以将Channel进行注册了。在Netty的NioEventLoopGroup 中EventExecutor都是SingleThreadEventLoop来承担的(如果继续跟进代码的话，会发现其实 EventExecutor 实际上就是一个 Java 原生的线程池，最后实现的是一个ExecutorService)。  
 
 &emsp; 接下来，获取到了 EventExecutor 后，就可以让它帮忙注册了。  
 
@@ -495,7 +495,7 @@ protected void doBeginRead() throws Exception {
 
 
 ## 1.4. 客户端接入源码分析  
-&emsp; 负责处理网络读写，连接和客户端情感求接入的 Reactor 线程是 NioEventLoop，分析一下客户端是怎么接入的。当多路复用器检测到准备就绪的 channel，默认执行 processSelectedKeysOptimized，代码如下  
+&emsp; 负责处理网络读写，连接和客户端情感求接入的Reactor线程是NioEventLoop，分析一下客户端是怎么接入的。当多路复用器检测到准备就绪的channel，默认执行processSelectedKeysOptimized，代码如下  
 
 ```java
 private void processSelectedKeys() {

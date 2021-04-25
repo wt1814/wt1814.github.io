@@ -15,7 +15,10 @@
 <!-- /TOC -->
 
 # 1. Linux问题排查
-<!-- 
+<!--
+Java后端线上问题排查常用命令收藏 
+https://mp.weixin.qq.com/s/48Z_niFVb2AVk2zDWkK-WA
+
 Linux 服务器 CPU 详细信息查看、物理 CPU 以及逻辑 CPU 
 https://mp.weixin.qq.com/s/nPRjExUQiSguas9-GNSaag
 

@@ -3,7 +3,10 @@
 
 # 高并发系统三高  
 
-<!-- 
+<!--
+ 如何模拟超过 5 万用户的并发访问？ 
+https://mp.weixin.qq.com/s/CuA98cbQOkYLdT4FUIolVQ
+
 Java系统高并发的解决方案 
 https://mp.weixin.qq.com/s?__biz=MzUxNDA1NDI3OA==&mid=2247485308&idx=1&sn=468c87744b25c065617fbc3ed1ab5b31&chksm=f94a8695ce3d0f836e17c46325dd0e9077d4cd5daa690b5bd4814a4ec2dac866166036a16367&scene=0&xtrack=1#rd
 

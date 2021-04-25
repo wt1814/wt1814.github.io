@@ -27,9 +27,15 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 在浏览器地址栏键入URL，按下回车之后经历的流程：URL解析 ---> DNS解析 ---> TCP连接 ---> 发送HTTP请求 ---> 服务器处理请求并返回HTTP报文 ---> 浏览器解析渲染页面--->连接结束。  
+&emsp; 在浏览器地址栏键入URL，按下回车之后经历的流程：URL解析 ---> DNS解析 ---> TCP连接 ---> 发送HTTP请求 ---> 服务器处理请求并返回HTTP报文 ---> 浏览器解析渲染页面 ---> 连接结束。  
  
 # 1. HTTP  
+<!-- 
+
+ 一次 HTTP 请求到底经历了什么？ 
+ https://mp.weixin.qq.com/s/15qyAT6Zq0Q5z1DkGHVt9w
+-->
+
 ## 1.1. HTTP简介  
 &emsp; HTTP(HyperText Transfer Protocol，超文本传输协议)是一个简单的请求-响应协议，它运行在TCP之上。它指定了客户端可能发送给服务器什么样的消息以及得到什么样的响应。请求和响应消息的头以ASCII码形式给出；而消息内容则具有一个类似MIME的格式。  
 
@@ -48,7 +54,7 @@ https://mp.weixin.qq.com/s/81ZGJ_HdUIcYX6F6GEi0Nw
 &emsp; HTTP1.1新改动：  
 * 持久连接  
 * 请求管道化  
-* 增加缓存处理(新的字段如cache-control)  
+* 增加缓存处理（新的字段如cache-control）  
 * 增加Host字段、支持断点传输等  
 
 &emsp; HTTP2新改动：  
@@ -59,7 +65,7 @@ https://mp.weixin.qq.com/s/81ZGJ_HdUIcYX6F6GEi0Nw
 
 ----
 ## 1.2. ★★★一次完整的HTTP请求处理流程  
-&emsp; 在浏览器地址栏键入URL，按下回车之后经历的流程：URL解析 ---> DNS解析 ---> TCP连接 ---> 发送HTTP请求 ---> 服务器处理请求并返回HTTP报文 ---> 浏览器解析渲染页面--->连接结束。  
+&emsp; 在浏览器地址栏键入URL，按下回车之后经历的流程：URL解析 ---> DNS解析 ---> TCP连接 ---> 发送HTTP请求 ---> 服务器处理请求并返回HTTP报文 ---> 浏览器解析渲染页面 ---> 连接结束。  
 
 ----
 ## 1.3. Http与TCP  
@@ -70,9 +76,9 @@ https://mp.weixin.qq.com/s/81ZGJ_HdUIcYX6F6GEi0Nw
 2. 一个TCP连接可以对应几个HTTP请求？  
 &emsp; 如果维持连接，一个TCP连接是可以发送多个HTTP请求的。  
 
-3. 一个TCP连接中HTTP请求发送可以一起发送么(比如一起发三个请求，再三个响应一起接收)？  
+3. 一个TCP连接中HTTP请求发送可以一起发送么（比如一起发三个请求，再三个响应一起接收）？  
 &emsp; HTTP/1.1存在一个问题，单个TCP连接在同一时刻只能处理一个请求，意思是说：两个请求的生命周期不能重叠，任意两个HTTP请求从开始到结束的时间在同一个 TCP 连接里不能重叠。  
-&emsp; 虽然 HTTP/1.1 规范中规定了Pipelining来试图解决这个问题，但是这个功能在浏览器中默认是关闭的。(Pipelining：一个支持持久连接的客户端可以在一个连接中发送多个请求(不需要等待任意请求的响应)。收到请求的服务器必须按照请求收到的顺序发送响应。)  
+&emsp; 虽然 HTTP/1.1 规范中规定了Pipelining来试图解决这个问题，但是这个功能在浏览器中默认是关闭的。(Pipelining：一个支持持久连接的客户端可以在一个连接中发送多个请求，不需要等待任意请求的响应。收到请求的服务器必须按照请求收到的顺序发送响应。)  
 &emsp; HTTP2 提供了Multiplexing多路传输特性，可以在一个TCP连接中同时完成多个HTTP请求。  
 &emsp; 总结：在 HTTP/1.1存在Pipelining技术可以完成这个多个请求同时发送，但是由于浏览器默认关闭，所以可以认为这是不可行的。在HTTP2中由于 Multiplexing特点的存在，多个HTTP请求可以在同一个TCP连接中并行进行。  
 &emsp; 那么在 HTTP/1.1时代，浏览器是如何提高页面加载效率的呢？主要有下面两点：  
@@ -97,11 +103,11 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 
 &emsp; HTTP使用统一资源标识符(Uniform Resource Identifiers, URI)来传输数据和建立连接。URI包含URL和URN。  
 &emsp; URI，是uniform resource identifier，统一资源标识符，用来唯一的标识一个资源。Web上可用的每种资源如HTML文档、图像、视频片段、程序等都是一个来URI来定位的。  
-&emsp; URI一般由三部组成：1).访问资源的命名机制2).存放资源的主机名3).资源自身的名称，由路径表示，着重强调于资源。 
+&emsp; URI一般由三部组成：1).访问资源的命名机制；2).存放资源的主机名；3).资源自身的名称，由路径表示，着重强调于资源。 
 
 ##### 1.4.1.1.1. URL  
 &emsp; URL是uniform resource locator，统一资源定位器，它是一种具体的URI，即URL可以用来标识一个资源，而且还指明了如何locate这个资源。  
-&emsp; 采用URL可以用一种统一的格式来描述各种信息资源，包括文件、服务器的地址和目录等。URL一般由三部组成：1).协议(或称为服务方式)2).存有该资源的主机IP地址(有时也包括端口号)3).主机资源的具体地址。如目录和文件名等。  
+&emsp; 采用URL可以用一种统一的格式来描述各种信息资源，包括文件、服务器的地址和目录等。URL一般由三部组成：1).协议(或称为服务方式)；2).存有该资源的主机IP地址(有时也包括端口号)；3).主机资源的具体地址。如目录和文件名等。  
 &emsp; URL完整格式为：协议://用户名:密码@子域名.域名.顶级域名:端口号/目录/文件名.文件后缀?参数=值#标志  
 
 ##### 1.4.1.1.2. 请求地址最后面的“/”加和不加到底有什么区别？  
@@ -128,7 +134,7 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/http-4.png) 
 
 ##### 1.4.1.2.2. 服务器响应消息  
-&emsp; HTTP响应报文也由四部分组成，分别是状态行(含三部分内容，分别是HTTP版本、状态码和原因短语)、响应头、空行以及响应正文，如下：   
+&emsp; HTTP响应报文也由四部分组成，分别是状态行（含三部分内容，分别是HTTP版本、状态码和原因短语）、响应头、空行以及响应正文，如下：   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/http-5.png) 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/http-6.png) 
 
@@ -286,5 +292,7 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 <!-- 
 巧用大白鲨(WireShark)抓包，看透网络请求 
 https://mp.weixin.qq.com/s/RNDbu-_Em4aTgnyX9XBO0w
+ 一次 HTTP 请求到底经历了什么？ 
+https://mp.weixin.qq.com/s/15qyAT6Zq0Q5z1DkGHVt9w
 -->
 .......

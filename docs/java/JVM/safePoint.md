@@ -20,6 +20,9 @@ https://blog.csdn.net/baichoufei90/article/details/85097727
 https://blog.csdn.net/qian_348840260/article/details/88819502
 聊聊JVM（九）理解进入safepoint时如何让Java线程全部阻塞
 https://blog.csdn.net/ITer_ZC/article/details/41892567?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-5.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-5.control
+抢先式中断
+https://mp.weixin.qq.com/s/3YHHtuPENiV_2ZXfHHuD4A
+
 -->
 
 ## 1.1. Stop the Word

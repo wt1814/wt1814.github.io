@@ -16,4 +16,6 @@ https://mp.weixin.qq.com/s/smqRexJNmEbqmNuuJ3Zziw
 
 10 种常见的软件架构模式 
 https://mp.weixin.qq.com/s/KqskV1AYLnlgVS1qFvJD4g
+
+https://mp.weixin.qq.com/s/smqRexJNmEbqmNuuJ3Zziw
 -->

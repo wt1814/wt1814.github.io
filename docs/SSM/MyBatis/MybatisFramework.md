@@ -12,7 +12,7 @@
 # 1. Mybatis架构
 ## 1.1. Mybatis工作流程概述  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-13.png)  
-&emsp; Mybatis工作流程概述：  
+&emsp; **<font color = "clime">Mybatis工作流程概述：</font>**  
 1. 读取核心配置文件并返回InputStream流对象。
 2. 根据InputStream流对象解析出Configuration对象，然后创建SqlSessionFactory工厂对象。
 3. 根据一系列属性从SqlSessionFactory工厂中创建SqlSession。
@@ -74,7 +74,7 @@ sqlSession = factory.openSession();
 &emsp; 核心处理层功能如下：  
 
 * 配置解析  
-&emsp; 在 Mybatis 初始化过程中，会加载 mybatis-config.xml 配置文件、映射配置文件以及 Mapper 接口中的注解信息，解析后的配置信息会形成相应的对象并保存到 Configration 对象中。之后，根据该对象创建SqlSessionFactory 对象。待 Mybatis 初始化完成后，可以通过 SqlSessionFactory 创建 SqlSession 对象并开始数据库操作。  
+&emsp; 在 Mybatis 初始化过程中，会加载 mybatis-config.xml 配置文件、映射配置文件以及 Mapper 接口中的注解信息，解析后的配置信息会形成相应的对象并保存到 Configration 对象中。之后，根据该对象创建SqlSessionFactory对象。待 Mybatis 初始化完成后，可以通过 SqlSessionFactory 创建 SqlSession 对象并开始数据库操作。  
 * SQL 解析与 scripting 模块  
 &emsp; Mybatis 实现的动态 SQL 语句，几乎可以编写出所有满足需要的 SQL。  
 &emsp; Mybatis 中 scripting 模块会根据用户传入的参数，解析映射文件中定义的动态 SQL 节点，形成数据库能执行的SQL 语句。  
@@ -85,12 +85,12 @@ sqlSession = factory.openSession();
     |名称 |意义 |
     |---|---|
     |Configuration |管理 mybatis-config.xml 全局配置关系类 |
-    |SqlSessionFactory |Session 管理工厂接口 |
-    |Session |SqlSession 是一个面向用户（程序员）的接口。SqlSession 中提供了很多操作数据库的方法 |
-    |Executor |执行器是一个接口（基本执行器、缓存执行器）。作用：SqlSession 内部通过执行器操作数据库 |
+    |SqlSessionFactory |Session管理工厂接口 |
+    |Session |SqlSession 是一个面向用户（程序员）的接口。SqlSession中提供了很多操作数据库的方法 |
+    |Executor |执行器是一个接口（基本执行器、缓存执行器）。作用：SqlSession内部通过执行器操作数据库 |
     |MappedStatement |底层封装对象。作用：对操作数据库存储封装，包括 sql 语句、输入输出参数 
-    |StatementHandler |具体操作数据库相关的 handler 接口| 
-    |ResultSetHandler |具体操作数据库返回结果的 handler 接口|
+    |StatementHandler |具体操作数据库相关的handler接口| 
+    |ResultSetHandler |具体操作数据库返回结果的handler接口|
 
 <!-- 
 MyBatis 层级结构各个组件的介绍(这里只是简单介绍，具体介绍在后面)：

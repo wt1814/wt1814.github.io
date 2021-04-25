@@ -7,6 +7,12 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+1. netty如何解决NIO空轮询bug的？  
+&emsp; **selectCnt在正常逻辑时，会被重新赋值为1，在出现空轮询bug时会累加，直到大于阈值512，则触发重构selector操作。从这里可以看到netty并没有真正解决NIO的epoll模型的bug，而是采用替换selector的操作巧妙的避开了空轮询bug！**  
+&emsp; **把旧的Selector中已注册的SelectionKey，全部挪到新的 Selector中去。**  
+
+
 # 1. ~~NioEventLoop的执行，解决NIO的bug~~  
 <!-- 
 https://www.cnblogs.com/dafanjoy/p/10507662.html
@@ -17,20 +23,20 @@ https://blog.csdn.net/qq_43049310/article/details/113688981
 
 ## 1.1. NIO的空轮询bug  
 &emsp; JDK1.5开始引入了epoll基于事件响应机制来优化NIO。相较于select和poll机制来说，epoll机制将事件处理交给了操作系统内核(操作系统硬中断)来处理，优化了elect和poll模型的无效遍历问题。  
-&emsp; 但是JDK中epoll的实现却是有漏洞的，其中最有名的就是NIO空轮询bug。理论上无客户端连接时Selector.select() 方法会阻塞，但空轮询bug导致：即使无客户端连接，NIO照样不断的从select本应该阻塞的Selector.select()中wake up出来，导致CPU100%问题。，如下图所示：  
+&emsp; 但是JDK中epoll的实现却是有漏洞的，其中最有名的就是NIO空轮询bug。理论上无客户端连接时Selector.select() 方法会阻塞，但空轮询bug导致：即使无客户端连接，NIO照样不断的从select本应该阻塞的Selector.select()中wake up出来，导致CPU100%问题。如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-118.png)  
 
 
-&emsp; 如上图所示，NIO程序一直处于while死循环中，不断向cpu申请资源导致CPU 100%！ 官方声称在JDK1.6版本的update18修复了该问题，但是直到JDK1.7、JDK1.8版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有被根本解决。  
+&emsp; 如上图所示，NIO程序一直处于while死循环中，不断向cpu申请资源导致CPU 100%！官方声称在JDK1.6版本的update18修复了该问题，但是直到JDK1.7、JDK1.8版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有被根本解决。  
 
 ## 1.2. netty如何解决NIO空轮询bug的？  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-113.png)  
-&emsp; selectCnt 在正常逻辑时，会被重新赋值为1，在出现空轮询bug时会累加，直到大于阈值512，则触发重构selector操作。从这里可以看到netty并没有真正解决NIO的epoll模型的bug，而是采用替换selector的操作巧妙的避开了空轮询bug！  
+&emsp; **selectCnt在正常逻辑时，会被重新赋值为1，在出现空轮询bug时会累加，直到大于阈值512，则触发重构selector操作。从这里可以看到netty并没有真正解决NIO的epoll模型的bug，而是采用替换selector的操作巧妙的避开了空轮询bug！**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-114.png)  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-115.png)  
 
-&emsp; 把旧的Selector中已注册的SelectionKey，全部挪到新的 Selector中去  
+&emsp; **把旧的Selector中已注册的SelectionKey，全部挪到新的 Selector中去。**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-116.png)  
 
 &emsp; 成员变量this.selector 指向新的Selector的引用  

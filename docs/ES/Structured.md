@@ -3,30 +3,36 @@
 <!-- TOC -->
 
 - [1. 结构化检索](#1-结构化检索)
-    - [1.1. 精确值查找](#11-精确值查找)
-        - [1.1.1. 单个精确值查找（term query）](#111-单个精确值查找term-query)
-        - [1.1.2. 布尔过滤器(复合查询)](#112-布尔过滤器复合查询)
-        - [1.1.3. 多个值精确查找（terms query）](#113-多个值精确查找terms-query)
-    - [1.2. 范围检索（range query）](#12-范围检索range-query)
-    - [1.3. 存在与否检索（exist query）](#13-存在与否检索exist-query)
-    - [1.4. 前缀检索（ Prefix Query ）](#14-前缀检索-prefix-query-)
-    - [1.5. 通配符检索( wildcard query)](#15-通配符检索-wildcard-query)
-    - [1.6. 正则表达式检索（regexp query）](#16-正则表达式检索regexp-query)
-    - [1.7. 模糊检索(fuzzy query)](#17-模糊检索fuzzy-query)
-    - [1.8. 类型检索（type query）](#18-类型检索type-query)
-    - [1.9. Ids检索（ids query）](#19-ids检索ids-query)
+    - [1.1. 什么是结构化检索](#11-什么是结构化检索)
+    - [1.2. 精确值查找](#12-精确值查找)
+        - [1.2.1. 单个精确值查找（term query）](#121-单个精确值查找term-query)
+        - [1.2.2. 布尔过滤器(复合查询)](#122-布尔过滤器复合查询)
+        - [1.2.3. 多个值精确查找（terms query）](#123-多个值精确查找terms-query)
+    - [1.3. 范围检索（range query）](#13-范围检索range-query)
+    - [1.4. 存在与否检索（exist query）](#14-存在与否检索exist-query)
+    - [1.5. 前缀检索（ Prefix Query ）](#15-前缀检索-prefix-query-)
+    - [1.6. 通配符检索( wildcard query)](#16-通配符检索-wildcard-query)
+    - [1.7. 正则表达式检索（regexp query）](#17-正则表达式检索regexp-query)
+    - [1.8. 模糊检索(fuzzy query)](#18-模糊检索fuzzy-query)
+    - [1.9. 类型检索（type query）](#19-类型检索type-query)
+    - [1.10. Ids检索（ids query）](#110-ids检索ids-query)
 
 <!-- /TOC -->
 
 # 1. 结构化检索
+
+## 1.1. 什么是结构化检索  
+<!-- 
+https://www.elastic.co/guide/cn/elasticsearch/guide/current/structured-search.html
+-->
 &emsp; 针对字段类型： 日期、时间、数字类型，以及精确的文本匹配。  
 &emsp; 结构化检索特点：  
-* 1）结构化查询，得到的结果 总是 非是即否，要么存于集合之中，要么存在集合之外。  
+* 1） **结构化查询，得到的结果总是 非是即否，** 要么存于集合之中，要么存在集合之外。  
 * 2）结构化查询不关心文件的相关度或评分；它简单的对文档包括或排除处理。  
 
-## 1.1. 精确值查找
-### 1.1.1. 单个精确值查找（term query）
-&emsp; term 查询会查找我们指定的精确值。term 查询是简单的，它接受一个字段名以及我们希望查找的数值。  
+## 1.2. 精确值查找
+### 1.2.1. 单个精确值查找（term query）
+&emsp; term 查询会查找指定的精确值。term查询是简单的，它接受一个字段名以及希望查找的数值。  
 &emsp; 想要类似mysql中如下sql语句的查询操作：
 
 ```sql
@@ -46,7 +52,7 @@ GET /my_store/products/_search
 }
 ```
 
-&emsp; 当进行精确值查找时， 我们会使用过滤器（filters）。过滤器很重要，因为它们执行速度非常快，不会计算相关度（直接跳过了整个评分阶段）而且很容易被缓存。如下： 使用 constant_score 查询以非评分模式来执行 term 查询并以一作为统一评分。  
+&emsp; 当进行精确值查找时，会使用过滤器（filters）。过滤器很重要，因为它们执行速度非常快，不会计算相关度（直接跳过了整个评分阶段）而且很容易被缓存。如下： 使用 constant_score 查询以非评分模式来执行 term 查询并以一作为统一评分。  
 
 ```
 GET /my_store/products/_search
@@ -90,7 +96,7 @@ POST testindex/testtype/_mapping
 searchSourceBuilder.query(QueryBuilders.termQuery(“text.keyword”, “来自新华社的报道”));
 ```
 
-### 1.1.2. 布尔过滤器(复合查询)
+### 1.2.2. 布尔过滤器(复合查询)
 &emsp; 一个 bool 过滤器由三部分组成：  
 
 ```
@@ -349,7 +355,7 @@ GET /product/_search
 
 
 
-### 1.1.3. 多个值精确查找（terms query）
+### 1.2.3. 多个值精确查找（terms query）
 
 ```
 {
@@ -380,7 +386,7 @@ GET /my_index/my_type/_search
 }
 ```
 
-## 1.2. 范围检索（range query）
+## 1.3. 范围检索（range query）
 &emsp; range 查询可同时提供包含（inclusive）和不包含（exclusive）这两种范围表达式，可供组合的选项如下：  
 
 * gt: > 大于（greater than）
@@ -417,7 +423,7 @@ GET /my_store/products/_search
 }
 ```
 
-## 1.3. 存在与否检索（exist query）
+## 1.4. 存在与否检索（exist query）
 &emsp; mysql中，有如下sql：  
 
 ```sql
@@ -466,7 +472,7 @@ GET /_search
 ```
 
 
-## 1.4. 前缀检索（ Prefix Query ）
+## 1.5. 前缀检索（ Prefix Query ）
 &emsp; 匹配包含 not analyzed 的前缀字符：  
 
 ```
@@ -477,7 +483,7 @@ GET /_search
 }
 ```
 
-## 1.5. 通配符检索( wildcard query)
+## 1.6. 通配符检索( wildcard query)
 &emsp; 匹配具有匹配通配符表达式（ (not analyzed ）的字段的文档。 支持的通配符：  
 &emsp; 1）\*，它匹配任何字符序列（包括空字符序列）；  
 &emsp; 2）？，它匹配任何单个字符。  
@@ -495,7 +501,7 @@ GET /_search
 ```
 
 
-## 1.6. 正则表达式检索（regexp query）
+## 1.7. 正则表达式检索（regexp query）
 &emsp; 正则表达式查询允许您使用正则表达式术语查询。  
 &emsp; 举例如下：  
 
@@ -512,7 +518,7 @@ GET /_search
 
 &emsp; 注意：\*的匹配会非常慢，需要使用一个长的前缀，通常类似.\*?+通配符查询的正则检索性能会非常低。  
 
-## 1.7. 模糊检索(fuzzy query)
+## 1.8. 模糊检索(fuzzy query)
 &emsp; 模糊查询查找在模糊度中指定的最大编辑距离内的所有可能的匹配项，然后检查术语字典，以找出在索引中实际存在待检索的关键词。  
 &emsp; 举例如下：  
 
@@ -525,7 +531,7 @@ GET /_search
 }
 ```
 
-## 1.8. 类型检索（type query）
+## 1.9. 类型检索（type query）
 &emsp; 举例：  
 
 ```
@@ -541,7 +547,7 @@ GET /my_index/_search
 
 &emsp; 已验证，检索索引my_index中，type为xext的全部信息。  
 
-## 1.9. Ids检索（ids query）
+## 1.10. Ids检索（ids query）
 &emsp; 返回指定id的全部信息。  
 
 ```

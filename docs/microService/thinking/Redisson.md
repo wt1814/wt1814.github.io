@@ -19,23 +19,18 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">1. RedissonLock解决客户端死锁问题(自动延期)：</font>**  
+1.  **<font color = "clime">RedissonLock解决客户端死锁问题(自动延期)：</font>**  
 &emsp; <font color = "clime">如果加锁未设置失效时间，只要客户端一旦加锁成功，就会启动一个后台线程(看门狗线程)，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>  
+2. Redisson实现了多种锁：重入锁、公平锁、联锁、红锁、读写锁、信号量...  
+3. **Redisson重入锁：**  
+    1. Redisson重入锁加锁流程：  
+        1. 执行lock.lock()代码时，<font color = "red">如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。</font>  
+        2. 然后发送一段lua脚本，带有三个参数：一个是锁的名字(在代码里指定的)、一个是锁的时常(默认30秒)、一个是加锁的客户端id(每个客户端对应一个id)。<font color = "red">然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。</font>  
 
-&emsp; 2. Redisson实现了多种锁：重入锁、公平锁、联锁、红锁、读写锁、信号量...  
-
-&emsp; **3. Redisson重入锁：**  
-
-&emsp; Redisson重入锁加锁流程：  
-1. 执行lock.lock()代码时，<font color = "red">如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。</font>  
-2. 然后发送一段lua脚本，带有三个参数：一个是锁的名字(在代码里指定的)、一个是锁的时常(默认30秒)、一个是加锁的客户端id(每个客户端对应一个id)。<font color = "red">然后脚本会判断是否有该名字的锁，如果没有就往数据结构中加入该锁的客户端id。</font>  
-
-    * 锁不存在(exists)，则加锁(hset)，并设置(pexpire)锁的过期时间；  
-    * 锁存在，检测(hexists)是当前线程持有锁，锁重入(hincrby)，并且重新设置(pexpire)该锁的有效时间；
-    * 锁存在，但不是当前线程的，返回(pttl)锁的过期时间。 
-
-
-&emsp; **<font color = "red">Redisson重入锁缺陷：</font>** 在哨兵模式或者主从模式下，如果master实例宕机的时候，可能导致多个客户端同时完成加锁。  
+            * 锁不存在(exists)，则加锁(hset)，并设置(pexpire)锁的过期时间；  
+            * 锁存在，检测(hexists)是当前线程持有锁，锁重入(hincrby)，并且重新设置(pexpire)该锁的有效时间；
+            * 锁存在，但不是当前线程的，返回(pttl)锁的过期时间。 
+    2. **<font color = "red">Redisson重入锁缺陷：</font>** 在哨兵模式或者主从模式下，如果master实例宕机的时候，可能导致多个客户端同时完成加锁。  
 
 
 # 1. Redisson实现redis分布式锁 

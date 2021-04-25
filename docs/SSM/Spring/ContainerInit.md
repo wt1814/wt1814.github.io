@@ -122,7 +122,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
     }
 }
 ```
-&emsp; 以 XmlBean 读取器的其中一种策略 XmlBeanDefinitionReader 为例。XmlBeanDefinitionReader 调 用其父类AbstractBeanDefinitionReader的 reader.loadBeanDefinitions()方法读取Bean配置资源。 由于使用 ClassPathXmlApplicationContext 作为例子分析，因此 getConfigResources 的返回值 为 null，因此程序执行 reader.loadBeanDefinitions(configLocations)分支。  
+&emsp; 以XmlBean读取器的其中一种策略XmlBeanDefinitionReader为例。XmlBeanDefinitionReader调用其父类AbstractBeanDefinitionReader的 reader.loadBeanDefinitions()方法读取Bean配置资源。由于使用ClassPathXmlApplicationContext作为例子分析，因此getConfigResources的返回值为 null，因此程序执行reader.loadBeanDefinitions(configLocations)分支。  
 
 ## 1.4. 分配路径处理策略  
 &emsp; 在 XmlBeanDefinitionReader 的抽象父类 AbstractBeanDefinitionReader 中定义了载入过程。  

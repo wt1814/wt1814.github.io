@@ -25,17 +25,16 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; <font color="clime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
-&emsp; <font color = "clime">Redis哨兵架构中主要包括两个部分：Redis Sentinel集群和Redis数据集群。</font>  
-
-&emsp; **<font color = "clime">哨兵原理：</font>**  
-* **<font color = "red">心跳检查：Sentinel通过三个定时任务来完成对各个节点的发现和监控，这是保证Redis高可用的重要机制。</font>**  
-    * 每隔10秒，每个Sentinel节点会向主节点和从节点发送info命令获取最新的拓扑结构。  
-    * 每隔2秒，每个Sentinel节点会向Redis数据节点的__sentinel__：hello 频道上发送该Sentinel节点对于主节点的判断以及当前Sentinel节点的信息，同时每个Sentinel节点也会订阅该频道，来了解其他 Sentinel节点以及它们对主节点的判断。  
-    * 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令 **<font color = "clime">做一次心跳检测，</font>**  
-* **<font color = "red">主观下线和客观下线：首先单个Sentinel节点认为数据节点主观下线，询问其他Sentinel节点， Sentinel多数节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。</font>**
-* **<font color = "red">故障转移/主节点选举。</font>**    
-* **<font color = "red">Sentinel选举：Sentinel集群是集中式架构，基于raft算法。</font>**  
+1. <font color="clime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
+2. <font color = "clime">Redis哨兵架构中主要包括两个部分：Redis Sentinel集群和Redis数据集群。</font>  
+3. **<font color = "clime">哨兵原理：</font>**  
+    * **<font color = "red">心跳检查：Sentinel通过三个定时任务来完成对各个节点的发现和监控，这是保证Redis高可用的重要机制。</font>**  
+        * 每隔10秒，每个Sentinel节点会向主节点和从节点发送info命令获取最新的拓扑结构。  
+        * 每隔2秒，每个Sentinel节点会向Redis数据节点的__sentinel__：hello 频道上发送该Sentinel节点对于主节点的判断以及当前Sentinel节点的信息，同时每个Sentinel节点也会订阅该频道，来了解其他 Sentinel节点以及它们对主节点的判断。  
+        * 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令 **<font color = "clime">做一次心跳检测。</font>**  
+    * **<font color = "red">主观下线和客观下线：首先单个Sentinel节点认为数据节点主观下线，询问其他Sentinel节点， Sentinel多数节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。</font>**
+    * **<font color = "red">故障转移/主节点选举。</font>**    
+    * **<font color = "red">Sentinel选举：Sentinel集群是集中式架构，基于raft算法。</font>**  
 
 # 1. 哨兵模式  
 &emsp; **<font color = "red">参考《Redis开发与运维》</font>**
@@ -98,7 +97,7 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 #### 1.2.1.3. 定时任务三  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-109.png)  
 <center>Sentinel节点向其余节点发送ping命令</center>  
-&emsp; 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令 **<font color = "clime">做一次心跳检测，</font>** 来确认这些节点当前是否可达。如上图所示。通过上面的定时任务，Sentinel节点对主节点、从节点、其余 Sentinel节点都建立起连接，实现了对每个节点的监控，这个定时任务是节 点失败判定的重要依据。  
+&emsp; 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令 **<font color = "clime">做一次心跳检测</font>** ，来确认这些节点当前是否可达。如上图所示。通过上面的定时任务，Sentinel节点对主节点、从节点、其余 Sentinel节点都建立起连接，实现了对每个节点的监控，这个定时任务是节 点失败判定的重要依据。  
 
 ### 1.2.2. 主观下线、客观下线  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-88.png)  

@@ -20,11 +20,12 @@
 
 <!-- /TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/SpringMVC/mvc-5.png)  
+
 &emsp; 有些特殊数据类型无法直接进行数据绑定，必须先经过数据转换，例如日期。  
 
 
 # 1. SpringMVC教程
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/SpringMVC/mvc-5.png)  
 
 ## 1.1. SpringMVC注解  
 ### 1.1.1. 地址映射  
@@ -105,7 +106,7 @@ private Date actionDate;
 ``` 
 
 &emsp; 报错：Can not parse date while it seems to fit format 'yyyy-MM-dd'T'HH\:mm\:ss.SSS  
-&emsp; 是因为在创建实体类的时候data默认的格式是：yyyy-MM-dd HH\:mm\:ss，但是在接收数据的时候默认的json格式是yyyy-MM-dd'T'HH\:mm\:ss.SSS。  
+&emsp; 是因为在创建实体类的时候data默认的格式是：yyyy-MM-dd HH :mm :ss，但是在接收数据的时候默认的json格式是yyyy-MM-dd'T'HH :mm :ss.SSS。  
 &emsp; 解决的办法是在实体类中加入注解：  
 
 ```java
@@ -207,13 +208,13 @@ private Date actionDate;
 &emsp; 运行结果和Converter的一样。  
 
 ### 1.1.3. 返回模型和视图  
-&emsp; SpringMVC处理方法支持如下的返回方式：ModelAndView, Model, ModelMap, Map,View, String, void，ResponseEntity(作用比较强大,可以返回文件，字符串等)。无论何种方式都要清楚其返回的视图(或调用另一个controller，即转发和重定向的使用，涉及到怎么向另一个controller传参数)和模型。返回json字符串时使用@responseBody注解。  
+&emsp; SpringMVC处理方法支持如下的返回方式：ModelAndView, Model, ModelMap, Map,View, String, void，ResponseEntity（作用比较强大，可以返回文件，字符串等）。无论何种方式都要清楚其返回的视图(或调用另一个controller，即转发和重定向的使用，涉及到怎么向另一个controller传参数)和模型。返回json字符串时使用@responseBody注解。  
 
 ## 1.2. SpringMVC高级功能  
 ### 1.2.1. SpringMVC中文乱码  
 1. 解决POST请求乱码问题：在 web.xml 中配置一个CharacterEncodingFilter过滤器，设置成utf-8；  
 2. GET请求中文参数出现乱码解决方法有两个：  
-    * 修改 tomcat 配置文件添加编码与工程编码一致，如下：  
+    * 修改 tomcat 配置文件，添加编码与工程编码一致，如下：  
 
         ```xml
         <ConnectorURIEncoding="utf-8" connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443"/>

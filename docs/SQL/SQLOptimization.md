@@ -26,6 +26,9 @@
 
 <!-- /TOC -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-52.png)  
+
+
 # 1. SQL优化  
 <!--
 你知道这 8 种 SQL 错误用法吗？ 
@@ -33,7 +36,6 @@ https://mp.weixin.qq.com/s/Ur-SWCwm-6yVF9vV2eLlHA
 男朋友连模糊匹配like %%怎么优化都不知道 
 https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-52.png)  
 
 ## 1.1. MySql性能(最大数据量、最大并发数、查询耗时)
 
@@ -177,7 +179,7 @@ show status
 ```
 &emsp; 由于返回结果太多，此处不贴出结果。其中，在返回的结果中，主要关注 “Queries”、“Threadsconnected” 和 “Threadsrunning” 的值，即查询次数、线程连接数和线程运行数。
 
-&emsp; 可以通过执行如下脚本监控 MySQL 服务器运行的状态值  
+&emsp; 可以通过执行如下脚本监控 MySQL 服务器运行的状态值：  
 
 ```
 #!/bin/bash

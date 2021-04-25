@@ -22,14 +22,11 @@
 
 
 &emsp; **<font color = "red">总结：</font>**
+1. SpringAOP的主要功能是：日志记录，性能统计，安全控制，事务处理，异常处理等。 
+    * 慢请求记录  
+    * 使用aop + redis + Lua接口限流
 
-&emsp; SpringAOP的主要功能是：日志记录，性能统计，安全控制，事务处理，异常处理等。 
-
-* 慢请求记录  
-* 使用aop + redis + Lua接口限流
-
-
-&emsp; **SpringAOP失效：**  
+2. **SpringAOP失效：**  
 &emsp; <font color = "red">同一对象内部方法嵌套调用，慎用this来调用被@Async、@Transactional、@Cacheable等注解标注的方法，this下注解可能不生效。</font>async方法中的this不是动态代理的子类对象，而是原始的对象，故this调用无法通过动态代理来增强。 
 
 
@@ -115,8 +112,8 @@ public void save(String name,String password){
 
 #### 1.1.3.2. 不定形参类型  
 &emsp; Spring AOP提供使用org.aspectj.lang.JoinPoint类型获取连接点数据，任何通知方法的第一个参数都可以是JoinPoint(环绕通知是ProceedingJoinPoint，JoinPoint子类)。  
-1. JoinPoint：提供访问当前被通知方法的目标对象、代理对象、方法参数等数据  
-2. ProceedingJoinPoint：只用于环绕通知，使用proceed()方法来执行目标方法  
+1. JoinPoint：提供访问当前被通知方法的目标对象、代理对象、方法参数等数据。  
+2. ProceedingJoinPoint：只用于环绕通知，使用proceed()方法来执行目标方法。  
 
 &emsp; 如参数类型是JoinPoint、ProceedingJoinPoint类型，可以从“argNames”属性省略掉该参数名(可选，写上也对)，这些类型对象会自动传入的，但必须作为第一个参数。 
 

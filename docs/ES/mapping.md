@@ -48,7 +48,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490923&idx=2&sn=ce4983
 ES中支持手动定义映射，动态映射两种方式。
 https://mp.weixin.qq.com/s/gi9Dxt23chmEgDK9ZWfHLw
 -->
-&emsp; 当没有事先定义好 Mapping，添加数据时，ElasticSearch 会自动根据字段进行换算出对应的类型，但是换算出来的类型并不一定是开发人员想要的字段类型，还是需要人为的干预进行修改成想要的 Mapping。  
+&emsp; 当没有事先定义好 Mapping，添加数据时，ElasticSearch会自动根据字段进行换算出对应的类型，但是换算出来的类型并不一定是开发人员想要的字段类型，还是需要人为的干预进行修改成想要的Mapping。  
 
 &emsp; 动态映射：ES中提供的重要特性，可以快速使用ES，而不需要先创建索引、定义映射。如直接向ES提交文档进行索引：  
 

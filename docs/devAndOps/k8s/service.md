@@ -20,7 +20,7 @@
 <!-- 
 https://blog.csdn.net/PpikachuP/article/details/89674578
 -->
-&emsp; Service是Kubernetes最核心的概念，通过创建Service，可以为一组具有相同功能的容器应用提供一个统一的入口地址，并且将请求负载分发到后端的各个容器应用上。本节对Service的使用进行详细说明，包括Service的负载均衡、外网访问、DNS服务的搭建、Ingress7层路由机制等。  
+&emsp; **<font color = "clime">Service是Kubernetes最核心的概念，通过创建Service，可以为一组具有相同功能的容器应用提供一个统一的入口地址，并且将请求负载分发到后端的各个容器应用上。</font>** 本节对Service的使用进行详细说明，包括Service的负载均衡、外网访问、DNS服务的搭建、Ingress7层路由机制等。  
 
 ## 1.1. Service基本用法  
 &emsp; 在某些环境中，应用系统需要将一个外部数据库作为后端服务进行连接，或将另一个集群或Namespace中的服务作为服务的后端，这时可以通过创建一个无Label Selector的Service来实现。  
@@ -33,10 +33,10 @@ https://blog.csdn.net/qq_23348071/article/details/87185025
 &emsp; <font color = "red">由于Pod和Service是Kubernetes集群范围内的虚拟概念，所以集群外的客户端系统无法通过Pod的IP地址或者Service的虚拟IP地址和虚拟端口号访问到它们。</font><font color = "clime">为了让外部客户端可以访问这些服务，可以将Pod或Service的端口号映射到宿主机，以使得客户端应用能够通过物理机访问容器应用。</font>  
 
 1. 将容器应用的端口号映射到物理机  
-2. 将Service的端口号映射到物理机  
+2. **将Service的端口号映射到物理机**  
 
 ### 1.2.1. 利用Rinetd实现Service负载均衡  
-&emsp; 端口转发工具-Rineted：Rineted是Linux操作系统中为重定向传输控制协议工具。可将源IP端口数据转发至目标IP端口。在Kubernetes中用于将service服务对外暴露。  
+&emsp; 端口转发工具Rineted：Rineted是Linux操作系统中为重定向传输控制协议工具。可将源IP端口数据转发至目标IP端口。在Kubernetes中用于将service服务对外暴露。  
 
 ## 1.3. DNS服务搭建指南  
 &emsp; 作为服务发现机制的基本功能，在集群内需要能够通过服务名对服务进行访问，这就需要一个集群范围的DNS服务来完成服务名到ClusterIP的解析。  

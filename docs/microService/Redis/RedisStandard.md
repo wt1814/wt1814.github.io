@@ -16,16 +16,13 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">以业务名 (或数据库名) 为前缀(防止 key 冲突)，用冒号分隔，比如业务名: 表名: id</font>**  
-
-&emsp; **<font color = "clime">bigkey</font>**  
-&emsp; 如果无法避免存储 bigkey，那么我建议你开启 Redis 的 lazy-free 机制。（4.0+版本支持）  
+1. **避免多个应用使用一个 Redis 实例。**  
+2. **<font color = "clime">以业务名 (或数据库名) 为前缀(防止 key 冲突)，用冒号分隔，比如业务名: 表名: id</font>**  
+3. **<font color = "clime">bigkey</font>**  
+&emsp; 如果无法避免存储 bigkey，那么建议开启 Redis 的 lazy-free 机制。（4.0+版本支持）  
 &emsp; 当开启这个机制后，Redis 在删除一个 bigkey 时，释放内存的耗时操作，将会放到后台线程中去执行，这样可以在最大程度上，避免对主线程的影响。  
-
-&emsp; **使用批量操作提高效率。**  
-&emsp; 1).原生命令：例如 mget、mset。2).非原生命令：可以使用 pipeline提高效率。  
-&emsp; 但要注意控制一次批量操作的元素个数 (例如 500 以内，实际也和元素字节数有关)。  
-&emsp; 注意两者不同：  
+4. **使用批量操作提高效率。**  
+&emsp; 1).原生命令：例如 mget、mset。2).非原生命令：可以使用 pipeline提高效率。两者不同：  
     * 原生是原子操作，pipeline 是非原子操作。  
     * pipeline 可以打包不同的命令，原生做不到。  
     * pipeline 需要客户端和服务端同时支持。  
@@ -76,12 +73,12 @@ https://mp.weixin.qq.com/s/-ydAQL077bz7yuKDw3d_Qw
 
         user:{uid}:friends:messages:{mid}
 
-    &emsp; 简化为  
+    &emsp; 简化为：  
 
         u:{uid}:fr:m:{mid}
 
 * 不要包含特殊字符  
-&emsp; 反例：包含空格、换行、单双引号以及其他转义字符
+&emsp; 反例：包含空格、换行、单双引号以及其他转义字符。
 
 #### 1.2.1.2. value设计  
 
@@ -91,7 +88,7 @@ https://mp.weixin.qq.com/s/-ydAQL077bz7yuKDw3d_Qw
 &emsp; 非字符串的 bigkey，不要使用 del 删除，使用 hscan、sscan、zscan 方式渐进式删除，同时要注意防止 bigkey 过期时间自动删除问题 (例如一个 200 万的 zset 设置 1 小时过期，会触发 del 操作，造成阻塞，而且该操作不会不出现在慢查询中 (latency 可查))，查找方法和删除方法  
 
 * 选择适合的数据类型  
-&emsp; 例如：实体类型 (要合理控制和使用数据结构内存编码优化配置, 例如 ziplist，但也要注意节省内存和性能之间的平衡)  
+&emsp; 例如：实体类型 (要合理控制和使用数据结构内存编码优化配置，例如 ziplist，但也要注意节省内存和性能之间的平衡)  
     &emsp; 反例：
 
         set user:1:name tom
@@ -112,13 +109,10 @@ https://mp.weixin.qq.com/s/-ydAQL077bz7yuKDw3d_Qw
 &emsp; 禁止线上使用 keys、flushall、flushdb 等，通过 redis 的 rename 机制禁掉命令，或者使用 scan 的方式渐进式处理。  
 3. 合理使用 select  
 &emsp; redis的多数据库较弱，使用数字进行区分，很多客户端支持较差，同时多业务用多数据库实际还是单线程处理，会有干扰。  
-4. 使用批量操作提高效率。1).原生命令：例如 mget、mset。2).非原生命令：可以使用 pipeline提高效率。  
-&emsp; 但要注意控制一次批量操作的元素个数 (例如 500 以内，实际也和元素字节数有关)。  
-&emsp; 注意两者不同：  
+4. 使用批量操作提高效率。1).原生命令：例如 mget、mset。2).非原生命令：可以使用 pipeline提高效率。两者不同：  
     * 原生是原子操作，pipeline 是非原子操作。  
     * pipeline 可以打包不同的命令，原生做不到。  
     * pipeline 需要客户端和服务端同时支持。  
-
 5. **<font color = "clime">不建议过多使用 Redis 事务功能</font>**  
 &emsp; Redis 的事务功能较弱 (不支持回滚)，而且集群版本(自研和官方) 要求一次事务操作的 key 必须在一个 slot 上。可以使用 hashtag 功能解决。   
 6. Redis 集群版本在使用 Lua 上有特殊要求  
@@ -128,7 +122,7 @@ https://mp.weixin.qq.com/s/-ydAQL077bz7yuKDw3d_Qw
 &emsp; 必要情况下使用 monitor 命令时，要注意不要长时间使用。  
 
 ### 1.2.3. 客户端使用
-1. 避免多个应用使用一个 Redis 实例  
+1. **避免多个应用使用一个 Redis 实例。**  
 &emsp; 不相干的业务拆分，公共数据做服务化。  
 2. 使用连接池  
 &emsp; 可以有效控制连接，同时提高效率，标准使用方式：  

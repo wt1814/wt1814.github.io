@@ -12,8 +12,8 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)</font>**  
-&emsp; **<font color = "clime">容器操作常用命令：run、start、stop、exec(进入运行的容器)</font>**  
+1. **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)。</font>**  
+2. **<font color = "clime">容器操作常用命令：run、start、stop、exec(进入运行的容器)。</font>**  
 
 # 1. Docker使用教程  
 <!-- 
@@ -47,7 +47,7 @@ https://docs.docker.com/config/daemon/
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-39.png)  
 
 ### 1.4.1. 镜像操作命令  
-&emsp; **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)</font>**  
+&emsp; **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)。</font>**  
 
 * 获取镜像：  
 &emsp; docker pull centos (默认获取centos最新的镜像)  
@@ -80,7 +80,7 @@ https://docs.docker.com/config/daemon/
 -->
 
 ### 1.4.2. 容器操作指令
-&emsp; **<font color = "clime">容器操作常用命令：run、start、stop、exec</font>**  
+&emsp; **<font color = "clime">容器操作常用命令：run、start、stop、exec。</font>**  
 
 * 创建并启动容器：  
 

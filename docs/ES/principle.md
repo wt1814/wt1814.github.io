@@ -14,11 +14,9 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **数据先写入内存buffer，然后每隔1s，将数据refresh到os cache，到了os cache数据就能被搜索到(所以说es从写入到能被搜索到，中间有1s的延迟)。**    
-&emsp; **每隔5s，将数据写入translog文件(这样如果机器宕机，内存数据全没，最多会有5s的数据丢失)，translog大到一定程度，或者默认每隔30mins，会触发commit操作，将缓冲区的数据都flush到segment file磁盘文件中。数据写入segment file之后，同时就建立好了倒排索引。**  
-
-&emsp; es丢数据？  
-&emsp; es第一是准实时的，数据写入1秒后可以搜索到；可能会丢失数据的。有5秒的数据，停留在buffer、translog os cache、segment file os cache中，而不在磁盘上，此时如果宕机，会导致5秒的数据丢失。  
+1. **数据先写入内存buffer，然后每隔1s，将数据refresh到os cache，到了os cache数据就能被搜索到(所以说es从写入到能被搜索到，中间有1s的延迟)。**    
+2. **每隔5s，将数据写入translog文件(这样如果机器宕机，内存数据全没，最多会有5s的数据丢失)，translog大到一定程度，或者默认每隔30mins，会触发commit操作，将缓冲区的数据都flush到segment file磁盘文件中。数据写入segment file之后，同时就建立好了倒排索引。**  
+3. es丢数据？ es第一是准实时的，数据写入1秒后可以搜索到；可能会丢失数据的。有5秒的数据，停留在buffer、translog os cache、segment file os cache中，而不在磁盘上，此时如果宕机，会导致5秒的数据丢失。  
 
 # 1. ES机制原理
 &emsp; **<font color = "red">参考中华石衫老师的《ES顶尖高手系列课程》</font>**  
@@ -53,12 +51,12 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-85.png)  
 
 
-&emsp; **写入流程：**  
-1. 数据写入buffer缓冲和translog日志文件  
+&emsp; **<font color = "clime">写入流程：</font>**  
+1. 数据写入buffer缓冲和translog日志文件。  
 2. 每隔一秒钟，buffer中的数据被写入新的seament file，并进入os cache，此时segment被打开并供search使用。 
 
-        操作系统里面，磁盘文件其实都有一个东西，叫做 os cache ，即操作系统缓存，就是说数据写入磁盘文件之前，会先进入 os cache ，先进入操作系统级别的一个内存缓存中去。只要 buffer 中的数据被 refresh 操作刷入 os cache 中，这个数据就可以被搜索到了。  
-        为什么叫 es 是准实时的？NRT ，全称 near real-time 。默认是每隔 1 秒 refresh 一次的，所以 es 是准实时的，因为写入的数据 1 秒之后才能被看到。可以通过 es 的 restful api 或者 java api ，手动执行一次 refresh 操作，就是手动将 buffer 中的数据刷入 os cache 中，让数据立马就可以被搜索到。只要数据被输入 os cache 中，buffer 就会被清空了，因为不需要保留 buffer 了，数据在 translog 里面已经持久化到磁盘去一份了。  
+        操作系统里面，磁盘文件其实都有一个东西，叫做os cache ，即操作系统缓存，就是说数据写入磁盘文件之前，会先进入os cache，先进入操作系统级别的一个内存缓存中去。只要buffer中的数据被refresh操作刷入os cache中，这个数据就可以被搜索到了。  
+        为什么叫 es 是准实时的？NRT ，全称 near real-time 。默认是每隔 1 秒refresh一次的，所以es是准实时的，因为写入的数据 1 秒之后才能被看到。可以通过 es 的 restful api 或者 java api ，手动执行一次 refresh 操作，就是手动将 buffer 中的数据刷入 os cache 中，让数据立马就可以被搜索到。只要数据被输入 os cache 中，buffer 就会被清空了，因为不需要保留 buffer 了，数据在 translog 里面已经持久化到磁盘去一份了。  
 
 3. buffer被清空。
 4. 重复1-3，新的segment不断添加，buffer不断清空，而translog中的数据不断累加。  
@@ -102,7 +100,7 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 * coordinate node 返回 document 给客户端。  
 
 ## 1.3. 全文搜索流程  
-&emsp; es 最强大的是做全文检索，就是比如有三条数据：
+&emsp; es最强大的是做全文检索，就是比如有三条数据：
 
     java真好玩儿啊
     java好难学啊

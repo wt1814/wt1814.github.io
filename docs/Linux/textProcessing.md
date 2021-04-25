@@ -27,6 +27,13 @@
 
 # 1. Linux文本处理  
 <!--
+Linux 三剑客之 grep 教程详解 
+https://mp.weixin.qq.com/s/xJsDfuVqv2v3nqda59QN7Q
+干货！上古神器 sed 教程详解，小白也能看的懂
+https://mp.weixin.qq.com/s/xlQZ5aE7tr3yk-9sHpbabw
+Linux 三剑客之 awk 实战详解教程 
+https://mp.weixin.qq.com/s/OD6mbcsgiuOsv76wFEfuMg
+
 五分钟入门文本处理三剑客grep awk sed 
 https://mp.weixin.qq.com/s/_s0xIVsB6Zz0PYrgeBurxw
 Shell文本处理三剑客：grep、sed、awk 
@@ -702,7 +709,7 @@ xman         -     -     -     -   -   class-3  php  8 5
     ka
 
 ### 1.3.9. awk脚本  
-&emsp; 前面说过awk是可以说是一个小型编程语言。如果命令比较短我们可以直接在命令行执行，当命令行比较长的时候，可以使用脚本来处理，比命令行的可读性更高，还可以加上注释。  
+&emsp; 前面说过awk是可以说是一个小型编程语言。如果命令比较短，可以直接在命令行执行，当命令行比较长的时候，可以使用脚本来处理，比命令行的可读性更高，还可以加上注释。  
 &emsp; 写一个完整的awk脚本并执行步骤  
 
 1. 先创建一个awk文件  

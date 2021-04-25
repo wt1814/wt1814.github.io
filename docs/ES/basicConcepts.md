@@ -7,6 +7,7 @@
         - [1.1.2. ~~类型(Type)~~](#112-类型type)
         - [1.1.3. 映射(mapping)](#113-映射mapping)
         - [1.1.4. 文档(document)](#114-文档document)
+            - [1.1.4.1. ★★★文档的元数据](#1141-★★★文档的元数据)
         - [1.1.5. 字段(field)](#115-字段field)
     - [1.2. 倒排索引](#12-倒排索引)
         - [1.2.1. 示例](#121-示例)
@@ -58,6 +59,12 @@ https://mp.weixin.qq.com/s/4ssGyiK_J2NXwZe4JqnKHQ
 
 |关系型数据库|ES|
 |---|---|
+|数据库|索引|
+|表|类型|
+|行|文档|
+|列|字段|
+|表结构|映射(Mapping)|
+
 
 
 <!-- 
@@ -102,31 +109,38 @@ ID是一个文件的唯一标识，如果在存库的时候没有提供ID,系统
 
 ### 1.1.4. 文档(document)  
 &emsp; 文档是可搜索数据的最小单位。  
-&emsp; 文档都是JSON格式的。文档的元数据：  
+&emsp; 文档都是JSON格式的。  
 
-  ```json
-  {
-    "_index": "movies",   #文档所属的索引名称
-    "_type": "_doc",      #文档所属的类型名称
-    "_id": "288",         #文档唯一ID
-    "_version": 1,        #文档版本信息
-    "_score": 0,          #相关性打分
-    "_source": {          #文档的原始Json数据
-    "year": 1994,         #字段year：字段值1994
-    "id": "288",
-    "title": "Natural",
-    "@version": "1",
-    "genre": [
-      "Action",
-      "Crime",
-      "Thriller"
-    ]
-  }
-  ```
+#### 1.1.4.1. ★★★文档的元数据  
+<!-- 
+元数据（_index、_type、_id、_score、_source）
+https://blog.csdn.net/qq_42513284/article/details/90678516
+-->
+
+
+```json
+{
+  "_index": "movies",   #文档所属的索引名称
+  "_type": "_doc",      #文档所属的类型名称
+  "_id": "288",         #文档唯一ID
+  "_version": 1,        #文档版本信息
+  "_score": 0,          #相关性打分
+  "_source": {          #文档的原始Json数据
+  "year": 1994,         #字段year：字段值1994
+  "id": "288",
+  "title": "Natural",
+  "@version": "1",
+  "genre": [
+    "Action",
+    "Crime",
+    "Thriller"
+  ]
+}
+```
 
 
 ### 1.1.5. 字段(field)  
-&emsp; 文档中包含零个或者多个字段，字段可以是一个简单的值(例如字符串、整数、日期)，也可以是一个数组或对象的嵌套结构。字段类似于关系数据库中表的列。每个字段都对应一个字段类型，例如整数、字符串、对象等。字段还可以指定如何分析该字段的值。  
+&emsp; 文档中包含零个或者多个字段，字段可以是一个简单的值（例如字符串、整数、日期），也可以是一个数组或对象的嵌套结构。字段类似于关系数据库中表的列。每个字段都对应一个字段类型，例如整数、字符串、对象等。字段还可以指定如何分析该字段的值。  
 
 ## 1.2. 倒排索引  
 &emsp; <font color = "red">在Elasticsearch中倒排索引也是非常重要的“索引”结构。</font>Elasticsearch将写入索引的所有信息组织成倒排索引的结构。该结构是一种<font color = "clime">将文档单词到文档ID的数据结构，其工作方式与传统的关系数据库不同，可以认为倒排索引是面向词项而不是面向文档的。</font>
@@ -182,9 +196,9 @@ ID是一个文件的唯一标识，如果在存库的时候没有提供ID,系统
 * **<font color = "red">倒排列表：记录单词与对应文档结合，由倒排索引项组成。</font>**  
 &emsp; 倒排索引项：  
   * 文档   
-  * 词频 TF - 单词在文档中出现的次数，用于相关性评分  
-  * 位置(Position)- 单词在文档中分词的位置，用于phrase query  
-  * 偏移(Offset)- 记录单词开始结束的位置，实现高亮显示  
+  * 词频 TF - 单词在文档中出现的次数，用于相关性评分。  
+  * 位置(Position)- 单词在文档中分词的位置，用于phrase query。  
+  * 偏移(Offset)- 记录单词开始结束的位置，实现高亮显示。  
 
 &emsp; 举个简单例子，理解下“倒排索引项”：以 Token“学习”为例：  
 
@@ -258,9 +272,9 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247491016&idx=1&sn=843b7e
 
 &emsp; **Analyzer由三部分组成：**  
 
-* Character Filters：原始文本处理，如去除html  
-* Tokenizer：按照规则切分为单词  
-* Token Filters：对切分单词加工、小写、删除stopwords，增加同义词  
+* Character Filters：原始文本处理，如去除html。  
+* Tokenizer：按照规则切分为单词。  
+* Token Filters：对切分单词加工、小写、删除stopwords，增加同义词。  
 
 &emsp; **Analyzer分词过程简介**  
 1. 字符过滤器  character filter  
