@@ -214,10 +214,10 @@ public class quickSort {
 -----
 ## 1.3. 直接选择排序  
 &emsp; 从第一个元素开始，扫描整个待排数组，找到最小的元素放之后再与第一个元素交换位置，然后再从第二个元素开始，继续寻找最小的元素与第二个元素交换位置，依次类推。  
-&emsp; 表现最稳定的排序算法之一，因为无论什么数据进去都是O(n2)的时间复杂度，所以用到它的时候，数据规模越小越好。好处就是不占用额外的内存空间。  
+&emsp; **表现最稳定的排序算法之一，因为无论什么数据进去都是O(n2)的时间复杂度，所以用到它的时候，数据规模越小越好。好处就是不占用额外的内存空间。**  
 
 ### 1.3.1. 算法描述  
-1. 首先在未排序序列中找到最小(大)元素，存放到排序序列的起始位置
+1. 首先在未排序序列中找到最小(大)元素，存放到排序序列的起始位置。
 2. 再从剩余未排序元素中继续寻找最小(大)元素，然后放到已排序序列的末尾。
 3. 重复第二步，直到所有元素均排序完毕。  
 
@@ -227,6 +227,13 @@ public class quickSort {
 ### 1.3.2. 编码  
 
 ```java
+
+public static void main(String[] args) {
+    int[] arr = new int[] {4,7,6,5,3,2,8,1};
+    int[] ints = selectionSort(arr);
+    System.out.println(Arrays.toString(ints));
+}
+
 /**
 * 选择排序
 * @param array
@@ -296,12 +303,6 @@ public static void selectionSort_improvement(int[] array){
         counter++;
     }
 }
-
-
-public static void main(String[] args) {
-    int[] arr = new int[] {4,7,6,5,3,2,8,1};
-    selectionSort_improvement(arr);
-}
 ```
 
 
@@ -312,14 +313,12 @@ https://mp.weixin.qq.com/s?__biz=MzA4NDE4MzY2MA==&mid=2647523648&idx=1&sn=a2c939
 https://mp.weixin.qq.com/s/D_RPGriu3xMGYA11TMzxeA
 -->
 
-&emsp; 首先了解二叉堆。堆(Heap)是一类基于完全二叉树的特殊数据结构。通常将堆分为两种类型：  
+&emsp; 首先了解二叉堆。 **<font color = "red">堆(Heap)是一类基于完全二叉树的特殊数据结构。</font>** 通常将堆分为两种类型：  
 
-* <font color = "lime">大顶堆(Max Heap)：在大顶堆中，根结点的值必须大于它的孩子结点的值，对于二叉树中所有子树也应递归地满足这一特性。</font> 
+* <font color = "clime">大顶堆(Max Heap)：在大顶堆中，根结点的值必须大于它的孩子结点的值，对于二叉树中所有子树也应递归地满足这一特性。</font> 
 * 小顶堆(Min Heap)：在小顶堆中，根结点的值必须小于它的孩子结点的值，且对于二叉树的所有子树也均递归地满足同一特性。  
 
 &emsp; 二叉堆的构建、删除、自我调整等基本操作是实现堆排序的基础。  
-
-
 
 ### 1.4.1. 算法描述  
 1. 把无序数组构建成二叉堆。需要从小到大排序，则构建成最大堆；需要从大到小排序，则构建成最小堆。  

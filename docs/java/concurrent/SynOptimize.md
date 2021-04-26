@@ -191,7 +191,7 @@ https://baijiahao.baidu.com/s?id=1630535202760061296&wfr=spider&for=pc
 &emsp; 偏向锁、轻量级锁的状态转化及对象Mark Word的关系如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-29.png)  
  
-&emsp; 图中，偏向锁的重偏向和撤销偏向时如果判断对象是否已经锁定？  
+&emsp; 图中，偏向锁的重偏向和撤销偏向时，如何判断对象是否已经锁定？  
 &emsp; HotSpot支持存储释放偏向锁，以及偏向锁的批量重偏向和撤销。这个特性可以通过JVM的参数进行切换，而且这是默认支持的。  
 &emsp; Unlock状态下Mark Word的一个比特位用于标识该对象偏向锁是否被使用或者是否被禁止。如果该bit位为0，则该对象未被锁定，并且禁止偏向；如果该bit位为1，则意味着该对象处于以下三种状态：  
 
@@ -246,7 +246,7 @@ https://zhuanlan.zhihu.com/p/127884116
 3. 已经获取轻量级锁的线程的解锁。   
 &emsp; 轻量级锁的锁释放逻辑其实就是获得锁的逆向逻辑，通过CAS操作把线程栈帧中的LockRecord替换回到锁对象的MarkWord中。如果成功，则释放锁。如果失败，表示当前锁存在竞争，释放锁，唤醒被挂起的线程，开始新一轮竞争。  
 4. 新线程获取轻量级锁：  
-&emsp; **<font color = "red">1. 获取轻量锁过程当中会当在前线程的虚拟机栈中创建一个Lock Record的内存区域去存储获取锁的记录DisplacedMarkWord，</font>  
+&emsp; **<font color = "red">1. 获取轻量锁过程当中会当在前线程的虚拟机栈中创建一个Lock Record的内存区域去存储获取锁的记录DisplacedMarkWord。</font>  
 &emsp; <font color = "clime">2. 然后使用CAS操作将锁对象的Mark Word更新成指向刚刚创建的Lock Record的内存区域DisplacedMarkWord的地址，</font>** 如果这个操作成功，就说明线程获取了该对象的锁，把对象的Mark Word 标记成 00，表示该对象处于轻量级锁状态。失败时，会判断是否是该线程之前已经获取到锁对象了，如果是就进入同步块执行。如果不是，那就是有多个线程竞争这个锁对象，那轻量锁就不适用于这个情况了，要膨胀成重量级锁。  
 
         线程A获取轻量级锁时会把对象头中的MarkWord复制一份到线程A的栈帧中创建用于存储锁记录的空间DisplacedMarkWord，然后使用CAS将对象头中的内容替换成线程A存储DisplacedMarkWord的地址。如果这时候出现线程B来获取锁，线程B也跟线程A同样复制对象头的MarkWord到自己的DisplacedMarkWord中，如果线程A锁还没释放，这时候那么线程B的CAS操作会失败，会继续自旋，当然不可能让线程B一直自旋下去，自旋到一定次数(固定次数/自适应)就会升级为重量级锁。 

@@ -28,7 +28,7 @@
  
 3. 线程复用机制：    
 &emsp; **线程池将线程和任务进行解耦，线程是线程，任务是任务，摆脱了之前通过Thread创建线程时的一个线程必须对应一个任务的限制。**  
-&emsp; 在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对Thread进行了封装，并不是每次执行任务都会调用Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行。如果有则直接执行，也就是调用任务中的run方法，将run方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的run方法串联起来。  
+&emsp; **<font color = "red">在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对Thread进行了封装（内部类Worker），并不是每次执行任务都会调用Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行。</font>** 如果有则直接执行，也就是调用任务中的run方法，将run方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的run方法串联起来。  
 &emsp; 源码解析：runWorker()方法中，有任务时，while循环获取；没有任务时，清除空闲线程。  
 5. 线程池保证核心线程不被销毁？  
 &emsp; 获取任务getTask()方法里allowCoreThreadTimeOut值默认为true，线程take()会一直阻塞，等待任务的添加。   
@@ -218,9 +218,9 @@ public ThreadPoolExecutor(int corePoolSize,
 * int  maximumPoolSize：  
 &emsp; 线程池允许的最大线程数大小。当workQueue满了，不能添加任务的时候，这个参数才会生效。  
 * long  keepAliveTime：  
-&emsp; 空闲线程(超出corePoolSize的线程)的生存时间。这些线程如果长时间没有执行任务，并且超过了keepAliveTime设定的时间，就会消亡。  
+&emsp; 空闲线程（超出corePoolSize的线程）的生存时间。这些线程如果长时间没有执行任务，并且超过了keepAliveTime设定的时间，就会消亡。  
 * TimeUnit unit：  
-&emsp; 参数keepAliveTime的单位。有7种取值，在TimeUnit类中有7种静态属性：TimeUnit.DAYS；TimeUnit.HOURS；  
+&emsp; 参数keepAliveTime的单位。有7种取值，在TimeUnit类中有7种静态属性：TimeUnit.DAYS...；  
 * BlockingQueue<Runnable\>  workQueue：  
 &emsp; 任务阻塞队列，是java.util.concurrent下主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样，如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态，直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition来实现阻塞和唤醒。  
 * ThreadFactory threadFactory：  
@@ -256,11 +256,11 @@ https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
 &emsp; <font color = "clime">线程池创建时没有设置成预启动加载，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
 1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务（任务实例会传入直接用于构造工作线程实例）。  
 2. 如果当前工作线程总数大于等于corePoolSize，判断线程池是否处于运行中状态，同时尝试用非阻塞方法向任务队列放入任务，这里会二次检查线程池运行状态，如果当前工作线程数量为0，则创建一个非核心线程并且传入的任务对象为null。  
-3. 如果向任务队列投放任务失败(任务队列已经满了)，则会尝试创建非核心线程传入任务实例执行。  
+3. 如果向任务队列投放任务失败（任务队列已经满了），则会尝试创建非核心线程传入任务实例执行。  
 4. 如果创建非核心线程失败，此时需要拒绝执行任务，调用拒绝策略处理任务。  
 
         为什么需要二次检查线程池的运行状态，当前工作线程数量为0，尝试创建一个非核心线程并且传入的任务对象为null？这个可以看API注释：
-        如果一个任务成功加入任务队列，依然需要二次检查是否需要添加一个工作线程(因为所有存活的工作线程有可能在最后一次检查之后已经终结)或者执行当前方法的时候线程池是否已经shutdown了。所以需要二次检查线程池的状态，必须时把任务从任务队列中移除或者在没有可用的工作线程的前提下新建一个工作线程。
+        如果一个任务成功加入任务队列，依然需要二次检查是否需要添加一个工作线程（因为所有存活的工作线程有可能在最后一次检查之后已经终结）或者执行当前方法的时候线程池是否已经shutdown了。所以需要二次检查线程池的状态，必须时把任务从任务队列中移除或者在没有可用的工作线程的前提下新建一个工作线程。
 
 
 ### 1.3.1. execute()  
@@ -306,10 +306,10 @@ public void execute(Runnable command) {
 
 ### 1.3.2. addWorker()，创建新的线程  
 &emsp; addWorker()方法主要负责创建新的线程并执行任务。完成了如下几件任务：  
-1. 原子性的增加workerCount
-2. 将用户给定的任务封装成为一个worker，并将此worker添加进workers集合中
-3. 启动worker对应的线程
-4. 若线程启动失败，回滚worker的创建动作，即从workers中移除新添加的worker，并原子性的减少workerCount
+1. 原子性的增加workerCount。
+2. 将用户给定的任务封装成为一个worker，并将此worker添加进workers集合中。
+3. 启动worker对应的线程。
+4. 若线程启动失败，回滚worker的创建动作，即从workers中移除新添加的worker，并原子性的减少workerCount。
 
 ```java
 /**
@@ -531,15 +531,15 @@ thread.start();
 
 &emsp; 线程复用原理：  
 &emsp; 线程池将线程和任务进行解耦，线程是线程，任务是任务，摆脱了之前通过 Thread 创建线程时的一个线程必须对应一个任务的限制。  
-&emsp; 在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对 Thread 进行了封装，并不是每次执行任务都会调用 Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行，如果有则直接执行，也就是调用任务中的 run 方法，将 run 方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的 run 方法串联起来。  
+&emsp; 在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对 Thread 进行了封装（内部类Worker），并不是每次执行任务都会调用 Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行，如果有则直接执行，也就是调用任务中的 run 方法，将 run 方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的 run 方法串联起来。  
 
 -----
 &emsp; **<font color = "clime">worker中的线程start 后，执行的是worker的run()方法，而run()方法会调用ThreadPoolExecutor类的runWorker()方法，runWorker()方法实现了线程池中的线程复用机制。</font>** runWorker()方法的核心流程：  
 1. Worker先执行一次解锁操作，用于解除不可中断状态。  
-2. <font color = "red">通过while循环调用getTask()方法从任务队列中获取任务(当然，首轮循环也有可能是外部传入的firstTask任务实例)。</font>  
+2. <font color = "red">通过while循环调用getTask()方法从任务队列中获取任务（当然，首轮循环也有可能是外部传入的firstTask任务实例）。</font>  
 3. 如果线程池更变为STOP状态，则需要确保工作线程是中断状态并且进行中断处理，否则要保证工作线程必须不是中断状态。  
-&emsp; 执行任务实例Runnale#run()方法，任务实例执行之前和之后(包括正常执行完毕和异常执行情况)分别会调用钩子方法beforeExecute()和afterExecute()。    
-4. while循环跳出意味着runWorker()方法结束和工作线程生命周期结束(Worker#run()生命周期完结)，会调用processWorkerExit()处理工作线程退出的后续工作。  
+&emsp; 执行任务实例Runnale#run()方法，任务实例执行之前和之后（包括正常执行完毕和异常执行情况）分别会调用钩子方法beforeExecute()和afterExecute()。    
+4. while循环跳出意味着runWorker()方法结束和工作线程生命周期结束（Worker#run()生命周期完结），会调用processWorkerExit()处理工作线程退出的后续工作。  
 
 <!-- 
 

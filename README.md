@@ -37,7 +37,7 @@
     - [DevOps](#devops)
     - [计算机网络](#计算机网络)
     - [测试工具](#测试工具)
-    - [开发常用工具](#开发常用工具)
+    - [常用工具](#常用工具)
     - [Error](#error)
 
 <!-- /TOC -->
@@ -196,7 +196,7 @@
 &emsp; [Atmoic](/docs/java/concurrent/Atmoic.md)  
 &emsp; &emsp; [AtomicStampedReference与AtomicMarkableReference](/docs/java/concurrent/AtomicStampedReference.md)  
 &emsp; &emsp; [LongAdder](/docs/java/concurrent/LongAdder.md)  
-&emsp; [collections](/docs/java/concurrent/collections.md)  
+&emsp; [collections](/docs/java/concurrent/Collections.md)  
 &emsp; &emsp; [ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)  
 &emsp; &emsp; [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
 &emsp; [tools](/docs/java/concurrent/tools.md)  
@@ -546,6 +546,7 @@
 &emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
 &emsp; [统一异常处理](/docs/web/ExceptionHandler.md)  
 &emsp; [统一日志记录](/docs/web/unifiedLog.md)  
+[钉钉应用开放平台](/docs/web/dingding.md)  
 [API接口设计](/docs/web/API.md)    
 &emsp; [RESTful风格](/docs/web/interface/RESTful.md)  
 &emsp; [接口幂等](/docs/web/interface/idempotent.md)  
@@ -658,9 +659,10 @@
 [Jmeter](/docs/devAndOps/Jmeter.md)  
 [JMH](/docs/java/JVM/JMH.md)  
 
-## 开发常用工具  
+## 常用工具  
 [idea](/docs/software/idea/idea.md)  
 [抓包Charles](/docs/software/charles.md) 
+[markdown](/docs/software/markdown.md)  
 
 ---
 ## Error  

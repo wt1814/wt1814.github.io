@@ -43,11 +43,11 @@ https://mp.weixin.qq.com/s/GDno-X1N8zc98h9MZ8_KoA
 &emsp; Java提供了两种锁机制来控制多个线程对共享资源的互斥访问，第一个是JVM实现的synchronized，而另一个是JDK实现的ReentrantLock。  
 &emsp; ReentrantLock与synchronized的联系：Lock接口提供了与synchronized关键字类似的同步功能，但需要在使用时手动获取锁和释放锁。ReentrantLock和synchronized都是可重入的互斥锁。  
 &emsp; **<font color = "red">Lock接口与synchronized关键字的区别(Lock的优势全部体现在构造函数、方法中)：</font>**  
-1. (支持非公平)ReenTrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁。所谓的公平锁就是先等待的线程先获得锁。  
+1. （支持非公平）ReenTrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁。所谓的公平锁就是先等待的线程先获得锁。  
 2. Lock接口可以尝试非阻塞地获取锁，当前线程尝试获取锁。如果这一时刻锁没有被其他线程获取到，则成功获取并持有锁。  
-3. (可被中断)Lock接口能被中断地获取锁，与synchronized不同，获取到锁的线程能够响应中断，当获取到的锁的线程被中断时，中断异常将会被抛出，同时锁会被释放。 可以使线程在等待锁的时候响应中断；  
-4. (支持超时/限时等待)Lock接口可以在指定的截止时间之前获取锁，如果截止时间到了依旧无法获取锁，则返回。可以让线程尝试获取锁，并在无法获取锁的时候立即返回或者等待一段时间；  
-5. (可实现选择性通知，锁可以绑定多个条件)ReenTrantLock提供了一个Condition(条件)类，用来实现分组唤醒需要唤醒的一些线程，而不是像synchronized要么随机唤醒一个线程要么唤醒全部线程。  
+3. （可被中断）Lock接口能被中断地获取锁，与synchronized不同，获取到锁的线程能够响应中断，当获取到的锁的线程被中断时，中断异常将会被抛出，同时锁会被释放。可以使线程在等待锁的时候响应中断；  
+4. （支持超时/限时等待）Lock接口可以在指定的截止时间之前获取锁，如果截止时间到了依旧无法获取锁，则返回。可以让线程尝试获取锁，并在无法获取锁的时候立即返回或者等待一段时间；  
+5. （可实现选择性通知，锁可以绑定多个条件）ReenTrantLock提供了一个Condition(条件)类，用来实现分组唤醒需要唤醒的一些线程，而不是像synchronized要么随机唤醒一个线程要么唤醒全部线程。  
 
 
 &emsp; **什么时候选择用ReentrantLock代替synchronized？**  
@@ -220,7 +220,7 @@ public final void acquire(int arg) {
     }
     ```
 
-    &emsp; nonfairTryAcquire(int acquires)：先比较当前锁的状态是否是0，如果是0，则尝试去原子抢占这个锁(设置状态为1，然后把当前线程设置成独占线程)，如果当前锁的状态不是0，就去比较当前线程和占用锁的线程是不是一个线程，如果是，会去增加状态变量的值，从这里看出可重入锁之所以可重入，就是同一个线程可以反复使用它占用的锁。如果以上两种情况都不通过，则返回失败false。  
+    &emsp; nonfairTryAcquire(int acquires)：先比较当前锁的状态是否是0，如果是0，则尝试去原子抢占这个锁（设置状态为1，然后把当前线程设置成独占线程），如果当前锁的状态不是0，就去比较当前线程和占用锁的线程是不是一个线程，如果是，会去增加状态变量的值，从这里看出可重入锁之所以可重入，就是同一个线程可以反复使用它占用的锁。如果以上两种情况都不通过，则返回失败false。  
 
     <!-- 非公平锁tryAcquire的流程是：检查state字段，若为0，表示锁未被占用，那么尝试占用，若不为0，检查当前锁是否被自己占用，若被自己占用，则更新state字段，表示重入锁的次数。如果以上两点都没有成功，则获取锁失败，返回false。-->  
     &emsp; 假设当前有三个线程去竞争锁，假设线程A的CAS操作成功，返回。那么线程B和C则设置state失败，返回false，就会则进入acquireQueued流程，也就是基于CLH队列的抢占模式。   
@@ -254,29 +254,29 @@ public final void acquire(int arg) {
 
     &emsp; B、C线程同时尝试入队列，由于队列尚未初始化，tail==null，故至少会有一个线程会走到enq(node)。假设同时走到了enq(node)里。  
 
-        ```java
-        /**
-        * 初始化队列并且入队新节点
-        */
-        private Node enq(final Node node) {
-            //开始自旋
-            for (;;) {
-                Node t = tail;
-                if (t == null) { // Must initialize
-                    // 如果tail为空,则新建一个head节点,并且tail指向head
-                    if (compareAndSetHead(new Node()))
-                        tail = head;
-                } else {
-                    node.prev = t;
-                    // tail不为空,将新节点入队
-                    if (compareAndSetTail(t, node)) {
-                        t.next = node;
-                        return t;
-                    }
+    ```java
+    /**
+    * 初始化队列并且入队新节点
+    */
+    private Node enq(final Node node) {
+        //开始自旋
+        for (;;) {
+            Node t = tail;
+            if (t == null) { // Must initialize
+                // 如果tail为空,则新建一个head节点,并且tail指向head
+                if (compareAndSetHead(new Node()))
+                    tail = head;
+            } else {
+                node.prev = t;
+                // tail不为空,将新节点入队
+                if (compareAndSetTail(t, node)) {
+                    t.next = node;
+                    return t;
                 }
             }
         }
-        ```
+    }
+    ```
 
     &emsp; 这里体现了经典的自旋+CAS组合来实现非阻塞的原子操作。由于compareAndSetHead的实现使用了unsafe类提供的CAS操作，所以只有一个线程会创建head节点成功。假设线程B成功，之后B、C开始第二轮循环，此时tail已经不为空，两个线程都走到else里面。假设B线程compareAndSetTail成功，那么B就可以返回了，C由于入队失败还需要第三轮循环。最终所有线程都可以成功入队。  
     &emsp; 当B、C入等待队列后，此时AQS队列如下：  

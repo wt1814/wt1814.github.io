@@ -21,7 +21,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. ThreadLocal使用场景  
+1. ThreadLocal使用场景：  
     1. 线程安全问题
     2. 业务中变量传递。1)ThreadLocal实现同一线程下多个类之间的数据传递；2)ThreadLocal实现线程内的缓存，避免重复调用。
     3. ThreadLocal+MDC实现链路日志增强

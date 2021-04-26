@@ -48,8 +48,8 @@ CAS包含了 3个操作数：需要读写的内存位置V、进行比较的值A�
 -->
 &emsp; **<font color = "clime">CAS，Compare And Swap，即比较并交换。一种无锁原子算法，CAS是一种乐观锁。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-29.png)   
-&emsp; **<font color = "clime">在函数CAS(V,E,N)中有3个参数：从内存中读取的值E，计算的结果值V，内存中的当前值N(可能已经被其他线程改变)。</font>** 
-&emsp; **<font color = "clime">函数流程：</font>** s1. 读取当前值E，2. 计算结果值V，<font color = "clime">3. 将读取的当前值E和当前新值N作比较，如果相等，更新为V；</font>4. 如果不相等，再次读取当前值E计算结果V，将E再和新的当前值N比较，直到相等。  
+&emsp; **<font color = "clime">在函数CAS(V,E,N)中有3个参数：从内存中读取的值E，计算的结果值V，内存中的当前值N(可能已经被其他线程改变)。</font>**  
+&emsp; **<font color = "clime">函数流程：</font>** 1. 读取当前值E，2. 计算结果值V，<font color = "clime">3. 将读取的当前值E和当前新值N作比较，如果相等，更新为V；</font>4. 如果不相等，再次读取当前值E计算结果V，将E再和新的当前值N比较，直到相等。  
 &emsp; 注：当多个线程同时使用CAS操作一个变量时，只有一个会胜出，并成功更新，其余均会失败。**一般，失败的线程不会挂起，仅是被告知失败，并且允许再次尝试，当然也允许实现的线程放弃操作(一般情况下，这是一个自旋操作，即不断的重试)。**基于这样的原理，CAS操作即使没有锁，也可以发现其他线程对当前线程的干扰。  
 
 ## 1.2. CAS缺点  
@@ -69,7 +69,7 @@ CAS包含了 3个操作数：需要读写的内存位置V、进行比较的值A�
     &emsp; 4).线程a恢复，接着对地址X执行CAS，发现X中存储的还是对象A，对象匹配，CAS成功。   
     2. ABA问题需不需要解决？   
     &emsp; ~~如果依赖中间变化的状态，需要解决。如果不是依赖中间变化的状态，对业务结果无影响。~~  
-    3. 解决ABA问题。
+    3. 解决ABA问题。  
     &emsp; **<font color = "red">ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。</font>**   
     &emsp; **<font color = "clime">从Java1.5开始JDK的atomic包里提供了[AtomicStampedReference](/docs/java/concurrent/6.AtomicStampedReference.md)和AtomicMarkableReference类来解决ABA问题。</font>**  
 

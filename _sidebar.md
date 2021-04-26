@@ -136,7 +136,7 @@
         * [Atmoic](/docs/java/concurrent/Atmoic.md)  
             * [AtomicStampedReference与AtomicMarkableReference](/docs/java/concurrent/AtomicStampedReference.md)  
             * [LongAdder](/docs/java/concurrent/LongAdder.md)  
-        * [collections](/docs/java/concurrent/collections.md)  
+        * [collections](/docs/java/concurrent/Collections.md)  
             * [ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)  
             * [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
         * [tools](/docs/java/concurrent/tools.md)
@@ -423,6 +423,7 @@
         * [统一格式返回](/docs/web/UnifiedFormat.md)   
         * [统一异常处理](/docs/web/ExceptionHandler.md)  
         * [统一日志记录](/docs/web/unifiedLog.md)  
+    * [钉钉应用开放平台](/docs/web/dingding.md)  
     * [API接口设计](/docs/web/API.md)    
         * [RESTful风格](/docs/web/interface/RESTful.md)  
         * [接口幂等](/docs/web/interface/idempotent.md)  
@@ -506,6 +507,7 @@
 * 测试工具
     * [Jmeter](/docs/devAndOps/Jmeter.md)  
     * [JMH](/docs/java/JVM/JMH.md)  
-* 开发常用工具  
+* 常用工具  
     * [idea](/docs/software/idea/idea.md)  
     * [抓包Charles](/docs/software/charles.md)  
+    * 

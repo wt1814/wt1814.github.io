@@ -22,9 +22,9 @@
 2. Volatile底层原理：  
 &emsp; **<font color = "clime">在Volatile写前插入写-写屏障，在Volatile写后插入写-读屏障；在Volatile读后插入读-读屏障、读-写屏障。</font>**  
 3. DCL详解：  
-	1. 为什么两次判断？ 线程1调用第一个if（singleton==null），可能会被挂起  
+	1. 为什么两次判断？ 线程1调用第一个if（singleton==null），可能会被挂起。  
 	2. 为什么要加volatile关键字？  
-	&emsp; singleton = new Singleton()非原子性操作，包含3个步骤：分配内存 ---> 初始化对象 ---> 将singleton对象指向分配的内存空间(这步一旦执行了，那singleton对象就不等于null了)。
+	&emsp; singleton = new Singleton()非原子性操作，包含3个步骤：分配内存 ---> 初始化对象 ---> 将singleton对象指向分配的内存空间(这步一旦执行了，那singleton对象就不等于null了)。  
 	&emsp; 因为指令重排序，可能编程1->3->2。如果是这种顺序，会导致别的线程拿到半成品的实例。  
 
 # 1. Volatile  
@@ -176,9 +176,9 @@ public class Singleton {
 #### 1.3.3.2. 为什么要加volatile关键字？  
 &emsp; 了解下singleton = new Singleton()这段代码其实不是原子性的操作，它至少分为以下3个步骤：  
 
-1. 给singleton对象分配内存空间  
-2. 调用Singleton类的构造函数等，初始化singleton对象  
-3. 将singleton对象指向分配的内存空间，这步一旦执行了，那singleton对象就不等于null了  
+1. 给singleton对象分配内存空间。  
+2. 调用Singleton类的构造函数等，初始化singleton对象。  
+3. 将singleton对象指向分配的内存空间，这步一旦执行了，那singleton对象就不等于null了。  
 
 &emsp; 这里还需要知道一点，就是有时候JVM会为了优化，而做指令重排序的操作，这里的指令，指的是CPU层面的。  
 &emsp; 正常情况下，singleton = new Singleton()的步骤是按照1->2->3这种步骤进行的，但是一旦JVM做了指令重排序，那么顺序很可能编程1->3->2，如果是这种顺序，可以发现，在3步骤执行完singleton对象就不等于null，但是它其实还没做步骤二的初始化工作，但是另一个线程进来时发现，singleton不等于null了，就这样把半成品的实例返回去，调用是会报错的。  

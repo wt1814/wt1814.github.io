@@ -43,10 +43,10 @@ https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
 &emsp; LongAdder的基本思路就是分散热点，将value值的新增操作分散到一个数组中，不同线程会命中到数组的不同槽中，各个线程只对自己槽中的那个value值进行CAS操作，这样热点就被分散了，冲突的概率就小很多。  
 &emsp; **<font color = "clime">LongAdder有一个全局变量volatile long base值，当并发不高的情况下都是通过CAS来直接操作base值，如果CAS失败，则针对LongAdder中的Cell[]数组中的Cell进行CAS操作，减少失败的概率。</font>**  
 &emsp; 例如当前类中base = 10，有三个线程进行CAS原子性的+1操作，线程一执行成功，此时base=11，线程二、线程三执行失败后开始针对于Cell[]数组中的Cell元素进行+1操作，同样也是CAS操作，此时数组index=1和index=2中Cell的value都被设置为了1。  
-&emsp; 执行完成后，统计累加数据：sum = 11 + 1 + 1 = 13，利用LongAdder进行累加的操作就执行完了，流程图如下：  
+&emsp; 执行完成后，统计累加数据：`sum = 11 + 1 + 1 = 13`，利用LongAdder进行累加的操作就执行完了，流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-36.png)   
 2. 使用Contended注解来消除伪共享  
-&emsp; 在 LongAdder 的父类 Striped64 中存在一个 volatile Cell[] cells; 数组，其长度是2 的幂次方，每个Cell都使用 @Contended 注解进行修饰，而@Contended注解可以进行缓存行填充，从而解决伪共享问题。伪共享会导致缓存行失效，缓存一致性开销变大。  
+&emsp; 在 LongAdder 的父类 Striped64 中存在一个`volatile Cell[] cells;` 数组，其长度是2 的幂次方，每个Cell都使用@Contended注解进行修饰，而@Contended注解可以进行缓存行填充，从而解决伪共享问题。伪共享会导致缓存行失效，缓存一致性开销变大。  
 
 ```java
 @sun.misc.Contended static final class Cell {

@@ -19,7 +19,7 @@
 2. **<font color = "red">monitor运行的机制过程如下：(_EntryList队列、_Owner区域、_WaitSet队列)</font>**  
   ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
   * 想要获取monitor的线程，首先会进入_EntryList队列。  
-  * 当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程,同时计数器count加1。  
+  * 当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程，同时计数器count加1。  
   * **如果线程调用了wait()方法，则会进入WaitSet队列。** 它会释放monitor锁，即将owner赋值为null，count自减1，进入WaitSet队列阻塞等待。  
   * 如果其他线程调用 notify() / notifyAll()，会唤醒WaitSet中的某个线程，该线程再次尝试获取monitor锁，成功即进入Owner区域。  
   * 同步方法执行完毕了，线程退出临界区，会将monitor的owner设为null，并释放监视锁。  

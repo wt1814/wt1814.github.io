@@ -30,7 +30,7 @@
 
 3. **ThreadLocalMap的key被回收后，如何获取值？**  
 &emsp; ThreadLocal#get() ---> setInitialValue() ---> ThreadLocalMap.set(this, value); 。  
-&emsp; 通过nextIndex()不断获取table上得槽位，直到遇到第一个为null的地方，此处也将是存放具体entry的位置，在线性探测法的不断冲突中，如果遇到非空entry中的key为null，可以表明key的弱引用已经被回收，但是由于线程仍未结束生命周期被回收而导致该entry仍未从table中被回收，那么则会在这里尝试通过replaceStaleEntry()方法，将null key的entry回收掉并set相应的值。  
+&emsp; 通过nextIndex()不断获取table上得槽位，直到遇到第一个为null的地方，此处也将是存放具体entry的位置，在线性探测法的不断冲突中，如果遇到非空entry中的key为null，可以表明key的弱引用已经被回收，但是由于线程仍未结束生命周期被回收，而导致该entry仍未从table中被回收，那么则会在这里尝试通过replaceStaleEntry()方法，将null key的entry回收掉并set相应的值。  
 
 # 1. ThreadLocal  
 <!-- 
@@ -127,7 +127,7 @@ ThreadLocalMap threadLocals = null;
 //与此线程有关的InheritableThreadLocal值。由InheritableThreadLocal类维护
 ThreadLocalMap inheritableThreadLocals = null;
 ```
-&emsp; 从上面Thread类源代码可以看出Thread类中有一个threadLocals和一个inheritableThreadLocals变量，它们都是ThreadLocalMap类型的变量 <font color = "red">(ThreadLocalMap是ThreadLocal类的内部类)</font> 。即，具体的ThreadLocalMap实例并不是ThreadLocal保持，而是每个Thread持有，且不同的Thread持有不同的ThreadLocalMap实例, 因此它们是不存在线程竞争的(不是一个全局的map)，另一个好处是每次线程死亡，所有map中引用到的对象都会随着这个Thread的死亡而被垃圾收集器一起收集。     
+&emsp; 从上面Thread类源代码可以看出Thread类中有一个threadLocals和一个inheritableThreadLocals变量，它们都是ThreadLocalMap类型的变量 <font color = "red">(ThreadLocalMap是ThreadLocal类的内部类)</font> 。即，具体的ThreadLocalMap实例并不是ThreadLocal保持，而是每个Thread持有，且不同的Thread持有不同的ThreadLocalMap实例，因此它们是不存在线程竞争的(不是一个全局的map)，另一个好处是每次线程死亡，所有map中引用到的对象都会随着这个Thread的死亡而被垃圾收集器一起收集。     
 &emsp; 默认情况下这两个变量都是null， **<font color = "red">只有当前线程调用ThreadLocal类的set或get方法时才创建它们，实际上调用这两个方法的时候，调用的是ThreadLocalMap类对应的 get()、set()方法。</font>**  
 
 ### 1.2.2. ThreadLocalMap内部类
@@ -260,5 +260,5 @@ for (Entry e = tab[i]; e != null; e = tab[i = nextIndex(i, len)]) {
 }
 ```
 
-&emsp; 通过nextIndex()不断获取table上得槽位，直到遇到第一个为null的地方，此处也将是存放具体entry的位置，在线性探测法的不断冲突中，如果遇到非空entry中的key为null，可以表明key的弱引用已经被回收，但是由于线程仍未结束生命周期被回收而导致该entry仍未从table中被回收，那么则会在这里尝试通过replaceStaleEntry()方法，将null key的entry回收掉并set相应的值。  
+&emsp; 通过nextIndex()不断获取table上得槽位，直到遇到第一个为null的地方，此处也将是存放具体entry的位置，在线性探测法的不断冲突中，如果遇到非空entry中的key为null，可以表明key的弱引用已经被回收，但是由于线程仍未结束生命周期被回收，而导致该entry仍未从table中被回收，那么则会在这里尝试通过replaceStaleEntry()方法，将null key的entry回收掉并set相应的值。  
 

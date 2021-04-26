@@ -330,7 +330,7 @@ public V get(Object key) {
 }
 ```
 
-##### 1.1.2.2.2. get()为什么不需要加锁？  
+##### 1.1.2.2.2. ★★★get()为什么不需要加锁？  
 &emsp; 用volatile修饰的Node。  
 &emsp; get操作可以无锁是由于Node的元素val和指针next是用volatile修饰的，在多线程环境下线程A修改结点的val或者新增节点的时候是对线程B可见的。    
 

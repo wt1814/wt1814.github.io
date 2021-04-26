@@ -35,7 +35,7 @@
         3. acquireQueued()使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
         4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。
     * 释放同步状态  
-4. 共享模式下，获取同步状态、释放同步状态
+4. 共享模式下，获取同步状态、释放同步状态。
 
 # 1. AQS  
 ## 1.1. 简介  
@@ -80,9 +80,9 @@ protected final boolean compareAndSetState(int expect, int update) {
     return unsafe.compareAndSwapInt(this, stateOffset, expect, update);
 }
 ```
-&emsp; **<font color = "red">使用int类型的成员变量state来控制同步状态。</font>**  
+&emsp; **<font color = "red">使用int类型的成员变量state来控制同步状态：</font>**  
 
-* 是由volatile修饰的，保证多线程中的可见性。  
+* state是由volatile修饰的，保证多线程中的可见性。  
 * 并且提供了几个访问这个字段的方法：getState()、setState、compareAndSetState。这几个方法都是final修饰的，说明子类中无法重写它们。另外它们都是protected修饰的，说明只能在子类中使用这些方法。  
 
 &emsp; **<font color = "clime">怎么通过字段state控制同步状态？</font>**  
@@ -236,9 +236,9 @@ static final class Node {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-19.png)  
 &emsp; CLH队列入列就是tail指向新节点、新节点的prev指向当前最后的节点，当前最后一个节点的next指向当前节点。addWaiter方法如下：  
 
-1. 将当前线程封装成Node  
-2. <font color = "clime">当前链表中的tail节点是否为空，如果不为空，则通过cas操作把当前线程的node添加到AQS队列</font>  
-3. <font color = "clime">如果为空或者cas失败，调用enq将节点添加到AQS队列</font>  
+1. 将当前线程封装成Node。  
+2. <font color = "clime">当前链表中的tail节点是否为空，如果不为空，则通过cas操作把当前线程的node添加到AQS队列。</font>  
+3. <font color = "clime">如果为空或者cas失败，调用enq将节点添加到AQS队列。</font>  
 
 ```java
 /**
@@ -360,7 +360,7 @@ https://www.cnblogs.com/waterystone/p/4920797.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-20.png)  
 &emsp; acquire(int arg)是独占模式下线程获取同步状态的顶层入口。  
 &emsp; <font color = "clime">独占模式获取同步状态流程如下：</font>  
-1. **<font color = "clime">调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回(这里体现了非公平锁，每个线程获取锁时会尝试直接抢占加锁一次，而CLH队列中可能还有别的线程在等待)；</font>**  
+1. **<font color = "clime">调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回（这里体现了非公平锁，每个线程获取锁时会尝试直接抢占加锁一次，而CLH队列中可能还有别的线程在等待）；</font>**  
 2. addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；  
 3. acquireQueued()使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
 4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。

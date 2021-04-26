@@ -224,7 +224,7 @@ public class DaoInterceptor implements MethodInterceptor {
 &emsp; 总结：合适的配置线程池大小其实很不容易，但是通过上述的公式和具体代码，就能快速、落地的算出这个线程池该设置的多大。不过还是需要通过压力测试来进行微调，只有经过压测测试的检验，才能最终保证的配置大小是准确的。 
 
 ## 1.4. ★★★线程池的监控  
-&emsp; 如果在项目中大规模的使用了线程池，那么必须要有一套监控体系，来指导当前线程池的状态，当出现问题的时候可以快速定位到问题。而线程池提供了相应的扩展方法，**<font color = "clime">通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。</font>**  
+&emsp; 如果在项目中大规模的使用了线程池，那么必须要有一套监控体系，来指导当前线程池的状态，当出现问题的时候可以快速定位到问题。而线程池提供了相应的扩展方法， **<font color = "clime">通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。</font>**  
 
 ```java
 public class Demo1 extends ThreadPoolExecutor {
