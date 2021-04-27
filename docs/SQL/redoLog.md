@@ -191,7 +191,7 @@ Redo log 两阶段提交
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-144.png)  
 
 &emsp; MySQL 使用两阶段提交主要解决 binlog 和 redo log 的数据一致性的问题。  
-&emsp; redo log 和 binlog 都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。下图为 MySQL 二阶段提交简图：  
+&emsp; redo log 和 binlog 都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。下图为 MySQL两阶段提交简图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-96.png)  
 &emsp; <font color = "clime">两阶段提交原理描述: </font> 
 

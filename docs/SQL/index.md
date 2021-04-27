@@ -22,6 +22,7 @@
 2. 索引失效。  
 3. 索引条件下推：  
 &emsp; 索引下推简而言之就是在复合索引由于某些条件(比如 like %aa)失效的情况下，当存在失效的过滤字段在索引覆盖范围内，使用比较的方式在不回表的情况下进一步缩小查询的范围。其实就是对索引失效的进一步修复。  
+&emsp; **<font color = "clime">~~MySQL 5.6 引入了「索引下推优化」，可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。~~</font>**  
     * 关闭ICP：索引--->回表--->条件过滤。  
     * 开启ICP：索引--->条件过滤--->回表。  
 
@@ -144,12 +145,12 @@ https://mp.weixin.qq.com/s/Mvl3OURNurdrJ2o9OyM6KQ
 &emsp; 解决办法：可采用在建立索引时用reverse(columnName)这种方法处理。  
 5. 隐式转换导致索引失效。 **<font color = "clime">⚠️注：包含类型转换和字符集转换。</font>**    
 &emsp; 由于表的字段tu_mdn定义为varchar2(20)，但在查询时把该字段作为number类型以where条件传给sql语句，这样会导致索引失效。  
-&emsp; 错误的例子：select * from test where tu_mdn=13333333333;  
-&emsp; 正确的例子：select * from test where tu_mdn='13333333333';  
+&emsp; 错误的例子：`select * from test where tu_mdn=13333333333;`  
+&emsp; 正确的例子：`select * from test where tu_mdn='13333333333';` 
 6. 对索引列使用函数导致索引失效。  
 &emsp; 对于这样情况应当创建基于函数的索引。  
 &emsp; 错误的例子：select * from test where round(id)=10; 此时id的索引已经不起作用了。  
-&emsp; 正确的例子：首先建立函数索引，create index test_id_fbi_idx on test(round(id));然后 select * from test where round(id)=10; 这时函数索引起作用了。
+&emsp; 正确的例子：首先建立函数索引，`create index test_id_fbi_idx on test(round(id));`然后 `select * from test where round(id)=10;` 这时函数索引起作用了。
 
 <!-- 
 字符编码，原来是SQL不走索引的元凶之一！ 
@@ -201,7 +202,7 @@ select * from employee where name like '小%' and age=28 and sex='0';
 
 &emsp; 「解析：」 这里考察索引下推的知识点，如果是「Mysql5.6之前」，在idx_name_age索引树，找出所有名字第一个字是“小”的人，拿到它们的主键id，然后回表找出数据行，再去对比年龄和性别等其他字段。如图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-152.png)  
-&emsp; 有些朋友可能觉得奇怪，（name,age)不是联合索引嘛？为什么选出包含“小”字后，不再顺便看下年龄age再回表呢，不是更高效嘛？所以呀，MySQL 5.6 就引入了「索引下推优化」，可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。  
+&emsp; 有些朋友可能觉得奇怪，(name,age)不是联合索引嘛？为什么选出包含“小”字后，不再顺便看下年龄age再回表呢，不是更高效嘛？所以呀， **<font color = "clime">MySQL 5.6 引入了「索引下推优化」，可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。</font>**  
 
 &emsp; 因此，MySQL5.6版本之后，选出包含“小”字后，顺表过滤age=28，所以就只需一次回表。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-153.png)  

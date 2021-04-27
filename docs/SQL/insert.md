@@ -8,7 +8,11 @@
 <!-- /TOC -->
 
 # 1. ~~insert插入流程~~  
-<!-- 
+<!--
+MySQL中InnoDB脏页刷新机制Checkpoint
+★★★ https://blog.csdn.net/weixin_39820173/article/details/113402536
+★★★ https://www.cnblogs.com/olinux/p/5196139.html
+
  MySQL不会丢失数据的秘密，就藏在它的 7种日志里 
  https://mp.weixin.qq.com/s/S9dQd1hgYzMBoDqV5bPuiQ
 

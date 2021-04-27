@@ -60,25 +60,30 @@ https://mp.weixin.qq.com/s/FykC_mfqJH5oics3wIzBQA
 -->
 &emsp; MySQL可以使用一个索引来满足ORDER BY子句的排序，而不需要额外的排序，但是需要满足以下几个条件：  
 1. WHERE 条件和OREDR BY使用相同的索引：即key_part1与key_part2是复合索引，where中使用复合索引中的key_part1  
-
-    SELECT*FROM user WHERE key_part1=1 ORDER BY key_part1 DESC, key_part2 DESC;
+```sql
+SELECT*FROM user WHERE key_part1=1 ORDER BY key_part1 DESC, key_part2 DESC;
+```
 2. 而且ORDER BY顺序和索引顺序相同：  
-
-    SELECT*FROM user ORDER BY key_part1, key_part2;
+```sql
+ SELECT*FROM user ORDER BY key_part1, key_part2;
+```
 3. 并且要么都是升序要么都是降序：  
-
-    SELECT*FROM user ORDER BY key_part1 DESC, key_part2 DESC;
-
+```sql
+SELECT*FROM user ORDER BY key_part1 DESC, key_part2 DESC;
+```
 &emsp; 但<font color = "clime">以下几种情况则不使用索引</font>：  
 1. ORDER BY中混合ASC和DESC：  
-
-    SELECT*FROM user ORDER BY key_part1 DESC, key_part2 ASC;
+```sql
+SELECT*FROM user ORDER BY key_part1 DESC, key_part2 ASC;
+```
 2. 查询行的关键字与ORDER BY所使用的不相同，即WHERE 后的字段与ORDER BY 后的字段是不一样的  
-
-    SELECT*FROM user WHERE key2 = ‘xxx’ ORDER BY key1;
+```sql
+SELECT*FROM user WHERE key2 = ‘xxx’ ORDER BY key1;
+```
 3. ORDER BY对不同的关键字使用，即ORDER BY后的关键字不相同  
-    
-    SELECT*FROM user ORDER BY key1, key2;
+```sql 
+SELECT*FROM user ORDER BY key1, key2;
+```
 
 ### 1.1.4. like优化  
 <!-- 

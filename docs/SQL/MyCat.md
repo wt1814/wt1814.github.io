@@ -2,46 +2,48 @@
 
 <!-- TOC -->
 
-- [1. MyCat简介](#1-mycat简介)
-    - [1.1. MyCat概述](#11-mycat概述)
-    - [1.2. 原理](#12-原理)
-    - [1.3. MyCat核心概念](#13-mycat核心概念)
-        - [1.3.1. 逻辑库(schema)](#131-逻辑库schema)
-        - [1.3.2. 逻辑表(table)](#132-逻辑表table)
-            - [1.3.2.1. 分片表](#1321-分片表)
-            - [1.3.2.2. 非分片表](#1322-非分片表)
-            - [1.3.2.3. ER表](#1323-er表)
-            - [1.3.2.4. 全局表](#1324-全局表)
-        - [1.3.3. 分片节点(dataNode)/数据库分片](#133-分片节点datanode数据库分片)
-        - [1.3.4. 节点主机(dataHost)/服务器](#134-节点主机datahost服务器)
-        - [1.3.5. 分片规则(rule)](#135-分片规则rule)
-        - [1.3.6. 多租户](#136-多租户)
-- [2. MyCat使用](#2-mycat使用)
-    - [2.1. MyCat配置详解](#21-mycat配置详解)
-        - [2.1.1. server.xml](#211-serverxml)
-            - [2.1.1.1. System标签](#2111-system标签)
-            - [2.1.1.2. 自增主键/全局序列号的生成方式(sequence)](#2112-自增主键全局序列号的生成方式sequence)
-        - [2.1.2. schema.xml](#212-schemaxml)
-            - [2.1.2.1. schema标签](#2121-schema标签)
-            - [2.1.2.2. table标签](#2122-table标签)
-            - [2.1.2.3. childTable标签](#2123-childtable标签)
-            - [2.1.2.4. dataNode标签](#2124-datanode标签)
-            - [2.1.2.5. 全局表(type属性)](#2125-全局表type属性)
-            - [2.1.2.6. 一对多关联/ER关系分片表，设置表间关联关系](#2126-一对多关联er关系分片表设置表间关联关系)
-            - [2.1.2.7. 多对多关联](#2127-多对多关联)
-        - [2.1.3. rule.xml](#213-rulexml)
-            - [2.1.3.1. tableRule标签](#2131-tablerule标签)
-            - [2.1.3.2. function标签](#2132-function标签)
-        - [2.1.4. 结合配置中心实现动态刷新](#214-结合配置中心实现动态刷新)
-    - [2.2. 分片具体规则](#22-分片具体规则)
-        - [2.2.1. 分片键：主键分片vs非主键分片](#221-分片键主键分片vs非主键分片)
-        - [2.2.2. 分片函数](#222-分片函数)
+- [1. MyCat](#1-mycat)
+    - [1.1. MyCat简介](#11-mycat简介)
+        - [1.1.1. MyCat概述](#111-mycat概述)
+        - [1.1.2. 原理](#112-原理)
+        - [1.1.3. MyCat核心概念](#113-mycat核心概念)
+            - [1.1.3.1. 逻辑库(schema)](#1131-逻辑库schema)
+            - [1.1.3.2. 逻辑表(table)](#1132-逻辑表table)
+                - [1.1.3.2.1. 分片表](#11321-分片表)
+                - [1.1.3.2.2. 非分片表](#11322-非分片表)
+                - [1.1.3.2.3. ER表](#11323-er表)
+                - [1.1.3.2.4. 全局表](#11324-全局表)
+            - [1.1.3.3. 分片节点(dataNode)/数据库分片](#1133-分片节点datanode数据库分片)
+            - [1.1.3.4. 节点主机(dataHost)/服务器](#1134-节点主机datahost服务器)
+            - [1.1.3.5. 分片规则(rule)](#1135-分片规则rule)
+            - [1.1.3.6. 多租户](#1136-多租户)
+    - [1.2. MyCat使用](#12-mycat使用)
+        - [1.2.1. MyCat配置详解](#121-mycat配置详解)
+            - [1.2.1.1. server.xml](#1211-serverxml)
+                - [1.2.1.1.1. System标签](#12111-system标签)
+                - [1.2.1.1.2. 自增主键/全局序列号的生成方式(sequence)](#12112-自增主键全局序列号的生成方式sequence)
+            - [1.2.1.2. schema.xml](#1212-schemaxml)
+                - [1.2.1.2.1. schema标签](#12121-schema标签)
+                - [1.2.1.2.2. table标签](#12122-table标签)
+                - [1.2.1.2.3. childTable标签](#12123-childtable标签)
+                - [1.2.1.2.4. dataNode标签](#12124-datanode标签)
+                - [1.2.1.2.5. 全局表(type属性)](#12125-全局表type属性)
+                - [1.2.1.2.6. 一对多关联/ER关系分片表，设置表间关联关系](#12126-一对多关联er关系分片表设置表间关联关系)
+                - [1.2.1.2.7. 多对多关联](#12127-多对多关联)
+            - [1.2.1.3. rule.xml](#1213-rulexml)
+                - [1.2.1.3.1. tableRule标签](#12131-tablerule标签)
+                - [1.2.1.3.2. function标签](#12132-function标签)
+            - [1.2.1.4. 结合配置中心实现动态刷新](#1214-结合配置中心实现动态刷新)
+        - [1.2.2. 分片具体规则](#122-分片具体规则)
+            - [1.2.2.1. 分片键：主键分片vs非主键分片](#1221-分片键主键分片vs非主键分片)
+            - [1.2.2.2. 分片函数](#1222-分片函数)
 
 <!-- /TOC -->
 
-# 1. MyCat简介  
+# 1. MyCat
+## 1.1. MyCat简介  
 
-## 1.1. MyCat概述  
+### 1.1.1. MyCat概述  
 &emsp; 国外有一个数据库领域的权威人士说了一个结论：**千亿以下的数据规模仍然是数据库领域的专长，而Hadoop等大数据系统，更适合的是千亿以上的规模。所以，Mycat适合1000亿条以下的单表规模，如果数据超过了这个规模，使用Mycat Plus！**  
 &emsp; Mycat是数据库分库分表中间件。Mycat使用最多的两个功能是：读写分离和分库分表功能。  
 
@@ -75,30 +77,30 @@
     支持库内分表(1.6)
     集群基于ZooKeeper管理，在线升级，扩容，智能优化，大数据处理(2.0开发版)。
 
-## 1.2. 原理  
+### 1.1.2. 原理  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-40.png)  
 &emsp; 原理：拦截，分片分析、路由分析、读写分离分析、缓存分析。  
 &emsp; 当Mycat收到一个SQL时，会先解析这个SQL，查找涉及到的表，然后看此表的定义，如果有分片规则，则获取到SQL里分片字段的值，并匹配分片函数，得到该SQL对应的分片列表，然后将SQL发往这些分片去执行，最后收集和处理所有分片返回的结果数据，并输出到客户端。以select * from Orders where prov=?语句为例，查到prov=wuhan，按照分片函数，wuhan返回dn1，于是SQL就发给了MySQL1，去取DB1上的查询结果，并返回给用户。  
 
-## 1.3. MyCat核心概念  
-### 1.3.1. 逻辑库(schema)  
+### 1.1.3. MyCat核心概念  
+#### 1.1.3.1. 逻辑库(schema)  
 &emsp; 逻辑库，与MySQL中的Database(数据库)对应，一个逻辑库中定义了所包括的Table。  
 
-### 1.3.2. 逻辑表(table)  
+#### 1.1.3.2. 逻辑表(table)  
 &emsp; 分布式数据库中，对应用来说，读写数据的表就是逻辑表。逻辑表需要声明其所存储的逻辑数据节点DataNode，这是通过表格的分片规则定义来实现的。  
 &emsp; 表结构还包含全局序列号(分布式数据库自增ID)、全局表(表结构不做数据切分，不分片)、ER表()、多对多关联表。  
 
-#### 1.3.2.1. 分片表  
+##### 1.1.3.2.1. 分片表  
 &emsp; 分片表，指原有的很大数据的表，需要切分到多个数据库的表，每个分片都有一部分数据，所有分片构成了完整的数据。例如：在mycat配置中的t_node就属于分片表，数据按照规则被分到dn1，dn2两个分片节点(dataNode)上。  
 &emsp; <table name="t_node" primaryKey="vid" autoIncrement="true" dataNode="dn1,dn2" rule="rule1" />  
 
-#### 1.3.2.2. 非分片表  
+##### 1.1.3.2.2. 非分片表  
 &emsp; 一个数据库中并不是所有的表都很大，某些表是可以不用进行切分的，非分片是相对分片表来说的，就是那些不需要进行数据切分的表。如下配置中t_node，只存在于分片节点(dataNode)dn1上。  
 &emsp; <table name="t_node" primaryKey="vid" autoIncrement="true" dataNode="dn1" />  
 
-#### 1.3.2.3. ER表  
+##### 1.1.3.2.3. ER表  
 
-#### 1.3.2.4. 全局表  
+##### 1.1.3.2.4. 全局表  
 &emsp; 在schema.xml中增加全局表配置type=“global”。  
 &emsp; 全局表：在mycat上创建全局表就会自动的在所有物理库上自动创建表，全局表在操作的时候会同时操作所有的物理表，所以在mycat上插入一条数据，就会在每个物理表中都相应的插入一条数据。全局表在不同的物理库中对应的物理表都完全一致。  
 
@@ -111,33 +113,33 @@
 &emsp; 全局表与非分片表区别：  
 &emsp; 非分片表在一个节点上；全局表在所有节点上。  
 
-### 1.3.3. 分片节点(dataNode)/数据库分片  
+#### 1.1.3.3. 分片节点(dataNode)/数据库分片  
 &emsp; 数据切分后，一个大表被分到不同的分片数据库上面，每个表分片所在的数据库就是分片节点(dataNode)。  
 
-### 1.3.4. 节点主机(dataHost)/服务器  
+#### 1.1.3.4. 节点主机(dataHost)/服务器  
 &emsp; 数据切分后，每个分片节点(dataNode)不一定都会独占一台机器，同一机器上面可以有多个分片数据库，这样一个或多个分片节点(dataNode)所在的机器就是节点主机(dataHost)，为了规避单节点主机并发数限制，尽量将读写压力高的分片节点(dataNode)均衡的放在不同的节点主机(dataHost)。  
 
-### 1.3.5. 分片规则(rule)  
+#### 1.1.3.5. 分片规则(rule)  
 &emsp; 参考分片规则章节。  
 
-### 1.3.6. 多租户  
+#### 1.1.3.6. 多租户  
 &emsp; 在云计算时代，数据库中间件可以以多租户的形式给一个或多个应用提供服务，每个应用访问的可能是一个独立或者是共享的物理库，常见的如阿里云数据库服务器RDS。  
 
 ----------
-# 2. MyCat使用  
-## 2.1. MyCat配置详解  
+## 1.2. MyCat使用  
+### 1.2.1. MyCat配置详解  
 &emsp; **<font color = "red">server.xml用于配置mycat服务的参数，Mycat的用户名、密码、逻辑数据库名、服务端口、读写权限等。</font>**  
 &emsp; **<font color = "red">schema.xml，配置逻辑库、逻辑表(表所在的数据节点、表的分片规则、主键是否自增等)、ER分片子表、数据节点、底层(具体的数据库实例、读写分离和心跳语句)。</font>**  
 &emsp; **<font color = "red">rule.xml，配置分片的片键、分片规则。mycat提供了十多种分片规则，也可以自定义分片规则。</font>**  
 &emsp; log4j2.xml，mycat的日志信息，开发时建议设置成debug级别。  
 
-### 2.1.1. server.xml  
-#### 2.1.1.1. System标签  
+#### 1.2.1.1. server.xml  
+##### 1.2.1.1.1. System标签  
 &emsp; charset属性：  
 &emsp; sequnceHandlerType属性：sequnceHandlerType属性指定Mycat全局序列的类型：0为本地文件方式；1为数据库方式;2为时间戳序列方式。默认使用本地文件方式，文件方式主要用于测试。  
 &emsp; handleDistributedTransactions，分布式事务开关属性：分布式事务开关，0为不过滤分布式事务，1为过滤分布式事务(如果分布式事务内只涉及全局表，则不过滤)，2为不过滤分布式事务，但是记录分布式事务日志。  
 
-#### 2.1.1.2. 自增主键/全局序列号的生成方式(sequence)  
+##### 1.2.1.1.2. 自增主键/全局序列号的生成方式(sequence)  
 &emsp; 在实现分库分表的情况下，数据库自增主键已无法保证自增主键的全局唯一。为此，MyCat提供了全局sequence，并且提供了包含本地配置和数据库配置等多种实现方式。  
     
     0:本地文件方式(sequence_conf.properties)；
@@ -154,11 +156,11 @@
 insert into tb1(id,name) values(next value for MYCATSEQ_GLOBAL,'micmiu.com');
 ```
 
-### 2.1.2. schema.xml  
+#### 1.2.1.2. schema.xml  
 
-#### 2.1.2.1. schema标签  
+##### 1.2.1.2.1. schema标签  
 
-#### 2.1.2.2. table标签  
+##### 1.2.1.2.2. table标签  
 &emsp; table标签定义了 Mycat中的逻辑表，所有需要拆分的表都需要在table标签中定义。  
 * rule属性：该属性用于指定逻辑表要使用的规则的名字，规则的名字在rule.Xml中定义，必须与 tableRule标签中name属性的值一一对应。  
 * ruleRequired属性：该属性用于指定表是否绑定分片规则，如果配置为true，但没有配置具体的rule，则程序会报错。  
@@ -169,19 +171,19 @@ insert into tb1(id,name) values(next value for MYCATSEQ_GLOBAL,'micmiu.com');
 &emsp; 由于insert操作时没有带入分片键，所以Mycat会先取下这个表对应的全局序列，然后赋值给分片键。  
 &emsp; 如果要使用这个功能，则最好配合数据库模式的全局序列。使用autoIncrement=”true"指定这个表使用自增长主键，这样Mycat才不会抛出“分片键找不到”的异常。使用autoInCrement= "false”来禁用这个功能，autoincrement的值默认为false。  
 
-#### 2.1.2.3. childTable标签  
+##### 1.2.1.2.3. childTable标签  
 &emsp; childTable标签用于定义E-R分片的子表，通过标签上的属性与父表进行关联。  
 
-#### 2.1.2.4. dataNode标签  
+##### 1.2.1.2.4. dataNode标签  
 &emsp; dataNode标签定义了 Mycat中的数据节点，也就是通常所说的数据分片。一个dataNode标签就是一个独立的数据分片。  
 
-#### 2.1.2.5. 全局表(type属性)  
+##### 1.2.1.2.5. 全局表(type属性)  
 
 ```xml
 <table name="tbl_user" primaryKey="id" type="global" dataNode="dataNode1,dataNode2,dataNode3" />
 ```
 
-#### 2.1.2.6. 一对多关联/ER关系分片表，设置表间关联关系  
+##### 1.2.1.2.6. 一对多关联/ER关系分片表，设置表间关联关系  
 &emsp; 基于E-R关系的数据分片策略，子表的记录与所关联的父表记录存放在同一个数据分片上，即子表依赖于父表，通过表分组(Table Group)保证数据Join不会跨库操作。  
 &emsp; 在schema.xml配置子表childTable。  
 
@@ -200,7 +202,7 @@ insert into tb1(id,name) values(next value for MYCATSEQ_GLOBAL,'micmiu.com');
 </table>
 ```
 
-#### 2.1.2.7. 多对多关联  
+##### 1.2.1.2.7. 多对多关联  
 &emsp; 多对多的表格如何处理？  
 &emsp; 多对多的表格通常情况下，有以下几种：  
 
@@ -210,8 +212,8 @@ insert into tb1(id,name) values(next value for MYCATSEQ_GLOBAL,'micmiu.com');
 &emsp; 对于第一种，字典表可以被定义为“全局表”，字典表的记录规模可以在几千到几十万之间，基本是变动比较少的表，由MyCAT自动实时同步到所有分片，这样就可以三个表都做JOIN操作了。  
 &emsp; 对于第二种，需要从业务角度来看，关系表更偏向哪个表，即“A的关系”还是“B的关系”，来决定关系表跟从那个方向存储。目前还暂时无法很好支持这种模式下的3个表之间的关联。未来版本中将考虑将中间表进行双向复制，以实现从A-关系表 以及B-关系表的双向关联查询。  
 
-### 2.1.3. rule.xml  
-#### 2.1.3.1. tableRule标签  
+#### 1.2.1.3. rule.xml  
+##### 1.2.1.3.1. tableRule标签  
 &emsp; 这个标签定义表规则。定义的表规则在sehema.xml：  
 
 ```xml
@@ -227,7 +229,7 @@ insert into tb1(id,name) values(next value for MYCATSEQ_GLOBAL,'micmiu.com');
 &emsp; columns属性指定对应的表中用于分片的列名。  
 &emsp; algorithm属性对应function中指定的算法的名称。  
 
-#### 2.1.3.2. function标签  
+##### 1.2.1.3.2. function标签  
 
 ```xml
 <function name="rang-modM class="org.opencloudb.route.function.PartitionByRangeMod">
@@ -238,13 +240,13 @@ insert into tb1(id,name) values(next value for MYCATSEQ_GLOBAL,'micmiu.com');
 &emsp; class属性对应具体的分片算法，需要指定算法的具体类。  
 &emsp; property属性根据算法的要求指定。  
 
-### 2.1.4. 结合配置中心实现动态刷新  
+#### 1.2.1.4. 结合配置中心实现动态刷新  
 ......
 
-## 2.2. 分片具体规则  
+### 1.2.2. 分片具体规则  
 &emsp; MyCAT通过定义表的分片规则来实现分片。每个逻辑表可以捆绑一个分片规则，每个分片规则指定一个分片字段并绑定一个函数，来实现动态分片算法。   
 
-### 2.2.1. 分片键：主键分片vs非主键分片  
+#### 1.2.2.1. 分片键：主键分片vs非主键分片  
 &emsp; 当没有任何字段可以作为分片字段的时候，主键分片就是唯一选择，其优点是按照主键的查询最快，当采用自动增长的序列号作为主键时，还能比较均匀的将数据分片在不同的节点上。  
 &emsp; 若有某个合适的业务字段比较合适作为分片字段，则建议采用此业务字段分片，选择分片字段的条件如下：  
 
@@ -260,7 +262,7 @@ insert into tb1(id,name) values(next value for MYCATSEQ_GLOBAL,'micmiu.com');
 ```  
 &emsp; 对于非主键分片的table，填写属性primaryKey，此时MyCAT会将你根据主键查询的SQL语句的第一次执行结果进行分析，确定该Table的某个主键在什么分片上，并进行主键到分片ID的缓存。第二次或后续查询mycat会优先从缓存中查询是否有id–>node 即主键到分片的映射，如果有直接查询，通过此种方法提高了非主键分片的查询性能。  
 
-### 2.2.2. 分片函数  
+#### 1.2.2.2. 分片函数  
 &emsp; Mycat内置了十多种分片规则，也支持自定义分片。  
 * 取模mod-long
 * 自然月分片 sharding-by-month

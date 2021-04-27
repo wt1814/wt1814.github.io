@@ -3,7 +3,7 @@
 - [1. 复制的问题和解决方案](#1-复制的问题和解决方案)
     - [1.1. 《mysql深入浅出开发、优化与管理维护》](#11-mysql深入浅出开发优化与管理维护)
         - [1.1.1. 大对象blog,text传输](#111-大对象blogtext传输)
-        - [1.1.2. 主从不一致后锁表](#112-主从不一致后锁表)
+        - [1.1.2. ~~主从不一致后锁表~~](#112-主从不一致后锁表)
         - [1.1.3. 如何查看主从延迟？](#113-如何查看主从延迟)
         - [1.1.4. 跳过错误](#114-跳过错误)
         - [1.1.5. 如何提高复制性能？](#115-如何提高复制性能)
@@ -44,9 +44,7 @@
 		1. 突然产生延迟，然后再跟上。可以通过备库上的慢查询日志来进行优化。在备库上开启 log_slow_slave_statement 选项，可以在慢查询日志中记录复制线程执行的语句。
 		2. 稳定的延迟增大
 	3. 并行复制  
-	
-
-&emsp; <font color = "red">复制问题要分清楚是master的问题，还是slave的问题。master问题找 binlog，slave问题找relaylog。</font>  
+4. <font color = "red">复制问题要分清楚是master的问题，还是slave的问题。master问题找二进制日志binlog，slave问题找中继日志relaylog。</font>  
 
 
 # 1. 复制的问题和解决方案  
@@ -59,13 +57,13 @@ https://www.cnblogs.com/gered/p/11388986.html#_label0_7
 ### 1.1.1. 大对象blog,text传输  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-98.png)  
 
-### 1.1.2. 主从不一致后锁表
-&emsp; flush tables with read lock;   
+### 1.1.2. ~~主从不一致后锁表~~
 
-&emsp; 然后 show master status\G  
-&emsp; 然后 show slave status\G 来查看从库同步状态 或者重新 change master to....  
-&emsp; 然后 select master_pos_wait('mysql-bin.00002','389'); (即刚刚show master status找到的文件及位置)，如果为1 表示超时退出 ，如果为0 则标识主从同步。  
-&emsp; 最后再主库 unlock tables; 解锁  
+
+&emsp; ~~mysql 主从复制不一致，不停库不锁表恢复主从同步~~
+<!-- 
+https://www.bbsmax.com/A/B0zqK1Nr5v/
+-->  
 
 ### 1.1.3. 如何查看主从延迟？  
 .......
