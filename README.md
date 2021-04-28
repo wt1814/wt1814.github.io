@@ -2,7 +2,6 @@
 
 - [wt1814-note](#wt1814-note)
     - [侃侃Java](#侃侃java)
-    - [算法](#算法)
     - [Java](#java)
         - [Java基础](#java基础)
         - [设计模式](#设计模式)
@@ -39,6 +38,7 @@
     - [测试工具](#测试工具)
     - [常用工具](#常用工具)
     - [Error](#error)
+    - [算法](#算法)
 
 <!-- /TOC -->
 
@@ -46,38 +46,6 @@
 
 ## 侃侃Java  
 [学习不要学的片面](/docs/life/oneSided.md)  
-
-
-## 算法  
-[总结](/docs/java/function/summary.md)  
-[算法基本概念](/docs/java/function/notion.md)  
-&emsp; [时间复杂度](/docs/java/function/TimeComplexity.md)  
-[算法方法](/docs/java/function/algorithmicIdea.md)  
-&emsp; [递归](/docs/java/function/recursion.md)  
-&emsp; [动态规划](/docs/java/function/dynamic.md)  
-[基本数据结构](/docs/java/function/structure/structure.md)  
-&emsp; [数组和链表](/docs/java/function/structure/array.md)  
-&emsp; [栈与队列](/docs/java/function/structure/stack.md)  
-&emsp; [二叉树](/docs/java/function/structure/tree.md)  
-&emsp; [二叉排序(查找)树](/docs/java/function/structure/binarySort.md)  
-&emsp; &emsp; [平衡二叉树](/docs/java/function/structure/AVL.md)  
-&emsp; &emsp; [红黑树](/docs/java/function/structure/redBlack.md)  
-&emsp; [B树](/docs/java/function/structure/BTree.md)  
-&emsp; [二叉堆](/docs/java/function/structure/binaryReactor.md)  
-&emsp; [哈希](/docs/java/function/structure/hash.md)   
-[基本算法](/docs/java/function/basicAlgorithm.md)  
-&emsp; [排序算法](/docs/java/function/sort.md)  
-&emsp; &emsp; [比较排序](/docs/java/function/sort/compare.md)  
-&emsp; &emsp; [非比较排序](/docs/java/function/sort/noCompare.md)  
-&emsp; &emsp; [外部排序](/docs/java/function/sort/externalSort.md)  
-&emsp; [查找算法](/docs/java/function/search.md)  
-[其他数据结构](/docs/java/function/otherStructure.md)  
-&emsp; [跳跃表](/docs/java/function/SkipList.md)  
-&emsp; [位图](/docs/java/function/BitMap.md)  
-&emsp; [BloomFilter](/docs/java/function/BloomFilter.md)  
-&emsp; [HyperLogLog](/docs/java/function/HyperLogLog.md)  
-&emsp; [Trie](/docs/java/function/Trie.md)  
-[资源限制](/docs/java/function/bigdata.md)  
 
 ## Java  
 ### Java基础
@@ -673,3 +641,36 @@
 [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 [redis scan命令](/docs/Error/redisScan.md)  
 <!-- [雪花利用ZK生成workId]()   -->
+
+
+
+## 算法  
+[总结](/docs/java/function/summary.md)  
+[算法基本概念](/docs/java/function/notion.md)  
+&emsp; [时间复杂度](/docs/java/function/TimeComplexity.md)  
+[算法方法](/docs/java/function/algorithmicIdea.md)  
+&emsp; [递归](/docs/java/function/recursion.md)  
+&emsp; [动态规划](/docs/java/function/dynamic.md)  
+[基本数据结构](/docs/java/function/structure/structure.md)  
+&emsp; [数组和链表](/docs/java/function/structure/array.md)  
+&emsp; [栈与队列](/docs/java/function/structure/stack.md)  
+&emsp; [二叉树](/docs/java/function/structure/tree.md)  
+&emsp; [二叉排序(查找)树](/docs/java/function/structure/binarySort.md)  
+&emsp; &emsp; [平衡二叉树](/docs/java/function/structure/AVL.md)  
+&emsp; &emsp; [红黑树](/docs/java/function/structure/redBlack.md)  
+&emsp; [B树](/docs/java/function/structure/BTree.md)  
+&emsp; [二叉堆](/docs/java/function/structure/binaryReactor.md)  
+&emsp; [哈希](/docs/java/function/structure/hash.md)   
+[基本算法](/docs/java/function/basicAlgorithm.md)  
+&emsp; [排序算法](/docs/java/function/sort.md)  
+&emsp; &emsp; [比较排序](/docs/java/function/sort/compare.md)  
+&emsp; &emsp; [非比较排序](/docs/java/function/sort/noCompare.md)  
+&emsp; &emsp; [外部排序](/docs/java/function/sort/externalSort.md)  
+&emsp; [查找算法](/docs/java/function/search.md)  
+[其他数据结构](/docs/java/function/otherStructure.md)  
+&emsp; [跳跃表](/docs/java/function/SkipList.md)  
+&emsp; [位图](/docs/java/function/BitMap.md)  
+&emsp; [BloomFilter](/docs/java/function/BloomFilter.md)  
+&emsp; [HyperLogLog](/docs/java/function/HyperLogLog.md)  
+&emsp; [Trie](/docs/java/function/Trie.md)  
+[资源限制](/docs/java/function/bigdata.md)  

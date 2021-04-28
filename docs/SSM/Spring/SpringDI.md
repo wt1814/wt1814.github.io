@@ -16,7 +16,8 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">Spring DI依赖注入阶段，doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean() 初始化。</font>**  
+1. ~~SpringBean默认单例，非懒加载，即容器启动时就加载。~~  
+2. doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean() 初始化。  
 
 # 1. SpringDI解析
 ## 1.1. ~~依赖注入发生的时间(懒加载相关)~~  
@@ -363,11 +364,11 @@ protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable O
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/Spring/SpringDI-5.png)  
 &emsp; **主要流程：**  
 1. 先检查 instanceWrapper变量是不是null，这里一般是null，除非当前正在创建的Bean在 factoryBeanInstanceCache中存在这个是保存还没创建完成的FactoryBean的集合。  
-2. **<font color = "clime">调用createBeanInstance方法实例化Bean</font>**  
+2. **<font color = "clime">调用createBeanInstance方法实例化Bean。</font>**  
 3. 如果当前 RootBeanDefinition对象还没有调用过实现了的 MergedBeanDefinitionPostProcessor接口的方法，则会进行调用 。  
-4. 当满足这三点：单例Bean、 **<font color = "lime">尝试解析bean之间的循环引用</font>** 、bean目前正在创建中，则会进一步检查是否实现了 SmartInstantiationAwareBeanPostProcessor接口。如果实现了则调用是实现的 getEarlyBeanReference方法  
-5. **<font color = "clime">调用 populateBean方法进行属性填充</font>**  
-6. **<font color = "clime">调用 initializeBean方法对Bean进行初始化</font>**  
+4. 当满足这三点：单例Bean、 **<font color = "blue">尝试解析bean之间的循环引用</font>** 、bean目前正在创建中，则会进一步检查是否实现了 SmartInstantiationAwareBeanPostProcessor接口。如果实现了则调用是实现的 getEarlyBeanReference方法。  
+5. **<font color = "clime">调用 populateBean方法进行属性填充。</font>**  
+6. **<font color = "clime">调用 initializeBean方法对Bean进行初始化。</font>**  
 
 &emsp; **<font color = "clime">Spring DI依赖注入阶段，doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean() 初始化。</font>**  
 

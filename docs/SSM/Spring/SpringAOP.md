@@ -61,8 +61,8 @@ https://mp.weixin.qq.com/s/3Elf_HQXXl1tObq3HRlrfA
 
 #### 1.1.2.2. 分类  
 1. 通过方法签名定义切点：  
-&emsp; execution(public * \*(..)),匹配所有目标类的public方法，但不匹配SmartSeller和protected void showGoods()方法。第一个\*代表返回类型，第二个\*代表方法名，而..代表任意入参的方法；    
-&emsp; execution(* \*To(..)),匹配目标类所有以To为后缀的方法。它匹配NaiveWaiter和NaughtyWaiter的greetTo()和serveTo()方法。第一个\*代表返回类型，而*To代表任意以To为后缀的方法；  
+&emsp; execution(public * \*(..))，匹配所有目标类的public方法，但不匹配SmartSeller和protected void showGoods()方法。第一个\*代表返回类型，第二个\*代表方法名，而..代表任意入参的方法；    
+&emsp; execution(* \*To(..))，匹配目标类所有以To为后缀的方法。它匹配NaiveWaiter和NaughtyWaiter的greetTo()和serveTo()方法。第一个\*代表返回类型，而*To代表任意以To为后缀的方法；  
 2. 通过类定义切点：  
 &emsp; execution(* com.baobaotao.Waiter.\*(..))，匹配Waiter接口的所有方法，它匹配NaiveWaiter和NaughtyWaiter类的greetTo()和serveTo()方法。第一个\*代表返回任意类型，com.baobaotao.Waiter.\*代表Waiter接口中的所有方法；  
 &emsp; execution(\* com.baobaotao.Waiter+.*(..))，匹配Waiter接口及其所有实现类的方法，它不但匹配NaiveWaiter和NaughtyWaiter类的greetTo()和serveTo()这两个Waiter接口定义的方法，同时还匹配NaiveWaiter#smile()和NaughtyWaiter#joke()这两个不在Waiter接口中定义的方法。  
@@ -111,7 +111,7 @@ public void save(String name,String password){
 ```
 
 #### 1.1.3.2. 不定形参类型  
-&emsp; Spring AOP提供使用org.aspectj.lang.JoinPoint类型获取连接点数据，任何通知方法的第一个参数都可以是JoinPoint(环绕通知是ProceedingJoinPoint，JoinPoint子类)。  
+&emsp; Spring AOP提供使用org.aspectj.lang.JoinPoint类型获取连接点数据，任何通知方法的第一个参数都可以是JoinPoint（环绕通知是ProceedingJoinPoint，JoinPoint子类）。  
 1. JoinPoint：提供访问当前被通知方法的目标对象、代理对象、方法参数等数据。  
 2. ProceedingJoinPoint：只用于环绕通知，使用proceed()方法来执行目标方法。  
 

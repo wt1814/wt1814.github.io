@@ -52,7 +52,7 @@
 
 &emsp; MyBatis按照功能职责的不同，所有的package可以分成不同的工作层次。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-14.png)  
-&emsp; Mybatis的功能架构分为三层：  
+&emsp; **<font color = "red">Mybatis的功能架构分为三层：</font>**  
 
 * API接口层：提供给外部使用的接口API，开发人员通过这些本地API来操纵数据库。接口层一接收到调用请求就会调用核心处理层来完成具体的数据处理。  
 * 核心处理层：负责具体的SQL查找、SQL解析、SQL执行和执行结果映射处理等。它主要的目的是根据调用的请求完成一次数据库操作。  
@@ -74,9 +74,9 @@ sqlSession = factory.openSession();
 &emsp; 核心处理层功能如下：  
 
 * 配置解析  
-&emsp; 在 Mybatis 初始化过程中，会加载 mybatis-config.xml 配置文件、映射配置文件以及 Mapper 接口中的注解信息，解析后的配置信息会形成相应的对象并保存到 Configration 对象中。之后，根据该对象创建SqlSessionFactory对象。待 Mybatis 初始化完成后，可以通过 SqlSessionFactory 创建 SqlSession 对象并开始数据库操作。  
+&emsp; 在 Mybatis 初始化过程中，会加载 mybatis-config.xml 配置文件、映射配置文件以及 Mapper 接口中的注解信息，解析后的配置信息会形成相应的对象并保存到Configration对象中。之后，根据该对象创建SqlSessionFactory对象。待 Mybatis 初始化完成后，可以通过 SqlSessionFactory 创建 SqlSession 对象并开始数据库操作。  
 * SQL 解析与 scripting 模块  
-&emsp; Mybatis 实现的动态 SQL 语句，几乎可以编写出所有满足需要的 SQL。  
+&emsp; Mybatis 实现的动态SQL语句，几乎可以编写出所有满足需要的 SQL。  
 &emsp; Mybatis 中 scripting 模块会根据用户传入的参数，解析映射文件中定义的动态 SQL 节点，形成数据库能执行的SQL 语句。  
 * SQL 执行  
 &emsp; 执行 SQL 语句；处理结果集，并映射成 Java 对象。  

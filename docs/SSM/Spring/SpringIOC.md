@@ -20,10 +20,12 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. BeanFactory与ApplicationContext
 2. BeanDefinition： **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
-3. Spring容器刷新：刷新前的准备 ---> 创建容器 ---> 预处理 ---> 后置处理器 ---> 注册事件 ---> 特殊bean ---> 监听器 ---> 非懒加载Bean ---> 发布事件 
+3. Spring容器刷新：  
+&emsp; **<font color = "blue">高度概括：容器本身、对外扩展。</font>**
+&emsp; 刷新前的准备 ---> 创建容器 ---> 预处理 ---> 后置处理器 ---> 注册事件 ---> 特殊bean ---> 监听器 ---> 非懒加载Bean ---> 发布事件   
     **<font color = "red">Spring bean容器刷新的核心 12+1个步骤完成IoC容器的创建及初始化工作：</font>**  
     1. 刷新前的准备工作。  
-    2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>** 个人理解：此处仅仅相当于创建Spring Bean的类，实例化是在Spring DI里。   
+    2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>** <font color = "blue">个人理解：此处仅仅相当于创建Spring Bean的类，实例化是在Spring DI里。</font>   
         &emsp; **<font color = "clime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
         ```java
         private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
@@ -32,11 +34,11 @@
     4. 允许在上下文子类中对bean工厂进行后处理。 本方法没有具体实现，是一个扩展点，开发人员可以根据自己的情况做具体的实现。  
     5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理。</font>**  
     6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
-    7. 初始化一些消息源(比如处理国际化的i18n等消息源)。  
+    7. 初始化一些消息源（比如处理国际化的i18n等消息源）。  
     8. **<font color = "red">初始化应用事件多播器。</font>**  
     9. **<font color = "red">具体的子类初始化一些特殊的bean在初始化。典型的模板方法(钩子方法)。</font>**  
     10. **<font color = "red">注册一些监听器。</font>**  
-    11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font><font color = "clime">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font>**  
+    11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font><font color = "blue">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font>**  
     12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
     13. 重置公共的一些缓存数据。  
 
@@ -69,7 +71,7 @@ https://juejin.cn/post/6844903967143493640
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-3.png)  
 -->
 &emsp; Spring Bean的创建是典型的工厂模式，这一系列的Bean工厂，也即IOC容器为开发者管理对象间的依赖关系提供了很多便利和基础服务。  
-&emsp; 其中BeanFactory作为最顶层的一个接口类，它定义了IOC容器的基本功能规范。BeanFactory有三个重要的子类：ListableBeanFactory、HierarchicalBeanFactory和AutowireCapableBeanFactory。它们最终的默认实现类是<font color = "red">DefaultListableBeanFactory</font>，它实现了所有的接口。  
+&emsp; 其中BeanFactory作为最顶层的一个接口类，定义了IOC容器的基本功能规范。BeanFactory有三个重要的子类：ListableBeanFactory、HierarchicalBeanFactory和AutowireCapableBeanFactory。它们最终的默认实现类是<font color = "red">DefaultListableBeanFactory</font>，它实现了所有的接口。  
 &emsp; 为什么定义这么多层次的接口？查阅这些接口的源码和说明发现，每个接口都有使用的场合，主要是为了区分在Spring内部在操作过程中对象的传递和转化过程时，对对象的数据访问所做的限制。例如ListableBeanFactory接口表示这些Bean是可列表化的，而HierarchicalBeanFactory表示的是这些Bean是有继承关系的，也就是每个Bean有可能有父Bean。AutowireCapableBeanFactory 接口定义 Bean 的自动装配规则。这三个接口共同定义了Bean的集合、Bean之间的关系、以及Bean行为。  
 &emsp; 最基本的IOC容器接口BeanFactory，来看一下它的源码：  
 
@@ -136,7 +138,7 @@ public interface BeanFactory {
 ### 1.1.3. BeanDefinition  
 &emsp; 在这些Spring提供的基本IoC容器的接口定义和实现的基础上， **<font color = "clime">Spring通过定义BeanDefinition来管理基于Spring的应用中的各种对象以及它们之间的相互依赖关系。BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-4.png)  
-&emsp; BeanDefinition抽象了Bean的定义，是让容器起作用的主要数据类型。对IoC容器来说，BeanDefinition就是对依赖反转模式中管理的对象依赖关系的数据抽象，也是容器实现依赖反转功能的核心数据结构，依赖反转功能都是围绕对这个BeanDefinition的处理来完成的。  
+&emsp; BeanDefinition抽象了Bean的定义，是让容器起作用的主要数据类型。对IoC容器来说，BeanDefinition就是对依赖反转模式中管理的对象依赖关系的数据抽象，也是容器实现依赖反转功能的核心数据结构，依赖反转功能都是围绕对BeanDefinition的处理来完成的。  
 
 ### 1.1.4. BeanDefinitionReader  
 &emsp; Bean的解析过程非常复杂，功能被分的很细，因为这里需要被扩展的地方很多，必须保证有足够的灵活性，以应对可能的变化。Bean的解析主要就是对Spring配置文件的解析。这个解析过程主要通过BeanDefintionReader来完成。  
@@ -301,8 +303,8 @@ public void refresh() throws BeansException, IllegalStateException {
         2. BeanDifinition的载入，就是把用户在xml中定义好的bean解析成为IoC的内部数据结构，也就是BeanDifinition。  
         3. BeanDifinition的注册，向IoC容器注册这些BeanDifinition，把BeanDifinition注册到一个Map中保存。
     
-&emsp; 步骤5，BeanFactoryPostProcessor，对BeanFactory做一些后置操作  
-&emsp; 步骤6，BeanPostProcessor，对bean实例在初始化前后做一些增强工作  
+&emsp; 步骤5，BeanFactoryPostProcessor，对BeanFactory做一些后置操作。  
+&emsp; 步骤6，BeanPostProcessor，对bean实例在初始化前后做一些增强工作。  
 &emsp; 步骤10，注册一些监听器。  
 &emsp; 步骤11，对剩余所有的非懒加载的BeanDefinition(bean 定义)执行bean实例化操作。<font color = "clime">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font>    
 

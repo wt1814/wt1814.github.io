@@ -20,19 +20,19 @@
 &emsp; **<font color = "red">总结：</font>**  
 
 1. **<font color = "blue">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
-2. 代理类的生成流程：1). 获取当前的Spring Bean适配的advisors；2). 创建代理类。   
+2. **<font color = "clime">代理类的生成流程：1). 获取当前的Spring Bean适配的advisors；2). 创建代理类。</font>**   
     1. Spring AOP获取对应Bean适配的Advisors链的核心逻辑：
         1. 获取当前IoC容器中所有的Aspect类
-        2. 给每个 Aspect 类的 advice 方法创建一个Spring Advisor，这一步又能细分为 
+        2. 给每个 Aspect 类的 advice 方法创建一个Spring Advisor，这一步又能细分为： 
             1. 遍历所有 advice 方法
             2. 解析方法的注解和pointcut
             3. 实例化 Advisor 对象
         3. 获取到候选的 Advisors，并且缓存起来，方便下一次直接获取
         4. 从候选的Advisors中筛选出与目标类适配的Advisor 
-            1. 获取到Advisor的切入点 pointcut
-            2. 获取到当前 target 类 所有的 public 方法
-            3. 遍历方法，通过切入点的 methodMatcher 匹配当前方法，只有有一个匹配成功就相当于当前的Advisor 适配
-        5. 对筛选之后的 Advisor 链进行排序  
+            1. 获取到Advisor的切入点pointcut
+            2. 获取到当前target类所有的public方法
+            3. 遍历方法，通过切入点的methodMatcher匹配当前方法，只要有一个匹配成功就相当于当前的Advisor适配
+        5. 对筛选之后的Advisor链进行排序  
     2. 创建代理类
         1. 创建AopProxy。根据ProxyConfig 获取到了对应的AopProxy的实现类，分别是JdkDynamicAopProxy和ObjenesisCglibAopProxy。 
         2. 获取代理类
@@ -232,7 +232,7 @@ protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) 
 2. 创建代理类  
 
 ### 1.3.1. 获取对应Bean适配的Advisors链  
-&emsp; 获取对应Bean适配的Advisors链，分为两步。  
+&emsp; 获取对应Bean适配的Advisors链，分为两步：  
 1. 获取容器所有的advisors作为候选，即解析Spring容器中所有Aspect类中的advice方法，包装成advisor；  
 2. 从候选的Advisors中筛选出适配当前Bean的Advisors链； 
 

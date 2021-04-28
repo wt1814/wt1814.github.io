@@ -17,9 +17,8 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-32.png)  
 
 &emsp; **<font color = "red">总结：</font>**   
-1. **<font color = "clime">其实mybatis扩展性很强，基于插件机制，基本上可以控制SQL执行的各个阶段，如执行阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。</font>**  
-2. **<font color="clime">Mybaits插件的实现主要用了拦截器、责任链和动态代理。</font>** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
-3. 有哪些对象允许被代理？有哪些方法可以被拦截？  
+1. **<font color="clime">Mybaits插件的实现主要用了拦截器、责任链和动态代理。</font>** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
+2. **<font color = "clime">mybatis扩展性很强，基于插件机制，基本上可以控制SQL执行的各个阶段，如执行阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。</font>**   
     * 执行器Executor（update、query、commit、rollback等方法）；  
     * 参数处理器ParameterHandler（getParameterObject、setParameters方法）；  
     * 结果集处理器ResultSetHandler（handleResultSets、handleOutputParameters等方法）；  
@@ -47,7 +46,7 @@ http://www.mybatis.cn/726.html
 &emsp; **<font color = "clime">其实mybatis扩展性很强，基于插件机制，基本上可以控制SQL执行的各个阶段，如执行阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。</font>**  
 
 ## 1.2. Mybatis插件编码示例  
-&emsp; 1. 写一个打印SQL执行时间的插件  
+1. 写一个打印SQL执行时间的插件  
 
 ```java
 @Intercepts({@Signature(type = StatementHandler.class, method = "query", args = { Statement.class, ResultHandler.class }),
@@ -83,7 +82,7 @@ public class SqlCostTimeInterceptor implements Interceptor {
 ```
 &emsp; 插件必须实现org.apache.ibatis.plugin.Interceptor接口。Mybatis规定插件必须编写@Intercepts注解，是必须，而不是可选。  
 
-&emsp; 2. 在mybatis配置文件中配置插件：  
+2. 在mybatis配置文件中配置插件：  
 &emsp; Mybatis的插件配置在configuration内部，初始化时，会读取这些插件，保存于Configuration对象的InterceptorChain中。  
 
 ```xml

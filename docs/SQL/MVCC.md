@@ -28,8 +28,8 @@
 3. Read View判断：  
 &emsp; 如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。  
 4. 在读取已提交、可重复读两种隔离级别下会使用MVCC。  
-    * 读取已提交READ COMMITTED 是在每次执行 select 操作时都会生成一次 Read View。
-    * 可重复读REPEATABLE READ 只有在第一次执行 select 操作时才会生成 Read View，后续的 select 操作都将使用第一次生成的 Read View。
+    * 读取已提交READ COMMITTED是在每次执行select操作时都会生成一次Read View。
+    * 可重复读REPEATABLE READ 只有在第一次执行select操作时才会生成Read View，后续的select操作都将使用第一次生成的Read View。
 
 
 # 1. MVCC
@@ -84,7 +84,7 @@ MCVV这种读取历史数据的方式称为快照读(snapshot read)，而读取�
 -->
 
 ## 1.2. ~~MVCC定义~~
-&emsp; Multi-Version Concurrency Control，多版本并发控制。<font color = "red">MVCC 是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问。MVCC是无锁操作的一种实现方式。</font>  
+&emsp; Multi-Version Concurrency Control，多版本并发控制。<font color = "red">MVCC是一种并发控制的方法，一般在数据库管理系统中，实现对数据库的并发访问。MVCC是无锁操作的一种实现方式。</font>  
 
 &emsp; 数据库并发场景有三种，分别为：
 
@@ -195,10 +195,10 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
 ---
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-146.png)  
 &emsp; 执行过程如下：  
-1. 如果被访问版本的trx_id=creator_id，意味着当前事务在访问它自己修改过的记录，所以该版本可以被当前事务访问  
-2. 如果被访问版本的trx_id\<min_trx_id，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问
-3. 被访问版本的trx_id>=max_trx_id，表明生成该版本的事务在当前事务生成ReadView后才开启，该版本不可以被当前事务访问  
-4. 被访问版本的trx_id是否在m_ids列表中
+1. 如果被访问版本的trx_id=creator_id，意味着当前事务在访问它自己修改过的记录，所以该版本可以被当前事务访问。  
+2. 如果被访问版本的trx_id\<min_trx_id，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。
+3. 被访问版本的trx_id>=max_trx_id，表明生成该版本的事务在当前事务生成ReadView后才开启，该版本不可以被当前事务访问。  
+4. 被访问版本的trx_id是否在m_ids列表中。
     1. 是，创建ReadView时，该版本还是活跃的，该版本不可以被访问。顺着版本链找下一个版本的数据，继续执行上面的步骤判断可见性，如果最后一个版本还不可见，意味着记录对当前事务完全不可见。  
     2. 否，创建ReadView时，生成该版本的事务已经被提交，该版本可以被访问。  
 

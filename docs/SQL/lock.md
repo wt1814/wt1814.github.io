@@ -23,7 +23,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. InnoDB共有七种类型的锁：共享/排它锁、意向锁、记录锁(Record lock)、间隙锁(Gap lock)、临键锁(Next-key lock)、插入意向锁、自增锁。  
-2. **<font color = "red">InnoDB存储引擎的锁的算法有三种</font>**  
+2. **<font color = "red">InnoDB存储引擎的锁的算法有三种：</font>**  
     1. Record lock：单个行记录上的锁。  
     2. Gap lock：间隙锁，锁定一个范围，不包括记录本身。  
     &emsp; **<font color = "red">当使用范围条件(> 、< 、between......)检索数据，InnoDB会给符合条件的已有数据记录的索引项加锁。对于键值在条件范围内但并不存在的记录，叫做“间隙(GAP)”，InnoDB也会对这个“间隙”加锁，这就是间隙锁。</font>**  
