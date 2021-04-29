@@ -76,6 +76,7 @@
     * [线程Thread](/docs/java/concurrent/thread.md)  
         * [线程基本知识](/docs/java/concurrent/threadConcepts.md)  
         * [线程基本操作](/docs/java/concurrent/threadOperation.md)  
+        * [CompletionService](/docs/java/concurrent/CompletionService.md)  
         * [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
         * [Thread类详解](/docs/java/concurrent/threadClass.md)  
     * [并发编程](/docs/java/concurrent/MultiThread.md)  

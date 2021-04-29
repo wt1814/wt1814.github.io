@@ -11,7 +11,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "red">rehash：</font>**  
-&emsp; dictEntry有有ht[0]和ht[1]两个对象。  
+&emsp; dictEntry有ht[0]和ht[1]两个对象。  
 &emsp; 扩展操作：ht[1]扩展的大小是比当前 ht[0].used 值的二倍大的第一个2的整数幂；收缩操作：ht[0].used 的第一个大于等于的 2 的整数幂。  
 &emsp; **<font color = "clime">当ht[0]上的所有的键值对都rehash到ht[1]中，会重新计算所有的数组下标值，当数据迁移完后，ht[0]就会被释放，然后将ht[1]改为ht[0]，并新创建ht[1]，为下一次的扩展和收缩做准备。</font>**  
 2. **<font color = "red">渐进式rehash：</font>**  

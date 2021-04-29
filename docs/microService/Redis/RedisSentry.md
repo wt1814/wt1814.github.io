@@ -30,17 +30,17 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 3. **<font color = "clime">哨兵原理：</font>**  
     * **<font color = "red">心跳检查：Sentinel通过三个定时任务来完成对各个节点的发现和监控，这是保证Redis高可用的重要机制。</font>**  
         * 每隔10秒，每个Sentinel节点会向主节点和从节点发送info命令获取最新的拓扑结构。  
-        * 每隔2秒，每个Sentinel节点会向Redis数据节点的__sentinel__：hello 频道上发送该Sentinel节点对于主节点的判断以及当前Sentinel节点的信息，同时每个Sentinel节点也会订阅该频道，来了解其他 Sentinel节点以及它们对主节点的判断。  
-        * 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令 **<font color = "clime">做一次心跳检测。</font>**  
-    * **<font color = "red">主观下线和客观下线：首先单个Sentinel节点认为数据节点主观下线，询问其他Sentinel节点， Sentinel多数节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。</font>**
-    * **<font color = "red">故障转移/主节点选举。</font>**    
+        * 每隔2秒，每个Sentinel节点会向Redis数据节点的__sentinel__：hello频道上发送该Sentinel节点对于主节点的判断以及当前Sentinel节点的信息，同时每个Sentinel节点也会订阅该频道，来了解其他Sentinel节点以及它们对主节点的判断。  
+        * 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点发送一条ping命令 **<font color = "clime">做一次心跳检测。</font>**  
+    * **<font color = "red">主观下线和客观下线：首先单个Sentinel节点认为数据节点主观下线，询问其他Sentinel节点，Sentinel多数节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。</font>**
+    * **<font color = "red">故障转移/主节点选举：Sentinel节点的领导者根据策略在从节点中选择主节点。</font>**    
     * **<font color = "red">Sentinel选举：Sentinel集群是集中式架构，基于raft算法。</font>**  
 
 # 1. 哨兵模式  
 &emsp; **<font color = "red">参考《Redis开发与运维》</font>**
 
-&emsp; 主从模式弊端：当Master宕机后，Redis集群将不能对外提供写入操作，需要手动将一个从节点晋升为主节点，同时需要修改应用方的主节点地址， 还需要命令其他从节点去复制新的主节点， 整个过程都需要人工干预。在 Redis 2.8 提供比较完善的解决方案：Redis Sentinel。  
-&emsp; Redis Sentinel 是一个能够自动完成故障发现和故障转移并通知应用方，从而实现真正的高可用的分布式架构。下面是Redis官方文档对于哨兵功能的描述：  
+&emsp; 主从模式弊端：当Master宕机后，Redis集群将不能对外提供写入操作，需要手动将一个从节点晋升为主节点，同时需要修改应用方的主节点地址，还需要命令其他从节点去复制新的主节点，整个过程都需要人工干预。在Redis 2.8提供比较完善的解决方案：Redis Sentinel。  
+&emsp; Redis Sentinel是一个能够自动完成故障发现和故障转移并通知应用方，从而实现真正的高可用的分布式架构。下面是Redis官方文档对于哨兵功能的描述：  
 <!-- 哨兵，英文名 Sentinel，是一个分布式系统，用于对主从结构中的每一台服务器进行监控，当主节点出现故障后通过投票机制来挑选新的主节点，并且将所有的从节点连接到新的主节点上。
 哨兵是Redis高可用的解决方案，它是一个管理多个Redis实例的服务工具，可以实现对Redis实例的监控、通知、自动故障转移。
 -->
@@ -97,7 +97,7 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 #### 1.2.1.3. 定时任务三  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-109.png)  
 <center>Sentinel节点向其余节点发送ping命令</center>  
-&emsp; 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令 **<font color = "clime">做一次心跳检测</font>** ，来确认这些节点当前是否可达。如上图所示。通过上面的定时任务，Sentinel节点对主节点、从节点、其余 Sentinel节点都建立起连接，实现了对每个节点的监控，这个定时任务是节 点失败判定的重要依据。  
+&emsp; 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令 **<font color = "clime">做一次心跳检测</font>** ，来确认这些节点当前是否可达。如上图所示。通过上面的定时任务，Sentinel节点对主节点、从节点、其余 Sentinel节点都建立起连接，实现了对每个节点的监控，这个定时任务是节点失败判定的重要依据。  
 
 ### 1.2.2. 主观下线、客观下线  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-88.png)  
@@ -115,8 +115,8 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
     * 选择优先级最高级别的节点，如果不存在则继续  
     * 选择复制偏移量最大的节点(数据最完整)，存在则返回，不存在则继续  
     * 选择 runid 最小的节点  
-2. <font color = "red">在新的主节点上执行slaveofnoone，让其变成主节点</font>  
-3. <font color = "red">向剩余的从节点发送命令，让它们成为新主节点的从节点</font>  
+2. <font color = "red">在新的主节点上执行slaveofnoone，让其变成主节点。</font>  
+3. <font color = "red">向剩余的从节点发送命令，让它们成为新主节点的从节点。</font>  
 
 <!-- 
  3.4. Sentinel(哨兵)进程的工作方式：  

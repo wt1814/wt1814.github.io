@@ -27,7 +27,7 @@
 &emsp; **<font color = "clime">如果是对分区数不多的Kafka集群而言，比较推荐使用第一种方法，即在多个producer用户线程中共享一个KafkaProducer实例。若是对那些拥有超多分区的集群而言，釆用第二种方法具有较高的可控性，方便producer的后续管理。</font>**   
 
 # 1. kafka生产者
-&emsp; **<font color = "clime">参考《kafka实战》</font>**  
+&emsp; **<font color = "red">参考《kafka实战》</font>**  
 
 ## 1.1. 构造Producer
 ### 1.1.1. Producer程序实例
@@ -63,9 +63,9 @@ public class KafkaProducerTest {
 ```
 
 &emsp; 构造一个producer实例大致需要以下5个步骤：   
-1. 构造一个 java.utiLProperties 对象，然后至少指定 bootstrap.servers、key.serializer 和 value.serializer这3个属性，它们没有默认值。  
+1. 构造一个java.utiLProperties对象，然后至少指定bootstrap.servers、key.serializer和value.serializer这3个属性，它们没有默认值。  
     * bootstrap.servers，指定broker的地址清单。
-    * key.serializer（key 序列化器），必须是一个实现org.apache.kafka.common.serialization.Serializer接口的类，将key序列化成字节数组。注意：key.serializer必须被设置，即使消息中没有指定key。  
+    * key.serializer（key序列化器），必须是一个实现org.apache.kafka.common.serialization.Serializer接口的类，将key序列化成字节数组。注意：key.serializer必须被设置，即使消息中没有指定key。  
     * value.serializer（value 序列化器），将value序列化成字节数组。
 2. 使用上一步中创建的Properties实例构造KafkaProducer对象。
 3. 构造待发送的消息对象ProducerRecord，指定消息要被发送到的topic、分区以及对应的key和value。注意，分区和key信息可以不用指定，由Kafka自行确定目标分区。
@@ -195,6 +195,6 @@ props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
 |说 明|优 势|劣 势|
 |---|---|---|
 |单 KafkaProducer 实例|所有线程共享一个KafkaProducer 实例|实现简单，性能好|①所有线程共享一个内存缓冲区，可能需要较多内存；</br>②一旦producer某个线程崩溃导致KafkaProducer实例被“破坏”，则所有用户线程都无法工作|
-|多 KafkaProducer 实例|	每个线程维护自己专属的 KafkaProducer 实例|①每个用户线程拥有专属的 KafkaProducer 实例、缓冲 区空间及一组对应的配置参数，可以进行细粒度的调优；</br>②单个 KafkaProducer崩溃不会影响其他producer线程工作 |需要较大的内存分配开销|
+|多 KafkaProducer 实例|	每个线程维护自己专属的 KafkaProducer 实例|①每个用户线程拥有专属的KafkaProducer实例、缓冲 区空间及一组对应的配置参数，可以进行细粒度的调优；</br>②单个KafkaProducer崩溃不会影响其他producer线程工作 |需要较大的内存分配开销|
 
 &emsp; **<font color = "clime">如果是对分区数不多的Kafka集群而言，比较推荐使用第一种方法，即在多个producer用户线程中共享一个KafkaProducer实例。若是对那些拥有超多分区的集群而言，釆用第二种方法具有较高的可控性，方便producer的后续管理。</font>**    
