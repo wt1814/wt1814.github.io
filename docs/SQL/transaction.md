@@ -24,13 +24,13 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. 事务的四大特性(ACID)：原子性(Atomicity)、一致性(Consistency)、隔离性(Isolation)、持久性(Durability)。  
 2. 并发事务处理带来的问题：脏读、丢失修改、不可重复读、幻读。  
-&emsp; SQL标准定义了四个隔离级别：读取未提交、读取已提交、可重复读(可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读)、可串行化。  
+&emsp; SQL标准定义了四个隔离级别：读取未提交、读取已提交、可重复读（可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读）、可串行化。  
 3. 在MySQL中，默认的隔离级别是REPEATABLE-READ(可重复读)，阻止脏读和不可重复读，并且解决了幻读问题。  
 &emsp; 隔离性(事务的隔离级别)的实现，利用的是锁和MVCC机制。 
     * **<font color = "blue">快照读：生成一个事务快照(ReadView)，之后都从这个快照获取数据。</font>** 普通select语句就是快照读。  
     &emsp; <font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
-    * **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的 update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
-    &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。  
+    * **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
+    &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用Gap Lock或Next-Key Lock(Gap Lock + Record Lock)来解决。  
 
 
 # 1. MySql的事务  
@@ -143,11 +143,11 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 &emsp; 隔离性(事务的隔离级别)的实现，利用的是锁和MVCC机制。  
 
 &emsp; **<font color = "clime">RR可重复读是怎么解决幻读的？</font>**  
-&emsp; 幻读：在一个事务中使用相同的 SQL 两次读取，第二次读取到了其他事务新插入的行，则称为发生了幻读。  
+&emsp; 幻读：在一个事务中使用相同的SQL两次读取，第二次读取到了其他事务新插入的行，则称为发生了幻读。  
 &emsp; 例如：  
-1. 事务1第一次查询：select * from user where id < 10 时查到了 id = 1 的数据；  
+1. 事务1第一次查询：`select * from user where id < 10`时查到了id = 1的数据；  
 2. 事务2插入了 id = 2 的数据；  
-3. 事务1使用同样的语句第二次查询时，查到了 id = 1、id = 2 的数据，出现了幻读。  
+3. 事务1使用同样的语句第二次查询时，查到了id = 1、id = 2的数据，出现了幻读。  
 
 &emsp; 谈到幻读，首先要引入“当前读”和“快照读”的概念：  
 * **<font color = "blue">快照读：生成一个事务快照(ReadView)，之后都从这个快照获取数据。</font>** 普通select语句就是快照读。  
@@ -155,7 +155,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 
 &emsp; <font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
 &emsp; <font color = "clime">而对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。</font>  
-&emsp; 其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update，当使用了Gap Lock时，Gap锁会锁住id < 10 的整个范围，因此其他事务无法插入id < 10 的数据，从而防止了幻读。  
+&emsp; 其实原理也很简单，用上面的例子稍微修改下以触发当前读：`select * from user where id < 10 for update`，当使用了Gap Lock时，Gap锁会锁住id < 10 的整个范围，因此其他事务无法插入id < 10 的数据，从而防止了幻读。  
 
 <!-- 
 &emsp; 可重复读是怎么实现的？  

@@ -14,6 +14,8 @@ https://mp.weixin.qq.com/s/hGtkjhG1Wz9BwrLKU4ph-w
 
 mybatis日志功能是如何设计的？ 
 https://mp.weixin.qq.com/s/JkdszV7Oy9E9cITNebY2NA
+最牛逼的 Java 日志框架，性能无敌，横扫所有对手。。 
+https://mp.weixin.qq.com/s/kWBY1Qweq4bVBEpqYcFuVg
 -->  
 &emsp; 使用[]进行参数变量隔离  
 &emsp; 如有参数变量，应该写成如下写法:  

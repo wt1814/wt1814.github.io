@@ -2,6 +2,13 @@
 <!-- 
 一个快速排序这么多细节？ 
 https://mp.weixin.qq.com/s/-jhXzU3RzMWMWtmkFxknEQ
+
+西法的刷题秘籍 2.0
+https://mp.weixin.qq.com/s/oL8x6cxL4WGicnhi1hZkVQ
+我推荐大家直接使用在线版 + latex Chrome 插件在线观看，不仅阅读体验好，而且可以享受自动更新的服务。在线地址：https://leetcode-solution-leetcode-pp.gitbook.io/leetcode-solution/
+
+latex 插件我用的是 tex-all-the-things。地址：https://chrome.google.com/webstore/detail/tex-all-the-things/cbimabofgmfdkicghcadidpemeenbffn
+
 -->
 &emsp; 数据结构是门特大的学问  
 

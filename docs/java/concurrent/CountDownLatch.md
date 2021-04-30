@@ -19,6 +19,8 @@
 4. <font color = "clime">CountDownLatch是由AQS实现的，创建CountDownLatch时设置计数器count其实就是设置AQS.state=count，也就是重入次数。await()方法调用获取锁的方法，由于AQS.state=count表示锁被占用且重入次数为count，所以获取不到锁线程被阻塞并进入AQS队列。countDown()方法调用释放锁的方法，每释放一次AQS.state减1，当AQS.state变为0时表示处于无锁状态了，就依次唤醒AQS队列中阻塞的线程来获取锁，继续执行逻辑代码。</font>  
 
 # 1. CountDownLatch，线程计数器  
+&emsp; CountDownLatch做为jdk提供的多线程同步工具，CountDownLatch其实本质上可以看做一个线程计数器，统计多个线程执行完成的情况，适用于控制一个或多个线程等待，直到所有线程都执行完毕的场景，因此我们可以利用其功能特点实现获取多个线程的执行结果。  
+
 <!-- 
 CountDownLatch实践
 https://mp.weixin.qq.com/s/wDxfDcbJCQs99huLyztnCQ

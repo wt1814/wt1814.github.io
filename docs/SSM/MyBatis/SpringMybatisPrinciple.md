@@ -56,7 +56,7 @@ this.sqlSessionProxy = (SqlSession) newProxyInstance( SqlSessionFactory.class.ge
 ```
 
 ## 1.3. 接口的扫描注册  
-&emsp; 获取Mapper接口。在Service层可以使用@Autowired自动注入的Mapper接口，需要保存在 BeanFactory（比如 XmlWebApplicationContext）中。也就是说接口是在 Spring 启动的时候，会被扫描，注册。     
+&emsp; 获取Mapper接口。在Service层可以使用@Autowired自动注入的Mapper接口，需要保存在 BeanFactory（比如 XmlWebApplicationContext）中。也就是说接口是在 Spring 启动的时候，会被扫描、注册。     
 &emsp; 扫描注册Mapper接口是在 applicationContext.xml里面配置了MapperScannerConfigurer或者使用注解@MapperScan完成的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-25.png)  
 &emsp; <font color = "red">MapperScannerConfigurer 实现了BeanDefinitionRegistryPostProcessor接口， BeanDefinitionRegistryPostProcessor 是 BeanFactoryPostProcessor的子类。</font>  

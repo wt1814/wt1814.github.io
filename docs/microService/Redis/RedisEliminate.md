@@ -28,13 +28,14 @@
     * 定时删除策略，在设置键的过期时间的同时，创建一个定时器，让定时器在键的过期时间来临时，立即执行对键的删除操作。  
     * <font color = "clime">惰性删除策略，只有当访问一个key时，才会判断该key是否已过期，过期则清除。</font>  
     * <font color = "red"> **定期删除策略，每隔一段时间执行一次删除过期键操作**</font>，并通过<font color = "clime">限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响</font>，同时，通过定期删除过期键，也有效地减少了因为过期键而带来的内存浪费。  
-2. **Redis内存淘汰使用的算法有：**  
-&emsp; **<font color = "clime">volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>** Redis内存淘汰使用的算法有4种： 
+2. **Redis内存淘汰使用的算法：**  
+&emsp; **<font color = "clime">volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
+&emsp; Redis内存淘汰使用的算法有4种： 
     * random，随机删除。  
     * TTL，删除过期时间最少的键。  
     * <font color = "clime">LRU，Least Recently Used：最近最少使用（访问时间）。</font>判断最近被使用的时间，离目前最远的数据优先被淘汰。  
     &emsp; **<font color = "red">如果基于传统LRU算法实现，Redis LRU会有什么问题？需要额外的数据结构存储，消耗内存。</font>**  
-    &emsp; <font color = "red">Redis LRU对传统的LRU算法进行了改良，通过随机采样来调整算法的精度。</font>如果淘汰策略是LRU，则根据配置的采样值maxmemory_samples(默认是 5 个)，随机从数据库中选择m个key，淘汰其中热度最低的key对应的缓存数据。所以采样参数m配置的数值越大，就越能精确的查找到待淘汰的缓存数据，但是也消耗更多的CPU计算，执行效率降低。  
+    &emsp; **<font color = "blue">Redis LRU对传统的LRU算法进行了改良，通过随机采样来调整算法的精度。</font>** 如果淘汰策略是LRU，则根据配置的采样值maxmemory_samples(默认是 5 个)，随机从数据库中选择m个key，淘汰其中热度最低的key对应的缓存数据。所以采样参数m配置的数值越大，就越能精确的查找到待淘汰的缓存数据，但是也消耗更多的CPU计算，执行效率降低。  
     * <font color = "clime">LFU，Least Frequently Used，最不常用（访问频率），4.0版本新增。</font>  
 3. **内存淘汰策略选择：**  
     1. 如果数据呈现幂律分布，也就是一部分数据访问频率高，一部分数据访问频率低，或者无法预测数据的使用频率时，则使用allkeys-lru/allkeys-lfu。  
@@ -90,18 +91,18 @@
 
 ## 1.2. 内存设置  
 &emsp; <font color = "red">如果大量非过期key堆积在内存里，导致redis内存块耗尽了。redis会采用内存淘汰机制。</font>Redis的内存淘汰策略，是指当内存使用达到最大内存极限时，需要使用淘汰算法来决定清理掉哪些数据，以保证新数据的存入。  
-&emsp; 默认情况下，在32位OS中，Redis最大使用3GB的内存；在64位OS中则没有限制。  
+&emsp; **<font color = "clime">默认情况下，在32位OS中，Redis最大使用3GB的内存；在64位OS中则没有限制。</font>**  
 &emsp; **在使用Redis时，应该对数据占用的最大空间有一个基本准确的预估，并为Redis设定最大使用的内存。否则在64位OS中Redis会无限制地占用内存(当物理内存被占满后会使用swap空间)，容易引发各种各样的问题。**  
 
 &emsp; **Redis内存设置：**  
-1. 通过配置文件配置  
+1. 通过配置文件配置：  
 &emsp; 通过在Redis安装目录下面的redis.conf配置文件中添加以下配置设置内存大小  
 
         //设置Redis最大占用内存大小为100M
         maxmemory 100mb
     &emsp; redis的配置文件不一定使用的是安装目录下面的redis.conf文件，启动redis服务的时候是可以传一个参数指定redis的配置文件的  
 
-2. 通过命令修改  
+2. 通过命令修改：  
 &emsp; Redis支持运行时通过命令动态修改内存大小  
 
         //设置Redis最大占用内存大小为100M  

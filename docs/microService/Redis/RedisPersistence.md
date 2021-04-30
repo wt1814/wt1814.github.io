@@ -14,7 +14,7 @@
         - [1.2.2. AOF持久化流程](#122-aof持久化流程)
             - [1.2.2.1. ★★★重写机制](#1221-★★★重写机制)
                 - [1.2.2.1.1. 重写机制简介](#12211-重写机制简介)
-                - [1.2.2.1.2. ~~~~重写机制触发及流程~~~~](#12212-重写机制触发及流程)
+                - [1.2.2.1.2. ~~重写机制触发及流程~~](#12212-重写机制触发及流程)
                 - [1.2.2.1.3. bgrewriteaof](#12213-bgrewriteaof)
             - [1.2.2.2. 重启加载步骤(数据恢复流程)](#1222-重启加载步骤数据恢复流程)
         - [1.2.3. AOF文件损坏](#123-aof文件损坏)
@@ -36,7 +36,7 @@
 
         **<font color = "red">AOF重写降低了文件占用空间，除此之外，另一个目的是：更小的AOF 文件可以更快地被Redis加载。</font>**  
         在写入AOF日志文件时，如果Redis服务器宕机，则AOF日志文件文件会出格式错误。在重启Redis服务器时，Redis服务器会拒绝载入这个AOF文件，可以通过以下步骤修复AOF 并恢复数据： 
-    * 备份现在AOF文件，以防万一。
+    * 备份当前的AOF文件，以防万一。
     * <font color = "red">使用redis-check-aof命令修复AOF文件</font>  
     * 重启Redis服务器，加载已经修复的AOF文件，恢复数据。  
 
@@ -67,7 +67,7 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 &emsp; <font color = "red">RDB持久化是Redis默认的持久化方式。RDB是一种快照存储持久化方式，</font><font color = "clime">将Redis某一时刻的所有内存数据保存到硬盘的文件当中</font>，默认保存的文件名为dump.rdb，dump.rdb文件默认生成在%REDIS_HOME%etc目录下(如/usr/local/redis/etc/)，可以修改redis.conf文件中的dir指定dump.rdb的保存路径。也可以将快照复制到其他服务器从而创建具有相同数据的服务器副本。  
 
 ### 1.1.1. RDB的触发  
-&emsp; RDB触发机制分为使用指令手动触发和自动触发。  
+&emsp; RDB触发机制分为指令手动触发和自动触发。  
 
 #### 1.1.1.1. 自动触发RDB持久化：
 1. 方式一：修改redis.conf文件，默认配置如下所示：  
@@ -90,13 +90,14 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 2. Bgsave命令：  
 &emsp; 与Save命令不同，Bgsave命令是一个异步操作。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-32.png)  
-&emsp; bgsave，执行该命令时，Redis会在后台异步执行快照操作，此时Redis仍然可以相应客户端请求。具体操作是当客户端发服务发出Bgsave命令时，Redis服务器主进程会Forks操作创建一个子进程来数据同步问题，在将数据保存到RDB文件之后，子进程会退出。新RDB文件就会原子地替换旧的RDB文件。所以，与Save命令相比，Redis服务器在处理Bgsave采用子线程进行IO写入。而主进程仍然可以接收其他请求，但Forks子进程是同步的，所以Forks子进程时，一样不能接收其他请求。这意味着，如果Forks一个子进程花费的时间太久(一般是很快的)，而且占用内存会加倍，Bgsave命令仍然有阻塞其他客户的请求的情况发生。  
+&emsp; bgsave，执行该命令时，Redis会在后台异步执行快照操作，此时Redis仍然可以处理客户端请求。具体操作是当客户端发服务发出Bgsave命令时，Redis服务器主进程会Forks操作创建一个子进程来数据同步问题，在将数据保存到RDB文件之后，子进程会退出。新RDB文件就会原子地替换旧的RDB文件。所以，与Save命令相比，Redis服务器在处理Bgsave采用子线程进行IO写入。而主进程仍然可以接收其他请求。  
+&emsp; 但Forks子进程是同步的，所以Forks子进程时，一样不能接收其他请求。这意味着，如果Forks一个子进程花费的时间太久(一般是很快的)，而且占用内存会加倍，Bgsave命令仍然有阻塞其他客户的请求的情况发生。  
 
 ### 1.1.2. RDB的流程  
 &emsp; bgsave是主流的触发RDB持久化方式。它的运行流程如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-53.png)  
 1. 执行bgsave命令，Redis父进程判断当前是否存在正在执行的子进程，如RDB/AOF子进程，如果存在bgsave命令直接返回。  
-2. 父进程执行fork操作创建子进程，fork操作过程中父进程会阻塞，通过info stats命令查看latest_fork_usec选项，可以获取最近一个fork操作的耗 时，单位为微秒。  
+2. 父进程执行fork操作创建子进程，fork操作过程中父进程会阻塞，通过info stats命令查看latest_fork_usec选项，可以获取最近一个fork操作的耗时，单位为微秒。  
 3. 父进程fork完成后，bgsave命令返回“Background saving started”信息并不再阻塞父进程，可以继续响应其他命令。  
 4. 子进程创建RDB文件，根据父进程内存生成临时快照文件，完成后对原有文件进行原子替换。执行lastsave命令可以获取最后一次生成RDB的时间，对应info统计的rdb_last_save_time选项。  
 5. 进程发送信号给父进程表示完成，父进程更新统计信息，具体见info Persistence下的rdb_*相关选项。  
@@ -170,7 +171,7 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 
 &emsp; **<font color = "red">AOF重写降低了文件占用空间，除此之外，另一个目的是：更小的AOF 文件可以更快地被Redis加载。</font>**  
 
-##### 1.2.2.1.2. ~~~~重写机制触发及流程~~~~
+##### 1.2.2.1.2. ~~重写机制触发及流程~~
 <!-- 
 https://www.cnblogs.com/wdliu/p/9377278.html
 -->
@@ -201,7 +202,7 @@ https://www.cnblogs.com/wdliu/p/9377278.html
 ### 1.2.3. AOF文件损坏  
 &emsp; 在写入AOF日志文件时，如果Redis服务器宕机，则AOF日志文件文件会出格式错误。在重启Redis服务器时，Redis服务器会拒绝载入这个AOF文件，可以通过以下步骤修复AOF 并恢复数据：  
 
-* 备份现在AOF文件，以防万一。
+* 备份当前的AOF文件，以防万一。
 * <font color = "red">使用redis-check-aof命令修复AOF文件</font>，该命令格式如下：  
 
         # 修复aof日志文件

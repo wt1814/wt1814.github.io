@@ -19,7 +19,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. Spring循环依赖的场景：均采用setter方法(属性注入)注入方式，可被解决；采用构造器和setter方法(属性注入)混合注入方式可能被解决。
-2. **<font color = "red">Spring通过3级缓存解决。</font>**  
+2. **<font color = "red">Spring通过3级缓存解决：</font>**  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
     * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
     * 二级缓存: Map<String,Object> earlySingletonObjects，早期曝光对象，二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。尚未经历了完整的Spring Bean初始化生命周期。
@@ -165,11 +165,11 @@ https://www.cnblogs.com/leeego-123/p/12165278.html
 -->
 
 ### 1.4.1. 三级缓存概念 
-&emsp; **<font color = "red">Spring通过3级缓存解决。</font>**  
+&emsp; **<font color = "red">Spring通过3级缓存解决：</font>**  
 
-* 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
-* 二级缓存: Map<String,Object> earlySingletonObjects，早期曝光对象，二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。尚未经历了完整的Spring Bean初始化生命周期。
 * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
+* 二级缓存: Map<String,Object> earlySingletonObjects，早期曝光对象，二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。尚未经历了完整的Spring Bean初始化生命周期。
+* 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
 
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
@@ -315,7 +315,7 @@ https://www.cnblogs.com/grey-wolf/p/13034371.html
 
 ---
 
-&emsp; 跟踪源代码过程中注意区别下有AOP的依赖跟没有AOP的依赖两种情况，跟踪后会发现三级缓存的功能是只有真正发生循环依赖的时候，才去提前生成代理对象，否则只会创建一个工厂并将其放入到三级缓存中，但是不会去通过这个工厂去真正创建对象。  
+&emsp; **<font color = "clime">跟踪源代码过程中注意区别下有AOP的依赖跟没有AOP的依赖两种情况，跟踪后会发现三级缓存的功能是只有真正发生循环依赖的时候，才去提前生成代理对象，否则只会创建一个工厂并将其放入到三级缓存中，但是不会去通过这个工厂去真正创建对象。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-18.png)  
 &emsp; 如上图所示，如果使用二级缓存解决循环依赖，意味着所有Bean在实例化后就要完成AOP代理，这样违背了Spring设计的原则，Spring在设计之初就是通过AnnotationAwareAspectJAutoProxyCreator这个后置处理器来在Bean生命周期的最后一步来完成AOP代理，而不是在实例化后就立马进行AOP代理。  
 

@@ -17,7 +17,10 @@
 -->
 
 # 1. 缓存算法  
-&emsp; 先进先出策略 FIFO(First In，First Out)、最少使用策略 LFU(Least Frequently Used)、最近最少使用策略 LRU(Least Recently Used)。  
+&emsp; FIFO(First In，First Out)先进先出。  
+&emsp; **<font color = "red">LRU (Least recently used) 最近最少使用，选择最近最久未使用的数据删除。</font>**  
+&emsp; LFU(Least Frequently Used)最不经常使用。它是基于“如果一个数据在最近一段时间内使用次数很少，那么在将来一段时间内被使用的可能性也很小”的思路。  
+
 
 ## 1.1. FIFO
 &emsp; 在FIFO Cache设计中，核心原则就是：如果一个数据最先进入缓存中，则应该最早淘汰掉。也就是说，当缓存满的时候，应当把最先进入缓存的数据给淘汰掉。在FIFO Cache中应该支持以下操作;  
@@ -28,7 +31,7 @@
 &emsp; 利用一个双向链表保存数据，当来了新的数据之后便添加到链表末尾，如果Cache存满数据，则把链表头部数据删除，然后把新的数据添加到链表末尾。在访问数据的时候，如果在Cache中存在该数据的话，则返回对应的value值；否则返回-1。如果想提高访问效率，可以利用hashmap来保存每个key在链表中对应的位置。  
 
 ## 1.2. LRU  
-&emsp; LRU是Least Recently Used的缩写，选择最近最久未使用的数据删除。  
+&emsp; **<font color = "red">LRU (Least recently used) 最近最少使用，选择最近最久未使用的数据删除。</font>**  
 &emsp; **<font color = "clime">LRU Cache具备的操作：</font>**  
 1. put(key, val) 方法插入新的或更新已有键值对，如果缓存已满的话，要删除那个最久没用过的键值对以腾出位置插入。  
 2. get(key) 方法获取 key 对应的 val，如果 key 不存在则返回 -1。  
@@ -280,7 +283,7 @@ public class LRUCacheTest {
 
 
 ## 1.3. LFU
-&emsp; LFU(Least Frequently Used)最近最少使用算法。它是基于“如果一个数据在最近一段时间内使用次数很少，那么在将来一段时间内被使用的可能性也很小”的思路。  
+&emsp; LFU(Least Frequently Used)最不经常使用。它是基于“如果一个数据在最近一段时间内使用次数很少，那么在将来一段时间内被使用的可能性也很小”的思路。  
 &emsp; 注意LFU和LRU算法的不同之处，LRU的淘汰规则是基于访问时间，而LFU是基于访问次数的。  
 &emsp; LFU Cache应该支持的操作为：  
 &emsp; get(key)：如果Cache中存在该key，则返回对应的value值，否则，返回-1；  

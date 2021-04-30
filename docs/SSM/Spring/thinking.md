@@ -46,7 +46,7 @@ https://mp.weixin.qq.com/s/VzBA7DehOwYUAl7xt8KPAw
 ---
 &emsp;  知道了Spring提供了可扩展的接口，也简单进行了分类，当然最主要的是要知道这些接口的作用。  
 
-* Aware接口提供了Bean对容器对感知  
+* Aware接口提供了Bean对容器的感知  
 &emsp;  容器管理的Bean一般不需要了解容器的状态和直接使用容器，但在某些情况下，是需要在Bean中直接对IOC容器进行操作的，这时候，就需要在Bean中设定对容器的感知。Spring IOC容器也提供了该功能，它是通过特定的aware接口来完成的。   
 * BeanPostProcessor  
 &emsp;  BeanPostProcessor，可以在spring容器实例化bean之后，在执行bean的初始化方法前后，添加一些自己的处理逻辑。   

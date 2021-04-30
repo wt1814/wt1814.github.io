@@ -33,8 +33,8 @@
     4. 从SqlSession中调用Executor执行数据库操作和生成具体SQL指令。
     5. 对执行结果进行二次封装。
     6. 提交与事务。   
-2. Mapper接口动态代理类的生成： 
-    * 解析配置文件生成sqlSessionFactory时，会调用bindMapperForNamespace() ---> addMapper方法，根据mapper文件中的namespace属性值，将接口生成动态代理类的工厂，存储在MapperRegistry对象中。    
+2. **<font color = "clime">Mapper接口动态代理类的生成：</font>** 
+    * 解析配置文件生成sqlSessionFactory时，会调用bindMapperForNamespace() ---> addMapper方法，根据mapper文件中的namespace属性值，将接口生成动态代理类的工厂，存储在MapperRegistry对象中。MapperRegistry内部维护一个映射关系，每个接口对应一个MapperProxyFactory（生成动态代理工厂类）。      
     * 在调用getMapper，根据type类型，从MapperRegistry对象中的knownMappers获取到当前类型对应的代理工厂类，然后通过代理工厂类生成对应Mapper的代理类。  
 
 # 1. MyBatis解析
@@ -59,7 +59,7 @@ https://mp.weixin.qq.com/s/9eJ-xQyIdu-qx2ePUv1bEw
 5. 对执行结果进行二次封装。
 6. 提交与事务。  
 
-&emsp; **定义XXXMapper接口类并利用它来做CRUD操作时，Mybatis是利用了动态代理的技术生成代理类。**   
+&emsp; **<font color = "clime">定义XXXMapper接口类并利用它来做CRUD操作时，Mybatis是利用了动态代理的技术生成代理类。</font>**   
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-15.png)  
  
@@ -360,7 +360,7 @@ private void buildStatementFromContext(List<XNode> list, String requiredDatabase
 }
 ```
 
-parseStatementNode()主要是对xml的节点进行解析。假设有这样一段配置：  
+&emsp; parseStatementNode()主要是对xml的节点进行解析。假设有这样一段配置：  
 
 ```xml
 <select id="selectDemo" parameterType="java.lang.Integer" resultType='Map'>
@@ -426,7 +426,7 @@ public <T> void addMapper(Class<T> type) {
 }
 ```
 
-&emsp; MapperRegistry内部维护一个映射关系，每个接口对应一个MapperProxyFactory（生成动态代理工厂类）  
+&emsp; **<font color = "clime">MapperRegistry内部维护一个映射关系，每个接口对应一个MapperProxyFactory（生成动态代理工厂类）。</font>**  
 
 ```java
 private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<>(); 

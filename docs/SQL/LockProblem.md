@@ -2,7 +2,7 @@
 <!-- TOC -->
 
 - [1. MySql锁造成的问题](#1-mysql锁造成的问题)
-    - [1.1. 死锁](#11-死锁)
+    - [1.1. ~~死锁~~](#11-死锁)
         - [1.1.1. 死锁产生](#111-死锁产生)
         - [1.1.2. 死锁检测](#112-死锁检测)
         - [1.1.3. 避免死锁](#113-避免死锁)
@@ -18,20 +18,23 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "clime">1. MySql如何处理死锁？  
+&emsp; ~~胡扯，死锁，mysql检测后，回滚一条事务，抛出异常。~~  
+1. **<font color = "clime">1. MySql如何处理死锁？**  
     1. 发起死锁检测，主动回滚其中一条事务，让其他事务继续执行。  
-    2. 设置超时时间，超时后自动释放。</font>**   
+    2. 设置超时时间，超时后自动释放。</font>   
 2. **<font color = "clime">2. 如果出现死锁？除了以上两种方案外，开发人员还需要检查代码。</font>**  
 
 
 # 1. MySql锁造成的问题
 
-## 1.1. 死锁  
+## 1.1. ~~死锁~~  
 <!-- 
 ★★★mysql死锁的情况问题分析 gap间隙锁
 https://blog.csdn.net/u010325193/article/details/88366707
 MySQL间隙锁问题
 https://www.cnblogs.com/jing99/p/11489510.html
+https://zhuanlan.zhihu.com/p/93647727
+https://developer.aliyun.com/article/775952?spm=a2c6h.17698244.wenzhang.1.39c66e14iBarub
 -->
 <!-- 
 MySQL死锁产生原因和解决方法 
@@ -39,7 +42,7 @@ https://mp.weixin.qq.com/s/F3IPSiKzabuDd8S5UKI-WQ
 死锁的发生与否，并不在于事务中有多少条SQl语句，死锁的关键在于：两个(或以上)的Session加锁的顺序不一致。而使用本文上面提到的，分析MySQL每条SQL语句的加锁规则，分析出每条语句的加锁顺序，然后检查多个并发SQL间是否存在相反的顺序加锁的情况，就可以分析出各种潜在的死锁情况，也可以分析出线上死锁发生的原因。 
 -->
 
-&emsp; 服务器报错：Deadlock found when trying to get to lock; try restarting transaction。  
+&emsp; 服务器报错：`Deadlock found when trying to get to lock; try restarting transaction`。  
 &emsp; 死锁发生了如何解决，MySQL 有没有提供什么机制去解决死锁。
   
 ### 1.1.1. 死锁产生  
