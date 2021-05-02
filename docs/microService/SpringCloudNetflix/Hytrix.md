@@ -30,10 +30,9 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 服务雪崩：在微服务架构中，存在着那么多的服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统的瘫痪。  
-2. Hytrix：~~<font color = "clime">首先熔断的对象是服务之间的请求；熔断策略有根据请求的数量分为信号量和线程池；还有请求的时间(即超时熔断)；请求错误率。</font>~~  
-3. Hystrix工作流程：1. 包装请求 ---> 2. 发起请求 ---> 3. 缓存处理 ---> 4. 判断断路器是否打开（熔断） ---> 5. 判断是否进行业务请求（请求是否需要隔离或降级） ---> 6. 执行业务请求 ---> 7. 健康监测 ---> 8. fallback处理或返回成功的响应  
-4. Hystrix熔断策略：  
-
+2. Hytrix：~~<font color = "clime">熔断的对象是服务之间的请求；熔断策略有根据请求的数量分为信号量和线程池；还有请求的时间(即超时熔断)；请求错误率。</font>~~  
+3. 熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。Hystrix中有三种降级方案(fallback，回退方案/降级处理方案)。
+4. Hystrix工作流程：1. 包装请求 ---> 2. 发起请求 ---> 3. 缓存处理 ---> 4. 判断断路器是否打开（熔断） ---> 5. 判断是否进行业务请求（请求是否需要隔离或降级） ---> 6. 执行业务请求 ---> 7. 健康监测 ---> 8. fallback处理或返回成功的响应。  
 5. 微服务集群中，Hystrix的度量信息通过Turbine来汇集监控信息，并将聚合后的信息提供给Hystrix Dashboard来集中展示和监控。  
 
 
@@ -59,7 +58,7 @@
 用Hystrix保护自己的应用
 https://mp.weixin.qq.com/s/nCifoTiqhBT2Eai2UJinag
 -->
-&emsp; Hystrix是如何处理请求，在官网有详细介绍：https://github.com/Netflix/Hystrix/wiki/How-it-Works。  
+&emsp; Hystrix是如何处理请求，在官网有详细介绍：https://github.com/Netflix/Hystrix/wiki/How-it-Works 。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-29.png)  
 1. <font color = "red">包装请求：</font>  
 &emsp; **<font color = "red">可以使用继承HystrixCommand或HystrixObservableCommand来包装业务方法；</font>**  
@@ -73,7 +72,7 @@ https://mp.weixin.qq.com/s/nCifoTiqhBT2Eai2UJinag
     Observable<K> ocValue = command.toObservable();    //cold observable
     ```
     &emsp; 如上图所示：  
-    &emsp; 执行同步调用execute方法，会调用queue().get()方法，queue()又会调用toObservable().toBlocking().toFuture()；所以，所有的方法调用都依赖Observable的方法调用，只是取决于是需要同步还是异步调用；  
+    &emsp; 执行同步调用execute方法，会调用`queue().get()`方法，queue()又会调用`toObservable().toBlocking().toFuture()；`所以，所有的方法调用都依赖Observable的方法调用，只是取决于是需要同步还是异步调用；  
 3. <font color = "red">缓存处理：</font>  
 &emsp; 当请求来到后，会判断请求是否启用了缓存（默认是启用的），再判断当前请求是否携带了缓存Key；  
 &emsp; 如果命中缓存就直接返回；否则进入剩下的逻辑；  

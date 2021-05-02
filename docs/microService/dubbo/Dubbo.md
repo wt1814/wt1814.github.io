@@ -21,7 +21,6 @@
 <!-- /TOC -->
 
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo.png)   
 
 &emsp; dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级......  
 
@@ -118,8 +117,8 @@ https://mp.weixin.qq.com/s/2Wm2SsRa1xOMX6pV9NyCrA
 * <font color = "red">LeastActive，最少活跃调用数，活跃数指调用前后计数差。</font>相同活跃数的随机。使慢的提供者收到更少请求，因为越慢的提供者的调用前后计数差会越大。  
 * <font color = "clime">ConsistentHash，[分布式一致性哈希算法](/docs/microService/thinking/分布式算法-consistent.md)。</font>相同参数的请求总是发到同一提供者；当某一台提供者崩溃时，原本发往该提供者的请求，基于虚拟节点，平摊到其它提供者，不会引起剧烈变动。  
 
-    * 缺省只对第一个参数Hash，如果要修改，请配置<dubbo:parameter key="hash.arguments" value="0,1" /\>  
-    * 缺省用160份虚拟节点，如果要修改，请配置<dubbo:parameter key="hash.nodes" value="320" /\>  
+    * 缺省只对第一个参数Hash，如果要修改，请配置`<dubbo:parameter key="hash.arguments" value="0,1" />`  
+    * 缺省用160份虚拟节点，如果要修改，请配置`<dubbo:parameter key="hash.nodes" value="320" />`  
 
 ### 1.1.9. ★★★集群容错策略  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-13.png)   

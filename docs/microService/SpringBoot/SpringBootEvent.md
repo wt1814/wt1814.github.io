@@ -149,7 +149,6 @@ public abstract class SpringApplicationEvent extends ApplicationEvent {
 
 ## 1.4. ★★★SpringBoot具体的生命周期事件类  
 &emsp; **<font color = "clime">SpringBoot内置的7种生命周期事件</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-7.png)  
 
 |发布顺序|事件|用途|
 |---|---|---|
@@ -201,7 +200,7 @@ public class ApplicationEnvironmentPreparedEvent extends SpringApplicationEvent 
  }
 }
 ```
-&emsp; ApplicationEnvironmentPreparedEvent事件多了一个environment属性。ApplicationEnvironmentPreparedEvent事件的environment属性作用是利用事件发布订阅机制，相应监听器们可以从ApplicationEnvironmentPreparedEvent事件中取出environment变量，然后可以为environment属性增加属性值或读出environment变量中的值。  
+&emsp; ApplicationEnvironmentPreparedEvent事件多了一个environment属性。ApplicationEnvironmentPreparedEvent事件的environment属性作用是利用事件发布订阅机制，相应的监听器可以从ApplicationEnvironmentPreparedEvent事件中取出environment变量，然后可以为environment属性增加属性值或读出environment变量中的值。  
 
     举个例子： ConfigFileApplicationListener监听器就是监听了ApplicationEnvironmentPreparedEvent事件，然后取出ApplicationEnvironmentPreparedEvent事件的environment属性，然后再为environment属性增加application.properties配置文件中的环境变量值。
 
@@ -269,7 +268,7 @@ public class ApplicationPreparedEvent extends SpringApplicationEvent {
 ```
 &emsp; 同样可以看到ApplicationPreparedEvent事件多了个ConfigurableApplicationContext类型的context属性，多了context属性的作用是能让监听该事件的监听器们能拿到context属性，监听器拿到context属性一般有如下作用：  
 1. 从事件中取出context属性，然后可以增加一些后置处理器，比如ConfigFileApplicationListener监听器监听到ApplicationPreparedEvent事件后，然后取出context变量，通过context变量增加了PropertySourceOrderingPostProcessor这个后置处理器；  
-2. 通过context属性取出beanFactory容器，然后注册一些bean，比如LoggingApplicationListener监听器通过ApplicationPreparedEvent事件的context属性取出beanFactory容器,然后注册了springBootLoggingSystem这个单例bean；  
+2. 通过context属性取出beanFactory容器，然后注册一些bean，比如LoggingApplicationListener监听器通过ApplicationPreparedEvent事件的context属性取出beanFactory容器，然后注册了springBootLoggingSystem这个单例bean；  
 3. 通过context属性取出Environment环境变量，然后就可以操作环境变量，比如PropertiesMigrationListener。  
 
 &emsp; ApplicationPreparedEvent事件在ApplicationContext容器已经完全准备好时但在容器刷新前触发，在这个阶段bean定义已经加载完毕还有environment已经准备好可以用了。  

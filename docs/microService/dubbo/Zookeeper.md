@@ -27,9 +27,6 @@
 
 <!-- /TOC -->
 
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-2.png)  
-
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
 2. C/S之间的Watcher机制。特性：一次性触发、有序性（客户端先得到watch通知才可查看节点变化结果）。  
@@ -43,6 +40,8 @@
         &emsp; **<font color = "red">Zookeeper保证的是CP，即一致性(Consistency)和分区容错性(Partition-Tolerance)，而牺牲了部分可用性(Available)。</font>**  
         * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>
         * Zookeeper的CP模型：非强一致性， **<font color = "clime">而是单调一致性/顺序一致性。</font>**  
+            1. <font color = "clime">假设有2n+1个server，在同步流程中，leader向follower同步数据，当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。</font><font color = "red">如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。</font>  
+            2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数(n+1)的server认同后，将对整个集群进行同步，超过半数(n+1)的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
     3. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
 
 # 1. Zookeeper
@@ -178,7 +177,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 
 ###### 1.3.2.3.1.2. 服务器启动时的leader选举 
 &emsp; 每个节点启动的时候状态都是LOOKING，处于观望状态，接下来就开始进行选主流程。  
-&emsp; 若进行 Leader 选举，则至少需要两台机器，这里选取 3 台机器组成的服务器集群为例。在集群初始化阶段，当有一台服务器 Server1 启动时，其单独无法进行和完成 Leader 选举，当第二台服务器 Server2 启动时，此时两台机器可以相互通信，每台机器都试图找到 Leader，于是进入 Leader选举过程。选举过程如下：  
+&emsp; 若进行Leader选举，则至少需要两台机器，这里选取 3 台机器组成的服务器集群为例。在集群初始化阶段，当有一台服务器 Server1 启动时，其单独无法进行和完成Leader选举，当第二台服务器 Server2 启动时，此时两台机器可以相互通信，每台机器都试图找到Leader，于是进入Leader选举过程。选举过程如下：  
 1. 每个 Server 发出一个投票。由于是初始情况， Server1 和 Server2 都会将自己作为 Leader 服务器来进行投票，每次投票会包含所推举的服务器的 myid 和 ZXID、 epoch，使用(myid, ZXID,epoch)来表示，此时 Server1 的投票为(1, 0)， Server2 的投票为(2, 0)，然后各自将这个投票发给集群中其他机器。  
 2. 接受来自各个服务器的投票。集群的每个服务器收到投票后，首先判断该投票的有效性，如检查是否是本轮投票( epoch)、是否来自LOOKING 状态的服务器。  
 3. 处理投票。针对每一个投票，服务器都需要将别人的投票和自己的投票进行PK，PK规则如下：  
@@ -242,7 +241,7 @@ https://blog.csdn.net/weixin_47727457/article/details/106439452
 
 2. Zookeeper的CP模型：  
 &emsp; 很多文章和博客里提到，zookeeper是一种提供强一致性的服务，在分区容错性和可用性上做了一定折中，这和CAP理论是吻合的。但实际上<font color = "clime">zookeeper提供的只是单调一致性/顺序一致性。</font>  
-    1. 假设有2n+1个server，在同步流程中，leader向follower同步数据，当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。<font color = "red">如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。</font>  
+    1. <font color = "clime">假设有2n+1个server，在同步流程中，leader向follower同步数据，当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。</font><font color = "red">如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。</font>  
     2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数(n+1)的server认同后，将对整个集群进行同步，超过半数(n+1)的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
 
 #### 1.3.2.5. ~~脑裂~~  

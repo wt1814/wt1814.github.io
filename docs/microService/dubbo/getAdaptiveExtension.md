@@ -28,7 +28,7 @@
 <!-- /TOC -->
 
 # 1. 获得自适应的拓展对象
-&emsp; Dubbo SPI的扩展点自适应机制： **<font color = "red">在Dubbo中，很多拓展都是通过SPI机制进行加载的，比如Protocol、Cluster、LoadBalance等。</font>** <font color = "clime">有时，有些拓展并不想在框架启动阶段被加载，而是希望在拓展方法被调用时，根据运行时参数进行加载。这听起来有些矛盾。</font>拓展未被加载，那么拓展方法就无法被调用（静态方法除外）。拓展方法未被调用，拓展就无法被加载。对于这个矛盾的问题，Dubbo通过自适应拓展机制很好的解决了。自适应拓展机制的实现逻辑比较复杂，首先Dubbo会为拓展接口生成具有代理功能的代码。然后通过javassist或jdk编译这段代码，得到Class类。最后再通过反射创建代理类，整个过程比较复杂。  
+&emsp; Dubbo SPI的扩展点自适应机制： **<font color = "red">在Dubbo中，很多拓展都是通过SPI机制进行加载的，比如Protocol、Cluster、LoadBalance等。</font>** <font color = "clime">有时，有些拓展并不想在框架启动阶段被加载，而是希望在拓展方法被调用时，根据运行时参数进行加载。这听起来有些矛盾。拓展未被加载，那么拓展方法就无法被调用（静态方法除外）。拓展方法未被调用，拓展就无法被加载。对于这个矛盾的问题，Dubbo通过自适应拓展机制很好的解决了。</font>自适应拓展机制的实现逻辑比较复杂，首先Dubbo会为拓展接口生成具有代理功能的代码。然后通过javassist或jdk编译这段代码，得到Class类。最后再通过反射创建代理类，整个过程比较复杂。  
 
 ## 1.1. 自适应示例  
 &emsp; 为了让大家对自适应拓展有一个感性的认识，下面通过一个示例进行演示。这是一个与汽车相关的例子，有一个车轮制造厂接口WheelMaker：  
@@ -230,9 +230,9 @@ private Class<?> getAdaptiveExtensionClass() {
 ```
 &emsp; getAdaptiveExtensionClass方法同样包含了三个逻辑，如下：  
 
-1. 调用getExtensionClasses获取所有的拓展类
-2. 检查缓存，若缓存不为空，则返回缓存
-3. 若缓存为空，则调用createAdaptiveExtensionClass创建自适应拓展类
+1. 调用getExtensionClasses获取所有的拓展类；
+2. 检查缓存，若缓存不为空，则返回缓存；
+3. 若缓存为空，则调用createAdaptiveExtensionClass创建自适应拓展类。
 
 &emsp; 这三个逻辑看起来平淡无奇，似乎没有多讲的必要。但是这些平淡无奇的代码中隐藏了着一些细节，需要说明一下。首先从第一个逻辑说起，getExtensionClasses这个方法用于获取某个接口的所有实现类。比如该方法可以获取Protocol接口的DubboProtocol、HttpProtocol、InjvmProtocol等实现类。在获取实现类的过程中，如果某个实现类被Adaptive注解修饰了，那么该类就会被赋值给cachedAdaptiveClass变量。此时，上面步骤中的第二步条件成立（缓存不为空），直接返回cachedAdaptiveClass即可。如果所有的实现类均未被Adaptive注解修饰，那么执行第三步逻辑，创建自适应拓展类。相关代码如下：  
 

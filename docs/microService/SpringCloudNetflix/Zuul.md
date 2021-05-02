@@ -39,20 +39,20 @@
 &emsp; Spring Cloud Zuul，微服务网关，包含hystrix、ribbon、actuator。主要有路由转发、请求过滤功能。  
 
 ## 1.1. 路由转发  
-&emsp; 采用zuul.routes.<route\>.path与zuul.routes.<route\>.serviceid参数对的方式进行配置。例如：  
+&emsp; 采用`zuul.routes.<route\>.path`与`zuul.routes.<route\>.serviceid`参数对的方式进行配置。例如：  
 
 ```properties
 zuul.routes.user-service.path=/user-service/**  
 zuul.routes.user-service.serviceid=user-service
 ```
-&emsp; 还可以更简洁的配置方式：zuul.routes.<serviceid\>=<path\>，其中<serviceid\> 用来指定路由的具体服务名，<path\>用来配置匹配的请求表达式。  
+&emsp; 还可以更简洁的配置方式：`zuul.routes.<serviceid\>=<path\>`，其中<serviceid\> 用来指定路由的具体服务名，<path\>用来配置匹配的请求表达式。  
 
 ### 1.1.1. 服务路由的默认规则  
 &emsp; 为Spring Cloud Zuul构建的API网关服务引入Spring Cloud Eureka之后，<font color = "red">zuul为Eureka中的每个服务都自动创建一个默认路由规则，这些默认规则的path会使用service Id配置的服务名作为请求前缀。</font>如上所示。  
 &emsp; 默认情况下所有Eureka上的服务都会被Zuul自动创建映射关系进行路由，一些不希望对外开放的服务也被外部访问到。这个时候可以配置zuul.ignored-services参数来设置一个服务名匹配表达式进行判断，如果服务名匹配表达式，那么Zull将跳过这个服务，不为其创建路由规则。例如：zuul.ignored-services=*表示对所有的服务不自动创建路由规则，这样就需要为每个服配置路由规则。  
 
 ### 1.1.2. 路径匹配  
-&emsp; 在Zuul中，路由匹配的路径表达式采用了Ant风格定义，它一共有下面三种通配符。  
+&emsp; 在Zuul中，路由匹配的路径表达式采用了Ant风格定义，它一共有下面三种通配符：  
 
 * ?：匹配任意单个字符  
 * *：匹配任意数量的字符  
@@ -61,7 +61,7 @@ zuul.routes.user-service.serviceid=user-service
 &emsp; 在使用的路由规则匹配请求的时候是通过线性遍历的方式，在请求路径获取到第一个匹配的路由规则之后就返回并结束匹配过程。所以当存在多个匹配的路由规则时，匹配结果完全取决于路由规则的保存顺序。  
 
 ### 1.1.3. 本地跳转  
-&emsp; Zuul 实现的 API 网关中，支持 forward 形式的服务端跳转配置，只需通过使用 path 与 url 的配置方式就能完成，通过 url 中使用 forward 来指定需要跳转的服务器资源路径。  
+&emsp; Zuul 实现的 API 网关中，支持 forward 形式的服务端跳转配置，只需通过使用path与url的配置方式就能完成，通过url中使用forward来指定需要跳转的服务器资源路径。  
 
 ```yaml
 zuul:
@@ -102,9 +102,7 @@ zuul.addHostHeader=true
 
 ### 1.1.6. 使用zuul上传文件问题  
 &emsp; 对于小文件（1M以内上传），无须任何处理，即可正常上传。 **<font color = "red">对于大文件（10M以上）上传，需要为上传路径添加/zuul前缀。也可使用zuul.servlet-path自定义前缀。</font>**   
-&emsp; 假设zuul.routes.microservice-file-upload=/microservice-file-upload/**  
-&emsp; 如果http://{HOST}:{PORT}/upload 是微服务microservice-file-upload的上传路径，则可使用Zuul的/zuul/microservice-file-upload/upload路径上传大文件。  
-&emsp; 如果Zuul使用了Ribbon做负载均衡，那么对于超大的文件（例如500M），需要提高超时设置，例如：  
+&emsp; 假设zuul.routes.microservice-file-upload=/microservice-file-upload/**，如果http://{HOST}:{PORT}/upload 是微服务microservice-file-upload的上传路径，则可使用Zuul的/zuul/microservice-file-upload/upload路径上传大文件；如果Zuul使用了Ribbon做负载均衡，那么对于超大的文件（例如500M），需要提高超时设置，例如：  
 
 ```yaml
 hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000

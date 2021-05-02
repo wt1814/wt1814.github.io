@@ -134,9 +134,9 @@ public class KafkaConsumer {
 }
 ```
 
-&emsp; 上面示例创建了一个生产者，发送消息到topic1，消费者监听topic1消费消息。监听器用@KafkaListener注解，topics表示监听的topic，支持同时监听多个，用英文逗号分隔。启动项目，postman调接口触发生产者发送消息，  
+&emsp; 上面示例创建了一个生产者，发送消息到topic1，消费者监听topic1消费消息。监听器用@KafkaListener注解，topics表示监听的topic，支持同时监听多个，用英文逗号分隔。启动项目，postman调接口触发生产者发送消息。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-36.png)  
-&emsp; 可以看到监听器消费成功，
+&emsp; 可以看到监听器消费成功。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-37.png)  
 
 ## 1.3. topic管理  

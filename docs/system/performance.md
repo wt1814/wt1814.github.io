@@ -21,6 +21,21 @@
 <!-- /TOC -->
 
 # 1. 性能指标  
+<!-- 
+QPS计算
+详解NGINX如何统计网站的PV、UV、独立IP
+https://www.jb51.net/article/161419.htm
+
+https://blog.csdn.net/u010325193/article/details/89817576
+https://blog.csdn.net/seesun2012/article/details/79501038?utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromMachineLearnPai2%7Edefault-1.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromMachineLearnPai2%7Edefault-1.control
+
+http://t.zoukankan.com/sunbeidan-p-8477196.html
+
+https://blog.csdn.net/exceptional_derek/article/details/47617397
+https://developer.aliyun.com/article/42063?spm=a2c6h.13813017.0.dArticle738638.6c782b8dDRJfLw
+
+https://www.gonet.com.cn/webduirshow-153.html
+-->
 
 ## 1.1. 性能指标简介
 <!-- 
@@ -47,7 +62,7 @@ https://mp.weixin.qq.com/s/LFBK_3Mfo644mzXZXxsSTw
 
 ### 1.1.1. 吞吐量  
 &emsp; 在了解qps、tps、rt、并发数之前，首先应该明确一个系统的吞吐量到底代表什么含义，一般来说，系统吞吐量指的是系统的抗压、负载能力，代表一个系统每秒钟能承受的最大用户访问量。  
-&emsp; **一个系统的吞吐量通常由qps(tps)、并发数来决定，每个系统对这两个值都有一个相对极限值，只要某一项达到最大值，系统的吞吐量就上不去了。**  
+&emsp; **<font color = "clime">一个系统的吞吐量通常由qps(tps)、并发数来决定，每个系统对这两个值都有一个相对极限值，只要某一项达到最大值，系统的吞吐量就上不去了。</font>**  
 
 ### 1.1.2. QPS
 &emsp; Queries Per Second，每秒查询数，即是每秒能够响应的查询次数，注意这里的查询是指用户发出请求到服务器做出响应成功的次数，简单理解可以认为查询=请求request。  

@@ -24,6 +24,7 @@ https://blog.csdn.net/luzhensmart/article/details/86565496
 https://zhuanlan.zhihu.com/p/64839455
 JVM常量池浅析
 https://www.jianshu.com/p/cf78e68e3a99
+https://blog.csdn.net/qq_34039868/article/details/103957965
 -->
 
 ## 1.1. 常量池  
@@ -56,5 +57,4 @@ https://www.pianshen.com/article/72411279197/
 &emsp; 详情参考[Java基础数据类型](/docs/java/basis/BasicsDataType.md)  
 
 ## 1.3. 小结  
-
 

@@ -21,6 +21,10 @@ https://blog.csdn.net/hellozhxy/article/details/82632007
 
 ## 1.1. 排序与相关性
 &emsp; 默认情况下，返回的结果是按照 相关性 进行排序的——最相关的文档排在最前。   
+<!-- 
+elasticsearch排序(相关性排序score)
+https://blog.csdn.net/wwd0501/article/details/78622204
+-->
 
 ### 1.1.1. 排序
 &emsp; 为了按照相关性来排序，需要将相关性表示为一个数值。在 Elasticsearch 中， 相关性得分 由一个浮点数进行表示，并在搜索结果中通过 _score 参数返回， 默认排序是 _score 降序。  

@@ -17,6 +17,9 @@ https://blog.csdn.net/m0_37125796/article/details/88833419
 如何降低QPS(错峰、限流、削峰)
 https://www.pianshen.com/article/2449719440/
 
+面试官再问高并发，求你把这篇发给他！
+https://blog.csdn.net/youanyyou/article/details/107075116
+
 -->
 
 ## 高性能  

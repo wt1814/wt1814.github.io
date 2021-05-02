@@ -51,7 +51,7 @@ https://mp.weixin.qq.com/s/0eotlFBTSl-HxInb4Xg1Iw
 &emsp; **Kafka有三次消息传递的过程：**  
 
 * 生产者发消息给Kafka Broker。
-* Kafka Broker消息同步和持久化
+* Kafka Broker消息同步和持久化。
 * Kafka Broker将消息传递给消费者。
 
 &emsp; **<font color = "blue">在这三步中每一步都有可能会丢失消息。</font>**    
@@ -100,7 +100,7 @@ https://mp.weixin.qq.com/s/0eotlFBTSl-HxInb4Xg1Iw
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-62.png)  
 &emsp; 设置为 0 时代表 Producer 发送消息后就认为成功，消息有可能丢失。    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-63.png)  
-&emsp; 设置为-1 时，代表 ISR 列表中的所有 Replica 将消息同步完成后才认为消息发送成功；但是如果只存在主 Partition 的时候，Broker 异常时同样会导致消息丢失。所以此时就需要min.insync.replicas参数的配合，该参数需要设定值大于等于 2，当 Partition 的个数小于设定的值时，Producer发送消息会直接报错。  
+&emsp; 设置为-1 时，代表 ISR 列表中的所有 Replica 将消息同步完成后才认为消息发送成功；但是如果只存在主Partition的时候，Broker异常时同样会导致消息丢失。所以此时就需要min.insync.replicas参数的配合，该参数需要设定值大于等于2，当Partition的个数小于设定的值时，Producer发送消息会直接报错。  
 
 &emsp; 上面这个过程看似已经很完美了，但是假设如果消息在同步到部分从Partition 上时，主 Partition 宕机，此时消息会重传，虽然消息不会丢失，但是会造成同一条消息会存储多次。在新版本中 Kafka 提出了幂等性的概念，通过给每条消息设置一个唯一 ID，并且该 ID 可以唯一映射到 Partition 的一个固定位置，从而避免消息重复存储的问题。 
 

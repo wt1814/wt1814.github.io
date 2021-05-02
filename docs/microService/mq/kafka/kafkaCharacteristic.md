@@ -75,7 +75,7 @@ public long transferFrom(FileChannel fileChannel, long position, long count) thr
 
 &emsp; Java NIO 的 FileChannel 的 transferTo 和 transferFrom 方法是基于sendfile方式实现零拷贝。  
 
-&emsp; 注： transferTo 和 transferFrom 并不保证一定能使用零拷贝。实际上是否能使用零拷贝与操作系统相关，如果操作系统提供 sendfile 这样的零拷贝系统调用，则这两个方法会通过这样的系统调用充分利用零拷贝的优势，否则并不能通过这两个方法本身实现零拷贝。  
+&emsp; 注：transferTo 和 transferFrom 并不保证一定能使用零拷贝。 **<font color = "clime">实际上是否能使用零拷贝与操作系统相关，如果操作系统提供 sendfile 这样的零拷贝系统调用，则这两个方法会通过这样的系统调用充分利用零拷贝的优势，否则并不能通过这两个方法本身实现零拷贝。</font>**  
 
 
 ## 1.2. 高可用与数据一致性(副本机制)
@@ -102,8 +102,8 @@ public long transferFrom(FileChannel fileChannel, long position, long count) thr
 * exactly once：精确传递一次。消息被处理且只会被处理一次。不丢失不重复就一次。  
 
 
-&emsp; at most once，最多一次，可以理解为可能发生消息丢失；at least once，至少一次，可以理解为可能发生重复消费。kafka 通过 ack 的配置来实现这两种。  
-&emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。exactly once也被称为幂等性。  
+&emsp; at most once，最多一次，可以理解为可能发生消息丢失；at least once，至少一次，可以理解为可能发生重复消费。kafka通过ack的配置来实现这两种。  
+&emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。 **exactly once也被称为幂等性。**  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-119.png)  
 

@@ -97,7 +97,7 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 * Server stub将运行结果打包成消息序列化后，发送调用方；
 * Client stub接收到消息，并进行反序列化，调用方最终得到调用结果。
 
-&emsp; 总结来说，RPC用于服务之间的调用问题，特别是分布式环境；RPC让远程调用时，像调用本地方法一样方便和无感知；RPC框架屏蔽了很多底层的细节，不需要开发人员关注这些细节，比如序列化和反序列化、网络传输协议的细节。  
+&emsp; 总结来说， **<font color = "red">RPC用于服务之间的调用问题，特别是分布式环境；RPC让远程调用时，像调用本地方法一样方便和无感知；RPC框架屏蔽了很多底层的细节，不需要开发人员关注这些细节，比如序列化和反序列化、网络传输协议的细节。</font>**  
 
 ----
 ~~RPC结构拆解~~  
@@ -145,7 +145,7 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-7.png)  
 
 ### 1.5.1. 远程代理对象(动态代理)
-&emsp; **服务调用者调用的服务实际是远程服务的本地代理。生成Client Stub(客户端存根)和Server Stub(服务端存根)的时候需要用到java动态代理技术，可以使用jdk提供的原生的动态代理机制，也可以使用开源的：Cglib代理，Javassist字节码生成技术。**   
+&emsp; **<font color = "clime">服务调用者调用的服务实际是远程服务的本地代理。生成Client Stub(客户端存根)和Server Stub(服务端存根)的时候需要用到java动态代理技术，可以使用jdk提供的原生的动态代理机制，也可以使用开源的：Cglib代理，Javassist字节码生成技术。</font>**   
 
 ### 1.5.2. 序列化
 &emsp; 在网络中，所有的数据都将会被转化为字节进行传送，所以为了能够使参数对象在网络中进行传输，需要对这些参数进行序列化和反序列化操作。

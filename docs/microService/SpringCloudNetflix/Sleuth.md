@@ -90,9 +90,9 @@ https://mp.weixin.qq.com/s/WfTEQagsRntOpMVIZZS_Rw
 ```
 &emsp; INFO[]标签中为链路追踪信息。每个值的含义如下所述：  
 
-* 第一个值：springcloud-consumer-sleuth，它记录了应用的名称，也就是application properties中spring.application.name参数配置的属性  
-* 第二个值：f6fb983680aab32b, Spring Cloud Sleuth生成的一个ID，称为Trace ID，它用来标识一条请求链路。一条请求链路中包含一个Trace ID，多个Span ID  
-* 第三个值：c70932279d3b3a54，Spring Cloud Sleuth生成的另外一个ID，称为Span ID，它表示一个基本的工作单元，比如发送一个HTTP请求  
+* 第一个值：springcloud-consumer-sleuth，它记录了应用的名称，也就是application properties中spring.application.name参数配置的属性。  
+* 第二个值：f6fb983680aab32b, Spring Cloud Sleuth生成的一个ID，称为Trace ID，它用来标识一条请求链路。一条请求链路中包含一个Trace ID，多个Span ID。  
+* 第三个值：c70932279d3b3a54，Spring Cloud Sleuth生成的另外一个ID，称为Span ID，它表示一个基本的工作单元，比如发送一个HTTP请求。  
 * 第四个值：false，表示是否要将该信息输出到Zipkin等服务中来收集和展示。
 
 
@@ -256,7 +256,7 @@ public void saveLog2(String log) {
 * Collector：收集器组件，它主要处理从外部系统发送过来的跟踪信息，将这些信息转换为Zipkin内部处理的Span格式，以支待后续的存储、分析、展示等功能。  
 * Storage：存储组件，它主要处理收集器接收到的跟踪信息，默认会将这些信息存储在内存中。也可以修改此存储策略，通过使用其他存储组件将跟踪信息存储到数据库中。  
 * RESTful API：API组件，它主要用来提供外部访问接口。比如给客户端展示跟踪信息，或是外接系统访问以实现监控等。  
-* Web UI：UI组件， 基于API组件实现的上层应用。通过UI组件，用户可以方便而又直观地查询和分析跟踪信息。  
+* Web UI：UI组件，基于API组件实现的上层应用。通过UI组件，用户可以方便而又直观地查询和分析跟踪信息。  
 
 &emsp; Zipkin的设计基于Google Dapper论文。核心术语如下：  
 * Trace，Zipkin使用Trace结构表示对一次请求的跟踪，一次请求可能由后台的若干服务负责处理，每个服务的处理是一个Span，Span之间有依赖关系，Trace就是树结构的Span集合；  

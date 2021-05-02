@@ -2,24 +2,24 @@
 
 - [1. Dubbo SPI](#1-dubbo-spi)
     - [1.1. SPI简介](#11-spi简介)
-    - [1.2. SPI示例](#12-spi示例)
-        - [1.2.1. Java SPI 示例](#121-java-spi-示例)
-        - [1.2.2. Dubbo SPI示例](#122-dubbo-spi示例)
-    - [1.3. 扩展点特性](#13-扩展点特性)
-        - [1.3.1. 扩展点自动包装，Wrapper机制](#131-扩展点自动包装wrapper机制)
-        - [1.3.2. 扩展点自动装配](#132-扩展点自动装配)
-        - [1.3.3. 扩展点自适应](#133-扩展点自适应)
-        - [1.3.4. 扩展点自动激活](#134-扩展点自动激活)
+    - [1.2. Dubbo中的扩展点有哪些？](#12-dubbo中的扩展点有哪些)
+    - [1.3. SPI示例](#13-spi示例)
+        - [1.3.1. Java SPI 示例](#131-java-spi-示例)
+        - [1.3.2. Dubbo SPI示例](#132-dubbo-spi示例)
+    - [1.4. 扩展点特性](#14-扩展点特性)
+        - [1.4.1. 扩展点自动包装，Wrapper机制](#141-扩展点自动包装wrapper机制)
+        - [1.4.2. 扩展点自动装配](#142-扩展点自动装配)
+        - [1.4.3. 扩展点自适应](#143-扩展点自适应)
+        - [1.4.4. 扩展点自动激活](#144-扩展点自动激活)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">Dubbo改进了JDK标准的SPI的以下问题：</font>**  
-
-* JDK标准的SPI会一次性实例化扩展点所有实现。  
-* 如果扩展点加载失败，连扩展点的名称都拿不到了。  
-* 增加了对扩展点IoC和AOP的支持，一个扩展点可以直接setter注入其它扩展点。  
-
+1. **<font color = "clime">Dubbo改进了JDK标准的SPI的以下问题：</font>**  
+    * JDK标准的SPI会一次性实例化扩展点所有实现。  
+    * 如果扩展点加载失败，连扩展点的名称都拿不到了。  
+    * 增加了对扩展点IoC和AOP的支持，一个扩展点可以直接setter注入其它扩展点。  
+2. Dubbo中已经实现的扩展：协议扩展 、调用拦截扩展 、引用监听扩展 、暴露监听扩展 、集群扩展 、路由扩展 、负载均衡扩展 、合并结果扩展 、注册中心扩展 、监控中心扩展 、扩展点加载扩展 、动态代理扩展 、编译器扩展 、Dubbo 配置中心扩展 、消息派发扩展 、线程池扩展 、序列化扩展 、网络传输扩展 、信息交换扩展 、组网扩展 、Telnet 命令扩展 、状态检查扩展 、容器扩展 、缓存扩展 、验证扩展 、日志适配扩展。  
 
 
 # 1. Dubbo SPI  
@@ -32,7 +32,7 @@ https://mp.weixin.qq.com/s/hR8hlJyGxnn3wIfBhlNbuQ
 -->
 
 ## 1.1. SPI简介  
-&emsp; **<font color = "red">SPI全称为Service Provider Interface，是一种服务发现机制。SPI的本质是将接口实现类的全限定名配置在文件中，并由服务加载器读取配置文件，加载实现类。这样可以在运行时，动态的为接口替换实现类。</font>** 正因此特性，可以很容易的通过SPI机制为程序提供拓展功能。  
+&emsp; **<font color = "red">SPI全称为Service Provider Interface，是一种服务发现机制。[SPI](/docs/java/basis/SPI.md)的本质是将接口实现类的全限定名配置在文件中，并由服务加载器读取配置文件，加载实现类。这样可以在运行时，动态的为接口替换实现类。</font>** 正因此特性，可以很容易的通过SPI机制为程序提供拓展功能。  
 &emsp; SPI机制在第三方框架中也有所应用，比如Dubbo就是通过SPI机制加载所有的组件。不过，Dubbo并未使用Java原生的SPI机制，而是对其进行了增强，使其能够更好的满足需求。 **<font color = "clime">Dubbo改进了JDK标准的SPI的以下问题：</font>**  
 
 * JDK标准的SPI会一次性实例化扩展点所有实现，如果有扩展实现初始化很耗时，但如果没用上也加载，会很浪费资源。
@@ -55,10 +55,15 @@ Dubbo改进了JDK标准的SPI的以下问题：
 * <font color = "red">如果扩展点加载失败，连扩展点的名称都拿不到了。</font>比如：JDK标准的ScriptEngine，通过getName()获取脚本类型的名称，但如果 RubyScriptEngine因为所依赖的jruby.jar不存在，导致RubyScriptEngine类加载失败，这个失败原因被吃掉了，和ruby对应不起来，当用户执行ruby脚本时，会报不支持ruby，而不是真正失败的原因。
 * <font color = "red">增加了对扩展点IoC和AOP的支持，</font>一个扩展点可以直接setter注入其它扩展点。
 -->
-## 1.2. SPI示例  
+
+## 1.2. Dubbo中的扩展点有哪些？
+&emsp; [Dubbo中已经实现的扩展](https://dubbo.apache.org/zh/docs/v2.7/dev/impls/)：  
+&emsp; 协议扩展 、调用拦截扩展 、引用监听扩展 、暴露监听扩展 、集群扩展 、路由扩展 、负载均衡扩展 、合并结果扩展 、注册中心扩展 、监控中心扩展 、扩展点加载扩展 、动态代理扩展 、编译器扩展 、Dubbo 配置中心扩展 、消息派发扩展 、线程池扩展 、序列化扩展 、网络传输扩展 、信息交换扩展 、组网扩展 、Telnet 命令扩展 、状态检查扩展 、容器扩展 、缓存扩展 、验证扩展 、日志适配扩展。  
+
+## 1.3. SPI示例  
 &emsp; 接下来，先来了解一下Java SPI与Dubbo SPI的用法。   
 
-### 1.2.1. Java SPI 示例  
+### 1.3.1. Java SPI 示例  
 &emsp; 定义一个接口，名称为Robot。  
 
 ```java
@@ -108,7 +113,7 @@ public class JavaSPITest {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-27.png)   
 &emsp; 从测试结果可以看出，两个实现类被成功的加载，并输出了相应的内容。关于Java SPI的演示先到这里，接下来演示Dubbo SPI。  
 
-### 1.2.2. Dubbo SPI示例  
+### 1.3.2. Dubbo SPI示例  
 &emsp; <font color = "red">Dubbo SPI的相关逻辑被封装在了ExtensionLoader类中，通过ExtensionLoader，可以加载指定的实现类。Dubbo SPI所需的配置文件需放置在META-INF/dubbo路径下，</font>配置内容如下。  
 
 ```properties
@@ -140,13 +145,13 @@ public class DubboSPITest {
 * @Adaptive自适应拓展实现类标志  
 * @Activate自动激活条件的标记  
 
-## 1.3. 扩展点特性  
+## 1.4. 扩展点特性  
 &emsp; Dubbo的SPI主要有两种：
 
 * [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
 * [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
 
-### 1.3.1. 扩展点自动包装，Wrapper机制  
+### 1.4.1. 扩展点自动包装，Wrapper机制  
 <!-- 
 Dubbo扩展机制（三）Wrapper【代理】
 https://www.cnblogs.com/caoxb/p/13140345.html
@@ -185,7 +190,7 @@ public class XxxProtocolWrapper implements Protocol {
 * 在接口实现方法中要调用SPI接口引用对象的相应方法
 * 该类名称以Wrapper结尾
 
-### 1.3.2. 扩展点自动装配  
+### 1.4.2. 扩展点自动装配  
 &emsp; **加载扩展点时，自动注入依赖的扩展点。**加载扩展点时，扩展点实现类的成员如果为其它扩展点类型，ExtensionLoader会自动注入依赖的扩展点。ExtensionLoader通过扫描扩展点实现类的所有setter方法来判定其成员。即ExtensionLoader会执行扩展点的拼装操作。  
 &emsp; 示例：有两个为扩展点CarMaker（造车者）、WheelMaker(造轮者)  
 &emsp; 接口类如下：  
@@ -220,7 +225,7 @@ public class RaceCarMaker implements CarMaker {
 &emsp; ExtensionLoader加载CarMaker的扩展点实现RaceCarMaker时，setWheelMaker方法的WheelMaker也是扩展点则会注入WheelMaker的实现。  
 &emsp; 这里带来另一个问题，ExtensionLoader要注入依赖扩展点时，如何决定要注入依赖扩展点的哪个实现。在这个示例中，即是在多个WheelMaker的实现中要注入哪个。这个问题在下面一点扩展点自适应中说明。  
 
-### 1.3.3. 扩展点自适应  
+### 1.4.3. 扩展点自适应  
 <!--
 Adaptive【URL-动态适配】
 https://www.cnblogs.com/caoxb/p/13140329.html
@@ -279,7 +284,7 @@ public interface Transporter {
 ```
 &emsp; 对于bind()方法，Adaptive实现先查找server key，如果该Key没有值则找 transport key值，来决定代理到哪个实际扩展点。  
 
-### 1.3.4. 扩展点自动激活
+### 1.4.4. 扩展点自动激活
 &emsp; 对于集合类扩展点，比如：Filter, InvokerListener, ExportListener, TelnetHandler, StatusChecker等，可以同时加载多个实现，此时，可以用自动激活来简化配置，如：  
 
 ```java

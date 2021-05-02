@@ -11,8 +11,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-34.png)  
-
 &emsp; **<font color = "red">总结：</font>**  
 1. spring-boot-starter-actuator依赖中已经实现的一些原生端点。根据端点的作用，<font color = "clime">可以将原生端点分为以下三大类。</font>  
     * 应用配置类：获取应用程序中加载的应用配置、环境变量、自动化配置报告等与Spring Boot应用密切相关的配置类信息。  
@@ -44,7 +42,7 @@ management.security.enabled=false
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-26.png)  
 
 ## 1.2. actuator原生端点  
-&emsp; spring-boot-starter-actuator依赖中已经实现的一些原生端点。根据端点的作用，<font color = "clime">可以将原生端点分为以下三大类。</font>  
+&emsp; spring-boot-starter-actuator依赖中已经实现的一些原生端点。根据端点的作用，<font color = "clime">可以将原生端点分为以下三大类：</font>  
 
 * 应用配置类：获取应用程序中加载的应用配置、环境变量、自动化配置报告等与Spring Boot应用密切相关的配置类信息。  
 * 度量指标类：获取应用程序运行过程中用于监控的度量指标，比如内存信息、线程池信息、HTTP请求统计等。  
@@ -146,7 +144,7 @@ management.security.enabled=false
         "status": "UP"
     }
     ```  
-* **<font color = "red">/heapdump：访问http://localhost:8080/actuator/heapdump 会自动生成一个 Jvm 的堆文件 heapdump。</font>** 可以使用 JDK 自带的 Jvm 监控工具 VisualVM 打开此文件查看内存快照。  
+* **<font color = "red">/heapdump：访问http://localhost:8080/actuator/heapdump 会自动生成一个Jvm的堆文件 heapdump。</font>** 可以使用JDK自带的Jvm监控工具VisualVM打开此文件查看内存快照。  
 
 * **<font color = "red">/dump：该端点用来暴露程序运行中的线程信息。</font>** 它使用java.lang.management.ThreadMXBean的dumpAllThreads方法来返回所有含有同步信息的活动线程详情。  
 * /trace：该端点用来返回基本的HTTP跟踪信息。默认情况下，跟踪信息的存储采用org.springframework.boot.actuate.trace.InMemoryTraceRepository实现的内存方式，始终保留最近的100条请求记录。它记录的内容格式如下：  

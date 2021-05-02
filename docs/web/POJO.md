@@ -25,4 +25,6 @@ DO,DTO,VO,POJO 敖丙还不知道？
 https://mp.weixin.qq.com/s/yUveVZ3QHxXMaxbm4ryHXQ
 浅析 VO、DTO、DO、PO 的概念、区别和用处！ 
 https://mp.weixin.qq.com/s/8Pqj4hOsTVmmveIEu1UI-A
+
+https://zhuanlan.zhihu.com/p/94931336
 -->

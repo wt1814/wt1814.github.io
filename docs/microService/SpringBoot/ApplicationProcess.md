@@ -180,7 +180,7 @@ public ConfigurableApplicationContext run(String... args) {
 	}
 ```
 
-&emsp; 5、下面方法判断启动类中是否包含@Component注解，但是在启动类中并没有该注解，继续更进发现MergedAnnotations类传入了一个参数SearchStrategy.TYPE_HIERARCHY，会查找继承关系中是否包含这个注解，@SpringBootApplication --> @SpringBootConfiguration --> @Configuration --> @Component，当找到@Component注解之后，会把该对象注册到AnnotatedBeanDefinitionReader对象中  
+&emsp; 5、下面方法判断启动类中是否包含@Component注解，但是在启动类中并没有该注解，继续更进发现MergedAnnotations类传入了一个参数SearchStrategy.TYPE_HIERARCHY，会查找继承关系中是否包含这个注解，@SpringBootApplication --> @SpringBootConfiguration --> @Configuration --> @Component，当找到@Component注解之后，会把该对象注册到AnnotatedBeanDefinitionReader对象中。  
 
 ```java
 private boolean isComponent(Class<?> type) {

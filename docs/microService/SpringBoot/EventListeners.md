@@ -89,12 +89,12 @@ public ConfigurableApplicationContext run(String... args) {
  return context;
 }
 ```
-&emsp; <font color = "red">SpringBoot在启动过程中首先会先新建一个SpringApplicationRunListeners对象用于发布SpringBoot启动过程中的各种生命周期事件</font>，比如发布ApplicationStartingEvent,ApplicationEnvironmentPreparedEvent和ApplicationContextInitializedEvent等事件，<font color = "red">然后相应的监听器会执行一些SpringBoot启动过程中的初始化逻辑。</font>  
+&emsp; <font color = "red">SpringBoot在启动过程中首先会先新建一个SpringApplicationRunListeners对象用于发布SpringBoot启动过程中的各种生命周期事件</font>，比如发布ApplicationStartingEvent，ApplicationEnvironmentPreparedEvent和ApplicationContextInitializedEvent等事件，<font color = "red">然后相应的监听器会执行一些SpringBoot启动过程中的初始化逻辑。</font>  
 &emsp; 监听这些SpringBoot的生命周期事件的监听器是何时被加载实例化的呢？<font color = "red">这些执行初始化逻辑的监听器是在SpringApplication的构建过程中，根据ApplicationListener接口去spring.factories配置文件中加载并实例化的。</font>  
 
 ### 1.3.1. 为广播SpringBoot内置生命周期事件做前期准备  
 #### 1.3.1.1. 加载ApplicationListener监听器实现类  
-&emsp; <font color = "red">构建SpringApplication对象时，this.setListeners(this.getSpringFactoriesInstances(ApplicationListener.class))，从spring.factories中加载出ApplicationListener事件监听接口的SPI扩展实现类然后添加到SpringApplication对象的listeners集合中，用于后续监听SpringBoot启动过程中的事件，来执行一些初始化逻辑工作。</font>  
+&emsp; <font color = "red">构建SpringApplication对象时，`this.setListeners(this.getSpringFactoriesInstances(ApplicationListener.class))`，从spring.factories中加载出ApplicationListener事件监听接口的SPI扩展实现类然后添加到SpringApplication对象的listeners集合中，用于后续监听SpringBoot启动过程中的事件，来执行一些初始化逻辑工作。</font>  
 &emsp; SpringBoot启动时的具体监听器都实现了ApplicationListener接口，其在spring.factories部分配置如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-8.png)  
 &emsp; 在调试时，会从所有的spring.factories配置文件中加载监听器，最终加载了10个监听器。如下图：  

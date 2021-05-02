@@ -14,8 +14,8 @@
 
 # 1. 自定义springboot-starter
 &emsp; 通过配置文件定义自动配置开关：  
-1. 编写业务逻辑  
-2. 定义配置文件对应类  
+1. 编写业务逻辑。  
+2. 定义配置文件对应类。  
     * @ConfigurationProperties配置属性文件，需要指定前缀prefix。
     * @EnableConfigurationProperties启用配置，需要指定启用的配置类。
     * @NestedConfigurationProperty当一个类中引用了外部类，需要在该属性上加该注解。

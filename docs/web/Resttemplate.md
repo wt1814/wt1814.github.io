@@ -40,3 +40,11 @@ https://blog.csdn.net/qq_35794202/article/details/102998621
         HttpEntity<String> httpEntity = new HttpEntity(openAccountRequest,headers);
 
 -->
+
+
+
+
+<!-- 
+RestTemplate，请求失败自动重试机制
+https://www.cnblogs.com/zimug/p/13507850.html
+-->

@@ -17,6 +17,7 @@
     3. 通过Protocol类的export方法暴露服务。  
         1. 本地各种协议暴露。  
         2. 注册中心暴露。  
+    4. 如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心。  
 2. **服务消费者引用服务的主过程：(包含3个步骤)**  
     1. ReferenceConfig解析引用的服务。  
     2. ReferenceConfig 类的 init 方法调用 Protocol 的 refer 方法生成 Invoker 实例。  
@@ -32,7 +33,7 @@
 &emsp; 注意：URL是[Dubbo公共契约](https://dubbo.apache.org/zh/docs/v2.7/dev/contract/)之一。    
 
 ## 1.2. ~~暴露服务~~  
-&emsp; [服务暴露源码解析](/docs/microService/dubbo/export.md)  
+&emsp; 详解请看[服务暴露源码解析](/docs/microService/dubbo/export.md)  
 
 &emsp; 下图是服务提供者暴露服务的主过程：(包含3个步骤)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-29.png)   
@@ -50,13 +51,13 @@
     &emsp; Dubbo协议的Invoker转为Exporter发生在DubboProtocol 类的 export 方法，它主要是打开 socket 侦听服务，并接收客户端发来的各种请求，通讯细节由 Dubbo 自己实现。  
     * **RMI 的实现**  
     &emsp; RMI协议的Invoker转为Exporter发生在 RmiProtocol类的 export 方法，它通过 Spring 或 Dubbo 或 JDK 来实现 RMI 服务，通讯细节这一块由 JDK 底层来实现，这就省了不少工作量。  
-4. **<font color = "clime">如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心</font>**  
+4. **<font color = "clime">如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心。</font>**  
     &emsp; ~~基于扩展点自适应机制，通过URL的registry://协议头识别，就会调用 RegistryProtocol的export()方法，将export参数中的提供者URL，先注册到注册中心。~~  
     &emsp; ~~再重新传给Protocol扩展点进行暴露：dubbo://service-host/com.foo.FooService?version=1.0.0，然后基于扩展点自适应机制，通过提供者URL的dubbo://协议头识别，就会调用DubboProtocol的export()方法，打开服务端口。~~  
 
 
 ## 1.3. ~~引用服务~~
-&emsp; [服务引用源码解析](/docs/microService/dubbo/introduce.md)  
+&emsp; 详解请看[服务引用源码解析](/docs/microService/dubbo/introduce.md)  
 
 &emsp; 服务暴露之后，客户端就要引用服务，最后才是调用的过程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-30.png)   

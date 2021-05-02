@@ -101,6 +101,7 @@
 [类加载](/docs/java/JVM/classLoading.md)  
 &emsp; [JVM类的加载](/docs/java/JVM/classLoad.md)  
 &emsp; [JVM类加载器](/docs/java/JVM/classLoader.md)  
+&emsp; [对象的生命周期](/docs/java/JVM/ObjectPeriod.md)  
 [内存结构](/docs/java/JVM/Memory.md)  
 &emsp; [JVM内存结构](/docs/java/JVM/JVMMemory.md)  
 &emsp; [常量池详解](/docs/java/JVM/ConstantPool.md)  
@@ -118,7 +119,6 @@
 &emsp; [三色标记](/docs/java/JVM/TriMark.md)  
 [调优](/docs/java/JVM/tuning.md)  
 &emsp; [JVM调优-基础](/docs/java/JVM/TuningBasic.md)  
-&emsp; [性能指标](/docs/system/performance.md)  
 &emsp; [JVM调优](/docs/java/JVM/tuningProblem.md)  
 &emsp; [JVM问题排查](/docs/java/JVM/TroubleShooting.md)  
 &emsp; [JAVA线上故障排查](/docs/Linux/problem.md)  
@@ -308,6 +308,7 @@
 &emsp; [RedisPipeline/批处理](/docs/microService/Redis/RedisPipeline.md)  
 &emsp; [Redis和Lua](/docs/microService/Redis/lua.md)  
 &emsp; [Redis持久化](/docs/microService/Redis/RedisPersistence.md)  
+&emsp; &emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
 &emsp; [Redis内存](/docs/microService/Redis/RedisEliminate.md)  
 &emsp; [Redis实现消息队列](/docs/microService/Redis/Message.md)  
 &emsp; &emsp; [发布订阅](/docs/microService/Redis/pub.md)  
@@ -344,12 +345,12 @@
 [kafka集群管理](/docs/microService/mq/kafka/kafkaUse.md)  
 [kafka-SpringBoot](/docs/microService/mq/kafka/kafkaSpringBoot.md)  
 [kafka高级应用](/docs/microService/mq/kafka/advanced.md)  
-<!-- 
-[kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
--->
 [kafka源码](/docs/microService/mq/kafka/kafkaSource.md)  
 [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
 [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md)  
+<!-- 
+[kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
+-->
 
 ### SpringBoot  
 [学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
@@ -402,9 +403,9 @@
 -->
 
 ### Zookeeper
+[如何理解分布式协调技术](/docs/microService/dubbo/coordinate.md)  
 [Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
 [Zookeeper使用](/docs/microService/dubbo/ZookeeperUse.md)  
-[如何理解分布式协调技术](/docs/microService/dubbo/coordinate.md)  
 
 ### 分布式理论  
 [分布式和集群](/docs/system/distributed.md)   
@@ -543,6 +544,7 @@
 
 [分布式高并发](/docs/system/DistributedHighConcurrency.md)   
 &emsp; [分布式与微服务](/docs/system/serviceSplit.md)  
+&emsp; [性能指标](/docs/system/performance.md)  
 &emsp; [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; [高可用](/docs/system/highAvailability.md)  
 &emsp; [秒杀系统设计](/docs/system/seckill.md)  

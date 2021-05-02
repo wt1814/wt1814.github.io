@@ -14,6 +14,7 @@
                 - [1.3.2.3.2. G1---写屏障（tore Barrier）+SATB](#13232-g1---写屏障tore-barriersatb)
                 - [1.3.2.3.3. 读屏障（Load Barrier）](#13233-读屏障load-barrier)
                 - [1.3.2.3.4. 总结](#13234-总结)
+                - [1.3.2.3.5. ~~STAB详解~~](#13235-stab详解)
 
 <!-- /TOC -->
 
@@ -216,4 +217,11 @@ https://blog.csdn.net/waltonhuang/article/details/105550331
 增量更新，关注引用的增加，把黑色重写标记为灰色，下次重新扫描属性。  
 SATB snapshot at the beginning，关注引用的删除
 当B->D消失时，要把这个引用推到GC的堆栈，保证D还能被GC扫描到。 
+-->
+##### 1.3.2.3.5. ~~STAB详解~~  
+<!-- 
+STAB
+https://blog.csdn.net/f191501223/article/details/84726719
+https://blog.csdn.net/qq_33460562/article/details/103202935
+https://blog.csdn.net/weixin_30814223/article/details/95706567
 -->

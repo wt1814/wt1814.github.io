@@ -36,7 +36,7 @@ https://blog.csdn.net/weixin_33769207/article/details/86361060
 Dubbo-服务提供者初始化
 https://www.cnblogs.com/caoxb/p/13140261.html
 -->
-&emsp; 服务提供者初始化过程，即ServiceBean 初始化过程。   
+&emsp; 服务提供者初始化过程，即ServiceBean初始化过程。   
 
 ### 1.2.1. 解析配置文件  
 &emsp; Spring解析Dubbo配置文件时，会找到dubbo命名空间对应的handler，DubboNamespaceHandler。  
@@ -139,7 +139,7 @@ https://www.cnblogs.com/caoxb/p/13140244.html
 
 2. 单例非懒加载bean的创建  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-46.png)  
-    1. 以demoService的bean创建为例，demoService属于ReferenceBean类型的工厂bean
+    1. 以demoService的bean创建为例，demoService属于ReferenceBean类型的工厂bean；
     2. demoService在实例化后（earlySingletonExposure为true提前暴露）准备开始进行属性注入，即将其所有暴露的method作为属性；
     3. demoService将demoService.sayHello方法当成它的属性，并始对它进行属性注入（emoService.sayHello是一个Method类型的bean）；
     4. 开始创建名为demoService.sayHello的bean，这个Bean属于MethodConfig；

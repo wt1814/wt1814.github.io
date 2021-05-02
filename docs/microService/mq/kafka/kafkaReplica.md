@@ -114,14 +114,14 @@ In-sync Replicas(ISR)
 &emsp; 当领导者副本宕机了，Kafka依托于ZooKeeper提供的监控功能能够实时感知到，并立即开启新一轮的领导者选举，从追随者副本中选一个作为新的领导者。老Leader副本重启回来后，只能作为追随者副本加入到集群中。  
 &emsp; **当Leader宕机时，要从Follower中选举出新的Leader，但并不是所有的Follower都有资格参与选举。因为有的Follower的同步情况滞后，如果让它成为Leader，将会导致消息丢失。**   
 
-0. 什么是滞后副本  
+0. 什么是滞后副本？  
 &emsp; 默认情况下(注意只是默认)，只有被认定为是实时同步的Follower副本，才可能被选举成Leader。一个副本与leader失去实时同步的原因有很多，比如：  
 
-    * 慢副本(Slow replica)：follower replica在一段时间内一直无法赶上 leader 的写进度。造成这种情况的最常见原因之一是 follower replica 上的 I/O瓶颈，导致它持久化日志的时间比它从 leader 消费消息的时间要长；  
-    * 卡住副本(Stuck replica)：follower replica 在很长一段时间内停止从 leader 获取消息。这可能是以为GC停顿，或者副本出现故障；  
-    * 刚启动副本(Bootstrapping replica)：当用户给某个主题增加副本因子时，新的 follower replicas是不同步的，直到它跟上 leader 的日志。  
+    * 慢副本(Slow replica)：follower replica在一段时间内一直无法赶上 leader 的写进度。造成这种情况的最常见原因之一是follower replica 上的 I/O瓶颈，导致它持久化日志的时间比它从leader消费消息的时间要长；  
+    * 卡住副本(Stuck replica)：follower replica在很长一段时间内停止从leader获取消息。这可能是发生GC停顿，或者副本出现故障；  
+    * 刚启动副本(Bootstrapping replica)：当用户给某个主题增加副本因子时，新的 follower replicas是不同步的，直到它跟上leader的日志。  
 1. **引入ISR**  
-&emsp; **<font color = "clime">为了避免将旧副本选举为Leader，Kafka引入了ISR(In-Sync Replica，保持同步的副本)的概念，这是一个集合，里面存放的是和Leader保持同步的副本并含有Leader。这是一个动态调整的集合，当副本由同步变为滞后时会从集合中剔除，而当副本由滞后变为同步时又会加入到集合中。</font>**  
+&emsp; **<font color = "clime">为了避免将旧副本选举为Leader，Kafka引入了ISR（In-Sync Replica，保持同步的副本）的概念，这是一个集合，里面存放的是和Leader保持同步的副本并含有Leader。这是一个动态调整的集合，当副本由同步变为滞后时会从集合中剔除，而当副本由滞后变为同步时又会加入到集合中。</font>**  
 
 <!--
 https://juejin.cn/post/6844903950009794567#heading-3
@@ -164,7 +164,7 @@ unclean领导者选举。再回去看看刚刚我们说Leader挂了怎么办，�
 对于副本机制，在 broker 级别有一个可选的配置参数 unclean.leader.election.enable，默认值为 fasle，代表禁止不完全的首领选举。这是针对当首领副本挂掉且 ISR 中没有其他可用副本时，是否允许某个不完全同步的副本成为首领副本，这可能会导致数据丢失或者数据不一致，在某些对数据一致性要求较高的场景 (如金融领域)，这可能无法容忍的，所以其默认值为 false，如果你能够允许部分数据不一致的话，可以配置为 true。
 
 -->
-&emsp; ISR是一个动态调整的集合，而非静态不变的。当ISR集合为空时，即没有同步副本(Leader也挂了)，无法选出下一个Leader，Kafka集群将会失效。而为了提高可用性，Kafka提供了unclean.leader.election.enable参数，当设置为true且ISR集合为空时，会进行Unclear Leader选举，允许在非同步副本中选出新的Leader，从而提高Kafka集群的可用性，但这样会造成消息丢失。在允许消息丢失的场景中，是可以开启此参数来提高可用性的。而其他情况，则不建议开启，而是通过其他手段来提高可用性。  
+&emsp; ISR是一个动态调整的集合，而非静态不变的。当ISR集合为空时，即没有同步副本(Leader也挂了)，无法选出下一个Leader，Kafka集群将会失效。 **<font color = "red">而为了提高可用性，Kafka提供了unclean.leader.election.enable参数，当设置为true且ISR集合为空时，会进行Unclear Leader选举，允许在非同步副本中选出新的Leader，从而提高Kafka集群的可用性，但这样会造成消息丢失。在允许消息丢失的场景中，是可以开启此参数来提高可用性的。</font>** 而其他情况，则不建议开启，而是通过其他手段来提高可用性。  
 
 ## 1.4. ~~服务端副本消息的同步(LEO和HW)~~ 
 <!-- 
@@ -194,7 +194,7 @@ kafka数据一致性，通过HW来保证
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-75.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-112.png)  
 &emsp; **其中LEO(Last End Offset，低水位)记录了日志的下一条消息偏移量，即当前最新消息的偏移量加一。<font color = "red">**  
-&emsp; **而HW(High Watermark，高水位)界定了消费者可见的消息，消费者可以消费小于HW的消息，而大于等于HW的消息将无法消费。</font>** 是ISR队列中最小的LEO。  
+&emsp; **而HW（High Watermark，高水位）界定了消费者可见的消息，消费者可以消费小于HW的消息，而大于等于HW的消息将无法消费。</font>** 是ISR队列中最小的LEO。  
 
 ### 1.4.2. ★★★~~副本上LEO和HW的更新~~
 &emsp; 上述即是LEO和HW的基本概念，下面看下具体是如何工作的。  
@@ -292,4 +292,4 @@ https://my.oschina.net/u/3379856/blog/4388538
 &emsp; 下面是数据不一致情况：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-81.png)  
 &emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有消息m0，且HW为1，A、B同时宕机。B重启，被选为Leader，将写入新的LeaderEpoch(1, 1)。B开始工作，收到消息m2时。这是A重启，将作为Follower将发送LeaderEpochRequert(FollowerLastEpoch=0)，B返回大于FollowerLastEpoch的第一个LeaderEpoch的StartOffset，即1，小于当前LEO值，所以将发生日志截断，并发送Fetch请求，同步消息m2，避免了消息不一致问题。  
-&emsp; 你可能会问，m2消息那岂不是丢失了？是的，m2消息丢失了，但这种情况的发送的根本原因在于min.insync.replicas的值设置为1，即没有任何其他副本同步的情况下，就认为m2消息为已提交状态。LeaderEpoch不能解决min.insync.replicas为1带来的数据丢失问题，但是可以解决其所带来的数据不一致问题。而我们之前所说能解决的数据丢失问题，是指消息已经成功同步到Follower上，但因HW未及时更新引起的数据丢失问题。  
+&emsp; 但是此时m2消息会丢失，这种情况发生的根本原因在于min.insync.replicas的值设置为1，即没有任何其他副本同步的情况下，就认为m2消息为已提交状态。LeaderEpoch不能解决min.insync.replicas为1带来的数据丢失问题，但是可以解决其所带来的数据不一致问题。而我们之前所说能解决的数据丢失问题，是指消息已经成功同步到Follower上，但因HW未及时更新引起的数据丢失问题。  

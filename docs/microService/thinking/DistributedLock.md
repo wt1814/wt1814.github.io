@@ -10,8 +10,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-29.png)  
-
 # 1. 分布式锁  
 <!-- 
 分布式锁需要满足的特性有这么几点：

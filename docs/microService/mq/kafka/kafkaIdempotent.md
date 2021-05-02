@@ -14,7 +14,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. Kafka幂等是针对生产者角度的特性。kafka只保证producer单个会话中的单个分区幂等。  
-2. **<font color = "red">Kafka幂等性实现机制：(分区消息维护一个序列号，进行比较)</font>**  
+2. **<font color = "red">Kafka幂等性实现机制：（分区消息维护一个序列号，进行比较）</font>**  
     1. 每一个producer在初始化时会生成一个producer_id，并为每个目标partition维护一个"一个序列号"；
     2. producer每发送一条消息，会将 \<producer_id,分区\> 对应的“序列号”加1；  
     3. broker端会为每一对 \<producer_id,分区\> 维护一个序列号，对于每收到的一条消息，会判断服务端的SN_old和接收到的消息中的SN_new进行对比：  
