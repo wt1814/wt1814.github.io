@@ -110,7 +110,7 @@ https://mp.weixin.qq.com/s/oCOKYOgak3PjmHnFiAin7g
 &emsp; HeapsterInfluxDB和Grafana均以Pod的形式启动和运行。由于Heapster需要与Kubemetes Master进行安全连接，所以需要设置Master的CA证书安全策略。  
 
 ### 1.1.8. Helm：Kubemetes应用包管理工具
-&emsp; 随着容器技术逐渐被企业接受，简单的应用在Kubernetes上己经能够便捷部署。但对于复杂的应用中间件，在Kubemetes上进行容器化部署并非易事，通常需要先研究Docker镜像的运 行需求、环境变量等内容，并能为这些容器定制存储、网络等设置，最后设计和编写Deployment. Configmap, Service及Ingress等相关yaml配置文件，再提交给Kubemetes进行部署。这些复杂的过程将逐步被Helm应用包管理工具实现。  
+&emsp; 随着容器技术逐渐被企业接受，简单的应用在Kubernetes上己经能够便捷部署。但对于复杂的应用中间件，在Kubemetes上进行容器化部署并非易事，通常需要先研究Docker镜像的运行需求、环境变量等内容，并能为这些容器定制存储、网络等设置，最后设计和编写Deployment. Configmap, Service及Ingress等相关yaml配置文件，再提交给Kubemetes进行部署。这些复杂的过程将逐步被Helm应用包管理工具实现。  
 
 ## 1.2. Trouble Shooting指导  
 

@@ -39,7 +39,7 @@ https://blog.csdn.net/ghost_leader/article/details/55827729
 
 https://blog.csdn.net/qq_37165604/article/details/79802390
 -->
-linux内核2.4版本以上的基本都支持LVS，要使用lvs，只需要再安装一个lvs的管理工具：ipvsadm  
+&emsp; linux内核2.4版本以上的基本都支持LVS，要使用lvs，只需要再安装一个lvs的管理工具：ipvsadm  
 
     yum install ipvsadm
 

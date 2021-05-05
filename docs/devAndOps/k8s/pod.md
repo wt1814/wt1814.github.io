@@ -38,7 +38,7 @@ https://blog.csdn.net/weixin_45691464/article/details/106006125
 k8s中蓝绿部署、金丝雀发布、滚动更新汇总 
 https://mp.weixin.qq.com/s?__biz=MzU0NjEwMTg4Mg==&mid=2247484195&idx=1&sn=b841f2ea305acfa2996a667d4ff4d99e&chksm=fb638c36cc140520e6905db5923afe163d7babb5d9eb6c5e8045a795c37b33a2a2e5541e3efd&scene=21#wechat_redirect
 -->
-[多种发布方式](/docs/system/publishe.md)  
+&emsp; 参考[多种发布方式](/docs/system/publishe.md)  
 
 &emsp; kubernetes支持金丝雀发布(又称灰度发布、灰度更新)、滚动更新。  
 &emsp; **<font coclor = "clime">Kubernetes不支持内置的蓝/绿部署。</font>** 目前最好的方式是创建新的部署，然后更新应用程序的服务(如service)以指向新的部署；蓝绿部署是不停老版本，部署新版本然后进行测试，确认OK后将流量逐步切到新版本。蓝绿部署无需停机，并且风险较小。  

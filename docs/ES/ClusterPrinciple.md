@@ -13,7 +13,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 集群容错整体流程：Master选举(假如宕机节点是Master)(可能产生脑分裂) ---> 分片容错 ---> Master重启故障机 ---> 数据同步。 
+1. 集群容错整体流程：Master选举(假如宕机节点是Master)(可能产生脑分裂) ---> 分片容错（选取主分片） ---> Master重启故障机 ---> 数据同步。 
 2. 脑分裂： **<font color = "clime">正确设置最少投票通过数量(discovery.zen.minimum_master_nodes = 候选节点/+1)参数，即半数机制，可以避免脑分裂问题。</font>**  
 
 # 1. ~~ES集群运行原理~~
@@ -49,7 +49,7 @@
 &emsp; ①第一步：Master选举(假如宕机节点是Master)。  
 &emsp; &emsp; 1)脑裂：可能会产生多个Master节点。  
 &emsp; &emsp; 2)解决：discovery.zen.minimum_master_nodes=N/2+1。  
-&emsp; ②第二步：Replica容错，新的(或者原有)Master节点会将丢失的Primary对应的某个副本提升为Primary。  
+&emsp; ②第二步：Replica容错，新的(或者原有)Master节点会将丢失的Primary主分片对应的某个副本提升为Primary。  
 &emsp; ③第三步：Master节点会尝试重启故障机。  
 &emsp; ④第四步：数据同步，Master会将宕机期间丢失的数据同步到重启机器对应的分片上去。  
 
@@ -60,8 +60,7 @@
 
 &emsp; master选举过程是自动完成的，有几个参数可以影响选举的过程：  
 
-* discovery.zen.ping_timeout：选举超时时间，默认3秒，网络状况不好时可以增加超时时间。
-discovery.zen.join_timeout：有新的node加入集群时，会发送一个join request到master node，同样因为网络原因可以调大，如果一次超时，默认最多重试20次。  
+* discovery.zen.ping_timeout：选举超时时间，默认3秒，网络状况不好时可以增加超时时间。discovery.zen.join_timeout：有新的node加入集群时，会发送一个join request到master node，同样因为网络原因可以调大，如果一次超时，默认最多重试20次。  
 * discovery.zen.master_election.ignore_non_master_pings：如果master node意外宕机了，集群进行重新选举，如果此值为true，那么只有master eligible node才有资格被选为master。  
 * discovery.zen.minimum_master_nodes：新选举master时，要求必须有多少个master eligible node去连接那个新选举的master。而且还用于设置一个集群中必须拥有的master eligible node。如果这些要求没有被满足，那么master node就会被停止，然后会重新选举一个新的master。这个参数必须设置为master eligible node的quorum数量。一般避免说只有两个master eligible node，因为2的quorum还是2。如果在那个情况下，任何一个master候选节点宕机了，集群就无法正常运作了。 
 

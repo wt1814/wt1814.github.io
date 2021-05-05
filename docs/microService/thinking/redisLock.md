@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. Redis分布式锁](#1-redis分布式锁)
+- [1. RedisLock](#1-redislock)
     - [1.1. Redis部署方式](#11-redis部署方式)
     - [1.2. Redis Client原生API](#12-redis-client原生api)
         - [1.2.1. 单实例redis实现分布式锁](#121-单实例redis实现分布式锁)
@@ -19,7 +19,7 @@
 3. ~~RedLock“顺序加锁”：确保互斥。在同一时刻，必须保证锁至多只能被一个客户端持有。~~   
 
 
-# 1. Redis分布式锁  
+# 1. RedisLock 
 ## 1.1. Redis部署方式 
 &emsp; 使用Redis分布式锁需要考虑Redis的部署问题。Redis有多种部署方式：单机模式；Master-Slave+Sentinel选举模式；Redis Cluster模式。  
 * 如果采用单机部署模式，会存在单点问题。 **<font color = "clime">只要Redis故障了，可能存在`死锁`问题。</font>**  
@@ -111,7 +111,7 @@ public class RedisTool {
 6. 只要别的线程建立了一把分布式锁，当前线程就得不断轮询去尝试获取锁。  
 
 &emsp; **<font color="red">一句话概述：当前线程尝试给每个Master节点`顺序`加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。</font>**  
-&emsp; ~~RedLock“顺序加锁”：确保互斥。在同一时刻，必须保证锁至多只能被一个客户端持有。~~   
+&emsp; ~~**<font color="blue">RedLock“顺序加锁”：确保互斥。在同一时刻，必须保证锁至多只能被一个客户端持有。</font>**~~   
 <!-- 
 https://mp.weixin.qq.com/s/UjK9fhRElLzllqHWz9wxJg
 为了取到锁，客户端应该执行以下操作:

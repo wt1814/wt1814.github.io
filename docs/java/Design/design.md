@@ -14,6 +14,8 @@
 
 # 1. ~~设计模式~~
 
+
+
 <!-- 
 可参考《设计模式 - 可复用面向对象软件的基础(高清版)》
 结构可参考《Java与模式》
@@ -26,7 +28,11 @@ https://mp.weixin.qq.com/s/ewnxn3xIZNNIX84_kQ2qmg
 https://mp.weixin.qq.com/s/EnkvEIVTLzOcuVd8s8fJTQ
 
 -->
-&emsp; 有关设计模式可参考网址：[refactoringguru.cn](https://refactoringguru.cn/design-patterns/catalog)  
+<!-- 
+★★★
+https://refactoringguru.cn/design-patterns/catalog
+-->
+&emsp; **<font color = "blue">有关设计模式可参考网址：[refactoringguru.cn](https://refactoringguru.cn/design-patterns/catalog)</font>**  
 
 &emsp; 常用设计模式有23种(不包含简单工厂模式)。 **<font color = "red">这23种设计模式的本质是面向对象设计原则的实际运用，是对类的封装性、继承性和多态性，以及类的关联关系和组合关系的充分理解。</font>**  
 

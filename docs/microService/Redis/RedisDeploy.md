@@ -20,5 +20,6 @@ https://mp.weixin.qq.com/s/8JPBNMGhBsq2jfW9v-H5vQ
 1. [主从模式](/docs/microService/Redis/Redis主从复制.md) ：读写分离，备份，一个Master可以有多个Slaves。  
 2. [哨兵sentinel](/docs/microService/Redis/Redis哨兵模式.md)：监控，自动转移，哨兵发现主服务器挂了后，就会从slave中重新选举一个主服务器。  
 3. [分片](/docs/microService/Redis/Redis分片模式.md)：为了解决单机Redis容量有限的问题，将数据按一定的规则分配到多台机器，内存/QPS不受限于单机，可受益于分布式集群高扩展性。Redis Cluster是官方的集群。  
+&emsp; **<font color = "clime">注：redis集群模式很耗费资源。</font>**  
 
 &emsp; <font color="red">参考：《Redis开发与运维》</font>  

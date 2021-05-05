@@ -21,9 +21,9 @@
 2. **select()：**  
     &emsp; **select运行流程：**  
     &emsp; select()运行时会将fd_set集合从用户态拷贝到内核态。在内核态中线性扫描socket，即采用轮询。如果有事件返回，会将内核态的数组相应的FD置位。最后再将内核态的数据返回用户态。  
-    &emsp; **select机制的问题：**  
+    &emsp; **select机制的问题：（拷贝、两次轮询、FD置位）**  
     * 为了减少数据拷贝带来的性能损坏，内核对被监控的fd_set集合大小做了限制，并且这个是通过宏控制的，大小不可改变(限制为1024)  
-    * 每次调用select， **<font color = "red">1)需要把fd_set集合从用户态拷贝到内核态，</font>** **<font color = "clime">2)需要在内核遍历传递进来的所有fd_set(对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低)，</font>** **<font color = "red">3)如果有数据返回还需要从内核态拷贝到用户态。</font>** 如果fd_set集合很大时，开销比较大。 
+    * 每次调用select， **<font color = "red">1)需要把fd_set集合从用户态拷贝到内核态，</font>** **<font color = "clime">2)需要在内核遍历传递进来的所有fd_set（对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低），</font>** **<font color = "red">3)如果有数据返回还需要从内核态拷贝到用户态。</font>** 如果fd_set集合很大时，开销比较大。 
     * 由于运行时，需要将FD置位，导致fd_set集合不可重用。  
     * **<font color = "clime">select()函数返回后，</font>** 调用函数并不知道是哪几个流（可能有一个，多个，甚至全部）， **<font color = "clime">还得再次遍历fd_set集合处理数据，即采用无差别轮询。</font>**   
     * ~~惊群~~   
@@ -41,7 +41,7 @@
     &emsp; 注意：ET模式只支持非阻塞的读写：为了保证数据的完整性。  
 
       **epoll机制的优点：**  
-    * 调用epoll_ctl时拷贝进内核并保存，之后每次epoll_wait不拷贝。 内核态和用户态共享epoll_create创建的空间。  
+    * 调用epoll_ctl时拷贝进内核并保存，之后每次epoll_wait不拷贝。  
     * epoll()函数返回后，调用函数以O(1)复杂度遍历。  
 
 
@@ -49,6 +49,8 @@
 <!--
 ★★★ 你管这破玩意叫 IO 多路复用？ 
 https://mp.weixin.qq.com/s/Ok7SIROXu1THUbWsFu-UYw
+★★★ epoll原理详解（最清晰）
+https://blog.csdn.net/lyztyycode/article/details/79491419
 
 深入Hotspot源码与Linux内核理解NIO与Epoll 
 https://mp.weixin.qq.com/s/WhfnTtMpY4EgT65UezKjtw
@@ -104,6 +106,15 @@ int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-94.png)  
 &emsp; select()运行时会将fd_set集合从用户态拷贝到内核态。在内核态中线性扫描socket，即采用轮询。如果有事件返回，会将内核态的数组相应的FD置位。最后再将内核态的数据返回用户态。  
 
+
+--------
+
+1. 步骤1的解法：select创建3个文件描述符集，并将这些文件描述符拷贝到内核中，这里限制了文件句柄的最大的数量为1024（注意是全部传入---第一次拷贝）；  
+2. 步骤2的解法：内核针对读缓冲区和写缓冲区来判断是否可读可写,这个动作和select无关；  
+3. 步骤3的解法：内核在检测到文件句柄可读/可写时就产生中断通知监控者select，select被内核触发之后，就返回可读可写的文件句柄的总数；  
+4. 步骤4的解法：select会将之前传递给内核的文件句柄再次从内核传到用户态（第2次拷贝），select返回给用户态的只是可读可写的文件句柄总数，再使用FD_ISSET宏函数来检测哪些文件I/O可读可写（遍历）；  
+5. 步骤5的解法：select对于事件的监控是建立在内核的修改之上的，也就是说经过一次监控之后，内核会修改位，因此再次监控时需要再次从用户态向内核态进行拷贝（第N次拷贝）  
+
 ### 1.1.2. 调用select()函数示例
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-95.png)  
 
@@ -146,7 +157,7 @@ int 函数返回fds集合中就绪的读、写，或出错的描述符数量，�
 &emsp; **<font color = "red">在内核中只将revents字段置位，pollfds链表可重用。</font>**   
 
 ## 1.3. epoll
-&emsp; epoll是在2.6内核中提出的，是之前的select和poll的增强版本。相对于select和poll来说，epoll更加灵活，没有描述符限制。 **epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。**  
+&emsp; epoll是在2.6内核中提出的，是之前的select和poll的增强版本。相对于select和poll来说，epoll更加灵活，没有描述符限制。 **epoll使用一个文件描述符管理多个描述符，将用户关心的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。**  
 <!-- 
 ★★★
 https://zhuanlan.zhihu.com/p/159135478
@@ -160,18 +171,28 @@ https://mp.weixin.qq.com/s/qVUXY7t515xmXIL8gQ1nBQ
 
 * int epoll_create(int size)  
 &emsp; 函数创建epoll文件描述符，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。返回是epoll描述符。-1表示创建失败。  
-&emsp; 调用epoll_create，会在内核cache里建个红黑树，epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改；同时也会再建立一个rdllist双向链表，用于存储准备就绪的事件，当epoll_wait调用时，仅查看这个rdllist双向链表数据即可。     
+&emsp; **<font color = "clime">调用epoll_create，会在内核cache里建个红黑树，epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改；同时也会再建立一个rdllist双向链表，用于存储准备就绪的事件，当epoll_wait调用时，仅查看这个rdllist双向链表数据即可。</font>**     
 * int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)  
 &emsp; 控制对指定描述符fd执行op操作，event是与fd关联的监听事件。op操作有三种：添加EPOLL_CTL_ADD，删除EPOLL_CTL_DEL，修改EPOLL_CTL_MOD。分别添加、删除和修改对fd的监听事件。  
 &emsp; 即epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改。  
 &emsp; 对于需要监视的文件描述符集合，epoll_ctl对红黑树进行管理，红黑树中每个成员由描述符值和所要监控的文件描述符指向的文件表项的引用等组成。  
 * int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout)  
 &emsp; 等待epfd上的io事件，最多返回maxevents个事件。  
-&emsp; 参数events用来从内核得到事件的集合，maxevents告之内核这个events有多大，这个maxevents的值不能大于创建epoll_create()时的size，参数timeout是超时时间(毫秒，0会立即返回，-1将不确定，也有说法说是永久阻塞)。该函数返回需要处理的事件数目，如返回0表示已超时。  
+&emsp; **参数events用来从内核得到事件的集合，** maxevents告之内核这个events有多大，这个maxevents的值不能大于创建epoll_create()时的size，参数timeout是超时时间(毫秒，0会立即返回，-1将不确定，也有说法说是永久阻塞)。该函数返回需要处理的事件数目，如返回0表示已超时。  
 
 
-&emsp; 在select/poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描，而epoll事先通过epoll_ctl()来注册一个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait()时便得到通知。  
+&emsp; 在select/poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描， **而epoll事先通过epoll_ctl()来注册一个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait()时便得到通知。**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-104.png)  
+
+
+---------
+
+1. 步骤1的解法：首先执行epoll_create在内核专属于epoll的高速cache区，并在该缓冲区建立红黑树和就绪链表，用户态传入的文件句柄将被放到红黑树中（第一次拷贝）。  
+2. 步骤2的解法：内核针对读缓冲区和写缓冲区来判断是否可读可写，这个动作与epoll无关；  
+3. 步骤3的解法：epoll_ctl执行add动作时除了将文件句柄放到红黑树上之外，还向内核注册了该文件句柄的回调函数，内核在检测到某句柄可读可写时则调用该回调函数，回调函数将文件句柄放到就绪链表。  
+4. 步骤4的解法： **<font color = "clime">epoll_wait只监控就绪链表就可以，如果就绪链表有文件句柄，则表示该文件句柄可读可写，并返回到用户态（少量的拷贝）；</font>**  
+5. 步骤5的解法：由于内核不修改文件句柄的位，因此只需要在第一次传入就可以重复监控，直到使用epoll_ctl删除，否则不需要重新传入，因此无多次拷贝。  
+&emsp; 简单说：epoll是继承了select/poll的I/O复用的思想，并在二者的基础上从监控IO流、查找I/O事件等角度来提高效率，具体地说就是内核句柄列表、红黑树、就绪list链表来实现的。  
 
 
 ### 1.3.2. 调用epoll()函数

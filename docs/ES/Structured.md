@@ -25,7 +25,7 @@
 <!-- 
 https://www.elastic.co/guide/cn/elasticsearch/guide/current/structured-search.html
 -->
-&emsp; 针对字段类型： 日期、时间、数字类型，以及精确的文本匹配。  
+&emsp; 结构化搜索（Structured search）是指有关探询那些具有内在结构数据的过程。比如日期、时间和数字都是结构化的：它们有精确的格式，可以对这些格式进行逻辑操作。比较常见的操作包括比较数字或时间的范围，或判定两个值的大小。  
 &emsp; 结构化检索特点：  
 * 1） **结构化查询，得到的结果总是 非是即否，** 要么存于集合之中，要么存在集合之外。  
 * 2）结构化查询不关心文件的相关度或评分；它简单的对文档包括或排除处理。  
@@ -366,7 +366,7 @@ GET /product/_search
 ```
 
 &emsp; 如上，terms是包含的意思，包含20或者包含30。  
-&emsp; 如下实现严格意义的精确值检索， tag_count代表必须匹配的次数为1。  
+&emsp; 如下实现严格意义的精确值检索，tag_count代表必须匹配的次数为1。  
 
 ```
 GET /my_index/my_type/_search
@@ -502,7 +502,7 @@ GET /_search
 
 
 ## 1.7. 正则表达式检索（regexp query）
-&emsp; 正则表达式查询允许您使用正则表达式术语查询。  
+&emsp; 正则表达式查询允许使用正则表达式术语查询。  
 &emsp; 举例如下：  
 
 ```

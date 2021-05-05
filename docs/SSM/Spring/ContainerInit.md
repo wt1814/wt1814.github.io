@@ -17,6 +17,11 @@
 
 <!-- /TOC -->
 
+<!--
+ Spring IoC 容器初始化（2） 
+https://mp.weixin.qq.com/s?__biz=MzU4NzYyMDE4MQ==&mid=2247484614&idx=1&sn=4083d7d8cbc2b35af97f0fd053732f4e&chksm=fde80efcca9f87ea3535c0a88cf17dcf76020cf1c98fedbc57d067c67548f8f25f41df01a5a2&scene=178&cur_album_id=1709091772175319041#rd
+-->
+
 # 1. 容器初始化详解  
 &emsp; **<font color = "clime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
 

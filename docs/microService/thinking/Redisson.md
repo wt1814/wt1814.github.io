@@ -20,7 +20,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1.  **<font color = "clime">RedissonLock解决客户端死锁问题(自动延期)：</font>**  
-&emsp; <font color = "clime">如果加锁未设置失效时间，只要客户端一旦加锁成功，就会启动一个后台线程(看门狗线程)，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>  
+&emsp; <font color = "clime">如果加锁`未设置失效时间`，只要客户端一旦加锁成功，就会启动一个后台线程(看门狗线程)，会每隔10秒检查一下，如果客户端1还持有锁key，那么就会不断的延长锁key的生存时间。</font>  
 2. Redisson实现了多种锁：重入锁、公平锁、联锁、红锁、读写锁、信号量...  
 3. **Redisson重入锁：**  
     1. Redisson重入锁加锁流程：  

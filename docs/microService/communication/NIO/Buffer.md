@@ -76,7 +76,7 @@ private int capacity;
 |reset()|将position置为标记值|  
 
 ### 1.2.1. 创建缓冲区  
-&emsp; **创建缓冲区的关键函数(对所有的缓冲区类通用，按照需要替换类名)：**  
+&emsp; **创建缓冲区的关键函数（对所有的缓冲区类通用，按照需要替换类名）：**  
 
 ```java
 public abstract class CharBuffer extends Buffer implements CharSequence, Comparable {

@@ -17,6 +17,7 @@
         - [1.3.7. 内置变量](#137-内置变量)
         - [1.3.8. 内置函数](#138-内置函数)
         - [1.3.9. awk脚本](#139-awk脚本)
+    - [1.4. 管道命令|](#14-管道命令)
 
 <!-- /TOC -->
 
@@ -733,3 +734,11 @@ xman         -     -     -     -   -   class-3  php  8 5
 
     [root@iz2ze76ybn73dvwmdij06zz ~]# ./printname.awk
     my name is 姓名
+
+## 1.4. 管道命令|
+
+<!-- 
+
+Linux中管道命令的用法
+https://blog.csdn.net/tq384998430/article/details/54925742
+-->

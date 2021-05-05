@@ -162,7 +162,7 @@ PUT my_index/_doc/1
   &emsp; 新添加的字段值，在添加过程中 Mapping 已自动添加字段。  
 
 * dynamic-false  
-&emsp; 设置 dynamic 为 false时，新增字段数据可以写入，不可以被索引，Mapping 结构会被更新。同样先将 dynamic 设置为 false，然后向里面添加数据，其他步骤和上面 true 操作一样。定义 Mapping，添加数据。搜索 gender 字段： 
+&emsp; 设置 dynamic 为 false时，新增字段数据可以写入，不可以被索引，Mapping 结构会被更新。同样先将 dynamic 设置为 false，然后向里面添加数据，其他步骤和上面 true 操作一样。定义 Mapping，添加数据。搜索 gender 字段：   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-48.png)   
 &emsp; 此时新增字段数据无法被索引，但数据可以写入。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-49.png)  
@@ -249,7 +249,7 @@ PUT person/_doc/2
 &emsp; 搜索 address.keyword 为空的数据： 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-36.png)  
 &emsp; 搜索返回异常，默认是不被允许搜索NUll。这是需要在Mapping指定null_value属性，并且不能在text类型中声明。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-37.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-88.png)  
 &emsp; 搜索address.keyword 为空的数据：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-38.png)  
 &emsp; 设置 "null_value":"NULL" 后，空值可以处理搜索。  

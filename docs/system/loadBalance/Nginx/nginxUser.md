@@ -309,11 +309,10 @@ http {
 ### 1.2.4. 静态资源WEB服务 
 1. 静态资源类型  
 &emsp; 非服务器动态运行生成的文件，换句话说，就是可以直接在服务器上找到对应文件的请求。  
-
-* 浏览器端渲染：HTML,CSS,JS
-* 图片：JPEG,GIF,PNG
-* 视频：FLV,MPEG
-* 文件：TXT，任意下载文件
+    * 浏览器端渲染：HTML,CSS,JS
+    * 图片：JPEG,GIF,PNG
+    * 视频：FLV,MPEG
+    * 文件：TXT，任意下载文件
 
 ### 1.2.5. 动静分离    
 &emsp; Nginx是一个http服务器，可以独立提供http服务，可以做网页静态服务器。  

@@ -44,8 +44,8 @@ https://blog.csdn.net/yangshangwei/article/details/52799675
 &emsp; 如果需要升级某个docker镜像，可以这样做。  
 
 1. 给每个新生成的镜像都打上相应版本的tag。此时可能存在image:latest、image:v1、image:v2等。  
-2. 如果要从v1升级到v2，首先将导入的v2镜像强制重命名为image:latest，命令为docker tag -f image:v2 image:latest  
-3. docker stop之前正在运行的容器  
+2. 如果要从v1升级到v2，首先将导入的v2镜像强制重命名为image:latest，命令为docker tag -f image:v2 image:latest。  
+3. docker stop之前正在运行的容器。  
 4. 启用docker run image，此时image的等价镜像image:latest就是最新的V2镜像。  
 
 &emsp; 总结下步骤：load/tag/stop/run  

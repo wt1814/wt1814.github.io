@@ -19,10 +19,6 @@
 <!-- /TOC -->
 
 
-
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-11.png) 
-
 &emsp; **<font color = "red">总结：</font>**  
 1. Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在4层或7层。</font>  
 2. **多进程：** Nginx启动时，会生成两种类型的进程，一个主进程master，一个（windows版本的目前只有一个）或多个工作进程worker。  
@@ -44,7 +40,7 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 -->
 &emsp; Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在在4层或7层。</font>  
 
-* 同时处理大量的并发请求(可以处理2-3万并发连接数，官方监测能支持5万并发)。
+* 同时处理大量的并发请求（可以处理2-3万并发连接数，官方监测能支持5万并发）。
 * 内存消耗小：开启10个nginx才占150M内存 ，nginx处理静态文件好，耗费内存少。  
 * 节省宽带：支持GZIP压缩，可以添加浏览器本地缓存。
 * <font color = "red">Nginx原理：两种进程、多进程单线程、基于异步非阻塞的事件驱动模型、模块化设计。</font>

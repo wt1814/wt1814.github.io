@@ -18,7 +18,7 @@
 <!-- /TOC -->
 
 # 1. NIO通道  
-&emsp; 实体--->通道--->缓冲区。Channel用于在缓冲区和位于通道另一侧的实体(通常是一个文件或套接字)之间有效地传输数据。它从一个实体读取数据，并将其放在缓冲区块中以供消费。  
+&emsp; 实体--->通道--->缓冲区。Channel用于在缓冲区和位于通道另一侧的实体（通常是一个文件或套接字）之间有效地传输数据。它从一个实体读取数据，并将其放在缓冲区块中以供消费。  
 &emsp; Channel(通道)与Stream(流)的不同之处在于通道是双向的，流只能在一个方向上操作(一个流必须是InputStream或者OutputStream的子类)，而通道可以用于读，写或者二者同时进行，最关键的是可以和多路复用器结合起来，提供状态位，多路复用器可识别Channel所处的状态。  
 &emsp; 通道可以以阻塞(Wocfcwg)或非阻塞(wowWochwg)模式运行。 **<font color = "red">非阻塞模式的通道永远不会让调用的线程休眠。请求的操作要么立即完成，要么返回一个结果表明未进行任何操作。</font><font color = "clime">只有面向流的(stream-oriented)的通道，如sockets和pipes才能使用非阻塞模式。</font>** 
 
@@ -124,8 +124,7 @@ public interface Channel{
 
 ## 1.2. 内存映射文件  
 &emsp; 通道映射技术：一种快速读写技术。用户进程将文件数据视为内存，不需要发出read()或write()系统调用；可以映射非常大的文件(文件可能无法全部读入内存)，而不消耗大量内存来复制数据。  
-&emsp; java nio提供的FileChannel提供了map()方法，该方法可以在一个打开的文件和MappedByteBuffer之间建立一个虚拟内存映射，MappedByteBuffer继承于ByteBuffer，类似于一个基于内存的缓冲区，只不过该对象的数据元素存储在磁盘的一个文件中；  
-&emsp; [ByteBuffer](/docs/microService/communication/NIO/ByteBuffer.md)  
+&emsp; java nio提供的FileChannel提供了map()方法，该方法可以在一个打开的文件和MappedByteBuffer之间建立一个虚拟内存映射，MappedByteBuffer继承于[ByteBuffer](/docs/microService/communication/NIO/ByteBuffer.md)，类似于一个基于内存的缓冲区，只不过该对象的数据元素存储在磁盘的一个文件中；  
 
 ## 1.3. 分散Scatter/聚集Gather  
 &emsp; 在Java NIO中，通道提供了称为分散/聚集(或向量I/O)的重要功能。使用单个write()函数将字节从一组缓冲区写入流，并且可以使用单个read()函数将字节从流读取到一组缓冲区中。  
@@ -368,7 +367,7 @@ this is content from input4.txt
 ```
 
 ## 1.5. 通道工具类  
-&emsp; NIO通道提供了一个全新的类似流的I/O隐喻，但是字节流以及字符读写器仍然存在并被广泛使用。一个工具类java.nio.channels.Channels定义了几种静态的工厂方法以使通道可以更加容易地同流和读写器互联。  
+&emsp; NIO通道提供了一个全新的类似流的I/O隐喻，但是字节流以及字符读写器仍然存在并被广泛使用。 **一个工具类java.nio.channels.Channels定义了几种静态的工厂方法以使通道可以更加容易地同流和读写器互联。**  
 &emsp; java.nio.channels.Channels工具方法汇总：  
 
 |方法|返回|描述|

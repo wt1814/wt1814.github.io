@@ -195,19 +195,19 @@ http://www.itmuch.com/docker/18-docker-user-network-embeded-dns/
 初探Docker的网络模式 
 https://www.docker.org.cn/docker/187.html
 -->
-&emsp; docker run 创建 Docker 容器时，可以用 --net 选项指定容器的网络模式，Docker 有以下 4 种网络模式：
+&emsp; docker run创建Docker容器时，可以用 --net 选项指定容器的网络模式，Docker 有以下 4 种网络模式：
 
-* host 模式，使用 --net=host 指定。
-* container 模式，使用 --net=container:NAMEorID 指定。
-* none 模式，使用 --net=none 指定。
-* bridge 模式，使用 --net=bridge 指定，默认设置。
+* host模式，使用 --net=host 指定。
+* container模式，使用 --net=container:NAMEorID 指定。
+* none模式，使用 --net=none 指定。
+* bridge模式，使用 --net=bridge 指定，默认设置。
 
 &emsp; 可以使用docker network ls查看当前主机的网络模式。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-44.png)  
 
 * host 模式  
-&emsp; 如果启动容器的时候使用 host 模式，那么这个容器将不会获得一个独立的 Network Namespace，而是和宿主机共用一个 Network Namespace。容器将不会虚拟出自己的网卡，配置自己的 IP 等，而是使用宿主机的 IP 和端口。  
-&emsp; 例如，在 10.10.101.105/24 的机器上用 host 模式启动一个含有 web 应用的 Docker 容器，监听 tcp 80 端口。当容器中执行任何类似 ifconfig 命令查看网络环境时，看到的都是宿主机上的信息。而外界访问容器中的应用，则直接使用 10.10.101.105:80 即可，不用任何 NAT 转换，就如直接跑在宿主机中一样。但是，容器的其他方面，如文件系统、进程列表等还是和宿主机隔离的。  
+&emsp; 如果启动容器的时候使用 host 模式，那么这个容器将不会获得一个独立的Network Namespace，而是和宿主机共用一个Network Namespace。容器将不会虚拟出自己的网卡，配置自己的IP等，而是使用宿主机的IP和端口。  
+&emsp; 例如，在 10.10.101.105/24 的机器上用 host 模式启动一个含有 web 应用的Docker容器，监听tcp 80端口。当容器中执行任何类似 ifconfig 命令查看网络环境时，看到的都是宿主机上的信息。而外界访问容器中的应用，则直接使用 10.10.101.105:80 即可，不用任何 NAT 转换，就如直接跑在宿主机中一样。但是，容器的其他方面，如文件系统、进程列表等还是和宿主机隔离的。  
 * container 模式  
 &emsp; 这个模式指定新创建的容器和已经存在的一个容器共享一个 Network Namespace，而不是和宿主机共享。新创建的容器不会创建自己的网卡，配置自己的 IP，而是和一个指定的容器共享 IP、端口范围等。同样，两个容器除了网络方面，其他的如文件系统、进程列表等还是隔离的。两个容器的进程可以通过 lo 网卡设备通信。  
 * none模式  
@@ -221,8 +221,8 @@ https://www.docker.org.cn/docker/187.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-42.png)  
 &emsp; 可以通过为容器命名，通过名称通信，这样无论该容器重启多少次，ip如何改变，都不会存在通信不可用的情形。  
 
-* 通过docker run -d --name myweb tomcat命令，使用tomcat镜像运行一个名称为myweb的容器。通过docker run -d --name mydatabases mysql命令，使用mysql镜像运行一个名称为mydatabases的容器  
-* 通过docker inspect myweb查看myweb容器的详细配置。其中NetworkSettings下的IPAddress的信息即为docker为该容器分配的虚拟ip地址  
+* 通过docker run -d --name myweb tomcat命令，使用tomcat镜像运行一个名称为myweb的容器。通过docker run -d --name mydatabases mysql命令，使用mysql镜像运行一个名称为mydatabases的容器。  
+* 通过docker inspect myweb查看myweb容器的详细配置。其中NetworkSettings下的IPAddress的信息即为docker为该容器分配的虚拟ip地址。  
 
 &emsp; 记录mydatabases容器的ip地址，进入myweb容器，用ping命令访问mydatabases的ip。发现是没问题的，说明docker之间运用虚拟ip地址可以直接互相访问。  
 

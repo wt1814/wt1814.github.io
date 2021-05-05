@@ -32,7 +32,7 @@ Docker 提供了一个命令行工具和一整套 RESTful API。可以在同一�
 * graghdriver是所有与容器镜像相关操作的执行者
 -->
 ### 1.1.1. C/S模式
-&emsp; Docker使用客户端-服务器(client-server)架构模式。通过下面这个图可以简单清晰看出Server/Client通信。 
+&emsp; Docker使用客户端-服务器(client-server)架构模式。通过下面这个图可以简单清晰看出Server/Client通信。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-45.png)  
 <center>Docker架构图一</center>  
 

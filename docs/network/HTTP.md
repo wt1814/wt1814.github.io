@@ -70,7 +70,7 @@ https://mp.weixin.qq.com/s/81ZGJ_HdUIcYX6F6GEi0Nw
 ----
 ## 1.3. Http与TCP  
 1. 现代浏览器在与服务器建立了一个TCP连接后是否会在一个HTTP请求完成后断开？什么情况下会断开？  
-&emsp; 在HTTP/1.0中，一个服务器在发送完一个HTTP响应后，会断开TCP链接。HTTP/1.1将Connection头写进标准，并且默认开启持久连接(除非请求中写明Connection: close)，那么浏览器和服务器之间是会维持一段时间的TCP连接，不会一个请求结束就断掉。  
+&emsp; 在HTTP/1.0中，一个服务器在发送完一个HTTP响应后，会断开TCP链接。HTTP/1.1将Connection头写进标准，并且默认开启持久连接（除非请求中写明Connection: close），那么浏览器和服务器之间是会维持一段时间的TCP连接，不会一个请求结束就断掉。  
 &emsp; 即默认情况下建立TCP连接不会断开，只有在请求报头中声明Connection: close才会在请求完成后关闭连接。  
 
 2. 一个TCP连接可以对应几个HTTP请求？  
