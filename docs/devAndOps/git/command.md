@@ -12,6 +12,9 @@ https://mp.weixin.qq.com/s/bT7VXffqHuzUZUY5c4ce7A
  https://mp.weixin.qq.com/s/J2sIku38WxL4ge4W5DP2hw
 -->
 
+<!-- 本地仓库的位置 -->
+本地仓库的位置可设置为：\<localRepository\>${user.home}/.m2/repository\</localRepository\>
+
 ## Git分支命名  
 <!-- 
  别乱提交代码了，你必须知道的 Git 分支开发规范！ 

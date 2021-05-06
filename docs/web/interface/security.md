@@ -5,4 +5,7 @@
 https://mp.weixin.qq.com/s/UM7WxjnxHsq4RZj3kUB9tg
 API接口的安全设计验证：ticket，签名，时间戳 
 https://mp.weixin.qq.com/s/vdeeypw5juuveY_NEtS1tA
+
+10种常见安全漏洞浅析 
+https://mp.weixin.qq.com/s/DuCoscAr7C-E3ROtOjyUsQ
 -->

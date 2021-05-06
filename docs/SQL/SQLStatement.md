@@ -18,6 +18,9 @@
 1. 关联查询优化：使用索引、驱动表选择、条件谓词下推......
 
 # 1. SQL语句优化
+<!--
+https://mp.weixin.qq.com/s/aJJ-KddVIFJ4b-eXKbxSSg
+-->
 &emsp; MySql官网提供的优化方案：https://dev.mysql.com/doc/refman/5.7/en/optimization.html  
 
 ## 1.1. 基本查询优化  

@@ -7,6 +7,9 @@
 3. **<font color = "clime">事件回调机制：</font>** <font color = "red">run()阶段涉及了比较重要的[事件回调机制](/docs/microService/SpringBoot/eventCallback.md)，回调4个监听器(ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener)中的方法与加载项目中组件到IOC容器中。</font>
 
 # 1. SpringApplication实例run()方法运行过程
+<!-- 
+https://mp.weixin.qq.com/s/UgocvaEQkmdRgvkWwjUr7g
+-->
 &emsp; 进入SpringApplication#run方法中，一路点击#run方法。  
 
 &emsp; **<font color = "red">主要步骤总结如下：</font>**  
