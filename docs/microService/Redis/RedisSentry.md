@@ -21,8 +21,6 @@ Redis如何实现故障自动恢复？
 https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-75.png)  
-
 
 &emsp; **<font color = "red">总结：</font>**  
 1. <font color="clime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  

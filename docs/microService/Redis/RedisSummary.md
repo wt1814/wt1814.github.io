@@ -23,6 +23,20 @@ https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&__biz=MzAxODc1MzM5Nw==&s
         * 客户端和服务端通信：请求重定向、<font color = "red">ASK重定向</font>
 5. Redis还有发布订阅、管道、Lua脚本...
 
+## redis很快  
+
+
+
+
+&emsp; Redis性能如此高的原因：  
+
+* 纯内存操作
+* 单线程/多线程
+* 高效的数据结构
+* 合理的数据编码
+* 其他方面的优化
+
+
 <!--
 Redis 竟然浪费了这么多内存！ 
 https://mp.weixin.qq.com/s/2eCT5gaxLXEOK7Ax0BO_rQ

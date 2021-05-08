@@ -11,6 +11,7 @@
         - [1.4.3. 查看执行的SQL列表](#143-查看执行的sql列表)
         - [1.4.4. 查询指定ID的执行详细信息](#144-查询指定id的执行详细信息)
         - [1.4.5. 获取CPU、Block IO等信息](#145-获取cpublock-io等信息)
+    - [1.5. trace工具](#15-trace工具)
 
 <!-- /TOC -->
 
@@ -264,3 +265,11 @@ show profile block io,cpu for query Query_ID;
 show profile cpu,block io,memory,swaps,context switches,source for query Query_ID;
 show profile all for query Query_ID;
 ```
+
+
+## 1.5. trace工具
+<!-- 
+MySQL中trace工具的使用
+https://blog.csdn.net/weixin_43576564/article/details/90202501
+-->
+&emsp; MySQL5.6版本后提供了对SQL的跟踪工具trace，通过使用trace阔以让我们明白optimizer如何选择执行计划的。  

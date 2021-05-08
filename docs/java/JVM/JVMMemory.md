@@ -19,7 +19,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-51.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
 

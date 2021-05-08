@@ -18,7 +18,7 @@ https://mp.weixin.qq.com/s/rJ-YSpHy9SVnJQ6UHUKZvQ
 -->
 
 ## 1.1. 简介
-&emsp; **<font color = "red">内存溢出out of memory</font>** ，是指<font color = "red">程序在申请内存时，没有足够的内存空间供其使用</font>，出现out of memory；  
+&emsp; **<font color = "red">内存溢出out of memory</font>** ，是指<font color = "red">程序在申请内存时，没有足够的内存空间供其使用</font>，出现out of memory。  
 &emsp; **<font color = "red">内存泄露memory leak</font>** ，是指<font color = "red">程序在申请内存后，无法释放已申请的内存空间</font>。一次内存泄露危害可以忽略，但内存泄露堆积后果很严重，无论多少内存，迟早会被占光。内存泄露，会导致频繁的Full GC。  
 &emsp; 所以内存泄漏可能会导致内存溢出，但内存溢出并不完全都是因为内存泄漏，也有可能使用了太多的大对象导致。  
 

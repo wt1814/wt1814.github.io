@@ -20,6 +20,11 @@
 <!-- 
 链表反转的姿势
 https://mp.weixin.qq.com/s/YVQvbhO0HJtnrocVg8-qmQ
+
+带头节点的单链表及其基本操作(Java实现)
+https://blog.csdn.net/m0_37572458/article/details/78199507
+java实现无头单链表
+https://blog.csdn.net/zhizhengguan/article/details/105967696
 -->
 
 ## 1.1. 数组  

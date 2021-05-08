@@ -42,7 +42,6 @@ https://mp.weixin.qq.com/s/sCbhQolu_BXBXsQwlFC81g
 记录插入顺序的LinkHashMap、给key排序的TreeMap。
 -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-4.png)  
 &emsp; **<font color = "red">总结：</font>**  
 
 1. HashMap数据结构：  

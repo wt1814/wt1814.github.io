@@ -74,7 +74,7 @@ https://mp.weixin.qq.com/s/3YHHtuPENiV_2ZXfHHuD4A
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-77.png)  
 &emsp; <font color = "red">如果内存中多数对象都是存活的，这种算法将会产生大量的内存间复制的开销</font>， **<font color = "clime">但对于多数对象都是可回收的情况，算法需要复制的就是占少数的存活对象，而且每次都是针对整个半区进行内存回收，分配内存时也就不用考虑有空间碎片的复杂情况，只要移动堆顶指针，按顺序分配即可。</font>** 这样实现简单，运行高效，不过其缺陷也显而易见，这种复制回收算法的代价是<font color = "red">将可用内存缩小为了原来的一半</font>，空间浪费多了一点。 
 3. 特点：  
-    * 适用于存活对象较少的情况  
+    * 适用于存活对象较少的情况。  
     * 优点：  
         1. 只扫描一次，效率提高。  
         2. 没有碎片，空间连续。

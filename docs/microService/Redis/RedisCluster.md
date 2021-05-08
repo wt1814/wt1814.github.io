@@ -32,9 +32,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-74.png)  
-
-
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "red">根据执行分片的位置，可以分为三种分片方式：</font>** 客户端分片、代理分片、服务器分片：官方Redis Cluster。  
 2. **<font color = "clime">Redis集群服务端：</font>**  

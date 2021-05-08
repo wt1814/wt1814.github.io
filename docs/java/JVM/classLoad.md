@@ -20,7 +20,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-50.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 类加载流程：  
@@ -31,7 +30,7 @@
     2. <font color = "red">这里所设置的初始值"通常情况"下是数据类型默认的零值(如0、0L、null、false等)，比如定义了public static int value=111 ，那么 value 变量在准备阶段的初始值就是 0 而不是111(初始化阶段才会复制)。</font>  
     * <font color = "red">特殊情况：比如给value变量加上了fianl关键字public static final int value=111，那么准备阶段value的值就被赋值为 111。</font>  
 3. 解析(Resolution)  
-&emsp; 为什么要用符号引用呢？ **<font color = "red">这是因为类加载之前，javac会将源代码编译成.class文件，这个时候javac是不知道被编译的类中所引用的类、方法或者变量它们的引用地址在哪里，所以只能用符号引用来表示。</font>** 
+&emsp; 为什么要用符号引用呢？ **<font color = "red">这是因为类加载之前，javac会将源代码编译成.class文件，这个时候javac是不知道被编译的类中所引用的类、方法或者变量它们的引用地址在哪里，所以只能用符号引用来表示。</font>**  
 &emsp; **<font color = "clime">解析过程在某些情况下可以在初始化阶段之后再开始，这是为了支持Java的动态绑定。</font>**   
 
 # 1. JVM类的加载  

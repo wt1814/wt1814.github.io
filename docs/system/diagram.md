@@ -14,6 +14,10 @@ https://mp.weixin.qq.com/s/-PUjF1-7brmyUznCXkM06g
 
 
 <!-- 
+https://mp.weixin.qq.com/s/7rXFVcc_q1iv_X5M6ff6kQ
+-->
+
+<!-- 
 亿级流量架构之资源隔离思路与方法
 https://mp.weixin.qq.com/s/Gd6l0YWUQCD4cDpN1q80ig
 工作两三年了，整不明白架构图都画啥？ 

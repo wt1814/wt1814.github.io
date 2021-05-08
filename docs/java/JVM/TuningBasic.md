@@ -257,7 +257,7 @@ https://mp.weixin.qq.com/s/MC2y6JAbZyjIVp7yTxT7fQ
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-35.png)  
 
 #### 1.4.1.3. Jmap：java内存映像工具  
-&emsp; <font color = "red">jmap(JVM Memory Map)命令用于生成heap dump文件，如果不使用这个命令，**还可以使用-XX:+HeapDumpOnOutOfMemoryError参数来让虚拟机出现OOM的时候自动生成dump文件** 。</font>   
+&emsp; <font color = "red">jmap(JVM Memory Map)命令用于生成heap dump文件，如果不使用这个命令，</font>**<font color = "red">还可以使用-XX:+HeapDumpOnOutOfMemoryError参数来让虚拟机出现OOM的时候自动生成dump文件。</font>**    
 &emsp; jmap不仅能生成dump文件，还可以查询finalize执行队列、Java堆和永久代的详细信息，如当前使用率、当前使用的是哪种收集器等。  
 &emsp; 命令格式：jmap [option]  PID。option参数： 
 

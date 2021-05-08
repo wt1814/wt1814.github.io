@@ -27,7 +27,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-76.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
 1. <font color = "red">主从复制过程大体可以分为3个阶段：连接建立阶段(即准备阶段)、数据同步阶段、命令传播阶段。</font>  

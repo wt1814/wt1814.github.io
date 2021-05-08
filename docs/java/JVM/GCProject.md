@@ -20,7 +20,6 @@
 <!-- /TOC -->
 
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-56.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; GC回收对象：  
@@ -262,9 +261,9 @@ https://blog.csdn.net/shudaqi2010/article/details/53811992
 &emsp; 永久代中回收的内容主要是两部分：废弃的常量和无用的类。  
 &emsp; <font color = "clime">类的卸载阶段，判断无用的类必须满足三个条件：</font>  
 
-* 该类所以的实例都已经被回收  
-* 加载该类的ClassLoader被回收  
-* 该类对应的java.lang.Class对象没有在任何地方引用，无法在任何地方通过反射访问该类的方法  
+* 该类所以的实例都已经被回收；  
+* 加载该类的ClassLoader被回收；  
+* 该类对应的java.lang.Class对象没有在任何地方引用，无法在任何地方通过反射访问该类的方法。  
 
 &emsp; 虚拟机可以对上述3个条件对无用类进行回收，这里说的仅仅是“可以”，而不是和对象一样不使用了就会必然回收。  
 

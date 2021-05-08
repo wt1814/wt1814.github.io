@@ -326,13 +326,15 @@
 &emsp; [Redis实现消息队列](/docs/microService/Redis/Message.md)  
 &emsp; &emsp; [发布订阅](/docs/microService/Redis/pub.md)  
 &emsp; [Redis实现延迟队列](/docs/microService/Redis/delay.md)  
+&emsp; [Redis多线程](/docs/microService/Redis/RedisMultiThread.md)  
 [Redis高可用](/docs/microService/Redis/RedisDeploy.md)  
 &emsp; [Redis主从复制](/docs/microService/Redis/RedisMasterSlave.md)  
 &emsp; [Redis哨兵模式](/docs/microService/Redis/RedisSentry.md)  
 &emsp; [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
-<!-- [Redis原理](/docs/microService/Redis/RedisPrinciple.md)  -->
+&emsp; [高可用建设](/docs/microService/Redis/availabConstructe.md)  
 [Redis运维](/docs/microService/Redis/RedisOperation.md)  
 [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
+<!-- [Redis原理](/docs/microService/Redis/RedisPrinciple.md)  -->
 
 ### 限流降级
 [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
