@@ -2,23 +2,45 @@
 <!-- TOC -->
 
 - [1. 分库分表查询](#1-分库分表查询)
-    - [1.1. ~~分库分表多维度查询/非拆分键查询~~](#11-分库分表多维度查询非拆分键查询)
-    - [1.2. 非partition key的查询问题](#12-非partition-key的查询问题)
-    - [1.3. 跨分片的排序order by、分组group by以及聚合count等函数问题](#13-跨分片的排序order-by分组group-by以及聚合count等函数问题)
-    - [1.4. 跨分片的排序分页](#14-跨分片的排序分页)
-    - [1.5. 跨节点Join的问题](#15-跨节点join的问题)
+    - [1.1. 非partition key的查询 / 分库分表多维度查询](#11-非partition-key的查询--分库分表多维度查询)
+        - [1.1.1. 端上除了partition key只有一个非partition key作为条件查询](#111-端上除了partition-key只有一个非partition-key作为条件查询)
+        - [1.1.2. 端上除了partition key不止一个非partition key作为条件查询](#112-端上除了partition-key不止一个非partition-key作为条件查询)
+        - [1.1.3. 后台除了partition key还有各种非partition key组合条件查询](#113-后台除了partition-key还有各种非partition-key组合条件查询)
+        - [1.1.4. 基因法详解](#114-基因法详解)
+    - [1.2. 跨分片的排序order by、分组group by以及聚合count等函数](#12-跨分片的排序order-by分组group-by以及聚合count等函数)
+    - [1.3. 跨分片的排序分页](#13-跨分片的排序分页)
+    - [1.4. 跨节点Join的问题](#14-跨节点join的问题)
 
 <!-- /TOC -->
 
+
+&emsp; **<font color = "red">总结：</font>**
+1. 非partition key的查询
+	* 基因法
+	* 映射法
+	* 冗余法
+	* NoSQL法：ES、Hbase等。  
+2. 跨分片的排序order by、分组group by以及聚合count等函数  
+&emsp; 这些是一类问题，因为它们<font color = "red">都需要基于全部数据集合进行计算。多数的代理都不会自动处理合并工作，部分支持聚合函数MAX、MIN、COUNT、SUM。</font>  
+&emsp; **<font color = "red">解决方案：分别在各个节点上执行相应的函数处理得到结果后，在应用程序端进行合并。</font>** 每个结点的查询可以并行执行，因此很多时候它的速度要比单一大表快很多。但如果结果集很大，对应用程序内存的消耗是一个问题。  
+3. 跨分片的排序分页  
+&emsp; <font color = "red">一般来讲，分页时需要按照指定字段进行排序。当排序字段是分片字段时，通过分片规则可以比较容易定位到指定的分片；而当排序字段非分片字段时，情况就会变得比较复杂了。</font>为了最终结果的准确性，需要在不同的分片节点中将数据进行排序并返回，并将不同分片返回的结果集进行汇总和再次排序，最后再返回给用户。  
+4. 跨节点Join的问题
+&emsp; tddl、MyCAT等都支持跨分片join。如果中间不支持，跨库Join的几种解决思路：  
+
+	* 在程序中进行拼装。  
+	* 全局表
+	* 字段冗余 
+
+
 # 1. 分库分表查询
 
-## 1.1. ~~分库分表多维度查询/非拆分键查询~~  
+## 1.1. 非partition key的查询 / 分库分表多维度查询  
 <!-- 
 https://blog.csdn.net/coolmsn8786/article/details/100377411
 
 分库分表下非拆分键的查询方案
 https://blog.csdn.net/sinat_29774479/article/details/107555322
--->
 
 * 记录两份数据，一份按照用户纬度分表，一份按照视频ID维度分表。按照订单使用者拆分为3个数据库，客户端、商家端、渠道端，目的是分散压力，提高吞吐量，互不影响  
 * 以用户维度分库，在单个库里，以其他维度进行分区操作  
@@ -33,34 +55,42 @@ https://blog.csdn.net/sinat_29774479/article/details/107555322
 4. 如果还有其他一些查询频率更低，且实时性无要求，也通过biolog同步一份数据到kudu数据仓库，利用大数据olap等技术做查询操作。  
 
 
+-->
+&emsp; **水平分库分表，基于拆分策略为常用的hash法。**  
+### 1.1.1. 端上除了partition key只有一个非partition key作为条件查询  
+* 映射法  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-19.png)  
+&emsp; 建立一张映射表，使用缓存存储。  
 
+* 基因法  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-20.png)  
+&emsp; 注：写入时，基因法生成user_id，如图。关于xbit基因，例如要分8张表，23=8，故x取3，即3bit基因。根据user_id查询时可直接取模路由到对应的分库或分表。根据user_name查询时，先通过user_name_code生成函数生成user_name_code再对其取模路由到对应的分库或分表。id生成常用snowflake算法。  
 
-## 1.2. 非partition key的查询问题  
-&emsp; 水平分库分表，基于拆分策略为常用的hash法。  
-1. **端上除了partition key只有一个非partition key作为条件查询**  
-    * 映射法  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-19.png)  
-    * 基因法  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-20.png)  
-    &emsp; 注：写入时，基因法生成user_id，如图。关于xbit基因，例如要分8张表，23=8，故x取3，即3bit基因。根据user_id查询时可直接取模路由到对应的分库或分表。根据user_name查询时，先通过user_name_code生成函数生成user_name_code再对其取模路由到对应的分库或分表。id生成常用snowflake算法。  
-2. **端上除了partition key不止一个非partition key作为条件查询**  
-    * 映射法  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-21.png)  
-    * 冗余法    
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-22.png)  
-    &emsp; 注：按照order_id或buyer_id查询时路由到db_o_buyer库中，按照seller_id查询时路由到db_o_seller库中。感觉有点本末倒置！有其他好的办法吗？改变技术栈呢？  
-3. **后台除了partition key还有各种非partition key组合条件查询**  
-    * NoSQL法  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-23.png)  
-    * 冗余法  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-24.png)  
+### 1.1.2. 端上除了partition key不止一个非partition key作为条件查询 
+* 映射法  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-21.png)  
+* 冗余法    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-22.png)  
+&emsp; 注：按照order_id或buyer_id查询时路由到db_o_buyer库中，按照seller_id查询时路由到db_o_seller库中。感觉有点本末倒置！有其他好的办法吗？改变技术栈呢？  
 
-## 1.3. 跨分片的排序order by、分组group by以及聚合count等函数问题  
+### 1.1.3. 后台除了partition key还有各种非partition key组合条件查询 
+* NoSQL法  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-23.png)  
+* 冗余法  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-24.png)  
+
+### 1.1.4. 基因法详解  
+<!--
+基因算法-分库分表的超级解决方案
+https://blog.csdn.net/weixin_52346300/article/details/113104964
+-->
+
+## 1.2. 跨分片的排序order by、分组group by以及聚合count等函数  
 &emsp; 这些是一类问题，因为它们<font color = "red">都需要基于全部数据集合进行计算。多数的代理都不会自动处理合并工作，部分支持聚合函数MAX、MIN、COUNT、SUM。</font>  
 &emsp; **<font color = "red">解决方案：分别在各个节点上执行相应的函数处理得到结果后，在应用程序端进行合并。</font>** 每个结点的查询可以并行执行，因此很多时候它的速度要比单一大表快很多。但如果结果集很大，对应用程序内存的消耗是一个问题。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-16.png)  
 
-## 1.4. 跨分片的排序分页  
+## 1.3. 跨分片的排序分页  
 &emsp; <font color = "red">一般来讲，分页时需要按照指定字段进行排序。当排序字段是分片字段时，通过分片规则可以比较容易定位到指定的分片；而当排序字段非分片字段时，情况就会变得比较复杂了。</font>为了最终结果的准确性，需要在不同的分片节点中将数据进行排序并返回，并将不同分片返回的结果集进行汇总和再次排序，最后再返回给用户。如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-17.png)  
 &emsp; 上面图中所描述的只是最简单的一种情况(取第一页数据)，看起来对性能的影响并不大。但是，如果想取出第10页数据，情况又将变得复杂很多，如下图所示：  
@@ -69,7 +99,7 @@ https://blog.csdn.net/sinat_29774479/article/details/107555322
 
 ----
 
-## 1.5. 跨节点Join的问题  
+## 1.4. 跨节点Join的问题  
 &emsp; 在单库单表的情况下，联合查询是非常容易的。但是，随着分库与分表的演变，联合查询就遇到跨库关联和跨表关系问题。在设计之初就应该尽量避免联合查询。  
 &emsp; tddl、MyCAT等都支持跨分片join。如果中间不支持，跨库Join的几种解决思路：  
 
