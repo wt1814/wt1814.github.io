@@ -301,7 +301,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247483899&idx=1&sn=ab5b06
 -->
 
 #### 1.2.2.2. 快慢指针  
-&emsp; **<font color = "red">可以用快慢指针解决以下两大类问题：</font>**  
+&emsp; **<font color = "clime">可以用快慢指针解决以下两大类问题：</font>**  
 1. 寻找/删除第K个结点  
 2. 有关链表环问题的相关解法    
 
@@ -309,7 +309,7 @@ https://mp.weixin.qq.com/s?__biz=MzI5MTU1MzM3MQ==&mid=2247483899&idx=1&sn=ab5b06
 
     LeetCode 876：给定一个带有头结点 head 的非空单链表，返回链表的中间结点。如果有两个中间结点，则返回第二个中间结点。  
 
-&emsp; 这里引入快慢指针，主要有三步 1、 快慢指针同时指向 head 的后继结点 2、 慢指针走一步，快指针走两步 3、 不断地重复步骤2，什么时候停下来呢，这取决于链表的长度是奇数还是偶数。  
+&emsp; 这里引入快慢指针，主要有三步 1、快慢指针同时指向 head 的后继结点 2、慢指针走一步，快指针走两步 3、不断地重复步骤2，什么时候停下来呢，这取决于链表的长度是奇数还是偶数。  
 
 * 如果链表长度为奇数，当 fast.next = null 时，slow 为中间结点   
 ![Alt Text](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/641.gif)  
@@ -384,6 +384,9 @@ public Node detectCrossNode() {
 &emsp; 综上所述，要找到入口结点，只需定义两个指针，一个指针指向head， 一个指针指向快慢指向的相遇点，然后这两个指针不断遍历(同时走一步)，当它们指向同一个结点时即是环的入口结点  
 
 ```java
+/**
+* 到入口结点
+**/
 public Node getRingEntryNode() {
     // 获取快慢指针相遇结点
     Node crossNode = detectCrossNode();

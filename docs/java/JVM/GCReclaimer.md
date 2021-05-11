@@ -76,16 +76,16 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 &emsp; 上图展示了多种作用于不同分代的收集器。如果两个收集器之间存在连线，那说明它们可以搭配使用。虚拟机所处的区域说明它是属于新生代收集器还是老年代收集器。选择对具体应用最合适的收集器。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-67.png)  
 
-* Serial串行收集器： 新生代收集器、最基本、发展历史最久(jdk1.3之前)、单线程、基于复制算法。  
-* Serial Old串行老年代收集器： 老年代版本的Serial收集器、单线程、基于标记-整理算法。  
-* ParNew收集器： Serial的多线程版本、新生代收集器、多线程、基于复制算法、关注用户停顿时间。  
-* Parallel Scavenge收集器： 新生代收集器，基于复制算法，并行的多线程、关注吞吐量。  
-* Parallel Old收集器： Parallel Scavenge的老年代版本，使用多线程和“标记-整理”算法。  
-* CMS(Conturrent Mark Sweep)收集器： 并发、基于标记-清除算法。  
-* G1(Garbage-First)收集器： 并行与并发、分代收集、空间整合。  
-* Shenandoah： 支持并发的整理算法、基于读写屏障、旋转指针。  
-* ZGC： 支持并发收集、基于动态Region、染色指针、虚拟内存映射。  
-* Epsilon垃圾收集器： 没有操作的垃圾收集器、处理内存分配但不实现任何实际内存回收机制的GC。  
+* Serial串行收集器：新生代收集器、最基本、发展历史最久(jdk1.3之前)、单线程、基于复制算法。  
+* Serial Old串行老年代收集器：老年代版本的Serial收集器、单线程、基于标记-整理算法。  
+* ParNew收集器：Serial的多线程版本、新生代收集器、多线程、基于复制算法、关注用户停顿时间。  
+* Parallel Scavenge收集器：新生代收集器，基于复制算法，并行的多线程、关注吞吐量。  
+* Parallel Old收集器：Parallel Scavenge的老年代版本，使用多线程和“标记-整理”算法。  
+* CMS(Conturrent Mark Sweep)收集器：并发、基于标记-清除算法。  
+* G1(Garbage-First)收集器：并行与并发、分代收集、空间整合。  
+* Shenandoah：支持并发的整理算法、基于读写屏障、旋转指针。  
+* ZGC：支持并发收集、基于动态Region、染色指针、虚拟内存映射。  
+* Epsilon垃圾收集器：没有操作的垃圾收集器、处理内存分配但不实现任何实际内存回收机制的GC。  
 
 
 &emsp; 在JDK 7U4之前UserParallelGC用的是ParallelScavenge+SerialOld，在这个版本后Parallel已经很成熟了，所以直接替换了旧的收集器，所以 **<font color = "clime">JDK 7u4后的7和JDK8默认使用的都是ParallelScavenge+ParallelOld。</font>**  
