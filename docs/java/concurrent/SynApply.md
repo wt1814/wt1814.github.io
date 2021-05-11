@@ -17,7 +17,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-16.png)  
 
 # 1. Synchronized  
 <!--

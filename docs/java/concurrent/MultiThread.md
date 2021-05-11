@@ -15,8 +15,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-27.png)  
-
 # 1. 并发编程  
 <!-- 
 10张图告诉你多线程那些破事 

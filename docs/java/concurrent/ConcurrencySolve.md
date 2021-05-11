@@ -65,7 +65,7 @@ https://www.cnblogs.com/jackson0714/p/java_Volatile.html
 
 #### 1.1.1.1. 总线锁  
 &emsp; 早期，cpu从主内存读取数据到高速缓存，会在总线对这个数据加锁，这样其他cpu无法去读或写这个数据，直到这个cpu使用完数据释放锁之后其他cpu才能读取该数据。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-103.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-46.png)  
 
 #### 1.1.1.2. 缓存锁  
 &emsp; 缓存锁：只要保证多个CPU缓存的同一份数据是一致的就可以了，基于缓存一致性协议来实现的。  

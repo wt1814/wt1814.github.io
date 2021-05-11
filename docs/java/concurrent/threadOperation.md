@@ -6,15 +6,15 @@
         - [1.1.1. 继承Thread父类](#111-继承thread父类)
         - [1.1.2. Runnable接口](#112-runnable接口)
         - [1.1.3. Callable接口](#113-callable接口)
-        - [1.1.4. Future接口](#114-future接口)
-        - [1.1.5. FutureTask](#115-futuretask)
-        - [1.1.6. 三种创建线程的不同](#116-三种创建线程的不同)
+        - [1.1.4. 三种创建线程的不同](#114-三种创建线程的不同)
+        - [1.1.5. Future接口](#115-future接口)
+        - [1.1.6. FutureTask](#116-futuretask)
+        - [1.1.7. CompletableFuture](#117-completablefuture)
+        - [1.1.8. CompletionService](#118-completionservice)
     - [1.2. 线程传参](#12-线程传参)
         - [1.2.1. 构造方法](#121-构造方法)
         - [1.2.2. 变量和方法](#122-变量和方法)
         - [1.2.3. 回调函数](#123-回调函数)
-    - [1.3. CompletionService](#13-completionservice)
-    - [1.4. CompletableFuture](#14-completablefuture)
 
 <!-- /TOC -->
 
@@ -68,7 +68,15 @@ thread.start();
 ### 1.1.3. Callable接口
 &emsp; Callable接口提供了一个call()方法作为线程执行体，call()方法比run()方法功能要强大。1.call()方法可以有返回值；2.call()方法可以声明抛出异常。
 
-### 1.1.4. Future接口
+
+
+### 1.1.4. 三种创建线程的不同
+&emsp; 实现Runnable和Callable接口的类只能当做一个可以在线程中运行的任务，不是真正意义上的线程，因此最后还需要通过Thread来调用。可以说任务是通过线程驱动从而执行的。实际上所有的多线程代码都是通过运行Thread的start()方法来运行的。  
+&emsp; 实现接口和继承Thread的不同：实现Runnable接口、Callable接口避免了单继承的局限性。Callable支持返回多种类型的数据。  
+
+
+
+### 1.1.5. Future接口
 <!-- 
  阿里架构师教你JUC-Future与FutureTask原理详解 
  https://mp.weixin.qq.com/s/HJqHMzzosCvYgv7JkgRMHQ
@@ -102,7 +110,7 @@ boolean isCancelled();
 ```
 &emsp; **<font color = "red">注：Future设置方法超时，使用get(long timeout,TimeUnit unit)方法</font>**
 
-### 1.1.5. FutureTask
+### 1.1.6. FutureTask
 &emsp; Java5为Future接口提供了一个实现类FutureTask，表示一个可以取消的异步运算。它有启动和取消运算、查询运算是否完成和取回运算结果等方法。只有当运算完成的时候结果才能取回，如果运算尚未完成get方法将会阻塞。FutureTask既实现了Future接口，还实现了Runnable接口，因此可以作为Thread类的target。
 
 <!-- 
@@ -153,10 +161,13 @@ String result = ft.get();
 System.out.println(result);//输出:aaaa
 ```
 
-### 1.1.6. 三种创建线程的不同
-&emsp; 实现Runnable和Callable接口的类只能当做一个可以在线程中运行的任务，不是真正意义上的线程，因此最后还需要通过Thread来调用。可以说任务是通过线程驱动从而执行的。实际上所有的多线程代码都是通过运行Thread的start()方法来运行的。  
-&emsp; 实现接口和继承Thread的不同：实现Runnable接口、Callable接口避免了单继承的局限性。Callable支持返回多种类型的数据。  
 
+### 1.1.7. CompletableFuture
+&emsp; [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
+
+
+### 1.1.8. CompletionService  
+&emsp; [CompletionService](/docs/java/concurrent/CompletionService.md)  
 
 
 ----
@@ -243,9 +254,3 @@ public class MyThread3 extends Thread{
     }
 }
 ```
-
-## 1.3. CompletionService  
-&emsp; [CompletionService](/docs/java/concurrent/CompletionService.md)  
-
-## 1.4. CompletableFuture
-&emsp; [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  

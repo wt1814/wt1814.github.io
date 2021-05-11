@@ -91,7 +91,7 @@ https://mp.weixin.qq.com/s/zteJKZ6jy5RdhWUTM10kdQ
 1. 找出第一个与key相等的元素  
 
 ```java
-int searchFirstEqual(int *arr, int n, int key)
+int searchFirstEqual(int arr[], int n, int key)
 {
     int left = 0, right = n-1;
     while(left<=right) {
@@ -106,7 +106,7 @@ int searchFirstEqual(int *arr, int n, int key)
 2. 找出最后一个与key相等的元素  
 
 ```java
-int searchLastEqual(int *arr, int n, int key)
+int searchLastEqual(int arr[], int n, int key)
 {
    int left = 0, right = n-1;
    while(left<=right) {
@@ -121,7 +121,7 @@ int searchLastEqual(int *arr, int n, int key)
 3. 查找第一个等于或者大于Key的元素  
 
 ```java
-int searchFirstEqualOrLarger(int *arr, int n, int key)
+int searchFirstEqualOrLarger(int arr[], int n, int key)
 {
    int left=0, right=n-1;
    while(left<=right) {
@@ -135,7 +135,7 @@ int searchFirstEqualOrLarger(int *arr, int n, int key)
 4. 查找第一个大于key的元素  
 
 ```java
-int searchFirstLarger(int *arr, int n, int key)
+int searchFirstLarger(int arr[], int n, int key)
 {
    int left=0, right=n-1;
    while(left<=right) {
@@ -149,7 +149,7 @@ int searchFirstLarger(int *arr, int n, int key)
 5. 查找最后一个等于或者小于key的元素  
 
 ```java
-int searchLastEqualOrSmaller(int *arr, int n, int key)
+int searchLastEqualOrSmaller(int arr[], int n, int key)
 {
    int left=0, right=n-1;
    while(left<=right) {
@@ -163,7 +163,7 @@ int searchLastEqualOrSmaller(int *arr, int n, int key)
 6. 查找最后一个小于key的元素    
 
 ```java
-int searchLastSmaller(int *arr, int n, int key)
+int searchLastSmaller(int arr[], int n, int key)
 {
    int left=0, right=n-1;
    while(left<=right) {
@@ -180,7 +180,7 @@ int searchLastSmaller(int *arr, int n, int key)
 ```java
 int main(void)
 {
-   int arr[17] = {1,
+   int arr[] = {1,
                   2, 2, 5, 5, 5,
                   5, 5, 5, 5, 5,
                   5, 5, 6, 6, 7};

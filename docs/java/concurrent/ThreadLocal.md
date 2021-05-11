@@ -16,7 +16,6 @@
 <!-- /TOC -->
 
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-26.png)   
 
 &emsp; **<font color = "red">总结：</font>**  
 1. ThreadLocal源码/内存模型  
