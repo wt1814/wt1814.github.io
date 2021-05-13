@@ -101,6 +101,11 @@ public static void main(String[] args){
 
 
 ## 1.2. ★★★快速排序  
+<!-- 
+Java实现快速排序（快排）
+https://www.cnblogs.com/captainad/p/10999697.html
+-->
+
 &emsp; 快速排序的基本思想：通过一趟排序将待排记录分隔成独立的两部分，其中一部分记录的关键字均比另一部分的关键字小，则可分别对这两部分记录继续进行排序，以达到整个序列有序。  
 
 ### 1.2.1. 算法描述  
@@ -213,6 +218,9 @@ public class quickSort {
 ```
 -----
 ## 1.3. 直接选择排序  
+<!-- 
+https://www.cnblogs.com/captainad/p/10946033.html
+-->
 &emsp; 从第一个元素开始，扫描整个待排数组，找到最小的元素放之后再与第一个元素交换位置，然后再从第二个元素开始，继续寻找最小的元素与第二个元素交换位置，依次类推。  
 &emsp; **表现最稳定的排序算法之一，因为无论什么数据进去都是O(n2)的时间复杂度，所以用到它的时候，数据规模越小越好。好处就是不占用额外的内存空间。**  
 
@@ -240,7 +248,8 @@ public static void main(String[] args) {
 * @return
 */
 public static int[] selectionSort(int[] array) {
-    if (array.length == 0)
+    // 如果数组长度为0或者1，都是不用排序直接返回
+    if (array.length == 0 || array.length == 1 )
         return array;
     for (int i = 0; i < array.length; i++) {
         int minIndex = i;
@@ -248,6 +257,7 @@ public static int[] selectionSort(int[] array) {
             if (array[j] < array[minIndex]) //找到最小的数
                 minIndex = j; //将最小数的索引保存
         }
+        
         int temp = array[minIndex];
         array[minIndex] = array[i];
         array[i] = temp;
@@ -383,6 +393,9 @@ public static void main(String[] args) {
 ```
 -----
 ## 1.5. 直接插入排序  
+<!-- 
+https://www.cnblogs.com/captainad/p/10957006.html
+-->
 &emsp; 每一趟将一个待排序的记录，按照其关键字的大小插入到有序队列的合适位置里，直到全部插入完成。  
 
 ### 1.5.1. 算法描述
@@ -470,7 +483,12 @@ public static int binarySearch(int[] array,int lowerBound,int upperBound,int tar
 
 ----
 ## 1.6. 希尔排序  
-&emsp; **先将整个待排序的记录序列分割成为若干子序列，分别进行直接插入排序，待整个序列中的记录“基本有序”时，再对全体记录进行依次直接插入排序。**  
+<!-- 
+https://blog.csdn.net/qq_42079455/article/details/88203410
+-->
+&emsp; **<font color = "red">希尔排序解决了插入排序的什么痛点？</font>**  
+
+&emsp; **先将整个待排序的记录序列分割成为若干子序列，<font color = "clime">分别进行直接插入排序，</font>待整个序列中的记录“基本有序”时，再对全体记录进行依次直接插入排序。**  
 
 ### 1.6.1. 算法描述  
 1. 选择一个增量序列t1，t2，…，tk，其中ti>tj，tk=1；
@@ -501,6 +519,9 @@ public static void sheelSort(int[] array){
 ```
 
 ## 1.7. 归并排序
+<!-- 
+https://www.cnblogs.com/chengxiao/p/6194356.html
+-->
 &emsp; 归并排序是分治算法的典型应用。  
 &emsp; 归并排序先将一个无序的N长数组切成N个有序子序列(只有一个数据的序列认为是有序序列)，然后两两合并，再将合并后的N/2(或者N/2 + 1)个子序列继续进行两两合并，以此类推得到一个完整的有序数组。过程如下图所示：
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-3.png)  

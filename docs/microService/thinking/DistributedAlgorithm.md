@@ -1,6 +1,9 @@
 # 分布式算法
 <!-- 
 
+ 详解分布式一致性机制 
+ https://mp.weixin.qq.com/s/WEucGZq1nosqlAbCSDB9xQ
+
 Raft协议
 https://mp.weixin.qq.com/s/Voyq4Y7IfEXN6sZiVSoCEw
 Raft实战系列，集群成员如何变更？日志怎么压缩？ 

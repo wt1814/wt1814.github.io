@@ -30,7 +30,7 @@ https://mp.weixin.qq.com/s/fWeWHceRqNEEmi-O3GnV0A
 
 https://docs.oracle.com/javase/tutorial/java/annotations/index.html
 
-
+https://mp.weixin.qq.com/s/1KGNUG9l12gibyfMj1caCg
 
 注解作用
 https://www.zhihu.com/question/47449512/answer/658228092

@@ -22,7 +22,6 @@
     - [1.3. 线程池正确用法](#13-线程池正确用法)
 
 <!-- /TOC -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-1.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 根据返回的对象类型，创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor(任务调度线程池)、ForkJoinPool。  
@@ -114,11 +113,11 @@ public static ExecutorService newScheduledThreadPool(int corePoolSize) {
 ```
 &emsp; 核心线程池固定，大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。  
 &emsp; 工作机制：  
-1. 添加一个任务  
-2. 线程池中的线程从DelayQueue中取任务  
-3. 线程从DelayQueue中获取time大于等于当前时间的task  
-4. 执行完后修改这个task的time为下次被执行的时间  
-5. 这个 task 放回DelayQueue队列中  
+1. 添加一个任务；  
+2. 线程池中的线程从DelayQueue中取任务；  
+3. 线程从DelayQueue中获取time大于等于当前时间的task；  
+4. 执行完后修改这个task的time为下次被执行的时间；  
+5. 这个 task 放回DelayQueue队列中。  
 
 &emsp; 线程池特点：最大线程数为Integer.MAX_VALUE、阻塞队列是DelayedWorkQueue、keepAliveTime为0、scheduleAtFixedRate() ：按某种速率周期执行、scheduleWithFixedDelay()：在某个延迟后执行。  
 &emsp; 使用场景：周期性执行任务的场景，需要限制线程数量的场景。  
