@@ -170,7 +170,7 @@
 &emsp; [Atmoic](/docs/java/concurrent/Atmoic.md)  
 &emsp; &emsp; [AtomicStampedReference与AtomicMarkableReference](/docs/java/concurrent/AtomicStampedReference.md)  
 &emsp; &emsp; [LongAdder](/docs/java/concurrent/LongAdder.md)  
-&emsp; [collections](/docs/java/concurrent/Collections.md)  
+&emsp; [Collections](/docs/java/concurrent/collections.md)  
 &emsp; &emsp; [ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)  
 &emsp; &emsp; [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
 &emsp; [tools](/docs/java/concurrent/tools.md)  
@@ -667,6 +667,7 @@
 
 ## 算法  
 [总结](/docs/java/function/summary.md)  
+[算法基础](/docs/java/function/basics.md)  
 [算法基本概念](/docs/java/function/notion.md)  
 &emsp; [时间复杂度](/docs/java/function/TimeComplexity.md)  
 [算法方法](/docs/java/function/algorithmicIdea.md)  
@@ -695,4 +696,4 @@
 &emsp; [BloomFilter](/docs/java/function/BloomFilter.md)  
 &emsp; [HyperLogLog](/docs/java/function/HyperLogLog.md)  
 &emsp; [Trie](/docs/java/function/Trie.md)  
-[资源限制](/docs/java/function/bigdata.md)  
+[大数据和空间限制](/docs/java/function/bigdata.md)  

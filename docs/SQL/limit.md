@@ -34,19 +34,19 @@ https://mp.weixin.qq.com/s/KcaLyboO0MltR6out67_DA
  https://mp.weixin.qq.com/s/ejZ4f828dQnXyNE6dcLxOw
 -->
 1. 直接使用数据库提供的SQL语句  
-&emsp; 语句样式：MySQL中，可用如下方法：SELECT * FROM 表名称 LIMIT M,N  
-&emsp; 适应场景：适用于数据量较少的情况(元组百/千级)  
+&emsp; 语句样式：MySQL中，可用如下方法：`SELECT * FROM 表名称 LIMIT M,N`  
+&emsp; 适应场景：适用于数据量较少的情况(元组百/千级)。  
 &emsp; 原因/缺点：全表扫描，速度会很慢 且 有的数据库结果集返回不稳定(如某次返回1,2,3，另外的一次返回2,1,3)。Limit限制的是从结果集的M位置处取出N条输出，其余抛弃。  
 
 2. <font color = "clime">建立主键或唯一索引，利用索引</font>  
-&emsp; 语句样式：MySQL中，可用如下方法：SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) LIMIT M  
-&emsp; 适应场景：适用于数据量多的情况(元组数上万)  
-&emsp; 原因：索引扫描，速度会很快. 有朋友提出: 因为数据查询出来并不是按照pk_id排序的，所以会有漏掉数据的情况，只能方法3  
+&emsp; 语句样式：MySQL中，可用如下方法：`SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) LIMIT M`。  
+&emsp; 适应场景：适用于数据量多的情况(元组数上万)。  
+&emsp; 原因：索引扫描，速度会很快. 有朋友提出: 因为数据查询出来并不是按照pk_id排序的，所以会有漏掉数据的情况，只能方法3。  
 
 3. <font color = "red">基于索引再排序</font>  
-&emsp; 语句样式：MySQL中，可用如下方法：`SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) ORDER BY id_pk ASC LIMIT M`  
-&emsp; 适应场景：适用于数据量多的情况(元组数上万)。最好ORDER BY后的列对象是主键或唯一索引，使得ORDERBY操作能利用索引被消除但结果集是稳定的(稳定的含义，参见方法1)  
-&emsp; 原因：索引扫描，速度会很快. 但MySQL的排序操作，只有ASC没有DESC(DESC是假的，未来会做真正的DESC，期待...).  
+&emsp; 语句样式：MySQL中，可用如下方法：`SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) ORDER BY id_pk ASC LIMIT M`。  
+&emsp; 适应场景：适用于数据量多的情况(元组数上万)。最好ORDER BY后的列对象是主键或唯一索引，使得ORDERBY操作能利用索引被消除但结果集是稳定的(稳定的含义，参见方法1)。  
+&emsp; 原因：索引扫描，速度会很快. 但MySQL的排序操作，只有ASC没有DESC(DESC是假的，未来会做真正的DESC，期待...)。 
 
 4. 基于索引使用prepare  
 &emsp; 第一个问号表示pageNum，第二个？表示每页元组数  
@@ -54,7 +54,7 @@ https://mp.weixin.qq.com/s/KcaLyboO0MltR6out67_DA
 &emsp; 适应场景：大数据量  
 &emsp; 原因：索引扫描，速度会很快。prepare语句又比一般的查询语句快一点。  
 
-5. 利用MySQL支持ORDER操作可以利用索引快速定位部分元组，避免全表扫描  
+5. 利用MySQL支持ORDER操作可以利用索引快速定位部分元组，避免全表扫描。  
 &emsp; 比如：读第1000到1019行元组(pk是主键/唯一键)。  
 ```sql
 ELECT * FROM your_table WHERE pk>=1000 ORDER BY pk ASC LIMIT 0,20  
@@ -77,7 +77,7 @@ ELECT * FROM your_table WHERE pk>=1000 ORDER BY pk ASC LIMIT 0,20
     ```
 
 ## 1.3. limit效率问题  
-&emsp; 有一个需求，就是从vote_record_memory表中查出3600000到3800000的数据，此时在id上加个索引，索引的类型是Normal，索引的方法是BTREE，分别用两种方法查询  
+&emsp; 有一个需求，就是从vote_record_memory表中查出3600000到3800000的数据，此时在id上加个索引，索引的类型是Normal，索引的方法是BTREE，分别用两种方法查询。  
 
 ```sql
 -- 方法1
@@ -106,6 +106,6 @@ SELECT * FROM vote_record_memory vrm WHERE vrm.id >= 3600000 LIMIT 20000
 神坑！MySQL中order by与limit不要一起用！ 
 https://mp.weixin.qq.com/s/93rBBFlfTx58OjD5S_OlAw
 -->
+&emsp; ORDER BY排序后，用LIMIT取前几条，发现返回的结果集的顺序与预期的不一样。  
 
-&emsp; 如果 order by 的列有相同的值时，MySQL 会随机选取这些行，为了保证每次都返回的顺序一致可以额外增加一个排序字段（比如：id），用两个字段来尽可能减少重复的概率。  
-
+&emsp; 如果order by的列有相同的值时，MySQL 会随机选取这些行，为了保证每次都返回的顺序一致可以额外增加一个排序字段（比如：id），用两个字段来尽可能减少重复的概率。  

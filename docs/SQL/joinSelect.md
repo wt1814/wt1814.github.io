@@ -193,5 +193,5 @@ select user.* from user where exists(select order.user_id from order where user.
 2. UNION ALL 和 UNION 不同之处在于 UNION ALL 会将每一个符合条件的资料都列出来，无论资料值有无重复；  
 3. UNION ALL只是简单的将两个结果合并后就返回。这样，如果返回的两个结果集中有重复的数据，那么返回的结果集就会包含重复的数据了。  
 -->
-&emsp; UNION运算符通过组合其他两个结果表(例如TABLE1和TABLE2)并消去表中任何重复行而派生出一个结果表。UNION内部的SELECT语句必须拥有相同数量的列。列也必须拥有相似的数据类型。同时，每条SELECT语句中的列的顺序必须相同。UNION 结果集中的列名总是等于UNION中第一个SELECT语句中的列名。    
-&emsp; **UNION与UNION ALL：** 默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用UNION ALL。从效率上说，sql union all的执行效率要比sql union效率要高很多，这是因为使用sql union需要进行排重，而sql union all是不需要排重的，这一点非常重要，因为对于一些单纯地使用分表来提高效率的查询，完全可以使用sql union all。  
+&emsp; UNION运算符通过组合其他两个结果表(例如TABLE1和TABLE2)并消去表中任何重复行而派生出一个结果表。UNION内部的SELECT语句必须拥有相同数量的列。列也必须拥有相似的数据类型。同时，每条SELECT语句中的列的顺序必须相同。UNION结果集中的列名总是等于UNION中第一个SELECT语句中的列名。    
+&emsp; **<font color = "clime">UNION与UNION ALL：默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用UNION ALL。</font>** 从效率上说，sql union all的执行效率要比sql union效率要高很多，这是因为使用sql union需要进行排重，而sql union all是不需要排重的，这一点非常重要，因为对于一些单纯地使用分表来提高效率的查询，完全可以使用sql union all。  

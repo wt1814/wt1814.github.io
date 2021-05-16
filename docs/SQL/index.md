@@ -118,8 +118,7 @@ https://mp.weixin.qq.com/s/Mvl3OURNurdrJ2o9OyM6KQ
     &emsp; mysql查询时索引会一直向右匹配，直到遇到范围查询(>、<、between、like)就停止匹配。mysql从左到右的使用索引中的字段，一个查询可以只使用索引中的一部份，但只能是最左侧部分。例如索引是key index(a,b,c)。可以支持 a|a,b|a,b,c 3种组合进行查找，但不支持b，c进行查找。当最左侧字段是常量引用时，索引就十分有效。  
 
     &emsp; **<font color = "red">WHERE+ 多个字段ORDER BY，满足最左前缀。</font>**  
-    &emsp; SELECT * FROM [table] WHERE uid=1 ORDER x,y LIMIT 0,10;  
-    &emsp; 建立索引(uid,x,y)实现order by的优化,比建立(x,y,uid)索引效果要好得多。  
+    &emsp; `SELECT * FROM [table] WHERE uid=1 ORDER x,y LIMIT 0,10;` 建立索引(uid,x,y)实现order by的优化,比建立(x,y,uid)索引效果要好得多。  
     
     &emsp; <font color = "red">联合索引，选择区分度较高的字段在前列。</font>  
 

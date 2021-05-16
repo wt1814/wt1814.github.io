@@ -110,7 +110,7 @@
         * [Atmoic](/docs/java/concurrent/Atmoic.md)  
             * [AtomicStampedReference与AtomicMarkableReference](/docs/java/concurrent/AtomicStampedReference.md)  
             * [LongAdder](/docs/java/concurrent/LongAdder.md)  
-        * [collections](/docs/java/concurrent/Collections.md)  
+        * [Collections](/docs/java/concurrent/collections.md)  
             * [ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)  
             * [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
         * [tools](/docs/java/concurrent/tools.md)
@@ -120,7 +120,7 @@
             * [Exchanger](/docs/java/concurrent/Exchanger.md)  
             * [LocLockSupport](/docs/java/concurrent/LockSupport.md)  
     * 其他  
-        * 
+        * [获取多线程执行结果](/docs/java/concurrent/execResult.md)  
 * 数据库  
     * [数据建模](/docs/SQL/modeling.md)  
     * [SQL语句](/docs/SQL/SQLSentence.md)  
@@ -498,6 +498,7 @@
 
 * 算法
     * [总结](/docs/java/function/summary.md)  
+    * [算法基础](/docs/java/function/basics.md)  
     * [算法基本概念](/docs/java/function/notion.md)  
         * [时间复杂度](/docs/java/function/TimeComplexity.md)  
     * [算法方法](/docs/java/function/algorithmicIdea.md)  
@@ -526,4 +527,4 @@
     * [BloomFilter](/docs/java/function/BloomFilter.md)  
     * [HyperLogLog](/docs/java/function/HyperLogLog.md)  
     * [Trie](/docs/java/function/Trie.md)  
-    * [资源限制](/docs/java/function/bigdata.md)  
+    * [大数据和空间限制](/docs/java/function/bigdata.md)  

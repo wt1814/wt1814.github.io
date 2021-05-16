@@ -43,6 +43,8 @@ https://mp.weixin.qq.com/s/CXJHvTofKix6rR-ZZgeT_w
 https://mp.weixin.qq.com/s/d6cjgj8rxqKTw9AkKkpG9A
 基于binlog的canal组件有哪些使用场景(三)？ 
 https://mp.weixin.qq.com/s/X7-V7EQcnE0cK-NCfdsS1w
+
+https://mp.weixin.qq.com/s/RtgLZW9ifNoB9wfAlflGKQ
 -->
 ## 1.1. 主从复制简介  
 &emsp; 什么是主从复制?  

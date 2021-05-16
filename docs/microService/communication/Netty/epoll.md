@@ -58,7 +58,8 @@ IO多路复用的三种机制Select，Poll，Epoll
 https://www.jianshu.com/p/397449cadc9a
 https://www.bilibili.com/read/cv6134546?share_medium=android&share_plat=android&share_source=WEIXIN&share_tag=s_i&timestamp=1596386488&unique_k=aZsmwN
 
-
+https://mp.weixin.qq.com/s/uEoGXbweCxu08AShhsw9Xg
+https://mp.weixin.qq.com/s/BYaORGezXycLUFHcvi3ZnQ
 
 IO多路复用
 https://mp.weixin.qq.com/s/yCOnNp_1-0_Q1srSO_3Kog

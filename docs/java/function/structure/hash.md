@@ -10,6 +10,10 @@
     - [1.2. 几道和散列(哈希)表有关的题](#12-几道和散列哈希表有关的题)
         - [1.2.1. 两数之和](#121-两数之和)
         - [1.2.2. 无重复字符的最长子串](#122-无重复字符的最长子串)
+        - [1.2.3. ~~三数之和~~](#123-三数之和)
+        - [1.2.4. 两个数组的交集](#124-两个数组的交集)
+        - [1.2.5. 两个数组的交集 II](#125-两个数组的交集-ii)
+        - [1.2.6. 四数相加 II](#126-四数相加-ii)
 
 <!-- /TOC -->
 
@@ -160,4 +164,180 @@ public:
 };
 ```
 
+### 1.2.3. ~~三数之和~~  
+&emsp; 题目来源于 LeetCode 上第 15 号问题： 3Sum 。  
 
+&emsp; **题目描述**  
+&emsp; 给定一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？找出所有满足条件且不重复的三元组。  
+
+&emsp; **题目解析**  
+&emsp; 题目需要我们找出三个数且和为 0 ，那么除了三个数全是 0 的情况之外，肯定会有负数和正数，所以一开始可以先选择一个数，然后再去找另外两个数，这样只要找到两个数且和为第一个选择的数的相反数就行了。也就是说需要枚举 a 和 b ，将 c 的存入 map 即可。  
+&emsp; 需要注意的是返回的结果中，不能有有重复的结果。这样的代码时间复杂度是 O(n^2)。在这里可以先将原数组进行排序，然后再遍历排序后的数组，这样就可以使用双指针以线性时间复杂度来遍历所有满足题意的两个数组合。  
+
+&emsp; **代码实现**   
+
+```java
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        sort(nums.begin(), nums.end());
+        if (nums.empty() || nums.back() < 0 || nums.front() > 0) return {};
+        for (int k = 0; k < nums.size(); ++k) {
+            if (nums[k] > 0) break;
+            if (k > 0 && nums[k] == nums[k - 1]) continue;
+            int target = 0 - nums[k];
+            int i = k + 1, j = nums.size() - 1;
+            while (i < j) {
+                if (nums[i] + nums[j] == target) {
+                    res.push_back({nums[k], nums[i], nums[j]});
+                    while (i < j && nums[i] == nums[i + 1]) ++i;
+                    while (i < j && nums[j] == nums[j - 1]) --j;
+                    ++i; --j;
+                } else if (nums[i] + nums[j] < target) ++i;
+                else --j;
+            }
+        }
+        return res;
+    }
+};
+```
+
+### 1.2.4. 两个数组的交集  
+&emsp; 题目来源于 LeetCode 上第 349 号问题： Intersection of Two Arrays。  
+
+&emsp; **题目描述**  
+&emsp; 给定两个数组，编写一个函数来计算它们的交集。   
+
+&emsp; **题目解析**  
+&emsp; 容器类 set 的使用。  
+
+* 遍历 num1，通过 set 容器 record 存储 num1 的元素  
+* 遍历 num2，在 record 中查找是否有相同的元素，如果有，用 set 容器 resultSet 进行存储  
+* 将 resultSet 转换为 vector 类型  
+
+
+&emsp; **动画描述**  
+![Alt Text](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/646.gif)  
+
+&emsp; **代码实现**   
+
+```java
+// 时间复杂度: O(nlogn)
+// 空间复杂度: O(n)
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        set<int> record;
+        for( int i = 0 ; i < nums1.size() ; i ++ ){
+            record.insert(nums1[i]);
+        }
+        set<int> resultSet;
+        for( int i = 0 ; i < nums2.size() ; i ++ ){
+            if(record.find(nums2[i]) != record.end()){
+                resultSet.insert(nums2[i]);
+            }
+        }
+        vector<int> resultVector;
+        for(set<int>::iterator iter = resultSet.begin(); iter != resultSet.end(); iter ++ ){
+            resultVector.push_back(*iter);
+        }
+
+        return resultVector;
+    }
+};
+```
+
+
+### 1.2.5. 两个数组的交集 II
+&emsp; 题目来源于 LeetCode 上第 350 号问题： Intersection of Two Arrays II。  
+&emsp; 题目描述  
+&emsp; 给定两个数组，编写一个函数来计算它们的交集。  
+
+&emsp; 示例 1:  
+
+```text
+输入: nums1 = [1,2,2,1], nums2 = [2,2]
+输出: [2,2]
+```
+&emsp; 示例 2:  
+
+```text
+输入: nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+输出: [4,9]
+```
+&emsp; **题目解析**  
+&emsp; 与上题 两个数组的交集 类似。只不过这里使用的是 map 。 
+
+* 遍历 num1，通过 map 容器 record 存储 num1 的元素与频率；
+* 遍历 num2 ，在 record 中查找是否有相同的元素（该元素的存储频率大于 0 ），如果有，用 map 容器resultVector 进行存储，同时该元素的频率减一。
+
+&emsp; **动画描述**  
+![Alt Text](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/647.gif)  
+
+&emsp; **代码实现**  
+
+```java
+// 时间复杂度: O(nlogn)
+// 空间复杂度: O(n)
+class Solution {
+public:
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        map<int, int> record;
+        for(int i = 0 ; i < nums1.size() ; i ++){
+             record[nums1[i]] += 1;
+        }
+        vector<int> resultVector;
+        for(int i = 0 ; i < nums2.size() ; i ++){
+            if(record[nums2[i]] > 0){
+                resultVector.push_back(nums2[i]);
+                record[nums2[i]] --;
+            }
+        }
+        return resultVector;
+    }
+};
+```
+
+### 1.2.6. 四数相加 II
+&emsp; 题目来源于 LeetCode 上第 454 号问题： 4Sum II 。  
+&emsp; **题目描述**  
+给定四个包含整数的数组列表 A , B , C , D ,计算有多少个元组 (i, j, k, l) ，使得 A[i] + B[j] + C[k] + D[l] = 0。  
+&emsp; 为了使问题简单化，所有的 A, B, C, D 具有相同的长度 N，且 0 ≤ N ≤ 500 。所有整数的范围在 -2^28 到 2^28- 1 之间，最终结果不会超过 2^31 - 1 。  
+
+&emsp; **题目解析**  
+&emsp; 与 Two Sum 极其类似，使用哈希表来解决问题。  
+
+* 把 A 和 B 的两两之和都求出来，在哈希表中建立两数之和与其出现次数之间的映射；
+* 遍历 C 和 D 中任意两个数之和，只要看哈希表存不存在这两数之和的相反数就行了。
+
+&emsp; **动画描述**  
+![Alt Text](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/648.gif)  
+
+
+&emsp; **代码实现**  
+
+```java
+// 时间复杂度: O(n^2)
+// 空间复杂度: O(n^2)
+class Solution {
+public:
+    int fourSumCount(vector<int>& A, vector<int>& B, vector<int>& C, vector<int>& D) {
+        unordered_map<int,int> hashtable;
+        for(int i = 0 ; i < A.size() ; i ++){
+            for(int j = 0 ; j < B.size() ; j ++){
+                 hashtable[A[i]+B[j]] += 1;
+            }
+        }
+        int res = 0;
+        for(int i = 0 ; i < C.size() ; i ++){
+            for(int j = 0 ; j < D.size() ; j ++){
+                if(hashtable.find(-C[i]-D[j]) != hashtable.end()){
+                    res += hashtable[-C[i]-D[j]];
+                }
+            }
+        }
+        return res;
+    }
+};
+```

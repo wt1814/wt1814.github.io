@@ -33,7 +33,7 @@
 
 ## 1.1. BlockingQueue接口  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-35.png)  
-&emsp; BlockingQueue是继承自Queue的接口，在Queue的基础上增加了阻塞操作。相比Queue接口有两种形式的api，BlockingQueue则有四种形式的api，阻塞队列定义如果调用了某个函数可能当时不能立即满足结果 ，但很有可能在未来的某个时刻会满足。四种api定义：  
+&emsp; BlockingQueue是继承自Queue的接口，在Queue的基础上增加了阻塞操作。相比Queue接口有两种形式的api，BlockingQueue则有四种形式的api，阻塞队列定义如果调用了某个函数可能当时不能立即满足结果，但很有可能在未来的某个时刻会满足。四种api定义：  
 * 添加数据方法：  
     * add(e)：将元素添加到队列末尾，成功则返回true；<font color = "red">如果队列已满，则插入失败，抛出异常。</font>  
     * offer(e)：将元素添加到队列末尾，成功则返回true；<font color = "red">如果队列已满，则插入失败，返回false。</font>  
