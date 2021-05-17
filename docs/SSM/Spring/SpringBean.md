@@ -66,8 +66,8 @@ https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 7. BeanPostProcessor后置处理：  
 &emsp; 如果这个Bean实现了BeanPostProcessor接口，将会调用postProcessAfterInitialization(Object obj, String s)方法；由于这个方法是在Bean初始化结束时调用的，所以可以被应用于内存或缓存技术；  
 8. 注册Destruction  
-
-    以上几个步骤完成后，Bean就已经被正确创建了，之后就可以使用这个Bean了。  
+    
+&emsp; `以上几个步骤完成后，Bean就已经被正确创建了，之后就可以使用这个Bean了。`  
 
 9. DisposableBean：   
 &emsp; 当Bean不再需要时，会经过清理阶段，如果Bean实现了DisposableBean这个接口，会调用其实现的destroy()方法；  

@@ -48,7 +48,7 @@
 
 ------
 &emsp; 查看AbstractApplicationContext.refresh()方法中实例化所有非懒加载的bean过程即
-这个方法finishBeanFactoryInitialization查看此方法最后一行beanFactory.preInstantiateSingletons();实际调用此方法我们来看此单例实例化过程
+这个方法finishBeanFactoryInitialization查看此方法最后一行beanFactory.preInstantiateSingletons();实际调用此方法，来看此单例实例化过程
 为DefaultListBeanFactory.preInstantiateSingletons源码如下  
 
 ```java
@@ -65,10 +65,7 @@ public void preInstantiateSingletons() throws BeansException {
 	//此处省略无数行代码
 }
 ```
-&emsp; 从以上代码的循环中的条件我们不难看出容器启动过程中会实例化的bean只有满足以下三个条件的bean：非抽象的、单例的、非懒加载的。  
-
-
-
+&emsp; 从以上代码的循环中的条件，不难看出容器启动过程中会实例化的bean只有满足以下三个条件的bean：非抽象的、单例的、非懒加载的。  
 
 
 ## 1.2. SpringDI时序图  
@@ -365,7 +362,7 @@ protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable O
 &emsp; **主要流程：**  
 1. 先检查 instanceWrapper变量是不是null，这里一般是null，除非当前正在创建的Bean在 factoryBeanInstanceCache中存在这个是保存还没创建完成的FactoryBean的集合。  
 2. **<font color = "clime">调用createBeanInstance方法实例化Bean。</font>**  
-3. 如果当前 RootBeanDefinition对象还没有调用过实现了的 MergedBeanDefinitionPostProcessor接口的方法，则会进行调用 。  
+3. 如果当前 RootBeanDefinition对象还没有调用过实现了MergedBeanDefinitionPostProcessor接口的方法，则会进行调用 。  
 4. 当满足这三点：单例Bean、 **<font color = "blue">尝试解析bean之间的循环引用</font>** 、bean目前正在创建中，则会进一步检查是否实现了 SmartInstantiationAwareBeanPostProcessor接口。如果实现了则调用是实现的 getEarlyBeanReference方法。  
 5. **<font color = "clime">调用 populateBean方法进行属性填充。</font>**  
 6. **<font color = "clime">调用 initializeBean方法对Bean进行初始化。</font>**  

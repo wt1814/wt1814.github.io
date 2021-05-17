@@ -19,8 +19,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-58.png)  
-
 &emsp; **<font color = "red">总结：</font>**  
 1. InnoDB共有七种类型的锁：共享/排它锁、意向锁、记录锁(Record lock)、间隙锁(Gap lock)、临键锁(Next-key lock)、插入意向锁、自增锁。  
 2. **<font color = "red">InnoDB存储引擎的锁的算法有三种：</font>**  

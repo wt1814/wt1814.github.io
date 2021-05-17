@@ -18,6 +18,8 @@
 https://mp.weixin.qq.com/s/Q0MqcvbeI7gAcJH5ZaQWgA
 JDK为何自己先破坏双亲委派模型? 
 https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
+Java历史上有三次破坏双亲委派模型，是哪三次？ 
+https://mp.weixin.qq.com/s/zZmsi7lpuQHECOHA2ohOvA
 -->
 
 &emsp; **<font color = "red">总结：</font>**  

@@ -35,6 +35,9 @@
 
 <!-- 
 
+细数ThreadLocal三大坑，内存泄露仅是小儿科
+https://mp.weixin.qq.com/s/1YzMHrr26jKl0R_o9l9GiQ
+
 面试官再问你 ThreadLocal，就这样狠狠 “怼” 回去！ 
 https://mp.weixin.qq.com/s/9gXSrw6llYy29OPH-rQuxQ
 

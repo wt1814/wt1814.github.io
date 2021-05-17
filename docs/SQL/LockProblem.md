@@ -72,7 +72,7 @@ https://mp.weixin.qq.com/s/F3IPSiKzabuDd8S5UKI-WQ
 * 改变事务隔离级别。  
 
 ### 1.1.4. 解决死锁
-&emsp; **<font color = "clime">如果出现死锁</font>** ，<font color = "clime">可以用show engine innodb status;命令来确定最后一个死锁产生的原因。</font>返回结果中包括死锁相关事务的详细信息，如引发死锁的SQL语句，事务已经获得的锁，正在等待什么锁，以及被回滚的事务等。据此可以分析死锁产生的原因和改进措施。  
+&emsp; **<font color = "clime">如果出现死锁</font>** ，<font color = "clime">可以用`show engine innodb status;`命令来确定最后一个死锁产生的原因。</font>返回结果中包括死锁相关事务的详细信息，如引发死锁的SQL语句，事务已经获得的锁，正在等待什么锁，以及被回滚的事务等。据此可以分析死锁产生的原因和改进措施。  
 
 &emsp; **<font color = "clime">死锁的解决方案：</font>**   
 1. 首先在程序的设计上，当发现程序有高并发的访问某一个表时，尽量对该表的执行操作串行化，或者锁升级，一次性获取所有的锁资源。  
