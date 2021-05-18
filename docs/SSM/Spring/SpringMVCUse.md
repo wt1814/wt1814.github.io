@@ -56,7 +56,7 @@ public @interface RequestMapping {
 * method：指定请求的method类型， 如GET、POST、PUT、DELETE等；  
 * consumes：指定处理请求的提交内容类型(Content-Type)，例如application/json、text/html等；  
 * produces:  指定返回的内容类型，仅当request请求头中的(Accept)类型中包含该指定类型才返回；  
-* params：指定request中必须包含某些参数值是，才让该方法处理请求；  
+* params：指定request中必须包含某些参数值，才让该方法处理请求；  
 * headers：指定request中必须包含某些指定的header值，才能让该方法处理请求。  
 
 &emsp; @RequestMapping中consumes和produces属性使用Content-Type进行过滤信息；headers中可以使用Content-Type进行过滤和判断。

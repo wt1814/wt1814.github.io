@@ -39,6 +39,9 @@ https://mp.weixin.qq.com/s/mH1jRiZTiHdlMBSwu3f2zg
 https://mp.weixin.qq.com/s/bF4T2t9Y7fr3XN8vkAG03Q
 ThreadLocal的最牛辨析！
 https://mp.weixin.qq.com/s/IklA1Oil9kRh7Z_HwuAnyg
+
+ThreadLocal以及内存泄漏 
+https://mp.weixin.qq.com/s/hjx7CHPpVjs9_Hz3pl0DgQ
 -->
 
 ## 1.1. ThreadLocal简介

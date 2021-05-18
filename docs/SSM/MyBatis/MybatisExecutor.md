@@ -223,7 +223,7 @@ private void parseConfiguration(XNode root) {
 ```
 
 #### 1.3.1.1. 解析mapper映射文件
-&emsp; <font color = "red">mapperElement(root.evalNode("mappers"))，mapperElemet()方法是解析mapper映射文件的。</font> mapper标签配置方式：  
+&emsp; `mapperElement(root.evalNode("mappers"))`<font color = "red">，mapperElemet()方法是解析mapper映射文件的。</font> mapper标签配置方式：  
 
 ```xml
 <mappers>

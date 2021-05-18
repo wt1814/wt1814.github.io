@@ -20,6 +20,9 @@ MySQL中InnoDB脏页刷新机制Checkpoint
 https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
 -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-166.png)  
+
+
 ## 1.1. 事务提交前的日志文件写入  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-150.png)  
 

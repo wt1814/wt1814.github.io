@@ -403,9 +403,11 @@
 [Dubbo详解](/docs/microService/dubbo/DubboExplanate.md)  
 &emsp; [Dubbo框架设计](/docs/microService/dubbo/design.md)  
 &emsp; [Dubbo实现细节](/docs/microService/dubbo/realization.md)  
+&emsp; [Dubbo协议长连接心跳](/docs/microService/dubbo/LongConnection.md)  
 &emsp; [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
 &emsp; &emsp; [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
 &emsp; &emsp; [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
+ 
 [Dubbo运行流程源码解析](/docs/microService/dubbo/DubboSource.md)  
 &emsp; [初始化源码解析](/docs/microService/dubbo/dubboSpring.md)  
 &emsp; [服务暴露源码解析](/docs/microService/dubbo/export.md)  
@@ -538,6 +540,7 @@
 &emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
 &emsp; [统一异常处理](/docs/web/ExceptionHandler.md)  
 &emsp; [统一日志记录](/docs/web/unifiedLog.md)  
+&emsp; [工具类hutool](/docs/web/hutool.md)  
 [API接口设计](/docs/web/API.md)    
 &emsp; [RESTful风格](/docs/web/interface/RESTful.md)  
 &emsp; [接口幂等](/docs/web/interface/idempotent.md)  
@@ -636,7 +639,8 @@
 [DNS](docs/network/DNS.md)  
 [TCP](/docs/network/TCP.md)  
 &emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
-&emsp; [TCP粘包](/docs/network/TCPSticking.md)  
+&emsp; [TCP粘包](/docs/network/TCPSticking.md)   
+[长/短连接](/docs/network/connection.md)   
 [网络抓包](/docs/network/wireshark.md)  
 
 

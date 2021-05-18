@@ -17,8 +17,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/aop-8.png)  
-
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "red">Spring事务属性通常由事务的传播行为、事务的隔离级别、事务的超时值、事务只读标志组成。</font>**  
     * 事务的传播行为主要分为支持当前事务和不支持当前事务。  

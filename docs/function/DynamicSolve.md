@@ -15,6 +15,20 @@
 # 1. 动态规划解题  
 <!-- 
 
+
+备忘录方法
+https://baike.baidu.com/item/%E5%A4%87%E5%BF%98%E5%BD%95%E6%96%B9%E6%B3%95/6756819?appJump=1&ivk_sa=1022817p
+
+细谈递归，备忘录递归，动态规划，三种算法思想和运行原理
+https://blog.csdn.net/qq_39046727/article/details/78966105
+
+备忘录方法与动态规划比较
+
+https://blog.csdn.net/annmi26002/article/details/101975994
+动态规划题解（转）
+https://www.cnblogs.com/wsw-seu/p/13381312.html
+
+
 https://blog.csdn.net/zw6161080123/article/details/80639932
 
 这才是真正的状态压缩动态规划好不好！！！ 

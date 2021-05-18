@@ -297,6 +297,7 @@
     * [Dubbo详解](/docs/microService/dubbo/DubboExplanate.md)  
         * [Dubbo框架设计](/docs/microService/dubbo/design.md)  
         * [Dubbo实现细节](/docs/microService/dubbo/realization.md)  
+        * [Dubbo协议长连接心跳](/docs/microService/dubbo/LongConnection.md)   
         * [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
             * [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
             * [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
@@ -411,6 +412,7 @@
         * [统一格式返回](/docs/web/UnifiedFormat.md)   
         * [统一异常处理](/docs/web/ExceptionHandler.md)  
         * [统一日志记录](/docs/web/unifiedLog.md)  
+        * [工具类hutool](/docs/web/hutool.md)  
     * [API接口设计](/docs/web/API.md)    
         * [RESTful风格](/docs/web/interface/RESTful.md)  
         * [接口幂等](/docs/web/interface/idempotent.md)  
@@ -487,6 +489,7 @@
     * [TCP](/docs/network/TCP.md)  
         * [TIME_WAIT问题](/docs/network/timewait.md)  
         * [TCP粘包](/docs/network/TCPSticking.md)  
+    * [长/短连接](/docs/network/connection.md)  
     * [网络抓包](/docs/network/wireshark.md)  
 * 测试工具
     * [Jmeter](/docs/devAndOps/Jmeter.md)  
