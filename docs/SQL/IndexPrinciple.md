@@ -102,7 +102,10 @@ https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
 &emsp; 由于B+Tree非叶子节点不存储数据(data)，因此所有的数据都要查询至叶子节点，而叶子节点的高度都是相同的，因此所有数据的查询速度都是一样的。  
 
 #### 1.1.1.3. ~~InnoDB索引B+tree实现过程~~  
-<!-- 
+<!--
+ Mysql索引-B+树是如何生长的
+https://mp.weixin.qq.com/s/3kJt34IXkvowL6E5xp-zoA
+
 https://mp.weixin.qq.com/s/6BoGlaYpdDjzZy19YhInEw
 https://zhuanlan.zhihu.com/p/98818611
 

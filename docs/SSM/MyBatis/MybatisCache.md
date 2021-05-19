@@ -22,8 +22,6 @@ https://mp.weixin.qq.com/s/_V8d37Oo3PMubLu429K2Lw
 https://mp.weixin.qq.com/s/nkoUjud9_-QhG5Tp40gFeA
 -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-31.png)  
-
 # 1. MyBatis缓存  
 &emsp; MyBatis支持声明式数据缓存（declarative data caching）。MyBatis提供了默认基于Java HashMap的缓存实现，以及用于与OSCache、Ehcache、Hazelcast和Memcached连接的默认连接器。MyBatis还提供API供其他缓存实现使用。  
 
@@ -99,7 +97,7 @@ public void testSqlSession(){
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-23.png)  
 &emsp; <font color= "red">在有事务的情况下，同一个方法内，有多个线程 Mybatis 多次请求数据库的情况下，创建了多个 SqlSession 会话！</font>  
 
-&emsp; 为什么在同一个事务下，又开启两个SqlSession了呢？  
+&emsp; 为什么在同一个事务下，又开启了两个SqlSession？  
 &emsp; 这就需要查看源码了，通过源码会发现，在启用的这两个线程中，在事务管理器 TransactionSynchronizationManager 中获取 SqlSessionHolder，再从 SqlSessionHolder 中获取 SqlSession。而这两个线程的 ThreadLocal 绑定的线程不一样，所以就重新 openSession 了一个 SqlSession。  
 
 

@@ -22,7 +22,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-32.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **缓存穿透、缓存击穿和缓存雪崩：**  

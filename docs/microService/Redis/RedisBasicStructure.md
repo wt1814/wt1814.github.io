@@ -28,8 +28,6 @@
 <!-- /TOC -->
 
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-72.png)  
-
 &emsp; **<font color = "red">总结：</font>**  
 1.  **<font color = "clime">Redis各个数据类型的使用场景：分析存储类型和可用的操作。</font>**  
     * 有序列表list：列表不但是有序的，同时支持按照索引范围获取元素。可以用作栈、文章列表。  
@@ -141,14 +139,14 @@ https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
 &emsp; Hash存储键值对的无序散列表。  
 
 &emsp; <font color = "clime">Hash与String同样是存储字符串(存储单个字符串时使用String；存储对象时使用Hash，勿将对象序列化后存String类型)，它们的主要区别：</font>  
-1. 把所有相关的值聚集到一个 key 中，节省内存空间  
-2. 只使用一个 key，减少 key 冲突  
-3. 当需要批量获取值的时候，只需要使用一个命令，减少内存/IO/CPU 的消耗  
+1. 把所有相关的值聚集到一个 key 中，节省内存空间。  
+2. 只使用一个 key，减少 key 冲突。  
+3. 当需要批量获取值的时候，只需要使用一个命令，减少内存/IO/CPU 的消耗。  
 
 &emsp; **不适合的场景：** 
-1. Field 不能单独设置过期时间  
-2. 没有bit操作  
-3. 需要考虑数据量分布的问题(value 值非常大的时候，无法分布到多个节点)  
+1. Field 不能单独设置过期时间。  
+2. 没有bit操作。  
+3. 需要考虑数据量分布的问题(value 值非常大的时候，无法分布到多个节点)。  
 
 #### 1.2.3.1. 常用操作
 &emsp; ......

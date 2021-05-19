@@ -2,6 +2,30 @@
 
 # 算法基础  
 
+## print 和 println的区别
+&emsp; println 输出字符后，下一个输出的字符会换行展示  
+&emsp; print 输出字符后，下一个输出字符不会会换展示  
+
+```java
+System.out.print(stack.pop());
+// print 输出字符后，下一个输出字符不会会换展示
+// 输出 uoy era woh
+
+//System.out.println(stack.pop());
+// println 输出字符后，下一个输出的字符会换行展示
+// 输出u
+//o
+//y
+//
+//e
+//r
+//a
+//
+//w
+//o
+//h
+```
+
 ## i++ 与 ++i 
 <!-- 
 &emsp; i++ 与 ++i 的主要区别有两个：  

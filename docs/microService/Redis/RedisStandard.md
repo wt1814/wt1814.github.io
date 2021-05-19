@@ -11,7 +11,7 @@
         - [1.2.2. 命令使用](#122-命令使用)
         - [1.2.3. 客户端使用](#123-客户端使用)
         - [1.2.4. 相关工具](#124-相关工具)
-        - [1.2.5. 删除 bigkey](#125-删除-bigkey)
+        - [1.2.5. 删除bigkey](#125-删除bigkey)
 
 <!-- /TOC -->
 
@@ -166,10 +166,10 @@ https://mp.weixin.qq.com/s/-ydAQL077bz7yuKDw3d_Qw
 3. 热点 key 寻找  
 &emsp; 内部实现使用 monitor，所以建议短时间使用 facebook 的 redis-faina 阿里云 Redis 已经在内核层面解决热点 key 问题   
 
-### 1.2.5. 删除 bigkey
+### 1.2.5. 删除bigkey
 
 &emsp; 下面操作可以使用 pipeline 加速。  
-&emsp; redis 4.0 已经支持 key 的异步删除，欢迎使用。  
+&emsp; **<font color = "clime">redis 4.0 已经支持 key 的异步删除，欢迎使用。</font>**  
 
 1. Hash 删除: hscan + hdel
 

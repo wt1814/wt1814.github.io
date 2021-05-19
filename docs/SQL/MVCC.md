@@ -33,7 +33,10 @@
 
 
 # 1. MVCC
-<!-- 
+<!--
+MySQL面试三连杀：如何实现可重复读、又为什么会出现幻读、是否解决了幻读问题
+https://mp.weixin.qq.com/s/D9hL0W1dcSmzDd2joHgy5A
+
 https://www.codercto.com/a/88775.html
 https://zhuanlan.zhihu.com/p/147372839
 https://www.jianshu.com/p/8845ddca3b23
