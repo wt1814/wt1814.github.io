@@ -8,8 +8,6 @@ Redis官方的高可用性解决方案
 https://mp.weixin.qq.com/s/8JPBNMGhBsq2jfW9v-H5vQ
 -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-51.png)  
-
 &emsp; Redis部署方式： **<font color = "red">单机、主从复制模式、哨兵模式、分片模式（包含客户端分片、代理分片、服务器分片即Redis Cluster）。</font>**  
 1. Redis单机：  
     &emsp; Redis单机部署一般存在如下几个问题：  
