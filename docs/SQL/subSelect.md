@@ -6,7 +6,8 @@
         - [1.1.1. 端上除了partition key只有一个非partition key作为条件查询](#111-端上除了partition-key只有一个非partition-key作为条件查询)
         - [1.1.2. 端上除了partition key不止一个非partition key作为条件查询](#112-端上除了partition-key不止一个非partition-key作为条件查询)
         - [1.1.3. 后台除了partition key还有各种非partition key组合条件查询](#113-后台除了partition-key还有各种非partition-key组合条件查询)
-        - [1.1.4. 基因法详解](#114-基因法详解)
+        - [1.1.4. ★★★基因法详解](#114-★★★基因法详解)
+        - [1.1.5. ★★★基因法+B2B模式](#115-★★★基因法b2b模式)
     - [1.2. 跨分片的排序order by、分组group by以及聚合count等函数](#12-跨分片的排序order-by分组group-by以及聚合count等函数)
     - [1.3. 跨分片的排序分页](#13-跨分片的排序分页)
     - [1.4. 跨节点Join的问题](#14-跨节点join的问题)
@@ -79,11 +80,19 @@ https://blog.csdn.net/sinat_29774479/article/details/107555322
 * 冗余法  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-24.png)  
 
-### 1.1.4. 基因法详解  
+### 1.1.4. ★★★基因法详解  
 <!--
 基因算法-分库分表的超级解决方案
 https://blog.csdn.net/weixin_52346300/article/details/113104964
 -->
+
+### 1.1.5. ★★★基因法+B2B模式
+<!-- 
+https://www.cnblogs.com/heqiyoujing/p/11297432.html
+-->
+
+&emsp; B2B模式（有买家、卖家），冗余法（买家库和卖家库）和基因法。  
+
 
 ## 1.2. 跨分片的排序order by、分组group by以及聚合count等函数  
 &emsp; 这些是一类问题，因为它们<font color = "red">都需要基于全部数据集合进行计算。多数的代理都不会自动处理合并工作，部分支持聚合函数MAX、MIN、COUNT、SUM。</font>  

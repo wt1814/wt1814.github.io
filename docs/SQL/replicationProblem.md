@@ -27,7 +27,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 复制过程
-	1. 大对象blog,text传输
+	1. 大对象blog,text传输： **<font color = "clime">解决的办法就是在主从库上增加max_allowed_packet参数的大小。</font>**  
 2. 错误
 	1. 主从不一致后锁表 
 	2. 跳过错误
@@ -55,7 +55,10 @@ https://www.cnblogs.com/gered/p/11388986.html#_label0_7
 -->
 
 ### 1.1.1. 大对象blog,text传输  
+&emsp; 如果应用中使用大的BLOG列或者长字符串，那么在从库上恢复时，可能会出现“log event entry exceeded max_allowed_packet”错误，这是因为含有大文本的记录无法通过网络进行传输导致。  
+&emsp; **<font color = "clime">解决的办法就是在主从库上增加max_allowed_packet参数的大小，这个参数的默认值为1MB，可以按照实际需要进行修改，比如下例中将其增大为16MB：</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-98.png)  
+
 
 ### 1.1.2. ~~主从不一致后锁表~~
 
@@ -98,7 +101,6 @@ slave-parallel-workers=2
 ```
 
 ### 1.1.6. 主从切换  
-
 
 
 ## 1.2. 《高性能MySql》相关章节

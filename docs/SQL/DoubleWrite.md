@@ -12,7 +12,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
-2.  在应用(apply)重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。  
+2.  在应用(apply)重做日志(redo log)前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。  
     1. 在异常崩溃时，如果不出现“页数据损坏”，能够通过redo恢复数据；
     2. 在出现“页数据损坏”时，能够通过double write buffer恢复页数据； 
 3. doublewrite分为内存和磁盘的两层架构。当有页数据要刷盘时：  
