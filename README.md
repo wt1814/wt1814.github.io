@@ -12,16 +12,16 @@
         - [Spring](#spring)
         - [MyBatis](#mybatis)
     - [分布式](#分布式)
-        - [分布式高并发](#分布式高并发)
+        - [SpringBoot](#springboot)
+        - [SpringCloud](#springcloud)
+        - [Dubbo](#dubbo)
+        - [Zookeeper](#zookeeper)
         - [分布式缓存](#分布式缓存)
             - [Redis](#redis)
         - [限流降级](#限流降级)
         - [分布式消息队列](#分布式消息队列)
             - [kafka](#kafka)
-        - [SpringBoot](#springboot)
-        - [SpringCloud](#springcloud)
-        - [Dubbo](#dubbo)
-        - [Zookeeper](#zookeeper)
+        - [分布式高并发](#分布式高并发)
         - [分布式理论](#分布式理论)
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
@@ -293,15 +293,62 @@
 ----
 
 ## 分布式  
-### 分布式高并发
-[分布式高并发](/docs/system/DistributedHighConcurrency.md)   
-&emsp; [分布式与微服务](/docs/system/serviceSplit.md)  
-&emsp; [性能指标](/docs/system/performance.md)  
-&emsp; [并发系统三高](/docs/system/threeHigh.md)  
-&emsp; [高可用](/docs/system/highAvailability.md)  
-&emsp; [秒杀系统设计](/docs/system/seckill.md)  
-&emsp; [资源限制](/docs/system/ResourceConstraints.md)  
+### SpringBoot  
+[学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
+[SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
+[SpringBoot源码](/docs/microService/SpringBoot/SpringBootSource.md)  
+&emsp; [SpringBoot启动过程-SpringApplication初始化](/docs/microService/SpringBoot/SpringApplicationInit.md)  
+&emsp; [SpringBoot启动过程-run()方法运行过程](/docs/microService/SpringBoot/runProcess.md)  
+&emsp; &emsp; [SpringBoot事件监听](/docs/microService/SpringBoot/EventListeners.md)  
+&emsp; &emsp; [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/SpringBootEvent.md)  
+&emsp; &emsp; [SpringBoot事件回调机制](/docs/microService/SpringBoot/eventCallback.md)  
+&emsp; [SpringBoot自动配置原理-@SpringBootApplication](/docs/microService/SpringBoot/SpringBootApplication.md)  
+&emsp; [SpringBoot自动配置原理-加载自动配置](/docs/microService/SpringBoot/ApplicationProcess.md)  
+&emsp; [内置Tomcat](/docs/microService/SpringBoot/Tomcat.md)  
+[自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
+### SpringCloud    
+[Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
+[Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
+[Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
+[Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/Hytrix.md)  
+[Spring Cloud Feign](/docs/microService/SpringCloudNetflix/Feign.md)  
+[Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
+[Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
+[Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
+
+### Dubbo  
+[RPC](/docs/microService/RPC.md)  
+[Dubbo](/docs/microService/dubbo/Dubbo.md)   
+[Dubbo使用教程](/docs/microService/dubbo/DubboUse.md)  
+[Dubbo详解](/docs/microService/dubbo/DubboExplanate.md)  
+&emsp; [Dubbo框架设计](/docs/microService/dubbo/design.md)  
+&emsp; [Dubbo实现细节](/docs/microService/dubbo/realization.md)  
+&emsp; [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
+&emsp; &emsp; [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
+&emsp; &emsp; [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
+&emsp; [Dubbo协议长连接心跳](/docs/microService/dubbo/LongConnection.md)  
+
+[Dubbo运行流程源码解析](/docs/microService/dubbo/DubboSource.md)  
+&emsp; [初始化源码解析](/docs/microService/dubbo/dubboSpring.md)  
+&emsp; [服务暴露源码解析](/docs/microService/dubbo/export.md)  
+&emsp; [服务引用源码解析](/docs/microService/dubbo/introduce.md)  
+&emsp; [服务调用源码解析](/docs/microService/dubbo/call.md)  
+&emsp; [再次理解dubbo-rpc包](/docs/microService/dubbo/dubboRPC.md)  
+[Dubbo常见问题](/docs/microService/dubbo/problem.md)  
+
+<!-- 
+[Dubbo集群容错源码解析](/docs/microService/dubbo/DubboColonySource.md)  
+&emsp; [服务目录源码解析](/docs/microService/dubbo/Directory.md)  
+&emsp; [服务路由源码解析](/docs/microService/dubbo/Router.md)  
+&emsp; [集群源码解析](/docs/microService/dubbo/Cluster.md)  
+&emsp; [负载均衡源码解析](/docs/microService/dubbo/LoadBalance.md)  
+-->
+
+### Zookeeper
+[如何理解分布式协调技术](/docs/microService/dubbo/coordinate.md)  
+[Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
+[Zookeeper使用](/docs/microService/dubbo/ZookeeperUse.md)  
 
 ### 分布式缓存  
 [缓存](/docs/cache/Cache.md)  
@@ -372,62 +419,14 @@
 [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
 -->
 
-### SpringBoot  
-[学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
-[SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
-[SpringBoot源码](/docs/microService/SpringBoot/SpringBootSource.md)  
-&emsp; [SpringBoot启动过程-SpringApplication初始化](/docs/microService/SpringBoot/SpringApplicationInit.md)  
-&emsp; [SpringBoot启动过程-run()方法运行过程](/docs/microService/SpringBoot/runProcess.md)  
-&emsp; &emsp; [SpringBoot事件监听](/docs/microService/SpringBoot/EventListeners.md)  
-&emsp; &emsp; [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/SpringBootEvent.md)  
-&emsp; &emsp; [SpringBoot事件回调机制](/docs/microService/SpringBoot/eventCallback.md)  
-&emsp; [SpringBoot自动配置原理-@SpringBootApplication](/docs/microService/SpringBoot/SpringBootApplication.md)  
-&emsp; [SpringBoot自动配置原理-加载自动配置](/docs/microService/SpringBoot/ApplicationProcess.md)  
-&emsp; [内置Tomcat](/docs/microService/SpringBoot/Tomcat.md)  
-[自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
-
-### SpringCloud    
-[Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
-[Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
-[Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
-[Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/Hytrix.md)  
-[Spring Cloud Feign](/docs/microService/SpringCloudNetflix/Feign.md)  
-[Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
-[Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
-[Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
-
-### Dubbo  
-[RPC](/docs/microService/RPC.md)  
-[Dubbo](/docs/microService/dubbo/Dubbo.md)   
-[Dubbo使用教程](/docs/microService/dubbo/DubboUse.md)  
-[Dubbo详解](/docs/microService/dubbo/DubboExplanate.md)  
-&emsp; [Dubbo框架设计](/docs/microService/dubbo/design.md)  
-&emsp; [Dubbo实现细节](/docs/microService/dubbo/realization.md)  
-&emsp; [Dubbo协议长连接心跳](/docs/microService/dubbo/LongConnection.md)  
-&emsp; [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
-&emsp; &emsp; [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
-&emsp; &emsp; [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
- 
-[Dubbo运行流程源码解析](/docs/microService/dubbo/DubboSource.md)  
-&emsp; [初始化源码解析](/docs/microService/dubbo/dubboSpring.md)  
-&emsp; [服务暴露源码解析](/docs/microService/dubbo/export.md)  
-&emsp; [服务引用源码解析](/docs/microService/dubbo/introduce.md)  
-&emsp; [服务调用源码解析](/docs/microService/dubbo/call.md)  
-&emsp; [再次理解dubbo-rpc包](/docs/microService/dubbo/dubboRPC.md)  
-[Dubbo常见问题](/docs/microService/dubbo/problem.md)  
-
-<!-- 
-[Dubbo集群容错源码解析](/docs/microService/dubbo/DubboColonySource.md)  
-&emsp; [服务目录源码解析](/docs/microService/dubbo/Directory.md)  
-&emsp; [服务路由源码解析](/docs/microService/dubbo/Router.md)  
-&emsp; [集群源码解析](/docs/microService/dubbo/Cluster.md)  
-&emsp; [负载均衡源码解析](/docs/microService/dubbo/LoadBalance.md)  
--->
-
-### Zookeeper
-[如何理解分布式协调技术](/docs/microService/dubbo/coordinate.md)  
-[Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
-[Zookeeper使用](/docs/microService/dubbo/ZookeeperUse.md)  
+### 分布式高并发
+[分布式高并发](/docs/system/DistributedHighConcurrency.md)   
+&emsp; [分布式与微服务](/docs/system/serviceSplit.md)  
+&emsp; [性能指标](/docs/system/performance.md)  
+&emsp; [并发系统三高](/docs/system/threeHigh.md)  
+&emsp; [高可用](/docs/system/highAvailability.md)  
+&emsp; [秒杀系统设计](/docs/system/seckill.md)  
+&emsp; [资源限制](/docs/system/ResourceConstraints.md)  
 
 ### 分布式理论  
 [分布式和集群](/docs/system/distributed.md)   
@@ -671,34 +670,8 @@
 -->
 
 ## 算法  
-[总结](/docs/function/summary.md)  
-[算法基础](/docs/function/basics.md)  
-[算法基本概念](/docs/function/notion.md)  
-&emsp; [时间复杂度](/docs/function/TimeComplexity.md)  
-[算法方法](/docs/function/algorithmicIdea.md)  
-&emsp; [递归](/docs/function/recursion.md)  
-&emsp; [动态规划](/docs/function/dynamic.md)  
-&emsp; &emsp; [备忘录与动态规划](/docs/function/MemorandumAndDynamic.md)  
-&emsp; &emsp; [动态规划解题](/docs/function/DynamicSolve.md)  
-[基本数据结构](/docs/function/structure/structure.md)  
-&emsp; [数组和链表](/docs/function/structure/array.md)  
-&emsp; [栈与队列](/docs/function/structure/stack.md)  
-&emsp; [哈希](/docs/function/structure/hash.md)   
-&emsp; [二叉树](/docs/function/structure/tree.md)  
-&emsp; [二叉排序(查找)树](/docs/function/structure/binarySort.md)  
-&emsp; &emsp; [平衡二叉树](/docs/function/structure/AVL.md)  
-&emsp; &emsp; [红黑树](/docs/function/structure/redBlack.md)  
-&emsp; [B树](/docs/function/structure/BTree.md)  
-&emsp; [二叉堆](/docs/function/structure/binaryReactor.md)  
-[字符串](/docs/function/structure/String.md)   
-[排序查找算法](/docs/function/basicAlgorithm.md)  
-&emsp; [排序算法](/docs/function/sort.md)  
-&emsp; &emsp; [比较排序](/docs/function/sort/compare.md)  
-&emsp; &emsp; [非比较排序](/docs/function/sort/noCompare.md)  
-&emsp; &emsp; [外部排序](/docs/function/sort/externalSort.md)  
-&emsp; [查找算法](/docs/function/search.md)  
-&emsp; &emsp; [双指针法](/docs/function/DoublePointer.md)  
-[其他数据结构](/docs/function/otherStructure.md)  
+[红黑树](/docs/function/redBlack.md)  
+[复杂数据结构](/docs/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/function/SkipList.md)  
 &emsp; [位图](/docs/function/BitMap.md)  
 &emsp; [BloomFilter](/docs/function/BloomFilter.md)  

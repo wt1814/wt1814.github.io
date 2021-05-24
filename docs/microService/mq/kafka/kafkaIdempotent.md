@@ -23,7 +23,6 @@
         * 如果SN_old > SN_new+1，说明中间有数据尚未写入，或者是发生了乱序，或者是数据丢失，将抛出严重异常：OutOfOrderSeqenceException。 
 
 
-
 # 1. 幂等性   
 <!-- 
 https://blog.csdn.net/BeiisBei/article/details/104737298
@@ -52,7 +51,7 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 * 唯一标识：要想区分请求是否重复，请求中就得有唯一标识。例如支付请求中，订单号就是唯一标识。  
 * 记录下已处理过的请求标识：光有唯一标识还不够，还需要记录下那些请求是已经处理过的，这样当收到新的请求时，用新请求中的标识和处理记录进行比较，如果处理记录中有相同的标识，说明是重复记录，拒绝掉。  
 
-&emsp; **<font color = "clime">Kafka为了实现幂等性，它在底层设计架构中引入了ProducerID和SequenceNumber。</font>**  
+&emsp; **<font color = "clime">Kafka为了实现幂等性，它在底层设计架构中引入了ProducerID和SequenceNumber：</font>**  
 
 * ProducerID：在每个新的Producer初始化时，会被分配一个唯一的ProducerID，这个ProducerID对客户端使用者是不可见的。  
 * SequenceNumber：对于每个ProducerID，Producer发送数据的每个Topic和Partition都对应一个从0开始单调递增的SequenceNumber值。  

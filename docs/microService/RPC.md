@@ -108,28 +108,28 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 
 &emsp; 如下是各个部分的详细职责：  
 
-1. RpcServer：负责导出(export)远程接口  
-2. RpcClient：负责导入(import)远程接口的代理实现  
-3. RpcProxy：远程接口的代理实现  
+1. RpcServer：负责导出(export)远程接口。  
+2. RpcClient：负责导入(import)远程接口的代理实现。  
+3. RpcProxy：远程接口的代理实现。  
 4. RpcInvoker：  
-    * 客户方实现：负责编码调用信息和发送调用请求到服务方并等待调用结果返回  
-    * 服务方实现：负责调用服务端接口的具体实现并返回调用结果  
-5. RpcProtocol：负责协议编/解码  
-6. RpcConnector：负责维持客户方和服务方的连接通道和发送数据到服务方  
-7. RpcAcceptor：负责接收客户方请求并返回请求结果  
-8. RpcProcessor：负责在服务方控制调用过程，包括管理调用线程池、超时时间等  
-9. RpcChannel：数据传输通道  
+    * 客户方实现：负责编码调用信息和发送调用请求到服务方并等待调用结果返回。  
+    * 服务方实现：负责调用服务端接口的具体实现并返回调用结果。  
+5. RpcProtocol：负责协议编/解码。  
+6. RpcConnector：负责维持客户方和服务方的连接通道和发送数据到服务方。  
+7. RpcAcceptor：负责接收客户方请求并返回请求结果。  
+8. RpcProcessor：负责在服务方控制调用过程，包括管理调用线程池、超时时间等。  
+9. RpcChannel：数据传输通道。  
 
 &emsp; RPC的设计由Client，Client stub，Network，Server stub，Server构成。其中Client就是用来调用服务的，Cient stub是用来把调用的方法和参数序列化的(因为要在网络中传输，必须要把对象转变成字节)，Network用来传输这些信息到Server stub，Server stub用来把这些信息反序列化的，Server就是服务的提供者，最终调用的就是Server提供的方法。  
 
 1. Client像调用本地服务似的调用远程服务；
-2. Client stub接收到调用后，将方法、参数序列化
-3. 客户端通过sockets将消息发送到服务端
-4. Server stub 收到消息后进行解码(将消息对象反序列化)
-5. Server stub 根据解码结果调用本地的服务本地服务执行(对于服务端来说是本地执行)并将结果返回给Server stub
-6. Server stub将返回结果打包成消息(将结果消息对象序列化)
-7. 服务端通过sockets将消息发送到客户端
-8. Client stub接收到结果消息，并进行解码(将结果消息发序列化)
+2. Client stub接收到调用后，将方法、参数序列化；
+3. 客户端通过sockets将消息发送到服务端；
+4. Server stub 收到消息后进行解码(将消息对象反序列化)；
+5. Server stub 根据解码结果调用本地的服务本地服务执行(对于服务端来说是本地执行)并将结果返回给Server stub；
+6. Server stub将返回结果打包成消息(将结果消息对象序列化)；
+7. 服务端通过sockets将消息发送到客户端；
+8. Client stub接收到结果消息，并进行解码(将结果消息发序列化)；
 9. 客户端得到最终结果。
 
 ## 1.4. RPC框架需要解决的问题？  

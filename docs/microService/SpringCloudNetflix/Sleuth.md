@@ -29,8 +29,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-33.png)  
-
 
 # 1. Spring Cloud Sleuth
 <!-- 
