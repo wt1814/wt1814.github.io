@@ -19,16 +19,16 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. saga是一种解决长事务的分布式事务方案。  
+1. Saga是一种解决长事务的分布式事务方案。  
 2. Saga模型将一个分布式事务拆分为多个本地事务，也是一种二阶段补偿性事务。有两种恢复策略：  
-    * 向后恢复
-    * 向前恢复
+    * <font color = "red">backward recovery，向后恢复，补偿所有已完成的事务。</font>  
+    * <font color = "red">forward recovery，向前恢复，重试失败的事务，假设每个子事务最终都会成功。</font>  
 3. Saga有两种执行方式：  
     * 编排（Choreography）：每个服务产生并聆听其他服务的事件，并决定是否应采取行动。  
     &emsp; 该实现第一个服务执行一个事务，然后发布一个事件。该事件被一个或多个服务进行监听，这些服务再执行本地事务并发布(或不发布)新的事件，当最后一个服务执行本地事务并且不发布任何事件时，意味着分布式事务结束，或者它发布的事件没有被任何Saga参与者听到都意味着事务结束。  
     * 控制（Orchestration）：saga协调器orchestrator以命令/回复的方式与每项服务进行通信，告诉服务应该执行哪些操作。  
 4. **<font color = "blue">Saga和TCC：</font>**  
-    1. Saga没有“预留”Try行为，每个子事务(本地事务)依次执行提交阶段，所以会留下原始事务操作的痕迹，Cancel属于不完美补偿，需要考虑对业务上的影响。  
+    1. **<font color = "red">Saga没有“预留”Try行为，每个子事务(本地事务)依次执行提交阶段，所以会留下原始事务操作的痕迹，</font>** Cancel属于不完美补偿，需要考虑对业务上的影响。  
     2. Saga和TCC一样需要注意3个问题：1)保持幂等性；2)允许空补偿；3)防止资源悬挂。
 
 
@@ -90,7 +90,7 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 
 &emsp; **<font color = "clime">Saga定义了两种恢复策略：</font>** 
 
-* <font color = "red">backward recovery，向后恢复，补偿所有已完成的事务，如果任一子事务失败。</font>即上面提到的第二种执行顺序，其中j是发生错误的sub-transaction，这种做法的效果是撤销掉之前所有成功的sub-transation，使得整个Saga的执行结果撤销。  
+* <font color = "red">backward recovery，向后恢复，补偿所有已完成的事务。</font>即上面提到的第二种执行顺序，其中j是发生错误的sub-transaction，这种做法的效果是撤销掉之前所有成功的sub-transation，使得整个Saga的执行结果撤销。  
 * <font color = "red">forward recovery，向前恢复，重试失败的事务，假设每个子事务最终都会成功。</font><font color = "clime">适用于必须要成功的场景。</font> 执行顺序是类似于这样的：T1, T2, ..., Tj(失败), Tj(重试),..., Tn，其中j是发生错误的sub-transaction。该情况下不需要Ci。  
 
 &emsp; 显然，向前恢复没有必要提供补偿事务，如果业务中，子事务(最终)总会成功，或补偿事务难以定义或不可能，向前恢复更符合需求。  

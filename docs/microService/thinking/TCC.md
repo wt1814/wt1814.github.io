@@ -84,8 +84,8 @@ https://blog.csdn.net/xiaozhu0301/article/details/111322711
 -->
 
 &emsp; **<font color = "clime">TCC两个阶段都由业务代码控制，由于网络阻塞等原因，可能导致两个阶段执行顺序相反，</font>** 引发问题：  
-1. 空回滚(Try方法由于网络问题没收到超时了，此时事务管理器就会发出Cancel命令。需要支持Cancel在未执行Try的情况下能正常的Cancel。)；  
-2. 资源悬挂(TC回滚事务调用二阶段完成空回滚后，一阶段try请求又到了)。  
+1. 空回滚（Try方法由于网络问题没收到超时了，此时事务管理器就会发出Cancel命令。需要支持Cancel在未执行Try的情况下能正常的Cancel。）；  
+2. 资源悬挂（TC回滚事务调用二阶段完成空回滚后，一阶段try请求又到了）。  
 
 
 &emsp; **<font color = "clime">解决方案：使用一张事务状态控制表（包含全局事务ID、分支事务ID、执行状态）。</font>**  

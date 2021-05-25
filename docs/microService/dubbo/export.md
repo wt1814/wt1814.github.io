@@ -6,7 +6,7 @@
     - [1.3. 前置工作](#13-前置工作)
         - [1.3.1. 检查配置](#131-检查配置)
         - [1.3.2. 多协议多注册中心导出服务](#132-多协议多注册中心导出服务)
-        - [1.3.3. 组装 URL](#133-组装-url)
+        - [1.3.3. ★★★组装URL](#133-★★★组装url)
     - [1.4. 导出Dubbo服务](#14-导出dubbo服务)
         - [1.4.1. ★★★导出Dubbo服务总览](#141-★★★导出dubbo服务总览)
         - [1.4.2. Invoker创建过程](#142-invoker创建过程)
@@ -27,8 +27,8 @@
         1. 导出到本地
         2. 导出到远程：其包含了服务导出与服务注册两个过程。  
             1. 服务导出：
-                1. 为服务提供类(ref)生成 Invoker。  
-                2. 导出服务，并生成 Exporter。
+                1. 为服务提供类(ref)生成Invoker。`ProxyFactory #getInvoker(T proxy, Class<T> type, URL url)`  
+                2. 导出服务，并生成Exporter。`DubboProtocol #export(Invoker<T> invoker)`
             2. 服务注册(以Zookeeper为例)：  
                 1. createRegistry，创建Zookeeper客户端。
                 2. 服务注册，本质上是将服务配置数据写入到Zookeeper的某个路径的节点下。
@@ -340,7 +340,7 @@ protected List<URL> loadRegistries(boolean provider) {
 
 &emsp; 关于多协议多注册中心导出服务就先分析到这，代码不是很多，接下来分析URL组装过程。    
 
-### 1.3.3. 组装 URL
+### 1.3.3. ★★★组装URL
 &emsp; 配置检查完毕后，紧接着要做的事情是根据配置，以及其他一些信息组装 URL。前面说过，<font color = "red">URL是Dubbo配置的载体，通过URL可让Dubbo的各种配置在各个模块之间传递。</font>大家在阅读 Dubbo 服务导出相关源码的过程中，要注意 URL 内容的变化。既然 URL 如此重要，那么下面来了解一下 URL 组装的过程。  
 
 ```java

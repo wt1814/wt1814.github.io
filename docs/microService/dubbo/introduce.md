@@ -12,12 +12,12 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. <font color = "clime">Dubbo服务引用的时机有两个，第一个是在Spring容器调用ReferenceBean的afterPropertiesSet方法时引用服务，第二个是在ReferenceBean对应的服务被注入到其他类中时引用。</font>  
-&emsp; 服务引用的入口方法为 ReferenceBean 的 getObject 方法，该方法定义在 Spring 的 FactoryBean 接口中。  
+&emsp; 服务引用的入口方法为ReferenceBean的getObject方法，该方法定义在Spring的FactoryBean接口中。  
 2. **<font color = "red">服务引用流程：</font>**  
     1. 处理配置
     2. 引用服务  
-        1. 创建Invoker。Invoker是由Protocol实现类构建而来。
-        2. 创建代理。有了代理对象，即可进行远程调用。  
+        1. 创建Invoker。Invoker是由Protocol实现类构建而来。`DubboProtocol #refer(Class<T> serviceType, URL url)`
+        2. 创建代理。有了代理对象，即可进行远程调用。`ProxyFactory# getProxy(Invoker<T> invoker)`  
 
 
 # 1. 服务引用   

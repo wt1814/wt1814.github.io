@@ -22,9 +22,13 @@
 <!-- /TOC -->
 
 **<font color = "red">总结：</font>**    
-&emsp; 分布式ID的基本生成方式有：UUID、数据库方式(主键自增、序列号、<font color = "clime">号段模式</font><font color = "red">)、redis等中间件、雪花算法。</font>  
-&emsp; 数据库Oracle中有序列SEQUENCE。在Mysql中可以建一张伪序列号表。  
-&emsp; 号段模式可以理解为从数据库批量的获取自增ID，每次从数据库取出一个号段范围。  
+1. 分布式ID的基本生成方式有：UUID、数据库方式(主键自增、序列号、<font color = "clime">号段模式</font><font color = "red">)、redis等中间件、雪花算法。</font>  
+    * 数据库Oracle中有序列SEQUENCE。在Mysql中可以建一张伪序列号表。  
+    * 号段模式可以理解为从数据库批量的获取自增ID，每次从数据库取出一个号段范围。  
+2. snowflake算法：  
+    1. snowflake算法所生成的ID结构：正数位(占1比特)+ 时间戳(占41比特)+ 机器ID(占5比特)+ 数据中心(占5比特)+ 自增值(占12比特)，总共64比特组成的一个Long类型。可以根据自身业务特性分配bit位，非常灵活。
+    2. ID呈趋势递增。  
+    3. **snowflake算法缺点：** <font color="red">依赖于系统时钟的一致性。如果某台机器的系统时钟回拨，有可能造成ID冲突，或者ID乱序。</font> 百度UidGenerator如果时间有任何的回拨，那么直接抛出异常。   
 
 # 1. 分布式ID常见生成方案  
 <!-- 
@@ -214,7 +218,7 @@ update id_generator set max_id = #{max_id+step}, version = version + 1 where ver
 
 &emsp; **snowflake算法优点：**  
 1. 生成ID时不依赖于DB，完全在内存生成，高性能高可用。  
-2. ID呈趋势递增，后续插入索引树的时候性能较好。  
+2. **<font color = "clime">ID呈趋势递增，后续插入索引树的时候性能较好。</font>**   
 3. 可以根据自身业务特性分配bit位，非常灵活。  
 
 &emsp; **snowflake算法缺点：** <font color="red">依赖于系统时钟的一致性。如果某台机器的系统时钟回拨，有可能造成ID冲突，或者ID乱序。</font>  

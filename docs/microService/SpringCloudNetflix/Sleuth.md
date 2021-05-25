@@ -9,15 +9,19 @@
         - [1.2.2. 跟踪原理](#122-跟踪原理)
         - [1.2.3. spring-cloud-starter-sleuth功能点](#123-spring-cloud-starter-sleuth功能点)
             - [1.2.3.1. 抽样收集](#1231-抽样收集)
-            - [1.2.3.2. ★★★获取当前traceId](#1232-★★★获取当前traceid)
-            - [1.2.3.3. ★★★日志获取traceId](#1233-★★★日志获取traceid)
-            - [1.2.3.4. 传递traceId到异步线程池](#1234-传递traceid到异步线程池)
-            - [1.2.3.5. 子线程或线程池中获取 Zipkin traceId 并打印](#1235-子线程或线程池中获取-zipkin-traceid-并打印)
-            - [1.2.3.6. 监控本地方法](#1236-监控本地方法)
-            - [1.2.3.7. 计划任务](#1237-计划任务)
-            - [1.2.3.8. TracingFilter](#1238-tracingfilter)
-            - [1.2.3.9. 过滤不想跟踪的请求](#1239-过滤不想跟踪的请求)
-            - [1.2.3.10. 用RabbitMq代替Http发送调用链数据](#12310-用rabbitmq代替http发送调用链数据)
+            - [1.2.3.2. 有关traceId](#1232-有关traceid)
+                - [1.2.3.2.1. ★★★获取当前traceId](#12321-★★★获取当前traceid)
+                - [1.2.3.2.2. ★★★日志获取traceId](#12322-★★★日志获取traceid)
+                - [1.2.3.2.3. 传递traceId到异步线程池](#12323-传递traceid到异步线程池)
+                - [1.2.3.2.4. 子线程或线程池中获取 Zipkin traceId 并打印](#12324-子线程或线程池中获取-zipkin-traceid-并打印)
+            - [1.2.3.3. 在Sleuth链路中自定义信息](#1233-在sleuth链路中自定义信息)
+                - [1.2.3.3.1. 增加自定义属性](#12331-增加自定义属性)
+                - [1.2.3.3.2. 添加自定义Tag标签](#12332-添加自定义tag标签)
+            - [1.2.3.4. 监控本地方法](#1234-监控本地方法)
+            - [1.2.3.5. 计划任务](#1235-计划任务)
+            - [1.2.3.6. TracingFilter](#1236-tracingfilter)
+            - [1.2.3.7. 过滤不想跟踪的请求](#1237-过滤不想跟踪的请求)
+            - [1.2.3.8. 用RabbitMq代替Http发送调用链数据](#1238-用rabbitmq代替http发送调用链数据)
     - [1.3. Zipkin](#13-zipkin)
         - [1.3.1. 与Zipkin整合](#131-与zipkin整合)
             - [1.3.1.1. 在Zipkin中图形化展示分布式链接监控数据](#1311-在zipkin中图形化展示分布式链接监控数据)
@@ -29,6 +33,13 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+1. **<font color = "clime">埋点日志通常包含：traceId、spanId、调用的开始时间，协议类型、调用方ip和端口，请求的服务名、调用耗时，调用结果，异常信息等，同时预留可扩展字段，为下一步扩展做准备；</font>**  
+2. spring-cloud-starter-sleuth功能点：
+    1. 有关traceId：获取当前traceId、日志获取traceId、传递traceId到异步线程池、子线程或线程池中获取Zipkin traceId并打印。  
+    2. sleuth自定义信息。增加自定义属性、添加自定义Tag标签。  
+    3. 监控本地方法：异步执行和远程调用都会新开启一个Span，如果想监控本地的方法耗时时间，可以采用埋点的方式监控本地方法，也就是开启一个新的Span。  
+    4. ...  
 
 # 1. Spring Cloud Sleuth
 <!-- 
@@ -40,6 +51,10 @@ https://mp.weixin.qq.com/s/CZnVxs0vDMBhhBUiioon3g
 主流微服务全链路监控系统之战 
 https://mp.weixin.qq.com/s/WfTEQagsRntOpMVIZZS_Rw
 -->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-43.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-44.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-45.png)  
+
 
 ## 1.1. 全链路监控功能  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-42.png)  
@@ -57,13 +72,14 @@ https://mp.weixin.qq.com/s/WfTEQagsRntOpMVIZZS_Rw
 
 &emsp; **一般的全链路监控系统，大致可分为四大功能模块：**
 1. 埋点与生成日志。  
-&emsp; 埋点即系统在当前节点的上下文信息，可以分为客户端埋点、服务端埋点，以及客户端和服务端双向型埋点。埋点日志通常要包含以下内容traceId、spanId、调用的开始时间，协议类型、调用方ip和端口，请求的服务名、调用耗时，调用结果，异常信息等，同时预留可扩展字段，为下一步扩展做准备；  
+&emsp; 埋点即系统在当前节点的上下文信息，可以分为客户端埋点、服务端埋点，以及客户端和服务端双向型埋点。 **<font color = "clime">埋点日志通常包含：traceId、spanId、调用的开始时间，协议类型、调用方ip和端口，请求的服务名、调用耗时，调用结果，异常信息等，同时预留可扩展字段，为下一步扩展做准备；</font>**  
 2. 收集和存储日志。  
 &emsp; 主要支持分布式日志采集的方案，同时增加MQ作为缓冲；  
 3. 分析和统计调用链路数据以及时效性。  
 &emsp; 调用链跟踪分析：把同一TraceID的Span收集起来，按时间排序就是timeline。把ParentID串起来就是调用栈。  
 &emsp; 抛异常或者超时，在日志里打印TraceID。利用TraceID查询调用链情况，定位问题。  
 4. 展现以及决策支持。  
+
 
 ## 1.2. Spring Cloud Sleuth
 ### 1.2.1. Sleuth实现追踪  
@@ -119,7 +135,8 @@ public Sampler defaultSampler() {
 }
 ```
 
-#### 1.2.3.2. ★★★获取当前traceId  
+#### 1.2.3.2. 有关traceId
+##### 1.2.3.2.1. ★★★获取当前traceId  
 &emsp; 在项目中获取traceId，可以参考下述的方式  
 
 ```java
@@ -137,7 +154,7 @@ public class Breadcrumb {
 }
 ```
 
-#### 1.2.3.3. ★★★日志获取traceId  
+##### 1.2.3.2.2. ★★★日志获取traceId  
 &emsp; 如果日志文件是有做过格式设置的，可能看不到traceId的输出，可以使用下述的日志格式。  
 
 ```xml
@@ -177,7 +194,7 @@ public class Breadcrumb {
 </configuration>
 ```
 
-#### 1.2.3.4. 传递traceId到异步线程池  
+##### 1.2.3.2.3. 传递traceId到异步线程池  
 
 1. Sleuth对异步任务是支持的，使用@Async开启一个异步任务后，Sleuth会为这个调用新创建一个Span。  
 2. <font color = "clime">如果自定义了异步任务的线程池，会导致无法新创建一个Span，需要使用Sleuth提供的LazyTraceExecutor来包装下。代码如下所示。</font>  
@@ -203,11 +220,28 @@ public class CustomExecutorConfig extends AsyncConfigurerSupport {
 &emsp; 如果直接return executor就不会有新Span，也就不会有save-log这个 Span。如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-21.png)  
 
-#### 1.2.3.5. 子线程或线程池中获取 Zipkin traceId 并打印  
+##### 1.2.3.2.4. 子线程或线程池中获取 Zipkin traceId 并打印  
 ......
 
-#### 1.2.3.6. 监控本地方法  
-&emsp; 异步执行和远程调用都会新开启一个Span，如果想监控本地的方法耗时时间，可以采用埋点的方式监控本地方法，也就是开启一个新的Span。代码如下所示。   
+
+#### 1.2.3.3. 在Sleuth链路中自定义信息
+##### 1.2.3.3.1. 增加自定义属性
+......
+<!-- 
+https://blog.csdn.net/sj1231984/article/details/106198335/
+-->
+
+##### 1.2.3.3.2. 添加自定义Tag标签 
+......
+<!-- 
+https://blog.csdn.net/ldjjbzh626/article/details/105193427
+-->
+
+
+
+
+#### 1.2.3.4. 监控本地方法  
+&emsp; **<font color = "clime">异步执行和远程调用都会新开启一个Span，如果想监控本地的方法耗时时间，可以采用埋点的方式监控本地方法，也就是开启一个新的Span。</font>** 代码如下所示。   
 
 ```java
 @Autowired
@@ -233,16 +267,16 @@ public void saveLog2(String log) {
 @NewSpan(name = "saveLog2")
 ```  
 
-#### 1.2.3.7. 计划任务  
+#### 1.2.3.5. 计划任务  
 ......  
 
-#### 1.2.3.8. TracingFilter  
+#### 1.2.3.6. TracingFilter  
 ......  
 
-#### 1.2.3.9. 过滤不想跟踪的请求  
+#### 1.2.3.7. 过滤不想跟踪的请求  
 ......  
 
-#### 1.2.3.10. 用RabbitMq代替Http发送调用链数据  
+#### 1.2.3.8. 用RabbitMq代替Http发送调用链数据  
 ......
 
 ## 1.3. Zipkin
