@@ -123,7 +123,7 @@ int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct 
 ### 1.1.3. select机制的问题总结
 &emsp; **<font color = "clime">select机制的问题：</font>**  
 
-* 为了减少数据拷贝带来的性能损坏，内核对被监控的fd_set集合大小做了限制，并且这个是通过宏控制的，大小不可改变(限制为1024)  
+* 为了减少数据拷贝带来的性能损坏，内核对被监控的fd_set集合大小做了限制，并且这个是通过宏控制的，大小不可改变(限制为1024)。  
 * 每次调用select， **<font color = "red">1)需要把fd_set集合从用户态拷贝到内核态，</font>** **<font color = "clime">2)需要在内核遍历传递进来的所有fd_set(对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低)，</font>** **<font color = "clime">3)如果有数据返回还需要从内核态拷贝到用户态。</font>** 如果fd_set集合很大时，开销比较大。 
 * 由于运行时，需要将FD置位，导致fd_set集合不可重用。  
 * **<font color = "clime">select()函数返回后，</font>** 调用函数并不知道是哪几个流(可能有一个，多个，甚至全部)， **<font color = "clime">还得再次遍历fd_set集合处理数据，即采用无差别轮询。</font>**     
