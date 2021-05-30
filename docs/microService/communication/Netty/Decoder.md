@@ -136,10 +136,10 @@ public class NettyClient {
 #### 1.2.2.2. Netty提供的解码器
 &emsp; **<font color = "red">Netty默认提供了多种解码器来解决，可以进行分包操作，满足99%的编码需求。</font>** 分别如下：  
 
-* 固定长度的拆包器FixedLengthFrameDecoder，每个应用层数据包的都拆分成都是固定长度的大小
-* 行拆包器LineBasedFrameDecoder，每个应用层数据包，都以换行符作为分隔符，进行分割拆分
-* 分隔符拆包器DelimiterBasedFrameDecoder，每个应用层数据包，都通过自定义的分隔符，进行分割拆分
-* 基于数据包长度的拆包器LengthFieldBasedFrameDecoder，将应用层数据包的长度，作为接收端应用层数据包的拆分依据。按照应用层数据包的大小，拆包。这个拆包器，有一个要求，就是应用层协议中包含数据包的长度  
+* 固定长度的拆包器FixedLengthFrameDecoder，每个应用层数据包的都拆分成都是固定长度的大小。
+* 行拆包器LineBasedFrameDecoder，每个应用层数据包，都以换行符作为分隔符，进行分割拆分。
+* 分隔符拆包器DelimiterBasedFrameDecoder，每个应用层数据包，都通过自定义的分隔符，进行分割拆分。
+* 基于数据包长度的拆包器LengthFieldBasedFrameDecoder，将应用层数据包的长度，作为接收端应用层数据包的拆分依据。按照应用层数据包的大小，拆包。这个拆包器，有一个要求，就是应用层协议中包含数据包的长度。  
 
 &emsp; 以上解码器在使用时只需要添加到Netty的责任链中即可，大多数情况下这4种解码器都可以满足了，当然除了以上4种解码器，用户也可以自定义解码器进行处理。
 

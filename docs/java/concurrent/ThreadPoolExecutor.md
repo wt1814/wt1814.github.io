@@ -17,7 +17,8 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 理解构造函数中参数：  
-&emsp; [阻塞队列](/docs/java/concurrent/BlockingQueue.md)；拒绝策略，默认AbortPolicy（拒绝任务，抛异常），可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。  
+    * [阻塞队列](/docs/java/concurrent/BlockingQueue.md)，线程池所使用的缓冲队列，常用的是：SynchronousQueue、ArrayBlockingQueue、LinkedBlockingQueue。   
+    * 拒绝策略，默认AbortPolicy（拒绝任务，抛异常），可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。  
 
 2. 线程运行流程：查看execute方法。  
     &emsp; <font color = "clime">线程池创建时没有设置成预启动加载，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
@@ -36,6 +37,8 @@
 
 # 1. ~~ThreadPoolExecutor~~
 <!--
+https://mp.weixin.qq.com/s/hnulrvdxbLDQSN1_3PXtFQ
+
 https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
 https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
 面试官：线程池是如何重复利用空闲的线程来执行任务的？ 
@@ -222,7 +225,9 @@ public ThreadPoolExecutor(int corePoolSize,
 * TimeUnit unit：  
 &emsp; 参数keepAliveTime的单位。有7种取值，在TimeUnit类中有7种静态属性：TimeUnit.DAYS...；  
 * BlockingQueue<Runnable\>  workQueue：  
-&emsp; 任务阻塞队列，是java.util.concurrent下主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样，如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态，直到BlockingQueue里有空间才会被唤醒继续操作。具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition来实现阻塞和唤醒。  
+&emsp; 任务阻塞队列，是java.util.concurrent下主要用来控制线程同步的工具。如果BlockQueue是空的，从BlockingQueue取东西的操作将会被阻断进入等待状态，直到BlockingQueue进了东西才会被唤醒。同样，如果BlockingQueue是满的，任何试图往里存东西的操作也会被阻断进入等待状态，直到BlockingQueue里有空间才会被唤醒继续操作。  
+&emsp; <font color = "clime">线程池所使用的缓冲队列，常用的是：java.util.concurrent.ArrayBlockingQueue、LinkedBlockingQueue、SynchronousQueue。</font>**  
+&emsp; 具体的实现类有LinkedBlockingQueue，ArrayBlockingQueued等。一般其内部的都是通过Lock和Condition来实现阻塞和唤醒。  
 * ThreadFactory threadFactory：  
 &emsp; 用户设置创建线程的工厂，可以通过这个工厂来创建有业务意义的线程名字。可以对比下自定义的线程工厂和默认的线程工厂创建的名字。   
     

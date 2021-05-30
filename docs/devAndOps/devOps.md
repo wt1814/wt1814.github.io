@@ -36,7 +36,7 @@ https://mp.weixin.qq.com/s/5RpZRJlkypdg4rMAisCYTA
 * DevOps敏捷  
 &emsp; 敏捷开发指的是在 DevOps 中采用敏捷思想进行软件开发，敏捷宣言无疑是很重要的一项。有多种敏捷方法可以采用，比如Scrum、看板和极限编程。
 * DevOps持续集成  
-&emsp; 持续集成提供了让多个程序员可以同时运行应用程序的最佳实践，可以频繁合并源代码、验证代码(静态测试用例)、编译和测试代码(动态测试用例〉。  
+&emsp; 持续集成提供了让多个程序员可以同时运行应用程序的最佳实践，可以频繁合并源代码、验证代码(静态测试用例)、编译和测试代码(动态测试用例)。  
 * DevOps持续交付  
 &emsp; 持续交忖关注从开发、测试、验收到生产环境的高频生产能力。基于高度的自动化，极端的发布上线时间可以达到分钟级。
 * DevOps持续监控  
@@ -77,7 +77,7 @@ https://blog.csdn.net/hualinux/article/details/106586601?utm_medium=distribute.p
 构建工具链真的会让研发流程高效起来吗
 https://blog.gitee.com/2020/04/26/tool-chain/
 -->
-&emsp; 对于DevOps架构，可以参照DevOps过程逐步核查。按过程中每步决定的所需功能，经测量去选择可用工具。 DevOps一般包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等。  
+&emsp; 对于DevOps架构，可以参照DevOps过程逐步核查。按过程中每步决定的所需功能，经测量去选择可用工具。DevOps一般包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-3.png)  
 
 * 版本控制&协作开发：GitHub、GitLab、BitBucket、SubVersion、Coding、Bazaar

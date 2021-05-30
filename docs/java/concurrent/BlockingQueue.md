@@ -3,23 +3,32 @@
 - [1. 阻塞队列](#1-阻塞队列)
     - [1.1. BlockingQueue接口](#11-blockingqueue接口)
     - [1.2. 常见BlockingQueue](#12-常见blockingqueue)
-        - [1.2.1. ArrayBlockingQueue](#121-arrayblockingqueue)
-            - [1.2.1.1. 属性](#1211-属性)
-            - [1.2.1.2. 元素入队](#1212-元素入队)
-            - [1.2.1.3. 获取元素](#1213-获取元素)
-        - [1.2.2. LinkedBlockingQueue](#122-linkedblockingqueue)
+        - [1.2.1. SynchronousQueue](#121-synchronousqueue)
+        - [1.2.2. ArrayBlockingQueue](#122-arrayblockingqueue)
             - [1.2.2.1. 属性](#1221-属性)
-            - [1.2.2.2. 入队](#1222-入队)
-            - [1.2.2.3. 出队](#1223-出队)
+            - [1.2.2.2. 元素入队](#1222-元素入队)
+            - [1.2.2.3. 获取元素](#1223-获取元素)
+        - [1.2.3. LinkedBlockingQueue](#123-linkedblockingqueue)
+            - [1.2.3.1. 属性](#1231-属性)
+            - [1.2.3.2. 入队](#1232-入队)
+            - [1.2.3.3. 出队](#1233-出队)
     - [1.3. 生产者-消费者](#13-生产者-消费者)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 阻塞队列：当队列是空的时，从队列中获取元素的操作将会被阻塞，或者当队列是满时，往队列里添加元素的操作会被阻塞。  
-2. <font color = "red">ArrayBlockingQueue与LinkedBlockingQueue：</font> ArrayBlockingQueue预先分配好一段连续内存，更稳定；LinkedBlockingQueue读写锁分离，吞吐量更大。  
+2. **<font color = "clime">线程池所使用的缓冲队列，常用的是：SynchronousQueue（无缓冲等待队列）、ArrayBlockingQueue（有界缓冲等待队列）、LinkedBlockingQueue（无界缓冲等待队列）。</font>**   
+3. SynchronousQueue，没有容量，是无缓冲等待队列，是一个不存储元素的阻塞队列，会直接将任务交给消费者，必须等队列中的添加元素被消费后才能继续添加新的元素。  
+4. LinkedBlockingQueue不同于ArrayBlockingQueue，它如果不指定容量，默认为Integer.MAX_VALUE，也就是无界队列。所以为了避免队列过大造成机器负载或者内存爆满的情况出现，在使用的时候建议手动传一个队列的大小。  
+5. <font color = "red">ArrayBlockingQueue与LinkedBlockingQueue：</font> ArrayBlockingQueue预先分配好一段连续内存，更稳定；LinkedBlockingQueue读写锁分离，吞吐量更大。  
 
 # 1. 阻塞队列  
+<!-- 
+线程池的三种队列区别：SynchronousQueue、LinkedBlockingQueue 和ArrayBlockingQueue
+https://blog.csdn.net/qq_26881739/article/details/80983495
+-->
+
 &emsp; **<font color = "clime">阻塞队列与普通队列的区别在于，</font>** 试图从空的阻塞队列中获取元素的线程将会被阻塞，直到其他的线程往空的队列插入新的元素。同样，试图往已满的阻塞队列中添加新元素的线程同样也会被阻塞，直到其他的线程使队列重新变得空闲起来，如从队列中移除一个或者多个元素，或者完全清空队列，下图展示了如何通过阻塞队列来合作：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-34.png)  
 <!-- 
@@ -72,8 +81,11 @@
 3. 由于ArrayBlockingQueue采用的是数组的存储容器，因此在插入或删除元素时不会产生或销毁任何额外的对象实例，而LinkedBlockingQueue则会生成一个额外的Node对象。这可能在长时间内需要高效并发地处理大批量数据的时，对于GC可能存在较大影响。
 4. 两者的实现队列添加或移除的锁不一样，ArrayBlockingQueue实现的队列中的锁是没有分离的，即添加操作和移除操作采用的同一个ReenterLock锁，而LinkedBlockingQueue实现的队列中的锁是分离的，其添加采用的是putLock，移除采用的则是takeLock，这样能大大提高队列的吞吐量，也意味着在高并发的情况下生产者和消费者可以并行地操作队列中的数据，以此来提高整个队列的并发性能。
 
-### 1.2.1. ArrayBlockingQueue  
-#### 1.2.1.1. 属性  
+### 1.2.1. SynchronousQueue  
+
+
+### 1.2.2. ArrayBlockingQueue  
+#### 1.2.2.1. 属性  
 
 ```java
 // 存储队列中的元素
@@ -94,7 +106,7 @@ private final Condition notFull;
 transient Itrs itrs;
 ```  
 
-#### 1.2.1.2. 元素入队  
+#### 1.2.2.2. 元素入队  
 
 ```java
 // 入队，线程安全，队满时线程被阻塞
@@ -165,7 +177,7 @@ public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedExcepti
 }
 ```
 
-#### 1.2.1.3. 获取元素  
+#### 1.2.2.3. 获取元素  
 
 &emsp; 插入与获取元素的方法用的都是同一个全局锁，因此即使多线程环境下，也不会发生调用插入方法完成后无法获取到这个元素的情况poll 返回队首元素，队列为空返回null 非阻塞。  
 
@@ -238,13 +250,13 @@ public E poll(long timeout, TimeUnit unit) throws InterruptedException {
 }
 ```
 
-### 1.2.2. LinkedBlockingQueue
+### 1.2.3. LinkedBlockingQueue
 <!-- 
 https://blog.csdn.net/tonywu1992/article/details/83419448
 -->
-&emsp; LinkedBlockingQueue不同于ArrayBlockingQueue，它如果不指定容量，默认为Integer.MAX_VALUE，也就是无界队列。所以为了避免队列过大造成机器负载或者内存爆满的情况出现，在使用的时候建议手动传一个队列的大小。  
+&emsp; **<font color = "clime">LinkedBlockingQueue不同于ArrayBlockingQueue，它如果不指定容量，默认为Integer.MAX_VALUE，也就是无界队列。所以为了避免队列过大造成机器负载或者内存爆满的情况出现，在使用的时候建议手动传一个队列的大小。</font>**  
 
-#### 1.2.2.1. 属性  
+#### 1.2.3.1. 属性  
 
 ```java
 /**
@@ -289,7 +301,7 @@ private final Condition notFull = putLock.newCondition();
 &emsp; 每个添加到LinkedBlockingQueue队列中的数据都将被封装成Node节点，添加到链表队列中，其中head和last分别指向队列的头结点和尾结点。与ArrayBlockingQueue不同的是，LinkedBlockingQueue内部分别使用了takeLock 和 putLock对并发进行控制，也就是说，添加和删除操作并不是互斥操作，可以同时进行，这样也就可以大大提高吞吐量。  
 &emsp; 这里如果不指定队列的容量大小，也就是使用默认的Integer.MAX_VALUE，如果存在添加速度大于删除速度时候，有可能会内存溢出。  
 
-#### 1.2.2.2. 入队  
+#### 1.2.3.2. 入队  
 &emsp; LinkedBlockingQueue提供了多种入队操作的实现来满足不同情况下的需求，入队操作有如下几种：  
 
 * void put(E e)；
@@ -389,7 +401,7 @@ public boolean offer(E e, long timeout, TimeUnit unit)
 ```
 &emsp; 该方法只是对offer方法进行了阻塞超时处理，使用了Condition的awaitNanos来进行超时等待，这里为什么要用while循环？因为awaitNanos方法是可中断的，为了防止在等待过程中线程被中断，这里使用while循环进行等待过程中中断的处理，继续等待剩下需等待的时间。  
 
-#### 1.2.2.3. 出队  
+#### 1.2.3.3. 出队  
 &emsp; LinkedBlockingQueue提供了多种出队操作的实现来满足不同情况下的需求，如下：  
 
 * E take();

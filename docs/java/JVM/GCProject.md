@@ -14,25 +14,29 @@
                 - [1.1.1.3.4. 虚引用](#11134-虚引用)
                 - [1.1.1.3.5. ★★★软引用和弱引用的使用](#11135-★★★软引用和弱引用的使用)
         - [1.1.2. 对象生存还是死亡](#112-对象生存还是死亡)
-            - [1.1.2.1. ~~null与GC~~](#1121-null与gc)
     - [1.2. 方法区(类和常量)回收/类的卸载阶段](#12-方法区类和常量回收类的卸载阶段)
+    - [1.3. ~~null与GC~~](#13-null与gc)
 
 <!-- /TOC -->
 
 
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; GC回收对象：  
-1. 存活标准：引用计数法、根可达性分析法  
-2. 四种引用  
-&emsp; **<font color = "red">软引用：当堆使用率临近阈值时，才会去回收软引用的对象。</font>**  
-&emsp; **<font color = "red">弱引用：只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>**  
-&emsp; **软引用和弱引用的使用：**  
-&emsp; **<font color = "red">软引用，弱引用都非常适合来保存那些可有可无的缓存数据，如果这么做，当系统内存不足时，这些缓存数据会被回收，不会导致内存溢出。而当内存资源充足时，这些缓存数据又可以存在相当长的时间，从而起到加速系统的作用。</font>**  
-&emsp; **<font color = "clime">假如⼀个应⽤需要读取⼤量的本地图⽚，如果每次读取图⽚都从硬盘读取会严重影响性能，如果⼀次性全部加载到内存⼜可能造成内存溢出，这时可以⽤软引⽤解决这个问题。</font>**  
-3. 对象生存还是死亡？null与GC  
-&emsp; **<font color = "clime">如果有必要执行Object#finalize()方法，放入F-Queue队列；收集器将对F-Queue队列中的对象进行第二次小规模的标记；如果对象在执行finalize()方法方法时重新与引用链上的任何一个对象建立关联则逃脱死亡，否则执行死亡。</font>**  
-
+1. 堆中对象的存活：  
+	1. 存活标准
+		1. 引用计数法、根可达性分析法  
+		2. 四种引用  
+		&emsp; **<font color = "red">软引用：当堆使用率临近阈值时，才会去回收软引用的对象。</font>**  
+		&emsp; **<font color = "red">弱引用：只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>**  
+		&emsp; **软引用和弱引用的使用：**  
+		&emsp; **<font color = "red">软引用，弱引用都非常适合来保存那些可有可无的缓存数据，如果这么做，当系统内存不足时，这些缓存数据会被回收，不会导致内存溢出。而当内存资源充足时，这些缓存数据又可以存在相当长的时间，从而起到加速系统的作用。</font>**  
+		&emsp; **<font color = "clime">假如⼀个应⽤需要读取⼤量的本地图⽚，如果每次读取图⽚都从硬盘读取会严重影响性能，如果⼀次性全部加载到内存⼜可能造成内存溢出，这时可以⽤软引⽤解决这个问题。</font>**  
+	2. 对象生存还是死亡？  
+	&emsp; **<font color = "clime">如果有必要执行Object#finalize()方法，放入F-Queue队列；收集器将对F-Queue队列中的对象进行第二次小规模的标记；如果对象在执行finalize()方法方法时重新与引用链上的任何一个对象建立关联则逃脱死亡，否则执行死亡。</font>**  
+2. null与GC：《深入理解Java虚拟机》作者的观点：在需要“不使用的对象应手动赋值为null“时大胆去用，但不应当对其有过多依赖，更不能当作是一个普遍规则来推广。  
+&emsp; 虽然代码片段已经离开了变量xxx的作用域，但在此之后，没有任何对运行时栈的读写，placeHolder所在的索引还没有被其他变量重用，所以GC判断其为存活。    
+&emsp; 加上int replacer = 1;和将placeHolder赋值为null起到了同样的作用：断开堆中placeHolder和栈的联系，让GC判断placeHolder已经死亡。    
+&emsp; “不使用的对象应手动赋值为null“的原理了，一切根源都是来自于JVM的一个“bug”：代码离开变量作用域时，并不会自动切断其与堆的联系。    
 
 # 1. GC  
 <!-- 
@@ -230,33 +234,6 @@ public class FinalizeEscapeGC {
 }
 ```
 
-#### 1.1.2.1. ~~null与GC~~  
-<!-- 
-重要  https://mp.weixin.qq.com/s/NaZe23qnezTiOw76UjJlSQ
-
-https://www.codebye.com/jiang-dui-xiang-shu-xing-fu-wei-null-gc-hui-hui-shou-ma.html
-
-https://www.polarxiong.com/archives/Java-%E5%AF%B9%E8%B1%A1%E4%B8%8D%E5%86%8D%E4%BD%BF%E7%94%A8%E6%97%B6%E8%B5%8B%E5%80%BC%E4%B8%BAnull%E7%9A%84%E4%BD%9C%E7%94%A8%E5%92%8C%E5%8E%9F%E7%90%86.html
-
-https://www.cnblogs.com/ouhaitao/p/9996374.html
-
-java方法中把对象置null,到底能不能加速垃圾回收
-https://blog.csdn.net/dfdsggdgg/article/details/52463882?utm_medium=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase&depth_1-utm_source=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase
-
-https://www.cnblogs.com/ouhaitao/p/9996374.html
-https://www.cnblogs.com/raylee2007/p/4944465.html
-https://www.cnblogs.com/christmad/p/13124907.html
-https://blog.csdn.net/shudaqi2010/article/details/53811992
-
--->
-&emsp; **有利于GC更早回收内存，减少内存占用。**  
-
-&emsp; **~~<font color = "clime">手动将不用的对象引用置为null，可以使得JVM在下一次GC时释放这部分内存。</font>~~**  
-&emsp; ~~对于占用空间比较大的对象(比如大数组)，推荐在确认不再使用的时候将其值为null，jvm在回收大对象的时候不如小对象来的及时，置为null就能强制在下次GC的时候回收掉它。~~  
-
-&emsp; ~~一个对象的引用执行null，并不会被立即回收，还需要执行finalize()方法(必须要重写这个方法，且只能执行一次)。可执行过程中，可能会重新变为可达对象。但是并不鼓励使用这个方法！~~  
-
-----
 ## 1.2. 方法区(类和常量)回收/类的卸载阶段
 &emsp; 永久代中回收的内容主要是两部分：废弃的常量和无用的类。  
 &emsp; <font color = "clime">类的卸载阶段，判断无用的类必须满足三个条件：</font>  
@@ -289,3 +266,29 @@ https://blog.csdn.net/shudaqi2010/article/details/53811992
 
 虚拟机可以对满足上述3个条件的无用类进行回收，这里说的仅仅是“可以”，而并不是和对象一样不使用了就会必然被回收。
 -->
+
+## 1.3. ~~null与GC~~  
+<!-- 
+重要  https://mp.weixin.qq.com/s/NaZe23qnezTiOw76UjJlSQ
+
+https://www.codebye.com/jiang-dui-xiang-shu-xing-fu-wei-null-gc-hui-hui-shou-ma.html
+
+https://www.polarxiong.com/archives/Java-%E5%AF%B9%E8%B1%A1%E4%B8%8D%E5%86%8D%E4%BD%BF%E7%94%A8%E6%97%B6%E8%B5%8B%E5%80%BC%E4%B8%BAnull%E7%9A%84%E4%BD%9C%E7%94%A8%E5%92%8C%E5%8E%9F%E7%90%86.html
+
+https://www.cnblogs.com/ouhaitao/p/9996374.html
+
+java方法中把对象置null,到底能不能加速垃圾回收
+https://blog.csdn.net/dfdsggdgg/article/details/52463882?utm_medium=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase&depth_1-utm_source=distribute.wap_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase
+
+https://www.cnblogs.com/ouhaitao/p/9996374.html
+https://www.cnblogs.com/raylee2007/p/4944465.html
+https://www.cnblogs.com/christmad/p/13124907.html
+https://blog.csdn.net/shudaqi2010/article/details/53811992
+
+-->
+&emsp; **有利于GC更早回收内存，减少内存占用。**  
+
+&emsp; **~~<font color = "clime">手动将不用的对象引用置为null，可以使得JVM在下一次GC时释放这部分内存。</font>~~**  
+&emsp; ~~对于占用空间比较大的对象(比如大数组)，推荐在确认不再使用的时候将其值为null，jvm在回收大对象的时候不如小对象来的及时，置为null就能强制在下次GC的时候回收掉它。~~  
+
+&emsp; ~~一个对象的引用执行null，并不会被立即回收，还需要执行finalize()方法(必须要重写这个方法，且只能执行一次)。可执行过程中，可能会重新变为可达对象。但是并不鼓励使用这个方法！~~  

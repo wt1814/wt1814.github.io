@@ -47,6 +47,7 @@
 # wt1814-note  
 
 ## 侃侃Java  
+[知识点总结](/docs/java/KnowledgePoints.md)  
 [学习不要学的片面](/docs/life/oneSided.md)  
 
 ## Java  
@@ -88,7 +89,7 @@
 &emsp; &emsp; [原型模式](/docs/java/Design/prototype.md)  
 &emsp; [结构型设计模式](/docs/java/Design/structure.md)  
 &emsp; &emsp; [代理模式](/docs/java/Design/proxy.md)   
-&emsp; &emsp; [JDK动态代理](/docs/java/Design/JDKProxy.md)   
+&emsp; &emsp; [动态代理](/docs/java/Design/DynamicProxy.md)   
 &emsp; &emsp; [装饰者模式](/docs/java/Design/decorator.md)   
 &emsp; &emsp; [适配器模式](/docs/java/Design/adapter.md)   
 &emsp; &emsp; [门面模式](/docs/java/Design/facade.md)   
@@ -321,6 +322,7 @@
 [RPC](/docs/microService/RPC.md)  
 [Dubbo](/docs/microService/dubbo/Dubbo.md)   
 [Dubbo使用教程](/docs/microService/dubbo/DubboUse.md)  
+&emsp; [Dubbo实战](/docs/microService/dubbo/DubboActualCombat.md)  
 [Dubbo详解](/docs/microService/dubbo/DubboExplanate.md)  
 &emsp; [Dubbo框架设计](/docs/microService/dubbo/design.md)  
 &emsp; [Dubbo实现细节](/docs/microService/dubbo/realization.md)  
@@ -392,6 +394,7 @@
 [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
 &emsp; [Sentinel](/docs/microService/thinking/Sentinel.md)  
 [服务降级](/docs/microService/thinking/Demotion.md)  
+[熔断降级服务异常报警通知](/docs/microService/thinking/Fuse.md)  
 
 ### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  
@@ -521,7 +524,7 @@
 &emsp; &emsp; [Netty服务端创建](/docs/microService/communication/Netty/principle.md)  
 &emsp; &emsp; [Netty客户端创建](/docs/microService/communication/Netty/customer.md)  
 &emsp; &emsp; [NioEventLoop](/docs/microService/communication/Netty/NioEventLoop.md)  
-&emsp; &emsp; [NioEventLoop的执行](/docs/microService/communication/Netty/NioEventLoopRun.md)  
+&emsp; &emsp; &emsp; [NioEventLoop的执行](/docs/microService/communication/Netty/NioEventLoopRun.md)  
 &emsp; &emsp; [内存分配-ByteBuf](/docs/microService/communication/Netty/byteBuf.md)    
 &emsp; &emsp; [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)    
 &emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
@@ -635,10 +638,10 @@
 [OSI七层网络模型](/docs/network/OSI.md)  
 [HTTP](/docs/network/HTTP.md)  
 [HTTPS](/docs/network/HTTPS.md)  
-[DNS](docs/network/DNS.md)  
 [TCP](/docs/network/TCP.md)  
 &emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
 &emsp; [TCP粘包](/docs/network/TCPSticking.md)   
+[DNS](docs/network/DNS.md)  
 [长/短连接](/docs/network/connection.md)   
 [网络抓包](/docs/network/wireshark.md)  
 

@@ -18,6 +18,11 @@
 
 
 # 1. 高可用  
+<!-- 
+跨地域场景下，如何解决分布式系统的一致性？ 
+https://mp.weixin.qq.com/s/7oO_5MQPIH_8wNC4sXUeAg
+-->
+
 
 ## 1.1. xxx个9
 <!-- 

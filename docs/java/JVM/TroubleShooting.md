@@ -11,17 +11,17 @@
     - [1.5. 内存溢出排查实战](#15-内存溢出排查实战)
         - [1.5.1. 堆溢出演示](#151-堆溢出演示)
         - [1.5.2. 内存溢出的解决方案](#152-内存溢出的解决方案)
-            - [可以使用的解决方案](#可以使用的解决方案)
-            - [1.5.2.1. 使用内存查看工具分析堆dump文件](#1521-使用内存查看工具分析堆dump文件)
-            - [★★★dump中live参数](#★★★dump中live参数)
-            - [1.5.2.2. ★★★jvm内存快照dump文件太大，怎么分析](#1522-★★★jvm内存快照dump文件太大怎么分析)
+            - [1.5.2.1. 可以使用的解决方案](#1521-可以使用的解决方案)
+            - [1.5.2.2. 使用内存查看工具分析堆dump文件](#1522-使用内存查看工具分析堆dump文件)
+            - [1.5.2.3. ★★★dump中live参数](#1523-★★★dump中live参数)
+            - [1.5.2.4. ★★★jvm内存快照dump文件太大，怎么分析](#1524-★★★jvm内存快照dump文件太大怎么分析)
     - [1.6. 线程死锁](#16-线程死锁)
     - [1.7. 其他情况](#17-其他情况)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 隔离故障服务器
+1. 快速恢复业务：隔离故障服务器
 2. CPU飚高  
 &emsp; **<font color = "red">CPU过高可能是系统频繁的进行Full GC，导致系统缓慢。</font><font color = "clime">而平常也可能遇到比较耗时的计算，导致CPU过高的情况。</font>**  
 &emsp; **<font color = "clime">怎么区分导致CPU过高的原因具体是Full GC次数过多还是代码中有比较耗时的计算？</font>** 如果是Full GC次数过多，那么通过jstack得到的线程信息会是类似于VM Thread之类的线程，而如果是代码中有比较耗时的计算，那么得到的就是一个线程的具体堆栈信息。  
@@ -187,7 +187,7 @@ Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
 <!-- 
 https://blog.csdn.net/prestigeding/article/details/89075661
 -->
-#### 可以使用的解决方案
+#### 1.5.2.1. 可以使用的解决方案
 1. **<font color = "clime">修改JVM启动参数，直接增加内存。</font>**  
 2. 检查错误日志，查看“OutOfMemory”错误前是否有其它异常或错误。  
 3. **<font color = "clime">对代码进行走查和分析，找出可能发生内存溢出的位置。</font>** 重点排查以下几点：  
@@ -197,7 +197,7 @@ https://blog.csdn.net/prestigeding/article/details/89075661
     * 检查List、Map等集合对象是否有使用后，未清除的问题。List、Map等集合对象会始终存有对对象的引用，使得这些对象不能被GC回收。  
 4. **<font color = "clime">使用内存查看工具动态查看内存快照。</font>**  
 
-#### 1.5.2.1. 使用内存查看工具分析堆dump文件  
+#### 1.5.2.2. 使用内存查看工具分析堆dump文件  
 1. 保存内存快照(两种方法)：  
     1. 添加JVM参数，该参数作用是：在程序内存溢出时输出dump文件。参数：-XX:+HeapDumpOnOutOfMemoryError -Xms20m -Xmx20m    
     &emsp; 随后找到项目地址，会发现在Project本目录中出现了个hprof文件，至此就把堆内存快照保存下来了。  
@@ -213,7 +213,7 @@ https://blog.csdn.net/prestigeding/article/details/89075661
 2. 使用内存工具分析  
 &emsp; 有了dump文件，就可以通过dump分析工具进行分析，比如常用的MAT，Jprofile，jvisualvm等工具都可以分析，这些工具都能够看出到底是哪里溢出，哪里创建了大量的对象等等信息。  
 
-#### ★★★dump中live参数  
+#### 1.5.2.3. ★★★dump中live参数  
 &emsp; 开发人员经常需要查看内存中的一些变量的值，来定位生产环境的问题。一般会使用jmap来抓dump，在抓dump的时候，会把堆全部扒下来：  
 
 ```text
@@ -229,7 +229,7 @@ jmap -dump:live,format=b,file=path pid
 
 &emsp; 那么抓下来的dump会减少一个数量级，在几十M左右，这样我们传输，打开这个dump的时间将大大减少，为解决故障赢取了宝贵的时间。   
 
-#### 1.5.2.2. ★★★jvm内存快照dump文件太大，怎么分析  
+#### 1.5.2.4. ★★★jvm内存快照dump文件太大，怎么分析  
 <!-- 
 https://www.cnblogs.com/liangzs/p/8489321.html
 jhat -J-Xmx512M a1.log

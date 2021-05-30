@@ -44,7 +44,7 @@ https://mp.weixin.qq.com/s/qSiExDGODbj4NXJQNcKpdA
 
     堆外直接内存的优势：Java 网络程序中使用堆外直接内存进行内容发送（Socket读写操作），可以避免了字节缓冲区的二次拷贝；相反，如果使用传统的堆内存（Heap Memory，其实就是byte[]）进行Socket读写，JVM会将堆内存Buffer拷贝一份到堆外直接内存中，然后才写入Socket中。这样，相比于堆外直接内存，消息在发送过程中多了一次缓冲区的内存拷贝。
 
-&emsp; 综上所述，其实ByteBuf 一共会有六种组合：Pooled 池化内存和Unpooled 非池化内存；Unsafe 和非Unsafe；Heap堆内存和Direct 堆外内存。下图是ByteBuf 最重要的继承关系类结构图，通过命名就能一目了然：
+&emsp; 综上所述，其实ByteBuf 一共会有六种组合：Pooled 池化内存和Unpooled 非池化内存；Unsafe和非Unsafe；Heap堆内存和Direct 堆外内存。下图是ByteBuf 最重要的继承关系类结构图，通过命名就能一目了然：
 
 &emsp; ByteBuf最基本的读写API 操作在AbstractByteBuf 中已经实现了，其众多子类采用不同的策略来分配内存空间，下面对重要的几个子类总结如下：  
 
@@ -59,7 +59,7 @@ https://mp.weixin.qq.com/s/qSiExDGODbj4NXJQNcKpdA
 
 
 ### 1.1.4. ★★★~~内存使用~~
-1. 堆外内存
+1. 堆外内存  
 &emsp; 堆内内存 / 堆外内存的切换方式，指定参数：`io.netty.noPreferDirect = true / false`  
 
 &emsp; 默认不使用堆内内存的，可以这样指定使用堆内内存
@@ -71,7 +71,7 @@ b.childOption(ChannelOption.ALLOCATOR, new PooledByteBufAllocator(false))
 
 &emsp; Netty分配堆外内存的本质是调用 JDK 的ByteBuffer.allocateDirect(initialCapacity); 方法，再往下就是 JDK 的 Unsafe 了。
 
-2. 内存池
+2. 内存池  
 &emsp; 内存池 / 非内存池 的切换方式，指定参数：`io.netty.allocator.type = unpooled / pooled` 
 &emsp; 启动类中指定配置：  
 
@@ -87,9 +87,7 @@ ServerBootstrap b = new ServerBootstrap();
 b.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
 ```
 
-
 &emsp; **<font color = "clime">默认情况下，安卓平台使用非池实现，其他平台使用内存池实现，在未指定 netty.allocator.type 参数时，默认内存池实现。</font>**  
-
 
 ## 1.2. ByteBufAllocator内存管理器
 [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)   

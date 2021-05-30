@@ -12,8 +12,8 @@
 
 # 1. 常量池
 <!--
- 终于搞懂了Java8的内存结构，再也不纠结方法区和常量池了！ 
- https://mp.weixin.qq.com/s/WvdPQ8JsR9qqWMlvX7ockA
+终于搞懂了Java8的内存结构，再也不纠结方法区和常量池了！ 
+https://mp.weixin.qq.com/s/WvdPQ8JsR9qqWMlvX7ockA
 JAVA常量池，一篇文章就足够入门了。（含图解）
 https://blog.csdn.net/qq_41376740/article/details/80338158
 常量池 
@@ -43,11 +43,11 @@ https://blog.csdn.net/luzhensmart/article/details/86565496
 https://www.pianshen.com/article/72411279197/
 -->
 
-&emsp; 常量池分为以下三种：class文件常量池、运行时常量池、全局字符串常量池。  
+&emsp; **<font color = "clime">常量池分为以下三种：class文件常量池、运行时常量池、全局字符串常量池。</font>**   
 1. class文件常量池(Class Constant Pool)  
 &emsp; class常量池是在编译的时候每个class都有的，在编译阶段，存放的是常量(文本字符串、final常量等)和符号引用。  
 2. 运行时常量池(Runtime Constant Pool)  
-&emsp; 运行时常量池是在类加载完成之后， **将每个class常量池中的符号引用值转存到运行时常量池中** ，也就是说，每个class都有一个运行时常量池，类在解析之后，将符号引用替换成直接引用，与全局常量池中的引用值保持一致。  
+&emsp; 运行时常量池是在类加载完成之后， **<font color = "clime">将每个class常量池中的符号引用值转存到运行时常量池中</font>** ，也就是说，每个class都有一个运行时常量池，类在解析之后，将符号引用替换成直接引用，与全局常量池中的引用值保持一致。  
 3. 全局字符串常量池(String Pool)  
 &emsp; 全局字符串常量池中存放的内容是在类加载完成后存到String Pool中的，在每个VM中只有一份，存放的是字符串常量的引用值(在堆中生成字符串对象实例)。  
 

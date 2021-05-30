@@ -20,6 +20,8 @@
             - [1.3.5.3. resize()，扩容机制](#1353-resize扩容机制)
                 - [1.3.5.3.1. 时序图及说明](#13531-时序图及说明)
                 - [1.3.5.3.2. 具体源码](#13532-具体源码)
+                    - [1.3.5.3.2.1. resize()方法](#135321-resize方法)
+                    - [1.3.5.3.2.2. split()，红黑树处理](#135322-split红黑树处理)
     - [1.4. HashMap在JDK1.7和JDK1.8中的区别总结](#14-hashmap在jdk17和jdk18中的区别总结)
     - [1.5. HashMap的线程安全问题](#15-hashmap的线程安全问题)
         - [1.5.1. JDK1.8](#151-jdk18)
@@ -56,9 +58,11 @@ https://mp.weixin.qq.com/s/sCbhQolu_BXBXsQwlFC81g
 2. HashMap成员方法：  
     1. hash()函数/扰动函数：hash函数会根据传递的key值进行计算， 1)首先计算key的hashCode值， 2)然后再对hashcode进行无符号右移操作， 3)最后再和hashCode进行异或 ^ 操作。（即让hashcode的高16位和低16位进行异或操作。）   
     &emsp; **<font color = "clime">这样做的好处是增加了随机性，减少了碰撞冲突的可能性。</font>**    
-    &emsp; （无符号右移操作说明：「无符号右移，也叫逻辑右移，即若该数为正，则高位补0，而若该数为负数，则右移后高位同样补0」，也就是不管是正数还是负数，右移都会在空缺位补0。）  
     2. put()函数：<font color = "clime">在put的时候，首先对key做hash运算，计算出该key所在的index。如果没碰撞，直接放到数组中，如果碰撞了，如果key是相同的，则替换到原来的值。如果key不同，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。最后判断哈希表是否满了(当前哈希表大小*负载因子)，如果满了，则扩容。</font>  
-    2. 扩容机制：JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。对链表进行迁移。会对链表中的节点，进行分组()，进行迁移后，一类的节点位置在原索引，一类在原索引+旧数组长度。 ~~通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度~~
+    2. 扩容机制：JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。  
+        * 单节点迁移。  
+        * 如果节点是红黑树类型的话则需要进行红黑树的拆分：拆分成高低位链表，如果链表长度大于6，需要把链表升级成红黑树。
+        * 对链表进行迁移。会对链表中的节点，进行分组()，进行迁移后，一类的节点位置在原索引，一类在原索引+旧数组长度。 ~~通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度~~
 3. HashMap的线程安全问题：在jdk1.8中，在多线程环境下，会发生数据覆盖的情况。
     1. 假设两个线程A、B都在进行put操作，并且hash函数计算出的插入下标是相同的，当线程A执行完第六行代码后由于时间片耗尽导致被挂起，而线程B得到时间片后在该下标处插入了元素，完成了正常的插入，然后线程A获得时间片，由于之前已经进行了hash碰撞的判断，所有此时不会再进行判断，而是直接进行插入，这就导致了线程B插入的数据被线程A覆盖了，从而线程不安全。  
 
@@ -566,7 +570,7 @@ resize();
 3. 若table数组未被初始化，且threshold为0，说明调用HashMap()构造方法，那么就把数组大小设为16，threshold设为16*0.75。  
 4. 接着需要判断是否第一次初始化。如果不是，那么<font color = "red">扩容之后，要重新计算键值对的位置，并把它们移动到合适的位置上去。</font>  
     1. 如果是单个节点，直接重新计算下标值，移动。  
-    2. 如果节点是红黑树类型的话则需要进行红黑树的拆分。  
+    2. 如果节点是红黑树类型的话则需要进行红黑树的拆分：拆分成高低位链表，如果链表长度大于6，需要把链表升级成红黑树。  
     3. <font color = "red">对链表进行迁移。会对链表中的节点，进行分组，进行迁移后，一类的节点位置在原索引，一类在原索引+旧数组长度。</font>
 
 
@@ -582,6 +586,7 @@ resize();
 
 ##### 1.3.5.3.2. 具体源码
 
+###### 1.3.5.3.2.1. resize()方法
 ```java
 final Node<K,V>[] resize() {
     Node<K,V>[] oldTab = table;
@@ -662,6 +667,75 @@ final Node<K,V>[] resize() {
         }
     }
     return newTab;
+}
+```
+
+###### 1.3.5.3.2.2. split()，红黑树处理  
+&emsp; 红黑树的拆分和链表的逻辑基本一致，不同的地方在于，重新映射后，会将红黑树拆分成两条链表，根据链表的长度，判断需不需要把链表重新进行树化。  
+<!-- 
+https://blog.csdn.net/m0_46657043/article/details/106574422
+-->
+
+```java
+final void split(HashMap<K,V> map, Node<K,V>[] tab, int index, int bit) {
+    TreeNode<K,V> b = this;
+    // Relink into lo and hi lists, preserving order
+    // 和链表同样的套路，分成高位和低位
+    TreeNode<K,V> loHead = null, loTail = null;
+    TreeNode<K,V> hiHead = null, hiTail = null;
+    int lc = 0, hc = 0;
+    /**
+      * TreeNode 是间接继承于 Node，保留了 next，可以像链表一样遍历
+      * 这里的操作和链表的一毛一样
+      */
+    for (TreeNode<K,V> e = b, next; e != null; e = next) {
+        next = (TreeNode<K,V>)e.next;
+        e.next = null;
+        // bit 就是 oldCap
+        if ((e.hash & bit) == 0) {
+            if ((e.prev = loTail) == null)
+                loHead = e;
+            else
+            // 尾插
+                loTail.next = e;
+            loTail = e;
+            ++lc;
+        }
+        else {
+            if ((e.prev = hiTail) == null)
+                hiHead = e;
+            else
+                hiTail.next = e;
+            hiTail = e;
+            ++hc;
+        }
+    }
+
+    // 树化低位链表
+    if (loHead != null) {
+        // 如果 loHead 不为空，且链表长度小于等于 6，则将红黑树转成链表
+        if (lc <= UNTREEIFY_THRESHOLD)
+            tab[index] = loHead.untreeify(map);
+        else {
+            /**
+              * hiHead == null 时，表明扩容后，
+              * 所有节点仍在原位置，树结构不变，无需重新树化
+              */
+            tab[index] = loHead;
+            if (hiHead != null) // (else is already treeified)
+                loHead.treeify(tab);
+        }
+    }
+    // 树化高位链表，逻辑与上面一致
+    if (hiHead != null) {
+        if (hc <= UNTREEIFY_THRESHOLD)
+            tab[index + bit] = hiHead.untreeify(map);
+        else {
+            tab[index + bit] = hiHead;
+            if (loHead != null)
+                hiHead.treeify(tab);
+        }
+    }
 }
 ```
 

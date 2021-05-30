@@ -22,8 +22,8 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">grep是一款强大的文本搜索工具，支持正则表达式。</font>**    
-&emsp; **<font color = "clime">sed是一种流编辑器(增、删、改、查)，是一款处理文本比较优秀的工具，可以结合正则表达式一起使用。</font>**  
+1. **<font color = "clime">grep是一款强大的文本搜索工具，支持正则表达式。</font>**    
+2. **<font color = "clime">sed是一种流编辑器(增、删、改、查)，是一款处理文本比较优秀的工具，可以结合正则表达式一起使用。</font>**  
 
 
 # 1. Linux文本处理  

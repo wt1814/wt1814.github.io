@@ -18,6 +18,9 @@
 1. 1). 一个容器或多个容器可以同属于一个Pod之中。 2). Pod是由Pod控制器进行管理控制，其代表性的Pod控制器有Deployment、StatefulSet等。 3). Pod组成的应用是通过Service或Ingress提供外部访问。  
 2. **<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
     1. **<font color = "clime">Master的组件包括：API Server、controller-manager、scheduler和etcd等几个组件。</font>**  
+        * **<font color = "red">API Server：K8S对外的唯一接口，提供HTTP/HTTPS RESTful API，即kubernetes API。</font>**  
+        * **<font color = "red">controller-manager：负责管理集群各种资源，保证资源处于预期的状态。</font>** 
+        * **<font color = "red">scheduler：资源调度，负责决定将Pod放到哪个Node上运行。</font>** 
     2. **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
 
 
@@ -62,15 +65,15 @@ Kubernetes Pod调度说明，Scheduler
 https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 -->
 1. API Server  
-&emsp; K8S对外的唯一接口，提供HTTP/HTTPS RESTful API，即kubernetes API。所有的请求都需要经过这个接口进行通信。主要负责接收、校验并响应所有的REST请求，结果状态被持久存储在etcd当中，所有资源增删改查的唯一入口。
+&emsp; **<font color = "red">K8S对外的唯一接口，提供HTTP/HTTPS RESTful API，即kubernetes API。</font>** 所有的请求都需要经过这个接口进行通信。主要负责接收、校验并响应所有的REST请求，结果状态被持久存储在etcd当中，所有资源增删改查的唯一入口。
 3. Controller Manager  
-&emsp; 负责管理集群各种资源，保证资源处于预期的状态。Controller Manager由多种controller组成，包括replication controller、endpoints controller、namespace controller、serviceaccounts controller等 。由控制器完成的主要功能主要包括生命周期功能和API业务逻辑，具体如下：
+&emsp; **<font color = "red">负责管理集群各种资源，保证资源处于预期的状态。</font>** Controller Manager由多种controller组成，包括replication controller、endpoints controller、namespace controller、serviceaccounts controller等 。由控制器完成的主要功能主要包括生命周期功能和API业务逻辑，具体如下：
 
     * 生命周期功能：包括Namespace创建和生命周期、Event垃圾回收、Pod终止相关的垃圾回收、级联垃圾回收及Node垃圾回收等。
     * API业务逻辑：例如，由ReplicaSet执行的Pod扩展等。
 
 4. 调度器(Schedule)  
-&emsp; 资源调度，负责决定将Pod放到哪个Node上运行。Scheduler在调度时会对集群的结构进行分析，当前各个节点的负载，以及应用对高可用、性能等方面的需求。  
+&emsp; **<font color = "red">资源调度，负责决定将Pod放到哪个Node上运行。</font>** Scheduler在调度时会对集群的结构进行分析，当前各个节点的负载，以及应用对高可用、性能等方面的需求。  
 2. etcd  
 &emsp; 负责保存k8s集群的配置信息和各种资源的状态信息，当数据发生变化时，etcd会快速地通知k8s相关组件。etcd是一个独立的服务组件，并不隶属于K8S集群。生产环境当中etcd应该以集群方式运行，以确保服务的可用性。  
 &emsp; etcd不仅仅用于提供键值数据存储，而且还为其提供了监听(watch)机制，用于监听和推送变更。在K8S集群系统中，etcd的键值发生变化会通知倒API Server，并由其通过watch API向客户端输出。  
@@ -227,7 +230,7 @@ https://www.cnblogs.com/justmine/p/8684564.html
 &emsp; K8S使用的网络插件需要为每个Pod配置至少一个特定的地址，即Pod IP。Pod IP地址实际存在于某个网卡(可以是虚拟机设备)上。  
 &emsp; <font color = "clime">而Service的地址却是一个虚拟IP地址，没有任何网络接口配置在此地址上，它由Kube-proxy借助iptables规则或ipvs规则重定向到本地端口，再将其调度到后端的Pod对象。</font>Service的IP地址是集群提供服务的接口，也称为Cluster IP。  
 &emsp; Pod网络和IP由K8S的网络插件负责配置和管理，具体使用的网络地址可以在管理配置网络插件时进行指定，如10.244.0.0/16网络。而Cluster网络和IP是由K8S集群负责配置和管理，如10.96.0.0/12网络。  
-&emsp; 从上图进行总结起来， **<font color = "clime">一个K8S集群包含是三个网络：</font>**  
+&emsp; 从上图进行总结起来， **<font color = "clime">一个K8S集群包含三个网络：</font>**  
 
 * 节点网络：各主机(Master、Node、ETCD等)自身所属的网络，地址配置在主机的网络接口，用于各主机之间的通信，又称为节点网络。  
 * Pod网络：专用于Pod资源对象的网络，它是一个虚拟网络，用于为各Pod对象设定IP地址等网络参数，其地址配置在Pod中容器的网络接口上。Pod网络需要借助kubenet插件或CNI插件实现。  

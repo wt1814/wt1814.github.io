@@ -21,8 +21,7 @@
 1. BeanFactory与ApplicationContext
 2. BeanDefinition： **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
 3. Spring容器刷新：  
-&emsp; **<font color = "blue">高度概括：容器本身、对外扩展。</font>**
-&emsp; 刷新前的准备 ---> 创建容器 ---> 预处理 ---> 后置处理器 ---> 注册事件 ---> 特殊bean ---> 监听器 ---> 非懒加载Bean ---> 发布事件   
+&emsp; **<font color = "blue">高度概括：容器本身、对外扩展。</font>** （刷新前的准备 ---> 创建容器 ---> 预处理 ---> 后置处理器 ---> 注册事件 ---> 特殊bean ---> 监听器 ---> 非懒加载Bean ---> 发布事件）   
     **<font color = "red">Spring bean容器刷新的核心 12+1个步骤完成IoC容器的创建及初始化工作：</font>**  
     1. 刷新前的准备工作。  
     2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>** <font color = "blue">个人理解：此处仅仅相当于创建Spring Bean的类，实例化是在Spring DI里。</font>   

@@ -2,23 +2,27 @@
 
 <!-- TOC -->
 
-- [1. JDK动态代理](#1-jdk动态代理)
-    - [1.1. 编码](#11-编码)
-    - [1.2. 源码分析-1](#12-源码分析-1)
+- [1. 两种动态代理](#1-两种动态代理)
+    - [1.1. JDK动态代理](#11-jdk动态代理)
+        - [1.1.1. 编码](#111-编码)
+        - [1.1.2. 源码分析-1](#112-源码分析-1)
+    - [1.2. CGLIB](#12-cglib)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. Java动态代理类位于java.lang.reflect包下，一般主要涉及到以下两个重要的类或接口，一个是InvocationHandler(Interface)、另一个则是Proxy(Class)。  
-    * Proxy类。该类即为动态代理类。Proxy.newProxyInstance()生成代理对象；  
-    * InvocationHandler接口。在使用动态代理时，需要定义一个位于代理类与委托类之间的中介类，中介类被要求实现InvocationHandler接口。通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。  
+1. JDK动态代理  
+    1. Java动态代理类位于java.lang.reflect包下，一般主要涉及到以下两个重要的类或接口，一个是InvocationHandler(Interface)、另一个则是Proxy(Class)。  
+        * Proxy类。该类即为动态代理类。Proxy.newProxyInstance()生成代理对象；  
+        * InvocationHandler接口。在使用动态代理时，需要定义一个位于代理类与委托类之间的中介类，中介类被要求实现InvocationHandler接口。通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。  
+    2. <font color = "clime">JDK动态代理的实现，大致流程：</font>  
+        1. <font color = "red">为接口创建代理类的字节码文件。</font>使用反射来创建代理类。  
+        2. <font color = "red">使用ClassLoader将字节码文件加载到JVM。</font>  
+        3. <font color = "red">创建代理类实例对象，执行对象的目标方法。</font>  
 
-2. <font color = "clime">JDK动态代理的实现，大致流程：</font>  
-    1. <font color = "red">为接口创建代理类的字节码文件。</font>使用反射来创建代理类。  
-    2. <font color = "red">使用ClassLoader将字节码文件加载到JVM。</font>  
-    3. <font color = "red">创建代理类实例对象，执行对象的目标方法。</font>  
 
-# 1. JDK动态代理
+# 1. 两种动态代理
+## 1.1. JDK动态代理
 <!-- 
   利用拦截器(拦截器必须实现InvocationHanlder)加上反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理。
 -->
@@ -55,7 +59,7 @@
     -->
  
 
-## 1.1. 编码  
+### 1.1.1. 编码  
 &emsp; 代码示例：  
 &emsp; 首先需要定义一个接口：  
 
@@ -115,7 +119,7 @@ public class Main {
     查询用户信息
     执行了invoke
 
-## 1.2. 源码分析-1
+### 1.1.2. 源码分析-1
 <!-- 
 https://mp.weixin.qq.com/s/RoPuIgGlZg6h-Zk1YMwroA
 
@@ -306,4 +310,9 @@ private static final class ProxyClassFactory
     }
 }
 ```
+
+## 1.2. CGLIB  
+<!-- 
+https://mp.weixin.qq.com/s/Am4uccsBFpKFnswSmI3iuA
+-->
 

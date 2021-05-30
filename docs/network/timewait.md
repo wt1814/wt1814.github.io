@@ -17,7 +17,7 @@
     1. 客户端  
     &emsp; **HTTP请求的头部，connection 设置为 keep-alive，** 保持存活一段时间：现在的浏览器，一般都这么进行了。     
     2. 服务器端  
-        * **允许time_wait状态的socket被重用。**
+        * **<font color = "red">允许time_wait状态的socket被重用。</font>**
         * 缩减time_wait时间，设置为 1 MSL（即，2 mins）。
 
 

@@ -25,6 +25,8 @@ https://mp.weixin.qq.com/s/RjRzacdmx3DMHlhjj1GM3g
 ## 1.2. 静态代理  
 
 ## 1.3. 动态代理 
+&emsp; [两种动态代理](/docs/java/Design/JDKProxy.md)  
+
 <!-- 
 
 
