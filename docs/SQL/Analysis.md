@@ -16,7 +16,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结</font>**  
-1. **<font color = "clime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling。</font>**  
+1. **<font color = "clime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling、trace。</font>**  
 2. explain：  
 &emsp; expain出来的信息列分别是id、select_type、table、partitions、 **<font color = "red">type</font>** 、possible_keys、 **<font color = "red">key</font>** 、 **<font color = "red">key_len</font>** 、ref、rows、filtered、 **<font color = "red">Extra</font>** 。  
 &emsp; **<font color = "clime">type单表查询类型要达到range级别(只检索给定范围的行，使用一个索引来选择行，非全表扫描)，extra额外的信息，常见的不太友好的值，如下：Using filesort，Using temporary。其他重要字段：key、key_len</font>**  
@@ -272,4 +272,4 @@ show profile all for query Query_ID;
 MySQL中trace工具的使用
 https://blog.csdn.net/weixin_43576564/article/details/90202501
 -->
-&emsp; MySQL5.6版本后提供了对SQL的跟踪工具trace，通过使用trace阔以让我们明白optimizer如何选择执行计划的。  
+&emsp; MySQL5.6版本后提供了对SQL的跟踪工具trace，通过使用trace，可以知道optimizer如何选择执行计划的。  

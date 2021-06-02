@@ -23,19 +23,21 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 同步状态，通过state控制同步状态。  
-2. 同步队列，双向链表，每个节点代表一个线程，节点有5个状态。
-    * 入列：采用CAS算法设置尾节点+死循环自旋。  
-    * 出列：首节点的线程释放同步状态后，将会唤醒(LockSupport.unpark)它的后继节点(next)，而后继节点将会在获取同步状态成功时将自己设置为首节点。
-    * 入列或出列都会使用到[LockSupport](/docs/java/concurrent/LockSupport.md)工具类来阻塞、唤醒线程。    
-3. 独占模式：  
-    * 获取同步状态  
-        1. 调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回(这里体现了非公平锁，每个线程获取锁时会尝试直接抢占加锁一次，而CLH队列中可能还有别的线程在等待)；
-        2. addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；
-        3. acquireQueued()使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
-        4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。
-    * 释放同步状态  
-4. 共享模式下，获取同步状态、释放同步状态。
+1. 属性
+    1. 同步状态，通过state控制同步状态。  
+    2. 同步队列，双向链表，每个节点代表一个线程，节点有5个状态。
+        * 入列：未获取到锁的线程会创建节点，线程安全（CAS算法设置尾节点+死循环自旋）的加入队列尾部。  
+        * 出列：首节点的线程释放同步状态后，将会唤醒(LockSupport.unpark)它的后继节点(next)，而后继节点将会在获取同步状态成功时将自己设置为首节点。
+        * 入列或出列都会使用到[LockSupport](/docs/java/concurrent/LockSupport.md)工具类来阻塞、唤醒线程。    
+2. 方法
+    1. 独占模式：  
+        * 获取同步状态  
+            1. 调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回；
+            2. tryAcquire()获取资源失败，则调用addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；
+            3. acquireQueued()使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
+            4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。
+        * 释放同步状态  
+    2. 共享模式下，获取同步状态、释放同步状态。
 
 # 1. AQS  
 ## 1.1. 简介  
@@ -58,7 +60,7 @@
 
 ## 1.3. 属性  
 &emsp; AQS核心思想是，<font color = "red">如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。</font><font color = "clime">如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制。</font>  
-&emsp; <font color = "clime">AQS使用一个int state成员变量来表示同步状态，通过内置的FIFO队列来完成获取资源线程的排队工作，即将暂时获取不到锁的线程加入到队列中。AQS使用CAS对该同步状态进行原子操作实现对其值的修改。</font>  
+&emsp; <font color = "clime">AQS使用一个`private volatile int state`成员变量来表示同步状态，通过内置的FIFO队列来完成获取资源线程的排队工作，即将暂时获取不到锁的线程加入到队列中。AQS使用CAS对该同步状态进行原子操作实现对其值的修改。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-2.png)   
 
 ### 1.3.1. 同步状态state  
@@ -360,8 +362,8 @@ https://www.cnblogs.com/waterystone/p/4920797.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-20.png)  
 &emsp; acquire(int arg)是独占模式下线程获取同步状态的顶层入口。  
 &emsp; <font color = "clime">独占模式获取同步状态流程如下：</font>  
-1. **<font color = "clime">调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回（这里体现了非公平锁，每个线程获取锁时会尝试直接抢占加锁一次，而CLH队列中可能还有别的线程在等待）；</font>**  
-2. addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；  
+1. **<font color = "clime">调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回；</font>**  
+2. tryAcquire()获取资源失败，则调用addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；  
 3. acquireQueued()使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
 4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。
 

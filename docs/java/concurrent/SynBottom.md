@@ -1,31 +1,36 @@
 <!-- TOC -->
 
 - [1. Synchronized底层原理](#1-synchronized底层原理)
-    - [1.1. Java对象头与monitor](#11-java对象头与monitor)
-        - [1.1.1. JVM内存对象](#111-jvm内存对象)
-        - [1.1.2. 对象头详解](#112-对象头详解)
-            - [1.1.2.1. Mark Word](#1121-mark-word)
-            - [1.1.2.2. class pointer](#1122-class-pointer)
-            - [1.1.2.3. array length](#1123-array-length)
-        - [1.1.3. monitor对象](#113-monitor对象)
-    - [1.2. Synchronized底层实现](#12-synchronized底层实现)
-        - [1.2.1. 同步代码块](#121-同步代码块)
-        - [1.2.2. 同步方法](#122-同步方法)
+    - [1.1. Synchronized底层实现](#11-synchronized底层实现)
+        - [1.1.1. 同步代码块](#111-同步代码块)
+        - [1.1.2. 同步方法](#112-同步方法)
+    - [1.2. Java对象头与monitor](#12-java对象头与monitor)
+        - [1.2.1. JVM内存对象](#121-jvm内存对象)
+        - [1.2.2. 对象头详解](#122-对象头详解)
+            - [1.2.2.1. Mark Word](#1221-mark-word)
+            - [1.2.2.2. class pointer](#1222-class-pointer)
+            - [1.2.2.3. array length](#1223-array-length)
+    - [1.3. C++的Monitor](#13-c的monitor)
+    - [1.4. linux互斥锁nutex(内核态)](#14-linux互斥锁nutex内核态)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "clime">Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联。</font>**  
-2. **<font color = "red">monitor运行的机制过程如下：(_EntryList队列、_Owner区域、_WaitSet队列)</font>**  
-  ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
-  * 想要获取monitor的线程，首先会进入_EntryList队列。  
-  * 当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程，同时计数器count加1。  
-  * **如果线程调用了wait()方法，则会进入WaitSet队列。** 它会释放monitor锁，即将owner赋值为null，count自减1，进入WaitSet队列阻塞等待。  
-  * 如果其他线程调用 notify() / notifyAll()，会唤醒WaitSet中的某个线程，该线程再次尝试获取monitor锁，成功即进入Owner区域。  
-  * 同步方法执行完毕了，线程退出临界区，会将monitor的owner设为null，并释放监视锁。  
-3. Synchronized修饰方法、代码块  
-&emsp; Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。  
-&emsp; Synchronized代码块同步：使用monitorenter和monitorexit指令实现。  
+1. Synchronized底层实现  
+    * Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。  
+    * Synchronized代码块同步：使用monitorenter和monitorexit指令实现。 
+    &emsp; 每一个对象都会和一个监视器monitor关联。监视器被占用时会被锁住，其他线程无法来获取该monitor。   
+    &emsp; 线程执行monitorenter指令时尝试获取对象的monitor的所有权，当monitor被占用时就会处于锁定状态。  
+2. **<font color = "clime">Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联。</font>**  
+3. **<font color = "clime">在Java虚拟机(HotSpot)中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。</font><font color = "blue">monitor运行的机制过程如下：(_EntryList队列、_Owner区域、_WaitSet队列)</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
+    * 想要获取monitor的线程，首先会进入_EntryList队列。  
+    * 当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程，同时计数器count加1。  
+    * **如果线程调用了wait()方法，则会进入WaitSet队列。** 它会释放monitor锁，即将owner赋值为null，count自减1，进入WaitSet队列阻塞等待。  
+    * 如果其他线程调用 notify() / notifyAll()，会唤醒WaitSet中的某个线程，该线程再次尝试获取monitor锁，成功即进入Owner区域。  
+    * 同步方法执行完毕了，线程退出临界区，会将monitor的owner设为null，并释放监视锁。  
+4. 
+
 
 # 1. Synchronized底层原理
 <!--
@@ -42,7 +47,148 @@ Synchronized底层原理—Monitor监视器
 https://blog.csdn.net/qq_40788718/article/details/106450724?utm_source=app
 -->
 
-## 1.1. Java对象头与monitor  
+## 1.1. Synchronized底层实现  
+<!-- 
+Synchronized的内部实现原理
+https://www.jianshu.com/p/5c4f441bf142
+-->
+
+```java
+public class SyncDemo {
+
+    public Synchronized void play() {}
+
+    public void learn() {
+        Synchronized(this) {
+        }
+    }
+}
+```
+
+<!-- 编译完成，我们去对应目录执行 javap -c xxx.class 命令查看反编译的文件： 
+https://juejin.cn/post/6888112467747176456 
+先将SynchronizedDemo.java使用javac SynchronizedDemo.java命令将其编译成SynchronizedDemo.class。然后使用javap -c SynchronizedDemo.class反编译字节码。  
+通过javap -v -c SynchronizedMethodDemo.class命令反编译SynchronizedMethodDemo类。-v参数即-verbose，表示输出反编译的附加信息。下面以反编译普通方法为例。  
+-->
+&emsp; 利用javap工具查看生成的class文件信息分析Synchronized，下面是部分信息:  
+
+    查看字节码工具：  
+    Show Uytecode With jclasslib
+    Show Bytccodc
+
+```java
+public com.zzw.juc.sync.SyncDemo();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1        // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 8: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   Lcom/zzw/juc/sync/SyncDemo;
+
+  public Synchronized void play();
+    descriptor: ()V
+    flags: ACC_PUBLIC, ACC_Synchronized
+    Code:
+      stack=0, locals=1, args_size=1
+         0: return
+      LineNumberTable:
+        line 10: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       1     0  this   Lcom/zzw/juc/sync/SyncDemo;
+
+  public void learn();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=3, args_size=1
+         0: aload_0
+         1: dup
+         2: astore_1
+         3: monitorenter
+         4: aload_1
+         5: monitorexit
+         6: goto          14
+         9: astore_2
+        10: aload_1
+        11: monitorexit
+        12: aload_2
+        13: athrow
+        14: return
+      Exception table:
+         from    to  target type
+             4     6     9   any
+             9    12     9   any
+```
+&emsp; JVM基于进入和退出Monitor对象来实现方法同步和代码块同步，但两者实现细节不同。  
+
+* **<font color = "red">方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。</font>**  
+* **<font color = "red">代码块同步：使用monitorenter和monitorexit指令实现。</font>**  
+
+### 1.1.1. 同步代码块  
+&emsp; monitorenter指令插入到同步代码块的开始位置，monitorexit指令插入到同步代码块的结束位置，<font color = "red">JVM需要保证每一个monitorenter都有一个monitorexit与之相对应。</font>  
+
+&emsp; 两条指令的作用：  
+* monitorenter：  
+&emsp; 每一个对象都会和一个监视器monitor关联。监视器被占用时会被锁住，其他线程无法来获取该monitor。    
+&emsp; <font color = "red">线程执行monitorenter指令时尝试获取monitor的所有权，当monitor被占用时就会处于锁定状态。</font>过程如下：
+    1. <font color = "red">如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。</font>  
+    2. 如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1，所以Synchronized关键字实现的锁是可重入的锁。  
+    3. 如果其他线程已经占用了monitor，则该线程进入阻塞状态，直到monitor的进入数为0，再重新尝试获取monitor的所有权。  
+* monitorexit：  
+&emsp; 执行monitorexit的线程必须是objectref所对应的monitor的所有者。  
+&emsp; 指令执行时，monitor的进入数减1，如果减1后进入数为0，当前线程释放monitor，不再是这个monitor的所有者。其他被这个monitor阻塞的线程可以尝试去获取这个monitor的所有权。  
+
+&emsp; **<font color = "red">同步代码块中会出现两次的monitorexit。</font>** 这是因为一个线程对一个对象上锁了，后续就一定要解锁，第二个monitorexit是为了保证在线程异常时，也能正常解锁，避免造成死锁。  
+
+&emsp; 总结：Synchronized的实现原理，Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。  
+
+<!-- 
+monitorenter ：
+每个对象有一个监视器锁(monitor)。当monitor被占用时就会处于锁定状态，线程执行monitorenter指令时尝试获取monitor的所有权，过程如下：
+
+1、如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。
+
+2、如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1.
+
+3.如果其他线程已经占用了monitor，则该线程进入阻塞状态，直到monitor的进入数为0，再重新尝试获取monitor的所有权。
+
+monitorexit：
+
+　　执行monitorexit的线程必须是objectref所对应的monitor的所有者。
+
+　　指令执行时，monitor的进入数减1，如果减1后进入数为0，那线程退出monitor，不再是这个monitor的所有者。其他被这个monitor阻塞的线程可以尝试去获取这个 monitor 的所有权。
+
+　　Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。
+
+「monitorenter」：
+Java对象天生就是一个Monitor，当monitor被占用，它就处于锁定的状态。
+每个对象都与一个监视器关联。且只有在有线程持有的情况下，监视器才被锁定。
+执行monitorenter的线程尝试获得monitor的所有权：
+
+如果与objectref关联的监视器的条目计数为0，则线程进入监视器，并将其条目计数设置为1。然后，该线程是monitor的所有者。如果线程已经拥有与objectref关联的监视器，则它将重新进入监视器，从而增加其条目计数。这个就是锁重入。如果另一个线程已经拥有与objectref关联的监视器，则该线程将阻塞，直到该监视器的条目计数为零为止，然后再次尝试获取所有权。
+「monitorexit」：
+一个或多个MonitorExit指令可与Monitorenter指令一起使用，它们共同实现同步语句。
+尽管可以将monitorenter和monitorexit指令用于提供等效的锁定语义，但它们并未用于同步方法的实现中。
+JVM在完成monitorexit时的处理方式分为正常退出和出现异常时退出：
+
+常规同步方法完成时监视器退出由Java虚拟机的返回指令处理。也就是说程序正常执行完毕的时候，JVM有一个指令会隐式的完成monitor的退出---monitorexit，这个指令是athrow。如果同步语句出现了异常时，JVM的异常处理机制也能monitorexit。
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-57.png)  
+简单的加锁解锁过程
+因此，执行同步代码块后首先要执行monitorenter指令，退出的时候monitorexit指令。  
+-->
+
+### 1.1.2. 同步方法  
+&emsp; 当JVM执行引擎执行某一个方法时，其会从方法区中获取该方法的access_flags，检查其是否有ACC_SYNCRHONIZED标识符，若是有该标识符，则说明当前方法是同步方法，需要先获取当前对象的monitor，再来执行方法，方法执行完后再释放monitor。在方法执行期间，其他任何线程都无法再获得同一个monitor对象。 其实本质上没有区别，只是方法的同步是一种隐式的方式来实现，无需通过字节码来完成。  
+
+
+## 1.2. Java对象头与monitor  
 <!-- 
 Java对象头与monitor
 https://blog.csdn.net/kking_edc/article/details/108382333
@@ -69,7 +215,7 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 -->
 &emsp; Java对象头是实现synchronized的锁对象的基础。  
 
-### 1.1.1. JVM内存对象
+### 1.2.1. JVM内存对象
 <!-- 
 Java对象头与monitor
 https://blog.csdn.net/kking_edc/article/details/108382333
@@ -102,8 +248,8 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 </dependencies>
 -->
 
-### 1.1.2. 对象头详解  
-#### 1.1.2.1. Mark Word  
+### 1.2.2. 对象头详解  
+#### 1.2.2.1. Mark Word  
 &emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "clime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
 
 &emsp; 这部分主要用来存储对象自身的运行时数据，如hashcode、gc分代年龄等。mark word的位长度为JVM的一个Word大小，也就是说32位JVM的Mark word为32位，64位JVM为64位。
@@ -137,7 +283,7 @@ https://blog.csdn.net/kking_edc/article/details/108382333
         所以最好的办法是将这个映射关系存储在对象头中，因为对象头本身也有一些hashcode、GC相关的数据，所以如果能将锁信息与这些信息共存在对象头中就好了。
         也就是说，如果用一个全局 map 来存对象的锁信息，还需要对该 map 做线程安全处理，不同的锁之间会有影响。所以直接存到对象头。
 
-#### 1.1.2.2. class pointer
+#### 1.2.2.2. class pointer
 &emsp; 这一部分用于存储对象的类型指针，该指针指向它的类元数据，JVM通过这个指针确定对象是哪个类的实例。该指针的位长度为JVM的一个字大小，即32位的JVM为32位，64位的JVM为64位。  
 &emsp; 如果应用的对象过多，使用64位的指针将浪费大量内存，统计而言，64位的JVM将会比32位的JVM多耗费50%的内存。为了节约内存可以使用选项+UseCompressedOops开启指针压缩，其中，oop即ordinary object pointer普通对象指针。开启该选项后，下列指针将压缩至32位：  
 
@@ -147,10 +293,10 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 
 &emsp; 当然，也不是所有的指针都会压缩，一些特殊类型的指针JVM不会优化，比如指向PermGen的Class对象指针(JDK8中指向元空间的Class对象指针)、本地变量、堆栈元素、入参、返回值和NULL指针等。  
 
-#### 1.1.2.3. array length  
+#### 1.2.2.3. array length  
 &emsp; 如果对象是一个数组，那么对象头还需要有额外的空间用于存储数组的长度，这部分数据的长度也随着JVM架构的不同而不同：32位的JVM上，长度为32位；64位JVM则为64位。64位JVM如果开启+UseCompressedOops选项，该区域长度也将由64位压缩至32位。  
 
-### 1.1.3. monitor对象  
+## 1.3. C++的Monitor  
 <!-- 
 Mutex Lock
 https://www.cnblogs.com/bjlhx/p/10555194.html
@@ -159,7 +305,7 @@ https://www.cnblogs.com/bjlhx/p/10555194.html
 &emsp; monitor对象介绍：  
 &emsp; 每个对象有一个监视器锁(monitor)，monitor本质是基于操作系统互斥(mutex)实现的，操作系统实现线程之间切换需要从用户态到内核态切换，成本非常高。一个monitor只能被一个线程拥有。
 -->
-&emsp; 每个对象实例都会有个Monitor对象，Monitor对象和Java对象一同创建并消毁，在Java虚拟机(HotSpot)中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。ObjectMonitor的成员变量如下( Hospot 1.8) ：  
+&emsp; 每个对象实例都会有个Monitor对象，Monitor对象和Java对象一同创建并消毁， **<font color = "clime">在Java虚拟机(HotSpot)中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。</font>ObjectMonitor的成员变量如下( Hospot 1.8) ：  
 
 ```C
 ObjectMonitor() {
@@ -320,138 +466,10 @@ void ATTR ObjectMonitor::exit(bool not_suspended, TRAPS) {
 }
 ```
 
-## 1.2. Synchronized底层实现  
-
-```java
-public class SyncDemo {
-
-    public Synchronized void play() {}
-
-    public void learn() {
-        Synchronized(this) {
-        }
-    }
-}
-```
-
-<!-- 编译完成，我们去对应目录执行 javap -c xxx.class 命令查看反编译的文件： 
-https://juejin.cn/post/6888112467747176456 
-先将SynchronizedDemo.java使用javac SynchronizedDemo.java命令将其编译成SynchronizedDemo.class。然后使用javap -c SynchronizedDemo.class反编译字节码。  
-通过javap -v -c SynchronizedMethodDemo.class命令反编译SynchronizedMethodDemo类。-v参数即-verbose，表示输出反编译的附加信息。下面以反编译普通方法为例。  
--->
-&emsp; 利用javap工具查看生成的class文件信息分析Synchronized，下面是部分信息:  
-
-    查看字节码工具：  
-    Show Uytecode With jclasslib
-    Show Bytccodc
-
-```java
-public com.zzw.juc.sync.SyncDemo();
-    descriptor: ()V
-    flags: ACC_PUBLIC
-    Code:
-      stack=1, locals=1, args_size=1
-         0: aload_0
-         1: invokespecial #1        // Method java/lang/Object."<init>":()V
-         4: return
-      LineNumberTable:
-        line 8: 0
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-            0       5     0  this   Lcom/zzw/juc/sync/SyncDemo;
-
-  public Synchronized void play();
-    descriptor: ()V
-    flags: ACC_PUBLIC, ACC_Synchronized
-    Code:
-      stack=0, locals=1, args_size=1
-         0: return
-      LineNumberTable:
-        line 10: 0
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-            0       1     0  this   Lcom/zzw/juc/sync/SyncDemo;
-
-  public void learn();
-    descriptor: ()V
-    flags: ACC_PUBLIC
-    Code:
-      stack=2, locals=3, args_size=1
-         0: aload_0
-         1: dup
-         2: astore_1
-         3: monitorenter
-         4: aload_1
-         5: monitorexit
-         6: goto          14
-         9: astore_2
-        10: aload_1
-        11: monitorexit
-        12: aload_2
-        13: athrow
-        14: return
-      Exception table:
-         from    to  target type
-             4     6     9   any
-             9    12     9   any
-```
-&emsp; JVM基于进入和退出Monitor对象来实现方法同步和代码块同步，但两者实现细节不同。  
-
-* **<font color = "red">方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。</font>**  
-* **<font color = "red">代码块同步：使用monitorenter和monitorexit指令实现。</font>**  
-
-### 1.2.1. 同步代码块  
-&emsp; monitorenter指令插入到同步代码块的开始位置，monitorexit指令插入到同步代码块的结束位置，<font color = "red">JVM需要保证每一个monitorenter都有一个monitorexit与之相对应。</font>  
-
-&emsp; 两条指令的作用：  
-* monitorenter：  
-&emsp; 每一个对象都会和一个监视器monitor关联。监视器被占用时会被锁住，其他线程无法来获取该monitor。  
-&emsp; <font color = "red">线程执行monitorenter指令时尝试获取monitor的所有权，当monitor被占用时就会处于锁定状态。</font>过程如下：
-    1. <font color = "red">如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。</font>  
-    2. 如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1，所以Synchronized关键字实现的锁是可重入的锁。  
-    3. 如果其他线程已经占用了monitor，则该线程进入阻塞状态，直到monitor的进入数为0，再重新尝试获取monitor的所有权。  
-* monitorexit：  
-&emsp; 执行monitorexit的线程必须是objectref所对应的monitor的所有者。  
-&emsp; 指令执行时，monitor的进入数减1，如果减1后进入数为0，当前线程释放monitor，不再是这个monitor的所有者。其他被这个monitor阻塞的线程可以尝试去获取这个monitor的所有权。  
-
-&emsp; **<font color = "red">同步代码块中会出现两次的monitorexit。</font>** 这是因为一个线程对一个对象上锁了，后续就一定要解锁，第二个monitorexit是为了保证在线程异常时，也能正常解锁，避免造成死锁。  
-
-&emsp; 总结：Synchronized的实现原理，Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。  
-
+## 1.4. linux互斥锁nutex(内核态)
 <!-- 
-monitorenter ：
-每个对象有一个监视器锁(monitor)。当monitor被占用时就会处于锁定状态，线程执行monitorenter指令时尝试获取monitor的所有权，过程如下：
-
-1、如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。
-
-2、如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1.
-
-3.如果其他线程已经占用了monitor，则该线程进入阻塞状态，直到monitor的进入数为0，再重新尝试获取monitor的所有权。
-
-monitorexit：
-
-　　执行monitorexit的线程必须是objectref所对应的monitor的所有者。
-
-　　指令执行时，monitor的进入数减1，如果减1后进入数为0，那线程退出monitor，不再是这个monitor的所有者。其他被这个monitor阻塞的线程可以尝试去获取这个 monitor 的所有权。
-
-　　Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。
-
-「monitorenter」：
-Java对象天生就是一个Monitor，当monitor被占用，它就处于锁定的状态。
-每个对象都与一个监视器关联。且只有在有线程持有的情况下，监视器才被锁定。
-执行monitorenter的线程尝试获得monitor的所有权：
-
-如果与objectref关联的监视器的条目计数为0，则线程进入监视器，并将其条目计数设置为1。然后，该线程是monitor的所有者。如果线程已经拥有与objectref关联的监视器，则它将重新进入监视器，从而增加其条目计数。这个就是锁重入。如果另一个线程已经拥有与objectref关联的监视器，则该线程将阻塞，直到该监视器的条目计数为零为止，然后再次尝试获取所有权。
-「monitorexit」：
-一个或多个MonitorExit指令可与Monitorenter指令一起使用，它们共同实现同步语句。
-尽管可以将monitorenter和monitorexit指令用于提供等效的锁定语义，但它们并未用于同步方法的实现中。
-JVM在完成monitorexit时的处理方式分为正常退出和出现异常时退出：
-
-常规同步方法完成时监视器退出由Java虚拟机的返回指令处理。也就是说程序正常执行完毕的时候，JVM有一个指令会隐式的完成monitor的退出---monitorexit，这个指令是athrow。如果同步语句出现了异常时，JVM的异常处理机制也能monitorexit。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-57.png)  
-简单的加锁解锁过程
-因此，执行同步代码块后首先要执行monitorenter指令，退出的时候monitorexit指令。  
+https://blog.csdn.net/silent123go/article/details/52760492
 -->
-
-### 1.2.2. 同步方法  
-&emsp; 当JVM执行引擎执行某一个方法时，其会从方法区中获取该方法的access_flags，检查其是否有ACC_SYNCRHONIZED标识符，若是有该标识符，则说明当前方法是同步方法，需要先获取当前对象的monitor，再来执行方法，方法执行完后再释放monitor。在方法执行期间，其他任何线程都无法再获得同一个monitor对象。 其实本质上没有区别，只是方法的同步是一种隐式的方式来实现，无需通过字节码来完成。  
+&emsp; <font color = "clime">重量级锁是依赖对象内部的monitor锁来实现的，而monitor又依赖操作系统的MutexLock(互斥锁)来实现的，所以重量级锁也称为互斥锁。</font>  
+&emsp; **<font color = "clime">为什么说重量级线程开销很大？</font>**  
+&emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，被阻塞的线程不会消耗cpu。 **<font color = "clime">但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态(向内核申请)，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。</font>**  

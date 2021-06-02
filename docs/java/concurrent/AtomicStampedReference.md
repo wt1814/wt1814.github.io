@@ -2,15 +2,20 @@
 <!-- TOC -->
 
 - [1. AtomicStampedReference与AtomicMarkableReference](#1-atomicstampedreference与atomicmarkablereference)
-    - [1.1. AtomicStampedReference类详解](#11-atomicstampedreference类详解)
-        - [1.1.1. 源码分析](#111-源码分析)
-        - [1.1.2. 示例](#112-示例)
-    - [1.2. AtomicMarkableReference](#12-atomicmarkablereference)
+    - [1.1. AtomicStampedReference示例](#11-atomicstampedreference示例)
+    - [1.2. AtomicStampedReference类详解](#12-atomicstampedreference类详解)
+        - [1.2.1. 源码分析](#121-源码分析)
+        - [1.2.2. 示例](#122-示例)
+    - [1.3. AtomicMarkableReference](#13-atomicmarkablereference)
 
 <!-- /TOC -->
 
 # 1. AtomicStampedReference与AtomicMarkableReference
-## 1.1. AtomicStampedReference类详解 
+
+## 1.1. AtomicStampedReference示例  
+&emsp; AtomicStampedReference每次修改都会让stamp值加1，类似于版本控制号。  
+
+## 1.2. AtomicStampedReference类详解 
 <!-- 
 
 CAS底层原理与ABA问题
@@ -19,7 +24,8 @@ https://mp.weixin.qq.com/s/FaM3jCJeLQYIcfZZlpZXeA
 --> 
 &emsp; <font color = "red">Java1.5中提供了AtomicStampedReference这个类，通过包装[E,int]的元组来对对象标记版本戳stamp，从而避免ABA问题。</font>这个类的compareAndSet方法作用是首先检查当前引用是否等于预期引用，并且当前标志是否等于预期标志，如果全部相等，则以原子方式将该引用和该标志的值设置为给定的更新值。 
 
-### 1.1.1. 源码分析  
+
+### 1.2.1. 源码分析  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-28.png)  
 &emsp; **内部类**  
 
@@ -36,7 +42,7 @@ private static class Pair<T> {
     }
 }
 ```
-&emsp; 将元素值和版本号绑定在一起，存储在Pair的reference和stamp(邮票、戳的意思)中。  
+&emsp; **<font color = "blue">将元素值和版本号绑定在一起，存储在Pair的reference和stamp(邮票、戳的意思)中。</font>**  
 
 &emsp; **属性：**  
 
@@ -87,7 +93,7 @@ private boolean casPair(Pair<V> cmp, Pair<V> val) {
 * 如果元素值和版本号都没有变化，并且和新的也相同，返回true；  
 * 如果元素值和版本号都没有变化，并且和新的不完全相同，就构造一个新的Pair对象并执行CAS更新pair。 
 
-### 1.1.2. 示例  
+### 1.2.2. 示例  
 &emsp; 示例代码：分别用AtomicInteger和AtomicStampedReference来对初始值为100的原子整型变量进行更新，AtomicInteger会成功执行CAS操作，而加上版本戳的AtomicStampedReference对于ABA问题会执行CAS失败：  
 
 ```java
@@ -157,6 +163,6 @@ public class ABA {
 ```
 
 
-## 1.2. AtomicMarkableReference
-&emsp; AtomicStampedReference可以知道，引用变量中途被更改了几次。有时候，并不关心引用变量更改了几次，只是单纯的关心是否更改过，所以就有了AtomicMarkableReference。  
+## 1.3. AtomicMarkableReference
+&emsp; **<font color = "clime">AtomicStampedReference可以知道，引用变量中途被更改了几次。有时候，并不关心引用变量更改了几次，只是单纯的关心是否更改过，所以就有了AtomicMarkableReference。</font>**  
 &emsp; AtomicMarkableReference的唯一区别就是不再用int标识引用，而是使用boolean变量——表示引用变量是否被更改过。  

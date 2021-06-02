@@ -15,8 +15,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-56.png)  
-
 &emsp; **<font color = "red">总结：</font>**  
 1. 为了使索引的使用效率更高，在创建索引时，必须考虑在哪些字段上创建索引和创建什么类型的索引。  
 2. 索引失效。  

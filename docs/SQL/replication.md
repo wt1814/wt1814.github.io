@@ -21,7 +21,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-64.png)  
 &emsp; **<font color = "red">总结：</font>**  
 1. 对于每一个主从复制的连接，都有三个线程。拥有多个从库的主库为每一个连接到主库的从库创建一个binlog输出线程，每一个从库都有它自己的I/O线程和SQL线程。  
 2. 同步方式可以划分为：异步、半同步和同步。在MySQL5.7中，带来了全新的多线程复制技术。   

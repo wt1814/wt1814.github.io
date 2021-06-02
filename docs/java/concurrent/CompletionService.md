@@ -1,20 +1,20 @@
 
 <!-- TOC -->
 
-- [1. CompletionService](#1-completionservice)
+- [1. ~~CompletionService~~](#1-completionservice)
     - [1.1. 使用场景](#11-使用场景)
     - [1.2. 使用示例](#12-使用示例)
 
 <!-- /TOC -->
 
 
-# 1. CompletionService  
+# 1. ~~CompletionService~~  
 <!-- 
 https://mp.weixin.qq.com/s/Eo-WR1agGETF0hE3Eaivrg
 https://segmentfault.com/a/1190000023603639
 https://www.bbsmax.com/A/amd0v7w1Jg/
 -->
-
+&emsp; **<font color = "red">JDK 8的CompletionService相对于之前版本的Future而言，其优势是能够尽可能快的得到执行完成的任务。</font>**  
 &emsp; CompletionService可以看作FutureTask的一个进阶版，通过FutureTask+阻塞队列的方式能够按照线程执行完毕的顺序获取线程执行结果，起到聚合的目的，这个其实跟CountDownLatch差不多，如果需要执行的线程次数是固定的且需要等待执行结果全部返回后统一处理，可以使用CompletionService。  
 
 

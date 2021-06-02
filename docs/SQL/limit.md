@@ -10,11 +10,12 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 普通Limit语句需要全表扫描，可以基于索引再分页。  
-
-```sql
-SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) LIMIT M  
-```
+1. 普通Limit语句需要全表扫描。
+&emsp; 建立主键或唯一索引，利用索引：`SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) LIMIT M`  
+&emsp; 基于索引再排序：`SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) ORDER BY id_pk ASC LIMIT M`
+2. ORDER BY与limit  
+&emsp; ORDER BY排序后，用LIMIT取前几条，发现返回的结果集的顺序与预期的不一样。    
+&emsp; 如果order by的列有相同的值时，MySQL 会随机选取这些行，为了保证每次都返回的顺序一致可以额外增加一个排序字段（比如：id），用两个字段来尽可能减少重复的概率。  
 
 # 1. limit
 
@@ -41,7 +42,7 @@ https://mp.weixin.qq.com/s/KcaLyboO0MltR6out67_DA
 2. <font color = "clime">建立主键或唯一索引，利用索引</font>  
 &emsp; 语句样式：MySQL中，可用如下方法：`SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) LIMIT M`。  
 &emsp; 适应场景：适用于数据量多的情况(元组数上万)。  
-&emsp; 原因：索引扫描，速度会很快. 有朋友提出: 因为数据查询出来并不是按照pk_id排序的，所以会有漏掉数据的情况，只能方法3。  
+&emsp; 原因：索引扫描，速度会很快。 有朋友提出: 因为数据查询出来并不是按照pk_id排序的，所以会有漏掉数据的情况，只能方法3。  
 
 3. <font color = "red">基于索引再排序</font>  
 &emsp; 语句样式：MySQL中，可用如下方法：`SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) ORDER BY id_pk ASC LIMIT M`。  

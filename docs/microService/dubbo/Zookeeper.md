@@ -5,18 +5,21 @@
     - [1.1. Zookeeper是什么](#11-zookeeper是什么)
     - [1.2. ZooKeeper分层命名空间(逻辑存储结构)](#12-zookeeper分层命名空间逻辑存储结构)
     - [1.3. ★★★Zookeeper的运行原理](#13-★★★zookeeper的运行原理)
-        - [1.3.1. C/S之间的Watcher机制](#131-cs之间的watcher机制)
-        - [1.3.2. ★★★服务端通过ZAB协议，保证主从节点数据一致性](#132-★★★服务端通过zab协议保证主从节点数据一致性)
-            - [1.3.2.1. ZAB协议概述](#1321-zab协议概述)
-            - [1.3.2.2. ~~ZAB协议中的ZXid~~](#1322-zab协议中的zxid)
-            - [1.3.2.3. ZAB协议](#1323-zab协议)
-                - [1.3.2.3.1. 选举流程，恢复模式](#13231-选举流程恢复模式)
-                    - [1.3.2.3.1.1. 选举流程中几个重要参数](#132311-选举流程中几个重要参数)
-                    - [1.3.2.3.1.2. 服务器启动时的leader选举](#132312-服务器启动时的leader选举)
-                    - [1.3.2.3.1.3. 运行过程中的leader选举](#132313-运行过程中的leader选举)
-                - [1.3.2.3.2. 数据同步，广播模式](#13232-数据同步广播模式)
-            - [1.3.2.4. Zookeeper的CP模型(保证读取数据顺序一致性)](#1324-zookeeper的cp模型保证读取数据顺序一致性)
-            - [1.3.2.5. ~~脑裂~~](#1325-脑裂)
+        - [1.3.1. 读写数据流程](#131-读写数据流程)
+            - [1.3.1.1. 读数据流程](#1311-读数据流程)
+            - [1.3.1.2. 写数据流程](#1312-写数据流程)
+        - [1.3.2. C/S之间的Watcher机制](#132-cs之间的watcher机制)
+        - [1.3.3. ★★★服务端通过ZAB协议，保证主从节点数据一致性](#133-★★★服务端通过zab协议保证主从节点数据一致性)
+            - [1.3.3.1. ZAB协议概述](#1331-zab协议概述)
+            - [1.3.3.2. ~~ZAB协议中的ZXid~~](#1332-zab协议中的zxid)
+            - [1.3.3.3. ZAB协议](#1333-zab协议)
+                - [1.3.3.3.1. 选举流程，恢复模式](#13331-选举流程恢复模式)
+                    - [1.3.3.3.1.1. 选举流程中几个重要参数](#133311-选举流程中几个重要参数)
+                    - [1.3.3.3.1.2. 服务器启动时的leader选举](#133312-服务器启动时的leader选举)
+                    - [1.3.3.3.1.3. 运行过程中的leader选举](#133313-运行过程中的leader选举)
+                - [1.3.3.3.2. 数据同步，广播模式](#13332-数据同步广播模式)
+            - [1.3.3.4. Zookeeper的CP模型(保证读取数据顺序一致性)](#1334-zookeeper的cp模型保证读取数据顺序一致性)
+            - [1.3.3.5. ~~脑裂~~](#1335-脑裂)
     - [1.4. Zookeeper应用场景](#14-zookeeper应用场景)
         - [1.4.1. 集群管理，HA高可用性](#141-集群管理ha高可用性)
         - [1.4.2. 元数据/配置信息管理](#142-元数据配置信息管理)
@@ -105,7 +108,33 @@ ZooKeeper = 文件系统 + 监听通知机制。
 ## 1.3. ★★★Zookeeper的运行原理  
 ~~架构图~~
 
-### 1.3.1. C/S之间的Watcher机制  
+### 1.3.1. 读写数据流程  
+#### 1.3.1.1. 读数据流程  
+&emsp; 当Client向zookeeper发出读请求时，无论是Leader还是Follower，都直接返回查询结果。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-2.png)  
+&emsp; 如果是对zk进行读取操作，读取到的数据可能是过期的旧数据，不是最新的数据。  
+
+#### 1.3.1.2. 写数据流程
+&emsp; zookeeper写入操作分为两种情况，① 写入请求直接发送到leader节点，② 写入请求发送到Follower节点，这两种情况有略微的区别。  
+
+&emsp; 写入请求直接发送到Leader节点时的操作步骤如下：  
+1. Client向Leader发出写请求。
+2. Leader将数据写入到本节点，并将数据发送到所有的Follower节点；
+3. 等待Follower节点返回；
+4. 当Leader接收到一半以上节点(包含自己)返回写成功的信息之后，返回写入成功消息给client;
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-3.png)  
+
+&emsp; 写入请求发送到Follower节点的操作步骤如下：  
+1. Client向Follower发出写请求
+2. Follower节点将请求转发给Leader
+3. Leader将数据写入到本节点，并将数据发送到所有的Follower节点
+4. 等待Follower节点返回
+5. 当Leader接收到一半以上节点(包含自己)返回写成功的信息之后，返回写入成功消息给原来的Follower
+6. 原来的Follower返回写入成功消息给Client
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-4.png)  
+
+
+### 1.3.2. C/S之间的Watcher机制  
 &emsp; 在ZooKeeper中，引入Watcher机制来实现分布式数据的发布/订阅功能。Zookeeper客户端向服务端的某个Znode注册一个Watcher监听，当服务端的一些指定事件触发了这个Watcher，服务端会向指定客户端发送一个事件通知来实现分布式的通知功能，然后客户端根据Watcher通知状态和事件类型做出业务上的改变。  
 &emsp; 触发watch事件种类很多，如：节点创建，节点删除，节点改变，子节点改变等。  
 
@@ -119,12 +148,12 @@ ZooKeeper = 文件系统 + 监听通知机制。
 * 有序性：  
 &emsp; 客户端先得到watch通知才可查看节点变化结果。  
 
-### 1.3.2. ★★★服务端通过ZAB协议，保证主从节点数据一致性
+### 1.3.3. ★★★服务端通过ZAB协议，保证主从节点数据一致性
 <!-- 
 https://www.cnblogs.com/zz-ksw/p/12786067.html
 -->
 
-#### 1.3.2.1. ZAB协议概述  
+#### 1.3.3.1. ZAB协议概述  
 &emsp; Zab 协议的具体实现可以分为以下两部分：  
 
 * 消息广播阶段：Leader节点接受事务提交，并且将新的Proposal请求广播给Follower节点，收集各个节点的反馈，决定是否进行Commit。  
@@ -132,7 +161,7 @@ https://www.cnblogs.com/zz-ksw/p/12786067.html
 
 &emsp; 整个ZooKeeper集群的一致性保证就是在上面两个状态之前切换，当 Leader 服务正常时，就是正常的消息广播模式；当 Leader 不可用时，则进入崩溃恢复模式，崩溃恢复阶段会进行数据同步，完成以后，重新进入消息广播阶段。  
 
-#### 1.3.2.2. ~~ZAB协议中的ZXid~~  
+#### 1.3.3.2. ~~ZAB协议中的ZXid~~  
 &emsp; 如何保证事务的顺序一致性的？  
 &emsp; zookeeper采用了递增的事务Id来标识，所有的proposal（提议）都在被提出的时候加上了zxid。zxid实际上是一个64位的数字，高32位是epoch（时期; 纪元; 世; 新时代）用来标识leader是否发生改变，如果有新的leader产生出来，epoch会自增；低32位用来递增计数。当新产生proposal的时候，会依据数据库的两阶段过程，首先会向其他的server发出事务执行请求，如果超过半数的机器都能执行并且能够成功，那么就会开始执行。  
 
@@ -144,7 +173,7 @@ https://www.cnblogs.com/zz-ksw/p/12786067.html
 &emsp; 每当有一个新的 Leader 选举出现时，就会从这个 Leader 服务器上取出其本地日志中最大事务的 Zxid，并从中读取 epoch 值，然后加 1，以此作为新的周期 ID。总结一下，高 32 位代表了每代 Leader 的唯一性，低 32 位则代表了每代 Leader 中事务的唯一性。  
 
 
-#### 1.3.2.3. ZAB协议
+#### 1.3.3.3. ZAB协议
 &emsp; ZAB(Zookeeper Atomic Broadcast)，崩溃可恢复的的原子消息广播协议。ZAB协议包括两种基本模式：崩溃恢复(选主)和消息广播(同步)。整个Zookeeper集群就是在这两个模式之间切换。  
 
 &emsp; Zookeeper集群角色：  
@@ -162,10 +191,10 @@ https://www.cnblogs.com/zz-ksw/p/12786067.html
     * OBSERVING：observer角色；  
 -->
 
-##### 1.3.2.3.1. 选举流程，恢复模式  
+##### 1.3.3.3.1. 选举流程，恢复模式  
 &emsp; 当整个集群在启动时，或者当leader节点出现网络中断、崩溃等情况时，ZAB协议就会进入恢复模式并选举产生新的Leader，当leader服务器选举出来后，并且集群中有过半的机器和该leader节点完成数据同步后(同步指的是数据同步，用来保证集群中过半的机器能够和leader服务器的数据状态保持一致)，ZAB协议就会退出恢复模式。  
 
-###### 1.3.2.3.1.1. 选举流程中几个重要参数 
+###### 1.3.3.3.1.1. 选举流程中几个重要参数 
 &emsp; 服务器ID：即配置的myId。id越大，选举时权重越高。  
 &emsp; <font color = "red">事务ID，zkid(Zookeeper Transaction Id)：服务器在运行时产生的数据id，即zkid，这里指本地最新snapshot的id。id越大说明数据越新，选举时权重越高。</font>  
 &emsp; 选举轮数：Epoch，即逻辑时钟。随着选举的轮数++。  
@@ -175,7 +204,7 @@ ZooKeeper状态的每次变化都接收一个ZXID(ZooKeeper事务id)形式的标
 ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一的zxid，如果zxid1小于zxid2说明zxid1在zxid2之前发生。
 -->
 
-###### 1.3.2.3.1.2. 服务器启动时的leader选举 
+###### 1.3.3.3.1.2. 服务器启动时的leader选举 
 &emsp; 每个节点启动的时候状态都是LOOKING，处于观望状态，接下来就开始进行选主流程。  
 &emsp; 若进行Leader选举，则至少需要两台机器，这里选取 3 台机器组成的服务器集群为例。在集群初始化阶段，当有一台服务器 Server1 启动时，其单独无法进行和完成Leader选举，当第二台服务器 Server2 启动时，此时两台机器可以相互通信，每台机器都试图找到Leader，于是进入Leader选举过程。选举过程如下：  
 1. 每个 Server 发出一个投票。由于是初始情况， Server1 和 Server2 都会将自己作为 Leader 服务器来进行投票，每次投票会包含所推举的服务器的 myid 和 ZXID、 epoch，使用(myid, ZXID,epoch)来表示，此时 Server1 的投票为(1, 0)， Server2 的投票为(2, 0)，然后各自将这个投票发给集群中其他机器。  
@@ -190,7 +219,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 
 &emsp; **<font color = "red">一句话概述：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>**
 
-###### 1.3.2.3.1.3. 运行过程中的leader选举  
+###### 1.3.3.3.1.3. 运行过程中的leader选举  
 &emsp; 当集群中的 leader 服务器出现宕机或者不可用的情况时，那么整个集群将无法对外提供服务，而是进入新一轮的 Leader 选举，服务器运行期间的 Leader 选举和启动时期的 Leader 选举基本过程是一致的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-3.png)  
 1. 变更状态。 Leader挂后，余下的非Observer服务器都会将自己的服务器状态变更为LOOKING，然后开始进入Leader选举过程。  
@@ -199,7 +228,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 4. 统计投票。与启动时过程相同。  
 5. 改变服务器的状态。与启动时过程相同。  
 
-##### 1.3.2.3.2. 数据同步，广播模式  
+##### 1.3.3.3.2. 数据同步，广播模式  
 &emsp; 当集群中已经有过半的 Follower 节点完成了和 Leader 状态同步以后，那么整个集群就进入了消息广播模式。这个时候，在 Leader 节点正常工作时，启动一台新的服务器加入到集群，那这个服务器会直接进入数据恢复模式，和leader 节点进行数据同步。同步完成后即可正常对外提供非事务请求的处理。  
 &emsp; 注：leader节点可以处理事务请求和非事务请求， follower 节点只能处理非事务请求，如果 follower 节点接收到非事务请求，会把这个请求转发给 Leader 服务器。  
 
@@ -216,7 +245,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 &emsp; 注：和完整的2pc事务不一样的地方在于，zab协议不能终止事务，follower节点要么ACK给leader，要么抛弃leader，只需要保证过半数的节点响应这个消息并提交了即可，虽然在某一个时刻follower节点和leader节点的状态会不一致，但是也是这个特性提升了集群的整体性能。当然这种数据不一致的问题，zab协议提供了一种恢复模式来进行数据恢复。  
 &emsp; 这里需要注意的是leader的投票过程，不需要Observer的ack，也就是Observer不需要参与投票过程，但是Observer必须要同步Leader的数据从而在处理请求的时候保证数据的一致性。  
 
-#### 1.3.2.4. Zookeeper的CP模型(保证读取数据顺序一致性)  
+#### 1.3.3.4. Zookeeper的CP模型(保证读取数据顺序一致性)  
 <!-- 
 Zookeeper写入是强一致性,读取是顺序一致性。
 https://blog.csdn.net/weixin_47727457/article/details/106439452
@@ -244,7 +273,7 @@ https://blog.csdn.net/weixin_47727457/article/details/106439452
     1. <font color = "clime">假设有2n+1个server，在同步流程中，leader向follower同步数据，当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。</font><font color = "red">如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。</font>  
     2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数(n+1)的server认同后，将对整个集群进行同步，超过半数(n+1)的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
 
-#### 1.3.2.5. ~~脑裂~~  
+#### 1.3.3.5. ~~脑裂~~  
 &emsp; 过半机制，要求集群内的节点数量为2N+1。  
 
 ----

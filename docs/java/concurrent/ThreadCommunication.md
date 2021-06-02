@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [1. 通信](#1-通信)
+- [1. ~~通信~~](#1-通信)
     - [1.1. 线程通信](#11-线程通信)
         - [1.1.1. wait() / notify()](#111-wait--notify)
         - [1.1.2. 实现生产者和消费者问题](#112-实现生产者和消费者问题)
@@ -8,12 +8,24 @@
             - [1.1.2.2. 生产者](#1122-生产者)
             - [1.1.2.3. 消费者](#1123-消费者)
             - [1.1.2.4. 测试](#1124-测试)
+        - [1.1.3. 多线程顺序打印ABC-join方法](#113-多线程顺序打印abc-join方法)
     - [1.2. 进程通信](#12-进程通信)
 
 <!-- /TOC -->
 
-# 1. 通信
+# 1. ~~通信~~
 ## 1.1. 线程通信  
+<!-- 
+https://blog.csdn.net/yanpenglei/article/details/79556591
+
+&emsp; 生产者消费者问题，Java能实现的几种方法：  
+
+* wait() / notify()方法
+* await() / signal()方法
+* BlockingQueue阻塞队列方法
+* 信号量
+* 管道
+-->
 &emsp; 分布式系统中说的两种通信机制：共享内存机制和消息通信机制。  
 
 &emsp; 单机中实现线程通信的方式：  
@@ -302,6 +314,68 @@ public class Test{
 【要消费的产品数量】:50    【库存量】:10    暂时不能执行生产任务!
 【已经生产产品数】:80    【现仓储量为】:90
 【已经消费产品数】:50    【现仓储量为】:40
+```
+
+
+### 1.1.3. 多线程顺序打印ABC-join方法
+
+&emsp; 当B线程执行到了A线程的join()方法时，B就会等待，等A线程都运行完，B线程才会执行。  
+
+```java
+public class JoinTest {
+    public static void main(String[] args) {
+        ThreadA threadA = new ThreadA();
+        ThreadB threadB = new ThreadB(threadA);
+        ThreadC threadC = new ThreadC(threadB);
+        threadA.start();
+        threadB.start();
+        threadC.start();
+    }
+}
+
+class ThreadA extends Thread{
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        System.out.println("A");
+    }
+
+}
+class ThreadB extends Thread{
+    private ThreadA threadA;
+    public ThreadB(ThreadA threadA){
+        this.threadA =threadA;
+    }
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        try {
+            threadA.join();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println("B");
+    }
+
+}
+class ThreadC extends Thread{
+    private ThreadB threadB;
+    public ThreadC(ThreadB threadB){
+        this.threadB =threadB;
+    }
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        try {
+            threadB.join();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println("C");
+    }
+}
 ```
 
 ## 1.2. 进程通信  

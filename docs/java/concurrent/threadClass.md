@@ -20,12 +20,12 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 线程状态：新建、就绪、阻塞（等待阻塞(o.wait-)、同步阻塞(lock)、其他阻塞(sleep/join)）、等待、计时等待、终止。  
+1. 线程状态：新建、就绪、阻塞（等待阻塞(o.wait)、同步阻塞(lock)、其他阻塞(sleep/join)）、等待、计时等待、终止。  
 2. 中断  
 &emsp; **<font color = "red">线程在不同状态下对于中断所产生的反应：</font>**    
-&emsp; NEW和TERMINATED对于中断操作几乎是屏蔽的；  
-&emsp; RUNNABLE和BLOCKED类似， **<font color = "cclime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中；</font>**  
-&emsp; WAITING/TIMED_WAITING状态下的线程对于中断操作是敏感的，它们会抛出异常并清空中断标志位。
+    * NEW和TERMINATED对于中断操作几乎是屏蔽的；  
+    * RUNNABLE和BLOCKED类似， **<font color = "cclime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中；</font>**  
+    * WAITING/TIMED_WAITING状态下的线程对于中断操作是敏感的，它们会抛出异常并清空中断标志位。
 
 
 # 1. Thread类详解  

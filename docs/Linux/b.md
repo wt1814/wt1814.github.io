@@ -1,5 +1,3 @@
-
-
 <!-- TOC -->
 
 - [1. Linux问题排查](#1-linux问题排查)
@@ -15,6 +13,7 @@
 <!-- /TOC -->
 
 # 1. Linux问题排查
+
 <!--
 Java后端线上问题排查常用命令收藏 
 https://mp.weixin.qq.com/s/48Z_niFVb2AVk2zDWkK-WA
@@ -109,4 +108,5 @@ https://www.linuxidc.com/Linux/2020-05/163174.htm
 
 ## 1.2. Linux下性能分析工具总结  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Linux/linux-1.png) 
+
 
