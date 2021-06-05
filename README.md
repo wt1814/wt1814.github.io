@@ -127,8 +127,9 @@
 &emsp; [JVM调优-基础](/docs/java/JVM/TuningBasic.md)  
 &emsp; [JVM调优](/docs/java/JVM/tuningProblem.md)  
 &emsp; [JVM问题排查](/docs/java/JVM/TroubleShooting.md)  
-&emsp; [JAVA线上故障排查](/docs/Linux/problem.md)  
 &emsp; [Arthas工具](/docs/java/JVM/Arthas.md)  
+&emsp; [JAVA线上故障排查](/docs/Linux/problem.md)  
+
 
 <!-- 
 &emsp; [JVM排查案例](/docs/java/JVM/case.md)  
@@ -141,6 +142,7 @@
 &emsp; [Thread类详解](/docs/java/concurrent/threadClass.md)  
 &emsp; [线程基本操作](/docs/java/concurrent/threadOperation.md)  
 &emsp; [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
+&emsp; [CompletionService](/docs/java/concurrent/CompletionService.md)  
 [并发编程](/docs/java/concurrent/MultiThread.md)  
 &emsp; [并发编程原理](/docs/java/concurrent/ConcurrentPrinciple.md)  
 &emsp; &emsp; [CPU缓存及JMM](/docs/java/concurrent/JMM.md)  
@@ -154,16 +156,16 @@
 &emsp; &emsp; [Volatile](/docs/java/concurrent/Volatile.md)  
 &emsp; &emsp; [ThreadLocal原理](/docs/java/concurrent/ThreadLocal.md)  
 &emsp; &emsp; [ThreadLocal应用](/docs/java/concurrent/ThreadLocalUse.md)  
-&emsp; [线程通信](/docs/java/concurrent/ThreadCommunication.md)  
+&emsp; [线程通信(生产者消费者问题)](/docs/java/concurrent/ThreadCommunication.md)  
 &emsp; [线程活跃性](/docs/java/concurrent/Activity.md)  
 [线程池](/docs/java/concurrent/ThreadPool.md)  
 &emsp; [ThreadPoolExecutor](/docs/java/concurrent/ThreadPoolExecutor.md)  
 &emsp; [ForkJoinPool](/docs/java/concurrent/ForkJoinPool.md)  
 &emsp; [线程池的正确使用](/docs/java/concurrent/ThreadPoolUse.md)  
-&emsp; [CompletionService](/docs/java/concurrent/CompletionService.md)  
 [J.U.C包](/docs/java/concurrent/ConcurrentPackage.md)  
 &emsp; [CAS](/docs/java/concurrent/CAS.md)  
 &emsp; [AQS](/docs/java/concurrent/AQS.md)  
+&emsp; &emsp; [LocLockSupport](/docs/java/concurrent/LockSupport.md)  
 &emsp; [Lock](/docs/java/concurrent/Lock.md)  
 &emsp; &emsp; [ReentrantLock](/docs/java/concurrent/ReentrantLock.md)  
 &emsp; &emsp; [Condition](/docs/java/concurrent/Condition.md)  
@@ -179,7 +181,6 @@
 &emsp; &emsp; [CyclicBarrier](/docs/java/concurrent/CyclicBarrier.md)  
 &emsp; &emsp; [Semaphore](/docs/java/concurrent/Semaphore.md)  
 &emsp; &emsp; [Exchanger](/docs/java/concurrent/Exchanger.md)  
-&emsp; &emsp; [LocLockSupport](/docs/java/concurrent/LockSupport.md)  
 [获取多线程执行结果](/docs/java/concurrent/execResult.md)  
 <!-- 
 [并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
@@ -227,17 +228,17 @@
 &emsp; [InnoDB磁盘结构-可靠性](/docs/SQL/disk.md)  
 &emsp; &emsp; [表空间](/docs/SQL/TableSpace.md)  
 &emsp; &emsp; [MySql事务日志](/docs/SQL/log.md)  
-&emsp; &emsp; &emsp; [redoLog](/docs/SQL/redoLog.md)  
-&emsp; &emsp; &emsp; [Double Write](/docs/SQL/DoubleWrite.md)  
-&emsp; &emsp; &emsp; [binLog使用](/docs/SQL/BinlogUse.md)  
+&emsp; &emsp; &emsp; [undoLog和binLog](/docs/SQL/undoLog.md)  
+&emsp; &emsp; &emsp; [redoLog与DoubleWrite](/docs/SQL/redoLog.md)  
+&emsp; &emsp; &emsp; [binLog使用](/docs/SQL/UseBinlog.md)  
+&emsp; &emsp; [两阶段提交和崩溃恢复](/docs/SQL/CrashRecovery.md)  
 &emsp; [小结：insert插入流程](/docs/SQL/insert.md)  
-&emsp; [崩溃恢复](/docs/SQL/CrashRecovery.md)  
 
 &emsp; [索引底层原理](/docs/SQL/IndexPrinciple.md)  
 &emsp; [各种索引](/docs/SQL/IndexKnowledge.md)  
 &emsp; [MySql事务](/docs/SQL/transaction.md)  
 &emsp; [MySql锁](/docs/SQL/lock.md)  
-&emsp; [MySql锁表和死锁](/docs/SQL/LockProblem.md)  
+&emsp; [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
 &emsp; [MySql-MVCC](/docs/SQL/MVCC.md)  
 
 <!-- 
@@ -303,9 +304,10 @@
 &emsp; &emsp; [SpringBoot事件监听](/docs/microService/SpringBoot/EventListeners.md)  
 &emsp; &emsp; [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/SpringBootEvent.md)  
 &emsp; &emsp; [SpringBoot事件回调机制](/docs/microService/SpringBoot/eventCallback.md)  
-&emsp; [SpringBoot自动配置原理-@SpringBootApplication](/docs/microService/SpringBoot/SpringBootApplication.md)  
-&emsp; [SpringBoot自动配置原理-加载自动配置](/docs/microService/SpringBoot/ApplicationProcess.md)  
-&emsp; [内置Tomcat](/docs/microService/SpringBoot/Tomcat.md)  
+&emsp; [SpringBoot自动配置](/docs/microService/SpringBoot/AutomaticAssembly.md)  
+&emsp; &emsp; [注解@SpringBootApplication](/docs/microService/SpringBoot/SpringBootApplication.md)  
+&emsp; &emsp; [加载自动配置流程](/docs/microService/SpringBoot/ApplicationProcess.md)  
+&emsp; &emsp; [内置Tomcat](/docs/microService/SpringBoot/Tomcat.md)  
 [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
 ### SpringCloud    
@@ -394,7 +396,6 @@
 [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
 &emsp; [Sentinel](/docs/microService/thinking/Sentinel.md)  
 [服务降级](/docs/microService/thinking/Demotion.md)  
-[熔断降级服务异常报警通知](/docs/microService/thinking/Fuse.md)  
 
 ### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  

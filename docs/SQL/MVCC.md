@@ -34,6 +34,8 @@
 
 # 1. MVCC
 <!--
+https://mp.weixin.qq.com/s/B-2AN3ryX8IJWUoxLRPp_w
+
 MySQL面试三连杀：如何实现可重复读、又为什么会出现幻读、是否解决了幻读问题
 https://mp.weixin.qq.com/s/D9hL0W1dcSmzDd2joHgy5A
 

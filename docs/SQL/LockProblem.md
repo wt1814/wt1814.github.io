@@ -19,10 +19,11 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; ~~胡扯，死锁，mysql检测后，回滚一条事务，抛出异常。~~  
-1. **<font color = "clime">1. MySql如何处理死锁？**  
+1. **<font color = "clime">MySql如何处理死锁？**  
     1. 发起死锁检测，主动回滚其中一条事务，让其他事务继续执行。  
-    2. 设置超时时间，超时后自动释放。</font>   
-2. **<font color = "clime">2. 如果出现死锁？除了以上两种方案外，开发人员还需要检查代码。</font>**  
+    2. 设置超时时间，超时后自动释放。
+    &emsp; 在涉及外部锁，或涉及表锁的情况下，InnoDB 并不能完全自动检测到死锁， 这需要通过设置锁等待超时参数 innodb_lock_wait_timeout 来解决。</font>   
+2. **<font color = "clime">如果出现死锁？除了以上两种方案外，开发人员还需要检查代码。</font>**  
 
 
 # 1. MySql锁造成的问题
@@ -132,7 +133,7 @@ process_method(dataId,userDataDtoList){
 
 |时间序列|Tx-Session-1|Tx-Session-2|
 |---|---|---|
-|T1	START TRANSACTION;| |	
+|T1	|START TRANSACTION;| |	
 |T2	| |START TRANSACTION;|
 |T3	|DELETE FROM t_user_data WHERE data_id = ‘xxxxx’;|  |	
 |T4	| |DELETE FROM t_user_data WHERE data_id = ‘yyyyy’;|

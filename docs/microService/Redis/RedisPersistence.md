@@ -28,19 +28,16 @@
 1. RDB，快照；保存某一时刻的全部数据；缺点是间隔长(配置文件中默认最少60s)。 
  
 2. AOF，文件追加；记录所有操作命令；优点是默认间隔1s，丢失数据少；缺点是文件比较大，通过重写机制来压缩文件体积。  
-    &emsp; **<font color = "clime">重写后的AOF文件为什么可以变小？有如下原因：</font>**  
+    1. **<font color = "clime">重写后的AOF文件为什么可以变小？有如下原因：</font>**  
+        1. <font color = "red">进程内已经超时的数据不再写入文件。</font>   
+        2. <font color = "red">旧的AOF文件含有无效命令，</font>如del key1、hdel key2、srem keys、set a111、set a222等。重写使用进程内数据直接生成，这样新的AOF文件只保留最终数据的写入命令。  
+        3. <font color = "red">多条写命令可以合并为一个，</font>如：lpush list a、lpush list b、lpush list c可以转化为：lpush list a b c。为了防止单条命令过大造成客户端缓冲区溢出，对于list、set、hash、zset等类型操作，以64个元素为界拆分为多条。  
 
-    1. <font color = "red">进程内已经超时的数据不再写入文件。</font>   
-    2. <font color = "red">旧的AOF文件含有无效命令，</font>如del key1、hdel key2、srem keys、set a111、set a222等。重写使用进程内数据直接生成，这样新的AOF文件只保留最终数据的写入命令。  
-    3. <font color = "red">多条写命令可以合并为一个，</font>如：lpush list a、lpush list b、lpush list c可以转化为：lpush list a b c。为了防止单条命令过大造成客户端缓冲区溢出，对于list、set、hash、zset等类型操作，以64个元素为界拆分为多条。  
-
-        **<font color = "red">AOF重写降低了文件占用空间，除此之外，另一个目的是：更小的AOF 文件可以更快地被Redis加载。</font>**  
-        在写入AOF日志文件时，如果Redis服务器宕机，则AOF日志文件文件会出格式错误。在重启Redis服务器时，Redis服务器会拒绝载入这个AOF文件，可以通过以下步骤修复AOF 并恢复数据： 
-    * 备份当前的AOF文件，以防万一。
-    * <font color = "red">使用redis-check-aof命令修复AOF文件</font>  
-    * 重启Redis服务器，加载已经修复的AOF文件，恢复数据。  
-
-
+    2. **<font color = "red">AOF重写降低了文件占用空间，除此之外，另一个目的是：更小的AOF 文件可以更快地被Redis加载。</font>**  
+    3. 在写入AOF日志文件时，如果Redis服务器宕机，则AOF日志文件文件会出格式错误。在重启Redis服务器时，Redis服务器会拒绝载入这个AOF文件，可以通过以下步骤修复AOF 并恢复数据： 
+        * 备份当前的AOF文件，以防万一。
+        * <font color = "red">使用redis-check-aof命令修复AOF文件</font>  
+        * 重启Redis服务器，加载已经修复的AOF文件，恢复数据。  
 3. Redis4.0混合持久化，先RDB，后AOF。  
 4. ~~**<font color = "clime">RDB方式bgsave指令中fork子进程、AOF方式重写bgrewriteaof都会造成阻塞。</font>**~~  
 

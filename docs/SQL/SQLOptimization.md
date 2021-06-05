@@ -26,8 +26,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-52.png)  
-
 
 # 1. SQL优化  
 <!--

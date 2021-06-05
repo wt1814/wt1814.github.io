@@ -19,6 +19,16 @@
         1. 创建Invoker。Invoker是由Protocol实现类构建而来。`DubboProtocol #refer(Class<T> serviceType, URL url)`
         2. 创建代理。有了代理对象，即可进行远程调用。`ProxyFactory# getProxy(Invoker<T> invoker)`  
 
+```java
+@SPI("javassist")
+public interface ProxyFactory {
+    @Adaptive({"proxy"})
+    <T> T getProxy(Invoker<T> var1) throws RpcException;
+
+    @Adaptive({"proxy"})
+    <T> Invoker<T> getInvoker(T var1, Class<T> var2, URL var3) throws RpcException;
+}
+```
 
 # 1. 服务引用   
 <!-- 

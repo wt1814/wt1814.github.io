@@ -10,6 +10,8 @@ https://mp.weixin.qq.com/s/z0BmJz6dk9VNHalicgN2rg
 https://mp.weixin.qq.com/s/BVoqaDn7HUNtdB5vZa0zug
  手把手教你 javap 反编译分解代码，授人以鱼不如授人以渔 
 https://mp.weixin.qq.com/s/o0MFrSVS7fYLDo6UnfmA-A
+
+https://mp.weixin.qq.com/s/AnRtCQDIkKgIdhKTk2sWeA
 -->
 &emsp; 根据Java虚拟机规范，类文件由单个 ClassFile 结构组成：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-91.png)  

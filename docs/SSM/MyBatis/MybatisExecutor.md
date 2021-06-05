@@ -23,7 +23,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-30.png)  
 
 &emsp; **<font color = "red">总结：</font>**   
 1. sql执行流程：   
@@ -34,7 +33,7 @@
     5. 对执行结果进行二次封装。
     6. 提交与事务。   
 2. **<font color = "clime">Mapper接口动态代理类的生成：</font>** 
-    * 解析配置文件生成sqlSessionFactory时，会调用bindMapperForNamespace() ---> addMapper方法，根据mapper文件中的namespace属性值，将接口生成动态代理类的工厂，存储在MapperRegistry对象中。MapperRegistry内部维护一个映射关系，每个接口对应一个MapperProxyFactory（生成动态代理工厂类）。      
+    * **<font color = "blue">解析配置文件生成sqlSessionFactory时，</font>** 会调用bindMapperForNamespace() ---> addMapper方法， **<font color = "blue">根据mapper文件中的namespace属性值，将接口生成动态代理类的工厂，存储在MapperRegistry对象中。</font>** MapperRegistry内部维护一个映射关系，每个接口对应一个MapperProxyFactory（生成动态代理工厂类）。      
     * 在调用getMapper，根据type类型，从MapperRegistry对象中的knownMappers获取到当前类型对应的代理工厂类，然后通过代理工厂类生成对应Mapper的代理类。  
 
 # 1. MyBatis解析

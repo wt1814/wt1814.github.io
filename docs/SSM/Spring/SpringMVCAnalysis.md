@@ -14,15 +14,17 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **SpringMVC的工作流程：**  
-    1. 找到处理器：前端控制器DispatcherServlet ---> 处理器映射器HandlerMapping ---> 找到处理器Handler；  
-    2. 处理器处理：前端控制器DispatcherServlet ---> 处理器适配器HandlerAdapter ---> 处理器Handler ---> 执行处理器Controller(也叫后端控制器) ---> Controller执行完成返回ModelAndView；  
+    1. 找到处理器：前端控制器DispatcherServlet ---> **<font color = "red">处理器映射器HandlerMapping</font>** ---> 找到处理器Handler；  
+    2. 处理器处理：前端控制器DispatcherServlet ---> **<font color = "red">处理器适配器HandlerAdapter</font>** ---> 处理器Handler ---> 执行具体的处理器Controller(也叫后端控制器) ---> Controller执行完成返回ModelAndView；  
+    &emsp; 1. **<font color = "blue">处理器适配器HandlAdapter：按照特定规则(HandlerAdapter要求的规则)去执行Handler。通过HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。</font>**  
+    &emsp; 2. 处理器Handler和controller区别：
     3. 返回前端控制器DispatcherServlet ---> 视图解析器ViewReslover。  
 2. **SpringMVC解析：**  
     1. 在SpringMVC.xml中定义一个DispatcherServlet和一个监听器ContextLoaderListener。  
     2. 上下文在web容器中的启动：<font color = "red">由ContextLoaderListener启动的上下文为根上下文。在根上下文的基础上，还有一个与Web MVC相关的上下文用来保存控制器(DispatcherServlet)需要的MVC对象，作为根上下文的子上下文，构成一个层次化的上下文体系。</font>  
-    3. DispatcherServlet初始化和使用：  
-        1. 完成Spring MVC的组件的初始化。  
-        2. 调用阶段。这一步是由请求触发的。~~参考SPring MVC流程~~  
+    3. **<font color = "red">DispatcherServlet初始化和使用：</font>**     
+        1. 初始化阶段。DispatcherServlet的初始化在HttpServletBean#init()方法中。 **<font color = "red">完成Spring MVC的组件的初始化。</font>**    
+        2. 调用阶段。这一步是由请求触发的。入口为DispatcherServlet#doService() ---> DispatcherServlet#doDispatch()。 **<font color = "blue">逻辑即为SpringMVC处理流程。</font>**   
 
 
 # 1. SpringMVC解析
@@ -30,7 +32,6 @@
 SpringMVC 九大组件之 HandlerMapping 深入分析 
 https://mp.weixin.qq.com/s/0x7_OXPDFX5BqF0jGxN2Vg
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/SpringMVC/mvc-6.png)  
 
 ## 1.1. SpringMVC的工作流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/SpringMVC/springmvc-2.png)  
@@ -52,7 +53,7 @@ https://mp.weixin.qq.com/s/0x7_OXPDFX5BqF0jGxN2Vg
 2. **<font color = "red">处理器映射器HandlerMapping</font>**  
 &emsp; 根据请求的url查找Handler。HandlerMapping负责根据用户请求找到Handler即处理器(Controller)，SpringMVC提供了不同的映射器实现不同的映射方式，例如：配置文件方式，实现接口方式，注解方式等。  
 3. **<font color = "red">处理器适配器HandlAdapter</font>**  
-&emsp; 按照特定规则(HandlerAdapter要求的规则)去执行Handler。通过HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。  
+&emsp; **<font color = "blue">按照特定规则(HandlerAdapter要求的规则)去执行Handler。通过HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。</font>**  
 4. **<font color = "red">Handler处理器</font>**  
 &emsp; 编写Handler时按照HandlerAdapter的要求去做，这样适配器才可以去正确执行Handler。Handler是继DispatcherServlet前端控制器的后端控制器，在DispatcherServlet 的控制下Handler对具体的用户请求进行处理。由于Handler涉及到具体的用户业务请求，所以一般情况需要工程师根据业务需求开发Handler。  
 5. **<font color = "red">ViewResolver视图解析器</font>**  
@@ -61,6 +62,16 @@ https://mp.weixin.qq.com/s/0x7_OXPDFX5BqF0jGxN2Vg
 &emsp; View是一个接口，实现类支持不同的View类型(jsp、freemarker...)。  
 
 &emsp; 注意：<font color = "red">处理器Handler以及视图层View都是需要手动开发的。其他的一些组件比如：前端控制器DispatcherServlet、处理器映射器HandlerMapping、处理器适配器HandlerAdapter等都是框架提供的，不需要自己手动开发。</font>  
+
+
+&emsp; Spring MVC中的Controller和Handler有什么区别？  
+<!-- 
+https://blog.csdn.net/ZhongGuoZhiChuang/article/details/71106680?locationNum=1&fps=1
+-->
+&emsp; 一般来说，Controller是Handler，但Handler不一定是Controller。  
+&emsp; 例如，HttpRequestHandler，WebRequestHandler，MessageHandler都是可以使用DispatcherServlet的处理程序。 （（@）Controller是执行Web请求并返回视图的处理程序。）  
+&emsp; 简而言之，Handler只是一个术语，它不是一个类或接口。 它可以执行映射。  
+
 
 ## 1.2. SpringMVC源码解析  
 &emsp; 原始SSM项目中可以在web.xml中看到SpringMVC的部署描述。  

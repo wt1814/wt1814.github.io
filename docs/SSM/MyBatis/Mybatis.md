@@ -43,7 +43,6 @@
 <!-- /TOC -->
 
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-29.png)  
 
 # 1. MyBatis使用教程  
 

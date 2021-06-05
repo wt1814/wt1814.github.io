@@ -20,33 +20,33 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. BeanFactory与ApplicationContext
 2. BeanDefinition： **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
-3. Spring容器刷新：  
-&emsp; **<font color = "blue">高度概括：容器本身、对外扩展。</font>** （刷新前的准备 ---> 创建容器 ---> 预处理 ---> 后置处理器 ---> 注册事件 ---> 特殊bean ---> 监听器 ---> 非懒加载Bean ---> 发布事件）   
-    **<font color = "red">Spring bean容器刷新的核心 12+1个步骤完成IoC容器的创建及初始化工作：</font>**  
+3. Spring容器刷新： **<font color = "blue">（高度概括：容器本身、容器扩展、事件和实例化Bean。）</font>**     
+    **<font color = "red">Spring bean容器刷新的核心 12个步骤完成IoC容器的创建及初始化工作：</font>**  
     1. 刷新前的准备工作。  
     2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>** <font color = "blue">个人理解：此处仅仅相当于创建Spring Bean的类，实例化是在Spring DI里。</font>   
         &emsp; **<font color = "clime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
         ```java
         private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
         ```
+    -----------
     3. 对IoC容器进行一些预处理。 为BeanFactory配置容器特性，例如设置BeanFactory的类加载器，配置了BeanPostProcessor，注册了三个默认bean实例，分别是“environment”、“systemProperties”、“systemEnvironment”。  
     4. 允许在上下文子类中对bean工厂进行后处理。 本方法没有具体实现，是一个扩展点，开发人员可以根据自己的情况做具体的实现。  
-    5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理。</font>**  
+    5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理（修改BeanDefinition对象）。</font>**  
     6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
-    7. 初始化一些消息源（比如处理国际化的i18n等消息源）。  
+    7. 初始化一些消息源（比如处理国际化的i18n等消息源）。 
+    ------------ 
     8. **<font color = "red">初始化应用事件多播器。</font>**  
-    9. **<font color = "red">具体的子类初始化一些特殊的bean在初始化。典型的模板方法(钩子方法)。</font>**  
+    9. **<font color = "red">onRefresh()，典型的模板方法(钩子方法)。不同的Spring容器做不同的事情。比如web程序的容器ServletWebServerApplicationContext中会调用createWebServer方法去创建内置的Servlet容器。</font>**  
     10. **<font color = "red">注册一些监听器。</font>**  
     11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font><font color = "blue">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font>**  
     12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
-    13. 重置公共的一些缓存数据。  
-
-
-
 
 
 # 1. SpringIOC解析
 <!--
+https://blog.csdn.net/weixin_43328357/article/details/103438792
+https://www.cnblogs.com/grasp/p/11942735.html
+
 《轻松读懂spring》之 IOC的主干流程（上） 
 https://mp.weixin.qq.com/s/SZn9WRZjOuGXo2sX6TU0Uw
 
@@ -211,7 +211,6 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 10. **<font color = "red">注册一些监听器。</font>**  
 11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font><font color = "clime">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font>**    
 12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
-13. 重置公共的一些缓存数据。  
 
 ```java
 // 完成IoC容器的创建及初始化工作
@@ -256,6 +255,8 @@ public void refresh() throws BeansException, IllegalStateException {
 
             //  9： 具体的子类初始化一些特殊的bean在初始化 singleton beans 之前)
             //  从方法名就可以知道，典型的模板方法(钩子方法)
+            //一个模板方法，不同的Spring容器做不同的事情。比如web程序的容器ServletWebServerApplicationContext中会调用createWebServer方法去创建内置的Servlet容器。  
+            //目前SpringBoot只支持3种内置的Servlet容器：Tomcat、Jetty、Undertow。  
             onRefresh();
 
             //  10： 为事件传播器注册事件监听器
@@ -294,7 +295,7 @@ public void refresh() throws BeansException, IllegalStateException {
 }
 ```
 &emsp; **refresh()方法主要为IOC容器Bean的生命周期管理提供条件。**  
-&emsp; Spring 容器初始化，共经历了 13 步；其中尤其需要重点关注的是：  
+&emsp; Spring 容器初始化，共经历了 12 步；其中尤其需要重点关注的是：  
 &emsp; 步骤2，初始化Spring容器，并构建了BeanDefinition定义  
 
         ClassPathXmlApplicationContext容器的初始化包括BeanDefinition的resource定位、加载和注册这三个基本的过程。  

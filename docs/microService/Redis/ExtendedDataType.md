@@ -7,7 +7,7 @@
     - [1.2. Bitmap，位图](#12-bitmap位图)
         - [1.2.1. 位图介绍](#121-位图介绍)
         - [1.2.2. Redis Bitmap命令](#122-redis-bitmap命令)
-        - [1.2.3. 应用场景](#123-应用场景)
+        - [1.2.3. ~~应用场景~~](#123-应用场景)
             - [1.2.3.1. 使用场景一：用户签到](#1231-使用场景一用户签到)
             - [1.2.3.2. 使用场景二：统计活跃用户](#1232-使用场景二统计活跃用户)
             - [1.2.3.3. 使用场景三：用户在线状态](#1233-使用场景三用户在线状态)
@@ -25,16 +25,16 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-73.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
 1. <font color = "clime">Bitmap、HyperLogLog都是作为Redis的Value值。</font>  
-2. <font color = "clime">Bitmap：二值状态统计。Redis中的Bitmap，key可以为某一天或某一ID，Bitmap中bit可以存储用户的任意信息。所以Redis Bitmap可以用作统计信息。</font>  
+2. <font color = "clime">Bitmap：二值状态统计。Redis中的Bitmap，key可以为某一天或某一ID，Bitmap中bit可以存储用户的任意信息。所以Redis Bitmap可以用作统计信息。常用场景：用户签到、统计活跃用户、用户在线状态。</font>  
 3. <font color = "clime">HyperLogLog用于基数统计，例如UV（独立访客数）。</font>  
     * 基数统计是指找出集合中不重复元素，用于去重。  
     * 使用Redis统计集合的基数一般有三种方法，分别是使用Redis的Hash，BitMap和HyperLogLog。  
     * HyperLogLog内存空间消耗少，但存在误差0.81%。  
-4. [布隆过滤器](/docs/function/otherStructure.md)作为一个插件加载到Redis Server中，就会给Redis提供了强大的布隆去重功能。  
+4. Streams消息队列：支持多播的可持久化的消息队列，用于实现发布订阅功能，借鉴了kafka的设计。 
+5. [布隆过滤器](/docs/function/otherStructure.md)作为一个插件加载到Redis Server中，就会给Redis提供了强大的布隆去重功能。  
 
 
 # 1. Redis扩展数据类型  
@@ -99,8 +99,10 @@ https://www.yuque.com/happy-coder/qka0of/ekdfzb
     * BITCOUNT统计位的值为1的数量。
     * BITPOS寻址第一个为0或者1的bit的位置(寻址第一个为1的bit的位置：bitpos dupcheck 1；寻址第一个为0的bit的位置：bitpos dupcheck 0)。  
 
-### 1.2.3. 应用场景
+### 1.2.3. ~~应用场景~~
 <!-- 
+****  https://blog.csdn.net/github_35634180/article/details/98452341
+
 实际项目开发中有很多业务都适合采用redis的bit来实现。
 用户签到场景
 
@@ -120,7 +122,6 @@ APP内用户的全局消息提示小红点
 
 * <font color = "red">各种实时分析，例如在线用户统计。</font>
 * <font color = "red">用户访问统计。</font>
-
 
 
 #### 1.2.3.1. 使用场景一：用户签到  

@@ -3,25 +3,29 @@
 - [1. EXPLAIN、PROCEDURE ANALYSE(分析)](#1-explainprocedure-analyse分析)
     - [1.1. explain与explain extended](#11-explain与explain-extended)
         - [1.1.1. explain extended](#111-explain-extended)
-    - [1.2. show warnings](#12-show-warnings)
-    - [1.3. ~~proceduer analyse()取得建议~~](#13-proceduer-analyse取得建议)
-    - [1.4. profiling](#14-profiling)
-        - [1.4.1. 查看profile开启情况](#141-查看profile开启情况)
-        - [1.4.2. 启用profile](#142-启用profile)
-        - [1.4.3. 查看执行的SQL列表](#143-查看执行的sql列表)
-        - [1.4.4. 查询指定ID的执行详细信息](#144-查询指定id的执行详细信息)
-        - [1.4.5. 获取CPU、Block IO等信息](#145-获取cpublock-io等信息)
-    - [1.5. trace工具](#15-trace工具)
+    - [1.2. profiling](#12-profiling)
+        - [1.2.1. 查看profile开启情况](#121-查看profile开启情况)
+        - [1.2.2. 启用profile](#122-启用profile)
+        - [1.2.3. 查看执行的SQL列表](#123-查看执行的sql列表)
+        - [1.2.4. 查询指定ID的执行详细信息](#124-查询指定id的执行详细信息)
+        - [1.2.5. 获取CPU、Block IO等信息](#125-获取cpublock-io等信息)
+    - [1.3. trace工具](#13-trace工具)
+    - [1.4. 小结](#14-小结)
+    - [1.5. show warnings](#15-show-warnings)
+    - [1.6. ~~proceduer analyse()取得建议~~](#16-proceduer-analyse取得建议)
+    - [1.7. sql分析工具](#17-sql分析工具)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结</font>**  
-1. **<font color = "clime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling。</font>**  
+1. **<font color = "clime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling、trace。</font>**  
 2. explain：  
 &emsp; expain出来的信息列分别是id、select_type、table、partitions、 **<font color = "red">type</font>** 、possible_keys、 **<font color = "red">key</font>** 、 **<font color = "red">key_len</font>** 、ref、rows、filtered、 **<font color = "red">Extra</font>** 。  
 &emsp; **<font color = "clime">type单表查询类型要达到range级别(只检索给定范围的行，使用一个索引来选择行，非全表扫描)，extra额外的信息，常见的不太友好的值，如下：Using filesort，Using temporary。其他重要字段：key、key_len</font>**  
 3. profiling  
-&emsp; 使用profiling命令可以了解SQL语句消耗资源的详细信息(每个执行步骤的开销)。 
+&emsp; 使用profiling命令可以了解SQL语句消耗资源的详细信息(每个执行步骤的开销)。可以清楚了解到SQL到底慢在哪个环节。   
+4. trace
+&emsp; 查看优化器如何选择执行计划，获取每个可能的索引选择的代价。  
 
 # 1. EXPLAIN、PROCEDURE ANALYSE(分析)  
 
@@ -145,27 +149,10 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
 ### 1.1.1. explain extended
 &emsp; <font color = "red">用explain extended查看执行计划会比explain多一列filtered。filtered列给出了一个百分比的值，这个百分比值和rows列的值一起使用，可以估计出那些将要和explain中的前一个表进行连接的行的数目。前一个表就是指explain的id列的值比当前表的id小的表。</font>  
 
-## 1.2. show warnings
-&emsp; SHOW WARNINGS显示有关由于当前会话中执行最新的非诊断性语句而导致的条件的信息。  
-&emsp; 可以使用mysql show warnings避免一些隐式转换等。  
-<!-- 
-explain extended + show warnings
-阿里的程序员也不过如此，竟被一个简单的SQL查询难住 
-https://mp.weixin.qq.com/s/6jjLv2SIBmh2kjHunxJVYA
--->
-
-## 1.3. ~~proceduer analyse()取得建议~~  
-&emsp; PROCEDURE ANALYSE()，在优化表结构时可以辅助参考分析语句。  
-&emsp; 使用proceduer analyse()对当前已有应用的表类型的判断，该函数可以对数据表中的列的数据类型(字段类型)提出优化建议(Optimal_fieldtype)。  
-
-```sql
-SELECT column_name FROM table_name PROCEDURE ANALYSE();
-```
-
-## 1.4. profiling  
+## 1.2. profiling  
 &emsp; 使用profiling命令可以了解SQL语句消耗资源的详细信息(每个执行步骤的开销)。  
 
-### 1.4.1. 查看profile开启情况  
+### 1.2.1. 查看profile开启情况  
 ```
 select @@profiling;
 ```
@@ -182,7 +169,7 @@ mysql> select @@profiling;
 ```
 &emsp; 0 表示关闭状态，1表示开启  
 
-### 1.4.2. 启用profile  
+### 1.2.2. 启用profile  
 ```
 set profiling = 1;  
 ```
@@ -202,7 +189,7 @@ mysql> select @@profiling;
 ```
 &emsp; 在连接关闭后，profiling状态自动设置为关闭状态。  
 
-### 1.4.3. 查看执行的SQL列表  
+### 1.2.3. 查看执行的SQL列表  
 ```
 show profiles;  
 ```
@@ -226,7 +213,7 @@ mysql> show profiles;
 ```
 &emsp; 该命令执行之前，需要执行其他 SQL 语句才有记录。  
 
-### 1.4.4. 查询指定ID的执行详细信息  
+### 1.2.4. 查询指定ID的执行详细信息  
 
 ```sql
 show profile for query Query_ID;
@@ -258,7 +245,7 @@ mysql> show profile for query 9;
 ```
 &emsp; 每行都是状态变化的过程以及它们持续的时间。Status这一列和show processlist的 State是一致的。因此，需要优化的注意点与上文描述的一样。  
 
-### 1.4.5. 获取CPU、Block IO等信息  
+### 1.2.5. 获取CPU、Block IO等信息  
 
 ```sql
 show profile block io,cpu for query Query_ID;
@@ -267,9 +254,79 @@ show profile all for query Query_ID;
 ```
 
 
-## 1.5. trace工具
+## 1.3. trace工具
 <!-- 
 MySQL中trace工具的使用
 https://blog.csdn.net/weixin_43576564/article/details/90202501
+
+https://baijiahao.baidu.com/s?id=1644815785057748879&wfr=spider&for=pc
 -->
-&emsp; MySQL5.6版本后提供了对SQL的跟踪工具trace，通过使用trace阔以让我们明白optimizer如何选择执行计划的。  
+&emsp; explain可以查看SQL执行计划，但是无法知道它为什么做这个决策，如果想确定多种索引方案之间是如何选择的或者排序时选择的是哪种排序模式，有什么好的办法吗？  
+&emsp; 从MySQL 5.6开始，可以使用trace查看优化器如何选择执行计划。  
+&emsp; **通过trace，能够进一步了解为什么优化器选择A执行计划而不是选择B执行计划，或者知道某个排序使用的排序模式，更好地理解优化器行为。**  
+&emsp; 如果需要使用，先开启trace，设置格式为JSON，再执行需要分析的SQL，最后查看trace分析结果（在 information_schema.OPTIMIZER_TRACE 中）。  
+&emsp; 注意⚠️：开启该功能，会对 MySQL 性能有所影响，因此只建议分析问题时临时开启。  
+
+示例：在test_table中除了d字段，abc字段都有索引。执行如下sql  
+
+```sql
+explain select * from test_table where a=90000 and b=90000 order by a;
+```
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-171.png)  
+&emsp; 通过上面执行计划中 key 这个字段可以看出，该语句使用的是 b 字段的索引 idx_a。实际表 t1 中，a、b 两个字段都有索引，为什么条件中有这两个索引字段却偏偏选了a字段的索引呢？这时就可以使用trace进行分析。  
+
+&emsp; 大致步骤如下：  
+
+1. 开启trace分析器  
+2. 执行要查询的sql  
+3. 查看分析结果  
+4. 关闭trace分析器
+
+        NO.1 开启trace分析器
+        MySQL [test]> set session optimizer_trace="enabled=on";
+        NO.2 执行要查询的SQL
+        MySQL [test]> select * from test_table where a=90000 and b=90000 order by a;
+        NO.3 查询分析结果
+        MySQL [test]> SELECT * FROM information_schema.OPTIMIZER_TRACE\G
+        注意：在返回的steps数组中可以查看详细mysql都干了什么。
+        NO.4 关闭trace分析器
+        mysql> set session optimizer_trace="enabled=off";
+
+
+&emsp; TRACE字段中整个文本大致分为三个过程：  
+
+1. 准备阶段：对应文本中的 join_preparation  
+2. 优化阶段：对应文本中的 join_optimization  
+3. 执行阶段：对应文本中的 join_execution  
+
+&emsp; 使用时，重点关注优化阶段和执行阶段。  
+
+
+## 1.4. 小结
+&emsp; 对比一下三种分析 SQL 方法的特点：
+
+* explain：获取 MySQL 中 SQL 语句的执行计划，比如语句是否使用了关联查询、是否使用了索引、扫描行数等；
+* profile：可以清楚了解到SQL到底慢在哪个环节；
+* trace：查看优化器如何选择执行计划，获取每个可能的索引选择的代价。
+
+
+
+## 1.5. show warnings
+&emsp; SHOW WARNINGS显示有关由于当前会话中执行最新的非诊断性语句而导致的条件的信息。  
+&emsp; 可以使用mysql show warnings避免一些隐式转换等。  
+<!-- 
+explain extended + show warnings
+阿里的程序员也不过如此，竟被一个简单的SQL查询难住 
+https://mp.weixin.qq.com/s/6jjLv2SIBmh2kjHunxJVYA
+-->
+
+## 1.6. ~~proceduer analyse()取得建议~~  
+&emsp; PROCEDURE ANALYSE()，在优化表结构时可以辅助参考分析语句。  
+&emsp; 使用proceduer analyse()对当前已有应用的表类型的判断，该函数可以对数据表中的列的数据类型(字段类型)提出优化建议(Optimal_fieldtype)。  
+
+```sql
+SELECT column_name FROM table_name PROCEDURE ANALYSE();
+```
+
+## 1.7. sql分析工具
+&emsp; 小米开源的sql分析工具：soar-web  

@@ -16,11 +16,12 @@
 
 
 &emsp; **<font color = "red">总结：</font>**
-1. 非partition key的查询
+1. 非partition key的查询 / 分库分表多维度查询  
 	* 基因法
 	* 映射法
 	* 冗余法
 	* NoSQL法：ES、Hbase等。  
+&emsp; **<font color = "blue">B2B模式（有买家、卖家），采用冗余法（买家库和卖家库）和基因法结合。</font>**  
 2. 跨分片的排序order by、分组group by以及聚合count等函数  
 &emsp; 这些是一类问题，因为它们<font color = "red">都需要基于全部数据集合进行计算。多数的代理都不会自动处理合并工作，部分支持聚合函数MAX、MIN、COUNT、SUM。</font>  
 &emsp; **<font color = "red">解决方案：分别在各个节点上执行相应的函数处理得到结果后，在应用程序端进行合并。</font>** 每个结点的查询可以并行执行，因此很多时候它的速度要比单一大表快很多。但如果结果集很大，对应用程序内存的消耗是一个问题。  
@@ -91,7 +92,7 @@ https://blog.csdn.net/weixin_52346300/article/details/113104964
 https://www.cnblogs.com/heqiyoujing/p/11297432.html
 -->
 
-&emsp; B2B模式（有买家、卖家），冗余法（买家库和卖家库）和基因法。  
+&emsp; B2B模式（有买家、卖家），采用冗余法（买家库和卖家库）和基因法。  
 
 
 ## 1.2. 跨分片的排序order by、分组group by以及聚合count等函数  

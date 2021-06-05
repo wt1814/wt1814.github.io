@@ -11,14 +11,17 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **服务提供者暴露服务的主过程：(包含3个步骤)**  
+1. 解析服务  
+&emsp; **<font color = "clime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
+&emsp; ⚠️注：在暴露服务ServiceConfig.export()或引用服务ReferenceConfig.get()时，会将Bean对象转换URL格式，所有Bean属性转成URL的参数。然后将URL传给协议扩展点，基于扩展点的扩展点自适应机制，根据URL的协议头，进行不同协议的服务暴露或引用。  
+2. **服务提供者暴露服务的主过程：**  
     1. ServiceConfig将Bean对象解析成URL格式。  
     2. 通过ProxyFactory类的getInvoker方法使用ref(实际类)生成一个AbstractProxyInvoker实例。  
-    3. 通过Protocol类的export方法暴露服务。  
+    3. 通过Protocol(协议)类的export方法暴露服务。  
         1. 本地各种协议暴露。  
         2. 注册中心暴露。  
     4. 如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心。  
-2. **服务消费者引用服务的主过程：(包含3个步骤)**  
+3. **服务消费者引用服务的主过程：**  
     1. ReferenceConfig解析引用的服务。  
     2. ReferenceConfig 类的 init 方法调用 Protocol 的 refer 方法生成 Invoker 实例。  
     3. 把Invoker转换为客户端需要的接口。  
@@ -40,7 +43,7 @@
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-53.png)   
 
-1. 首先ServiceConfig类拿到对外提供服务的实际类 ref(如：HelloWorldImpl)，将将Bean对象解析成URL格式； ~~在容器启动的时候，通过ServiceConfig解析标签，创建dubbo标签解析器来解析dubbo的标签，容器创建完成之后，触发ContextRefreshEvent事件回调开始暴露服务~~  
+1. 首先ServiceConfig类拿到对外提供服务的实际类 ref(如：HelloWorldImpl)，将Bean对象解析成URL格式； ~~在容器启动的时候，通过ServiceConfig解析标签，创建dubbo标签解析器来解析dubbo的标签，容器创建完成之后，触发ContextRefreshEvent事件回调开始暴露服务~~  
     * 在没有注册中心，直接暴露提供者的情况下，ServiceConfig解析出的URL的格式为：dubbo://service-host/com.foo.FooService?version=1.0.0。
     * 在有注册中心，需要注册提供者地址的情况下，ServiceConfig 解析出的URL的格式为: registry://registry-host/org.apache.dubbo.registry.RegistryService?export=URL.encode("dubbo://service-host/com.foo.FooService?version=1.0.0")。  
 2. **然后通过ProxyFactory类的getInvoker方法使用ref生成一个AbstractProxyInvoker实例，** 到这一步就完成具体服务到Invoker的转化； ~~通过ProxyFactory获取到invoker，invoker包含了需要执行的方法的对象信息和具体的URL地址~~   

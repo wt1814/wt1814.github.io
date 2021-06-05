@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. Aware接口，Bean对容器对感知](#1-aware接口bean对容器对感知)
+- [1. Aware接口，Bean对容器的感知](#1-aware接口bean对容器的感知)
     - [1.1. ApplicationContextAware接口](#11-applicationcontextaware接口)
         - [1.1.1. ApplicationContextAware接口解析](#111-applicationcontextaware接口解析)
     - [1.2. BeanNameAware接口](#12-beannameaware接口)
@@ -14,7 +14,7 @@
  https://mp.weixin.qq.com/s/jz2PU64RZ0-RJjjKfONSQA
 -->
 
-# 1. Aware接口，Bean对容器对感知  
+# 1. Aware接口，Bean对容器的感知  
 &emsp; **<font color = "clime">容器管理的Bean一般不需要了解容器的状态和直接使用容器，但在某些情况下，是需要在Bean中直接对IOC容器进行操作的，这时候，就需要在Bean中设定对容器的感知。Spring IOC容器也提供了该功能，它是通过特定的aware接口来完成的。</font>** <font color = "red">aware接口有以下这些：
 
 * BeanNameAware，可以在Bean中得到它在IOC容器中的Bean实例名称。  

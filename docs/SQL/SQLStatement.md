@@ -74,7 +74,10 @@ SELECT*FROM user WHERE key_part1=1 ORDER BY key_part1 DESC, key_part2 DESC;
 ```sql
 SELECT*FROM user ORDER BY key_part1 DESC, key_part2 DESC;
 ```
+
+
 &emsp; 但<font color = "clime">以下几种情况则不使用索引</font>：  
+
 1. ORDER BY中混合ASC和DESC：  
 ```sql
 SELECT*FROM user ORDER BY key_part1 DESC, key_part2 ASC;

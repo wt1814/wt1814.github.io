@@ -21,7 +21,7 @@ https://blog.csdn.net/forget_me_not1991/article/details/80676181?utm_medium=dist
 &emsp; 注意：Dubbo缺省协议不适合传送大数据量的服务，比如传文件，传视频等，除非请求量很低。  
 
 ## 1.1. 前言：长连接  
-参考[长/短连接](/docs/network/connection.md)  
+&emsp; 参考[长/短连接](/docs/network/connection.md)  
 
 ## 1.2. Dubbo协议长连接
 &emsp; Dubbo协议采用长连接，还可以防止注册中心宕机风险。  

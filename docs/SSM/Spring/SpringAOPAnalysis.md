@@ -19,23 +19,23 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 
-1. **<font color = "blue">AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
+1. **<font color = "blue">自动代理触发的时机：AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
 2. **<font color = "clime">代理类的生成流程：1). 获取当前的Spring Bean适配的advisors；2). 创建代理类。</font>**   
     1. Spring AOP获取对应Bean适配的Advisors链的核心逻辑：
-        1. 获取当前IoC容器中所有的Aspect类
+        1. 获取当前IoC容器中所有的Aspect类。
         2. 给每个 Aspect 类的 advice 方法创建一个Spring Advisor，这一步又能细分为： 
-            1. 遍历所有 advice 方法
-            2. 解析方法的注解和pointcut
-            3. 实例化 Advisor 对象
-        3. 获取到候选的 Advisors，并且缓存起来，方便下一次直接获取
-        4. 从候选的Advisors中筛选出与目标类适配的Advisor 
-            1. 获取到Advisor的切入点pointcut
-            2. 获取到当前target类所有的public方法
-            3. 遍历方法，通过切入点的methodMatcher匹配当前方法，只要有一个匹配成功就相当于当前的Advisor适配
-        5. 对筛选之后的Advisor链进行排序  
+            1. 遍历所有 advice 方法。
+            2. 解析方法的注解和pointcut。
+            3. 实例化 Advisor 对象。
+        3. 获取到候选的 Advisors，并且缓存起来，方便下一次直接获取。
+        4. 从候选的Advisors中筛选出与目标类适配的Advisor。 
+            1. 获取到Advisor的切入点pointcut。
+            2. 获取到当前target类所有的public方法。
+            3. 遍历方法，通过切入点的methodMatcher匹配当前方法，只要有一个匹配成功就相当于当前的Advisor适配。
+        5. 对筛选之后的Advisor链进行排序。  
     2. 创建代理类
         1. 创建AopProxy。根据ProxyConfig 获取到了对应的AopProxy的实现类，分别是JdkDynamicAopProxy和ObjenesisCglibAopProxy。 
-        2. 获取代理类
+        2. 获取代理类。
 
 
 # 1. SpringAOP解析
@@ -44,7 +44,6 @@
  你知道Spring是怎么将AOP应用到Bean的生命周期中的吗? 
  https://mp.weixin.qq.com/s?__biz=MzU5ODg2Njk4OA==&mid=2247484456&idx=1&sn=395189e7139ba306db901f1cadc7b08c&chksm=febce96bc9cb607df38f916490b5d81a57988e40b9380e79c1169a8b14d5a53f13e18423c7fa&scene=21#wechat_redirect
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/aop-7.png)  
 <!-- &emsp; Spring AOP的功能是什么？根据配置来生成代理类，拦截指定的方法，将指定的advice织入。  -->
 1. <font color = "red">Spring AOP 的触发时机是什么时候？</font>  
 2. <font color = "red">Spring AOP 是如何解析配置的Aspect，生成 Advisors 链的？</font>  

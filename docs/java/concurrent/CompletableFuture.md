@@ -1,13 +1,17 @@
 <!-- TOC -->
 
-- [1. CompletableFuture<T>](#1-completablefuturet)
+- [1. ~~CompletableFuture<T>~~](#1-completablefuturet)
     - [1.1. CompletableFuture简介](#11-completablefuture简介)
     - [1.2. ~~CompletableFuture类分析~~](#12-completablefuture类分析)
     - [1.3. CompletableFuture使用](#13-completablefuture使用)
 
 <!-- /TOC -->
 
-# 1. CompletableFuture<T>  
+
+&emsp; <font color = "red">从Java 8开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。</font>**  
+&emsp; CompletableFuture提供了丰富的API对结果进行处理。  
+
+# 1. ~~CompletableFuture<T>~~  
 <!-- 
  从 CompletableFuture 到异步编程 
  https://mp.weixin.qq.com/s/PfYh5x1JuU1SSKI3x0_L0Q
@@ -40,7 +44,7 @@ https://mp.weixin.qq.com/s/_T9xIYMKNXFLixTmKMD12A
 -->
 ## 1.1. CompletableFuture简介
 &emsp; CompletableFuture，组合式异步编程，异步回调。  
-&emsp; 使用Future获得异步执行结果时，要么调用阻塞方法get()，要么轮询看isDone()是否为true，这两种方法都不是很好，因为主线程也会被迫等待。 **<font color = "red">从Java 8开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。</font>**  
+&emsp;  **<font color = "blue">使用Future获得异步执行结果时，要么调用阻塞方法get()，要么轮询看isDone()是否为true，这两种方法都不是很好，因为主线程也会被迫等待。</font><font color = "red">从Java 8开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。</font>**  
 
 &emsp; **<font color = "clime">使用场景：某个接口顺序调用了多个服务，且多个服务之间没有数据依赖。使用CompletableFuture会使响应时间缩短很多。</font>**    
 

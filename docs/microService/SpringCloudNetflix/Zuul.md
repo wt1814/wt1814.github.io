@@ -26,13 +26,12 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-31.png)  
 
 &emsp; **<font color = "red">总结：</font>**  
 1. Spring Cloud Zuul，微服务网关，包含hystrix、ribbon、actuator。主要有路由转发、请求过滤功能。  
 2. **<font color = "red">Zuul提供了四种过滤器的API，分别为前置（Pre）、路由（Route）、后置（Post）和错误（Error）四种处理方式。</font>**  
 3. 动态加载：  
-&emsp; 作为最外部的网关，它必须具备动态更新内部逻辑的能力， 比如动态修改路由规则、 动态添加／删除过滤器等。  
+&emsp; 作为最外部的网关，它必须具备动态更新内部逻辑的能力，比如动态修改路由规则、动态添加／删除过滤器等。  
 &emsp; 通过Zuul实现的API网关服务具备了动态路由和动态过滤的器能力，可以在不重启API网关服务的前提下为其动态修改路由规则和添加或删除过滤器。   
 
 # 1. Spring Cloud Zuul

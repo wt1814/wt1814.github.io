@@ -19,8 +19,6 @@
 
 -->
 
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-57.png)  
 &emsp; **<font color = "red">总结：</font>**  
 1. 事务的四大特性(ACID)：原子性(Atomicity)、一致性(Consistency)、隔离性(Isolation)、持久性(Durability)。  
 2. 并发事务处理带来的问题：脏读、丢失修改、不可重复读、幻读。  
@@ -86,7 +84,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 
 * READ-UNCOMMITTED(读取未提交)：最低的隔离级别，允许读取尚未提交的数据变更，可能会导致脏读、幻读或不可重复读。  
 * READ-COMMITTED(读取已提交)：允许读取并发事务已经提交的数据，可以阻止脏读，但是幻读或不可重复读仍有可能发生。  
-* REPEATABLE-READ(可重复读)：对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，<font color = "red">可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读</font>。  
+* REPEATABLE-READ(可重复读)：对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，<font color = "red">可以阻止脏读和不可重复读，幻读仍有可能发生。</font>。  
 * SERIALIZABLE(可串行化)：最高的隔离级别，完全服从ACID的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。  
 
 |隔离级别 |读数据一致性 |脏读|不可重复读|幻读|
@@ -96,7 +94,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 |可重复读(Repeatable read)|事务级 |不可能|不可能|可能|
 |可序列化(Serializable) |最高级别，事务级|不可能|不可能|不可能| 
 
-&emsp; **<font color = "clime">以上是SQL-92标准中定义的四种隔离级别。在MySQL中，默认的隔离级别是REPEATABLE-READ(可重复读)，并且解决了幻读问题。</font>** 简单的来说，mysql的默认隔离级别解决了脏读、幻读、不可重复读问题。  
+&emsp; **<font color = "blue">以上是SQL-92标准中定义的四种隔离级别。在MySQL中，默认的隔离级别是REPEATABLE-READ(可重复读)，并且解决了幻读问题。</font>** 简单的来说，mysql的默认隔离级别解决了脏读、幻读、不可重复读问题。  
 
 &emsp; RR和RC区别：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-121.png)  
@@ -140,6 +138,9 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 
 
 ### 1.4.3. 隔离性(事务的隔离级别)的实现  
+<!-- 
+https://mp.weixin.qq.com/s/B-2AN3ryX8IJWUoxLRPp_w
+-->
 &emsp; 隔离性(事务的隔离级别)的实现，利用的是锁和MVCC机制。  
 
 &emsp; **<font color = "clime">RR可重复读是怎么解决幻读的？</font>**  
@@ -171,4 +172,4 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 &emsp; 从应用层面，通过代码判断数据库数据是否有效，然后决定回滚还是提交数据！如果在事务里故意写出违反约束的代码，一致性还是无法保证的。
 
 ## 1.5. 事务SQL语句  
-......
+&emsp; ......

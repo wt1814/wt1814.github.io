@@ -9,8 +9,8 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 启动对象的注入：在容器准备阶段prepareContext()会将@SpringBootApplication--->@Component对象注册到容器中。  
-2. 自动装配入口，从刷新容器refresh()开始。 
+1. 启动对象的注入：在SpringBoot启动流程的容器准备阶段prepareContext()会将@SpringBootApplication--->@Component对象注册到容器中。  
+2. 自动装配入口，从SpringBoot启动流程的刷新容器阶段refresh()开始。 
 
 # 1. 自动装配原理
 ## 1.1. 启动对象的注入
@@ -20,164 +20,164 @@
 
 ```java
 public ConfigurableApplicationContext run(String... args) {
-		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
-		ConfigurableApplicationContext context = null;
-		Collection<SpringBootExceptionReporter> exceptionReporters = new ArrayList<>();
-		configureHeadlessProperty();
-		SpringApplicationRunListeners listeners = getRunListeners(args);
-		listeners.starting();
-		try {
-			ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
-			ConfigurableEnvironment environment = prepareEnvironment(listeners, applicationArguments);
-			configureIgnoreBeanInfo(environment);
-			Banner printedBanner = printBanner(environment);
-			context = createApplicationContext();
-			exceptionReporters = getSpringFactoriesInstances(SpringBootExceptionReporter.class,
-					new Class[] { ConfigurableApplicationContext.class }, context);
-            //此处完成自动装配的过程
-			prepareContext(context, environment, listeners, applicationArguments, printedBanner);
-			refreshContext(context);
-			afterRefresh(context, applicationArguments);
-			stopWatch.stop();
-			if (this.logStartupInfo) {
-				new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), stopWatch);
-			}
-			listeners.started(context);
-			callRunners(context, applicationArguments);
+	StopWatch stopWatch = new StopWatch();
+	stopWatch.start();
+	ConfigurableApplicationContext context = null;
+	Collection<SpringBootExceptionReporter> exceptionReporters = new ArrayList<>();
+	configureHeadlessProperty();
+	SpringApplicationRunListeners listeners = getRunListeners(args);
+	listeners.starting();
+	try {
+		ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+		ConfigurableEnvironment environment = prepareEnvironment(listeners, applicationArguments);
+		configureIgnoreBeanInfo(environment);
+		Banner printedBanner = printBanner(environment);
+		context = createApplicationContext();
+		exceptionReporters = getSpringFactoriesInstances(SpringBootExceptionReporter.class,
+				new Class[] { ConfigurableApplicationContext.class }, context);
+		//此处完成自动装配的过程
+		prepareContext(context, environment, listeners, applicationArguments, printedBanner);
+		refreshContext(context);
+		afterRefresh(context, applicationArguments);
+		stopWatch.stop();
+		if (this.logStartupInfo) {
+			new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), stopWatch);
 		}
-		catch (Throwable ex) {
-			handleRunFailure(context, ex, exceptionReporters, listeners);
-			throw new IllegalStateException(ex);
-		}
-
-		try {
-			listeners.running(context);
-		}
-		catch (Throwable ex) {
-			handleRunFailure(context, ex, exceptionReporters, null);
-			throw new IllegalStateException(ex);
-		}
-		return context;
+		listeners.started(context);
+		callRunners(context, applicationArguments);
 	}
+	catch (Throwable ex) {
+		handleRunFailure(context, ex, exceptionReporters, listeners);
+		throw new IllegalStateException(ex);
+	}
+
+	try {
+		listeners.running(context);
+	}
+	catch (Throwable ex) {
+		handleRunFailure(context, ex, exceptionReporters, null);
+		throw new IllegalStateException(ex);
+	}
+	return context;
+}
 ```
 
 &emsp; 2、在prepareContext方法中查找load方法，一层一层向内点击，找到最终的load方法。  
 
 ```java
 //prepareContext方法
-	private void prepareContext(ConfigurableApplicationContext context, ConfigurableEnvironment environment,
-			SpringApplicationRunListeners listeners, ApplicationArguments applicationArguments, Banner printedBanner) {
-		context.setEnvironment(environment);
-		postProcessApplicationContext(context);
-		applyInitializers(context);
-		listeners.contextPrepared(context);
-		if (this.logStartupInfo) {
-			logStartupInfo(context.getParent() == null);
-			logStartupProfileInfo(context);
-		}
-		// Add boot specific singleton beans
-		ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
-		beanFactory.registerSingleton("springApplicationArguments", applicationArguments);
-		if (printedBanner != null) {
-			beanFactory.registerSingleton("springBootBanner", printedBanner);
-		}
-		if (beanFactory instanceof DefaultListableBeanFactory) {
-			((DefaultListableBeanFactory) beanFactory)
-					.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
-		}
-		if (this.lazyInitialization) {
-			context.addBeanFactoryPostProcessor(new LazyInitializationBeanFactoryPostProcessor());
-		}
-		// Load the sources
-		Set<Object> sources = getAllSources();
-		Assert.notEmpty(sources, "Sources must not be empty");
-        //load方法完成该功能
-		load(context, sources.toArray(new Object[0]));
-		listeners.contextLoaded(context);
+private void prepareContext(ConfigurableApplicationContext context, ConfigurableEnvironment environment,
+		SpringApplicationRunListeners listeners, ApplicationArguments applicationArguments, Banner printedBanner) {
+	context.setEnvironment(environment);
+	postProcessApplicationContext(context);
+	applyInitializers(context);
+	listeners.contextPrepared(context);
+	if (this.logStartupInfo) {
+		logStartupInfo(context.getParent() == null);
+		logStartupProfileInfo(context);
 	}
+	// Add boot specific singleton beans
+	ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
+	beanFactory.registerSingleton("springApplicationArguments", applicationArguments);
+	if (printedBanner != null) {
+		beanFactory.registerSingleton("springBootBanner", printedBanner);
+	}
+	if (beanFactory instanceof DefaultListableBeanFactory) {
+		((DefaultListableBeanFactory) beanFactory)
+				.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
+	}
+	if (this.lazyInitialization) {
+		context.addBeanFactoryPostProcessor(new LazyInitializationBeanFactoryPostProcessor());
+	}
+	// Load the sources
+	Set<Object> sources = getAllSources();
+	Assert.notEmpty(sources, "Sources must not be empty");
+	//load方法完成该功能
+	load(context, sources.toArray(new Object[0]));
+	listeners.contextLoaded(context);
+}
 
 
-	/**
-	 * Load beans into the application context.
-	 * @param context the context to load beans into
-	 * @param sources the sources to load
-	 * 加载bean对象到context中
-	 */
-	protected void load(ApplicationContext context, Object[] sources) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Loading source " + StringUtils.arrayToCommaDelimitedString(sources));
-		}
-        //获取bean对象定义的加载器
-		BeanDefinitionLoader loader = createBeanDefinitionLoader(getBeanDefinitionRegistry(context), sources);
-		if (this.beanNameGenerator != null) {
-			loader.setBeanNameGenerator(this.beanNameGenerator);
-		}
-		if (this.resourceLoader != null) {
-			loader.setResourceLoader(this.resourceLoader);
-		}
-		if (this.environment != null) {
-			loader.setEnvironment(this.environment);
-		}
-		loader.load();
+/**
+	* Load beans into the application context.
+	* @param context the context to load beans into
+	* @param sources the sources to load
+	* 加载bean对象到context中
+	*/
+protected void load(ApplicationContext context, Object[] sources) {
+	if (logger.isDebugEnabled()) {
+		logger.debug("Loading source " + StringUtils.arrayToCommaDelimitedString(sources));
 	}
+	//获取bean对象定义的加载器
+	BeanDefinitionLoader loader = createBeanDefinitionLoader(getBeanDefinitionRegistry(context), sources);
+	if (this.beanNameGenerator != null) {
+		loader.setBeanNameGenerator(this.beanNameGenerator);
+	}
+	if (this.resourceLoader != null) {
+		loader.setResourceLoader(this.resourceLoader);
+	}
+	if (this.environment != null) {
+		loader.setEnvironment(this.environment);
+	}
+	loader.load();
+}
 
-	/**
-	 * Load the sources into the reader.
-	 * @return the number of loaded beans
-	 */
-	int load() {
-		int count = 0;
-		for (Object source : this.sources) {
-			count += load(source);
-		}
-		return count;
+/**
+	* Load the sources into the reader.
+	* @return the number of loaded beans
+	*/
+int load() {
+	int count = 0;
+	for (Object source : this.sources) {
+		count += load(source);
 	}
+	return count;
+}
 ```
 
 &emsp; 3、实际执行load的是BeanDefinitionLoader中的load方法，如下：  
 
 ```java
-	//实际记载bean的方法
-	private int load(Object source) {
-		Assert.notNull(source, "Source must not be null");
-        //如果是class类型，启用注解类型
-		if (source instanceof Class<?>) {
-			return load((Class<?>) source);
-		}
-        //如果是resource类型，启动xml解析
-		if (source instanceof Resource) {
-			return load((Resource) source);
-		}
-        //如果是package类型，启用扫描包，例如@ComponentScan
-		if (source instanceof Package) {
-			return load((Package) source);
-		}
-        //如果是字符串类型，直接加载
-		if (source instanceof CharSequence) {
-			return load((CharSequence) source);
-		}
-		throw new IllegalArgumentException("Invalid source type " + source.getClass());
+//实际记载bean的方法
+private int load(Object source) {
+	Assert.notNull(source, "Source must not be null");
+	//如果是class类型，启用注解类型
+	if (source instanceof Class<?>) {
+		return load((Class<?>) source);
 	}
+	//如果是resource类型，启动xml解析
+	if (source instanceof Resource) {
+		return load((Resource) source);
+	}
+	//如果是package类型，启用扫描包，例如@ComponentScan
+	if (source instanceof Package) {
+		return load((Package) source);
+	}
+	//如果是字符串类型，直接加载
+	if (source instanceof CharSequence) {
+		return load((CharSequence) source);
+	}
+	throw new IllegalArgumentException("Invalid source type " + source.getClass());
+}
 ```
 
-&emsp; 4、下面方法将用来判断是否资源的类型，是使用groovy加载还是使用注解的方式  
+&emsp; 4、下面方法将用来判断是否资源的类型，是使用groovy加载还是使用注解的方式。  
 
 ```java
-	private int load(Class<?> source) {
-        //判断使用groovy脚本
-		if (isGroovyPresent() && GroovyBeanDefinitionSource.class.isAssignableFrom(source)) {
-			// Any GroovyLoaders added in beans{} DSL can contribute beans here
-			GroovyBeanDefinitionSource loader = BeanUtils.instantiateClass(source, GroovyBeanDefinitionSource.class);
-			load(loader);
-		}
-        //使用注解加载
-		if (isComponent(source)) {
-			this.annotatedReader.register(source);
-			return 1;
-		}
-		return 0;
+private int load(Class<?> source) {
+	//判断使用groovy脚本
+	if (isGroovyPresent() && GroovyBeanDefinitionSource.class.isAssignableFrom(source)) {
+		// Any GroovyLoaders added in beans{} DSL can contribute beans here
+		GroovyBeanDefinitionSource loader = BeanUtils.instantiateClass(source, GroovyBeanDefinitionSource.class);
+		load(loader);
 	}
+	//使用注解加载
+	if (isComponent(source)) {
+		this.annotatedReader.register(source);
+		return 1;
+	}
+	return 0;
+}
 ```
 
 &emsp; 5、下面方法判断启动类中是否包含@Component注解，但是在启动类中并没有该注解，继续更进发现MergedAnnotations类传入了一个参数SearchStrategy.TYPE_HIERARCHY，会查找继承关系中是否包含这个注解，@SpringBootApplication --> @SpringBootConfiguration --> @Configuration --> @Component，当找到@Component注解之后，会把该对象注册到AnnotatedBeanDefinitionReader对象中。  
@@ -196,10 +196,10 @@ private boolean isComponent(Class<?> type) {
 }
 
 /**
-	* Register a bean from the given bean class, deriving its metadata from
-	* class-declared annotations.
-	* 从给定的bean class中注册一个bean对象，从注解中找到相关的元数据
-	*/
+* Register a bean from the given bean class, deriving its metadata from
+* class-declared annotations.
+* 从给定的bean class中注册一个bean对象，从注解中找到相关的元数据
+*/
 private <T> void doRegisterBean(Class<T> beanClass, @Nullable String name,
 		@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
 		@Nullable BeanDefinitionCustomizer[] customizers) {
@@ -240,9 +240,9 @@ private <T> void doRegisterBean(Class<T> beanClass, @Nullable String name,
 }
 
 /**
-	* Register the given bean definition with the given bean factory.
-	* 注册主类，如果有别名可以设置别名
-	*/
+* Register the given bean definition with the given bean factory.
+* 注册主类，如果有别名可以设置别名
+*/
 public static void registerBeanDefinition(
 		BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)
 		throws BeanDefinitionStoreException {
@@ -321,21 +321,21 @@ public void refresh() throws BeansException, IllegalStateException {
 
 ```java
 /**
-	 * Instantiate and invoke all registered BeanFactoryPostProcessor beans,
-	 * respecting explicit order if given.
-	 * <p>Must be called before singleton instantiation.
-	 */
-	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
-        //开始执行beanFactoryPostProcessor对应实现类,需要知道的是beanFactoryPostProcessor是spring的扩展接口，在刷新容器之前，该接口可以用来修改bean元数据信息
-		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
+* Instantiate and invoke all registered BeanFactoryPostProcessor beans,
+* respecting explicit order if given.
+* <p>Must be called before singleton instantiation.
+*/
+protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+	//开始执行beanFactoryPostProcessor对应实现类,需要知道的是beanFactoryPostProcessor是spring的扩展接口，在刷新容器之前，该接口可以用来修改bean元数据信息
+	PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
-		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
-		// (e.g. through an @Bean method registered by ConfigurationClassPostProcessor)
-		if (beanFactory.getTempClassLoader() == null && beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
-			beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
-			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
-		}
+	// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
+	// (e.g. through an @Bean method registered by ConfigurationClassPostProcessor)
+	if (beanFactory.getTempClassLoader() == null && beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
+		beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
+		beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
 	}
+}
 ```
 
 &emsp; 8、查看invokeBeanFactoryPostProcessors的具体执行方法  
@@ -490,68 +490,68 @@ public void refresh() throws BeansException, IllegalStateException {
 
 ```java
 public void parse(Set<BeanDefinitionHolder> configCandidates) {
-		for (BeanDefinitionHolder holder : configCandidates) {
-			BeanDefinition bd = holder.getBeanDefinition();
-			try {
-                //是否是注解类
-				if (bd instanceof AnnotatedBeanDefinition) {
-					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
-				}
-				else if (bd instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) bd).hasBeanClass()) {
-					parse(((AbstractBeanDefinition) bd).getBeanClass(), holder.getBeanName());
-				}
-				else {
-					parse(bd.getBeanClassName(), holder.getBeanName());
-				}
+	for (BeanDefinitionHolder holder : configCandidates) {
+		BeanDefinition bd = holder.getBeanDefinition();
+		try {
+			//是否是注解类
+			if (bd instanceof AnnotatedBeanDefinition) {
+				parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 			}
-			catch (BeanDefinitionStoreException ex) {
-				throw ex;
-			}
-			catch (Throwable ex) {
-				throw new BeanDefinitionStoreException(
-						"Failed to parse configuration class [" + bd.getBeanClassName() + "]", ex);
-			}
-		}
-    	//执行配置类
-		this.deferredImportSelectorHandler.process();
-	}
--------------------
-    	protected final void parse(AnnotationMetadata metadata, String beanName) throws IOException {
-		processConfigurationClass(new ConfigurationClass(metadata, beanName));
-	}
--------------------
-    protected void processConfigurationClass(ConfigurationClass configClass) throws IOException {
-		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
-			return;
-		}
-
-		ConfigurationClass existingClass = this.configurationClasses.get(configClass);
-		if (existingClass != null) {
-			if (configClass.isImported()) {
-				if (existingClass.isImported()) {
-					existingClass.mergeImportedBy(configClass);
-				}
-				// Otherwise ignore new imported config class; existing non-imported class overrides it.
-				return;
+			else if (bd instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) bd).hasBeanClass()) {
+				parse(((AbstractBeanDefinition) bd).getBeanClass(), holder.getBeanName());
 			}
 			else {
-				// Explicit bean definition found, probably replacing an import.
-				// Let's remove the old one and go with the new one.
-				this.configurationClasses.remove(configClass);
-				this.knownSuperclasses.values().removeIf(configClass::equals);
+				parse(bd.getBeanClassName(), holder.getBeanName());
 			}
 		}
-
-		// Recursively process the configuration class and its superclass hierarchy.
-		SourceClass sourceClass = asSourceClass(configClass);
-		do {
-            //循环处理bean,如果有父类，则处理父类，直至结束
-			sourceClass = doProcessConfigurationClass(configClass, sourceClass);
+		catch (BeanDefinitionStoreException ex) {
+			throw ex;
 		}
-		while (sourceClass != null);
-
-		this.configurationClasses.put(configClass, configClass);
+		catch (Throwable ex) {
+			throw new BeanDefinitionStoreException(
+					"Failed to parse configuration class [" + bd.getBeanClassName() + "]", ex);
+		}
 	}
+	//执行配置类
+	this.deferredImportSelectorHandler.process();
+}
+//-------------------
+	protected final void parse(AnnotationMetadata metadata, String beanName) throws IOException {
+	processConfigurationClass(new ConfigurationClass(metadata, beanName));
+}
+//-------------------
+protected void processConfigurationClass(ConfigurationClass configClass) throws IOException {
+	if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
+		return;
+	}
+
+	ConfigurationClass existingClass = this.configurationClasses.get(configClass);
+	if (existingClass != null) {
+		if (configClass.isImported()) {
+			if (existingClass.isImported()) {
+				existingClass.mergeImportedBy(configClass);
+			}
+			// Otherwise ignore new imported config class; existing non-imported class overrides it.
+			return;
+		}
+		else {
+			// Explicit bean definition found, probably replacing an import.
+			// Let's remove the old one and go with the new one.
+			this.configurationClasses.remove(configClass);
+			this.knownSuperclasses.values().removeIf(configClass::equals);
+		}
+	}
+
+	// Recursively process the configuration class and its superclass hierarchy.
+	SourceClass sourceClass = asSourceClass(configClass);
+	do {
+		//循环处理bean,如果有父类，则处理父类，直至结束
+		sourceClass = doProcessConfigurationClass(configClass, sourceClass);
+	}
+	while (sourceClass != null);
+
+	this.configurationClasses.put(configClass, configClass);
+}
 ```
 
 &emsp; 10、继续跟进doProcessConfigurationClass方法，此方式是支持注解配置的核心逻辑。  
@@ -666,39 +666,39 @@ public void parse(Set<BeanDefinitionHolder> configCandidates) {
 ```java
 processImports(configClass, sourceClass, getImports(sourceClass), true);
 
-	/**
-	 * Returns {@code @Import} class, considering all meta-annotations.
-	 */
-	private Set<SourceClass> getImports(SourceClass sourceClass) throws IOException {
-		Set<SourceClass> imports = new LinkedHashSet<>();
-		Set<SourceClass> visited = new LinkedHashSet<>();
-		collectImports(sourceClass, imports, visited);
-		return imports;
-	}
-------------------
-    	/**
-	 * Recursively collect all declared {@code @Import} values. Unlike most
-	 * meta-annotations it is valid to have several {@code @Import}s declared with
-	 * different values; the usual process of returning values from the first
-	 * meta-annotation on a class is not sufficient.
-	 * <p>For example, it is common for a {@code @Configuration} class to declare direct
-	 * {@code @Import}s in addition to meta-imports originating from an {@code @Enable}
-	 * annotation.
-	 * 看到所有的bean都以导入的方式被加载进去
-	 */
-	private void collectImports(SourceClass sourceClass, Set<SourceClass> imports, Set<SourceClass> visited)
-			throws IOException {
+/**
+* Returns {@code @Import} class, considering all meta-annotations.
+*/
+private Set<SourceClass> getImports(SourceClass sourceClass) throws IOException {
+	Set<SourceClass> imports = new LinkedHashSet<>();
+	Set<SourceClass> visited = new LinkedHashSet<>();
+	collectImports(sourceClass, imports, visited);
+	return imports;
+}
+//------------------
+/**
+* Recursively collect all declared {@code @Import} values. Unlike most
+* meta-annotations it is valid to have several {@code @Import}s declared with
+* different values; the usual process of returning values from the first
+* meta-annotation on a class is not sufficient.
+* <p>For example, it is common for a {@code @Configuration} class to declare direct
+* {@code @Import}s in addition to meta-imports originating from an {@code @Enable}
+* annotation.
+* 看到所有的bean都以导入的方式被加载进去
+*/
+private void collectImports(SourceClass sourceClass, Set<SourceClass> imports, Set<SourceClass> visited)
+		throws IOException {
 
-		if (visited.add(sourceClass)) {
-			for (SourceClass annotation : sourceClass.getAnnotations()) {
-				String annName = annotation.getMetadata().getClassName();
-				if (!annName.equals(Import.class.getName())) {
-					collectImports(annotation, imports, visited);
-				}
+	if (visited.add(sourceClass)) {
+		for (SourceClass annotation : sourceClass.getAnnotations()) {
+			String annName = annotation.getMetadata().getClassName();
+			if (!annName.equals(Import.class.getName())) {
+				collectImports(annotation, imports, visited);
 			}
-			imports.addAll(sourceClass.getAnnotationAttributes(Import.class.getName(), "value"));
 		}
+		imports.addAll(sourceClass.getAnnotationAttributes(Import.class.getName(), "value"));
 	}
+}
 ```
 
 &emsp; 12、继续回到ConfigurationClassParser中的parse方法中的最后一行，继续跟进该方法：  
@@ -707,71 +707,69 @@ processImports(configClass, sourceClass, getImports(sourceClass), true);
 this.deferredImportSelectorHandler.process()
 -------------
 public void process() {
-			List<DeferredImportSelectorHolder> deferredImports = this.deferredImportSelectors;
-			this.deferredImportSelectors = null;
-			try {
-				if (deferredImports != null) {
-					DeferredImportSelectorGroupingHandler handler = new DeferredImportSelectorGroupingHandler();
-					deferredImports.sort(DEFERRED_IMPORT_COMPARATOR);
-					deferredImports.forEach(handler::register);
-					handler.processGroupImports();
-				}
-			}
-			finally {
-				this.deferredImportSelectors = new ArrayList<>();
-			}
-		}
----------------
-  public void processGroupImports() {
-			for (DeferredImportSelectorGrouping grouping : this.groupings.values()) {
-				grouping.getImports().forEach(entry -> {
-					ConfigurationClass configurationClass = this.configurationClasses.get(
-							entry.getMetadata());
-					try {
-						processImports(configurationClass, asSourceClass(configurationClass),
-								asSourceClasses(entry.getImportClassName()), false);
-					}
-					catch (BeanDefinitionStoreException ex) {
-						throw ex;
-					}
-					catch (Throwable ex) {
-						throw new BeanDefinitionStoreException(
-								"Failed to process import candidates for configuration class [" +
-										configurationClass.getMetadata().getClassName() + "]", ex);
-					}
-				});
-			}
-		}
-------------
-    /**
-		 * Return the imports defined by the group.
-		 * @return each import with its associated configuration class
-		 */
-		public Iterable<Group.Entry> getImports() {
-			for (DeferredImportSelectorHolder deferredImport : this.deferredImports) {
-				this.group.process(deferredImport.getConfigurationClass().getMetadata(),
-						deferredImport.getImportSelector());
-			}
-			return this.group.selectImports();
+	List<DeferredImportSelectorHolder> deferredImports = this.deferredImportSelectors;
+	this.deferredImportSelectors = null;
+	try {
+		if (deferredImports != null) {
+			DeferredImportSelectorGroupingHandler handler = new DeferredImportSelectorGroupingHandler();
+			deferredImports.sort(DEFERRED_IMPORT_COMPARATOR);
+			deferredImports.forEach(handler::register);
+			handler.processGroupImports();
 		}
 	}
-------------
-    public DeferredImportSelector getImportSelector() {
-			return this.importSelector;
-		}
-------------
-    @Override
-		public void process(AnnotationMetadata annotationMetadata, DeferredImportSelector deferredImportSelector) {
-			Assert.state(deferredImportSelector instanceof AutoConfigurationImportSelector,
-					() -> String.format("Only %s implementations are supported, got %s",
-							AutoConfigurationImportSelector.class.getSimpleName(),
-							deferredImportSelector.getClass().getName()));
-			AutoConfigurationEntry autoConfigurationEntry = ((AutoConfigurationImportSelector) deferredImportSelector)
-					.getAutoConfigurationEntry(getAutoConfigurationMetadata(), annotationMetadata);
-			this.autoConfigurationEntries.add(autoConfigurationEntry);
-			for (String importClassName : autoConfigurationEntry.getConfigurations()) {
-				this.entries.putIfAbsent(importClassName, annotationMetadata);
+	finally {
+		this.deferredImportSelectors = new ArrayList<>();
+	}
+}
+---------------
+public void processGroupImports() {
+	for (DeferredImportSelectorGrouping grouping : this.groupings.values()) {
+		grouping.getImports().forEach(entry -> {
+			ConfigurationClass configurationClass = this.configurationClasses.get(
+					entry.getMetadata());
+			try {
+				processImports(configurationClass, asSourceClass(configurationClass),
+						asSourceClasses(entry.getImportClassName()), false);
 			}
-		}
-
+			catch (BeanDefinitionStoreException ex) {
+				throw ex;
+			}
+			catch (Throwable ex) {
+				throw new BeanDefinitionStoreException(
+						"Failed to process import candidates for configuration class [" +
+								configurationClass.getMetadata().getClassName() + "]", ex);
+			}
+		});
+	}
+}
+//------------
+/**
+* Return the imports defined by the group.
+* @return each import with its associated configuration class
+*/
+public Iterable<Group.Entry> getImports() {
+	for (DeferredImportSelectorHolder deferredImport : this.deferredImports) {
+		this.group.process(deferredImport.getConfigurationClass().getMetadata(),
+				deferredImport.getImportSelector());
+	}
+	return this.group.selectImports();
+}
+//------------
+public DeferredImportSelector getImportSelector() {
+	return this.importSelector;
+}
+//------------
+@Override
+public void process(AnnotationMetadata annotationMetadata, DeferredImportSelector deferredImportSelector) {
+	Assert.state(deferredImportSelector instanceof AutoConfigurationImportSelector,
+			() -> String.format("Only %s implementations are supported, got %s",
+					AutoConfigurationImportSelector.class.getSimpleName(),
+					deferredImportSelector.getClass().getName()));
+	AutoConfigurationEntry autoConfigurationEntry = ((AutoConfigurationImportSelector) deferredImportSelector)
+			.getAutoConfigurationEntry(getAutoConfigurationMetadata(), annotationMetadata);
+	this.autoConfigurationEntries.add(autoConfigurationEntry);
+	for (String importClassName : autoConfigurationEntry.getConfigurations()) {
+		this.entries.putIfAbsent(importClassName, annotationMetadata);
+	}
+}
 ```

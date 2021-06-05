@@ -29,11 +29,12 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1.  **<font color = "clime">Redis各个数据类型的使用场景：分析存储类型和可用的操作。</font>**  
+1. Key操作命令：expire，为给定key设置生存时间；TTL key，以秒为单位，返回给定 key 的剩余生存时间(TTL, time to live)。  
+2.  **<font color = "clime">Redis各个数据类型的使用场景：分析存储类型和可用的操作。</font>**  
     * 有序列表list：列表不但是有序的，同时支持按照索引范围获取元素。可以用作栈、文章列表。  
     * 无序集合set：集合内操作，可以用作标签、点赞、签到；spop/srandmember命令生成随机数；集合间操作，可以用作社交需求。  
-    * 有序集合ZSet：可以用作排行榜功能。  
-2. **ZSet实现多维排序：**  
+    * 有序集合ZSet：有序的集合，每个元素有个 score。可以用作排行榜、延迟队列。  
+3. **ZSet实现多维排序：**  
 &emsp; <font color = "red">将涉及排序的多个维度的列通过一定的方式转换成一个特殊的列</font>，即result = function(x, y, z)，即x，y，z是三个排序因子，例如下载量、时间等，通过自定义函数function()计算得到result，将result作为ZSet中的score的值，就能实现任意维度的排序需求了。 
 
 # 1. Redis  

@@ -20,8 +20,6 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/SpringMVC/mvc-5.png)  
-
 &emsp; 有些特殊数据类型无法直接进行数据绑定，必须先经过数据转换，例如日期。  
 
 

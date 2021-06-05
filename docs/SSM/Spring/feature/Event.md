@@ -60,7 +60,7 @@ https://blog.csdn.net/weixin_39035120/article/details/86225377
 |ContextClosedEvent|Spring应用上下文关闭事件|
 
 * ContextRefreshedEvent，上下文更新事件  
-    &emsp; **<font color = "clime">ContextRefreshedEvent上下文更新事件发生在刷新容器（refresh()方法）的“完成刷新容器时发布对应的事件”步骤中。</font>**  
+    &emsp; **<font color = "blue">ContextRefreshedEvent上下文更新事件发生在刷新容器（refresh()方法）的“完成刷新容器时发布对应的事件”步骤中。</font>**  
     ```java
     // AbstractApplicationContext.class
     public void refresh() throws BeansException, IllegalStateException {

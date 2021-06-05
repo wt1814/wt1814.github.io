@@ -40,6 +40,9 @@
 
 # 1. ~~循环依赖~~  
 <!-- 
+Spring循环依赖-earlySingletonObjects的作用
+https://zhuanlan.zhihu.com/p/149654571
+
 
 ★★★https://stor.51cto.com/art/202101/643646.htm
 https://mp.weixin.qq.com/s/p01mrjBwstK74d3D3181og
@@ -308,6 +311,15 @@ https://www.cnblogs.com/grey-wolf/p/13034371.html
 &emsp; 所以，就要加一个map，这个map，用来存放那种不完整的bean。  
 
 4. **~~二级缓存能不能解决？为什么要三级缓存？~~**  
+<!-- 
+
+
+Spring循环依赖三级缓存是否可以减少为二级缓存
+https://blog.csdn.net/szw906689771/article/details/112034259
+
+
+https://www.cnblogs.com/asker009/p/14376955.html
+-->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
 &emsp; 理论上来说是可以解决循环依赖的问题，但是注意：为什么要在三级缓存中放置匿名内部类？  
 &emsp; 本质在于为了创建代理对象，假如现在有A类，需要生成代理对象，A需要实例化。  

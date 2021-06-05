@@ -72,6 +72,8 @@ https://mp.weixin.qq.com/s/-CbNU5uPH1cpMuZ-eQQgFw
 3. 查询注册表：HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Runtime Environment\"当前JRE版本号"\JavaHome。  
 
 ## 1.3. JVM  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-145.png)  
+
 &emsp; JVM(Java Virtual Mechinal)：Java虚拟机，是JRE的一部分，是整个java实现跨平台的最核心的部分，是可运行java字节码文件.class的虚拟计算机。  
 &emsp; **JVM标准结构：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-4.png)  

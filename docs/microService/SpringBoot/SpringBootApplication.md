@@ -12,17 +12,13 @@
 
 <!-- /TOC -->
 
-* @SpringBootApplication  
+1. @SpringBootApplication  
     * @ComponentScan  
     * @SpringBootConfiguration  
     * @EnableAutoConfiguration  
-        * EnableAutoConfigurationImportSelector.class
-            * getCandidateConfigurations()  
-                * loadSpringFactories()
-
-
-* @Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。AutoConfigurationImportSelector类中存在getCandidateConfigurations()方法可以获取所有的配置。  
-* AutoConfigurationImportSelector#getCandidateConfigurations()方法获取所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
+2. @EnableAutoConfiguration使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。   
+&emsp; @Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。AutoConfigurationImportSelector类中存在getCandidateConfigurations()方法可以获取所有的配置。  
+&emsp; AutoConfigurationImportSelector#getCandidateConfigurations()方法获取所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
 
 
 # 1. SpringBoot自动配置

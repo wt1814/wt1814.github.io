@@ -1,6 +1,10 @@
 
 
 # idea
+<!-- 
+IntelliJ IDEA 2020.2.3永久激活教程
+https://www.yuque.com/docs/share/23fc9e41-ad96-4343-aced-a35419117d89
+-->
 
 ## Idea更新本地仓库maven构建索引
 <!-- 

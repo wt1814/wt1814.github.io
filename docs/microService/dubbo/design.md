@@ -16,9 +16,9 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "clime">protocol 远程调用层：封装 RPC 调用，以 Invocation, Result 为中心，扩展接口为 Protocol, Invoker, Exporter。</font>**
-2. **<font color = "clime">proxy 服务代理层：服务接口透明代理，生成服务的客户端Stub和服务器端Skeleton, 以ServiceProxy为中心，扩展接口为ProxyFactory。</font>**  
-&emsp; **<font color = "clime">Proxy层封装了所有接口的透明化代理，而在其它层都以 Invoker 为中心，只有到了暴露给用户使用时，才用 Proxy 将 Invoker 转成接口，或将接口实现转成 Invoker，也就是去掉 Proxy 层 RPC 是可以 Run 的，只是不那么透明，不那么看起来像调本地服务一样调远程服务。</font>**  
+1. **<font color = "red">protocol 远程调用层：封装RPC调用，以 Invocation, Result 为中心，扩展接口为 Protocol, Invoker, Exporter。</font>**
+2. **<font color = "red">proxy 服务代理层：服务接口透明代理，生成服务的客户端Stub和服务器端Skeleton, 以ServiceProxy为中心，扩展接口为ProxyFactory。</font>**  
+&emsp; **<font color = "red">Proxy层封装了所有接口的透明化代理，而在其它层都以 Invoker 为中心，只有到了暴露给用户使用时，才用 Proxy 将 Invoker 转成接口，或将接口实现转成 Invoker，也就是去掉 Proxy 层 RPC 是可以 Run 的，只是不那么透明，不那么看起来像调本地服务一样调远程服务。</font>**  
 
 
 # 1. Dubbo框架设计  

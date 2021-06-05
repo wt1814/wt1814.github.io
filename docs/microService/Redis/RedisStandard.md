@@ -15,7 +15,7 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "red">~~总结：~~</font>**  
 1. **避免多个应用使用一个 Redis 实例。**  
 2. **<font color = "clime">以业务名 (或数据库名) 为前缀(防止 key 冲突)，用冒号分隔，比如业务名: 表名: id</font>**  
 3. **<font color = "clime">bigkey</font>**  
