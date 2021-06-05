@@ -16,7 +16,10 @@ https://mp.weixin.qq.com/s/Eo-WR1agGETF0hE3Eaivrg
 https://segmentfault.com/a/1190000023603639
 https://www.bbsmax.com/A/amd0v7w1Jg/
 -->
+<<<<<<< HEAD
 &emsp; ~~JDK 8的CompletionService相对于之前版本的Future而言，其优势是能够尽可能快的得到执行完成的任务。例如有4个并发任务要执行，正常情况下通过Future.get()获取，通常只能按照提交的顺序获得结果，如果最后提交的最先完成的话，总执行时间会长很多。而通过CompletionService能够降低总执行时间。~~  
+=======
+>>>>>>> 05dc2b95fc995cfa3419e66d8bce69a6444dc6f5
 &emsp; **<font color = "red">JDK 8的CompletionService相对于之前版本的Future而言，其优势是能够尽可能快的得到执行完成的任务。</font>**  
 &emsp; CompletionService可以看作FutureTask的一个进阶版，通过FutureTask+阻塞队列的方式能够按照线程执行完毕的顺序获取线程执行结果，起到聚合的目的，这个其实跟CountDownLatch差不多，如果需要执行的线程次数是固定的且需要等待执行结果全部返回后统一处理，可以使用CompletionService。  
 

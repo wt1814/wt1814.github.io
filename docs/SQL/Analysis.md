@@ -319,6 +319,7 @@ explain extended + show warnings
 阿里的程序员也不过如此，竟被一个简单的SQL查询难住 
 https://mp.weixin.qq.com/s/6jjLv2SIBmh2kjHunxJVYA
 -->
+<<<<<<< HEAD
 
 ## 1.6. ~~proceduer analyse()取得建议~~  
 &emsp; PROCEDURE ANALYSE()，在优化表结构时可以辅助参考分析语句。  
@@ -330,3 +331,6 @@ SELECT column_name FROM table_name PROCEDURE ANALYSE();
 
 ## 1.7. sql分析工具
 &emsp; 小米开源的sql分析工具：soar-web  
+=======
+&emsp; MySQL5.6版本后提供了对SQL的跟踪工具trace，通过使用trace，可以知道optimizer如何选择执行计划的。  
+>>>>>>> 05dc2b95fc995cfa3419e66d8bce69a6444dc6f5
