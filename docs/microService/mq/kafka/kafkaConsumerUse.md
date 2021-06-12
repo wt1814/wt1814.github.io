@@ -40,6 +40,7 @@
     1. 消费者组：Kafka消费端确保一个Partition在一个消费者组内只能被一个消费者消费。  
     2. **<font color = "red">消费者组重平衡：</font>**  
     &emsp; **什么是重平衡？ 假设组内某个实例挂掉了，Kafka能够自动检测到，然后把这个Failed实例之前负责的分区转移给其他活着的消费者，这个过程称之为重平衡(Rebalance)。**  
+    &emsp; 重平衡触发条件：组成员发生变更、组订阅topic数发生变更、组订阅topic的分区数发生变更。
     3.  **重平衡流程：**  
     &emsp; 引入协调者(每一台Broker上都有一个协调者组件)，由协调者为消费组服务，为消费者们做好协调工作。一个消费组只需一个协调者进行服务。  
     &emsp; 1. 当消费者收到协调者的再均衡开始通知时，需要立即提交偏移量；  
@@ -172,7 +173,7 @@ https://www.kancloud.cn/nicefo71/kafka/1473378
     * 消费组内新增消费者，触发 Repartition 操作，如下图所示。一般这种情况是为了提高消费端的消费能力，从而加快消费进度。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-92.png)   
 2. 组订阅topic数发生变更，比如使用基于正则表达式的订阅，当匹配正则表达式的新topic被创建时则会触发rebalance。
-3. 组订阅topic的分区数发生变更，比如使用命令行脚本增加了订阅topic的分区数。如下图所示。一般这种调整 Partition 个数的情况也是为了提高消费端消费速度的，因为当消费者个数大于等于 Partition 个数时，在增加消费者个数是没有用的（原因是：在一个消费组内，消费者:Partition = 1:N，当 N 小于 1 时，相当于消费者过剩了），所以一方面增加 Partition 个数同时增加消费者个数可以提高消费端的消费速度。  
+3. 组订阅topic的分区数发生变更，比如使用命令行脚本增加了订阅topic的分区数。如下图所示。一般这种调整 Partition 个数的情况也是为了提高消费端消费速度的，因为当消费者个数大于等于 Partition 个数时，在增加消费者个数是没有用的（原因是：在一个消费组内，消费者:Partition = 1:N，当 N 小于 1 时，相当于消费者过剩了）， **<font color = "clime">所以一方面增加 Partition 个数同时增加消费者个数可以提高消费端的消费速度。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-90.png)    
 
 #### 1.2.2.3. 重平衡流程

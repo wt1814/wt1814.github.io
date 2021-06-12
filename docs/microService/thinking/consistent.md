@@ -55,7 +55,7 @@
 &emsp; **<font color = "red">迁移并不是直接进行数据迁移，而是在查询时去找顺时针到后继节点，因缓存未命中而刷新缓存。</font>**  
 
 ## 1.3. 缺点  
-&emsp; 如像下图这样，按顺时针规则，所有的key都归属于同一个节点，会造成数据倾斜。 **<font color = "clime">如果节点太少或分布不均匀的时候，都会造成数据倾斜。</font>**  
+&emsp; 如像下图这样，按顺时针规则，所有的key都归属于同一个节点，会造成 **<font color = "blue">数据倾斜。</font>** **<font color = "clime">如果节点太少或分布不均匀的时候，都会造成数据倾斜。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-9.png)  
 &emsp; <font color = "red">为了优化这种节点太少而产生的不均衡情况，一致性哈希算法引入了“虚拟节点”的概念。</font>所谓虚拟节点，就是<font color = "red">基于原来的物理节点映射出N个子节点</font>，最好把所有的子节点映射到环形空间上。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/functions/function-10.png)  

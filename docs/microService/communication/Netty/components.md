@@ -22,7 +22,7 @@
 1. 由netty运行流程可以看出Netty核心组件有Bootstrap、EventLoop、channel相关、byteBuf...  
 2. Bootstrap和ServerBootstrap是针对于Client和Server端定义的引导类，主要用于配置各种参数，并启动整个Netty服务。  
 3. 线程模型之EventLoop  
-    1. 当一个连接到达时，Netty就会创建一个Channel，然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
+    1. **<font color = "blue">当一个连接到达时，Netty就会创建一个Channel，</font>** 然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
     2. <font color = "clime">EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。</font>  
 4. Channel  
     1. **在Netty中，Channel是一个Socket连接的抽象，它为用户提供了关于底层Socket状态(是否是连接还是断开)以及对Socket的读写等操作。**  

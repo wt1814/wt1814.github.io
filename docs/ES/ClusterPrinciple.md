@@ -76,7 +76,7 @@ Elasticsearch 中的节点(比如共 20 个)，其中的 10 个 选了一个mast
 &emsp; **<font color = "clime">正确设置最少投票通过数量(discovery.zen.minimum_master_nodes)参数，可以避免脑分裂问题。</font>**  
 &emsp; discovery.zen.minimum_master_nodes参数表示至少需要多少个master eligible node，才可以成功地选举出master，否则不进行选举。  
 
-&emsp; 足够的master eligible node计算公式：quorum = master_eligible_nodes / 2 + 1  
+&emsp; 足够的master eligible node计算公式：quorum = master_eligible_nodes / 2 + 1。  
 
 &emsp; 如上图10个node的集群，如果全部是master eligible node，那么quorum = 10/2 + 1 = 6。  
 &emsp; 如果有3个master eligible node，7个data node，那么quorum = 3/2 + 1 = 2。  

@@ -8,6 +8,8 @@ https://mp.weixin.qq.com/s/s3qtr5hpB7Q3-Tu60R8gxA
 还在为 Arthas 命令头疼？ 来看看这个插件吧！ 
 https://mp.weixin.qq.com/s/OZT1wIfmzSa5TiMIbmZ5aQ
 -->
+
+## 简介
 &emsp; 官方文档：http://arthas.gitee.io/  
 &emsp; Arthas(阿尔萨斯)是Alibaba开源的Java诊断工具，深受开发者喜爱。  
 &emsp; 当你遇到以下类似问题而束手无策时，Arthas可以帮助你解决：  
@@ -19,5 +21,14 @@ https://mp.weixin.qq.com/s/OZT1wIfmzSa5TiMIbmZ5aQ
 1. 有什么办法可以监控到JVM的实时运行状态？  
 1. 怎么快速定位应用的热点，生成火焰图？  
 
-&emsp; Arthas支持JDK 6+，支持Linux/Mac/Windows，采用命令行交互模式，同时提供丰富的 Tab 自动补全功能，进一步方便进行问题的定位和诊断。  
+&emsp; Arthas支持JDK 6+，支持Linux/Mac/Windows，采用命令行交互模式，同时提供丰富的Tab自动补全功能，进一步方便进行问题的定位和诊断。  
+
+## 搭建、启动
+&emsp; 前提：有一个正在运行的java应用。  
+
+1. wget(下载) https://alibaba.github.io/arthas/arthas-boot.jar
+2. 启动：java -jar arthas-boot.jar
+
+## 使用命令
+
 

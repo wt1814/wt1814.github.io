@@ -111,9 +111,8 @@ https://blog.csdn.net/zuozewei/article/details/108165523
 &emsp; **Kubernetes集群网络存储与Pod挂载点的区别：**  
 &emsp; <font color = "clime">Kubernetes集群网络存储是不同宿主机实现文件共享；Pod挂载点是容器与宿主机实现文件共享。</font>  
 
-
 ### 1.2.4. 内网中搭建私有仓库  
-......
+&emsp; ......
 <!-- 
 从私有仓库拉取镜像
 https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-registry/

@@ -4,7 +4,7 @@
 
 - [1. kafka特性](#1-kafka特性)
     - [1.1. 高性能(读写机制)](#11-高性能读写机制)
-        - [1.1.1. 顺序读写](#111-顺序读写)
+        - [1.1.1. 持久化-顺序读写](#111-持久化-顺序读写)
         - [1.1.2. ~~基于Sendfile实现零拷贝(Zero Copy)~~](#112-基于sendfile实现零拷贝zero-copy)
     - [1.2. 高可用与数据一致性(副本机制)](#12-高可用与数据一致性副本机制)
     - [1.3. 可靠性](#13-可靠性)
@@ -39,7 +39,7 @@ Kafka服务器在响应客户端读取的时候，底层使用ZeroCopy技术，�
 
 &emsp; ~~数据写入Kafka会把收到的消息都写入到硬盘中。为了优化写入速度，Kafka使用了：顺序写入和Memory Mapped File 。~~  
 
-### 1.1.1. 顺序读写  
+### 1.1.1. 持久化-顺序读写  
 &emsp; kafka的消息是不断追加到文件中的，这个特性使kafka可以充分利用磁盘的顺序读写性能。Kafka会将数据顺序插入到文件末尾，消费者端通过控制偏移量来读取消息，这样做会导致数据无法删除，时间一长，磁盘空间会满，kafka提供了2种策略来删除数据：基于时间删除和基于partition文件的大小删除。  
 
     顺序读写不需要硬盘磁头的寻道时间，只需很少的扇区旋转时间，所以速度远快于随机读写。
@@ -79,7 +79,7 @@ public long transferFrom(FileChannel fileChannel, long position, long count) thr
 
 
 ## 1.2. 高可用与数据一致性(副本机制)
-[kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
+&emsp; 参考[kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
 
 ## 1.3. 可靠性
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-118.png)  
@@ -115,7 +115,7 @@ public long transferFrom(FileChannel fileChannel, long position, long count) thr
 [kafka幂等和事务](/docs/microService/mq/kafka/kafkaTraction.md)
 
 ## 1.4. 如何让Kafka的消息有序？  
-&emsp; Kafka无法做到消息全局有序，只能做到 Partition 维度的有序。所以如果想要消息有序，就需要从Partition维度入手。一般有两种解决方案。
+&emsp; Kafka无法做到消息全局有序，只能做到 Partition 维度的有序。所以如果想要消息有序，就需要从Partition维度入手。一般有两种解决方案：
 
 * 单Partition，单Consumer。通过此种方案强制消息全部写入同一个Partition内，但是同时也牺牲掉了Kafka高吞吐的特性了，所以一般不会采用此方案。  
 * **多Partition，多Consumer，指定key使用特定的Hash策略，使其消息落入指定的Partition 中，从而保证相同的key对应的消息是有序的。** 此方案也是有一些弊端，比如当Partition个数发生变化时，相同的key对应的消息会落入到其他的Partition上，所以一旦确定Partition个数后就不能在修改Partition个数了。  

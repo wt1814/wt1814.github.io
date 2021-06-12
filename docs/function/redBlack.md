@@ -76,18 +76,18 @@ https://mp.weixin.qq.com/s/oAyiRC_O-N5CHqAjt2va9w
 &emsp; 已知插入根节点涂为黑色， **<font color = "clime">其他节点都是涂红色；如果插入结点的父节点为黑色，就不需要进行旋转变色调整，</font>** 其他情况都需要根据实际选择合适的处理策略进行调整，使其符合红黑树性质。最开始调整的时候是将插入结点作为当前节点。 
 
 ### 1.2.1. 变色  
-&emsp; 如果当前节点的父亲节点和叔叔节点均是红色，那么执行以下变色操作：父 --> 黑 、 叔 --> 黑 、 爷 --> 红。    
+&emsp; 如果当前节点的父亲节点和叔叔节点均是红色，那么执行以下变色操作： **<font color = "clime">父 --> 黑 、 叔 --> 黑 、 爷 --> 红。</font>**    
 
 &emsp; 开始分析爷爷是否满足红黑树特性  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-45.png)  
 
 ### 1.2.2. 左旋  
-&emsp; 条件：父亲是红色 、 叔叔是黑色 、 当前是右子树。  
+&emsp; **<font color = "clime">条件：父亲是红色、叔叔是黑色、当前是右子树。</font>**  
 &emsp; 执行：以父亲进行旋转  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-46.png)  
 
 ### 1.2.3. 右旋  
-&emsp; 条件：父亲是红色、叔叔是黑色、当前是左子树。  
+&emsp;  **<font color = "clime">条件：父亲是红色、叔叔是黑色、当前是左子树。</font>**   
 &emsp; 执行：
 
 * 父亲节点 变为 黑色

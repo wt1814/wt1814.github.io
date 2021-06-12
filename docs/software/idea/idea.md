@@ -4,6 +4,8 @@
 <!-- 
 IntelliJ IDEA 2020.2.3永久激活教程
 https://www.yuque.com/docs/share/23fc9e41-ad96-4343-aced-a35419117d89
+
+
 -->
 
 ## Idea更新本地仓库maven构建索引
@@ -35,4 +37,9 @@ https://blog.csdn.net/a772304419/article/details/79680775
 <!-- 
  Stream Trace 
 https://mp.weixin.qq.com/s/-IZ9jDMXUlL4kFt-OZ-qQw
+-->
+
+### 代码质量检测插件
+<!-- 
+https://mp.weixin.qq.com/s/UwS0oGaHR5yV5PIAHx6QZg
 -->

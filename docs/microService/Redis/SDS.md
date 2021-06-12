@@ -24,6 +24,8 @@
 
 # 1. SDS字符串  
 <!-- 
+sds 空间分配策略
+https://mp.weixin.qq.com/s/R7Ux8ji6WpvfZ45VUt4Aiw
 https://mp.weixin.qq.com/s/VY31lBOSggOHvVf54GzvYw
 https://mp.weixin.qq.com/s/f71rakde6KBJ_ilRf1M8xQ
 -->
@@ -113,6 +115,3 @@ SDS还提供「空间预分配」和「惰性空间释放」两种策略。在�
 
 4. <font color = "clime">二进制安全</font>  
 &emsp; SDS是二进制安全的，除了可以储存字符串以外还可以储存二进制文件(如图片、音频，视频等文件的二进制数据)；而c语言中的字符串是以空字符串作为结束符，一些图片中含有结束符，因此不是二进制安全的。  
-
-
-

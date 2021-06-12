@@ -14,19 +14,21 @@
         - [1.6.2. 内存溢出的解决方案](#162-内存溢出的解决方案)
             - [1.6.2.1. 可以使用的解决方案](#1621-可以使用的解决方案)
             - [1.6.2.2. 使用内存查看工具分析堆dump文件](#1622-使用内存查看工具分析堆dump文件)
-            - [1.6.2.3. ★★★dump中live参数](#1623-★★★dump中live参数)
-            - [1.6.2.4. ★★★jvm内存快照dump文件太大，怎么分析](#1624-★★★jvm内存快照dump文件太大怎么分析)
+            - [1.6.2.3. ★★★jvm内存快照dump文件太大，怎么分析](#1623-★★★jvm内存快照dump文件太大怎么分析)
+                - [1.6.2.3.1. ★★★jmap中live参数](#16231-★★★jmap中live参数)
+                - [1.6.2.3.2. jhat指定最大堆内存](#16232-jhat指定最大堆内存)
+                - [1.6.2.3.3. linux下的mat](#16233-linux下的mat)
     - [1.7. 线程死锁](#17-线程死锁)
     - [1.8. 其他情况](#18-其他情况)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 快速恢复业务：隔离故障服务器
+1. 快速恢复业务：隔离故障服务器。
 2. CPU飚高  
 &emsp; **<font color = "red">CPU过高可能是系统频繁的进行Full GC，导致系统缓慢。</font><font color = "clime">而平常也可能遇到比较耗时的计算，导致CPU过高的情况。</font>**  
 &emsp; **<font color = "clime">怎么区分导致CPU过高的原因具体是Full GC次数过多还是代码中有比较耗时的计算？</font>** 如果是Full GC次数过多，那么通过jstack得到的线程信息会是类似于VM Thread之类的线程，而如果是代码中有比较耗时的计算，那么得到的就是一个线程的具体堆栈信息。 
-3. CPU高，查看所有进程占用率要远小于100
+3. **<font color = "blue">CPU高，查看所有进程占用率要远小于100。</font>**
     1. 可能多个线程执行同一方法，每个线程占有不高，但总和比较大。  
     2. 可以使用arthas工具的thread -n -i分析。
 4. FGC过高  
@@ -39,8 +41,8 @@
 		3. 对代码进行走查和分析，找出可能发生内存溢出的位置。 
 		4. 使用内存查看工具动态查看内存快照。 
 	2. 使用内存查看工具分析堆dump文件
-	3. **<font color = "clime">live参数表示需要抓取目前在生命周期内的内存对象，也就是说GC收不走的对象，然后绝大部分情况下，需要的看的就是这些内存。</font>**  
-	4. jvm内存快照dump文件太大：  
+    3. jvm内存快照dump文件太大： 
+	    * **<font color = "clime">live参数表示需要抓取目前在生命周期内的内存对象，也就是说GC收不走的对象，然后绝大部分情况下，需要的看的就是这些内存。</font>**   
 		* 如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。
 		* 如果dump文件太大，使用linux下的mat，既Memory Analyzer Tools。   
 
@@ -234,7 +236,15 @@ https://blog.csdn.net/prestigeding/article/details/89075661
 2. 使用内存工具分析  
 &emsp; 有了dump文件，就可以通过dump分析工具进行分析，比如常用的MAT，Jprofile，jvisualvm等工具都可以分析，这些工具都能够看出到底是哪里溢出，哪里创建了大量的对象等等信息。  
 
-#### 1.6.2.3. ★★★dump中live参数  
+
+#### 1.6.2.3. ★★★jvm内存快照dump文件太大，怎么分析  
+<!-- 
+https://www.cnblogs.com/liangzs/p/8489321.html
+jhat -J-Xmx512M a1.log
+https://www.cnblogs.com/baihuitestsoftware/articles/6406271.html
+-->
+
+##### 1.6.2.3.1. ★★★jmap中live参数  
 &emsp; 开发人员经常需要查看内存中的一些变量的值，来定位生产环境的问题。一般会使用jmap来抓dump，在抓dump的时候，会把堆全部扒下来：  
 
 ```text
@@ -250,14 +260,11 @@ jmap -dump:live,format=b,file=path pid
 
 &emsp; 那么抓下来的dump会减少一个数量级，在几十M左右，这样我们传输，打开这个dump的时间将大大减少，为解决故障赢取了宝贵的时间。   
 
-#### 1.6.2.4. ★★★jvm内存快照dump文件太大，怎么分析  
-<!-- 
-https://www.cnblogs.com/liangzs/p/8489321.html
-jhat -J-Xmx512M a1.log
-https://www.cnblogs.com/baihuitestsoftware/articles/6406271.html
--->
-* 如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。
-* 如果dump文件太大，使用linux下的mat，既Memory Analyzer Tools。   
+##### 1.6.2.3.2. jhat指定最大堆内存
+&emsp; 如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。
+
+##### 1.6.2.3.3. linux下的mat
+&emsp; 如果dump文件太大，使用linux下的mat，既Memory Analyzer Tools。   
 
 ## 1.7. 线程死锁  
 &emsp; 死循环、死锁、阻塞、页面打开慢等问题，打印线程堆栈是最好的解决问题的途径。  

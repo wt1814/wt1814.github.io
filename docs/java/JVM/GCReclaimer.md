@@ -68,7 +68,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 * 并行收集器【吞吐量优先】 -> Parallel Scanvenge、Parallel Old  
 &emsp; **<font color = "red">多条垃圾收集线程并行工作，但此时用户线程仍然处于等待状态。</font>** 适用于科学计算、后台处理等交互场景 。  
 * 并发收集器【停顿时间优先】 -> CMS、G1  
-&emsp; **<font color = "red">用户线程和垃圾收集线程同时执行(但并不一定是并行的，可能是交替执行的)，垃圾收集线程在执行的时候不会停顿用户线程的运行。</font>** 适用于相对时间有要求的场景，比如Web。  
+&emsp; **<font color = "red">用户线程和垃圾收集线程同时执行</font><font color = "blue">(但并不一定是并行的，可能是交替执行的)，</font><font color = "red">垃圾收集线程在执行的时候不会停顿用户线程的运行。</font>** 适用于相对时间有要求的场景，比如Web。  
 
 ## 1.3. 收集器详解
 &emsp; HotSpot虚拟机所包含的所有收集器如图：  

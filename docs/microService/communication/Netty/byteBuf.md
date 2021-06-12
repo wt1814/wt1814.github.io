@@ -59,35 +59,29 @@ https://mp.weixin.qq.com/s/qSiExDGODbj4NXJQNcKpdA
 
 
 ### 1.1.4. ★★★~~内存使用~~
+&emsp; **<font color = "clime">默认情况下，安卓平台使用非池实现，其他平台使用内存池实现。</font>**  
+
 1. 堆外内存  
 &emsp; 堆内内存 / 堆外内存的切换方式，指定参数：`io.netty.noPreferDirect = true / false`  
-
 &emsp; 默认不使用堆内内存的，可以这样指定使用堆内内存
-
 ```java
 ServerBootstrap b = new ServerBootstrap();
 b.childOption(ChannelOption.ALLOCATOR, new PooledByteBufAllocator(false))
 ```
-
-&emsp; Netty分配堆外内存的本质是调用 JDK 的ByteBuffer.allocateDirect(initialCapacity); 方法，再往下就是 JDK 的 Unsafe 了。
+&emsp; Netty分配堆外内存的本质是调用JDK的`ByteBuffer.allocateDirect(initialCapacity);`方法，再往下就是JDK的Unsafe了。
 
 2. 内存池  
-&emsp; 内存池 / 非内存池 的切换方式，指定参数：`io.netty.allocator.type = unpooled / pooled` 
+&emsp; 内存池 / 非内存池 的切换方式，指定参数：`io.netty.allocator.type = unpooled / pooled`  
 &emsp; 启动类中指定配置：  
-
 ```java
 ServerBootstrap b = new ServerBootstrap();
 b.childOption(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT);
 ```
-
 &emsp; 或
-
 ```java
 ServerBootstrap b = new ServerBootstrap();
 b.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
 ```
-
-&emsp; **<font color = "clime">默认情况下，安卓平台使用非池实现，其他平台使用内存池实现，在未指定 netty.allocator.type 参数时，默认内存池实现。</font>**  
 
 ## 1.2. ByteBufAllocator内存管理器
 [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)   

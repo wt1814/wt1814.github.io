@@ -14,10 +14,6 @@
             - [1.3.2.1. 多线程模型简介](#1321-多线程模型简介)
             - [1.3.2.2. 多线程模型缺点](#1322-多线程模型缺点)
         - [1.3.3. 主从多线程模型](#133-主从多线程模型)
-    - [1.4. Reactor线程模型详解二](#14-reactor线程模型详解二)
-        - [1.4.1. 单Reactor单线程模型](#141-单reactor单线程模型)
-        - [1.4.2. 单Reactor多线程模型](#142-单reactor多线程模型)
-        - [1.4.3. 单Reactor单线程模型](#143-单reactor单线程模型)
     - [1.5. Netty中的线程模型与Reactor的联系](#15-netty中的线程模型与reactor的联系)
         - [1.5.1. 单线程模型](#151-单线程模型)
         - [1.5.2. 多线程模型](#152-多线程模型)
@@ -32,23 +28,17 @@ Reactor的一般流程、3种线程模型、Netty中的Reactor
 
 &emsp; **<font color = "red">总结：</font>**  
 1. Reactor线程模型跟NIO中Selctor类似，多路复用，事件分发。  
-2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，其中Reactor负责监听和分发事件，线程池负责处理事件。</font>** **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
+2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font><font color = "blue">其中Reactor负责监听和分发事件，线程池负责处理事件。</font>** **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
 3. **单线程模型(单Reactor单线程)**  
 &emsp; ~~这是最基本的单Reactor单线程模型。其中Reactor线程，负责多路分离套接字，有新连接到来触发connect 事件之后，交由Acceptor进行处理，有IO读写事件之后交给hanlder处理。~~  
 &emsp; ~~Acceptor主要任务就是构建handler，在获取到和client相关的SocketChannel之后 ，绑定到相应的hanlder上，对应的SocketChannel有读写事件之后，基于racotor分发,hanlder就可以处理了（所有的IO事件都绑定到selector上，有Reactor分发）。~~  
-&emsp; **<font color = "red">Reactor单线程模型，指的是所有的IO操作都在同一个NIO线程上面完成。</font>** 单个NIO线程会成为系统瓶颈，并且会有节点故障问题。  
-&emsp; NIO线程的职责如下：  
-    * 作为NIO服务端，接收客户端的TCP请求；  
-    * 作为NIO客户端，向服务端发起TCP请求；  
-    * 读取通信对端的请求或者应答消息；  
-    * 向通信对端发送消息请求或者应答消息。  
+&emsp; **<font color = "red">Reactor单线程模型，指的是所有的IO操作都在同一个NIO线程上面完成。</font>** 单个NIO线程会成为系统瓶颈，并且会有节点故障问题。   
 4. **多线程模型(单Reactor多线程)**  
 &emsp; ~~相对于第一种单线程的模式来说，在处理业务逻辑，也就是获取到IO的读写事件之后，交由线程池来处理，这样可以减小主reactor的性能开销，从而更专注的做事件分发工作了，从而提升整个应用的吞吐。~~  
-&emsp; Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作。在极个别特殊场景中，一个NIO线程负责监听和处理所有的客户端连接可能会存在性能问题。  
-    1. 有专门一个NIO线程(Acceptor线程)用于监听服务端，接收客户端的TCP连接请求；  
-    2. 网络IO操作(读、写等)由一个NIO线程池负责，线程池可以采用标准的JDK线程池实现，它包含一个任务队列和N个可用的线程，由这些NIO线程负责消息的读取、解码、编码和发送；    
-    3. 1个NIO线程可以同时处理N条链路，但是1个链路只对应1个NIO线程，防止发生并发操作问题。    
+&emsp; Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作。在极个别特殊场景中，一个NIO线程(Acceptor线程)负责监听和处理所有的客户端连接可能会存在性能问题。    
 5. **主从多线程模型(多Reactor多线程)**    
+&emsp; 主从Reactor多线程模型中，Reactor线程拆分为mainReactor和subReactor两个部分，mainReactor只处理连接事件，读写事件交给subReactor来处理。业务逻辑还是由线程池来处理，mainRactor只处理连接事件，用一个线程来处理就好。处理读写事件的subReactor个数一般和CPU数量相等，一个subReactor对应一个线程，业务逻辑由线程池处理。  
+
 &emsp; ~~第三种模型比起第二种模型，是将Reactor分成两部分：~~  
 &emsp; ~~mainReactor负责监听server socket，用来处理新连接的建立，将建立的socketChannel指定注册给subReactor。~~  
 &emsp; ~~subReactor维护自己的selector, 基于mainReactor 注册的socketChannel多路分离IO读写事件，读写网 络数据，对业务处理的功能，另其扔给worker线程池来完成。~~  
@@ -100,7 +90,7 @@ https://www.jianshu.com/p/eef7ebe28673
 * Synchronous Event Demultiplexer，同步事件分离器，本质上是系统调用。比如linux中的select、poll、epoll等。比如，select方法会一直阻塞直到handle上有事件发生时才会返回。  
 * **Event Handler，事件处理器，**其会定义一些回调方法或者称为钩子函数，当handle上有事件发生时，回调方法便会执行，一种事件处理机制。  
 * **Concrete Event Handler，具体的事件处理器，**实现了Event Handler。在回调方法中会实现具体的业务逻辑。  
-* Initiation Dispatcher，初始分发器，也是reactor角色，提供了注册、删除与转发event handler的方法。当Synchronous Event Demultiplexer检测到handle上有事件发生时，便会通知initiation dispatcher调用特定的event handler的回调方法。  
+* **<font color = "clime">Initiation Dispatcher，初始分发器，也是reactor角色，</font>** 提供了注册、删除与转发event handler的方法。当Synchronous Event Demultiplexer检测到handle上有事件发生时，便会通知initiation dispatcher调用特定的event handler的回调方法。  
 
 &emsp; **<font color = "clime">Reactor的一般处理流程：</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-108.png)  
@@ -121,6 +111,9 @@ Reactor的一般流程
 -->
 
 ## 1.3. Reactor线程模型详解  
+<!-- 
+https://blog.csdn.net/bingxuesiyang/article/details/89888664
+-->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-90.png)  
 
 &emsp; Reactor线程模型跟NIO中Selctor类似，多路复用，事件分发。  
@@ -134,6 +127,10 @@ Reactor的一般流程
 #### 1.3.1.1. 单线程模型简介  
 &emsp; 对于并发不是很高的应用，可以使用单线程模型。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-91.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-120.png)  
+
+&emsp; 这是最基本的单Reactor单线程模型。其中Reactor线程，负责多路分离套接字，有新连接到来触发connect 事件之后，交由Acceptor进行处理，有IO读写事件之后交给hanlder处理。  
+&emsp; Acceptor主要任务就是构建handler，在获取到和client相关的SocketChannel之后 ，绑定到相应的hanlder上，对应的SocketChannel有读写事件之后，基于racotor分发,hanlder就可以处理了（所有的IO事件都绑定到selector上，有Reactor分发）。  
 
 
 &emsp; **<font color = "red">Reactor单线程模型，指的是所有的IO操作都在同一个NIO线程上面完成，</font>** NIO线程的职责如下：  
@@ -171,6 +168,8 @@ Reactor 单线程模型示意图如下所示：
 #### 1.3.2.1. 多线程模型简介
 &emsp; Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作，它的原理图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-92.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-121.png)  
+&emsp; 相对于第一种单线程的模式来说，在处理业务逻辑，也就是获取到IO的读写事件之后，交由线程池来处理，这样可以减小主reactor的性能开销，从而更专注的做事件分发工作了，从而提升整个应用的吞吐。  
 
 &emsp; Reactor多线程模型的特点：  
 
@@ -193,7 +192,25 @@ Reactor 单线程模型示意图如下所示：
 &emsp; 单Reactor承当所有事件的监听和响应，而当服务端遇到大量的客户端同时进行连接，或者在请求连接时执行一些耗时操作，比如身份认证，权限检查等，这种瞬时的高并发就容易成为性能瓶颈  
 -->
 
+--------------
+
+
 ### 1.3.3. 主从多线程模型  
+<!-- 
+Reactor主从多线程
+https://www.cnblogs.com/-wenli/p/13343397.html
+https://blog.csdn.net/Jack__iT/article/details/107010486
+-->
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-122.png)  
+&emsp; 第三种模型比起第二种模型，是将Reactor分成两部分：  
+
+* mainReactor负责监听server socket，用来处理新连接的建立，将建立的socketChannel指定注册给subReactor。  
+* subReactor维护自己的selector, 基于mainReactor 注册的socketChannel多路分离IO读写事件，读写网 络数据，对业务处理的功能，另其扔给worker线程池来完成。  
+
+
+-----------
+
 &emsp; Reactor主从多线程模型中，一个连接accept专门用一个线程处理。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-93.png)  
 &emsp; 主从Reactor线程模型的特点是：服务端用于接收客户端连接的不再是个1个单独的NIO线程，而是一个独立的NIO线程池。Acceptor接收到客户端TCP连接请求处理完成后(可能包含接入认证等)，将新创建的SocketChannel注册到IO线程池(sub reactor线程池)的某个IO线程上，由它负责SocketChannel的读写和编解码工作。Acceptor线程池仅仅只用于客户端的登陆、握手和安全认证，一旦链路建立成功，就将链路注册到后端subReactor线程池的IO线程上，由IO线程负责后续的IO操作。  
@@ -224,27 +241,6 @@ Reactor 单线程模型示意图如下所示：
     步骤 2 完成之后，业务层的链路正式建立，将 SocketChannel 从主线程池的 Reactor 线程的多路复用器上摘除，重新注册到 Sub 线程池的线程上，用于处理 I/O 的读写操作。
 -->
 
-## 1.4. Reactor线程模型详解二
-<!-- 
-https://blog.csdn.net/bingxuesiyang/article/details/89888664
--->
-
-### 1.4.1. 单Reactor单线程模型  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-120.png)  
-
-&emsp; 这是最基本的单Reactor单线程模型。其中Reactor线程，负责多路分离套接字，有新连接到来触发connect 事件之后，交由Acceptor进行处理，有IO读写事件之后交给hanlder处理。  
-&emsp; Acceptor主要任务就是构建handler，在获取到和client相关的SocketChannel之后 ，绑定到相应的hanlder上，对应的SocketChannel有读写事件之后，基于racotor分发,hanlder就可以处理了（所有的IO事件都绑定到selector上，有Reactor分发）。  
-
-### 1.4.2. 单Reactor多线程模型  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-121.png)  
-&emsp; 相对于第一种单线程的模式来说，在处理业务逻辑，也就是获取到IO的读写事件之后，交由线程池来处理，这样可以减小主reactor的性能开销，从而更专注的做事件分发工作了，从而提升整个应用的吞吐。  
-
-### 1.4.3. 单Reactor单线程模型  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-122.png)  
-&emsp; 第三种模型比起第二种模型，是将Reactor分成两部分：  
-
-* mainReactor负责监听server socket，用来处理新连接的建立，将建立的socketChannel指定注册给subReactor。  
-* subReactor维护自己的selector, 基于mainReactor 注册的socketChannel多路分离IO读写事件，读写网 络数据，对业务处理的功能，另其扔给worker线程池来完成。  
 
 ## 1.5. Netty中的线程模型与Reactor的联系  
 <!-- 

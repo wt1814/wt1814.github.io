@@ -20,7 +20,6 @@
 <!-- /TOC -->
 
 
-
 &emsp; **<font color = "red">总结：</font>**  
 1. 堆中对象的存活：  
 	1. 存活标准
@@ -33,9 +32,10 @@
 		&emsp; **<font color = "clime">假如⼀个应⽤需要读取⼤量的本地图⽚，如果每次读取图⽚都从硬盘读取会严重影响性能，如果⼀次性全部加载到内存⼜可能造成内存溢出，这时可以⽤软引⽤解决这个问题。</font>**  
 	2. 对象生存还是死亡？  
 	&emsp; **<font color = "clime">如果有必要执行Object#finalize()方法，放入F-Queue队列；收集器将对F-Queue队列中的对象进行第二次小规模的标记；如果对象在执行finalize()方法方法时重新与引用链上的任何一个对象建立关联则逃脱死亡，否则执行死亡。</font>**  
-2. null与GC：《深入理解Java虚拟机》作者的观点：在需要“不使用的对象应手动赋值为null“时大胆去用，但不应当对其有过多依赖，更不能当作是一个普遍规则来推广。  
+2. null与GC：  
+&emsp; 《深入理解Java虚拟机》作者的观点：在需要“不使用的对象应手动赋值为null“时大胆去用，但不应当对其有过多依赖，更不能当作是一个普遍规则来推广。  
 &emsp; 虽然代码片段已经离开了变量xxx的作用域，但在此之后，没有任何对运行时栈的读写，placeHolder所在的索引还没有被其他变量重用，所以GC判断其为存活。    
-&emsp; 加上int replacer = 1;和将placeHolder赋值为null起到了同样的作用：断开堆中placeHolder和栈的联系，让GC判断placeHolder已经死亡。    
+&emsp; 加上`int replacer = 1;`和将placeHolder赋值为null起到了同样的作用：断开堆中placeHolder和栈的联系，让GC判断placeHolder已经死亡。    
 &emsp; “不使用的对象应手动赋值为null“的原理了，一切根源都是来自于JVM的一个“bug”：代码离开变量作用域时，并不会自动切断其与堆的联系。    
 
 # 1. GC  

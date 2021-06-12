@@ -21,7 +21,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **在消息发送的过程中，涉及到了两个线程：Main线程和Sender线程，以及一个线程共享变量RecordAccumulator(消息累加器)。 <font color = "clime">main线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。</font><font color = "red">其中主线程发送消息的过程如下图所示，需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。</font>**  
+1. **在消息发送的过程中，涉及到了两个线程：Main线程和Sender线程，以及一个线程共享变量RecordAccumulator(消息累加器)。 <font color = "clime">main线程将消息发送给RecordAccumulator，Sender线程不断从RecordAccumulator中拉取消息发送到Kafka broker。</font><font color = "red">其中主线程发送消息的过程需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。</font>**  
 
 
 

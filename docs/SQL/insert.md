@@ -13,8 +13,11 @@ MySQL中InnoDB脏页刷新机制Checkpoint
 ★★★ https://blog.csdn.net/weixin_39820173/article/details/113402536
 ★★★ https://www.cnblogs.com/olinux/p/5196139.html
 
- MySQL不会丢失数据的秘密，就藏在它的 7种日志里 
- https://mp.weixin.qq.com/s/S9dQd1hgYzMBoDqV5bPuiQ
+面试官：你知道select语句和update语句分别是怎么执行的吗？ 
+https://mp.weixin.qq.com/s/o-GYPbZIkXTKkMYtuO6m5g
+
+MySQL不会丢失数据的秘密，就藏在它的 7种日志里 
+https://mp.weixin.qq.com/s/S9dQd1hgYzMBoDqV5bPuiQ
 
 回顾下写流程
 https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
@@ -42,11 +45,10 @@ https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
 2. 当开启 double write 时，InnoDB 刷脏页时首先会复制一份刷入 double write，在这个过程中，由于double write的页是连续的，对磁盘的写入也是顺序操作，性能消耗不大。
 3. 无论是否经过 double write，脏页最终还是需要刷入表空间的数据文件。刷入完成后才能释放 buffer pool 当中的空间。
 4. insert buffer 也是 buffer pool 中的一部分，当 buffer pool 空间不足需要交换出部分脏页时，有可能将 insert buffer 的数据页换出，刷入共享表空间中的 insert buffer 数据文件中。
-5. 当 innodb_stats_persistent=ON 时，SQL 语句所涉及到的 InnoDB 统计信息也会被刷盘到 innodb_table_stats 和 innodb_index_stats 这两张系统表中，这样就不用每次再实时计算了。
-6. 有一些情况下可以不经过 double write 直接刷盘
+5. 当 innodb_stats_persistent=ON 时，SQL语句所涉及到的 InnoDB 统计信息也会被刷盘到 innodb_table_stats 和 innodb_index_stats 这两张系统表中，这样就不用每次再实时计算了。
+6. 有一些情况下可以不经过 double write直接刷盘
 
     * 关闭 double write  
-    * 不需要 double write 保障，如 drop table 等操作  
-
+    * 不需要 double write 保障，如 drop table等操作  
 
 &emsp; 汇总两张图，一条 insert 语句的所有涉及到的数据在磁盘上会依次写入 redo log，binlog，(double write，insert buffer) 共享表空间，最后在自己的用户表空间落定为安。
