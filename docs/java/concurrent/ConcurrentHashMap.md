@@ -12,7 +12,7 @@
                 - [1.1.2.1.3. addCount](#11213-addcount)
             - [1.1.2.2. get()方法](#1122-get方法)
                 - [1.1.2.2.1. get()流程](#11221-get流程)
-                - [1.1.2.2.2. get()为什么不需要加锁？](#11222-get为什么不需要加锁)
+                - [1.1.2.2.2. ★★★get()为什么不需要加锁？](#11222-★★★get为什么不需要加锁)
     - [1.2. Java7 ConcurrentHashMap](#12-java7-concurrenthashmap)
         - [1.2.1. 存储结构](#121-存储结构)
             - [1.2.1.1. 静态内部类 Segment](#1211-静态内部类-segment)
@@ -44,6 +44,9 @@
         * 在1.8中ConcurrentHashMap的get操作全程不需要加锁，这也是它比其他并发集合（比如hashtable、用Collections.synchronizedMap()包装的hashmap）安全效率高的原因之一。  
         * get操作全程不需要加锁是因为Node的成员val是用volatile修饰的，和数组用volatile修饰没有关系。  
         * 数组用volatile修饰主要是保证在数组扩容的时候保证可见性。
+2. ConcurrentHashMap，JDK1.8  
+    1. 在 JDK1.7 中，ConcurrentHashMap 类采用了分段锁的思想，Segment(段) + HashEntry(哈希条目) + ReentrantLock。  
+    2. Segment继承ReentrantLock(可重入锁)，从而实现并发控制。 Segment的个数一旦初始化就不能改变，默认Segment的个数是16个，也可以认为ConcurrentHashMap默认支持最多16个线程并发。  
 
 
 # 1. ConcurrentHashMap   
@@ -207,8 +210,7 @@ final Node<K,V>[] helpTransfer(Node<K,V>[] tab, Node<K,V> f) {
             if ((sc >>> RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 ||
                     sc == rs + MAX_RESIZERS || transferIndex <= 0)
                 break;//跳出循环
-            if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1)) {//在低 16 位
-                上增加扩容线程数
+            if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1)) {//在低 16 位上增加扩容线程数
                 transfer(tab, nextTab);//帮助扩容
                 break; } }
         return nextTab;
@@ -293,9 +295,9 @@ https://mp.weixin.qq.com/s/3FCg-9kPjSAR0tN6xLW6tw
 -->
 ##### 1.1.2.2.1. get()流程
 &emsp; **<font color = "clime">get()流程：</font>**  
-1. 根据 hash 值计算位置。  
-2. 查找到指定位置，如果头节点就是要找的，直接返回它的 value。  
-3. 如果头节点 hash 值小于 0 ，说明正在扩容或者是红黑树，进行查找。  
+1. 根据hash值计算位置。  
+2. 查找到指定位置，如果头节点就是要找的，直接返回它的value。  
+3. 如果头节点hash值小于0，说明正在扩容或者是红黑树，进行查找。  
 4. 如果是链表，遍历查找。    
 
 ```java

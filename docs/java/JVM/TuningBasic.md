@@ -34,7 +34,7 @@
     &emsp; **线程出现停顿的时候，通过jstack来查看各个线程的调用堆栈，就可以知道没有响应的线程到底在后台做什么事情，或者等待什么生产环境中最主要的危险操作是下面这三种资源。**  
     * Jmap：java内存映像工具  
     &emsp; <font color = "red">jmap(JVM Memory Map)命令用于生成heap dump文件，如果不使用这个命令，</font> **<font color = "red">j还可以使用-XX:+HeapDumpOnOutOfMemoryError参数来让虚拟机出现OOM的时候自动生成dump文件。</font>**   
-    &emsp; jmap -dump:live,format=b,file=path pid。参数lime表示需要抓取目前在生命周期内的内存对象。  
+    &emsp; jmap -dump:live,format=b,file=path pid。 **<font color = "blue">参数lime表示需要抓取目前在生命周期内的内存对象。</font>**   
     * Jhat：虚拟机堆转储快照分析工具  
     * Jstat：虚拟机统计信息监视工具  
     * Jinfo：java配置信息工具  
@@ -42,7 +42,7 @@
 # 1. JVM调优基础  
 
 ## 1.1. 性能指标  
-[性能指标](/docs/system/performance.md)  
+&emsp; 参考[性能指标](/docs/system/performance.md)  
 
 ## 1.2. JVM参数  
 &emsp; **<font color = "red">设置参数的方式：</font>**  

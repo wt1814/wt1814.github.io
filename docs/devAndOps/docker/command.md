@@ -13,7 +13,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)。</font>**  
-2. **<font color = "clime">容器操作常用命令：run、start、stop、exec(进入运行的容器)。</font>**  
+2. **<font color = "clime">容器操作常用命令：run(创建并启动)、start(启动已有)、stop、exec(进入运行的容器)。</font>**  
 
 # 1. Docker使用教程  
 <!-- 

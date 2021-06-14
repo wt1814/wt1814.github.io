@@ -20,6 +20,10 @@
 
 
 # 1. RedisLock 
+<!-- 
+
+-->
+
 ## 1.1. Redis部署方式 
 &emsp; 使用Redis分布式锁需要考虑Redis的部署问题。Redis有多种部署方式：单机模式；Master-Slave+Sentinel选举模式；Redis Cluster模式。  
 * 如果采用单机部署模式，会存在单点问题。 **<font color = "clime">只要Redis故障了，可能存在`死锁`问题。</font>**  

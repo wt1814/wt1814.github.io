@@ -71,7 +71,7 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-27.png)  
 
 * Reactor通信调度层  
-&emsp; 它由一系列辅助类完成，包括Reactor线程NioEvenlLoop及其父类，NioSocketChannel/NioServerSocketChannel及其父类，ByteBuffer以及由其衍生出来的各种Buffer，Unsafe以及其衍生出的各种内部类等。该层的主要职责就是监听网络的读写和连接操作，负责将网络层的数据读取到内存缓冲区中，然后触发务种网络事件，例如连接创建、连接激活、 读事件、写事件等，将这些事件触发到PipeLine中，由PipeLine管理的职责链来进行后续的处理。  
+&emsp; 它由一系列辅助类完成，包括Reactor线程NioEvenlLoop及其父类，NioSocketChannel/NioServerSocketChannel及其父类，ByteBuffer以及由其衍生出来的各种Buffer，Unsafe以及其衍生出的各种内部类等。该层的主要职责就是监听网络的读写和连接操作，负责将网络层的数据读取到内存缓冲区中，然后触发各种网络事件，例如连接创建、连接激活、 读事件、写事件等，将这些事件触发到PipeLine中，由PipeLine管理的职责链来进行后续的处理。  
 * 职责链ChannelPipeline  
 &emsp; 它负责事件在职责链中的有序传播，同时负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。不同应用的Handler用于消息的编解码，它可以将外部的协议消息转换成内部的POJO对象，这样上层业务则只需要关心处理业务逻辑即可，不需要感知底层的协议差异和线程模型差异，实现了架构层面的分层隔离。  
 * 业务逻辑编排层(Service ChannelHandler)  

@@ -20,7 +20,7 @@
 
 
 # 1. Java基本数据类型  
-&emsp; Java数据类型分为基本数据类型和引用数据类型。除了8种基本类型外，全是引用类型。引用数据类型分3种：类(包含集合类、8种基本数据类型的封装类)，接口，数组(数组一旦实例化，它的长度就固定了)。  
+&emsp; Java数据类型分为基本数据类型和引用数据类型。除了8种基本类型外，全是引用类型。引用数据类型分3种：类（包含集合类、8种基本数据类型的封装类），接口，数组（数组一旦实例化，它的长度就固定了）。  
 
 ## 1.1. 8种基本数据类型  
 <!-- float和double的区别 https://www.runoob.com/w3cnote/float-and-double-different.html -->
@@ -31,8 +31,6 @@ https://baike.baidu.com/item/%E5%8D%95%E7%B2%BE%E5%BA%A6
  【265期】面试官：为什么Integer用==比较时127相等而128不相等？ 
  https://mp.weixin.qq.com/s/fBaYxLnR9gOoQUQpUrsMBA
 -->
-
-
 
 |数据类型|字节|位数|默认值|取值范围|
 |---|---|---|---|---|
@@ -46,7 +44,7 @@ https://baike.baidu.com/item/%E5%8D%95%E7%B2%BE%E5%BA%A6
 |boolean	|4|32	|false	| |
 
 1. 4种整数类型  
-&emsp; byte：占用内存1字节，8位。其中1位符号位，7位数据位，所以范围-128 \~ 127  
+&emsp; byte：占用内存1字节，8位。其中1位符号位，7位数据位，所以范围-128 \~ 127。  
 &emsp; short：占用内存2字节，16位。  
 &emsp; int：占用内存4字节，32位。  
 &emsp; long：占用内存8字节，64位。  

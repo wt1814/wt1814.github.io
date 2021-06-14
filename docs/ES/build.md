@@ -11,6 +11,9 @@ https://blog.csdn.net/laoyang360/article/details/79293493#comments_15296602
 Elasticsearch 生产环境集群部署最佳实践 
 https://mp.weixin.qq.com/s/RVaR0U-CVAmLOewYse7HKA
 
+ 如何使用 Kibana 可视化地理位置数据 
+ https://mp.weixin.qq.com/s/96TBRzABHol27KrMncUkTQ
+
 -->
 
 # ElasticSearch安装 

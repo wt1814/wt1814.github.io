@@ -28,10 +28,10 @@
     * 为了线程安全。  
     * 为了 HashCode 的不可变性。String类经常被用作HashMap的key。  
 2. String创建了几个对象？  
-&emsp; String str1 = "java";创建一个对象放在常量池中。  
-&emsp; String str2 = new String("java");创建两个对象，字面量"java"创建一个对象放在常量池中，new String()又创建一个对象放在堆中。如果常量池中已经存在，则是创建了一个对象。  
-&emsp; String str3 = "hello "+"java"; 创建了一个对象。  
-&emsp; String str5 = str3 + "java";创建了三个对象。
+&emsp; `String str1 = "java";`创建一个对象放在常量池中。  
+&emsp; `String str2 = new String("java");`创建两个对象，字面量"java"创建一个对象放在常量池中，new String()又创建一个对象放在堆中。如果常量池中已经存在，则是创建了一个对象。  
+&emsp; `String str3 = "hello "+"java";`创建了一个对象。  
+&emsp; `String str5 = str3 + "java";`创建了三个对象。
 3. String不可变，安全；StringBuilder可变，线程不安全；StringBuffer可变，线程安全。  
 
 

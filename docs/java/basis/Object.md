@@ -81,7 +81,7 @@ public native int hashCode();
 重写equals就必须重写hashCode的原理分析
 https://www.cnblogs.com/wang-meng/p/7501378.html
 -->
-&emsp; **<font color = "red">在某些业务场景下，需要使用自定义类作为哈希表的键。用HashMap存入自定义的类时，如果不重写这个自定义类的equals和hashCode方法，得到的结果会和预期的不一样。</font>**  
+&emsp; **<font color = "blue">在某些业务场景下，需要使用自定义类作为哈希表的键。用HashMap存入自定义的类时，如果不重写这个自定义类的equals和hashCode方法，得到的结果会和预期的不一样。</font>**  
 
 ### 1.2.3. getClass方法  
 &emsp; getClass方法是一个本地方法，被final修饰子类不能够重写，通过该方法可以获取类的元数据和方法信息。它能够获取一个类的定义信息，然后使用反射去访问类的全部信息，包括函数和字段。  

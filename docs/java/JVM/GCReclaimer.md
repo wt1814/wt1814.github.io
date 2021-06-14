@@ -47,7 +47,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 &emsp; GC过程一定会发生STW(Stop The World)，而一旦发生STW必然会影响用户使用，所以GC的发展都是在围绕减少STW时间这一目的。通过并行与并发已经极大的减少了STW的时间，但是STW的时间还是会因为各种原因不可控，G1提供的一个最大功能就是可控的STW时间。  
 
 ## 1.2. 收集器分类  
-<font color = "clime">1. 根据收集器的指标分类(两个关键指标，停顿时间和吞吐量)：</font>  
+<font color = "blue">1. 根据收集器的指标分类（两个关键指标，停顿时间和吞吐量）：</font>  
 &emsp; 收集器性能考虑因素：  
 
 * **<font color = "clime">吞吐量：运行用户代码时间/(运行用户代码时间+垃圾收集时间)。</font>**  
@@ -68,7 +68,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 * 并行收集器【吞吐量优先】 -> Parallel Scanvenge、Parallel Old  
 &emsp; **<font color = "red">多条垃圾收集线程并行工作，但此时用户线程仍然处于等待状态。</font>** 适用于科学计算、后台处理等交互场景 。  
 * 并发收集器【停顿时间优先】 -> CMS、G1  
-&emsp; **<font color = "red">用户线程和垃圾收集线程同时执行(但并不一定是并行的，可能是交替执行的)，垃圾收集线程在执行的时候不会停顿用户线程的运行。</font>** 适用于相对时间有要求的场景，比如Web。  
+&emsp; **<font color = "red">用户线程和垃圾收集线程同时执行</font><font color = "blue">(但并不一定是并行的，可能是交替执行的)，</font><font color = "red">垃圾收集线程在执行的时候不会停顿用户线程的运行。</font>** 适用于相对时间有要求的场景，比如Web。  
 
 ## 1.3. 收集器详解
 &emsp; HotSpot虚拟机所包含的所有收集器如图：  

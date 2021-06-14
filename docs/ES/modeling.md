@@ -167,7 +167,7 @@ Mapping建模:
 
 -->
 
-&emsp; 索引分为静态 Mapping(自定义字段)+动态 Mapping(ES 自动根据导入数据适配)。  
+&emsp; **<font color = "red">索引分为静态Mapping(自定义字段)+动态Mapping(ES 自动根据导入数据适配)。</font>**  
 &emsp; 实战业务场景建议：选用静态Mapping，根据业务类型自己定义字段类型。好处：可控；节省存储空间（默认string是text+keyword，实际业务不一定需要）。  
 &emsp; **Mapping建议结合[索引模板](/docs/ES/index.md)定义。**  
 

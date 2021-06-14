@@ -43,14 +43,20 @@
       **epoll机制的优点：**  
     * 调用epoll_ctl时拷贝进内核并保存，之后每次epoll_wait不拷贝。  
     * epoll()函数返回后，调用函数以O(1)复杂度遍历。  
-
+5. [Netty的Reactor线程模型](/docs/microService/communication/Netty/Reactor.md)  
 
 # 1. 多路复用(select/poll/epoll)
 <!--
+epoll
+★★★ https://baike.baidu.com/item/epoll/10738144?fr=aladdin
+★★★ https://blog.csdn.net/buknow/article/details/106972995
+
 ★★★ 你管这破玩意叫 IO 多路复用？ 
 https://mp.weixin.qq.com/s/Ok7SIROXu1THUbWsFu-UYw
 ★★★ epoll原理详解（最清晰）
 https://blog.csdn.net/lyztyycode/article/details/79491419
+
+
 
 深入Hotspot源码与Linux内核理解NIO与Epoll 
 https://mp.weixin.qq.com/s/WhfnTtMpY4EgT65UezKjtw
@@ -95,7 +101,7 @@ int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-45.png)  
 
 &emsp; 【参数说明】  
-&emsp; int maxfdp1，指定待测试的文件描述字个数，它的值是待测试的最大描述字加1。  
+&emsp; int maxfdp1，指定待测试的文件描述符个数，它的值是待测试的最大描述符加1。  
 &emsp; fd_set \*readset, fd_set \*writeset, fd_set \*exceptset，fd_set可以理解为一个集合(**<font color = "red">实际上是一个long类型的数组，最高1024位</font>**)，这个集合中存放的是文件描述符(file descriptor)，即文件句柄。中间的三个参数指定要让内核测试读、写和异常条件的文件描述符集合。如果对某一个的条件不感兴趣，就可以把它设为空指针。  
 &emsp; const struct timeval *timeout timeout，告知内核等待所指定文件描述符集合中的任何一个就绪可花多少时间。其timeval结构用于指定这段时间的秒数和微秒数。  
 

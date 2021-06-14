@@ -41,7 +41,7 @@ https://kuboard.cn/learning/
 3. Pod资源组成的应用如何提供外部访问的？  
 &emsp; **<font color = "red">Pod组成的应用是通过Service这类抽象资源提供内部和外部访问的，</font>** 但是service的外部访问需要端口的映射，带来的是端口映射的麻烦和操作的繁琐。为此还有一种提供外部访问的资源叫做Ingress。  
 4. Service又是怎么关联到Pod呢？  
-&emsp; <font color = "red">在上面说的Pod是由Pod控制器进行管理控制，对Pod资源对象的期望状态进行自动管理。</font> **<font color = "clime">而在Pod控制器是通过一个YAML的文件进行定义Pod资源对象的。在该文件中，还会对Pod资源对象进行打标签，用于Pod的辨识，而Servcie就是通过标签选择器，关联至同一标签类型的Pod资源对象。这样就实现了从service-->pod-->container的一个过程。</font>**  
+&emsp; <font color = "red">在上面说的Pod是由Pod控制器进行管理控制，对Pod资源对象的期望状态进行自动管理。</font> **<font color = "clime">而在Pod控制器是通过一个YAML的文件进行定义Pod资源对象的。在该文件中，还会对Pod资源对象进行打标签，用于Pod的辨识，而Servcie就是通过标签选择器，关联至同一标签类型的Pod资源对象。这样就实现了从`service-->pod-->container`的一个过程。</font>**  
 
 ## 1.2. Kubernetes架构
 &emsp; 当部署完 Kubernetes，即拥有了一个完整的集群。  

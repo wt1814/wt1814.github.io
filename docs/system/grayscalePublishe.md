@@ -4,14 +4,20 @@
 - [1. ~~灰度发布/金丝雀发布~~](#1-灰度发布金丝雀发布)
     - [1.1. 灰度发布简介](#11-灰度发布简介)
     - [1.2. 灰度发布设计的思考](#12-灰度发布设计的思考)
-    - [1.3. 微服务网关实现灰度发布](#13-微服务网关实现灰度发布)
-        - [1.3.1. zuul实现灰度发布](#131-zuul实现灰度发布)
-    - [1.4. Spring cloud ribbon实现灰度发布](#14-spring-cloud-ribbon实现灰度发布)
-    - [1.5. dubbo实现灰度发布](#15-dubbo实现灰度发布)
+    - [1.3. 灰度的策略](#13-灰度的策略)
+    - [1.4. 微服务网关实现灰度发布](#14-微服务网关实现灰度发布)
+        - [1.4.1. zuul实现灰度发布](#141-zuul实现灰度发布)
+    - [1.5. Spring cloud ribbon实现灰度发布](#15-spring-cloud-ribbon实现灰度发布)
+    - [1.6. dubbo实现灰度发布](#16-dubbo实现灰度发布)
 
 <!-- /TOC -->
 
-<!-- 
+
+# 1. ~~灰度发布/金丝雀发布~~  
+<!--
+*** 不容错过的灰度发布系统架构设计 
+https://mp.weixin.qq.com/s/Aq9Mwkpx18Zkt6iWL2bZEw
+
 漫画：什么是蓝绿部署？ 
 https://mp.weixin.qq.com/s/pzvZoyFG9j4takV6Q0pHWw
 https://www.baidu.com/baidu?tn=monline_7_dg&ie=utf-8&wd=%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83%E5%92%8C%E8%93%9D%E7%BB%BF%E5%8F%91%E5%B8%83https://www.baidu.com/baidu?tn=monline_7_dg&ie=utf-8&wd=%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83%E5%92%8C%E8%93%9D%E7%BB%BF%E5%8F%91%E5%B8%83
@@ -26,10 +32,6 @@ https://baike.baidu.com/item/%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/7100322
 https://mp.weixin.qq.com/s/h27Er8rWl4W9x4IC6PlduA
 
 
--->
-
-# 1. ~~灰度发布/金丝雀发布~~  
-<!-- 
 网关实现灰度发布
 https://segmentfault.com/a/1190000017894943
 -->
@@ -71,7 +73,20 @@ https://segmentfault.com/a/1190000017894943
 &emsp; 需要设计的系统分为两种场景，一种是http方式接入，需要借助网关(gate-way)去实现流量的切换，和系统路由；另一种是rpc接入(目前为dubbo)，需要借助dubbo提供的负载均衡策略来实现，结合自带的qos(dubbo的在线运维命令)实现服务启动/关闭。  
 &emsp; 【说明】：服务内部执行线程监控待定，sentinel、 pinpoint or other。  
 
-## 1.3. 微服务网关实现灰度发布  
+## 1.3. 灰度的策略  
+<!-- 
+https://mp.weixin.qq.com/s/Aq9Mwkpx18Zkt6iWL2bZEw
+-->
+&emsp; 灰度必须要有灰度策略，灰度策略常见的方式有以下几种  
+&emsp; 1、基于Request Header进行流量切分  
+&emsp; 2、基于Cookie进行流量切分  
+&emsp; 3、基于请求参数进行流量切分  
+&emsp; 举例：根据请求中携带的用户uid进行取模，灰度的范围是百分之一，那么uid取模的范围就是100，模是0访问新版服务，模是1~99的访问老版服务。  
+&emsp; 灰度发布策略分为两类，单策略和组合策略  
+&emsp; 单策略：比如按照用户的uid、token、ip进行取模  
+&emsp; 组合策略：多个服务同时灰度，比如我有A/B/C三个服务，需要同时对A和C进行灰度，但是B不需要灰度，这个时候就需要一个tag字段  
+
+## 1.4. 微服务网关实现灰度发布  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/stability/stab-1.png)  
 &emsp; 其中分为几个重要的部分：  
 &emsp; 接入层网关，接入客户端请求，根据下发的配置将符合条件的请求转发到新旧系统上。  
@@ -87,13 +102,13 @@ https://segmentfault.com/a/1190000017894943
 3. 启服/停服
 4. 服务自检
 
-### 1.3.1. zuul实现灰度发布  
+### 1.4.1. zuul实现灰度发布  
 ......
 
-## 1.4. Spring cloud ribbon实现灰度发布  
+## 1.5. Spring cloud ribbon实现灰度发布  
 ......
 
-## 1.5. dubbo实现灰度发布  
+## 1.6. dubbo实现灰度发布  
 
 <!-- 
 https://segmentfault.com/a/1190000017894943

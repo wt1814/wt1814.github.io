@@ -22,10 +22,10 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. Kafka副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。  
+1. **<font color = "blue">Kafka副本中只有Leader可以和客户端交互，进行读写，其他副本是只能同步，不能分担读写压力。</font>**  
 2. 客户端数据请求：  
 &emsp; 集群中的每个broker都会缓存所有主题的分区副本信息，客户端会定期发送元数据请求，然后将获取的集群元数据信息进行缓存。  
-3. 服务端Leader的选举：从ISR集合副本中选取。  
+3. 服务端Leader的选举：从ISR（保持同步的副本）集合副本中选取。  
 4. 服务端副本消息的同步：  
 &emsp; LEO，低水位，记录了日志的下一条消息偏移量，即当前最新消息的偏移量加一；HW，高水位，界定了消费者可见的消息，是ISR队列中最小的LEO。  
     1. Follower副本更新LEO和HW：  
@@ -37,8 +37,12 @@
             * 当Follower拉取消息时，会更新Leader上存储的Follower副本LEO，然后判断是否需要更新HW，更新的方式和上述相同。 
         * 除了这两种正常情况，当发生故障时，例如Leader宕机，Follower被选为新的Leader，会尝试更新HW。还有副本被踢出ISR时，也会尝试更新HW。 
 5. 在服务端Leader切换时，会存在数据丢失和数据不一致的问题。  
-&emsp; **<font color = "blue">为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制。</font>**  
-    1. Leader Epoch，分为两部分，前者Epoch，表示Leader版本号，是一个单调递增的正整数，每当Leader变更时，都会加1；后者StartOffset，为每一代Leader写入的第一条消息的位移。 
+    1. 主从切换，数据不一致的情况如下：
+    &emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有m0消息，且HW为1。若A、B同时宕机，且B重启时，A还未恢复，则B被选为Leader。 
+    &emsp; 在B重启作为Leader之后，收到消息m2。A宕机重启后向成为Leader的B发送Fetch请求，发现自己的HW和B的HW一致，都是2，因此不会进行消息截断，而这也造成了数据不一致。 
+    2. 引入Leader Epoch机制：
+    &emsp; **<font color = "blue">为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制。</font>** 在每个副本日志目录下都有一个leader-epoch-checkpoint文件，用于保存Leader Epoch信息。  
+    &emsp; Leader Epoch，分为两部分，前者Epoch，表示Leader版本号，是一个单调递增的正整数，每当Leader变更时，都会加1；后者StartOffset，为每一代Leader写入的第一条消息的位移。 
 
 
 # 1. Kafka副本机制  
@@ -291,5 +295,5 @@ https://my.oschina.net/u/3379856/blog/4388538
 ##### 1.4.4.3.2. 数据不一致
 &emsp; 下面是数据不一致情况：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-81.png)  
-&emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有消息m0，且HW为1，A、B同时宕机。B重启，被选为Leader，将写入新的LeaderEpoch(1, 1)。B开始工作，收到消息m2时。这是A重启，将作为Follower将发送LeaderEpochRequert(FollowerLastEpoch=0)，B返回大于FollowerLastEpoch的第一个LeaderEpoch的StartOffset，即1，小于当前LEO值，所以将发生日志截断，并发送Fetch请求，同步消息m2，避免了消息不一致问题。  
-&emsp; 但是此时m2消息会丢失，这种情况发生的根本原因在于min.insync.replicas的值设置为1，即没有任何其他副本同步的情况下，就认为m2消息为已提交状态。LeaderEpoch不能解决min.insync.replicas为1带来的数据丢失问题，但是可以解决其所带来的数据不一致问题。而我们之前所说能解决的数据丢失问题，是指消息已经成功同步到Follower上，但因HW未及时更新引起的数据丢失问题。  
+&emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有消息m0，且HW为1，A、B同时宕机。B重启，被选为Leader，将写入新的LeaderEpoch(1, 1)。B开始工作，收到消息m2时。这时A重启，将作为Follower将发送LeaderEpochRequert(FollowerLastEpoch=0)，B返回大于FollowerLastEpoch的第一个LeaderEpoch的StartOffset，即1，小于当前LEO值，所以将发生日志截断，并发送Fetch请求，同步消息m2，避免了消息不一致问题。  
+&emsp; 但是此时m2消息会丢失，这种情况发生的根本原因在于min.insync.replicas的值设置为1，即没有任何其他副本同步的情况下，就认为m2消息为已提交状态。LeaderEpoch不能解决min.insync.replicas为1带来的数据丢失问题，但是可以解决其所带来的数据不一致问题。而之前所说能解决的数据丢失问题，是指消息已经成功同步到Follower上，但因HW未及时更新引起的数据丢失问题。  

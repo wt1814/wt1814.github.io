@@ -1,17 +1,23 @@
 
 
 &emsp; [Netty介绍及架构剖析](/docs/microService/communication/Netty/concepts.md)  
-&emsp; [Netty核心组件](/docs/microService/communication/Netty/components.md)    
+&emsp; [Netty编码示例](/docs/microService/communication/Netty/Execution.md)  
+&emsp; [Netty核心组件](/docs/microService/communication/Netty/components.md)   
+&emsp; [小结：Netty运行流程](/docs/microService/communication/Netty/operation.md)   
 &emsp; [Netty高性能](/docs/microService/communication/Netty/performance.md)  
-&emsp; &emsp; [零拷贝](/docs/microService/communication/Netty/nettyZeroCopy.md)  
+&emsp; &emsp; [~~Netty中的零拷贝~~](/docs/microService/communication/Netty/nettyZeroCopy.md)  
 &emsp; &emsp; [Reactor与EventLoop](/docs/microService/communication/Netty/Reactor.md)  
 &emsp; [TCP粘拆包与Netty编解码](/docs/microService/communication/Netty/Decoder.md)  
 &emsp; [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
 &emsp; [Netty源码](/docs/microService/communication/Netty/source.md)    
 &emsp; &emsp; [Netty服务端创建](/docs/microService/communication/Netty/principle.md)  
 &emsp; &emsp; [Netty客户端创建](/docs/microService/communication/Netty/customer.md)  
-&emsp; &emsp; [内存分配byteBuf](/docs/microService/communication/Netty/byteBuf.md)  
-
+&emsp; &emsp; [NioEventLoop](/docs/microService/communication/Netty/NioEventLoop.md)  
+&emsp; &emsp; &emsp; [NioEventLoop的执行](/docs/microService/communication/Netty/NioEventLoopRun.md)  
+&emsp; &emsp; [内存分配-ByteBuf](/docs/microService/communication/Netty/byteBuf.md)    
+&emsp; &emsp; [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)    
+&emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
+&emsp; &emsp; [内存分配-池化内存分配](/docs/microService/communication/Netty/Pooled.md)    
 <!-- 
 很好的视频
 https://www.bilibili.com/video/BV1ft4y1B74d?p=1
