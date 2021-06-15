@@ -4,14 +4,14 @@
 - [1. Volatile](#1-volatile)
     - [1.1. Volatile的特性](#11-volatile的特性)
     - [1.2. Volatile原理](#12-volatile原理)
-    - [Volatile为什么不安全？](#volatile为什么不安全)
-    - [1.3. Volatile使用](#13-volatile使用)
-        - [1.3.1. 如何正确使用Volatile变量](#131-如何正确使用volatile变量)
-        - [1.3.2. 状态标志](#132-状态标志)
-        - [1.3.3. ★★★单例模式的实现](#133-★★★单例模式的实现)
-            - [1.3.3.1. 为什么两次判断？](#1331-为什么两次判断)
-            - [1.3.3.2. 为什么要加volatile关键字？](#1332-为什么要加volatile关键字)
-    - [1.4. Volatile、AtomicInteger与LongAdder](#14-volatileatomicinteger与longadder)
+    - [1.3. Volatile为什么不安全？](#13-volatile为什么不安全)
+    - [1.4. Volatile使用](#14-volatile使用)
+        - [1.4.1. 如何正确使用Volatile变量](#141-如何正确使用volatile变量)
+        - [1.4.2. 状态标志](#142-状态标志)
+        - [1.4.3. ★★★单例模式的实现](#143-★★★单例模式的实现)
+            - [1.4.3.1. 为什么两次判断？](#1431-为什么两次判断)
+            - [1.4.3.2. 为什么要加volatile关键字？](#1432-为什么要加volatile关键字)
+    - [1.5. Volatile、AtomicInteger与LongAdder](#15-volatileatomicinteger与longadder)
 
 <!-- /TOC -->
 
@@ -23,7 +23,7 @@
 2. Volatile底层原理：  
     * **<font color = "clime">在Volatile写前插入写-写屏障（禁止上面的普通写与下面的Volatile写重排序），在Volatile写后插入写-读屏障（禁止上面的Volatile写与下面可能有的Volatile读/写重排序）。</font>**  
     * **<font color = "clime">在Volatile读后插入读-读屏障（禁止下面的普通读操作与上面的Volatile读重排序）、读-写屏障（禁止下面所有的普通写操作和上面Volatile读重排序）。</font>**  
-3. Volatile为什么不安全（不保证原则性）？  
+3. Volatile为什么不安全（不保证原则性，线程切换）？  
 &emsp; 两个线程执行i++（i++的过程可以分为三步，首先获取i的值，其次对i的值进行加1，最后将得到的新值写会到缓存中），线程1获取i值后被挂起，线程2执行...  
 4. DCL详解：  
 	1. 为什么两次判断？ 线程1调用第一个if（singleton==null），可能会被挂起。  
@@ -95,8 +95,8 @@ https://mp.weixin.qq.com/s/DFCh1XE1hbikjBGEpYJguw
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-49.png)  
 
 
-## Volatile为什么不安全？  
-&emsp; Volatile可以保证修改的值立即能更新到主存，其他线程也会捕捉到被修改后的值，那么为什么不能保证原子性呢？
+## 1.3. Volatile为什么不安全？  
+&emsp; Volatile可以保证修改的值立即能更新到主存，其他线程也会捕捉到被修改后的值，那么为什么不能保证原子性呢？---线程切换
 &emsp; 首先需要了解的是，Java中只有对基本类型变量的赋值和读取是原子操作，如i = 1的赋值操作，但是像j = i或者i++这样的操作都不是原子操作，因为它们都进行了多次原子操作，比如先读取i的值，再将i的值赋值给j，两个原子操作加起来就不是原子操作了。  
 &emsp; 所以，如果一个变量被volatile修饰了，那么肯定可以保证每次读取这个变量值的时候得到的值是最新的，但是一旦需要对变量进行自增这样的非原子操作，就不会保证这个变量的原子性了。  
 &emsp; 例：  
@@ -105,14 +105,14 @@ https://mp.weixin.qq.com/s/DFCh1XE1hbikjBGEpYJguw
 &emsp; 问题来了，线程A已经读取到了i的值为100，也就是说读取的这个原子操作已经结束了，所以这个可见性来的有点晚，线程A阻塞结束后，继续将100这个值加1，得到101，再将值写到缓存，最后刷入主存，所以即便是volatile具有可见性，也不能保证对它修饰的变量具有原子性。  
 
 
-## 1.3. Volatile使用  
-### 1.3.1. 如何正确使用Volatile变量  
+## 1.4. Volatile使用  
+### 1.4.1. 如何正确使用Volatile变量  
 <!-- 
 关键字Volatile主要使用的场合是在多个线程中可以感知实例变量 被更改了，并且可以获得最新的值使用，也就是用多线程读取共享变 量时可以获得最新值使用。
 -->
 &emsp; **<font color = "red">Volatile的使用场景：</font>** 关键字Volatile用于多线程环境下的单次操作(单次读或者单次写)。即Volatile主要使用的场合是在多个线程中可以感知实例变量被更改了，并且可以获得最新的值使用，也就是用多线程读取共享变量时可以获得最新值使用。  
 
-### 1.3.2. 状态标志
+### 1.4.2. 状态标志
 &emsp; 也许实现Volatile变量的规范使用仅仅是使用一个布尔状态标志，用于指示发生了一个重要的一次性事件，例如完成初始化或请求停机。  
 
 ```java
@@ -132,7 +132,7 @@ public void doWork() {
 &emsp; 而如果使用Synchronized块编写循环要比使用Volatile状态标志编写麻烦很多。由于Volatile简化了编码，并且状态标志并不依赖于程序内任何其他状态，因此此处非常适合使用Volatile。  
 &emsp; 这种类型的状态标记的一个公共特性是： **<font color = "clime">通常只有一种状态转换；</font>** shutdownRequested标志从false 转换为true，然后程序停止。这种模式可以扩展到来回转换的状态标志，但是只有在转换周期不被察觉的情况下才能扩展(从false到true，再转换到false)。此外，还需要某些原子状态转换机制，例如原子变量。  
 
-### 1.3.3. ★★★单例模式的实现  
+### 1.4.3. ★★★单例模式的实现  
 <!-- 
 
 DCL为什么要用volatile关键字？
@@ -181,14 +181,14 @@ public class Singleton {
 ```
 &emsp; 这是一种懒汉的单例模式，使用时才创建对象，而且为了避免初始化操作的指令重排序，给instance加上了Volatile。
 
-#### 1.3.3.1. 为什么两次判断？  
+#### 1.4.3.1. 为什么两次判断？  
 &emsp; 第一次校验： 也就是第一个if（singleton==null），这个是为了代码提高代码执行效率，由于单例模式只要一次创建实例即可，所以当创建了一个实例之后，再次调用getInstance方法就不必要进入同步代码块，不用竞争锁。直接返回前面创建的实例即可。  
 &emsp; 第二次校验： 也就是第二个if（singleton==null），这个校验是防止二次创建实例，假如有一种情况，当singleton还未被创建时，线程t1调用getInstance方法，由于第一次判断singleton==null，此时线程t1准备继续执行，但是由于资源被线程t2抢占了，此时t2页调用getInstance方法。  
 &emsp; 同样的，由于singleton并没有实例化，t2同样可以通过第一个if，然后继续往下执行，同步代码块，第二个if也通过，然后t2线程创建了一个实例singleton。  
 &emsp; 此时t2线程完成任务，资源又回到t1线程，t1此时也进入同步代码块，如果没有这个第二个if，那么，t1就也会创建一个singleton实例，那么，就会出现创建多个实例的情况，但是加上第二个if，就可以完全避免这个多线程导致多次创建实例的问题。  
 &emsp; 所以说：两次校验都必不可少。  
 
-#### 1.3.3.2. 为什么要加volatile关键字？  
+#### 1.4.3.2. 为什么要加volatile关键字？  
 &emsp; 了解下singleton = new Singleton()这段代码其实不是原子性的操作，它至少分为以下3个步骤：  
 
 1. 给singleton对象分配内存空间。  
@@ -198,5 +198,5 @@ public class Singleton {
 &emsp; 这里还需要知道一点，就是有时候JVM会为了优化，而做指令重排序的操作，这里的指令，指的是CPU层面的。  
 &emsp; 正常情况下，singleton = new Singleton()的步骤是按照1->2->3这种步骤进行的，但是一旦JVM做了指令重排序，那么顺序很可能编程1->3->2，如果是这种顺序，可以发现，在3步骤执行完singleton对象就不等于null，但是它其实还没做步骤二的初始化工作，但是另一个线程进来时发现，singleton不等于null了，就这样把半成品的实例返回去，调用是会报错的。  
 
-## 1.4. Volatile、AtomicInteger与LongAdder  
+## 1.5. Volatile、AtomicInteger与LongAdder  
 &emsp; &emsp; [LongAdder](/docs/java/concurrent/LongAdder.md)  

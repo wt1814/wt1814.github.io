@@ -22,10 +22,10 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. ThreadLocal使用场景：  
-    1. 线程安全问题
+    1. 线程安全问题。
     2. 业务中变量传递。1)ThreadLocal实现同一线程下多个类之间的数据传递；2)ThreadLocal实现线程内的缓存，避免重复调用。
-    3. ThreadLocal+MDC实现链路日志增强
-    4. ThreadLocal 实现数据库读写分离下强制读主库
+    3. ThreadLocal+MDC实现链路日志增强。
+    4. ThreadLocal 实现数据库读写分离下强制读主库。
 2. ThreadLocal无法在父子线程之间传递。使用类InheritableThreadLocal可以在子线程中取得父线程继承下来的值。   
 3. ThreadLocal和线程池。TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
 4. FastThreadLocal

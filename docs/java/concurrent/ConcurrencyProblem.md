@@ -18,7 +18,7 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. **并发安全的3个问题：**  
 
-    * 线程切换带来的原子性问题；
+    * 线程切换带来的原子性问题；（[Volatile](/docs/java/concurrent/Volatile.md)不保证原子性）
     * 缓存不能及时刷新导致的可见性问题；
     * 编译优化带来的有序性问题  
 
@@ -71,6 +71,7 @@ https://mp.weixin.qq.com/s/DaCTrm8y9vWeaJyHfbRoTw
 &emsp; **<font color = "clime">注：【编译器优化】和“缓存不能及时刷新”(【内存系统重排序】)都是重排序的一种。</font>**   
 
 ## 1.2. 线程切换带来的原子性问题  
+&emsp; [Volatile](/docs/java/concurrent/Volatile.md)不保证原子性。  
 &emsp; 现代操作系统都是基于线程调度的，java并发程序出现的多线程，会涉及到线程切换，在一条语句可能需要多个cpu指令完成。例如代码count+=1大概需要三条指令。  
 
 * 把变量 count 从内存加载到CPU的寄存器中

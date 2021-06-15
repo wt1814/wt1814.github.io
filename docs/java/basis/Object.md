@@ -80,6 +80,7 @@ public native int hashCode();
 <!-- 
 重写equals就必须重写hashCode的原理分析
 https://www.cnblogs.com/wang-meng/p/7501378.html
+https://blog.csdn.net/u012557538/article/details/89861552
 -->
 &emsp; **<font color = "blue">在某些业务场景下，需要使用自定义类作为哈希表的键。用HashMap存入自定义的类时，如果不重写这个自定义类的equals和hashCode方法，得到的结果会和预期的不一样。</font>**  
 

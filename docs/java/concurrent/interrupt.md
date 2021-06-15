@@ -8,6 +8,15 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+1. 中断  
+&emsp; **<font color = "red">线程在不同状态下对于中断所产生的反应：</font>**    
+    * NEW和TERMINATED对于中断操作几乎是屏蔽的；  
+    * RUNNABLE和BLOCKED类似， **<font color = "cclime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中；</font>**  
+    * WAITING/TIMED_WAITING状态下的线程对于中断操作是敏感的，它们会抛出异常并清空中断标志位。
+
+
+
 # 1. 中断线程  
 <!-- 
 https://blog.csdn.net/w1014074794/article/details/51111376?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_title-0&spm=1001.2101.3001.4242

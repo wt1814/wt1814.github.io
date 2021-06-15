@@ -8,7 +8,8 @@
 <!-- /TOC -->
 
 
-&emsp; <font color = "red">从Java 8开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。</font>**  
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; <font color = "red">从Java 8开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。</font>  
 &emsp; ⚠️注：异步回调，主线程不会阻塞。  
 &emsp; CompletableFuture提供了丰富的API对结果进行处理。  
 
