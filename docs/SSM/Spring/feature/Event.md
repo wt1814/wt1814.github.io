@@ -32,9 +32,8 @@ https://blog.csdn.net/weixin_39035120/article/details/86225377
 &emsp; **<font color = "clime">★★★Spring事件机制的流程：</font>**   
 1. **<font color = "clime">事件机制的核心是事件。</font>** Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件(继承ApplicationEvent)。  
 2. **<font color = "clime">确定事件后，要把事件发布出去。</font>** 在事件发布类的业务代码中调用ApplicationEventPublisher#publishEvent方法(或调用ApplicationEventPublisher的子类，例如调用ApplicationContext#publishEvent)。  
-3. **<font color = "clime">发布完成之后，启动监听器，自动监听。</font>** 在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
+3. **<font color = "blue">发布完成之后，启动监听器，自动监听。</font>** 在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
 4. 最后，就是实际场景中触发事件发布，完成一系列任务。  
-
 
 &emsp; **<font color = "red">实现Spring事件机制主要有4个类：</font>**  
 

@@ -576,7 +576,7 @@ protected BeanWrapper instantiateBean(final String beanName, final RootBeanDefin
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/Spring/SpringDI-7.png)  
 1. 检查当前Bean是否实现了 InstantiationAwareBeanPostProcessor的 postProcessAfterInstantiation方法则调用，并结束Bean的填充。  
 2. 将按照类型跟按照名称注入的Bean分开，如果注入的Bean还没有实例化的这里会实例化，然后放到 PropertyValues对象中。  
-3. 如果实现了 InstantiationAwareBeanPostProcessor类的 postProcessProperties则调用这个方法并获取返回值，如果返回值是null，则有可能是实现了过期的 postProcessPropertyValues方法，这里需要进一步调用 postProcessPropertyValues方法  
+3. 如果实现了 InstantiationAwareBeanPostProcessor类的 postProcessProperties则调用这个方法并获取返回值，如果返回值是null，则有可能是实现了过期的 postProcessPropertyValues方法，这里需要进一步调用postProcessPropertyValues方法。  
 4. 进行参数填充  
 
 ```java

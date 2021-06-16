@@ -3,11 +3,12 @@
 <!-- TOC -->
 
 - [1. MyBatis高级使用](#1-mybatis高级使用)
-    - [1.1. Mybatis 中 if-test 判断大坑](#11-mybatis-中-if-test-判断大坑)
-    - [1.2. 流式查询](#12-流式查询)
-    - [1.3. 整合MyBatis](#13-整合mybatis)
-        - [1.3.1. Spring整合MyBatis](#131-spring整合mybatis)
-        - [1.3.2. SpringBoot整合MyBatis](#132-springboot整合mybatis)
+    - [1.1. insertOrUpdate](#11-insertorupdate)
+    - [1.2. Mybatis 中 if-test 判断大坑](#12-mybatis-中-if-test-判断大坑)
+    - [1.3. 流式查询](#13-流式查询)
+    - [1.4. 整合MyBatis](#14-整合mybatis)
+        - [1.4.1. Spring整合MyBatis](#141-spring整合mybatis)
+        - [1.4.2. SpringBoot整合MyBatis](#142-springboot整合mybatis)
 
 <!-- /TOC -->
 
@@ -17,7 +18,10 @@ MySQL 千万数据量深分页优化, 拒绝线上故障！
 https://mp.weixin.qq.com/s/i3wLeCSxqWKrTwgtfelumQ
 -->
 
-## 1.1. Mybatis 中 if-test 判断大坑  
+## 1.1. insertOrUpdate
+&emsp; .......
+
+## 1.2. Mybatis 中 if-test 判断大坑  
 <!-- 
 mybatis 中 if-test 判断大坑
 https://www.cnblogs.com/grasp/p/11268049.html
@@ -25,7 +29,7 @@ https://www.cnblogs.com/grasp/p/11268049.html
 &emsp; \<if test="takeWay == '0'"> mybatis的if判断：  
 &emsp; 单个的字符要写到双引号里面才行，改为\<if test='takeWay == "1"'>或者改为\<if test="takeWay == '1'.toString() ">  
 
-## 1.2. 流式查询  
+## 1.3. 流式查询  
 <!--
  MyBatis读取大量数据（流式读取）
 https://www.cnblogs.com/yifanSJ/p/12658536.html
@@ -57,8 +61,8 @@ https://www.jianshu.com/p/2ba501063556
 &emsp; 流式查询的过程当中，数据库连接是保持打开状态的，因此要注意的是： **<font color = "clime">执行一个流式查询后，数据库访问框架就不负责关闭数据库连接了，需要应用在取完数据后自己关闭。</font>**  
 
 
-## 1.3. 整合MyBatis  
-### 1.3.1. Spring整合MyBatis  
+## 1.4. 整合MyBatis  
+### 1.4.1. Spring整合MyBatis  
 
 &emsp; 添加配置文件  
 
@@ -74,7 +78,7 @@ https://www.jianshu.com/p/2ba501063556
 </bean>
 ```
 
-### 1.3.2. SpringBoot整合MyBatis  
+### 1.4.2. SpringBoot整合MyBatis  
 1. 引入jar包
 2. 使用硬编码的方式配置bean。比如SqlSessionFactory，SqlSessionTemplate, PlatformTransactionManager。
 3. 扫描接口包。
