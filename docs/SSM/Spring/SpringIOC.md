@@ -35,9 +35,9 @@
     6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
     7. 初始化一些消息源（比如处理国际化的i18n等消息源）。 
     ------------ 
-    8. **<font color = "red">初始化应用事件多播器。</font>**  
+    8. **<font color = "red">初始化应用[事件多播器](/docs/SSM/Spring/feature/EventMulticaster.md)。</font>**     
     9. **<font color = "red">onRefresh()，典型的模板方法(钩子方法)。不同的Spring容器做不同的事情。比如web程序的容器ServletWebServerApplicationContext中会调用createWebServer方法去创建内置的Servlet容器。</font>**  
-    10. **<font color = "red">注册一些监听器。</font>**  
+    10. **<font color = "red">注册一些监听器到事件多播器上。</font>**  
     11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font><font color = "blue">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font>**  
     12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
 
