@@ -16,8 +16,8 @@
 &emsp; ⚠️注：在暴露服务ServiceConfig.export()或引用服务ReferenceConfig.get()时，会将Bean对象转换URL格式，所有Bean属性转成URL的参数。然后将URL传给协议扩展点，基于扩展点的扩展点自适应机制，根据URL的协议头，进行不同协议的服务暴露或引用。  
 2. **服务提供者暴露服务的主过程：**  
     1. ServiceConfig将Bean对象解析成URL格式。  
-    2. 通过ProxyFactory类的getInvoker方法使用ref(实际类)生成一个AbstractProxyInvoker实例。  
-    3. 通过Protocol(协议)类的export方法暴露服务。  
+    2. 通过ProxyFactory类的getInvoker方法使用ref(实际类)生成一个AbstractProxyInvoker实例。`ProxyFactory #getInvoker(T proxy, Class<T> type, URL url)`  
+    3. 通过Protocol(协议)类的export方法暴露服务。`DubboProtocol #export(Invoker<T> invoker)`  
         1. 本地各种协议暴露。  
         2. 注册中心暴露。  
     4. 如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心。  
