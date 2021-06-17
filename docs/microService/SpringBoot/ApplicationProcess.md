@@ -9,8 +9,8 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 启动对象的注入：在SpringBoot启动流程的容器准备阶段prepareContext()会将@SpringBootApplication--->@Component对象注册到容器中。  
-2. 自动装配入口，从SpringBoot启动流程的刷新容器阶段refresh()开始。 
+1. 启动对象的注入：在SpringBoot启动流程的`容器准备阶段`prepareContext()会将@SpringBootApplication--->@Component对象注册到容器中。  
+2. 自动装配入口，从SpringBoot启动流程的`刷新容器阶段`refresh()开始。 
 
 # 1. 自动装配原理
 ## 1.1. 启动对象的注入

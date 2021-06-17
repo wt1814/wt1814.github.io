@@ -5,9 +5,6 @@
     - [1.1. Zookeeper是什么](#11-zookeeper是什么)
     - [1.2. ZooKeeper分层命名空间(逻辑存储结构)](#12-zookeeper分层命名空间逻辑存储结构)
     - [1.3. ★★★Zookeeper的运行原理](#13-★★★zookeeper的运行原理)
-        - [1.3.1. 读写数据流程](#131-读写数据流程)
-            - [1.3.1.1. 读数据流程](#1311-读数据流程)
-            - [1.3.1.2. 写数据流程](#1312-写数据流程)
         - [1.3.2. C/S之间的Watcher机制](#132-cs之间的watcher机制)
         - [1.3.3. ★★★服务端通过ZAB协议，保证主从节点数据一致性](#133-★★★服务端通过zab协议保证主从节点数据一致性)
             - [1.3.3.1. ZAB协议概述](#1331-zab协议概述)
@@ -17,7 +14,7 @@
                     - [1.3.3.3.1.1. 选举流程中几个重要参数](#133311-选举流程中几个重要参数)
                     - [1.3.3.3.1.2. 服务器启动时的leader选举](#133312-服务器启动时的leader选举)
                     - [1.3.3.3.1.3. 运行过程中的leader选举](#133313-运行过程中的leader选举)
-                - [1.3.3.3.2. 数据同步，广播模式](#13332-数据同步广播模式)
+                - [1.3.3.3.2. 数据同步-数据读写流程，广播模式](#13332-数据同步-数据读写流程广播模式)
             - [1.3.3.4. Zookeeper的CP模型(保证读取数据顺序一致性)](#1334-zookeeper的cp模型保证读取数据顺序一致性)
             - [1.3.3.5. ~~脑裂~~](#1335-脑裂)
 
@@ -25,16 +22,15 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
-2. 读写数据流程
-    * 当Client向zookeeper发出读请求时，无论是Leader还是Follower，都直接返回查询结果。  
-    * 写入请求发送到Follower节点，Follower节点将请求转发给Leader。  
 3. C/S之间的Watcher机制。特性：一次性触发、有序性（客户端先得到watch通知才可查看节点变化结果）。  
 4. ZK服务端通过ZAB协议保证数据顺序一致性。  
     1. ZAB协议：
         1. 崩溃恢复
             * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>  
             * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态。
-        2. 消息广播：<font color = "clime">在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点，如果是读请求，就直接从当前节点中读取数据，如果是写请求，那么请求会被转发给 leader 提交事务，</font>然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交(类2PC事务)。 
+        2. 消息广播：<font color = "clime">在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点。</font>    
+            * 如果是读请求，就直接从当前节点中读取数据。  
+            * 如果是写请求，那么请求会被转发给 leader 提交事务，然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交(类2PC事务)。 
     2.  数据一致性  
         &emsp; **<font color = "red">Zookeeper保证的是CP，即一致性(Consistency)和分区容错性(Partition-Tolerance)，而牺牲了部分可用性(Available)。</font>**  
         * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>
@@ -103,31 +99,6 @@ ZooKeeper = 文件系统 + 监听通知机制。
 
 ## 1.3. ★★★Zookeeper的运行原理  
 ~~架构图~~
-
-### 1.3.1. 读写数据流程  
-#### 1.3.1.1. 读数据流程  
-&emsp; 当Client向zookeeper发出读请求时，无论是Leader还是Follower，都直接返回查询结果。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-2.png)  
-&emsp; 如果是对zk进行读取操作，读取到的数据可能是过期的旧数据，不是最新的数据。  
-
-#### 1.3.1.2. 写数据流程
-&emsp; zookeeper写入操作分为两种情况，① 写入请求直接发送到leader节点，② 写入请求发送到Follower节点，这两种情况有略微的区别。  
-
-&emsp; 写入请求直接发送到Leader节点时的操作步骤如下：  
-1. Client向Leader发出写请求。
-2. Leader将数据写入到本节点，并将数据发送到所有的Follower节点；
-3. 等待Follower节点返回；
-4. 当Leader接收到一半以上节点(包含自己)返回写成功的信息之后，返回写入成功消息给client;
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-3.png)  
-
-&emsp; 写入请求发送到Follower节点的操作步骤如下：  
-1. Client向Follower发出写请求
-2. Follower节点将请求转发给Leader
-3. Leader将数据写入到本节点，并将数据发送到所有的Follower节点
-4. 等待Follower节点返回
-5. 当Leader接收到一半以上节点(包含自己)返回写成功的信息之后，返回写入成功消息给原来的Follower
-6. 原来的Follower返回写入成功消息给Client
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-4.png)  
 
 
 ### 1.3.2. C/S之间的Watcher机制  
@@ -224,7 +195,36 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 4. 统计投票。与启动时过程相同。  
 5. 改变服务器的状态。与启动时过程相同。  
 
-##### 1.3.3.3.2. 数据同步，广播模式  
+##### 1.3.3.3.2. 数据同步-数据读写流程，广播模式  
+
+<!-- 
+
+
+1.3.1.1. 读数据流程  
+&emsp; 当Client向zookeeper发出读请求时，无论是Leader还是Follower，都直接返回查询结果。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-2.png)  
+&emsp; 如果是对zk进行读取操作，读取到的数据可能是过期的旧数据，不是最新的数据。  
+
+1.3.1.2. 写数据流程
+&emsp; zookeeper写入操作分为两种情况，① 写入请求直接发送到leader节点，② 写入请求发送到Follower节点，这两种情况有略微的区别。  
+
+&emsp; 写入请求直接发送到Leader节点时的操作步骤如下：  
+1. Client向Leader发出写请求。
+2. Leader将数据写入到本节点，并将数据发送到所有的Follower节点；
+3. 等待Follower节点返回；
+4. 当Leader接收到一半以上节点(包含自己)返回写成功的信息之后，返回写入成功消息给client;
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-3.png)  
+
+&emsp; 写入请求发送到Follower节点的操作步骤如下：  
+1. Client向Follower发出写请求
+2. Follower节点将请求转发给Leader
+3. Leader将数据写入到本节点，并将数据发送到所有的Follower节点
+4. 等待Follower节点返回
+5. 当Leader接收到一半以上节点(包含自己)返回写成功的信息之后，返回写入成功消息给原来的Follower
+6. 原来的Follower返回写入成功消息给Client
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-4.png)  
+-->
+
 &emsp; 当集群中已经有过半的 Follower 节点完成了和 Leader 状态同步以后，那么整个集群就进入了消息广播模式。这个时候，在 Leader 节点正常工作时，启动一台新的服务器加入到集群，那这个服务器会直接进入数据恢复模式，和leader 节点进行数据同步。同步完成后即可正常对外提供非事务请求的处理。  
 &emsp; 注：leader节点可以处理事务请求和非事务请求， follower 节点只能处理非事务请求，如果 follower 节点接收到非事务请求，会把这个请求转发给 Leader 服务器。  
 
