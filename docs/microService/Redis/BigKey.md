@@ -29,7 +29,7 @@ https://blog.csdn.net/weixin_47531845/article/details/108821372
 -->
 
 ## 1.1. BigKey定义
-&emsp; 在Redis中，一个字符串最大512MB，一个二级数据结构（例如hash、list、set、zset）可以存储大约40亿个(2^32-1)个元素，但实际上中如果下面两种情况，可以认为它是bigkey。
+&emsp; 在Redis中，一个字符串最大512MB，一个二级数据结构（例如hash、list、set、zset）可以存储大约40亿个(2^32-1)个元素，但实际上，如果是下面两种情况，可以认为它是bigkey。
 
 * 字符串类型：它的big体现在单个value值很大，一般认为超过10KB就是bigkey。  
 * 非字符串类型：哈希、列表、集合、有序集合，它们的big体现在元素个数太多。  

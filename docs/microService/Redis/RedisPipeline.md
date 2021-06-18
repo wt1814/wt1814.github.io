@@ -34,9 +34,9 @@ https://www.jianshu.com/p/75137d23ae4a
 
 
 &emsp; 批量get/set(multi get/set)与管道：  
-1. 原生批命令是原子性，pipeline是非原子性  
-2. 原生批命令一命令多个key, 但pipeline支持多命令（存在事务），非原子性  
-3. 原生批命令是服务端实现，而pipeline需要服务端与客户端共同完成  
+1. 原生批命令是原子性，pipeline是非原子性。  
+2. 原生批命令一命令多个key, 但pipeline支持多命令（存在事务），非原子性。  
+3. 原生批命令是服务端实现，而pipeline需要服务端与客户端共同完成。  
 
 ## 1.2. Redis Pipeline
 &emsp; Pipeline指的是管道技术，指的是客户端允许将多个请求依次发给服务器，过程中而不需要等待请求的回复，在最后再一并读取结果即可。  

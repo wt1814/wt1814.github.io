@@ -358,11 +358,12 @@
 [Zookeeper使用](/docs/microService/dubbo/ZookeeperUse.md)  
 
 ### 分布式缓存  
-[缓存](/docs/cache/Cache.md)  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
 [双缓存](/docs/cache/DoubleCache.md)  
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
-
+<!-- 
+[缓存](/docs/cache/Cache.md)  
+-->
 
 #### Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
