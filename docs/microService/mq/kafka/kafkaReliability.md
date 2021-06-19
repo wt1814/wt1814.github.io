@@ -24,7 +24,7 @@
 
 1. 在Producer端、Broker端、Consumer端都有可能会丢失消息。  
 2. Producer端：  
-&emsp; 为防止Producer端丢失消息， **<font color = "red">除了将ack设置为all，还可以使用带有回调通知的发送 API，即producer.send(msg, callback)。</font>**  
+&emsp; 为防止Producer端丢失消息， **<font color = "red">除了将ack设置为all，`还可以使用带有回调通知的发送 API，即producer.send(msg, callback)`。</font>**  
 3. Broker端:  
 &emsp; Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不丢失消息是做不到的，只能通过调整刷盘机制的参数缓解该情况。  
 &emsp; 为了解决该问题，kafka通过producer和broker协同处理单个broker丢失参数的情况。 **<font color = "red">一旦producer发现broker消息丢失，即可自动进行retry。</font>** 除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。  
