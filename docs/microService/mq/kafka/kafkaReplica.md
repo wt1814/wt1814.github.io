@@ -38,7 +38,7 @@
         * 除了这两种正常情况，当发生故障时，例如Leader宕机，Follower被选为新的Leader，会尝试更新HW。还有副本被踢出ISR时，也会尝试更新HW。 
 5. 在服务端Leader切换时，会存在数据丢失和数据不一致的问题。  
     1. 主从切换，数据不一致的情况如下：  
-    &emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有m0消息，且HW为1。若A、B同时宕机，且B重启时，A还未恢复，则B被选为Leader。 
+    &emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有m0消息，且HW为1。若A、B同时宕机，且B重启时，A还未恢复，则B被选为Leader。  
     &emsp; 在B重启作为Leader之后，收到消息m2。A宕机重启后向成为Leader的B发送Fetch请求，发现自己的HW和B的HW一致，都是2，因此不会进行消息截断，而这也造成了数据不一致。  
     2. 引入Leader Epoch机制：  
     &emsp; **<font color = "blue">为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制。</font>** 在每个副本日志目录下都有一个leader-epoch-checkpoint文件，用于保存Leader Epoch信息。  
