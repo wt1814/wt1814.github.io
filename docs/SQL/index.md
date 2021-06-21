@@ -25,6 +25,10 @@
     * 开启ICP：索引--->条件过滤--->回表。  
 
 # 1. Sql索引优化  
+<!-- 
+*****Mysql：好好的索引，为什么要下推？ 
+https://mp.weixin.qq.com/s/6Q87MzhVI-rRMQ-E9IOPiw
+-->
 
 ## 1.1. 索引简介  
 &emsp; 索引(Index)是帮助MySQL高效获取数据的数据结构。  
