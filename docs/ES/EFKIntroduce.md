@@ -45,7 +45,7 @@ https://www.cnblogs.com/xianglei_/p/12047315.html
 * Kibana：展示数据  
 &emsp; 数据分析与可视化平台，对Elasticsearch存储的数据进行可视化分析，通过表格的形式展现出来。  
 
-&emsp; **<font color = "red">EFK的流程：</font>** Filebeat->【LogstashShipper ---> 缓冲中间件Kafka ---> LogstashIndexer】->【Elasticsearch <-> Kibana】。由程序产生出日志，由Filebeat进行处理，将日志数据输出到Logstash中，Logstash再将数据输出到Elasticsearch中，Elasticsearch再与Kibana相结合展示给用户。
+&emsp; **<font color = "red">EFK的流程：</font>** `Filebeat->【LogstashShipper ---> 缓冲中间件Kafka ---> LogstashIndexer】->【Elasticsearch <-> Kibana】`。由程序产生出日志，由Filebeat进行处理，将日志数据输出到Logstash中，Logstash再将数据输出到Elasticsearch中，Elasticsearch再与Kibana相结合展示给用户。
 
 ## 1.2. EFK日志架构的演进  
 <!-- 
@@ -63,7 +63,7 @@ https://www.cnblogs.com/panchanggui/p/10697548.html
 * 注意了，Logstash将Log读出、过滤、输出都是在应用服务器上进行的，这势必会造成服务器上占用系统资源较高，性能不佳，需要进行拆分。  
 
 ### 1.2.2. 初级版  
-&emsp; 在这版中，**<font color = "red">加入一个缓冲中间件Kafka</font>** 。另外对Logstash拆分为Shipper和Indexer。先说一下，LogStash自身没有什么角色，只是根据不同的功能、不同的配置给出不同的称呼而已。Shipper来进行日志收集，Indexer从缓冲中间件接收日志，过滤输出到Elasticsearch。具体如下图所示：  
+&emsp; 在这版中， **<font color = "red">加入一个缓冲中间件Kafka</font>** 。另外对Logstash拆分为Shipper和Indexer。先说一下，LogStash自身没有什么角色，只是根据不同的功能、不同的配置给出不同的称呼而已。Shipper来进行日志收集，Indexer从缓冲中间件接收日志，过滤输出到Elasticsearch。具体如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-16.png)  
 &emsp; 说一下，这个缓冲中间件的选择。  
 &emsp; 早期的博客，都是推荐使用redis。因为这是ELK Stack 官网建议使用 Redis 来做消息队列，但是很多大佬已经通过实践证明使用Kafka更加优秀。原因如下:  

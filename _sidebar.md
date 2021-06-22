@@ -367,7 +367,7 @@
             * [高亮显示](/docs/ES/highLight.md)  
             * [检索模版](/docs/ES/searchTemplate.md)  
         * [Java客户端](/docs/ES/JavaRestClient.md)  
-    * [ES原理](/docs/ES/Principle.md)  
+    * [ES原理](/docs/ES/principle.md)  
         * [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
         * [ES增删改原理](/docs/ES/write.md)  
     * [ES运维](/docs/ES/Operation.md)  

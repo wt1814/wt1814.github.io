@@ -17,11 +17,8 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; **<font color = "clime">大索引设计建议：使用模板+滚动Rollover+Curator动态创建索引。</font>**  
-
-* 使用Rollver增量管理索引  
-* 使用curator高效清理历史数据  
-
-
+* 使用Rollver增量管理索引。  
+* 使用curator高效清理历史数据。  
 
 # 1. PB级别的大索引如何设计？  
 &emsp; 单纯的普通数据索引，如果不考虑增量数据，基本上普通索引就能够满足性能要求。  

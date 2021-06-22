@@ -492,7 +492,7 @@
 &emsp; &emsp; [高亮显示](/docs/ES/highLight.md)  
 &emsp; &emsp; [检索模版](/docs/ES/searchTemplate.md)  
 &emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
-[ES原理](/docs/ES/Principle.md)  
+[ES原理](/docs/ES/principle.md)  
 &emsp; [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
 &emsp; [ES增删改原理](/docs/ES/write.md)  
 [ES运维](/docs/ES/Operation.md)  
