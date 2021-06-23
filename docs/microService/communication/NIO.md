@@ -19,7 +19,7 @@ https://mp.weixin.qq.com/s/3OtbG6jegOS4m2GbyOF2lQ
     |DatagramChannel|能通过UDP读写网络中的数据|
     |ServerSocketChannel|可以监听新进来的TCP连接，对每一个新进来的连接都会创建一个SocketChannel|
 * Buffer(缓冲区)：  
-&emsp; 高效数据容器。Buffer也被成为内存缓冲区，本质上就是内存中的一块，用于数据的读写，NIO Buffer将其包裹并提供开发时常用的接口，便于数据操作。  
+&emsp; 高效数据容器。Buffer也被称为内存缓冲区，本质上就是内存中的一块，用于数据的读写，NIO Buffer将其包裹并提供开发时常用的接口，便于数据操作。  
 &emsp; NIO中的所有I/O都是通过一个通道开始的。数据总是从缓冲区写入通道，并从通道读取到缓冲区。从通道读取：创建一个缓冲区，然后请求通道读取数据。通道写入：创建一个缓冲区，填充数据，并要求通道写入数据。  
 &emsp; 在NIO中使用的核心缓冲区有：CharBuffer、DoubleBuffer、IntBuffer、LongBuffer、ByteBuffer、ShortBuffer、FloatBuffer。上述缓冲区覆盖了通过I/O发送的基本数据类型：characters，double，int，long，byte，short和float。
 * Selectors(IO复用器/选择器)：  
