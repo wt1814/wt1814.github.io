@@ -16,7 +16,7 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-
+&emsp; char的包装类型是Character。  
 
 
 # 1. Java基本数据类型  
