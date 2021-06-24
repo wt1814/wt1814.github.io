@@ -6,6 +6,7 @@
     - [1.1. 从未分库分表动态切换到分库分表](#11-从未分库分表动态切换到分库分表)
         - [1.1.1. 停机迁移方案](#111-停机迁移方案)
         - [1.1.2. 双写迁移方案](#112-双写迁移方案)
+    - [1.2. MySql现有的未分区表进行分区](#12-mysql现有的未分区表进行分区)
 
 <!-- /TOC -->
 
@@ -42,3 +43,20 @@ https://mp.weixin.qq.com/s?__biz=MzU5MTIyODk1Mg==&mid=2247484005&amp;idx=1&amp;s
 &emsp; 接着当数据完全一致了，就 ok 了，基于仅仅使用分库分表的最新代码，重新部署一次，不就仅仅基于分库分表在操作了么，还没有几个小时的停机时间，很稳。所以现在基本玩儿数据迁移之类的，都是这么干的。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-128.png)  
+
+## 1.2. MySql现有的未分区表进行分区
+<!-- 
+
+https://blog.csdn.net/sunvince/article/details/7752662
+
+Mysql 未分区表分区
+https://www.cnblogs.com/shenqilun/articles/11136766.html
+
+针对TIMESTAMP的分区方案
+https://www.cnblogs.com/ivictor/p/5032793.html
+
+如何对现有的未分区表进行分区
+https://qastack.cn/dba/48011/how-to-partition-an-existing-non-partitioned-table
+
+-->
+&emsp; mysql在已有无分区表增加分区，mysql5.5才有，可以是innodb_file_per_table关闭状态。  
