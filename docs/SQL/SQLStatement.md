@@ -46,7 +46,7 @@ Group by 优化
 https://mp.weixin.qq.com/s/YXVRNQz0HJu_qvJktxQuMw
 -->
 1. 优化GROUP BY：提高GROUP BY语句的效率，<font color = "red">可以通过将不需要的记录在GROUP BY之前过滤掉。即联合使用where子句和having子句。</font>  
-2. 在默认情况下，MySQL中的GROUP BY语句会对其后出现的字段进行默认排序(非主键情况)，就好比使用ORDER BY col1,col2,col3…所以在后面跟上具有相同列(与GROUP BY后出现的col1,col2,col3…相同)ORDER BY子句并没有影响该SQL的实际执行性能。  
+2. 在默认情况下，MySQL中的GROUP BY语句会对其后出现的字段进行默认排序(非主键情况)，就好比使用ORDER BY col1,col2,col3…所以在后面跟上具有相同列（与GROUP BY后出现的col1,col2,col3…相同）ORDER BY子句并没有影响该SQL的实际执行性能。  
 
 &emsp; 那么就会有这样的情况出现，对查询到的结果是否已经排序不在乎时，可以使用ORDER BY NULL禁止排序达到优化目的。下面使用EXPLAIN命令分析SQL。  
 &emsp; 在user_1中执行select id, sum(money) form user_1 group by name时，会默认排序(注意group by后的column是非index才会体现group by的排序，如果是primary key，那之前说过了InnoDB默认是按照主键index排好序的)  
