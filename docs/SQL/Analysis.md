@@ -24,7 +24,7 @@
 &emsp; **<font color = "clime">type单表查询类型要达到range级别(只检索给定范围的行，使用一个索引来选择行，非全表扫描)，extra额外的信息，常见的不太友好的值，如下：Using filesort，Using temporary。其他重要字段：key、key_len</font>**  
 3. profiling  
 &emsp; 使用profiling命令可以了解SQL语句消耗资源的详细信息(每个执行步骤的开销)。可以清楚了解到SQL到底慢在哪个环节。   
-4. trace
+4. trace  
 &emsp; 查看优化器如何选择执行计划，获取每个可能的索引选择的代价。  
 
 # 1. EXPLAIN、PROCEDURE ANALYSE(分析)  
