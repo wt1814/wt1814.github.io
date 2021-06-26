@@ -33,8 +33,8 @@
 5. MVCC解决了幻读没有？  
 &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了 Gap Lock 时，Gap 锁会锁住 id < 10 的整个范围，因此其他事务无法插入 id < 10 的数据，从而防止了幻读。  
 
-    当前读:select...lock in share mode; select...for update;
-    当前读:update、insert、delete
+        当前读:select...lock in share mode; select...for update;
+        当前读:update、insert、delete
 
 
 # 1. MVCC
