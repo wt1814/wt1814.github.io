@@ -14,7 +14,7 @@
             - [1.3.3.3. REPEATABLE READ，可重复读](#1333-repeatable-read可重复读)
             - [1.3.3.4. SERIALIZABLE](#1334-serializable)
             - [1.3.3.5. 总结](#1335-总结)
-        - [1.3.4. MVCC解决了幻读了没有？](#134-mvcc解决了幻读了没有)
+        - [1.3.4. ~~MVCC解决了幻读了没有？~~](#134-mvcc解决了幻读了没有)
 
 <!-- /TOC -->
 
@@ -28,8 +28,13 @@
 3. Read View判断：  
 &emsp; 如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。  
 4. 在读取已提交、可重复读两种隔离级别下会使用MVCC。  
-    * 读取已提交READ COMMITTED是在每次执行select操作时都会生成一次Read View。
-    * 可重复读REPEATABLE READ 只有在第一次执行select操作时才会生成Read View，后续的select操作都将使用第一次生成的Read View。
+    * 读取已提交READ COMMITTED是在`每次执行select操作时`都会生成一次Read View。所以解决不了幻读问题。 
+    * 可重复读REPEATABLE READ只有在第一次执行select操作时才会生成Read View，后续的select操作都将使用第一次生成的Read View。
+5. MVCC解决了幻读没有？  
+&emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了 Gap Lock 时，Gap 锁会锁住 id < 10 的整个范围，因此其他事务无法插入 id < 10 的数据，从而防止了幻读。  
+
+    当前读:select...lock in share mode; select...for update;
+    当前读:update、insert、delete
 
 
 # 1. MVCC
@@ -290,7 +295,17 @@ MVCC在MySQL InnoDB中的实现主要是为了提高数据库并发性能，用�
 * READ UNCOMMITTED 每次执行 select 都会去读最新的记录。  
 * SERIALIZABLE 每次执行 select 操作都会在该语句后面加上 lock in share mode，使 select 变为一致性锁定读，将读写进行串行化。  
 
-### 1.3.4. MVCC解决了幻读了没有？  
+### 1.3.4. ~~MVCC解决了幻读了没有？~~  
+<!-- 
+https://blog.csdn.net/MarkusZhang/article/details/107335259
+-->
+
+&emsp; 回答这个问题前，先要了解下什么是快照读、什么是当前读。  
+
+    当前读:select...lock in share mode; select...for update;
+    当前读:update、insert、delete
+    快照读:不加锁的非阻塞读，select
+
 &emsp; 幻读：在一个事务中使用相同的 SQL 两次读取，第二次读取到了其他事务新插入的行，则称为发生了幻读。  
 &emsp; 例如：  
 1. 事务1第一次查询：select * from user where id < 10 时查到了 id = 1 的数据；  
@@ -299,7 +314,7 @@ MVCC在MySQL InnoDB中的实现主要是为了提高数据库并发性能，用�
 
 &emsp; MVCC解决了快照读的幻读：  
 &emsp; <font color = "clime">对于快照读，MVCC 因为从 ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
-&emsp; <font color = "clime">而对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update，当使用了 Gap Lock 时，Gap 锁会锁住 id < 10 的整个范围，因此其他事务无法插入 id < 10 的数据，从而防止了幻读。  
+&emsp; <font color = "clime">而对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock(Gap Lock + Record Lock)来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了 Gap Lock 时，Gap 锁会锁住 id < 10 的整个范围，因此其他事务无法插入 id < 10 的数据，从而防止了幻读。  
 
 <!-- 
 

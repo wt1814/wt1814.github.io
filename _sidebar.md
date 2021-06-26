@@ -168,7 +168,7 @@
             * [MySql事务日志](/docs/SQL/log.md)  
                 * [undoLog和binLog](/docs/SQL/undoLog.md)  
                 * [redoLog与DoubleWrite](/docs/SQL/redoLog.md)  
-                * [binLog使用](/docs/SQL/UseBinlog.md)  
+                * [binLog使用](/docs/SQL/binLogUse.md)  
                 * [两阶段提交和崩溃恢复](/docs/SQL/CrashRecovery.md)  
         * [小结：insert插入流程](/docs/SQL/insert.md)  
         * [索引底层原理](/docs/SQL/IndexPrinciple.md)  

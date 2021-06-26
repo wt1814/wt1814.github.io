@@ -15,7 +15,7 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. 两阶段提交
     1. **<font color = "clime">redo log和binlog都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。两阶段提交保证解决binlog和redo log的数据一致性。</font>**    
-    2. 两阶段提交是很典型的分布式事务场景，因为redolog和binlog两者本身就是两个独立的个体，要想保持一致，就必须使用分布式事务的解决方案来处理。而将redolog分成了两步，其实就是使用了两阶段提交协议(Two-phaseCommit，2PC)。  
+    2. `两阶段提交是很典型的分布式事务场景，因为redolog和binlog两者本身就是两个独立的个体，`要想保持一致，就必须使用分布式事务的解决方案来处理。 **<font color = "blue">而将redolog分成了两步，其实就是使用了两阶段提交协议(Two-phaseCommit，2PC)。</font>**  
     &emsp; 事务的提交过程有两个阶段，就是将redolog的写入拆成了两个步骤：prepare和commit，中间再穿插写入binlog。  
         1. 记录redolog，InnoDB事务进入prepare状态；
         2. 写入binlog；

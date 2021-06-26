@@ -32,7 +32,7 @@ https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
 1. 首先 insert 进入 server 层后，会进行一些必要的检查，检查的过程中并不会涉及到磁盘的写入。
 2. 检查没有问题之后，便进入引擎层开始正式的提交。我们知道 InnoDB 会将数据页缓存至内存中的 buffer pool，所以 insert 语句到了这里并不需要立刻将数据写入磁盘文件中，只需要修改 buffer pool 当中对应的数据页就可以了。
 
-    buffer pool 中的数据页刷盘并不需要在事务提交前完成，其中的交互过程会在下一张图中分解。
+    &emsp; buffer pool中的数据页刷盘并不需要在事务提交前完成，其中的交互过程会在下一张图中分解。
 
 4. 但仅仅写入内存的 buffer pool 并不能保证数据的持久化，如果 MySQL 宕机重启了，需要保证 insert 的数据不会丢失。redo log 因此而生，当 innodb_flush_log_at_trx_commit=1 时，每次事务提交都会触发一次 redo log 刷盘。（redo log 是顺序写入，相比直接修改数据文件，redo 的磁盘写入效率更加高效）
 5. 如果开启了 binlog 日志，还需将事务逻辑数据写入binlog 文件，且为了保证复制安全，建议使用 sync_binlog=1 ，也就是每次事务提交时，都要将 binlog 日志的变更刷入磁盘。  

@@ -234,7 +234,7 @@
 &emsp; &emsp; [MySql事务日志](/docs/SQL/log.md)  
 &emsp; &emsp; &emsp; [undoLog和binLog](/docs/SQL/undoLog.md)  
 &emsp; &emsp; &emsp; [redoLog与DoubleWrite](/docs/SQL/redoLog.md)  
-&emsp; &emsp; &emsp; [binLog使用](/docs/SQL/UseBinlog.md)  
+&emsp; &emsp; &emsp; [binLog使用](/docs/SQL/binLogUse.md)  
 &emsp; &emsp; [两阶段提交和崩溃恢复](/docs/SQL/CrashRecovery.md)  
 &emsp; [小结：insert插入流程](/docs/SQL/insert.md)  
 
