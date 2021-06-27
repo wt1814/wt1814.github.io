@@ -20,6 +20,8 @@
 
 # 1. Redis多线程
 <!-- 
+重要  ★★★Redis 多线程网络模型全面揭秘 
+https://mp.weixin.qq.com/s/-s5BaFx2IV5xbyjgZWk-5A
 
 https://baijiahao.baidu.com/s?id=1664285811566919896&wfr=spider&for=pc&searchword=redis%E5%A4%9A%E7%BA%BF%E7%A8%8B
 https://www.cnblogs.com/gz666666/p/12901507.html

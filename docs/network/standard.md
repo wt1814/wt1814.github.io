@@ -10,7 +10,12 @@
 <!-- /TOC -->
 
 # 1. 网络的性能指标
-<!-- 
+<!--
+带宽设置多少？
+抖音服务器带宽有多大，才能供上亿人同时刷？ 
+https://mp.weixin.qq.com/s/jRYFJwStJ6tJilECyj1SCA
+
+
 带宽、延时、吞吐率、PPS 这些都是啥？ 
 https://mp.weixin.qq.com/s/MIIRaMOqlrXx_8w3bvJ4nA
 -->

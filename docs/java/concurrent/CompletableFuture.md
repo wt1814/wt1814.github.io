@@ -15,6 +15,9 @@
 
 # 1. ~~CompletableFuture<T>~~  
 <!--
+手把手教你线程池配合CompletableFuture实现图片下载并压缩 
+https://mp.weixin.qq.com/s/spmqWaS_8Oe-5TQlnksTVw
+
 CompletableFuture详解 
 https://mp.weixin.qq.com/s/ZVdAre6YAwCLXSotVDsc_Q
  从 CompletableFuture 到异步编程 

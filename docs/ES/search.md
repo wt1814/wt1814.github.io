@@ -8,6 +8,11 @@
 <!-- /TOC -->
 
 # 1. 检索操作  
+<!-- 
+
+重要  fingerprint filter 插件——Elasticsearch 去重必备利器 
+https://www.baidu.com/index.php?tn=monline_3_dg
+-->
 
 <!-- 
 检索类型如何选型呢？
