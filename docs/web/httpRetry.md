@@ -2,8 +2,9 @@
 <!-- TOC -->
 
 - [1. 重试请求](#1-重试请求)
-    - [1.1. RestTemplate自动重试](#11-resttemplate自动重试)
-    - [1.2. Spring Cloud Ribbon](#12-spring-cloud-ribbon)
+    - [1.1. Spring Retry](#11-spring-retry)
+    - [1.2. RestTemplate自动重试](#12-resttemplate自动重试)
+    - [1.3. Spring Cloud Ribbon](#13-spring-cloud-ribbon)
 
 <!-- /TOC -->
 
@@ -16,13 +17,15 @@ https://mp.weixin.qq.com/s/_qFK-ki7-mL4Nnv4zEfYrQ
 
 -->
 
-## 1.1. RestTemplate自动重试  
+## 1.1. Spring Retry
+
+## 1.2. RestTemplate自动重试  
 <!-- 
 https://www.hangge.com/blog/cache/detail_2522.html
 -->
 
 
-## 1.2. Spring Cloud Ribbon  
+## 1.3. Spring Cloud Ribbon  
 &emsp; Spring Cloud整合Spring Retry来增强RestTemplate的重试能力。通过RestTemplate实现的服务访问就会自动根据配置来实现重试机制。  
 
 ```yaml

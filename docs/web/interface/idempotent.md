@@ -14,7 +14,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 接口幂等xxx常用解决方案：分布式锁、select+insert。  
+&emsp; 接口幂等xxx常用解决方案：分布式锁、select+insert、状态机幂等。  
 
 # 1. 接口幂等  
 
