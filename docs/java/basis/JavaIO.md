@@ -21,9 +21,9 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "clime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>** I/O读写大文件解决方案：  
-    * 使用BufferedInputStream进行包装；
-    * 逐行读取；
-    * 并发读取：1)逐行批次打包；2)大文件拆分成小文件
+    * 使用BufferedInputStream进行包装。
+    * 逐行读取。
+    * 并发读取：1)逐行批次打包；2)大文件拆分成小文件。
     * 零拷贝方案：
         * FileChannel，分配读取到已分配固定长度的 java.nio.ByteBuffer。
         * 内存文件映射，MappedByteBuffer。采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。
