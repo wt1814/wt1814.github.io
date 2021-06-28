@@ -11,7 +11,7 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. Java动态代理类位于java.lang.reflect包下，一般主要涉及到以下两个重要的类或接口，一个是InvocationHandler(Interface)、另一个则是Proxy(Class)。  
     * Proxy类。该类即为动态代理类。Proxy.newProxyInstance()生成代理对象；  
-    * InvocationHandler接口。在使用动态代理时，需要定义一个位于代理类与委托类之间的中介类，中介类被要求实现InvocationHandler接口。通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。  
+    * InvocationHandler接口。 **<font color = "clime">在使用动态代理时，需要定义一个位于代理类与委托类之间的中介类，中介类被要求实现InvocationHandler接口。</font>** 通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。  
 2. <font color = "clime">JDK动态代理的实现，大致流程：</font>  
     1. <font color = "red">为接口创建代理类的字节码文件。</font> **<font color = "blue">使用反射来创建代理类。</font>**  
     2. <font color = "red">使用ClassLoader将字节码文件加载到JVM。</font>  
