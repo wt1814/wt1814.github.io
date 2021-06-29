@@ -39,6 +39,8 @@ https://mp.weixin.qq.com/s/znVGpJhtA52UKiekHWqD3w
  这些排查内存问题的命令，你用过多少？ 
  https://mp.weixin.qq.com/s/1mdFnmHXLK3j5x75ecdx1Q
 
+ Java后端线上问题排查常用命令收藏 
+https://mp.weixin.qq.com/s/WJG9PU6c8wYcbFViW_lZtw
 -->
 
 &emsp; 针对Java应用，性能诊断工具主要分为两层：OS层面和Java应用层面(包括应用代码诊断和GC诊断)。  
