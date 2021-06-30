@@ -114,7 +114,7 @@
         * [Atmoic](/docs/java/concurrent/Atmoic.md)  
             * [AtomicStampedReference与AtomicMarkableReference](/docs/java/concurrent/AtomicStampedReference.md)  
             * [LongAdder](/docs/java/concurrent/LongAdder.md)  
-        * [Collections](/docs/java/concurrent/collections.md)  
+        * [Collections](/docs/java/concurrent/jihe.md)  
             * [ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)  
             * [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
         * [tools](/docs/java/concurrent/tools.md)
