@@ -18,8 +18,8 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "clime">Volatile的特性：</font>**  
     1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>    
-    2. <font color = "red">实现了有序性，禁止进行指令重排序。</font>  
-    3. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**  
+    2. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**  
+    3. <font color = "red">实现了有序性，禁止进行指令重排序。</font>  
 2. Volatile底层原理：  
     * **<font color = "clime">在Volatile写前插入写-写屏障（禁止上面的普通写与下面的Volatile写重排序），在Volatile写后插入写-读屏障（禁止上面的Volatile写与下面可能有的Volatile读/写重排序）。</font>**  
     * **<font color = "clime">在Volatile读后插入读-读屏障（禁止下面的普通读操作与上面的Volatile读重排序）、读-写屏障（禁止下面所有的普通写操作和上面Volatile读重排序）。</font>**  
@@ -42,9 +42,10 @@ https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>  
 
         i++在虚拟机内部有3条指令(读取－修改－写入)执行。表达式i++的操作步骤分解如下：1)从内存中取出i的值；2)计算i的值；3)将i的值写到内存中。    
-2. <font color = "red">实现了有序性，禁止进行指令重排序。</font>
+
+2. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**变量被修改后，会立即保存在主存中，并清除工作内存中的值。这个变量不会在多个线程中存在复本，直接从内存读取。新值对其他线程来说是立即可见的。  
 <!-- 在Volatile变量的赋值操作后⾯会有⼀个内存屏障(⽣成的汇编代码上)，读操作不会被重排序到内存屏障之前。 -->
-3. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**变量被修改后，会立即保存在主存中，并清除工作内存中的值。这个变量不会在多个线程中存在复本，直接从内存读取。新值对其他线程来说是立即可见的。  
+3. <font color = "red">实现了有序性，禁止进行指令重排序。</font>
 
 &emsp; **<font color = "red">总结：Volatile保证了可见性和有序性，同时可以保证单次读/写的原子性。</font>**  
 
