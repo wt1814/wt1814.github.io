@@ -692,3 +692,9 @@
 &emsp; [HyperLogLog](/docs/function/HyperLogLog.md)  
 &emsp; [Trie](/docs/function/Trie.md)  
 [大数据和空间限制](/docs/function/bigdata.md)  
+
+-------------------
+
+<!-- 
+[管理](/docs/Administration/Admin.md)  
+-->
