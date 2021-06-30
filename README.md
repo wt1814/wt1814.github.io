@@ -696,5 +696,5 @@
 -------------------
 
 <!-- 
-[管理](/docs/Administration/Admin.md)  
+[技术管理](/docs/Administration/TechnologyAdmin.md)  
 -->
