@@ -12,4 +12,7 @@ https://mp.weixin.qq.com/s/MJgOJFMeAmBrfjXuJia80A
 线上YGC频繁事故分析 
 https://mp.weixin.qq.com/s/v-1qxNnQnyXtP-mLnwUx3A
 
+
+##########   618，核心服务OOM！ 
+https://mp.weixin.qq.com/s/hxQef3scOsABfU2oc0bYvw
 -->

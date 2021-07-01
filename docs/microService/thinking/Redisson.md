@@ -37,6 +37,11 @@
 
 
 # 1. Redisson实现redis分布式锁 
+<!-- 
+  Redisson 分布式锁源码 02：看门狗 
+  https://mp.weixin.qq.com/s/ussF5Ox1Q01IYFCwAiyu5Q
+-->
+
 ## 1.1. Redisson简介  
 &emsp; 基于redis的分布式锁实现客户端[Redisson](/docs/microService/Redis/Redisson.md) ，官方网址：https://redisson.org/ 。Redisson支持redis单实例、redis master-slave、redis哨兵、redis cluster等各种部署架构。  
 
