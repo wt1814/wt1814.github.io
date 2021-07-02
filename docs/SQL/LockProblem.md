@@ -19,11 +19,12 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; ~~胡扯，死锁，mysql检测后，回滚一条事务，抛出异常。~~  
-1. **<font color = "clime">MySql如何处理死锁？**  
+1. 服务器报错：`Deadlock found when trying to get to lock; try restarting transaction`。  
+2. **<font color = "clime"> 死锁发生了如何解决，MySQL有没有提供什么机制去解决死锁？**  
     1. 发起死锁检测，主动回滚其中一条事务，让其他事务继续执行。  
     2. 设置超时时间，超时后自动释放。  
-    &emsp; `在涉及外部锁，或涉及表锁的情况下，InnoDB 并不能完全自动检测到死锁，`这需要通过设置锁等待超时参数 innodb_lock_wait_timeout 来解决。</font>   
-2. **<font color = "clime">如果出现死锁？除了以上两种方案外，开发人员还需要检查代码。</font>**  
+    &emsp; `在涉及外部锁，或涉及表锁的情况下，InnoDB并不能完全自动检测到死锁，`这需要通过设置锁等待超时参数 innodb_lock_wait_timeout来解决。</font>   
+3. &emsp; **<font color = "clime">如果出现死锁</font>** ，<font color = "clime">可以用`show engine innodb status;`命令来确定最后一个死锁产生的原因。  
 
 
 # 1. MySql锁造成的问题
@@ -44,7 +45,7 @@ https://mp.weixin.qq.com/s/F3IPSiKzabuDd8S5UKI-WQ
 -->
 
 &emsp; 服务器报错：`Deadlock found when trying to get to lock; try restarting transaction`。  
-&emsp; 死锁发生了如何解决，MySQL 有没有提供什么机制去解决死锁。
+&emsp; 死锁发生了如何解决，MySQL有没有提供什么机制去解决死锁？  
   
 ### 1.1.1. 死锁产生  
 &emsp; 死锁是指两个或多个事务在同一资源上相互占用，并请求锁定对方占用的资源，从而导致恶性循环。  
@@ -194,7 +195,7 @@ Record lock, heap no 1 PHYSICAL RECORD: n_fields 1; compact format; info bits 0
 
     next-key锁将gap锁定在索引中最大值之上，而supremum伪记录的值高于索引中实际的任何值。supremum不是真正的索引记录，因此，实际上，此next-key锁仅锁定最大索引值之后的间隙。  
 
-&emsp; <font color = "red">两个事务的锁属性可以通过select * from information_schema.innodb_locks;进行查询，</font>数据如下表：  
+&emsp; <font color = "red">两个事务的锁属性可以通过`select * from information_schema.innodb_locks;`进行查询，</font>数据如下表：  
 
 |lock_id	|lock_tx_id	|lock_mode	|lock_type	|lock_table	|lock_index	|lock_space|lock_page|lock_rec|lock_data|
 |---|---|---|---|---|---|---|---|---|---|

@@ -20,7 +20,7 @@
         1. 记录redolog，InnoDB事务进入prepare状态；
         2. 写入binlog；
         3. 将redolog这个事务相关的记录状态设置为commit状态。
-2. 崩溃恢复  
+2. 崩溃恢复： **<font color = "red">当重启数据库实例的时候，数据库做2个阶段性操作：redo log处理，undo log及binlog 处理。在崩溃恢复中还需要回滚没有提交的事务，提交没有提交成功的事务。由于回滚操作需要undo日志的支持，undo日志的完整性和可靠性需要redo日志来保证，所以崩溃恢复先做redo前滚，然后做undo回滚。</font>**    
 
 
 # 1. 两阶段提交和崩溃恢复
@@ -142,6 +142,10 @@ https://blog.csdn.net/weixin_39820173/article/details/113402536
 
 ## 1.6. ~~恢复~~
 <!-- 
+
+https://blog.csdn.net/weixin_37692493/article/details/106970706
+
+
 &emsp; 启动innodb的时候，不管上次是正常关闭还是异常关闭，总是会进行恢复操作。因为redo log记录的是数据页的物理变化，因此恢复的时候速度比逻辑日志(如binlog)要快很多。重启innodb时，首先会检查磁盘中数据页的LSN，如果数据页的LSN小于日志中的LSN，则会从checkpoint开始恢复。还有一种情况，在宕机前正处于checkpoint的刷盘过程，且数据页的刷盘进度超过了日志页的刷盘进度，此时会出现数据页中记录的LSN大于日志中的LSN，这时超出日志进度的部分将不会重做，因为这本身就表示已经做过的事情，无需再重做。  
 
 
