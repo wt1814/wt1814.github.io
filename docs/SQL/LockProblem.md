@@ -22,7 +22,7 @@
 1. **<font color = "clime">MySql如何处理死锁？**  
     1. 发起死锁检测，主动回滚其中一条事务，让其他事务继续执行。  
     2. 设置超时时间，超时后自动释放。  
-    &emsp; 在涉及外部锁，或涉及表锁的情况下，InnoDB 并不能完全自动检测到死锁， 这需要通过设置锁等待超时参数 innodb_lock_wait_timeout 来解决。</font>   
+    &emsp; `在涉及外部锁，或涉及表锁的情况下，InnoDB 并不能完全自动检测到死锁，`这需要通过设置锁等待超时参数 innodb_lock_wait_timeout 来解决。</font>   
 2. **<font color = "clime">如果出现死锁？除了以上两种方案外，开发人员还需要检查代码。</font>**  
 
 
