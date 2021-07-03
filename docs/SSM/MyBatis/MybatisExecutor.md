@@ -23,7 +23,6 @@
 
 <!-- /TOC -->
 
-
 &emsp; **<font color = "red">总结：</font>**   
 1. sql执行流程：   
     1. 读取核心配置文件并返回InputStream流对象。
