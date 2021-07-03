@@ -146,7 +146,7 @@ public void preInstantiateSingletons() throws BeansException {
 &emsp; 根据上面的分析得知，可以通过lazy-init属性来对整个IoC容器的初始化和依赖注入过程进行一些简单的控制。这些控制是可以由容器的使用者来决定的，具体来说，可以通过在 BeanDefinition中设置lazy-init属性来进行控制。  
 
 ## @Lazy
-......
+&emsp; ......
 <!--
 Spring中的 @Lazy注解简析
 https://blog.csdn.net/weixin_41888813/article/details/102947633

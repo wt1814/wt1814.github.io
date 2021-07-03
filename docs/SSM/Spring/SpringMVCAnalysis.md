@@ -16,15 +16,16 @@
 1. **SpringMVC的工作流程：**  
     1. 找到处理器：前端控制器DispatcherServlet ---> **<font color = "red">处理器映射器HandlerMapping</font>** ---> 找到处理器Handler；  
     2. 处理器处理：前端控制器DispatcherServlet ---> **<font color = "red">处理器适配器HandlerAdapter</font>** ---> 处理器Handler ---> 执行具体的处理器Controller(也叫后端控制器) ---> Controller执行完成返回ModelAndView；  
-    &emsp; 1. **<font color = "blue">处理器适配器HandlAdapter：按照特定规则(HandlerAdapter要求的规则)去执行Handler。通过HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。</font>**  
-    &emsp; 2. 处理器Handler和controller区别：
+    &emsp; 1. 处理器映射器HandlerMapping：根据请求的url查找HandlerHandler即处理器(Controller)。  
+    &emsp; 2. **<font color = "blue">处理器适配器HandlAdapter：按照特定规则(HandlerAdapter要求的规则)去执行Handler。通过HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。</font>**  
+    &emsp; 3. 处理器Handler和controller区别：
     3. 返回前端控制器DispatcherServlet ---> 视图解析器ViewReslover。  
 2. **SpringMVC解析：**  
     1. 在SpringMVC.xml中定义一个DispatcherServlet和一个监听器ContextLoaderListener。  
     2. 上下文在web容器中的启动：<font color = "red">由ContextLoaderListener启动的上下文为根上下文。在根上下文的基础上，还有一个与Web MVC相关的上下文用来保存控制器(DispatcherServlet)需要的MVC对象，作为根上下文的子上下文，构成一个层次化的上下文体系。</font>  
-    3. **<font color = "red">DispatcherServlet初始化和使用：</font>**     
-        1. 初始化阶段。DispatcherServlet的初始化在HttpServletBean#init()方法中。 **<font color = "red">完成Spring MVC的组件的初始化。</font>**    
-        2. 调用阶段。这一步是由请求触发的。入口为DispatcherServlet#doService() ---> DispatcherServlet#doDispatch()。 **<font color = "blue">逻辑即为SpringMVC处理流程。</font>**   
+    3. **<font color = "red">`DispatcherServlet初始化和使用：`</font>**     
+        1. 初始化阶段。DispatcherServlet的初始化在HttpServletBean#init()方法中。 **<font color = "red">`完成Spring MVC的组件的初始化。`</font>**    
+        2. 调用阶段。这一步是由请求触发的。入口为DispatcherServlet#doService() ---> DispatcherServlet#doDispatch()。 **<font color = "blue">`逻辑即为SpringMVC处理流程。`</font>**   
 
 
 # 1. SpringMVC解析

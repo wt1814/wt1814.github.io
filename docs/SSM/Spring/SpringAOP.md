@@ -17,18 +17,17 @@
     - [1.3. ★★★SpringAOP失效](#13-★★★springaop失效)
         - [1.3.1. 解决方案](#131-解决方案)
             - [1.3.1.1. 通过ApplicationContext来获得动态代理对象](#1311-通过applicationcontext来获得动态代理对象)
+    - [1.4. ~~过滤器，拦截器和aop的区别~~](#14-过滤器拦截器和aop的区别)
 
 <!-- /TOC -->
-
 
 &emsp; **<font color = "red">总结：</font>**
 1. SpringAOP的主要功能是：日志记录，性能统计，安全控制，事务处理，异常处理等。 
     * 慢请求记录  
     * 使用aop + redis + Lua接口限流
-
 2. **SpringAOP失效：**  
 &emsp; <font color = "red">同一对象内部方法嵌套调用，慎用this来调用被@Async、@Transactional、@Cacheable等注解标注的方法，this下注解可能不生效。</font>async方法中的this不是动态代理的子类对象，而是原始的对象，故this调用无法通过动态代理来增强。 
-
+3. 过滤器，拦截器和aop的区别：过滤器拦截的是URL；拦截器拦截的是URL；Spring AOP只能拦截Spring管理Bean的访问（业务层Service）。  
 
 # 1. SpringAOP  
 
@@ -185,3 +184,10 @@ public class AsyncService implements ApplicationContextAware {
 ```
 &emsp; 可以看到完美达到目的。同理是用BeanFactoryAware可达到同样的效果。  
 
+
+## 1.4. ~~过滤器，拦截器和aop的区别~~
+<!--
+
+过滤器，拦截器和aop的区别
+https://my.oschina.net/xiaoyoung/blog/3032271
+ -->

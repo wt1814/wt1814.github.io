@@ -92,7 +92,7 @@ https://blog.csdn.net/q1937915896/article/details/88178558?utm_medium=distribute
 2. @Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入。  
 
 &emsp; **@Qualifier 注解有什么作用？**  
-&emsp; **<font color = "red">当创建多个相同类型的 bean 并希望仅使用属性装配其中一个 bean 时，可以使用@Qualifier 注解和 @Autowired 通过指定应该装配哪个确切的 bean 来消除歧义。</font>**    
+&emsp; **<font color = "red">当创建多个相同类型的bean并希望仅使用属性装配其中一个bean时，可以使用@Qualifier注解和@Autowired通过指定应该装配哪个确切的bean来消除歧义。</font>**    
 
 #### 1.2.2.2. SpringBean的作用域  
 &emsp; <font color = "red">Spring容器中的bean可以分为5个范围：</font>  

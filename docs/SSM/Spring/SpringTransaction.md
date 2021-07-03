@@ -8,7 +8,7 @@
         - [1.2.2. 注解@Transactional使用](#122-注解transactional使用)
     - [1.3. ★★★Spring事务属性详解](#13-★★★spring事务属性详解)
         - [1.3.1. 事务传播行为](#131-事务传播行为)
-            - [1.3.1.1. 传播行为编码示例](#1311-传播行为编码示例)
+            - [1.3.1.1. ~~传播行为编码示例~~](#1311-传播行为编码示例)
         - [1.3.2. 事务隔离级别](#132-事务隔离级别)
         - [1.3.3. 事务超时](#133-事务超时)
         - [1.3.4. 事务只读属性](#134-事务只读属性)
@@ -118,11 +118,12 @@ public interface TransactionDefinition {
 &emsp; 7. PROPAGATION_NESTED：如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；如果当前没有事务，则该取值等价于PROPAGATION_REQUIRED。  
 &emsp; 嵌套事务是外部事务的一部分，只有外部事务结束后它才会被提交。由此可见，PROPAGATION_REQUIRES_NEW和PROPAGATION_NESTED的最大区别在于：PROPAGATION_REQUIRES_NEW完全是一个新的事务，而PROPAGATION_NESTED则是外部事务的子事务，如果外部事务commit，嵌套事务也会被commit， 这个规则同样适用于roll back。  
 
-#### 1.3.1.1. 传播行为编码示例  
+#### 1.3.1.1. ~~传播行为编码示例~~  
 <!-- 
 Spring 事务传播属性有那么难吗？看这一篇就够了！
 https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
 -->
+
 
 ### 1.3.2. 事务隔离级别  
 &emsp; 隔离级别是指若干个并发的事务之间的隔离程度。TransactionDefinition接口中定义了5个表示隔离级别的常量，默认值为ISOLATION_DEFAULT(使用数据库的设置)，其他四个隔离级别和数据库的隔离级别一致。  
@@ -206,9 +207,7 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
             DEBUG o.m.spring.transaction.SpringManagedTransaction - JDBC Connection [com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl@28cfe912] will not be managed by Spring
 
 2.**如何通过程序判断是否存在事务？**  
-
-        boolean flag = TransactionSynchronizationManager.isActualTransactionActive();  
-&emsp; 返回true，则在事务控制下，否则不在控制下。  
+&emsp; `boolean flag = TransactionSynchronizationManager.isActualTransactionActive();`返回true，则在事务控制下，否则不在控制下。  
 
 <!-- 
 1.6. Spring的事务管理器  

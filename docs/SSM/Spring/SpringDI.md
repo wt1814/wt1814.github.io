@@ -21,6 +21,7 @@
 
 # 1. SpringDI解析
 ## 1.1. ~~依赖注入发生的时间(懒加载相关)~~  
+&emsp; [lazy-init](/docs/SSM/Spring/feature/lazy-init.md)  
 &emsp; 当Spring IOC容器完成了Bean定义资源的定位、载入和解析注册以后，IOC容器中已经管理类Bean定义的相关数据，但是此时IOC容器还没有对所管理的Bean进行依赖注入，<font color= "red">依赖注入在以下两种情况发生</font>：  
 
 * 用户第一次调用getBean()方法时，IOC容器触发依赖注入。  

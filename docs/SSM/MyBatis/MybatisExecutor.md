@@ -33,7 +33,7 @@
     5. 对执行结果进行二次封装。
     6. 提交与事务。   
 2. **<font color = "clime">Mapper接口动态代理类的生成：</font>** 
-    * **<font color = "blue">解析配置文件生成sqlSessionFactory时，</font>** 会调用bindMapperForNamespace() ---> addMapper方法， **<font color = "blue">根据mapper文件中的namespace属性值，将接口生成动态代理类的工厂，存储在MapperRegistry对象中。</font>** MapperRegistry内部维护一个映射关系，每个接口对应一个`MapperProxyFactory（生成动态代理工厂类）`。      
+    * **<font color = "blue">解析配置文件生成sqlSessionFactory时，</font>** 会调用bindMapperForNamespace() ---> addMapper方法， **<font color = "blue">根据mapper文件中的namespace属性值，将接口生成动态代理类的`工厂`，存储在MapperRegistry对象中。</font>** MapperRegistry内部维护一个映射关系，每个接口对应一个`MapperProxyFactory（生成动态代理工厂类）`。      
     * 在调用getMapper，根据type类型，从MapperRegistry对象中的knownMappers获取到当前类型对应的代理工厂类，然后通过代理工厂类使用`jdk自带的动态代理`生成对应Mapper的代理类。  
     ```java
     //这里可以看到每次调用都会创建一个新的代理对象返回

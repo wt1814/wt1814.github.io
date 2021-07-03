@@ -27,7 +27,7 @@
             1. 遍历所有 advice 方法。
             2. 解析方法的注解和pointcut。
             3. 实例化 Advisor 对象。
-        3. 获取到候选的 Advisors，并且缓存起来，方便下一次直接获取。
+        3. 获取到候选的 Advisors，并且`缓存`起来，方便下一次直接获取。
         4. 从候选的Advisors中筛选出与目标类适配的Advisor。 
             1. 获取到Advisor的切入点pointcut。
             2. 获取到当前target类所有的public方法。

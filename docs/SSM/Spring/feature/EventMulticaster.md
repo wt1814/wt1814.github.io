@@ -74,9 +74,7 @@ protected void registerListeners() {
 }
 ```
 
- 
-
-发布事件：multicastEvent方法----->invokeListener方法---->doInvokeListener方法调用监听器的onApplicationEvent
+&emsp; 发布事件：multicastEvent方法----->invokeListener方法---->doInvokeListener方法调用监听器的onApplicationEvent
 
 ```java
 // SimpleApplicationEventMulticaster
@@ -100,11 +98,9 @@ public void multicastEvent(final ApplicationEvent event, @Nullable ResolvableTyp
 }
 ```
 
-可以看到这里支持异步发送，但是从上面我们初始化简单多播器的时候，executer对象并没有赋值，因此始终是同步发布。如果我们想实现异步发布事件，那么就要让上面初始化多播器的逻辑走进第一个分支。我们可以在容器中自己继承SimpleApplicationEventMulticaster，并初始化一个线程池，然后将其注册到容器中，bean的名字必须使用“applicationEventMulticaster”，因为此时容器还没有创建真正的对象，只有这个名字的bean定义才会马上去创建对象。这样就可以实现异步发布事件了。
+&emsp; 可以看到这里支持异步发送，但是从上面我们初始化简单多播器的时候，executer对象并没有赋值，因此始终是同步发布。如果我们想实现异步发布事件，那么就要让上面初始化多播器的逻辑走进第一个分支。我们可以在容器中自己继承SimpleApplicationEventMulticaster，并初始化一个线程池，然后将其注册到容器中，bean的名字必须使用“applicationEventMulticaster”，因为此时容器还没有创建真正的对象，只有这个名字的bean定义才会马上去创建对象。这样就可以实现异步发布事件了。
 
- 
-
-3.执行finishRefresh方法发布ContextRefreshedEvent事件，标志的容器已经启动完成。
+3. 执行finishRefresh方法发布ContextRefreshedEvent事件，标志的容器已经启动完成。
 
 ```java
 protected void finishRefresh() {
@@ -125,6 +121,4 @@ protected void finishRefresh() {
 }
 ```
 
-监听器的流程完了，我们现在来看下使用
-
-
+&emsp; 监听器的流程完了，我们现在来看下使用
