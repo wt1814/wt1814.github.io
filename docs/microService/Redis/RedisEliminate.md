@@ -29,15 +29,16 @@
     * <font color = "clime">惰性删除策略，只有当访问一个key时，才会判断该key是否已过期，过期则清除。</font>  
     * <font color = "red"> **定期删除策略，每隔一段时间执行一次删除过期键操作**</font>，并通过<font color = "clime">限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响</font>，同时，通过定期删除过期键，也有效地减少了因为过期键而带来的内存浪费。  
 2. **Redis内存淘汰使用的算法：**  
-&emsp; **<font color = "clime">volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
 &emsp; Redis内存淘汰使用的算法有4种： 
     * random，随机删除。  
     * TTL，删除过期时间最少的键。  
     * <font color = "clime">LRU，Least Recently Used：最近最少使用（访问时间）。</font>判断最近被使用的时间，离目前最远的数据优先被淘汰。  
-    &emsp; **<font color = "red">如果基于传统LRU算法实现，Redis LRU会有什么问题？需要额外的数据结构存储，消耗内存。</font>**  
-    &emsp; **<font color = "blue">Redis LRU对传统的LRU算法进行了改良，通过随机采样来调整算法的精度。</font>** 如果淘汰策略是LRU，则根据配置的采样值maxmemory_samples(默认是 5 个)，随机从数据库中选择m个key，淘汰其中热度最低的key对应的缓存数据。所以采样参数m配置的数值越大，就越能精确的查找到待淘汰的缓存数据，但是也消耗更多的CPU计算，执行效率降低。  
+    &emsp; **<font color = "red">`如果基于传统LRU算法实现，Redis LRU会有什么问题？需要额外的数据结构存储，消耗内存。`</font>**  
+    &emsp; **<font color = "blue">Redis LRU对传统的LRU算法进行了改良，通过`随机采样`来调整算法的精度。</font>** 如果淘汰策略是LRU，则根据配置的采样值maxmemory_samples(默认是 5 个)，随机从数据库中选择m个key，淘汰其中热度最低的key对应的缓存数据。所以采样参数m配置的数值越大，就越能精确的查找到待淘汰的缓存数据，但是也消耗更多的CPU计算，执行效率降低。  
     * <font color = "clime">LFU，Least Frequently Used，最不常用（访问频率），4.0版本新增。</font>  
-3. **内存淘汰策略选择：**  
+3. **~~内存淘汰策略选择：~~**  
+&emsp; **<font color = "clime">volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。</font>**  
+
     1. 如果数据呈现幂律分布，也就是一部分数据访问频率高，一部分数据访问频率低，或者无法预测数据的使用频率时，则使用allkeys-lru/allkeys-lfu。  
     2. 如果数据呈现平等分布，也就是所有的数据访问频率都相同，则使用allkeys-random。
     3. 如果研发者需要通过设置不同的ttl来判断数据过期的先后顺序，此时可以选择volatile-ttl策略。
@@ -47,7 +48,7 @@
     **volatile-xxx策略只会针对带过期时间的key进行淘汰，allkeys-xxx策略会对所有的key进行淘汰。**  
 
     * 如果只是拿Redis做缓存，那应该使用allkeys-xxx，客户端写缓存时不必携带过期时间。  
-    * 如果还想同时使用Redis的持久化功能，那就使用volatile-xxx策略，这样可以保留没有设置过期时间的key，它们是永久的key不会被LRU算法淘汰。  
+    * `如果还想同时使用Redis的持久化功能，那就使用volatile-xxx策略，这样可以保留没有设置过期时间的key，它们是永久的key不会被LRU算法淘汰。`  
 
 
 # 1. Redis内存  
