@@ -42,7 +42,7 @@
     &emsp; 在B重启作为Leader之后，收到消息m2。A宕机重启后向成为Leader的B发送Fetch请求，发现自己的HW和B的HW一致，都是2，因此不会进行消息截断，而这也造成了数据不一致。  
     2. 引入Leader Epoch机制：  
     &emsp; **<font color = "blue">为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制。</font>** 在每个副本日志目录下都有一个leader-epoch-checkpoint文件，用于保存Leader Epoch信息。  
-    &emsp; Leader Epoch，分为两部分，前者Epoch，表示Leader版本号，是一个单调递增的正整数，每当Leader变更时，都会加1；后者StartOffset，为每一代Leader写入的第一条消息的位移。   
+    &emsp; Leader Epoch，分为两部分，前者Epoch，表示Leader版本号，是一个单调递增的正整数，每当Leader变更时，都会加1；`后者StartOffset，为每一代Leader写入的第一条消息的位移。`   
 
 
 # 1. Kafka副本机制  

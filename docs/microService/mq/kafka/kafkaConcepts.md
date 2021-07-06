@@ -18,7 +18,7 @@ https://mp.weixin.qq.com/s/QPHPugWlbfeh8HhQvELSSQ
 &emsp; **kafka中文文档：** https://kafka.apachecn.org/  
 
 ## 1.1. kafka介绍  
-&emsp; Apache Kafka是一个分布式流处理平台。流处理平台有以下三种特性:
+&emsp; Apache Kafka是一个分布式流处理平台。流处理平台有以下三种特性：
 
 * 可以发布和订阅流式的记录。这一方面与消息队列或者企业消息系统类似。
 * 可以储存流式的记录，并且有较好的容错性。
