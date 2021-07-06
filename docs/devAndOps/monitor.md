@@ -64,4 +64,7 @@ https://mp.weixin.qq.com/s/VAzATGHgYdKZY8Yk2PHKuw
 https://mp.weixin.qq.com/s/Z4SGXTqv0u1mzHI-2IZDyg
 性能监控工具之 Grafana + Prometheus + Exporters 
 https://mp.weixin.qq.com/s/HKWga3DxbPWx0lGMyaQsgQ
+
+号称下一代监控系统，来看看它有多强！ 
+https://mp.weixin.qq.com/s/zqXOYQV_kSYWp3ibr0rH7g
 -->

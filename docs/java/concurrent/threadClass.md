@@ -27,6 +27,9 @@ https://mp.weixin.qq.com/s/wTZReOSthGONsOAqYgQFaA
 
 为什么 Java 线程没有 Running 状态？一下被问懵！ 
 https://mp.weixin.qq.com/s/_M_VkFDCdIiXokhzqsDT_A
+透彻Java线程状态转换
+https://mp.weixin.qq.com/s/6CJHQQ0ZS-yHWhjWhc7UXQ
+
 -->
 
 ## 1.1. Thread.java的构造函数
