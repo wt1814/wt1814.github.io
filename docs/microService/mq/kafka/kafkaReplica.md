@@ -32,7 +32,7 @@
     &emsp; 更新LEO和HW的时机： **<font color = "clime">Follower向Leader拉取了消息之后。(⚠️注意：Follower副本只和Leader副本交互。)</font>**  
     &emsp; **<font color = "red">会用获取的偏移量加1来更新LEO，并且用Leader的HW值和当前LEO的最小值来更新HW。</font>**  
     2. Leader副本上LEO和HW的更新：  
-        * 正常情况下Leader副本的更新时机有两个：一、收到生产者的消息；二、被Follower拉取消息。(⚠️注意：Leader副本即和Leader副本交互，也和生产者交互。)  
+        * 正常情况下Leader副本的更新时机有两个：一、收到生产者的消息；二、被Follower拉取消息。(⚠️注意：Leader副本即和Follower副本交互，也和生产者交互。)  
             * 当收到生产者消息时，会用当前偏移量加1来更新LEO，然后取LEO和远程ISR副本中LEO的最小值更新HW。 
             * 当Follower拉取消息时，会更新Leader上存储的Follower副本LEO，然后判断是否需要更新HW，更新的方式和上述相同。 
         * 除了这两种正常情况，当发生故障时，例如Leader宕机，Follower被选为新的Leader，会尝试更新HW。还有副本被踢出ISR时，也会尝试更新HW。 
