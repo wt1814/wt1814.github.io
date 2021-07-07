@@ -16,7 +16,6 @@
     - [1.2. 系统吞吐量评估](#12-系统吞吐量评估)
     - [1.3. 高并发概念](#13-高并发概念)
     - [1.4. 性能调优](#14-性能调优)
-    - [1.5. QPS飘高](#15-qps飘高)
 
 <!-- /TOC -->
 
@@ -119,7 +118,4 @@ https://www.cnblogs.com/capacity-yang/p/13064775.html
 <!-- 
 https://mp.weixin.qq.com/s/LFBK_3Mfo644mzXZXxsSTw
 -->
-
-## 1.5. QPS飘高  
-
 
