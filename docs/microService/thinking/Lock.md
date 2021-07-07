@@ -10,16 +10,14 @@
 
 <!-- /TOC -->
 
-
 &emsp; **<font color = "red">总结：</font>**  
 1. 实现分布式锁的细节：  
     * **<font color = "blue">确保互斥：在同一时刻，必须保证锁至多只能被一个客户端持有。</font>**  
     * **<font color = "clime">不能死锁：在一个客户端在持有锁的期间崩溃而没有主动解锁情况下，也能保证后续其他客户端能加锁。</font>**    
-    * **<font color = "clime">避免活锁：在获取锁失败的情况下，反复进行重试操作，占用CPU资源，影响性能。</font>**    
+    * **<font color = "clime">`避免活锁：在获取锁失败的情况下，反复进行重试操作，占用CPU资源，影响性能。`</font>**    
     * 实现更多锁特性：锁中断、锁重入、锁超时等。确保客户端只能解锁自己持有的锁。  
 2. 分布式锁选型
     CAP只能满足其二、数据一致性、性能
-
 
 # 1. 分布式锁  
 <!-- 
@@ -66,7 +64,6 @@ https://www.cnblogs.com/aoshicangqiong/p/12173550.html
 * 实现更多锁特性：锁中断、锁重入、锁超时等。确保客户端只能解锁自己持有的锁。  
 
 ## 1.3. 分布式锁实现  
-&emsp; 分布式锁实现的三个核心要素：1.加锁；2.解锁；3.锁超时。  
 &emsp; 分布式锁一般有三种基础的实现方式：1.数据库悲观锁、乐观锁；2.[基于缓存(redis，memcached，tair)的分布式锁](/docs/microService/thinking/redisLock.md)；3.[基于ZooKeeper临时顺序节点的分布式锁](/docs/microService/thinking/ZKLock.md)。  
 &emsp; <font color="red">基于Redis的分布式锁是AP模型，基于Zookeeper的分布式锁是CP模型的。</font> 
 

@@ -334,6 +334,7 @@
 * [分布式事务](/docs/microService/thinking/DistriTransaction.md)  
     * [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
     * [TCC](/docs/microService/thinking/TCC.md)   
+    * [TCC问题](/docs/microService/thinking/TCCProblem.md)  
     * [Saga](/docs/microService/thinking/Event.md)  
     * [消息模式](/docs/microService/thinking/news.md)   
     * [分布式事务的选型](/docs/microService/thinking/DistributedTransactionSelection.md)  
