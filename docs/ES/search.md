@@ -18,7 +18,7 @@
 	4. 前缀检索 prefix query
 	5. 通配符检索 wildcard query
 		1. ? 代表单个字符
-		2. * 代表0到多个字符
+		2. \* 代表0到多个字符
 	6. 正则表达式检索 regexp query
 	7. 模糊检索 fuzzy query
 	8. 类型检索 type query 检索索引下对应type的数据

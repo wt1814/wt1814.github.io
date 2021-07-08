@@ -1,41 +1,30 @@
 
 <!-- TOC -->
 
-- [1. 索引详解](#1-索引详解)
-    - [1.1. 索引操作](#11-索引操作)
-        - [1.1.1. 索引增删改查](#111-索引增删改查)
-        - [1.1.2. Open/Close Index打开/关闭索引](#112-openclose-index打开关闭索引)
-        - [1.1.3. 索引映射管理](#113-索引映射管理)
-        - [1.1.4. 索引别名](#114-索引别名)
-            - [1.1.4.1. 索引别名操作](#1141-索引别名操作)
-            - [1.1.4.2. ★★★Rollover Index别名滚动指向新创建的索引](#1142-★★★rollover-index别名滚动指向新创建的索引)
-        - [1.1.5. 索引配置](#115-索引配置)
-            - [1.1.5.1. 更新索引配置](#1151-更新索引配置)
-            - [1.1.5.2. 获取配置](#1152-获取配置)
-            - [1.1.5.3. 索引分析](#1153-索引分析)
-            - [1.1.5.4. ★★★索引模板](#1154-★★★索引模板)
-            - [1.1.5.5. 重建索引](#1155-重建索引)
-                - [1.1.5.5.1. ★★★Shrink Index收缩索引](#11551-★★★shrink-index收缩索引)
-                - [1.1.5.5.2. Split Index拆分索引](#11552-split-index拆分索引)
-    - [1.2. 索引监控](#12-索引监控)
-        - [1.2.1. 索引统计](#121-索引统计)
-        - [1.2.2. 索引分片](#122-索引分片)
-        - [1.2.3. 索引恢复](#123-索引恢复)
-        - [1.2.4. 索引分片存储](#124-索引分片存储)
-    - [1.3. 索引状态管理](#13-索引状态管理)
+- [1. 索引基本操作](#1-索引基本操作)
+    - [1.1. 索引增删改查](#11-索引增删改查)
+    - [1.2. Open/Close Index打开/关闭索引](#12-openclose-index打开关闭索引)
+    - [1.3. 索引映射管理](#13-索引映射管理)
+    - [1.4. 索引别名](#14-索引别名)
+        - [1.4.1. 索引别名操作](#141-索引别名操作)
+        - [1.4.2. ★★★Rollover Index别名滚动指向新创建的索引](#142-★★★rollover-index别名滚动指向新创建的索引)
+    - [1.5. 索引配置](#15-索引配置)
+        - [1.5.1. 更新索引配置](#151-更新索引配置)
+        - [1.5.2. 获取配置](#152-获取配置)
+        - [1.5.3. 索引分析](#153-索引分析)
+        - [1.5.4. ★★★索引模板](#154-★★★索引模板)
+        - [1.5.5. 重建索引](#155-重建索引)
+            - [1.5.5.1. ★★★Shrink Index收缩索引](#1551-★★★shrink-index收缩索引)
+            - [1.5.5.2. Split Index拆分索引](#1552-split-index拆分索引)
 
 <!-- /TOC -->
 
 
 &emsp; **<font color = "clime">ES的rollover index API，可以根据满足指定的条件（时间、文档数量、索引大小）创建新的索引，并把别名滚动指向新的索引。</font>**   
 
-# 1. 索引详解  
-&emsp; **<font color = "red">部分参考《Elasticsearch技术解析与实战》</font>**  
 
-<!--
 
--->
-
+# 1. 索引基本操作
 <!-- 
 ~~
 ElasticSearch 索引基本操作～ 
@@ -43,9 +32,10 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490712&idx=1&sn=b10f39
 索引管理  
 https://mp.weixin.qq.com/s/gi9Dxt23chmEgDK9ZWfHLw
 -->
+&emsp; **<font color = "red">部分参考《Elasticsearch技术解析与实战》</font>**  
 
-## 1.1. 索引操作
-### 1.1.1. 索引增删改查  
+
+## 1.1. 索引增删改查  
 &emsp; 创建一个名为twitter的索引，设置索引的分片数为3，备份数为2。  
 
 ```text
@@ -182,7 +172,7 @@ index.blocks.metadata：设为true，则索引元数据不可读写。
 ```
 
 
-### 1.1.2. Open/Close Index打开/关闭索引  
+## 1.2. Open/Close Index打开/关闭索引  
 
 ```text
 POST /my_index/_close
@@ -192,13 +182,13 @@ POST /my_index/_open
 &emsp; 关闭的索引不能进行读写操作，几乎不占集群开销。  
 &emsp; 关闭的索引可以打开，打开走的是正常的恢复流程。
 
-### 1.1.3. 索引映射管理  
+## 1.3. 索引映射管理  
 &emsp; ......
 
-### 1.1.4. 索引别名  
-#### 1.1.4.1. 索引别名操作
+## 1.4. 索引别名  
+### 1.4.1. 索引别名操作
 
-#### 1.1.4.2. ★★★Rollover Index别名滚动指向新创建的索引
+### 1.4.2. ★★★Rollover Index别名滚动指向新创建的索引
 &emsp; **对于有时效性的索引数据，如日志，过一定时间后，老的索引数据就没有用了。可以像数据库中根据时间创建表来存放不同时段的数据一样，在ES中也可用建多个索引的方式来分开存放不同时段的数据。比数据库中更方便的是ES中可以通过别名滚动指向最新的索引的方式，通过别名来操作时总是操作的最新的索引。**  
 &emsp; **<font color = "clime">ES的rollover index API，可以根据满足指定的条件（时间、文档数量、索引大小）创建新的索引，并把别名滚动指向新的索引。</font>**  
 &emsp; 注意：这时的别名只能是一个索引的别名。  
@@ -308,20 +298,20 @@ POST /logs_write/_rollover?dry_run
 &emsp; 测试不会创建索引，只是检测条件是否满足  
 &emsp; 注意：rollover是请求它才会进行操作，并不是自动在后台进行的。可以周期性地去请求它。  
 
-### 1.1.5. 索引配置  
+## 1.5. 索引配置  
 <!-- 
 Elasticsearch技术解析与实战 第2.4章
 -->
 &emsp; 在Elasticsearch中索引有很多的配置参数，有些配置是可以在建好索引后重新进行设置和管理的，比如索引的副本数量、索引的分词等。  
 
-#### 1.1.5.1. 更新索引配置  
+### 1.5.1. 更新索引配置  
 
-#### 1.1.5.2. 获取配置  
+### 1.5.2. 获取配置  
 
-#### 1.1.5.3. 索引分析  
+### 1.5.3. 索引分析  
 
 
-#### 1.1.5.4. ★★★索引模板
+### 1.5.4. ★★★索引模板
 <!-- 
 https://www.cnblogs.com/shoufeng/p/10641560.html
 -->
@@ -507,9 +497,9 @@ PUT blog_index
 ```
 
 
-#### 1.1.5.5. 重建索引   
+### 1.5.5. 重建索引   
 
-##### 1.1.5.5.1. ★★★Shrink Index收缩索引
+#### 1.5.5.1. ★★★Shrink Index收缩索引
 &emsp; 索引的分片数是不可更改的，如要减少分片数可以通过收缩方式收缩为一个新的索引。新索引的分片数必须是原分片数的因子值，如原分片数是8，则新索引的分片数可以为4、2、1 。  
 &emsp; 什么时候需要收缩索引呢?  
 &emsp; 最初创建索引的时候分片数设置得太大，后面发现用不了那么多分片，这个时候就需要收缩了。  
@@ -557,7 +547,7 @@ GET _cat/recovery?v
 GET _cluster/health  
 ```
 
-##### 1.1.5.5.2. Split Index拆分索引
+#### 1.5.5.2. Split Index拆分索引
 &emsp; **当索引的分片容量过大时，可以通过拆分操作将索引拆分为一个倍数分片数的新索引。** 能拆分为几倍由创建索引时指定的index.number_of_routing_shards路由分片数决定。这个路由分片数决定了根据一致性hash路由文档到分片的散列空间。  
 &emsp; 如index.number_of_routing_shards = 30，指定的分片数是5，则可按如下倍数方式进行拆分：  
 
@@ -614,97 +604,4 @@ POST my_source_index/_split/my_target_index
 ```text
 GET _cat/recovery?v
 GET _cluster/health
-```
-
-
-## 1.2. 索引监控
-### 1.2.1. 索引统计  
-&emsp; **查看索引状态信息**  
-&emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-stats.html  
-
-&emsp; 查看所有的索引状态：  
-
-```text
-GET /_stats  
-```
-
-&emsp; 查看指定索引的状态信息：  
-
-```text
-GET /index1,index2/_stats  
-```
-
-&emsp; **查看索引段信息**  
-&emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-segments.html  
-
-```text
-GET /test/_segments 
-GET /index1,index2/_segments
-GET /_segments
-```
-
-### 1.2.2. 索引分片
-
-### 1.2.3. 索引恢复
-&emsp; **查看索引恢复信息**  
-&emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-recovery.html
-
-&emsp; GET index1,index2/_recovery?human  
-&emsp; GET /_recovery?human  
-
-### 1.2.4. 索引分片存储
-&emsp; **查看索引分片的存储信息**  
-&emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-shards-stores.html
-
-```text
-# return information of only index test
-GET /test/_shard_stores
-# return information of only test1 and test2 indices
-GET /test1,test2/_shard_stores
-# return information of all indices
-GET /_shard_stores
-GET /_shard_stores?status=green
-```
-
-## 1.3. 索引状态管理
-&emsp; Clear Cache清理缓存  
-
-```text
-POST /twitter/_cache/clear  
-```
-
-&emsp; 默认会清理所有缓存，可指定清理query, fielddata or request缓存  
-
-```text
-POST /kimchy,elasticsearch/_cache/clear
-POST /_cache/clear
-```
-
-&emsp; Refresh，重新打开读取索引  
-
-```text
-POST /kimchy,elasticsearch/_refresh
-POST /_refresh
-```
-
-&emsp; Flush，将缓存在内存中的索引数据刷新到持久存储中  
-
-```text
-POST twitter/_flush
-```
-
-&emsp; Force merge 强制段合并  
-
-```text
-POST /kimchy/_forcemerge?only_expunge_deletes=false&max_num_segments=100&flush=true
-```
-
-&emsp; 可选参数说明：  
-&emsp; max_num_segments 合并为几个段，默认1  
-&emsp; only_expunge_deletes 是否只合并含有删除文档的段，默认false  
-&emsp; flush 合并后是否刷新，默认true  
-
-```text
-POST /kimchy,elasticsearch/_forcemerge
-POST /_forcemerge
 ```
