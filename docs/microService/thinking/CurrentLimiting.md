@@ -29,6 +29,28 @@
         2. **<font color = "blue">只要令牌桶中存在令牌，那么就允许突发地传输数据直到达到用户配置的门限，所以它适合于具有突发特性的流量。</font>** 
 4. 限流方式有服务降级、服务拒绝。 
 
+
+<!-- 
+
+微服务接口限流的设计、思考
+https://blog.csdn.net/weixin_41850404/article/details/84616231
+
+Sentinel服务限流、降级、热点规则
+https://www.cnblogs.com/qlqwjy/p/13909052.html
+
+如何查看线上机器的QPS
+https://blog.csdn.net/exceptional_derek/article/details/47617397
+
+Sentinel 规则的种类
+https://zhuanlan.zhihu.com/p/364009386
+
+Sentinel使用配置文件配置限流规则
+https://blog.csdn.net/u013792404/article/details/101287064
+
+限流规则说明
+https://help.aliyun.com/document_detail/149951.html
+-->
+
 # 1. 限流  
 <!-- 
 后端服务不得不了解之限流
