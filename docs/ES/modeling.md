@@ -11,7 +11,7 @@
 
 <!-- /TOC -->
 
-
+&emsp; **<font color = "clime">分片大小官方推荐值为20-40GB。</font>** 
 
 # 1. ES建模  
 <!-- 

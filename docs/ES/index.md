@@ -27,6 +27,8 @@
 <!-- /TOC -->
 
 
+&emsp; **<font color = "clime">ES的rollover index API，可以根据满足指定的条件（时间、文档数量、索引大小）创建新的索引，并把别名滚动指向新的索引。</font>**   
+
 # 1. 索引详解  
 &emsp; **<font color = "red">部分参考《Elasticsearch技术解析与实战》</font>**  
 
@@ -77,7 +79,7 @@ PUT twitter
 ```
 
 &emsp; **创建mapping映射：**  
-&emsp; 注意：在ES中创建一个mapping映射类似于在数据库中定义表结构，即表里面有哪些字段、字段是什么类型、字段的默认值等；也类似于solr里面的模式schema的定义。  
+&emsp; `注意：在ES中创建一个mapping映射类似于在数据库中定义表结构，即表里面有哪些字段、字段是什么类型、字段的默认值等。`  
 
 ```text
 PUT twitter
@@ -115,7 +117,7 @@ PUT twitter
 }
 ```
 
-&emsp; 创建索引时返回的结果说明  
+&emsp; 创建索引时返回的结果说明：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-26.png)  
 
 &emsp; **Get Index查看索引的定义信息**  
@@ -144,7 +146,7 @@ HEAD twitter
 
 &emsp; **修改索引的settings信息**  
 &emsp; 索引的设置信息分为静态信息和动态信息两部分。静态信息不可更改，如索引的分片数。动态信息可以修改。  
-&emsp; REST访问端点：/_settings，更新所有索引的； {index}/_settings更新一个或多个索引的settings。  
+&emsp; REST访问端点：/_settings，更新所有索引的settings信息； {index}/_settings更新一个或多个索引的settings。  
 &emsp; 详细的设置项请参考：https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html#index-modules-settings
 
 &emsp; **修改备份数**
@@ -376,7 +378,7 @@ DELETE /_template/template_1
 &emsp; 针对大索引，使用模板是必须的。核心需要设置的setting(仅列举了实战中最常用、可以动态修改的)如下：  
 
 * index.numberofreplicas 每个主分片具有的副本数。默认为 1(7.X 版本，低于 7.X 为 5)。
-* index.maxresultwindow 深度分页 rom + size 的最大值—— 默认为 10000。
+* index.maxresultwindow 深度分页 from + size 的最大值—— 默认为 10000。
 * index.refresh_interval 默认 1s：代表最快 1s 搜索可见；
 
 &emsp; 写入时候建议设置为 -1，提高写入性能；  

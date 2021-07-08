@@ -7,6 +7,34 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+1. 结构化检索
+	1. 精确值检索
+		1. 单个精确值检索 term query
+		2. 布尔过滤器 bool filter
+		3. 多个精确值检索 terms query
+	2. 范围检索 range query
+	3. 存在与否检索 exist query
+	4. 前缀检索 prefix query
+	5. 通配符检索 wildcard query
+		1. ? 代表单个字符
+		2. * 代表0到多个字符
+	6. 正则表达式检索 regexp query
+	7. 模糊检索 fuzzy query
+	8. 类型检索 type query 检索索引下对应type的数据
+	9. ID检索 ids query 检索指定id的数据
+2. 全文检索
+	1. 匹配检索 match query
+	2. 匹配解析检索 match_phrase query
+	3. 匹配解析前缀检索 match_phrase_prefix query
+	4. 多字段匹配检索 multi_match query 支持字段模糊匹配
+	5. 字符串检测 query_string
+	6. 简化字符串检索 simple_query_string
+3. 复合检索
+4. Joining检索
+5. GEO检索
+
+
 # 1. 检索操作  
 <!-- 
 

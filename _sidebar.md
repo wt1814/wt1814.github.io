@@ -384,6 +384,7 @@
         * [EFK介绍](/docs/ES/EFKIntroduce.md)  
         * [EFK使用](/docs/ES/EFKUse.md)  
         * [Kibana用户手册](/docs/ES/Kibana.md)  
+        * [Kibana查询](/docs/ES/KibanaQuery.md)  
 * 分布式通信  
 * [分布式通信基础](/docs/microService/communication/Netty/basics.md)    
     * [序列化](/docs/microService/communication/serializbale.md)  

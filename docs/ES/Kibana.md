@@ -11,7 +11,7 @@ https://www.cnblogs.com/gaohanghang/p/12099614.html
 https://mp.weixin.qq.com/s/c1myzUz7fJhcG_ZjM9wguw
 -->
 
-&emsp; Kibana文档：https://www.elastic.co/guide/cn/kibana/current/index.html  
+&emsp; **<font color = "clime">Kibana文档：https://www.elastic.co/guide/cn/kibana/current/index.html</font>**  
 
 ## 1.1. 日志检索  
 * 登录后界面  

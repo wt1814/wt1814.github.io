@@ -28,7 +28,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490840&idx=2&sn=3bf455
 
 ## 1.1. 新建文档
 &emsp; 首先新建一个索引。  
-&emsp; 然后向索引中添加一个文档：  
+&emsp; 然后向索引中添加一个文档： 1 表示新建文档的 id。  
 
 ```text
 PUT blog/_doc/1
@@ -38,8 +38,8 @@ PUT blog/_doc/1
   "content":"首先新建一个索引。"
 }
 ```
-&emsp; 1 表示新建文档的 id。  
-&emsp; 添加成功后，响应的 json 如下：  
+
+&emsp; 添加成功后，响应的json如下：  
 
 ```text
 {
@@ -79,11 +79,10 @@ POST blog/_doc
 ```
 
 ## 1.2. 获取文档
-&emsp; Es 中提供了 GET API 来查看存储在 es 中的文档。使用方式如下：  
+&emsp; Es 中提供了 GET API 来查看存储在 es 中的文档。使用方式如下：下面这个命令表示获取一个id为RuWrl3UByGJWB5WucKtP的文档。   
   
     GET blog/_doc/RuWrl3UByGJWB5WucKtP  
 
-&emsp; 上面这个命令表示获取一个id为RuWrl3UByGJWB5WucKtP的文档。  
 &emsp; 如果获取不存在的文档，会返回如下信息：  
 
 ```text
@@ -232,19 +231,19 @@ POST blog/_delete_by_query
 &emsp; 首先需要将所有的批量操作写入一个JSON文件中，然后通过POST请求将该JSON文件上传并执行。    
 &emsp; 例如新建一个名为 aaa.json的文件，内容如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-31.png)  
-&emsp; 首先第一行：index表示要执行一个索引操作(这个表示一个action，其他的action还有create，delete，update)。_index 定义了索引名称，这里表示要创建一个名为 user 的索引，_id 表示新建文档的 id 为 666。  
+&emsp; 首先第一行：index表示要执行一个索引操作(这个表示一个action，其他的action还有create，delete，update)。_index定义了索引名称，这里表示要创建一个名为 user的索引，_id表示新建文档的id为666。  
 &emsp; 第二行是第一行操作的参数。  
 &emsp; 第三行的 update 则表示要更新。  
 &emsp; 第四行是第三行的参数。  
 &emsp; 注意，结尾要空出一行。  
 
-&emsp; aaa.json 文件创建成功后，在该目录下，执行请求命令，如下：  
+&emsp; aaa.json文件创建成功后，在该目录下，执行请求命令，如下：  
 
 ```text
 curl -XPOST "http://localhost:9200/user/_bulk" -H "content-type:application/json" --data-binary @aaa.json
 ```
-&emsp; 执行完成后，就会创建一个名为 user 的索引，同时向该索引中添加一条记录，再修改该记录，最终结果如下：  
+&emsp; 执行完成后，就会创建一个名为user的索引，同时向该索引中添加一条记录，再修改该记录，最终结果如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-32.png)  
 
 ## 1.6. 索引词频率  
-&emsp; term vector是在Lucene中的一个概念，就是对于文档的某一列，如title、body这种文 本类型的建立词频的多维向量空间，每一个词就是一个维度，这个维度的值就是这个词在这个列中的频率。在Elasticsearch中termvectors返回在索引中特定文档字段的统计信息， termvectors在Elasticsearch中是实时分析的，如果要想不实时分析，可以设置realtime参数为falseo默认情况下索引词频率统计是关闭的，需要在建索引的时候手工打开。  
+&emsp; term vector是在Lucene中的一个概念，就是对于文档的某一列，如title、body这种文本类型的建立词频的多维向量空间，每一个词就是一个维度，这个维度的值就是这个词在这个列中的频率。在Elasticsearch中termvectors返回在索引中特定文档字段的统计信息，termvectors在Elasticsearch中是实时分析的，如果要想不实时分析，可以设置realtime参数为falseo默认情况下索引词频率统计是关闭的，需要在建索引的时候手工打开。  

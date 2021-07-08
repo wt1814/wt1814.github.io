@@ -18,16 +18,16 @@
 <!-- /TOC -->
 
 &emsp; 空值处理：  
-&emsp; 搜索 address.keyword 为空的数据，搜索返回异常，默认是不被允许搜索NUll。这是需要在Mapping指定null_value属性，并且不能在text类型中声明。  
+&emsp; 搜索address.keyword为空的数据，搜索返回异常，默认是不被允许搜索NUll。这时需要在Mapping指定null_value属性，并且不能在text类型中声明。  
 
 
 # 1. ~~映射详解~~
 &emsp; **<font color = "red">部分参考《Elasticsearch技术解析与实战》</font>**  
 
-&emsp; Mapping (映射)类似关系型数据库中的表的结构定义。将数据以JSON格式存入到ElasticSearch中后，在搜索引擎中JSON字段映射对应的类型，这时需要mapping来定义内容的类型。  
+&emsp; Mapping (映射)类似关系型数据库中的表的结构定义。将数据以JSON格式存入到ElasticSearch后，在搜索引擎中JSON字段映射对应的类型，这时需要mapping来定义内容的类型。  
 
 ----
-&emsp; 映射是定义存储和索引的文档类型以及字段的过程。索引中的每一个文档都有一个类型，每种类型都有它自己的映射。一个映射定义了文档结构内每个字段的数据类型。映射通过配置来定义字段类型与该类型相关联的元数据的关系。例如，可以通过映射来定义日期类型的格式、数字类型的格式或者文档中所有字段的值是否应该被_all字段索引等。本章将介绍映射的概念、参数，以及动态映射的使用等。  
+&emsp; **<font color = "red">映射是定义存储和索引的文档类型以及字段的过程。索引中的每一个文档都有一个类型，每种类型都有它自己的映射。一个映射定义了文档结构内每个字段的数据类型。映射通过配置来定义字段类型与该类型相关联的元数据的关系。</font>** 例如，可以通过映射来定义日期类型的格式、数字类型的格式或者文档中所有字段的值是否应该被_all字段索引等。本章将介绍映射的概念、参数，以及动态映射的使用等。  
 
 ## 1.1. 动态映射  
 <!-- 
@@ -48,7 +48,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490923&idx=2&sn=ce4983
 ES中支持手动定义映射，动态映射两种方式。
 https://mp.weixin.qq.com/s/gi9Dxt23chmEgDK9ZWfHLw
 -->
-&emsp; 当没有事先定义好 Mapping，添加数据时，ElasticSearch会自动根据字段进行换算出对应的类型，但是换算出来的类型并不一定是开发人员想要的字段类型，还是需要人为的干预进行修改成想要的Mapping。  
+&emsp; **<font color = "red">当没有事先定义好Mapping，添加数据时，ElasticSearch会自动根据字段进行换算出对应的类型，但是换算出来的类型并不一定是开发人员想要的字段类型，还是需要人为的干预进行修改成想要的Mapping。</font>**  
 
 &emsp; 动态映射：ES中提供的重要特性，可以快速使用ES，而不需要先创建索引、定义映射。如直接向ES提交文档进行索引：  
 
@@ -56,8 +56,8 @@ https://mp.weixin.qq.com/s/gi9Dxt23chmEgDK9ZWfHLw
 PUT data/_doc/1
 { "count": 5 }
 ```
-&emsp; ES将自动为创建data索引、_doc 映射、类型为 long 的字段 count  
-&emsp; 索引文档时，当有新字段时 ES将根据字段的json的数据类型自动加入字段定义到mapping中。  
+&emsp; ES将自动为创建data索引、_doc映射、类型为long的字段count。  
+&emsp; 索引文档时，当有新字段时ES将根据字段的json的数据类型自动加入字段定义到mapping中。  
 
 ### 1.1.1. 字段动态映射规则(字段类型)  
 
@@ -134,11 +134,11 @@ PUT my_index/_doc/1
 
 
 ## 1.2. 更新映射  
-&emsp; 使用 dynamic 控制映射是否可以被更新。  
+&emsp; 使用dynamic控制映射是否可以被更新。  
 * dynamic-true  
-&emsp; 设置 dynamic 为 true是默认 dynamic 的默认值，新增字段数据可以写入，同时也可以被索引，Mapping 结构也会被更新。  
+&emsp; 设置dynamic为true是默认dynamic的默认值，新增字段数据可以写入，同时也可以被索引，Mapping结构也会被更新。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-45.png)  
-&emsp; 添加数据，同时多添加一个没被定义的 gender 字段。  
+&emsp; 添加数据，同时多添加一个没被定义的gender字段。  
 
   ```text
   # 向 person 中添加数据
@@ -155,24 +155,23 @@ PUT my_index/_doc/1
   }
   ```
 
-  &emsp; 添加成功，搜索 gender 字段：  
+  &emsp; 添加成功，搜索gender字段：  
   ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-46.png)  
-  &emsp; 查看 Mapping 结构：   
+  &emsp; 查看Mapping结构：   
   ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-47.png)  
-  &emsp; 新添加的字段值，在添加过程中 Mapping 已自动添加字段。  
+  &emsp; 新添加的字段值，在添加过程中Mapping已自动添加字段。  
 
 * dynamic-false  
-&emsp; 设置 dynamic 为 false时，新增字段数据可以写入，不可以被索引，Mapping 结构会被更新。同样先将 dynamic 设置为 false，然后向里面添加数据，其他步骤和上面 true 操作一样。定义 Mapping，添加数据。搜索 gender 字段：   
+&emsp; 设置dynamic为false时，新增字段数据可以写入，不可以被索引，Mapping结构会被更新。同样先将dynamic设置为false，然后向里面添加数据，其他步骤和上面true操作一样。定义Mapping，添加数据。搜索gender字段：   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-48.png)   
 &emsp; 此时新增字段数据无法被索引，但数据可以写入。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-49.png)  
-&emsp; Mappnig 也不会添加新增的字段：  
+&emsp; Mappnig也不会添加新增的字段：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-50.png)  
 
 * dynamic-strict  
-&emsp; 设置 dynamic 为 strict时，从字面上意思也可以看出，对于动态映射是较严格的，新增字段数据不可以写入，不可以被索引，Mapping 结构不会被更新。只能按照定义好的 Mapping 结构添加数据。在添加新字段数据时，就马上会抛出异常：  
+&emsp; 设置dynamic为strict时，从字面上意思也可以看出，对于动态映射是较严格的，新增字段数据不可以写入，不可以被索引，Mapping结构不会被更新。只能按照定义好的 Mapping结构添加数据。在添加新字段数据时，就马上会抛出异常：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-51.png)  
-
 
 ## 1.3. 字段数据类型  
 <!--
