@@ -32,7 +32,10 @@
 &emsp; 运行机制与select()相似。将fd_set数组改为采用链表方式pollfds，没有连接数的限制，并且pollfds可重用。  
 4. **epoll()：**  
     &emsp; **epoll的三个函数：**  
-    &emsp; 调用epoll_create，会在内核cache里建个红黑树，epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改；同时也会再建立一个rdllist双向链表，用于存储准备就绪的事件，当epoll_wait调用时，仅查看这个rdllist双向链表数据即可。epoll_wait阻塞等待注册的事件发生，返回事件的数目，并将触发的事件写入events数组中。    
+    * 调用epoll_create，会在内核cache里建个红黑树，同时也会再建立一个rdllist双向链表。 
+    * epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改。
+    * 双向链表，用于存储准备就绪的事件，当epoll_wait调用时，仅查看这个rdllist双向链表数据即可。epoll_wait阻塞等待注册的事件发生，返回事件的数目，并将触发的事件写入events数组中。    
+    
     &emsp; **epoll机制的工作模式：**  
     
     * LT模式(默认，水平触发，level trigger)：当epoll_wait检测到某描述符事件就绪并通知应用程序时，应用程序可以不立即处理该事件；下次调用epoll_wait时，会再次响应应用程序并通知此事件。    
