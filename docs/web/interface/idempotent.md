@@ -14,11 +14,15 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 接口幂等xxx常用解决方案：分布式锁、select+insert、状态机幂等。  
+&emsp; 接口幂等xxx常用解决方案：分布式锁、DB锁（ <font color = "red">select+insert，insert前先select，该方案可能不适用于并发场景，在并发场景中，要配合其他方案一起使用，否则同样会产生重复数据</font>、<font color = "clime">状态机</font>、<font color = "red">乐观锁（新增version字段）</font>）....  
 
 # 1. 接口幂等  
 
 <!-- 
+
+高并发下如何保证接口的幂等性？ 
+https://mp.weixin.qq.com/s/2dpjLAxILJE9md1XKOPUKA
+
 SpringBoot 接口幂等性的实现方案 
 https://mp.weixin.qq.com/s/uYrjzA4QeZSD_S82w2dNIQ
 你的项目是如何处理重复请求/并发请求的？
@@ -89,4 +93,3 @@ https://mp.weixin.qq.com/s/L5lOUB_cbi67eyCHmCHhbQ
 
 ### 1.3.4. 对外提供接口的api如何保证幂等？  
 &emsp; 对外提供接口为了支持幂等调用，接口可以有两个字段必须传，一个是来源source，一个是来源方序列号seq，这个两个字段在提供方系统里面做联合唯一索引，这样当第三方调用时，先在本方系统里面查询一下，是否已经处理过，返回相应处理结果；没有处理过，进行相应处理，返回结果。注意，为了幂等友好，一定要先查询一下，是否处理过该笔业务，不查询直接插入业务系统，会报错，但实际已经处理了。    
-

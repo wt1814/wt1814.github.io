@@ -13,15 +13,22 @@
     - [1.3. Redis的噩梦：阻塞](#13-redis的噩梦阻塞)
     - [1.4. 持久化问题定位与优化](#14-持久化问题定位与优化)
     - [1.5. 内存优化](#15-内存优化)
+    - [1.6. redis内存中的key分析](#16-redis内存中的key分析)
 
 <!-- /TOC -->
+&emsp; **<font color = "red">总结：</font>**  
+1. 连接问题：
+2. 内存问题：
 
 
 # 1. Redis常见问题与优化  
 &emsp; **参考《Redis开发与运维》**  
 
 
-<!-- 
+<!--
+
+
+
 线上Redis高并发性能调优实践 
 https://mp.weixin.qq.com/s/JFNqQWS5GrCW5Q2kmeNVrw
 【95期】面试官：你遇到 Redis 线上连接超时一般如何处理？ 
@@ -220,3 +227,18 @@ multi=-1 qbuf=0 qbuf-free=0 obl=0 oll=224869 omem=2129300608 events=rw cmd=monit
 
 ## 1.5. 内存优化  
 ......
+
+
+## 1.6. redis内存中的key分析
+
+<!-- 
+
+Redis爆了？快速定位Redis占用最高的key有哪些
+https://blog.csdn.net/weixin_34199405/article/details/92266571
+
+
+
+redis key占用内存量分析
+https://blog.csdn.net/u013282159/article/details/85780942
+-->
+

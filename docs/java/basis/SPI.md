@@ -35,6 +35,8 @@
 https://blog.csdn.net/sigangjun/article/details/79071850
 在java中使用SPI创建可扩展的应用程序 
 https://mp.weixin.qq.com/s/B17Kvjb66iAAZmxDqBDWsA
+为什么要有 SPI
+https://mp.weixin.qq.com/s/4jA9MU-RFY8MttUbMmt76g
 -->
 
 ## 1.1. 什么是SPI？
