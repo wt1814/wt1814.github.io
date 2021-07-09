@@ -23,9 +23,9 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 
-1. 仅CPU方式有4次状态切换，4次CPU拷贝；  
-2. DMA：CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，因此减少了2次CPU拷贝；  
-3. mmap内存映射：将内核中读缓冲区地址与用户空间缓冲区地址进行映射，又减少了一次cpu拷贝。总共包含1次cpu拷贝、2次DMA拷贝；  
+1. 仅CPU方式有4次状态切换，4次CPU拷贝。  
+2. DMA：CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，因此减少了2次CPU拷贝。  
+3. mmap内存映射：将内核中读缓冲区地址与用户空间缓冲区地址进行映射，又减少了一次cpu拷贝。总共包含1次cpu拷贝、2次DMA拷贝。  
 	
 	    此流程中，cpu拷贝从4次减少到1次，但状态切换还是4次。  
 
@@ -196,7 +196,7 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 
 &emsp;如下图表示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-98.png)  
-&emsp; 由上图可以很清晰地看到, 一次 read-send 涉及到了四次拷贝：  
+&emsp; 由上图可以很清晰地看到，一次 read-send 涉及到了四次拷贝：  
 
 * 硬盘拷贝到内核缓冲区(DMA COPY)；
 * 内核缓冲区拷贝到应用程序缓冲区(CPU COPY)；
@@ -295,7 +295,7 @@ ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
 
 #### 1.3.2.3. ~~sendfile+DMA收集，零拷贝~~
 &emsp; Linux 2.4内核对sendfile系统调用进行优化，但是需要硬件DMA控制器的配合。  
-&emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息(文件描述符、地址偏移量等信息)记录到socket缓冲区中。  
+&emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。  
 &emsp; DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩的1次CPU拷贝。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-33.png)  
 &emsp; 这种方式又减少了1次CPU拷贝，即有2次状态切换、0次CPU拷贝、2次DMA拷贝。  
