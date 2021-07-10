@@ -21,8 +21,7 @@ https://www.jianshu.com/p/5c6466510d3b
 
 netty是怎么解决Nio中臭名昭著的bug（Netty源码分析之NioEventLoop）
 https://www.jianshu.com/p/9acf36f7e025
-NioEventLoop的创建
-https://www.cnblogs.com/dafanjoy/p/10486019.html
+
 
 https://www.jianshu.com/p/23820270e30a
 -->
@@ -60,17 +59,19 @@ https://www.jianshu.com/p/23820270e30a
 
 
 &emsp; **SingleThreadEventExecutor简述**  
-&emsp; io.netty.util.concurrent.SingleThreadEventExecutor 内部包含了一个任务 FIFO 队列，用于存储提交到该类的 Runnable 任务。它也创建了一个定制的单线程对象，规定了线程执行之后结束之前的一些处理，比如把未执行完成的任务执行完毕、关闭 NioEventLoop 的 Selector 等。它提供了addTask、offerTask、removeTask、runAllTasks等仅供子类可以调用的方法。但没有具体实现线程具体要执行的内容，它空出了 run 方法让子类来实现，所以 SingleThreadEventExecutor 类本身默认不会从它的任务队列中取出任务进行执行：  
+&emsp; io.netty.util.concurrent.SingleThreadEventExecutor 内部包含了一个任务 FIFO 队列，用于存储提交到该类的 Runnable 任务。它也创建了一个定制的单线程对象，规定了线程执行之后结束之前的一些处理，比如把未执行完成的任务执行完毕、关闭 NioEventLoop 的 Selector 等。它提供了addTask、offerTask、removeTask、runAllTasks等仅供子类可以调用的方法。但没有具体实现线程具体要执行的内容，它空出了run方法让子类来实现，所以 SingleThreadEventExecutor 类本身默认不会从它的任务队列中取出任务进行执行：  
 
 ```java
 protected abstract void run();
 ```
 
-&emsp; 作为子类的 NioEventLoop 将实现这个方法，它也就成了 NioEventLoop 的重要入口方法。NioEventLoop 的 run 方法实现后，将被 SingleThreadEventExecutor 里创建的线程执行， NioEventLoop  所负的对 channels 的职责，将在 run 方法中实现。  
-
+&emsp; 作为子类的NioEventLoop将实现这个方法，它也就成了NioEventLoop的重要入口方法。NioEventLoop的run方法实现后，将被SingleThreadEventExecutor里创建的线程执行，NioEventLoop所负的对channels的职责，将在run方法中实现。  
 
 ## 1.3. NioEventLoop的创建
-
+<!-- 
+NioEventLoop的创建
+https://www.cnblogs.com/dafanjoy/p/10486019.html
+-->
 
 ## 1.5. NioEventLoop的启动  
 <!-- 
@@ -80,7 +81,9 @@ https://www.cnblogs.com/dafanjoy/p/10507393.html
 书籍netty4核心源码
 https://www.jianshu.com/p/5c6466510d3b
 -->
+&emsp; 参考[NioEventLoop的启动](/docs/microService/communication/Netty/NioEventLoopStart.md)  
 &emsp; 包含绑定channel。  
+
 
 ## 1.4. NioEventLoop的执行，解决NIO的bug  
 

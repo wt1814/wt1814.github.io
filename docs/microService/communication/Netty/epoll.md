@@ -12,6 +12,7 @@
         - [1.3.2. 调用epoll()函数](#132-调用epoll函数)
         - [1.3.3. epoll工作模式](#133-epoll工作模式)
     - [1.4. ~~三者区别联系~~](#14-三者区别联系)
+    - [1.5. 两种IO多路复用模式：Reactor和Proactor](#15-两种io多路复用模式reactor和proactor)
 
 <!-- /TOC -->
 
@@ -47,7 +48,7 @@
       **epoll机制的优点：**  
     * 调用epoll_ctl时拷贝进内核并保存，之后每次epoll_wait不拷贝。  
     * epoll()函数返回后，调用函数以O(1)复杂度遍历。  
-5. [Netty的Reactor线程模型](/docs/microService/communication/Netty/Reactor.md)  
+5. 两种IO多路复用模式：[Reactor和Proactor](/docs/microService/communication/Netty/Reactor.md)  
 
 # 1. 多路复用(select/poll/epoll)
 <!--
@@ -271,3 +272,7 @@ epoll的优点主要是一下几个方面：
 |最大连接数|1024|无上限	|无上限|
 |fd拷贝|每次调用select拷贝	|每次调用poll拷贝|fd首次调用epoll_ctl拷贝，每次调用epoll_wait不拷贝|
 |工作效率|轮询：O(n)|轮询：O(n)|	回调：O(1)|
+
+
+## 1.5. 两种IO多路复用模式：Reactor和Proactor
+&emsp; 参考[Reactor与EventLoop](/docs/microService/communication/Netty/Reactor.md)  

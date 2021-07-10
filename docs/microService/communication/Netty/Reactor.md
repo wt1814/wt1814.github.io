@@ -37,7 +37,7 @@ Reactor的一般流程、3种线程模型、Netty中的Reactor
 &emsp; ~~相对于第一种单线程的模式来说，在处理业务逻辑，也就是获取到IO的读写事件之后，交由线程池来处理，这样可以减小主reactor的性能开销，从而更专注的做事件分发工作了，从而提升整个应用的吞吐。~~  
 &emsp; Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作。在极个别特殊场景中，一个NIO线程(Acceptor线程)负责监听和处理所有的客户端连接可能会存在性能问题。    
 5. **主从多线程模型(多Reactor多线程)**    
-&emsp; 主从Reactor多线程模型中，Reactor线程拆分为mainReactor和subReactor两个部分，mainReactor只处理连接事件，读写事件交给subReactor来处理。业务逻辑还是由线程池来处理，mainRactor只处理连接事件，用一个线程来处理就好。处理读写事件的subReactor个数一般和CPU数量相等，一个subReactor对应一个线程，业务逻辑由线程池处理。  
+&emsp; 主从Reactor多线程模型中，Reactor线程拆分为mainReactor和subReactor两个部分， **<font color = "clime">mainReactor只处理连接事件，读写事件交给subReactor来处理。</font>** 业务逻辑还是由线程池来处理，mainRactor只处理连接事件，用一个线程来处理就好。处理读写事件的subReactor个数一般和CPU数量相等，一个subReactor对应一个线程，业务逻辑由线程池处理。  
 &emsp; ~~第三种模型比起第二种模型，是将Reactor分成两部分：~~  
 &emsp; ~~mainReactor负责监听server socket，用来处理新连接的建立，将建立的socketChannel指定注册给subReactor。~~  
 &emsp; ~~subReactor维护自己的selector, 基于mainReactor 注册的socketChannel多路分离IO读写事件，读写网 络数据，对业务处理的功能，另其扔给worker线程池来完成。~~  
