@@ -14,7 +14,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; 接口幂等xxx常用解决方案：分布式锁、DB锁（ <font color = "red">select+insert，insert前先select，该方案可能不适用于并发场景，在并发场景中，要配合其他方案一起使用，否则同样会产生重复数据</font>、<font color = "clime">状态机</font>、<font color = "red">乐观锁（新增version字段）</font>）....  
+&emsp; 接口幂等xxx常用解决方案：分布式锁、DB锁（ <font color = "red">1).select+insert，insert前先select，该方案可能不适用于并发场景，在并发场景中，要配合其他方案一起使用，否则同样会产生重复数据</font>、<font color = "clime"> 2). 状态机</font>、<font color = "red">3). 乐观锁（新增version字段）</font>）....  
 
 # 1. 接口幂等  
 
