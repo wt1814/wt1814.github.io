@@ -82,7 +82,7 @@ Dockerfile是一个文本文件，其内包含了一条条的指令，每一条�
 &emsp; 一旦应用及其依赖被打包成一个Docker镜像，就能以镜像的形式交付并以容器的方式运行了。当然还可以将镜像推送到镜像仓库服务。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-27.png)  
 
-&emsp; 应用容器化过程中最基础的是创建一个Dockerfile。Dockerfile是一个包含用于组合镜像的命令的文本文档(必须要写成 Dockerfile)，它主要有两个用途，一是对当前应用的描述，二是指导Docker完成镜像的构建。Dockerfile对当前的应用及其依赖有一个清晰准确的描述，并且非常容易阅读和理解。另外，Dockerfile也通常被放在构建上下文的根目录下(在Docker当中，包含应用文件的目录通常被称为构建上下文(Build Context)，在构建镜像时构建上下文和该上下文中的文件和目录都会被上传到 Docker daemon，这样 daemon 可以直接访问在镜像中存储的任何代码、文件或者其他数据)。  
+&emsp; 应用容器化过程中最基础的是创建一个Dockerfile。Dockerfile是一个包含用于组合镜像的命令的文本文档(必须要写成 Dockerfile)，它主要有两个用途，一是对当前应用的描述，二是指导Docker完成镜像的构建。Dockerfile对当前的应用及其依赖有一个清晰准确的描述，并且非常容易阅读和理解。另外，Dockerfile也通常被放在构建上下文的根目录下（在Docker当中，包含应用文件的目录通常被称为构建上下文(Build Context)，在构建镜像时构建上下文和该上下文中的文件和目录都会被上传到 Docker daemon，这样 daemon 可以直接访问在镜像中存储的任何代码、文件或者其他数据）。  
 
 ### 1.3.1. Dockerfile命令详解  
 <!-- 
