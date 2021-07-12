@@ -27,8 +27,6 @@
 &emsp; 多态，一个接口在一个包中有多个实现；而SPI提供的接口的实现一般在多个包中，例如JDBC的实现mysql、oracle，web容器有tomcat、jetty等。  
 &emsp; 一个接口在b、c包中有实现，在a包中可替换所依赖的包（b或c），动态实现某一个功能。  
 
-&emsp; 如果理解有误，见谅。 
-
 
 # 1. Java SPI机制详解
 <!--

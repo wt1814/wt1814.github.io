@@ -36,7 +36,7 @@
     * [结构型设计模式](/docs/java/Design/structure.md)  
         * [代理模式](/docs/java/Design/proxy.md)  
         * [JDK动态代理](/docs/java/Design/DynamicProxy.md)   
-        * [CGLIB](/docs/java/Design/CGLIB.md)   
+        * [CGLIB代理](/docs/java/Design/CGLIB.md)   
         * [装饰者模式](/docs/java/Design/decorator.md)   
         * [适配器模式](/docs/java/Design/adapter.md)   
         * [门面模式](/docs/java/Design/facade.md)   

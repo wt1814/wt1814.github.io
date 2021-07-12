@@ -2,9 +2,10 @@
 
 <!-- TOC -->
 
-- [0.1. JDK动态代理](#01-jdk动态代理)
-    - [0.1.1. 编码](#011-编码)
-    - [0.1.2. 源码分析-1](#012-源码分析-1)
+- [1. JDK动态代理](#1-jdk动态代理)
+    - [1.1. 编码](#11-编码)
+    - [1.2. 源码分析-1](#12-源码分析-1)
+    - [1.3. JDK动态代理为什么只能使用接口](#13-jdk动态代理为什么只能使用接口)
 
 <!-- /TOC -->
 
@@ -13,11 +14,11 @@
     * Proxy类。该类即为动态代理类。Proxy.newProxyInstance()生成代理对象；  
     * InvocationHandler接口。 **<font color = "clime">在使用动态代理时，需要定义一个位于代理类与委托类之间的中介类，中介类被要求实现InvocationHandler接口。</font>** 通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。  
 2. <font color = "clime">JDK动态代理的实现，大致流程：</font>  
-    1. <font color = "red">为接口创建代理类的字节码文件。</font> **<font color = "blue">使用反射来创建代理类。</font>**  
+    1. <font color = "red">为接口创建代理类的字节码文件。</font> `使用反射来创建代理类。`  
     2. <font color = "red">使用ClassLoader将字节码文件加载到JVM。</font>  
     3. <font color = "red">创建代理类实例对象，执行对象的目标方法。</font>  
 
-## 0.1. JDK动态代理
+# 1. JDK动态代理
 <!-- 
   利用拦截器(拦截器必须实现InvocationHanlder)加上反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理。
 -->
@@ -54,7 +55,7 @@
     -->
  
 
-### 0.1.1. 编码  
+## 1.1. 编码  
 &emsp; 代码示例：  
 &emsp; 首先需要定义一个接口：  
 
@@ -114,7 +115,7 @@ public class Main {
     查询用户信息
     执行了invoke
 
-### 0.1.2. 源码分析-1
+## 1.2. 源码分析-1
 <!-- 
 https://mp.weixin.qq.com/s/RoPuIgGlZg6h-Zk1YMwroA
 
@@ -305,4 +306,15 @@ private static final class ProxyClassFactory
     }
 }
 ```
+
+## 1.3. JDK动态代理为什么只能使用接口
+&emsp; JDK动态代理是为接口生成代理对象，该代理对象继承了 JAVA 标准类库 Proxy.java 类并且实现了目标对象。由于 JAVA 遵循单继承多实现原则所以 JDK 无法利用继承来为目标对象生产代理对象。  
+
+<!-- 
+关于代理：为什么 JDK 动态代理只能为接口生成代理？
+https://segmentfault.com/a/1190000021821314
+
+深入分析JDK动态代理为什么只能使用接口
+https://blog.csdn.net/u014301265/article/details/102832131
+-->
 
