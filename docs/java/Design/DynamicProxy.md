@@ -5,7 +5,10 @@
 - [1. JDK动态代理](#1-jdk动态代理)
     - [1.1. 编码](#11-编码)
     - [1.2. 源码分析-1](#12-源码分析-1)
-    - [1.3. JDK动态代理为什么只能使用接口](#13-jdk动态代理为什么只能使用接口)
+    - [1.3. JDK动态代理为什么只能使用接口？](#13-jdk动态代理为什么只能使用接口)
+        - [1.3.1. 编码示例](#131-编码示例)
+        - [1.3.2. 解析](#132-解析)
+        - [1.3.3. 小结](#133-小结)
 
 <!-- /TOC -->
 
@@ -17,6 +20,8 @@
     1. <font color = "red">为接口创建代理类的字节码文件。</font> `使用反射来创建代理类。`  
     2. <font color = "red">使用ClassLoader将字节码文件加载到JVM。</font>  
     3. <font color = "red">创建代理类实例对象，执行对象的目标方法。</font>  
+3. JDK动态代理为什么只能使用接口？  
+&emsp; JDK 动态代理是为接口生成代理对象，该代理对象继承了 JAVA 标准类库 Proxy.java 类并且实现了目标对象。由于 JAVA 遵循单继承多实现原则所以 JDK 无法利用继承来为目标对象生产代理对象。   
 
 # 1. JDK动态代理
 <!-- 
@@ -307,8 +312,7 @@ private static final class ProxyClassFactory
 }
 ```
 
-## 1.3. JDK动态代理为什么只能使用接口
-&emsp; JDK动态代理是为接口生成代理对象，该代理对象继承了 JAVA 标准类库 Proxy.java 类并且实现了目标对象。由于 JAVA 遵循单继承多实现原则所以 JDK 无法利用继承来为目标对象生产代理对象。  
+## 1.3. JDK动态代理为什么只能使用接口？
 
 <!-- 
 关于代理：为什么 JDK 动态代理只能为接口生成代理？
@@ -318,3 +322,106 @@ https://segmentfault.com/a/1190000021821314
 https://blog.csdn.net/u014301265/article/details/102832131
 -->
 
+### 1.3.1. 编码示例  
+
+### 1.3.2. 解析
+&emsp; JDK动态代理的源码中，java.lang.reflect.Proxy 类中有一个内部类 ProxyClassFactory。该内部类有如下一个方法：  
+
+```java
+public Class<?> apply(ClassLoader loader, Class<?>[] interfaces) {}
+```
+
+&emsp; 在该方法中调用了 sun.misc.ProxyGenerator 类的如下方法：  
+
+```java
+public static byte[] generateProxyClass(final String var0, Class<?>[] var1, int var2){}
+```
+
+&emsp; 即代码如下：  
+
+```java
+/**
+ * Generate the specified proxy class.
+ */
+byte[] proxyClassFile = ProxyGenerator.generateProxyClass(proxyName, interfaces, accessFlags);
+```
+
+&emsp; 这条代码就是为目标类在内存中生成一个代理类，可以看到返回的类型是 byte[]。所以，现在要做的就是利用该语句为 UserService 生成一个代理对象，并将二进制数据生成为一个 class 文件！我们只需要利用反编译工具查看一个该代码即可一幕了然了。  
+
+&emsp; 现在开始：  
+
+```java
+public class App {
+    public static void main(String[] args) {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        UserService userService = (UserService) context.getBean("userService");
+     
+        Class<?>[] interfaces = new Class[]{UserService.class};
+        byte[] bytes = ProxyGenerator.generateProxyClass("UserService", interfaces);
+
+        File file = new File("/<path>/UserService.class");
+        try {
+            OutputStream outputStream = new FileOutputStream(file);
+            outputStream.write(bytes);
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+&emsp; 最后，就会在我们的磁盘中生成一个 UserService.class 字节码文件，我们只需要反编译即可（可以直接利用 IDE 查看，如 IntelliJ IDEA）。打开字节码文件（省略无关内容）如下所示：  
+
+```java
+public final class UserService extends Proxy implements com.mingrn.proxy.service.UserService {
+    private static Method m1;
+    private static Method m3;
+    private static Method m2;
+    private static Method m0;
+
+    public UserService(InvocationHandler var1) throws  {
+        super(var1);
+    }
+
+    public final boolean equals(Object var1) throws  {
+        // ...
+    }
+
+    public final List find() throws  {
+        // ...
+    }
+
+    public final String toString() throws  {
+        // ...
+    }
+
+    public final int hashCode() throws  {
+        // ...
+    }
+
+    static {
+        try {
+            m1 = Class.forName("java.lang.Object").getMethod("equals", Class.forName("java.lang.Object"));
+            m3 = Class.forName("com.mingrn.proxy.service.UserService").getMethod("find");
+            m2 = Class.forName("java.lang.Object").getMethod("toString");
+            m0 = Class.forName("java.lang.Object").getMethod("hashCode");
+        } catch (NoSuchMethodException var2) {
+            throw new NoSuchMethodError(var2.getMessage());
+        } catch (ClassNotFoundException var3) {
+            throw new NoClassDefFoundError(var3.getMessage());
+        }
+    }
+}
+```
+
+&emsp; 我们需要关心的仅仅是生成的 UserService 类的继承与实现关系即可：  
+
+```java
+class UserService extends Proxy implements com.mingrn.proxy.service.UserService {}  
+```
+&emsp; 现在明白为什么 JDK 动态代理一定是只能为接口生成代理类而不是使用继承了吗？  
+
+### 1.3.3. 小结
+&emsp; JDK 动态代理是为接口生成代理对象，该代理对象继承了 JAVA 标准类库 Proxy.java 类并且实现了目标对象。由于 JAVA 遵循单继承多实现原则所以 JDK 无法利用继承来为目标对象生产代理对象。  
