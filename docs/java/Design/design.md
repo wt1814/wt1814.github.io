@@ -97,6 +97,7 @@ https://refactoringguru.cn/design-patterns/catalog
 
 * **<font color = "clime">[代理(Proxy)模式](/docs/java/Design/proxy.md)：控制客户端对对象的访问。</font>**  
     * [JDK动态代理](/docs/java/Design/JDKProxy.md)
+    * [CGLIB代理](/docs/java/Design/CGLIB.md)   
 * **<font color = "red">[装饰者(Decorator)模式](/docs/java/Design/decorator.md)：为对象添加新功能。</font>** 
 * [适配器(Adapter)模式](/docs/java/Design/adapter.md)：将原来不兼容的两个类融合在一起。  
 * 桥接(Bridge)模式：将两个能够独立变化的部分分离开来。  
