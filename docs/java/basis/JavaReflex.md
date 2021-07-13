@@ -11,7 +11,7 @@
         - [1.4.2. 获取构造方法并使用](#142-获取构造方法并使用)
         - [1.4.3. 获取成员变量并调用](#143-获取成员变量并调用)
         - [1.4.4. 获取成员方法并调用](#144-获取成员方法并调用)
-    - [反射的实现原理](#反射的实现原理)
+    - [1.5. ~~反射的实现原理~~](#15-反射的实现原理)
 
 <!-- /TOC -->
 
@@ -19,16 +19,6 @@
 <!-- 
 面试官：什么是Java反射？它的应用场景有哪些？ 
 https://mp.weixin.qq.com/s/TqSLUWYWfhHjpfI_srETJg
-
-
-反射和多态的实现原理详解以及区别
-https://mp.weixin.qq.com/s/_MrNY1LSA_BsAWTuhNb0KQ
-
-Java反射机制原理探究
-https://zhuanlan.zhihu.com/p/162971344
-
-Java反射原理
-https://cloud.tencent.com/developer/article/1695077?from=information.detail.%E5%8F%8D%E5%B0%84%E5%8E%9F%E7%90%86
 
 -->
 
@@ -38,7 +28,7 @@ https://cloud.tencent.com/developer/article/1695077?from=information.detail.%E5%
 1. **动态加载类：**  
 &emsp; 编译时加载类是静态加载类，new 创建对象是静态加载类，在编译时刻就需要加载所有可用使用到的类，如果有一个用不了，那么整个文件都无法通过编译。  
 &emsp; 运行时加载类是动态加载类。Class c =  Class.forName("类的全名")，不仅表示了类的类型，还表示了动态加载类，编译不会报错，在运行时才会加载，使用接口标准能更方便动态加载类的实现。功能性的类尽量使用动态加载，而不用静态加载。  
-2. 可以访问任意一个对象的任意一个方法和属性，包括获取、修改私有属性。  
+2. `破坏：可以访问任意一个对象的任意一个方法和属性，包括获取、修改私有属性。`  
 
 &emsp; 反射机制优缺点：  
 
@@ -146,7 +136,14 @@ Array类：提供了动态创建数组，以及访问数组的元素的静态方
 ......
 
 
-## 反射的实现原理
+## 1.5. ~~反射的实现原理~~
+<!-- 
+Java反射机制原理探究
+https://zhuanlan.zhihu.com/p/162971344
+
+Java反射原理
+https://cloud.tencent.com/developer/article/1695077?from=information.detail.%E5%8F%8D%E5%B0%84%E5%8E%9F%E7%90%86
+-->
 &emsp; Class类与java.lang.reflect库一起对反射的概念提供了技术支持。java.lang.reflect类库包含了Field类，Method类以及Constructor类。这些类用来表示未知类里对应的成员。Class类提供了获取getFields()、getMethods()和getConstructors()等方法，而这些方法的返回值类型就定义在java.lang.reflect当中。  
 
 &emsp; 如果不知道某个对象的确切类型(即list引用到底是ArrayList类型还是LinkedList类型)，RTTI可以告诉你，但是有一个前提：这个类型在编译时必须已知，这样才能使用RTTI来识别它。  
@@ -163,3 +160,11 @@ Array类：提供了动态创建数组，以及访问数组的元素的静态方
 &emsp; 那么在运行时期，无论是通过字面量还是forName方法获取Class对象，都是去根据这个类的全限定名(全限定名必须是唯一的，这也间接回答了为什么类名不能重复这个问题。)然后获取对应的Class对象。  
 
 &emsp; 总结: java虚拟机帮我们生成了类的class对象,而通过类的全限定名，我们可以去获取这个类的字节码.class文件，然后再获取这个类对应的class对象，再通过class对象提供的方法结合类Method,Filed,Constructor，就能获取到这个类的所有相关信息. 获取到这些信息之后，就可以使用Constructor创建对象，用get和set方法读取和修改与Field对象相关的字段，用invoke方法调用与Method对象关联的方法。  
+
+------------
+
+&emsp; 调用反射的总体流程如下：  
+
+* 准备阶段：编译期装载所有的类，将每个类的元信息保存至Class类对象中，每一个类对应一个Class对象  
+* 获取Class对象：调用x.class/x.getClass()/Class.forName() 获取x的Class对象clz（这些方法的底层都是native方法，是在JVM底层编写好的，涉及到了JVM底层，就先不进行探究了）  
+* 进行实际反射操作：通过clz对象获取Field/Method/Constructor对象进行进一步操作
