@@ -29,7 +29,7 @@
         3. acquireQueued(final Node node, int arg)，使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
         4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。  
 
-    用一张流程图总结一下非公平锁的获取锁的过程。  
+    &emsp; 用一张流程图总结一下非公平锁的获取锁的过程。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-75.png)  
 
 # 1. ReentrantLock，重入锁  
