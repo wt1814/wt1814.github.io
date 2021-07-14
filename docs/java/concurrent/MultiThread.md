@@ -33,18 +33,14 @@ https://mp.weixin.qq.com/s/FE2492BG9vag6_sPF7K_Rw
 
 
 ## 1.2. 并发编程原理  
-&emsp; [CPU缓存及JMM](/docs/java/concurrent/JMM.md)  
-
+1. [CPU缓存及JMM](/docs/java/concurrent/JMM.md)  
 &emsp; <font color = "clime">JMM中定义了线程的两种行为：线程通信、线程同步。</font><font color = "red">线程通信是一种手段，而线程同步是一种目的，即线程通信的主要目的是用于线程同步。线程同步是为了解决线程安全问题。</font>  
-
-&emsp; [并发安全问题产生原因](/docs/java/concurrent/ConcurrencyProblem.md)  
-&emsp; [并发安全解决底层](/docs/java/concurrent/ConcurrencySolve.md)  
-&emsp; [伪共享问题](/docs/java/concurrent/PseudoSharing.md)   
+2. [并发安全问题产生原因](/docs/java/concurrent/ConcurrencyProblem.md)  
+3. [并发安全解决底层](/docs/java/concurrent/ConcurrencySolve.md)  
+4. [伪共享问题](/docs/java/concurrent/PseudoSharing.md)   
 
 ## 1.3. 线程同步  
 ### 1.3.1. 线程安全  
-
-
 &emsp; [线程安全解决方案](/docs/java/concurrent/ThreadSafety.md)
   
 ### 1.3.2. Synchronized  
