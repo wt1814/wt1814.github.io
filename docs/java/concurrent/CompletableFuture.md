@@ -15,6 +15,19 @@
 
 # 1. ~~CompletableFuture<T>~~  
 <!--
+
+使用CompletableFuture
+https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650
+利用CompletableFuture优化程序的执行效率
+https://www.cnblogs.com/hama1993/p/10534202.html
+CompletableFuture基本用法
+https://www.cnblogs.com/cjsblog/p/9267163.html
+
+
+CompletableFuture 组合式异步编程与 并行流
+https://blog.csdn.net/moonpure/article/details/81080427
+
+
 手把手教你线程池配合CompletableFuture实现图片下载并压缩 
 https://mp.weixin.qq.com/s/spmqWaS_8Oe-5TQlnksTVw
 
