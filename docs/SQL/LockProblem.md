@@ -24,7 +24,7 @@
     1. 发起死锁检测，主动回滚其中一条事务，让其他事务继续执行。  
     2. 设置超时时间，超时后自动释放。  
     &emsp; `在涉及外部锁，或涉及表锁的情况下，InnoDB并不能完全自动检测到死锁，`这需要通过设置锁等待超时参数 innodb_lock_wait_timeout来解决。</font>   
-3. &emsp; **<font color = "clime">如果出现死锁</font>** ，<font color = "clime">可以用`show engine innodb status;`命令来确定最后一个死锁产生的原因。  
+3. &emsp; **<font color = "clime">如果出现死锁</font>** ，<font color = "clime">可以用`show engine innodb status;`命令来确定最后一个死锁产生的原因。</font>  
 
 
 # 1. MySql锁造成的问题

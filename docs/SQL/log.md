@@ -44,7 +44,7 @@ https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
 
 &emsp; 重点需要关注的是二进制日志(binlog)和事务日志(包括redo log和undo log)。  
 
-&emsp; 此外日志可以分为<font color = "red">逻辑日志和物理日志</font>。  
+&emsp; 此外日志可以分为<font color = "clime">逻辑日志和物理日志</font>。  
     
 * 逻辑日志：可以简单理解为记录的就是sql语句。
 * 物理日志：因为mysql数据最终是保存在数据页中的，物理日志记录的就是数据页变更。

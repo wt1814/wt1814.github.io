@@ -161,6 +161,7 @@
         * [InnoDB体系结构](/docs/SQL/InnoDB.md)  
         * [InnoDB内存结构-性能](/docs/SQL/memory.md)  
             * [BufferPool](/docs/SQL/bufferPoolNew.md)  
+            * [脏页落盘，CheckPoint](/docs/SQL/CheckPoint.md)  
             * [ChangeBuffer](/docs/SQL/ChangeBuffer.md)  
             * [AdaptiveHashIndex](/docs/SQL/AdaptiveHashIndex.md)  
         * [InnoDB磁盘结构-可靠性](/docs/SQL/disk.md)  
@@ -174,9 +175,9 @@
         * [索引底层原理](/docs/SQL/IndexPrinciple.md)  
         * [各种索引](/docs/SQL/IndexKnowledge.md)  
         * [MySql事务](/docs/SQL/transaction.md)  
+        * [MySql-MVCC](/docs/SQL/MVCC.md)  
         * [MySql锁](/docs/SQL/lock.md)  
         * [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
-        * [MySql-MVCC](/docs/SQL/MVCC.md)  
 * Spring  
     * [Spring](/docs/SSM/Spring/Spring.md)  
     * [对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  

@@ -228,6 +228,7 @@
 &emsp; [InnoDB体系结构](/docs/SQL/InnoDB.md)  
 &emsp; [InnoDB内存结构-性能](/docs/SQL/memory.md)  
 &emsp; &emsp; [BufferPool](/docs/SQL/bufferPoolNew.md)  
+&emsp; &emsp; [脏页落盘，CheckPoint](/docs/SQL/CheckPoint.md)  
 &emsp; &emsp; [ChangeBuffer](/docs/SQL/ChangeBuffer.md)  
 &emsp; &emsp; [AdaptiveHashIndex](/docs/SQL/AdaptiveHashIndex.md)  
 &emsp; [InnoDB磁盘结构-可靠性](/docs/SQL/disk.md)  
@@ -242,9 +243,9 @@
 &emsp; [索引底层原理](/docs/SQL/IndexPrinciple.md)  
 &emsp; [各种索引](/docs/SQL/IndexKnowledge.md)  
 &emsp; [MySql事务](/docs/SQL/transaction.md)  
+&emsp; [MySql-MVCC](/docs/SQL/MVCC.md)  
 &emsp; [MySql锁](/docs/SQL/lock.md)  
 &emsp; [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
-&emsp; [MySql-MVCC](/docs/SQL/MVCC.md)  
 
 <!-- 
 &emsp; [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
