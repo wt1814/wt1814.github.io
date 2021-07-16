@@ -201,6 +201,7 @@
 [数据库对象](/docs/SQL/DatabaseObject.md)  
 [SQL优化](/docs/SQL/SQLOptimization.md)  
 &emsp; [SQL分析](/docs/SQL/Analysis.md)  
+&emsp; &emsp; [explain](/docs/SQL/explain.md)  
 &emsp; [~~SQL语句优化~~](/docs/SQL/SQLStatement.md)  
 &emsp; [索引优化](/docs/SQL/index.md)  
 &emsp; [优化案例](/docs/SQL/case.md)  

@@ -135,6 +135,7 @@
     * [数据库对象](/docs/SQL/DatabaseObject.md)  
     * [SQL优化](/docs/SQL/SQLOptimization.md)  
         * [SQL分析](/docs/SQL/Analysis.md)  
+            * [explain](/docs/SQL/explain.md)  
         * [~~SQL语句优化~~](/docs/SQL/SQLStatement.md)  
         * [索引优化](/docs/SQL/index.md)  
         * [优化案例](/docs/SQL/case.md)  
