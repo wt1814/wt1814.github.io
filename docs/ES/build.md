@@ -25,6 +25,9 @@ https://mp.weixin.qq.com/s/x-3C3Nekv3pYoagGgQ8Q-A
 <!-- 
 ElasticSearch 从安装开始 
 https://mp.weixin.qq.com/s/QnBqoaptV5-xKIpOBKSfHQ
+
+**** es搭建
+https://www.elastic.co/cn/start
 -->
 
 ## 单节点安装  

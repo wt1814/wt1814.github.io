@@ -20,7 +20,7 @@
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; ~~胡扯，死锁，mysql检测后，回滚一条事务，抛出异常。~~  
 1. 服务器报错：`Deadlock found when trying to get to lock; try restarting transaction`。  
-2. **<font color = "clime"> 死锁发生了如何解决，MySQL有没有提供什么机制去解决死锁？**  
+2. **<font color = "clime"> 死锁发生了如何解决，MySQL有没有提供什么机制去解决死锁？</font>**  
     1. 发起死锁检测，主动回滚其中一条事务，让其他事务继续执行。  
     2. 设置超时时间，超时后自动释放。  
     &emsp; `在涉及外部锁，或涉及表锁的情况下，InnoDB并不能完全自动检测到死锁，`这需要通过设置锁等待超时参数 innodb_lock_wait_timeout来解决。</font>   

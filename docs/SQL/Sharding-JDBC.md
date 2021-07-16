@@ -8,7 +8,7 @@ https://segmentfault.com/a/1190000037706070
 https://www.cnblogs.com/mr-yang-localhost/p/8313360.html
 -->
 
-## 1.1. 种分片策略
+## 1.1. 分片策略
 ### 1.1.1. 标准分片策略  
 &emsp; 使用场景：SQL 语句中有>，>=, <=，<，=，IN 和 BETWEEN AND 操作符，都可以应用此分片策略。  
 &emsp; 标准分片策略（StandardShardingStrategy），它只支持对单个分片健（字段）为依据的分库分表，并提供了两种分片算法 PreciseShardingAlgorithm（精准分片）和 RangeShardingAlgorithm（范围分片）。  
