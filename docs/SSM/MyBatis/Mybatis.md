@@ -38,7 +38,6 @@
     - [1.4. Spring整合Mybatis](#14-spring整合mybatis)
     - [1.5. Intellij IDEA中Mybatis Mapper自动注入警告的解决方案](#15-intellij-idea中mybatis-mapper自动注入警告的解决方案)
     - [1.6. mybatis-generator](#16-mybatis-generator)
-    - [1.7. MyBatis之分页插件](#17-mybatis之分页插件)
 
 <!-- /TOC -->
 
@@ -103,7 +102,7 @@
 
 &emsp; 显而易见，上述语句将把整个数据库内容直接暴露出来了。  
 
-&emsp; <font color = "red">#{}方式则是先用占位符代替参数将SQL语句先进行预编译，然后再将参数中的内容替换进来。由于SQL语句已经被预编译过，其SQL意图将无法通过非法的参数内容实现更改，其参数中的内容，无法变为SQL命令的一部分。故，</font> **<font color = "clime">#{}可以防止SQL注入而${}却不行。</font>**   
+&emsp; <font color = "red">#{}方式则是先用占位符代替参数将SQL语句先进行预编译，然后再将参数中的内容替换进来。由于SQL语句已经被预编译过，其SQL意图将无法通过非法的参数内容实现更改，其参数中的内容，无法变为SQL命令的一部分。故，</font> **<font color = "clime">#{}可以防止SQL注入，而${}却不行。</font>**   
 
 ### 1.1.3. 适用场景  
 #### 1.1.3.1. #{} 和 ${} 均适用场景  
@@ -546,5 +545,4 @@ System.out.println("新增学生ID: " + entity.getStudentId());
 ## 1.6. mybatis-generator  
 &emsp; mybatis-generator，能够生成PO类，能生成mapper映射文件（其中包括基本的增删改查功能）、能生成mapper接口。  
 
-## 1.7. MyBatis之分页插件  
-...
+
