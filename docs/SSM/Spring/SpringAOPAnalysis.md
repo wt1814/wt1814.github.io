@@ -20,7 +20,7 @@
 &emsp; **<font color = "red">总结：</font>**  
 
 1. **<font color = "blue">自动代理触发的时机：AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
-2. **<font color = "clime">代理类的生成流程：1). 获取当前的Spring Bean适配的advisors；2). 创建代理类。</font>**   
+2. **<font color = "clime">代理类的生成流程：1). `获取当前的Spring Bean适配的advisors；`2). `创建代理类`。</font>**   
     1. Spring AOP获取对应Bean适配的Advisors链的核心逻辑：
         1. 获取当前IoC容器中所有的Aspect类。
         2. 给每个Aspect类的advice方法创建一个Spring Advisor，这一步又能细分为： 

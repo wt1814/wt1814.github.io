@@ -27,7 +27,9 @@ ElasticSearch 从安装开始
 https://mp.weixin.qq.com/s/QnBqoaptV5-xKIpOBKSfHQ
 
 **** es搭建
+https://www.elastic.co/cn/downloads/past-releases#elasticsearch
 https://www.elastic.co/cn/start
+
 -->
 
 ## 单节点安装  
