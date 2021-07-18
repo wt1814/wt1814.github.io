@@ -12,7 +12,7 @@
 <!-- /TOC -->
 
 
-&emsp; **<font color = "red">Feign为每一个FeignClient都提供了一个feign.Logger实例，可以在配置中开启日志，</font>** 
+&emsp; **<font color = "red">Feign为每一个FeignClient都提供了一个feign.Logger实例，可以在配置中开启日志。</font>** 
 
 # 1. Spring Cloud Feign  
 <!-- 
