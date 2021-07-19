@@ -292,7 +292,6 @@
         * [Redis主从复制](/docs/microService/Redis/RedisMasterSlave.md)  
         * [Redis哨兵模式](/docs/microService/Redis/RedisSentry.md)  
         * [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
-        * [高可用建设](/docs/microService/Redis/availabConstructe.md)  
     * [Redis运维](/docs/microService/Redis/RedisOperation.md)  
     * [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 * [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   

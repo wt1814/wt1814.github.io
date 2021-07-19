@@ -400,7 +400,6 @@
 &emsp; [Redis主从复制](/docs/microService/Redis/RedisMasterSlave.md)  
 &emsp; [Redis哨兵模式](/docs/microService/Redis/RedisSentry.md)  
 &emsp; [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
-&emsp; [高可用建设](/docs/microService/Redis/availabConstructe.md)  
 [Redis运维](/docs/microService/Redis/RedisOperation.md)  
 [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 <!-- [Redis原理](/docs/microService/Redis/RedisPrinciple.md)  -->
