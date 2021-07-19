@@ -45,7 +45,7 @@
     4. 如果希望一些数据能长期被保存，而一些数据可以被淘汰掉，选择volatile-lru/volatile-lfu或volatile-random都是比较不错的。
     5. 由于设置expire会消耗额外的内存，如果计划避免Redis内存在此项上的浪费，可以选用allkeys-lru/volatile-lfu策略，这样就可以不再设置过期时间，高效利用内存了。  
 
-    **volatile-xxx策略只会针对带过期时间的key进行淘汰，allkeys-xxx策略会对所有的key进行淘汰。**  
+    &emsp; **volatile-xxx策略只会针对带过期时间的key进行淘汰，allkeys-xxx策略会对所有的key进行淘汰。**  
 
     * 如果只是拿Redis做缓存，那应该使用allkeys-xxx，客户端写缓存时不必携带过期时间。  
     * `如果还想同时使用Redis的持久化功能，那就使用volatile-xxx策略，这样可以保留没有设置过期时间的key，它们是永久的key不会被LRU算法淘汰。`  

@@ -1,14 +1,41 @@
 
-# Sentinel
+<!-- TOC -->
 
+- [1. Sentinel](#1-sentinel)
+    - [1.1. 接入Sentinel](#11-接入sentinel)
+    - [1.2. sentinel控制台](#12-sentinel控制台)
+        - [1.2.1. API 分组和route维度](#121-api-分组和route维度)
+        - [1.2.2. 网关限流规则 GatewayFlowRule](#122-网关限流规则-gatewayflowrule)
+        - [1.2.3. 熔断降级](#123-熔断降级)
+
+<!-- /TOC -->
+
+# 1. Sentinel
 
 Sentinel实现限流，竟是如此的简单！ 
 https://mp.weixin.qq.com/s/N2N6cwNLH6_Gs663qm6Hwg
 
-https://mp.weixin.qq.com/s/Ayk1pOnOnClguB5QUvJHLg
 
-无需写代码，引入Sentinel只需一行配置即可搞定限流！
-https://mp.weixin.qq.com/s/calqKRkSBOMuRwa4SnzY9w
 
- Gateway结合Sentinel1.8限流熔断管理以及自定义异常 
- https://mp.weixin.qq.com/s/YRfDFeIcoFlIl5kE7A9Y0Q
+## 1.1. 接入Sentinel
+<!-- 
+全局配置
+异常处理 https://mp.weixin.qq.com/s?__biz=MzkwNzI0MzQ2NQ==&mid=2247489058&idx=3&sn=2a9abd84a257e49869689079bccfa733&source=41#wechat_redirect
+-->
+&emsp; 查看[官方文档](https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel)  
+
+## 1.2. sentinel控制台
+<!-- 
+https://mp.weixin.qq.com/s/YRfDFeIcoFlIl5kE7A9Y0Q
+-->
+### 1.2.1. API 分组和route维度
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-57.png)  
+
+
+### 1.2.2. 网关限流规则 GatewayFlowRule
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-58.png)  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-59.png)  
+
+### 1.2.3. 熔断降级
