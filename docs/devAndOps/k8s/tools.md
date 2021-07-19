@@ -2,6 +2,7 @@
 <!-- TOC -->
 
 - [1. Kubernetes运维指南](#1-kubernetes运维指南)
+    - [Kubernetes自动伸缩](#kubernetes自动伸缩)
     - [1.1. Kubernetes集群管理指南](#11-kubernetes集群管理指南)
         - [1.1.1. 使用WebUI(Dashboard)管理集群](#111-使用webuidashboard管理集群)
         - [1.1.2. 集群统一日志管理](#112-集群统一日志管理)
@@ -24,6 +25,12 @@
 https://mp.weixin.qq.com/s/9MRvBGDlEKKbUabhNsVIHQ
 -->
 &emsp; <font color = "red">整体参考《Kubernetes权威指南》</font>  
+
+
+## Kubernetes自动伸缩
+<!-- 
+https://mp.weixin.qq.com/s/-t6fS_Hif9jDPsuMlWWeyQ
+-->
 
 ## 1.1. Kubernetes集群管理指南  
 &emsp; 本节将从Node的管理、Label的管理、Namespace资源共享、资源配额管理、集群Master高可用及集群监控等方面，对Kubernetes集群本身的运维管理进行详细说明。  

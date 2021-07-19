@@ -295,6 +295,7 @@
     * [Redis运维](/docs/microService/Redis/RedisOperation.md)  
     * [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 * [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
+    * [限流Sentinel](/docs/microService/thinking/Sentinel.md) 
 * [服务降级](/docs/microService/thinking/Demotion.md)  
 * 分布式消息队列
     * [mq](/docs/microService/mq/mq.md)  
@@ -489,8 +490,8 @@
             * [k8s安装及常用命令](/docs/devAndOps/k8s/command.md)  
             * [Yaml文件配置](/docs/devAndOps/k8s/yaml.md)  
         * [k8s架构](/docs/devAndOps/k8s/principle.md)  
-        * [Pod详解](/docs/devAndOps/k8s/pod.md)  
-        * [Service详解](/docs/devAndOps/k8s/service.md)  
+            * [Pod详解](/docs/devAndOps/k8s/pod.md)  
+            * [Service详解](/docs/devAndOps/k8s/service.md)  
         * [k8s运维](/docs/devAndOps/k8s/tools.md)  
         * [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
     * [多种发布方式](/docs/system/publishe.md)  

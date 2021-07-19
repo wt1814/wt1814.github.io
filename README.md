@@ -372,6 +372,8 @@
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
 <!-- 
 [缓存](/docs/cache/Cache.md)  
+本地缓存
+https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 -->
 
 #### Redis
@@ -406,7 +408,7 @@
 
 ### 限流降级
 [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
-&emsp; [Sentinel](/docs/microService/thinking/Sentinel.md)  
+&emsp; [限流Sentinel](/docs/microService/thinking/Sentinel.md)  
 [服务降级](/docs/microService/thinking/Demotion.md)  
 
 ### 分布式消息队列  
@@ -515,6 +517,10 @@
 &emsp; [EFK使用](/docs/ES/EFKUse.md)  
 &emsp; [Kibana用户手册](/docs/ES/Kibana.md)  
 &emsp; [Kibana查询](/docs/ES/KibanaQuery.md)  
+<!-- 
+logstash同步mysql数据到Elasticsearch实战,主要实现删除
+https://blog.csdn.net/Giggle1994/article/details/111194763
+-->
 
 ### 分布式通信  
 [分布式通信基础](/docs/microService/communication/Netty/basics.md)   
@@ -644,8 +650,8 @@
 &emsp; &emsp; [k8s安装及常用命令](/docs/devAndOps/k8s/command.md)  
 &emsp; &emsp; [Yaml文件配置](/docs/devAndOps/k8s/yaml.md)  
 &emsp; [k8s架构](/docs/devAndOps/k8s/principle.md)  
-&emsp; [Pod详解](/docs/devAndOps/k8s/pod.md)  
-&emsp; [Service详解](/docs/devAndOps/k8s/service.md)  
+&emsp; &emsp; [Pod详解](/docs/devAndOps/k8s/pod.md)  
+&emsp; &emsp; [Service详解](/docs/devAndOps/k8s/service.md)  
 &emsp; [k8s运维](/docs/devAndOps/k8s/tools.md)  
 &emsp; [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
 [多种发布方式](/docs/system/publishe.md)  

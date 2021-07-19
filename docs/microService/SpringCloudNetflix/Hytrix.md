@@ -2,6 +2,7 @@
 <!-- TOC -->
 
 - [1. Spring Cloud Hytrix](#1-spring-cloud-hytrix)
+    - [Hystrix配置说明](#hystrix配置说明)
     - [1.1. 服务雪崩](#11-服务雪崩)
     - [1.2. Hytrix简介](#12-hytrix简介)
     - [1.3. Hystrix原理](#13-hystrix原理)
@@ -33,8 +34,68 @@
 3. Hystrix工作流程：1. 包装请求 ---> 2. 发起请求 ---> 3. 缓存处理 ---> 4. 判断断路器是否打开（熔断） ---> 5. 判断是否进行业务请求（请求是否需要隔离或降级） ---> 6. 执行业务请求 ---> 7. 健康监测 ---> 8. fallback处理或返回成功的响应。  
 4. <font color = "clime">微服务集群中，Hystrix的度量信息通过`Turbine`来汇集监控信息，并将聚合后的信息提供给Hystrix Dashboard来集中展示和监控。</font>  
 
+```properties
+#开启熔断机制
+feign.hystrix.enabled=true
+# 设置hystrix超时时间，默认1000ms
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=60000
+# 是否开启超时，默认false，不建议开启
+# hystrix.command.default.execution.isolation.thread.interruptOnTimeout=false
+# 最大线程数量，默认10，Fast Fail 应用，建议使用默认值。
+# hystrix.threadpool.default.coreSize=20
+# 允许在队列中的等待的任务数量，默认5，Fast Fail 应用，建议使用默认值。
+# hystrix.threadpool.default.queueSizeRejectionThreshold=10
+
+# queueSizeRejectionThreshold默认值是5，允许在队列中的等待的任务数量。maxQueueSize默认值是-1，队列大小。如果是Fast Fail 应用，建议使用默认值。线程池饱满后直接拒绝后续的任务，不再进行等待。即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝。
+```
 
 # 1. Spring Cloud Hytrix
+
+
+
+## Hystrix配置说明
+<!--
+
+https://blog.csdn.net/sinat_35757488/article/details/90765281
+
+-->
+
+```text
+    统计滚动的时间窗口 default 10000 ten seconds
+    withMetricsRollingStatisticalWindowInMilliseconds(10000)
+    滚动时间窗口 bucket 数量 default
+    withMetricsRollingStatisticalWindowBuckets(10)
+    采样时间间隔 default 500
+    withMetricsHealthSnapshotIntervalInMilliseconds(1)
+    熔断器在整个统计时间内是否开启的阀值，默认20。也就是10秒钟内至少请求20次，熔断器才发挥起作用
+    withCircuitBreakerRequestVolumeThreshold(20)
+    默认:50。当出错率超过50%后熔断器启动.
+    withCircuitBreakerErrorThresholdPercentage(30)
+    熔断器默认工作时间,默认:5秒.熔断器中断请求5秒后会关闭重试,如果请求仍然失败,继续打开熔断器5秒,如此循环
+    withCircuitBreakerSleepWindowInMilliseconds(1000)
+    隔离策略
+    withExecutionIsolationStrategy(ExecutionIsolationStrategy.SEMAPHORE)
+    信号量隔离时最大并发请求数
+    withExecutionIsolationSemaphoreMaxConcurrentRequests(2)
+    命令组名，该命令属于哪一个组，可以帮助我们更好的组织命令。
+    withGroupKey(HystrixCommandGroupKey.Factory.asKey(“HelloGroup”))
+    命令名称，每个CommandKey代表一个依赖抽象,相同的依赖要使用相同的CommandKey名称。依赖隔离的根本就是对相同CommandKey的依赖做隔离。
+    andCommandKey(HystrixCommandKey.Factory.asKey(“Hello”)
+    所属线程池的名称，同样配置的命令会共享同一线程池，若不配置，会默认使用GroupKey作为线程池名称。
+    andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey(“HelloThreadPool”))
+    命令属性，设置包括断路器的配置，隔离策略，降级设置，以及一些监控指标等。
+    线程池属性，配置包括线程池大小，排队队列的大小等。
+
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=1000
+超时时间，默认1000ms
+execution.timeout.enabled
+是否开启超时，默认true
+execution.isolation.thread.interruptOnTimeout
+当超时的时候是否中断(interrupt) HystrixCommand.run()执行
+```
+
+
+
 ## 1.1. 服务雪崩  
 &emsp; 在微服务架构中，将系统拆分成了很多服务单元，各单元的应用间通过服务注册与订阅的方式互相依赖。由于每个单元都在不同的进程中运行，依赖通过远程调用的方式执行，这样就有可能因为网络原因或是依赖服务自身间题出现调用故障或延迟，而这些问题会直接导致调用方的对外服务也出现延迟，若此时调用方的请求不断增加，最后就会因等待出现故障的依赖方响应形成任务积压，最终导致自身服务的瘫痪。  
 &emsp; **<font color = "clime">在微服务架构中，存在着那么多的服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统的瘫痪，</font>** 这样的架构相较传统架构更加不稳定。为了解决这样的问题，产生了断路器等一系列的服务保护机制。  
