@@ -12,11 +12,6 @@
 
 # 1. Sentinel
 
-Sentinel实现限流，竟是如此的简单！ 
-https://mp.weixin.qq.com/s/N2N6cwNLH6_Gs663qm6Hwg
-
-
-
 ## 1.1. 接入Sentinel
 <!-- 
 全局配置
@@ -39,3 +34,4 @@ https://mp.weixin.qq.com/s/YRfDFeIcoFlIl5kE7A9Y0Q
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-59.png)  
 
 ### 1.2.3. 熔断降级
+
