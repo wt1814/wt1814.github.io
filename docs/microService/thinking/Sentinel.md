@@ -28,7 +28,7 @@ https://mp.weixin.qq.com/s/YRfDFeIcoFlIl5kE7A9Y0Q
 
 
 ### 1.2.2. 网关限流规则 GatewayFlowRule
-
+&emsp; **<font color = "clime">阈值类型：qps和线程数</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-58.png)  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-59.png)  
