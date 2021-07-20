@@ -21,8 +21,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**
-
-1. 在Producer端、Broker端、Consumer端都有可能会丢失消息。  
+1. 在Producer端、Broker端、Consumer端都有可能丢失消息。  
 2. Producer端：  
 &emsp; 为防止Producer端丢失消息， **<font color = "red">除了将ack设置为all，`还可以使用带有回调通知的发送API，即producer.send(msg, callback)`。</font>**  
 3. Broker端:  

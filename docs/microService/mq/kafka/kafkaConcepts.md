@@ -31,11 +31,11 @@ https://mp.weixin.qq.com/s/QPHPugWlbfeh8HhQvELSSQ
 1. producer：  
 &emsp; 消息生产者，发布消息到kafka集群的终端或服务。  
 2. broker：  
-&emsp; kafka 集群中包含的服务器。
+&emsp; kafka集群中包含的服务器。  
 3. topic：  
 &emsp; 每条发布到 kafka 集群的消息属于的类别，即kafka是面向topic的。主题，表示一类消息，consumer通过订阅Topic来消费消息，一个Broker节点可以有多个Topic，每个Topic又包含N个partition(分区或者分片)。    
 4. partition：  
-&emsp; 每个 topic 包含一个或多个 partition。partition 是一个有序且不可变的消息序列，它是以 append log 文件形式存储的，partition 用于存放 Producer 生产的消息，然后 Consumer 消费 partition 上的消息，每个 partition 只能被一个 Consumer 消费。partition 还有副本的概念。    
+&emsp; 每个topic包含一个或多个partition。partition是一个有序且不可变的消息序列，它是以append log文件形式存储的，partition用于存放Producer生产的消息，然后Consumer消费partition上的消息，每个partition只能被一个Consumer消费。partition还有副本的概念。    
 5. consumer：  
 &emsp; 从 kafka 集群中消费消息的终端或服务。  
 6. Consumer group：  
