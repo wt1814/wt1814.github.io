@@ -714,3 +714,9 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 <!-- 
 [技术管理](/docs/Administration/TechnologyAdmin.md)  
 -->
+
+## 面试技巧
+[总体流程](/docs/recruit/1resumeCreate.md)  
+[死命题](/docs/recruit/2askedProblem.md)  
+[问面试官](/docs/recruit/3askProblem.md)  
+[难点](/docs/recruit/4difficultProblem.md)  
