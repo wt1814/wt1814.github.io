@@ -15,6 +15,7 @@
         - [1.2.4. 接口防刷](#124-接口防刷)
         - [1.2.5. 接口响应时间](#125-接口响应时间)
         - [1.2.6. 接口预警](#126-接口预警)
+        - [接口扩展](#接口扩展)
     - [1.3. JavaBean](#13-javabean)
         - [1.3.1. POJO](#131-pojo)
         - [1.3.2. BeanUtils](#132-beanutils)
@@ -116,6 +117,10 @@
 
 ### 1.2.6. 接口预警
 自定义机器人接入：https://developers.dingtalk.com/document/app/custom-robot-access?spm=ding_open_doc.document.0.0.6d9d28e1FpnG8g#topic-2026027
+
+
+### 接口扩展  
+
 
 ## 1.3. JavaBean
 
