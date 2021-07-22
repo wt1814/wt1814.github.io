@@ -66,9 +66,14 @@
 
 ### 1.2.1. Restful API设计
 
-&emsp; Restful API的设计通过HTTP的方法来表示CRUD相关的操作。因此，除了get和post方法外，还会用到其他的HTTP方法，如PUT、DELETE、HEAD等，通过不同的HTTP方法来表示不同含义的操作。例如下面这组对文章的增删改查的Restful API：   
+&emsp; Restful API的设计通过HTTP的方法来表示CRUD相关的操作。因此，除了get和post方法外，还会用到其他的HTTP方法，如PUT、DELETE、HEAD等，通过不同的HTTP方法来表示不同含义的操作。例如下面这组对用户信息的增删改查的Restful API：  
 
-
+|接口URL|HTTP方法|接口说明|
+|---|---|---|
+|/userInfo|POST|保存用户|
+|/userInfo/{id}|GET|查询用户列表|
+|/userInfo/{id}|DELETE|删除用户|
+|/userInfo/{id}|PUT|更新用户信息|
 
 ### 1.2.2. 接口幂等  
 
