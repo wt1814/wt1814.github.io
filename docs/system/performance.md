@@ -22,6 +22,10 @@
 
 # 1. 性能指标  
 <!-- 
+重要**** 怎么理解的并发量和QPS？
+https://blog.csdn.net/lihuanlin/article/details/113039461
+
+
 QPS计算
 详解NGINX如何统计网站的PV、UV、独立IP
 https://www.jb51.net/article/161419.htm

@@ -85,10 +85,15 @@ https://mp.weixin.qq.com/s/L5lOUB_cbi67eyCHmCHhbQ
 5. 数据库乐观锁  
 6. 数据库悲观锁  
 7. 分布式锁  
-
-### 1.3.3. 接口编码  
 8. select + insert  
 9. 状态机幂等  
+
+<!-- 
+基于状态机的乐观锁
+https://www.jianshu.com/p/c6e9ddbea022?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
+-->
+
+### 1.3.3. 接口编码  
 10. Token机制  
 
 ### 1.3.4. 对外提供接口的api如何保证幂等？  

@@ -13,6 +13,9 @@
 
 # 1. Optional类  
 <!-- 
+*****很重要 Java8 Optional，可以这样用啊 
+ https://mp.weixin.qq.com/s/-8W6-MwPURrwviJ2gJT4Tw
+
 求求你，别再用 “ ! = null " 做判空了！ 
 https://mp.weixin.qq.com/s/NXUWZjt2kYRG301CXehp0A
 Java 8 中使用 Optional 处理 null 对象，超全指南 

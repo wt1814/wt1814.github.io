@@ -12,7 +12,7 @@
 MySQL中InnoDB脏页刷新机制Checkpoint
 ★★★ https://blog.csdn.net/weixin_39820173/article/details/113402536
 ★★★ https://www.cnblogs.com/olinux/p/5196139.html
-
+https://blog.csdn.net/baidu_29609961/article/details/105106975
 面试官：你知道select语句和update语句分别是怎么执行的吗？ 
 https://mp.weixin.qq.com/s/o-GYPbZIkXTKkMYtuO6m5g
 

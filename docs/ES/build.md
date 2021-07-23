@@ -1,6 +1,17 @@
 
 
 <!-- 
+ElasticSearch为什么快
+https://blog.csdn.net/Anna4/article/details/104821408
+Elasticsearch 搜索为什么那么快？
+https://www.jianshu.com/p/9c7d4bb3b093
+ES为什么那么快？除了倒排索引还有哪些原因？
+https://blog.csdn.net/GaleZhang/article/details/108293389
+Elasticsearch：ES 倒排索引为什么查询速度会这么快
+https://www.jianshu.com/p/addefe15f3e9
+-->
+
+<!-- 
 
 如何系统的学习 Elasticsearch ？ 
 https://mp.weixin.qq.com/s/mDXLxGRA3TG71HteVLCtHw
@@ -49,5 +60,4 @@ https://www.elastic.co/cn/start
 ## 集群安装  
 
 ## Kibana安装
-
 

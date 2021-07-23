@@ -19,7 +19,18 @@
 
 <!-- /TOC -->
 
-<!-- 
+<!--
+利用反射越过泛型检查
+https://www.jianshu.com/p/6493fdab6ac5
+ava泛型类型擦除以及类型擦除带来的问题
+https://www.cnblogs.com/wuqinglong/p/9456193.html
+
+Java泛型类型擦除：何时以及发生了什么？
+http://www.cocoachina.com/articles/44971
+
+XXXjava编译成class
+
+
 https://mp.weixin.qq.com/s/skxnaaPz2eN1YASUlfwMDA
 https://mp.weixin.qq.com/s/ilqFpf5kE0XzJnOv9SsX7Q
 https://www.cnblogs.com/lihaoyang/p/7104293.html
