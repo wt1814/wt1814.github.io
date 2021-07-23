@@ -20,6 +20,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
+1. ES是一个`分布式`的`搜索`框架。  
 1. **<font color = "blue">ES数据结构</font>**  
 &emsp; 索引Index（数据库） ---> 映射Mapping（表结构） ---> 文档Fields（一行数据）  
 &emsp; **<font color = "clime">★★★注：文档的元数据（有哪些字段）是由映射Mapping决定的。</font>**    
