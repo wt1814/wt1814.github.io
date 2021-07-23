@@ -22,7 +22,7 @@
 1. 由netty运行流程可以看出Netty核心组件有Bootstrap、channel相关、EventLoop、byteBuf...  
 2. Bootstrap和ServerBootstrap是针对于Client和Server端定义的引导类，主要用于配置各种参数，并启动整个Netty服务。  
 3. Channel  
-    1. **在Netty中，Channel是一个Socket连接的抽象，它为用户提供了关于底层Socket状态(是否是连接还是断开)以及对Socket的读写等操作。**  
+    1. **在Netty中，Channel是一个Socket连接的抽象，它为用户提供了关于底层Socket状态（是否是连接还是断开）以及对Socket的读写等操作。**  
     2. ChannelHandler  
     &emsp; **ChannelHandler主要用来处理各种事件，这里的事件很广泛，比如可以是连接、数据接收、异常、数据转换等。**  
     3. ChannelPipeline  
