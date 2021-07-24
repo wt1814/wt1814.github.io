@@ -5,3 +5,10 @@
 &emsp; [HTTPS](/docs/network/HTTPS.md)  
 &emsp; [长/短连接](/docs/network/connection.md)   
 &emsp; [网络抓包](/docs/network/wireshark.md)  
+
+
+<!-- 
+
+IP、TCP和DNS与HTTP的密切关系
+https://www.cnblogs.com/it-cen/p/4899692.html
+-->
