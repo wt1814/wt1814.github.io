@@ -2,7 +2,6 @@
 <!-- TOC -->
 
 - [1. Kubernetes运维指南](#1-kubernetes运维指南)
-    - [Kubernetes自动伸缩](#kubernetes自动伸缩)
     - [1.1. Kubernetes集群管理指南](#11-kubernetes集群管理指南)
         - [1.1.1. 使用WebUI(Dashboard)管理集群](#111-使用webuidashboard管理集群)
         - [1.1.2. 集群统一日志管理](#112-集群统一日志管理)
@@ -20,17 +19,8 @@
 <!-- /TOC -->
 
 # 1. Kubernetes运维指南  
-<!-- 
-应该监控哪些Kubernetes健康指标？ 
-https://mp.weixin.qq.com/s/9MRvBGDlEKKbUabhNsVIHQ
--->
+
 &emsp; <font color = "red">整体参考《Kubernetes权威指南》</font>  
-
-
-## Kubernetes自动伸缩
-<!-- 
-https://mp.weixin.qq.com/s/-t6fS_Hif9jDPsuMlWWeyQ
--->
 
 ## 1.1. Kubernetes集群管理指南  
 &emsp; 本节将从Node的管理、Label的管理、Namespace资源共享、资源配额管理、集群Master高可用及集群监控等方面，对Kubernetes集群本身的运维管理进行详细说明。  
@@ -83,6 +73,8 @@ https://mp.weixin.qq.com/s/oCOKYOgak3PjmHnFiAin7g
 &emsp; 在实际生产系统中会经常遇到服务器容量不足的情况，这时就需要购买新的服务器，然后将应用系统进行水平扩展来完成对系统的扩容。  
 &emsp; 在Kubernetes集群中，一个新Node的加入是非常简单的。在新的Node节点上安装Docker、kubelet和kube-proxy服务，然后配置kubelet和kube-proxy的启动参数，将Master URL指定为当前Kubernetes集群Master的地址，最后启动这些服务。通过kubelet默认的自动注册机制，新的Node将会自动加入现有的Kubemetes集群中。    
 
+&emsp; [k8s自动伸缩](/docs/devAndOps/k8s/Stretch.md)  
+
 ### 1.1.4. 更新资源对象的Label  
 &emsp; <font color = "clime">Label(标签)作为用户可灵活定义的对象属性，在正在运行的资源对象上，仍然可以随时通过kubectl label命令对其进行增加、修改、删除等操作。</font>  
 
@@ -100,21 +92,7 @@ https://mp.weixin.qq.com/s/oCOKYOgak3PjmHnFiAin7g
 &emsp; Kubemetes作为容器应用的管理平台，通过对Pod的运行状况进行监控，并且根据主机或容器失效的状态将新的Pod调度到其他Node上，实现了应用层的高可用性。针对Kubernetes集群，高可用性还应包含以下两个层面的考虑：etcd数据存储的高可用性和Kubernetes Master组件的高可用性。  
 
 ### 1.1.7. Kubemetes集群监控  
-<!-- 
- 10个常用监控Kubernetes性能的Prometheus Operator指标 
- https://mp.weixin.qq.com/s/idQgb0GC2yhaVYwgGj5gcA
--->
-
-&emsp; 在大规模容器集群中，需要对所有Node和全部容器进行性能监控，Kubemetes建议使用一套工具来实现集群性能数据的釆集、存储和展示。  
-
-* Heapster：对集群中各Node上cAdvisor的数据釆集汇聚的系统，通过访问每个Node上kubelet的APL再通过kubelet调用cAdvisor的API来釆集该节点上所有容器的性 能数据。Heapster对性能数据进行聚合，并将结果保存到后端存储系统中。Heaspter支持多种后端存储系统，包括memory(保存在内存中)、InfluxDB、BigQuery＞谷歌云平台提供的Google Cloud Monitoring (https://cloud.google.com/monitoring/ )和Google Cloud Logging(https://cloud.google.com/logging/ )等。Heapster项目的主页为 https://github.com/kubemetes/heapstero 。  
-* InfluxDB：是分布式时序数据库(每条记录都带有时间戳属性)，主要用于实时数据釆集、事件跟踪记录、存储时间图表、原始数据等。InfluxDB提供了REST API用于数据的存储和查询。InfluxDB的主页为http://influxdb.com 。
-* Grafana：通过Dashboard将InfluxDB中的时序数据展现成图表或曲线等形式，便于运维人员查看集群的运行状态。Grafana的主页为http://grafana.orgo  
-
-&emsp; 基于Heapster+InfluxDB+Grafana的集群监控系统总体架构如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-3.png)  
-
-&emsp; HeapsterInfluxDB和Grafana均以Pod的形式启动和运行。由于Heapster需要与Kubemetes Master进行安全连接，所以需要设置Master的CA证书安全策略。  
+&emsp; [k8s监控](/docs/devAndOps/k8s/Monitor.md)  
 
 ### 1.1.8. Helm：Kubemetes应用包管理工具
 &emsp; 随着容器技术逐渐被企业接受，简单的应用在Kubernetes上己经能够便捷部署。但对于复杂的应用中间件，在Kubemetes上进行容器化部署并非易事，通常需要先研究Docker镜像的运行需求、环境变量等内容，并能为这些容器定制存储、网络等设置，最后设计和编写Deployment. Configmap, Service及Ingress等相关yaml配置文件，再提交给Kubemetes进行部署。这些复杂的过程将逐步被Helm应用包管理工具实现。  

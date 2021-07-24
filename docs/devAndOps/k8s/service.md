@@ -32,8 +32,8 @@ https://blog.csdn.net/qq_23348071/article/details/87185025
 -->
 &emsp; <font color = "red">由于Pod和Service是Kubernetes集群范围内的虚拟概念，所以集群外的客户端系统无法通过Pod的IP地址或者Service的虚拟IP地址和虚拟端口号访问到它们。</font><font color = "clime">为了让外部客户端可以访问这些服务，可以将Pod或Service的端口号映射到宿主机，以使得客户端应用能够通过物理机访问容器应用。</font>  
 
-1. 将容器应用的端口号映射到物理机  
-2. **将Service的端口号映射到物理机**  
+1. 将容器应用的端口号映射到物理机。  
+2. **将Service的端口号映射到物理机。**  
 
 ### 1.2.1. 利用Rinetd实现Service负载均衡  
 &emsp; 端口转发工具Rineted：Rineted是Linux操作系统中为重定向传输控制协议工具。可将源IP端口数据转发至目标IP端口。在Kubernetes中用于将service服务对外暴露。  
