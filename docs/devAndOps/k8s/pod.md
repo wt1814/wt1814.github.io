@@ -54,4 +54,4 @@ https://mp.weixin.qq.com/s?__biz=MzU0NjEwMTg4Mg==&mid=2247484195&idx=1&sn=b841f2
 
 ## 1.4. Pod的扩容和缩容  
 &emsp; 在实际生产系统中，经常会遇到某个服务需要扩容的场景，也可能会遇到由于资源紧张或者工作负载降低而需要减少服务实例数量的场景。此时可以利用Deployment/RC的Scale机制来完成这些工作。  
-&emsp; **<font color = "clime">Kubernetes对Pod的扩容和缩容操作提供了手动和自动两种模式。</font>** 手动模式通过执行kubectl scale命令对一个Deployment/RC进行Pod副本数量的设置，即可一键完成。自动模式则需要用户根据某个性能指标或者自定义业务指标，并指定Pod副本数量的范围，系统将自动在这个范围内根据性能指标的变化进行调整。  
+&emsp; **<font color = "clime">Kubernetes对Pod的扩容和缩容操作提供了手动和自动两种模式。</font>** 手动模式通过执行kubectl scale命令对一个Deployment/RC进行Pod副本数量的设置，即可一键完成。[自动模式](/docs/devAndOps/k8s/Stretch.md)`则需要用户根据某个性能指标或者自定义业务指标，`并指定Pod副本数量的范围，系统将自动在这个范围内根据性能指标的变化进行调整。  

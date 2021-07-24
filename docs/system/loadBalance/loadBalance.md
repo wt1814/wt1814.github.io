@@ -11,12 +11,11 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **负载均衡方案选择：**  
-* **3000万以上的，nginx+监控；**  
-* 5000万PV的，HAProxy+Keepalived,nginx，HAPROXY负责TCP的负载均衡，nginx负责7层调度； 
-* **1亿以上的，LVS-DR+keepalived,nginx，LVS-DR负责TCP的负载均衡，nginx负责7层调度。**  
-
-
+&emsp; **<font color = "clime">★★★负载均衡方案选择</font>**  
+&emsp; 小于3000万pv的，DNS轮询+监控；  
+&emsp; **3000万以上的，nginx+监控；**  
+&emsp; 5000万PV的，HAProxy+Keepalived,nginx，HAPROXY负责TCP的负载均衡，nginx负责7层调度；  
+&emsp; **1亿以上的，LVS-DR+keepalived,nginx，LVS-DR负责TCP的负载均衡，nginx负责7层调度。**  
 
 # 1. 负载均衡
 <!--

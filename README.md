@@ -32,11 +32,12 @@
     - [~~软件工程~~](#软件工程)
     - [项目构建基础](#项目构建基础)
     - [架构设计](#架构设计)
-    - [DDD](#ddd)
-    - [负载均衡](#负载均衡)
-    - [Linux](#linux)
+        - [DDD](#ddd)
+        - [负载均衡](#负载均衡)
+        - [OpenAPI](#openapi)
     - [DevOps](#devops)
     - [计算机网络](#计算机网络)
+    - [Linux操作系统](#linux操作系统)
     - [测试工具](#测试工具)
     - [常用工具](#常用工具)
     - [Error](#error)
@@ -592,20 +593,20 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 ## 架构设计  
 [架构图](/docs/system/diagram.md)  
 [软件架构设计模式](/docs/system/designPattern.md)  
-[OpenAPI](/docs/system/OpenAPI.md)  
-&emsp; [容灾和备份](/docs/system/backups.md)  
+[容灾和备份](/docs/system/backups.md)  
+
 <!-- 
 [Gateway](/docs/microService/microservices/Gateway.md)  
 
 软件工程
 
-## DDD
+### DDD
 [DDD](/docs/system/DDD.md)  
 -->
 
 ----
 
-## 负载均衡  
+### 负载均衡  
 [负载均衡](/docs/system/loadBalance/loadBalance.md)  
 [DNS轮询](/docs/system/loadBalance/DNS.md)  
 [CDN](/docs/system/loadBalance/CDN.md)   
@@ -616,25 +617,20 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
 [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
 
-----
-
-## Linux  
-[Linux命令](/docs/Linux/LinuxCommand.md)  
-&emsp; [文本处理](/docs/Linux/textProcessing.md)  
-&emsp; [网络通讯](/docs/Linux/NetworkCommunication.md)  
-&emsp; [进程管理](/docs/Linux/ProcessManagement.md)  
-[shell编程](/docs/Linux/shell.md)  
-[堡垒机](/docs/Linux/baolei.md)  
-[Linux系统](/docs/Linux/Linux.md)  
+### OpenAPI 
+[OpenAPI](/docs/system/OpenAPI.md)  
 
 ------
 
 ## DevOps  
 [DevOps与CI/CD](/docs/devAndOps/devOps.md)  
-[DevOps搭建](/docs/devAndOps/devOpsPractice.md)  
+&emsp; [DevOps搭建](/docs/devAndOps/devOpsPractice.md)  
 [GIT](/docs/devAndOps/git/command.md)  
 [Maven](/docs/devAndOps/maven.md)  
+[多种发布方式](/docs/system/publishe.md)  
+&emsp; [灰度发布](/docs/system/grayscalePublishe.md)  
 [Jenkins](/docs/devAndOps/Jenkins.md)  
+[监控系统](/docs/devAndOps/monitor.md)  
 [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
 &emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
 &emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
@@ -651,31 +647,42 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; [Yaml文件配置](/docs/devAndOps/k8s/yaml.md)  
 &emsp; [k8s架构](/docs/devAndOps/k8s/principle.md)  
 &emsp; &emsp; [Pod详解](/docs/devAndOps/k8s/pod.md)  
+&emsp; &emsp; &emsp; [k8s自动伸缩](/docs/devAndOps/k8s/Stretch.md)  
 &emsp; &emsp; [Service详解](/docs/devAndOps/k8s/service.md)  
 &emsp; [k8s运维](/docs/devAndOps/k8s/tools.md)  
-&emsp; &emsp; [k8s自动伸缩](/docs/devAndOps/k8s/Stretch.md)  
 &emsp; &emsp; [k8s监控](/docs/devAndOps/k8s/Monitor.md)  
 &emsp; [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
-[多种发布方式](/docs/system/publishe.md)  
-&emsp; [灰度发布](/docs/system/grayscalePublishe.md)  
-[监控](/docs/devAndOps/monitor.md)  
 
 ----
 
 ## 计算机网络  
 [网络的性能指标](/docs/network/standard.md)  
 [OSI七层网络模型](/docs/network/OSI.md)  
-[HTTP](/docs/network/HTTP.md)  
-[HTTPS](/docs/network/HTTPS.md)  
-[TCP](/docs/network/TCP.md)  
-&emsp; [TCP传输阶段](/docs/network/TCPTransfer.md)  
-&emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
-&emsp; [TCP粘包](/docs/network/TCPSticking.md)   
-[UDP](/docs/network/UDP.md)  
-[DNS](docs/network/DNS.md)  
-[长/短连接](/docs/network/connection.md)   
-[网络抓包](/docs/network/wireshark.md)  
+[应用层](/docs/network/application.md)  
+&emsp; [DNS](docs/network/DNS.md)  
+&emsp; [HTTP](/docs/network/HTTP.md)  
+&emsp; [HTTPS](/docs/network/HTTPS.md)  
+&emsp; [长/短连接](/docs/network/connection.md)   
+&emsp; [网络抓包](/docs/network/wireshark.md)  
+[传输层](/docs/network/transfer.md)  
+&emsp; [TCP](/docs/network/TCP.md)  
+&emsp; &emsp; [TCP传输阶段](/docs/network/TCPTransfer.md)  
+&emsp; &emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
+&emsp; &emsp; [TCP粘包](/docs/network/TCPSticking.md)   
+&emsp; [UDP](/docs/network/UDP.md)  
 
+
+
+----
+
+## Linux操作系统  
+[Linux命令](/docs/Linux/LinuxCommand.md)  
+&emsp; [文本处理](/docs/Linux/textProcessing.md)  
+&emsp; [网络通讯](/docs/Linux/NetworkCommunication.md)  
+&emsp; [进程管理](/docs/Linux/ProcessManagement.md)  
+[shell编程](/docs/Linux/shell.md)  
+[堡垒机](/docs/Linux/baolei.md)  
+[Linux系统](/docs/Linux/Linux.md)  
 
 ----
 

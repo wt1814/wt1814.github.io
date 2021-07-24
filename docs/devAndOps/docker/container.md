@@ -10,27 +10,30 @@
     - [1.2. 容器隔离原理](#12-容器隔离原理)
         - [1.2.1. Namespaces，命名空间](#121-namespaces命名空间)
         - [1.2.2. CGroups](#122-cgroups)
-    - [1.3. 容器的文件系统](#13-容器的文件系统)
-    - [1.4. 数据卷(Volume)](#14-数据卷volume)
-        - [1.4.1. 数据卷](#141-数据卷)
-        - [1.4.2. 数据卷容器](#142-数据卷容器)
-    - [1.5. Docker宿主机与容器通信(端口映射)](#15-docker宿主机与容器通信端口映射)
-        - [1.5.1. 自动映射端口](#151-自动映射端口)
-        - [1.5.2. 绑定端口到指定接口](#152-绑定端口到指定接口)
-        - [1.5.3. 示例](#153-示例)
-    - [1.6. 容器间通信](#16-容器间通信)
-        - [1.6.1. Docker四种网络模式](#161-docker四种网络模式)
-        - [1.6.2. 容器间单向通信(Link)](#162-容器间单向通信link)
-        - [1.6.3. 容器间双向通信(bridge)](#163-容器间双向通信bridge)
-            - [1.6.3.1. Docker中的虚拟网桥](#1631-docker中的虚拟网桥)
-            - [1.6.3.2. 借助网桥进行容器间通信](#1632-借助网桥进行容器间通信)
-            - [1.6.3.3. 网桥通信原理](#1633-网桥通信原理)
-        - [1.6.4. 不同主机间容器通信](#164-不同主机间容器通信)
+    - [1.3. 容器的文件](#13-容器的文件)
+        - [1.3.1. 容器的文件系统](#131-容器的文件系统)
+        - [1.3.2. 数据卷(Volume)](#132-数据卷volume)
+            - [1.3.2.1. 数据卷](#1321-数据卷)
+            - [1.3.2.2. 数据卷容器](#1322-数据卷容器)
+    - [1.4. 容器的通信](#14-容器的通信)
+        - [1.4.1. Docker宿主机与容器通信(端口映射)](#141-docker宿主机与容器通信端口映射)
+            - [1.4.1.1. 自动映射端口](#1411-自动映射端口)
+            - [1.4.1.2. 绑定端口到指定接口](#1412-绑定端口到指定接口)
+            - [1.4.1.3. 示例](#1413-示例)
+        - [1.4.2. 容器间通信](#142-容器间通信)
+            - [1.4.2.1. Docker四种网络模式](#1421-docker四种网络模式)
+            - [1.4.2.2. 容器间单向通信(Link)](#1422-容器间单向通信link)
+            - [1.4.2.3. 容器间双向通信(bridge)](#1423-容器间双向通信bridge)
+                - [1.4.2.3.1. Docker中的虚拟网桥](#14231-docker中的虚拟网桥)
+                - [1.4.2.3.2. 借助网桥进行容器间通信](#14232-借助网桥进行容器间通信)
+                - [1.4.2.3.3. 网桥通信原理](#14233-网桥通信原理)
+            - [1.4.2.4. 不同主机间容器通信](#1424-不同主机间容器通信)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **<font color = "clime">单个宿主机的多个容器是隔离的，其依赖于Linux的Namespaces、CGroups，隔离的容器需要通信、文件共享(数据持久化)。</font>**  
+1. 单个宿主机的多个容器是隔离的，其依赖于Linux的Namespaces、CGroups。  
+2. 隔离的容器需要通信、文件共享(数据持久化)。  
 
 # 1. 容器详解  
 <!-- 
@@ -91,7 +94,8 @@ https://docs.docker.com/config/containers/start-containers-automatically/
 
     在CGroup中，所有的任务就是一个系统的一个进程，而CGroup就是一组按照某种标准划分的进程，在CGroup这种机制中，所有的资源控制都是以CGroup作为单位实现的，每一个进程都可以随时加入一个CGroup也可以随时退出一个CGroup。
 
-## 1.3. 容器的文件系统   
+## 1.3. 容器的文件
+### 1.3.1. 容器的文件系统   
 &emsp; 容器会共享其所在主机的操作系统/内核（容器执行使用共享主机的内核代码），<font color = "red">但是容器内运行的进程所使用的是容器自己的文件系统，也就是容器内部的进程访问数据时访问的是容器的文件系统。</font>当从一个镜像启动容器的时候，除了把镜像当成容器的文件系统一部分之外，Docker还会在该镜像的最顶层加载一个可读写文件系统，容器中运行的程序就是在这个读写层中执行的。  
 &emsp; 使用Docker，启动容器，会新建两层内容。这两层分别为Docker容器的初始层(Init Layer)与可读写层(Read-Write Layer)：  
 
@@ -101,7 +105,7 @@ https://docs.docker.com/config/containers/start-containers-automatically/
 &emsp; 在运行阶段时，容器产生的新文件、文件的修改都会在可读写层上，当停止容器(stop)运行之后并不会被损毁，但是删除容器会丢弃其中的数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-23.png)  
 
-## 1.4. 数据卷(Volume)
+### 1.3.2. 数据卷(Volume)
 <!--
 https://www.docker.org.cn/dockerppt/117.html
 Docker容器数据持久化
@@ -121,7 +125,7 @@ docker create --name webpage -v /webapps:/tomcat/webapps tomcat /bin/true，接�
 -->
 &emsp; docker通过数据卷(Volume)来进行数据持久化、文件共享。有数据卷和数据卷容器两种方式。  
 
-### 1.4.1. 数据卷
+#### 1.3.2.1. 数据卷
 &emsp; 数据卷是一个或多个容器专门指定绕过Union File System的目录，为持续性或共享数据提供一些有用的功能：  
 
 * 数据卷可以在容器间共享和重用。
@@ -129,11 +133,12 @@ docker create --name webpage -v /webapps:/tomcat/webapps tomcat /bin/true，接�
 * 数据卷数据改变不会被包括在容器中。
 * 数据卷是持续性的，直到没有容器使用它们。
 
-### 1.4.2. 数据卷容器  
+#### 1.3.2.2. 数据卷容器  
 &emsp; 通过设置挂载点，可以创建一个用于挂载的容器，其他容器设置参照该容器的挂载信息，进行挂载。  
 &emsp; 例如创建一个webpage的容器，设置挂载信息，无需运行该容器：`docker create --name webpage -v /webapps:/tomcat/webapps tomcat /bin/true`，接着创建其他容器参照该容器的挂载信息进行挂载：`docker run --volumes-from webpage --name myweb02 -d tomcat`，创建的myweb02的容器的挂载信息，就和webpage的挂载信息相同。如果需要修改挂载点，只需要修改webpage的挂载信息即可。 
- 
-## 1.5. Docker宿主机与容器通信(端口映射)  
+
+## 1.4. 容器的通信
+### 1.4.1. Docker宿主机与容器通信(端口映射)  
 <!-- 
 ~~
 Docker学习笔记：Docker 端口映射 
@@ -141,7 +146,7 @@ https://www.docker.org.cn/dockerppt/110.html
 -->
 &emsp; **容器运行在宿主机上，如果外网能够访问容器，才能够使用它提供的服务。Docker容器与宿主机进行通信可以通过映射容器的端口到宿主机上。**  
 
-### 1.5.1. 自动映射端口  
+#### 1.4.1.1. 自动映射端口  
 &emsp; -P使用时需要指定--expose选项，指定需要对外提供服务的端口
 
 ```text
@@ -149,7 +154,7 @@ $ sudo docker run -t -P --expose 22 --name server  ubuntu:14.04
 ```
 &emsp; 使用docker run -P自动绑定所有对外提供服务的容器端口，映射的端口将会从没有使用的端口池中 (49000..49900) 自动选择，可以通过docker ps、docker inspect \<container_id>或者docker port \<container_id> \<port>确定具体的绑定信息。 
 
-### 1.5.2. 绑定端口到指定接口  
+#### 1.4.1.2. 绑定端口到指定接口  
 &emsp; 基本语法  
 
 ```text
@@ -169,14 +174,14 @@ $ sudo docker run -p [([<host_interface>:[host_port]])|(<host_port>):]<container
 # Bind UDP port 5353 of the container to UDP port 53 on 127.0.0.1 of the host machine. $ sudo docker run -p 127.0.0.1:53:5353/udp <image> <cmd>
 ```
 
-### 1.5.3. 示例  
+#### 1.4.1.3. 示例  
 &emsp; 例如，使用如下命令启动一个容器  
 
     docker run -p 8080:80 --name test nginx  
 
 &emsp; 使用-p参数将容器的80端口映射到宿主机的8080端口，这样就可以通过curl localhost:8080访问到容器上80端口的服务了。另外一个参数-P可以将容器的端口映射到宿主机的高位随机端口上，而不需要手动指定。  
 
-## 1.6. 容器间通信  
+### 1.4.2. 容器间通信  
 <!-- 
 
 Docker容器网络
@@ -189,7 +194,7 @@ http://www.itmuch.com/docker/17-docker-bridge-dns/
 http://www.itmuch.com/docker/18-docker-user-network-embeded-dns/
 -->
 
-### 1.6.1. Docker四种网络模式  
+#### 1.4.2.1. Docker四种网络模式  
 <!-- 
 初探Docker的网络模式 
 https://www.docker.org.cn/docker/187.html
@@ -214,7 +219,7 @@ https://www.docker.org.cn/docker/187.html
 * bridge模式  
 &emsp; bridge 模式是 Docker 默认的网络设置，此模式会为每一个容器分配 Network Namespace、设置 IP 等，并将一个主机上的 Docker 容器连接到一个虚拟网桥上。当 Docker server 启动时，会在主机上创建一个名为 docker0 的虚拟网桥，此主机上启动的 Docker 容器会连接到这个虚拟网桥上。虚拟网桥的工作方式和物理交换机类似，这样主机上的所有容器就通过交换机连在了一个二层网络中。接下来就要为容器分配 IP 了，Docker 会从 RFC1918 所定义的私有 IP 网段中，选择一个和宿主机不同的IP地址和子网分配给 docker0，连接到 docker0 的容器就从这个子网中选择一个未占用的 IP 使用。如一般 Docker 会使用 172.17.0.0/16 这个网段，并将 172.17.42.1/16 分配给 docker0 网桥(在主机上使用 ifconfig 命令是可以看到 docker0 的，可以认为它是网桥的管理接口，在宿主机上作为一块虚拟网卡使用)   
 
-### 1.6.2. 容器间单向通信(Link)  
+#### 1.4.2.2. 容器间单向通信(Link)  
 &emsp; 在docker环境下，容器创建后，都会默认分配一个虚拟ip，该ip无法从外界直接访问，但是在docker环境下各个ip直接是互通互联的。下图假设Tomcat分配的虚拟ip为107.1.31.22，Mysql分配的虚拟ip为107.1.31.24。  
 &emsp; 虽然在Docker环境下可以通过虚拟ip互相访问，但是局限性很大，原因是容器是随时可能宕机，重启的，宕机重启后会为容器重新分配ip，这样原来直接通信的ip就消失了。所以容器间通信不建议通过ip进行通信。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-42.png)  
@@ -230,15 +235,15 @@ https://www.docker.org.cn/docker/187.html
 * 把之前的myweb容器。运用docker rm myweb移除掉，保留mydatabases容器。通过docker run -d --name myweb --link mydatabases tomcat来运行容器。其中--link是指定该容器需要和名称为databases的容器通信。  
 * 进入myweb容器docker exec -it myweb sh,运行命令ping mydatabases，即可通信。配置mysql连接的时候，把ip换成mydatabases即可，docker会自动维护mydatabases和该容器ip的映射，即使该容器的ip改变也不会影响访问。  
 
-### 1.6.3. 容器间双向通信(bridge)  
+#### 1.4.2.3. 容器间双向通信(bridge)  
 &emsp; 通过上文，配置容器间互相link，也是可以实现双向通信的，但是有点麻烦。Docker提供了网桥，用来快速实现容器间双向通信。  
 
-#### 1.6.3.1. Docker中的虚拟网桥  
+##### 1.4.2.3.1. Docker中的虚拟网桥  
 &emsp; docker网桥组件概览图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-41.png)  
 &emsp; Docker中的网桥也是虚拟出来的，网桥的主要用途是用来实现docker环境和外部的通信。在某个容器内部ping外部的ip例如百度。是可以ping通的。实际上是容器发出的数据包，通过虚拟网桥，发送给宿主机的物理网卡，实际上是借助物理网卡与外界通信的，反之物理网卡也会通过虚拟网桥把相应的数据包送回给相应的容器。  
 
-#### 1.6.3.2. 借助网桥进行容器间通信
+##### 1.4.2.3.2. 借助网桥进行容器间通信
 &emsp; 可以借助网桥实现容器间的双向通信。docker虚拟网桥的另一个作用是为容器在网络层面上进行分组，把不同容器都绑定到网桥上，这样容器间就可以天然互联互通。  
 
 * docker run -d --name myweb tomcat运行myweb容器；docker run -d -it --name mydatabases centos sh交互模式挂起一个databases容器(这里用一个linux容器模拟数据库服务器)。由于没配置网桥，此时容器间无法通过名称互相通信  
@@ -277,11 +282,12 @@ PING mydatabases (172.18.0.3) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.196/0.297/0.417/0.091 ms
 # exit
 ```
-#### 1.6.3.3. 网桥通信原理  
+
+##### 1.4.2.3.3. 网桥通信原理  
 &emsp; 网桥为什么可以实现容器间的互联互通？实际上，每当创建一个网桥，docker都会在宿主机上安装一个虚拟网卡，该虚拟网卡也充当了一个网关的作用。与该网桥(虚拟网关)绑定的容器，相当于处在一个局域网，所以可以通信。虚拟网卡毕竟是虚拟的，如果容器想要和外部通信，仍然需要借助外部(宿主机)的物理网卡。虚拟网卡的数据包进行地址转换，转换为物理网卡的数据包发送出去，反之外部和内部容器通信，也需要进行数据包地址转换。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-44.png)  
 
-### 1.6.4. 不同主机间容器通信  
+#### 1.4.2.4. 不同主机间容器通信  
 <!-- 
 docker同宿主机容器和不同宿主机容器之间怎么通信？
 https://blog.51cto.com/2367685/2349762
