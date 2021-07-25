@@ -506,6 +506,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; &emsp; [检索模版](/docs/ES/searchTemplate.md)  
 &emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
 [ES原理](/docs/ES/principle.md)  
+&emsp; [Elasticsearch搜索为什么那么快？](/docs/ES/SearchFast.md)  
 &emsp; [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
 &emsp; [ES增删改原理](/docs/ES/write.md)  
 [ES运维](/docs/ES/Operation.md)  

@@ -375,6 +375,7 @@
             * [检索模版](/docs/ES/searchTemplate.md)  
         * [Java客户端](/docs/ES/JavaRestClient.md)  
     * [ES原理](/docs/ES/principle.md)  
+        * [Elasticsearch搜索为什么那么快？](/docs/ES/SearchFast.md)  
         * [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
         * [ES增删改原理](/docs/ES/write.md)  
     * [ES运维](/docs/ES/Operation.md)  
