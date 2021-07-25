@@ -16,14 +16,11 @@
         - [1.3.5. ？和 T 的区别](#135-和-t-的区别)
         - [1.3.6. Class< T > 和 Class< ? > 区别](#136-class-t--和-class---区别)
     - [1.4. 类型擦除](#14-类型擦除)
+    - [1.5. 利用反射越过泛型检查](#15-利用反射越过泛型检查)
 
 <!-- /TOC -->
 
 <!--
-利用反射越过泛型检查
-https://www.jianshu.com/p/6493fdab6ac5
-ava泛型类型擦除以及类型擦除带来的问题
-https://www.cnblogs.com/wuqinglong/p/9456193.html
 
 Java泛型类型擦除：何时以及发生了什么？
 http://www.cocoachina.com/articles/44971
@@ -103,3 +100,12 @@ https://mp.weixin.qq.com/s/YDGfYDWop9lvCWKym66_qA
 &emsp; 泛型是通过类型擦除来实现的，<font color = "red">编译器在编译时擦除了所有泛型类型相关的信息，所以在运行时不存在任何泛型类型相关的信息。</font>  
 &emsp; 泛型擦除具体来说就是在编译成字节码时首先进行类型检查，接着进行类型擦除（即所有类型参数都用它们的限定类型替换，包括类、变量和方法），接着如果类型擦除和多态性发生冲突时就在子类中生成桥方法解决，接着如果调用泛型方法的返回类型被擦除则在调用该方法时插入强制类型转换。  
 
+
+
+## 1.5. 利用反射越过泛型检查
+<!-- 
+重要***利用反射越过泛型检查
+https://www.jianshu.com/p/6493fdab6ac5
+ava泛型类型擦除以及类型擦除带来的问题
+https://www.cnblogs.com/wuqinglong/p/9456193.html
+-->
