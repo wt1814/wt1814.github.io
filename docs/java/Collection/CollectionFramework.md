@@ -29,10 +29,8 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. <font color = "clime">List：有序，可重复。Set：无序，不可重复(唯一)。Map：存储键值对。</font>  
 &emsp; <font color = "clime">List有ArrayList、Vector、LinkedList。Map有HashMap、LinkedHashMap、TreeMap、Hashtable。Set有HashSet、LinkedHashSet、TreeSet。</font>    
-
 2. 快速失败机制：单线程迭代器中直接删除元素或多线程使用非安全的容器都会抛出ConcurrentModificationException异常。  
-&emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，在拷贝的集合上进行遍历。</font>**  
-
+&emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，再在拷贝的集合上进行遍历。</font>**  
 3. 排序：  
     * Comparable，自然排序（自身属性，整数(大小排序)，字符串(字典序)）。  
     * Comparator，定制排序。  
@@ -417,7 +415,7 @@ public static void main(String[] args) {
 <!-- 
 &emsp; fail-safe 是 Java 中的一种 安全失败 机制，它表示的是在遍历时不是直接在原集合上进行访问，而是先复制原有集合内容，在拷贝的集合上进行遍历。由于迭代时是对原集合的拷贝进行遍历，所以在遍历过程中对原集合所作的修改并不能被迭代器检测到，所以不会触发 ConcurrentModificationException。java.util.concurrent 包下的容器都是安全失败的，可以在多线程条件下使用，并发修改。  
 -->
-&emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，在拷贝的集合上进行遍历。</font>**  
+&emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，再在拷贝的集合上进行遍历。</font>**  
 
 &emsp; 原理：由于迭代时是对原集合的拷贝进行遍历，所以在遍历过程中对原集合所作的修改并不能被迭代器检测到，所以不会触发Concurrent Modification Exception。  
 

@@ -17,11 +17,9 @@
 
 
 ## 1.4. 简历制作 
-制作内容
-https://www.zhihu.com/question/25002833
+制作内容 https://www.zhihu.com/question/25002833
 
-制作模版  
-https://mp.weixin.qq.com/s/z0k922U6jwXe5VYlz33gaA
+制作模版 https://mp.weixin.qq.com/s/z0k922U6jwXe5VYlz33gaA
 
 ## 1.3. 自我介绍  
 
@@ -54,7 +52,4 @@ https://zhidao.baidu.com/question/1696738441039638308.html
 -->
 
 ### 还有什么要问的吗？  
-
-
-
 
