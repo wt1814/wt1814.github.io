@@ -8,7 +8,7 @@
 
 <!-- /TOC -->
 
-
+&emsp; 常用设计模式有23种(不包含简单工厂模式)。 **<font color = "red">这23种设计模式的本质是面向对象设计原则的实际运用，是对类的封装性、继承性和多态性，以及类的关联关系和组合关系的充分理解。</font>**  
 &emsp; **<font color = "red">结构型：多个类协同完成一个功能；行为型，算法模式。</font>**  
 
 
@@ -96,7 +96,7 @@ https://refactoringguru.cn/design-patterns/catalog
 &emsp; **结构型模式有7种：**   
 
 * **<font color = "clime">[代理(Proxy)模式](/docs/java/Design/proxy.md)：控制客户端对对象的访问。</font>**  
-    * [JDK动态代理](/docs/java/Design/JDKProxy.md)
+    * [JDK动态代理](/docs/java/Design/DynamicProxy.md)   
     * [CGLIB代理](/docs/java/Design/CGLIB.md)   
 * **<font color = "red">[装饰者(Decorator)模式](/docs/java/Design/decorator.md)：为对象添加新功能。</font>** 
 * [适配器(Adapter)模式](/docs/java/Design/adapter.md)：将原来不兼容的两个类融合在一起。  

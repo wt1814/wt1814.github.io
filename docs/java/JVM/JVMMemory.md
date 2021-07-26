@@ -32,7 +32,7 @@
         1. 由于PermGen内存经常会溢出，引发java.lang.OutOfMemoryError: PermGen，因此JVM的开发者希望这一块内存可以更灵活地被管理，不要再经常出现这样的OOM。  
         2. 移除PermGen可以促进HotSpot JVM与JRockit VM的融合，因为JRockit没有永久代。  
     2. 演进历程：  
-        * jdk1.6及之前：有永久代(permanent generation) ，静态变量存放在永久代上。  
+        * jdk1.6及之前：有永久代(permanent generation)，静态变量存放在永久代上。  
         * jdk1.7：有永久代，但已经逐步“去永久代”，<font color = "red">字符串常量池、静态变量</font>移除，保存在堆中。  
         * jdk1.8及之后：无永久代，类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
 
@@ -268,3 +268,4 @@ https://www.cnblogs.com/duanxz/p/3520829.html
 &emsp; **<font color = "red">~~为什么要用元空间替代方法区？~~</font>**  
 1. 整个永久代有一个 JVM 本身设置固定大小上线，无法进行调整。字符串常量池存在于永久代中，在大量使用字符串的情况下，非常容易出现OOM的异常。此外，JVM加载的class的总数，方法的大小等都很难确定，因此对永久代大小的指定难以确定。太小的永久代容易导致永久代内存溢出，太大的永久代则容易导致虚拟机内存紧张。  
 &emsp; <font color = "red">而元空间使用的是直接内存，受本机可用内存的限制，很难发生java.lang.OutOfMemoryError。</font>也可以通过JVM参数来指定元空间的大小。  
+
