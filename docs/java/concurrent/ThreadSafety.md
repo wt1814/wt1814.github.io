@@ -11,15 +11,15 @@ https://mp.weixin.qq.com/s/3PfvkKKtH48XbMEtab2Z_g
 &emsp; 若多个线程同时对资源执行写操作，一般都需要考虑线程同步，否则的话就可能影响线程安全。线程安全问题有“丢失修改”、“不可重复读”、“读‘脏’数据”等。  
 
 &emsp; **<font color = "red">线程安全的解决方案如下：</font>**  
-1. **<font color = "clime">阻塞/互斥同步(悲观锁)</font>**   
+1. **<font color = "clime">阻塞/互斥同步（悲观锁）</font>**   
 &emsp; synchronized。互斥同步最主要的问题就是线程阻塞和唤醒所带来的性能问题，因此这种同步也称为阻塞同步。互斥同步属于一种悲观的并发策略。  
-2. **<font color = "clime">非阻塞同步(乐观锁，CAS)</font>** 
-3. **<font color = "clime">无同步方案(线程封闭)</font>**   
+2. **<font color = "clime">非阻塞同步（乐观锁，CAS）</font>** 
+3. **<font color = "clime">无同步方案（线程封闭）</font>**   
 &emsp; **<font color = "red">要保证线程安全，并不是一定就要进行同步。如果一个方法本来就不涉及共享数据，那它自然就无须任何同步措施去保证正确性。</font>**  
-    * **<font color = "clime">栈封闭(类变量变局部变量)</font>**  
+    * **<font color = "clime">栈封闭（类变量变局部变量）</font>**  
     &emsp; 多个线程访问同一个方法的局部变量时，不会出现线程安全问题。因为局部变量存储在虚拟机栈中，属于线程私有的。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-9.png)   
-    * **<font color = "clime">线程本地存储(Thread Local Storage)</font>**  
+    * **<font color = "clime">线程本地存储（Thread Local Storage）</font>**  
     &emsp; 如果一段代码中所需要的数据必须与其他代码共享，那就看看这些共享数据的代码是否能保证在同一个线程中执行。如果能保证，就可以把共享数据的可见范围限制在同一个线程之内，这样，无须同步也能保证线程之间不出现数据争用的问题。  
     &emsp; 符合这种特点的应用并不少见，大部分使用消费队列的架构模式（如“生产者-消费者”模式）都会将产品的消费过程尽量在一个线程中消费完。其中最重要的一个应用实例就是经典Web交互模型中的“一个请求对应一个服务器线程”（Thread-per-Request）的处理方式，这种处理方式的广泛应用使得很多Web服务端应用都可以使用线程本地存储来解决线程安全问题。  
     &emsp; 可以使用java.lang.ThreadLocal类来实现线程本地存储功能。  

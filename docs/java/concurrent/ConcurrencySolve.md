@@ -18,7 +18,7 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. 缓存一致性协议  
     1. 怎么解决缓存一致性问题呢？使用总线锁或缓存锁。  
-    &emsp; 缓存锁：只要保证多个CPU缓存的同一份数据是一致的就可以了，基于缓存一致性协议来实现的。  
+    &emsp; 缓存锁：只要保证多个CPU缓存的同一份数据是一致的就可以了，基于缓存一致性协议来实现。  
     2. MESI缓存一致性协议  
     &emsp; 其他cpu通过 总线嗅探机制 可以感知到数据的变化从而将自己缓存里的数据失效。  
     &emsp; 总线嗅探会带来总线风暴。  
@@ -69,7 +69,7 @@ https://www.cnblogs.com/jackson0714/p/java_Volatile.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-46.png)  
 
 #### 1.1.1.2. 缓存锁  
-&emsp; 缓存锁：只要保证多个CPU缓存的同一份数据是一致的就可以了，基于缓存一致性协议来实现的。  
+&emsp; 缓存锁：只要保证多个CPU缓存的同一份数据是一致的就可以了，基于缓存一致性协议来实现。  
 
 
 ### 1.1.2. ~~MESI缓存一致性协议~~  

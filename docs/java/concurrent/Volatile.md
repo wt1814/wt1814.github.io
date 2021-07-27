@@ -23,7 +23,7 @@
 2. Volatile底层原理：  
     * **<font color = "clime">在Volatile写前插入写-写[屏障](/docs/java/concurrent/ConcurrencySolve.md)（禁止上面的普通写与下面的Volatile写重排序），在Volatile写后插入写-读屏障（禁止上面的Volatile写与下面可能有的Volatile读/写重排序）。</font>**  
     * **<font color = "clime">在Volatile读后插入读-读屏障（禁止下面的普通读操作与上面的Volatile读重排序）、读-写屏障（禁止下面所有的普通写操作和上面Volatile读重排序）。</font>**  
-3. Volatile为什么不安全（不保证原则性，线程切换）？  
+3. Volatile为什么不安全（不保证原子性，线程切换）？  
 &emsp; 两个线程执行i++（i++的过程可以分为三步，首先获取i的值，其次对i的值进行加1，最后将得到的新值写回到缓存中），线程1获取i值后被挂起，线程2执行...  
 4. DCL详解：  
 	1. 为什么两次判断？ 线程1调用第一个if（singleton==null），可能会被挂起。  

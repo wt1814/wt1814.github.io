@@ -42,7 +42,7 @@ https://mp.weixin.qq.com/s/gKsD1U38h4MJczEFC33ydw
 -->
 &emsp; Synchronized可以禁止指令重排吗？不可以。  
 &emsp; <font color = "red">即然Synchronized无法禁止指令重排，为何可以保证有序性？</font>  
-&emsp; <font color = "red">Synchronized遵守as-if-serial语义(在java中，不管怎么排序，都不能影响单线程程序的执行结果)。</font><font color = "clime">某个线程执行到被Synchronized修饰的代码之前，会先进行加锁。执行完代码后才进行解锁。在这个期间，其他线程无法获得锁。也就是在这段时间，被Synchronized修饰的代码是单线程执行的。满足了as-if-serial语义的一个前提。</font>  
+&emsp; <font color = "red">Synchronized遵守as-if-serial语义（在java中，不管怎么排序，都不能影响单线程程序的执行结果）。</font><font color = "clime">某个线程执行到被Synchronized修饰的代码之前，会先进行加锁。执行完代码后才进行解锁。在这个期间，其他线程无法获得锁。也就是在这段时间，被Synchronized修饰的代码是单线程执行的。满足了as-if-serial语义的一个前提。</font>  
 <!-- 
 https://mp.weixin.qq.com/s/fL1ixtmiqKo83aUJ-cfrpg
 -->
