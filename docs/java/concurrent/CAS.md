@@ -10,7 +10,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. CAS函数  
-&emsp; **<font color = "clime">在函数CAS(V,E,N)中有3个参数：从内存中读取的值E，计算的结果值V，内存中的当前值N(可能已经被其他线程改变)。</font>**  
+&emsp; **<font color = "clime">在函数CAS(V,E,N)中有3个参数：从内存中读取的值E，计算的结果值V，内存中的当前值N（可能已经被其他线程改变）。</font>**  
 &emsp; **<font color = "clime">函数流程：</font>** 1. 读取当前值E，2. 计算结果值V，<font color = "clime">3. 将读取的当前值E和当前新值N作比较，如果相等，更新为V；</font>4. 如果不相等，再次读取当前值E计算结果V，将E再和新的当前值N比较，直到相等。 
 2. **CAS缺点：**  
     * 循环时间长开销大。自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。  
