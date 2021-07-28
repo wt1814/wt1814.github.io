@@ -16,16 +16,16 @@
         - [SpringCloud](#springcloud)
         - [Dubbo](#dubbo)
         - [Zookeeper](#zookeeper)
-        - [分布式缓存](#分布式缓存)
-            - [Redis](#redis)
-        - [限流降级](#限流降级)
-        - [分布式消息队列](#分布式消息队列)
-            - [kafka](#kafka)
         - [分布式高并发](#分布式高并发)
         - [分布式理论](#分布式理论)
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
+        - [分布式缓存](#分布式缓存)
+            - [Redis](#redis)
+        - [限流降级](#限流降级)
+        - [分布式消息队列](#分布式消息队列)
+            - [kafka](#kafka)
         - [任务调度](#任务调度)
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式通信](#分布式通信)
@@ -368,6 +368,40 @@
 [Zookeeper问题](/docs/microService/dubbo/ZookeeperProblem.md)  
 -->
 
+### 分布式高并发
+[分布式高并发](/docs/system/DistributedHighConcurrency.md)   
+&emsp; [分布式与微服务](/docs/system/serviceSplit.md)  
+&emsp; [性能指标](/docs/system/performance.md)  
+&emsp; [并发系统三高](/docs/system/threeHigh.md)  
+&emsp; [高可用](/docs/system/highAvailability.md)  
+&emsp; [秒杀系统设计](/docs/system/seckill.md)  
+&emsp; [资源限制](/docs/system/ResourceConstraints.md)  
+
+### 分布式理论  
+[分布式和集群](/docs/system/distributed.md)   
+[分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
+&emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
+[分布式理论](/docs/microService/thinking/DistributedTheory.md)  
+
+### 分布式ID
+[分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
+
+### 分布式事务
+[分布式事务](/docs/microService/thinking/DistriTransaction.md)  
+&emsp; [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
+&emsp; [TCC](/docs/microService/thinking/TCC.md)   
+&emsp; [TCC问题](/docs/microService/thinking/TCCProblem.md)   
+&emsp; [Saga](/docs/microService/thinking/Event.md)  
+&emsp; [消息模式](/docs/microService/thinking/news.md)   
+&emsp; [分布式事务的选型](/docs/microService/thinking/DistributedTransactionSelection.md)  
+
+### 分布式锁
+[分布式锁](/docs/microService/thinking/Lock.md)  
+&emsp; [RedisLock](/docs/microService/thinking/redisLock.md)  
+&emsp; [Redisson](/docs/microService/thinking/Redisson.md)  
+&emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
+&emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
+
 ### 分布式缓存  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
 [双缓存](/docs/cache/DoubleCache.md)  
@@ -439,40 +473,6 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 <!-- 
 [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
 -->
-
-### 分布式高并发
-[分布式高并发](/docs/system/DistributedHighConcurrency.md)   
-&emsp; [分布式与微服务](/docs/system/serviceSplit.md)  
-&emsp; [性能指标](/docs/system/performance.md)  
-&emsp; [并发系统三高](/docs/system/threeHigh.md)  
-&emsp; [高可用](/docs/system/highAvailability.md)  
-&emsp; [秒杀系统设计](/docs/system/seckill.md)  
-&emsp; [资源限制](/docs/system/ResourceConstraints.md)  
-
-### 分布式理论  
-[分布式和集群](/docs/system/distributed.md)   
-[分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
-&emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
-[分布式理论](/docs/microService/thinking/DistributedTheory.md)  
-
-### 分布式ID
-[分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
-
-### 分布式事务
-[分布式事务](/docs/microService/thinking/DistriTransaction.md)  
-&emsp; [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
-&emsp; [TCC](/docs/microService/thinking/TCC.md)   
-&emsp; [TCC问题](/docs/microService/thinking/TCCProblem.md)   
-&emsp; [Saga](/docs/microService/thinking/Event.md)  
-&emsp; [消息模式](/docs/microService/thinking/news.md)   
-&emsp; [分布式事务的选型](/docs/microService/thinking/DistributedTransactionSelection.md)  
-
-### 分布式锁
-[分布式锁](/docs/microService/thinking/Lock.md)  
-&emsp; [RedisLock](/docs/microService/thinking/redisLock.md)  
-&emsp; [Redisson](/docs/microService/thinking/Redisson.md)  
-&emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
-&emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
 
 ### 任务调度
 [延时队列](/docs/frame/delayQueue.md)  

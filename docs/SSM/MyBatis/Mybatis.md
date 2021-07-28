@@ -42,7 +42,6 @@
 <!-- /TOC -->
 
 
-
 # 1. MyBatis使用教程  
 
 ## 1.1. #和$的区别  
@@ -540,9 +539,7 @@ System.out.println("新增学生ID: " + entity.getStudentId());
 ----
 
 ## 1.5. Intellij IDEA中Mybatis Mapper自动注入警告的解决方案   
-...
+&emsp; ...
 
 ## 1.6. mybatis-generator  
 &emsp; mybatis-generator，能够生成PO类，能生成mapper映射文件（其中包括基本的增删改查功能）、能生成mapper接口。  
-
-
