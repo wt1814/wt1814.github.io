@@ -4,12 +4,14 @@
 
 - [1. RedisLock](#1-redislock)
     - [1.1. Redis部署方式](#11-redis部署方式)
-    - [1.2. Redis Client原生API](#12-redis-client原生api)
+    - [1.2. Redis分布式锁实现方案](#12-redis分布式锁实现方案)
         - [1.2.1. 单实例redis实现分布式锁](#121-单实例redis实现分布式锁)
             - [1.2.1.1. 加锁](#1211-加锁)
             - [1.2.1.2. ~~加锁的注意点~~](#1212-加锁的注意点)
             - [1.2.1.3. 解锁](#1213-解锁)
-        - [1.2.2. 集群RedLock算法实现分布式锁](#122-集群redlock算法实现分布式锁)
+        - [1.2.2. lua脚本实现分布式锁](#122-lua脚本实现分布式锁)
+        - [1.2.3. SET EX PX NX + 校验惟一随机值，再删除](#123-set-ex-px-nx--校验惟一随机值再删除)
+        - [1.2.4. 集群RedLock算法实现分布式锁](#124-集群redlock算法实现分布式锁)
     - [1.3. Redisson实现redis分布式锁](#13-redisson实现redis分布式锁)
 
 <!-- /TOC -->
@@ -20,9 +22,30 @@
     * 如何避免死锁？设置锁过期时间。  
     * `锁过期。 增大冗余时间。`  
     * 释放别人的锁。 唯一标识，例如线程ID或UUID。  
-3. RedLock：  
+3. redis实现分布式锁方案：  
+    * 方案一：SETNX + EXPIRE  
+    * 方案二：SETNX + value值是（系统时间+过时时间）  
+    * `方案三：使用Lua脚本(包含SETNX + EXPIRE两条指令) ` 
+    * 方案四：SET的扩展命令（SET EX PX NX）  
+    * `方案五：SET EX PX NX + 校验惟一随机值，再删除释放`  
+    * 方案六: 开源框架: Redisson  
+    * 方案七：多机实现的分布式锁Redlock   
+4. `方案五：SET EX PX NX + 校验惟一随机值，再删除释放`
+&emsp; 在这里，判断是否是当前线程加的锁和释放锁不是一个原子操做。若是调用jedis.del()释放锁的时候，可能这把锁已经不属于当前客户端，会解除他人加的锁。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-61.png)  
+&emsp; 为了更严谨，通常也是用lua脚本代替。lua脚本以下：  
+
+```text
+if redis.call('get',KEYS[1]) == ARGV[1] then 
+   return redis.call('del',KEYS[1]) 
+else
+   return 0
+end;
+```
+5. RedLock：  
     1. RedLock：当前线程尝试给每个Master节点`顺序`加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。  
     2. ~~RedLock“顺序加锁”：确保互斥。在同一时刻，必须保证锁至多只能被一个客户端持有。~~   
+
 
 # 1. RedisLock 
 <!-- 
@@ -34,7 +57,21 @@
 * 如果采用单机部署模式，会存在单点问题。 **<font color = "clime">只要Redis故障了，可能存在`死锁`问题。</font>**  
 * 采用Master-Slave模式，加锁的时候只对一个节点加锁，即使通过Sentinel做了高可用，但是<font color="clime">如果Master节点故障了，发生主从切换，此时就会有可能出现锁丢失的问题，可能导致多个客户端同时完成加锁</font>。  
 
-## 1.2. Redis Client原生API  
+## 1.2. Redis分布式锁实现方案  
+<!-- 
+七种方案！探讨Redis分布式锁的正确使用姿式
+https://www.shangmayuan.com/a/c3bd01caa98044f28d5584dc.html
+-->  
+
+&emsp; redis实现分布式锁方案：  
+* 方案一：SETNX + EXPIRE  
+* 方案二：SETNX + value值是（系统时间+过时时间）  
+* `方案三：使用Lua脚本(包含SETNX + EXPIRE两条指令) ` 
+* 方案四：SET的扩展命令（SET EX PX NX）  
+* 方案五：SET EX PX NX + 校验惟一随机值,再删除释放  
+* 方案六: 开源框架: Redisson  
+* 方案七：多机实现的分布式锁Redlock  
+
 ### 1.2.1. 单实例redis实现分布式锁  
 #### 1.2.1.1. 加锁  
 &emsp; 加锁中使用了redis的set命令。加锁涉及获取锁、加锁两步操作，**最初分布式锁借助于setnx和expire命令**，但是这两个命令不是原子操作，如果执行setnx之后获取锁，但是此时客户端挂掉，这样无法执行expire设置过期时间，就导致锁一直无法被释放，因此**在2.8版本中Antirez为setnx增加了参数扩展，使得setnx和expire具备原子操作性**。  
@@ -118,8 +155,41 @@ public class RedisTool {
 }
 ```
 
+### 1.2.2. lua脚本实现分布式锁  
 
-### 1.2.2. 集群RedLock算法实现分布式锁  
+### 1.2.3. SET EX PX NX + 校验惟一随机值，再删除  
+&emsp; 既然锁可能被别的线程误删，那咱们给value值设置一个标记当前线程惟一的随机数，在删除的时候，校验一下，不就OK了嘛。伪代码以下：  
+
+```text
+if（jedis.set(key_resource_id, uni_request_id, "NX", "EX", 100s) == 1）{ //加锁
+    try {
+        do something  //业务处理
+    }catch(){
+　　}
+　　finally {
+       //判断是否是当前线程加的锁,是才释放
+       if (uni_request_id.equals(jedis.get(key_resource_id))) {
+        jedis.del(lockKey); //释放锁
+        }
+    }
+}
+```
+
+&emsp; 在这里，判断是否是当前线程加的锁和释放锁不是一个原子操做。若是调用jedis.del()释放锁的时候，可能这把锁已经不属于当前客户端，会解除他人加的锁。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-61.png)  
+
+&emsp; 为了更严谨，通常也是用lua脚本代替。lua脚本以下：  
+
+```text
+if redis.call('get',KEYS[1]) == ARGV[1] then 
+   return redis.call('del',KEYS[1]) 
+else
+   return 0
+end;
+```
+
+
+### 1.2.4. 集群RedLock算法实现分布式锁  
 &emsp; Redis分布式锁官网中文地址：http://redis.cn/topics/distlock.html 。 
 
 &emsp; RedLock算法描述：假设Redis的部署模式是Redis Cluster，总共有5个Master节点。客户端通过以下步骤获取一把锁。  
