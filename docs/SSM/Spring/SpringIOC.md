@@ -20,10 +20,10 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. BeanFactory与ApplicationContext
 2. BeanDefinition： **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
-3. Spring容器刷新： **<font color = "blue">（⚠主要包含3部分：容器本身--创建容器、容器扩展--后置处理器、事件和实例化Bean。）</font>**     
+3. Spring容器刷新： **<font color = "blue">（⚠`主要包含3部分：容器本身--创建容器、容器扩展--后置处理器、事件和实例化Bean。`）</font>**     
     **<font color = "red">Spring bean容器刷新的核心 12个步骤完成IoC容器的创建及初始化工作：</font>**  
     1. 刷新前的准备工作。  
-    2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>** <font color = "blue">个人理解：此处仅仅相当于创建Spring Bean的类，实例化是在Spring DI里。</font>   
+    2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>** <font color = "blue">`个人理解：此处仅仅相当于创建Spring Bean的类，实例化是在Spring DI里。`</font>   
         &emsp; **<font color = "clime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
         ```java
         private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
@@ -36,9 +36,9 @@
     7. 初始化一些消息源（比如处理国际化的i18n等消息源）。 
     ------------ 
     8. **<font color = "red">初始化应用[事件多播器](/docs/SSM/Spring/feature/EventMulticaster.md)。</font>**     
-    9. **<font color = "red">onRefresh()，典型的模板方法(钩子方法)。不同的Spring容器做不同的事情。比如web程序的容器ServletWebServerApplicationContext中会调用createWebServer方法去创建内置的Servlet容器。</font>**  
+    9. **<font color = "red">`onRefresh()，典型的模板方法(钩子方法)。不同的Spring容器做不同的事情。`比如web程序的容器ServletWebServerApplicationContext中会调用createWebServer方法去创建内置的Servlet容器。</font>**  
     10. **<font color = "red">注册一些监听器到事件多播器上。</font>**  
-    11. **<font color = "red">实例化剩余的单例bean(非懒加载方式)。</font><font color = "blue">注意事项：Bean的IoC、DI和AOP都是发生在此步骤。</font>**  
+    11. **<font color = "red">`实例化剩余的单例bean(非懒加载方式)。`</font><font color = "blue">`注意事项：Bean的IoC、DI和AOP都是发生在此步骤。`</font>**  
     12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
 
 

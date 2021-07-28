@@ -21,6 +21,7 @@
 1. `@Transactional(rollbackFor = Exception.class) `，Transactional默认只回滚RuntimeException，但是可以指定要回滚的异常类型。    
 2. **<font color = "red">Spring事务属性通常由事务的传播行为、事务的隔离级别、事务的超时值、事务只读标志组成。</font>**  
     * 事务的传播行为主要分为支持当前事务和不支持当前事务。  
+    &emsp; <font color = "red">PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务，合并成一个事务；如果当前没有事务，则创建一个新的事务。这是默认值。</font>  
     * 事务的隔离级别，默认使用底层数据库的默认隔离级别。  
     * 事务只读，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。  
 3. Spring事务失效：  

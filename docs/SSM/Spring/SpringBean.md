@@ -11,6 +11,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-10.png)  
 &emsp; SpringBean的生命周期主要有4个阶段：  
 1. 实例化(Instantiation)，可以理解为new一个对象；
 2. 属性赋值(Populate)，可以理解为调用setter方法完成属性注入；

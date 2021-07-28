@@ -17,7 +17,7 @@
     1. 找到处理器：前端控制器DispatcherServlet ---> **<font color = "red">处理器映射器HandlerMapping</font>** ---> 找到处理器Handler；  
     2. 处理器处理：前端控制器DispatcherServlet ---> **<font color = "red">处理器适配器HandlerAdapter</font>** ---> 处理器Handler ---> 执行具体的处理器Controller(也叫后端控制器) ---> Controller执行完成返回ModelAndView；  
     &emsp; 1. 处理器映射器HandlerMapping：根据请求的url查找HandlerHandler即处理器(Controller)。  
-    &emsp; 2. **<font color = "blue">处理器适配器HandlAdapter：按照特定规则(HandlerAdapter要求的规则)去执行Handler。通过HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。</font>**  
+    &emsp; 2. **<font color = "blue">处理器适配器HandlAdapter：按照特定规则（HandlerAdapter要求的规则）去执行Handler。通过HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。</font>**  
     &emsp; 3. 处理器Handler和controller区别：
     3. 返回前端控制器DispatcherServlet ---> 视图解析器ViewReslover。  
 2. **SpringMVC解析：**  
