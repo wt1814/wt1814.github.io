@@ -331,7 +331,9 @@
 
 ### Dubbo  
 [RPC](/docs/microService/RPC.md)  
-[Dubbo](/docs/microService/dubbo/Dubbo.md)   
+[Dubbo介绍](/docs/microService/dubbo/Dubbo.md)   
+&emsp; [Dubbo协议和序列化](/docs/microService/dubbo/Agreement.md)  
+&emsp; [Dubbo负载和容错](/docs/microService/dubbo/Load.md)  
 [Dubbo使用教程](/docs/microService/dubbo/DubboUse.md)  
 &emsp; [Dubbo实战](/docs/microService/dubbo/DubboActualCombat.md)  
 [Dubbo详解](/docs/microService/dubbo/DubboExplanate.md)  
