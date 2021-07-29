@@ -30,18 +30,17 @@
     * `方案五：SET EX PX NX + 校验惟一随机值，再删除释放`  
     * 方案六: 开源框架: Redisson  
     * 方案七：多机实现的分布式锁Redlock   
-4. `方案五：SET EX PX NX + 校验惟一随机值，再删除释放`
+4. `方案五：SET EX PX NX + 校验惟一随机值，再删除释放`  
 &emsp; 在这里，判断是否是当前线程加的锁和释放锁不是一个原子操做。若是调用jedis.del()释放锁的时候，可能这把锁已经不属于当前客户端，会解除他人加的锁。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-61.png)  
 &emsp; 为了更严谨，通常也是用lua脚本代替。lua脚本以下：  
-
-```text
-if redis.call('get',KEYS[1]) == ARGV[1] then 
-   return redis.call('del',KEYS[1]) 
-else
-   return 0
-end;
-```
+    ```text
+    if redis.call('get',KEYS[1]) == ARGV[1] then 
+    return redis.call('del',KEYS[1]) 
+    else
+    return 0
+    end;
+    ```
 5. RedLock：  
     1. RedLock：当前线程尝试给每个Master节点`顺序`加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。  
     2. ~~RedLock“顺序加锁”：确保互斥。在同一时刻，必须保证锁至多只能被一个客户端持有。~~   

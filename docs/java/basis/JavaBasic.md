@@ -8,6 +8,10 @@
         - [1.1.3. 选择语句](#113-选择语句)
         - [1.1.4. 循环语句](#114-循环语句)
         - [1.1.5. 扩展](#115-扩展)
+        - [1.1.6. 符号](#116-符号)
+            - [1.1.6.1. 三元运算符](#1161-三元运算符)
+            - [1.1.6.2. 通配符](#1162-通配符)
+            - [1.1.6.3. 占位符](#1163-占位符)
     - [1.2. Java关键字](#12-java关键字)
         - [1.2.1. Java访问控制符](#121-java访问控制符)
         - [1.2.2. static-1](#122-static-1)
@@ -97,8 +101,59 @@ https://www.cnblogs.com/dudadi/p/Java.html
 
 ### 1.1.5. 扩展
 &emsp; 三元运算符：  
-&emsp; 格式：表达式？表达式成立执行该语句:表达式不成立执行该语句;  
-&emsp; if(){}else{}语句可以和三元运算符相互转换。
+&emsp; 格式：表达式？表达式成立执行该语句:表达式不成立执行该语句;    
+&emsp; if(){}else{}语句可以和三元运算符相互转换。  
+
+### 1.1.6. 符号
+
+#### 1.1.6.1. 三元运算符  
+&emsp; 格式：表达式？表达式成立执行该语句:表达式不成立执行该语句;    
+&emsp; if(){}else{}语句可以和三元运算符相互转换。  
+
+#### 1.1.6.2. 通配符  
+&emsp; 通配符包括星号“*”和问号“？”。星号表示匹配的数量不受限制，而后者的匹配字符数则受到限制。  
+
+#### 1.1.6.3. 占位符  
+<!-- 
+ String.format() 图文详解，写得非常好！ 
+ https://mp.weixin.qq.com/s/r5l93TERuT1hBDbU2WlDpg
+-->
+
+&emsp; 两种java中的占位符的使用：  
+&emsp; 第一种：使用%s占位，使用String.format转换  
+
+```java
+public class Test {
+    public static void main(String[] args) {
+        String url = "我叫%s,今年%s岁。";
+        String name = "小明";
+        String age = "28";
+        url = String.format(url,name,age);
+        System.out.println(url);
+    }
+}
+```
+&emsp; 控制台输出：  
+
+    我叫小明，年28岁。
+ 
+&emsp; 第二种：使用{1}占位，使用MessageFormat.format转换  
+
+```java
+public class Test {
+    public static void main(String[] args) {
+        String url02 = "我叫{0},今年{1}岁。";
+        String name = "小明";
+        String age = "28";
+        url02 = MessageFormat.format(url02,name,age);
+        System.out.println(url02);
+    }
+}
+```
+&emsp; 控制台同样输出：  
+
+    我叫小明，今年28岁。
+
 
 
 ## 1.2. Java关键字  

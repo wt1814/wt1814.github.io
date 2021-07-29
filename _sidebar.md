@@ -272,7 +272,7 @@
     * [分布式与微服务](/docs/system/serviceSplit.md)  
     * [性能指标](/docs/system/performance.md)  
     * [并发系统三高](/docs/system/threeHigh.md)  
-    * [高可用](/docs/system/highAvailability.md)  
+        * [高可用建设](/docs/system/highAvailability.md)  
     * [秒杀系统设计](/docs/system/seckill.md)  
     * [资源限制](/docs/system/ResourceConstraints.md)  
 * 分布式理论  
@@ -392,7 +392,6 @@
         * [EFK使用](/docs/ES/EFKUse.md)  
         * [Kibana用户手册](/docs/ES/Kibana.md)  
         * [Kibana查询](/docs/ES/KibanaQuery.md)  
-* 分布式通信  
 * [分布式通信基础](/docs/microService/communication/Netty/basics.md)    
     * [序列化](/docs/microService/communication/serializbale.md)  
     * [五种I/O模型](/docs/microService/communication/IO.md)  
