@@ -105,7 +105,7 @@ https://mp.weixin.qq.com/s/2Wm2SsRa1xOMX6pV9NyCrA
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-14.png)  
 
 ## 1.4. Dubbo生态
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo生态.png)   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-65.png)   
 
 ### 1.4.1. Dubbo与分布式事务  
 &emsp; Dubbo支持分布式事务吗？   
