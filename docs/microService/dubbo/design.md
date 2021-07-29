@@ -3,14 +3,11 @@
 - [1. Dubbo框架设计](#1-dubbo框架设计)
     - [1.1. 整体设计](#11-整体设计)
     - [1.2. 各层说明](#12-各层说明)
-    - [1.3. 关系说明](#13-关系说明)
-    - [1.4. 模块分包](#14-模块分包)
-    - [1.5. 依赖关系](#15-依赖关系)
-    - [1.6. ~~Dubbo服务调用~~](#16-dubbo服务调用)
-        - [1.6.1. 调用链](#161-调用链)
-        - [1.6.2. 暴露服务时序](#162-暴露服务时序)
-        - [1.6.3. 引用服务时序](#163-引用服务时序)
-    - [1.7. DDD领域模型](#17-ddd领域模型)
+    - [1.3. Dubbo核心组件](#13-dubbo核心组件)
+    - [1.4. Dubbo总体调用过程](#14-dubbo总体调用过程)
+    - [1.5. 关系说明](#15-关系说明)
+    - [1.6. 模块分包](#16-模块分包)
+    - [1.7. 依赖关系](#17-依赖关系)
 
 <!-- /TOC -->
 
@@ -54,9 +51,41 @@ http://dubbo.apache.org/zh/docs/v2.7/dev/design/
 * **<font color = "clime">protocol 远程调用层：封装 RPC 调用，以 Invocation, Result 为中心，扩展接口为 Protocol, Invoker, Exporter。</font>**
 * exchange 信息交换层：封装请求响应模式，同步转异步，以 Request, Response 为中心，扩展接口为 Exchanger, ExchangeChannel, ExchangeClient, ExchangeServer。
 * transport 网络传输层：抽象 mina 和 netty 为统一接口，以 Message 为中心，扩展接口为 Channel, Transporter, Client, Server, Codec。
-* serialize 数据序列化层：可复用的一些工具，扩展接口为 Serialization, ObjectInput, ObjectOutput, ThreadPool。
+* serialize 数据序列化层：可复用的一些工具，扩展接口为 Serialization, ObjectInput, ObjectOutput, ThreadPool。  
 
-## 1.3. 关系说明
+
+------------------
+
+
+&emsp; Dubbo的总体分为业务层(Biz)、RPC层、Remote层。如果把每一层继续做细分，那么一共可以分为十层。其中，Monitor层在最新的官方PPT中并不再作为单独的一层。如图1-7所示，图中左边是具体的分层, 右边是该层中比较重要的接口。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-61.png)  
+&emsp; Service和Config两层可以认为是API层，主要提供给API使用者，使用者无须关心底层的实现，只需要配置和完成业务代码即可；后面所有的层级合在一起，可以认为是SPI层，主要提供给扩展者使用，即用户可以基于Dubb。框架做定制性的二次开发，扩展其功能。Dubbo的扩展能力非常强，这也是Dubbo一直广受欢迎的原因之一。后续会有专门的章节介绍Dubbo的扩展机制。  
+&emsp; 每一层都会有比较核心的接口来支撑整个层次的逻辑，后续如果读者需要阅读源码，则可以从这些核心接口开始，梳理整个逻辑过程。在后面的章节中，我们会围绕不同的层次对其原理进行讲解。  
+
+## 1.3. Dubbo核心组件
+&emsp; Dubbo框架中的分层代表了不同的逻辑实现，它们是一个个组件，这些组件构成了整个Dubbo体系，在使用方角度更多接触到的可能是配置，更多底层构件被抽象和隐藏了，同时提供了非常高的扩展性。Dubbo框架之所以能够做到高扩展性,受益于各个组件职责分明的设计，每个组件提供灵活的扩展点，如表1-2所示。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-62.png)  
+
+
+## 1.4. Dubbo总体调用过程
+&emsp; 或许有读者目前还不能理解整个组件串起来的工作过程，因此我们先介绍一下服务的暴露过程。首先，服务器端（服务提供者）在框架启动时，会初始化服务实例，通过Proxy组件调用具体协议（Protocol ）,把服务端要暴露的接口封装成Invoker（真实类型是AbstractProxylnvoker ,然后转换成Exporter,这个时候框架会打开服务端口等并记录服务实例到内存中，最后通过Registry把服务元数据注册到注册中心。这就是服务端（服务提供者）整个接口暴露的过程。读者可能对里面的各种组件还不清楚，下面就讲解组件的含义：  
+
+* Proxy组件：我们知道，Dubbo中只需要引用一个接口就可以调用远程的服务，并且只需要像调用本地方法一样调用即可。其实是Dubbo框架为我们生成了代理类，调用的方法其实是Proxy组件生成的代理方法，会自动发起远程/本地调用，并返回结果,整个过程对用户完全透明。 
+* Protocol：顾名思义，协议就是对数据格式的一种约定。它可以把我们对接口的配置,根据不同的协议转换成不同的Invoker对象。例如：用DubboProtocol可以把XML文件中一个远程接口的配置转换成一个Dubbolnvokero  
+* Exporter：用于暴露到注册中心的对象，它的内部属性持有了 Invoker对象，我们可以认为它在Invoker上包了 一层。 
+* Registry：把Exporter注册到注册中心。
+
+&emsp; 以上就是整个服务暴露的过程，消费方在启动时会通过Registry在注册中心订阅服务端的元数据（包括IP和端口）。这样就可以得到刚才暴露的服务了。 下面我们来看一下消费者调用服务提供者的总体流程，我们此处只介绍远程调用，本地调用是远程调用的子集，因此不在此展开。Dubbo组件调用总体流程如图1-8所示。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-63.png)  
+&emsp; 首先，调用过程也是从一个Proxy开始的，Proxy持有了一个Invoker对象。然后触发invoke调用。在invoke调用过程中，需要使用Cluster, Cluster负责容错，如调用失败的重试。Cluster在调用之前会通过Directory获取所有可以调用的远程服务Invoker列表（一个接口可能有多个节点提供服务）。由于可以调用的远程服务有很多，此时如果用户配置了路由规则（如指定某些方法只能调用某个节点），那么还会根据路由规则将Invoker列表过滤一遍。  
+&emsp; 然后，存活下来的Invoker可能还会有很多，此时要调用哪一个呢？于是会继续通过LoadBalance方法做负载均衡，最终选出一个可以调用的Invokero这个Invoker在调用之前又会经过一个过滤器链，这个过滤器链通常是处理上下文、限流、计数等。  
+&emsp; 接着，会使用Client做数据传输，如我们常见的Netty Client等。传输之前肯定要做一些私有协议的构造，此时就会用到Codec接口。构造完成后，就对数据包做序列化（Serialization) ,然后传输到服务提供者端。服务提供者收到数据包，也会使用Codec处理协议头及一些半包、粘包等。处理完成后再对完整的数据报文做反序列化处理。
+
+&emsp; 随后，这个Request会被分配到线程池 ThreadPool 中进行处理oServer会处理这些Request,根据请求查找对应的Exporter 它内部持有了 Invoker 0 Invoker是被用装饰器模式一层一层套了非常多Filter的，因此在调用最终的实现类之前，又会经过一个服务提供者端的过滤器链。  
+&emsp; 最终，得到了具体接口的真实实现并调用，再原路把结果返回。 至此，一个完整的远程调用过程就结束了。  
+
+
+## 1.5. 关系说明
 &emsp; **关系说明：**  
 
 * 在 RPC 中，Protocol是核心层，也就是只要有 Protocol + Invoker + Exporter 就可以完成非透明的 RPC 调用，然后在 Invoker 的主过程上 Filter 拦截点。
@@ -66,30 +95,8 @@ http://dubbo.apache.org/zh/docs/v2.7/dev/design/
 &emsp; 而Remoting实现是Dubbo协议的实现，如果选择RMI协议，整个Remoting都不会用上，Remoting内部再划为Transport传输层和Exchange信息交换层，Transport 层只负责单向消息传输，是对 Mina, Netty, Grizzly 的抽象，它也可以扩展 UDP 传输，而 Exchange 层是在传输层之上封装了 Request-Response 语义。
 * Registry 和 Monitor 实际上不算一层，而是一个独立的节点，只是为了全局概览，用层的方式画在一起。  
 
-## 1.4. 模块分包  
-<!-- 
-http://svip.iocoder.cn/Dubbo/intro/
--->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-17.png)   
-&emsp; 模块说明：
 
-* dubbo-common公共逻辑模块：包括 Util 类和通用模型。
-* dubbo-remoting远程通讯模块：相当于Dubbo协议的实现，如果RPC用RMI协议则不需要使用此包。
-* dubbo-rpc远程调用模块：抽象各种协议，以及动态代理，只包含一对一的调用，不关心集群的管理。
-* dubbo-cluster集群模块：将多个服务提供方伪装为一个提供方，包括：负载均衡, 容错，路由等，集群的地址列表可以是静态配置的，也可以是由注册中心下发。
-* dubbo-registry 注册中心模块：基于注册中心下发地址的集群方式，以及对各种注册中心的抽象。
-* dubbo-monitor监控模块：统计服务调用次数，调用时间的，调用链跟踪的服务。
-* dubbo-config配置模块：是Dubbo对外的API，用户通过Config使用Dubbo，隐藏Dubbo所有细节。
-* dubbo-container容器模块：是一个Standlone的容器，以简单的Main加载Spring启动，因为服务通常不需要Tomcat/JBoss等Web容器的特性，没必要用Web容器去加载服务。
-
-&emsp; 整体上按照分层结构进行分包，与分层的不同点在于：  
-
-* container 为服务容器，用于部署运行服务，没有在层中画出。
-* protocol 层和 proxy 层都放在 rpc 模块中，这两层是 rpc 的核心，在不需要集群也就是只有一个提供者时，可以只使用这两层完成 rpc 调用。
-* transport 层和 exchange 层都放在 remoting 模块中，为 rpc 调用的通讯基础。
-* serialize 层放在 common 模块中，以便更大程度复用。  
-
-## 1.5. 依赖关系  
+## 1.7. 依赖关系  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-18.png)   
 &emsp; 图例说明：  
 
@@ -98,22 +105,3 @@ http://svip.iocoder.cn/Dubbo/intro/
 * 图中蓝色虚线为初始化时调用，红色虚线为运行时异步调用，红色实线为运行时同步调用。
 * 图中只包含 RPC 的层，不包含 Remoting 的层，Remoting 整体都隐含在 Protocol 中。
 
-## 1.6. ~~Dubbo服务调用~~
-### 1.6.1. 调用链  
-&emsp; 展开总设计图的红色调用链，如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-19.png)   
-
-### 1.6.2. 暴露服务时序  
-&emsp; 展开总设计图左边服务提供方暴露服务的蓝色初始化链，时序图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-20.png)   
-
-### 1.6.3. 引用服务时序
-&emsp; 展开总设计图右边服务消费方引用服务的蓝色初始化链，时序图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-21.png)   
-
-## 1.7. DDD领域模型
-&emsp; 在Dubbo的核心领域模型中：  
-
-* Protocol是服务域，它是 Invoker 暴露和引用的主功能入口，它负责 Invoker 的生命周期管理。
-* Invoker是实体域，它是 Dubbo 的核心模型，其它模型都向它靠扰，或转换成它，它代表一个可执行体，可向它发起invoke调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。
-* Invocation 是会话域，它持有调用过程中的变量，比如方法名，参数等。

@@ -3,17 +3,16 @@
 <!-- TOC -->
 
 - [1. Dubbo](#1-dubbo)
-    - [1.1. Dubbo介绍](#11-dubbo介绍)
-        - [1.1.1. Dubbo工作流程](#111-dubbo工作流程)
-        - [1.1.2. Dubbo需要Web容器吗？内置了哪几种服务容器？](#112-dubbo需要web容器吗内置了哪几种服务容器)
-        - [1.1.3. Dubbo有哪些注册中心？](#113-dubbo有哪些注册中心)
-        - [Dubbo协议、序列化](#dubbo协议序列化)
-        - [1.1.6. 服务提供者能实现失效踢出是什么原理？](#116-服务提供者能实现失效踢出是什么原理)
-        - [1.1.7. Dubbo服务之间的调用是阻塞的吗？](#117-dubbo服务之间的调用是阻塞的吗)
-        - [1.1.8. ★★★负载均衡](#118-★★★负载均衡)
-    - [1.2. Dubbo和Spring Cloud](#12-dubbo和spring-cloud)
-    - [1.3. Dubbo生态](#13-dubbo生态)
-        - [1.3.1. Dubbo与分布式事务](#131-dubbo与分布式事务)
+    - [1.1. Dubbo工作流程](#11-dubbo工作流程)
+    - [1.2. dubbo相关知识点](#12-dubbo相关知识点)
+        - [1.2.1. Dubbo需要Web容器吗？内置了哪几种服务容器？](#121-dubbo需要web容器吗内置了哪几种服务容器)
+        - [1.2.2. Dubbo有哪些注册中心？](#122-dubbo有哪些注册中心)
+        - [1.2.3. Dubbo序列化和协议](#123-dubbo序列化和协议)
+        - [1.2.4. ★★★负载均衡](#124-★★★负载均衡)
+        - [1.2.5. Dubbo服务之间的调用是阻塞的吗？](#125-dubbo服务之间的调用是阻塞的吗)
+    - [1.3. Dubbo和Spring Cloud](#13-dubbo和spring-cloud)
+    - [1.4. Dubbo生态](#14-dubbo生态)
+        - [1.4.1. Dubbo与分布式事务](#141-dubbo与分布式事务)
 
 <!-- /TOC -->
 
@@ -30,8 +29,7 @@
 https://mp.weixin.qq.com/s/2Wm2SsRa1xOMX6pV9NyCrA
 -->
 
-## 1.1. Dubbo介绍
-### 1.1.1. Dubbo工作流程  
+## 1.1. Dubbo工作流程  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-11.png)   
 &emsp; Dubbo中5个角色：Provider、Consumer、Registry、Monitor、Container。  
 
@@ -73,36 +71,33 @@ https://mp.weixin.qq.com/s/2Wm2SsRa1xOMX6pV9NyCrA
 3. 做一些过滤操作，比如加入缓存、mock数据  
 4. 接口调用数据统计  
 
-### 1.1.2. Dubbo需要Web容器吗？内置了哪几种服务容器？  
+## 1.2. dubbo相关知识点
+### 1.2.1. Dubbo需要Web容器吗？内置了哪几种服务容器？  
 &emsp; 不需要，如果强制使用Web容器，只会增加复杂性，也浪费资源。  
 &emsp; Dubbo内置了Spring Container、Jetty Container、Log4j Container。   
 &emsp; Dubbo的服务容器只是一个简单的Main方法，并加载一个简单的Spring容器，用于暴露服务。  
 
-### 1.1.3. Dubbo有哪些注册中心？  
+### 1.2.2. Dubbo有哪些注册中心？  
 
 * Multicast注册中心：Multicast注册中心不需要任何中心节点，只要广播地址，就能进行服务注册和发现。基于网络中组播传输实现；  
 * Zookeeper注册中心：基于分布式协调系统Zookeeper实现，采用Zookeeper的watch机制实现数据变更；  
 * redis注册中心：基于redis实现，采用key/Map存储，key中存储服务名和类型，Map中key存储服务URL，value服务过期时间。基于redis的发布/订阅模式通知数据变更；  
 * Simple注册中心。  
 
-### Dubbo协议、序列化
+### 1.2.3. Dubbo序列化和协议
 &emsp; [Dubbo协议和序列化](/docs/microService/dubbo/Agreement.md)  
 
-### 1.1.6. 服务提供者能实现失效踢出是什么原理？  
-&emsp; 服务失效踢出基于zookeeper的临时节点原理。  
+### 1.2.4. ★★★负载均衡  
+&emsp; [Dubbo负载、容错、降级](/docs/microService/dubbo/Load.md)   
 
-### 1.1.7. Dubbo服务之间的调用是阻塞的吗？  
+### 1.2.5. Dubbo服务之间的调用是阻塞的吗？  
 &emsp; 默认是同步等待结果，阻塞的，支持异步调用。Dubbo的异步调用是基于NIO的非阻塞实现并行调用，客户端不需要启动多线程即可完成并行调用多个远程服务，相对多线程开销较小，异步调用会返回一个Future对象。  
 &emsp; 异步调用流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-12.png)   
 
-### 1.1.8. ★★★负载均衡  
-&emsp; [Dubbo负载、容错、降级](/docs/microService/dubbo/Load.md)   
-
-
 ------
 
-## 1.2. Dubbo和Spring Cloud  
+## 1.3. Dubbo和Spring Cloud  
 &emsp; Dubbo是SOA时代的产物，它的关注点主要在于服务的调用，流量分发、流量监控和熔断。  
 &emsp; Spring Cloud诞生于微服务架构时代，考虑的是微服务治理的方方面面，另外由于依托了Spirng、Spirng Boot的优势之上。  
 
@@ -110,9 +105,9 @@ https://mp.weixin.qq.com/s/2Wm2SsRa1xOMX6pV9NyCrA
 * <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "clime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-14.png)  
 
-## 1.3. Dubbo生态
+## 1.4. Dubbo生态
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo生态.png)   
 
-### 1.3.1. Dubbo与分布式事务  
+### 1.4.1. Dubbo与分布式事务  
 &emsp; Dubbo支持分布式事务吗？   
 &emsp; 目前暂时不支持，可与通过tcc-transaction框架实现。TCC-Transaction通过Dubbo隐式传参的功能，避免自己对业务代码的入侵。 

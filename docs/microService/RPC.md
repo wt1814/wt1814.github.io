@@ -7,18 +7,20 @@
         - [1.1.2. RPC](#112-rpc)
     - [1.2. RPC起源](#12-rpc起源)
     - [1.3. ★★★RPC调用过程](#13-★★★rpc调用过程)
-    - [1.4. RPC框架需要解决的问题？](#14-rpc框架需要解决的问题)
-    - [1.5. ★★★使用了哪些技术？](#15-★★★使用了哪些技术)
-        - [1.5.1. 远程代理对象(动态代理)](#151-远程代理对象动态代理)
-        - [1.5.2. 序列化](#152-序列化)
-        - [1.5.3. 通信](#153-通信)
-            - [1.5.3.1. RPC中的通信协议](#1531-rpc中的通信协议)
-        - [1.5.4. 服务暴露(服务注册中心)](#154-服务暴露服务注册中心)
-    - [1.6. 流行的RPC框架](#16-流行的rpc框架)
-    - [1.7. ~~RPC调用和HTTP调用~~](#17-rpc调用和http调用)
+    - [1.4. ★★★RPC框架使用了哪些技术？](#14-★★★rpc框架使用了哪些技术)
+        - [1.4.1. 远程代理对象(动态代理)](#141-远程代理对象动态代理)
+        - [1.4.2. 序列化](#142-序列化)
+        - [1.4.3. 通信](#143-通信)
+            - [1.4.3.1. RPC中的通信协议](#1431-rpc中的通信协议)
+        - [1.4.4. 服务暴露(服务注册中心)](#144-服务暴露服务注册中心)
+    - [1.5. 流行的RPC框架](#15-流行的rpc框架)
+    - [1.6. ~~RPC调用和HTTP调用~~](#16-rpc调用和http调用)
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+1. RPC流程：  
+2. RPC框架使用了哪些技术？  
 
 
 # 1. ~~RPC~~  
@@ -132,7 +134,10 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 8. Client stub接收到结果消息，并进行解码(将结果消息发序列化)；
 9. 客户端得到最终结果。
 
-## 1.4. RPC框架需要解决的问题？  
+## 1.4. ★★★RPC框架使用了哪些技术？  
+&emsp; 一个比较完善的RPC框架  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-7.png)  
+
 &emsp; RPC框架需要解决的问题？  
 1. 如何确定客户端和服务端之间的通信协议？  
 2. 如何更高效地进行网络通信？  
@@ -140,14 +145,10 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 4. 客户端如何发现这些暴露的服务？  
 5. 如何更高效地对请求对象和响应结果进行序列化和反序列化操作？  
 
-## 1.5. ★★★使用了哪些技术？  
-&emsp; 一个比较完善的RPC框架  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-7.png)  
-
-### 1.5.1. 远程代理对象(动态代理)
+### 1.4.1. 远程代理对象(动态代理)
 &emsp; **<font color = "clime">服务调用者调用的服务实际是远程服务的本地代理。生成Client Stub(客户端存根)和Server Stub(服务端存根)的时候需要用到java动态代理技术，可以使用jdk提供的原生的动态代理机制，也可以使用开源的：Cglib代理，Javassist字节码生成技术。</font>**   
 
-### 1.5.2. 序列化
+### 1.4.2. 序列化
 &emsp; 在网络中，所有的数据都将会被转化为字节进行传送，所以为了能够使参数对象在网络中进行传输，需要对这些参数进行序列化和反序列化操作。
 
 * 序列化：把对象转换为字节序列的过程称为对象的序列化，也就是编码的过程。
@@ -155,7 +156,7 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 
 &emsp; 目前比较高效的开源序列化框架：如Kryo、fastjson和Protobuf等。
 
-### 1.5.3. 通信
+### 1.4.3. 通信
 &emsp; **通信方式：**  
 &emsp; 出于并发性能的考虑，传统的阻塞式IO显然不太合适，因此需要异步的IO，即NIO。  
 &emsp; Java提供了NIO的解决方案，Java 7也提供了更优秀的NIO.2支持。可以选择Netty或者mina来解决NIO数据传输的问题。
@@ -163,7 +164,7 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 &emsp; **通信协议：**  
 &emsp; <font color = "clime">RPC框架与具体的协议无关。RPC 可基于HTTP或TCP协议。</font>Web Service就是基于HTTP协议的RPC，它具有良好的跨平台性，但其性能却不如基于TCP协议的RPC。  
 
-#### 1.5.3.1. RPC中的通信协议  
+#### 1.4.3.1. RPC中的通信协议  
 <!-- 
 ~~
 https://blog.csdn.net/u013952133/article/details/79256799
@@ -217,11 +218,11 @@ RESTful：面向资源，这里的资源可以是一段文字、一个文件、�
 当然，对于遵守接口风格这一点，我个人是保留意见的，在实际的项目开发过程中，很多时候这些接口风格过于理想化；有些东西借鉴一下可以，更多的还需要结合项目实际使用。
 -->
 
-### 1.5.4. 服务暴露(服务注册中心)
+### 1.4.4. 服务暴露(服务注册中心)
 &emsp; 可选：Redis、Zookeeper、Consul、Etcd。  
 &emsp; 一般使用ZooKeeper提供服务注册与发现功能，解决单点故障以及分布式部署的问题(注册中心)。  
 
-## 1.6. 流行的RPC框架
+## 1.5. 流行的RPC框架
 <!-- 
 Dubbo  
 Dubbo 是阿里巴巴公司开源的一个Java高性能优秀的服务框架，使得应用可通过高性能的 RPC 实现服务的输出和输入功能，可以和 Spring框架无缝集成。目前已经进入Apache孵化器。  
@@ -270,5 +271,5 @@ Apache Thrift ：https://thrift.apache.org/
 -->
 
 
-## 1.7. ~~RPC调用和HTTP调用~~
+## 1.6. ~~RPC调用和HTTP调用~~
 &emsp; RPC服务和HTTP服务还是存在很多的不同点的，一般来说，RPC服务主要是针对大型企业的，而HTTP服务主要是针对小企业的，因为RPC效率更高，而HTTP服务开发迭代会更快。  
