@@ -1,6 +1,20 @@
 
 
-# SpringBoot  
+<!-- TOC -->
+
+- [1. SpringBoot](#1-springboot)
+    - [1.1. 配置文件](#11-配置文件)
+        - [1.1.1. bootstrap和application两种配置文件](#111-bootstrap和application两种配置文件)
+        - [1.1.2. application.yaml自定义属性](#112-applicationyaml自定义属性)
+        - [1.1.3. 自定义配置文件](#113-自定义配置文件)
+            - [1.1.3.1. 加载自定义yml文件](#1131-加载自定义yml文件)
+            - [1.1.3.2. 让yml,properties配置文件有提示](#1132-让ymlproperties配置文件有提示)
+        - [1.1.4. 多环境的属性配置](#114-多环境的属性配置)
+        - [1.1.5. 配置信息加密](#115-配置信息加密)
+
+<!-- /TOC -->
+
+# 1. SpringBoot  
 &emsp; Spring Boot、Spring MVC 和 Spring 有什么区别？  
 1. Spring  
 &emsp; Spring最重要的特征是依赖注入。所有SpringModules不是依赖注入就是IOC控制反转。恰当的使用DI或者IOC，可以开发松耦合应用。松耦合应用的单元测试可以很容易的进行。  
@@ -51,8 +65,8 @@ Spring Boot 优点非常多，如：
 
 -----
 
-## 配置文件  
-### bootstrap和application两种配置文件
+## 1.1. 配置文件  
+### 1.1.1. bootstrap和application两种配置文件
 &emsp; SpringBoot的核心配置文件是bootstrap和application配置文件。  
 
 * bootstrap配置文件是系统级别的，用来加载外部配置，如配置中心的配置信息，也可以用来定义系统不会变化的属性。bootstatp文件的加载先于application文件。  
@@ -69,11 +83,11 @@ Spring Boot 优点非常多，如：
 
 &emsp; Application.properties中key在SpringBoot官网文档给出了详尽的配置以及说明。http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#common-application-properties 。
 
-### application.yaml自定义属性  
+### 1.1.2. application.yaml自定义属性  
 &emsp; Application自定义属性，获取配置文件属性值方式：@Value注解，注入Environment属性。  
 
-### 自定义配置文件  
-#### 加载自定义yml文件  
+### 1.1.3. 自定义配置文件  
+#### 1.1.3.1. 加载自定义yml文件  
 ......
 <!-- 
 
@@ -82,7 +96,7 @@ https://www.cnblogs.com/huahua035/p/11272464.html
 
 -->
 
-#### 让yml,properties配置文件有提示
+#### 1.1.3.2. 让yml,properties配置文件有提示
 <!--
 超实用，Spring Boot 让yml,properties配置文件有提示 
 https://mp.weixin.qq.com/s?__biz=MzA4NjgxMjQ5Mg==&mid=2665762955&idx=1&sn=95c84bb2bd98b2a7ad1ddf674bd51959&chksm=84d202a8b3a58bbed74fd75ebcacd0306dc903a7737833f022fa69ce5b7c381753a7ebd7f6f0&mpshare=1&scene=1&srcid=&sharer_sharetime=1573691098077&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2459be73db906624e0949067f9260b7dff7fc16439cfbba9bed0142b226a920e566c156662dadf2b9695e0da6ac283e4bf4df8bdb6c156c8f21b2df31ecf98b28126c08f0a024633087f0a70cc074936&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=9PZBgG0W8u5aIQH8JwuoebfJbcWXVv%2F8Jwpab0URWoWCafXeDrv6e7zaSa2n%2B7Oa
@@ -90,10 +104,10 @@ https://mp.weixin.qq.com/s?__biz=MzA4NjgxMjQ5Mg==&mid=2665762955&idx=1&sn=95c84b
 
 ......
 
-### 多环境的属性配置  
+### 1.1.4. 多环境的属性配置  
 ......
 
-### 配置信息加密  
+### 1.1.5. 配置信息加密  
 ......
 
 

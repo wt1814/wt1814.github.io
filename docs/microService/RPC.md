@@ -35,7 +35,7 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-9.png)   
 
 ### 1.1.2. RPC
-&emsp; **RPC：让远程调用变得和本地调用一样**  
+&emsp; **RPC：让远程调用变得和本地调用一样。**  
 &emsp; 那么在 Server_A中怎么调用Server_B中的add方法呢？  
 &emsp; 很多人都会想到Server_B封装一个接口，通过服务把这个方法暴露出去，比如通过HTTP请求，那么Server_A就可以调用Server_B中的add方法了。  
 &emsp; 通过这种方法实现起来没有问题，也是一个不错的解决方法，就是在每次调用的时候，都要发起HTTP请求，代码里面要写HttpClient.sendRequest这样的代码，那么有没有可能像调用本地一样，去发起远程调用呢？让程序员不知道这是调用的远程方法呢？这时候就要提到RPC了。  
