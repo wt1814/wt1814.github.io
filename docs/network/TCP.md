@@ -63,7 +63,7 @@ https://blog.csdn.net/a159357445566/article/details/106411680/
 &emsp; TCP三次握手的过程掌握最重要的两点就是客户端和服务端状态的变化和三次握手过程标志信息的变化。  
 
 ##### 1.3.1.1.1. 流程  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP-1.png)  
 &emsp; 初始状态：客户端处于closed(关闭) 状态，服务端处于listen(监听) 状态。  
 &emsp; 第一次握手：建立连接时，客户端发送SYN包(SYN=1，sql=x)到服务器。并进入SYN_SEND发送等待状态，等待服务器确认；  
 &emsp; 第二次握手： **<font color = "red">服务器收到SYN包，必须确认客户的SYN(ACK=1，ack+1)，**</font> 同时自己也发送一个SYN包(SYN=1，sql=Y)，即SYN+ACK包，此时服务器进入SYN_RECV确认接收状态；  

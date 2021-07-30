@@ -515,7 +515,7 @@
         * [TCP](/docs/network/TCP.md)  
         * [TCP传输阶段](/docs/network/TCPTransfer.md)  
         * [TIME_WAIT问题](/docs/network/timewait.md)  
-        * [TCP和HTTP的长短连接](/docs/network/connection.md)  
+        * [长短连接](/docs/network/connection.md)  
         * [TCP粘包](/docs/network/TCPSticking.md)  
         * [UDP](/docs/network/UDP.md)  
 * Linux操作系统  
