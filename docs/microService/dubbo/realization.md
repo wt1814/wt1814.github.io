@@ -11,7 +11,7 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 解析服务  
+1. 解析服务：  
 &emsp; **<font color = "clime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
 &emsp; ⚠️注：在暴露服务ServiceConfig.export()或引用服务ReferenceConfig.get()时，会将Bean对象转换URL格式，所有Bean属性转成URL的参数。然后将URL传给协议扩展点，基于扩展点的扩展点自适应机制，根据URL的协议头，进行不同协议的服务暴露或引用。  
 2. **服务提供者暴露服务的主过程：**  
@@ -23,7 +23,7 @@
     4. 如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心。  
 3. **服务消费者引用服务的主过程：**  
     1. ReferenceConfig解析引用的服务。  
-    2. ReferenceConfig 类的 init 方法调用 Protocol 的 refer 方法生成 Invoker 实例。  
+    2. ReferenceConfig类的init方法调用Protocol的refer方法生成Invoker实例。  
     3. 把Invoker转换为客户端需要的接口。  
 
 

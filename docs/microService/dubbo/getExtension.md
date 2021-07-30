@@ -23,10 +23,10 @@
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; Dubbo SPI获得指定拓展对象，首先通过ExtensionLoader的getExtensionLoader方法获取一个ExtensionLoader实例，然后再通过ExtensionLoader的getExtension方法（调用createExtension方法）获取拓展类对象。createExtension方法包含了如下的步骤：  
 
-* 通过getExtensionClasses获取所有的拓展类
-* 通过反射创建拓展对象
-* 向拓展对象中注入依赖
-* 将拓展对象包裹在相应的Wrapper对象中
+* 通过getExtensionClasses获取所有的拓展类。  
+* 通过反射创建拓展对象。  
+* 向拓展对象中注入依赖。  
+* 将拓展对象包裹在相应的Wrapper对象中。  
 
 &emsp; 以上步骤中，第一个步骤是加载拓展类的关键，第三和第四个步骤是Dubbo IOC与AOP的具体实现。  
 

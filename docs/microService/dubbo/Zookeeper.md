@@ -12,30 +12,9 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
-3. ~~C/S之间的Watcher机制~~  
-&emsp; ~~特性：~~  
-    * 异步发送
-    * 一次性触发  
-    &emsp; Watcher通知是一次性的， **<font color = "clime">即一旦触发一次通知后，该Watcher就失效了，因此客户端需要反复注册Watcher。</font>** 但是在获取watch事件和设置新的watch事件之间有延迟。延迟为毫秒级别，理论上会出现不能观察到节点的每一次变化。  
-    &emsp; `不支持用持久Watcher的原因：如果Watcher的注册是持久的，那么必然导致服务端的每次数据更新都会通知到客户端。这在数据变更非常频繁且监听客户端特别多的场景下，ZooKeeper无法保证性能。`  
-    * 有序性：`⚠️（两阶段）客户端先得到watch通知，才可查看节点变化结果`。  
-4. ZK服务端通过ZAB协议保证数据顺序一致性。  
-    1. ZAB协议：
-        1. **<font color = "clime">崩溃恢复</font>**  
-            * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>  
-            * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态。
-        2. **<font color = "clime">`消息广播（数据读写流程，读写流程）：`</font>**  
-            &emsp; 在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点。    
-            * 如果是读请求，就直接从当前节点中读取数据。  
-            * 如果是写请求，那么请求会被转发给 leader 提交事务，然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交。 
-            &emsp; ⚠️注：leader向follower写数据详细流程：类2pc(两阶段提交)。  
-    2.  数据一致性  
-        &emsp; **<font color = "red">Zookeeper保证的是CP，即一致性(Consistency)和分区容错性(Partition-Tolerance)，而牺牲了部分可用性(Available)。</font>**  
-        * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>
-        * Zookeeper的CP模型：非强一致性， **<font color = "clime">而是单调一致性/顺序一致性。</font>**  
-            1. <font color = "clime">假设有2n+1个server，在同步流程中，leader向follower同步数据，当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。</font><font color = "red">如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。</font> 未同步数据的情况，Zookeeper提供了同步机制（可选型），类似回调。   
-            2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数(n+1)的server认同后，将对整个集群进行同步，超过半数(n+1)的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
-5. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
+2. zookeeper引入了watcher机制来实现发布/订阅功能。  
+3. ZK服务端通过ZAB协议保证数据顺序一致性。  
+4. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
 
 # 1. Zookeeper
 &emsp; Zookeeper官网文档：https://zookeeper.apache.org/doc/current

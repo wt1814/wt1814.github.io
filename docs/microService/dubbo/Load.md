@@ -3,14 +3,14 @@
 <!-- TOC -->
 
 - [1. Dubbo](#1-dubbo)
-    - [1.1. ★★★负载均衡](#11-★★★负载均衡)
-    - [1.2. ★★★集群容错策略](#12-★★★集群容错策略)
+    - [1.1. 负载均衡](#11-负载均衡)
+    - [1.2. 集群容错策略](#12-集群容错策略)
     - [1.3. 服务降级](#13-服务降级)
 
 <!-- /TOC -->
 
 # 1. Dubbo
-## 1.1. ★★★负载均衡  
+## 1.1. 负载均衡  
 <!-- https://mp.weixin.qq.com/s/xkwwAUV9ziabPNUMEr5DPQ -->
 * <font color = "red">Random(缺省)，随机，按权重设置随机概率。</font>在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。  
 * <font color = "red">RoundRobin，轮循，按公约后的权重设置轮循比率。</font>  
@@ -21,7 +21,7 @@
     * 缺省只对第一个参数Hash，如果要修改，请配置`<dubbo:parameter key="hash.arguments" value="0,1" />`  
     * 缺省用160份虚拟节点，如果要修改，请配置`<dubbo:parameter key="hash.nodes" value="320" />`  
 
-## 1.2. ★★★集群容错策略  
+## 1.2. 集群容错策略  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-13.png)   
 &emsp; <font color = "red">在集群调用失败时，Dubbo 提供了多种容错方案，缺省为 failover 重试。</font>下面列举dubbo支持的容错策略：  
 
