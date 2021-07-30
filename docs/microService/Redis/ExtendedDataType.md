@@ -39,6 +39,8 @@
 
 # 1. Redis扩展数据类型  
 <!-- 
+巧用 Bitmap 实现亿级海量数据统计
+https://mp.weixin.qq.com/s/S9N80nt3DZzJpusuhW-K5A
 
 -->
 <!-- 

@@ -119,6 +119,9 @@ Java历史上有三次破坏双亲委派模型，是哪三次？
 https://mp.weixin.qq.com/s/zZmsi7lpuQHECOHA2ohOvA
 我竟然被“双亲委派”给虐了 
 https://mp.weixin.qq.com/s/Q0MqcvbeI7gAcJH5ZaQWgA
+搞个双亲委派然后再破坏，图啥？ 
+https://mp.weixin.qq.com/s/11P6NwmFsi_EsTxAuul4gQ
+
 -->
 &emsp; 双亲委派模型并不是一个强制性的约束模型，而是Java设计者推荐给开发者的类加载器实现方式，可以“被破坏”。  
 

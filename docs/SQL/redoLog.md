@@ -38,6 +38,8 @@
 
 # 1. redo log(重做日志)和两次写
 <!-- 
+redo log是什么？
+https://mp.weixin.qq.com/s/KUWamAYrBxFJi7t46hh79g
 Log Buffer 
 https://mp.weixin.qq.com/s/-Hx2KKYMEQCcTC-ADEuwVA
 https://mp.weixin.qq.com/s/mNfjT99qIbjKGraZLV8EIQ

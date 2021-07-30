@@ -2,6 +2,15 @@
 
 # Socket编程  
 <!-- 
+
+Socket是tcp、udp的封装。  
+
+HTTP 和 Socket 的区别
+https://www.cnblogs.com/zhuleixiao/p/9218121.html
+
+HTTP 和 Socket 的区别
+https://www.cnblogs.com/zhuleixiao/p/9218121.html
+
 HTTP 和 Socket 的区别
 https://www.cnblogs.com/meier1205/p/5971313.html
 

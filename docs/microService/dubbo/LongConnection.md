@@ -10,6 +10,15 @@
 
 # 1. ~~Dubbo协议长连接心跳~~  
 <!-- 
+
+
+dubbo是长连接还是短连接_聊聊 TCP 长连接和心跳那些事
+https://blog.csdn.net/weixin_39850699/article/details/109903631
+
+rpc、dubbo和http的区别
+https://blog.csdn.net/qq_27184497/article/details/117265654
+
+
 https://blog.csdn.net/weixin_39850699/article/details/109903631
 https://blog.csdn.net/YAOQINGGG/article/details/91649589
 

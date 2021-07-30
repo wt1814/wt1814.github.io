@@ -49,6 +49,8 @@
 # 1. RedisLock 
 <!-- 
 
+★★★重要Redis分布式锁到底安全吗？ 
+https://mp.weixin.qq.com/s/jDR1uH-4ACRCZFm4EdNBEg
 -->
 
 ## 1.1. Redis部署方式 

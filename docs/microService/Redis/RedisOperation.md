@@ -29,6 +29,8 @@ https://mp.weixin.qq.com/s/KuupYUFbOUmaM_WbvP0I0A
 
 ### 指标
 <!--
+那你讲讲Redis都有哪些监控指标？ 
+https://mp.weixin.qq.com/s/yeQ8xR0fPQGs7r66itV9KA
 那你讲讲Redis都有哪些监控指标？
 https://mp.weixin.qq.com/s/laEsm7V_Hmz8VjurBiP5cQ
 Redis性能指标监控 

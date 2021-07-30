@@ -2,20 +2,26 @@
 <!-- TOC -->
 
 - [1. Dubbo](#1-dubbo)
-    - [1.2. 通信协议](#12-通信协议)
-        - [dubbo协议](#dubbo协议)
-        - [rmi协议](#rmi协议)
-        - [hessian协议](#hessian协议)
-        - [http协议](#http协议)
-        - [webservice协议](#webservice协议)
-    - [1.1. Dubbo支持哪些序列化方式？](#11-dubbo支持哪些序列化方式)
+    - [1.1. 通信协议](#11-通信协议)
+        - [1.1.1. dubbo协议](#111-dubbo协议)
+        - [1.1.2. rmi协议](#112-rmi协议)
+        - [1.1.3. hessian协议](#113-hessian协议)
+        - [1.1.4. http协议](#114-http协议)
+        - [1.1.5. webservice协议](#115-webservice协议)
+    - [1.2. Dubbo支持哪些序列化方式？](#12-dubbo支持哪些序列化方式)
 
 <!-- /TOC -->
 
 # 1. Dubbo
 
 
-## 1.2. 通信协议  
+## 1.1. 通信协议  
+<!-- 
+
+*** dubbo 支持的9种协议
+https://blog.csdn.net/xiaojin21cen/article/details/79834222
+-->
+
 &emsp; **<font color = "blue">不同服务在性能上适用不同协议进行传输，比如大数据用短连接协议，小数据大并发用长连接协议。</font>**  s
 
 |协议名称|实现描述|连接|适用范围|使用场景|
@@ -29,7 +35,7 @@
 |Redis|||||  	
 
 
-### dubbo协议
+### 1.1.1. dubbo协议
 缺省协议，使用基于mina1.1.7+hessian3.2.1的tbremoting交互。  
 连接个数：单连接  
 连接方式：长连接  
@@ -58,7 +64,7 @@ buffer=“8192” accepts=“1000” payload=“8388608” />
 <dubbo:protocol name="dubbo" accepts="1000" />
 ```
 
-### rmi协议
+### 1.1.2. rmi协议
 Java标准的远程调用协议。  
 连接个数：多连接  
 连接方式：短连接  
@@ -70,7 +76,7 @@ Java标准的远程调用协议。
 
 RMI协议采用JDK标准的java.rmi.*实现，采用阻塞式短连接和JDK标准序列化方式。  
 
-### hessian协议
+### 1.1.3. hessian协议
 基于Hessian的远程调用协议。  
 连接个数：多连接  
 连接方式：短连接  
@@ -83,7 +89,7 @@ RMI协议采用JDK标准的java.rmi.*实现，采用阻塞式短连接和JDK标�
 1、Hessian协议用于集成Hessian的服务，Hessian底层采用Http通讯，采用Servlet暴露服务，Dubbo缺省内嵌Jetty作为服务器实现。  
 2、Hessian是Caucho开源的一个RPC框架：http://hessian.caucho.com，其通讯效率高于WebService和Java自带的序列化。  
 
-### http协议
+### 1.1.4. http协议
 基于http表单的远程调用协议。  
 连接个数：多连接  
 连接方式：短连接  
@@ -93,7 +99,7 @@ RMI协议采用JDK标准的java.rmi.*实现，采用阻塞式短连接和JDK标�
 适用范围：传入传出参数数据包大小混合，提供者比消费者个数多，可用浏览器查看，可用表单或URL传入参数，暂不支持传文件。  
 适用场景：需同时给应用程序和浏览器JS使用的服务。  
 
-### webservice协议
+### 1.1.5. webservice协议
 
 基于WebService的远程调用协议。 
 连接个数：多连接 
@@ -104,7 +110,7 @@ RMI协议采用JDK标准的java.rmi.*实现，采用阻塞式短连接和JDK标�
 适用场景：系统集成，跨语言调用
 
 
-## 1.1. Dubbo支持哪些序列化方式？  
+## 1.2. Dubbo支持哪些序列化方式？  
 &emsp; 默认使用Hessian序列化，还有Duddo、FastJson、Java自带序列化。   
 
 

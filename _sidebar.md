@@ -315,6 +315,7 @@
         * [BigKey](/docs/microService/Redis/BigKey.md)  
     * [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
     * [Redis内置功能](/docs/microService/Redis/BuiltIn.md)  
+        * [Redis为什么那么快？](/docs/microService/Redis/RedisFast.md)  
         * [Redis事务](/docs/microService/Redis/RedisTransaction.md)  
         * [RedisPipeline/批处理](/docs/microService/Redis/RedisPipeline.md)  
         * [Redis和Lua](/docs/microService/Redis/lua.md)  
@@ -514,6 +515,7 @@
         * [TCP](/docs/network/TCP.md)  
         * [TCP传输阶段](/docs/network/TCPTransfer.md)  
         * [TIME_WAIT问题](/docs/network/timewait.md)  
+        * [TCP和HTTP的长短连接](/docs/network/connection.md)  
         * [TCP粘包](/docs/network/TCPSticking.md)  
         * [UDP](/docs/network/UDP.md)  
 * Linux操作系统  
