@@ -340,7 +340,7 @@
 &emsp; [远程调用](/docs/microService/dubbo/remote.md)  
 &emsp; &emsp; [Dubbo调用介绍](/docs/microService/dubbo/RemoteIntroduce.md)  
 &emsp; &emsp; [Dubbo序列化和协议](/docs/microService/dubbo/Agreement.md)  
-&emsp; &emsp; [Dubbo协议长连接心跳](/docs/microService/dubbo/LongConnection.md)  
+&emsp; &emsp; [Dubbo协议长连接](/docs/microService/dubbo/LongConnection.md)  
 &emsp; [Dubbo集群容错](/docs/microService/dubbo/Load.md)  
 &emsp; [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
 &emsp; &emsp; [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
@@ -677,8 +677,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; [长短连接](/docs/network/connection.md)  
 &emsp; &emsp; [TCP粘包](/docs/network/TCPSticking.md)   
 &emsp; [UDP](/docs/network/UDP.md)  
-
-
 
 ----
 
