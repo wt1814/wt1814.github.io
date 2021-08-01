@@ -18,6 +18,18 @@
 <!-- 
 https://blog.csdn.net/m0_37556444/article/details/107959226
 https://www.cnblogs.com/rickiyang/p/13253203.html
+
+
+Netty内存管理详解
+https://blog.csdn.net/aa1215018028/article/details/108832233
+https://blog.csdn.net/zhousenshan/article/details/82432805
+https://blog.csdn.net/u011212394/article/details/104004144
+https://blog.csdn.net/qq_41652863/article/details/95643161?utm_source=app&app_version=4.12.0&code=app_1562916241&uLinkId=usr1mkqgl919blen
+https://blog.csdn.net/TheLudlows/article/details/86264785?utm_medium=distribute.wap_relevant.none-task-blog-2~default~baidujs_title~default-2.essearch_wap_relevant
+https://blog.csdn.net/qq_41652863/article/details/99095769?utm_source=app&app_version=4.12.0&code=app_1562916241&uLinkId=usr1mkqgl919blen
+https://blog.csdn.net/ClarenceZero/article/details/112999320?utm_medium=distribute.wap_relevant.none-task-blog-2~default~baidujs_title~default-6.essearch_wap_relevant
+https://zhuanlan.zhihu.com/p/100239049
+https://www.cnblogs.com/jiangxinlingdu/p/11333800.html
 -->
 
 &emsp; 参考《Netty4核心原理与手写RPC框架实战》  
