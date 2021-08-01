@@ -43,7 +43,6 @@
     - [Error](#error)
     - [项目总结](#项目总结)
     - [算法](#算法)
-    - [面试技巧](#面试技巧)
 
 <!-- /TOC -->
 
@@ -727,14 +726,3 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [Trie](/docs/function/Trie.md)  
 [大数据和空间限制](/docs/function/bigdata.md)  
 
--------------------
-
-<!-- 
-[技术管理](/docs/Administration/TechnologyAdmin.md)  
--->
-
-## 面试技巧
-[总体流程](/docs/recruit/1resumeCreate.md)  
-[死命题](/docs/recruit/2askedProblem.md)  
-[问面试官](/docs/recruit/3askProblem.md)  
-[难点](/docs/recruit/4difficultProblem.md)  
