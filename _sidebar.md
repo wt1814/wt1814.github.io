@@ -465,6 +465,7 @@
     * [架构图](/docs/system/diagram.md)   
     * [软件架构设计模式](/docs/system/designPattern.md)  
     * [容灾和备份](/docs/system/backups.md)  
+    * [架构的方方面面](/docs/system/AllAspects.md)  
 * [负载均衡](/docs/system/loadBalance/loadBalance.md)   
     * [DNS轮询](/docs/system/loadBalance/DNS.md)  
     * [CDN](/docs/system/loadBalance/CDN.md)   
