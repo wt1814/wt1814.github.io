@@ -213,6 +213,7 @@
 [数据库分布式](/docs/SQL/DistributedDatabase.md)  
 &emsp; [主从复制](/docs/SQL/replication.md)  
 &emsp; &emsp; [主从复制的问题](/docs/SQL/replicationProblem.md)  
+&emsp; [读写分离实现](/docs/SQL/ReadWrite.md)  
 &emsp; [分区](/docs/SQL/partition.md)  
 &emsp; [分库分表](/docs/SQL/sub.md)  
 &emsp; &emsp; [分库分表带来的问题](/docs/SQL/subProblem.md)  
@@ -222,7 +223,6 @@
 &emsp; [数据库分布式实现](/docs/SQL/subRealize.md)  
 &emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md)  
 &emsp; &emsp; [Sharding-JDBC](/docs/SQL/Sharding-JDBC.md)  
-&emsp; [读写分离实现](/docs/SQL/ReadWrite.md)  
 [数据库连接池](/docs/SQL/connectionPool.md)  
 [MySQL运维](/docs/SQL/MySqlMonitor.md)  
 
