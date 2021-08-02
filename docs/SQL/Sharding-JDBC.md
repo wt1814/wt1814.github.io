@@ -3,6 +3,11 @@
 
 # 1. sharding-jdbc
 <!-- 
+ShardingSphere
+https://mp.weixin.qq.com/s?__biz=MzAxNTM4NzAyNg==&mid=2247488500&idx=1&sn=108bf704a54b0a9638e84698deb3ce4c&chksm=9b858309acf20a1fc606f6d140e9638072405011829bb8decc906a648d3f2f75441c0adac869&token=1691474648&lang=zh_CN#rd
+
+
+
 分片策略
 https://segmentfault.com/a/1190000037706070
 https://www.cnblogs.com/mr-yang-localhost/p/8313360.html
@@ -17,10 +22,10 @@ https://www.cnblogs.com/mr-yang-localhost/p/8313360.html
     一旦我们没配置范围分片算法，而 SQL 中又用到 BETWEEN AND 或者 like等，那么 SQL 将按全库、表路由的方式逐一执行，查询性能会很差需要特别注意。
 
 ### 1.1.2. 范围分片算法
-&emsp; 使用场景：当我们 SQL中的分片健字段用到 BETWEEN AND操作符会使用到此算法，会根据 SQL中给出的分片健值范围值处理分库、分表逻辑。  
+&emsp; 使用场景：当SQL中的分片健字段用到 BETWEEN AND操作符会使用到此算法，会根据 SQL中给出的分片健值范围值处理分库、分表逻辑。  
 
 ### 1.1.3. 复合分片策略
-&emsp; 使用场景：SQL 语句中有>，>=, <=，<，=，IN 和 BETWEEN AND 等操作符，不同的是复合分片策略支持对多个分片健操作。  
+&emsp; 使用场景：SQL 语句中有>，>=, <=，<，=，IN 和 BETWEEN AND 等操作符，`不同的是复合分片策略支持对多个分片健操作。`  
 
 
 ### 1.1.4. 行表达式分片策略

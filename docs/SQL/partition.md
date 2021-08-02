@@ -7,7 +7,9 @@
     - [1.2. 怎么分区](#12-怎么分区)
         - [1.2.1. 分区键](#121-分区键)
         - [1.2.2. 分区路由(MySql分区类型)](#122-分区路由mysql分区类型)
-    - [1.3. 管理分区(增、删分区)](#13-管理分区增删分区)
+    - [1.3. 管理分区](#13-管理分区)
+        - [1.3.1. CURD](#131-curd)
+        - [1.3.2. ★★★mysql在已有无分区表增加分区](#132-★★★mysql在已有无分区表增加分区)
     - [1.4. 分区表使用](#14-分区表使用)
 
 <!-- /TOC -->
@@ -119,7 +121,8 @@ subpartition by hash(to_days(purchased)) subpartitions 2
 );
 ```
 
-## 1.3. 管理分区(增、删分区)  
+## 1.3. 管理分区  
+### 1.3.1. CURD
 &emsp; mysql不禁止在分区键值上使用null，分区键可能是一个字段或者一个用户定义的表达式，一般情况下，mysql的分区把null值当做零值或者一个最小值进行处理。range分区中，null值会被当做最小值来处理；list分区中null值必须出现在枚举列表中，否则不被接受；hash/key分区中，null值会被当做领值来处理。  
 &emsp; mysql提供了添加、删除、重定义、合并、拆分分区的命令，这些操作都可以通过alter table命令来实现。  
 
@@ -144,6 +147,13 @@ alter table article_range drop PARTITION p201808
 alter table article_key coalesce partition 6
 ```
 &emsp; key/hash分区的管理不会删除数据，但是每一次调整(新增或销毁分区)都会将所有的数据重写分配到新的分区上。==效率极低==，最好在设计阶段就考虑好分区策略。  
+
+
+### 1.3.2. ★★★mysql在已有无分区表增加分区
+<!-- 
+https://blog.csdn.net/sunvince/article/details/7752662  
+-->
+
 
 ## 1.4. 分区表使用  
 &emsp; 在where条件带入分区键。  
