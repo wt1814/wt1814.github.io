@@ -1,12 +1,12 @@
 
 <!-- TOC -->
 
-- [1.1. redo log(重做日志)](#11-redo-log重做日志)
+- [1.1. redo log(重做日志)，WAL技术](#11-redo-log重做日志wal技术)
     - [1.1.1. 为什么需要redo log](#111-为什么需要redo-log)
     - [1.1.2. redo log简介](#112-redo-log简介)
     - [1.1.3. redo log详解](#113-redo-log详解)
         - [1.1.3.1. 记录形式](#1131-记录形式)
-        - [1.1.3.2. 写入流程，Write-Ahead Logging](#1132-写入流程write-ahead-logging)
+        - [1.1.3.2. ★★★写入流程，Write-Ahead Logging](#1132-★★★写入流程write-ahead-logging)
         - [1.1.3.3. 刷盘时机](#1133-刷盘时机)
         - [1.1.3.4. 对应的物理文件](#1134-对应的物理文件)
 
@@ -19,7 +19,7 @@
 4. 刷盘时机：重做日志的写盘，并不一定是随着事务的提交才写入重做日志文件的，而是随着事务的开始，逐步开始的。先写入redo log buffer。  
 
 
-# 1.1. redo log(重做日志)
+# 1.1. redo log(重做日志)，WAL技术
 <!-- 
 redo log是什么？
 https://mp.weixin.qq.com/s/KUWamAYrBxFJi7t46hh79g
@@ -82,7 +82,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-94.png)  
 &emsp; 图中展示了一组4个文件的redo log日志，checkpoint是当前要擦除的位置，擦除记录前需要先把对应的数据落盘(更新内存页，等待刷脏页)。write pos到 checkpoint之间的部分可以用来记录新的操作，如果write pos和checkpoint 相遇，说明 redolog 已满，这个时候数据库停止进行数据库更新语句的执行，转而进行 redo log 日志同步到磁盘中。checkpoint 到 write pos 之间的部分等待落盘(先更新内存页，然后等待刷脏页)。  
 
-### 1.1.3.2. 写入流程，Write-Ahead Logging
+### 1.1.3.2. ★★★写入流程，Write-Ahead Logging
 
 &emsp; <font color = "clime">~~事务开始之后就产生redo log，redo log的落盘并不是随着事务的提交才写入的，而是在事务的执行过程中，便开始写入redo log文件中。~~</font>  
 

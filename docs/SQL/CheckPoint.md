@@ -4,6 +4,13 @@
 # 脏页落盘  
 <!-- 
 https://blog.csdn.net/baidu_29609961/article/details/105106975
+
+MySQL中InnoDB脏页刷新机制Checkpoint
+★★★ https://blog.csdn.net/weixin_39820173/article/details/113402536
+★★★ https://www.cnblogs.com/olinux/p/5196139.html
+https://blog.csdn.net/baidu_29609961/article/details/105106975
+
+
 -->
 &emsp; 在数据库中进行读取操作，将从磁盘中读到的页放在缓冲池中，下次再读相同的页时，首先判断该页是否在缓冲池中。若在缓冲池中，称该页在缓冲池中被命中，直接读取该页。否则，读取磁 盘上的页。  
 

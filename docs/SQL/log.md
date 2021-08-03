@@ -11,7 +11,6 @@
 # 1. MySql日志文件  
 &emsp; **<font color = "red">参考《MySQL技术内幕：InnoDB存储引擎》</font>**  
 <!--
-
 https://mp.weixin.qq.com/s/1FOL7E--rQ9_QUN-dO_4pQ
 MySQL中的7种日志你都知道是干啥的吗
 https://mp.weixin.qq.com/s/oeKTX-E6W40IjLy5TJewLg
@@ -26,6 +25,9 @@ https://mp.weixin.qq.com/s/XTpoYW--6PTqotcC8tpF2A
 https://mp.weixin.qq.com/s/mSxUXHgcHo5a7VAhvjIpCQ
 
 写入流程
+https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
+
+回顾下写流程
 https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
 
 -->
@@ -49,6 +51,3 @@ https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
 * 逻辑日志：可以简单理解为记录的就是sql语句。
 * 物理日志：因为mysql数据最终是保存在数据页中的，物理日志记录的就是数据页变更。
 
-<!-- 
-WAL
--->
