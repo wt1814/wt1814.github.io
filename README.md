@@ -225,7 +225,13 @@
 &emsp; &emsp; [Sharding-JDBC](/docs/SQL/Sharding-JDBC.md)  
 [数据库连接池](/docs/SQL/connectionPool.md)  
 [MySQL运维](/docs/SQL/MySqlMonitor.md)  
-
+[索引事务锁](/docs/SQL/IndexTransactionLock.md)   
+&emsp; [索引底层原理](/docs/SQL/IndexPrinciple.md)  
+&emsp; [各种索引](/docs/SQL/IndexKnowledge.md)  
+&emsp; [MySql事务](/docs/SQL/transaction.md)  
+&emsp; [MySql-MVCC](/docs/SQL/MVCC.md)  
+&emsp; [MySql锁](/docs/SQL/lock.md)  
+&emsp; [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
 [MySql架构原理](/docs/SQL/MySqlPrinciple.md)   
 &emsp; [MySql架构](/docs/SQL/Framework.md)   
 &emsp; [MySql存储引擎](/docs/SQL/MySqlStorage.md)  
@@ -244,13 +250,6 @@
 &emsp; &emsp; &emsp; [binLog使用](/docs/SQL/binLogUse.md)  
 &emsp; [两阶段提交和崩溃恢复](/docs/SQL/CrashRecovery.md)  
 &emsp; [小结：insert插入流程](/docs/SQL/insert.md)  
-[索引事务锁](/docs/SQL/IndexTransactionLock.md)   
-&emsp; [索引底层原理](/docs/SQL/IndexPrinciple.md)  
-&emsp; [各种索引](/docs/SQL/IndexKnowledge.md)  
-&emsp; [MySql事务](/docs/SQL/transaction.md)  
-&emsp; [MySql-MVCC](/docs/SQL/MVCC.md)  
-&emsp; [MySql锁](/docs/SQL/lock.md)  
-&emsp; [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
 
 <!-- 
 &emsp; [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
