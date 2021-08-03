@@ -179,13 +179,12 @@
         * [InnoDB磁盘结构-可靠性](/docs/SQL/disk.md)  
             * [表空间](/docs/SQL/TableSpace.md)  
             * [MySql事务日志](/docs/SQL/log.md)  
-                * [undoLog和binLog](/docs/SQL/undoLog.md)  
                 * [redoLog](/docs/SQL/redoLog.md)  
                 * [DoubleWrite](/docs/SQL/DoubleWrite.md)  
+                * [undoLog和binLog](/docs/SQL/undoLog.md)  
                 * [binLog使用](/docs/SQL/binLogUse.md)  
         * [两阶段提交和崩溃恢复](/docs/SQL/CrashRecovery.md)  
         * [小结：insert插入流程](/docs/SQL/insert.md)  
-
 * Spring  
     * [Spring](/docs/SSM/Spring/Spring.md)  
     * [对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
