@@ -14,8 +14,7 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间(tablespace)。表空间又由段(segment)，区(extent)，页(page)组成。  
 2. **<font color = "clime">相比较之下，使用独占表空间的效率以及性能会更高一点。</font>**  
-3. **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB(在操作系统中默认页大小是4KB)。</font>**  
-
+3. **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB（在操作系统中默认页大小是4KB）。</font>**  
 
 # 1. 表空间  
 <!--

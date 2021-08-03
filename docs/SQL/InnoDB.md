@@ -8,6 +8,10 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+1. `如果从内存上来看，Change Buffer和Adaptive Hash Index占用的内存都属于Buffer Pool，Log Buffer占用的内存与 Buffer Pool独立。即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。`  
+2. `Buffer Pool有Changer Buffer；Redo Log有Double Write。`  
+
 # 1. InnoDB体系结构  
 <!-- 
 InnoDB 原理
@@ -46,7 +50,7 @@ https://mp.weixin.qq.com/s/nrb0OaiD_QRtPGREpUr0HA
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-147.png)  
 
 
-&emsp; 内存中的结构主要包括Buffer Pool，Change Buffer、Adaptive Hash Index以及Log Buffer四部分。 **<font color = "clime">如果从内存上来看，Change Buffer和Adaptive Hash Index占用的内存都属于Buffer Pool，Log Buffer占用的内存与 Buffer Pool独立。</font>** 即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。  
+&emsp; 内存中的结构主要包括Buffer Pool，Change Buffer、Adaptive Hash Index以及Log Buffer四部分。`如果从内存上来看，Change Buffer和Adaptive Hash Index占用的内存都属于Buffer Pool，Log Buffer占用的内存与 Buffer Pool独立。即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。`  
 
 * [Buffer Pool](/docs/SQL/BufferPool.md)  
 * [Change Buffer](/docs/SQL/ChangeBuffer.md)  
