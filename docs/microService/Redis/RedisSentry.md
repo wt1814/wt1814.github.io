@@ -30,9 +30,9 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
         * 每隔10秒，每个Sentinel节点会向主节点和从节点发送`info命令` **<font color = "clime">获取最新的拓扑结构。</font>**   
         * 每隔2秒，每个Sentinel节点会向Redis数据节点的`__sentinel__：hello频道`上发送该Sentinel节点对于主节点的判断以及当前Sentinel节点的信息，同时每个Sentinel节点也会订阅该频道， **<font color = "clime">了解其他Sentinel节点以及它们对主节点的判断。</font>**  
         * 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点发送一条`ping命令` **<font color = "clime">做一次心跳检测。</font>**  
-    * **<font color = "red">主观下线和客观下线：首先单个Sentinel节点认为数据节点主观下线，询问其他Sentinel节点，Sentinel多数节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。</font>**
-    * **<font color = "red">故障转移/主节点选举：Sentinel节点的领导者根据策略在从节点中选择主节点。</font>**    
-    * **<font color = "red">Sentinel选举：Sentinel集群是集中式架构，基于raft算法。</font>**  
+    * **<font color = "red">主观下线和客观下线：</font>** 首先单个Sentinel节点认为数据节点主观下线，询问其他Sentinel节点，Sentinel多数节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。
+    * **<font color = "red">故障转移/主节点选举：</font>** Sentinel节点的领导者根据策略在从节点中选择主节点。    
+    * **<font color = "red">Sentinel选举：</font>** Sentinel集群是集中式架构，基于raft算法。  
 
 # 1. 哨兵模式  
 &emsp; **<font color = "red">参考《Redis开发与运维》</font>**
