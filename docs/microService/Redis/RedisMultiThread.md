@@ -20,6 +20,14 @@
 
 # 1. Redis多线程
 <!-- 
+ 面试时说Redis是单线程的，被喷惨了！ 
+ https://mp.weixin.qq.com/s/ucJ8nVwnbWvMOg0hQIJlAg
+https://mp.weixin.qq.com/s/5Kdz3-Xx-tMPbhKMGundfw
+Redis 6.0 新特性-多线程连环13问！ 
+https://mp.weixin.qq.com/s/FZu3acwK6zrCBZQ_3HoUgw
+https://www.yuque.com/happy-coder/qka0of/fqzgda
+-->
+<!-- 
 重要  ★★★Redis 多线程网络模型全面揭秘 
 https://mp.weixin.qq.com/s/-s5BaFx2IV5xbyjgZWk-5A
 

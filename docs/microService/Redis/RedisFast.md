@@ -2,54 +2,6 @@
 
 # Redis为什么这么快？ 
 <!-- 
-Redis为什么这么快？ 
-https://mp.weixin.qq.com/s/v4ORkYyjfLxYVNhzaJH8tw
--->
-
-
-<!-- 
- 面试时说Redis是单线程的，被喷惨了！ 
- https://mp.weixin.qq.com/s/ucJ8nVwnbWvMOg0hQIJlAg
-https://mp.weixin.qq.com/s/5Kdz3-Xx-tMPbhKMGundfw
-Redis 6.0 新特性-多线程连环13问！ 
-https://mp.weixin.qq.com/s/FZu3acwK6zrCBZQ_3HoUgw
-https://www.yuque.com/happy-coder/qka0of/fqzgda
--->
-
-&emsp; Redis是单线程的，为什么采用单线程的Redis也会如此之快呢？  
-&emsp; 严格来说，Redis Server是多线程的，只是它的请求处理整个流程是单线程处理的。  
-
-&emsp; Redis的性能非常之高，每秒可以承受10W+的QPS，它如此优秀的性能主要取决于以下几个方面：  
-
-* 纯内存操作
-* 使用IO多路复用技术
-* 非CPU密集型任务
-* 单线程的优势
-
-1. 内存  
-&emsp; KV 结构的内存数据库，时间复杂度 O(1)。  
-
-2. 单线程的优势  
-    &emsp; 单线程的好处：   
-    * 没有创建线程、销毁线程带来的消耗  
-    * 避免了上线文切换导致的 CPU 消耗  
-    * 避免了线程之间带来的竞争问题，例如加锁释放锁死锁等 
-
-3. 异步非阻塞  
-&emsp; 异步非阻塞 I/O，多路复用处理并发连接。 
-
-4. 多线程优化  
-Redis Server本身是多线程的，除了请求处理流程是单线程处理之外，Redis内部还有其他工作线程在后台执行，它负责异步执行某些比较耗时的任务，例如AOF每秒刷盘、AOF文件重写都是在另一个线程中完成的。  
-
-而在Redis 4.0之后，Redis引入了lazyfree的机制，提供了unlink、flushall aysc、flushdb async等命令和lazyfree-lazy-eviction、lazyfree-lazy-expire等机制来异步释放内存，它主要是为了解决在释放大内存数据导致整个redis阻塞的性能问题。  
-
-在删除大key时，释放内存往往都比较耗时，所以Redis提供异步释放内存的方式，让这些耗时的操作放到另一个线程中异步去处理，从而不影响主线程的执行，提高性能。  
-
-到了Redis 6.0，Redis又引入了多线程来完成请求数据的协议解析，进一步提升性能。它主要是解决高并发场景下，单线程解析请求数据协议带来的压力。请求数据的协议解析由多线程完成之后，后面的请求处理阶段依旧还是单线程排队处理。  
-
-可见，Redis并不是保守地认为单线程有多好，也不是为了使用多线程而引入多线程。Redis作者很清楚单线程和多线程的使用场景，针对性地优化，这是非常值得我们学习的。  
-
-
 5. 缺点  
 上面介绍了单线程可以达到如此高的性能，并不是说它就没有缺点了。
 
@@ -57,4 +9,23 @@ Redis Server本身是多线程的，除了请求处理流程是单线程处理�
 我们平时遇到Redis变慢或长时间阻塞的问题，90%也都是因为Redis处理请求是单线程这个原因导致的。  
 
 所以，我们在使用Redis时，一定要避免非常耗时的操作，例如使用时间复杂度过高的方式获取数据、一次性获取过多的数据、大量key集中过期导致Redis淘汰key压力变大等等，这些场景都会阻塞住整个处理线程，直到它们处理完成，势必会影响业务的访问。  
+
+-->
+
+<!-- 
+Redis为什么这么快？ 
+https://mp.weixin.qq.com/s/v4ORkYyjfLxYVNhzaJH8tw
+-->
+
+&emsp; Redis的性能非常之高，每秒可以承受10W+的QPS，它如此优秀的性能主要取决于以下几个方面：  
+
+* 纯内存操作
+* [虚拟内存机制](/docs/microService/Redis/RedisVM.md)  
+* [合理的线程模型](/docs/microService/Redis/RedisMultiThread.md)   
+* 使用IO多路复用技术
+* 合理的数据编码
+* ......
+
+
+
 
