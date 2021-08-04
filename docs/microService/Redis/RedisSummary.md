@@ -7,7 +7,7 @@ https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&__biz=MzAxODc1MzM5Nw==&s
 -->
 
 1. Redis有5种基本数据类型，每种数据类型都有不同的数据结构；
-2. Redis有3(Bitmaps位图、HyperLogLog基数统计、Geospatial地图)+1(Streams消息队列)+1(Redis中的布隆过滤器)种高级数据类型。  
+2. Redis有3（Bitmaps位图、HyperLogLog基数统计、Geospatial地图) + 1(Streams消息队列) + 1(Redis中的布隆过滤器) 种高级数据类型。  
 3. Redis有持久化、内存淘汰、事务等特性。  
     * 内存淘汰具体选择哪种策略？
 4. Redis有多种部署架构。单机、哨兵、集群。  
@@ -22,9 +22,6 @@ https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&__biz=MzAxODc1MzM5Nw==&s
         * 服务端：数据分槽、故障转移
         * 客户端和服务端通信：请求重定向、<font color = "red">ASK重定向</font>
 5. Redis还有发布订阅、管道、Lua脚本...
-
-## redis很快  
-
 
 
 

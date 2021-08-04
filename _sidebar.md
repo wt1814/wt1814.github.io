@@ -302,9 +302,9 @@
     * [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
 * 任务调度
     * [延时队列](/docs/frame/delayQueue.md)  
-    * [时间轮算法](/docs/microService/dubbo/timeWheel.md)  
     * [分布式调度](/docs/frame/taskSheduling.md)  
         * [XXL-JOB](/docs/frame/XXL-JOB.md)  
+    * [时间轮算法](/docs/microService/dubbo/timeWheel.md)  
 * 分布式缓存
     * [分布式缓存问题](/docs/cache/DistributedCache.md)  
     * [缓存算法](/docs/cache/CacheAlgorithm.md)  
@@ -318,8 +318,10 @@
     * [Redis客户端使用及开发规范](/docs/microService/Redis/RedisStandard.md)  
         * [BigKey](/docs/microService/Redis/BigKey.md)  
     * [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
-    * [Redis内置功能](/docs/microService/Redis/BuiltIn.md)  
+    * [Redis原理](/docs/microService/Redis/RedisPrinciple.md)  
         * [Redis为什么那么快？](/docs/microService/Redis/RedisFast.md)  
+        * [Redis事件](/docs/microService/Redis/RedisEvent.md)  
+    * [Redis内置功能](/docs/microService/Redis/BuiltIn.md)  
         * [Redis事务](/docs/microService/Redis/RedisTransaction.md)  
         * [RedisPipeline/批处理](/docs/microService/Redis/RedisPipeline.md)  
         * [Redis和Lua](/docs/microService/Redis/lua.md)  

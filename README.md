@@ -409,6 +409,7 @@
 
 ### 分布式缓存  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
+[缓存更新](/docs/cache/CacheUpdate.md)  
 [双缓存](/docs/cache/DoubleCache.md)  
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
 <!-- 
@@ -428,17 +429,18 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [Redis客户端使用及开发规范](/docs/microService/Redis/RedisStandard.md)  
 &emsp; [BigKey](/docs/microService/Redis/BigKey.md)  
 [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
-[Redis内置功能](/docs/microService/Redis/BuiltIn.md)    
+[Redis原理](/docs/microService/Redis/RedisPrinciple.md)  
 &emsp; [Redis为什么那么快？](/docs/microService/Redis/RedisFast.md)  
+&emsp; [Redis事件](/docs/microService/Redis/RedisEvent.md)  
+[Redis内置功能](/docs/microService/Redis/BuiltIn.md)    
 &emsp; [Redis事务](/docs/microService/Redis/RedisTransaction.md)  
 &emsp; [RedisPipeline/批处理](/docs/microService/Redis/RedisPipeline.md)  
 &emsp; [Redis和Lua](/docs/microService/Redis/lua.md)  
 &emsp; [Redis持久化](/docs/microService/Redis/RedisPersistence.md)  
 &emsp; &emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
 &emsp; [Redis内存](/docs/microService/Redis/RedisEliminate.md)  
-&emsp; [Redis实现消息队列](/docs/microService/Redis/Message.md)  
+&emsp; [Redis实现队列](/docs/microService/Redis/Message.md)  
 &emsp; &emsp; [发布订阅](/docs/microService/Redis/pub.md)  
-&emsp; [Redis实现延迟队列](/docs/microService/Redis/delay.md)  
 &emsp; [Redis多线程](/docs/microService/Redis/RedisMultiThread.md)  
 [Redis高可用](/docs/microService/Redis/RedisDeploy.md)  
 &emsp; [Redis主从复制](/docs/microService/Redis/RedisMasterSlave.md)  
@@ -446,7 +448,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
 [Redis运维](/docs/microService/Redis/RedisOperation.md)  
 [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
-<!-- [Redis原理](/docs/microService/Redis/RedisPrinciple.md)  -->
+
 
 ### 限流降级
 [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
@@ -482,9 +484,9 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 ### 任务调度
 [延时队列](/docs/frame/delayQueue.md)  
-[时间轮算法](/docs/microService/dubbo/timeWheel.md)  
 [分布式调度](/docs/frame/taskSheduling.md)  
 &emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
+[时间轮算法](/docs/microService/dubbo/timeWheel.md)  
 
 ### 分布式搜索引擎  
 <!-- &emsp; &emsp; [基本查询](/docs/ES/basicSearch.md)   -->
