@@ -75,7 +75,7 @@ redis.clients.jedis.exceptions.JedisConnectionException: Could not get a resourc
 Caused by: java.util.NoSuchElementException: Pool exhausted at org.apache.commons.pool2.impl.GenericObjectPool.borrowObject(GenericObjectPool. java:464)  
 ```
 
-&emsp; 对于这个问题，需要重点讨论的是为什么连接池没有资源了，造成没有资源的原因非常多，可能如下：  
+&emsp; 对于这个问题， **<font color = "blue">需要重点讨论的是为什么连接池没有资源了，造成没有资源的原因非常多，可能如下：</font>**  
 
 * 客户端：高并发下连接池设置过小，出现供不应求，所以会出现上面的错误，但是正常情况下只要比默认的最大连接数（8个）多一些即可，因为正常情况下JedisPool以及Jedis的处理效率足够高。  
 * 客户端：没有正确使用连接池，比如没有进行释放。  
@@ -157,33 +157,24 @@ redis.clients.jedis.exceptions.JedisDataException: ERR max number of clients rea
 &emsp; 服务端现象：Redis主节点内存陡增，几乎用满maxmemory，而从节点内存并没有变化（正常情况下主从节点内存使用量基本相同），如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-112.png)  
 <center>主从节点内存不一致，主节点内存陡增</center>
-
 &emsp; 客户端现象：客户端产生了OOM异常，也就是Redis主节点使用的内存已经超过了maxmemory的设置，无法写入新的数据：  
-
 ```text
 redis.clients.jedis.exceptions.JedisDataException: OOM command not allowed when used memory > 'maxmemory'
 ```
-
 2. 分析原因  
 &emsp; 从现象看，可能的原因有两个。  
-
 &emsp; 1）确实有大量写入，但是主从复制出现问题：查询了Redis复制的相关 信息，复制是正常的，主从数据基本一致。  
 &emsp; 主节点的键个数： 
-
 ```text
 127.0.0.1:6379> dbsize 
 (integer) 2126870 
 ```
-
 &emsp; 从节点的键个数： 
-
 ```text
 127.0.0.1:6380> dbsize 
 (integer) 2126870 
 ```
-
 &emsp; 2）其他原因造成主节点内存使用过大：排查是否由客户端缓冲区造成 主节点内存陡增，使用info clients命令查询相关信息如下：  
-
 ```text
 127.0.0.1:6379> info clients
 # Clients 
@@ -192,28 +183,23 @@ client_longest_output_list:225698
 client_biggest_input_buf:0 
 blocked_clients:0
 ```
-
 &emsp; 很明显输出缓冲区不太正常，最大的客户端输出缓冲区队列已经超过了20万个对象，于是需要通过client list命令找到omem不正常的连接，一般来说大部分客户端的omem为0（因为处理速度会足够快），于是执行如下代码，找到omem非零的客户端连接：  
-
 ```text
 redis-cli client list | grep -v "omem=0"
 ```
-
 &emsp; 找到了如下一条记录： 
-
 ```text
 id=7 addr=10.10.xx.78:56358 fd=6 name= age=91 idle=0 flags=O db=0 sub=0 psub=0 
 multi=-1 qbuf=0 qbuf-free=0 obl=0 oll=224869 omem=2129300608 events=rw cmd=monitor 
 ```
 &emsp; 已经很明显是因为有客户端在执行monitor命令造成的。  
-
 3. 处理方法和后期处理   
 &emsp; 对这个问题处理的方法相对简单，只要使用client kill命令杀掉这个连接，让其他客户端恢复正常写数据即可。但是更为重要的是在日后如何及时 发现和避免这种问题的发生，基本有三点：  
     * 从运维层面禁止monitor命令，例如使用rename-command命令重置 monitor命令为一个随机字符串，除此之外，如果monitor没有做rename- command，也可以对monitor命令进行相应的监控（例如client list）。 
     * 从开发层面进行培训，禁止在生产环境中使用monitor命令，因为有时 候monitor命令在测试的时候还是比较有用的，完全禁止也不太现实。 
     * 限制输出缓冲区的大小。  
 
-&emsp; &emsp; 使用专业的Redis运维工具，例如CacheCloud，上述问题在Cachecloud中会收到相应的报警，快速发现和定位问题。
+&emsp; 使用专业的Redis运维工具，例如CacheCloud，上述问题在Cachecloud中会收到相应的报警，快速发现和定位问题。
 
 
 ### 1.2.2. 客户端周期性的超时  
