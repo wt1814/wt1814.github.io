@@ -11,6 +11,11 @@
 <!-- /TOC -->
 
 # 1. Sentinel
+<!-- 
+什么是Sentinel?它能做什么
+https://blog.csdn.net/u012190514/article/details/81383698
+-->
+
 
 ## 1.1. 接入Sentinel
 <!-- 
