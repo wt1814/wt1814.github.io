@@ -52,9 +52,9 @@ https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487531&idx=1&sn=b3fbc4
 * [TCC模式](/docs/microService/thinking/TCC.md)-强一致性
 * [事件溯源模式(Event Sourcing)](/docs/microService/thinking/news.md)，Saga事务模型-最终一致性 
 * [消息驱动模式(Message Driven)](/docs/microService/thinking/news.md) 
-    * 本地消息表（异步确保）-强一致性
-    * 事务消息-最终一致性
-    * 最大努力通知-最终一致性
+    * 本地消息表（异步确保）--- 强一致性
+    * 事务消息 --- 最终一致性
+    * 最大努力通知 --- 最终一致性
 
 ## 1.3. 分布式事务具体实现  
 ### 1.3.1. JTA  

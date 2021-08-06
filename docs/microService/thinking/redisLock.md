@@ -28,9 +28,9 @@
     * `方案三：使用Lua脚本(包含SETNX + EXPIRE两条指令) ` 
     * 方案四：SET的扩展命令（SET EX PX NX）  
     * `方案五：SET EX PX NX + 校验惟一随机值，再删除释放`  
-    * 方案六: 开源框架: Redisson  
-    * 方案七：多机实现的分布式锁Redlock   
-4. `方案五：SET EX PX NX + 校验惟一随机值，再删除释放`  
+    * `方案六: 开源框架: Redisson`  
+    * `方案七：多机实现的分布式锁Redlock`   
+4. `方案五：SET EX PX NX + 校验惟一随机值，再删除释放（先查询再删除，非院子操作，需要使用lua脚本保证其原子性）。`  
 &emsp; 在这里，判断是否是当前线程加的锁和释放锁不是一个原子操做。若是调用jedis.del()释放锁的时候，可能这把锁已经不属于当前客户端，会解除他人加的锁。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-61.png)  
 &emsp; 为了更严谨，通常也是用lua脚本代替。lua脚本以下：  

@@ -21,6 +21,7 @@
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
+        - [资源限制](#资源限制)
         - [分布式缓存](#分布式缓存)
             - [Redis](#redis)
         - [限流降级](#限流降级)
@@ -374,16 +375,15 @@
 -->
 
 ### 分布式高并发
-[分布式高并发](/docs/system/DistributedHighConcurrency.md)   
+[分布式与高并发](/docs/system/DistributedHighConcurrency.md)   
 &emsp; [分布式与微服务](/docs/system/serviceSplit.md)  
+&emsp; [分布式和集群](/docs/system/distributed.md)   
 &emsp; [性能指标](/docs/system/performance.md)  
 &emsp; [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; &emsp; [高可用建设](/docs/system/highAvailability.md)  
 &emsp; [秒杀系统设计](/docs/system/seckill.md)  
-&emsp; [资源限制](/docs/system/ResourceConstraints.md)  
 
 ### 分布式理论  
-[分布式和集群](/docs/system/distributed.md)   
 [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
 &emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
 [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
@@ -406,6 +406,9 @@
 &emsp; [Redisson](/docs/microService/thinking/Redisson.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
 &emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
+
+### 资源限制
+[资源限制](/docs/system/ResourceConstraints.md)  
 
 ### 分布式缓存  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
