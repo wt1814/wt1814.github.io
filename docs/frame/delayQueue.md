@@ -33,5 +33,3 @@ https://my.oschina.net/u/4455409/blog/4714151
 * 使用RabbitMq或者其他MQ改造实现延迟队列，优点是，开源，现成的稳定的实现方案，缺点是：MQ是一个消息中间件，如果团队技术栈本来就有MQ，那还好，如果不是，那为了延迟队列而去部署一套MQ成本有点大
 * 使用Redis的zset、list的特性，我们可以利用redis来实现一个延迟队列RedisDelayQueue
 
-
-

@@ -1,6 +1,5 @@
 
 
-
 <!-- TOC -->
 
 - [1. Redis的事件](#1-redis的事件)
@@ -13,6 +12,14 @@
 
 # 1. Redis的事件  
 &emsp; Redis 服务器是一个事件驱动程序。  
+<!--
+Redis基于Reactor模式开发了网络事件处理
+https://blog.csdn.net/weixin_45931215/article/details/118728932
+
+https://blog.csdn.net/shandadadada/article/details/106175386
+https://www.cnblogs.com/harvyxu/p/7499396.html
+-->
+
 
 ## 1.1. 文件事件
 &emsp; 服务器通过套接字与客户端或者其它服务器进行通信，文件事件就是对套接字操作的抽象。  
