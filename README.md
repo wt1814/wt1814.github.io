@@ -376,9 +376,8 @@
 
 ### 分布式高并发
 [分布式与高并发](/docs/system/DistributedHighConcurrency.md)   
-&emsp; [分布式与微服务](/docs/system/serviceSplit.md)  
 &emsp; [分布式和集群](/docs/system/distributed.md)   
-&emsp; [性能指标](/docs/system/performance.md)  
+&emsp; [系统性能指标](/docs/system/performance.md)  
 &emsp; [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; &emsp; [高可用建设](/docs/system/highAvailability.md)  
 &emsp; [秒杀系统设计](/docs/system/seckill.md)  

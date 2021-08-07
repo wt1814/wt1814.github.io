@@ -24,7 +24,8 @@
 <!-- 
 重要**** 怎么理解的并发量和QPS？
 https://blog.csdn.net/lihuanlin/article/details/113039461
-
+系统的平均并发用户数和并发数峰值如何估算
+https://my.oschina.net/ydsakyclguozi/blog/398236
 
 QPS计算
 详解NGINX如何统计网站的PV、UV、独立IP
