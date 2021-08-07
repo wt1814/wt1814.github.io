@@ -16,6 +16,10 @@
 Reactor的一般流程、3种线程模型、Netty中的Reactor
 -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
+
+
 # 1. Netty与Reactor  
 
 <!-- 
