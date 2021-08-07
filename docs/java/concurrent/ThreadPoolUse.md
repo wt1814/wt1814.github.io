@@ -12,11 +12,11 @@
             - [1.1.3.4. 采用Future模式](#1134-采用future模式)
     - [1.2. 设置隔离的线程池](#12-设置隔离的线程池)
     - [1.3. 确定线程池的大小](#13-确定线程池的大小)
-    - [1.4. ★★★线程池的监控](#14-★★★线程池的监控)
-    - [1.5. 线程池关闭](#15-线程池关闭)
-        - [1.5.1. ThreadPoolExecutor的shutdown()与shutdownNow()源码](#151-threadpoolexecutor的shutdown与shutdownnow源码)
-        - [1.5.2. ThreadPoolExecutor#awaitTermination](#152-threadpoolexecutorawaittermination)
-        - [1.5.3. 总结：优雅关闭线程池](#153-总结优雅关闭线程池)
+    - [1.4. 线程池关闭](#14-线程池关闭)
+        - [1.4.1. ThreadPoolExecutor的shutdown()与shutdownNow()源码](#141-threadpoolexecutor的shutdown与shutdownnow源码)
+        - [1.4.2. ThreadPoolExecutor#awaitTermination](#142-threadpoolexecutorawaittermination)
+        - [1.4.3. 总结：优雅关闭线程池](#143-总结优雅关闭线程池)
+    - [1.5. ★★★线程池的监控](#15-★★★线程池的监控)
     - [1.6. SpringBoot整合线程池](#16-springboot整合线程池)
         - [1.6.1. ★★★@Async没有执行的问题分析(@Async线程默认配置)](#161-★★★async没有执行的问题分析async线程默认配置)
         - [1.6.2. 重写spring默认线程池](#162-重写spring默认线程池)
@@ -26,17 +26,20 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "clime">线程池异常处理：</font>**  
-&emsp; ThreadPoolExecutor中将异常传递给afterExecute()方法，而afterExecute()没有做任何处理。这种处理方式能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。即使感知到了，也无法查看异常信息。  
-&emsp; 解决方案：在提交的任务中将异常捕获并处理，不抛给线程池；异常抛给线程池，但是要及时处理抛出的异常。如果提交任务的时候使用的方法是submit，那么该方法将返回一个Future对象，所有的异常以及处理结果都可以通过future对象获取。    
-2. **<font color = "blue">建议根据异步业务类型，合理设置隔离的线程池。</font>**  
-3. 确定线程池的大小（CPU可同时处理线程数量大部分是CPU核数的两倍）  
-    * 如果是CPU密集型应用(多线程处理复杂算法)，则线程池大小设置为N+1。
-    * 如果是IO密集型应用(多线程用于数据库数据交互、文件上传下载、网络数据传输等)，则线程池大小设置为2N。
-    * 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。 
-4. **<font color = "clime">线程池的监控：</font>**  
+1. **<font color = "clime">线程池设置：</font>**   
+    1. 使用自定义的线程池。共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。`建议根据异步业务类型，合理设置隔离的线程池。`  
+    2. 确定线程池的大小（CPU可同时处理线程数量大部分是CPU核数的两倍）  
+        * 如果是CPU密集型应用(多线程处理复杂算法)，则线程池大小设置为N+1。
+        * 如果是IO密集型应用(多线程用于数据库数据交互、文件上传下载、网络数据传输等)，则线程池大小设置为2N。
+        * 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。 
+    3. 线程池的优雅关闭：处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
+2. **<font color = "clime">线程池使用：</font>**   
+    1. **<font color = "clime">线程池异常处理：</font>**  
+    &emsp; ThreadPoolExecutor中将异常传递给afterExecute()方法，而afterExecute()没有做任何处理。这种处理方式能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。即使感知到了，也无法查看异常信息。  
+    &emsp; 解决方案：在提交的任务中将异常捕获并处理，不抛给线程池；异常抛给线程池，但是要及时处理抛出的异常。如果提交任务的时候使用的方法是submit，那么该方法将返回一个Future对象，所有的异常以及处理结果都可以通过future对象获取。    
+3. **<font color = "clime">线程池的监控：</font>**  
 &emsp; 通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。  
-5. @Async方法没有执行的问题分析：  
+4. @Async方法没有执行的问题分析：  
 &emsp; @Async异步方法默认使用Spring创建ThreadPoolTaskExecutor(参考TaskExecutionAutoConfiguration)，其中默认核心线程数为8，默认最大队列和默认最大线程数都是Integer.MAX_VALUE，队列使用LinkedBlockingQueue，容量是：Integet.MAX_VALUE，空闲线程保留时间：60s，线程池拒绝策略：AbortPolicy。创建新线程的条件是队列填满时，而这样的配置队列永远不会填满，如果有@Async注解标注的方法长期占用线程(比如HTTP长连接等待获取结果)，在核心8个线程数占用满了之后，新的调用就会进入队列，外部表现为没有执行。  
 
 # 1. 线程池正确用法
@@ -223,7 +226,103 @@ public class DaoInterceptor implements MethodInterceptor {
 
 &emsp; 总结：合适的配置线程池大小其实很不容易，但是通过上述的公式和具体代码，就能快速、落地的算出这个线程池该设置的多大。不过还是需要通过压力测试来进行微调，只有经过压测测试的检验，才能最终保证的配置大小是准确的。 
 
-## 1.4. ★★★线程池的监控  
+
+
+## 1.4. 线程池关闭  
+&emsp; 线程池总共存在5种状态，分别为：RUNNING、SHUTDOWN、STOP、TIDYING、TERMINATED。    
+&emsp; 当执行ThreadPoolExecutor#shutdown方法将会使线程池状态从 RUNNING 转变为 SHUTDOWN。而调用 ThreadPoolExecutor#shutdownNow 之后线程池状态将会从 RUNNING 转变为 STOP。从上面的图上还可以看到，当线程池处于 SHUTDOWN，还是可以继续调用 ThreadPoolExecutor#shutdownNow 方法，将其状态转变为 STOP 。    
+
+### 1.4.1. ThreadPoolExecutor的shutdown()与shutdownNow()源码
+&emsp; ThreadPoolExecutor#shutdown()方法源码：  
+
+```java
+public void shutdown() {
+    final ReentrantLock mainLock = this.mainLock;
+    mainLock.lock();
+    try {
+        // 检查权限
+        checkShutdownAccess();
+        // 设置线程池状态
+        advanceRunState(SHUTDOWN);
+        // 中断空闲线程
+        interruptIdleWorkers();
+        // 钩子函数，主要用于清理一些资源
+        onShutdown();
+    } finally {
+        mainLock.unlock();
+    }
+    tryTerminate();
+}
+```
+&emsp; shutdown方法首先加锁，其次先检查系统安装状态。接着就会将线程池状态变为SHUTDOWN，在这之后线程池不再接受提交的新任务。此时如果还继续往线程池提交任务，将会使用线程池拒绝策略响应，默认情况下将会使用ThreadPoolExecutor.AbortPolicy，抛出RejectedExecutionException异常。  
+&emsp; interruptIdleWorkers方法只会中断空闲的线程，不会中断正在执行任务的的线程。空闲的线程将会阻塞在线程池的阻塞队列上。  
+
+&emsp; ThreadPoolExecutor#shutdownNow()源码如下：  
+
+```java
+public List<Runnable> shutdownNow() {
+    List<Runnable> tasks;
+    final ReentrantLock mainLock = this.mainLock;
+    mainLock.lock();
+    try {
+        // 检查状态
+        checkShutdownAccess();
+        // 将线程池状态变为 STOP
+        advanceRunState(STOP);
+        // 中断所有线程，包括工作线程以及空闲线程
+        interruptWorkers();
+        // 丢弃工作队列中存量任务
+        tasks = drainQueue();
+    } finally {
+        mainLock.unlock();
+    }
+    tryTerminate();
+    return tasks;
+}
+```
+&emsp; shutdownNow 方法将会把线程池状态设置为 STOP，然后中断所有线程，最后取出工作队列中所有未完成的任务返回给调用者。  
+&emsp; 对比 shutdown 方法，shutdownNow 方法比较粗暴，直接中断工作线程。不过这里需要注意，中断线程并不代表线程立刻结束。这里需要线程主动配合线程中断响应。  
+
+### 1.4.2. ThreadPoolExecutor#awaitTermination   
+&emsp; 线程池 shutdown 与 shutdownNow 方法都不会主动等待执行任务的结束，如果需要等到线程池任务执行结束，需要调用 awaitTermination 主动等待任务调用结束。  
+&emsp; 调用方法如下：  
+
+```java
+threadPool.shutdown();
+try {
+        while (!threadPool.awaitTermination(60,TimeUnit.SECONDS)){
+            System.out.println("线程池任务还未执行结束");
+        }
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+}
+```
+&emsp; 如果线程池任务执行结束，awaitTermination方法将会返回true，否则当等待时间超过指定时间后将会返回false。  
+&emsp; 如果需要使用这种进制，建议在上面的基础上增加一定重试次数。这个真的很重要！！！  
+
+### 1.4.3. 总结：优雅关闭线程池  
+&emsp; 处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合 shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
+
+```java
+threadPool.shutdown(); // Disable new tasks from being submitted
+// 设定最大重试次数
+try {
+    // 等待 60 s
+    if (!threadPool.awaitTermination(60, TimeUnit.SECONDS)) {
+        // 调用 shutdownNow 取消正在执行的任务
+        threadPool.shutdownNow();
+        // 再次等待 60 s，如果还未结束，可以再次尝试，或则直接放弃
+        if (!threadPool.awaitTermination(60, TimeUnit.SECONDS))
+        System.err.println("线程池任务未正常执行结束");
+    }
+} catch (InterruptedException ie) {
+    // 重新调用 shutdownNow
+    threadPool.shutdownNow();
+}
+```
+
+
+## 1.5. ★★★线程池的监控  
 &emsp; 如果在项目中大规模的使用了线程池，那么必须要有一套监控体系，来指导当前线程池的状态，当出现问题的时候可以快速定位到问题。而线程池提供了相应的扩展方法， **<font color = "clime">通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。</font>**  
 
 ```java
@@ -303,98 +402,7 @@ public class Test implements Runnable{
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-19.png)  
 
-## 1.5. 线程池关闭  
-&emsp; 线程池总共存在5种状态，分别为：RUNNING、SHUTDOWN、STOP、TIDYING、TERMINATED。    
-&emsp; 当执行ThreadPoolExecutor#shutdown方法将会使线程池状态从 RUNNING 转变为 SHUTDOWN。而调用 ThreadPoolExecutor#shutdownNow 之后线程池状态将会从 RUNNING 转变为 STOP。从上面的图上还可以看到，当线程池处于 SHUTDOWN，还是可以继续调用 ThreadPoolExecutor#shutdownNow 方法，将其状态转变为 STOP 。    
 
-### 1.5.1. ThreadPoolExecutor的shutdown()与shutdownNow()源码
-&emsp; ThreadPoolExecutor#shutdown()方法源码：  
-
-```java
-public void shutdown() {
-    final ReentrantLock mainLock = this.mainLock;
-    mainLock.lock();
-    try {
-        // 检查权限
-        checkShutdownAccess();
-        // 设置线程池状态
-        advanceRunState(SHUTDOWN);
-        // 中断空闲线程
-        interruptIdleWorkers();
-        // 钩子函数，主要用于清理一些资源
-        onShutdown();
-    } finally {
-        mainLock.unlock();
-    }
-    tryTerminate();
-}
-```
-&emsp; shutdown方法首先加锁，其次先检查系统安装状态。接着就会将线程池状态变为SHUTDOWN，在这之后线程池不再接受提交的新任务。此时如果还继续往线程池提交任务，将会使用线程池拒绝策略响应，默认情况下将会使用ThreadPoolExecutor.AbortPolicy，抛出RejectedExecutionException异常。  
-&emsp; interruptIdleWorkers方法只会中断空闲的线程，不会中断正在执行任务的的线程。空闲的线程将会阻塞在线程池的阻塞队列上。  
-
-&emsp; ThreadPoolExecutor#shutdownNow()源码如下：  
-
-```java
-public List<Runnable> shutdownNow() {
-    List<Runnable> tasks;
-    final ReentrantLock mainLock = this.mainLock;
-    mainLock.lock();
-    try {
-        // 检查状态
-        checkShutdownAccess();
-        // 将线程池状态变为 STOP
-        advanceRunState(STOP);
-        // 中断所有线程，包括工作线程以及空闲线程
-        interruptWorkers();
-        // 丢弃工作队列中存量任务
-        tasks = drainQueue();
-    } finally {
-        mainLock.unlock();
-    }
-    tryTerminate();
-    return tasks;
-}
-```
-&emsp; shutdownNow 方法将会把线程池状态设置为 STOP，然后中断所有线程，最后取出工作队列中所有未完成的任务返回给调用者。  
-&emsp; 对比 shutdown 方法，shutdownNow 方法比较粗暴，直接中断工作线程。不过这里需要注意，中断线程并不代表线程立刻结束。这里需要线程主动配合线程中断响应。  
-
-### 1.5.2. ThreadPoolExecutor#awaitTermination   
-&emsp; 线程池 shutdown 与 shutdownNow 方法都不会主动等待执行任务的结束，如果需要等到线程池任务执行结束，需要调用 awaitTermination 主动等待任务调用结束。  
-&emsp; 调用方法如下：  
-
-```java
-threadPool.shutdown();
-try {
-        while (!threadPool.awaitTermination(60,TimeUnit.SECONDS)){
-            System.out.println("线程池任务还未执行结束");
-        }
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-}
-```
-&emsp; 如果线程池任务执行结束，awaitTermination方法将会返回true，否则当等待时间超过指定时间后将会返回false。  
-&emsp; 如果需要使用这种进制，建议在上面的基础上增加一定重试次数。这个真的很重要！！！  
-
-### 1.5.3. 总结：优雅关闭线程池  
-&emsp; 处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合 shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
-
-```java
-threadPool.shutdown(); // Disable new tasks from being submitted
-// 设定最大重试次数
-try {
-    // 等待 60 s
-    if (!threadPool.awaitTermination(60, TimeUnit.SECONDS)) {
-        // 调用 shutdownNow 取消正在执行的任务
-        threadPool.shutdownNow();
-        // 再次等待 60 s，如果还未结束，可以再次尝试，或则直接放弃
-        if (!threadPool.awaitTermination(60, TimeUnit.SECONDS))
-        System.err.println("线程池任务未正常执行结束");
-    }
-} catch (InterruptedException ie) {
-    // 重新调用 shutdownNow
-    threadPool.shutdownNow();
-}
-```
 
 ## 1.6. SpringBoot整合线程池
 &emsp; SpringBoot框架提供了@Async注解使用ThreadPoolExecutor。可以重写spring默认的线程池或自定义线程池。  
