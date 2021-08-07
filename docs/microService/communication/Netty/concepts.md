@@ -19,14 +19,15 @@
 4.Netty支持应用层的KeepAlive。
 5.Netty规避了JAVA NIO中的很多BUG，性能更好。
 -->
+
+&emsp; **<font color = "red">websocket和netty</font>**  
+&emsp; websocket是一个通信协议，而netty是一个Java网络编程框架。可以利用netty实现websocket通信，也可以用其他的。 
+
 &emsp; **Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。**  
 
 1. Netty是一个基于NIO的client-server（客户端服务器）框架，使用它可以快速简单地开发网络应用程序。
 2. 它极大地简化并优化了TCP和UDP套接字服务器等网络编程，并且性能以及安全性等很多方面甚至都要更好。
 3. 支持多种协议 如FTP，SMTP，HTTP以及各种二进制和基于文本的传统协议。  
-
-&emsp; **<font color = "red">websocket和netty</font>**  
-&emsp; websocket是一个通信协议，而netty是一个Java网络编程框架。可以利用netty实现websocket通信，也可以用其他的。 
 
 &emsp; **<font color = "clime">为什么要用Netty？</font>**  
 &emsp; 在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  

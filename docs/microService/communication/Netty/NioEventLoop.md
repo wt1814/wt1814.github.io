@@ -7,8 +7,8 @@
         - [1.1.2. 客户端](#112-客户端)
     - [1.2. NioEventLoop的继承体系](#12-nioeventloop的继承体系)
     - [1.3. NioEventLoop的创建](#13-nioeventloop的创建)
-    - [1.5. NioEventLoop的启动](#15-nioeventloop的启动)
-    - [1.4. NioEventLoop的执行，解决NIO的bug](#14-nioeventloop的执行解决nio的bug)
+    - [1.4. NioEventLoop的启动](#14-nioeventloop的启动)
+    - [1.5. NioEventLoop的执行，解决NIO的bug](#15-nioeventloop的执行解决nio的bug)
 
 <!-- /TOC -->
 
@@ -73,7 +73,7 @@ NioEventLoop的创建
 https://www.cnblogs.com/dafanjoy/p/10486019.html
 -->
 
-## 1.5. NioEventLoop的启动  
+## 1.4. NioEventLoop的启动  
 <!-- 
 https://www.jianshu.com/p/e577803f0fb8
 https://www.cnblogs.com/dafanjoy/p/10507393.html
@@ -85,6 +85,6 @@ https://www.jianshu.com/p/5c6466510d3b
 &emsp; 包含绑定channel。  
 
 
-## 1.4. NioEventLoop的执行，解决NIO的bug  
+## 1.5. NioEventLoop的执行，解决NIO的bug  
 
 &emsp; [NioEventLoop的执行](/docs/microService/communication/Netty/NioEventLoopRun.md)  
