@@ -8,7 +8,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. Docker中镜像是分层的，最顶层是读写层(镜像与容器的区别)，其底部依赖于Linux的UnionFS文件系统。  
+1. Docker中镜像是分层的，最顶层是读写层（镜像与容器的区别），其底部依赖于Linux的UnionFS文件系统。  
 2. **<font color = "red">利用联合文件系统UnionFS写时复制的特点，在启动一个容器时，Docker引擎实际上只是增加了一个可写层和构造了一个Linux容器。</font>**  
 
 # 1. 镜像详解

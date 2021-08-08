@@ -36,8 +36,8 @@
         - [DDD](#ddd)
         - [负载均衡](#负载均衡)
         - [OpenAPI](#openapi)
-    - [DevOps](#devops)
     - [计算机网络](#计算机网络)
+    - [DevOps](#devops)
     - [Linux操作系统](#linux操作系统)
     - [测试工具](#测试工具)
     - [常用工具](#常用工具)
@@ -636,10 +636,30 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 ### OpenAPI 
 [OpenAPI](/docs/system/OpenAPI.md)  
 
+----
+
+## 计算机网络  
+[OSI七层网络模型](/docs/network/OSI.md)  
+[应用层](/docs/network/application.md)  
+&emsp; [DNS](docs/network/DNS.md)  
+&emsp; [HTTP](/docs/network/HTTP.md)  
+&emsp; [HTTPS](/docs/network/HTTPS.md)  
+[传输层](/docs/network/transfer.md)  
+&emsp; [TCP](/docs/network/TCP.md)  
+&emsp; &emsp; [TCP传输阶段](/docs/network/TCPTransfer.md)  
+&emsp; &emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
+&emsp; &emsp; [长短连接](/docs/network/connection.md)  
+&emsp; &emsp; [TCP粘包](/docs/network/TCPSticking.md)   
+&emsp; [UDP](/docs/network/UDP.md)  
+[网络的性能指标](/docs/network/standard.md)  
+[网络工具](/docs/network/NetTools.md)  
+&emsp; [网络抓包](/docs/network/wireshark.md)  
+&emsp; [网络监控](/docs/network/NetMonitor.md)  
+
 ------
 
 ## DevOps  
-[DevOps与CI/CD](/docs/devAndOps/devOps.md)  
+[CI/CD与Devops](/docs/devAndOps/devOps.md)  
 &emsp; [DevOps搭建](/docs/devAndOps/devOpsPractice.md)  
 [GIT](/docs/devAndOps/git/command.md)  
 [Maven](/docs/devAndOps/maven.md)  
@@ -669,25 +689,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; [k8s监控](/docs/devAndOps/k8s/Monitor.md)  
 &emsp; [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
 
-----
-
-## 计算机网络  
-[网络的性能指标](/docs/network/standard.md)  
-[OSI七层网络模型](/docs/network/OSI.md)  
-[应用层](/docs/network/application.md)  
-&emsp; [DNS](docs/network/DNS.md)  
-&emsp; [HTTP](/docs/network/HTTP.md)  
-&emsp; [HTTPS](/docs/network/HTTPS.md)  
-[传输层](/docs/network/transfer.md)  
-&emsp; [TCP](/docs/network/TCP.md)  
-&emsp; &emsp; [TCP传输阶段](/docs/network/TCPTransfer.md)  
-&emsp; &emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
-&emsp; &emsp; [长短连接](/docs/network/connection.md)  
-&emsp; &emsp; [TCP粘包](/docs/network/TCPSticking.md)   
-&emsp; [UDP](/docs/network/UDP.md)  
-[网络工具](/docs/network/NetTools.md)  
-&emsp; [网络抓包](/docs/network/wireshark.md)  
-&emsp; [网络监控](/docs/network/NetMonitor.md)  
 
 ----
 

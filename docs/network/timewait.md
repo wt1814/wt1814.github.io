@@ -12,7 +12,7 @@
 &emsp; **<font color = "red">总结：</font>**  
 
 1. TIME_WAIT状态，该socket所占用的本地端口号将一直无法释放。TIME_WAIT过多，可能出现做为客户端的程序无法向服务端建立新的socket连接的情况。  
-2. **大量的TIME_WAIT状态 TCP 连接存在，是因为大量的短连接存在。TIME_WAIT状态时socket还占用端口。** TIME_WAIT状态默认为2MSL。    
+2. **大量的TIME_WAIT状态TCP连接存在，是因为大量的短连接存在。TIME_WAIT状态时socket还占用端口。** TIME_WAIT状态默认为2MSL。    
 3. 解决办法：
     1. 客户端  
     &emsp; **HTTP请求的头部，connection 设置为 keep-alive，** 保持存活一段时间：现在的浏览器，一般都这么进行了。     
