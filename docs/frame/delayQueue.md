@@ -15,6 +15,12 @@ https://mp.weixin.qq.com/s/DcyXPGxXFYcXCQJII1INpg
 
 一口气说出 6种 延时队列的实现方案
 https://my.oschina.net/u/4455409/blog/4714151
+
+延时队列实现的几种姿势
+https://mp.weixin.qq.com/s/Xs9J0wy16XILRAt7myaNAw
+
+https://blog.csdn.net/deel_feel/article/details/91872366
+https://zhuanlan.zhihu.com/p/104285758
 -->
 
 ## 背景
