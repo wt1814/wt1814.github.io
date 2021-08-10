@@ -2,6 +2,8 @@
 
 
 &emsp; [代理模式](/docs/java/Design/proxy.md)   
+&emsp; [JDK动态代理](/docs/java/Design/DynamicProxy.md)   
+&emsp; [CGLIB代理](/docs/java/Design/CGLIB.md)   
 &emsp; [装饰者模式](/docs/java/Design/decorator.md)   
 &emsp; [适配器模式](/docs/java/Design/adapter.md)   
 &emsp; [门面模式](/docs/java/Design/facade.md)   
