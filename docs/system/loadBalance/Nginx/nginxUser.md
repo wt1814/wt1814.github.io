@@ -1,0 +1,537 @@
+
+
+<!-- TOC -->
+
+- [1. Nginx使用](#1-nginx使用)
+    - [1.1. 基于配置文件的Nginx处理请求流程](#11-基于配置文件的nginx处理请求流程)
+        - [1.1.1. IP和域名部分的处理](#111-ip和域名部分的处理)
+        - [1.1.2. Location详解](#112-location详解)
+    - [1.2. Nginx使用场景](#12-nginx使用场景)
+        - [1.2.1. 反向代理](#121-反向代理)
+            - [1.2.1.1. 代理服务器简介](#1211-代理服务器简介)
+                - [1.2.1.1.1. 正向代理](#12111-正向代理)
+                - [1.2.1.1.2. 反向代理](#12112-反向代理)
+                - [1.2.1.1.3. 正向代理和反向代理对比](#12113-正向代理和反向代理对比)
+            - [1.2.1.2. ★★★~~Nginx负载均衡~~](#1212-★★★nginx负载均衡)
+        - [1.2.2. 虚拟主机](#122-虚拟主机)
+        - [1.2.3. 多个webapp的配置](#123-多个webapp的配置)
+        - [1.2.4. 静态资源WEB服务](#124-静态资源web服务)
+        - [1.2.5. 动静分离](#125-动静分离)
+        - [1.2.6. 跨域解决](#126-跨域解决)
+        - [1.2.7. 地址重定向，Rewrite](#127-地址重定向rewrite)
+        - [1.2.8. HTTPS反向代理配置](#128-https反向代理配置)
+        - [1.2.9. 其他功能](#129-其他功能)
+            - [1.2.9.1. 缓存](#1291-缓存)
+            - [1.2.9.2. 限流](#1292-限流)
+            - [1.2.9.3. 黑白名单](#1293-黑白名单)
+            - [1.2.9.4. 防盗链](#1294-防盗链)
+            - [1.2.9.5. 流量复制](#1295-流量复制)
+            - [1.2.9.6. 正向代理](#1296-正向代理)
+    - [1.3. Nginx配置参数中文说明](#13-nginx配置参数中文说明)
+
+<!-- /TOC -->
+
+
+<!-- 
+https://mp.weixin.qq.com/s/trUWEfsxLWVASZckDOwqPQ
+https://mp.weixin.qq.com/s/kIIGCq_oN66nt4MMYaCJpQ
+
+ Nginx系列：配置跳转的常用方式 
+ https://mp.weixin.qq.com/s/XEN_6Xz8Ayk1Z3qKugePjA
+
+-->
+&emsp; **<font color = "red">总结：</font>**  
+1. <font color = "red">Nginx服务器处理一个请求是按照两部分进行的。第一部分是IP和域名，由listen和server_name指令匹配server模块；第二部分是URL，匹配server模块里的location；最后就是location里的具体处理。</font>  
+2. <font color = "red">Nginx使用场景：反向代理、虚拟主机、静态资源WEB服务、缓存、限流、黑白名单、防盗链、流量复制...</font>  
+3. 负载均衡：  
+    1. **<font color = "red">Nginx反向代理通过proxy_pass来配置；负载均衡使用Upstream模块实现。</font>**  
+    2. **<font color = "red">Nginx支持的负载均衡调度算法方式如下：</font>**  
+        * **<font color = "red">轮询(默认)</font>** 
+        * **<font color = "red">weight：</font>** 指定权重。  
+        * **<font color = "red">ip_hash</font>**  
+        * **<font color = "red">fair(第三方)：</font>** 智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配。  
+        * **<font color = "red">url_hash(第三方)</font>**  
+
+# 1. Nginx使用  
+## 1.1. 基于配置文件的Nginx处理请求流程  
+&emsp; <font color = "red">Nginx服务器处理一个请求是按照两部分进行的。第一部分是IP和域名，由listen和server_name指令匹配server模块；第二部分是URL，匹配server模块里的location；最后就是location里的具体处理。</font>  
+
+### 1.1.1. IP和域名部分的处理  
+
+&emsp; **基于名称的虚拟服务器**  
+```
+server {
+    listen      80;
+    server_name example.org www.example.org;
+    ...
+}
+
+server {
+    listen      80;
+    server_name example.net www.example.net;
+    ...
+}
+
+server {
+    listen      80;
+    server_name example.com www.example.com;
+    ...
+}
+```
+&emsp; 若是这种配置，nginx判断使用那个服务器的依据是request头部中的Host，Host 匹配到哪个server_name就使用哪个服务器。如果都不匹配，则使用默认的服务器。在未显示指定默认服务器的情况下，比如上面的这个例子，nginx认为第一个server为默认服务器。如需显示指定，如下。
+
+```
+# 0.8.21 版本以前使用的是default
+server {
+    listen      80 default_server; #default_server 是监听端口的一个属性
+    server_name example.net www.example.net;
+    ...
+}
+```
+
+&emsp; **如何处理不含Host头部的请求**  
+
+```
+server {
+    listen      80;
+    # 使用空字符串匹配未定义的Host
+    server_name "";
+    # 返回一个特殊状态码，并关闭连接
+    return      444;
+}
+```
+&emsp; 注意：0.8.48版本以后，""是server_name的默认值，所以此处可以省略server_name ""，在更早的版本，server_name的默认值为主机的hostname。
+
+&emsp; **基于名称和IP的混合虚拟服务器**  
+&emsp; 前提知识：一台主机可以有多个IP(多网卡)，一个IP可以绑定多个域名。  
+
+```
+server {
+    listen      192.168.1.1:80;
+    server_name example.org www.example.org;
+    ...
+}
+
+server {
+    listen      192.168.1.1:80;
+    server_name example.net www.example.net;
+    ...
+}
+
+server {
+    listen      192.168.1.2:80;
+    server_name example.com www.example.com;
+    ...
+}
+```
+&emsp; nginx首先匹配监听IP地址和端口，匹配成功之后，再匹配相应的server_name，这个通过之后就选择使用该server处理请求，否则使用默认的server。正如前面所说，default_server 是监听端口的一个属性，所以不同的默认服务器应该有且只有一个定义在不同的IP:端口，如下。  
+
+```
+server {
+    listen      192.168.1.1:80;
+    server_name example.org www.example.org;
+    ...
+}
+
+server {
+    listen      192.168.1.1:80 default_server;
+    server_name example.net www.example.net;
+    ...
+}
+
+server {
+    listen      192.168.1.2:80 default_server;
+    server_name example.com www.example.com;
+    ...
+}
+```
+
+### 1.1.2. Location详解  
+<!-- 
+Nginx 实践｜location 路径匹配
+https://mp.weixin.qq.com/s/qchaaVoOSJOqnRBlBIU--g
+-->
+&emsp; URL部分处理通过location实现。location指令的作用是根据用户请求的URI来执行不同的应用，也就是根据用户请求的网站URL进行匹配，匹配成功即进行相关的操作。    
+
+
+## 1.2. Nginx使用场景  
+&emsp; Nginx基本功能：作为http server、虚拟主机、反向代理服务器(负载均衡)、电子邮件(IMAP/POP3)代理服务器。  
+
+### 1.2.1. 反向代理  
+
+#### 1.2.1.1. 代理服务器简介  
+&emsp; **什么是代理服务器(Proxy Serve)？**  
+&emsp; 提供代理服务的电脑系统或其它类型的网络终端，代替网络用户去取得网络信息。  
+&emsp; **为什么使用代理服务器？**  
+1. 提高访问速度：由于目标主机返回的数据会存放在代理服务器的硬盘中，因此下一次客户再访问相同的站点数据时，会直接从代理服务器的硬盘中读取，起到了缓存的作用，尤其对于热门网站能明显提高访问速度。  
+2. 防火墙作用：由于所有的客户机请求都必须通过代理服务器访问远程站点，因此可以在代理服务器上设限，过滤掉某些不安全信息。同时正向代理中上网者可以隐藏自己的IP，免受攻击。  
+3. 突破访问限制：互联网上有许多开发的代理服务器，客户机在访问受限时，可通过不受限的代理服务器访问目标站点，通俗说，使用的翻墙浏览器就是利用了代理服务器，可以直接访问外网。  
+
+##### 1.2.1.1.1. 正向代理  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-1.png)  
+&emsp; 正向代理：内网服务器主动去请求外网的服务的一种行为。正向代理其实就是说客户端无法主动或者不打算完成主动去向某服务器发起请求，而是委托了nginx代理服务器去向服务器发起请求，并且获得处理结果，返回给客户端。  
+&emsp; 正向代理主要应用于内网环境中只有某台特定服务器支持连接互联网，而其它同一局域网的服务器IP都不支持直接连接互联网，此时可以在支持连接公网的服务器配置nginx的正向代理，局域网内其它机器可通过此台服务器连接公网。  
+&emsp; 如图，服务器①的IP没有访问公网的权限，nginx服务器同时连接了内网和公网，则服务器①可通过nginx服务器访问公网。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-2.png)   
+&emsp; (1)访问原来无法访问的资源，如google。  
+&emsp; (2)可以做缓存，加速访问资源。  
+&emsp; (3)对客户端访问授权，上网进行认证。  
+&emsp; (4)代理可以记录用户访问记录(上网行为管理)，对外隐藏用户信息。  
+
+##### 1.2.1.1.2. 反向代理  
+&emsp; 反向代理(Reverse Proxy)指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。  
+&emsp; 对反向代理服务器的攻击并不会使得网页信息遭到破坏，这样就增强了Web服务器的安全性。这种方式通过降低了向WEB服务器的请求数从而降低了WEB服务器的负载。  
+&emsp; 当网站的访问量达到一定程度后，单台服务器不能满足用户的请求时，需要用多台服务器集群可以使用nginx做反向代理。并且多台服务器可以平均分担负载，不会因为某台服务器负载高宕机而某台服务器闲置的情况。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-3.png) 
+
+&emsp; 反向代理的作用：  
+* 保证内网的安全，可以使用反向代理提供WAF功能，阻止web攻击大型网站，通常将反向代理作为公网访问地址，Web服务器是内网。    
+* 负载均衡，通过反向代理服务器来优化网站的负载。    
+
+##### 1.2.1.1.3. 正向代理和反向代理对比  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-4.png) 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-5.png) 
+
+* 位置不同  
+
+        正向代理，架设在客户机和目标主机之间； 
+        反向代理，架设在服务器端；  
+
+* 代理对象不同  
+
+        正向代理，代理客户端，服务端不知道实际发起请求的客户端；   
+        反向代理，代理服务端，客户端不知道实际提供服务的服务端；   
+        备注：正向代理–HTTP代理为多个人提供翻墙服务；反向代理–百度外卖为多个商户提供平台给某个用户提供外卖服务。  
+
+* 用途不同  
+
+        正向代理，为在防火墙内的局域网客户端提供访问Internet的途径；  
+        反向代理，将防火墙后面的服务器提供给Internet访问；  
+
+* 安全性不同  
+
+        正向代理允许客户端通过它访问任意网站并且隐藏客户端自身，因此必须采取安全措施以确保仅为授权的客户端提供服务； 
+        反向代理都对外都是透明的，访问者并不知道自己访问的是哪一个代理。
+
+&emsp; **正向代理的应用：**  
+1. 访问原来无法访问的资源。   
+2. 用作缓存，加速访问速度。   
+3. 对客户端访问授权，上网进行认证。  
+4. 代理可以记录用户访问记录(上网行为管理)，对外隐藏用户信息。  
+
+&emsp; **反向代理的应用：**  
+1. 保护内网安全 
+2. 负载均衡 
+3. 缓存，减少服务器的压力 
+
+#### 1.2.1.2. ★★★~~Nginx负载均衡~~  
+<!-- 
+
+讲讲Nginx如何实现四层负载均衡
+https://blog.csdn.net/yihuliunian/article/details/108534708
+-->
+
+&emsp; 负载均衡功能即是反向代理的应用，只不过负载均衡是代理多台服务器，更注重其均衡转发功能。    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-5.png) 
+
+&emsp; **<font color = "red">Nginx支持的负载均衡调度算法方式如下：</font>**  
+* **<font color = "red">轮询(默认)</font>** ：接收到的请求按照顺序逐一分配到不同的后端服务器，即使在使用过程中，某一台后端服务器宕机，Nginx会自动将该服务器剔除出队列，请求受理情况不会受到任何影响。 
+* **<font color = "red">weight</font>** ：指定权重。这种方式下，可以给不同的后端服务器设置一个权重值(weight)，用于调整不同的服务器上请求的分配率；权重数据越大，被分配到请求的几率越大；该权重值，主要是针对实际工作环境中不同的后端服务器硬件配置进行调整的。  
+* **<font color = "red">ip_hash</font>** ：每个请求按照发起客户端的ip的hash结果进行匹配，这样的算法下一个固定ip地址的客户端总会访问到同一个后端服务器，这也在一定程度上解决了集群部署环境下session共享的问题。  
+* **<font color = "red">fair(第三方)</font>** ：智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配，<font color = "red">响应时间短处理效率高的服务器分配到请求的概率高，响应时间长处理效率低的服务器分配到的请求少；</font>结合了前两者的优点的一种调度算法。但是需要注意的是Nginx默认不支持fair算法，如果要使用这种调度算法，请安装upstream_fair模块。  
+* **<font color = "red">url_hash(第三方)</font>** ：按照访问的url的hash结果分配请求，每个请求的url会指向后端固定的某个服务器，可以在Nginx作为静态服务器的情况下提高缓存效率。同样要注意Nginx默认不支持这种调度算法，要使用的话需要安装Nginx的hash软件包。  
+
+&emsp; **Nginx负载均衡配置：**    
+&emsp; **<font color = "red">Nginx反向代理通过proxy_pass来配置。负载均衡使用Upstream模块实现。</font>**  
+&emsp; 假设这样一个应用场景：将应用部署在192.168.1.11:80、192.168.1.12:80、192.168.1.13:80三台linux环境的服务器上。网站域名叫 www.helloworld.com ，公网IP为192.168.1.11。在公网IP所在的服务器上部署nginx，对所有请求做负载均衡处理。  
+&emsp; nginx.conf 配置如下：  
+
+```
+http {
+     #设定mime类型,类型由mime.type文件定义
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+    #设定日志格式
+    access_log    /var/log/nginx/access.log;
+
+    #设定负载均衡的服务器列表
+    upstream load_balance_server {
+        #weigth参数表示权值，权值越高被分配到的几率越大
+        server 192.168.1.11:80   weight=5;
+        server 192.168.1.12:80   weight=1;
+        server 192.168.1.13:80   weight=6;
+    }
+
+   #HTTP服务器
+   server {
+        #侦听80端口
+        listen       80;
+
+        #定义使用www.xx.com访问
+        server_name  www.helloworld.com;
+
+        #对所有请求进行负载均衡请求
+        location / {
+            root        /root;                 #定义服务器的默认网站根目录位置
+            index       index.html index.htm;  #定义首页索引文件的名称
+            proxy_pass  http://load_balance_server ;#请求转向load_balance_server 定义的服务器列表
+
+            #以下是一些反向代理的配置(可选择性配置)
+            #proxy_redirect off;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            #后端的Web服务器可以通过X-Forwarded-For获取用户真实IP
+            proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_connect_timeout 90;          #nginx跟后端服务器连接超时时间(代理连接超时)
+            proxy_send_timeout 90;             #后端服务器数据回传时间(代理发送超时)
+            proxy_read_timeout 90;             #连接成功后，后端服务器响应时间(代理接收超时)
+            proxy_buffer_size 4k;              #设置代理服务器(nginx)保存用户头信息的缓冲区大小
+            proxy_buffers 4 32k;               #proxy_buffers缓冲区，网页平均在32k以下的话，这样设置
+            proxy_busy_buffers_size 64k;       #高负荷下缓冲大小(proxy_buffers*2)
+            proxy_temp_file_write_size 64k;    #设定缓存文件夹大小，大于这个值，将从upstream服务器传
+
+            client_max_body_size 10m;          #允许客户端请求的最大单文件字节数
+            client_body_buffer_size 128k;      #缓冲区代理缓冲用户端请求的最大字节数
+        }
+    }
+}
+```
+### 1.2.2. 虚拟主机  
+<!-- 
+ 如何在服务器上添加虚拟IP
+ https://mp.weixin.qq.com/s/K5r0UPCzG_FALD_H8Dibyg
+-->
+......
+
+### 1.2.3. 多个webapp的配置  
+......
+
+### 1.2.4. 静态资源WEB服务 
+1. 静态资源类型  
+&emsp; 非服务器动态运行生成的文件，换句话说，就是可以直接在服务器上找到对应文件的请求。  
+    * 浏览器端渲染：HTML,CSS,JS
+    * 图片：JPEG,GIF,PNG
+    * 视频：FLV,MPEG
+    * 文件：TXT，任意下载文件
+
+### 1.2.5. 动静分离    
+&emsp; Nginx是一个http服务器，可以独立提供http服务，可以做网页静态服务器。  
+......
+
+### 1.2.6. 跨域解决  
+<!-- 
+https://mp.weixin.qq.com/s/oTBEK0tp2jANosVtRRj1lQ
+-->
+......
+
+### 1.2.7. 地址重定向，Rewrite  
+&emsp; Rewrite 是 Nginx 服务器提供的一个重要的功能，它可以实现 URL 重写和重定向功能。  
+......
+
+### 1.2.8. HTTPS反向代理配置  
+&emsp; Nginx静态资源服务器开启https配置及http rewrite到https。  
+......
+
+### 1.2.9. 其他功能  
+#### 1.2.9.1. 缓存  
+......
+
+#### 1.2.9.2. 限流  
+......
+
+#### 1.2.9.3. 黑白名单  
+......
+
+#### 1.2.9.4. 防盗链  
+......
+
+#### 1.2.9.5. 流量复制  
+......
+
+#### 1.2.9.6. 正向代理  
+......
+
+
+
+## 1.3. Nginx配置参数中文说明 
+&emsp; nginx.conf 配置文件主要分为三部分：全局块、Events 块、HTTPS 块。  
+
+```
+worker_processes  1；                            # worker进程的数量
+events {                                          # 事件区块开始
+    worker_connections  1024；                  # 每个worker进程支持的最大连接数
+}                                           # 事件区块结束
+http {                                       # HTTP区块开始
+    include       mime.types；                     # Nginx支持的媒体类型库文件
+    default_type  application/octet-stream；            # 默认的媒体类型
+    sendfile        on；                       # 开启高效传输模式
+    keepalive_timeout  65；                   # 连接超时
+    server {                                    # 第一个Server区块开始，表示一个独立的虚拟主机站点
+        listen       80；                          # 提供服务的端口，默认80
+        server_name  localhost；                # 提供服务的域名主机名
+        location / {                            # 第一个location区块开始
+            root   html；                   # 站点的根目录，相当于Nginx的安装目录
+            index  index.html index.htm；           # 默认的首页文件，多个用空格分开
+        }                                  # 第一个location区块结果
+        error_page   500502503504  /50x.html；          # 出现对应的http状态码时，使用50x.html回应客户
+        location = /50x.html {                      # location区块开始，访问50x.html
+            root   html；                              # 指定对应的站点目录为html
+        }
+    }  
+    ......
+```
+
+&emsp; Nginx 配置语法：
+* 配置文件由指令和指令块构成   
+* 每条指令以分号(;)结尾，指令和参数间以空格符分隔  
+* 指令块以大括号{}将多条指令组织在一起  
+* include 语句允许组合多个配置文件以提高可维护性  
+* 使用 # 添加注释  
+* 使用 $ 定义变量  
+* 部分指令的参数支持正则表达式  
+
+
+&emsp; **配置文件示例：**  
+```
+#定义Nginx运行的用户和用户组
+user www www;
+#
+#nginx进程数,建议设置为等于CPU总核心数.
+worker_processes 8;
+#
+#全局错误日志定义类型,[ debug | info | notice | warn | error | crit ]
+error_log /var/log/nginx/error.log info;
+#
+#进程文件
+pid /var/run/nginx.pid;
+#
+#一个nginx进程打开的最多文件描述符数目,理论值应该是最多打开文件数(系统的值ulimit -n)与nginx进程数相除,但是nginx分配请求并不均匀,所以建议与ulimit -n的值保持一致.
+worker_rlimit_nofile 65535;
+#
+#工作模式与连接数上限
+events
+{
+    #参考事件模型,use [ kqueue | rtsig | epoll | /dev/poll | select | poll ]; epoll模型是Linux 2.6以上版本内核中的高性能网络I/O模型,如果跑在FreeBSD上面,就用kqueue模型.
+    use epoll;
+    #单个进程最大连接数(最大连接数=连接数*进程数)
+    worker_connections 65535;
+}
+#
+#设定http服务器
+http
+{
+    include mime.types; #文件扩展名与文件类型映射表
+    default_type application/octet-stream; #默认文件类型
+    #charset utf-8; #默认编码
+    server_names_hash_bucket_size 128; #服务器名字的hash表大小
+    client_header_buffer_size 32k; #上传文件大小限制
+    large_client_header_buffers 4 64k; #设定请求缓
+    client_max_body_size 8m; #设定请求缓
+    
+    # 开启目录列表访问,合适下载服务器,默认关闭.
+    autoindex on; # 显示目录
+    autoindex_exact_size on; # 显示文件大小 默认为on,显示出文件的确切大小,单位是bytes 改为off后,显示出文件的大概大小,单位是kB或者MB或者GB
+    autoindex_localtime on; # 显示文件时间 默认为off,显示的文件时间为GMT时间 改为on后,显示的文件时间为文件的服务器时间
+    
+    sendfile on; # 开启高效文件传输模式,sendfile指令指定nginx是否调用sendfile函数来输出文件,对于普通应用设为 on,如果用来进行下载等应用磁盘IO重负载应用,可设置为off,以平衡磁盘与网络I/O处理速度,降低系统的负载.注意：如果图片显示不正常把这个改成off.
+    tcp_nopush on; # 防止网络阻塞
+    tcp_nodelay on; # 防止网络阻塞
+    
+    keepalive_timeout 120; # (单位s)设置客户端连接保持活动的超时时间,在超过这个时间后服务器会关闭该链接
+    
+    # FastCGI相关参数是为了改善网站的性能：减少资源占用,提高访问速度.下面参数看字面意思都能理解.
+    fastcgi_connect_timeout 300;
+    fastcgi_send_timeout 300;
+    fastcgi_read_timeout 300;
+    fastcgi_buffer_size 64k;
+    fastcgi_buffers 4 64k;
+    fastcgi_busy_buffers_size 128k;
+    fastcgi_temp_file_write_size 128k;
+    
+    # gzip模块设置
+    gzip on; #开启gzip压缩输出
+    gzip_min_length 1k; #允许压缩的页面的最小字节数,页面字节数从header偷得content-length中获取.默认是0,不管页面多大都进行压缩.建议设置成大于1k的字节数,小于1k可能会越压越大
+    gzip_buffers 4 16k; #表示申请4个单位为16k的内存作为压缩结果流缓存,默认值是申请与原始数据大小相同的内存空间来存储gzip压缩结果
+    gzip_http_version 1.1; #压缩版本(默认1.1,目前大部分浏览器已经支持gzip解压.前端如果是squid2.5请使用1.0)
+    gzip_comp_level 2; #压缩等级.1压缩比最小,处理速度快.9压缩比最大,比较消耗cpu资源,处理速度最慢,但是因为压缩比最大,所以包最小,传输速度快
+    gzip_types text/plain application/x-javascript text/css application/xml;
+    #压缩类型,默认就已经包含text/html,所以下面就不用再写了,写上去也不会有问题,但是会有一个warn.
+    gzip_vary on;#选项可以让前端的缓存服务器缓存经过gzip压缩的页面.例如:用squid缓存经过nginx压缩的数据
+    
+    #开启限制IP连接数的时候需要使用
+    #limit_zone crawler $binary_remote_addr 10m;
+    
+    ##upstream的负载均衡,四种调度算法(下例主讲)##
+    
+    #虚拟主机的配置
+    server
+    {
+        # 监听端口
+        listen 80;
+        # 域名可以有多个,用空格隔开
+        server_name ably.com;
+        # HTTP 自动跳转 HTTPS
+        rewrite ^(.*) https://$server_name$1 permanent;
+    }
+    
+    server
+    {
+        # 监听端口 HTTPS
+        listen 443 ssl;
+        server_name ably.com;
+        
+        # 配置域名证书
+        ssl_certificate      C:\WebServer\Certs\certificate.crt;
+        ssl_certificate_key  C:\WebServer\Certs\private.key;
+        ssl_session_cache    shared:SSL:1m;
+        ssl_session_timeout  5m;
+        ssl_protocols SSLv2 SSLv3 TLSv1;
+        ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+        ssl_prefer_server_ciphers  on;
+    
+        index index.html index.htm index.php;
+        root /data/www/;
+        location ~ .*\.(php|php5)?$
+        {
+            fastcgi_pass 127.0.0.1:9000;
+            fastcgi_index index.php;
+            include fastcgi.conf;
+        }
+        
+        # 配置地址拦截转发，解决跨域验证问题
+        location /oauth/{
+            proxy_pass https://localhost:13580/oauth/;
+            proxy_set_header HOST $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+        
+        # 图片缓存时间设置
+        location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$ {
+            expires 10d;
+        }
+        
+        # JS和CSS缓存时间设置
+        location ~ .*\.(js|css)?$ {
+            expires 1h;
+        }
+
+        # 日志格式设定
+        log_format access '$remote_addr - $remote_user [$time_local] "$request" '
+        '$status $body_bytes_sent "$http_referer" '
+        '"$http_user_agent" $http_x_forwarded_for';
+        # 定义本虚拟主机的访问日志
+        access_log /var/log/nginx/access.log access;
+        
+        # 设定查看Nginx状态的地址.StubStatus模块能够获取Nginx自上次启动以来的工作状态，此模块非核心模块，需要在Nginx编译安装时手工指定才能使用
+        location /NginxStatus {
+            stub_status on;
+            access_log on;
+            auth_basic "NginxStatus";
+            auth_basic_user_file conf/htpasswd;
+            #htpasswd文件的内容可以用apache提供的htpasswd工具来产生.
+        }
+    }
+}
+```
+
