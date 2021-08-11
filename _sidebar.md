@@ -275,12 +275,6 @@
         * [Watcher](/docs/microService/dubbo/Watcher.md)  
         * [ZAB](/docs/microService/dubbo/ZAB.md)  
     * [Zookeeper使用](/docs/microService/dubbo/ZookeeperUse.md)  
-* [分布式与高并发](/docs/system/DistributedHighConcurrency.md)   
-    * [分布式和集群](/docs/system/distributed.md)  
-    * [系统性能指标](/docs/system/performance.md)  
-    * [并发系统三高](/docs/system/threeHigh.md)  
-        * [高可用建设](/docs/system/highAvailability.md)  
-    * [秒杀系统设计](/docs/system/seckill.md)  
 * 分布式理论  
     * [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
         * [一致性哈希](/docs/microService/thinking/consistent.md)  
@@ -298,12 +292,14 @@
     * [Redisson](/docs/microService/thinking/Redisson.md)  
     * [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
     * [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
-* 任务调度
-    * [延时队列](/docs/frame/delayQueue.md)  
-    * [分布式调度](/docs/frame/taskSheduling.md)  
-        * [XXL-JOB](/docs/frame/XXL-JOB.md)  
-    * [时间轮算法](/docs/microService/dubbo/timeWheel.md)  
-* [资源限制](/docs/system/ResourceConstraints.md)  
+* 高并发
+    * [分布式与高并发](/docs/system/DistributedHighConcurrency.md)   
+    * [分布式和集群](/docs/system/distributed.md)  
+    * [系统性能指标](/docs/system/performance.md)  
+    * [并发系统三高](/docs/system/threeHigh.md)  
+        * [高可用建设](/docs/system/highAvailability.md)  
+    * [秒杀系统设计](/docs/system/seckill.md)  
+    * [资源限制](/docs/system/ResourceConstraints.md)  
 * 分布式缓存
     * [分布式缓存问题](/docs/cache/DistributedCache.md)  
     * [缓存更新](/docs/cache/CacheUpdate.md)  
@@ -365,6 +361,11 @@
     * [kafka源码](/docs/microService/mq/kafka/kafkaSource.md)  
         * [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
         * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md)  
+* 任务调度
+    * [延时队列](/docs/frame/delayQueue.md)  
+    * [分布式调度](/docs/frame/taskSheduling.md)  
+        * [XXL-JOB](/docs/frame/XXL-JOB.md)  
+    * [时间轮算法](/docs/microService/dubbo/timeWheel.md)  
 * 分布式搜索引擎  
     * [ES搭建](/docs/ES/build.md)   
         * [ES配置文件](/docs/ES/configure.md)  

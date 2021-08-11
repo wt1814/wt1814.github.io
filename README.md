@@ -10,22 +10,25 @@
     - [SSM](#ssm)
         - [Spring](#spring)
         - [MyBatis](#mybatis)
-    - [分布式](#分布式)
+    - [分布式框架](#分布式框架)
         - [SpringBoot](#springboot)
         - [SpringCloud](#springcloud)
         - [Dubbo](#dubbo)
         - [Zookeeper](#zookeeper)
-        - [分布式高并发](#分布式高并发)
+    - [分布式原理](#分布式原理)
         - [分布式理论](#分布式理论)
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
+    - [高并发](#高并发)
+        - [分布式与高并发](#分布式与高并发)
         - [资源限制](#资源限制)
         - [分布式缓存](#分布式缓存)
             - [Redis](#redis)
         - [限流降级](#限流降级)
         - [分布式消息队列](#分布式消息队列)
             - [kafka](#kafka)
+    - [常用中间件](#常用中间件)
         - [任务调度](#任务调度)
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式通信](#分布式通信)
@@ -298,7 +301,7 @@
 
 ----
 
-## 分布式  
+## 分布式框架  
 ### SpringBoot  
 [学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
 [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
@@ -368,14 +371,7 @@
 [Zookeeper问题](/docs/microService/dubbo/ZookeeperProblem.md)  
 -->
 
-### 分布式高并发
-[分布式与高并发](/docs/system/DistributedHighConcurrency.md)   
-&emsp; [分布式和集群](/docs/system/distributed.md)   
-&emsp; [系统性能指标](/docs/system/performance.md)  
-&emsp; [并发系统三高](/docs/system/threeHigh.md)  
-&emsp; &emsp; [高可用建设](/docs/system/highAvailability.md)  
-&emsp; [秒杀系统设计](/docs/system/seckill.md)  
-
+## 分布式原理
 ### 分布式理论  
 [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
 &emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
@@ -399,6 +395,17 @@
 &emsp; [Redisson](/docs/microService/thinking/Redisson.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
 &emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
+
+
+## 高并发
+### 分布式与高并发
+[分布式与高并发](/docs/system/DistributedHighConcurrency.md)   
+&emsp; [分布式和集群](/docs/system/distributed.md)   
+&emsp; [系统性能指标](/docs/system/performance.md)  
+&emsp; [并发系统三高](/docs/system/threeHigh.md)  
+&emsp; &emsp; [高可用建设](/docs/system/highAvailability.md)  
+&emsp; [秒杀系统设计](/docs/system/seckill.md)  
+
 
 ### 资源限制
 [资源限制](/docs/system/ResourceConstraints.md)  
@@ -479,6 +486,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
 -->
 
+## 常用中间件
 ### 任务调度
 [延时队列](/docs/frame/delayQueue.md)  
 [分布式调度](/docs/frame/taskSheduling.md)  
