@@ -1,7 +1,6 @@
 <!-- TOC -->
 
 - [wt1814-note](#wt1814-note)
-    - [侃侃Java](#侃侃java)
     - [Java](#java)
         - [Java基础](#java基础)
         - [设计模式](#设计模式)
@@ -48,11 +47,6 @@
 <!-- /TOC -->
 
 # wt1814-note  
-
-## 侃侃Java  
-[知识点总结](/docs/java/KnowledgePoints.md)  
-[学习不要学的片面](/docs/life/oneSided.md)  
-
 ## Java  
 ### Java基础
 [Java基础](/docs/java/basis/JavaBasic.md)  
