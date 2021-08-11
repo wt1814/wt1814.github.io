@@ -97,7 +97,7 @@ https://blog.csdn.net/u011918260/article/details/70047159?utm_medium=distribute.
 ## 1.6. 安全点工作机制  
 &emsp; 在HotSpot虚拟机中，安全点协议是主动协作的 。每一个用户线程在安全点上都会检测一个标志位，来决定自己是否暂停执行。  
 
-* 对于JIT编译后的代码，JIT会在代码特定的位置(通常来说，在方法的返回处和counted loop的结束处)上插入安全点代码。
+* 对于JIT编译后的代码，JIT会在代码特定的位置（通常来说，在方法的返回处和counted loop的结束处）上插入安全点代码。
 * 对于解释执行的代码，JVM会设置一个2字节的dispatch tables。解释器执行的时候会经常去检查这个dispatch tables，当有安全点请求的时候，就会让线程去进行安全点检查。
 
 ## 1.7. 安全区域又是什么？  
