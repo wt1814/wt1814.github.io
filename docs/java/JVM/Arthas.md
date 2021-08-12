@@ -2,18 +2,18 @@
 
 - [1. Arthas](#1-arthas)
     - [1.1. 简介](#11-简介)
-    - [1.3. 使用教程](#13-使用教程)
-        - [准备](#准备)
-        - [下载并运行 Arthas](#下载并运行-arthas)
-        - [访问 WebConsole](#访问-webconsole)
-        - [问题 1：这个类从哪个 jar 包加载的？为什么会报各种类相关的 Exception？](#问题-1这个类从哪个-jar-包加载的为什么会报各种类相关的-exception)
-        - [问题 2：我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？](#问题-2我改的代码为什么没有执行到难道是我没-commit分支搞错了)
-        - [问题 3：遇到问题无法在线上debug，难道只能通过加日志再重新发布吗？](#问题-3遇到问题无法在线上debug难道只能通过加日志再重新发布吗)
-        - [问题 4：线上遇到某个用户的数据处理有问题，但线上同样无法 debug，线下无法重现！](#问题-4线上遇到某个用户的数据处理有问题但线上同样无法-debug线下无法重现)
-        - [问题 5：是否有一个全局视角来查看系统的运行状况？](#问题-5是否有一个全局视角来查看系统的运行状况)
-        - [问题 6：有什么办法可以监控到JVM的实时运行状态？](#问题-6有什么办法可以监控到jvm的实时运行状态)
-        - [问题 7：怎么快速定位应用的热点，生成火焰图？](#问题-7怎么快速定位应用的热点生成火焰图)
-        - [问题 8：怎样直接从JVM内查找某个类的实例？](#问题-8怎样直接从jvm内查找某个类的实例)
+    - [1.2. 使用教程](#12-使用教程)
+        - [1.2.1. 准备](#121-准备)
+        - [1.2.2. 下载并运行 Arthas](#122-下载并运行-arthas)
+        - [1.2.3. 访问 WebConsole](#123-访问-webconsole)
+        - [1.2.4. 问题 1：这个类从哪个 jar 包加载的？为什么会报各种类相关的 Exception？](#124-问题-1这个类从哪个-jar-包加载的为什么会报各种类相关的-exception)
+        - [1.2.5. 问题 2：我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？](#125-问题-2我改的代码为什么没有执行到难道是我没-commit分支搞错了)
+        - [1.2.6. 问题 3：遇到问题无法在线上debug，难道只能通过加日志再重新发布吗？](#126-问题-3遇到问题无法在线上debug难道只能通过加日志再重新发布吗)
+        - [1.2.7. 问题 4：线上遇到某个用户的数据处理有问题，但线上同样无法 debug，线下无法重现！](#127-问题-4线上遇到某个用户的数据处理有问题但线上同样无法-debug线下无法重现)
+        - [1.2.8. 问题 5：是否有一个全局视角来查看系统的运行状况？](#128-问题-5是否有一个全局视角来查看系统的运行状况)
+        - [1.2.9. 问题 6：有什么办法可以监控到JVM的实时运行状态？](#129-问题-6有什么办法可以监控到jvm的实时运行状态)
+        - [1.2.10. 问题 7：怎么快速定位应用的热点，生成火焰图？](#1210-问题-7怎么快速定位应用的热点生成火焰图)
+        - [1.2.11. 问题 8：怎样直接从JVM内查找某个类的实例？](#1211-问题-8怎样直接从jvm内查找某个类的实例)
 
 <!-- /TOC -->
 
@@ -50,8 +50,8 @@ https://mp.weixin.qq.com/s/aUy7-90cxOukuFSiwEeA4A
 &emsp; Arthas支持JDK 6+，支持Linux/Mac/Windows，采用命令行交互模式，同时提供丰富的Tab自动补全功能，进一步方便进行问题的定位和诊断。  
 
 
-## 1.3. 使用教程
-### 准备
+## 1.2. 使用教程
+### 1.2.1. 准备
 &emsp; 测试代码  
 
 ```java
@@ -120,20 +120,20 @@ public class ArthasDemo {
 ```
 
 
-### 下载并运行 Arthas  
+### 1.2.2. 下载并运行 Arthas  
 &emsp; 前提：有一个正在运行的java应用。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-146.png)  
 
 1. wget(下载) https://alibaba.github.io/arthas/arthas-boot.jar
 2. 启动：java -jar arthas-boot.jar
 
-### 访问 WebConsole
+### 1.2.3. 访问 WebConsole
 &emsp; attach 成功后可以打开谷歌浏览器输入http://127.0.0.1:3658/ 打开 WebConsole  
 &emsp; （吐槽一句 Mac OS 的 Safari 浏览器不支持）  
 
     使用 WebConsole 最方便的是可以打开多个标签页同时操作
 
-### 问题 1：这个类从哪个 jar 包加载的？为什么会报各种类相关的 Exception？  
+### 1.2.4. 问题 1：这个类从哪个 jar 包加载的？为什么会报各种类相关的 Exception？  
 &emsp; 这个问题我经常在处理各种「依赖冲突」的时候遇到，有一些类的完全名称是一模一样，通过常规的办法无法解决类具体从哪个 jar 包加载。  
 &emsp; 别急，看我下面的解决办法。  
 
@@ -168,7 +168,7 @@ $ classloader -c 1b6d3586 -r java/lang/String.class
 jar:file:/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home/jre/lib/rt.jar!/java/lang/String.class
 ```
 
-### 问题 2：我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？
+### 1.2.5. 问题 2：我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？
 &emsp; 推荐使用 watch 和 tt 命令，非常好用。  
 
 &emsp; 这两个命令都是用来查看方法调用过程的，不同的是 watch 命令是调用一次打印一次方法的调用情况，而 tt 命令可以先生成一个不断增加的调用列表，然后指定其中某一项进行观测。  
@@ -289,7 +289,7 @@ sts() + ")";
 [arthas@3633]$
 ```
 
-### 问题 3：遇到问题无法在线上debug，难道只能通过加日志再重新发布吗？
+### 1.2.6. 问题 3：遇到问题无法在线上debug，难道只能通过加日志再重新发布吗？
 &emsp; 通过上面问题 2 的 watch 和 tt 命令可以查看方法调用情况。  
 &emsp; 此外，可以通过 redefine 命令「热替换」线上的代码，注意应用重启之后会失效，这在某些紧急情况下会有奇效。  
 &emsp; 比如说我们修改一下方法体里面的代码，加了一行日志打印：  
@@ -307,7 +307,7 @@ private List<People> convert(String s) {
 <center>热替换 JVM 内存中（方法区）加载的类</center>
 &emsp; 从这张图可以明显的看出，明明源码中没有打印字符串 s 的逻辑，但是控制台还是打印了字符串，因为我们已经热替换了 JVM 内存中（方法区）加载的类。  
 
-### 问题 4：线上遇到某个用户的数据处理有问题，但线上同样无法 debug，线下无法重现！  
+### 1.2.7. 问题 4：线上遇到某个用户的数据处理有问题，但线上同样无法 debug，线下无法重现！  
 &emsp; 这个问题没有完美的解决办法  
 &emsp; 参考一下问题 2 和问题 3的解决方案  
 &emsp; 推荐使用 tt 命令并将命令行返回结果输出到一个文件中，后续可以选择异常的一行记录使用 tt -i 命令进行深入的分析。  
@@ -330,7 +330,7 @@ monitor -c 30 com.shockang.study.ArthasDemo convert | tee /Users/shockang/Downlo
 -c 后面接统计周期，默认值为120秒
 ```
 
-### 问题 5：是否有一个全局视角来查看系统的运行状况？
+### 1.2.8. 问题 5：是否有一个全局视角来查看系统的运行状况？
 
 &emsp; 使用 dashboard 命令可以查看当前系统的实时数据面板， 当运行在Ali-tomcat时，会显示当前tomcat的实时信息，如HTTP请求的qps, rt, 错误数, 线程池信息等等。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-155.png)  
@@ -338,12 +338,12 @@ monitor -c 30 com.shockang.study.ArthasDemo convert | tee /Users/shockang/Downlo
 
 &emsp; 从图中可以看到线程情况，内存使用情况，系统参数等。  
 
-### 问题 6：有什么办法可以监控到JVM的实时运行状态？
+### 1.2.9. 问题 6：有什么办法可以监控到JVM的实时运行状态？
 &emsp; 使用 jvm 命令可以查看 JVM 的实时运行状态。   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-156.png)  
 <center>JVM 的实时运行状态</center>
 
-### 问题 7：怎么快速定位应用的热点，生成火焰图？
+### 1.2.10. 问题 7：怎么快速定位应用的热点，生成火焰图？
 &emsp; profiler 命令支持生成应用热点的火焰图。本质上是通过不断的采样，然后把收集到的采样结果生成火焰图。
 
     默认情况下，生成的是 cpu 的火焰图，即 event 是 cpu，可以用--event 参数来指定。注意不同系统支持的 event 不同
@@ -357,7 +357,7 @@ monitor -c 30 com.shockang.study.ArthasDemo convert | tee /Users/shockang/Downlo
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-159.png)  
 <center>profiler结果图</center>  
 
-### 问题 8：怎样直接从JVM内查找某个类的实例？
+### 1.2.11. 问题 8：怎样直接从JVM内查找某个类的实例？
 &emsp; 使用 vmtool 可以达成目的  
 
     这个功能是 Arthas 3.5.1 新增的。可以参考官方文档 https://arthas.aliyun.com/doc/vmtool.html#id1
