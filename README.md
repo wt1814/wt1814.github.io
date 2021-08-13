@@ -166,7 +166,7 @@
 &emsp; [线程池的正确使用](/docs/java/concurrent/ThreadPoolUse.md)  
 &emsp; [Future相关](/docs/java/concurrent/Future.md)  
 &emsp; [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
-&emsp; [CompletionService](/docs/java/concurrent/CompletionService.md)   
+&emsp; [CompletionService](/docs/java/concurrent/CompletionService.md)  
 [J.U.C包](/docs/java/concurrent/ConcurrentPackage.md)  
 &emsp; [CAS](/docs/java/concurrent/CAS.md)  
 &emsp; [AQS](/docs/java/concurrent/AQS.md)  
