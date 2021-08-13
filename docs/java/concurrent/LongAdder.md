@@ -10,10 +10,10 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. LongAdder重要属性：有一个全局变量`volatile long base`值、父类Striped64中存在一个`volatile Cell[] cells;`数组，其长度是2 的幂次方。  
+1. LongAdder重要属性：有一个全局变量`volatile long base`值、父类Striped64中存在一个`volatile Cell[] cells;`数组，其长度是2的幂次方。  
 2. LongAdder原理：  
     1. CAS操作：当并发不高的情况下都是通过CAS来直接操作base值，如果CAS失败，则针对LongAdder中的Cell[]数组中的Cell进行CAS操作，减少失败的概率。
-    2. 解决伪共享：每个Cell都使用 @Contended注解进行修饰，而@Contended注解可以进行缓存行填充，从而解决伪共享问题。
+    2. 解决伪共享：每个Cell都使用@Contended注解进行修饰，而@Contended注解可以进行缓存行填充，从而解决伪共享问题。
 
 # 1. LongAdder 
 ## 1.1. Volatile、AtomicInteger

@@ -32,7 +32,7 @@
 3. **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
 	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。
 	* CachedThreadPool和ScheduledThreadPool：允许创建的线程数量为Integer.MAX_VALUE，可能会创建大量线程，从而导致OOM。
-4. execute()，提交不需要返回值的任务；submit()，提交需要返回值的任务。    
+4. execute()，提交不需要返回值的任务；`submit()，提交需要返回值的任务，返回值类型是Future`。    
 
 
 # 1. 线程池
