@@ -12,6 +12,9 @@
  8张图，5大组件！了解MySQL查询语句执行过程。 
  https://mp.weixin.qq.com/s/jg0Os6ZhiP7KwFd6LLkZ1A
 
+浅谈 MySQL InnoDB 的内存组件 
+*** https://mp.weixin.qq.com/s/7Kab4IQsNcU_bZdbv_MuOg
+
 -->
 
 ## 1.1. MySql Server系统架构  

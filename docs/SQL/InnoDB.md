@@ -16,6 +16,10 @@
 <!-- 
 InnoDB 原理
 https://mp.weixin.qq.com/s/nrb0OaiD_QRtPGREpUr0HA
+
+一条 sql 的执行过程详解
+*** https://quxuecx.blog.csdn.net/article/details/112001274
+
 -->
 &emsp; Innodb体系结构图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-131.png)  

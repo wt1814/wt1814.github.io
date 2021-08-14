@@ -11,6 +11,14 @@
 
 
 # 1. Future相关
+<!-- 
+java中Future的使用
+https://www.cnblogs.com/flydean/p/12680281.html
+https://baijiahao.baidu.com/s?id=1671811356385033078&wfr=spider&for=pc&searchword=java%20future
+https://zhuanlan.zhihu.com/p/42682411
+
+-->
+
 ## 1.1. Future接口
 <!-- 
  阿里架构师教你JUC-Future与FutureTask原理详解 

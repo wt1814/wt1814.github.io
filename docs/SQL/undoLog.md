@@ -27,6 +27,12 @@
     3. 写入流程：SQL修改语句先写Binlog Buffer，事务提交时，按照一定的格式刷到磁盘中。binlog刷盘时机：对于InnoDB存储引擎而言，mysql通过sync_binlog参数控制binlog的刷盘时机。  
 
 # 1. undo log和binlog(两个逻辑日志)
+
+<!-- 
+不会吧，不会吧，还有人不知道 binlog ？ 
+https://mp.weixin.qq.com/s/W-u9l_As2pLUMlSQFTckCQ
+-->
+
 ## 1.1. undo log，回滚日志
 <!-- 
 * undo log(回滚日志)  实现原子性  

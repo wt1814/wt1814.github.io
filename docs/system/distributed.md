@@ -15,6 +15,14 @@ https://mp.weixin.qq.com/s/mfoVfOEF58Qg06w_YMtuNw
 
 
 ## 分布式和微服务架构
+
+<!-- 
+**** 我C，一个库里Curry几百个表，这谁受得了？ 
+https://mp.weixin.qq.com/s/zjezT6XiHK60BnmSxVwt6Q
+
+
+-->
+
 <!-- 
 三分钟彻底弄懂什么是分布式和微服务架构 
 https://mp.weixin.qq.com/s/2Hk8cUPLj8_COQW2L5h56g

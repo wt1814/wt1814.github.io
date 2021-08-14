@@ -27,7 +27,8 @@
 <!-- 
 https://blog.csdn.net/ab1024249403/article/details/110099571
 
-
+redo log与binlog间的破事 
+https://mp.weixin.qq.com/s/jG9_Iqb4Ig2eUAyIgfeyVQ
 -->
 
 ## 1.1. ~~redo log与binlog的区别~~

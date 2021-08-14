@@ -22,6 +22,8 @@
 # 1.1. redo log(重做日志)，WAL技术
 <!-- 
 redo log是什么？
+*** https://mp.weixin.qq.com/s/-ejTflS8v8UJhOkPk3pucQ
+
 https://mp.weixin.qq.com/s/KUWamAYrBxFJi7t46hh79g
 Log Buffer 
 https://mp.weixin.qq.com/s/-Hx2KKYMEQCcTC-ADEuwVA

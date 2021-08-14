@@ -6,14 +6,15 @@
         - [1.1.1. 标记-清除(Mark-Sweep)算法](#111-标记-清除mark-sweep算法)
         - [1.1.2. 标记-复制(Copying)算法](#112-标记-复制copying算法)
         - [1.1.3. 标记-整理(Mark-Compact)算法](#113-标记-整理mark-compact算法)
-    - [1.2. ~~分代收集理论，卡表与Remembered Set~~](#12-分代收集理论卡表与remembered-set)
-    - [1.3. HotSpot GC分类](#13-hotspot-gc分类)
-        - [1.3.1. Yong GC](#131-yong-gc)
-            - [1.3.1.1. ~~YGC触发时机~~](#1311-ygc触发时机)
-            - [1.3.1.2. YGC执行流程](#1312-ygc执行流程)
-        - [1.3.2. Major GC](#132-major-gc)
-        - [1.3.3. Full GC](#133-full-gc)
-            - [1.3.3.1. FGC的触发时机](#1331-fgc的触发时机)
+    - [1.2. 分代收集](#12-分代收集)
+    - [1.3. 跨代引用假说，记忆集和卡表](#13-跨代引用假说记忆集和卡表)
+    - [1.4. HotSpot GC分类](#14-hotspot-gc分类)
+        - [1.4.1. Yong GC](#141-yong-gc)
+            - [1.4.1.1. ~~YGC触发时机~~](#1411-ygc触发时机)
+            - [1.4.1.2. YGC执行流程](#1412-ygc执行流程)
+        - [1.4.2. Major GC](#142-major-gc)
+        - [1.4.3. Full GC](#143-full-gc)
+            - [1.4.3.1. FGC的触发时机](#1431-fgc的触发时机)
 
 <!-- /TOC -->
 
@@ -47,6 +48,12 @@
     &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足（可能是GC过程中浮动垃圾过多导致暂时性的空间不足），便会报Concurrent Mode Failure错误，并触发Full GC。  
 
 # 1. GC算法与分代回收
+<!-- 
+Stop The World 是何时发生的？ 
+https://mp.weixin.qq.com/s/AdF--fvDq63z0Inr2-JSHw
+
+-->
+
 ## 1.1. GC算法  
 <!-- 
 分代收集算法 
@@ -99,7 +106,7 @@ https://mp.weixin.qq.com/s/3YHHtuPENiV_2ZXfHHuD4A
 
 &emsp; **<font color = "clime">标记清除和标记整理都需要扫描两次。</font>**  
 
-## 1.2. ~~分代收集理论，卡表与Remembered Set~~  
+## 1.2. 分代收集 
 <!--
 卡表与Remembered Set
 ★★★ https://blog.csdn.net/Sqdmn/article/details/103978643/
@@ -130,9 +137,14 @@ https://www.bilibili.com/video/BV1Jy4y1p7t8
 &emsp; 新生代采用复制算法；老年代采用标记-整理算法。 **<font color = "clime">注意：CMS回收老年代，但采用标记-清除算法；CMS收集器也会在内存空间的碎片化程度已经大到影响对象分配时，采用标记-整理算法收集一次，以获得规整的内存空间。</font>**  
   
 
-----
 <!-- 
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
+-->
+
+
+## 1.3. 跨代引用假说，记忆集和卡表
+<!-- 
+https://mp.weixin.qq.com/s/AdF--fvDq63z0Inr2-JSHw
 -->
 &emsp; **跨代引用假说：**  
 &emsp; 分代收集并非只是简单划分一下内存区域，它至少存在一个明显的困难：对象之间不是孤立的，对象之间会存在跨代引用。假如现在要进行只局限于新生代的垃圾收集，根据根可达性分析的知识，与GC Roots之间不存在引用链即为可回收，但新生代的对象很有可能会被老年代所引用，那么老年代对象将临时加入 GC Roots 集合中，不得不再额外遍历整个老年代中的所有对象来确保可达性分析结果的正确性，这无疑为内存回收带来很大的性能负担。为了解决这个问题，就需要对分代收集理论添加一条经验法则： **<font color = "clime">跨代引用假说(跨代引用相对于同代引用仅占少数)。</font>**  
@@ -151,7 +163,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 
 
 
-## 1.3. HotSpot GC分类  
+## 1.4. HotSpot GC分类  
 <!-- 
 其实 GC 分为两大类，分别是 Partial GC 和 Full GC。
 
@@ -196,13 +208,13 @@ full gc 触发条件有哪些？
 * Full GC：收集整个堆，包括young gen、old gen、perm gen(如果存在的话)等所有部分的模式。  
 &emsp; Major GC通常是跟full GC是等价的，收集整个GC堆。但因为HotSpot VM发展了这么多年，外界对各种名词的解读已经完全混乱了，当有人说“major GC”的时候一定要问清楚指的是上面的full GC还是old GC。
 
-### 1.3.1. Yong GC  
+### 1.4.1. Yong GC  
 <!-- 
 https://www.cnblogs.com/williamjie/p/9516367.html
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-99.png)  
 
-#### 1.3.1.1. ~~YGC触发时机~~
+#### 1.4.1.1. ~~YGC触发时机~~
 <!-- 
 
 ***** https://blog.csdn.net/weixin_28901327/article/details/114427714
@@ -211,24 +223,24 @@ https://www.cnblogs.com/williamjie/p/9516367.html
 1. Eden区空间满；<font color = "red">Survivor区中From和To区域默认使用率都是50%，Survivor区使用率设置使用命令-XX:TargetSurvivorRatio=80。</font>  
 2. 空间分配担保成功
 
-#### 1.3.1.2. YGC执行流程
+#### 1.4.1.2. YGC执行流程
 &emsp; **YGC执行流程：(young GC中有部分存活对象会晋升到old gen，所以young GC后old gen的占用量通常会有所升高)**  
 1. 大部分对象在Eden区中生成。当Eden占用完时，垃圾回收器进行回收。  
 2. 回收时先将eden区存活对象复制到一个survivor0区，然后清空eden区。   
 3. 当这个survivor0区也存放满了时，则将eden区和survivor0区(使用的survivor中的对象也可能失去引用)存活对象复制到另一个survivor1区，然后清空eden和这个survivor0区，此时survivor0区是空的，然后将survivor0区和survivor1区交换，即保持survivor1区为空， 如此往复。  
 4. 每经过一次YGC，对象年龄加1，当对象寿命超过阈值时，会晋升至老年代，最大寿命15(4bit)。  
 
-### 1.3.2. Major GC  
+### 1.4.2. Major GC  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-100.png)  
 
-### 1.3.3. Full GC  
+### 1.4.3. Full GC  
 <!-- 
 https://zhidao.baidu.com/question/717236418134267765.html
 https://blog.csdn.net/qq_38384440/article/details/81710887
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-101.png)  
 
-#### 1.3.3.1. FGC的触发时机
+#### 1.4.3.1. FGC的触发时机
 &emsp; **<font color = "red">Full GC的触发时机：( 系统调用--->  老年代或永久代不足 ---> 执行GC时，老年代或永久的不足 ---> 回收器(例如CMS))</font>**  
 1. <font color = "red">系统调用System.gc()</font>  
 &emsp; 只是建议虚拟机执行Full GC，但是虚拟机不一定真正去执行。不建议使用这种方式，而是让虚拟机管理内存。  

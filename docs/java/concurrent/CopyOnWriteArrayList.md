@@ -11,6 +11,15 @@
 
 
 # 1. CopyOnWriteArrayList
+<!-- 
+CopyOnWriteArrayList
+https://blog.csdn.net/weixin_42146366/article/details/88016527
+https://blog.csdn.net/hua631150873/article/details/51306021
+https://www.cnblogs.com/zengcongcong/p/12754067.html
+
+-->
+
+
 ## 1.1. CopyOnWrite简介 
 &emsp; CopyOnWrite，简称COW。所谓写时复制，即读操作时不加锁以保证性能不受影响； **<font color = "clime">写操作时加锁，复制资源的一份副本，在副本上执行写操作，写操作完成后将资源的引用指向副本。</font>**  
 

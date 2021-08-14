@@ -11,6 +11,8 @@
 
 # 1. sql更新流程  
 <!--
+一条 sql 的执行过程详解
+*** https://quxuecx.blog.csdn.net/article/details/112001274
 
 
 MySQL不会丢失数据的秘密，就藏在它的 7种日志里 
