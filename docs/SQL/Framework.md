@@ -14,7 +14,7 @@
 
 浅谈 MySQL InnoDB 的内存组件 
 *** https://mp.weixin.qq.com/s/7Kab4IQsNcU_bZdbv_MuOg
-
+*** https://www.cnblogs.com/mengxinJ/p/14045520.html#_label1
 -->
 
 ## 1.1. MySql Server系统架构  
