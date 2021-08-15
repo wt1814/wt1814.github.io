@@ -30,22 +30,21 @@ https://mp.weixin.qq.com/s/StjX9bi-YDANrMX21Pn_Uw
 -->
 
 ## 1.2. InnoDB存储引擎  
-&emsp; **内容参考：**  
 
-* 《MySQL技术内幕：InnoDB存储引擎》  
-* https://dev.mysql.com/doc/refman/5.7/en/  
+    内容参考：  
+    《MySQL技术内幕：InnoDB存储引擎》  
+    https://dev.mysql.com/doc/refman/5.7/en/  
 
 &emsp; MySQL5.5及之后版本默认的存储引擎：InnoDB。  
 
-&emsp; **<font color = "red">InnoDB的特性：</font>**    
-
-* [支持事务](/docs/SQL/transaction.md)  
-* [支持行锁](/docs/SQL/lock.md)，采用[MVCC](/docs/SQL/MVCC.md)来支持高并发  
-* 支持外键  
-* 支持崩溃后的安全恢复  
-* 不支持全文索引  
-* InnoDB 不保存表的具体行数，执行`select count(*) from table`时需要全表扫描。  
-
+1. **<font color = "red">InnoDB的特性：</font>**    
+    * [支持事务](/docs/SQL/transaction.md)  
+    * [支持行锁](/docs/SQL/lock.md)，采用[MVCC](/docs/SQL/MVCC.md)来支持高并发  
+    * 支持外键  
+    * 支持崩溃后的安全恢复  
+    * 不支持全文索引  
+    * InnoDB 不保存表的具体行数，执行`select count(*) from table`时需要全表扫描。  
+2. [InnoDB体系结构](/docs/SQL/InnoDB.md)  
 <!-- 
 支持事务操作，具有事务 ACID 隔离特性，默认的隔离级别是可重复读(repetable-read)、通过MVCC(并发版本控制)来实现的。能够解决脏读和不可重复读的问题。
 InnoDB 支持外键操作。
@@ -63,8 +62,6 @@ InnoDB引擎有几个重点特性，为其带来了更好的性能和可靠性�
 异步IO(Async IO)
 刷新邻接页(Flush Neighbor Page)
 -->
-
-&emsp; [InnoDB体系结构](/docs/SQL/InnoDB.md)  
 
 ## 1.3. MyISAM存储引擎  
 &emsp; MyISAM上的索引结构，查看[索引](/docs/SQL/7.index.md)  
@@ -91,7 +88,7 @@ InnoDB引擎有几个重点特性，为其带来了更好的性能和可靠性�
 * 在 MyISAM 存储引擎中，把表的总行数存储在磁盘上，当执行 `select count(*) from t` 时，直接返回总数据。  
 * 在 InnoDB 存储引擎中，跟 MyISAM 不一样，没有将总行数存储在磁盘上，当执行 `select count(*) from t` 时，会先把数据读出来，一行一行的累加，最后返回总数量。  
 
-&emsp; InnoDB 中 count(*) 语句是在执行的时候，全表扫描统计总数量，所以当数据越来越大时，语句就越来越耗时了，为什么 InnoDB 引擎不像 MyISAM 引擎一样，将总行数存储到磁盘上？这跟 InnoDB 的事务特性有关，由于多版本并发控制(MVCC)的原因，InnoDB 表“应该返回多少行”也是不确定的。  
+&emsp; InnoDB中count(*) 语句是在执行的时候，全表扫描统计总数量，所以当数据越来越大时，语句就越来越耗时了，为什么 InnoDB 引擎不像 MyISAM 引擎一样，将总行数存储到磁盘上？这跟 InnoDB 的事务特性有关，由于多版本并发控制(MVCC)的原因，InnoDB 表“应该返回多少行”也是不确定的。  
 
 ## 1.4. ~~InnoDB与MyISAM的区别总结~~  
 <!-- 

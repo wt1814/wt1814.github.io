@@ -164,7 +164,7 @@ https://baijiahao.baidu.com/s?id=1644815785057748879&wfr=spider&for=pc
 &emsp; 如果需要使用，先开启trace，设置格式为JSON，再执行需要分析的SQL，最后查看trace分析结果（在 information_schema.OPTIMIZER_TRACE 中）。  
 &emsp; 注意⚠️：开启该功能，会对 MySQL 性能有所影响，因此只建议分析问题时临时开启。  
 
-示例：在test_table中除了d字段，abc字段都有索引。执行如下sql  
+&emsp; 示例：在test_table中除了d字段，abc字段都有索引。执行如下sql：  
 
 ```sql
 explain select * from test_table where a=90000 and b=90000 order by a;

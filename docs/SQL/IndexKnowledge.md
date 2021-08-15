@@ -10,7 +10,7 @@
 
 # 1. 各种索引  
 ## 1.1. 聚簇索引和非聚簇索引 
-&emsp; <font color = "red">InnoDB索引类型可以分为主键索引和辅助索引(非主键索引)。</font>  
+&emsp; <font color = "red">InnoDB索引类型可以分为主键索引和辅助索引（非主键索引）。</font>  
 &emsp; **<font color = "clime">主键索引树中，叶子结点保存着主键和对应行的全部数据。主键索引又被称为聚簇索引。</font>**   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-34.png)  
 &emsp; **<font color = "clime">辅助索引树中，叶子结点保存着索引值和主键值。辅助索引又被称为非聚簇索引。当使用辅助索引进行查询时，一般需要进行回表操作。</font>**   

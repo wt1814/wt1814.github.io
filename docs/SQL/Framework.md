@@ -3,18 +3,14 @@
 
 - [1. MySql架构](#1-mysql架构)
     - [1.1. MySql Server系统架构](#11-mysql-server系统架构)
-    - [1.2. MySQL查询过程](#12-mysql查询过程)
+    - [1.2. MySQL查询流程](#12-mysql查询流程)
+    - [1.3. MySql更新流程](#13-mysql更新流程)
 
 <!-- /TOC -->
 
 # 1. MySql架构  
 <!-- 
- 8张图，5大组件！了解MySQL查询语句执行过程。 
- https://mp.weixin.qq.com/s/jg0Os6ZhiP7KwFd6LLkZ1A
 
-浅谈 MySQL InnoDB 的内存组件 
-*** https://mp.weixin.qq.com/s/7Kab4IQsNcU_bZdbv_MuOg
-*** https://www.cnblogs.com/mengxinJ/p/14045520.html#_label1
 -->
 
 ## 1.1. MySql Server系统架构  
@@ -24,10 +20,13 @@
 2. 存储引擎：主要负责数据的存储和读取，采用可以替换的插件式架构，支持 InnoDB、MyISAM、Memory等多个存储引擎，其中InnoDB引擎有自有的日志模块redolog模块。  
 &emsp; <font color = "red">InnoDB从MySQL5.5.5版本开始成为了默认存储引擎。即执行create table建表的时候，如果不指定引擎类型，默认使用的就是InnoDB。</font>也可以通过指定存储引擎的类型来选择别的引擎，比如在create table语句中使用engine=memory，来指定使用内存引擎创建表。不同存储引擎的表数据存取方式不同，支持的功能也不同。  
 
-## 1.2. MySQL查询过程  
+## 1.2. MySQL查询流程  
 <!-- 
 你知道select语句和update语句分别是怎么执行的吗？
 https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
+
+ 8张图，5大组件！了解MySQL查询语句执行过程。 
+ https://mp.weixin.qq.com/s/jg0Os6ZhiP7KwFd6LLkZ1A
 -->
 &emsp; 很多的查询优化工作实际上就是遵循一些原则让MySQL的优化器能够按照预想的合理方式运行而已。  
 &emsp; 当向MySQL发送一个请求的时候，MySQL到底做了些什么呢？  
@@ -123,3 +122,17 @@ https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
 &emsp; 会在数据库的慢查询日志中看到一个rows_examined的字段，表示这个语句执行过程中扫描了多少行。这个值就是在执行器每次调用引擎获取数据行的时候累加的。  
 &emsp; 在有些场景下，执行器调用一次，在引擎内部则扫描了多行，因此引擎扫描行数跟rows_examined并不是完全相同的。  
 -->
+
+
+## 1.3. MySql更新流程
+<!-- 
+
+浅谈 MySQL InnoDB 的内存组件 
+*** https://mp.weixin.qq.com/s/7Kab4IQsNcU_bZdbv_MuOg
+*** https://www.cnblogs.com/mengxinJ/p/14045520.html#_label1
+
+-->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-176.png)  
+
+&emsp; server层：bin log。  
+&emsp; 引擎层：updo log、redo log。  
