@@ -1,7 +1,7 @@
 
 &emsp; [MySql架构](/docs/SQL/Framework.md)   
-&emsp; [binLog](/docs/SQL/BinLog.md)  
-&emsp; [binLog使用](/docs/SQL/binLogUse.md)  
+&emsp; [binLog日志](/docs/SQL/BinLog.md)  
+&emsp; [binLog日志使用](/docs/SQL/binLogUse.md)  
 &emsp; [MySql存储引擎](/docs/SQL/MySqlStorage.md)  
 &emsp; [InnoDB体系结构](/docs/SQL/InnoDB.md)  
 &emsp; [InnoDB内存结构-性能](/docs/SQL/memory.md)  
