@@ -22,6 +22,9 @@
 <!-- 
 面试官：谈谈MySQL的limit用法、逻辑分页和物理分页 
 https://mp.weixin.qq.com/s/KcaLyboO0MltR6out67_DA
+
+MySQL 千万数据量深分页优化, 拒绝线上故障！ 
+https://mp.weixin.qq.com/s?__biz=Mzg4NDU0Mjk5OQ==&mid=2247491478&idx=1&sn=74ae760980211ac4e08f2182d217da0e&chksm=cfb7c4eef8c04df89d2805bc7a294ef97dad33c482f5f675ff5dcbf0213516a6c394c5cee7e6&scene=178&cur_album_id=1674476913974624262#rd
 -->
 
 ## 1.1. 逻辑分页和物理分页  
