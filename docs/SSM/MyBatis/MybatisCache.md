@@ -60,8 +60,7 @@ public void testSqlSession() throws Exception{
 &emsp; 运行一下代码。查看控制台，有一下输出。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-21.png)  
 &emsp; 这说明<font color = "red">在同一个方法，Mybatis多次请求数据库且没有事务的情况下，创建了多个SqlSession会话！</font>  
-
-&emsp; 然后，在 testSqlSession 方法上加上 @Transactional 注解看看效果。  
+&emsp; 然后，在testSqlSession方法上加上@Transactional注解看看效果。  
 
 ```java
 @Transactional

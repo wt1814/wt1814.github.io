@@ -18,7 +18,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. `@Transactional(rollbackFor = Exception.class) `，Transactional默认只回滚RuntimeException，但是可以指定要回滚的异常类型。    
+1. `@Transactional(rollbackFor = Exception.class) `，Transactional`默认只回滚RuntimeException，`但是可以指定要回滚的异常类型。    
 2. **<font color = "red">Spring事务属性通常由事务的传播行为、事务的隔离级别、事务的超时值、事务只读标志组成。</font>**  
     * 事务的传播行为主要分为支持当前事务和不支持当前事务。  
     &emsp; <font color = "red">PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务，合并成一个事务；如果当前没有事务，则创建一个新的事务。这是默认值。</font>  
@@ -81,7 +81,7 @@ https://mp.weixin.qq.com/s/RpA3RvYv4I4zYSzBmZaDiA
 |isolation|该属性用于设置底层数据库的事务隔离级别，事务隔离级别用于处理多事务并发的情况，通常使用数据库的默认隔离级别即可，基本不需要进行设置。|
 |timeout|该属性用于设置事务的超时秒数，默认值为-1表示永不超时。|
 |readOnly|该属性用于设置当前事务是否为只读事务，默认值为false(可读写)。|
-|rollbackFor|该属性用于设置需要进行回滚的异常类数组，当方法中抛出指定异常数组中的异常时，则进行事务回滚。例如：指定单一异常类：@Transactional(rollbackFor=RuntimeException.class)。可以指定多个异常类：@Transactional(rollbackFor={RuntimeException.class， Exception.class})。|
+|rollbackFor|`该属性用于设置需要进行回滚的异常类数组`，当方法中抛出指定异常数组中的异常时，则进行事务回滚。例如：指定单一异常类：@Transactional(rollbackFor=RuntimeException.class)。可以指定多个异常类：@Transactional(rollbackFor={RuntimeException.class， Exception.class})。|
 |rollbackForClassName|该属性用于设置需要进行回滚的异常类名称数组，当方法中抛出指定异常名称数组中的异常时，则进行事务回滚。例如：指定单一异常类名称@Transactional(rollbackForClassName=”RuntimeException”)。可以指定多个异常类名称：@Transactional(rollbackForClassName={“RuntimeException”，”Exception”})。|
 |noRollbackFor|	该属性用于设置不需要进行回滚的异常类数组，当方法中抛出指定异常数组中的异常时，不进行事务回滚。例如：指定单一异常类：@Transactional(noRollbackFor=RuntimeException.class)指定多个异常类：@Transactional(noRollbackFor={RuntimeException.class， Exception.class})。|
 |noRollbackForClassName	|该属性用于设置不需要进行回滚的异常类名称数组，当方法中抛出指定异常名称数组中的异常时，不进行事务回滚。例如：指定单一异常类名称：@Transactional(noRollbackForClassName=”RuntimeException”)指定多个异常类名称：@Transactional(noRollbackForClassName={“RuntimeException”，”Exception”})|  
