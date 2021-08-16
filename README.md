@@ -46,6 +46,7 @@
     - [Error](#error)
     - [项目总结](#项目总结)
     - [算法](#算法)
+    - [学习资料](#学习资料)
 
 <!-- /TOC -->
 
@@ -743,3 +744,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [HyperLogLog](/docs/function/HyperLogLog.md)  
 &emsp; [Trie](/docs/function/Trie.md)  
 [大数据和空间限制](/docs/function/bigdata.md)  
+
+
+## 学习资料  
+[推荐书籍](/docs/a-study/book.md)  
