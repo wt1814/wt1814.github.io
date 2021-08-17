@@ -7,7 +7,7 @@
     - [1.3. Zookeeper的运行原理](#13-zookeeper的运行原理)
         - [1.3.1. 服务端通过ZAB协议，保证主从节点数据一致性](#131-服务端通过zab协议保证主从节点数据一致性)
         - [1.3.2. C/S之间的Watcher机制](#132-cs之间的watcher机制)
-    - [1.4. ZK的弊端](#14-zk的弊端)
+    - [1.4. ~~ZK的弊端~~](#14-zk的弊端)
 
 <!-- /TOC -->
 
@@ -16,7 +16,10 @@
 2. `ZK服务端`通过`ZAB协议`保证`数据顺序一致性`。  
 3. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
 4. zookeeper引入了`watcher机制`来实现`客户端和服务端`的发布/订阅功能。  
-
+5. ZK的弊端：
+	1. 服务端从节点多，主从同步慢。  
+	2. 客户端多，`网络风暴`。  
+    
 # 1. Zookeeper
 &emsp; Zookeeper官网文档：https://zookeeper.apache.org/doc/current
 <!--
@@ -84,6 +87,6 @@ ZooKeeper = 文件系统 + 监听通知机制。
 &emsp; [Watcher](/docs/microService/dubbo/Watcher.md)  
 
 
-## 1.4. ZK的弊端
-
-
+## 1.4. ~~ZK的弊端~~
+1. 服务端从节点多，主从同步慢。  
+2. 客户端多，`网络风暴`。  
