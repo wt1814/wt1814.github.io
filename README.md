@@ -370,8 +370,8 @@
 ### Zookeeper
 [如何理解分布式协调技术](/docs/microService/dubbo/coordinate.md)  
 [Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
-&emsp; [Watcher](/docs/microService/dubbo/Watcher.md)  
 &emsp; [ZAB](/docs/microService/dubbo/ZAB.md)  
+&emsp; [Watcher](/docs/microService/dubbo/Watcher.md)  
 [Zookeeper使用](/docs/microService/dubbo/ZookeeperUse.md)  
 <!-- 
 [Zookeeper问题](/docs/microService/dubbo/ZookeeperProblem.md)  

@@ -4,17 +4,18 @@
 - [1. Zookeeper](#1-zookeeper)
     - [1.1. Zookeeper是什么](#11-zookeeper是什么)
     - [1.2. ZooKeeper分层命名空间(逻辑存储结构)](#12-zookeeper分层命名空间逻辑存储结构)
-    - [1.3. ★★★Zookeeper的运行原理](#13-★★★zookeeper的运行原理)
+    - [1.3. Zookeeper的运行原理](#13-zookeeper的运行原理)
+        - [1.3.1. 服务端通过ZAB协议，保证主从节点数据一致性](#131-服务端通过zab协议保证主从节点数据一致性)
         - [1.3.2. C/S之间的Watcher机制](#132-cs之间的watcher机制)
-        - [1.3.3. ★★★服务端通过ZAB协议，保证主从节点数据一致性](#133-★★★服务端通过zab协议保证主从节点数据一致性)
+    - [1.4. ZK的弊端](#14-zk的弊端)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
-2. zookeeper引入了watcher机制来实现发布/订阅功能。  
-3. ZK服务端通过ZAB协议保证数据顺序一致性。  
-4. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
+2. `ZK服务端`通过`ZAB协议`保证`数据顺序一致性`。  
+3. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
+4. zookeeper引入了`watcher机制`来实现`客户端和服务端`的发布/订阅功能。  
 
 # 1. Zookeeper
 &emsp; Zookeeper官网文档：https://zookeeper.apache.org/doc/current
@@ -74,12 +75,15 @@ ZooKeeper = 文件系统 + 监听通知机制。
 * 顺序号是一个单调递增的计数器，由父节点维护。  
 * 在分布式系统中，顺序号可以被用于为所有的事件进行全局排序，这样客户端可以通过顺序号推断事件的顺序。  
 
-## 1.3. ★★★Zookeeper的运行原理  
+## 1.3. Zookeeper的运行原理  
 ~~架构图~~
-
+### 1.3.1. 服务端通过ZAB协议，保证主从节点数据一致性
+&emsp; [ZAB](/docs/microService/dubbo/ZAB.md)  
 
 ### 1.3.2. C/S之间的Watcher机制  
 &emsp; [Watcher](/docs/microService/dubbo/Watcher.md)  
 
-### 1.3.3. ★★★服务端通过ZAB协议，保证主从节点数据一致性
-&emsp; [ZAB](/docs/microService/dubbo/ZAB.md)  
+
+## 1.4. ZK的弊端
+
+

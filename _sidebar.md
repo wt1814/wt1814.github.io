@@ -271,7 +271,6 @@
         * [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
             * [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
             * [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
-        * [Dubbo协议长连接心跳](/docs/microService/dubbo/LongConnection.md)   
     * [Dubbo运行流程源码解析](/docs/microService/dubbo/DubboSource.md)  
         * [初始化源码解析](/docs/microService/dubbo/dubboSpring.md)  
         * [服务暴露源码解析](/docs/microService/dubbo/export.md)  
@@ -282,8 +281,8 @@
 * Zookeeper
     * [如何理解分布式协调技术](/docs/microService/dubbo/coordinate.md)  
     * [Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
-        * [Watcher](/docs/microService/dubbo/Watcher.md)  
         * [ZAB](/docs/microService/dubbo/ZAB.md)  
+        * [Watcher](/docs/microService/dubbo/Watcher.md)  
     * [Zookeeper使用](/docs/microService/dubbo/ZookeeperUse.md)  
 * 分布式理论  
     * [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
