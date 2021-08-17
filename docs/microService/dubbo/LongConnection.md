@@ -36,5 +36,5 @@ https://blog.csdn.net/YAOQINGGG/article/details/91649589
 https://blog.csdn.net/weixin_39850699/article/details/109903631
 -->
 
-&emsp; 目的：维持provider和consumer之间的长连接
+&emsp; 目的：维持provider和consumer之间的长连接。  
 &emsp; 实现：dubbo心跳时间heartbeat默认是60s，超过heartbeat时间没有收到消息，就发送心跳消息(provider，consumer一样)，如果连着3次(heartbeatTimeout为heartbeat*3)没有收到心跳响应，provider会关闭channel，而consumer会进行重连；不论是provider还是consumer的心跳检测都是通过启动定时任务的方式实现。    
