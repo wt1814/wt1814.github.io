@@ -88,5 +88,10 @@ ZooKeeper = 文件系统 + 监听通知机制。
 
 
 ## 1.4. ~~ZK的弊端~~
+<!-- 
+https://blog.csdn.net/wwwsq/article/details/7644445
+https://zhuanlan.zhihu.com/p/37894143
+-->
+
 1. 服务端从节点多，主从同步慢。  
 2. 客户端多，`网络风暴`。~~watcher机制中，回调流程，只有主节点参与？~~    
