@@ -96,6 +96,7 @@
             * [伪共享问题](/docs/java/concurrent/PseudoSharing.md)  
         * [线程安全解决方案](/docs/java/concurrent/ThreadSafety.md)  
             * [Synchronized应用](/docs/java/concurrent/SynApply.md)  
+            * [Synchronized的各种用法](/docs/java/concurrent/SynUse.md)  
             * [Synchronized底层原理](/docs/java/concurrent/SynBottom.md)  
             * [Synchronized优化](/docs/java/concurrent/SynOptimize.md)  
             * [Volatile](/docs/java/concurrent/Volatile.md)  

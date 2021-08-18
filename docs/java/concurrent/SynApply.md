@@ -19,12 +19,7 @@
 
 
 # 1. Synchronized  
-<!--
-***Synchronized 的 8 种用法，真是绝了！ 
-https://mp.weixin.qq.com/s/TOkDyqAE5TToriOMX6I6tg
-详解synchronized锁的各种用法及注意事项 
-https://mp.weixin.qq.com/s/gKsD1U38h4MJczEFC33ydw
--->
+
 ## 1.1. Synchronized简介
 &emsp; **<font color = "red">Synchronized能够保证在同一时刻最多只有一个线程执行该段代码。</font>**  
 
