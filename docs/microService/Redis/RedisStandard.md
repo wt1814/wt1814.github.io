@@ -16,17 +16,16 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">~~总结：~~</font>**  
-1. **避免多个应用使用一个 Redis 实例。**  
+1. **避免多个应用使用一个Redis实例。**  
 2. **<font color = "clime">以业务名 (或数据库名) 为前缀(防止 key 冲突)，用冒号分隔，比如业务名: 表名: id</font>**  
 3. **<font color = "clime">bigkey</font>**  
-&emsp; 如果无法避免存储 bigkey，那么建议开启 Redis 的 lazy-free 机制。（4.0+版本支持）  
-&emsp; 当开启这个机制后，Redis 在删除一个 bigkey 时，释放内存的耗时操作，将会放到后台线程中去执行，这样可以在最大程度上，避免对主线程的影响。  
+&emsp; 如果无法避免存储 bigkey，那么建议开启Redis的lazy-free机制。（4.0+版本支持）  
+&emsp; 当开启这个机制后，Redis在删除一个bigkey时，释放内存的耗时操作，将会放到后台线程中去执行，这样可以在最大程度上，避免对主线程的影响。  
 4. **使用批量操作提高效率。**  
 &emsp; 1).原生命令：例如 mget、mset。2).非原生命令：可以使用 pipeline提高效率。两者不同：  
     * 原生是原子操作，pipeline 是非原子操作。  
     * pipeline 可以打包不同的命令，原生做不到。  
     * pipeline 需要客户端和服务端同时支持。  
-
 
 
 # 1. ~~Redis客户端使用及开发规范~~
