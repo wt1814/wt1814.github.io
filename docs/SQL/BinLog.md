@@ -20,6 +20,13 @@
 <!-- 
 不会吧，不会吧，还有人不知道 binlog ？ 
 https://mp.weixin.qq.com/s/W-u9l_As2pLUMlSQFTckCQ
+
+ Mysql的日志那些事 
+    binlog：归档日志， Server层的日志。
+    redo log：重做日志，InnoDB存储引擎层的日志。
+    undo log：回滚日志，提供回滚操作，InnoDB存储引擎层的日志。
+https://mp.weixin.qq.com/s/Xb688Hw2EN_EiDoMLcX7ww
+
 -->
 
 <!--

@@ -16,6 +16,9 @@
 <!-- /TOC -->
 
 <!-- 
+***Redis中主、从库宕机如何恢复？
+ https://mp.weixin.qq.com/s/pO23ASPrc46BoPkRnQsPXQ
+
 ~~
 Redis如何实现故障自动恢复？ 
 https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g

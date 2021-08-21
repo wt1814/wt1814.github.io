@@ -6,12 +6,16 @@ https://mp.weixin.qq.com/s/GlqoafdmC4Xjf7DACN3srQ
 
 Redis官方的高可用性解决方案 
 https://mp.weixin.qq.com/s/8JPBNMGhBsq2jfW9v-H5vQ
+
+ ***Redis 生产架构选型解决方案 
+ https://mp.weixin.qq.com/s/4d-zeaVbQFn7qT4DWagjOg
+***Redis中主、从库宕机如何恢复？
+ https://mp.weixin.qq.com/s/pO23ASPrc46BoPkRnQsPXQ
 -->
 
 &emsp; Redis部署方式： **<font color = "red">单机、主从复制模式、哨兵模式、分片模式（包含客户端分片、代理分片、服务器分片即Redis Cluster）。</font>**  
 1. Redis单机：  
     &emsp; Redis单机部署一般存在如下几个问题：  
-
     * 机器故障，导致Redis不可用，数据丢失。  
     * 容量瓶颈：容量不能水平扩展。  
     * QPS 瓶颈：一台机器的处理能力、网络宽带总是有限的，如果能够划分一些流量到其他机器，可以有效解决QPS问题。 

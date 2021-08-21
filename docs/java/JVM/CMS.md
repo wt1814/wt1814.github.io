@@ -16,7 +16,7 @@
             - [1.2.2.6. 并发重置](#1226-并发重置)
     - [1.3. ~~优点与问题~~](#13-优点与问题)
         - [1.3.1. 减少remark阶段停顿](#131-减少remark阶段停顿)
-        - [1.3.2. 内存碎片问题](#132-内存碎片问题)
+        - [1.3.2. ~~内存碎片问题解决~~](#132-内存碎片问题解决)
         - [1.3.3. ~~concurrent mode failure & promotion failed问题~~](#133-concurrent-mode-failure--promotion-failed问题)
             - [1.3.3.1. 简介](#1331-简介)
             - [1.3.3.2. 可能原因及解决方案](#1332-可能原因及解决方案)
@@ -37,7 +37,12 @@
     1. 划时代的并发收集器。  
     2. 吞吐量低。并发执行，线程切换。  
     3. **<font color = "blue">并发执行，产生浮动垃圾(参考三色标记法中“错标”)。</font>**  
-    4. 使用"标记-清除"算法，产生碎片空间。
+    4. 使用"标记-清除"算法，产生碎片空间。 CMSGC在老生代回收时产生的内存碎片会导致老生代的利用率变低；或者可能在老生代总内存大小足够的情况下，却不能容纳新生代的晋升行为（由于没有连续的内存空间可用），导致触发FullGC。针对这个问题，`Sun官方给出了以下解决内存碎片问题的方法：`  
+        * 增大Xmx或者减少Xmn  
+        * 在应用访问量最低的时候，在程序中主动调用System.gc()，比如每天凌晨。  
+        * 在应用启动并完成所有初始化工作后，主动调用System.gc()，它可以将初始化的数据压缩到一个单独的chunk中，以腾出更多的连续内存空间给新生代晋升使用。  
+        * `降低-XX:CMSInitiatingOccupancyFraction参数（内存占用率，默认70%）以提早执行CMSGC动作，`虽然CMSGC不会进行内存碎片的压缩整理，但它会合并老生代中相邻的free空间。这样就可以容纳更多的新生代晋升行为。 
+        * CMS收集器提供了一个-XX：+UseCMS-CompactAtFullCollection开关参数（默认是开启的，此参数从JDK 9开始废弃），用于在CMS收集器不得不进行Full GC时开启内存碎片的合并整理过程。`还提供了另外一个参数-XX：CMSFullGCsBefore-Compaction（此参数从JDK 9开始废弃），这个参数的作用是要求CMS收集器在执行过若干次（数量由参数值决定）不整理空间的Full GC之后，下一次进入Full GC前会先进行碎片整理（默认值为0，表示每次进入Full GC时都进行碎片整理）。`  
     5. 晋升失败与并发模式失败：都会退化成单线程的Full GC。  
         * 晋升失败(promotion failed)：当新生代发生垃圾回收， **老年代有足够的空间可以容纳晋升的对象，但是由于空闲空间的碎片化，导致晋升失败。** ~此时会触发单线程且带压缩动作的Full GC。~  
         * 并发模式失败(concurrent mode failure)：当CMS在执行回收时，新生代发生垃圾回收，同时老年代又没有足够的空间容纳晋升的对象时。CMS垃圾回收会退化成单线程的Full GC。所有的应用线程都会被暂停，老年代中所有的无效对象都被回收。  
@@ -225,6 +230,8 @@ https://segmentfault.com/a/1190000020625913?utm_source=tag-newest
 <!-- 
 https://blog.csdn.net/zqz_zqz/article/details/70568819
 https://www.jianshu.com/p/86e358afdf17
+线程资源被垃圾收集线程占用（cpu资源占用问题）
+https://segmentfault.com/a/1190000040354999?utm_source=sf-similar-article
 -->
 &emsp; CMS是一款优秀的收集器，它最主要的优点在名字上已经体现出来： **<font color = "clime">并发收集、低停顿。</font>** 但是也有以下 **<font color = "red">三个明显的缺点：</font>**  
 
@@ -242,13 +249,41 @@ https://www.jianshu.com/p/86e358afdf17
 https://mp.weixin.qq.com/s/5czSnGFi_PdOAsM-Iqqmww
 -->
 
-&emsp;一般CMS的GC耗时80%都在remark阶段，如果发现remark阶段停顿时间很长，可以尝试添加该参数：`-XX:+CMSScavengeBeforeRemark`。  
-&emsp;在执行remark操作之前先做一次Young GC，目的在于减少年轻代对老年代的无效引用，降低remark时的开销。  
+&emsp; 一般CMS的GC耗时80%都在remark阶段，如果发现remark阶段停顿时间很长，可以尝试添加该参数：`-XX:+CMSScavengeBeforeRemark`。  
+&emsp; 在执行remark操作之前先做一次Young GC，目的在于减少年轻代对老年代的无效引用，降低remark时的开销。  
 
 
-### 1.3.2. 内存碎片问题  
-&emsp;CMS是基于标记-清除算法的，CMS只会删除无用对象，不会对内存做压缩，会造成内存碎片，这时候需要用到这个参数：`-XX:CMSFullGCsBeforeCompaction=n`。  
+### 1.3.2. ~~内存碎片问题解决~~  
+<!-- 
+
+CMSGC造成内存碎片的解决方法
+https://blog.csdn.net/weixin_34343689/article/details/86131696
+
+CMS的碎片解决方案
+https://blog.csdn.net/qq_40198004/article/details/109668921
+
+CMS的CMSInitiatingOccupancyFraction解析
+https://blog.csdn.net/insomsia/article/details/91802923
+-->
+&emsp; CMS是基于标记-清除算法的，CMS只会删除无用对象，不会对内存做压缩，会造成内存碎片，这时候需要用到这个参数：`-XX:CMSFullGCsBeforeCompaction=n`。  
 &emsp;意思是说在上一次CMS并发GC执行过后，到底还要再执行多少次full GC才会做压缩。默认是0，也就是在默认配置下每次CMS GC顶不住了而要转入full GC的时候都会做压缩。 如果把CMSFullGCsBeforeCompaction配置为10，就会让上面说的第一个条件变成每隔10次真正的full GC才做一次压缩。  
+
+-------------
+
+&emsp; CMSGC在老生代回收时产生的内存碎片会导致老生代的利用率变低；或者可能在老生代总内存大小足够的情况下，却不能容纳新生代的晋升行为（由于没有连续的内存空间可用），导致触发FullGC。针对这个问题，Sun官方给出了以下的四种解决方法：
+
+* 增大Xmx或者减少Xmn  
+* 在应用访问量最低的时候，在程序中主动调用System.gc()，比如每天凌晨。  
+* 在应用启动并完成所有初始化工作后，主动调用System.gc()，它可以将初始化的数据压缩到一个单独的chunk中，以腾出更多的连续内存空间给新生代晋升使用。  
+* 降低-XX:CMSInitiatingOccupancyFraction参数（内存占用率，默认70%）以提早执行CMSGC动作，虽然CMSGC不会进行内存碎片的压缩整理，但它会合并老生代中相邻的free空间。这样就可以容纳更多的新生代晋升行为。   
+
+----------
+
+&emsp; CMS是一款基于“标记-清除”算法实现的收集器，如果读者对前面这部分介绍还有印象的话，就可能想到这意味着收集结束时会有大量空间碎片产生。空间碎片过多时，将会给大对象分配带来很大麻烦，往往会出现老年代还有很多剩余空间，但就是无法找到足够大的连续空间来分配当前对象，而不得不提前触发一次Full GC的情况。  
+&emsp; 为了解决这个问题，CMS收集器提供了一个-XX：+UseCMS-CompactAtFullCollection开关参数（默认是开启的，此参数从JDK 9开始废弃），用于在CMS收集器不得不进行Full GC时开启内存碎片的合并整理过程，由于这个内存整理必须移动存活对象，（在Shenandoah和ZGC出现前）是无法并发的。  
+&emsp; 这样空间碎片问题是解决了，但停顿时间又会变长，因此虚拟机设计者们还提供了另外一个参数-XX：CMSFullGCsBefore-Compaction（此参数从JDK 9开始废弃），这个参数的作用是要求CMS收集器在执行过若干次（数量由参数值决定）不整理空间的Full GC之后，下一次进入Full GC前会先进行碎片整理（默认值为0，表示每次进入Full GC时都进行碎片整理）。  
+
+
 
 ### 1.3.3. ~~concurrent mode failure & promotion failed问题~~
 <!-- 

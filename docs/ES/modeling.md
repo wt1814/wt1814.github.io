@@ -15,6 +15,11 @@
 
 # 1. ES建模  
 <!-- 
+大家点击阅读原文或者复制下面链接查看。
+https://t2.lagounews.com/9R5DRcROsO3C1 
+手把手带你实践 Elasticsearch 数据建模全流程
+
+
 Elasticsearch 索引设计实战指南
 https://mp.weixin.qq.com/s/Fc5LhiLJIeCtstl9OFeqdQ
 
