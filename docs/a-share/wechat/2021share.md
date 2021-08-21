@@ -87,7 +87,8 @@
 [LockSupport的用法及原理](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492654&idx=1&sn=e440e63678af660a06bafb8372f29d06&chksm=cf70f640f8077f5660948116eeb98d17a2f8d98140e8d9dc333d733576f7951344143da72b63&scene=21#wechat_redirect)  
 [手把手教你线程池配合CompletableFuture实现图片下载并压缩](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492769&idx=1&sn=13bad273744afae302a174275b210561&chksm=cf70f6cff8077fd90f0acc7ea465d4bb3b6cbd76865cd7eb49f111b2f742436ff806bd80c5dd&scene=21#wechat_redirect)  
 [java 全局变量 内存不回收_java垃圾回收机制，解决程序员的内存管理问题](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492812&idx=1&sn=f605d623cd4da34fb0dcccc114e85396&chksm=cf70f6a2f8077fb40edb05a24fa988f26e96b015bce8c081c2bf71ec906c08d9e767322bc502&scene=21#wechat_redirect)  
-
+[ Synchronized 的 8 种用法，真是绝了！](https://mp.weixin.qq.com/s/SXhMEce6NcckUEUEGmj69w)  
+[详解synchronized锁的各种用法及注意事项](https://mp.weixin.qq.com/s/Ejk4L8HqKuGRuyXvM4GGQQ)  
 
 ## 数据库
 [神奇的 SQL 之 ICP → 索引条件下推](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491427&idx=3&sn=bc6b4ca1afb6525ae33b9019fde36c6c&chksm=fa20bf7fcd5736695a3b7f4851e4d24a8e9ad69df301e74acdb2fcdbcd5055afa7f2893ba786&scene=21#wechat_redirect)  
@@ -133,7 +134,8 @@
 [Explain执行计划key_len详解](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492881&idx=1&sn=63833f91e04f291a3f5fb73343445fa7&chksm=cf70f77ff8077e696f6a15ecda01cc2c62fdbd7d41f5fb77e9539c433b1648436b8c86f67972&scene=21#wechat_redirect)  
 [读写分离怎么做，怎么实现](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493046&idx=1&sn=b12312f37c9800d2bf514bebc5c4067b&chksm=cf70f7d8f8077ece13e82bf5a2701b935588f4fb117c2d1b7eb1458a62462ecf0362f13dd856&scene=21#wechat_redirect)  
 [我C，一个库里Curry几百个表，这谁受得了？](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493169&idx=1&sn=30ad2fd144b8512520b8f99dc6f36a22&chksm=cf70f45ff8077d49b08db9663204cf625a9868c60e238b7649069dd8bf7c4aabc09eeb32b02b&scene=21#wechat_redirect)  
-
+[ 一条 sql 的执行过程详解](https://mp.weixin.qq.com/s/y9R6fn8PXbvHrWCqyk9qlA)  
+[浅谈 MySQL InnoDB 的内存组件](https://mp.weixin.qq.com/s/h2rsvttXWxOSjz0wTsFtOg)  
 
 ## Spring
 [Spring与Spring Boot中的事件机制](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491905&idx=2&sn=8b4a1a4e053cd212e3200beb243ffad5&chksm=fa23415dcd54c84b07d43e797b76d4d70edbb87267ea21c863d4679991fb3a5989d69cfeadcb&scene=21#wechat_redirect)  
@@ -155,7 +157,9 @@
 [Intellij IDEA中Mybatis Mapper自动注入警告的6种解决方案](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247492459&idx=2&sn=e294e7721eb040648169b4e38ccd2779&chksm=fa234377cd54ca6114946349578f6c2a706e63012eb69fb2e04f7fee44e662297ba84dde14f3&scene=21#wechat_redirect)  
 [浅析MyBatis的动态代理原理](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247492409&idx=1&sn=855f388232c50322164fbfd2e499a445&chksm=fa234325cd54ca33347c26ab2811aacbbe0243a96e960a3496ea8aa73b39371830932db8db29&scene=21#wechat_redirect)  
 [Mybatis为啥能适应各种日志框架](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247493065&idx=1&sn=4d2feaf734c50f61700c231a04fc4b08&chksm=fa2345d5cd54ccc38dcac69c973bf5c3d9694242cb03d747ba1418fc6d0a922376680acf2c80&scene=21#wechat_redirect)  
-
+[新技能 MyBatis 千万数据表，快速分页！](https://mp.weixin.qq.com/s/9fd4-8fb2ZteHhfPwhfVeQ)  
+[Mybatis针对Oracle使用fetchSize](https://mp.weixin.qq.com/s/lj0hYjaGqBIn-3mdvsu-Zw)  
+[使用 MyBatis 查询千万数据量？](https://mp.weixin.qq.com/s/R7QnaHZ3vStXFpcaqJlocg)  
 
 ## Redis
 [Redis复制原理](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491906&idx=3&sn=c0f01ccd8bec5c40577f7e0bfeed181c&chksm=fa23415ecd54c848d717c684f714715731a9e494bf259db28818ac5580fb4e257f7b481b8b77&scene=21#wechat_redirect)  
@@ -210,7 +214,8 @@
 [spring-cloud-sleuth链路信息中增加自定义属性](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492438&idx=2&sn=8c7eb9a09d08afdcf1ef17d9ac082cde&chksm=cf70f138f807782e429ecfa710e8efdc662b56410a198728228eb1824963b4bf5d58e1a1a699&scene=21#wechat_redirect)  
 [如何在Sleuth链路中添加自定义Tag标签](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492438&idx=1&sn=ae90e15b5b170ee0ce9b751079789a07&chksm=cf70f138f807782e23aa053a20c04e283ac5d78ba53b62585a42319b52e1e35c14ab89be30f6&scene=21#wechat_redirect)  
 [Zookeeper读写数据流程](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492529&idx=1&sn=2354451ac9a2d437d72a17fcbcc6f358&chksm=cf70f1dff80778c95a08f34efb0d2610bf7889e37586d83bb38fff48d3051cee5f9267368cee&scene=21#wechat_redirect)  
-
+[Zookeeper的优缺点](https://mp.weixin.qq.com/s/lVWRPXAujr_yxaS6B4nOuA)  
+[Zookeeper系统设计的缺陷](https://mp.weixin.qq.com/s/gdeI-EYhJ2Xwv6Hyd3NaHA)  
 
 ## 高并发
 [什么是流量削峰？如何解决秒杀业务的削峰场景](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492412&idx=1&sn=d0728cd3bf7487fa2186a63d731641ef&chksm=cf70f152f80778444ec86d60c6758c8349c0a60744d531a134c1e0f7e2d2abdfbbc17a0912b1&scene=21#wechat_redirect)  
