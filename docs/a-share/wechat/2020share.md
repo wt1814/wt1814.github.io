@@ -23,7 +23,7 @@
 [wait、notify/notifyAll](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487198&idx=1&sn=20052e67046fcc03566b52f3753a3517&chksm=fa20aec2cd5727d4c91baa65e0bfc2db26b9bc04562a9b1ce324d1d493cba652c3007827c951&scene=21#wechat_redirect)  
 [如何去掉 list 集合中重复的元素?](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487463&idx=1&sn=92d88449673debf3aea33a8419fa048a&chksm=fa20affbcd5726edda3684710b276b9c36f7f7b45d365eaeefd4087825f3d12d40f01bf61e55&scene=21#wechat_redirect)  
 [JDK SPI源码分析](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487935&idx=2&sn=f775e00f7a2d63ac15b032adb0c7409b&chksm=fa20b1a3cd5738b5d92c8da6c700f20003bd225ff868f1341d6ac8eccc966f9a962e2eeb0dbb&scene=21#wechat_redirect)  
-[你应该了解的 Java SPI机制](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487935&idx=1&sn=253608a1d1b1b2d8f243234eb53ed539&chksm=fa20b1a3cd5738b55f06e66b10e9dfdb9e03c9ac6d55a279974f8387f0b3016cf80b67ca8eb2&scene=21#wechat_redirect)  
+[你应该了解的Java SPI机制](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487935&idx=1&sn=253608a1d1b1b2d8f243234eb53ed539&chksm=fa20b1a3cd5738b55f06e66b10e9dfdb9e03c9ac6d55a279974f8387f0b3016cf80b67ca8eb2&scene=21#wechat_redirect)  
 [超赞，压缩20M文件从30秒到1秒的优化过程](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487946&idx=1&sn=d6978ee9bcdbd2ecd305655783b63463&chksm=fa20b1d6cd5738c0d250c9c60a6f8f5700a0f6b956881ff6a213b921c570a4194112d3b93987&scene=21#wechat_redirect)  
 [七种对象复制工具类，阿粉该 Pick 谁？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247488030&idx=1&sn=e8feb6c17f2470135a9e0ba692f3cc6c&chksm=fa20b202cd573b14da2d9c5bf0a1a6743526db750f1bcf7bee4913fc70b1f121d07158731e48&scene=21#wechat_redirect)  
 [关于Java8 parallelStream并发安全的思考](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247488067&idx=1&sn=009cf069a16248a74b00f9b1a33ba1c8&chksm=fa20b25fcd573b4914c5a3fb7a75b5890b4d57e70f039b6e5622b9819b590a72e80293ad721c&scene=21#wechat_redirect)  
@@ -32,13 +32,13 @@
 [Java8——异步编程](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247488387&idx=1&sn=0e0cd58d25044f6f8ed2a8c6edc83f76&chksm=fa20b39fcd573a89b7d2a0c615fa8e0383ee532b660f6ddc383c68f8e3cfaca99a8c71d66ff5&scene=21#wechat_redirect)  
 [kill代码重复/大量ifelse](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489441&idx=1&sn=a4bf6e829cc26cb573701a6bdb462d18&chksm=fa20b7bdcd573eab9e5d5afb7c82a3576b84b90f19b96587a53fb1e6750fb21f406af1dc33b3&scene=21#wechat_redirect)  
 [Java只有值传递！为什么？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489913&idx=1&sn=fe5bf525940d359c4b249dc3bc260dfb&chksm=fa20b965cd573073b44829c6e6572f7b8f98ee6744b9f00776883cdcd87206d0333298d4d9e7&scene=21#wechat_redirect)  
-[你只会用 StringBuilder？试试 StringJoiner，真香！](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490225&idx=3&sn=12688ce5bbf9983ec8eafd3f5656e6e6&chksm=fa20baadcd5733bb77974b78f2e43257bb965d0df07dbf41193b3e501185e26ed779facc95f9&scene=21#wechat_redirect)  
+[你只会用StringBuilder？试试 StringJoiner，真香！](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490225&idx=3&sn=12688ce5bbf9983ec8eafd3f5656e6e6&chksm=fa20baadcd5733bb77974b78f2e43257bb965d0df07dbf41193b3e501185e26ed779facc95f9&scene=21#wechat_redirect)  
 [PO、VO、DAO、BO、DTO、POJO能分清吗？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490225&idx=2&sn=ed9378b4ea608313ce1ee6ada24b1ec7&chksm=fa20baadcd5733bb5864c448778914938272ba4458837b8fa481334a03e3350964b008159f49&scene=21#wechat_redirect)  
 
 
 ## 设计模式
 [《重学 Java 设计模式》PDF 出炉了 - 小傅哥，肝了50天写出18万字271页的实战编程资料](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487936&idx=2&sn=72932e8dfa5aa2d01da06160189b5b00&chksm=fa20b1dccd5738cad2c6a15846be2f89f55af5a3fb5599044590d7e97bc01d991187353536d1&scene=21#wechat_redirect)  
-[【设计模式】 模式PK：代理模式VS装饰模式](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487936&idx=1&sn=55bb2f4f3680a242d75989414ae9de04&chksm=fa20b1dccd5738ca3943d6bb82183674dc7f1b4ae32d5fe593bb431c02c8e4c2f5b430f6c6ce&scene=21#wechat_redirect)  
+[【设计模式】模式PK：代理模式VS装饰模式](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487936&idx=1&sn=55bb2f4f3680a242d75989414ae9de04&chksm=fa20b1dccd5738ca3943d6bb82183674dc7f1b4ae32d5fe593bb431c02c8e4c2f5b430f6c6ce&scene=21#wechat_redirect)  
 [设计模式在工作中的实践](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247488735&idx=1&sn=ca6d118b03a47e7647a7f71c5b9c0fdd&chksm=fa20b4c3cd573dd5f63f9b151025f688f779d4b713200ff834b9db4d490db7343abf820ba96c&scene=21#wechat_redirect)  
 [10个常见的软件架构模式](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489152&idx=3&sn=976aad716d43e5f848cd30b33730c0e2&chksm=fa20b69ccd573f8a9c092a3cbbd8f2ec49fc00cebbcafe6c6b30a4e64b55963d92f68cf36778&scene=21#wechat_redirect)  
 [【状态设计模式】使用场景](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489271&idx=1&sn=ba1ef2c5556b63d7784d2291613aa79d&chksm=fa20b6ebcd573ffd81702dc0814f44174686d350bb9a1c4b13b9cde2ac221ab0561ba819ef89&scene=21#wechat_redirect)  
@@ -67,7 +67,7 @@
 [CAS底层原理与ABA问题](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247486861&idx=1&sn=7c7c5435530a9936d153598aa28d9e70&chksm=fa20ad91cd5724878302147276c284bd5d079cf9050f7012ce6151f41b43e1c02fc2c669ca75&scene=21#wechat_redirect)  
 [Java并发包基石-AQS详解](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487075&idx=3&sn=32b28796612998d8026ea2213954c1be&chksm=fa20ae7fcd5727695f567e4c880ab33dc8a3add9991814ab41aed733284986a58246b571eb63&scene=21#wechat_redirect)  
 [AQS（抽象同步队列）解析与实战](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487075&idx=2&sn=027d762e54ab50f54387abb11a433361&chksm=fa20ae7fcd5727696336b64955a3a3575d284358a65f68757fd5ac9e9dd3ef800ec126dc82d1&scene=21#wechat_redirect)  
-[Java中的锁[原理、锁优化、CAS、AQS]](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487075&idx=1&sn=0c6ece1f09d91489278a204f40b2bcf6&chksm=fa20ae7fcd572769cd69f1d22bbba83ee85158366003f91b12a2d9974dd63556b17548dafe92&scene=21#wechat_redirect)  
+[Java中的锁原理、锁优化、CAS、AQS](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487075&idx=1&sn=0c6ece1f09d91489278a204f40b2bcf6&chksm=fa20ae7fcd572769cd69f1d22bbba83ee85158366003f91b12a2d9974dd63556b17548dafe92&scene=21#wechat_redirect)  
 [Future和CompletableFuture解析与使用](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487569&idx=2&sn=34afcdad0a1141b4675199542aa3cf2c&chksm=fa20b04dcd57395ba64c62b739a4a98294d40b9b54f85c07f289a1d6cac77cf8c85cf98a818c&scene=21#wechat_redirect)  
 [JDK8-Fork/Join和CompletableFuture的使用](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487569&idx=1&sn=39d2f3b7d1ad70ecb8e05144d33203b7&chksm=fa20b04dcd57395b726e0501c689733248a3e8476e14cce6b92b8e9e0b4737bbfd30aba68e66&scene=21#wechat_redirect)  
 [反制面试官 | 14张原理图 | 再也不怕被问 volatile!](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487763&idx=1&sn=d575d886a22203797ce8866c9ef396a8&chksm=fa20b10fcd573819b51a497f8cd3bc4a705f994855a3e95430c375387e7a0592cdd47dabb251&scene=21#wechat_redirect)  
@@ -189,6 +189,8 @@
 [如何使用SpringBoot AOP 记录操作日志、异常日志？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489161&idx=1&sn=ab1db2ac3df722b2111a3f3490d4bc56&chksm=fa20b695cd573f8306222a64a194e3e3c1acf37700e97f18c86a49635e8efe787d2df9e715f6&scene=21#wechat_redirect)  
 [Spring 中的bean 是线程安全的吗？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490225&idx=1&sn=ba774bc872b5ea99bc0374c854f1bdf1&chksm=fa20baadcd5733bbb055604e3e30cee7fc6061e2ddc86eaaf43cbf40312b5c793f5a1cef7877&scene=21#wechat_redirect)  
 [Spring高频面试题：如何解决循环依赖问题！](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490285&idx=2&sn=e832d91fa5be2d0eb21854ed1a242610&chksm=fa20baf1cd5733e78de7912d0e1fb55e7f862add6556b15348ef50af803b0c05331c441ab079&scene=21#wechat_redirect)  
+[切面和自定义注解的配合使用](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247488301&idx=1&sn=c53134500962665e8d3fb8ece2936f40&chksm=fa20b331cd573a27f415d2e8798507b11f6120d298eaecec5e08222e5a9975aa62c839a81b09&scene=21#wechat_redirect)  
+
 
 
 ## Mybatis
@@ -287,6 +289,10 @@
 [SpringBoot内置tomcat启动原理](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489747&idx=1&sn=cf6c7a31d8258b46016c2c9b4b133b58&chksm=fa20b8cfcd5731d93bc1681d997d41fefafbe7475fa7a284193c37730793929e38ad6e146c91&scene=21#wechat_redirect)  
 [Dubbo几个常见面试题](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491011&idx=1&sn=6eb9fad7f27b04957ffbe7c5fbc7d040&chksm=fa20bddfcd5734c9710c343739d51e3d05ed390131e21be50fb87b24935e99336b7ae4fdfbc7&scene=21#wechat_redirect)  
 [什么是Hystrix](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491213&idx=1&sn=9f67865447b3ef23b32e3105a28b2696&chksm=fa20be91cd573787fedc2a543d5579380eb28dc9628b9dd7a526660e852b28b4c43ff5e81dae&scene=21#wechat_redirect)  
+[一个复杂系统的拆分改造实践！](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489899&idx=3&sn=b02ce3572cf7c90c8273396f009a469c&chksm=fa20b977cd573061b8b6231c929afe3201ba4cc5adb7dc27e777a1a2ac6b8f8596f2e32c363f&scene=21#wechat_redirect)  
+[电商系统中微服务体系中的分层设计和领域划分？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490072&idx=1&sn=0d24f67475875631305a041f90daf444&chksm=fa20ba04cd573312d78e20fd6d39bf61d86703662c4b003b172fb8ed08a915fae9d12e46fde9&scene=21#wechat_redirect)  
+[熔断降级处理](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247486862&idx=1&sn=63d0265ee67863f5b3c25cad53e65107&chksm=fa20ad92cd572484c4306d3d4cdc836cb0f2f54e1ea948f346e9b933a59c98e18d83ad95f77d&scene=21#wechat_redirect)  
+
 
 
 ## 分布式
@@ -332,6 +338,20 @@
 [详解日志采集工具--Logstash、Filebeat、Fluentd、Logagent对比](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490581&idx=4&sn=d2b3c5919ce2057dfd8512a6a12ceab5&chksm=fa20bc09cd57351f4f445c6cc30d5eb99126eb874eee42409ab1fe58b67f0b3e325eb39c31ac&scene=21#wechat_redirect)  
 [ES倒排索引结构设计太牛逼](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491060&idx=1&sn=79d4979f01358e6a8572542fe49b4ce9&chksm=fa20bde8cd5734fe8378393879920b867f19ccccf79b2af08cbe46e5f7006be59234d659a865&scene=21#wechat_redirect)  
 
+## 中间件
+[延迟队列实现，定时任务，关闭订单](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489054&idx=2&sn=322db6ea1f80a8950549236e3d577eb3&chksm=fa20b602cd573f149081de41aea3a30752a4df4fe9f27110e5184986efa17a568590f4a217e0&scene=21#wechat_redirect)  
+[延时队列实现的几种姿势](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489054&idx=1&sn=8ddec37d47f64e9c511a06bae003cb5c&chksm=fa20b602cd573f148ed0277908cfa2bd17b0151ebf010008b16595ab7b93299e48a3cba463f7&scene=21#wechat_redirect)  
+[权限设计的一些想法和思考](https://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247484511&idx=1&sn=de05d27a88628971448f927df253e900&scene=21#wechat_redirect)  
+[超级全面的权限系统设计方案](https://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247484528&idx=1&sn=786d25bbe8690815f0b5566f240397ee&scene=21#wechat_redirect)  
+[Spring Boot 整合 Activiti 工作流](https://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247484381&idx=1&sn=2ea1f4849ab15da869aa24dc70cd5802&scene=21#wechat_redirect)  
+[分布式定时任务调度系统技术选型 ](https://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247484692&idx=2&sn=ad459f47b91298fb469f9e0cd7deb967&scene=21#wechat_redirect)  
+[定时任务实现原理详解](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491011&idx=2&sn=237b688a72b5ba2ca65f01f8f99eb6f3&chksm=fa20bddfcd5734c96981b63ccfb53009d551f43046d3205da6c9d902d61bf235bba733ab9f44&scene=21#wechat_redirect)  
+[基于分布式文件系统 FastDFS，利用 Zuul 网关实现滑块验证登录](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487464&idx=1&sn=80fa02da4671fc8251925efc70be0887&chksm=fa20aff4cd5726e252cacc420ee389ed5295c8001a1eb4829f10853bd1bbe8272dca01e1bb33&scene=21#wechat_redirect)  
+[单点登录的三种实现方式，你会几种？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489079&idx=2&sn=e2e99b429f3aec9fa1c508bf0fed2871&chksm=fa20b62bcd573f3d32a4bd9bbe25d9248835c93824e694d230b96a854d704a97aac095e20690&scene=21#wechat_redirect)  
+[Spring Boot 实现限制账户登录数](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489079&idx=1&sn=8e7465bd819fdc6ad7f3f69045d5e202&chksm=fa20b62bcd573f3daae117cc0aa31c7efb4613cb3d10b70ecb30ff77846dee081b46f2f5629c&scene=21#wechat_redirect)  
+[]()  
+[]()  
+
 ## Netty
 [Springboot 整合 Netty 实战(附源码) ](https://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247484479&idx=2&sn=8cdd76489c437525492a9cbecbe927a5&scene=21#wechat_redirect)  
 [推荐：一款Java开源的Springboot 即时通讯 IM 聊天系统](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247486559&idx=2&sn=3e373025e02a2afb4f64f47b1154ce1a&chksm=fa20ac43cd57255563f0aed11b01ed9dc28e17da8e61283bc3dfbd344db0fc8121f98e2b2911&scene=21#wechat_redirect)  
@@ -376,6 +396,24 @@
 [收藏系列-springboot断点续传的两种方法](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491174&idx=1&sn=cb223c797e5866bebffb88aa0a587769&chksm=fa20be7acd57376cdc36dbdd3353ba56e94f2addd40f50941a45c5b51bdfc60d25d63a33b9fb&scene=21#wechat_redirect)  
 [Excel 大批量数据的导入和导出，如何做优化？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491358&idx=1&sn=7e7e54c607656aafd94bcdc1d8a37e1f&chksm=fa20bf02cd57361405f481ecf16bb5ade3527a81c8cad61337d88230a26634a7f16541a76a54&scene=21#wechat_redirect)  
 [Spring Validation，参数校验没那么简单！](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491358&idx=2&sn=d51b3f65a0a7d71c46acc07142165d80&chksm=fa20bf02cd5736145c7abb98cfc8f03941bb5d35285827dfdf8d0acbd11a612b3dc5caf3fa31&scene=21#wechat_redirect)  
+[Java 生成二维码实战](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247486841&idx=1&sn=48f0122b417e6ea3f55a8edfe0c34232&chksm=fa20ad65cd57247316f5bedd7fc5737cdae0ecf6c2c5889582bc77bdd4ec5d332664681e7a76&scene=21#wechat_redirect)  
+[一个依赖搞定 Spring Boot 反爬虫，防止接口盗刷！](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247486841&idx=2&sn=39e2eee7f5707b57e8208f3280c38557&chksm=fa20ad65cd572473dffe133dd5b2462dd0a7455f20c5643900a37b8c1dba7ab1306065599ed1&scene=21#wechat_redirect)  
+[处理Java bean间的映射实现，墙裂推荐MapStruct这款效率神器!](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489232&idx=2&sn=7d3a331c87cb6231f84a060aa83e467f&chksm=fa20b6cccd573fda08d2275145efaa6dd2e7ecaa4b3bb53a24f388530869f706c8623e6e5176&scene=21#wechat_redirect)  
+[接口的响应时间过长](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247486851&idx=1&sn=2cf89ab78e3540e96346a84eee5c3f76&chksm=fa20ad9fcd572489903048792a71f249c5392157e53cb6ca9df737519fd12e2e5738adc2ad0b&scene=21#wechat_redirect)  
+[爆文-DDD领域驱动设计实践](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489159&idx=2&sn=239e75c3db5b6f0ef9ada3d100bfc799&chksm=fa20b69bcd573f8d7547999ad2e6851bf4bf9218d37abaf4d1d825d05f1b115905de60803c6d&scene=21#wechat_redirect)  
+[高可用解决方案：同城双活？异地双活？异地多活？怎么实现？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490237&idx=2&sn=f6743666fc6c0d849a89e4e2e2b2fee1&chksm=fa20baa1cd5733b7ca9330ecac60535532b1c8e1aee0f55bfc2769361d80503b01c7f70a349e&scene=21#wechat_redirect)  
+[史上最简单通俗易懂的 RestFul 讲解！](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490237&idx=1&sn=1af95b9cc06eb728c8d2fbd198499e1b&chksm=fa20baa1cd5733b7d06e4db7cb0d0b312d54b9e0495441bcd1baac848dccd90947cef9a6a008&scene=21#wechat_redirect)  
+
+
+## 负载均衡
+[nginx如何处理一个请求](https://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247484463&idx=1&sn=772487c782011a105440e50e6d69561d&scene=21#wechat_redirect)  
+[如何优雅地使用 Nginx 限流](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247485043&idx=1&sn=767cfbabc46762442538f1789b7671d3&chksm=fa20a66fcd572f793bc066df7d3174465e97db7903af05660ceff0f4a8f7e36397f9510cd9d2&scene=21#wechat_redirect)  
+[什么是负载均衡](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247486252&idx=1&sn=1eb01563518930bb9e31fc4d7bff3fa2&chksm=fa20ab30cd5722262057dc7e73f9d63c5532130463426ce27f8e22c3d1287543fcb826e6c281&scene=21#wechat_redirect)  
+[一文详解LVS、Nginx及HAProxy工作原理](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247488357&idx=1&sn=47938b1fba11f3ec149d9c1d31fac4bf&chksm=fa20b379cd573a6f1f921a577bb5c19802878b049f315dd3e1a759f77730f28637ed436b7339&scene=21#wechat_redirect)  
+[CDN是什么？使用CDN有什么优势？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490334&idx=1&sn=8d27e9cc4d01378333937bbec57bc281&chksm=fa20bb02cd5732140bcef23a48af17b9132e867906dacc2094766b7da08c41ad5a0f8dd4894d&scene=21#wechat_redirect)  
+[使用 CDN 的好处和注意事项](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490334&idx=2&sn=9464962df494024a1051d5e583f9e702&chksm=fa20bb02cd573214917a30b7a6cf8ddf851624f0982990822a2735d57026186329962852fbe9&scene=21#wechat_redirect)  
+[CDN是什么？与DNS有什么关系？及其原理](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490334&idx=3&sn=4298a16a390373cc6437b89d2dd63039&chksm=fa20bb02cd5732145534eab545009e1a3004383856317ad950747f79609daf7fbb2abc7d9c1a&scene=21#wechat_redirect)  
+[Keepalived](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490333&idx=1&sn=ae96d6806216648a4599f4943c2c0165&chksm=fa20bb01cd5732173ac5c3023c691f183de417f703bc99a870570a68c21a74e74f7a3ff18e0d&scene=21#wechat_redirect)  
 
 
 ## DevOps
@@ -417,19 +455,45 @@
 [k8s资源限制](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490894&idx=2&sn=8d31b0d34b3d883586692ce8683260fe&chksm=fa20bd52cd5734441ba986149b48de90593a4ed16906b0eb3abaf54eb6217d844aef75c6d03e&scene=21#wechat_redirect)  
 [k8s的yaml文件配置详解](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490894&idx=1&sn=beaf2aa8d11766bd39d633f07dde44be&chksm=fa20bd52cd5734449da1d6bd896db38f3b701e902a76e451796ea17e2ab082e96f34d20c30dc&scene=21#wechat_redirect)  
 [Kubernetes中容器到容器通信](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490967&idx=1&sn=d52c9010afb40d93643d48fcbb251fea&chksm=fa20bd8bcd57349dc18f8a2d8fcd74c3730eb3a6bf4ce9a2e8a0e52ae1c3930f15eb31b12488&scene=21#wechat_redirect)  
+[git设置代理模式](https://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247484520&idx=2&sn=2ec61298575d1cb460511340c2ccfaf9&scene=21#wechat_redirect)  
+[Git 如何优雅地回退代码，用 reset 还是 revert ？](https://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247484520&idx=1&sn=6b993f10307876bce13ad5ee00e02364&scene=21#wechat_redirect)  
+[（吃灰系列）git clone时RPC failed](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490691&idx=3&sn=80f8b08f8e3ec45c0c52d7fa6bbd8b4b&chksm=fa20bc9fcd5735895d3b212194f19ea816f6452ab336be1300df783aca51a75accf023fb0c12&scene=21#wechat_redirect)  
+[一次Maven依赖冲突采坑，把依赖调解、类加载彻底整明白了](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247489742&idx=2&sn=227a0adaa9c7b914a353284f1580b014&chksm=fa20b8d2cd5731c478eb24d3567fc4dea605a640c311e52897182ff94bd8067b3673c50dccc1&scene=21#wechat_redirect)  
+[一个Tomcat 如何部署多个项目？附多种解决方案及详细步骤！](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247486052&idx=1&sn=d0de35773cebae1e669b00abae1293c0&chksm=fa20aa78cd57236ef6fb9413e89b8eb9bd9c92b29816142c7f4adea1e2702cf7b1ed4f32c5aa&scene=21#wechat_redirect)  
+[自从用完Gradle后，有点嫌弃Maven了！速度贼快！](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247486559&idx=3&sn=9a090514ef979473ec00a6bbbc380397&chksm=fa20ac43cd57255575958fe3dac4a61266a0172addd85e16c2762b6016a42c5d9bba26c4d5bb&scene=21#wechat_redirect)  
+[还好做了监控，不然Bug就找不到了](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247487385&idx=1&sn=96b5b3ff54c70e97e92eb9c314347d79&chksm=fa20af85cd5726938741eeb603767f962cfd250f93d09ff71c422987cc98dd7c05920c37eb50&scene=21#wechat_redirect)  
+[网关实现灰度发布](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247488118&idx=1&sn=894ee3bcc06b283cd62d80e7aafa9627&chksm=fa20b26acd573b7ce9e95f99ab239f9f7d0735716aa50c74fdbe730239187e9f2d4c8c525c1c&scene=21#wechat_redirect)  
 
 
+## Linux
+[五分钟入门文本处理三剑客grep awk sed ](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247485751&idx=1&sn=d332d66121a9e5cd6d3ae6db8b74c5b2&chksm=fa20a92bcd57203ddb97898c116c22e6a24bb435df0e0cb4e8ff14843c493d37987743035251&scene=21#wechat_redirect)  
+[Linux网络流量监控工具](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247488602&idx=3&sn=eb4215f6bee63de1c32443725db8896e&chksm=fa20b446cd573d5069f1d8fc924567c92f6b087e041521e3932afc15af4482468a140ce073ec&scene=21#wechat_redirect)  
+[Shell文本处理三剑客：grep、sed、awk](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247488602&idx=1&sn=733c6cea814f1111b7bac772a1def4a0&chksm=fa20b446cd573d5005e03ae7ce8eba71a2e59807e191c14c6e8267cee2442ce3dec232aec023&scene=21#wechat_redirect)  
+[什么是堡垒机？为什么需要堡垒机？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490027&idx=3&sn=f192137b21e5075ab714ff9fe3a2e3c4&chksm=fa20b9f7cd5730e1f41aa754048df9e644437da6519b6a2897d51250e6aa4ac1a05a876e8aa5&scene=21#wechat_redirect)  
+[为什么 Linux 需要 Swapping](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490784&idx=2&sn=c950fefe17d0ad7007596d78b9d2a247&chksm=fa20bcfccd5735ea678da3726bdfc33b3b6c7816abc37c896a0ce36268070ceb7877cb306739&scene=21#wechat_redirect)  
+[Linux命令行通配符](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490815&idx=2&sn=7b284237ff31e575fa476d3c8f0e6e1b&chksm=fa20bce3cd5735f5fc1448f61cc18f044742e14233509a016aa4ec91ee9529f4c321758b98a5&scene=21#wechat_redirect)  
 
-[]()  
-[]()  
-[]()  
-[]()  
-[]()  
-[]()  
-[]()  
-[]()  
-[]()  
-[]()  
+
+## 计算机网络
+[HTTP](https://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247484484&idx=1&sn=56d3ee651ef56b937391c22724045ab6&scene=21#wechat_redirect)  
+[HTTPS](https://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247484484&idx=2&sn=869e8894ae8ee6bccaa68f5c01f2a69d&scene=21#wechat_redirect)  
+[DNS](https://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247484501&idx=1&sn=3b80188162d8cd2d46439a857c19749d&scene=21#wechat_redirect)  
+[TCP](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247485870&idx=2&sn=fe17b93f6a4335294f24cd7c3afe5a5d&chksm=fa20a9b2cd5720a41a8a588d2602b130dde7f9b98ee67d92bc9068c03cac3accb720325fb582&scene=21#wechat_redirect)  
+[一文带你深入HTTP](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247486842&idx=2&sn=d4b52e15d2e0999f444a6d46326c2035&chksm=fa20ad66cd57247010e24958135c5e685ac2b70ecca2b2e69eff88f90adbc8cc6a5c4247064c&scene=21#wechat_redirect)  
+[靠着这篇HTTPS，我已经学会了](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247486842&idx=1&sn=14d6dfc712a2301ddc92d516f5339db0&chksm=fa20ad66cd5724703641a85eff22a2fc80f60872d8374b94a4a534c263b774af58240be04b94&scene=21#wechat_redirect)  
+[最精美详尽的 HTTPS 原理图](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247488389&idx=1&sn=69f4d65276971377c09f0b08bb852fd9&chksm=fa20b399cd573a8fdcc93339cce7e0b038df92289c3a8f32f4baf52d7fadc5d5bcacb0bcae5b&scene=21#wechat_redirect)  
+[GET和POST两种基本请求方法有什么区别](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247488644&idx=1&sn=75b74fac838bd420da3bbf84d3a372fe&chksm=fa20b498cd573d8e04511696771774d6dbe5f0d574874197db2f0c3e6fa76d88ddaeb5bbc60f&scene=21#wechat_redirect)  
+[面试官：HTTP协议无状态中的 "状态" 到底指的是什么？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490027&idx=2&sn=439f575d50f1d81f14e8e67c56ccc2f0&chksm=fa20b9f7cd5730e1999a6b7e0cf23845600cb3cdf960383196d3f0a4360e3282a867fb09999d&scene=21#wechat_redirect)  
+[带宽、延时、吞吐率、PPS 这些都是啥？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491357&idx=2&sn=f1dc082841dd6650abd63a107bf62298&chksm=fa20bf01cd573617f185e4d934ac9d9f03c69601fc65c7c33a7b5a35d00b04606dbce88a39b5&scene=21#wechat_redirect)  
+[99%的人都不知道内网、外网、宽带、带宽、流量、网速之间的区别与联系](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491357&idx=1&sn=508e97360cfa298b15609631e7156c35&chksm=fa20bf01cd57361710267039f9b26bd12a62929c4e1b72c04d03e9f7cc94a2c44aa9296f605d&scene=21#wechat_redirect)  
+[一文讲懂什么是vlan、三层交换机、网关、DNS、子网掩码、MAC地址](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491480&idx=2&sn=9c31a68e20576f1f54259034d4acb3ca&chksm=fa20bf84cd573692a7da54a880d74b81185d33b81eb5d92fed9944d622c15950bb81678acbaa&scene=21#wechat_redirect)  
+
+
+## 职场
+[一个技术总监的忠告：精通那么多技术，你为何还是受不到重用？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490094&idx=1&sn=1d5a399b4535d3bbe8c19546ea48f73a&chksm=fa20ba32cd5733246780837d2052e061026190796547c9c57bc454d7b9d9b3ef4570e1e21fa9&scene=21#wechat_redirect)  
+[一个大厂首席技术官的忠告：决定你工资上限的，是这件事](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490166&idx=1&sn=e27e5dae1357eb039c12c014aa6a518e&chksm=fa20ba6acd57337c73eca859ab38ab9fd20a58318ce3833b6021e2bb2c86660b3277cb248c9d&scene=21#wechat_redirect)  
+[这3种工作态度，堵死你的升职加薪之路！](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247490582&idx=1&sn=ad092df2cef2847811f42e7b43f9e978&chksm=fa20bc0acd57351cca16c627e9298906c7075b71816590ee2a470a0aa376bc8e30149a92eb8d&scene=21#wechat_redirect)  
+
 
 
 
