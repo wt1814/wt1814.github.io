@@ -19,6 +19,14 @@
 
 
 # 1. 单例模式
+<!-- 
+设计模式回答
+https://mp.weixin.qq.com/s/_aQuVoD3tVNB3aTEFDky7g
+
+单例模式的优缺点和使用场景
+https://www.cnblogs.com/damsoft/p/6105122.html
+
+-->
 
 ## 1.1. 简介  
 
