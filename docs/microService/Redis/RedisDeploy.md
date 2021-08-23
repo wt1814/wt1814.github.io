@@ -1,9 +1,17 @@
 
+<!-- TOC -->
+
+- [1. Redis高可用](#1-redis高可用)
+    - [1.1. 多种架构方式](#11-多种架构方式)
+    - [1.2. Redis高可用建设考虑因素](#12-redis高可用建设考虑因素)
+    - [1.3. 支持xxx万的QPS](#13-支持xxx万的qps)
+
+<!-- /TOC -->
+
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; `小型公司，可以采用哨兵，主从复制-单副本模式。`  
 
-
-# Redis高可用
+# 1. Redis高可用
 <!--
 一文把Redis主从复制、哨兵、Cluster三种模式摸透 
 https://mp.weixin.qq.com/s/GlqoafdmC4Xjf7DACN3srQ
@@ -21,7 +29,7 @@ https://mp.weixin.qq.com/s/8JPBNMGhBsq2jfW9v-H5vQ
 https://mp.weixin.qq.com/s/4d-zeaVbQFn7qT4DWagjOg
 -->
 
-## 多种架构方式 
+## 1.1. 多种架构方式 
 &emsp; Redis部署方式： **<font color = "red">单机、主从复制模式、哨兵模式、分片模式（包含客户端分片、代理分片、服务器分片即Redis Cluster）。</font>**  
 1. Redis单机：  
     &emsp; Redis单机部署一般存在如下几个问题：  
@@ -37,7 +45,7 @@ https://mp.weixin.qq.com/s/4d-zeaVbQFn7qT4DWagjOg
 &emsp; <font color="red">参考：《Redis开发与运维》</font>  
 
 
-## Redis高可用建设考虑因素
+## 1.2. Redis高可用建设考虑因素
 1. **<font color = "clime">考虑资源：</font>**    
 &emsp; Redis集群最少6个节点，每个节点20G，总共120G。因此Redis集群比较耗资源。小型公司可以采用哨兵模式。    
 2. **<font color = "clime">考虑QPS：</font>**  
@@ -47,7 +55,7 @@ https://mp.weixin.qq.com/s/4d-zeaVbQFn7qT4DWagjOg
 &emsp; `小型公司，可以采用哨兵，主从复制-单副本模式。`  
 
 
-## 支持xxx万的QPS  
+## 1.3. 支持xxx万的QPS  
 <!-- 
 https://www.zhihu.com/question/263771630
 -->
