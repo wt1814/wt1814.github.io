@@ -458,6 +458,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; &emsp; [发布订阅](/docs/microService/Redis/pub.md)  
 [Redis高可用](/docs/microService/Redis/RedisDeploy.md)  
 &emsp; [Redis主从复制](/docs/microService/Redis/RedisMasterSlave.md)  
+&emsp; [Redis读写分离](/docs/microService/Redis/RedisWriteRead.md)  
 &emsp; [Redis哨兵模式](/docs/microService/Redis/RedisSentry.md)  
 &emsp; [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
 [Redis运维](/docs/microService/Redis/RedisOperation.md)  

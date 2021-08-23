@@ -343,6 +343,7 @@
         * [Redis实现延迟队列](/docs/microService/Redis/delay.md)  
     * [Redis高可用](/docs/microService/Redis/RedisDeploy.md)  
         * [Redis主从复制](/docs/microService/Redis/RedisMasterSlave.md)  
+        * [Redis读写分离](/docs/microService/Redis/RedisWriteRead.md)  
         * [Redis哨兵模式](/docs/microService/Redis/RedisSentry.md)  
         * [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
     * [Redis运维](/docs/microService/Redis/RedisOperation.md)  
