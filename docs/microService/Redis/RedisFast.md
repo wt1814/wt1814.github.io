@@ -21,8 +21,8 @@ https://mp.weixin.qq.com/s/v4ORkYyjfLxYVNhzaJH8tw
 
 * 纯内存操作
 * [虚拟内存机制](/docs/microService/Redis/RedisVM.md)  
+* [使用IO多路复用技术](/docs/microService/Redis/RedisEvent.md)  
 * [合理的线程模型](/docs/microService/Redis/RedisMultiThread.md)   
-* 使用IO多路复用技术
 * 合理的数据编码
 * ......
 

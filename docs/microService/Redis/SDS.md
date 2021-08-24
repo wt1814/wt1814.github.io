@@ -25,6 +25,9 @@
 
 # 1. SDS字符串  
 <!-- 
+https://www.jianshu.com/p/738a0a17e723
+
+
 sds 空间分配策略
 https://mp.weixin.qq.com/s/R7Ux8ji6WpvfZ45VUt4Aiw
 https://mp.weixin.qq.com/s/VY31lBOSggOHvVf54GzvYw
