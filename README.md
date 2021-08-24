@@ -455,7 +455,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; &emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
 &emsp; [Redis内存](/docs/microService/Redis/RedisEliminate.md)  
 &emsp; [Redis实现队列](/docs/microService/Redis/Message.md)  
-&emsp; &emsp; [发布订阅](/docs/microService/Redis/pub.md)  
+&emsp; &emsp; [发布订阅](/docs/microService/Redis/Subscribe.md)  
 [Redis高可用](/docs/microService/Redis/RedisDeploy.md)  
 &emsp; [Redis主从复制](/docs/microService/Redis/RedisMasterSlave.md)  
 &emsp; [Redis读写分离](/docs/microService/Redis/RedisWriteRead.md)  

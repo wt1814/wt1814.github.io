@@ -339,7 +339,7 @@
             * [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
         * [Redis淘汰策略](/docs/microService/Redis/RedisEliminate.md)  
         * [Redis实现消息队列](/docs/microService/Redis/Message.md) 
-            * [Redis发布订阅](/docs/microService/Redis/pub.md)  
+            * [Redis发布订阅](/docs/microService/Redis/Subscribe.md)  
         * [Redis实现延迟队列](/docs/microService/Redis/delay.md)  
     * [Redis高可用](/docs/microService/Redis/RedisDeploy.md)  
         * [Redis主从复制](/docs/microService/Redis/RedisMasterSlave.md)  
