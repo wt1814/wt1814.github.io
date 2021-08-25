@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. AOF重写阻塞](#1-aof重写阻塞)
+- [1. ~~AOF重写阻塞~~](#1-aof重写阻塞)
     - [1.1. 问题背景](#11-问题背景)
     - [1.2. 什么是AOF重写](#12-什么是aof重写)
     - [1.3. 阻塞原因](#13-阻塞原因)
@@ -11,25 +11,31 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 当Redis执行完一个写命令之后，它会同时将这个写命令发送给 AOF缓冲区和AOF重写缓冲区。  
+1. 当Redis执行完一个写命令之后，它会同时将这个写命令发送给AOF缓冲区和AOF重写缓冲区。  
 2. AOF重写阻塞原因：
-	1. **<font color = "clime">当子进程完成AOF重写工作之后，它会向父进程发送一个信号，父进程在接收到该信号之后，会调用一个信号处理函数，并执行相应工作：将AOF重写缓冲区中的所有内容写入到新的AOF文件中。</font>**  
+	1. **<font color = "clime">当子进程完成AOF重写工作之后，它会向父进程发送一个信号，父进程在接收到该信号之后，`会调用一个信号处理函数，并执行相应工作：将AOF重写缓冲区中的所有内容写入到新的AOF文件中。`</font>**  
 	2. **<font color = "clime">在整个AOF后台重写过程中，只有信号处理函数执行时会对Redis主进程造成阻塞，在其他时候，AOF后台重写都不会阻塞主进程。</font>**  
 &emsp; 如果信号处理函数执行时间较长，即造成AOF阻塞时间长，就会对性能有影响。  
 2. 解决方案：  
 	* **<font color = "red">将no-appendfsync-on-rewrite设置为yes。</font>** 
 	* master节点关闭AOF。  
     
-&emsp;折中方式：在master节点设置将no-appendfsync-on-rewrite设置为yes（表示在日志重写时，不进行命令追加操作，而只是将命令放在重写缓冲区里，避免与命令的追加造成磁盘IO上的冲突），同时auto-aof-rewrite-percentage参数设置为0，关闭主动重写。  
+&emsp; 折中方式：在master节点设置将no-appendfsync-on-rewrite设置为yes（表示在日志重写时，不进行命令追加操作，而只是将命令放在重写缓冲区里，避免与命令的追加造成磁盘IO上的冲突），同时auto-aof-rewrite-percentage参数设置为0，关闭主动重写。  
+3. 虽然在everysec配置下aof的fsync是由子线程进行操作的，但是主线程会监控fsync的执行进度。  
+&emsp; **<font color = "clime">主线程在执行时候如果发现上一次的fsync操作还没有返回，那么主线程就会阻塞。</font>**  
 
 
-# 1. AOF重写阻塞
+# 1. ~~AOF重写阻塞~~
 <!-- 
 Redis AOF重写阻塞问题分析
 https://blog.csdn.net/github_32521685/article/details/106354737
 https://www.yht7.com/news/89862
 
 https://www.cnblogs.com/Brake/p/14352772.html
+
+https://blog.csdn.net/github_32521685/article/details/106354737
+
+*** https://article.itxueyuan.com/e19qlM
 -->
 
 ## 1.1. 问题背景
