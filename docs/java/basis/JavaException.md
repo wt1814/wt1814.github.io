@@ -1,4 +1,5 @@
 
+
 <!-- TOC -->
 
 - [1. Java异常](#1-java异常)
@@ -9,14 +10,23 @@
     - [1.4. 异常使用教程](#14-异常使用教程)
         - [1.4.1. 异常处理](#141-异常处理)
             - [1.4.1.1. try、catch、finally](#1411-trycatchfinally)
-                - [1.4.1.1.1. 使用 try...with...resources 优雅关闭资源](#14111-使用-trywithresources-优雅关闭资源)
+                - [1.4.1.1.1. 使用try...with...resources优雅关闭资源](#14111-使用trywithresources优雅关闭资源)
             - [1.4.1.2. throws和throw](#1412-throws和throw)
             - [1.4.1.3. 异常处理原则](#1413-异常处理原则)
-        - [1.4.2. 自定义异常](#142-自定义异常)
-        - [1.4.3. 统一异常处理](#143-统一异常处理)
-        - [1.4.4. Assert处理异常](#144-assert处理异常)
+        - [1.4.2. 异常捕获后再次抛出](#142-异常捕获后再次抛出)
+        - [1.4.3. 自定义异常](#143-自定义异常)
+        - [1.4.4. 统一异常处理](#144-统一异常处理)
+        - [1.4.5. Assert处理异常](#145-assert处理异常)
 
 <!-- /TOC -->
+
+&emsp; **<font color = "red">总结：</font>**  
+1. 异常捕获后再次抛出。
+    * 捕获后抛出原来的异常，希望保留最新的异常抛出点－－fillStackTrace 
+    * 捕获后抛出新的异常，希望抛出完整的异常链－－initCause  
+2. 自定义异常
+3. 统一异常处理
+
 
 # 1. Java异常  
 <!-- 
@@ -79,7 +89,7 @@ e.printStackTrace();//void类型，在命令行打印异常信息在程序中出
 ### 1.4.1. 异常处理  
 #### 1.4.1.1. try、catch、finally  
 
-##### 1.4.1.1.1. 使用 try...with...resources 优雅关闭资源  
+##### 1.4.1.1.1. 使用try...with...resources优雅关闭资源  
 
 
 #### 1.4.1.2. throws和throw  
@@ -97,10 +107,20 @@ e.printStackTrace();//void类型，在命令行打印异常信息在程序中出
 &emsp; ......
 
 
-### 1.4.2. 自定义异常 
+### 1.4.2. 异常捕获后再次抛出
+<!-- 
+https://www.cnblogs.com/yangyunnb/p/6058411.html
+-->
+
+* 情况一：捕获后抛出原来的异常，希望保留最新的异常抛出点－－fillStackTrace  
+* 情况二：捕获后抛出新的异常，希望抛出完整的异常链－－initCause  
+
+
+
+### 1.4.3. 自定义异常 
 ......
 
-### 1.4.3. 统一异常处理  
+### 1.4.4. 统一异常处理  
 <!-- 
 
 SpringBoot优雅的全局异常处理 
@@ -111,4 +131,4 @@ https://mp.weixin.qq.com/s/r_HjHi92owNwh5VULiaKcQ
 &emsp; @ExceptionHandler结合@ControllerAdvice，可以提供全局的统一异常处理器。  
 &emsp; 实现HandlerExceptionResolver接口或继承其抽象实现AbstractHandlerExceptionResolver，也可以实现统一异常处理。  
 
-### 1.4.4. Assert处理异常  
+### 1.4.5. Assert处理异常  
