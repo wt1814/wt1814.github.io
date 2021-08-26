@@ -85,7 +85,8 @@ Kafka服务器在响应客户端读取的时候，底层使用ZeroCopy技术，�
 &emsp; [kafka如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
 
 ### 1.3.3. 幂等（重复消费）和事务
-&emsp; [kafka幂等和事务](/docs/microService/mq/kafka/kafkaTraction.md)
+&emsp; [kafka幂等性](/docs/microService/mq/kafka/kafkaIdempotent.md)  
+&emsp; [kafka事务](/docs/microService/mq/kafka/kafkaTraction.md)  
 
 ## 1.4. 如何让Kafka的消息有序？  
 &emsp; Kafka无法做到消息全局有序，只能做到Partition维度的有序。所以如果想要消息有序，就需要从Partition维度入手。一般有两种解决方案：

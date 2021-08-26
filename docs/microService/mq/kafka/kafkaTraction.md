@@ -64,13 +64,13 @@ kafka事务的应用场景
 
 
 ### 1.1.3. Kafka事务特性  
-&emsp; Kafka的事务特性本质上代表了三个功能：原子写操作，拒绝僵尸实例(Zombie fencing)和读事务消息。  
+&emsp; Kafka的事务特性本质上代表了三个功能：原子写操作，拒绝僵尸实例（Zombie fencing）和读事务消息。  
 
 #### 1.1.3.1. 原子写
 &emsp; Kafka的事务特性本质上是支持了Kafka跨分区和Topic的原子写操作。在同一个事务中的消息要么同时写入成功，要么同时写入失败。Kafka中的Offset信息存储在一个名为_consumed_offsets的Topic中，因此read-process-write模式，除了向目标Topic写入消息，还会向_consumed_offsets中写入已经消费的Offsets数据。因此read-process-write本质上就是跨分区和Topic的原子写操作。Kafka的事务特性就是要确保跨分区的多个写操作的原子性。   
 
 #### 1.1.3.2. 拒绝僵尸实例
-&emsp; 在分布式系统中，一个实例的宕机或失联，集群往往会自动启动一个新的实例来代替它的工作。 **<font color = "red">此时若原实例恢复了，那么集群中就产生了两个具有相同职责的实例，此时前一个instance就被称为“僵尸实例(Zombie Instance)”。</font>** 在Kafka中，两个相同的producer同时处理消息并生产出重复的消息(read-process-write模式)，这样就严重违反了Exactly Once Processing的语义。这就是僵尸实例问题。  
+&emsp; 在分布式系统中，一个实例的宕机或失联，集群往往会自动启动一个新的实例来代替它的工作。 **<font color = "red">此时若原实例恢复了，那么集群中就产生了两个具有相同职责的实例，此时前一个instance就被称为“僵尸实例(Zombie Instance)”。</font>** 在Kafka中，两个相同的producer同时处理消息并生产出重复的消息（read-process-write模式），这样就严重违反了Exactly Once Processing的语义。这就是僵尸实例问题。  
 &emsp; **Kafka事务特性通过transaction-id属性来解决僵尸实例问题。** 所有具有相同transaction-id的Producer都会被分配相同的pid，同时每一个Producer还会被分配一个递增的epoch。Kafka收到事务提交请求时，如果检查当前事务提交者的epoch不是最新的，那么就会拒绝该Producer的请求。从而达成拒绝僵尸实例的目标。
 
 #### 1.1.3.3. 读事务消息  

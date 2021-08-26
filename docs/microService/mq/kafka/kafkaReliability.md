@@ -24,7 +24,7 @@
 &emsp; **<font color = "red">总结：</font>**
 1. 在Producer端、Broker端、Consumer端都有可能丢失消息。  
 2. Producer端：  
-&emsp; 为防止Producer端丢失消息， **<font color = "red">除了将ack设置为all，`还可以使用带有回调通知的发送API，即producer.send(msg, callback)`。</font>**  
+&emsp; 为防止Producer端丢失消息， **<font color = "red">除了将ack设置为all，表明所有副本 Broker 都要接收到消息，才算“已提交”。`还可以使用带有回调通知的发送API，即producer.send(msg, callback)`。</font>**  
 3. Broker端:  
 &emsp; Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不丢失消息是做不到的，只能通过调整刷盘机制的参数缓解该情况。  
 &emsp; 为了解决该问题，kafka通过producer和broker协同处理单个broker丢失参数的情况。 **<font color = "red">`一旦producer发现broker消息丢失，即可自动进行retry。`</font>** 除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。  
@@ -273,7 +273,7 @@ while (true) {
 * 不要使用 producer.send(msg)，而是 producer.send(msg, callback) 
 * 设置 acks = all  
     * acks 是 Producer 的一个参数，代表了你对“已提交“消息的定义。  
-    * 如果设置为 all，表明所有副本 Broker 都要接收到消息，才算“已提交“。这是最严谨的定义。  
+    * 如果设置为 all，表明所有副本 Broker 都要接收到消息，才算“已提交”。这是最严谨的定义。  
 * 设置 retries 为一个较大的值  
     * retries 是 Producer 的参数，能够让 Producer 自动重试  
 * 设置 unclean.leader.election.enable = false  
