@@ -1,8 +1,15 @@
 
+<!-- TOC -->
 
+- [1. Redis协议](#1-redis协议)
+    - [1.1. RESP简介](#11-resp简介)
+    - [1.2. RESP详解](#12-resp详解)
+    - [1.3. 手写一个简单版的redis客户端](#13-手写一个简单版的redis客户端)
 
-# Redis协议
-## RESP简介  
+<!-- /TOC -->
+
+# 1. Redis协议
+## 1.1. RESP简介  
 <!-- 
 http://www.jwsblog.com/archives/74.html
 https://blog.csdn.net/mango_love/article/details/106557576
@@ -17,10 +24,10 @@ https://blog.csdn.net/mango_love/article/details/106557576
 2. `解析速度快。`由于RESP能知道返回数据的固定长度,所以不用像json那样扫描整个payload去解析, 所以它的性能是能跟解析二进制数据的性能相媲美的.  
 3. 可读性好.  
 
-## RESP详解
+## 1.2. RESP详解
 
 
-## 手写一个简单版的redis客户端  
+## 1.3. 手写一个简单版的redis客户端  
 <!-- 
 redis通讯协议(RESP )是什么
 https://juejin.cn/post/6844903955235864589

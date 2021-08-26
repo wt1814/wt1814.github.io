@@ -13,7 +13,17 @@ https://blog.csdn.net/gududedabai/article/details/80002453
 https://www.jianshu.com/p/8a4154780204
 https://blog.csdn.net/zhaoyuqiang/article/details/106907496?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-1.control&spm=1001.2101.3001.4242
 https://www.jianshu.com/p/8a4154780204
+
+kafka——高效读写数据
+https://www.jianshu.com/p/ce8253609b6b
+
+Kafka为什么吞吐量大、速度快？ 
+https://mp.weixin.qq.com/s/QIK1N-ePm6DQE4tMQ9N3Gw
 -->
+
+&emsp; kafka的消息是不断追加到文件中的，这个特性使kafka可以充分利用磁盘的顺序读写性能。Kafka会将数据顺序插入到文件末尾，消费者端通过控制偏移量来读取消息，这样做会导致数据无法删除，时间一长，磁盘空间会满，kafka提供了2种策略来删除数据：基于时间删除和基于partition文件的大小删除。  
+
+    顺序读写不需要硬盘磁头的寻道时间，只需很少的扇区旋转时间，所以速度远快于随机读写。  
 
 ## 1.1. 概述
 &emsp; Kafka很大程度上依赖文件系统来存储和缓存消息。有一普遍的认识：磁盘很慢。这让人们怀疑使用磁盘作为持久化的性能。实际上，磁盘是快还是慢完全取决于我们是如何使用它。  
