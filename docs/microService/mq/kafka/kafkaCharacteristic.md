@@ -1,19 +1,20 @@
-
-
 <!-- TOC -->
 
 - [1. kafka特性](#1-kafka特性)
-    - [1.1. 高性能(读写机制)](#11-高性能读写机制)
-        - [1.1.1. 持久化-顺序读写](#111-持久化-顺序读写)
-        - [1.1.2. ~~基于Sendfile实现零拷贝(Zero Copy)~~](#112-基于sendfile实现零拷贝zero-copy)
-    - [1.2. 高可用与数据一致性(副本机制)](#12-高可用与数据一致性副本机制)
-    - [1.3. 可靠性](#13-可靠性)
-        - [1.3.1. ★★★消费语义介绍](#131-★★★消费语义介绍)
-        - [1.3.2. 可靠性(如何保证消息队列不丢失?)](#132-可靠性如何保证消息队列不丢失)
-        - [1.3.3. 幂等（重复消费）和事务](#133-幂等重复消费和事务)
-    - [1.4. 如何让Kafka的消息有序？](#14-如何让kafka的消息有序)
+    - [1.1. Kafka为什么吞吐量大、速度快？](#11-kafka为什么吞吐量大速度快)
+    - [1.2. 高性能(读写机制)](#12-高性能读写机制)
+        - [1.2.1. 持久化-顺序读写](#121-持久化-顺序读写)
+        - [1.2.2. ~~基于Sendfile实现零拷贝(Zero Copy)~~](#122-基于sendfile实现零拷贝zero-copy)
+    - [1.3. 高可用与数据一致性(副本机制)](#13-高可用与数据一致性副本机制)
+    - [1.4. 可靠性](#14-可靠性)
+        - [1.4.1. ★★★消费语义介绍](#141-★★★消费语义介绍)
+        - [1.4.2. 可靠性(如何保证消息队列不丢失?)](#142-可靠性如何保证消息队列不丢失)
+        - [1.4.3. 幂等（重复消费）和事务](#143-幂等重复消费和事务)
+    - [1.5. 如何让Kafka的消息有序？](#15-如何让kafka的消息有序)
 
 <!-- /TOC -->
+
+
 &emsp; **<font color = "red">总结：</font>**  
 
 * 高性能：顺序读写、基于Sendfile实现零拷贝。  
@@ -29,7 +30,14 @@ kafka——高效读写数据
 https://www.jianshu.com/p/ce8253609b6b
 -->
 
-## 1.1. 高性能(读写机制)  
+## 1.1. Kafka为什么吞吐量大、速度快？ 
+<!--
+Kafka为什么吞吐量大、速度快？ 
+https://mp.weixin.qq.com/s/QIK1N-ePm6DQE4tMQ9N3Gw
+
+-->
+
+## 1.2. 高性能(读写机制)  
 <!--
 Kafka的特性之一就是高吞吐率，但是Kafka的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，但是Kafka即使是普通的服务器，Kafka也可以轻松支持每秒百万级的写入请求，超过了大部分的消息中间件，这种特性也使得Kafka在日志处理等海量数据场景广泛应用。Kafka会把收到的消息都写入到硬盘中，防止丢失数据。为了优化写入速度Kafka采用了两个技术顺序写入和MMFile 。
 
@@ -44,12 +52,12 @@ Kafka服务器在响应客户端读取的时候，底层使用ZeroCopy技术，�
 
 &emsp; ~~数据写入Kafka会把收到的消息都写入到硬盘中。为了优化写入速度，Kafka使用了：顺序写入和Memory Mapped File 。~~  
 
-### 1.1.1. 持久化-顺序读写  
+### 1.2.1. 持久化-顺序读写  
 &emsp; kafka的消息是不断追加到文件中的，这个特性使kafka可以充分利用磁盘的顺序读写性能。Kafka会将数据顺序插入到文件末尾，消费者端通过控制偏移量来读取消息，这样做会导致数据无法删除，时间一长，磁盘空间会满，kafka提供了2种策略来删除数据：基于时间删除和基于partition文件的大小删除。  
 
     顺序读写不需要硬盘磁头的寻道时间，只需很少的扇区旋转时间，所以速度远快于随机读写。
 
-### 1.1.2. ~~基于Sendfile实现零拷贝(Zero Copy)~~  
+### 1.2.2. ~~基于Sendfile实现零拷贝(Zero Copy)~~  
 <!-- Kafka 提供了produce.type参数来控制是否主动的进行刷新，如果 Kafka 写入到 mmf 后立即flush再返回给生产者则为同步模式，反之为异步模式。 -->  
 <!-- 
 在这之前先来了解一下零拷贝(直接让操作系统的 Cache 中的数据发送到网卡后传输给下游的消费者)：平时从服务器读取静态文件时，服务器先将文件从复制到内核空间，再复制到用户空间，最后再复制到内核空间并通过网卡发送出去，而零拷贝则是直接从内核到内核再到网卡，省去了用户空间的复制。
@@ -83,13 +91,13 @@ public long transferFrom(FileChannel fileChannel, long position, long count) thr
 &emsp; 注：transferTo 和 transferFrom 并不保证一定能使用零拷贝。 **<font color = "clime">实际上是否能使用零拷贝与操作系统相关，如果操作系统提供 sendfile 这样的零拷贝系统调用，则这两个方法会通过这样的系统调用充分利用零拷贝的优势，否则并不能通过这两个方法本身实现零拷贝。</font>**  
 
 
-## 1.2. 高可用与数据一致性(副本机制)
+## 1.3. 高可用与数据一致性(副本机制)
 &emsp; 参考[kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
 
-## 1.3. 可靠性
+## 1.4. 可靠性
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-118.png)  
 
-### 1.3.1. ★★★消费语义介绍  
+### 1.4.1. ★★★消费语义介绍  
 <!--
 &emsp; Kafka在producer和consumer之间提供的语义保证。显然，Kafka可以提供的消息交付语义保证有多种：  
 
@@ -112,15 +120,14 @@ public long transferFrom(FileChannel fileChannel, long position, long count) thr
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-119.png)  
 
+### 1.4.2. 可靠性(如何保证消息队列不丢失?)  
+&emsp; [kafka如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
 
-### 1.3.2. 可靠性(如何保证消息队列不丢失?)  
-[kafka如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
+### 1.4.3. 幂等（重复消费）和事务
+&emsp; [kafka幂等和事务](/docs/microService/mq/kafka/kafkaTraction.md)
 
-### 1.3.3. 幂等（重复消费）和事务
-[kafka幂等和事务](/docs/microService/mq/kafka/kafkaTraction.md)
-
-## 1.4. 如何让Kafka的消息有序？  
-&emsp; Kafka无法做到消息全局有序，只能做到 Partition 维度的有序。所以如果想要消息有序，就需要从Partition维度入手。一般有两种解决方案：
+## 1.5. 如何让Kafka的消息有序？  
+&emsp; Kafka无法做到消息全局有序，只能做到Partition维度的有序。所以如果想要消息有序，就需要从Partition维度入手。一般有两种解决方案：
 
 * 单Partition，单Consumer。通过此种方案强制消息全部写入同一个Partition内，但是同时也牺牲掉了Kafka高吞吐的特性了，所以一般不会采用此方案。  
 * **多Partition，多Consumer，指定key使用特定的Hash策略，使其消息落入指定的Partition 中，从而保证相同的key对应的消息是有序的。** 此方案也是有一些弊端，比如当Partition个数发生变化时，相同的key对应的消息会落入到其他的Partition上，所以一旦确定Partition个数后就不能在修改Partition个数了。  

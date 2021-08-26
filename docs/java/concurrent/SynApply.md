@@ -12,6 +12,7 @@
             - [1.2.4.1. 同步类](#1241-同步类)
             - [1.2.4.2. 同步this实例](#1242-同步this实例)
             - [1.2.4.3. 同步对象实例](#1243-同步对象实例)
+            - [synchronized 加锁 this 和 class 的区别！](#synchronized-加锁-this-和-class-的区别)
     - [1.3. Synchronized与ReentrantLock](#13-synchronized与reentrantlock)
     - [1.4. Synchronized与Object#wait()](#14-synchronized与objectwait)
 
@@ -178,6 +179,11 @@ private void SynchronizedInstance() {
     }
 }
 ```
+
+#### synchronized 加锁 this 和 class 的区别！ 
+<!-- 
+https://mp.weixin.qq.com/s/ewXpaeMYNx7FAW_fYoQbPg
+--> 
 
 ## 1.3. Synchronized与ReentrantLock  
 &emsp; **<font color = "red">Synchronized与ReentrantLock的比较：</font>**  

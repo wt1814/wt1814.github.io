@@ -26,6 +26,9 @@
 <!-- 
 https://blog.csdn.net/yangshangwei/article/details/104958460
 https://blog.csdn.net/weixin_47531845/article/details/108821372
+
+ ***** 一文详解Redis中BigKey、HotKey的发现与处理 
+ https://mp.weixin.qq.com/s/FPYE1B839_8Yk1-YSiW-1Q
 -->
 
 ## 1.1. BigKey定义
