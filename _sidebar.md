@@ -436,6 +436,7 @@
     * [Netty介绍及架构剖析](/docs/microService/communication/Netty/concepts.md)  
     * [Netty运行流程](/docs/microService/communication/Netty/operation.md)    
     * [Netty核心组件](/docs/microService/communication/Netty/components.md)   
+    * [Netty架构剖析](/docs/microService/communication/Netty/Architecture.md)   
     * [Netty高性能](/docs/microService/communication/Netty/performance.md)  
         * [~~Netty中的零拷贝~~](/docs/microService/communication/Netty/nettyZeroCopy.md)  
         * [Reactor与EventLoop](/docs/microService/communication/Netty/NettyReactor.md)  

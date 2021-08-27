@@ -29,8 +29,8 @@ https://blog.csdn.net/zhoujn90/article/details/44955137
 &emsp; 要想明白 Socket，必须要理解 TCP 连接。  
 
 &emsp; TCP 三次握手：握手过程中并不传输数据，在握手后服务器与客户端才开始传输数据，理想状态下，TCP 连接一旦建立，在通讯双方中的任何一方主动断开连接之前 TCP 连接会一直保持下去。  
-
-&emsp; Socket 是对 TCP/IP 协议的封装，Socket 只是个接口不是协议，通过 Socket 才能使用 TCP/IP 协议，除了 TCP，也可以使用 UDP 协议来传递数据。  
+&emsp; **<font color = "red">WebSocket是一种在单个TCP连接上进行全双工通信的协议。</font>** WebSocket通信协议于2011年被IETF定为标准RFC 6455，并由RFC7936补充规范。WebSocket API也被W3C定为标准。  
+&emsp; **<font color = "red">Socket 是对 TCP/IP 协议的封装，Socket 只是个接口不是协议，通过 Socket 才能使用 TCP/IP 协议，除了 TCP，也可以使用 UDP 协议来传递数据。</font>**  
 
 &emsp; 创建 Socket 连接的时候，可以指定传输层协议，可以是 TCP 或者 UDP，当用 TCP 连接，该Socket就是个TCP连接，反之。  
 

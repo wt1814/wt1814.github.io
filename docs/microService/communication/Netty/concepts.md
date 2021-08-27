@@ -1,15 +1,18 @@
 
 <!-- TOC -->
 
-- [1. netty核心概念](#1-netty核心概念)
+- [1. Netty核心概念](#1-netty核心概念)
     - [1.1. Netty简介](#11-netty简介)
     - [1.2. Netty的整体架构](#12-netty的整体架构)
-    - [1.3. Netty逻辑架构](#13-netty逻辑架构)
-    - [1.4. Netty项目架构](#14-netty项目架构)
+    - [1.3. Netty项目架构](#13-netty项目架构)
 
 <!-- /TOC -->
 
-# 1. netty核心概念  
+&emsp; **<font color = "red">总结：</font>**  
+1. **<font color = "red">Netty采用了典型的三层网络架构进行设计和开发：</font>**  通信调度层Reactor、职责链ChannelPipeline、业务逻辑编排层Service ChannelHandler。  
+
+# 1. Netty核心概念  
+
 ## 1.1. Netty简介  
 <!-- 
 为什么要使用Netty而不直接使用JAVA中的NIO
@@ -19,9 +22,6 @@
 4.Netty支持应用层的KeepAlive。
 5.Netty规避了JAVA NIO中的很多BUG，性能更好。
 -->
-
-&emsp; **<font color = "red">websocket和netty</font>**  
-&emsp; websocket是一个通信协议，而netty是一个Java网络编程框架。可以利用netty实现websocket通信，也可以用其他的。 
 
 &emsp; **Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。**  
 
@@ -67,23 +67,8 @@
     * In-VM Piple：JVM内部的传输实现。  
 * Protocol Support：协议支持。Netty对于一些通用协议的编解码实现。例如：HTTP、Redis、DNS等等。
 
-## 1.3. Netty逻辑架构  
-<!-- 
-《Netty权威指南》第20章
--->
-&emsp; **<font color = "red">Netty采用了典型的三层网络架构进行设计和开发，逻辑架构如下图所示：</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-125.png)  
 
-* Reactor通信调度层  
-&emsp; 它由一系列辅助类完成，包括Reactor线程NioEvenlLoop及其父类，NioSocketChannel/NioServerSocketChannel及其父类，ByteBuffer以及由其衍生出来的各种Buffer，Unsafe以及其衍生出的各种内部类等。该层的主要职责就是监听网络的读写和连接操作，负责将网络层的数据读取到内存缓冲区中，然后触发各种网络事件，例如连接创建、连接激活、 读事件、写事件等，将这些事件触发到PipeLine中，由PipeLine管理的职责链来进行后续的处理。  
-* 职责链ChannelPipeline  
-&emsp; 它负责事件在职责链中的有序传播，同时负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。不同应用的Handler用于消息的编解码，它可以将外部的协议消息转换成内部的POJO对象，这样上层业务则只需要关心处理业务逻辑即可，不需要感知底层的协议差异和线程模型差异，实现了架构层面的分层隔离。  
-* 业务逻辑编排层(Service ChannelHandler)  
-&emsp; 业务逻辑编排层通常有两类：一类是纯粹的业务逻辑编排，还有一类是其他的应用层协议插件，用于特定协议相关的会话和链路管理。例如CMPP协议，用于管理和中国移动短信系统的对接。  
-
-&emsp; 架构的不同层面，需要关心和处理的对象都不同，通常情况下，对于业务开发者，只需要关心职责链的拦截和业务Handler的编排。因为应用层协议栈往往是开发一次，到处运行，所以实际上对于业务开发者来说，只需要关心服务层的业务逻辑开发即可。各种应用协议以插件的形式提供，只有协议开发人员需要关注协议插件，对于其他业务开发人员来说，只需关心业务逻辑定制。这种分层的架构设计理念实现了NIO框架各层之间的解耦，便于上层业务协议栈的开发和业务逻辑的定制。  
-
-## 1.4. Netty项目架构  
+## 1.3. Netty项目架构  
 &emsp; **Netty的项目结构：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-26.png)  
 
@@ -108,4 +93,3 @@
 &emsp; 另外，它提供了一个子项目handler-proxy，实现对HTTP、Socks4、Socks5的代理转发。   
 * example项目，该项目是提供各种Netty使用示例。  
 
-&emsp; **<font color = "clime">Netty中开发者最经常打交道的五个组件：ByteBuf，Channel，pipeline，ChannelHandler、EventLoop。</font>**  

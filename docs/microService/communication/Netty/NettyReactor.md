@@ -29,7 +29,7 @@ https://mp.weixin.qq.com/s/7CvrYsuLSFF7eCAQ3svihw
 -->
 
 ## 1.1. Reactor是什么
-&emsp; 参考[Reactor](/docs/microService/communication/Netty/Reactor.md)    
+&emsp; 参考[多路复用之Reactor模式](/docs/microService/communication/Netty/Reactor.md)  
 
 
 ## 1.2. Netty中的线程模型与Reactor的联系  

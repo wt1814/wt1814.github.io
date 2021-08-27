@@ -19,7 +19,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 由netty运行流程可以看出Netty核心组件有Bootstrap、channel相关、EventLoop、byteBuf...  
+1. `由netty运行流程可以看出Netty核心组件有Bootstrap、channel相关、EventLoop、byteBuf...`  
 2. Bootstrap和ServerBootstrap是针对于Client和Server端定义的引导类，主要用于配置各种参数，并启动整个Netty服务。  
 3. Channel  
     1. **在Netty中，Channel是一个Socket连接的抽象，它为用户提供了关于底层Socket状态（是否是连接还是断开）以及对Socket的读写等操作。**  
@@ -29,7 +29,7 @@
     &emsp; Netty的ChannelHandler为处理器提供了基本的抽象，目前可以认为每个ChannelHandler的实例都类似于一种为了响应特定事件而被执行的回调。从应用程序开发人员的角度来看，它充当了所有处理入站和出站数据的应用程序逻辑的拦截载体。ChannelPipeline提供了ChannelHandler链的容器，并定义了用于在该链上传播入站和出站事件流的API。当Channel被创建时，它会被自动地分配到它专属的ChannelPipeline。  
     4. ChannelHandlerContext  
     &emsp; 当ChannelHandler被添加到ChannelPipeline时，它将会被分配一个ChannelHandlerContext，它代表了ChannelHandler和ChannelPipeline之间的绑定。ChannelHandlerContext的主要功能是管理它所关联的ChannelHandler和在同一个ChannelPipeline中的其他ChannelHandler之间的交互。  
-4. 线程模型之EventLoop  
+4. EventLoop线程模型  
     1. **<font color = "blue">当一个连接到达时，Netty就会创建一个Channel，</font>** 然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上（此流程在NioEventLoop的启动中），在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
     2. <font color = "clime">EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。</font>  
 
