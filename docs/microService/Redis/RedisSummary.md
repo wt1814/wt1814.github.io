@@ -2,6 +2,9 @@
 # Redis总结  
 <!-- 
 
+Redis变慢了，如何快速排查？ 
+https://mp.weixin.qq.com/s/NEMTOhDTRi3aD5vLoDqcUg
+
 redis源码
 https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&__biz=MzAxODc1MzM5Nw==&scene=1&album_id=1340108909599883264&count=3#wechat_redirect
 -->

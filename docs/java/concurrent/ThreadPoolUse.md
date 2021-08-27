@@ -32,6 +32,7 @@
         * 如果是CPU密集型应用(多线程处理复杂算法)，则线程池大小设置为N+1。
         * 如果是IO密集型应用(多线程用于数据库数据交互、文件上传下载、网络数据传输等)，则线程池大小设置为2N。
         * 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。 
+        `最大线程数与核心线程数一致，队列大小200或500-1000。`  
     3. `线程池的优雅关闭：`处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
 2. **<font color = "clime">线程池使用：</font>**   
     1. **<font color = "clime">线程池异常处理：</font>**  
@@ -118,6 +119,11 @@ final void runWorker(Worker w) {
 <!-- 
  别再纠结线程池大小/线程数量了，没有固定公式的 
  https://mp.weixin.qq.com/s/caiVVZwU883WjuYwO9jfng
+
+
+ https://blog.csdn.net/weixin_44777693/article/details/95246059
+ https://blog.csdn.net/WoAiBianCheng123abc/article/details/82828980
+ https://blog.csdn.net/huangshanchun/article/details/78567501
 -->
 &emsp; **<font color = "clime">CPU可同时处理线程数量大部分是CPU核数的两倍。</font>**    
 &emsp; **一般做法：**  

@@ -10,6 +10,12 @@
 
 
 # 1. 布隆过滤器  
+<!-- 
+牛逼哄哄的 BitMap
+https://mp.weixin.qq.com/s/8tmjHoYvPW61C9fCnJoFdQ
+
+-->
+
 ## 1.1. 布隆过滤器介绍
 &emsp; BloomFilter是由一个固定大小的二进制向量或者位图(bitmap)和一系列(通常好几个)映射函数组成的。  
 &emsp; **1. 布隆过滤器的原理：**  

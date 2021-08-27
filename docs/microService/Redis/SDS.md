@@ -25,6 +25,8 @@
 
 # 1. SDS字符串  
 <!-- 
+*** embstr编码的简单动态字符串（SDS）
+
 https://www.jianshu.com/p/738a0a17e723
 
 

@@ -22,6 +22,9 @@
 
 # 1. 性能指标  
 <!-- 
+一文搞清楚QPS、TPS、并发用户数、吞吐量 
+https://mp.weixin.qq.com/s/GM7_Q9sSdnt8gCznsE4Xbw
+
 重要**** 怎么理解的并发量和QPS？
 https://blog.csdn.net/lihuanlin/article/details/113039461
 系统的平均并发用户数和并发数峰值如何估算
