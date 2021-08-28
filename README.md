@@ -13,6 +13,7 @@
     - [分布式框架](#分布式框架)
         - [SpringBoot](#springboot)
         - [SpringCloud](#springcloud)
+        - [OpenAPI](#openapi)
         - [Dubbo](#dubbo)
         - [Zookeeper](#zookeeper)
     - [分布式原理](#分布式原理)
@@ -32,13 +33,11 @@
         - [任务调度](#任务调度)
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式通信](#分布式通信)
-    - [~~软件工程~~](#软件工程)
     - [项目构建基础](#项目构建基础)
     - [架构设计](#架构设计)
         - [DDD](#ddd)
-        - [负载均衡](#负载均衡)
-        - [OpenAPI](#openapi)
     - [计算机网络](#计算机网络)
+        - [负载均衡](#负载均衡)
     - [DevOps](#devops)
     - [Linux操作系统](#linux操作系统)
     - [测试工具](#测试工具)
@@ -337,6 +336,9 @@
 [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
 
+### OpenAPI 
+[OpenAPI](/docs/system/OpenAPI.md)  
+
 ### Dubbo  
 [RPC介绍](/docs/microService/RPC.md)  
 [Dubbo介绍](/docs/microService/dubbo/Dubbo.md)   
@@ -508,7 +510,6 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [时间轮算法](/docs/microService/dubbo/timeWheel.md)  
 
 ### 分布式搜索引擎  
-<!-- &emsp; &emsp; [基本查询](/docs/ES/basicSearch.md)   -->
 [ES搭建](/docs/ES/build.md)  
 &emsp; [ES配置文件](/docs/ES/configure.md)  
 &emsp; [内存设置](/docs/ES/heap.md)  
@@ -591,8 +592,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 ---
 
-## ~~软件工程~~
-
 ## 项目构建基础  
 [构建基础](/docs/web/BuildFoundation.md)  
 &emsp; [日志系统](/docs/web/log.md)  
@@ -628,7 +627,9 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [架构的方方面面](/docs/system/AllAspects.md)  
 [架构图](/docs/system/diagram.md)  
 [软件架构设计模式](/docs/system/designPattern.md)  
-[容灾和备份](/docs/system/backups.md)  
+[架构质量属性](/docs/system/QualityAttribute.md)  
+&emsp; [系统瓶颈](/docs/system/Bottleneck.md)  
+&emsp; [容灾和备份](/docs/system/backups.md)  
 
 
 <!-- 
@@ -640,21 +641,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [DDD](/docs/system/DDD.md)  
 -->
 
-----
-
-### 负载均衡  
-[负载均衡](/docs/system/loadBalance/loadBalance.md)  
-[DNS轮询](/docs/system/loadBalance/DNS.md)  
-[CDN](/docs/system/loadBalance/CDN.md)   
-[http重定向](/docs/system/loadBalance/redirect.md)  
-[LVS](/docs/system/loadBalance/LVS.md)  
-[Keepalived](/docs/system/loadBalance/Keepalived.md)  
-[Nginx](/docs/system/loadBalance/Nginx/nginx.md)  
-[Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
-[Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
-
-### OpenAPI 
-[OpenAPI](/docs/system/OpenAPI.md)  
 
 ----
 
@@ -675,6 +661,18 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [网络工具](/docs/network/NetTools.md)  
 &emsp; [网络抓包](/docs/network/wireshark.md)  
 &emsp; [网络监控](/docs/network/NetMonitor.md)  
+
+### 负载均衡  
+[负载均衡](/docs/system/loadBalance/loadBalance.md)  
+[DNS轮询](/docs/system/loadBalance/DNS.md)  
+[CDN](/docs/system/loadBalance/CDN.md)   
+[http重定向](/docs/system/loadBalance/redirect.md)  
+[LVS](/docs/system/loadBalance/LVS.md)  
+[Keepalived](/docs/system/loadBalance/Keepalived.md)  
+[Nginx](/docs/system/loadBalance/Nginx/nginx.md)  
+&emsp; [Nginx介绍](/docs/system/loadBalance/Nginx/nginxIntroduce.md)  
+&emsp; [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
+&emsp; [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
 
 ------
 

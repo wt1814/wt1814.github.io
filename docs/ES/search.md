@@ -36,6 +36,8 @@
 
 
 # 1. 检索操作  
+<!-- &emsp; &emsp; [基本查询](/docs/ES/basicSearch.md)   -->
+
 <!-- 
 
 重要  fingerprint filter 插件——Elasticsearch 去重必备利器 

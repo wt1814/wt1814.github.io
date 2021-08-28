@@ -14,7 +14,7 @@ https://mp.weixin.qq.com/s/wL5YI5TZXl1zRY8qS--awQ
 -->
 
 
-&emsp; 为了使不同计算机厂家生产的计算机能够相互通信，以便在更大的范围内建立计算机网络，国际标准化组织(ISO)在1978年提出了“开放系统互联参考模型”，即著名的OSI/RM模型(Open System Interconnection/Reference Model)。  
+&emsp; 为了使不同计算机厂家生产的计算机能够相互通信，以便在更大的范围内建立计算机网络，国际标准化组织（ISO）在1978年提出了“开放系统互联参考模型”，即著名的OSI/RM模型（Open System Interconnection/Reference Model）。  
 &emsp; 除了标准的OSI七层模型以外，常见的网络层次划分还有TCP/IP四层协议以及TCP/IP五层协议，它们之间的对应关系如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/osi-1.png)  
 

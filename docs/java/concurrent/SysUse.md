@@ -10,7 +10,6 @@
         - [1.4.1. 同步类](#141-同步类)
         - [1.4.2. 同步this实例](#142-同步this实例)
         - [1.4.3. 同步对象实例](#143-同步对象实例)
-        - [1.4.4. synchronized加锁this和class的区别！](#144-synchronized加锁this和class的区别)
     - [1.5. 类锁和对象锁](#15-类锁和对象锁)
 
 <!-- /TOC -->
@@ -21,6 +20,12 @@
 
 
 # 1. ~~Synchronized使用~~  
+<!-- 
+synchronized加锁this和class的区别！
+https://mp.weixin.qq.com/s/ewXpaeMYNx7FAW_fYoQbPg
+--> 
+
+
 ## 1.1. Synchronized使用简介
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-11.png)  
 
@@ -148,13 +153,6 @@ private void SynchronizedInstance() {
 }
 ```
 
-### 1.4.4. synchronized加锁this和class的区别！ 
-<!-- 
-https://mp.weixin.qq.com/s/ewXpaeMYNx7FAW_fYoQbPg
---> 
-
-
- 
 ## 1.5. 类锁和对象锁
 &emsp; **<font color = "clime">前提：是否是同一个类或同一个类的实例对象。</font>**    
 

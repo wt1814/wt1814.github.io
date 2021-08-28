@@ -18,7 +18,7 @@
     &emsp; **HTTP请求的头部，connection 设置为 keep-alive，** 保持存活一段时间：现在的浏览器，一般都这么进行了。     
     2. 服务器端  
         * **<font color = "red">允许time_wait状态的socket被重用。</font>**
-        * 缩减time_wait时间，设置为 1 MSL（即，2 mins）。
+        * 缩减time_wait时间，设置为 1 MSL（即2mins）。
 
 
 # 1. TIME_WAIT问题
@@ -53,7 +53,7 @@ https://mp.weixin.qq.com/s/dXpcXa_DZgJ-0PwaKdWr3g
 ## 1.3. 解决办法  
 &emsp; 一般解决办法：  
 1. 客户端  
-&emsp; HTTP 请求的头部，connection 设置为 keep-alive，保持存活一段时间：现在的浏览器，一般都这么进行了。     
+&emsp; HTTP请求的头部，connection 设置为 keep-alive，保持存活一段时间：现在的浏览器，一般都这么进行了。     
 2. 服务器端  
     * 允许 time_wait 状态的 socket 被重用
-    * 缩减 time_wait 时间，设置为 1 MSL（即，2 mins）
+    * 缩减 time_wait 时间，设置为 1 MSL（即2mins）

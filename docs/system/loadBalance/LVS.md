@@ -14,7 +14,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; **LVS是四层(传输层)负载均衡，LVS支持TCP/UDP的负载均衡。**  
+&emsp; **LVS是四层（传输层）负载均衡，LVS支持TCP/UDP的负载均衡。**  
 &emsp; LVS的转发主要通过修改 IP 地址（NAT 模式，分为源地址修改SNAT和目标地址修改 DNAT）、修改目标 MAC（DR 模式）来实现。  
 
 
