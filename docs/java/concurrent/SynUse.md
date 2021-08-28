@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. ~~synchronized锁的各种用法~~](#1-synchronized锁的各种用法)
+- [1. Synchronized使用实例](#1-synchronized使用实例)
     - [1.1. synchronized类锁](#11-synchronized类锁)
         - [1.1.1. synchronized修饰同一个类的两个静态方法时互斥](#111-synchronized修饰同一个类的两个静态方法时互斥)
         - [1.1.2. synchronized分别修饰同一个类的静态方法和当前类时互斥](#112-synchronized分别修饰同一个类的静态方法和当前类时互斥)
@@ -29,9 +29,11 @@
 
 <!-- /TOC -->
 
-# 1. ~~synchronized锁的各种用法~~
+# 1. Synchronized使用实例
 
 <!--
+
+~~
 ***Synchronized 的 8 种用法，真是绝了！ 
 https://mp.weixin.qq.com/s/TOkDyqAE5TToriOMX6I6tg
 详解synchronized锁的各种用法及注意事项 

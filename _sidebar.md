@@ -96,7 +96,7 @@
         * [线程安全解决方案](/docs/java/concurrent/ThreadSafety.md)  
             * [Synchronized介绍](/docs/java/concurrent/SynApply.md)  
             * [Synchronized使用](/docs/java/concurrent/SysUse.md)  
-            * [Synchronized的各种用法](/docs/java/concurrent/SynUse.md)  
+            * [Synchronized使用是否安全](/docs/java/concurrent/SynUse.md)  
             * [Synchronized底层原理](/docs/java/concurrent/SynBottom.md)  
             * [Synchronized优化](/docs/java/concurrent/SynOptimize.md)  
             * [Volatile](/docs/java/concurrent/Volatile.md)  
