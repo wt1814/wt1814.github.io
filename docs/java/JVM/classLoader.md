@@ -121,20 +121,32 @@ https://mp.weixin.qq.com/s/zZmsi7lpuQHECOHA2ohOvA
 https://mp.weixin.qq.com/s/Q0MqcvbeI7gAcJH5ZaQWgA
 搞个双亲委派然后再破坏，图啥？ 
 https://mp.weixin.qq.com/s/11P6NwmFsi_EsTxAuul4gQ
-
+Spring破坏双亲委派模型 
+https://blog.csdn.net/luzhensmart/article/details/82665122
 -->
 &emsp; 双亲委派模型并不是一个强制性的约束模型，而是Java设计者推荐给开发者的类加载器实现方式，可以“被破坏”。  
 
 &emsp; **<font color = "red">破坏双亲委派模型的案例：</font>**  
 
 * 双亲委派模型有一个问题：顶层ClassLoader无法加载底层ClassLoader的类，典型例子JNDI、JDBC。**<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器。所以加入了线程上下文类加载器(Thread Context ClassLoader)，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
+&emsp; ~~JNDI是Java标准服务，它的代码由启动类加载器去加载。但是JNDI需要回调独立厂商实现的代码，而类加载器无法识别这些回调代码（SPI）。~~   
+&emsp; ~~为了解决这个问题，引入了一个线程上下文类加载器。 可通过Thread.setContextClassLoader()设置。~~   
+&emsp; ~~利用线程上下文类加载器去加载所需要的SPI代码，即父类加载器请求子类加载器去完成类加载的过程，而破坏了双亲委派模型。~~  
 * **利用破坏双亲委派来实现代码热替换(每次修改类文件，不需要重启服务)。因为一个Class只能被一个ClassLoader加载一次，否则会报java.lang.LinkageError。当要实现代码热部署时，可以每次都new一个自定义的ClassLoader来加载新的Class文件。** JSP的实现动态修改就是使用此特性实现。  
 * Tomcat中使用了自定义ClassLoader，并且也破坏了双亲委托机制。每个应用使用WebAppClassloader进行单独加载，它首先使用WebAppClassloader进行类加载，如果加载不了再委托父加载器去加载， **<font color = "red">这样可以保证每个应用中的类不冲突。每个tomcat中可以部署多个项目，每个项目中存在很多相同的class文件(很多相同的jar包)，加载到jvm中可以做到互不干扰。</font>**  
+* Spring破坏双亲委派模型  
+&emsp; Spring要对用户程序进行组织和管理，而用户程序一般放在WEB-INF目录下，由WebAppClassLoader类加载器加载，而Spring由Common类加载器或Shared类加载器加载。   
+&emsp; 那么Spring是如何访问WEB-INF下的用户程序呢？   
+&emsp; 使用线程上下文类加载器。 Spring加载类所用的classLoader都是通过Thread.currentThread().getContextClassLoader()获取的。当线程创建时会默认创建一个AppClassLoader类加载器（对应Tomcat中的WebAppclassLoader类加载器）：setContextClassLoader(AppClassLoader)。   
+&emsp; 利用这个来加载用户程序。即任何一个线程都可通过getContextClassLoader()获取到WebAppclassLoader。  
 
 ----------------
 
 &emsp; Tomcat为什么要破坏双亲委派模型？  
 &emsp; 因为一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。  
+
+----------
+
 
 
 ## 1.3. 类加载器应用  

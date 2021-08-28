@@ -14,6 +14,12 @@
 
 
 # 1. 分布式事务  
+<!-- 
+你这 Saga 事务保“隔离性”吗？ 
+https://mp.weixin.qq.com/s/cZabAt7JF4QrQHERHHAWjA
+
+-->
+
 <!--
 如何选择分布式事务解决方案？
 https://mp.weixin.qq.com/s/2AL3uJ5BG2X3Y2Vxg0XqnQ
