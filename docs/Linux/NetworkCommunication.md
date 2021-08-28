@@ -3,8 +3,6 @@
 - [1. Linux网络通讯](#1-linux网络通讯)
     - [1.1. 常见网络命令](#11-常见网络命令)
     - [1.2. Linux网络流量监控工具](#12-linux网络流量监控工具)
-        - [1.2.1. iftop](#121-iftop)
-        - [1.2.2. nethogs](#122-nethogs)
     - [1.3. 网络抓包](#13-网络抓包)
 
 <!-- /TOC -->
@@ -18,7 +16,7 @@ https://mp.weixin.qq.com/s/uMK6QnJKK2MFERkfx6b-QA
 Linux 网络分析必备技能：tcpdump 实战详解 
 https://mp.weixin.qq.com/s/Tgxdyt1PdVkaNdlZGIDdbA
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/linux/linux-5.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Linux/linux-5.png)  
 
 * ping命令  
 &emsp; ping命令用来测试主机之间网络的连通性。执行ping指令会使用ICMP传输协议，发出要求回应的信息，若远端主机的网络功能没有问题，就会回应该信息，因而得知该主机运作正常。  
