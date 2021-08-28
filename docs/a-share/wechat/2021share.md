@@ -55,6 +55,9 @@
 [CPU突然飙升到300%，Dubbo活动线程数直接飙到1000](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492724&idx=1&sn=9397f1426588c51dc2420d1ffb93ac69&chksm=cf70f61af8077f0cb130691a9b8c7cbbb198493f8b902348a888f4d9656f435ef9ea8e381935&scene=21#wechat_redirect)  
 [Java后端线上问题排查常用命令收藏](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492770&idx=1&sn=2642906e884c99b1091cb787f32e9c1f&chksm=cf70f6ccf8077fdab92b1141d724e14e629910cd318ad857e53e395b6a7c39cc89f476df90a0&scene=21#wechat_redirect)  
 [带着8个问题5分钟教你学会Arthas诊断工具](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493154&idx=1&sn=4df39fa12749e9d8f64678b3df76bf40&chksm=cf70f44cf8077d5a6161b47c1854321a6d56d622e4c8f314ffaf3ffc7c637388c452d6f6b8f7&scene=21#wechat_redirect)  
+[CMSGC造成内存碎片的解决方法](https://mp.weixin.qq.com/s/iZpbwMAeG39cdvLBtzj8mA)  
+[CMS的碎片解决方案](https://mp.weixin.qq.com/s/39rcjLx_kKXAinMQuXsNgQ)  
+
 
 ## 并发编程
 [Java并发之线程中断](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491495&idx=1&sn=807acfc7e20ca5ddc825c8939702bed7&chksm=fa20bfbbcd5736ad043d0ebf6e532b23331d2680483c699516f7e5d9b39dfd48f4258b338211&scene=21#wechat_redirect)  
@@ -134,8 +137,9 @@
 [Explain执行计划key_len详解](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492881&idx=1&sn=63833f91e04f291a3f5fb73343445fa7&chksm=cf70f77ff8077e696f6a15ecda01cc2c62fdbd7d41f5fb77e9539c433b1648436b8c86f67972&scene=21#wechat_redirect)  
 [读写分离怎么做，怎么实现](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493046&idx=1&sn=b12312f37c9800d2bf514bebc5c4067b&chksm=cf70f7d8f8077ece13e82bf5a2701b935588f4fb117c2d1b7eb1458a62462ecf0362f13dd856&scene=21#wechat_redirect)  
 [我C，一个库里Curry几百个表，这谁受得了？](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493169&idx=1&sn=30ad2fd144b8512520b8f99dc6f36a22&chksm=cf70f45ff8077d49b08db9663204cf625a9868c60e238b7649069dd8bf7c4aabc09eeb32b02b&scene=21#wechat_redirect)  
-[ 一条 sql 的执行过程详解](https://mp.weixin.qq.com/s/y9R6fn8PXbvHrWCqyk9qlA)  
+[一条 sql 的执行过程详解](https://mp.weixin.qq.com/s/y9R6fn8PXbvHrWCqyk9qlA)  
 [浅谈 MySQL InnoDB 的内存组件](https://mp.weixin.qq.com/s/h2rsvttXWxOSjz0wTsFtOg)  
+[10款常见MySQL高可用方案选型解读](https://mp.weixin.qq.com/s?__biz=MzkwOTIxNDQ3OA%3D%3D&mid=2247533652&idx=1&sn=1d23f952288e3a61b65542ddcace454f&scene=45#wechat_redirect)  
 
 ## Spring
 [Spring与Spring Boot中的事件机制](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491905&idx=2&sn=8b4a1a4e053cd212e3200beb243ffad5&chksm=fa23415dcd54c84b07d43e797b76d4d70edbb87267ea21c863d4679991fb3a5989d69cfeadcb&scene=21#wechat_redirect)  
@@ -179,6 +183,8 @@
 [Redis爆了？快速定位Redis占用最高的key有哪些](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492826&idx=1&sn=896def4a519c5f8f6cc30a64404940bb&chksm=cf70f6b4f8077fa2a97f468bfe270d2639ef756cfefc490f330f3618ab835795c2b0dda8cc2f&scene=21#wechat_redirect)  
 [大厂经典面试题：Redis为什么这么快？](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493047&idx=1&sn=9189167157fc91984f071c22221c7e73&chksm=cf70f7d9f8077ecfb80108288da76c3357f24f4dafa3a0e109040bc2f49973fe3a79a30f5810&scene=21#wechat_redirect)  
 [Redis选择实现了自己的VM](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493047&idx=2&sn=756bfc4aa3889889bfba97ddf90a2ce1&chksm=cf70f7d9f8077ecf87c91111a1cb47109ded45201e1db08ee2bb8b798997795fa5507fd9d065&scene=21#wechat_redirect)  
+[Redis协议是什么样的](https://mp.weixin.qq.com/s?__biz=MzA4MTA0NTI1Mg%3D%3D&mid=2650926322&idx=1&sn=03fc00ca82889553f4a7b4b5ad73aea4&scene=45#wechat_redirect)  
+[Redis通讯协议RESP详解](https://mp.weixin.qq.com/s?__biz=MzA5ODU4ODc2NA%3D%3D&mid=2247483882&idx=1&sn=4d9c166ebfba92c0b8fd5b8524270056&scene=45#wechat_redirect)  
 
 
 ## mq
@@ -307,6 +313,12 @@
 [程序人生的岔路口，你选择什么？](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493041&idx=1&sn=d71017b37a01957c30627eb4025e9a26&chksm=cf70f7dff8077ec946f9539062b2f2cced4638fe3415e5ff75ab72c527b5b0b38a373224a453&scene=21#wechat_redirect)  
 [为什么CTO、技术总监、架构师都不写代码，还这么牛逼？](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493168&idx=1&sn=b02f601bc31b7ef1cfe660041508d42a&chksm=cf70f45ef8077d48e28da605672a2cf644de680c4c55c8e9f08ff5c5edbab2d02256296c5e62&scene=21#wechat_redirect)  
 [一个好端端的团队是如何被管理者搞垮的？](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493168&idx=2&sn=2d416985f9a9612d4635d524ea18bc4a&chksm=cf70f45ef8077d487cce256f80727dc895bb17f6eaafe6eb8270cb981b6395023819e417e17f&scene=21#wechat_redirect)  
+[尽量不要劝一个人进步](https://mp.weixin.qq.com/s?__biz=MjM5MTk0MTM1NA%3D%3D&mid=2456651852&idx=1&sn=a03eca705c6be8869df3bb84b4c08cd2&scene=45#wechat_redirect)  
+[架构大咖说丨顶级架构师 = 技术大牛？](https://mp.weixin.qq.com/s?__biz=MzIzODIzNzE0NQ%3D%3D&mid=2654442304&idx=1&sn=f33b44c99f1b2c31b3f5a69825de59d7&scene=45#wechat_redirect)  
+[如何赢得上司的信任](https://mp.weixin.qq.com/s/Oa7xewXkyJbInCyNgRRDYw)  
+[向上反馈困难问题](https://mp.weixin.qq.com/s/kfhs6UBiejCuLd1vzWMFww)  
+[向上争取资源支持](https://mp.weixin.qq.com/s/GWIjYWF78fYVyAJR01YCEg)  
+
       
 ## 我是产品
 [收藏：关于需求，张小龙的16个核心观点](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247493799&idx=1&sn=1f19dd7489ee7025771a91adc6fe87c4&chksm=fa2348bbcd54c1ad5d1765078ee3be5b62c17dfe92dd0a59099825354bbf4291652c84d4c9de&scene=21#wechat_redirect)  

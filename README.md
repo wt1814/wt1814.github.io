@@ -152,7 +152,8 @@
 &emsp; &emsp; [并发安全解决底层](/docs/java/concurrent/ConcurrencySolve.md)  
 &emsp; &emsp; [伪共享问题](/docs/java/concurrent/PseudoSharing.md)  
 &emsp; [线程安全解决方案](/docs/java/concurrent/ThreadSafety.md)  
-&emsp; &emsp; [Synchronized应用](/docs/java/concurrent/SynApply.md)  
+&emsp; &emsp; [Synchronized介绍](/docs/java/concurrent/SynApply.md)  
+&emsp; &emsp; [Synchronized使用](/docs/java/concurrent/SysUse.md)  
 &emsp; &emsp; [Synchronized的各种用法](/docs/java/concurrent/SynUse.md)  
 &emsp; &emsp; [Synchronized底层原理](/docs/java/concurrent/SynBottom.md)  
 &emsp; &emsp; [Synchronized优化](/docs/java/concurrent/SynOptimize.md)  
@@ -444,7 +445,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [Redis原理](/docs/microService/Redis/RedisPrinciple.md)  
 &emsp; [Redis为什么那么快？](/docs/microService/Redis/RedisFast.md)  
 &emsp; [Redis虚拟内存机制](/docs/microService/Redis/RedisVM.md)  
-&emsp; [Redis事件/IO多路复用](/docs/microService/Redis/RedisEvent.md)  
+&emsp; [Redis事件/Reactor](/docs/microService/Redis/RedisEvent.md)  
 &emsp; [Redis多线程模型](/docs/microService/Redis/RedisMultiThread.md)  
 &emsp; [Redis协议](/docs/microService/Redis/RESP.md)  
 [Redis内置功能](/docs/microService/Redis/BuiltIn.md)    
@@ -552,7 +553,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 -->
 
 ### 分布式通信  
-[分布式通信基础](/docs/microService/communication/Netty/basics.md)   
+[通信基础](/docs/microService/communication/Netty/basics.md)   
 &emsp; [序列化](/docs/microService/communication/serializbale.md)  
 &emsp; [网络IO](/docs/microService/communication/NetworkIO.md)  
 &emsp; &emsp; [五种I/O模型](/docs/microService/communication/IO.md)  

@@ -14,8 +14,9 @@
             - [1.3.2.1. 多线程模型简介](#1321-多线程模型简介)
             - [1.3.2.2. 多线程模型缺点](#1322-多线程模型缺点)
         - [1.3.3. 主从多线程模型](#133-主从多线程模型)
-    - [1.4. Proactor介绍](#14-proactor介绍)
-    - [1.5. 参考](#15-参考)
+    - [1.4. 主流的中间件所采用的网络模型](#14-主流的中间件所采用的网络模型)
+    - [1.5. Proactor介绍](#15-proactor介绍)
+    - [1.6. 参考](#16-参考)
 
 <!-- /TOC -->
 
@@ -235,8 +236,11 @@ https://blog.csdn.net/Jack__iT/article/details/107010486
     步骤 2 完成之后，业务层的链路正式建立，将 SocketChannel 从主线程池的 Reactor 线程的多路复用器上摘除，重新注册到 Sub 线程池的线程上，用于处理 I/O 的读写操作。
 -->
 
+## 1.4. 主流的中间件所采用的网络模型  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-133.png)  
 
-## 1.4. Proactor介绍  
+
+## 1.5. Proactor介绍  
 <!-- 
 Proactor
 http://www.yeolar.com/note/2012/12/10/proactor/
@@ -254,6 +258,6 @@ http://www.yeolar.com/note/2012/12/10/proactor/
 5. 读完成事件处理器直接处理用户进程缓冲区中的数据。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-86.png)  
 
-## 1.5. 参考  
+## 1.6. 参考  
 &emsp; https://www.bilibili.com/video/BV1ft4y1B74d?p=2  
 &emsp; https://www.bilibili.com/video/BV17t41137su?p=61  
