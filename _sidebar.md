@@ -527,6 +527,8 @@
         * [DevOps搭建](/docs/devAndOps/devOpsPractice.md)   
     * [GIT](/docs/devAndOps/git/command.md)  
     * [Maven](/docs/devAndOps/maven.md)  
+    * [Jmeter](/docs/devAndOps/Jmeter.md)  
+    * [JMH](/docs/java/JVM/JMH.md)  
     * [多种发布方式](/docs/system/publishe.md)  
         * [灰度发布](/docs/system/grayscalePublishe.md)  
     * [Jenkins](/docs/devAndOps/Jenkins.md)  
@@ -558,9 +560,6 @@
     * [网络通讯](/docs/Linux/NetworkCommunication.md)  
     * [进程管理](/docs/Linux/ProcessManagement.md)  
     * [shell编程](/docs/Linux/shell.md)  
-* 测试工具
-    * [Jmeter](/docs/devAndOps/Jmeter.md)  
-    * [JMH](/docs/java/JVM/JMH.md)  
 * 常用工具  
     * [idea](/docs/software/idea/idea.md)  
     * [抓包Charles](/docs/software/charles.md)  

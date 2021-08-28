@@ -40,7 +40,6 @@
         - [负载均衡](#负载均衡)
     - [DevOps](#devops)
     - [Linux操作系统](#linux操作系统)
-    - [测试工具](#测试工具)
     - [常用工具](#常用工具)
     - [Error](#error)
     - [项目总结](#项目总结)
@@ -681,6 +680,8 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [DevOps搭建](/docs/devAndOps/devOpsPractice.md)  
 [GIT](/docs/devAndOps/git/command.md)  
 [Maven](/docs/devAndOps/maven.md)  
+[Jmeter](/docs/devAndOps/Jmeter.md)  
+[JMH](/docs/java/JVM/JMH.md)  
 [多种发布方式](/docs/system/publishe.md)  
 &emsp; [灰度发布](/docs/system/grayscalePublishe.md)  
 [Jenkins](/docs/devAndOps/Jenkins.md)  
@@ -721,9 +722,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 ----
 
-## 测试工具  
-[Jmeter](/docs/devAndOps/Jmeter.md)  
-[JMH](/docs/java/JVM/JMH.md)  
 
 ## 常用工具  
 [idea](/docs/software/idea/idea.md)  
