@@ -570,7 +570,7 @@
     * [红黑树](/docs/function/redBlack.md)  
     * [复杂数据结构](/docs/function/otherStructure.md)  
         * [跳跃表](/docs/function/SkipList.md)  
-        * [位图](/docs/function/BitMap.md)  
+        * [位图BitMap](/docs/function/BitMap.md)  
         * [BloomFilter](/docs/function/BloomFilter.md)  
         * [HyperLogLog](/docs/function/HyperLogLog.md)  
         * [Trie](/docs/function/Trie.md)  

@@ -747,7 +747,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [红黑树](/docs/function/redBlack.md)  
 [复杂数据结构](/docs/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/function/SkipList.md)  
-&emsp; [位图](/docs/function/BitMap.md)  
+&emsp; [位图BitMap](/docs/function/BitMap.md)  
 &emsp; [BloomFilter](/docs/function/BloomFilter.md)  
 &emsp; [HyperLogLog](/docs/function/HyperLogLog.md)  
 &emsp; [Trie](/docs/function/Trie.md)  
