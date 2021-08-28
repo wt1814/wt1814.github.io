@@ -7,6 +7,9 @@
         - [JVM](#jvm)
         - [并发编程](#并发编程)
     - [数据库](#数据库)
+    - [项目构建基础](#项目构建基础)
+    - [架构设计](#架构设计)
+        - [DDD](#ddd)
     - [SSM](#ssm)
         - [Spring](#spring)
         - [MyBatis](#mybatis)
@@ -33,16 +36,13 @@
         - [任务调度](#任务调度)
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式通信](#分布式通信)
-    - [项目构建基础](#项目构建基础)
-    - [架构设计](#架构设计)
-        - [DDD](#ddd)
+    - [Error](#error)
+    - [项目总结](#项目总结)
     - [计算机网络](#计算机网络)
         - [负载均衡](#负载均衡)
     - [DevOps](#devops)
     - [Linux操作系统](#linux操作系统)
     - [常用工具](#常用工具)
-    - [Error](#error)
-    - [项目总结](#项目总结)
     - [算法](#算法)
     - [学习资料](#学习资料)
 
@@ -259,6 +259,59 @@
 &emsp; [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
 &emsp; [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
 -->
+
+--------
+
+## 项目构建基础  
+[构建基础](/docs/web/BuildFoundation.md)  
+&emsp; [日志系统](/docs/web/log.md)  
+&emsp; [SpringTest](/docs/web/test.md)  
+&emsp; [乱码](/docs/web/garbled.md)  
+&emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
+&emsp; [统一异常处理](/docs/web/ExceptionHandler.md)  
+&emsp; [统一日志记录](/docs/web/unifiedLog.md)  
+&emsp; [工具类hutool](/docs/web/hutool.md)  
+[API接口设计](/docs/web/API.md)    
+&emsp; [RESTful风格](/docs/web/interface/RESTful.md)  
+&emsp; [接口幂等](/docs/web/interface/idempotent.md)  
+&emsp; [接口防刷/反爬虫](/docs/web/interface/brush.md)  
+&emsp; [接口安全](/docs/web/interface/security.md)  
+&emsp; [★★★接口响应时间问题](/docs/web/interface/timeout.md)  
+&emsp; [接口预警](/docs/web/interface/EarlyWarn.md)  
+[JavaBean](/docs/web/JavaBean.md)  
+&emsp; [POJO](/docs/web/POJO.md)  
+&emsp; [BeanUtils](/docs/web/BeanUtils.md)  
+&emsp; [参数校验](/docs/web/Validation.md)  
+&emsp; [Lombok](/docs/web/Lombok.md)  
+[Http](/docs/web/http.md)   
+&emsp; [RestTemplate](/docs/web/Resttemplate.md)  
+&emsp; [Http重试](/docs/web/httpRetry.md)   
+[数据相关](/docs/web/Data.md)  
+&emsp; [格式化](/docs/web/Format.md)  
+&emsp; [数据脱敏](/docs/web/sensitive.md)  
+&emsp; [加密算法](/docs/web/encryption.md)  
+[源码安全](/docs/web/codeSecurity.md)   
+[其他](/docs/web/other.md)  
+
+## 架构设计  
+[架构的方方面面](/docs/system/AllAspects.md)  
+[架构图](/docs/system/diagram.md)  
+[软件架构设计模式](/docs/system/designPattern.md)  
+[架构质量属性](/docs/system/QualityAttribute.md)  
+&emsp; [系统瓶颈](/docs/system/Bottleneck.md)  
+&emsp; [容灾和备份](/docs/system/backups.md)  
+
+
+<!-- 
+[Gateway](/docs/microService/microservices/Gateway.md)  
+
+软件工程
+
+### DDD
+[DDD](/docs/system/DDD.md)  
+-->
+
+-------
 
 ## SSM  
 ### Spring  
@@ -590,56 +643,19 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
 
 ---
+## Error  
+[多线程串线了](/docs/Error/ThreadCrossed.md)  
+[熔断降级处理](/docs/Error/hystrix.md)  
+[Redis高并发](/docs/Error/redisConcurrent.md)  
+[Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
+[redis scan命令](/docs/Error/redisScan.md)  
+<!-- [雪花利用ZK生成workId]()   -->
 
-## 项目构建基础  
-[构建基础](/docs/web/BuildFoundation.md)  
-&emsp; [日志系统](/docs/web/log.md)  
-&emsp; [SpringTest](/docs/web/test.md)  
-&emsp; [乱码](/docs/web/garbled.md)  
-&emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
-&emsp; [统一异常处理](/docs/web/ExceptionHandler.md)  
-&emsp; [统一日志记录](/docs/web/unifiedLog.md)  
-&emsp; [工具类hutool](/docs/web/hutool.md)  
-[API接口设计](/docs/web/API.md)    
-&emsp; [RESTful风格](/docs/web/interface/RESTful.md)  
-&emsp; [接口幂等](/docs/web/interface/idempotent.md)  
-&emsp; [接口防刷/反爬虫](/docs/web/interface/brush.md)  
-&emsp; [接口安全](/docs/web/interface/security.md)  
-&emsp; [★★★接口响应时间问题](/docs/web/interface/timeout.md)  
-&emsp; [接口预警](/docs/web/interface/EarlyWarn.md)  
-[JavaBean](/docs/web/JavaBean.md)  
-&emsp; [POJO](/docs/web/POJO.md)  
-&emsp; [BeanUtils](/docs/web/BeanUtils.md)  
-&emsp; [参数校验](/docs/web/Validation.md)  
-&emsp; [Lombok](/docs/web/Lombok.md)  
-[Http](/docs/web/http.md)   
-&emsp; [RestTemplate](/docs/web/Resttemplate.md)  
-&emsp; [Http重试](/docs/web/httpRetry.md)   
-[数据相关](/docs/web/Data.md)  
-&emsp; [格式化](/docs/web/Format.md)  
-&emsp; [数据脱敏](/docs/web/sensitive.md)  
-&emsp; [加密算法](/docs/web/encryption.md)  
-[源码安全](/docs/web/codeSecurity.md)   
-[其他](/docs/web/other.md)  
-
-## 架构设计  
-[架构的方方面面](/docs/system/AllAspects.md)  
-[架构图](/docs/system/diagram.md)  
-[软件架构设计模式](/docs/system/designPattern.md)  
-[架构质量属性](/docs/system/QualityAttribute.md)  
-&emsp; [系统瓶颈](/docs/system/Bottleneck.md)  
-&emsp; [容灾和备份](/docs/system/backups.md)  
-
-
+## 项目总结  
 <!-- 
-[Gateway](/docs/microService/microservices/Gateway.md)  
-
-软件工程
-
-### DDD
-[DDD](/docs/system/DDD.md)  
+[支付项目](/docs/project/payment.md)  
+[二清项目](/docs/project/erqing.md)  
 -->
-
 
 ----
 
@@ -728,20 +744,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [抓包Charles](/docs/software/charles.md)  
 [markdown](/docs/software/markdown.md)  
 
----
-## Error  
-[多线程串线了](/docs/Error/ThreadCrossed.md)  
-[熔断降级处理](/docs/Error/hystrix.md)  
-[Redis高并发](/docs/Error/redisConcurrent.md)  
-[Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-[redis scan命令](/docs/Error/redisScan.md)  
-<!-- [雪花利用ZK生成workId]()   -->
-
-## 项目总结  
-<!-- 
-[支付项目](/docs/project/payment.md)  
-[二清项目](/docs/project/erqing.md)  
--->
+--------
 
 ## 算法  
 [红黑树](/docs/function/redBlack.md)  
