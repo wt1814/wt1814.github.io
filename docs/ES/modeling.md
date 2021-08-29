@@ -13,7 +13,7 @@
 
 &emsp; **<font color = "clime">分片大小官方推荐值为20-40GB。</font>** 
 
-# 1. ES建模  
+# 1. ~~ES建模~~  
 <!-- 
 大家点击阅读原文或者复制下面链接查看。
 https://t2.lagounews.com/9R5DRcROsO3C1 
