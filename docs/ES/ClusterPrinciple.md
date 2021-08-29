@@ -14,7 +14,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 集群容错整体流程：Master选举(假如宕机节点是Master)(可能产生脑分裂) ---> 分片容错（选取主分片） ---> Master重启故障机 ---> 数据同步。 
-2. 脑分裂： **<font color = "clime">正确设置最少投票通过数量(discovery.zen.minimum_master_nodes = 候选节点/+1)参数，即半数机制，可以避免脑分裂问题。</font>**  
+2. 脑分裂： **<font color = "clime">正确设置最少投票通过数量（discovery.zen.minimum_master_nodes = 候选节点/+1）参数，即半数机制，可以避免脑分裂问题。</font>**  
 
 # 1. ~~ES集群运行原理~~
 ## 1.1. ~~zen discovery集群发现机制~~  

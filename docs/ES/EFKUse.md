@@ -38,29 +38,29 @@ https://blog.csdn.net/zimou5581/article/details/90519307
 
 1. maven  
 
-```xml
-<!--logback日志-->
-<dependency>
-    <groupId>net.logstash.logback</groupId>
-    <artifactId>logstash-logback-encoder</artifactId>
-    <version>4.8</version>
-</dependency>
-```
+    ```xml
+    <!--logback日志-->
+    <dependency>
+        <groupId>net.logstash.logback</groupId>
+        <artifactId>logstash-logback-encoder</artifactId>
+        <version>4.8</version>
+    </dependency>
+    ```
 
 2. 修改logback.xml配置文件，添加logstash配置，并且使java应用打印出来的日志以json格式来显示，并且一个日志占用一行，这样对于elk处理非常简单方便高效。     
 
-```xml
-<appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-    <param name="Encoding" value="UTF-8"/>
-    <remoteHost>192.168.1.102</remoteHost>
-    <port>10514</port>
-    <!-- <filter class="com.program.interceptor.ELKFilter"/>-->//引入过滤类
-    <!-- encoder is required -->
-    <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" >
-        <customFields>{"appname":"${appName}"}</customFields> // 索引名
-    </encoder>
-</appender>
-```
+    ```xml
+    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <param name="Encoding" value="UTF-8"/>
+        <remoteHost>192.168.1.102</remoteHost>
+        <port>10514</port>
+        <!-- <filter class="com.program.interceptor.ELKFilter"/>-->//引入过滤类
+        <!-- encoder is required -->
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" >
+            <customFields>{"appname":"${appName}"}</customFields> // 索引名
+        </encoder>
+    </appender>
+    ```
 
 ## 1.3. EFK监控  
 <!-- 
