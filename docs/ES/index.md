@@ -3,26 +3,17 @@
 
 - [1. 索引基本操作](#1-索引基本操作)
     - [1.1. 索引增删改查](#11-索引增删改查)
-    - [1.2. Open/Close Index打开/关闭索引](#12-openclose-index打开关闭索引)
-    - [1.3. 索引映射管理](#13-索引映射管理)
-    - [1.4. 索引别名](#14-索引别名)
-        - [1.4.1. 索引别名操作](#141-索引别名操作)
-        - [1.4.2. ★★★Rollover Index别名滚动指向新创建的索引](#142-★★★rollover-index别名滚动指向新创建的索引)
-    - [1.5. 索引配置](#15-索引配置)
-        - [1.5.1. 更新索引配置](#151-更新索引配置)
-        - [1.5.2. 获取配置](#152-获取配置)
-        - [1.5.3. 索引分析](#153-索引分析)
-        - [1.5.4. ★★★索引模板](#154-★★★索引模板)
-        - [1.5.5. 重建索引](#155-重建索引)
-            - [1.5.5.1. ★★★Shrink Index收缩索引](#1551-★★★shrink-index收缩索引)
-            - [1.5.5.2. Split Index拆分索引](#1552-split-index拆分索引)
+    - [1.2. 索引设计](#12-索引设计)
+        - [1.2.1. 索引映射](#121-索引映射)
+        - [1.2.2. ★★★索引模板](#122-★★★索引模板)
+        - [1.2.3. 索引别名](#123-索引别名)
+            - [1.2.3.1. 索引别名操作](#1231-索引别名操作)
+            - [1.2.3.2. ★★★Rollover Index别名滚动指向新创建的索引](#1232-★★★rollover-index别名滚动指向新创建的索引)
 
 <!-- /TOC -->
 
 
 &emsp; **<font color = "clime">ES的rollover index API，可以根据满足指定的条件（时间、文档数量、索引大小）创建新的索引，并把别名滚动指向新的索引。</font>**   
-
-
 
 # 1. 索引基本操作
 <!-- 
@@ -171,147 +162,16 @@ index.blocks.write：设为true，则不可写。
 index.blocks.metadata：设为true，则索引元数据不可读写。
 ```
 
-
-## 1.2. Open/Close Index打开/关闭索引  
-
-```text
-POST /my_index/_close
-POST /my_index/_open
-```
-&emsp; 说明：  
-&emsp; 关闭的索引不能进行读写操作，几乎不占集群开销。  
-&emsp; 关闭的索引可以打开，打开走的是正常的恢复流程。
-
-## 1.3. 索引映射管理  
+## 1.2. 索引设计
+### 1.2.1. 索引映射  
 &emsp; ......
 
-## 1.4. 索引别名  
-### 1.4.1. 索引别名操作
-
-### 1.4.2. ★★★Rollover Index别名滚动指向新创建的索引
-&emsp; **对于有时效性的索引数据，如日志，过一定时间后，老的索引数据就没有用了。可以像数据库中根据时间创建表来存放不同时段的数据一样，在ES中也可用建多个索引的方式来分开存放不同时段的数据。比数据库中更方便的是ES中可以通过别名滚动指向最新的索引的方式，通过别名来操作时总是操作的最新的索引。**  
-&emsp; **<font color = "clime">ES的rollover index API，可以根据满足指定的条件（时间、文档数量、索引大小）创建新的索引，并把别名滚动指向新的索引。</font>**  
-&emsp; 注意：这时的别名只能是一个索引的别名。  
-
-&emsp; Rollover Index示例：  
-&emsp; 创建一个名字为logs-0000001 、别名为logs_write 的索引：  
-
-```text
-PUT /logs-000001
-{
-  "aliases": {
-    "logs_write": {}
-  }
-}
-```
-
-&emsp; 添加1000个文档到索引logs-000001，然后设置别名滚动的条件  
-
-```text
-POST /logs_write/_rollover
-{
-  "conditions": {
-    "max_age":   "7d",
-    "max_docs":  1000,
-    "max_size":  "5gb"
-  }
-}
-```
-&emsp; 说明：  
-&emsp; 如果别名logs_write指向的索引是7天前（含）创建的或索引的文档数>=1000或索引的大小>= 5gb，则会创建一个新索引 logs-000002，并把别名logs_writer指向新创建的logs-000002索引。  
-&emsp; Rollover Index新建索引的命名规则：  
-&emsp; 如果索引的名称是-数字结尾，如logs-000001，则新建索引的名称也会是这个模式，数值增1。  
-&emsp; 如果索引的名称不是-数值结尾，则在请求rollover api时需指定新索引的名称。
-
-```text
-POST /my_alias/_rollover/my_new_index_name
-{
-  "conditions": {
-    "max_age":   "7d",
-    "max_docs":  1000,
-    "max_size": "5gb"
-  }
-}
-```
-
-&emsp; 在名称中使用Date math（时间表达式）  
-&emsp; 如果希望生成的索引名称中带有日期，如logstash-2016.02.03-1 ，则可以在创建索引时采用时间表达式来命名：  
-
-```text
-# PUT /<logs-{now/d}-1> with URI encoding:
-PUT /%3Clogs-%7Bnow%2Fd%7D-1%3E
-{
-  "aliases": {
-    "logs_write": {}
-  }
-}
-PUT logs_write/_doc/1
-{
-  "message": "a dummy log"
-} 
-POST logs_write/_refresh
-# Wait for a day to pass
-POST /logs_write/_rollover
-{
-  "conditions": {
-    "max_docs":   "1"
-  }
-}
-```
-
-&emsp; Rollover时可对新的索引作定义：  
-
-```text
-PUT /logs-000001
-{
-  "aliases": {
-    "logs_write": {}
-  }
-}
-POST /logs_write/_rollover
-{
-  "conditions" : {
-    "max_age": "7d",
-    "max_docs": 1000,
-    "max_size": "5gb"
-  },
-  "settings": {
-    "index.number_of_shards": 2
-  }
-}
-```
-
-&emsp; Dry run实际操作前先测试是否达到条件：  
-
-```text
-POST /logs_write/_rollover?dry_run
-{
-  "conditions" : {
-    "max_age": "7d",
-    "max_docs": 1000,
-    "max_size": "5gb"
-  }
-}
-```
-
-&emsp; 说明：  
-&emsp; 测试不会创建索引，只是检测条件是否满足  
-&emsp; 注意：rollover是请求它才会进行操作，并不是自动在后台进行的。可以周期性地去请求它。  
-
-## 1.5. 索引配置  
-<!-- 
-Elasticsearch技术解析与实战 第2.4章
--->
-&emsp; 在Elasticsearch中索引有很多的配置参数，有些配置是可以在建好索引后重新进行设置和管理的，比如索引的副本数量、索引的分词等。  
-
-### 1.5.1. 更新索引配置  
-
-### 1.5.2. 获取配置  
-
-### 1.5.3. 索引分析  
 
 
-### 1.5.4. ★★★索引模板
+
+
+
+### 1.2.2. ★★★索引模板
 <!-- 
 https://www.cnblogs.com/shoufeng/p/10641560.html
 -->
@@ -496,112 +356,115 @@ PUT blog_index
 }
 ```
 
+### 1.2.3. 索引别名  
+#### 1.2.3.1. 索引别名操作
 
-### 1.5.5. 重建索引   
+#### 1.2.3.2. ★★★Rollover Index别名滚动指向新创建的索引
+&emsp; **对于有时效性的索引数据，如日志，过一定时间后，老的索引数据就没有用了。可以像数据库中根据时间创建表来存放不同时段的数据一样，在ES中也可用建多个索引的方式来分开存放不同时段的数据。比数据库中更方便的是ES中可以通过别名滚动指向最新的索引的方式，通过别名来操作时总是操作的最新的索引。**  
+&emsp; **<font color = "clime">ES的rollover index API，可以根据满足指定的条件（时间、文档数量、索引大小）创建新的索引，并把别名滚动指向新的索引。</font>**  
+&emsp; 注意：这时的别名只能是一个索引的别名。  
 
-#### 1.5.5.1. ★★★Shrink Index收缩索引
-&emsp; 索引的分片数是不可更改的，如要减少分片数可以通过收缩方式收缩为一个新的索引。新索引的分片数必须是原分片数的因子值，如原分片数是8，则新索引的分片数可以为4、2、1 。  
-&emsp; 什么时候需要收缩索引呢?  
-&emsp; 最初创建索引的时候分片数设置得太大，后面发现用不了那么多分片，这个时候就需要收缩了。  
-
-&emsp; **收缩的流程：**  
-
-1. 先把所有主分片都转移到一台主机上；
-2. 在这台主机上创建一个新索引，分片数较小，其他设置和原索引一致；
-3. 把原索引的所有分片，复制（或硬链接）到新索引的目录下；
-4. 对新索引进行打开操作恢复分片数据；
-5. (可选)重新把新索引的分片均衡到其他节点上。
-
-&emsp; **收缩前的准备工作：**  
-1. 将原索引设置为只读；
-2. 将原索引各分片的一个副本重分配到同一个节点上，并且要是健康绿色状态。
+&emsp; Rollover Index示例：  
+&emsp; 创建一个名字为logs-0000001 、别名为logs_write 的索引：  
 
 ```text
-PUT /my_source_index/_settings
+PUT /logs-000001
 {
-  "settings": {
-    <!-- 指定进行收缩的节点的名称 -->
-    "index.routing.allocation.require._name": "shrink_node_name",
-    <!-- 阻止写，只读 -->
-     "index.blocks.write": true
+  "aliases": {
+    "logs_write": {}
   }
 }
 ```
 
-&emsp; 进行收缩：  
+&emsp; 添加1000个文档到索引logs-000001，然后设置别名滚动的条件  
 
 ```text
-POST my_source_index/_shrink/my_target_index
+POST /logs_write/_rollover
 {
-  "settings": {
-    "index.number_of_replicas": 1,
-    "index.number_of_shards": 1,
-    "index.codec": "best_compression"
-  }}
-```
-
-&emsp; 监控收缩过程：  
-
-```text
-GET _cat/recovery?v
-GET _cluster/health  
-```
-
-#### 1.5.5.2. Split Index拆分索引
-&emsp; **当索引的分片容量过大时，可以通过拆分操作将索引拆分为一个倍数分片数的新索引。** 能拆分为几倍由创建索引时指定的index.number_of_routing_shards路由分片数决定。这个路由分片数决定了根据一致性hash路由文档到分片的散列空间。  
-&emsp; 如index.number_of_routing_shards = 30，指定的分片数是5，则可按如下倍数方式进行拆分：  
-
-```text
-5 → 10 → 30 (split by 2, then by 3)
-5 → 15 → 30 (split by 3, then by 2)
-5 → 30 (split by 6)
-```
-
-&emsp; 为什么需要拆分索引？  
-&emsp; 当最初设置的索引的分片数不够用时就需要拆分索引了，和压缩索引相反。  
-&emsp; 注意：只有在创建时指定了index.number_of_routing_shards的索引才可以进行拆分，ES7开始将不再有这个限制。  
-
-&emsp; 和solr的区别是，solr是对一个分片进行拆分，es中是整个索引进行拆分。  
-&emsp; 拆分步骤：  
-&emsp; 准备一个索引来做拆分：  
-
-```text
-PUT my_source_index
-{
-    "settings": {
-        "index.number_of_shards" : 1,
-        <!-- 创建时需要指定路由分片数 -->
-        "index.number_of_routing_shards" : 2
-    }
+  "conditions": {
+    "max_age":   "7d",
+    "max_docs":  1000,
+    "max_size":  "5gb"
+  }
 }
 ```
-
-&emsp; 先设置索引只读：  
+&emsp; 说明：  
+&emsp; 如果别名logs_write指向的索引是7天前（含）创建的或索引的文档数>=1000或索引的大小>= 5gb，则会创建一个新索引 logs-000002，并把别名logs_writer指向新创建的logs-000002索引。  
+&emsp; Rollover Index新建索引的命名规则：  
+&emsp; 如果索引的名称是-数字结尾，如logs-000001，则新建索引的名称也会是这个模式，数值增1。  
+&emsp; 如果索引的名称不是-数值结尾，则在请求rollover api时需指定新索引的名称。
 
 ```text
-PUT /my_source_index/_settings
+POST /my_alias/_rollover/my_new_index_name
 {
-  "settings": {
-    "index.blocks.write": true
+  "conditions": {
+    "max_age":   "7d",
+    "max_docs":  1000,
+    "max_size": "5gb"
   }
 }
 ```
 
-&emsp; 做拆分：  
+&emsp; 在名称中使用Date math（时间表达式）  
+&emsp; 如果希望生成的索引名称中带有日期，如logstash-2016.02.03-1 ，则可以在创建索引时采用时间表达式来命名：  
 
 ```text
-POST my_source_index/_split/my_target_index
+# PUT /<logs-{now/d}-1> with URI encoding:
+PUT /%3Clogs-%7Bnow%2Fd%7D-1%3E
 {
+  "aliases": {
+    "logs_write": {}
+  }
+}
+PUT logs_write/_doc/1
+{
+  "message": "a dummy log"
+} 
+POST logs_write/_refresh
+# Wait for a day to pass
+POST /logs_write/_rollover
+{
+  "conditions": {
+    "max_docs":   "1"
+  }
+}
+```
+
+&emsp; Rollover时可对新的索引作定义：  
+
+```text
+PUT /logs-000001
+{
+  "aliases": {
+    "logs_write": {}
+  }
+}
+POST /logs_write/_rollover
+{
+  "conditions" : {
+    "max_age": "7d",
+    "max_docs": 1000,
+    "max_size": "5gb"
+  },
   "settings": {
-    <!--新索引的分片数需符合拆分规则-->
     "index.number_of_shards": 2
   }
 }
 ```
 
-&emsp; 监控拆分过程：  
+&emsp; Dry run实际操作前先测试是否达到条件：  
 
 ```text
-GET _cat/recovery?v
-GET _cluster/health
+POST /logs_write/_rollover?dry_run
+{
+  "conditions" : {
+    "max_age": "7d",
+    "max_docs": 1000,
+    "max_size": "5gb"
+  }
+}
 ```
+
+&emsp; 说明：  
+&emsp; 测试不会创建索引，只是检测条件是否满足  
+&emsp; 注意：rollover是请求它才会进行操作，并不是自动在后台进行的。可以周期性地去请求它。  
