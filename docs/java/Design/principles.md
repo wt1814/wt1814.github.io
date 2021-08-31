@@ -30,6 +30,7 @@
 
 
 # 1. 设计原则
+&emsp; ~~设计原则都会将其简化为「SOLID」，对应于单一职责原则（Single Responsibility Principle）、开放/封闭原则（Open Closed Principle）、里氏替代原则（Liskov Substitution Principle）、最小知道原则（Law of Demeter）、接口隔离原则（Interface Segregation Principle）和依赖倒置原则（Dependence Inversion Principle）~~  
 <!-- 
 https://mp.weixin.qq.com/s/jzPjOGhYLFVWUYIAD33lYA
 https://mp.weixin.qq.com/s/38zETXT9jMxFg4quQkPgpg

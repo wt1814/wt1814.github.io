@@ -1,12 +1,12 @@
 
 
+&emsp; &emsp; [外观模式/门面模式](/docs/java/Design/facade.md)   
+&emsp; &emsp; [适配器模式](/docs/java/Design/adapter.md)   
+&emsp; &emsp; [代理模式](/docs/java/Design/proxy.md)   
+&emsp; &emsp; [JDK动态代理](/docs/java/Design/DynamicProxy.md)   
+&emsp; &emsp; [CGLIB代理](/docs/java/Design/CGLIB.md)   
+&emsp; &emsp; [装饰者模式](/docs/java/Design/decorator.md)  
 
-&emsp; [代理模式](/docs/java/Design/proxy.md)   
-&emsp; [JDK动态代理](/docs/java/Design/DynamicProxy.md)   
-&emsp; [CGLIB代理](/docs/java/Design/CGLIB.md)   
-&emsp; [装饰者模式](/docs/java/Design/decorator.md)   
-&emsp; [适配器模式](/docs/java/Design/adapter.md)   
-&emsp; [门面模式](/docs/java/Design/facade.md)   
 <!-- 
 适配器模式和装饰器模式有什么区别？
 虽然适配器模式和装饰器模式的结构类似，   但是每种模式的出现意图不同。适配器模式被用于桥接两个接口， 而装饰模式的目的是在不修改类的情况下给类增加新的功能。

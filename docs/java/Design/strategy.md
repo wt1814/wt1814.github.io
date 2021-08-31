@@ -11,6 +11,8 @@
 <!-- 
 策略模式 + 反射工厂
 https://mp.weixin.qq.com/s/6HqGa_inBHTxGOP12QXPnQ
+
+https://www.runoob.com/design-pattern/strategy-pattern.html
 -->
 
 ## 1.1. 简介

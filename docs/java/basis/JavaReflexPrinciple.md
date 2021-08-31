@@ -11,6 +11,14 @@
 <!-- /TOC -->
 
 
+
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; 调用反射的总体流程如下：  
+* 准备阶段：编译期装载所有的类，将每个类的元信息保存至Class类对象中，每一个类对应一个Class对象。  
+* 获取Class对象：调用x.class/x.getClass()/Class.forName() 获取x的Class对象clz（这些方法的底层都是native方法，是在JVM底层编写好的，涉及到了JVM底层，就先不进行探究了）。  
+* 进行实际反射操作：通过clz对象获取Field/Method/Constructor对象进行进一步操作。  
+
+
 # 1. ~~反射的实现原理~~
 &emsp; Class类与java.lang.reflect库一起对反射的概念提供了技术支持。java.lang.reflect类库包含了Field类，Method类以及Constructor类。这些类用来表示未知类里对应的成员。Class类提供了获取getFields()、getMethods()和getConstructors()等方法，而这些方法的返回值类型就定义在java.lang.reflect当中。  
 
