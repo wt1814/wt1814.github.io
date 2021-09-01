@@ -72,12 +72,11 @@
         * [CMS回收器](/docs/java/JVM/CMS.md)  
         * [G1回收器](/docs/java/JVM/G1.md)  
         * [三色标记](/docs/java/JVM/TriMark.md)  
-    * [调优](/docs/java/JVM/tuning.md)  
+    * [JVM调优](/docs/java/JVM/tuning.md)  
         * [JVM调优-基础](/docs/java/JVM/TuningBasic.md)  
         * [JVM调优](/docs/java/JVM/tuningProblem.md)  
         * [JVM问题排查](/docs/java/JVM/TroubleShooting.md)  
         * [Arthas工具](/docs/java/JVM/Arthas.md)  
-        * [JAVA线上故障排查](/docs/Linux/problem.md)   
 * 并发编程  
     * [并发编程总结](/docs/java/concurrent/summary.md)  
     * [线程Thread](/docs/java/concurrent/thread.md)  
@@ -232,6 +231,7 @@
     * [软件架构设计模式](/docs/system/designPattern.md)  
     * [架构质量属性](/docs/system/QualityAttribute.md)  
         * [系统瓶颈](/docs/system/Bottleneck.md)  
+        * [JAVA线上故障排查](/docs/Linux/problem.md)   
         * [容灾和备份](/docs/system/backups.md)  
 * Spring  
     * [Spring](/docs/SSM/Spring/Spring.md)  

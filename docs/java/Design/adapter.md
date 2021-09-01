@@ -4,8 +4,9 @@
 - [1. 适配器(Adapter)模式](#1-适配器adapter模式)
     - [1.1. 简介](#11-简介)
     - [1.2. 结构](#12-结构)
-    - [类适配器与对象适配器](#类适配器与对象适配器)
-    - [1.3. Mybatis日志的适配器](#13-mybatis日志的适配器)
+    - [1.3. 类适配器模式与对象适配器模式](#13-类适配器模式与对象适配器模式)
+    - [接口适配器模式](#接口适配器模式)
+    - [1.4. Mybatis日志的适配器](#14-mybatis日志的适配器)
 
 <!-- /TOC -->
 
@@ -16,14 +17,7 @@
 2. 适配的思想。  
 
 # 1. 适配器(Adapter)模式  
-<!--
-适配器模式在Java日志体系中的应用 
-https://mp.weixin.qq.com/s/Tvo0C1ptPMyoNaggCjphuQ
-萌新发问：MyBatis日志到底是如何做到兼容所有常用日志框架的？ 
-https://mp.weixin.qq.com/s/hUA-GEbRYH0-qgcEKCUylg
-适配器模式在Mybatis中的妙用 
-https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
--->
+
 ## 1.1. 简介
 &emsp; 适配器模式(Adapter Pattern)，将一个类的接口转换成客户端期望的另一种接口，从而使原本因接口不匹配而导致无法在一起工作的两个类能够一起工作。  
 
@@ -58,8 +52,23 @@ https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
 &emsp; **适配器模式有3种形式：类适配器、对象适配器、接口适配器。**  
 
 
-## 类适配器与对象适配器  
+## 1.3. 类适配器模式与对象适配器模式  
+
+https://blog.csdn.net/u012359453/article/details/79165080
 
 
-## 1.3. Mybatis日志的适配器
+## 接口适配器模式
+https://www.cnblogs.com/mingmingcome/p/9810731.html
+
+
+## 1.4. Mybatis日志的适配器
+
+<!--
+适配器模式在Java日志体系中的应用 
+https://mp.weixin.qq.com/s/Tvo0C1ptPMyoNaggCjphuQ
+萌新发问：MyBatis日志到底是如何做到兼容所有常用日志框架的？ 
+https://mp.weixin.qq.com/s/hUA-GEbRYH0-qgcEKCUylg
+适配器模式在Mybatis中的妙用 
+https://mp.weixin.qq.com/s/vdwDCk5GY-vL8V8K_TBoTg
+-->
 &emsp; 参考[MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)  

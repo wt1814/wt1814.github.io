@@ -47,7 +47,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 &emsp; GC过程一定会发生STW(Stop The World)，而一旦发生STW必然会影响用户使用，所以GC的发展都是在围绕减少STW时间这一目的。通过并行与并发已经极大的减少了STW的时间，但是STW的时间还是会因为各种原因不可控，G1提供的一个最大功能就是可控的STW时间。  
 
 ## 1.2. 收集器分类  
-<font color = "blue">1. 根据收集器的指标分类（两个关键指标，停顿时间和吞吐量）：</font>  
+<font color = "blue">1. 根据收集器的指标分类（`两个关键指标，停顿时间和吞吐量`）：</font>  
 &emsp; 收集器性能考虑因素：  
 
 * **<font color = "clime">吞吐量：运行用户代码时间/(运行用户代码时间+垃圾收集时间)。</font>**  

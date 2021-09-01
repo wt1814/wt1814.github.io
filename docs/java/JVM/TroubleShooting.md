@@ -40,7 +40,7 @@
     2. 可以使用arthas工具的thread -n -i分析。
 4. FGC过高  
 &emsp; **<font color = "clime">FGC过高可能是内存参数设置不合理，也有可能是代码中某个位置读取数据量较大导致系统内存耗尽。FGC过高可能导致CPU飚高。</font>**  
-&emsp; **<font color = "clime">解决思路：打印线程堆栈信息。查看线程堆栈是用户线程，还是GC线程。如果是GC线程，打印内存快照进行分析。</font>**  
+&emsp; **<font color = "clime">解决思路：打印线程堆栈信息。查看线程堆栈是用户线程，还是GC线程。如果是GC线程，打印内存快照进行分析（`查看内存溢出`）。</font>**  
 5. 内存溢出  
 	1. 解决方案：
 		1. 修改JVM启动参数，直接增加内存。  
@@ -152,18 +152,16 @@ https://blog.csdn.net/weixin_35078004/article/details/113707562
 1. 可能多个线程执行同一方法，每个线程占有不高，但总和比较大。  
 2. ......
 
-
 &emsp; 解决方案：
 1. 可以使用arthas工具的thread -n -i分析。
 2. 
-
 
 
 ## 1.5. FGC过高  
 &emsp; ~~使用jstack来分析GC是不是太频繁， **<font color = "clime">使用jstat -gc pid 1000命令来对gc分代变化情况进行观察，</font>** 1000表示采样间隔(ms)，S0C/S1C、S0U/S1U、EC/EU、OC/OU、MC/MU分别代表两个Survivor区、Eden区、老年代、元数据区的容量和使用量。YGC/YGT、FGC/FGCT、GCT则代表YoungGc、FullGc的耗时和次数以及总耗时。如果看到gc比较频繁，再针对gc方面做进一步分析。~~   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-81.png)  
 
-&emsp; **<font color = "clime">FGC过高可能是内存参数设置不合理，也有可能是代码中某个位置读取数据量较大导致系统内存耗尽。FGC过高可能导致CPU飚高。</font>** ⚠注意：FGC过高，会导致CPU飚高；但CPU飚高不一定是FGC过高。  
+&emsp; **<font color = "clime">FGC过高 1)可能是内存参数设置不合理，2)也有可能是代码中某个位置读取数据量较大导致系统内存耗尽。FGC过高可能导致CPU飚高。</font>** ⚠注意：FGC过高，会导致CPU飚高；但CPU飚高不一定是FGC过高。  
 &emsp; **<font color = "clime">解决思路：打印线程堆栈信息。查看线程堆栈是用户线程，还是GC线程。如果是GC线程，打印内存快照进行分析。</font>**  
 
 1. 如果FGC后还有大量对象，说明Old区过小，应该扩大Old区；  
