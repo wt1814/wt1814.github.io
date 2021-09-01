@@ -4,11 +4,11 @@
 - [1. JVM问题排查](#1-jvm问题排查)
     - [1.1. 快速恢复业务](#11-快速恢复业务)
     - [1.2. 系统缓慢可能的原因](#12-系统缓慢可能的原因)
-    - [1.5. FGC过高](#15-fgc过高)
-    - [1.3. CPU飚高](#13-cpu飚高)
-        - [1.3.1. 现象](#131-现象)
-        - [1.3.2. 排查步骤](#132-排查步骤)
-    - [1.4. ★★★CPU高，查看所有进程占用率要远小于100](#14-★★★cpu高查看所有进程占用率要远小于100)
+    - [1.3. FGC过高](#13-fgc过高)
+    - [1.4. CPU飚高](#14-cpu飚高)
+        - [1.4.1. 现象](#141-现象)
+        - [1.4.2. 排查步骤](#142-排查步骤)
+    - [1.5. ★★★CPU高，查看所有进程占用率要远小于100](#15-★★★cpu高查看所有进程占用率要远小于100)
     - [1.6. 内存溢出排查实战](#16-内存溢出排查实战)
         - [1.6.1. 堆溢出演示](#161-堆溢出演示)
         - [1.6.2. 内存溢出的解决方案](#162-内存溢出的解决方案)
@@ -20,6 +20,7 @@
                 - [1.6.2.3.3. linux下的mat](#16233-linux下的mat)
     - [1.7. 线程死锁](#17-线程死锁)
     - [1.8. 其他情况](#18-其他情况)
+    - [1.9. JAVA线上故障排查](#19-java线上故障排查)
 
 <!-- /TOC -->
 
@@ -88,7 +89,7 @@ https://blog.csdn.net/z69183787/article/details/103955420
 
 
 
-## 1.5. FGC过高  
+## 1.3. FGC过高  
 &emsp; ~~使用jstack来分析GC是不是太频繁， **<font color = "clime">使用jstat -gc pid 1000命令来对gc分代变化情况进行观察，</font>** 1000表示采样间隔(ms)，S0C/S1C、S0U/S1U、EC/EU、OC/OU、MC/MU分别代表两个Survivor区、Eden区、老年代、元数据区的容量和使用量。YGC/YGT、FGC/FGCT、GCT则代表YoungGc、FullGc的耗时和次数以及总耗时。如果看到gc比较频繁，再针对gc方面做进一步分析。~~   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-81.png)  
 
@@ -114,12 +115,12 @@ https://blog.csdn.net/z69183787/article/details/103955420
 
 
 
-## 1.3. CPU飚高  
+## 1.4. CPU飚高  
 <!-- 
 https://www.cnblogs.com/klvchen/p/11089632.html
 -->
 
-### 1.3.1. 现象   
+### 1.4.1. 现象   
 &emsp; **<font color = "red">CPU过高可能是系统频繁的进行Full GC，导致系统缓慢。</font><font color = "clime">而平常也可能遇到比较耗时的计算，导致CPU过高的情况。</font>**
 
 &emsp; **<font color = "clime">怎么区分导致CPU过高的原因具体是Full GC次数过多还是代码中有比较耗时的计算？</font>**  
@@ -127,7 +128,7 @@ https://www.cnblogs.com/klvchen/p/11089632.html
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-47.png)  
 &emsp; 这里可以看到，在请求UserController的时候，由于该Controller进行了一个比较耗时的调用，导致该线程的CPU一直处于100%。可以根据堆栈信息，直接定位到UserController的34行，查看代码中具体是什么原因导致计算量如此之高。  
 
-### 1.3.2. 排查步骤  
+### 1.4.2. 排查步骤  
 
     1. 通过top命令找到CPU消耗最高的进程，并记住进程ID。  
     2. 再次通过top -Hp [进程 ID]找到CPU消耗最高的线程ID，并记住线程ID。  
@@ -171,7 +172,7 @@ https://www.cnblogs.com/klvchen/p/11089632.html
 * 如果该线程是VM Thread(VM Thread 指的就是垃圾回收的线程，一般前面会有 nid=0x.......，这里 nid 的意思就是操作系统线程 id)，则通过 jstat -gcutil 命令监控当前系统的 GC 状况。然后通过 jmap dump:format=b,file= 导出系统当前的内存数据。导出之后将内存情况放到Mat工具中进行分析即可得出内存中主要是什么对象比较消耗内存，进而可以处理相关代码。
 
 
-## 1.4. ★★★CPU高，查看所有进程占用率要远小于100
+## 1.5. ★★★CPU高，查看所有进程占用率要远小于100
 <!-- 
 https://www.cnblogs.com/arnoldlu/p/12112225.html
 https://www.liaochuntao.cn/2020/02/23/java-web-59/
@@ -293,3 +294,8 @@ https://club.perfma.com/article/2073508
  ※※※jstack文件进行分析  
 &emsp; 常见的是对整个jstack文件进行分析，通常比较关注WAITING和TIMED_WAITING的部分，BLOCKED就不用说了。我们可以使用命令cat jstack.log | grep "java.lang.Thread.State" | sort -nr | uniq -c来对jstack的状态有一个整体的把握，如果WAITING之类的特别多，那么多半是有问题啦。  
 -->
+
+
+## 1.9. JAVA线上故障排查
+&emsp; 参考[JAVA线上故障排查](/docs/Linux/problem.md)  
+
