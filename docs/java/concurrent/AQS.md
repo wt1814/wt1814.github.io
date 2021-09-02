@@ -28,7 +28,7 @@
     2. 同步队列，`双向链表`，每个节点代表一个线程，节点有5个状态。
         * 入列：未获取到锁的线程会创建节点，`线程安全（CAS算法设置尾节点+死循环自旋）`的加入队列尾部。  
         * 出列：首节点的线程释放同步状态后，`将会唤醒(LockSupport.unpark)它的后继节点(next)`，而后继节点将会在获取同步状态成功时将自己设置为首节点。
-        * `入列或出列都会使用到[LockSupport](/docs/java/concurrent/LockSupport.md)工具类来阻塞、唤醒线程。`    
+        * 入列或出列都会使用到[LockSupport](/docs/java/concurrent/LockSupport.md)工具类来阻塞、唤醒线程。    
 2. 方法
     1. 独占模式：  
         * **<font color = "blue">获取同步状态</font>**   

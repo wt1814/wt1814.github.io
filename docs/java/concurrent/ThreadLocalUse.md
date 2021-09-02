@@ -11,7 +11,6 @@
             - [1.1.3.1. ThreadLocal实现同一线程下多个类之间的数据传递](#1131-threadlocal实现同一线程下多个类之间的数据传递)
             - [1.1.3.2. ThreadLocal实现线程内的缓存，避免重复调用](#1132-threadlocal实现线程内的缓存避免重复调用)
         - [1.1.4. ThreadLocal+MDC实现链路日志增强](#114-threadlocalmdc实现链路日志增强)
-        - [1.1.5. ThreadLocal 实现数据库读写分离下强制读主库](#115-threadlocal-实现数据库读写分离下强制读主库)
     - [1.2. ThreadLocal局限性(变量不具有传递性)](#12-threadlocal局限性变量不具有传递性)
         - [1.2.1. 类InheritableThreadLocal的使用](#121-类inheritablethreadlocal的使用)
     - [1.3. ThreadLocal和线程池](#13-threadlocal和线程池)
@@ -113,8 +112,6 @@ https://blog.csdn.net/u010889990/article/details/115206051
 ### 1.1.4. ThreadLocal+MDC实现链路日志增强  
 &emsp; ......
 
-### 1.1.5. ThreadLocal 实现数据库读写分离下强制读主库  
-&emsp; ......
 
 ## 1.2. ThreadLocal局限性(变量不具有传递性)  
 &emsp; <font color = "red">ThreadLocal无法在父子线程之间传递，</font>示例代码如下：  
