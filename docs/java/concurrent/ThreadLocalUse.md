@@ -41,9 +41,6 @@ https://mp.weixin.qq.com/s/1YzMHrr26jKl0R_o9l9GiQ
 面试官再问你 ThreadLocal，就这样狠狠 “怼” 回去！ 
 https://mp.weixin.qq.com/s/9gXSrw6llYy29OPH-rQuxQ
 
-
-https://mp.weixin.qq.com/s/1YzMHrr26jKl0R_o9l9GiQ
-
 -->
 
 ## 1.1. ThreadLocal使用  
@@ -103,6 +100,10 @@ public static String formatAsPerson(Long one){
 ```
 
 ### 1.1.3. 业务中变量传递
+<!-- 
+https://blog.csdn.net/u010889990/article/details/115206051
+-->
+
 #### 1.1.3.1. ThreadLocal实现同一线程下多个类之间的数据传递  
 &emsp; ......
 

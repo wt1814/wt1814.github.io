@@ -18,9 +18,9 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. **并发安全的3个问题：**  
 
-    * 线程切换带来的原子性问题；（[Volatile](/docs/java/concurrent/Volatile.md)不保证原子性）
-    * 缓存不能及时刷新导致的可见性问题；
-    * 编译优化带来的有序性问题  
+    * 原子性：线程切换带来的原子性问题；（[Volatile](/docs/java/concurrent/Volatile.md)不保证原子性）
+    * 可见性：缓存不能及时刷新导致的可见性问题；
+    * 有序性：编译优化带来的有序性问题  
 
     &emsp; **<font color = "clime">【编译器优化】和“缓存不能及时刷新”(【内存系统重排序】)都是重排序的一种。</font>**   
 

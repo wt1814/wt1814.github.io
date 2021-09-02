@@ -84,8 +84,6 @@
         * [Thread类详解](/docs/java/concurrent/threadClass.md)  
             * [线程停止与中断](/docs/java/concurrent/interrupt.md)  
         * [线程基本操作](/docs/java/concurrent/threadOperation.md)  
-        * [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
-        * [CompletionService](/docs/java/concurrent/CompletionService.md)  
     * [并发编程](/docs/java/concurrent/MultiThread.md)  
         * [并发编程原理](/docs/java/concurrent/ConcurrentPrinciple.md)  
             * [CPU缓存及JMM](/docs/java/concurrent/JMM.md)  
