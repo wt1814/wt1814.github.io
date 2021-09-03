@@ -152,7 +152,6 @@
         * [MySql瓶颈](/docs/SQL/Bottleneck.md)  
         * [数据库分布式](/docs/SQL/Distributed.md)  
         * [主从复制](/docs/SQL/replication.md)  
-            * [主从复制的问题](/docs/SQL/replicationProblem.md)  
             * [主从复制原理](/docs/SQL/ReplicationPrinciple.md)  
             * [主从复制实现](/docs/SQL/ReplicationRealize.md)  
             * [主从复制的问题](/docs/SQL/replicationProblem.md)  
