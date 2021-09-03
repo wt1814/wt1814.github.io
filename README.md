@@ -44,7 +44,6 @@
     - [Linux操作系统](#linux操作系统)
     - [常用工具](#常用工具)
     - [算法](#算法)
-    - [学习资料](#学习资料)
 
 <!-- /TOC -->
 
@@ -757,6 +756,3 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [Trie](/docs/function/Trie.md)  
 [大数据和空间限制](/docs/function/bigdata.md)  
 
-
-## 学习资料  
-[推荐书籍](/docs/a-study/book.md)  
