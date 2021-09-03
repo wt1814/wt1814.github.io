@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [1. ES建模](#1-es建模)
+- [1. ~~ES建模~~](#1-es建模)
     - [1.1. 分片数和副本数如何设计？](#11-分片数和副本数如何设计)
         - [1.1.1. 索引设置多少分片？](#111-索引设置多少分片)
         - [1.1.2. 索引设置多少副本？](#112-索引设置多少副本)
@@ -15,6 +15,9 @@
 
 # 1. ~~ES建模~~  
 <!-- 
+Elasticsearch Nested 选型
+https://mp.weixin.qq.com/s/Fk-iXR0W48v2yIvJ-aJGKQ
+
 大家点击阅读原文或者复制下面链接查看。
 https://t2.lagounews.com/9R5DRcROsO3C1 
 手把手带你实践 Elasticsearch 数据建模全流程

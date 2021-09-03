@@ -11,8 +11,13 @@
 
 # 1. ES集群操作
 <!-- 
- Elasticsearch 跨网络、跨集群同步选型指南 
- https://mp.weixin.qq.com/s/1yXNrSdyk_cR8V7wqJarRw
+Elasticsearch 跨网络、跨集群同步选型指南 
+https://mp.weixin.qq.com/s/1yXNrSdyk_cR8V7wqJarRw
+
+亿级日增量的ES线上环境集群部署，上干货！ 
+https://mp.weixin.qq.com/s/8PjfMqZGDkOk_hv4iIaqNg
+
+
 -->
 
 ## 1.1. 集群健康状态检查  
