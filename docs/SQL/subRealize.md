@@ -13,16 +13,16 @@
 
 <!-- /TOC -->
 
-<!-- 
-ShardingSphere内核原理 
-https://mp.weixin.qq.com/s/hPJHCKcptRYvKQPZRz6Tdg
--->
+&emsp; **<font color = "clime">总结：</font>**  
+1. **<font color = "red">典型的数据库中间件设计方案有2种：代理proxy、客户端分片smart-client。</font>** 
+2. SpringAOP实现分布式数据源
+3. MyBatis插件实现分布式数据源
+
 
 # 1. 数据库分布式实现  
 
 ## 1.1. 数据库中间件  
 &emsp; 数据库中间件的主要作用是向应用程序开发人员屏蔽读写分离和分库分表面临的挑战，并隐藏底层实现细节，使得开发人员可以像操作单库单表那样去操作数据。  
-
 &emsp; **<font color = "clime">除了数据库中间件之外还可以使用SpringAOP、ORM框架代理来实现多数据源读写分离。</font>**  
 
 ### 1.1.1. 设计方案  

@@ -77,7 +77,7 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
     * SIMPLE：最简单的查询，查询中不包含子查询或者UNION；  
     * PRIMARY：查询中若包含任何复杂的子查询，最外层查询则被标记为PRIMARY，也就是最后被执行的语句；  
     * SUBQUERY：在SELECT from或者WHERE列表中包含了子查询；  
-    * DERIVED：导出表的SELECT(FROM子句的子查询)；在FROM列表中包含的子查询被标记为DERIVED(衍生)MySQL会递归执行这些子查询，把结果放在临时表里；  
+    * DERIVED：导出表的SELECT（FROM子句的子查询）；在FROM列表中包含的子查询被标记为DERIVED（衍生）MySQL会递归执行这些子查询，把结果放在临时表里；  
     * UNION：UNION中的第二个或后面的SELECT语句；若第二个SELECT出现在UNION之后，则被标记为UNION；若UNION包含在FROM子句的子查询中，外层SELECT将被标记为DERIVED；  
     * UNION RESULT：UNION的结果；  
     * DEPENDENT SUBQUERY：子查询中的第一个 SELECT，取决于外面的查询，即子查询依赖于外层查询的结果。出现该值的时候一定要特别注意，可能需要使用join的方式优化子查询；  
