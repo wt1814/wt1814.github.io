@@ -5,11 +5,8 @@
 
 - [1. SQL优化](#1-sql优化)
     - [1.1. MySql性能和瓶颈](#11-mysql性能和瓶颈)
-    - [1.2. ★★★SQL优化维度](#12-★★★sql优化维度)
-    - [1.3. 慢查询(监控)](#13-慢查询监控)
-        - [1.3.1. 慢查询简介](#131-慢查询简介)
-        - [1.3.2. 慢查询使用](#132-慢查询使用)
-        - [1.3.3. 慢查询工具](#133-慢查询工具)
+    - [1.2. ★★★多方面优化](#12-★★★多方面优化)
+    - [1.3. 慢查询（监控）](#13-慢查询监控)
     - [1.4. EXPLAIN、PROCEDURE ANALYSE(分析)](#14-explainprocedure-analyse分析)
     - [1.5. Sql语句优化](#15-sql语句优化)
     - [1.6. 数据库表结构设计](#16-数据库表结构设计)
@@ -39,12 +36,12 @@ https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
 &emsp; 查看[数据库分布式](/docs/SQL/DistributedDatabase.md)  
 
 
-## 1.2. ★★★SQL优化维度  
+## 1.2. ★★★多方面优化 
 1. 服务器的优化。  
 2. 表结构设计： **<font color = "red">单库单表无法满足时，可以拆分表结构（主从复制、分库分表），或者使用ES搜索引擎。</font>**  
 3. SQL语句的优化。  
-    &emsp; 对查询语句的监控、分析、优化是SQL优化的一般步骤。常规调优思路：  
-    1. 查看slowlog，分析slowlog，分析出查询慢的语句。  
+    &emsp; `对查询语句的监控、分析、优化是SQL优化的一般步骤。`常规调优思路：  
+    1. 查看慢查询日志slowlog，分析slowlog，分析出查询慢的语句。  
     2. 按照一定优先级，进行一个一个的排查所有慢语句。  
     3. 分析top sql，进行explain调试，查看语句执行时间。  
     4. 调整[索引](/docs/SQL/7.index.md)或语句本身。 
@@ -56,65 +53,11 @@ https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
 ----
 ----
 
-## 1.3. 慢查询(监控)  
-<!-- 
-https://mp.weixin.qq.com/s/KG8xGeu1Sq_RhcCwl3AW5Q
--->
-### 1.3.1. 慢查询简介  
-&emsp; MySQL慢查询日志是MySQL提供的一种日志记录，用来记录在MySQL中响应时间超过阈值的语句，具体指运行时间超过long_query_time值(默认值为10，即10秒，通常设置为1秒)的SQL，则会被记录到慢查询日志中(日志可以写入文件或者数据库表，如果对性能要求高的话，建议写文件)。默认情况下，MySQL数据库是不开启慢查询日志的，如果不是调优需要的话，不建议启动该参数。  
-&emsp; 一般来说，慢查询发生在大表(比如：一个表的数据量有几百万)，且查询条件的字段没有建立索引，此时，要匹配查询条件的字段会进行全表扫描，耗时超过long_query_time，则为慢查询语句。  
+## 1.3. 慢查询（监控）  
+&emsp; 查看[慢查询（监控）](/docs/SQL/Slowlog.md)  
 
-### 1.3.2. 慢查询使用  
-1. 参数说明：  
-    
-        slow_query_log，慢查询开启状态。
-        slow_query_log_file，慢查询日志存放的位置。
-        long_query_time，查询超过多少秒才记录。
-2. 设置步骤：  
-    1. 查看慢查询相关参数。  
-
-            #查看是否开启慢查询
-            #slowquerylog = off，表示没有开启慢查询
-            #slowquerylog_file 表示慢查询日志存放的目录
-            show variables like 'slow_query%';
-            show variables like 'long_query_time'; 
- 
-    2. 设置方法。
-        方法一：全局变量设置。(即时性的，重启mysql之后失效，常用的)  
-
-            --将 slow_query_log 全局变量设置为“ON”状态
-            set global slow_query_log='ON';
-            --设置慢查询日志存放的位置
-            set global slow_query_log_file='/usr/local/mysql/data/slow.log';
-            --查询超过1秒就记录
-            set global long_query_time=1;  
-
-        方法二：配置文件设置。修改配置文件my.cnf，在[mysqld]下的下方加入。  
-
-            [mysqld]
-            slow_query_log = ON
-            slow_query_log_file = /usr/local/mysql/data/slow.log
-            long_query_time = 1
-
-    3. 重启MySQL服务。  
-
-            service mysqld restart
-
-    4. 查看设置后的参数。  
-
-            show variables like 'slow_query%';
-            show variables like 'long_query_time';  
-
-### 1.3.3. 慢查询工具  
-<!-- 
-如何定位 MySQL 慢查询？ 
-https://mp.weixin.qq.com/s/_SWewX-8nFam20Wcg6No1Q
--->
-......
-
-----
 ## 1.4. EXPLAIN、PROCEDURE ANALYSE(分析)  
-&emsp; [SQL分析](/docs/SQL/Analysis.md)  
+&emsp; 查看[SQL分析](/docs/SQL/Analysis.md)  
 
 ## 1.5. Sql语句优化  
 &emsp; [SQL语句优化](/docs/SQL/SQLStatement.md)  

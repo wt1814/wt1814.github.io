@@ -140,6 +140,7 @@
     * [MySql函数](/docs/SQL/MySQLFunction.md)  
     * [数据库对象](/docs/SQL/DatabaseObject.md)  
     * [SQL优化](/docs/SQL/SQLOptimization.md)  
+        * [慢查询（监控）](/docs/SQL/Slowlog.md)  
         * [SQL分析](/docs/SQL/Analysis.md)  
             * [explain](/docs/SQL/explain.md)  
         * [~~SQL语句优化~~](/docs/SQL/SQLStatement.md)  
