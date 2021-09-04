@@ -225,12 +225,12 @@
     * [其他](/docs/web/other.md)  
 * 架构设计  
     * [架构的方方面面](/docs/system/AllAspects.md)  
-    * [架构图](/docs/system/diagram.md)   
     * [软件架构设计模式](/docs/system/designPattern.md)  
+    * [架构图](/docs/system/diagram.md)   
     * [架构质量属性](/docs/system/QualityAttribute.md)  
-        * [系统瓶颈](/docs/system/Bottleneck.md)  
-        * [JAVA线上故障排查](/docs/Linux/problem.md)   
         * [容灾和备份](/docs/system/backups.md)  
+    * [系统瓶颈](/docs/system/Bottleneck.md)  
+    * [JAVA线上故障排查](/docs/Linux/problem.md)   
 * Spring  
     * [Spring](/docs/SSM/Spring/Spring.md)  
     * [对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  

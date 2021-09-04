@@ -200,7 +200,7 @@ Record lock, heap no 1 PHYSICAL RECORD: n_fields 1; compact format; info bits 0
 |lock_id	|lock_tx_id	|lock_mode	|lock_type	|lock_table	|lock_index	|lock_space|lock_page|lock_rec|lock_data|
 |---|---|---|---|---|---|---|---|---|---|
 |3882 :33 :6 :1	|3882|	X|	RECORD|	test.t_user_data|	idx_data_id	|33|	6	|1|	supremum pseudo-record|
-|3883 :33 :6 :1	3883	|X	|RECORD	|test.t_user_data	|idx_data_id	|33	|6	|1	|supremum pseudo-record|
+|3883 :33 :6 :1	|3883	|X	|RECORD	|test.t_user_data	|idx_data_id	|33	|6	|1	|supremum pseudo-record|
 
     DELETE FROM t_user_data WHERE data_id = '不存在的索引值';   
 

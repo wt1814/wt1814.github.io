@@ -18,7 +18,7 @@ https://www.cnblogs.com/geaozhang/category/1326927.html
 # 1. MySql存储引擎
 1. MySQL常见的存储引擎有InnoDB、MyISAM、Memory、NDB。<font color = "red">InnoDB现在是MySQL默认的存储引擎，支持事务、行级锁定和外键。</font>  
 2. MySQL的存储引擎是针对表的，不是针对库的。也就是说在一个数据库中可以使用不同的存储引擎。但是不建议这样做。 
-3. MySQL是插件式的存储引擎，其中存储引擎分很多种。只要实现符合mysql存储引擎的接口，可以开发自己的存储引擎! 
+3. MySQL是插件式的存储引擎，其中存储引擎分很多种。只要实现符合mysql存储引擎的接口，可以开发自己的存储引擎。 
 4. **<font color = "red">所有跨存储引擎的功能都是在服务层实现的。</font>**  
 
 ## 1.1. 存储引擎操作  
