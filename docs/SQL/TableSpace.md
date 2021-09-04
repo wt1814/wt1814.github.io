@@ -1,13 +1,17 @@
 <!-- TOC -->
 
-- [1. 表空间](#1-表空间)
-    - [1.1. 逻辑存储结构](#11-逻辑存储结构)
-        - [1.1.1. 表空间详解](#111-表空间详解)
-        - [1.1.2. InnoDB数据页结构](#112-innodb数据页结构)
-            - [1.1.2.1. InnoDB行格式](#1121-innodb行格式)
-                - [1.1.2.1.1. Compact行记录格式](#11211-compact行记录格式)
-                - [1.1.2.1.2. 行溢出数据](#11212-行溢出数据)
-    - [1.2. InnoDB表数据文件](#12-innodb表数据文件)
+- [1. BufferPool落盘表空间](#1-bufferpool落盘表空间)
+    - [1.1. 脏页落盘](#11-脏页落盘)
+        - [1.1.1. 保证数据的持久性](#111-保证数据的持久性)
+        - [1.1.2. 脏页落盘](#112-脏页落盘)
+        - [1.1.3. CheckPoint检查点机制](#113-checkpoint检查点机制)
+    - [1.2. MySql逻辑存储结构](#12-mysql逻辑存储结构)
+        - [1.2.1. 表空间详解](#121-表空间详解)
+        - [1.2.2. InnoDB数据页结构](#122-innodb数据页结构)
+            - [1.2.2.1. InnoDB行格式](#1221-innodb行格式)
+                - [1.2.2.1.1. Compact行记录格式](#12211-compact行记录格式)
+                - [1.2.2.1.2. 行溢出数据](#12212-行溢出数据)
+    - [1.3. InnoDB表数据文件](#13-innodb表数据文件)
 
 <!-- /TOC -->
 
@@ -16,14 +20,48 @@
 2. **<font color = "clime">相比较之下，使用独占表空间的效率以及性能会更高一点。</font>**  
 3. **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB（在操作系统中默认页大小是4KB）。</font>**  
 
-# 1. 表空间  
+# 1. BufferPool落盘表空间  
 <!--
 innodb使用手册
 https://zhuanlan.zhihu.com/p/111958646
+
+
+https://blog.csdn.net/baidu_29609961/article/details/105106975
 -->
 
+## 1.1. 脏页落盘  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-177.png)  
+&emsp; InnoDB内存缓冲池中的数据page要完成持久化的话，是通过两个流程来完成的，一个是脏页落盘；一个是预写redo log日志。  
 
-## 1.1. 逻辑存储结构  
+### 1.1.1. 保证数据的持久性  
+&emsp; 当缓冲池中的页的版本比磁盘要新时，数据库需要将新版本的页从缓冲池刷新到磁盘。但是如果每次一个页发送变化，就进行刷新，那么性能开发是非常大的，于是InnoDB采用了Write Ahead Log（WAL）策略和Force Log at Commit机制实现事务级别下数据的持久性。  
+
+&emsp; WAL要求数据的变更写入到磁盘前，首先必须将内存中的日志写入到磁盘；  
+&emsp; Force-log-at-commit要求当一个事务提交时，所有产生的日志都必须刷新到磁盘上，如果日志刷新成功后，缓冲池中的数据刷新到磁盘前数据库发生了宕机，那么重启时，数据库可以从日志中 恢复数据。  
+&emsp; 为了确保每次日志都写入到重做日志文件，在每次将重做日志缓冲写入重做日志后，必须调用一次fsync操作，将缓冲文件从文件系统缓存中真正写入磁盘。 可以通过 innodb_flush_log_at_trx_commit来控制重做日志刷新到磁盘的策略。  
+
+### 1.1.2. 脏页落盘  
+&emsp; 在数据库中进行读取操作，将从磁盘中读到的页放在缓冲池中，下次再读相同的页时，首先判断该页是否在缓冲池中。若在缓冲池中，称该页在缓冲池中被命中，直接读取该页。否则，读取磁 盘上的页。  
+&emsp; 对于数据库中页的修改操作，则首先修改在缓冲池中的页，然后再以一定的频率刷新到磁盘上。页从缓冲池刷新回磁盘的操作并不是在每次页发生更新时触发，而是通过一种称为CheckPoint的 机制刷新回磁盘。  
+
+### 1.1.3. CheckPoint检查点机制  
+&emsp; CheckPoint是为了解决下面几个问题：  
+1. 缩短数据库的恢复时间；  
+2. 缓冲池不够用时，将脏页刷新到磁盘；  
+3. 重做日志不可用时，刷新脏页  
+
+&emsp; 当数据库发生宕机时，数据库不需要重做所有的日志，因为Checkpoint之前的页都已经刷新回磁盘。数据库只需对Checkpoint后的重做日志进行恢复，这样就大大缩短了恢复的时间。  
+&emsp; 当缓冲池不够用时，根据LRU算法(最少最近使用原则)会溢出最近最少使用的页，若此页为脏页，那么需要强制执行Checkpoint，将脏页也就是页的新版本刷回磁盘。  
+&emsp; 当重做日志出现不可用时，因为当前事务数据库系统对重做日志的设计都是循环使用的，并不是让其无限增大的。重做日志可以被重用的部分是指这些重做日志已经不再需要，当数据库发生宕机时，数据库恢复操作不需要这部分的重做日志，因此这部分就可以被覆盖重用。如果重做日志还需要使用，那么必须强制Checkpoint，将缓冲池中的页至少刷新到当前重做日志的位置。
+
+&emsp; CheckPoint分类   
+&emsp; 在InnoDB存储引擎内部，有两种Checkpoint，分别为：Sharp Checkpoint、Fuzzy Checkpoint    
+
+* sharp checkpoint：在关闭数据库的时候，将buffer pool中的脏页全部刷新到磁盘中  
+* fuzzy checkpoint：数据库正常运行时，在不同的时机，将部分脏页写入磁盘。仅刷新部分脏页到磁盘，也是为了避免一次刷新全部的脏页造成的性能问题。  
+
+
+## 1.2. MySql逻辑存储结构  
 &emsp; 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间(tablespace)。表空间又由段(segment)，区(extent)，页(page)组成。页在一些文档中有时候也称为块(block)。InnoDb逻辑存储结构图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-41.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-134.png)  
@@ -37,7 +75,7 @@ https://zhuanlan.zhihu.com/p/111958646
 * 页(page)：页是InnoDB磁盘管理的最小单位。在InnoDB存储引擎中，默认每个页的大小为16KB。从InnoDB1.2.x版本开始，可以通过参数innodbpagesize将页的大小设置为4K，8K，16K。  
 &emsp; **InnoDB存储引擎中，常见的页类型有：数据页，undo页，系统页，事务数据页，插入缓冲位图页，插入缓冲空闲列表页等。**  
 
-### 1.1.1. 表空间详解  
+### 1.2.1. 表空间详解  
 &emsp; Innodb中表空间可以分为以下几种：  
 
 * 系统表空间。系统表空间又包括了InnoDB数据字典，双写缓冲区(Doublewrite Buffer)，修改缓存(Change Buffer)，Undo日志等。  
@@ -72,7 +110,7 @@ https://zhuanlan.zhihu.com/p/111958646
 
 &emsp; **<font color = "clime">相比较之下，使用独占表空间的效率以及性能会更高一点。</font>**  
 
-### 1.1.2. InnoDB数据页结构  
+### 1.2.2. InnoDB数据页结构  
 <!-- 
 https://zhuanlan.zhihu.com/p/111958646
 -->
@@ -83,7 +121,7 @@ https://zhuanlan.zhihu.com/p/111958646
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-135.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-136.png)  
 
-#### 1.1.2.1. InnoDB行格式
+#### 1.2.2.1. InnoDB行格式
 <!-- 
 https://zhuanlan.zhihu.com/p/111958646
 https://juejin.cn/post/6844904190477598733#heading-14
@@ -93,7 +131,7 @@ https://juejin.cn/post/6844904190477598733#heading-14
 <!-- 
 先说一个结论：页中放的行越多，innodb性能越高。所以在mysql 5.0中引入了compact行记录格式。  
 -->
-##### 1.1.2.1.1. Compact行记录格式    
+##### 1.2.2.1.1. Compact行记录格式    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-137.png)  
 
 * 变长字段长度列表：变长列中存储多少字节数据是不固定的，所以在存储数据时候也需要把这些数据占用的字节数存储起来。varchar(M) M代表的是存储多少字符(mysql5.0.3之前是字节，之后是字符)。  
@@ -107,7 +145,7 @@ https://juejin.cn/post/6844904190477598733#heading-14
 
 &emsp; 综上，无论是char类型还是varchar类型，null值都不占用任何存储空间。  
 
-##### 1.1.2.1.2. 行溢出数据  
+##### 1.2.2.1.2. 行溢出数据  
 &emsp; 一个页中至少要放两行数据，否则B+树就成了链表，所以如果行数据超出一定长度，innodb就会将行数据放到溢出页中。  
 
 &emsp; **compact和redundant**  
@@ -117,7 +155,7 @@ https://juejin.cn/post/6844904190477598733#heading-14
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-140.png)  
 &emsp; 数据页中只存放20字节的Off Page指针，实际数据都在溢出页。  
 
-## 1.2. InnoDB表数据文件  
+## 1.3. InnoDB表数据文件  
 &emsp; <font color = "red">在InnoDB中，数据和索引文件是合起来储存的，如图所示，InnoDB 的存储文件有两个，后缀名分别是 .frm 和 .idb，其中 .frm 是表的定义文件，</font> **<font color = "clime">而idb是数据文件/索引文件。</font>**   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-33.png)  
 

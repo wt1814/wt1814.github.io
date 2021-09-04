@@ -6,7 +6,6 @@
 &emsp; [InnoDB体系结构](/docs/SQL/InnoDB.md)  
 &emsp; [InnoDB内存结构-性能](/docs/SQL/memory.md)  
 &emsp; &emsp; [BufferPool](/docs/SQL/bufferPoolNew.md)  
-&emsp; &emsp; [脏页落盘，CheckPoint](/docs/SQL/CheckPoint.md)  
 &emsp; &emsp; [ChangeBuffer](/docs/SQL/ChangeBuffer.md)  
 &emsp; &emsp; [AdaptiveHashIndex](/docs/SQL/AdaptiveHashIndex.md)  
 &emsp; [InnoDB磁盘结构-可靠性](/docs/SQL/disk.md)  
