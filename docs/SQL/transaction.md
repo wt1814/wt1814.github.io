@@ -84,7 +84,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 
 * READ-UNCOMMITTED(读取未提交)：最低的隔离级别，允许读取尚未提交的数据变更，可能会导致脏读、幻读或不可重复读。  
 * READ-COMMITTED(读取已提交)：允许读取并发事务已经提交的数据，可以阻止脏读，但是幻读或不可重复读仍有可能发生。  
-* REPEATABLE-READ(可重复读)：对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，<font color = "red">可以阻止脏读和不可重复读，幻读仍有可能发生。</font>。  
+* REPEATABLE-READ(可重复读)：对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，<font color = "red">可以阻止脏读和不可重复读，幻读仍有可能发生。</font>  
 * SERIALIZABLE(可串行化)：最高的隔离级别，完全服从ACID的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。  
 
 |隔离级别 |读数据一致性 |脏读|不可重复读|幻读|
@@ -102,8 +102,8 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 ## 1.4. Innodb事务实现原理  
 &emsp; 实现事务采取了哪些技术以及思想？  
 
-* 原子性：使用[事务日志](/docs/SQL/log.md)undo log，从而达到回滚；  
-* 持久性：使用事务日志redo log，从而达到故障后恢复；  
+* 原子性：使用事务日志[undo log](/docs/SQL/undoLog.md)，从而达到回滚；  
+* 持久性：使用事务日志[redo log](/docs/SQL/redoLog.md)，从而达到故障后恢复；  
 * 隔离性：使用[锁](/docs/SQL/lock.md)以及[MVCC](/docs/SQL/MVCC.md)，运用的优化思想有读写分离，读读并行，读写并行；  
 * 一致性：通过回滚，以及恢复，和在并发环境下的隔离做到一致性。  
 
@@ -111,7 +111,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 &emsp; 总之，ACID只是个概念，事务最终目的是要保障数据的可靠性，一致性。  
 
 ### 1.4.1. 原子性的实现  
-&emsp; 采用[undo log](/docs/SQL/log.md)实现。  
+&emsp; 采用[undo log](/docs/SQL/undoLog.md)实现。  
 
 <!-- 
 &emsp; 利用Innodb的undo log。undo log名为回滚日志，是实现原子性的关键，当事务回滚时能够撤销所有已经成功执行的sql语句，它需要记录要回滚的相应日志信息。例如：  
@@ -125,7 +125,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 
 
 ### 1.4.2. 持久性的实现  
-&emsp; 采用[redoLog](/docs/SQL/redoLog.md)实现。  
+&emsp; 采用[redo log](/docs/SQL/redoLog.md)实现。  
 <!-- 
 &emsp; 利用Innodb的redo log。当做数据修改的时候，不仅在内存中操作，还会在redo log中记录这次操作。<font color = "red">当事务提交的时候，会将redo log日志进行刷盘(redo log一部分在内存中，一部分在磁盘上)。</font><font color = "clime">当数据库宕机重启的时候，会将redo log中的内容恢复到数据库中，再根据undo log和binlog内容决定回滚数据还是提交数据。</font>  
 

@@ -194,7 +194,7 @@
         * [两阶段提交和崩溃恢复](/docs/SQL/CrashRecovery.md)  
         * [小结：insert插入流程](/docs/SQL/insert.md)  
 * 项目构建基础  
-    * [构建基础](/docs/web/BuildFoundation.md)  
+    * [项目构建基础](/docs/web/BuildFoundation.md)  
         * [统一格式返回](/docs/web/UnifiedFormat.md)   
         * [统一异常处理](/docs/web/ExceptionHandler.md)  
         * [统一日志记录](/docs/web/unifiedLog.md)  

@@ -2,25 +2,17 @@
 <!-- TOC -->
 
 - [1. MySql架构](#1-mysql架构)
-    - [1.1. MySql Server系统架构](#11-mysql-server系统架构)
-    - [1.2. MySQL查询流程](#12-mysql查询流程)
-    - [1.3. MySql更新流程](#13-mysql更新流程)
+    - [1.1. MySQL查询流程](#11-mysql查询流程)
+    - [1.2. MySql更新流程](#12-mysql更新流程)
 
 <!-- /TOC -->
 
 # 1. MySql架构  
 <!-- 
 
--->
+--> 
 
-## 1.1. MySql Server系统架构  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-44.png)  
-&emsp; **<font color = "clime">MySQL服务器主要分为Server层和存储引擎层。</font>**  
-1. <font color = "red">Server层包括连接器、查询缓存、分析器、优化器、执行器等。</font>涵盖MySQL的大多数核心服务功能，以及所有的内置函数(如日期、时间、数学和加密函数等)，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等，还有 **<font color = "clime">一个通用的日志模块binglog日志模块。</font>**     
-2. 存储引擎：主要负责数据的存储和读取，采用可以替换的插件式架构，支持 InnoDB、MyISAM、Memory等多个存储引擎，其中InnoDB引擎有自有的日志模块redolog模块。  
-&emsp; <font color = "red">InnoDB从MySQL5.5.5版本开始成为了默认存储引擎。即执行create table建表的时候，如果不指定引擎类型，默认使用的就是InnoDB。</font>也可以通过指定存储引擎的类型来选择别的引擎，比如在create table语句中使用engine=memory，来指定使用内存引擎创建表。不同存储引擎的表数据存取方式不同，支持的功能也不同。  
-
-## 1.2. MySQL查询流程  
+## 1.1. MySQL查询流程  
 <!-- 
 你知道select语句和update语句分别是怎么执行的吗？
 https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
@@ -39,6 +31,16 @@ https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
 5. 将结果返回给客户端，同时缓存查询结果。  
 
 &emsp; `客户端请求 ---> 连接器（验证用户身份，给予权限）  ---> 查询缓存（存在缓存则直接返回，不存在则执行后续操作） ---> 分析器（对SQL进行词法分析和语法分析操作）  ---> 优化器（主要对执行的sql优化选择最优的执行方案方法）  ---> 执行器（执行时会先看用户是否有执行权限，有才去使用这个引擎提供的接口） ---> 去引擎层获取数据返回（如果开启查询缓存则会缓存查询结果）。`  
+
+
+----------
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-44.png)  
+&emsp; **<font color = "clime">MySQL服务器主要分为Server层和存储引擎层。</font>**  
+1. <font color = "red">Server层包括连接器、查询缓存、分析器、优化器、执行器等。</font>涵盖MySQL的大多数核心服务功能，以及所有的内置函数(如日期、时间、数学和加密函数等)，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等，还有 **<font color = "clime">一个通用的日志模块binglog日志模块。</font>**     
+2. 存储引擎：主要负责数据的存储和读取，采用可以替换的插件式架构，支持 InnoDB、MyISAM、Memory等多个存储引擎，其中InnoDB引擎有自有的日志模块redolog模块。  
+&emsp; <font color = "red">InnoDB从MySQL5.5.5版本开始成为了默认存储引擎。即执行create table建表的时候，如果不指定引擎类型，默认使用的就是InnoDB。</font>也可以通过指定存储引擎的类型来选择别的引擎，比如在create table语句中使用engine=memory，来指定使用内存引擎创建表。不同存储引擎的表数据存取方式不同，支持的功能也不同。 
+
 <!-- 
     连接器：负责跟客户端建立连接、获取权限、维持和管理连接。
 查询缓存：执行SQL语句之前，先查缓存，缓存结果可能是以key-value对方式存储的，key 是查询的语句，value 是查询的结果。
@@ -124,7 +126,7 @@ https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
 -->
 
 
-## 1.3. MySql更新流程
+## 1.2. MySql更新流程
 <!-- 
 
 浅谈 MySQL InnoDB 的内存组件 

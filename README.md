@@ -262,7 +262,7 @@
 --------
 
 ## 项目构建基础  
-[构建基础](/docs/web/BuildFoundation.md)  
+[项目构建基础](/docs/web/BuildFoundation.md)  
 &emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
 &emsp; [统一异常处理](/docs/web/ExceptionHandler.md)  
 &emsp; [统一日志记录](/docs/web/unifiedLog.md)  
