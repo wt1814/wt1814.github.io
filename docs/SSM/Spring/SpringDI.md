@@ -16,8 +16,9 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. ~~SpringBean默认单例，非懒加载，即容器启动时就加载。~~  
-2. doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean() 初始化。  
+1. 加载时机：SpringBean默认单例，非懒加载，即容器启动时就加载。  
+2. 加载流程：  
+    1. doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean()初始化。  
 
 # 1. SpringDI解析
 ## 1.1. ~~依赖注入发生的时间(懒加载相关)~~  
