@@ -11,7 +11,7 @@
 # 1. AOP
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/AOP-2.png)  
 &emsp; AOP（Aspect-Oriented Programming面向切面编程）能够将那些与业务无关，却为业务模块所共同调用的逻辑或责任（例如事务处理、日志管理、权限控制等）封装起来，便于减少系统的重复代码，降低模块间的耦合度，并有利于未来的可拓展性和可维护性。  
-&emsp; AOP可以算作是代理模式的一个典型应用。AOP提供了对通知(advice)的支持。通知不同于必须显式调用的方法，每当发生匹配的触发事件时，它就自动地执行。  
+&emsp; AOP可以算作是代理模式的一个典型应用。AOP提供了对通知（advice）的支持。通知不同于必须显式调用的方法，每当发生匹配的触发事件时，它就自动地执行。  
 
 ## 1.1. AOP基本概念  
 <!-- 
@@ -48,7 +48,7 @@ https://mp.weixin.qq.com/s/ZC9WMbOZJ6V3RkaFm6UZYQ
 ~~
 https://mp.weixin.qq.com/s/-gLXHd_mylv_86sTMOgCBg
 -->
-&emsp; 常用的代理有通过接口的[JDK动态代理](/docs/java/Design/proxy.md)和通过继承类的[CGLIB动态代理](/docs/java/Design/CGLIB.md)。  
+&emsp; 常用的代理有通过接口的[JDK动态代理](/docs/java/Design/DynamicProxy.md)和通过继承类的[CGLIB动态代理](/docs/java/Design/CGLIB.md)。  
 1. [JDK动态代理](/docs/java/Design/DynamicProxy.md)  
 &emsp; <font color = "red">利用拦截器（拦截器必须实现InvocationHanlder）加上反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理。</font>  
 2. [CGLIB动态代理](/docs/java/Design/CGLIB.md)  
