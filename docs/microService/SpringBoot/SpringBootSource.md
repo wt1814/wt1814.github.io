@@ -1,5 +1,12 @@
 
 
+<!-- 
+
+ 非常有必要了解的Springboot启动扩展点 
+ https://mp.weixin.qq.com/s/H9hcQHZUNhuRodEPiVOHfQ
+ https://mp.weixin.qq.com/s/Z5meCbbfgUmnLnnWjeEeVw
+-->
+
 &emsp; [SpringBoot启动过程](/docs/microService/SpringBoot/SpringBootRun.md)  
 &emsp; &emsp; [SpringApplication初始化](/docs/microService/SpringBoot/SpringApplicationInit.md)  
 &emsp; &emsp; [run()方法运行过程](/docs/microService/SpringBoot/runProcess.md)  

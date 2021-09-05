@@ -3,9 +3,7 @@
 # 学习SpringBoot的感悟  
 
 <!-- 
- 非常有必要了解的Springboot启动扩展点 
- https://mp.weixin.qq.com/s/H9hcQHZUNhuRodEPiVOHfQ
- https://mp.weixin.qq.com/s/Z5meCbbfgUmnLnnWjeEeVw
+
 -->
 
 ## 前言  

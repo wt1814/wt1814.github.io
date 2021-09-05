@@ -18,7 +18,7 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "blue">构造过程一般是对构造函数的一些成员属性赋值，做一些初始化工作。</font><font color = "blue">SpringApplication有6个属性：资源加载器、资源类集合、应用类型、初始化器、监听器、包含main函数的主类。</font>**  
+1. **<font color = "blue">构造过程一般是对构造函数的一些成员属性赋值，做一些初始化工作。</font><font color = "blue">SpringApplication有6个属性：`资源加载器`、资源类集合、应用类型、`初始化器`、`监听器`、`包含main函数的主类`。</font>**  
 	1. 给resourceLoader属性赋值，resourceLoader属性，资源加载器，此时传入的resourceLoader参数为null；  
 	2. **<font color = "clime">初始化资源类集合并去重。</font>** 给primarySources属性赋值，primarySources属性即`SpringApplication.run(MainApplication.class,args);`中传入的MainApplication.class，该类为SpringBoot项目的启动类，主要通过该类来扫描Configuration类加载bean；
 	3. **<font color = "clime">判断当前是否是一个 Web 应用。</font>** 给webApplicationType属性赋值，webApplicationType属性，代表应用类型，根据classpath存在的相应Application类来判断。因为后面要根据webApplicationType来确定创建哪种Environment对象和创建哪种ApplicationContext；

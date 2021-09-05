@@ -19,7 +19,7 @@
     * @ConfigurationProperties配置属性文件，需要指定前缀prefix。
     * @EnableConfigurationProperties启用配置，需要指定启用的配置类。
     * @NestedConfigurationProperty当一个类中引用了外部类，需要在该属性上加该注解。
-3. **<font color = "red">定义自动配置类，该类自动暴露功能接口。</font>**  
+3. **<font color = "red">`定义自动配置类，该类自动暴露功能接口。`</font>**  
     * @Configuration注解。
     * @EnableConfigurationProperties注解。该注解是用来开启对配置文件对应类中@ConfigurationProperties注解配置Bean的支持。也就是@EnableConfigurationProperties注解告诉Spring Boot能支持@ConfigurationProperties。 当然了，也可以在 @ConfigurationProperties注解的类上添加@Configuration或者@Component注解。
     * @ConditionalOnProperty注解控制@Configuration是否生效。简单来说也就是可以通过在yml配置文件中控制@Configuration注解的配置类是否生效。
