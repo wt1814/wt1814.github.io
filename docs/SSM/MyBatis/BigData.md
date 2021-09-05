@@ -2,13 +2,13 @@
 <!-- TOC -->
 
 - [1. MyBatis大数据查询](#1-mybatis大数据查询)
-    - [1.1. 针对Oracle使用批处理fetchSize](#11-针对oracle使用批处理fetchsize)
-    - [1.2. 流式查询](#12-流式查询)
-        - [1.2.1. 基本概念](#121-基本概念)
-        - [1.2.2. MyBatis流式查询使用教程](#122-mybatis流式查询使用教程)
-            - [1.2.2.1. MyBatis流式查询接口](#1221-mybatis流式查询接口)
-            - [1.2.2.2. 流式查询保持连接方案](#1222-流式查询保持连接方案)
-    - [1.3. 游标查询](#13-游标查询)
+    - [1.1. 流式查询](#11-流式查询)
+        - [1.1.1. 基本概念](#111-基本概念)
+        - [1.1.2. MyBatis流式查询使用教程](#112-mybatis流式查询使用教程)
+            - [1.1.2.1. MyBatis流式查询接口](#1121-mybatis流式查询接口)
+            - [1.1.2.2. 流式查询保持连接方案](#1122-流式查询保持连接方案)
+    - [1.2. 游标查询](#12-游标查询)
+    - [1.3. 针对Oracle使用批处理fetchSize](#13-针对oracle使用批处理fetchsize)
 
 <!-- /TOC -->
 
@@ -31,31 +31,19 @@ https://mp.weixin.qq.com/s/RFgPkpyCPQQOo0SKZHA9Eg
 
 
 
-## 1.1. 针对Oracle使用批处理fetchSize
-<!-- 
 
-mybatis大数据查询优化：fetchSize
-https://www.jianshu.com/p/2ba501063556
-
-https://www.oschina.net/question/3488884_2271532?sort=time
-Mybatis针对Oracle使用fetchSize
-https://blog.csdn.net/onlyusc2/article/details/108042167
-https://my.oschina.net/qalong/blog/3123826
--->
-
-
-## 1.2. 流式查询  
+## 1.1. 流式查询  
 &emsp; 流式查询指的是查询成功后不是返回一个集合而是返回一个迭代器，应用每次从迭代器取一条查询结果。流式查询的好处是能够降低内存使用。  
 &emsp; **<font color = "clime">如果没有流式查询，想要从数据库取 1000 万条记录而又没有足够的内存时，就不得不分页查询，而分页查询效率取决于表设计，如果设计的不好，就无法执行高效的分页查询。因此流式查询是一个数据库访问框架必须具备的功能。</font>**  
 &emsp; 流式查询的过程当中，数据库连接是保持打开状态的，因此要注意的是： **<font color = "clime">执行一个流式查询后，数据库访问框架就不负责关闭数据库连接了，需要应用在取完数据后自己关闭。</font>**  
 
-### 1.2.1. 基本概念
+### 1.1.1. 基本概念
 &emsp; 流式查询指的是查询成功后不是返回一个集合而是返回一个迭代器，应用每次从迭代器取一条查询结果。流式查询的好处是能够降低内存使用。  
 &emsp; 如果没有流式查询，我们想要从数据库取 1000 万条记录而又没有足够的内存时，就不得不分页查询，而分页查询效率取决于表设计，如果设计的不好，就无法执行高效的分页查询。因此流式查询是一个数据库访问框架必须具备的功能。  
 &emsp; 流式查询的过程当中，数据库连接是保持打开状态的，因此要注意的是：执行一个流式查询后，数据库访问框架就不负责关闭数据库连接了，需要应用在取完数据后自己关闭。   
 
-### 1.2.2. MyBatis流式查询使用教程
-#### 1.2.2.1. MyBatis流式查询接口
+### 1.1.2. MyBatis流式查询使用教程
+#### 1.1.2.1. MyBatis流式查询接口
 &emsp; MyBatis提供了一个叫 org.apache.ibatis.cursor.Cursor 的接口类用于流式查询，这个接口继承了 java.io.Closeable 和 java.lang.Iterable 接口，由此可知：
 
 * Cursor是可关闭的；
@@ -102,7 +90,7 @@ java.lang.IllegalStateException: A Cursor is already closed.
 ```
 &emsp; 这是因为我们前面说了在取数据的过程中需要保持数据库连接，而 Mapper 方法通常在执行完后连接就关闭了，因此 Cusor 也一并关闭了。  
 
-#### 1.2.2.2. 流式查询保持连接方案
+#### 1.1.2.2. 流式查询保持连接方案
 &emsp; 解决以上问题的思路不复杂，保持数据库连接打开即可。我们至少有三种方案可选。  
 &emsp; 方案一：SqlSessionFactory  
 
@@ -161,6 +149,19 @@ public void scanFoo3(@PathVariable("limit") int limit) throws Exception {
 
 &emsp; 以上是三种实现 MyBatis 流式查询的方法。  
 
-## 1.3. 游标查询
+## 1.2. 游标查询
+&emsp; ...  
 
 
+## 1.3. 针对Oracle使用批处理fetchSize
+<!-- 
+
+mybatis大数据查询优化：fetchSize
+https://www.jianshu.com/p/2ba501063556
+
+https://www.oschina.net/question/3488884_2271532?sort=time
+Mybatis针对Oracle使用fetchSize
+https://blog.csdn.net/onlyusc2/article/details/108042167
+https://my.oschina.net/qalong/blog/3123826
+-->
+&emsp; ...  

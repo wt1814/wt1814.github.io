@@ -13,6 +13,10 @@
 
 
 # 1. 自定义springboot-starter
+&emsp; 学习SpringBoot时，官方网址提供的资料很重要。SpringBoot提供的Starters：https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#using-boot-starter
+&emsp; SpringBoot提供的Starters有限。但项目中可能会用到各种各样的组件，这时可以自定义Starter使项目组件化、模块化。  
+
+
 &emsp; 通过配置文件定义自动配置开关：  
 1. 编写业务逻辑。  
 2. 定义配置文件对应类。  

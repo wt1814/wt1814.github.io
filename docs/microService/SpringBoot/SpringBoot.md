@@ -2,24 +2,36 @@
 
 <!-- TOC -->
 
-- [1. SpringBoot](#1-springboot)
-    - [1.1. 配置文件](#11-配置文件)
-        - [1.1.1. bootstrap和application两种配置文件](#111-bootstrap和application两种配置文件)
-        - [1.1.2. application.yaml自定义属性](#112-applicationyaml自定义属性)
-        - [1.1.3. 自定义配置文件](#113-自定义配置文件)
-            - [1.1.3.1. 加载自定义yml文件](#1131-加载自定义yml文件)
-            - [1.1.3.2. 让yml,properties配置文件有提示](#1132-让ymlproperties配置文件有提示)
-        - [1.1.4. 多环境的属性配置](#114-多环境的属性配置)
-        - [1.1.5. 配置信息加密](#115-配置信息加密)
+- [1. ~~SpringBoot~~](#1-springboot)
+    - [1.1. SpringBoot简介](#11-springboot简介)
+    - [1.2. 配置文件](#12-配置文件)
+        - [1.2.1. bootstrap和application两种配置文件](#121-bootstrap和application两种配置文件)
+        - [1.2.2. application.yaml自定义属性](#122-applicationyaml自定义属性)
+        - [1.2.3. 自定义配置文件](#123-自定义配置文件)
+            - [1.2.3.1. 加载自定义yml文件](#1231-加载自定义yml文件)
+            - [1.2.3.2. 让yml,properties配置文件有提示](#1232-让ymlproperties配置文件有提示)
+        - [1.2.4. 多环境的属性配置](#124-多环境的属性配置)
+        - [1.2.5. 配置信息加密](#125-配置信息加密)
 
 <!-- /TOC -->
 
-# 1. SpringBoot  
+# 1. ~~SpringBoot~~  
+&emsp; SpringBoot基本上是Spring框架的扩展，它消除了设置Spring应用程序所需的XML配置，为更快，更高效的开发生态系统铺平了道路。  
+
+* SpringBoot简化了Spring的配置；
+* SpringBoot提供了起步依赖、自动配置；
+* SpringBoot内嵌了Tomcat、 Jetty、 Undertow容器（无需部署war文件）；
+* 提供生产指标，例如指标、健壮检查和外部化配置。  
+
+
+## 1.1. SpringBoot简介  
 &emsp; Spring Boot、Spring MVC 和 Spring 有什么区别？  
 1. Spring  
 &emsp; Spring最重要的特征是依赖注入。所有SpringModules不是依赖注入就是IOC控制反转。恰当的使用DI或者IOC，可以开发松耦合应用。松耦合应用的单元测试可以很容易的进行。  
 2. Spring MVC    
 &emsp; Spring MVC提供了一种分离式的方法来开发Web应用。通过运用像DispatcherServelet，MoudlAndView和ViewResolver等一些简单的概念，开发Web应用将会变的非常简单。  
+
+
 3. SpringBoot   
 &emsp; Spring 和 SpringMVC 的问题在于需要配置大量的参数。Spring Boot 通过一个自动配置和启动的项来目解决这个问题。为了更快的构建产品就绪应用程序，Spring Boot 提供了一些非功能性特征。  
 
@@ -65,8 +77,8 @@ Spring Boot 优点非常多，如：
 
 -----
 
-## 1.1. 配置文件  
-### 1.1.1. bootstrap和application两种配置文件
+## 1.2. 配置文件  
+### 1.2.1. bootstrap和application两种配置文件
 &emsp; SpringBoot的核心配置文件是bootstrap和application配置文件。  
 
 * bootstrap配置文件是系统级别的，用来加载外部配置，如配置中心的配置信息，也可以用来定义系统不会变化的属性。bootstatp文件的加载先于application文件。  
@@ -83,11 +95,11 @@ Spring Boot 优点非常多，如：
 
 &emsp; Application.properties中key在SpringBoot官网文档给出了详尽的配置以及说明。http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#common-application-properties 。
 
-### 1.1.2. application.yaml自定义属性  
+### 1.2.2. application.yaml自定义属性  
 &emsp; Application自定义属性，获取配置文件属性值方式：@Value注解，注入Environment属性。  
 
-### 1.1.3. 自定义配置文件  
-#### 1.1.3.1. 加载自定义yml文件  
+### 1.2.3. 自定义配置文件  
+#### 1.2.3.1. 加载自定义yml文件  
 ......
 <!-- 
 
@@ -96,7 +108,7 @@ https://www.cnblogs.com/huahua035/p/11272464.html
 
 -->
 
-#### 1.1.3.2. 让yml,properties配置文件有提示
+#### 1.2.3.2. 让yml,properties配置文件有提示
 <!--
 超实用，Spring Boot 让yml,properties配置文件有提示 
 https://mp.weixin.qq.com/s?__biz=MzA4NjgxMjQ5Mg==&mid=2665762955&idx=1&sn=95c84bb2bd98b2a7ad1ddf674bd51959&chksm=84d202a8b3a58bbed74fd75ebcacd0306dc903a7737833f022fa69ce5b7c381753a7ebd7f6f0&mpshare=1&scene=1&srcid=&sharer_sharetime=1573691098077&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2459be73db906624e0949067f9260b7dff7fc16439cfbba9bed0142b226a920e566c156662dadf2b9695e0da6ac283e4bf4df8bdb6c156c8f21b2df31ecf98b28126c08f0a024633087f0a70cc074936&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=9PZBgG0W8u5aIQH8JwuoebfJbcWXVv%2F8Jwpab0URWoWCafXeDrv6e7zaSa2n%2B7Oa
@@ -104,10 +116,10 @@ https://mp.weixin.qq.com/s?__biz=MzA4NjgxMjQ5Mg==&mid=2665762955&idx=1&sn=95c84b
 
 ......
 
-### 1.1.4. 多环境的属性配置  
+### 1.2.4. 多环境的属性配置  
 ......
 
-### 1.1.5. 配置信息加密  
+### 1.2.5. 配置信息加密  
 ......
 
 
