@@ -116,6 +116,6 @@ buffer=“8192” accepts=“1000” payload=“8388608” />
 &emsp; Dubbo默认使用Hessian序列化，还有Duddo、FastJson、Java自带序列化。   
 
 &emsp; dubbo序列化：阿里尚未开发成熟的高效java序列化实现，阿里不建议在生产环境使用它。  
-&emsp; hessian2序列化：hessian是一种跨语言的高效二进制序列化方式。但这里实际不是原生的hessian2序列化，而是阿里修改过的，它是dubbo RPC默认启用的序列化方式。
+&emsp; hessian2序列化：hessian是一种跨语言的高效二进制序列化方式。但这里实际不是原生的hessian2序列化，而是阿里修改过的，它是dubbo RPC默认启用的序列化方式。  
 &emsp; json序列化：目前有两种实现，一种是采用的阿里的fastjson库，另一种是采用dubbo中自己实现的简单json库，但其实现都不是特别成熟，而且json这种文本序列化性能一般不如上面两种二进制序列化。  
 &emsp; java序列化：主要是采用JDK自带的Java序列化实现，性能很不理想。  

@@ -28,7 +28,11 @@
         2. 导出到远程：其包含了服务导出与服务注册两个过程。  
             1. 服务导出：
                 1. 为服务提供类(ref)生成Invoker。`ProxyFactory #getInvoker(T proxy, Class<T> type, URL url)`  
-                2. 导出服务，并生成Exporter。`DubboProtocol #export(Invoker<T> invoker)`
+                2. 导出服务，并生成Exporter。`DubboProtocol #export(Invoker<T> invoker)`。**<font color = "clime">主要做如下一些操作：</font>**  
+                    1. 调用doLocalExport导出服务
+                    2. 向注册中心注册服务
+                    3. 向注册中心进行订阅 override 数据
+                    4. 创建并返回 DestroyableExporter
             2. 服务注册(以Zookeeper为例)：  
                 1. createRegistry，创建Zookeeper客户端。
                 2. 服务注册，本质上是将服务配置数据写入到Zookeeper的某个路径的节点下。

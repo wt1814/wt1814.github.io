@@ -19,7 +19,9 @@
 5. ZK的弊端：
 	1. 服务端从节点多，主从同步慢。  
 	2. 客户端多，`网络风暴`。~~watcher机制中，回调流程，只有主节点参与？~~  
-    
+
+
+
 # 1. Zookeeper
 &emsp; Zookeeper官网文档：https://zookeeper.apache.org/doc/current
 <!--
