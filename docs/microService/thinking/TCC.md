@@ -11,7 +11,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "red">TCC是一种业务层面或者是应用层的两阶段提交。</font>**  
-&emsp; TCC是Try（检测及资源锁定或者预留）、Commit（确认）、Cancel（取消）的缩写，业务层面需要写对应的三个方法。TCC是两阶段型、补偿型的事务。  
+&emsp; TCC是`Try（检测及资源锁定或者预留）`、Commit（确认）、Cancel（取消）的缩写，业务层面需要写对应的三个方法。TCC是两阶段型、补偿型的事务。  
 2. TCC与二阶段比较  
 &emsp; 使用2PC机制时————以提交为例————一个完整的事务生命周期是：begin -> 业务逻辑 -> prepare -> commit。  
 &emsp; 使用TCC机制时————以提交为例————一个完整的事务生命周期是：begin -> 业务逻辑(try业务) -> commit(comfirm业务)。  
@@ -19,7 +19,7 @@
 &emsp; 1、2PC机制的业务阶段 等价于 TCC机制的try业务阶段；  
 &emsp; 2、2PC机制的提交阶段（prepare & commit） 等价于 TCC机制的提交阶段（confirm）；  
 &emsp; 3、2PC机制的回滚阶段（rollback） 等价于 TCC机制的回滚阶段（cancel）。  
-&emsp; 因此，可以看出，虽然TCC机制中有两个阶段都存在业务逻辑的执行，但其中try业务阶段其实是与全局事务处理无关的。认清了这一点，当再比较TCC和2PC时，就会很容易地发现，`TCC不是两阶段提交，而只是它对事务的提交/回滚是通过执行一段confirm/cancel业务逻辑来实现，仅此而已。`  
+&emsp; 因此，可以看出，虽然TCC机制中有两个阶段都存在业务逻辑的执行，但其中 `try业务阶段其实是与全局事务处理无关的`。认清了这一点，当再比较TCC和2PC时，就会很容易地发现，`TCC不是两阶段提交，而只是它对事务的提交/回滚是通过执行一段confirm/cancel业务逻辑来实现，仅此而已。`  
 3.  **<font color = "clime">TCC的数据最终一致性：基于Confirm和Cancel的`幂等性`，保证事务最终完成确认或者取消，保证数据的一致性。</font>**  
 4. TCC的问题：  
     &emsp; **<font color = "clime">TCC两个阶段都由业务代码控制，由于网络阻塞等原因，可能导致两个阶段执行顺序相反，</font>** 引发问题：  

@@ -23,7 +23,7 @@
 <!-- /TOC -->
 
 **<font color = "red">总结：</font>**    
-1. 分布式ID的基本生成方式有：UUID、数据库方式（主键自增、序列号、<font color = "clime">号段模式</font><font color = "red">）、redis、ZK等中间件、雪花算法。</font>  
+1. 分布式ID的基本生成方式有：UUID，数据库方式（主键自增、序列号、<font color = "clime">号段模式</font><font color = "red">），redis、ZK等中间件，雪花算法。</font>  
     * 数据库Oracle中有序列SEQUENCE；在Mysql中可以建一张伪序列号表。  
     * 号段模式可以理解为从数据库批量的获取自增ID，每次从数据库取出一个号段范围。  
 2. snowflake算法：  

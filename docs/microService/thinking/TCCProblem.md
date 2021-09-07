@@ -41,7 +41,7 @@ https://blog.csdn.net/xiaozhu0301/article/details/111322711
 &emsp; 从上图中红色部分可以看到：如果当TC调用参与者的二阶段方法时，发生了异常(TC本身异常或者网络异常丢失结果)。此时TC无法感知到调用的结果。为了保证分布式事务能够走到终态，此时TC会按照一定的规则重复调用参与者的二阶段方法。  
 
 ### 1.2.2. 应对策略
-&emsp; 对于幂等类型的问题，通常的手段是引入幂等字段进行防重放攻击。对于分布式事务框架中的幂等问题，同样可以祭出这一利器。我们可以通过增加一张事务状态控制表来实现，这个表的关键字段有以下几个：  
+&emsp; 对于幂等类型的问题，通常的手段是引入幂等字段进行防重放攻击。对于分布式事务框架中的幂等问题，同样可以祭出这一利器。我们可以通过 **<font color= "red">增加一张事务状态控制表来实现，这个表的关键字段有以下几个：</font>**  
 
 1. 主事务ID
 2. 分支事务ID
@@ -53,7 +53,7 @@ https://blog.csdn.net/xiaozhu0301/article/details/111322711
 2. CONFIRMED© - 已提交
 3. ROLLBACKED® - 已回滚
 
-&emsp; 幂等记录的插入时机是参与者的Try方法，此时的分支事务状态会被初始化为INIT。然后当二阶段的Confirm/Cancel执行时会将其状态置为CONFIRMED/ROLLBACKED。  
+&emsp; **<font color= "clime">幂等记录的插入时机是参与者的Try方法，此时的分支事务状态会被初始化为INIT。然后当二阶段的Confirm/Cancel执行时会将其状态置为CONFIRMED/ROLLBACKED。</font>**  
 
 &emsp; 当TC重复调用二阶段接口时，参与者会先获取事务状态控制表的对应记录查看其事务状态。如果状态已经为CONFIRMED/ROLLBACKED，那么表示参与者已经处理完其分内之事，不需要再次执行，可以直接返回幂等成功的结果给TC，帮助其推进分布式事务。增加了幂等记录的写入和读取判断后，时序图如下(蓝色部分)：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-52.png)  
@@ -78,7 +78,7 @@ https://blog.csdn.net/xiaozhu0301/article/details/111322711
 
 &emsp; 很显然，可以继续利用事务状态控制表来实现这个功能。  
 
-&emsp; 前面提到过为了保证幂等性，当Try方法被成功执行后，会插入一条记录，标识该分支事务处于INIT状态。所以后续当二阶段的Cancel方法被调用时，可以通过查询控制表的对应记录进行判断。如果记录存在且状态为INIT，就表示一阶段已成功执行，可以正常执行回滚操作，释放预留的资源；如果记录不存在则表示一阶段未执行，本次为空回滚，不释放任何资源。  
+&emsp; 前面提到过为了保证幂等性，当Try方法被成功执行后，会插入一条记录，标识该分支事务处于INIT状态。所以后续 **<font color = "red">当二阶段的Cancel方法被调用时，可以通过查询控制表的对应记录进行判断。如果记录存在且状态为INIT，就表示一阶段已成功执行，可以正常执行回滚操作，释放预留的资源；如果记录不存在则表示一阶段未执行，本次为空回滚，不释放任何资源。</font>**  
 
 &emsp; 时序图如下所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-54.png)  
