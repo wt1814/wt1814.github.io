@@ -26,7 +26,6 @@
         - [分布式锁](#分布式锁)
     - [高并发](#高并发)
         - [分布式与高并发](#分布式与高并发)
-        - [资源限制](#资源限制)
         - [分布式缓存](#分布式缓存)
             - [Redis](#redis)
         - [限流降级](#限流降级)
@@ -469,10 +468,7 @@
 &emsp; [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; &emsp; [高可用建设](/docs/system/highAvailability.md)  
 &emsp; [秒杀系统设计](/docs/system/seckill.md)  
-
-
-### 资源限制
-[资源限制](/docs/system/ResourceConstraints.md)  
+&emsp; [资源限制](/docs/system/ResourceConstraints.md)  
 
 ### 分布式缓存  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
