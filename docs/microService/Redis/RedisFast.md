@@ -19,12 +19,15 @@ https://mp.weixin.qq.com/s/v4ORkYyjfLxYVNhzaJH8tw
 
 &emsp; Redis的性能非常之高，每秒可以承受10W+的QPS，它如此优秀的性能主要取决于以下几个方面：  
 
-* 纯内存操作
-* [虚拟内存机制](/docs/microService/Redis/RedisVM.md)  
-* [使用IO多路复用技术](/docs/microService/Redis/RedisEvent.md)  
-* [合理的线程模型](/docs/microService/Redis/RedisMultiThread.md)   
-* 合理的数据编码
-* ......
+1. 磁盘I/O：
+    * 纯内存操作
+    * [虚拟内存机制](/docs/microService/Redis/RedisVM.md)  
+    * 合理的数据编码
+2. 网络I/O：  
+    * [使用IO多路复用技术](/docs/microService/Redis/RedisEvent.md)  
+    * [合理的线程模型](/docs/microService/Redis/RedisMultiThread.md)   
+    * [简单快速的Redis协议](/docs/microService/Redis/RESP.md)  
+3. ......
 
 
 

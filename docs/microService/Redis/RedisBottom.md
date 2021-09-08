@@ -27,8 +27,12 @@
 2. redis底层8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。  
     * ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>** 只用在字段个数少，字段值小的场景里。  
     * QuickList其实就是结合了ZipList和LinkedList的优点设计出来的。quicklist存储了一个双向链表，每个节点都是一个ziplist。  
-3. redis数据类型内部编码：  
-    * String和Hash都是存储的字符串，Hash由ziplist(压缩列表)或者dictht(字典)组成；  
+3. Redis会根据当前值的类型和长度决定使用哪种内部编码实现。    
+    * String字符串类型的内部编码有三种：
+        1. int，存储8个字节的长整型(long，2^63-1)。当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
+        2. embstr，代表 embstr 格式的 SDS(Simple Dynamic String 简单动态字符串)，存储小于44个字节的字符串。  
+        3. raw，存储大于 44 个字节的字符串(3.2 版本之前是 39 字节)。  
+    * Hash由ziplist(压缩列表)或者dictht(字典)组成；  
     * List，「有序」「可重复」集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  
     * Set，「无序」「不可重复」集合， **<font color = "clime">是特殊的Hash结构(value为null)，</font>** 由intset(整数集合)或者dictht(字典)组成；
     * ZSet，「有序」「不可重复」集合，由skiplist(跳跃表)或者ziplist(压缩列表)组成。  
@@ -216,15 +220,15 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 &emsp; **<font color = "red">字符串类型的内部编码有三种：</font>**  
 
 *  int，存储8个字节的长整型(long，2^63-1)。   
-*  embstr，代表 embstr 格式的 SDS(Simple Dynamic String 简单动态字符串)，存储小于44个字节的字符串。   
-*  raw，存储大于 44 个字节的字符串(3.2 版本之前是 39 字节)。  
+*  embstr，代表 embstr 格式的 SDS(Simple Dynamic String 简单动态字符串)， **<font color = "clime">存储小于44个字节的字符串。</font>**   
+*  **<font color = "clime">raw，存储大于 44 个字节的字符串(3.2 版本之前是 39 字节)。</font>**     
 
 &emsp; <font color = "red">Redis会根据当前值的类型和长度决定使用哪种内部编码实现。</font>  
 
 1. embstr和raw的区别？  
 &emsp; embstr的使用只分配一次内存空间（因为RedisObject和SDS是连续的），而raw需要分配两次内存空间（分别为RedisObject和SDS分配空间）。因此与raw相比，<font color = "red">embstr的好处在于创建时少分配一次空间，删除时少释放一次空间，以及对象的所有数据连在一起，寻找方便。而embstr的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个RedisObject和SDS都需要重新分配空间，</font>因此Redis中的embstr实现为只读。  
 2. int和embstr什么时候转化为raw?  
-&emsp; 当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
+&emsp; **<font color = "clime">当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。</font>**  
 3. embstr没有超过阈值，为什么变成raw了？  
 &emsp; 对于embstr，由于其实现是只读的，因此在对embstr对象进行修改时，都会先转化为raw再进行修改。因此，只要是修改embstr对象，修改后的对象一定是raw的，无论是否达到了44个字节。  
 4. 当长度小于阈值时，会还原吗？  

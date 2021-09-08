@@ -20,7 +20,9 @@
 	* **<font color = "red">将no-appendfsync-on-rewrite设置为yes。</font>** 
 	* master节点关闭AOF。  
     
-&emsp; 折中方式：在master节点设置将no-appendfsync-on-rewrite设置为yes（表示在日志重写时，不进行命令追加操作，而只是将命令放在重写缓冲区里，避免与命令的追加造成磁盘IO上的冲突），同时auto-aof-rewrite-percentage参数设置为0，关闭主动重写。  
+    可以采取比较折中的方式：  
+    * 在master节点设置将no-appendfsync-on-rewrite设置为yes（表示在日志重写时，不进行命令追加操作，而只是将命令放在重写缓冲区里，避免与命令的追加造成磁盘IO上的冲突），同时auto-aof-rewrite-percentage参数设置为0关闭主动重写。  
+    * 在重写时为了避免硬盘空间不足或者IO使用率高影响重写功能，还添加了硬盘空间报警和IO使用率报警保障重写的正常进行
 3. 虽然在everysec配置下aof的fsync是由子线程进行操作的，但是主线程会监控fsync的执行进度。  
 &emsp; **<font color = "clime">主线程在执行时候如果发现上一次的fsync操作还没有返回，那么主线程就会阻塞。</font>**  
 

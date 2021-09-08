@@ -158,40 +158,46 @@ redis.clients.jedis.exceptions.JedisDataException: ERR max number of clients rea
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-112.png)  
 <center>主从节点内存不一致，主节点内存陡增</center>
 &emsp; 客户端现象：客户端产生了OOM异常，也就是Redis主节点使用的内存已经超过了maxmemory的设置，无法写入新的数据：  
-```text
-redis.clients.jedis.exceptions.JedisDataException: OOM command not allowed when used memory > 'maxmemory'
-```
+
+    ```text
+    redis.clients.jedis.exceptions.JedisDataException: OOM command not allowed when used memory > 'maxmemory'
+    ```
 2. 分析原因  
 &emsp; 从现象看，可能的原因有两个。  
 &emsp; 1）确实有大量写入，但是主从复制出现问题：查询了Redis复制的相关 信息，复制是正常的，主从数据基本一致。  
 &emsp; 主节点的键个数： 
-```text
-127.0.0.1:6379> dbsize 
-(integer) 2126870 
-```
+
+    ```text
+    127.0.0.1:6379> dbsize 
+    (integer) 2126870 
+    ```
 &emsp; 从节点的键个数： 
-```text
-127.0.0.1:6380> dbsize 
-(integer) 2126870 
-```
+
+    ```text
+    127.0.0.1:6380> dbsize 
+    (integer) 2126870 
+    ```
 &emsp; 2）其他原因造成主节点内存使用过大：排查是否由客户端缓冲区造成 主节点内存陡增，使用info clients命令查询相关信息如下：  
-```text
-127.0.0.1:6379> info clients
-# Clients 
-connected_clients:1891 
-client_longest_output_list:225698 
-client_biggest_input_buf:0 
-blocked_clients:0
-```
+
+    ```text
+    127.0.0.1:6379> info clients
+    # Clients 
+    connected_clients:1891 
+    client_longest_output_list:225698 
+    client_biggest_input_buf:0 
+    blocked_clients:0
+    ```
 &emsp; 很明显输出缓冲区不太正常，最大的客户端输出缓冲区队列已经超过了20万个对象，于是需要通过client list命令找到omem不正常的连接，一般来说大部分客户端的omem为0（因为处理速度会足够快），于是执行如下代码，找到omem非零的客户端连接：  
-```text
-redis-cli client list | grep -v "omem=0"
-```
+
+    ```text
+    redis-cli client list | grep -v "omem=0"
+    ```
 &emsp; 找到了如下一条记录： 
-```text
-id=7 addr=10.10.xx.78:56358 fd=6 name= age=91 idle=0 flags=O db=0 sub=0 psub=0 
-multi=-1 qbuf=0 qbuf-free=0 obl=0 oll=224869 omem=2129300608 events=rw cmd=monitor 
-```
+
+    ```text
+    id=7 addr=10.10.xx.78:56358 fd=6 name= age=91 idle=0 flags=O db=0 sub=0 psub=0 
+    multi=-1 qbuf=0 qbuf-free=0 obl=0 oll=224869 omem=2129300608 events=rw cmd=monitor 
+    ```
 &emsp; 已经很明显是因为有客户端在执行monitor命令造成的。  
 3. 处理方法和后期处理   
 &emsp; 对这个问题处理的方法相对简单，只要使用client kill命令杀掉这个连接，让其他客户端恢复正常写数据即可。但是更为重要的是在日后如何及时 发现和避免这种问题的发生，基本有三点：  

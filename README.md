@@ -505,7 +505,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [Redis和Lua](/docs/microService/Redis/lua.md)  
 &emsp; [Redis持久化](/docs/microService/Redis/RedisPersistence.md)  
 &emsp; &emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
-&emsp; [RedisKey删除](/docs/microService/Redis/Keydel.md)  
+&emsp; [Redis的Key删除](/docs/microService/Redis/Keydel.md)  
 &emsp; [Redis内存淘汰](/docs/microService/Redis/RedisEliminate.md)  
 &emsp; [Redis实现队列](/docs/microService/Redis/Message.md)  
 &emsp; &emsp; [发布订阅](/docs/microService/Redis/Subscribe.md)  
