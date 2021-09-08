@@ -468,6 +468,7 @@
 &emsp; [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; &emsp; [高可用建设](/docs/system/highAvailability.md)  
 &emsp; [秒杀系统设计](/docs/system/seckill.md)  
+&emsp; &emsp; [Redis实现库存扣减](/docs/system/stock.md)  
 &emsp; [资源限制](/docs/system/ResourceConstraints.md)  
 
 ### 分布式缓存  

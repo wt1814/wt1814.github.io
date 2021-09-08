@@ -226,4 +226,9 @@ SELECT column_name FROM table_name PROCEDURE ANALYSE();
 ```
 
 ## 1.7. sql分析工具
+<!-- 
+4 款 MySQL 调优工具 
+https://mp.weixin.qq.com/s/X5Ik_cpKdk95IDLG-vZg4w
+-->
+
 &emsp; 小米开源的sql分析工具：soar-web  
