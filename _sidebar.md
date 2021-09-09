@@ -400,7 +400,7 @@
         * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
         * [kafka服务端](/docs/microService/mq/kafka/kafkaServer.md)  
     * [kafka特性](/docs/microService/mq/kafka/kafkaCharacteristic.md)  
-        * [持久化-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
+        * [持久化/磁盘I/O-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
         * [内存和零拷贝](/docs/microService/mq/kafka/kafkaZeroCopy.md)  
         * [网络IO优化](/docs/microService/mq/kafka/networkIO.md)  
         * [副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  

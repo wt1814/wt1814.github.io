@@ -15,7 +15,6 @@ https://blog.csdn.net/youanyyou/article/details/107075116
 2. **<font color = "clime">`高可用`：表示系统可以正常服务的时间。</font>** 一个全年不停机、无故障；另一个隔三差五出线上事故、宕机，用户肯定选择前者。另外，如果系统只能做到90%可用，也会大大拖累业务。  
 3. **<font color = "clime">`高扩展`：表示系统的扩展能力，流量高峰时能否在短时间内完成扩容，更平稳地承接峰值流量，比如双11活动、明星离婚等热点事件。</font>**  
 
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/availab/system-11.png)  
 
 &emsp; 这3个目标是需要通盘考虑的，因为它们互相关联、甚至也会相互影响。  

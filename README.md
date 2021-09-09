@@ -535,7 +535,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
 &emsp; [kafka服务端](/docs/microService/mq/kafka/kafkaServer.md)  
 [kafka特性](/docs/microService/mq/kafka/kafkaCharacteristic.md)  
-&emsp; [持久化-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
+&emsp; [持久化/磁盘I/O-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
 &emsp; [内存和零拷贝](/docs/microService/mq/kafka/kafkaZeroCopy.md)  
 &emsp; [网络IO优化](/docs/microService/mq/kafka/networkIO.md)  
 &emsp; [副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
