@@ -8,8 +8,6 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "red">Netty采用了典型的三层网络架构进行设计和开发：</font>**  通信调度层Reactor、职责链ChannelPipeline、业务逻辑编排层Service ChannelHandler。  
 
 # 1. Netty核心概念  
 

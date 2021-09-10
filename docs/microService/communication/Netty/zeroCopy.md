@@ -29,13 +29,13 @@
     * DMA拷贝：设备(或网络)和内核态之间的复制。  
 3. 多种I/O传输方式： 
     1. 仅CPU方式有4次状态切换，4次CPU拷贝。  
-    2. **<font color = "blue">DMA（Direct Memory Access，直接内存访问）。</font>** CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，因此减少了2次CPU拷贝。  
-    3. **<font color = "blue">mmap（内存映射）。</font>** 将内核中读缓冲区地址与用户空间缓冲区地址进行映射，又减少了一次cpu拷贝。总共包含1次cpu拷贝、2次DMA拷贝。  
+    2. **<font color = "blue">DMA（Direct Memory Access，直接内存访问）。</font>** CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，因此减少了2次CPU拷贝。共2次CPU拷贝，2次DMA拷贝，4次状态切换。    
+    3. **<font color = "blue">mmap（内存映射）。</font>** 将内核中读缓冲区地址与用户空间缓冲区地址进行映射，又减少了一次cpu拷贝。总共包含1次cpu拷贝，2次DMA拷贝，4次状态切换。  
         
             此流程中，cpu拷贝从4次减少到1次，但状态切换还是4次。  
 
-    4. **<font color = "blue">sendfile（函数调用）。</font>** **<font color = "red">数据不经过用户缓冲区，该数据无法被修改，但减少了2次状态切换。</font>** 即只有2次状态切换、1次CPU拷贝、2次DMA拷贝。   
-    5. sendfile+DMA：将仅剩的1次CPU拷贝优化掉，把内核空间缓冲区中对应的数据描述信息(文件描述符、地址偏移量等信息)记录到socket缓冲区中。    
+    4. **<font color = "blue">sendfile（函数调用）。</font>** **<font color = "red">数据不经过用户缓冲区，该数据无法被修改，但减少了2次状态切换。</font>** 即只有1次CPU拷贝、2次DMA拷贝、2次状态切换。   
+    5. sendfile+DMA：将仅剩的1次CPU拷贝优化掉，把内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。    
     &emsp; 仍然无法对数据进行修改，并且需要硬件层面DMA的支持，并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。  
     6. splice：splice系统调用是Linux在2.6版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
     &emsp; splice系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
@@ -87,7 +87,7 @@ https://blog.csdn.net/wufaliang003/article/details/106195984
 
 * 状态切换：内核态和用户态之间的切换。  
 * CPU拷贝：内核态和用户态之间的复制。  
-* DMA拷贝：设备(或网络)和内核态之间的复制。  
+* DMA拷贝：设备（或网络）和内核态之间的复制。  
 
 ## 1.1. 传统Linux I/O中数据拷贝过程
 <!-- 
