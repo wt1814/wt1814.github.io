@@ -1,8 +1,17 @@
 
 
+<!-- TOC -->
 
+- [1. 非池化内存分配](#1-非池化内存分配)
+    - [1.1. 堆内内存分配](#11-堆内内存分配)
+        - [1.1.1. InstrumentedUnpooledUnsafeHeapByteBuf](#111-instrumentedunpooledunsafeheapbytebuf)
+        - [1.1.2. InstrumentedUnpooledHeapByteBuf](#112-instrumentedunpooledheapbytebuf)
+        - [1.1.3. 数据获取方式](#113-数据获取方式)
+    - [1.2. 堆外内存分配](#12-堆外内存分配)
 
-# 非池化内存分配  
+<!-- /TOC -->
+
+# 1. 非池化内存分配  
 <!-- 
 https://blog.csdn.net/gaoliang1719/article/details/113787703
 -->
@@ -10,7 +19,7 @@ https://blog.csdn.net/gaoliang1719/article/details/113787703
 &emsp; Netty在非池化堆内存分配上Java9与Java8以下版本有啥不同呢？Netty堆外内存回收默认机制使用JDK提供的Cleaner吗？  
 
 
-## 堆内内存分配
+## 1.1. 堆内内存分配
 &emsp; 下面这小段代码摘自UnpooledByteBufAllocator#newHeapBuffer，通过此方法分析非池化堆内存的分配。  
 
 ```java
@@ -25,7 +34,7 @@ protected ByteBuf newHeapBuffer(int initialCapacity, int maxCapacity) {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-126.png)  
 &emsp; 还是聚集到堆内存的分配上来，主要分析上图中红色部分。InstrumentedUnpooledUnsafeHeapByteBuf和InstrumentedUnpooledHeapByteBuf有啥区别？  
 
-### InstrumentedUnpooledUnsafeHeapByteBuf  
+### 1.1.1. InstrumentedUnpooledUnsafeHeapByteBuf  
 &emsp; 下面看下InstrumentedUnpooledUnsafeHeapByteBuf其内存分配的行为allocateArray()。   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-127.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-128.png)  
@@ -40,7 +49,7 @@ protected ByteBuf newHeapBuffer(int initialCapacity, int maxCapacity) {
 &emsp; Java8以及以下版本：使用堆内存分配。  
 
 
-### InstrumentedUnpooledHeapByteBuf  
+### 1.1.2. InstrumentedUnpooledHeapByteBuf  
 &emsp; 下面为InstrumentedUnpooledHeapByteBuf的内存分配allocateArray().   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-131.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-132.png)  
@@ -49,7 +58,7 @@ protected ByteBuf newHeapBuffer(int initialCapacity, int maxCapacity) {
 &emsp; 小结：InstrumentedUnpooledHeapByteBuf直接在堆内存分配空间。  
 
 
-### 数据获取方式  
+### 1.1.3. 数据获取方式  
 &emsp; UnpooledUnsafeHeapByteBuf数据获取    
 &emsp; UnpooledUnsafeHeapByteBuf的数据获取方式getByte()  
 
@@ -94,5 +103,5 @@ static byte getByte(byte[] memory, int index) {
 ```
 &emsp; 小结：UnpooledUnsafeHeapByteBuf通过UNSAFE.getByte这种地址+偏移量的方式获取内存中的数据；UnpooledHeapByteBuf通过数组直接从堆内存获取。  
 
-## 堆外内存分配  
+## 1.2. 堆外内存分配  
 
