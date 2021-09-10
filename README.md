@@ -621,7 +621,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [Netty介绍](/docs/microService/communication/Netty/concepts.md)  
 &emsp; [Netty运行流程](/docs/microService/communication/Netty/operation.md)   
 &emsp; [Netty核心组件](/docs/microService/communication/Netty/components.md)   
-&emsp; [Netty架构剖析](/docs/microService/communication/Netty/Architecture.md)   
+&emsp; [Netty逻辑架构](/docs/microService/communication/Netty/Architecture.md)   
 &emsp; [Netty高性能](/docs/microService/communication/Netty/performance.md)  
 &emsp; &emsp; [~~Netty中的零拷贝~~](/docs/microService/communication/Netty/nettyZeroCopy.md)  
 &emsp; &emsp; [Reactor与EventLoop](/docs/microService/communication/Netty/NettyReactor.md)  
