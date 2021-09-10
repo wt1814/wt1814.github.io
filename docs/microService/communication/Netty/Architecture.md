@@ -1,17 +1,16 @@
 
 <!-- TOC -->
 
-- [1. 架构剖析](#1-架构剖析)
-    - [1.1. Netty逻辑架构](#11-netty逻辑架构)
-    - [1.2. 关键架构属性](#12-关键架构属性)
+- [1. Netty逻辑架构](#1-netty逻辑架构)
 
 <!-- /TOC -->
 
-# 1. 架构剖析  
-## 1.1. Netty逻辑架构  
+# 1. Netty逻辑架构  
 <!-- 
 《Netty权威指南》第20章
 -->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-44.png)  
+
 &emsp; **<font color = "red">Netty采用了典型的三层网络架构进行设计和开发，逻辑架构如下图所示：</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-125.png)  
 
@@ -33,8 +32,3 @@
 2. 职责链 ChannelPipeline：负责事件在职责链中的有序传播，以及负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，拦截处理和向后传播事件。  
 3. 业务逻辑编排层：业务逻辑编排层通常有两类，一类是纯粹的业务逻辑编排，一类是应用层协议插件，用于特定协议相关的会话和链路管理。由于应用层协议栈往往是开发一次到处运行，并且变动较小，故而将应用协议到 POJO 的转变和上层业务放到不同的 ChannelHandler 中，就可以实现协议层和业务逻辑层的隔离，实现架构层面的分层隔离。  
 
-
-## 1.2. 关键架构属性
-<!-- 
-《Netty权威指南》第20章
--->

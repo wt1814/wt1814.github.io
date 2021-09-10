@@ -1,6 +1,10 @@
 
 
 # Netty高性能  
+<!-- 
+关键架构属性
+《Netty权威指南》第20章
+-->
 &emsp; Netty高性能  
 
 * [零拷贝](/docs/microService/communication/Netty/nettyZeroCopy.md)  
