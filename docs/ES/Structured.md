@@ -6,14 +6,14 @@
     - [1.1. 什么是结构化检索](#11-什么是结构化检索)
     - [1.2. 精确值查找](#12-精确值查找)
         - [1.2.1. 单个精确值查找（term query）](#121-单个精确值查找term-query)
-        - [1.2.2. 布尔过滤器(复合查询)](#122-布尔过滤器复合查询)
+        - [1.2.2. 布尔过滤器（复合查询）](#122-布尔过滤器复合查询)
         - [1.2.3. 多个值精确查找（terms query）](#123-多个值精确查找terms-query)
     - [1.3. 范围检索（range query）](#13-范围检索range-query)
     - [1.4. 存在与否检索（exist query）](#14-存在与否检索exist-query)
-    - [1.5. 前缀检索（ Prefix Query ）](#15-前缀检索-prefix-query-)
-    - [1.6. 通配符检索( wildcard query)](#16-通配符检索-wildcard-query)
+    - [1.5. 前缀检索（Prefix Query）](#15-前缀检索prefix-query)
+    - [1.6. 通配符检索（wildcard query）](#16-通配符检索wildcard-query)
     - [1.7. 正则表达式检索（regexp query）](#17-正则表达式检索regexp-query)
-    - [1.8. 模糊检索(fuzzy query)](#18-模糊检索fuzzy-query)
+    - [1.8. 模糊检索（fuzzy query）](#18-模糊检索fuzzy-query)
     - [1.9. 类型检索（type query）](#19-类型检索type-query)
     - [1.10. Ids检索（ids query）](#110-ids检索ids-query)
 
@@ -97,7 +97,7 @@ POST testindex/testtype/_mapping
 searchSourceBuilder.query(QueryBuilders.termQuery(“text.keyword”, “来自新华社的报道”));
 ```
 
-### 1.2.2. 布尔过滤器(复合查询)
+### 1.2.2. 布尔过滤器（复合查询）
 &emsp; 一个 bool 过滤器由三部分组成：  
 
 ```
@@ -473,7 +473,7 @@ GET /_search
 ```
 
 
-## 1.5. 前缀检索（ Prefix Query ）
+## 1.5. 前缀检索（Prefix Query）
 &emsp; 匹配包含 not analyzed 的前缀字符：  
 
 ```
@@ -484,7 +484,7 @@ GET /_search
 }
 ```
 
-## 1.6. 通配符检索( wildcard query)
+## 1.6. 通配符检索（wildcard query）
 &emsp; 匹配具有匹配通配符表达式（ (not analyzed ）的字段的文档。 支持的通配符：  
 &emsp; 1）\*，它匹配任何字符序列（包括空字符序列）；  
 &emsp; 2）？，它匹配任何单个字符。  
@@ -519,7 +519,7 @@ GET /_search
 
 &emsp; 注意：\*的匹配会非常慢，需要使用一个长的前缀，通常类似.\*?+通配符查询的正则检索性能会非常低。  
 
-## 1.8. 模糊检索(fuzzy query)
+## 1.8. 模糊检索（fuzzy query）
 &emsp; 模糊查询查找在模糊度中指定的最大编辑距离内的所有可能的匹配项，然后检查术语字典，以找出在索引中实际存在待检索的关键词。  
 &emsp; 举例如下：  
 
@@ -562,3 +562,4 @@ GET /my_index/_search
   }
 }
 ```
+

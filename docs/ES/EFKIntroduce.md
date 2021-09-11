@@ -34,13 +34,13 @@ https://www.cnblogs.com/xianglei_/p/12047315.html
 -->
 &emsp; EFK是目前最受欢迎的日志管理系统。 **<font color = "red">EFK是ELK日志分析系统的一个变种，加入了filebeat可以更好的收集到资源日志来为日志分析做好准备工作。</font>** EFK组件：  
 
-* Filebeat:   
+* Filebeat：   
 &emsp; **轻量级的开源日志文件数据搜集器。**通常在需要采集数据的客户端安装Filebeat，并指定目录与日志格式，Filebeat就能快速收集数据，并发送给logstash进行解析，或是直接发给Elasticsearch存储。  
 
         常见的日志采集工具有Logstash、Filebeat、Fluentd、Logagent、rsyslog等等。  
 * Logstash：收集数据  
 &emsp; **数据收集引擎。**它支持动态的的从各种数据源获取数据，并对数据进行过滤，分析，丰富，统一格式等操作，然后存储到用户指定的位置。 
-* Elasticsearch: 存储数据  
+* Elasticsearch：存储数据  
 &emsp; 能对大容量的数据进行接近实时的存储，搜索和分析操作。 
 * Kibana：展示数据  
 &emsp; 数据分析与可视化平台，对Elasticsearch存储的数据进行可视化分析，通过表格的形式展现出来。  
