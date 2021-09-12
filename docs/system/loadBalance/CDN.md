@@ -103,9 +103,9 @@ CDN 基本工作过程
 https://blog.csdn.net/u014209205/article/details/89892359
 -->
 &emsp; 考虑没有CDN的情况，发布了一些静态资源服务，然后来自世界各地的用户开始请求资源。  
-&emsp; 假设静态资源服务接入的是浙江移动的ISP，而世界各地的用户接入的ISP是各种各样的。同样假设北京到杭州之间的通信延时是3ms，对于一次web请求就至少是6ms的延时(请求+响应)，因此ISP之间的通信互联成为影响静态资源加载速度的一个重要瓶颈！
+&emsp; 假设静态资源服务接入的是浙江移动的ISP，而世界各地的用户接入的ISP是各种各样的。同样假设北京到杭州之间的通信延时是3ms，对于一次web请求就至少是6ms的延时（请求+响应），因此ISP之间的通信互联成为影响静态资源加载速度的一个重要瓶颈！
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/cdn/cdn-1.png)  
-&emsp; 具体看一下没有CDN的web请求过程，主要分为两步：1. 域名服务器解析IP地址 ；2. 和目标机器建立连接请求资源。  
+&emsp; 具体看一下没有CDN的web请求过程，主要分为两步：1. 域名服务器解析IP地址；2. 和目标机器建立连接请求资源。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/cdn/cdn-2.png)  
 &emsp; 在域名解析的过程中，由于域名和IP映射存储在server-isp-DNS服务器(A记录解析)，发起请求之后，需要通过根域名服务器依次迭代查询。最后返回源站的IP地址给客户端，开始建立连接请求资源。而对于使用CDN服务的架构，通常是下面这样的：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/loadBalance/cdn/cdn-3.png)  

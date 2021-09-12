@@ -32,13 +32,13 @@ Docker 提供了一个命令行工具和一整套 RESTful API。可以在同一�
 * graghdriver是所有与容器镜像相关操作的执行者
 -->
 ### 1.1.1. C/S模式
-&emsp; Docker使用客户端-服务器(client-server)架构模式。通过下面这个图可以简单清晰看出Server/Client通信。  
+&emsp; Docker使用客户端-服务器（client-server）架构模式。通过下面这个图可以简单清晰看出Server/Client通信。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-45.png)  
 <center>Docker架构图一</center>  
 
 &emsp; **<font color = "clime">Docker整体可以大致分为三部分：</font>**
 
-* 外层：Client通过命令行界面(CLI)向Docker Server发起请求。
+* 外层：Client通过命令行界面（CLI）向Docker Server发起请求。
 * 中间层：REST API，使用HTTP协议建立Client与Server之间的通信。
 * 内层：Server，可以是本地的也可以是远程的，接收并分发Client端发起的请求。
 
@@ -46,7 +46,7 @@ Docker 提供了一个命令行工具和一整套 RESTful API。可以在同一�
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-16.png) 
 <center>Docker架构图二</center> 
 
-* docker cli用来管理容器和镜像，客户端提供一个只读镜像，然后通过镜像可以创建多个容器，这些容器可以只是一个RFS(Root file system根文件系统)，也可以是一个包含了用户应用的RFS，容器在docker client中只是要给进程，两个进程之间互不可见。  
+* docker cli用来管理容器和镜像，客户端提供一个只读镜像，然后通过镜像可以创建多个容器，这些容器可以只是一个RFS（Root file system根文件系统），也可以是一个包含了用户应用的RFS，容器在docker client中只是要给进程，两个进程之间互不可见。  
 &emsp; 用户不能与server直接交互，但可以通过与容器这个桥梁来交互，由于是操作系统级别的虚拟技术，中间的损耗几乎可以不计。  
 * Docker Daemon 是Docker架构中一个常驻在后台的系统进程，主要功能是在后台启动一个Server接收处理Client发送的请求。Server负责接受Client发送的请求通过路由分发调度，找到相应的Handler来执行请求。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-46.png)  

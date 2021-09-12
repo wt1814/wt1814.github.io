@@ -5,10 +5,12 @@
     - [1.1. 灰度发布简介](#11-灰度发布简介)
     - [1.2. 灰度发布设计的思考](#12-灰度发布设计的思考)
     - [1.3. 灰度的策略](#13-灰度的策略)
-    - [1.4. 微服务网关实现灰度发布](#14-微服务网关实现灰度发布)
-        - [1.4.1. zuul实现灰度发布](#141-zuul实现灰度发布)
-    - [1.5. Spring cloud ribbon实现灰度发布](#15-spring-cloud-ribbon实现灰度发布)
-    - [1.6. dubbo实现灰度发布](#16-dubbo实现灰度发布)
+    - [1.4. 灰度实现](#14-灰度实现)
+        - [1.4.1. ★★★Nginx实现灰度](#141-★★★nginx实现灰度)
+        - [1.4.2. 微服务网关实现灰度发布](#142-微服务网关实现灰度发布)
+        - [1.4.3. zuul实现灰度发布](#143-zuul实现灰度发布)
+        - [1.4.4. Spring cloud ribbon实现灰度发布](#144-spring-cloud-ribbon实现灰度发布)
+        - [1.4.5. dubbo实现灰度发布](#145-dubbo实现灰度发布)
 
 <!-- /TOC -->
 
@@ -86,7 +88,16 @@ https://mp.weixin.qq.com/s/Aq9Mwkpx18Zkt6iWL2bZEw
 &emsp; 单策略：比如按照用户的uid、token、ip进行取模  
 &emsp; 组合策略：多个服务同时灰度，比如我有A/B/C三个服务，需要同时对A和C进行灰度，但是B不需要灰度，这个时候就需要一个tag字段  
 
-## 1.4. 微服务网关实现灰度发布  
+## 1.4. 灰度实现
+
+### 1.4.1. ★★★Nginx实现灰度
+&emsp; 灰度发布常见一般有三种方式：  
+
+* Nginx+LUA方式  
+* 根据Cookie实现灰度发布  
+* 根据来路IP实现灰度发布  
+
+### 1.4.2. 微服务网关实现灰度发布  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/stability/stab-1.png)  
 &emsp; 其中分为几个重要的部分：  
 &emsp; 接入层网关，接入客户端请求，根据下发的配置将符合条件的请求转发到新旧系统上。  
@@ -102,13 +113,13 @@ https://mp.weixin.qq.com/s/Aq9Mwkpx18Zkt6iWL2bZEw
 3. 启服/停服
 4. 服务自检
 
-### 1.4.1. zuul实现灰度发布  
+### 1.4.3. zuul实现灰度发布  
 ......
 
-## 1.5. Spring cloud ribbon实现灰度发布  
+### 1.4.4. Spring cloud ribbon实现灰度发布  
 ......
 
-## 1.6. dubbo实现灰度发布  
+### 1.4.5. dubbo实现灰度发布  
 
 <!-- 
 https://segmentfault.com/a/1190000017894943
