@@ -11,7 +11,7 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. 依赖ASM字节码工具，通过动态生成`实现接口或继承类`的类字节码，实现动态代理。  
 &emsp; `针对接口，生成实现接口的类，即implements方式；针对类，生成继承父类的类，即extends方式。`    
-2. **<font color = "clime">CGLIB基于类生成动态代理需要注意？</font><font color = "blue">(CGLIB生成的代理是继承类的)</font>**  
+2. **<font color = "clime">CGLIB基于继承类生成动态代理需要注意：</font>**  
     1. final声明的类是不能被代理的；
     2. 类中的private,final方法不能被代理，static方法不生成代理方法。
 

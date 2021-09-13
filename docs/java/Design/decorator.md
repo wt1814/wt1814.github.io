@@ -7,9 +7,16 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; Decorator，装饰角色，一般是一个抽象类，继承自或实现Component（抽象构件），在它的属性里面有一个变量指向Component抽象构件，这是装饰器最关键的地方。  
+
+
 # 1. 装饰(Decorator)模式  
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MzUzODU4MjE2MQ==&mid=2247484592&idx=1&sn=42a14aef3707745f570488be2fe77326&chksm=fad4c94ecda34058648b394acca654520e97f080aa156fb281c26eaad6f910c55e67b3063364&scene=21#wechat_redirect
+
+https://www.cnblogs.com/volcano-liu/p/10897897.html
+
 -->
 ## 1.1. 简介
 &emsp; 装饰者模式(Decorator Pattern)是指在不改变原有对象的基础之上，将功能附加到对象上， **<font color = "clime">提供了比继承更有弹性的替代方案(扩展原有对象的功能)。</font>**  
@@ -34,11 +41,15 @@ https://mp.weixin.qq.com/s?__biz=MzUzODU4MjE2MQ==&mid=2247484592&idx=1&sn=42a14a
 2. 动态装饰时，多层装饰时会更复杂。  
 
 ## 1.2. 结构  
+<!-- 
+https://www.cnblogs.com/volcano-liu/p/10897897.html
+-->
 &emsp; **模式角色组成：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-11.png)  
 
 * Component，抽象构件角色，是一个abstract class，组件对象的接口，可以给这些对象动态的添加职责。  
 * ConcreteComponent，具体的处理类，用于实现operation方法。具体的组件对象，实现了组件接口。该对象通常就是被装饰器装饰的原始对象，可以给这个对象添加职责。  
-* Decorator，所有装饰器的父类，是一个abstract class，需要定义一个与组件接口一致的接口(主要是为了实现装饰器功能的复用，即具体的装饰器A可以装饰另外一个具体的装饰器B，因为装饰器类也是一个Component)，并持有一个Component对象，该对象其实就是被装饰的对象。如果不继承组件接口类，则只能为某个组件添加单一的功能，即装饰器对象不能在装饰其他的装饰器对象。  
+* Decorator，装饰角色，所有装饰器的父类，是一个abstract class，需要定义一个与组件接口一致的接口(主要是为了实现装饰器功能的复用，即具体的装饰器A可以装饰另外一个具体的装饰器B，因为装饰器类也是一个Component)，并持有一个Component对象，该对象其实就是被装饰的对象。如果不继承组件接口类，则只能为某个组件添加单一的功能，即装饰器对象不能在装饰其他的装饰器对象。  
+&emsp; 一般是一个抽象类，继承自或实现Component（抽象构件），在它的属性里面有一个变量指向Component抽象构件，这是装饰器最关键的地方。  
 * ConcreteDecorator，具体的装饰器类，实现具体要向被装饰对象添加的功能。用来装饰具体的组件对象或者另外一个具体的装饰器对象。  
 
