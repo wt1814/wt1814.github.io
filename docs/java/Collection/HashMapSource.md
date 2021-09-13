@@ -1,52 +1,27 @@
 
 <!-- TOC -->
 
-- [1. HashMap](#1-hashmap)
-    - [1.1. Map介绍](#11-map介绍)
-    - [1.2. Map集合遍历](#12-map集合遍历)
-    - [1.3. HashMap源码](#13-hashmap源码)
-        - [1.3.1. HashMap类定义](#131-hashmap类定义)
-        - [1.3.2. 属性(数据结构)](#132-属性数据结构)
-        - [1.3.3. 源码](#133-源码)
-            - [1.3.3.1. Hash表数据结构](#1331-hash表数据结构)
-            - [1.3.3.2. 树形化结构](#1332-树形化结构)
-            - [1.3.3.3. HashMap的内部类](#1333-hashmap的内部类)
-        - [1.3.4. 构造函数](#134-构造函数)
-        - [1.3.5. 成员方法](#135-成员方法)
-            - [1.3.5.1. hash()函数(扰动函数)](#1351-hash函数扰动函数)
-            - [1.3.5.2. put()，插入](#1352-put插入)
-                - [1.3.5.2.1. 时序图及说明](#13521-时序图及说明)
-                - [1.3.5.2.2. 具体源码](#13522-具体源码)
-            - [1.3.5.3. resize()，扩容机制](#1353-resize扩容机制)
-                - [1.3.5.3.1. 时序图及说明](#13531-时序图及说明)
-                - [1.3.5.3.2. 具体源码](#13532-具体源码)
-                    - [1.3.5.3.2.1. resize()方法](#135321-resize方法)
-                    - [1.3.5.3.2.2. split()，红黑树处理](#135322-split红黑树处理)
-    - [1.4. HashMap在JDK1.7和JDK1.8中的区别总结](#14-hashmap在jdk17和jdk18中的区别总结)
-    - [1.5. HashMap的线程安全问题](#15-hashmap的线程安全问题)
-        - [1.5.1. JDK1.8](#151-jdk18)
-        - [1.5.2. JDK1.7](#152-jdk17)
-            - [1.5.2.1. 死循环](#1521-死循环)
-                - [1.5.2.1.1. 示例](#15211-示例)
-                - [1.5.2.1.2. 死循环分析](#15212-死循环分析)
-        - [1.5.3. 线程安全的map](#153-线程安全的map)
-    - [1.6. 如何实现一个自定义的class作为HashMap的key？](#16-如何实现一个自定义的class作为hashmap的key)
+- [1. HashMap源码](#1-hashmap源码)
+    - [1.1. HashMap类定义](#11-hashmap类定义)
+    - [1.2. 属性(数据结构)](#12-属性数据结构)
+        - [1.2.1. 源码](#121-源码)
+        - [1.2.2. Hash表数据结构](#122-hash表数据结构)
+        - [1.2.3. 树形化结构](#123-树形化结构)
+        - [1.2.4. HashMap的内部类](#124-hashmap的内部类)
+    - [1.3. 构造函数](#13-构造函数)
+    - [1.4. 成员方法](#14-成员方法)
+        - [1.4.1. hash()函数(扰动函数)](#141-hash函数扰动函数)
+        - [1.4.2. put()，插入](#142-put插入)
+            - [1.4.2.1. 时序图及说明](#1421-时序图及说明)
+            - [1.4.2.2. 具体源码](#1422-具体源码)
+        - [1.4.3. resize()，扩容机制](#143-resize扩容机制)
+            - [1.4.3.1. 时序图及说明](#1431-时序图及说明)
+            - [1.4.3.2. 具体源码](#1432-具体源码)
+                - [1.4.3.2.1. resize()方法](#14321-resize方法)
+                - [1.4.3.2.2. split()，红黑树处理](#14322-split红黑树处理)
+    - [1.5. HashMap在JDK1.7和JDK1.8中的区别总结](#15-hashmap在jdk17和jdk18中的区别总结)
 
 <!-- /TOC -->
-
-<!--- 
-https://mp.weixin.qq.com/s/3yT4YkRtxXeu9Hv0EOtkpQ
-https://mp.weixin.qq.com/s/qfm-Xq1ZNJFJdSZ58qSLLA
-https://mp.weixin.qq.com/s/zKrpKLo1S2e0LuPJRDSiiQ
-https://mp.weixin.qq.com/s/wIjAj4rAAZccAl-yhmj_TA
-https://mp.weixin.qq.com/s/VpcgoV9JJWZz6tLagsIYnQ
-https://mp.weixin.qq.com/s/yijuwQuuOBE8x1VKk6lhCQ
-HashMap
-https://mp.weixin.qq.com/s/50opoIzy--aGCDZPNvg7RA
-https://mp.weixin.qq.com/s/sCbhQolu_BXBXsQwlFC81g
-
-记录插入顺序的LinkHashMap、给key排序的TreeMap。
--->
 
 &emsp; **<font color = "red">总结：</font>**  
 
@@ -66,97 +41,20 @@ https://mp.weixin.qq.com/s/sCbhQolu_BXBXsQwlFC81g
         * 单节点迁移。  
         * 如果节点是红黑树类型的话则需要进行红黑树的拆分：拆分成高低位链表，如果链表长度大于6，需要把链表升级成红黑树。
         * 对链表进行迁移。会对链表中的节点进行分组，进行迁移后，一类的节点位置在原索引，一类在原索引+旧数组长度。 ~~通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度~~
-3. HashMap的线程安全问题：  
-    &emsp; HashMap的线程不安全体现在会造成死循环、数据丢失、数据覆盖这些问题。其中死循环和数据丢失是在JDK1.7中出现的问题，在JDK1.8中已经得到解决，然而1.8中仍会有数据覆盖这样的问题。  
-    1. 在jdk1.8中，在多线程环境下，会发生数据覆盖的情况。  
-    &emsp; 假设两个线程A、B都在进行put操作，并且hash函数计算出的插入下标是相同的，当线程A执行完第六行代码后由于时间片耗尽导致被挂起，而线程B得到时间片后在该下标处插入了元素，完成了正常的插入，`然后线程A获得时间片，由于之前已经进行了hash碰撞的判断，所有此时不会再进行判断，而是直接进行插入，这就导致了线程B插入的数据被线程A覆盖了，从而线程不安全。`  
-    2. HashMap导致CPU100% 的原因是因为 HashMap 死循环导致的。导致死循环的根本原因是JDK 1.7扩容采用的是“头插法”，会导致同一索引位置的节点在扩容后顺序反掉。而JDK 1.8之后采用的是“尾插法”，扩容后节点顺序不会反掉，不存在死循环问题。  
-    &emsp; 导致死循环示例：线程1、2同时扩容，新建数组，此时线程2挂起。线程在newTable1上完成扩容。线程2唤醒，线程2的指针指向的是newTable1，⚠️此时当前元素e和next的值已经相反。线程2在newTable2上执行扩容，完成顺序相反的元素一和二的插入，当下次循环执行到`e.next = newTable[i] `可能发生死循环。  
-    &emsp; 发生死循环后，剩余元素无法搬运，并且线程不会停止，因此会造成CPU100%。  
-    3. 线程安全的hashMap：Hashtable、Collections.synchronizedMap、[ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)。  
 
-# 1. HashMap
+# 1. HashMap源码
 
-## 1.1. Map介绍
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-3.png)  
-
-* LikedHashMap  
-&emsp; LinkedHashMap是HashMap的一个子类，保存了记录的插入顺序，在用Iterator遍历LinkedHashMap时，先得到的记录肯定是先插入的，也可以在构造时带参数，按照访问次序排序。  
-&emsp; LinkedHashMap怎么实现有序的？  
-&emsp; LinkedHashMap内部维护了一个单链表，有头尾节点，同时LinkedHashMap节点Entry内部除了继承HashMap的Node属性，还有before和after用于标识前置节点和后置节点。可以实现按插入的顺序或访问顺序排序。  
-
-* TreeMap(可排序)  
-&emsp; TreeMap实现SortedMap接口，能够把它保存的记录根据键排序，默认是按键值的升序排序，也可以指定排序的比较器，当用Iterator遍历TreeMap时，得到的记录是排过序的。  
-&emsp; 如果使用排序的映射，建议使用TreeMap。  
-&emsp; 在使用TreeMap时，key必须实现Comparable接口或者在构造TreeMap传入自定义的Comparator，否则会在运行时抛出java.lang.ClassCastException类型的异常。  
-
-
-## 1.2. Map集合遍历  
-
-1. map.keySet()  
-2. map.values()  
-3. map.entrySet()  
-4. map.entrySet().iterator()  
-5. JDK1.8中map.forEach((key, value) -> { })    
-
-```java
-public void testHashMap() {
-    Map<String, String> map = new HashMap<>(4);
-    map.put("1", "a");
-    map.put("2", "b");
-    map.put("3", "c");
-    map.put("4", "d");
-
-    System.out.println("----- map.keySet() -----");
-    //获取所有的 key，根据 key 取出对应的value
-    for (String key : map.keySet()) {
-        System.out.println("key:" + key + ",value:" + map.get(key));
-    }
-    System.out.println("----- 获取map种所有的value：map.values() -----");
-    //遍历所有的value
-    for (String value : map.values()) {
-        System.out.println("value:" + value);
-    }
-    System.out.println("----- 获取键值对：map.entrySet() -----");
-    //取出对应的 key，value 键值对,容量大时推荐使用
-    for (Map.Entry<String, String> entry : map.entrySet()) {
-        System.out.println("键值对:" + entry);
-        //获取 键值对的 key
-        System.out.println("key:" + entry.getKey());
-        //获取 键值对的 value
-        System.out.println("value:" + entry.getValue());
-    }
-
-    System.out.println("----- 通过 Map.entrySet使用iterator遍历 key 和 value -----");
-    Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
-    while (iterator.hasNext()) {
-        Map.Entry<String, String> entry = iterator.next();
-        System.out.println("key:" + entry.getKey() + ",value:" + entry.getValue());
-    }
-
-    System.out.println("----- map.forEach JDK1.8 新特性 -----");
-    map.forEach((key, value) -> {
-        System.out.println("key=" + key + ",value=" + value);
-    });
-}
-```
-&emsp; 推荐：<font color = "clime">使用entrySet遍历Map类集合KV，而不是keySet方式进行遍历。</font>  
-&emsp; 说明：keySet其实是遍历了2次，一次是转为Iterator对象，另一次是从hashMap中取出key所对应的value。而entrySet只是遍历了一次就把key和value都放到了entry中，效率更高。  
-&emsp; <font color = "red">如果是 JDK8，使用 Map.foreach 方法。</font>  
-
-## 1.3. HashMap源码  
-
-### 1.3.1. HashMap类定义  
+## 1.1. HashMap类定义  
 
 ```java
 public class HashMap<K,V> extends AbstractMap<K,V> implements Map<K,V>, Cloneable, Serializable
 ```
 &emsp; Cloneable空接口，表示可以克隆； Serializable序列化； AbstractMap，提供Map实现接口。  
 
-### 1.3.2. 属性(数据结构)  
+## 1.2. 属性(数据结构)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-5.png)  
 
-### 1.3.3. 源码
+### 1.2.1. 源码
 ```java
 //默认的初始化容量为16，必须是2的n次幂
 static final int DEFAULT_INITIAL_CAPACITY = 1 << 4; // aka 16
@@ -234,7 +132,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 }
 ```
 
-#### 1.3.3.1. Hash表数据结构
+### 1.2.2. Hash表数据结构
 &emsp; **HashMap中hash函数设计：** 参考下文成员方法hash()章节。    
 &emsp; **HashMap在发生hash冲突的时候用的是链地址法。** **<font color = "red">JDK1.7中使用头插法，JDK1.8使用尾插法。</font>**  
 &emsp; **在HashMap的数据结构中，有两个参数可以影响HashMap的性能：初始容量(inital capacity)和负载因子(load factor)。** 初始容量和负载因子也可以修改，具体实现方式，可以在对象初始化的时候，指定参数。  
@@ -262,7 +160,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
         threshold除了用于存放扩容阈值还有其他作用吗？
         在新建HashMap对象时，threshold还会被用来存初始化时的容量。HashMap直到第一次插入节点时，才会对table进行初始化，避免不必要的空间浪费。
 
-#### 1.3.3.2. 树形化结构
+### 1.2.3. 树形化结构
 &emsp; 在JDK1.8中，HashMap是由数组+链表+红黑树构成，新增了红黑树作为底层数据结构。链表长度大于8的时候，链表会转成红黑树；当红黑树的节点数小于6时，会转化成链表。  
 &emsp; **<font color = "clime">为什么使用红黑树？</font>**  
 &emsp; JDK1.7中，<font color = "red">如果哈希碰撞过多，拉链过长，</font>极端情况下，所有值都落入了同一个桶内，这就退化成了一个链表。<font color = "red">通过key值查找要遍历链表，效率较低。</font>JDK1.8在解决哈希冲突时，当链表长度大于阈值(默认为8)时，将链表转化为红黑树，以减少搜索时间。  
@@ -283,11 +181,11 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 
 &emsp; 小结：<font color = "clime">把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于 8；table 数组长度大于等于 64。</font>  
 
-#### 1.3.3.3. HashMap的内部类
+### 1.2.4. HashMap的内部类
 &emsp; HashMap 内部有很多内部类，扩展了 HashMap 的一些功能，EntrySet类就是其中一种，该类较为简单，无内部属性，可以理解为一个工具类，对HashMap进行了简单的封装，提供了方便的遍历、删除等操作。  
 &emsp; 调用HashMap的entrySet()方法就可以返回EntrySet实例对象，为了不至于每次调用该方法都返回新的EntrySet对象，所以设置该属性，缓存EntrySet实例  。  
 
-### 1.3.4. 构造函数  
+## 1.3. 构造函数  
 
 ```java
 //默认构造函数，初始化加载因子loadFactor = 0.75
@@ -349,8 +247,8 @@ static final int tableSizeFor(int cap) {
 &emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-12.png)  
 &emsp; 上面采用了一个比较大的数字进行扩容，由上图可知 2^29 次方的数组经过一系列的或操作后，会算出来结果是2^30次方。所以扩容后的数组长度是原来的2倍。  
 
-### 1.3.5. 成员方法  
-#### 1.3.5.1. hash()函数(扰动函数)  
+## 1.4. 成员方法  
+### 1.4.1. hash()函数(扰动函数)  
 &emsp; **<font color = "red">无论增加、删除还是查找键值对，定位到数组的位置都是很关键的第一步。</font>** 在HashMap中并不是直接通过key的hashcode方法获取哈希值，而是通过内部自定义的hash方法计算哈希值。  
 ```java
 static final int hash(Object key) {
@@ -387,8 +285,8 @@ static final int hash(Object key) {
 &emsp; (h = key.hashCode()) ^ (h >>> 16) 是为了让高位数据与低位数据进行异或，变相的让高位数据参与到计算中，int 有 32 位，右移 16 位就能让低 16 位和高 16 位进行异或，也是为了增加 hash 值的随机性。  
 -->
 
-#### 1.3.5.2. put()，插入 
-##### 1.3.5.2.1. 时序图及说明
+### 1.4.2. put()，插入 
+#### 1.4.2.1. 时序图及说明
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-18.png)  
 
 &emsp; **<font color = "clime">插入元素方法：</font>**   
@@ -408,7 +306,7 @@ static final int hash(Object key) {
         2. 可能还会出现准备插入节点和要插入节点的hash和参数key相等，直接返回。
 6. 判断是否需要扩容。  
 
-##### 1.3.5.2.2. 具体源码
+#### 1.4.2.2. 具体源码
 &emsp; JDK1.8put()方法源码部分：  
 
 ```java
@@ -547,7 +445,7 @@ final TreeNode<K,V> putTreeVal(HashMap<K,V> map, Node<K,V>[] tab,
 }
 ```
 
-#### 1.3.5.3. resize()，扩容机制  
+### 1.4.3. resize()，扩容机制  
 <!-- 
 https://www.jianshu.com/p/87d2ef48e645
 -->
@@ -567,7 +465,7 @@ if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY)
 resize();
 ```
 
-##### 1.3.5.3.1. 时序图及说明   
+#### 1.4.3.1. 时序图及说明   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-15.png)  
 
 &emsp; <font color = "red">HashMap每次扩容都是建立一个新的table数组，长度和容量阈值都变为原来的两倍，然后把原数组元素重新映射到新数组上。</font>  
@@ -591,9 +489,9 @@ resize();
 &emsp; 因为 2 个节点在老表是同一个索引位置，因此计算新表的索引位置时，只取决于新表在高位多出来的这一位(图中标红)，而这一位的值刚好等于 oldCap。  
 &emsp; 因为只取决于这一位，所以只会存在两种情况：1)  (e.hash & oldCap) == 0 ，则新表索引位置为“原索引位置” ；2)(e.hash & oldCap) == 1，则新表索引位置为“原索引 + oldCap 位置”。  
 
-##### 1.3.5.3.2. 具体源码
+#### 1.4.3.2. 具体源码
 
-###### 1.3.5.3.2.1. resize()方法
+##### 1.4.3.2.1. resize()方法
 ```java
 final Node<K,V>[] resize() {
     Node<K,V>[] oldTab = table;
@@ -677,7 +575,7 @@ final Node<K,V>[] resize() {
 }
 ```
 
-###### 1.3.5.3.2.2. split()，红黑树处理  
+##### 1.4.3.2.2. split()，红黑树处理  
 &emsp; 红黑树的拆分和链表的逻辑基本一致，不同的地方在于，重新映射后，会将红黑树拆分成两条链表，根据链表的长度，判断需不需要把链表重新进行树化。  
 <!-- 
 https://blog.csdn.net/m0_46657043/article/details/106574422
@@ -758,81 +656,10 @@ rehash时，红黑树怎么处理？
 
 -->
 
-## 1.4. HashMap在JDK1.7和JDK1.8中的区别总结  
+## 1.5. HashMap在JDK1.7和JDK1.8中的区别总结  
 
 * 数组+链表改成了数组+链表或红黑树；  
 * 链表的插入方式从头插法改成了尾插法，简单说就是插入时，如果数组位置上已经有元素，1.7将新元素放到数组中，原始节点作为新节点的后继节点，1.8遍历链表，将元素放置到链表的最后；  
 * 扩容的时候1.7需要对原数组中的元素进行重新hash定位在新数组的位置，1.8采用更简单的判断逻辑，位置不变或索引+旧容量大小；  
 * 在插入时，1.7先判断是否需要扩容，再插入，1.8先进行插入，插入完成再判断是否需要扩容；  
 
-## 1.5. HashMap的线程安全问题  
-<!-- 
-
-踩坑！JDK8中HashMap依然会死循环！ 
-https://mp.weixin.qq.com/s/BKPKvcENMEQSELPQ4C7ZvQ
--->
-
-
-&emsp; HashMap在数组的元素过多时会进行扩容操作，扩容之后会把原数组中的元素拿到新的数组中，这时候在多线程情况下就有可能出现多个线程搬运一个元素。或者说一个线程正在进行扩容，但是另一个线程还想进来存或者读元素，这也可能会出现线程安全问题。   
-
-&emsp; **<font color = "clime">HashMap的线程不安全体现在会造成死循环、数据丢失、数据覆盖这些问题。其中死循环和数据丢失是在JDK1.7中出现的问题，在JDK1.8中已经得到解决，然而1.8中仍会有数据覆盖这样的问题。</font>**  
-
-### 1.5.1. JDK1.8
-<!-- 
-https://blog.csdn.net/swpu_ocean/article/details/88917958
--->
-
-&emsp;  **<font color = "red">在jdk1.8中，在多线程环境下，会发生数据覆盖的情况。</font>**  
-&emsp; 在jdk1.8中对HashMap进行了优化，在发生hash碰撞，不再采用头插法方式，而是直接插入链表尾部，因此不会出现JDK1.7环形链表的情况。  
-
-&emsp; <font color = "red">其中putVal()的第6行代码（if ((p = tab[i = (n - 1) & hash]) == null) // 如果没有hash碰撞则直接插入元素）是判断是否出现hash碰撞，</font>假设两个线程A、B都在进行put操作，并且hash函数计算出的插入下标是相同的，<font color = "red">当线程A执行完第六行代码后由于时间片耗尽导致被挂起，而线程B得到时间片后在该下标处插入了元素，完成了正常的插入，</font>然后线程A获得时间片，由于之前已经进行了hash碰撞的判断，所有此时不会再进行判断，而是直接进行插入，这就导致了线程B插入的数据被线程A覆盖了，从而线程不安全。  
-
-&emsp; 除此之外，还有就是putVal()的第38行处有个++size，还是线程A、B，这两个线程同时进行put操作时，假设当前HashMap的sise大小为10，当线程A执行到第38行代码时，从主内存中获得size的值为10后准备进行+1操作，但是由于时间片耗尽只好让出CPU，线程B拿到CPU还是从主内存中拿到size的值10进行+1操作，完成了put操作并将size=11写回主内存，然后线程A再次拿到CPU并继续执行(此时size的值仍为10)，当执行完put操作后，还是将size=11写回内存，此时，线程A、B都执行了一次put操作，但是size的值只增加了1，所以说还是由于数据覆盖又导致了线程不安全。  
-
-### 1.5.2. JDK1.7
-
-#### 1.5.2.1. 死循环
-<!--
-**** https://mp.weixin.qq.com/s/wIjAj4rAAZccAl-yhmj_TA
-https://blog.csdn.net/swpu_ocean/article/details/88917958
-https://mp.weixin.qq.com/s?__biz=MzkzODE3OTI0Ng==&mid=2247491120&idx=1&sn=44228b42b8f54508f2ee01af9a3a231e&source=41#wechat_redirect
-https://mp.weixin.qq.com/s/ZL2tgDZ5RAZvqrHo2qHPiQ
--->
-
-&emsp; HashMap 导致 CPU 100% 的原因就是因为 HashMap 死循环导致的。  
-&emsp; 导致死循环的根本原因是 JDK 1.7 扩容采用的是“头插法”，会导致同一索引位置的节点在扩容后顺序反掉。而 JDK 1.8 之后采用的是“尾插法”，扩容后节点顺序不会反掉，不存在死循环问题。  
-
-##### 1.5.2.1.1. 示例  
-<!-- 
-https://mp.weixin.qq.com/s?__biz=MzkzODE3OTI0Ng==&mid=2247491120&idx=1&sn=44228b42b8f54508f2ee01af9a3a231e&source=41#wechat_redirect
--->
-
-##### 1.5.2.1.2. 死循环分析  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-21.png)  
-&emsp; 例子：有1个容量为2的 HashMap，loadFactor=0.75，此时线程1和线程2 同时往该 HashMap 插入一个数据，都触发了扩容流程，接着有以下流程。   
-
-&emsp; 1）在2个线程都插入节点，触发扩容流程之前，此时的结构如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-22.png)  
-&emsp; 2）线程1进行扩容，执行到代码：Entry<K,V> next = e.next 后被调度挂起，此时的结构如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-23.png)  
-&emsp; 3）线程1被挂起后，线程2进入扩容流程，并走完整个扩容流程，此时的结构如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-24.png)  
-&emsp; 由于两个线程操作的是同一个 table，所以该图又可以画成如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-25.png)  
-&emsp; 4）线程1恢复后，继续走完第一次的循环流程，此时的结构如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-26.png)  
-&emsp; 5）线程1继续走完第二次循环，此时的结构如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-27.png)  
-&emsp; 6）线程1继续执行第三次循环，执行到 e.next = newTable[i] 时形成环，执行完第三次循环的结构如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-28.png)  
-
-
-### 1.5.3. 线程安全的map
-&emsp; 在多线程下安全的操作map，主要有以下解决方法：  
-
-* 使用Hashtable线程安全类；  
-* 使用Collections 包下的线程安全的容器比如Collections.synchronizedMap方法，对方法进行加同步锁；  
-* 使用并发包中的[ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)类；  
-
-## 1.6. 如何实现一个自定义的class作为HashMap的key？  
-&emsp; ......
