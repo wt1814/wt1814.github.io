@@ -1,18 +1,24 @@
 
 <!-- TOC -->
 
-- [1. 策略(Strategy)模式](#1-策略strategy模式)
+- [1. 策略(Strategy)模式，if/else，多用组合少用继承](#1-策略strategy模式ifelse多用组合少用继承)
     - [1.1. 简介](#11-简介)
     - [1.2. 结构](#12-结构)
+    - [1.3. 小结](#13-小结)
 
 <!-- /TOC -->
 
-# 1. 策略(Strategy)模式  
+# 1. 策略(Strategy)模式，if/else，多用组合少用继承  
 <!-- 
 策略模式 + 反射工厂
 https://mp.weixin.qq.com/s/6HqGa_inBHTxGOP12QXPnQ
 
 https://www.runoob.com/design-pattern/strategy-pattern.html
+
+
+https://blog.csdn.net/dengjili/article/details/79273928
+https://cloud.tencent.com/developer/article/1385920?from=article.detail.1066412
+https://my.oschina.net/u/1187187/blog/192706?p={{page}}
 -->
 
 ## 1.1. 简介
@@ -45,3 +51,12 @@ https://www.runoob.com/design-pattern/strategy-pattern.html
 * ConcreteStrategy：具体策略类，包装了相关的算法或行为。  
 * Context：环境类，用一个ConcreteStrategy对象来配置。维护一个对Strategy对象的引用。可定义一个接口来让Strategy访问它的数据。  
 
+&emsp; `环境类使用组合。`  
+
+## 1.3. 小结
+1. 让确定不变的东西放在基类中，实现更好的代码重用和逻辑上的继承关系。
+2. 让变化的东西实现灵活性，我们可以对变化的东西进一步抽象为接口，采用组合的方式在基类中放入变化东西的接口。
+3. 同时为了实现代码的重用性，我们对每一种变化的类型设计一个类，通过组合，这个类只需要写一份代码就可以使用在各个地方。
+4. 可以在基类的子类中对接口进行赋值，可以直接在构造函数中对其赋以需要的实现接口的类，但为了不对实现编程，其实更好的做法是实现一些set方法，动态地设定那些变化的类，以及在今后还会学到工厂模式。  
+
+&emsp; 继承，接口，组合的综合使用，使得我们能够获得更好的类体系结构。  
