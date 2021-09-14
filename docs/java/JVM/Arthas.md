@@ -6,7 +6,7 @@
         - [1.2.1. 准备](#121-准备)
         - [1.2.2. 下载并运行Arthas](#122-下载并运行arthas)
         - [1.2.3. 访问 WebConsole](#123-访问-webconsole)
-        - [1.2.4. 命令列表](#124-命令列表)
+        - [1.2.4. Arthas命令介绍](#124-arthas命令介绍)
     - [1.3. 使用示例](#13-使用示例)
         - [1.3.1. 问题 1：这个类从哪个 jar 包加载的？为什么会报各种类相关的 Exception？](#131-问题-1这个类从哪个-jar-包加载的为什么会报各种类相关的-exception)
         - [1.3.2. 问题 2：我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？](#132-问题-2我改的代码为什么没有执行到难道是我没-commit分支搞错了)
@@ -140,14 +140,61 @@ https://blog.csdn.net/qq_39218530/article/details/117301113
 
     使用 WebConsole 最方便的是可以打开多个标签页同时操作
 
-### 1.2.4. 命令列表
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-160.png)  
-
+### 1.2.4. Arthas命令介绍
 <!-- 
 https://blog.csdn.net/qq_39218530/article/details/117301113
 -->
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-160.png)  
 
+**1、基础命令**  
+&emsp; help——查看命令帮助信息  
+&emsp; cat——打印文件内容，和linux里的cat命令类似  
+&emsp; echo–打印参数，和linux里的echo命令类似  
+&emsp; grep——匹配查找，和linux里的grep命令类似  
+&emsp; base64——base64编码转换，和linux里的base64命令类似  
+&emsp; tee——复制标准输入到标准输出和指定的文件，和linux里的tee命令类似  
+&emsp; pwd——返回当前的工作目录，和linux命令类似  
+&emsp; cls——清空当前屏幕区域  
+&emsp; session——查看当前会话的信息  
+&emsp; reset——重置增强类，将被 Arthas 增强过的类全部还原，Arthas 服务端关闭时会重置所有增强过的类  
+&emsp; version——输出当前目标 Java 进程所加载的 Arthas 版本号  
+&emsp; history——打印命令历史  
+&emsp; quit——退出当前 Arthas 客户端，其他 Arthas 客户端不受影响  
+&emsp; stop——关闭 Arthas 服务端，所有 Arthas 客户端全部退出  
+&emsp; keymap——Arthas快捷键列表及自定义快捷键  
+
+**2、jvm 相关命令**  
+&emsp; dashboard——当前系统的实时数据面板  
+&emsp; thread——查看当前 JVM 的线程堆栈信息  
+&emsp; jvm——查看当前 JVM 的信息  
+&emsp; sysprop——查看和修改JVM的系统属性  
+&emsp; sysenv——查看JVM的环境变量  
+&emsp; vmoption——查看和修改JVM里诊断相关的option  
+&emsp; perfcounter——查看当前 JVM 的Perf Counter信息  
+&emsp; logger——查看和修改logger  
+&emsp; getstatic——查看类的静态属性  
+&emsp; ognl——执行ognl表达式  
+&emsp; mbean——查看 Mbean 的信息  
+&emsp; heapdump——dump java heap, 类似jmap命令的heap dump功能  
+&emsp; vmtool——从jvm里查询对象，执行forceGc  
+
+**3、class/classloader相关命令**  
+&emsp; sc——查看JVM已加载的类信息  
+&emsp; sm——查看已加载类的方法信息  
+&emsp; jad——反编译指定已加载类的源码  
+&emsp; mc——内存编译器，内存编译.java文件为.class文件  
+&emsp; retransform——加载外部的.class文件，retransform到JVM里  
+&emsp; redefine——加载外部的.class文件，redefine到JVM里  
+&emsp; dump——dump 已加载类的 byte code 到特定目录  
+&emsp; classloader——查看classloader的继承树，urls，类加载信息，使用classloader去getResource  
+
+**4、monitor/watch/trace相关命令**  
+&emsp; monitor——方法执行监控  
+&emsp; watch——方法执行数据观测  
+&emsp; trace——方法内部调用路径，并输出方法路径上的每个节点上耗时   
+&emsp; stack——输出当前方法被调用的调用路径  
+&emsp; tt——方法执行数据的时空隧道，记录下指定方法每次调用的入参和返回信息，并能对这些不同的时间下调用进行观测  
 
 ## 1.3. 使用示例
 ### 1.3.1. 问题 1：这个类从哪个 jar 包加载的？为什么会报各种类相关的 Exception？  
