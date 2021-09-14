@@ -36,7 +36,6 @@
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式通信](#分布式通信)
     - [Error](#error)
-    - [项目总结](#项目总结)
     - [计算机网络](#计算机网络)
         - [负载均衡](#负载均衡)
     - [DevOps](#devops)
@@ -652,12 +651,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 [redis scan命令](/docs/Error/redisScan.md)  
 <!-- [雪花利用ZK生成workId]()   -->
-
-## 项目总结  
-<!-- 
-[支付项目](/docs/project/payment.md)  
-[二清项目](/docs/project/erqing.md)  
--->
 
 ----
 

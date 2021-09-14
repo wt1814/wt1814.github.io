@@ -499,8 +499,6 @@
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-* 项目总结  
-
 * 计算机网络  
     * [OSI七层网络模型](/docs/network/OSI.md)  
     * [应用层](/docs/network/application.md)  
