@@ -21,7 +21,7 @@
 &emsp; **<font color = "red">总结：</font>**  
 1.  **<font color = "clime">RedissonLock解决客户端死锁问题（自动延期）：</font>**  
     1. 什么是死锁？因为业务不知道要执行多久才能结束，所以这个key一般不会设置过期时间。这样如果在执行业务的过程中，业务机器宕机，unlock操作不会执行，所以这个锁不会被释放，`其他机器拿不到锁，从而形成了死锁。`  
-    2. Redission解决死锁：(**要点：30s和10s**)
+    2. ~~Redission解决死锁：(**要点：30s和10s**)~~
         1. 当业务方调用加锁操作的时候，`未设置加锁时间`，默认的leaseTime是-1，所以会取watch dog的时间作为锁的持有时间，默认是30s，这个时候即使发生了宕机现象，因为这个锁不是永不过期的，所以30s后就会释放，不会产生死锁。 
         2. 另一方面，它还能解决当锁内逻辑超过30s的时候锁会失效的问题，因为当leaseTime是-1的时候，`客户端会启动一个定时任务（watch dog）`，会每隔10秒检查一下，如果客户端1还持有锁key，在业务方释放锁之前，会一直不停的增加这个锁的生命周期时间，保证在业务执行完毕之前，这个锁一直不会因为redis的超时而被释放。
 2. Redisson实现了多种锁：重入锁、公平锁、联锁、红锁、读写锁、信号量...  
@@ -38,12 +38,28 @@
 
 # 1. Redisson实现redis分布式锁 
 <!-- 
-  Redisson 分布式锁源码 02：看门狗 
-  https://mp.weixin.qq.com/s/ussF5Ox1Q01IYFCwAiyu5Q
+Redisson 分布式锁源码 
+https://mp.weixin.qq.com/s?__biz=Mzg4MjU1ODU3Ng==&mid=2247492046&idx=1&sn=d62bbdeda76a3a0cb917f6b8629adf57&chksm=cf5672d1f821fbc7401ccbede20188f9fac20120e71e058e4fb80105cda3cf613f56c45d275d&scene=178&cur_album_id=1945719891076956169#rd
+看门狗 
+https://mp.weixin.qq.com/s/ussF5Ox1Q01IYFCwAiyu5Q
 
-★★★加锁源码
-https://mp.weixin.qq.com/s/33CUudLhbCI9mV5g9Qut8Q
+https://mp.weixin.qq.com/s?__biz=Mzg4MjU1ODU3Ng==&mid=2247492074&idx=1&sn=262c87dd4ad500387e3bcbd368277c52&chksm=cf5672f5f821fbe3052bac2ee78bc051f7e7f41632ccd308db88b4cc5a9a4e96b1caf3d12490&scene=178&cur_album_id=1945727448256462850#rd
 
+https://mp.weixin.qq.com/s?__biz=Mzg4MjU1ODU3Ng==&mid=2247492084&idx=1&sn=081249c859ce19c14839a6f7da665a1d&chksm=cf5672ebf821fbfd4843f1072e24a6ef84d650181df6ac950592424914c203963deac2f78132&scene=178&cur_album_id=1945727448256462850#rd
+
+https://mp.weixin.qq.com/s?__biz=Mzg4MjU1ODU3Ng==&mid=2247492171&idx=1&sn=fd5566fb47dcde65d374c02234e98f07&chksm=cf567154f821f8421e31bd91901706bcea7fbe9a97795eb741aeeb0da79535a9091ee96932ab&scene=178&cur_album_id=1945727448256462850#rd
+
+https://mp.weixin.qq.com/s?__biz=Mzg4MjU1ODU3Ng==&mid=2247492183&idx=1&sn=e87bbac336786fbbca30d680789ad4cd&chksm=cf567148f821f85e9a1a7ef9d71836874dbfb85dd0b878486e232dc022b6016fc0cd452fb7e1&scene=178&cur_album_id=1945727448256462850#rd
+
+https://mp.weixin.qq.com/s?__biz=Mzg4MjU1ODU3Ng==&mid=2247492191&idx=1&sn=e2f1a41d4bbc89a61c392c5c7498853a&chksm=cf567140f821f856c37ee8295803ae826d64f6d29396b1e9a545444de2ad13f88ae537471ec9&scene=178&cur_album_id=1945727448256462850#rd
+
+https://mp.weixin.qq.com/s?__biz=Mzg4MjU1ODU3Ng==&mid=2247492207&idx=1&sn=784f657b083cc2a0dd003d3512452dfa&chksm=cf567170f821f866d01473a8d1fad49c5be45604d55fb9b84a237623287bd803680c49df2409&scene=178&cur_album_id=1945727448256462850#rd
+
+https://mp.weixin.qq.com/s?__biz=Mzg4MjU1ODU3Ng==&mid=2247492249&idx=1&sn=9b07dddd17c0a6db72a37805e4f45382&chksm=cf567186f821f890df08f348ab2fee835ca36d08ab1aa5e1ee94bd78d5c8157310a11640d5a9&scene=178&cur_album_id=1945727448256462850#rd
+
+https://mp.weixin.qq.com/s?__biz=Mzg4MjU1ODU3Ng==&mid=2247492271&idx=1&sn=01fabbbddc688c24fd0e1e0d0f62104d&chksm=cf5671b0f821f8a6a8dd4b4874aa38cd8775f119ef0ca8210290ff595d5f614dd7e5a9fc949b&scene=178&cur_album_id=1945727448256462850#rd
+
+https://mp.weixin.qq.com/s?__biz=Mzg4MjU1ODU3Ng==&mid=2247492301&idx=1&sn=5fb58d72051eb2e0febf0ca37a05ef09&chksm=cf5671d2f821f8c41e45c205d0d98afd2ade0b78d49e18fb3a55bab0c40bde41ad1b6ca7ea3f&scene=178&cur_album_id=1945727448256462850#rd
 
 -->
 
