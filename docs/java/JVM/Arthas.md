@@ -36,9 +36,9 @@ https://mp.weixin.qq.com/s/aUy7-90cxOukuFSiwEeA4A
 https://mp.weixin.qq.com/s/OZT1wIfmzSa5TiMIbmZ5aQ
 -->
 
+&emsp; 官方文档：https://arthas.aliyun.com/zh-cn/  
 
 ## 1.1. 简介
-&emsp; 官方文档：http://arthas.gitee.io/  
 &emsp; Arthas(阿尔萨斯)是Alibaba开源的Java诊断工具，深受开发者喜爱。  
 &emsp; 当你遇到以下类似问题而束手无策时，Arthas可以解决：  
 1. **<font color = "clime">这个类从哪个 jar 包加载的？为什么会报各种类相关的 Exception？</font>**  
@@ -129,7 +129,8 @@ public class ArthasDemo {
 1. wget(下载) https://alibaba.github.io/arthas/arthas-boot.jar
 2. 启动：java -jar arthas-boot.jar
 
-&emsp; ⚠️注意：如果java应用运行在docker容器中，进入docker容器，下载并运行Arthas。  
+&emsp; ⚠️注意：如果java应用运行在docker容器中，进入docker容器，下载并运行Arthas。详情参见官方文档 https://arthas.aliyun.com/doc/docker.html#dockerjava  
+  
 <!-- 
 https://blog.csdn.net/qq_39218530/article/details/117301113
 -->
@@ -145,6 +146,7 @@ https://blog.csdn.net/qq_39218530/article/details/117301113
 https://blog.csdn.net/qq_39218530/article/details/117301113
 -->
 
+&emsp; 官方文档：https://arthas.aliyun.com/doc/commands.html  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-160.png)  
 
 **1、基础命令**  
