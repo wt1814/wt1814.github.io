@@ -1,6 +1,7 @@
 <!-- TOC -->
 
 - [wt1814-note](#wt1814-note)
+    - [总结](#总结)
     - [Java](#java)
         - [Java基础](#java基础)
         - [设计模式](#设计模式)
@@ -46,6 +47,7 @@
 <!-- /TOC -->
 
 # wt1814-note  
+## 总结
 [总结](/docs/summary.md)  
 
 ## Java  
