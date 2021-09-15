@@ -16,7 +16,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "clime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时，如果发现有闲置的monitor(重量级锁对象)，会进行锁降级。</font>   
+1. **<font color = "clime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时，如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>   
 2. 锁升级
 	1. 偏向锁：  
         1.  **<font color = "bule">偏向锁状态</font>**  
@@ -46,9 +46,8 @@
 		4. 已经获取轻量级锁的线程的解锁： **<font color = "red">轻量级锁的锁释放逻辑其实就是获得锁的逆向逻辑，通过CAS操作把线程栈帧中的LockRecord替换回到锁对象的MarkWord中。</font>** 
     3. 重量级锁  
     &emsp; **<font color = "clime">为什么有了自旋锁还需要重量级锁？</font>**  
-    &emsp; 偏向锁、自旋锁都是用户空间完成。重量级锁是需要向内核申请。  
     &emsp; 自旋是消耗CPU资源的，如果锁的时间长，或者自旋线程多，CPU会被大量消耗；重量级锁有等待队列，所有拿不到锁的线程进入等待队列，不需要消耗CPU资源。  
-
+    &emsp; 偏向锁、自旋锁都是用户空间完成。重量级锁是需要向内核申请。  
 
 # 1. Synchronized锁优化
 <!--
@@ -271,11 +270,10 @@ https://zhuanlan.zhihu.com/p/127884116
 云霄：这个问题，上面有涉及，Synchronized底层是monitor实现，监视器锁monitor本质又是依赖于底层的操作系统的 Mutex Lock 来实现的，这就涉及到操作系统让线程从用户态切换到内核态。这个成本非常高，状态之间的转换需要相对比较长的时间，这就是为什么Synchronized 效率低的原因。因此，这种依赖于操作系统 Mutex Lock 所实现的锁我们称之为重量级锁。  
 
 -->
-
 参考[Synchronized底层原理](/docs/java/concurrent/SynBottom.md)  
 &emsp; **<font color = "clime">为什么有了自旋锁还需要重量级锁？</font>**  
-&emsp; 偏向锁、自旋锁都是用户空间完成。重量级锁是需要向内核申请。  
 &emsp; 自旋是消耗CPU资源的，如果锁的时间长，或者自旋线程多，CPU会被大量消耗；重量级锁有等待队列，所有拿不到锁的线程进入等待队列，不需要消耗CPU资源。  
+&emsp; 偏向锁、自旋锁都是用户空间完成。重量级锁是需要向内核申请。  
 &emsp; **<font color = "clime">升级为重量级锁过程：</font>**  
 &emsp; 升级重量级锁--->向操作系统申请资源，linux mutex，CPU从3级-0级系统调用，线程挂起，进入等待队列，等待操作系统的调度，然后再映射回用户空间。  
 
