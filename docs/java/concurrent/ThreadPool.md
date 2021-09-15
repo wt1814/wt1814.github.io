@@ -28,7 +28,7 @@
     * 降低系统资源消耗。通过复用已存在的线程，降低线程创建和销毁造成的消耗；  
     * 提高响应速度。当有任务到达时，无需等待新线程的创建便能立即执行；  
     * 提高线程的可管理性。线程是稀缺资源，如果无限制的创建，不仅会消耗大量系统资源，还会降低系统的稳定性，使用线程池可以进行对线程进行统一的分配、调优和监控。  
-2. 根据返回的对象类型，创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor(任务调度线程池)、ForkJoinPool。  
+2. 根据返回的对象类型，创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor（任务调度线程池）、ForkJoinPool。  
 3. **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
 	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。
 	* CachedThreadPool和ScheduledThreadPool：允许创建的线程数量为Integer.MAX_VALUE，可能会创建大量线程，从而导致OOM。
