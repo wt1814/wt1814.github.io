@@ -1,5 +1,5 @@
 
-* [总结](/docs/summary.md)  
+* [大总结](/docs/summary.md)  
 * Java  
     * [Java基础](/docs/java/basis/JavaBasic.md)  
     * [Java基本数据类型](/docs/java/basis/DataType.md)  

@@ -48,7 +48,7 @@
 
 # wt1814-note  
 ## 总结
-[总结](/docs/summary.md)  
+[大总结](/docs/summary.md)  
 
 ## Java  
 ### Java基础
