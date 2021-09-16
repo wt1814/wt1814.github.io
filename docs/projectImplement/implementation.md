@@ -20,6 +20,9 @@ https://mp.weixin.qq.com/s/QJFY46Ku66MwQwkb7AQpNQ
 https://mp.weixin.qq.com/s/_LJWWHk9E07i1hNQ_D4R9A
 服务化带来的问题---之数据迁移经历 
 https://mp.weixin.qq.com/s?__biz=MzU5MTIyODk1Mg==&mid=2247484005&amp;idx=1&amp;sn=8957f419dfcffc85523aadd0a496ebec&source=41#wechat_redirect
+
+现在有一个未分库分表的系统，你怎么分？ 
+https://mp.weixin.qq.com/s/gJy3N5UtSdb3FhJ9HUlO6A
 -->
 ## 1.1. 从未分库分表动态切换到分库分表
 &emsp; 现在有一个未分库分表的系统，未来要分库分表，如何设计才可以让系统从未分库分表**动态切换**到分库分表上？

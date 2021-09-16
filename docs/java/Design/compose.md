@@ -98,7 +98,8 @@ B r i d g e ( 4 . 2 )将实现和抽象分离开，如果抽象和一个特定�
 <!-- 
 https://mp.weixin.qq.com/s/KksIdVFsh2mr3kZvrNQHgg
 https://time.geekbang.org/column/article/169593
-
+https://www.jianshu.com/p/349bf04a9d4d
+https://www.junmajinlong.com/coding/inherit_composition_delegate/
 -->
 
 ### 1.2.1. 继承
