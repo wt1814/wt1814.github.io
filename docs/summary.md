@@ -34,6 +34,18 @@
                 - [1.4.4.6.1. CountDownLatch](#14461-countdownlatch)
                 - [1.4.4.6.2. CyclicBarrier](#14462-cyclicbarrier)
                 - [1.4.4.6.3. Semaphore](#14463-semaphore)
+    - [1.5. 数据库](#15-数据库)
+        - [1.5.1. SQL语句](#151-sql语句)
+            - [1.5.1.1. 基本查询语句](#1511-基本查询语句)
+            - [1.5.1.2. 连接查询](#1512-连接查询)
+            - [1.5.1.3. ~~高级查询~~](#1513-高级查询)
+        - [1.5.2. MySql函数](#152-mysql函数)
+        - [1.5.3. MySql优化](#153-mysql优化)
+            - [1.5.3.1. SQL分析](#1531-sql分析)
+                - [1.5.3.1.1. Expain](#15311-expain)
+            - [1.5.3.2. SQL优化](#1532-sql优化)
+            - [1.5.3.3. 索引优化](#1533-索引优化)
+            - [1.5.3.4. 碎片优化](#1534-碎片优化)
 
 <!-- /TOC -->
 
@@ -210,3 +222,83 @@
 ##### 1.4.4.6.3. Semaphore
 &emsp; Semaphore类，一个计数信号量。从概念上讲，信号量维护了一个许可集合。如有必要，在许可可用前会阻塞每一个acquire()，然后再获取该许可。每个 release()添加一个许可，从而可能释放一个正在阻塞的获取者。但是，不使用实际的许可对象，Semaphore只对可用许可的号码进行计数，并采取相应的行动。  
 &emsp; 使用场景： **<font color = "red">Semaphore通常用于限制可以访问某些资源(物理或逻辑的)的线程数目。Semaphore可以用来构建一些对象池，资源池之类的，比如数据库连接池。</font>**   
+
+
+## 1.5. 数据库
+### 1.5.1. SQL语句  
+#### 1.5.1.1. 基本查询语句
+1. 基本查询SQL执行顺序：from -> on -> join -> where -> group by ->  avg,sum.... ->having -> select -> distinct -> order by -> top,limit。 
+2. distinct关键字：Distinct与Count(聚合函数)，COUNT()会过滤掉为NULL的项。  
+3. 分组函数  
+&emsp; **<font color = "clime">查询结果集中有统计数据时，就需要使用分组函数。</font>**  
+&emsp; **<font color = "red">Group By分组函数中，查询只能得到组相关的信息。组相关的信息(统计信息)：count,sum,max,min,avg。</font> 在select指定的字段要么包含在Group By语句的后面，作为分组的依据；要么被包含在聚合函数中。group by是对结果集分组，而不是查询字段分组。**  
+&emsp; **<font color = "red">Group By含有去重效果。</font>**  
+1. 普通Limit语句需要全表扫描。  
+&emsp; 建立主键或唯一索引，利用索引：`SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) LIMIT M`  
+&emsp; 基于索引再排序：`SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) ORDER BY id_pk ASC LIMIT M`
+2. **<font color = "blue">ORDER BY与limit（分页再加排序）</font>**  
+&emsp; ORDER BY排序后，用LIMIT取前几条，发现返回的结果集的顺序与预期的不一样。    
+&emsp; 如果order by的列有相同的值时，MySQL会随机选取这些行，为了保证每次都返回的顺序一致可以额外增加一个排序字段（比如：id），用两个字段来尽可能减少重复的概率。  
+
+#### 1.5.1.2. 连接查询
+1. **关键字in：**  
+&emsp; **<font color = "clime">in查询里面的数量最大只能1000。</font>**  
+&emsp; **<font color = "red">确定给定的值是否与子查询或列表中的值相匹配。in在查询的时候，首先查询子查询的表，然后将内表和外表做一个笛卡尔积，然后按照条件进行筛选。所以</font><font color = "clime">相对内表比较小的时候，in的速度较快。</font>**  
+2. exists指定一个子查询，检测行的存在。<font color = "clime">遍历循环外表，然后看外表中的记录有没有和内表的数据一样的。匹配上就将结果放入结果集中。</font><font color = "red">exists内层查询语句不返回查询的记录，而是返回一个真假值。</font>  
+&emsp; **<font color = "clime">in和exists的区别：</font><font color = "red">如果子查询得出的结果集记录较少，主查询中的表较大且又有索引时应该用in，反之如果外层的主查询记录较少，子查询中的表大，又有索引时使用exists。</font>**  
+3. **UNION与UNION ALL：** 默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用UNION ALL。  
+
+#### 1.5.1.3. ~~高级查询~~
+
+
+### 1.5.2. MySql函数
+&emsp; **<font color = "red">控制流程函数、字符串函数、数学函数、日期时间函数、聚合函数</font>**  
+
+
+### 1.5.3. MySql优化
+&emsp; <font color = "red">MySql性能由综合因素决定，抛开业务复杂度，影响程度依次是硬件配置、MySQL配置、数据表设计、索引优化。</font>  
+1. SQL语句的优化。  
+    &emsp; `对查询语句的监控、分析、优化是SQL优化的一般步骤。`常规调优思路：  
+    1. 查看慢查询日志slowlog，分析slowlog，分析出查询慢的语句。  
+    2. 按照一定优先级，进行一个一个的排查所有慢语句。  
+    3. 分析top sql，进行explain调试，查看语句执行时间。  
+    4. 调整[索引](/docs/SQL/7.index.md)或语句本身。 
+2. 表结构设计： **<font color = "red">单库单表无法满足时，可以拆分表结构（主从复制、分库分表），或者使用ES搜索引擎。</font>**  
+3. 服务器的优化。  
+
+#### 1.5.3.1. SQL分析
+1. **<font color = "clime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling、trace。</font>**  
+2. <font color = "red">用explain extended查看执行计划会比explain多一列filtered。filtered列给出了一个百分比的值，这个百分比值和rows列的值一起使用，可以估计出那些将要和explain中的前一个表进行连接的行的数目。前一个表就是指explain的id列的值比当前表的id小的表。</font>  
+&emsp; mysql中有一个explain 命令可以用来分析select 语句的运行效果，例如explain可以获得select语句使用的索引情况、排序的情况等等。除此以外，explain 的extended 扩展能够在原本explain的基础上额外的提供一些查询优化的信息，这些信息可以通过mysql的show warnings命令得到。  
+3. profiling  
+&emsp; 使用profiling命令可以了解SQL语句消耗资源的详细信息（每个执行步骤的开销）。可以清楚了解到SQL到底慢在哪个环节。   
+4. trace  
+&emsp; 查看优化器如何选择执行计划，获取每个可能的索引选择的代价。  
+
+
+##### 1.5.3.1.1. Expain
+&emsp; expain信息列分别是id、select_type、table、partitions、 **<font color = "red">type</font>** 、possible_keys、 **<font color = "red">key</font>** 、 **<font color = "red">key_len</font>** 、ref、rows、filtered、 **<font color = "red">Extra</font>** 。  
+* **<font color = "clime">type单表查询类型要达到range级别（只检索给定范围的行，使用一个索引来选择行，非全表扫描）。</font>**  
+* key_len表示使用的索引长度，key_len可以衡量索引的好坏，key_len越小 索引效果越好。 **<font color = "blue">可以根据key_len来判断联合索引是否生效。</font>**  
+* extra额外的信息，常见的不太友好的值，如下：Using filesort，Using temporary。   
+
+
+#### 1.5.3.2. SQL优化
+1. 基本查询优化：  
+2. 子查询优化：
+2. 关联查询优化：使用索引、 **<font color = "bllue">驱动表选择、条件谓词下推</font>** ......  
+&emsp; 谓词下推，就是在将过滤条件下推到离数据源更近的地方，最好就是在table_scan时就能过滤掉不需要的数据。  
+
+#### 1.5.3.3. 索引优化
+1. 创建索引：为了使索引的使用效率更高，在创建索引时，必须考虑在哪些字段上创建索引和创建什么类型的索引。  
+2. 索引失效。  
+3. 索引条件下推：  
+&emsp; 索引下推简而言之就是在复合索引由于某些条件（比如 like %aa）失效的情况下，当存在失效的过滤字段在索引覆盖范围内，使用比较的方式在不回表的情况下进一步缩小查询的范围。其实就是对索引失效的进一步修复。  
+&emsp; **<font color = "clime">~~MySQL 5.6 引入了「索引下推优化」，可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。~~</font>**  
+    * 关闭ICP：索引--->回表--->条件过滤。  
+    * 开启ICP：索引--->条件过滤--->回表。</font>在支持ICP后，`MySQL在取出索引数据的同时，判断是否可以进行where条件过滤，`<font color = "blue">将where的部分过滤操作放在存储引擎层提前过滤掉不必要的数据，</font>减少了不必要数据被扫描带来的IO开销。  
+
+#### 1.5.3.4. 碎片优化
+
+
+

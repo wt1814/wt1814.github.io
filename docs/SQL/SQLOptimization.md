@@ -37,6 +37,7 @@ https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
 
 
 ## 1.2. ★★★多方面优化 
+&emsp; <font color = "red">MySql性能由综合因素决定，抛开业务复杂度，影响程度依次是硬件配置、MySQL配置、数据表设计、索引优化。</font>  
 1. SQL语句的优化。  
     &emsp; `对查询语句的监控、分析、优化是SQL优化的一般步骤。`常规调优思路：  
     1. 查看慢查询日志slowlog，分析slowlog，分析出查询慢的语句。  
@@ -46,7 +47,6 @@ https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
 2. 表结构设计： **<font color = "red">单库单表无法满足时，可以拆分表结构（主从复制、分库分表），或者使用ES搜索引擎。</font>**  
 3. 服务器的优化。  
 
-&emsp; <font color = "red">MySql性能由综合因素决定，抛开业务复杂度，影响程度依次是硬件配置、MySQL配置、数据表设计、索引优化。</font>  
 
  
 ----
