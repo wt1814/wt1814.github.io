@@ -8,7 +8,15 @@
         - [1.3.1. JDK、JRE、JVM](#131-jdkjrejvm)
         - [1.3.2. 编译成Class字节码文件](#132-编译成class字节码文件)
         - [1.3.3. 类加载](#133-类加载)
+            - [1.3.3.1. JVM类的加载](#1331-jvm类的加载)
+            - [1.3.3.2. JVM类加载器](#1332-jvm类加载器)
         - [1.3.4. 内存结构](#134-内存结构)
+            - [1.3.4.1. JVM内存结构](#1341-jvm内存结构)
+                - [1.3.4.1.1. JVM内存结构](#13411-jvm内存结构)
+                - [1.3.4.1.2. 常量池详解](#13412-常量池详解)
+                - [1.3.4.1.3. 逃逸分析](#13413-逃逸分析)
+            - [1.3.4.2. 内存中的对象](#1342-内存中的对象)
+            - [1.3.4.3. 内存泄露](#1343-内存泄露)
         - [1.3.5. JVM执行](#135-jvm执行)
         - [1.3.6. GC](#136-gc)
         - [1.3.7. JVM调优](#137-jvm调优)
@@ -101,12 +109,102 @@
 
 ## 1.3. JVM
 ### 1.3.1. JDK、JRE、JVM
+1. <font color = "red">JVM由4大部分组成：类加载器ClassLoader，运行时数据区Runtime Data Area，执行引擎Execution Engine，本地方法调用Native Interface。</font>  
+2. **<font color = "clime">JVM各组件的作用（JVM执行程序的过程）：</font>**   
+    1. 首先通过类加载器（ClassLoader）会把Java代码转换成字节码；  
+    2. 运行时数据区（Runtime Data Area）再把字节码加载到内存中；  
+    3. <font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此需要特定的命令解析器执行引擎（Execution Engine），将字节码翻译成底层系统指令，再交由CPU去执行；</font>  
+    4. 而这个过程中需要调用其他语言的本地库接口（Native Interface）来实现整个程序的功能。  
+
 
 ### 1.3.2. 编译成Class字节码文件
 
 ### 1.3.3. 类加载
+#### 1.3.3.1. JVM类的加载
+1. 类加载流程：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-5.png)  
+2. 验证：确保被加载的类的正确性。验证阶段大致会完成4个阶段的检验动作：1. 文件格式验证、2. 元数据验证、3. 字节码验证、4. 符号引用验证。  
+3. 准备(Preparation)  
+&emsp; <font color = "red">为类的静态变量分配内存，并将其初始化为默认值，这些内存都将在方法区中分配。</font>对于该阶段有以下几点需要注意：  
+    1. <font color = "red">这时候进行内存分配的仅包括类变量(static)，而不包括实例变量，实例变量会在对象实例化时随着对象一块分配在Java堆中。</font>  
+    2. <font color = "red">这里所设置的初始值"通常情况"下是数据类型默认的零值(如0、0L、null、false等)，比如定义了public static int value=111 ，那么 value 变量在准备阶段的初始值就是 0 而不是111(初始化阶段才会复制)。</font>  
+    * <font color = "red">特殊情况：比如给value变量加上了fianl关键字public static final int value=111，那么准备阶段value的值就被赋值为 111。</font>  
+4. 解析(Resolution)： **<font color = "red">将常量池内的符号引用转换为直接引用</font>** ，得到类或者字段、方法在内存中的指针或者偏移量，确保类与类之间相互引用正确性，完成内存结构布局，以便直接调用该方法。  
+&emsp; `为什么要用符号引用呢？` **<font color = "blue">这是因为类加载之前，javac会将源代码编译成.class文件，这个时候javac是不知道被编译的类中所引用的类、方法或者变量它们的引用地址在哪里，所以只能用符号引用来表示。</font>**  
+&emsp; **<font color = "clime">解析过程在某些情况下可以在初始化阶段之后再开始，这是为了支持Java的动态绑定。</font>**   
+
+
+#### 1.3.3.2. JVM类加载器
+1. JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。  
+&emsp; 双亲委派模型中，类加载器之间的父子关系一般不会以继承（Inheritance）的关系来实现，而是使用组合（Composition）关系来复用父加载器的代码的。      
+2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。  
+&emsp; 好处：避免类的重复加载；防止核心API被随意篡改。   
+3. 破坏双亲委派模型的案例：  
+    1. `双亲委派模型有一个问题：顶层ClassLoader无法加载底层ClassLoader的类，典型例子JNDI、JDBC。`
+        * **<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器。所以加入了线程上下文类加载器(Thread Context ClassLoader)，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
+    2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。    
+    3. ......  
 
 ### 1.3.4. 内存结构
+#### 1.3.4.1. JVM内存结构
+##### 1.3.4.1.1. JVM内存结构
+1. 运行时数据区。线程独享：程序计数器、JVM栈、本地方法栈；线程共享区：堆、方法区（元空间）。  
+2. Java虚拟机栈是由一个个栈帧组成，每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法出口信息。局部变量表存储八大原始类型、对象引用、returnAddress。 
+3. 堆  
+    1. 1). 堆分为新生代、老年代，默认比例1: 2； 2). 新生代又按照8: 1: 1划分为Eden区和两个Survivor区。  
+    2. **<font color = "blue">在Eden区中，JVM为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
+    3. 堆是分配对象存储的唯一选择吗？[逃逸分析](/docs/java/JVM/escape.md)  
+4. <font color = "clime">方法区的演进：</font>  
+    1. 为什么JDK1.8移除元空间  
+        1. 由于PermGen内存经常会溢出，引发java.lang.OutOfMemoryError: PermGen，因此JVM的开发者希望这一块内存可以更灵活地被管理，不要再经常出现这样的OOM。  
+        2. 移除PermGen可以促进HotSpot JVM与JRockit VM的融合，因为JRockit没有永久代。  
+    2. 演进历程：  
+        * jdk1.6及之前：有永久代(permanent generation)，静态变量存放在永久代上。  
+        * jdk1.7：有永久代，但已经逐步“去永久代”，[字符串常量池](/docs/java/JVM/ConstantPool.md) <font color = "red">、静态变量</font>移除，保存在堆中。  
+        * jdk1.8及之后：无永久代，类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
+
+
+##### 1.3.4.1.2. 常量池详解
+&emsp; **<font color = "clime">常量池分为以下三种：class文件常量池、运行时常量池、全局字符串常量池。</font>**   
+
+##### 1.3.4.1.3. 逃逸分析
+1. <font color = "red">通过逃逸分析算法可以分析出某一个方法中的某个对象是否会被其它方法或者线程访问到。</font>如果分析结果显示某对象并不会被其他方法引用或被其它线程访问，则有可能在编译期间做一些深层次的优化。   
+2. 对于NoEscape（ **<font color = "clime">没有逃逸</font>** ）状态的对象，则不一定，具体会有这种优化情况：   
+    1. 对象可能分配在栈上。  
+    2. 分离对象或标量替换。  
+    &emsp; **<font color = "clime">在HotSpot中并没有真正的实现"栈"中分配对象的功能，取而代之的是一个叫做"标量替换"的折中办法。</font>**  
+    &emsp; 什么是标量？标量，不可再分，基本数据类型；相对的是聚合量，可再分，引用类型。  
+    &emsp; **当JVM通过逃逸分析，确定要将对象分配到栈上时，即时编译可以将对象打散，将对象替换为一个个很小的局部变量，将这个打散的过程叫做标量替换。** 
+    3. 消除同步锁
+
+
+#### 1.3.4.2. 内存中的对象
+1. **<font color = "clime">对象创建过程：1. 检测类是否被加载；2. 为对象分配内存；3. 将分配内存空间的对象初始化零值；4. 对对象进行其他设置；5.执行init方法。</font>**   
+2. 为对象分配内存：
+    * 分配内存两种方式：指针碰撞（内存空间绝对规整）；空闲列表（内存空间是不连续的）。
+        * 标记-整理或复制 ---> 空间规整 ---> 指针碰撞； 
+        * 标记-清除 ---> 空间不规整 ---> 空闲列表。       
+    * 线程安全问题：1).采用CAS； **<font color = "clime">2).线程本地分配缓冲（TLAB）。</font>**  
+    * **<font color = "blue">TLAB详解：</font>**  
+        * 线程本地分配缓存，这是一个线程专用的内存分配区域。可以加速对象的分配。TLAB是在堆中开辟的内存区域。默认情况下，TLAB空间的内存非常小，仅占有整个Eden空间的1%。  
+        * **<font color = "blue">TLAB通常很小，所以放不下大对象。`JVM设置了最大浪费空间`。</font>**  
+        &emsp; 当大对象申请内存时，当剩余的空间小于最大浪费空间，那该TLAB属于的线程在重新向Eden区申请一个TLAB空间。进行对象创建，还是空间不够，那这个对象太大了，去Eden区直接创建吧！  
+        &emsp; 当剩余的空间大于最大浪费空间，那这个大对象直接去Eden区创建。剩余空间还需要使用。
+    * **<font color = "blue">`内存分配全流程：`逃逸分析 ---> 没有逃逸，尝试栈上分配 ---> 是否满足直接进入老年代的条件 ---> 尝试TLAB分配 ---> Eden分配。</font>**  
+3. 堆内存分配策略：  
+&emsp; 分配策略有：对象优先在Eden分配、大对象直接进入老年代、长期存活的对象将进入老年代、动态对象年龄判定、空间分配担保。  
+&emsp; 空间分配担保： **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的总空间。</font>**   
+
+#### 1.3.4.3. 内存泄露
+1. 内存溢出与内存泄露
+&emsp; **<font color = "red">内存溢出out of memory</font>** ，是指<font color = "red">程序在申请内存时，`没有足够的内存空间供其使用`</font>，出现out of memory。  
+&emsp; **<font color = "blue">内存泄露memory leak</font>** ，是指<font color = "red">程序在申请内存后，`无法释放已申请的内存空间`</font>。一次内存泄露危害可以忽略，但内存泄露堆积后果很严重，无论多少内存，迟早会被占光。内存泄露，会导致频繁的Full GC。  
+&emsp; 所以内存泄漏可能会导致内存溢出，但内存溢出并不完全都是因为内存泄漏，也有可能使用了太多的大对象导致。  
+2. 内存溢出影响  
+&emsp; **<font color = "clime">问题：`JVM堆内存溢出后，其他线程是否可继续工作？`</font>**  
+&emsp; 当一个线程抛出OOM异常后，它所占据的内存资源会全部被释放掉，从而不会影响其他线程的运行！  
+&emsp; **<font color = "red">其实发生OOM的线程一般情况下会死亡，也就是会被终结掉，该线程持有的对象占用的heap都会被gc了，释放内存。</font><font color = "clime">因为发生OOM之前要进行gc，就算其他线程能够正常工作，也会因为频繁gc产生较大的影响。</font>**  
+
 
 ### 1.3.5. JVM执行
 

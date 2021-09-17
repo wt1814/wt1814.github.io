@@ -11,10 +11,10 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. <font color = "red">JVM由4大部分组成：类加载器ClassLoader，运行时数据区Runtime Data Area，执行引擎Execution Engine，本地方法调用Native Interface。</font>  
 2. **<font color = "clime">JVM各组件的作用（JVM执行程序的过程）：</font>**   
-    1. 首先通过类加载器(ClassLoader)会把Java代码转换成字节码；  
-    2. 运行时数据区(Runtime Data Area)再把字节码加载到内存中；  
-    2. <font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此需要特定的命令解析器执行引擎(Execution Engine)，将字节码翻译成底层系统指令，再交由CPU去执行；</font>  
-    3. 而这个过程中需要调用其他语言的本地库接口(Native Interface)来实现整个程序的功能。  
+    1. 首先通过类加载器（ClassLoader）会把Java代码转换成字节码；  
+    2. 运行时数据区（Runtime Data Area）再把字节码加载到内存中；  
+    3. <font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此需要特定的命令解析器执行引擎（Execution Engine），将字节码翻译成底层系统指令，再交由CPU去执行；</font>  
+    4. 而这个过程中需要调用其他语言的本地库接口（Native Interface）来实现整个程序的功能。  
 
 
 # 1. JDK、JRE、JVM  
@@ -95,8 +95,7 @@ https://mp.weixin.qq.com/s/-CbNU5uPH1cpMuZ-eQQgFw
 &emsp; **<font color = "clime">各组件的作用(JVM执行程序的过程)：</font>**  
 1. 首先通过类加载器（ClassLoader）会把Java代码转换成字节码；  
 2. 运行时数据区（Runtime Data Area）再把字节码加载到内存中；  
-2. <font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此需要特定的命令解析器执行引擎（Execution Engine），将字节码翻译成底层系统指令，再交由CPU去执行；</font>  
-3. 而这个过程中需要调用其他语言的本地库接口（Native Interface）来实现整个程序的功能。  
-
+3. <font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此需要特定的命令解析器执行引擎（Execution Engine），将字节码翻译成底层系统指令，再交由CPU去执行；</font>  
+4. 而这个过程中需要调用其他语言的本地库接口（Native Interface）来实现整个程序的功能。  
 
 &emsp; **JVM与不同系统(JVM的平台无关性)：** java能跨平台，实现一次编写，多处运行。Java能够跨平台运行的核心在于JVM 。不是Java能够跨平台，而是它的jvm能够跨平台。Java虚拟机屏蔽了与具体操作系统平台相关的信息，只要为不同平台实现了相应的虚拟机，编译后的Java字节码就可以在该平台上运行。  
