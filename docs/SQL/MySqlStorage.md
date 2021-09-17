@@ -45,6 +45,7 @@ https://mp.weixin.qq.com/s/StjX9bi-YDANrMX21Pn_Uw
     * 不支持全文索引  
     * InnoDB 不保存表的具体行数，执行`select count(*) from table`时需要全表扫描。  
 2. [InnoDB体系结构](/docs/SQL/InnoDB.md)  
+
 <!-- 
 支持事务操作，具有事务 ACID 隔离特性，默认的隔离级别是可重复读(repetable-read)、通过MVCC(并发版本控制)来实现的。能够解决脏读和不可重复读的问题。
 InnoDB 支持外键操作。
