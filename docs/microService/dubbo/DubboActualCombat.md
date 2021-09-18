@@ -10,3 +10,15 @@
 
 https://my.oschina.net/u/3039671/blog/833589
 -->
+
+
+## Dubbo参数校验
+
+<!-- 
+
+官方文档 https://dubbo.apache.org/zh/docs/advanced/parameter-validation/
+
+https://www.cnblogs.com/allennote/articles/12543506.html
+https://blog.csdn.net/lbh199466/article/details/95060983
+
+-->
