@@ -128,6 +128,7 @@
         - [1.8.9. SpringMVC解析](#189-springmvc解析)
         - [1.8.10. 过滤器、拦截器、监听器](#1810-过滤器拦截器监听器)
     - [1.9. MyBatis](#19-mybatis)
+        - [MyBatis大数据量查询](#mybatis大数据量查询)
         - [1.9.1. MyBatis架构](#191-mybatis架构)
         - [1.9.2. MyBatis SQL执行解析](#192-mybatis-sql执行解析)
         - [1.9.3. MyBatis缓存](#193-mybatis缓存)
@@ -956,10 +957,10 @@
 
 ## 1.7. 架构设计
 ### 1.7.1. 架构质量属性
-
+&emsp; ......  
 
 ### 1.7.2. 系统瓶颈
-
+&emsp; ......  
 
 ## 1.8. Spring
 ### 1.8.1. Spring基础
@@ -1092,6 +1093,7 @@
 
 
 ##### 1.8.5.2.4. InitializingBean
+&emsp; ......  
 
 
 ### 1.8.6. SpringAOP教程
@@ -1156,16 +1158,68 @@
 
 
 ### 1.8.10. 过滤器、拦截器、监听器
-
+&emsp; ......  
 
 ## 1.9. MyBatis
+
+### MyBatis大数据量查询
+1. 流式查询  
+&emsp; 流式查询指的是查询成功后不是返回一个集合而是返回一个迭代器，应用每次从迭代器取一条查询结果。流式查询的好处是能够降低内存使用。  
+&emsp; **<font color = "clime">如果没有流式查询，想要从数据库取 1000 万条记录而又没有足够的内存时，就不得不分页查询，而分页查询效率取决于表设计，如果设计的不好，就无法执行高效的分页查询。因此流式查询是一个数据库访问框架必须具备的功能。</font>**  
+&emsp; 流式查询的过程当中，数据库连接是保持打开状态的，因此要注意的是： **<font color = "clime">执行一个流式查询后，数据库访问框架就不负责关闭数据库连接了，需要应用在取完数据后自己关闭。</font>**  
+
 ### 1.9.1. MyBatis架构
+&emsp; **<font color = "red">Mybatis的功能架构分为三层：</font>**  
+
+* API接口层：提供给外部使用的接口API，开发人员通过这些本地API来操纵数据库。接口层一接收到调用请求就会调用核心处理层来完成具体的数据处理。  
+* 核心处理层：负责具体的SQL查找、SQL解析、SQL执行和执行结果映射处理等。它主要的目的是根据调用的请求完成一次数据库操作。  
+* 基础支持层：负责最基础的功能支撑，包括连接管理、事务管理、配置加载和缓存处理，这些都是共用的东西，将它们抽取出来作为最基础的组件。为上层的数据处理层提供最基础的支撑。  
+
 
 ### 1.9.2. MyBatis SQL执行解析
+1. sql执行流程：   
+    1. 读取核心配置文件并返回InputStream流对象。
+    2. 根据InputStream流对象解析出Configuration对象，然后创建SqlSessionFactory工厂对象。
+    3. 根据一系列属性从SqlSessionFactory工厂中创建SqlSession。
+    4. 从SqlSession中调用Executor执行数据库操作和生成具体SQL指令。
+    5. 对执行结果进行二次封装。
+    6. 提交与事务。   
+2. **<font color = "clime">Mapper接口动态代理类的生成：</font>** 
+    * **<font color = "blue">解析配置文件生成sqlSessionFactory时，</font>** 会调用bindMapperForNamespace() ---> addMapper方法， **<font color = "blue">根据mapper文件中的namespace属性值，将接口生成动态代理类的`工厂`，存储在MapperRegistry对象中。</font>** MapperRegistry内部维护一个映射关系，每个接口对应一个`MapperProxyFactory（生成动态代理工厂类）`。      
+    * 在调用getMapper，根据type类型，从MapperRegistry对象中的knownMappers获取到当前类型对应的代理工厂类，然后通过代理工厂类使用`jdk自带的动态代理`生成对应Mapper的代理类。  
+    ```java
+    //这里可以看到每次调用都会创建一个新的代理对象返回
+    return mapperProxyFactory.newInstance(sqlSession);
+    ```
+
+    ```java
+    public T newInstance(SqlSession sqlSession) {
+        //首先会调用这个newInstance方法
+        //动态代理逻辑在MapperProxy里面
+        final MapperProxy<T> mapperProxy = new MapperProxy<>(sqlSession, mapperInterface, methodCache);
+        //通过这里调用下面的newInstance方法
+        return newInstance(mapperProxy);
+    }
+    @SuppressWarnings("unchecked")
+    protected T newInstance(MapperProxy<T> mapperProxy) {
+        //jdk自带的动态代理
+        return (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), new Class[] { mapperInterface }, mapperProxy);
+    }
+    ```
 
 
 ### 1.9.3. MyBatis缓存
+&emsp; ......  
+
 
 ### 1.9.4. MyBatis插件解析
+1. **<font color="clime">Mybaits插件的实现主要用了拦截器、责任链和动态代理。</font>** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
+2. **<font color = "clime">mybatis扩展性很强，基于插件机制，基本上可以控制SQL执行的各个阶段，如执行器阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。</font>**   
+    * 执行器Executor（update、query、commit、rollback等方法）；  
+    * 参数处理器ParameterHandler（getParameterObject、setParameters方法）；  
+    * 结果集处理器ResultSetHandler（handleResultSets、handleOutputParameters等方法）；  
+    * SQL语法构建器StatementHandler（prepare、parameterize、batch、update、query等方法）；    
+
+
 
 
