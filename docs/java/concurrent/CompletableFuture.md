@@ -45,6 +45,9 @@ https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650
 
 https://mp.weixin.qq.com/s/_T9xIYMKNXFLixTmKMD12A
 
+CompletableFuture多线程并发异步编程
+https://mp.weixin.qq.com/s/R_-MX85FbaO7VnQedQbc2A
+
 上个礼拜我们线上有个接口比较慢，这个接口在刚开始响应时间是正常的。但随着数据量的增多，响应时间变慢了。
 
 这个接口里面顺序调用了2个服务，且2个服务之间没有数据依赖。我就用CompletableFuture把调用2个服务的过程异步化了一下，响应时间也基本上缩短为原来的一半，问题解决。

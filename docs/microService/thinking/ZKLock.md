@@ -2,12 +2,13 @@
 <!-- TOC -->
 
 - [1. 基于ZK实现分布式锁](#1-基于zk实现分布式锁)
-    - [1.1. ZK分布式锁实现原理](#11-zk分布式锁实现原理)
-        - [1.1.1. 独占锁的实现](#111-独占锁的实现)
-        - [1.1.2. 读写锁的实现](#112-读写锁的实现)
-            - [1.1.2.1. 读写锁的第一种实现](#1121-读写锁的第一种实现)
-            - [1.1.2.2. 读写锁的第二种实现](#1122-读写锁的第二种实现)
-    - [1.2. ZK分布式锁实现](#12-zk分布式锁实现)
+    - [1.1. ZK惊群](#11-zk惊群)
+    - [1.2. ZK分布式锁实现原理](#12-zk分布式锁实现原理)
+        - [1.2.1. 独占锁的实现](#121-独占锁的实现)
+        - [1.2.2. 读写锁的实现](#122-读写锁的实现)
+            - [1.2.2.1. 读写锁的第一种实现](#1221-读写锁的第一种实现)
+            - [1.2.2.2. 读写锁的第二种实现](#1222-读写锁的第二种实现)
+    - [1.3. ZK分布式锁实现](#13-zk分布式锁实现)
 
 <!-- /TOC -->
 
@@ -26,7 +27,13 @@
 
 
 # 1. 基于ZK实现分布式锁
-<!-- 
+<!--
+ 基于Zookeeper实现分布式锁，如何解决羊群问题？ 
+ https://mp.weixin.qq.com/s/wmRRrdIHaXDk_qBh9zzsyw
+
+ ZK 惊群与脑裂
+ https://blog.csdn.net/ajianyingxiaoqinghan/article/details/107327336
+
 ZooKeeper 分布式锁 Curator
 https://mp.weixin.qq.com/s/_e-vyZeTlJUaZY1APRb05A
 ★★★加锁源码
@@ -37,14 +44,18 @@ https://mp.weixin.qq.com/s/9whV1nuwfu2hWt8newteTA
 -->
 &emsp; **<font color = "red">参考《ZooKeeper 分布式过程协同技术详解》和《从Paxos到Zookeeper 分布式一致性原理与实践》</font>**  
 
-## 1.1. ZK分布式锁实现原理
+## 1.1. ZK惊群
+
+
+
+## 1.2. ZK分布式锁实现原理
 &emsp; **<font color = "clime">基于ZooKeeper可以实现分布式的独占锁和读写锁。对于ZK来说，实现分布式锁的核心是临时顺序节点和监听机制。</font>**  
 &emsp; **zookeeper分布式锁的缺点：**  
 
 * 需要另外依赖zookeeper，而部分服务是不会使用zookeeper的，增加了系统的复杂性；  
 * 相对于redis分布式锁，性能要稍微略差一些。加锁会频繁地“写”zookeeper，增加zookeeper的压力；写zookeeper的时候会在集群进行同步，节点数越多，同步越慢，获取锁的过程越慢。
 
-### 1.1.1. 独占锁的实现  
+### 1.2.1. 独占锁的实现  
 &emsp; **使用ZK实现分布式独占锁：**  
 1. 使用ZK的临时节点和有序节点，每个线程获取锁就是在ZK创建一个临时有序的节点，比如在/lock/目录下。  
 2. 创建节点成功后，获取/lock目录下的所有临时节点，再判断当前线程创建的节点是否是所有的节点的序号最小的节点。  
@@ -74,7 +85,7 @@ https://mp.weixin.qq.com/s/9whV1nuwfu2hWt8newteTA
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-17.png)  
     &emsp; 例如：持有/lock/000的客户端还在执行方法，持有/lock/001的客户端突然断开连接，为了不让后面的节点收到错误的通知顺序，要尽可能保证在该客户端之前获取锁的所有客户端都能执行完成，需适当加大SessionTimeOut的值来延长节点的存活时间。  
 
-### 1.1.2. 读写锁的实现  
+### 1.2.2. 读写锁的实现  
 &emsp; 读写锁包含一个读锁和写锁，操作O1对资源R1加读锁，且获得了锁，其他操作可同时对资源R1设置读锁，进行共享读操作。如果操作O1对资源R1加写锁，且获得了锁，其他操作再对资源R1设置不同类型的锁都会被阻塞。总结来说，读锁具有共享性，而写锁具有排他性。那么在 Zookeeper 中，可以用怎样的节点结构实现上面的操作呢？  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-37.png)  
 &emsp; 在Zookeeper中，由于读写锁和独占锁的节点结构不同，读写锁的客户端不用再去竞争创建lock节点。所以在一开始，所有的客户端都会创建自己的锁节点。之后， **<font color = "red">客户端从 Zookeeper 端获取 /share_lock下所有的子节点，并判断自己能否获取锁。</font>**  
@@ -86,7 +97,7 @@ https://mp.weixin.qq.com/s/9whV1nuwfu2hWt8newteTA
 
 &emsp; 不同于独占锁，读写锁的实现稍微复杂一下。读写锁有两种实现方式，各有异同，接下来就来说说这两种实现方式。  
 
-#### 1.1.2.1. 读写锁的第一种实现  
+#### 1.2.2.1. 读写锁的第一种实现  
 &emsp; **<font color = "red">第一种实现是对 /sharelock 节点设置 watcher，当 /sharelock 下的子节点被删除时，未获取锁的客户端收到 /share_lock 子节点变动的通知。在收到通知后，客户端重新判断自己创建的子节点是否可以获取锁，如果失败，再次等待通知。</font>** 详细流程如下：  
 1. 所有客户端创建自己的锁节点。  
 2. 从 Zookeeper 端获取/sharelock下所有的子节点，并对/sharelock节点设置 watcher。  
@@ -98,7 +109,7 @@ https://mp.weixin.qq.com/s/9whV1nuwfu2hWt8newteTA
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-38.png)  
 &emsp; 上面获取读写锁流程并不复杂，但却存在性能问题。以图3所示锁节点结构为例，第一个锁节点 host1-W-0000000001 被移除后，Zookeeper 会将 /share_lock 子节点变动的通知分发给所有的客户端。但实际上，该子节点变动通知除了能影响 host2-R-0000000002 节点对应的客户端外，分发给其他客户端则是在做无用功，因为其他客户端即使获取了通知也无法获取锁。所以这里需要做一些优化，优化措施是让客户端只在自己关心的节点被删除时，再去获取锁。  
 
-#### 1.1.2.2. 读写锁的第二种实现  
+#### 1.2.2.2. 读写锁的第二种实现  
 &emsp; 在了解读写锁第一种实现的弊端后，针对这一实现进行优化。这里客户端不再对 /share_lock 节点进行监视，而只对自己关心的节点进行监视。还是以图3的锁节点结构进行举例说明，host2-R-0000000002 对应的客户端 C2 只需监视 host1-W-0000000001 节点是否被删除即可。而 host3-W-0000000003 对应的客户端 C3 只需监视 host2-R-0000000002 节点是否被删除即可，只有 host2-R-0000000002 节点被删除，客户端 C3 才能获取锁。而 host1-W-0000000001 节点被删除时，产生的通知对于客户端 C3 来说是无用的，即使客户端 C3 响应了通知也没法获取锁。这里总结一下，不同客户端关心的锁节点是不同的。如果客户端创建的是读锁节点，那么客户端只需找出比读锁节点序号小的最后一个的写锁节点，并设置 watcher 即可。而如果是写锁节点，则更简单，客户端仅需对该节点的上一个节点设置 watcher 即可。详细的流程如下：  
 1. 所有客户端创建自己的锁节点。
 2. 从Zookeeper端获取/share_lock下所有的子节点。
@@ -109,5 +120,5 @@ https://mp.weixin.qq.com/s/9whV1nuwfu2hWt8newteTA
 &emsp; 上述步骤对于的流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-39.png)  
 
-## 1.2. ZK分布式锁实现  
+## 1.3. ZK分布式锁实现  
 &emsp; ZK分布式锁一般使用框架Curator实现。  

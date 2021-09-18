@@ -139,7 +139,12 @@ https://www.bilibili.com/video/BV1Jy4y1p7t8
 
 ### 1.2.1. ~~新生代和老年代采用的算法~~
 <!-- 
-
+年轻代使用复制算法
+http://baijiahao.baidu.com/s?id=1677093957550473323&wfr=spider&for=pc&searchword=%E4%B8%BA%E4%BB%80%E4%B9%88%E5%B9%B4%E8%BD%BB%E4%BB%A3%E4%BD%BF%E7%94%A8%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95
+https://blog.csdn.net/weixin_38118016/article/details/115354336
+https://www.kuangstudy.com/bbs/1327624514502131713
+https://www.jianshu.com/p/1d6c44415dbc
+https://blog.csdn.net/qq_43644398/article/details/109173054
 
 -->
 

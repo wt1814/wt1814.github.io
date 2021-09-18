@@ -27,8 +27,14 @@
 <!-- 
 https://blog.csdn.net/ab1024249403/article/details/110099571
 
+redo log与binlog间
+https://mp.weixin.qq.com/s/XPXvx9fE1632uzo1SGn4SA
+
 redo log与binlog间的破事 
 https://mp.weixin.qq.com/s/jG9_Iqb4Ig2eUAyIgfeyVQ
+5. redo log 为什么可以保证crash safe机制呢？ 
+https://mp.weixin.qq.com/s/tmlk9p3UOnxzMwjggCtC2g
+
 -->
 
 ## 1.1. ~~redo log与binlog的区别~~

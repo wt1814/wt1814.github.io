@@ -24,6 +24,9 @@
 # 1. xxxTCC模式-强一致性xxx 
 <!-- 
 https://www.cnblogs.com/haizai/p/11938823.html
+分布式事务 Seata TCC 模式深度解析 | SOFAChannel#4 直播整理 
+https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
+
 -->
 &emsp; 不管是 2PC 还是 3PC 都是依赖于数据库的事务提交和回滚。  
 &emsp; 而有时候一些业务它不仅仅涉及到数据库，可能是发送一条短信，也可能是上传一张图片。所以说事务的提交和回滚就得提升到业务层面而不是数据库层面了，  **<font color = "red">而TCC是一种`业务层面或者是应用层`的`两阶段、补偿型`的事务。</font>**   
