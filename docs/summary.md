@@ -359,7 +359,7 @@
     * 灰色：本对象已访问过，但是本对象 引用到 的其他对象 尚未全部访问完。全部访问后，会转换为黑色。  
     * 白色：尚未访问过。  
 2. 三色标记流程： 1).根对象黑色... **<font color = "clime">如果标记结束后对象仍为白色，意味着已经“找不到”该对象在哪了，不可能会再被重新引用。</font>**  
-3. **<font color = "clime">`多标/错标`，本应该回收 但是 没有回收到的内存，被称之为“浮动垃圾”</font>** ，并不会影响垃圾回收的正确性，只是需要等到下一轮垃圾回收才被清除。  
+3. **<font color = "clime">`多标/错标`，本应该回收 但是 没有回收掉的内存，被称之为“浮动垃圾”</font>** ，并不会影响垃圾回收的正确性，只是需要等到下一轮垃圾回收才被清除。  
 4. **<font color = "clime">漏标：把本来应该存活的垃圾，标记为了死亡。这就会导致非常严重的错误。</font>**   
 	1. 两个必要条件：1). 灰色指向白色的引用消失。2). 黑色重新指向白色；  
   &emsp; 新增对象不算漏标。  
@@ -952,22 +952,108 @@
 
 ## 1.8. Spring
 ### 1.8.1. Spring基础
-
+1. **@Autowired和@Resource之间的区别：**  
+    1. @Autowired默认是按照类型装配注入的，默认情况下它要求依赖对象必须存在(可以设置它的required属性为false)。
+    2. @Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入。  
 
 ### 1.8.2. Spring IOC
+1. BeanFactory与ApplicationContext
+2. BeanDefinition： **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
+3. Spring容器刷新：  
+    **<font color = "blue">（⚠`利用工厂和反射创建Bean。主要包含3部分：1).容器本身--创建容器、2).容器扩展--后置处理器、3).事件，子容器，实例化Bean。`）</font>**     
+    **<font color = "red">Spring bean容器刷新的核心 12个步骤完成IoC容器的创建及初始化工作：</font>**  
+    1. 刷新前的准备工作。  
+    2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>** <font color = "blue">`个人理解：此处仅仅相当于创建Spring Bean的类，实例化是在Spring DI里。`</font>   
+        &emsp; **<font color = "clime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
+        ```java
+        private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
+        ```
+    -----------
+    3. 对IoC容器进行一些预处理。 为BeanFactory配置容器特性，例如设置BeanFactory的类加载器，配置了BeanPostProcessor，注册了三个默认bean实例，分别是“environment”、“systemProperties”、“systemEnvironment”。  
+    4. 允许在上下文子类中对bean工厂进行后处理。 本方法没有具体实现，是一个扩展点，开发人员可以根据自己的情况做具体的实现。  
+    5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理（修改BeanDefinition对象）。</font>**  
+    6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
+    7. 初始化一些消息源（比如处理国际化的i18n等消息源）。 
+    ------------ 
+    8. **<font color = "red">初始化应用[事件多播器](/docs/SSM/Spring/feature/EventMulticaster.md)。</font>**     
+    9. **<font color = "red">`onRefresh()，典型的模板方法(钩子方法)。不同的Spring容器做不同的事情。`比如web程序的容器ServletWebServerApplicationContext中会调用createWebServer方法去创建内置的Servlet容器。</font>**  
+    10. **<font color = "red">注册一些监听器到事件多播器上。</font>**  
+    11. **<font color = "red">`实例化剩余的单例bean(非懒加载方式)。`</font><font color = "blue">`注意事项：Bean的IoC、DI和AOP都是发生在此步骤。`</font>**  
+    12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
 
 
 ### 1.8.3. Spring DI
+1. 加载时机：SpringBean默认单例，非懒加载，即容器启动时就加载。  
+2. 加载流程：  
+    1. doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean()初始化。  
+
+
 
 #### 1.8.3.1. 循环依赖
+1. Spring循环依赖的场景：均采用setter方法（属性注入）注入方式，可被解决；采用构造器和setter方法（属性注入）混合注入方式可能被解决。
+2. **<font color = "red">Spring通过3级缓存解决：</font>**  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
+    * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
+    * 二级缓存: Map<String,Object> earlySingletonObjects， **<font color = "blue">早期曝光对象</font>** ，二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。尚未经历了完整的Spring Bean初始化生命周期。
+    * 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
+3. **<font color = "clime">单例模式下Spring解决循环依赖的流程：</font>**  
+    1. Spring创建bean主要分为两个步骤，创建原始bean对象，接着去填充对象属性和初始化。  
+    2. 每次创建bean之前，都会从缓存中查下有没有该bean，因为是单例，只能有一个。  
+    3. 当创建beanA的原始对象后，并把它放到三级缓存中，接下来就该填充对象属性了，这时候发现依赖了beanB，接着就又去创建 beanB，同样的流程，创建完beanB填充属性时又发现它依赖了beanA，又是同样的流程，不同的是，这时候可以在三级缓存中查到刚放进去的原始对象beanA，所以不需要继续创建，用它注入beanB，完成beanB的创建。此时会将beanA从三级缓存删除，放到二级缓存。   
+    4. 既然 beanB 创建好了，所以 beanA 就可以完成填充属性的步骤了，接着执行剩下的逻辑，闭环完成。  
+    ---
+    &emsp; 当A、B两个类发生循环引用时，在A完成实例化后，就使用实例化后的对象去创建一个对象工厂，并添加到三级缓存中。 **<font color = "blue">`如果A被AOP代理，那么通过这个工厂获取到的就是A代理后的对象，如果A没有被AOP代理，那么这个工厂获取到的就是A实例化的对象。`</font>** 当A进行属性注入时，会去创建B，同时B又依赖了A，所以创建B的同时又会去调用getBean(a)来获取需要的依赖，此时的getBean(a)会从缓存中获取：  
+
+    * 第一步，先获取到三级缓存中的工厂。  
+    * 第二步，调用对象工厂的getObject方法来获取到对应的对象，得到这个对象后将其注入到B中。紧接着B会走完它的生命周期流程，包括初始化、后置处理器等。  
+
+    当B创建完后，会将B再注入到A中，此时A再完成它的整个生命周期。  
+4. 常见问题
+    1. 二级缓存能解决循环依赖嘛？  
+    &emsp; 二级缓存可以解决循环依赖。  
+    &emsp; 如果创建的Bean有对应的代理，那其他对象注入时，注入的应该是对应的代理对象；但是Spring无法提前知道这个对象是不是有循环依赖的情况，而正常情况下（没有循环依赖情况），Spring都是在创建好完成品Bean之后才创建对应的代理。这时候Spring有两个选择：
+
+        * 方案一：不管有没有循环依赖，都提前创建好代理对象，并将代理对象放入缓存，出现循环依赖时，其他对象直接就可以取到代理对象并注入。
+        * 方案二：不提前创建好代理对象，在出现循环依赖被其他对象注入时，才实时生成代理对象。这样在没有循环依赖的情况下，Bean就可以按着Spring设计原则的步骤来创建。  
+
+    &emsp; 如果使用二级缓存解决循环依赖，即采用方案一，意味着所有Bean在实例化后就要完成AOP代理，这样违背了Spring设计的原则，Spring在设计之初就是通过AnnotationAwareAspectJAutoProxyCreator这个后置处理器来在Bean生命周期的最后一步来完成AOP代理，而不是在实例化后就立马进行AOP代理。   
+    &emsp; **怎么做到提前曝光对象而又不生成代理呢？**   
+    &emsp; Spring就是在对象外面包一层ObjectFactory（三级缓存存放），提前曝光的是ObjectFactory对象，在被注入时才在ObjectFactory.getObject方式内实时生成代理对象，并将生成好的代理对象放入到第二级缓存Map\<String, Object> earlySingletonObjects。  
+
+
 
 ### 1.8.4. Bean的生命周期
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-10.png)  
+&emsp; SpringBean的生命周期主要有4个阶段：  
+1. 实例化（Instantiation），可以理解为new一个对象；
+2. 属性赋值（Populate），可以理解为调用setter方法完成属性注入；
+3. 初始化（Initialization），包含：  
+    * 激活Aware方法  
+    * 前置处理  
+    * 激活自定义的init方法 
+    * 后置处理 
+4. 销毁（Destruction）---注册Destruction回调函数。  
+
 
 ### 1.8.5. 容器相关特性
 #### 1.8.5.1. FactoryBean
+&emsp; BeanFactory是个Factory，也就是IOC容器或对象工厂；FactoryBean是个Bean，也由BeanFactory管理。  
+&emsp; `一般情况下，Spring通过反射机制利用<bean>的class属性指定实现类实例化Bean。` **<font color = "red">在某些情况下，实例化Bean过程比较复杂，</font>** 如果按照传统的方式，则需要在\<bean>中提供大量的配置信息。配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。 **<font color = "red">Spring为此提供了一个org.springframework.bean.factory.FactoryBean的`工厂类接口`，用户可以通过实现该接口定制实例化Bean的逻辑。</font>**  
+&emsp; **<font color = "red">FactoryBean接口的一些实现类，如Spring自身提供的ProxyFactoryBean、JndiObjectFactoryBean，还有Mybatis中的SqlSessionFactoryBean，</font>** 用于生产一些复杂的Bean。  
+
 
 #### 1.8.5.2. 可二次开发常用接口
+&emsp; **<font color = "red">Spring可二次开发常用接口：</font>**  
+&emsp; Spring为了用户的开发方便和特性支持，开放了一些特殊接口和类，用户可进行实现或者继承，常见的有：  
 
+&emsp; **Spring IOC阶段：**  
+&emsp; [事件多播器](/docs/SSM/Spring/feature/EventMulticaster.md)  
+&emsp; [事件](/docs/SSM/Spring/feature/Event.md)  
+
+&emsp; **Spring DI阶段：**  
+&emsp; [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
+&emsp; [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
+&emsp; [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
 
 ##### 1.8.5.2.1. 事件
 

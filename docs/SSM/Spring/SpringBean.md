@@ -13,14 +13,14 @@
 &emsp; **<font color = "red">总结：</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-10.png)  
 &emsp; SpringBean的生命周期主要有4个阶段：  
-1. 实例化(Instantiation)，可以理解为new一个对象；
-2. 属性赋值(Populate)，可以理解为调用setter方法完成属性注入；
-3. 初始化(Initialization)，包含：  
+1. 实例化（Instantiation），可以理解为new一个对象；
+2. 属性赋值（Populate），可以理解为调用setter方法完成属性注入；
+3. 初始化（Initialization），包含：  
     * 激活Aware方法  
     * 前置处理  
     * 激活自定义的init方法 
     * 后置处理 
-4. 销毁(Destruction)---注册Destruction回调函数。  
+4. 销毁（Destruction）---注册Destruction回调函数。  
 
 # 1. SpringBean生命周期
 <!-- 
