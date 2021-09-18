@@ -13,7 +13,7 @@ https://blog.csdn.net/pengweismile/article/details/103207017
 https://www.cnblogs.com/nijunyang/p/12339757.html?ivk_sa=1024320u
 -->
 
-&emsp; **<font color = "blue">Spring容器的refresh方法，容器启动过程中，事件监听listener相关的主要是这个三个方法：</font>**  
+&emsp; **<font color = "blue">Spring容器的refresh方法，容器启动过程中，事件监听listener相关的主要是这三个方法：</font>**  
 * initApplicationEventMulticaster方法初始化事件多播器，后续的事件发布都是由多播器来发布的；  
 * registerListeners注册监听器到前面初始化好的多播器上面去；
 * finishRefresh容器启动完成最后刷新，发布ContextRefreshedEvent事件。  

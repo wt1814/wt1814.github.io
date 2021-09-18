@@ -122,7 +122,7 @@
                 - [1.8.5.2.2. Aware接口](#18522-aware接口)
                 - [1.8.5.2.3. 后置处理器](#18523-后置处理器)
                 - [1.8.5.2.4. InitializingBean](#18524-initializingbean)
-        - [1.8.6. AOP基本概念](#186-aop基本概念)
+        - [1.8.6. SpringAOP教程](#186-springaop教程)
         - [1.8.7. SpringAOP解析](#187-springaop解析)
         - [1.8.8. Spring事务](#188-spring事务)
         - [1.8.9. SpringMVC解析](#189-springmvc解析)
@@ -1067,25 +1067,92 @@
 &emsp; [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
 
 ##### 1.8.5.2.1. 事件
-
+&emsp; **<font color = "clime">★★★Spring事件机制的流程：</font>**   
+1. **<font color = "clime">事件机制的核心是事件。</font>** Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件(继承ApplicationEvent)。  
+2. **<font color = "clime">确定事件后，要把事件发布出去。</font>** 在事件发布类的业务代码中调用ApplicationEventPublisher#publishEvent方法（或调用ApplicationEventPublisher的子类，例如调用ApplicationContext#publishEvent）。  
+3. **<font color = "blue">发布完成之后，启动监听器，自动监听。</font>** 在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
+4. 最后，就是实际场景中触发事件发布，完成一系列任务。  
 
 ##### 1.8.5.2.2. Aware接口
+&emsp; **<font color = "clime">容器管理的Bean一般不需要了解容器的状态和直接使用容器，但在某些情况下，是需要在Bean中直接对IOC容器进行操作的，这时候，就需要在Bean中设定对容器的感知。Spring IOC容器也提供了该功能，它是通过特定的aware接口来完成的。</font>** <font color = "red">aware接口有以下这些：
+
+* BeanNameAware，可以在Bean中得到它在IOC容器中的Bean实例名称。  
+* BeanFactoryAware，可以在Bean中得到Bean所在的IOC容器，从而直接在Bean中使用IOC容器的服务。  
+* ApplicationContextAware，可以在Bean中得到Bean所在的应用上下文，从而直接在 Bean中使用应用上下文的服务。  
+* MessageSourceAware，在Bean中可以得到消息源。  
+* ApplicationEventPublisherAware，在Bean中可以得到应用上下文的事件发布器，从而可以在Bean中发布应用上下文的事件。  
+* ResourceLoaderAware，在Bean中可以得到ResourceLoader，从而在Bean中使用ResourceLoader加载外部对应的Resource资源。</font>  
+
+&emsp; 在设置Bean的属性之后，调用初始化回调方法之前，Spring会调用aware接口中的setter方法。  
 
 
 ##### 1.8.5.2.3. 后置处理器
+1. <font color = "clime">实现BeanFactoryPostProcessor接口，可以`在spring的bean创建之前，修改bean的定义属性（BeanDefinition）`。</font>  
+2. <font color = "red">实现BeanPostProcessor接口，</font><font color = "blue">可以在spring容器实例化bean之后，`在执行bean的初始化方法前后，`添加一些自己的处理逻辑。</font>  
+
 
 ##### 1.8.5.2.4. InitializingBean
 
 
-### 1.8.6. AOP基本概念
+### 1.8.6. SpringAOP教程
+1. SpringAOP的主要功能是：日志记录，性能统计，安全控制，事务处理，异常处理等。 
+    * 慢请求记录  
+    * 使用aop + redis + Lua接口限流
+2. **SpringAOP失效：**  
+&emsp; <font color = "red">同一对象内部方法嵌套调用，慎用this来调用被@Async、@Transactional、@Cacheable等注解标注的方法，this下注解可能不生效。</font>async方法中的this不是动态代理的子类对象，而是原始的对象，故this调用无法通过动态代理来增强。 
+3. **<font color = "red">过滤器，拦截器和aop的区别：</font>** 过滤器拦截的是URL；拦截器拦截的是URL；Spring AOP只能拦截Spring管理Bean的访问（业务层Service）。  
 
 
 ### 1.8.7. SpringAOP解析
+1. **<font color = "blue">自动代理触发的时机：AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
+2. **<font color = "clime">代理类的生成流程：1). `获取当前的Spring Bean适配的advisors；`2). `创建代理类`。</font>**   
+    1. Spring AOP获取对应Bean适配的Advisors链的核心逻辑：
+        1. 获取当前IoC容器中所有的Aspect类。
+        2. 给每个Aspect类的advice方法创建一个Spring Advisor，这一步又能细分为： 
+            1. 遍历所有 advice 方法。
+            2. 解析方法的注解和pointcut。
+            3. 实例化 Advisor 对象。
+        3. 获取到候选的 Advisors，并且`缓存`起来，方便下一次直接获取。
+        4. 从候选的Advisors中筛选出与目标类适配的Advisor。 
+            1. 获取到Advisor的切入点pointcut。
+            2. 获取到当前target类所有的public方法。
+            3. 遍历方法，通过切入点的methodMatcher匹配当前方法，只要有一个匹配成功就相当于当前的Advisor适配。
+        5. 对筛选之后的Advisor链进行排序。  
+    2. 创建代理类
+        1. 创建AopProxy。根据ProxyConfig 获取到了对应的AopProxy的实现类，分别是JdkDynamicAopProxy和ObjenesisCglibAopProxy。 
+        2. 获取代理类。
+
 
 ### 1.8.8. Spring事务
+1. `@Transactional(rollbackFor = Exception.class) `，Transactional`默认只回滚RuntimeException，`但是可以指定要回滚的异常类型。    
+2. **<font color = "red">Spring事务属性通常由事务的传播行为、事务的隔离级别、事务的超时值、事务只读标志组成。</font>**  
+    * 事务的传播行为主要分为支持当前事务和不支持当前事务。  
+    &emsp; <font color = "red">PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务，合并成一个事务；如果当前没有事务，则创建一个新的事务。这是默认值。</font>  
+    * 事务的隔离级别，默认使用底层数据库的默认隔离级别。  
+    * 事务只读，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。  
+3. Spring事务失效：  
+    * 使用在了非public方法上。
+    * 捕获了异常，未再抛出。
+    * 同一个类中方法调用。
+    * @Transactional的类注入失败。
+    * 多数据源（静态配置）
+    * 原始SSM项目，重复扫描导致事务失效  
 
 
 ### 1.8.9. SpringMVC解析
+1. **SpringMVC的工作流程：**  
+    1. 找到处理器：前端控制器DispatcherServlet ---> **<font color = "red">处理器映射器HandlerMapping</font>** ---> 找到处理器Handler；  
+    2. 处理器处理：前端控制器DispatcherServlet ---> **<font color = "red">处理器适配器HandlerAdapter</font>** ---> 处理器Handler ---> 执行具体的处理器Controller（也叫后端控制器） ---> Controller执行完成返回ModelAndView；  
+    &emsp; 1. 处理器映射器HandlerMapping：根据请求的url查找HandlerHandler即处理器（Controller）。  
+    &emsp; 2. **<font color = "blue">处理器适配器HandlAdapter：按照特定规则（HandlerAdapter要求的规则）去执行Handler。通过HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。</font>**  
+    &emsp; 3. 处理器Handler和controller区别：
+    3. 返回前端控制器DispatcherServlet ---> 视图解析器ViewReslover。  
+2. **SpringMVC解析：**  
+    1. 在SpringMVC.xml中定义一个DispatcherServlet和一个监听器ContextLoaderListener。  
+    2. 上下文在web容器中的启动：<font color = "red">由ContextLoaderListener启动的上下文为根上下文。在根上下文的基础上，还有一个与Web MVC相关的上下文用来保存控制器（DispatcherServlet）需要的MVC对象，作为根上下文的子上下文，构成一个层次化的上下文体系。</font>  
+    3. **<font color = "red">`DispatcherServlet初始化和使用：`</font>**     
+        1. 初始化阶段。DispatcherServlet的初始化在HttpServletBean#init()方法中。 **<font color = "red">`完成Spring MVC的组件的初始化。`</font>**    
+        2. 调用阶段。这一步是由请求触发的。入口为DispatcherServlet#doService() ---> DispatcherServlet#doDispatch()。 **<font color = "blue">`逻辑即为SpringMVC处理流程。`</font>**   
 
 
 ### 1.8.10. 过滤器、拦截器、监听器
