@@ -28,11 +28,16 @@
     * 降低系统资源消耗。通过复用已存在的线程，降低线程创建和销毁造成的消耗；  
     * 提高响应速度。当有任务到达时，无需等待新线程的创建便能立即执行；  
     * 提高线程的可管理性。线程是稀缺资源，如果无限制的创建，不仅会消耗大量系统资源，还会降低系统的稳定性，使用线程池可以进行对线程进行统一的分配、调优和监控。  
-2. 根据返回的对象类型，创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor（任务调度线程池）、ForkJoinPool。  
-3. **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
+2. 线程池框架Executor：  
+&emsp; Executor：所有线程池的接口。  
+&emsp; ExecutorService：扩展了Executor接口。添加了一些用来管理执行器生命周期和任务生命周期的方法。  
+&emsp; ThreadPoolExecutor(创建线程池方式一)：线程池的具体实现类。  
+&emsp; Executors(创建线程池方式二)：提供了一系列静态的工厂方法用于创建线程池，返回的线程池都实现了ExecutorService 接口。  
+3. 根据返回的对象类型，创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor（任务调度线程池）、ForkJoinPool。  
+4. **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
 	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。
 	* CachedThreadPool和ScheduledThreadPool：允许创建的线程数量为Integer.MAX_VALUE，可能会创建大量线程，从而导致OOM。
-4. execute()，提交不需要返回值的任务；`submit()，提交需要返回值的任务，返回值类型是Future`。    
+5. 线程池执行，ExecutorService的API：execute()，提交不需要返回值的任务；`submit()，提交需要返回值的任务，返回值类型是Future`。    
 
 
 # 1. 线程池

@@ -9,8 +9,8 @@
     - [1.3. Thread.java的成员方法](#13-threadjava的成员方法)
         - [1.3.1. 线程的start方法和run方法的区别](#131-线程的start方法和run方法的区别)
         - [1.3.2. Thread.sleep()与Object.wait()](#132-threadsleep与objectwait)
-        - [1.3.3. ~~Join()方法~~](#133-join方法)
-        - [1.3.4. yield()，线程让步](#134-yield线程让步)
+        - [1.3.3. yield()，线程让步](#133-yield线程让步)
+        - [1.3.4. ~~Join()方法~~](#134-join方法)
         - [1.3.5. interrupt()与stop()，中断线程](#135-interrupt与stop中断线程)
         - [1.3.6. 守护线程](#136-守护线程)
         - [1.3.7. 线程优先级](#137-线程优先级)
@@ -19,8 +19,8 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 线程状态：新建、就绪、阻塞（等待阻塞(o.wait)、同步阻塞(lock)、其他阻塞(sleep/join)）、等待、计时等待、终止。  
-2. thread.join()把指定的线程加入到当前线程，可以将两个交替执行的线程合并为顺序执行的线程。比如在线程B中调用了线程A的Join()方法，直到线程A执行完毕后，才会继续执行线程B。  
-3. yield()，线程让步。 yield会使当前线程让出CPU执行时间片，与其他线程一起重新竞争CPU时间片。  
+2. yield()，线程让步。 yield会使当前线程让出CPU执行时间片，与其他线程一起重新竞争CPU时间片。  
+3. thread.join()把指定的线程加入到当前线程，可以将两个交替执行的线程合并为顺序执行的线程。比如在线程B中调用了线程A的Join()方法，直到线程A执行完毕后，才会继续执行线程B。  
 
 
 # 1. Thread类详解  
@@ -122,7 +122,7 @@ https://blog.csdn.net/zl18310999566/article/details/87931473
 &emsp; 两者都会暂停线程的执行。两者的区别是：进入waiting状态是线程主动的，而进入blocked状态是被动的。更进一步的说，进入blocked状态是在同步(synchronized代码之外)，而进入waiting状态是在同步代码之内。
 
 ### 1.2.2. 线程状态切换
-&emsp; 线程状态切换图示  
+&emsp; 线程状态切换图示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-1.png)  
 
 &emsp; 代码演示：  
@@ -185,14 +185,7 @@ class SubThread implements Runnable{
 * 用途不同：wait通常被用于线程间交互/通信，sleep通常被用于暂停执行。
 * 用法不同：wait()方法被调用后，线程不会自动苏醒，需要别的线程调用同一个对象上的notify()或者notifyAll()方法。sleep()方法执行完成后，线程会自动苏醒。或者可以使用wait(long timeout)超时后线程会自动苏醒。
 
-
-### 1.3.3. ~~Join()方法~~
-&emsp; thread.join()把指定的线程加入到当前线程，可以将两个交替执行的线程合并为顺序执行的线程。比如在线程B中调用了线程A的Join()方法，直到线程A执行完毕后，才会继续执行线程B。  
-&emsp; 在很多情况下，主线程创建并启动子线程，如果子线程中要进行大量的耗时运算，主线程往往将早于子线程结束之前结束。这时，如果主线程想等待子线程执行完成之后再结束，比如子线程处理一个数据，主线程要取得这个数据中的值，就要用到join()方法了。方法join()的作用是等待线程对象销毁。  
-&emsp; 方法join具有使线程排队运行的作用，有些类似同步的运行效果。join与synchronized的区别是：join在内部使用wait()方法进行等待，而sychronized关键字使用的是“对象监视器”原理做为同步。  
-
-
-### 1.3.4. yield()，线程让步
+### 1.3.3. yield()，线程让步
 <!-- 
 yield()方法的作用是放弃当前的CPU资源，将它让给其他的任务去占用CPU执行时 间。但放弃的时间不确定，有可能刚刚放弃，马上又获得CPU时间片。
 -->
@@ -216,8 +209,14 @@ public static native void yield();
 * yield()方法仅释放CPU执行权，<font color = "red">锁仍然占用，线程会被放入就绪队列，会在短时间内再次执行</font>。
 
 
+### 1.3.4. ~~Join()方法~~
+&emsp; thread.join()把指定的线程加入到当前线程，可以将两个交替执行的线程合并为顺序执行的线程。比如在线程B中调用了线程A的Join()方法，直到线程A执行完毕后，才会继续执行线程B。  
+&emsp; 在很多情况下，主线程创建并启动子线程，如果子线程中要进行大量的耗时运算，主线程往往将早于子线程结束之前结束。这时，如果主线程想等待子线程执行完成之后再结束，比如子线程处理一个数据，主线程要取得这个数据中的值，就要用到join()方法了。方法join()的作用是等待线程对象销毁。  
+&emsp; 方法join具有使线程排队运行的作用，有些类似同步的运行效果。join与synchronized的区别是：join在内部使用wait()方法进行等待，而sychronized关键字使用的是“对象监视器”原理做为同步。  
+
 ### 1.3.5. interrupt()与stop()，中断线程
 &emsp; 参考[线程停止与中断](/docs/java/concurrent/interrupt.md)   
+
 
 ### 1.3.6. 守护线程
 &emsp; 线程分为用户线程、守护线程。线程初始化默认为用户线程；使用setDaemon()方法将一个线程设置为守护线程。main()属于非守护线程。
