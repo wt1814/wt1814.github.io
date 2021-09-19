@@ -156,6 +156,9 @@
         - [Sleuth](#sleuth)
         - [Admin](#admin)
     - [1.12. Dubbo](#112-dubbo)
+        - [Dubbo和Spring Cloud](#dubbo和spring-cloud)
+        - [RPC介绍](#rpc介绍)
+        - [Dubbo介绍](#dubbo介绍)
     - [1.13. Zookeeper](#113-zookeeper)
 
 <!-- /TOC -->
@@ -1345,22 +1348,87 @@
 7. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
 
 ### Eureka
+1. 服务治理框架和产品都围绕着服务注册与服务发现机制来完成对微服务应用实例的自动化管理。  
+2. Spring Cloud Eureka，使用Netflix Eureka来实现服务注册与发现，它既包含了服务端组件，也包含了客户端组件。  
+3. Eureka服务治理体系包含三个核心角色：服务注册中心、服务提供者以及服务消费者。  
+    * 服务提供者  
+    &emsp; 服务同步、服务续约。
+    * 服务消费者    
+    &emsp; 荻取服务、服务调用、服务下线。
+    * 服务注册中心  
+        * 失效剔除  
+        * 自我保护：  
+        &emsp; 开启自我保护后，Eureka Server在运行期间，会统计心跳失败的比例在15分钟之内是否低于85%，如果出现低于的情况（在单机调试的时候很容易满足，实际在生产环境上通常是由于网络不稳定导致），Eureka Server会将当前的实例注册信息保护起来，让这些实例不会过期，尽可能保护这些注册信息。  
+        &emsp; Eureka Server进入自我保护状态后，客户端很容易拿到实际已经不存在的服务实例，会出现调用失败的清况。  
+4. <font color = "red">高可用注册中心/AP模型：EurekaServer的高可用实际上就是将自己作为服务向其他服务注册中心注册自己，这样就可以形成一组互相注册的服务注册中心，以实现服务清单的互相同步，达到高可用的效果。</font>  
 
 
 ### Ribbon
 
 ### Hytrix
+1. 服务雪崩：在微服务架构中，存在着那么多的服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统的瘫痪。  
+2. 熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。Hystrix中的降级方案：熔断触发降级、请求超时触发降级、资源（信号量、线程池）隔离触发降级 / 依赖隔离。  
+&emsp; <font color = "clime">熔断的对象是服务之间的请求；`熔断策略有根据请求的数量分为信号量和线程池，还有请求的时间（即超时熔断），请求错误率（即熔断触发降级）。`</font>  
+3. Hystrix工作流程：1. 包装请求 ---> 2. 发起请求 ---> 3. 缓存处理 ---> 4. 判断断路器是否打开（熔断） ---> 5. 判断是否进行业务请求（请求是否需要隔离或降级） ---> 6. 执行业务请求 ---> 7. 健康监测 ---> 8. fallback处理或返回成功的响应。  
+4. <font color = "clime">微服务集群中，Hystrix的度量信息通过`Turbine`来汇集监控信息，并将聚合后的信息提供给Hystrix Dashboard来集中展示和监控。</font>  
 
 ### Feign
 
 ### Zuul
+1. Spring Cloud Zuul，微服务网关，包含hystrix、ribbon、actuator。主要有路由转发、请求过滤功能。  
+2. **<font color = "red">Zuul提供了四种过滤器的API，分别为前置（Pre）、路由（Route）、后置（Post）和错误（Error）四种处理方式。</font>**  
+3. 动态加载：  
+&emsp; 作为最外部的网关，它必须具备动态更新内部逻辑的能力，比如动态修改路由规则、动态添加／删除过滤器等。  
+&emsp; 通过Zuul实现的API网关服务具备了动态路由和动态过滤的器能力，可以在不重启API网关服务的前提下为其动态修改路由规则和添加或删除过滤器。   
+
 
 ### Sleuth
+1. **<font color = "red">埋点日志通常包含：traceId、spanId、调用的开始时间，协议类型、调用方ip和端口，请求的服务名、调用耗时，调用结果，异常信息等，同时预留可扩展字段，为下一步扩展做准备；</font>**  
+2. spring-cloud-starter-sleuth功能点：
+    1. 有关traceId：获取当前traceId、日志获取traceId、传递traceId到异步线程池、子线程或线程池中获取Zipkin traceId并打印。  
+    2. sleuth自定义信息。增加自定义属性、添加自定义Tag标签。  
+    3. 监控本地方法：异步执行和远程调用都会新开启一个Span，如果想监控本地的方法耗时时间，可以采用埋点的方式监控本地方法，也就是开启一个新的Span。  
+    4. ...  
+
 
 ### Admin
+1. spring-boot-starter-actuator依赖中已经实现的一些原生端点。根据端点的作用，<font color = "clime">可以将原生端点分为以下三大类：</font>  
+    * 应用配置类：获取应用程序中加载的应用配置、环境变量、自动化配置报告等与Spring Boot应用密切相关的配置类信息。  
+    * 度量指标类：获取应用程序运行过程中用于监控的度量指标，比如内存信息、线程池信息、HTTP请求统计等。  
+    * 操作控制类：提供了对应用的关闭等操作类功能。  
+2. 监控通知
+3. 集成spring security
 
 
 ## 1.12. Dubbo
+### Dubbo和Spring Cloud
+&emsp; Dubbo是SOA时代的产物，它的关注点主要在于服务的调用，流量分发、流量监控和熔断。  
+&emsp; Spring Cloud诞生于微服务架构时代，考虑的是微服务治理的方方面面，另外由于依托了Spirng、Spirng Boot的优势之上。  
+
+* 两个框架在开始目标就不一致：<font color = "red">Dubbo定位服务治理；Spirng Cloud是一个生态。</font>  
+* <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "clime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。
+
+### RPC介绍
+
+
+
+### Dubbo介绍
+1. Dubbo的工作原理：  
+    1. 服务启动的时候，provider和consumer根据配置信息，连接到注册中心register，分别向注册中心注册和订阅服务。  
+    2. register根据服务订阅关系，返回provider信息到consumer，同时consumer会把provider信息缓存到本地。如果信息有变更，consumer会收到来自register的推送。  
+    3. consumer生成代理对象，同时根据负载均衡策略，选择一台provider，同时定时向monitor记录接口的调用次数和时间信息。  
+    4. 拿到代理对象之后，consumer通过`代理对象`发起接口调用。  
+    5. provider收到请求后对数据进行反序列化，然后通过代理调用具体的接口实现。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-52.png)   
+
+2. **<font color = "red">为什么要通过代理对象通信？</font>**    
+    &emsp; dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级等。让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：  
+    1. 调用的负载均衡策略  
+    2. 调用失败、超时、降级和容错机制  
+    3. 做一些过滤操作，比如加入缓存、mock数据  
+    4. 接口调用数据统计  
+
 
 
 ## 1.13. Zookeeper

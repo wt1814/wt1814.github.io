@@ -10,15 +10,25 @@
         - [1.2.3. Dubbo序列化和协议](#123-dubbo序列化和协议)
         - [1.2.4. ★★★负载均衡](#124-★★★负载均衡)
         - [1.2.5. Dubbo服务之间的调用是阻塞的吗？](#125-dubbo服务之间的调用是阻塞的吗)
-    - [1.3. Dubbo和Spring Cloud](#13-dubbo和spring-cloud)
-    - [1.4. Dubbo生态](#14-dubbo生态)
-        - [1.4.1. Dubbo与分布式事务](#141-dubbo与分布式事务)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级......  
+1. Dubbo的工作原理：  
+    1. 服务启动的时候，provider和consumer根据配置信息，连接到注册中心register，分别向注册中心注册和订阅服务。  
+    2. register根据服务订阅关系，返回provider信息到consumer，同时consumer会把provider信息缓存到本地。如果信息有变更，consumer会收到来自register的推送。  
+    3. consumer生成代理对象，同时根据负载均衡策略，选择一台provider，同时定时向monitor记录接口的调用次数和时间信息。  
+    4. 拿到代理对象之后，consumer通过`代理对象`发起接口调用。  
+    5. provider收到请求后对数据进行反序列化，然后通过代理调用具体的接口实现。  
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-52.png)   
+
+2. **<font color = "red">为什么要通过代理对象通信？</font>**    
+    &emsp; dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级等。让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：  
+    1. 调用的负载均衡策略  
+    2. 调用失败、超时、降级和容错机制  
+    3. 做一些过滤操作，比如加入缓存、mock数据  
+    4. 接口调用数据统计  
 
 # 1. Dubbo  
 <!--
@@ -92,19 +102,3 @@ https://mp.weixin.qq.com/s/2Wm2SsRa1xOMX6pV9NyCrA
 &emsp; 异步调用流程图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-12.png)   
 
-------
-
-## 1.3. Dubbo和Spring Cloud  
-&emsp; Dubbo是SOA时代的产物，它的关注点主要在于服务的调用，流量分发、流量监控和熔断。  
-&emsp; Spring Cloud诞生于微服务架构时代，考虑的是微服务治理的方方面面，另外由于依托了Spirng、Spirng Boot的优势之上。  
-
-* 两个框架在开始目标就不一致：<font color = "red">Dubbo定位服务治理；Spirng Cloud是一个生态。</font>  
-* <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "clime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-14.png)  
-
-## 1.4. Dubbo生态
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-65.png)   
-
-### 1.4.1. Dubbo与分布式事务  
-&emsp; Dubbo支持分布式事务吗？   
-&emsp; 目前暂时不支持，可与通过tcc-transaction框架实现。TCC-Transaction通过Dubbo隐式传参的功能，避免自己对业务代码的入侵。 

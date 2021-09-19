@@ -29,7 +29,7 @@
 ## 1.1. 本地调用和远程调用 
 ### 1.1.1. 本地调用和远程调用
 &emsp; 远程是相对于本地来说的，有远程调用就有本地调用，那么先说说本地调用是什么。    
-&emsp; 比如下图，代码在同一个进程中(或者说同一个地址空间)调用另外一个方法，得到需要的结果，这就是本地调用。  
+&emsp; 比如下图，代码在同一个进程中（或者说同一个地址空间）调用另外一个方法，得到需要的结果，这就是本地调用。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-8.png)   
 &emsp; 那么想象一下，如果这里的add方法是一个很复杂的方法，很多系统都想用这个方法，那么可以把这个方法单独拆成一个服务，提供给各个系统进行调用，那么本地就会变成远程，就会变成这样：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/RPC/rpc-9.png)   
