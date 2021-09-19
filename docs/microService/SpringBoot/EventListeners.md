@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. SpringBoot监听机制](#1-springboot监听机制)
+- [1. SpringBoot事件监听机制](#1-springboot事件监听机制)
     - [1.1. 引言](#11-引言)
     - [1.2. SpringBoot事件监听机制分析](#12-springboot事件监听机制分析)
     - [1.3. SpringBoot广播内置生命周期事件流程分析](#13-springboot广播内置生命周期事件流程分析)
@@ -14,7 +14,7 @@
 
 <!-- /TOC -->
 
-# 1. SpringBoot监听机制  
+# 1. SpringBoot事件监听机制  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-11.png)  
 
 ## 1.1. 引言  

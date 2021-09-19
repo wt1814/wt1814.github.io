@@ -128,18 +128,35 @@
         - [1.8.9. SpringMVC解析](#189-springmvc解析)
         - [1.8.10. 过滤器、拦截器、监听器](#1810-过滤器拦截器监听器)
     - [1.9. MyBatis](#19-mybatis)
-        - [MyBatis大数据量查询](#mybatis大数据量查询)
-        - [1.9.1. MyBatis架构](#191-mybatis架构)
-        - [1.9.2. MyBatis SQL执行解析](#192-mybatis-sql执行解析)
-        - [1.9.3. MyBatis缓存](#193-mybatis缓存)
-        - [1.9.4. MyBatis插件解析](#194-mybatis插件解析)
-    - [SpringBoot](#springboot)
-        - [SpringBoot基础知识](#springboot基础知识)
-        - [SpringBoot启动过程](#springboot启动过程)
-        - [SpringBoot自动配置](#springboot自动配置)
-    - [SpringCloud](#springcloud)
-    - [Dubbo](#dubbo)
-    - [Zookeeper](#zookeeper)
+        - [1.9.1. MyBatis大数据量查询](#191-mybatis大数据量查询)
+        - [1.9.2. MyBatis架构](#192-mybatis架构)
+        - [1.9.3. MyBatis SQL执行解析](#193-mybatis-sql执行解析)
+        - [1.9.4. MyBatis缓存](#194-mybatis缓存)
+        - [1.9.5. MyBatis插件解析](#195-mybatis插件解析)
+    - [1.10. SpringBoot](#110-springboot)
+        - [1.10.1. SpringBoot基础知识](#1101-springboot基础知识)
+        - [1.10.2. SpringBoot启动过程](#1102-springboot启动过程)
+            - [1.10.2.1. SpringApplication初始化](#11021-springapplication初始化)
+            - [1.10.2.2. run()方法运行过程](#11022-run方法运行过程)
+            - [1.10.2.3. SpringBoot事件监听机制](#11023-springboot事件监听机制)
+                - [1.10.2.3.1. 事件监听步骤](#110231-事件监听步骤)
+                - [1.10.2.3.2. 内置生命周期事件](#110232-内置生命周期事件)
+            - [1.10.2.4. SpringBoot事件回调](#11024-springboot事件回调)
+        - [1.10.3. SpringBoot自动配置](#1103-springboot自动配置)
+            - [1.10.3.1. 注解@SpringBootApplication](#11031-注解springbootapplication)
+            - [1.10.3.2. 加载自动配置流程](#11032-加载自动配置流程)
+            - [1.10.3.3. 内置Tomcat](#11033-内置tomcat)
+        - [自定义strater](#自定义strater)
+    - [1.11. SpringCloud](#111-springcloud)
+        - [Eureka](#eureka)
+        - [Ribbon](#ribbon)
+        - [Hytrix](#hytrix)
+        - [Feign](#feign)
+        - [Zuul](#zuul)
+        - [Sleuth](#sleuth)
+        - [Admin](#admin)
+    - [1.12. Dubbo](#112-dubbo)
+    - [1.13. Zookeeper](#113-zookeeper)
 
 <!-- /TOC -->
 
@@ -1169,13 +1186,13 @@
 
 ## 1.9. MyBatis
 
-### MyBatis大数据量查询
+### 1.9.1. MyBatis大数据量查询
 1. 流式查询  
 &emsp; 流式查询指的是查询成功后不是返回一个集合而是返回一个迭代器，应用每次从迭代器取一条查询结果。流式查询的好处是能够降低内存使用。  
 &emsp; **<font color = "clime">如果没有流式查询，想要从数据库取 1000 万条记录而又没有足够的内存时，就不得不分页查询，而分页查询效率取决于表设计，如果设计的不好，就无法执行高效的分页查询。因此流式查询是一个数据库访问框架必须具备的功能。</font>**  
 &emsp; 流式查询的过程当中，数据库连接是保持打开状态的，因此要注意的是： **<font color = "clime">执行一个流式查询后，数据库访问框架就不负责关闭数据库连接了，需要应用在取完数据后自己关闭。</font>**  
 
-### 1.9.1. MyBatis架构
+### 1.9.2. MyBatis架构
 &emsp; **<font color = "red">Mybatis的功能架构分为三层：</font>**  
 
 * API接口层：提供给外部使用的接口API，开发人员通过这些本地API来操纵数据库。接口层一接收到调用请求就会调用核心处理层来完成具体的数据处理。  
@@ -1183,7 +1200,7 @@
 * 基础支持层：负责最基础的功能支撑，包括连接管理、事务管理、配置加载和缓存处理，这些都是共用的东西，将它们抽取出来作为最基础的组件。为上层的数据处理层提供最基础的支撑。  
 
 
-### 1.9.2. MyBatis SQL执行解析
+### 1.9.3. MyBatis SQL执行解析
 1. sql执行流程：   
     1. 读取核心配置文件并返回InputStream流对象。
     2. 根据InputStream流对象解析出Configuration对象，然后创建SqlSessionFactory工厂对象。
@@ -1215,11 +1232,11 @@
     ```
 
 
-### 1.9.3. MyBatis缓存
+### 1.9.4. MyBatis缓存
 &emsp; ......  
 
 
-### 1.9.4. MyBatis插件解析
+### 1.9.5. MyBatis插件解析
 1. **<font color="clime">Mybaits插件的实现主要用了拦截器、责任链和动态代理。</font>** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
 2. **<font color = "clime">mybatis扩展性很强，基于插件机制，基本上可以控制SQL执行的各个阶段，如执行器阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。</font>**   
     * 执行器Executor（update、query、commit、rollback等方法）；  
@@ -1228,24 +1245,125 @@
     * SQL语法构建器StatementHandler（prepare、parameterize、batch、update、query等方法）；    
 
 
-## SpringBoot
+## 1.10. SpringBoot
 
-### SpringBoot基础知识
-
-
-### SpringBoot启动过程
+### 1.10.1. SpringBoot基础知识
 
 
-### SpringBoot自动配置
+### 1.10.2. SpringBoot启动过程
+&emsp; SpringApplication.run()中首先new SpringApplication对象，然后调用该对象的run方法。<font color = "red">即run()方法主要包括两大步骤：</font>  
+1. 创建SpringApplication对象；  
+2. 运行run()方法。  
+
+#### 1.10.2.1. SpringApplication初始化
+1. **<font color = "blue">构造过程一般是对构造函数的一些成员属性赋值，做一些初始化工作。</font><font color = "blue">SpringApplication有6个属性：`资源加载器`、资源类集合、应用类型、`初始化器`、`监听器`、`包含main函数的主类`。</font>**  
+	1. 给resourceLoader属性赋值，resourceLoader属性，资源加载器，此时传入的resourceLoader参数为null；  
+	2. **<font color = "clime">初始化资源类集合并去重。</font>** 给primarySources属性赋值，primarySources属性即`SpringApplication.run(MainApplication.class,args);`中传入的MainApplication.class，该类为SpringBoot项目的启动类，主要通过该类来扫描Configuration类加载bean；
+	3. **<font color = "clime">判断当前是否是一个 Web 应用。</font>** 给webApplicationType属性赋值，webApplicationType属性，代表应用类型，根据classpath存在的相应Application类来判断。因为后面要根据webApplicationType来确定创建哪种Environment对象和创建哪种ApplicationContext；
+	4. **<font color = "blue">设置应用上下文初始化器。</font>** 给initializers属性赋值，initializers属性为List<ApplicationContextInitializer<?\>>集合，利用SpringBoot的SPI机制从spring.factories配置文件中加载，后面在初始化容器的时候会应用这些初始化器来执行一些初始化工作。因为SpringBoot自己实现的SPI机制比较重要；  
+	5. **<font color = "blue">设置监听器。</font>** 给listeners属性赋值，listeners属性为List<ApplicationListener<?\>>集合，同样利用SpringBoot的SPI机制从spring.factories配置文件中加载。因为SpringBoot启动过程中会在不同的阶段发射一些事件，所以这些加载的监听器们就是来监听SpringBoot启动过程中的一些生命周期事件的；
+	6. **<font color = "clime">推断主入口应用类。</font>** 给mainApplicationClass属性赋值，mainApplicationClass属性表示包含main函数的类，即这里要推断哪个类调用了main函数，然后把这个类的全限定名赋值给mainApplicationClass属性，用于后面启动流程中打印一些日志。
+
+2. **<font color = "clime">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。SpringBoot通过以下步骤实现自己的SPI机制：</font>**  
+	1. 首先获取线程上下文类加载器;  
+	2. 然后利用上下文类加载器从spring.factories配置文件中加载所有的SPI扩展实现类并放入缓存中；  
+	3. 根据SPI接口从缓存中取出相应的SPI扩展实现类；  
+	4. 实例化从缓存中取出的SPI扩展实现类并返回。  
+
+#### 1.10.2.2. run()方法运行过程
+1. **<font color = "clime">运行流程：创建所有Spring运行监听器并发布应用启动事件、准备环境变量、创建容器 ---> 容器准备（为刚创建的容器对象做一些初始化工作，准备一些容器属性值等）、刷新容器 ---> 执行刷新容器后的后置处理逻辑、调用ApplicationRunner和CommandLineRunner的run方法。</font>**  
+2. **<font color = "clime">`内置生命周期事件：`</font>** <font color = "red">在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件。</font>  
+3. **<font color = "clime">`事件回调机制：`</font>** <font color = "red">run()阶段涉及了比较重要的[事件回调机制](/docs/microService/SpringBoot/eventCallback.md)，回调4个监听器（ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener）中的方法与加载项目中组件到IOC容器中。</font>  
+
+#### 1.10.2.3. SpringBoot事件监听机制
+##### 1.10.2.3.1. 事件监听步骤
+&emsp; **<font color = "clime">SpringBoot启动时广播生命周期事件步骤：</font>**    
+1. 为广播SpringBoot内置生命周期事件做前期准备：    
+    1. 首先加载ApplicationListener监听器实现类；  
+    2. 其次加载SPI扩展类EventPublishingRunListener。  
+2. SpringBoot启动时利用EventPublishingRunListener广播生命周期事件，然后ApplicationListener监听器实现类监听相应的生命周期事件执行一些初始化逻辑的工作。  
+    1. 构建SpringApplication对象时<font color = "red">根据ApplicationListener接口去spring.factories配置文件中加载并实例化监听器。</font>  
+    2. 在SpringBoot的启动过程中首先从spring.factories配置文件中加载并实例化EventPublishingRunListener对象。  
+    3. 在SpringBoot的启动过程中会发布一系列SpringBoot内置的生命周期事件。  
+
+##### 1.10.2.3.2. 内置生命周期事件
+&emsp; **<font color = "clime">SpringBoot内置的7种生命周期事件</font>**  
+
+|发布顺序|事件|用途|
+|---|---|---|
+|1|ApplicationStartingEvent|在SpringApplication启动时但在环境变量Environment或容器ApplicationContext创建前触发，标志SpringApplication开始启动。|
+|2|ApplicationEnvironmentPreparedEvent|在SpringApplication已经开始启动且环境变量Environment已经准备好时触发，标志环境变量已经准备好。|
+|3|ApplicationContextInitializedEvent|ApplicationContextInitilizers的初始化方法已经被调用即从spring.factories中加载的initializers已经执行ApplicationContext初始化逻辑但在bean定义加载前触发，标志Application已经初始化完毕。|
+|4|ApplicationPreparedEvent|在Spring容器刷新refresh前触发。|
+|5|ApplicationStaredEvent|在Spring容器刷新后触发，但在调用ApplicationRunner和CommandLineRunner的run方法调用前触发，标志Spring容器已经刷新，此时所有的bean实例等都已经加载了。|
+|6|ApplicationReadyEvent|只要SpringApplication可以接收服务请求时即调用完ApplicationRunner和CommandLineRunner的run方法后触发，此时标志SpringApplication已经正在运行，即成功启动。|
+|7|ApplicationFailedEvent|若SpringApplicaton未能成功启动时则会catch住异常发布ApplicationFailedEvent事件，标志ApplicationFailedEvent启动失败。|
 
 
-## SpringCloud
+#### 1.10.2.4. SpringBoot事件回调
+&emsp; **<font color = "clime">SpringBoot事件回调：</font>**  
+
+* **<font color = "red">ApplicationContextInitializer，IOC容器初始化时被回调；</font>**  
+* **<font color = "red">SpringApplicationRunListener，SpringBoot启动过程中多次被回调；</font>**  
+* **<font color = "red">ApplicationRunner，容器启动完成后被回调；</font>**  
+* **<font color = "red">CommandLineRunner，ApplicationRunner之后被回调。</font>**  
+
+### 1.10.3. SpringBoot自动配置
+&emsp; 包含两部分：1. 注解@SpringBootApplication；2. 加载自动配置流程。
 
 
-## Dubbo
+#### 1.10.3.1. 注解@SpringBootApplication
+1. @SpringBootApplication  
+    * @ComponentScan  
+    * @SpringBootConfiguration  
+    * @EnableAutoConfiguration  
+2. @EnableAutoConfiguration使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。   
+    1. @Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。  
+    2. AutoConfigurationImportSelector#getCandidateConfigurations()方法获取配置文件spring.factories所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
 
 
-## Zookeeper
+#### 1.10.3.2. 加载自动配置流程
+1. 启动对象的注入：在SpringBoot启动流程的`容器准备阶段`prepareContext()会将@SpringBootApplication--->@Component对象注册到容器中。  
+2. 自动装配入口，从SpringBoot启动流程的`刷新容器阶段`refresh()开始。 
+
+#### 1.10.3.3. 内置Tomcat
+1. SpringBoot内置Tomcat，可以对比SpringBoot自动配置运行流程了解。  
+2. Tomcat的自动装配：自动装配过程中，Web容器所对应的自动配置类为ServletWebServerFactoryAutoConfiguration，该类导入了EmbeddedTomcat，EmbeddedJetty，EmbeddedUndertow三个类，可以根据用户的需求去选择使用哪一个web服务器，默认情况下使用的是tomcat。  
+3. Tomcat的启动：在容器刷新refreshContext(context)步骤完成。  
+
+
+### 自定义strater
+
+## 1.11. SpringCloud
+&emsp; **<font color = "clime">Spring Cloud各组件运行流程：</font>**  
+1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关(Zuul)来访问内部服务。客户端的请求首先经过负载均衡(Ngnix)，再到达服务网关(Zuul集群)；  
+2. 网关接收到请求后，从注册中心(Eureka)获取可用服务；  
+3. 由Ribbon进行均衡负载后，分发到后端的具体实例；  
+4. 微服务之间也可通过Feign进行通信处理业务；  
+5. Hystrix负责处理服务超时熔断；Hystrix dashboard，Turbine负责监控Hystrix的熔断情况，并给予图形化的展示；  
+6. Turbine监控服务间的调用和熔断相关指标；  
+7. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
+
+### Eureka
+
+
+### Ribbon
+
+### Hytrix
+
+### Feign
+
+### Zuul
+
+### Sleuth
+
+### Admin
+
+
+## 1.12. Dubbo
+
+
+## 1.13. Zookeeper
 
 
 
