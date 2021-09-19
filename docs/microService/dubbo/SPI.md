@@ -19,6 +19,11 @@
     * JDK标准的SPI会一次性实例化扩展点所有实现。  
     * 如果扩展点加载失败，连扩展点的名称都拿不到了。  
     * 增加了对扩展点IoC和AOP的支持，一个扩展点可以直接setter注入其它扩展点。  
+2. 扩展点特性
+    * 扩展点自动包装，Wrapper机制
+    * 扩展点自动装配
+    * 扩展点自适应
+    * 扩展点自动激活
 
 # 1. Dubbo SPI  
 &emsp; **<font color = "red">官网：http://dubbo.apache.org/</font>** 

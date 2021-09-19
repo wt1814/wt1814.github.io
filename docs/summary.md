@@ -146,19 +146,27 @@
             - [1.10.3.1. 注解@SpringBootApplication](#11031-注解springbootapplication)
             - [1.10.3.2. 加载自动配置流程](#11032-加载自动配置流程)
             - [1.10.3.3. 内置Tomcat](#11033-内置tomcat)
-        - [自定义strater](#自定义strater)
+        - [1.10.4. 自定义strater](#1104-自定义strater)
     - [1.11. SpringCloud](#111-springcloud)
-        - [Eureka](#eureka)
-        - [Ribbon](#ribbon)
-        - [Hytrix](#hytrix)
-        - [Feign](#feign)
-        - [Zuul](#zuul)
-        - [Sleuth](#sleuth)
-        - [Admin](#admin)
+        - [1.11.1. Eureka](#1111-eureka)
+        - [1.11.2. Ribbon](#1112-ribbon)
+        - [1.11.3. Hytrix](#1113-hytrix)
+        - [1.11.4. Feign](#1114-feign)
+        - [1.11.5. Zuul](#1115-zuul)
+        - [1.11.6. Sleuth](#1116-sleuth)
+        - [1.11.7. Admin](#1117-admin)
     - [1.12. Dubbo](#112-dubbo)
-        - [Dubbo和Spring Cloud](#dubbo和spring-cloud)
-        - [RPC介绍](#rpc介绍)
-        - [Dubbo介绍](#dubbo介绍)
+        - [1.12.1. Dubbo和Spring Cloud](#1121-dubbo和spring-cloud)
+        - [1.12.2. RPC介绍](#1122-rpc介绍)
+        - [1.12.3. Dubbo介绍](#1123-dubbo介绍)
+        - [1.12.4. Dubbo框架设计](#1124-dubbo框架设计)
+        - [1.12.5. 暴露和引用服务](#1125-暴露和引用服务)
+        - [1.12.6. 服务调用](#1126-服务调用)
+            - [1.12.6.1. 服务调用介绍](#11261-服务调用介绍)
+            - [1.12.6.2. Dubbo序列化和协议](#11262-dubbo序列化和协议)
+                - [1.12.6.2.1. Dubbo协议长连接](#112621-dubbo协议长连接)
+        - [1.12.7. Dubbo集群容错](#1127-dubbo集群容错)
+        - [1.12.8. 扩展点加载(SPI)](#1128-扩展点加载spi)
     - [1.13. Zookeeper](#113-zookeeper)
 
 <!-- /TOC -->
@@ -1335,7 +1343,7 @@
 3. Tomcat的启动：在容器刷新refreshContext(context)步骤完成。  
 
 
-### 自定义strater
+### 1.10.4. 自定义strater
 
 ## 1.11. SpringCloud
 &emsp; **<font color = "clime">Spring Cloud各组件运行流程：</font>**  
@@ -1347,7 +1355,7 @@
 6. Turbine监控服务间的调用和熔断相关指标；  
 7. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
 
-### Eureka
+### 1.11.1. Eureka
 1. 服务治理框架和产品都围绕着服务注册与服务发现机制来完成对微服务应用实例的自动化管理。  
 2. Spring Cloud Eureka，使用Netflix Eureka来实现服务注册与发现，它既包含了服务端组件，也包含了客户端组件。  
 3. Eureka服务治理体系包含三个核心角色：服务注册中心、服务提供者以及服务消费者。  
@@ -1363,18 +1371,18 @@
 4. <font color = "red">高可用注册中心/AP模型：EurekaServer的高可用实际上就是将自己作为服务向其他服务注册中心注册自己，这样就可以形成一组互相注册的服务注册中心，以实现服务清单的互相同步，达到高可用的效果。</font>  
 
 
-### Ribbon
+### 1.11.2. Ribbon
 
-### Hytrix
+### 1.11.3. Hytrix
 1. 服务雪崩：在微服务架构中，存在着那么多的服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统的瘫痪。  
 2. 熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。Hystrix中的降级方案：熔断触发降级、请求超时触发降级、资源（信号量、线程池）隔离触发降级 / 依赖隔离。  
 &emsp; <font color = "clime">熔断的对象是服务之间的请求；`熔断策略有根据请求的数量分为信号量和线程池，还有请求的时间（即超时熔断），请求错误率（即熔断触发降级）。`</font>  
 3. Hystrix工作流程：1. 包装请求 ---> 2. 发起请求 ---> 3. 缓存处理 ---> 4. 判断断路器是否打开（熔断） ---> 5. 判断是否进行业务请求（请求是否需要隔离或降级） ---> 6. 执行业务请求 ---> 7. 健康监测 ---> 8. fallback处理或返回成功的响应。  
 4. <font color = "clime">微服务集群中，Hystrix的度量信息通过`Turbine`来汇集监控信息，并将聚合后的信息提供给Hystrix Dashboard来集中展示和监控。</font>  
 
-### Feign
+### 1.11.4. Feign
 
-### Zuul
+### 1.11.5. Zuul
 1. Spring Cloud Zuul，微服务网关，包含hystrix、ribbon、actuator。主要有路由转发、请求过滤功能。  
 2. **<font color = "red">Zuul提供了四种过滤器的API，分别为前置（Pre）、路由（Route）、后置（Post）和错误（Error）四种处理方式。</font>**  
 3. 动态加载：  
@@ -1382,7 +1390,7 @@
 &emsp; 通过Zuul实现的API网关服务具备了动态路由和动态过滤的器能力，可以在不重启API网关服务的前提下为其动态修改路由规则和添加或删除过滤器。   
 
 
-### Sleuth
+### 1.11.6. Sleuth
 1. **<font color = "red">埋点日志通常包含：traceId、spanId、调用的开始时间，协议类型、调用方ip和端口，请求的服务名、调用耗时，调用结果，异常信息等，同时预留可扩展字段，为下一步扩展做准备；</font>**  
 2. spring-cloud-starter-sleuth功能点：
     1. 有关traceId：获取当前traceId、日志获取traceId、传递traceId到异步线程池、子线程或线程池中获取Zipkin traceId并打印。  
@@ -1391,7 +1399,7 @@
     4. ...  
 
 
-### Admin
+### 1.11.7. Admin
 1. spring-boot-starter-actuator依赖中已经实现的一些原生端点。根据端点的作用，<font color = "clime">可以将原生端点分为以下三大类：</font>  
     * 应用配置类：获取应用程序中加载的应用配置、环境变量、自动化配置报告等与Spring Boot应用密切相关的配置类信息。  
     * 度量指标类：获取应用程序运行过程中用于监控的度量指标，比如内存信息、线程池信息、HTTP请求统计等。  
@@ -1401,18 +1409,18 @@
 
 
 ## 1.12. Dubbo
-### Dubbo和Spring Cloud
+### 1.12.1. Dubbo和Spring Cloud
 &emsp; Dubbo是SOA时代的产物，它的关注点主要在于服务的调用，流量分发、流量监控和熔断。  
 &emsp; Spring Cloud诞生于微服务架构时代，考虑的是微服务治理的方方面面，另外由于依托了Spirng、Spirng Boot的优势之上。  
 
 * 两个框架在开始目标就不一致：<font color = "red">Dubbo定位服务治理；Spirng Cloud是一个生态。</font>  
 * <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "clime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。
 
-### RPC介绍
+### 1.12.2. RPC介绍
+&emsp; ......  
 
 
-
-### Dubbo介绍
+### 1.12.3. Dubbo介绍
 1. Dubbo的工作原理：  
     1. 服务启动的时候，provider和consumer根据配置信息，连接到注册中心register，分别向注册中心注册和订阅服务。  
     2. register根据服务订阅关系，返回provider信息到consumer，同时consumer会把provider信息缓存到本地。如果信息有变更，consumer会收到来自register的推送。  
@@ -1429,9 +1437,110 @@
     3. 做一些过滤操作，比如加入缓存、mock数据  
     4. 接口调用数据统计  
 
+### 1.12.4. Dubbo框架设计
+1. 分层架构设计
+    1. 从大的范围来说，dubbo分为三层：
+        * business业务逻辑层由开发人员来提供接口和实现还有一些配置信息。
+        * RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理。
+        * remoting则是对网络传输协议和数据转换的封装。  
+    2. RPC层包含config，配置层、proxy，代理层、register，服务注册层、cluster，路由层、monitor，监控层、protocol，远程调用层。    
+        1. **<font color = "red">proxy，服务代理层：服务接口透明代理，生成服务的客户端Stub和服务器端Skeleton，以ServiceProxy为中心，扩展接口为ProxyFactory。</font>**  
+        &emsp; **<font color = "red">Proxy层封装了所有接口的透明化代理，而在其它层都以Invoker为中心，</font><font color = "blue">只有到了暴露给用户使用时，才用Proxy将Invoker转成接口，或将接口实现转成 Invoker，也就是去掉Proxy层RPC是可以Run的，只是不那么透明，不那么看起来像调本地服务一样调远程服务。</font>**  
+        &emsp; dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级......  
+        2. **<font color = "red">protocol，远程调用层：封装RPC调用，以Invocation, Result为中心，扩展接口为Protocol, Invoker, Exporter。</font>**
+    3. remoting层：  
+        1. 网络传输层：抽象mina和netty为统一接口，以Message为中心，扩展接口为Channel, Transporter, Client, Server, Codec。  
+        2. 数据序列化层：可复用的一些工具，扩展接口为Serialization, ObjectInput, ObjectOutput, ThreadPool。  
+2. 总体调用过程  
 
+
+### 1.12.5. 暴露和引用服务
+1. 解析服务：  
+&emsp; **<font color = "clime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
+&emsp; ⚠️注：在暴露服务ServiceConfig.export()或引用服务ReferenceConfig.get()时，会将Bean对象转换URL格式，所有Bean属性转成URL的参数。然后将URL传给协议扩展点，基于扩展点的扩展点自适应机制，根据URL的协议头，进行不同协议的服务暴露或引用。  
+2. **服务提供者暴露服务的主过程：**  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-29.png)   
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-53.png)   
+    1. ServiceConfig将Bean对象解析成URL格式。  
+    2. 通过ProxyFactory类的getInvoker方法使用ref(实际类)生成一个AbstractProxyInvoker实例。`ProxyFactory #getInvoker(T proxy, Class<T> type, URL url)`  
+    3. 通过Protocol(协议)类的export方法暴露服务。`DubboProtocol #export(Invoker<T> invoker)`  
+        1. 本地各种协议暴露。  
+        2. 注册中心暴露。  
+    4. 如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心。  
+3. **服务消费者引用服务的主过程：**  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-30.png)   
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-54.png)   
+    1. ReferenceConfig解析引用的服务。  
+    2. ReferenceConfig类的init方法调用Protocol的refer方法生成Invoker实例。  
+    3. 把Invoker转换为客户端需要的接口。  
+
+### 1.12.6. 服务调用
+#### 1.12.6.1. 服务调用介绍
+
+
+#### 1.12.6.2. Dubbo序列化和协议
+1. 不同服务在性能上适用不同协议进行传输，比如大数据用短连接协议，小数据大并发用长连接协议。  
+2. 默认使用Hessian序列化，还有Duddo、FastJson、Java自带序列化。   
+
+##### 1.12.6.2.1. Dubbo协议长连接
+&emsp; Dubbo缺省协议采用单一长连接和NIO异步通讯，适合于小数据量大并发的服务调用，以及服务消费者机器数远大于服务提供者机器数的情况。  
+&emsp; 注意：Dubbo缺省协议不适合传送大数据量的服务，比如传文件，传视频等，除非请求量很低。  
+&emsp; Dubbo协议采用长连接，还可以防止注册中心宕机风险。  
+
+
+### 1.12.7. Dubbo集群容错
+1. 负载均衡
+2. 集群容错策略
+3. 服务降级
+
+### 1.12.8. 扩展点加载(SPI)
+1. **<font color = "clime">Dubbo改进了JDK标准的SPI的以下问题：</font>**  
+    * JDK标准的SPI会一次性实例化扩展点所有实现。  
+    * 如果扩展点加载失败，连扩展点的名称都拿不到了。  
+    * 增加了对扩展点IoC和AOP的支持，一个扩展点可以直接setter注入其它扩展点。  
+2. 扩展点特性
+    * 扩展点自动包装，Wrapper机制
+    * 扩展点自动装配
+    * 扩展点自适应
+    * 扩展点自动激活
 
 ## 1.13. Zookeeper
+
+1. **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
+2. `ZK服务端`通过`ZAB协议`保证`数据顺序一致性`。  
+    1. ZK服务端通过`ZAB协议`保证`数据顺序一致性`。  
+    2. ZAB协议：
+        1. **<font color = "clime">崩溃恢复</font>**  
+            * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>  
+            * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态。
+        2. **<font color = "clime">`消息广播（数据读写流程，读写流程）：`</font>**  
+            &emsp; 在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点。    
+            * 如果是读请求，就直接从当前节点中读取数据。  
+            * 如果是写请求，那么请求会被转发给 leader 提交事务，然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交。   
+            &emsp; ⚠️注：leader向follower写数据详细流程：类2pc(两阶段提交)。  
+    3.  数据一致性  
+        &emsp; **<font color = "red">Zookeeper保证的是CP，即一致性(Consistency)和分区容错性(Partition-Tolerance)，而牺牲了部分可用性(Available)。</font>**  
+        * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>
+        * Zookeeper的CP模型：非强一致性， **<font color = "clime">而是单调一致性/顺序一致性。</font>**  
+            1. <font color = "clime">假设有2n+1个server，在同步流程中，leader向follower同步数据，当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。</font><font color = "red">如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。</font> 未同步数据的情况，Zookeeper提供了同步机制（可选型），类似回调。   
+            2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数(n+1)的server认同后，将对整个集群进行同步，超过半数(n+1)的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
+3. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
+4. zookeeper引入了`watcher机制`来实现`客户端和服务端`的发布/订阅功能。  
+    1. Watcher机制运行流程：Zookeeper客户端向服务端的某个Znode注册一个Watcher监听，当服务端的一些指定事件触发了这个Watcher，服务端会向指定客户端发送一个事件通知来实现分布式的通知功能，然后客户端根据Watcher通知状态和事件类型做出业务上的改变。  
+    &emsp; 触发watch事件种类很多，如：节点创建，节点删除，节点改变，子节点改变等。  
+    2.  **watch的重要特性：**  
+        * 异步发送
+        * 一次性触发：  
+        &emsp; Watcher通知是一次性的， **<font color = "clime">即一旦触发一次通知后，该Watcher就失效了，因此客户端需要反复注册Watcher。</font>** 但是在获取watch事件和设置新的watch事件之间有延迟。延迟为毫秒级别，理论上会出现不能观察到节点的每一次变化。  
+        &emsp; `不支持用持久Watcher的原因：如果Watcher的注册是持久的，那么必然导致服务端的每次数据更新都会通知到客户端。这在数据变更非常频繁且监听客户端特别多的场景下，ZooKeeper无法保证性能。`  
+        * 有序性：  
+        &emsp; 客户端先得到watch通知才可查看节点变化结果。  
+    3. 客户端过多，会引发网络风暴。  
+5. ZK的弊端：
+	1. 服务端从节点多，主从同步慢。  
+	2. 客户端多，`网络风暴`。~~watcher机制中，回调流程，只有主节点参与？~~  
+6. Zookeeper应用场景：统一命名服务，生成分布式ID、分布式锁、队列管理、元数据/配置信息管理，数据发布/订阅、分布式协调、集群管理，HA高可用性。  
+
 
 
 
