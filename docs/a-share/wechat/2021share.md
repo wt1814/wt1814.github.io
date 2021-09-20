@@ -31,6 +31,10 @@
 [深入分析JDK动态代理为什么只能使用接口](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492854&idx=2&sn=193c28f174974738d1ce0646c85726b1&chksm=cf70f698f8077f8ef0621879b67ffb7bde422cea91b80ff86121044c3c951260eb8885ce4bd0&scene=21#wechat_redirect)  
 [为什么 JDK 动态代理只能为接口生成代理？](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492854&idx=1&sn=3edd7e1c52f58d9c6400fa8e7b8b8295&chksm=cf70f698f8077f8ea5f0c7a082ac60d3180366a12749c93fd3e4820201e155a7f28ad6633a34&scene=21#wechat_redirect)  
 [多态、策略模式和简单工厂模式的理解](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493091&idx=1&sn=818d94298ee5a6690ee329e546957b07&chksm=cf70f78df8077e9b5f6708b30c35a108b73d0edbd1533f33643c1124cb3a3d13fc322b14f257&scene=21#wechat_redirect)  
+[单例模式和静态类的区别](https://mp.weixin.qq.com/s/lro6cd32XPePnN8Gld52cw)  
+[java适配器模式之接口适配器](https://mp.weixin.qq.com/s/d-pqYpPNZ8r9KY0Brcw-Cg)  
+[类适配器和对象适配器](https://mp.weixin.qq.com/s/srT3T6QgFSAqNKLsxNa7gQ)  
+[策略模式(继承，接口，组合的综合运用)](https://mp.weixin.qq.com/s/XMjyHbhsDtOs0HzP9P0aPQ)  
 
 
 ## JVM
@@ -57,7 +61,8 @@
 [带着8个问题5分钟教你学会Arthas诊断工具](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493154&idx=1&sn=4df39fa12749e9d8f64678b3df76bf40&chksm=cf70f44cf8077d5a6161b47c1854321a6d56d622e4c8f314ffaf3ffc7c637388c452d6f6b8f7&scene=21#wechat_redirect)  
 [CMSGC造成内存碎片的解决方法](https://mp.weixin.qq.com/s/iZpbwMAeG39cdvLBtzj8mA)  
 [CMS的碎片解决方案](https://mp.weixin.qq.com/s/39rcjLx_kKXAinMQuXsNgQ)  
-
+[Arthas快速上手与原理浅谈](https://mp.weixin.qq.com/s/L1roudFF3eQP6Yj6nr8exQ)  
+[arthas诊断Docker里的Java进程](https://mp.weixin.qq.com/s/LmHT8OCq-cfgcmIVb_BGSA)  
 
 ## 并发编程
 [Java并发之线程中断](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491495&idx=1&sn=807acfc7e20ca5ddc825c8939702bed7&chksm=fa20bfbbcd5736ad043d0ebf6e532b23331d2680483c699516f7e5d9b39dfd48f4258b338211&scene=21#wechat_redirect)  
@@ -94,7 +99,7 @@
 [详解synchronized锁的各种用法及注意事项](https://mp.weixin.qq.com/s/Ejk4L8HqKuGRuyXvM4GGQQ)  
 
 ## 数据库
-[神奇的 SQL 之 ICP → 索引条件下推](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491427&idx=3&sn=bc6b4ca1afb6525ae33b9019fde36c6c&chksm=fa20bf7fcd5736695a3b7f4851e4d24a8e9ad69df301e74acdb2fcdbcd5055afa7f2893ba786&scene=21#wechat_redirect)  
+[神奇的 SQL 之 ICP，索引条件下推](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491427&idx=3&sn=bc6b4ca1afb6525ae33b9019fde36c6c&chksm=fa20bf7fcd5736695a3b7f4851e4d24a8e9ad69df301e74acdb2fcdbcd5055afa7f2893ba786&scene=21#wechat_redirect)  
 [如何进行数据库设计？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491427&idx=2&sn=9866941453c445554611244769b0cc9f&chksm=fa20bf7fcd573669ba27c9deb0f6da4ba5d58a7565bf79ecd810994b36c5ae54a069b19e502a&scene=21#wechat_redirect)  
 [MySQL binlog原来可以这样用？](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491427&idx=1&sn=bea0d72714b99808877bd4cfdf639ce7&chksm=fa20bf7fcd573669b24407a1ee5152c280fce22146f5e8f7c9c813b4cec6a60e4004fe5dd348&scene=21#wechat_redirect)  
 [MySQL主从复制作用和原理](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491778&idx=2&sn=61fc14dee9d9daff023ac4516de7e27b&chksm=fa2340decd54c9c87f5615a5189c5ace54bf1e230d171432a615c740bf7a3e49f9407e725c9a&scene=21#wechat_redirect)  
@@ -133,9 +138,9 @@
 [mysql在已有无分区表增加分区](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492728&idx=1&sn=3614ebae0ce98b9d89f7580906a1a178&chksm=cf70f616f8077f006c984fb05fa53d657beca560dfdddcfd4f69c8520d370433c2290355251d&scene=21#wechat_redirect)  
 [Mysql索引-B+树是如何生长的](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492771&idx=1&sn=181ec02044d00956dca56d208ccd3d44&chksm=cf70f6cdf8077fdb47e2ca1242378cd7aa6d2661c00ace9d9c2d853f8ef1b23c3e2e3d922486&scene=21#wechat_redirect)  
 [MySQL面试三连杀：如何实现可重复读、又为什么会出现幻读、是否解决了幻读问题？](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492771&idx=2&sn=71a3aa6add558dba45b076c653f02c60&chksm=cf70f6cdf8077fdbed18a88006ca959f2d28abc5ddfc0ae1d266eb133354dc9e246cc1a89a5e&scene=21#wechat_redirect)  
-[收藏- mac mysql 安装及 my.cnf文件设置](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492870&idx=1&sn=d7f1db164b97555d1f9d60e5db70d5ac&chksm=cf70f768f8077e7e6a5506f36c817210e35337451b905d481aea62206a49b8b7ed2280a4fa54&scene=21#wechat_redirect)  
-[Explain执行计划key_len详解](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492881&idx=1&sn=63833f91e04f291a3f5fb73343445fa7&chksm=cf70f77ff8077e696f6a15ecda01cc2c62fdbd7d41f5fb77e9539c433b1648436b8c86f67972&scene=21#wechat_redirect)  
-[读写分离怎么做，怎么实现](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493046&idx=1&sn=b12312f37c9800d2bf514bebc5c4067b&chksm=cf70f7d8f8077ece13e82bf5a2701b935588f4fb117c2d1b7eb1458a62462ecf0362f13dd856&scene=21#wechat_redirect)  
+[收藏- mac mysql安装及 my.cnf文件设置](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492870&idx=1&sn=d7f1db164b97555d1f9d60e5db70d5ac&chksm=cf70f768f8077e7e6a5506f36c817210e35337451b905d481aea62206a49b8b7ed2280a4fa54&scene=21#wechat_redirect)  
+[Explain执行计划详解](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492881&idx=1&sn=63833f91e04f291a3f5fb73343445fa7&chksm=cf70f77ff8077e696f6a15ecda01cc2c62fdbd7d41f5fb77e9539c433b1648436b8c86f67972&scene=21#wechat_redirect)  
+[读写分离怎么做，怎么实现](https://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493046&idx=1&sn=b12312f37c9800d2bf514bebc5c4067b&chksm=cf70f7d8f8077ece13e82bf5a2701b935588f4fb117c2d1b7eb1458a62462ecf0362f13dd856&scene=21#wechat_redirect)  
 [我C，一个库里Curry几百个表，这谁受得了？](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493169&idx=1&sn=30ad2fd144b8512520b8f99dc6f36a22&chksm=cf70f45ff8077d49b08db9663204cf625a9868c60e238b7649069dd8bf7c4aabc09eeb32b02b&scene=21#wechat_redirect)  
 [一条 sql 的执行过程详解](https://mp.weixin.qq.com/s/y9R6fn8PXbvHrWCqyk9qlA)  
 [浅谈 MySQL InnoDB 的内存组件](https://mp.weixin.qq.com/s/h2rsvttXWxOSjz0wTsFtOg)  
@@ -185,6 +190,7 @@
 [Redis选择实现了自己的VM](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493047&idx=2&sn=756bfc4aa3889889bfba97ddf90a2ce1&chksm=cf70f7d9f8077ecf87c91111a1cb47109ded45201e1db08ee2bb8b798997795fa5507fd9d065&scene=21#wechat_redirect)  
 [Redis协议是什么样的](https://mp.weixin.qq.com/s?__biz=MzA4MTA0NTI1Mg%3D%3D&mid=2650926322&idx=1&sn=03fc00ca82889553f4a7b4b5ad73aea4&scene=45#wechat_redirect)  
 [Redis通讯协议RESP详解](https://mp.weixin.qq.com/s?__biz=MzA5ODU4ODc2NA%3D%3D&mid=2247483882&idx=1&sn=4d9c166ebfba92c0b8fd5b8524270056&scene=45#wechat_redirect)  
+[redis设计与实现-Reactor模型的应用](https://mp.weixin.qq.com/s/CExNSoYDDotLdV6vIxEd7A)  
 
 
 ## mq
@@ -202,6 +208,8 @@
 [详解分布式一致性机制](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492382&idx=1&sn=69c333a85a30afe9c8b0fdb3d544f7aa&chksm=cf70f170f8077866caff842919d0359ef9848f3c8bb776928fcb8aaede06e45f014b85b9b516&scene=21#wechat_redirect)  
 [专业点，那叫“基于状态机的乐观锁”解决幂等](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493001&idx=1&sn=3531faf0cb5beef7f72d4ea248ace157&chksm=cf70f7e7f8077ef198e2f1b80df63ca3dfc8212e77d78ad90cabf88a5aea5692b4808e457517&scene=21#wechat_redirect)  
 [TCC和两阶段提交有啥异同？](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493014&idx=1&sn=6634e7b7b9aef8dce1dfd348de2b0283&chksm=cf70f7f8f8077eee3109af82e0470e7e1b10e1f1f2039a2725a4dfa80fe15b6195767e9fbbcf&scene=21#wechat_redirect)  
+[拜托，面试请不要再问我TCC分布式事务的实现原理](https://mp.weixin.qq.com/s/4sAalMfVV_VFuoVQ4edP-Q)  
+[分布式事务 Seata TCC 模式深度解析](https://mp.weixin.qq.com/s/CZBReTmzrYytDqK16iZErA)  
 
 
 ## 微服务
@@ -222,6 +230,7 @@
 [Zookeeper读写数据流程](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492529&idx=1&sn=2354451ac9a2d437d72a17fcbcc6f358&chksm=cf70f1dff80778c95a08f34efb0d2610bf7889e37586d83bb38fff48d3051cee5f9267368cee&scene=21#wechat_redirect)  
 [Zookeeper的优缺点](https://mp.weixin.qq.com/s/lVWRPXAujr_yxaS6B4nOuA)  
 [Zookeeper系统设计的缺陷](https://mp.weixin.qq.com/s/gdeI-EYhJ2Xwv6Hyd3NaHA)  
+[Dubbo的参数校验](https://mp.weixin.qq.com/s/w50rDa95VslmlK83B5unCg)  
 
 ## 高并发
 [什么是流量削峰？如何解决秒杀业务的削峰场景](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492412&idx=1&sn=d0728cd3bf7487fa2186a63d731641ef&chksm=cf70f152f80778444ec86d60c6758c8349c0a60744d531a134c1e0f7e2d2abdfbbc17a0912b1&scene=21#wechat_redirect)  
@@ -275,6 +284,7 @@
 [什么是集群?什么是分布式?二者的区别](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247493304&idx=1&sn=a7ff8ffc83fce319666a4cbbaa3f95a3&chksm=fa2346a4cd54cfb21f43788308c93cc6252b4703ebea5ac7c02b5e004222bd06f0fa3fdc79c6&scene=21#wechat_redirect)  
 [Web服务器性能瓶颈因素](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247493058&idx=1&sn=4dd0207800e920494dbd422289e0b561&chksm=cf70f7acf8077ebacb1fbabaf2a52ebb947b95e496d7da1cd266a15e0a3fc5ed41cd3d2a236a&scene=21#wechat_redirect)  
 [又一款Nginx 管理可视化神器！通过界面完成配置监控](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247492891&idx=2&sn=0ef84ff036a5637d594dced23d435637&chksm=fa234507cd54cc114664202f18cf8baf608a600e712e71027016bfbdc68c74094f13648f551e&scene=21#wechat_redirect)  
+[架构质量属性](https://mp.weixin.qq.com/s/_StEV5fCq5bK6qL67ex9qQ)  
 
 ## DevOps
 [全面解析微服务系统监控分层，啃透服务治理核心！](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491480&idx=3&sn=edfa91a29980c89c8836e5d5a63e1909&chksm=fa20bf84cd5736928a14b5286f11644a83b17cad81edbc2f4e4241974a865b660db2e90cdb58&scene=21#wechat_redirect)  
@@ -290,6 +300,9 @@
 [不容错过的灰度发布系统架构设计](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492597&idx=1&sn=bb0cfa5596fbd2e3682787515258f6e3&chksm=cf70f19bf807788d254bea0e2b5688a52f4832a132cc9cdfb29fc687f738fb71c7acf6d16210&scene=21#wechat_redirect)  
 [k8s自动扩缩容hpa](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492827&idx=1&sn=820bc4bf12afd92e2a4a4006cd5586d2&chksm=cf70f6b5f8077fa3204566d18b801b964daa398b46b8fb1c3e5d036e9be1e249f23aa84d7805&scene=21#wechat_redirect)  
 [Kubernetes自动伸缩机制，为你降本增效](http://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492924&idx=1&sn=048aa2ea43c31708cf71cc1301f05044&chksm=cf70f752f8077e44726e437c6f95c78e03da74884aa2eb2a0d52021f34aa3fd19fc285610a5a&scene=21#wechat_redirect)  
+[Git仓库完整迁移](https://mp.weixin.qq.com/s/3ophiVkRwyE4W_DsMShXxw)  
+[K8S延迟销毁容器（更优雅的升级）](https://mp.weixin.qq.com/s/vx1QteninDLznghMFJc28w)  
+
 
 ## 计算机网络
 [一文讲懂什么是vlan、三层交换机、网关、DNS、子网掩码、MAC地址](http://mp.weixin.qq.com/s?__biz=MzUyNTE4NzQ0Mw==&mid=2247491480&idx=2&sn=9c31a68e20576f1f54259034d4acb3ca&chksm=fa20bf84cd573692a7da54a880d74b81185d33b81eb5d92fed9944d622c15950bb81678acbaa&scene=21#wechat_redirect)  
