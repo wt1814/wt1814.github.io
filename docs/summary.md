@@ -35,6 +35,25 @@
     - [1.4. 并发编程](#14-并发编程)
         - [1.4.1. 线程Thread](#141-线程thread)
         - [1.4.2. 并发编程](#142-并发编程)
+            - [1.4.2.1. 并发编程原理](#1421-并发编程原理)
+                - [1.4.2.1.1. CPU缓存及JMM](#14211-cpu缓存及jmm)
+                - [1.4.2.1.2. 并发安全问题产生原因](#14212-并发安全问题产生原因)
+                - [1.4.2.1.3. 并发安全解决底层](#14213-并发安全解决底层)
+                - [1.4.2.1.4. 伪共享问题](#14214-伪共享问题)
+            - [1.4.2.2. 线程安全解决](#1422-线程安全解决)
+                - [1.4.2.2.1. 线程安全解决方案](#14221-线程安全解决方案)
+                - [1.4.2.2.2. Synchronized](#14222-synchronized)
+                    - [1.4.2.2.2.1. Synchronized介绍](#142221-synchronized介绍)
+                    - [1.4.2.2.2.2. Synchronized使用](#142222-synchronized使用)
+                - [1.4.2.2.3. Synchronized使用是否安全](#14223-synchronized使用是否安全)
+                    - [1.4.2.2.3.1. Synchronized底层原理](#142231-synchronized底层原理)
+                    - [1.4.2.2.3.2. Synchronized优化](#142232-synchronized优化)
+                - [1.4.2.2.4. Volatile](#14224-volatile)
+                - [1.4.2.2.5. ThreadLocal原理](#14225-threadlocal原理)
+                    - [1.4.2.2.5.1. ThreadLocal原理](#142251-threadlocal原理)
+                    - [1.4.2.2.5.2. ThreadLocal应用](#142252-threadlocal应用)
+            - [1.4.2.3. 线程通信(生产者消费者问题)](#1423-线程通信生产者消费者问题)
+            - [1.4.2.4. 线程活跃性](#1424-线程活跃性)
         - [1.4.3. 线程池](#143-线程池)
             - [1.4.3.1. 线程池框架](#1431-线程池框架)
             - [1.4.3.2. ThreadPoolExecutor详解](#1432-threadpoolexecutor详解)
@@ -495,6 +514,191 @@
     * WAITING/TIMED_WAITING状态下的线程对于中断操作是敏感的，它们会抛出异常并清空中断标志位。  
 
 ### 1.4.2. 并发编程
+#### 1.4.2.1. 并发编程原理
+##### 1.4.2.1.1. CPU缓存及JMM
+1. JMM
+    1. JMM内存划分：线程对变量的所有操作都必须在工作内存进行，而不能直接读写主内存中的变量。    
+    2. 单个线程操作时，8种内存间交换操作指令。  
+    3. 线程之间的通信和同步。线程之间的通信过程：线程对变量的操作（读取赋值等）必须在工作内存中进行，首先要将变量从主内存拷贝到自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，不能直接操作主内存中的变量，</font>各个线程中的工作内存中存储着主内存中的变量副本拷贝，<font color = "red">因此不同的线程间无法访问对方的工作内存，线程间的通信（传值）必须通过主内存来完成。</font>    
+
+
+##### 1.4.2.1.2. 并发安全问题产生原因
+1. **并发安全的3个问题：**  
+
+    * 原子性：线程切换带来的原子性问题；（[Volatile](/docs/java/concurrent/Volatile.md)不保证原子性）
+    * 可见性：缓存不能及时刷新导致的可见性问题；
+    * 有序性：编译优化带来的有序性问题  
+
+    &emsp; **<font color = "clime">【编译器优化】和“缓存不能及时刷新”(【内存系统重排序】)都是重排序的一种。</font>**   
+
+2. **重排序：**  
+    * **<font color = "blue">重排序分类：1). 编译器优化；2). 指令重排序(CPU优化行为)；3). 内存系统重排序：内存系统没有重排序，但是由于有缓存的存在，使得程序整体上会表现出乱序的行为。</font>**     
+        * 对于编译器，JMM的编译器重排序规则会禁止特定类型的编译器重排序（不是所有的编译器重排序都要禁止）。  
+        * 对于处理器重排序，JMM的处理器重排序规则会要求Java编译器在生成指令序列时，插入特定类型的内存屏障指令， **<font color = "clime">通过内存屏障指令来禁止特定类型的处理器重排序</font>** (不是所有的处理器重排序都要禁止)。 
+
+    * 重排序遵守的规则：重排序遵守数据依赖性、重排序遵守as-if-serial语义。  
+    * 重排序对多线程的影响
+
+##### 1.4.2.1.3. 并发安全解决底层
+1. 缓存一致性协议  
+    1. 怎么解决缓存一致性问题呢？使用总线锁或缓存锁。  
+    &emsp; 缓存锁：只要保证多个CPU缓存的同一份数据是一致的就可以了，基于缓存一致性协议来实现。  
+    2. MESI缓存一致性协议  
+        1. 缓存一致性协议有很多种，MESI(Modified-Exclusive-Shared-Invalid)协议其实是目前使用很广泛的缓存一致性协议，x86处理器所使用的缓存一致性协议就是基于MESI的。  
+        2. 其他cpu通过 总线嗅探机制 可以感知到数据的变化从而将自己缓存里的数据失效。总线嗅探，**<font color = "red">每个CPU不断嗅探总线上传播的数据来检查自己缓存值是否过期了，如果处理器发现自己的缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置为无效状态，当处理器对这个数据进行修改操作的时候，会重新从内存中把数据读取到处理器缓存中。</font>**    
+        2. 总线嗅探会带来总线风暴。  
+2. 内存屏障  
+&emsp; Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。  
+&emsp; 内存屏障，禁止处理器重排序，保障缓存一致性。
+    1. 内存屏障的作用：（~~原子性~~、可见性、有序性）
+        1.（`保障可见性`）它会强制将对缓存的修改操作立即写入主存； 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。 
+        2.（`保障有序性`）阻止屏障两侧的指令重排序。 
+3. JMM中的happens-before原则
+
+##### 1.4.2.1.4. 伪共享问题
+1. CPU具有多级缓存，越接近CPU的缓存越小也越快；CPU缓存中的数据是以缓存行为单位处理的；CPU缓存行（通常是64字节）能带来免费加载数据的好处，所以处理数组性能非常高。  
+2. **CPU缓存行也带来了弊端，多线程处理不相干的变量时会相互影响，也就是伪共享。**  
+&emsp; 设想如果有个long类型的变量a，它不是数组的一部分，而是一个单独的变量，并且还有另外一个long类型的变量b紧挨着它，那么当加载a的时候将免费加载b。  
+&emsp; 看起来似乎没有什么毛病，但是如果一个CPU核心的线程在对a进行修改，另一个CPU核心的线程却在对b进行读取。  
+3. 避免伪共享的主要思路就是让不相干的变量不要出现在同一个缓存行中；一是在两个long类型的变量之间再加7个long类型(字节填充)；二是创建自己的long类型，而不是用原生的；三是使用java8提供的注解。  
+&emsp; 高性能原子类[LongAdder](/docs/java/concurrent/LongAdder.md)可以解决类伪共享问题。   
+
+#### 1.4.2.2. 线程安全解决
+##### 1.4.2.2.1. 线程安全解决方案
+1. 线程安全解决方案
+	1. 阻塞/互斥同步（悲观锁）
+	2. 非阻塞同步（乐观锁，CAS） 
+	3. 无同步方案（线程封闭）
+		* 栈封闭（类变量变局部变量）
+		* 线程本地存储（Thread Local Storage）
+	4. 不可变对象
+2. Java并发原语
+	Java内存模型，除了定义了一套规范，还提供了一系列原语，封装了底层实现后，供开发者直接使用。  
+	* 原子性可以通过synchronized和Lock来实现。  
+	* 可见性可以通过Volatile、synchronized、final来实现。  
+	* 有序性可以通过synchronized或者Lock、volatile来实现。  
+
+##### 1.4.2.2.2. Synchronized
+###### 1.4.2.2.2.1. Synchronized介绍
+
+
+
+
+###### 1.4.2.2.2.2. Synchronized使用
+1. `类锁：当Synchronized修饰静态方法或Synchronized修饰代码块传入某个class对象（Synchronized (XXXX.class)）时被称为类锁。`
+2. `对象锁：当Synchronized修饰非静态方法或Synchronized修饰代码块时传入非class对象（Synchronized this）时被称为对象锁。`
+
+
+##### 1.4.2.2.3. Synchronized使用是否安全
+
+
+###### 1.4.2.2.3.1. Synchronized底层原理
+1. Synchronized底层实现：  
+    * Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。  
+    * Synchronized代码块同步：使用monitorenter和monitorexit指令实现。   
+每一个对象都会和一个监视器monitor关联。监视器被占用时会被锁住，其他线程无法来获取该monitor。   
+线程执行monitorenter指令时尝试获取对象的monitor的所有权，当monitor被占用时就会处于锁定状态。  
+2. **<font color = "clime">Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor（也称为管程或监视器锁）的起始地址，每个对象都存在着一个monitor与之关联。</font>**  
+3. **<font color = "clime">在Java虚拟机（HotSpot）中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。</font><font color = "blue">monitor运行的机制过程如下：(_EntryList队列、_Owner区域、_WaitSet队列)</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
+    * `想要获取monitor的线程，首先会进入_EntryList队列。`  
+    * `当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程，`同时计数器count加1。  
+    * **如果线程调用了wait()方法，则会进入WaitSet队列。** 它会释放monitor锁，即将owner赋值为null，count自减1，进入WaitSet队列阻塞等待。  
+    * 如果其他线程调用 notify() / notifyAll()，会唤醒WaitSet中的某个线程，该线程再次尝试获取monitor锁，成功即进入Owner区域。  
+    * 同步方法执行完毕了，线程退出临界区，会将monitor的owner设为null，并释放监视锁。  
+4. linux互斥锁nutex（内核态）  
+&emsp; <font color = "clime">重量级锁是依赖对象内部的monitor锁来实现的，而monitor又依赖操作系统的MutexLock(互斥锁)来实现的，所以重量级锁也称为互斥锁。</font>  
+&emsp; **<font color = "clime">为什么说重量级线程开销很大？</font>**  
+&emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，被阻塞的线程不会消耗cpu。 **<font color = "clime">`但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态(向内核申请)，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。`</font>**  
+
+
+
+###### 1.4.2.2.3.2. Synchronized优化
+1. **<font color = "clime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时，如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>   
+2. 锁升级
+    锁主要存在四种状态，依次是：无锁状态（普通对象）、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。锁升级流程如下：   
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-79.png)   
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-80.png)   
+	1. 偏向锁：  
+        1.  **<font color = "bule">偏向锁状态</font>**  
+            * **<font color = "clime">匿名偏向(Anonymously biased)</font>** 。在此状态下thread pointer为NULL(0)，意味着还没有线程偏向于这个锁对象。第一个试图获取该锁的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。这是允许偏向锁的类对象的初始状态。
+            * **<font color = "clime">可重偏向(Rebiasable)</font>** 。在此状态下，偏向锁的epoch字段是无效的（与锁对象对应的class的mark_prototype的epoch值不匹配）。下一个试图获取锁对象的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。**在批量重偏向的操作中，未被持有的锁对象都被置于这个状态，以便允许被快速重偏向。**
+            * **<font color = "clime">已偏向(Biased)</font>** 。这种状态下，thread pointer非空，且epoch为有效值——意味着其他线程正在持有这个锁对象。
+        2. 偏向锁获取： 
+            1. 判断是偏向锁时，检查对象头Mark Word中记录的Thread Id是否是当前线程ID。  
+            2. 如果对象头Mark Word中Thread Id不是当前线程ID，则进行CAS操作，企图将当前线程ID替换进Mark Word。如果当前对象锁状态处于匿名偏向锁状态（可偏向未锁定），则会替换成功（ **<font color = "clime">将Mark Word中的Thread id由匿名0改成当前线程ID，</font>** 在当前线程栈中找到内存地址最高的可用Lock Record，将线程ID存入）。  
+            3. 如果对象锁已经被其他线程占用，则会替换失败，开始进行偏向锁撤销，这也是偏向锁的特点，一旦出现线程竞争，就会撤销偏向锁； 
+        3. 偏向锁撤销： 
+            1. 等到安全点，检查持有偏向锁的`线程是否还存活`。如果线程还存活，则检查线程是否在执行同步代码块中的代码，如果是，则升级为轻量级锁，进行CAS竞争锁； 
+            2. 如果持有偏向锁的线程未存活，或者持有偏向锁的线程未在执行同步代码块中的代码， **<font color = "red">则进行校验`是否允许重偏向`。</font>**   
+                1. **<font color = "clime">如果不允许重偏向，则撤销偏向锁，将Mark Word设置为无锁状态（未锁定不可偏向状态），然后升级为轻量级锁，进行CAS竞争锁；</font><font color = "blue">(偏向锁被重置为无锁状态，这种策略是为了提高获得锁和释放锁的效率。)</font>**     
+                2. 如果允许重偏向，设置为匿名偏向锁状态，CAS将偏向锁重新指向线程A（在对象头和线程栈帧的锁记录中存储当前线程ID）； 
+            3. 唤醒暂停的线程，从安全点继续执行代码。 
+	2. 轻量级锁：
+		1. 偏向锁升级为轻量级锁之后，对象的Markword也会进行相应的的变化。   
+            1. 线程在自己的栈桢中创建锁记录LockRecord。
+            2. 将锁对象的对象头中的MarkWord复制到线程刚刚创建的锁记录中。
+            3. 将锁记录中的Owner指针指向锁对象。
+            4. 将锁对象的对象头的MarkWord替换为指向锁记录的指针。
+		2. 自旋锁：轻量级锁在加锁过程中，用到了自旋锁。自旋锁分为固定次数自旋锁（在JDK 1.6之前，自旋次数默认是10次）和自适应自旋锁。
+		3. 新线程获取轻量级锁
+			1. 获取轻量锁过程当中会在当前线程的虚拟机栈中创建一个Lock Record的内存区域去存储获取锁的记录DisplacedMarkWord，
+			2. 然后使用CAS操作将锁对象的Mark Word更新成指向刚刚创建的Lock Record的内存区域DisplacedMarkWord的地址。  
+		4. 已经获取轻量级锁的线程的解锁： **<font color = "red">轻量级锁的锁释放逻辑其实就是获得锁的逆向逻辑，通过CAS操作把线程栈帧中的LockRecord替换回到锁对象的MarkWord中。</font>** 
+    3. 重量级锁  
+    &emsp; **<font color = "clime">为什么有了自旋锁还需要重量级锁？</font>**  
+    &emsp; 自旋是消耗CPU资源的，如果锁的时间长，或者自旋线程多，CPU会被大量消耗；重量级锁有等待队列，所有拿不到锁的线程进入等待队列，不需要消耗CPU资源。  
+    &emsp; 偏向锁、自旋锁都是用户空间完成。重量级锁是需要向内核申请。  
+
+
+
+##### 1.4.2.2.4. Volatile
+1. **<font color = "clime">Volatile的特性：</font>**  
+    1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>    
+    2. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**  
+    3. <font color = "red">实现了有序性，禁止进行指令重排序。</font>  
+2. Volatile底层原理：  
+    * **<font color = "clime">在Volatile写前插入写-写[屏障](/docs/java/concurrent/ConcurrencySolve.md)（禁止上面的普通写与下面的Volatile写重排序），在Volatile写后插入写-读屏障（禁止上面的Volatile写与下面可能有的Volatile读/写重排序）。</font>**  
+    * **<font color = "clime">在Volatile读后插入读-读屏障（禁止下面的普通读操作与上面的Volatile读重排序）、读-写屏障（禁止下面所有的普通写操作和上面Volatile读重排序）。</font>**  
+3. Volatile为什么不安全（不保证原子性，线程切换）？  
+&emsp; 两个线程执行i++（i++的过程可以分为三步，首先获取i的值，其次对i的值进行加1，最后将得到的新值写回到缓存中），线程1获取i值后被挂起，线程2执行...  
+4. DCL详解：  
+	1. 为什么两次判断？ 线程1调用第一个if(singleton==null)，可能会被挂起。  
+	2. 为什么要加volatile关键字？  
+	&emsp; singleton = new Singleton()非原子性操作，包含3个步骤：分配内存 ---> 初始化对象 ---> 将singleton对象指向分配的内存空间(这步一旦执行了，那singleton对象就不等于null了)。  
+	&emsp; **<font color = "clime">因为指令重排序，可能编程1->3->2。如果是这种顺序，会导致别的线程拿到半成品的实例。</font>**  
+
+
+##### 1.4.2.2.5. ThreadLocal原理
+###### 1.4.2.2.5.1. ThreadLocal原理
+1. ThreadLocal源码/内存模型：  
+    1. **<font color = "red">ThreadLocal#set()#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** 即，当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
+    &emsp; ~~Thread ---> ThreadLocal.ThreadLocalMap~~
+    2. **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。<font color = "clime">`Key是一个ThreadLocal实例，Value是设置的值。`Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
+2. **ThreadLocal内存泄露：**  
+&emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key(ThreadLocal实例)会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
+&emsp; **<font color = "clime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  
+&emsp; 解决方案：`调用remove()方法`
+3. **ThreadLocalMap的key被回收后，如何获取值？**  
+&emsp; ThreadLocal#get() ---> setInitialValue() ---> ThreadLocalMap.set(this, value); 。  
+&emsp; 通过nextIndex()不断获取table上的槽位，直到遇到第一个为null的地方，此处也将是存放具体entry的位置，在线性探测法的不断冲突中，如果遇到非空entry中的key为null，可以表明key的弱引用已经被回收，但是由于线程仍未结束生命周期被回收，而导致该entry仍未从table中被回收，那么则会在这里尝试通过replaceStaleEntry()方法，将null key的entry回收掉并set相应的值。  
+
+
+###### 1.4.2.2.5.2. ThreadLocal应用
+1. ThreadLocal使用场景：  
+    1. 线程安全问题。
+    2. 业务中变量传递。1)ThreadLocal实现同一线程下多个类之间的数据传递；2)ThreadLocal实现线程内的缓存，避免重复调用。
+    3. ThreadLocal+MDC实现链路日志增强。
+    4. ThreadLocal 实现数据库读写分离下强制读主库。
+2. ThreadLocal无法在父子线程之间传递。使用类InheritableThreadLocal可以在子线程中取得父线程继承下来的值。   
+3. ThreadLocal和线程池。TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
+4. FastThreadLocal
+
+
+#### 1.4.2.3. 线程通信(生产者消费者问题)
+
+#### 1.4.2.4. 线程活跃性
+
 
 ### 1.4.3. 线程池
 #### 1.4.3.1. 线程池框架

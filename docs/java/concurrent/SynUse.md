@@ -11,21 +11,21 @@
         - [1.2.2. synchronized分别修饰同一个类对象的非静态方法和当前对象时互斥](#122-synchronized分别修饰同一个类对象的非静态方法和当前对象时互斥)
         - [1.2.3. synchronized修饰不同对象的两个非静态方法时不会互斥](#123-synchronized修饰不同对象的两个非静态方法时不会互斥)
         - [1.2.4. synchronized代码块修饰同一个对象时互斥](#124-synchronized代码块修饰同一个对象时互斥)
-        - [场景四：两个线程分别同时访问（一个或两个）对象的同步方法和非同步方法](#场景四两个线程分别同时访问一个或两个对象的同步方法和非同步方法)
-        - [场景五：两个线程访问同一个对象中的同步方法，同步方法又调用一个非同步方法](#场景五两个线程访问同一个对象中的同步方法同步方法又调用一个非同步方法)
-        - [场景六：两个线程同时访问同一个对象的不同的同步方法](#场景六两个线程同时访问同一个对象的不同的同步方法)
-        - [场景七：两个线程分别同时访问静态synchronized和非静态synchronized方法](#场景七两个线程分别同时访问静态synchronized和非静态synchronized方法)
-    - [场景八：同步方法抛出异常后，JVM会自动释放锁的情况](#场景八同步方法抛出异常后jvm会自动释放锁的情况)
-    - [1.3. synchronized修饰当前类和当前对象时不会互斥](#13-synchronized修饰当前类和当前对象时不会互斥)
-    - [1.4. synchronized锁注意事项](#14-synchronized锁注意事项)
-        - [1.4.1. synchronized锁不能被中断](#141-synchronized锁不能被中断)
-        - [1.4.2. synchronized锁可重入](#142-synchronized锁可重入)
-            - [1.4.2.1. 不同方法，synchronized是可重入的](#1421-不同方法synchronized是可重入的)
-            - [1.4.2.2. 相同方法，synchronized是可重入的](#1422-相同方法synchronized是可重入的)
-        - [1.4.3. synchronized锁不带超时功能](#143-synchronized锁不带超时功能)
-        - [1.4.4. 唤醒/等待需要synchronized锁](#144-唤醒等待需要synchronized锁)
-        - [1.4.5. 使用synchronized锁时尽量缩小范围以保证性能](#145-使用synchronized锁时尽量缩小范围以保证性能)
-    - [小结](#小结)
+        - [1.2.5. 场景四：两个线程分别同时访问（一个或两个）对象的同步方法和非同步方法](#125-场景四两个线程分别同时访问一个或两个对象的同步方法和非同步方法)
+        - [1.2.6. 场景五：两个线程访问同一个对象中的同步方法，同步方法又调用一个非同步方法](#126-场景五两个线程访问同一个对象中的同步方法同步方法又调用一个非同步方法)
+        - [1.2.7. 场景六：两个线程同时访问同一个对象的不同的同步方法](#127-场景六两个线程同时访问同一个对象的不同的同步方法)
+        - [1.2.8. 场景七：两个线程分别同时访问静态synchronized和非静态synchronized方法](#128-场景七两个线程分别同时访问静态synchronized和非静态synchronized方法)
+    - [1.3. 场景八：同步方法抛出异常后，JVM会自动释放锁的情况](#13-场景八同步方法抛出异常后jvm会自动释放锁的情况)
+    - [1.4. synchronized修饰当前类和当前对象时不会互斥](#14-synchronized修饰当前类和当前对象时不会互斥)
+    - [1.5. synchronized锁注意事项](#15-synchronized锁注意事项)
+        - [1.5.1. synchronized锁不能被中断](#151-synchronized锁不能被中断)
+        - [1.5.2. synchronized锁可重入](#152-synchronized锁可重入)
+            - [1.5.2.1. 不同方法，synchronized是可重入的](#1521-不同方法synchronized是可重入的)
+            - [1.5.2.2. 相同方法，synchronized是可重入的](#1522-相同方法synchronized是可重入的)
+        - [1.5.3. synchronized锁不带超时功能](#153-synchronized锁不带超时功能)
+        - [1.5.4. 唤醒/等待需要synchronized锁](#154-唤醒等待需要synchronized锁)
+        - [1.5.5. 使用synchronized锁时尽量缩小范围以保证性能](#155-使用synchronized锁时尽量缩小范围以保证性能)
+    - [1.6. 小结](#16-小结)
 
 <!-- /TOC -->
 
@@ -466,7 +466,7 @@ Wed Aug 18 22:18:03 GMT+08:00 2021 Thread-1 end...
 
 &emsp; 【结论】synchronized代码块修饰同一个对象时互斥，若synchronized代码块修饰的是不同对象，那么不会互斥。  
 
-### 场景四：两个线程分别同时访问（一个或两个）对象的同步方法和非同步方法
+### 1.2.5. 场景四：两个线程分别同时访问（一个或两个）对象的同步方法和非同步方法
 
 这个场景是两个线程其中一个访问同步方法，另一个访问非同步方法，此时程序会不会串行执行呢，也就是说是不是线程安全的呢？  
 我们可以确定是线程不安全的，如果方法不加synchronized都是安全的，那就不需要同步方法了。验证下我们的结论：  
@@ -547,7 +547,7 @@ public class Condition4 implements Runnable {
 你可能想到一个类似场景：多个线程访问同一个对象中的同步方法，同步方法又调用一个非同步方法，这个场景会是线程安全的吗？  
 
 
-### 场景五：两个线程访问同一个对象中的同步方法，同步方法又调用一个非同步方法
+### 1.2.6. 场景五：两个线程访问同一个对象中的同步方法，同步方法又调用一个非同步方法
 
 我们来实验下这个场景，用两个线程调用同步方法，在同步方法中调用普通方法；再用一个线程直接调用普通方法，看看是否是线程安全的？  
 
@@ -637,7 +637,7 @@ public class Condition8 implements Runnable {
 
 「两个线程访问同一个对象中的同步方法，同步方法又调用一个非同步方法，仅在没有其他线程直接调用非同步方法的情况下，是线程安全的。若有其他线程直接调用非同步方法，则是线程不安全的。」  
 
-### 场景六：两个线程同时访问同一个对象的不同的同步方法
+### 1.2.7. 场景六：两个线程同时访问同一个对象的不同的同步方法
 这个场景也是在探讨对象锁的作用范围，对象锁的作用范围是对象中的所有同步方法。所以，当访问同一个对象中的多个同步方法时，结论是：  
 
 「两个线程同时访问同一个对象的不同的同步方法时，是线程安全的。」  
@@ -707,7 +707,7 @@ public class Condition5 implements Runnable {
 
 两个方法（method0()和method1()）的synchronized修饰符，虽没有指定锁对象，但默认锁对象为this对象为锁对象，所以对于同一个实例（instance），两个线程拿到的锁是同一把锁，此时同步方法会串行执行。这也是synchronized关键字的可重入性的一种体现。  
 
-### 场景七：两个线程分别同时访问静态synchronized和非静态synchronized方法
+### 1.2.8. 场景七：两个线程分别同时访问静态synchronized和非静态synchronized方法
 这种场景的本质也是在探讨两个线程获取的是不是同一把锁的问题。静态synchronized方法属于类锁，锁对象是（*.class）对象，非静态synchronized方法属于对象锁中的方法锁，锁对象是this对象。两个线程拿到的是不同的锁，自然不会相互影响。结论：  
 
 「两个线程分别同时访问静态synchronized和非静态synchronized方法，线程不安全。」  
@@ -774,7 +774,7 @@ public class Condition6 implements Runnable {
 测试结束  
 ```
 
-## 场景八：同步方法抛出异常后，JVM会自动释放锁的情况
+## 1.3. 场景八：同步方法抛出异常后，JVM会自动释放锁的情况
 本场景探讨的是synchronized释放锁的场景：  
 
 「只有当同步方法执行完或执行时抛出异常这两种情况，才会释放锁。」  
@@ -852,7 +852,7 @@ Exception in thread "Thread-0" java.lang.RuntimeException
 结果分析：  
 可以看出线程还是串行执行的，说明是线程安全的。而且出现异常后，不会造成死锁现象，JVM会自动释放出现异常线程的锁对象，其他线程获取锁继续执行。  
 
-## 1.3. synchronized修饰当前类和当前对象时不会互斥  
+## 1.4. synchronized修饰当前类和当前对象时不会互斥  
 
 ```java
 public class ClassAndObjectLock {
@@ -898,8 +898,8 @@ Wed Aug 18 22:27:08 GMT+08:00 2021 Thread-0 end...
 
 &emsp; 【结论】可见，类锁和对象锁是相互独立的，互不相斥。  
 
-## 1.4. synchronized锁注意事项
-### 1.4.1. synchronized锁不能被中断
+## 1.5. synchronized锁注意事项
+### 1.5.1. synchronized锁不能被中断
 &emsp; 为了模拟synchronized锁不可中断，下面先让两个线程进入死锁，然后再用main线程去中断其中一个线程，看被中断的线程能否释放锁并被唤醒。  
 
 ```java
@@ -962,8 +962,8 @@ main thread begin to interrupt Thread-0 and Thread-0 will release lock1...
 
 &emsp; 【结论】如上图，main线程中断Thread-0后，Thread-0并不会释放锁并醒过来。同样的，ReentrantLock的tryLock或lockInterruptibly是可以被中断的。  
 
-### 1.4.2. synchronized锁可重入
-#### 1.4.2.1. 不同方法，synchronized是可重入的
+### 1.5.2. synchronized锁可重入
+#### 1.5.2.1. 不同方法，synchronized是可重入的
 
 ```java
 public class SynchronizeAndReentrant {
@@ -989,7 +989,7 @@ test1 method is called...
 test2 method is called...
 ```
 
-#### 1.4.2.2. 相同方法，synchronized是可重入的
+#### 1.5.2.2. 相同方法，synchronized是可重入的
 
 ```java
 public class SynchronizeAndReentrant2 {
@@ -1017,10 +1017,10 @@ public class SynchronizeAndReentrant2 {
  test1 method is called 4st time...
 ```
 
-### 1.4.3. synchronized锁不带超时功能
+### 1.5.3. synchronized锁不带超时功能
 &emsp; synchronized锁不带超时功能,而ReentrantLock的tryLock是具备带超时功能的，在指定时间没获取到锁，该线程会苏醒，有助于预防死锁的产生。  
 
-### 1.4.4. 唤醒/等待需要synchronized锁
+### 1.5.4. 唤醒/等待需要synchronized锁
 
 ```java
 public class NotifyNeedSynchronized {
@@ -1044,7 +1044,7 @@ Exception in thread "main" java.lang.IllegalMonitorStateException
 
 &emsp; 【结论】使用Object的notify和wait等方法时，必须要使用synchronized锁，否则会抛出IllegalMonitorStateException。  
 
-### 1.4.5. 使用synchronized锁时尽量缩小范围以保证性能
+### 1.5.5. 使用synchronized锁时尽量缩小范围以保证性能
 &emsp; 使用synchronized锁时，为了尽可能提高性能，我们应该尽量缩小锁的范围。能不锁方法就不锁方法，推荐尽量使用synchronized代码块来降低锁的范围。以下面的一段netty源码为例：  
 
 ```java
@@ -1070,5 +1070,5 @@ public <T> ServerBootstrap childOption(ChannelOption<T> childOption, T value) {
 &emsp; 可见，找到并发访问代码的临界区，并不用synchronized锁全部代码，尽量避免使用synchronized来修饰方法。  
 
 
-## 小结  
+## 1.6. 小结  
 &emsp; 本文总结了并用代码实现和验证了synchronized各种使用场景，以及各种场景发生的原因和结论。我们分析的理论基础都是synchronized关键字的锁对象究竟是谁？多个线程之间竞争的是否是同一把锁？根据这个条件来判断线程是否是安全的。所以，有了这些场景的分析锻炼后，我们在以后使用多线程编程时，也可以通过分析锁对象的方式，判断出线程是否是安全的，从而避免此类问题的出现。  
