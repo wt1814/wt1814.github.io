@@ -456,6 +456,7 @@
 [分布式事务](/docs/microService/thinking/DistriTransaction.md)  
 &emsp; [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
 &emsp; [TCC](/docs/microService/thinking/TCC.md)   
+&emsp; [TCC问题1](/docs/microService/thinking/TCCProblemOne.md)   
 &emsp; [TCC问题](/docs/microService/thinking/TCCProblem.md)   
 &emsp; [Saga](/docs/microService/thinking/Event.md)  
 &emsp; [消息模式](/docs/microService/thinking/news.md)   

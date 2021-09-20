@@ -3,6 +3,9 @@
 
 - [1. xxxTCC模式-强一致性xxx](#1-xxxtcc模式-强一致性xxx)
     - [1.1. ~~实现流程~~](#11-实现流程)
+        - [实现流程一](#实现流程一)
+        - [★★★实现流程二](#★★★实现流程二)
+        - [实现流程三](#实现流程三)
     - [1.2. 特点](#12-特点)
     - [1.3. TCC与二阶段比较](#13-tcc与二阶段比较)
 
@@ -23,7 +26,6 @@
 
 # 1. xxxTCC模式-强一致性xxx 
 <!-- 
-https://www.cnblogs.com/haizai/p/11938823.html
 分布式事务 Seata TCC 模式深度解析 | SOFAChannel#4 直播整理 
 https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
 
@@ -31,15 +33,16 @@ https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
 &emsp; 不管是 2PC 还是 3PC 都是依赖于数据库的事务提交和回滚。  
 &emsp; 而有时候一些业务它不仅仅涉及到数据库，可能是发送一条短信，也可能是上传一张图片。所以说事务的提交和回滚就得提升到业务层面而不是数据库层面了，  **<font color = "red">而TCC是一种`业务层面或者是应用层`的`两阶段、补偿型`的事务。</font>**   
 
-&emsp; TCC是Try(检测及资源锁定或者预留)、Commit(确认)、Cancel(取消)的缩写，业务层面需要写对应的三个方法。主要用于跨数据库、跨服务的业务操作的数据一致性问题。    
+&emsp; TCC是Try（检测及资源锁定或者预留）、Commit（确认）、Cancel（取消）的缩写，业务层面需要写对应的三个方法。主要用于跨数据库、跨服务的业务操作的数据一致性问题。    
 
 ## 1.1. ~~实现流程~~  
 <!-- 
 *** https://www.cnblogs.com/jajian/p/10014145.html
-https://www.cnblogs.com/rjzheng/p/10164667.html
 https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
+https://www.cnblogs.com/rjzheng/p/10164667.html
 -->
 
+### 实现流程一
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-9.png)  
 &emsp; TCC是两阶段型、补偿型的事务。TCC采用的补偿机制，其逻辑模式类似于XA两阶段提交。其核心思想是：<font color = "red">针对每个操作，都要注册一个与其对应的确认和补偿(撤销)操作。</font>TCC模型是把锁的粒度完全交给业务处理。业务实现TCC服务之后，该TCC服务将作为分布式事务的其中一个资源，参与到整个分布式事务中；<font color = "clime">事务管理器分两阶段协调的TCC服务，第一阶段调用所有TCC服务的Try方法，在第二阶段执行所有TCC服务的Confirm或者Cancel方法。</font>  
 &emsp; TCC模型中有个事务管理者的角色，用来记录TCC全局事务状态并提交或者回滚事务。  
@@ -79,6 +82,22 @@ Cancel：
     不做任何操作。
 ```
 
+### ★★★实现流程二
+<!-- 
+https://www.cnblogs.com/jajian/p/10014145.html
+-->
+
+1. try阶段：
+    * 支付服务：在 pay() 那个方法里，你别直接把订单状态修改为已支付啊！你先把订单状态修改为 UPDATING，也就是修改中的意思。  
+    * 库存服务：库存进行冻结。  
+
+
+
+
+### 实现流程三
+
+
+
 ## 1.2. 特点  
 * 优点：  
     * 性能提升：具体业务来实现控制资源锁的粒度变小，不会锁定整个资源。  
@@ -103,5 +122,4 @@ https://blog.csdn.net/Saintyyu/article/details/100862449
 &emsp; 3、 2PC机制的回滚阶段（rollback） 等价于 TCC机制的回滚阶段（cancel）。  
 
 &emsp; 因此，可以看出，虽然TCC机制中有两个阶段都存在业务逻辑的执行，但其中try业务阶段其实是与全局事务处理无关的。认清了这一点，当再比较TCC和2PC时，就会很容易地发现，`TCC不是两阶段提交，而只是它对事务的提交/回滚是通过执行一段confirm/cancel业务逻辑来实现，仅此而已。`  
-
 
