@@ -385,7 +385,7 @@
         * [Redis和Lua](/docs/microService/Redis/lua.md)  
         * [Redis持久化](/docs/microService/Redis/RedisPersistence.md)  
             * [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
-        * [Redis的Key删除](/docs/microService/Redis/Keydel.md)  
+        * [Redis过期键删除](/docs/microService/Redis/Keydel.md)  
         * [Redis内存淘汰](/docs/microService/Redis/RedisEliminate.md)  
         * [Redis实现消息队列](/docs/microService/Redis/Message.md) 
             * [Redis发布订阅](/docs/microService/Redis/Subscribe.md)  

@@ -16,14 +16,14 @@
 	1. **<font color = "clime">当子进程完成AOF重写工作之后，它会向父进程发送一个信号，父进程在接收到该信号之后，`会调用一个信号处理函数，并执行相应工作：将AOF重写缓冲区中的所有内容写入到新的AOF文件中。`</font>**  
 	2. **<font color = "clime">在整个AOF后台重写过程中，只有信号处理函数执行时会对Redis主进程造成阻塞，在其他时候，AOF后台重写都不会阻塞主进程。</font>**  
 &emsp; 如果信号处理函数执行时间较长，即造成AOF阻塞时间长，就会对性能有影响。  
-2. 解决方案：  
+3. 解决方案：  
 	* **<font color = "red">将no-appendfsync-on-rewrite设置为yes。</font>** 
 	* master节点关闭AOF。  
     
     可以采取比较折中的方式：  
     * 在master节点设置将no-appendfsync-on-rewrite设置为yes（表示在日志重写时，不进行命令追加操作，而只是将命令放在重写缓冲区里，避免与命令的追加造成磁盘IO上的冲突），同时auto-aof-rewrite-percentage参数设置为0关闭主动重写。  
     * 在重写时为了避免硬盘空间不足或者IO使用率高影响重写功能，还添加了硬盘空间报警和IO使用率报警保障重写的正常进行
-3. 虽然在everysec配置下aof的fsync是由子线程进行操作的，但是主线程会监控fsync的执行进度。  
+4. 虽然在everysec配置下aof的fsync是由子线程进行操作的，但是主线程会监控fsync的执行进度。  
 &emsp; **<font color = "clime">主线程在执行时候如果发现上一次的fsync操作还没有返回，那么主线程就会阻塞。</font>**  
 
 

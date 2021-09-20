@@ -27,7 +27,7 @@ https://www.jianshu.com/p/75137d23ae4a
 ### 1.1.2. redis中批处理方式  
 &emsp; Redis主要提供了以下几种批量操作方式：  
 
-* 批量get/set(multi get/set)。⚠️注意：Redis中有删除单个Key的指令 DEL，但没有批量删除 Key 的指令。  
+* 批量get/set(multi get/set)。⚠️注意：Redis中有删除单个Key的指令DEL，但没有批量删除 Key 的指令。  
 * 管道(pipelining)
 * 事务(transaction)
 * 基于事务的管道(transaction in pipelining)

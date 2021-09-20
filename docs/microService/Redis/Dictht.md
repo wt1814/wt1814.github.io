@@ -19,6 +19,7 @@
 &emsp; **<font color = "red">在渐进式rehash的过程「更新、删除、查询会在ht[0]和ht[1]中都进行」，比如更新一个值先更新ht[0]，然后再更新ht[1]。</font>**   
 &emsp; **<font color = "clime">而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，</font><font color = "red">这样保证「ht[0]只减不增，直到最后的某一个时刻变成空表」，这样rehash操作完成。</font>**  
 
+
 # 1. Dictht
 <!-- 
 Redis 字典
