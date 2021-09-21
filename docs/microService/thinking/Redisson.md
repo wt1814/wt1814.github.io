@@ -3,7 +3,7 @@
 
 - [1. Redisson实现redis分布式锁](#1-redisson实现redis分布式锁)
     - [1.1. Redisson简介](#11-redisson简介)
-    - [1.2. ★★★Redisson解决死锁问题(watch dog自动延期机制)](#12-★★★redisson解决死锁问题watch-dog自动延期机制)
+    - [1.2. ★★★~~Redisson解决死锁问题(watch dog自动延期机制)~~](#12-★★★redisson解决死锁问题watch-dog自动延期机制)
     - [1.3. 重入锁解析](#13-重入锁解析)
         - [1.3.1. 获取锁tryLock](#131-获取锁trylock)
         - [1.3.2. 解锁unlock](#132-解锁unlock)
@@ -22,9 +22,9 @@
 1.  **<font color = "clime">RedissonLock解决客户端死锁问题（自动延期）：</font>**  
     1. 什么是死锁？因为业务不知道要执行多久才能结束，所以这个key一般不会设置过期时间。这样如果在执行业务的过程中，业务机器宕机，unlock操作不会执行，所以这个锁不会被释放，`其他机器拿不到锁，从而形成了死锁。`  
     2. ~~Redission解决死锁：(**要点：30s和10s**)~~
-        1. 当业务方调用加锁操作的时候，`未设置加锁时间`，默认的leaseTime是-1，所以会取watch dog的时间作为锁的持有时间，默认是30s，这个时候即使发生了宕机现象，因为这个锁不是永不过期的，所以30s后就会释放，不会产生死锁。 
-        2. 另一方面，它还能解决当锁内逻辑超过30s的时候锁会失效的问题，因为当leaseTime是-1的时候，`客户端会启动一个定时任务（watch dog）`，会每隔10秒检查一下，如果客户端1还持有锁key，在业务方释放锁之前，会一直不停的增加这个锁的生命周期时间，保证在业务执行完毕之前，这个锁一直不会因为redis的超时而被释放。
-2. Redisson实现了多种锁：重入锁、公平锁、联锁、红锁、读写锁、信号量...  
+        1. `未设置加锁时间，自动设置加锁时间：`当业务方调用加锁操作的时候，`未设置加锁时间`，默认的leaseTime是-1，所以会取watch dog的时间作为锁的持有时间，默认是30s，这个时候即使发生了宕机现象，因为这个锁不是永不过期的，所以30s后就会释放，不会产生死锁。 
+        2. `异步续租、递归调用：`另一方面，它还能解决当锁内逻辑超过30s的时候锁会失效的问题，因为当leaseTime是-1的时候，`客户端会启动一个异步任务（watch dog）`，会每隔10秒检查一下，如果客户端1还持有锁key，在业务方释放锁之前，会一直不停的增加这个锁的生命周期时间，保证在业务执行完毕之前，这个锁一直不会因为redis的超时而被释放。
+2. Redisson实现了多种锁：重入锁、公平锁、联锁、红锁、读写锁、信号量Semaphore 和 CountDownLatch...  
 3. **Redisson重入锁：**  
     1. Redisson重入锁加锁流程：  
         1. 执行lock.lock()代码时，<font color = "red">如果该客户端面对的是一个redis cluster集群，首先会根据hash节点选择一台机器。</font>  
@@ -37,7 +37,9 @@
 
 
 # 1. Redisson实现redis分布式锁 
-<!-- 
+
+
+<!-- ~~
 Redisson 分布式锁源码 
 https://mp.weixin.qq.com/s?__biz=Mzg4MjU1ODU3Ng==&mid=2247492046&idx=1&sn=d62bbdeda76a3a0cb917f6b8629adf57&chksm=cf5672d1f821fbc7401ccbede20188f9fac20120e71e058e4fb80105cda3cf613f56c45d275d&scene=178&cur_album_id=1945719891076956169#rd
 看门狗 
@@ -81,8 +83,10 @@ try{
 }
 ```
 
-## 1.2. ★★★Redisson解决死锁问题(watch dog自动延期机制)  
+## 1.2. ★★★~~Redisson解决死锁问题(watch dog自动延期机制)~~  
 <!-- 
+★★★ https://mp.weixin.qq.com/s/ussF5Ox1Q01IYFCwAiyu5Q
+
 https://www.cnblogs.com/jklixin/p/13212864.html
 
 * 自动延期  
