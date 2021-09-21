@@ -31,7 +31,7 @@
             - [Redis](#redis)
         - [限流降级](#限流降级)
         - [分布式消息队列](#分布式消息队列)
-            - [kafka](#kafka)
+            - [Kafka](#kafka)
     - [常用中间件](#常用中间件)
         - [任务调度](#任务调度)
         - [分布式搜索引擎](#分布式搜索引擎)
@@ -536,7 +536,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 ### 分布式消息队列  
 [mq](/docs/microService/mq/mq.md)  
 
-#### kafka  
+#### Kafka  
 [kafka总结](/docs/microService/mq/kafka/kafka.md)   
 [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
 [kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  

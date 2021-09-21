@@ -35,7 +35,6 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-
 1. 消费者/消费者组/消费者组重平衡  
     1. 消费者组：Kafka消费端确保一个Partition在一个消费者组内只能被一个消费者消费。  
     2. **<font color = "red">消费者组重平衡：</font>**  

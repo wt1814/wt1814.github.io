@@ -13,8 +13,9 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. Kafka幂等是针对生产者角度的特性。kafka只保证producer单个会话中的单个分区幂等。  
-2. **<font color = "red">Kafka幂等性实现机制：（`producer_id和序列号，进行比较`）</font>**  
+1. **幂等又称为exactly once（精确传递一次。消息被处理且只会被处理一次。不丢失不重复就一次）。**  
+2. Kafka幂等是针对生产者角度的特性。kafka只保证producer单个会话中的单个分区幂等。  
+3. **<font color = "red">Kafka幂等性实现机制：（`producer_id和序列号，进行比较`）</font>**  
     1. `每一个producer在初始化时会生成一个producer_id，并为每个目标partition维护一个"序列号"；`
     2. producer每发送一条消息，会将 \<producer_id,分区\> 对应的“序列号”加1；  
     3. broker端会为每一对 \<producer_id,分区\> 维护一个序列号，对于每收到的一条消息，会判断服务端的SN_old和接收到的消息中的SN_new进行对比：  
@@ -30,8 +31,8 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 &emsp; Kafka的幂等性和事务是比较重要的特性，特别是在数据丢失和数据重复的问题上非常重要。  
 
 ## 1.1. 幂等性介绍
-&emsp; **幂等又称为exactly once（精确传递一次。消息被处理且只会被处理一次。不丢失不重复就一次）。**Kafka在0.11.0.0之前的版本中只支持At Least Once和At Most Once语义，尚不支持Exactly Once语义。  
-&emsp; 但是在很多要求严格的场景下，如使用Kafka处理交易数据，Exactly Once语义是必须的。可以通过让下游系统具有幂等性来配合Kafka的At Least Once语义来间接实现Exactly Once。但是：  
+&emsp; **幂等又称为exactly once（精确传递一次。消息被处理且只会被处理一次。不丢失不重复就一次）。**  
+&emsp; Kafka在0.11.0.0之前的版本中只支持At Least Once和At Most Once语义，尚不支持Exactly Once语义。但是在很多要求严格的场景下，如使用Kafka处理交易数据，Exactly Once语义是必须的。可以通过让下游系统具有幂等性来配合Kafka的At Least Once语义来间接实现Exactly Once。但是：  
 
 * 该方案要求下游系统支持幂等操作，限制了Kafka的适用场景。
 * 实现门槛相对较高，需要用户对Kafka的工作机制非常了解。

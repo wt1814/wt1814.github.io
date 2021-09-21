@@ -5,7 +5,7 @@
     - [1.2. 高可用与数据一致性(副本机制)](#12-高可用与数据一致性副本机制)
     - [1.3. 可靠性](#13-可靠性)
         - [1.3.1. ★★★消费语义介绍](#131-★★★消费语义介绍)
-        - [1.3.2. 可靠性(如何保证消息队列不丢失?)](#132-可靠性如何保证消息队列不丢失)
+        - [1.3.2. 可靠性（如何保证消息队列不丢失?）](#132-可靠性如何保证消息队列不丢失)
         - [1.3.3. 幂等（重复消费）和事务](#133-幂等重复消费和事务)
     - [1.4. 如何让Kafka的消息有序？](#14-如何让kafka的消息有序)
 
@@ -40,8 +40,8 @@ Kafka服务器在响应客户端读取的时候，底层使用ZeroCopy技术，�
 &emsp; Kafka的消息是保存或缓存在磁盘上的，一般认为在磁盘上读写数据是会降低性能的，因为寻址会比较消耗时间，但是实际上，Kafka的特性之一就是高吞吐率。 **Kafka之所以能这么快，是因为：「顺序写磁盘、大量使用内存页、零拷贝技术的使用」..**  
 
 &emsp; [持久化/磁盘I/O-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
-&emsp; [内存和零拷贝/网络I/O](/docs/microService/mq/kafka/kafkaZeroCopy.md)  
-&emsp; [网络IO优化/网络I/O](/docs/microService/mq/kafka/networkIO.md)  
+&emsp; [内存和零拷贝/网络IO](/docs/microService/mq/kafka/kafkaZeroCopy.md)  
+&emsp; [网络IO优化/网络IO](/docs/microService/mq/kafka/networkIO.md)  
 
 ## 1.2. 高可用与数据一致性(副本机制)
 &emsp; 参考[kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
@@ -81,7 +81,7 @@ Kafka服务器在响应客户端读取的时候，底层使用ZeroCopy技术，�
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-119.png)  
 
-### 1.3.2. 可靠性(如何保证消息队列不丢失?)  
+### 1.3.2. 可靠性（如何保证消息队列不丢失?）  
 &emsp; [kafka如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
 
 ### 1.3.3. 幂等（重复消费）和事务
