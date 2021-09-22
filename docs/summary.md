@@ -2,8 +2,32 @@
 <!-- TOC -->
 
 - [1. 总结](#1-总结)
-    - [1.1. Java基础](#11-java基础)
+    - [1.1. Java](#11-java)
+        - [1.1.1. Java基础](#111-java基础)
+        - [1.1.2. Java基础数据类型](#112-java基础数据类型)
+            - [1.1.2.1. String](#1121-string)
+            - [1.1.2.2. Java基本数据类型](#1122-java基本数据类型)
+        - [1.1.3. Java集合框架](#113-java集合框架)
+            - [1.1.3.1. Java集合框架](#1131-java集合框架)
+            - [1.1.3.2. HashMap](#1132-hashmap)
+                - [1.1.3.2.1. HashMap源码](#11321-hashmap源码)
+                - [1.1.3.2.2. HashMap安全](#11322-hashmap安全)
+            - [1.1.3.3. Collection](#1133-collection)
+        - [1.1.4. JDK1.8](#114-jdk18)
+            - [1.1.4.1. 接口的默认方法与静态方法](#1141-接口的默认方法与静态方法)
+            - [1.1.4.2. Lambda表达式](#1142-lambda表达式)
+            - [1.1.4.3. Stream](#1143-stream)
+            - [1.1.4.4. Optional](#1144-optional)
+            - [1.1.4.5. DateTime](#1145-datetime)
+        - [1.1.5. Java异常](#115-java异常)
+        - [1.1.6. Java范型](#116-java范型)
+        - [1.1.7. 自定义注解](#117-自定义注解)
+        - [1.1.8. IO](#118-io)
+        - [1.1.9. SPI](#119-spi)
     - [1.2. 设计模式](#12-设计模式)
+        - [1.2.1. 七大设计原则](#121-七大设计原则)
+        - [1.2.2. 继承和组合/复用规则](#122-继承和组合复用规则)
+        - [1.2.3. 设计模式](#123-设计模式)
     - [1.3. JVM](#13-jvm)
         - [1.3.1. JDK、JRE、JVM](#131-jdkjrejvm)
         - [1.3.2. 编译成Class字节码文件](#132-编译成class字节码文件)
@@ -277,9 +301,130 @@
 
 # 1. 总结  
 
-## 1.1. Java基础
+## 1.1. Java
+### 1.1.1. Java基础
+
+### 1.1.2. Java基础数据类型
+#### 1.1.2.1. String
+1. String 类是用final关键字修饰的，所以认为其是不可变对象。反射可以改变String对象。  
+&emsp; **<font color = "clime">为什么Java字符串是不可变的？</font>** 原因大致有以下三个：  
+    * 为了实现字符串常量池。字符串常量池可以节省大量的内存空间。  
+    * 为了线程安全。  
+    * 为了 HashCode 的不可变性。String类经常被用作HashMap的key。  
+2. String创建了几个对象？  
+&emsp; `String str1 = "java";`创建一个对象放在常量池中。  
+&emsp; `String str2 = new String("java");`创建两个对象，字面量"java"创建一个对象放在常量池中，new String()又创建一个对象放在堆中。如果常量池中已经存在，则是创建了一个对象。  
+&emsp; `String str3 = "hello "+"java";`创建了一个对象。  
+&emsp; `String str5 = str3 + "java";`创建了三个对象。
+3. String不可变，安全；StringBuilder可变，线程不安全；StringBuffer可变，线程安全。  
+
+#### 1.1.2.2. Java基本数据类型
+
+|数据类型|字节|位数|默认值|取值范围|
+|---|---|---|---|---|
+|byte	|1	|8|0	|-128-127|
+|short	|2	|16|0	|-32768-32767|
+|int	|4	|32|0	|-2147483648-2147483647|
+|long	|8	|64|0| |	
+|float	|4	|32|0.0f| |	
+|double	|8	|64|0.0d| |	
+|char	|2	|16|'\u0000'| |	
+|boolean	|4|32	|false	| |
+
+&emsp; char的包装类型是Character。  
+
+### 1.1.3. Java集合框架
+#### 1.1.3.1. Java集合框架
+1. <font color = "clime">List：有序，可重复。Set：无序，不可重复(唯一)。Map：存储键值对。</font>  
+&emsp; <font color = "clime">List有ArrayList、Vector、LinkedList。Map有HashMap、LinkedHashMap、TreeMap、Hashtable。Set有HashSet、LinkedHashSet、TreeSet。</font>    
+2. 快速失败机制：单线程迭代器中直接删除元素或多线程使用非安全的容器都会抛出ConcurrentModificationException异常。  
+&emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，再在拷贝的集合上进行遍历。</font>**  
+3. 排序：  
+    * Comparable，自然排序（自身属性，整数(大小排序)，字符串(字典序)）。  
+    * Comparator，定制排序。  
+
+#### 1.1.3.2. HashMap
+##### 1.1.3.2.1. HashMap源码
+1. HashMap数据结构：  
+    1. Hash表数据结构：  
+    &emsp; 初始容量为16；  
+    &emsp; loadFactor加载因子0.75f；  
+    &emsp; HashMap在发生hash冲突的时候用的是链地址法。JDK1.7中使用头插法，JDK1.8使用尾插法。  
+    2. 树形化结构：  
+    &emsp; 树形化：把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于8；table数组长度大于等于64。  
+    &emsp; 解除树形化：阈值6。
+2. HashMap成员方法：  
+    1. hash()函数/扰动函数：hash函数会根据传递的key值进行计算， 1)首先计算key的hashCode值， 2)然后再对hashcode进行无符号右移操作， 3)最后再和hashCode进行异或 ^ 操作。（即让hashcode的高16位和低16位进行异或操作。）   
+    &emsp; **<font color = "clime">这样做的好处是增加了随机性，减少了碰撞冲突的可能性。</font>**    
+    2. put()函数：<font color = "clime">在put的时候，首先对key做hash运算，计算出该key所在的index。如果没碰撞，直接放到数组中，如果碰撞了，如果key是相同的，则替换到原来的值。如果key不同，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。最后判断哈希表是否满了(当前哈希表大小*负载因子)，如果满了，则扩容。</font>  
+    2. 扩容机制：JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。  
+        * 单节点迁移。  
+        * 如果节点是红黑树类型的话则需要进行红黑树的拆分：拆分成高低位链表，如果链表长度大于6，需要把链表升级成红黑树。
+        * 对链表进行迁移。会对链表中的节点进行分组，进行迁移后，一类的节点位置在原索引，一类在原索引+旧数组长度。 ~~通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度~~
+
+
+##### 1.1.3.2.2. HashMap安全
+&emsp; HashMap的线程不安全体现在会造成死循环、数据丢失、数据覆盖这些问题。其中死循环和数据丢失是在JDK1.7中出现的问题，在JDK1.8中已经得到解决，然而1.8中仍会有数据覆盖这样的问题。  
+1. 在jdk1.8中，在多线程环境下，会发生数据覆盖的情况。  
+&emsp; 假设两个线程A、B都在进行put操作，并且hash函数计算出的插入下标是相同的，当线程A执行完第六行代码后由于时间片耗尽导致被挂起，而线程B得到时间片后在该下标处插入了元素，完成了正常的插入，`然后线程A获得时间片，由于之前已经进行了hash碰撞的判断，所有此时不会再进行判断，而是直接进行插入，这就导致了线程B插入的数据被线程A覆盖了，从而线程不安全。`  
+2. HashMap导致CPU100% 的原因是因为 HashMap 死循环导致的。导致死循环的根本原因是JDK 1.7扩容采用的是“头插法”，会导致同一索引位置的节点在扩容后顺序反掉。而JDK 1.8之后采用的是“尾插法”，扩容后节点顺序不会反掉，不存在死循环问题。  
+&emsp; 导致死循环示例：线程1、2同时扩容，新建数组，此时线程2挂起。线程在newTable1上完成扩容。线程2唤醒，线程2的指针指向的是newTable1，⚠️此时当前元素e和next的值已经相反。线程2在newTable2上执行扩容，完成顺序相反的元素一和二的插入，当下次循环执行到`e.next = newTable[i] `可能发生死循环。  
+&emsp; 发生死循环后，剩余元素无法搬运，并且线程不会停止，因此会造成CPU100%。  
+3. 线程安全的hashMap：Hashtable、Collections.synchronizedMap、[ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)。 
+
+#### 1.1.3.3. Collection
+1. HashSet基于HashMap实现： **<font color = "clime">存储在HashSet中的数据作为Map的key，而Map的value统一为PRESENT。</font>**  
+    &emsp; 添加元素，如何保证值不重复？  
+    &emsp; HashSet#add通过 map.put() 方法来添加元素。HashSet的add(E e)方法，会将e作为key，PRESENT作为value插入到map集合中。  
+    * 如果e(新插入的key)存在，HashMap#put返回原key对应的value值（注意新插入的value会覆盖原value值），Hashset#add返回false，表示插入值重复，插入失败。  
+    * 如果e(新插入的key)不存在，HashMap#put返回null值，Hashset#add返回true，表示插入值不重复，插入成功。  
+
+
+
+### 1.1.4. JDK1.8
+#### 1.1.4.1. 接口的默认方法与静态方法
+1. 接口的默认方法与静态方法  
+    * <font color = "clime">接口中的default方法会被子接口继承，也可以被其实现类所调用。default方法被继承时，可以被子接口覆写。</font>  
+    * <font color = "clime">接口中的static方法不能被继承，也不能被实现类调用，只能被自身调用。即不能通过接口实现类的方法调用静态方法，直接通过接口名称调用。但是静态变量会被继承。</font>  
+
+
+#### 1.1.4.2. Lambda表达式
+1. **<font color = "clime">函数式接口的实例创建三种方式：lambda表达式；方法引用；构造方法引用。</font>**   
+2. Lambda表达式作用域，访问外层作用域定义的局部变量、类的属性：  
+    * <font color = "clime">访问局部变量：lambda表达式若访问了局部变量，则局部变量必须是final的。若局部变量没有加final关键字，系统会自动添加，此后再修改该局部变量，会编译错误。</font>  
+    * <font color = "clime">访问类的属性：lambda内部使用this关键字(或不使用)访问或修改全局变量、实例方法。</font>    
+
+#### 1.1.4.3. Stream
+&emsp; **<font color = "clime">使用并行流parallelStream()有线程安全问题。例如：parallelStream().forEach()内部修改集合会有问题。解决方案：1.使用锁； 2.使用collect和reduce操作(Collections框架提供了同步的包装)。</font>**  
+
+#### 1.1.4.4. Optional
+&emsp; 使用Optional时尽量不直接调用Optional.get()方法，Optional.isPresent()更应该被视为一个私有方法，应依赖于其他像Optional.orElse()，Optional.orElseGet()，Optional.map()等这样的方法。  
+
+#### 1.1.4.5. DateTime
+
+
+
+### 1.1.5. Java异常
+
+### 1.1.6. Java范型
+
+
+### 1.1.7. 自定义注解
+
+### 1.1.8. IO
+
+### 1.1.9. SPI
+
+
 
 ## 1.2. 设计模式
+### 1.2.1. 七大设计原则
+
+
+### 1.2.2. 继承和组合/复用规则
+
+
+### 1.2.3. 设计模式
 
 ## 1.3. JVM
 ### 1.3.1. JDK、JRE、JVM

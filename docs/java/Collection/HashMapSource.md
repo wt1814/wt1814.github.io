@@ -24,7 +24,6 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-
 1. HashMap数据结构：  
     1. Hash表数据结构：  
     &emsp; 初始容量为16；  

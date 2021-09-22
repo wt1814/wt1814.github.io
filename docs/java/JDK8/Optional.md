@@ -12,7 +12,8 @@
 
 <!-- /TOC -->
 
-&emsp; 小结：使用Optional时尽量不直接调用Optional.get()方法，Optional.isPresent()更应该被视为一个私有方法，应依赖于其他像Optional.orElse()，Optional.orElseGet()，Optional.map()等这样的方法。  
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; 使用Optional时尽量不直接调用Optional.get()方法，Optional.isPresent()更应该被视为一个私有方法，应依赖于其他像Optional.orElse()，Optional.orElseGet()，Optional.map()等这样的方法。  
 
 # 1. Optional类  
 <!-- 

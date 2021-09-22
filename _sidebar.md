@@ -2,10 +2,10 @@
 * [大总结](/docs/summary.md)  
 * Java  
     * [Java基础](/docs/java/basis/JavaBasic.md)  
-    * [Java基本数据类型](/docs/java/basis/DataType.md)  
+    * [Java基础数据类型](/docs/java/basis/DataType.md)  
         * [Object](/docs/java/basis/Object.md)  
         * [String](/docs/java/basis/String.md)  
-        * [Java基础数据类型](/docs/java/basis/BasicsDataType.md)  
+        * [Java基本数据类型](/docs/java/basis/BasicsDataType.md)  
         * [Java对象大小](/docs/java/basis/ObjectSize.md)  
     * [Java集合框架](/docs/java/Collection/CollectionFramework.md)  
         * [HashMap使用](/docs/java/Collection/HashMapUse.md)  
