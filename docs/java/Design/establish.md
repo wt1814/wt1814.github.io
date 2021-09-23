@@ -1,3 +1,4 @@
+
 &emsp; &emsp; [单例模式](/docs/java/Design/singleton.md)  
 &emsp; &emsp; [简单工厂模式](/docs/java/Design/factory.md)  
 &emsp; &emsp; [抽象工厂模式](/docs/java/Design/AbstractFactory.md)  

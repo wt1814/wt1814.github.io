@@ -46,7 +46,7 @@
         * [代理模式](/docs/java/Design/proxy.md)  
             * [JDK动态代理](/docs/java/Design/DynamicProxy.md)   
             * [CGLIB代理](/docs/java/Design/CGLIB.md)   
-        * [装饰者模式](/docs/java/Design/decorator.md)   
+        * [装饰器模式](/docs/java/Design/decorator.md)   
         * [桥接模式(if/else)](/docs/java/Design/Bridge.md)  
         * [享元模式(池化技术)](/docs/java/Design/Enjoy.md)  
     * [行为型设计模式](/docs/java/Design/behavior.md)  

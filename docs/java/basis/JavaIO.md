@@ -28,6 +28,7 @@
         * FileChannel，分配读取到已分配固定长度的 java.nio.ByteBuffer。
         * 内存文件映射，MappedByteBuffer。采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。
 
+
 # 1. I/O读写大批量数据  
 <!--
 超赞，压缩20M文件从30秒到1秒的优化过程 
