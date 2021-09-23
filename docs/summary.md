@@ -299,6 +299,16 @@
                     - [1.17.2.2.3.3. 幂等（重复消费）](#1172233-幂等重复消费)
                     - [1.17.2.2.3.4. 事务](#1172234-事务)
                 - [1.17.2.2.4. 如何让Kafka的消息有序？](#117224-如何让kafka的消息有序)
+    - [1.18. 分布式通信](#118-分布式通信)
+        - [1.18.1. 通信基础](#1181-通信基础)
+        - [1.18.2. 网络IO](#1182-网络io)
+            - [1.18.2.1. 五种I/O模型](#11821-五种io模型)
+            - [1.18.2.2. I/O多路复用详解](#11822-io多路复用详解)
+            - [1.18.2.3. 多路复用之Reactor模式](#11823-多路复用之reactor模式)
+            - [1.18.2.4. IO性能优化之零拷贝](#11824-io性能优化之零拷贝)
+        - [1.18.3. Socket编程](#1183-socket编程)
+        - [1.18.4. NIO](#1184-nio)
+        - [1.18.5. Netty](#1185-netty)
 
 <!-- /TOC -->
 
@@ -2843,4 +2853,149 @@
 * **多Partition，多Consumer，指定key使用特定的Hash策略，使其消息落入指定的Partition 中，从而保证相同的key对应的消息是有序的。** 此方案也是有一些弊端，比如当Partition个数发生变化时，相同的key对应的消息会落入到其他的Partition上，所以一旦确定Partition个数后就不能在修改Partition个数了。  
 
 
+## 1.18. 分布式通信
+### 1.18.1. 通信基础
+&emsp; 1. 序列化。  
 
+### 1.18.2. 网络IO
+#### 1.18.2.1. 五种I/O模型
+1. **<font color = "red">网络IO的本质就是socket流的读取，通常一次IO读操作会涉及到两个对象和两个阶段。**</font>  
+    * **<font color = "clime">两个对象：用户进程（线程）、内核对象（内核态和用户态）。</font><font color = "blue">用户进程请求内核。</font>**   
+    * **<font color = "clime">`内核中涉及两个阶段：1. 等待数据准备；2. 数据从内核空间拷贝到用户空间。`</font>** 基于以上两个阶段就产生了五种不同的IO模式，分别是：阻塞I/O模型、非阻塞I/O模型、多路复用I/O模型、信号驱动I/O模型、异步I/O模型。其中，前四种被称为同步I/O。  
+
+2. **<font color = "blue">同步（等待结果）和阻塞（线程）：</font>**  
+    * 异步和同步：对于请求结果的获取是客户端主动获取结果，还是由服务端来通知结果。    
+    * 阻塞和非阻塞：在等待这个函数返回结果之前，当前的线程是处于挂起状态还是运行状态。 
+
+3. **<font color = "red">I/O模型：</font>**  
+    * 同步阻塞I/O：  
+        1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
+        2. 内核等待I/O数据返回，此时用户进程处于【阻塞】，一直等待内核返回；
+        3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
+        4. 内核将数据返回给用户进程。  
+
+    特点：两阶段都阻塞。  
+    * 同步非阻塞I/O：  
+        1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
+        2. 内核等待I/O数据返回。无I/O数据返回时，内核返回给用户进程ewouldblock结果。【非阻塞】用户进程，立马返回结果。但 **<font color = "clime">用户进程要主动轮询查询结果。</font>**  
+        3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
+        4. 内核将数据返回给用户进程。  
+    
+    特点：第一阶段不阻塞但要轮询，第二阶段阻塞。
+    * 多路复用I/O：（~~同步阻塞，又基于回调通知~~）  
+    &emsp; 多路复用I/O模型和阻塞I/O模型并没有太大的不同，事实上，还更差一些，因为它需要使用两个系统调用(select和recvfrom)，而阻塞I/O模型只有一次系统调用(recvfrom)。但是Selector的优势在于它可以同时处理多个连接。   
+        1. 用户多进程或多线程发起select系统调用，复用器Selector会监听注册进来的进程事件。用户进程【同步】等待结果；
+        2. 内核等待I/O数据返回，无数据返回时，select进程【阻塞】，进程也受阻于select调用；
+        2. I/O数据返回后，内核将数据从内核空间拷贝到用户空间， **<font color = "clime">Selector`通知`哪个进程哪个事件；</font>**  
+        4. 进程发起recvfrom系统调用。
+
+#### 1.18.2.2. I/O多路复用详解
+1. **<font color = "clime">`select,poll,epoll只是I/O多路复用模型中第一阶段，即获取网络数据、用户态和内核态之间的拷贝。`</font>** 此阶段会阻塞线程。  
+2. **select()：**  
+    &emsp; **select运行流程：**  
+    &emsp; **<font color = "red">select()运行时会将fd_set集合从用户态拷贝到内核态。</font>** 在内核态中线性扫描socket，即采用轮询。如果有事件返回，会将内核态的数组相应的FD置位。最后再将内核态的数据返回用户态。  
+    &emsp; **select机制的问题：（拷贝、两次轮询、FD置位）**  
+    * 为了减少数据拷贝带来的性能损坏，内核对被监控的fd_set集合大小做了限制，并且这个是通过宏控制的，大小不可改变（限制为1024）。  
+    * 每次调用select， **<font color = "red">1)需要把fd_set集合从用户态拷贝到内核态，</font>** **<font color = "clime">2)需要在内核遍历传递进来的所有fd_set（对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低），</font>** **<font color = "red">3)如果有数据返回还需要从内核态拷贝到用户态。</font>** 如果fd_set集合很大时，开销比较大。 
+    * 由于运行时，需要将FD置位，导致fd_set集合不可重用。  
+    * **<font color = "clime">select()函数返回后，</font>** 调用函数并不知道是哪几个流（可能有一个，多个，甚至全部）， **<font color = "clime">还得再次遍历fd_set集合处理数据，即采用无差别轮询。</font>**   
+    * ~~惊群~~   
+3. **poll()：** 运行机制与select()相似。将fd_set数组改为采用链表方式pollfds，没有连接数的限制，并且pollfds可重用。   
+4. **epoll()：**   
+    1. **epoll的三个函数：**  
+        * 调用epoll_create，会在内核cache里建个红黑树，同时也会再建立一个rdllist双向链表。 
+        * epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改。
+        * 双向链表，用于存储准备就绪的事件，当epoll_wait调用时，仅查看这个rdllist双向链表数据即可。epoll_wait阻塞等待注册的事件发生，返回事件的数目，并将触发的事件写入events数组中。    
+    2. **epoll机制的工作模式：**  
+        * LT模式（默认，水平触发，level trigger）：当epoll_wait检测到某描述符事件就绪并通知应用程序时，应用程序可以不立即处理该事件；下次调用epoll_wait时，会再次响应应用程序并通知此事件。    
+        * ET模式（边缘触发，edge trigger）：当epoll_wait检测到某描述符事件就绪并通知应用程序时，应用程序必须立即处理该事件。如果不处理，下次调用epoll_wait时，不会再次响应应用程序并通知此事件。（直到做了某些操作导致该描述符变成未就绪状态了，也就是说 **<font color = "clime">边缘触发只在状态由未就绪变为就绪时只通知一次。</font>** ）   
+
+        &emsp; 由此可见：ET模式的效率比LT模式的效率要高很多。只是如果使用ET模式，就要保证每次进行数据处理时，要将其处理完，不能造成数据丢失，这样对编写代码的人要求就比较高。  
+        &emsp; 注意：ET模式只支持非阻塞的读写：为了保证数据的完整性。  
+
+    3. **epoll机制的优点：**  
+        * 调用epoll_ctl时拷贝进内核并保存，之后每次epoll_wait不拷贝。  
+        * epoll()函数返回后，调用函数以O(1)复杂度遍历。  
+5. 两种IO多路复用模式：[Reactor和Proactor](/docs/microService/communication/Netty/Reactor.md)  
+
+
+
+#### 1.18.2.3. 多路复用之Reactor模式
+1. `Reactor，是网络编程中基于IO多路复用的一种设计模式，是event-driven architecture的一种实现方式，处理多个客户端并发的向服务端请求服务的场景。`    
+2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font><font color = "blue">`其中Reactor负责监听和分发事件，线程池负责处理事件。`</font>** **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
+3. **单线程模型(单Reactor单线程)**  
+&emsp; ~~这是最基本的单Reactor单线程模型。其中Reactor线程，负责多路分离套接字，有新连接到来触发connect事件之后，交由Acceptor进行处理，有IO读写事件之后交给hanlder处理。~~  
+&emsp; ~~Acceptor主要任务就是构建handler，在获取到和client相关的SocketChannel之后，绑定到相应的hanlder上，对应的SocketChannel有读写事件之后，基于racotor分发,hanlder就可以处理了（所有的IO事件都绑定到selector上，有Reactor分发）。~~  
+&emsp; **<font color = "red">Reactor单线程模型，指的是所有的IO操作都在同一个NIO线程上面完成。</font>** 单个NIO线程会成为系统瓶颈，并且会有节点故障问题。   
+4. **多线程模型(单Reactor多线程)**  
+&emsp; ~~相对于第一种单线程的模式来说，在处理业务逻辑，也就是获取到IO的读写事件之后，交由线程池来处理，这样可以减小主reactor的性能开销，从而更专注的做事件分发工作了，从而提升整个应用的吞吐。~~  
+&emsp; Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作。在极个别特殊场景中，一个NIO线程(Acceptor线程)负责监听和处理所有的客户端连接可能会存在性能问题。    
+5. **主从多线程模型(多Reactor多线程)**    
+&emsp; 主从Reactor多线程模型中，Reactor线程拆分为mainReactor和subReactor两个部分， **<font color = "clime">mainReactor只处理连接事件，读写事件交给subReactor来处理。</font>** 业务逻辑还是由线程池来处理，mainRactor只处理连接事件，用一个线程来处理就好。处理读写事件的subReactor个数一般和CPU数量相等，一个subReactor对应一个线程，业务逻辑由线程池处理。  
+&emsp; ~~第三种模型比起第二种模型，是将Reactor分成两部分：~~  
+&emsp; ~~mainReactor负责监听server socket，用来处理新连接的建立，将建立的socketChannel指定注册给subReactor。~~  
+&emsp; ~~subReactor维护自己的selector, 基于mainReactor 注册的socketChannel多路分离IO读写事件，读写网 络数据，对业务处理的功能，另其扔给worker线程池来完成。~~  
+&emsp; Reactor主从多线程模型中，一个连接accept专门用一个线程处理。  
+&emsp; 主从Reactor线程模型的特点是：服务端用于接收客户端连接的不再是个1个单独的NIO线程，而是一个独立的NIO线程池。Acceptor接收到客户端TCP连接请求处理完成后(可能包含接入认证等)，将新创建的SocketChannel注册到IO线程池（sub reactor线程池）的某个IO线程上，由它负责SocketChannel的读写和编解码工作。Acceptor线程池仅仅只用于客户端的登陆、握手和安全认证，一旦链路建立成功，就将链路注册到后端subReactor线程池的IO线程上，由IO线程负责后续的IO操作。  
+&emsp; 利用主从NIO线程模型，可以解决1个服务端监听线程无法有效处理所有客户端连接的性能不足问题。  
+
+
+#### 1.18.2.4. IO性能优化之零拷贝
+1. 比较常见的I/O流程是读取磁盘文件传输到网络中。  
+2. **<font color = "clime">I/O传输中的一些基本概念：</font>**  
+    * 状态切换：内核态和用户态之间的切换。  
+    * CPU拷贝：内核态和用户态之间的复制。 **零拷贝："零"更多的是指在用户态和内核态之间的复制是0次。**   
+    * DMA拷贝：设备（或网络）和内核态之间的复制。  
+3. 多种I/O传输方式： 
+    1. 仅CPU方式有4次状态切换，4次CPU拷贝。  
+    2. **<font color = "blue">DMA（Direct Memory Access，直接内存访问）。</font>** CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，因此减少了2次CPU拷贝。共2次CPU拷贝，2次DMA拷贝，4次状态切换。    
+    3. **<font color = "blue">mmap（内存映射）。</font>** 将内核中读缓冲区地址与用户空间缓冲区地址进行映射，又减少了一次cpu拷贝。总共包含1次cpu拷贝，2次DMA拷贝，4次状态切换。  
+        
+            此流程中，cpu拷贝从4次减少到1次，但状态切换还是4次。  
+
+    4. **<font color = "blue">sendfile（函数调用）。</font>** **<font color = "red">数据不经过用户缓冲区，该数据无法被修改，但减少了2次状态切换。</font>** 即只有1次CPU拷贝、2次DMA拷贝、2次状态切换。   
+    5. sendfile+DMA：将仅剩的1次CPU拷贝优化掉，把内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。    
+    &emsp; 仍然无法对数据进行修改，并且需要硬件层面DMA的支持，并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。  
+    6. splice：splice系统调用是Linux在2.6版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
+    &emsp; splice系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
+
+-----------
+
+1. 仅CPU方式：  
+&emsp; 仅CPU方式有4次状态切换，4次CPU拷贝。  
+2. **CPU&DMA方式：**    
+    * 读过程涉及2次空间切换(需要CPU参与)、1次DMA拷贝、1次CPU拷贝；
+    * 写过程涉及2次空间切换、1次DMA拷贝、1次CPU拷贝；  
+&emsp; CPU&DMA与仅CPU方式相比少了2次CPU拷贝，多了2次DMA拷贝。  
+3. mmap+write方式：  
+&emsp; **<font color = "clime">mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享。</font>**  
+&emsp; 使用mmap+write方式相比CPU&DMA方式又少了一次CPU拷贝。即进行了4次用户空间与内核空间的上下文切换，以及3次数据拷贝；其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝。  
+4. sendfile方式：  
+&emsp; **<font color = "red">它建立了两个文件之间的传输通道。</font>**  
+&emsp; 应用程序只需要调用sendfile函数即可完成。 **<font color = "clime">数据不经过用户缓冲区，该数据无法被修改，但减少了2次状态切换。</font>** 即只有2次状态切换、1次CPU拷贝、2次DMA拷贝。   
+5. sendfile+DMA：  
+&emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。  
+&emsp; DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩的1次CPU拷贝。  
+&emsp; 这种方式又减少了1次CPU拷贝，即有2次状态切换、0次CPU拷贝、2次DMA拷贝。  
+&emsp; 但是仍然无法对数据进行修改，并且需要硬件层面DMA的支持， **并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。**   
+6. splice方式：  
+&emsp; splice系统调用是Linux在2.6版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
+&emsp; splice系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
+&emsp; **<font color = "clime">splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。</font>**  
+
+
+### 1.18.3. Socket编程
+&emsp; `Socket是对TCP/IP 协议的封装。`Socket 只是个接口不是协议，通过 Socket 才能使用 TCP/IP 协议，除了 TCP，也可以使用 UDP 协议来传递数据。  
+
+
+### 1.18.4. NIO
+&emsp; **Java BIO即Block I/O，同步并阻塞的IO。**  
+&emsp; **<font color = "red">NIO，同步非阻塞I/O，基于io多路复用模型，即select，poll，epoll。</font>**  
+&emsp; **<font color = "red">Java AIO即Async非阻塞，是异步非阻塞的IO。</font>**  
+
+&emsp; BIO方式适用于连接数目比较小且固定的架构，这种方式对服务器资源要求比较高，并发局限于应用中，JDK1.4以前的唯一选择，但程序直观简单易理解。  
+&emsp; NIO方式适用于连接数目多且连接比较短（轻操作）的架构，比如聊天服务器，并发局限于应用中，编程比较复杂，JDK1.4开始支持。  
+&emsp; AIO方式适用于连接数目多且连接比较长（重操作）的架构，比如相册服务器，充分调用OS参与并发操作，编程比较复杂，JDK7开始支持。  
+
+
+### 1.18.5. Netty
