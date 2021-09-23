@@ -309,6 +309,13 @@
         - [1.18.3. Socket编程](#1183-socket编程)
         - [1.18.4. NIO](#1184-nio)
         - [1.18.5. Netty](#1185-netty)
+            - [1.18.5.1. Netty简介](#11851-netty简介)
+            - [1.18.5.2. Netty运行流程](#11852-netty运行流程)
+            - [1.18.5.3. Netty逻辑架构](#11853-netty逻辑架构)
+            - [1.18.5.4. Netty核心组件](#11854-netty核心组件)
+            - [1.18.5.5. Netty高性能](#11855-netty高性能)
+            - [1.18.5.6. Netty开发](#11856-netty开发)
+            - [1.18.5.7. Netty源码](#11857-netty源码)
 
 <!-- /TOC -->
 
@@ -2997,5 +3004,77 @@
 &emsp; NIO方式适用于连接数目多且连接比较短（轻操作）的架构，比如聊天服务器，并发局限于应用中，编程比较复杂，JDK1.4开始支持。  
 &emsp; AIO方式适用于连接数目多且连接比较长（重操作）的架构，比如相册服务器，充分调用OS参与并发操作，编程比较复杂，JDK7开始支持。  
 
-
 ### 1.18.5. Netty
+#### 1.18.5.1. Netty简介
+&emsp; **Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。**  
+
+1. Netty是一个基于NIO的client-server（客户端服务器）框架，使用它可以快速简单地开发网络应用程序。
+2. 它极大地简化并优化了TCP和UDP套接字服务器等网络编程，并且性能以及安全性等很多方面甚至都要更好。
+3. 支持多种协议 如FTP，SMTP，HTTP以及各种二进制和基于文本的传统协议。  
+
+&emsp; **<font color = "clime">为什么要用Netty？</font>**  
+&emsp; 在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
+
+* NIO的类库和API繁杂，使用麻烦，需要熟练掌握Selector、ServerSocketChannek、SockctChannek、ByteBuffer等。  
+* **原生API使用单线程模型，不能很好利用多核优势；**  
+* 原生API是直接使用的IO数据，没有做任何封装处理，对数据的编解码、TCP的粘包和拆包、客户端断连、网络的可靠性和安全性方面没有做处理；  
+* **<font color = "red">JDK NIO的BUG，例如臭名昭著的epoll bug，它会导致Selector空轮询，最终导致CPU100%。</font>官方声称在JDK1.6版本的update18修复了该问题，但是直到JDK 1.7版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有得到根本性解决。该BUG以及与该BUG相关的问题单可以参见以下链接内容。** 
+    * http://bugs.java.com/bugdatabase/viewbug.do?bug_id=6403933  
+    * http://bugs.java.com/bugdalabase/viewbug.do?bug_id=21477l9  
+
+#### 1.18.5.2. Netty运行流程
+&emsp; [Netty运行流程](/docs/microService/communication/Netty/operation.md)   
+
+
+#### 1.18.5.3. Netty逻辑架构
+&emsp; [Netty逻辑架构](/docs/microService/communication/Netty/Architecture.md)   
+
+
+#### 1.18.5.4. Netty核心组件
+1. `由netty运行流程可以看出Netty核心组件有Bootstrap、channel相关、EventLoop、byteBuf...`  
+2. Bootstrap和ServerBootstrap是针对于Client和Server端定义的引导类，主要用于配置各种参数，并启动整个Netty服务。  
+3. Channel  
+    1. **在Netty中，Channel是一个Socket连接的抽象，它为用户提供了关于底层Socket状态（是否是连接还是断开）以及对Socket的读写等操作。**  
+    2. ChannelHandler  
+    &emsp; **ChannelHandler主要用来处理各种事件，这里的事件很广泛，比如可以是连接、数据接收、异常、数据转换等。**  
+    3. ChannelPipeline  
+    &emsp; Netty的ChannelHandler为处理器提供了基本的抽象，目前可以认为每个ChannelHandler的实例都类似于一种为了响应特定事件而被执行的回调。从应用程序开发人员的角度来看，它充当了所有处理入站和出站数据的应用程序逻辑的拦截载体。ChannelPipeline提供了ChannelHandler链的容器，并定义了用于在该链上传播入站和出站事件流的API。当Channel被创建时，它会被自动地分配到它专属的ChannelPipeline。  
+    4. ChannelHandlerContext  
+    &emsp; 当ChannelHandler被添加到ChannelPipeline时，它将会被分配一个ChannelHandlerContext，它代表了ChannelHandler和ChannelPipeline之间的绑定。ChannelHandlerContext的主要功能是管理它所关联的ChannelHandler和在同一个ChannelPipeline中的其他ChannelHandler之间的交互。  
+4. EventLoop线程模型  
+    1. **<font color = "blue">当一个连接到达时，Netty就会创建一个Channel，</font>** 然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上（此流程在NioEventLoop的启动中），在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
+    2. <font color = "clime">EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。</font>  
+
+#### 1.18.5.5. Netty高性能
+
+* [零拷贝](/docs/microService/communication/Netty/nettyZeroCopy.md)  
+* [高效的Reactor线程模型](/docs/microService/communication/Netty/Reactor.md) 
+* 异步非阻塞通信  
+* 内存池
+* 无锁化的串行设计理念  
+* 高效的并发编程  
+* 对高性能对的序列化框架支持
+* 灵活的TCP参数配置能力
+
+&emsp; Reactor与EventLoop  
+&emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
+
+#### 1.18.5.6. Netty开发
+1、 TCP粘拆包与Netty编解码  
+    1. [TCP的粘包和拆包问题描述](/docs/network/TCPSticking.md)  
+    2. **<font color = "clime">Netty对半包或者粘包的处理：</font>** **每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，<font color = "red">所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。</font>** 
+    3. Netty默认提供了多种解码器来解决，可以进行分包操作。  
+        * 固定长度的拆包器 FixedLengthFrameDecoder
+        * 行拆包器 LineBasedFrameDecoder
+        * 分隔符拆包器 DelimiterBasedFrameDecoder
+        * 基于数据包长度的拆包器 LengthFieldBasedFrameDecoder
+2. Netty实战
+3. Netty多协议开发
+    * Http协议开发应用
+    * WebSocket协议开发
+    &emsp; WebSocket是基于TCP的应用层协议，用于在C/S架构的应用中实现双向通信，关于WebSocket协议的详细规范和定义参见rfc6455。  
+    * 私有协议栈开发  
+
+#### 1.18.5.7. Netty源码
+
+
