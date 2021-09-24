@@ -4,6 +4,9 @@
 - [1. 装饰(Decorator)模式](#1-装饰decorator模式)
     - [1.1. 简介](#11-简介)
     - [1.2. 结构](#12-结构)
+    - [1.3. 模式实现](#13-模式实现)
+    - [1.4. 使用场景](#14-使用场景)
+    - [1.5. JDK源码](#15-jdk源码)
 
 <!-- /TOC -->
 
@@ -53,3 +56,201 @@ https://www.cnblogs.com/volcano-liu/p/10897897.html
 &emsp; 一般是一个抽象类，继承自或实现Component（抽象构件），在它的属性里面有一个变量指向Component抽象构件，这是装饰器最关键的地方。  
 * ConcreteDecorator，具体的装饰器类，实现具体要向被装饰对象添加的功能。用来装饰具体的组件对象或者另外一个具体的装饰器对象。  
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-25.png)  
+* Component: 抽象构件。是定义一个对象接口，可以给这些对象动态地添加职责。
+* ConcreteComponent:具体构件。是定义了一个具体的对象，也可以给这个对象添加一些职责。
+* Decorator: 抽象装饰类。是装饰抽象类，继承了Component,从外类来扩展Component类的功能，但对于Component来说，是无需知道Decorator存在的。
+* ConcreteDecorator:具体装饰类，起到给Component添加职责的功能。
+
+## 1.3. 模式实现
+* Component：抽象构件, 被装饰抽象类
+
+```java
+public interface Cake {
+    String nameDetail();
+    Double price();
+}
+```
+
+* ConcreteComponent: 抽象实现类，被装饰对象类
+
+```java
+public class CakeImpl implements Cake {
+    /**
+     * 手抓饼配料->鸡蛋，牛肉，蔬菜,
+     * 组合方式：1.鸡蛋，2.牛肉，3.蔬菜，4. 鸡蛋+牛肉，5. 鸡蛋+蔬菜，6.牛肉＋蔬菜, 7.鸡蛋+牛肉+蔬菜
+     */
+    public String nameDetail() {
+        return "原味手抓饼";
+    }
+    public Double price() {
+        return 5d;
+    }
+}
+```
+
+* Decorator: 抽象装饰类
+
+```java
+public class CakeDecorator implements Cake{
+    Cake cake;
+    //装饰实现类
+    public CakeDecorator(Cake cake) {
+        this.cake = cake;
+    }
+    public String nameDetail() {
+        return cake.nameDetail();
+    }
+    public Double price() {
+        return cake.price();
+    }
+}
+```
+
+* ConcreteDecorator: Decorator具体实现类
+&emsp; 鸡蛋手抓饼 +1.5元
+
+```java
+public class EggCakeDecorator extends CakeDecorator{
+    public EggCakeDecorator(Cake cake) {
+        super(cake);
+    }
+    //关键部分
+    @Override
+    public String nameDetail() {
+        return "鸡蛋，" + cake.nameDetail();
+    }
+    @Override
+    public Double price() {
+        return 1.5 + cake.price();
+    }
+}
+```
+
+&emsp; 牛肉手抓饼 +2元
+
+```java
+public class MeetCakeDecorator extends CakeDecorator{
+
+    public MeetCakeDecorator(Cake cake) {
+        super(cake);
+    }
+
+    //关键部分
+    @Override
+    public String nameDetail() {
+        return "牛肉，" + cake.nameDetail();
+    }
+    @Override
+    public Double price() {
+        return 2 + cake.price();
+    }
+}
+```
+
+&emsp; 蔬菜手抓饼 +0.5元
+
+```java
+public class VeggCakeDecorator extends CakeDecorator{
+
+    public VeggCakeDecorator(Cake cake) {
+        super(cake);
+    }
+
+    //关键部分
+
+    @Override
+    public String nameDetail() {
+        return "蔬菜，" + cake.nameDetail();
+    }
+
+    @Override
+    public Double price() {
+        return 0.5 + cake.price();
+    }
+}
+```
+
+* 测试类
+
+```java
+@Slf4j
+public class Test {
+
+    public static void main(String[] args) {
+        Cake cake = new CakeImpl();
+        log.info("小红想吃{}, 价格：￥{}", cake.nameDetail(), cake.price());
+
+        CakeDecorator cakeEgg = new EggCakeDecorator(cake);
+        log.info("小明想吃{}, 价格：￥{}", cakeEgg.nameDetail(), cakeEgg.price());
+
+        CakeDecorator meetCake = new MeetCakeDecorator(cakeEgg);
+        CakeDecorator veggCake = new VeggCakeDecorator(meetCake);
+        log.info("小张想吃{}, 价格：￥{}", veggCake.nameDetail(), veggCake.price());
+    }
+}
+```
+
+* 输出结果  
+
+```text
+小红想吃原味手抓饼, 价格：￥5.0
+小明想吃鸡蛋，原味手抓饼, 价格：￥6.5
+小张想吃蔬菜，牛肉，鸡蛋，原味手抓饼, 价格：￥9.0
+```
+
+## 1.4. 使用场景
+* 优点
+
+    装饰者模式可以提供比继承更多的灵活性。
+    可以通过一种动态的方式来扩展一个对象的功能，在运行时选择不同的装饰器，从而实现不同的行为。
+    通过使用不同的具体装饰类以及这些装饰类的排列组合，可以创造出很多不同行为的组合。可以使用多个具体装饰类来装饰同一对象，得到功能更为强大的对象。
+    具体构件类与具体装饰类可以独立变化，用户可以根据需要增加新的具体构件类和具体装饰类，在使用时再对其进行组合，原有代码无须改变，符合“开闭原则”。
+
+
+* 缺点
+
+    会产生很多的小对象，增加了系统的复杂性
+    这种比继承更加灵活机动的特性，也同时意味着装饰模式比继承更加易于出错，排错也很困难，对于多次装饰的对象，调试时寻找错误可能需要逐级排查，较为烦琐。
+
+* 使用场景
+
+    在不影响其他对象的情况下，以动态、透明的方式给单个对象添加职责。
+    需要动态地给一个对象增加功能，这些功能也可以动态地被撤销。当不能采用继承的方式对系统进行扩充或者采用继承不利于系统扩展和维护时。
+
+## 1.5. JDK源码
+
+* java.io.BufferedInputStream(InputStream)
+* java.io.DataInputStream(InputStream)
+* java.io.BufferedOutputStream(OutputStream)
+
+
+&emsp; 源码解析
+
+```java
+//装饰器抽象类 java.io.FilterInputStream
+public class FilterInputStream extends InputStream{
+  protected FilterInputStream(InputStream in) {
+        this.in = in;
+    }
+}
+```
+
+```java
+//java.io.BufferedInputStream(InputStream) 装饰类
+public class BufferedInputStream extends FilterInputStream {
+  public BufferedInputStream(InputStream in) {
+          this(in, DEFAULT_BUFFER_SIZE);
+      }
+}
+```
+
+```java
+public class Test{
+  public static void main(String[] args){
+    String file = "filename.txt";    
+      InputStream is = new FileInputStream(file);
+       BufferedInputStream bis = new BufferedInputStream(is);
+  }
+}
+```

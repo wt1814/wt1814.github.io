@@ -6,7 +6,7 @@
 - [1. HashMap的线程安全问题](#1-hashmap的线程安全问题)
     - [1.1. JDK1.8](#11-jdk18)
     - [1.2. JDK1.7](#12-jdk17)
-        - [1.2.1. 死循环](#121-死循环)
+        - [1.2.1. ~~死循环~~](#121-死循环)
             - [1.2.1.1. 示例](#1211-示例)
             - [1.2.1.2. 死循环分析](#1212-死循环分析)
     - [1.3. 线程安全的map](#13-线程安全的map)
@@ -18,7 +18,7 @@
 1. 在jdk1.8中，在多线程环境下，会发生数据覆盖的情况。  
 &emsp; 假设两个线程A、B都在进行put操作，并且hash函数计算出的插入下标是相同的，当线程A执行完第六行代码后由于时间片耗尽导致被挂起，而线程B得到时间片后在该下标处插入了元素，完成了正常的插入，`然后线程A获得时间片，由于之前已经进行了hash碰撞的判断，所有此时不会再进行判断，而是直接进行插入，这就导致了线程B插入的数据被线程A覆盖了，从而线程不安全。`  
 2. HashMap导致CPU100% 的原因是因为 HashMap 死循环导致的。导致死循环的根本原因是JDK 1.7扩容采用的是“头插法”，会导致同一索引位置的节点在扩容后顺序反掉。而JDK 1.8之后采用的是“尾插法”，扩容后节点顺序不会反掉，不存在死循环问题。  
-&emsp; 导致死循环示例：线程1、2同时扩容，新建数组，此时线程2挂起。线程在newTable1上完成扩容。线程2唤醒，线程2的指针指向的是newTable1，⚠️此时当前元素e和next的值已经相反。线程2在newTable2上执行扩容，完成顺序相反的元素一和二的插入，当下次循环执行到`e.next = newTable[i] `可能发生死循环。  
+&emsp; 导致死循环示例：线程1、2同时扩容。线程1指向节点和下一节点，线程挂起。线程2完成扩容，此时线程1唤醒。线程1继续完成头节点插入，形成闭环。    
 &emsp; 发生死循环后，剩余元素无法搬运，并且线程不会停止，因此会造成CPU100%。  
 3. 线程安全的hashMap：Hashtable、Collections.synchronizedMap、[ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)。  
 
@@ -49,8 +49,10 @@ https://blog.csdn.net/swpu_ocean/article/details/88917958
 
 ## 1.2. JDK1.7
 
-### 1.2.1. 死循环
+### 1.2.1. ~~死循环~~
 <!--
+
+**** https://blog.csdn.net/J080624/article/details/87923678
 **** https://mp.weixin.qq.com/s/wIjAj4rAAZccAl-yhmj_TA
 https://blog.csdn.net/swpu_ocean/article/details/88917958
 https://mp.weixin.qq.com/s?__biz=MzkzODE3OTI0Ng==&mid=2247491120&idx=1&sn=44228b42b8f54508f2ee01af9a3a231e&source=41#wechat_redirect
