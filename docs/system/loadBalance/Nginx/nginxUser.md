@@ -46,11 +46,11 @@ https://mp.weixin.qq.com/s/kIIGCq_oN66nt4MMYaCJpQ
 3. 负载均衡：  
     1. **<font color = "red">Nginx反向代理通过proxy_pass来配置；负载均衡使用Upstream模块实现。</font>**  
     2. **<font color = "red">Nginx支持的负载均衡调度算法方式如下：</font>**  
-        * **<font color = "red">轮询(默认)</font>** 
+        * **<font color = "red">轮询（默认）</font>** 
         * **<font color = "red">weight：</font>** 指定权重。  
         * **<font color = "red">ip_hash</font>**  
-        * **<font color = "red">fair(第三方)：</font>** 智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配。  
-        * **<font color = "red">url_hash(第三方)</font>**  
+        * **<font color = "red">fair（第三方）：</font>** 智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配。  
+        * **<font color = "red">url_hash（第三方）</font>**  
 
 # 1. Nginx使用  
 ## 1.1. 基于配置文件的Nginx处理请求流程  

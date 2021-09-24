@@ -316,6 +316,27 @@
             - [1.18.5.5. Netty高性能](#11855-netty高性能)
             - [1.18.5.6. Netty开发](#11856-netty开发)
             - [1.18.5.7. Netty源码](#11857-netty源码)
+    - [1.19. 计算机网络](#119-计算机网络)
+        - [1.19.1. OSI七层网络模型](#1191-osi七层网络模型)
+        - [1.19.2. 应用层](#1192-应用层)
+            - [1.19.2.1. DNS](#11921-dns)
+            - [1.19.2.2. HTTP](#11922-http)
+            - [1.19.2.3. HTTPS](#11923-https)
+        - [1.19.3. 传输层](#1193-传输层)
+            - [1.19.3.1. TCP](#11931-tcp)
+        - [1.19.4. 网络的性能指标](#1194-网络的性能指标)
+    - [1.20. 负载均衡](#120-负载均衡)
+        - [1.20.1. 负载均衡解决方案](#1201-负载均衡解决方案)
+        - [1.20.2. Nginx](#1202-nginx)
+            - [1.20.2.1. Nginx介绍](#12021-nginx介绍)
+            - [1.20.2.2. Nginx使用](#12022-nginx使用)
+    - [1.21. CI/CD与Devops](#121-cicd与devops)
+        - [1.21.1. 从上往下学Docker](#1211-从上往下学docker)
+            - [1.21.1.1. Docker使用教程](#12111-docker使用教程)
+            - [1.21.1.2. 镜像详解](#12112-镜像详解)
+            - [1.21.1.3. 容器详解](#12113-容器详解)
+        - [1.21.2. Kubernetes](#1212-kubernetes)
+            - [1.21.2.1. k8s架构](#12121-k8s架构)
 
 <!-- /TOC -->
 
@@ -3076,5 +3097,121 @@
     * 私有协议栈开发  
 
 #### 1.18.5.7. Netty源码
+
+
+## 1.19. 计算机网络
+### 1.19.1. OSI七层网络模型
+
+### 1.19.2. 应用层
+#### 1.19.2.1. DNS
+1. **<font color = "clime">DNS解析流程：</font>** ...  
+2. DNS将域名解析成ip，网络通信也即 ip:端口 间的通信。  
+
+#### 1.19.2.2. HTTP
+&emsp; 在浏览器地址栏键入URL，按下回车之后经历的流程：URL解析 ---> DNS解析 ---> TCP连接 ---> 发送HTTP请求 ---> 服务器处理请求并返回HTTP报文 ---> 浏览器解析渲染页面 ---> 连接结束。  
+
+#### 1.19.2.3. HTTPS
+1. **<font color = "clime">HTTPS的整体过程分为证书验证、协商密钥、数据传输阶段。</font>**  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/https-5.png)  
+    1. 证书验证阶段，一次交互，客户端发送请求，获取到服务端的证书，并进行校验。若不合法，进行警告。  
+    2. 协商密钥阶段，采取非对称加密。客户端用公钥对随机数进行加密和传输；服务端用私钥解密随机数，获取到随机数，完成连接。 **<font color = "clime">~~注：非对称加密的目的就是让服务端得到这个随机值，以后客户端和服务端的通信就可以通过这个随机值来进行加密解密。~~</font>**  
+    3. 完成连接后，采用对称加密进行数据传输。  
+2. 本地随机数会被窃取嘛？  
+&emsp; HTTPS并不包含对随机数的安全保证，HTTPS保证的只是传输过程安全，<font color = "red">而随机数存储于本地，本地的安全属于另一安全范畴。</font>  
+
+### 1.19.3. 传输层
+#### 1.19.3.1. TCP
+1. 连接建立
+    1. 三次握手  
+        1. 为什么只有三次握手才能确认双方的接受与发送能力是否正常，而两次却不可以？  
+        &emsp; <font color = "clime">第三次握手中，客户端向服务器发送确认包ACK，防止了服务器端的一直等待而浪费资源。</font>例如：已失效的连接请求报文突然又传送到了服务器，从而会产生错误。  
+    2. 四次挥手  
+        1. **<font color = "clime">Client收到服务端F1N后，Client进入TIME_WAIT状态。</font>** 2MSL后自动关闭。 
+        2. 为什么客户端最后还要等待2MSL？  
+        &emsp; <font color = "red">保证客户端发送的最后一个ACK报文能够到达服务器，因为这个ACK报文可能丢失。</font>  
+        &emsp; 站在服务器的角度看来，服务端已经发送了FIN+ACK报文请求断开了，客户端还没有给我回应，应该是服务器发送的请求断开报文它没有收到，于是服务器又会重新发送一次。而客户端就能在这个2MSL时间段内收到这个重传的报文，接着给出回应报文， **<font color = "clime">并且会重启2MSL计时器。</font>**  
+    &emsp;如果客户端收到服务端的FIN+ACK报文后，发送一个ACK给服务端之后就“自私”地立马进入CLOSED状态，可能会导致服务端无法确认收到最后的ACK指令，也就无法进入CLOSED状态，这是客户端不负责任的表现。  
+    3. **<font color = "blue">如果已经建立了连接，但是客户端突然出现故障了怎么办？</font>**   
+    &emsp; 客户端如果出现故障，服务器不能一直等下去，白白浪费资源。`在TCP设有一个保活计时器。`<font color = "clime">服务器每收到一次客户端的请求后都会重新复位这个计时器，时间通常是设置为2小时，若两小时还没有收到客户端的任何数据，服务器就会发送一个探测报文段，以后每隔75分钟发送一次。若一连发送10个探测报文仍然没反应，服务器就认为客户端出了故障，接着就关闭连接。</font>  
+2. TIME_WAIT问题
+    1. TIME_WAIT状态，该socket所占用的本地端口号将一直无法释放。TIME_WAIT过多，可能出现做为客户端的程序无法向服务端建立新的socket连接的情况。  
+    2. **大量的TIME_WAIT状态TCP连接存在，是因为大量的短连接存在。TIME_WAIT状态时socket还占用端口。** TIME_WAIT状态默认为2MSL。    
+    3. 解决办法：
+        1. 客户端  
+        &emsp; **HTTP请求的头部，connection 设置为 keep-alive，** 保持存活一段时间：现在的浏览器，一般都这么进行了。     
+        2. 服务器端  
+            * **<font color = "red">允许time_wait状态的socket被重用。</font>**
+            * 缩减time_wait时间，设置为 1 MSL（即2mins）。
+3. Http长短链接
+4. TCP粘包
+    1. **TCP是基于流传输的协议，请求数据在其传输的过程中是没有界限区分，所以在读取请求的时候，不一定能获取到一个完整的数据包。**  
+    2. **<font color = "red">TCP粘包/拆包常见解决方案：</font>** 
+        * 每个包都固定长度。
+        * 每个包的末尾使用固定的分隔符。
+        * 将消息分为头部和消息体，在头部中保存有当前整个消息的长度。
+        * 通过自定义协议进行粘包和拆包的处理。   
+5. 数据传输
+
+### 1.19.4. 网络的性能指标
+&emsp; **<font color = "red">通常是以4个指标来衡量网络的性能，分别是`带宽、延时、吞吐率、PPS(Packet Per Second)`。</font>**  
+
+## 1.20. 负载均衡
+&emsp; 要想理解负载均衡，首先需要清楚OSI七层网络模型。  
+
+### 1.20.1. 负载均衡解决方案
+&emsp; **<font color = "clime">★★★负载均衡方案选择</font>**  
+&emsp; 小于3000万pv的，DNS轮询+监控；  
+&emsp; **3000万以上的，nginx+监控；**  
+&emsp; 5000万PV的，HAProxy+Keepalived,nginx，HAPROXY负责TCP的负载均衡，nginx负责7层调度；  
+&emsp; **1亿以上的，LVS-DR+keepalived,nginx，LVS-DR负责TCP的负载均衡，nginx负责7层调度。**  
+
+### 1.20.2. Nginx
+#### 1.20.2.1. Nginx介绍
+1. Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在4层或7层。</font>  
+2. **多进程：** Nginx启动时，会生成两种类型的进程，一个主进程master，一个（windows版本的目前只有一个）或多个工作进程worker。  
+    * 主进程并不处理网络请求，主要负责调度工作进程：加载配置、启动工作进程、非停升级。  
+    * **<font color = "red">一般推荐worker进程数与CPU内核数一致，这样一来不存在大量的子进程生成和管理任务，避免了进程之间竞争CPU资源和进程切换的开销。</font>**  
+
+#### 1.20.2.2. Nginx使用
+1. <font color = "red">Nginx服务器处理一个请求是按照两部分进行的。第一部分是IP和域名，由listen和server_name指令匹配server模块；第二部分是URL，匹配server模块里的location；最后就是location里的具体处理。</font>  
+2. <font color = "red">Nginx使用场景：反向代理、虚拟主机、静态资源WEB服务、缓存、限流、黑白名单、防盗链、流量复制...</font>  
+3. 负载均衡：  
+    1. **<font color = "red">Nginx反向代理通过proxy_pass来配置；负载均衡使用Upstream模块实现。</font>**  
+    2. **<font color = "red">Nginx支持的负载均衡调度算法方式如下：</font>**  
+        * **<font color = "red">轮询（默认）</font>** 
+        * **<font color = "red">weight：</font>** 指定权重。  
+        * **<font color = "red">ip_hash</font>**  
+        * **<font color = "red">fair（第三方）：</font>** 智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配。  
+        * **<font color = "red">url_hash（第三方）</font>**  
+
+## 1.21. CI/CD与Devops
+&emsp; **<font color = "clime">DevOps一般包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等。</font>**  
+
+### 1.21.1. 从上往下学Docker
+
+#### 1.21.1.1. Docker使用教程
+1. **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)。</font>**  
+2. **<font color = "clime">容器操作常用命令：run(创建并启动)、start(启动已有)、stop、exec(进入运行的容器)。</font>**  
+
+#### 1.21.1.2. 镜像详解
+1. Docker中镜像是分层的，最顶层是读写层（镜像与容器的区别），其底部依赖于Linux的UnionFS文件系统。  
+2. **<font color = "red">利用联合文件系统UnionFS写时复制的特点，在启动一个容器时，Docker引擎实际上只是增加了一个可写层和构造了一个Linux容器。</font>**  
+
+#### 1.21.1.3. 容器详解
+1. 单个宿主机的多个容器是隔离的，其依赖于Linux的Namespaces、CGroups。  
+2. 隔离的容器需要通信、文件共享（数据持久化）。  
+
+### 1.21.2. Kubernetes
+#### 1.21.2.1. k8s架构
+1. 1). 一个容器或多个容器可以同属于一个Pod之中。 2). Pod是由Pod控制器进行管理控制，其代表性的Pod控制器有Deployment、StatefulSet等。 3). Pod组成的应用是通过Service或Ingress提供外部访问。  
+2. **<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
+    1. **<font color = "clime">Master的组件包括：API Server、controller-manager、scheduler和etcd等几个组件。</font>**  
+        * **<font color = "red">API Server：K8S对外的唯一接口，提供HTTP/HTTPS RESTful API，即kubernetes API。</font>**  
+        * **<font color = "red">controller-manager：负责管理集群各种资源，保证资源处于预期的状态。</font>** 
+        * **<font color = "red">scheduler：资源调度，负责决定将Pod放到哪个Node上运行。</font>** 
+    2. **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
+
+
+
 
 
