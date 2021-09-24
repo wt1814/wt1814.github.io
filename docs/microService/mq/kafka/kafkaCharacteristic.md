@@ -82,6 +82,10 @@ Kafka服务器在响应客户端读取的时候，底层使用ZeroCopy技术，�
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-119.png)  
 
 ### 1.3.2. 可靠性（如何保证消息队列不丢失?）  
+<!-- 
+如何保证Kafka的可靠性、幂等性和有序性
+https://zhuanlan.zhihu.com/p/380956215
+-->
 &emsp; [kafka如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
 
 ### 1.3.3. 幂等（重复消费）和事务

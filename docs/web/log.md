@@ -15,6 +15,9 @@ https://mp.weixin.qq.com/s/hGtkjhG1Wz9BwrLKU4ph-w
 mybatis日志功能是如何设计的？ 
 https://mp.weixin.qq.com/s/JkdszV7Oy9E9cITNebY2NA
 
+日志打印的15个建议 
+https://mp.weixin.qq.com/s/D7rye88cki8rXMg0v1-dVw
+
 -->  
 &emsp; 使用[]进行参数变量隔离  
 &emsp; 如有参数变量，应该写成如下写法:  

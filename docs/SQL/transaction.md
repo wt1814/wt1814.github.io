@@ -32,11 +32,14 @@
 
 
 # 1. MySql的事务  
-<!-- 
-https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
+<!--
 
+https://mp.weixin.qq.com/s/CZHuGT4sKs_QHD_bv3BfAQ
 MySQL中事务和锁的重点和难点，一次性讲清楚！
 https://mp.weixin.qq.com/s/DbhiRTZYn7aHIaRT5juZ4w
+幻读是啥，会有什么问题？如何解决？ 
+https://mp.weixin.qq.com/s/5L1pVM3KYi3EJZRlSNAz6w
+
 -->
 &emsp; MySql的事务基于InnoDB存储引擎讲解。  
 

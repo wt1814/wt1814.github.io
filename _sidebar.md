@@ -571,7 +571,8 @@
 * 常用工具  
     * [idea](/docs/software/idea/idea.md)  
     * [抓包Charles](/docs/software/charles.md)  
-
+    * [markdown](/docs/software/markdown.md)  
+    * [Json](/docs/software/Json.md)  
 * 算法
     * [红黑树](/docs/function/redBlack.md)  
     * [复杂数据结构](/docs/function/otherStructure.md)  

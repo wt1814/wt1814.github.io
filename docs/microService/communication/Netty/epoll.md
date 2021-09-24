@@ -80,6 +80,10 @@ https://www.cnblogs.com/Joy-Hu/p/10762239.html
 https://ke.qq.com/webcourse/index.html#cid=398381&term_id=100475149&taid=9526675549590573&type=1024&vid=5285890803916888161
 -->
 <!--
+
+XXXX 再谈Linux epoll惊群问题的原因和解决方案 
+https://mp.weixin.qq.com/s/9quhzwMBoyOjSR3nY6klkw
+
 ~~
 https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
 -->
