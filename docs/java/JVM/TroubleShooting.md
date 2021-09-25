@@ -14,10 +14,10 @@
         - [1.6.2. 内存溢出的解决方案](#162-内存溢出的解决方案)
             - [1.6.2.1. 可以使用的解决方案](#1621-可以使用的解决方案)
             - [1.6.2.2. 使用内存查看工具分析堆dump文件](#1622-使用内存查看工具分析堆dump文件)
-            - [1.6.2.3. ★★★jvm内存快照dump文件太大，怎么分析](#1623-★★★jvm内存快照dump文件太大怎么分析)
-                - [1.6.2.3.1. ★★★jmap中live参数](#16231-★★★jmap中live参数)
-                - [1.6.2.3.2. jhat指定最大堆内存](#16232-jhat指定最大堆内存)
-                - [1.6.2.3.3. linux下的mat](#16233-linux下的mat)
+                - [1.6.2.2.1. ★★★jvm内存快照dump文件太大，怎么分析](#16221-★★★jvm内存快照dump文件太大怎么分析)
+                    - [1.6.2.2.1.1. ★★★jmap中live参数](#162211-★★★jmap中live参数)
+                    - [1.6.2.2.1.2. jhat指定最大堆内存](#162212-jhat指定最大堆内存)
+                    - [1.6.2.2.1.3. ~~linux下的mat~~](#162213-linux下的mat)
     - [1.7. 线程死锁](#17-线程死锁)
     - [1.8. 其他情况](#18-其他情况)
     - [1.9. JAVA线上故障排查](#19-java线上故障排查)
@@ -245,14 +245,14 @@ https://blog.csdn.net/prestigeding/article/details/89075661
 &emsp; 有了dump文件，就可以通过dump分析工具进行分析，比如常用的MAT，Jprofile，jvisualvm等工具都可以分析，这些工具都能够看出到底是哪里溢出，哪里创建了大量的对象等等信息。  
 
 
-#### 1.6.2.3. ★★★jvm内存快照dump文件太大，怎么分析  
+##### 1.6.2.2.1. ★★★jvm内存快照dump文件太大，怎么分析  
 <!-- 
 https://www.cnblogs.com/liangzs/p/8489321.html
 jhat -J-Xmx512M a1.log
 https://www.cnblogs.com/baihuitestsoftware/articles/6406271.html
 -->
 
-##### 1.6.2.3.1. ★★★jmap中live参数  
+###### 1.6.2.2.1.1. ★★★jmap中live参数  
 &emsp; 开发人员经常需要查看内存中的一些变量的值，来定位生产环境的问题。一般会使用jmap来抓dump，在抓dump的时候，会把堆全部扒下来：  
 
 ```text
@@ -268,10 +268,13 @@ jmap -dump:live,format=b,file=path pid
 
 &emsp; 那么抓下来的dump会减少一个数量级，在几十M左右，这样我们传输，打开这个dump的时间将大大减少，为解决故障赢取了宝贵的时间。   
 
-##### 1.6.2.3.2. jhat指定最大堆内存
+###### 1.6.2.2.1.2. jhat指定最大堆内存
 &emsp; 如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。
 
-##### 1.6.2.3.3. linux下的mat
+###### 1.6.2.2.1.3. ~~linux下的mat~~
+<!-- 
+https://www.jianshu.com/p/c8e0f8748ac0
+-->
 &emsp; 如果dump文件太大，使用linux下的mat，既Memory Analyzer Tools。   
 
 ## 1.7. 线程死锁  
