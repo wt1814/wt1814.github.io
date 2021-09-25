@@ -28,8 +28,11 @@
 
 # 1. 分布式锁  
 <!-- 
-分布式锁需要满足的特性有这么几点：
+*** 分布式锁需要满足的特性有这么几点：
 https://mp.weixin.qq.com/s/1IIKb3Uitdd_wHcq7pKdxg
+*** 聊聊redis分布式锁的8大坑 
+https://mp.weixin.qq.com/s/mNcmx_RTyeKPjWu4-y5qFA
+
 -->
 
 ## 1.1. 分布式锁使用场景  
