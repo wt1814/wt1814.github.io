@@ -1168,10 +1168,11 @@
 
 
 #### 1.4.3.6. ~~CompletionService~~
-
+&emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务，并方便的集中处理上述任务的结果(且任务最先完成的先返回)。  
+&emsp; 内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
 
 #### 1.4.3.7. ~~CompletableFuture~~
-
+&emsp; CompletableFuture 可以很方便的实现异步任务的封装 并实现结果的联合等一系列操作，轻松实现 任务的并行。  
 
 ### 1.4.4. JUC
 #### 1.4.4.1. CAS

@@ -15,6 +15,14 @@ https://www.cnblogs.com/zhjh256/p/11829397.html
 https://mp.weixin.qq.com/s/Eo-WR1agGETF0hE3Eaivrg
 https://segmentfault.com/a/1190000023603639
 https://www.bbsmax.com/A/amd0v7w1Jg/
+
+----------
+
+https://blog.csdn.net/zangdaiyang1991/article/details/84333995
+https://www.cnblogs.com/zhjh256/p/11829397.html
+https://blog.csdn.net/qq877728715/article/details/114446658
+https://www.cnblogs.com/dennyzhangdd/p/7010972.html#_label2
+
 -->
 &emsp; ~~JDK 8的CompletionService相对于之前版本的Future而言，其优势是能够尽可能快的得到执行完成的任务。例如有4个并发任务要执行，正常情况下通过Future.get()获取，通常只能按照提交的顺序获得结果，如果最后提交的最先完成的话，总执行时间会长很多。而通过CompletionService能够降低总执行时间。~~  
 &emsp; **<font color = "red">JDK 8的CompletionService相对于之前版本的Future而言，其优势是能够尽可能快的得到执行完成的任务。</font>**  
