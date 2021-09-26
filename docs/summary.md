@@ -77,7 +77,7 @@
                     - [1.4.2.2.3.1. Synchronized底层原理](#142231-synchronized底层原理)
                     - [1.4.2.2.3.2. Synchronized优化](#142232-synchronized优化)
                 - [1.4.2.2.4. Volatile](#14224-volatile)
-                - [1.4.2.2.5. ThreadLocal原理](#14225-threadlocal原理)
+                - [1.4.2.2.5. ThreadLocal](#14225-threadlocal)
                     - [1.4.2.2.5.1. ThreadLocal原理](#142251-threadlocal原理)
                     - [1.4.2.2.5.2. ThreadLocal应用](#142252-threadlocal应用)
             - [1.4.2.3. 线程通信(生产者消费者问题)](#1423-线程通信生产者消费者问题)
@@ -918,11 +918,10 @@
     * 有序性：编译优化带来的有序性问题  
 
     &emsp; **<font color = "clime">【编译器优化】和“缓存不能及时刷新”(【内存系统重排序】)都是重排序的一种。</font>**   
-
 2. **重排序：**  
     * **<font color = "blue">重排序分类：1). 编译器优化；2). 指令重排序(CPU优化行为)；3). 内存系统重排序：内存系统没有重排序，但是由于有缓存的存在，使得程序整体上会表现出乱序的行为。</font>**     
         * 对于编译器，JMM的编译器重排序规则会禁止特定类型的编译器重排序（不是所有的编译器重排序都要禁止）。  
-        * 对于处理器重排序，JMM的处理器重排序规则会要求Java编译器在生成指令序列时，插入特定类型的内存屏障指令， **<font color = "clime">通过内存屏障指令来禁止特定类型的处理器重排序</font>** (不是所有的处理器重排序都要禁止)。 
+        * 对于处理器重排序，JMM的处理器重排序规则会要求Java编译器在生成指令序列时，插入特定类型的内存屏障指令， **<font color = "clime">通过内存屏障指令来禁止特定类型的处理器重排序</font>** （不是所有的处理器重排序都要禁止）。 
 
     * 重排序遵守的规则：重排序遵守数据依赖性、重排序遵守as-if-serial语义。  
     * 重排序对多线程的影响
@@ -933,14 +932,15 @@
     &emsp; 缓存锁：只要保证多个CPU缓存的同一份数据是一致的就可以了，基于缓存一致性协议来实现。  
     2. MESI缓存一致性协议  
         1. 缓存一致性协议有很多种，MESI(Modified-Exclusive-Shared-Invalid)协议其实是目前使用很广泛的缓存一致性协议，x86处理器所使用的缓存一致性协议就是基于MESI的。  
-        2. 其他cpu通过 总线嗅探机制 可以感知到数据的变化从而将自己缓存里的数据失效。总线嗅探，**<font color = "red">每个CPU不断嗅探总线上传播的数据来检查自己缓存值是否过期了，如果处理器发现自己的缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置为无效状态，当处理器对这个数据进行修改操作的时候，会重新从内存中把数据读取到处理器缓存中。</font>**    
+        2. 其他cpu通过 总线嗅探机制 可以感知到数据的变化从而将自己缓存里的数据失效。  
+        &emsp; 总线嗅探， **<font color = "red">每个CPU不断嗅探总线上传播的数据来检查自己缓存值是否过期了，如果处理器发现自己的缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置为无效状态，当处理器对这个数据进行修改操作的时候，会重新从内存中把数据读取到处理器缓存中。</font>**    
         2. 总线嗅探会带来总线风暴。  
 2. 内存屏障  
-&emsp; Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。  
-&emsp; 内存屏障，禁止处理器重排序，保障缓存一致性。
+    Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。  
+    内存屏障，禁止处理器重排序，保障缓存一致性。
     1. 内存屏障的作用：（~~原子性~~、可见性、有序性）
-        1.（`保障可见性`）它会强制将对缓存的修改操作立即写入主存； 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。 
-        2.（`保障有序性`）阻止屏障两侧的指令重排序。 
+        1.（`保障可见性`）它会强制将对缓存的修改操作立即写入主存； 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。   
+        2.（`保障有序性`）阻止屏障两侧的指令重排序。   
 3. JMM中的happens-before原则
 
 ##### 1.4.2.1.4. 伪共享问题
@@ -976,7 +976,11 @@
 
 
 ##### 1.4.2.2.3. Synchronized使用是否安全
-
+&emsp; 共有 `类锁 + 对象锁 + 类锁 * 对象锁`种情况。    
+1. 类锁
+2. 对象锁
+3. 类锁和对象锁
+4. 不安全场景
 
 ###### 1.4.2.2.3.1. Synchronized底层原理
 1. Synchronized底层实现：  
@@ -1048,21 +1052,24 @@
     * **<font color = "clime">在Volatile读后插入读-读屏障（禁止下面的普通读操作与上面的Volatile读重排序）、读-写屏障（禁止下面所有的普通写操作和上面Volatile读重排序）。</font>**  
 3. Volatile为什么不安全（不保证原子性，线程切换）？  
 &emsp; 两个线程执行i++（i++的过程可以分为三步，首先获取i的值，其次对i的值进行加1，最后将得到的新值写回到缓存中），线程1获取i值后被挂起，线程2执行...  
-4. DCL详解：  
-	1. 为什么两次判断？ 线程1调用第一个if(singleton==null)，可能会被挂起。  
-	2. 为什么要加volatile关键字？  
-	&emsp; singleton = new Singleton()非原子性操作，包含3个步骤：分配内存 ---> 初始化对象 ---> 将singleton对象指向分配的内存空间(这步一旦执行了，那singleton对象就不等于null了)。  
-	&emsp; **<font color = "clime">因为指令重排序，可能编程1->3->2。如果是这种顺序，会导致别的线程拿到半成品的实例。</font>**  
+4. volatile使用场景：
+    **<font color = "red">Volatile的使用场景：</font>** 关键字Volatile用于多线程环境下的单次操作（单次读或者单次写）。即Volatile主要使用的场合是在多个线程中可以感知实例变量被更改了，并且可以获得最新的值使用，也就是用多线程读取共享变量时可以获得最新值使用。  
+    1. 全局状态标志。
+    2. DCL详解：  
+        1. 为什么两次判断？ 线程1调用第一个if(singleton==null)，可能会被挂起。  
+        2. 为什么要加volatile关键字？  
+        &emsp; singleton = new Singleton()非原子性操作，包含3个步骤：分配内存 ---> 初始化对象 ---> 将singleton对象指向分配的内存空间(这步一旦执行了，那singleton对象就不等于null了)。  
+        &emsp; **<font color = "clime">因为指令重排序，可能编程1->3->2。如果是这种顺序，会导致别的线程拿到半成品的实例。</font>**  
 
 
-##### 1.4.2.2.5. ThreadLocal原理
+##### 1.4.2.2.5. ThreadLocal
 ###### 1.4.2.2.5.1. ThreadLocal原理
 1. ThreadLocal源码/内存模型：  
     1. **<font color = "red">ThreadLocal#set()#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** 即，当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
     &emsp; ~~Thread ---> ThreadLocal.ThreadLocalMap~~
-    2. **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。<font color = "clime">`Key是一个ThreadLocal实例，Value是设置的值。`Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
+    2. **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。<font color = "clime">`Key是一个ThreadLocal实例，Value是设置的值。`Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
 2. **ThreadLocal内存泄露：**  
-&emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key(ThreadLocal实例)会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
+&emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">`如果一个ThreadLocal不存在外部强引用时，Key（ThreadLocal实例）会被GC回收，这样就会导致ThreadLocalMap中key为null，`而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
 &emsp; **<font color = "clime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  
 &emsp; 解决方案：`调用remove()方法`
 3. **ThreadLocalMap的key被回收后，如何获取值？**  
@@ -1076,9 +1083,12 @@
     2. 业务中变量传递。1)ThreadLocal实现同一线程下多个类之间的数据传递；2)ThreadLocal实现线程内的缓存，避免重复调用。
     3. ThreadLocal+MDC实现链路日志增强。
     4. ThreadLocal 实现数据库读写分离下强制读主库。
-2. ThreadLocal无法在父子线程之间传递。使用类InheritableThreadLocal可以在子线程中取得父线程继承下来的值。   
-3. ThreadLocal和线程池。TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
-4. FastThreadLocal
+2. ~~ThreadLocal三大坑~~
+    1. 内存泄露
+    2. ThreadLocal无法在父子线程之间传递。使用类InheritableThreadLocal可以在子线程中取得父线程继承下来的值。   
+    3. 线程池中线程上下文丢失。TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
+    4. 并行流中线程上下文丢失。问题同线程池中线程上下文丢失。  
+3. ThreadLocal优化：FastThreadLocal
 
 
 #### 1.4.2.3. 线程通信(生产者消费者问题)

@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. Synchronized使用实例](#1-synchronized使用实例)
+- [1. XXXXXSynchronized使用实例XXXXX](#1-xxxxxsynchronized使用实例xxxxx)
     - [1.1. synchronized类锁](#11-synchronized类锁)
         - [1.1.1. synchronized修饰同一个类的两个静态方法时互斥](#111-synchronized修饰同一个类的两个静态方法时互斥)
         - [1.1.2. synchronized分别修饰同一个类的静态方法和当前类时互斥](#112-synchronized分别修饰同一个类的静态方法和当前类时互斥)
@@ -29,7 +29,14 @@
 
 <!-- /TOC -->
 
-# 1. Synchronized使用实例
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; 共有 `类锁 + 对象锁 + 类锁 * 对象锁`种情况。    
+1. 类锁
+2. 对象锁
+3. 类锁和对象锁
+4. 不安全场景
+
+# 1. XXXXXSynchronized使用实例XXXXX
 
 <!--
 
