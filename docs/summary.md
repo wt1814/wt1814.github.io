@@ -1085,11 +1085,10 @@
     4. ThreadLocal 实现数据库读写分离下强制读主库。
 2. ~~ThreadLocal三大坑~~
     1. 内存泄露
-    2. ThreadLocal无法在父子线程之间传递。使用类InheritableThreadLocal可以在子线程中取得父线程继承下来的值。   
+    2. ThreadLocal无法在`父子线程（new Thread()）`之间传递。使用类InheritableThreadLocal可以在子线程中取得父线程继承下来的值。   
     3. 线程池中线程上下文丢失。TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
     4. 并行流中线程上下文丢失。问题同线程池中线程上下文丢失。  
 3. ThreadLocal优化：FastThreadLocal
-
 
 #### 1.4.2.3. 线程通信(生产者消费者问题)
 
