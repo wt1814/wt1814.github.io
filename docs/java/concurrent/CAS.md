@@ -77,6 +77,11 @@ CAS包含了 3个操作数：需要读写的内存位置V、进行比较的值A�
 
 ## 1.3. Unsafe类  
 <!-- 
+
+ Java中Unsafe类的原理详解与使用案例 
+ https://mp.weixin.qq.com/s/s6sywaX5DLJfAVbYUJv2yQ
+-->
+<!-- 
 CAS在JAVA的底层实现是通过指令 lock cmpxchg实现的。lock保证当执行cmpxchg时其他cpu不允许对其做修改，保证原子性。  
 -->
 
