@@ -139,8 +139,9 @@
             - [1.5.5.1. 索引底层原理](#1551-索引底层原理)
             - [1.5.5.2. 各种索引](#1552-各种索引)
             - [1.5.5.3. MySql事务](#1553-mysql事务)
-            - [1.5.5.4. MySql锁](#1554-mysql锁)
-            - [1.5.5.5. MySql死锁和锁表](#1555-mysql死锁和锁表)
+            - [1.5.5.4. MVCC](#1554-mvcc)
+            - [1.5.5.5. MySql锁](#1555-mysql锁)
+            - [1.5.5.6. MySql死锁和锁表](#1556-mysql死锁和锁表)
         - [1.5.6. MySql架构原理](#156-mysql架构原理)
             - [1.5.6.1. MySql架构](#1561-mysql架构)
             - [1.5.6.2. binLog日志](#1562-binlog日志)
@@ -1555,8 +1556,25 @@
     * **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
     &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用Gap Lock或Next-Key Lock（Gap Lock + Record Lock）来解决。  
 
+#### 1.5.5.4. MVCC
+1. **<font color = "clime">多版本并发控制（MVCC）是一种用来解决读-写冲突的无锁并发控制。</font>**  
+&emsp; <font color = "clime">MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
+2. **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC，一个是undo log，用于记录数据的变化轨迹（版本链），用于数据回滚；另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。</font>**   
+    * 版本链的生成：在数据库中的每一条记录实际都会存在三个隐藏列：事务ID、行ID、回滚指针，指向undo log记录。  
+    *  **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
+3. ~~Read View判断：~~  
+&emsp; 如果被访问版本的trx_id小于ReadView中的up_limit_id值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  
+&emsp; <font color = "red">如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。</font>如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；<font color = "clime">如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。</font>  
+4. 在读取已提交、可重复读两种隔离级别下会使用MVCC。  
+    * 读取已提交READ COMMITTED是在`每次执行select操作时`都会生成一次Read View。所以解决不了幻读问题。 
+    * 可重复读REPEATABLE READ只有在第一次执行select操作时才会生成Read View，后续的select操作都将使用第一次生成的Read View。
+5. MVCC解决了幻读没有？  
+        当前读:select...lock in share mode; select...for update;
+        当前读:update、insert、delete
+&emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了Gap Lock时，Gap锁会锁住id < 10的整个范围，因此其他事务无法插入id < 10的数据，从而防止了幻读。  
 
-#### 1.5.5.4. MySql锁
+
+#### 1.5.5.5. MySql锁
 1. InnoDB共有七种类型的锁：共享/排它锁、意向锁、记录锁（Record lock）、间隙锁（Gap lock）、临键锁（Next-key lock）、插入意向锁、自增锁。  
 2. **<font color = "red">InnoDB存储引擎的锁的算法有三种：</font>**  
     1. Record lock：单个行记录上的锁。  
@@ -1567,7 +1585,7 @@
     &emsp; 临键锁，是记录锁与间隙锁的组合，它的封锁范围，既包含索引记录，又包含索引区间。  
     &emsp; <font color = "red">默认情况下，innodb使用next-key locks来锁定记录。</font><font color = "clime">但当查询的索引含有唯一属性的时候，Next-Key Lock会进行优化，将其降级为Record Lock，即仅锁住索引本身，不是范围。</font>  
 
-#### 1.5.5.5. MySql死锁和锁表
+#### 1.5.5.6. MySql死锁和锁表
 &emsp; ~~胡扯，死锁，mysql检测后，回滚一条事务，抛出异常。~~  
 1. 服务器报错：`Deadlock found when trying to get to lock; try restarting transaction`。  
 2. **<font color = "clime"> 死锁发生了如何解决，MySQL有没有提供什么机制去解决死锁？</font>**  
@@ -1626,7 +1644,7 @@
 
 
 ###### 1.5.6.4.1.2. ChangeBuffer
-1. 在「非唯一」「普通」索引页（即非聚集索引）不在缓冲池中，对页进行了写操作， 1). 并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更， 2).等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中的技术。  
+1. 在「非唯一」「普通」索引页（即非聚集索引）不在缓冲池中，对页进行了写操作， 1). 并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更， 2).`等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中`的技术。  
 2. **~~<font color = "red">如果辅助索引页已经在缓冲区了，则直接修改即可；如果不在，则先将修改保存到 Change Buffer。</font><font color = "blue">Change Buffer的数据在对应辅助索引页读取到缓冲区时合并到真正的辅助索引页中。Change Buffer 内部实现也是使用的 B+ 树。</font>~~**  
 
 ###### 1.5.6.4.1.3. AdaptiveHashIndex
