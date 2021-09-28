@@ -20,6 +20,11 @@ https://mp.weixin.qq.com/s/i3wLeCSxqWKrTwgtfelumQ
 
 ## 1.1. insertOrUpdate
 &emsp; .......
+<!-- 
+存在则更新 ON DUPLICATE KEY UPDATE
+https://blog.csdn.net/f327888576/article/details/89490442
+
+-->
 
 ## 1.2. mybatis大数据查询 
 &emsp; [MyBatis大数据查询](/docs/SSM/MyBatis/BigData.md)  
