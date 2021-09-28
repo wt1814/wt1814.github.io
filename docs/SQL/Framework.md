@@ -134,6 +134,9 @@ https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
 *** https://www.cnblogs.com/mengxinJ/p/14045520.html#_label1
 
 -->
+
+&emsp; 参考[InnoDB插入更新流程](/docs/SQL/insert.md)  
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-176.png)  
 
 &emsp; server层：bin log。  

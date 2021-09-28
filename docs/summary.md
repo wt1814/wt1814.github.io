@@ -1601,6 +1601,12 @@
 2. **<font color = "clime">MySQL服务器主要分为Server层和存储引擎层。</font>**  
 	1. <font color = "red">Server层包括连接器、查询缓存、分析器、优化器、执行器等。</font>涵盖MySQL的大多数核心服务功能，以及所有的内置函数(如日期、时间、数学和加密函数等)，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等，还有 **<font color = "clime">一个通用的日志模块binglog日志模块。</font>**     
 	2. 存储引擎：主要负责数据的存储和读取，采用可以替换的插件式架构，支持 InnoDB、MyISAM、Memory等多个存储引擎，其中InnoDB引擎有自有的日志模块redolog模块。  
+3. MySQL更新路程：  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-174.png)  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-183.png)  
+    1. 事务提交前 --- 内存操作： 1)数据加载到缓冲池buffer poll； 2)写回滚日志undo log； 3)更新缓冲池数据 4) 写redo log buffer
+    2. 事务提交：redo log与bin log两阶段提交。  
+    3. 事务提交后：后台线程将buffer poll中数据落盘。  
 
 #### 1.5.6.2. binLog日志  
 1. **<font color = "clime">binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。</font>**  

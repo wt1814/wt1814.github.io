@@ -245,8 +245,10 @@
 &emsp; [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
 [MySql架构原理](/docs/SQL/MySqlPrinciple.md)   
 &emsp; [MySql架构](/docs/SQL/Framework.md)   
+&emsp; [InnoDB插入更新流程](/docs/SQL/insert.md)  
 &emsp; [binLog日志](/docs/SQL/BinLog.md)  
-&emsp; [binLog日志使用](/docs/SQL/binLogUse.md)  
+&emsp; &emsp; [binLog日志介绍](/docs/SQL/BinLogIntro.md)  
+&emsp; &emsp; [binLog日志使用](/docs/SQL/binLogUse.md)  
 &emsp; [MySql存储引擎](/docs/SQL/MySqlStorage.md)  
 &emsp; [InnoDB体系结构](/docs/SQL/InnoDB.md)  
 &emsp; [InnoDB内存结构-性能](/docs/SQL/memory.md)  
@@ -259,7 +261,6 @@
 &emsp; &emsp; [redoLog](/docs/SQL/redoLog.md)  
 &emsp; &emsp; [DoubleWrite](/docs/SQL/DoubleWrite.md)  
 &emsp; [两阶段提交和崩溃恢复](/docs/SQL/CrashRecovery.md)  
-&emsp; [小结：insert插入流程](/docs/SQL/insert.md)  
 
 <!-- 
 &emsp; [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  

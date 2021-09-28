@@ -1,15 +1,16 @@
 
 <!-- TOC -->
 
-- [1. sql更新流程](#1-sql更新流程)
-    - [1.1. insert插入流程](#11-insert插入流程)
-        - [1.1.1. 事务提交前的日志文件写入](#111-事务提交前的日志文件写入)
-        - [1.1.2. 事务提交后的数据文件写入](#112-事务提交后的数据文件写入)
-    - [1.2. update更新流程](#12-update更新流程)
+- [1. ~~sql更新流程~~](#1-sql更新流程)
+    - [1.1. ★★★update更新流程](#11-★★★update更新流程)
+    - [1.2. insert插入流程](#12-insert插入流程)
+        - [1.2.1. 事务提交前的日志文件写入](#121-事务提交前的日志文件写入)
+        - [1.2.2. 事务提交后的数据文件写入](#122-事务提交后的数据文件写入)
+    - [1.3. update更新流程](#13-update更新流程)
 
 <!-- /TOC -->
 
-# 1. sql更新流程  
+# 1. ~~sql更新流程~~  
 <!--
 一条 sql 的执行过程详解
 *** https://quxuecx.blog.csdn.net/article/details/112001274
@@ -18,14 +19,26 @@
 MySQL不会丢失数据的秘密，就藏在它的 7种日志里 
 https://mp.weixin.qq.com/s/S9dQd1hgYzMBoDqV5bPuiQ
 
-
 -->
 
-## 1.1. insert插入流程
+
+## 1.1. ★★★update更新流程
+<!-- 
+*** InnoDB插入更新流程
+https://mp.weixin.qq.com/s/e-5plTcE4n47L_3JzMS6kw#
+-->
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-183.png)  
+
+1. 事务提交前 --- 内存操作： 1)数据加载到缓冲池buffer poll； 2)写回滚日志undo log； 3)更新缓冲池数据 4) 写redo log buffer
+2. 事务提交：redo log与bin log两阶段提交。  
+3. 事务提交后：后台线程将buffer poll中数据落盘。  
+
+## 1.2. insert插入流程
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-166.png)  
 
 
-### 1.1.1. 事务提交前的日志文件写入  
+### 1.2.1. 事务提交前的日志文件写入  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-174.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-150.png)  
 
 1. 首先 insert 进入 server 层后，会进行一些必要的检查，检查的过程中并不会涉及到磁盘的写入。
@@ -38,7 +51,7 @@ https://mp.weixin.qq.com/s/S9dQd1hgYzMBoDqV5bPuiQ
 
 &emsp; 综上（在 InnoDB buffer pool足够大且上述的两个参数设置为双一时），insert语句成功提交时，真正发生磁盘数据写入的，并不是MySQL的数据文件，而是redo log和binlog文件。然而，InnoDB buffer pool不可能无限大，redo log也需要定期轮换，很难容下所有的数据，下面来看看buffer pool与磁盘数据文件的交互方式。
 
-### 1.1.2. 事务提交后的数据文件写入  
+### 1.2.2. 事务提交后的数据文件写入  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-151.png)  
 1. 当 buffer pool 中的数据页达到一定量的脏页或 InnoDB 的 IO 压力较小 时，都会触发脏页的刷盘操作。
 2. 当开启 double write 时，InnoDB 刷脏页时首先会复制一份刷入 double write，在这个过程中，由于double write的页是连续的，对磁盘的写入也是顺序操作，性能消耗不大。
@@ -52,7 +65,7 @@ https://mp.weixin.qq.com/s/S9dQd1hgYzMBoDqV5bPuiQ
 
 &emsp; 汇总两张图，一条 insert 语句的所有涉及到的数据在磁盘上会依次写入 redo log，binlog，(double write，insert buffer) 共享表空间，最后在自己的用户表空间落定为安。  
 
-## 1.2. update更新流程
+## 1.3. update更新流程
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-174.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-175.png)  
 
