@@ -22,13 +22,18 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. 事务的四大特性（ACID）：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability）。  
 2. 并发事务处理带来的问题：脏读、丢失修改、不可重复读、幻读。  
-&emsp; SQL标准定义了四个隔离级别：读取未提交、读取已提交、可重复读（可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读）、可串行化。  
-3. 在MySQL中，默认的隔离级别是REPEATABLE-READ（可重复读），阻止脏读和不可重复读，并且解决了幻读问题。  
+    * 脏读：一个事务读了另一个事务未提交的数据。
+    * 丢失修改：一个事务覆盖了另一个事务的数据。  
+    * 不可重复读：一个事务多次读，另一事务中间修改了数据。  
+    * 幻读：一个事务多次读，另一事务中间新增了数据。  
+3. SQL标准定义了四个隔离级别：读取未提交、读取已提交、可重复读（可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读）、可串行化。  
+4. 在MySQL中，默认的隔离级别是REPEATABLE-READ（可重复读），阻止脏读和不可重复读，并且解决了幻读问题。  
 &emsp; 隔离性(事务的隔离级别)的实现，利用的是锁和MVCC机制。 
     * **<font color = "blue">快照读：生成一个事务快照（ReadView），之后都从这个快照获取数据。</font>** 普通select语句就是快照读。  
     &emsp; <font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
     * **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
     &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用Gap Lock或Next-Key Lock（Gap Lock + Record Lock）来解决。  
+
 
 
 # 1. MySql的事务  

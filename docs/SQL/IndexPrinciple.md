@@ -166,3 +166,4 @@ https://mp.weixin.qq.com/s/QKLX7zNm7xxMZ7dYvlkxxw
 
 &emsp; <font color = "red">哈希索引适用的场景</font>：等值查询。  
 &emsp; <font color = "red">哈希索引不适用的场景</font>：hash函数的不可预测性，hash索引中经过hash函数建立索引之后，索引的顺序与原顺序无法保持一致。不支持范围查询、不支持索引完成排序、不支持联合索引的最左前缀匹配规则、不支持部分匹配、只支持等值查询如=，IN()，不支持 < >。  
+
