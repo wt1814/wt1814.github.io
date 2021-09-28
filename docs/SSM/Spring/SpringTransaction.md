@@ -12,8 +12,8 @@
         - [1.3.2. 事务隔离级别](#132-事务隔离级别)
         - [1.3.3. 事务超时](#133-事务超时)
         - [1.3.4. 事务只读属性](#134-事务只读属性)
-    - [1.4. ★★★Spring事务失效](#14-★★★spring事务失效)
-    - [1.5. Spring事务其他使用](#15-spring事务其他使用)
+    - [1.4. Spring事务其他使用](#14-spring事务其他使用)
+    - [1.5. ★★★Spring事务失效](#15-★★★spring事务失效)
 
 <!-- /TOC -->
 
@@ -24,13 +24,6 @@
     &emsp; <font color = "red">PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务，合并成一个事务；如果当前没有事务，则创建一个新的事务。这是默认值。</font>  
     * 事务的隔离级别，默认使用底层数据库的默认隔离级别。  
     * 事务只读，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。  
-3. Spring事务失效：  
-    * 使用在了非public方法上。
-    * 捕获了异常，未再抛出。
-    * 同一个类中方法调用。
-    * @Transactional的类注入失败。
-    * 多数据源（静态配置）
-    * 原始SSM项目，重复扫描导致事务失效  
 
 
 # 1. Spring事务   
@@ -152,11 +145,7 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
 
 &emsp; **★★★<font color = "clime">在将事务设置成只读后，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。</font>**  
 
-## 1.4. ★★★Spring事务失效  
-
-
-
-## 1.5. Spring事务其他使用  
+## 1.4. Spring事务其他使用  
 1. **如何通过日志判断事务是否已经被Spring所管理？**  
     1. 在logback或者log4j中对org.springframework.aop、org.springframework.transaction、org.springframework.jdbc、org.mybatis.spring.transaction进行DEBUG级别日志跟踪(开发期)。  
     2. 查看日志中是否有事务管理、开启、提交、回滚等字符，如：
@@ -187,3 +176,7 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
 &emsp; Spring不仅提供这些事务管理器，还提供对如JMS事务管理的管理器等，Spring提供一致的事务抽象如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/AOP/aop-9.png)  
 -->
+
+## 1.5. ★★★Spring事务失效  
+&emsp; 参考[Spring事务失效](/docs/SSM/Spring/SpringTransactionInvalid.md)  
+

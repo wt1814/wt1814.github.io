@@ -180,6 +180,8 @@
         - [1.8.6. SpringAOP教程](#186-springaop教程)
         - [1.8.7. SpringAOP解析](#187-springaop解析)
         - [1.8.8. Spring事务](#188-spring事务)
+            - [1.8.8.1. Spring事务使用](#1881-spring事务使用)
+            - [1.8.8.2. Spring事务失效](#1882-spring事务失效)
         - [1.8.9. SpringMVC解析](#189-springmvc解析)
         - [1.8.10. 过滤器、拦截器、监听器](#1810-过滤器拦截器监听器)
     - [1.9. MyBatis](#19-mybatis)
@@ -1896,13 +1898,16 @@
 
 
 ### 1.8.8. Spring事务
+#### 1.8.8.1. Spring事务使用  
 1. `@Transactional(rollbackFor = Exception.class) `，Transactional`默认只回滚RuntimeException，`但是可以指定要回滚的异常类型。    
 2. **<font color = "red">Spring事务属性通常由事务的传播行为、事务的隔离级别、事务的超时值、事务只读标志组成。</font>**  
     * 事务的传播行为主要分为支持当前事务和不支持当前事务。  
     &emsp; <font color = "red">PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务，合并成一个事务；如果当前没有事务，则创建一个新的事务。这是默认值。</font>  
     * 事务的隔离级别，默认使用底层数据库的默认隔离级别。  
     * 事务只读，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。  
-3. Spring事务失效：  
+
+
+#### 1.8.8.2. Spring事务失效
     * 使用在了非public方法上。
     * 捕获了异常，未再抛出。
     * 同一个类中方法调用。
