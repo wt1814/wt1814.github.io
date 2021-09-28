@@ -1709,7 +1709,7 @@
 
 
 ### 1.6.2. 接口响应时间
-1. 链路追踪，查询耗时情况。  
+1. `链路追踪，查询耗时情况。`  
 2. 接口的响应时间过长，你会怎么办？（此处只针对最简单的场景，抛开STW那些复杂的问题。）以下是我目前想到的：  
     1. 异步化（Runnable、Future）  
     2. 缓存  
@@ -1736,6 +1736,12 @@
 
 ### 1.8.2. Spring IOC
 1. BeanFactory与ApplicationContext
+    * BeanFactory作为最顶层的一个接口类，定义了IOC容器的基本功能规范。
+    * <font color = "clime">ApplicationContext接口是BeanFactory的扩展，它除了具备BeanFactory接口所拥有的全部功能外，还有应用程序上下文的一层含义</font>，主要包括：  
+        1. 继承自ListableBeanFactory接口，<font color = "clime">可以访问Bean工厂上下文的组件；</font>  
+        2. 继承自ResourceLoader接口，以通用的方式加载文件资源；  
+        3. 继承自ApplicationContextPublisher接口，<font color = "clime">拥有发布事件注册监听的能力；</font>  
+        4. 继承自 MessageSource 接口，解析消息支持国际化。  
 2. BeanDefinition： **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
 3. Spring容器刷新：  
     **<font color = "blue">（⚠`利用工厂和反射创建Bean。主要包含3部分：1).容器本身--创建容器、2).容器扩展--后置处理器、3).事件，子容器，实例化Bean。`）</font>**     
@@ -1765,14 +1771,12 @@
 2. 加载流程：  
     1. doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean()初始化。  
 
-
-
 #### 1.8.3.1. 循环依赖
 1. Spring循环依赖的场景：均采用setter方法（属性注入）注入方式，可被解决；采用构造器和setter方法（属性注入）混合注入方式可能被解决。
 2. **<font color = "red">Spring通过3级缓存解决：</font>**  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
     * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
-    * 二级缓存: Map<String,Object> earlySingletonObjects， **<font color = "blue">早期曝光对象</font>** ，二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。尚未经历了完整的Spring Bean初始化生命周期。
+    * 二级缓存: Map<String,Object> earlySingletonObjects， **<font color = "blue">早期曝光对象</font>** ，`二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。`尚未经历了完整的Spring Bean初始化生命周期。
     * 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
 3. **<font color = "clime">单例模式下Spring解决循环依赖的流程：</font>**  
     1. Spring创建bean主要分为两个步骤，创建原始bean对象，接着去填充对象属性和初始化。  
@@ -1799,7 +1803,6 @@
     &emsp; Spring就是在对象外面包一层ObjectFactory（三级缓存存放），提前曝光的是ObjectFactory对象，在被注入时才在ObjectFactory.getObject方式内实时生成代理对象，并将生成好的代理对象放入到第二级缓存Map\<String, Object> earlySingletonObjects。  
 
 
-
 ### 1.8.4. Bean的生命周期
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-10.png)  
 &emsp; SpringBean的生命周期主要有4个阶段：  
@@ -1821,7 +1824,7 @@
 
 
 #### 1.8.5.2. 可二次开发常用接口
-&emsp; **<font color = "red">Spring可二次开发常用接口：</font>**  
+&emsp; **<font color = "red">Spring的扩展性，Spring可二次开发常用接口：</font>**  
 &emsp; Spring为了用户的开发方便和特性支持，开放了一些特殊接口和类，用户可进行实现或者继承，常见的有：  
 
 &emsp; **Spring IOC阶段：**  
@@ -1866,7 +1869,8 @@
 1. SpringAOP的主要功能是：日志记录，性能统计，安全控制，事务处理，异常处理等。 
     * 慢请求记录  
     * 使用aop + redis + Lua接口限流
-2. **SpringAOP失效：**  
+2. `SpringAOP失效：`  
+&emsp; 参考[Spring事务失效](/docs/SSM/Spring/SpringTransactionInvalid.md)  
 &emsp; <font color = "red">同一对象内部方法嵌套调用，慎用this来调用被@Async、@Transactional、@Cacheable等注解标注的方法，this下注解可能不生效。</font>async方法中的this不是动态代理的子类对象，而是原始的对象，故this调用无法通过动态代理来增强。 
 3. **<font color = "red">过滤器，拦截器和aop的区别：</font>** 过滤器拦截的是URL；拦截器拦截的是URL；Spring AOP只能拦截Spring管理Bean的访问（业务层Service）。  
 

@@ -19,6 +19,12 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. BeanFactory与ApplicationContext
+    * BeanFactory作为最顶层的一个接口类，定义了IOC容器的基本功能规范。
+    * <font color = "clime">ApplicationContext接口是BeanFactory的扩展，它除了具备BeanFactory接口所拥有的全部功能外，还有应用程序上下文的一层含义</font>，主要包括：  
+        1. 继承自ListableBeanFactory接口，<font color = "clime">可以访问Bean工厂上下文的组件；</font>  
+        2. 继承自ResourceLoader接口，以通用的方式加载文件资源；  
+        3. 继承自ApplicationContextPublisher接口，<font color = "clime">拥有发布事件注册监听的能力；</font>  
+        4. 继承自 MessageSource 接口，解析消息支持国际化。  
 2. BeanDefinition： **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
 3. Spring容器刷新：  
     **<font color = "blue">（⚠`利用工厂和反射创建Bean。主要包含3部分：1).容器本身--创建容器、2).容器扩展--后置处理器、3).事件，子容器，实例化Bean。`）</font>**     

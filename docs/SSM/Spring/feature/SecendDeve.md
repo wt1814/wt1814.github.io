@@ -1,6 +1,6 @@
 
 
-&emsp; **<font color = "red">Spring可二次开发常用接口：</font>**  
+&emsp; **<font color = "red">Spring的扩展性，Spring可二次开发常用接口：</font>**  
 &emsp; Spring为了用户的开发方便和特性支持，开放了一些特殊接口和类，用户可进行实现或者继承，常见的有：  
 
 &emsp; **Spring IOC阶段：**  
