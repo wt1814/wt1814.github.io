@@ -107,6 +107,8 @@
 &emsp; &emsp; [责任链模式(if/else)](/docs/java/Design/chain.md)   
 &emsp; &emsp; [观察者模式](/docs/java/Design/observer.md)   
 [设计模式大讨论](/docs/java/Design/discuss.md)  
+[编码规范](/docs/java/Design/CodingSpecification.md)  
+
 
 ### JVM  
 [JVM总结](/docs/java/JVM/summary.md)  
