@@ -45,5 +45,4 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkwMzE3MDY0Ng==&action=getalbum&a
 3. 由Ribbon进行负载均衡后，分发到后端的具体实例；  
 4. 微服务之间也可通过Feign进行通信处理业务；  
 5. Hystrix负责处理服务超时熔断；Hystrix dashboard，Turbine负责监控Hystrix的熔断情况，并给予图形化的展示；  
-6. Turbine监控服务间的调用和熔断相关指标；  
-7. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
+6. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
