@@ -11,6 +11,20 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+1. 第一步，创建maven项目  
+	1. 命名潜规则  
+	&emsp; spring-boot-starter-XX是springboot官方的starter；XX-spring-boot-starter是第三方扩展的starter。
+	2. 项目pom文件
+2. `第二步，写自动配置逻辑`
+	1. 编写业务逻辑  
+	2. 定义配置文件对应类  
+    	* @ConfigurationProperties 配置属性文件，需要指定前缀 prefix。
+    	* @EnableConfigurationProperties 启用配置，需要指定启用的配置类。
+    	* @NestedConfigurationProperty 当一个类中引用了外部类，需要在该属性上加该注解。
+	3. 定义自动配置类，自动暴露功能接口。  
+3. 第三步，应用加载starter的配置，有两种方式：主动加载、被动加载。  
+
 
 # 1. 自定义springboot-starter
 &emsp; 学习SpringBoot时，官方网址提供的资料很重要。SpringBoot提供的Starters：https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#using-boot-starter
@@ -70,8 +84,7 @@ https://www.cnblogs.com/hello-shf/p/10864977.html
     * @ConfigurationProperties 配置属性文件，需要指定前缀 prefix。
     * @EnableConfigurationProperties 启用配置，需要指定启用的配置类。
     * @NestedConfigurationProperty 当一个类中引用了外部类，需要在该属性上加该注解。
-3. 定义自动配置类  
-&emsp; 自动配置类自动暴露功能接口。  
+3. 定义自动配置类，自动暴露功能接口。   
 
     ```java
     @ConditionalOnProperty(prefix = "xxxxx", name = "enable",havingValue = "true", matchIfMissing = true)

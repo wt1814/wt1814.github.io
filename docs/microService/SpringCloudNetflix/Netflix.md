@@ -42,7 +42,7 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkwMzE3MDY0Ng==&action=getalbum&a
 &emsp; **<font color = "clime">Spring Cloud各组件运行流程：</font>**  
 1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关(Zuul)来访问内部服务。客户端的请求首先经过负载均衡(Ngnix)，再到达服务网关(Zuul集群)；  
 2. 网关接收到请求后，从注册中心(Eureka)获取可用服务；  
-3. 由Ribbon进行均衡负载后，分发到后端的具体实例；  
+3. 由Ribbon进行负载均衡后，分发到后端的具体实例；  
 4. 微服务之间也可通过Feign进行通信处理业务；  
 5. Hystrix负责处理服务超时熔断；Hystrix dashboard，Turbine负责监控Hystrix的熔断情况，并给予图形化的展示；  
 6. Turbine监控服务间的调用和熔断相关指标；  

@@ -24,7 +24,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**   
-1. sql执行流程：   
+1. Mybatis Sql执行流程：   
     1. 读取核心配置文件并返回InputStream流对象。
     2. 根据InputStream流对象解析出Configuration对象，然后创建SqlSessionFactory工厂对象。
     3. 根据一系列属性从SqlSessionFactory工厂中创建SqlSession。

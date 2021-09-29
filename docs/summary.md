@@ -1908,12 +1908,11 @@
 
 
 #### 1.8.8.2. Spring事务失效
-    * 使用在了非public方法上。
-    * 捕获了异常，未再抛出。
-    * 同一个类中方法调用。
-    * @Transactional的类注入失败。
-    * 多数据源（静态配置）
-    * 原始SSM项目，重复扫描导致事务失效  
+1. <font color = "red">同一个类中方法调用。</font>  
+&emsp; 因为spring声明式事务是基于AOP实现的，是使用动态代理来达到事务管理的目的，当前类调用的方法上面加@Transactional 这个是没有任何作用的，因为 **<font color = "clime">调用这个方法的是this，没有经过 Spring 的代理类。</font>**  
+2. 方法不是public的。    
+&emsp; @Transactional 只能用于 public 的方法上，否则事务不会失效，如果要用在非 public 方法上，可以开启 AspectJ 代理模式。  
+3. 抛出的异常不支持回滚。捕获了异常，未再抛出。  
 
 
 ### 1.8.9. SpringMVC解析
@@ -1952,13 +1951,13 @@
 
 
 ### 1.9.3. MyBatis SQL执行解析
-1. sql执行流程：   
+1. Mybatis Sql执行流程：   
     1. 读取核心配置文件并返回InputStream流对象。
     2. 根据InputStream流对象解析出Configuration对象，然后创建SqlSessionFactory工厂对象。
     3. 根据一系列属性从SqlSessionFactory工厂中创建SqlSession。
     4. 从SqlSession中调用Executor执行数据库操作和生成具体SQL指令。
     5. 对执行结果进行二次封装。
-    6. 提交与事务。   
+    6. 提交与事务。      
 2. **<font color = "clime">Mapper接口动态代理类的生成：</font>** 
     * **<font color = "blue">解析配置文件生成sqlSessionFactory时，</font>** 会调用bindMapperForNamespace() ---> addMapper方法， **<font color = "blue">根据mapper文件中的namespace属性值，将接口生成动态代理类的`工厂`，存储在MapperRegistry对象中。</font>** MapperRegistry内部维护一个映射关系，每个接口对应一个`MapperProxyFactory（生成动态代理工厂类）`。      
     * 在调用getMapper，根据type类型，从MapperRegistry对象中的knownMappers获取到当前类型对应的代理工厂类，然后通过代理工厂类使用`jdk自带的动态代理`生成对应Mapper的代理类。  
@@ -2082,14 +2081,26 @@
 2. Tomcat的自动装配：自动装配过程中，Web容器所对应的自动配置类为ServletWebServerFactoryAutoConfiguration，该类导入了EmbeddedTomcat，EmbeddedJetty，EmbeddedUndertow三个类，可以根据用户的需求去选择使用哪一个web服务器，默认情况下使用的是tomcat。  
 3. Tomcat的启动：在容器刷新refreshContext(context)步骤完成。  
 
-
 ### 1.10.4. 自定义strater
+1. 第一步，创建maven项目  
+	1. 命名潜规则  
+	&emsp; spring-boot-starter-XX是springboot官方的starter；XX-spring-boot-starter是第三方扩展的starter。
+	2. 项目pom文件
+2. `第二步，写自动配置逻辑`
+	1. 编写业务逻辑  
+	2. 定义配置文件对应类  
+    	* @ConfigurationProperties 配置属性文件，需要指定前缀 prefix。
+    	* @EnableConfigurationProperties 启用配置，需要指定启用的配置类。
+    	* @NestedConfigurationProperty 当一个类中引用了外部类，需要在该属性上加该注解。
+	3. 定义自动配置类，自动暴露功能接口。  
+3. 第三步，应用加载starter的配置，有两种方式：主动加载、被动加载。  
+
 
 ## 1.11. SpringCloud
 &emsp; **<font color = "clime">Spring Cloud各组件运行流程：</font>**  
 1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关(Zuul)来访问内部服务。客户端的请求首先经过负载均衡(Ngnix)，再到达服务网关(Zuul集群)；  
 2. 网关接收到请求后，从注册中心(Eureka)获取可用服务；  
-3. 由Ribbon进行均衡负载后，分发到后端的具体实例；  
+3. 由Ribbon进行负载均衡后，分发到后端的具体实例；  
 4. 微服务之间也可通过Feign进行通信处理业务；  
 5. Hystrix负责处理服务超时熔断；Hystrix dashboard，Turbine负责监控Hystrix的熔断情况，并给予图形化的展示；  
 6. Turbine监控服务间的调用和熔断相关指标；  
