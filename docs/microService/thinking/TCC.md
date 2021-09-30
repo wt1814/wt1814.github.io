@@ -13,8 +13,8 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "red">TCC是一种`业务层面或者是应用层`的`两阶段、补偿型`的事务。</font>**  
-&emsp; TCC是`Try（检测及资源锁定或者预留）`、Commit（确认）、Cancel（取消）的缩写，业务层面需要写对应的三个方法。  
-2. TCC与二阶段比较  
+2. TCC是`Try（检测及资源锁定或者预留）`、Commit（确认）、Cancel（取消）的缩写，业务层面需要写对应的三个方法。  
+3. TCC与二阶段比较  
 &emsp; 使用2PC机制时————以提交为例————一个完整的事务生命周期是：begin -> 业务逻辑 -> prepare -> commit。  
 &emsp; 使用TCC机制时————以提交为例————一个完整的事务生命周期是：begin -> 业务逻辑(try业务) -> commit(comfirm业务)。  
 &emsp; 综上，可以从执行的阶段上将二者一一对应起来：  
@@ -23,13 +23,8 @@
 &emsp; 3、2PC机制的回滚阶段（rollback） 等价于 TCC机制的回滚阶段（cancel）。  
 &emsp; 因此，可以看出，虽然TCC机制中有两个阶段都存在业务逻辑的执行，但其中 `try业务阶段其实是与全局事务处理无关的`。认清了这一点，当再比较TCC和2PC时，就会很容易地发现，`TCC不是两阶段提交，而只是它对事务的提交/回滚是通过执行一段confirm/cancel业务逻辑来实现，仅此而已。`  
 
-
 # 1. xxxTCC模式-强一致性xxx 
-<!-- 
-分布式事务 Seata TCC 模式深度解析 | SOFAChannel#4 直播整理 
-https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
 
--->
 &emsp; 不管是 2PC 还是 3PC 都是依赖于数据库的事务提交和回滚。  
 &emsp; 而有时候一些业务它不仅仅涉及到数据库，可能是发送一条短信，也可能是上传一张图片。所以说事务的提交和回滚就得提升到业务层面而不是数据库层面了，  **<font color = "red">而TCC是一种`业务层面或者是应用层`的`两阶段、补偿型`的事务。</font>**   
 
@@ -92,10 +87,22 @@ https://www.cnblogs.com/jajian/p/10014145.html
     * 库存服务：库存进行冻结。  
 
 
-
+&emsp; 一个支付订单的场景  
+* Try
+	* 订单服务，订单状态修改为 UPDATING，也就是修改中的意思
+	* 库存服务，别直接扣减库存，可以冻结掉库存。
+	* 积分服务，别直接给用户增加会员积分，可以先在积分表里的一个预增加积分字段加入积分。
+* Confirm/Cancel
+	* 订单服务，
+	* 库存服务，
+	* 积分服务，
 
 ### 实现流程三
+<!-- 
+分布式事务 Seata TCC 模式深度解析 | SOFAChannel#4 直播整理 
+https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
 
+-->
 
 
 ## 1.2. 特点  
