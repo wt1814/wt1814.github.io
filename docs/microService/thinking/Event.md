@@ -28,7 +28,7 @@
     2. 有两种恢复策略：  
         * <font color = "red">backward recovery，向后恢复，补偿所有已完成的事务。</font>  
         * <font color = "red">forward recovery，向前恢复，重试失败的事务，假设每个子事务最终都会成功。</font>  
-3. **<font color = "blue">Saga和TCC：</font>**  
+3. **<font color = "blue">Saga和TCC比较：</font>**  
     1. **<font color = "red">Saga没有“预留”Try行为，每个子事务(本地事务)依次执行提交阶段，所以会留下原始事务操作的痕迹，</font>** Cancel属于不完美补偿，需要考虑对业务上的影响。  
     2. Saga和TCC一样需要注意3个问题：1)保持幂等性；2)允许空补偿；3)防止资源悬挂。
 

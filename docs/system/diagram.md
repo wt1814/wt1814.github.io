@@ -3,8 +3,12 @@
 # 架构图
 
 <!--
- 架构设计的本质：系统与子系统、模块与组件、框架与架构 
- https://mp.weixin.qq.com/s/41imDYFlBXlKadFog5e73Q
+
+如何画好架构图
+https://blog.csdn.net/weixin_39860915/article/details/98863807
+
+架构设计的本质：系统与子系统、模块与组件、框架与架构 
+https://mp.weixin.qq.com/s/41imDYFlBXlKadFog5e73Q
 
 软件架构质量属性（一）
 https://blog.csdn.net/trecn001/article/details/93721030

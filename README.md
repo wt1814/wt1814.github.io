@@ -468,6 +468,7 @@
 &emsp; [Saga](/docs/microService/thinking/Event.md)  
 &emsp; [消息模式](/docs/microService/thinking/news.md)   
 &emsp; [分布式事务的选型](/docs/microService/thinking/DistributedTransactionSelection.md)  
+&emsp; [阿里Seata](/docs/microService/thinking/Seata.md)  
 
 ### 分布式锁
 [分布式锁](/docs/microService/thinking/Lock.md)  
