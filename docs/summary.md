@@ -213,7 +213,9 @@
         - [1.11.6. Sleuth](#1116-sleuth)
         - [1.11.7. Admin](#1117-admin)
     - [1.12. Dubbo](#112-dubbo)
-        - [1.12.1. Dubbo和Spring Cloud](#1121-dubbo和spring-cloud)
+        - [分布式服务治理](#分布式服务治理)
+            - [1.12.1. Dubbo和Spring Cloud](#1121-dubbo和spring-cloud)
+            - [Spring Cloud Alibaba介绍](#spring-cloud-alibaba介绍)
         - [1.12.2. RPC介绍](#1122-rpc介绍)
         - [1.12.3. Dubbo介绍](#1123-dubbo介绍)
         - [1.12.4. Dubbo框架设计](#1124-dubbo框架设计)
@@ -2163,12 +2165,16 @@
 
 
 ## 1.12. Dubbo
-### 1.12.1. Dubbo和Spring Cloud
+### 分布式服务治理
+#### 1.12.1. Dubbo和Spring Cloud
 &emsp; Dubbo是SOA时代的产物，它的关注点主要在于服务的调用，流量分发、流量监控和熔断。  
 &emsp; Spring Cloud诞生于微服务架构时代，考虑的是微服务治理的方方面面，另外由于依托了Spirng、Spirng Boot的优势之上。  
 
 * 两个框架在开始目标就不一致：<font color = "red">Dubbo定位服务治理；Spirng Cloud是一个生态。</font>  
-* <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "clime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。
+* <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "clime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。  
+
+#### Spring Cloud Alibaba介绍  
+
 
 ### 1.12.2. RPC介绍
 &emsp; ......  
@@ -2179,11 +2185,9 @@
     1. 服务启动的时候，provider和consumer根据配置信息，连接到注册中心register，分别向注册中心注册和订阅服务。  
     2. register根据服务订阅关系，返回provider信息到consumer，同时consumer会把provider信息缓存到本地。如果信息有变更，consumer会收到来自register的推送。  
     3. consumer生成代理对象，同时根据负载均衡策略，选择一台provider，同时定时向monitor记录接口的调用次数和时间信息。  
-    4. 拿到代理对象之后，consumer通过`代理对象`发起接口调用。  
+    4. **<font color = "clime">拿到代理对象之后，consumer通过`代理对象`发起接口调用。</font>**  
     5. provider收到请求后对数据进行反序列化，然后通过代理调用具体的接口实现。  
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-52.png)   
-
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-52.png)   
 2. **<font color = "red">为什么要通过代理对象通信？</font>**    
     &emsp; dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级等。让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：  
     1. 调用的负载均衡策略  
@@ -2195,17 +2199,17 @@
 1. 分层架构设计
     1. 从大的范围来说，dubbo分为三层：
         * business业务逻辑层由开发人员来提供接口和实现还有一些配置信息。
-        * RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理。
+        * `RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理。`
         * remoting则是对网络传输协议和数据转换的封装。  
-    2. RPC层包含config，配置层、proxy，代理层、register，服务注册层、cluster，路由层、monitor，监控层、protocol，远程调用层。    
-        1. **<font color = "red">proxy，服务代理层：服务接口透明代理，生成服务的客户端Stub和服务器端Skeleton，以ServiceProxy为中心，扩展接口为ProxyFactory。</font>**  
+    2. RPC层包含配置层config、代理层proxy、服务注册层register、路由层cluster、监控层monitor、远程调用层protocol。    
+        1. **<font color = "red">服务代理层proxy：服务接口透明代理，生成服务的客户端Stub和服务器端Skeleton，以ServiceProxy为中心，扩展接口为ProxyFactory。</font>**  
         &emsp; **<font color = "red">Proxy层封装了所有接口的透明化代理，而在其它层都以Invoker为中心，</font><font color = "blue">只有到了暴露给用户使用时，才用Proxy将Invoker转成接口，或将接口实现转成 Invoker，也就是去掉Proxy层RPC是可以Run的，只是不那么透明，不那么看起来像调本地服务一样调远程服务。</font>**  
         &emsp; dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级......  
-        2. **<font color = "red">protocol，远程调用层：封装RPC调用，以Invocation, Result为中心，扩展接口为Protocol, Invoker, Exporter。</font>**
+        2. **<font color = "red">远程调用层protocol：封装RPC调用，以Invocation, Result为中心，扩展接口为Protocol, Invoker, Exporter。</font>**  
     3. remoting层：  
         1. 网络传输层：抽象mina和netty为统一接口，以Message为中心，扩展接口为Channel, Transporter, Client, Server, Codec。  
         2. 数据序列化层：可复用的一些工具，扩展接口为Serialization, ObjectInput, ObjectOutput, ThreadPool。  
-2. 总体调用过程  
+2. ~~总体调用过程~~  
 
 
 ### 1.12.5. 暴露和引用服务

@@ -20,9 +20,7 @@
     3. consumer生成代理对象，同时根据负载均衡策略，选择一台provider，同时定时向monitor记录接口的调用次数和时间信息。  
     4. 拿到代理对象之后，consumer通过`代理对象`发起接口调用。  
     5. provider收到请求后对数据进行反序列化，然后通过代理调用具体的接口实现。  
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-52.png)   
-
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-52.png)   
 2. **<font color = "red">为什么要通过代理对象通信？</font>**    
     &emsp; dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级等。让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：  
     1. 调用的负载均衡策略  
