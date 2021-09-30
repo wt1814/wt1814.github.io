@@ -18,10 +18,14 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. ZK服务端通过`ZAB协议`保证`数据顺序一致性`。  
 2. ZAB协议：
-    1. **<font color = "clime">崩溃恢复</font>**  
+    1. Zookeeper集群角色：  
+        * 领导者Leader：同一时间集群总只允许有一个Leader，提供对客户端的读写功能，负责将数据同步至各个节点；  
+        * 跟随者Follower：提供对客户端读功能，写请求则转发给Leader处理，当Leader崩溃失联之后参与Leader选举；  
+        * 观察者Observer：与Follower不同的是但不参与Leader选举。  
+    2. **<font color = "clime">崩溃恢复</font>**  
         * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>  
         * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态。
-    2. **<font color = "clime">`消息广播（数据读写流程，读写流程）：`</font>**  
+    3. **<font color = "clime">`消息广播（数据读写流程，读写流程）：`</font>**  
         &emsp; 在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点。    
         * 如果是读请求，就直接从当前节点中读取数据。  
         * 如果是写请求，那么请求会被转发给 leader 提交事务，然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交。   
