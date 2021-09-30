@@ -28,6 +28,9 @@
 <!-- 
 *****Mysql：好好的索引，为什么要下推？ 
 https://mp.weixin.qq.com/s/6Q87MzhVI-rRMQ-E9IOPiw
+索引下推
+https://mp.weixin.qq.com/s/QAfxurLy2W1xIkQshjmYSw
+
 -->
 
 ## 1.1. 索引简介  

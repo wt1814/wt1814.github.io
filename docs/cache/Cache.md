@@ -12,8 +12,7 @@ https://mp.weixin.qq.com/s/UN-lk8KXsbhdF8u09a4GOA
 如何优化缓存中百万级并发的KEY 
 https://mp.weixin.qq.com/s/Bm3JlCdBF8UdlOjUgKyqow
 
-万字详解本地缓存之王 Caffeine 
-https://mp.weixin.qq.com/s/aLN5pxs2MuHd5EFHkiBmBQ
+
 -->
 
 

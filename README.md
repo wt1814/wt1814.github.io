@@ -69,13 +69,13 @@
 &emsp; [Optional](/docs/java/JDK8/Optional.md)  
 &emsp; [DateTime](/docs/java/JDK8/DateTime.md)  
 [Java异常](/docs/java/basis/JavaException.md)  
-[Java反射](/docs/java/basis/JavaReflex.md)  
-&emsp; [Java反射运用](/docs/java/basis/JavaReflexUse.md)  
-&emsp; [Java反射原理](/docs/java/basis/JavaReflexPrinciple.md)  
 [Java范型](/docs/java/basis/JavaParadigm.md)  
 &emsp; [范型使用](/docs/java/basis/ParadigmUse.md)  
 &emsp; [范型擦除](/docs/java/basis/ParadigmErase.md)  
 [自定义注解](/docs/java/basis/annotation.md)  
+[Java反射](/docs/java/basis/JavaReflex.md)  
+&emsp; [Java反射运用](/docs/java/basis/JavaReflexUse.md)  
+&emsp; [Java反射原理](/docs/java/basis/JavaReflexPrinciple.md)  
 [IO](/docs/java/basis/JavaIO.md)  
 [SPI](/docs/java/basis/SPI.md)  
 [SDK](/docs/java/basis/SDK.md)  
@@ -490,10 +490,11 @@
 &emsp; [资源限制](/docs/system/ResourceConstraints.md)  
 
 ### 分布式缓存  
+[缓存算法](/docs/cache/CacheAlgorithm.md)  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
 [缓存更新](/docs/cache/CacheUpdate.md)  
 [双缓存](/docs/cache/DoubleCache.md)  
-[缓存算法](/docs/cache/CacheAlgorithm.md)  
+[本地缓存](/docs/cache/LocalCache.md)  
 <!-- 
 [缓存](/docs/cache/Cache.md)  
 本地缓存
