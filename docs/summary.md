@@ -2668,8 +2668,10 @@
 &emsp; **<font color = "clime">Redis为了保证查找的速度，只会将value交换出去，而在内存中保留所有的Key。</font>**  
 
 ##### 1.16.2.2.3. Redis事件/Reactor
-&emsp; [Redis事件/Reactor](/docs/microService/Redis/RedisEvent.md)  
-&emsp; 参考《Redis设计与实现》第12章  
+&emsp; 参考[Redis事件/Reactor](/docs/microService/Redis/RedisEvent.md)  
+&emsp; Redis基于Reactor模式开发了自己的网络事件处理器：这个处理器被称为文件事件处理器（file event handler）：文件事件处理器使用I/O多路复用（multiplexing）程序来同时监听多个套接字，并根据套接字目前执行的任务来为套接字关联不同的事件处理器。  
+&emsp; 下图展示了文件事件处理器的四个组成部分，它们分别是套接字、I/O多路复用程序、文件事件分派器(dispatcher)，以及事件处理器。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-56.png)    
 
 ##### 1.16.2.2.4. Redis多线程模型
 1. 为什么Redis一开始使用单线程？  
