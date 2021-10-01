@@ -258,7 +258,7 @@
                 - [1.16.2.1.1. Redis基本数据类型](#116211-redis基本数据类型)
                 - [1.16.2.1.2. Redis扩展数据类型](#116212-redis扩展数据类型)
                 - [1.16.2.1.3. Redis底层实现](#116213-redis底层实现)
-                    - [1.16.2.1.3.1. SDS](#1162131-sds)
+                    - [1.16.2.1.3.1. SDS详解](#1162131-sds详解)
                     - [1.16.2.1.3.2. Dictht](#1162132-dictht)
             - [1.16.2.2. Redis原理](#11622-redis原理)
                 - [1.16.2.2.1. Redis为什么那么快？](#116221-redis为什么那么快)
@@ -2375,7 +2375,7 @@
 
 * 允许空回滚
 	* 产生：注册分支事务是在调用 RPC 时，Seata 框架的切面会拦截到该次调用请求， **<font color = "red">先向 TC 注册一个分支事务，然后才去执行 RPC 调用逻辑。如果 RPC 调用逻辑有问题，比如调用方机器宕机、网络异常，都会造成 RPC 调用失败，即未执行 Try 方法。但是分布式事务已经开启了，需要推进到终态，因此，TC 会回调参与者二阶段 Cancel 接口，从而形成空回滚。</font>**  
-	* 解决方案：**<font color = "clime">需要一张额外的事务控制表，其中有分布式事务 ID 和分支事务 ID，第一阶段 Try 方法里会插入一条记录，表示一阶段执行了。Cancel 接口里读取该记录，如果该记录存在，则正常回滚；如果该记录不存在，则是空回滚。</font>**  
+	* 解决方案： **<font color = "clime">需要一张额外的事务控制表，其中有分布式事务 ID 和分支事务 ID，第一阶段 Try 方法里会插入一条记录，表示一阶段执行了。Cancel 接口里读取该记录，如果该记录存在，则正常回滚；如果该记录不存在，则是空回滚。</font>**  
 * 接口幂等
 	* 产生
 	* 解决方案：在事务控制表上加一个状态字段，用来记录每个分支事务的执行状态。
@@ -2559,8 +2559,8 @@
 &emsp; 解决方案：空值缓存；`设置布隆过滤器`，若布隆过滤器中无，则直接返回，若存在，则查找缓存redis。  
 3. 缓存`击穿`(`热点缓存`)：  
 &emsp; 当缓存中不存在但是数据库中存在的数据（一般来说指缓存失效），在短时间内针对这种数据产生大量的请求，由于缓存不能命中，直击数据库，给数据库造成较大压力。  
-&emsp; **<font color = "clime">解决方案：key永不过期，使用互斥锁或队列，双缓存。</font>**   
-&emsp; **<font color = "blue">使用互斥锁详解：</font>**  
+&emsp; **<font color = "clime">解决方案：`key永不过期`，使用互斥锁或队列，双缓存。</font>**   
+&emsp; **<font color = "blue">`使用互斥锁详解：`</font>**  
     * 使用synchronized块，这个方法在缓存命中的时候，系统的吞吐量不会受影响，但是当缓存失效时，请求还是会打到数据库，只不过不是高并发而是阻塞而已。但是，这样会造成用户体验不佳，并且还给数据库带来额外压力。
     * 使用synchronized双重判断，虽然能够阻止高并发请求打到数据库，但是第二个以及之后的请求在命中缓存时，还是排队进行的。比如，当30个请求一起并发过来，在双重判断时，第一个请求去数据库查询并更新缓存数据，剩下的29个请求则是依次排队取缓存中取数据。请求排在后面的用户的体验会不爽。  
     * 使用互斥锁ReentrantLock，可以有效避免前面几种问题。  
@@ -2581,10 +2581,15 @@
 ##### 1.16.2.1.1. Redis基本数据类型
 1. Key操作命令：expire，为给定key设置生存时间；TTL key，以秒为单位，返回给定key的剩余生存时间（TTL, time to live）。  
 2.  **<font color = "clime">Redis各个数据类型的使用场景：分析存储类型和可用的操作。</font>**  
-    * 有序列表list：列表不但是有序的，同时支持按照索引范围获取元素。  
+    * 有序列表list：  
+    &emsp; 列表不但是有序的，同时支持按照索引范围获取元素。  
     &emsp; 可以用作栈、文章列表。  
-    * 无序集合set：集合内操作，可以用作标签、点赞、签到； spop/srandmember命令生成随机数； 集合间操作，可以用作社交需求。  
-    * 有序集合ZSet：有序的集合，每个元素有个 score。  
+    * 无序集合set：
+        * 集合内操作，可以用作标签、点赞、签到；
+        * 集合间操作，可以用作社交需求； 
+        * spop/srandmember命令生成随机数。   
+    * 有序集合ZSet：  
+    &emsp; 有序的集合，每个元素有个 score。  
     &emsp; 可以用作排行榜、延迟队列。  
 3. **ZSet实现多维排序：**  
 &emsp; <font color = "red">将涉及排序的多个维度的列通过一定的方式转换成一个特殊的列</font>，即result = function(x, y, z)，即x，y，z是三个排序因子，例如下载量、时间等，通过自定义函数function()计算得到result，将result作为ZSet中的score的值，就能实现任意维度的排序需求了。 
@@ -2603,21 +2608,21 @@
 
 ##### 1.16.2.1.3. Redis底层实现
 1. 很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！  
-2. redis底层8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。  
+2. redis底层8种数据结构：int、embstr(SDS)、raw、ziplist、hashtable、quicklist、intset、skiplist。  
     * ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>** 只用在字段个数少，字段值小的场景里。  
     * QuickList其实就是结合了ZipList和LinkedList的优点设计出来的。quicklist存储了一个双向链表，每个节点都是一个ziplist。  
 3. Redis会根据当前值的类型和长度决定使用哪种内部编码实现。 **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
     
     * String字符串类型的内部编码有三种：
         1. int，存储8个字节的长整型(long，2^63-1)。当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
-        2. embstr，代表 embstr 格式的 SDS(Simple Dynamic String 简单动态字符串)，存储小于44个字节的字符串。  
+        2. embstr，代表 embstr 格式的 SDS（Simple Dynamic String简单动态字符串），存储小于44个字节的字符串。  
         3. raw，存储大于 44 个字节的字符串(3.2 版本之前是 39 字节)。  
     * Hash由ziplist(压缩列表)或者dictht(字典)组成；  
     * List，「有序」「可重复」集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  
     * Set，「无序」「不可重复」集合， **<font color = "clime">是特殊的Hash结构(value为null)，</font>** 由intset(整数集合)或者dictht(字典)组成；
     * ZSet，「有序」「不可重复」集合，由skiplist(跳跃表)或者ziplist(压缩列表)组成。  
 
-###### 1.16.2.1.3.1. SDS
+###### 1.16.2.1.3.1. SDS详解
 1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>** <font color = "red">len保存了字符串的长度，free表示buf数组中未使用的字节数量，buf数组则是保存字符串的每一个字符元素。</font>  
 2. Redis字符串追加会做以下三个操作：  
     1. 计算出大小是否足够；  
@@ -2638,7 +2643,7 @@
 &emsp; 扩展操作：ht[1]扩展的大小是比当前 ht[0].used 值的二倍大的第一个2的整数幂；收缩操作：ht[0].used 的第一个大于等于的 2 的整数幂。  
 &emsp; **<font color = "clime">当ht[0]上的所有的键值对都rehash到ht[1]中，会重新计算所有的数组下标值，当数据迁移完后，ht[0]就会被释放，然后将ht[1]改为ht[0]，并新创建ht[1]，为下一次的扩展和收缩做准备。</font>**  
 2. **<font color = "red">渐进式rehash：</font>**  
-&emsp; **<font color = "clime">Redis将所有的rehash的操作分成多步进行，直到都rehash完成。</font>**  
+&emsp; **<font color = "clime">Redis将所有的`rehash操作分成多步进行`，直到都rehash完成。</font>**  
 &emsp; **<font color = "red">在渐进式rehash的过程「更新、删除、查询会在ht[0]和ht[1]中都进行」，比如更新一个值先更新ht[0]，然后再更新ht[1]。</font>**   
 &emsp; **<font color = "clime">而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，</font><font color = "red">这样保证「ht[0]只减不增，直到最后的某一个时刻变成空表」，这样rehash操作完成。</font>**  
 
@@ -2658,9 +2663,13 @@
 3. ......
 
 ##### 1.16.2.2.2. Redis虚拟内存机制
+&emsp; **<font color = "clime">通过VM功能可以实现冷热数据分离，使热数据仍在内存中、冷数据保存到磁盘。这样就可以避免因为内存不足而造成访问速度下降的问题。</font>**  
+&emsp; 使用虚拟内存把那些不经常访问的数据交换到磁盘上。需要特别注意的是Redis并没有使用OS提供的Swap，而是自己实现。  
+&emsp; **<font color = "clime">Redis为了保证查找的速度，只会将value交换出去，而在内存中保留所有的Key。</font>**  
 
 ##### 1.16.2.2.3. Redis事件/Reactor
-
+&emsp; [Redis事件/Reactor](/docs/microService/Redis/RedisEvent.md)  
+&emsp; 参考《Redis设计与实现》第12章  
 
 ##### 1.16.2.2.4. Redis多线程模型
 1. 为什么Redis一开始使用单线程？  
@@ -2671,7 +2680,7 @@
 3. 官方建议：4核的机器建议设置为2或3个线程，8核的建议设置为6个线程， **<font color = "clime">线程数一定要小于机器核数，尽量不超过8个。</font>**   
 
 ##### 1.16.2.2.5. Redis协议
-&emsp; RESP是REdis Serialization Protocol的简称，也就是专门为redis设计的一套序列化协议。这个协议其实在redis的1。2版本时就已经出现了，但是到了redis2.0才最终成为redis通讯协议的标准。  
+&emsp; RESP是Redis Serialization Protocol的简称，也就是专门为redis设计的一套序列化协议。这个协议其实在redis的1.2版本时就已经出现了，但是到了redis2.0才最终成为redis通讯协议的标准。  
 &emsp; 这个序列化协议听起来很高大上， 但实际上就是一个文本协议。根据官方的说法，这个协议是基于以下几点(而妥协)设计的：  
 1. 实现简单。可以减低客户端出现bug的机率  
 2. `解析速度快。`由于RESP能知道返回数据的固定长度，所以不用像json那样扫描整个payload去解析，所以它的性能是能跟解析二进制数据的性能相媲美的。  
@@ -2709,12 +2718,8 @@
         1. <font color = "red">进程内已经超时的数据不再写入文件。</font>   
         2. <font color = "red">旧的AOF文件含有无效命令，</font>如del key1、hdel key2、srem keys、set a111、set a222等。重写使用进程内数据直接生成，这样新的AOF文件只保留最终数据的写入命令。  
         3. <font color = "red">多条写命令可以合并为一个，</font>如：lpush list a、lpush list b、lpush list c可以转化为：lpush list a b c。为了防止单条命令过大造成客户端缓冲区溢出，对于list、set、hash、zset等类型操作，以64个元素为界拆分为多条。  
-
     2. **<font color = "red">AOF重写降低了文件占用空间，除此之外，另一个目的是：更小的AOF 文件可以更快地被Redis加载。</font>**  
-    3. 在写入AOF日志文件时，如果Redis服务器宕机，则AOF日志文件文件会出格式错误。在重启Redis服务器时，Redis服务器会拒绝载入这个AOF文件，可以通过以下步骤修复AOF 并恢复数据： 
-        * 备份当前的AOF文件，以防万一。
-        * <font color = "red">使用redis-check-aof命令修复AOF文件</font>  
-        * 重启Redis服务器，加载已经修复的AOF文件，恢复数据。  
+    3. 在写入AOF日志文件时，如果Redis服务器宕机，则AOF日志文件文件会出格式错误。在重启Redis服务器时，Redis服务器会拒绝载入这个AOF文件，可以修复AOF 并恢复数据。 
 3. Redis4.0混合持久化，先RDB，后AOF。  
 4. ~~**<font color = "clime">RDB方式bgsave指令中fork子进程、AOF方式重写bgrewriteaof都会造成阻塞。</font>**~~  
 
@@ -2729,8 +2734,8 @@
 	* master节点关闭AOF。  
     
     可以采取比较折中的方式：  
-    * 在master节点设置将no-appendfsync-on-rewrite设置为yes（表示在日志重写时，不进行命令追加操作，而只是将命令放在重写缓冲区里，避免与命令的追加造成磁盘IO上的冲突），同时auto-aof-rewrite-percentage参数设置为0关闭主动重写。  
-    * 在重写时为了避免硬盘空间不足或者IO使用率高影响重写功能，还添加了硬盘空间报警和IO使用率报警保障重写的正常进行
+        * 在master节点设置将no-appendfsync-on-rewrite设置为yes（表示在日志重写时，不进行命令追加操作，而只是将命令放在重写缓冲区里，避免与命令的追加造成磁盘IO上的冲突），同时auto-aof-rewrite-percentage参数设置为0关闭主动重写。  
+        * 在重写时为了避免硬盘空间不足或者IO使用率高影响重写功能，还添加了硬盘空间报警和IO使用率报警保障重写的正常进行。
 4. 虽然在everysec配置下aof的fsync是由子线程进行操作的，但是主线程会监控fsync的执行进度。  
 &emsp; **<font color = "clime">主线程在执行时候如果发现上一次的fsync操作还没有返回，那么主线程就会阻塞。</font>**  
 
@@ -2743,8 +2748,7 @@
 
 
 ##### 1.16.2.3.6. Redis内存淘汰
-1. **Redis内存淘汰使用的算法：**  
-&emsp; Redis内存淘汰使用的算法有4种： 
+1. **Redis内存淘汰使用的算法有4种：**  
     * random，随机删除。  
     * TTL，删除过期时间最少的键。  
     * <font color = "clime">LRU，Least Recently Used：最近最少使用（访问时间）。</font>判断最近被使用的时间，离目前最远的数据优先被淘汰。  
@@ -2840,6 +2844,7 @@
 
 ### 1.16.3. 分布式限流
 1. **<font color = "clime">一个限流系统的设计要考虑限流对象、限流算法、限流方式、限流设计的要点。</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-24.png)  
 2.`限流对象分类：基于请求限流、基于资源限流。`  
 3. 限流算法：  
     * 固定窗口算法，有时会让通过请求量允许为限制的两倍。  
@@ -2923,7 +2928,7 @@
 &emsp; kafka的消息是不断追加到文件中的，这个特性使kafka可以充分利用磁盘的顺序读写性能。  
 
 ###### 1.17.2.2.1.2. 内存和零拷贝/网络IO
-&emsp; 为了优化读写性能，Kafka利用了操作系统本身的Page Cache，就是利用操作系统自身的内存而不是JVM空间内存。
+&emsp; 为了优化读写性能，Kafka利用了操作系统本身的Page Cache，就是利用操作系统自身的内存而不是JVM空间内存。  
 &emsp; Kafka 的数据传输通过TransportLayer来完成，其子类 PlaintextTransportLayer 通过Java NIO的FileChannel的transferTo和transferFrom方法实现零拷贝。  
 
 ###### 1.17.2.2.1.3. 网络IO优化/网络IO
@@ -3003,12 +3008,12 @@
         * 如果SN_old < SN_new+1，说明是重复写入的数据，直接丢弃。    
         * 如果SN_old > SN_new+1，说明中间有数据尚未写入，或者是发生了乱序，或者是数据丢失，将抛出严重异常：OutOfOrderSeqenceException。 
 4. Kafka消费者的幂等性（kafka怎样保证消息仅被消费一次？）  
-&emsp; 在使用kafka时，大多数场景对于数据少量的不一致(重复或者丢失)并不关注，比如日志，因为不会影响最终的使用或者分析，但是在某些应用场景(比如业务数据)，需要对任何一条消息都要做到精确一次的消费，才能保证系统的正确性，kafka并不提供准确一致的消费API，需要在实际使用时借用外部的一些手段来保证消费的精确性。    
-&emsp; 当消费者消费到了重复的数据的时候，消费者需要去过滤这部分的数据。主要有以下两种思路：  
-1. 将消息的offset存在消费者应用中或者第三方存储的地方  
-&emsp; 可以将这个数据存放在redis或者是内存中，消费消息时，如果有这条数据的话，就不会去做后续操作  
-2. 数据落库的时候，根据主键去过滤  
-&emsp; 在落库时，如果不不在这条数据，则去新增，如果存在则去修改  
+    &emsp; 在使用kafka时，大多数场景对于数据少量的不一致(重复或者丢失)并不关注，比如日志，因为不会影响最终的使用或者分析，但是在某些应用场景(比如业务数据)，需要对任何一条消息都要做到精确一次的消费，才能保证系统的正确性，`kafka并不提供准确一致的消费API，需要在实际使用时借用外部的一些手段来保证消费的精确性。`    
+    &emsp; 当消费者消费到了重复的数据的时候，消费者需要去过滤这部分的数据。主要有以下两种思路：  
+    1. 将消息的offset存在消费者应用中或者第三方存储的地方  
+    &emsp; 可以将这个数据存放在redis或者是内存中，消费消息时，如果有这条数据的话，就不会去做后续操作  
+    2. 数据落库的时候，根据主键去过滤  
+    &emsp; 在落库时，如果不不在这条数据，则去新增，如果存在则去修改  
 
 ###### 1.17.2.2.3.4. 事务
 

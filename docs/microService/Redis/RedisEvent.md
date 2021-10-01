@@ -5,14 +5,14 @@
 - [1. ~~Redis的事件与Reactor~~](#1-redis的事件与reactor)
     - [1.1. 概述](#11-概述)
     - [1.2. 文件事件](#12-文件事件)
-    - [1.3. 时间事件](#13-时间事件)
+    - [1.3. 时间事件（定时任务）](#13-时间事件定时任务)
     - [1.4. 事件的调度与执行](#14-事件的调度与执行)
 
 <!-- /TOC -->
 
 
 # 1. ~~Redis的事件与Reactor~~  
-
+&emsp; 参考《Redis设计与实现》第12章  
 <!--
 Redis基于Reactor模式开发了网络事件处理
 https://blog.csdn.net/weixin_45931215/article/details/118728932
@@ -32,7 +32,7 @@ https://www.cnblogs.com/harvyxu/p/7499396.html
 &emsp; **<font color = "clime">Redis基于`Reactor模式`开发了自己的网络事件处理器，使用 I/O 多路复用程序来同时监听多个套接字，并将到达的事件传送给文件事件分派器，分派器会根据套接字产生的事件类型调用相应的事件处理器。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-56.png)  
 
-## 1.3. 时间事件
+## 1.3. 时间事件（定时任务）
 &emsp; 服务器有一些操作需要在给定的时间点执行，时间事件是对这类定时操作的抽象。  
 &emsp; 时间事件又分为：  
 
