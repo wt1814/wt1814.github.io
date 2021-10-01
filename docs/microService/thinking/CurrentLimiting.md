@@ -19,10 +19,10 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "clime">一个限流系统的设计要考虑限流对象、限流算法、限流方式、限流设计的要点。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-24.png)  
 2.`限流对象分类：基于请求限流、基于资源限流。`  
 3. 限流算法：  
     * 固定窗口算法，有时会让通过请求量允许为限制的两倍。  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-24.png)  
     * 滑动窗口算法， **<font color = "clime">避免了固定窗口计数器带来的双倍突发请求。</font>** 但时间区间的精度越高，算法所需的空间容量就越大。  
     * 漏桶算法，实现流量整形和流量控制。漏洞底部的设计大小固定，水流速度固定。漏桶算法的缺陷也很明显，当短时间内有大量的突发请求时，即便此时服务器没有任何负载，每个请求也都得在队列中等待一段时间才能被响应。  
     * 令牌桶算法，
