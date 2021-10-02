@@ -3214,18 +3214,15 @@
     2. <font color = "clime">EventLoop的主要作用实际就是负责监听网络事件并调用事件处理器进行相关I/O操作的处理。</font>  
 
 #### 1.18.5.5. Netty高性能
-
-* [零拷贝](/docs/microService/communication/Netty/nettyZeroCopy.md)  
-* [高效的Reactor线程模型](/docs/microService/communication/Netty/Reactor.md) 
 * 异步非阻塞通信  
+* [高效的Reactor线程模型](/docs/microService/communication/Netty/Reactor.md) 
+    &emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
+* [零拷贝](/docs/microService/communication/Netty/nettyZeroCopy.md)  
+* 灵活的TCP参数配置能力
 * 内存池
 * 无锁化的串行设计理念  
 * 高效的并发编程  
 * 对高性能对的序列化框架支持
-* 灵活的TCP参数配置能力
-
-&emsp; Reactor与EventLoop  
-&emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
 
 #### 1.18.5.6. Netty开发
 1. TCP粘拆包与Netty编解码  

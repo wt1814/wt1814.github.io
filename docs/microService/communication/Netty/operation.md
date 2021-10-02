@@ -156,4 +156,5 @@ public final class EchoClient {
 
 ## 1.3. Netty整体运行流程
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-87.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-44.png)  
 
