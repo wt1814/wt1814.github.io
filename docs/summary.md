@@ -3052,11 +3052,11 @@
     特点：两阶段都阻塞。  
     * 同步非阻塞I/O：  
         1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
-        2. 内核等待I/O数据返回。无I/O数据返回时，内核返回给用户进程ewouldblock结果。【非阻塞】用户进程，立马返回结果。但 **<font color = "clime">用户进程要主动轮询查询结果。</font>**  
+        2. 内核等待I/O数据返回。无I/O数据返回时，内核返回给用户进程ewouldblock结果。`【非阻塞】用户进程，立马返回结果。`但 **<font color = "clime">用户进程要主动轮询查询结果。</font>**  
         3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
         4. 内核将数据返回给用户进程。  
     
-    特点：第一阶段不阻塞但要轮询，第二阶段阻塞。
+    特点：`第一阶段不阻塞但要轮询，`第二阶段阻塞。
     * 多路复用I/O：（~~同步阻塞，又基于回调通知~~）  
     &emsp; 多路复用I/O模型和阻塞I/O模型并没有太大的不同，事实上，还更差一些，因为它需要使用两个系统调用(select和recvfrom)，而阻塞I/O模型只有一次系统调用(recvfrom)。但是Selector的优势在于它可以同时处理多个连接。   
         1. 用户多进程或多线程发起select系统调用，复用器Selector会监听注册进来的进程事件。用户进程【同步】等待结果；
@@ -3067,14 +3067,14 @@
 #### 1.18.2.2. I/O多路复用详解
 1. **<font color = "clime">`select,poll,epoll只是I/O多路复用模型中第一阶段，即获取网络数据、用户态和内核态之间的拷贝。`</font>** 此阶段会阻塞线程。  
 2. **select()：**  
-    &emsp; **select运行流程：**  
-    &emsp; **<font color = "red">select()运行时会将fd_set集合从用户态拷贝到内核态。</font>** 在内核态中线性扫描socket，即采用轮询。如果有事件返回，会将内核态的数组相应的FD置位。最后再将内核态的数据返回用户态。  
-    &emsp; **select机制的问题：（拷贝、两次轮询、FD置位）**  
-    * 为了减少数据拷贝带来的性能损坏，内核对被监控的fd_set集合大小做了限制，并且这个是通过宏控制的，大小不可改变（限制为1024）。  
-    * 每次调用select， **<font color = "red">1)需要把fd_set集合从用户态拷贝到内核态，</font>** **<font color = "clime">2)需要在内核遍历传递进来的所有fd_set（对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低），</font>** **<font color = "red">3)如果有数据返回还需要从内核态拷贝到用户态。</font>** 如果fd_set集合很大时，开销比较大。 
-    * 由于运行时，需要将FD置位，导致fd_set集合不可重用。  
-    * **<font color = "clime">select()函数返回后，</font>** 调用函数并不知道是哪几个流（可能有一个，多个，甚至全部）， **<font color = "clime">还得再次遍历fd_set集合处理数据，即采用无差别轮询。</font>**   
-    * ~~惊群~~   
+    1. **select运行流程：**  
+        &emsp; **<font color = "red">select()运行时会将fd_set集合从用户态拷贝到内核态。</font>** 在内核态中线性扫描socket，即采用轮询。如果有事件返回，会将内核态的数组相应的FD置位。最后再将内核态的数据返回用户态。  
+    2. **select机制的问题：（拷贝、两次轮询、FD置位）**  
+        * 为了减少数据拷贝带来的性能损坏，内核对被监控的fd_set集合大小做了限制，并且这个是通过宏控制的，大小不可改变（限制为1024）。  
+        * 每次调用select， **<font color = "red">1)需要把fd_set集合从用户态拷贝到内核态，</font>** **<font color = "clime">2)需要在内核遍历传递进来的所有fd_set（对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低），</font>** **<font color = "red">3)如果有数据返回还需要从内核态拷贝到用户态。</font>** 如果fd_set集合很大时，开销比较大。 
+        * 由于运行时，需要将FD置位，导致fd_set集合不可重用。  
+        * **<font color = "clime">select()函数返回后，</font>** 调用函数并不知道是哪几个流（可能有一个，多个，甚至全部）， **<font color = "clime">还得再次遍历fd_set集合处理数据，即采用无差别轮询。</font>**   
+        * ~~惊群~~   
 3. **poll()：** 运行机制与select()相似。将fd_set数组改为采用链表方式pollfds，没有连接数的限制，并且pollfds可重用。   
 4. **epoll()：**   
     1. **epoll的三个函数：**  
@@ -3164,9 +3164,9 @@
 
 
 ### 1.18.4. NIO
-&emsp; **Java BIO即Block I/O，同步并阻塞的IO。**  
+&emsp; **BIO即Block I/O，同步并阻塞的IO。**  
 &emsp; **<font color = "red">NIO，同步非阻塞I/O，基于io多路复用模型，即select，poll，epoll。</font>**  
-&emsp; **<font color = "red">Java AIO即Async非阻塞，是异步非阻塞的IO。</font>**  
+&emsp; **<font color = "red">AIO即Async非阻塞，是异步非阻塞的IO。</font>**  
 
 &emsp; BIO方式适用于连接数目比较小且固定的架构，这种方式对服务器资源要求比较高，并发局限于应用中，JDK1.4以前的唯一选择，但程序直观简单易理解。  
 &emsp; NIO方式适用于连接数目多且连接比较短（轻操作）的架构，比如聊天服务器，并发局限于应用中，编程比较复杂，JDK1.4开始支持。  
@@ -3178,7 +3178,7 @@
 
 1. Netty是一个基于NIO的client-server（客户端服务器）框架，使用它可以快速简单地开发网络应用程序。
 2. 它极大地简化并优化了TCP和UDP套接字服务器等网络编程，并且性能以及安全性等很多方面甚至都要更好。
-3. 支持多种协议 如FTP，SMTP，HTTP以及各种二进制和基于文本的传统协议。  
+3. 支持多种协议，如FTP，SMTP，HTTP以及各种二进制和基于文本的传统协议。  
 
 &emsp; **<font color = "clime">为什么要用Netty？</font>**  
 &emsp; 在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
@@ -3228,7 +3228,7 @@
 &emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
 
 #### 1.18.5.6. Netty开发
-1、 TCP粘拆包与Netty编解码  
+1. TCP粘拆包与Netty编解码  
     1. [TCP的粘包和拆包问题描述](/docs/network/TCPSticking.md)  
     2. **<font color = "clime">Netty对半包或者粘包的处理：</font>** **每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，<font color = "red">所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。</font>** 
     3. Netty默认提供了多种解码器来解决，可以进行分包操作。  

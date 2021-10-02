@@ -638,7 +638,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 [Netty](/docs/microService/communication/Netty/netty.md)   
 &emsp; [Netty介绍](/docs/microService/communication/Netty/concepts.md)  
-&emsp; [Netty运行流程](/docs/microService/communication/Netty/operation.md)   
+&emsp; [Netty运行流程介绍](/docs/microService/communication/Netty/operation.md)   
 &emsp; [Netty逻辑架构](/docs/microService/communication/Netty/Architecture.md)   
 &emsp; [Netty核心组件](/docs/microService/communication/Netty/components.md)   
 &emsp; [Netty高性能](/docs/microService/communication/Netty/performance.md)  
