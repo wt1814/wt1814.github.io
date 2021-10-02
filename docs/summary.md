@@ -3192,6 +3192,11 @@
 
 #### 1.18.5.2. Netty运行流程
 &emsp; [Netty运行流程](/docs/microService/communication/Netty/operation.md)   
+&emsp; **<font color = "clime">服务器执行流程概述：</font>**  
+1. 创建服务器启动辅助类，服务端是ServerBootstrap。需要设置事件循环组EventLoopGroup，如果使用reactor主从模式，需要创建2个： **<font color = "clime">创建boss线程组用于服务端接受客户端的连接；创建worker线程组用于进行 SocketChannel的数据读写。</font>**  
+2. 对ServerBootstrap进行配置，配置项有channel,handler,option。  
+3. 绑定服务器端口并启动服务器，同步等待服务器启动完毕。  
+4. 阻塞启动线程，并同步等待服务器关闭，因为如果不阻塞启动线程，则会在finally块中执行优雅关闭，导致服务器也会被关闭了。  
 
 
 #### 1.18.5.3. Netty逻辑架构
@@ -3216,7 +3221,8 @@
 #### 1.18.5.5. Netty高性能
 * 异步非阻塞通信  
 * [高效的Reactor线程模型](/docs/microService/communication/Netty/Reactor.md) 
-    &emsp; Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
+    1. Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
+    2. Netty主从Reactor多线层模型，内部实现了两个线程池，boss线程池和work线程池，其中boss线程池的线程负责处理请求的accept事件，当接收到accept事件的请求时，把对应的socket封装到一个NioSocketChannel中，并交给work线程池，其中work线程池负责请求的read和write事件，由对应的Handler处理。
 * [零拷贝](/docs/microService/communication/Netty/nettyZeroCopy.md)  
 * 灵活的TCP参数配置能力
 * 内存池
