@@ -622,6 +622,10 @@ logstash同步mysql数据到Elasticsearch实战,主要实现删除
 https://blog.csdn.net/Giggle1994/article/details/111194763
 -->
 
+------
+[ES重制](/docs/ESRemake/ESRemake.md)    
+
+
 ### 分布式通信  
 [通信基础](/docs/microService/communication/Netty/basics.md)   
 &emsp; [序列化](/docs/microService/communication/serializbale.md)  
