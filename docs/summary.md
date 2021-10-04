@@ -351,6 +351,7 @@
 
 ## 1.1. Java
 ### 1.1.1. Java基础
+1. 关键字Static
 
 ### 1.1.2. Java基础数据类型
 #### 1.1.2.1. String
@@ -474,7 +475,7 @@
 	* 准备阶段：编译期装载所有的类，将每个类的元信息保存至Class类对象中，每一个类对应一个Class对象。  
 	* 获取Class对象：调用x.class/x.getClass()/Class.forName() 获取x的Class对象clz（这些方法的底层都是native方法，是在JVM底层编写好的，涉及到了JVM底层，就先不进行探究了）。  
 	* 进行实际反射操作：通过clz对象获取Field/Method/Constructor对象进行进一步操作。  
-
+4. 自定义 注解+反射 实际应用。    
 
 ### 1.1.9. IO
 1. **<font color = "clime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>** I/O读写大文件解决方案：  
@@ -1002,7 +1003,7 @@
 4. 不安全场景
 
 ###### 1.4.2.2.3.1. Synchronized底层原理
-1. Synchronized底层实现：  
+1. `查看Synchronized的字节码。`Synchronized底层实现：  
     * Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。  
     * Synchronized代码块同步：使用monitorenter和monitorexit指令实现。   
 每一个对象都会和一个监视器monitor关联。监视器被占用时会被锁住，其他线程无法来获取该monitor。   
@@ -1019,7 +1020,6 @@
 &emsp; <font color = "clime">重量级锁是依赖对象内部的monitor锁来实现的，而monitor又依赖操作系统的MutexLock(互斥锁)来实现的，所以重量级锁也称为互斥锁。</font>  
 &emsp; **<font color = "clime">为什么说重量级线程开销很大？</font>**  
 &emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，被阻塞的线程不会消耗cpu。 **<font color = "clime">`但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态(向内核申请)，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。`</font>**  
-
 
 
 ###### 1.4.2.2.3.2. Synchronized优化
@@ -1059,14 +1059,12 @@
     &emsp; 自旋是消耗CPU资源的，如果锁的时间长，或者自旋线程多，CPU会被大量消耗；重量级锁有等待队列，所有拿不到锁的线程进入等待队列，不需要消耗CPU资源。  
     &emsp; 偏向锁、自旋锁都是用户空间完成。重量级锁是需要向内核申请。  
 
-
-
 ##### 1.4.2.2.4. Volatile
 1. **<font color = "clime">Volatile的特性：</font>**  
     1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>    
     2. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**  
     3. <font color = "red">实现了有序性，禁止进行指令重排序。</font>  
-2. Volatile底层原理：  
+2. `查看Volatile的汇编代码。`Volatile底层原理：  
     * **<font color = "clime">在Volatile写前插入写-写[屏障](/docs/java/concurrent/ConcurrencySolve.md)（禁止上面的普通写与下面的Volatile写重排序），在Volatile写后插入写-读屏障（禁止上面的Volatile写与下面可能有的Volatile读/写重排序）。</font>**  
     * **<font color = "clime">在Volatile读后插入读-读屏障（禁止下面的普通读操作与上面的Volatile读重排序）、读-写屏障（禁止下面所有的普通写操作和上面Volatile读重排序）。</font>**  
 3. Volatile为什么不安全（不保证原子性，线程切换）？  

@@ -53,6 +53,8 @@
 ## Java  
 ### Java基础
 [Java基础](/docs/java/basis/JavaBasic.md)  
+&emsp; [关键字](/docs/java/basis/keyword.md)  
+&emsp; [内部类](/docs/java/basis/InnerClass.md)  
 [Java基础数据类型](/docs/java/basis/DataType.md)  
 &emsp; [Object](/docs/java/basis/Object.md)  
 &emsp; [String](/docs/java/basis/String.md)  
