@@ -354,6 +354,7 @@
 1. static关键字：  
 &emsp; 方便在没有创建对象的情况下来进行调用（方法/变量）。  
 &emsp; 1). static修饰变量、 2). 修饰方法、 3). static 可以修饰代码块，主要分为两种，一种直接定义在类中，使用static{}，这种被称为静态代码块，一种是在类中定义静态内部类，使用static class xxx来进行定义、 4). static可以和单例模式一起使用，通过双重检查锁来实现线程安全的单例模式、 5).静态导包。     
+&emsp; `注⚠️：static静态方法引用类变量，变量需要static修饰。`  
 
 ### 1.1.2. Java基础数据类型
 #### 1.1.2.1. String
@@ -504,7 +505,6 @@
 &emsp; 一个接口在b、c包中有实现，在a包中可替换所依赖的包（b或c），动态实现某一个功能。  
 
 
-
 ## 1.2. 设计模式
 ### 1.2.1. 七大设计原则
 * 针对单个类的设计原则：  
@@ -523,9 +523,8 @@
 1. 类和类之间的关系有三种：is-a（继承或泛化）、has-a（关联或聚合）和use-a（依赖）。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-27.png)  
 2. 组合的含义更像是一个对象(类)由各方面构成，这些方面并非来自于继承，但有时候却是必不可少的。如果说继承是垂直结构，那么组合是横向结构。  
-3. 对于委托，类与类之间或对象与对象之间可以没有任何逻辑上的关系(比如继承关系和组合关系)，仅仅只是委托方和被委托方的关系。不过，继承而来的方法本就会自动查找，所以这些方法不需要委托。而组合经常会结合委托一起使用，或者说组合的过程中本就依赖于委托，比如对于房子.煮饭()这个方法调用请求，应该委托或转发给厨房.煮饭()。  
-4. 委托是将一部分功能分割出去完成，即委托者（delegator）将自己委托给受托者（delegatee），受托者方法中参数为委托者对象；然后委托者调用受托者类对象。  
-
+3. `对于委托，类与类之间或对象与对象之间可以没有任何逻辑上的关系(比如继承关系和组合关系)，仅仅只是委托方和被委托方的关系。`不过，继承而来的方法本就会自动查找，所以这些方法不需要委托。而组合经常会结合委托一起使用，或者说组合的过程中本就依赖于委托，比如对于房子.煮饭()这个方法调用请求，应该委托或转发给厨房.煮饭()。  
+4. 委托是将一部分功能分割出去完成，即委托者（delegator）将自己委托给受托者（delegatee），`受托者方法中参数为委托者对象`；然后委托者调用受托者类对象。  
 
 ### 1.2.3. 设计模式
 1. 常用设计模式有23种（不包含简单工厂模式）。 **<font color = "red">这23种设计模式的本质是面向对象设计原则的实际运用，是对类的封装性、继承性和多态性，以及类的关联关系和组合关系的充分理解。</font>**  
@@ -533,13 +532,63 @@
 3. 面试题：你使用过哪些设计模式？ 根据实际使用，设计模式分3类：  
     * 框架：SpringAOP、mq、池化（享元模式）
     * 不自觉使用的设计模式，如外观/门面模式、适配器模式（Service层调用）。  
-    * 需要编码
-
+    * 需要编码：单例模式与static静态类、工厂模式、模板方法、3个if/else的优化：桥接模式、策略模式、观察者模式...  
 
 #### 1.2.3.1. 创建型设计模式
 1. 单例模式
     1. 单例模式与static静态类：静态使用于一些非状态Bean，单例使用于状态Bean。  
-    2. 单例模式适用场景。  
+    2. ~~单例模式适用场景~~。
+    3. 编码
+    ★★★双重校验锁的形式：DCL详解参考[Volatile](/docs/java/concurrent/Volatile.md)。`注⚠️：static、volicate、双重校验+锁synchronized。`  
+
+    ```java
+    public class LazyDoubleCheckSingleton {
+        
+        private volatile static LazyDoubleCheckSingleton lazy = null;
+
+        private LazyDoubleCheckSingleton(){
+            
+        }
+        
+        public static LazyDoubleCheckSingleton getInstance(){
+            // 第一重检测
+            if(lazy == null){
+                // 锁定代码块
+                synchronized (LazyDoubleCheckSingleton.class){
+                    // 第二重检测
+                    if(lazy == null){
+                        // 实例化对象
+                        lazy = new LazyDoubleCheckSingleton();
+                        //1.分配内存给这个对象
+                        //2.初始化对象
+                        //3.设置 lazy 指向刚分配的内存地址
+                    }
+                }
+            } 
+            return lazy;
+        }
+        
+        /**
+        * 逻辑操作
+        **/
+        public void showMessage(){
+        System.out.println("Hello World!");
+    }
+    }
+    ```
+
+    ```java
+    public static void main(String[] args){
+        // 
+        LazyDoubleCheckSingleton instance = LazyDoubleCheckSingleton.getInstance();
+        //
+        instance.methodOne();
+    }
+    ```
+    &emsp; <font color = "red">只有在singleton == null的情况下再进行加锁创建对象，如果singleton!=null，就直接返回就行了，并没有进行并发控制。大大的提升了效率。</font>   
+    &emsp; <font color = "clime">从上面的代码中可以看到，其实整个过程中进行了两次singleton == null的判断，所以这种方法被称之为"双重校验锁"。</font>   
+    &emsp; <font color = "clime">还有值得注意的是，双重校验锁的实现方式中，静态成员变量singleton必须通过volatile来修饰，保证其初始化不被重排，否则可能被引用到一个未初始化完成的对象。</font>   
+    
 2. 简单工厂模式和抽象工厂模式
 3. 建造者模式： **<font color = "red">建造者模式适用于创建对象需要很多步骤，但是步骤的顺序不一定固定。如果一个对象有非常复杂的内部结构(很多属性)，可以将复杂对象的创建和使用进行分离。</font>**  
 4. 原型模式：

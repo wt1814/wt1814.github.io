@@ -77,6 +77,7 @@ public class LazySimpleSingleton {
 
 ```java
 public class LazyDoubleCheckSingleton {
+    
     private volatile static LazyDoubleCheckSingleton lazy = null;
 
     private LazyDoubleCheckSingleton(){
@@ -100,6 +101,22 @@ public class LazyDoubleCheckSingleton {
         } 
         return lazy;
     }
+    
+    /**
+    * 逻辑操作
+    **/
+    public void showMessage(){
+      System.out.println("Hello World!");
+   }
+}
+```
+
+```java
+public static void main(String[] args){
+    // 
+    LazyDoubleCheckSingleton instance = LazyDoubleCheckSingleton.getInstance();
+    //
+    instance.methodOne();
 }
 ```
 &emsp; <font color = "red">只有在singleton == null的情况下再进行加锁创建对象，如果singleton!=null，就直接返回就行了，并没有进行并发控制。大大的提升了效率。</font>   
