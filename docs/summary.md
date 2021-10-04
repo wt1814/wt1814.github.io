@@ -22,8 +22,9 @@
         - [1.1.5. Java异常](#115-java异常)
         - [1.1.6. Java范型](#116-java范型)
         - [1.1.7. 自定义注解](#117-自定义注解)
-        - [1.1.8. IO](#118-io)
-        - [1.1.9. SPI](#119-spi)
+        - [1.1.8. 反射](#118-反射)
+        - [1.1.9. IO](#119-io)
+        - [1.1.10. SPI](#1110-spi)
     - [1.2. 设计模式](#12-设计模式)
         - [1.2.1. 七大设计原则](#121-七大设计原则)
         - [1.2.2. 继承和组合/复用规则](#122-继承和组合复用规则)
@@ -213,9 +214,9 @@
         - [1.11.6. Sleuth](#1116-sleuth)
         - [1.11.7. Admin](#1117-admin)
     - [1.12. Dubbo](#112-dubbo)
-        - [分布式服务治理](#分布式服务治理)
-            - [1.12.1. Dubbo和Spring Cloud](#1121-dubbo和spring-cloud)
-            - [Spring Cloud Alibaba介绍](#spring-cloud-alibaba介绍)
+        - [1.12.1. 分布式服务治理](#1121-分布式服务治理)
+            - [1.12.1.1. Dubbo和Spring Cloud](#11211-dubbo和spring-cloud)
+            - [1.12.1.2. Spring Cloud Alibaba介绍](#11212-spring-cloud-alibaba介绍)
         - [1.12.2. RPC介绍](#1122-rpc介绍)
         - [1.12.3. Dubbo介绍](#1123-dubbo介绍)
         - [1.12.4. Dubbo框架设计](#1124-dubbo框架设计)
@@ -431,7 +432,7 @@
 #### 1.1.4.1. 接口的默认方法与静态方法
 1. 接口的默认方法与静态方法  
     * <font color = "clime">接口中的default方法会被子接口继承，也可以被其实现类所调用。default方法被继承时，可以被子接口覆写。</font>  
-    * <font color = "clime">接口中的static方法不能被继承，也不能被实现类调用，只能被自身调用。即不能通过接口实现类的方法调用静态方法，直接通过接口名称调用。但是静态变量会被继承。</font>  
+    * <font color = "clime">接口中的`static方法`不能被继承，也不能被实现类调用，`只能被自身调用`。即不能通过接口实现类的方法调用静态方法，直接通过接口名称调用。但是静态变量会被继承。</font>  
 
 
 #### 1.1.4.2. Lambda表达式
@@ -450,7 +451,7 @@
 
 
 ### 1.1.5. Java异常
-1. throws和throw：throws用在函数上，后面跟的是异常类，可以跟多个；而throw用在函数内，后面跟的是异常对象。  
+1. throws和throw：throws用在函数上，后面跟的是异常类，可以跟多个；`而throw用在函数内，后面跟的是异常对象。`  
 2. 异常捕获后再次抛出。
     * 捕获后抛出原来的异常，希望保留最新的异常抛出点。 
     * 捕获后抛出新的异常，希望抛出完整的异常链。  
@@ -466,7 +467,16 @@
 ### 1.1.7. 自定义注解
 
 
-### 1.1.8. IO
+### 1.1.8. 反射
+1. 运行时动态加载类、`破坏：可以访问任意一个对象的任意一个方法和属性，包括获取、修改私有属性。`   
+2. **<font color = "clime">平常开发中使用反射的实际场景有：动态代理、JDBC中的加载数据库驱动程序、Spring框架中加载bean对象。</font>**  
+3. 调用反射的总体流程如下：  
+	* 准备阶段：编译期装载所有的类，将每个类的元信息保存至Class类对象中，每一个类对应一个Class对象。  
+	* 获取Class对象：调用x.class/x.getClass()/Class.forName() 获取x的Class对象clz（这些方法的底层都是native方法，是在JVM底层编写好的，涉及到了JVM底层，就先不进行探究了）。  
+	* 进行实际反射操作：通过clz对象获取Field/Method/Constructor对象进行进一步操作。  
+
+
+### 1.1.9. IO
 1. **<font color = "clime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>** I/O读写大文件解决方案：  
     * 使用BufferedInputStream进行包装。
     * 逐行读取。
@@ -476,7 +486,7 @@
         * 内存文件映射，MappedByteBuffer。采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。
 
 
-### 1.1.9. SPI
+### 1.1.10. SPI
 &emsp; **<font color = "clime">JDK提供的SPI机制：</font>**  
 1. 提供一个接口；  
 2. 服务提供方实现接口，并在META-INF/services/中暴露实现类地址；  
@@ -2165,15 +2175,15 @@
 
 
 ## 1.12. Dubbo
-### 分布式服务治理
-#### 1.12.1. Dubbo和Spring Cloud
+### 1.12.1. 分布式服务治理
+#### 1.12.1.1. Dubbo和Spring Cloud
 &emsp; Dubbo是SOA时代的产物，它的关注点主要在于服务的调用，流量分发、流量监控和熔断。  
 &emsp; Spring Cloud诞生于微服务架构时代，考虑的是微服务治理的方方面面，另外由于依托了Spirng、Spirng Boot的优势之上。  
 
 * 两个框架在开始目标就不一致：<font color = "red">Dubbo定位服务治理；Spirng Cloud是一个生态。</font>  
 * <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "clime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。  
 
-#### Spring Cloud Alibaba介绍  
+#### 1.12.1.2. Spring Cloud Alibaba介绍  
 
 
 ### 1.12.2. RPC介绍
