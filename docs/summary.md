@@ -3320,7 +3320,7 @@
 1. Nginx是一个高性能的Web服务器。<font color = "red">Nginx工作在4层或7层。</font>  
 2. **多进程：** Nginx启动时，会生成两种类型的进程，一个主进程master，一个（windows版本的目前只有一个）或多个工作进程worker。  
     * 主进程并不处理网络请求，主要负责调度工作进程：加载配置、启动工作进程、非停升级。  
-    * **<font color = "red">一般推荐worker进程数与CPU内核数一致，这样一来不存在大量的子进程生成和管理任务，避免了进程之间竞争CPU资源和进程切换的开销。</font>**  
+    * **<font color = "red">`一般推荐worker进程数与CPU内核数一致，这样一来不存在大量的子进程生成和管理任务，避免了进程之间竞争CPU资源和进程切换的开销。`</font>**  
 
 #### 1.20.2.2. Nginx使用
 1. <font color = "red">Nginx服务器处理一个请求是按照两部分进行的。第一部分是IP和域名，由listen和server_name指令匹配server模块；第二部分是URL，匹配server模块里的location；最后就是location里的具体处理。</font>  
@@ -3335,7 +3335,19 @@
         * **<font color = "red">url_hash（第三方）</font>**  
 
 ## 1.21. CI/CD与Devops
-&emsp; **<font color = "clime">DevOps一般包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等。</font>**  
+1. DevOps框架
+&emsp; 以下是一个DevOps框架。这个框架只指出那些被认可的概念和它们在某种程度上的关系。
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-8.png)  
+&emsp; **<font color = "clime">敏捷开发指的是在 DevOps 中采用敏捷思想进行软件开发，敏捷宣言无疑是很重要的一项。有多种敏捷方法可以采用，比如Scrum、看板和极限编程。</font>**  
+&emsp; **<font color = "clime">持续集成提供了让多个程序员可以同时运行应用程序的最佳实践，可以频繁合并源代码、验证代码(静态测试用例)、编译和测试代码(动态测试用例)。</font>**  
+&emsp; **<font color = "clime">持续交忖关注从开发、测试、验收到生产环境的高频生产能力。基于高度的自动化，极端的发布上线时间可以达到分钟级。</font>**  
+2. DevOps流程
+下图显示了一个DevOps流程。它不是DevOps流程的正式定义，而是表述了在大多数组织机构中，为了实现一个服务而会被循环执行的合乎逻辑顺序的一系列阶段。  
+&emsp; 深色部分表示开发流程，浅色部分表示运维流程。这两个流程构成了DevOps方法的核心。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-1.png)  
+3. 工具集  
+**<font color = "clime">DevOps一般包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等。</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-3.png)  
 
 ### 1.21.1. 从上往下学Docker
 
