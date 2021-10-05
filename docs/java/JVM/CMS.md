@@ -234,6 +234,14 @@ https://blog.csdn.net/zqz_zqz/article/details/70568819
 https://www.jianshu.com/p/86e358afdf17
 线程资源被垃圾收集线程占用（cpu资源占用问题）
 https://segmentfault.com/a/1190000040354999?utm_source=sf-similar-article
+
+https://blog.csdn.net/m0_37989980/article/details/112794928
+缺点：
+
+    CMS 不会整理压缩堆空间，存在碎片。
+    需要更多 CPU 资源：CMS 默认启动的回收线程数是（CPU 数量+3）/ 4，也就是当 CPU 在4个以上时，并发回收时垃圾收集线程不少于 25% 的 CPU 资源，并且随着 CPU 数量的增加而下降。但是当 CPU 不足4个（譬如2个）时，CMS 对用户程序的影响就可能变得很大。
+    需要更多堆空间：由于在 GC 阶段用户线程还需要运行，那也就还需要预留有足够的内存空间给用户线程使用。
+
 -->
 &emsp; CMS是一款优秀的收集器，它最主要的优点在名字上已经体现出来： **<font color = "clime">并发收集、低停顿。</font>** 但是也有以下 **<font color = "red">三个明显的缺点：</font>**  
 
