@@ -16,13 +16,12 @@
 &emsp; 如何将各分区调整到合适的大小，分析活跃数据的大小是很好的切入点。  
 &emsp; **活跃数据的大小是指，应用程序稳定运行时长期存活对象在堆中占用的空间大小，也就是Full GC后堆中老年代占用空间的大小。** 
 2. GC调优
-    1. <font color = "clime">GC的优化主要有2个维度，一是频率，二是时长。</font>  
-    2. **<font color = "clime">如果满足下面的指标，则一般不需要进行GC调优：</font>**    
+    1. <font color = "clime">`GC的优化主要有2个维度，一是频率，二是时长。`</font> **<font color = "clime">如果满足下面的指标，则一般不需要进行GC调优：</font>**    
         * Minor GC执行时间不到50ms;
         * Minor GC执行不频繁，约10秒一次；
         * Full GC执行时间不到1s;
         * Full GC执行频率不算频繁，不低于10分钟1次。
-    3. Young GC、Full GC优化策略 参考 1.2.3节。
+    2. Young GC、Full GC优化策略 参考 1.2.3节。
 
 
 # 1. JVM调优 

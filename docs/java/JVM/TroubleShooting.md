@@ -28,7 +28,7 @@
 1. 快速恢复业务：隔离故障服务器。  
 2. FGC过高  
 &emsp; **<font color = "clime">FGC过高可能是内存参数设置不合理，也有可能是代码中某个位置读取数据量较大导致系统内存耗尽。FGC过高可能导致CPU飚高。</font>**  
-&emsp; **<font color = "clime">解决思路（`FGC过高参考CPU飚高`）：FGC过高一般会导致CPU过高，打印线程堆栈信息。查看线程堆栈是用户线程，还是GC线程。如果是GC线程，打印内存快照进行分析（`查看内存溢出`）。</font>**  
+&emsp; **<font color = "clime">解决思路（`FGC过高参考CPU飚高`）：FGC过高一般会导致CPU过高，打印线程堆栈信息。查看线程堆栈是用户线程，还是GC线程。如果是GC线程，打印内存快照进行分析（`查看内存溢出`），`进行Full GC优化`。</font>**  
 3. CPU飚高  
 &emsp; **<font color = "red">CPU过高可能是系统频繁的进行Full GC，导致系统缓慢。</font><font color = "clime">而平常也可能遇到比较耗时的计算，导致CPU过高的情况。</font>**  
 &emsp; **<font color = "clime">怎么区分导致CPU过高的原因具体是Full GC次数过多还是代码中有比较耗时的计算？</font>** `如果是Full GC次数过多，那么通过jstack得到的线程信息会是类似于VM Thread之类的线程`；而`如果是代码中有比较耗时的计算，那么得到的就是一个线程的具体堆栈信息。` 
