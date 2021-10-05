@@ -12,6 +12,9 @@
 
 # 1. 常量池
 <!--
+java虚拟机：运行时常量池
+https://www.cnblogs.com/xiaotian15/p/6971353.html
+
 终于搞懂了Java8的内存结构，再也不纠结方法区和常量池了！ 
 https://mp.weixin.qq.com/s/WvdPQ8JsR9qqWMlvX7ockA
 JAVA常量池，一篇文章就足够入门了。（含图解）
