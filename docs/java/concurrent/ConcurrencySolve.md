@@ -29,7 +29,8 @@
     1. 内存屏障的作用：（~~原子性~~、可见性、有序性）
         1.（`保障可见性`）它会强制将对缓存的修改操作立即写入主存； 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。 
         2.（`保障有序性`）阻止屏障两侧的指令重排序。 
-3. JMM中的happens-before原则
+3. JMM中的happens-before原则：JSR-133内存模型 **<font color = "red">使用happens-before的概念来阐述操作之间的内存可见性。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
+&emsp; happens-before原则有管理锁定（lock）规则、volatile变量规则（参考volatile原理，即内存屏障）、线程启动规则（Thread.start()）、线程终止规则（Thread.join()）、线程中断规则（Thread.interrupt()）...  
 
 # 1. ~~并发安全解决底层~~
 <!-- 
@@ -147,8 +148,6 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 &emsp; 对于上面的一组CPU指令(Store表示写入指令，Load表示读取指令)，StoreLoad 屏障之前的Store指令无法与StoreLoad 屏障之后的Load指令进行交换位置，即重排序。但是StoreLoad屏障之前和之后的指令是可以互换位置的，即Store1可以和Store2互换，Load2可以和Load3互换。  
 
 
-
-
 ## 1.3. JMM中的happens-before原则
 &emsp; JSR-133内存模型 **<font color = "red">使用happens-before的概念来阐述操作之间的内存可见性。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
 <!-- 
@@ -162,11 +161,11 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 &emsp; 为了方便程序开发，Java 内存模型实现了下述的先行发生关系：  
 
 * 程序次序规则： 在一个单独的线程中，按照程序代码的执行流顺序，(时间上)先执行的操作happen—before(时间上)后执行的操作。  
-(同一个线程中前面的所有写操作对后面的操作可见)
+（同一个线程中前面的所有写操作对后面的操作可见）
 * 管理锁定规则：一个unlock操作happen—before后面(时间上的先后顺序)对同一个锁的lock操作。  
-(如果线程1解锁了monitor a，接着线程2锁定了a，那么，线程1解锁a之前的写操作都对线程2可见(线程1和线程2可以是同一个线程))  
+（如果线程1解锁了monitor a，接着线程2锁定了a，那么，线程1解锁a之前的写操作都对线程2可见(线程1和线程2可以是同一个线程)）   
 * volatile变量规则：对一个volatile变量的写操作happen—before后面(时间上)对该变量的读操作。  
-(如果线程1写入了volatile变量v(临界资源)，接着线程2读取了v，那么，线程1写入v及之前的写操作都对线程2可见(线程1和线程2可以是同一个线程)) 
+（如果线程1写入了volatile变量v(临界资源)，接着线程2读取了v，那么，线程1写入v及之前的写操作都对线程2可见(线程1和线程2可以是同一个线程)） 
 
 ---- 
 * <font color = "red">线程启动规则：</font>Thread.start()方法happen—before调用start的线程前的每一个操作。  
@@ -174,13 +173,13 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 * <font color = "red">线程终止规则：</font>线程的所有操作都happen—before对此线程的终止检测，可以通过Thread.join()方法结束、Thread.isAlive()的返回值等手段检测到线程已经终止执行。  
 (线程t1写入的所有变量，在任意其它线程t2调用t1.join()，或者t1.isAlive() 成功返回后，都对t2可见。)  
 * <font color = "red">线程中断规则：</font>对线程interrupt()的调用 happen—before 发生于被中断线程的代码检测到中断时事件的发生。  
-(线程t1写入的所有变量，调用Thread.interrupt()，被打断的线程t2，可以看到t1的全部操作)  
+（线程t1写入的所有变量，调用Thread.interrupt()，被打断的线程t2，可以看到t1的全部操作）  
 
 ---
 * 对象终结规则：一个对象的初始化完成（构造函数执行结束）happen—before它的finalize()方法的开始。  
-(对象调用finalize()方法时，对象初始化完成的任意操作，同步到全部主存同步到全部cache。)  
+（对象调用finalize()方法时，对象初始化完成的任意操作，同步到全部主存同步到全部cache。）  
 * 传递性：如果操作A happen—before操作B，操作B happen—before操作C，那么可以得出A happen—before操作C。  
-(A h-b B， B h-b C 那么可以得到 A h-b C)  
+（A h-b B， B h-b C 那么可以得到 A h-b C）  
 
 &emsp; **<font color = "red">as-if-serial规则和happens-before规则的区别：</font>**  
 

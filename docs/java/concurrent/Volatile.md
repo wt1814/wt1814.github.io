@@ -18,14 +18,14 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "clime">Volatile的特性：</font>**  
     1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>    
+    **<font color = "clime">Volatile为什么不安全（不保证原子性，线程切换）？</font>**    
+    两个线程执行i++（i++的过程可以分为三步，首先获取i的值，其次对i的值进行加1，最后将得到的新值写回到缓存中），线程1获取i值后被挂起，线程2执行...  
     2. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**  
     3. <font color = "red">实现了有序性，禁止进行指令重排序。</font>  
 2. Volatile底层原理：  
     * **<font color = "clime">在Volatile写前插入写-写[屏障](/docs/java/concurrent/ConcurrencySolve.md)（禁止上面的普通写与下面的Volatile写重排序），在Volatile写后插入写-读屏障（禁止上面的Volatile写与下面可能有的Volatile读/写重排序）。</font>**  
     * **<font color = "clime">在Volatile读后插入读-读屏障（禁止下面的普通读操作与上面的Volatile读重排序）、读-写屏障（禁止下面所有的普通写操作和上面Volatile读重排序）。</font>**  
-3. Volatile为什么不安全（不保证原子性，线程切换）？  
-&emsp; 两个线程执行i++（i++的过程可以分为三步，首先获取i的值，其次对i的值进行加1，最后将得到的新值写回到缓存中），线程1获取i值后被挂起，线程2执行...  
-4. volatile使用场景：
+3. volatile使用场景：
     **<font color = "red">Volatile的使用场景：</font>** 关键字Volatile用于多线程环境下的单次操作（单次读或者单次写）。即Volatile主要使用的场合是在多个线程中可以感知实例变量被更改了，并且可以获得最新的值使用，也就是用多线程读取共享变量时可以获得最新值使用。  
     1. 全局状态标志。
     2. DCL详解：  
@@ -73,6 +73,7 @@ https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
 除了在i++操作时使用Synchronized关键字实现同步外，还可以使用Atomiclnteger原子类进行实现。
 原子操作是不能分割的整体，没有其他线程能够中断或检查正在原子操作中的变量。— 个原子(atomic)类型就是一个原子操作可用的类型，它可以在没有锁的情况下做到线程安全 (thread-safe) 。
 -->
+
 ## 1.2. Volatile原理  
 <!-- 
 如何把java文件生成汇编语言
@@ -108,6 +109,7 @@ https://mp.weixin.qq.com/s/DFCh1XE1hbikjBGEpYJguw
 &emsp; 一个变量i被volatile修饰，两个线程想对这个变量修改，都对其进行自增操作也就是i++， **<font color = "red">i++的过程可以分为三步，首先获取i的值，其次对i的值进行加1，最后将得到的新值写回到缓存中。</font>**    
 &emsp; 线程A首先得到了i的初始值100，但是还没来得及修改，就阻塞了，这时线程B开始了，它也得到了i的值，由于i的值未被修改，即使是被volatile修饰，主存的变量还没变化，那么线程B得到的值也是100，之后对其进行加1操作，得到101后，将新值写入到缓存中，再刷入主存中。根据可见性的原则，这个主存的值可以被其他线程可见。  
 &emsp; 问题来了，线程A已经读取到了i的值为100，也就是说读取的这个原子操作已经结束了，所以这个可见性来的有点晚，线程A阻塞结束后，继续将100这个值加1，得到101，再将值写到缓存，最后刷入主存，所以即便是volatile具有可见性，也不能保证对它修饰的变量具有原子性。  
+
 
 
 ## 1.4. Volatile使用  

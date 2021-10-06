@@ -966,12 +966,13 @@
 
 ## 1.4. 并发编程
 ### 1.4.1. 线程Thread
-1. 线程状态：新建、就绪、阻塞（等待阻塞(o.wait)、同步阻塞(lock)、其他阻塞(sleep/join)）、等待、计时等待、终止。  
+1. 创建线程的方式：Thread、Runnable、Callable、线程池相关（Future, ThreadPOOL, `@Async`）...  
+2. 线程状态：新建、就绪、阻塞（等待阻塞(o.wait)、同步阻塞(lock)、其他阻塞(sleep/join)）、等待、计时等待、终止。  
 &emsp; 线程状态切换图示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-1.png)  
-2. yield()，线程让步。 yield会使当前线程让出CPU执行时间片，与其他线程一起重新竞争CPU时间片。  
-3. thread.join()把指定的线程加入到当前线程，可以将两个交替执行的线程合并为顺序执行的线程。比如在线程B中调用了线程A的Join()方法，直到线程A执行完毕后，才会继续执行线程B。  
-4. 中断  
+3. yield()，线程让步。 yield会使当前线程让出CPU执行时间片，与其他线程一起重新竞争CPU时间片。  
+4. thread.join()把指定的线程加入到当前线程，可以将两个交替执行的线程合并为顺序执行的线程。比如在线程B中调用了线程A的Join()方法，直到线程A执行完毕后，才会继续执行线程B。  
+5. 中断  
     &emsp; **<font color = "red">线程在不同状态下对于中断所产生的反应：</font>**    
     * NEW和TERMINATED对于中断操作几乎是屏蔽的；  
     * RUNNABLE和BLOCKED类似， **<font color = "cclime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中；</font>**  
@@ -1012,12 +1013,12 @@
         &emsp; 总线嗅探， **<font color = "red">每个CPU不断嗅探总线上传播的数据来检查自己缓存值是否过期了，如果处理器发现自己的缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置为无效状态，当处理器对这个数据进行修改操作的时候，会重新从内存中把数据读取到处理器缓存中。</font>**    
         2. 总线嗅探会带来总线风暴。  
 2. 内存屏障  
-    Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。  
-    内存屏障，禁止处理器重排序，保障缓存一致性。
-    1. 内存屏障的作用：（~~原子性~~、可见性、有序性）
-        1.（`保障可见性`）它会强制将对缓存的修改操作立即写入主存； 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。   
-        2.（`保障有序性`）阻止屏障两侧的指令重排序。   
-3. JMM中的happens-before原则
+    Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。内存屏障，禁止处理器重排序，保障缓存一致性。
+    内存屏障的作用：（~~原子性~~、可见性、有序性）  
+    1.（`保障可见性`）它会强制将对缓存的修改操作立即写入主存； 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。   
+    2.（`保障有序性`）阻止屏障两侧的指令重排序。   
+3. JMM中的happens-before原则：JSR-133内存模型 **<font color = "red">使用happens-before的概念来阐述操作之间的内存可见性。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
+&emsp; happens-before原则有管理锁定（lock）规则、volatile变量规则（参考volatile原理，即内存屏障）、线程启动规则（Thread.start()）、线程终止规则（Thread.join()）、线程中断规则（Thread.interrupt()）...  
 
 ##### 1.4.2.1.4. 伪共享问题
 1. CPU具有多级缓存，越接近CPU的缓存越小也越快；CPU缓存中的数据是以缓存行为单位处理的；CPU缓存行（通常是64字节）能带来免费加载数据的好处，所以处理数组性能非常高。  
@@ -1075,7 +1076,7 @@
 4. linux互斥锁nutex（内核态）  
 &emsp; <font color = "clime">重量级锁是依赖对象内部的monitor锁来实现的，而monitor又依赖操作系统的MutexLock(互斥锁)来实现的，所以重量级锁也称为互斥锁。</font>  
 &emsp; **<font color = "clime">为什么说重量级线程开销很大？</font>**  
-&emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，被阻塞的线程不会消耗cpu。 **<font color = "clime">`但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态(向内核申请)，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。`</font>**  
+&emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，`被阻塞的线程不会消耗cpu`。 **<font color = "clime">`但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态(向内核申请)，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。`</font>**  
 
 
 ###### 1.4.2.2.3.2. Synchronized优化
@@ -1095,7 +1096,7 @@
             3. 如果对象锁已经被其他线程占用，则会替换失败，开始进行偏向锁撤销，这也是偏向锁的特点，一旦出现线程竞争，就会撤销偏向锁； 
         3. 偏向锁撤销： 
             1. 等到安全点，检查持有偏向锁的`线程是否还存活`。如果线程还存活，则检查线程是否在执行同步代码块中的代码，如果是，则升级为轻量级锁，进行CAS竞争锁； 
-            2. 如果持有偏向锁的线程未存活，或者持有偏向锁的线程未在执行同步代码块中的代码， **<font color = "red">则进行校验`是否允许重偏向`。</font>**   
+            2. `如果持有偏向锁的线程未存活，或者持有偏向锁的线程未在执行同步代码块中的代码`， **<font color = "red">则进行校验`是否允许重偏向`。</font>**   
                 1. **<font color = "clime">如果不允许重偏向，则撤销偏向锁，将Mark Word设置为无锁状态（未锁定不可偏向状态），然后升级为轻量级锁，进行CAS竞争锁；</font><font color = "blue">(偏向锁被重置为无锁状态，这种策略是为了提高获得锁和释放锁的效率。)</font>**     
                 2. 如果允许重偏向，设置为匿名偏向锁状态，CAS将偏向锁重新指向线程A（在对象头和线程栈帧的锁记录中存储当前线程ID）； 
             3. 唤醒暂停的线程，从安全点继续执行代码。 
@@ -1200,7 +1201,7 @@
 &emsp; **<font color = "red">在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对Thread进行了封装（内部类Worker），并不是每次执行任务都会调用Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行。</font>** 如果有则直接执行，也就是调用任务中的run方法，将run方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的run方法串联起来。  
 &emsp; 源码解析：runWorker()方法中，有任务时，while循环获取；没有任务时，清除空闲线程。  
 4. 线程池保证核心线程不被销毁？  
-    ThreadPoolExecutor回收线程都是等while死循环里getTask()获取不到任务，返回null时，调用processWorkerExit方法从Set集合中remove掉线程，getTask()返回null又分为2两种场景：  
+    &emsp; ThreadPoolExecutor回收线程都是等while死循环里getTask()获取不到任务，返回null时，调用processWorkerExit方法从Set集合中remove掉线程，getTask()返回null又分为2两种场景：  
     1. 线程正常执行完任务，并且已经等到超过keepAliveTime时间，大于核心线程数，那么会返回null，结束外层的runWorker中的while循环
     2. 当调用shutdown()方法，会将线程池状态置为shutdown，并且需要等待正在执行的任务执行完，阻塞队列中的任务执行完才能返回null
 
@@ -1326,7 +1327,7 @@
 #### 1.4.4.4. Atomic
 ##### 1.4.4.4.1. AtomicStampedReference与AtomicMarkableReference
 1. AtomicStampedReference每次修改都会让stamp值加1，类似于版本控制号。 
-2. **<font color = "clime">AtomicStampedReference可以知道，引用变量中途被更改了几次。有时候，并不关心引用变量更改了几次，只是单纯的关心是否更改过，所以就有了AtomicMarkableReference。</font>**  
+2. **<font color = "clime">AtomicStampedReference可以知道引用变量中途被更改了几次。有时候，并不关心引用变量更改了几次，只是单纯的关心是否更改过，所以就有了AtomicMarkableReference。</font>**  
 
 ##### 1.4.4.4.2. LongAdder
 1. LongAdder重要属性：有一个全局变量`volatile long base`值、父类Striped64中存在一个`volatile Cell[] cells;`数组，其长度是2的幂次方。  
