@@ -5,7 +5,7 @@
 &emsp; expain信息列分别是id、select_type、table、partitions、 **<font color = "red">type</font>** 、possible_keys、 **<font color = "red">key</font>** 、 **<font color = "red">key_len</font>** 、ref、rows、filtered、 **<font color = "red">Extra</font>** 。  
 * **<font color = "clime">type单表查询类型要达到range级别（只检索给定范围的行，使用一个索引来选择行，非全表扫描）。</font>**  
 * key_len表示使用的索引长度，key_len可以衡量索引的好坏，key_len越小 索引效果越好。 **<font color = "blue">可以根据key_len来判断联合索引是否生效。</font>**  
-* extra额外的信息，常见的不太友好的值，如下：Using filesort，Using temporary。   
+* **<font color = "red">extra：额外的信息，该列包含MySQL解决查询的详细信息。注意，常见的不太友好的值，如Using filesort（额外排序）、Using temporary（使用了临时表），意思MYSQL根本不能使用索引，常出现在使用order by。</font>**  
 
 
 # 1. explain
@@ -108,7 +108,7 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
 * ref：显示使用哪个列或常数与key一起从表中选择行。  
 * rows：扫描行数。该值是个预估值。显示MySQL认为它执行查询时必须检查的行数。多行之间的数据相乘可以估算要处理的行数。  
 * filtered：显示了通过条件过滤出的行数的百分比估计值。  
-* **<font color = "red">extra：该列包含MySQL解决查询的详细信息。注意，常见的不太友好的值，如Using filesort、Using temporary，意思MYSQL根本不能使用索引，常出现在使用order by。</font>**  
+* **<font color = "red">extra：该列包含MySQL解决查询的详细信息。注意，常见的不太友好的值，如Using filesort（额外排序）、Using temporary（使用了临时表），意思MYSQL根本不能使用索引，常出现在使用order by。</font>**  
     * Distinct：MySQL发现第1个匹配行后，停止为当前的行组合搜索更多的行。  
     * Not exists：MySQL能够对查询进行LEFT JOIN优化，发现1个匹配LEFT JOIN标准的行后，不再为前面的的行组合在该表内检查更多的行。  
     * range checked for each record (index map: #)：MySQL没有发现好的可以使用的索引，但发现如果来自前面的表的列值已知，可能部分索引可以使用。  

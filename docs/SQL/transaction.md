@@ -9,15 +9,12 @@
     - [1.4. Innodb事务实现原理](#14-innodb事务实现原理)
         - [1.4.1. 原子性的实现](#141-原子性的实现)
         - [1.4.2. 持久性的实现](#142-持久性的实现)
-        - [1.4.3. 隔离性(事务的隔离级别)的实现](#143-隔离性事务的隔离级别的实现)
+        - [1.4.3. ~~隔离性(事务的隔离级别)的实现~~](#143-隔离性事务的隔离级别的实现)
         - [1.4.4. 一致性的实现](#144-一致性的实现)
     - [1.5. 事务SQL语句](#15-事务sql语句)
 
 <!-- /TOC -->
 
-<!-- 
-
--->
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 事务的四大特性（ACID）：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability）。  
@@ -26,14 +23,21 @@
     * 丢失修改：一个事务覆盖了另一个事务的数据。  
     * 不可重复读：一个事务多次读，另一事务中间修改了数据。  
     * 幻读：一个事务多次读，另一事务中间新增了数据。  
-3. SQL标准定义了四个隔离级别：读取未提交、读取已提交、可重复读（可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读）、可串行化。  
-4. 在MySQL中，默认的隔离级别是REPEATABLE-READ（可重复读），阻止脏读和不可重复读，并且解决了幻读问题。  
-&emsp; 隔离性(事务的隔离级别)的实现，利用的是锁和MVCC机制。 
-    * **<font color = "blue">快照读：生成一个事务快照（ReadView），之后都从这个快照获取数据。</font>** 普通select语句就是快照读。  
-    &emsp; <font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
-    * **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
-    &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用Gap Lock或Next-Key Lock（Gap Lock + Record Lock）来解决。  
-
+3. SQL标准定义了四个隔离级别（隔离性）：读取未提交、读取已提交、可重复读（可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读）、可串行化。  
+4. Innodb事务实现原理
+    * 原子性的实现：采用[undo log](/docs/SQL/undoLog.md)实现。  
+    * 持久性的实现：采用[redo log](/docs/SQL/redoLog.md)实现。  
+    * 隔离性(事务的隔离级别)的实现
+        在MySQL中，默认的隔离级别是REPEATABLE-READ（可重复读），阻止脏读和不可重复读，并且解决了幻读问题。  
+        隔离性(事务的隔离级别)的实现，利用的是锁和MVCC机制。 
+        * **<font color = "blue">快照读：生成一个事务快照（ReadView），之后都从这个快照获取数据。</font>** 普通select语句就是快照读。  
+        &emsp; <font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
+        * **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
+        &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用Gap Lock或Next-Key Lock（Gap Lock + Record Lock）来解决。  
+    * 一致性的实现
+    &emsp; Mysql怎么保证一致性的？这个问题分为两个层面来说。  
+    &emsp; 从数据库层面，数据库通过原子性、隔离性、持久性来保证一致性。也就是说ACID四大特性之中，C(一致性)是目的，A(原子性)、I(隔离性)、D(持久性)是手段，是为了保证一致性，数据库提供的手段。数据库必须要实现AID三大特性，才有可能实现一致性。例如，原子性无法保证，显然一致性也无法保证。  
+    &emsp; 从应用层面，通过代码判断数据库数据是否有效，然后决定回滚还是提交数据！如果在事务里故意写出违反约束的代码，一致性还是无法保证的。
 
 
 # 1. MySql的事务  
@@ -145,7 +149,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 
 
 
-### 1.4.3. 隔离性(事务的隔离级别)的实现  
+### 1.4.3. ~~隔离性(事务的隔离级别)的实现~~  
 <!-- 
 https://mp.weixin.qq.com/s/B-2AN3ryX8IJWUoxLRPp_w
 -->

@@ -29,7 +29,7 @@ https://mp.weixin.qq.com/s/e-5plTcE4n47L_3JzMS6kw#
 -->
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-183.png)  
 
-1. 事务提交前 --- 内存操作： 1)数据加载到缓冲池buffer poll； 2)写回滚日志undo log； 3)更新缓冲池数据 4) 写redo log buffer
+1. 事务提交前 --- 内存操作： “1)数据加载到缓冲池buffer poll；” 2)写回滚日志undo log； 3)更新缓冲池数据 4) 写redo log buffer
 2. 事务提交：redo log与bin log两阶段提交。  
 3. 事务提交后：后台线程将buffer poll中数据落盘。  
 
