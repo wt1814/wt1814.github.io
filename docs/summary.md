@@ -2088,7 +2088,7 @@
 
 
 ### 1.10.2. SpringBoot启动过程
-&emsp; SpringApplication.run()中首先new SpringApplication对象，然后调用该对象的run方法。<font color = "red">即run()方法主要包括两大步骤：</font>  
+&emsp; SpringApplication.run()中首先new SpringApplication对象，然后调用该对象的run方法。<font color = "red">`即run()方法主要包括两大步骤：`</font>  
 1. 创建SpringApplication对象；  
 2. 运行run()方法。  
 
@@ -2108,7 +2108,10 @@
 	4. 实例化从缓存中取出的SPI扩展实现类并返回。  
 
 #### 1.10.2.2. run()方法运行过程
-1. **<font color = "clime">运行流程：创建所有Spring运行监听器并发布应用启动事件、准备环境变量、创建容器 ---> 容器准备（为刚创建的容器对象做一些初始化工作，准备一些容器属性值等）、刷新容器 ---> 执行刷新容器后的后置处理逻辑、调用ApplicationRunner和CommandLineRunner的run方法。</font>**  
+1. **<font color = "clime">运行流程：</font>**  
+	1. 创建所有Spring运行监听器并发布应用启动事件、准备环境变量、创建容器。 
+	2. 容器准备（为刚创建的容器对象做一些初始化工作，准备一些容器属性值等）、刷新容器。 
+	3. 执行刷新容器后的后置处理逻辑、调用ApplicationRunner和CommandLineRunner的run方法。  
 2. **<font color = "clime">`内置生命周期事件：`</font>** <font color = "red">在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件。</font>  
 3. **<font color = "clime">`事件回调机制：`</font>** <font color = "red">run()阶段涉及了比较重要的[事件回调机制](/docs/microService/SpringBoot/eventCallback.md)，回调4个监听器（ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener）中的方法与加载项目中组件到IOC容器中。</font>  
 
