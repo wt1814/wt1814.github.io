@@ -4,6 +4,9 @@
 
 <!--
 
+ 还发愁画流程图？IDEA这款神仙插件全部帮你搞定！ 
+ https://mp.weixin.qq.com/s/26FoSDaS7CteDWQLvDklYw
+
 如何画好架构图
 https://blog.csdn.net/weixin_39860915/article/details/98863807
 
