@@ -338,7 +338,7 @@
 [SpringBean生命周期](/docs/SSM/Spring/SpringBean.md)  
 [容器相关特性](/docs/SSM/Spring/feature/ContainerFeature.md)  
 &emsp; [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
-&emsp; [可二次开发常用接口](/docs/SSM/Spring/feature/SecendDeve.md)  
+&emsp; [可二次开发常用接口(扩展性)](/docs/SSM/Spring/feature/SecendDeve.md)  
 &emsp; &emsp; [事件多播器](/docs/SSM/Spring/feature/EventMulticaster.md)  
 &emsp; &emsp; [事件](/docs/SSM/Spring/feature/Event.md)  
 &emsp; &emsp; [Aware接口](/docs/SSM/Spring/feature/Aware.md)  

@@ -173,7 +173,7 @@
         - [1.8.4. Bean的生命周期](#184-bean的生命周期)
         - [1.8.5. 容器相关特性](#185-容器相关特性)
             - [1.8.5.1. FactoryBean](#1851-factorybean)
-            - [1.8.5.2. 可二次开发常用接口](#1852-可二次开发常用接口)
+            - [1.8.5.2. Spring可二次开发常用接口（扩展性）](#1852-spring可二次开发常用接口扩展性)
                 - [1.8.5.2.1. 事件](#18521-事件)
                 - [1.8.5.2.2. Aware接口](#18522-aware接口)
                 - [1.8.5.2.3. 后置处理器](#18523-后置处理器)
@@ -1909,12 +1909,11 @@
 ### 1.8.5. 容器相关特性
 #### 1.8.5.1. FactoryBean
 &emsp; BeanFactory是个Factory，也就是IOC容器或对象工厂；FactoryBean是个Bean，也由BeanFactory管理。  
-&emsp; `一般情况下，Spring通过反射机制利用<bean>的class属性指定实现类实例化Bean。` **<font color = "red">在某些情况下，实例化Bean过程比较复杂，</font>** 如果按照传统的方式，则需要在\<bean>中提供大量的配置信息。配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。 **<font color = "red">Spring为此提供了一个org.springframework.bean.factory.FactoryBean的`工厂类接口`，用户可以通过实现该接口定制实例化Bean的逻辑。</font>**  
+&emsp; 一般情况下，Spring通过`反射机制`利用\<bean\>的class属性指定实现类实例化Bean。 **<font color = "red">在某些情况下，实例化Bean过程比较复杂，</font>** 如果按照传统的方式，则需要在\<bean>中提供大量的配置信息。配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。 **<font color = "red">Spring为此提供了一个org.springframework.bean.factory.FactoryBean的`工厂类接口`，用户可以通过实现该接口定制实例化Bean的逻辑。</font>**  
 &emsp; **<font color = "red">FactoryBean接口的一些实现类，如Spring自身提供的ProxyFactoryBean、JndiObjectFactoryBean，还有Mybatis中的SqlSessionFactoryBean，</font>** 用于生产一些复杂的Bean。  
 
 
-#### 1.8.5.2. 可二次开发常用接口
-&emsp; **<font color = "red">Spring的扩展性，Spring可二次开发常用接口：</font>**  
+#### 1.8.5.2. Spring可二次开发常用接口（扩展性）
 &emsp; Spring为了用户的开发方便和特性支持，开放了一些特殊接口和类，用户可进行实现或者继承，常见的有：  
 
 &emsp; **Spring IOC阶段：**  
