@@ -45,6 +45,9 @@
 
 
 <!--
+说下你对方法区演变过程和内部结构的理解
+https://mp.weixin.qq.com/s/n4w_qQxHp6d2TB_d5FC5LA
+
 Metaspace 之一：Metaspace整体介绍（永久代被替换原因、元空间特点、元空间内存查看分析方法）
 https://www.cnblogs.com/duanxz/p/3520829.html
 

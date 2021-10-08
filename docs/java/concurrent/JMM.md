@@ -26,6 +26,8 @@
 <!--
 CPU缓存一致性协议
 https://blog.csdn.net/w1453114339/article/details/107563613
+
+https://mp.weixin.qq.com/s/yWifJmirZNnBrAIZrpJwyg
 -->
 <!-- 
 ~~

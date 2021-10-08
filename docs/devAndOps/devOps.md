@@ -27,6 +27,10 @@
 
 # 1. CI/CD与Devops
 <!--
+ *** 6 张图带你搞懂 CI/CD 流水线 
+ https://mp.weixin.qq.com/s/J_gKQzq-CSrqmrzeAHUrng
+
+
 ***一文弄懂什么是DevOps
 https://mp.weixin.qq.com/s/-AFFoCs8hidM9vwzZ4iYjg
 GitLab持续集成 

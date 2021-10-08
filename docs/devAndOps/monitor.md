@@ -10,6 +10,9 @@ https://mp.weixin.qq.com/s/mFczwFdtO1eWzXAfKQ1Wfw
 
 SkyWalking
 https://mp.weixin.qq.com/s/Z7dRtmj2T7F09Q8etoK3hg
+用了3年CAT，这次我想选择SkyWalking，老板反手就是一个赞！ 
+https://mp.weixin.qq.com/s/foYoz8qjalO0AhlBcM0BpA
+
 14款备受好评的开源监控工具 
 https://mp.weixin.qq.com/s/M-ygzU0V8hgITqx0Wdl6iQ
 Prometheus+Grafana
