@@ -201,7 +201,7 @@
                 - [1.10.2.3.2. 内置生命周期事件](#110232-内置生命周期事件)
             - [1.10.2.4. SpringBoot事件回调](#11024-springboot事件回调)
         - [1.10.3. SpringBoot自动配置](#1103-springboot自动配置)
-            - [1.10.3.1. 注解@SpringBootApplication](#11031-注解springbootapplication)
+            - [1.10.3.1. 注解@SpringBootApplication（启动对象）](#11031-注解springbootapplication启动对象)
             - [1.10.3.2. 加载自动配置流程](#11032-加载自动配置流程)
             - [1.10.3.3. 内置Tomcat](#11033-内置tomcat)
         - [1.10.4. 自定义strater](#1104-自定义strater)
@@ -2108,7 +2108,7 @@
 	4. 实例化从缓存中取出的SPI扩展实现类并返回。  
 
 #### 1.10.2.2. run()方法运行过程
-1. **<font color = "clime">运行流程：</font>**  
+1. **<font color = "clime">运行流程，分3步：</font>**  
 	1. 创建所有Spring运行监听器并发布应用启动事件、准备环境变量、创建容器。 
 	2. 容器准备（为刚创建的容器对象做一些初始化工作，准备一些容器属性值等）、刷新容器。 
 	3. 执行刷新容器后的后置处理逻辑、调用ApplicationRunner和CommandLineRunner的run方法。  
@@ -2152,7 +2152,7 @@
 &emsp; 包含两部分：1. 注解@SpringBootApplication；2. 加载自动配置流程。
 
 
-#### 1.10.3.1. 注解@SpringBootApplication
+#### 1.10.3.1. 注解@SpringBootApplication（启动对象）
 1. @SpringBootApplication  
     * @ComponentScan  
     * @SpringBootConfiguration  
@@ -2163,8 +2163,8 @@
 
 
 #### 1.10.3.2. 加载自动配置流程
-1. 启动对象的注入：在SpringBoot启动流程的`容器准备阶段`prepareContext()会将@SpringBootApplication--->@Component对象注册到容器中。  
-2. 自动装配入口，从SpringBoot启动流程的`刷新容器阶段`refresh()开始。 
+1. `启动对象的注入`：在SpringBoot启动流程的`容器准备阶段`prepareContext()会将@SpringBootApplication--->@Component对象注册到容器中。  
+2. `自动装配入口`，从SpringBoot启动流程的`刷新容器阶段`refresh()开始。 
 
 #### 1.10.3.3. 内置Tomcat
 1. SpringBoot内置Tomcat，可以对比SpringBoot自动配置运行流程了解。  

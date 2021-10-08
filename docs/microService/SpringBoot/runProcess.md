@@ -2,7 +2,7 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "clime">运行流程：</font>**  
+1. **<font color = "clime">运行流程，分3步：</font>**  
 	1. 创建所有Spring运行监听器并发布应用启动事件、准备环境变量、创建容器。 
 	2. 容器准备（为刚创建的容器对象做一些初始化工作，准备一些容器属性值等）、刷新容器。 
 	3. 执行刷新容器后的后置处理逻辑、调用ApplicationRunner和CommandLineRunner的run方法。  
