@@ -2286,15 +2286,16 @@
 
 ### 1.12.4. Dubbo框架设计
 1. 分层架构设计
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-51.png)  
     1. 从大的范围来说，dubbo分为三层：
         * business业务逻辑层由开发人员来提供接口和实现还有一些配置信息。
         * `RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理。`
         * remoting则是对网络传输协议和数据转换的封装。  
     2. RPC层包含配置层config、代理层proxy、服务注册层register、路由层cluster、监控层monitor、远程调用层protocol。    
-        1. **<font color = "red">服务代理层proxy：服务接口透明代理，生成服务的客户端Stub和服务器端Skeleton，以ServiceProxy为中心，扩展接口为ProxyFactory。</font>**  
+        1. **<font color = "red">`服务代理层proxy`：服务接口透明代理，生成服务的客户端Stub和服务器端Skeleton，以ServiceProxy为中心，扩展接口为ProxyFactory。</font>**  
         &emsp; **<font color = "red">Proxy层封装了所有接口的透明化代理，而在其它层都以Invoker为中心，</font><font color = "blue">只有到了暴露给用户使用时，才用Proxy将Invoker转成接口，或将接口实现转成 Invoker，也就是去掉Proxy层RPC是可以Run的，只是不那么透明，不那么看起来像调本地服务一样调远程服务。</font>**  
         &emsp; dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级......  
-        2. **<font color = "red">远程调用层protocol：封装RPC调用，以Invocation, Result为中心，扩展接口为Protocol, Invoker, Exporter。</font>**  
+        2. **<font color = "red">`远程调用层protocol`：封装RPC调用，以Invocation, Result为中心，扩展接口为Protocol, Invoker, Exporter。</font>**  
     3. remoting层：  
         1. 网络传输层：抽象mina和netty为统一接口，以Message为中心，扩展接口为Channel, Transporter, Client, Server, Codec。  
         2. 数据序列化层：可复用的一些工具，扩展接口为Serialization, ObjectInput, ObjectOutput, ThreadPool。  
@@ -2304,8 +2305,8 @@
 ### 1.12.5. 暴露和引用服务
 1. 解析服务：  
 &emsp; **<font color = "clime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
-&emsp; ⚠️注：在暴露服务ServiceConfig.export()或引用服务ReferenceConfig.get()时，会将Bean对象转换URL格式，所有Bean属性转成URL的参数。然后将URL传给协议扩展点，基于扩展点的扩展点自适应机制，根据URL的协议头，进行不同协议的服务暴露或引用。  
-2. **服务提供者暴露服务的主过程：**  
+&emsp; ⚠️注：`在暴露服务ServiceConfig.export()或引用服务ReferenceConfig.get()时，会将Bean对象转换URL格式，所有Bean属性转成URL的参数。`然后将URL传给协议扩展点，基于扩展点的扩展点自适应机制，根据URL的协议头，进行不同协议的服务暴露或引用。  
+2. **服务提供者暴露服务的主过程：** `参考dubbo架构分层`  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-29.png)   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-53.png)   
     1. ServiceConfig将Bean对象解析成URL格式。  
@@ -2314,7 +2315,7 @@
         1. 本地各种协议暴露。  
         2. 注册中心暴露。  
     4. 如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心。  
-3. **服务消费者引用服务的主过程：**  
+3. **服务消费者引用服务的主过程：** `与服务暴露相反` 
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-30.png)   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-54.png)   
     1. ReferenceConfig解析引用的服务。  
