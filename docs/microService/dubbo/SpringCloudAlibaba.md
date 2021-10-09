@@ -18,6 +18,13 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+1. Spring Cloud与Dubbo的比较本身是不公平的，主要前者是一套较为完整的架构方案，而Dubbo只是服务治理与RPC实现方案。  
+&emsp; Spring Cloud Alibaba是阿里巴巴提供的微服务开发一站式解决方案，是阿里巴巴开源中间件与 Spring Cloud 体系的融合。   
+2. 集成 Spring Cloud 组件：**<font color = "clime">Spring Cloud Alibaba作为整套的微服务解决组件，只依靠目前阿里的开源组件是不够的，更多的是集成当前的社区组件，所以 Spring Cloud Alibaba 可以集成 Zuul，OpenFeign等网关，也支持 Spring Cloud Stream消息组件。</font>**  
+3. **<font color = "clime">使用@DubboTransported 注解可将底层的 Rest 协议无缝切换成 Dubbo RPC 协议，进行 RPC 调用。</font>**  
+4. Spring Cloud Alibaba 基于 Nacos 提供 spring-cloud-alibaba-starter-nacos-discovery & spring-cloud-alibaba-starter-nacos-config 实现了服务注册 & 配置管理功能。  
+&emsp; 使用 Seata 解决微服务场景下面临的分布式事务问题。  
 
 # 1. Spring Cloud Alibaba
 
@@ -28,9 +35,9 @@ https://zhuanlan.zhihu.com/p/98874444
 
 ## 1.1. 介绍
 &emsp; Spring Cloud与Dubbo的比较本身是不公平的，主要前者是一套较为完整的架构方案，而Dubbo只是服务治理与RPC实现方案。  
-&emsp; 由于Dubbo在国内有着非常大的用户群体，但是其周边设施与组件相对来说并不那么完善。很多开发者用户又很希望享受Spring Cloud的生态，因此也会有一些Spring Cloud与Dubbo一起使用的案例与方法出现，但是一直以来大部分Spring Cloud整合Dubbo的使用方案都比较别扭。这主要是由于Dubbod的注册中心采用了ZooKeeper，而开始时Spring Cloud体系中的注册中心并不支持ZooKeeper，所以很多方案是存在两个不同注册中心的，之后即使Spring Cloud支持了ZooKeeper，但是由于服务信息的粒度与存储也不一致。所以，长期以来，在服务治理层面上，这两者一直都一套完美的融合方案。  
-&emsp; 直到Spring Cloud Alibaba的出现，才得以解决这样的问题。Spring Cloud Alibaba 是阿里巴巴提供的微服务开发一站式解决方案，是阿里巴巴开源中间件与 Spring Cloud 体系的融合。    
-&emsp; 依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。  
+&emsp; 由于Dubbo在国内有着非常大的用户群体，但是其周边设施与组件相对来说并不那么完善。很多开发者用户又很希望享受Spring Cloud的生态，因此也会有一些Spring Cloud与Dubbo一起使用的案例与方法出现，但是一直以来大部分Spring Cloud整合Dubbo的使用方案都比较别扭。这主要是由于Dubbod的注册中心采用了ZooKeeper，而开始时Spring Cloud体系中的注册中心并不支持ZooKeeper，所以很多方案是存在两个不同注册中心的，之后即使Spring Cloud支持了ZooKeeper，但是由于服务信息的粒度与存储也不一致。所以，长期以来，在服务治理层面上，这两者一直都没有一套完美的融合方案。  
+&emsp; 直到Spring Cloud Alibaba的出现，才得以解决这样的问题。Spring Cloud Alibaba是阿里巴巴提供的微服务开发一站式解决方案，是阿里巴巴开源中间件与 Spring Cloud 体系的融合。    
+&emsp; 依托 Spring Cloud Alibaba，只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。  
 &emsp; 作为 Spring Cloud 体系下的新实现，Spring Cloud Alibaba 跟官方的组件或其它的第三方实现如 Netflix, Consul，Zookeeper 等对比，具备了更多的功能：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-66.png)   
 
@@ -54,18 +61,18 @@ https://zhuanlan.zhihu.com/p/98874444
 * Alibaba Cloud SchedulerX：阿里中间件团队开发的一款分布式任务调度产品，提供秒级、精准的定时（基于 Cron 表达式）任务调度服务。
 
 ### 1.2.3. 集成 Spring Cloud 组件
-&emsp; Spring Cloud Alibaba 作为整套的微服务解决组件，只依靠目前阿里的开源组件是不够的，更多的是集成当前的社区组件，所以 Spring Cloud Alibaba 可以集成 Zuul，OpenFeign等网关，也支持 Spring Cloud Stream 消息组件。
+&emsp; **<font color = "clime">Spring Cloud Alibaba作为整套的微服务解决组件，只依靠目前阿里的开源组件是不够的，更多的是集成当前的社区组件，所以 Spring Cloud Alibaba 可以集成 Zuul，OpenFeign等网关，也支持 Spring Cloud Stream消息组件。</font>**  
 
 ## 1.3. Spring Cloud Alibaba 功能
 &emsp; 那么作为微服务解决方案， Spring Cloud Alibaba是如何支持微服务治理的各个功能。
 
 ### 1.3.1. 服务注册与发现
-&emsp; Spring Cloud Alibaba 基于 Nacos 提供 spring-cloud-alibaba-starter-nacos-discovery & spring-cloud-alibaba-starter-nacos-config 实现了服务注册 & 配置管理功能。依靠 @EnableDiscoveryClient 进行服务的注册，兼容 RestTemplate & OpenFeign 的客户端进行服务调用。  
+&emsp; **<font color = "clime">Spring Cloud Alibaba 基于 Nacos 提供 spring-cloud-alibaba-starter-nacos-discovery & spring-cloud-alibaba-starter-nacos-config 实现了服务注册 & 配置管理功能。</font>** 依靠 @EnableDiscoveryClient 进行服务的注册，兼容 RestTemplate & OpenFeign 的客户端进行服务调用。  
 &emsp; 适配 Spring Cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。
 
 ### 1.3.2. 支持多协议的服务调用
-&emsp; Spring Cloud 默认的服务调用依赖 OpenFeign 或 RestTemplate 使用 REST 进行调用。  
-&emsp; 使用 @DubboTransported 注解可将底层的 Rest 协议无缝切换成 Dubbo RPC 协议，进行 RPC 调用。  
+&emsp; Spring Cloud 默认的服务调用依赖 OpenFeign或RestTemplate使用REST进行调用。  
+&emsp; **<font color = "clime">使用@DubboTransported 注解可将底层的 Rest 协议无缝切换成 Dubbo RPC 协议，进行 RPC 调用。</font>**  
 
 ```java
 @FeignClient("dubbo-provider")
