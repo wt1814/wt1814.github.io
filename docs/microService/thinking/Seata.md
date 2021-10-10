@@ -12,6 +12,18 @@
 # 1. Seata分布式事务框架
 &emsp; Seata 是一款开源的分布式事务解决方案，致力于提供高性能和简单易用的分布式事务服务。Seata 将为用户提供了 AT、TCC、SAGA 和 XA 事务模式，为用户打造一站式的分布式解决方案。  
 
+<!-- 
+【Seata】之 初识（四种模式）
+https://blog.csdn.net/fanfan4569/article/details/102522210
+-->
+
+&emsp; AT 模式分为两个阶段：
+
+* 一阶段：执行用户SQL  
+* 二阶段：Seata框架自动生成  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-69.png)  
+
 ## 1.1. AT模式
 <!-- 
 Seata AT模式
@@ -86,22 +98,22 @@ https://zhuanlan.zhihu.com/p/344220223
 
     UNDO_LOG Table，MySQL示例如下：    
 
-    ```sql
-    DROP TABLE IF EXISTS `undo_log`;
-    -- 注意此处0.3.0+ 增加唯一索引 ux_undo_log
-    CREATE TABLE `undo_log` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
-    `branch_id` bigint(20) NOT NULL,
-    `xid` varchar(100) NOT NULL,
-    `context` varchar(128) NOT NULL,
-    `rollback_info` longblob NOT NULL,
-    `log_status` int(11) NOT NULL,
-    `log_created` datetime NOT NULL,
-    `log_modified` datetime NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
-    ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-    ```
+        ```sql
+        DROP TABLE IF EXISTS `undo_log`;
+        -- 注意此处0.3.0+ 增加唯一索引 ux_undo_log
+        CREATE TABLE `undo_log` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `branch_id` bigint(20) NOT NULL,
+        `xid` varchar(100) NOT NULL,
+        `context` varchar(128) NOT NULL,
+        `rollback_info` longblob NOT NULL,
+        `log_status` int(11) NOT NULL,
+        `log_created` datetime NOT NULL,
+        `log_modified` datetime NOT NULL,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+        ```
 
 
 ### 1.1.3. AT模式解析
