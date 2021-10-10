@@ -342,7 +342,7 @@
 * 分布式理论  
     * [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
         * [一致性哈希](/docs/microService/thinking/consistent.md)  
-    * [分布式理论](/docs/microService/thinking/DistributedTheory.md)  
+    * [分布式理论CAP](/docs/microService/thinking/DistributedTheory.md)  
 * [分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
 * [分布式事务](/docs/microService/thinking/DistriTransaction.md)  
     * [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  

@@ -457,7 +457,7 @@
 ### 分布式理论  
 [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
 &emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
-[分布式理论](/docs/microService/thinking/DistributedTheory.md)  
+[分布式理论CAP](/docs/microService/thinking/DistributedTheory.md)  
 
 ### 分布式ID
 [分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
