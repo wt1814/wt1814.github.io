@@ -2961,7 +2961,7 @@
 3. 限流算法：  
     * 固定窗口算法，有时会让通过请求量允许为限制的两倍。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-24.png)  
-    * 滑动窗口算法， **<font color = "clime">避免了固定窗口计数器带来的双倍突发请求。</font>** 但时间区间的精度越高，算法所需的空间容量就越大。  
+    * 滑动窗口算法， **<font color = "clime">`避免了固定窗口计数器带来的双倍突发请求。`</font>** 但时间区间的精度越高，算法所需的空间容量就越大。  
     * 漏桶算法，实现流量整形和流量控制。漏洞底部的设计大小固定，水流速度固定。漏桶算法的缺陷也很明显，当短时间内有大量的突发请求时，即便此时服务器没有任何负载，每个请求也都得在队列中等待一段时间才能被响应。  
     * 令牌桶算法，
         1. 漏桶算法和令牌桶算法在设计上的区别：`漏桶算法中“水滴”代表请求，令牌桶中“水滴”代表请求令牌。`   
@@ -3083,7 +3083,6 @@
 * 消费者只能读取已经提交的消息  
 
 ###### 1.17.2.2.3.1. 消费语义介绍 
-&emsp; **消息传递语义介绍：**  
 &emsp; 消息传递语义message delivery semantic，简单说就是消息传递过程中消息传递的保证性。主要分为三种：  
 
 * at most once：最多一次。消息可能丢失也可能被处理，但最多只会被处理一次。  
@@ -3099,7 +3098,8 @@
 ###### 1.17.2.2.3.2. 如何保证消息队列不丢失?  
 1. 在Producer端、Broker端、Consumer端都有可能丢失消息。  
 2. Producer端：  
-&emsp; 为防止Producer端丢失消息， **<font color = "red">除了将ack设置为all，表明所有副本 Broker 都要接收到消息，才算“已提交”。`还可以使用带有回调通知的发送API，即producer.send(msg, callback)`。</font>**  
+&emsp; 为防止Producer端丢失消息， **<font color = "red">除了将ack设置为all，表明所有副本 Broker 都要接收到消息，才算“已提交”。</font>**  
+&emsp; `还可以使用带有回调通知的发送API，即producer.send(msg, callback)`。  
 3. Broker端:  
 &emsp; Kafka没有提供同步刷盘的方式。要完全让kafka保证单个broker不丢失消息是做不到的，只能通过调整刷盘机制的参数缓解该情况。  
 &emsp; 为了解决该问题，kafka通过producer和broker协同处理单个broker丢失参数的情况。 **<font color = "red">`一旦producer发现broker消息丢失，即可自动进行retry。`</font>** 除非retry次数超过阀值（可配置），消息才会丢失。此时需要生产者客户端手动处理该情况。  
