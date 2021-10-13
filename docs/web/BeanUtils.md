@@ -2,6 +2,8 @@
 
 # BeanUtils
 <!-- 
+*** 12种 vo2dto 方法，就 BeanUtil.copyProperties 压测数据最拉跨！ 
+https://mp.weixin.qq.com/s/Xq7oQg7dYESMYxHVnxX8Dw
 MapStruct
 https://juejin.im/post/6859213877474033672
  七种对象复制工具类，阿粉该 Pick 谁？ 
@@ -9,6 +11,8 @@ https://juejin.im/post/6859213877474033672
  如何优雅的转换Bean对象? 
 https://mp.weixin.qq.com/s/ZLOLhPNwqNtO2gxOiZ5oNA
 https://mp.weixin.qq.com/s/dhp7_3oG7iPHTQlTB5Noow
+
+
 
 -->
 

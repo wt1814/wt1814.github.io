@@ -42,8 +42,6 @@
 &emsp; 元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。元空间的内存大小受本地内存限制。  
 
 # 1. JVM内存结构/运行时数据区  
-
-
 <!--
 说下你对方法区演变过程和内部结构的理解
 https://mp.weixin.qq.com/s/n4w_qQxHp6d2TB_d5FC5LA
@@ -54,6 +52,8 @@ https://www.cnblogs.com/duanxz/p/3520829.html
 JVM 内存结构 
 https://mp.weixin.qq.com/s/mWIsVIYkn7ts02mdmvRndA
 https://mp.weixin.qq.com/s/jPIHNsQwiYNCRUQt1qXR6Q
+Java面试官：为什么不把基本类型放堆中呢？ 
+https://mp.weixin.qq.com/s/BnM2KL9CpEWlVXa_hEcEdg
 -->
 &emsp; **<font color = "red">部分参考《深入理解java虚拟机 第3版》第2章 Java内存区域与内存溢出异常</font>**   
 
