@@ -240,8 +240,8 @@
             - [1.14.3.4. 消息模式](#11434-消息模式)
             - [1.14.3.5. 分布式事务的选型](#11435-分布式事务的选型)
             - [1.14.3.6. 分布式事务框架Seata](#11436-分布式事务框架seata)
-                - [~~AT模式详解~~](#at模式详解)
-                - [四种模式的区别](#四种模式的区别)
+                - [1.14.3.6.1. ~~AT模式详解~~](#114361-at模式详解)
+                - [1.14.3.6.2. 四种模式的区别](#114362-四种模式的区别)
         - [1.14.4. 分布式锁](#1144-分布式锁)
             - [1.14.4.1. 分布式锁实现方案](#11441-分布式锁实现方案)
             - [1.14.4.2. RedisLock](#11442-redislock)
@@ -339,13 +339,15 @@
         - [1.20.2. Nginx](#1202-nginx)
             - [1.20.2.1. Nginx介绍](#12021-nginx介绍)
             - [1.20.2.2. Nginx使用](#12022-nginx使用)
-    - [1.21. CI/CD与Devops](#121-cicd与devops)
-        - [1.21.1. 从上往下学Docker](#1211-从上往下学docker)
-            - [1.21.1.1. Docker使用教程](#12111-docker使用教程)
-            - [1.21.1.2. 镜像详解](#12112-镜像详解)
-            - [1.21.1.3. 容器详解](#12113-容器详解)
-        - [1.21.2. Kubernetes](#1212-kubernetes)
-            - [1.21.2.1. k8s架构](#12121-k8s架构)
+    - [1.21. Devops](#121-devops)
+        - [1.21.1. CI/CD](#1211-cicd)
+        - [1.21.2. DevOps](#1212-devops)
+        - [1.21.3. 从上往下学Docker](#1213-从上往下学docker)
+            - [1.21.3.1. Docker使用教程](#12131-docker使用教程)
+            - [1.21.3.2. 镜像详解](#12132-镜像详解)
+            - [1.21.3.3. 容器详解](#12133-容器详解)
+        - [1.21.4. Kubernetes](#1214-kubernetes)
+            - [1.21.4.1. k8s架构](#12141-k8s架构)
 
 <!-- /TOC -->
 
@@ -2513,7 +2515,7 @@
 * **<font color = "clime">单体服务，多数据源，使用XA协议的服务；</font>**  
 
 #### 1.14.3.6. 分布式事务框架Seata
-##### ~~AT模式详解~~
+##### 1.14.3.6.1. ~~AT模式详解~~
 &emsp; AT 模式分为两个阶段：
 
 * 一阶段：执行用户SQL  
@@ -2522,7 +2524,7 @@
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-69.png)  
 
 
-##### 四种模式的区别
+##### 1.14.3.6.2. 四种模式的区别
 &emsp; 四种分布式事务模式，分别在不同的时间被提出，每种模式都有它的适用场景  
 
 * AT 模式是无侵入的分布式事务解决方案，适用于不希望对业务进行改造的场景，几乎0学习成本。  
@@ -3445,7 +3447,18 @@
         * **<font color = "red">fair（第三方）：</font>** 智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配。  
         * **<font color = "red">url_hash（第三方）</font>**  
 
-## 1.21. CI/CD与Devops
+## 1.21. Devops
+### 1.21.1. CI/CD
+&emsp; `CI/CD是两个独立过程的组合：持续集成和持续部署。`  
+1. Continuous Integration（持续集成）
+持续集成（CI）是构建软件和完成初始测试的过程。  
+
+2. Continuous Delivery（持续交付）
+
+3. Continuous Deployment（持续部署）
+持续部署（CD）是将代码与基础设施相结合的过程，确保完成所有测试并遵循策略，然后将代码部署到预期环境中。  
+
+### 1.21.2. DevOps
 1. DevOps框架  
 &emsp; 以下是一个DevOps框架。这个框架只指出那些被认可的概念和它们在某种程度上的关系。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-8.png)  
@@ -3460,9 +3473,9 @@
 &emsp; **<font color = "clime">DevOps一般包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-3.png)  
 
-### 1.21.1. 从上往下学Docker
+### 1.21.3. 从上往下学Docker
 
-#### 1.21.1.1. Docker使用教程
+#### 1.21.3.1. Docker使用教程
 1. **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)。</font>**  
 2. **<font color = "clime">容器操作常用命令：run(创建并启动)、start(启动已有)、stop、exec(进入运行的容器)。</font>**  
 3. **<font color = "clime">Dockerfile中包含：</font>** （# 为 Dockerfile中的注释）  
@@ -3475,16 +3488,16 @@
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-9.png)  
 
 
-#### 1.21.1.2. 镜像详解
+#### 1.21.3.2. 镜像详解
 1. Docker中镜像是分层的，最顶层是读写层（镜像与容器的区别），其底部依赖于Linux的UnionFS文件系统。  
 2. **<font color = "red">利用联合文件系统UnionFS写时复制的特点，在启动一个容器时，Docker引擎实际上只是增加了一个可写层和构造了一个Linux容器。</font>**  
 
-#### 1.21.1.3. 容器详解
+#### 1.21.3.3. 容器详解
 1. 单个宿主机的多个容器是隔离的，其依赖于Linux的Namespaces、CGroups。  
 2. 隔离的容器需要通信、文件共享（数据持久化）。  
 
-### 1.21.2. Kubernetes
-#### 1.21.2.1. k8s架构
+### 1.21.4. Kubernetes
+#### 1.21.4.1. k8s架构
 1. 1). 一个容器或多个容器可以同属于一个Pod之中。 2). Pod是由Pod控制器进行管理控制，其代表性的Pod控制器有Deployment、StatefulSet等。 3). Pod组成的应用是通过Service或Ingress提供外部访问。  
 2. **<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
     1. **<font color = "clime">Master的组件包括：API Server、controller-manager、scheduler和etcd等几个组件。</font>**  
