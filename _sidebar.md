@@ -542,7 +542,8 @@
         * [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
         * [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)   
 * DevOps  
-    * [CI/CD与Devops](/docs/devAndOps/devOps.md)  
+    * [CI/CD](/docs/devAndOps/CICD.md)  
+    * [Devops](/docs/devAndOps/devOps.md)  
         * [DevOps搭建](/docs/devAndOps/devOpsPractice.md)   
     * [GIT](/docs/devAndOps/git/command.md)  
     * [Maven](/docs/devAndOps/maven.md)  

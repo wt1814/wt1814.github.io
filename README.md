@@ -712,7 +712,8 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 ------
 
 ## DevOps  
-[CI/CD与Devops](/docs/devAndOps/devOps.md)  
+[CI/CD](/docs/devAndOps/CICD.md)  
+[Devops](/docs/devAndOps/devOps.md)  
 &emsp; [DevOps搭建](/docs/devAndOps/devOpsPractice.md)  
 [GIT](/docs/devAndOps/git/command.md)  
 [Maven](/docs/devAndOps/maven.md)  
