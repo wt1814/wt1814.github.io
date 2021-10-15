@@ -3375,7 +3375,7 @@
 1. **<font color = "clime">HTTPS的整体过程分为证书验证、协商密钥、数据传输阶段。</font>**  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/https-5.png)  
     1. 证书验证阶段，一次交互，客户端发送请求，获取到服务端的证书，并进行校验。若不合法，进行警告。  
-    2. 协商密钥阶段，采取非对称加密。客户端用公钥对随机数进行加密和传输；服务端用私钥解密随机数，获取到随机数，完成连接。 **<font color = "clime">~~注：非对称加密的目的就是让服务端得到这个随机值，以后客户端和服务端的通信就可以通过这个随机值来进行加密解密。~~</font>**  
+    2. 协商密钥阶段，采取非对称加密。`客户端用公钥对随机数进行加密和传输；`服务端用私钥解密随机数，获取到随机数，完成连接。 **<font color = "clime">~~注：非对称加密的目的就是让服务端得到这个随机值，以后客户端和服务端的通信就可以通过这个随机值来进行加密解密。~~</font>**  
     3. 完成连接后，采用对称加密进行数据传输。  
 2. 本地随机数会被窃取嘛？  
 &emsp; HTTPS并不包含对随机数的安全保证，HTTPS保证的只是传输过程安全，<font color = "red">而随机数存储于本地，本地的安全属于另一安全范畴。</font>  
@@ -3446,18 +3446,18 @@
         * **<font color = "red">url_hash（第三方）</font>**  
 
 ## 1.21. CI/CD与Devops
-1. DevOps框架
+1. DevOps框架  
 &emsp; 以下是一个DevOps框架。这个框架只指出那些被认可的概念和它们在某种程度上的关系。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-8.png)  
 &emsp; **<font color = "clime">敏捷开发指的是在 DevOps 中采用敏捷思想进行软件开发，敏捷宣言无疑是很重要的一项。有多种敏捷方法可以采用，比如Scrum、看板和极限编程。</font>**  
 &emsp; **<font color = "clime">持续集成提供了让多个程序员可以同时运行应用程序的最佳实践，可以频繁合并源代码、验证代码(静态测试用例)、编译和测试代码(动态测试用例)。</font>**  
 &emsp; **<font color = "clime">持续交忖关注从开发、测试、验收到生产环境的高频生产能力。基于高度的自动化，极端的发布上线时间可以达到分钟级。</font>**  
-2. DevOps流程
-下图显示了一个DevOps流程。它不是DevOps流程的正式定义，而是表述了在大多数组织机构中，为了实现一个服务而会被循环执行的合乎逻辑顺序的一系列阶段。  
+2. DevOps流程  
+&emsp; 下图显示了一个DevOps流程。它不是DevOps流程的正式定义，而是表述了在大多数组织机构中，为了实现一个服务而会被循环执行的合乎逻辑顺序的一系列阶段。  
 &emsp; 深色部分表示开发流程，浅色部分表示运维流程。这两个流程构成了DevOps方法的核心。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-1.png)  
 3. 工具集  
-**<font color = "clime">DevOps一般包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等。</font>**  
+&emsp; **<font color = "clime">DevOps一般包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-3.png)  
 
 ### 1.21.1. 从上往下学Docker
@@ -3465,6 +3465,15 @@
 #### 1.21.1.1. Docker使用教程
 1. **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)。</font>**  
 2. **<font color = "clime">容器操作常用命令：run(创建并启动)、start(启动已有)、stop、exec(进入运行的容器)。</font>**  
+3. **<font color = "clime">Dockerfile中包含：</font>** （# 为 Dockerfile中的注释）  
+    * 基础镜像(FROM)    
+    * 镜像元信息   
+    * **<font color = "clime">镜像操作指令</font>** （RUN、COPY、ADD、EXPOSE、WORKDIR、ONBUILD、USER、VOLUME等）    
+        * RUN命令：**run是在docker build构建镜像时，会执行的命令，** 比如安装一些软件、配置一些基础环境。  
+    * **<font color = "clime">容器启动时执行指令</font>** （CMD、ENTRYPOINT）  
+        * CMD命令： **cmd是在docker run启动容器时，会执行的命令，为启动的容器指定默认要运行的程序。** CMD指令指定的程序可被docker run命令行参数中指定要运行的程序所覆盖。 **<font color = "clime">注意：如果Dockerfile中如果存在多个CMD指令，仅最后一个生效。</font>**    
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-9.png)  
+
 
 #### 1.21.1.2. 镜像详解
 1. Docker中镜像是分层的，最顶层是读写层（镜像与容器的区别），其底部依赖于Linux的UnionFS文件系统。  

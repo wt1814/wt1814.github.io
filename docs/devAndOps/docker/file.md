@@ -19,7 +19,6 @@
     * **<font color = "clime">容器启动时执行指令</font>** （CMD、ENTRYPOINT）  
         * CMD命令： **cmd是在docker run启动容器时，会执行的命令，为启动的容器指定默认要运行的程序。** CMD指令指定的程序可被docker run命令行参数中指定要运行的程序所覆盖。 **<font color = "clime">注意：如果Dockerfile中如果存在多个CMD指令，仅最后一个生效。</font>**    
 
-
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-9.png)  
 
 # 1. DockerFile
