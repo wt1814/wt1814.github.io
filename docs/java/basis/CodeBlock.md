@@ -15,6 +15,11 @@ https://blog.csdn.net/qq_37580085/article/details/108408951?utm_medium=distribut
 
 https://jingyan.baidu.com/article/925f8cb8bf47f1c0dde056e9.html
 
+代码块的作用
+https://www.cnblogs.com/newbie27/p/10414604.html
+https://blog.csdn.net/weixin_30385221/article/details/114469679
+
+
 -->
 
 ## 1.1. 四种代码块
@@ -70,7 +75,7 @@ class TestOne{
     {
         testOne = 2;
         System.out.println(testOne);
-    }    //构造代码块
+    }    //todo 构造代码块
 
     public TestOne() {
         testOne = 3;
