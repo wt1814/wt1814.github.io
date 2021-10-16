@@ -14,8 +14,8 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 单例模式与static静态类：静态使用于一些非状态Bean，单例使用于状态Bean。  
-2. 单例模式适用场景。  
+1. `单例模式与static静态类`：静态使用于一些非状态Bean，单例使用于状态Bean。  
+2. ~~单例模式适用场景~~：全局只有一个示例，例如：数据库连接池、spring单例bean、全局熟悉...  
 
 
 # 1. 单例模式
@@ -78,7 +78,7 @@ public class LazySimpleSingleton {
 ```java
 public class LazyDoubleCheckSingleton {
     
-    private volatile static LazyDoubleCheckSingleton lazy = null;
+    private static volatile LazyDoubleCheckSingleton lazy = null;
 
     private LazyDoubleCheckSingleton(){
         
@@ -108,6 +108,7 @@ public class LazyDoubleCheckSingleton {
     public void showMessage(){
       System.out.println("Hello World!");
    }
+   
 }
 ```
 
