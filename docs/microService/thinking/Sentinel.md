@@ -14,8 +14,9 @@
 <!-- 
 什么是Sentinel?它能做什么
 https://blog.csdn.net/u012190514/article/details/81383698
+很好？Sentinel 夺命连环 17 问
+https://mp.weixin.qq.com/s/JBX3M-LrNwCoGl4Xzcg18Q
 -->
-
 
 ## 1.1. 接入Sentinel
 <!-- 
@@ -37,6 +38,8 @@ https://mp.weixin.qq.com/s/YRfDFeIcoFlIl5kE7A9Y0Q
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-58.png)  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-59.png)  
+
+
 
 ### 1.2.3. 熔断降级
 

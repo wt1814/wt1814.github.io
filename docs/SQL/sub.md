@@ -25,6 +25,10 @@
 &emsp; **<font color = "clime">分库分表是为了支撑高并发、数据量大两个问题的。</font>**  
 
 ## 1.1. ~~数据切分方式~~
+<!-- 
+
+https://mp.weixin.qq.com/s/3ZCwKVLthoBZX4tkgfcuzA
+-->
 &emsp; ~~数据拆分后的优点~~   
 &emsp; 数据切分分为两种方式，垂直(纵向)切分和水平(横向)切分。先垂直后水平。  
 

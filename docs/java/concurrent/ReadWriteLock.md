@@ -1,14 +1,15 @@
 <!-- TOC -->
 
 - [1. 读写锁](#1-读写锁)
-    - [1.1. ReentrantReadWriteLock，读写锁](#11-reentrantreadwritelock读写锁)
+    - [1.1. ~~ReentrantReadWriteLock，读写锁~~](#11-reentrantreadwritelock读写锁)
     - [1.2. ~~StampedLock，读写锁的升级~~](#12-stampedlock读写锁的升级)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
 1. ReentrantReadWriteLock  
-&emsp; **<font color = "red">ReentrantReadWriteLock缺点：读写锁互斥，只有当前没有线程持有读锁或者写锁时，才能获取到写锁，</font><font color = "clime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
+    1. 读写锁ReentrantReadWriteLock：读读共享，读写互斥，写写互斥。  
+    2. **<font color = "red">ReentrantReadWriteLock缺点：读写锁互斥，只有当前没有线程持有读锁或者写锁时，才能获取到写锁，</font><font color = "clime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
 2. StampedLock  
     1. StampedLock有3种模式：写锁 writeLock、悲观读锁 readLock、乐观读锁 tryOptimisticRead。  
     &emsp; StampedLock通过乐观读锁tryOptimisticRead解决ReentrantReadWriteLock的写锁饥饿问题。乐观读锁模式下，一个线程获取的乐观读锁之后，不会阻塞其他线程获取写锁。    
@@ -20,9 +21,12 @@
 <!-- 
 面试官：读写锁了解吗？它的升降级啥时候用？ 
 https://mp.weixin.qq.com/s/JwEkiH6WlQd-UfyAPbltBA
+ReadWriteLock读写之间互斥吗？
+https://mp.weixin.qq.com/s/_L0qyZBWyeCkmSN821EW3g
+
 -->
 
-## 1.1. ReentrantReadWriteLock，读写锁
+## 1.1. ~~ReentrantReadWriteLock，读写锁~~
 &emsp; ReentrantReadWriteLock维护了两个锁，读锁和写锁，所以一般称其为读写锁。写锁是独占的（写操作只能由一个线程来操作）。读锁是共享的，如果没有写锁，读锁可以由多个线程共享。  
 &emsp; 优点：与互斥锁相比，虽然一次只能有一个写线程可以修改共享数据，但大量读线程可以同时读取共享数据，所以，读写锁适用于共享数据很大，且读操作远多于写操作的情况。  
 &emsp; **<font color = "red">缺点：读写锁互斥，只有当前没有线程持有读锁或者写锁时才能获取到写锁，</font><font color = "clime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
