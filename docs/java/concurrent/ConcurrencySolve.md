@@ -27,8 +27,8 @@
 &emsp; Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。  
 &emsp; 内存屏障，禁止处理器重排序，保障缓存一致性。
     1. 内存屏障的作用：（~~原子性~~、可见性、有序性）
-        1.（`保障可见性`）它会强制将对缓存的修改操作立即写入主存； 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。 
-        2.（`保障有序性`）阻止屏障两侧的指令重排序。 
+        1. （`保障可见性`）它会强制将对缓存的修改操作立即写入主存； 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。  
+        2. （`保障有序性`）阻止屏障两侧的指令重排序。 
 3. JMM中的happens-before原则：JSR-133内存模型 **<font color = "red">使用happens-before的概念来阐述操作之间的内存可见性。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
 &emsp; happens-before原则有管理锁定（lock）规则、volatile变量规则（参考volatile原理，即内存屏障）、线程启动规则（Thread.start()）、线程终止规则（Thread.join()）、线程中断规则（Thread.interrupt()）...  
 
