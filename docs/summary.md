@@ -1273,6 +1273,10 @@
 #### 1.4.3.7. ~~CompletableFuture~~
 &emsp; CompletableFuture 可以很方便的实现异步任务的封装 **<font color = "clime">并实现结果的联合等一系列操作，</font>** 轻松实现 任务的并行。  
 
+* thenCombine：结合两个CompletionStage的结果，进行转化后返回。  
+* applyToEither：两个CompletionStage，谁计算的快，就用那个CompletionStage的结果进行下一步的处理。  
+* ...
+
 ### 1.4.4. JUC
 #### 1.4.4.1. CAS
 1. CAS函数  
