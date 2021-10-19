@@ -1267,11 +1267,11 @@
 
 
 #### 1.4.3.6. ~~CompletionService~~
-&emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务，并方便的集中处理上述任务的结果(且任务最先完成的先返回)。  
+&emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务， **<font color = "clime">并方便的集中处理上述任务的结果(且任务最先完成的先返回)。</font>**  
 &emsp; 内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
 
 #### 1.4.3.7. ~~CompletableFuture~~
-&emsp; CompletableFuture 可以很方便的实现异步任务的封装 并实现结果的联合等一系列操作，轻松实现 任务的并行。  
+&emsp; CompletableFuture 可以很方便的实现异步任务的封装 **<font color = "clime">并实现结果的联合等一系列操作，</font>** 轻松实现 任务的并行。  
 
 ### 1.4.4. JUC
 #### 1.4.4.1. CAS
@@ -1326,9 +1326,9 @@
     5. （可实现选择性通知，锁可以绑定多个条件）ReenTrantLock提供了一个Condition(条件)类，用来实现分组唤醒需要唤醒的一些线程，而不是像synchronized要么随机唤醒一个线程要么唤醒全部线程。  
 2. **<font color = "red">lock()方法描述：</font>**  
     1. 在初始化ReentrantLock的时候，如果不传参数是否公平，那么默认使用非公平锁，也就是NonfairSync。  
-    2. 1). <font color = "clime">调用ReentrantLock的lock方法的时候，实际上是调用了NonfairSync的lock方法，这个方法①先用CAS操作`compareAndSetState(0, 1)`，去尝试抢占该锁。如果成功，就把当前线程设置在这个锁上，表示抢占成功。</font>  
-       2). ②如果失败，则调用acquire模板方法，等待抢占。   
-       `“非公平”体现在，如果占用锁的线程刚释放锁，state置为0，而排队等待锁的线程还未唤醒时，新来的线程就直接抢占了该锁，那么就“插队”了。`   
+    2. 1). <font color = "clime">调用ReentrantLock的lock方法的时候，实际上是调用了NonfairSync的lock方法，这个方法①先用CAS操作`compareAndSetState(0, 1)`，去尝试抢占该锁。如果成功，就把当前线程设置在这个锁上，表示抢占成功。</font>         
+    &emsp; `“非公平”体现在，如果占用锁的线程刚释放锁，state置为0，而排队等待锁的线程还未唤醒时，新来的线程就直接抢占了该锁，那么就“插队”了。`   
+    &emsp; 2). ②如果失败，则调用acquire模板方法，等待抢占。   
     3. AQS的acquire模板方法：  
         1. AQS#acquire()调用子类NonfairSync#tryAcquire()#nonfairTryAcquire()。 **<font color = "blue">如果锁状态是0，再次CAS抢占锁。</font>** 如果锁状态不是0，判断是否当前线程。    
         2. acquireQueued(addWaiter(Node.EXCLUSIVE), arg) )，其中addWaiter(Node.EXCLUSIVE)入等待队列。  
@@ -1340,7 +1340,8 @@
 
 ###### 1.4.4.3.1.1. 读写锁
 1. ReentrantReadWriteLock  
-&emsp; **<font color = "red">ReentrantReadWriteLock缺点：`读写锁互斥，只有当前没有线程持有读锁或者写锁时，才能获取到写锁，`</font><font color = "clime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
+    1. 读写锁ReentrantReadWriteLock：读读共享，读写互斥，写写互斥。  
+    2. **<font color = "red">ReentrantReadWriteLock缺点：`读写锁互斥，只有当前没有线程持有读锁或者写锁时，才能获取到写锁，`</font><font color = "clime">这可能会导致写线程发生饥饿现象，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
 2. StampedLock  
     1. StampedLock有3种模式：写锁 writeLock、悲观读锁 readLock、乐观读锁 tryOptimisticRead。  
     &emsp; StampedLock通过乐观读锁tryOptimisticRead解决ReentrantReadWriteLock的写锁饥饿问题。乐观读锁模式下，一个线程获取的乐观读锁之后，不会阻塞其他线程获取写锁。    
