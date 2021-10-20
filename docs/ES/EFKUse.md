@@ -26,6 +26,13 @@ https://blog.csdn.net/ct1150/article/details/88058345
 
 
 ## 1.2. 日志收集  
+<!-- 
+
+Filebeat、Logstash、Rsyslog 各种姿势采集Nginx日志 
+https://mp.weixin.qq.com/s/TXmxWGvQ-gjTlpSXFkqMNQ
+TB级微服务海量日志监控平台 
+https://mp.weixin.qq.com/s/TcuXAOnqHWlKpceP1T4BpA
+-->
 
 ### 1.2.1. fileBeat采集Spring日志  
 <!-- 

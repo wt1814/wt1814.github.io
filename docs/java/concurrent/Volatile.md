@@ -37,6 +37,11 @@
 
 # 1. Volatile  
 <!-- 
+
+volatile 的设计原理
+https://mp.weixin.qq.com/s/MyhBFZQdMvH4m1nSbQUQWA
+-->
+<!-- 
 ~~
 借鉴
 https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA

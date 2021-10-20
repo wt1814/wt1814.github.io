@@ -234,6 +234,7 @@
 &emsp; [分库分表](/docs/SQL/sub.md)  
 &emsp; &emsp; [分库分表带来的问题](/docs/SQL/subProblem.md)  
 &emsp; &emsp; [分库分表查询](/docs/SQL/subSelect.md)  
+&emsp; &emsp; [分库分表后分页查询](/docs/SQL/subSelectLimit.md)  
 &emsp; [数据迁移](/docs/projectImplement/implementation.md)  
 &emsp; [亿级订单系统](/docs/SQL/million.md)  
 &emsp; [数据库分布式实现](/docs/SQL/subRealize.md)  

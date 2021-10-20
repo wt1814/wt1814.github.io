@@ -20,6 +20,7 @@
 <!-- 
  分库分表：如何做到永不迁移数据和避免热点？ 
  https://mp.weixin.qq.com/s/qRCnD73nH_XuW0T_TWq8lg
+ https://mp.weixin.qq.com/s/drxoH5I_jKvH28D99yar-Q
 -->
 
 &emsp; **<font color = "clime">分库分表是为了支撑高并发、数据量大两个问题的。</font>**  
