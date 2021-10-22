@@ -44,9 +44,6 @@
 # 1. JVM内存结构/运行时数据区  
 <!--
 
-JVM 内存结构 
-https://mp.weixin.qq.com/s/mWIsVIYkn7ts02mdmvRndA
-
 -->
 &emsp; **<font color = "red">部分参考《深入理解java虚拟机 第3版》第2章 Java内存区域与内存溢出异常</font>**   
 

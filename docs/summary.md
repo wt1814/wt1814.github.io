@@ -689,13 +689,14 @@
 
 
 #### 1.3.3.2. JVM类加载器
-1. JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。  
-&emsp; 双亲委派模型中，类加载器之间的父子关系一般不会以继承（Inheritance）的关系来实现，而是使用组合（Composition）关系来复用父加载器的代码的。      
+1. JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。自定义类加载器：需要继承自ClassLoader,重写方法findClass()。      
 2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。  
+&emsp; 双亲委派模型中，类加载器之间的父子关系一般不会以继承（Inheritance）的关系来实现，而是使用组合（Composition）关系来复用父加载器的代码的。  
 &emsp; 好处：避免类的重复加载；防止核心API被随意篡改。   
-3. 破坏双亲委派模型的案例：  
+3. 破坏双亲委派模型：  
+    1. 破坏双亲委派模型 继承ClassLoader，重写loadClass()方法。  
     1. `双亲委派模型有一个问题：顶层ClassLoader无法加载底层ClassLoader的类，典型例子JNDI、JDBC。`
-        * **<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器。所以加入了`线程上下文类加载器(Thread Context ClassLoader)`，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
+        * **<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器，而 JDBC 运行时又需要去访问子类加载器加载的驱动，就破坏了该模型。所以加入了`线程上下文类加载器(Thread Context ClassLoader)`，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
     2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。    
     3. ......  
 
@@ -771,21 +772,23 @@
 			1. **<font color = "clime">不可回收对象包含 1). 方法区中，类静态属性(static)引用的对象； 2). 方法区中，常量(final static)引用的对象；</font>** 
 			2. `由以上可得java 全局变量 不可被回收。`  
 		2. 四种引用  
-			* **<font color = "red">软引用：当堆使用率临近阈值时，才会去回收软引用的对象。</font>**  
-			* **<font color = "red">弱引用：只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>**  
+			* **<font color = "red">软引用：SoftReference object=new  SoftReference(new Object()); 。当堆使用率临近阈值时，才会去回收软引用的对象。</font>**  
+			* **<font color = "red">弱引用：WeakReference object=new  WeakReference (new Object();，ThreadLocal中有使用。只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>**  
 
 					软引用和弱引用的使用：
 					软引用，弱引用都非常适合来保存那些可有可无的缓存数据，如果这么做，当系统内存不足时，这些缓存数据会被回收，不会导致内存溢出。而当内存资源充足时，这些缓存数据又可以存在相当长的时间，从而起到加速系统的作用。  
 					假如⼀个应⽤需要读取⼤量的本地图⽚，如果每次读取图⽚都从硬盘读取会严重影响性能，如果⼀次性全部加载到内存⼜可能造成内存溢出，这时可以⽤软引⽤解决这个问题。  
 
-			* 虚引用：虚引用是所有类型中最弱的一个。 **<font color = "red">一个持有虚引用的对象，和没有引用几乎是一样的，随时可能被垃圾回收器回收。</font>**    
+			* 虚引用：PhantomReference。虚引用是所有类型中最弱的一个。 **<font color = "red">一个持有虚引用的对象，和没有引用几乎是一样的，随时可能被垃圾回收器回收。</font>**    
 	2. 对象生存还是死亡？  
 	&emsp; **<font color = "clime">如果有必要执行父类`Object#finalize()`方法，放入F-Queue队列；收集器将对F-Queue队列中的对象进行第二次小规模的标记；如果对象在执行finalize()方法时重新与引用链上的任何一个对象建立关联则逃脱死亡，否则执行死亡。</font>**  
-2. null与GC：  
+2. 方法区(类和常量)回收/类的卸载阶段
+3. null与GC：  
 &emsp; 《深入理解Java虚拟机》作者的观点：在需要“不使用的对象应手动赋值为null”时大胆去用，但不应当对其有过多依赖，更不能当作是一个普遍规则来推广。  
 &emsp; **<font color = "red">虽然代码片段已经离开了变量xxx的`作用域`，但在此之后，没有任何对运行时栈的读写，placeHolder所在的索引还没有被其他变量重用，所以GC判断其为存活。</font>**    
 &emsp; 加上`int replacer = 1;`和将placeHolder赋值为null起到了同样的作用：断开堆中placeHolder和栈的联系，让GC判断placeHolder已经死亡。    
 &emsp; “不使用的对象应手动赋值为null”的原理，一切根源都是来自于JVM的一个“bug”：代码离开变量作用域时，并不会自动切断其与堆的联系。    
+   
 
 #### 方法区的回收  
 
@@ -844,7 +847,6 @@
     <font color  = "red">其中内存占用、吞吐量和停顿时间，三者共同构成了一个“不可能三角”。</font>    
     停顿时间越短就越适合需要和用户交互的程序，良好的响应速度能提升用户体验；  
     高吞吐量则可以高效地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。  
-
 2. 根据运行时，线程执行方式分类：  
     * 串行收集器 -> Serial和Serial Old  
     &emsp; **<font color = "red">只能有一个垃圾回收线程执行，用户线程暂停。</font>** 适用于内存比较小的嵌入式设备 。  
@@ -852,7 +854,7 @@
     &emsp; **<font color = "red">多条垃圾收集线程并行工作，但此时用户线程仍然处于等待状态。</font>** 适用于科学计算、后台处理等交互场景 。  
     * 并发收集器【停顿时间优先】 -> CMS、G1  
     &emsp; **<font color = "red">用户线程和垃圾收集线程同时执行</font><font color = "blue">（但并不一定是并行的，可能是交替执行的），</font><font color = "red">垃圾收集线程在执行的时候不会停顿用户线程的运行。</font>** 适用于相对时间有要求的场景，比如Web。  
-
+3. `JDK 7u4后的7和JDK8默认使用的都是ParallelScavenge+ParallelOld。`  
 
 ##### 1.3.6.4.2. CMS回收器
 1. **<font color = "clime">CMS在某些阶段是并发，即CMS GC时并不是全部并发执行。大部分并发，但也有停顿(STW)，只是停顿时间更少。因为CMS是并发收集器，为了不影响用户线程使用，所以采用标记-清除算法。</font>**   
@@ -979,12 +981,15 @@
 		2. 检查错误日志，查看“OutOfMemory”错误前是否有其它异常或错误。  
 		3. 对代码进行走查和分析，找出可能发生内存溢出的位置。 
 		4. 使用内存查看工具动态查看内存快照。 
-	2. 使用内存查看工具分析堆dump文件
-        1. jvm内存快照dump文件太大： 
-            * **<font color = "clime">live参数表示需要抓取目前在生命周期内的内存对象，也就是说GC收不走的对象，然后绝大部分情况下，需要的看的就是这些内存。</font>**   
-            * 如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。
-            * 如果dump文件太大，使用linux下的mat，既Memory Analyzer Tools。   
-        2. 工具mat分析堆dump文件
+    2. 保存内存快照(两种方法)： 
+        1. 添加JVM参数，(-XX:+HeapDumpOnOutOfMemoryError)，让JVM遇到OOM异常时能输出堆内信息，可以通过（-XX:+HeapDumpPath）参数设置堆内存溢出快照输出的文件地址。  
+        2. jmap命令。`注：线上环境不能直接使用jmap命令。找到未进行GC的一个节点，从线上环境摘除。然后再使用jmap命令。`  
+	3. 使用内存查看工具分析堆dump文件
+    4. jvm内存快照dump文件太大： 
+	    * **<font color = "clime">live参数表示需要抓取目前在生命周期内的内存对象，也就是说GC收不走的对象，然后绝大部分情况下，需要的看的就是这些内存。</font>**   
+		* 如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。
+		* 如果dump文件太大，使用linux下的mat，既Memory Analyzer Tools。   
+
 
 #### 1.3.7.4. Arthas工具
 

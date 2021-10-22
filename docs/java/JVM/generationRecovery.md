@@ -61,10 +61,7 @@ https://mp.weixin.qq.com/s/AdF--fvDq63z0Inr2-JSHw
 
 ## 1.1. GC算法  
 <!-- 
-分代收集算法 
-https://mp.weixin.qq.com/s/34hXeHqklAkV4Qu2X0lw3w
-★★★垃圾收集原理依据及要点
-https://mp.weixin.qq.com/s/3YHHtuPENiV_2ZXfHHuD4A
+
 -->
 &emsp; GC常用的算法：标记-清除(Mark-Sweep)、复制(Copying)、标记-整理(Mark-Compact)、分代收集(新生用复制，老年用标记-整理)。  
 
@@ -164,6 +161,7 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 ## 1.3. 跨代引用假说，记忆集和卡表
 <!-- 
 https://mp.weixin.qq.com/s/AdF--fvDq63z0Inr2-JSHw
+https://mp.weixin.qq.com/s/3YHHtuPENiV_2ZXfHHuD4A
 -->
 &emsp; **跨代引用假说：**  
 &emsp; 分代收集并非只是简单划分一下内存区域，它至少存在一个明显的困难：对象之间不是孤立的，对象之间会存在跨代引用。假如现在要进行只局限于新生代的垃圾收集，根据根可达性分析的知识，与GC Roots之间不存在引用链即为可回收，但新生代的对象很有可能会被老年代所引用，那么老年代对象将临时加入 GC Roots 集合中，不得不再额外遍历整个老年代中的所有对象来确保可达性分析结果的正确性，这无疑为内存回收带来很大的性能负担。为了解决这个问题，就需要对分代收集理论添加一条经验法则： **<font color = "clime">跨代引用假说(跨代引用相对于同代引用仅占少数)。</font>**  

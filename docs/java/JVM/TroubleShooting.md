@@ -47,8 +47,11 @@
 		2. 检查错误日志，查看“OutOfMemory”错误前是否有其它异常或错误。  
 		3. 对代码进行走查和分析，找出可能发生内存溢出的位置。 
 		4. 使用内存查看工具动态查看内存快照。 
-	2. 使用内存查看工具分析堆dump文件
-    3. jvm内存快照dump文件太大： 
+    2. 保存内存快照(两种方法)： 
+        1. 添加JVM参数，(-XX:+HeapDumpOnOutOfMemoryError)，让JVM遇到OOM异常时能输出堆内信息，可以通过（-XX:+HeapDumpPath）参数设置堆内存溢出快照输出的文件地址。  
+        2. jmap命令。`注：线上环境不能直接使用jmap命令。找到未进行GC的一个节点，从线上环境摘除。然后再使用jmap命令。`  
+	3. 使用内存查看工具分析堆dump文件
+    4. jvm内存快照dump文件太大： 
 	    * **<font color = "clime">live参数表示需要抓取目前在生命周期内的内存对象，也就是说GC收不走的对象，然后绝大部分情况下，需要的看的就是这些内存。</font>**   
 		* 如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。
 		* 如果dump文件太大，使用linux下的mat，既Memory Analyzer Tools。   
@@ -60,7 +63,6 @@
 ★★★JVM故障分析及性能优化系列之五
 https://blog.csdn.net/z69183787/article/details/103955420
 -->
-
 
     获取线程stack快照，排查CPU飚高；  
     获取堆heap快照，排查内存溢出的问题；  
@@ -86,8 +88,6 @@ https://blog.csdn.net/z69183787/article/details/103955420
 
 &emsp; 对于这三种情况，通过查看CPU和系统内存情况是无法查看出具体问题的，因为它们相对来说都是具有一定阻塞性操作，CPU和系统内存使用情况都不高，但是功能却很慢。  
 
-
-
 ## 1.3. FGC过高  
 &emsp; ~~使用jstack来分析GC是不是太频繁， **<font color = "clime">使用jstat -gc pid 1000命令来对gc分代变化情况进行观察，</font>** 1000表示采样间隔(ms)，S0C/S1C、S0U/S1U、EC/EU、OC/OU、MC/MU分别代表两个Survivor区、Eden区、老年代、元数据区的容量和使用量。YGC/YGT、FGC/FGCT、GCT则代表YoungGc、FullGc的耗时和次数以及总耗时。如果看到gc比较频繁，再针对gc方面做进一步分析。~~   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-81.png)  
@@ -111,8 +111,6 @@ https://blog.csdn.net/z69183787/article/details/103955420
 
 &emsp; <font color = "red">FGC过高，内存参数设置不合理，一般是Old区内存不够导致 FGC。</font>  
 -->
-
-
 
 ## 1.4. CPU飚高  
 <!-- 
@@ -232,9 +230,13 @@ https://blog.csdn.net/prestigeding/article/details/89075661
 1. 保存内存快照(两种方法)：  
     1. 添加JVM参数，该参数作用是：在程序内存溢出时输出dump文件。参数：-XX:+HeapDumpOnOutOfMemoryError -Xms20m -Xmx20m    
     &emsp; 随后找到项目地址，会发现在Project本目录中出现了个hprof文件，至此就把堆内存快照保存下来了。  
+    &emsp; 也可以通过（-XX:+HeapDumpPath）参数设置堆内存溢出快照输出的文件地址，这对于特别是对相隔数月才出现的OOM异常尤为重要。  
+
+            -Xms10M -Xmx10M -Xmn2M -XX:SurvivorRatio=8 -XX:+HeapDumpOnOutOfMemoryError 
+            -XX:HeapDumpPath=D:\study\log_hprof\gc.hprof
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-45.png)  
     2. jmap命令：先运行对应的jar进程，jps找到该进程ID，然后jmap设置导出格式。  
-    &emsp; **<font color = "clime">注：线上环境不能直接使用jmap命令。找到未进行GC的一个节点，从线上环境摘除。然后再使用jmap命令。</font>**    
+    &emsp; **<font color = "clime">`注：线上环境不能直接使用jmap命令。找到未进行GC的一个节点，从线上环境摘除。然后再使用jmap命令。`</font>**    
 
         ``
         jps
@@ -300,4 +302,3 @@ https://club.perfma.com/article/2073508
 
 ## 1.9. JAVA线上故障排查
 &emsp; 参考[JAVA线上故障排查](/docs/Linux/problem.md)  
-

@@ -43,10 +43,6 @@
 # 1. 内存中的对象  
 <!-- 
 
-
-https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
-一个 Java 对象到底有多大？ 
-https://mp.weixin.qq.com/s/bKg-CufJf2vZshJB_ssY5w
 -->
 
 ## 1.1. 对象的创建过程  

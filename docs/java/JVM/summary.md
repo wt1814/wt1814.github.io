@@ -1,8 +1,4 @@
-<!-- 
-Java类的生命周期
-https://mp.weixin.qq.com/s/t2XP9s4HOu3LrE_g7G1VWA
 
--->
 <!-- 
 https://mp.weixin.qq.com/s/PFlZXXZU-zu_prCg5g4V0Q
 jvm全套 链接: https://pan.baidu.com/s/1PcaER6cNiDt6teawLOwpgQ 提取码: c5fh
