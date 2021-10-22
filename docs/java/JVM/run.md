@@ -18,6 +18,12 @@
 # 1. ~~编译执行~~  
 <!-- 
 
+内存  Code Cache
+   https://mp.weixin.qq.com/s/SDh6DnE783aXMa7fnZ-GNw
+
+-->
+<!-- 
+
 https://blog.csdn.net/xiaotai1234/article/details/108290474
 查看java文件汇编代码与字节码
 https://blog.csdn.net/J080624/article/details/85318895

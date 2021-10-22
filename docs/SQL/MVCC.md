@@ -38,6 +38,12 @@
 
 # 1. MVCC
 <!--
+MVCC原理详解 
+https://mp.weixin.qq.com/s/7kBh6vH8X8a9PwTVUp0yfg
+
+MVCC原理详解 
+https://mp.weixin.qq.com/s/7kBh6vH8X8a9PwTVUp0yfg
+
 https://mp.weixin.qq.com/s/B-2AN3ryX8IJWUoxLRPp_w
 
 MySQL面试三连杀：如何实现可重复读、又为什么会出现幻读、是否解决了幻读问题

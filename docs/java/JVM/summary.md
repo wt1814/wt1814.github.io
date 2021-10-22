@@ -1,16 +1,12 @@
 <!-- 
 Java类的生命周期
 https://mp.weixin.qq.com/s/t2XP9s4HOu3LrE_g7G1VWA
-JVM超神之路：年后跳槽需要的JVM知识点，周末给你整理了一份！！！ 
-https://mp.weixin.qq.com/s/-ceS7--mpJyk6ILr7EtMXg
-学习JVM是如何从入门到放弃的？
-https://zhuanlan.zhihu.com/p/39536807
+
 -->
 <!-- 
 https://mp.weixin.qq.com/s/PFlZXXZU-zu_prCg5g4V0Q
 jvm全套 链接: https://pan.baidu.com/s/1PcaER6cNiDt6teawLOwpgQ 提取码: c5fh
-JVM学习目录
-https://www.cnblogs.com/ding-dang/p/13129619.html
+
 -->
 
 

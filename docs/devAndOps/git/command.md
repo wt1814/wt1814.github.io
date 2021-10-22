@@ -1,7 +1,8 @@
 # git
 
 <!--
-
+用21张图，把Git 工作原理彻底说清楚 
+https://mp.weixin.qq.com/s/tzq0dBTSqpp-V89L5Y1IOg
 
 git clone时报RPC failed; curl 18 transfer closed with outstanding read data remaining
 https://www.cnblogs.com/zjfjava/p/10392150.html

@@ -38,6 +38,10 @@
 &emsp; <font color = "red">观看了马士兵的《Java高级工程师就业班 标记算法》</font>  
 
 <!-- 
+三色标记算法
+https://mp.weixin.qq.com/s/bkOc0OvvHBH0eaxL2osG7g
+
+
 三色标记  SATB
 https://www.bilibili.com/video/BV17J411V7tz?from=search&seid=3673548210809646054
 https://www.bilibili.com/video/BV1Uz4y1S798

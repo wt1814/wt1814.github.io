@@ -50,6 +50,9 @@
 
 # 1. 线程池正确用法
 <!-- 
+*** 面试官：线程池执行过程中遇到异常会发生什么，怎样处理？ 
+ https://mp.weixin.qq.com/s/7pQoC9PSqN43sbfhr0IUmA
+
 论如何优雅的自定义ThreadPoolExecutor线程池
 https://www.cnblogs.com/wang-meng/p/10163855.html
 -->

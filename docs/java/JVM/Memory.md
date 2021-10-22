@@ -6,9 +6,4 @@
 &emsp; [内存中的对象](/docs/java/JVM/MemoryObject.md)  
 &emsp; [内存泄露](/docs/java/JVM/MemoryLeak.md)  
 
-<!-- 
 
-内存  Code Cache
-   https://mp.weixin.qq.com/s/SDh6DnE783aXMa7fnZ-GNw
-
--->

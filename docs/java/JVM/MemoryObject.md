@@ -42,8 +42,7 @@
 
 # 1. 内存中的对象  
 <!-- 
-★★★ java类和对象的生命周期
-https://blog.csdn.net/yanliguoyifang/article/details/80964237
+
 
 https://mp.weixin.qq.com/s/_0IANOvyP_UNezDm0bxXmg
 一个 Java 对象到底有多大？ 

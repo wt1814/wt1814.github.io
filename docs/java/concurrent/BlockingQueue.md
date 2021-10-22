@@ -24,6 +24,8 @@
 
 # 1. 阻塞队列  
 <!-- 
+详解 18 种队列，你知道几种？ 
+https://mp.weixin.qq.com/s/cmA5iYF2VBv995kfB6pu0w
 线程池的三种队列区别：SynchronousQueue、LinkedBlockingQueue 和ArrayBlockingQueue
 https://blog.csdn.net/qq_26881739/article/details/80983495
 -->

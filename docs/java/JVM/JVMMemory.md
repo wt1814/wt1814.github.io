@@ -43,17 +43,10 @@
 
 # 1. JVM内存结构/运行时数据区  
 <!--
-说下你对方法区演变过程和内部结构的理解
-https://mp.weixin.qq.com/s/n4w_qQxHp6d2TB_d5FC5LA
-
-Metaspace 之一：Metaspace整体介绍（永久代被替换原因、元空间特点、元空间内存查看分析方法）
-https://www.cnblogs.com/duanxz/p/3520829.html
 
 JVM 内存结构 
 https://mp.weixin.qq.com/s/mWIsVIYkn7ts02mdmvRndA
-https://mp.weixin.qq.com/s/jPIHNsQwiYNCRUQt1qXR6Q
-Java面试官：为什么不把基本类型放堆中呢？ 
-https://mp.weixin.qq.com/s/BnM2KL9CpEWlVXa_hEcEdg
+
 -->
 &emsp; **<font color = "red">部分参考《深入理解java虚拟机 第3版》第2章 Java内存区域与内存溢出异常</font>**   
 
@@ -224,6 +217,12 @@ https://mp.weixin.qq.com/s/Tv-0hjIgN9Grqvch1fFUiA -->
 &emsp; JVM主要管理两种类型的内存：堆和非堆。简单来说堆就是Java代码可及的内存，是留给开发人员使用的；非堆就是JVM留给自己用的。所以方法区、JVM内部处理或优化所需的内存(如JIT编译后的代码缓存)、每个类结构(如运行时常数池、字段和方法数据)以及方法和构造方法的代码都在非堆内存中。  
 
 ## 1.5. ~~方法区(永久代)~~  
+<!-- 
+
+说下你对方法区演变过程和内部结构的理解
+https://mp.weixin.qq.com/s/n4w_qQxHp6d2TB_d5FC5LA
+-->
+
 &emsp; JDK1.8以前的HotSpot JVM有方法区，也叫永久代(permanent generation)。  
 &emsp; 存储内容：方法区用于存放已被虚拟机加载的类信息、常量、静态变量、即时编译器(JIT)编译后的代码等数据。  
 

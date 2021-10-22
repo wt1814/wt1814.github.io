@@ -25,6 +25,11 @@
 讲讲 MySQL 中的 WAL 策略和 CheckPoint 技术
 https://mp.weixin.qq.com/s/bZJkylcGYyn2-POfLKfFtA
 
+redo log日志
+https://mp.weixin.qq.com/s/qgHlSo0wFJvPsYoEsU-xIQ
+讲讲 MySQL 中的 WAL 策略和 CheckPoint 技术
+https://mp.weixin.qq.com/s/bZJkylcGYyn2-POfLKfFtA
+
 redo log是什么？
 *** https://mp.weixin.qq.com/s/-ejTflS8v8UJhOkPk3pucQ
 
