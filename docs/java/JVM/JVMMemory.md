@@ -19,7 +19,6 @@
 
 <!-- /TOC -->
 
-
 &emsp; **<font color = "red">总结：</font>**  
 1. 运行时数据区。线程独享：程序计数器、JVM栈、本地方法栈；线程共享区：堆、方法区（元空间）。  
 2. <font color = "red">JVM栈描述Java方法执行的内存模型。</font>Java虚拟机栈中出栈入栈的元素称为“栈帧”，栈对应线程，栈帧对应方法。每个方法被执行的时候，都会创建一个栈帧，把栈帧压入栈，当方法正常返回或者抛出未捕获的异常时，栈帧就会出栈。    
@@ -30,14 +29,16 @@
     1. 1). 堆分为新生代、老年代，默认比例1: 2； 2). 新生代又按照8: 1: 1划分为Eden区和两个Survivor区。  
     2. **<font color = "blue">在Eden区中，JVM为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
     3. 堆是分配对象存储的唯一选择吗？[逃逸分析](/docs/java/JVM/escape.md)  
-4. <font color = "clime">方法区的演进：</font>  
-    1. 为什么JDK1.8移除元空间  
-        1. 由于PermGen内存经常会溢出，引发java.lang.OutOfMemoryError: PermGen，因此JVM的开发者希望这一块内存可以更灵活地被管理，不要再经常出现这样的OOM。  
-        2. 移除PermGen可以促进HotSpot JVM与JRockit VM的融合，因为JRockit没有永久代。  
-    2. 演进历程：  
-        * jdk1.6及之前：有永久代(permanent generation)。静态变量存放在永久代上。  
-        * jdk1.7：有永久代，但已经逐步“去永久代”。[字符串常量池](/docs/java/JVM/ConstantPool.md) <font color = "red">、静态变量</font>移除，保存在堆中。  
-        * jdk1.8及之后：无永久代。类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
+4. 方法区：
+    1. 在类加载阶段，在Java堆中生成一个代表这个类的java.lang.Class对象，作为对方法区中这些数据的访问入口。  
+    2. <font color = "clime">方法区的演进：</font>  
+        1. 为什么JDK1.8移除元空间  
+            1. 由于PermGen内存经常会溢出，引发java.lang.OutOfMemoryError: PermGen，因此JVM的开发者希望这一块内存可以更灵活地被管理，不要再经常出现这样的OOM。  
+            2. 移除PermGen可以促进HotSpot JVM与JRockit VM的融合，因为JRockit没有永久代。  
+        2. 演进历程：  
+            * jdk1.6及之前：有永久代(permanent generation)。静态变量存放在永久代上。  
+            * jdk1.7：有永久代，但已经逐步“去永久代”。[字符串常量池](/docs/java/JVM/ConstantPool.md) <font color = "red">、静态变量</font>移除，保存在堆中。  
+            * jdk1.8及之后：无永久代。类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
 5. MetaSpace存储类的元数据信息。  
 &emsp; 元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。元空间的内存大小受本地内存限制。  
 

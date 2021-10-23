@@ -710,14 +710,16 @@
     1. 1). 堆分为新生代、老年代，默认比例1: 2； 2). 新生代又按照8: 1: 1划分为Eden区和两个Survivor区。  
     2. **<font color = "blue">在Eden区中，JVM为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
     3. 堆是分配对象存储的唯一选择吗？[逃逸分析](/docs/java/JVM/escape.md)  
-4. <font color = "clime">方法区的演进：</font>  
-    1. 为什么JDK1.8移除元空间  
-        1. 由于PermGen内存经常会溢出，引发java.lang.OutOfMemoryError: PermGen，因此JVM的开发者希望这一块内存可以更灵活地被管理，不要再经常出现这样的OOM。  
-        2. 移除PermGen可以促进HotSpot JVM与JRockit VM的融合，因为JRockit没有永久代。  
-    2. 演进历程：  
-        * jdk1.6及之前：有永久代(permanent generation)。静态变量存放在永久代上。  
-        * jdk1.7：有永久代，但已经逐步“去永久代”。[字符串常量池](/docs/java/JVM/ConstantPool.md) <font color = "red">、静态变量</font>移除，保存在堆中。  
-        * jdk1.8及之后：无永久代。类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
+4. 方法区：
+    1. 在类加载阶段，在Java堆中生成一个代表这个类的java.lang.Class对象，作为对方法区中这些数据的访问入口。  
+    2. <font color = "clime">方法区的演进：</font>  
+        1. 为什么JDK1.8移除元空间  
+            1. 由于PermGen内存经常会溢出，引发java.lang.OutOfMemoryError: PermGen，因此JVM的开发者希望这一块内存可以更灵活地被管理，不要再经常出现这样的OOM。  
+            2. 移除PermGen可以促进HotSpot JVM与JRockit VM的融合，因为JRockit没有永久代。  
+        2. 演进历程：  
+            * jdk1.6及之前：有永久代(permanent generation)。静态变量存放在永久代上。  
+            * jdk1.7：有永久代，但已经逐步“去永久代”。[字符串常量池](/docs/java/JVM/ConstantPool.md) <font color = "red">、静态变量</font>移除，保存在堆中。  
+            * jdk1.8及之后：无永久代。类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
 5. MetaSpace存储类的元数据信息。  
 &emsp; 元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。元空间的内存大小受本地内存限制。  
 
@@ -783,6 +785,15 @@
 	2. 对象生存还是死亡？  
 	&emsp; **<font color = "clime">如果有必要执行父类`Object#finalize()`方法，放入F-Queue队列；收集器将对F-Queue队列中的对象进行第二次小规模的标记；如果对象在执行finalize()方法时重新与引用链上的任何一个对象建立关联则逃脱死亡，否则执行死亡。</font>**  
 2. 方法区(类和常量)回收/类的卸载阶段
+	1. Java虚拟机规范对方法区是否实现垃圾回收没有做出强制的规定。存在未实现或未能完整实现方法区类型卸载的垃圾回收器（例如JDK 11的zGC收集器）。~~方法区的回收效果比较难令人满意，条件很苛刻，但是回收又是很有必要的。~~  
+	2. 方法区的垃圾收集主要回收两部分：废弃的常量和不再使用的类型。  
+	3. 类的卸载
+		1. 类需要同时满足下面3个条件才能算是 “无用的类” ：  
+			* 该类所有的实例都已经被回收，也就是 Java 堆中不存在该类的任何实例。
+			* 加载该类的 ClassLoader 已经被回收。
+			* 该类对应的 java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。
+		2. 一个类何时结束生命周期，取决于代表它的Class对象何时结束生命周期。   
+		&emsp; 注：由java虚拟机自带的三种类加载加载的类在虚拟机的整个生命周期中是不会被卸载的，由用户自定义的类加载器所加载的类才可以被卸载。     
 3. null与GC：  
 &emsp; 《深入理解Java虚拟机》作者的观点：在需要“不使用的对象应手动赋值为null”时大胆去用，但不应当对其有过多依赖，更不能当作是一个普遍规则来推广。  
 &emsp; **<font color = "red">虽然代码片段已经离开了变量xxx的`作用域`，但在此之后，没有任何对运行时栈的读写，placeHolder所在的索引还没有被其他变量重用，所以GC判断其为存活。</font>**    
