@@ -7,7 +7,7 @@
         - [1.1.2. Java基础数据类型](#112-java基础数据类型)
             - [1.1.2.1. String](#1121-string)
             - [1.1.2.2. Java基本数据类型](#1122-java基本数据类型)
-            - [java对象大小](#java对象大小)
+            - [1.1.2.3. java对象大小](#1123-java对象大小)
         - [1.1.3. Java集合框架](#113-java集合框架)
             - [1.1.3.1. Java集合框架](#1131-java集合框架)
             - [1.1.3.2. HashMap](#1132-hashmap)
@@ -50,14 +50,14 @@
         - [1.3.5. JVM执行](#135-jvm执行)
         - [1.3.6. GC](#136-gc)
             - [1.3.6.1. GC-回收对象](#1361-gc-回收对象)
-            - [方法区的回收](#方法区的回收)
-            - [1.3.6.2. GC-回收位置/安全点](#1362-gc-回收位置安全点)
-            - [1.3.6.3. 回收算法与分代回收](#1363-回收算法与分代回收)
-            - [1.3.6.4. GC-垃圾回收器](#1364-gc-垃圾回收器)
-                - [1.3.6.4.1. 垃圾回收器](#13641-垃圾回收器)
-                - [1.3.6.4.2. CMS回收器](#13642-cms回收器)
-                - [1.3.6.4.3. G1回收器](#13643-g1回收器)
-                - [1.3.6.4.4. 三色标记](#13644-三色标记)
+            - [1.3.6.2. 方法区的回收](#1362-方法区的回收)
+            - [1.3.6.3. GC-回收位置/安全点](#1363-gc-回收位置安全点)
+            - [1.3.6.4. 回收算法与分代回收](#1364-回收算法与分代回收)
+            - [1.3.6.5. GC-垃圾回收器](#1365-gc-垃圾回收器)
+                - [1.3.6.5.1. 垃圾回收器](#13651-垃圾回收器)
+                - [1.3.6.5.2. CMS回收器](#13652-cms回收器)
+                - [1.3.6.5.3. G1回收器](#13653-g1回收器)
+                - [1.3.6.5.4. 三色标记](#13654-三色标记)
         - [1.3.7. JVM调优](#137-jvm调优)
             - [1.3.7.1. JVM调优-基础](#1371-jvm调优-基础)
             - [1.3.7.2. JVM调优](#1372-jvm调优)
@@ -230,6 +230,9 @@
         - [1.12.7. Dubbo集群容错](#1127-dubbo集群容错)
         - [1.12.8. 扩展点加载(SPI)](#1128-扩展点加载spi)
     - [1.13. Zookeeper](#113-zookeeper)
+        - [1.13.1. ZK服务端](#1131-zk服务端)
+        - [1.13.2. ZK客户端](#1132-zk客户端)
+        - [1.13.3. ZK弊端和应用场景](#1133-zk弊端和应用场景)
     - [1.14. 分布式](#114-分布式)
         - [1.14.1. 分布式理论CAP](#1141-分布式理论cap)
         - [1.14.2. 分布式ID](#1142-分布式id)
@@ -392,7 +395,7 @@
 
 &emsp; char的包装类型是Character。  
 
-#### java对象大小
+#### 1.1.2.3. java对象大小
 
 
 ### 1.1.3. Java集合框架
@@ -801,11 +804,11 @@
 &emsp; “不使用的对象应手动赋值为null”的原理，一切根源都是来自于JVM的一个“bug”：代码离开变量作用域时，并不会自动切断其与堆的联系。    
    
 
-#### 方法区的回收  
+#### 1.3.6.2. 方法区的回收  
 
 
 
-#### 1.3.6.2. GC-回收位置/安全点
+#### 1.3.6.3. GC-回收位置/安全点
 1. 安全点  
 &emsp; **<font color = "clime">可达性分析算法必须是在一个确保一致性的内存快照中进行。</font>**   
 &emsp; **<font color = "clime">安全点意味着在这个点时，所有工作线程的状态是确定的，JVM可以安全地执行GC。</font>**  
@@ -814,7 +817,7 @@
 &emsp; **<font color = "blue">已经挂起的线程会被认定为处在安全区域内，中断的时候不需要考虑安全区域中的线程。</font>**  
 &emsp; 当前安全区域的线程要被唤醒离开安全区域时，先检查能否离开，如果GC完成了，那么线程可以离开，否则它必须等待直到收到安全离开的信号为止。  
 
-#### 1.3.6.3. 回收算法与分代回收
+#### 1.3.6.4. 回收算法与分代回收
 1. GC算法  
     * **<font color = "clime">标记-清除算法分为两个阶段：标记阶段和清除阶段。</font>** 不足：清除过程中，扫描两次，效率不高；清除后，产生空间碎片。  
     * `复制：1).（非标记-复制）只扫描一次；` 2). 没有碎片，空间连续； 3). 50%的内存空间始终空闲浪费。  
@@ -845,8 +848,8 @@
     4. <font color = "red">系统调用System.gc()</font>  
     &emsp; 只是建议虚拟机执行Full GC，但是虚拟机不一定真正去执行。不建议使用这种方式，而是让虚拟机管理内存。  
 
-#### 1.3.6.4. GC-垃圾回收器
-##### 1.3.6.4.1. 垃圾回收器
+#### 1.3.6.5. GC-垃圾回收器
+##### 1.3.6.5.1. 垃圾回收器
 1. 根据收集器的指标（性能考虑因素）分类（`两个关键指标，停顿时间和吞吐量`）：  
     * **<font color = "clime">吞吐量：运行用户代码时间/(运行用户代码时间+垃圾收集时间)。</font>**  
     * 停顿时间：执行垃圾收集时，程序的工作线程被暂停的时间。  
@@ -867,7 +870,7 @@
     &emsp; **<font color = "red">用户线程和垃圾收集线程同时执行</font><font color = "blue">（但并不一定是并行的，可能是交替执行的），</font><font color = "red">垃圾收集线程在执行的时候不会停顿用户线程的运行。</font>** 适用于相对时间有要求的场景，比如Web。  
 3. `JDK 7u4后的7和JDK8默认使用的都是ParallelScavenge+ParallelOld。`  
 
-##### 1.3.6.4.2. CMS回收器
+##### 1.3.6.5.2. CMS回收器
 1. **<font color = "clime">CMS在某些阶段是并发，即CMS GC时并不是全部并发执行。大部分并发，但也有停顿(STW)，只是停顿时间更少。因为CMS是并发收集器，为了不影响用户线程使用，所以采用标记-清除算法。</font>**   
 2. CMS GC执行流程：(**<font color = "clime">3次标记、2次清除</font>**)  
     1. 初始标记：标记GCRoots能直接关联到的对象。   
@@ -893,7 +896,7 @@
     6. 减少remark阶段停顿：在执行并发操作之前先做一次Young GC。  
 
 
-##### 1.3.6.4.3. G1回收器
+##### 1.3.6.5.3. G1回收器
 1. G1是一种服务端应用使用的垃圾收集器，目标是用在多核、大内存的机器上， **<font color = "clime">G1在大多数情况下可以实现指定的GC暂停时间，同时还能保持较高的吞吐量。</font>**   
 2. G1特点（为什么要选择G1？）  
     1. 并行和并发
@@ -915,7 +918,7 @@
             5. 清除垃圾
 
 
-##### 1.3.6.4.4. 三色标记
+##### 1.3.6.5.4. 三色标记
 1. 三色：  
     * 黑色：本对象已访问过，而且本对象 引用到 的其他对象 也全部访问过了。  
     * 灰色：本对象已访问过，但是本对象 引用到 的其他对象 尚未全部访问完。全部访问后，会转换为黑色。  
@@ -2272,7 +2275,7 @@
 2. **<font color = "red">Zuul提供了四种过滤器的API，分别为前置（Pre）、路由（Route）、后置（Post）和错误（Error）四种处理方式。</font>**  
 3. 动态加载：  
 &emsp; 作为最外部的网关，它必须具备动态更新内部逻辑的能力，比如动态修改路由规则、动态添加／删除过滤器等。  
-&emsp; 通过Zuul实现的API网关服务具备了动态路由和动态过滤的器能力，可以在不重启API网关服务的前提下为其动态修改路由规则和添加或删除过滤器。   
+&emsp; 通过Zuul实现的API网关服务具备了动态路由和动态过滤器能力，可以在不重启API网关服务的前提下为其动态修改路由规则和添加或删除过滤器。   
 
 
 ### 1.11.6. Sleuth
@@ -2305,7 +2308,7 @@
 #### 1.12.1.2. Spring Cloud Alibaba介绍  
 1. Spring Cloud与Dubbo的比较本身是不公平的，主要前者是一套较为完整的架构方案，而Dubbo只是服务治理与RPC实现方案。  
 &emsp; Spring Cloud Alibaba是阿里巴巴提供的微服务开发一站式解决方案，是阿里巴巴开源中间件与 Spring Cloud 体系的融合。   
-2. 集成 Spring Cloud 组件：**<font color = "clime">Spring Cloud Alibaba作为整套的微服务解决组件，只依靠目前阿里的开源组件是不够的，更多的是集成当前的社区组件，所以 Spring Cloud Alibaba 可以集成 Zuul，OpenFeign等网关，也支持 Spring Cloud Stream消息组件。</font>**  
+2. 集成 Spring Cloud 组件： **<font color = "clime">Spring Cloud Alibaba作为整套的微服务解决组件，只依靠目前阿里的开源组件是不够的，更多的是集成当前的社区组件，所以 Spring Cloud Alibaba 可以集成 Zuul，OpenFeign等网关，也支持 Spring Cloud Stream消息组件。</font>**  
 3. **<font color = "clime">使用@DubboTransported 注解可将底层的 Rest 协议无缝切换成 Dubbo RPC 协议，进行 RPC 调用。</font>**  
 4. Spring Cloud Alibaba 基于 Nacos 提供 spring-cloud-alibaba-starter-nacos-discovery & spring-cloud-alibaba-starter-nacos-config 实现了服务注册 & 配置管理功能。  
 &emsp; 使用 Seata 解决微服务场景下面临的分布式事务问题。  
@@ -2330,7 +2333,7 @@
     4. 接口调用数据统计  
 
 ### 1.12.4. Dubbo框架设计
-1. 分层架构设计
+1. 分层架构设计  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-51.png)  
     1. 从大的范围来说，dubbo分为三层：
         * business业务逻辑层由开发人员来提供接口和实现还有一些配置信息。
@@ -2351,7 +2354,7 @@
 1. 解析服务：  
 &emsp; **<font color = "clime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
 &emsp; ⚠️注：`在暴露服务ServiceConfig.export()或引用服务ReferenceConfig.get()时，会将Bean对象转换URL格式，所有Bean属性转成URL的参数。`然后将URL传给协议扩展点，基于扩展点的扩展点自适应机制，根据URL的协议头，进行不同协议的服务暴露或引用。  
-2. **服务提供者暴露服务的主过程：** `参考dubbo架构分层`  
+2. **服务提供者暴露服务的主过程：** `参考dubbo架构分层`，`主要分4步`。    
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-29.png)   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-53.png)   
     1. ServiceConfig将Bean对象解析成URL格式。  
@@ -2399,6 +2402,8 @@
 
 ## 1.13. Zookeeper
 1. **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
+
+### 1.13.1. ZK服务端
 2. `ZK服务端`通过`ZAB协议`保证`数据顺序一致性`。  
     1. ZAB协议：
         1. Zookeeper集群角色：  
@@ -2420,17 +2425,25 @@
             1. <font color = "clime">假设有2n+1个server，在同步流程中，leader向follower同步数据，当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。</font><font color = "red">如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。</font> 未同步数据的情况，Zookeeper提供了同步机制（可选型），类似回调。   
             2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数(n+1)的server认同后，将对整个集群进行同步，超过半数(n+1)的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
 3. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
-4. zookeeper引入了`watcher机制`来实现`客户端和服务端`的发布/订阅功能。  
-    1. Watcher机制运行流程：Zookeeper客户端向服务端的某个Znode注册一个Watcher监听，当服务端的一些指定事件触发了这个Watcher，服务端会向指定客户端发送一个事件通知来实现分布式的通知功能，然后客户端根据Watcher通知状态和事件类型做出业务上的改变。  
-    &emsp; 触发watch事件种类很多，如：节点创建，节点删除，节点改变，子节点改变等。  
-    2.  **watch的重要特性：**  
-        * 异步发送
-        * 一次性触发：  
-        &emsp; Watcher通知是一次性的， **<font color = "clime">即一旦触发一次通知后，该Watcher就失效了，因此客户端需要反复注册Watcher。</font>** 但是在获取watch事件和设置新的watch事件之间有延迟。延迟为毫秒级别，理论上会出现不能观察到节点的每一次变化。  
-        &emsp; `不支持用持久Watcher的原因：如果Watcher的注册是持久的，那么必然导致服务端的每次数据更新都会通知到客户端。这在数据变更非常频繁且监听客户端特别多的场景下，ZooKeeper无法保证性能。`  
-        * 有序性：  
-        &emsp; 客户端先得到watch通知才可查看节点变化结果。  
-    3. 客户端过多，会引发网络风暴。  
+
+### 1.13.2. ZK客户端
+&emsp; zookeeper引入了`watcher机制`来实现`客户端和服务端`的发布/订阅功能。  
+1. ~~Watcher机制运行流程：Zookeeper客户端向服务端的某个Znode注册一个Watcher监听，当服务端的一些指定事件触发了这个Watcher，服务端会向指定客户端发送一个事件通知来实现分布式的通知功能，然后客户端根据Watcher通知状态和事件类型做出业务上的改变。  
+&emsp; 触发watch事件种类很多，如：节点创建，节点删除，节点改变，子节点改变等。~~  
+&emsp; 概括可以分为三个过程：1. 客户端注册 Watcher；2. 服务端处理 Watcher；3. 客户端回调 Watcher。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-5.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-6.png)  
+&emsp; 大致流程就是 Client 向ZK中注册 Watcher，如果注册成功的话，会将对应的 Watcher 存储在本地。当ZK服务器端触发 Watcher 事件之后，会向客户端发送通知，客户端会从 ClientWatchManager 中取出对应的 Watcher 进行回调。  
+2.  **watch的重要特性：**  
+    * 异步发送
+    * 一次性触发：  
+    &emsp; Watcher通知是一次性的， **<font color = "clime">即一旦触发一次通知后，该Watcher就失效了，因此客户端需要反复注册Watcher。</font>** 但是在获取watch事件和设置新的watch事件之间有延迟。延迟为毫秒级别，理论上会出现不能观察到节点的每一次变化。  
+    &emsp; `不支持用持久Watcher的原因：如果Watcher的注册是持久的，那么必然导致服务端的每次数据更新都会通知到客户端。这在数据变更非常频繁且监听客户端特别多的场景下，ZooKeeper无法保证性能。`  
+    * 有序性：  
+    &emsp; 客户端先得到watch通知才可查看节点变化结果。  
+3. 客户端过多，会引发网络风暴。  
+
+### 1.13.3. ZK弊端和应用场景
 5. ZK的弊端：
 	1. 服务端从节点多，主从同步慢。  
 	2. 客户端多，`网络风暴`。~~watcher机制中，回调流程，只有主节点参与？~~  
