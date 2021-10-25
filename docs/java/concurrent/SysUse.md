@@ -4,12 +4,14 @@
 
 - [1. ~~Synchronized使用~~](#1-synchronized使用)
     - [1.1. Synchronized使用简介](#11-synchronized使用简介)
-    - [1.2. Synchronized同步普通方法](#12-synchronized同步普通方法)
-    - [1.3. Synchronized同步静态方法](#13-synchronized同步静态方法)
-    - [1.4. Synchronized同步语句块](#14-synchronized同步语句块)
-        - [1.4.1. 同步类](#141-同步类)
-        - [1.4.2. 同步this实例](#142-同步this实例)
-        - [1.4.3. 同步对象实例](#143-同步对象实例)
+    - [1.2. Synchronized同步方法](#12-synchronized同步方法)
+        - [1.2.1. Synchronized同步普通方法](#121-synchronized同步普通方法)
+        - [1.2.2. Synchronized同步静态方法](#122-synchronized同步静态方法)
+    - [1.3. Synchronized同步语句块](#13-synchronized同步语句块)
+        - [1.3.1. 同步this实例](#131-同步this实例)
+        - [1.3.2. 同步对象实例](#132-同步对象实例)
+        - [1.3.3. 同步类](#133-同步类)
+    - [1.4. String锁](#14-string锁)
     - [1.5. 类锁和对象锁](#15-类锁和对象锁)
 
 <!-- /TOC -->
@@ -20,7 +22,9 @@
 
 
 # 1. ~~Synchronized使用~~  
-<!-- 
+<!--
+https://www.cnblogs.com/huansky/p/8869888.html
+https://juejin.cn/post/6844903920913874952
 synchronized加锁this和class的区别！
 https://mp.weixin.qq.com/s/ewXpaeMYNx7FAW_fYoQbPg
 --> 
@@ -28,7 +32,7 @@ https://mp.weixin.qq.com/s/ewXpaeMYNx7FAW_fYoQbPg
 
 ## 1.1. Synchronized使用简介
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-11.png)  
-
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-84.png)  
 &emsp; Synchronized可以使用在普通方法、静态方法、同步块中。 **<font color = "clime">Synchronized作用的对象应该是唯一的。</font>** Synchronized使用在同步块中，锁粒度更小。根据锁的具体实例，又可以分为类锁和对象锁。  
 &emsp; 关键字Synchronized取得的锁都是对象锁，而不是把一段代码或方法(函数)当作锁。  
 <!-- 
@@ -36,8 +40,8 @@ https://mp.weixin.qq.com/s/ewXpaeMYNx7FAW_fYoQbPg
 在大多数的情况下，同步Synchronized代码块都不使用String作为锁对象，而改用其他，比如new Object()实例化一个 Object对象，但它并不放人缓存中。  
 -->
 
-
-## 1.2. Synchronized同步普通方法  
+## 1.2. Synchronized同步方法
+### 1.2.1. Synchronized同步普通方法  
 &emsp; 这种方法使用虽然最简单，但是只能作用在单例上面，如果不是单例，同步方法锁将失效。  
 
 ```java
@@ -57,7 +61,13 @@ private Synchronized void SynchronizedMethod() {
 &emsp; 对于普通同步方法，锁是当前实例对象，进入同步代码前要获得当前实例的锁。  
 &emsp; 当两个线程同时对一个对象的一个方法进行操作，只有一个线程能够抢到锁。因为一个对象只有一把锁，一个线程获取了该对象的锁之后，其他线程无法获取该对象的锁，就不能访问该对象的其他Synchronized实例方法。可是，两个线程实例化两个不同的对象，获得的锁是不同的锁，所以互相并不影响。  
 
-## 1.3. Synchronized同步静态方法  
+
+两个线程互不干扰（实际上他们是交替异步执行的）。当多个线程访问多个对象的，JVM会创建多个锁，每个锁只是锁着它对应的实例。不同的线程持有不同的锁，访问不同的对象。  
+在调用synchronized修饰的方法时，线程一定是排队运行的，只有共享资源的读写才需要同步，如果不是共享资源，根本就没有同步的必要。  
+
+
+
+### 1.2.2. Synchronized同步静态方法  
 &emsp; 同步静态方法，不管有多少个类实例，同时只有一个线程能获取锁进入这个方法。  
 
 ```java
@@ -77,10 +87,50 @@ private Synchronized static void SynchronizedStaticMethod() {
 &emsp; 对于静态同步方法，锁是当前类的Class对象，进入同步代码前要获得当前类对象的锁。  
 &emsp; 注意：两个线程实例化两个不同的对象，但是访问的方法是静态的，此时获取的锁是同一个锁，两个线程发生了互斥(即一个线程访问，另一个线程只能等着)，因为静态方法是依附于类而不是对象的，当Synchronized修饰静态方法时，锁是class对象。  
 
-## 1.4. Synchronized同步语句块  
+## 1.3. Synchronized同步语句块  
 &emsp; 对于同步代码块，锁是Synchronized括号里面配置的对象，对给定对象加锁，进入同步代码块前要获得给定对象的锁。  
 
-### 1.4.1. 同步类
+### 1.3.1. 同步this实例  
+&emsp; 这也是同步块的用法，表示锁住整个当前对象实例，只有获取到这个实例的锁才能进入这个方法。  
+
+```java
+/**
+ * 用在this
+ */
+private void SynchronizedThis() {
+    Synchronized (this) {
+        System.out.println("SynchronizedThis");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+&emsp; 用法和同步普通方法锁一样，都是锁住整个当前实例。  
+
+### 1.3.2. 同步对象实例  
+&emsp; 这也是同步块的用法，和上面的锁住当前实例一样，这里表示锁住整个LOCK 对象实例，只有获取到这个LOCK实例的锁才能进入这个方法。  
+
+```java
+/**
+ * 用在对象
+ */
+private void SynchronizedInstance() {
+    Synchronized (LOCK) {
+        System.out.println("SynchronizedInstance");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+
+### 1.3.3. 同步类
 &emsp; 下面提供了两种同步类的方法，锁住效果和同步静态方法一样，都是类级别的锁，同时只有一个线程能访问带有同步类锁的方法。  
 
 ```java
@@ -114,44 +164,8 @@ private void SynchronizedGetClass() {
 ```
 &emsp; 这里的两种用法是同步块的用法，这里表示只有获取到这个类锁才能进入这个代码块。  
 
-### 1.4.2. 同步this实例  
-&emsp; 这也是同步块的用法，表示锁住整个当前对象实例，只有获取到这个实例的锁才能进入这个方法。  
-
-```java
-/**
- * 用在this
- */
-private void SynchronizedThis() {
-    Synchronized (this) {
-        System.out.println("SynchronizedThis");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-}
-```
-&emsp; 用法和同步普通方法锁一样，都是锁住整个当前实例。  
-
-### 1.4.3. 同步对象实例  
-&emsp; 这也是同步块的用法，和上面的锁住当前实例一样，这里表示锁住整个LOCK 对象实例，只有获取到这个LOCK实例的锁才能进入这个方法。  
-
-```java
-/**
- * 用在对象
- */
-private void SynchronizedInstance() {
-    Synchronized (LOCK) {
-        System.out.println("SynchronizedInstance");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-}
-```
+## 1.4. String锁
+&emsp; 由于在JVM中具有String常量池缓存的功能，因此相同字面量是同一个锁。  
 
 ## 1.5. 类锁和对象锁
 &emsp; **<font color = "clime">前提：是否是同一个类或同一个类的实例对象。</font>**    

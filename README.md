@@ -481,6 +481,7 @@
 [分布式锁](/docs/microService/thinking/Lock.md)  
 &emsp; [RedisLock](/docs/microService/thinking/redisLock.md)  
 &emsp; [Redisson](/docs/microService/thinking/Redisson.md)  
+&emsp; [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
 &emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
 

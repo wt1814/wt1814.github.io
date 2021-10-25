@@ -361,6 +361,7 @@
 * [分布式锁](/docs/microService/thinking/Lock.md)  
     * [RedisLock](/docs/microService/thinking/redisLock.md)  
     * [Redisson](/docs/microService/thinking/Redisson.md)  
+    * [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
     * [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
     * [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
 * 高并发
