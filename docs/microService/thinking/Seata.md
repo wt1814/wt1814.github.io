@@ -22,7 +22,6 @@ https://blog.csdn.net/fanfan4569/article/details/102522210
 * 一阶段：执行用户SQL  
 * 二阶段：Seata框架自动生成  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-69.png)  
 
 ## 1.1. AT模式
 <!-- 

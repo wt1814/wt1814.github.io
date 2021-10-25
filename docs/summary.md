@@ -252,6 +252,7 @@
         - [1.14.4. 分布式锁](#1144-分布式锁)
             - [1.14.4.1. 分布式锁实现方案](#11441-分布式锁实现方案)
             - [1.14.4.2. RedisLock](#11442-redislock)
+            - [redis分布式锁的8大坑](#redis分布式锁的8大坑)
             - [1.14.4.3. Redisson](#11443-redisson)
             - [1.14.4.4. ZK分布式锁](#11444-zk分布式锁)
             - [1.14.4.5. MySql分布式锁](#11445-mysql分布式锁)
@@ -2576,8 +2577,6 @@
 * 一阶段：执行用户SQL  
 * 二阶段：Seata框架自动生成  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-69.png)  
-
 
 ##### 1.14.3.6.2. 四种模式的区别
 &emsp; 四种分布式事务模式，分别在不同的时间被提出，每种模式都有它的适用场景  
@@ -2633,6 +2632,10 @@
 4. RedLock红锁：  
     1. RedLock：当前线程尝试给每个Master节点`顺序`加锁。要在多数节点上加锁，并且加锁时间小于超时时间，则加锁成功；加锁失败时，依次删除节点上的锁。  
     2. ~~RedLock“顺序加锁”：确保互斥。在同一时刻，必须保证锁至多只能被一个客户端持有。~~   
+
+#### redis分布式锁的8大坑
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-69.png)  
+
 
 #### 1.14.4.3. Redisson
 1.  **<font color = "clime">RedissonLock解决客户端死锁问题（自动延期）：</font>**  
