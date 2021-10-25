@@ -17,12 +17,6 @@
 https://blog.csdn.net/fanfan4569/article/details/102522210
 -->
 
-&emsp; AT 模式分为两个阶段：
-
-* 一阶段：执行用户SQL  
-* 二阶段：Seata框架自动生成  
-
-
 ## 1.1. AT模式
 <!-- 
 Seata AT模式
@@ -44,6 +38,74 @@ https://zhuanlan.zhihu.com/p/344220223
 
 
 ### 1.1.2. 工作流程
+&emsp; AT 模式分为两个阶段：
+
+1. 一阶段：执行用户SQL。业务数据和回滚日志记录在同一个本地事务中提交，释放本地锁和连接资源。    
+2. 二阶段：Seata框架自动生成。commit异步化快速完成；rollback通过一阶段的回滚日志进行反向补偿。    
+
+--------------
+&emsp; 下面通过一个分支事务的执行过程来了解 Seata 的工作流程。  
+&emsp; 例如有一个业务表 product(id,name)，分支事务的业务逻辑：  
+
+```sql
+update product set name = 'GTS' where name = 'TXC';
+```
+
+1. 一阶段  
+    （1）解析 SQL  
+    &emsp; 得到 SQL 的类型（UPDATE），表（product），条件（where name = 'TXC'）等相关的信息。  
+    （2）查询前镜像  
+    &emsp; 根据解析得到的条件信息，生成查询语句，定位数据。  
+
+    ```sql
+    select id, name from product where name = 'TXC';  
+    ```
+    &emsp; 得到前镜像：  
+
+    |id|name|
+    |---|---|
+    |1|TXC|
+
+    （3）执行业务 SQL  
+    &emsp; 执行自己的业务逻辑：  
+    ```sql  
+    update product set name = 'GTS' where name = 'TXC';  
+    ```
+    &emsp; 把 name 改为了 GTS。  
+    （4）查询后镜像  
+    &emsp; 根据前镜像的结果，通过 主键 定位数据。  
+
+    ```sql
+    select id, name from product where id = 1;
+    ```
+    &emsp; 得到后镜像：
+
+    |id|name|
+    |---|---|
+    |1|GTS|
+
+    （5）插入回滚日志  
+    &emsp; 把前后镜像数据以及业务 SQL 相关的信息组成一条回滚日志记录，插入到 UNDO_LOG 表中。  
+    （6）提交前，向 TC 注册分支：申请 product 表中，主键值等于 1 的记录的 全局锁 。  
+    （7）本地事务提交：业务数据的更新和前面步骤中生成的 UNDO LOG 一并提交。  
+    （8）将本地事务提交的结果上报给 TC。  
+2. 二阶段 - 提交  
+（1）收到 TC 的分支提交请求，把请求放入一个异步任务的队列中，马上返回提交成功的结果给 TC。  
+（2）异步任务阶段的分支提交请求，将异步和批量地删除相应 UNDO LOG 记录。  
+3. 二阶段 - 回滚  
+（1）收到 TC 的分支回滚请求，开启一个本地事务，执行如下操作。  
+（2）通过 XID 和 Branch ID 查找到相应的 UNDO LOG 记录。  
+（3）数据校验  
+&emsp; 拿 UNDO LOG 中的后镜与当前数据进行比较，根据校验结果决定是否做回滚。  
+（4）根据 UNDO LOG 中的前镜像和业务 SQL 的相关信息生成并执行回滚的语句：  
+```sql
+update product set name = 'TXC' where id = 1;
+```
+（5）提交本地事务  
+&emsp; 并把本地事务的执行结果（即分支事务回滚的结果）上报给 TC。  
+
+----------------
+
 &emsp; 我们用一个比较简单的业务场景来描述一下Seata AT模式的工作过程。  
 &emsp; 有个充值业务，现在有两个服务，一个负责管理用户的余额，另外一个负责管理用户的积分。  
 &emsp; 当用户充值的时候，首先增加用户账户上的余额，然后增加用户的积分。  

@@ -7,7 +7,6 @@
     - [1.3. 分布式锁实现](#13-分布式锁实现)
         - [1.3.1. 分布式锁实现方案](#131-分布式锁实现方案)
         - [1.3.2. 分布式锁选型/各种锁的区别](#132-分布式锁选型各种锁的区别)
-    - [1.4. ~~正确使用分布式锁~~](#14-正确使用分布式锁)
 
 <!-- /TOC -->
 
@@ -88,32 +87,3 @@ https://www.cnblogs.com/aoshicangqiong/p/12173550.html
 &emsp; 由RedLock、ZK实现的锁，相对安全，但是又有性能问题。  
 &emsp; 所以对于分布式锁的选型还是，针对具体业务、具体场景是要数据一致性好点，还是性能好点。  
 
-## 1.4. ~~正确使用分布式锁~~  
-<!-- 
-记一次由Redis分布式锁造成的重大事故，避免以后踩坑！ 
-https://mp.weixin.qq.com/s/70mS50S2hdN_qd-RD4rk2Q
-
-
-
-&emsp; 之前跟同事讨论，redis锁是不是要加时间限制。其实redis锁要不要加时间，也就是释放锁的时机问题，最终演变成了finally里要不要释放锁。  
-&emsp; 如果redis锁用于争抢资源(文本、数据库)，在finally是要释放锁的；如果redis锁用于幂等，建议还是不要在finally释放锁了，可能程序执行时间比你触发幂等的间隔短，那加不加锁，也就没意义了。  
--->
-&emsp; 对于锁的使用，编码问题，小编认为可以参考DCL(双重校验锁)的使用。例如过期Token：  
-
-```java
-private volatile static token;
-
-//......
-if(StringUtil.isBack(token)){
-    lock.lock();
-    if(StringUtil.isBack(token)){
-        token = "xxx";
-    }
-    lock.unlock();
-} 
-```
-
-&emsp; 当然还有一些其他问题考虑：锁重入、自动延期等等。  
-
-&emsp; 如果不能正确使用分布式锁，还是会出一些问题的。例如下面这位哥们。  
-https://mp.weixin.qq.com/s/70mS50S2hdN_qd-RD4rk2Q  
