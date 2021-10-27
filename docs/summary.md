@@ -2836,7 +2836,7 @@ update product set name = 'TXC' where id = 1;
 1. Key操作命令：expire，为给定key设置生存时间；TTL key，以秒为单位，返回给定key的剩余生存时间（TTL, time to live）。  
 2.  **<font color = "clime">Redis各个数据类型的使用场景：分析存储类型和可用的操作。</font>**  
     * 有序列表list：  
-    &emsp; 列表不但是有序的，同时支持按照索引范围获取元素。  
+    &emsp; `列表不但是有序的，同时支持按照索引范围获取元素。`  
     &emsp; 可以用作栈、文章列表。  
     * 无序集合set：
         * 集合内操作，可以用作标签、点赞、签到；
@@ -2877,7 +2877,10 @@ update product set name = 'TXC' where id = 1;
     * ZSet，「有序」「不可重复」集合，由skiplist(跳跃表)或者ziplist(压缩列表)组成。  
 
 ###### 1.16.2.1.3.1. SDS详解
-1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>** <font color = "red">len保存了字符串的长度，free表示buf数组中未使用的字节数量，buf数组则是保存字符串的每一个字符元素。</font>  
+1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>** 
+    * len保存了字符串的长度；
+    * free表示buf数组中未使用的字节数量；
+    * buf数组则是保存字符串的每一个字符元素。  
 2. Redis字符串追加会做以下三个操作：  
     1. 计算出大小是否足够；  
     2. 开辟空间至满足所需大小；  

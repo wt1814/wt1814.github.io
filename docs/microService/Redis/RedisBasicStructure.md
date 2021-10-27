@@ -31,7 +31,7 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. Key操作命令：expire，为给定key设置生存时间；TTL key，以秒为单位，返回给定key的剩余生存时间（TTL, time to live）。  
 2.  **<font color = "clime">Redis各个数据类型的使用场景：分析存储类型和可用的操作。</font>**  
-    * 有序列表list：列表不但是有序的，同时支持按照索引范围获取元素。  
+    * 有序列表list：`列表不但是有序的，同时支持按照索引范围获取元素。`  
     &emsp; 可以用作栈、文章列表。  
     * 无序集合set：集合内操作，可以用作标签、点赞、签到； spop/srandmember命令生成随机数； 集合间操作，可以用作社交需求。  
     * 有序集合ZSet：有序的集合，每个元素有个 score。  

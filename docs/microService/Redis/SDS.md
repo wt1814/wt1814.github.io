@@ -9,7 +9,10 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>** <font color = "red">len保存了字符串的长度，free表示buf数组中未使用的字节数量，buf数组则是保存字符串的每一个字符元素。</font>  
+1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>** 
+    * len保存了字符串的长度；
+    * free表示buf数组中未使用的字节数量；
+    * buf数组则是保存字符串的每一个字符元素。  
 2. Redis字符串追加会做以下三个操作：  
     1. 计算出大小是否足够；  
     2. 开辟空间至满足所需大小；  
