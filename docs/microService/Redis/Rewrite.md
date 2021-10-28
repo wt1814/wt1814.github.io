@@ -29,6 +29,14 @@
 
 # 1. ~~AOF重写阻塞~~
 <!-- 
+阻塞
+https://www.cnblogs.com/myJuly/p/13328586.html
+https://blog.csdn.net/thewindkee/article/details/83507596
+https://blog.csdn.net/qq_34999565/article/details/112697188
+https://blog.csdn.net/qq_34556414/article/details/106292161
+-->
+
+<!-- 
 Redis AOF重写阻塞问题分析
 https://blog.csdn.net/github_32521685/article/details/106354737
 https://www.yht7.com/news/89862

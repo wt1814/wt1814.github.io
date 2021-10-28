@@ -67,6 +67,7 @@
 # 1. 秒杀系统设计  
 
 <!-- 
+https://mp.weixin.qq.com/s/4xXb2ZKYAdV1tISHDsgJcg
 万字好文，电商秒杀系统架构分析与实战！ 
 https://mp.weixin.qq.com/s/Nbm1vQvPXVY_-VFesC5yvw
 如何设计一个秒杀系统呢

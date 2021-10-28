@@ -533,7 +533,6 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [RedisPipeline/批处理](/docs/microService/Redis/RedisPipeline.md)  
 &emsp; [Redis和Lua](/docs/microService/Redis/lua.md)  
 &emsp; [Redis持久化](/docs/microService/Redis/RedisPersistence.md)  
-&emsp; &emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
 &emsp; [Redis过期键删除](/docs/microService/Redis/Keydel.md)  
 &emsp; [Redis内存淘汰](/docs/microService/Redis/RedisEliminate.md)  
 &emsp; [Redis实现队列](/docs/microService/Redis/Message.md)  
@@ -544,7 +543,8 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [Redis哨兵模式](/docs/microService/Redis/RedisSentry.md)  
 &emsp; [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
 [Redis运维](/docs/microService/Redis/RedisOperation.md)  
-[Redis常见问题与优化](/docs/microService/Redis/problem.md)  
+&emsp; [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
+&emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
 
 ### 限流降级
 [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
@@ -723,6 +723,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [DevOps搭建](/docs/devAndOps/devOpsPractice.md)  
 [GIT](/docs/devAndOps/git/command.md)  
 [Maven](/docs/devAndOps/maven.md)  
+&emsp; [Maven冲突解决](/docs/devAndOps/conflict.md)  
 [Jmeter](/docs/devAndOps/Jmeter.md)  
 [JMH](/docs/java/JVM/JMH.md)  
 [多种发布方式](/docs/system/publishe.md)  
