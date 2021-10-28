@@ -227,6 +227,14 @@ https://www.cnblogs.com/cjsblog/p/9664536.html
 
 ## 1.4. 保持有序
 
+&emsp; Kafka无法做到消息全局有序，只能做到Partition维度的有序。所以如果想要消息有序，就需要从Partition维度入手。一般有两种解决方案：
+
+* 单Partition，单Consumer。通过此种方案强制消息全部写入同一个Partition内，但是同时也牺牲掉了Kafka高吞吐的特性了，所以一般不会采用此方案。  
+* **多Partition，多Consumer，指定key使用特定的Hash策略，使其消息落入指定的Partition 中，从而保证相同的key对应的消息是有序的。** 此方案也是有一些弊端，比如当Partition个数发生变化时，相同的key对应的消息会落入到其他的Partition上，所以一旦确定Partition个数后就不能在修改Partition个数了。  
+
+
+
+
 ### 1.4.1. 存储消息保序
 
     如果将Topic设置成单分区，该Topic的所有的消息都只在一个分区内读写，保证全局的顺序性，但将丧失Kafka多分区带来的高吞吐量和负载均衡的性能优势。
