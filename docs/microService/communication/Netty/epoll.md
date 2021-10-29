@@ -18,7 +18,7 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "clime">`select,poll,epoll只是I/O多路复用模型中第一阶段，即获取网络数据、用户态和内核态之间的拷贝。`</font>** 此阶段会阻塞线程。  
+1. **<font color = "clime">`~~select,poll,epoll只是I/O多路复用模型中第一阶段，即获取网络数据、用户态和内核态之间的拷贝。~~`</font>** 此阶段会阻塞线程。  
 2. **select()：**  
     1. **select运行流程：**  
         &emsp; **<font color = "red">select()运行时会将fd_set集合从用户态拷贝到内核态。</font>** 在内核态中线性扫描socket，即采用轮询。如果有事件返回，会将内核态的数组相应的FD置位。最后再将内核态的数据返回用户态。  
