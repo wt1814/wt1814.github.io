@@ -1,182 +1,98 @@
 
 
-# Dubbo的参数校验
-&emsp; 在 Dubbo 中进行参数验证  
-&emsp; 参数验证功能是基于 JSR303 实现的，用户只需标识 JSR303 标准的验证 annotation，并通过声明 filter 来实现验证。  
+# 从头到尾的炕，不得不用【CompletableFuture】整一下
 
-## Maven依赖
+## 背景  
+&emsp; app改版，代码重构。  
+&emsp; 还记得刚接手这块内容的时候，有个for循环【串行】调用远程，稍微改点东西，就会导致接口超时。  
+&emsp; 这次重构，想着优化一下。看调用的对方接口说明：  
 
-```xml
-<dependency>
-    <groupId>javax.validation</groupId>
-    <artifactId>validation-api</artifactId>
-    <version>1.0.0.GA</version>
-</dependency>
-<dependency>
-    <groupId>org.hibernate</groupId>
-    <artifactId>hibernate-validator</artifactId>
-    <version>4.2.0.Final</version>
-</dependency>
+```java
+@MethodDesc("查询用户在哪个分群，不传分群id则返回所有分群")
+List<Integer> queryGroupsByUserId(String var1, List<Integer> var2);
 ```
 
-## 示例
-### 参数标注示例 
+&emsp; 敲代码，调试无果。再一次入炕。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/share/share-1.png)  
+
+
+## 通过CompletableFuture的allOf方法对多个异步执行结果进行处理
+&emsp; CompletableFuture和CompletionService的知识，可以查看之前的文章。  
+
 ```java
-import java.io.Serializable;
-import java.util.Date;
- 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
- 
-public class ValidationParameter implements Serializable {
-    private static final long serialVersionUID = 7158911668568000392L;
- 
-    @NotNull // 不允许为空
-    @Size(min = 1, max = 20) // 长度或大小范围
-    private String name;
- 
-    @NotNull(groups = ValidationService.Save.class) // 保存时不允许为空，更新时允许为空 ，表示不更新该字段
-    @Pattern(regexp = "^\\s*\\w+(?:\\.{0,1}[\\w-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*\\.[a-zA-Z]+\\s*$")
-    private String email;
- 
-    @Min(18) // 最小值
-    @Max(100) // 最大值
-    private int age;
- 
-    @Past // 必须为一个过去的时间
-    private Date loginDate;
- 
-    @Future // 必须为一个未来的时间
-    private Date expiryDate;
- 
-    public String getName() {
-        return name;
-    }
- 
-    public void setName(String name) {
-        this.name = name;
-    }
- 
-    public String getEmail() {
-        return email;
-    }
- 
-    public void setEmail(String email) {
-        this.email = email;
-    }
- 
-    public int getAge() {
-        return age;
-    }
- 
-    public void setAge(int age) {
-        this.age = age;
-    }
- 
-    public Date getLoginDate() {
-        return loginDate;
-    }
- 
-    public void setLoginDate(Date loginDate) {
-        this.loginDate = loginDate;
-    }
- 
-    public Date getExpiryDate() {
-        return expiryDate;
-    }
- 
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
+List<Integer> groups= null;
+
+if (list != null && list.size()>0){
+    if (list.size() <=20){
+        groups= groupServiceApi.queryGroupsByUserId(iid, list);
+    }else {
+        // 集合拆分
+        List<List<Integer>> lists = this.splitList(list, 15);
+        // 获取结果
+        List<CompletableFuture<List<Integer>>> futures = this.getGroupIds(iid,lists);
+        // 多个异步执行结果合并到该集合
+        List<Integer> futureUsers = new ArrayList<>();
+
+        // 通过allOf对多个异步执行结果进行处理
+        CompletableFuture allFuture = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()])).whenComplete((v, t) -> {
+                // 所有CompletableFuture执行完成后进行遍历
+                futures.forEach(future -> {
+                    synchronized (this) {
+                        // 查询结果合并
+                        futureUsers.addAll(future.getNow(null));
+                    }
+                });
+            });
+        // 阻塞等待所有CompletableFuture执行完成
+        allFuture.get();
+        // 对合并后的结果集进行去重处理
+        groups = futureUsers.stream().distinct().collect(Collectors.toList());
     }
 }
 ```
 
 
-### 分组验证示例
-
 ```java
-public interface ValidationService { // 缺省可按服务接口区分验证场景，如：@NotNull(groups = ValidationService.class)   
-    @interface Save{} // 与方法同名接口，首字母大写，用于区分验证场景，如：@NotNull(groups = ValidationService.Save.class)，可选
-    void save(ValidationParameter parameter);
-    void update(ValidationParameter parameter);
+/**
+    * list拆分
+    * @param list
+    * @param groupSize
+    * @return
+    */
+private List<List<Integer>> splitList(List<Integer> list , int groupSize){
+    int length = list.size();
+    // 计算可以分成多少组
+    int num = ( length + groupSize - 1 )/groupSize ; // TODO
+    List<List<Integer>> newList = new ArrayList<>(num);
+    for (int i = 0; i < num; i++) {
+        // 开始位置
+        int fromIndex = i * groupSize;
+        // 结束位置
+        int toIndex = (i+1) * groupSize < length ? ( i+1 ) * groupSize : length ;
+        newList.add(list.subList(fromIndex,toIndex)) ;
+    }
+    return  newList ;
 }
 ```
 
-### 关联验证示例 
-
 ```java
-import javax.validation.GroupSequence;
- 
-public interface ValidationService {   
-    @GroupSequence(Update.class) // 同时验证Update组规则
-    @interface Save{}
-    void save(ValidationParameter parameter);
- 
-    @interface Update{} 
-    void update(ValidationParameter parameter);
+/**
+    * 异步获取结果
+    * @param iid
+    * @param lists
+    * @return
+    */
+private List<CompletableFuture<List<Integer>>> getGroupIds(String iid,List<List<Integer>> lists){
+
+    List<CompletableFuture<List<Integer>>> completableFutures =  new ArrayList<>();
+    for (List<Integer> list:lists){
+
+        CompletableFuture<List<Integer>> listCompletableFuture = CompletableFuture.supplyAsync(() -> groupServiceApi.queryGroupsByUserId(iid, list));
+        completableFutures.add(listCompletableFuture);
+
+    }
+    return completableFutures;
+
 }
 ```
 
-
-### 参数验证示例
-
-```java
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
- 
-public interface ValidationService {
-    void save(@NotNull ValidationParameter parameter); // 验证参数不为空
-    void delete(@Min(1) int id); // 直接对基本类型参数验证
-}
-```
-
-
-## 配置
-### 在客户端验证参数
-
-```xml
-<dubbo:reference id="validationService" interface="org.apache.dubbo.examples.validation.api.ValidationService" validation="true" />
-```
-
-### 在服务器端验证参数
-
-```xml
-<dubbo:service interface="org.apache.dubbo.examples.validation.api.ValidationService" ref="validationService" validation="true" />
-```
-
-## 验证异常信息 
-
-```java
-import javax.validation.ConstraintViolationException;
-import javax.validation.ConstraintViolationException;
- 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
- 
-import org.apache.dubbo.examples.validation.api.ValidationParameter;
-import org.apache.dubbo.examples.validation.api.ValidationService;
-import org.apache.dubbo.rpc.RpcException;
- 
-public class ValidationConsumer {   
-    public static void main(String[] args) throws Exception {
-        String config = ValidationConsumer.class.getPackage().getName().replace('.', '/') + "/validation-consumer.xml";
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(config);
-        context.start();
-        ValidationService validationService = (ValidationService)context.getBean("validationService");
-        // Error
-        try {
-            parameter = new ValidationParameter();
-            validationService.save(parameter);
-            System.out.println("Validation ERROR");
-        } catch (RpcException e) { // 抛出的是RpcException
-            ConstraintViolationException ve = (ConstraintViolationException) e.getCause(); // 里面嵌了一个ConstraintViolationException
-            Set<ConstraintViolation<?>> violations = ve.getConstraintViolations(); // 可以拿到一个验证错误详细信息的集合
-            System.out.println(violations);
-        }
-    } 
-}
-```

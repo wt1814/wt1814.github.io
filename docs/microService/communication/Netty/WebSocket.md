@@ -10,6 +10,14 @@
 <!-- /TOC -->
 
 
+<!-- 
+SpringBoot+WebSocket实时监控异常 
+https://mp.weixin.qq.com/s/xdqer-DtZuaGsTloNkuB8w
+分布式WebSocket集群解决方案 
+https://mp.weixin.qq.com/s/5unniQ_b_MZZRRUkGoE4uA
+
+-->
+
 # 1. WebSocket协议
 <!-- 
 WebSocket协议入门介绍
