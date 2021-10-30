@@ -38,3 +38,18 @@ https://mp.weixin.qq.com/s/TC7gQnxBoxvFh-iaQg28YQ
 
 
 -->
+
+
+
+------
+
+
+9.Netty 发送消息有几种方式？  
+
+Netty 有两种发送消息的方式：  
+
+    直接写入 Channel 中，消息从 ChannelPipeline 当中尾部开始移动；写入和 ChannelHandler 绑定的 ChannelHandlerContext 中，消息从 ChannelPipeline 中的下一个 ChannelHandler 中移动。  
+
+10.默认情况 Netty 起多少线程？何时启动？  
+
+Netty 默认是 CPU 处理器数的两倍，bind 完之后启动。  

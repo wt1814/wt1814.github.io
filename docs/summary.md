@@ -3452,21 +3452,20 @@ update product set name = 'TXC' where id = 1;
 
 ### 1.18.5. Netty
 #### 1.18.5.1. Netty简介
-&emsp; **Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。**  
+1. **Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。**  
+    1. Netty是一个基于NIO的client-server（客户端服务器）框架，使用它可以快速简单地开发网络应用程序。
+    2. 它极大地简化并优化了TCP和UDP套接字服务器等网络编程，并且性能以及安全性等很多方面甚至都要更好。
+    3. 支持多种协议，如FTP，SMTP，HTTP以及各种二进制和基于文本的传统协议。  
 
-1. Netty是一个基于NIO的client-server（客户端服务器）框架，使用它可以快速简单地开发网络应用程序。
-2. 它极大地简化并优化了TCP和UDP套接字服务器等网络编程，并且性能以及安全性等很多方面甚至都要更好。
-3. 支持多种协议，如FTP，SMTP，HTTP以及各种二进制和基于文本的传统协议。  
+2. **<font color = "clime">为什么要用Netty？</font>**  
+    &emsp; 在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
 
-&emsp; **<font color = "clime">为什么要用Netty？</font>**  
-&emsp; 在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
-
-* NIO的类库和API繁杂，使用麻烦，需要熟练掌握Selector、ServerSocketChannek、SockctChannek、ByteBuffer等。  
-* **原生API使用单线程模型，不能很好利用多核优势；**  
-* 原生API是直接使用的IO数据，没有做任何封装处理，对数据的编解码、TCP的粘包和拆包、客户端断连、网络的可靠性和安全性方面没有做处理；  
-* **<font color = "red">JDK NIO的BUG，例如臭名昭著的epoll bug，它会导致Selector空轮询，最终导致CPU100%。</font>官方声称在JDK1.6版本的update18修复了该问题，但是直到JDK 1.7版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有得到根本性解决。该BUG以及与该BUG相关的问题单可以参见以下链接内容。** 
-    * http://bugs.java.com/bugdatabase/viewbug.do?bug_id=6403933  
-    * http://bugs.java.com/bugdalabase/viewbug.do?bug_id=21477l9  
+    * NIO的类库和API繁杂，使用麻烦，需要熟练掌握Selector、ServerSocketChannek、SockctChannek、ByteBuffer等。  
+    * **原生API使用单线程模型，不能很好利用多核优势；**  
+    * 原生API是直接使用的IO数据，没有做任何封装处理，对数据的编解码、TCP的粘包和拆包、客户端断连、网络的可靠性和安全性方面没有做处理；  
+    * **<font color = "red">JDK NIO的BUG，例如臭名昭著的epoll bug，它会导致Selector空轮询，最终导致CPU100%。</font>官方声称在JDK1.6版本的update18修复了该问题，但是直到JDK 1.7版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有得到根本性解决。该BUG以及与该BUG相关的问题单可以参见以下链接内容。** 
+        * http://bugs.java.com/bugdatabase/viewbug.do?bug_id=6403933  
+        * http://bugs.java.com/bugdalabase/viewbug.do?bug_id=21477l9  
 
 #### 1.18.5.2. Netty运行流程
 &emsp; [Netty运行流程](/docs/microService/communication/Netty/operation.md)   
@@ -3519,6 +3518,12 @@ update product set name = 'TXC' where id = 1;
 * 对高性能对的序列化框架支持
 
 #### 1.18.5.6. Netty开发
+1. Netty应用场景，Netty主要用来做网络通信：  
+    * 作为 RPC 框架的网络通信工具 ：我们在分布式系统中，不同服务节点之间经常需要相互调用，这个时候就需要 RPC 框架了。不同服务节点之间的通信是如何做的呢？可以使用 Netty 来做。比如我调用另外一个节点的方法的话，至少是要让对方知道我调用的是哪个类中的哪个方法以及相关参数吧！  
+    * 实现一个自己的 HTTP 服务器 ：通过 Netty 我们可以自己实现一个简单的 HTTP 服务器，这个大家应该不陌生。说到 HTTP 服务器的话，作为 Java 后端开发，我们一般使用 Tomcat 比较多。一个最基本的 HTTP 服务器可要以处理常见的 HTTP Method 的请求，比如 POST 请求、GET 请求等等。  
+    * 实现一个即时通讯系统 ：使用 Netty 我们可以实现一个可以聊天类似微信的即时通讯系统，这方面的开源项目还蛮多的，可以自行去 Github 找一找。  
+    * 实现消息推送系统 ：市面上有很多消息推送系统都是基于 Netty 来做的。......
+    * ...  
 1. TCP粘拆包与Netty编解码  
     1. [TCP的粘包和拆包问题描述](/docs/network/TCPSticking.md)  
     2. **<font color = "clime">Netty对半包或者粘包的处理：</font>** **每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，<font color = "red">所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。</font>** 
