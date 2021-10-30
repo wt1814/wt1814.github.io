@@ -2,16 +2,23 @@
 <!-- TOC -->
 
 - [1. Linux的五种I/O模型](#1-linux的五种io模型)
-    - [1.2.1. 阻塞IO](#121-阻塞io)
-    - [1.2.2. 非阻塞IO](#122-非阻塞io)
-    - [1.2.3. 多路复用IO](#123-多路复用io)
-    - [1.2.4. ~~信号驱动IO~~](#124-信号驱动io)
-    - [1.2.5. ~~异步IO~~](#125-异步io)
-    - [1.3. 同步/异步、阻塞/非阻塞](#13-同步异步阻塞非阻塞)
-        - [1.3.1. 同步和异步](#131-同步和异步)
-        - [1.3.2. 阻塞和非阻塞](#132-阻塞和非阻塞)
-        - [1.3.3. 小结](#133-小结)
-    - [1.4. ~~各I/O模型的对比与总结~~](#14-各io模型的对比与总结)
+    - [1.1. 阻塞IO](#11-阻塞io)
+        - [1.1.1. 流程](#111-流程)
+        - [1.1.2. 使用示例](#112-使用示例)
+    - [1.2. 非阻塞IO](#12-非阻塞io)
+        - [1.2.1. 流程](#121-流程)
+        - [1.2.2. 使用示例](#122-使用示例)
+    - [1.3. 多路复用IO](#13-多路复用io)
+        - [1.3.1. 为什么要有多路复用IO](#131-为什么要有多路复用io)
+        - [1.3.2. 多路复用IO流程？](#132-多路复用io流程)
+        - [1.3.3. 使用示例](#133-使用示例)
+    - [1.4. ~~信号驱动IO~~](#14-信号驱动io)
+    - [1.5. ~~异步IO~~](#15-异步io)
+    - [1.6. 同步/异步、阻塞/非阻塞](#16-同步异步阻塞非阻塞)
+        - [1.6.1. 同步和异步](#161-同步和异步)
+        - [1.6.2. 阻塞和非阻塞](#162-阻塞和非阻塞)
+        - [1.6.3. 小结](#163-小结)
+    - [1.7. ~~各I/O模型的对比与总结~~](#17-各io模型的对比与总结)
 
 <!-- /TOC -->
 
@@ -24,28 +31,38 @@
 2. **<font color = "blue">同步（等待结果）和阻塞（线程）：</font>**  
     * 异步和同步：对于请求结果的获取是客户端主动获取结果，还是由服务端来通知结果。    
     * 阻塞和非阻塞：在等待这个函数返回结果之前，当前的线程是处于挂起状态还是运行状态。 
-3. **<font color = "red">I/O模型：</font>**  
-    * 同步阻塞I/O：  
+3. 同步阻塞I/O：  
+    1. 流程：  
         1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
         2. 内核等待I/O数据返回，此时用户进程处于【阻塞】，一直等待内核返回；
         3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
         4. 内核将数据返回给用户进程。  
 
-    &emsp; 特点：两阶段都阻塞。  
-    * 同步非阻塞I/O：  
+    特点：两阶段都阻塞。  
+    2. BIO采用多线程时，`大量的线程占用很大的内存空间，并且线程切换会带来很大的开销，10000个线程真正发生读写事件的线程数不会超过20%，每次accept都开一个线程也是一种资源浪费。`  
+4. 同步非阻塞I/O：  
+    1. 流程：  
         1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
         2. 内核等待I/O数据返回。无I/O数据返回时，内核返回给用户进程ewouldblock结果。`【非阻塞】用户进程，立马返回结果。`但 **<font color = "clime">用户进程要主动轮询查询结果。</font>**  
         3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
         4. 内核将数据返回给用户进程。  
     
-    &emsp; 特点：`第一阶段不阻塞但要轮询，`第二阶段阻塞。
-    * 多路复用I/O：（~~同步阻塞，又基于回调通知~~）  
-    &emsp; 多路复用I/O模型和阻塞I/O模型并没有太大的不同，事实上，还更差一些，因为它需要使用两个系统调用(select和recvfrom)，而阻塞I/O模型只有一次系统调用(recvfrom)。但是Selector的优势在于它可以同时处理多个连接。   
+    特点：`第一阶段不阻塞但要轮询，`第二阶段阻塞。  
+    2. NIO`每次轮询所有fd（包括没有发生读写事件的fd）会很浪费cpu。`  
+5. 多路复用I/O：（~~同步阻塞，又基于回调通知~~）  
+    1. 为什么有多路复用？  
+    &emsp; 如果一个I/O流进来，我们就开启一个进程处理这个I/O流。那么假设现在有一百万个I/O流进来，那就需要开启一百万个进程一一对应处理这些I/O流（——这就是传统意义下的多进程并发处理）。思考一下，一百万个进程，你的CPU占有率会多高，这个实现方式及其的不合理。所以人们提出了I/O多路复用这个模型，一个线程，通过记录I/O流的状态来同时管理多个I/O，可以提高服务器的吞吐能力。  
+    2. 多路是指多个socket套接字，复用是指复用同一个进程。  
+    3. 流程：  
         1. 用户多进程或多线程发起select系统调用，复用器Selector会监听注册进来的进程事件。用户进程【同步】等待结果；
         2. 内核等待I/O数据返回，无数据返回时，select进程【阻塞】，进程也受阻于select调用；
         2. I/O数据返回后，内核将数据从内核空间拷贝到用户空间， **<font color = "clime">Selector`通知`哪个进程哪个事件；</font>**  
         4. 进程发起recvfrom系统调用。
-    
+        
+        多路复用I/O模型和阻塞I/O模型并没有太大的不同，事实上，还更差一些，因为它需要使用两个系统调用(select和recvfrom)，而阻塞I/O模型只有一次系统调用(recvfrom)。但是Selector的优势在于它可以同时处理多个连接。   
+    4. 多路复用`能支持更多的并发连接请求。`  
+6. 信号驱动IO  
+7. 异步IO
 
 # 1. Linux的五种I/O模型  
 &emsp; **<font color = "blue">学习本章节，需要对Linux操作系统有一定的了解。</font>**  
@@ -55,20 +72,14 @@
 -->
 <!--
 
-多路复用
-http://m.elecfans.com/article/644160.html
 https://www.cnblogs.com/shoshana-kong/p/14062903.html
-https://www.cnblogs.com/nr-zhang/p/10483011.html
+https://zhuanlan.zhihu.com/p/115220699
 
 
-一举拿下 I/O 多路复用
-https://mp.weixin.qq.com/s/Qpa0qXxuIM8jrBqDaXmVNA
-*** 阿里二面：什么是mmap？ 
-https://mp.weixin.qq.com/s/sG0rviJlhVtHzGfd5NoqDQ
-框架篇：见识一下linux高性能网络IO+Reactor模型  
-https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
-「网络IO套路」当时就靠它追到女友 
-https://mp.weixin.qq.com/s/x-AZQO5uiuu5svIvScotzA
+
+-->
+
+<!--
 大白话详解5种网络IO模型 
 https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 -->
@@ -130,7 +141,8 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 &emsp; 基于以上两个阶段就产生了五种不同的IO模式，分别是：阻塞I/O模型、非阻塞I/O模型、多路复用I/O模型、异步I/O模型。</font><font color= "clime">其中，前四种被称为同步I/O。</font>   
  
 
-## 1.2.1. 阻塞IO  
+## 1.1. 阻塞IO  
+### 1.1.1. 流程
 &emsp; 在linux中，默认情况下所有的socket都是blocking。从进程发起IO操作，一直等待上述两个阶段完成。两阶段一起阻塞。  
 &emsp; 一个典型的读操作流程大概是这样：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-1.png)  
@@ -149,7 +161,43 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 &emsp; 所以，blocking IO的特点就是在IO执行的两个阶段都被block了。  
 -->
 
-## 1.2.2. 非阻塞IO  
+### 1.1.2. 使用示例
+&emsp; 服务端采用单线程，当accept一个请求后，在recv或send调用阻塞时，将无法accept其他请求（必须等上一个请求处recv或send完），`无法处理并发`。 
+
+```c
+// 伪代码描述
+while(1) {
+  // accept阻塞
+  client_fd = accept(listen_fd)
+  fds.append(client_fd)
+  for (fd in fds) {
+    // recv阻塞（会影响上面的accept）
+    if (recv(fd)) {
+      // logic
+    }
+  }  
+}
+```
+
+&emsp; 服务器端采用多线程，当accept一个请求后，开启线程进行recv，可以完成并发处理，但随着请求数增加需要增加系统线程，`大量的线程占用很大的内存空间，并且线程切换会带来很大的开销，10000个线程真正发生读写事件的线程数不会超过20%，每次accept都开一个线程也是一种资源浪费。`  
+
+```c
+// 伪代码描述
+while(1) {
+  // accept阻塞
+  client_fd = accept(listen_fd)
+  // 开启线程read数据（fd增多导致线程数增多）
+  new Thread func() {
+    // recv阻塞（多线程不影响上面的accept）
+    if (recv(fd)) {
+      // logic
+    }
+  }  
+}
+```
+
+## 1.2. 非阻塞IO  
+### 1.2.1. 流程
 &emsp; Linux下，可以通过设置socket使其变为non-blocking。进程一直询问IO准备好了没有，准备好了再发起读取操作，这时才把数据从内核空间拷贝到用户空间。 **<font color = "red">第一阶段不阻塞但要轮询，第二阶段阻塞。</font>**  
 &emsp; 当对一个non-blocking socket执行读操作时，流程是这个样子：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-2.png)  
@@ -167,12 +215,51 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 &emsp; 所以，nonblocking IO的特点是用户进程需要不断的主动询问kernel数据好了没有。  
 -->
 
+### 1.2.2. 使用示例
+&emsp; 服务器端当accept一个请求后，加入fds集合，每次轮询一遍fds集合recv(非阻塞)数据，没有数据则立即返回错误，`每次轮询所有fd（包括没有发生读写事件的fd）会很浪费cpu。`  
 
-## 1.2.3. 多路复用IO  
+```c
+setNonblocking(listen_fd)
+// 伪代码描述
+while(1) {
+  // accept非阻塞（cpu一直忙轮询）
+  client_fd = accept(listen_fd)
+  if (client_fd != null) {
+    // 有人连接
+    fds.append(client_fd)
+  } else {
+    // 无人连接
+  }  
+  for (fd in fds) {
+    // recv非阻塞
+    setNonblocking(client_fd)
+    // recv 为非阻塞命令
+    if (len = recv(fd) && len > 0) {
+      // 有读写数据
+      // logic
+    } else {
+       无读写数据
+    }
+  }  
+}
+```
+
+## 1.3. 多路复用IO  
 <!-- 
 此模型用到select和poll函数，这两个函数也会使进程阻塞，select先阻塞，有活动套接字才返回，但是和阻塞I/O不同的是，这两个函数可以同时阻塞多个I/O操作，而且可以同时对多个读操作，多个写操作的I/O函数进行检测，直到有数据可读或可写（就是监听多个socket）。select被调用后，进程会被阻塞，内核监视所有select负责的socket，当有任何一个socket的数据准备好了，select就会返回套接字可读，我们就可以调用recvfrom处理数据。  
 -->
+### 1.3.1. 为什么要有多路复用IO
+<!-- 
+https://zhuanlan.zhihu.com/p/115220699
+-->
+&emsp; IO复用形成原因：  
+&emsp; 如果一个I/O流进来，我们就开启一个进程处理这个I/O流。那么假设现在有一百万个I/O流进来，那就需要开启一百万个进程一一对应处理这些I/O流（——这就是传统意义下的多进程并发处理）。思考一下，一百万个进程，你的CPU占有率会多高，这个实现方式及其的不合理。所以人们提出了I/O多路复用这个模型，一个线程，通过记录I/O流的状态来同时管理多个I/O，可以提高服务器的吞吐能力。  
+
+
+### 1.3.2. 多路复用IO流程？  
+&emsp; `多路是指多个socket套接字，复用是指复用同一个进程。`   
 &emsp; 多个连接使用同一个select去询问IO准备好了没有，如果有准备好了的，就返回有数据准备好了，然后对应的连接再发起读取操作，把数据从内核空间拷贝到用户空间。  
+
 &emsp; 两阶段分开阻塞。  
 &emsp; IO multiplexing就是指select，poll，epoll，有些也称这种IO方式为event driven IO。select/epoll的好处就在于单个process就可以同时处理多个网络连接的IO。它的基本原理就是select，poll，epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-3.png)  
@@ -196,9 +283,28 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 &emsp; 多个进程的I/O可以注册到一个复用器(Selector)上，当用户进程调用该Selector，Selector会监听注册进来的所有I/O，如果Selector监听的所有I/O在内核缓存区都没有可读数据，select调用进程会被阻塞，而当任一I/O在内核缓冲区中有可读数据时，select调用就会返回，而后select调用进程可以自己或通知另外的进程(注册进程)再次发起读取I/O，读取内核中准备好的数据，多个进程注册I/O后，只有一个select调用进程被阻塞。    
 &emsp; 其实多路复用I/O模型和阻塞I/O模型并没有太大的不同，事实上，还更差一些，因为这里需要使用两个系统调用(select和recvfrom)，而阻塞I/O模型只有一次系统调用(recvfrom)。但是Selector的优势在于它可以同时处理多个连接。   
 -->
- 
 
-## 1.2.4. ~~信号驱动IO~~  
+### 1.3.3. 使用示例
+&emsp; 服务器端采用单线程通过select/epoll等系统调用获取fd列表，遍历有事件的fd进行accept/recv/send，使其`能支持更多的并发连接请求。`  
+
+```c
+fds = [listen_fd]
+// 伪代码描述
+while(1) {
+  // 通过内核获取有读写事件发生的fd，只要有一个则返回，无则阻塞
+  // 整个过程只在调用select、poll、epoll这些调用的时候才会阻塞，accept/recv是不会阻塞
+  for (fd in select(fds)) {
+    if (fd == listen_fd) {
+        client_fd = accept(listen_fd)
+        fds.append(client_fd)
+    } elseif (len = recv(fd) && len != -1) { 
+      // logic
+    }
+  }  
+}
+```
+
+## 1.4. ~~信号驱动IO~~  
 <!-- 
 https://blog.csdn.net/uestcprince/article/details/90734564
 -->
@@ -207,14 +313,14 @@ https://blog.csdn.net/uestcprince/article/details/90734564
 
 &emsp; 特点：第一阶段不阻塞，第二阶段阻塞。  
 
-## 1.2.5. ~~异步IO~~
+## 1.5. ~~异步IO~~
 &emsp; **进程发起读取操作会立即返回，等到数据准备好且已经拷贝到用户空间了再通知进程拿数据。两个阶段都不阻塞。**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-5.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-50.png)  
 &emsp; 用户进程发起read操作之后，立刻就可以开始去做其它的事。而另一方面，从kernel的角度，当它接收到一个asynchronous read之后，首先它会立刻返回，所以不会对用户进程产生任何block。然后，kernel会等待数据准备完成，然后将数据拷贝到用户内存，当这一切都完成之后，kernel会给用户进程发送一个signal，告诉它read操作完成了。  
 
-## 1.3. 同步/异步、阻塞/非阻塞  
-### 1.3.1. 同步和异步
+## 1.6. 同步/异步、阻塞/非阻塞  
+### 1.6.1. 同步和异步
 <!-- 
 同步非同步的区别在于调用操作系统的recvfrom()的时候是否阻塞，可见除了最后的异步IO其它都是同步IO。
 同步、异步  
@@ -225,7 +331,7 @@ https://blog.csdn.net/uestcprince/article/details/90734564
 &emsp; 同步和异步其实是指获取CPU时间片到利用，**主要看请求发起方对消息结果的获取是主动发起的，还是被动通知的。**如下图所示，如果是请求方主动发起的，一直在等待应答结果(同步阻塞)，或者可以先去处理其他事情，但要不断轮询查看发起的请求是否由应答结果(同步非阻塞)，因为不管如何都要发起方主动获取消息结果，所以形式上还是同步操作。如果是由服务方通知的，也就是请求方发出请求后，要么一直等待通知(异步阻塞)，要么先去干自己的事(异步非阻塞)。当事情处理完成后，服务方会主动通知请求方，它的请求已经完成，这就是异步。异步通知的方式一般通过状态改变、消息通知或者回调函数来完成，大多数时候采用的都是回调函数。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-8.png)  
 
-### 1.3.2. 阻塞和非阻塞  
+### 1.6.2. 阻塞和非阻塞  
 <!-- 
 阻塞、非阻塞  
 &emsp; 阻塞请求，A调用B，A一直等着B的返回，别的事情什么也不干。  
@@ -235,14 +341,14 @@ https://blog.csdn.net/uestcprince/article/details/90734564
 &emsp; 阻塞和非阻塞在计算机的世界里，通常指针对I/O的操作，如网络I/O和磁盘I/O等。那么什么是阻塞和非阻塞呢？简单地说，就是调用一个函数后，**在等待这个函数返回结果之前，当前的线程是处于挂起状态还是运行状态。**如果是挂起状态，就意味着当前线程什么都不能干，就等着获取结果，这就是同步阻塞；如果仍然是运行状态，就意味着当前线程是可以继续处理其他任务的，但要时不时地看一下是否由结果来，这就是同步非阻塞。具体如下图所示。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-9.png)  
 
-### 1.3.3. 小结  
+### 1.6.3. 小结  
 <!-- 
 &emsp; **阻塞、非阻塞和同步、异步的区别：**  
 &emsp; 阻塞、非阻塞和同步、异步其实针对的对象是不一样的。阻塞、非阻塞说的是调用者，同步、异步说的是被调用者。
 -->
 &emsp; 从上面的描述中，可以看到<font color = "red">阻塞和非阻塞通常是指在客户端发出请求后，在服务端处理这个请求的过程中，客户端本身是直接挂起等待结果，还是继续做其他的任务。而异步和同步则是对于请求结果的获取是客户端主动获取结果，还是由服务端来通知结果。</font>从这一点来看，<font color = "clime">同步和阻塞其实描述的是两个不同角度的事情，阻塞和非阻塞指的是客户端等待消息处理时本身的状态，是挂起还是继续干别的。同步和异步指的是对于消息结果是客户端主动获取的，还是由服务端间接推送的。</font>  
 
-## 1.4. ~~各I/O模型的对比与总结~~  
+## 1.7. ~~各I/O模型的对比与总结~~  
 &emsp; 前四种I/O模型都是同步I/O操作，它们的区别在于第一阶段，而第二阶段是一样的：在数据从内核拷贝到应用缓冲期间(用户空间)，进程阻塞于recvfrom调用。  
 &emsp; 下图是各I/O 模型的阻塞状态对比：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-6.png)  

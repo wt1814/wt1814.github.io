@@ -44,7 +44,13 @@
 # 1. Reactor线程模型  
 &emsp; **<font color = "clime">《Reactor论文》</font>**  
 
-<!-- 
+<!--
+一举拿下 I/O 多路复用
+https://mp.weixin.qq.com/s/Qpa0qXxuIM8jrBqDaXmVNA
+框架篇：见识一下linux高性能网络IO+Reactor模型  
+https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
+「网络IO套路」当时就靠它追到女友 
+https://mp.weixin.qq.com/s/x-AZQO5uiuu5svIvScotzA
 网络模式
 https://www.jianshu.com/p/a23b29f1511f
 
