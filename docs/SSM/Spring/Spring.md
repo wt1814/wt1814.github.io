@@ -33,6 +33,12 @@ https://mp.weixin.qq.com/s/34-DdoNcpMUlZiin6Js0Xg
     2. @Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入。  
 
 # 1. Spring
+<!-- 
+Spring 有哪几种依赖注入方式？官方是怎么建议使用的呢？ 
+https://mp.weixin.qq.com/s/vY1gZhp_g78IoXJ5QQvlFQ
+-->
+
+
 ## 1.1. Spring模块  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-1.png)  
 

@@ -19,6 +19,9 @@
 # 1. git
 
 <!--
+Git 实用技巧记录 
+https://mp.weixin.qq.com/s/vQ5uzwGmvvI844Ehj2iZ9w
+
 用21张图，把Git 工作原理彻底说清楚 
 https://mp.weixin.qq.com/s/tzq0dBTSqpp-V89L5Y1IOg
 

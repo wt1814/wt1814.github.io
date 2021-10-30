@@ -4,6 +4,7 @@
     - [1.1. CompletableFuture简介](#11-completablefuture简介)
     - [1.2. ~~CompletableFuture类分析~~](#12-completablefuture类分析)
     - [1.3. CompletableFuture使用](#13-completablefuture使用)
+    - [CompletableFuture实战](#completablefuture实战)
 
 <!-- /TOC -->
 
@@ -148,3 +149,6 @@ https://www.cnblogs.com/happyliu/p/9462703.html
     ```java
     public CompletionStage<T> exceptionally(Function<Throwable, ? extends T> fn);
     ```
+
+## CompletableFuture实战
+&emsp; [CompletableFuture使用1](/docs/a-share/CompletableFutureUse.md)  
