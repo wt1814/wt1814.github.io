@@ -420,6 +420,7 @@
 * 分布式消息队列
     * [MQ](/docs/microService/mq/mq.md)  
         * [消息积压](/docs/microService/mq/MessageBacklog.md)  
+    * [消息推拉机制](/docs/microService/mq/PushPull.md)  
     * [kafka总结](/docs/microService/mq/kafka/kafka.md)   
     * [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
     * [kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  

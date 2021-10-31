@@ -556,6 +556,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 ### 分布式消息队列  
 [MQ](/docs/microService/mq/mq.md)  
 &emsp; [消息积压](/docs/microService/mq/MessageBacklog.md)  
+[消息推拉机制](/docs/microService/mq/PushPull.md)  
 
 
 #### Kafka  
