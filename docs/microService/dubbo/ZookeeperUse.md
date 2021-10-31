@@ -109,6 +109,8 @@ taokeeper
 
 
 ## 1.4. 部署
+&emsp; Windows 下的启动脚本是 zkServer.cmd。  
+
 &emsp; ZooKeeper的三种部署方式：  
 
 * 单机模式，即部署在单台机器上的一个 ZK 服务，适用于学习、了解 ZK 基础功能；
