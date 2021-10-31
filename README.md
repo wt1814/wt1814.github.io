@@ -553,7 +553,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [服务降级](/docs/microService/thinking/Demotion.md)  
 
 ### 分布式消息队列  
-[mq](/docs/microService/mq/mq.md)  
+[MQ](/docs/microService/mq/mq.md)  
 &emsp; [消息积压](/docs/microService/mq/MessageBacklog.md)  
 
 
@@ -676,7 +676,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; &emsp; [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)    
 &emsp; &emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
 &emsp; &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
-
 [WebSocket协议](/docs/microService/communication/Netty/WebSocket.md)  
 
 

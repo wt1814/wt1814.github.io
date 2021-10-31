@@ -417,7 +417,7 @@
     * [限流Sentinel](/docs/microService/thinking/Sentinel.md) 
 * [服务降级](/docs/microService/thinking/Demotion.md)  
 * 分布式消息队列
-    * [mq](/docs/microService/mq/mq.md)  
+    * [MQ](/docs/microService/mq/mq.md)  
         * [消息积压](/docs/microService/mq/MessageBacklog.md)  
     * [kafka总结](/docs/microService/mq/kafka/kafka.md)   
     * [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
