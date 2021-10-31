@@ -3651,13 +3651,11 @@ update product set name = 'TXC' where id = 1;
 ## 1.21. Devops
 ### 1.21.1. CI/CD
 &emsp; `CI/CD是两个独立过程的组合：持续集成和持续部署。`  
-1. Continuous Integration（持续集成）
-持续集成（CI）是构建软件和完成初始测试的过程。  
-
-2. Continuous Delivery（持续交付）
-
-3. Continuous Deployment（持续部署）
-持续部署（CD）是将代码与基础设施相结合的过程，确保完成所有测试并遵循策略，然后将代码部署到预期环境中。  
+1. Continuous Integration（持续集成）  
+&emsp; 持续集成（CI）是构建软件和完成初始测试的过程。  
+2. Continuous Delivery（持续交付）  
+3. Continuous Deployment（持续部署）  
+&emsp; 持续部署（CD）是将代码与基础设施相结合的过程，确保完成所有测试并遵循策略，然后将代码部署到预期环境中。  
 
 ### 1.21.2. DevOps
 1. DevOps框架  
