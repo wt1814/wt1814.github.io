@@ -116,6 +116,7 @@
     * [线程池框架](/docs/java/concurrent/ThreadPool.md)  
         * [ThreadPoolExecutor详解](/docs/java/concurrent/ThreadPoolExecutor.md)  
         * [线程池的正确使用](/docs/java/concurrent/ThreadPoolUse.md)  
+            * [线程池的异常](/docs/java/concurrent/ThreadPoolException.md)  
         * [ForkJoinPool详解](/docs/java/concurrent/ForkJoinPool.md)  
         * [Future相关](/docs/java/concurrent/Future.md)  
         * [CompletionService](/docs/java/concurrent/CompletionService.md)  
