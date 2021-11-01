@@ -20,7 +20,7 @@
     1. <font color = "red">为接口创建代理类的字节码文件。</font> 使用`反射`来创建代理类。  
     2. <font color = "red">使用ClassLoader将字节码文件加载到JVM。</font>  
     3. <font color = "red">创建代理类实例对象，执行对象的目标方法。</font>  
-3. JDK动态代理为什么只能使用接口？  
+3. `JDK动态代理为什么只能使用接口？`  
 &emsp; JDK动态代理是为接口生成代理对象，该代理对象继承了JAVA标准类库Proxy.java类并且实现了目标对象。由于JAVA遵循单继承多实现原则，所以JDK无法利用继承来为目标对象生产代理对象。   
 
 # 1. JDK动态代理

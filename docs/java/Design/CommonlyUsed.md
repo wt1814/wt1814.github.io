@@ -1,10 +1,7 @@
 
 
+&emsp; [Spring中经典的9种设计模式](/docs/java/Design/SpringDesign.md)  
+&emsp; [8种Mybatis里的设计模式](/docs/java/Design/MybatisDesign.md)  
+&emsp; [常用的设计模式](/docs/java/Design/UsedDesign.md)  
 
-Spring中涉及的设计模式总结 
-https://mp.weixin.qq.com/s/ktNs4T_OZ-neWWvtBmC-cA
-
-
-
-https://mp.weixin.qq.com/s/LD7WHJ-OHmU81G3xgL5u5g
 

@@ -59,7 +59,10 @@
         * [责任链模式(if/else)](/docs/java/Design/chain.md)   
         * [观察者模式](/docs/java/Design/observer.md)   
     * [设计模式大讨论](/docs/java/Design/discuss.md)  
-    * [常用的设计模式](/docs/java/Design/CommonlyUsed.md)  
+    * [设计模式使用](/docs/java/Design/CommonlyUsed.md)  
+        * [Spring中经典的9种设计模式](/docs/java/Design/SpringDesign.md)  
+        * [8种Mybatis里的设计模式](/docs/java/Design/MybatisDesign.md)  
+        * [常用的设计模式](/docs/java/Design/UsedDesign.md)  
 * JVM  
     * [JVM总结](/docs/java/JVM/summary.md)  
     * [JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM.md)  

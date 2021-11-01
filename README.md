@@ -91,6 +91,7 @@
 [设计模式详解](/docs/java/Design/design.md)  
 &emsp; [创建型设计模式](/docs/java/Design/establish.md)  
 &emsp; &emsp; [单例模式](/docs/java/Design/singleton.md)  
+&emsp; &emsp; [单例与多例](/docs/java/Design/singletonMultiple.md)  
 &emsp; &emsp; [简单工厂模式](/docs/java/Design/factory.md)  
 &emsp; &emsp; [抽象工厂模式](/docs/java/Design/AbstractFactory.md)  
 &emsp; &emsp; [建造者模式](/docs/java/Design/build.md)  
@@ -110,7 +111,10 @@
 &emsp; &emsp; [责任链模式(if/else)](/docs/java/Design/chain.md)   
 &emsp; &emsp; [观察者模式](/docs/java/Design/observer.md)   
 [设计模式大讨论](/docs/java/Design/discuss.md)  
-[常用的设计模式](/docs/java/Design/CommonlyUsed.md)  
+[设计模式使用](/docs/java/Design/CommonlyUsed.md)  
+&emsp; [Spring中经典的9种设计模式](/docs/java/Design/SpringDesign.md)  
+&emsp; [8种Mybatis里的设计模式](/docs/java/Design/MybatisDesign.md)  
+&emsp; [常用的设计模式](/docs/java/Design/UsedDesign.md)  
 
 
 ### JVM  
