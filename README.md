@@ -82,6 +82,7 @@
 [SPI](/docs/java/basis/SPI.md)  
 [SDK](/docs/java/basis/SDK.md)  
 [对象池](/docs/java/basis/ObjectPool.md)  
+[编码规范](/docs/java/Design/CodingSpecification.md)  
 
 ### 设计模式  
 [七大设计原则](/docs/java/Design/principles.md)  
@@ -109,7 +110,7 @@
 &emsp; &emsp; [责任链模式(if/else)](/docs/java/Design/chain.md)   
 &emsp; &emsp; [观察者模式](/docs/java/Design/observer.md)   
 [设计模式大讨论](/docs/java/Design/discuss.md)  
-[编码规范](/docs/java/Design/CodingSpecification.md)  
+[常用的设计模式](/docs/java/Design/CommonlyUsed.md)  
 
 
 ### JVM  

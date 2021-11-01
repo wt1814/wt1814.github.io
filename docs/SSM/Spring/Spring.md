@@ -21,8 +21,6 @@ https://mp.weixin.qq.com/mp/homepage?__biz=MzI5NTYwNDQxNA==&hid=5&sn=0966e849b09
 
 https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247484705&idx=1&sn=64cac4a15524b6698e9152f151b6beb6&scene=19#wechat_redirect
 
-Spring中涉及的设计模式总结 
-https://mp.weixin.qq.com/s/ktNs4T_OZ-neWWvtBmC-cA
 @Autowire和@Resource注解使用的正确姿势，别再用错的了！！ 
 https://mp.weixin.qq.com/s/34-DdoNcpMUlZiin6Js0Xg
 
