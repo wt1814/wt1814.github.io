@@ -107,7 +107,7 @@ public class CakeDecorator implements Cake{
 }
 ```
 
-* ConcreteDecorator: Decorator具体实现类
+* ConcreteDecorator: Decorator具体实现类  
 &emsp; 鸡蛋手抓饼 +1.5元
 
 ```java

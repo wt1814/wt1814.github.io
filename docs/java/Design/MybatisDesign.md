@@ -18,5 +18,13 @@ https://cloud.tencent.com/developer/article/1447253
 8. 迭代器模式: 例如迭代器模式PropertyTokenizer；  
 
 
-### 单例模式
-在Mybatis中有两个地方用到单例模式，ErrorContext和LogFactory，其中ErrorContext是用在每个线程范围内的单例，用于记录该线程的执行环境错误信息，而LogFactory则是提供给整个Mybatis使用的日志工厂，用于获得针对项目配置好的日志对象。  
+## 单例模式
+&emsp; 在Mybatis中有两个地方用到单例模式，ErrorContext和LogFactory，其中ErrorContext是用在每个线程范围内的单例，用于记录该线程的执行环境错误信息，而LogFactory则是提供给整个Mybatis使用的日志工厂，用于获得针对项目配置好的日志对象。  
+
+
+## 装饰器模式
+&emsp; 装饰器模式（Decorator Pattern）允许向一个现有的对象添加新的功能，同时又不改变其结构。这种类型的设计模式属于结构型模式，它是作为现有的类的一个包装。这种模式创建了一个装饰类，用来包装原有的类，并在保持类方法签名完整性的前提下，提供了额外的功能。  
+&emsp; 实际开发中，大多数用于对老项目的某些功能进行扩展。新项目中一般不怎么用此模式。  
+&emsp; 生活中的案例：人靠衣裳马靠鞍。美容照相机、没有摄影机，美图秀秀。  
+&emsp; 此设计模式重点在于对已有的功能进行扩展。  
+&emsp; 在Mybatis中，Cache的实现类LruCache、FifoCache等都是装饰一个类PerpetualCache。常见代码格式，就是装饰类中会有个被装饰类的属性，并且这个属性还是构造方法的参数。  
