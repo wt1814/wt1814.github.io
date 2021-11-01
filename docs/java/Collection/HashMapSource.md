@@ -33,12 +33,13 @@
     &emsp; 树形化：把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于8；table数组长度大于等于64。  
     &emsp; 解除树形化：阈值6。
 2. HashMap成员方法：  
-    1. hash()函数/扰动函数：hash函数会根据传递的key值进行计算， 1)首先计算key的hashCode值， 2)然后再对hashcode进行无符号右移操作， 3)最后再和hashCode进行异或 ^ 操作。（即让hashcode的高16位和低16位进行异或操作。）   
+    1. hash()函数/扰动函数：  
+    &emsp; hash函数会根据传递的key值进行计算， 1)首先计算key的hashCode值， 2)然后再对hashcode进行无符号右移操作， 3)最后再和hashCode进行异或 ^ 操作。（即让hashcode的高16位和低16位进行异或操作。）   
     &emsp; **<font color = "clime">这样做的好处是增加了随机性，减少了碰撞冲突的可能性。</font>**    
     2. put()函数：
         1. 在put的时候，首先对key做hash运算，计算出该key所在的index。
         2. 如果没碰撞，直接放到数组中；
-        3. 如果碰撞了，如果key是相同的，则替换到原来的值；
+        3. 如果碰撞了，如果key是相同的，则替掉到原来的值；
         4. 如果key不同，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。
         5. 最后判断哈希表是否满了(当前哈希表大小*负载因子)，如果满了，则扩容。  
     2. 扩容机制：JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。  
@@ -294,7 +295,7 @@ static final int hash(Object key) {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-18.png)  
 
 &emsp; **<font color = "clime">插入元素方法：</font>**   
-&emsp; <font color = "clime">在put的时候，首先对key做hash运算，计算出该key所在的index。如果没碰撞，直接放到数组中，如果碰撞了，如果key是相同的，则替换到原来的值。如果key不同，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。最后判断哈希表是否满了(当前哈希表大小*负载因子)，如果满了，则扩容。</font>  
+&emsp; <font color = "clime">在put的时候，首先对key做hash运算，计算出该key所在的index。如果没碰撞，直接放到数组中，如果碰撞了，如果key是相同的，则替换掉原来的值。如果key不同，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。最后判断哈希表是否满了(当前哈希表大小*负载因子)，如果满了，则扩容。</font>  
 
 1. 计算 key 的 hash 值。  
 &emsp; 计算方式是 (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);  
