@@ -857,7 +857,12 @@
 4. 跨代引用假说（跨代引用相对于同代引用仅占少数）  
 &emsp; **既然跨代引用只是少数，那么就没必要去扫描整个老年代，也不必专门记录每一个对象是否存在哪些跨代引用，只需在新生代上建立一个全局的数据结构，称为记忆集(Remembered Set)，这个结构把老年代划分为若干个小块，标识出老年代的哪一块内存会存在跨代引用。此后当发生Minor GC时，只有包含了跨代引用的小块内存里的对象才会被加入GC Roots进行扫描。**  
 &emsp; 卡表是记忆集的一种实现方式。  
-5. 
+5. 各种GC
+    * Partial GC(局部 GC): 并不收集整个 GC 堆的模式 
+        * Young GC: 只收集 Young Gen 的 GC，Young GC 还有种说法就叫做 Minor GC
+        * Old GC: 只收集 old gen 的 GC，只有垃圾收集器 CMS 的 concurrent collection 是这个模式
+        * Mixed GC: 收集整个 Young Gen 以及部分 old gen 的 GC，只有垃圾收集器 G1 有这个模式
+    * Full GC: 收集整个堆，包括新生代，老年代，永久代(在 JDK 1.8 及以后，永久代被移除，换为 metaspace 元空间)等所有部分的模式
 6. YGC触发时机
 7. Full GC   
 &emsp; **<font color = "red">Full GC的触发时机：（老年代或永久代不足 ---> 老年代不满足年轻代晋升 ---> 回收器(例如CMS)---> 系统调用 ）</font>**   
