@@ -236,6 +236,8 @@ full gc 触发条件有哪些？
 
 <!-- 
 https://cloud.tencent.com/developer/article/1582661
+https://www.zhihu.com/question/41922036
+
 -->
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-98.png)  
