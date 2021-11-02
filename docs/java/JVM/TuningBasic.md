@@ -44,7 +44,7 @@
     &emsp; **<font color = "clime">生成线程快照的主要目的是定位线程出现长时间停顿的原因，如线程间死锁、死循环、请求外部资源导致的长时间等待等都是导致线程长时间停顿的常见原因。</font>**  
     &emsp; **`线程出现停顿的时候，通过jstack来查看各个线程的调用堆栈，就可以知道没有响应的线程到底在后台做什么事情，或者等待什么。`**  
     * Jmap：java内存映像工具。  
-    &emsp; <font color = "red">jmap(JVM Memory Map)命令用于生成heap dump文件，如果不使用这个命令，</font> **<font color = "red">还可以使用-XX:+HeapDumpOnOutOfMemoryError参数来让虚拟机出现OOM的时候自动生成dump文件。</font>**   
+    &emsp; <font color = "red">jmap（JVM Memory Map）命令用于生成heap dump文件。如果不使用这个命令，</font> **<font color = "red">还可以使用-XX:+HeapDumpOnOutOfMemoryError参数来让虚拟机出现OOM的时候自动生成dump文件。</font>**   
     &emsp; jmap -dump:live,format=b,file=path pid。 **<font color = "blue">参数lime表示需要抓取目前在生命周期内的内存对象。</font>**   
     * Jhat：虚拟机堆转储快照分析工具。  
     * Jstat：虚拟机统计信息监视工具。  
