@@ -782,7 +782,7 @@
     * **<font color = "blue">`内存分配全流程：`逃逸分析 ---> 没有逃逸，尝试栈上分配 ---> 是否满足直接进入老年代的条件 ---> `尝试TLAB分配` ---> `新生代Eden区分配`。</font>**  
     * 堆内存分配策略：  
     &emsp; 分配策略有：对象优先在Eden分配、大对象直接进入老年代、长期存活的对象将进入老年代、动态对象年龄判定、空间分配担保。  
-    &emsp; `空间分配担保：` **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的总空间。</font>**   
+    &emsp; `空间分配担保：` **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的`总空间`。</font>**   
 
 #### 1.3.4.3. 内存泄露
 1. 内存溢出与内存泄露  
@@ -863,7 +863,7 @@
         * Old GC: 只收集 old gen 的 GC，只有垃圾收集器 CMS 的 concurrent collection 是这个模式
         * Mixed GC: 收集整个 Young Gen 以及部分 old gen 的 GC，只有垃圾收集器 G1 有这个模式
     * Full GC: 收集整个堆，包括新生代，老年代，永久代(在 JDK 1.8 及以后，永久代被移除，换为 metaspace 元空间)等所有部分的模式
-6. YGC触发时机
+6. YGC触发时机：eden区快要被占满的时候；在full gc前会让先执行以下young gc。  
 7. Full GC   
 &emsp; **<font color = "red">Full GC的触发时机：（老年代或永久代不足 ---> 老年代不满足年轻代晋升 ---> 回收器(例如CMS)---> 系统调用 ）</font>**   
     1. 老年代或永久的不足
@@ -876,7 +876,7 @@
         1. 统计得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间  
         &emsp; Hotspot为了避免由于新生代对象晋升到旧生代导致旧生代空间不足的现象，在进行Minor GC时，做了一个判断，如果之前统计所得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间，那么就直接触发Full GC。  
         2. 空间分配担保失败  
-        &emsp; **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的总空间，</font>** 如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。   
+        &emsp; **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的`总空间`，</font>** 如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。   
     3. CMS GC时出现promotion failed（晋升失败）和concurrent mode failure（并发模式失败）  
     &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足（可能是GC过程中浮动垃圾过多导致暂时性的空间不足），便会报Concurrent Mode Failure错误，并触发Full GC。  
     4. <font color = "red">系统调用System.gc()</font>  
