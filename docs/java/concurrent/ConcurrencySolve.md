@@ -30,8 +30,14 @@
     1. 内存屏障的作用：（~~原子性~~、可见性、有序性）  
         1. （`保障可见性`）它会强制将对缓存的修改操作立即写入主存； 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。  
         2. （`保障有序性`）阻止屏障两侧的指令重排序。 
-3. JMM中的happens-before原则：JSR-133内存模型 **<font color = "red">使用happens-before的概念来阐述操作之间的内存可见性。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
-&emsp; happens-before原则有管理锁定（lock）规则、volatile变量规则（参考volatile原理，即内存屏障）、线程启动规则（Thread.start()）、线程终止规则（Thread.join()）、线程中断规则（Thread.interrupt()）...  
+3. JMM中的happens-before原则：  
+    &emsp; JSR-133内存模型 **<font color = "red">使用`happens-before`的概念来阐述操作之间的`内存可见性`。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
+    * 如果操作1 happens-before 操作2，那么第操作1的执行结果将对操作2可见，而且操作1的执行顺序排在第操作2之前。
+    * 两个操作之间存在happens-before关系，并不意味着一定要按照happens-before原则制定的顺序来执行。如果重排序之后的执行结果与按照happens-before关系来执行的结果一致，那么这种重排序并不非法。  
+
+    &emsp; happens-before原则有管理锁定（lock）规则、volatile变量规则（参考volatile原理，即内存屏障）、线程启动规则（Thread.start()）、线程终止规则（Thread.join()）、线程中断规则（Thread.interrupt()）...  
+    
+
 
 # 1. ~~并发安全解决底层~~
 <!-- 
@@ -153,9 +159,22 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 
 ## 1.3. JMM中的happens-before原则
 &emsp; JSR-133内存模型 **<font color = "red">使用happens-before的概念来阐述操作之间的内存可见性。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
+
+* 如果操作1 happens-before 操作2，那么第操作1的执行结果将对操作2可见，而且操作1的执行顺序排在第操作2之前。
+* 两个操作之间存在happens-before关系，并不意味着一定要按照happens-before原则制定的顺序来执行。如果重排序之后的执行结果与按照happens-before关系来执行的结果一致，那么这种重排序并不非法。  
+
+
+----
+
+&emsp; happens-before关系的定义如下：
+
+* 如果一个操作happens-before另一个操作，那么第一个操作的执行结果将对第二个操作可见，而且第一个操作的执行顺序排在第二个操作之前。  
+* 两个操作之间存在happens-before关系，并不意味着Java平台的具体实现必须要按照happens-before关系指定的顺序来执行。如果重排序之后的执行结果，与按happens-before关系来执行的结果一致，那么JMM也允许这样的重排序。  
 <!-- 
 &emsp; Happens-before规则主要用来约束两个操作，两个操作之间具有 happens-before关系, 并不意味着前一个操作必须要在后一个操作之前执行，happens-before 仅仅要求前一个操作(执行的结果)对后一个操作可见, (the first is visible to and ordered before the second，前一个操作的结果可以被后续的操作获取)。  
 -->
+
+-----
 &emsp; happens-before关系的分析需要分为单线程和多线程的情况：  
 
 * 单线程下的 happens-before 字节码的先后顺序天然包含happens-before关系：因为单线程内共享一份工作内存，不存在数据一致性的问题。在程序控制流路径中靠前的字节码 happens-before 靠后的字节码，即靠前的字节码执行完之后操作结果对靠后的字节码可见。然而，这并不意味着前者一定在后者之前执行。实际上，如果后者不依赖前者的运行结果，那么它们可能会被重排序。  
@@ -163,7 +182,7 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 
 &emsp; 为了方便程序开发，Java 内存模型实现了下述的先行发生关系：  
 
-* 程序次序规则： 在一个单独的线程中，按照程序代码的执行流顺序，(时间上)先执行的操作happen—before(时间上)后执行的操作。  
+* 程序次序规则：在一个单独的线程中，按照程序代码的执行流顺序，(时间上)先执行的操作happen—before(时间上)后执行的操作。  
 （同一个线程中前面的所有写操作对后面的操作可见）
 * 管理锁定规则：一个unlock操作happen—before后面(时间上的先后顺序)对同一个锁的lock操作。  
 （如果线程1解锁了monitor a，接着线程2锁定了a，那么，线程1解锁a之前的写操作都对线程2可见(线程1和线程2可以是同一个线程)）   
