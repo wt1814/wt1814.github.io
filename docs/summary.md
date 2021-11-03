@@ -1254,7 +1254,7 @@
             4. 将锁对象的对象头的MarkWord替换为指向锁记录的指针。
 		2. 自旋锁：轻量级锁在加锁过程中，用到了自旋锁。自旋锁分为固定次数自旋锁（在JDK 1.6之前，自旋次数默认是10次）和自适应自旋锁。
 		3. 新线程获取轻量级锁
-			1. 获取轻量锁过程当中会在当前线程的虚拟机栈中创建一个Lock Record的内存区域去存储获取锁的记录DisplacedMarkWord，
+			1. 获取轻量锁过程当中会在当前线程的虚拟机栈中创建一个Lock Record的内存区域去存储获取锁的记录DisplacedMarkWord。
 			2. 然后使用CAS操作将锁对象的Mark Word更新成指向刚刚创建的Lock Record的内存区域DisplacedMarkWord的地址。  
 		4. 已经获取轻量级锁的线程的解锁： **<font color = "red">轻量级锁的锁释放逻辑其实就是获得锁的逆向逻辑，通过CAS操作把线程栈帧中的LockRecord替换回到锁对象的MarkWord中。</font>** 
     3. 重量级锁  
@@ -1272,7 +1272,7 @@
     * **<font color = "clime">在Volatile读后插入读-读屏障（禁止下面的普通读操作与上面的Volatile读重排序）、读-写屏障（禁止下面所有的普通写操作和上面Volatile读重排序）。</font>**  
 3. Volatile为什么不安全（不保证原子性，线程切换）？  
 &emsp; 两个线程执行i++（i++的过程可以分为三步，首先获取i的值，其次对i的值进行加1，最后将得到的新值写回到缓存中），线程1获取i值后被挂起，线程2执行...  
-4. volatile使用场景： 
+4. volatile使用场景：  
     &emsp; 关键字Volatile用于多线程环境下的单次操作（单次读或者单次写）。即Volatile主要使用的场合是在多个线程中可以感知实例变量被更改了，并且可以获得最新的值使用，也就是用多线程读取共享变量时可以获得最新值使用。  
     1. 全局状态标志。
     2. DCL详解：  
@@ -1283,18 +1283,28 @@
 
 
 ##### 1.4.2.2.5. ThreadLocal
+&emsp; ThreadLocal的作用是每一个线程创建一个副本。  
+
+1. 在进行对象跨层次传递的时候，使用ThreadLocal可以避免多次传递，打破层次间的束缚。   
+2. 线程间层次隔离。  
+3. 进行事务操作，用于存储线程事务信息。  
+4. 数据库连接，Session会话管理。  
+
 ###### 1.4.2.2.5.1. ThreadLocal原理
 1. ThreadLocal源码/内存模型：  
     1. **<font color = "red">ThreadLocal#set()#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** 即，当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
     &emsp; ~~Thread ---> ThreadLocal.ThreadLocalMap~~
-    2. **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。<font color = "clime">`Key是一个ThreadLocal实例，Value是设置的值。`Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
-2. **ThreadLocal内存泄露：**  
-&emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">`如果一个ThreadLocal不存在外部强引用时，Key（ThreadLocal实例）会被GC回收，这样就会导致ThreadLocalMap中key为null，`而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
-&emsp; **<font color = "clime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  
-&emsp; 解决方案：`调用remove()方法`
-3. **ThreadLocalMap的key被回收后，如何获取值？**  
-&emsp; ThreadLocal#get() ---> setInitialValue() ---> ThreadLocalMap.set(this, value); 。  
-&emsp; 通过nextIndex()不断获取table上的槽位，直到遇到第一个为null的地方，此处也将是存放具体entry的位置，在线性探测法的不断冲突中，如果遇到非空entry中的key为null，可以表明key的弱引用已经被回收，但是由于线程仍未结束生命周期被回收，而导致该entry仍未从table中被回收，那么则会在这里尝试通过replaceStaleEntry()方法，将null key的entry回收掉并set相应的值。  
+    2. **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。<font color = "clime">`Key是一个ThreadLocal实例，Value是设置的值。`Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
+2. ThreadLocal是如何实现线程隔离的？   
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-85.png)  
+    &emsp; ThreadLocal之所以能达到变量的线程隔离，其实就是每个线程都有一个自己的ThreadLocalMap对象来存储同一个threadLocal实例set的值，而取值的时候也是根据同一个threadLocal实例去自己的ThreadLocalMap里面找，自然就互不影响了，从而达到线程隔离的目的！  
+3. **ThreadLocal内存泄露：**  
+    &emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key(ThreadLocal实例)会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
+    &emsp; **<font color = "clime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  
+    &emsp; 解决方案：`调用remove()方法`
+4. **ThreadLocalMap的key被回收后，如何获取值？**  
+    &emsp; ThreadLocal#get() ---> setInitialValue() ---> ThreadLocalMap.set(this, value); 。  
+    &emsp; 通过nextIndex()不断获取table上的槽位，直到遇到第一个为null的地方，此处也将是存放具体entry的位置，在线性探测法的不断冲突中，如果遇到非空entry中的key为null，可以表明key的弱引用已经被回收，但是由于线程仍未结束生命周期被回收，而导致该entry仍未从table中被回收，那么则会在这里尝试通过replaceStaleEntry()方法，将null key的entry回收掉并set相应的值。  
 
 ###### 1.4.2.2.5.2. ThreadLocal应用
 1. ThreadLocal使用场景：  
@@ -1323,8 +1333,8 @@
 2. 线程池框架Executor：  
 &emsp; Executor：所有线程池的接口。  
 &emsp; ExecutorService：扩展了Executor接口。添加了一些用来管理执行器生命周期和任务生命周期的方法。  
-&emsp; ThreadPoolExecutor(创建线程池方式一)：线程池的具体实现类。  
-&emsp; Executors(创建线程池方式二)：提供了一系列静态的工厂方法用于创建线程池，返回的线程池都实现了ExecutorService 接口。  
+&emsp; ThreadPoolExecutor（创建线程池方式一）：线程池的具体实现类。  
+&emsp; Executors（创建线程池方式二）：提供了一系列静态的工厂方法用于创建线程池，返回的线程池都实现了ExecutorService 接口。  
 3. 根据返回的对象类型，创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor（任务调度线程池）、ForkJoinPool。  
 4. **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
 	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。
@@ -1350,10 +1360,11 @@
 &emsp; **<font color = "red">在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对Thread进行了封装（内部类Worker），并不是每次执行任务都会调用Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行。</font>** 如果有则直接执行，也就是调用任务中的run方法，将run方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的run方法串联起来。  
 &emsp; 源码解析：`runWorker()方法中，有任务时，while (task != null || (task = getTask()) != null) 循环获取；没有任务时，清除空闲线程。`  
 4. 线程池保证核心线程不被销毁？  
-    &emsp; ThreadPoolExecutor回收线程都是等while死循环里getTask()获取不到任务，返回null时，调用processWorkerExit方法从Set集合中remove掉线程，getTask()返回null又分为2两种场景：  
-    1. 线程正常执行完任务，`并且已经等到超过keepAliveTime时间，大于核心线程数，那么会返回null`，结束外层的runWorker中的while循环。
-    2. 当调用shutdown()方法，会将线程池状态置为shutdown，并且需要等待正在执行的任务执行完，阻塞队列中的任务执行完才能返回null。
-    3. `getTask()不返回null的情况有获取到任务，或获取不到任务，但线程数小于等于核心线程数。`  
+    &emsp; `ThreadPoolExecutor回收线程都是等while死循环里getTask()获取不到任务，返回null时，调用processWorkerExit方法从Set集合中remove掉线程。`  
+    1. getTask()返回null又分为2两种场景：  
+        1. 线程正常执行完任务，`并且已经等到超过keepAliveTime时间，大于核心线程数，那么会返回null`，结束外层的runWorker中的while循环。
+        2. 当调用shutdown()方法，会将线程池状态置为shutdown，并且需要等待正在执行的任务执行完，阻塞队列中的任务执行完才能返回null。
+    2. `getTask()不返回null的情况有获取到任务，或获取不到任务，但线程数小于等于核心线程数。`  
 
 #### 1.4.3.3. 线程池的正确使用
 1. **<font color = "clime">线程池设置：</font>**   
@@ -1367,14 +1378,11 @@
         &emsp; `线程池的任务队列本来起缓冲作用，`但是如果设置的不合理会导致线程池无法扩容至max，这样无法发挥多线程的能力，导致一些服务响应变慢。队列长度要看具体使用场景，取决服务端处理能力以及客户端能容忍的超时时间等。队列长度要根据使用场景设置一个上限值，如果响应时间要求较高的系统可以设置为0。  
         &emsp; `队列大小200或500-1000。`  
     3. `线程池的优雅关闭：`处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
-2. **<font color = "clime">线程池使用：</font>**   
-    1. **<font color = "clime">线程池异常处理：</font>**  
-    &emsp; ThreadPoolExecutor中将异常传递给afterExecute()方法，而afterExecute()没有做任何处理。这种处理方式能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。即使感知到了，也无法查看异常信息。  
-    &emsp; 解决方案：在提交的任务中将异常捕获并处理，不抛给线程池；异常抛给线程池，但是要及时处理抛出的异常。如果提交任务的时候使用的方法是submit，那么该方法将返回一个Future对象，所有的异常以及处理结果都可以通过future对象获取。     
-    1. 线程池未处理异常：
-        1. 线程遇到未处理的异常就结束了。  
-        2. 当线程池中线程频繁出现未捕获的异常，那线程的复用率就大大降低了，需要不断地创建新线程。  
-    2. 线程池中线程中异常尽量手动捕获。  
+2. **<font color = "clime">线程池使用：</font>**    
+    1. `线程池未处理异常：`
+        1. 线程遇到未处理的异常就结束了。ThreadPoolExecutor中将异常传递给afterExecute()方法，而afterExecute()没有做任何处理。这种处理方式能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。即使感知到了，也无法查看异常信息。    
+        2. `当线程池中线程频繁出现未捕获的异常，那线程的复用率就大大降低了，需要不断地创建新线程。`  
+    2. `线程池中线程中异常尽量手动捕获。`  
 3. **<font color = "clime">线程池的监控：</font>**  
 &emsp; 通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。  
 4. @Async方法没有执行的问题分析：  
