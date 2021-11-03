@@ -9,7 +9,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 中断  
+1. 中断Thread.interrupt()  
 &emsp; **<font color = "red">线程在不同状态下对于中断所产生的反应：</font>**    
     * NEW和TERMINATED对于中断操作几乎是屏蔽的；  
     * RUNNABLE和BLOCKED类似， **<font color = "cclime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中；</font>**  

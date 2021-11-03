@@ -17,16 +17,13 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 6种线程状态：  
-
+&emsp; 查看[线程状态](/docs/java/concurrent/threadState.md)  
 2. yield()，线程让步。 yield会使当前线程让出CPU执行时间片，与其他线程一起重新竞争CPU时间片。  
 3. thread.join()把指定的线程加入到当前线程，可以将两个交替执行的线程合并为顺序执行的线程。比如在线程B中调用了线程A的Join()方法，直到线程A执行完毕后，才会继续执行线程B。  
 
 
 # 1. Thread类详解  
 <!-- 
-
-为什么 Java 线程没有 Running 状态？一下被问懵！ 
-https://mp.weixin.qq.com/s/_M_VkFDCdIiXokhzqsDT_A
 
 -->
 
@@ -68,7 +65,7 @@ String threadName = Thread.currentThread().getName();
 &emsp; **线程组：ThreadGroup并不能提供对线程的管理，其主要功能是对线程进行组织。** 在构造Thread时，可以显示地指定线程的Group(ThreadGroup)。如果没有显示指定，子线程会被加入父线程所在的线程组(无论如何线程都会被加入某个Thread Group之中)。
 
 ## 1.2. ★★★线程状态介绍(线程生命周期)
-&emsp; [线程状态](/docs/java/concurrent/threadState.md)  
+&emsp; 查看[线程状态](/docs/java/concurrent/threadState.md)  
 
 ## 1.3. Thread.java的成员方法
 
