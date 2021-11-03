@@ -9,14 +9,15 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. CAS函数  
+1. **<font color = "clime">CAS，Compare And Swap，即比较并交换。一种无锁原子算法，CAS是一种乐观锁。</font>**  
+2. CAS函数  
 &emsp; **<font color = "clime">在函数CAS(V,E,N)中有3个参数：从内存中读取的值E，计算的结果值V，内存中的当前值N（可能已经被其他线程改变）。</font>**  
-&emsp; **<font color = "clime">函数流程：</font>** 1. 读取当前值E，2. 计算结果值V，<font color = "clime">3. 将读取的当前值E和当前新值N作比较，如果相等，更新为V；</font>4. 如果不相等，再次读取当前值E计算结果V，将E再和新的当前值N比较，直到相等。 
-2. **CAS缺点：**  
+&emsp; **<font color = "clime">函数流程：</font>** 1. 读取当前值E；2. 计算结果值V；<font color = "clime">3. 将读取的当前值E和当前新值N作比较，如果相等，更新为V；</font>4. 如果不相等，再次读取当前值E计算结果V，将E再和新的当前值N比较，直到相等。 
+3. **CAS缺点：**  
     * 循环时间长开销大。自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。  
     * **<font color = "red">只能保证一个共享变量的原子操作。</font> <font color = "clime">从Java1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个对象里来进行CAS操作。</font>**  
     * ABA问题。  
-3. ABA问题详解
+4. ABA问题详解
     1. 什么是ABA问题？  
     &emsp; ABA示例：  
     &emsp; 1).在多线程的环境中，线程a从共享的地址X中读取到了对象A。  
