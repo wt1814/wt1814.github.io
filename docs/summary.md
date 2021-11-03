@@ -866,7 +866,6 @@
 &emsp; 加上`int replacer = 1;`和将placeHolder赋值为null起到了同样的作用：断开堆中placeHolder和栈的联系，让GC判断placeHolder已经死亡。    
 &emsp; “不使用的对象应手动赋值为null”的原理，一切根源都是来自于JVM的一个“bug”：代码离开变量作用域时，并不会自动切断其与堆的联系。    
 
-
 #### 1.3.6.2. GC-回收位置/安全点
 1. 安全点  
 &emsp; **<font color = "clime">可达性分析算法必须是在一个确保一致性的内存快照中进行。</font>**   
@@ -1317,7 +1316,6 @@
     1. 线程正常执行完任务，`并且已经等到超过keepAliveTime时间，大于核心线程数，那么会返回null`，结束外层的runWorker中的while循环。
     2. 当调用shutdown()方法，会将线程池状态置为shutdown，并且需要等待正在执行的任务执行完，阻塞队列中的任务执行完才能返回null。
     3. `getTask()不返回null的情况有获取到任务，或获取不到任务，但线程数小于等于核心线程数。`  
-
 
 #### 1.4.3.3. 线程池的正确使用
 1. **<font color = "clime">线程池设置：</font>**   
