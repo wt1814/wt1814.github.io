@@ -40,6 +40,9 @@
 
 volatile 的设计原理
 https://mp.weixin.qq.com/s/MyhBFZQdMvH4m1nSbQUQWA
+
+99%的人没弄懂volatile的设计原理
+https://mp.weixin.qq.com/s/WTqdSz-lc5zzelJgk4Co8g
 -->
 <!-- 
 ~~

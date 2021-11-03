@@ -20,6 +20,8 @@ SpringCloud之OpenFeign服务接口调用
 https://mp.weixin.qq.com/s/rxPt0GNlG9bMBosTmqU1Yw
 SpringCloud OpenFeign 核心原理
 https://mp.weixin.qq.com/s/zYfhJDyHji58Skw3IqIWzg
+openFeign
+https://mp.weixin.qq.com/s/rdutzgM350dgSPK9kMptDA
 
 -->
 &emsp; Feign：是Netflix开发的<font color = "red">声明式、模板化的HTTP客户端，使用Feign可以更快捷、优雅地调用HTTP API，“面向接口的形式”调用HTTP请求，达到就像调用本地方法一样调用远程HTTP请求的效果。</font>  

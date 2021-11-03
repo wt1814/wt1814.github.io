@@ -11,6 +11,9 @@
 
 
 # 1. Ribbon使用教程  
+&emsp; 负载均衡大体可以分为两类：集中式、进程内。前者也被称为服务端负载均衡，其一般位于服务集群的前端，统一接收、处理、转发客户端的请求。典型地包括F5硬件、LVS、Nginx等技术方案；而后者也被称为客户端负载均衡，其是在客户端侧根据某种策略选择合适的服务实例直接进行请求，其典型代表有Ribbon。  
+
+-------
 &emsp; Spring Cloud Ribbon，<font color = "red">客户端负载均衡，在每个客户端节点都维护着自己要访问的服务端清单。</font>在Spring Cloud中，当Ribbon与Eureka配合使用时，Ribbon可自动从Eureka Server获取服务提供者列表，并基于负载均衡算法，请求其中一个服务提供者实例。  
 &emsp; RestTemplate可以使用Ribbon的自动化配置，同时通过配置@LoadBalanced还能够开启客户端负载均衡。  
 

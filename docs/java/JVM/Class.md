@@ -16,6 +16,9 @@ https://mp.weixin.qq.com/s/BVoqaDn7HUNtdB5vZa0zug
 https://mp.weixin.qq.com/s/o0MFrSVS7fYLDo6UnfmA-A
 
 https://mp.weixin.qq.com/s/AnRtCQDIkKgIdhKTk2sWeA
+
+2W 字的Java class类文件结构详解！
+https://mp.weixin.qq.com/s/RndRd9apu3tXEDGBZF7EbQ
 -->
 &emsp; 根据Java虚拟机规范，类文件由单个 ClassFile 结构组成：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-91.png)  
