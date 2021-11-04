@@ -15,7 +15,7 @@
 &emsp; 基于索引再排序：`SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) ORDER BY id_pk ASC LIMIT M`
 2. **<font color = "blue">ORDER BY与limit（分页再加排序）</font>**  
 &emsp; ORDER BY排序后，用LIMIT取前几条，发现返回的结果集的顺序与预期的不一样。    
-&emsp; 如果order by的列有相同的值时，MySQL会随机选取这些行，为了保证每次都返回的顺序一致可以额外增加一个排序字段（比如：id），用两个字段来尽可能减少重复的概率。  
+&emsp; 如果order by的列有相同的值时，MySQL会随机选取这些行，`为了保证每次都返回的顺序一致可以额外增加一个排序字段（比如：id），用两个字段来尽可能减少重复的概率。`  
 
 # 1. limit
 
