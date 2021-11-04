@@ -22,6 +22,7 @@
 # 1.1. redo log(重做日志)，WAL技术
 <!-- 
 
+https://mp.weixin.qq.com/s/oia-GM1xWQBrQcnkNAgSjA
 讲讲 MySQL 中的 WAL 策略和 CheckPoint 技术
 https://mp.weixin.qq.com/s/bZJkylcGYyn2-POfLKfFtA
 
@@ -101,6 +102,16 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 &emsp; 在 MySQL 中，如果每一次的更新操作都需要写进磁盘，然后磁盘也要找到对应的那条记录，然后再更新，整个过程 IO 成本、查找成本都很高。为了解决这个问题，MySQL 的设计者就采用了日志(redo log)来提升更新效率。  
 &emsp; 而日志和磁盘配合的整个过程，其实就是 MySQL 里的 WAL 技术，WAL 的全称是 Write-Ahead Logging，它的关键点就是先写日志，再写磁盘。  
 &emsp; 具体来说，<font color = "clime">当有一条记录需要更新的时候，InnoDB 引擎就会先把记录写到 redo log(redolog buffer)里面，并更新内存(buffer pool)，这个时候更新就算完成了。同时，InnoDB 引擎会在适当的时候，将这个操作记录更新到磁盘里面(刷脏页)。</font>  
+
+
+-----------
+
+在计算机体系中，CPU处理速度和硬盘的速度，是不在同一个数量级上的，为了让它们速度匹配，从而催生了我们的内存模块，但是内存有一个特点，就是掉电之后，数据就会丢失，不是持久的，我们需要持久化的数据，最后都需要存储到硬盘上。   
+
+InnoDB引擎设计者也利用了类似的设计思想，先写内存，再写硬盘，这样就不会因为redo log写硬盘IO而导致数据库性能问题。在InnoDB中，这种技术有一个专业名称，叫做Write-Ahead Log（预先日志持久化）  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-184.png)  
+
 
 
 ### 1.1.3.3. 刷盘时机

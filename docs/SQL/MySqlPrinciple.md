@@ -15,3 +15,11 @@
 &emsp; &emsp; [DoubleWrite](/docs/SQL/DoubleWrite.md)  
 &emsp; [两阶段提交和崩溃恢复](/docs/SQL/CrashRecovery.md)  
 &emsp; [小结：insert插入流程](/docs/SQL/insert.md)  
+
+
+
+<!-- 
+
+南山的架构笔记
+https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkyODI3NDY4MQ==&action=getalbum&album_id=2039257623614521345&scene=173&from_msgid=2247484159&from_itemidx=1&count=3&nolastread=1#wechat_redirect
+-->

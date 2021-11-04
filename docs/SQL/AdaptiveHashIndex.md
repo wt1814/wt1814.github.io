@@ -8,7 +8,7 @@
 -->
 &emsp;对于InnoDB的哈希索引，确切的应该这么说：  
 &emsp;(1)InnoDB用户无法手动创建哈希索引，这一层上说，InnoDB确实不支持哈希索引；  
-&emsp;(2)InnoDB会自调优(self-tuning)，如果判定建立自适应哈希索引(Adaptive Hash Index, AHI)，能够提升查询效率，InnoDB自己会建立相关哈希索引，这一层上说，InnoDB又是支持哈希索引的；  
+&emsp;(2)InnoDB会自调优(self-tuning)，如果判定建立自适应哈希索引(Adaptive Hash Index, AHI)，能够提升查询效率，InnoDB自己会建立相关哈希索引，这一层上说，InnoDB又是支持哈希索引的。  
 
 
 &emsp; 哈希(hash)是一种非常快的查找方法，一般情况下查找的时间复杂度为O(1)。常用于连接(join)操作，如SQL Server和Oracle中的哈希连接(hash join)。但是SQL Server和Oracle等常见的数据库并不支持哈希索引(hash index)。MySQL的Heap存储引擎默认的索引类型为哈希，而InnoDB存储引擎提出了另一种实现方法，自适应哈希索引(adaptive hash index)。  

@@ -160,7 +160,7 @@
             - [1.5.6.4. InnoDB体系结构](#1564-innodb体系结构)
                 - [1.5.6.4.1. InnoDB内存结构-性能](#15641-innodb内存结构-性能)
                     - [1.5.6.4.1.1. BufferPool](#156411-bufferpool)
-                    - [1.5.6.4.1.2. ChangeBuffer](#156412-changebuffer)
+                    - [1.5.6.4.1.2. 写缓冲ChangeBuffer](#156412-写缓冲changebuffer)
                     - [1.5.6.4.1.3. AdaptiveHashIndex](#156413-adaptivehashindex)
                 - [1.5.6.4.2. InnoDB磁盘结构-可靠性](#15642-innodb磁盘结构-可靠性)
                     - [1.5.6.4.2.1. BufferPool落盘表空间](#156421-bufferpool落盘表空间)
@@ -1876,16 +1876,21 @@ Read view 匹配条件规则如下：
 	1. <font color = "red">Server层包括连接器、查询缓存、分析器、优化器、执行器等。</font>涵盖MySQL的大多数核心服务功能，以及所有的内置函数(如日期、时间、数学和加密函数等)，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等，还有 **<font color = "clime">一个通用的日志模块binglog日志模块。</font>**     
 	2. `存储引擎：主要负责数据的存储和读取，`采用可以替换的插件式架构，支持 InnoDB、MyISAM、Memory等多个存储引擎，其中InnoDB引擎有自有的日志模块redolog模块。  
 3. MySQL更新路程：  
+    1. 事务提交前 --- 内存操作：  
+        1. 数据加载到缓冲池buffer poll；  
+        2. `写回滚日志undo log；`  
+        3. 更新缓冲池数据；  
+        4. 写redo log buffer。  
+    2. 事务提交：`redo log与bin log两阶段提交。`  
+    3. 事务提交后：后台线程将buffer poll中数据落盘。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-174.png)  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-183.png)  
-    1. 事务提交前 --- 内存操作： “1)数据加载到缓冲池buffer poll；” 2)写回滚日志undo log； 3)更新缓冲池数据 4) 写redo log buffer
-    2. 事务提交：redo log与bin log两阶段提交。  
-    3. 事务提交后：后台线程将buffer poll中数据落盘。  
 
 #### 1.5.6.2. binLog日志  
 1. **<font color = "clime">binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。</font>**  
 2. 在实际应用中，主要用在两个场景：主从复制和数据恢复。  
-3. 写入流程：SQL修改语句先写Binlog Buffer，事务提交时，按照一定的格式刷到磁盘中。binlog刷盘时机：对于InnoDB存储引擎而言，mysql通过sync_binlog参数控制binlog的刷盘时机。  
+3. 写入流程：SQL修改语句先写Binlog Buffer，事务提交时，按照一定的格式刷到磁盘中。  
+&emsp; binlog刷盘时机：对于InnoDB存储引擎而言，mysql通过sync_binlog参数控制binlog的刷盘时机。  
 
 #### 1.5.6.3. MySql存储引擎
 1. **<font color = "red">InnoDB的特性：</font>**    
@@ -1897,7 +1902,8 @@ Read view 匹配条件规则如下：
     * InnoDB 不保存表的具体行数，执行`select count(*) from table`时需要全表扫描。  
 
 #### 1.5.6.4. InnoDB体系结构
-&emsp; Innodb体系结构包含后台线程、内存池和磁盘上的结构。
+&emsp; Innodb体系结构包含后台线程、内存池和磁盘上的结构。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-147.png)  
 1. `如果从内存上来看，Change Buffer和Adaptive Hash Index占用的内存都属于Buffer Pool；redo Log Buffer占用的内存与Buffer Pool独立。即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。`  
 2. `Buffer Pool有Changer Buffer；Redo Log有Double Write。`  
 
@@ -1923,15 +1929,14 @@ Read view 匹配条件规则如下：
 &emsp; **Buffer pool 另一个主要的功能是「加速写」，即当需要修改一个页面的时候，先将这个页面在缓冲池中进行修改，记下相关的重做日志，这个页面的修改就算已经完成了。**  
 
 
-###### 1.5.6.4.1.2. ChangeBuffer
+###### 1.5.6.4.1.2. 写缓冲ChangeBuffer
 1. 在「非唯一」「普通」索引页（即非聚集索引）不在缓冲池中，对页进行了写操作， 1). 并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更， 2).`等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中`的技术。  
 2. **~~<font color = "red">如果辅助索引页已经在缓冲区了，则直接修改即可；如果不在，则先将修改保存到 Change Buffer。</font><font color = "blue">Change Buffer的数据在对应辅助索引页读取到缓冲区时合并到真正的辅助索引页中。Change Buffer 内部实现也是使用的 B+ 树。</font>~~**  
 
 ###### 1.5.6.4.1.3. AdaptiveHashIndex
 &emsp;对于InnoDB的哈希索引，确切的应该这么说：  
 &emsp;(1)InnoDB用户无法手动创建哈希索引，这一层上说，InnoDB确实不支持哈希索引；  
-&emsp;(2)InnoDB会自调优(self-tuning)，如果判定建立自适应哈希索引(Adaptive Hash Index, AHI)，能够提升查询效率，InnoDB自己会建立相关哈希索引，这一层上说，InnoDB又是支持哈希索引的；  
-
+&emsp;(2)InnoDB会自调优(self-tuning)，如果判定建立自适应哈希索引(Adaptive Hash Index, AHI)，能够提升查询效率，InnoDB自己会建立相关哈希索引，这一层上说，InnoDB又是支持哈希索引的。  
 
 ##### 1.5.6.4.2. InnoDB磁盘结构-可靠性
 ###### 1.5.6.4.2.1. BufferPool落盘表空间
@@ -1940,18 +1945,21 @@ Read view 匹配条件规则如下：
 3. **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB（在操作系统中默认页大小是4KB）。</font>**  
 
 ###### 1.5.6.4.2.2. undoLog
-1. **<font color = "clime">Undo log，回滚日志，是逻辑日记。undo log解决了事务原子性。</font>**    
+1. **<font color = "clime">Undo log，回滚日志，是逻辑日记。undo log解决了事务原子性。</font>** 主要有两个作用，事务回滚和MVCC（Mutil-Version Concurrency Control）。      
 2. undo log主要记录了数据的逻辑变化，比如一条INSERT语句，对应一条DELETE的undo log，对于每个UPDATE语句，对应一条相反的UPDATE的undo log，这样在发生错误时，就能回滚到事务之前的数据状态。
 3. 事务开始之前，将当前的版本生成undo log。
 
 ###### 1.5.6.4.2.3. redoLog
 1. redo log，物理格式的日志，记录的是物理数据页面的修改的信息。 **<font color = "red">`redo log实际上记录数据页的变更，而这种变更记录是没必要全部保存，`因此redo log实现上采用了大小固定，循环写入的方式，当写到结尾时，会回到开头循环写日志。</font>**    
 2. 解决事务的一致性，持久化数据。  
-3. `写入流程(Write-Ahead Logging，‘日志’先行)：当有一条记录需要更新的时候，InnoDB引擎就会先把记录写到redo log(redolog buffer)里面，并更新内存(buffer pool)，这个时候更新就算完成了。`同时，InnoDB引擎会在适当的时候，`将这个redoLog操作记录更新到磁盘里面（刷脏页）`。
+3. 写入流程：`(Write-Ahead Logging，‘日志’先行)  
+&emsp; 在计算机体系中，CPU处理速度和硬盘的速度，是不在同一个数量级上的，为了让它们速度匹配，从而催生了我们的内存模块，但是内存有一个特点，就是掉电之后，数据就会丢失，不是持久的，我们需要持久化的数据，最后都需要存储到硬盘上。InnoDB引擎设计者也利用了类似的设计思想。   
+&emsp; 当有一条记录需要更新的时候，InnoDB引擎就会先把记录写到redo log(redolog buffer)里面，并更新内存(buffer pool)，这个时候更新就算完成了。`同时，InnoDB引擎会在适当的时候，`将这个redoLog操作记录更新到磁盘里面（刷脏页）`。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-184.png)  
 4. 刷盘时机：重做日志的写盘，并不一定是随着事务的提交才写入重做日志文件的，而是随着事务的开始，逐步开始的。先写入redo log buffer。  
 
 ###### 1.5.6.4.2.4. DoubleWrite
-&emsp; doublewrite：<font color = "blue">如果说写缓冲change buffer带给InnoDB存储引擎的是性能，那么两次写Double Write带给InnoDB存储引擎的是数据的可靠性。</font>  
+&emsp; double write：<font color = "blue">如果说写缓冲change buffer带给InnoDB存储引擎的是性能，那么两次写Double Write带给InnoDB存储引擎的是数据的可靠性。</font>  
 1. MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
 2. 在应用(apply)重做日志(redo log)前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。  
     1. 在异常崩溃时，如果不出现“页数据损坏”，能够通过redo恢复数据；
