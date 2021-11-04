@@ -1194,8 +1194,19 @@
 
 
 ###### 1.4.2.2.2.2. Synchronized使用
-1. `类锁：当Synchronized修饰静态方法或Synchronized修饰代码块传入某个class对象（Synchronized (XXXX.class)）时被称为类锁。`
-2. `对象锁：当Synchronized修饰非静态方法或Synchronized修饰代码块时传入非class对象（Synchronized this）时被称为对象锁。`
+1. synchronized可以修饰代码块或者方法：  
+    ```java
+    synchronized (lock){
+        //被保护的代码块
+    }
+    public synchronized void method() {
+        被保护的方法
+    }
+    ```
+2. 类锁和对象锁  
+    1. `类锁：当Synchronized修饰静态方法或Synchronized修饰代码块传入某个class对象（Synchronized (XXXX.class)）时被称为类锁。`
+    2. `对象锁：当Synchronized修饰非静态方法或Synchronized修饰代码块时传入非class对象（Synchronized this）时被称为对象锁。`
+3. String锁：由于在JVM中具有String常量池缓存的功能，因此相同字面量是同一个锁。  
 
 
 ##### 1.4.2.2.3. Synchronized使用是否安全
