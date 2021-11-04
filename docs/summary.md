@@ -1794,11 +1794,11 @@
     * 幻读：一个事务多次读，另一事务中间新增了数据。  
 3. SQL标准定义了四个隔离级别（隔离性）：读取未提交、读取已提交、可重复读（可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读）、可串行化。  
 4. Innodb事务实现原理
-    * 原子性的实现：采用[undo log](/docs/SQL/undoLog.md)实现。  
-    * 持久性的实现：采用[redo log](/docs/SQL/redoLog.md)实现。  
-    * 隔离性(事务的隔离级别)的实现
+    * 原子性的实现：采用回滚日志[undo log](/docs/SQL/undoLog.md)实现。  
+    * 持久性的实现：采用重做日志[redo log](/docs/SQL/redoLog.md)实现。  
+    * 隔离性（事务的隔离级别）的实现
         在MySQL中，默认的隔离级别是REPEATABLE-READ（可重复读），阻止脏读和不可重复读，并且解决了幻读问题。  
-        &emsp; 隔离性(事务的隔离级别)的实现，利用的是锁和MVCC机制。 
+        &emsp; 隔离性（事务的隔离级别）的实现，利用的是锁和MVCC机制。 
         * **<font color = "blue">快照读：生成一个事务快照（ReadView），之后都从这个快照获取数据。</font>** 普通select语句就是快照读。  
         &emsp; <font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
         * **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
@@ -1810,13 +1810,30 @@
 
 #### 1.5.5.4. MVCC
 1. **<font color = "clime">多版本并发控制（MVCC）是一种用来解决读-写冲突的无锁并发控制。</font>**  
-&emsp; <font color = "clime">MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
-2. **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC。一个是undo log，用于记录数据的变化轨迹（版本链），用于数据回滚；另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。</font>**   
-    * 版本链的生成：在数据库中的每一条记录实际都会存在三个隐藏列：事务ID、行ID、回滚指针，指向undo log记录。  
-    *  **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
+&emsp; <font color = "clime">`MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。`两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
+2. **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC。</font>**   
+    * 一个是undo log，用于记录数据的变化轨迹（版本链），用于数据回滚。  
+    &emsp; 版本链的生成：在数据库中的每一条记录实际都会存在三个隐藏列：事务ID、行ID、回滚指针，指向undo log记录。  
+    *  另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。  
+    &emsp; **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
 3. ~~Read View判断：~~  
 &emsp; 如果被访问版本的trx_id小于ReadView中的up_limit_id值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  
 &emsp; <font color = "red">如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。</font>如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；<font color = "clime">如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。</font>  
+    -------
+Read View是如何保证可见性判断的呢？我们先看看Read view 的几个重要属性
+
+    m_ids:当前系统中那些活跃(未提交)的读写事务ID, 它数据结构为一个List。  
+    min_limit_id:表示在生成Read View时，当前系统中活跃的读写事务中最小的事务id，即m_ids中的最小值。  
+    max_limit_id:表示生成Read View时，系统中应该分配给下一个事务的id值。  
+    creator_trx_id: 创建当前Read View的事务ID  
+Read view 匹配条件规则如下：
+
+    如果数据事务ID trx_id < min_limit_id，表明生成该版本的事务在生成Read View前，已经提交(因为事务ID是递增的)，所以该版本可以被当前事务访问。  
+    如果trx_id>= max_limit_id，表明生成该版本的事务在生成ReadView后才生成，所以该版本不可以被当前事务访问。  
+    如果 min_limit_id =<trx_id< max_limit_id，需要分3种情况讨论  
+        （1）.如果m_ids包含trx_id,则代表Read View生成时刻，这个事务还未提交，但是如果数据的trx_id等于creator_trx_id的话，表明数据是自己生成的，因此是可见的。  
+        （2）如果m_ids包含trx_id，并且trx_id不等于creator_trx_id，则Read   View生成时，事务未提交，并且不是自己生产的，所以当前事务也是看不见的；
+        （3）.如果m_ids不包含trx_id，则说明你这个事务在Read View生成之前就已经提交了，修改的结果，当前事务是能看见的。
 4. 在读取已提交、可重复读两种隔离级别下会使用MVCC。  
     * 读取已提交READ COMMITTED是在`每次执行select操作时`都会生成一次Read View。所以解决不了幻读问题。 
     * 可重复读REPEATABLE READ只有在第一次执行select操作时才会生成Read View，后续的select操作都将使用第一次生成的Read View。
@@ -1849,7 +1866,12 @@
 
 ### 1.5.6. MySql架构原理
 #### 1.5.6.1. MySql架构
-1. MySQL整个查询执行过程，总的来说分为5个步骤：`1). 客户端请求 ---> 连接器（验证用户身份，给予权限）  ---> 2). 查询缓存（存在缓存则直接返回，不存在则执行后续操作） ---> 3). 分析器（对SQL进行词法分析和语法分析操作）  ---> 优化器（主要对执行的sql优化选择最优的执行方案方法）  ---> 4). 执行器（执行时会先看用户是否有执行权限，有才去使用这个引擎提供的接口） ---> 5). 去引擎层获取数据返回（如果开启查询缓存则会缓存查询结果）。`  
+1. MySQL整个查询执行过程，总的来说分为5个步骤：  
+    1. 客户端请求 ---> 连接器（验证用户身份，给予权限）  
+    2. 查询缓存（存在缓存则直接返回，不存在则执行后续操作）
+    3. 分析器（对SQL进行词法分析和语法分析操作）  ---> 优化器（主要对执行的sql优化选择最优的执行方案方法）  
+    4. 执行器（执行时会先看用户是否有执行权限，有才去使用这个引擎提供的接口）  
+    5. 去引擎层获取数据返回（如果开启查询缓存则会缓存查询结果）。   
 2. **<font color = "clime">MySQL服务器主要分为Server层和存储引擎层。</font>**  
 	1. <font color = "red">Server层包括连接器、查询缓存、分析器、优化器、执行器等。</font>涵盖MySQL的大多数核心服务功能，以及所有的内置函数(如日期、时间、数学和加密函数等)，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等，还有 **<font color = "clime">一个通用的日志模块binglog日志模块。</font>**     
 	2. `存储引擎：主要负责数据的存储和读取，`采用可以替换的插件式架构，支持 InnoDB、MyISAM、Memory等多个存储引擎，其中InnoDB引擎有自有的日志模块redolog模块。  

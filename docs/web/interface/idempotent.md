@@ -26,6 +26,8 @@
 # 1. 接口幂等  
 
 <!-- 
+分布式幂等问题解决方案三部曲 
+https://mp.weixin.qq.com/s/bzroRTHYlVgc4vYv_6gpIQ
 
 高并发下如何保证接口的幂等性？ 
 https://mp.weixin.qq.com/s/2dpjLAxILJE9md1XKOPUKA

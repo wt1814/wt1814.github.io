@@ -38,6 +38,9 @@
 
 # 1. MVCC
 <!--
+https://segmentfault.com/a/1190000037557620
+https://www.jianshu.com/p/f692d4f8a53e
+
 MVCC原理详解 
 https://mp.weixin.qq.com/s/7kBh6vH8X8a9PwTVUp0yfg
 
