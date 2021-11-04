@@ -17,7 +17,8 @@
 
 # 1. Optional类  
 <!-- 
-
+实例
+https://mp.weixin.qq.com/s/sYCE05xYN0kycKgT_P6cJw
 -->
 &emsp; Java8引入Optional类，是一个可以为null的容器对象，是一个包含有可选值的包装类，可以保存类型T的值，或者保存null。Optional类的引入解决空指针异常。防止编写不必要的null检查。快速定位NullPointException。  
 &emsp; public final class Optional<T\>，<font color = "clime">构造函数私有化；不能new实例；不能被继承。</font>  
