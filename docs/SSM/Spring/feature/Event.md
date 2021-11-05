@@ -14,6 +14,14 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "clime">5个标准事件：</font>**   
+
+* 上下文更新事件（ContextRefreshedEvent）：在调用ConfigurableApplicationContext接口中的refresh()方法时被触发。  
+* 上下文开始事件（ContextStartedEvent）：当容器调用ConfigurableApplicationContext的Start()方法开始/重新开始容器时触发该事件。  
+* 上下文停止事件（ContextStoppedEvent）：当容器调用ConfigurableApplicationContext的Stop()方法停止容器时触发该事件。  
+* 上下文关闭事件（ContextClosedEvent）：当ApplicationContext被关闭时触发该事件。容器被关闭时，其管理的所有单例Bean都被销毁。  
+* 请求处理事件（RequestHandledEvent）：在Web应用中，当一个http请求（request）结束触发该事件。如果一个bean实现了ApplicationListener接口，当一个ApplicationEvent被发布以后，bean会自动被通知。  
+
 # 1. Spring的事件机制  
 <!-- 
 https://zhuanlan.zhihu.com/p/71230214
@@ -58,6 +66,19 @@ https://blog.csdn.net/weixin_39035120/article/details/86225377
 |ContextStartedEvent|Spring应用上下文启动事件|
 |ContextStopedEvent|Spring应用上下文停止事件|
 |ContextClosedEvent|Spring应用上下文关闭事件|
+
+--------
+
+&emsp; Spring 提供5种标准的事件：  
+
+* 上下文更新事件（ContextRefreshedEvent）：在调用ConfigurableApplicationContext接口中的refresh()方法时被触发。  
+* 上下文开始事件（ContextStartedEvent）：当容器调用ConfigurableApplicationContext的Start()方法开始/重新开始容器时触发该事件。  
+* 上下文停止事件（ContextStoppedEvent）：当容器调用ConfigurableApplicationContext的Stop()方法停止容器时触发该事件。  
+* 上下文关闭事件（ContextClosedEvent）：当ApplicationContext被关闭时触发该事件。容器被关闭时，其管理的所有单例Bean都被销毁。  
+* 请求处理事件（RequestHandledEvent）：在Web应用中，当一个http请求（request）结束触发该事件。如果一个bean实现了ApplicationListener接口，当一个ApplicationEvent被发布以后，bean会自动被通知。  
+
+
+-----------
 
 * ContextRefreshedEvent，上下文更新事件  
     &emsp; **<font color = "blue">ContextRefreshedEvent上下文更新事件发生在刷新容器（refresh()方法）的“完成刷新容器时发布对应的事件”步骤中。</font>**  

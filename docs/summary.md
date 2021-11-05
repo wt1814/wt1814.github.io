@@ -2056,9 +2056,8 @@
         3. 继承自ApplicationContextPublisher接口，<font color = "clime">拥有发布事件注册监听的能力；</font>  
         4. 继承自 MessageSource 接口，解析消息支持国际化。  
 2. BeanDefinition： **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
-3. Spring容器刷新：  
+3. Spring bean容器刷新的核心 12个步骤完成IoC容器的创建及初始化工作：  
     **<font color = "blue">（⚠`利用工厂和反射创建Bean。主要包含3部分：1).容器本身--创建容器、2).容器扩展--后置处理器、3).事件，子容器，实例化Bean。`）</font>**     
-    **<font color = "red">Spring bean容器刷新的核心 12个步骤完成IoC容器的创建及初始化工作：</font>**  
     1. 刷新前的准备工作。  
     2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>** <font color = "blue">`个人理解：此处仅仅相当于创建Spring Bean的类，实例化是在Spring DI里。`</font>   
         &emsp; **<font color = "clime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
@@ -2090,8 +2089,13 @@
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
     * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
     * 二级缓存: Map<String,Object> earlySingletonObjects， **<font color = "blue">早期曝光对象</font>** ，`二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。`尚未经历了完整的Spring Bean初始化生命周期。
-    * 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
-3. **<font color = "clime">单例模式下Spring解决循环依赖的流程：</font>**  
+    * 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。  
+3. 未发生依赖
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-21.png)  
+4. **<font color = "clime">单例模式下Spring解决循环依赖的流程：</font>**  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-22.png)  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-17.png)  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-16.png)  
     1. Spring创建bean主要分为两个步骤，创建原始bean对象，接着去填充对象属性和初始化。  
     2. 每次创建bean之前，都会从缓存中查下有没有该bean，因为是单例，只能有一个。  
     3. 当创建beanA的原始对象后，并把它放到三级缓存中，接下来就该填充对象属性了，这时候发现依赖了beanB，接着就又去创建 beanB，同样的流程，创建完beanB填充属性时又发现它依赖了beanA，又是同样的流程，不同的是，这时候可以在三级缓存中查到刚放进去的原始对象beanA，所以不需要继续创建，用它注入beanB，完成beanB的创建。此时会将beanA从三级缓存删除，放到二级缓存。   
@@ -2103,7 +2107,7 @@
     * 第二步，调用对象工厂的getObject方法来获取到对应的对象，得到这个对象后将其注入到B中。紧接着B会走完它的生命周期流程，包括初始化、后置处理器等。  
 
     当B创建完后，会将B再注入到A中，此时A再完成它的整个生命周期。  
-4. 常见问题
+5. 常见问题
     1. 二级缓存能解决循环依赖嘛？  
     &emsp; 二级缓存可以解决循环依赖。  
     &emsp; 如果创建的Bean有对应的代理，那其他对象注入时，注入的应该是对应的代理对象；但是Spring无法提前知道这个对象是不是有循环依赖的情况，而正常情况下（没有循环依赖情况），Spring都是在创建好完成品Bean之后才创建对应的代理。这时候Spring有两个选择：
@@ -2128,12 +2132,13 @@
     * 后置处理 
 4. 销毁（Destruction）---注册Destruction回调函数。  
 
-
 ### 1.8.5. 容器相关特性
 #### 1.8.5.1. FactoryBean
 &emsp; BeanFactory是个Factory，也就是IOC容器或对象工厂；FactoryBean是个Bean，也由BeanFactory管理。  
 &emsp; 一般情况下，Spring通过`反射机制`利用\<bean\>的class属性指定实现类实例化Bean。 **<font color = "red">在某些情况下，实例化Bean过程比较复杂，</font>** 如果按照传统的方式，则需要在\<bean>中提供大量的配置信息。配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。 **<font color = "red">Spring为此提供了一个org.springframework.bean.factory.FactoryBean的`工厂类接口`，用户可以通过实现该接口定制实例化Bean的逻辑。</font>**  
 &emsp; **<font color = "red">FactoryBean接口的一些实现类，如Spring自身提供的ProxyFactoryBean、JndiObjectFactoryBean，还有Mybatis中的SqlSessionFactoryBean，</font>** 用于生产一些复杂的Bean。  
+
+&emsp; `⚠️FactoryBean，工厂Bean，首先是个Bean，其次再加上工厂模式。`  
 
 
 #### 1.8.5.2. Spring可二次开发常用接口（扩展性）
@@ -2152,8 +2157,17 @@
 &emsp; **<font color = "clime">★★★Spring事件机制的流程：</font>**   
 1. **<font color = "clime">事件机制的核心是事件。</font>** Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件(继承ApplicationEvent)。  
 2. **<font color = "clime">确定事件后，要把事件发布出去。</font>** 在事件发布类的业务代码中调用ApplicationEventPublisher#publishEvent方法（或调用ApplicationEventPublisher的子类，例如调用ApplicationContext#publishEvent）。  
-3. **<font color = "blue">发布完成之后，启动监听器，自动监听。</font>** 在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
+3. **<font color = "blue">`发布完成之后，启动监听器，自动监听。`</font>** 在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
 4. 最后，就是实际场景中触发事件发布，完成一系列任务。  
+
+
+&emsp; **<font color = "clime">5个标准事件：</font>**   
+
+* 上下文更新事件（ContextRefreshedEvent）：在调用ConfigurableApplicationContext接口中的refresh()方法时被触发。  
+* 上下文开始事件（ContextStartedEvent）：当容器调用ConfigurableApplicationContext的Start()方法开始/重新开始容器时触发该事件。  
+* 上下文停止事件（ContextStoppedEvent）：当容器调用ConfigurableApplicationContext的Stop()方法停止容器时触发该事件。  
+* 上下文关闭事件（ContextClosedEvent）：当ApplicationContext被关闭时触发该事件。容器被关闭时，其管理的所有单例Bean都被销毁。  
+* 请求处理事件（RequestHandledEvent）：在Web应用中，当一个http请求（request）结束触发该事件。如果一个bean实现了ApplicationListener接口，当一个ApplicationEvent被发布以后，bean会自动被通知。  
 
 ##### 1.8.5.2.2. Aware接口
 &emsp; **<font color = "clime">容器管理的Bean一般不需要了解容器的状态和直接使用容器，但在某些情况下，是需要在Bean中直接对IOC容器进行操作的，这时候，就需要在Bean中设定对容器的感知。Spring IOC容器也提供了该功能，它是通过特定的aware接口来完成的。</font>** <font color = "red">aware接口有以下这些：
