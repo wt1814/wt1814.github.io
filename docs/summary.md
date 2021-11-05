@@ -1828,30 +1828,31 @@
     *  另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。  
     &emsp; **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
 3. ~~Read View判断：~~  
-&emsp; 如果被访问版本的trx_id小于ReadView中的up_limit_id值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  
-&emsp; <font color = "red">如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。</font>如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；<font color = "clime">如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。</font>  
-    -------
-Read View是如何保证可见性判断的呢？我们先看看Read view 的几个重要属性
+    &emsp; 如果被访问版本的trx_id小于ReadView中的up_limit_id值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  
+    &emsp; <font color = "red">如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。</font>如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；<font color = "clime">如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。</font>  
 
-    m_ids:当前系统中那些活跃(未提交)的读写事务ID, 它数据结构为一个List。  
-    min_limit_id:表示在生成Read View时，当前系统中活跃的读写事务中最小的事务id，即m_ids中的最小值。  
-    max_limit_id:表示生成Read View时，系统中应该分配给下一个事务的id值。  
-    creator_trx_id: 创建当前Read View的事务ID  
-Read view 匹配条件规则如下：
+    &emsp; Read View是如何保证可见性判断的呢？我们先看看Read view 的几个重要属性   
 
-    如果数据事务ID trx_id < min_limit_id，表明生成该版本的事务在生成Read View前，已经提交(因为事务ID是递增的)，所以该版本可以被当前事务访问。  
-    如果trx_id>= max_limit_id，表明生成该版本的事务在生成ReadView后才生成，所以该版本不可以被当前事务访问。  
-    如果 min_limit_id =<trx_id< max_limit_id，需要分3种情况讨论  
-        （1）.如果m_ids包含trx_id,则代表Read View生成时刻，这个事务还未提交，但是如果数据的trx_id等于creator_trx_id的话，表明数据是自己生成的，因此是可见的。  
-        （2）如果m_ids包含trx_id，并且trx_id不等于creator_trx_id，则Read   View生成时，事务未提交，并且不是自己生产的，所以当前事务也是看不见的；
-        （3）.如果m_ids不包含trx_id，则说明你这个事务在Read View生成之前就已经提交了，修改的结果，当前事务是能看见的。
+    * m_ids:当前系统中那些活跃(未提交)的读写事务ID, 它数据结构为一个List。  
+    * min_limit_id:表示在生成Read View时，当前系统中活跃的读写事务中最小的事务id，即m_ids中的最小值。  
+    * max_limit_id:表示生成Read View时，系统中应该分配给下一个事务的id值。  
+    * creator_trx_id: 创建当前Read View的事务ID  
+
+    &emsp; Read view 匹配条件规则如下：
+
+    * 如果数据事务ID trx_id < min_limit_id，表明生成该版本的事务在生成Read View前，已经提交(因为事务ID是递增的)，所以该版本可以被当前事务访问。  
+    * 如果trx_id>= max_limit_id，表明生成该版本的事务在生成ReadView后才生成，所以该版本不可以被当前事务访问。  
+    * 如果 min_limit_id =<trx_id< max_limit_id，需要分3种情况讨论  
+        * （1）.如果m_ids包含trx_id,则代表Read View生成时刻，这个事务还未提交，但是如果数据的trx_id等于creator_trx_id的话，表明数据是自己生成的，因此是可见的。  
+        * （2）如果m_ids包含trx_id，并且trx_id不等于creator_trx_id，则Read   View生成时，事务未提交，并且不是自己生产的，所以当前事务也是看不见的；
+        * （3）.如果m_ids不包含trx_id，则说明你这个事务在Read View生成之前就已经提交了，修改的结果，当前事务是能看见的。
 4. 在读取已提交、可重复读两种隔离级别下会使用MVCC。  
     * 读取已提交READ COMMITTED是在`每次执行select操作时`都会生成一次Read View。所以解决不了幻读问题。 
     * 可重复读REPEATABLE READ只有在第一次执行select操作时才会生成Read View，后续的select操作都将使用第一次生成的Read View。
 5. MVCC解决了幻读没有？  
         当前读:select...lock in share mode; select...for update;
         当前读:update、insert、delete
-&emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了Gap Lock时，Gap锁会锁住id < 10的整个范围，因此其他事务无法插入id < 10的数据，从而防止了幻读。  
+    &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了Gap Lock时，Gap锁会锁住id < 10的整个范围，因此其他事务无法插入id < 10的数据，从而防止了幻读。  
 
 
 #### 1.5.5.5. MySql锁
@@ -1993,7 +1994,12 @@ Read view 匹配条件规则如下：
 
 ## 1.6. 项目构建
 ### 1.6.1. 接口幂等
-&emsp; 接口幂等xxx常用解决方案：分布式锁、DB锁<font color = "red">（ 1).select+insert，insert前先select，该方案可能不适用于并发场景，在并发场景中，要配合其他方案一起使用，否则同样会产生重复数据</font>、<font color = "clime"> 2). 状态机</font>、<font color = "red">3). 乐观锁（新增version字段））</font>....  
+&emsp; 接口幂等常用解决方案：  
+* 分布式锁
+* DB锁
+    * 1).select+insert，insert前先select，该方案可能不适用于并发场景，在并发场景中，要配合其他方案一起使用，否则同样会产生重复数据 
+    * 2). 状态机
+    * 3). 乐观锁（新增version字段）） 
 
 &emsp; **<font color = "blue">小结：</font>**  
 &emsp; 一般场景直接使用redis分布式锁解决。可是redis分布式锁可能因编码、部署等，出现一些问题。    
@@ -2010,17 +2016,30 @@ Read view 匹配条件规则如下：
     4. 干掉锁（空间换时间）  
 
 ### 1.6.3. 接口预警
-1. logback添加error预警
-2. Filebeat+Logstash发送Email告警日志
-3. 钉钉应用开放平台
+1. 应用主动发送：
+    1. 钉钉应用开放平台
+    2. logback添加error预警
+2. 中间件：  
+    1. Filebeat+Logstash发送Email告警日志
+
 
 ## 1.7. 架构设计
 ### 1.7.1. 架构质量属性
 &emsp; 高性能、可靠性、可定制性、可扩展性...  
 &emsp; 架构属性一般包括如下方面：性能，伸缩性，可用性，安全性，容错性，灾难恢复，可访问性，可运维，管理，灵活性，可扩展性，可维护性，国际化，本地化。还有法律法规，成本，人员等对上面架构属性的影响。 
 
+--------
+
+1. 架构自身：
+2. 架构延伸：
+3. 架构对外：
+
+
 ### 1.7.2. 系统瓶颈
-&emsp; ......  
+1. 网络I/O
+2. 磁盘I/O
+3. 内存
+4. CPU
 
 ## 1.8. Spring
 ### 1.8.1. Spring基础

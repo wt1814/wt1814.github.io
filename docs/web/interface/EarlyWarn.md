@@ -1,7 +1,13 @@
 
+1. 应用主动发送：
+    1. 钉钉应用开放平台
+    2. logback添加error预警
+2. 中间件：  
+    1. Filebeat+Logstash发送Email告警日志
 
 
 # 接口预警  
+
 
 ## logback添加error预警
 <!-- 
