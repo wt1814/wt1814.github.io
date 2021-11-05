@@ -2202,7 +2202,7 @@
 
 
 ### 1.8.7. SpringAOP解析
-1. **<font color = "blue">自动代理触发的时机：AspectJAnnotationAutoProxyCreator是一个BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
+1. **<font color = "blue">自动代理触发的时机：AspectJAnnotationAutoProxyCreator是一个后置处理器BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
 2. **<font color = "clime">代理类的生成流程：1). `获取当前的Spring Bean适配的advisors；`2). `创建代理类`。</font>**   
     1. Spring AOP获取对应Bean适配的Advisors链的核心逻辑：
         1. 获取当前IoC容器中所有的Aspect类。
@@ -2261,7 +2261,7 @@
 ## 1.9. MyBatis
 
 ### 1.9.1. MyBatis大数据量查询
-1. 流式查询  
+1. `流式查询（针对查询结果集比较大）`  
 &emsp; 流式查询指的是查询成功后不是返回一个集合而是返回一个迭代器，应用每次从迭代器取一条查询结果。流式查询的好处是能够降低内存使用。  
 &emsp; **<font color = "clime">如果没有流式查询，想要从数据库取 1000 万条记录而又没有足够的内存时，就不得不分页查询，而分页查询效率取决于表设计，如果设计的不好，就无法执行高效的分页查询。因此流式查询是一个数据库访问框架必须具备的功能。</font>**  
 &emsp; 流式查询的过程当中，数据库连接是保持打开状态的，因此要注意的是： **<font color = "clime">执行一个流式查询后，数据库访问框架就不负责关闭数据库连接了，需要应用在取完数据后自己关闭。</font>**  
@@ -2322,7 +2322,12 @@
 ## 1.10. SpringBoot
 
 ### 1.10.1. SpringBoot基础知识
+&emsp; SpringBoot基本上是Spring框架的扩展，它消除了设置Spring应用程序所需的XML配置，为更快，更高效的开发生态系统铺平了道路。  
 
+* SpringBoot简化了Spring的配置；
+* SpringBoot提供了起步依赖、自动配置；
+* SpringBoot内嵌了Tomcat、 Jetty、 Undertow容器（无需部署war文件）；
+* 提供生产指标，例如指标、健壮检查和外部化配置。  
 
 ### 1.10.2. SpringBoot启动过程
 &emsp; SpringApplication.run()中首先new SpringApplication对象，然后调用该对象的run方法。<font color = "red">`即run()方法主要包括两大步骤：`</font>  
