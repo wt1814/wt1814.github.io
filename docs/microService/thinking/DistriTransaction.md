@@ -15,6 +15,9 @@
 
 # 1. 分布式事务  
 <!-- 
+对比7种分布式事务方案，还是偏爱阿里开源的Seata，真香！(原理+实战) 
+https://mp.weixin.qq.com/s/zsi21He-SPbeT1NP9nh4OA
+
 你这 Saga 事务保“隔离性”吗？ 
 https://mp.weixin.qq.com/s/cZabAt7JF4QrQHERHHAWjA
 

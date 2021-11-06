@@ -28,7 +28,14 @@
 
 
 # 1. Dubbo运行流程  
-## 1.1. 解析服务  
+
+
+## 1.1. 解析服务 
+<!-- 
+URL统一模型的意义
+https://mp.weixin.qq.com/s/YHFp58F1gbrWvZ91iX_WcA
+
+--> 
 &emsp; **<font color = "clime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
 
 &emsp; ⚠️注：在暴露服务ServiceConfig.export()或引用服务ReferenceConfig.get()时，会将Bean对象转换URL格式，所有Bean属性转成URL的参数。然后将URL传给协议扩展点，基于扩展点的扩展点自适应机制，根据URL的协议头，进行不同协议的服务暴露或引用。  
@@ -60,6 +67,10 @@
 
 
 ## 1.3. ~~引用服务~~
+<!-- 
+服务引用 时机、三种方式
+https://mp.weixin.qq.com/s/Cqh-sxjDvdGt6r2XE6vjoQ
+-->
 &emsp; 详解请看[服务引用源码解析](/docs/microService/dubbo/introduce.md)  
 
 &emsp; 服务暴露之后，客户端就要引用服务，最后才是调用的过程。  
