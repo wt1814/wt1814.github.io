@@ -412,9 +412,9 @@
 [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
 [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
 [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
-[Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/Hytrix.md)  
 [Spring Cloud Feign](/docs/microService/SpringCloudNetflix/Feign.md)  
 [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
+[Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/Hytrix.md)  
 [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
 
