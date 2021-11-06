@@ -27,7 +27,7 @@
         - [分布式锁](#分布式锁)
     - [高并发](#高并发)
         - [分布式与高并发](#分布式与高并发)
-        - [分布式缓存](#分布式缓存)
+        - [缓存](#缓存)
             - [Redis](#redis)
         - [限流降级](#限流降级)
         - [分布式消息队列](#分布式消息队列)
@@ -508,7 +508,7 @@
 &emsp; &emsp; &emsp; [Redis实现库存扣减](/docs/system/stock.md)  
 &emsp; [资源限制](/docs/system/ResourceConstraints.md)  
 
-### 分布式缓存  
+### 缓存  
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
 [缓存更新](/docs/cache/CacheUpdate.md)  

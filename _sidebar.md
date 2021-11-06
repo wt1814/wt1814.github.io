@@ -382,7 +382,7 @@
         * [秒杀系统设计](/docs/system/seckill.md)  
             * [Redis实现库存扣减](/docs/system/stock.md)  
     * [资源限制](/docs/system/ResourceConstraints.md)  
-* 分布式缓存
+* 缓存
     * [缓存算法](/docs/cache/CacheAlgorithm.md)  
     * [分布式缓存问题](/docs/cache/DistributedCache.md)  
     * [缓存更新](/docs/cache/CacheUpdate.md)  
