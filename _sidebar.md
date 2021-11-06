@@ -255,6 +255,7 @@
         * [容灾和备份](/docs/system/backups.md)  
     * [系统瓶颈](/docs/system/Bottleneck.md)  
     * [JAVA线上故障排查](/docs/Linux/problem.md)   
+    * [脚手架介绍](/docs/system/Scaffolding.md)  
 * Spring  
     * [Spring](/docs/SSM/Spring/Spring.md)  
     * [对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
