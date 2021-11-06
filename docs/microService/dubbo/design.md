@@ -11,7 +11,7 @@
 1. 分层架构设计  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-51.png)  
     1. 从大的范围来说，dubbo分为三层：
-        * business业务逻辑层由开发人员来提供接口和实现还有一些配置信息。
+        * business业务逻辑层由开发人员来提供接口和实现，还有一些配置信息。
         * `RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理。`
         * remoting则是对网络传输协议和数据转换的封装。  
     2. RPC层包含配置层config、代理层proxy、服务注册层register、路由层cluster、监控层monitor、远程调用层protocol。    

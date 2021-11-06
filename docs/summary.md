@@ -2660,7 +2660,7 @@
 1. 分层架构设计  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-51.png)  
     1. 从大的范围来说，dubbo分为三层：
-        * business业务逻辑层由开发人员来提供接口和实现还有一些配置信息。
+        * business业务逻辑层由开发人员来提供接口和实现，还有一些配置信息。
         * `RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理。`
         * remoting则是对网络传输协议和数据转换的封装。  
     2. RPC层包含配置层config、代理层proxy、服务注册层register、路由层cluster、监控层monitor、远程调用层protocol。    
@@ -2699,7 +2699,7 @@
 
 
 #### 1.12.6.2. Dubbo序列化和协议
-1. 不同服务在性能上适用不同协议进行传输，比如大数据用短连接协议，小数据大并发用长连接协议。  
+1. 不同服务在性能上适用不同协议进行传输，比如`大数据用短连接协议`，`小数据大并发用长连接协议`。  
 2. 默认使用Hessian序列化，还有Duddo、FastJson、Java自带序列化。   
 
 ##### 1.12.6.2.1. Dubbo协议长连接
@@ -2725,13 +2725,13 @@
     * 扩展点自动激活
 
 ## 1.13. Zookeeper
-1. **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
+&emsp; **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
 
 ### 1.13.1. ZK服务端
-2. `ZK服务端`通过`ZAB协议`保证`数据顺序一致性`。  
+1. `ZK服务端`通过`ZAB协议`保证`数据顺序一致性`。  
     1. ZAB协议：
         1. Zookeeper集群角色：  
-            * 领导者Leader：同一时间集群总只允许有一个Leader，提供对客户端的读写功能，负责将数据同步至各个节点；  
+            * 领导者Leader：同一时间，集群只允许有一个Leader，提供对客户端的读写功能，负责将数据同步至各个节点；  
             * 跟随者Follower：提供对客户端读功能，写请求则转发给Leader处理，当Leader崩溃失联之后参与Leader选举；  
             * 观察者Observer：与Follower不同的是但不参与Leader选举。  
         2. **<font color = "clime">崩溃恢复</font>**  
@@ -2748,7 +2748,7 @@
         * Zookeeper的CP模型：非强一致性， **<font color = "clime">而是单调一致性/顺序一致性。</font>**  
             1. <font color = "clime">假设有2n+1个server，在同步流程中，leader向follower同步数据，当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。</font><font color = "red">如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。</font> 未同步数据的情况，Zookeeper提供了同步机制（可选型），类似回调。   
             2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数(n+1)的server认同后，将对整个集群进行同步，超过半数(n+1)的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
-3. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
+2. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
 
 ### 1.13.2. ZK客户端
 &emsp; zookeeper引入了`watcher机制`来实现`客户端和服务端`的发布/订阅功能。  

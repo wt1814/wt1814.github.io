@@ -19,7 +19,7 @@
 1. ZK服务端通过`ZAB协议`保证`数据顺序一致性`。  
 2. ZAB协议：
     1. Zookeeper集群角色：  
-        * 领导者Leader：同一时间集群总只允许有一个Leader，提供对客户端的读写功能，负责将数据同步至各个节点；  
+        * 领导者Leader：同一时间，集群只允许有一个Leader，提供对客户端的读写功能，负责将数据同步至各个节点；  
         * 跟随者Follower：提供对客户端读功能，写请求则转发给Leader处理，当Leader崩溃失联之后参与Leader选举；  
         * 观察者Observer：与Follower不同的是但不参与Leader选举。  
     2. **<font color = "clime">崩溃恢复</font>**  
