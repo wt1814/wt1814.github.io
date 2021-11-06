@@ -172,6 +172,10 @@ https://mp.weixin.qq.com/s/nCifoTiqhBT2Eai2UJinag
 
 ### 1.3.2. 熔断与降级  
 &emsp; 熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。Hystrix中有三种降级方案(fallback，回退方案/降级处理方案)。
+<!-- 
+Hystrix 中线程池隔离与信号量隔离区别
+https://www.cnblogs.com/ming-blogs/p/14596721.html
+-->
 
 #### 1.3.2.1. 熔断触发降级(断路器原理)
 <!-- 
