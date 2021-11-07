@@ -39,6 +39,9 @@
 
 # 1. 分布式缓存  
 <!--
+https://zhuanlan.zhihu.com/p/346651831
+*** https://blog.csdn.net/zeb_perfect/article/details/54135506
+
 ******
 https://blog.csdn.net/weixin_39782500/article/details/111344759
 -->

@@ -270,7 +270,7 @@
             - [1.15.3.2. 秒杀系统设计](#11532-秒杀系统设计)
         - [1.15.4. 资源限制](#1154-资源限制)
     - [1.16. 缓存](#116-缓存)
-        - [1.16.1. 分布式缓存问题](#1161-分布式缓存问题)
+        - [1.16.1. ~~分布式缓存问题~~](#1161-分布式缓存问题)
         - [1.16.2. Redis](#1162-redis)
             - [1.16.2.1. Redis数据类型](#11621-redis数据类型)
                 - [1.16.2.1.1. Redis基本数据类型](#116211-redis基本数据类型)
@@ -3135,7 +3135,7 @@ update product set name = 'TXC' where id = 1;
 5. 池化技术。各种池化技术的使用和池大小的设置，包括HTTP请求池、线程池（考虑CPU密集型还是IO密集型设置核心参数）、数据库和Redis连接池等。    
 
 ## 1.16. 缓存
-### 1.16.1. 分布式缓存问题
+### 1.16.1. ~~分布式缓存问题~~
 1. **缓存穿透、缓存击穿和缓存雪崩：**  
 &emsp; <font color="red">缓存穿透、缓存击穿和缓存雪崩都是缓存失效导致大量请求直接访问数据库而出现的情况。</font>  
 &emsp; <font color="red">不同的是缓存穿透是数据库和缓存都不存在相关数据；而缓存击穿和缓存雪崩是缓存和数据库都存在相应数据，</font><font color = "clime">只是缓存失效了而已。</font>  
@@ -3182,10 +3182,10 @@ update product set name = 'TXC' where id = 1;
 
 ##### 1.16.2.1.2. Redis扩展数据类型
 1. <font color = "clime">Bitmap、HyperLogLog都是作为Redis的Value值。</font>  
-2. <font color = "clime">Bitmap：二值状态统计。Redis中的Bitmap，key可以为某一天或某一ID，Bitmap中bit可以存储用户的任意信息。所以Redis Bitmap可以用作统计信息。常用场景：用户签到、统计活跃用户、用户在线状态。</font>  
-&emsp; 基于Redis BitMap实现用户签到功能： **<font color = "clime">考虑到每月初需要重置连续签到次数，最简单的方式是按用户每月存一条签到数据（也可以每年存一条数据）。`Key的格式为u :sign :uid :yyyyMM`，`Value则采用长度为4个字节（32位）的位图（最大月份只有31天）。位图的每一位代表一天的签到，1表示已签，0表示未签。`</font>**  
-3. <font color = "clime">HyperLogLog用于基数统计，例如UV（独立访客数）。</font>  
-    * 基数统计是指找出集合中不重复元素，用于去重。  
+2. <font color = "clime">`Bitmap：二值状态统计。`Redis中的Bitmap，`key可以为某一天或某一ID，Bitmap中bit可以存储用户的任意信息，所以Redis Bitmap可以用作统计信息。`常用场景：用户签到、统计活跃用户、用户在线状态。</font>  
+    1. 基于Redis BitMap实现用户签到功能： **<font color = "clime">考虑到每月初需要重置连续签到次数，最简单的方式是按用户每月存一条签到数据（也可以每年存一条数据）。`Key的格式为u :sign :uid :yyyyMM`，`Value则采用长度为4个字节（32位）的位图（最大月份只有31天）。位图的每一位代表一天的签到，1表示已签，0表示未签。`</font>**  
+3. <font color = "clime">`HyperLogLog用于基数统计，例如UV（独立访客数）。`</font>  
+    * `基数统计是指找出集合中不重复元素，用于去重。`  
     * 使用Redis统计集合的基数一般有三种方法，分别是使用Redis的Hash，BitMap和HyperLogLog。  
     * HyperLogLog内存空间消耗少，但存在误差0.81%。  
 4. Streams消息队列：支持多播的可持久化的消息队列，用于实现发布订阅功能，借鉴了kafka的设计。 
