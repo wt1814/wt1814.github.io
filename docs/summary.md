@@ -275,7 +275,7 @@
             - [1.16.2.1. Redis数据类型](#11621-redis数据类型)
                 - [1.16.2.1.1. Redis基本数据类型](#116211-redis基本数据类型)
                 - [1.16.2.1.2. Redis扩展数据类型](#116212-redis扩展数据类型)
-                - [1.16.2.1.3. Redis底层实现](#116213-redis底层实现)
+                - [1.16.2.1.3. ~~Redis底层实现~~](#116213-redis底层实现)
                     - [1.16.2.1.3.1. SDS详解](#1162131-sds详解)
                     - [1.16.2.1.3.2. Dictht](#1162132-dictht)
             - [1.16.2.2. Redis原理](#11622-redis原理)
@@ -3192,7 +3192,7 @@ update product set name = 'TXC' where id = 1;
 5. [布隆过滤器](/docs/function/otherStructure.md)作为一个插件加载到Redis Server中，就会给Redis提供了强大的布隆去重功能。  
 
 
-##### 1.16.2.1.3. Redis底层实现
+##### 1.16.2.1.3. ~~Redis底层实现~~
 1. 很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！  
 2. redis底层8种数据结构：int、embstr(SDS)、raw、ziplist、hashtable、quicklist、intset、skiplist。  
     * ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>** 只用在字段个数少，字段值小的场景里。  
@@ -3268,12 +3268,12 @@ update product set name = 'TXC' where id = 1;
 2. 为什么引入多线程？  
 &emsp; **<font color = "clime">因为读写网络的read/write系统调用（网络I/O）在Redis执行期间占用了大部分CPU时间，如果把网络读写做成多线程的方式对性能会有很大提升。</font>**  
 &emsp; **<font color = "clime">Redis的多线程部分只是用来处理网络数据的读写和协议解析，执行命令仍然是单线程。</font>** 
-3. 官方建议：4核的机器建议设置为2或3个线程，8核的建议设置为6个线程， **<font color = "clime">线程数一定要小于机器核数，尽量不超过8个。</font>**   
+3. 官方建议：4核的机器建议设置为2或3个线程，8核的建议设置为6个线程， **<font color = "clime">`线程数一定要小于机器核数，尽量不超过8个。`</font>**   
 
 ##### 1.16.2.2.5. Redis协议
 &emsp; RESP是Redis Serialization Protocol的简称，也就是专门为redis设计的一套序列化协议。这个协议其实在redis的1.2版本时就已经出现了，但是到了redis2.0才最终成为redis通讯协议的标准。  
 &emsp; 这个序列化协议听起来很高大上， 但实际上就是一个文本协议。根据官方的说法，这个协议是基于以下几点(而妥协)设计的：  
-1. 实现简单。可以减低客户端出现bug的机率  
+1. 实现简单。可以减低客户端出现bug的机率。  
 2. `解析速度快。`由于RESP能知道返回数据的固定长度，所以不用像json那样扫描整个payload去解析，所以它的性能是能跟解析二进制数据的性能相媲美的。  
 3. 可读性好。  
 
@@ -3315,17 +3315,17 @@ update product set name = 'TXC' where id = 1;
 4. ~~**<font color = "clime">RDB方式bgsave指令中fork子进程、AOF方式重写bgrewriteaof都会造成阻塞。</font>**~~  
 
 ###### 1.16.2.3.4.1. AOF重写阻塞
-1. 当Redis执行完一个写命令之后，它会同时将这个写命令发送给AOF缓冲区和AOF重写缓冲区。  
+1. **<font color = "clime">当Redis执行完一个写命令之后，它会同时将这个写命令发送给AOF缓冲区和AOF重写缓冲区。</font>**  
 2. AOF重写阻塞原因：
 	1. **<font color = "clime">当子进程完成AOF重写工作之后，它会向父进程发送一个信号，父进程在接收到该信号之后，`会调用一个信号处理函数，并执行相应工作：将AOF重写缓冲区中的所有内容写入到新的AOF文件中。`</font>**  
-	2. **<font color = "clime">在整个AOF后台重写过程中，只有信号处理函数执行时会对Redis主进程造成阻塞，在其他时候，AOF后台重写都不会阻塞主进程。</font>**  
+	2. **<font color = "clime">在整个AOF后台重写过程中，`只有信号处理函数执行时会对Redis主进程造成阻塞，`在其他时候，AOF后台重写都不会阻塞主进程。</font>**  
 &emsp; 如果信号处理函数执行时间较长，即造成AOF阻塞时间长，就会对性能有影响。  
 3. 解决方案：  
 	* **<font color = "red">将no-appendfsync-on-rewrite设置为yes。</font>** 
 	* master节点关闭AOF。  
     
     可以采取比较折中的方式：  
-        * 在master节点设置将no-appendfsync-on-rewrite设置为yes（表示在日志重写时，不进行命令追加操作，而只是将命令放在重写缓冲区里，避免与命令的追加造成磁盘IO上的冲突），同时auto-aof-rewrite-percentage参数设置为0关闭主动重写。  
+        * 在master节点设置将no-appendfsync-on-rewrite设置为yes（`表示在日志重写时，不进行命令追加操作，而只是将命令放在重写缓冲区里，避免与命令的追加造成磁盘IO上的冲突`），同时auto-aof-rewrite-percentage参数设置为0关闭主动重写。  
         * 在重写时为了避免硬盘空间不足或者IO使用率高影响重写功能，还添加了硬盘空间报警和IO使用率报警保障重写的正常进行。
 4. 虽然在everysec配置下aof的fsync是由子线程进行操作的，但是主线程会监控fsync的执行进度。  
 &emsp; **<font color = "clime">主线程在执行时候如果发现上一次的fsync操作还没有返回，那么主线程就会阻塞。</font>**  
@@ -3345,7 +3345,7 @@ update product set name = 'TXC' where id = 1;
     * <font color = "clime">LRU，Least Recently Used：最近最少使用（访问时间）。</font>判断最近被使用的时间，离目前最远的数据优先被淘汰。  
     &emsp; **<font color = "red">`如果基于传统LRU算法实现，Redis LRU会有什么问题？需要额外的数据结构存储，消耗内存。`</font>**  
     &emsp; **<font color = "blue">Redis LRU对传统的LRU算法进行了改良，通过`随机采样`来调整算法的精度。</font>** 如果淘汰策略是LRU，则根据配置的采样值maxmemory_samples(默认是 5 个)，随机从数据库中选择m个key，淘汰其中热度最低的key对应的缓存数据。所以采样参数m配置的数值越大，就越能精确的查找到待淘汰的缓存数据，但是也消耗更多的CPU计算，执行效率降低。  
-    * <font color = "clime">LFU，Least Frequently Used，最不常用（访问频率），4.0版本新增。</font>  
+    * <font color = "clime">LFU，Least Frequently Used，最不常用（`访问频率`），4.0版本新增。</font>  
 2. **~~内存淘汰策略选择：~~**  
 &emsp; **<font color = "clime">volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。volatile-xxx策略只会针对带过期时间的key进行淘汰，allkeys-xxx策略会对所有的key进行淘汰。</font>**  
     * 如果只是拿Redis做缓存，那应该使用allkeys-xxx，客户端写缓存时不必携带过期时间。  
@@ -3425,8 +3425,8 @@ update product set name = 'TXC' where id = 1;
     * 请求重定向：在集群模式下，Redis接收任何键相关命令时首先计算键对应的槽，再根据槽找出所对应的节点，如果节点是自身，则处理键命令；否则回复MOVED重定向错误，通知客户端请求正确的节点。这个过程称为MOVED重定向。  
     * ASK重定向：Redis集群支持在线迁移槽(slot)和数据来完成水平伸缩，当slot对应的数据从源节点到目标节点迁移过程中，客户端需要做到智能识别，保证键命令可正常执行。例如当一个slot数据从源节点迁移到目标节点时，期间可能出现一部分数据在源节点，而另一部分在目标节点。  
         1. 客户端根据本地slots缓存发送命令到源节点，如果存在键对象则直接执行并返回结果给客户端。  
-        2. **<font color = "clime">如果键对象不存在，则可能存在于目标节点，这时源节点会回复ASK重定向异常。格式如下：(error)ASK{slot}{targetIP}：{targetPort}。</font>**   
-        3. 客户端从ASK重定向异常提取出目标节点信息，发送asking命令到目标节点打开客户端连接标识，再执行键命令。如果存在则执行，不存在则返回不存在信息。   
+        2. **<font color = "clime">`如果键对象不存在，则可能存在于目标节点，这时源节点会回复ASK重定向异常。格式如下：(error)ASK{slot}{targetIP}：{targetPort}。`</font>**   
+        3. `客户端从ASK重定向异常提取出目标节点信息，`发送asking命令到目标节点打开客户端连接标识，再执行键命令。如果存在则执行，不存在则返回不存在信息。   
 
     &emsp; **<font color = "clime">ASK与MOVED虽然都是对客户端的重定向控制，但是有着本质区别。ASK重定向说明集群正在进行slot数据迁移，客户端无法知道什么时候迁移完成，因此只能是临时性的重定向，客户端不会更新slots缓存。但是MOVED重定向说明键对应的槽已经明确指定到新的节点，因此需要更新slots缓存。</font>**  
 
@@ -3434,10 +3434,10 @@ update product set name = 'TXC' where id = 1;
 
 
 ### 1.16.3. 分布式限流
-限流的地方、怎么限流？  
+&emsp; 限流的地方、怎么限流？  
 1. **<font color = "clime">一个限流系统的设计要考虑限流对象、限流算法、限流方式、限流设计的要点。</font>**  
 2. 限流的位置：网关、系统还是接口？  
-3. `限流对象分类：基于请求限流、基于资源限流。`  
+3. `限流对象分类：基于请求限流、基于资源限流。` 阿里Sentinel是针对`qps和线程数`进行限流。   
 4. 限流算法：  
     * 固定窗口算法，有时会让通过请求量允许为限制的两倍。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-24.png)  

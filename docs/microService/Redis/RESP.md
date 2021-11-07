@@ -20,7 +20,7 @@ https://blog。csdn。net/mango_love/article/details/106557576
 
 &emsp; RESP是Redis Serialization Protocol的简称，也就是专门为redis设计的一套序列化协议。这个协议其实在redis的1.2版本时就已经出现了，但是到了redis2.0才最终成为redis通讯协议的标准。  
 &emsp; 这个序列化协议听起来很高大上， 但实际上就是一个文本协议。根据官方的说法，这个协议是基于以下几点(而妥协)设计的：  
-1. 实现简单。可以减低客户端出现bug的机率  
+1. 实现简单。可以减低客户端出现bug的机率。  
 2. `解析速度快。`由于RESP能知道返回数据的固定长度，所以不用像json那样扫描整个payload去解析，所以它的性能是能跟解析二进制数据的性能相媲美的。  
 3. 可读性好。  
 
