@@ -18,6 +18,9 @@
 # 1. Redis的事件与Reactor  
 &emsp; **<font color = "red">参考《Redis设计与实现》第12章</font>**  
 <!--
+***  Redis线程模型 
+https://mp.weixin.qq.com/s/EgbJ1NlqOWk1SH3HLMcS9w
+
 Redis基于Reactor模式开发了网络事件处理
 https://blog.csdn.net/weixin_45931215/article/details/118728932
 
