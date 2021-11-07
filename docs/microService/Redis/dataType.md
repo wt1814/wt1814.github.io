@@ -1,13 +1,38 @@
 
 
+<!-- TOC -->
 
-# 数据类型
+- [1. 数据类型](#1-数据类型)
+    - [1.1. 数据类型](#11-数据类型)
+        - [1.1.1. String内部编码](#111-string内部编码)
+        - [1.1.2. Hash内部编码](#112-hash内部编码)
+        - [1.1.3. List内部编码](#113-list内部编码)
+        - [1.1.4. Set内部编码](#114-set内部编码)
+        - [1.1.5. Zset内部编码](#115-zset内部编码)
+    - [1.2. 查看redis内部存储的操作](#12-查看redis内部存储的操作)
 
-## 1.4. 数据类型
+<!-- /TOC -->
+
+&emsp; **<font color = "red">总结：</font>**  
+3. Redis会根据当前值的类型和长度决定使用哪种内部编码实现。 **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
+    
+    * String字符串类型的内部编码有三种：
+        1. int，存储8个字节的长整型(long，2^63-1)。当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
+        2. embstr，代表 embstr 格式的 SDS(Simple Dynamic String 简单动态字符串)，存储小于44个字节的字符串。  
+        3. raw，存储大于 44 个字节的字符串(3.2 版本之前是 39 字节)。  
+    * Hash由ziplist(压缩列表)或者dictht(字典)组成；  
+    * List，「有序」「可重复」集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  
+    * Set，「无序」「不可重复」集合， **<font color = "clime">是特殊的Hash结构(value为null)，</font>** 由intset(整数集合)或者dictht(字典)组成；
+    * ZSet，「有序」「不可重复」集合，由skiplist(跳跃表)或者ziplist(压缩列表)组成。  
+
+
+# 1. 数据类型
+
+## 1.1. 数据类型
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-106.png)  
 
 
-### 1.4.1. String内部编码  
+### 1.1.1. String内部编码  
 <!-- 
 Redis 字符串
 https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
@@ -29,13 +54,13 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 4. 当长度小于阈值时，会还原吗？  
 &emsp; 关于Redis内部编码的转换，都符合以下规律：编码转换在Redis写入数据时完成，且转换过程不可逆，只能从小内存编码向大内存编码转换（但是不包括重新set）。  
 
-### 1.4.2. Hash内部编码  
+### 1.1.2. Hash内部编码  
 &emsp; <font color = "clime">Redis的Hash可以使用两种数据结构实现：ziplist、dictht。</font>Hash结构当同时满足如下两个条件时底层采用了ZipList实现，一旦有一个条件不满足时，就会被转码为dictht进行存储。  
 
 * Hash中存储的所有元素的key和value的长度都小于64byte。(通过修改hash-max-ziplist-value配置调节大小)
 * Hash中存储的元素个数小于512。(通过修改hash-max-ziplist-entries配置调节大小)  
 
-### 1.4.3. List内部编码   
+### 1.1.3. List内部编码   
 &emsp; **在Redis3.2之前，List底层采用了ZipList和LinkedList实现的，在3.2之后，List底层采用了QuickList。**  
 &emsp; Redis3.2之前，初始化的List使用的ZipList，List满足以下两个条件时则一直使用ZipList作为底层实现，当以下两个条件任一一个不满足时，则会被转换成LinkedList。
 
@@ -44,7 +69,7 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 
 
 
-### 1.4.4. Set内部编码   
+### 1.1.4. Set内部编码   
 &emsp; Redis中列表和集合都可以用来存储字符串，但是<font color = "red">「Set是不可重复的集合，而List列表可以存储相同的字符串」，</font> **<font color = "cclime">「Set是一个特殊的value为空的Hash」，</font>** Set集合是无序的这个和后面讲的ZSet有序集合相对。  
 
 &emsp; Redis 用intset或dictEntry存储set。当满足如下两个条件的时候，采用整数集合实现；一旦有一个条件不满足时则采用字典来实现。  
@@ -53,7 +78,7 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 * Set 集合中的元素个数不大于 512(默认 512，可以通过修改 set-max-intset-entries 配置调整集合大小) 
 
 
-### 1.4.5. Zset内部编码   
+### 1.1.5. Zset内部编码   
 &emsp; ZSet的底层实现是ziplist和skiplist实现的，由ziplist转换为skiplist。当同时满足以下两个条件时，采用ZipList实现；反之采用SkipList实现。
 
 * Zset中保存的元素个数小于128。(通过修改zset-max-ziplist-entries配置来修改)  
@@ -64,7 +89,7 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 
 -------------
 
-## 1.5. 查看redis内部存储的操作  
+## 1.2. 查看redis内部存储的操作  
 &emsp; ......
 
 
