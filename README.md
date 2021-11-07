@@ -20,7 +20,7 @@
         - [OpenAPI](#openapi)
         - [Dubbo](#dubbo)
         - [Zookeeper](#zookeeper)
-    - [分布式原理](#分布式原理)
+    - [分布式](#分布式)
         - [分布式理论](#分布式理论)
         - [分布式ID](#分布式id)
         - [分布式事务](#分布式事务)
@@ -468,7 +468,9 @@
 [Zookeeper问题](/docs/microService/dubbo/ZookeeperProblem.md)  
 -->
 
-## 分布式原理
+## 分布式
+[分布式和集群](/docs/system/distributed.md)   
+
 ### 分布式理论  
 [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
 &emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
@@ -499,7 +501,6 @@
 
 ## 高并发
 ### 分布式与高并发
-[分布式和集群](/docs/system/distributed.md)   
 [系统性能指标](/docs/system/performance.md)  
 [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; [高可用建设](/docs/system/highAvailability.md)  

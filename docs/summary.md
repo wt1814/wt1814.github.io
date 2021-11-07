@@ -3084,14 +3084,15 @@ update product set name = 'TXC' where id = 1;
 &emsp; `分布式带来数据一致性的问题。`  
 
 ### 1.15.2. 系统性能指标
-1. 吞吐量
+1. 吞吐量  
 &emsp; 一般来说， **<font color = "clime">系统吞吐量指的是系统的抗压、负载能力，代表一个系统每秒钟能承受的最大用户访问量。</font>**   
 &emsp; **<font color = "clime">`一个系统的吞吐量通常由qps(tps)、并发数来决定，`每个系统对这两个值都有一个相对极限值，只要某一项达到最大值，系统的吞吐量就上不去了。</font>**  
+2. QPS  
 &emsp; Queries Per Second，每秒查询数，即是每秒能够响应的查询次数，注意这里的查询是指用户发出请求到服务器做出响应成功的次数，简单理解可以认为查询=请求request。`qps=每秒钟request数量`  
-3. TPS
+3. TPS  
 &emsp; Transactions Per Second 的缩写，每秒处理的事务数。一个事务是指一个客户机向服务器发送请求然后服务器做出反应的过程。客户机在发送请求时开始计时，收到服务器响应后结束计时，以此来计算使用的时间和完成的事务个数。  
 &emsp; 针对单接口而言，TPS可以认为是等价于QPS的，比如访问一个页面/index.html，是一个TPS，而访问/index.html页面可能请求了3次服务器比如css、js、index接口，产生了3个QPS。  
-4. 并发数
+4. 并发数  
 &emsp; 简而言之，系统能同时处理的请求/事务数量。  
 &emsp; 计算方式：QPS = 并发数 / RT 或者 并发数= QPS * RT  
 
