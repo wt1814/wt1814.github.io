@@ -373,8 +373,7 @@
     * [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
     * [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
     * [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
-* 高并发
-    * [分布式与高并发](/docs/system/DistributedHighConcurrency.md)   
+* [分布式与高并发](/docs/system/DistributedHighConcurrency.md)   
     * [分布式和集群](/docs/system/distributed.md)  
     * [系统性能指标](/docs/system/performance.md)  
     * [并发系统三高](/docs/system/threeHigh.md)  

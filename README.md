@@ -499,14 +499,13 @@
 
 ## 高并发
 ### 分布式与高并发
-[分布式与高并发](/docs/system/DistributedHighConcurrency.md)   
-&emsp; [分布式和集群](/docs/system/distributed.md)   
-&emsp; [系统性能指标](/docs/system/performance.md)  
-&emsp; [并发系统三高](/docs/system/threeHigh.md)  
-&emsp; &emsp; [高可用建设](/docs/system/highAvailability.md)  
-&emsp; &emsp; [秒杀系统设计](/docs/system/seckill.md)  
-&emsp; &emsp; &emsp; [Redis实现库存扣减](/docs/system/stock.md)  
-&emsp; [资源限制](/docs/system/ResourceConstraints.md)  
+[分布式和集群](/docs/system/distributed.md)   
+[系统性能指标](/docs/system/performance.md)  
+[并发系统三高](/docs/system/threeHigh.md)  
+&emsp; [高可用建设](/docs/system/highAvailability.md)  
+&emsp; [秒杀系统设计](/docs/system/seckill.md)  
+&emsp; &emsp; [Redis实现库存扣减](/docs/system/stock.md)  
+[资源限制](/docs/system/ResourceConstraints.md)  
 
 ### 缓存  
 [缓存算法](/docs/cache/CacheAlgorithm.md)  

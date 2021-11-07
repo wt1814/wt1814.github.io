@@ -33,6 +33,9 @@ https://mp.weixin.qq.com/s/eaNFwNyz-TIXmhtWMYsxKQ
 
 -->
 
+&emsp; `分布式带来数据一致性的问题。`  
+
+
 ## 集群  
 <!-- 
 
