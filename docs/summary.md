@@ -3199,30 +3199,31 @@ update product set name = 'TXC' where id = 1;
 1. 很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！  
 2. redis底层8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。  
 3. 3种链表：  
-    * 双端链表LinkedList
+    * 双端链表LinkedList  
         &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
         ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-62.png)  
-    * 压缩列表Ziplist
+    * 压缩列表Ziplist  
         &emsp; 在双端链表中，如果在一个链表节点中存储一个小数据，比如一个字节。那么对应的就要保存头节点，前后指针等额外的数据。这样就浪费了空间，同时由于反复申请与释放也容易导致内存碎片化。这样内存的使用效率就太低了。  
         &emsp; Redis设计了压缩列表  
         ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-110.png)  
         &emsp; ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>** 只用在字段个数少，字段值小的场景里。  
-    * 快速列表Quicklist
+    * 快速列表Quicklist  
         QuickList其实就是结合了ZipList和LinkedList的优点设计出来的。quicklist存储了一个双向链表，每个节点都是一个ziplist。  
         ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-63.png)  
-4. 整数集合inset
+4. 整数集合inset  
 &emsp; inset的数据结构：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-7.png)  
 &emsp; inset也叫做整数集合，用于保存整数值的数据结构类型，它可以保存int16_t、int32_t 或者int64_t 的整数值。  
 &emsp; 在整数集合中，有三个属性值encoding、length、contents[]，分别表示编码方式、整数集合的长度、以及元素内容，length就是记录contents里面的大小。  
-5. 跳跃表SkipList
+5. 跳跃表SkipList  
 &emsp; skiplist也叫做「跳跃表」，跳跃表是一种有序的数据结构，它通过每一个节点维持多个指向其它节点的指针，从而达到快速访问的目的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-85.png)  
 &emsp; SkipList分为两部分，dict部分是由字典实现，Zset部分使用跳跃表实现，从图中可以看出，dict和跳跃表都存储了数据，实际上dict和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
 
 
 ###### 1.16.2.1.3.2. SDS详解
-1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>** 
+1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>**  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-77.png)  
     * len保存了字符串的长度；
     * free表示buf数组中未使用的字节数量；
     * buf数组则是保存字符串的每一个字符元素。  
@@ -3252,10 +3253,11 @@ update product set name = 'TXC' where id = 1;
 
 ###### 1.16.2.1.3.4. 数据类型  
 &emsp; Redis会根据当前值的类型和长度决定使用哪种内部编码实现。 **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
-    
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-106.png)  
+
 * String字符串类型的内部编码有三种：
     1. int，存储8个字节的长整型(long，2^63-1)。当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
-    2. embstr，代表 embstr 格式的 SDS（Simple Dynamic String简单动态字符串），存储小于44个字节的字符串。  
+    2. embstr，代表 embstr 格式的 SDS(Simple Dynamic String 简单动态字符串)，存储小于44个字节的字符串。  
     3. raw，存储大于 44 个字节的字符串(3.2 版本之前是 39 字节)。  
 * Hash由ziplist(压缩列表)或者dictht(字典)组成；  
 * List，「有序」「可重复」集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  

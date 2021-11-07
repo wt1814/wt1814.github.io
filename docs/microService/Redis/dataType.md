@@ -14,23 +14,29 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-3. Redis会根据当前值的类型和长度决定使用哪种内部编码实现。 **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
-    
-    * String字符串类型的内部编码有三种：
-        1. int，存储8个字节的长整型(long，2^63-1)。当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
-        2. embstr，代表 embstr 格式的 SDS(Simple Dynamic String 简单动态字符串)，存储小于44个字节的字符串。  
-        3. raw，存储大于 44 个字节的字符串(3.2 版本之前是 39 字节)。  
-    * Hash由ziplist(压缩列表)或者dictht(字典)组成；  
-    * List，「有序」「可重复」集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  
-    * Set，「无序」「不可重复」集合， **<font color = "clime">是特殊的Hash结构(value为null)，</font>** 由intset(整数集合)或者dictht(字典)组成；
-    * ZSet，「有序」「不可重复」集合，由skiplist(跳跃表)或者ziplist(压缩列表)组成。  
+&emsp; Redis会根据当前值的类型和长度决定使用哪种内部编码实现。 **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-106.png)  
+
+* String字符串类型的内部编码有三种：
+    1. int，存储8个字节的长整型(long，2^63-1)。当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
+    2. embstr，代表 embstr 格式的 SDS(Simple Dynamic String 简单动态字符串)，存储小于44个字节的字符串。  
+    3. raw，存储大于 44 个字节的字符串(3.2 版本之前是 39 字节)。  
+* Hash由ziplist(压缩列表)或者dictht(字典)组成；  
+* List，「有序」「可重复」集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  
+* Set，「无序」「不可重复」集合， **<font color = "clime">是特殊的Hash结构(value为null)，</font>** 由intset(整数集合)或者dictht(字典)组成；
+* ZSet，「有序」「不可重复」集合，由skiplist(跳跃表)或者ziplist(压缩列表)组成。  
 
 
 # 1. 数据类型
+<!-- 
+
+*** https://pdai.tech/md/db/nosql-redis/db-redis-data-type-enc.html
+
+https://database.51cto.com/art/201906/598234.htm
+-->
 
 ## 1.1. 数据类型
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-106.png)  
-
 
 ### 1.1.1. String内部编码  
 <!-- 

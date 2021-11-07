@@ -9,7 +9,8 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>** 
+1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>**  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-77.png)  
     * len保存了字符串的长度；
     * free表示buf数组中未使用的字节数量；
     * buf数组则是保存字符串的每一个字符元素。  
