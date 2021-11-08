@@ -48,6 +48,8 @@ Kafka服务器在响应客户端读取的时候，底层使用ZeroCopy技术，�
 &emsp; 参考[kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
 
 ## 1.3. 可靠性
+&emsp; Kafka作为一个商业级消息中间件，消息可靠性的重要性可想而知。如何确保消息的精确传输？如何确保消息的准确存储？如何确保消息的正确消费？这些都是需要考虑的问题。  
+
 &emsp; 可靠性保证：确保系统在各种不同的环境下能够发生一致的行为。  
 &emsp; Kafka的保证：  
 

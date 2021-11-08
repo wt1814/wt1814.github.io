@@ -20,9 +20,9 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. Producer发送消息的过程：需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。  
-&emsp; Kafka提供了默认的分区策略（轮询、随机、按key顺序），同时支持自定义分区策略。  
+&emsp; Kafka分区策略查看[消息分区](/docs/microService/mq/kafka/topic.md)。  
 2. **<font color = "clime">如何提升Producer的性能？异步，批量，压缩。</font>**  
-3. 多线程处理。  
+3. 多线程处理：   
 &emsp; 多线程单KafkaProducer实例（可以理解为单例模式）、多线程多KafkaProducer实例（可以理解为多例，原型模式）。  
 &emsp; **<font color = "clime">如果是对分区数不多的Kafka集群而言，比较推荐使用第一种方法，即在多个producer用户线程中共享一个KafkaProducer实例。若是对那些拥有超多分区的集群而言，釆用第二种方法具有较高的可控性，方便producer的后续管理。</font>**   
 
