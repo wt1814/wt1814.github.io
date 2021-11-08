@@ -434,7 +434,7 @@
     * [kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  
         * [kafka生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
         * [消息分区](/docs/microService/mq/kafka/topic.md)  
-        * [分区后保持顺序](/docs/microService/mq/kafka/order.md)  
+        * [分区保持顺序](/docs/microService/mq/kafka/order.md)  
         * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
         * [kafka服务端](/docs/microService/mq/kafka/kafkaServer.md)  
     * [kafka特性](/docs/microService/mq/kafka/kafkaCharacteristic.md)  

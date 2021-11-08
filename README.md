@@ -575,7 +575,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  
 &emsp; [kafka生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
 &emsp; [消息分区](/docs/microService/mq/kafka/topic.md)  
-&emsp; [分区后保持顺序](/docs/microService/mq/kafka/order.md)  
+&emsp; [分区保持顺序](/docs/microService/mq/kafka/order.md)  
 &emsp; [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
 &emsp; [kafka服务端](/docs/microService/mq/kafka/kafkaServer.md)  
 [kafka特性](/docs/microService/mq/kafka/kafkaCharacteristic.md)  
