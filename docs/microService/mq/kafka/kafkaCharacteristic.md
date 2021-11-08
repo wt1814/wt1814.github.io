@@ -12,7 +12,7 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-* 高并发：  
+* 高并发：支持百万级TPS。   
     * 高性能：磁盘I/O-顺序读写、基于Sendfile实现零拷贝。  
     * 高可用：Kafka副本机制。  
 * 分布式：  

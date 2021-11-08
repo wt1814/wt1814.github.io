@@ -3539,7 +3539,7 @@ update product set name = 'TXC' where id = 1;
 ### 1.17.2. Kafka
 
 #### 1.17.2.1. kafka基本概念
-&emsp; Apache Kafka是一个分布式流处理平台。  
+&emsp; Apache Kafka是一个分布式流处理平台。支持百万及TPS。    
 
 ##### 1.17.2.1.1. kafka生产者
 1. Producer发送消息的过程：需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。  
@@ -3567,7 +3567,7 @@ update product set name = 'TXC' where id = 1;
             1. 轮询。  
             2. range策略。 
 4. 分区数设置
-5. 分区后保持有序  
+5. 分区后保持有序，查看顺序消费。    
 
 ##### 1.17.2.1.3. kafka消费者
 1. 消费者/消费者组/消费者组重平衡  
@@ -3594,7 +3594,7 @@ update product set name = 'TXC' where id = 1;
 
 
 #### 1.17.2.2. kafka特性
-* 高并发：  
+* 高并发：支持百万级TPS。    
     * 高性能：磁盘I/O-顺序读写、基于Sendfile实现零拷贝。  
     * 高可用：Kafka副本机制。  
 * 分布式：  
