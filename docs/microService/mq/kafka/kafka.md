@@ -20,7 +20,8 @@
 &emsp; [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md)  
 
 <!-- 
-
+Kafka为什么这么快？
+https://www.linkflowtech.com/3392.html
 kafka为什么用TCP/IP
 https://blog.csdn.net/qq_37865420/article/details/108323695
 -->
