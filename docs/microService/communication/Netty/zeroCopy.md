@@ -27,42 +27,40 @@
     * 状态切换：内核态和用户态之间的切换。  
     * CPU拷贝：内核态和用户态之间的复制。 **零拷贝："零"更多的是指在用户态和内核态之间的复制是0次。**   
     * DMA拷贝：设备（或网络）和内核态之间的复制。  
-3. 多种I/O传输方式： 
-    1. 仅CPU方式有4次状态切换，4次CPU拷贝。  
-    2. **<font color = "blue">DMA（Direct Memory Access，直接内存访问）。</font>** CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，因此减少了2次CPU拷贝。共2次CPU拷贝，2次DMA拷贝，4次状态切换。    
-    3. **<font color = "blue">mmap（内存映射）。</font>** 将内核中读缓冲区地址与用户空间缓冲区地址进行映射，又减少了一次cpu拷贝。总共包含1次cpu拷贝，2次DMA拷贝，4次状态切换。  
-        
-            此流程中，cpu拷贝从4次减少到1次，但状态切换还是4次。  
+3. 仅CPU方式：  
+	![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-66.png)  
+	&emsp; **仅CPU方式读数据read流程：**  
 
-    4. **<font color = "blue">sendfile（函数调用）。</font>** **<font color = "red">数据不经过用户缓冲区，该数据无法被修改，但减少了2次状态切换。</font>** 即只有1次CPU拷贝、2次DMA拷贝、2次状态切换。   
-    5. sendfile+DMA：将仅剩的1次CPU拷贝优化掉，把内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。    
-    &emsp; 仍然无法对数据进行修改，并且需要硬件层面DMA的支持，并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。  
-    6. splice：splice系统调用是Linux在2.6版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
-    &emsp; splice系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
+	* 当应用程序需要读取磁盘数据时，调用read()从用户态陷入内核态，read()这个系统调用最终由CPU来完成；
+	* CPU向磁盘发起I/O请求，磁盘收到之后开始准备数据；
+	* 磁盘将数据放到磁盘缓冲区之后，向CPU发起I/O中断，报告CPU数据已经Ready了；
+	* CPU收到磁盘控制器的I/O中断之后，开始拷贝数据，完成之后read()返回，再从内核态切换到用户态；  
 
------------
+    `仅CPU方式有4次状态切换，4次CPU拷贝。`    
 
-1. 仅CPU方式：  
-&emsp; 仅CPU方式有4次状态切换，4次CPU拷贝。  
-2. **CPU&DMA方式：**    
-    * 读过程涉及2次空间切换(需要CPU参与)、1次DMA拷贝、1次CPU拷贝；
-    * 写过程涉及2次空间切换、1次DMA拷贝、1次CPU拷贝；  
-&emsp; CPU&DMA与仅CPU方式相比少了2次CPU拷贝，多了2次DMA拷贝。  
-3. mmap+write方式：  
-&emsp; **<font color = "clime">mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享。</font>**  
-&emsp; 使用mmap+write方式相比CPU&DMA方式又少了一次CPU拷贝。即进行了4次用户空间与内核空间的上下文切换，以及3次数据拷贝；其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝。  
-4. sendfile方式：  
-&emsp; **<font color = "red">它建立了两个文件之间的传输通道。</font>**  
-&emsp; 应用程序只需要调用sendfile函数即可完成。 **<font color = "clime">数据不经过用户缓冲区，该数据无法被修改，但减少了2次状态切换。</font>** 即只有2次状态切换、1次CPU拷贝、2次DMA拷贝。   
-5. sendfile+DMA：  
-&emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。  
-&emsp; DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩的1次CPU拷贝。  
-&emsp; 这种方式又减少了1次CPU拷贝，即有2次状态切换、0次CPU拷贝、2次DMA拷贝。  
-&emsp; 但是仍然无法对数据进行修改，并且需要硬件层面DMA的支持， **并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。**   
-6. splice方式：  
+4. CPU & DMA（Direct Memory Access，直接内存访问）方式   
+	![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-68.png)    
+	&emsp; **<font color = "red">最主要的变化是，CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，因此减少了2次CPU拷贝。共2次CPU拷贝，2次DMA拷贝，4次状态切换。之后的过程类似。</font>**  
+
+	* 读过程涉及2次空间切换(需要CPU参与)、1次DMA拷贝、1次CPU拷贝；
+	* 写过程涉及2次空间切换、1次DMA拷贝、1次CPU拷贝；  
+5. `零拷贝技术的几个实现手段包括：mmap+write、sendfile、sendfile+DMA收集、splice等。`  
+6. **<font color = "blue">mmap（内存映射）：</font>**   
+    &emsp; **<font color = "clime">mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享，</font>** 又减少了一次cpu拷贝。总共包含1次cpu拷贝，2次DMA拷贝，4次状态切换。此流程中，cpu拷贝从4次减少到1次，但状态切换还是4次。   
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-100.png)  
+7. sendfile（函数调用）：  
+    1. 升级后的sendfile将内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。  
+    2. DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩的1次CPU拷贝。  
+
+&emsp; `数据不经过用户缓冲区，这种方式又减少了1次CPU拷贝。`即有2次状态切换、0次CPU拷贝、2次DMA拷贝。  
+&emsp; 但是`仍然无法对数据进行修改`，并且需要硬件层面DMA的支持， **并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。**   
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-32.png)  
+8. sendfile+DMA收集
+9. splice方式  
 &emsp; splice系统调用是Linux在2.6版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
 &emsp; splice系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
 &emsp; **<font color = "clime">splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-35.png)  
 
 
 <!-- 
@@ -243,7 +241,7 @@ DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要
 -->
 
 ### 1.3.2. 零拷贝技术实现技术
-&emsp; 目前，零拷贝技术的几个实现手段包括：mmap+write、sendfile、sendfile+DMA收集、splice等。  
+&emsp; 目前，`零拷贝技术的几个实现手段包括：mmap+write、sendfile、sendfile+DMA收集、splice等。`  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-72.png)
 
 #### 1.3.2.1. mmap+write方式，内存映射
