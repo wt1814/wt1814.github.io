@@ -64,26 +64,29 @@
 
 
 <!-- 
-*** 阿里二面：什么是mmap？ 
+★★★阿里二面：什么是mmap？ 
 https://mp.weixin.qq.com/s/sG0rviJlhVtHzGfd5NoqDQ
 ★★★零拷贝流程
 https://mp.weixin.qq.com/s/xY-hJl5qJv3QtttcMqHZRQ
 
 https://mp.weixin.qq.com/s/mOGtDgcc826MhGP7OWwjyg
-
 深入理解零拷贝技术 
 https://mp.weixin.qq.com/s/OF1A80pUrTQNouebYtUZbQ
+https://blog.csdn.net/wufaliang003/article/details/106195984
 
 -->
 
 # 1. IO性能优化之零拷贝
 <!-- 
 想理解好零拷贝，重点还在于理解为什么需要拷贝，以及不同零拷贝技术的对比。想理解好 I/O 原理，必须先弄清楚数据结构。  
-零拷贝
+
+-->
+
+<!-- 
+https://mp.weixin.qq.com/s/mWPjFbCVzvuAW3Y9lEQbGg
+~~
 https://www.jianshu.com/p/2581342317ce
 http://baijiahao.baidu.com/s?id=1664128784220450138&wfr=spider&for=pc
-https://mp.weixin.qq.com/s/mWPjFbCVzvuAW3Y9lEQbGg
-https://blog.csdn.net/wufaliang003/article/details/106195984
 -->
 
 &emsp; I/O传输中的一些基本概念：  

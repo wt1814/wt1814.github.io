@@ -10,6 +10,11 @@
     - [1.4. 命令](#14-命令)
         - [1.4.1. git clone 文件大](#141-git-clone-文件大)
         - [1.4.2. git tag](#142-git-tag)
+        - [1.4.3. ★★★git回滚](#143-★★★git回滚)
+            - [场景](#场景)
+            - [撤销，commit](#撤销commit)
+            - [回滚，push](#回滚push)
+            - [删除某次提交](#删除某次提交)
     - [1.5. gitignore规则不生效](#15-gitignore规则不生效)
     - [1.6. octotree，树形展示Github项目代码](#16-octotree树形展示github项目代码)
     - [1.7. git迁移仓库](#17-git迁移仓库)
@@ -86,11 +91,33 @@ https://blog.csdn.net/u011423145/article/details/107860812
 &emsp; git clone giturl --depth=1  
 
 
-
-
 ### 1.4.2. git tag  
 &emsp; 常常在代码封板时，使用git 创建一个tag，这样一个不可修改的历史代码版本就像被封存起来一样，不论是运维发布拉取，或者以后的代码版本管理，都是十分方便的。  
 
+
+### 1.4.3. ★★★git回滚
+<!--
+https://blog.csdn.net/ligang2585116/article/details/71094887
+https://zhuanlan.zhihu.com/p/137856034
+https://blog.csdn.net/tsq292978891/article/details/78965693
+
+-->
+
+&emsp; 强制推送到远程分支：  
+
+```text
+git push -f origin master ## 这里假设只有一个master分支
+```
+
+#### 场景  
+
+#### 撤销，commit  
+
+
+#### 回滚，push
+
+
+#### 删除某次提交
 
 
 
