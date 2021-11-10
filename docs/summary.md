@@ -3727,7 +3727,6 @@ update product set name = 'TXC' where id = 1;
 ###### 1.17.2.2.3.5. 事务
 
 
-
 ## 1.18. 分布式通信
 ### 1.18.1. 通信基础
 &emsp; 1. 序列化。  
@@ -3743,33 +3742,33 @@ update product set name = 'TXC' where id = 1;
     * 阻塞和非阻塞：在等待这个函数返回结果之前，当前的线程是处于挂起状态还是运行状态。 
 3. 同步阻塞I/O：  
     1. 流程：  
+        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-1.png)  
         1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
         2. 内核等待I/O数据返回，此时用户进程处于【阻塞】，一直等待内核返回；
         3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
         4. 内核将数据返回给用户进程。  
-
     特点：两阶段都阻塞。  
     2. BIO采用多线程时，`大量的线程占用很大的内存空间，并且线程切换会带来很大的开销，10000个线程真正发生读写事件的线程数不会超过20%，每次accept都开一个线程也是一种资源浪费。`  
 4. 同步非阻塞I/O：  
     1. 流程：  
+        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-2.png)  
         1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
         2. 内核等待I/O数据返回。无I/O数据返回时，内核返回给用户进程ewouldblock结果。`【非阻塞】用户进程，立马返回结果。`但 **<font color = "clime">用户进程要主动轮询查询结果。</font>**  
         3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
         4. 内核将数据返回给用户进程。  
-    
     特点：`第一阶段不阻塞但要轮询，`第二阶段阻塞。  
     2. NIO`每次轮询所有fd（包括没有发生读写事件的fd）会很浪费cpu。`  
 5. 多路复用I/O：（~~同步阻塞，又基于回调通知~~）  
     1. 为什么有多路复用？  
-    &emsp; 如果一个I/O流进来，我们就开启一个进程处理这个I/O流。那么假设现在有一百万个I/O流进来，那就需要开启一百万个进程一一对应处理这些I/O流（——这就是传统意义下的多进程并发处理）。思考一下，一百万个进程，你的CPU占有率会多高，这个实现方式及其的不合理。所以人们提出了I/O多路复用这个模型，一个线程，通过记录I/O流的状态来同时管理多个I/O，可以提高服务器的吞吐能力。  
-    2. 多路是指多个socket套接字，复用是指复用同一个进程。  
+    &emsp; 如果一个I/O流进来，就开启一个进程处理这个I/O流。那么假设现在有一百万个I/O流进来，那就需要开启一百万个进程一一对应处理这些I/O流（——这就是传统意义下的多进程并发处理）。思考一下，一百万个进程，CPU占有率会多高，这个实现方式及其的不合理。所以人们提出了I/O多路复用这个模型，一个线程，通过记录I/O流的状态来同时管理多个I/O，可以提高服务器的吞吐能力。  
+    2. `多路是指多个socket套接字，复用是指复用同一个进程。`  
     3. 流程：  
+        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-3.png)  
         1. 用户多进程或多线程发起select系统调用，复用器Selector会监听注册进来的进程事件。用户进程【同步】等待结果；
         2. 内核等待I/O数据返回，无数据返回时，select进程【阻塞】，进程也受阻于select调用；
         2. I/O数据返回后，内核将数据从内核空间拷贝到用户空间， **<font color = "clime">Selector`通知`哪个进程哪个事件；</font>**  
         4. 进程发起recvfrom系统调用。
-        
-        多路复用I/O模型和阻塞I/O模型并没有太大的不同，事实上，还更差一些，因为它需要使用两个系统调用(select和recvfrom)，而阻塞I/O模型只有一次系统调用(recvfrom)。但是Selector的优势在于它可以同时处理多个连接。   
+    多路复用I/O模型和阻塞I/O模型并没有太大的不同，事实上，还更差一些，因为它需要使用两个系统调用(select和recvfrom)，而阻塞I/O模型只有一次系统调用(recvfrom)。但是Selector的优势在于它可以同时处理多个连接。   
     4. 多路复用`能支持更多的并发连接请求。`  
 6. 信号驱动IO  
 7. 异步IO
@@ -3788,6 +3787,7 @@ update product set name = 'TXC' where id = 1;
 3. **poll()：** 运行机制与select()相似。将fd_set数组改为采用链表方式pollfds，没有连接数的限制，并且pollfds可重用。   
 4. **epoll()：**   
     1. **epoll的三个函数：**  
+        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-119.png)  
         * 调用epoll_create，会在内核cache里建个红黑树，同时也会再建立一个rdllist双向链表。 
         * epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改。
         * 双向链表，用于存储准备就绪的事件，当epoll_wait调用时，仅查看这个rdllist双向链表数据即可。epoll_wait阻塞等待注册的事件发生，返回事件的数目，并将触发的事件写入events数组中。    
@@ -3803,8 +3803,6 @@ update product set name = 'TXC' where id = 1;
         * epoll()函数返回后，调用函数以O(1)复杂度遍历。  
 5. 两种IO多路复用模式：[Reactor和Proactor](/docs/microService/communication/Netty/Reactor.md)  
 
-
-
 #### 1.18.2.3. 多路复用之Reactor模式
 1. `Reactor，是网络编程中基于IO多路复用的一种设计模式，是event-driven architecture的一种实现方式，处理多个客户端并发的向服务端请求服务的场景。`    
 2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font><font color = "blue">`其中Reactor负责监听和分发事件，线程池负责处理事件。`</font>** **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
@@ -3816,12 +3814,13 @@ update product set name = 'TXC' where id = 1;
 &emsp; ~~相对于第一种单线程的模式来说，在处理业务逻辑，也就是获取到IO的读写事件之后，交由线程池来处理，这样可以减小主reactor的性能开销，从而更专注的做事件分发工作了，从而提升整个应用的吞吐。~~  
 &emsp; Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作。在极个别特殊场景中，一个NIO线程(Acceptor线程)负责监听和处理所有的客户端连接可能会存在性能问题。    
 5. **主从多线程模型(多Reactor多线程)**    
-&emsp; 主从Reactor多线程模型中，Reactor线程拆分为mainReactor和subReactor两个部分， **<font color = "clime">mainReactor只处理连接事件，读写事件交给subReactor来处理。</font>** 业务逻辑还是由线程池来处理，mainRactor只处理连接事件，用一个线程来处理就好。处理读写事件的subReactor个数一般和CPU数量相等，一个subReactor对应一个线程，业务逻辑由线程池处理。  
+&emsp; 主从Reactor多线程模型中，Reactor线程拆分为mainReactor和subReactor两个部分， **<font color = "clime">`mainReactor只处理连接事件`，`读写事件交给subReactor来处理`。</font>** 业务逻辑还是由线程池来处理。  
+&emsp; mainRactor只处理连接事件，用一个线程来处理就好。处理读写事件的subReactor个数一般和CPU数量相等，一个subReactor对应一个线程。  
 &emsp; ~~第三种模型比起第二种模型，是将Reactor分成两部分：~~  
 &emsp; ~~mainReactor负责监听server socket，用来处理新连接的建立，将建立的socketChannel指定注册给subReactor。~~  
 &emsp; ~~subReactor维护自己的selector, 基于mainReactor 注册的socketChannel多路分离IO读写事件，读写网 络数据，对业务处理的功能，另其扔给worker线程池来完成。~~  
 &emsp; Reactor主从多线程模型中，一个连接accept专门用一个线程处理。  
-&emsp; 主从Reactor线程模型的特点是：服务端用于接收客户端连接的不再是个1个单独的NIO线程，而是一个独立的NIO线程池。Acceptor接收到客户端TCP连接请求处理完成后(可能包含接入认证等)，将新创建的SocketChannel注册到IO线程池（sub reactor线程池）的某个IO线程上，由它负责SocketChannel的读写和编解码工作。Acceptor线程池仅仅只用于客户端的登陆、握手和安全认证，一旦链路建立成功，就将链路注册到后端subReactor线程池的IO线程上，由IO线程负责后续的IO操作。  
+&emsp; 主从Reactor线程模型的特点是：服务端用于接收客户端连接的不再是个1个单独的NIO线程，而是一个独立的NIO线程池。Acceptor接收到客户端TCP连接请求处理完成后（可能包含接入认证等），将新创建的SocketChannel注册到IO线程池（sub reactor线程池）的某个IO线程上，由它负责SocketChannel的读写和编解码工作。Acceptor线程池仅仅只用于客户端的登陆、握手和安全认证，一旦链路建立成功，就将链路注册到后端subReactor线程池的IO线程上，由IO线程负责后续的IO操作。  
 &emsp; 利用主从NIO线程模型，可以解决1个服务端监听线程无法有效处理所有客户端连接的性能不足问题。  
 
 
@@ -3829,7 +3828,7 @@ update product set name = 'TXC' where id = 1;
 1. 比较常见的I/O流程是读取磁盘文件传输到网络中。  
 2. **<font color = "clime">I/O传输中的一些基本概念：</font>**  
     * 状态切换：内核态和用户态之间的切换。  
-    * CPU拷贝：内核态和用户态之间的复制。 **零拷贝："零"更多的是指在用户态和内核态之间的复制是0次。**   
+    * CPU拷贝：内核态和用户态之间的复制。 `零拷贝："零"更多的是指在用户态和内核态之间的复制是0次。`   
     * DMA拷贝：设备（或网络）和内核态之间的复制。  
 3. 多种I/O传输方式： 
     1. 仅CPU方式有4次状态切换，4次CPU拷贝。  
