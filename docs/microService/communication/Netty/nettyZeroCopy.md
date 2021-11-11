@@ -6,6 +6,9 @@ https://www.bilibili.com/video/BV17t41137su?p=38
 
 netty源码书
 https://segmentfault.com/a/1190000007560884
+
+https://mp.weixin.qq.com/s/xY-hJl5qJv3QtttcMqHZRQ
+
 -->
 
 &emsp; 前言：[IO性能优化之零拷贝](/docs/microService/communication/Netty/zeroCopy.md)  

@@ -8,14 +8,15 @@
             - [1.1.2.1. DMA介绍](#1121-dma介绍)
             - [1.1.2.2. 加入DMA后的读数据read流程](#1122-加入dma后的读数据read流程)
             - [1.1.2.3. ★★★一次读取数据read、传输数据write交互详解](#1123-★★★一次读取数据read传输数据write交互详解)
-        - [1.2. CPU&DMA-2](#12-cpudma-2)
-    - [1.3. 零拷贝技术](#13-零拷贝技术)
-        - [1.3.1. 零拷贝简介](#131-零拷贝简介)
-        - [1.3.2. 零拷贝技术实现技术](#132-零拷贝技术实现技术)
-            - [1.3.2.1. mmap+write方式，内存映射](#1321-mmapwrite方式内存映射)
-            - [1.3.2.2. sendfile方式](#1322-sendfile方式)
-            - [1.3.2.3. ~~sendfile+DMA收集，零拷贝~~](#1323-sendfiledma收集零拷贝)
-            - [1.3.2.4. splice方式](#1324-splice方式)
+        - [1.1.3. CPU&DMA-2](#113-cpudma-2)
+    - [1.2. 零拷贝技术](#12-零拷贝技术)
+        - [1.2.1. 零拷贝简介](#121-零拷贝简介)
+        - [1.2.2. 零拷贝技术实现技术](#122-零拷贝技术实现技术)
+            - [1.2.2.1. mmap+write方式，内存映射](#1221-mmapwrite方式内存映射)
+            - [1.2.2.2. sendfile方式](#1222-sendfile方式)
+            - [1.2.2.3. ~~sendfile+DMA收集，零拷贝~~](#1223-sendfiledma收集零拷贝)
+            - [1.2.2.4. splice方式](#1224-splice方式)
+    - [1.3. 小结](#13-小结)
     - [1.4. 零拷贝实现](#14-零拷贝实现)
 
 <!-- /TOC -->
@@ -55,7 +56,7 @@
 &emsp; `数据不经过用户缓冲区，这种方式又减少了1次CPU拷贝。`即有2次状态切换、0次CPU拷贝、2次DMA拷贝。  
 &emsp; 但是`仍然无法对数据进行修改`，并且需要硬件层面DMA的支持， **并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。**   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-32.png)  
-8. sendfile+DMA收集
+8. sendfile+DMA收集  
 9. splice方式  
 &emsp; splice系统调用是Linux在2.6版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
 &emsp; splice系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
@@ -69,9 +70,10 @@ https://mp.weixin.qq.com/s/sG0rviJlhVtHzGfd5NoqDQ
 ★★★零拷贝流程
 https://mp.weixin.qq.com/s/xY-hJl5qJv3QtttcMqHZRQ
 
+
+
 https://mp.weixin.qq.com/s/mOGtDgcc826MhGP7OWwjyg
 深入理解零拷贝技术 
-https://mp.weixin.qq.com/s/OF1A80pUrTQNouebYtUZbQ
 https://blog.csdn.net/wufaliang003/article/details/106195984
 
 -->
@@ -109,12 +111,25 @@ DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要
 -->
 
 &emsp; 在Linux系统内部，缓存和内存容量都是有限的，更多的数据都是存储在磁盘中。对于Web服务器来说，经常需要从磁盘中读取read数据到内存，然后再通过网卡传输write给用户。  
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-65.png)  
 &emsp; 上述数据流转只是概述，接下来看看几种模式。
 
 ### 1.1.1. 仅CPU方式读数据read流程
+&emsp; 基于传统的IO方式，底层实际上通过调用read()和write()来实现。  
+&emsp; 通过read()把数据从硬盘读取到内核缓冲区，再复制到用户缓冲区；然后再通过write()写入到socket缓冲区，最后写入网卡设备。  
+
+```text
+File.read(file, buf, len);
+Socket.send(socket, buf, len);
+```
+
+&emsp; 整个过程发生了4次用户态和内核态的上下文切换和4次拷贝。  
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-66.png)  
-&emsp; **仅CPU方式读数据read流程：**  
+
+
+&emsp; **仅CPU方式读数据read流程，具体流程如下：**  
 
 * 当应用程序需要读取磁盘数据时，调用read()从用户态陷入内核态，read()这个系统调用最终由CPU来完成；
 * CPU向磁盘发起I/O请求，磁盘收到之后开始准备数据；
@@ -122,6 +137,27 @@ DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要
 * CPU收到磁盘控制器的I/O中断之后，开始拷贝数据，完成之后read()返回，再从内核态切换到用户态；  
 
 &emsp; ~~缺点：~~ CPU操作数据与磁盘操作数据的速度不是一个量级。 **CPU是很珍贵的资源。**  
+
+-------
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-139.png)  
+
+&emsp; 4 次 copy：  
+
+* CPU 负责将数据从磁盘搬运到内核空间的 Page Cache 中；  
+* CPU 负责将数据从内核空间的 Socket 缓冲区搬运到的网络中；  
+* CPU 负责将数据从内核空间的 Page Cache 搬运到用户空间的缓冲区；  
+* CPU 负责将数据从用户空间的缓冲区搬运到内核空间的 Socket 缓冲区中；  
+
+
+&emsp; 4 次上下文切换：
+
+* read 系统调用时：用户态切换到内核态；
+* read 系统调用完毕：内核态切换回用户态；
+* write 系统调用时：用户态切换到内核态；
+* write 系统调用完毕：内核态切换回用户态；
+
+
 
 ### 1.1.2. CPU&DMA方式
 #### 1.1.2.1. DMA介绍
@@ -143,6 +179,15 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-68.png)    
 &emsp; **<font color = "red">最主要的变化是，CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，之后的过程类似。</font>**
 
+<!-- 
+用户进程通过read()方法向操作系统发起调用，此时上下文从用户态转向内核态
+DMA控制器把数据从硬盘中拷贝到读缓冲区
+CPU把读缓冲区数据拷贝到应用缓冲区，上下文从内核态转为用户态，read()返回
+用户进程通过write()方法发起调用，上下文从用户态转为内核态
+CPU将应用缓冲区中数据拷贝到socket缓冲区
+DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，write()返回
+
+-->
 
 #### 1.1.2.3. ★★★一次读取数据read、传输数据write交互详解
 &emsp; 继续思考Web服务器读取本地磁盘文件数据再通过网络传输给用户的详细过程。  
@@ -150,6 +195,7 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-69.png)   
 &emsp; **来看下完整的数据拷贝过程简图：**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-71.png)  
+
 -----
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-99.png)  
 &emsp; **应用程序读数据read流程：**
@@ -175,8 +221,28 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 &emsp; CPU&DMA与仅CPU方式少了2次CPU拷贝，多了2次DMA拷贝。  
 &emsp; **注：无论从仅CPU方式和DMA&CPU方式，都存在多次冗余数据拷贝和内核态&用户态的切换。**  
 
+--------------
 
-### 1.2. CPU&DMA-2 
+1. 用户进程通过read()方法向操作系统发起调用，此时上下文从用户态转向内核态  
+2. DMA控制器把数据从硬盘中拷贝到读缓冲区  
+3. CPU把读缓冲区数据拷贝到应用缓冲区，上下文从内核态转为用户态，read()返回  
+4. 用户进程通过write()方法发起调用，上下文从用户态转为内核态  
+5. CPU将应用缓冲区中数据拷贝到socket缓冲区  
+6. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，write()返回  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-140.png)  
+
+--------
+第一步:操作系统通过DMA传输将硬盘中的数据复制到内核缓冲区  
+第二步:操作系统执行read方法将内核缓冲区的数据复制到用户空间  
+第三步:操作系统执行write方法将用户空间的数据复制到内核socket缓冲区  
+第四步:操作系统通过DMA传输将内核socket缓冲区数据复制给网卡发送数据  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-141.png)  
+
+
+
+### 1.1.3. CPU&DMA-2 
 &emsp;总结所有系统中，不管是WEB应用服务器，FTP服务器，数据库服务器，静态文件服务器等等，所有涉及到数据传输的场景，无非就一种：——从硬盘上读取文件数据, 发送到网络上去。  
 
 &emsp;这个场景简化为一个模型：  
@@ -211,8 +277,8 @@ CPU的时间宝贵，让它做杂活就是浪费资源。
 &emsp; Linux的零拷贝技术就是为了优化掉这两次不必要的拷贝。
 
 
-## 1.3. 零拷贝技术
-### 1.3.1. 零拷贝简介
+## 1.2. 零拷贝技术
+### 1.2.1. 零拷贝简介
 &emsp; **零拷贝是什么？**    
 &emsp; "零拷贝"中的"拷贝"是指操作系统在I/O操作中，将数据从一个内存区域复制到另外一个内存区域， **<font color = "red">而"零"并不是指0次复制，更多的是指在用户态和内核态之间的复制是0次。</font>**
 
@@ -243,11 +309,11 @@ DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要
 从内核态到用户态时会发生上下文切换，上下文切换时指由用户态切换到内核态, 以及由内核态切换到用户态。
 -->
 
-### 1.3.2. 零拷贝技术实现技术
+### 1.2.2. 零拷贝技术实现技术
 &emsp; 目前，`零拷贝技术的几个实现手段包括：mmap+write、sendfile、sendfile+DMA收集、splice等。`  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-72.png)
 
-#### 1.3.2.1. mmap+write方式，内存映射
+#### 1.2.2.1. mmap+write方式，内存映射
 &emsp; **<font color = "clime">mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享。</font>**  
 &emsp; 使用mmap+write方式代替原来的read+write方式，mmap是一种内存映射文件的方法，即将一个文件或者其它对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对映关系；这样就可以省掉原来内核read缓冲区copy数据到用户缓冲区，但是还是需要内核read缓冲区将数据copy到内核socket缓冲区。大致如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-100.png)  
@@ -257,6 +323,41 @@ DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要
 &emsp; **<font color = "clime">「通过mmap实现的零拷贝I/O进行了4次用户空间与内核空间的上下文切换，以及3次数据拷贝；其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝」。</font>**  
 
 &emsp; mmap对大文件传输有一定优势，但是小文件可能出现碎片，并且在多个进程同时操作文件时可能产生引发coredump的signal。  
+
+------------
+
+mmap+write简单来说就是使用mmap替换了read+write中的read操作，减少了一次CPU的拷贝。  
+mmap主要实现方式是将读缓冲区的地址和用户缓冲区的地址进行映射，内核缓冲区和应用缓冲区共享，从而减少了从读缓冲区到用户缓冲区的一次CPU拷贝。  
+
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-142.png)  
+
+整个过程发生了4次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
+
+1. 用户进程通过mmap()方法向操作系统发起调用，上下文从用户态转向内核态
+2. DMA控制器把数据从硬盘中拷贝到读缓冲区
+3. 上下文从内核态转为用户态，mmap调用返回
+4. 用户进程通过write()方法发起调用，上下文从用户态转为内核态
+5. CPU将读缓冲区中数据拷贝到socket缓冲区
+6. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，write()返回
+
+
+mmap的方式节省了一次CPU拷贝，同时由于用户进程中的内存是虚拟的，只是映射到内核的读缓冲区，所以可以节省一半的内存空间，比较适合大文件的传输。  
+
+
+------------
+
+mmap函数的作用相当于是内存共享,将内核空间的内存区域和用户空间共享,这样就避免了将内核空间的数据拷贝到用户空间的步骤,通过mmap函数发送数据时上述的步骤如下:  
+
+第一步:操作系统通过DMA传输将硬盘中的数据复制到内核缓冲区,执行了mmap函数之后,拷贝到内核缓冲区的数据会和用户空间进行共享,所以不需要进行拷贝  
+第二步:CPU将内核缓冲区的数据拷贝到内核空间socket缓冲区  
+第三步:操作系统通过DMA传输将内核socket缓冲区数据拷贝给网卡发送数据  
+
+流程如下图示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-143.png)  
+
+整个流程中：DMA拷贝2次、CPU拷贝1次、用户空间和内核空间切换4次  
+
+可以发现此种方案避免了内核空间和用户空间之间数据的拷贝工作,但是在内核空间内部还是会有一次数据拷贝过程,而且CPU还是会有从内核空间和用户空间的切换过程  
 
 <!-- 
 include <sys/mman.h>
@@ -269,7 +370,7 @@ void *mmap(void *start， size_t length， int prot， int flags， int fd， of
     5)异步，DMA引擎将socket缓冲区中的数据copy到网卡
 -->
 
-#### 1.3.2.2. sendfile方式
+#### 1.2.2.2. sendfile方式
 &emsp; mmap+write方式有一定改进，但是由系统调用引起的状态切换并没有减少。  
 &emsp; sendfile系统调用是在Linux内核2.1版本中被引入， **<font color = "red">它建立了两个文件之间的传输通道。</font>**  
 
@@ -278,9 +379,39 @@ void *mmap(void *start， size_t length， int prot， int flags， int fd， of
 1. 发出sendfile系统调用，导致用户空间到内核空间的上下文切换，然后通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区中，接着再将数据从内核空间缓冲区复制到socket相关的缓冲区。    
 2. sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA异步将内核空间socket缓冲区中的数据传递到网卡。    
 
-
 &emsp; sendfile方式中，应用程序只需要调用sendfile函数即可完成。数据不经过用户缓冲区，该数据无法被修改。但减少了2次状态切换，即只有2次状态切换、1次CPU拷贝、2次DMA拷贝。    
 &emsp; 但是sendfile在内核缓冲区和socket缓冲区仍然存在一次CPU拷贝，或许这个还可以优化。
+
+
+------------
+
+相比mmap来说，sendfile同样减少了一次CPU拷贝，而且还减少了2次上下文切换。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-147.png)  
+sendfile是Linux2.1内核版本后引入的一个系统调用函数，通过使用sendfile数据可以直接在内核空间进行传输，因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-148.png)  
+
+整个过程发生了2次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
+
+1. 用户进程通过sendfile()方法向操作系统发起调用，上下文从用户态转向内核态
+2. DMA控制器把数据从硬盘中拷贝到读缓冲区
+3. CPU将读缓冲区中数据拷贝到socket缓冲区
+4. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，sendfile调用返回  
+
+sendfile方法IO数据对用户空间完全不可见，所以只能适用于完全不需要用户空间处理的情况，比如静态文件服务器。  
+
+-------
+senfile函数的作用是将一个文件描述符的内容发送给另一个文件描述符。而用户空间是不需要关心文件描述符的,所以整个的拷贝过程只会在内核空间操作,相当于减少了内核空间和用户空间之间数据的拷贝过程,而且还避免了CPU在内核空间和用户空间之间的来回切换过程。整体流程如下：  
+
+第一步：通过DMA传输将硬盘中的数据复制到内核页缓冲区  
+第二步：通过sendfile函数将页缓冲区的数据通过CPU拷贝给socket缓冲区  
+第三步：网卡通过DMA传输将socket缓冲区的数据拷贝走并发送数据  
+
+流程如下图示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-149.png)  
+整个过程中：DMA拷贝2次、CPU拷贝1次、内核空间和用户空间切换0次  
+
+可以看出通过sendfile函数时只会有一次CPU拷贝过程，而且全程都是在内核空间实现的，所以整个过程都不会使得CPU在内核空间和用户空间进行来回切换的操作，性能相比于mmap而言要更好  
+
 
 <!-- 
 sendfile系统调用在内核版本2.1中被引入，目的是简化通过网络在两个通道之间进行的数据传输过程。sendfile系统调用的引入，不仅减少了数据复制，还减少了上下文切换的次数，大致如下图所示：  
@@ -296,7 +427,8 @@ ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
 「通过sendfile实现的零拷贝I/O使用了2次用户空间与内核空间的上下文切换，以及3次数据的拷贝。其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝」
 -->
 
-#### 1.3.2.3. ~~sendfile+DMA收集，零拷贝~~
+
+#### 1.2.2.3. ~~sendfile+DMA收集，零拷贝~~
 &emsp; Linux 2.4内核对sendfile系统调用进行优化，但是需要硬件DMA控制器的配合。  
 &emsp; 升级后的sendfile将内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。  
 &emsp; DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩的1次CPU拷贝。  
@@ -315,11 +447,62 @@ ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
 「带有DMA收集拷贝功能的sendfile实现的I/O使用了2次用户空间与内核空间的上下文切换，以及2次数据的拷贝，而且这2次的数据拷贝都是非CPU拷贝。这样一来我们就实现了最理想的零拷贝I/O传输了，不需要任何一次的CPU拷贝，以及最少的上下文切换」
 -->
 
-#### 1.3.2.4. splice方式  
+----------
+
+另外如果硬件支持的化,sendfile函数还可以直接将文件描述符和数据长度发送给socket缓冲区,然后直接通过DMA传输将页缓冲区的数据拷贝给网卡进行发送即可,这样就避免了CPU在内核空间内的拷贝过程，流程如下：  
+
+第一步：通过DMA传输将硬盘中的数据复制到内核页缓冲区  
+第二步：通过sendfile函数将页缓冲区数据的文件描述符和数据长度发送给socket缓冲区  
+第三步：网卡通过DMA传输根据文件描述符和文件长度直接从页缓冲区拷贝数据  
+
+如下图示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-144.png)  
+整个过程中：DMA拷贝2次、CPU拷贝0次、内核空间和用户空间切换0次  
+所以整个过程都是没有CPU拷贝的过程的，实现了真正的CPU零拷贝机制  
+
+------------------
+
+Linux2.4内核版本之后对sendfile做了进一步优化，通过引入新的硬件支持，这个方式叫做DMA Scatter/Gather 分散/收集功能。  
+它将读缓冲区中的数据描述信息--内存地址和偏移量记录到socket缓冲区，由 DMA 根据这些将数据从读缓冲区拷贝到网卡，相比之前版本减少了一次CPU拷贝的过程  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-145.png)  
+
+整个过程发生了2次用户态和内核态的上下文切换和2次拷贝，其中更重要的是完全没有CPU拷贝，具体流程如下：  
+
+1. 用户进程通过sendfile()方法向操作系统发起调用，上下文从用户态转向内核态  
+2. DMA控制器利用scatter把数据从硬盘中拷贝到读缓冲区离散存储  
+3. CPU把读缓冲区中的文件描述符和数据长度发送到socket缓冲区  
+4. DMA控制器根据文件描述符和数据长度，使用scatter/gather把数据从内核缓冲区拷贝到网卡  
+5. sendfile()调用返回，上下文从内核态切换回用户态  
+
+DMA gather和sendfile一样数据对用户空间不可见，而且需要硬件支持，同时输入文件描述符只能是文件，但是过程中完全没有CPU拷贝过程，极大提升了性能。  
+
+#### 1.2.2.4. splice方式  
 &emsp; splice系统调用是Linux在2.6版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
 &emsp; splice系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-35.png)  
 &emsp; **<font color = "clime">splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。</font>**  
+
+--------
+
+splice函数的作用是将两个文件描述符之间建立一个管道,然后将文件描述符的引用传递过去,这样在使用到数据的时候就可以直接通过引用指针访问到具体数据。过程如下：  
+
+第一步:通过DMA传输将文件复制到内核页缓冲区  
+第二步:通过splice函数在页缓冲区和socket缓冲区之间建立管道,并将文件描述符的引用指针发送给socket缓冲区  
+第三步:网卡通过DMA传输根据文件描述符的指针直接访问数据  
+
+如下图示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-146.png)  
+
+整个过程中：DMA拷贝2次、CPU拷贝0次、内核空间和用户空间切换0次  
+可以看出通过slice函数传输数据时同样可以实现CPU的零拷贝，且不需要CPU在内核空间和用户空间之间来回切换  
+
+## 1.3. 小结  
+由于CPU和IO速度的差异问题，产生了DMA技术，通过DMA搬运来减少CPU的等待时间。  
+传统的IOread+write方式会产生2次DMA拷贝+2次CPU拷贝，同时有4次上下文切换。  
+而通过mmap+write方式则产生2次DMA拷贝+1次CPU拷贝，4次上下文切换，通过内存映射减少了一次CPU拷贝，可以减少内存使用，适合大文件的传输。  
+sendfile方式是新增的一个系统调用函数，产生2次DMA拷贝+1次CPU拷贝，但是只有2次上下文切换。因为只有一次调用，减少了上下文的切换，但是用户空间对IO数据不可见，适用于静态文件服务器。  
+sendfile+DMA gather方式产生2次DMA拷贝，没有CPU拷贝，而且也只有2次上下文切换。虽然极大地提升了性能，但是需要依赖新的硬件设备支持。  
+
 
 ## 1.4. 零拷贝实现  
 

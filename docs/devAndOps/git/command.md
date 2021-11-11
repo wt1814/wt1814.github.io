@@ -11,15 +11,25 @@
         - [1.4.1. git clone 文件大](#141-git-clone-文件大)
         - [1.4.2. git tag](#142-git-tag)
         - [1.4.3. ★★★git回滚](#143-★★★git回滚)
-            - [场景](#场景)
-            - [撤销，commit](#撤销commit)
-            - [回滚，push](#回滚push)
-            - [删除某次提交](#删除某次提交)
+            - [1.4.3.1. 场景](#1431-场景)
+            - [1.4.3.2. 撤销，commit](#1432-撤销commit)
+            - [1.4.3.3. 回滚，push](#1433-回滚push)
+                - [1.4.3.3.1. ★★★情况二：删除最后一次远程提交](#14331-★★★情况二删除最后一次远程提交)
+                - [1.4.3.3.2. ★★★情况三：回滚某次提交](#14332-★★★情况三回滚某次提交)
+            - [1.4.3.4. 删除某次提交](#1434-删除某次提交)
     - [1.5. gitignore规则不生效](#15-gitignore规则不生效)
     - [1.6. octotree，树形展示Github项目代码](#16-octotree树形展示github项目代码)
     - [1.7. git迁移仓库](#17-git迁移仓库)
 
 <!-- /TOC -->
+
+
+&emsp; **<font color = "red">总结：</font>**  
+1. 回滚  
+    1. 删除最后一次远程提交
+    2. 回滚某次提交
+    3. 强制提交  
+
 
 # 1. git
 
@@ -109,15 +119,44 @@ https://blog.csdn.net/tsq292978891/article/details/78965693
 git push -f origin master ## 这里假设只有一个master分支
 ```
 
-#### 场景  
+#### 1.4.3.1. 场景  
 
-#### 撤销，commit  
-
-
-#### 回滚，push
+#### 1.4.3.2. 撤销，commit  
 
 
-#### 删除某次提交
+#### 1.4.3.3. 回滚，push
+
+##### 1.4.3.3.1. ★★★情况二：删除最后一次远程提交  
+&emsp; 方式一：使用revert  
+
+```text
+$ git revert HEAD
+$ git push origin master
+```
+
+&emsp; 方式二：使用reset
+
+```text
+$ git reset --hard HEAD^
+$ git push origin master -f
+```
+
+&emsp; 二者区别：  
+
+&emsp; revert 是放弃指定提交的修改，但是会生成一次新的提交，需要填写提交注释，以前的历史记录都在；  
+&emsp; reset 是指将HEAD指针指到指定提交，历史记录中不会出现放弃的提交记录。  
+
+
+##### 1.4.3.3.2. ★★★情况三：回滚某次提交  
+
+```text
+# 找到要回滚的commitID
+$ git log
+$ git revert commitID
+```
+
+
+#### 1.4.3.4. 删除某次提交
 
 
 

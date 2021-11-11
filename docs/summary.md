@@ -4025,6 +4025,8 @@ update product set name = 'TXC' where id = 1;
         2. 服务器端  
             * **<font color = "red">允许time_wait状态的socket被重用。</font>**
             * 缩减time_wait时间，设置为 1 MSL（即2mins）。
+
+
 ###### 1.19.3.1.1.2. Http长短链接
 
 ###### 1.19.3.1.1.3. TCP粘包
