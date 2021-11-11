@@ -15,7 +15,7 @@
 <!-- /TOC -->
 
 
-&emsp; **<font color = "red">总结：</font>**
+&emsp; **<font color = "red">总结：</font>**  
 1. 非partition key的查询 / 分库分表多维度查询  
 	* 基因法
 	* 映射法

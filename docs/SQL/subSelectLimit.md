@@ -1,94 +1,262 @@
+<!-- TOC -->
+
+- [1. 分库分表后分页查询](#1-分库分表后分页查询)
+    - [1.1. 分表对分页的影响](#11-分表对分页的影响)
+        - [1.1.1. 分段法](#111-分段法)
+        - [1.1.2. 模余均摊法](#112-模余均摊法)
+    - [1.2. 全局视野法](#12-全局视野法)
+        - [1.2.1. 方案](#121-方案)
+        - [1.2.2. 优缺点](#122-优缺点)
+    - [1.3. 业务折衷法](#13-业务折衷法)
+        - [1.3.1. 业务折衷一：禁止跳页查询](#131-业务折衷一禁止跳页查询)
+        - [1.3.2. 允许数据精度损失](#132-允许数据精度损失)
+    - [1.4. 二次查询法](#14-二次查询法)
+    - [1.5. 小结](#15-小结)
+
+<!-- /TOC -->
+
+
+&emsp; **<font color = "red">总结：</font>**  
+&emsp; “跨库分页”的四种方案。  
+1. 分库分表对分页的影响：  
+	常见的分片策略有随机分片和连续分片这两种。  
+2. 全局视野法
+	1. 流程
+		1. 如果要获取第N页的数据(每页S条数据)，则将每一个子库的前N页(offset 0,limit N*S)的所有数据都先查出来(有筛选条件或排序规则的话都包含)。  
+		2. 然后将各个子库的结果合并起来之后，再做一次分页查询（可不用带上相同的筛选条件，但还要带上排序规则)即可得出最终结果，这种方式类似es分页的逻辑。
+	2. 优点: 数据准确，可以跳页  
+	3. 缺点： 
+	（1）每个分库需要返回更多的数据，增大了网络传输量（耗网络）；  
+	（2）服务层还需要进行二次排序，增大了服务层的计算量（耗CPU）；   	（3）最致命的，这个算法随着页码的增大，性能会急剧下降，这是因为SQL改写后每个分库要返回X+Y行数据：返回第3页，offset中的X=200；假如要返回第100页，offset中的X=9900，即每个分库要返回100页数据，数据量和排序量都将大增，性能平方级下降。  
+3. 方法二：业务折衷法-禁止跳页查询(对应es中的scroll方法)   
+	1. 流程：  
+		1. 如果要获取第N页的数据，第一页时，是和全局视野法一致。  
+		2. 但第二页开始后，需要在每一个子库查询时，加上可以排除上一页的过滤条件(如按时间排序时，获取上一页的最大时间后，需要加上time > ${maxTime_lastPage}的条件，然后再limit S。即可获取各个子库的结果。  
+		3. 之后再合并后top S即可得到最终结果。  
+	2. 优点: 数据准确，性能良好  
+	3. 缺点: 不能跳页  
+4. 方法三：业务折衷法-允许模糊数据  
+	1. 前提：数据库分库-数据均衡原理  
+	使用patition key进行分库，在数据量较大，数据分布足够随机的情况下，各分库所有非patition key属性，在各个分库上的数据分布，统计概率情况是一致的。  
+	2. 流程：将order by time offset X limit Y，改写成order by time offset X/N limit Y/N    
+	3. 优点: 性能良好，可以跳页
+	4. 缺点: 数据不准确
+5. 终极武器-二次查询法  
 
 
 
-# 分库分表后分页查询
+
+
+# 1. 分库分表后分页查询
 <!-- 
+*** https://mp.weixin.qq.com/s/h99sXP4mvVFsJw6Oh3aU5A?
+
+https://www.cnblogs.com/yjmyzz/p/why_paging_so_tough_with_sharding.html
+
 https://mp.weixin.qq.com/s/F47s0NTqxEeDN-kTfrelSA
-https://mp.weixin.qq.com/s/m45F4-kk7oQ5312O5NEu3w
-https://mp.weixin.qq.com/s/h99sXP4mvVFsJw6Oh3aU5A?
-
 -->
+ 
+&emsp; <font color = "red">一般来讲，分页时需要按照指定字段进行排序。当排序字段是分片字段时，通过分片规则可以比较容易定位到指定的分片；而当排序字段非分片字段时，情况就会变得比较复杂了。</font>  
+&emsp; 分库后，分页查询按照时间time来排序order by。 
 
-
-
+## 1.1. 分表对分页的影响
 <!-- 
-水平分库分表后的分页查询
-https://blog.csdn.net/Winmusic/article/details/101645621
--->  
-&emsp; <font color = "red">一般来讲，分页时需要按照指定字段进行排序。当排序字段是分片字段时，通过分片规则可以比较容易定位到指定的分片；而当排序字段非分片字段时，情况就会变得比较复杂了。</font>为了最终结果的准确性，需要在不同的分片节点中将数据进行排序并返回，并将不同分片返回的结果集进行汇总和再次排序，最后再返回给用户。如下图所示：  
+https://mp.weixin.qq.com/s/m45F4-kk7oQ5312O5NEu3w
+-->
+&emsp; 比如有一张表，里面有8条记录(为简单起见，假设该表上只有1个自增ID），数学上可以抽象成1个(有序)数列(注：为方便讨论，不加特殊说明的情况下，文本中数列的顺序，均指升序)  
+&emsp; (1，2，3，4，5，6，7，8)  
+&emsp; 如果要取出上面红色标识的2,3这二条记录，limit 1,2 就行了。  
+&emsp; 现在假如分成2张表（即：原来的数列，拆分成2个非空子数列），一般来讲，有二种常用分法。    
+
+### 1.1.1. 分段法
+&emsp; 比如：有时间属性的数据，类似订单这种，可以按下单时间拆分，每个月1张表。  
+
+
+### 1.1.2. 模余均摊法
+
+
+
+## 1.2. 全局视野法 
+### 1.2.1. 方案
+&emsp; 若查询第x页的数据，每页y条。一共n个库。
+&emsp; 步骤：
+
+1. 将order by time offset (x*y+1) limit y，改写成order by time offset 0 limit (x*y+1) +y
+2. 服务层将改写后的SQL语句发往各个分库：即每库各取x页的数据
+3. 服务层将得到 n*(x*y+1+y) 条数据
+4. 服务层对得到的数据进行内存排序，内存排序后再取偏移量x*y+1后的y条记录，就是全局视野所需的一页数据
+
+
+----------
+
+
+&emsp; 为了最终结果的准确性，需要在不同的分片节点中将数据进行排序并返回，并将不同分片返回的结果集进行汇总和再次排序，最后再返回给用户。如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-17.png)  
 &emsp; 上面图中所描述的只是最简单的一种情况(取第一页数据)，看起来对性能的影响并不大。但是，如果想取出第10页数据，情况又将变得复杂很多，如下图所示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-18.png)  
 &emsp; 有些读者可能并不太理解，为什么不能像获取第一页数据那样简单处理(排序取出前10条再合并、排序)。其实并不难理解，因为各分片节点中的数据可能是随机的，为了排序的准确性，必须把所有分片节点的前N页数据都排序好后做合并，最后再进行整体的排序。很显然，这样的操作是比较消耗资源的，用户越往后翻页，系统性能将会越差。 
 
-----
+### 1.2.2. 优缺点
+&emsp; 方案优点：  
+&emsp; 通过服务层修改SQL语句，扩大数据召回量，能够得到全局视野，业务无损，精准返回所需数据。  
 
+
+&emsp; 方案缺点：  
+&emsp; （1）每个分库需要返回更多的数据，增大了网络传输量（耗网络）；  
+&emsp; （2）除了数据库按照time进行排序，服务层还需要进行二次排序，增大了服务层的计算量（耗CPU）；  
+&emsp; （3）最致命的，这个算法随着页码的增大，性能会急剧下降，这是因为SQL改写后每个分库要返回X+Y行数据：返回第3页，offset中的X=200；假如要返回第100页，offset中的X=9900，即每个分库要返回100页数据，数据量和排序量都将大增，性能平方级下降。  
+
+-----
+
+优点: 数据准确，可以跳页
+缺点: 深度分页时的性能差，即随着分页参数增加，网络传输数据量越来越大，每个子表每次需要查询的数据越多，性能也越慢
+
+
+## 1.3. 业务折衷法
 <!-- 
+https://mp.weixin.qq.com/s/h99sXP4mvVFsJw6Oh3aU5A?
 
-*** https://mp.weixin.qq.com/s/079pjykt2J32xXP4s0kurg
-
-https://blog.csdn.net/Winmusic/article/details/101645621
 -->
+&emsp; “全局视野法”虽然性能较差，但其业务无损，数据精准，不失为一种方案，有没有性能更优的方案呢？  
+&emsp; “任何脱离业务的架构设计都是耍流氓”，技术方案需要折衷，在技术难度较大的情况下，业务需求的折衷能够极大的简化技术方案。  
 
-&emsp; 分库后，分页查询按照时间time来排序order by。 
-1. 全局视野法 
-    若查询第x页的数据，每页y条。一共n个库。
-    步骤：
-
-    1. 将order by time offset (x*y+1) limit y，改写成order by time offset 0 limit (x*y+1) +y
-    2. 服务层将改写后的SQL语句发往各个分库：即每库各取x页的数据
-    3. 服务层将得到 n*(x*y+1+y) 条数据
-    4. 服务层对得到的数据进行内存排序，内存排序后再取偏移量x*y+1后的y条记录，就是全局视野所需的一页数据
-
-2. 业务折衷法
-    禁止跳页查询。只提供“下一页”的功能。  
-    1. 查询第1页数据
-        每个库执行order by time where time>0 limit y
-        得到 n*y条数据，内存排序，得到前y条，即为第1页。
-        $time_max=第1页最大的time
-    2. 获取第2页数据
-        每个库依次查询
-        order by time where time>$time_max limit y
-        一共得到n*y条数据，取time最小的y条为第2页数据。
-        $time_max=第2页最大的time
+### 1.3.1. 业务折衷一：禁止跳页查询  
+禁止跳页查询。只提供“下一页”的功能。  
+1. 查询第1页数据
+    每个库执行order by time where time>0 limit y
+    得到 n*y条数据，内存排序，得到前y条，即为第1页。
+    $time_max=第1页最大的time
+2. 获取第2页数据
+    每个库依次查询
+    order by time where time>$time_max limit y
+    一共得到n*y条数据，取time最小的y条为第2页数据。
+    $time_max=第2页最大的time
     
-    数据的传输量和排序的数据量不会随着不断翻页而导致性能下降。
-3. 二次查询法
-    为了方便举例，假设2个库，一页5条数据，查询第200页的SQL语句为select * from T order by time offset 1000 limit 5;  
+数据的传输量和排序的数据量不会随着不断翻页而导致性能下降。
 
-    1. 查询改写  
-    改写为select * from T order by time offset 500 limit 5，并投递给所有的分库，注意，这个offset的500，来自于全局offset的总偏移量1000，除以水平切分数据库个数2。  
-    如果是3个分库，则可以改写为select * from T order by time offset 333 limit 5  
-    假设这三个分库返回的数据(time, uid)如下：  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-178.png)  
-    每个分库都返回的按照time排序的一页数据。  
+### 1.3.2. 允许数据精度损失
+分库数为2的情况下：  
 
-    2. 找到所返回3页全部数据的最小值  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-179.png)  
-    第一个库，5条数据的time最小值是1487501123  
-    第二个库，5条数据的time最小值是1487501133  
-    第三个库，5条数据的time最小值是1487501143  
-    故，三页数据中，time最小值来自第一个库，time_min=1487501123，这个过程只需要比较各个分库第一条数据。  
+“全局视野法”能够返回业务无损的精确数据，在查询页数较大，例如第100页时，会有性能问题，此时业务上是否能够接受，返回的100页不是精准的数据，而允许有一些数据偏差呢？  
 
-    3. 查询二次改写  
-    第二次要改写成一个between语句，between的起点是time_min，between的终点是原来每个分库各自返回数据的最大值：  
-    第一个分库，第一次返回数据的最大值是1487501523  
-    所以查询改写为select * from T order by time where time between time_min and 1487501523  
-    第二个分库，第一次返回数据的最大值是1487501323  
-    所以查询改写为select\ * from T order by time where time between time_min and 1487501323  
-    第三个分库，第一次返回数据的最大值是1487501553  
-    所以查询改写为select * from T order by time where time between time_min and 1487501553  
-    第二次查询会返回比第一次查询结果集更多的数据，假设这三个分库返回的数据(time, uid)如下：  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-180.png)  
+ 
 
-    4. 在每个结果集中虚拟一个time_min记录，找到time_min在全局的offset  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-181.png)  
-    故：  
-    time_min在第一个库的offset是333；  
-    time_min在第二个库的offset是331；  
-    time_min在第三个库的offset是330；  
-    综上，time_min在全局的offset是333+331+330=994；  
+数据库分库-数据均衡原理  
 
-    5. 得到time_min在全局的offset，就相当于有了全局视野，根据第二次的结果集，就能够得到全局offset 1000 limit 5的记录  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-182.png)  
-    第二次查询在各个分库返回的结果集是有序的，又知道了time_min在全局的offset是994，一路排下来，容易知道全局offset 1000 limit 5的一页记录（上图中黄色记录）。  
+使用patition key进行分库，在数据量较大，数据分布足够随机的情况下，各分库所有非patition key属性，在各个分库上的数据分布，统计概率情况是一致的。  
+
+
+利用这一原理，要查询全局100页数据，offset 9900 limit 100改写为offset 4950 limit 50，每个分库偏移4950（一半），获取50条数据（半页），得到的数据集的并集，基本能够认为，是全局数据的offset 9900 limit 100的数据，当然，这一页数据的精度，并不是精准的。  
+根据实际业务经验，用户都要查询第100页网页、帖子、邮件的数据了，这一页数据的精准性损失，业务上往往是可以接受的，但此时技术方案的复杂度便大大降低了，既不需要返回更多的数据，也不需要进行服务内存排序了。  
+
+
+## 1.4. 二次查询法
+为了方便举例，假设2个库，一页5条数据，查询第200页的SQL语句为select * from T order by time offset 1000 limit 5;  
+
+1. 查询改写  
+改写为select * from T order by time offset 500 limit 5，并投递给所有的分库，注意，这个offset的500，来自于全局offset的总偏移量1000，除以水平切分数据库个数2。  
+如果是3个分库，则可以改写为select * from T order by time offset 333 limit 5  
+假设这三个分库返回的数据(time, uid)如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-178.png)  
+每个分库都返回的按照time排序的一页数据。  
+
+2. 找到所返回3页全部数据的最小值  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-179.png)  
+第一个库，5条数据的time最小值是1487501123  
+第二个库，5条数据的time最小值是1487501133  
+第三个库，5条数据的time最小值是1487501143  
+故，三页数据中，time最小值来自第一个库，time_min=1487501123，这个过程只需要比较各个分库第一条数据。  
+
+3. 查询二次改写  
+第二次要改写成一个between语句，between的起点是time_min，between的终点是原来每个分库各自返回数据的最大值：  
+第一个分库，第一次返回数据的最大值是1487501523  
+所以查询改写为select * from T order by time where time between time_min and 1487501523  
+第二个分库，第一次返回数据的最大值是1487501323  
+所以查询改写为select\ * from T order by time where time between time_min and 1487501323  
+第三个分库，第一次返回数据的最大值是1487501553  
+所以查询改写为select * from T order by time where time between time_min and 1487501553  
+第二次查询会返回比第一次查询结果集更多的数据，假设这三个分库返回的数据(time, uid)如下：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-180.png)  
+
+4. 在每个结果集中虚拟一个time_min记录，找到time_min在全局的offset  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-181.png)  
+故：  
+time_min在第一个库的offset是333；  
+time_min在第二个库的offset是331；  
+time_min在第三个库的offset是330；  
+综上，time_min在全局的offset是333+331+330=994；  
+
+5. 得到time_min在全局的offset，就相当于有了全局视野，根据第二次的结果集，就能够得到全局offset 1000 limit 5的记录  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-182.png)  
+第二次查询在各个分库返回的结果集是有序的，又知道了time_min在全局的offset是994，一路排下来，容易知道全局offset 1000 limit 5的一页记录（上图中黄色记录）。  
+
+
+## 1.5. 小结  
+<!-- 
+https://www.jianshu.com/p/831e4a7494e7
+-->
+&emsp; 解决“跨N库分页”这一难题的四种方法：  
+ 
+1. 方法一：全局视野法  
+（1）将order by time offset X limit Y，改写成order by time offset 0 limit X+Y  
+（2）服务层对得到的N*(X+Y)条数据进行内存排序，内存排序后再取偏移量X后的Y条记录
+
+这种方法随着翻页的进行，性能越来越低。  
+
+----------
+如果要获取第N页的数据(每页S条数据)，则将每一个子库的前N页(offset 0,limit N*S)的所有数据都先查出来(有筛选条件或排序规则的话都包含)，然后将各个子库的结果合并起来之后，再做查询下top S（可不用带上相同的筛选条件，但还要带上排序规则)即可得出最终结果，这种方式类似es分页的逻辑。
+
+
+
+
+2. 方法二：业务折衷法-禁止跳页查询(对应es中的scroll方法)    
+（1）用正常的方法取得第一页数据，并得到第一页记录的time_max  
+（2）每次翻页，将order by time offset X limit Y，改写成order by time where time>$time_max limit Y  
+
+以保证每次只返回一页数据，性能为常量。  
+
+--------------
+
+如果要获取第N页的数据，第一页时，是和全局视野法一致。但第二页开始后，需要在每一个子库查询时，加上可以排除上一页的过滤条件(如按时间排序时，获取上一页的最大时间后，需要加上time > ${maxTime_lastPage}的条件；如果没有排序规则，由于是默认主键id的排序规则，也可加上 id > ${maxId_lastPage}的条件)，然后再limit S。即可获取各个子库的结果，之后再合并后top S即可得到最终结果。  
+在类似app中列表下拉的场景中，业务上可以禁止跳页查询，此时可以使用这种方式。  
+
+    优点: 数据准确，性能良好
+    缺点: 不能跳页
+
+
+
+3. 方法三：业务折衷法-允许模糊数据  
+（1）将order by time offset X limit Y，改写成order by time offset X/N limit Y/N  
+
+-------------
+
+在大数据量的前提下，需要查询的数据，从概率论角度，是均匀分布在各个字库中的，因此可以假定需要查询的第N页数据，在子库中都处于第N/X页的前S/X条中（X=子库数）；所以查询子库时，限定offset ((N/X)-1)*S/X,limit S/X即可，例N=S=100,X=2时,子库分页条件为offset 4950,limit 50；然后合并子库结果后即可得出最终结果，当然这个结果是不准确的。在类似网页回帖上的场景下，往往数据精度要求不太高，此时可以使用这种方式。  
+
+    优点: 性能良好，可以跳页
+    缺点: 数据不准确
+
+
+
+4. 方法四：二次查询法  
+（1）将order by time offset X limit Y，改写成order by time offset X/N limit Y  
+（2）找到最小值time_min  
+（3）between二次查询，order by time between $time_min and $time_i_max  
+（4）设置虚拟time_min，找到time_min在各个分库的offset，从而得到time_min在全局的offset  
+（5）得到了time_min在全局的offset，自然得到了全局的offset X limit Y  
+
+---------
+
+也是在大数据量的前提下，依据概率论，可以假定需要查询的第N页的数据，在子库中都处于第N/X页的后面。然后可按如下步骤查询:  
+
+1). [第一次查询] 按指定条件(筛选条件或排序规则条件)查询各个子库的S条数据，即offset ((N/X)-1)*S/X,limit S  
+2). 如果没有排序规则条件，则默认主键id排序，那么获取各个子库的返回数据的最小值和最大值: min_i_id,max_i_id；如果有排序条件，就按排序条件获取   
+3). 比较各个子库的min_i_id，得到最小的，定义为min_id  
+4). [第二次查询] 再次查询(有筛选条件的话也要包含)各个子库，加上条件:   min_id<id<max_i_id；(注: min_i_id = min_id的子库可省略查询)  
+5). 查看第二次查询结果中，min_id_id != min_id的其它子库中，共多了几条数据，如果多了M条，则可以得出全局中，min_id前面的数据有(((N/X)-1)*S/X)*X - M => ((N/X)-1)*S-M 条，((N/X)-1)*S-M即为min_id的全局offset  
+6). 计算真正的全局offset: ((N-1)*S)和min_id的全局offset: ((N/X)-1)*S-M之间的差值K，由公式可得: K>=0  
+7). 合并第二次查询的各子库结果，并按id排序后，以K为offset,S为limit即可得到最终全局的分页结果  
+
+    优点: 性能良好，可以跳页，数据相对准备，可以返回各个字库中offset ((N/X)-1)*S/X之后的实际数据
+    缺点: 需要二次查询，逻辑复杂，不完全精确，可能会漏掉各个子库中offset ((N/X)-1)*S/X之前的实际数据，以及之后不该包含的部
+
+
