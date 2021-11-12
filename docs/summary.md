@@ -3924,14 +3924,8 @@ update product set name = 'TXC' where id = 1;
 
 ### 1.18.5. Netty
 #### 1.18.5.1. Netty简介
-&emsp; Netty是一个非阻塞I/O客户端-服务器框架，主要用于开发Java网络应用程序，如协议服务器和客户端。异步事件驱动的网络应用程序框架和工具用于简化网络编程，例如TCP和UDP套接字服务器。[2]Netty包括了反应器编程模式的实现。Netty最初由JBoss开发，现在由Netty项目社区开发和维护。  
-&emsp; 除了作为异步网络应用程序框架，Netty还包括了对HTTP、HTTP2、DNS及其他协议的支持，涵盖了在Servlet容器内运行的能力、对WebSockets的支持、与Google Protocol Buffers的集成、对SSL/TLS的支持以及对用于SPDY协议和消息压缩的支持。自2004年以来，Netty一直在被积极开发。  
-
-1. **Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。**  
-    1. Netty是一个基于NIO的client-server（客户端服务器）框架，使用它可以快速简单地开发网络应用程序。
-    2. 它极大地简化并优化了TCP和UDP套接字服务器等网络编程，并且性能以及安全性等很多方面甚至都要更好。
-    3. 支持多种协议，如FTP，SMTP，HTTP以及各种二进制和基于文本的传统协议。  
-
+1. Netty是一个`非阻塞I/O` **<font color = "red">客户端-服务器框架</font>，主要用于开发Java网络应用程序，如协议服务器和客户端。`异步事件驱动`的网络应用程序框架和工具用于简化网络编程，例如TCP和UDP套接字服务器。Netty包括了`反应器编程模式`的实现。  
+&emsp; 除了作为异步网络应用程序框架，Netty还包括了对HTTP、HTTP2、DNS及其他协议的支持，涵盖了在Servlet容器内运行的能力、`对WebSockets的支持`、与Google Protocol Buffers的集成、对SSL/TLS的支持以及对用于SPDY协议和消息压缩的支持。  
 2. **<font color = "clime">为什么要用Netty？</font>**  
     &emsp; 在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
 
