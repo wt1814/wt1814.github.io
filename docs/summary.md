@@ -145,7 +145,7 @@
             - [1.5.4.6. 分库分表](#1546-分库分表)
                 - [1.5.4.6.1. 分库分表](#15461-分库分表)
                 - [1.5.4.6.2. 分库分表查询](#15462-分库分表查询)
-                - [跨分片的排序分页](#跨分片的排序分页)
+                - [1.5.4.6.3. 跨分片的排序分页](#15463-跨分片的排序分页)
             - [1.5.4.7. 数据迁移](#1547-数据迁移)
         - [1.5.5. 索引事物锁](#155-索引事物锁)
             - [1.5.5.1. 索引底层原理](#1551-索引底层原理)
@@ -337,10 +337,15 @@
         - [1.18.5. Netty](#1185-netty)
             - [1.18.5.1. Netty简介](#11851-netty简介)
             - [1.18.5.2. Netty运行流程](#11852-netty运行流程)
-            - [1.18.5.3. Netty逻辑架构](#11853-netty逻辑架构)
-            - [1.18.5.4. Netty核心组件](#11854-netty核心组件)
+            - [1.18.5.3. Netty核心组件](#11853-netty核心组件)
+            - [1.18.5.4. Netty逻辑架构](#11854-netty逻辑架构)
             - [1.18.5.5. Netty高性能](#11855-netty高性能)
+                - [1.18.5.5.1. Netty的Reactor线程模型](#118551-netty的reactor线程模型)
             - [1.18.5.6. Netty开发](#11856-netty开发)
+                - [1.18.5.6.1. Netty应用场景，](#118561-netty应用场景)
+                - [1.18.5.6.2. TCP粘拆包与Netty编解码](#118562-tcp粘拆包与netty编解码)
+                - [1.18.5.6.3. Netty实战](#118563-netty实战)
+                - [1.18.5.6.4. Netty多协议开发](#118564-netty多协议开发)
             - [1.18.5.7. Netty源码](#11857-netty源码)
     - [1.19. 计算机网络](#119-计算机网络)
         - [1.19.1. OSI七层网络模型](#1191-osi七层网络模型)
@@ -1779,7 +1784,7 @@
 5. ~~**<font color = "blue">小结：分库分表分片键设计</font>**~~  
 &emsp; ~~分库分表的分片键设计多数参考查询场景。因此分库分表时设计拆分字段考虑因素：1). 是否有必要按照地区、时间拆分表；2)参考B2B模式（有买家、卖家），订单表采用`冗余法（买家库和卖家库）和基因法`结合。~~  
 
-##### 跨分片的排序分页
+##### 1.5.4.6.3. 跨分片的排序分页
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; “跨库分页”的四种方案。  
 1. 分库分表对分页的影响：  
@@ -3949,11 +3954,7 @@ update product set name = 'TXC' where id = 1;
 4. 阻塞启动线程，并同步等待服务器关闭，因为如果不阻塞启动线程，则会在finally块中执行优雅关闭，导致服务器也会被关闭了。  
 
 
-#### 1.18.5.3. Netty逻辑架构
-&emsp; [Netty逻辑架构](/docs/microService/communication/Netty/Architecture.md)   
-
-
-#### 1.18.5.4. Netty核心组件
+#### 1.18.5.3. Netty核心组件
 1. `由netty运行流程可以看出Netty核心组件有Bootstrap、channel相关、EventLoop、byteBuf...`  
 2. Bootstrap和ServerBootstrap是针对于Client和Server端定义的引导类，主要用于配置各种参数，并启动整个Netty服务。  
 3. `EventLoop线程模型`  
@@ -3972,39 +3973,53 @@ update product set name = 'TXC' where id = 1;
     &emsp; 当ChannelHandler被添加到ChannelPipeline时，它将会被分配一个ChannelHandlerContext，它代表了ChannelHandler和ChannelPipeline之间的绑定。ChannelHandlerContext的主要功能是管理它所关联的ChannelHandler和在同一个ChannelPipeline中的其他ChannelHandler之间的交互。  
 
 
+#### 1.18.5.4. Netty逻辑架构
+&emsp; [Netty逻辑架构](/docs/microService/communication/Netty/Architecture.md)   
+
+
 #### 1.18.5.5. Netty高性能
-* 异步非阻塞通信  
-* [高效的Reactor线程模型](/docs/microService/communication/Netty/Reactor.md) 
-    1. Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
-    2. Netty主从Reactor多线层模型，内部实现了两个线程池，boss线程池和work线程池，其中boss线程池的线程负责处理请求的accept事件，当接收到accept事件的请求时，把对应的socket封装到一个NioSocketChannel中，并交给work线程池，其中work线程池负责请求的read和write事件，由对应的Handler处理。
-* [零拷贝](/docs/microService/communication/Netty/nettyZeroCopy.md)  
-* 灵活的TCP参数配置能力
-* 内存池
-* 无锁化的串行设计理念  
-* 高效的并发编程  
-* 对高性能对的序列化框架支持
+&emsp; Netty高性能：    
+
+1. 网络I/O  
+    * IO 线程模型：异步非阻塞通信。  
+    * [高效的Reactor线程模型](/docs/microService/communication/Netty/Reactor.md) 
+    * [零拷贝](/docs/microService/communication/Netty/nettyZeroCopy.md)  
+    * 高性能序列化协议：支持 protobuf 等高性能序列化协议。
+2. 内存池设计：申请的内存可以重用，主要指直接内存。内部实现是用一颗二叉查找树管理内存分配情况。  
+3. 串形化处理读写：避免使用锁带来的性能开销。以及高效的并发编程。  
+
+##### 1.18.5.5.1. Netty的Reactor线程模型
+1. Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
+2. Netty主从Reactor多线层模型，内部实现了两个线程池，boss线程池和work线程池，其中boss线程池的线程负责处理请求的accept事件，当接收到accept事件的请求时，把对应的socket封装到一个NioSocketChannel中，并交给work线程池，其中work线程池负责请求的read和write事件，由对应的Handler处理。
 
 #### 1.18.5.6. Netty开发
-1. Netty应用场景，Netty主要用来做网络通信：  
-    * 作为 RPC 框架的网络通信工具 ：我们在分布式系统中，不同服务节点之间经常需要相互调用，这个时候就需要 RPC 框架了。不同服务节点之间的通信是如何做的呢？可以使用 Netty 来做。比如我调用另外一个节点的方法的话，至少是要让对方知道我调用的是哪个类中的哪个方法以及相关参数吧！  
-    * 实现一个自己的 HTTP 服务器 ：通过 Netty 我们可以自己实现一个简单的 HTTP 服务器，这个大家应该不陌生。说到 HTTP 服务器的话，作为 Java 后端开发，我们一般使用 Tomcat 比较多。一个最基本的 HTTP 服务器可要以处理常见的 HTTP Method 的请求，比如 POST 请求、GET 请求等等。  
-    * 实现一个即时通讯系统 ：使用 Netty 我们可以实现一个可以聊天类似微信的即时通讯系统，这方面的开源项目还蛮多的，可以自行去 Github 找一找。  
-    * 实现消息推送系统 ：市面上有很多消息推送系统都是基于 Netty 来做的。......
-    * ...  
-1. TCP粘拆包与Netty编解码  
-    1. [TCP的粘包和拆包问题描述](/docs/network/TCPSticking.md)  
-    2. **<font color = "clime">Netty对半包或者粘包的处理：</font>** **每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，<font color = "red">所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。</font>** 
-    3. Netty默认提供了多种解码器来解决，可以进行分包操作。  
-        * 固定长度的拆包器 FixedLengthFrameDecoder
-        * 行拆包器 LineBasedFrameDecoder
-        * 分隔符拆包器 DelimiterBasedFrameDecoder
-        * 基于数据包长度的拆包器 LengthFieldBasedFrameDecoder
-2. Netty实战
-3. Netty多协议开发
-    * Http协议开发应用
-    * WebSocket协议开发  
-    &emsp; WebSocket是基于TCP的应用层协议，用于在C/S架构的应用中实现双向通信，关于WebSocket协议的详细规范和定义参见rfc6455。  
-    * 私有协议栈开发  
+##### 1.18.5.6.1. Netty应用场景，  
+&emsp; Netty主要用来做网络通信：   
+
+* 作为 RPC 框架的网络通信工具 ：我们在分布式系统中，不同服务节点之间经常需要相互调用，这个时候就需要 RPC 框架了。不同服务节点之间的通信是如何做的呢？可以使用 Netty 来做。比如我调用另外一个节点的方法的话，至少是要让对方知道我调用的是哪个类中的哪个方法以及相关参数吧！  
+* 实现一个自己的 HTTP 服务器 ：通过 Netty 我们可以自己实现一个简单的 HTTP 服务器，这个大家应该不陌生。说到 HTTP 服务器的话，作为 Java 后端开发，我们一般使用 Tomcat 比较多。一个最基本的 HTTP 服务器可要以处理常见的 HTTP Method 的请求，比如 POST 请求、GET 请求等等。  
+* 实现一个即时通讯系统 ：使用 Netty 可以实现一个可以聊天类似微信的即时通讯系统，这方面的开源项目还蛮多的，可以自行去 Github 找一找。  
+* 实现消息推送系统 ：市面上有很多消息推送系统都是基于 Netty 来做的。......
+* ...  
+
+##### 1.18.5.6.2. TCP粘拆包与Netty编解码  
+1. [TCP的粘包和拆包问题描述](/docs/network/TCPSticking.md)  
+2. **<font color = "clime">Netty对半包或者粘包的处理：</font>** **每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，<font color = "red">所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。</font>** 
+3. Netty默认提供了多种解码器来解决，可以进行分包操作。  
+    * 固定长度的拆包器 FixedLengthFrameDecoder
+    * 行拆包器 LineBasedFrameDecoder
+    * 分隔符拆包器 DelimiterBasedFrameDecoder
+    * 基于数据包长度的拆包器 LengthFieldBasedFrameDecoder  
+
+##### 1.18.5.6.3. Netty实战
+&emsp; ...  
+
+##### 1.18.5.6.4. Netty多协议开发
+
+* Http协议开发应用
+* WebSocket协议开发  
+&emsp; WebSocket是基于TCP的应用层协议，用于在C/S架构的应用中实现双向通信，关于WebSocket协议的详细规范和定义参见rfc6455。  
+* 私有协议栈开发  
 
 #### 1.18.5.7. Netty源码
 
