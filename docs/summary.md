@@ -3924,6 +3924,9 @@ update product set name = 'TXC' where id = 1;
 
 ### 1.18.5. Netty
 #### 1.18.5.1. Netty简介
+&emsp; Netty是一个非阻塞I/O客户端-服务器框架，主要用于开发Java网络应用程序，如协议服务器和客户端。异步事件驱动的网络应用程序框架和工具用于简化网络编程，例如TCP和UDP套接字服务器。[2]Netty包括了反应器编程模式的实现。Netty最初由JBoss开发，现在由Netty项目社区开发和维护。  
+&emsp; 除了作为异步网络应用程序框架，Netty还包括了对HTTP、HTTP2、DNS及其他协议的支持，涵盖了在Servlet容器内运行的能力、对WebSockets的支持、与Google Protocol Buffers的集成、对SSL/TLS的支持以及对用于SPDY协议和消息压缩的支持。自2004年以来，Netty一直在被积极开发。  
+
 1. **Netty是由JBoss开发，基于Java NIO的一个高性能通信框架。**  
     1. Netty是一个基于NIO的client-server（客户端服务器）框架，使用它可以快速简单地开发网络应用程序。
     2. 它极大地简化并优化了TCP和UDP套接字服务器等网络编程，并且性能以及安全性等很多方面甚至都要更好。
@@ -3942,17 +3945,19 @@ update product set name = 'TXC' where id = 1;
 #### 1.18.5.2. Netty运行流程
 &emsp; [Netty运行流程](/docs/microService/communication/Netty/operation.md)   
 
-&emsp; Netty整体运行流程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-87.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-44.png)  
-
-&emsp; **<font color = "clime">服务器执行流程概述：</font>**  
+&emsp; **<font color = "clime">一般来说，使用Bootstrap创建启动器的步骤可分为以下几步：</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-151.png)  
 1. 创建服务器启动辅助类，服务端是ServerBootstrap。  
 &emsp; 需要设置事件循环组EventLoopGroup，如果使用reactor主从模式，需要创建2个： **<font color = "clime">`创建boss线程组（EventLoopGroup bossGroup）`用于服务端接受客户端的连接；`创建worker线程组（EventLoopGroup workerGroup）`用于进行 SocketChannel的数据读写。</font>**  
 2. 对ServerBootstrap进行配置，配置项有channel,handler,option。  
 3. 绑定服务器端口并启动服务器，同步等待服务器启动完毕。  
 4. 阻塞启动线程，并同步等待服务器关闭，因为如果不阻塞启动线程，则会在finally块中执行优雅关闭，导致服务器也会被关闭了。  
 
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-150.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-44.png)  
+
+&emsp; Netty整体运行流程：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-87.png) 
 
 #### 1.18.5.3. Netty核心组件
 1. `由netty运行流程可以看出Netty核心组件有Bootstrap、channel相关、EventLoop、byteBuf...`  
