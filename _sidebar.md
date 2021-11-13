@@ -534,7 +534,10 @@
             * [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)    
             * [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
             * [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
-* [WebSocket协议](/docs/microService/communication/Netty/WebSocket.md)  
+* webSocket  
+    * [长轮询](/docs/webSocket/LongPolling.md)  
+    * [WebSocket协议](/docs/microService/communication/Netty/WebSocket.md)  
+    * [IM系统](/docs/webSocket/IM.md)  
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  

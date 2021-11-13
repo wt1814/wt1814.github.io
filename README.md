@@ -36,6 +36,7 @@
         - [任务调度](#任务调度)
         - [分布式搜索引擎](#分布式搜索引擎)
         - [分布式通信/网络IO](#分布式通信网络io)
+    - [webSocket](#websocket)
     - [磁盘IO](#磁盘io)
     - [Error](#error)
     - [计算机网络](#计算机网络)
@@ -693,8 +694,13 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; &emsp; [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)    
 &emsp; &emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
 &emsp; &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
-[WebSocket协议](/docs/microService/communication/Netty/WebSocket.md)  
-&emsp; [IM系统](/docs/microService/communication/IM.md)  
+
+
+## webSocket
+[长轮询](/docs/webSocket/LongPolling.md)  
+[WebSocket协议](/docs/webSocket/WebSocket.md)  
+[IM系统](/docs/webSocket/IM.md)  
+
 
 ## 磁盘IO
 
