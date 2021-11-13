@@ -62,9 +62,6 @@ https://developer.aliyun.com/article/37987
 https://blog.csdn.net/zhizhengguan/article/details/107866641
 https://blog.csdn.net/seanxwq/article/details/115703360
 
-HTTP 和 Socket 的区别
-https://www.cnblogs.com/zhuleixiao/p/9218121.html
-
 -->
 
 &emsp; 当网络通信时采用TCP协议时，在真正的读写操作之前，server与client之间必须建立一个连接，当读写操作完成后，双方不再需要这个连接时它们可以释放这个连接，连接的建立是需要三次握手的，而释放则需要4次挥手，所以说每个连接的建立都是需要资源消耗和时间消耗的。  

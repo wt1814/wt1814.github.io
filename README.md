@@ -440,6 +440,7 @@
 &emsp; &emsp; [Dubbo调用介绍](/docs/microService/dubbo/RemoteIntroduce.md)  
 &emsp; &emsp; [Dubbo序列化和协议](/docs/microService/dubbo/Agreement.md)  
 &emsp; &emsp; &emsp; [Dubbo协议长连接](/docs/microService/dubbo/LongConnection.md)  
+&emsp; [Dubbo心跳机制](/docs/microService/dubbo/heartbeat.md)  
 &emsp; [Dubbo集群容错](/docs/microService/dubbo/Load.md)  
 &emsp; [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
 &emsp; &emsp; [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
