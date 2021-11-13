@@ -536,7 +536,8 @@
             * [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
 * webSocket  
     * [长轮询](/docs/webSocket/LongPolling.md)  
-    * [WebSocket协议](/docs/microService/communication/Netty/WebSocket.md)  
+    * [WebSocket协议](/docs/webSocket/WebSocket.md)  
+    * [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
     * [IM系统](/docs/webSocket/IM.md)  
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
