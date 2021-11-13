@@ -236,6 +236,7 @@
             - [1.12.6.1. 服务调用介绍](#11261-服务调用介绍)
             - [1.12.6.2. Dubbo序列化和协议](#11262-dubbo序列化和协议)
                 - [1.12.6.2.1. Dubbo协议长连接](#112621-dubbo协议长连接)
+        - [Dubbo心跳机制](#dubbo心跳机制)
         - [1.12.7. Dubbo集群容错](#1127-dubbo集群容错)
         - [1.12.8. 扩展点加载(SPI)](#1128-扩展点加载spi)
     - [1.13. Zookeeper](#113-zookeeper)
@@ -4061,9 +4062,11 @@ update product set name = 'TXC' where id = 1;
 ###### 1.19.3.1.1.1. 连接建立
 1. 连接建立
     1. 三次握手  
+        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP-1.png)  
         1. 为什么只有三次握手才能确认双方的接受与发送能力是否正常，而两次却不可以？  
         &emsp; <font color = "clime">第三次握手中，客户端向服务器发送确认包ACK，防止了服务器端的一直等待而浪费资源。</font>例如：已失效的连接请求报文突然又传送到了服务器，从而会产生错误。  
     2. 四次挥手  
+        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP-2.png)  
         1. **<font color = "clime">Client收到服务端F1N后，Client进入TIME_WAIT状态。</font>** 2MSL后自动关闭。 
         2. 为什么客户端最后还要等待2MSL？  
         &emsp; <font color = "red">保证客户端发送的最后一个`ACK报文`能够到达服务器，因为这个ACK报文可能丢失。</font>  
