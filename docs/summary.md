@@ -7,7 +7,6 @@
         - [1.1.2. Java基础数据类型](#112-java基础数据类型)
             - [1.1.2.1. String](#1121-string)
             - [1.1.2.2. Java基本数据类型](#1122-java基本数据类型)
-            - [1.1.2.3. java对象大小](#1123-java对象大小)
         - [1.1.3. Java集合框架](#113-java集合框架)
             - [1.1.3.1. Java集合框架](#1131-java集合框架)
             - [1.1.3.2. HashMap](#1132-hashmap)
@@ -25,7 +24,7 @@
         - [1.1.7. 自定义注解](#117-自定义注解)
         - [1.1.8. 反射](#118-反射)
         - [1.1.9. IO](#119-io)
-        - [1.1.10. SPI](#1110-spi)
+        - [1.1.10. SPI，服务提供发现接口，一种扩展机制](#1110-spi服务提供发现接口一种扩展机制)
     - [1.2. 设计模式](#12-设计模式)
         - [1.2.1. 七大设计原则](#121-七大设计原则)
         - [1.2.2. 继承和组合/复用规则](#122-继承和组合复用规则)
@@ -418,16 +417,18 @@
 
 &emsp; char的包装类型是Character。  
 
-#### 1.1.2.3. java对象大小
-
+&emsp; java对象大小查看【JVM内存】章节。  
 
 ### 1.1.3. Java集合框架
 #### 1.1.3.1. Java集合框架
-1. <font color = "clime">List：有序，可重复。Set：无序，不可重复(唯一)。Map：存储键值对。</font>  
-&emsp; <font color = "clime">List有ArrayList、Vector、LinkedList。Map有HashMap、LinkedHashMap、TreeMap、Hashtable。Set有HashSet、LinkedHashSet、TreeSet。</font>    
-2. 快速失败机制：单线程迭代器中直接删除元素或多线程使用非安全的容器都会抛出ConcurrentModificationException异常。  
+1. `基本数据结构：数组、链表、Hash、树。`集合框架又有是否安全之分。  
+2. Java集合框架：  
+    * List：有序，可重复。List有ArrayList、LinkedList、Vector。
+    * Set：无序，不可重复(唯一)。Set有HashSet、LinkedHashSet、TreeSet。
+    * Map：存储键值对。Map有HashMap、LinkedHashMap、TreeMap、Hashtable。     
+3. 快速失败机制：单线程迭代器中直接删除元素或多线程使用非安全的容器都会抛出ConcurrentModificationException异常。  
 &emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，再在拷贝的集合上进行遍历。</font>**  
-3. 排序：  
+4. 排序：  
     * Comparable，自然排序（自身属性，整数(大小排序)，字符串(字典序)）。  
     * Comparator，定制排序。  
 
@@ -473,13 +474,11 @@
     * 如果e(新插入的key)存在，HashMap#put返回原key对应的value值（注意新插入的value会覆盖原value值），Hashset#add返回false，表示插入值重复，插入失败。  
     * 如果e(新插入的key)不存在，HashMap#put返回null值，Hashset#add返回true，表示插入值不重复，插入成功。  
 
-
 ### 1.1.4. JDK1.8
 #### 1.1.4.1. 接口的默认方法与静态方法
 1. 接口的默认方法与静态方法  
     * <font color = "clime">接口中的default方法会被子接口继承，也可以被其实现类所调用。default方法被继承时，可以被子接口覆写。</font>  
     * <font color = "clime">接口中的`static方法`不能被继承，也不能被实现类调用，`只能被自身调用`。即不能通过接口实现类的方法调用静态方法，直接通过接口名称调用。但是静态变量会被继承。</font>  
-
 
 #### 1.1.4.2. Lambda表达式
 1. **<font color = "clime">函数式接口的实例创建三种方式：lambda表达式；方法引用；构造方法引用。</font>**   
@@ -497,7 +496,9 @@
 
 
 ### 1.1.5. Java异常
-1. throws和throw：throws用在函数上，后面跟的是异常类，可以跟多个；`而throw用在函数内，后面跟的是异常对象。`  
+1. throws和throw：  
+    * throws用在`函数上`，后面跟的是`异常类`，可以跟多个；
+    * throw用在`函数内`，后面跟的是`异常对象`。  
 2. 异常捕获后再次抛出。
     * 捕获后抛出原来的异常，希望保留最新的异常抛出点。 
     * 捕获后抛出新的异常，希望抛出完整的异常链。  
@@ -515,12 +516,12 @@
 
 ### 1.1.8. 反射
 1. 运行时动态加载类、`破坏：可以访问任意一个对象的任意一个方法和属性，包括获取、修改私有属性。`   
-2. **<font color = "clime">平常开发中使用反射的实际场景有：动态代理、JDBC中的加载数据库驱动程序、Spring框架中加载bean对象。</font>**  
+2. **<font color = "clime">平常开发中使用反射的实际场景有：`动态代理`、JDBC中的加载数据库驱动程序、`Spring框架中加载bean对象`。</font>**  
 3. 调用反射的总体流程如下：  
 	* 准备阶段：编译期装载所有的类，将每个类的元信息保存至Class类对象中，每一个类对应一个Class对象。  
 	* 获取Class对象：调用x.class/x.getClass()/Class.forName() 获取x的Class对象clz（这些方法的底层都是native方法，是在JVM底层编写好的，涉及到了JVM底层，就先不进行探究了）。  
 	* 进行实际反射操作：通过clz对象获取Field/Method/Constructor对象进行进一步操作。  
-4. 自定义 注解+反射 实际应用。    
+4. 自定义注解 + 反射 实际应用。    
 
 ### 1.1.9. IO
 1. **<font color = "clime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>** I/O读写大文件解决方案：  
@@ -532,7 +533,7 @@
         * 内存文件映射，MappedByteBuffer。采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。
 
 
-### 1.1.10. SPI
+### 1.1.10. SPI，服务提供发现接口，一种扩展机制  
 &emsp; **<font color = "clime">JDK提供的SPI机制：</font>**  
 1. 提供一个接口；  
 2. 服务提供方实现接口，并在META-INF/services/中暴露实现类地址；  
