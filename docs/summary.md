@@ -492,6 +492,13 @@
 #### 1.1.4.4. Optional
 &emsp; 使用Optional时尽量不直接调用Optional.get()方法，Optional.isPresent()更应该被视为一个私有方法，应依赖于其他像Optional.orElse()，Optional.orElseGet()，Optional.map()等这样的方法。  
 
+&emsp; 抛出异常可以使用：  
+
+```java
+//todo Optional.ofNullable(storeInfo) 创建对象
+Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));  
+```
+
 #### 1.1.4.5. DateTime
 
 
