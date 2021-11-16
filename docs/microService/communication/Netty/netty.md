@@ -22,6 +22,8 @@
 很好的视频
 https://www.bilibili.com/video/BV1ft4y1B74d?p=1
 
+深入分析Buffer 
+https://mp.weixin.qq.com/s/4zOLqsARGbrxOXXh24B_MQ
 
 netty系列文章
 https://www.cnblogs.com/dafanjoy/category/1306477.html

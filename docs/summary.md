@@ -735,13 +735,12 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 &emsp; **<font color = "clime">解析过程在某些情况下可以在初始化阶段之后再开始，这是为了支持Java的动态绑定。</font>**   
 6. 初始化：执行static代码块(cinit)进行初始化，如果存在父类，先对父类进行初始化。  
 
-
 #### 1.3.3.2. JVM类加载器
 1. JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。  
 &emsp; 自定义类加载器：需要继承自ClassLoader，重写方法findClass()。      
 2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。  
 &emsp; 双亲委派模型中，类加载器之间的父子关系一般不会以继承（Inheritance）的关系来实现，而是使用组合（Composition）关系来复用父加载器的代码的。  
-&emsp; 好处：避免类的重复加载；防止核心API被随意篡改。   
+&emsp; `好处：避免类的重复加载；防止核心API被随意篡改。`   
 3. 破坏双亲委派模型：  
     1. 破坏双亲委派模型：继承ClassLoader，重写loadClass()方法。  
     1. `双亲委派模型有一个问题：顶层ClassLoader无法加载底层ClassLoader的类，典型例子JNDI、JDBC。`
@@ -754,13 +753,17 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 ##### 1.3.4.1.1. JVM内存结构
 1. 运行时数据区。线程独享：程序计数器、JVM栈、本地方法栈；线程共享区：堆、方法区（元空间）。  
 2. 程序计数器看作是当前线程所执行的字节码的行号指示器。  
-3. <font color = "red">JVM栈描述Java方法执行的内存模型。</font>Java虚拟机栈中出栈入栈的元素称为“栈帧”，栈对应线程，栈帧对应方法。每个方法被执行的时候，都会创建一个栈帧，把栈帧压入栈，当方法正常返回或者抛出未捕获的异常时，栈帧就会出栈。    
-&emsp; Java虚拟机栈是由一个个栈帧组成，每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法出口信息。局部变量表存储八大原始类型、对象引用、returnAddress。  
-&emsp; `为什么不把基本类型放堆中呢？`   
-&emsp; 因为其占用的空间一般是 1~8 个字节——需要空间比较少，而且因为是基本类型，所以不会出现动态增长的情况——长度固定，因此栈中存储就够了。  
+3. JVM栈  
+    1. <font color = "red">JVM栈描述Java方法执行的内存模型。</font>Java虚拟机栈中出栈入栈的元素称为“栈帧”，栈对应线程，栈帧对应方法。每个方法被执行的时候，都会创建一个栈帧，把栈帧压入栈，当方法正常返回或者抛出未捕获的异常时，栈帧就会出栈。    
+    2. Java虚拟机栈是由一个个栈帧组成，每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法出口信息。  
+        * 操作数栈：Java没有寄存器，所有参数传递都是使用操作数栈。  
+        * ~~局部变量表存储八大原始类型、对象引用、returnAddress。~~  
+        * ~~动态链接：~~  
+    3. `为什么不把基本类型放堆中呢？`   
+    &emsp; 因为其占用的空间一般是 1~8 个字节——需要空间比较少，而且因为是基本类型，所以不会出现动态增长的情况——长度固定，因此栈中存储就够了。  
 4. 堆  
     1. 堆分为新生代、老年代，默认比例1: 2。 新生代又按照8: 1: 1划分为Eden区和两个Survivor区。  
-    2. **<font color = "blue">在Eden区中，JVM为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
+    2. **<font color = "blue">在Eden区中，JVM为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>** `新生代 -> Eden -> TLAB`      
     3. 堆是分配对象存储的唯一选择吗？[逃逸分析](/docs/java/JVM/escape.md)  
 5. 方法区：
     1. 在类加载阶段，在Java堆中生成一个代表这个类的java.lang.Class对象，作为对方法区中这些数据的访问入口。  
@@ -774,7 +777,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
             * jdk1.8及之后：无永久代。类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
 6. MetaSpace存储类的元数据信息。  
 &emsp; 元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。元空间的内存大小受本地内存限制。  
-7. 静态方法和实例方法  
+7. 扩展点：静态方法和实例方法  
 &emsp; 静态方法会在程序运行的时候直接装载进入方法区。而实例方法会在new的时候以对象的方法装载进入堆中。  
 &emsp; 最大的区别在于内存的区别，由于main函数为static静态方法，会直接在运行的时候装载进入内存区，实例方法必须new，在堆中创建内存区域。再进行引用。  
 
@@ -799,7 +802,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         * 标记-整理或复制 ---> 空间规整 ---> 指针碰撞； 
         * 标记-清除 ---> 空间不规整 ---> 空闲列表。       
     * 线程安全问题：1).采用CAS； **<font color = "clime">2).线程本地分配缓冲（TLAB）。</font>**  
-    * **<font color = "blue">TLAB详解：</font>**  
+        &emsp; **<font color = "blue">TLAB详解：</font>**  
         * 线程本地分配缓存，这是一个线程专用的内存分配区域。可以加速对象的分配。TLAB是在堆中开辟的内存区域。默认情况下，TLAB空间的内存非常小，仅占有整个Eden空间的1%。  
         * **<font color = "blue">TLAB通常很小，所以放不下大对象。`JVM设置了最大浪费空间`。</font>**  
         &emsp; 当大对象申请内存时，当剩余的空间小于最大浪费空间，那该TLAB属于的线程在重新向Eden区申请一个TLAB空间。进行对象创建，还是空间不够，那这个对象太大了，去Eden区直接创建吧！  
@@ -815,10 +818,10 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 1. 在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充。  
     * 实例数据：存放类的属性数据信息，包括父类的属性信息，如果是数组的实例部分还包括数组的长度，这部分内存按4字节对齐。    
     * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍(8字节对齐)。填充数据不是必须存在的，仅仅是为了字节对齐。   
-2. JVM中对象头的方式有以下两种(以32位JVM为例)  
-    * 普通对象：  
+2. JVM中对象头的方式有以下两种（以32位JVM为例）  
+    &emsp; 普通对象：  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-60.png)   
-    * 数组对象：  
+    &emsp; 数组对象：  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-61.png)   
 
     对象头：包含Mark Word、class pointer、array length共3部分。  
@@ -878,7 +881,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         * 该类对应的 java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。
     2. `一个类何时结束生命周期，取决于代表它的Class对象何时结束生命周期。`   
     &emsp; 注：`由java虚拟机自带的三种类加载加载的类在虚拟机的整个生命周期中是不会被卸载的，`由用户自定义的类加载器所加载的类才可以被卸载。     
-    3. `方法区是在Full GC时回收。`  
+    3. `★★★方法区是在Full GC时回收。`  
     &emsp; Full GC: 收集整个堆，包括新生代，老年代，永久代(在 JDK 1.8 及以后，永久代被移除，换为 metaspace 元空间)等所有部分的模式。  
 
 ##### 1.3.6.1.3. null与GC  
@@ -913,7 +916,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         * Old GC：只收集 old gen 的 GC，只有垃圾收集器 CMS 的 concurrent collection 是这个模式。  
         * Mixed GC：收集整个 Young Gen 以及部分 old gen 的 GC，只有垃圾收集器 G1 有这个模式。  
     * `Full GC：收集整个堆，包括新生代，老年代，永久代(在 JDK 1.8 及以后，永久代被移除，换为 metaspace 元空间)等所有部分的模式。`  
-6. YGC触发时机：eden区快要被占满的时候；在full gc前会让先执行以下young gc。  
+6. YGC触发时机：eden区快要被占满的时候；在full gc前会先执行young gc。  
 7. Full GC   
 &emsp; **<font color = "red">Full GC的触发时机：（老年代或永久代不足 ---> 老年代不满足年轻代晋升 ---> 回收器(例如CMS)---> 系统调用 ）</font>**   
     1. 老年代或永久的不足
@@ -927,9 +930,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         &emsp; Hotspot为了避免由于新生代对象晋升到旧生代导致旧生代空间不足的现象，在进行Minor GC时，做了一个判断，如果之前统计所得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间，那么就直接触发Full GC。  
         2. 空间分配担保失败  
         &emsp; **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的`总空间`，</font>** 如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。   
-    3. CMS GC时出现promotion failed（晋升失败）和concurrent mode failure（并发模式失败）  
-    &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足（可能是GC过程中浮动垃圾过多导致暂时性的空间不足），便会报Concurrent Mode Failure错误，并触发Full GC。  
-    4. <font color = "red">系统调用System.gc()</font>  
+        3. CMS GC时出现promotion failed（晋升失败）和concurrent mode failure（并发模式失败）  
+        &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足（可能是GC过程中浮动垃圾过多导致暂时性的空间不足），便会报Concurrent Mode Failure错误，并触发Full GC。  
+    3. <font color = "red">系统调用System.gc()</font>  
     &emsp; 只是建议虚拟机执行Full GC，但是虚拟机不一定真正去执行。不建议使用这种方式，而是让虚拟机管理内存。  
 
 #### 1.3.6.4. GC-垃圾回收器
@@ -942,9 +945,11 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     * 收集频率：相对于应用程序的执行，收集操作发生的频率。  
     * 快速：一个对象从诞生到被回收所经历的时间。  
 
-    &emsp; <font color  = "red">其中内存占用、吞吐量和停顿时间，三者共同构成了一个“不可能三角”。</font>    
-    &emsp; 停顿时间越短就越适合需要和用户交互的程序，良好的响应速度能提升用户体验；  
-    &emsp; 高吞吐量则可以高效地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。  
+&emsp; <font color  = "red">其中内存占用、吞吐量和停顿时间，三者共同构成了一个“不可能三角”。</font>   
+
+    * 停顿时间越短就越适合需要和用户交互的程序，良好的响应速度能提升用户体验；  
+    * 高吞吐量则可以高效地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。  
+
 2. 根据运行时，线程执行方式分类：  
     * 串行收集器 -> Serial和Serial Old  
     &emsp; **<font color = "red">只能有一个垃圾回收线程执行，用户线程暂停。</font>** 适用于内存比较小的嵌入式设备 。  
@@ -965,7 +970,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     6. 并发清除：并发、标记-清除，GC与用户线程并发执行。   
     7. 并发重置。
 3. `CMS的特点：`  
-    1. 划时代的并发收集器。`关注停顿时间。`    
+    1. 划时代的并发收集器。`关注停顿时间。⚠️注：GC的两个关键指标：停顿时间和吞吐量。`    
     2. `吞吐量低。`并发执行，线程切换。  
     3. **<font color = "blue">并发执行，`产生浮动垃圾（参考三色标记法中“错标”）`。</font>**  
     4. 使用"标记-清除"算法，产生空间碎片。CMS GC在老生代回收时产生的内存碎片会导致老生代的利用率变低；或者可能在老生代总内存大小足够的情况下，却不能容纳新生代的晋升行为（由于没有连续的内存空间可用），导致触发FullGC。  
@@ -979,7 +984,6 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         * 晋升失败(promotion failed)：`当新生代发生垃圾回收`， **老年代有足够的空间可以容纳晋升的对象，但是由于空闲空间的碎片化，导致晋升失败。** ~此时会触发单线程且带压缩动作的Full GC。~  
         * 并发模式失败(concurrent mode failure)：`当CMS在执行回收时`，新生代发生垃圾回收，同时老年代又没有足够的空间容纳晋升的对象时。CMS垃圾回收会退化成单线程的Full GC。所有的应用线程都会被暂停，老年代中所有的无效对象都被回收。  
     6. 减少remark阶段停顿：在执行并发操作之前先做一次Young GC。  
-
 
 ##### 1.3.6.4.3. G1回收器
 1. G1是一种服务端应用使用的垃圾收集器，目标是用在`多核、大内存`的机器上， **<font color = "clime">G1在大多数情况下可以`实现指定的GC暂停时间，同时还能保持较高的吞吐量`。</font>**   

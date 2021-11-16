@@ -31,6 +31,8 @@
 
 # 1. 索引底层原理  
 <!-- 
+MySQL 索引和 B+Tree
+https://mp.weixin.qq.com/s/6N4FKjrqEtwQqF7EcqLE0g
  再有人问你MySQL索引原理，就把这篇文章甩给他！ 
  https://mp.weixin.qq.com/s/9yeModGuGvDu5S0bW9sU6w
 数据库索引，终于懂了 

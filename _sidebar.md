@@ -37,6 +37,7 @@
 * 设计模式  
     * [七大设计原则](/docs/java/Design/principles.md)  
         * [面向抽象和面向接口](/docs/java/Design/abstract.md)  
+        * [UML](/docs/java/Design/UML.md)  
         * [继承和组合/复用规则](/docs/java/Design/compose.md)  
     * [设计模式详解](/docs/java/Design/design.md)  
     * [创建型设计模式](/docs/java/Design/establish.md)  
