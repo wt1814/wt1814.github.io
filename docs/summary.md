@@ -1079,7 +1079,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     1. 可能多个线程执行同一方法，每个线程占有不高，但总和比较大。  
     2. 可以使用arthas工具的thread -n -i分析。
 5. 内存溢出OOM  
-	1. 解决方案：
+	1. 解决方案： **<font color = "clime">不止一种</font>**
 		1. 修改JVM启动参数，直接增加内存。  
 		2. `检查错误日志，查看“OutOfMemory”错误前是否有其它异常或错误。`  
 		3. `对代码进行走查和分析，找出可能发生内存溢出的位置。` 
