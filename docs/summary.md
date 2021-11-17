@@ -69,37 +69,37 @@
             - [1.3.7.2. JVM调优](#1372-jvm调优)
             - [1.3.7.3. JVM问题排查](#1373-jvm问题排查)
             - [1.3.7.4. Arthas工具](#1374-arthas工具)
-    - [1.4. 并发编程](#14-并发编程)
+    - [1.4. 多线程和并发](#14-多线程和并发)
         - [1.4.1. 线程Thread](#141-线程thread)
             - [1.4.1.1. 线程状态详解](#1411-线程状态详解)
-        - [1.4.2. 并发编程](#142-并发编程)
-            - [1.4.2.1. 并发编程原理](#1421-并发编程原理)
-                - [1.4.2.1.1. CPU缓存及JMM](#14211-cpu缓存及jmm)
-                - [1.4.2.1.2. 并发安全问题产生原因](#14212-并发安全问题产生原因)
-                - [1.4.2.1.3. 并发安全解决底层](#14213-并发安全解决底层)
-                - [1.4.2.1.4. 伪共享问题](#14214-伪共享问题)
-            - [1.4.2.2. 线程安全解决](#1422-线程安全解决)
-                - [1.4.2.2.1. 线程安全解决方案](#14221-线程安全解决方案)
-                - [1.4.2.2.2. Synchronized](#14222-synchronized)
-                    - [1.4.2.2.2.1. Synchronized介绍](#142221-synchronized介绍)
-                    - [1.4.2.2.2.2. Synchronized使用](#142222-synchronized使用)
-                - [1.4.2.2.3. Synchronized使用是否安全](#14223-synchronized使用是否安全)
-                    - [1.4.2.2.3.1. Synchronized底层原理](#142231-synchronized底层原理)
-                    - [1.4.2.2.3.2. Synchronized优化](#142232-synchronized优化)
-                - [1.4.2.2.4. Volatile](#14224-volatile)
-                - [1.4.2.2.5. ThreadLocal](#14225-threadlocal)
-                    - [1.4.2.2.5.1. ThreadLocal原理](#142251-threadlocal原理)
-                    - [1.4.2.2.5.2. ThreadLocal应用](#142252-threadlocal应用)
-            - [1.4.2.3. 线程通信(生产者消费者问题)](#1423-线程通信生产者消费者问题)
-            - [1.4.2.4. 线程活跃性](#1424-线程活跃性)
-        - [1.4.3. 线程池](#143-线程池)
-            - [1.4.3.1. 线程池框架](#1431-线程池框架)
-            - [1.4.3.2. ThreadPoolExecutor详解](#1432-threadpoolexecutor详解)
-            - [1.4.3.3. 线程池的正确使用](#1433-线程池的正确使用)
-            - [1.4.3.4. ForkJoinPool详解](#1434-forkjoinpool详解)
-            - [1.4.3.5. Future相关](#1435-future相关)
-            - [1.4.3.6. ~~CompletionService~~](#1436-completionservice)
-            - [1.4.3.7. ~~CompletableFuture~~](#1437-completablefuture)
+        - [1.4.2. 线程池-多线程](#142-线程池-多线程)
+            - [1.4.2.1. 线程池框架](#1421-线程池框架)
+            - [1.4.2.2. ThreadPoolExecutor详解](#1422-threadpoolexecutor详解)
+            - [1.4.2.3. 线程池的正确使用](#1423-线程池的正确使用)
+            - [1.4.2.4. ForkJoinPool详解](#1424-forkjoinpool详解)
+            - [1.4.2.5. Future相关](#1425-future相关)
+            - [1.4.2.6. ~~CompletionService~~](#1426-completionservice)
+            - [1.4.2.7. ~~CompletableFuture~~](#1427-completablefuture)
+        - [1.4.3. 并发编程](#143-并发编程)
+            - [1.4.3.1. 并发编程原理](#1431-并发编程原理)
+                - [1.4.3.1.1. CPU缓存及JMM](#14311-cpu缓存及jmm)
+                - [1.4.3.1.2. 并发安全问题产生原因](#14312-并发安全问题产生原因)
+                - [1.4.3.1.3. 并发安全解决底层](#14313-并发安全解决底层)
+                - [1.4.3.1.4. 伪共享问题](#14314-伪共享问题)
+            - [1.4.3.2. 线程安全解决](#1432-线程安全解决)
+                - [1.4.3.2.1. 线程安全解决方案](#14321-线程安全解决方案)
+                - [1.4.3.2.2. Synchronized](#14322-synchronized)
+                    - [1.4.3.2.2.1. Synchronized介绍](#143221-synchronized介绍)
+                    - [1.4.3.2.2.2. Synchronized使用](#143222-synchronized使用)
+                - [1.4.3.2.3. Synchronized使用是否安全](#14323-synchronized使用是否安全)
+                    - [1.4.3.2.3.1. Synchronized底层原理](#143231-synchronized底层原理)
+                    - [1.4.3.2.3.2. Synchronized优化](#143232-synchronized优化)
+                - [1.4.3.2.4. Volatile](#14324-volatile)
+                - [1.4.3.2.5. ThreadLocal](#14325-threadlocal)
+                    - [1.4.3.2.5.1. ThreadLocal原理](#143251-threadlocal原理)
+                    - [1.4.3.2.5.2. ThreadLocal应用](#143252-threadlocal应用)
+            - [1.4.3.3. 线程通信(生产者消费者问题)](#1433-线程通信生产者消费者问题)
+            - [1.4.3.4. 线程活跃性](#1434-线程活跃性)
         - [1.4.4. JUC](#144-juc)
             - [1.4.4.1. CAS](#1441-cas)
             - [1.4.4.2. AQS](#1442-aqs)
@@ -235,9 +235,9 @@
             - [1.12.6.1. 服务调用介绍](#11261-服务调用介绍)
             - [1.12.6.2. Dubbo序列化和协议](#11262-dubbo序列化和协议)
                 - [1.12.6.2.1. Dubbo协议长连接](#112621-dubbo协议长连接)
-        - [Dubbo心跳机制](#dubbo心跳机制)
-        - [1.12.7. Dubbo集群容错](#1127-dubbo集群容错)
-        - [1.12.8. 扩展点加载(SPI)](#1128-扩展点加载spi)
+        - [1.12.7. Dubbo心跳机制](#1127-dubbo心跳机制)
+        - [1.12.8. Dubbo集群容错](#1128-dubbo集群容错)
+        - [1.12.9. 扩展点加载(SPI)](#1129-扩展点加载spi)
     - [1.13. Zookeeper](#113-zookeeper)
         - [1.13.1. ZK服务端](#1131-zk服务端)
         - [1.13.2. ZK客户端](#1132-zk客户端)
@@ -1097,7 +1097,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 #### 1.3.7.4. Arthas工具
 
 
-## 1.4. 并发编程
+## 1.4. 多线程和并发
+
+
 ### 1.4.1. 线程Thread
 1. 创建线程的方式：Thread、Runnable、Callable、线程池相关（Future, ThreadPOOL, `@Async`）...  
 2. 线程状态 
@@ -1140,16 +1142,109 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 8. 线程状态切换图示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-5.png) 
 
-### 1.4.2. 并发编程
-#### 1.4.2.1. 并发编程原理
-##### 1.4.2.1.1. CPU缓存及JMM
+
+### 1.4.2. 线程池-多线程
+#### 1.4.2.1. 线程池框架
+1. **线程池通过线程复用机制，并对线程进行统一管理，** 具有以下优点：  
+    * 降低系统资源消耗。通过复用已存在的线程，降低线程创建和销毁造成的消耗；  
+    * 提高响应速度。当有任务到达时，无需等待新线程的创建便能立即执行；  
+    * 提高线程的可管理性。线程是稀缺资源，如果无限制的创建，不仅会消耗大量系统资源，还会降低系统的稳定性，使用线程池可以进行对线程进行统一的分配、调优和监控。  
+2. 线程池框架Executor：  
+&emsp; Executor：所有线程池的接口。  
+&emsp; ExecutorService：扩展了Executor接口。添加了一些用来管理执行器生命周期和任务生命周期的方法。  
+&emsp; ThreadPoolExecutor（创建线程池方式一）：线程池的具体实现类。  
+&emsp; Executors（创建线程池方式二）：提供了一系列静态的工厂方法用于创建线程池，返回的线程池都实现了ExecutorService 接口。  
+3. 根据返回的对象类型，创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor（任务调度线程池）、ForkJoinPool。  
+4. **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
+	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。
+	* CachedThreadPool和ScheduledThreadPool：允许创建的线程数量为Integer.MAX_VALUE，可能会创建大量线程，从而导致OOM。
+5. 线程池执行，ExecutorService的API：execute()，提交不需要返回值的任务；`submit()，提交需要返回值的任务，返回值类型是Future`。    
+
+#### 1.4.2.2. ThreadPoolExecutor详解
+1. 理解构造函数中参数：核心线程数大小、最大线程数大小、空闲线程（超出corePoolSize的线程）的生存时间、参数keepAliveTime的单位、任务阻塞队列、创建线程的工厂（可以通过这个工厂来创建有业务意义的线程名字）。  
+    * [阻塞队列](/docs/java/concurrent/BlockingQueue.md)，线程池所使用的缓冲队列，常用的是：SynchronousQueue、ArrayBlockingQueue、LinkedBlockingQueue。   
+    * 拒绝策略，默认AbortPolicy（拒绝任务，抛异常）， **<font color = "clime">可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。</font>**  
+2. 线程池中核心方法调用链路：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-17.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-14.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-20.png)  
+2. 线程运行流程：查看execute方法。  
+    &emsp; <font color = "clime">线程池创建时`没有设置成预启动加载`，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
+    1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务（任务实例会传入直接用于构造工作线程实例）。  
+    2. 如果当前工作线程总数大于等于corePoolSize，判断线程池是否处于运行中状态，同时尝试用非阻塞方法向任务队列放入任务，这里会二次检查线程池运行状态，如果当前工作线程数量为0，则创建一个非核心线程并且传入的任务对象为null。  
+    3. 如果向任务队列投放任务失败（任务队列已经满了），则会尝试创建非核心线程传入任务实例执行。  
+    4. 如果创建非核心线程失败，此时需要拒绝执行任务，调用拒绝策略处理任务。  
+3. 线程复用机制：    
+&emsp; **线程池将线程和任务进行解耦，线程是线程，任务是任务，摆脱了之前通过Thread创建线程时的一个线程必须对应一个任务的限制。**  
+&emsp; **<font color = "red">在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对Thread进行了封装（内部类Worker），并不是每次执行任务都会调用Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行。</font>** 如果有则直接执行，也就是调用任务中的run方法，将run方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的run方法串联起来。  
+&emsp; 源码解析：`runWorker()方法中，有任务时，while (task != null || (task = getTask()) != null) 循环获取；没有任务时，清除空闲线程。`  
+4. 线程池保证核心线程不被销毁？  
+    &emsp; `ThreadPoolExecutor回收线程都是等while死循环里getTask()获取不到任务，返回null时，调用processWorkerExit方法从Set集合中remove掉线程。`  
+    1. getTask()返回null又分为2两种场景：  
+        1. 线程正常执行完任务，`并且已经等到超过keepAliveTime时间，大于核心线程数，那么会返回null`，结束外层的runWorker中的while循环。
+        2. 当调用shutdown()方法，会将线程池状态置为shutdown，并且需要等待正在执行的任务执行完，阻塞队列中的任务执行完才能返回null。
+    2. `getTask()不返回null的情况有获取到任务，或获取不到任务，但线程数小于等于核心线程数。`  
+
+#### 1.4.2.3. 线程池的正确使用
+1. **<font color = "clime">线程池设置：</font>**   
+    1. `使用自定义的线程池。`共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。`建议根据异步业务类型，合理设置隔离的线程池。`  
+    2. `确定线程池的大小（CPU可同时处理线程数量大部分是CPU核数的两倍）`  
+        1. 线程数设置，`建议核心线程数core与最大线程数max一致`
+            * 如果是CPU密集型应用（多线程处理复杂算法），则线程池大小设置为N+1。
+            * 如果是IO密集型应用（多线程用于数据库数据交互、文件上传下载、网络数据传输等），则线程池大小设置为2N。
+            * 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。  
+        2. 阻塞队列设置  
+        &emsp; `线程池的任务队列本来起缓冲作用，`但是如果设置的不合理会导致线程池无法扩容至max，这样无法发挥多线程的能力，导致一些服务响应变慢。队列长度要看具体使用场景，取决服务端处理能力以及客户端能容忍的超时时间等。队列长度要根据使用场景设置一个上限值，如果响应时间要求较高的系统可以设置为0。  
+        &emsp; `队列大小200或500-1000。`  
+    3. `线程池的优雅关闭：`处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
+2. **<font color = "clime">线程池使用：</font>**    
+    1. `线程池未处理异常：`
+        1. 线程遇到未处理的异常就结束了。ThreadPoolExecutor中将异常传递给afterExecute()方法，而afterExecute()没有做任何处理。这种处理方式能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。即使感知到了，也无法查看异常信息。    
+        2. `当线程池中线程频繁出现未捕获的异常，那线程的复用率就大大降低了，需要不断地创建新线程。`  
+    2. `线程池中线程中异常尽量手动捕获。`  
+3. **<font color = "clime">线程池的监控：</font>**  
+&emsp; 通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。  
+4. @Async方法没有执行的问题分析：  
+&emsp; @Async异步方法默认使用Spring创建ThreadPoolTaskExecutor(参考TaskExecutionAutoConfiguration)，其中默认核心线程数为8，默认最大队列和默认最大线程数都是Integer.MAX_VALUE，队列使用LinkedBlockingQueue，容量是：Integet.MAX_VALUE，空闲线程保留时间：60s，线程池拒绝策略：AbortPolicy。创建新线程的条件是队列填满时，而这样的配置队列永远不会填满，如果有@Async注解标注的方法长期占用线程(比如HTTP长连接等待获取结果)，在核心8个线程数占用满了之后，新的调用就会进入队列，外部表现为没有执行。  
+
+
+#### 1.4.2.4. ForkJoinPool详解
+1. <font color = "clime">ForkJoinPool的两大核心是 分而治之和工作窃取 算法。</font>  
+2. 分而治之：<font color = "red">ForkJoinPool的计算方式是大任务拆中任务，中任务拆小任务，最后再汇总。</font>  
+3. 工作窃取算法  
+&emsp; <font color = "clime">每个工作线程都有自己的工作队列WorkQueue。这是一个双端队列，它是线程私有的。</font>双端队列的操作：push、pop、poll。push/pop只能被队列的所有者线程调用，而poll是由其它线程窃取任务时调用的。  
+    1. ForkJoinTask中fork的子任务，将放入运行该任务的工作线程的队头，工作线程将以LIFO的顺序来处理工作队列中的任务；  
+    2. **<font color = "clime">`为了最大化地利用CPU，空闲的线程将随机从其它线程的队列中“窃取”任务来执行。从工作队列的尾部窃取任务，以减少竞争；`</font>**  
+    3. **<font color = "clime">`当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；`</font>**    
+
+
+#### 1.4.2.5. Future相关
+1. **Future是一个接口，它可以对具体的Runnable或者Callable任务进行取消、判断任务是否已取消、查询任务是否完成、获取任务结果。**  
+2. JDK1.5为Future接口提供了一个实现类FutureTask，表示一个可以取消的异步运算。它有启动和取消运算、查询运算是否完成和取回运算结果等方法。  
+
+
+#### 1.4.2.6. ~~CompletionService~~
+&emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务， **<font color = "clime">并方便的集中处理上述任务的结果(且任务最先完成的先返回)。</font>**  
+&emsp; 内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
+
+#### 1.4.2.7. ~~CompletableFuture~~
+&emsp; CompletableFuture 可以很方便的实现异步任务的封装 **<font color = "clime">并实现结果的联合等一系列操作，</font>** 轻松实现 任务的并行。  
+
+* thenCombine：结合两个CompletionStage的结果，进行转化后返回。  
+* applyToEither：两个CompletionStage，谁计算的快，就用那个CompletionStage的结果进行下一步的处理。  
+* ...
+
+
+### 1.4.3. 并发编程
+#### 1.4.3.1. 并发编程原理
+##### 1.4.3.1.1. CPU缓存及JMM
 1. JMM
     1. JMM内存划分：线程对变量的所有操作都必须在工作内存进行，而不能直接读写主内存中的变量。    
     2. 单个线程操作时，8种内存间交换操作指令。  
     3. 线程之间的通信和同步。线程之间的通信过程：线程对变量的操作（读取赋值等）必须在工作内存中进行，首先要将变量从主内存拷贝到自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，不能直接操作主内存中的变量，</font>各个线程中的工作内存中存储着主内存中的变量副本拷贝，<font color = "red">因此不同的线程间无法访问对方的工作内存，线程间的通信（传值）必须通过主内存来完成。</font>    
 
 
-##### 1.4.2.1.2. 并发安全问题产生原因
+##### 1.4.3.1.2. 并发安全问题产生原因
 1. **并发安全的3个问题：**  
 
     * 原子性：线程切换带来的原子性问题；（[Volatile](/docs/java/concurrent/Volatile.md)不保证原子性）
@@ -1165,7 +1260,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     * 重排序遵守的规则：重排序遵守数据依赖性、重排序遵守as-if-serial语义。  
     * 重排序对多线程的影响
 
-##### 1.4.2.1.3. 并发安全解决底层
+##### 1.4.3.1.3. 并发安全解决底层
 1. 缓存一致性协议  
     1. 怎么解决缓存一致性问题呢？使用总线锁或缓存锁。  
         * 总线锁：cpu从主内存读取数据到高速缓存，会在总线对这个数据加锁，这样其他cpu无法去读或写这个数据，直到这个cpu使用完数据释放锁之后其他cpu才能读取该数据。  
@@ -1190,7 +1285,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     **<font color = "clime">happens-before原则有管理锁定（lock）规则、volatile变量规则、线程启动规则（Thread.start()）、线程终止规则（Thread.join()）、线程中断规则（Thread.interrupt()）...</font>**  
     volatile变量规则就是使用内存屏障保证线程可见性。  
 
-##### 1.4.2.1.4. 伪共享问题
+##### 1.4.3.1.4. 伪共享问题
 1. CPU具有多级缓存，越接近CPU的缓存越小也越快；CPU缓存中的数据是以缓存行为单位处理的；CPU缓存行（通常是64字节）能带来免费加载数据的好处，所以处理数组性能非常高。  
 2. **CPU缓存行也带来了弊端，多线程处理不相干的变量时会相互影响，也就是伪共享。**  
 &emsp; 设想如果有个long类型的变量a，它不是数组的一部分，而是一个单独的变量，并且还有另外一个long类型的变量b紧挨着它，那么当加载a的时候将免费加载b。  
@@ -1198,8 +1293,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 3. 避免伪共享的主要思路就是让不相干的变量不要出现在同一个缓存行中；一是在两个long类型的变量之间再加7个long类型(字节填充)；二是创建自己的long类型，而不是用原生的；三是使用java8提供的注解。  
 &emsp; 高性能原子类[LongAdder](/docs/java/concurrent/LongAdder.md)可以解决类伪共享问题。   
 
-#### 1.4.2.2. 线程安全解决
-##### 1.4.2.2.1. 线程安全解决方案
+#### 1.4.3.2. 线程安全解决
+##### 1.4.3.2.1. 线程安全解决方案
 1. 线程安全解决方案
 	1. 阻塞/互斥同步（悲观锁）
 	2. 非阻塞同步（乐观锁，CAS） 
@@ -1213,11 +1308,11 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 	* 可见性可以通过Volatile、synchronized、final来实现。  
 	* 有序性可以通过synchronized或者Lock、volatile来实现。  
 
-##### 1.4.2.2.2. Synchronized
-###### 1.4.2.2.2.1. Synchronized介绍
+##### 1.4.3.2.2. Synchronized
+###### 1.4.3.2.2.1. Synchronized介绍
 
 
-###### 1.4.2.2.2.2. Synchronized使用
+###### 1.4.3.2.2.2. Synchronized使用
 1. synchronized可以修饰代码块或者方法：  
     ```java
     synchronized (lock){
@@ -1233,14 +1328,14 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 3. String锁：由于在JVM中具有String常量池缓存的功能，因此相同字面量是同一个锁。  
 
 
-##### 1.4.2.2.3. Synchronized使用是否安全
+##### 1.4.3.2.3. Synchronized使用是否安全
 &emsp; 共有 `类锁 + 对象锁 + 类锁 * 对象锁`种情况。    
 1. 类锁
 2. 对象锁
 3. 类锁和对象锁
 4. 不安全场景
 
-###### 1.4.2.2.3.1. Synchronized底层原理
+###### 1.4.3.2.3.1. Synchronized底层原理
 1. Synchronized底层实现：`查看Synchronized的字节码。`  
     * Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。  
     * Synchronized代码块同步：使用monitorenter和monitorexit指令实现。   
@@ -1260,7 +1355,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 &emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，`被阻塞的线程不会消耗cpu`。 **<font color = "clime">`但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态(向内核申请)，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。`</font>**  
 
 
-###### 1.4.2.2.3.2. Synchronized优化
+###### 1.4.3.2.3.2. Synchronized优化
 1. **<font color = "clime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时，如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>   
 2. 锁升级  
     &emsp; 锁主要存在四种状态，依次是：无锁状态（普通对象）、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。锁升级流程如下：   
@@ -1297,7 +1392,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     &emsp; 自旋是消耗CPU资源的，如果锁的时间长，或者自旋线程多，CPU会被大量消耗；重量级锁有等待队列，所有拿不到锁的线程进入等待队列，不需要消耗CPU资源。  
     &emsp; 偏向锁、自旋锁都是用户空间完成。重量级锁是需要向内核申请。  
 
-##### 1.4.2.2.4. Volatile
+##### 1.4.3.2.4. Volatile
 1. **<font color = "clime">Volatile的特性：</font>**  
     1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>    
     2. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**  
@@ -1317,7 +1412,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         &emsp; **<font color = "clime">因为指令重排序，可能编程1->3->2。如果是这种顺序，会导致别的线程拿到半成品的实例。</font>**  
 
 
-##### 1.4.2.2.5. ThreadLocal
+##### 1.4.3.2.5. ThreadLocal
 &emsp; ThreadLocal的作用是每一个线程创建一个副本。  
 
 1. 在进行对象跨层次传递的时候，使用ThreadLocal可以避免多次传递，打破层次间的束缚。   
@@ -1325,7 +1420,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 3. 进行事务操作，用于存储线程事务信息。  
 4. 数据库连接，Session会话管理。  
 
-###### 1.4.2.2.5.1. ThreadLocal原理
+###### 1.4.3.2.5.1. ThreadLocal原理
 1. ThreadLocal源码/内存模型：  
     1. **<font color = "red">ThreadLocal#set()#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** 即，当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
     &emsp; ~~Thread ---> ThreadLocal.ThreadLocalMap~~
@@ -1341,7 +1436,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     &emsp; ThreadLocal#get() ---> setInitialValue() ---> ThreadLocalMap.set(this, value); 。  
     &emsp; 通过nextIndex()不断获取table上的槽位，直到遇到第一个为null的地方，此处也将是存放具体entry的位置，在线性探测法的不断冲突中，如果遇到非空entry中的key为null，可以表明key的弱引用已经被回收，但是由于线程仍未结束生命周期被回收，而导致该entry仍未从table中被回收，那么则会在这里尝试通过replaceStaleEntry()方法，将null key的entry回收掉并set相应的值。  
 
-###### 1.4.2.2.5.2. ThreadLocal应用
+###### 1.4.3.2.5.2. ThreadLocal应用
 1. ThreadLocal使用场景：  
     1. 线程安全问题。
     2. 业务中变量传递。1)ThreadLocal实现同一线程下多个类之间的数据传递；2)ThreadLocal实现线程内的缓存，避免重复调用。
@@ -1354,101 +1449,10 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     4. 并行流中线程上下文丢失。问题同线程池中线程上下文丢失。  
 3. ThreadLocal优化：FastThreadLocal
 
-#### 1.4.2.3. 线程通信(生产者消费者问题)
+#### 1.4.3.3. 线程通信(生产者消费者问题)
 
-#### 1.4.2.4. 线程活跃性
+#### 1.4.3.4. 线程活跃性
 
-
-### 1.4.3. 线程池
-#### 1.4.3.1. 线程池框架
-1. **线程池通过线程复用机制，并对线程进行统一管理，** 具有以下优点：  
-    * 降低系统资源消耗。通过复用已存在的线程，降低线程创建和销毁造成的消耗；  
-    * 提高响应速度。当有任务到达时，无需等待新线程的创建便能立即执行；  
-    * 提高线程的可管理性。线程是稀缺资源，如果无限制的创建，不仅会消耗大量系统资源，还会降低系统的稳定性，使用线程池可以进行对线程进行统一的分配、调优和监控。  
-2. 线程池框架Executor：  
-&emsp; Executor：所有线程池的接口。  
-&emsp; ExecutorService：扩展了Executor接口。添加了一些用来管理执行器生命周期和任务生命周期的方法。  
-&emsp; ThreadPoolExecutor（创建线程池方式一）：线程池的具体实现类。  
-&emsp; Executors（创建线程池方式二）：提供了一系列静态的工厂方法用于创建线程池，返回的线程池都实现了ExecutorService 接口。  
-3. 根据返回的对象类型，创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor（任务调度线程池）、ForkJoinPool。  
-4. **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
-	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。
-	* CachedThreadPool和ScheduledThreadPool：允许创建的线程数量为Integer.MAX_VALUE，可能会创建大量线程，从而导致OOM。
-5. 线程池执行，ExecutorService的API：execute()，提交不需要返回值的任务；`submit()，提交需要返回值的任务，返回值类型是Future`。    
-
-#### 1.4.3.2. ThreadPoolExecutor详解
-1. 理解构造函数中参数：核心线程数大小、最大线程数大小、空闲线程（超出corePoolSize的线程）的生存时间、参数keepAliveTime的单位、任务阻塞队列、创建线程的工厂（可以通过这个工厂来创建有业务意义的线程名字）。  
-    * [阻塞队列](/docs/java/concurrent/BlockingQueue.md)，线程池所使用的缓冲队列，常用的是：SynchronousQueue、ArrayBlockingQueue、LinkedBlockingQueue。   
-    * 拒绝策略，默认AbortPolicy（拒绝任务，抛异常）， **<font color = "clime">可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。</font>**  
-2. 线程池中核心方法调用链路：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-17.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-14.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-20.png)  
-2. 线程运行流程：查看execute方法。  
-    &emsp; <font color = "clime">线程池创建时`没有设置成预启动加载`，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
-    1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务（任务实例会传入直接用于构造工作线程实例）。  
-    2. 如果当前工作线程总数大于等于corePoolSize，判断线程池是否处于运行中状态，同时尝试用非阻塞方法向任务队列放入任务，这里会二次检查线程池运行状态，如果当前工作线程数量为0，则创建一个非核心线程并且传入的任务对象为null。  
-    3. 如果向任务队列投放任务失败（任务队列已经满了），则会尝试创建非核心线程传入任务实例执行。  
-    4. 如果创建非核心线程失败，此时需要拒绝执行任务，调用拒绝策略处理任务。  
-3. 线程复用机制：    
-&emsp; **线程池将线程和任务进行解耦，线程是线程，任务是任务，摆脱了之前通过Thread创建线程时的一个线程必须对应一个任务的限制。**  
-&emsp; **<font color = "red">在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对Thread进行了封装（内部类Worker），并不是每次执行任务都会调用Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行。</font>** 如果有则直接执行，也就是调用任务中的run方法，将run方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的run方法串联起来。  
-&emsp; 源码解析：`runWorker()方法中，有任务时，while (task != null || (task = getTask()) != null) 循环获取；没有任务时，清除空闲线程。`  
-4. 线程池保证核心线程不被销毁？  
-    &emsp; `ThreadPoolExecutor回收线程都是等while死循环里getTask()获取不到任务，返回null时，调用processWorkerExit方法从Set集合中remove掉线程。`  
-    1. getTask()返回null又分为2两种场景：  
-        1. 线程正常执行完任务，`并且已经等到超过keepAliveTime时间，大于核心线程数，那么会返回null`，结束外层的runWorker中的while循环。
-        2. 当调用shutdown()方法，会将线程池状态置为shutdown，并且需要等待正在执行的任务执行完，阻塞队列中的任务执行完才能返回null。
-    2. `getTask()不返回null的情况有获取到任务，或获取不到任务，但线程数小于等于核心线程数。`  
-
-#### 1.4.3.3. 线程池的正确使用
-1. **<font color = "clime">线程池设置：</font>**   
-    1. `使用自定义的线程池。`共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。`建议根据异步业务类型，合理设置隔离的线程池。`  
-    2. `确定线程池的大小（CPU可同时处理线程数量大部分是CPU核数的两倍）`  
-        1. 线程数设置，`建议核心线程数core与最大线程数max一致`
-            * 如果是CPU密集型应用（多线程处理复杂算法），则线程池大小设置为N+1。
-            * 如果是IO密集型应用（多线程用于数据库数据交互、文件上传下载、网络数据传输等），则线程池大小设置为2N。
-            * 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。  
-        2. 阻塞队列设置  
-        &emsp; `线程池的任务队列本来起缓冲作用，`但是如果设置的不合理会导致线程池无法扩容至max，这样无法发挥多线程的能力，导致一些服务响应变慢。队列长度要看具体使用场景，取决服务端处理能力以及客户端能容忍的超时时间等。队列长度要根据使用场景设置一个上限值，如果响应时间要求较高的系统可以设置为0。  
-        &emsp; `队列大小200或500-1000。`  
-    3. `线程池的优雅关闭：`处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
-2. **<font color = "clime">线程池使用：</font>**    
-    1. `线程池未处理异常：`
-        1. 线程遇到未处理的异常就结束了。ThreadPoolExecutor中将异常传递给afterExecute()方法，而afterExecute()没有做任何处理。这种处理方式能够保证提交的任务抛出了异常不会影响其他任务的执行，同时也不会对用来执行该任务的线程产生任何影响。然而afterExecute()没有做任何处理，所以如果任务抛出了异常，也无法立刻感知到。即使感知到了，也无法查看异常信息。    
-        2. `当线程池中线程频繁出现未捕获的异常，那线程的复用率就大大降低了，需要不断地创建新线程。`  
-    2. `线程池中线程中异常尽量手动捕获。`  
-3. **<font color = "clime">线程池的监控：</font>**  
-&emsp; 通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。  
-4. @Async方法没有执行的问题分析：  
-&emsp; @Async异步方法默认使用Spring创建ThreadPoolTaskExecutor(参考TaskExecutionAutoConfiguration)，其中默认核心线程数为8，默认最大队列和默认最大线程数都是Integer.MAX_VALUE，队列使用LinkedBlockingQueue，容量是：Integet.MAX_VALUE，空闲线程保留时间：60s，线程池拒绝策略：AbortPolicy。创建新线程的条件是队列填满时，而这样的配置队列永远不会填满，如果有@Async注解标注的方法长期占用线程(比如HTTP长连接等待获取结果)，在核心8个线程数占用满了之后，新的调用就会进入队列，外部表现为没有执行。  
-
-
-#### 1.4.3.4. ForkJoinPool详解
-1. <font color = "clime">ForkJoinPool的两大核心是 分而治之和工作窃取 算法。</font>  
-2. 分而治之：<font color = "red">ForkJoinPool的计算方式是大任务拆中任务，中任务拆小任务，最后再汇总。</font>  
-3. 工作窃取算法  
-&emsp; <font color = "clime">每个工作线程都有自己的工作队列WorkQueue。这是一个双端队列，它是线程私有的。</font>双端队列的操作：push、pop、poll。push/pop只能被队列的所有者线程调用，而poll是由其它线程窃取任务时调用的。  
-    1. ForkJoinTask中fork的子任务，将放入运行该任务的工作线程的队头，工作线程将以LIFO的顺序来处理工作队列中的任务；  
-    2. **<font color = "clime">`为了最大化地利用CPU，空闲的线程将随机从其它线程的队列中“窃取”任务来执行。从工作队列的尾部窃取任务，以减少竞争；`</font>**  
-    3. **<font color = "clime">`当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；`</font>**    
-
-
-#### 1.4.3.5. Future相关
-1. **Future是一个接口，它可以对具体的Runnable或者Callable任务进行取消、判断任务是否已取消、查询任务是否完成、获取任务结果。**  
-2. JDK1.5为Future接口提供了一个实现类FutureTask，表示一个可以取消的异步运算。它有启动和取消运算、查询运算是否完成和取回运算结果等方法。  
-
-
-#### 1.4.3.6. ~~CompletionService~~
-&emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务， **<font color = "clime">并方便的集中处理上述任务的结果(且任务最先完成的先返回)。</font>**  
-&emsp; 内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
-
-#### 1.4.3.7. ~~CompletableFuture~~
-&emsp; CompletableFuture 可以很方便的实现异步任务的封装 **<font color = "clime">并实现结果的联合等一系列操作，</font>** 轻松实现 任务的并行。  
-
-* thenCombine：结合两个CompletionStage的结果，进行转化后返回。  
-* applyToEither：两个CompletionStage，谁计算的快，就用那个CompletionStage的结果进行下一步的处理。  
-* ...
 
 ### 1.4.4. JUC
 #### 1.4.4.1. CAS
@@ -2774,15 +2778,15 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 &emsp; Dubbo协议采用长连接，还可以防止注册中心宕机风险。  
 
 
-### Dubbo心跳机制  
+### 1.12.7. Dubbo心跳机制  
 
 
-### 1.12.7. Dubbo集群容错
+### 1.12.8. Dubbo集群容错
 1. 负载均衡
 2. 集群容错策略
 3. 服务降级
 
-### 1.12.8. 扩展点加载(SPI)
+### 1.12.9. 扩展点加载(SPI)
 1. **<font color = "clime">Dubbo改进了JDK标准的SPI的以下问题：</font>**  
     * JDK标准的SPI会一次性实例化扩展点所有实现。  
     * 如果扩展点加载失败，连扩展点的名称都拿不到了。  
