@@ -34,14 +34,6 @@
     3. 数组用volatile修饰主要是保证在数组扩容的时候保证可见性。  
 
 
-<!-- 
-ConcurrentHashMap中有十个提升性能的细节，你都知道吗？
-https://mp.weixin.qq.com/s/vZZQeWaKQ2pbUDyyqpzunQ
-
-ConcurrentHashMap线程安全吗 
-https://mp.weixin.qq.com/s/ZCQPrgW6iv2IP_3RKk016g
---> 
-
 # 1. Java8 ConcurrentHashMap  
 <!-- 
 阿里十年架构师，教你深度分析ConcurrentHashMap原理分析 
@@ -49,6 +41,17 @@ https://www.sohu.com/a/320372210_120176035
 一文看懂ConcurrentHashMap
 https://segmentfault.com/a/1190000022279729
 -->
+<!-- 
+ConcurrentHashMap 底层原理
+https://blog.csdn.net/qq_33591903/article/details/106634270
+
+ConcurrentHashMap中有十个提升性能的细节，你都知道吗？
+https://mp.weixin.qq.com/s/vZZQeWaKQ2pbUDyyqpzunQ
+
+ConcurrentHashMap线程安全吗 
+https://mp.weixin.qq.com/s/ZCQPrgW6iv2IP_3RKk016g
+--> 
+
 &emsp; **<font color = "red">从jdk1.8开始，ConcurrentHashMap类取消了Segment分段锁，采用Node + CAS + Synchronized来保证并发安全。</font>**  
 &emsp; **<font color = "clime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的ConcurrentHashMap效率又提升了许多。</font>**  
 

@@ -1317,7 +1317,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         &emsp; 总线嗅探， **<font color = "red">每个CPU不断嗅探总线上传播的数据来检查自己缓存值是否过期了，如果处理器发现自己的缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置为无效状态，当处理器对这个数据进行修改操作的时候，会重新从内存中把数据读取到处理器缓存中。</font>**    
         2. 总线嗅探会带来总线风暴。  
 2. 内存屏障：    
-    &emsp; Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。内存屏障，禁止处理器重排序，保障缓存一致性。  
+    &emsp; Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。`内存屏障，禁止处理器重排序，保障缓存一致性。`  
     &emsp; `内存屏障的作用：（~~原子性~~、可见性、有序性）`  
     1. `（保障可见性）它会强制将对缓存的修改操作立即写入主存；` 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。   
     2. `（保障有序性）阻止屏障两侧的指令重排序。`   
@@ -1614,9 +1614,12 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         1. 在1.8中ConcurrentHashMap的get操作全程不需要加锁，这也是它比其他并发集合（比如hashtable、用Collections.synchronizedMap()包装的hashmap）安全效率高的原因之一。  
         2. `get操作全程不需要加锁是因为Node的成员val是用volatile修饰的，`和数组用volatile修饰没有关系。  
         3. 数组用volatile修饰主要是保证在数组扩容的时候保证可见性。  
-2. ConcurrentHashMap，JDK1.7  
+2. ~~ConcurrentHashMap，JDK1.7~~  
     1. 在JDK1.7中，ConcurrentHashMap类采用了分段锁的思想，Segment(段) + HashEntry(哈希条目) + ReentrantLock。  
     2. Segment继承ReentrantLock(可重入锁)，从而实现并发控制。Segment的个数一旦初始化就不能改变，默认Segment的个数是16个，也可以认为ConcurrentHashMap默认支持最多16个线程并发。  
+    3. put()方法：  
+        1. 获取 ReentrantLock 独占锁，获取不到，scanAndLockForPut 获取。  
+        2. scanAndLockForPut 这个方法可以确保返回时，当前线程一定是获取到锁的状态。  
 
 ##### 1.4.4.5.3. BlockingQueue
 1. 阻塞队列：当队列是空的时候，从队列中获取元素的操作将会被阻塞，或者当队列是满时，往队列里添加元素的操作会被阻塞。  

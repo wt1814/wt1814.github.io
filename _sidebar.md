@@ -144,7 +144,7 @@
             * [LongAdder](/docs/java/concurrent/LongAdder.md)  
         * [Collections](/docs/java/concurrent/jihe.md)  
             * [CopyOnWriteArrayList](/docs/java/concurrent/CopyOnWriteArrayList.md)  
-            * [ConcurrentHashMap1.8](/docs/java/concurrent/ConcurrentHashMap.md)  
+            * [ConcurrentHashMap，JDK1.8](/docs/java/concurrent/ConcurrentHashMap.md)  
             * [ConcurrentHashMap，JDK1.7](/docs/java/concurrent/ConcurrentHashMap7.md)  
             * [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
         * [tools](/docs/java/concurrent/tools.md)

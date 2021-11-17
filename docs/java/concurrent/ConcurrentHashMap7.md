@@ -7,7 +7,9 @@
     - [1.2. 构造函数](#12-构造函数)
     - [1.3. 成员方法](#13-成员方法)
         - [1.3.1. put()方法](#131-put方法)
-            - [1.3.1.1. 扩容 rehash](#1311-扩容-rehash)
+            - [ensureSegment()方法](#ensuresegment方法)
+            - [scanAndLockForPut()方法](#scanandlockforput方法)
+            - [1.3.1.1. rehash()，扩容](#1311-rehash扩容)
         - [1.3.2. get()方法](#132-get方法)
 
 <!-- /TOC -->
@@ -15,8 +17,16 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. 在JDK1.7中，ConcurrentHashMap类采用了分段锁的思想，Segment(段) + HashEntry(哈希条目) + ReentrantLock。  
 2. Segment继承ReentrantLock(可重入锁)，从而实现并发控制。Segment的个数一旦初始化就不能改变，默认Segment的个数是16个，也可以认为ConcurrentHashMap默认支持最多16个线程并发。  
+3. put()方法：  
+    1. 获取 ReentrantLock 独占锁，获取不到，scanAndLockForPut 获取。  
+    2. scanAndLockForPut 这个方法可以确保返回时，当前线程一定是获取到锁的状态。  
 
 # 1. Java7 ConcurrentHashMap  
+<!-- 
+ConcurrentHashMap 底层原理
+https://blog.csdn.net/qq_33591903/article/details/106634270
+-->
+
 ## 1.1. 存储结构  
 &emsp; 在 JDK1.7 中，ConcurrentHashMap 类采用了分段锁的思想，Segment(段) + HashEntry(哈希条目) + ReentrantLock。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-10.png)  
@@ -162,7 +172,12 @@ final V put(K key, int hash, V value, boolean onlyIfAbsent) {
 }
 ```
 
-#### 1.3.1.1. 扩容 rehash  
+#### ensureSegment()方法
+
+
+#### scanAndLockForPut()方法
+
+#### 1.3.1.1. rehash()，扩容  
 &emsp; ConcurrentHashMap 的扩容只会扩容到原来的两倍。原数组里的数据移动到新的数组时，位置要么不变，要么变为 index+ oldSize，参数里的 node 会在扩容之后使用链表头插法插入到指定位置。  
 
 ```java
