@@ -159,8 +159,7 @@
 ### 并发编程  
 [并发编程总结](/docs/java/concurrent/summary.md)  
 [多线程和并发](/docs/java/concurrent/MultithreadingAndConcurrency.md)  
-[线程Thread](/docs/java/concurrent/thread.md)  
-&emsp; [线程基本知识](/docs/java/concurrent/threadConcepts.md)  
+[Thread.java](/docs/java/concurrent/thread.md)  
 &emsp; [Thread类详解](/docs/java/concurrent/threadClass.md)  
 &emsp; &emsp; [线程状态](/docs/java/concurrent/threadState.md)  
 &emsp; &emsp; [线程停止与中断](/docs/java/concurrent/interrupt.md)  
