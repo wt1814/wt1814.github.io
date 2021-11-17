@@ -1879,6 +1879,56 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 	4. 缺点: 数据不准确
 5. 终极武器-二次查询法  
 
+--------------
+
+
+&emsp; 方法一：全局视野法  
+&emsp; （1）将order by time offset X limit Y，改写成order by time offset 0 limit X+Y  
+&emsp; （2）服务层对得到的N*(X+Y)条数据进行内存排序，内存排序后再取偏移量X后的Y条记录  
+&emsp; 这种方法随着翻页的进行，性能越来越低。  
+ 
+
+&emsp; 方法二：业务折衷法-禁止跳页查询  
+&emsp; （1）用正常的方法取得第一页数据，并得到第一页记录的time_max  
+&emsp; （2）每次翻页，将order by time offset X limit Y，改写成order by time where time>$time_max limit Y  
+&emsp; 以保证每次只返回一页数据，性能为常量。  
+
+
+&emsp; 方法三：业务折衷法-允许模糊数据  
+&emsp; （1）将order by time offset X limit Y，改写成order by time offset X/N limit Y/N  
+
+&emsp; 方法四：二次查询法  
+&emsp; （1）将order by time offset X limit Y，改写成order by time offset X/N limit Y   
+&emsp; （2）找到最小值time_min   
+&emsp; （3）between二次查询，order by time between $time_min and $time_i_max    
+&emsp; （4）设置虚拟time_min，找到time_min在各个分库的offset，从而得到time_min在全局的offset    
+&emsp; （5）得到了time_min在全局的offset，自然得到了全局的offset X limit Y    
+
+---------------------
+
+查询二次改写   
+这也是"业界难题-跨库分页”中提到的一个方法，大致思路如下：在某 1 页的数据均摊到各分表的前提下(注：这个前提很重要，也就是说不会有一个分表的数据特别多或特别少)，换句话说：这个方案不适用分段法。    
+
+第一次改写的SQL语句是select * from T order by time offset 333 limit 5  
+
+第二次要改写成一个between语句，between的起点是time_min，between的终点是原来每个分库各自返回数据的最大值：  
+
+第一个分库，第一次返回数据的最大值是1487501523  
+
+所以查询改写为select * from T order by time where time between time_min and 1487501523  
+
+
+第二个分库，第一次返回数据的最大值是1487501323  
+
+所以查询改写为select * from T order by time where time between time_min and 1487501323  
+
+
+第三个分库，第一次返回数据的最大值是1487501553  
+
+所以查询改写为select * from T order by time where time between time_min and 1487501553  
+ 
+
+相对第一次查询，第二次查询条件放宽了，故第二次查询会返回比第一次查询结果集更多的数据  
 
 
 #### 1.5.4.7. 数据迁移
