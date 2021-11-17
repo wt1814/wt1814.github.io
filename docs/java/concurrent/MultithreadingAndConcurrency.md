@@ -2,14 +2,15 @@
 
 <!-- TOC -->
 
-- [1. 线程基本概念](#1-线程基本概念)
+- [1. 多线程和并发](#1-多线程和并发)
     - [1.1. 线程](#11-线程)
     - [1.2. 多线程](#12-多线程)
 
 <!-- /TOC -->
 
 <!-- 
-***
+java多线程与并发（基础篇）
+https://www.cnblogs.com/zsql/p/11144688.html
 阿里面试官问我Java线程和操作系统线程什么关系 
 https://mp.weixin.qq.com/s/1DBqevIIZAzynUzBAeyPXQ
 线程基本知识
@@ -19,7 +20,7 @@ https://mp.weixin.qq.com/s/k1cd4s18tmF4kqHj4unOTA
 -->
 
 
-# 1. 线程基本概念  
+# 1. 多线程和并发  
 &emsp; <font color = "red">~~操作系统熟悉一波...~~</font>  
 
 ## 1.1. 线程
