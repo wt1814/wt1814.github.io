@@ -2,18 +2,17 @@
 
 <!-- TOC -->
 
-- [1. ConcurrentHashMap](#1-concurrenthashmap)
-    - [1.1. Java8 ConcurrentHashMap](#11-java8-concurrenthashmap)
-        - [1.1.1. 存储结构](#111-存储结构)
-        - [1.1.2. 成员方法](#112-成员方法)
-            - [1.1.2.1. put()方法](#1121-put方法)
-                - [1.1.2.1.1. 协助扩容helpTransfer](#11211-协助扩容helptransfer)
-                    - [1.1.2.1.1.1. ~~帮助扩容transfer~~](#112111-帮助扩容transfer)
-                - [1.1.2.1.2. treeifyBin](#11212-treeifybin)
-                - [1.1.2.1.3. addCount](#11213-addcount)
-            - [1.1.2.2. get()方法](#1122-get方法)
-                - [1.1.2.2.1. get()流程](#11221-get流程)
-                - [1.1.2.2.2. ★★★get()为什么不需要加锁？](#11222-★★★get为什么不需要加锁)
+- [1. Java8 ConcurrentHashMap](#1-java8-concurrenthashmap)
+    - [1.1. 存储结构](#11-存储结构)
+    - [1.2. 成员方法](#12-成员方法)
+        - [1.2.1. put()方法](#121-put方法)
+            - [1.2.1.1. 协助扩容helpTransfer](#1211-协助扩容helptransfer)
+                - [1.2.1.1.1. ~~帮助扩容transfer~~](#12111-帮助扩容transfer)
+            - [1.2.1.2. treeifyBin](#1212-treeifybin)
+            - [1.2.1.3. addCount](#1213-addcount)
+        - [1.2.2. get()方法](#122-get方法)
+            - [1.2.2.1. get()流程](#1221-get流程)
+            - [1.2.2.2. ★★★get()为什么不需要加锁？](#1222-★★★get为什么不需要加锁)
 
 <!-- /TOC -->
 
@@ -35,7 +34,6 @@
     3. 数组用volatile修饰主要是保证在数组扩容的时候保证可见性。  
 
 
-# 1. ConcurrentHashMap   
 <!-- 
 ConcurrentHashMap中有十个提升性能的细节，你都知道吗？
 https://mp.weixin.qq.com/s/vZZQeWaKQ2pbUDyyqpzunQ
@@ -44,7 +42,7 @@ ConcurrentHashMap线程安全吗
 https://mp.weixin.qq.com/s/ZCQPrgW6iv2IP_3RKk016g
 --> 
 
-## 1.1. Java8 ConcurrentHashMap  
+# 1. Java8 ConcurrentHashMap  
 <!-- 
 阿里十年架构师，教你深度分析ConcurrentHashMap原理分析 
 https://www.sohu.com/a/320372210_120176035
@@ -54,7 +52,7 @@ https://segmentfault.com/a/1190000022279729
 &emsp; **<font color = "red">从jdk1.8开始，ConcurrentHashMap类取消了Segment分段锁，采用Node + CAS + Synchronized来保证并发安全。</font>**  
 &emsp; **<font color = "clime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的ConcurrentHashMap效率又提升了许多。</font>**  
 
-### 1.1.1. 存储结构  
+## 1.1. 存储结构  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-11.png)  
 
 &emsp; ConcurrentHashMap数据结构跟 jdk1.8 中 HashMap 结构保持一致，都是数组 + 链表 + 红黑树。和 HashMap1.8 相同的一些地方：  
@@ -73,8 +71,8 @@ https://segmentfault.com/a/1190000022279729
     }
     ```
 
-### 1.1.2. 成员方法  
-#### 1.1.2.1. put()方法  
+## 1.2. 成员方法  
+### 1.2.1. put()方法  
 
 &emsp; **<font color = "clime">put()流程：</font>**
 1. 根据 key 计算出 hashcode 。  
@@ -177,7 +175,7 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
 }
 ```
 
-##### 1.1.2.1.1. 协助扩容helpTransfer  
+#### 1.2.1.1. 协助扩容helpTransfer  
 
 ```java
 final Node<K,V>[] helpTransfer(Node<K,V>[] tab, Node<K,V> f) {
@@ -205,13 +203,13 @@ final Node<K,V>[] helpTransfer(Node<K,V>[] tab, Node<K,V> f) {
 }
 ```
 
-###### 1.1.2.1.1.1. ~~帮助扩容transfer~~  
+##### 1.2.1.1.1. ~~帮助扩容transfer~~  
 <!-- 
 https://blog.csdn.net/luzhensmart/article/details/105968886
 -->
 &emsp; 扩容是ConcurrentHashMap的精华之一，扩容操作的核心在于数据的转移，在单线程环境下数据的转移很简单，无非就是把旧数组中的数据迁移到新的数组。但是这在多线程环境下，在扩容的时候其他线程也可能正在添加元素，这时又触发了扩容怎么办？可能大家想到的第一个解决方案是加互斥锁，把转移过程锁住，虽然是可行的解决方案，但是会带来较大的性能开销。因为互斥锁会导致所有访问临界区的线程陷入到阻塞状态，持有锁的线程耗时越长，其他竞争线程就会一直被阻塞，导致吞吐量较低。而且还可能导致死锁。 而ConcurrentHashMap并没有直接加锁，而是采用CAS实现无锁的并发同步策略，最精华的部分是它可以利用多线程来进行协同扩容 简单来说，它把Node数组当作多个线程之间共享的任务队列，然后通过维护一个指针来划分每个线程锁负责的区间，每个线程通过区间逆向遍历来实现扩容，一个已经迁移完的bucket会被替换为一个ForwardingNode节点，标记当前bucket已经被其他线程迁移完了。  
 
-##### 1.1.2.1.2. treeifyBin  
+#### 1.2.1.2. treeifyBin  
 &emsp; 在 putVal 的最后部分，有一个判断，如果链表长度大于 8，那么就会触发扩容或者红黑树的转化操作。  
 
 ```java
@@ -242,7 +240,7 @@ private final void treeifyBin(Node<K,V>[] tab, int index) {
 }
 ```
 
-##### 1.1.2.1.3. addCount
+#### 1.2.1.3. addCount
 &emsp; 在putVal最后调用 addCount 的时候，传递了两个参数，分别是 1 和 binCount(链表长度)。  
 
 ```java
@@ -279,13 +277,13 @@ private final void addCount(long x, int check) {
 }
 ```
 
-#### 1.1.2.2. get()方法  
+### 1.2.2. get()方法  
 <!-- 
 ★★★为什么ConcurrentHashMap的读操作不需要加锁？ 
 https://mp.weixin.qq.com/s/3FCg-9kPjSAR0tN6xLW6tw
  
 -->
-##### 1.1.2.2.1. get()流程
+#### 1.2.2.1. get()流程
 &emsp; **<font color = "clime">get()流程：</font>**  
 1. 根据hash值计算位置。  
 2. 查找到指定位置，如果头节点就是要找的，直接返回它的value。  
@@ -324,7 +322,7 @@ public V get(Object key) {
 }
 ```
 
-##### 1.1.2.2.2. ★★★get()为什么不需要加锁？  
+#### 1.2.2.2. ★★★get()为什么不需要加锁？  
 &emsp; 用volatile修饰的Node。  
 &emsp; get操作可以无锁是由于Node的元素val和指针next是用volatile修饰的，在多线程环境下线程A修改结点的val或者新增节点的时候是对线程B可见的。    
 
@@ -337,5 +335,3 @@ static class Node<K,V> implements Map.Entry<K,V> {
 ```
 
 &emsp; 用volatile修饰的table属性`transient volatile Node<K,V>[] table;` ，是为了使得Node数组在扩容的时候对其他线程具有可见性而加的volatile。  
-
-
