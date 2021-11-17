@@ -10,7 +10,10 @@
 <!-- /TOC -->
 
 # 1. Netty实战  
-<!-- 
+<!--
+服务的心跳机制
+https://mp.weixin.qq.com/s/Cnf5g-CLqhL83_nYLQBjrw
+
 Netty主要应用于以下领域：  
 * 高性能的RPC框架：常用于微服务之间的高性能远程调用(如Dubbo)
 * 游戏行业：Netty可以很轻松地定制和开发一个私有协议栈，
