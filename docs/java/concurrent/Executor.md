@@ -45,7 +45,7 @@
 
 ---------
 
-&emsp; Executor框架由三个部分组成  
+&emsp; Executor框架由三个部分组成：  
 
 * 工作任务：Runnable/Callable 接口
     * 工作任务就是Runnable/Callable接口的实现，可以被线程池执行

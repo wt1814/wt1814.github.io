@@ -1105,7 +1105,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 2. 线程状态 
 3. thread.yield()，线程让步     
 &emsp; yield会使当前线程让出CPU执行时间片，与其他线程一起重新竞争CPU时间片。  
-4. thread.join()  
+4. thread.join()，线程加入  
 &emsp; 把指定的线程加入到当前线程，可以将两个交替执行的线程合并为顺序执行的线程。比如在线程B中调用了线程A的Join()方法，直到线程A执行完毕后，才会继续执行线程B。  
 5. thread.interrupt()，线程中断  
     &emsp; **<font color = "red">线程在不同状态下对于中断所产生的反应：</font>**    
@@ -1117,11 +1117,12 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 1. 通用的线程周期。操作系统层面有5个状态，分别是：New（新建）、Runnable（就绪）、Running（运行）、Blocked（阻塞）、Dead（死亡）。  
 2. Java线程状态均来自Thread类下的State这一内部枚举类中所定义的状态：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-2.png)  
+&emsp; `影响线程状态的相关java相关类：synchronized关键字、Object类、Thread类。`  
 1. 新建状态（NEW）：  
     1. 一个尚未启动的线程处于这一状态。用new语句创建的线程处于新建状态，此时它和其他Java对象一样，仅仅在堆区中被分配了内存，并初始化其成员变量的值。  
     2. 操作  
         * new Thread()
-2. 就绪状态(Runnable)：  
+2. 就绪状态（Runnable）：  
     1. 当一个线程对象创建后，其他线程调用它的start()方法，该线程就进入就绪状态，Java虚拟机会为它创建方法调用栈和程序计数器。处于这个状态的线程位于可运行池中，等待获得CPU的使用权。<!-- Runnable (可运行/运行状态，等待CPU的调度)(要注意：即使是正在运行的线程，状态也是Runnable，而不是Running) -->  
     2. 操作  
         * 被synchronized标记的代码，获取到同步监视器。
@@ -1140,6 +1141,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     2. 操作  
         * obj.wait() 释放同步监视器obj，并进入阻塞状态。
         * threadA中调用threadB.join()，threadA将Waiting，直到threadB终止。
+    3. 阻塞和等待的区别：  
 5. <font color = "red">计时等待（TIMED_WAITING）：</font>  
     1. 一个正在限时等待另一个线程执行一个动作的线程处于这一状态。  
     2. 操作
@@ -1155,7 +1157,6 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 8. 线程状态切换图示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-5.png) 
 
-
 ### 1.4.2. 线程池-多线程
 #### 1.4.2.1. 线程池框架
 1. **线程池通过线程复用机制，并对线程进行统一管理，** 具有以下优点：  
@@ -1163,10 +1164,22 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     * 提高响应速度。当有任务到达时，无需等待新线程的创建便能立即执行；  
     * 提高线程的可管理性。线程是稀缺资源，如果无限制的创建，不仅会消耗大量系统资源，还会降低系统的稳定性，使用线程池可以进行对线程进行统一的分配、调优和监控。  
 2. 线程池框架Executor：  
-&emsp; Executor：所有线程池的接口。  
-&emsp; ExecutorService：扩展了Executor接口。添加了一些用来管理执行器生命周期和任务生命周期的方法。  
-&emsp; ThreadPoolExecutor（创建线程池方式一）：线程池的具体实现类。  
-&emsp; Executors（创建线程池方式二）：提供了一系列静态的工厂方法用于创建线程池，返回的线程池都实现了ExecutorService 接口。  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-21.png)   
+    &emsp; Executor：所有线程池的接口。  
+    &emsp; ExecutorService：扩展了Executor接口。添加了一些用来管理执行器生命周期和任务生命周期的方法。  
+    &emsp; ThreadPoolExecutor（创建线程池方式一）：线程池的具体实现类。  
+    &emsp; Executors（创建线程池方式二）：提供了一系列静态的工厂方法用于创建线程池，返回的线程池都实现了ExecutorService 接口。  
+    
+    &emsp; Executor框架由三个部分组成：  
+
+    * 工作任务：Runnable/Callable 接口
+        * 工作任务就是Runnable/Callable接口的实现，可以被线程池执行
+    * 执行机制：Executor接口、ExecutorService接口、ScheduledExecutorService接口
+        * ThreadPoolExecutor 是最核心的线程池实现，用来执行被提交的任务
+        * ScheduledThreadPoolExecutor 是任务调度的线程池实现，可以在给定的延迟后运行命令，或者定期执行命令(它比Timer更灵活)
+        * ForkJoinPool是一个并发执行框架
+    * 异步计算的结果：Future接口
+        * 实现Future接口的FutureTask类，代表异步计算的结果
 3. 根据返回的对象类型，创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor（任务调度线程池）、ForkJoinPool。  
 4. **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
 	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。
@@ -1204,7 +1217,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     2. `确定线程池的大小（CPU可同时处理线程数量大部分是CPU核数的两倍）`  
         1. 线程数设置，`建议核心线程数core与最大线程数max一致`
             * 如果是CPU密集型应用（多线程处理复杂算法），则线程池大小设置为N+1。
-            * 如果是IO密集型应用（多线程用于数据库数据交互、文件上传下载、网络数据传输等），则线程池大小设置为2N。
+            * 如果是IO密集型（网络IO/磁盘IO）应用（多线程用于数据库数据交互、文件上传下载、网络数据传输等），则线程池大小设置为2N。
             * 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。  
         2. 阻塞队列设置  
         &emsp; `线程池的任务队列本来起缓冲作用，`但是如果设置的不合理会导致线程池无法扩容至max，这样无法发挥多线程的能力，导致一些服务响应变慢。队列长度要看具体使用场景，取决服务端处理能力以及客户端能容忍的超时时间等。队列长度要根据使用场景设置一个上限值，如果响应时间要求较高的系统可以设置为0。  
