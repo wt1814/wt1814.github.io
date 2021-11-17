@@ -45,6 +45,9 @@
 **** https://www.jianshu.com/p/06717ac8312c
 https://www.freesion.com/article/73021012217/
 
+Happens-before 原则 
+https://mp.weixin.qq.com/s/H346rAdeyIhqM-hncR1Izw
+
 -->
 
 <!-- 
