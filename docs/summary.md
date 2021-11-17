@@ -1537,8 +1537,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 2. **<font color = "red">lock()方法描述：</font>**  
     1. 在初始化ReentrantLock的时候，如果不传参数是否公平，那么默认使用非公平锁，也就是NonfairSync。  
     2. 1). <font color = "clime">调用ReentrantLock的lock方法的时候，实际上是调用了NonfairSync的lock方法，这个方法①先用CAS操作`compareAndSetState(0, 1)`，去尝试抢占该锁。如果成功，就把当前线程设置在这个锁上，表示抢占成功。</font>         
-    &emsp; `“非公平”体现在，如果占用锁的线程刚释放锁，state置为0，而排队等待锁的线程还未唤醒时，新来的线程就直接抢占了该锁，那么就“插队”了。`   
-    2). ②如果失败，则`调用acquire()模板方法`，等待抢占。   
+        `“非公平”体现在，如果占用锁的线程刚释放锁，state置为0，而排队等待锁的线程还未唤醒时，新来的线程就直接抢占了该锁，那么就“插队”了。`   
+        2). ②如果失败，则`调用acquire()模板方法`，等待抢占。   
     3. `AQS的acquire模板方法：`  
         1. AQS#acquire()调用子类NonfairSync#tryAcquire()#nonfairTryAcquire()。 **<font color = "blue">如果锁状态是0，再次CAS抢占锁。</font>** 如果锁状态不是0，判断是否当前线程。    
         2. acquireQueued(addWaiter(Node.EXCLUSIVE), arg) )，其中addWaiter(Node.EXCLUSIVE)入等待队列。  
@@ -1583,8 +1583,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     &emsp; **<font color = "red">从jdk1.8开始，ConcurrentHashMap类取消了Segment分段锁，采用`Node + CAS + Synchronized`来保证并发安全。</font>**  
     &emsp; **<font color = "clime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的ConcurrentHashMap效率又提升了许多。</font>**  
     1. **<font color = "clime">put()流程：</font>**
-        1. 根据 key 计算出 hashcode 。  
-        2. 整个过程自旋添加节点。  
+        1. 根据key计算出hashcode。  
+        2. `整个过程自旋添加节点。`  
         2. 判断是否需要进行初始化数组。  
         3. <font color = "red">为当前key定位出Node，如果为空表示此数组下无节点，当前位置可以直接写入数据，利用CAS尝试写入，失败则进入下一次循环。</font>  
         4. **<font color = "blue">如果当前位置的hashcode == MOVED == -1，表示其他线程插入成功正在进行扩容，则当前线程`帮助进行扩容`。</font>**  
@@ -1608,9 +1608,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 #### 1.4.4.6. tools
 ##### 1.4.4.6.1. CountDownLatch
-1.  **<font color = "red">java.util.concurrent.CountDownLatch类，`能够使一个线程等待其他线程完成各自的工作后再执行。`</font>** <font color = "red">利用它可以实现类似计数器的功能。</font><font color = "blue">比如有一个任务A，它要等待其他4个任务执行完毕之后才能执行，此时就可以利用CountDownLatch来实现这种功能了。</font>  
+1.  **<font color = "red">java.util.concurrent.CountDownLatch类，`能够使一个线程等待其他线程完成各自的工作后再执行。`</font>** <font color = "red">`利用它可以实现类似计数器的功能。`</font><font color = "blue">比如有一个任务A，它要等待其他4个任务执行完毕之后才能执行，此时就可以利用CountDownLatch来实现这种功能了。</font>  
 2. **<font color = "clime">countDown()方法是将count-1，如果发现count=0了，就唤醒</font><font color = "blue">阻塞的主线程。</font>**  
-&emsp; ⚠️注：特别注意主线程会被阻塞。  
+&emsp; ⚠️注：`特别注意主线程会被阻塞。`  
 3. <font color = "red">CountDownLatch对象不能被重复利用，也就是不能修改计数器的值。</font>CountDownLatch是一次性的，计数器的值只能在构造方法中初始化一次，之后没有任何机制再次对其设置值，当CountDownLatch使用完毕后，它不能再次被使用。    
 4. <font color = "clime">CountDownLatch是由AQS实现的，创建CountDownLatch时设置计数器count其实就是设置AQS.state=count，也就是重入次数。  
     * await()方法调用获取锁的方法，由于AQS.state=count表示锁被占用且重入次数为count，所以获取不到锁线程被阻塞并进入AQS队列。  
