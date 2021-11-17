@@ -82,7 +82,7 @@
             - [1.4.2.7. ~~CompletableFuture~~](#1427-completablefuture)
         - [1.4.3. 并发编程](#143-并发编程)
             - [1.4.3.1. 并发编程原理](#1431-并发编程原理)
-                - [1.4.3.1.1. CPU缓存及JMM](#14311-cpu缓存及jmm)
+                - [1.4.3.1.1. ~~CPU缓存及JMM~~](#14311-cpu缓存及jmm)
                 - [1.4.3.1.2. 并发安全问题产生原因](#14312-并发安全问题产生原因)
                 - [1.4.3.1.3. 并发安全解决底层](#14313-并发安全解决底层)
                 - [1.4.3.1.4. 伪共享问题](#14314-伪共享问题)
@@ -1263,7 +1263,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 ### 1.4.3. 并发编程
 #### 1.4.3.1. 并发编程原理
-##### 1.4.3.1.1. CPU缓存及JMM
+##### 1.4.3.1.1. ~~CPU缓存及JMM~~
 1. JMM
     1. JMM内存划分：线程对变量的所有操作都必须在工作内存进行，而不能直接读写主内存中的变量。    
     2. 单个线程操作时，8种内存间交换操作指令。  
@@ -1277,7 +1277,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     * 可见性：缓存不能及时刷新导致的可见性问题；
     * 有序性：编译优化带来的有序性问题  
 
-    &emsp; **<font color = "clime">`【缓存不能及时刷新】/可见性 (【内存系统重排序】)` 和`【编译器优化】/有序性` 都是`重排序`的一种。</font>**   
+&emsp; **<font color = "clime">`【缓存不能及时刷新】/可见性 (【内存系统重排序】)` 和`【编译器优化】/有序性` 都是`重排序`的一种。</font>**   
+
 2. **~~重排序：~~**  
     * **<font color = "blue">重排序分类：1). 编译器优化；2). 指令重排序(CPU优化行为)；3). 内存系统重排序：内存系统没有重排序，但是由于有缓存的存在，使得程序整体上会表现出乱序的行为。</font>**     
         * 对于编译器，JMM的编译器重排序规则会禁止特定类型的编译器重排序（不是所有的编译器重排序都要禁止）。  
@@ -1308,8 +1309,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     * 如果一个操作happens-before另一个操作，那么第一个操作的执行结果将对第二个操作可见，而且第一个操作的执行顺序排在第二个操作之前。  
     * 两个操作之间存在happens-before关系，并不意味着Java平台的具体实现必须要按照happens-before关系指定的顺序来执行。如果重排序之后的执行结果，与按happens-before关系来执行的结果一致，那么JMM也允许这样的重排序。  
 
-    **<font color = "clime">happens-before原则有管理锁定（lock）规则、volatile变量规则、线程启动规则（Thread.start()）、线程终止规则（Thread.join()）、线程中断规则（Thread.interrupt()）...</font>**  
-    volatile变量规则就是使用内存屏障保证线程可见性。  
+&emsp; **<font color = "clime">happens-before原则有管理锁定（lock）规则、volatile变量规则、线程启动规则（Thread.start()）、线程终止规则（Thread.join()）、线程中断规则（Thread.interrupt()）...</font>**  
+&emsp; volatile变量规则就是使用内存屏障保证线程可见性。  
 
 ##### 1.4.3.1.4. 伪共享问题
 1. CPU具有多级缓存，越接近CPU的缓存越小也越快；CPU缓存中的数据是以缓存行为单位处理的；CPU缓存行（通常是64字节）能带来免费加载数据的好处，所以处理数组性能非常高。  
