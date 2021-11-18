@@ -41,6 +41,10 @@
 # 1. ~~并发安全解决底层~~
 
 <!-- 
+****** MESI 优化带来的可见性问题
+https://mp.weixin.qq.com/s/WTqdSz-lc5zzelJgk4Co8g
+https://www.jianshu.com/p/06717ac8312c
+
 缓存一致性
 **** https://www.jianshu.com/p/06717ac8312c
 https://www.freesion.com/article/73021012217/

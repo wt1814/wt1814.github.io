@@ -43,6 +43,9 @@
 
 # 1. 分区
 <!-- 
+Kafka的存储架构
+https://mp.weixin.qq.com/s/a09J-G9SmC8PLFyKtM2hng
+
 https://blog.51cto.com/u_15127499/2672673
 如何为Kafka集群选择合适的Topics/Partitions数量？
 https://www.iteblog.com/archives/1805.html

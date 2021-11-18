@@ -2115,7 +2115,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 #### 1.5.6.4. InnoDB体系结构
 &emsp; Innodb体系结构包含后台线程、内存池和磁盘上的结构。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-147.png)  
-1. `如果从内存上来看，Change Buffer和Adaptive Hash Index占用的内存都属于Buffer Pool；redo Log Buffer占用的内存与Buffer Pool独立。即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。`  
+1. `如果从内存上来看，Change Buffer和Adaptive Hash Index占用的内存都属于Buffer Pool`；redo Log Buffer占用的内存与Buffer Pool独立。`即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。`  
 2. `Buffer Pool有Changer Buffer；Redo Log有Double Write。`  
 
 
@@ -2156,15 +2156,15 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 3. **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB（在操作系统中默认页大小是4KB）。</font>**  
 
 ###### 1.5.6.4.2.2. undoLog
-1. **<font color = "clime">Undo log，回滚日志，是逻辑日记。undo log解决了事务原子性。</font>** 主要有两个作用，事务回滚和MVCC（Mutil-Version Concurrency Control）。      
+1. **<font color = "clime">Undo log，回滚日志，是`逻辑日记`。undo log解决了事务原子性。</font>** 主要有两个作用，事务回滚和MVCC（Mutil-Version Concurrency Control）。      
 2. undo log主要记录了数据的逻辑变化，比如一条INSERT语句，对应一条DELETE的undo log，对于每个UPDATE语句，对应一条相反的UPDATE的undo log，这样在发生错误时，就能回滚到事务之前的数据状态。
 3. 事务开始之前，将当前的版本生成undo log。
 
 ###### 1.5.6.4.2.3. redoLog
-1. redo log，物理格式的日志，记录的是物理数据页面的修改的信息。 **<font color = "red">`redo log实际上记录数据页的变更，而这种变更记录是没必要全部保存，`因此redo log实现上采用了大小固定，循环写入的方式，当写到结尾时，会回到开头循环写日志。</font>**    
+1. redo log，物理格式的日志，记录的是物理数据页面的修改的信息。 **<font color = "red">`redo log实际上记录数据页的变更，而这种变更记录是没必要全部保存，`因此redo log实现上采用了大小固定，`循环写入`的方式，当写到结尾时，会回到开头循环写日志。</font>**    
 2. 解决事务的一致性，持久化数据。  
 3. 写入流程：`(Write-Ahead Logging，‘日志’先行)`   
-&emsp; 在计算机体系中，CPU处理速度和硬盘的速度，是不在同一个数量级上的，为了让它们速度匹配，从而催生了我们的内存模块，但是内存有一个特点，就是掉电之后，数据就会丢失，不是持久的，我们需要持久化的数据，最后都需要存储到硬盘上。InnoDB引擎设计者也利用了类似的设计思想。   
+&emsp; 在计算机体系中，CPU处理速度和硬盘的速度，是不在同一个数量级上的，为了让它们速度匹配，从而催生了内存模块，但是内存有一个特点，就是掉电之后，数据就会丢失，不是持久的，我们需要持久化的数据，最后都需要存储到硬盘上。InnoDB引擎设计者也利用了类似的设计思想。   
 &emsp; 当有一条记录需要更新的时候，InnoDB引擎就会先把记录写到redo log(redolog buffer)里面，并更新内存(buffer pool)，这个时候更新就算完成了。`同时，InnoDB引擎会在适当的时候，`将这个redoLog操作记录更新到磁盘里面（刷脏页）。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-184.png)  
 4. 刷盘时机：重做日志的写盘，并不一定是随着事务的提交才写入重做日志文件的，而是随着事务的开始，逐步开始的。先写入redo log buffer。  
@@ -2172,7 +2172,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 ###### 1.5.6.4.2.4. DoubleWrite
 &emsp; double write：<font color = "blue">如果说写缓冲change buffer带给InnoDB存储引擎的是性能，那么两次写Double Write带给InnoDB存储引擎的是数据的可靠性。</font>  
 1. MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
-2. 在应用(apply)重做日志(redo log)前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。  
+2. 在应用(apply)重做日志(redo log)前，需要一个页的副本，当`写入失效发生时`，`先通过页的副本来还原该页，再进行重做`，这就是doublewrite。即doublewrite是页的副本。  
     1. 在异常崩溃时，如果不出现“页数据损坏”，能够通过redo恢复数据；
     2. 在出现“页数据损坏”时，能够通过double write buffer恢复页数据； 
 3. doublewrite分为内存和磁盘的两层架构。当有页数据要刷盘时：  
