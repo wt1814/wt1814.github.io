@@ -2038,7 +2038,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了Gap Lock时，Gap锁会锁住id < 10的整个范围，因此其他事务无法插入id < 10的数据，从而防止了幻读。  
 
 #### 1.5.5.5. MySql锁
-1. 数据库锁
+1. 数据库锁  
     &emsp; **锁的分类：**  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-42.png)  
 
@@ -2078,13 +2078,13 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 ### 1.5.6. MySql架构原理
 #### 1.5.6.1. MySql架构
 1. MySQL整个查询执行过程，总的来说分为5个步骤：  
-    1. 客户端请求 ---> 连接器（验证用户身份，给予权限）  
-    2. 查询缓存（存在缓存则直接返回，不存在则执行后续操作）
-    3. 分析器（对SQL进行词法分析和语法分析操作）  ---> 优化器（主要对执行的sql优化选择最优的执行方案方法）  
-    4. 执行器（执行时会先看用户是否有执行权限，有才去使用这个引擎提供的接口）  
+    1. 客户端请求 ---> 连接器（验证用户身份，给予权限）；  
+    2. 查询缓存（存在缓存则直接返回，不存在则执行后续操作）；
+    3. 分析器（对SQL进行词法分析和语法分析操作）  ---> 优化器（主要对执行的sql优化选择最优的执行方案方法）；  
+    4. 执行器（执行时会先看用户是否有执行权限，有才去使用这个引擎提供的接口）；  
     5. 去引擎层获取数据返回（如果开启查询缓存则会缓存查询结果）。   
 2. **<font color = "clime">MySQL服务器主要分为Server层和存储引擎层。</font>**  
-	1. <font color = "red">Server层包括连接器、查询缓存、分析器、优化器、执行器等。</font>涵盖MySQL的大多数核心服务功能，以及所有的内置函数(如日期、时间、数学和加密函数等)，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等，还有 **<font color = "clime">一个通用的日志模块binglog日志模块。</font>**     
+	1. <font color = "red">Server层包括连接器、查询缓存、分析器、优化器、执行器等。</font>涵盖MySQL的大多数核心服务功能，以及所有的内置函数（如日期、时间、数学和加密函数等），所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等，还有 **<font color = "clime">一个通用的日志模块binglog日志模块。</font>**   
 	2. `存储引擎：主要负责数据的存储和读取，`采用可以替换的插件式架构，支持 InnoDB、MyISAM、Memory等多个存储引擎，其中InnoDB引擎有自有的日志模块redolog模块。  
 3. MySQL更新路程：  
     1. 事务提交前 --- 内存操作：  
@@ -2163,9 +2163,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 ###### 1.5.6.4.2.3. redoLog
 1. redo log，物理格式的日志，记录的是物理数据页面的修改的信息。 **<font color = "red">`redo log实际上记录数据页的变更，而这种变更记录是没必要全部保存，`因此redo log实现上采用了大小固定，循环写入的方式，当写到结尾时，会回到开头循环写日志。</font>**    
 2. 解决事务的一致性，持久化数据。  
-3. 写入流程：`(Write-Ahead Logging，‘日志’先行)  
+3. 写入流程：`(Write-Ahead Logging，‘日志’先行)`   
 &emsp; 在计算机体系中，CPU处理速度和硬盘的速度，是不在同一个数量级上的，为了让它们速度匹配，从而催生了我们的内存模块，但是内存有一个特点，就是掉电之后，数据就会丢失，不是持久的，我们需要持久化的数据，最后都需要存储到硬盘上。InnoDB引擎设计者也利用了类似的设计思想。   
-&emsp; 当有一条记录需要更新的时候，InnoDB引擎就会先把记录写到redo log(redolog buffer)里面，并更新内存(buffer pool)，这个时候更新就算完成了。`同时，InnoDB引擎会在适当的时候，`将这个redoLog操作记录更新到磁盘里面（刷脏页）`。  
+&emsp; 当有一条记录需要更新的时候，InnoDB引擎就会先把记录写到redo log(redolog buffer)里面，并更新内存(buffer pool)，这个时候更新就算完成了。`同时，InnoDB引擎会在适当的时候，`将这个redoLog操作记录更新到磁盘里面（刷脏页）。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-184.png)  
 4. 刷盘时机：重做日志的写盘，并不一定是随着事务的提交才写入重做日志文件的，而是随着事务的开始，逐步开始的。先写入redo log buffer。  
 
