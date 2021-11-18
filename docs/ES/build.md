@@ -1,5 +1,11 @@
 
 <!-- 
+ Elasticsearch 为什么能做到快速检索？— 倒排索引的秘密 
+ https://mp.weixin.qq.com/s/vwTrRSfgJ-7bWQUJWhfaHQ
+
+ Elasticsearch 异步搜索 Async search 实战 
+ https://mp.weixin.qq.com/s/XYXp5Xn2r7Vnqxj3iswi9A
+
 ***  死磕 Elasticsearch 方法论认知清单
 https://mp.weixin.qq.com/s/GTDoSXTX263lc920u3N1_Q
 

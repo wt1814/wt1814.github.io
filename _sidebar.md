@@ -540,6 +540,7 @@
             * [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
 * webSocket  
     * [长轮询](/docs/webSocket/LongPolling.md)  
+        * [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
     * [WebSocket协议](/docs/webSocket/WebSocket.md)  
     * [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
     * [IM系统](/docs/webSocket/IM.md)  

@@ -7,7 +7,7 @@
         - [1.1.2. group by优化](#112-group-by优化)
         - [1.1.3. Order by优化](#113-order-by优化)
         - [1.1.4. like优化](#114-like优化)
-    - [1.2. 子查询优化](#12-子查询优化)
+    - [1.2. 子查询优化，使用连接（JOIN）来代替子查询（Sub-Queries）](#12-子查询优化使用连接join来代替子查询sub-queries)
     - [1.3. 关联查询优化](#13-关联查询优化)
         - [1.3.1. ★★★条件谓词下推](#131-★★★条件谓词下推)
     - [1.4. 组合查询优化](#14-组合查询优化)
@@ -102,7 +102,12 @@ like %%怎么优化
 https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
 -->
 
-## 1.2. 子查询优化  
+## 1.2. 子查询优化，使用连接（JOIN）来代替子查询（Sub-Queries）  
+<!-- 
+3、使用连接（JOIN）来代替子查询（Sub-Queries）
+https://mp.weixin.qq.com/s/lQ8CGYFpmPnxSzghxFYe9g
+-->
+
 &emsp; <font color = "red">使用子查询有时候可以使用更有效的JOIN连接代替，这是因为MySQL中不需要在内存中创建临时表完成SELECT子查询与主查询两部分查询工作。但是并不是所有的时候都成立，最好是在on关键字后面的列有索引的话，效果会更好！</font>  
 &emsp; 比如在表major中major_id是有索引的：  
 

@@ -20,6 +20,11 @@
 <!-- 
 传统轮询、长轮询、服务器发送事件与WebSocket
 https://cloud.tencent.com/developer/article/1821509
+
+
+https://www.cnblogs.com/huchong/p/8595644.html
+
+
 -->
 &emsp; Web Sockets定义了一种在通过一个单一的 socket 在网络上进行全双工通讯的通道。仅仅是传统的 HTTP 通讯的一个增量的提高，尤其对于实时、事件驱动的应用来说是一个飞跃。  
 
