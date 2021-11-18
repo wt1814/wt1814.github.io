@@ -2004,7 +2004,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 #### 1.5.5.4. MVCC
 1. **<font color = "clime">多版本并发控制（MVCC）是一种用来解决读-写冲突的无锁并发控制。</font>**  
-&emsp; <font color = "clime">`MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。`两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
+2. <font color = "clime">`MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。`两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
 2. **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC。</font>**   
     * 一个是undo log，用于记录数据的变化轨迹（版本链），用于数据回滚。  
     &emsp; 版本链的生成：在数据库中的每一条记录实际都会存在三个隐藏列：事务ID、行ID、回滚指针，指向undo log记录。  
@@ -2037,10 +2037,22 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         当前读:update、insert、delete
     &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了Gap Lock时，Gap锁会锁住id < 10的整个范围，因此其他事务无法插入id < 10的数据，从而防止了幻读。  
 
-
 #### 1.5.5.5. MySql锁
-1. InnoDB共有七种类型的锁：共享/排它锁、意向锁、记录锁（Record lock）、间隙锁（Gap lock）、临键锁（Next-key lock）、插入意向锁、自增锁。  
-2. **<font color = "red">InnoDB存储引擎的锁的算法有三种：</font>**  
+1. 数据库锁
+    &emsp; **锁的分类：**  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-42.png)  
+
+    * 按使用方式：乐观锁、悲观锁。  
+    * 锁类别：有共享锁(读锁)和排他锁(写锁)。锁类别取决于存储引擎执行的sql语句。  
+        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-47.png)  
+    * 按粒度：锁的粒度的不同可以分为表锁、页锁、行锁。  
+2. InnoDB共有七种类型的锁：共享/排它锁、意向锁、记录锁（Record lock）、间隙锁（Gap lock）、临键锁（Next-key lock）、插入意向锁、自增锁。  
+3. 意向锁(表级锁)  
+	&emsp; InnoDB 存储引擎表锁：当没有对数据表中的索引数据进行查询时，会执行表锁操作。采用两种意向锁(Intention Locks)。  
+
+	* 意向共享锁(IS)：事务打算给数据行加行共享锁，事务在给一个数据行加共享锁前，必须先取得该表的 IS 锁。  
+	* 意向排他锁(IX)：事务打算给数据行加行排他锁，事务在给一个数据行加排他锁前，必须先取得该表的 IX 锁。  
+4. **<font color = "red">InnoDB存储引擎的锁的算法有三种：</font>**  
     1. Record lock：单个行记录上的锁。  
     2. Gap lock：间隙锁，锁定一个范围，不包括记录本身。  
     &emsp; **<font color = "red">当使用范围条件（> 、< 、between...）检索数据，InnoDB会给符合条件的已有数据记录的索引项加锁。对于键值在条件范围内但并不存在的记录，叫做“间隙（GAP）”，InnoDB也会对这个“间隙”加锁，这就是间隙锁。</font>**  
@@ -2048,15 +2060,19 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     3. Next-key lock：record+gap锁定一个范围，包含记录本身。  
     &emsp; 临键锁，是记录锁与间隙锁的组合，它的封锁范围，既包含索引记录，又包含索引区间。  
     &emsp; <font color = "red">默认情况下，innodb使用next-key locks来锁定记录。</font><font color = "clime">但当查询的索引含有唯一属性的时候，Next-Key Lock会进行优化，将其降级为Record Lock，即仅锁住索引本身，不是范围。</font>  
+5. 插入意向锁  
+    &emsp; 对已有数据行的修改与删除，必须加强互斥锁(X锁)，那么对于数据的插入，是否还需要加这么强的锁，来实施互斥呢？插入意向锁，孕育而生。  
+    &emsp; 插入意向锁，是间隙锁(Gap Locks)的一种(所以，也是实施在索引上的)，它是专门针对insert操作的。多个事务，在同一个索引，同一个范围区间插入记录时，如果插入的位置不冲突，不会阻塞彼此。  
 
 #### 1.5.5.6. MySql死锁和锁表
 &emsp; ~~胡扯，死锁，mysql检测后，回滚一条事务，抛出异常。~~  
-1. 服务器报错：`Deadlock found when trying to get to lock; try restarting transaction`。  
-2. **<font color = "clime"> 死锁发生了如何解决，MySQL有没有提供什么机制去解决死锁？</font>**  
+1. 为什么发生死锁？  
+2. 发生死锁时，服务器报错：`Deadlock found when trying to get to lock; try restarting transaction`。  
+3. **<font color = "clime"> 死锁发生了如何解决，MySQL有没有提供什么机制去解决死锁？</font>**  
     1. 发起死锁检测，主动回滚其中一条事务，让其他事务继续执行。  
     2. 设置超时时间，超时后自动释放。  
     &emsp; `在涉及外部锁，或涉及表锁的情况下，InnoDB并不能完全自动检测到死锁，`这需要通过设置锁等待超时参数 innodb_lock_wait_timeout来解决。</font>   
-3. **<font color = "clime">如果出现死锁</font>** ，<font color = "clime">可以用`show engine innodb status;`命令来确定最后一个死锁产生的原因。</font>  
+4. **<font color = "clime">如果出现死锁</font>** ，<font color = "clime">可以用`show engine innodb status;`命令来确定最后一个死锁产生的原因。</font>  
 
 
 ### 1.5.6. MySql架构原理
