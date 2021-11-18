@@ -1948,9 +1948,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     * 二叉查找树，可能退化成单链表，相当于全表扫描。    
     * 平衡二叉树的不足：  
         ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-93.png)  
-        平衡二叉查找树定义为：节点的子节点高度差不能超过1,如上图中的节点20，左节点高度为1，右节点高度0，差为1，所以上图没有违反定义，它就是一个平衡二叉树。保证二叉树平衡的方式为左旋，右旋等操作，至于如何左旋右旋，可以自行去搜索相关的知识。  
-
-        如果上图中平衡二叉树保存的是id索引，现在要查找id = 8的数据，过程如下：  
+        &emsp; 如果上图中平衡二叉树保存的是id索引，现在要查找id = 8的数据，过程如下：  
 
         1. 把根节点加载进内存，用8和10进行比较，发现8比10小，继续加载10的左子树。
         2. 把5加载进内存，用8和5比较，同理，加载5节点的右子树。
@@ -1987,15 +1985,17 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     * 不可重复读：一个事务多次读，另一事务中间修改了数据。  
     * 幻读：一个事务多次读，另一事务中间新增了数据。  
 3. SQL标准定义了四个隔离级别（隔离性）：读取未提交、读取已提交、可重复读（可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读）、可串行化。  
-4. Innodb事务实现原理
+4. Innodb事务实现原理：
     * 原子性的实现：采用回滚日志[undo log](/docs/SQL/undoLog.md)实现。  
     * 持久性的实现：采用重做日志[redo log](/docs/SQL/redoLog.md)实现。  
-    * 隔离性（事务的隔离级别）的实现
+    * 隔离性（事务的隔离级别）的实现  
         在MySQL中，默认的隔离级别是REPEATABLE-READ（可重复读），阻止脏读和不可重复读，并且解决了幻读问题。  
         &emsp; 隔离性（事务的隔离级别）的实现，利用的是锁和MVCC机制。 
-        * **<font color = "blue">快照读：生成一个事务快照（ReadView），之后都从这个快照获取数据。</font>** 普通select语句就是快照读。  
+        * **<font color = "blue">快照读：</font>**    
+        &emsp; 生成一个事务快照（ReadView），之后都从这个快照获取数据。普通select语句就是快照读。  
         &emsp; <font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
-        * **<font color = "clime">当前读：读取数据的最新版本。</font>** 常见的update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
+        * **<font color = "clime">当前读：</font>**   
+        &emsp; 读取数据的最新版本。常见的update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
         &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用Gap Lock或Next-Key Lock（Gap Lock + Record Lock）来解决。  
     * 一致性的实现  
         &emsp; Mysql怎么保证一致性的？这个问题分为两个层面来说。  
