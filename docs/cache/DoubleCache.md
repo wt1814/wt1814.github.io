@@ -4,6 +4,11 @@
 <!-- 
 多级缓存
 https://mp.weixin.qq.com/s/02PsTTJl-90K888DEjReeQ
+
+三层缓存架构
+https://mp.weixin.qq.com/s/nhNht6La8rfPHTut2wMcew
+
+
 -->
 
 &emsp; 设置一级缓存和二级缓存，一级缓存过期时间短，二级缓存过期时间长或者不过期，一级缓存失效后访问二级缓存，同时刷新一级缓存和二级缓存。  
