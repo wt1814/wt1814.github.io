@@ -2303,7 +2303,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
     * 二级缓存: Map<String,Object> earlySingletonObjects， **<font color = "blue">早期曝光对象</font>** ，`二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。`尚未经历了完整的Spring Bean初始化生命周期。
     * 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。  
-3. 未发生依赖
+3. 未发生依赖  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-21.png)  
 4. **<font color = "clime">单例模式下Spring解决循环依赖的流程：</font>**  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-22.png)  
@@ -2340,15 +2340,15 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 2. 属性赋值（Populate），可以理解为调用setter方法完成属性注入；
 3. 初始化（Initialization），包含：  
     * 激活Aware方法  
-    * 前置处理  
+    * 【前置处理】  
     * 激活自定义的init方法 
-    * 后置处理 
+    * 【后置处理】 
 4. 销毁（Destruction）---注册Destruction回调函数。  
 
 ### 1.8.5. 容器相关特性
 #### 1.8.5.1. FactoryBean
 &emsp; BeanFactory是个Factory，也就是IOC容器或对象工厂；FactoryBean是个Bean，也由BeanFactory管理。  
-&emsp; 一般情况下，Spring通过`反射机制`利用\<bean\>的class属性指定实现类实例化Bean。 **<font color = "red">在某些情况下，实例化Bean过程比较复杂，</font>** 如果按照传统的方式，则需要在\<bean>中提供大量的配置信息。配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。 **<font color = "red">Spring为此提供了一个org.springframework.bean.factory.FactoryBean的`工厂类接口`，用户可以通过实现该接口定制实例化Bean的逻辑。</font>**  
+&emsp; 一般情况下，Spring通过`反射机制`利用\<bean\>的class属性指定实现类实例化Bean。 **<font color = "red">在某些情况下，实例化Bean过程比较复杂，</font>** 如果按照传统的方式，则需要在\<bean>中提供大量的配置信息。配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。 **<font color = "red">Spring为此提供了一个org.springframework.bean.factory.FactoryBean的`工厂类接口，用户可以通过实现该接口定制实例化Bean的逻辑。`</font>**  
 &emsp; **<font color = "red">FactoryBean接口的一些实现类，如Spring自身提供的ProxyFactoryBean、JndiObjectFactoryBean，还有Mybatis中的SqlSessionFactoryBean，</font>** 用于生产一些复杂的Bean。  
 
 &emsp; `⚠️FactoryBean，工厂Bean，首先是个Bean，其次再加上工厂模式。`  
@@ -2496,8 +2496,10 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     5. 对执行结果进行二次封装。
     6. 提交与事务。      
 2. **<font color = "clime">Mapper接口动态代理类的生成：</font>** 
-    * **<font color = "blue">解析配置文件生成sqlSessionFactory时，</font>** 会调用bindMapperForNamespace() ---> addMapper方法， **<font color = "blue">根据mapper文件中的namespace属性值，将接口生成动态代理类的`工厂`，存储在MapperRegistry对象中。</font>** MapperRegistry内部维护一个映射关系，每个接口对应一个`MapperProxyFactory（生成动态代理工厂类）`。      
-    * 在调用getMapper，根据type类型，从MapperRegistry对象中的knownMappers获取到当前类型对应的代理工厂类，然后通过代理工厂类使用`jdk自带的动态代理`生成对应Mapper的代理类。  
+    * 生成代理工厂类：  
+    &emsp; **<font color = "blue">解析配置文件生成sqlSessionFactory时，</font>** 会调用bindMapperForNamespace() ---> addMapper方法， **<font color = "blue">根据mapper文件中的namespace属性值，将接口生成动态代理类的`工厂`，存储在MapperRegistry对象中。</font>** MapperRegistry内部维护一个映射关系，每个接口对应一个`MapperProxyFactory（生成动态代理工厂类）`。      
+    * 生成对应Mapper的代理类：    
+    &emsp; 在调用getMapper，根据type类型，从MapperRegistry对象中的knownMappers获取到当前类型对应的代理工厂类，然后通过代理工厂类使用`jdk自带的动态代理`生成对应Mapper的代理类。  
     ```java
     //这里可以看到每次调用都会创建一个新的代理对象返回
     return mapperProxyFactory.newInstance(sqlSession);
@@ -4368,8 +4370,5 @@ update product set name = 'TXC' where id = 1;
         * **<font color = "red">controller-manager：负责管理集群各种资源，保证资源处于预期的状态。</font>** 
         * **<font color = "red">scheduler：资源调度，负责决定将Pod放到哪个Node上运行。</font>** 
     2. **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
-
-
-
 
 
