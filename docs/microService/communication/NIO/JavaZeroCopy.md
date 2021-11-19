@@ -14,7 +14,10 @@
 2. Java中FileChannel类提供了transferFrom、transferTo()方法，来实现零拷贝。  
 
 # 1. Java中的零拷贝  
-
+<!-- 
+ Java 中的内存映射 mmap 
+ https://mp.weixin.qq.com/s/_TY_MzxiRzNnCoQJJkkaaQ
+-->
 
 ## 1.1. MappedByteBuffer，直接内存
 <!-- 
