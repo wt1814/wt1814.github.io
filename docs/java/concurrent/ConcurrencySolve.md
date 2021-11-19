@@ -9,6 +9,8 @@
             - [1.1.3.1. 总线嗅探](#1131-总线嗅探)
             - [1.1.3.2. 总线风暴](#1132-总线风暴)
     - [1.2. 内存屏障，禁止处理器重排序 / 【有序性】](#12-内存屏障禁止处理器重排序--有序性)
+        - [硬件层的内存屏障](#硬件层的内存屏障)
+        - [JVM中的内存屏障](#jvm中的内存屏障)
     - [1.3. JMM中的happens-before原则](#13-jmm中的happens-before原则)
 
 <!-- /TOC -->
@@ -44,10 +46,9 @@
 ****** MESI 优化带来的可见性问题
 https://mp.weixin.qq.com/s/WTqdSz-lc5zzelJgk4Co8g
 https://www.jianshu.com/p/06717ac8312c
-
-缓存一致性
-**** https://www.jianshu.com/p/06717ac8312c
 https://www.freesion.com/article/73021012217/
+https://blog.csdn.net/breakout_alex/article/details/94379895
+https://www.cnblogs.com/Courage129/p/14401680.html
 
 Happens-before 原则 
 https://mp.weixin.qq.com/s/H346rAdeyIhqM-hncR1Izw
@@ -55,16 +56,11 @@ https://mp.weixin.qq.com/s/H346rAdeyIhqM-hncR1Izw
 -->
 
 <!-- 
+~~
 
-https://www.cnblogs.com/Courage129/p/14401680.html
 https://zhuanlan.zhihu.com/p/260081868
-https://mp.weixin.qq.com/s?__biz=MzI0MjE4NTM5Mg==&mid=2648975640&idx=1&sn=a8e85ae9ae8d17013490cf09ff92c54e&chksm=f110acc7c66725d19ca1c743fb721434e48ee028804a808493e959aa4196625e246ae772a965&scene=21#wechat_redirect
-http://www.360doc.cn/mip/760841759.html
-https://blog.csdn.net/breakout_alex/article/details/94379895
-
 volatile!
 https://www.cnblogs.com/jackson0714/p/java_Volatile.html
-
 -->
 
 
@@ -104,6 +100,12 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 
 
 ## 1.2. 内存屏障，禁止处理器重排序 / 【有序性】  
+<!-- 
+内存屏障有两个作⽤：  
+1. 阻⽌屏障两侧的指令重排序；  
+2. 强制把写缓冲区/⾼速缓存中的脏数据等写回主内存，或者让缓存中相应的数据失效。 
+&emsp; **<font color= "red">内存屏障是被插入两个CPU指令之间的一种指令，用来禁止处理器指令发生重排序，从而保障有序性的。另外，为了达到屏障的效果，它也会使处理器写入、读取值之前，将主内存的值写入高速缓存，清空无效队列，从而保障可见性。</font>**  
+-->
 &emsp; **<font color = "red">Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。</font>**  
 
 &emsp; 什么是内存屏障？硬件层⾯，<font color = "red">内存屏障分两种：读屏障(Load Barrier)和写屏障(Store Barrier)。</font>  
@@ -114,12 +116,19 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 * **<font color = "clime">(保障有序性)阻⽌屏障两侧的指令重排序。</font>** 它确保指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面；即在执行到内存屏障这句指令时，在它前面的操作已经全部完成；  
 
 
+### 硬件层的内存屏障
 <!-- 
-内存屏障有两个作⽤：  
-1. 阻⽌屏障两侧的指令重排序；  
-2. 强制把写缓冲区/⾼速缓存中的脏数据等写回主内存，或者让缓存中相应的数据失效。 
-&emsp; **<font color= "red">内存屏障是被插入两个CPU指令之间的一种指令，用来禁止处理器指令发生重排序，从而保障有序性的。另外，为了达到屏障的效果，它也会使处理器写入、读取值之前，将主内存的值写入高速缓存，清空无效队列，从而保障可见性。</font>**  
+https://blog.csdn.net/breakout_alex/article/details/94379895
+
 -->
+
+
+### JVM中的内存屏障
+<!-- 
+https://blog.csdn.net/breakout_alex/article/details/94379895
+
+-->
+
 &emsp; <font color = "red">Java中有4种屏障：(load载入，store存储)</font>  
 
 |屏障类型 |简称 |指令示例|说明|

@@ -117,7 +117,11 @@ https://blog.csdn.net/q1937915896/article/details/88178558?utm_medium=distribute
 <!-- 
 Spring 中的bean 是线程安全的吗？ 
 https://mp.weixin.qq.com/s/P2GagWGNoMLxA5AuG_I7AA
+
+
 -->
+
+
 
 ##### 1.2.2.3.1. 单例Bean，非线程安全
 &emsp; **单例bean的优势：**  
@@ -134,4 +138,8 @@ https://mp.weixin.qq.com/s/P2GagWGNoMLxA5AuG_I7AA
 3. <font color = "red">Spring和mybatis整合，通过代理保证sessionTemplate的安全。</font>  
 
 ##### 1.2.2.3.2. 无状态Bean，线程安全
-
+<!--
+什么是无状态Bean、有状态Bean？之前一直很含糊。    
+今天日常工作中，脑子就突然灵光一现，是不是service、dao这些一般都是无状态Bean；那如果是一个List呢？ 
+-->
+ 

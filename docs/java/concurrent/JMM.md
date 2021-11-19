@@ -51,6 +51,7 @@ https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccdd
 &emsp; <font color = "red">一个Java的long类型是8字节，因此在一个缓存行中可以存8个long类型的变量。</font>  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-51.png)  
 
+
 ## 1.2. JMM  
 <!-- 
 &emsp; Java内存模型(Java Memory Model，JMM)是一种符合顺序一致内存模型规范的，屏蔽了各种硬件和操作系统的访问差异的，保证了Java程序在各种平台下对内存的访问都能保证效果一致的机制及规范。  
@@ -138,4 +139,3 @@ https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccdd
 &emsp; 由于JVM运行程序的实体是线程，而每个线程创建时JVM都会为其创建一个工作内存(有些地方称为栈空间)，工作内存是每个线程的私有数据区域。  
 &emsp; 而Java内存模型中规定所有变量都存储在主内存，主内存是共享内存区域，所有线程都可以访问，<font color = "clime">但线程对变量的操作(读取赋值等)必须在工作内存中进行，首先要将变量从主内存拷贝到自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，不能直接操作主内存中的变量，</font>各个线程中的工作内存中存储着主内存中的变量副本拷贝，<font color = "red">因此不同的线程间无法访问对方的工作内存，线程间的通信(传值)必须通过主内存来完成。</font>其简要访问过程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-42.png)   
-
