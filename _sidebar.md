@@ -75,6 +75,7 @@
         * [对象的生命周期](/docs/java/JVM/ObjectPeriod.md)  
     * [内存结构](/docs/java/JVM/Memory.md)  
         * [JVM内存结构](/docs/java/JVM/JVMMemory.md)  
+            * [JVM栈](/docs/java/JVM/JVMStack.md)  
             * [常量池详解](/docs/java/JVM/ConstantPool.md)  
             * [逃逸分析](/docs/java/JVM/escape.md)  
         * [内存中的对象](/docs/java/JVM/MemoryObject.md)  
