@@ -11,6 +11,10 @@ https://mp.weixin.qq.com/s/5unniQ_b_MZZRRUkGoE4uA
 关于即时通讯架构的一切
 https://mp.weixin.qq.com/s/eynMy_1vqxrPkgw0r-7heg
 
+
+SpringBoot + WebSocket 开发笔记
+https://www.cnblogs.com/strugglion/p/10021173.html
+
 -->
 
 
