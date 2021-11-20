@@ -16,6 +16,7 @@ https://mp.weixin.qq.com/s/UgocvaEQkmdRgvkWwjUr7g
 &emsp; 进入SpringApplication#run方法中，一路点击#run方法。  
 
 &emsp; **<font color = "red">主要步骤总结如下：</font>**  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringBoot/boot-9.png)  
 1. **<font color = "clime">创建所有Spring运行监听器并发布应用启动事件。</font>** 从spring.factories配置文件中加载EventPublishingRunListener对象，该对象拥有SimpleApplicationEventMulticaster属性，即在SpringBoot启动过程的不同阶段用来发布内置的生命周期事件;  
 2. <font color = "red">准备环境变量，</font>包括系统变量，环境变量，命令行参数，默认变量，servlet相关配置变量，随机值以及配置文件(比如application.properties)等;
 3. 控制台打印SpringBoot的bannner标志；  

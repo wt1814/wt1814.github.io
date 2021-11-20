@@ -2558,7 +2558,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 	1. 给resourceLoader属性赋值，resourceLoader属性，资源加载器，此时传入的resourceLoader参数为null；  
 	2. **<font color = "clime">初始化资源类集合并去重。</font>** 给primarySources属性赋值，primarySources属性即`SpringApplication.run(MainApplication.class,args);`中传入的MainApplication.class，该类为SpringBoot项目的启动类，主要通过该类来扫描Configuration类加载bean；
 	3. **<font color = "clime">判断当前是否是一个 Web 应用。</font>** 给webApplicationType属性赋值，webApplicationType属性，代表应用类型，根据classpath存在的相应Application类来判断。因为后面要根据webApplicationType来确定创建哪种Environment对象和创建哪种ApplicationContext；
-	4. **<font color = "blue">设置应用上下文初始化器。</font>** 给initializers属性赋值，initializers属性为List<ApplicationContextInitializer<?\>>集合，利用SpringBoot的SPI机制从spring.factories配置文件中加载，后面在初始化容器的时候会应用这些初始化器来执行一些初始化工作。因为SpringBoot自己实现的SPI机制比较重要；  
+	4. **<font color = "blue">设置应用上下文初始化器。</font>** 给initializers属性赋值，initializers属性为List<ApplicationContextInitializer<?\>>集合，利用SpringBoot的SPI机制从spring.factories配置文件中加载，后面`在初始化容器的时候会应用这些初始化器来执行一些初始化工作`。因为SpringBoot自己实现的SPI机制比较重要；  
 	5. **<font color = "blue">设置监听器。</font>** 给listeners属性赋值，listeners属性为List<ApplicationListener<?\>>集合，同样利用SpringBoot的SPI机制从spring.factories配置文件中加载。因为SpringBoot启动过程中会在不同的阶段发射一些事件，所以这些加载的监听器们就是来监听SpringBoot启动过程中的一些生命周期事件的；
 	6. **<font color = "clime">推断主入口应用类。</font>** 给mainApplicationClass属性赋值，mainApplicationClass属性表示包含main函数的类，即这里要推断哪个类调用了main函数，然后把这个类的全限定名赋值给mainApplicationClass属性，用于后面启动流程中打印一些日志。
 
@@ -2570,8 +2570,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 #### 1.10.2.2. run()方法运行过程
 1. **<font color = "clime">运行流程，分3步：</font>**  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringBoot/boot-9.png)  
 	1. 创建所有Spring运行监听器并发布应用启动事件、准备环境变量、创建容器。 
-	2. 容器准备（为刚创建的容器对象做一些初始化工作，准备一些容器属性值等）、刷新容器。 
+	2. 容器设置（为刚创建的容器对象做一些初始化工作，准备一些容器属性值等）、刷新容器。 
 	3. 执行刷新容器后的后置处理逻辑、调用ApplicationRunner和CommandLineRunner的run方法。  
 
     ```java
@@ -2743,7 +2744,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 2. `第二步，写自动配置逻辑`
 	1. 编写业务逻辑  
 	2. 定义配置文件对应类  
-    	* @ConfigurationProperties 配置属性文件，需要指定前缀 prefix。
+    	* @ConfigurationProperties 配置属性文件，需要指定前缀prefix。
     	* @EnableConfigurationProperties 启用配置，需要指定启用的配置类。
     	* @NestedConfigurationProperty 当一个类中引用了外部类，需要在该属性上加该注解。
 	3. 定义自动配置类，自动暴露功能接口。  
@@ -2767,6 +2768,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     &emsp; 服务同步、服务续约。
     * 服务消费者    
     &emsp; 荻取服务、服务调用、服务下线。
+    &emsp; 服务下线：在系统运行过程中必然会面临关闭或重启服务的某个实例的情况，在服务关闭期间，不希望客户端会继续调用关闭了的实例。 所以<font color = "red">在客户端程序中，当服务实例进行正常的关闭操作时，它会触发一个服务下线的REST请求给Eurka Server，告诉服务注册中心：“我要下线了”。服务端在接收到请求之后，将该服务状态置为下线(DOWN)，并把该下线事件传播出去。</font>  
     * 服务注册中心  
         * 失效剔除  
         * 自我保护：  
@@ -2794,34 +2796,34 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 1. 服务雪崩：在微服务架构中，存在着那么多的服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统的瘫痪。  
 2. Hystrix工作流程：1. 包装请求 ---> 2. 发起请求 ---> 3. 缓存处理 ---> 4. 判断断路器是否打开（熔断） ---> 5. 判断是否进行业务请求（请求是否需要隔离或降级） ---> 6. 执行业务请求 ---> 7. 健康监测 ---> 8. fallback处理或返回成功的响应。  
 3. 熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。Hystrix中的降级方案：熔断触发降级、请求超时触发降级、资源（信号量、线程池）隔离触发降级 / 依赖隔离。  
-  1. <font color = "clime">熔断的对象是服务之间的请求；`熔断策略有根据请求的数量分为信号量和线程池，还有请求的时间（即超时熔断），请求错误率（即熔断触发降级）。`</font>  
-  2. 线程池隔离与信号量隔离  
-    1. 线程池隔离：请求线程和每个服务单独用线程池。
-      &emsp; 比如现在有3个业务调用分别是查询订单、查询商品、查询用户，且这三个业务请求都是依赖第三方服务-订单服务、商品服务、用户服务。`为每一个服务接口单独开辟一个线程池，`保持与其他服务接口线程的隔离，提高该服务接口的独立性和高可用。    
-      2. 优点：  
-        1. 使用线程池隔离可以完全隔离依赖的服务，请求线程可以快速放回。  
-        2. 当线程池出现问题时，线程池隔离是独立的，不会影响其他服务和接口。  
-        3. 当失败的服务再次变得可用时，线程池将清理并可立即恢复，而不需要一个长时间的恢复。  
-        4. 独立的线程池提高了并发性。    
-      3. 缺点：  
-        1. 线程池隔离的主要缺点是它们增加计算开销（CPU）。每个命令的执行涉及到排队、调度和上下文切换都是在一个单独的线程上运行的。    
-    1. ~~线程池隔离：~~  
-      1. 调用线程和hystrixCommand线程不是同一个线程，并发请求数受到线程池（不是容器tomcat的线程池，而是hystrixCommand所属于线程组的线程池）中的线程数限制，默认是10。
-      2. 这个是默认的隔离机制
-      3. hystrixCommand线程无法获取到调用线程中的ThreadLocal中的值
-    2. 信号量隔离：
-      1. 调用线程和hystrixCommand线程是同一个线程，默认最大并发请求数是10  
-      2. 调用数度快，开销小，由于和调用线程是处于同一个线程，所以必须确保调用的微服务可用性足够高并且返回快才用  
-    3. 什么情况下使用线程池隔离/信号量隔离？  
-      * 请求并发量大，并且耗时长（请求耗时长一般是计算量大，或读数据库）：采用线程池隔离策略，这样的话，可以保证大量的容器（tomcat）线程可用，不会由于服务原因，一直处于阻塞或等待状态，快速失败返回。  
-      * 请求并发量大，并且耗时短（请求耗时长一般是计算量大，或读缓存）：采用信号量隔离策略，因为这类服务的返回通常会非常的快，不会占用容器线程太长时间，而且也减少了线程切换的一些开销，提高了缓存服务的效率。  
+    1. <font color = "clime">熔断的对象是服务之间的请求；`熔断策略有根据请求的数量分为信号量和线程池，还有请求的时间（即超时熔断），请求错误率（即熔断触发降级）。`</font>  
+    2. 线程池隔离与信号量隔离  
+        1. 线程池隔离：请求线程和每个服务单独用线程池。  
+        &emsp; 比如现在有3个业务调用分别是查询订单、查询商品、查询用户，且这三个业务请求都是依赖第三方服务-订单服务、商品服务、用户服务。`为每一个服务接口单独开辟一个线程池，`保持与其他服务接口线程的隔离，提高该服务接口的独立性和高可用。    
+        2. 优点：  
+            1. 使用线程池隔离可以完全隔离依赖的服务，请求线程可以快速放回。  
+            2. 当线程池出现问题时，线程池隔离是独立的，不会影响其他服务和接口。  
+            3. 当失败的服务再次变得可用时，线程池将清理并可立即恢复，而不需要一个长时间的恢复。  
+            4. 独立的线程池提高了并发性。    
+        3. 缺点：  
+            1. 线程池隔离的主要缺点是它们增加计算开销（CPU）。每个命令的执行涉及到排队、调度和上下文切换都是在一个单独的线程上运行的。    
+        1. ~~线程池隔离：~~  
+            1. 调用线程和hystrixCommand线程不是同一个线程，并发请求数受到线程池（不是容器tomcat的线程池，而是hystrixCommand所属于线程组的线程池）中的线程数限制，默认是10。  
+            2. 这个是默认的隔离机制
+            3. hystrixCommand线程无法获取到调用线程中的ThreadLocal中的值
+        2. 信号量隔离：
+            1. 调用线程和hystrixCommand线程是同一个线程，默认最大并发请求数是10  
+            2. 调用数度快，开销小，由于和调用线程是处于同一个线程，所以必须确保调用的微服务可用性足够高并且返回快才用  
+        3. 什么情况下使用线程池隔离/信号量隔离？  
+            * 请求并发量大，并且耗时长（请求耗时长一般是计算量大，或读数据库）：采用线程池隔离策略，这样的话，可以保证大量的容器（tomcat）线程可用，不会由于服务原因，一直处于阻塞或等待状态，快速失败返回。  
+            * 请求并发量大，并且耗时短（请求耗时长一般是计算量大，或读缓存）：采用信号量隔离策略，因为这类服务的返回通常会非常的快，不会占用容器线程太长时间，而且也减少了线程切换的一些开销，提高了缓存服务的效率。  
 4. <font color = "clime">微服务集群中，Hystrix的度量信息通过`Turbine`来汇集监控信息，并将聚合后的信息提供给Hystrix Dashboard来集中展示和监控。</font> 
 
 
 ### 1.11.6. Sleuth
 1. 分布式调用链追踪系统，可以解决的问题：  
-    **<font color = "red">(1) 如何快速定位请求异常；</font>**    
-    **<font color = "red">(2) 如何快速定位性能瓶颈；</font>**  
+    **<font color = "red">(1) `如何快速定位请求异常；`</font>**    
+    **<font color = "red">(2) `如何快速定位性能瓶颈；`</font>**  
     **<font color = "red">(3) 如何快速定位不合理调用；</font>**  
 2. **<font color = "red">埋点日志通常包含：traceId、spanId、调用的开始时间，协议类型、调用方ip和端口，请求的服务名、调用耗时，调用结果，异常信息等，同时预留可扩展字段，为下一步扩展做准备；</font>**  
 3. spring-cloud-starter-sleuth功能点：
