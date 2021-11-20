@@ -2848,7 +2848,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 1. 两个框架在开始目标就不一致：<font color = "red">Dubbo定位服务治理；Spirng Cloud是一个生态。</font>  
     * Dubbo是SOA时代的产物，它的关注点主要在于服务的调用，流量分发、流量监控和熔断。  
     * Spring Cloud诞生于微服务架构时代，考虑的是微服务治理的方方面面，另外由于依托了Spirng、Spirng Boot的优势之上。  
-2. <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "clime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。  
+2. <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "clime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是`REST相比RPC更为灵活`，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，`至于注重通信速度还是方便灵活性，具体情况具体考虑。`  
 
 #### 1.12.1.2. Spring Cloud Alibaba介绍  
 1. Spring Cloud与Dubbo的比较本身是不公平的，主要前者是一套较为完整的架构方案，而Dubbo只是服务治理与RPC实现方案。Spring Cloud Alibaba是阿里巴巴提供的微服务开发一站式解决方案，是阿里巴巴开源中间件与 Spring Cloud体系的融合。   
@@ -2870,7 +2870,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     5. provider收到请求后对数据进行反序列化，然后通过代理调用具体的接口实现。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-52.png)   
 2. **<font color = "red">为什么要通过代理对象通信？</font>**    
-    &emsp; dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级等。让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：  
+    &emsp; dubbo实现接口的`透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法`，同时还可以通过代理实现一些其他的策略，比如：  
     1. 调用的负载均衡策略  
     2. 调用失败、超时、降级和容错机制  
     3. 做一些过滤操作，比如加入缓存、mock数据  
