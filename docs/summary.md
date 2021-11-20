@@ -2956,11 +2956,11 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         1. Zookeeper集群角色：  
             * 领导者Leader：同一时间，集群只允许有一个Leader，提供对客户端的读写功能，负责将数据同步至各个节点；  
             * 跟随者Follower：提供对客户端读功能，写请求则转发给Leader处理，当Leader崩溃失联之后参与Leader选举；  
-            * 观察者Observer：与Follower不同的是但不参与Leader选举。  
+            * 观察者Observer：与Follower不同的是不参与Leader选举。  
         2. **<font color = "clime">崩溃恢复</font>**  
             * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>  
             * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态。
-        3. **<font color = "clime">`消息广播（数据读写流程，读写流程）：`</font>**  
+        3. **<font color = "clime">`消息广播（数据读写流程）：`</font>**  
             &emsp; 在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点。    
             * 如果是读请求，就直接从当前节点中读取数据。  
             * 如果是写请求，那么请求会被转发给 leader 提交事务，然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交。   
@@ -2980,12 +2980,12 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 &emsp; 概括可以分为三个过程：1. 客户端注册 Watcher；2. 服务端处理 Watcher；3. 客户端回调 Watcher。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-5.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-6.png)  
-&emsp; 大致流程就是 Client 向ZK中注册 Watcher，如果注册成功的话，会将对应的 Watcher 存储在本地。当ZK服务器端触发 Watcher 事件之后，会向客户端发送通知，客户端会从 ClientWatchManager 中取出对应的 Watcher 进行回调。  
+&emsp; 大致流程就是 Client 向ZK中注册 Watcher，如果注册成功的话，会将对应的 Watcher 存储在本地。当ZK服务器端触发 Watcher 事件之后，会向客户端发送通知，`客户端会从 ClientWatchManager 中取出对应的 Watcher 进行回调。`  
 2.  **watch的重要特性：**  
     * 异步发送
     * 一次性触发：  
     &emsp; Watcher通知是一次性的， **<font color = "clime">即一旦触发一次通知后，该Watcher就失效了，因此客户端需要反复注册Watcher。</font>** 但是在获取watch事件和设置新的watch事件之间有延迟。延迟为毫秒级别，理论上会出现不能观察到节点的每一次变化。  
-    &emsp; `不支持用持久Watcher的原因：如果Watcher的注册是持久的，那么必然导致服务端的每次数据更新都会通知到客户端。这在数据变更非常频繁且监听客户端特别多的场景下，ZooKeeper无法保证性能。`  
+    &emsp; `不支持用持久Watcher的原因：`如果Watcher的注册是持久的，那么必然导致`服务端的每次数据更新都会通知到客户端。这在数据变更非常频繁且监听客户端特别多的场景下，ZooKeeper无法保证性能。`  
     * 有序性：  
     &emsp; 客户端先得到watch通知才可查看节点变化结果。  
 3. 客户端过多，会引发网络风暴。  
