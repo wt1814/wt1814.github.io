@@ -1,6 +1,12 @@
 
 # 分布式与集群
-<!-- 
+<!--
+
+一分钟弄懂什么是分布式和微服务
+https://blog.csdn.net/zhonglunsheng/article/details/83153451
+什么是分布式系统，如何学习分布式系统
+https://www.cnblogs.com/xybaby/p/7787034.html
+
 什么是集群？负载均衡？ 
 https://mp.weixin.qq.com/s/GPGEgLpCE_KAUPis5UqbKA
 https://blog.csdn.net/weixin_42369687/article/details/89914131

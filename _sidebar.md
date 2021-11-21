@@ -304,6 +304,7 @@
         * [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
         * [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
         * [MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)   
+* [分布式微服务和集群](/docs/system/distributed.md)  
 * SpringBoot  
     * [学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
     * [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
@@ -382,8 +383,7 @@
     * [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
     * [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
     * [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
-* [分布式与高并发](/docs/system/DistributedHighConcurrency.md)   
-    * [分布式和集群](/docs/system/distributed.md)  
+* [高并发相关概念](/docs/system/DistributedHighConcurrency.md)   
     * [系统性能指标](/docs/system/performance.md)  
     * [并发系统三高](/docs/system/threeHigh.md)  
         * [高可用建设](/docs/system/highAvailability.md)  

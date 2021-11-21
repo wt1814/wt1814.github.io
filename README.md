@@ -26,7 +26,7 @@
         - [分布式事务](#分布式事务)
         - [分布式锁](#分布式锁)
     - [高并发](#高并发)
-        - [分布式与高并发](#分布式与高并发)
+        - [高并发相关概念](#高并发相关概念)
         - [缓存](#缓存)
             - [Redis](#redis)
         - [限流降级](#限流降级)
@@ -399,9 +399,11 @@
 &emsp; [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
 -->
 
-----
+------------
 
 ## 分布式框架  
+[分布式微服务和集群](/docs/system/distributed.md)  
+
 ### SpringBoot  
 [学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
 [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
@@ -507,9 +509,10 @@
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
 &emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
 
+------------
 
 ## 高并发
-### 分布式与高并发
+### 高并发相关概念
 [系统性能指标](/docs/system/performance.md)  
 [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; [高可用建设](/docs/system/highAvailability.md)  
@@ -605,6 +608,8 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 <!-- 
 [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
 -->
+
+--------------------------
 
 ## 常用中间件
 ### 任务调度
