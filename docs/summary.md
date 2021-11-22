@@ -288,13 +288,13 @@
                 - [1.17.2.2.4. Redis多线程模型](#117224-redis多线程模型)
                 - [1.17.2.2.5. Redis协议](#117225-redis协议)
             - [1.17.2.3. Redis内置功能](#11723-redis内置功能)
-                - [1.17.2.3.1. Redis事务](#117231-redis事务)
-                - [1.17.2.3.2. RedisPipeline/批处理](#117232-redispipeline批处理)
-                - [1.17.2.3.3. Redis和Lua](#117233-redis和lua)
-                - [1.17.2.3.4. Redis持久化](#117234-redis持久化)
-                    - [1.17.2.3.4.1. AOF重写阻塞](#1172341-aof重写阻塞)
-                - [1.17.2.3.5. Redis过期键删除](#117235-redis过期键删除)
-                - [1.17.2.3.6. Redis内存淘汰](#117236-redis内存淘汰)
+                - [1.17.2.3.1. Redis过期键删除](#117231-redis过期键删除)
+                - [1.17.2.3.2. Redis内存淘汰](#117232-redis内存淘汰)
+                - [1.17.2.3.3. Redis持久化](#117233-redis持久化)
+                    - [1.17.2.3.3.1. AOF重写阻塞](#1172331-aof重写阻塞)
+                - [1.17.2.3.4. Redis事务](#117234-redis事务)
+                - [1.17.2.3.5. Redis和Lua](#117235-redis和lua)
+                - [1.17.2.3.6. RedisPipeline/批处理](#117236-redispipeline批处理)
                 - [1.17.2.3.7. Redis实现消息队列](#117237-redis实现消息队列)
             - [1.17.2.4. Redis高可用](#11724-redis高可用)
                 - [1.17.2.4.1. Redis高可用方案](#117241-redis高可用方案)
@@ -3544,67 +3544,15 @@ update product set name = 'TXC' where id = 1;
 3. 可读性好。  
 
 #### 1.17.2.3. Redis内置功能
-##### 1.17.2.3.1. Redis事务
-1. **<font color = "clime">Redis事务的三个阶段：</font>**  
-    * 开始事务：以MULTI开启一个事务。   
-    * **<font color = "clime">命令入队：将多个命令入队到事务中，接到这些命令不会立即执行，而是放到等待执行的事务队列里。</font>**    
-    * 执行事务(exec)或取消事务(discard)：由EXEC/DISCARD命令触发事务。  
-2. **使用Redis事务的时候，可能会遇上以下两种错误：**  
-    * **<font color = "red">（类似于Java中的编译错误）事务在执行EXEC之前，入队的命令可能会出错。</font>** 比如说，命令可能会产生语法错误(参数数量错误，参数名错误等等)，或者其他更严重的错误，比如内存不足(如果服务器使用maxmemory设置了最大内存限制的话)。  
-    * **<font color = "red">（类似于Java中的运行错误）命令可能在 EXEC 调用之后失败。</font>** 举个例子，事务中的命令可能处理了错误类型的键，比如将列表命令用在了字符串键上面，诸如此类。  
 
-    1. Redis 针对如上两种错误采用了不同的处理策略，对于发生在 EXEC 执行之前的错误，服务器会对命令入队失败的情况进行记录，并在客户端调用 EXEC 命令时，拒绝执行并自动放弃这个事务（Redis 2.6.5 之前的做法是检查命令入队所得的返回值：如果命令入队时返回 QUEUED ，那么入队成功；否则，就是入队失败）  
-    2. 对于那些在 EXEC 命令执行之后所产生的错误，并没有对它们进行特别处理：即使事务中有某个/某些命令在执行时产生了错误，事务中的其他命令仍然会继续执行。 
-3. **带Watch的事务：**  
-&emsp; WATCH命令用于在事务开始之前监视任意数量的键：当调用EXEC命令执行事务时，如果任意一个被监视的键已经被其他客户端修改了，那么整个事务将被打断，不再执行，直接返回失败。 
-
-##### 1.17.2.3.2. RedisPipeline/批处理
-&emsp; Redis主要提供了以下几种批量操作方式：  
-
-* 批量get/set(multi get/set)。⚠️注意：Redis中有删除单个Key的指令DEL，但没有批量删除 Key 的指令。  
-* 管道(pipelining)
-* 事务(transaction)
-* 基于事务的管道(transaction in pipelining)
-
-##### 1.17.2.3.3. Redis和Lua
-
-##### 1.17.2.3.4. Redis持久化
-1. RDB，快照；保存某一时刻的全部数据；缺点是间隔长（配置文件中默认最少60s）。  
-2. AOF，文件追加；记录所有操作命令；优点是默认间隔1s，丢失数据少；缺点是文件比较大，通过重写机制来压缩文件体积。  
-    1. **<font color = "clime">重写后的AOF文件为什么可以变小？有如下原因：</font>**  
-        1. <font color = "red">进程内已经超时的数据不再写入文件。</font>   
-        2. <font color = "red">旧的AOF文件含有无效命令，</font>如del key1、hdel key2、srem keys、set a111、set a222等。重写使用进程内数据直接生成，这样新的AOF文件只保留最终数据的写入命令。  
-        3. <font color = "red">多条写命令可以合并为一个，</font>如：lpush list a、lpush list b、lpush list c可以转化为：lpush list a b c。为了防止单条命令过大造成客户端缓冲区溢出，对于list、set、hash、zset等类型操作，以64个元素为界拆分为多条。  
-    2. **<font color = "red">AOF重写降低了文件占用空间，除此之外，另一个目的是：更小的AOF 文件可以更快地被Redis加载。</font>**  
-    3. 在写入AOF日志文件时，如果Redis服务器宕机，则AOF日志文件文件会出格式错误。在重启Redis服务器时，Redis服务器会拒绝载入这个AOF文件，可以修复AOF 并恢复数据。 
-3. Redis4.0混合持久化，先RDB，后AOF。  
-4. ~~**<font color = "clime">RDB方式bgsave指令中fork子进程、AOF方式重写bgrewriteaof都会造成阻塞。</font>**~~  
-
-###### 1.17.2.3.4.1. AOF重写阻塞
-1. **<font color = "clime">当Redis执行完一个写命令之后，它会同时将这个写命令发送给AOF缓冲区和AOF重写缓冲区。</font>**  
-2. AOF重写阻塞原因：
-	1. **<font color = "clime">当子进程完成AOF重写工作之后，它会向父进程发送一个信号，父进程在接收到该信号之后，`会调用一个信号处理函数，并执行相应工作：将AOF重写缓冲区中的所有内容写入到新的AOF文件中。`</font>**  
-	2. **<font color = "clime">在整个AOF后台重写过程中，`只有信号处理函数执行时会对Redis主进程造成阻塞，`在其他时候，AOF后台重写都不会阻塞主进程。</font>**  
-&emsp; 如果信号处理函数执行时间较长，即造成AOF阻塞时间长，就会对性能有影响。  
-3. 解决方案：  
-	* **<font color = "red">将no-appendfsync-on-rewrite设置为yes。</font>** 
-	* master节点关闭AOF。  
-    
-    可以采取比较折中的方式：  
-        * 在master节点设置将no-appendfsync-on-rewrite设置为yes（`表示在日志重写时，不进行命令追加操作，而只是将命令放在重写缓冲区里，避免与命令的追加造成磁盘IO上的冲突`），同时auto-aof-rewrite-percentage参数设置为0关闭主动重写。  
-        * 在重写时为了避免硬盘空间不足或者IO使用率高影响重写功能，还添加了硬盘空间报警和IO使用率报警保障重写的正常进行。
-4. 虽然在everysec配置下aof的fsync是由子线程进行操作的，但是主线程会监控fsync的执行进度。  
-&emsp; **<font color = "clime">主线程在执行时候如果发现上一次的fsync操作还没有返回，那么主线程就会阻塞。</font>**  
-
-
-##### 1.17.2.3.5. Redis过期键删除
+##### 1.17.2.3.1. Redis过期键删除
 1. 过期键常见的删除策略有3种：定时删除(主动)、惰性删除(被动)、定期删除(主动)。<font color = "red">Redis服务器使用的是惰性删除策略和定期删除策略。</font>  
     * 定时删除策略，在设置键的过期时间的同时，创建一个定时器，让定时器在键的过期时间来临时，立即执行对键的删除操作。  
     * <font color = "clime">惰性删除策略，只有当访问一个key时，才会判断该key是否已过期，过期则清除。</font>  
     * <font color = "red">`定期删除策略，每隔一段时间执行一次删除过期键操作`</font>，并通过<font color = "clime">`限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响`</font>，同时，通过定期删除过期键，也有效地减少了因为过期键而带来的内存浪费。  
 
 
-##### 1.17.2.3.6. Redis内存淘汰
+##### 1.17.2.3.2. Redis内存淘汰
 1. **Redis内存淘汰使用的算法有4种：**  
     * random，随机删除。  
     * TTL，删除过期时间最少的键。  
@@ -3621,7 +3569,63 @@ update product set name = 'TXC' where id = 1;
     2. 如果数据呈现平等分布，也就是所有的数据访问频率都相同，则使用allkeys-random。
     3. 如果研发者需要通过设置不同的ttl来判断数据过期的先后顺序，此时可以选择volatile-ttl策略。
     4. `如果希望一些数据能长期被保存，而一些数据可以被淘汰掉，选择volatile-lru/volatile-lfu或volatile-random都是比较不错的。`
-    5. 由于设置expire会消耗额外的内存，如果计划避免Redis内存在此项上的浪费，可以选用allkeys-lru/volatile-lfu策略，这样就可以不再设置过期时间，高效利用内存了。  
+    5. 由于设置expire会消耗额外的内存，如果计划避免Redis内存在此项上的浪费，可以选用allkeys-lru/volatile-lfu策略，这样就可以不再设置过期时间，高效利用内存了。 
+
+
+##### 1.17.2.3.3. Redis持久化
+1. RDB，快照；保存某一时刻的全部数据；缺点是间隔长（配置文件中默认最少60s）。  
+2. AOF，文件追加；记录所有操作命令；优点是默认间隔1s，丢失数据少；缺点是文件比较大，通过重写机制来压缩文件体积。  
+    1. **<font color = "clime">重写后的AOF文件为什么可以变小？有如下原因：</font>**  
+        1. <font color = "red">进程内已经超时的数据不再写入文件。</font>   
+        2. <font color = "red">旧的AOF文件含有无效命令，</font>如del key1、hdel key2、srem keys、set a111、set a222等。重写使用进程内数据直接生成，这样新的AOF文件只保留最终数据的写入命令。  
+        3. <font color = "red">多条写命令可以合并为一个，</font>如：lpush list a、lpush list b、lpush list c可以转化为：lpush list a b c。为了防止单条命令过大造成客户端缓冲区溢出，对于list、set、hash、zset等类型操作，以64个元素为界拆分为多条。  
+    2. **<font color = "red">AOF重写降低了文件占用空间，除此之外，另一个目的是：更小的AOF 文件可以更快地被Redis加载。</font>**  
+    3. 在写入AOF日志文件时，如果Redis服务器宕机，则AOF日志文件文件会出格式错误。在重启Redis服务器时，Redis服务器会拒绝载入这个AOF文件，可以修复AOF 并恢复数据。 
+3. Redis4.0混合持久化，先RDB，后AOF。  
+4. ~~**<font color = "clime">RDB方式bgsave指令中fork子进程、AOF方式重写bgrewriteaof都会造成阻塞。</font>**~~  
+
+###### 1.17.2.3.3.1. AOF重写阻塞
+1. **<font color = "clime">当Redis执行完一个写命令之后，它会同时将这个写命令发送给AOF缓冲区和AOF重写缓冲区。</font>**  
+2. AOF重写阻塞d：
+	1. **<font color = "clime">当子进程完成AOF重写工作之后，它会向父进程发送一个信号，父进程在接收到该信号之后，`会调用一个信号处理函数，并执行相应工作：将AOF重写缓冲区中的所有内容写入到新的AOF文件中。`</font>**  
+	2. **<font color = "clime">在整个AOF后台重写过程中，`只有信号处理函数执行时会对Redis主进程造成阻塞，`在其他时候，AOF后台重写都不会阻塞主进程。</font>**  
+&emsp; 如果信号处理函数执行时间较长，即造成AOF阻塞时间长，就会对性能有影响。  
+3. 解决方案：  
+	* **<font color = "red">将no-appendfsync-on-rewrite设置为yes。</font>** 
+	* master节点关闭AOF。  
+    
+    可以采取比较折中的方式：  
+        * 在master节点设置将no-appendfsync-on-rewrite设置为yes（`表示在日志重写时，不进行命令追加操作，而只是将命令放在重写缓冲区里，避免与命令的追加造成磁盘IO上的冲突`），同时auto-aof-rewrite-percentage参数设置为0关闭主动重写。  
+        * 在重写时为了避免硬盘空间不足或者IO使用率高影响重写功能，还添加了硬盘空间报警和IO使用率报警保障重写的正常进行。
+4. 虽然在everysec配置下aof的fsync是由子线程进行操作的，但是主线程会监控fsync的执行进度。  
+&emsp; **<font color = "clime">主线程在执行时候如果发现上一次的fsync操作还没有返回，那么主线程就会阻塞。</font>**  
+
+
+
+##### 1.17.2.3.4. Redis事务
+1. **<font color = "clime">Redis事务的三个阶段：</font>**  
+    * 开始事务：以MULTI开启一个事务。   
+    * **<font color = "clime">命令入队：将多个命令入队到事务中，接到这些命令不会立即执行，而是放到等待执行的事务队列里。</font>**    
+    * 执行事务(exec)或取消事务(discard)：由EXEC/DISCARD命令触发事务。  
+2. **使用Redis事务的时候，可能会遇上以下两种错误：**  
+    * **<font color = "red">（类似于Java中的编译错误）事务在执行EXEC之前，入队的命令可能会出错。</font>** 比如说，命令可能会产生语法错误(参数数量错误，参数名错误等等)，或者其他更严重的错误，比如内存不足(如果服务器使用maxmemory设置了最大内存限制的话)。  
+    * **<font color = "red">（类似于Java中的运行错误）命令可能在 EXEC 调用之后失败。</font>** 举个例子，事务中的命令可能处理了错误类型的键，比如将列表命令用在了字符串键上面，诸如此类。  
+
+    1. Redis 针对如上两种错误采用了不同的处理策略，对于发生在 EXEC 执行之前的错误，服务器会对命令入队失败的情况进行记录，并在客户端调用 EXEC 命令时，拒绝执行并自动放弃这个事务（Redis 2.6.5 之前的做法是检查命令入队所得的返回值：如果命令入队时返回 QUEUED ，那么入队成功；否则，就是入队失败）  
+    2. 对于那些在 EXEC 命令执行之后所产生的错误，并没有对它们进行特别处理：即使事务中有某个/某些命令在执行时产生了错误，事务中的其他命令仍然会继续执行。 
+3. **带Watch的事务：**  
+&emsp; WATCH命令用于在事务开始之前监视任意数量的键：当调用EXEC命令执行事务时，如果任意一个被监视的键已经被其他客户端修改了，那么整个事务将被打断，不再执行，直接返回失败。 
+
+##### 1.17.2.3.5. Redis和Lua
+
+##### 1.17.2.3.6. RedisPipeline/批处理
+&emsp; Redis主要提供了以下几种批量操作方式：  
+
+* 批量get/set(multi get/set)。⚠️注意：Redis中有删除单个Key的指令DEL，但没有批量删除 Key 的指令。  
+* 管道(pipelining)
+* 事务(transaction)
+* 基于事务的管道(transaction in pipelining)
+
 
 ##### 1.17.2.3.7. Redis实现消息队列
 &emsp; redis中实现消息队列的几种方案：  
