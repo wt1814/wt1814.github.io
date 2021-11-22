@@ -2540,7 +2540,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 ----------------------------
 
 ## 1.10. 分布微服务和集群  
-&emsp; `分布式带来数据一致性的问题。`  
+&emsp; `分布式带来数据一致性的问题。` 解决方案：采用事务、锁，也可以使用补偿方案。   
 
 ## 1.11. SpringBoot
 
@@ -3388,15 +3388,16 @@ update product set name = 'TXC' where id = 1;
 &emsp; 当缓存中不存在但是数据库中存在的数据（`一般来说指缓存失效`），在短时间内针对这种数据产生大量的请求，由于缓存不能命中，直击数据库，给数据库造成较大压力。  
 &emsp; **<font color = "clime">解决方案：key永不过期，使用互斥锁或队列，双缓存。</font>**   
 6. 缓存雪崩：  
-&emsp; 缓存雪崩是指某一时间段内缓存中数据大批量过期失效，但是查询数据量巨大，引起数据库压力过大甚至宕机。和缓存击穿不同的是，缓存击穿指并发查同一条数据，缓存雪崩是不同数据都过期了，导致大量请求直达数据库。缓存雪崩有两种情况：  
-    * 缓存批量过期：缓存批量过期这样的雪崩只是对数据库产生周期性的压力，数据还是扛得住的。解决方案：`key随机值，` **<font color = "clime">key永不过期，使用互斥锁或队列，双缓存。</font>**
-    * 缓存服务器宕机：缓存服务器的某个节点宕机或断网，对数据库产生的压力是致命的。解决方案：服务器高可用。   
+    &emsp; 缓存雪崩是指某一时间段内缓存中数据大批量过期失效，但是查询数据量巨大，引起数据库压力过大甚至宕机。和缓存击穿不同的是，缓存击穿指并发查同一条数据，缓存雪崩是不同数据都过期了，导致大量请求直达数据库。缓存雪崩有两种情况：  
+    * 缓存批量过期：缓存批量过期这样的雪崩只是对数据库产生周期性的压力，数据还是扛得住的。  
+    &emsp; 解决方案：`key随机值，` **<font color = "clime">key永不过期，使用互斥锁或队列，双缓存。</font>**
+    * 缓存服务器宕机：缓存服务器的某个节点宕机或断网，对数据库产生的压力是致命的。  
+    &emsp; 解决方案：服务器高可用。   
 7. 更新缓存  
     1. 「先更新数据库，再删缓存」的策略，原因是这个策略即使在并发读写时，也能最大程度保证数据一致性。  
-    2. `先删除缓存，再更新数据库，非原子操作。可以采用双删延迟策略，进行兜底。` **<font color = "clime">第二次删除前线程休眠冗余的读写时间，如果读从库，再加上延迟时间。</font>**  
-    3. 先更新数据库，再删缓存，采用异步延时删除策略。  
-    4. `采用`延时删除`策略中的问题：`  
-        * **<font color = "clime">同步方式会降低吞吐量，可以采用异步。</font>**  
+    2. `先删除缓存，再更新数据库，非原子操作。可以采用双删延迟策略，进行兜底，补偿方案。` **<font color = "clime">第二次删除前线程休眠冗余的读写时间，如果读从库，再加上延迟时间。</font>**  
+    3. `采用`延时删除`策略中的问题：`  
+        * **<font color = "clime">同步方式会降低吞吐量，可以采用异步，即异步延时删除。</font>**  
         * **<font color = "clime">第二次删除可能失败，提供一个保障的重试机制。</font>** 方案一：采用消息队列，缺点对业务线代码造成大量的侵入；方案二：订阅binlog，订阅程序提取出所需要的数据以及key，另起一段非业务代码，获得该信息，尝试删除缓存操作，发现删除失败，将这些信息发送至消息队列，重新从消息队列中获得该数据，重试操作。
 
 
@@ -3442,11 +3443,11 @@ update product set name = 'TXC' where id = 1;
         ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-62.png)  
     * 压缩列表Ziplist  
         &emsp; 在双端链表中，如果在一个链表节点中存储一个小数据，比如一个字节。那么对应的就要保存头节点，前后指针等额外的数据。这样就浪费了空间，同时由于反复申请与释放也容易导致内存碎片化。这样内存的使用效率就太低了。  
-        &emsp; Redis设计了压缩列表  
+        &emsp; Redis设计了压缩列表：  
         ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-110.png)  
         &emsp; ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>** 只用在字段个数少，字段值小的场景里。  
     * 快速列表Quicklist  
-        QuickList其实就是结合了ZipList和LinkedList的优点设计出来的。quicklist存储了一个双向链表，每个节点都是一个ziplist。  
+        &emsp; QuickList其实就是结合了ZipList和LinkedList的优点设计出来的。quicklist存储了一个双向链表，每个节点都是一个ziplist。  
         ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-63.png)  
 4. 整数集合inset  
 &emsp; inset的数据结构：  
@@ -3493,13 +3494,13 @@ update product set name = 'TXC' where id = 1;
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-106.png)  
 
 * String字符串类型的内部编码有三种：
-    1. int，存储8个字节的长整型(long，2^63-1)。当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
-    2. embstr，代表 embstr 格式的 SDS(Simple Dynamic String 简单动态字符串)，存储小于44个字节的字符串。  
-    3. raw，存储大于 44 个字节的字符串(3.2 版本之前是 39 字节)。  
-* Hash由ziplist(压缩列表)或者dictht(字典)组成；  
+    1. int，存储8个字节的长整型（long，2^63-1）。当int数据不再是整数，或大小超过了long的范围（2^63-1 = 9223372036854775807）时，自动转化为embstr。  
+    2. embstr，代表 embstr 格式的 SDS（Simple Dynamic String简单动态字符串），存储小于44个字节的字符串。  
+    3. raw，存储大于44个字节的字符串（3.2 版本之前是 39 字节）。  
+* Hash由ziplist（压缩列表）或者dictht（字典）组成；  
 * List，「有序」「可重复」集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  
-* Set，「无序」「不可重复」集合， **<font color = "clime">是特殊的Hash结构(value为null)，</font>** 由intset(整数集合)或者dictht(字典)组成；
-* ZSet，「有序」「不可重复」集合，由skiplist(跳跃表)或者ziplist(压缩列表)组成。  
+* Set，「无序」「不可重复」集合， **<font color = "clime">是特殊的Hash结构（value为null），</font>** 由intset（整数集合）或者dictht（字典）组成；
+* ZSet，「有序」「不可重复」集合，由skiplist（跳跃表）或者ziplist（压缩列表）组成。  
 
 
 #### 1.17.2.2. Redis原理
@@ -4395,5 +4396,4 @@ update product set name = 'TXC' where id = 1;
         * **<font color = "red">controller-manager：负责管理集群各种资源，保证资源处于预期的状态。</font>** 
         * **<font color = "red">scheduler：资源调度，负责决定将Pod放到哪个Node上运行。</font>** 
     2. **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
-
 
