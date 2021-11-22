@@ -30,6 +30,7 @@ https://mp.weixin.qq.com/s/aJJ-KddVIFJ4b-eXKbxSSg
 
 ## 1.1. 基本查询优化  
 ### 1.1.1. 查询结果集优化  
+
 &emsp; 避免使用select \*。count(1)或count(列)代替count(*)。  
 
     count(*) 和 count(1)和count(列名)区别：  
@@ -44,6 +45,11 @@ https://mp.weixin.qq.com/s/aJJ-KddVIFJ4b-eXKbxSSg
         如果表多个列并且没有主键，则 count(1) 的执行效率优于 count(*)  
         如果有主键，则 select count(主键)的执行效率是最优的  
         如果表只有一个字段，则 select count(*)最优。
+
+&emsp; SQL查找是否"存在"，别再count了！   
+<!-- 
+https://mp.weixin.qq.com/s/4LV0endLdelsZrK6RHJzew
+-->
 
 ### 1.1.2. group by优化 
 <!-- 

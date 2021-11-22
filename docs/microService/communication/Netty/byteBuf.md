@@ -15,7 +15,10 @@
 
 
 # 1. Netty内存管理
-<!-- 
+<!--
+谈谈Netty内存管理 ！ 
+https://mp.weixin.qq.com/s/wh9sBajNczrKWtexf1beUA
+
 https://blog.csdn.net/m0_37556444/article/details/107959226
 https://www.cnblogs.com/rickiyang/p/13253203.html
 
