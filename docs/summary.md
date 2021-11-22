@@ -287,11 +287,11 @@
                 - [1.17.2.2.3. Redis事件/Reactor](#117223-redis事件reactor)
                 - [1.17.2.2.4. Redis多线程模型](#117224-redis多线程模型)
                 - [1.17.2.2.5. Redis协议](#117225-redis协议)
-            - [1.17.2.3. Redis内置功能](#11723-redis内置功能)
                 - [1.17.2.3.1. Redis过期键删除](#117231-redis过期键删除)
                 - [1.17.2.3.2. Redis内存淘汰](#117232-redis内存淘汰)
                 - [1.17.2.3.3. Redis持久化](#117233-redis持久化)
                     - [1.17.2.3.3.1. AOF重写阻塞](#1172331-aof重写阻塞)
+            - [1.17.2.3. Redis内置功能](#11723-redis内置功能)
                 - [1.17.2.3.4. Redis事务](#117234-redis事务)
                 - [1.17.2.3.5. Redis和Lua](#117235-redis和lua)
                 - [1.17.2.3.6. RedisPipeline/批处理](#117236-redispipeline批处理)
@@ -3504,6 +3504,8 @@ update product set name = 'TXC' where id = 1;
 
 
 #### 1.17.2.2. Redis原理
+&emsp; 从`内存、磁盘、网络IO、CPU`分析。  
+
 ##### 1.17.2.2.1. Redis为什么那么快？
 &emsp; Redis的性能非常之高，每秒可以承受10W+的QPS，它如此优秀的性能主要取决于以下几个方面：  
 
@@ -3543,7 +3545,8 @@ update product set name = 'TXC' where id = 1;
 2. `解析速度快。`由于RESP能知道返回数据的固定长度，所以不用像json那样扫描整个payload去解析，所以它的性能是能跟解析二进制数据的性能相媲美的。  
 3. 可读性好。  
 
-#### 1.17.2.3. Redis内置功能
+
+---------------
 
 ##### 1.17.2.3.1. Redis过期键删除
 1. 过期键常见的删除策略有3种：定时删除(主动)、惰性删除(被动)、定期删除(主动)。<font color = "red">Redis服务器使用的是惰性删除策略和定期删除策略。</font>  
@@ -3601,6 +3604,7 @@ update product set name = 'TXC' where id = 1;
 &emsp; **<font color = "clime">主线程在执行时候如果发现上一次的fsync操作还没有返回，那么主线程就会阻塞。</font>**  
 
 
+#### 1.17.2.3. Redis内置功能
 
 ##### 1.17.2.3.4. Redis事务
 1. **<font color = "clime">Redis事务的三个阶段：</font>**  
