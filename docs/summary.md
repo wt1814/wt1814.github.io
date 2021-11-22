@@ -287,15 +287,16 @@
                 - [1.17.2.2.3. Redis事件/Reactor](#117223-redis事件reactor)
                 - [1.17.2.2.4. Redis多线程模型](#117224-redis多线程模型)
                 - [1.17.2.2.5. Redis协议](#117225-redis协议)
-                - [1.17.2.3.1. Redis过期键删除](#117231-redis过期键删除)
-                - [1.17.2.3.2. Redis内存淘汰](#117232-redis内存淘汰)
-                - [1.17.2.3.3. Redis持久化](#117233-redis持久化)
-                    - [1.17.2.3.3.1. AOF重写阻塞](#1172331-aof重写阻塞)
+                - [Redis内存操作](#redis内存操作)
+                    - [1.17.2.2.6. Redis过期键删除](#117226-redis过期键删除)
+                    - [1.17.2.2.7. Redis内存淘汰](#117227-redis内存淘汰)
+                - [1.17.2.2.8. Redis持久化，磁盘操作](#117228-redis持久化磁盘操作)
+                    - [1.17.2.2.8.1. AOF重写阻塞](#1172281-aof重写阻塞)
             - [1.17.2.3. Redis内置功能](#11723-redis内置功能)
-                - [1.17.2.3.4. Redis事务](#117234-redis事务)
-                - [1.17.2.3.5. Redis和Lua](#117235-redis和lua)
-                - [1.17.2.3.6. RedisPipeline/批处理](#117236-redispipeline批处理)
-                - [1.17.2.3.7. Redis实现消息队列](#117237-redis实现消息队列)
+                - [1.17.2.3.1. Redis事务](#117231-redis事务)
+                - [1.17.2.3.2. Redis和Lua](#117232-redis和lua)
+                - [1.17.2.3.3. RedisPipeline/批处理](#117233-redispipeline批处理)
+                - [1.17.2.3.4. Redis实现消息队列](#117234-redis实现消息队列)
             - [1.17.2.4. Redis高可用](#11724-redis高可用)
                 - [1.17.2.4.1. Redis高可用方案](#117241-redis高可用方案)
                 - [1.17.2.4.2. Redis主从复制](#117242-redis主从复制)
@@ -3425,7 +3426,7 @@ update product set name = 'TXC' where id = 1;
     1. 基于Redis BitMap实现用户签到功能： **<font color = "clime">考虑到每月初需要重置连续签到次数，最简单的方式是按用户每月存一条签到数据（也可以每年存一条数据）。`Key的格式为u :sign :uid :yyyyMM`，`Value则采用长度为4个字节（32位）的位图（最大月份只有31天）。位图的每一位代表一天的签到，1表示已签，0表示未签。`</font>**  
 3. <font color = "clime">`HyperLogLog用于基数统计，例如UV（独立访客数）。`</font>  
     * `基数统计是指找出集合中不重复元素，用于去重。`  
-    * 使用Redis统计集合的基数一般有三种方法，分别是使用Redis的Hash，BitMap和HyperLogLog。  
+    * **<font color = "clime">使用Redis统计集合的基数一般有三种方法，分别是使用Redis的Hash，BitMap和HyperLogLog。</font>**  
     * HyperLogLog内存空间消耗少，但存在误差0.81%。  
 4. Streams消息队列：支持多播的可持久化的消息队列，用于实现发布订阅功能，借鉴了kafka的设计。 
 5. [布隆过滤器](/docs/function/otherStructure.md)作为一个插件加载到Redis Server中，就会给Redis提供了强大的布隆去重功能。  
@@ -3472,7 +3473,7 @@ update product set name = 'TXC' where id = 1;
 3. **Redis字符串的性能优势：**  
     * 动态扩展：拼接字符串时，计算出大小是否足够，开辟空间至满足所需大小。  
     * 避免缓冲区溢出。「c语言」中两个字符串拼接，若是没有分配足够长度的内存空间就「会出现缓冲区溢出的情况」。  
-    * （内存分配优化）降低空间分配次数，提升内存使用效率。 **<font color = "blue">空间预分配和惰性空间回收。</font>** 
+    * （`内存分配优化`）降低空间分配次数，提升内存使用效率。 **<font color = "blue">`空间预分配和惰性空间回收`。</font>** 
         * 空间预分配：对于追加操作来说，Redis不仅会开辟空间至够用，<font color = "red">而且还会预分配未使用的空间(free)来用于下一次操作。</font>  
         * 惰性空间回收：与上面情况相反，<font color = "red">惰性空间回收适用于字符串缩减操作。</font>比如有个字符串s1="hello world"，对s1进行sdstrim(s1," world")操作，<font color = "red">执行完该操作之后Redis不会立即回收减少的部分，而是会分配给下一个需要内存的程序。</font>  
     * 快速获取字符串长度。
@@ -3490,7 +3491,7 @@ update product set name = 'TXC' where id = 1;
 
 
 ###### 1.17.2.1.3.4. 数据类型  
-&emsp; Redis会根据当前值的类型和长度决定使用哪种内部编码实现。 **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
+&emsp; **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-106.png)  
 
 * String字符串类型的内部编码有三种：
@@ -3548,14 +3549,15 @@ update product set name = 'TXC' where id = 1;
 
 ---------------
 
-##### 1.17.2.3.1. Redis过期键删除
+##### Redis内存操作
+###### 1.17.2.2.6. Redis过期键删除
 1. 过期键常见的删除策略有3种：定时删除(主动)、惰性删除(被动)、定期删除(主动)。<font color = "red">Redis服务器使用的是惰性删除策略和定期删除策略。</font>  
     * 定时删除策略，在设置键的过期时间的同时，创建一个定时器，让定时器在键的过期时间来临时，立即执行对键的删除操作。  
     * <font color = "clime">惰性删除策略，只有当访问一个key时，才会判断该key是否已过期，过期则清除。</font>  
     * <font color = "red">`定期删除策略，每隔一段时间执行一次删除过期键操作`</font>，并通过<font color = "clime">`限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响`</font>，同时，通过定期删除过期键，也有效地减少了因为过期键而带来的内存浪费。  
 
 
-##### 1.17.2.3.2. Redis内存淘汰
+###### 1.17.2.2.7. Redis内存淘汰
 1. **Redis内存淘汰使用的算法有4种：**  
     * random，随机删除。  
     * TTL，删除过期时间最少的键。  
@@ -3574,8 +3576,7 @@ update product set name = 'TXC' where id = 1;
     4. `如果希望一些数据能长期被保存，而一些数据可以被淘汰掉，选择volatile-lru/volatile-lfu或volatile-random都是比较不错的。`
     5. 由于设置expire会消耗额外的内存，如果计划避免Redis内存在此项上的浪费，可以选用allkeys-lru/volatile-lfu策略，这样就可以不再设置过期时间，高效利用内存了。 
 
-
-##### 1.17.2.3.3. Redis持久化
+##### 1.17.2.2.8. Redis持久化，磁盘操作
 1. RDB，快照；保存某一时刻的全部数据；缺点是间隔长（配置文件中默认最少60s）。  
 2. AOF，文件追加；记录所有操作命令；优点是默认间隔1s，丢失数据少；缺点是文件比较大，通过重写机制来压缩文件体积。  
     1. **<font color = "clime">重写后的AOF文件为什么可以变小？有如下原因：</font>**  
@@ -3587,7 +3588,7 @@ update product set name = 'TXC' where id = 1;
 3. Redis4.0混合持久化，先RDB，后AOF。  
 4. ~~**<font color = "clime">RDB方式bgsave指令中fork子进程、AOF方式重写bgrewriteaof都会造成阻塞。</font>**~~  
 
-###### 1.17.2.3.3.1. AOF重写阻塞
+###### 1.17.2.2.8.1. AOF重写阻塞
 1. **<font color = "clime">当Redis执行完一个写命令之后，它会同时将这个写命令发送给AOF缓冲区和AOF重写缓冲区。</font>**  
 2. AOF重写阻塞d：
 	1. **<font color = "clime">当子进程完成AOF重写工作之后，它会向父进程发送一个信号，父进程在接收到该信号之后，`会调用一个信号处理函数，并执行相应工作：将AOF重写缓冲区中的所有内容写入到新的AOF文件中。`</font>**  
@@ -3606,7 +3607,7 @@ update product set name = 'TXC' where id = 1;
 
 #### 1.17.2.3. Redis内置功能
 
-##### 1.17.2.3.4. Redis事务
+##### 1.17.2.3.1. Redis事务
 1. **<font color = "clime">Redis事务的三个阶段：</font>**  
     * 开始事务：以MULTI开启一个事务。   
     * **<font color = "clime">命令入队：将多个命令入队到事务中，接到这些命令不会立即执行，而是放到等待执行的事务队列里。</font>**    
@@ -3620,9 +3621,9 @@ update product set name = 'TXC' where id = 1;
 3. **带Watch的事务：**  
 &emsp; WATCH命令用于在事务开始之前监视任意数量的键：当调用EXEC命令执行事务时，如果任意一个被监视的键已经被其他客户端修改了，那么整个事务将被打断，不再执行，直接返回失败。 
 
-##### 1.17.2.3.5. Redis和Lua
+##### 1.17.2.3.2. Redis和Lua
 
-##### 1.17.2.3.6. RedisPipeline/批处理
+##### 1.17.2.3.3. RedisPipeline/批处理
 &emsp; Redis主要提供了以下几种批量操作方式：  
 
 * 批量get/set(multi get/set)。⚠️注意：Redis中有删除单个Key的指令DEL，但没有批量删除 Key 的指令。  
@@ -3631,7 +3632,7 @@ update product set name = 'TXC' where id = 1;
 * 基于事务的管道(transaction in pipelining)
 
 
-##### 1.17.2.3.7. Redis实现消息队列
+##### 1.17.2.3.4. Redis实现消息队列
 &emsp; redis中实现消息队列的几种方案：  
 
 * 基于List的 LPUSH+BRPOP 的实现
