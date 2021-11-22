@@ -1,11 +1,13 @@
 
+
+
 <!-- TOC -->
 
 - [1. WebSocket协议](#1-websocket协议)
     - [1.1. WebSocket协议是什么](#11-websocket协议是什么)
         - [1.1.1. WebSocket是应用层协议](#111-websocket是应用层协议)
         - [1.1.2. WebSocket与Http的区别](#112-websocket与http的区别)
-        - [WebSocket与轮询](#websocket与轮询)
+        - [1.1.3. WebSocket与轮询](#113-websocket与轮询)
     - [1.2. 为什么要使用WebSocket](#12-为什么要使用websocket)
 
 <!-- /TOC -->
@@ -24,6 +26,8 @@ https://cloud.tencent.com/developer/article/1514062
 WebSocket，3 分钟让你全面认识它
 https://www.upyun.com/tech/article/508/%E8%AF%B4%E8%AF%B4%20WebSocket%EF%BC%8C3%20%E5%88%86%E9%92%9F%E8%AE%A9%E4%BD%A0%E5%85%A8%E9%9D%A2%E8%AE%A4%E8%AF%86%E5%AE%83.html
 -->
+
+&emsp; Web Sockets定义了一种在通过一个单一的 socket 在网络上进行全双工通讯的通道。仅仅是传统的 HTTP 通讯的一个增量的提高，尤其对于实时、事件驱动的应用来说是一个飞跃。  
 
 ## 1.1. WebSocket协议是什么
 ### 1.1.1. WebSocket是应用层协议
@@ -44,7 +48,7 @@ https://www.jianshu.com/p/56ba05083699
 &emsp; （1）HTTP协议（参见：rfc2616）比较臃肿，而WebSocket协议比较轻量。  
 &emsp; （2）对于HTTP协议来讲，一个数据包就是一条完整的消息；而WebSocket客户端与服务端通信的最小单位是帧（frame），由1个或多个帧组成一条完整的消息（message）。即：发送端将消息切割成多个帧，并发送给服务端；服务端接收消息帧，并将关联的帧重新组装成完整的消息。  
 
-### WebSocket与轮询
+### 1.1.3. WebSocket与轮询
 
 
 ## 1.2. 为什么要使用WebSocket

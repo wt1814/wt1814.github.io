@@ -11,10 +11,10 @@
             - [1.3.1.2. 长轮询和长短连接的联系、区别](#1312-长轮询和长短连接的联系区别)
         - [1.3.2. 基于iframe的长连接流（stream）模式](#132-基于iframe的长连接流stream模式)
     - [1.4. SSE (Server-Sent Events)](#14-sse-server-sent-events)
-    - [1.5. 四种Web即时通信技术](#15-四种web即时通信技术)
+    - [1.5. WebSocket](#15-websocket)
+    - [1.6. 四种Web即时通信技术](#16-四种web即时通信技术)
 
 <!-- /TOC -->
-
 
 
 
@@ -25,7 +25,7 @@ https://cloud.tencent.com/developer/article/1821509
 
 https://www.cnblogs.com/huchong/p/8595644.html
 -->
-&emsp; Web Sockets定义了一种在通过一个单一的 socket 在网络上进行全双工通讯的通道。仅仅是传统的 HTTP 通讯的一个增量的提高，尤其对于实时、事件驱动的应用来说是一个飞跃。  
+
 
 ## 1.1. Http的长连接与短连接  
 <!-- 
@@ -90,7 +90,11 @@ https://juejin.cn/post/6844903955240058893
 &emsp; SSE规范比较简单，主要分为两个部分：浏览器中的EventSource对象，以及服务器端与浏览器端之间的通讯协议。  
 
 
-## 1.5. 四种Web即时通信技术
+## 1.5. WebSocket
+&emsp; [WebSocket协议](/docs/webSocket/WebSocket.md)  
+
+
+## 1.6. 四种Web即时通信技术
 <!-- 
 https://juejin.cn/post/6844903955240058893
 -->
