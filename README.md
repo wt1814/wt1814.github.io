@@ -38,6 +38,7 @@
         - [分布式通信/网络IO](#分布式通信网络io)
     - [webSocket](#websocket)
     - [磁盘IO](#磁盘io)
+    - [内存优化](#内存优化)
     - [Error](#error)
     - [计算机网络](#计算机网络)
         - [负载均衡](#负载均衡)
@@ -716,6 +717,9 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 ## 磁盘IO
 &emsp; [页缓存](/docs/system/PageCache.md)  
+
+
+## 内存优化
 
 
 ---

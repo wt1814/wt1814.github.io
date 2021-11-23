@@ -206,7 +206,6 @@ https://zhuanlan.zhihu.com/p/380919797
 http://blog.tizer.top/archives/ye-wu-shang-de-shun-xu-xiao-fei--ru-he-bao-zheng-shi-xu-xing
 -->
 
-
 &emsp; 除了消息队列自身的顺序消费机制，我们可以合理地对消息进行改造，从业务上实现有序的目的。具体的方式有以下几种。  
 
 1. 根据不同的业务场景，以发送端或者消费端时间戳为准  
@@ -218,10 +217,7 @@ http://blog.tizer.top/archives/ye-wu-shang-de-shun-xu-xiao-fei--ru-he-bao-zheng-
 
 
 ## 1.5. 小结  
-
 &emsp; Kafka无法做到消息全局有序，只能做到Partition维度的有序。所以如果想要消息有序，就需要从Partition维度入手。一般有两种解决方案：
 
 * 单Partition，单Consumer。通过此种方案强制消息全部写入同一个Partition内，但是同时也牺牲掉了Kafka高吞吐的特性了，所以一般不会采用此方案。  
 * **多Partition，多Consumer，`指定key使用特定的Hash策略，使其消息落入指定的Partition 中`，`从而保证相同的key对应的消息是有序的`。** 此方案也是有一些弊端，比如当Partition个数发生变化时，相同的key对应的消息会落入到其他的Partition上，所以一旦确定Partition个数后就不能再修改Partition个数了。  
-
-
