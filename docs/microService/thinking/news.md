@@ -31,6 +31,14 @@
 
 
 # 1. 分布式事务
+&emsp; `可靠消息的两种实现方案：基于本地消息表、基于事务消息。`  
+<!-- 
+可靠消息最终一致性
+https://cloud.tencent.com/developer/article/1824295
+分布式事务 ：可靠消息最终一致性方案
+https://cloud.tencent.com/developer/article/1872437
+-->
+
 ## 1.1. 消息驱动模式(Message Driven) 
 ### 1.1.1. 本地消息表/消息状态表(异步确保)-最终一致性  
 #### 1.1.1.1. 基本思想(eBay的论文)
