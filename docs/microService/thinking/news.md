@@ -37,6 +37,9 @@
 https://cloud.tencent.com/developer/article/1824295
 分布式事务 ：可靠消息最终一致性方案
 https://cloud.tencent.com/developer/article/1872437
+可靠消息分布式事务
+https://cloud.tencent.com/developer/article/1824295
+https://blog.51cto.com/u_15127576/4044486
 -->
 
 ## 1.1. 消息驱动模式(Message Driven) 
