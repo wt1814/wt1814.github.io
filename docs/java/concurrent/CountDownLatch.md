@@ -13,6 +13,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
+0. CountDownLatch中count down是倒数的意思，latch则是门闩的含义。整体含义可以理解为倒数的门栓，似乎有一点“三二一，芝麻开门”的感觉。CountDownLatch的作用也是如此，在构造CountDownLatch的时候需要传入一个整数n，在这个整数“倒数”到0之前，主线程需要等待在门口，而这个“倒数”过程则是由各个执行线程驱动的，每个线程执行完一个任务“倒数”一次。总结来说，CountDownLatch的作用就是等待其他的线程都执行完任务，必要时可以对各个任务的执行结果进行汇总，然后主线程才继续往下执行。  
 1. java.util.concurrent.CountDownLatch类， **<font color = "red">能够使一个线程等待其他线程完成各自的工作后再执行。</font>** <font color = "red">利用它可以实现类似计数器的功能。</font><font color = "blue">比如有一个任务A，它要等待其他4个任务执行完毕之后才能执行，此时就可以利用CountDownLatch来实现这种功能了。</font>  
 2. **<font color = "clime">countDown()方法是将count-1，如果发现count=0了，就唤醒</font><font color = "blue">阻塞的主线程。</font>**  
 &emsp; ⚠️注：特别注意主线程会被阻塞。  
@@ -29,6 +30,8 @@ CountDownLatch实践
 https://mp.weixin.qq.com/s/wDxfDcbJCQs99huLyztnCQ
 
 https://mp.weixin.qq.com/s/JynLduej5FHPTmKf6nhsOA
+
+https://www.jianshu.com/p/128476015902
 -->
 
 <!-- 

@@ -28,6 +28,9 @@
 
 # 1. 基于ZK实现分布式锁
 <!--
+zk中如何防止羊群效应
+https://cloud.tencent.com/developer/article/1678078
+
  基于Zookeeper实现分布式锁，如何解决羊群问题？ 
  https://mp.weixin.qq.com/s/wmRRrdIHaXDk_qBh9zzsyw
 

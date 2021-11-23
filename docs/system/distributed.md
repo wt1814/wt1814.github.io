@@ -3,7 +3,7 @@
 <!--
 
 一分钟弄懂什么是分布式和微服务
-https://blog.csdn.net/zhonglunsheng/article/details/83153451
+https://blog.51cto.com/u_8865295/3031246
 什么是分布式系统，如何学习分布式系统
 https://www.cnblogs.com/xybaby/p/7787034.html
 

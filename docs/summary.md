@@ -1405,7 +1405,6 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 &emsp; **<font color = "clime">为什么说重量级线程开销很大？</font>**  
 &emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，`被阻塞的线程不会消耗cpu`。 **<font color = "clime">`但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态(向内核申请)，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。`</font>**  
 
-
 ###### 1.4.3.2.3.2. Synchronized优化
 1. **<font color = "clime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时，如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>   
 2. 锁升级  
@@ -1635,6 +1634,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 #### 1.4.4.6. tools
 ##### 1.4.4.6.1. CountDownLatch
+0. CountDownLatch中count down是倒数的意思，latch则是门闩的含义。整体含义可以理解为倒数的门栓，似乎有一点“三二一，芝麻开门”的感觉。CountDownLatch的作用也是如此，在构造CountDownLatch的时候需要传入一个整数n，在这个整数“倒数”到0之前，主线程需要等待在门口，而这个“倒数”过程则是由各个执行线程驱动的，每个线程执行完一个任务“倒数”一次。总结来说，CountDownLatch的作用就是等待其他的线程都执行完任务，必要时可以对各个任务的执行结果进行汇总，然后主线程才继续往下执行。  
 1.  **<font color = "red">java.util.concurrent.CountDownLatch类，`能够使一个线程等待其他线程完成各自的工作后再执行。`</font>** <font color = "red">`利用它可以实现类似计数器的功能。`</font><font color = "blue">比如有一个任务A，它要等待其他4个任务执行完毕之后才能执行，此时就可以利用CountDownLatch来实现这种功能了。</font>  
 2. **<font color = "clime">countDown()方法是将count-1，如果发现count=0了，就唤醒</font><font color = "blue">阻塞的主线程。</font>**  
 &emsp; ⚠️注：`特别注意主线程会被阻塞。`  
@@ -2997,10 +2997,19 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 3. 客户端过多，会引发网络风暴。  
 
 ### 1.14.3. ZK弊端和应用场景
-5. ZK的弊端：
+1. Zookeeper应用场景：统一命名服务，生成分布式ID、分布式锁、队列管理、元数据/配置信息管理，数据发布/订阅、分布式协调、集群管理，HA高可用性。  
+2. ZK的弊端：
 	1. 服务端从节点多，主从同步慢。  
 	2. 客户端多，`网络风暴`。~~watcher机制中，回调流程，只有主节点参与？~~  
-6. Zookeeper应用场景：统一命名服务，生成分布式ID、分布式锁、队列管理、元数据/配置信息管理，数据发布/订阅、分布式协调、集群管理，HA高可用性。  
+3. ZK羊群效应
+    1. 什么是羊群效应？  
+    &emsp; 羊群效应理论（The Effect of Sheep Flock），也称羊群行为（Herd Behavior）、从众心理。 羊群是一种很散乱的组织，平时在一起也是盲目地左冲右撞，但一旦有一只头羊动起来，其他的羊也会不假思索地一哄而上，全然不顾旁边可能有的狼和不远处更好的草。看到这里，就应该知道了，当多个客户端请求获取zk创建临时节点来进行加锁的时候，会进行竞争，因为zk独有的一个特性：即watch机制。啥意思呢？就是当A获取锁并加锁的时候，B会监听A的结点变化，当A创建的临时结点被删除的时候，B会去竞争锁。懂了没？  
+    &emsp; 那么问题来了？如果同时有1000个客户端发起请求并创建临时节点，都会去监听A结点的变化，然后A删除节点的时候会通知其他节点，这样是否会太影响并耗费资源了？  
+    2. 解决方案  
+        &emsp; 在使用ZK时，要尽量避免出现羊群效应。但是如果出现了该怎么解决？  
+        1. 如果ZK是用于实现分布式锁，使用临时顺序节点。 ~~未获取到锁的客户端给自己的上一个临时有序节点添加监听~~    
+        2. 如果ZK用于其他用途，则分析出现羊群效应的问题，从根本上解决问题或提供其他替代ZK的方案。  
+
 
 
 ## 1.15. 分布式
@@ -3296,7 +3305,7 @@ update product set name = 'TXC' where id = 1;
 
 
 #### 1.15.4.5. ZK分布式锁
-1. **<font color = "clime">对于ZK来说，实现分布式锁的核心是临时顺序节点和监听机制。</font>**  
+1. **<font color = "clime">对于ZK来说，实现分布式锁的核心是临时顺序节点和监听机制。</font>** ZK实现分布式锁要注意[羊群效应](/docs/microService/dubbo/ZookeeperProblem.md)    
 2. **ZooKeeper分布式锁的缺点：** 1). 需要依赖zookeeper；2). 性能低。频繁地“写”zookeeper。集群节点数越多，同步越慢，获取锁的过程越慢。  
 3. 基于ZooKeeper可以实现分布式的独占锁和读写锁。  
     1. **使用ZK实现分布式独占锁：**<font color="red">在某一节点下，建立临时顺序节点。最小节点获取到锁。非最小节点监听上一节点，上一节点释放锁，唤醒当前节点。</font>  
