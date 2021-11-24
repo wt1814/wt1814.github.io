@@ -675,6 +675,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; [I/O多路复用详解](/docs/microService/communication/Netty/epoll.md)  
 &emsp; &emsp; [多路复用之Reactor模式](/docs/microService/communication/Netty/Reactor.md)  
 &emsp; &emsp; [IO性能优化之零拷贝](/docs/microService/communication/Netty/zeroCopy.md)  
+&emsp; &emsp; [IO性能优化之零拷贝重制](/docs/microService/communication/Netty/zeroCopyRemake.md)  
 [Socket编程](/docs/microService/communication/Socket.md)  
 [NIO](/docs/microService/communication/NIO.md)  
 &emsp; [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
