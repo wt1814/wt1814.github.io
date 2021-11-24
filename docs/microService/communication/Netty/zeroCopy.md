@@ -70,8 +70,6 @@ https://mp.weixin.qq.com/s/sG0rviJlhVtHzGfd5NoqDQ
 ★★★零拷贝流程
 https://mp.weixin.qq.com/s/xY-hJl5qJv3QtttcMqHZRQ
 
-
-
 https://mp.weixin.qq.com/s/mOGtDgcc826MhGP7OWwjyg
 深入理解零拷贝技术 
 https://blog.csdn.net/wufaliang003/article/details/106195984
@@ -94,8 +92,15 @@ http://baijiahao.baidu.com/s?id=1664128784220450138&wfr=spider&for=pc
 &emsp; I/O传输中的一些基本概念：  
 
 * 状态切换：内核态和用户态之间的切换。  
+&emsp; 这里指的用户态、内核态指的是什么？上下文切换又是什么？  
+&emsp; 简单来说，用户空间指的就是用户进程的运行空间，内核空间就是内核的运行空间。   
+&emsp; 如果进程运行在内核空间就是内核态，运行在用户空间就是用户态。  
+&emsp; 为了安全起见，他们之间是互相隔离的，而在用户态和内核态之间的上下文切换也是比较耗时的。  
 * CPU拷贝：内核态和用户态之间的复制。  
 * DMA拷贝：设备（或网络）和内核态之间的复制。  
+&emsp; 因为对于一个IO操作而言，都是通过CPU发出对应的指令来完成，但是相比CPU来说，IO的速度太慢了，CPU有大量的时间处于等待IO的状态。  
+&emsp; 因此就产生了DMA（Direct Memory Access）直接内存访问技术，本质上来说他就是一块主板上独立的芯片，通过它来进行内存和IO设备的数据传输，从而减少CPU的等待时间。  
+&emsp; 但是无论谁来拷贝，频繁的拷贝耗时也是对性能的影响。  
 
 ## 1.1. 传统Linux I/O中数据拷贝过程
 <!-- 
@@ -116,8 +121,7 @@ DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要
 &emsp; 上述数据流转只是概述，接下来看看几种模式。
 
 ### 1.1.1. 仅CPU方式读数据read流程
-&emsp; 基于传统的IO方式，底层实际上通过调用read()和write()来实现。  
-&emsp; 通过read()把数据从硬盘读取到内核缓冲区，再复制到用户缓冲区；然后再通过write()写入到socket缓冲区，最后写入网卡设备。  
+&emsp; 基于传统的IO方式，底层实际上通过调用read()和write()来实现。 **<font color = "red">通过read()把数据从硬盘读取到内核缓冲区，再复制到用户缓冲区；然后再通过write()写入到socket缓冲区，最后写入网卡设备。</font>**  
 
 ```text
 File.read(file, buf, len);
@@ -326,12 +330,12 @@ DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要
 
 ------------
 
-mmap+write简单来说就是使用mmap替换了read+write中的read操作，减少了一次CPU的拷贝。  
-mmap主要实现方式是将读缓冲区的地址和用户缓冲区的地址进行映射，内核缓冲区和应用缓冲区共享，从而减少了从读缓冲区到用户缓冲区的一次CPU拷贝。  
+&emsp; mmap+write简单来说就是使用mmap替换了read+write中的read操作，减少了一次CPU的拷贝。  
+&emsp; mmap主要实现方式是将读缓冲区的地址和用户缓冲区的地址进行映射，内核缓冲区和应用缓冲区共享，从而减少了从读缓冲区到用户缓冲区的一次CPU拷贝。  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-142.png)  
 
-整个过程发生了4次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
+&emsp; 整个过程发生了4次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
 
 1. 用户进程通过mmap()方法向操作系统发起调用，上下文从用户态转向内核态
 2. DMA控制器把数据从硬盘中拷贝到读缓冲区
@@ -341,16 +345,16 @@ mmap主要实现方式是将读缓冲区的地址和用户缓冲区的地址进�
 6. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，write()返回
 
 
-mmap的方式节省了一次CPU拷贝，同时由于用户进程中的内存是虚拟的，只是映射到内核的读缓冲区，所以可以节省一半的内存空间，比较适合大文件的传输。  
+&emsp; mmap的方式节省了一次CPU拷贝，同时由于用户进程中的内存是虚拟的，只是映射到内核的读缓冲区，所以可以节省一半的内存空间，比较适合大文件的传输。  
 
 
 ------------
 
-mmap函数的作用相当于是内存共享,将内核空间的内存区域和用户空间共享,这样就避免了将内核空间的数据拷贝到用户空间的步骤,通过mmap函数发送数据时上述的步骤如下:  
+&emsp; mmap函数的作用相当于是内存共享,将内核空间的内存区域和用户空间共享,这样就避免了将内核空间的数据拷贝到用户空间的步骤,通过mmap函数发送数据时上述的步骤如下:  
 
-第一步:操作系统通过DMA传输将硬盘中的数据复制到内核缓冲区,执行了mmap函数之后,拷贝到内核缓冲区的数据会和用户空间进行共享,所以不需要进行拷贝  
-第二步:CPU将内核缓冲区的数据拷贝到内核空间socket缓冲区  
-第三步:操作系统通过DMA传输将内核socket缓冲区数据拷贝给网卡发送数据  
+&emsp; 第一步:操作系统通过DMA传输将硬盘中的数据复制到内核缓冲区,执行了mmap函数之后,拷贝到内核缓冲区的数据会和用户空间进行共享,所以不需要进行拷贝  
+&emsp; 第二步:CPU将内核缓冲区的数据拷贝到内核空间socket缓冲区  
+&emsp; 第三步:操作系统通过DMA传输将内核socket缓冲区数据拷贝给网卡发送数据  
 
 流程如下图示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-143.png)  
@@ -385,32 +389,32 @@ void *mmap(void *start， size_t length， int prot， int flags， int fd， of
 
 ------------
 
-相比mmap来说，sendfile同样减少了一次CPU拷贝，而且还减少了2次上下文切换。  
+&emsp; 相比mmap来说，sendfile同样减少了一次CPU拷贝，而且还减少了2次上下文切换。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-147.png)  
-sendfile是Linux2.1内核版本后引入的一个系统调用函数，通过使用sendfile数据可以直接在内核空间进行传输，因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。  
+&emsp; sendfile是Linux2.1内核版本后引入的一个系统调用函数，通过使用sendfile数据可以直接在内核空间进行传输，因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-148.png)  
 
-整个过程发生了2次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
+&emsp; 整个过程发生了2次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
 
 1. 用户进程通过sendfile()方法向操作系统发起调用，上下文从用户态转向内核态
 2. DMA控制器把数据从硬盘中拷贝到读缓冲区
 3. CPU将读缓冲区中数据拷贝到socket缓冲区
 4. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，sendfile调用返回  
 
-sendfile方法IO数据对用户空间完全不可见，所以只能适用于完全不需要用户空间处理的情况，比如静态文件服务器。  
+&emsp; sendfile方法IO数据对用户空间完全不可见，所以只能适用于完全不需要用户空间处理的情况，比如静态文件服务器。  
 
 -------
-senfile函数的作用是将一个文件描述符的内容发送给另一个文件描述符。而用户空间是不需要关心文件描述符的,所以整个的拷贝过程只会在内核空间操作,相当于减少了内核空间和用户空间之间数据的拷贝过程,而且还避免了CPU在内核空间和用户空间之间的来回切换过程。整体流程如下：  
+&emsp; senfile函数的作用是将一个文件描述符的内容发送给另一个文件描述符。而用户空间是不需要关心文件描述符的,所以整个的拷贝过程只会在内核空间操作,相当于减少了内核空间和用户空间之间数据的拷贝过程,而且还避免了CPU在内核空间和用户空间之间的来回切换过程。整体流程如下：  
 
-第一步：通过DMA传输将硬盘中的数据复制到内核页缓冲区  
-第二步：通过sendfile函数将页缓冲区的数据通过CPU拷贝给socket缓冲区  
-第三步：网卡通过DMA传输将socket缓冲区的数据拷贝走并发送数据  
+&emsp; 第一步：通过DMA传输将硬盘中的数据复制到内核页缓冲区  
+&emsp; 第二步：通过sendfile函数将页缓冲区的数据通过CPU拷贝给socket缓冲区  
+&emsp; 第三步：网卡通过DMA传输将socket缓冲区的数据拷贝走并发送数据  
 
-流程如下图示：  
+&emsp; 流程如下图示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-149.png)  
-整个过程中：DMA拷贝2次、CPU拷贝1次、内核空间和用户空间切换0次  
+&emsp; 整个过程中：DMA拷贝2次、CPU拷贝1次、内核空间和用户空间切换0次  
 
-可以看出通过sendfile函数时只会有一次CPU拷贝过程，而且全程都是在内核空间实现的，所以整个过程都不会使得CPU在内核空间和用户空间进行来回切换的操作，性能相比于mmap而言要更好  
+&emsp; 可以看出通过sendfile函数时只会有一次CPU拷贝过程，而且全程都是在内核空间实现的，所以整个过程都不会使得CPU在内核空间和用户空间进行来回切换的操作，性能相比于mmap而言要更好  
 
 
 <!-- 
