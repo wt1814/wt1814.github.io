@@ -4165,7 +4165,7 @@ update product set name = 'TXC' where id = 1;
 
 ### 1.19.5. Netty
 #### 1.19.5.1. Netty简介
-1. Netty是一个`非阻塞I/O` **<font color = "red">客户端-服务器框架</font>，主要用于开发Java网络应用程序，如协议服务器和客户端。`异步事件驱动`的网络应用程序框架和工具用于简化网络编程，例如TCP和UDP套接字服务器。Netty包括了`反应器编程模式`的实现。  
+1. Netty是一个`非阻塞I/O` <font color = "red">客户端-服务器框架</font>，主要用于开发Java网络应用程序，如协议服务器和客户端。`异步事件驱动`的网络应用程序框架和工具用于简化网络编程，例如TCP和UDP套接字服务器。Netty包括了`反应器编程模式`的实现。  
 &emsp; 除了作为异步网络应用程序框架，Netty还包括了对HTTP、HTTP2、DNS及其他协议的支持，涵盖了在Servlet容器内运行的能力、`对WebSockets的支持`、与Google Protocol Buffers的集成、对SSL/TLS的支持以及对用于SPDY协议和消息压缩的支持。  
 2. **<font color = "clime">为什么要用Netty？</font>**  
     &emsp; 在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
@@ -4183,7 +4183,9 @@ update product set name = 'TXC' where id = 1;
 &emsp; **<font color = "clime">一般来说，使用Bootstrap创建启动器的步骤可分为以下几步：</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-151.png)  
 1. 创建服务器启动辅助类，服务端是ServerBootstrap。  
-&emsp; 需要设置事件循环组EventLoopGroup，如果使用reactor主从模式，需要创建2个： **<font color = "clime">`创建boss线程组（EventLoopGroup bossGroup）`用于服务端接受客户端的连接；`创建worker线程组（EventLoopGroup workerGroup）`用于进行 SocketChannel的数据读写。</font>**  
+    &emsp; 需要设置事件循环组EventLoopGroup，如果使用reactor主从模式，需要创建2个：   
+    * **<font color = "clime">`创建boss线程组（EventLoopGroup bossGroup）`用于服务端接受客户端的连接；  
+    * `创建worker线程组（EventLoopGroup workerGroup）`用于进行 SocketChannel的数据读写。</font>**  
 2. 对ServerBootstrap进行配置，配置项有channel,handler,option。  
 3. 绑定服务器端口并启动服务器，同步等待服务器启动完毕。  
 4. 阻塞启动线程，并同步等待服务器关闭，因为如果不阻塞启动线程，则会在finally块中执行优雅关闭，导致服务器也会被关闭了。  
@@ -4232,7 +4234,7 @@ update product set name = 'TXC' where id = 1;
     * IO 线程模型：异步非阻塞通信。  
     * [高效的Reactor线程模型](/docs/microService/communication/Netty/Reactor.md) 
     * [零拷贝](/docs/microService/communication/Netty/nettyZeroCopy.md)  
-    * 高性能序列化协议：支持 protobuf 等高性能序列化协议。
+    * 支持 protobuf 等高性能序列化协议。
 2. 内存池设计：申请的内存可以重用，主要指直接内存。内部实现是用一颗二叉查找树管理内存分配情况。  
 3. 串形化处理读写：避免使用锁带来的性能开销。以及高效的并发编程。  
 
@@ -4244,10 +4246,10 @@ update product set name = 'TXC' where id = 1;
 ##### 1.19.5.6.1. Netty应用场景，  
 &emsp; Netty主要用来做网络通信：   
 
-* 作为 RPC 框架的网络通信工具 ：我们在分布式系统中，不同服务节点之间经常需要相互调用，这个时候就需要 RPC 框架了。不同服务节点之间的通信是如何做的呢？可以使用 Netty 来做。比如我调用另外一个节点的方法的话，至少是要让对方知道我调用的是哪个类中的哪个方法以及相关参数吧！  
-* 实现一个自己的 HTTP 服务器 ：通过 Netty 我们可以自己实现一个简单的 HTTP 服务器，这个大家应该不陌生。说到 HTTP 服务器的话，作为 Java 后端开发，我们一般使用 Tomcat 比较多。一个最基本的 HTTP 服务器可要以处理常见的 HTTP Method 的请求，比如 POST 请求、GET 请求等等。  
+* 作为 RPC 框架的网络通信工具：在分布式系统中，不同服务节点之间经常需要相互调用，这个时候就需要 RPC 框架了。不同服务节点之间的通信是如何做的呢？可以使用 Netty 来做。  
+* 实现一个自己的 HTTP 服务器 ：通过 Netty 可以实现一个简单的 HTTP 服务器。  
 * 实现一个即时通讯系统 ：使用 Netty 可以实现一个可以聊天类似微信的即时通讯系统，这方面的开源项目还蛮多的，可以自行去 Github 找一找。  
-* 实现消息推送系统 ：市面上有很多消息推送系统都是基于 Netty 来做的。......
+* 实现消息推送系统 ：市面上有很多消息推送系统都是基于 Netty 来做的。  
 * ...  
 
 ##### 1.19.5.6.2. TCP粘拆包与Netty编解码  

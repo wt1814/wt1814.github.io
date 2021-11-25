@@ -702,6 +702,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; &emsp; [NioEventLoop的启动](/docs/microService/communication/Netty/NioEventLoopStart.md)  
 &emsp; &emsp; &emsp; [NioEventLoop的执行](/docs/microService/communication/Netty/NioEventLoopRun.md)  
 &emsp; &emsp; [内存分配-ByteBuf](/docs/microService/communication/Netty/byteBuf.md)    
+&emsp; &emsp; &emsp; [内存分配-ByteBuf](/docs/microService/communication/Netty/byteBufIntro.md)    
 &emsp; &emsp; &emsp; [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)    
 &emsp; &emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
 &emsp; &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
@@ -720,7 +721,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 
 ## 内存优化
-
+&emsp; [堆外内存](/docs/system/OutHeapMemory.md)  
 
 ---
 ## Error  

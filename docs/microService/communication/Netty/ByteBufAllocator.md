@@ -32,4 +32,3 @@ public interface ByteBufAllocator {
 &emsp; ByteBufAllocator的基本实现类AbstractByteBufAllocator。  
 &emsp; 在AbstractByteBufAllocator#buffer()方法中做了判断，是否默认支持directBuffer，如果支持则分配directBuffer，否则分配heapBuffer。directBuffer()方法和heapBuffer()方法的实现逻辑几乎一致。  
 &emsp; unsafe和非unsafe，Netty 自动判别，如果操作系统底层支持unsafe 那就采用unsafe读写，否则采用非unsafe读写。  
-
