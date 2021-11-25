@@ -709,7 +709,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
 &emsp; &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
 [WebSocket](/docs/webSocket/Summary.md)  
-&emsp; [长轮询](/docs/webSocket/LongPolling.md)  
+&emsp; [4种Web端即时通信](/docs/webSocket/LongPolling.md)  
 &emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
 &emsp; [WebSocket协议](/docs/webSocket/WebSocket.md)  
 &emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
@@ -717,11 +717,11 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 
 ## 磁盘IO
-&emsp; [页缓存](/docs/system/PageCache.md)  
+[页缓存](/docs/system/PageCache.md)  
 
 
 ## 内存优化
-&emsp; [堆外内存](/docs/system/OutHeapMemory.md)  
+[堆外内存](/docs/system/OutHeapMemory.md)  
 
 ---
 ## Error  
