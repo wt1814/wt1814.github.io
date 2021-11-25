@@ -348,6 +348,7 @@
                 - [1.19.5.6.3. Netty实战](#119563-netty实战)
                 - [1.19.5.6.4. Netty多协议开发](#119564-netty多协议开发)
             - [1.19.5.7. Netty源码](#11957-netty源码)
+    - [WebSocket](#websocket)
     - [磁盘IO](#磁盘io)
     - [内存优化](#内存优化)
     - [1.20. 计算机网络](#120-计算机网络)
@@ -4272,6 +4273,10 @@ update product set name = 'TXC' where id = 1;
 * 私有协议栈开发  
 
 #### 1.19.5.7. Netty源码
+
+
+## WebSocket
+
 
 
 ## 磁盘IO

@@ -35,8 +35,7 @@
     - [常用中间件](#常用中间件)
         - [任务调度](#任务调度)
         - [分布式搜索引擎](#分布式搜索引擎)
-        - [分布式通信/网络IO](#分布式通信网络io)
-    - [webSocket](#websocket)
+    - [分布式通信/网络IO](#分布式通信网络io)
     - [磁盘IO](#磁盘io)
     - [内存优化](#内存优化)
     - [Error](#error)
@@ -667,7 +666,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [ES重制](/docs/ESRemake/ESRemake.md)    
 
 
-### 分布式通信/网络IO  
+## 分布式通信/网络IO  
 [通信基础](/docs/microService/communication/Netty/basics.md)   
 &emsp; [序列化](/docs/microService/communication/serializbale.md)  
 &emsp; [网络IO](/docs/microService/communication/NetworkIO.md)  
@@ -707,13 +706,12 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
 &emsp; &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
 
-
-## webSocket
-[长轮询](/docs/webSocket/LongPolling.md)  
-&emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
-[WebSocket协议](/docs/webSocket/WebSocket.md)  
-[WebSocket编码](/docs/webSocket/WebSocketCode.md)  
-[IM系统](/docs/webSocket/IM.md)  
+[WebSocket](/docs/webSocket/Summary.md)  
+&emsp; [长轮询](/docs/webSocket/LongPolling.md)  
+&emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
+&emsp; [WebSocket协议](/docs/webSocket/WebSocket.md)  
+&emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
+&emsp; [IM系统](/docs/webSocket/IM.md)  
 
 
 ## 磁盘IO
