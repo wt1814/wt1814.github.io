@@ -32,7 +32,7 @@ https://www.upyun.com/tech/article/508/%E8%AF%B4%E8%AF%B4%20WebSocket%EF%BC%8C3%
 ## 1.1. WebSocket协议是什么
 ### 1.1.1. WebSocket是应用层协议
 &emsp; WebSocket是基于TCP的应用层协议，用于在C/S架构的应用中实现双向通信，关于WebSocket协议的详细规范和定义参见[rfc6455](https://tools.ietf.org/html/rfc6455)。  
-&emsp; 需要特别注意的是：虽然WebSocket协议在建立连接时会使用HTTP协议，但这并意味着WebSocket协议是基于HTTP协议实现的。  
+&emsp; 需要特别注意的是：虽然WebSocket协议在建立连接时会使用HTTP协议，但这并不意味着WebSocket协议是基于HTTP协议实现的。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-135.png)  
 
 ### 1.1.2. WebSocket与Http的区别
