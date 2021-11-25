@@ -50,6 +50,7 @@
         * [外观模式/门面模式](/docs/java/Design/facade.md)   
         * [适配器模式](/docs/java/Design/adapter.md)   
         * [代理模式](/docs/java/Design/proxy.md)  
+            * [动态编程](/docs/java/Design/DynamicProgramming.md)  
             * [JDK动态代理](/docs/java/Design/DynamicProxy.md)   
             * [CGLIB代理](/docs/java/Design/CGLIB.md)   
         * [装饰器模式](/docs/java/Design/decorator.md)   

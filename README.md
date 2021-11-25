@@ -104,6 +104,7 @@
 &emsp; &emsp; [外观模式/门面模式](/docs/java/Design/facade.md)   
 &emsp; &emsp; [适配器模式](/docs/java/Design/adapter.md)   
 &emsp; &emsp; [代理模式](/docs/java/Design/proxy.md)   
+&emsp; &emsp; &emsp; [动态编程](/docs/java/Design/DynamicProgramming.md)  
 &emsp; &emsp; &emsp; [JDK动态代理](/docs/java/Design/DynamicProxy.md)   
 &emsp; &emsp; &emsp; [CGLIB代理](/docs/java/Design/CGLIB.md)   
 &emsp; &emsp; [装饰器模式](/docs/java/Design/decorator.md)  
@@ -707,7 +708,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; &emsp; [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)    
 &emsp; &emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
 &emsp; &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
-
 [WebSocket](/docs/webSocket/Summary.md)  
 &emsp; [长轮询](/docs/webSocket/LongPolling.md)  
 &emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
