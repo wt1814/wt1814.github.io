@@ -6,6 +6,7 @@
         - [1.2.1. Nginx+Keepalived](#121-nginxkeepalived)
     - [1.3. 采集Nginx的日志](#13-采集nginx的日志)
     - [1.4. Nginx监控](#14-nginx监控)
+    - [1.5. Nginx常见的优化配置](#15-nginx常见的优化配置)
 
 <!-- /TOC -->
 
@@ -79,3 +80,13 @@ https://mp.weixin.qq.com/s/aFbKCQBnrK3GaQsXjIFAOw
 又一款Nginx 管理可视化神器！通过界面完成配置监控 
 https://mp.weixin.qq.com/s/sPntuPTCNTs6bXsJkO8g5g
 -->
+
+
+## 1.5. Nginx常见的优化配置
+  
+* 调整 worker_processes：指 Nginx 要生成的 Worker 数量，最佳实践是每个 CPU 运行 1 个工作进程。  
+* 最大化 worker_connections。  
+* 启用 Gzip 压缩：压缩文件大小，减少了客户端 HTTP 的传输带宽，因此提高了页面加载速度。  
+* 为静态文件启用缓存。  
+* 禁用 access_logs：访问日志记录，它记录每个 Nginx 请求，因此消耗了大量 CPU 资源，从而降低了 Nginx 性能。  
+
