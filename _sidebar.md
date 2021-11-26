@@ -580,6 +580,7 @@
         * [Nginx介绍](/docs/system/loadBalance/Nginx/nginxIntroduce.md)  
         * [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
         * [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)   
+        * [Nginx原理](/docs/system/loadBalance/Nginx/nginxPrinciple.md)  
 * DevOps  
     * [CI/CD](/docs/devAndOps/CICD.md)  
     * [Devops](/docs/devAndOps/devOps.md)  

@@ -763,6 +763,8 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [Nginx介绍](/docs/system/loadBalance/Nginx/nginxIntroduce.md)  
 &emsp; [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
 &emsp; [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
+&emsp; [Nginx原理](/docs/system/loadBalance/Nginx/nginxPrinciple.md)  
+
 
 ------
 
