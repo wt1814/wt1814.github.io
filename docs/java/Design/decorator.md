@@ -15,7 +15,18 @@
 
 
 # 1. 装饰(Decorator)模式  
-<!-- 
+<!--
+
+详细讲解装饰者模式和继承之间的关系和优劣(讲道理这事儿，不怕过 就怕不够)
+https://blog.csdn.net/qq_27093465/article/details/53323187
+为什么装饰器模式能够取代继承？
+https://juejin.cn/post/6979384113195122695
+
+-------
+
+https://blog.csdn.net/qq_27093465/article/details/53323187
+https://mp.weixin.qq.com/s/8SD3gjoqv-yBlyXk7q0AEA
+
 https://mp.weixin.qq.com/s?__biz=MzUzODU4MjE2MQ==&mid=2247484592&idx=1&sn=42a14aef3707745f570488be2fe77326&chksm=fad4c94ecda34058648b394acca654520e97f080aa156fb281c26eaad6f910c55e67b3063364&scene=21#wechat_redirect
 
 https://www.cnblogs.com/volcano-liu/p/10897897.html

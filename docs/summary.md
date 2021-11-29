@@ -31,9 +31,9 @@
         - [1.2.3. 设计模式详解](#123-设计模式详解)
             - [1.2.3.1. 5种创建型设计模式](#1231-5种创建型设计模式)
             - [1.2.3.2. 7种结构型设计模式](#1232-7种结构型设计模式)
+            - [1.2.3.5. 两种动态代理](#1235-两种动态代理)
             - [1.2.3.3. 11种行为型设计模式](#1233-11种行为型设计模式)
             - [1.2.3.4. 设计模式大讨论](#1234-设计模式大讨论)
-            - [1.2.3.5. 2种动态代理](#1235-2种动态代理)
             - [1.2.3.6. 常使用的设计模式](#1236-常使用的设计模式)
     - [1.3. JVM](#13-jvm)
         - [1.3.1. JDK、JRE、JVM](#131-jdkjrejvm)
@@ -583,7 +583,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 &emsp; 个人的简单理解：  
 &emsp; SPI（Service Provider Interface），服务提供发现接口。热插拔、动态替换。  
-&emsp; 多态，一个接口在一个包中有多个实现；而SPI提供的接口的实现一般在多个包中，例如JDBC的实现mysql、oracle，web容器有tomcat、jetty等。  
+&emsp; `SPI与多态比较：`  
+&emsp; 多态，一个接口在一个包中有多个实现；  
+&emsp; 而SPI提供的接口的实现一般在多个包中，例如JDBC的实现mysql、oracle，web容器有tomcat、jetty等。  
 &emsp; 一个接口在b、c包中有实现，在a包中可替换所依赖的包（b或c），动态实现某一个功能。  
 
 
@@ -609,12 +611,12 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 ### 1.2.3. 设计模式详解
 1. 常用设计模式有23种（不包含简单工厂模式）。 **<font color = "red">这23种设计模式的本质是面向对象设计原则的实际运用，是对类的封装性、继承性和多态性，以及类的关联关系和组合关系的充分理解。</font>**  
-2.  **<font color = "red">结构型：多个类协同完成一个功能；行为型，算法模式。</font>**  
+2.  **<font color = "red">结构型设计模式：多个类协同完成一个功能； 行为型设计模式，算法模式。</font>**  
 
 #### 1.2.3.1. 5种创建型设计模式
 1. 单例模式
-    1. `单例模式与static静态类`：静态使用于一些非状态Bean，单例使用于状态Bean。  
-    2. ~~单例模式适用场景~~：全局只有一个示例，例如：数据库连接池、spring单例bean、全局熟悉...  
+    1. `单例模式与static静态类`：静态使用于一些非状态Bean，单例模式使用于状态Bean。  
+    2. ~~单例模式适用场景~~：全局只有一个示例，例如：数据库连接池、spring单例bean...  
     3. 编码
     ★★★双重校验锁的形式：DCL详解参考[Volatile](/docs/java/concurrent/Volatile.md)。`注⚠️：static、volicate、双重校验+锁synchronized。`  
 
@@ -642,6 +644,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
                     }
                 }
             } 
+            // todo 返回实例
             return lazy;
         }
         
@@ -678,15 +681,14 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 2. 适配器模式
     1. 平时开发中，面向接口编程，注入其他类，从而进行调用。  
     &emsp; 适配器(Adapter)模式中，Adapter，适配器类，即实现目标接口Target，又继承Adaptee类。适配器模式的核心角色，其他两个角色都是已经存在的角色，而适配器角色是需要新建立的，它的职责非常简单：把源角色转换为目标角色。`转换的方式有：即能通过继承，又能通过类关联的方式。`  
-    2. **适配器模式有3种形式：类适配器、对象适配器、接口适配器。**  
+    2. **适配器模式有3种形式：对象适配器、类适配器、接口适配器。**  
         * `对象适配器（平时使用最多）`：不使用多继承或继承的方式，而是使用直接关联，或者称为委托的方式。  
         * 类适配器：Adapter类继承Adaptee（被适配类），同时实现Target接口（因为Java不支持多继承，所以只能通过接口的方法来实现多继承），在Client类中可以根据需要选择并创建任一种符合需求的子类，来实现具体功能。 
         * 接口适配器：通过抽象类来实现适配。即适配器类是一个抽象类。  
     3. 适配的思想。  
 3. 代理模式：<font color = "red">提供了对目标对象另外的访问方式，即通过代理访问目标对象。</font>  
-4. 装饰器模式：Decorator，装饰角色，一般是一个抽象类，继承自或实现Component（抽象构件），在它的属性里面有一个变量指向Component抽象构件，这是装饰器最关键的地方。  
-&emsp; 实际开发中，大多数用于对老项目的某些功能进行扩展。新项目中一般不怎么用此模式。  
-&emsp; 此设计模式重点在于对已有的功能进行扩展。  
+4. 装饰器模式：`可替代继承(有继承就可以改写装饰器模式)`，此设计模式重点在于对已有的功能进行扩展。实际开发中，大多数用于对老项目的某些功能进行扩展。新项目中一般不怎么用此模式。`装饰器模式解决继承的【臃肿】`。      
+&emsp; Decorator，装饰角色，一般是一个抽象类，继承自或实现Component（抽象构件），在它的属性里面有一个变量指向Component抽象构件，这是装饰器最关键的地方。  
 &emsp; 在Mybatis中，Cache的实现类LruCache、FifoCache等都是装饰一个类PerpetualCache。常见代码格式，就是装饰类中会有个被装饰类的属性，并且这个属性还是构造方法的参数。  
 5. 桥接模式（if/else）
 6. 组合模式
@@ -701,6 +703,26 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     &emsp; PS：外部状态在线程间需考虑并发问题，因此不适合共享，但当对象被使用完成后，通过修改外部状态，使其可以复用于下一次的访问需求。  
 
 
+#### 1.2.3.5. 两种动态代理
+1. JDK动态代理：  
+    0. 两大知识点：反射、因单继承只能为接口生成代理对象。  
+    1. Java动态代理类位于java.lang.reflect包下，一般主要涉及到以下两个重要的类或接口，`一个是InvocationHandler接口、另一个则是Proxy类。`  
+        * Proxy类。该类即为动态代理类。Proxy.newProxyInstance()生成代理对象；  
+        * InvocationHandler接口。 **<font color = "clime">在使用动态代理时，需要定义一个位于代理类与委托类之间的中介类，中介类被要求实现InvocationHandler接口。</font>** 通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。  
+    2. <font color = "clime">JDK动态代理的实现，大致流程：</font>使用`反射`来创建代理类。  
+        1. <font color = "red">为接口创建代理类的字节码文件。</font>   
+        2. <font color = "red">使用ClassLoader将字节码文件加载到JVM。</font>  
+        3. <font color = "red">创建代理类实例对象，执行对象的目标方法。</font>  
+    3. `限制：JDK动态代理为什么只能使用接口？`  
+    &emsp; JDK动态代理是为接口生成代理对象，该代理对象继承了JAVA标准类库Proxy.java类并且实现了目标对象。由于JAVA遵循`单继承`多实现原则，所以JDK无法利用继承来为目标对象生产代理对象。   
+2. CGLIB代理
+    1. 依赖ASM字节码工具，通过动态生成`实现接口或继承类`的类字节码，实现动态代理。  
+    &emsp; `针对接口，生成实现接口的类，即implements方式；针对类，生成继承父类的类，即extends方式。`  
+    2. **<font color = "clime">CGLIB基于继承类生成动态代理需要注意：</font>**  
+        1. final声明的类是不能被代理的；
+        2. 类中的private,final方法不能被代理，static方法不生成代理方法。
+
+
 #### 1.2.3.3. 11种行为型设计模式
 1. 模板方法模式
 2. 策略模式(if/else)
@@ -710,31 +732,12 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 #### 1.2.3.4. 设计模式大讨论
 
 
-#### 1.2.3.5. 2种动态代理
-1. JDK动态代理
-    1. Java动态代理类位于java.lang.reflect包下，一般主要涉及到以下两个重要的类或接口，`一个是InvocationHandler接口、另一个则是Proxy类。`  
-        * Proxy类。该类即为动态代理类。Proxy.newProxyInstance()生成代理对象；  
-        * InvocationHandler接口。 **<font color = "clime">在使用动态代理时，需要定义一个位于代理类与委托类之间的中介类，中介类被要求实现InvocationHandler接口。</font>** 通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。  
-    2. <font color = "clime">JDK动态代理的实现，大致流程：</font>  
-        1. <font color = "red">为接口创建代理类的字节码文件。</font> 使用`反射`来创建代理类。  
-        2. <font color = "red">使用ClassLoader将字节码文件加载到JVM。</font>  
-        3. <font color = "red">创建代理类实例对象，执行对象的目标方法。</font>  
-    3. `JDK动态代理为什么只能使用接口？`  
-    &emsp; JDK动态代理是为接口生成代理对象，该代理对象继承了JAVA标准类库Proxy.java类并且实现了目标对象。由于JAVA遵循单继承多实现原则，所以JDK无法利用继承来为目标对象生产代理对象。   
-2. CGLIB代理
-    1. 依赖ASM字节码工具，通过动态生成`实现接口或继承类`的类字节码，实现动态代理。  
-    &emsp; `针对接口，生成实现接口的类，即implements方式；针对类，生成继承父类的类，即extends方式。`  
-    2. **<font color = "clime">CGLIB基于继承类生成动态代理需要注意：</font>**  
-        1. final声明的类是不能被代理的；
-        2. 类中的private,final方法不能被代理，static方法不生成代理方法。
-
 #### 1.2.3.6. 常使用的设计模式
 &emsp; 面试题：你使用过哪些设计模式？ 根据实际使用，设计模式分3类：  
 
 * 框架：SpringAOP、池化（享元模式）、 mq
 * 不自觉使用的设计模式，如外观/门面模式、 **<font color = "clime">对象适配器模式（Service层调用）</font>** 。  
-* 需要编码：单例模式与static静态类、工厂模式、模板方法、3个if/else的优化：桥接模式、策略模式、观察者模式...  
-
+* 需要编码：单例模式与static静态类，工厂模式，模板方法，3个if/else的优化：桥接模式、策略模式、责任链模式，观察者模式...  
 
 
 ## 1.3. JVM

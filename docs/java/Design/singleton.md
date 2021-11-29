@@ -64,8 +64,8 @@ public class LazySimpleSingleton {
     public static LazySimpleSingleton getInstance(){
         if(lazy == null){
             lazy = new LazySimpleSingleton();
-        } r
-        eturn lazy;
+        } 
+        return lazy;
     }
 }
 ```
@@ -99,6 +99,7 @@ public class LazyDoubleCheckSingleton {
                 }
             }
         } 
+        // todo 返回实例
         return lazy;
     }
     
