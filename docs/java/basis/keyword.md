@@ -5,6 +5,7 @@
     - [1.1. Java访问控制符](#11-java访问控制符)
     - [1.2. static](#12-static)
         - [1.2.1. 静态方法可以调用成员变量吗？](#121-静态方法可以调用成员变量吗)
+        - [static与JVM](#static与jvm)
     - [1.3. final](#13-final)
 
 <!-- /TOC -->
@@ -12,9 +13,13 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. static关键字：  
-&emsp; 方便在没有创建对象的情况下来进行调用（方法/变量）。  
-&emsp; 1). static修饰变量、 2). 修饰方法、 3). static 可以修饰代码块，主要分为两种，一种直接定义在类中，使用static{}，这种被称为静态代码块，一种是在类中定义静态内部类，使用static class xxx来进行定义、 4). static可以和单例模式一起使用，通过双重检查锁来实现线程安全的单例模式、 5).静态导包。   
-&emsp; 静态方法不能调用成员变量，只能调用静态变量。  
+    1. 方便在没有创建对象的情况下来进行调用（方法/变量）。  
+    2. static使用： 1). static修饰变量、 2). 修饰方法、 3). static 可以修饰代码块，主要分为两种，一种直接定义在类中，使用static{}，这种被称为静态代码块，一种是在类中定义静态内部类，使用static class xxx来进行定义、 4). static可以和单例模式一起使用，通过双重检查锁来实现线程安全的单例模式、 5).静态导包。     
+    3. 静态方法可以调用成员变量吗？ `注⚠️：static静态方法引用类变量，变量需要static修饰。`  
+    4. static与JVM： 
+        1. static作为类变量，只被加载一次。  
+        2. 类的加载流程中，准备阶段、初始化阶段。  
+        3. static变量被存放在方法区中。    
 
 
 # 1. Java关键字
@@ -63,6 +68,14 @@ static{
 ### 1.2.1. 静态方法可以调用成员变量吗？  
 <!-- 
 https://blog.csdn.net/bulubuluu/article/details/75688584
+-->
+
+### static与JVM
+<!-- 
+静态变量与JVM内存分配
+https://blog.csdn.net/ziyonghong/article/details/81163060
+
+https://bestqiang.github.io/2019/05/06/%E4%BB%8Eclass%E6%96%87%E4%BB%B6%E4%B8%8EJVM%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%E7%90%86%E8%A7%A3final%E3%80%81static%E3%80%81static-final/
 -->
 
 ## 1.3. final  

@@ -27,15 +27,15 @@
 1. HashMap数据结构：  
     1. Hash表数据结构：  
     &emsp; 初始容量为16；  
-    &emsp; loadFactor加载因子0.75f；  
     &emsp; HashMap在发生hash冲突的时候用的是链地址法。JDK1.7中使用头插法，JDK1.8使用尾插法。  
+    &emsp; loadFactor加载因子0.75f；  
     2. 树形化结构：  
     &emsp; 树形化：把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于8；table数组长度大于等于64。  
     &emsp; 解除树形化：阈值6。
 2. HashMap成员方法：  
     1. hash()函数/扰动函数：  
     &emsp; hash函数会根据传递的key值进行计算， 1)首先计算key的hashCode值， 2)然后再对hashcode进行无符号右移操作， 3)最后再和hashCode进行异或 ^ 操作。（即让hashcode的高16位和低16位进行异或操作。）   
-    &emsp; **<font color = "clime">这样做的好处是增加了随机性，减少了碰撞冲突的可能性。</font>**    
+    &emsp; **<font color = "clime">`看似“多余”的2、3步`的好处是增加了随机性，减少了碰撞冲突的可能性。</font>**    
     2. put()函数：
         1. 在put的时候，首先对key做hash运算，计算出该key所在的index。
         2. 如果没碰撞，直接放到数组中；

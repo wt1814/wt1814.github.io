@@ -17,6 +17,7 @@
             - [1.2.3.3. 延伸知识点](#1233-延伸知识点)
         - [1.2.4. 使用](#124-使用)
         - [1.2.5. 卸载](#125-卸载)
+    - [1.3. 小结：从JVM加载机制理解final、static、static final](#13-小结从jvm加载机制理解finalstaticstatic-final)
 
 <!-- /TOC -->
 
@@ -36,6 +37,7 @@
 &emsp; `为什么要用符号引用呢？` **<font color = "blue">这是因为类加载之前，javac会将源代码编译成.class文件，这个时候javac是不知道被编译的类中所引用的类、方法或者变量它们的引用地址在哪里，所以只能用符号引用来表示。</font>**  
 &emsp; **<font color = "clime">解析过程在某些情况下可以在初始化阶段之后再开始，这是为了支持Java的动态绑定。</font>**   
 6. 初始化：执行static代码块(cinit)进行初始化，如果存在父类，先对父类进行初始化。  
+7. 从class文件与JVM加载机制理解final、static、static final  
 
 <!-- 
 
@@ -55,15 +57,10 @@
 
 Ps：静态代码块是绝对线程安全的，只能隐式被java虚拟机在类加载过程中初始化调用！(此处该有问题static代码块线程安全吗？)
 
-当类加载完成之后，紧接着就是对象分配内存空间和初始化的过程
 
-    首先为对象分配合适大小的内存空间
 
-    接着为实例变量赋默认值
 
-    设置对象的头信息，对象hash码、GC分代年龄、元数据信息等
 
-    执行构造函数(init)初始化
 
 -->
 
@@ -215,3 +212,11 @@ Ps：静态代码块是绝对线程安全的，只能隐式被java虚拟机在�
 
 ### 1.2.5. 卸载  
 &emsp; 参考[GC](/docs/java/JVM/GC.md)方法区回收。  
+
+
+## 1.3. 小结：从JVM加载机制理解final、static、static final  
+<!-- 
+从class文件与JVM加载机制理解final、static、static final
+https://bestqiang.github.io/2019/05/06/%E4%BB%8Eclass%E6%96%87%E4%BB%B6%E4%B8%8EJVM%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%E7%90%86%E8%A7%A3final%E3%80%81static%E3%80%81static-final/
+-->
+
