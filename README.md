@@ -129,7 +129,7 @@
 [类加载](/docs/java/JVM/classLoading.md)  
 &emsp; [JVM类的加载](/docs/java/JVM/classLoad.md)  
 &emsp; [JVM类加载器](/docs/java/JVM/classLoader.md)  
-[内存结构](/docs/java/JVM/Memory.md)  
+[运行时数据区/内存结构](/docs/java/JVM/Memory.md)  
 &emsp; [JVM内存结构](/docs/java/JVM/JVMMemory.md)  
 &emsp; &emsp; [JVM栈](/docs/java/JVM/JVMStack.md)  
 &emsp; &emsp; [常量池详解](/docs/java/JVM/ConstantPool.md)  

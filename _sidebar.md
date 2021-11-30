@@ -74,7 +74,7 @@
         * [JVM类的加载](/docs/java/JVM/classLoad.md)  
         * [JVM类加载器](/docs/java/JVM/classLoader.md)  
         * [对象的生命周期](/docs/java/JVM/ObjectPeriod.md)  
-    * [内存结构](/docs/java/JVM/Memory.md)  
+    * [运行时数据区/内存结构](/docs/java/JVM/Memory.md)  
         * [JVM内存结构](/docs/java/JVM/JVMMemory.md)  
             * [JVM栈](/docs/java/JVM/JVMStack.md)  
             * [常量池详解](/docs/java/JVM/ConstantPool.md)  

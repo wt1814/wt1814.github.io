@@ -17,7 +17,7 @@
             - [1.2.3.3. 延伸知识点](#1233-延伸知识点)
         - [1.2.4. 使用](#124-使用)
         - [1.2.5. 卸载](#125-卸载)
-    - [1.3. 小结：从JVM加载机制理解final、static、static final](#13-小结从jvm加载机制理解finalstaticstatic-final)
+    - [1.3. 扩展：从JVM加载机制理解final、static、static final](#13-扩展从jvm加载机制理解finalstaticstatic-final)
 
 <!-- /TOC -->
 
@@ -213,8 +213,7 @@ Ps：静态代码块是绝对线程安全的，只能隐式被java虚拟机在�
 ### 1.2.5. 卸载  
 &emsp; 参考[GC](/docs/java/JVM/GC.md)方法区回收。  
 
-
-## 1.3. 小结：从JVM加载机制理解final、static、static final  
+## 1.3. 扩展：从JVM加载机制理解final、static、static final  
 <!-- 
 从class文件与JVM加载机制理解final、static、static final
 https://bestqiang.github.io/2019/05/06/%E4%BB%8Eclass%E6%96%87%E4%BB%B6%E4%B8%8EJVM%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%E7%90%86%E8%A7%A3final%E3%80%81static%E3%80%81static-final/

@@ -41,7 +41,7 @@
         - [1.3.3. 类加载](#133-类加载)
             - [1.3.3.1. JVM类的加载](#1331-jvm类的加载)
             - [1.3.3.2. JVM类加载器](#1332-jvm类加载器)
-        - [1.3.4. 内存结构](#134-内存结构)
+        - [1.3.4. 运行时数据区/内存结构](#134-运行时数据区内存结构)
             - [1.3.4.1. JVM内存结构](#1341-jvm内存结构)
                 - [1.3.4.1.1. JVM内存结构](#13411-jvm内存结构)
                 - [1.3.4.1.2. 常量池详解](#13412-常量池详解)
@@ -704,7 +704,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 
 #### 1.2.3.5. 两种动态代理
-1. JDK动态代理：  
+1. ~~动态编程~~  
+2. JDK动态代理：  
     0. 两大知识点：反射、因单继承只能为接口生成代理对象。  
     1. Java动态代理类位于java.lang.reflect包下，一般主要涉及到以下两个重要的类或接口，`一个是InvocationHandler接口、另一个则是Proxy类。`  
         * Proxy类。该类即为动态代理类。Proxy.newProxyInstance()生成代理对象；  
@@ -715,7 +716,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         3. <font color = "red">创建代理类实例对象，执行对象的目标方法。</font>  
     3. `限制：JDK动态代理为什么只能使用接口？`  
     &emsp; JDK动态代理是为接口生成代理对象，该代理对象继承了JAVA标准类库Proxy.java类并且实现了目标对象。由于JAVA遵循`单继承`多实现原则，所以JDK无法利用继承来为目标对象生产代理对象。   
-2. CGLIB代理
+3. CGLIB代理
     1. 依赖ASM字节码工具，通过动态生成`实现接口或继承类`的类字节码，实现动态代理。  
     &emsp; `针对接口，生成实现接口的类，即implements方式；针对类，生成继承父类的类，即extends方式。`  
     2. **<font color = "clime">CGLIB基于继承类生成动态代理需要注意：</font>**  
@@ -746,9 +747,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-145.png)  
 1. <font color = "red">JVM由4大部分组成：类加载器ClassLoader，运行时数据区Runtime Data Area，执行引擎Execution Engine，本地方法调用Native Interface。</font>  
 2. **<font color = "clime">JVM各组件的作用（JVM执行程序的过程）：</font>**   
-    1. 首先通过类加载器（ClassLoader）把Java代码转换成字节码；  
-    2. 运行时数据区（Runtime Data Area）再把字节码加载到内存中；  
-    3. <font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此`需要特定的命令解析器执行引擎（Execution Engine），将字节码翻译成底层系统指令，再交由CPU去执行；`</font>  
+    1. 编译：首先通过类加载器（ClassLoader）把Java代码转换成字节码；  
+    2. 加载：运行时数据区（Runtime Data Area）再把字节码加载到内存中；  
+    3. 运行：<font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此`需要特定的命令解析器执行引擎（Execution Engine），将字节码翻译成底层系统指令，再交由CPU去执行；`</font>  
     4. 而这个过程中需要调用其他语言的本地库接口（Native Interface）来实现整个程序的功能。  
 
 ### 1.3.2. 编译成Class字节码文件
@@ -768,10 +769,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 5. 解析(Resolution)： **<font color = "red">将常量池内的符号引用转换为直接引用</font>** ，得到类或者字段、方法在内存中的指针或者偏移量，确保类与类之间相互引用正确性，完成内存结构布局，以便直接调用该方法。  
 &emsp; `为什么要用符号引用呢？` **<font color = "blue">这是因为类加载之前，javac会将源代码编译成.class文件，这个时候javac是不知道被编译的类中所引用的类、方法或者变量它们的引用地址在哪里，所以只能用符号引用来表示。</font>**  
 &emsp; **<font color = "clime">解析过程在某些情况下可以在初始化阶段之后再开始，这是为了支持Java的动态绑定。</font>**   
-6. 初始化：执行static代码块(cinit)进行初始化，如果存在父类，先对父类进行初始化。  
-
-7. 从class文件与JVM加载机制理解final、static、static final  
-
+6. 初始化：执行`static代码块(cinit)进行初始化`，如果存在父类，先对父类进行初始化。  
+7. 扩展：从class文件与JVM加载机制理解final、static、static final  
 
 #### 1.3.3.2. JVM类加载器
 1. JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。  
@@ -786,12 +785,12 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。    
     3. ......  
 
-### 1.3.4. 内存结构
+### 1.3.4. 运行时数据区/内存结构
 #### 1.3.4.1. JVM内存结构
 ##### 1.3.4.1.1. JVM内存结构
 1. 运行时数据区。线程独享：程序计数器、JVM栈、本地方法栈；线程共享区：堆、方法区（元空间）。  
 2. 程序计数器看作是当前线程所执行的字节码的行号指示器。  
-3. JVM栈  
+3. JVM栈/【方法】【栈】  
     1. <font color = "red">JVM栈描述Java方法执行的内存模型。</font>Java虚拟机栈是线程私有的。Java虚拟机栈会出现两种异常：StackOverFlowError和OutOfMemoryError。    
     2. 【方法】栈  
     &emsp; Java虚拟机栈中出栈入栈的元素称为“栈帧”，栈对应线程，栈帧对应方法。每个方法被执行的时候，都会创建一个栈帧，把栈帧压入栈，当方法正常返回或者抛出未捕获的异常时，栈帧就会出栈。  
@@ -803,10 +802,12 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         * 方法返回地址
     4. `为什么不把基本类型放堆中呢？`   
     &emsp; 因为其占用的空间一般是 1~8 个字节——需要空间比较少，而且因为是基本类型，所以不会出现动态增长的情况——长度固定，因此栈中存储就够了。  
-4. 堆  
-    1. 堆分为新生代、老年代，默认比例1: 2。 新生代又按照8: 1: 1划分为Eden区和两个Survivor区。  
+4. 【GC】【堆】  
+    1. 【GC】堆：分代回收，堆分为新生代、老年代，默认比例1: 2。 新生代又按照8: 1: 1划分为Eden区和两个Survivor区。  
     2. **<font color = "blue">在Eden区中，JVM为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>** `新生代 -> Eden -> TLAB`      
-    3. 堆是分配对象存储的唯一选择吗？[逃逸分析](/docs/java/JVM/escape.md)  
+    3. GC【堆】：  
+        1. 堆中存放对象。  
+        2. 堆是分配对象存储的唯一选择吗？[逃逸分析](/docs/java/JVM/escape.md)  
 5. 方法区：
     1. 在类加载阶段，在Java堆中生成一个代表这个类的java.lang.Class对象，作为对方法区中这些数据的访问入口。  
     2. <font color = "clime">方法区的演进：</font>  
