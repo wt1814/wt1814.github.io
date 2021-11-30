@@ -795,6 +795,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 ### 1.3.4. 运行时数据区/内存结构
 #### 1.3.4.1. JVM内存结构
 ##### 1.3.4.1.1. JVM内存结构
+&emsp; Java虚拟机在执行Java程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK1.8和之前的版本略有不同。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-7.png)  
 1. 运行时数据区。线程独享：程序计数器、JVM栈、本地方法栈；线程共享区：堆、方法区（元空间）。  
 2. 程序计数器看作是当前线程所执行的字节码的行号指示器。  
 3. JVM栈/【方法】【栈】  
@@ -909,14 +911,14 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 &emsp; ...
 
 ### 1.3.6. GC
-&emsp; `垃圾回收器` 在 `安全点/安全区域` `分代/整堆` 回收 `(堆)根不可达的对象 或 (方法区)类/常量`。  
+&emsp; ⚠️⚠️⚠️一句话小结：`垃圾回收器` 在 `安全点/安全区域` 采用`回收算法` `分代/整堆` 回收 `(堆)根不可达的对象 或 (方法区)类/常量`。  
 
 #### 1.3.6.1. GC-回收位置/安全点
 1. 安全点  
 &emsp; **<font color = "clime">可达性分析算法必须是在一个确保一致性的内存快照中进行。</font>**   
 &emsp; **<font color = "clime">安全点意味着在这个点时，所有工作线程的状态是确定的，JVM可以安全地执行GC。</font>**  
 2. `安全区域和线程中断`  
-&emsp; `在安全点上中断的是活跃运行的用户线程，对于已经挂起的线程该怎么处理呢？`**<font color = "blue">已经挂起的线程会被认定为处在安全区域内，中断的时候不需要考虑安全区域中的线程。</font>**  
+&emsp; `在安全点上中断的是活跃运行的用户线程，对于已经挂起的线程该怎么处理呢？`**<font color = "blue">`已经挂起的线程`会被认定为处在`安全区域`内，中断的时候不需要考虑安全区域中的线程。</font>**  
 &emsp; 当前安全区域的线程要被唤醒离开安全区域时，先检查能否离开，如果GC完成了，那么线程可以离开，否则它必须等待，直到收到安全离开的信号为止。  
 
 #### 1.3.6.2. 回收算法与分代回收
@@ -939,23 +941,23 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     * `Full GC：收集整个堆，包括新生代，老年代，永久代(在 JDK 1.8 及以后，永久代被移除，换为 metaspace 元空间)等所有部分的模式。`  
 6. YGC触发时机：eden区快要被占满的时候；在full gc前会先执行young gc。  
 7. Full GC   
-&emsp; **<font color = "red">Full GC的触发时机：（老年代或永久代不足 ---> 老年代不满足年轻代晋升 ---> 回收器(例如CMS)---> 系统调用 ）</font>**   
-    1. 老年代或永久的不足
+&emsp; **<font color = "red">Full GC的触发时机：</font>**   
+    ⚠️注：是否满足年轻代晋升 --- 老年代或永久代空间是否充足 --- 系统主动调用
+    1. 老年代`不满足`年轻代晋升  
+        1. 统计得到的Minor GC晋升到旧生代的`平均大小`大于旧生代的剩余空间  
+        &emsp; Hotspot为了避免由于新生代对象晋升到旧生代导致旧生代空间不足的现象，在进行Minor GC时，做了一个判断，如果之前统计所得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间，那么就直接触发Full GC。  
+        2. `空间分配担保失败`  
+        &emsp; **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的`总空间`，</font>** 如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。   
+        3. `CMS GC时出现promotion failed（晋升失败）和concurrent mode failure（并发模式失败）`  
+        &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足（可能是GC过程中浮动垃圾过多导致暂时性的空间不足），便会报Concurrent Mode Failure错误，并触发Full GC。  
+    2. 老年代或永久代的`不足`
         1. 老年代空间不足(92%)  
         &emsp; 老年代空间不足的常见场景为大对象直接进入老年代、长期存活的对象进入老年代等。  
         &emsp; 为了避免以上原因引起的Full GC，应当尽量不要创建过大的对象以及数组。除此之外，可以通过-Xmn虚拟机参数调大新生代的大小，让对象尽量在新生代被回收掉，不进入老年代。还可以通过 -XX:MaxTenuringThreshold调大对象进入老年代的年龄，让对象在新生代多存活一段时间。  
         2. JDK 1.7及以前的永久代空间不足  
         &emsp; 为避免以上原因引起的Full GC，可采用的方法为增大永久代空间或转为使用CMS GC。  
-    2. 老年代不满足年轻代晋升  
-        1. 统计得到的Minor GC晋升到旧生代的`平均大小`大于旧生代的剩余空间  
-        &emsp; Hotspot为了避免由于新生代对象晋升到旧生代导致旧生代空间不足的现象，在进行Minor GC时，做了一个判断，如果之前统计所得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间，那么就直接触发Full GC。  
-        2. 空间分配担保失败  
-        &emsp; **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的`总空间`，</font>** 如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。   
-        3. CMS GC时出现promotion failed（晋升失败）和concurrent mode failure（并发模式失败）  
-        &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足（可能是GC过程中浮动垃圾过多导致暂时性的空间不足），便会报Concurrent Mode Failure错误，并触发Full GC。  
     3. <font color = "red">系统调用System.gc()</font>  
     &emsp; 只是建议虚拟机执行Full GC，但是虚拟机不一定真正去执行。不建议使用这种方式，而是让虚拟机管理内存。  
-
 
 #### 1.3.6.3. GC-回收对象
 
@@ -1040,7 +1042,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         * 增大Xmx或者减少Xmn  
         * `在应用访问量最低的时候，在程序中主动调用System.gc()，比如每天凌晨。`  
         * 在应用启动并完成所有初始化工作后，主动调用System.gc()，它可以将初始化的数据压缩到一个单独的chunk中，以腾出更多的连续内存空间给新生代晋升使用。  
-        * `降低-XX:CMSInitiatingOccupancyFraction参数（内存占用率，默认70%）以提早执行CMS GC动作，`虽然CMSGC不会进行内存碎片的压缩整理，但它会合并老生代中相邻的free空间。这样就可以容纳更多的新生代晋升行为。 
+        * `降低-XX:CMSInitiatingOccupancyFraction参数（内存占用率，默认70%）以提早执行CMS GC动作，`虽然CMS GC不会进行内存碎片的压缩整理，但它会合并老年代中相邻的free空间。这样就可以容纳更多的新生代晋升行为。 
         * CMS收集器提供了一个-XX：+UseCMS-CompactAtFullCollection开关参数（默认是开启的，此参数从JDK 9开始废弃），用于在CMS收集器不得不进行Full GC时开启内存碎片的合并整理过程。`还提供了另外一个参数-XX：CMSFullGCsBefore-Compaction（此参数从JDK 9开始废弃），这个参数的作用是要求CMS收集器在执行过若干次（数量由参数值决定）不整理空间的Full GC之后，下一次进入Full GC前会先进行碎片整理（默认值为0，表示每次进入Full GC时都进行碎片整理）。`  
     5. `晋升失败（新生代垃圾回收）与并发模式失败（CMS垃圾回收）`：都会退化成单线程的Full GC。  
         * 晋升失败(promotion failed)：`当新生代发生垃圾回收`， **老年代有足够的空间可以容纳晋升的对象，但是由于空闲空间的碎片化，导致晋升失败。** ~此时会触发单线程且带压缩动作的Full GC。~  
@@ -1079,8 +1081,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 4. **<font color = "clime">漏标：把本来应该存活的垃圾，标记为了死亡。这就会导致非常严重的错误。</font>**   
 	1. 两个必要条件：1). 灰色指向白色的引用消失。2). 黑色重新指向白色；  
   &emsp; 新增对象不算漏标。  
-	2. CMS采用增量更新（针对新增的引用，将其记录下来等待遍历）， **<font color = "clime">关注引用的增加（黑色重新指向白色），`把黑色重写标记为灰色`，下次重新扫描属性。</font>** 破坏了条件“黑指向白”。    
-    &emsp; CMS预清理阶段：（`三色标记法的漏标问题处理`） **<font color = "red">这个阶段是用来</font><font color = "blue">处理</font><font color = "clime">前一个并发标记阶段因为引用关系改变导致没有标记到的存活对象的。如果发现对象的引用发生变化，则JVM会标记堆的这个区域为Dirty Card。那些能够从Dirty Card到达的对象也被标记（标记为存活），当标记做完后，这个Dirty Card区域就会消失。</font>**  
+	2. CMS采用增量更新（针对新增的引用，将其记录下来等待遍历）， **<font color = "clime">关注引用的增加（黑色重新指向白色），`把黑色重新标记为灰色`，下次重新扫描属性。</font>** 破坏了条件“黑指向白”。    
+    &emsp; `CMS预清理阶段`：（`三色标记法的漏标问题处理`） **<font color = "red">这个阶段是用来</font><font color = "blue">处理</font><font color = "clime">前一个并发标记阶段因为引用关系改变导致没有标记到的存活对象的。如果发现对象的引用发生变化，则JVM会标记堆的这个区域为Dirty Card。那些能够从Dirty Card到达的对象也被标记（标记为存活），当标记做完后，这个Dirty Card区域就会消失。</font>**  
 	3. G1采用开始时快照技术SATB， **<font color = "clime">关注引用的删除（灰色指向白色的引用消失），当B->D消失时，要把这个引用推到GC的堆栈，保证D还能被GC扫描到。破坏了条件“灰指向白的引用消失”。</font>** 保存在GC堆栈中的删除引用，会在`最终标记remark阶段处理`。    
 	4. 使用SATB会大大减少扫描对象。  
 
