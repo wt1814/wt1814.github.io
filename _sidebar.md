@@ -97,6 +97,7 @@
         * [JVM问题排查](/docs/java/JVM/TroubleShooting.md)  
             * [MAT使用](/docs/java/JVM/mat.md)  
         * [Arthas工具](/docs/java/JVM/Arthas.md)  
+        * [Arthas常用命令](/docs/java/JVM/ArthasCommand.md)  
 * 并发编程  
     * [并发编程总结](/docs/java/concurrent/summary.md)  
     * [多线程和并发](/docs/java/concurrent/MultithreadingAndConcurrency.md)  
