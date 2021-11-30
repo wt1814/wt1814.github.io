@@ -26,6 +26,19 @@
 # 1. JDK动态代理
 <!-- 
   利用拦截器(拦截器必须实现InvocationHanlder)加上反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理。
+
+
+动态代理在我在设计模式中已经介绍过了，主要是通过 Proxy类的newProxyInstance方法和接口InvocationHandler来实现动态代理。代理对象的的生产过程在这里简单说一下：
+
+1、ProxyGenerator.generateProxyClass方法负责生成代理类的字节码，生成逻辑比较复杂，了解原理继续分析源码 sun.misc.ProxyGenerator；
+
+byte[] proxyClassFile = ProxyGenerator.generateProxyClass(proxyName, interfaces, accessFlags);
+2、native方法Proxy.defineClass0负责字节码加载的实现，并返回对应的Class对象。
+
+Class clazz = defineClass0(loader, proxyName, proxyClassFile, 0, proxyClassFile.length);
+3、利用clazz.newInstance反射机制生成代理类的对象；
+
+　　动态代理的局限性：它必须要求委托类实现一个接口，但是并非所有的类都有接口，对于没有实现接口的类，无法使用该方法实现代理；而且该方法无法 对委托类的方法内部逻辑作修改。
 -->
 &emsp; 动态代理实现方式由JDK自带的代理和Cglib提供的类库。这里只讨论JDK代理的使用。  
 
