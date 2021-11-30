@@ -219,4 +219,7 @@ private void doCheck(){
 <!-- 
 Guava的RateLimite
 https://mp.weixin.qq.com/s/zGSvz6LyoenQw1TeWFLpuQ
+
+Redis 实现限流的三种方式 
+https://mp.weixin.qq.com/s/UAD1w1pK-1udetQ8AUXkBA
 -->
