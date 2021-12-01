@@ -1179,7 +1179,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 1. 通用的线程周期。操作系统层面有5个状态，分别是：New（新建）、Runnable（就绪）、Running（运行）、Blocked（阻塞）、Dead（死亡）。  
 2. Java线程状态均来自Thread类下的State这一内部枚举类中所定义的状态：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-2.png)  
-&emsp; `影响线程状态的相关java相关类：synchronized关键字、Object类、Thread类。`  
+&emsp; `影响线程状态的相关java相关类：Thread类、Object类、Synchronized关键字。`  
+&emsp; 线程状态切换图示：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-5.png) 
 1. 新建状态（NEW）：  
     1. 一个尚未启动的线程处于这一状态。用new语句创建的线程处于新建状态，此时它和其他Java对象一样，仅仅在堆区中被分配了内存，并初始化其成员变量的值。  
     2. 操作  
@@ -1187,11 +1189,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 2. 就绪状态（Runnable）：  
     1. 当一个线程对象创建后，其他线程调用它的start()方法，该线程就进入就绪状态，Java虚拟机会为它创建方法调用栈和程序计数器。处于这个状态的线程位于可运行池中，等待获得CPU的使用权。<!-- Runnable (可运行/运行状态，等待CPU的调度)(要注意：即使是正在运行的线程，状态也是Runnable，而不是Running) -->  
     2. 操作  
-        * 被synchronized标记的代码，获取到同步监视器。
-        * obj.notify()唤醒线程。
-        * obj.notifyAll()唤醒线程。
-        * obj.wait(time), thread.join(time)等待时间time耗尽。
-        * 调用了thread.start()启动线程。
+        * 调用了thread.start()启动线程；
+        * obj.notify()唤醒线程； obj.notifyAll()唤醒线程； obj.wait(time), thread.join(time)等待时间time耗尽。
+        * 被synchronized标记的代码，获取到同步监视器。  
 3. **<font color = "red">阻塞状态（BLOCKED）：</font>**  
     1. **<font color = "clime">阻塞状态是指线程因为某些原因`放弃CPU`，暂时停止运行。</font>** 当线程处于阻塞状态时，Java虚拟机不会给线程分配CPU。直到线程重新进入就绪状态(获取监视器锁)，它才有机会转到运行状态。  
     2. 操作  
@@ -1201,23 +1201,20 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 4. **<font color = "red">等待状态（WAITING）：</font>**  
     1. **<font color = "clime">一个正在无限期等待另一个线程执行一个特别的动作的线程处于这一状态。</font>**  
     2. 操作  
-        * obj.wait() 释放同步监视器obj，并进入阻塞状态。
         * threadA中调用threadB.join()，threadA将Waiting，直到threadB终止。
+        * obj.wait() 释放同步监视器obj，并进入阻塞状态。
     3. 阻塞和等待的区别：  
 5. <font color = "red">计时等待（TIMED_WAITING）：</font>  
     1. 一个正在限时等待另一个线程执行一个动作的线程处于这一状态。  
     2. 操作
+        * thread.sleep(time)； threadA中调用threadB.join(time)
         * obj.wait(time)
-        * thread.sleep(time)
-        * threadA中调用threadB.join(time)
 6. 终止状态（TERMINATED）：  
     &emsp; 一个已经退出的线程处于这一状态。线程会以下面三种方式结束，结束后就是死亡状态。
     * 正常结束：run()或 call()方法执行完成，线程正常结束。
     * 异常结束：线程抛出一个未捕获的Exception或Error。
     * 调用stop：直接调用该线程的stop()方法来结束该线程—该方法通常容易导致死锁，不推荐使用。
 7. 注意：由于wait()/wait(time)导致线程处于Waiting/TimedWaiting状态，当线程被notify()/notifyAll()/wait等待时间到之后，如果没有获取到同步监视器。会直接进入Blocked阻塞状态。  
-8. 线程状态切换图示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-5.png) 
 
 ### 1.4.2. 线程池-多线程
 #### 1.4.2.1. 线程池框架
@@ -1236,17 +1233,16 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
     * 工作任务：Runnable/Callable 接口
         * 工作任务就是Runnable/Callable接口的实现，可以被线程池执行
-    * 执行机制：Executor接口、ExecutorService接口、ScheduledExecutorService接口
+    * **<font color = "red">执行机制（创建线程池的分类）</font>**：Executor接口、ExecutorService接口、ScheduledExecutorService接口
         * ThreadPoolExecutor 是最核心的线程池实现，用来执行被提交的任务
         * ScheduledThreadPoolExecutor 是任务调度的线程池实现，可以在给定的延迟后运行命令，或者定期执行命令(它比Timer更灵活)
         * ForkJoinPool是一个并发执行框架
     * 异步计算的结果：Future接口
         * 实现Future接口的FutureTask类，代表异步计算的结果
-3. 根据返回的对象类型，创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor（任务调度线程池）、ForkJoinPool。  
+3. 线程池执行，ExecutorService的API：execute()，提交不需要返回值的任务；`submit()，提交需要返回值的任务，返回值类型是Future`。   
 4. **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
-	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。
-	* CachedThreadPool和ScheduledThreadPool：允许创建的线程数量为Integer.MAX_VALUE，可能会创建大量线程，从而导致OOM。
-5. 线程池执行，ExecutorService的API：execute()，提交不需要返回值的任务；`submit()，提交需要返回值的任务，返回值类型是Future`。    
+	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。  
+	* CachedThreadPool和ScheduledThreadPool：允许创建的线程数量为Integer.MAX_VALUE，可能会创建大量线程，从而导致OOM。   
 
 #### 1.4.2.2. ThreadPoolExecutor详解
 1. 理解构造函数中参数：核心线程数大小、最大线程数大小、空闲线程（超出corePoolSize的线程）的生存时间、参数keepAliveTime的单位、任务阻塞队列、创建线程的工厂（可以通过这个工厂来创建有业务意义的线程名字）。  
