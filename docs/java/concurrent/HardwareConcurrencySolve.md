@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. 硬件层面解决并发安全](#1-硬件层面解决并发安全)
+- [1. 硬件层的并发安全](#1-硬件层的并发安全)
     - [1.1. 解决缓存一致性/【可见性】](#11-解决缓存一致性可见性)
         - [1.1.1. 总线锁](#111-总线锁)
         - [1.1.2. 缓存锁](#112-缓存锁)
@@ -29,7 +29,23 @@
         1. （`保障可见性`）它会强制将对缓存的修改操作立即写入主存； 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。  
         2. （`保障有序性`）阻止屏障两侧的指令重排序。 
 
-# 1. 硬件层面解决并发安全  
+# 1. 硬件层的并发安全  
+<!-- 
+
+*** https://mp.weixin.qq.com/s/WTqdSz-lc5zzelJgk4Co8g
+https://blog.csdn.net/w1453114339/article/details/107563613
+https://www.jianshu.com/p/06717ac8312c
+https://www.freesion.com/article/73021012217/
+
+-->
+
+<!-- 
+https://www.cnblogs.com/Courage129/p/14401680.html
+-->
+
+
+
+
 ## 1.1. 解决缓存一致性/【可见性】
 &emsp; **<font color = "clime">怎么解决缓存一致性问题呢？使用总线锁或缓存锁。</font>**  
 

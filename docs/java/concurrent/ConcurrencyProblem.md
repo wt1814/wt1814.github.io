@@ -2,6 +2,9 @@
 <!-- TOC -->
 
 - [1. 并发安全问题](#1-并发安全问题)
+    - [1.1. 计算机CPU缓存模型](#11-计算机cpu缓存模型)
+        - [1.1.1. 三级缓存](#111-三级缓存)
+        - [1.1.2. CPU缓存行](#112-cpu缓存行)
     - [1.1. 并发安全问题](#11-并发安全问题)
         - [1.1.1. 并发安全问题及含义](#111-并发安全问题及含义)
         - [1.1.2. 线程切换带来的原子性问题](#112-线程切换带来的原子性问题)
@@ -39,6 +42,20 @@
 缓存一致性
 **** https://www.jianshu.com/p/06717ac8312c
 -->
+
+<!--
+CPU缓存一致性协议
+https://blog.csdn.net/w1453114339/article/details/107563613
+
+https://mp.weixin.qq.com/s/yWifJmirZNnBrAIZrpJwyg
+-->
+<!-- 
+~~
+https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
+https://mp.weixin.qq.com/s?__biz=MzAwNDA2OTM1Ng==&mid=2453142004&idx=1&sn=81ccddb6c8b37114c022c4ad50368ecf&scene=21#wechat_redirect
+-->
+
+
 <!-- 
 
 【Java 并发003】原理层面：Java并发三特性全解析
@@ -48,6 +65,23 @@ https://www.cnblogs.com/maoqizhi/p/13909179.html
 ~~ 
 https://mp.weixin.qq.com/s/DaCTrm8y9vWeaJyHfbRoTw
 -->
+
+## 1.1. 计算机CPU缓存模型  
+
+### 1.1.1. 三级缓存
+&emsp; CPU是计算机的心脏，所有运算和程序最终都要由它来执行。  
+&emsp; 主内存(RAM)是数据存放的地方，CPU 和主内存之间有好几级缓存，因为即使直接访问主内存也是非常慢的。  
+&emsp; 如果对一块数据做相同的运算多次，那么在执行运算的时候把它加载到离 CPU 很近的地方就有意义了，比如一个循环计数，不想每次循环都跑到主内存去取这个数据来增长它。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-50.png)  
+&emsp; <font color = "red">越靠近CPU的缓存越快也越小。</font>所以L1缓存很小但很快，并且紧靠着在使用它的 CPU 内核。L2大一些，也慢一些，并且仍然只能被一个单独的 CPU 核使用。L3 在现代多核机器中更普遍，仍然更大，更慢，并且被单个插槽上的所有 CPU 核共享。最后，主存保存着程序运行的所有数据，它更大，更慢，由全部插槽上的所有 CPU 核共享。  
+&emsp; 当 CPU 执行运算的时候，它先去 L1 查找所需的数据，再去 L2，然后是 L3，最后如果这些缓存中都没有，所需的数据就要去主内存拿。走得越远，运算耗费的时间就越长。所以如果进行一些很频繁的运算，要确保数据在 L1 缓存中。  
+
+### 1.1.2. CPU缓存行  
+&emsp; 缓存是由缓存行组成的，通常是64字节（常用处理器的缓存行是64字节的，比较旧的处理器缓存行是 32 字节），并且它有效地引用主内存中的一块地址。  
+&emsp; <font color = "red">一个Java的long类型是8字节，因此在一个缓存行中可以存8个long类型的变量。</font>  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-51.png)  
+
+
 
 ## 1.1. 并发安全问题
 ### 1.1.1. 并发安全问题及含义  
