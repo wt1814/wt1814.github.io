@@ -1179,9 +1179,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 1. 通用的线程周期。操作系统层面有5个状态，分别是：New（新建）、Runnable（就绪）、Running（运行）、Blocked（阻塞）、Dead（死亡）。  
 2. Java线程状态均来自Thread类下的State这一内部枚举类中所定义的状态：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-2.png)  
-&emsp; `影响线程状态的相关java相关类：Thread类、Object类、Synchronized关键字。`  
 &emsp; 线程状态切换图示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-5.png) 
+&emsp; ⚠️⚠️⚠️`对象` `执行动作` 形成`线程`。`影响线程状态的相关java类：Object类、Synchronized关键字、Thread类。`  
 1. 新建状态（NEW）：  
     1. 一个尚未启动的线程处于这一状态。用new语句创建的线程处于新建状态，此时它和其他Java对象一样，仅仅在堆区中被分配了内存，并初始化其成员变量的值。  
     2. 操作  
@@ -1190,7 +1190,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     1. 当一个线程对象创建后，其他线程调用它的start()方法，该线程就进入就绪状态，Java虚拟机会为它创建方法调用栈和程序计数器。处于这个状态的线程位于可运行池中，等待获得CPU的使用权。<!-- Runnable (可运行/运行状态，等待CPU的调度)(要注意：即使是正在运行的线程，状态也是Runnable，而不是Running) -->  
     2. 操作  
         * 调用了thread.start()启动线程；
-        * obj.notify()唤醒线程； obj.notifyAll()唤醒线程； obj.wait(time), thread.join(time)等待时间time耗尽。
+        * 处于阻塞的线程：obj.notify()唤醒线程； obj.notifyAll()唤醒线程； 
+        * 处于等待的线程：obj.wait(time)，thread.join(time)等待时间time耗尽。
         * 被synchronized标记的代码，获取到同步监视器。  
 3. **<font color = "red">阻塞状态（BLOCKED）：</font>**  
     1. **<font color = "clime">阻塞状态是指线程因为某些原因`放弃CPU`，暂时停止运行。</font>** 当线程处于阻塞状态时，Java虚拟机不会给线程分配CPU。直到线程重新进入就绪状态(获取监视器锁)，它才有机会转到运行状态。  
