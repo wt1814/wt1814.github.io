@@ -179,7 +179,7 @@
 &emsp; [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
 [并发编程](/docs/java/concurrent/MultiThread.md)  
 &emsp; [并发编程原理](/docs/java/concurrent/ConcurrentPrinciple.md)  
-&emsp; &emsp; [并发安全问题产生原因](/docs/java/concurrent/ConcurrencyProblem.md)  
+&emsp; &emsp; [CPU多核缓存架构](/docs/java/concurrent/ConcurrencyProblem.md)  
 &emsp; &emsp; [硬件层的并发安全](/docs/java/concurrent/HardwareConcurrencySolve.md)  
 &emsp; &emsp; [Java解决并发安全](/docs/java/concurrent/ConcurrencySolve.md)  
 &emsp; &emsp; [伪共享问题](/docs/java/concurrent/PseudoSharing.md)  
