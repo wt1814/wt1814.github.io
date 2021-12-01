@@ -1215,6 +1215,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     * 异常结束：线程抛出一个未捕获的Exception或Error。
     * 调用stop：直接调用该线程的stop()方法来结束该线程—该方法通常容易导致死锁，不推荐使用。
 7. 注意：由于wait()/wait(time)导致线程处于Waiting/TimedWaiting状态，当线程被notify()/notifyAll()/wait等待时间到之后，如果没有获取到同步监视器。会直接进入Blocked阻塞状态。  
+8. 线程状态切换示意图：  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-6.png) 
+
 
 ### 1.4.2. 线程池-多线程
 #### 1.4.2.1. 线程池框架
