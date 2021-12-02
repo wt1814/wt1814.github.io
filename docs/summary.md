@@ -1496,7 +1496,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>    
     2. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**  
     3. <font color = "red">实现了有序性，禁止进行指令重排序。</font>  
-2. `查看Volatile的汇编代码。`Volatile底层原理：  
+2. `Volatile底层原理（happens-before中Volatile的特殊规则）：`查看Volatile的汇编代码。    
     * **<font color = "clime">在Volatile写前插入写-写[屏障](/docs/java/concurrent/ConcurrencySolve.md)（禁止上面的普通写与下面的Volatile写重排序），在Volatile写后插入写-读屏障（禁止上面的Volatile写与下面可能有的Volatile读/写重排序）。</font>**  
     * **<font color = "clime">在Volatile读后插入读-读屏障（禁止下面的普通读操作与上面的Volatile读重排序）、读-写屏障（禁止下面所有的普通写操作和上面Volatile读重排序）。</font>**  
 3. Volatile为什么不安全（不保证原子性，线程切换）？  
@@ -1505,11 +1505,10 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     &emsp; 关键字Volatile用于多线程环境下的单次操作（单次读或者单次写）。即Volatile主要使用的场合是在多个线程中可以感知实例变量被更改了，并且可以获得最新的值使用，也就是用多线程读取共享变量时可以获得最新值使用。  
     1. 全局状态标志。
     2. DCL详解：  
-        1. 为什么两次判断？ 线程1调用第一个if(singleton==null)，可能会被挂起。  
+        1. 为什么两次判断？线程1调用第一个if(singleton==null)，可能会被挂起。  
         2. 为什么要加volatile关键字？  
         &emsp; singleton = new Singleton()非原子性操作，包含3个步骤：分配内存 ---> 初始化对象 ---> 将singleton对象指向分配的内存空间(这步一旦执行了，那singleton对象就不等于null了)。  
         &emsp; **<font color = "clime">因为指令重排序，可能编程1->3->2。如果是这种顺序，会导致别的线程拿到半成品的实例。</font>**  
-
 
 ##### 1.4.3.2.5. ThreadLocal
 &emsp; ThreadLocal的作用是每一个线程创建一个副本。  
@@ -1521,9 +1520,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 ###### 1.4.3.2.5.1. ThreadLocal原理
 1. ThreadLocal源码/内存模型：  
-    1. **<font color = "red">ThreadLocal#set()#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** 即，当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
+    1. **<font color = "red">ThreadLocal的#set()、#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** 即，当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
     &emsp; ~~Thread ---> ThreadLocal.ThreadLocalMap~~
-    2. **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。`Key是一个ThreadLocal实例，Value是设置的值。`  
+    2. **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map中`Key是一个ThreadLocal实例，Value是设置的值。`ThreadLocalMap结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。  
     &emsp; <font color = "clime">Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>** 一个线程可能有多个ThreadLocal实例，编码中定义多个ThreadLocal实例，即存在多个Entry的情况。    
 2. ThreadLocal是如何实现线程隔离的？   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-85.png)  
