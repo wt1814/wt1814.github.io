@@ -40,6 +40,12 @@
     2. 共享模式下，获取同步状态、释放同步状态。
 
 # 1. AQS  
+<!-- 
+
+ 16 张图 | 揭开并发 AQS 的神秘面纱 
+ https://mp.weixin.qq.com/s/iaF82t_tiFwz3sOFzQoWrA
+-->
+
 ## 1.1. 简介  
 &emsp; AQS是AbstractQueuedSynchronizer的简称，翻译成中文就是抽象队列同步器 ，这三个单词分开来看：  
 
