@@ -3,6 +3,7 @@
 <!-- TOC -->
 
 - [1. ~~Synchronized使用~~](#1-synchronized使用)
+    - [类、对象、实例、方法](#类对象实例方法)
     - [1.1. Synchronized使用简介](#11-synchronized使用简介)
     - [1.2. Synchronized同步方法](#12-synchronized同步方法)
         - [1.2.1. Synchronized同步普通方法](#121-synchronized同步普通方法)
@@ -54,6 +55,15 @@ https://mp.weixin.qq.com/s/ewXpaeMYNx7FAW_fYoQbPg
 4、如果对象锁跟访问的对象没有关系，那么就会都同时访问。
 --> 
 
+
+## 类、对象、实例、方法
+* 类和对象
+    * xxx.Class
+    * 类名 对象名
+    * 实例化：new 类名();
+* 方法
+    * 普通方法
+    * 静态/类 方法
 
 ## 1.1. Synchronized使用简介
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-11.png)  

@@ -1391,7 +1391,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 		* 栈封闭（类变量变局部变量）
 		* 线程本地存储（Thread Local Storage）
 	4. 不可变对象
-2. Java并发原语
+2. Java并发原语  
 	Java内存模型，除了定义了一套规范，还提供了一系列原语，封装了底层实现后，供开发者直接使用。  
 	* 原子性可以通过synchronized和Lock来实现。  
 	* 可见性可以通过Volatile、synchronized、final来实现。  
@@ -1402,6 +1402,14 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 
 ###### 1.4.3.2.2.2. Synchronized使用
+1. 对象和方法
+    * 类和对象
+        * xxx.Class
+        * 类名 对象名
+        * 实例化：new 类名();
+    * 方法
+        * 普通方法
+        * 静态/类 方法
 1. synchronized可以修饰代码块或者方法：  
     ```java
     synchronized (lock){
@@ -1413,7 +1421,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     ```
 2. 类锁和对象锁  
     1. `类锁：当Synchronized修饰静态方法或Synchronized修饰代码块传入某个class对象（Synchronized (XXXX.class)）时被称为类锁。`
-    2. `对象锁：当Synchronized修饰非静态方法或Synchronized修饰代码块时传入非class对象（Synchronized this）时被称为对象锁。`
+    2. `对象锁：当Synchronized修饰非静态方法或Synchronized修饰代码块时传入非class对象（Synchronized (this)）时被称为对象锁。`
 3. String锁：由于在JVM中具有String常量池缓存的功能，因此相同字面量是同一个锁。  
 
 
@@ -1431,14 +1439,15 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 每一个对象都会和一个监视器monitor关联。监视器被占用时会被锁住，其他线程无法来获取该monitor。   
 线程执行monitorenter指令时尝试获取对象的monitor的所有权，当monitor被占用时就会处于锁定状态。  
 2. **<font color = "clime">Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor（也称为管程或监视器锁）的起始地址，每个对象都存在着一个monitor与之关联。</font>**  
-3. **<font color = "clime">在Java虚拟机（HotSpot）中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。</font><font color = "blue">monitor运行的机制过程如下：(_EntryList队列、_Owner区域、_WaitSet队列)</font>**  
+3. C++    
+&emsp; **<font color = "clime">在Java虚拟机（HotSpot）中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。</font><font color = "blue">monitor运行的机制过程如下：(_EntryList队列、_Owner区域、_WaitSet队列)</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
     * `想要获取monitor的线程，首先会进入_EntryList队列。`  
     * `当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程，`同时计数器count加1。  
     * **如果线程调用了wait()方法，则会进入WaitSet队列。** 它会释放monitor锁，即将owner赋值为null，count自减1，进入WaitSet队列阻塞等待。  
     * 如果其他线程调用 notify() / notifyAll()，会唤醒WaitSet中的某个线程，该线程再次尝试获取monitor锁，成功即进入Owner区域。  
     * 同步方法执行完毕了，线程退出临界区，会将monitor的owner设为null，并释放监视锁。  
-4. linux互斥锁nutex（内核态）  
+4. linux互斥锁mutex（内核态）  
 &emsp; <font color = "clime">重量级锁是依赖对象内部的monitor锁来实现的，而monitor又依赖操作系统的MutexLock(互斥锁)来实现的，所以重量级锁也称为互斥锁。</font>  
 &emsp; **<font color = "clime">为什么说重量级线程开销很大？</font>**  
 &emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，`被阻塞的线程不会消耗cpu`。 **<font color = "clime">`但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态(向内核申请)，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。`</font>**  
@@ -1449,7 +1458,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     &emsp; 锁主要存在四种状态，依次是：无锁状态（普通对象）、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。锁升级流程如下：   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-79.png)   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-80.png)   
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-86.png)   
 	1. 偏向锁：  
+        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-81.png)   
         1.  **<font color = "bule">偏向锁状态</font>**  
             * **<font color = "clime">匿名偏向(Anonymously biased)</font>** 。在此状态下thread pointer为NULL(0)，意味着还没有线程偏向于这个锁对象。第一个试图获取该锁的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。这是允许偏向锁的类对象的初始状态。
             * **<font color = "clime">可重偏向(Rebiasable)</font>** 。在此状态下，偏向锁的epoch字段是无效的（与锁对象对应的class的mark_prototype的epoch值不匹配）。下一个试图获取锁对象的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。**在批量重偏向的操作中，未被持有的锁对象都被置于这个状态，以便允许被快速重偏向。**

@@ -142,7 +142,7 @@ https://baijiahao.baidu.com/s?id=1630535202760061296&wfr=spider&for=pc
 &emsp; 偏向锁的获得和撤销流程图解：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-31.png)   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-81.png)   
-
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-86.png)   
 
 &emsp; 当JVM启用了偏向锁模式（JDK6以上默认开启），新创建对象的Mark Word中的Thread Id为0，说明此时处于可偏向但未偏向任何线程，也叫做匿名偏向状态(anonymously biased)。  
 
