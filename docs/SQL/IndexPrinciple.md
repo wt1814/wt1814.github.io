@@ -58,17 +58,12 @@
 
 -->
 
-
 <!-- 
 数据库索引，终于懂了 
 https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651967146&idx=1&sn=e11b8613a0d18bab4bd2abcb63175ad6&chksm=bd2d7b768a5af26073e275fd6556f35b48098576bb69304f04d4b28066e0bc7eb10a948a79ee&scene=21#wechat_redirect
-InnoDB索引，终于懂了 
-https://mp.weixin.qq.com/s/39XgTTC2VUVGq0EIlpb3WA
 
-~~
-再有人问你MySQL索引原理，就把这篇文章甩给他！ 
-https://mp.weixin.qq.com/s/9yeModGuGvDu5S0bW9sU6w
 -->
+
 
 &emsp; 不同的存储引擎支持的索引类型不一样：  
 
@@ -111,6 +106,9 @@ https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
 2. 操作系统IO消耗：<font color = "red">一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储的磁盘上。</font>这样的话，索引查找过程中就要产生磁盘I/O消耗，相对于内存存取，I/O存取的消耗要高几个数量级，所以 **<font color = "clime">评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中磁盘I/O操作次数的渐进复杂度。</font>** 换句话说，索引的结构组织要尽量减少查找过程中磁盘I/O的存取次数。  
 3. 具体分析：(重点B树和B+树的对比)  
     1. 二叉树：树的高度不均匀，不能自平衡，查找效率跟数据有关(树的高度)，并且IO代价高。  
+    2. 二叉搜索树为什么不适合用作数据库索引？    
+    &emsp; （1）当数据量大的时候，树的高度会比较高，数据量大的时候，查询会比较慢；  
+    &emsp; （2）每个节点只存储一个记录，可能导致一次查询有很多次磁盘IO；  
     2. 红黑树：树的高度随着数据量增加而增加，IO代价高。 
     3. **<font color = "clime">B树：</font>**  
         1. B树中每个节点中不仅包含数据的key值，还有data值。而每一个页的存储空间是有限的，<font color = "clime">如果data数据较大时将会导致每个节点(即一个页)能存储的key的数量很小。**当存储的数据量很大时同样会导致B树的深度较大，**增大查询时的磁盘I/O次数进而影响查询效率。</font>  
