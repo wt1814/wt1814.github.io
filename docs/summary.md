@@ -1982,7 +1982,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         * 数据区保存id 对应行数据的所有数据具体内容。  
         * 数据区保存的是真正保存数据的磁盘地址。  
 
-        到这里，平衡二叉树解决了存在线性链表的问题，数据查询的效率好像也还可以，基本能达到O(log2(n))， 那为什么mysql不选择平衡二叉树作为索引存储结构，他又存在什么样的问题呢？    
+        &emsp; 到这里，平衡二叉树解决了存在线性链表的问题，数据查询的效率好像也还可以，基本能达到O(log2(n))， 那为什么mysql不选择平衡二叉树作为索引存储结构，他又存在什么样的问题呢？    
 
         1. 搜索效率不足。一般来说，在树结构中，数据所处的深度，决定了搜索时的IO次数（MySql中将每个节点大小设置为一页大小，一次IO读取一页 / 一个节点）。如上图中搜索id = 8的数据，需要进行3次IO。当数据量到达几百万的时候，树的高度就会很恐怖。
         2. 查询不不稳定。如果查询的数据落在根节点，只需要一次IO，如果是叶子节点或者是支节点，会需要多次IO才可以。
@@ -2013,7 +2013,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     * 原子性的实现：采用回滚日志[undo log](/docs/SQL/undoLog.md)实现。  
     * 持久性的实现：采用重做日志[redo log](/docs/SQL/redoLog.md)实现。  
     * 隔离性（事务的隔离级别）的实现  
-        在MySQL中，默认的隔离级别是REPEATABLE-READ（可重复读），阻止脏读和不可重复读，并且解决了幻读问题。  
+        &emsp; 在MySQL中，默认的隔离级别是REPEATABLE-READ（可重复读），阻止脏读和不可重复读，并且解决了幻读问题。  
         &emsp; 隔离性（事务的隔离级别）的实现，利用的是锁和MVCC机制。 
         * **<font color = "blue">快照读：</font>**    
         &emsp; 生成一个事务快照（ReadView），之后都从这个快照获取数据。普通select语句就是快照读。  
@@ -2034,11 +2034,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     &emsp; 版本链的生成：在数据库中的每一条记录实际都会存在三个隐藏列：事务ID、行ID、回滚指针，指向undo log记录。  
     *  另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。  
     &emsp; **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
-3. ~~Read View判断：~~  
-    &emsp; 如果被访问版本的trx_id小于ReadView中的up_limit_id值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  
-    &emsp; <font color = "red">如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。</font>如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；<font color = "clime">如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。</font>  
-
-    &emsp; Read View是如何保证可见性判断的呢？我们先看看Read view 的几个重要属性   
+3. Read View判断可见性的规则：  
+    &emsp; Read view 的几个重要属性：   
 
     * m_ids:当前系统中那些活跃(未提交)的读写事务ID, 它数据结构为一个List。  
     * min_limit_id:表示在生成Read View时，当前系统中活跃的读写事务中最小的事务id，即m_ids中的最小值。  
@@ -2046,7 +2043,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     * creator_trx_id: 创建当前Read View的事务ID  
 
     &emsp; Read view 匹配条件规则如下：
-
+    &emsp; 如果被访问版本的trx_id小于ReadView中的up_limit_id值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  
+    &emsp; <font color = "red">如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。</font>如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；<font color = "clime">如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。</font>  
     * 如果数据事务ID trx_id < min_limit_id，表明生成该版本的事务在生成Read View前，已经提交(因为事务ID是递增的)，所以该版本可以被当前事务访问。  
     * 如果trx_id>= max_limit_id，表明生成该版本的事务在生成ReadView后才生成，所以该版本不可以被当前事务访问。  
     * 如果 min_limit_id =<trx_id< max_limit_id，需要分3种情况讨论  
