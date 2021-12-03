@@ -50,7 +50,8 @@
 
 # wt1814-note  
 ## 总结
-[大总结](/docs/summary.md)  
+[大总结1](/docs/summary.md)  
+[大总结2](/docs/summaryTwo.md)  
 
 ## Java  
 ### Java基础
