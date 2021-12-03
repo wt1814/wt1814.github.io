@@ -1906,43 +1906,33 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 &emsp; ~~分库分表的分片键设计多数参考查询场景。因此分库分表时设计拆分字段考虑因素：1). 是否有必要按照地区、时间拆分表；2)参考B2B模式（有买家、卖家），订单表采用`冗余法（买家库和卖家库）和基因法`结合。~~  
 
 ##### 1.5.4.6.3. 跨分片的排序分页
-&emsp; **<font color = "red">总结：</font>**  
-&emsp; “跨库分页”的四种方案。  
-1. 分库分表对分页的影响：  
-	常见的分片策略有随机分片和连续分片这两种。  
+&emsp; 常见的分片策略有随机分片和连续分片这两种。“跨库分页”的四种方案。    
 2. 全局视野法
-	1. 流程   
+	1. 流程  
+        &emsp; （1）将order by time offset X limit Y，改写成order by time offset 0 limit X+Y  
+        &emsp; （2）服务层对得到的N*(X+Y)条数据进行内存排序，内存排序后再取偏移量X后的Y条记录   
 		1. 如果要获取第N页的数据(每页S条数据)，则将每一个子库的前N页(offset 0,limit N*S)的所有数据都先查出来(有筛选条件或排序规则的话都包含)。  
 		2. 然后将各个子库的结果合并起来之后，再做一次分页查询（可不用带上相同的筛选条件，但还要带上排序规则)即可得出最终结果，这种方式类似es分页的逻辑。  
 	2. 优点: 数据准确，可以跳页  
 	3. 缺点：  
 	（1）每个分库需要返回更多的数据，增大了网络传输量（耗网络）；  
 	（2）服务层还需要进行二次排序，增大了服务层的计算量（耗CPU）；   	
-    （3）最致命的，这个算法随着页码的增大，性能会急剧下降，这是因为SQL改写后每个分库要返回X+Y行数据：返回第3页，offset中的X=200；假如要返回第100页，offset中的X=9900，即每个分库要返回100页数据，数据量和排序量都将大增，性能平方级下降。   
-    ------------
-    &emsp; （1）将order by time offset X limit Y，改写成order by time offset 0 limit X+Y  
-    &emsp; （2）服务层对得到的N*(X+Y)条数据进行内存排序，内存排序后再取偏移量X后的Y条记录  
-    &emsp; 这种方法随着翻页的进行，性能越来越低。  
+    （3）最致命的，这个算法随着页码的增大，性能会急剧下降，这是因为SQL改写后每个分库要返回X+Y行数据：返回第3页，offset中的X=200；假如要返回第100页，offset中的X=9900，即每个分库要返回100页数据，数据量和排序量都将大增，性能平方级下降。     
 3. 方法二：业务折衷法-禁止跳页查询(对应es中的scroll方法)   
 	1. 流程：  
+        &emsp; （1）用正常的方法取得第一页数据，并得到第一页记录的time_max  
+        &emsp; （2）每次翻页，将order by time offset X limit Y，改写成order by time where time>$time_max limit Y  
 		1. 如果要获取第N页的数据，第一页时，是和全局视野法一致。  
 		2. 但第二页开始后，需要在每一个子库查询时，加上可以排除上一页的过滤条件(如按时间排序时，获取上一页的最大时间后，需要加上time > ${maxTime_lastPage}的条件，然后再limit S。即可获取各个子库的结果。  
 		3. 之后再合并后top S即可得到最终结果。  
 	2. 优点: 数据准确，性能良好  
-	3. 缺点: 不能跳页  
-    -------
-    &emsp; （1）用正常的方法取得第一页数据，并得到第一页记录的time_max  
-    &emsp; （2）每次翻页，将order by time offset X limit Y，改写成order by time where time>$time_max limit Y  
-    &emsp; 以保证每次只返回一页数据，性能为常量。  
+	3. 缺点: 不能跳页    
 4. 方法三：业务折衷法-允许模糊数据  
 	1. 前提：数据库分库-数据均衡原理  
 	使用patition key进行分库，在数据量较大，数据分布足够随机的情况下，各分库所有非patition key属性，在各个分库上的数据分布，统计概率情况是一致的。  
 	2. 流程：将order by time offset X limit Y，改写成order by time offset X/N limit Y/N    
 	3. 优点: 性能良好，可以跳页
 	4. 缺点: 数据不准确
-    ---------
-    &emsp; （1）将order by time offset X limit Y，改写成order by time offset X/N limit Y/N  
-
 5. 终极武器-二次查询法  
     &emsp; （1）将order by time offset X limit Y，改写成order by time offset X/N limit Y   
     &emsp; （2）找到最小值time_min   
