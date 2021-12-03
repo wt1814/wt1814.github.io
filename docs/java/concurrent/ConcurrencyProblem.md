@@ -55,14 +55,19 @@ https://zhuanlan.zhihu.com/p/67150793
 
 ★★★并发问题产生的三大根源
 https://zhuanlan.zhihu.com/p/64988344
+
+CPU缓存一致性协议
+https://blog.csdn.net/w1453114339/article/details/107563613
 -->
 
 <!--
-CPU缓存一致性协议
-https://blog.csdn.net/w1453114339/article/details/107563613
+
 
 https://mp.weixin.qq.com/s/yWifJmirZNnBrAIZrpJwyg
 -->
+
+
+
 <!-- 
 ~~
 https://mp.weixin.qq.com/s/0_TDPDx8q2HmKCMyupWuNA
