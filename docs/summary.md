@@ -151,10 +151,10 @@
             - [1.5.5.4. MVCC](#1554-mvcc)
             - [1.5.5.5. MySql锁](#1555-mysql锁)
             - [1.5.5.6. MySql死锁和锁表](#1556-mysql死锁和锁表)
-        - [1.5.6. MySql架构原理](#156-mysql架构原理)
-            - [1.5.6.1. MySql架构](#1561-mysql架构)
-            - [1.5.6.2. binLog日志](#1562-binlog日志)
-            - [1.5.6.3. MySql存储引擎](#1563-mysql存储引擎)
+        - [1.5.6. MySql架构](#156-mysql架构)
+            - [1.5.6.1. MySql运行流程](#1561-mysql运行流程)
+            - [1.5.6.2. Server层之binLog日志](#1562-server层之binlog日志)
+            - [1.5.6.3. 存储引擎层](#1563-存储引擎层)
             - [1.5.6.4. InnoDB体系结构](#1564-innodb体系结构)
                 - [1.5.6.4.1. InnoDB内存结构-性能](#15641-innodb内存结构-性能)
                     - [1.5.6.4.1.1. BufferPool](#156411-bufferpool)
@@ -1882,8 +1882,8 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 4. **<font color = "clime">如果出现死锁</font>** ，<font color = "clime">可以用`show engine innodb status;`命令来确定最后一个死锁产生的原因。</font>  
 
 
-### 1.5.6. MySql架构原理
-#### 1.5.6.1. MySql架构
+### 1.5.6. MySql架构
+#### 1.5.6.1. MySql运行流程
 1. MySQL整个查询执行过程，总的来说分为5个步骤：  
     1. 客户端请求 ---> 连接器（验证用户身份，给予权限）；  
     2. 查询缓存（存在缓存则直接返回，不存在则执行后续操作）；
@@ -1904,13 +1904,13 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-174.png)  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-183.png)  
 
-#### 1.5.6.2. binLog日志  
+#### 1.5.6.2. Server层之binLog日志  
 1. **<font color = "clime">binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。</font>**  
 2. 在实际应用中，主要用在两个场景：主从复制和数据恢复。  
 3. 写入流程：SQL修改语句先写Binlog Buffer，事务提交时，按照一定的格式刷到磁盘中。  
 &emsp; binlog刷盘时机：对于InnoDB存储引擎而言，mysql通过sync_binlog参数控制binlog的刷盘时机。  
 
-#### 1.5.6.3. MySql存储引擎
+#### 1.5.6.3. 存储引擎层
 1. **<font color = "red">InnoDB的特性：</font>**    
     * [支持事务](/docs/SQL/transaction.md)  
     * [支持行锁](/docs/SQL/lock.md)，采用[MVCC](/docs/SQL/MVCC.md)来支持高并发  
@@ -1996,5 +1996,3 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         2. 写入binlog；
         3. 将redolog这个事务相关的记录状态设置为commit状态。
 2. 崩溃恢复： **<font color = "red">当重启数据库实例的时候，数据库做2个阶段性操作：redo log处理，undo log及binlog 处理。在崩溃恢复中还需要回滚没有提交的事务，提交没有提交成功的事务。由于回滚操作需要undo日志的支持，undo日志的完整性和可靠性需要redo日志来保证，所以崩溃恢复先做redo前滚，然后做undo回滚。</font>**    
-
-
