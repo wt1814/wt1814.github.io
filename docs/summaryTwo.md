@@ -254,7 +254,8 @@
 ## 1.2. 架构设计
 &emsp; ~~架构的方方面面： 1).架构模式、2).性能/系统瓶颈。~~   
 
-&emsp; 功能、流程、性能，性能又包含分布式（数据一致）、高并发（高性能、高可用、高扩展）  
+&emsp; 功能、流程、性能。   
+&emsp; 分布式（数据一致）、高并发（高性能、高可用、高扩展）  
 
 1. 功能、流程
 2. 性能/系统瓶颈：CPU、磁盘IO、内存、网络IO
@@ -299,9 +300,9 @@
         3. 继承自ApplicationContextPublisher接口，<font color = "clime">拥有发布事件注册监听的能力；</font>  
         4. 继承自 MessageSource 接口，解析消息支持国际化。  
 2. BeanDefinition： **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
-3. Spring bean容器刷新的核心 12个步骤完成IoC容器的创建及初始化工作：  
+3. Spring bean容器刷新的核心，12个步骤完成IoC容器的创建及初始化工作：  
     
-    **<font color = "blue">（⚠`利用工厂和反射创建Bean。主要包含3部分：1).容器本身--创建容器、2).容器扩展--后置处理器、3).事件，子容器，实例化Bean。`）</font>**     
+    **<font color = "blue">（⚠`利用工厂和反射创建Bean。主要包含3部分：1).容器本身--创建容器、2).容器扩展--预处理、后置处理器、3).事件，子容器，★★★实例化Bean。`）</font>**     
     1. 刷新前的准备工作。  
     2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>** <font color = "blue">`个人理解：此处仅仅相当于创建Spring Bean的类，实例化是在Spring DI里。`</font>   
         &emsp; **<font color = "clime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
@@ -342,7 +343,7 @@
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-16.png)  
     1. Spring创建bean主要分为两个步骤，创建原始bean对象，接着去填充对象属性和初始化。  
     2. 每次创建bean之前，都会从缓存中查下有没有该bean，因为是单例，只能有一个。  
-    3. 当创建beanA的原始对象后，并把它放到三级缓存中，接下来就该填充对象属性了，这时候发现依赖了beanB，接着就又去创建 beanB，同样的流程，创建完beanB填充属性时又发现它依赖了beanA，又是同样的流程，不同的是，这时候可以在三级缓存中查到刚放进去的原始对象beanA，所以不需要继续创建，用它注入beanB，完成beanB的创建。此时会将beanA从三级缓存删除，放到二级缓存。   
+    3. `当创建beanA的原始对象后，并把它放到三级缓存中，`接下来就该填充对象属性了，这时候发现依赖了beanB，接着就又去创建 beanB，同样的流程，创建完beanB填充属性时又发现它依赖了beanA，又是同样的流程，不同的是，这时候可以在三级缓存中查到刚放进去的原始对象beanA，所以不需要继续创建，用它注入beanB，完成beanB的创建。`此时会将beanA从三级缓存删除，放到二级缓存。`   
     4. 既然 beanB 创建好了，所以 beanA 就可以完成填充属性的步骤了，接着执行剩下的逻辑，闭环完成。  
     ---
     &emsp; 当A、B两个类发生循环引用时，在A完成实例化后，就使用实例化后的对象去创建一个对象工厂，并添加到三级缓存中。 **<font color = "blue">`如果A被AOP代理，那么通过这个工厂获取到的就是A代理后的对象，如果A没有被AOP代理，那么这个工厂获取到的就是A实例化的对象。`</font>** 当A进行属性注入时，会去创建B，同时B又依赖了A，所以创建B的同时又会去调用getBean(a)来获取需要的依赖，此时的getBean(a)会从缓存中获取：  
@@ -353,16 +354,15 @@
     当B创建完后，会将B再注入到A中，此时A再完成它的整个生命周期。  
 5. 常见问题
     1. 二级缓存能解决循环依赖嘛？  
-    &emsp; 二级缓存可以解决循环依赖。  
-    &emsp; 如果创建的Bean有对应的代理，那其他对象注入时，注入的应该是对应的代理对象；但是Spring无法提前知道这个对象是不是有循环依赖的情况，而正常情况下（没有循环依赖情况），Spring都是在创建好完成品Bean之后才创建对应的代理。这时候Spring有两个选择：
+    &emsp; 二级缓存可以解决循环依赖。如果创建的Bean有对应的代理，那其他对象注入时，注入的应该是对应的代理对象。  
+    &emsp; 但是Spring无法提前知道这个对象是不是有循环依赖的情况，而正常情况下（没有循环依赖情况），Spring都是在创建好完成品Bean之后才创建对应的代理。这时候Spring有两个选择：
 
         * 方案一：不管有没有循环依赖，都提前创建好代理对象，并将代理对象放入缓存，出现循环依赖时，其他对象直接就可以取到代理对象并注入。
         * 方案二：不提前创建好代理对象，在出现循环依赖被其他对象注入时，才实时生成代理对象。这样在没有循环依赖的情况下，Bean就可以按着Spring设计原则的步骤来创建。  
 
-    &emsp; 如果使用二级缓存解决循环依赖，即采用方案一，意味着所有Bean在实例化后就要完成AOP代理，这样违背了Spring设计的原则，Spring在设计之初就是通过AnnotationAwareAspectJAutoProxyCreator这个后置处理器来在Bean生命周期的最后一步来完成AOP代理，而不是在实例化后就立马进行AOP代理。   
+    &emsp; `如果使用二级缓存解决循环依赖，即采用方案一，意味着所有Bean在实例化后就要完成AOP代理，这样违背了Spring设计的原则，`Spring在设计之初就是通过AnnotationAwareAspectJAutoProxyCreator这个后置处理器来在Bean生命周期的最后一步来完成AOP代理，而不是在实例化后就立马进行AOP代理。   
     &emsp; **怎么做到提前曝光对象而又不生成代理呢？**   
     &emsp; Spring就是在对象外面包一层ObjectFactory（三级缓存存放），提前曝光的是ObjectFactory对象，在被注入时才在ObjectFactory.getObject方式内实时生成代理对象，并将生成好的代理对象放入到第二级缓存Map\<String, Object> earlySingletonObjects。  
-
 
 ### 1.3.4. Bean的生命周期
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-10.png)  
@@ -487,7 +487,7 @@
 1. **SpringMVC的工作流程：**  
     1. 找到处理器：前端控制器DispatcherServlet ---> **<font color = "red">处理器映射器HandlerMapping</font>** ---> 找到处理器Handler；  
     2. 处理器处理：前端控制器DispatcherServlet ---> **<font color = "red">处理器适配器HandlerAdapter</font>** ---> 处理器Handler ---> 执行具体的处理器Controller（也叫后端控制器） ---> Controller执行完成返回ModelAndView；  
-    &emsp; 1. 处理器映射器HandlerMapping：根据请求的url查找HandlerHandler即处理器（Controller）。  
+    &emsp; 1. 处理器映射器HandlerMapping：根据请求的url查找Handler即处理器（Controller）。  
     &emsp; 2. **<font color = "blue">处理器适配器HandlAdapter：按照特定规则（HandlerAdapter要求的规则）去执行Handler。通过HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。</font>**  
     &emsp; 3. 处理器Handler和controller区别：
     3. 返回前端控制器DispatcherServlet ---> 视图解析器ViewReslover。  
