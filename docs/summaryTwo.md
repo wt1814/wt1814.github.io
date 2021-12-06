@@ -601,7 +601,7 @@
 
 #### 1.6.2.2. run()方法运行过程
 1. **<font color = "clime">运行流程，分3步：</font>**  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringBoot/boot-9.png)  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/boot/boot-9.png)  
 
     ```java
     // SpringApplication.java
@@ -795,7 +795,7 @@
     * 服务提供者  
     &emsp; 服务同步、服务续约。
     * 服务消费者    
-    &emsp; 荻取服务、服务调用、服务下线。
+    &emsp; 荻取服务、服务调用、服务下线。  
     &emsp; 服务下线：在系统运行过程中必然会面临关闭或重启服务的某个实例的情况，在服务关闭期间，不希望客户端会继续调用关闭了的实例。 所以<font color = "red">在客户端程序中，当服务实例进行正常的关闭操作时，它会触发一个服务下线的REST请求给Eurka Server，告诉服务注册中心：“我要下线了”。服务端在接收到请求之后，将该服务状态置为下线(DOWN)，并把该下线事件传播出去。</font>  
     * 服务注册中心  
         * 失效剔除  
@@ -823,22 +823,23 @@
 ### 1.7.5. Hytrix
 1. 服务雪崩：在微服务架构中，存在着那么多的服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统的瘫痪。  
 2. Hystrix工作流程：1. 包装请求 ---> 2. 发起请求 ---> 3. 缓存处理 ---> 4. 判断断路器是否打开（熔断） ---> 5. 判断是否进行业务请求（请求是否需要隔离或降级） ---> 6. 执行业务请求 ---> 7. 健康监测 ---> 8. fallback处理或返回成功的响应。  
-3. 熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。Hystrix中的降级方案：熔断触发降级、请求超时触发降级、资源（信号量、线程池）隔离触发降级 / 依赖隔离。  
+3. 熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。
     1. <font color = "clime">熔断的对象是服务之间的请求；`熔断策略有根据请求的数量分为信号量和线程池，还有请求的时间（即超时熔断），请求错误率（即熔断触发降级）。`</font>  
+    &emsp; Hystrix中的降级方案：熔断触发降级、请求超时触发降级、资源（信号量、线程池）隔离触发降级 / 依赖隔离。  
     2. 线程池隔离与信号量隔离  
         1. 线程池隔离：请求线程和每个服务单独用线程池。  
-        &emsp; 比如现在有3个业务调用分别是查询订单、查询商品、查询用户，且这三个业务请求都是依赖第三方服务-订单服务、商品服务、用户服务。`为每一个服务接口单独开辟一个线程池，`保持与其他服务接口线程的隔离，提高该服务接口的独立性和高可用。    
-        2. 优点：  
-            1. 使用线程池隔离可以完全隔离依赖的服务，请求线程可以快速放回。  
-            2. 当线程池出现问题时，线程池隔离是独立的，不会影响其他服务和接口。  
-            3. 当失败的服务再次变得可用时，线程池将清理并可立即恢复，而不需要一个长时间的恢复。  
-            4. 独立的线程池提高了并发性。    
-        3. 缺点：  
-            1. 线程池隔离的主要缺点是它们增加计算开销（CPU）。每个命令的执行涉及到排队、调度和上下文切换都是在一个单独的线程上运行的。    
-        1. ~~线程池隔离：~~  
-            1. 调用线程和hystrixCommand线程不是同一个线程，并发请求数受到线程池（不是容器tomcat的线程池，而是hystrixCommand所属于线程组的线程池）中的线程数限制，默认是10。  
-            2. 这个是默认的隔离机制
-            3. hystrixCommand线程无法获取到调用线程中的ThreadLocal中的值
+            &emsp; 比如现在有3个业务调用分别是查询订单、查询商品、查询用户，且这三个业务请求都是依赖第三方服务-订单服务、商品服务、用户服务。`为每一个服务接口单独开辟一个线程池，`保持与其他服务接口线程的隔离，提高该服务接口的独立性和高可用。    
+            2. 优点：  
+                1. 使用线程池隔离可以完全隔离依赖的服务，请求线程可以快速放回。  
+                2. 当线程池出现问题时，线程池隔离是独立的，不会影响其他服务和接口。  
+                3. 当失败的服务再次变得可用时，线程池将清理并可立即恢复，而不需要一个长时间的恢复。  
+                4. 独立的线程池提高了并发性。    
+            3. 缺点：  
+                1. 线程池隔离的主要缺点是它们增加计算开销（CPU）。每个命令的执行涉及到排队、调度和上下文切换都是在一个单独的线程上运行的。    
+            1. ~~线程池隔离：~~  
+                1. 调用线程和hystrixCommand线程不是同一个线程，并发请求数受到线程池（不是容器tomcat的线程池，而是hystrixCommand所属于线程组的线程池）中的线程数限制，默认是10。  
+                2. 这个是默认的隔离机制
+                3. hystrixCommand线程无法获取到调用线程中的ThreadLocal中的值
         2. 信号量隔离：
             1. 调用线程和hystrixCommand线程是同一个线程，默认最大并发请求数是10  
             2. 调用数度快，开销小，由于和调用线程是处于同一个线程，所以必须确保调用的微服务可用性足够高并且返回快才用  
@@ -930,8 +931,8 @@
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-29.png)   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-53.png)   
     1. ServiceConfig将Bean对象解析成URL格式。  
-    2. 通过ProxyFactory类的getInvoker方法使用ref(实际类)生成一个AbstractProxyInvoker实例。`ProxyFactory #getInvoker(T proxy, Class<T> type, URL url)`  
-    3. 通过Protocol(协议)类的export方法暴露服务。`DubboProtocol #export(Invoker<T> invoker)`  
+    2. `服务代理层proxy`：通过ProxyFactory类的getInvoker方法使用ref(实际类)生成一个AbstractProxyInvoker实例。`ProxyFactory #getInvoker(T proxy, Class<T> type, URL url)`  
+    3. `远程调用层protocol`：通过Protocol(协议)类的export方法暴露服务。`DubboProtocol #export(Invoker<T> invoker)`  
         1. 本地各种协议暴露。  
         2. 注册中心暴露。  
     4. 如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心。  
