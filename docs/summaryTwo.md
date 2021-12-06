@@ -76,7 +76,7 @@
     - [1.9. Zookeeper](#19-zookeeper)
         - [1.9.1. ZK服务端](#191-zk服务端)
         - [1.9.2. ZK客户端](#192-zk客户端)
-        - [1.9.3. ZK弊端和应用场景](#193-zk弊端和应用场景)
+        - [1.9.3. ZK应用场景和弊端](#193-zk应用场景和弊端)
     - [1.10. 分布式](#110-分布式)
         - [1.10.1. 分布式理论CAP](#1101-分布式理论cap)
         - [1.10.2. 分布式ID](#1102-分布式id)
@@ -991,7 +991,7 @@
             * 跟随者Follower：提供对客户端读功能，写请求则转发给Leader处理，当Leader崩溃失联之后参与Leader选举；  
             * 观察者Observer：与Follower不同的是不参与Leader选举。  
         2. **<font color = "clime">崩溃恢复</font>**  
-            * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>  
+            * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch) ---> 接受投票 ---> 处理投票(epoch>ZXID>myid) ---> 统计投票 ---> 改变服务器状态。</font>  
             * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态。
         3. **<font color = "clime">`消息广播（数据读写流程）：`</font>**  
             &emsp; 在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点。    
@@ -1002,7 +1002,7 @@
         &emsp; **<font color = "red">Zookeeper保证的是CP，即一致性(Consistency)和分区容错性(Partition-Tolerance)，而牺牲了部分可用性(Available)。</font>**  
         * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>
         * Zookeeper的CP模型：非强一致性， **<font color = "clime">而是单调一致性/顺序一致性。</font>**  
-            1. <font color = "clime">假设有2n+1个server，在同步流程中，leader向follower同步数据，当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。</font><font color = "red">如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。</font> 未同步数据的情况，Zookeeper提供了同步机制（可选型），类似回调。   
+            1. <font color = "clime">假设有2n+1个server，在同步流程中，leader向follower同步数据，`当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。`</font><font color = "red">`如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。`</font> 未同步数据的情况，Zookeeper提供了同步机制（可选型），类似回调。   
             2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数(n+1)的server认同后，将对整个集群进行同步，超过半数(n+1)的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
 2. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
 
@@ -1023,7 +1023,7 @@
     &emsp; 客户端先得到watch通知才可查看节点变化结果。  
 3. 客户端过多，会引发网络风暴。  
 
-### 1.9.3. ZK弊端和应用场景
+### 1.9.3. ZK应用场景和弊端
 1. Zookeeper应用场景：统一命名服务，生成分布式ID、分布式锁、队列管理、元数据/配置信息管理，数据发布/订阅、分布式协调、集群管理，HA高可用性。  
 2. ZK的弊端：
 	1. 服务端从节点多，主从同步慢。  

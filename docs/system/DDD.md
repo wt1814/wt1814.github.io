@@ -1,7 +1,11 @@
 
 <!-- 
- DDD 划分领域、子域、核心域、支撑域的目的 
- https://mp.weixin.qq.com/s/oY_s7m_BQu_F2fxB1gbH3A
+DDD 划分领域、子域、核心域、支撑域的目的 
+https://mp.weixin.qq.com/s/oY_s7m_BQu_F2fxB1gbH3A
+
+DDD为什么能火起来？和微服务有啥关系？ 
+https://mp.weixin.qq.com/s/3eIxfCsTV64zoKjQRv2Zfg
+
 -->
 
 DDD并不是一个重量级的设计方法和开发过程。DDD并不是画模型图，而是将领域专家的思维模型转化成 有用的业务模型。  

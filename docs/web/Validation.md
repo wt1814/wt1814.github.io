@@ -30,4 +30,8 @@ https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&__biz=MzI0MTUwOTgyOQ==&s
 
  参数验证 @Validated 和 @Valid 的区别，Java Web 开发必备。 
  https://mp.weixin.qq.com/s/opK88MLb4he2IoV2Xa4wKA
+ 
+Spring Boot 实现各种参数校验
+https://mp.weixin.qq.com/s/VNrs1zGPgx9GsIqXEDZP0Q
+
 -->

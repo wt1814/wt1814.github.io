@@ -14,6 +14,11 @@
 
 
 # 1. 零拷贝
+<!-- 
+ 零拷贝实现原理与使用 
+ https://mp.weixin.qq.com/s/16QtgkJiPSxK--QdFwf0vA
+-->
+
 
 ## 1.1. CPU + DMA(直接内存访问)  
 &emsp; 直接内存访问(Direct Memory Access，DMA)：DMA允许外设设备和内存存储器之间直接进行IO数据传输，其过程不需要CPU的参与。  
