@@ -10,6 +10,12 @@
 <!-- /TOC -->
 
 # 1. Dubbo
+<!-- 
+dubbo系列
+https://juejin.cn/user/1943592291286557
+-->
+
+
 ## 1.1. 负载均衡  
 <!-- https://mp.weixin.qq.com/s/xkwwAUV9ziabPNUMEr5DPQ -->
 * <font color = "red">Random(缺省)，随机，按权重设置随机概率。</font>在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。  

@@ -11,3 +11,9 @@
 &emsp; &emsp; [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
 &emsp; &emsp; [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
 
+
+
+<!-- 
+dubbo系列
+https://juejin.cn/user/1943592291286557
+-->
