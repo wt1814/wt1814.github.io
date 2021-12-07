@@ -15,6 +15,8 @@
 &emsp; **<font color = "red">总结：</font>**  
 0. CountDownLatch中count down是倒数的意思，latch则是门闩的含义。整体含义可以理解为倒数的门栓，似乎有一点“三二一，芝麻开门”的感觉。CountDownLatch的作用也是如此，在构造CountDownLatch的时候需要传入一个整数n，在这个整数“倒数”到0之前，主线程需要等待在门口，而这个“倒数”过程则是由各个执行线程驱动的，每个线程执行完一个任务“倒数”一次。总结来说，CountDownLatch的作用就是等待其他的线程都执行完任务，必要时可以对各个任务的执行结果进行汇总，然后主线程才继续往下执行。  
 1. java.util.concurrent.CountDownLatch类， **<font color = "red">能够使一个线程等待其他线程完成各自的工作后再执行。</font>** <font color = "red">利用它可以实现类似计数器的功能。</font><font color = "blue">比如有一个任务A，它要等待其他4个任务执行完毕之后才能执行，此时就可以利用CountDownLatch来实现这种功能了。</font>  
+2. CountDownLatch的典型应用场景，大体可分为两类：结束信号、开始信号。  
+&emsp; 主线程创建、启动N个异步任务，我们期望当这N个任务全部执行完毕结束后，主线程才可以继续往下执行。即将CountDownLatch作为任务的结束信号来使用。   
 2. **<font color = "clime">countDown()方法是将count-1，如果发现count=0了，就唤醒</font><font color = "blue">阻塞的主线程。</font>**  
 &emsp; ⚠️注：特别注意主线程会被阻塞。  
 3. <font color = "red">CountDownLatch对象不能被重复利用，也就是不能修改计数器的值。</font>CountDownLatch是一次性的，计数器的值只能在构造方法中初始化一次，之后没有任何机制再次对其设置值，当CountDownLatch使用完毕后，它不能再次被使用。    
@@ -24,7 +26,10 @@
 
 # 1. CountDownLatch，线程计数器  
 &emsp; CountDownLatch做为jdk提供的多线程同步工具，CountDownLatch其实本质上可以看做一个线程计数器，统计多个线程执行完成的情况，适用于控制一个或多个线程等待，直到所有线程都执行完毕的场景，因此我们可以利用其功能特点实现获取多个线程的执行结果。  
-
+  
+<!-- 
+https://mp.weixin.qq.com/s/jC5CdNS4n16JigFACV7CAw
+-->
 <!-- 
 CountDownLatch实践
 https://mp.weixin.qq.com/s/wDxfDcbJCQs99huLyztnCQ
@@ -99,7 +104,8 @@ public boolean await(long timeout, TimeUnit unit)
 &emsp; CountDownLatch内部通过共享锁实现。在创建CountDownLatch实例时，需要传递一个int型的参数：count，该参数为计数器的初始值，也可以理解为该共享锁可以获取的总次数。当某个线程调用await()方法，程序首先判断count的值是否为0，如果不会0的话则会一直等待直到为0为止。当其他线程调用countDown()方法时，则执行释放共享锁状态，使count值- 1。当在创建CountDownLatch时初始化的count参数，必须要有count线程调用countDown方法才会使计数器count等于0，锁才会释放，前面等待的线程才会继续运行。注意CountDownLatch不能回滚重置。 
 
 ## 1.2. 使用示例  
-
+&emsp; CountDownLatch的典型应用场景，大体可分为两类：结束信号、开始信号。  
+&emsp; 主线程创建、启动N个异步任务，我们期望当这N个任务全部执行完毕结束后，主线程才可以继续往下执行。即将CountDownLatch作为任务的结束信号来使用。  
 <!-- 
 java多线程累加计数
 https://blog.csdn.net/wzmde007/article/details/79641084
