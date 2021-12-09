@@ -35,9 +35,9 @@
     - [常用中间件](#常用中间件)
         - [任务调度](#任务调度)
         - [分布式搜索引擎](#分布式搜索引擎)
-    - [网络IO/分布式通信](#网络io分布式通信)
-    - [磁盘IO](#磁盘io)
     - [内存优化](#内存优化)
+    - [磁盘IO](#磁盘io)
+    - [网络IO/分布式通信](#网络io分布式通信)
     - [Error](#error)
     - [计算机网络](#计算机网络)
         - [负载均衡](#负载均衡)
@@ -673,6 +673,13 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 -----------------
 
+## 内存优化
+[堆外内存](/docs/system/OutHeapMemory.md)  
+
+## 磁盘IO
+[页缓存](/docs/system/PageCache.md)  
+
+
 ## 网络IO/分布式通信  
 [通信基础](/docs/microService/communication/Netty/basics.md)   
 &emsp; [序列化](/docs/microService/communication/serializbale.md)  
@@ -718,14 +725,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [WebSocket协议](/docs/webSocket/WebSocket.md)  
 &emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
 &emsp; [IM系统](/docs/webSocket/IM.md)  
-
-
-## 磁盘IO
-[页缓存](/docs/system/PageCache.md)  
-
-
-## 内存优化
-[堆外内存](/docs/system/OutHeapMemory.md)  
 
 ---
 ## Error  
