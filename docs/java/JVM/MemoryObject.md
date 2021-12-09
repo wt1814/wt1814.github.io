@@ -49,6 +49,8 @@
 
 # 1. 内存中的对象  
 <!-- 
+*** java中new一个对象和对象=null有什么区别
+https://www.cnblogs.com/zjdxr-up/p/7168357.html
 
 -->
 
