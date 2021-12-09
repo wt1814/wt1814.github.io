@@ -47,18 +47,18 @@
 <!--
 *** https://mp.weixin.qq.com/s/sB5yi3fdfKsvTetND5cjVg
 
-
-一举拿下 I/O 多路复用
-https://mp.weixin.qq.com/s/Qpa0qXxuIM8jrBqDaXmVNA
-框架篇：见识一下linux高性能网络IO+Reactor模型  
-https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
 「网络IO套路」当时就靠它追到女友 
 https://mp.weixin.qq.com/s/x-AZQO5uiuu5svIvScotzA
-网络模式
-https://www.jianshu.com/p/a23b29f1511f
 
-https://zhuanlan.zhihu.com/p/264355987?utm_source=wechat_session
+
 https://mp.weixin.qq.com/s/7CvrYsuLSFF7eCAQ3svihw
+-->
+
+<!-- 
+~~
+https://zhuanlan.zhihu.com/p/264355987?utm_source=wechat_session
+一举拿下 I/O 多路复用
+https://mp.weixin.qq.com/s/Qpa0qXxuIM8jrBqDaXmVNA
 -->
 
 ## 1.1. Reactor是什么
@@ -256,6 +256,9 @@ https://blog.csdn.net/Jack__iT/article/details/107010486
 Proactor
 http://www.yeolar.com/note/2012/12/10/proactor/
 -->
+&emsp; 同步I/O模型通常用于实现Reactor模式  
+&emsp; 异步I/O模型则用于实现Proactor模式  
+
 &emsp; **Proactor和Reactor的区别：**  
 
 * Proactor是基于异步I/O的概念，而Reactor一般则是基于多路复用I/O的概念  
