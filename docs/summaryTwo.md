@@ -183,7 +183,7 @@
                 - [1.14.5.6.4. Netty多协议开发](#114564-netty多协议开发)
             - [1.14.5.7. Netty源码](#11457-netty源码)
     - [1.15. WebSocket](#115-websocket)
-        - [1.15.1. 种Web端即时通信](#1151-种web端即时通信)
+        - [1.15.1. 4种Web端即时通信](#1151-4种web端即时通信)
         - [1.15.2. 配置中心使用长轮询推送](#1152-配置中心使用长轮询推送)
         - [1.15.3. WebSocket](#1153-websocket)
     - [1.16. 磁盘IO](#116-磁盘io)
@@ -2192,15 +2192,13 @@ update product set name = 'TXC' where id = 1;
 &emsp; **<font color = "clime">splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-35.png)  
 
-
 ### 1.14.3. Socket编程
-&emsp; `Socket是对TCP/IP 协议的封装。`Socket 只是个接口不是协议，通过 Socket 才能使用 TCP/IP 协议，除了 TCP，也可以使用 UDP 协议来传递数据。  
-
+&emsp; `Socket是对TCP/IP协议的封装。`Socket只是个接口不是协议，通过Socket才能使用TCP/IP协议，除了TCP，也可以使用UDP协议来传递数据。  
 
 ### 1.14.4. NIO
 &emsp; **BIO即Block I/O，同步并阻塞的IO。**  
 &emsp; **<font color = "red">NIO，同步非阻塞I/O，基于io多路复用模型，即select，poll，epoll。</font>**  
-&emsp; **<font color = "red">AIO即Async非阻塞，是异步非阻塞的IO。</font>**  
+&emsp; **<font color = "red">AIO，异步非阻塞的IO。</font>**  
 
 &emsp; BIO方式适用于连接数目比较小且固定的架构，这种方式对服务器资源要求比较高，并发局限于应用中，JDK1.4以前的唯一选择，但程序直观简单易理解。  
 &emsp; NIO方式适用于连接数目多且连接比较短（轻操作）的架构，比如聊天服务器，并发局限于应用中，编程比较复杂，JDK1.4开始支持。  
@@ -2227,8 +2225,8 @@ update product set name = 'TXC' where id = 1;
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-151.png)  
 1. 创建服务器启动辅助类，服务端是ServerBootstrap。  
     &emsp; 需要设置事件循环组EventLoopGroup，如果使用reactor主从模式，需要创建2个：   
-    * **<font color = "clime">`创建boss线程组（EventLoopGroup bossGroup）`用于服务端接受客户端的连接；  
-    * `创建worker线程组（EventLoopGroup workerGroup）`用于进行 SocketChannel的数据读写。</font>**  
+    * <font color = "clime">`创建boss线程组（EventLoopGroup bossGroup）`用于服务端接受客户端的连接；  
+    * `创建worker线程组（EventLoopGroup workerGroup）`用于进行SocketChannel的数据读写。</font>  
 2. 对ServerBootstrap进行配置，配置项有channel,handler,option。  
 3. 绑定服务器端口并启动服务器，同步等待服务器启动完毕。  
 4. 阻塞启动线程，并同步等待服务器关闭，因为如果不阻塞启动线程，则会在finally块中执行优雅关闭，导致服务器也会被关闭了。  
@@ -2238,6 +2236,10 @@ update product set name = 'TXC' where id = 1;
 
 &emsp; Netty整体运行流程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-87.png) 
+
+1. Netty基于Reactor，parentGroup用于处理连接，childGroup用于处理数据读写。  
+2. 当一个连接到达时，Netty就会创建一个Channel，然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
+3. 职责链ChannelPipeline，负责事件在职责链中的有序传播，同时负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。 ChannelHandlerContext代表了ChannelHandler和ChannelPipeline之间的绑定。  
 
 #### 1.14.5.3. Netty核心组件
 1. `由netty运行流程可以看出Netty核心组件有Bootstrap、channel相关、EventLoop、byteBuf...`  
@@ -2255,7 +2257,12 @@ update product set name = 'TXC' where id = 1;
     3. ChannelPipeline  
     &emsp; Netty的ChannelHandler为处理器提供了基本的抽象，目前可以认为每个ChannelHandler的实例都类似于一种为了响应特定事件而被执行的回调。从应用程序开发人员的角度来看，它充当了所有处理入站和出站数据的应用程序逻辑的拦截载体。ChannelPipeline提供了ChannelHandler链的容器，并定义了用于在该链上传播入站和出站事件流的API。当Channel被创建时，它会被自动地分配到它专属的ChannelPipeline。  
     4. ChannelHandlerContext  
-    &emsp; 当ChannelHandler被添加到ChannelPipeline时，它将会被分配一个ChannelHandlerContext，它代表了ChannelHandler和ChannelPipeline之间的绑定。ChannelHandlerContext的主要功能是管理它所关联的ChannelHandler和在同一个ChannelPipeline中的其他ChannelHandler之间的交互。  
+    &emsp; 当ChannelHandler被添加到ChannelPipeline时，它将会被分配一个ChannelHandlerContext， **<font color = "clime">它代表了ChannelHandler和ChannelPipeline之间的绑定。</font>** ChannelHandlerContext的主要功能是管理它所关联的ChannelHandler和在同一个ChannelPipeline中的其他ChannelHandler之间的交互。  
+
+5. 小结：  
+    1. Netty基于Reactor，parentGroup用于处理连接，childGroup用于处理数据读写。  
+    2. 当一个连接到达时，Netty就会创建一个Channel，然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
+    3. 职责链ChannelPipeline，负责事件在职责链中的有序传播，同时负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。 ChannelHandlerContext代表了ChannelHandler和ChannelPipeline之间的绑定。  
 
 
 #### 1.14.5.4. Netty逻辑架构
@@ -2318,7 +2325,7 @@ update product set name = 'TXC' where id = 1;
 
 
 ## 1.15. WebSocket
-### 1.15.1. 种Web端即时通信
+### 1.15.1. 4种Web端即时通信
 1. Web端即时通讯技术：即时通讯技术简单的说就是实现这样一种功能：服务器端可以即时地将数据的更新或变化反应到客户端，例如消息即时推送等功能都是通过这种技术实现的。但是在Web中，由于浏览器的限制，实现即时通讯需要借助一些方法。这种限制出现的主要原因是，一般的Web通信都是浏览器先发送请求到服务器，服务器再进行响应完成数据的现实更新。  
 &emsp; 实现Web端即时通讯的方法：实现即时通讯主要有四种方式，它们分别是轮询、长轮询(comet)、长连接(SSE)、WebSocket。它们大体可以分为两类，一种是在HTTP基础上实现的，包括短轮询、comet和SSE；另一种不是在HTTP基础上实现是，即WebSocket。下面分别介绍一下这四种轮询方式，以及它们各自的优缺点。  
 2. 短轮询：平时写的忙轮询/无差别轮询。  
