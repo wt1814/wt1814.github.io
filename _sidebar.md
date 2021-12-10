@@ -349,7 +349,7 @@
             * [Dubbo心跳机制](/docs/microService/dubbo/heartbeat.md)  
         * [远程调用](/docs/microService/dubbo/remote.md)  
             * [Dubbo调用介绍](/docs/microService/dubbo/RemoteIntroduce.md)  
-            * 负载均衡
+            * 负载均衡  
             * [Dubbo集群容错](/docs/microService/dubbo/Load.md)  
         * [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
             * [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
