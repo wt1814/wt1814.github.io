@@ -2172,9 +2172,6 @@ update product set name = 'TXC' where id = 1;
         3. CPU将读缓冲区中数据拷贝到socket缓冲区
         4. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，sendfile调用返回  
     3. sendfile方式中，应用程序只需要调用sendfile函数即可完成。数据不经过用户缓冲区，该数据无法被修改。但减少了2次状态切换，即只有2次状态切换、1次CPU拷贝、2次DMA拷贝。  
-
-    
-
 8. sendfile+DMA收集  
 9. splice方式  
 &emsp; splice系统调用是Linux在2.6版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
