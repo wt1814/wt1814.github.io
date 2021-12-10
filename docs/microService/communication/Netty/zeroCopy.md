@@ -10,7 +10,6 @@
             - [1.1.2.3. ★★★一次读取数据read、传输数据write交互详解](#1123-★★★一次读取数据read传输数据write交互详解)
         - [1.1.3. CPU&DMA-2](#113-cpudma-2)
     - [1.2. 零拷贝技术](#12-零拷贝技术)
-            - [1.2.2.1. mmap+write方式，内存映射](#1221-mmapwrite方式内存映射)
             - [1.2.2.2. sendfile方式](#1222-sendfile方式)
             - [1.2.2.3. ~~sendfile+DMA收集，零拷贝~~](#1223-sendfiledma收集零拷贝)
             - [1.2.2.4. splice方式](#1224-splice方式)
@@ -234,76 +233,16 @@ DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态�
 ## 1.2. 零拷贝技术
 
 
-#### 1.2.2.1. mmap+write方式，内存映射
 
 
-<!-- 
-include <sys/mman.h>
-void *mmap(void *start， size_t length， int prot， int flags， int fd， off_t offset)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-75.png)   
-    1)发出mmap系统调用，导致用户空间到内核空间的上下文切换。然后通过DMA引擎将磁盘文件中的数据复制到内核空间缓冲区
-    2)mmap系统调用返回，导致内核空间到用户空间的上下文切换
-    3)这里不需要将数据从内核空间复制到用户空间，因为用户空间和内核空间共享了这个缓冲区
-    4)发出write系统调用，导致用户空间到内核空间的上下文切换。将数据从内核空间缓冲区复制到内核空间socket缓冲区；write系统调用返回，导致内核空间到用户空间的上下文切换
-    5)异步，DMA引擎将socket缓冲区中的数据copy到网卡
--->
 
 #### 1.2.2.2. sendfile方式
-&emsp; mmap+write方式有一定改进，但是由系统调用引起的状态切换并没有减少。  
-&emsp; sendfile系统调用是在Linux内核2.1版本中被引入， **<font color = "red">它建立了两个文件之间的传输通道。</font>**  
-
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-31.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-32.png)  
-1. 发出sendfile系统调用，导致用户空间到内核空间的上下文切换，然后通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区中，接着再将数据从内核空间缓冲区复制到socket相关的缓冲区。    
-2. sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA异步将内核空间socket缓冲区中的数据传递到网卡。    
-
-&emsp; sendfile方式中，应用程序只需要调用sendfile函数即可完成。数据不经过用户缓冲区，该数据无法被修改。但减少了2次状态切换，即只有2次状态切换、1次CPU拷贝、2次DMA拷贝。    
-&emsp; 但是sendfile在内核缓冲区和socket缓冲区仍然存在一次CPU拷贝，或许这个还可以优化。
 
 
-------------
-
-&emsp; 相比mmap来说，sendfile同样减少了一次CPU拷贝，而且还减少了2次上下文切换。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-147.png)  
-&emsp; sendfile是Linux2.1内核版本后引入的一个系统调用函数，通过使用sendfile数据可以直接在内核空间进行传输，因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-148.png)  
-
-&emsp; 整个过程发生了2次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
-
-1. 用户进程通过sendfile()方法向操作系统发起调用，上下文从用户态转向内核态
-2. DMA控制器把数据从硬盘中拷贝到读缓冲区
-3. CPU将读缓冲区中数据拷贝到socket缓冲区
-4. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，sendfile调用返回  
-
-&emsp; sendfile方法IO数据对用户空间完全不可见，所以只能适用于完全不需要用户空间处理的情况，比如静态文件服务器。  
-
--------
-&emsp; senfile函数的作用是将一个文件描述符的内容发送给另一个文件描述符。而用户空间是不需要关心文件描述符的,所以整个的拷贝过程只会在内核空间操作,相当于减少了内核空间和用户空间之间数据的拷贝过程,而且还避免了CPU在内核空间和用户空间之间的来回切换过程。整体流程如下：  
-
-&emsp; 第一步：通过DMA传输将硬盘中的数据复制到内核页缓冲区  
-&emsp; 第二步：通过sendfile函数将页缓冲区的数据通过CPU拷贝给socket缓冲区  
-&emsp; 第三步：网卡通过DMA传输将socket缓冲区的数据拷贝走并发送数据  
-
-&emsp; 流程如下图示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-149.png)  
-&emsp; 整个过程中：DMA拷贝2次、CPU拷贝1次、内核空间和用户空间切换0次  
-
-&emsp; 可以看出通过sendfile函数时只会有一次CPU拷贝过程，而且全程都是在内核空间实现的，所以整个过程都不会使得CPU在内核空间和用户空间进行来回切换的操作，性能相比于mmap而言要更好  
 
 
-<!-- 
-sendfile系统调用在内核版本2.1中被引入，目的是简化通过网络在两个通道之间进行的数据传输过程。sendfile系统调用的引入，不仅减少了数据复制，还减少了上下文切换的次数，大致如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-74.png)  
-数据传送只发生在内核空间，所以减少了一次上下文切换；但是还是存在一次copy，能不能把这一次copy也省略掉，Linux2.4内核中做了改进，将Kernel buffer中对应的数据描述信息(内存地址，偏移量)记录到相应的socket缓冲区当中，这样连内核空间中的一次cpu copy也省掉了；  
 
-include <sys/sendfile.h>
-ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-76.png)  
-    1)发出sendfile系统调用，导致用户空间到内核空间的上下文切换，然后通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区中，接着再将数据从内核空间缓冲区复制到socket相关的缓冲区  
-    2)sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA异步将内核空间socket缓冲区中的数据传递到网卡  
 
-「通过sendfile实现的零拷贝I/O使用了2次用户空间与内核空间的上下文切换，以及3次数据的拷贝。其中3次数据拷贝中包括了2次DMA拷贝和1次CPU拷贝」
--->
 
 
 #### 1.2.2.3. ~~sendfile+DMA收集，零拷贝~~

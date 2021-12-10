@@ -2161,29 +2161,19 @@ update product set name = 'TXC' where id = 1;
     5. CPU将读缓冲区中数据拷贝到socket缓冲区
     6. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，write()返回
 
-
     &emsp; mmap的方式节省了一次CPU拷贝，同时由于用户进程中的内存是虚拟的，只是映射到内核的读缓冲区，所以可以节省一半的内存空间，比较适合大文件的传输。  
 7. sendfile（函数调用）：  
-    1. 升级后的sendfile将内核空间缓冲区中对应的数据描述信息（文件描述符、地址偏移量等信息）记录到socket缓冲区中。  
-    2. DMA控制器根据socket缓冲区中的地址和偏移量将数据从内核缓冲区拷贝到网卡中，从而省去了内核空间中仅剩的1次CPU拷贝。  
+    1. &emsp; **<font color = "red">sendfile建立了两个文件之间的传输通道。</font>** 通过使用sendfile数据可以直接在内核空间进行传输，因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。   
+    2. 流程：  
+        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-148.png)  
+        &emsp; 整个过程发生了2次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
+        1. 用户进程通过sendfile()方法向操作系统发起调用，上下文从用户态转向内核态
+        2. DMA控制器把数据从硬盘中拷贝到读缓冲区
+        3. CPU将读缓冲区中数据拷贝到socket缓冲区
+        4. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，sendfile调用返回  
+    3. sendfile方式中，应用程序只需要调用sendfile函数即可完成。数据不经过用户缓冲区，该数据无法被修改。但减少了2次状态切换，即只有2次状态切换、1次CPU拷贝、2次DMA拷贝。  
 
-    &emsp; `数据不经过用户缓冲区，这种方式又减少了1次CPU拷贝。`即有2次状态切换、0次CPU拷贝、2次DMA拷贝。  
-    &emsp; 但是`仍然无法对数据进行修改`，并且需要硬件层面DMA的支持， **并且sendfile只能将文件数据拷贝到socket描述符上，有一定的局限性。**   
     
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-32.png)  
-    &emsp; 相比mmap来说，sendfile同样减少了一次CPU拷贝，而且还减少了2次上下文切换。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-147.png)  
-    &emsp; sendfile是Linux2.1内核版本后引入的一个系统调用函数，通过使用sendfile数据可以直接在内核空间进行传输，因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-148.png)  
-
-    &emsp; 整个过程发生了2次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
-
-    1. 用户进程通过sendfile()方法向操作系统发起调用，上下文从用户态转向内核态
-    2. DMA控制器把数据从硬盘中拷贝到读缓冲区
-    3. CPU将读缓冲区中数据拷贝到socket缓冲区
-    4. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，sendfile调用返回  
-
-    &emsp; sendfile方法IO数据对用户空间完全不可见，所以只能适用于完全不需要用户空间处理的情况，比如静态文件服务器。  
 
 8. sendfile+DMA收集  
 9. splice方式  
