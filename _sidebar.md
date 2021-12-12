@@ -614,6 +614,7 @@
         * [k8s使用教程](/docs/devAndOps/k8s/use.md)  
             * [k8s安装及常用命令](/docs/devAndOps/k8s/command.md)  
             * [Yaml文件配置](/docs/devAndOps/k8s/yaml.md)  
+                * [k8s自动伸缩](/docs/devAndOps/k8s/Stretch.md)  
         * [k8s架构](/docs/devAndOps/k8s/principle.md)  
             * [Pod详解](/docs/devAndOps/k8s/pod.md)  
                 * [k8s自动伸缩](/docs/devAndOps/k8s/Stretch.md)  

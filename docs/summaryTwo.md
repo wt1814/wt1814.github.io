@@ -376,6 +376,9 @@
     * 【后置处理】 
 4. 销毁（Destruction）---注册Destruction回调函数。  
 
+&emsp; Spring Bean的生命周期管理的基本思路是：在Bean出现之前，先准备操作Bean的BeanFactory，然后操作完Bean，所有的Bean也还会交给BeanFactory进行管理。再所有Bean操作准备BeanPostProcessor作为回调。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-23.png)  
+
 ### 1.3.5. 容器相关特性
 #### 1.3.5.1. FactoryBean
 &emsp; BeanFactory是个Factory，也就是IOC容器或对象工厂；FactoryBean是个Bean，也由BeanFactory管理。  
