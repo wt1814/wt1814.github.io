@@ -29,7 +29,7 @@
         1. 漏桶算法和令牌桶算法在设计上的区别：`漏桶算法中“水滴”代表请求，令牌桶中“水滴”代表请求令牌。`   
         2. **<font color = "blue">只要令牌桶中存在令牌，那么就允许突发地传输数据直到达到用户配置的门限，所以它适合于具有突发特性的流量。</font>** 
 4. 限流方式有服务降级、服务拒绝。 
-
+5. Java单机限流可以使用AtomicInteger、Semaphore或Guava的RateLimiter来实现，但是上述方案都不支持集群限流。集群限流的应用场景有两个，一个是网关，常用的方案有Nginx限流和Spring Cloud Gateway，另一个场景是与外部或者下游服务接口的交互，可以使用redis+lua实现。阿里巴巴的开源限流系统Sentinel也可以针对接口限流。  
 
 <!-- 
 
@@ -222,4 +222,8 @@ https://mp.weixin.qq.com/s/zGSvz6LyoenQw1TeWFLpuQ
 
 Redis 实现限流的三种方式 
 https://mp.weixin.qq.com/s/UAD1w1pK-1udetQ8AUXkBA
+
+Redis + Lua 实现系统限流
+https://blog.csdn.net/qq_37936542/article/details/105648277
+
 -->
