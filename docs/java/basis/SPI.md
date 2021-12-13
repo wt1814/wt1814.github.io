@@ -9,7 +9,7 @@
     - [1.4. SPI的用途](#14-spi的用途)
         - [1.4.1. Driver实现](#141-driver实现)
         - [1.4.2. Mysql DriverManager实现](#142-mysql-drivermanager实现)
-    - [1.5. JDK中SPI解析](#15-jdk中spi解析)
+    - [1.5. JDK中SPI解析（SPI与线程上下文类加载器）](#15-jdk中spi解析spi与线程上下文类加载器)
 
 <!-- /TOC -->
 
@@ -351,9 +351,24 @@ private static boolean isDriverAllowed(Driver driver, ClassLoader classLoader) {
 }
 ```
 
-## 1.5. JDK中SPI解析  
-<!-- 
+## 1.5. JDK中SPI解析（SPI与线程上下文类加载器）  
+<!--
+
+https://www.jianshu.com/p/304cb533ba2d
+https://zhuanlan.zhihu.com/p/38505998
+
 https://mp.weixin.qq.com/s/6BhHBtoBlSqHlXduhzg7Pw
 深入理解ServiceLoader类与SPI机制
 https://blog.csdn.net/li_xunhuan/article/details/103017286?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-15.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-15.nonecase
 -->
+
+
+&emsp; SPI内部使用线程上下文类加载器实现。ServiceLoader中的load方法：  
+
+```java
+public static <S> ServiceLoader<S> load(Class<S> service) {
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    return ServiceLoader.load(service, cl);
+}
+```
+
