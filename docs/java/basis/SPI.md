@@ -362,8 +362,7 @@ https://mp.weixin.qq.com/s/6BhHBtoBlSqHlXduhzg7Pw
 https://blog.csdn.net/li_xunhuan/article/details/103017286?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-15.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-15.nonecase
 -->
 
-
-&emsp; SPI内部使用线程上下文类加载器实现。ServiceLoader中的load方法：  
+&emsp; JDK的SPI内部使用线程上下文类加载器实现，破坏了双亲委派模型，是为了适用所有场景。ServiceLoader中的load方法：  
 
 ```java
 public static <S> ServiceLoader<S> load(Class<S> service) {
@@ -371,4 +370,6 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     return ServiceLoader.load(service, cl);
 }
 ```
+
+&emsp; `Dubbo的SPI并没有破坏双亲委派模型。`自己实现的框架，接口类和实现类一般都是由SystemClassLoader加载器来加载的，这时候双亲委派模型仍然可以正常使用。很多框架使用SPI方式的原因，不是因为双亲委派模型满足不了类加载需求，而是看重了SPI的易扩展性。  
 

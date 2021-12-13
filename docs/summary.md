@@ -376,7 +376,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 --------
 
-&emsp; SPI内部使用线程上下文类加载器实现。ServiceLoader中的load方法：  
+&emsp; JDK的SPI内部使用线程上下文类加载器实现，破坏了双亲委派模型，是为了适用所有场景。ServiceLoader中的load方法：  
 
 ```java
 public static <S> ServiceLoader<S> load(Class<S> service) {
@@ -384,6 +384,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     return ServiceLoader.load(service, cl);
 }
 ```
+
+&emsp; `Dubbo的SPI并没有破坏双亲委派模型。`自己实现的框架，接口类和实现类一般都是由SystemClassLoader加载器来加载的，这时候双亲委派模型仍然可以正常使用。很多框架使用SPI方式的原因，不是因为双亲委派模型满足不了类加载需求，而是看重了SPI的易扩展性。  
+
 
 -----
 
@@ -608,8 +611,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     1. 破坏双亲委派模型：继承ClassLoader，重写loadClass()方法。  
     1. `双亲委派模型有一个问题：顶层ClassLoader无法加载底层ClassLoader的类，典型例子JNDI、JDBC。`
         * **<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器，而 JDBC 运行时又需要去访问子类加载器加载的驱动，就破坏了该模型。所以加入了`线程上下文类加载器(Thread Context ClassLoader)`，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
-    2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。    
-    3. ......  
+    2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，`如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。`    
+    3. Spring破坏类加载器  
 
 ### 1.3.4. 运行时数据区/内存结构
 #### 1.3.4.1. JVM内存结构
