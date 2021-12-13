@@ -34,7 +34,10 @@
             - [1.2.3.3. 两种动态代理](#1233-两种动态代理)
             - [1.2.3.4. 11种行为型设计模式](#1234-11种行为型设计模式)
             - [1.2.3.5. 设计模式大讨论](#1235-设计模式大讨论)
-            - [1.2.3.6. 常使用的设计模式](#1236-常使用的设计模式)
+                - [1.2.3.5.1. 结构型模式的讨论](#12351-结构型模式的讨论)
+                - [1.2.3.5.2. 行为型模式的讨论](#12352-行为型模式的讨论)
+            - [1.2.3.6. 设计模式混编](#1236-设计模式混编)
+            - [1.2.3.7. 常使用的设计模式](#1237-常使用的设计模式)
     - [1.3. JVM](#13-jvm)
         - [1.3.1. JDK、JRE、JVM](#131-jdkjrejvm)
         - [1.3.2. 编译成Class字节码文件](#132-编译成class字节码文件)
@@ -122,50 +125,50 @@
             - [1.5.1.1. 基本查询语句](#1511-基本查询语句)
             - [1.5.1.2. 连接查询](#1512-连接查询)
             - [1.5.1.3. ~~高级查询~~](#1513-高级查询)
-        - [1.5.3. MySql优化](#153-mysql优化)
-            - [1.5.3.1. SQL分析](#1531-sql分析)
-                - [1.5.3.1.1. Expain](#15311-expain)
-            - [1.5.3.2. SQL优化](#1532-sql优化)
-            - [1.5.3.3. 索引优化](#1533-索引优化)
-            - [1.5.3.4. 碎片优化](#1534-碎片优化)
-        - [1.5.4. 数据库分布式](#154-数据库分布式)
-            - [1.5.4.1. 大数据量操作](#1541-大数据量操作)
-            - [1.5.4.2. MySql瓶颈](#1542-mysql瓶颈)
-            - [1.5.4.3. 数据库分布式](#1543-数据库分布式)
-            - [1.5.4.4. 主从复制](#1544-主从复制)
-                - [1.5.4.4.1. 主从复制原理](#15441-主从复制原理)
-                - [1.5.4.4.2. 主从复制实现](#15442-主从复制实现)
-                - [1.5.4.4.3. 主从复制问题](#15443-主从复制问题)
-                - [1.5.4.4.4. 高可用实现](#15444-高可用实现)
-                - [1.5.4.4.5. 读写分离实现](#15445-读写分离实现)
-            - [1.5.4.5. 分区](#1545-分区)
-            - [1.5.4.6. 分库分表](#1546-分库分表)
-                - [1.5.4.6.1. 分库分表](#15461-分库分表)
-                - [1.5.4.6.2. 分库分表查询](#15462-分库分表查询)
-                - [1.5.4.6.3. 跨分片的排序分页](#15463-跨分片的排序分页)
-            - [1.5.4.7. 数据迁移](#1547-数据迁移)
-        - [1.5.5. 索引事物锁](#155-索引事物锁)
-            - [1.5.5.1. 索引底层原理](#1551-索引底层原理)
-            - [1.5.5.2. ~~各种索引~~（还需要总结）](#1552-各种索引还需要总结)
-            - [1.5.5.3. MySql事务（还需要总结）](#1553-mysql事务还需要总结)
-            - [1.5.5.4. MVCC](#1554-mvcc)
-            - [1.5.5.5. MySql锁](#1555-mysql锁)
-            - [1.5.5.6. MySql死锁和锁表](#1556-mysql死锁和锁表)
-        - [1.5.6. MySql架构](#156-mysql架构)
-            - [1.5.6.1. MySql运行流程](#1561-mysql运行流程)
-            - [1.5.6.2. Server层之binLog日志](#1562-server层之binlog日志)
-            - [1.5.6.3. 存储引擎层](#1563-存储引擎层)
-            - [1.5.6.4. InnoDB体系结构](#1564-innodb体系结构)
-                - [1.5.6.4.1. InnoDB内存结构-性能](#15641-innodb内存结构-性能)
-                    - [1.5.6.4.1.1. BufferPool](#156411-bufferpool)
-                    - [1.5.6.4.1.2. 写缓冲ChangeBuffer](#156412-写缓冲changebuffer)
-                    - [1.5.6.4.1.3. AdaptiveHashIndex](#156413-adaptivehashindex)
-                - [1.5.6.4.2. InnoDB磁盘结构-可靠性](#15642-innodb磁盘结构-可靠性)
-                    - [1.5.6.4.2.1. BufferPool落盘表空间](#156421-bufferpool落盘表空间)
-                    - [1.5.6.4.2.2. undoLog](#156422-undolog)
-                    - [1.5.6.4.2.3. redoLog](#156423-redolog)
-                    - [1.5.6.4.2.4. DoubleWrite](#156424-doublewrite)
-                - [1.5.6.4.3. ~~两阶段提交和崩溃恢复~~](#15643-两阶段提交和崩溃恢复)
+        - [1.5.2. MySql优化](#152-mysql优化)
+            - [1.5.2.1. SQL分析](#1521-sql分析)
+                - [1.5.2.1.1. Expain](#15211-expain)
+            - [1.5.2.2. SQL优化](#1522-sql优化)
+            - [1.5.2.3. 索引优化](#1523-索引优化)
+            - [1.5.2.4. 碎片优化](#1524-碎片优化)
+        - [1.5.3. 数据库分布式](#153-数据库分布式)
+            - [1.5.3.1. 大数据量操作](#1531-大数据量操作)
+            - [1.5.3.2. MySql瓶颈](#1532-mysql瓶颈)
+            - [1.5.3.3. 数据库分布式](#1533-数据库分布式)
+            - [1.5.3.4. 主从复制](#1534-主从复制)
+                - [1.5.3.4.1. 主从复制原理](#15341-主从复制原理)
+                - [1.5.3.4.2. 主从复制实现](#15342-主从复制实现)
+                - [1.5.3.4.3. 主从复制问题](#15343-主从复制问题)
+                - [1.5.3.4.4. 高可用实现](#15344-高可用实现)
+                - [1.5.3.4.5. 读写分离实现](#15345-读写分离实现)
+            - [1.5.3.5. 分区](#1535-分区)
+            - [1.5.3.6. 分库分表](#1536-分库分表)
+                - [1.5.3.6.1. 分库分表](#15361-分库分表)
+                - [1.5.3.6.2. 分库分表查询](#15362-分库分表查询)
+                - [1.5.3.6.3. 跨分片的排序分页](#15363-跨分片的排序分页)
+            - [1.5.3.7. 数据迁移](#1537-数据迁移)
+        - [1.5.4. 索引事物锁](#154-索引事物锁)
+            - [1.5.4.1. 索引底层原理](#1541-索引底层原理)
+            - [1.5.4.2. ~~各种索引~~（还需要总结）](#1542-各种索引还需要总结)
+            - [1.5.4.3. MySql事务（还需要总结）](#1543-mysql事务还需要总结)
+            - [1.5.4.4. MVCC](#1544-mvcc)
+            - [1.5.4.5. MySql锁](#1545-mysql锁)
+            - [1.5.4.6. MySql死锁和锁表](#1546-mysql死锁和锁表)
+        - [1.5.5. MySql架构](#155-mysql架构)
+            - [1.5.5.1. MySql运行流程](#1551-mysql运行流程)
+            - [1.5.5.2. Server层之binLog日志](#1552-server层之binlog日志)
+            - [1.5.5.3. 存储引擎层](#1553-存储引擎层)
+            - [1.5.5.4. InnoDB体系结构](#1554-innodb体系结构)
+                - [1.5.5.4.1. InnoDB内存结构-性能](#15541-innodb内存结构-性能)
+                    - [1.5.5.4.1.1. BufferPool](#155411-bufferpool)
+                    - [1.5.5.4.1.2. 写缓冲ChangeBuffer](#155412-写缓冲changebuffer)
+                    - [1.5.5.4.1.3. AdaptiveHashIndex](#155413-adaptivehashindex)
+                - [1.5.5.4.2. InnoDB磁盘结构-可靠性](#15542-innodb磁盘结构-可靠性)
+                    - [1.5.5.4.2.1. BufferPool落盘表空间](#155421-bufferpool落盘表空间)
+                    - [1.5.5.4.2.2. undoLog](#155422-undolog)
+                    - [1.5.5.4.2.3. redoLog](#155423-redolog)
+                    - [1.5.5.4.2.4. DoubleWrite](#155424-doublewrite)
+                - [1.5.5.4.3. ~~两阶段提交和崩溃恢复~~](#15543-两阶段提交和崩溃恢复)
 
 <!-- /TOC -->
 
@@ -543,8 +546,21 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 #### 1.2.3.5. 设计模式大讨论
 
+##### 1.2.3.5.1. 结构型模式的讨论
+&emsp; 代理模式VS装饰模式  
+&emsp; 对于两个模式，首先要说的是，装饰模式就是代理模式的一个特殊应用，两者的共同点是都具有相同的接口， **<font color = "red">不同点则是代理模式着重对代理过程的控制，而装饰模式则是对类的功能进行加强或减弱，它着重类的功能变化。</font>**   
 
-#### 1.2.3.6. 常使用的设计模式
+
+&emsp; 装饰模式VS适配器模式  
+&emsp; 装饰模式和适配器模式在通用类图上没有太多的相似点，差别比较大，但是它们的功能有相似的地方：都是包装作用，都是通过委托方式实现其功能。不同点是：<font color = "clime">装饰模式包装的是自己的兄弟类，隶属于同一个家族(相同接口或父类)，</font><font color = "red">适配器模式则修饰非血缘关系类，把一个非本家族的对象伪装成本家族的对象，注意是伪装，因此它的本质还是非相同接口的对象。</font>   
+
+##### 1.2.3.5.2. 行为型模式的讨论
+
+
+#### 1.2.3.6. 设计模式混编
+
+
+#### 1.2.3.7. 常使用的设计模式
 &emsp; 面试题：你使用过哪些设计模式？ 根据实际使用，设计模式分3类：  
 
 * 框架：SpringAOP、池化（享元模式）、 mq
@@ -1540,7 +1556,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 #### 1.5.1.3. ~~高级查询~~
 
 
-### 1.5.3. MySql优化
+### 1.5.2. MySql优化
 &emsp; <font color = "red">MySql性能由综合因素决定，抛开业务复杂度，影响程度依次是硬件配置、MySQL配置、数据表设计、索引优化。</font>  
 1. SQL语句的优化。  
     &emsp; `对查询语句的监控、分析、优化是SQL优化的一般步骤。`常规调优思路：  
@@ -1551,7 +1567,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 2. 存储数据量较大： **<font color = "red">单库单表无法满足时，可以拆分表结构（主从复制、分库分表），或者使用ES搜索引擎。</font>**  
 3. 服务器的优化。  
 
-#### 1.5.3.1. SQL分析
+#### 1.5.2.1. SQL分析
 1. **<font color = "clime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling、trace。</font>**  
 2. <font color = "red">用explain extended查看执行计划会比explain多一列filtered。filtered列给出了一个百分比的值，这个百分比值和rows列的值一起使用，可以估计出那些将要和explain中的前一个表进行连接的行的数目。前一个表就是指explain的id列的值比当前表的id小的表。</font>  
 &emsp; mysql中有一个explain 命令可以用来分析select 语句的运行效果，例如explain可以获得select语句使用的索引情况、排序的情况等等。除此以外，explain 的extended 扩展能够在原本explain的基础上额外的提供一些查询优化的信息，这些信息可以通过mysql的show warnings命令得到。  
@@ -1560,19 +1576,19 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 4. trace  
 &emsp; 查看优化器如何选择执行计划，获取每个可能的索引选择的代价。  
 
-##### 1.5.3.1.1. Expain
+##### 1.5.2.1.1. Expain
 &emsp; expain信息列分别是id、select_type、table、partitions、`type`、possible_keys、`key`、`key_len`、ref、`rows`、filtered、 `Extra`。  
 * **<font color = "clime">`type，单表的访问方法。`单表查询类型要达到range级别（只检索给定范围的行，使用一个索引来选择行，非全表扫描）。</font>**  
 * key_len表示使用的索引长度，key_len可以衡量索引的好坏。key_len越小，索引效果越好。 **<font color = "blue">可以根据key_len来判断联合索引是否生效。</font>**  
 * **<font color = "red">extra：额外的信息，该列包含MySQL解决查询的详细信息。注意，常见的不太友好的值，如Using filesort（额外排序）、Using temporary（使用了临时表），意思MYSQL根本不能使用索引，常出现在使用order by。</font>**  
 
-#### 1.5.3.2. SQL优化
+#### 1.5.2.2. SQL优化
 1. 基本查询优化：  
 2. 子查询优化：使用连接（JOIN）来代替子查询（Sub-Queries）。  
 2. 关联查询优化：使用索引、 **<font color = "bllue">驱动表选择、`条件谓词下推`</font>** ......  
 &emsp; 谓词下推，就是在将过滤条件下推到离数据源更近的地方，最好就是在table_scan时就能过滤掉不需要的数据。  
 
-#### 1.5.3.3. 索引优化
+#### 1.5.2.3. 索引优化
 1. 创建索引：为了使索引的使用效率更高，在创建索引时，需要考虑在哪些字段上创建索引和创建什么类型的索引。  
     * 多表连接的字段、where条件字段、分组字段、排序字段、联合UNION字段、去重distinct字段上建立索引。  
     * 尽量选择区分度高的列作为索引。  
@@ -1584,13 +1600,13 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 关闭ICP：索引 ---> 回表 ---> 条件过滤。  
     * 开启ICP：索引 ---> 条件过滤 ---> 回表。</font>在支持ICP后，`MySQL在取出索引数据的同时，判断是否可以进行where条件过滤，`<font color = "blue">将where的部分过滤操作放在存储引擎层提前过滤掉不必要的数据，</font>`减少了不必要数据被扫描带来的IO开销。`  
 
-#### 1.5.3.4. 碎片优化
+#### 1.5.2.4. 碎片优化
 
 
-### 1.5.4. 数据库分布式
-#### 1.5.4.1. 大数据量操作
+### 1.5.3. 数据库分布式
+#### 1.5.3.1. 大数据量操作
 
-#### 1.5.4.2. MySql瓶颈
+#### 1.5.3.2. MySql瓶颈
 1. MySql性能
 	* 最大并发数：并发数是指同一时刻数据库能处理多少个请求，由max_connections和max_user_connections决定。max_connections是指MySQL实例的最大连接数，上限值是16384，max_user_connections是指每个数据库用户的最大连接数。  
 	* 查询耗时0.5秒，0.5秒是个经验值。  
@@ -1604,7 +1620,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 	&emsp; 第一种：SQL问题，如SQL中包含join，group by，order by，非索引字段条件查询等，增加CPU运算的操作。 解决方案：SQL优化，建立合适的索引，在业务Service层进行业务计算。  
 	&emsp; 第二种：单表数据量太大（达到1000W或100G以后），查询时扫描的行太多，SQL效率低，CPU率先出现瓶颈。 解决方案：水平分表。  
 
-#### 1.5.4.3. 数据库分布式
+#### 1.5.3.3. 数据库分布式
 &emsp; **`数据库拆分过程基本遵循的顺序是：`1).垂直拆分(业务拆分) ---> 2).读写分离 ---> 3).分库分表(水平拆分)。每个拆分过程都能解决业务上的一些问题，但同时也面临了一些挑战。**  
 1. **分库分表与读写分离：**   
     &emsp; `读写分离实现了数据库读能力的水平扩展，分库分表实现了写能力的水平扩展。`  
@@ -1624,8 +1640,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
             * 对于那些大访问量，并且表数据比较多的表，可以`采取分表和分区结合的方式`（如果merge这种分表方式，不能和分区配合的话，可以用其他的分表试）。  
             * `访问量不大，但是表数据很多的表，可以采取分区的方式等。`  
 
-#### 1.5.4.4. 主从复制
-##### 1.5.4.4.1. 主从复制原理  
+#### 1.5.3.4. 主从复制
+##### 1.5.3.4.1. 主从复制原理  
 1. 对于每一个主从复制的连接，都有三个线程。  
     * 拥有多个从库的主库为每一个连接到主库的从库创建一个binlog输出线程。  
     * 每一个从库都有它自己的I/O线程和SQL线程。  
@@ -1638,10 +1654,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     &emsp; 注：Mysql到Elasticsearch实时增量同步，多采用基于行复制。    
     * MySQL5.1及其以后的版本推荐使用混合模式的复制，它是<font color = "clime">根据事件的类型实时的改变binlog的格式。当设置为混合模式时，默认为基于语句的格式，但在特定的情况下它会自动转变为基于行的模式。</font>  
 
-##### 1.5.4.4.2. 主从复制实现
+##### 1.5.3.4.2. 主从复制实现
 
 
-##### 1.5.4.4.3. 主从复制问题
+##### 1.5.3.4.3. 主从复制问题
 1. 复制过程
 	1. 大对象blog,text传输： **<font color = "clime">解决的办法就是在主从库上增加max_allowed_packet参数的大小。</font>**  
 2. 错误
@@ -1662,10 +1678,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 	3. 并行复制  
 4. <font color = "red">复制问题要分清楚是master的问题，还是slave的问题。master问题找二进制日志binlog，slave问题找中继日志relaylog。</font>  
 
-##### 1.5.4.4.4. 高可用实现
+##### 1.5.3.4.4. 高可用实现
 
 
-##### 1.5.4.4.5. 读写分离实现
+##### 1.5.3.4.5. 读写分离实现
 &emsp; 读写分离的实现，可以在应用层解决，也可以通过中间件实现。  
 1. 应用层解决方案：  
     1. 驱动实现
@@ -1676,10 +1692,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     4. Spring动态数据源 + mybatis plugin
 2. 常见代理中间件有MyCat...  
 
-#### 1.5.4.5. 分区
+#### 1.5.3.5. 分区
 
-#### 1.5.4.6. 分库分表
-##### 1.5.4.6.1. 分库分表
+#### 1.5.3.6. 分库分表
+##### 1.5.3.6.1. 分库分表
 1. 数据切分方式：  
     * 垂直分库，一般根据业务维度拆分，分布式项目中单项目单库。  
     * **<font color = "clime">`水平分库`主要根据`用户属性（如地市）`拆分物理数据库。一种常见的方式是将全省划分为多个大区。`可以复合分片字段拆分，即按照用户属性（如地市）拆分后，再按照时间拆分。`</font>**  
@@ -1687,7 +1703,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * ~~水平分表：针对数据量比较大的单张表。~~ **<font color = "red">MySql水平分表必须使用MyISAM引擎。</font>**  
 2. 水平分库无论怎么分，只要能通过拆分字段和分片策略，找到具体的库就可以。  
 
-##### 1.5.4.6.2. 分库分表查询
+##### 1.5.3.6.2. 分库分表查询
 1. `非partition key的查询 / 分库分表多维度查询`  
 	* 冗余法
 	* 基因法  
@@ -1709,7 +1725,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 5. ~~**<font color = "blue">小结：分库分表分片键设计</font>**~~  
 &emsp; ~~分库分表的分片键设计多数参考查询场景。因此分库分表时设计拆分字段考虑因素：1). 是否有必要按照地区、时间拆分表；2)参考B2B模式（有买家、卖家），订单表采用`冗余法（买家库和卖家库）和基因法`结合。~~  
 
-##### 1.5.4.6.3. 跨分片的排序分页
+##### 1.5.3.6.3. 跨分片的排序分页
 &emsp; 常见的分片策略有随机分片和连续分片这两种。“跨库分页”的四种方案。    
 2. 全局视野法
 	1. 流程  
@@ -1761,13 +1777,13 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 相对第一次查询，第二次查询条件放宽了，故第二次查询会返回比第一次查询结果集更多的数据  
 
 
-#### 1.5.4.7. 数据迁移
+#### 1.5.3.7. 数据迁移
 1. 现在有一个未分库分表的系统，未来要分库分表，如何设计才可以让系统从未分库分表**动态切换**到分库分表上？
     * 停机迁移方案
     * 双写迁移方案 
 
-### 1.5.5. 索引事物锁
-#### 1.5.5.1. 索引底层原理 
+### 1.5.4. 索引事物锁
+#### 1.5.4.1. 索引底层原理 
 1. **<font color = "clime">评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中`磁盘I/O`操作次数的渐进复杂度。</font>**  
 &emsp; 操作系统中以页这种结构作为读写的基本单位。操作系统IO消耗：<font color = "red">一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储的磁盘上。</font>这样的话，索引查找过程中就要产生磁盘I/O消耗，相对于内存存取，I/O存取的消耗要高几个数量级，所以 **<font color = "clime">评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中磁盘I/O操作次数的渐进复杂度。</font>** 换句话说，索引的结构组织要尽量减少查找过程中磁盘I/O的存取次数。  
 2. InnoDB使用的数据结构选择：  
@@ -1805,10 +1821,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 3. **<font color = "red">联合索引底层还是使用B+树索引，并且还是只有一棵树，只是此时的排序：首先按照第一个索引排序，在第一个索引相同的情况下，再按第二个索引排序，依此类推。</font>**  
 4. 无索引时的数据查询：查询数据时从磁盘中依次加载数据页到InnoDB的缓冲池中，然后对缓冲池中缓存页的每行数据，通过数据页的单向链表一个一个去遍历查找，如果没有找到，那么就会顺着数据页的双向链表数据结构，依次遍历加载磁盘中的其他数据页到缓冲池中遍历查询。 
 
-#### 1.5.5.2. ~~各种索引~~（还需要总结）
+#### 1.5.4.2. ~~各种索引~~（还需要总结）
 &emsp; <font color = "red">InnoDB索引类型可以分为主键索引（聚簇索引）和辅助索引（非聚簇索引/非主键索引）。</font>  
 
-#### 1.5.5.3. MySql事务（还需要总结）  
+#### 1.5.4.3. MySql事务（还需要总结）  
 1. 事务的四大特性（ACID）：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability）。  
 2. 并发事务处理带来的问题：脏读、丢失修改、不可重复读、幻读。  
     * 脏`读`：一个事务读了另一个事务未提交的数据。
@@ -1833,7 +1849,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         1. 从数据库层面，数据库通过原子性、隔离性、持久性来保证一致性。也就是说ACID四大特性之中，C(一致性)是目的，A(原子性)、I(隔离性)、D(持久性)是手段，是为了保证一致性，数据库提供的手段。数据库必须要实现AID三大特性，才有可能实现一致性。例如，原子性无法保证，显然一致性也无法保证。  
         2. 从应用层面，通过代码判断数据库数据是否有效，然后决定回滚还是提交数据！如果在事务里故意写出违反约束的代码，一致性还是无法保证的。
 
-#### 1.5.5.4. MVCC
+#### 1.5.4.4. MVCC
 1. **<font color = "clime">多版本并发控制（MVCC）是一种用来解决读-写冲突的无锁并发控制。</font>**  
 2. <font color = "clime">`MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。`两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
 2. **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC。</font>**   
@@ -1866,7 +1882,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         当前读:update、insert、delete
     &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了Gap Lock时，Gap锁会锁住id < 10的整个范围，因此其他事务无法插入id < 10的数据，从而防止了幻读。  
 
-#### 1.5.5.5. MySql锁
+#### 1.5.4.5. MySql锁
 1. 数据库锁  
     &emsp; **锁的分类：**  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-42.png)  
@@ -1893,7 +1909,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     &emsp; 对已有数据行的修改与删除，必须加强互斥锁(X锁)，那么对于数据的插入，是否还需要加这么强的锁，来实施互斥呢？插入意向锁，孕育而生。  
     &emsp; 插入意向锁，是间隙锁(Gap Locks)的一种(所以，也是实施在索引上的)，它是专门针对insert操作的。多个事务，在同一个索引，同一个范围区间插入记录时，如果插入的位置不冲突，不会阻塞彼此。  
 
-#### 1.5.5.6. MySql死锁和锁表
+#### 1.5.4.6. MySql死锁和锁表
 &emsp; ~~胡扯，死锁，mysql检测后，回滚一条事务，抛出异常。~~  
 1. 为什么发生死锁？  
 2. 发生死锁时，服务器报错：`Deadlock found when trying to get to lock; try restarting transaction`。  
@@ -1904,8 +1920,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 4. **<font color = "clime">如果出现死锁</font>** ，<font color = "clime">可以用`show engine innodb status;`命令来确定最后一个死锁产生的原因。</font>  
 
 
-### 1.5.6. MySql架构
-#### 1.5.6.1. MySql运行流程
+### 1.5.5. MySql架构
+#### 1.5.5.1. MySql运行流程
 1. MySQL整个查询执行过程，总的来说分为5个步骤：  
     1. 客户端请求 ---> 连接器（验证用户身份，给予权限）；  
     2. 查询缓存（存在缓存则直接返回，不存在则执行后续操作）；
@@ -1926,13 +1942,13 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-174.png)  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-183.png)  
 
-#### 1.5.6.2. Server层之binLog日志  
+#### 1.5.5.2. Server层之binLog日志  
 1. **<font color = "clime">binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。</font>**  
 2. 在实际应用中，主要用在两个场景：主从复制和数据恢复。  
 3. 写入流程：SQL修改语句先写Binlog Buffer，事务提交时，按照一定的格式刷到磁盘中。  
 &emsp; binlog刷盘时机：对于InnoDB存储引擎而言，mysql通过sync_binlog参数控制binlog的刷盘时机。  
 
-#### 1.5.6.3. 存储引擎层
+#### 1.5.5.3. 存储引擎层
 1. **<font color = "red">InnoDB的特性：</font>**    
     * [支持事务](/docs/SQL/transaction.md)  
     * [支持行锁](/docs/SQL/lock.md)，采用[MVCC](/docs/SQL/MVCC.md)来支持高并发  
@@ -1941,21 +1957,21 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 不支持全文索引  
     * InnoDB 不保存表的具体行数，执行`select count(*) from table`时需要全表扫描。  
 
-#### 1.5.6.4. InnoDB体系结构
+#### 1.5.5.4. InnoDB体系结构
 &emsp; Innodb体系结构包含后台线程、内存池和磁盘上的结构。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-147.png)  
 1. `如果从内存上来看，Change Buffer和Adaptive Hash Index占用的内存都属于Buffer Pool`；redo Log Buffer占用的内存与Buffer Pool独立。`即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。`  
 2. `Buffer Pool有Changer Buffer；Redo Log有Double Write。`  
 
 
-##### 1.5.6.4.1. InnoDB内存结构-性能
+##### 1.5.5.4.1. InnoDB内存结构-性能
 &emsp; 内存中的结构主要包括Buffer Pool，Change Buffer、Adaptive Hash Index以及redo Log Buffer四部分。 **<font color = "blue">如果从内存上来看，[Change Buffer](/docs/SQL/ChangeBuffer.md)和[Adaptive Hash Index](/docs/SQL/AdaptiveHashIndex.md)占用的内存都属于Buffer Pool，redo Log Buffer占用的内存与 [Buffer Pool](/docs/SQL/bufferPoolNew.md)独立。</font>** `即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。`  
 
 &emsp; 内存数据落盘整体思路分析：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-173.png)  
 &emsp; `InnoDB内存缓冲池中的数据page要完成持久化的话，是通过两个流程来完成的，一个是脏页落盘；一个是预写redo log日志。`  
 
-###### 1.5.6.4.1.1. BufferPool
+###### 1.5.5.4.1.1. BufferPool
 1. 缓冲池是主内存中的一个区域，在InnoDB访问表和索引数据时会在其中进行高速缓存。**在专用服务器上，通常将多达80％的物理内存分配给缓冲池。**  
 1. **预读：**   
 &emsp; 数据访问，通常都遵循“集中读写”的原则，使用一些数据，大概率会使用附近的数据，这就是所谓的“局部性原理”，它表明提前加载是有效的，确实能够减少磁盘IO。  
@@ -1969,27 +1985,27 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; **Buffer pool 另一个主要的功能是「加速写」，即当需要修改一个页面的时候，先将这个页面在缓冲池中进行修改，记下相关的重做日志，这个页面的修改就算已经完成了。**  
 
 
-###### 1.5.6.4.1.2. 写缓冲ChangeBuffer
+###### 1.5.5.4.1.2. 写缓冲ChangeBuffer
 1. 在「非唯一」「普通」索引页（即非聚集索引）不在缓冲池中，对页进行了写操作， 1). 并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更， 2).`等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中`的技术。  
 2. **~~<font color = "red">如果辅助索引页已经在缓冲区了，则直接修改即可；如果不在，则先将修改保存到 Change Buffer。</font><font color = "blue">Change Buffer的数据在对应辅助索引页读取到缓冲区时合并到真正的辅助索引页中。Change Buffer 内部实现也是使用的 B+ 树。</font>~~**  
 
-###### 1.5.6.4.1.3. AdaptiveHashIndex
+###### 1.5.5.4.1.3. AdaptiveHashIndex
 &emsp;对于InnoDB的哈希索引，确切的应该这么说：  
 &emsp;(1)InnoDB用户无法手动创建哈希索引，这一层上说，InnoDB确实不支持哈希索引；  
 &emsp;(2)InnoDB会自调优(self-tuning)，如果判定建立自适应哈希索引(Adaptive Hash Index, AHI)，能够提升查询效率，InnoDB自己会建立相关哈希索引，这一层上说，InnoDB又是支持哈希索引的。  
 
-##### 1.5.6.4.2. InnoDB磁盘结构-可靠性
-###### 1.5.6.4.2.1. BufferPool落盘表空间
+##### 1.5.5.4.2. InnoDB磁盘结构-可靠性
+###### 1.5.5.4.2.1. BufferPool落盘表空间
 1. 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间tablespace。表空间又由段segment，区extent，页page组成。  
 2. **<font color = "clime">相比较之下，使用独占表空间的效率以及性能会更高一点。</font>**  
 3. **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB（在操作系统中默认页大小是4KB）。</font>**  
 
-###### 1.5.6.4.2.2. undoLog
+###### 1.5.5.4.2.2. undoLog
 1. **<font color = "clime">Undo log，回滚日志，是`逻辑日记`。undo log解决了事务原子性。</font>** 主要有两个作用，事务回滚和MVCC（Mutil-Version Concurrency Control）。      
 2. undo log主要记录了数据的逻辑变化，比如一条INSERT语句，对应一条DELETE的undo log，对于每个UPDATE语句，对应一条相反的UPDATE的undo log，这样在发生错误时，就能回滚到事务之前的数据状态。
 3. 事务开始之前，将当前的版本生成undo log。
 
-###### 1.5.6.4.2.3. redoLog
+###### 1.5.5.4.2.3. redoLog
 1. redo log，物理格式的日志，记录的是物理数据页面的修改的信息。 **<font color = "red">`redo log实际上记录数据页的变更，而这种变更记录是没必要全部保存，`因此redo log实现上采用了大小固定，`循环写入`的方式，当写到结尾时，会回到开头循环写日志。</font>**    
 2. 解决事务的一致性，持久化数据。  
 3. 写入流程：`(Write-Ahead Logging，‘日志’先行)`   
@@ -1998,7 +2014,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-184.png)  
 4. 刷盘时机：重做日志的写盘，并不一定是随着事务的提交才写入重做日志文件的，而是随着事务的开始，逐步开始的。先写入redo log buffer。  
 
-###### 1.5.6.4.2.4. DoubleWrite
+###### 1.5.5.4.2.4. DoubleWrite
 &emsp; double write：<font color = "blue">如果说写缓冲change buffer带给InnoDB存储引擎的是性能，那么两次写Double Write带给InnoDB存储引擎的是数据的可靠性。</font>  
 1. MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
 2. 在应用(apply)重做日志(redo log)前，需要一个页的副本，当`写入失效发生时`，`先通过页的副本来还原该页，再进行重做`，这就是doublewrite。即doublewrite是页的副本。  
@@ -2009,7 +2025,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     2. 第二步：doublewrite buffe的内存里，会先刷到doublewrite buffe的磁盘上；
     3. 第三步：doublewrite buffe的内存里，再刷到数据磁盘存储上； 
 
-##### 1.5.6.4.3. ~~两阶段提交和崩溃恢复~~
+##### 1.5.5.4.3. ~~两阶段提交和崩溃恢复~~
 1. 两阶段提交
     1. **<font color = "clime">redo log和binlog都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。两阶段提交保证解决binlog和redo log的数据一致性。</font>**    
     2. `两阶段提交是很典型的分布式事务场景，因为redolog和binlog两者本身就是两个独立的个体，`要想保持一致，就必须使用分布式事务的解决方案来处理。 **<font color = "blue">而将redolog分成了两步，其实就是使用了两阶段提交协议(Two-phaseCommit，2PC)。</font>**  
