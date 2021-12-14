@@ -603,16 +603,31 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 #### 1.3.3.2. JVM类加载器
 1. JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。  
-&emsp; 自定义类加载器：需要继承自ClassLoader，重写方法findClass()。      
+&emsp; 自定义类加载器：需要继承自ClassLoader，`重写方法findClass()`（⚠破坏类加载器是重写loadClass()方法）。      
 2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。  
 &emsp; 双亲委派模型中，类加载器之间的父子关系一般不会以继承（Inheritance）的关系来实现，而是使用组合（Composition）关系来复用父加载器的代码的。  
 &emsp; `好处：避免类的重复加载；防止核心API被随意篡改。`   
+3. tomcat类加载器  
+    &emsp; 根据实际的应用场景，分析下 tomcat 类加载器需要解决的几个问题
+
+    * 为了避免类冲突，每个 webapp 项目中各自使用的类库要有隔离机制
+    * 不同 webapp 项目支持共享某些类库
+    * 类加载器应该支持热插拔功能，比如对 jsp 的支持、webapp 的 reload 操作
+
+    &emsp; 为了解决以上问题，tomcat设计了一套类加载器，如下图所示。在 Tomcat 里面最重要的是 Common 类加载器，它的父加载器是应用程序类加载器，负责加载 ${catalina.base}/lib、${catalina.home}/lib 目录下面所有的 .jar 文件和 .class 文件。下图的虚线部分，有 catalina 类加载器、share 类加载器，并且它们的 parent 是 common 类加载器，默认情况下被赋值为 Common 类加载器实例，即 Common 类加载器、catalina 类加载器、 share 类加载器都属于同一个实例。当然，如果通过修改 catalina.properties 文件的 server.loader 和 shared.loader 配置，从而指定其创建不同的类加载器  
+
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/tomcat/tomcat-1.png)  
+
 3. 破坏双亲委派模型：  
     1. 破坏双亲委派模型：继承ClassLoader，重写loadClass()方法。  
     1. `双亲委派模型有一个问题：顶层ClassLoader无法加载底层ClassLoader的类，典型例子JNDI、JDBC。`
         * **<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器，而 JDBC 运行时又需要去访问子类加载器加载的驱动，就破坏了该模型。所以加入了`线程上下文类加载器(Thread Context ClassLoader)`，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
     2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，`如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。`    
-    3. Spring破坏类加载器  
+    3. Spring破坏双亲委派模型  
+    &emsp; Spring要对用户程序进行组织和管理，而用户程序一般放在WEB-INF目录下，由WebAppClassLoader类加载器加载，而Spring由Common类加载器或Shared类加载器加载。   
+    &emsp; 那么Spring是如何访问WEB-INF下的用户程序呢？   
+    &emsp; 使用线程上下文类加载器。 Spring加载类所用的classLoader都是通过Thread.currentThread().getContextClassLoader()获取的。当线程创建时会默认创建一个AppClassLoader类加载器（对应Tomcat中的WebAppclassLoader类加载器）：setContextClassLoader(AppClassLoader)。   
+    &emsp; 利用这个来加载用户程序。即任何一个线程都可通过getContextClassLoader()获取到WebAppclassLoader。  
 
 ### 1.3.4. 运行时数据区/内存结构
 #### 1.3.4.1. JVM内存结构

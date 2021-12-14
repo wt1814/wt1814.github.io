@@ -2,18 +2,20 @@
 
 - [1. 类加载的方式：类加载器](#1-类加载的方式类加载器)
     - [1.1. 类加载器的分类](#11-类加载器的分类)
-    - [1.2. 类加载器的加载机制](#12-类加载器的加载机制)
-        - [1.2.1. 双亲委派模型](#121-双亲委派模型)
-        - [1.2.2. ~~破坏双亲委派模型~~](#122-破坏双亲委派模型)
-            - [JDK破坏](#jdk破坏)
-            - [热替换](#热替换)
-            - [Tomcat](#tomcat)
-            - [Spring](#spring)
-    - [1.3. 类加载器应用](#13-类加载器应用)
-        - [1.3.1. 自定义类加载器](#131-自定义类加载器)
-        - [1.3.2. 查看Boostrap ClassLoader 加载的类库](#132-查看boostrap-classloader-加载的类库)
-        - [1.3.3. 如何在启动时观察加载了哪个jar包中的哪个类？](#133-如何在启动时观察加载了哪个jar包中的哪个类)
-        - [1.3.4. 观察特定类的加载上下文](#134-观察特定类的加载上下文)
+    - [1.2. tomcat类加载器](#12-tomcat类加载器)
+    - [1.3. 类加载器的加载机制](#13-类加载器的加载机制)
+        - [1.3.1. 双亲委派模型](#131-双亲委派模型)
+        - [1.3.2. ~~破坏双亲委派模型~~](#132-破坏双亲委派模型)
+            - [1.3.2.1. JDK破坏](#1321-jdk破坏)
+            - [1.3.2.2. 热替换](#1322-热替换)
+            - [1.3.2.3. Tomcat](#1323-tomcat)
+            - [1.3.2.4. Spring](#1324-spring)
+    - [1.4. 类加载器应用](#14-类加载器应用)
+        - [1.4.1. 自定义类加载器](#141-自定义类加载器)
+        - [1.4.2. 查看Boostrap ClassLoader 加载的类库](#142-查看boostrap-classloader-加载的类库)
+        - [1.4.3. 如何在启动时观察加载了哪个jar包中的哪个类？](#143-如何在启动时观察加载了哪个jar包中的哪个类)
+        - [1.4.4. 观察特定类的加载上下文](#144-观察特定类的加载上下文)
+    - [1.5. 类加载错误](#15-类加载错误)
 
 <!-- /TOC -->
 
@@ -76,11 +78,14 @@ https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 
 &emsp; 利用URLClassLoader进行加载  
 
+## 1.2. tomcat类加载器
+&emsp; 参考[tomcat类加载器](/docs/tomcat/tomcatClassLoader.md)  
 
-## 1.2. 类加载器的加载机制  
+
+## 1.3. 类加载器的加载机制  
 &emsp; 类加载器之间的层级关系如上图所示。这种层次关系被称作双亲委派模型。  
 
-### 1.2.1. 双亲委派模型  
+### 1.3.1. 双亲委派模型  
 <!-- 
 首先，通过委派的方式，可以避免类的重复加载，当父加载器已经加载过某一个类时，子加载器就不会再重新加载这个类。
 另外，通过双亲委派的方式，还保证了安全性。因为Bootstrap ClassLoader在加载的时候，只会加载JAVA_HOME中的jar包里面的类，如java.lang.Integer，那么这个类是不会被随意替换的，除非有人跑到你的机器上， 破坏你的JDK。
@@ -132,7 +137,7 @@ protected synchronized Class<?> loadClass(String name, boolean resolve)throws Cl
 * <font color = "clime">避免类的重复加载。</font> JVM中区分不同类，不仅仅是根据类名，相同的class文件被不同的ClassLoader加载就属于两个不同的类(比如，Java中的Object类，无论哪一个类加载器要加载这个类，最终都是委派给处于模型最顶端的启动类加载器进行加载，如果不采用双亲委派模型，由各个类加载器自己去加载的话，系统中会存在多种不同的Object类)。  
 * <font color = "clime">防止核心API被随意篡改，</font>避免用户自己编写的类动态替换Java的一些核心类，比如自定义类：java.lang.String。  
 
-### 1.2.2. ~~破坏双亲委派模型~~  
+### 1.3.2. ~~破坏双亲委派模型~~  
 <!-- 
 为什么需要破坏双亲委派模型
 https://mp.weixin.qq.com/s/2iGaiOpxBIM3msAZYPUOnQ
@@ -147,7 +152,7 @@ https://blog.csdn.net/luzhensmart/article/details/82665122
 -->
 &emsp; 双亲委派模型并不是一个强制性的约束模型，而是Java设计者推荐给开发者的类加载器实现方式，可以“被破坏”。  
 
-#### JDK破坏
+#### 1.3.2.1. JDK破坏
 <!-- 
 https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 -->
@@ -158,11 +163,11 @@ https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
     &emsp; ~~为了解决这个问题，引入了一个线程上下文类加载器。 可通过Thread.setContextClassLoader()设置。~~   
     &emsp; ~~利用线程上下文类加载器去加载所需要的SPI代码，即父类加载器请求子类加载器去完成类加载的过程，而破坏了双亲委派模型。~~  
 
-#### 热替换
+#### 1.3.2.2. 热替换
 
 * **利用破坏双亲委派来实现代码热替换(每次修改类文件，不需要重启服务)。因为一个Class只能被一个ClassLoader加载一次，否则会报java.lang.LinkageError。当要实现代码热部署时，可以每次都new一个自定义的ClassLoader来加载新的Class文件。** JSP的实现动态修改就是使用此特性实现。  
 
-#### Tomcat
+#### 1.3.2.3. Tomcat
 * Tomcat中使用了自定义ClassLoader，并且也破坏了双亲委托机制。每个应用使用WebAppClassloader进行单独加载，它首先使用WebAppClassloader进行类加载，如果加载不了再委托父加载器去加载， **<font color = "red">这样可以保证每个应用中的类不冲突。每个tomcat中可以部署多个项目，每个项目中存在很多相同的class文件(很多相同的jar包)，加载到jvm中可以做到互不干扰。</font>**  
 
 ----------------
@@ -171,7 +176,7 @@ https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 &emsp; 因为一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。  
 
 
-#### Spring
+#### 1.3.2.4. Spring
 * Spring破坏双亲委派模型  
 &emsp; Spring要对用户程序进行组织和管理，而用户程序一般放在WEB-INF目录下，由WebAppClassLoader类加载器加载，而Spring由Common类加载器或Shared类加载器加载。   
 &emsp; 那么Spring是如何访问WEB-INF下的用户程序呢？   
@@ -180,8 +185,8 @@ https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 
 
 
-## 1.3. 类加载器应用  
-### 1.3.1. 自定义类加载器  
+## 1.4. 类加载器应用  
+### 1.4.1. 自定义类加载器  
 
 &emsp; <font color = "red">什么情况下需要自定义类加载器？</font>  
 1. **隔离加载类。**在某些框架内进行中间件与应用的模块隔离，把类加载到不同的环境。
@@ -219,7 +224,7 @@ public class CustomClassLoader extends ClassLoader {
 }
 ```
 
-### 1.3.2. 查看Boostrap ClassLoader 加载的类库  
+### 1.4.2. 查看Boostrap ClassLoader 加载的类库  
 
 ```java
 public static void main(String[] args) {
@@ -242,7 +247,7 @@ file:/C:/Program%20Files/Java/jdk1.8.0_131/jre/lib/jfr.jar
 file:/C:/Program%20Files/Java/jdk1.8.0_131/jre/classes
 ```
 
-### 1.3.3. 如何在启动时观察加载了哪个jar包中的哪个类？  
+### 1.4.3. 如何在启动时观察加载了哪个jar包中的哪个类？  
 &emsp; 使用-XX:+TraceClassLoading参数，可以在启动时观察加载了哪个jar包中的哪个类。此参数在解决类冲突时特别实用。因为不同JVM环境对于加载类的顺序并非是一致的。  
 &emsp; 部分示例：  
 
@@ -264,6 +269,15 @@ file:/C:/Program%20Files/Java/jdk1.8.0_131/jre/classes
 ......
 ```
 
-### 1.3.4. 观察特定类的加载上下文  
+### 1.4.4. 观察特定类的加载上下文  
 &emsp; 由于加载的类数量众多，调试时很难捕捉到指定类的加载过程，这时可以使用条件断点功能。拿HashMap的加载过程为例，在ClassLoader#loadClass()处打个条件断点，效果如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-48.png)  
+
+
+## 1.5. 类加载错误
+&emsp; 在日常开发工作中，经常会遇到类冲突的情况，明明 classpath 下面的类有这个方法，但是一旦跑线上环境就出错，比如NoSuchMethodError、NoClassDefFoundError、NoClassDefFoundError 等。可以使用 jvm 参数 -verbose:class 方便地定位该问题，使用该参数可以快速地定位某个类是从哪个jar包加载的，而不是一味地埋头苦干，求百度，找Google。下面是使用 -verbose:class jvm 参数的部分日志输出  
+
+    [Loaded org.springframework.context.annotation.CommonAnnotationBeanPostProcessor from file:/D:/tomcat/webapps/touch/WEB-INF/lib/spring-context-4.3.7.RELEASE.jar]
+    [Loaded com.alibaba.dubbo.rpc.InvokerListener from file:/D:/tomcat/webapps/touch/WEB-INF/lib/dubbo-2.5.3.jar]
+    [Loaded com.alibaba.dubbo.common.bytecode.Wrapper from file:/D:/tomcat/webapps/touch/WEB-INF/lib/dubbo-2.5.3.jar]
+
