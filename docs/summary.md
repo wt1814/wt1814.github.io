@@ -582,6 +582,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     4. 而这个过程中需要调用其他语言的本地库接口（Native Interface）来实现整个程序的功能。  
 
 ### 1.3.2. 编译成Class字节码文件
+&emsp; ......
 
 ### 1.3.3. 类加载
 #### 1.3.3.1. JVM类的加载
@@ -603,7 +604,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 #### 1.3.3.2. JVM类加载器
 1. JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。  
-&emsp; 自定义类加载器：需要继承自ClassLoader，`重写方法findClass()`（⚠破坏类加载器是重写loadClass()方法）。      
+&emsp; 自定义类加载器：需要继承自ClassLoader，`重写方法findClass()`（⚠`破坏类加载器是重写loadClass()方法`）。      
 2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。  
 &emsp; 双亲委派模型中，类加载器之间的父子关系一般不会以继承（Inheritance）的关系来实现，而是使用组合（Composition）关系来复用父加载器的代码的。  
 &emsp; `好处：避免类的重复加载；防止核心API被随意篡改。`   
@@ -614,9 +615,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 不同 webapp 项目支持共享某些类库
     * 类加载器应该支持热插拔功能，比如对 jsp 的支持、webapp 的 reload 操作
 
-    &emsp; 为了解决以上问题，tomcat设计了一套类加载器，如下图所示。在 Tomcat 里面最重要的是 Common 类加载器，它的父加载器是应用程序类加载器，负责加载 ${catalina.base}/lib、${catalina.home}/lib 目录下面所有的 .jar 文件和 .class 文件。下图的虚线部分，有 catalina 类加载器、share 类加载器，并且它们的 parent 是 common 类加载器，默认情况下被赋值为 Common 类加载器实例，即 Common 类加载器、catalina 类加载器、 share 类加载器都属于同一个实例。当然，如果通过修改 catalina.properties 文件的 server.loader 和 shared.loader 配置，从而指定其创建不同的类加载器  
+&emsp; 为了解决以上问题，tomcat设计了一套类加载器，如下图所示。在 Tomcat 里面最重要的是 Common 类加载器，它的父加载器是应用程序类加载器，负责加载 ${catalina.base}/lib、${catalina.home}/lib 目录下面所有的 .jar 文件和 .class 文件。下图的虚线部分，有 catalina 类加载器、share 类加载器，并且它们的 parent 是 common 类加载器，默认情况下被赋值为 Common 类加载器实例，即 Common 类加载器、catalina 类加载器、 share 类加载器都属于同一个实例。当然，如果通过修改 catalina.properties 文件的 server.loader 和 shared.loader 配置，从而指定其创建不同的类加载器。  
 
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/tomcat/tomcat-1.png)  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/tomcat/tomcat-1.png)  
 
 3. 破坏双亲委派模型：  
     1. 破坏双亲委派模型：继承ClassLoader，重写loadClass()方法。  
@@ -624,7 +625,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         * **<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器，而 JDBC 运行时又需要去访问子类加载器加载的驱动，就破坏了该模型。所以加入了`线程上下文类加载器(Thread Context ClassLoader)`，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
     2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，`如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。`    
     3. Spring破坏双亲委派模型  
-    &emsp; Spring要对用户程序进行组织和管理，而用户程序一般放在WEB-INF目录下，由WebAppClassLoader类加载器加载，而Spring由Common类加载器或Shared类加载器加载。   
+    &emsp; Spring要对用户程序进行组织和管理，而`用户程序一般放在WEB-INF目录下，由WebAppClassLoader类加载器加载，而Spring由Common类加载器或Shared类加载器加载。`   
     &emsp; 那么Spring是如何访问WEB-INF下的用户程序呢？   
     &emsp; 使用线程上下文类加载器。 Spring加载类所用的classLoader都是通过Thread.currentThread().getContextClassLoader()获取的。当线程创建时会默认创建一个AppClassLoader类加载器（对应Tomcat中的WebAppclassLoader类加载器）：setContextClassLoader(AppClassLoader)。   
     &emsp; 利用这个来加载用户程序。即任何一个线程都可通过getContextClassLoader()获取到WebAppclassLoader。  
@@ -642,9 +643,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     &emsp; Java虚拟机栈中出栈入栈的元素称为“栈帧”，栈对应线程，栈帧对应方法。每个方法被执行的时候，都会创建一个栈帧，把栈帧压入栈，当方法正常返回或者抛出未捕获的异常时，栈帧就会出栈。  
     3. 方法【栈】  
         &emsp; <font color = "red">Java虚拟机栈是由一个个栈帧组成，每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法出口信息。</font>  
+        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-9.png)  
         * 局部变量表，局部变量表用于保存函数参数和局部变量。  
         * 操作数栈，操作数栈用于保存计算过程的中间结果，作为计算过程中变量临时的存储空间。  
-        * 动态连接
+        * 动态连接：每个栈帧中包含一个在常量池中对当前方法的引用， 目的是支持方法调用过程的动态连接。  
         * 方法返回地址
     4. `为什么不把基本类型放堆中呢？`   
     &emsp; 因为其占用的空间一般是 1~8 个字节——需要空间比较少，而且因为是基本类型，所以不会出现动态增长的情况——长度固定，因此栈中存储就够了。  
@@ -684,7 +686,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         设置对象的头信息，对象hash码、GC分代年龄、元数据信息等
         执行构造函数(init)初始化
 
-2. 步骤二：对象分配内存流程详解：
+2. 步骤二：对象分配内存流程详解：  
+    * 堆内存分配策略：  
+    &emsp; 分配策略有：对象优先在Eden分配、大对象直接进入老年代、长期存活的对象将进入老年代、动态对象年龄判定、空间分配担保。  
+    &emsp; `空间分配担保：` **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的`总空间`。</font>**   
     * **<font color = "blue">`内存分配全流程：`逃逸分析 ---> 没有逃逸，尝试栈上分配 ---> 是否满足直接进入老年代的条件 ---> `尝试TLAB分配` ---> `新生代Eden区分配`。</font>**  
     * 分配内存两种方式：指针碰撞（内存空间绝对规整）；空闲列表（内存空间是不连续的）。
         * 标记-整理或复制 ---> 空间规整 ---> 指针碰撞； 
@@ -704,10 +709,6 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         &emsp; 什么是标量？标量，不可再分，基本数据类型；相对的是聚合量，可再分，引用类型。  
         &emsp; **当JVM通过逃逸分析，确定要将对象分配到栈上时，即时编译可以将对象打散，将对象替换为一个个很小的局部变量，将这个打散的过程叫做标量替换。** 
         3. 消除同步锁 
-4. 堆内存分配策略：  
-&emsp; 分配策略有：对象优先在Eden分配、大对象直接进入老年代、长期存活的对象将进入老年代、动态对象年龄判定、空间分配担保。  
-&emsp; `空间分配担保：` **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的`总空间`。</font>**   
-
 
 ##### 1.3.4.2.2. 对象生命周期
 
@@ -725,9 +726,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     1. Mark Word：  
     &emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "clime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
     &emsp; 这部分主要用来存储对象自身的运行时数据，如hashcode、gc分代年龄等。mark word的位长度为JVM的一个Word大小，也就是说32位JVM的Mark word为32位，64位JVM为64位。
-    为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位，
+    为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位，  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-67.png)   
-
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-68.png)   
     2. class pointer：  
     &emsp; 这一部分用于存储对象的类型指针，该指针指向它的类元数据，JVM通过这个指针确定对象是哪个类的实例。该指针的位长度为JVM的一个字大小，即32位的JVM为32位，64位的JVM为64位。 
