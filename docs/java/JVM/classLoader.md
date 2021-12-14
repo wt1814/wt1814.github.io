@@ -39,6 +39,10 @@ https://mp.weixin.qq.com/s/36GeZelS5GU_PKZimes10g
 JDK为何自己先破坏双亲委派模型? 
 https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 
+
+真正理解线程上下文类加载器（多案例分析）
+https://blog.csdn.net/yangcheng33/article/details/52631940
+
 --> 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-6.png)  
 
