@@ -1002,7 +1002,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         2. 步骤一：保存内存快照（两种方法）： 
             1. 方式一：添加JVM参数，(-XX:+HeapDumpOnOutOfMemoryError)，让JVM遇到OOM异常时能输出堆内信息，可以通过（-XX:+HeapDumpPath）参数设置堆内存溢出快照输出的文件地址。  
             2. 方式二：jmap命令。`注：线上环境不能直接使用jmap命令。找到未进行GC的一个节点，从线上环境摘除。然后再使用jmap命令。`  
-            3. 附录：jvm内存快照dump文件太大： 
+            3. 附录： **<font color = "blue">jvm内存快照dump文件太大：</font>** 
                 * **<font color = "clime">live参数表示需要抓取目前在生命周期内的内存对象，也就是说GC收不走的对象，然后绝大部分情况下，需要的看的就是这些内存。</font>**   
                 * 如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。
                 * 如果dump文件太大，使用linux下的mat，既Memory Analyzer Tools。   
