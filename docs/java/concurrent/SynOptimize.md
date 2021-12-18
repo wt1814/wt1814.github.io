@@ -23,7 +23,7 @@
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-80.png)   
 	1. 偏向锁：  
         1.  **<font color = "bule">偏向锁状态</font>**  
-            * **<font color = "clime">匿名偏向(Anonymously biased)</font>** 。在此状态下thread pointer为NULL(0)，意味着还没有线程偏向于这个锁对象。第一个试图获取该锁的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。这是允许偏向锁的类对象的初始状态。
+            * **<font color = "clime">`匿名偏向(Anonymously biased)`</font>** 。在此状态下thread pointer为NULL(0)，意味着还没有线程偏向于这个锁对象。第一个试图获取该锁的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。这是允许偏向锁的类对象的初始状态。
             * **<font color = "clime">可重偏向(Rebiasable)</font>** 。在此状态下，偏向锁的epoch字段是无效的（与锁对象对应的class的mark_prototype的epoch值不匹配）。下一个试图获取锁对象的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。**在批量重偏向的操作中，未被持有的锁对象都被置于这个状态，以便允许被快速重偏向。**
             * **<font color = "clime">已偏向(Biased)</font>** 。这种状态下，thread pointer非空，且epoch为有效值——意味着其他线程正在持有这个锁对象。
         2. 偏向锁获取： 
@@ -36,6 +36,10 @@
                 1. **<font color = "clime">如果不允许重偏向，则撤销偏向锁，将Mark Word设置为无锁状态（未锁定不可偏向状态），然后升级为轻量级锁，进行CAS竞争锁；</font><font color = "blue">(偏向锁被重置为无锁状态，这种策略是为了提高获得锁和释放锁的效率。)</font>**     
                 2. 如果允许重偏向，设置为匿名偏向锁状态，CAS将偏向锁重新指向线程A（在对象头和线程栈帧的锁记录中存储当前线程ID）； 
             3. 唤醒暂停的线程，从安全点继续执行代码。 
+        4. 偏向锁的取消：  
+        &emsp; 偏向锁是默认开启的，而且开始时间一般是比应用程序启动慢几秒，如果不想有这个延迟，那么可以使用-XX:BiasedLockingStartUpDelay=0；  
+        &emsp; 如果不想要偏向锁，那么可以通过-XX:-UseBiasedLocking = false来设置；  
+        &emsp; 在启动代码的时候，要设置一个JVM参数， -XX:BiasedLockingStartupDelay=0，这个参数可以关闭JVM的偏向延迟，JVM默认会设置一个4秒钟的偏向延迟，也就是说JVM启动4秒钟内创建出的所有对象都是不可偏向的（也就是上图中的无锁不可偏向状态），如果对这些对象去加锁，加的会是轻量锁而不是偏向锁  
 	2. 轻量级锁：
 		1. 偏向锁升级为轻量级锁之后，对象的Markword也会进行相应的的变化。   
             1. 线程在自己的栈桢中创建锁记录LockRecord。
@@ -216,6 +220,8 @@ https://baijiahao.baidu.com/s?id=1630535202760061296&wfr=spider&for=pc
 #### 1.4.1.2. 偏向锁的性能(偏向锁的启动)   
 <!-- 
 https://zhuanlan.zhihu.com/p/127884116
+
+** https://mp.weixin.qq.com/s/AloGilUSxjoNVDHTfq1ZGQ
 -->
 &emsp; 偏向锁可以提高带有同步但无竞争的程序性能，但它同样是一个带有效益权衡(Trade Off)性质的优化，也就是说它并非总是对程序运行有利。 **<font color = "clime">如果程序中大多数的锁都总是被多个不同的线程访问，那偏向模式就是多余的。</font>** 在具体问题具体分析的前提下，有时候使用参数-XX：-UseBiasedLocking来禁止偏向锁优化反而可以提升性能。  
 &emsp; 并且从锁升级的图中能看到两个路线，“偏向锁未启动-->普通对象”和“偏向锁已启动-->匿名偏向对象”。  

@@ -355,7 +355,8 @@ private static boolean isDriverAllowed(Driver driver, ClassLoader classLoader) {
 <!--
 
 https://www.jianshu.com/p/304cb533ba2d
-https://zhuanlan.zhihu.com/p/38505998
+
+*** 重要https://zhuanlan.zhihu.com/p/38505998
 
 https://mp.weixin.qq.com/s/6BhHBtoBlSqHlXduhzg7Pw
 深入理解ServiceLoader类与SPI机制
