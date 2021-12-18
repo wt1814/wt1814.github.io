@@ -80,14 +80,15 @@
             - [1.4.2.3. 线程池的正确使用](#1423-线程池的正确使用)
             - [1.4.2.4. ForkJoinPool详解](#1424-forkjoinpool详解)
             - [1.4.2.5. Future相关](#1425-future相关)
-            - [1.4.2.6. ~~CompletionService~~](#1426-completionservice)
-            - [1.4.2.7. ~~CompletableFuture~~](#1427-completablefuture)
+            - [1.4.2.6. ~~CompletableFuture~~](#1426-completablefuture)
+            - [1.4.2.7. ~~CompletionService~~](#1427-completionservice)
         - [1.4.3. 并发编程](#143-并发编程)
             - [1.4.3.1. 并发编程原理](#1431-并发编程原理)
-                - [1.4.3.1.1. ~~CPU缓存及JMM~~](#14311-cpu缓存及jmm)
+                - [1.4.3.1.1. ~~CPU多核缓存架构及JMM~~](#14311-cpu多核缓存架构及jmm)
                 - [1.4.3.1.2. 并发安全问题产生原因](#14312-并发安全问题产生原因)
-                - [1.4.3.1.3. 并发安全解决底层](#14313-并发安全解决底层)
-                - [1.4.3.1.4. 伪共享问题](#14314-伪共享问题)
+                - [1.4.3.1.3. 硬件解决并发安全](#14313-硬件解决并发安全)
+                - [1.4.3.1.4. Java解决并发安全](#14314-java解决并发安全)
+                - [1.4.3.1.5. 伪共享问题](#14315-伪共享问题)
             - [1.4.3.2. 线程安全解决](#1432-线程安全解决)
                 - [1.4.3.2.1. 线程安全解决方案](#14321-线程安全解决方案)
                 - [1.4.3.2.2. Synchronized](#14322-synchronized)
@@ -1132,7 +1133,6 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 4. @Async方法没有执行的问题分析：  
 &emsp; @Async异步方法默认使用Spring创建ThreadPoolTaskExecutor(参考TaskExecutionAutoConfiguration)，其中默认核心线程数为8，默认最大队列和默认最大线程数都是Integer.MAX_VALUE，队列使用LinkedBlockingQueue，容量是：Integet.MAX_VALUE，空闲线程保留时间：60s，线程池拒绝策略：AbortPolicy。创建新线程的条件是队列填满时，而这样的配置队列永远不会填满，如果有@Async注解标注的方法长期占用线程(比如HTTP长连接等待获取结果)，在核心8个线程数占用满了之后，新的调用就会进入队列，外部表现为没有执行。  
 
-
 #### 1.4.2.4. ForkJoinPool详解
 1. <font color = "clime">ForkJoinPool的两大核心是 分而治之和工作窃取 算法。</font>  
 2. 分而治之：<font color = "red">ForkJoinPool的计算方式是大任务拆中任务，中任务拆小任务，最后再汇总。</font>  
@@ -1148,11 +1148,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 2. JDK1.5为Future接口提供了一个实现类FutureTask，表示一个可以取消的异步运算。它有启动和取消运算、查询运算是否完成和取回运算结果等方法。  
 
 
-#### 1.4.2.6. ~~CompletionService~~
-&emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务， **<font color = "clime">并方便的集中处理上述任务的结果(且任务最先完成的先返回)。</font>**  
-&emsp; 内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
 
-#### 1.4.2.7. ~~CompletableFuture~~
+#### 1.4.2.6. ~~CompletableFuture~~
 &emsp; CompletableFuture 可以很方便的实现异步任务的封装 **<font color = "clime">并实现结果的联合等一系列操作，</font>** 轻松实现 任务的并行。  
 
 * thenCombine：结合两个CompletionStage的结果，进行转化后返回。  
@@ -1160,14 +1157,18 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 * ...
 
 
+#### 1.4.2.7. ~~CompletionService~~
+&emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务， **<font color = "clime">并方便的集中处理上述任务的结果(且任务最先完成的先返回)。</font>**  
+&emsp; 内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
+
 ### 1.4.3. 并发编程
 #### 1.4.3.1. 并发编程原理
-##### 1.4.3.1.1. ~~CPU缓存及JMM~~
+##### 1.4.3.1.1. ~~CPU多核缓存架构及JMM~~
+1. CPU多核缓存架构
 1. JMM
     1. JMM内存划分：线程对变量的所有操作都必须在工作内存进行，而不能直接读写主内存中的变量。    
     2. 单个线程操作时，8种内存间交换操作指令。  
     3. 线程之间的通信和同步。线程之间的通信过程：线程对变量的操作（读取赋值等）必须在工作内存中进行，首先要将变量从主内存拷贝到自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，不能直接操作主内存中的变量，</font>各个线程中的工作内存中存储着主内存中的变量副本拷贝，<font color = "red">因此不同的线程间无法访问对方的工作内存，线程间的通信（传值）必须通过主内存来完成。</font>    
-
 
 ##### 1.4.3.1.2. 并发安全问题产生原因
 1. **并发安全的3个问题：**  
@@ -1186,7 +1187,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 重排序遵守的规则：重排序遵守数据依赖性、重排序遵守as-if-serial语义。  
     * 重排序对多线程的影响
 
-##### 1.4.3.1.3. 并发安全解决底层
+##### 1.4.3.1.3. 硬件解决并发安全
 1. 缓存一致性协议  
     1. 怎么解决缓存一致性问题呢？使用总线锁或缓存锁。  
         * 总线锁：cpu从主内存读取数据到高速缓存，会在总线对这个数据加锁，这样其他cpu无法去读或写这个数据，直到这个cpu使用完数据释放锁之后其他cpu才能读取该数据。  
@@ -1197,10 +1198,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         &emsp; 总线嗅探， **<font color = "red">每个CPU不断嗅探总线上传播的数据来检查自己缓存值是否过期了，如果处理器发现自己的缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置为无效状态，当处理器对这个数据进行修改操作的时候，会重新从内存中把数据读取到处理器缓存中。</font>**    
         2. 总线嗅探会带来总线风暴。  
 2. 内存屏障：    
-    &emsp; Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。`内存屏障，禁止处理器重排序，保障缓存一致性。`  
-    &emsp; `内存屏障的作用：（~~原子性~~、可见性、有序性）`  
-    1. `（保障可见性）它会强制将对缓存的修改操作立即写入主存；` 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。   
-    2. `（保障有序性）阻止屏障两侧的指令重排序。`   
+
+##### 1.4.3.1.4. Java解决并发安全
 3. JMM中的happens-before原则：  
     &emsp; JSR-133内存模型 **<font color = "red">使用`happens-before`的概念来阐述操作之间的`内存可见性`。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
     &emsp; happens-before关系的定义如下：
@@ -1210,8 +1209,14 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 &emsp; **<font color = "clime">happens-before原则有管理锁定（lock）规则、volatile变量规则、线程启动规则（Thread.start()）、线程终止规则（Thread.join()）、线程中断规则（Thread.interrupt()）...</font>**  
 &emsp; volatile变量规则就是使用内存屏障保证线程可见性。  
+2. 内存屏障
+    &emsp; Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。`内存屏障，禁止处理器重排序，保障缓存一致性。`  
+    &emsp; `内存屏障的作用：（~~原子性~~、可见性、有序性）`  
+    1. `（保障可见性）它会强制将对缓存的修改操作立即写入主存；` 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。   
+    2. `（保障有序性）阻止屏障两侧的指令重排序。`   
 
-##### 1.4.3.1.4. 伪共享问题
+
+##### 1.4.3.1.5. 伪共享问题
 1. CPU具有多级缓存，越接近CPU的缓存越小也越快；CPU缓存中的数据是以缓存行为单位处理的；CPU缓存行（通常是64字节）能带来免费加载数据的好处，所以处理数组性能非常高。  
 2. **CPU缓存行也带来了弊端，多线程处理不相干的变量时会相互影响，也就是伪共享。**  
 &emsp; 设想如果有个long类型的变量a，它不是数组的一部分，而是一个单独的变量，并且还有另外一个long类型的变量b紧挨着它，那么当加载a的时候将免费加载b。  
