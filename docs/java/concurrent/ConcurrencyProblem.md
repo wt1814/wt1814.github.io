@@ -21,6 +21,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
+&emsp; `⚠⚠⚠声明：并发安全并不是java独有的，其他语言，不同操作系统都存在并发安全。究其原因是因为cpu多级缓存架构。`  
 &emsp; 并发操作是指同一时间可能有多个用户对同一数据进行读写操作。  
 &emsp; `并发问题并不是Java独有的，也不是只在linux系统才会有，究其原因是计算机CPU优化带来的一些问题。`  
 
@@ -84,6 +85,7 @@ https://www.cnblogs.com/maoqizhi/p/13909179.html
 ~~ 
 https://mp.weixin.qq.com/s/DaCTrm8y9vWeaJyHfbRoTw
 -->
+&emsp; `⚠⚠⚠声明：并发安全并不是java独有的，其他语言，不同操作系统都存在并发安全。究其原因是因为cpu多级缓存架构。`  
 
 ## 1.1. 并发操作  
 
