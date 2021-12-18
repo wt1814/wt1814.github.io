@@ -616,9 +616,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 不同 webapp 项目支持共享某些类库
     * 类加载器应该支持热插拔功能，比如对 jsp 的支持、webapp 的 reload 操作
 
-&emsp; 为了解决以上问题，tomcat设计了一套类加载器，如下图所示。在 Tomcat 里面最重要的是 Common 类加载器，它的父加载器是应用程序类加载器，负责加载 ${catalina.base}/lib、${catalina.home}/lib 目录下面所有的 .jar 文件和 .class 文件。下图的虚线部分，有 catalina 类加载器、share 类加载器，并且它们的 parent 是 common 类加载器，默认情况下被赋值为 Common 类加载器实例，即 Common 类加载器、catalina 类加载器、 share 类加载器都属于同一个实例。当然，如果通过修改 catalina.properties 文件的 server.loader 和 shared.loader 配置，从而指定其创建不同的类加载器。  
+    &emsp; 为了解决以上问题，tomcat设计了一套类加载器，如下图所示。在 Tomcat 里面最重要的是 Common 类加载器，它的父加载器是应用程序类加载器，负责加载 ${catalina.base}/lib、${catalina.home}/lib 目录下面所有的 .jar 文件和 .class 文件。下图的虚线部分，有 catalina 类加载器、share 类加载器，并且它们的 parent 是 common 类加载器，默认情况下被赋值为 Common 类加载器实例，即 Common 类加载器、catalina 类加载器、 share 类加载器都属于同一个实例。当然，如果通过修改 catalina.properties 文件的 server.loader 和 shared.loader 配置，从而指定其创建不同的类加载器。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/tomcat/tomcat-1.png)  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/tomcat/tomcat-1.png)  
 
 3. 破坏双亲委派模型：  
     1. 破坏双亲委派模型：继承ClassLoader，重写loadClass()方法。  
@@ -782,10 +782,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; **<font color = "red">Full GC的触发时机：</font>**   
     ⚠️注：是否满足年轻代晋升 --- 老年代或永久代空间是否充足 --- 系统主动调用
     1. 老年代`不满足`年轻代晋升  
-        1. 统计得到的Minor GC晋升到旧生代的`平均大小`大于旧生代的剩余空间  
-        &emsp; Hotspot为了避免由于新生代对象晋升到旧生代导致旧生代空间不足的现象，在进行Minor GC时，做了一个判断，如果之前统计所得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间，那么就直接触发Full GC。  
+        1. 统计得到的Minor GC晋升到老年代的`平均大小`大于老年代的剩余空间  
+        &emsp; Hotspot为了避免由于新生代对象晋升到老年代导致老年代空间不足的现象，在进行Minor GC时，做了一个判断，如果之前统计所得到的Minor GC晋升到老年代的`平均大小`大于老年代的剩余空间，那么就直接触发Full GC。  
         2. `空间分配担保失败`  
-        &emsp; **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的`总空间`，</font>** 如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。   
+        &emsp; **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代`最大可用的连续空间`是否大于新生代所有对象的`总空间`，</font>** 如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代`最大可用连续空间`是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。   
         3. `CMS GC时出现promotion failed（晋升失败）和concurrent mode failure（并发模式失败）`  
         &emsp; 执行CMS GC的过程中同时有对象要放入老年代，而此时老年代空间不足（可能是GC过程中浮动垃圾过多导致暂时性的空间不足），便会报Concurrent Mode Failure错误，并触发Full GC。  
     2. 老年代或永久代的`不足`
@@ -806,7 +806,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         2. `由以上可得java 全局变量 不可被回收。`  
     2. 四种引用  
         * **<font color = "red">软引用：SoftReference object=new  SoftReference(new Object()); 。当堆使用率临近阈值时，才会去回收软引用的对象。</font>**  
-        * **<font color = "red">弱引用：WeakReference object=new  WeakReference (new Object();，ThreadLocal中有使用。只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>**  
+        * **<font color = "red">弱引用：WeakReference object=new  WeakReference (new Object();。ThreadLocal中有使用。只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>**  
 
                 软引用和弱引用的使用：
                 软引用，弱引用都非常适合来保存那些可有可无的缓存数据，如果这么做，当系统内存不足时，这些缓存数据会被回收，不会导致内存溢出。而当内存资源充足时，这些缓存数据又可以存在相当长的时间，从而起到加速系统的作用。  
@@ -814,7 +814,22 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
         * 虚引用：PhantomReference。虚引用是所有类型中最弱的一个。 **<font color = "red">一个持有虚引用的对象，和没有引用几乎是一样的，随时可能被垃圾回收器回收。</font>**    
 2. 对象生存还是死亡？  
-&emsp; **<font color = "clime">如果有必要执行父类`Object#finalize()`方法，放入F-Queue队列；收集器将对F-Queue队列中的对象进行第二次小规模的标记；如果对象在执行finalize()方法时重新与引用链上的任何一个对象建立关联则逃脱死亡，否则执行死亡。</font>**  
+    1. Object#finalize()⽅法介绍：  
+    &emsp; Object#finalize()⽅法什么时候被调⽤？析构函数(finalization)的⽬的是什么？  
+    &emsp; 垃圾回收器(garbage colector)决定回收某对象时，就会运⾏该对象的finalize()⽅法，但是在Java中很不幸，如果内存总是充⾜的，那么垃圾回收可能永远不会进⾏，也就是说filalize() 可能永远不被执⾏，显然指望它做收尾⼯作是靠不住的。  
+    &emsp; 那么finalize()究竟是做什么的呢？它最主要的⽤途是回收特殊渠道申请的内存。Java程序有垃圾回收器，所以⼀般情况下内存问题不⽤程序员操⼼。但有⼀种JNI(Java Native Interface)调⽤non-Java程序(C或C++)， finalize()的⼯作就是回收这部分的内存。  
+    2. <font color = "red">在可达性分析算法中，不可达的对象也不是一定会死亡的，它们暂时都处于“缓刑”阶段，要真正宣告一个对象“死亡”，至少要经历两次标记过程。</font>  
+        1. <font color = "red">判断有没有必要执行Object#finalize()方法</font>  
+        &emsp; **<font color = "clime">如果对象在进行可达性分析后发现没有与GC Roots相连接的引用链，那它将会被第一次标记并且进行一次筛选，</font>** 筛选的条件是此对象是否有必要执行finalize()方法。  
+        &emsp; 另外，有两种情况都视为“没有必要执行”：1)对象没有覆盖finaliza()方法；2)finalize()方法已经被虚拟机调用过。  
+        2. <font color = "red">如何执行？</font>F-Queue的队列  
+        &emsp; 如果这个对象被判定为有必要执行finalize()方法，那么此对象将会放置在一个叫做F-Queue的队列中，并在稍后由一个虚拟机自动建立的、低优先级的Finalizer线程去执行它。  
+        3. <font color = "red">执行死亡还是逃脱死亡？</font>  
+        &emsp; **<font color = "clime">首先，需要知道，finalize()方法是对象逃脱死亡命运的最后一次机会，稍后收集器将对F-Queue队列中的对象进行第二次小规模的标记。</font>**  
+        &emsp; 逃脱死亡：对象想在finalize()方法中成功拯救自己，只要重新与引用链上的任何一个对象建立关联即可，例如把自己(this关键字)赋值给某个类变量或者对象的成员变量，这样在第二次标记时它将被移出“即将回收”的集合。  
+        &emsp; 执行死亡：对象没有执行逃脱死亡，那就是死亡了。  
+        &emsp; 注：任何对象的finalize()方法都只会被系统调用一次。  
+
 
 ##### 1.3.6.3.2. 方法区(类和常量)回收/类的卸载阶段
 1. Java虚拟机规范对方法区是否实现垃圾回收没有做出强制的规定。存在未实现或未能完整实现方法区类型卸载的垃圾回收器（例如JDK 11的zGC收集器）。    
@@ -867,7 +882,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     1. 初始标记：标记GCRoots能直接关联到的对象。   
     2. 并发标记：进行GCRoots Tracing（可达性分析）过程，GC与用户线程并发执行。
     3. 预清理：（`三色标记法的漏标问题处理`） **<font color = "red">这个阶段是用来</font><font color = "blue">处理</font><font color = "clime">前一个并发标记阶段因为引用关系改变导致没有标记到的存活对象的。如果发现对象的引用发生变化，则JVM会标记堆的这个区域为Dirty Card。那些能够从Dirty Card到达的对象也被标记（标记为存活），当标记做完后，这个Dirty Card区域就会消失。</font>**  
-    4. 可终止的预处理。这个阶段尝试着去承担下一个阶段Final Remark阶段足够多的工作。  
+    4. 可终止的预处理。这个阶段`尝试着去承担下一个阶段Final Remark阶段足够多的工作`。  
     5. 重新标记（remark）：修正并发标记期间，因用户程序继续运作而导致标记产生变动的那一部分对象的标记记录。
     6. 并发清除：并发、标记-清除，GC与用户线程并发执行。   
     7. 并发重置。
@@ -984,15 +999,17 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 		2. `检查错误日志，查看“OutOfMemory”错误前是否有其它异常或错误。`  
 		3. `对代码进行走查和分析，找出可能发生内存溢出的位置。` 
 		4. `使用内存查看工具动态查看内存快照。` 
-    2. 保存内存快照（两种方法）： 
-        1. 添加JVM参数，(-XX:+HeapDumpOnOutOfMemoryError)，让JVM遇到OOM异常时能输出堆内信息，可以通过（-XX:+HeapDumpPath）参数设置堆内存溢出快照输出的文件地址。  
-        2. jmap命令。`注：线上环境不能直接使用jmap命令。找到未进行GC的一个节点，从线上环境摘除。然后再使用jmap命令。`  
-	3. 使用内存查看工具分析堆dump文件
-    4. jvm内存快照dump文件太大： 
-	    * **<font color = "clime">live参数表示需要抓取目前在生命周期内的内存对象，也就是说GC收不走的对象，然后绝大部分情况下，需要的看的就是这些内存。</font>**   
-		* 如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。
-		* 如果dump文件太大，使用linux下的mat，既Memory Analyzer Tools。   
-
+    2. 使用内存查看工具动态分析内存快照
+        2. 步骤一：保存内存快照（两种方法）： 
+            1. 方式一：添加JVM参数，(-XX:+HeapDumpOnOutOfMemoryError)，让JVM遇到OOM异常时能输出堆内信息，可以通过（-XX:+HeapDumpPath）参数设置堆内存溢出快照输出的文件地址。  
+            2. 方式二：jmap命令。`注：线上环境不能直接使用jmap命令。找到未进行GC的一个节点，从线上环境摘除。然后再使用jmap命令。`  
+            3. 附录： **<font color = "blue">jvm内存快照dump文件太大：</font>** 
+                * **<font color = "clime">live参数表示需要抓取目前在生命周期内的内存对象，也就是说GC收不走的对象，然后绝大部分情况下，需要的看的就是这些内存。</font>**   
+                * 如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。
+                * 如果dump文件太大，使用linux下的mat，既Memory Analyzer Tools。   
+        3. 步骤二：使用内存查看工具分析堆dump文件
+            1. 步骤一：查看对象占比；
+            2. 步骤二：查看大对象的引用链。  
 
 #### 1.3.7.4. Arthas工具
 
@@ -1001,7 +1018,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 
 ### 1.4.1. 线程Thread
-1. 创建线程的方式：Thread、Runnable、Callable、线程池相关（Future, ThreadPOOL, `@Async`）...  
+1. 创建线程的方式：Thread、Runnable、Callable、线程池相关（Future, ThreadPool, `@Async`）...  
 2. 线程状态 
 3. thread.yield()，线程让步     
 &emsp; yield会使当前线程让出CPU执行时间片，与其他线程一起重新竞争CPU时间片。  
@@ -1040,14 +1057,14 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 4. **<font color = "red">等待状态（WAITING）：</font>**  
     1. **<font color = "clime">一个正在无限期等待另一个线程执行一个特别的动作的线程处于这一状态。</font>**  
     2. 操作  
+        * obj.wait() 释放同步监视器obj，并进入阻塞状态。  
         * threadA中调用threadB.join()，threadA将Waiting，直到threadB终止。
-        * obj.wait() 释放同步监视器obj，并进入阻塞状态。
     3. 阻塞和等待的区别：  
 5. <font color = "red">计时等待（TIMED_WAITING）：</font>  
     1. 一个正在限时等待另一个线程执行一个动作的线程处于这一状态。  
     2. 操作
-        * thread.sleep(time)； threadA中调用threadB.join(time)
         * obj.wait(time)
+        * thread.sleep(time)； threadA中调用threadB.join(time)
 6. 终止状态（TERMINATED）：  
     &emsp; 一个已经退出的线程处于这一状态。线程会以下面三种方式结束，结束后就是死亡状态。
     * 正常结束：run()或 call()方法执行完成，线程正常结束。
@@ -1075,8 +1092,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
     * 工作任务：Runnable/Callable 接口
         * 工作任务就是Runnable/Callable接口的实现，可以被线程池执行
-    * **<font color = "red">执行机制（创建线程池的分类）</font>**：Executor接口、ExecutorService接口、ScheduledExecutorService接口
-        * ThreadPoolExecutor 是最核心的线程池实现，用来执行被提交的任务
+    * **<font color = "red">执行机制（创建线程池的分类）：</font>** Executor接口、ExecutorService接口、ScheduledExecutorService接口
+        * ThreadPoolExecutor 是最核心的线程池实现，用来执行被提交的任务。
         * ScheduledThreadPoolExecutor 是任务调度的线程池实现，可以在给定的延迟后运行命令，或者定期执行命令(它比Timer更灵活)
         * ForkJoinPool是一个并发执行框架
     * 异步计算的结果：Future接口
@@ -1091,10 +1108,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * [阻塞队列](/docs/java/concurrent/BlockingQueue.md)，线程池所使用的缓冲队列，常用的是：SynchronousQueue、ArrayBlockingQueue、LinkedBlockingQueue。   
     * 拒绝策略，默认AbortPolicy（拒绝任务，抛异常）， **<font color = "clime">可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。</font>**  
 2. 线程池中核心方法调用链路：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-17.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-14.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-20.png)  
-2. 线程运行流程：查看execute方法。  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-17.png)  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-14.png)  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-20.png)  
+    &emsp; 线程运行流程：查看execute方法。  
     &emsp; <font color = "clime">线程池创建时`没有设置成预启动加载`，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
     1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务（任务实例会传入直接用于构造工作线程实例）。  
     2. 如果当前工作线程总数大于等于corePoolSize，判断线程池是否处于运行中状态，同时尝试用非阻塞方法向任务队列放入任务，这里会二次检查线程池运行状态，如果当前工作线程数量为0，则创建一个非核心线程并且传入的任务对象为null。  

@@ -199,18 +199,19 @@ finalize() 方法是对象逃脱死亡命运的最后一次机会，稍后收集
 <!-- 
 https://www.jianshu.com/p/0618241f9f44
 -->
+&emsp; Object#finalize()⽅法介绍：  
+&emsp; Object#finalize()⽅法什么时候被调⽤？析构函数(finalization)的⽬的是什么？  
+&emsp; 垃圾回收器(garbage colector)决定回收某对象时，就会运⾏该对象的finalize()⽅法，但是在Java中很不幸，如果内存总是充⾜的，那么垃圾回收可能永远不会进⾏，也就是说filalize() 可能永远不被执⾏，显然指望它做收尾⼯作是靠不住的。  
+&emsp; 那么finalize()究竟是做什么的呢？它最主要的⽤途是回收特殊渠道申请的内存。Java程序有垃圾回收器，所以⼀般情况下内存问题不⽤程序员操⼼。但有⼀种JNI(Java Native Interface)调⽤non-Java程序(C或C++)， finalize()的⼯作就是回收这部分的内存。
+
 
 &emsp; <font color = "red">在可达性分析算法中，不可达的对象也不是一定会死亡的，它们暂时都处于“缓刑”阶段，要真正宣告一个对象“死亡”，至少要经历两次标记过程。</font>  
-
-    finalize()⽅法什么时候被调⽤？析构函数(finalization)的⽬的是什么？
-    垃圾回收器(garbage colector)决定回收某对象时，就会运⾏该对象的finalize()⽅法，但是在Java中很不幸，如果内存总是充⾜的，那么垃圾回收可能永远不会进⾏，也就是说filalize() 可能永远不被执⾏，显然指望它做收尾⼯作是靠不住的。 那么finalize()究竟是做什么的呢？ 它最主要的⽤途是回收特殊渠道申请的内存。Java程序有垃圾回收器，所以⼀般情况下内存问题不⽤程序员操⼼。但有⼀种JNI(Java Native Interface)调⽤non-Java程序(C或C++)， finalize()的⼯作就是回收这部分的内存。
 
 <!--
 1. <font color = "red">如果对象在进行可达性分析后没有与GC Root相连接的引用链，那么它会被第一次标记，并且进行一次筛选，</font><font color = "clime">筛选的条件是是否有必要执行finalize()。</font>即：当对象没有被覆盖finalize()或者finalize()方法已经被虚拟机调用过了，虚拟机将这两种情况都视为“没有必要执行”。  
 2. <font color = "red">当一个对象被判断为有必要执行finalize()方法，那么这个对象会被放置到F-Queue队列中，</font><font color = "clime">并且稍后JVM自动建立一个低优先级的Finalizer线程执行它，这里“执行”是虚拟机会触发这个方法，但不会承诺等待它运行结束</font>(万一这个方法运行缓慢或者死循环，F-Queue队列其他对象岂不是永久等待)。<font color = "red">finalize()是对象逃脱死亡的最后一次机会。稍后GC会对F-Queue进行第二次小规模标记。</font>如果对象能在finalize()方法中重新与引用链上任何一个方法建立关联(例如把自己this关键字赋值给某个类变量或者对象的成员变量)。那么第二次标记时，将会移出即将回收的集合。否则，这个对象就会被回收了。  
 &emsp; 注：任何对象的finalize()方法都只会被系统调用一次。  
 -->
-
 1. <font color = "red">判断有没有必要执行Object#finalize()方法</font>  
 &emsp; **<font color = "clime">如果对象在进行可达性分析后发现没有与GC Roots相连接的引用链，那它将会被第一次标记并且进行一次筛选，</font>** 筛选的条件是此对象是否有必要执行finalize()方法。  
 &emsp; 另外，有两种情况都视为“没有必要执行”：1)对象没有覆盖finaliza()方法；2)finalize()方法已经被虚拟机调用过。  
