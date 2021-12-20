@@ -1734,7 +1734,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     1. 驱动实现
         * com.mysql.jdbc.ReplicationDriver
         * Sharding-jdbc
-    2. MyBatis plugin(sqlType: select,update,insert)  
+    2. MyBatis plugin（sqlType: select,update,insert）  
     3. SpringAOP + mybatis plugin + 注解
     4. Spring动态数据源 + mybatis plugin
 2. 常见代理中间件有MyCat...  
@@ -1773,8 +1773,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; ~~分库分表的分片键设计多数参考查询场景。因此分库分表时设计拆分字段考虑因素：1). 是否有必要按照地区、时间拆分表；2)参考B2B模式（有买家、卖家），订单表采用`冗余法（买家库和卖家库）和基因法`结合。~~  
 
 ##### 1.5.3.6.3. 跨分片的排序分页
-&emsp; 常见的分片策略有随机分片和连续分片这两种。“跨库分页”的四种方案。    
-2. 全局视野法
+&emsp; 常见的分片策略有随机分片和连续分片这两种。“跨库分页”的四种方案。     
+1. 全局视野法
 	1. 流程  
         &emsp; （1）将order by time offset X limit Y，改写成order by time offset 0 limit X+Y  
         &emsp; （2）服务层对得到的N*(X+Y)条数据进行内存排序，内存排序后再取偏移量X后的Y条记录   
@@ -1785,7 +1785,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 	（1）每个分库需要返回更多的数据，增大了网络传输量（耗网络）；  
 	（2）服务层还需要进行二次排序，增大了服务层的计算量（耗CPU）；   	
     （3）最致命的，这个算法随着页码的增大，性能会急剧下降，这是因为SQL改写后每个分库要返回X+Y行数据：返回第3页，offset中的X=200；假如要返回第100页，offset中的X=9900，即每个分库要返回100页数据，数据量和排序量都将大增，性能平方级下降。     
-3. 方法二：业务折衷法-禁止跳页查询(对应es中的scroll方法)   
+2. 方法二：业务折衷法-禁止跳页查询(对应es中的scroll方法)   
 	1. 流程：  
         &emsp; （1）用正常的方法取得第一页数据，并得到第一页记录的time_max  
         &emsp; （2）每次翻页，将order by time offset X limit Y，改写成order by time where time>$time_max limit Y  
@@ -1794,13 +1794,13 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 		3. 之后再合并后top S即可得到最终结果。  
 	2. 优点: 数据准确，性能良好  
 	3. 缺点: 不能跳页    
-4. 方法三：业务折衷法-允许模糊数据  
+3. 方法三：业务折衷法-允许模糊数据  
 	1. 前提：数据库分库-数据均衡原理  
 	使用patition key进行分库，在数据量较大，数据分布足够随机的情况下，各分库所有非patition key属性，在各个分库上的数据分布，统计概率情况是一致的。  
 	2. 流程：将order by time offset X limit Y，改写成order by time offset X/N limit Y/N    
 	3. 优点: 性能良好，可以跳页
 	4. 缺点: 数据不准确
-5. 终极武器-二次查询法  
+4. 终极武器-二次查询法  
     &emsp; （1）将order by time offset X limit Y，改写成order by time offset X/N limit Y   
     &emsp; （2）找到最小值time_min   
     &emsp; （3）between二次查询，order by time between $time_min and $time_i_max    
