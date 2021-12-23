@@ -261,7 +261,7 @@
 2. 性能/系统瓶颈：CPU、磁盘IO、内存、网络IO
 
 
-&emsp; 应用型框架，Spring、Mybatis
+&emsp; 应用型框架，Spring、Mybatis  
 &emsp; 功能性框架，redis、mq，一般都是分布式、高并发系统。  
 
 * 分布式带来的问题：  
@@ -341,7 +341,7 @@
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-22.png)  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-17.png)  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-16.png)  
-    1. Spring创建bean主要分为两个步骤，创建原始bean对象，接着去填充对象属性和初始化。  
+    1. Spring创建bean主要分为两个步骤，`创建原始bean对象`，`接着去填充对象属性和初始化`。  
     2. 每次创建bean之前，都会从缓存中查下有没有该bean，因为是单例，只能有一个。  
     3. `当创建beanA的原始对象后，并把它放到三级缓存中，`接下来就该填充对象属性了，这时候发现依赖了beanB，接着就又去创建 beanB，同样的流程，创建完beanB填充属性时又发现它依赖了beanA，又是同样的流程，不同的是，这时候可以在三级缓存中查到刚放进去的原始对象beanA，所以不需要继续创建，用它注入beanB，完成beanB的创建。`此时会将beanA从三级缓存删除，放到二级缓存。`   
     4. 既然 beanB 创建好了，所以 beanA 就可以完成填充属性的步骤了，接着执行剩下的逻辑，闭环完成。  
@@ -376,6 +376,7 @@
     * 【后置处理】 
 4. 销毁（Destruction）---注册Destruction回调函数。  
 
+------
 &emsp; Spring Bean的生命周期管理的基本思路是：在Bean出现之前，先准备操作Bean的BeanFactory，然后操作完Bean，所有的Bean也还会交给BeanFactory进行管理。再所有Bean操作准备BeanPostProcessor作为回调。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-23.png)  
 
