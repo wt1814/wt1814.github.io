@@ -46,7 +46,7 @@
                 - [1.6.2.3.2. 内置生命周期事件](#16232-内置生命周期事件)
             - [1.6.2.4. SpringBoot事件回调](#1624-springboot事件回调)
         - [1.6.3. SpringBoot自动配置](#163-springboot自动配置)
-            - [1.6.3.1. 注解@SpringBootApplication（启动对象）](#1631-注解springbootapplication启动对象)
+            - [1.6.3.1. 注解@SpringBootApplication，获取自动配置](#1631-注解springbootapplication获取自动配置)
             - [1.6.3.2. 加载自动配置流程](#1632-加载自动配置流程)
             - [1.6.3.3. 内置Tomcat](#1633-内置tomcat)
         - [1.6.4. 自定义strater](#164-自定义strater)
@@ -382,11 +382,11 @@
 
 ### 1.3.5. 容器相关特性
 #### 1.3.5.1. FactoryBean
+1. BeanFactory
 &emsp; BeanFactory是个Factory，也就是IOC容器或对象工厂；FactoryBean是个Bean，也由BeanFactory管理。  
+2. FactoryBean：`⚠️FactoryBean，工厂Bean，首先是个Bean，其次再加上工厂模式。`  
 &emsp; 一般情况下，Spring通过`反射机制`利用\<bean\>的class属性指定实现类实例化Bean。 **<font color = "red">在某些情况下，实例化Bean过程比较复杂，</font>** 如果按照传统的方式，则需要在\<bean>中提供大量的配置信息。配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。 **<font color = "red">Spring为此提供了一个org.springframework.bean.factory.FactoryBean的`工厂类接口，用户可以通过实现该接口定制实例化Bean的逻辑。`</font>**  
 &emsp; **<font color = "red">FactoryBean接口的一些实现类，如Spring自身提供的ProxyFactoryBean、JndiObjectFactoryBean，还有Mybatis中的SqlSessionFactoryBean，</font>** 用于生产一些复杂的Bean。  
-
-&emsp; `⚠️FactoryBean，工厂Bean，首先是个Bean，其次再加上工厂模式。`  
 
 
 #### 1.3.5.2. Spring可二次开发常用接口（扩展性）
@@ -434,10 +434,8 @@
 1. <font color = "clime">实现BeanFactoryPostProcessor接口，可以`在spring的bean创建之前，修改bean的定义属性（BeanDefinition）`。</font>  
 2. <font color = "red">实现BeanPostProcessor接口，</font><font color = "blue">可以在spring容器实例化bean之后，`在执行bean的初始化方法前后，`添加一些自己的处理逻辑。</font>  
 
-
 ##### 1.3.5.2.4. InitializingBean
 &emsp; ......  
-
 
 ### 1.3.6. SpringAOP教程
 1. SpringAOP的主要功能是：日志记录，性能统计，安全控制，事务处理，异常处理等。 
@@ -555,10 +553,8 @@
     }
     ```
 
-
 ### 1.4.4. MyBatis缓存
 &emsp; ......  
-
 
 ### 1.4.5. MyBatis插件解析
 1. **<font color="clime">Mybaits插件的实现主要用了拦截器、责任链和动态代理。</font>** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
@@ -746,10 +742,9 @@
 * **<font color = "red">CommandLineRunner，ApplicationRunner之后被回调。</font>**  
 
 ### 1.6.3. SpringBoot自动配置
-&emsp; 包含两部分：1. 注解@SpringBootApplication；2. 加载自动配置流程。
+&emsp; 包含两部分：1. 注解@SpringBootApplication，获取自动配置；2. 加载自动配置流程。
 
-
-#### 1.6.3.1. 注解@SpringBootApplication（启动对象）
+#### 1.6.3.1. 注解@SpringBootApplication，获取自动配置
 1. @SpringBootApplication  
     * @ComponentScan  
     * @SpringBootConfiguration  
