@@ -79,6 +79,10 @@ https://bestqiang.github.io/2019/05/06/%E4%BB%8Eclass%E6%96%87%E4%BB%B6%E4%B8%8E
 -->
 
 ## 1.3. final  
+<!-- 
+浅析Java中的final关键字
+https://www.cnblogs.com/dolphin0520/p/3736238.html
+-->
 &emsp; final 是 Java 中的关键字，它表示的意思是 <font color="red">不可变的</font>，在 Java 中，final 主要用来  
 
 * 修饰类，final 修饰的类不能被继承，不能被继承的意思就是不能使用 extends 来继承被 final 修饰的类。
