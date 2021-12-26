@@ -37,8 +37,13 @@
 
 # 1. Synchronized底层原理
 <!--
- JOL：分析Java对象的内存布局 
-https://mp.weixin.qq.com/s/wsgxJSpEbY3yrmL9mDC2sw
+
+
+synchronized锁的值
+https://mp.weixin.qq.com/s/AloGilUSxjoNVDHTfq1ZGQ
+
+synchronized 的实现与Monitor监视器
+https://www.cnblogs.com/nineberg/p/13534521.html
 -->
 <!-- 
 17张图带你秒杀synchronized关键字 

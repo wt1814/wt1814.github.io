@@ -5,6 +5,8 @@
 <!--
 蓝绿部署、红黑部署、AB测试、灰度发布、金丝雀发布、滚动发布的概念与区别 
 https://mp.weixin.qq.com/s/fxQKvcIaWXwtg6ntEYiJBw
+ 蓝绿发布、滚动发布、灰度发布，有什么区别？ 
+https://mp.weixin.qq.com/s/hwfO9WCrBTYqz7nE4IA17A 
 -->
 
 * 金丝雀发布(又称灰度发布、灰度更新)：  

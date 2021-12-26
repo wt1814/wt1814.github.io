@@ -65,6 +65,9 @@ https://mp.weixin.qq.com/s/Ok7SIROXu1THUbWsFu-UYw
 ★★★ epoll原理详解（最清晰）
 https://blog.csdn.net/lyztyycode/article/details/79491419
 
+对惊群效应的处理 epoll
+https://blog.csdn.net/qq422431474/article/details/108244352
+
 ★★★ https://www.kancloud.cn/machh03/server/2095673
 https://mp.weixin.qq.com/s/BYaORGezXycLUFHcvi3ZnQ
 https://mp.weixin.qq.com/s/uEoGXbweCxu08AShhsw9Xg

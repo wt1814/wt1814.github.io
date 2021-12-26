@@ -16,6 +16,7 @@
 
 # 1. Netty内存管理
 <!--
+
 谈谈Netty内存管理 ！ 
 https://mp.weixin.qq.com/s/wh9sBajNczrKWtexf1beUA
 https://www.cnblogs.com/rickiyang/p/13100413.html
@@ -28,6 +29,14 @@ https://www.cnblogs.com/rickiyang/p/13253203.html
 https://blog.csdn.net/qq_41652863/article/details/99095769?utm_source=app&app_version=4.12.0&code=app_1562916241&uLinkId=usr1mkqgl919blen
 https://blog.csdn.net/ClarenceZero/article/details/112999320?utm_medium=distribute.wap_relevant.none-task-blog-2~default~baidujs_title~default-6.essearch_wap_relevant
 https://zhuanlan.zhihu.com/p/100239049
+
+
+Netty内存管理
+https://mp.weixin.qq.com/s/6RWwwnXwf4c84BQYy2_6fQ
+Netty内存管理算法
+https://blog.csdn.net/ClarenceZero/article/details/112971237
+
+
 -->
 
 &emsp; 参考《Netty4核心原理与手写RPC框架实战》  

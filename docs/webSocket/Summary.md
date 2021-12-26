@@ -6,3 +6,12 @@
 &emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
 &emsp; [IM系统](/docs/webSocket/IM.md)  
 
+<!-- 
+WebSockets 与长轮询的较量 
+https://juejin.cn/post/6844903871710494733
+https://cloud.tencent.com/developer/article/1514062
+https://juejin.cn/post/6844903955240058893
+
+-->
+
+

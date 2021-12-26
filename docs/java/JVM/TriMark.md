@@ -40,7 +40,8 @@
 <!-- 
 三色标记算法
 https://mp.weixin.qq.com/s/bkOc0OvvHBH0eaxL2osG7g
-
+三色标记详解 
+https://mp.weixin.qq.com/s/8leboRIQG1d7fggtZTNjFw
 
 三色标记  SATB
 https://www.bilibili.com/video/BV17J411V7tz?from=search&seid=3673548210809646054

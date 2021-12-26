@@ -39,6 +39,12 @@
 
 # 1. Java对象所占内存的大小
 <!--
+JOL：分析Java对象的内存布局 
+https://mp.weixin.qq.com/s/wsgxJSpEbY3yrmL9mDC2sw
+代码计算对象大小
+https://blog.csdn.net/antony9118/article/details/54317637
+
+
 https://mp.weixin.qq.com/s/bKg-CufJf2vZshJB_ssY5w
 https://www.cnblogs.com/ssskkk/p/12814931.html
 https://blog.csdn.net/yunqiinsight/article/details/80431831
