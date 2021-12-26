@@ -20,4 +20,7 @@ https://aysaml.com/articles/2020/09/23/1600856617447.html
 https://blog.csdn.net/m0_37556444/article/details/107959226
 https://www.cnblogs.com/rickiyang/p/13253203.html
 
+理解ChannelPipeline
+https://www.cnblogs.com/qdhxhz/p/10234908.html
+
 -->

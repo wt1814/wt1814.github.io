@@ -4,6 +4,7 @@
 # 事件和消息驱动
 <!-- 
 https://blog.csdn.net/li_xunhuan/article/details/105574498
+https://blog.csdn.net/qq_39025293/article/details/104248555
 -->
 &emsp; 消息驱动和事件驱动很类似，都是先有一个事件，然后产生一个相应的消息，再把消息放入消息队列，由需要的项目获取。他们的区别是消息是谁产生的  
 

@@ -1,5 +1,11 @@
 
 
+<!-- 
+数据库分布式
+https://blog.csdn.net/csdn_kenneth/article/details/83584580?spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-2.showsourcetag&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-2.showsourcetag
+
+-->
+
 &emsp; [大数据量操作](/docs/SQL/largeData.md)  
 &emsp; [MySql瓶颈](/docs/SQL/Bottleneck.md)  
 &emsp; [数据库分布式](/docs/SQL/Distributed.md)  
