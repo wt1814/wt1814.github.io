@@ -10,6 +10,9 @@ https://www.cnblogs.com/xybaby/p/7787034.html
 什么是集群？负载均衡？ 
 https://mp.weixin.qq.com/s/GPGEgLpCE_KAUPis5UqbKA
 https://blog.csdn.net/weixin_42369687/article/details/89914131
+
+什么是微服务和分布式？微服务和分布式的区别是什么？
+https://www.huaweicloud.com/zhishi/edit-582325.html
 -->
 
 <!-- 
