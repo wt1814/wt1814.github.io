@@ -64,6 +64,10 @@ https://mp.weixin.qq.com/s/SZn9WRZjOuGXo2sX6TU0Uw
 https://mp.weixin.qq.com/s/udo8TI4VPdd5-AYbLJpZgg
 Spring IoC - IoC 容器初始化 源码解析 
 https://juejin.cn/post/6844903967143493640
+
+ 将Bean注入Spring容器的五种方式 
+ https://mp.weixin.qq.com/s/r7j_bjDrOjaYXB6cPQD8Yw
+
 -->
 
 ## 1.1. IOC容器的设计与实现  

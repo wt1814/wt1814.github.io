@@ -9,14 +9,22 @@
 
 <!-- /TOC -->
 
+&emsp; 只有runnable到running时才会占用cpu时间片，其他都会出让cpu时间片。  
+&emsp; 线程的资源有不少，但应该包含CPU资源和锁资源这两类。  
+
+* sleep(long mills)：让出CPU资源，但是不会释放锁资源。  
+* wait()：让出CPU资源和锁资源。  
+
+&emsp; 锁是用来线程同步的，sleep(long mills)虽然让出了CPU，但是不会让出锁，其他线程可以利用CPU时间片了，但如果其他线程要获取sleep(long mills)拥有的锁才能执行，则会因为无法获取锁而不能执行，继续等待。  
+&emsp; 但是那些没有和sleep(long mills)竞争锁的线程，一旦得到CPU时间片即可运行了。  
 
 
 # 1. ★★★线程状态介绍(线程生命周期)
 <!-- 
 ★★★★
 https://juejin.cn/post/6986240210178670622
-
-
+★★★★
+https://www.codenong.com/cs105518429/
 为什么 Java 线程没有 Running 状态？一下被问懵！ 
 https://mp.weixin.qq.com/s/_M_VkFDCdIiXokhzqsDT_A
 -->

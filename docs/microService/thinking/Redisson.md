@@ -37,7 +37,11 @@
 
 
 # 1. Redisson实现redis分布式锁 
+<!-- 
+Redissson自动续期
+https://mp.weixin.qq.com/s/MjY_B2kd4tHdh9ZGbH6D7w
 
+-->
 
 <!-- ~~
 Redisson 分布式锁源码 
