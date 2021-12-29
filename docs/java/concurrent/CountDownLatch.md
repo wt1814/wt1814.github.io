@@ -9,6 +9,8 @@
         - [1.3.1. await()](#131-await)
         - [1.3.2. countDown()](#132-countdown)
     - [1.4. 总结](#14-总结)
+    - [CountDownLatch场景使用](#countdownlatch场景使用)
+    - [CyclicBarrier场景使用](#cyclicbarrier场景使用)
 
 <!-- /TOC -->
 
@@ -298,3 +300,84 @@ protected boolean tryReleaseShared(int releases) {
 &emsp; CountDownLatch用于一个线程A需要等待另外多个线程(B、C)执行后再执行的情况。  
 &emsp; 创建CountDownLatch时设置一个计数器count，表示要等待的线程数量。线程A调用await()方法后将被阻塞，线程B和线程C调用countDown()之后计数器count减1。当计数器的值变为0时，就表示所有的线程均已经完成了任务，然后就可以恢复等待的线程A继续执行了。  
 &emsp; <font color = "clime">CountDownLatch是由AQS实现的，创建CountDownLatch时设置计数器count其实就是设置AQS.state=count，也就是重入次数。await()方法调用获取锁的方法，由于AQS.state=count表示锁被占用且重入次数为count，所以获取不到锁线程被阻塞并进入AQS队列。countDown()方法调用释放锁的方法，每释放一次AQS.state减1，当AQS.state变为0时表示处于无锁状态了，就依次唤醒AQS队列中阻塞的线程来获取锁，继续执行逻辑代码。</font>  
+
+
+
+------------------
+
+## CountDownLatch场景使用
+场景一：让多个线程等待：模拟并发，让并发线程一起执行CountDownLatch充当的是一个发令枪的角色，比如田径赛跑时，运动员会在起跑线做准备动作，等到发令枪一声响，运动员就会奋力奔跑。   
+
+```java
+CountDownLatch countDownLatch = new CountDownLatch(1);
+for (int i = 0; i < 5; i++) {
+    new Thread(() -> {
+        try {
+            //准备完毕……运动员都阻塞在这，等待号令
+            countDownLatch.await();
+            String parter = "【" + Thread.currentThread().getName() + "】";
+            System.out.println(parter + "开始执行……");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }).start();
+}
+
+Thread.sleep(2000);// 裁判准备发令
+System.out.println("裁判发令开始");
+countDownLatch.countDown();// 发令枪：执行发令
+```
+
+执行结果  
+
+```java
+裁判发令开始
+【Thread-1】开始执行……
+【Thread-3】开始执行……
+【Thread-0】开始执行……
+【Thread-2】开始执行……
+【Thread-4】开始执行……
+```
+
+
+场景二：让单个线程等待：多个线程(任务)完成后，进行汇总合并  
+很多时候，我们的并发任务，存在前后依赖关系；比如数据详情页需要同时调用多个接口获取数据，并发请求获取到数据后、需要进行结果合并；或者多个数据操作完成后，需要数据check；  
+这其实都是：在多个线程(任务)完成后，进行汇总合并的场景。  
+
+```java
+CountDownLatch countDownLatch = new CountDownLatch(5);
+for (int i = 0; i < 5; i++) {
+    final int index = i;
+    new Thread(() -> {
+        try {
+            Thread.sleep(1000 + ThreadLocalRandom.current().nextInt(1000));
+            System.out.println("完成任务" + index + Thread.currentThread().getName());
+            countDownLatch.countDown();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }).start();
+}
+
+countDownLatch.await();// 主线程在阻塞，当计数器==0，就唤醒主线程往下执行。
+System.out.println("主线程:在所有任务运行完成后，进行结果汇总");
+```
+
+执行结果  
+
+```java
+完成任务2Thread-2
+完成任务3Thread-3
+完成任务1Thread-1
+完成任务0Thread-0
+完成任务4Thread-4
+主线程:在所有任务运行完成后，进行结果汇总
+```
+
+
+## CyclicBarrier场景使用
+<!-- 
+
+https://souche.yuque.com/beijing-myye7/dvgaei/ver0q9#Iv333
+-->
+
