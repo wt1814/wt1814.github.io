@@ -1274,13 +1274,6 @@ update product set name = 'TXC' where id = 1;
  
 
 #### 1.10.4.2. RedisLock
-1. 使用redis分布式锁要注意的问题：  
-    1. 采用Master-Slave模式，加锁的时候只对一个节点加锁，即使通过Sentinel做了高可用，但是<font color="clime">如果Master节点故障了，发生主从切换，此时就会有可能出现`锁丢失`的问题，`可能导致多个客户端同时完成加锁`</font>。  
-    &emsp; `在解决接口幂等问题中，采用redis分布式锁可以。但是如果涉及支付等对数据一致性要求严格的场景，需要结合数据库锁，建议使用基于状态机的乐观锁。`  
-    2. 编码问题：  
-        * key：释放别人的锁。唯一标识，例如UUID。  
-        * 如何避免死锁？设置锁过期时间。  
-        * `锁过期。 增大冗余时间。`  
 2. redis实现分布式锁方案：  
     * 方案一：SETNX + EXPIRE  
     * 方案二：SETNX + value值是（系统时间+过时时间）  
@@ -1305,6 +1298,14 @@ update product set name = 'TXC' where id = 1;
     2. ~~RedLock“顺序加锁”：确保互斥。在同一时刻，必须保证锁至多只能被一个客户端持有。~~   
 
 #### 1.10.4.3. 使用redis分布式锁的注意点
+1. 使用redis分布式锁要注意的问题：  
+    1. 采用Master-Slave模式，加锁的时候只对一个节点加锁，即使通过Sentinel做了高可用，但是<font color="clime">如果Master节点故障了，发生主从切换，此时就会有可能出现`锁丢失`的问题，`可能导致多个客户端同时完成加锁`</font>。  
+    &emsp; `在解决接口幂等问题中，采用redis分布式锁可以。但是如果涉及支付等对数据一致性要求严格的场景，需要结合数据库锁，建议使用基于状态机的乐观锁。`  
+    2. 编码问题：  
+        * key：释放别人的锁。唯一标识，例如UUID。  
+        * 如何避免死锁？设置锁过期时间。  
+        * `锁过期。 增大冗余时间。`  
+
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-69.png)  
 
 &emsp; 使用redis分布式锁的注意点：  
