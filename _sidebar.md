@@ -559,6 +559,7 @@
     * [WebSocket协议](/docs/webSocket/WebSocket.md)  
     * [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
     * [IM系统](/docs/webSocket/IM.md)  
+* [请求合并](/docs/webSocket/RequestMerge.md)  
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  

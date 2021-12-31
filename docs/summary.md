@@ -1024,6 +1024,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 4. thread.join()，线程加入  
 &emsp; 把指定的线程加入到当前线程，可以将两个交替执行的线程合并为顺序执行的线程。比如在线程B中调用了线程A的Join()方法，直到线程A执行完毕后，才会继续执行线程B。  
 5. thread.interrupt()，线程中断  
+    &emsp; thread.interrupt()用来中断线程，即将线程的中断状态位设置为true，注意中断操作并不会终止线程，不像stop()会立即终止一个运行中的线程，中断仅仅是将线程中断位设置为true（默认false）。线程会不断的检查中断位，如果线程处于阻塞状态（sleep、join、wait）且中断，就会抛出InterreptException来唤醒线程，交由应用程序处理；如果线程未阻塞且中断，也要交由应用程序处理；是终止线程，还是继续执行需要根据实际情况做出合理的响应。  
     &emsp; **<font color = "red">线程在不同状态下对于中断所产生的反应：</font>**    
     * NEW和TERMINATED对于中断操作几乎是屏蔽的；  
     * RUNNABLE和BLOCKED类似， **<font color = "cclime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中；</font>**  

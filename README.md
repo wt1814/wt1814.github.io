@@ -733,6 +733,8 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [WebSocket协议](/docs/webSocket/WebSocket.md)  
 &emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
 &emsp; [IM系统](/docs/webSocket/IM.md)  
+[请求合并](/docs/webSocket/RequestMerge.md)  
+
 
 ---
 ## Error  

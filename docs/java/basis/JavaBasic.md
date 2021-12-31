@@ -41,6 +41,9 @@
 
 # 1. Java基础
 <!-- 
+断言+断路，彻底的优化掉“if else”
+https://www.bilibili.com/video/BV1Sk4y1q7rD
+
 Java四种内部类总结
 https://blog.csdn.net/sinat_37003267/article/details/80058544
 https://www.runoob.com/java/java-inner-class.html

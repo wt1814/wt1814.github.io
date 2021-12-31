@@ -18,6 +18,9 @@
 
 # 1. 中断线程  
 <!-- 
+*** 线程中断机制及响应
+https://www.jianshu.com/p/28bf4345b125
+
 https://blog.csdn.net/w1014074794/article/details/51111376?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_title-0&spm=1001.2101.3001.4242
 
 https://www.cnblogs.com/yingying7/p/12434382.html

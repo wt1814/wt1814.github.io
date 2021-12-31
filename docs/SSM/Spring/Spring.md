@@ -24,6 +24,9 @@ https://mp.weixin.qq.com/s?__biz=MzI5NTYwNDQxNA==&mid=2247484705&idx=1&sn=64cac4
 @Autowire和@Resource注解使用的正确姿势，别再用错的了！！ 
 https://mp.weixin.qq.com/s/34-DdoNcpMUlZiin6Js0Xg
 
+将Bean注入Spring容器的五种方式 
+https://mp.weixin.qq.com/s/r7j_bjDrOjaYXB6cPQD8Yw
+
 -->
 &emsp; **<font color = "red">总结：</font>**  
 1. **@Autowired和@Resource之间的区别：**  
