@@ -5,6 +5,7 @@
 - [1. 布隆过滤器](#1-布隆过滤器)
     - [1.1. 布隆过滤器介绍](#11-布隆过滤器介绍)
     - [1.2. 布隆算法实现](#12-布隆算法实现)
+    - [bitmap和布隆过滤器的区别](#bitmap和布隆过滤器的区别)
 
 <!-- /TOC -->
 
@@ -49,3 +50,26 @@ https://mp.weixin.qq.com/s/8tmjHoYvPW61C9fCnJoFdQ
 
 ## 1.2. 布隆算法实现  
 &emsp; 布隆算法实现有RedisBloom、guava的BloomFilter。  
+
+
+## bitmap和布隆过滤器的区别
+<!--
+
+http://www.javashuo.com/article/p-saxrpzqf-kp.html
+
+1. bitmap更适合用于数字比较：  
+&emsp; 比如比较两个数组是否有重叠，把第一个数组中的1,2,5,7,11分别映射到bitmap位置中  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/structure/structure-2.png)  
+&emsp; 其他数组只需要把值当成索引号去bitmap中查看是否值=1  
+&emsp; 确定就是假如我是 1,100000000，那么其实只需要用到2位，但是却需要100000000位内存
+由此我们确定了布隆过滤  
+
+2. 布隆过滤器适合非数字比较（有误判）  
+&emsp; 当一个元素被加入集合时，通过 K 个 Hash函数将这个元素映射成一个位阵列（Bit array）中的 K 个点，把它们置为 1  
+&emsp; 也就是说一个数据可能占用多个bit，hash函数越多误判越少 但是消耗内存越多  
+
+-->
+
+&emsp; bitmap虽然好用，可是对于不少实际状况下的大数据处理它仍是远远不够的， **<font color = "clime">例如若是要进行64bit的long型数据去重，那咱们须要含有2^61个byte的byte数组来存储，这显然是不现实的。</font>** 那咱们如何来优化呢，很明显假如咱们申请了这么打的byte数组来标记数据，可想而知其空间利用率是极地的。布隆过滤器正是经过提升空间利用率来进行标记的。   
+
+
