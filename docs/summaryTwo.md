@@ -2096,7 +2096,7 @@ update product set name = 'TXC' where id = 1;
     1. 流程：  
         ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-2.png)  
         1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
-        2. 内核等待I/O数据返回。无I/O数据返回时，内核返回给用户进程ewouldblock结果。`【`非阻塞`】用户进程，立马返回结果。`但 **<font color = "clime">用户进程要`主动轮询`查询结果。</font>**  
+        2. 内核等待I/O数据返回。无I/O数据返回时，内核返回给用户进程ewouldblock结果。`【`非阻塞`】用户进程，立马返回结果。`但 **<font color = "clime">用户进程要`【主动轮询】`查询结果。</font>**  
         3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
         4. 内核将数据返回给用户进程。  
     特点：`第一阶段不阻塞但要轮询，`第二阶段阻塞。  
@@ -2160,7 +2160,7 @@ update product set name = 'TXC' where id = 1;
 1. 前言：`一次网络I/O事件，包含网络连接（IO多路复用） -> 读写数据（零拷贝） -> 处理事件。`  
 1. `Reactor，是网络编程中基于IO多路复用的一种设计模式，是【event-driven architecture】的一种实现方式，处理多个客户端并发的向服务端请求服务的场景。`    
 2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font><font color = "blue">`其中Reactor负责监听和分发事件，线程池负责处理事件。`</font>** **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
-3. **单线程模型(单Reactor单线程)**  
+3. **单线程模型（单Reactor单线程）**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-91.png)  
 &emsp; ~~这是最基本的单Reactor单线程模型。其中Reactor线程，负责多路分离套接字，有新连接到来触发connect事件之后，交由Acceptor进行处理，有IO读写事件之后交给hanlder处理。~~  
 &emsp; ~~Acceptor主要任务就是构建handler，在获取到和client相关的SocketChannel之后，绑定到相应的hanlder上，对应的SocketChannel有读写事件之后，基于racotor分发，hanlder就可以处理了（所有的IO事件都绑定到selector上，有Reactor分发）。~~  
@@ -2222,7 +2222,7 @@ update product set name = 'TXC' where id = 1;
 
     &emsp; mmap的方式节省了一次CPU拷贝，同时由于用户进程中的内存是虚拟的，只是映射到内核的读缓冲区，所以可以节省一半的内存空间，比较适合大文件的传输。  
 7. sendfile（函数调用）：  
-    1. &emsp; **<font color = "red">sendfile建立了两个文件之间的传输通道。</font>** 通过使用sendfile数据可以直接在内核空间进行传输，因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。   
+    1. **<font color = "red">sendfile建立了两个文件之间的传输通道。</font>** 通过使用sendfile数据可以直接在内核空间进行传输，因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。   
     2. 流程：  
         ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-148.png)  
         &emsp; 整个过程发生了2次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
