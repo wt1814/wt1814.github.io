@@ -2,6 +2,7 @@
 <!-- TOC -->
 
 - [1. git](#1-git)
+    - [git多用户](#git多用户)
     - [1.1. Git分支命名](#11-git分支命名)
     - [1.2. GIT本地库操作基本原理](#12-git本地库操作基本原理)
     - [1.3. 分支](#13-分支)
@@ -51,6 +52,12 @@ https://mp.weixin.qq.com/s/bT7VXffqHuzUZUY5c4ce7A
 
 <!-- 本地仓库的位置 -->
 本地仓库的位置可设置为：\<localRepository\>${user.home}/.m2/repository\</localRepository\>
+
+## git多用户
+<!-- 
+一台电脑上配置并使用两个github账号
+https://zhuanlan.zhihu.com/p/191589172
+-->
 
 ## 1.1. Git分支命名  
 <!-- 
