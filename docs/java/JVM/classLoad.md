@@ -58,7 +58,8 @@
 
 Ps：静态代码块是绝对线程安全的，只能隐式被java虚拟机在类加载过程中初始化调用！(此处该有问题static代码块线程安全吗？)
 
-
+不重启JVM，替换掉已经加载的类
+https://mp.weixin.qq.com/s/AoACDnVLfXTKEjUcnRZqog
 
 
 
