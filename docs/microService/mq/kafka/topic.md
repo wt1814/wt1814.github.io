@@ -43,6 +43,10 @@
 
 # 1. 分区
 <!-- 
+
+Kafka的存储架构
+https://mp.weixin.qq.com/s/4QyfEKMfoxO0383jlmYdRw
+
 Kafka的存储架构
 https://mp.weixin.qq.com/s/a09J-G9SmC8PLFyKtM2hng
 

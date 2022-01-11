@@ -26,6 +26,9 @@
 # 1. 接口幂等  
 
 <!-- 
+聊聊幂等设计 
+https://mp.weixin.qq.com/s/P3GVyHxrSLN4FV2xwnP71g
+
 分布式幂等问题解决方案三部曲 
 https://mp.weixin.qq.com/s/bzroRTHYlVgc4vYv_6gpIQ
 

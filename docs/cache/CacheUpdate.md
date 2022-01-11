@@ -19,12 +19,16 @@
 # 1. 缓存更新（保证缓存与数据库的双写一致性）  
 
 <!--
- 被 leeder 摆了一道，哭笑不得！ 
+
+缓存一致性
+https://mp.weixin.qq.com/s/vlxFsWKlj6HN-i2yU_Pyyw
+
+被 leeder 摆了一道，哭笑不得！ 
 https://mp.weixin.qq.com/s/eb31yUUk6cieuCVY1TCGTA
 
- 亿级流量高并发场景下，如何保证缓存与数据库的双写一致性？ 
- https://www.cnblogs.com/rjzheng/p/9041659.html
- https://mp.weixin.qq.com/s/-EErLaPPbO9gItIzefjTuw
+亿级流量高并发场景下，如何保证缓存与数据库的双写一致性？ 
+https://www.cnblogs.com/rjzheng/p/9041659.html
+https://mp.weixin.qq.com/s/-EErLaPPbO9gItIzefjTuw
  
 -->
 

@@ -281,6 +281,8 @@ System.out.println(str);//Vae
 
 ## 1.3. StringJoiner，字符串拼接  
 <!-- 
+
+
 你只会用 StringBuilder？试试 StringJoiner，真香！ 
 https://mp.weixin.qq.com/s/25PjDDuMKH3qv8LZimyUpg
 字符串拼接还在用StringBuilder？快试试Java8中的StringJoiner吧，真香！ 
