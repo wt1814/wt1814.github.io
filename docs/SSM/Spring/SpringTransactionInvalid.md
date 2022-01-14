@@ -1,13 +1,24 @@
-3. Spring事务失效：  
+
+<!-- TOC -->
+
+- [1. Spring事务问题](#1-spring事务问题)
+    - [1.1. Spring事务失效](#11-spring事务失效)
+    - [1.2. 大事务](#12-大事务)
+
+<!-- /TOC -->
+
+1. Spring事务失效：  
     * 使用在了非public方法上。
     * 捕获了异常，未再抛出。
     * 同一个类中方法调用。
     * @Transactional的类注入失败。
     * 多数据源（静态配置）
     * 原始SSM项目，重复扫描导致事务失效  
+2. 大事务问题：将修改库的代码聚合在一起。   
 
 
-# Spring事务失效
+# 1. Spring事务问题
+## 1.1. Spring事务失效
 <!-- 
 从源码剖析Spring事务失效问题
 https://blog.csdn.net/qq_38826019/article/details/117628192
@@ -63,3 +74,10 @@ http://events.jianshu.io/p/263689699877
 
         SHOW TABLE STATUS LIKE 'tbl_name';
         SHOW CREATE TABLE tbl_name; 
+
+
+
+## 1.2. 大事务
+<!-- 
+https://mp.weixin.qq.com/s/nMAsyH8z7E6XFYiKJTy4Cw
+-->

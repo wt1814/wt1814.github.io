@@ -26,7 +26,7 @@
         - [1.3.7. SpringAOP解析](#137-springaop解析)
         - [1.3.8. Spring事务](#138-spring事务)
             - [1.3.8.1. Spring事务使用](#1381-spring事务使用)
-            - [1.3.8.2. Spring事务失效](#1382-spring事务失效)
+            - [1.3.8.2. Spring事务问题](#1382-spring事务问题)
         - [1.3.9. SpringMVC解析](#139-springmvc解析)
         - [1.3.10. 过滤器、拦截器、监听器](#1310-过滤器拦截器监听器)
     - [1.4. MyBatis](#14-mybatis)
@@ -484,13 +484,14 @@
     * 事务只读，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。  
 
 
-#### 1.3.8.2. Spring事务失效
-1. <font color = "red">同一个类中方法调用。</font>  
-&emsp; 因为spring声明式事务是基于AOP实现的，是使用动态代理来达到事务管理的目的，当前类调用的方法上面加@Transactional 这个是没有任何作用的，因为 **<font color = "clime">调用这个方法的是this，没有经过 Spring 的代理类。</font>**  
-2. 方法不是public的。    
-&emsp; @Transactional 只能用于 public 的方法上，否则事务不会失效，如果要用在非 public 方法上，可以开启 AspectJ 代理模式。  
-3. 抛出的异常不支持回滚。捕获了异常，未再抛出。  
-
+#### 1.3.8.2. Spring事务问题
+1. 事务失效
+    1. <font color = "red">同一个类中方法调用。</font>  
+    &emsp; 因为spring声明式事务是基于AOP实现的，是使用动态代理来达到事务管理的目的，当前类调用的方法上面加@Transactional 这个是没有任何作用的，因为 **<font color = "clime">调用这个方法的是this，没有经过 Spring 的代理类。</font>**  
+    2. 方法不是public的。    
+    &emsp; @Transactional 只能用于 public 的方法上，否则事务不会失效，如果要用在非 public 方法上，可以开启 AspectJ 代理模式。  
+    3. 抛出的异常不支持回滚。捕获了异常，未再抛出。  
+2. 大事务问题：将修改库的代码聚合在一起。  
 
 ### 1.3.9. SpringMVC解析
 1. **SpringMVC的工作流程：**  

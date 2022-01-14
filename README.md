@@ -389,7 +389,7 @@
 &emsp; [SpringAOP教程](/docs/SSM/Spring/SpringAOPUse.md)  
 &emsp; [SpringAOP解析](/docs/SSM/Spring/SpringAOPAnalysis.md)  
 [Spring事务](/docs/SSM/Spring/SpringTransaction.md)  
-[Spring事务失效](/docs/SSM/Spring/SpringTransactionInvalid.md)  
+[Spring事务问题](/docs/SSM/Spring/SpringTransactionInvalid.md)  
 
 [SpringMVC](/docs/SSM/Spring/SpringMVC.md)  
 &emsp; [SpringMVC使用教程](/docs/SSM/Spring/SpringMVCUse.md)  
