@@ -16,6 +16,10 @@
 
 # 1. ~~CompletableFuture<T>~~  
 <!--
+异步神器：CompletableFuture实现原理和使用场景
+https://mp.weixin.qq.com/s/w5aRflM1rtzrSKNbHWuwiQ
+CompletableFuture
+https://mp.weixin.qq.com/s/QvStRoJNEhOz_4qR5H8iIA
 
 使用CompletableFuture
 https://www.liaoxuefeng.com/wiki/1252599548343744/1306581182447650

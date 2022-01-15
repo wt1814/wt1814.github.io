@@ -51,6 +51,9 @@
 &emsp; **<font color = "clime">部分参考《Redis开发与运维》第6章</font>**  
 
 <!--
+Redis主从同步
+https://mp.weixin.qq.com/s/EZWDKBkeVZiq1K9R2iGcSA
+
 ~~ 
 Redis的主从复制是如何做的？复制过程中也会产生各种问题 
  https://mp.weixin.qq.com/s/ee7Xdj4d1O-D-Yaa9G6U3w

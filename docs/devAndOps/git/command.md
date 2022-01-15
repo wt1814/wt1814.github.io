@@ -98,6 +98,9 @@ https://jingyan.baidu.com/article/a17d52854e164dc098c8f2b0.html
 
 ### 1.3.2. 基于Gitlab Issues为导向的分支管理
 <!--
+9种提高 GitHub 国内访问速度的方案
+https://juejin.cn/post/7043960479181438983?share_token=25e7cfba-e5e8-4a51-9237-6e922f9a15c4#heading-4
+
 基于Gitlab Issues为导向的分支管理
 https://blog.csdn.net/u011423145/article/details/107860812
 -->

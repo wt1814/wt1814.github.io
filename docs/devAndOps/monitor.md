@@ -1,7 +1,11 @@
 
 # 监控系统  
 
-<!-- 
+<!--
+搭建Prometheus+Grafana的云平台监控系统
+https://www.jianshu.com/p/268489bf5756?utm_campaign=haruki&utm_content=note&utm_medium=reader_share&utm_source=weixin
+
+
 如何快速深入理解监控知识？ 
 https://mp.weixin.qq.com/s/q4QxJi5KZKNNIvWMjfdM1A
 

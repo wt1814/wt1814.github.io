@@ -50,7 +50,9 @@
 
 
 # 1. ~~循环依赖~~  
-<!-- 
+<!--
+Spring处理循环依赖只使用二级缓存可以吗？ 
+https://mp.weixin.qq.com/s/WfY0jT2yukXgJ0pOkK6RuA
 Spring循环依赖-earlySingletonObjects的作用
 https://zhuanlan.zhihu.com/p/149654571
 

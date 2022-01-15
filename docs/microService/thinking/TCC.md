@@ -31,7 +31,10 @@
 &emsp; TCC是Try（检测及资源锁定或者预留）、Commit（确认）、Cancel（取消）的缩写，业务层面需要写对应的三个方法。主要用于跨数据库、跨服务的业务操作的数据一致性问题。    
 
 ## 1.1. ~~实现流程~~  
-<!-- 
+<!--
+TCC   TCC模式的三种类型？
+如果在 Try 阶段能正常的预留资源，那 Confirm 一定能完整正确的提交。
+https://mp.weixin.qq.com/s/OyIRPNd2bJZlcin9VFO9hw
 *** https://www.cnblogs.com/jajian/p/10014145.html
 https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
 https://www.cnblogs.com/rjzheng/p/10164667.html

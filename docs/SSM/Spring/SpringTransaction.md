@@ -27,7 +27,9 @@
 
 
 # 1. Spring事务   
-<!-- 
+<!--
+spring事务失效的12种场景
+https://mp.weixin.qq.com/s/nMAsyH8z7E6XFYiKJTy4Cw
 https://mp.weixin.qq.com/s/RpA3RvYv4I4zYSzBmZaDiA
 -->
 

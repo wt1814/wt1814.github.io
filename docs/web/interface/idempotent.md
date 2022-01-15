@@ -43,6 +43,9 @@ https://mp.weixin.qq.com/s/8I8fRoYuTED6S7EcbHllhQ
 https://mp.weixin.qq.com/s/6kcfTke9TciYOhcrUqq4rA
  8 种幂等性解决重复提交的方案 
  https://mp.weixin.qq.com/s/2nxU5smcf2j8okQG5RJeEQ
+ 幂等设计 
+https://juejin.cn/post/7049140742182141959?share_token=6ca87558-82c7-4249-b75a-91fd8c0ba8b1
+
 -->
 
 <!-- 

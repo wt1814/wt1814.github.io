@@ -4,6 +4,8 @@
 # Maven冲突
 
 <!-- 
+Java依赖冲突高效解决之道 
+https://mp.weixin.qq.com/s/0G5kLzz8Mtwf2hchB8ba7A
 ***高手解决 Maven Jar 包冲突是有技巧的 
 https://mp.weixin.qq.com/s/Eu2SmJKC7LLkk9DnGzyM6w
 
