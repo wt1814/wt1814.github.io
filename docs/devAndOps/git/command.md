@@ -57,6 +57,7 @@ https://mp.weixin.qq.com/s/bT7VXffqHuzUZUY5c4ce7A
 <!-- 
 一台电脑上配置并使用两个github账号
 https://zhuanlan.zhihu.com/p/191589172
+https://www.cnblogs.com/xjnotxj/p/5845574.html
 -->
 
 ## 1.1. Git分支命名  
