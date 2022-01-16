@@ -194,7 +194,7 @@
     * 为了 HashCode 的不可变性。String类经常被用作HashMap的key。  
 2. String创建了几个对象？  
 &emsp; `String str1 = "java";`创建一个对象放在常量池中。  
-&emsp; `String str2 = new String("java");`创建两个对象，`字面量"java"创建一个对象放在常量池中`，new String()又创建一个对象放在堆中。如果常量池中已经存在，则是创建了一个对象。  
+&emsp; `String str2 = new String("java");`创建两个对象，`字面量"java"创建一个对象放在常量池中`，new String()又创建一个对象放在堆中。`如果常量池中已经存在，则是创建了一个对象。`  
 &emsp; `String str3 = "hello "+"java";`创建了一个对象。  
 &emsp; `String str5 = str3 + "java";`创建了三个对象。
 3. String不可变，安全；StringBuilder可变，线程不安全；StringBuffer可变，线程安全。  
@@ -226,7 +226,7 @@
 3. 快速失败机制：单线程迭代器中直接删除元素或多线程使用非安全的容器都会抛出ConcurrentModificationException异常。  
 &emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，再在拷贝的集合上进行遍历。</font>**  
 4. 排序：  
-    * Comparable，自然排序（自身属性，整数(大小排序)，字符串(字典序)）。  
+    * Comparable，自然排序（自身属性，整数按照大小排序，字符串按照字典序）。  
     * Comparator，定制排序。  
 
 #### 1.1.3.2. HashMap
