@@ -15,7 +15,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充。  
+1. `对象内存大小原理：`在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充。  
     * 实例数据：存放类的属性数据信息，包括父类的属性信息，如果是数组的实例部分还包括数组的长度，这部分内存按4字节对齐。    
     * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍(8字节对齐)。填充数据不是必须存在的，仅仅是为了字节对齐。   
 2. JVM中对象头的方式有以下两种(以32位JVM为例)  
@@ -38,7 +38,22 @@
     &emsp; 如果对象是一个数组，那么对象头还需要有额外的空间用于存储数组的长度，这部分数据的长度也随着JVM架构的不同而不同：32位的JVM上，长度为32位；64位JVM则为64位。64位JVM如果开启+UseCompressedOops选项，该区域长度也将由64位压缩至32位。  
 
 # 1. Java对象所占内存的大小
+1. 引言：代码计算内存大小
+2. 对象为什么占用这么大？
+3. 计算对象大小的工具
+4. 节约内存
+
 <!--
+
+https://mp.weixin.qq.com/s/bKg-CufJf2vZshJB_ssY5w
+
+
+https://www.cnblogs.com/ssskkk/p/12814931.html
+https://blog.csdn.net/yunqiinsight/article/details/80431831
+
+https://blog.csdn.net/yueyazhishang/article/details/106415028
+https://blog.csdn.net/xmtblog/article/details/103760205
+-------
 JOL：分析Java对象的内存布局 
 https://mp.weixin.qq.com/s/wsgxJSpEbY3yrmL9mDC2sw
 代码计算对象大小
