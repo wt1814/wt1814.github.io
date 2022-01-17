@@ -27,7 +27,7 @@
         - [1.1.10. SPI与线程上下文类加载器](#1110-spi与线程上下文类加载器)
     - [1.2. 设计模式](#12-设计模式)
         - [1.2.1. 七大设计原则](#121-七大设计原则)
-        - [1.2.2. 继承和组合/复用规则](#122-继承和组合复用规则)
+        - [1.2.2. 复用规则（继承和组合）详解](#122-复用规则继承和组合详解)
         - [1.2.3. 设计模式详解](#123-设计模式详解)
             - [1.2.3.1. 5种创建型设计模式](#1231-5种创建型设计模式)
             - [1.2.3.2. 7种结构型设计模式](#1232-7种结构型设计模式)
@@ -222,7 +222,7 @@
 2. Java集合框架：  
     * List：有序，可重复。List有ArrayList、LinkedList、Vector。
     * Set：无序，不可重复(唯一)。Set有HashSet、LinkedHashSet、TreeSet。
-    * Map：存储键值对。Map有HashMap、LinkedHashMap、TreeMap、Hashtable。     
+    * Map：存储键值对。Map有HashMap、LinkedHashMap、TreeMap、HashTable。     
 3. 快速失败机制：单线程迭代器中直接删除元素或多线程使用非安全的容器都会抛出ConcurrentModificationException异常。  
 &emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，再在拷贝的集合上进行遍历。</font>**  
 4. 排序：  
@@ -274,8 +274,8 @@
 1. HashSet基于HashMap实现： **<font color = "clime">存储在HashSet中的数据作为Map的key，而Map的value统一为PRESENT。</font>**  
     &emsp; 添加元素，如何保证值不重复？  
     &emsp; HashSet#add通过 map.put() 方法来添加元素。HashSet的add(E e)方法，会将e作为key，PRESENT作为value插入到map集合中。  
-    * 如果e(新插入的key)存在，HashMap#put返回原key对应的value值（注意新插入的value会覆盖原value值），Hashset#add返回false，表示插入值重复，插入失败。  
-    * 如果e(新插入的key)不存在，HashMap#put返回null值，Hashset#add返回true，表示插入值不重复，插入成功。  
+    * 如果e（新插入的key）存在，HashMap#put返回原key对应的value值（注意新插入的value会覆盖原value值），Hashset#add返回false，表示插入值重复，插入失败。  
+    * 如果e（新插入的key）不存在，HashMap#put返回null值，Hashset#add返回true，表示插入值不重复，插入成功。  
 
 ### 1.1.4. JDK1.8
 #### 1.1.4.1. 接口的默认方法与静态方法
@@ -321,7 +321,6 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     2. 运行时，如何获取范型信息？  
 2. 利用反射越过泛型检查  
 &emsp; 反射是获取类Class文件进行操作。通过反射获取对象后可以获得相应的add方法，并向方法里面传入任何对象。  
-
 
 ### 1.1.7. 自定义注解
 
@@ -376,7 +375,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 --------
 
-&emsp; JDK的SPI内部使用线程上下文类加载器实现，破坏了双亲委派模型，是为了适用所有场景。ServiceLoader中的load方法：  
+&emsp; `JDK的SPI内部使用线程上下文类加载器实现，破坏了双亲委派模型，是为了适用所有场景。`ServiceLoader中的load方法：  
 
 ```java
 public static <S> ServiceLoader<S> load(Class<S> service) {
@@ -411,7 +410,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 合成复用原则（ **<font color = "red">尽量使用对象[组合(has-a)/聚合(contanis-a)](/docs/java/Design/compose.md)，而不是继承关系达到软件复用的目的</font>** ）；
     * 迪米特法则（一个对象应当对其他对象尽可能少的了解）。  
 
-### 1.2.2. 继承和组合/复用规则
+### 1.2.2. 复用规则（继承和组合）详解  
 1. 类和类之间的关系有三种：is-a（继承或泛化）、has-a（关联或聚合）和use-a（依赖）。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-27.png)  
 2. 组合的含义更像是一个对象(类)由各方面构成，这些方面并非来自于继承，但有时候却是必不可少的。`如果说继承是垂直结构，那么组合是横向结构。`  
@@ -475,7 +474,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         instance.methodOne();
     }
     ```
-    &emsp; <font color = "red">只有在singleton == null的情况下再进行加锁创建对象，如果singleton!=null，就直接返回就行了，并没有进行并发控制。大大的提升了效率。</font>   
+    &emsp; <font color = "red">只有在singleton == null的情况下才进行加锁创建对象，如果singleton!=null，就直接返回就行了，并没有进行并发控制。大大的提升了效率。</font>   
     &emsp; <font color = "clime">从上面的代码中可以看到，其实整个过程中进行了两次singleton == null的判断，所以这种方法被称之为"双重校验锁"。</font>   
     &emsp; <font color = "clime">还有值得注意的是，双重校验锁的实现方式中，静态成员变量singleton必须通过volatile来修饰，保证其初始化不被重排，否则可能被引用到一个未初始化完成的对象。</font>   
 2. 简单工厂模式和抽象工厂模式
@@ -502,29 +501,30 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 5. 桥接模式（if/else）
 6. 组合模式
 7. 享元模式（池化技术）  
-    &emsp; 享元模式：①将对象的公共部分抽取出来成为内部状态(实现共享)，②将随时间改变、不可共享的部分作为外部状态(通过更换外部状态实现对象复用)，从而减少创建对象的数量，以减少内存开销和提高性能。  
+    &emsp; 享元模式：①将对象的公共部分抽取出来成为内部状态（实现共享），②将随时间改变、不可共享的部分作为外部状态（通过更换外部状态实现对象复用），从而减少创建对象的数量，以减少内存开销和提高性能。  
     &emsp; 核心：共享和复用，共享(内部状态 - intrinsicState)，复用(外部状态 - extrinsicState)  
     &emsp; 使用场景：  
 
     * 共享：当只存在内部状态时，可以在多线程中共享使用(String常量池)  
-    * 复用：通过改变外部状态，可以更好实现对象的复用(线程池)  
+    * 复用：通过改变外部状态，可以更好实现对象的复用（线程池）  
 
-    &emsp; PS：外部状态在线程间需考虑并发问题，因此不适合共享，但当对象被使用完成后，通过修改外部状态，使其可以复用于下一次的访问需求。  
+&emsp; PS：外部状态在线程间需考虑并发问题，因此不适合共享，但当对象被使用完成后，通过修改外部状态，使其可以复用于下一次的访问需求。  
 
 
 #### 1.2.3.3. 两种动态代理
 1. 动态编程  
-&emsp; 动态编程是相对于静态编程而言，平时我们大多讨论的都是静态编程，java便是一种静态编程语言，它 的类型检查是在编译期间完成的。而动态编程是绕过了编译期间，在运行时完成类型检查。java有如下方法实现动态编程：动态代理，动态编译  
+&emsp; 动态编程是相对于静态编程而言，平时大多讨论的都是静态编程，java便是一种静态编程语言，它的类型检查是在编译期间完成的。而动态编程是绕过了编译期间，在运行时完成类型检查。  
+&emsp; java有如下方法实现动态编程：`动态代理`，`动态编译`。    
 3. JDK动态代理：  
-    0. 两大知识点：反射、因单继承只能为接口生成代理对象。  
     1. Java动态代理类位于java.lang.reflect包下，一般主要涉及到以下两个重要的类或接口，`一个是InvocationHandler接口、另一个则是Proxy类。`  
         * Proxy类。该类即为动态代理类。Proxy.newProxyInstance()生成代理对象；  
         * InvocationHandler接口。 **<font color = "clime">在使用动态代理时，需要定义一个位于代理类与委托类之间的中介类，中介类被要求实现InvocationHandler接口。</font>** 通过代理对象调用一个方法的时候，这个方法的调用会被转发为由InvocationHandler这个接口的invoke方法来进行调用。  
+    0. ~~两大知识点：反射、因单继承只能为接口生成代理对象。~~  
     2. <font color = "clime">JDK动态代理的实现，大致流程：</font>使用`反射`来创建代理类。  
         1. <font color = "red">为接口创建代理类的字节码文件。</font>   
         2. <font color = "red">使用ClassLoader将字节码文件加载到JVM。</font>  
         3. <font color = "red">创建代理类实例对象，执行对象的目标方法。</font>  
-    3. `限制：JDK动态代理为什么只能使用接口？`  
+    3. `~~限制：JDK动态代理为什么只能使用接口？~~`  
     &emsp; JDK动态代理是为接口生成代理对象，该代理对象继承了JAVA标准类库Proxy.java类并且实现了目标对象。由于JAVA遵循`单继承`多实现原则，所以JDK无法利用继承来为目标对象生产代理对象。   
 2. 动态编译  
     &emsp; 动态编译就是利用字节码修改技术，来操作java字节码在运行期间jvm中动态生成新类或者对已有类进行修改。动态编译时在java 6开始支持的，主要是通过一个JavaCompiler接口来完成的。可以解决需要动态插入代码的场景，比如动态代理的实现，实现AOP编程。  
@@ -543,8 +543,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 #### 1.2.3.4. 11种行为型设计模式
 1. 模板方法模式
-2. 策略模式(if/else)
-3. 责任链模式(if/else)
+2. 策略模式（if/else）
+3. 责任链模式（if/else）
 4. 观察者模式
 
 #### 1.2.3.5. 设计模式大讨论
