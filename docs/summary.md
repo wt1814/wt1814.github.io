@@ -594,7 +594,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 4. 准备(Preparation)  
 &emsp; <font color = "red">为类的静态变量分配内存，并将其初始化为默认值，这些内存都将在方法区中分配。</font>对于该阶段有以下几点需要注意：  
     1. <font color = "red">这时候进行内存分配的仅包括类变量(static)，而不包括实例变量，实例变量会在对象实例化时随着对象一块分配在Java堆中。</font>  
-    2. <font color = "red">这里所设置的初始值"通常情况"下是数据类型默认的零值(如0、0L、null、false等)，比如定义了public static int value=111 ，那么 value 变量在准备阶段的初始值就是 0 而不是111(初始化阶段才会复制)。</font>  
+    2. <font color = "red">这里所设置的初始值"通常情况"下是数据类型默认的零值（如0、0L、null、false等），比如定义了public static int value=111 ，那么 value 变量在准备阶段的初始值就是 0 而不是111（初始化阶段才会复制）。</font>  
     * <font color = "red">特殊情况：比如给value变量加上了fianl关键字public static final int value=111，那么准备阶段value的值就被赋值为 111。</font>  
 5. 解析(Resolution)： **<font color = "red">将常量池内的符号引用转换为直接引用</font>** ，得到类或者字段、方法在内存中的指针或者偏移量，确保类与类之间相互引用正确性，完成内存结构布局，以便直接调用该方法。  
 &emsp; `为什么要用符号引用呢？` **<font color = "blue">这是因为类加载之前，javac会将源代码编译成.class文件，这个时候javac是不知道被编译的类中所引用的类、方法或者变量它们的引用地址在哪里，所以只能用符号引用来表示。</font>**  
@@ -615,9 +615,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 不同 webapp 项目支持共享某些类库
     * 类加载器应该支持热插拔功能，比如对 jsp 的支持、webapp 的 reload 操作
 
-    &emsp; 为了解决以上问题，tomcat设计了一套类加载器，如下图所示。在 Tomcat 里面最重要的是 Common 类加载器，它的父加载器是应用程序类加载器，负责加载 ${catalina.base}/lib、${catalina.home}/lib 目录下面所有的 .jar 文件和 .class 文件。下图的虚线部分，有 catalina 类加载器、share 类加载器，并且它们的 parent 是 common 类加载器，默认情况下被赋值为 Common 类加载器实例，即 Common 类加载器、catalina 类加载器、 share 类加载器都属于同一个实例。当然，如果通过修改 catalina.properties 文件的 server.loader 和 shared.loader 配置，从而指定其创建不同的类加载器。  
-
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/tomcat/tomcat-1.png)  
+&emsp; 为了解决以上问题，tomcat设计了一套类加载器，如下图所示。在 Tomcat 里面最重要的是 Common 类加载器，它的父加载器是应用程序类加载器，负责加载 ${catalina.base}/lib、${catalina.home}/lib 目录下面所有的 .jar 文件和 .class 文件。下图的虚线部分，有 catalina 类加载器、share 类加载器，并且它们的 parent 是 common 类加载器，默认情况下被赋值为 Common 类加载器实例，即 Common 类加载器、catalina 类加载器、 share 类加载器都属于同一个实例。当然，如果通过修改 catalina.properties 文件的 server.loader 和 shared.loader 配置，从而指定其创建不同的类加载器。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/tomcat/tomcat-1.png)  
 
 3. 破坏双亲委派模型：  
     1. 破坏双亲委派模型：继承ClassLoader，重写loadClass()方法。  
@@ -647,7 +646,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         * 局部变量表，局部变量表用于保存函数参数和局部变量。  
         * 操作数栈，操作数栈用于保存计算过程的中间结果，作为计算过程中变量临时的存储空间。  
         * 动态连接：每个栈帧中包含一个在常量池中对当前方法的引用， 目的是支持方法调用过程的动态连接。  
-        * 方法返回地址
+        * 方法返回地址。
     4. `为什么不把基本类型放堆中呢？`   
     &emsp; 因为其占用的空间一般是 1~8 个字节——需要空间比较少，而且因为是基本类型，所以不会出现动态增长的情况——长度固定，因此栈中存储就够了。  
 4. 【GC】【堆】  
@@ -668,9 +667,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
             * jdk1.8及之后：无永久代。类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
 6. MetaSpace存储类的元数据信息。  
 &emsp; 元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。元空间的内存大小受本地内存限制。  
-7. 扩展点：静态方法和实例方法  
+7. 扩展点：`静态方法和实例方法`  
 &emsp; `静态方法`会在程序运行的时候`直接装载进入方法区`。而实例方法会在new的时候以对象的方法装载进入堆中。  
-&emsp; 最大的区别在于内存的区别，由于main函数为static静态方法，会直接在运行的时候装载进入内存区，实例方法必须new，在堆中创建内存区域。再进行引用。  
+&emsp; 最大的区别在于内存的区别，由于main函数为static静态方法，会直接在运行的时候装载进入内存区，实例方法必须new，在堆中创建内存区域，再进行引用。  
 
 ##### 1.3.4.1.2. 常量池详解
 &emsp; **<font color = "clime">常量池分为以下三种：class文件常量池、运行时常量池、全局字符串常量池。</font>**   
@@ -691,7 +690,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     &emsp; 分配策略有：对象优先在Eden分配、大对象直接进入老年代、长期存活的对象将进入老年代、动态对象年龄判定、空间分配担保。  
     &emsp; `空间分配担保：` **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的`总空间`。</font>**   
     * **<font color = "blue">`内存分配全流程：`逃逸分析 ---> 没有逃逸，尝试栈上分配 ---> 是否满足直接进入老年代的条件 ---> `尝试TLAB分配` ---> `新生代Eden区分配`。</font>**  
-    * 分配内存两种方式：指针碰撞（内存空间绝对规整）；空闲列表（内存空间是不连续的）。
+    * ~~分配内存两种方式：指针碰撞（内存空间绝对规整）；空闲列表（内存空间是不连续的）。~~
         * 标记-整理或复制 ---> 空间规整 ---> 指针碰撞； 
         * 标记-清除 ---> 空间不规整 ---> 空闲列表。       
     * 线程安全问题：1).采用CAS； **<font color = "clime">2).线程本地分配缓冲（TLAB）。</font>**  
@@ -713,7 +712,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 ##### 1.3.4.2.2. 对象生命周期
 
 ##### 1.3.4.2.3. 对象大小
-1. 在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充。  
+1. `在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充。`  
     * 实例数据：存放类的属性数据信息，包括父类的属性信息，如果是数组的实例部分还包括数组的长度，这部分内存按4字节对齐。    
     * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍(8字节对齐)。填充数据不是必须存在的，仅仅是为了字节对齐。   
 2. JVM中对象头的方式有以下两种（以32位JVM为例）  
@@ -778,7 +777,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         * Young GC：只收集 Young Gen 的 GC，Young GC 还有种说法就叫做 Minor GC。  
         * Old GC：只收集 old gen 的 GC，只有垃圾收集器 CMS 的 concurrent collection 是这个模式。  
         * Mixed GC：收集整个 Young Gen 以及部分 old gen 的 GC，只有垃圾收集器 G1 有这个模式。  
-    * `Full GC：收集整个堆，包括新生代，老年代，永久代(在 JDK 1.8 及以后，永久代被移除，换为 metaspace 元空间)等所有部分的模式。`  
+    * `Full GC：收集整个堆，包括新生代，老年代，永久代（在JDK 1.8 及以后，永久代被移除，换为 metaspace 元空间）等所有部分的模式。`  
 6. YGC触发时机：eden区快要被占满的时候；在full gc前会先执行young gc。  
 7. Full GC   
 &emsp; **<font color = "red">Full GC的触发时机：</font>**   
@@ -807,7 +806,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         1. **<font color = "clime">不可回收对象包含 1). 方法区中，类静态属性(static)引用的对象； 2). 方法区中，常量(final static)引用的对象；</font>** 
         2. `由以上可得java 全局变量 不可被回收。`  
     2. 四种引用  
-        * **<font color = "red">软引用：SoftReference object=new  SoftReference(new Object()); 。当堆使用率临近阈值时，才会去回收软引用的对象。</font>**  
+        * **<font color = "red">软引用：`SoftReference` object=new  SoftReference(new Object()); 。当堆使用率临近阈值时，才会去回收软引用的对象。</font>**  
         * **<font color = "red">弱引用：WeakReference object=new  WeakReference (new Object();。ThreadLocal中有使用。只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>**  
 
                 软引用和弱引用的使用：
@@ -815,7 +814,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
                 假如⼀个应⽤需要读取⼤量的本地图⽚，如果每次读取图⽚都从硬盘读取会严重影响性能，如果⼀次性全部加载到内存⼜可能造成内存溢出，这时可以⽤软引⽤解决这个问题。  
 
         * 虚引用：PhantomReference。虚引用是所有类型中最弱的一个。 **<font color = "red">一个持有虚引用的对象，和没有引用几乎是一样的，随时可能被垃圾回收器回收。</font>**    
-2. 对象生存还是死亡？  
+2. ~~对象生存还是死亡？~~  
     1. Object#finalize()⽅法介绍：  
     &emsp; Object#finalize()⽅法什么时候被调⽤？析构函数(finalization)的⽬的是什么？  
     &emsp; 垃圾回收器(garbage colector)决定回收某对象时，就会运⾏该对象的finalize()⽅法，但是在Java中很不幸，如果内存总是充⾜的，那么垃圾回收可能永远不会进⾏，也就是说filalize() 可能永远不被执⾏，显然指望它做收尾⼯作是靠不住的。  
@@ -843,7 +842,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         * 加载该类的 ClassLoader 已经被回收。
         * 该类对应的 java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。
     2. `一个类何时结束生命周期，取决于代表它的Class对象何时结束生命周期。`   
-    &emsp; 注：`由java虚拟机自带的三种类加载加载的类在虚拟机的整个生命周期中是不会被卸载的，`由用户自定义的类加载器所加载的类才可以被卸载。     
+    &emsp; 注：`由java虚拟机自带的三种类加载器加载的类在虚拟机的整个生命周期中是不会被卸载的，`由用户自定义的类加载器所加载的类才可以被卸载。     
     3. `★★★方法区是在Full GC时回收。`  
     &emsp; Full GC: 收集整个堆，包括新生代，老年代，永久代(在 JDK 1.8 及以后，永久代被移除，换为 metaspace 元空间)等所有部分的模式。  
 
@@ -865,9 +864,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 快速：一个对象从诞生到被回收所经历的时间。  
 
 &emsp; <font color  = "red">其中内存占用、吞吐量和停顿时间，三者共同构成了一个“不可能三角”。</font>   
-
-    * 停顿时间越短就越适合需要和用户交互的程序，良好的响应速度能提升用户体验；  
-    * 高吞吐量则可以高效地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。  
+* 停顿时间越短就越适合需要和用户交互的程序，良好的响应速度能提升用户体验；  
+* 高吞吐量则可以高效地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。  
 
 2. 根据运行时，线程执行方式分类：  
     * 串行收集器 -> Serial和Serial Old  
@@ -883,7 +881,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 2. CMS GC执行流程：(**<font color = "clime">3次标记、2次清除</font>**)  
     1. 初始标记：标记GCRoots能直接关联到的对象。   
     2. 并发标记：进行GCRoots Tracing（可达性分析）过程，GC与用户线程并发执行。
-    3. 预清理：（`三色标记法的漏标问题处理`） **<font color = "red">这个阶段是用来</font><font color = "blue">处理</font><font color = "clime">前一个并发标记阶段因为引用关系改变导致没有标记到的存活对象的。如果发现对象的引用发生变化，则JVM会标记堆的这个区域为Dirty Card。那些能够从Dirty Card到达的对象也被标记（标记为存活），当标记做完后，这个Dirty Card区域就会消失。</font>**  
+    3. 预清理：（`三色标记法的漏标问题处理`） **<font color = "red">这个阶段是用来</font><font color = "blue">处理</font><font color = "clime">前一个并发标记阶段因为引用关系改变导致没有标记到的存活对象的。`如果发现对象的引用发生变化，则JVM会标记堆的这个区域为Dirty Card。`那些能够从Dirty Card到达的对象也被标记（标记为存活），当标记做完后，这个Dirty Card区域就会消失。</font>**  
     4. 可终止的预处理。这个阶段`尝试着去承担下一个阶段Final Remark阶段足够多的工作`。  
     5. 重新标记（remark）：修正并发标记期间，因用户程序继续运作而导致标记产生变动的那一部分对象的标记记录。
     6. 并发清除：并发、标记-清除，GC与用户线程并发执行。   
@@ -1009,7 +1007,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
                 * **<font color = "clime">live参数表示需要抓取目前在生命周期内的内存对象，也就是说GC收不走的对象，然后绝大部分情况下，需要的看的就是这些内存。</font>**   
                 * 如果Dump文件太大，可能需要加上-J-Xmx512m这种参数指定最大堆内存，即jhat -J-Xmx512m -port 9998 /tmp/dump.dat。
                 * 如果dump文件太大，使用linux下的mat，既Memory Analyzer Tools。   
-        3. 步骤二：使用内存查看工具分析堆dump文件
+        3. `步骤二：使用内存查看工具分析堆dump文件`
             1. 步骤一：查看对象占比；
             2. 步骤二：查看大对象的引用链。  
 
@@ -1017,7 +1015,6 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 
 ## 1.4. 多线程和并发
-
 
 ### 1.4.1. 线程Thread
 1. 创建线程的方式：Thread、Runnable、Callable、线程池相关（Future, ThreadPool, `@Async`）...  
