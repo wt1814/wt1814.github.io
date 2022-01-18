@@ -571,6 +571,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 * 需要编码：单例模式与static静态类，工厂模式，模板方法，3个if/else的优化：桥接模式、策略模式、责任链模式，观察者模式...  
 
 ## 1.3. JVM
+&emsp; ~~待总结：堆外内存泄漏、跨代引用假说、finalize()~~  
+
 ### 1.3.1. JDK、JRE、JVM
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-4.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-145.png)  
