@@ -79,9 +79,9 @@
             - [1.4.2.2. ThreadPoolExecutor详解](#1422-threadpoolexecutor详解)
             - [1.4.2.3. 线程池的正确使用](#1423-线程池的正确使用)
             - [1.4.2.4. ForkJoinPool详解](#1424-forkjoinpool详解)
-            - [1.4.2.5. Future相关](#1425-future相关)
-            - [1.4.2.6. ~~CompletableFuture~~](#1426-completablefuture)
-            - [1.4.2.7. ~~CompletionService~~](#1427-completionservice)
+            - [1.4.2.5. ~~CompletionService~~](#1425-completionservice)
+            - [1.4.2.6. Future相关](#1426-future相关)
+            - [1.4.2.7. ~~CompletableFuture~~](#1427-completablefuture)
         - [1.4.3. 并发编程](#143-并发编程)
             - [1.4.3.1. 并发编程原理](#1431-并发编程原理)
                 - [1.4.3.1.1. ~~CPU多核缓存架构及JMM~~](#14311-cpu多核缓存架构及jmm)
@@ -1025,8 +1025,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; yield会使当前线程让出CPU执行时间片，与其他线程一起重新竞争CPU时间片。  
 4. thread.join()，线程加入  
 &emsp; 把指定的线程加入到当前线程，可以将两个交替执行的线程合并为顺序执行的线程。比如在线程B中调用了线程A的Join()方法，直到线程A执行完毕后，才会继续执行线程B。  
-5. thread.interrupt()，线程中断  
-    &emsp; thread.interrupt()用来中断线程，即将线程的中断状态位设置为true，注意中断操作并不会终止线程，不像stop()会立即终止一个运行中的线程，中断仅仅是将线程中断位设置为true（默认false）。线程会不断的检查中断位，如果线程处于阻塞状态（sleep、join、wait）且中断，就会抛出InterreptException来唤醒线程，交由应用程序处理；如果线程未阻塞且中断，也要交由应用程序处理；是终止线程，还是继续执行需要根据实际情况做出合理的响应。  
+5. thread.interrupt()，线程中断（将线程做特殊标记的动作）  
+    &emsp; thread.interrupt()用来中断线程，即将线程的中断状态位设置为true，`注意中断操作并不会终止线程，`不像stop()会立即终止一个运行中的线程，`中断仅仅是将线程中断位设置为true（默认false）`。线程会不断的检查中断位，如果线程处于阻塞状态（sleep、join、wait）且中断，就会抛出InterreptException来唤醒线程，交由应用程序处理；如果线程未阻塞且中断，也要交由应用程序处理；`是终止线程，还是继续执行需要根据实际情况做出合理的响应。`  
     &emsp; **<font color = "red">线程在不同状态下对于中断所产生的反应：</font>**    
     * NEW和TERMINATED对于中断操作几乎是屏蔽的；  
     * RUNNABLE和BLOCKED类似， **<font color = "cclime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中；</font>**  
@@ -1039,6 +1039,19 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; 线程状态切换图示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-5.png) 
 &emsp; ⚠️⚠️⚠️`对象` `执行动作` 形成`线程`。`影响线程状态的相关java类：Object类、Synchronized关键字、Thread类。`  
+
+-----------
+
+
+&emsp; `线程的资源有不少，但应该包含CPU资源和锁资源这两类。`  
+&emsp; 只有runnable到running时才会占用cpu时间片，其他都会出让cpu时间片。  
+
+* sleep(long mills)：让出CPU资源，但是不会释放锁资源。  
+* wait()：让出CPU资源和锁资源。  
+
+&emsp; 锁是用来线程同步的，sleep(long mills)虽然让出了CPU，但是不会让出锁，其他线程可以利用CPU时间片了，但如果其他线程要获取sleep(long mills)拥有的锁才能执行，则会因为无法获取锁而不能执行，继续等待。  
+&emsp; 但是那些没有和sleep(long mills)竞争锁的线程，一旦得到CPU时间片即可运行了。  
+
 1. 新建状态（NEW）：  
     1. 一个尚未启动的线程处于这一状态。用new语句创建的线程处于新建状态，此时它和其他Java对象一样，仅仅在堆区中被分配了内存，并初始化其成员变量的值。  
     2. 操作  
@@ -1046,10 +1059,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 2. 就绪状态（Runnable）：  
     1. 当一个线程对象创建后，其他线程调用它的start()方法，该线程就进入就绪状态，Java虚拟机会为它创建方法调用栈和程序计数器。处于这个状态的线程位于可运行池中，等待获得CPU的使用权。<!-- Runnable (可运行/运行状态，等待CPU的调度)(要注意：即使是正在运行的线程，状态也是Runnable，而不是Running) -->  
     2. 操作  
-        * 调用了thread.start()启动线程；
         * 处于阻塞的线程：obj.notify()唤醒线程； obj.notifyAll()唤醒线程； 
         * 处于等待的线程：obj.wait(time)，thread.join(time)等待时间time耗尽。
         * 被synchronized标记的代码，获取到同步监视器。  
+        * 调用了thread.start()启动线程；
 3. **<font color = "red">阻塞状态（BLOCKED）：</font>**  
     1. **<font color = "clime">阻塞状态是指线程因为某些原因`放弃CPU`，暂时停止运行。</font>** 当线程处于阻塞状态时，Java虚拟机不会给线程分配CPU。直到线程重新进入就绪状态(获取监视器锁)，它才有机会转到运行状态。  
     2. 操作  
@@ -1076,18 +1089,6 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 8. 线程状态切换示意图：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-6.png) 
 
------------
-
-&emsp; 只有runnable到running时才会占用cpu时间片，其他都会出让cpu时间片。  
-&emsp; 线程的资源有不少，但应该包含CPU资源和锁资源这两类。  
-
-* sleep(long mills)：让出CPU资源，但是不会释放锁资源。  
-* wait()：让出CPU资源和锁资源。  
-
-&emsp; 锁是用来线程同步的，sleep(long mills)虽然让出了CPU，但是不会让出锁，其他线程可以利用CPU时间片了，但如果其他线程要获取sleep(long mills)拥有的锁才能执行，则会因为无法获取锁而不能执行，继续等待。  
-&emsp; 但是那些没有和sleep(long mills)竞争锁的线程，一旦得到CPU时间片即可运行了。  
-
-
 
 ### 1.4.2. 线程池-多线程
 #### 1.4.2.1. 线程池框架
@@ -1105,13 +1106,13 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     &emsp; Executor框架由三个部分组成：  
 
     * 工作任务：Runnable/Callable 接口
-        * 工作任务就是Runnable/Callable接口的实现，可以被线程池执行
+        * 工作任务就是Runnable/Callable接口的实现，可以被线程池执行。
     * **<font color = "red">执行机制（创建线程池的分类）：</font>** Executor接口、ExecutorService接口、ScheduledExecutorService接口
         * ThreadPoolExecutor 是最核心的线程池实现，用来执行被提交的任务。
         * ScheduledThreadPoolExecutor 是任务调度的线程池实现，可以在给定的延迟后运行命令，或者定期执行命令(它比Timer更灵活)
         * ForkJoinPool是一个并发执行框架
     * 异步计算的结果：Future接口
-        * 实现Future接口的FutureTask类，代表异步计算的结果
+        * 实现Future接口的FutureTask类，代表异步计算的结果。  
 3. 线程池执行，ExecutorService的API：execute()，提交不需要返回值的任务；`submit()，提交需要返回值的任务，返回值类型是Future`。   
 4. **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
 	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。  
@@ -1174,23 +1175,23 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     3. **<font color = "clime">`当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；`</font>**    
 
 
-#### 1.4.2.5. Future相关
+#### 1.4.2.5. ~~CompletionService~~
+&emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务， **<font color = "clime">并方便的集中处理上述任务的结果(且任务最先完成的先返回)。</font>**  
+&emsp; 内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
+
+
+#### 1.4.2.6. Future相关
 1. **Future是一个接口，它可以对具体的Runnable或者Callable任务进行取消、判断任务是否已取消、查询任务是否完成、获取任务结果。**  
 2. JDK1.5为Future接口提供了一个实现类FutureTask，表示一个可以取消的异步运算。它有启动和取消运算、查询运算是否完成和取回运算结果等方法。  
 
 
-
-#### 1.4.2.6. ~~CompletableFuture~~
+#### 1.4.2.7. ~~CompletableFuture~~
 &emsp; CompletableFuture 可以很方便的实现异步任务的封装 **<font color = "clime">并实现结果的联合等一系列操作，</font>** 轻松实现 任务的并行。  
 
 * thenCombine：结合两个CompletionStage的结果，进行转化后返回。  
 * applyToEither：两个CompletionStage，谁计算的快，就用那个CompletionStage的结果进行下一步的处理。  
 * ...
 
-
-#### 1.4.2.7. ~~CompletionService~~
-&emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务， **<font color = "clime">并方便的集中处理上述任务的结果(且任务最先完成的先返回)。</font>**  
-&emsp; 内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
 
 ### 1.4.3. 并发编程
 #### 1.4.3.1. 并发编程原理
@@ -1217,7 +1218,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         * 对于处理器重排序，JMM的处理器重排序规则会要求Java编译器在生成指令序列时，插入特定类型的内存屏障指令， **<font color = "clime">通过内存屏障指令来禁止特定类型的处理器重排序</font>** （不是所有的处理器重排序都要禁止）。 
 
     * 重排序遵守的规则：重排序遵守数据依赖性、重排序遵守as-if-serial语义。  
-    * 重排序对多线程的影响
+    * 重排序对多线程的影响。  
 
 3. 伪共享问题
     1. CPU具有多级缓存，越接近CPU的缓存越小也越快；CPU缓存中的数据是以缓存行为单位处理的；CPU缓存行（通常是64字节）能带来免费加载数据的好处，所以处理数组性能非常高。  
@@ -1253,6 +1254,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 2. 内存屏障  
     &emsp; Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。`内存屏障，禁止处理器重排序，保障缓存一致性。`  
     &emsp; `内存屏障的作用：（~~原子性~~、可见性、有序性）`  
+    
     1. `（保障可见性）它会强制将对缓存的修改操作立即写入主存；` 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。   
     2. `（保障有序性）阻止屏障两侧的指令重排序。`   
 3. java并发原语：Java内存模型，除了定义了一套规范，还提供了一系列原语，封装了底层实现后，供开发者直接使用。  
