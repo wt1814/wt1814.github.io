@@ -2,10 +2,11 @@
 <!-- TOC -->
 
 - [1. ★★★线程状态介绍(线程生命周期)](#1-★★★线程状态介绍线程生命周期)
-    - [1.1. 线程有哪几种状态？](#11-线程有哪几种状态)
-        - [1.1.1. 通用的线程周期](#111-通用的线程周期)
-        - [1.1.2. Java中线程的生命周期](#112-java中线程的生命周期)
-    - [1.2. 线程状态切换](#12-线程状态切换)
+    - [1.1. 线程状态获取](#11-线程状态获取)
+    - [1.2. 线程有哪几种状态？](#12-线程有哪几种状态)
+        - [1.2.1. 通用的线程周期](#121-通用的线程周期)
+        - [1.2.2. Java中线程的生命周期](#122-java中线程的生命周期)
+    - [1.3. 线程状态切换](#13-线程状态切换)
 
 <!-- /TOC -->
 
@@ -35,15 +36,23 @@ https://mp.weixin.qq.com/s/_M_VkFDCdIiXokhzqsDT_A
 https://zhuanlan.zhihu.com/p/260373236
 -->
 
-## 1.1. 线程有哪几种状态？
-### 1.1.1. 通用的线程周期
+## 1.1. 线程状态获取
+<!-- 
+JAVA使用JConsole工具查看线程状态
+https://jingyan.baidu.com/article/ed15cb1b248bd05be2698116.html
+-->
+
+
+
+## 1.2. 线程有哪几种状态？
+### 1.2.1. 通用的线程周期
 <!-- 
 https://www.jianshu.com/p/3e79ae25bfb6
 -->
 &emsp; 操作系统层面有5个状态，分别是:New（新建）、Runnable（就绪）、Running（运行）、Blocked（阻塞）、Dead（死亡）。
 
 
-### 1.1.2. Java中线程的生命周期
+### 1.2.2. Java中线程的生命周期
 &emsp; Java线程状态均来自Thread类下的State这一内部枚举类中所定义的状态：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-2.png)  
 1. 新建状态（NEW）：一个尚未启动的线程处于这一状态。用new语句创建的线程处于新建状态，此时它和其他Java对象一样，仅仅在堆区中被分配了内存，并初始化其成员变量的值。
@@ -79,7 +88,7 @@ https://blog.csdn.net/zl18310999566/article/details/87931473
 -->
 &emsp; 两者都会暂停线程的执行。两者的区别是：进入waiting状态是线程主动的，而进入blocked状态是被动的。更进一步的说，进入blocked状态是在同步(synchronized代码之外)，而进入waiting状态是在同步代码之内。  
 
-## 1.2. 线程状态切换
+## 1.3. 线程状态切换
 &emsp; 线程状态切换图示：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-1.png)  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-4.png)  
@@ -90,3 +99,6 @@ https://blog.csdn.net/zl18310999566/article/details/87931473
 &emsp; 代码演示：  
 <!-- https://mp.weixin.qq.com/s/L2UqbdZQk7HvZ2r-M3eMlw -->
 ......
+
+
+
