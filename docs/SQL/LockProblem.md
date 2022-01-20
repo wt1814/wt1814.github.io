@@ -31,6 +31,12 @@
 
 ## 1.1. ~~死锁~~  
 <!-- 
+
+
+mysql死锁的情况问题分析 gap间隙锁
+https://blog.csdn.net/u010325193/article/details/88366707
+
+
 ★★★mysql死锁的情况问题分析 gap间隙锁
 https://blog.csdn.net/u010325193/article/details/88366707
 MySQL间隙锁问题
