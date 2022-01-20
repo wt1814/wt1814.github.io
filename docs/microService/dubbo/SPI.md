@@ -32,6 +32,10 @@ Dubbo 扩展点加载机制：从 Java SPI 到 Dubbo SPI
 https://mp.weixin.qq.com/s/PMF2kqT-XnAVmrxoutE0eQ
 来说说Dubbo SPI 机制 
 https://mp.weixin.qq.com/s/hR8hlJyGxnn3wIfBhlNbuQ
+
+DUBBO SPI机制六个特性
+https://mp.weixin.qq.com/s/Bf8zxRAv3jvxOIFFIe2ZwA
+
 -->
 
 ## 1.1. SPI简介  

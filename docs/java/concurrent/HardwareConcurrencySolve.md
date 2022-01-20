@@ -86,3 +86,11 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 https://blog.csdn.net/breakout_alex/article/details/94379895
 
 -->
+
+* 不同CPU硬件对于JVM的内存屏障规范实现指令不一样
+* Intel CPU硬件级内存屏障实现指令
+	* Ifence：是一种Load Barrier读屏障，实现LoadLoad屏障
+	* sfence：是一种Store Barrier写屏障，实现StoreStore屏障
+	* mfence：是一种全能型的屏障，具备Ifencce和sfence的能留，具备所有屏障能力
+* JVM底层简化了内存屏障硬件指令的实现
+	* lock前缀：lock指令不是一种内存屏障，但是它能完成类似内存屏障的功能
