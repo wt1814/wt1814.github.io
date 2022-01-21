@@ -242,9 +242,8 @@
 &emsp; 对数据要求高的场景，使用分布式锁 + db锁，db锁一般采用状态机幂等。  
 &emsp; 对于将商品数量放在redis中，扣减库存采用lua脚本，支付时反查订单系统，防止超卖问题。    
 
-
 ### 1.1.2. 接口响应时间
-1. `链路追踪，查询耗时情况。`  
+1. `链路追踪，`查询耗时情况。  
 2. 接口的响应时间过长，你会怎么办？（此处只针对最简单的场景，抛开STW那些复杂的问题。）以下是我目前想到的：  
     1. 异步化（Runnable、Future）  
     2. 缓存  
@@ -389,7 +388,7 @@
 
 ### 1.3.5. 容器相关特性
 #### 1.3.5.1. FactoryBean
-1. BeanFactory
+1. BeanFactory  
 &emsp; BeanFactory是个Factory，也就是IOC容器或对象工厂；FactoryBean是个Bean，也由BeanFactory管理。  
 2. FactoryBean：`⚠️FactoryBean，工厂Bean，首先是个Bean，其次再加上工厂模式。`  
 &emsp; 一般情况下，Spring通过`反射机制`利用\<bean\>的class属性指定实现类实例化Bean。 **<font color = "red">在某些情况下，实例化Bean过程比较复杂，</font>** 如果按照传统的方式，则需要在\<bean>中提供大量的配置信息。配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。 **<font color = "red">Spring为此提供了一个org.springframework.bean.factory.FactoryBean的`工厂类接口，用户可以通过实现该接口定制实例化Bean的逻辑。`</font>**  
@@ -410,7 +409,7 @@
 
 ##### 1.3.5.2.1. 事件
 &emsp; **<font color = "clime">★★★Spring事件机制的流程：</font>**   
-1. **<font color = "clime">事件机制的核心是事件。</font>** Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件(继承ApplicationEvent)。  
+1. **<font color = "clime">事件机制的核心是事件。</font>** Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件（继承ApplicationEvent）。  
 2. **<font color = "clime">确定事件后，要把事件发布出去。</font>** 在事件发布类的业务代码中调用ApplicationEventPublisher#publishEvent方法（或调用ApplicationEventPublisher的子类，例如调用ApplicationContext#publishEvent）。  
 3. **<font color = "blue">`发布完成之后，启动监听器，自动监听。`</font>** 在监听器类中覆盖ApplicationListener#onApplicationEvent方法。  
 4. 最后，就是实际场景中触发事件发布，完成一系列任务。  
