@@ -46,7 +46,7 @@
                 - [1.6.2.3.2. 内置生命周期事件](#16232-内置生命周期事件)
             - [1.6.2.4. SpringBoot事件回调](#1624-springboot事件回调)
         - [1.6.3. SpringBoot自动配置](#163-springboot自动配置)
-            - [1.6.3.1. 注解@SpringBootApplication，获取自动配置](#1631-注解springbootapplication获取自动配置)
+            - [1.6.3.1. 获取自动配置，注解@SpringBootApplication](#1631-获取自动配置注解springbootapplication)
             - [1.6.3.2. 加载自动配置流程](#1632-加载自动配置流程)
             - [1.6.3.3. 内置Tomcat](#1633-内置tomcat)
         - [1.6.4. 自定义strater](#164-自定义strater)
@@ -67,7 +67,8 @@
         - [1.8.4. Dubbo框架设计](#184-dubbo框架设计)
         - [1.8.5. 暴露和引用服务](#185-暴露和引用服务)
             - [1.8.5.1. Dubbo序列化和协议](#1851-dubbo序列化和协议)
-                - [1.8.5.1.1. Dubbo协议长连接](#18511-dubbo协议长连接)
+                - [1.8.5.1.1. Dubbo协议长连接和心跳](#18511-dubbo协议长连接和心跳)
+                    - [协议长链接](#协议长链接)
             - [1.8.5.2. Dubbo心跳机制](#1852-dubbo心跳机制)
         - [1.8.6. 服务调用](#186-服务调用)
             - [1.8.6.1. 服务调用介绍](#1861-服务调用介绍)
@@ -596,11 +597,11 @@
 	1. 给resourceLoader属性赋值，resourceLoader属性，资源加载器，此时传入的resourceLoader参数为null；  
 	2. **<font color = "clime">初始化资源类集合并去重。</font>** 给primarySources属性赋值，primarySources属性即`SpringApplication.run(MainApplication.class,args);`中传入的MainApplication.class，该类为SpringBoot项目的启动类，主要通过该类来扫描Configuration类加载bean；
 	3. **<font color = "clime">判断当前是否是一个 Web 应用。</font>** 给webApplicationType属性赋值，webApplicationType属性，代表应用类型，根据classpath存在的相应Application类来判断。因为后面要根据webApplicationType来确定创建哪种Environment对象和创建哪种ApplicationContext；
-	4. **<font color = "blue">设置应用上下文初始化器。</font>** 给initializers属性赋值，initializers属性为List<ApplicationContextInitializer<?\>>集合，利用SpringBoot的SPI机制从spring.factories配置文件中加载，后面`在初始化容器的时候会应用这些初始化器来执行一些初始化工作`。因为SpringBoot自己实现的SPI机制比较重要；  
+	4. **<font color = "blue">设置应用上下文初始化器。</font>** 给initializers属性赋值，initializers属性为List<ApplicationContextInitializer<?\>>集合，利用SpringBoot的SPI机制从spring.factories配置文件中加载，后面`在初始化容器的时候会应用这些初始化器来执行一些初始化工作`。`因为SpringBoot自己实现的SPI机制比较重要；`    
 	5. **<font color = "blue">设置监听器。</font>** 给listeners属性赋值，listeners属性为List<ApplicationListener<?\>>集合，同样利用SpringBoot的SPI机制从spring.factories配置文件中加载。因为SpringBoot启动过程中会在不同的阶段发射一些事件，所以这些加载的监听器们就是来监听SpringBoot启动过程中的一些生命周期事件的；
 	6. **<font color = "clime">推断主入口应用类。</font>** 给mainApplicationClass属性赋值，mainApplicationClass属性表示包含main函数的类，即这里要推断哪个类调用了main函数，然后把这个类的全限定名赋值给mainApplicationClass属性，用于后面启动流程中打印一些日志。
 
-2. **<font color = "clime">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。SpringBoot通过以下步骤实现自己的SPI机制：</font>**  
+2. **<font color = "clime">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。`SpringBoot通过以下步骤实现自己的SPI机制：</font>**`  
 	1. 首先获取线程上下文类加载器;  
 	2. 然后利用上下文类加载器从spring.factories配置文件中加载所有的SPI扩展实现类并放入缓存中；  
 	3. 根据SPI接口从缓存中取出相应的SPI扩展实现类；  
@@ -751,14 +752,14 @@
 ### 1.6.3. SpringBoot自动配置
 &emsp; 包含两部分：1. 注解@SpringBootApplication，获取自动配置；2. 加载自动配置流程。
 
-#### 1.6.3.1. 注解@SpringBootApplication，获取自动配置
+#### 1.6.3.1. 获取自动配置，注解@SpringBootApplication
 1. @SpringBootApplication  
     * @ComponentScan  
     * @SpringBootConfiguration  
     * @EnableAutoConfiguration  
-2. @EnableAutoConfiguration使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。   
-    1. @Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。  
-    2. AutoConfigurationImportSelector#getCandidateConfigurations()方法获取配置文件spring.factories所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
+2. `@EnableAutoConfiguration`使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。   
+    1. `@Import({AutoConfigurationImportSelector.class})`，开启自动配置，导入了AutoConfigurationImportSelector类。  
+    2. `AutoConfigurationImportSelector#getCandidateConfigurations()`方法获取配置文件spring.factories所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
 
 
 #### 1.6.3.2. 加载自动配置流程
@@ -830,7 +831,7 @@
 2. Hystrix工作流程：1. 包装请求 ---> 2. 发起请求 ---> 3. 缓存处理 ---> 4. 判断断路器是否打开（熔断） ---> 5. 判断是否进行业务请求（请求是否需要隔离或降级） ---> 6. 执行业务请求 ---> 7. 健康监测 ---> 8. fallback处理或返回成功的响应。  
 3. 熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。
     1. <font color = "clime">熔断的对象是服务之间的请求；`1).熔断策略会根据请求的数量分为信号量和线程池，2).还有请求的时间（即超时熔断），3).请求错误率（即熔断触发降级）。`</font>  
-    &emsp; Hystrix中的降级方案：熔断触发降级、请求超时触发降级、资源（信号量、线程池）隔离触发降级 / 依赖隔离。  
+    &emsp; ~~Hystrix中的降级方案：熔断触发降级、请求超时触发降级、资源（信号量、线程池）隔离触发降级 / 依赖隔离。~~  
     2. 线程池隔离与信号量隔离  
         1. 线程池隔离：  
             1. `请求线程和每个服务单独用线程池。`比如现在有3个业务调用分别是查询订单、查询商品、查询用户，且这三个业务请求都是依赖第三方服务-订单服务、商品服务、用户服务。`为每一个服务接口单独开辟一个线程池，`保持与其他服务接口线程的隔离，提高该服务接口的独立性和高可用。    
@@ -933,8 +934,8 @@
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-29.png)   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-53.png)   
     1. ServiceConfig将Bean对象解析成URL格式。  
-    2. `服务代理层proxy`：通过ProxyFactory类的getInvoker方法使用ref(实际类)生成一个AbstractProxyInvoker实例。`ProxyFactory #getInvoker(T proxy, Class<T> type, URL url)`  
-    3. `远程调用层protocol`：通过Protocol(协议)类的export方法暴露服务。`DubboProtocol #export(Invoker<T> invoker)`  
+    2. `服务代理层proxy`：通过ProxyFactory类的getInvoker方法使用ref实际类生成一个AbstractProxyInvoker实例。`ProxyFactory #getInvoker(T proxy, Class<T> type, URL url)`  
+    3. `远程调用层protocol`：通过Protocol协议类的export方法暴露服务。`DubboProtocol #export(Invoker<T> invoker)`  
         1. 本地各种协议暴露。  
         2. 注册中心暴露。  
     4. 如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心。  
@@ -951,14 +952,14 @@
 1. 不同服务在性能上适用不同协议进行传输，比如`大数据用短连接协议`，`小数据大并发用长连接协议`。  
 2. 默认使用Hessian序列化，还有Duddo、FastJson、Java自带序列化。   
 
-##### 1.8.5.1.1. Dubbo协议长连接
+##### 1.8.5.1.1. Dubbo协议长连接和心跳
+###### 协议长链接
 &emsp; Dubbo缺省协议采用单一长连接和NIO异步通讯，适合于小数据量大并发的服务调用，以及服务消费者机器数远大于服务提供者机器数的情况。  
 &emsp; 注意：Dubbo缺省协议不适合传送大数据量的服务，比如传文件，传视频等，除非请求量很低。  
 &emsp; Dubbo协议采用长连接，还可以防止注册中心宕机风险。  
 
-
 #### 1.8.5.2. Dubbo心跳机制  
-&emsp; 主流的RPC框架都会追求性能选择使用长连接，所以如何保活连接就是一个重要的话题。如何确保连接的有效性呢，在TCP中用到了KeepAlive机制。有了KeepAlive机制往往是不够用的，还需要配合心跳机制来一起使用。  
+&emsp; `主流的RPC框架都会追求性能选择使用长连接`，所以如何保活连接就是一个重要的话题。如何确保连接的有效性呢，在TCP中用到了KeepAlive机制。有了KeepAlive机制往往是不够用的，还需要配合心跳机制来一起使用。  
 &emsp; 何为心跳机制，简单来讲就是客户端启动一个定时器用来定时发送请求，服务端接到请求进行响应，如果多次没有接受到响应，那么客户端认为连接已经断开，可以断开半打开的连接或者进行重连处理。   
 &emsp; Dubbo的心跳方案：Dubbo 对于建立的每一个连接，同时在客户端和服务端开启了 2个定时器，一个用于定时发送心跳，一个用于定时重连、断连，执行的频率均为各自检测周期的 1/3。定时发送心跳的任务负责在连接空闲时，向对端发送心跳包。定时重连、断连的任务负责检测 lastRead 是否在超时周期内仍未被更新，如果判定为超时，客户端处理的逻辑是重连，服务端则采取断连的措施。  
 
@@ -990,6 +991,14 @@
     * 扩展点自动装配
     * 扩展点自适应
     * 扩展点自动激活
+
+--------
+
+2. **<font color = "clime">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。`SpringBoot通过以下步骤实现自己的SPI机制：</font>**`  
+	1. 首先获取线程上下文类加载器;  
+	2. 然后利用上下文类加载器从spring.factories配置文件中加载所有的SPI扩展实现类并放入缓存中；  
+	3. 根据SPI接口从缓存中取出相应的SPI扩展实现类；  
+	4. 实例化从缓存中取出的SPI扩展实现类并返回。  
 
 ## 1.9. Zookeeper
 &emsp; **<font color = "clime">Zookeeper是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</font>**  
@@ -1041,13 +1050,13 @@
 	2. 客户端多，`网络风暴`。~~watcher机制中，回调流程，只有主节点参与？~~  
 3. ZK羊群效应
     1. 什么是羊群效应？  
-    &emsp; 羊群效应理论（The Effect of Sheep Flock），也称羊群行为（Herd Behavior）、从众心理。 羊群是一种很散乱的组织，平时在一起也是盲目地左冲右撞，但一旦有一只头羊动起来，其他的羊也会不假思索地一哄而上，全然不顾旁边可能有的狼和不远处更好的草。看到这里，就应该知道了，当多个客户端请求获取zk创建临时节点来进行加锁的时候，会进行竞争，因为zk独有的一个特性：即watch机制。啥意思呢？就是当A获取锁并加锁的时候，B会监听A的结点变化，当A创建的临时结点被删除的时候，B会去竞争锁。懂了没？  
+    &emsp; 羊群效应理论（The Effect of Sheep Flock），也称羊群行为（Herd Behavior）、从众心理。 羊群是一种很散乱的组织，平时在一起也是盲目地左冲右撞，但一旦有一只头羊动起来，其他的羊也会不假思索地一哄而上，全然不顾旁边可能有的狼和不远处更好的草。  
+    &emsp; 当多个客户端请求获取zk创建临时节点来进行加锁的时候，会进行竞争，因为zk独有的一个特性：即watch机制。啥意思呢？就是当A获取锁并加锁的时候，B会监听A的结点变化，当A创建的临时结点被删除的时候，B会去竞争锁。懂了没？  
     &emsp; 那么问题来了？如果同时有1000个客户端发起请求并创建临时节点，都会去监听A结点的变化，然后A删除节点的时候会通知其他节点，这样是否会太影响并耗费资源了？  
     2. 解决方案  
         &emsp; 在使用ZK时，要尽量避免出现羊群效应。但是如果出现了该怎么解决？  
         1. 如果ZK是用于实现分布式锁，使用临时顺序节点。 ~~未获取到锁的客户端给自己的上一个临时有序节点添加监听~~    
         2. 如果ZK用于其他用途，则分析出现羊群效应的问题，从根本上解决问题或提供其他替代ZK的方案。  
-
 
 
 ## 1.10. 分布式
