@@ -601,7 +601,7 @@
 	5. **<font color = "blue">设置监听器。</font>** 给listeners属性赋值，listeners属性为List<ApplicationListener<?\>>集合，同样利用SpringBoot的SPI机制从spring.factories配置文件中加载。因为SpringBoot启动过程中会在不同的阶段发射一些事件，所以这些加载的监听器们就是来监听SpringBoot启动过程中的一些生命周期事件的；
 	6. **<font color = "clime">推断主入口应用类。</font>** 给mainApplicationClass属性赋值，mainApplicationClass属性表示包含main函数的类，即这里要推断哪个类调用了main函数，然后把这个类的全限定名赋值给mainApplicationClass属性，用于后面启动流程中打印一些日志。
 
-2. **<font color = "clime">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。`SpringBoot通过以下步骤实现自己的SPI机制：</font>**`  
+2. **<font color = "clime">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。`SpringBoot通过以下步骤实现自己的SPI机制：`</font>**  
 	1. 首先获取线程上下文类加载器;  
 	2. 然后利用上下文类加载器从spring.factories配置文件中加载所有的SPI扩展实现类并放入缓存中；  
 	3. 根据SPI接口从缓存中取出相应的SPI扩展实现类；  
@@ -1111,12 +1111,12 @@
         3. 提交阶段和2PC的提交一致。
     2. **XA三阶段特点：多一个阶段、  
         &emsp; <font color = "clime">3PC解决2PC的问题：降低了参与者的阻塞范围，~~解决单点故障问题~~，解决协调者和参与者同时挂掉的问题，减少了数据不一致的情况。</font>**  
-        2. <font color = "clime">超时机制也降低了参与者的阻塞范围，因为参与者不会一直持有事务资源并处于阻塞状态。</font>  
+        1. <font color = "clime">超时机制也降低了参与者的阻塞范围，因为参与者不会一直持有事务资源并处于阻塞状态。</font>  
         &emsp; 相比较2PC而言，3PC对于协调者（Coordinator）和参与者（Partcipant）都设置了超时时间，而2PC只有协调者才拥有超时机制。这解决了一个什么问题呢？   
         &emsp; 这个优化点，主要是避免了参与者在长时间无法与协调者节点通讯（协调者挂掉了）的情况下，无法释放资源的问题，因为参与者自身拥有超时机制会在超时后，自动进行本地commit从而进行释放资源。而这种机制也侧面降低了整个事务的阻塞时间和范围。  
         1. `解决单点故障问题`  
         &emsp; ~~引入超时机制。**<font color = "red">同时在协调者和参与者中都引入超时机制。一旦事物参与者迟迟没有接到协调者的commit请求，`会自动进行本地commit`。3PC追求的是最终一致性。这样也有效解决了协调者单点故障的问题。</font>**~~  
-        &emsp; 2pc协议在协调者和执行者同时宕机时(协调者和执行者不同时宕机时，都能确定事务状态)，选出协调者之后 无法确定事务状态，会等待宕机者恢复才会继续执行(无法利用定时器来做超时处理，超时后也不知道事务状态，无法处理，强制处理会导致数据不一致)，这段时间这个事务是阻塞的，其占用的资源不会被释放。  
+        &emsp; 2pc协议在协调者和执行者同时宕机时（协调者和执行者不同时宕机时，都能确定事务状态），选出协调者之后 无法确定事务状态，会等待宕机者恢复才会继续执行（无法利用定时器来做超时处理，超时后也不知道事务状态，无法处理，强制处理会导致数据不一致），这段时间这个事务是阻塞的，其占用的资源不会被释放。  
         &emsp; 3pc感知事物状态。只要有一个事务进入PreCommit，说明各执行节点的状态都是canCommit。  
         3. <font color = "red">数据不一致问题依然存在。</font>当参与者收到preCommit请求后等待do commite指令时，此时如果协调者请求`中断事务`，而协调者无法与参与者正常通信，会导致参与者继续提交事务，造成数据不一致。  
         ~~3PC 虽然解决了 Coordinator 与参与者都异常情况下导致数据不一致的问题，3PC 依然带来其他问题：比如，网络分区问题，在 preCommit 消息发送后突然两个机房断开，这时候 Coordinator 所在机房会 abort, 另外剩余参与者的机房则会 commit。~~  
