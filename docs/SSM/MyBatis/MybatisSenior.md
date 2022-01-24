@@ -4,8 +4,10 @@
 
 - [1. MyBatis高级使用](#1-mybatis高级使用)
     - [1.1. insertOrUpdate](#11-insertorupdate)
-    - [1.2. mybatis大数据查询](#12-mybatis大数据查询)
-    - [1.3. Mybatis中if-test判断大坑](#13-mybatis中if-test判断大坑)
+    - [1.2. Mybatis中if-test判断大坑](#12-mybatis中if-test判断大坑)
+    - [1.3. mybatis大数据](#13-mybatis大数据)
+        - [1.3.1. mybatis大数据查询](#131-mybatis大数据查询)
+        - [1.3.2. 批量插入大数据](#132-批量插入大数据)
     - [1.4. 整合MyBatis](#14-整合mybatis)
         - [1.4.1. Spring整合MyBatis](#141-spring整合mybatis)
         - [1.4.2. SpringBoot整合MyBatis](#142-springboot整合mybatis)
@@ -26,16 +28,29 @@ https://blog.csdn.net/f327888576/article/details/89490442
 
 -->
 
-## 1.2. mybatis大数据查询 
-&emsp; [MyBatis大数据查询](/docs/SSM/MyBatis/BigData.md)  
 
-## 1.3. Mybatis中if-test判断大坑  
+## 1.2. Mybatis中if-test判断大坑  
 <!-- 
 mybatis 中 if-test 判断大坑
 https://www.cnblogs.com/grasp/p/11268049.html
 -->
 &emsp; \<if test="takeWay == '0'"> mybatis的if判断：  
 &emsp; 单个的字符要写到双引号里面才行，改为\<if test='takeWay == "1"'>或者改为\<if test="takeWay == '1'.toString() ">  
+
+
+
+## 1.3. mybatis大数据  
+
+### 1.3.1. mybatis大数据查询 
+&emsp; [MyBatis大数据查询](/docs/SSM/MyBatis/BigData.md)  
+
+
+### 1.3.2. 批量插入大数据
+<!-- 
+【368期】阿里巴巴为什么禁止MyBatis批量插入几千条数据使用foreach？
+https://mp.weixin.qq.com/s/BW7YE8OPVe3IS03EOCm_fA
+-->
+
 
 
 ## 1.4. 整合MyBatis  
