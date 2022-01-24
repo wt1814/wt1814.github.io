@@ -283,6 +283,11 @@ try {
 
 
 ## 1.5. ★★★线程池的监控  
+<!-- 
+教你如何监控 Java 线程池运行状态的操作(必看)
+https://www.jb51.net/article/206454.htm
+-->
+
 &emsp; 如果在项目中大规模的使用了线程池，那么必须要有一套监控体系，来指导当前线程池的状态，当出现问题的时候可以快速定位到问题。而线程池提供了相应的扩展方法， **<font color = "clime">通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。</font>**  
 
 ```java

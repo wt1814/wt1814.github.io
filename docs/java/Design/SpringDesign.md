@@ -2,7 +2,10 @@
 
 
 # Spring中经典的9种设计模式
-<!-- 
+<!--
+
+谈谈Spring中都用到了哪些设计模式？
+https://www.cnblogs.com/kyoner/p/10949246.html
 
 Spring
 https://zhuanlan.zhihu.com/p/114244039
