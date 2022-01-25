@@ -20,6 +20,9 @@
 
 <!--
 
+为什么先删除缓存
+https://mp.weixin.qq.com/s/qXrKF2DqB-3WszealcXlqg
+
 缓存一致性
 https://mp.weixin.qq.com/s/vlxFsWKlj6HN-i2yU_Pyyw
 

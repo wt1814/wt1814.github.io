@@ -515,6 +515,7 @@
         * [EFK使用](/docs/ES/EFKUse.md)  
         * [Kibana用户手册](/docs/ES/Kibana.md)  
         * [Kibana查询](/docs/ES/KibanaQuery.md)  
+* [工作流](docs/middleware/workflow.md)  
 * 内存
     * [堆外内存](/docs/system/OutHeapMemory.md)  
 * 磁盘

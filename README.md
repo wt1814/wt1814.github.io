@@ -36,6 +36,7 @@
     - [常用中间件](#常用中间件)
         - [任务调度](#任务调度)
         - [分布式搜索引擎](#分布式搜索引擎)
+        - [工作流](#工作流)
     - [内存优化](#内存优化)
     - [磁盘IO](#磁盘io)
     - [网络IO/分布式通信](#网络io分布式通信)
@@ -683,6 +684,8 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 [ES重制](/docs/ESRemake/ESRemake.md)    
 
+### 工作流
+[工作流](docs/middleware/workflow.md)  
 
 -----------------
 

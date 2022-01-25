@@ -2091,6 +2091,8 @@ update product set name = 'TXC' where id = 1;
 &emsp; 1. 序列化。  
 
 ### 1.14.2. 网络IO
+&emsp; 前言：`一次网络I/O事件，包含网络连接（IO多路复用） -> 读写数据（零拷贝） -> 处理事件。`  
+
 #### 1.14.2.1. 五种I/O模型
 1. **<font color = "red">网络IO的本质就是socket流的读取，通常一次IO读操作会涉及到两个对象和两个阶段。**</font>  
     * **<font color = "clime">两个对象：用户进程（线程）、内核对象（内核态和用户态）。</font><font color = "blue">用户进程请求内核。</font>**   
@@ -2107,7 +2109,7 @@ update product set name = 'TXC' where id = 1;
         3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
         4. 内核将数据返回给用户进程。  
     特点：两阶段都阻塞。  
-    2. BIO采用多线程时，`大量的线程占用很大的内存空间，并且线程切换会带来很大的开销，10000个线程真正发生读写事件的线程数不会超过20%，每次accept都开一个线程也是一种资源浪费。`  
+    2. BIO采用多线程时，大量的线程占用很大的内存空间，并且线程切换会带来很大的开销，10000个线程真正发生读写事件的线程数不会超过20%，`每次accept都开一个线程也是一种资源浪费。`  
 4. 同步非阻塞I/O：  
     1. 流程：  
         ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-2.png)  
@@ -2141,7 +2143,7 @@ update product set name = 'TXC' where id = 1;
         * 为了减少数据拷贝带来的性能损坏，内核对被监控的fd_set集合大小做了限制，并且这个是通过宏控制的，大小不可改变（限制为1024）。  
         * 每次调用select， **<font color = "red">1)需要把fd_set集合从用户态拷贝到内核态，</font>** **<font color = "clime">2)需要在内核遍历传递进来的所有fd_set（对socket进行扫描时是线性扫描，即采用轮询的方法，效率较低），</font>** **<font color = "red">3)如果有数据返回还需要从内核态拷贝到用户态。</font>** 如果fd_set集合很大时，开销比较大。 
         * 由于运行时，需要将FD置位，导致fd_set集合不可重用。  
-        * **<font color = "clime">select()函数返回后，</font>** 调用函数并不知道是哪几个流（可能有一个，多个，甚至全部）， **<font color = "clime">还得再次遍历fd_set集合处理数据，即采用无差别轮询。</font>**   
+        * **<font color = "clime">select()函数返回后，</font>** 调用函数并不知道是哪几个流（可能有一个，多个，甚至全部）， **<font color = "clime">还得再次遍历fd_set集合处理数据，即采用`无差别轮询`。</font>**   
         * ~~惊群~~   
 3. **poll()：** 运行机制与select()相似。将fd_set数组改为采用链表方式pollfds，没有连接数的限制，并且pollfds可重用。   
 4. **epoll()：**   
@@ -2159,7 +2161,7 @@ update product set name = 'TXC' where id = 1;
         -----------
         1. 首先epoll_create创建一个epoll文件描述符，底层同时创建一个红黑树，和一个就绪链表；红黑树存储所监控的文件描述符的节点数据，就绪链表存储就绪的文件描述符的节点数据；  
         2. epoll_ctl将会添加新的描述符，首先判断是红黑树上是否有此文件描述符节点，如果有，则立即返回。如果没有， 则在树干上插入新的节点，并且告知内核注册回调函数。`当接收到某个文件描述符过来数据时，那么内核将该节点插入到就绪链表里面。`  
-        3. epoll_wait将会接收到消息，并且将数据拷贝到用户空间，清空链表。对于LT模式epoll_wait清空就绪链表之后会检查该文件描述符是哪一种模式，如果为LT模式，且必须该节点确实有事件未处理，那么就会把该节点重新放入到刚刚删除掉的且刚准备好的就绪链表，epoll_wait马上返回。ＥＴ模式不会检查，只会调用一次。  
+        3. epoll_wait将会接收到消息，并且将数据拷贝到用户空间，清空链表。对于LT模式epoll_wait清空就绪链表之后会检查该文件描述符是哪一种模式，如果为LT模式，且必须该节点确实有事件未处理，那么就会把该节点重新放入到刚刚删除掉的且刚准备好的就绪链表，epoll_wait马上返回。ＥT模式不会检查，只会调用一次。  
     2. **epoll机制的工作模式：**  
         * LT模式（默认，水平触发，level trigger）：当epoll_wait检测到某描述符事件就绪并通知应用程序时，应用程序可以不立即处理该事件； **<font color = "clime">下次调用epoll_wait时，会再次响应应用程序并通知此事件。</font>**    
         * ET模式（边缘触发，edge trigger）：当epoll_wait检测到某描述符事件就绪并通知应用程序时，应用程序必须立即处理该事件。如果不处理，下次调用epoll_wait时，不会再次响应应用程序并通知此事件。（直到做了某些操作导致该描述符变成未就绪状态了，也就是说 **<font color = "clime">边缘触发只在状态由未就绪变为就绪时只通知一次。</font>** ）   
@@ -2173,7 +2175,6 @@ update product set name = 'TXC' where id = 1;
 5. 两种IO多路复用模式：[Reactor和Proactor](/docs/microService/communication/Netty/Reactor.md)  
 
 #### 1.14.2.3. 多路复用之Reactor模式
-1. 前言：`一次网络I/O事件，包含网络连接（IO多路复用） -> 读写数据（零拷贝） -> 处理事件。`  
 1. `Reactor，是网络编程中基于IO多路复用的一种设计模式，是【event-driven architecture】的一种实现方式，处理多个客户端并发的向服务端请求服务的场景。`    
 2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font><font color = "blue">`其中Reactor负责监听和分发事件，线程池负责处理事件。`</font>** **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
 3. **单线程模型（单Reactor单线程）**  
@@ -2181,11 +2182,11 @@ update product set name = 'TXC' where id = 1;
 &emsp; ~~这是最基本的单Reactor单线程模型。其中Reactor线程，负责多路分离套接字，有新连接到来触发connect事件之后，交由Acceptor进行处理，有IO读写事件之后交给hanlder处理。~~  
 &emsp; ~~Acceptor主要任务就是构建handler，在获取到和client相关的SocketChannel之后，绑定到相应的hanlder上，对应的SocketChannel有读写事件之后，基于racotor分发，hanlder就可以处理了（所有的IO事件都绑定到selector上，有Reactor分发）。~~  
 &emsp; **<font color = "red">Reactor单线程模型，指的是所有的IO操作都在同一个NIO线程上面完成。</font>** 单个NIO线程会成为系统瓶颈，并且会有节点故障问题。   
-4. **多线程模型(单Reactor多线程)**  
+4. **多线程模型（单Reactor多线程）**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-92.png)  
 &emsp; ~~相对于第一种单线程的模式来说，在处理业务逻辑，也就是获取到IO的读写事件之后，交由线程池来处理，这样可以减小主reactor的性能开销，从而更专注的做事件分发工作了，从而提升整个应用的吞吐。~~  
-&emsp; Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作。在极个别特殊场景中，一个NIO线程(Acceptor线程)负责监听和处理所有的客户端连接可能会存在性能问题。    
-5. **主从多线程模型(多Reactor多线程)**    
+&emsp; Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作。在极个别特殊场景中，一个NIO线程（Acceptor线程）负责监听和处理所有的客户端连接可能会存在性能问题。    
+5. **主从多线程模型（多Reactor多线程）**    
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-93.png)  
 &emsp; 主从Reactor多线程模型中，Reactor线程拆分为mainReactor和subReactor两个部分， **<font color = "clime">`mainReactor只处理连接事件`，`读写事件交给subReactor来处理`。</font>** 业务逻辑还是由线程池来处理。  
 &emsp; mainRactor只处理连接事件，用一个线程来处理就好。处理读写事件的subReactor个数一般和CPU数量相等，一个subReactor对应一个线程。  
@@ -2223,29 +2224,29 @@ update product set name = 'TXC' where id = 1;
 6. **<font color = "blue">mmap（内存映射）：</font>**   
     &emsp; **<font color = "clime">mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享，</font>** 又减少了一次cpu拷贝。总共包含1次cpu拷贝，2次DMA拷贝，4次状态切换。此流程中，cpu拷贝从4次减少到1次，但状态切换还是4次。   
     &emsp; mmap+write简单来说就是使用mmap替换了read+write中的read操作，减少了一次CPU的拷贝。  
-    &emsp; mmap主要实现方式是将读缓冲区的地址和用户缓冲区的地址进行映射，内核缓冲区和应用缓冲区共享，从而减少了从读缓冲区到用户缓冲区的一次CPU拷贝。  
+    &emsp; `mmap主要实现方式是将读缓冲区的地址和用户缓冲区的地址进行映射，内核缓冲区和应用缓冲区共享，从而减少了从读缓冲区到用户缓冲区的一次CPU拷贝。`  
 
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-142.png)  
 
     &emsp; 整个过程发生了4次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
 
-    1. 用户进程通过mmap()方法向操作系统发起调用，上下文从用户态转向内核态
-    2. DMA控制器把数据从硬盘中拷贝到读缓冲区
-    3. 上下文从内核态转为用户态，mmap调用返回
-    4. 用户进程通过write()方法发起调用，上下文从用户态转为内核态
-    5. CPU将读缓冲区中数据拷贝到socket缓冲区
-    6. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，write()返回
+    1. 用户进程通过mmap()方法向操作系统发起调用，上下文从用户态转向内核态。
+    2. DMA控制器把数据从硬盘中拷贝到读缓冲区。
+    3. 上下文从内核态转为用户态，mmap调用返回。
+    4. 用户进程通过write()方法发起调用，上下文从用户态转为内核态。
+    5. CPU将读缓冲区中数据拷贝到socket缓冲区。
+    6. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，write()返回。
 
-    &emsp; mmap的方式节省了一次CPU拷贝，同时由于用户进程中的内存是虚拟的，只是映射到内核的读缓冲区，所以可以节省一半的内存空间，比较适合大文件的传输。  
+    &emsp; mmap的方式节省了一次CPU拷贝，同时由于用户进程中的内存是虚拟的，`只是映射到内核的读缓冲区，所以可以节省一半的内存空间，比较适合大文件的传输。`  
 7. sendfile（函数调用）：  
     1. **<font color = "red">sendfile建立了两个文件之间的传输通道。</font>** 通过使用sendfile数据可以直接在内核空间进行传输，因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。   
     2. 流程：  
         ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-148.png)  
         &emsp; 整个过程发生了2次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
-        1. 用户进程通过sendfile()方法向操作系统发起调用，上下文从用户态转向内核态
-        2. DMA控制器把数据从硬盘中拷贝到读缓冲区
-        3. CPU将读缓冲区中数据拷贝到socket缓冲区
-        4. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，sendfile调用返回  
+        1. 用户进程通过sendfile()方法向操作系统发起调用，上下文从用户态转向内核态。
+        2. DMA控制器把数据从硬盘中拷贝到读缓冲区。
+        3. CPU将读缓冲区中数据拷贝到socket缓冲区。
+        4. DMA控制器把数据从socket缓冲区拷贝到网卡，上下文从内核态切换回用户态，sendfile调用返回。  
     3. sendfile方式中，应用程序只需要调用sendfile函数即可完成。数据不经过用户缓冲区，该数据无法被修改。但减少了2次状态切换，即只有2次状态切换、1次CPU拷贝、2次DMA拷贝。  
 8. sendfile+DMA收集  
 9. splice方式  
@@ -2299,8 +2300,8 @@ update product set name = 'TXC' where id = 1;
 &emsp; Netty整体运行流程：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-87.png) 
 
-1. Netty基于Reactor，parentGroup用于处理连接，childGroup用于处理数据读写。  
-2. 当一个连接到达时，Netty就会创建一个Channel，然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
+1. `Netty基于Reactor，parentGroup用于处理连接，childGroup用于处理数据读写。`  
+2. 当一个连接到达时，Netty就会创建一个Channel，然后`从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上`，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
 3. 职责链ChannelPipeline，负责事件在职责链中的有序传播，同时负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。 ChannelHandlerContext代表了ChannelHandler和ChannelPipeline之间的绑定。  
 
 #### 1.14.5.3. Netty核心组件
@@ -2350,7 +2351,7 @@ update product set name = 'TXC' where id = 1;
 3. 串形化处理读写：避免使用锁带来的性能开销。以及高效的并发编程。  
 
 ##### 1.14.5.5.1. Netty的Reactor线程模型
-1. Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型的。</font>  
+1. Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型。</font>  
 2. Netty主从Reactor多线层模型，内部实现了两个线程池，boss线程池和work线程池，其中boss线程池的线程负责处理请求的accept事件，当接收到accept事件的请求时，把对应的socket封装到一个NioSocketChannel中，并交给work线程池，其中work线程池负责请求的read和write事件，由对应的Handler处理。
 
 #### 1.14.5.6. Netty开发
@@ -2358,9 +2359,9 @@ update product set name = 'TXC' where id = 1;
 &emsp; Netty主要用来做网络通信：   
 
 * 作为 RPC 框架的网络通信工具：在分布式系统中，不同服务节点之间经常需要相互调用，这个时候就需要 RPC 框架了。不同服务节点之间的通信是如何做的呢？可以使用 Netty 来做。  
-* 实现一个自己的 HTTP 服务器 ：通过 Netty 可以实现一个简单的 HTTP 服务器。  
-* 实现一个即时通讯系统 ：使用 Netty 可以实现一个可以聊天类似微信的即时通讯系统，这方面的开源项目还蛮多的，可以自行去 Github 找一找。  
-* 实现消息推送系统 ：市面上有很多消息推送系统都是基于 Netty 来做的。  
+* 实现一个自己的 HTTP 服务器：通过 Netty 可以实现一个简单的 HTTP 服务器。  
+* 实现一个即时通讯系统：使用 Netty 可以实现一个可以聊天类似微信的即时通讯系统，这方面的开源项目还蛮多的，可以自行去 Github 找一找。  
+* 实现消息推送系统：市面上有很多消息推送系统都是基于 Netty 来做的。  
 * ...  
 
 ##### 1.14.5.6.2. TCP粘拆包与Netty编解码  
@@ -2393,10 +2394,10 @@ update product set name = 'TXC' where id = 1;
 3. 长轮询：  
 	&emsp; 客户端发送请求后服务器端不会立即返回数据， **<font color = "red">服务器端会阻塞请求连接不会立即断开，`直到服务器端有数据更新或者是连接超时才返回`，</font>** `客户端才再次发出请求新建连接、如此反复从而获取最新数据。`  
 	* 优点：长轮询和短轮询比起来，明显减少了很多不必要的http请求次数，相比之下节约了资源。  
-	* 缺点：连接挂起也会导致资源的浪费。  
+	* 缺点：`连接挂起也会导致资源的浪费。`  
 4. 长连接（SSE）  
 &emsp; SSE是HTML5新增的功能，全称为Server-Sent Events。它可以`允许服务推送数据到客户端`。 **<font color = "clime">SSE在本质上就与之前的长轮询、短轮询不同，虽然都是基于http协议的，但是轮询需要客户端先发送请求。</font>** 而SSE`最大的特点就是不需要客户端发送请求`，`可以实现只要服务器端数据有更新，就可以马上发送到客户端`。  
-&emsp; SSE的优势很明显，它不需要建立或保持大量的客户端发往服务器端的请求，节约了很多资源，提升应用性能。并且后面会介绍道，SSE的实现非常简单，并且不需要依赖其他插件。  
+&emsp; SSE的优势很明显，`它不需要建立或保持大量的客户端发往服务器端的请求，`节约了很多资源，提升应用性能。并且后面会介绍道，SSE的实现非常简单，并且不需要依赖其他插件。  
 5. WebSocket  
 &emsp; WebSocket是Html5定义的一个新协议，与传统的http协议不同，该协议可以实现服务器与客户端之间全双工通信。简单来说，首先需要在客户端和服务器端建立起一个连接，这部分需要http。连接一旦建立，客户端和服务器端就处于平等的地位，可以相互发送数据，不存在请求和响应的区别。  
 &emsp; WebSocket的优点是实现了双向通信，缺点是服务器端的逻辑非常复杂。现在针对不同的后台语言有不同的插件可以使用。  

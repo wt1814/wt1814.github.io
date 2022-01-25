@@ -31,6 +31,9 @@
 # 1. HTTPS  
 <!-- 
 https://mp.weixin.qq.com/s/c5R3DcqTjSWIc1DzfkxhIQ
+用 HTTPS 安全吗？HTTPS 的原理是啥？ 
+https://mp.weixin.qq.com/s/wMe3XJSuEDKcryMs7FM2JQ
+
 -->
 &emsp; HTTPS(Secure Hypertext Transfer Protocol)安全超文本传输协议，是一个安全通信通道，它基于HTTP开发用于在客户计算机和服务器之间交换信息。它使用安全套接字层(SSL)进行信息交换，简单来说它是HTTP的安全版，是使用TLS/SSL加密的HTTP协议。HTTP协议采用明文传输信息，存在信息窃听、信息篡改和信息劫持的风险，而协议TLS/SSL具有身份验证、信息加密和完整性校验的功能，可以避免此类问题发生。  
 
