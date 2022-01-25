@@ -380,7 +380,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 
 --------
 
-&emsp; `JDK的SPI内部使用线程上下文类加载器实现，破坏了双亲委派模型，是为了适用所有场景。`ServiceLoader中的load方法：  
+&emsp; `JDK的SPI内部使用线程上下文类加载器Thread.currentThread().getContextClassLoader()实现，破坏了双亲委派模型，是为了适用所有场景。`ServiceLoader中的load方法：  
 
 ```java
 public static <S> ServiceLoader<S> load(Class<S> service) {
@@ -574,6 +574,17 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 * 框架：SpringAOP、池化（享元模式）、 mq
 * 不自觉使用的设计模式，如外观/门面模式、 **<font color = "clime">对象适配器模式（Service层调用）</font>** 。  
 * 需要编码：单例模式与static静态类，工厂模式，模板方法，3个if/else的优化：桥接模式、策略模式、责任链模式，观察者模式...  
+
+&emsp; Spring框架中用到了哪些设计模式：  
+
+* 工厂设计模式 : Spring使用工厂模式通过 BeanFactory、ApplicationContext 创建 bean 对象。  
+* 单例设计模式 : Spring 中的 Bean 默认都是单例的。  
+* 模板方法模式 : Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。  
+* 观察者模式: Spring事件驱动模型就是观察者模式很经典的一个应用。  
+* 代理设计模式 : Spring AOP 功能的实现。  
+* 适配器模式 :Spring AOP 的增强或通知(Advice)使用到了适配器模式、spring MVC 中也是用到了适配器模式适配Controller。  
+* 包装器设计模式 : 项目需要连接多个数据库，而且不同的客户在每次访问中根据需要会去访问不同的数据库。这种模式可以根据客户的需求能够动态切换不同的数据源。 
+* ……
 
 ## 1.3. JVM
 &emsp; ~~待总结：堆外内存泄漏、跨代引用假说、finalize()~~  

@@ -24,6 +24,10 @@
 
 # 1. Spring的事件机制  
 <!-- 
+
+事件机制的实现需要三个部分,事件源,事件,事件监听器
+https://zhuanlan.zhihu.com/p/114244039
+
 https://zhuanlan.zhihu.com/p/71230214
 Spring 与 Spring Boot 中的事件机制 
 https://mp.weixin.qq.com/s/_0QZu5f8XYSsqAzhAcGl2Q
