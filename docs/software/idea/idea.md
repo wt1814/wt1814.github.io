@@ -2,6 +2,12 @@
 
 # Idea
 
+## 安装
+<!-- 
+
+Mac idea 打不开
+https://blog.csdn.net/sanmi8276/article/details/108522676
+-->
 
 
 ## 激活
