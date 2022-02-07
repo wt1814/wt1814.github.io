@@ -16,6 +16,12 @@
 
 # 1. Netty内存管理
 <!--
+netty内存分配
+https://blog.51cto.com/u_15009384/2562473
+https://www.pianshen.com/article/2164163654/
+https://www.jianshu.com/p/205503c50adb
+
+
 
 谈谈Netty内存管理 ！ 
 https://mp.weixin.qq.com/s/wh9sBajNczrKWtexf1beUA

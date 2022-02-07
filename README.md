@@ -339,6 +339,9 @@
 &emsp; [加密算法](/docs/web/encryption.md)  
 [源码安全](/docs/web/codeSecurity.md)   
 [其他](/docs/web/other.md)  
+[前后端分离](/docs/web/separate.md)  
+&emsp; [跨域](/docs/web/Cross.md)  
+
 
 
 ## 架构设计  
@@ -699,6 +702,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [通信基础](/docs/microService/communication/Netty/basics.md)   
 &emsp; [序列化](/docs/microService/communication/serializbale.md)  
 &emsp; [网络IO](/docs/microService/communication/NetworkIO.md)  
+&emsp; &emsp; [服务器处理连接](/docs/microService/communication/ProcessingLinks.md)  
 &emsp; &emsp; [五种I/O模型](/docs/microService/communication/IO.md)  
 &emsp; &emsp; [I/O多路复用详解](/docs/microService/communication/Netty/epoll.md)  
 &emsp; &emsp; [多路复用之Reactor模式](/docs/microService/communication/Netty/Reactor.md)  

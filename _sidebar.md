@@ -262,6 +262,8 @@
         * [加密算法](/docs/web/encryption.md)  
     * [源码安全](/docs/web/codeSecurity.md)  
     * [其他](/docs/web/other.md)  
+    * [前后端分离](/docs/web/separate.md)  
+        * [跨域](/docs/web/Cross.md)    
 * 架构设计  
     * [架构的方方面面](/docs/system/AllAspects.md)  
     * [软件架构设计模式](/docs/system/designPattern.md)  
@@ -523,6 +525,7 @@
 * [网络IO](/docs/microService/communication/Netty/basics.md)    
     * [序列化](/docs/microService/communication/serializbale.md)  
     * [网络IO](/docs/microService/communication/NetworkIO.md)  
+        * [服务器处理连接](/docs/microService/communication/ProcessingLinks.md)  
         * [五种I/O模型](/docs/microService/communication/IO.md)  
         * [I/O多路复用详解](/docs/microService/communication/Netty/epoll.md)  
         * [多路复用之Reactor模式](/docs/microService/communication/Netty/Reactor.md)  
