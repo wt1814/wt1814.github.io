@@ -36,6 +36,9 @@
 
 # 1. ThreadLocal  
 <!-- 
+FastThreadLocal原理
+https://mp.weixin.qq.com/s/mPHRireoWNDu5j8Ndxky1g
+
 比较好： 什么，你的ThreadLocal内存泄漏了？ 
 https://mp.weixin.qq.com/s/mH1jRiZTiHdlMBSwu3f2zg
 ThreadLocal以及内存泄漏 
