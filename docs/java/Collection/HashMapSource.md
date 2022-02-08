@@ -45,7 +45,20 @@
     2. 扩容机制：JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。  
         * 单节点迁移。  
         * 如果节点是红黑树类型的话则需要进行红黑树的拆分：`拆分成高低位链表，如果链表长度大于6，需要把链表升级成红黑树。`
-        * 对链表进行迁移。会对链表中的节点进行分组，进行迁移后，一类的节点位置在原索引，一类在原索引+旧数组长度。 ~~通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度~~
+        * 对链表进行迁移。会对链表中的节点进行分组，进行迁移后，一类的节点位置在原索引，一类在原索引+旧数组长度。 ~~通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度~~  
+
+-----------------------
+
+&emsp; <font color = "clime">对链表进行迁移的注意点：</font>JDK1.8HashMap扩容阶段重新映射元素时不需要像1.7版本那样重新去一个个计算元素的 hash 值，<font color = "clime">而是通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度，</font>为什么呢？具体原因如下：  
+&emsp; 因为使用的是2次幂的扩展(指长度扩为原来2倍)，所以，元素的位置要么是在原位置，要么是在原位置再移动2次幂的位置。因此，在扩充 HashMap 的时候，不需要像 JDK1.7 的实现那样重新计算 hash，只需要看看原来的 hash 值新增的那个 bit 是 1 还是 0 就好了，是 0 的话索引没变，是 1 的话索引变成“原索引 +oldCap。  
+&emsp; 这点其实也可以看做长度为 2 的幂次方的一个好处，也是 HashMap 1.7 和 1.8 之间的一个区别。  
+&emsp; 示例：扩容前 table 的容量为16，a 节点和 b 节点在扩容前处于同一索引位置。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-19.png)  
+&emsp; 扩容后，table 长度为32，新表的 n - 1 只比老表的 n - 1 在高位多了一个1（图中标红）。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-20.png)  
+&emsp; 因为 2 个节点在老表是同一个索引位置，因此计算新表的索引位置时，只取决于新表在高位多出来的这一位(图中标红)，而这一位的值刚好等于 oldCap。  
+&emsp; 因为只取决于这一位，所以只会存在两种情况：1)  (e.hash & oldCap) == 0 ，则新表索引位置为“原索引位置” ；2)(e.hash & oldCap) == 1，则新表索引位置为“原索引 + oldCap 位置”。  
+
 
 # 1. HashMap源码
 
@@ -150,7 +163,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
     &emsp; **HashMap是通过一个名为tableSizeFor的方法来确保HashMap数组长度永远为2的幂次方的。源码查看构造函数部分。**  
     &emsp; 为什么要把数组长度设计为2的幂次方呢？  
     &emsp; 当数组长度为2的幂次方时，可以使用位运算来计算元素在数组中的下标。  
-* loadFactor加载因子0.75f。所谓的加载因子就是HashMap的容量达到0.75时的时候，会自动扩容并重新哈希resize()，扩容后的HashMap容量是之前容量的两倍，所以数组的长度总是2的n次方。(例：假设有一个HashMap的初始容量为16，那么扩容的阀值就是0.75 * 16 = 12。也就是说，在打算存入第13个值的时候，HashMap会先执行扩容)。  
+* loadFactor加载因子0.75f。所谓的加载因子就是HashMap的容量达到0.75时的时候，会自动扩容并重新哈希resize()，扩容后的HashMap容量是之前容量的两倍，所以数组的长度总是2的n次方。（例：假设有一个HashMap的初始容量为16，那么扩容的阀值就是0.75 * 16 = 12。也就是说，在打算存入第13个值的时候，HashMap会先执行扩容。）  
 
     &emsp; <font color = "clime">哈希因子为什么默认为0.75？</font>“哈希冲突”和“空间利用率”矛盾的一个折衷。  
     &emsp; 1. 如果loadFactor太小如0.5，则数组长度达到一半大小就需要扩容，空间使用率大大降低；map中的table需要不断的扩容，扩容是个耗时的过程。  
@@ -489,7 +502,7 @@ resize();
 &emsp; 这点其实也可以看做长度为 2 的幂次方的一个好处，也是 HashMap 1.7 和 1.8 之间的一个区别。  
 &emsp; 示例：扩容前 table 的容量为16，a 节点和 b 节点在扩容前处于同一索引位置。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-19.png)  
-&emsp; 扩容后，table 长度为32，新表的 n - 1 只比老表的 n - 1 在高位多了一个1(图中标红)。  
+&emsp; 扩容后，table 长度为32，新表的 n - 1 只比老表的 n - 1 在高位多了一个1（图中标红）。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-20.png)  
 &emsp; 因为 2 个节点在老表是同一个索引位置，因此计算新表的索引位置时，只取决于新表在高位多出来的这一位(图中标红)，而这一位的值刚好等于 oldCap。  
 &emsp; 因为只取决于这一位，所以只会存在两种情况：1)  (e.hash & oldCap) == 0 ，则新表索引位置为“原索引位置” ；2)(e.hash & oldCap) == 1，则新表索引位置为“原索引 + oldCap 位置”。  

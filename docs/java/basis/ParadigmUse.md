@@ -6,7 +6,7 @@
 
 - [1. Java泛型](#1-java泛型)
     - [1.1. 泛型简介](#11-泛型简介)
-    - [1.2. 为什么要使用泛型？](#12-为什么要使用泛型)
+    - [1.2. ★★★为什么要使用泛型？](#12-★★★为什么要使用泛型)
     - [1.3. 使用范型](#13-使用范型)
         - [1.3.1. 泛型类](#131-泛型类)
         - [1.3.2. 泛型接口](#132-泛型接口)
@@ -27,20 +27,27 @@ https://mp.weixin.qq.com/s/0AZY4XFO6AOyuihshKYtzQ
 
 Java泛型的特点与优缺点，泛型擦除是怎么回事？ 
 https://mp.weixin.qq.com/s/xW9PC88-OCbGSYI_897dow
+
 面试官又来问：List<String>能否转化为List<Object>? 
 https://mp.weixin.qq.com/s/UWeS1F1jCfyBvRlJPazbZA
 
+原生态类型与泛型
 
-https://mp.weixin.qq.com/s/skxnaaPz2eN1YASUlfwMDA
+https://www.jianshu.com/p/c999721756e7
+-->
 
+
+<!-- 
 
 Java的“泛型”特性，你以为自己会了？
 https://mp.weixin.qq.com/s/skxnaaPz2eN1YASUlfwMDA
 
-原生态类型与泛型
 https://www.jianshu.com/p/973bf08bf6ae
-https://www.jianshu.com/p/c999721756e7
 -->
+
+1. 为什么使用范型？范型的优点：编译期类型检查。  
+
+
 
 # 1. Java泛型
 ## 1.1. 泛型简介
@@ -50,8 +57,12 @@ https://mp.weixin.qq.com/s/ilqFpf5kE0XzJnOv9SsX7Q
 &emsp; 泛型：把类型明确的工作推迟到创建对象或调用方法的时候，才去明确的特殊的类型。  
 
 
-## 1.2. 为什么要使用泛型？  
+## 1.2. ★★★为什么要使用泛型？  
 <!-- 
+
+Java 泛型优点之编译时类型检查
+https://developer.aliyun.com/article/617432
+
 https://mp.weixin.qq.com/s/skxnaaPz2eN1YASUlfwMDA
 https://mp.weixin.qq.com/s/4QqRkHJ4NeZW9EgR4oOwhA
 https://mp.weixin.qq.com/s/kXaXODEZcxSNkALE7Im8Aw
