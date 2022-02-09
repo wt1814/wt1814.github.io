@@ -81,6 +81,7 @@
             * [JVM栈](/docs/java/JVM/JVMStack.md)  
             * [常量池详解](/docs/java/JVM/ConstantPool.md)  
             * [逃逸分析](/docs/java/JVM/escape.md)  
+            * [类存储内存小结](/docs/java/JVM/MemorySummary.md)  
         * [内存中的对象](/docs/java/JVM/MemoryObject.md)  
             * [Java对象大小](/docs/java/basis/ObjectSize.md)  
         * [内存泄露](/docs/java/JVM/MemoryLeak.md)  

@@ -47,7 +47,9 @@
         - [1.3.4. 运行时数据区/内存结构](#134-运行时数据区内存结构)
             - [1.3.4.1. JVM内存结构](#1341-jvm内存结构)
                 - [1.3.4.1.1. JVM内存结构](#13411-jvm内存结构)
-                - [1.3.4.1.2. 扩展点：`静态方法和实例方法`](#13412-扩展点静态方法和实例方法)
+                - [1.3.4.1.2. 类存储内存小结](#13412-类存储内存小结)
+                    - [1.3.4.1.2.1. 变量](#134121-变量)
+                    - [1.3.4.1.2.2. 静态方法和实例方法](#134122-静态方法和实例方法)
                 - [1.3.4.1.3. 常量池详解](#13413-常量池详解)
             - [1.3.4.2. 内存(堆栈)中的对象](#1342-内存堆栈中的对象)
                 - [1.3.4.2.1. 创建对象](#13421-创建对象)
@@ -673,6 +675,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     1. 破坏双亲委派的例子：
         1. `双亲委派模型有一个问题：顶层ClassLoader无法加载底层ClassLoader的类，典型例子JNDI、JDBC。`
             * **<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器，而 JDBC 运行时又需要去访问子类加载器加载的驱动，就破坏了该模型。所以加入了`线程上下文类加载器(Thread Context ClassLoader)`，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
+        2. 热替换
         2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，`如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。`    
         3. Spring破坏双亲委派模型  
         &emsp; Spring要对用户程序进行组织和管理，而`用户程序一般放在WEB-INF目录下，由WebAppClassLoader类加载器加载，而Spring由Common类加载器或Shared类加载器加载。`   
@@ -718,12 +721,19 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         2. 演进历程：  
             * jdk1.6及之前：有永久代(permanent generation)。静态变量存放在永久代上。  
             * jdk1.7：有永久代，但已经逐步“去永久代”。[字符串常量池](/docs/java/JVM/ConstantPool.md) <font color = "red">、静态变量</font>移除，保存在堆中。  
-            * jdk1.8及之后：无永久代。类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
+            * jdk1.8及之后：无永久代。类型信息、字段、`方法`、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
 6. MetaSpace存储类的元数据信息。  
 &emsp; 元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。元空间的内存大小受本地内存限制。  
 
 
-##### 1.3.4.1.2. 扩展点：`静态方法和实例方法`  
+##### 1.3.4.1.2. 类存储内存小结
+###### 1.3.4.1.2.1. 变量
+1. 常量final static
+2. 静态变量static
+3. 全局变量
+4. 局部变量 
+
+###### 1.3.4.1.2.2. 静态方法和实例方法
 &emsp; `静态方法`会在程序运行的时候`直接装载进入方法区`。而实例方法会在new的时候以对象的方法装载进入堆中。  
 &emsp; 最大的区别在于内存的区别，由于main函数为static静态方法，会直接在运行的时候装载进入内存区，实例方法必须new，在堆中创建内存区域，再进行引用。  
 
