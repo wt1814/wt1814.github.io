@@ -931,7 +931,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; 《深入理解Java虚拟机》作者的观点：在需要“不使用的对象应手动赋值为null”时大胆去用，但不应当对其有过多依赖，更不能当作是一个普遍规则来推广。  
 &emsp; **<font color = "red">虽然代码片段已经离开了变量xxx的`作用域`，但在此之后，没有任何对运行时栈的读写，placeHolder所在的索引还没有被其他变量重用，所以GC判断其为存活。</font>**    
 &emsp; 加上`int replacer = 1;`和将placeHolder赋值为null起到了同样的作用：断开堆中placeHolder和栈的联系，让GC判断placeHolder已经死亡。    
-&emsp; “不使用的对象应手动赋值为null”的原理，一切根源都是来自于JVM的一个“bug”：代码离开变量作用域时，并不会自动切断其与堆的联系。    
+&emsp; `“不使用的对象应手动赋值为null”的原理，一切根源都是来自于JVM的一个“bug”：代码离开变量作用域时，并不会自动切断其与堆的联系。`    
 
 
 #### 1.3.6.4. GC-垃圾回收器
@@ -990,10 +990,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     2. 分代收集：G1逻辑分代但物理不分代，将整个Java堆划分为多个大小相等的独立区域(Region)。E区、S区、H区、O区。  
     3. **<font color = "clime">`空间整合（不产生内存碎片）：`</font>** 与CMS的“标记--清理”算法不同，<font color = "red">G1从整体来看是基于“标记整理”算法实现的收集器；从局部上来看是基于“复制”算法实现的。</font>这两种算法都意味着<font color = "clime">G1运作期不会产生内存空间碎片</font>，收集后能提供规整的可用内存。这种特性有利于程序长时间运行，分配大对象吋不会因为无法找到连续内存空而提前触发下一次GC。  
     4. **<font color = "clime">`可预测的停顿：`</font>** 这是G1相对于CMS的另一个大优势，<font color = "red">降低停顿时间是G1和CMS共同的关注点，但G1除了追求低停顿外，还能建立可预测的停顿时间模型，</font>能让使用者明确指定在一个长度为M毫秒的时间片段内，消耗在垃圾收集上的时间不得超过N毫秒。  
-3. 回收流程：G1的收集过程可能有4个阶段：新生代GC、老年队并发标记周期、混合回收、如果需要可能会进行Full GC。   
-    1. 老年队并发标记周期  
+3. 回收流程：G1的收集过程可能有4个阶段：新生代GC、老年代并发标记周期、混合回收、如果需要可能会进行Full GC。   
+    1. 老年代并发标记周期  
     &emsp; **<font color = "clime">当整个堆内存（包括老年代和新生代）被占满一定大小的时候（默认是45%，可以通过-XX:InitiatingHeapOccupancyPercent进行设置），老年代回收过程会被启动。</font>**  
-    &emsp; **<font color = "clime">老年队并发标记周期，回收百分之百为垃圾的内存分段，</font>** H区（本质是o区）Humongous对象会独占整个内存分段。  
+    &emsp; **<font color = "clime">老年代并发标记周期，回收百分之百为垃圾的内存分段，</font>** H区（本质是o区）Humongous对象会独占整个内存分段。  
     2. 混合回收MixGC  
     &emsp; 老年代并发标记过程结束以后，紧跟着就会开始混合回收过程。混合回收的意思是年轻代和老年代会同时被回收。  
     &emsp; **<font color = "blue">步骤分2步：全局并发标记（global concurrent marking）、拷贝存活对象（evacuation）。</font>**  
@@ -1013,7 +1013,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 2. 三色标记流程： 1).根对象黑色... **<font color = "clime">如果标记结束后对象仍为白色，意味着已经“找不到”该对象在哪了，不可能会再被重新引用。</font>**  
 3. **<font color = "clime">`多标/错标`，本应该回收 但是 没有回收掉的内存，被称之为“浮动垃圾”</font>** ，并不会影响垃圾回收的正确性，只是需要等到下一轮垃圾回收才被清除。  
 4. **<font color = "clime">漏标：把本来应该存活的垃圾，标记为了死亡。这就会导致非常严重的错误。</font>**   
-	1. 两个必要条件：1). 灰色指向白色的引用消失。2). 黑色重新指向白色；  
+	1. 两个必要条件（`一删一增`）：1). 灰色指向白色的引用消失。2). 黑色重新指向白色；  
   &emsp; 新增对象不算漏标。  
 	2. CMS采用增量更新（针对新增的引用，将其记录下来等待遍历）， **<font color = "clime">关注引用的增加（黑色重新指向白色），`把黑色重新标记为灰色`，下次重新扫描属性。</font>** 破坏了条件“黑指向白”。    
     &emsp; `CMS预清理阶段`：（`三色标记法的漏标问题处理`） **<font color = "red">这个阶段是用来</font><font color = "blue">处理</font><font color = "clime">前一个并发标记阶段因为引用关系改变导致没有标记到的存活对象的。如果发现对象的引用发生变化，则JVM会标记堆的这个区域为Dirty Card。那些能够从Dirty Card到达的对象也被标记（标记为存活），当标记做完后，这个Dirty Card区域就会消失。</font>**  
