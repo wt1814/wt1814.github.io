@@ -644,7 +644,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; **<font color = "red">一句话概括：把代码数据加载到内存中，加载完成后，在方法区实例化一个对应的Class对象。</font>**  
 3. 验证：确保被加载的类的正确性。验证阶段大致会完成4个阶段的检验动作：1. 文件格式验证、2. 元数据验证、3. 字节码验证、4. 符号引用验证。  
 4. 准备(Preparation)  
-&emsp; <font color = "red">为类的静态变量分配内存，并将其初始化为默认值，这些内存都将在方法区中分配。</font>对于该阶段有以下几点需要注意：  
+&emsp; <font color = "red">为类的`静态变量`分配内存，并将其初始化为默认值，这些内存都将在`方法区`中分配。</font>对于该阶段有以下几点需要注意：  
     1. <font color = "red">这时候进行内存分配的仅包括类变量(static)，而不包括实例变量，实例变量会在对象实例化时随着对象一块分配在Java堆中。</font>  
     2. <font color = "red">这里所设置的初始值"通常情况"下是数据类型默认的零值（如0、0L、null、false等），比如定义了public static int value=111 ，那么 value 变量在准备阶段的初始值就是 0 而不是111（初始化阶段才会复制）。</font>  
     * <font color = "red">特殊情况：比如给value变量加上了fianl关键字public static final int value=111，那么准备阶段value的值就被赋值为 111。</font>  
@@ -667,10 +667,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 不同 webapp 项目支持共享某些类库
     * 类加载器应该支持热插拔功能，比如对 jsp 的支持、webapp 的 reload 操作
 
-&emsp; 为了解决以上问题，tomcat设计了一套类加载器，如下图所示。在 Tomcat 里面最重要的是 Common 类加载器，它的父加载器是应用程序类加载器，负责加载 ${catalina.base}/lib、${catalina.home}/lib 目录下面所有的 .jar 文件和 .class 文件。下图的虚线部分，有 catalina 类加载器、share 类加载器，并且它们的 parent 是 common 类加载器，默认情况下被赋值为 Common 类加载器实例，即 Common 类加载器、catalina 类加载器、 share 类加载器都属于同一个实例。当然，如果通过修改 catalina.properties 文件的 server.loader 和 shared.loader 配置，从而指定其创建不同的类加载器。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/tomcat/tomcat-1.png)  
-
-3. 破坏双亲委派模型：  
+    &emsp; 为了解决以上问题，tomcat设计了一套类加载器，如下图所示。在 Tomcat 里面最重要的是 Common 类加载器，它的父加载器是应用程序类加载器，负责加载 ${catalina.base}/lib、${catalina.home}/lib 目录下面所有的 .jar 文件和 .class 文件。下图的虚线部分，有 catalina 类加载器、share 类加载器，并且它们的 parent 是 common 类加载器，默认情况下被赋值为 Common 类加载器实例，即 Common 类加载器、catalina 类加载器、 share 类加载器都属于同一个实例。当然，如果通过修改 catalina.properties 文件的 server.loader 和 shared.loader 配置，从而指定其创建不同的类加载器。  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/tomcat/tomcat-1.png)  
+3. 破坏双亲委派模型：`使用线程上下文类加载器(Thread Context ClassLoader)`  
     1. 破坏双亲委派模型：继承ClassLoader，重写loadClass()方法。  
     1. `双亲委派模型有一个问题：顶层ClassLoader无法加载底层ClassLoader的类，典型例子JNDI、JDBC。`
         * **<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器，而 JDBC 运行时又需要去访问子类加载器加载的驱动，就破坏了该模型。所以加入了`线程上下文类加载器(Thread Context ClassLoader)`，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
