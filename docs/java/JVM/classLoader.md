@@ -42,7 +42,12 @@
 https://mp.weixin.qq.com/s/36GeZelS5GU_PKZimes10g
 JDK为何自己先破坏双亲委派模型? 
 https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
+https://segmentfault.com/a/1190000020858126
+https://www.zhihu.com/question/45022217
 
+https://blog.csdn.net/xiaobao5214/article/details/81674215
+*** https://www.jianshu.com/p/22d9c0a2d2e9
+*** https://blog.csdn.net/cy973071263/article/details/104129163
 
 真正理解线程上下文类加载器（多案例分析）
 https://blog.csdn.net/yangcheng33/article/details/52631940
