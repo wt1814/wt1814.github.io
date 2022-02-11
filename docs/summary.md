@@ -1668,9 +1668,11 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         5. <font color = "red">如果都不满足，则利用synchronized锁写入数据。</font>  
         6. 如果数量大于TREEIFY_THRESHOLD则要转换为红黑树。 
         7. 最后通过addCount来增加ConcurrentHashMap的长度，并且还可能触发扩容操作。  
-    2. **<font color = "clime">get()流程：为什么ConcurrentHashMap的读操作不需要加锁？</font>**  
+    2. 协助扩容  
+        &emsp; `ConcurrentHashMap并没有直接加锁，而是采用CAS实现无锁的并发同步策略，最精华的部分是它可以利用多线程来进行协同扩容。简单来说，它把Node数组当作多个线程之间共享的任务队列，然后通过维护一个指针来划分每个线程锁负责的区间，每个线程通过区间逆向遍历来实现扩容，一个已经迁移完的bucket会被替换为一个ForwardingNode节点，标记当前bucket已经被其他线程迁移完了。`   
+    3. **<font color = "clime">get()流程：为什么ConcurrentHashMap的读操作不需要加锁？</font>**  
         1. 在1.8中ConcurrentHashMap的get操作全程不需要加锁，这也是它比其他并发集合（比如hashtable、用Collections.synchronizedMap()包装的hashmap）安全效率高的原因之一。  
-        2. `get操作全程不需要加锁是因为Node的成员val是用volatile修饰的，`和数组用volatile修饰没有关系。  
+        2. get操作全程不需要加锁是因为Node的成员val是用volatile修饰的，和数组用volatile修饰没有关系。  
         3. 数组用volatile修饰主要是保证在数组扩容的时候保证可见性。  
 2. ~~ConcurrentHashMap，JDK1.7~~  
     1. 在JDK1.7中，ConcurrentHashMap类采用了分段锁的思想，Segment(段) + HashEntry(哈希条目) + ReentrantLock。  
