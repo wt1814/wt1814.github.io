@@ -44,7 +44,7 @@ https://blog.csdn.net/yanpenglei/article/details/79556591
 
 ### 1.1.1. wait() / notify()  
 1. wait()、notify/notifyAll() 方法是Object的本地final方法，无法被重写。  
-2. wait()使当前线程阻塞，前提是必须先获得锁，一般配合synchronized关键字使用，即，一般在synchronized同步代码块里使用 wait()、notify/notifyAll() 方法。  
+2. wait()使当前线程阻塞，前提是必须先获得锁，一般配合synchronized关键字使用，即一般在synchronized同步代码块里使用 wait()、notify/notifyAll() 方法。  
 3. 由于 wait()、notify/notifyAll() 在synchronized 代码块执行，说明当前线程一定是获取了锁的。  
 &emsp; 当线程执行wait()方法时候，会释放当前的锁，然后让出CPU，进入等待状态。  
 &emsp; 只有当 notify/notifyAll() 被执行时候，才会唤醒一个或多个正处于等待状态的线程，然后继续往下执行，直到执行完synchronized 代码块的代码或是中途遇到wait() ，再次释放锁。  
