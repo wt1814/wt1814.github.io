@@ -38,6 +38,11 @@
 
 # 1. Java8 ConcurrentHashMap  
 <!-- 
+ConcurrentHashMap 扩容
+https://blog.csdn.net/zzu_seu/article/details/106698150
+https://blog.csdn.net/ZOKEKAI/article/details/90051567
+https://blog.51cto.com/janephp/2413949
+
 阿里十年架构师，教你深度分析ConcurrentHashMap原理分析 
 https://www.sohu.com/a/320372210_120176035
 一文看懂ConcurrentHashMap

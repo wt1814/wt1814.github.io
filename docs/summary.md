@@ -1719,10 +1719,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 ### 1.5.1. SQL语句  
 #### 1.5.1.1. 基本查询语句
 1. 基本查询SQL执行顺序：from -> on -> join -> where -> group by ->  avg,sum.... ->having -> select -> distinct -> order by -> top,limit。 
-2. distinct关键字：Distinct与Count(聚合函数)，COUNT()会过滤掉为NULL的项。  
+2. distinct关键字：Distinct与Count（聚合函数），COUNT()会过滤掉为NULL的项。  
 3. 分组函数  
 &emsp; **<font color = "clime">查询结果集中有统计数据时，就需要使用分组函数。</font>**  
-&emsp; **<font color = "red">Group By分组函数中，查询只能得到组相关的信息。组相关的信息(统计信息)：count,sum,max,min,avg。</font> 在select指定的字段要么包含在Group By语句的后面，作为分组的依据；要么被包含在聚合函数中。`group by是对结果集分组`，而不是查询字段分组。**  
+&emsp; **<font color = "red">Group By分组函数中，查询只能得到组相关的信息。组相关的信息（统计信息）：count,sum,max,min,avg。</font> 在select指定的字段要么包含在Group By语句的后面，作为分组的依据；要么被包含在聚合函数中。`group by是对结果集分组`，而不是查询字段分组。**  
 &emsp; **<font color = "red">Group By含有去重效果。</font>**  
 1. 普通Limit语句需要全表扫描。  
 &emsp; 建立主键或唯一索引，利用索引：`SELECT * FROM 表名称 WHERE id_pk > (pageNum*10) LIMIT M`  
@@ -1754,11 +1754,12 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 3. 服务器的优化。  
 
 #### 1.5.2.1. SQL分析
-1. **<font color = "clime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling、trace。</font>**  
-2. <font color = "red">用explain extended查看执行计划会比explain多一列filtered。filtered列给出了一个百分比的值，这个百分比值和rows列的值一起使用，可以估计出那些将要和explain中的前一个表进行连接的行的数目。前一个表就是指explain的id列的值比当前表的id小的表。</font>  
-&emsp; mysql中有一个explain 命令可以用来分析select 语句的运行效果，例如explain可以获得select语句使用的索引情况、排序的情况等等。除此以外，explain 的extended 扩展能够在原本explain的基础上额外的提供一些查询优化的信息，这些信息可以通过mysql的show warnings命令得到。  
-3. profiling  
-&emsp; 使用profiling命令可以了解SQL语句消耗资源的详细信息（每个执行步骤的开销）。可以清楚了解到SQL到底慢在哪个环节。   
+1. **<font color = "clime">SQL分析语句有profiling（`资源`）、proceduer analyse（`表结构`）、EXPLAIN与explain extended、show warnings、trace。</font>**  
+1. profiling  
+&emsp; 使用profiling命令可以了解SQL语句消耗`资源`的详细信息（每个执行步骤的开销）。可以清楚了解到SQL到底慢在哪个环节。   
+2. show warnings:显示上一个语句的错误、警告以及注意。  
+3. <font color = "red">用explain extended查看执行计划会比explain多一列filtered。filtered列给出了一个百分比的值，这个百分比值和rows列的值一起使用，可以估计出那些将要和explain中的前一个表进行连接的行的数目。前一个表就是指explain的id列的值比当前表的id小的表。</font>  
+&emsp; mysql中有一个explain 命令可以用来分析select 语句的运行效果，例如explain可以获得select语句使用的索引情况、排序的情况等等。 **<font color = "clime">除此以外，explain 的extended 扩展能够在原本explain的基础上额外的提供一些查询优化的信息，这些信息可以通过mysql的show warnings命令得到。</font>**    
 4. trace  
 &emsp; 查看优化器如何选择执行计划，获取每个可能的索引选择的代价。  
 
@@ -1780,7 +1781,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 多表连接的字段、where条件字段、分组字段、排序字段、联合UNION字段、去重distinct字段上建立索引。  
     * 尽量选择区分度高的列作为索引。  
     * ...  
-2. 索引失效：进行null值运算、进行运算、隐式转换、对索引列使用函数，导致索引失效，进行模糊查询like时可能使索引失效(以%开头)，不满足联合索引最左前缀匹配原则。   
+2. 索引失效：进行null值运算、进行运算、隐式转换、对索引列使用函数，导致索引失效，进行模糊查询like时可能使索引失效（以%开头），不满足联合索引最左前缀匹配原则。   
 3. 索引条件下推：  
 &emsp; 索引下推简而言之就是在复合索引由于某些条件（比如 like %aa）失效的情况下，当存在失效的过滤字段在索引覆盖范围内，使用比较的方式在不回表的情况下进一步缩小查询的范围。其实就是对索引失效的进一步修复。  
 &emsp; **<font color = "clime">~~MySQL 5.6 引入了「索引下推优化」，可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。~~</font>**  
@@ -1860,7 +1861,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 		5. 二进制日志与InnoDB事务日志不同步
 	4. 未定义的服务器ID
 3. 性能
-	1. 如何查看主从延迟？  
+	1. ~~如何查看主从延迟？~~  
 	2. 产生延迟的两种方式：
 		1. `突然产生延迟，然后再跟上。可以通过备库上的慢查询日志来进行优化。`在备库上开启log_slow_slave_statement选项，可以在慢查询日志中记录复制线程执行的语句。
 		2. 稳定的延迟增大
@@ -1871,7 +1872,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 
 ##### 1.5.3.4.5. 读写分离实现
-&emsp; 读写分离的实现，可以在应用层解决，也可以通过中间件实现。  
+&emsp; 读写分离的实现，`可以在应用层解决，也可以通过中间件实现。`  
 1. 应用层解决方案：  
     1. 驱动实现
         * com.mysql.jdbc.ReplicationDriver
@@ -1943,6 +1944,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 	3. 优点: 性能良好，可以跳页
 	4. 缺点: 数据不准确
 4. 终极武器-二次查询法  
+    &emsp; 第一次查询：按照`limit 总数据/分库数,分页数`查询，获取到最小排序字段值和每个分库的最大排序字段值。
+    &emsp; 第二次查询：between 最小排序字段值,最大排序字段值。
+
     &emsp; （1）将order by time offset X limit Y，改写成order by time offset X/N limit Y   
     &emsp; （2）找到最小值time_min   
     &emsp; （3）between二次查询，order by time between $time_min and $time_i_max    
@@ -1951,9 +1955,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 ------------------
 查询二次改写   
-这也是"业界难题-跨库分页”中提到的一个方法，大致思路如下：在某 1 页的数据均摊到各分表的前提下(注：这个前提很重要，也就是说不会有一个分表的数据特别多或特别少)，换句话说：这个方案不适用分段法。    
+这也是"业界难题-跨库分页”中提到的一个方法，大致思路如下：在某 1 页的数据均摊到各分表的前提下(注：这个前提很重要，也就是说不会有一个分表的数据特别多或特别少)，换句话说：这个方案`不适用分段法`。    
 第一次改写的SQL语句是select * from T order by time offset 333 limit 5  
-第二次要改写成一个between语句，between的起点是time_min，between的终点是原来每个分库各自返回数据的最大值：  
+第二次要改写成一个between语句，between的起点是time_min，`between的终点是原来每个分库各自返回数据的最大值`：  
 第一个分库，第一次返回数据的最大值是1487501523  
 所以查询改写为select * from T order by time where time between time_min and 1487501523  
 
@@ -1964,8 +1968,6 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 所以查询改写为select * from T order by time where time between time_min and 1487501553  
 
 相对第一次查询，第二次查询条件放宽了，故第二次查询会返回比第一次查询结果集更多的数据  
-
-
 
 
 ###### 1.5.3.6.2.4. 跨节点Join的问题  
@@ -1990,7 +1992,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; 操作系统中以页这种结构作为读写的基本单位。操作系统IO消耗：<font color = "red">一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储的磁盘上。</font>这样的话，索引查找过程中就要产生磁盘I/O消耗，相对于内存存取，I/O存取的消耗要高几个数量级，所以 **<font color = "clime">评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中磁盘I/O操作次数的渐进复杂度。</font>** 换句话说，索引的结构组织要尽量减少查找过程中磁盘I/O的存取次数。  
 2. InnoDB使用的数据结构选择：  
     * Hash索引适合精确查找，但是范围查找不适合。  
-    * ~~二叉查找树（又：二叉搜索树，二叉排序树）~~
+    * ~~二叉查找树（又：二叉搜索树，二叉排序树）~~  
     &emsp; 可能退化成单链表，相当于全表扫描。  
     &emsp; （1）当数据量大的时候，树的高度会比较高，数据量大的时候，查询会比较慢；  
     &emsp; （2）每个节点只存储一个记录，可能导致一次查询有很多次磁盘IO；    
@@ -2009,9 +2011,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
         &emsp; 到这里，平衡二叉树解决了存在线性链表的问题，数据查询的效率好像也还可以，基本能达到O(log2(n))， 那为什么mysql不选择平衡二叉树作为索引存储结构，它又存在什么样的问题呢？    
 
-        1. 搜索效率不足。一般来说，在树结构中，数据所处的深度，决定了搜索时的IO次数（MySql中将每个节点大小设置为一页大小，一次IO读取一页 / 一个节点）。如上图中搜索id = 8的数据，需要进行3次IO。当数据量到达几百万的时候，树的高度就会很恐怖。
+        1. `搜索效率不足。`一般来说，在树结构中，数据所处的深度，决定了搜索时的IO次数（MySql中将每个节点大小设置为一页大小，一次IO读取一页 / 一个节点）。如上图中搜索id = 8的数据，需要进行3次IO。当数据量到达几百万的时候，树的高度就会很恐怖。
         2. 查询不稳定。如果查询的数据落在根节点，只需要一次IO，如果是叶子节点或者是支节点，会需要多次IO才可以。
-        3. 存储的数据内容太少。没有很好利用操作系统和磁盘数据交换特性，也没有利用好磁盘IO的预读能力。因为`操作系统和磁盘之间一次数据交换是以页为单位的，一页大小为 4K，即每次IO操作系统会将4K数据加载进内存。`但是，`在二叉树每个节点的结构只保存一个关键字，一个数据区，两个子节点的引用，并不能够填满4K的内容。幸幸苦苦做了一次的IO操作，却只加载了一个关键字。`在树的高度很高，恰好又搜索的关键字位于叶子节点或者支节点的时候，取一个关键字要做很多次的IO。
+        3. `存储的数据内容太少。`没有很好利用操作系统和磁盘数据交换特性，也没有利用好磁盘IO的预读能力。因为`操作系统和磁盘之间一次数据交换是以页为单位的，一页大小为 4K，即每次IO操作系统会将4K数据加载进内存。`但是，`在二叉树每个节点的结构只保存一个关键字，一个数据区，两个子节点的引用，并不能够填满4K的内容。幸幸苦苦做了一次的IO操作，却只加载了一个关键字。`在树的高度很高，恰好又搜索的关键字位于叶子节点或者支节点的时候，取一个关键字要做很多次的IO。
     * B树：
         1. B树中每个节点中不仅包含数据的key值，还有data值。 **<font color = "red">而每一个页的存储空间是有限的，如果data数据较大时将会导致每个节点（即一个页）能存储的key的数量很小。当存储的数据量很大时同样会导致B树的深度较大，</font>** 增大查询时的磁盘I/O次数进而影响查询效率。  
         2. `范围查询，磁盘I/O高。`
@@ -2066,26 +2068,26 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     &emsp; **<font color = "red">Read View是用来判断每一个读取语句有资格读取版本链中的哪个记录。所以在读取之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
 3. Read View判断可见性的规则：  
     1. Read view的几个重要属性：`活跃事务id集合、最小事务id、下一个事务id、当前事务id`    
-        * m_ids：当前系统中那些活跃(未提交)的读写事务ID, 数据结构为一个List。  
+        * m_ids：当前系统中那些活跃（未提交）的读写事务ID，数据结构为一个List。  
         * min_limit_id：表示在生成Read View时，当前系统中活跃的读写事务中最小的事务id，即m_ids中的最小值。  
         * max_limit_id：表示生成Read View时，系统中应该分配给下一个事务的id值。  
         * creator_trx_id：创建当前Read View的事务ID  
     2. Read view匹配条件规则如下：  
         &emsp; 如果被访问版本的trx_id小于ReadView中的up_limit_id值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  
         &emsp; <font color = "red">如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。</font>如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；<font color = "clime">如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。</font>  
-        * 如果数据事务ID trx_id < min_limit_id，表明生成该版本的事务在生成Read View前，已经提交(因为事务ID是递增的)，所以该版本可以被当前事务访问。  
+        * 如果数据事务ID trx_id < min_limit_id，表明生成该版本的事务在生成Read View前，已经提交（因为事务ID是递增的），所以该版本可以被当前事务访问。  
         * 如果trx_id>= max_limit_id，表明生成该版本的事务在生成ReadView后才生成，所以该版本不可以被当前事务访问。  
         * 如果 min_limit_id <=trx_id< max_limit_id，需要分3种情况讨论  
-            * （1）.如果m_ids包含trx_id,则代表Read View生成时刻，这个事务还未提交，但是如果数据的trx_id等于creator_trx_id的话，表明数据是自己生成的，因此是可见的。  
-            * （2）如果m_ids包含trx_id，并且trx_id不等于creator_trx_id，则Read   View生成时，事务未提交，并且不是自己生产的，所以当前事务也是看不见的；
-            * （3）.如果m_ids不包含trx_id，则说明你这个事务在Read View生成之前就已经提交了，修改的结果，当前事务是能看见的。
+            * （1）如果m_ids包含trx_id，则代表Read View生成时刻，这个事务还未提交，但是如果数据的trx_id等于creator_trx_id的话，表明数据是自己生成的，因此是可见的。  
+            * （2）如果m_ids包含trx_id，并且trx_id不等于creator_trx_id，则Read View生成时，事务未提交，并且不是自己生产的，所以当前事务也是看不见的；
+            * （3）如果m_ids不包含trx_id，则说明你这个事务在Read View生成之前就已经提交了，修改的结果，当前事务是能看见的。
 4. 在读取已提交、可重复读两种隔离级别下会使用MVCC。  
     * 读取已提交READ COMMITTED是在`每次执行select操作时`都会生成一次Read View。所以解决不了幻读问题。 
     * 可重复读REPEATABLE READ只有在第一次执行select操作时才会生成Read View，后续的select操作都将使用第一次生成的Read View。
 5. MVCC解决了幻读没有？  
         当前读:select...lock in share mode; select...for update;
         当前读:update、insert、delete
-    &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了Gap Lock时，Gap锁会锁住id < 10的整个范围，因此其他事务无法插入id < 10的数据，从而防止了幻读。  
+    &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了Gap Lock时，Gap锁会锁住id < 10的整个范围，因此其他事务无法插入id < 10的数据，从而防止了幻读。  
 
 #### 1.5.4.5. MySql锁
 1. 数据库锁  
