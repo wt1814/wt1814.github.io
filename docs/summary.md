@@ -2126,7 +2126,6 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     &emsp; `在涉及外部锁，或涉及表锁的情况下，InnoDB并不能完全自动检测到死锁，`这需要通过设置锁等待超时参数 innodb_lock_wait_timeout来解决。</font>   
 4. **<font color = "clime">如果出现死锁</font>** ，<font color = "clime">可以用`show engine innodb status;`命令来确定最后一个死锁产生的原因。</font>  
 
-
 ### 1.5.5. MySql架构
 #### 1.5.5.1. MySql运行流程
 1. MySQL整个查询执行过程，总的来说分为5个步骤：  
@@ -2138,7 +2137,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 2. **<font color = "clime">MySQL服务器主要分为Server层和存储引擎层。</font>**  
 	1. <font color = "red">Server层包括连接器、查询缓存、分析器、优化器、执行器等。</font>涵盖MySQL的大多数核心服务功能，以及所有的内置函数（如日期、时间、数学和加密函数等），所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等，还有 **<font color = "clime">一个通用的日志模块binglog日志模块。</font>**   
 	2. `存储引擎：主要负责数据的存储和读取，`采用可以替换的插件式架构，支持 InnoDB、MyISAM、Memory等多个存储引擎，其中InnoDB引擎有自有的日志模块redolog模块。  
-3. MySQL更新路程：  
+3. `MySQL更新路程：`  
     1. 事务提交前 --- **<font color = "clime">内存操作</font>** ：  
         1. 数据加载到缓冲池buffer poll；  
         2. `写回滚日志undo log；`  
@@ -2150,7 +2149,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-183.png)  
 
 #### 1.5.5.2. Server层之binLog日志  
-1. **<font color = "clime">binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。</font>**  
+1. **<font color = "clime">binlog是mysql的逻辑日志，并且由Server层进行记录，`使用任何存储引擎的mysql数据库都会记录binlog日志`。</font>**  
 2. 在实际应用中，主要用在两个场景：主从复制和数据恢复。  
 3. 写入流程：SQL修改语句先写Binlog Buffer，事务提交时，按照一定的格式刷到磁盘中。  
 &emsp; binlog刷盘时机：对于InnoDB存储引擎而言，mysql通过sync_binlog参数控制binlog的刷盘时机。  
@@ -2229,8 +2228,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     2. 在出现“页数据损坏”时，能够通过double write buffer恢复页数据； 
 3. doublewrite分为内存和磁盘的两层架构。当有页数据要刷盘时：  
     1. 第一步：页数据先memcopy到doublewrite buffer的内存里；
-    2. 第二步：doublewrite buffe的内存里，会先刷到doublewrite buffe的磁盘上；
-    3. 第三步：doublewrite buffe的内存里，再刷到数据磁盘存储上； 
+    2. 第二步：doublewrite buffe的内存里，会先刷到`doublewrite buffe的磁盘`上；
+    3. 第三步：doublewrite buffe的内存里，再刷到`数据磁盘`存储上； 
 
 ##### 1.5.5.4.3. ~~两阶段提交和崩溃恢复~~
 1. 两阶段提交
@@ -2240,4 +2239,4 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         1. 记录redolog，InnoDB事务进入prepare状态；
         2. 写入binlog；
         3. 将redolog这个事务相关的记录状态设置为commit状态。
-2. 崩溃恢复： **<font color = "red">当重启数据库实例的时候，数据库做2个阶段性操作：redo log处理，undo log及binlog 处理。在崩溃恢复中还需要回滚没有提交的事务，提交没有提交成功的事务。由于回滚操作需要undo日志的支持，undo日志的完整性和可靠性需要redo日志来保证，所以崩溃恢复先做redo前滚，然后做undo回滚。</font>**    
+2. 崩溃恢复： **<font color = "red">当重启数据库实例的时候，数据库做2个阶段性操作：redo log处理，undo log及binlog 处理。在崩溃恢复中还需要回滚没有提交的事务，提交没有提交成功的事务。由于回滚操作需要undo日志的支持，undo日志的完整性和可靠性需要redo日志来保证，所以崩溃恢复`先做redo前滚，然后做undo回滚`。</font>**    
