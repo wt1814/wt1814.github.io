@@ -799,6 +799,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [Devops](/docs/devAndOps/devOps.md)  
 &emsp; [DevOps搭建](/docs/devAndOps/devOpsPractice.md)  
 [GIT](/docs/devAndOps/git/command.md)  
+[Gradle](/docs/devAndOps/Gradle.md)  
 [Maven](/docs/devAndOps/maven.md)  
 &emsp; [Maven冲突解决](/docs/devAndOps/conflict.md)  
 [Jmeter](/docs/devAndOps/Jmeter.md)  

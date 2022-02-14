@@ -13,7 +13,7 @@
         - [1.3.1. Spring基础](#131-spring基础)
         - [1.3.2. Spring IOC](#132-spring-ioc)
         - [1.3.3. Spring DI](#133-spring-di)
-            - [1.3.3.1. 循环依赖](#1331-循环依赖)
+            - [1.3.3.1. Spring DI中循环依赖](#1331-spring-di中循环依赖)
         - [1.3.4. Bean的生命周期](#134-bean的生命周期)
         - [1.3.5. 容器相关特性](#135-容器相关特性)
             - [1.3.5.1. FactoryBean](#1351-factorybean)
@@ -272,7 +272,7 @@
 
 
 &emsp; 应用型框架，Spring、Mybatis  
-&emsp; 功能性框架，redis、mq，一般都是分布式、高并发系统。  
+&emsp; 功能型框架，redis、mq，一般都是分布式、高并发系统。  
 
 * 分布式带来的问题：  
 * 高并发系统的三高：  
@@ -338,7 +338,7 @@
 2. 加载流程：  
     1. doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean()初始化。  
 
-#### 1.3.3.1. 循环依赖
+#### 1.3.3.1. Spring DI中循环依赖
 1. Spring循环依赖的场景：均采用setter方法（属性注入）注入方式，可被解决；采用构造器和setter方法（属性注入）混合注入方式可能被解决。
 2. **<font color = "red">Spring通过3级缓存解决：</font>**  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
@@ -541,7 +541,7 @@
     6. 提交与事务。      
 2. **<font color = "clime">Mapper接口动态代理类的生成：</font>** 
     * 生成代理工厂类：  
-    &emsp; **<font color = "blue">解析配置文件生成sqlSessionFactory时，</font>** 会调用bindMapperForNamespace() ---> addMapper方法， **<font color = "blue">根据mapper文件中的namespace属性值，将接口生成动态代理类的`工厂`，存储在MapperRegistry对象中。</font>** MapperRegistry内部维护一个映射关系，每个接口对应一个`MapperProxyFactory（生成动态代理工厂类）`。      
+    &emsp; **<font color = "blue">解析配置文件生成sqlSessionFactory时，</font>** 会调用bindMapperForNamespace() ---> addMapper()方法， **<font color = "blue">根据mapper文件中的namespace属性值，`将接口生成动态代理类的工厂，存储在MapperRegistry对象中`。</font>** （MapperRegistry内部维护一个映射关系，每个接口对应一个`MapperProxyFactory（生成动态代理工厂类）`。）      
     * 生成对应Mapper的代理类：    
     &emsp; 在调用getMapper，根据type类型，从MapperRegistry对象中的knownMappers获取到当前类型对应的代理工厂类，然后通过代理工厂类使用`jdk自带的动态代理`生成对应Mapper的代理类。  
     ```java
@@ -568,7 +568,7 @@
 &emsp; ......  
 
 ### 1.4.5. MyBatis插件解析
-1. **<font color="clime">Mybaits插件的实现主要用了拦截器、责任链和动态代理。</font>** 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。  
+1. **<font color="clime">Mybaits插件的实现主要用了拦截器、责任链和动态代理。</font>** `动态代理可以对SQL语句执行过程中的某一点进行拦截`，`当配置多个插件时，责任链模式可以进行多次拦截`。  
 2. **<font color = "clime">mybatis扩展性很强，基于插件机制，基本上可以控制SQL执行的各个阶段，如执行器阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。</font>**   
     * 执行器Executor（update、query、commit、rollback等方法）；  
     * 参数处理器ParameterHandler（getParameterObject、setParameters方法）；  
@@ -601,6 +601,7 @@
 	2. **<font color = "clime">初始化资源类集合并去重。</font>** 给primarySources属性赋值，primarySources属性即`SpringApplication.run(MainApplication.class,args);`中传入的MainApplication.class，该类为SpringBoot项目的启动类，主要通过该类来扫描Configuration类加载bean；
 	3. **<font color = "clime">判断当前是否是一个 Web 应用。</font>** 给webApplicationType属性赋值，webApplicationType属性，代表应用类型，根据classpath存在的相应Application类来判断。因为后面要根据webApplicationType来确定创建哪种Environment对象和创建哪种ApplicationContext；
 	4. **<font color = "blue">设置应用上下文初始化器。</font>** 给initializers属性赋值，initializers属性为List<ApplicationContextInitializer<?\>>集合，利用SpringBoot的SPI机制从spring.factories配置文件中加载，后面`在初始化容器的时候会应用这些初始化器来执行一些初始化工作`。`因为SpringBoot自己实现的SPI机制比较重要；`    
+    &emsp; loadSpringFactories方法主要做的事情就是利用之前获取的线程上下文类加载器将classpath中的所有spring.factories配置文件中所有SPI接口的所有扩展实现类给加载出来，然后放入缓存中。注意，这里是一次性加载所有的SPI扩展实现类，所以之后根据SPI接口就直接从缓存中获取SPI扩展类了，就不用再次去spring.factories配置文件中获取SPI接口对应的扩展实现类了。`比如之后的获取ApplicationListener,FailureAnalyzer和EnableAutoConfiguration接口的扩展实现类都直接从缓存中获取即可。`  
 	5. **<font color = "blue">设置监听器。</font>** 给listeners属性赋值，listeners属性为List<ApplicationListener<?\>>集合，同样利用SpringBoot的SPI机制从spring.factories配置文件中加载。因为SpringBoot启动过程中会在不同的阶段发射一些事件，所以这些加载的监听器们就是来监听SpringBoot启动过程中的一些生命周期事件的；
 	6. **<font color = "clime">推断主入口应用类。</font>** 给mainApplicationClass属性赋值，mainApplicationClass属性表示包含main函数的类，即这里要推断哪个类调用了main函数，然后把这个类的全限定名赋值给mainApplicationClass属性，用于后面启动流程中打印一些日志。
 
@@ -619,7 +620,7 @@
     public ConfigurableApplicationContext run(String... args) {
         // 创建并启动计时监控类。new 一个StopWatch用于统计run启动过程花了多少时间
         StopWatch stopWatch = new StopWatch();
-        // 开始计时，首先记录了当前任务的名称，默认为空字符串，然后记录当前 Spring Boot 应用启动的开始时间
+        // 开始计时，首先记录了当前任务的名称，默认为空字符串，然后记录当前Spring Boot应用启动的开始时间
         stopWatch.start();
         ConfigurableApplicationContext context = null;
         // exceptionReporters集合用来存储异常报告器，用来报告SpringBoot启动过程的异常
