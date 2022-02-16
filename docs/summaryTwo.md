@@ -952,7 +952,6 @@
     2. ReferenceConfig类的init方法调用Protocol的refer方法生成Invoker实例。  
     3. 把Invoker转换为客户端需要的接口。  
 
-
 #### 1.8.5.1. Dubbo序列化和协议
 1. 不同服务在性能上适用不同协议进行传输，比如`大数据用短连接协议`，`小数据大并发用长连接协议`。  
 2. 默认使用Hessian序列化，还有Duddo、FastJson、Java自带序列化。   
@@ -1015,25 +1014,26 @@
 
 ### 1.9.1. ZK服务端
 1. `ZK服务端`通过`ZAB协议`保证`数据顺序一致性`。  
-    1. ZAB协议：
-        1. Zookeeper集群角色：  
-            * 领导者Leader：同一时间，集群只允许有一个Leader，提供对客户端的读写功能，负责将数据同步至各个节点；  
-            * 跟随者Follower：提供对客户端读功能，写请求则转发给Leader处理，当Leader崩溃失联之后参与Leader选举；  
-            * 观察者Observer：与Follower不同的是不参与Leader选举。  
-        2. **<font color = "clime">崩溃恢复</font>**  
-            * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch) ---> 接受投票 ---> 处理投票(epoch>ZXID>myid) ---> 统计投票 ---> 改变服务器状态。</font>  
-            * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态。
-        3. **<font color = "clime">`消息广播（数据读写流程）：`</font>**  
-            &emsp; 在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点。    
-            * 如果是读请求，就直接从当前节点中读取数据。  
-            * 如果是写请求，那么请求会被转发给 leader 提交事务，然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交。   
-            &emsp; ⚠️注：leader向follower写数据详细流程：类2pc(两阶段提交)。  
-    2. 数据一致性  
-        &emsp; **<font color = "red">Zookeeper保证的是CP，即一致性(Consistency)和分区容错性(Partition-Tolerance)，而牺牲了部分可用性(Available)。</font>**  
-        * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>
-        * Zookeeper的CP模型：非强一致性， **<font color = "clime">而是单调一致性/顺序一致性。</font>**  
-            1. <font color = "clime">假设有2n+1个server，在同步流程中，leader向follower同步数据，`当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。`</font><font color = "red">`如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。`</font> 未同步数据的情况，Zookeeper提供了同步机制（可选型），类似回调。   
-            2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数(n+1)的server认同后，将对整个集群进行同步，超过半数(n+1)的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
+3. **<font color = "clime">`消息广播（数据读写流程）：`</font>**  
+    &emsp; 在zookeeper中，客户端会随机连接到zookeeper集群中的一个节点。    
+    * 如果是读请求，就直接从当前节点中读取数据。  
+    * 如果是写请求，那么请求会被转发给 leader 提交事务，然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交。   
+    &emsp; ⚠️注：leader向follower写数据详细流程：类2pc(两阶段提交)。  
+2. 数据一致性  
+    &emsp; **<font color = "red">Zookeeper保证的是CP，即一致性(Consistency)和分区容错性(Partition-Tolerance)，而牺牲了部分可用性(Available)。</font>**  
+    * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>
+    * Zookeeper的CP模型：非强一致性， **<font color = "clime">而是单调一致性/顺序一致性。</font>**  
+        1. <font color = "clime">假设有2n+1个server，在同步流程中，leader向follower同步数据，`当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。`</font><font color = "red">`如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。`</font> 未同步数据的情况，Zookeeper提供了同步机制（可选型），类似回调。   
+        2. follower接收写请求后，转发给leader处理；leader完成两阶段提交的机制。向所有server发起提案，当提案获得超过半数(n+1)的server认同后，将对整个集群进行同步，超过半数(n+1)的server同步完成后，该写请求完成。如果client连接的并非同步完成follower，那么得到的并非最新数据，但可以保证单调性。  
+1. Zookeeper集群角色：  
+    * 领导者Leader：同一时间，集群只允许有一个Leader，提供对客户端的读写功能，负责将数据同步至各个节点；  
+    * 跟随者Follower：提供对客户端读功能，写请求则转发给Leader处理，当Leader崩溃失联之后参与Leader选举；  
+    * 观察者Observer：与Follower不同的是不参与Leader选举。  
+2. **<font color = "clime">崩溃恢复</font>**  
+    * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch) ---> 接受投票 ---> 处理投票(epoch>ZXID>myid) ---> 统计投票 ---> 改变服务器状态。</font>  
+        4. 统计投票。每次投票后，服务器都会统计投票信息，判断是否已经有过半机器接受到相同的投票信息，对于 Server1、 Server2 而言，都统计出集群中已经有两台机器接受了(2, 0)的投票信息，此时便认为已经选出了 Leader。  
+        5. 改变服务器状态。一旦确定了 Leader，每个服务器就会更新自己的状态，如果是 Follower，那么就变更为 FOLLOWING，如果是 Leader，就变更为 LEADING。  
+    * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态。
 2. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
 
 ### 1.9.2. ZK客户端
@@ -1058,7 +1058,7 @@
 2. ZK的弊端：
 	1. 服务端从节点多，主从同步慢。  
 	2. 客户端多，`网络风暴`。~~watcher机制中，回调流程，只有主节点参与？~~  
-3. ZK羊群效应
+3. `ZK羊群效应`
     1. 什么是羊群效应？  
     &emsp; 羊群效应理论（The Effect of Sheep Flock），也称羊群行为（Herd Behavior）、从众心理。 羊群是一种很散乱的组织，平时在一起也是盲目地左冲右撞，但一旦有一只头羊动起来，其他的羊也会不假思索地一哄而上，全然不顾旁边可能有的狼和不远处更好的草。  
     &emsp; 当多个客户端请求获取zk创建临时节点来进行加锁的时候，会进行竞争，因为zk独有的一个特性：即watch机制。啥意思呢？就是当A获取锁并加锁的时候，B会监听A的结点变化，当A创建的临时结点被删除的时候，B会去竞争锁。懂了没？  
@@ -1067,7 +1067,6 @@
         &emsp; 在使用ZK时，要尽量避免出现羊群效应。但是如果出现了该怎么解决？  
         1. 如果ZK是用于实现分布式锁，使用临时顺序节点。 ~~未获取到锁的客户端给自己的上一个临时有序节点添加监听~~    
         2. 如果ZK用于其他用途，则分析出现羊群效应的问题，从根本上解决问题或提供其他替代ZK的方案。  
-
 
 ## 1.10. 分布式
 ### 1.10.1. 分布式理论CAP
