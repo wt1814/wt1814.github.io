@@ -360,6 +360,8 @@
             * [Dubbo调用介绍](/docs/microService/dubbo/RemoteIntroduce.md)  
             * 负载均衡  
             * [Dubbo集群容错](/docs/microService/dubbo/Load.md)  
+            * [Dubbo负载、容错、降级](/docs/microService/dubbo/Load.md)  
+            * [Dubbo协议和序列化](/docs/microService/dubbo/Agreement.md)  
         * [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
             * [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
             * [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
