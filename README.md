@@ -476,7 +476,6 @@
 &emsp; [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
 &emsp; &emsp; [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
 &emsp; &emsp; [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
-
 [Dubbo运行流程源码解析](/docs/microService/dubbo/DubboSource.md)  
 &emsp; [初始化源码解析](/docs/microService/dubbo/dubboSpring.md)  
 &emsp; [服务暴露源码解析](/docs/microService/dubbo/export.md)  

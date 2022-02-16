@@ -15,19 +15,28 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "clime">Dubbo改进了JDK标准的SPI的以下问题：</font>**  
-    * JDK标准的SPI会一次性实例化扩展点所有实现。  
-    * 如果扩展点加载失败，连扩展点的名称都拿不到了。  
-    * 增加了对扩展点IoC和AOP的支持，一个扩展点可以直接setter注入其它扩展点。  
+0. ExtensionLoader是Dubbo SPI中用来加载扩展类的，有如下三个重要方法，搞懂这3个方法基本上就搞懂Dubbo SPI了。
+&emsp; 加载扩展类的三种方法如下
+    * getExtension()，获取普通扩展类
+    * getAdaptiveExtension()，获取自适应扩展类
+    * getActivateExtension()，获取自动激活的扩展类
 2. 扩展点特性
     * 扩展点自动包装，Wrapper机制
     * 扩展点自动装配
     * 扩展点自适应
     * 扩展点自动激活
+1. **<font color = "clime">~~Dubbo改进了JDK标准的SPI的以下问题：~~</font>**  
+    * JDK标准的SPI会一次性实例化扩展点所有实现。 将该实现类直接作为默认实现，不再自动生成代码 标记在方法上：生成接口对应的Adaptive类，通过url中的参数来确定最终的实现类。    
+    * 如果扩展点加载失败，连扩展点的名称都拿不到了。  
+    * 增加了对扩展点IoC和AOP的支持，一个扩展点可以直接setter注入其它扩展点。  
 
 # 1. Dubbo SPI  
 &emsp; **<font color = "red">官网：http://dubbo.apache.org/</font>** 
-<!-- 
+<!--
+
+https://www.javashitang.com/md/dubbo/Dubbo%20SPI%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%20AOP%EF%BC%8CIOC%EF%BC%8C%E8%87%AA%E9%80%82%E5%BA%94%EF%BC%8C%E8%87%AA%E5%8A%A8%E6%BF%80%E6%B4%BB%E7%9A%84.html
+
+
 Dubbo 扩展点加载机制：从 Java SPI 到 Dubbo SPI 
 https://mp.weixin.qq.com/s/PMF2kqT-XnAVmrxoutE0eQ
 来说说Dubbo SPI 机制 
