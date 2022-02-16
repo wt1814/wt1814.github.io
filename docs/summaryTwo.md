@@ -65,7 +65,7 @@
         - [1.8.2. RPC介绍](#182-rpc介绍)
         - [1.8.3. Dubbo介绍](#183-dubbo介绍)
         - [1.8.4. Dubbo框架设计](#184-dubbo框架设计)
-        - [1.8.5. 暴露和引用服务](#185-暴露和引用服务)
+        - [1.8.5. 暴露和引用服务（实际类 ---> invoker ---> ）](#185-暴露和引用服务实际类-----invoker-----)
             - [1.8.5.1. Dubbo序列化和协议](#1851-dubbo序列化和协议)
                 - [1.8.5.1.1. Dubbo协议长连接和心跳](#18511-dubbo协议长连接和心跳)
                     - [1.8.5.1.1.1. 协议长链接](#185111-协议长链接)
@@ -935,7 +935,7 @@
     3. 做一些过滤操作，比如加入缓存、mock数据  
     4. 接口调用数据统计  
 
-### 1.8.5. 暴露和引用服务
+### 1.8.5. 暴露和引用服务（实际类 ---> invoker ---> ）
 1. 解析服务：  
 &emsp; **<font color = "clime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
 &emsp; ⚠️注：`在暴露服务ServiceConfig.export()或引用服务ReferenceConfig.get()时，会将Bean对象转换URL格式，所有Bean属性转成URL的参数。`然后将URL传给协议扩展点，基于扩展点的扩展点自适应机制，根据URL的协议头，进行不同协议的服务暴露或引用。  
