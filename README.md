@@ -547,6 +547,7 @@
 ### 缓存  
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
+[Redis热点key](/docs/cache/hotspotKey.md)  
 [缓存更新](/docs/cache/CacheUpdate.md)  
 [双缓存](/docs/cache/DoubleCache.md)  
 [本地缓存](/docs/cache/LocalCache.md)  

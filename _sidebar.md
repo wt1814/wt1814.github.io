@@ -410,6 +410,7 @@
 * 缓存
     * [缓存算法](/docs/cache/CacheAlgorithm.md)  
     * [分布式缓存问题](/docs/cache/DistributedCache.md)  
+    * [Redis热点key](/docs/cache/hotspotKey.md)  
     * [缓存更新](/docs/cache/CacheUpdate.md)  
     * [Redis](/docs/microService/Redis/RedisSummary.md)   
     * [Redis数据类型](/docs/microService/Redis/RedisStructure.md)  

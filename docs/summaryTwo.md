@@ -116,15 +116,17 @@
             - [1.12.2.2. 布隆](#11222-布隆)
             - [1.12.2.3. 计数布隆过滤器](#11223-计数布隆过滤器)
             - [1.12.2.4. 布谷鸟](#11224-布谷鸟)
+            - [1.12.2.5. Redis热点key](#11225-redis热点key)
         - [1.12.3. Redis](#1123-redis)
             - [1.12.3.1. Redis数据类型](#11231-redis数据类型)
                 - [1.12.3.1.1. Redis基本数据类型](#112311-redis基本数据类型)
                 - [1.12.3.1.2. Redis扩展数据类型](#112312-redis扩展数据类型)
-                - [1.12.3.1.3. ~~Redis底层实现~~](#112313-redis底层实现)
-                    - [1.12.3.1.3.1. 数据结构](#1123131-数据结构)
-                    - [1.12.3.1.3.2. SDS详解](#1123132-sds详解)
-                    - [1.12.3.1.3.3. Dictht](#1123133-dictht)
-                    - [1.12.3.1.3.4. 数据类型](#1123134-数据类型)
+                - [1.12.3.1.3. redis使用：bigKey](#112313-redis使用bigkey)
+                - [1.12.3.1.4. ~~Redis底层实现~~](#112314-redis底层实现)
+                    - [1.12.3.1.4.1. 数据结构](#1123141-数据结构)
+                    - [1.12.3.1.4.2. SDS详解](#1123142-sds详解)
+                    - [1.12.3.1.4.3. Dictht](#1123143-dictht)
+                    - [1.12.3.1.4.4. 数据类型](#1123144-数据类型)
             - [1.12.3.2. Redis原理](#11232-redis原理)
                 - [1.12.3.2.1. Redis为什么那么快？](#112321-redis为什么那么快)
                 - [1.12.3.2.2. Redis虚拟内存机制](#112322-redis虚拟内存机制)
@@ -171,28 +173,28 @@
                     - [1.13.2.2.3.4. 幂等（重复消费）](#1132234-幂等重复消费)
                     - [1.13.2.2.3.5. 事务](#1132235-事务)
     - [1.14. 网络IO](#114-网络io)
-        - [~~服务器处理连接~~](#服务器处理连接)
-        - [1.14.1. 通信基础](#1141-通信基础)
-        - [1.14.2. 网络IO](#1142-网络io)
-            - [1.14.2.1. 五种I/O模型](#11421-五种io模型)
-            - [1.14.2.2. I/O多路复用详解](#11422-io多路复用详解)
-            - [1.14.2.3. 多路复用之Reactor模式](#11423-多路复用之reactor模式)
-            - [1.14.2.4. IO性能优化之零拷贝](#11424-io性能优化之零拷贝)
-        - [1.14.3. Socket编程](#1143-socket编程)
-        - [1.14.4. NIO](#1144-nio)
-        - [1.14.5. Netty](#1145-netty)
-            - [1.14.5.1. Netty简介](#11451-netty简介)
-            - [1.14.5.2. Netty运行流程](#11452-netty运行流程)
-            - [1.14.5.3. Netty核心组件](#11453-netty核心组件)
-            - [1.14.5.4. Netty逻辑架构](#11454-netty逻辑架构)
-            - [1.14.5.5. Netty高性能](#11455-netty高性能)
-                - [1.14.5.5.1. Netty的Reactor线程模型](#114551-netty的reactor线程模型)
-            - [1.14.5.6. Netty开发](#11456-netty开发)
-                - [1.14.5.6.1. Netty应用场景，](#114561-netty应用场景)
-                - [1.14.5.6.2. TCP粘拆包与Netty编解码](#114562-tcp粘拆包与netty编解码)
-                - [1.14.5.6.3. Netty实战](#114563-netty实战)
-                - [1.14.5.6.4. Netty多协议开发](#114564-netty多协议开发)
-            - [1.14.5.7. Netty源码](#11457-netty源码)
+        - [1.14.1. ~~服务器处理连接~~](#1141-服务器处理连接)
+        - [1.14.2. 通信基础](#1142-通信基础)
+        - [1.14.3. 网络IO](#1143-网络io)
+            - [1.14.3.1. 五种I/O模型](#11431-五种io模型)
+            - [1.14.3.2. I/O多路复用详解](#11432-io多路复用详解)
+            - [1.14.3.3. 多路复用之Reactor模式](#11433-多路复用之reactor模式)
+            - [1.14.3.4. IO性能优化之零拷贝](#11434-io性能优化之零拷贝)
+        - [1.14.4. Socket编程](#1144-socket编程)
+        - [1.14.5. NIO](#1145-nio)
+        - [1.14.6. Netty](#1146-netty)
+            - [1.14.6.1. Netty简介](#11461-netty简介)
+            - [1.14.6.2. Netty运行流程](#11462-netty运行流程)
+            - [1.14.6.3. Netty核心组件](#11463-netty核心组件)
+            - [1.14.6.4. Netty逻辑架构](#11464-netty逻辑架构)
+            - [1.14.6.5. Netty高性能](#11465-netty高性能)
+                - [1.14.6.5.1. Netty的Reactor线程模型](#114651-netty的reactor线程模型)
+            - [1.14.6.6. Netty开发](#11466-netty开发)
+                - [1.14.6.6.1. Netty应用场景，](#114661-netty应用场景)
+                - [1.14.6.6.2. TCP粘拆包与Netty编解码](#114662-tcp粘拆包与netty编解码)
+                - [1.14.6.6.3. Netty实战](#114663-netty实战)
+                - [1.14.6.6.4. Netty多协议开发](#114664-netty多协议开发)
+            - [1.14.6.7. Netty源码](#11467-netty源码)
     - [1.15. WebSocket](#115-websocket)
         - [1.15.1. 4种Web端即时通信](#1151-4种web端即时通信)
         - [1.15.2. 配置中心使用长轮询推送](#1152-配置中心使用长轮询推送)
@@ -1542,6 +1544,35 @@ update product set name = 'TXC' where id = 1;
 	&emsp; 哈希表由一个桶数组组成，其中一个桶可以有多个条目（比如上述图c中有四个条目）。而每个桶中有四个指纹位置，意味着一次哈希计算后布谷鸟有四个“巢“可用，而且四个巢是连续位置，可以更好的利用cpu高速缓存。也就是说每个桶的大小是4*8bits。  
 
 
+#### 1.12.2.5. Redis热点key
+1. 发现热key
+	1. 方法一:凭借业务经验，进行预估哪些是热key
+	2. 方法二:在客户端进行收集
+	3. 方法三:在Proxy层做收集  
+	4. 方法四:用redis自带命令
+	5. 方法五:自己抓包评估
+2. 处理方案
+	1. 二级缓存
+	2. 备份热key  
+    &emsp; 这个方案也很简单。不要让key走到同一台redis上不就行了。把这个key，在多个redis上都存一份不就好了。接下来，有热key请求进来的时候，我们就在有备份的redis上随机选取一台，进行访问取值，返回数据。  
+    &emsp; 假设redis的集群数量为N，步骤如下图所示  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-71.png)  
+    &emsp; 注:不一定是2N，你想取3N，4N都可以，看要求。  
+    &emsp; 伪代码如下  
+
+    ```text
+    const M = N * 2
+    //生成随机数
+    random = GenRandom(0, M)
+    //构造备份新key
+    bakHotKey = hotKey + “_” + random
+    data = redis.GET(bakHotKey)
+    if data == NULL {
+        data = GetFromDB()
+        redis.SET(bakHotKey, expireTime + GenRandom(0,5))
+    }
+    ``` 
+
 ### 1.12.3. Redis
 #### 1.12.3.1. Redis数据类型
 ##### 1.12.3.1.1. Redis基本数据类型
@@ -1570,11 +1601,12 @@ update product set name = 'TXC' where id = 1;
 4. Streams消息队列：支持多播的可持久化的消息队列，用于实现发布订阅功能，借鉴了kafka的设计。 
 5. [布隆过滤器](/docs/function/otherStructure.md)作为一个插件加载到Redis Server中，就会给Redis提供了强大的布隆去重功能。  
 
+##### 1.12.3.1.3. redis使用：bigKey
 
-##### 1.12.3.1.3. ~~Redis底层实现~~
+##### 1.12.3.1.4. ~~Redis底层实现~~
 1. 很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！  
 
-###### 1.12.3.1.3.1. 数据结构
+###### 1.12.3.1.4.1. 数据结构
 1. 很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！  
 2. ~~redis底层8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。~~  
 3. 3种链表：  
@@ -1599,7 +1631,7 @@ update product set name = 'TXC' where id = 1;
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-85.png)  
 &emsp; SkipList分为两部分，dict部分是由字典实现，Zset部分使用跳跃表实现，从图中可以看出，dict和跳跃表都存储了数据，实际上dict和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
 
-###### 1.12.3.1.3.2. SDS详解
+###### 1.12.3.1.4.2. SDS详解
 1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>**  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-77.png)  
     * len保存了字符串的长度；
@@ -1618,7 +1650,7 @@ update product set name = 'TXC' where id = 1;
     * 快速获取字符串长度。
     * 二进制安全。
 
-###### 1.12.3.1.3.3. Dictht
+###### 1.12.3.1.4.3. Dictht
 1. **<font color = "red">rehash：</font>**  
 &emsp; dictEntry有ht[0]和ht[1]两个对象。  
 &emsp; 扩展操作：ht[1]扩展的大小是比当前 ht[0].used 值的二倍大的第一个2的整数幂；收缩操作：ht[0].used 的第一个大于等于的 2 的整数幂。  
@@ -1629,7 +1661,7 @@ update product set name = 'TXC' where id = 1;
 &emsp; **<font color = "clime">而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，</font><font color = "red">这样保证`「ht[0]只减不增`，直到最后的某一个时刻变成空表」，这样rehash操作完成。</font>**  
 
 
-###### 1.12.3.1.3.4. 数据类型  
+###### 1.12.3.1.4.4. 数据类型  
 &emsp; **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-106.png)  
 
@@ -2097,7 +2129,7 @@ update product set name = 'TXC' where id = 1;
 
 ## 1.14. 网络IO
 
-### ~~服务器处理连接~~
+### 1.14.1. ~~服务器处理连接~~
 &emsp; 多线程模式和多进程模式是类似的，也是分为下面几种  
 
 1. 主进程accept，创建子线程处理
@@ -2105,13 +2137,13 @@ update product set name = 'TXC' where id = 1;
 3. 线程池
 
 
-### 1.14.1. 通信基础
+### 1.14.2. 通信基础
 &emsp; 1. 序列化。  
 
-### 1.14.2. 网络IO
+### 1.14.3. 网络IO
 &emsp; 前言：`一次网络I/O事件，包含网络连接（IO多路复用） -> 读写数据（零拷贝） -> 处理事件。`  
 
-#### 1.14.2.1. 五种I/O模型
+#### 1.14.3.1. 五种I/O模型
 1. **<font color = "red">网络IO的本质就是socket流的读取，通常一次IO读操作会涉及到两个对象和两个阶段。**</font>  
     * **<font color = "clime">两个对象：用户进程（线程）、内核对象（内核态和用户态）。</font><font color = "blue">用户进程请求内核。</font>**   
     * **<font color = "clime">`内核中涉及两个阶段：1. 等待数据准备；2. 数据从内核空间拷贝到用户空间。`</font>**  
@@ -2152,7 +2184,7 @@ update product set name = 'TXC' where id = 1;
 6. 信号驱动IO  
 7. 异步IO
 
-#### 1.14.2.2. I/O多路复用详解
+#### 1.14.3.2. I/O多路复用详解
 1. **<font color = "clime">`~~select,poll,epoll只是I/O多路复用模型中第一阶段，即获取网络数据、用户态和内核态之间的拷贝。~~`</font>** 此阶段会阻塞线程。  
 2. **select()：**  
     1. **select运行流程：**  
@@ -2192,7 +2224,7 @@ update product set name = 'TXC' where id = 1;
         * epoll()函数返回后，调用函数以O(1)复杂度遍历。  
 5. 两种IO多路复用模式：[Reactor和Proactor](/docs/microService/communication/Netty/Reactor.md)  
 
-#### 1.14.2.3. 多路复用之Reactor模式
+#### 1.14.3.3. 多路复用之Reactor模式
 1. `Reactor，是网络编程中基于IO多路复用的一种设计模式，是【event-driven architecture】的一种实现方式，处理多个客户端并发的向服务端请求服务的场景。`    
 2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font><font color = "blue">`其中Reactor负责监听和分发事件，线程池负责处理事件。`</font>** **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
 3. **单线程模型（单Reactor单线程）**  
@@ -2215,7 +2247,7 @@ update product set name = 'TXC' where id = 1;
 &emsp; 主从Reactor线程模型的特点是：服务端用于接收客户端连接的不再是1个单独的NIO线程，而是一个独立的NIO线程池。Acceptor接收到客户端TCP连接请求处理完成后（可能包含接入认证等），将新创建的SocketChannel注册到IO线程池（sub reactor线程池）的某个IO线程上，由它负责SocketChannel的读写和编解码工作。Acceptor线程池仅仅只用于客户端的登陆、握手和安全认证，一旦链路建立成功，就将链路注册到后端subReactor线程池的IO线程上，由IO线程负责后续的IO操作。  
 &emsp; 利用主从NIO线程模型，可以解决1个服务端监听线程无法有效处理所有客户端连接的性能不足问题。  
 
-#### 1.14.2.4. IO性能优化之零拷贝
+#### 1.14.3.4. IO性能优化之零拷贝
 1. 比较常见的I/O流程是读取磁盘文件传输到网络中。  
 2. **<font color = "clime">I/O传输中的一些基本概念：</font>**  
     * 状态切换：内核态和用户态之间的切换。  
@@ -2273,10 +2305,10 @@ update product set name = 'TXC' where id = 1;
 &emsp; **<font color = "clime">splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-35.png)  
 
-### 1.14.3. Socket编程
+### 1.14.4. Socket编程
 &emsp; `Socket是对TCP/IP协议的封装。`Socket只是个接口不是协议，通过Socket才能使用TCP/IP协议，除了TCP，也可以使用UDP协议来传递数据。  
 
-### 1.14.4. NIO
+### 1.14.5. NIO
 &emsp; **BIO即Block I/O，同步并阻塞的IO。**  
 &emsp; **<font color = "red">NIO，同步非阻塞I/O，基于io多路复用模型，即select，poll，epoll。</font>**  
 &emsp; **<font color = "red">AIO，异步非阻塞的IO。</font>**  
@@ -2285,8 +2317,8 @@ update product set name = 'TXC' where id = 1;
 &emsp; NIO方式适用于连接数目多且连接比较短（轻操作）的架构，比如聊天服务器，并发局限于应用中，编程比较复杂，JDK1.4开始支持。  
 &emsp; AIO方式适用于连接数目多且连接比较长（重操作）的架构，比如相册服务器，充分调用OS参与并发操作，编程比较复杂，JDK7开始支持。  
 
-### 1.14.5. Netty
-#### 1.14.5.1. Netty简介
+### 1.14.6. Netty
+#### 1.14.6.1. Netty简介
 1. Netty是一个`非阻塞I/O` <font color = "red">客户端-服务器框架</font>，主要用于开发Java网络应用程序，如协议服务器和客户端。`异步事件驱动`的网络应用程序框架和工具用于简化网络编程，例如TCP和UDP套接字服务器。Netty包括了`反应器编程模式`的实现。  
 &emsp; 除了作为异步网络应用程序框架，Netty还包括了对HTTP、HTTP2、DNS及其他协议的支持，涵盖了在Servlet容器内运行的能力、`对WebSockets的支持`、与Google Protocol Buffers的集成、对SSL/TLS的支持以及对用于SPDY协议和消息压缩的支持。  
 2. **<font color = "clime">为什么要用Netty？</font>**  
@@ -2299,7 +2331,7 @@ update product set name = 'TXC' where id = 1;
         * http://bugs.java.com/bugdatabase/viewbug.do?bug_id=6403933  
         * http://bugs.java.com/bugdalabase/viewbug.do?bug_id=21477l9  
 
-#### 1.14.5.2. Netty运行流程
+#### 1.14.6.2. Netty运行流程
 &emsp; [Netty运行流程](/docs/microService/communication/Netty/operation.md)   
 
 &emsp; **<font color = "clime">一般来说，使用Bootstrap创建启动器的步骤可分为以下几步：</font>**  
@@ -2322,7 +2354,7 @@ update product set name = 'TXC' where id = 1;
 2. 当一个连接到达时，Netty就会创建一个Channel，然后`从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上`，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
 3. 职责链ChannelPipeline，负责事件在职责链中的有序传播，同时负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。 ChannelHandlerContext代表了ChannelHandler和ChannelPipeline之间的绑定。  
 
-#### 1.14.5.3. Netty核心组件
+#### 1.14.6.3. Netty核心组件
 1. `由netty运行流程可以看出Netty核心组件有Bootstrap、channel相关、EventLoop、byteBuf...`  
 2. Bootstrap和ServerBootstrap是针对于Client和Server端定义的引导类，主要用于配置各种参数，并启动整个Netty服务。  
 3. `EventLoop线程模型`  
@@ -2346,7 +2378,7 @@ update product set name = 'TXC' where id = 1;
     3. 职责链ChannelPipeline，负责事件在职责链中的有序传播，同时负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。 ChannelHandlerContext代表了ChannelHandler和ChannelPipeline之间的绑定。  
 
 
-#### 1.14.5.4. Netty逻辑架构
+#### 1.14.6.4. Netty逻辑架构
 &emsp; **<font color = "red">Netty采用了典型的三层网络架构进行设计和开发，逻辑架构如下图所示：</font>**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-134.png)  
 1. 业务逻辑编排层 Service ChannelHandler：  
@@ -2358,7 +2390,7 @@ update product set name = 'TXC' where id = 1;
 
 &emsp; 架构的不同层面，需要关心和处理的对象都不同，通常情况下，对于业务开发者，只需要关心职责链的拦截和业务Handler的编排。因为应用层协议栈往往是开发一次，到处运行，所以实际上对于业务开发者来说，只需要关心服务层的业务逻辑开发即可。各种应用协议以插件的形式提供，只有协议开发人员需要关注协议插件，对于其他业务开发人员来说，只需关心业务逻辑定制。这种分层的架构设计理念实现了NIO框架各层之间的解耦，便于上层业务协议栈的开发和业务逻辑的定制。  
 
-#### 1.14.5.5. Netty高性能
+#### 1.14.6.5. Netty高性能
 &emsp; Netty高性能：    
 1. 内存池设计：申请的内存可以重用，主要指直接内存。内部实现是用一颗二叉查找树管理内存分配情况。  
 1. 网络I/O  
@@ -2368,12 +2400,12 @@ update product set name = 'TXC' where id = 1;
     * 支持 protobuf 等高性能序列化协议。
 3. 串形化处理读写：避免使用锁带来的性能开销。以及高效的并发编程。  
 
-##### 1.14.5.5.1. Netty的Reactor线程模型
+##### 1.14.6.5.1. Netty的Reactor线程模型
 1. Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型。</font>  
 2. Netty主从Reactor多线层模型，内部实现了两个线程池，boss线程池和work线程池，其中boss线程池的线程负责处理请求的accept事件，当接收到accept事件的请求时，把对应的socket封装到一个NioSocketChannel中，并交给work线程池，其中work线程池负责请求的read和write事件，由对应的Handler处理。
 
-#### 1.14.5.6. Netty开发
-##### 1.14.5.6.1. Netty应用场景，  
+#### 1.14.6.6. Netty开发
+##### 1.14.6.6.1. Netty应用场景，  
 &emsp; Netty主要用来做网络通信：   
 
 * 作为 RPC 框架的网络通信工具：在分布式系统中，不同服务节点之间经常需要相互调用，这个时候就需要 RPC 框架了。不同服务节点之间的通信是如何做的呢？可以使用 Netty 来做。  
@@ -2382,7 +2414,7 @@ update product set name = 'TXC' where id = 1;
 * 实现消息推送系统：市面上有很多消息推送系统都是基于 Netty 来做的。  
 * ...  
 
-##### 1.14.5.6.2. TCP粘拆包与Netty编解码  
+##### 1.14.6.6.2. TCP粘拆包与Netty编解码  
 1. [TCP的粘包和拆包问题描述](/docs/network/TCPSticking.md)  
 2. **<font color = "clime">Netty对半包或者粘包的处理：</font>** **每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，<font color = "red">所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。</font>** 
 3. Netty默认提供了多种解码器来解决，可以进行分包操作。  
@@ -2391,17 +2423,17 @@ update product set name = 'TXC' where id = 1;
     * 分隔符拆包器 DelimiterBasedFrameDecoder
     * 基于数据包长度的拆包器 LengthFieldBasedFrameDecoder  
 
-##### 1.14.5.6.3. Netty实战
+##### 1.14.6.6.3. Netty实战
 &emsp; ...  
 
-##### 1.14.5.6.4. Netty多协议开发
+##### 1.14.6.6.4. Netty多协议开发
 
 * Http协议开发应用
 * WebSocket协议开发  
 &emsp; WebSocket是基于TCP的应用层协议，用于在C/S架构的应用中实现双向通信，关于WebSocket协议的详细规范和定义参见rfc6455。  
 * 私有协议栈开发  
 
-#### 1.14.5.7. Netty源码
+#### 1.14.6.7. Netty源码
 
 
 ## 1.15. WebSocket
