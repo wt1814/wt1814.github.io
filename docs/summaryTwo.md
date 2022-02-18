@@ -1892,7 +1892,9 @@ update product set name = 'TXC' where id = 1;
         1. 漏桶算法和令牌桶算法在设计上的区别：`漏桶算法中“水滴”代表请求，令牌桶中“水滴”代表请求令牌。`   
         2. **<font color = "blue">`只要令牌桶中存在令牌，那么就允许突发地传输数据直到达到用户配置的门限，`所以它适合于具有突发特性的流量。</font>** 
 5. 限流方式有服务降级、服务拒绝。 
-5. Java单机限流可以使用AtomicInteger、Semaphore或Guava的RateLimiter来实现，但是上述方案都不支持集群限流。集群限流的应用场景有两个，一个是网关，常用的方案有Nginx限流和Spring Cloud Gateway，另一个场景是与外部或者下游服务接口的交互，可以使用redis+lua实现。阿里巴巴的开源限流系统Sentinel也可以针对接口限流。  
+5. 限流解决方案：    
+    * Java单机限流可以使用AtomicInteger、Semaphore或Guava的RateLimiter来实现，但是上述方案都不支持集群限流。  
+    * 集群限流的应用场景有两个，一个是网关，常用的方案有Nginx限流和Spring Cloud Gateway，另一个场景是与外部或者下游服务接口的交互，可以使用redis+lua实现。阿里巴巴的开源限流系统Sentinel也可以针对接口限流。  
 
 ### 1.12.5. 服务降级
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-36.png)  
@@ -2033,7 +2035,7 @@ update product set name = 'TXC' where id = 1;
 4. 在服务端Leader切换时，会存在数据丢失和数据不一致的问题。  
     1. 主从切换，数据不一致的情况如下：  
     &emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有m0消息，且HW为1。若A、B同时宕机，且B重启时，A还未恢复，则B被选为Leader。  
-    &emsp; 在B重启作为Leader之后，收到消息m2。A宕机重启后向成为Leader的B发送Fetch请求，发现自己的HW和B的HW一致，都是2，因此不会进行消息截断，而这也造成了数据不一致。  
+    &emsp; 在B重启作为Leader之后，收到消息m2。A宕机重启后，向成为Leader的B发送Fetch请求，发现自己的HW和B的HW一致，都是2，因此不会进行消息截断，而这也造成了数据不一致。  
     2. 引入Leader Epoch机制：  
     &emsp; **<font color = "blue">为了解决HW可能造成的数据丢失和数据不一致问题，Kafka引入了Leader Epoch机制。</font>** 在每个副本日志目录下都有一个leader-epoch-checkpoint文件，用于保存Leader Epoch信息。  
     &emsp; Leader Epoch，分为两部分，前者Epoch，表示Leader版本号，是一个单调递增的正整数，每当Leader变更时，都会加1；`后者StartOffset，为每一代Leader写入的第一条消息的位移。`   
@@ -2041,7 +2043,7 @@ update product set name = 'TXC' where id = 1;
 &emsp; 集群中的每个broker都会缓存所有主题的分区副本信息，客户端会定期发送元数据请求，然后将获取的集群元数据信息进行缓存。  
 
 ##### 1.13.2.2.3. ~~可靠性~~
-&emsp; Kafka作为一个商业级消息中间件，消息可靠性的重要性可想而知。如何确保消息的精确传输？如何确保消息的准确存储？如何确保消息的正确消费？这些都是需要考虑的问题。  
+&emsp; Kafka作为一个商业级消息中间件，消息可靠性的重要性可想而知。 **<font color = "clime">如何确保消息的`精确传输`？如何确保消息的`准确存储`？如何确保消息的`正确消费`？</font>** 这些都是需要考虑的问题。  
 &emsp; 可靠性保证：确保系统在各种不同的环境下能够发生一致的行为。  
 &emsp; Kafka的保证：  
 
