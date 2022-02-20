@@ -11,6 +11,7 @@
         - [1.1.3. RDB的优势和劣势](#113-rdb的优势和劣势)
     - [1.2. AOF(Append-only file)](#12-aofappend-only-file)
         - [1.2.1. 开启AOF，写入策略选择](#121-开启aof写入策略选择)
+        - [~~AOF写后日志~~](#aof写后日志)
         - [1.2.2. AOF持久化流程](#122-aof持久化流程)
             - [1.2.2.1. ★★★重写机制](#1221-★★★重写机制)
                 - [1.2.2.1.1. 重写机制简介](#12211-重写机制简介)
@@ -110,6 +111,9 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 
 -----
 
+
+&emsp; Redis 提供了两个命令来生成 RDB 快照文件，分别是 save 和 bgsave。save 命令在主线程中执行，会导致阻塞。而 bgsave 命令则会创建一个子进程，用于写入 RDB 文件的操作，避免了对主线程的阻塞，这也是 Redis RDB 的默认配置。   
+
 ## 1.2. AOF(Append-only file)  
 &emsp; AOF持久化机制是<font color = "red">以日志的形式记录Redis中的每一次的写操作</font>，不会记录查询操作，以文本的形式记录，打开记录的日志文件就可以查看操作记录。  
 <!-- &emsp; AOF持久化方式会记录客户端对服务器的每一次写操作命令，并将这些写操作以Redis协议追加保存到后缀为AOF文件末尾。-->  
@@ -137,6 +141,26 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 * always：客户端的每一个写操作都保存到AOF文件当中，这种策略很安全，但是每个写操作都有 IO 操作，所以也很慢。  
 * everysec：<font color = "red">appendfsync 的默认写入策略，每秒写入一次AOF文件，因此，最多可能会丢失1s的数据。</font>  
 * no：Redis 服务器不负责写入AOF，而是交由操作系统来处理什么时候写入AOF文件。更快，但也是最不安全的选择，不推荐使用。 
+
+
+### ~~AOF写后日志~~
+<!-- 
+https://mp.weixin.qq.com/s/8hJQhMMZx962OgKOUAEKDQ
+-->
+
+&emsp; AOF采用的是写后日志的方式，Redis先执行命令把数据写入内存，然后再记录日志到文件中。AOF日志记录的是操作命令，不是实际的数据，如果采用AOF方法做故障恢复时需要将全量日志都执行一遍。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-121.png)  
+
+&emsp; 平时用的MySQL则采用的是 “写前日志”，那 Redis为什么要先执行命令，再把数据写入日志呢？  
+
+&emsp; 这个主要是由于Redis在写入日志之前，不对命令进行语法检查，所以只记录执行成功的命令，避免出现记录错误命令的情况，而且在命令执行后再写日志不会阻塞当前的写操作。  
+
+&emsp; 后写日志主要有两个风险可能会发生：  
+
+* 数据可能会丢失：如果 Redis 刚执行完命令，此时发生故障宕机，会导致这条命令存在丢失的风险。  
+* 可能阻塞其他操作：AOF 日志其实也是在主线程中执行，所以当 Redis 把日志文件写入磁盘的时候，还是会阻塞后续的操作无法执行。  
+
+
 
 ### 1.2.2. AOF持久化流程  
 &emsp; **<font color = "red">AOF的工作流程操作：命令写入 (append)、文件同步(sync)、文件重写(rewrite)、重启加载 (load)。</font>**  

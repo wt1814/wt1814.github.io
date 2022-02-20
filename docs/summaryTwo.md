@@ -1759,6 +1759,23 @@ update product set name = 'TXC' where id = 1;
 3. Redis4.0混合持久化，先RDB，后AOF。  
 4. ~~**<font color = "clime">RDB方式bgsave指令中fork子进程、AOF方式重写bgrewriteaof都会造成阻塞。</font>**~~  
 
+
+5. Redis 提供了两个命令来生成 RDB 快照文件，分别是 save 和 bgsave。save 命令在主线程中执行，会导致阻塞。而 bgsave 命令则会创建一个子进程，用于写入 RDB 文件的操作，避免了对主线程的阻塞，这也是 Redis RDB 的默认配置。   
+
+
+
+6. AOF采用的是写后日志的方式，Redis先执行命令把数据写入内存，然后再记录日志到文件中。AOF日志记录的是操作命令，不是实际的数据，如果采用AOF方法做故障恢复时需要将全量日志都执行一遍。  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-121.png)  
+
+&emsp; 平时用的MySQL则采用的是 “写前日志”，那 Redis为什么要先执行命令，再把数据写入日志呢？  
+
+&emsp; 这个主要是由于Redis在写入日志之前，不对命令进行语法检查，所以只记录执行成功的命令，避免出现记录错误命令的情况，而且在命令执行后再写日志不会阻塞当前的写操作。  
+
+&emsp; 后写日志主要有两个风险可能会发生：  
+
+* 数据可能会丢失：如果 Redis 刚执行完命令，此时发生故障宕机，会导致这条命令存在丢失的风险。  
+* 可能阻塞其他操作：AOF 日志其实也是在主线程中执行，所以当 Redis 把日志文件写入磁盘的时候，还是会阻塞后续的操作无法执行。  
+
 ###### 1.12.3.2.7.1. ~~AOF重写阻塞~~
 1. AOF重写阻塞：
     1. **<font color = "clime">当Redis执行完一个写命令之后，它会`同时将这个写命令发送给AOF缓冲区和AOF重写缓冲区`。</font>**  
