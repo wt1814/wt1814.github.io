@@ -2231,7 +2231,7 @@ update product set name = 'TXC' where id = 1;
         -----------
         1. 首先epoll_create创建一个epoll文件描述符，底层同时创建一个红黑树，和一个就绪链表；红黑树存储所监控的文件描述符的节点数据，就绪链表存储就绪的文件描述符的节点数据；  
         2. epoll_ctl将会添加新的描述符，首先判断是红黑树上是否有此文件描述符节点，如果有，则立即返回。如果没有， 则在树干上插入新的节点，并且告知内核注册回调函数。`当接收到某个文件描述符过来数据时，那么内核将该节点插入到就绪链表里面。`  
-        3. epoll_wait将会接收到消息，并且将数据拷贝到用户空间，清空链表。对于LT模式epoll_wait清空就绪链表之后会检查该文件描述符是哪一种模式，如果为LT模式，且必须该节点确实有事件未处理，那么就会把该节点重新放入到刚刚删除掉的且刚准备好的就绪链表，epoll_wait马上返回。ＥT模式不会检查，只会调用一次。  
+        3. epoll_wait将会接收到消息，并且将数据拷贝到用户空间，清空链表。对于LT模式epoll_wait清空就绪链表之后会检查该文件描述符是哪一种模式，`如果为LT模式，且必须该节点确实有事件未处理，那么就会把该节点重新放入到刚刚删除掉的且刚准备好的就绪链表，`epoll_wait马上返回。ＥT模式不会检查，只会调用一次。  
     2. **epoll机制的工作模式：**  
         * LT模式（默认，水平触发，level trigger）：当epoll_wait检测到某描述符事件就绪并通知应用程序时，应用程序可以不立即处理该事件； **<font color = "clime">下次调用epoll_wait时，会再次响应应用程序并通知此事件。</font>**    
         * ET模式（边缘触发，edge trigger）：当epoll_wait检测到某描述符事件就绪并通知应用程序时，应用程序必须立即处理该事件。如果不处理，下次调用epoll_wait时，不会再次响应应用程序并通知此事件。（直到做了某些操作导致该描述符变成未就绪状态了，也就是说 **<font color = "clime">边缘触发只在状态由未就绪变为就绪时只通知一次。</font>** ）   
@@ -2246,7 +2246,9 @@ update product set name = 'TXC' where id = 1;
 
 #### 1.14.3.3. 多路复用之Reactor模式
 1. `Reactor，是网络编程中基于IO多路复用的一种设计模式，是【event-driven architecture】的一种实现方式，处理多个客户端并发的向服务端请求服务的场景。`    
-2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font><font color = "blue">`其中Reactor负责监听和分发事件，线程池负责处理事件。`</font>** **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
+2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font> **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
+    * `Reactor负责监听（建立连接）和处理请求（分发事件、读写）。`  
+    * 线程池负责处理事件。  
 3. **单线程模型（单Reactor单线程）**  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-91.png)  
 &emsp; ~~这是最基本的单Reactor单线程模型。其中Reactor线程，负责多路分离套接字，有新连接到来触发connect事件之后，交由Acceptor进行处理，有IO读写事件之后交给hanlder处理。~~  
@@ -2293,7 +2295,7 @@ update product set name = 'TXC' where id = 1;
 5. `零拷贝技术的几个实现手段包括：mmap+write、sendfile、sendfile+DMA收集、splice等。`  
 6. **<font color = "blue">mmap（内存映射）：</font>**   
     &emsp; **<font color = "clime">mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享，</font>** 又减少了一次cpu拷贝。总共包含1次cpu拷贝，2次DMA拷贝，4次状态切换。此流程中，cpu拷贝从4次减少到1次，但状态切换还是4次。   
-    &emsp; mmap+write简单来说就是使用mmap替换了read+write中的read操作，减少了一次CPU的拷贝。  
+    &emsp; mmap+write简单来说就是使用`mmap替换了read+write中的read操作`，减少了一次CPU的拷贝。  
     &emsp; `mmap主要实现方式是将读缓冲区的地址和用户缓冲区的地址进行映射，内核缓冲区和应用缓冲区共享，从而减少了从读缓冲区到用户缓冲区的一次CPU拷贝。`  
 
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-142.png)  
@@ -2345,7 +2347,7 @@ update product set name = 'TXC' where id = 1;
     &emsp; 在实际的网络开发中，其实很少使用Java NIO原生的API。主要有以下原因：  
 
     * NIO的类库和API繁杂，使用麻烦，需要熟练掌握Selector、ServerSocketChannel、SockctChannel、ByteBuffer等。  
-    * **原生API使用单线程模型，不能很好利用多核优势；**  
+    * `原生API使用单线程模型，不能很好利用多核优势；`  
     * 原生API是直接使用的IO数据，没有做任何封装处理，对数据的编解码、TCP的粘包和拆包、客户端断连、网络的可靠性和安全性方面没有做处理；  
     * **<font color = "red">JDK NIO的BUG，例如臭名昭著的epoll bug，它会导致Selector空轮询，最终导致CPU100%。</font>官方声称在JDK1.6版本的update18修复了该问题，但是直到JDK 1.7版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有得到根本性解决。该BUG以及与该BUG相关的问题单可以参见以下链接内容。** 
         * http://bugs.java.com/bugdatabase/viewbug.do?bug_id=6403933  
@@ -2422,7 +2424,7 @@ update product set name = 'TXC' where id = 1;
 
 ##### 1.14.6.5.1. Netty的Reactor线程模型
 1. Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型。</font>  
-2. Netty主从Reactor多线层模型，内部实现了两个线程池，boss线程池和work线程池，其中boss线程池的线程负责处理请求的accept事件，当接收到accept事件的请求时，把对应的socket封装到一个NioSocketChannel中，并交给work线程池，其中work线程池负责请求的read和write事件，由对应的Handler处理。
+2. Netty主从Reactor多线程模型，内部实现了两个线程池，boss线程池和work线程池，其中boss线程池的线程负责处理请求的accept事件，当接收到accept事件的请求时，把对应的socket封装到一个NioSocketChannel中，并交给work线程池，其中work线程池负责请求的read和write事件，由对应的Handler处理。
 
 #### 1.14.6.6. Netty开发
 ##### 1.14.6.6.1. Netty应用场景，  
@@ -2459,7 +2461,7 @@ update product set name = 'TXC' where id = 1;
 ## 1.15. WebSocket
 ### 1.15.1. 4种Web端即时通信
 1. `Web端即时通讯技术：服务器端可以即时地将数据的更新或变化反应到客户端，例如消息即时推送等功能都是通过这种技术实现的。`但是在Web中，由于浏览器的限制，实现即时通讯需要借助一些方法。这种限制出现的主要原因是，一般的Web通信都是浏览器先发送请求到服务器，服务器再进行响应完成数据的显示更新。  
-&emsp; 实现Web端即时通讯的方法：`实现即时通讯主要有四种方式，它们分别是轮询、长轮询(comet)、长连接(SSE)、WebSocket。` **<font color = "blue">它们大体可以分为两类，一种是在HTTP基础上实现的，包括短轮询、comet和SSE；另一种不是在HTTP基础上实现是，即WebSocket。</font>**    
+&emsp; 实现Web端即时通讯的方法：`实现即时通讯主要有四种方式，它们分别是轮询、长轮询(comet)、长连接(SSE)、WebSocket。` **<font color = "blue">它们大体可以分为两类，一种是在HTTP基础上实现的，包括短轮询、comet和SSE；另一种不是在HTTP基础上实现，即WebSocket。</font>**    
 2. 短轮询：平时写的忙轮询/无差别轮询。  
 3. 长轮询：  
 	&emsp; 客户端发送请求后服务器端不会立即返回数据， **<font color = "red">服务器端会阻塞请求连接不会立即断开，`直到服务器端有数据更新或者是连接超时才返回`，</font>** `客户端才再次发出请求新建连接、如此反复从而获取最新数据。`  

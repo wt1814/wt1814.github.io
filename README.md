@@ -743,6 +743,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; &emsp; [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)    
 &emsp; &emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
 &emsp; &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
+&emsp; &emsp; &emsp; [池化内存分配](/docs/microService/communication/Netty/byteBufTwo.md)    
 [WebSocket](/docs/webSocket/Summary.md)  
 &emsp; [4种Web端即时通信](/docs/webSocket/LongPolling.md)  
 &emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
