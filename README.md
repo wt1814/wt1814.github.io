@@ -480,6 +480,7 @@
 &emsp; &emsp; [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
 &emsp; &emsp; [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
 [Dubbo运行流程源码解析](/docs/microService/dubbo/DubboSource.md)  
+&emsp; [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
 &emsp; [初始化源码解析](/docs/microService/dubbo/dubboSpring.md)  
 &emsp; [服务暴露源码解析](/docs/microService/dubbo/export.md)  
 &emsp; [服务引用源码解析](/docs/microService/dubbo/introduce.md)  

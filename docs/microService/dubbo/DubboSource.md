@@ -59,3 +59,4 @@ http://svip.iocoder.cn/Dubbo/intro/
 3. 引用服务时序
 &emsp; 展开总设计图右边服务消费方引用服务的蓝色初始化链，时序图如下：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-21.png)   
+
