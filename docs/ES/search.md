@@ -38,7 +38,9 @@
 # 1. 检索操作  
 <!-- &emsp; &emsp; [基本查询](/docs/ES/basicSearch.md)   -->
 
-<!-- 
+<!--
+一文全览各种ES查询在Java中的实现 
+https://mp.weixin.qq.com/s/5KXpj4lQvxpj7B9Yo4qQEQ
 
 重要  fingerprint filter 插件——Elasticsearch 去重必备利器 
 https://www.baidu.com/index.php?tn=monline_3_dg
