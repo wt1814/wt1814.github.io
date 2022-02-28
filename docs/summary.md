@@ -443,6 +443,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 合成复用原则（ **<font color = "red">尽量使用对象[组合(has-a)/聚合(contanis-a)](/docs/java/Design/compose.md)，而不是继承关系达到软件复用的目的</font>** ）；
     * 迪米特法则（一个对象应当对其他对象尽可能少的了解）。  
 
+&emsp; `★★★如果说继承是垂直结构，那么组合是横向结构。`  
+
 ### 1.2.2. 复用规则（继承和组合）详解  
 1. 类和类之间的关系有三种：is-a（继承或泛化）、has-a（关联或聚合）和use-a（依赖）。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-27.png)  
@@ -511,7 +513,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     &emsp; <font color = "clime">从上面的代码中可以看到，其实整个过程中进行了两次singleton == null的判断，所以这种方法被称之为"双重校验锁"。</font>   
     &emsp; <font color = "clime">还有值得注意的是，双重校验锁的实现方式中，静态成员变量singleton必须通过volatile来修饰，保证其初始化不被重排，否则可能被引用到一个未初始化完成的对象。</font>   
 2. 简单工厂模式和抽象工厂模式
-3. 建造者模式： **<font color = "red">建造者模式适用于创建对象需要很多步骤，但是步骤的顺序不一定固定。如果一个对象有非常复杂的内部结构(很多属性)，可以将复杂对象的创建和使用进行分离。</font>**  
+3. 建造者模式： **<font color = "red">建造者模式适用于创建对象需要很多步骤，但是步骤的顺序不一定固定。如果一个对象有非常复杂的内部结构（很多属性），可以将复杂对象的创建和使用进行分离。</font>**  
 4. 原型模式：
     克隆的结果有2种，一种是浅复制，另一种是深复制。  
     * 浅复制: 对值类型的成员变量进行值的复制，对引用类型的成员变量只复制引用，不复制引用的对象。  
@@ -527,7 +529,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         * 接口适配器：通过抽象类来实现适配。即适配器类是一个抽象类。  
     3. 适配的思想。  
 3. 代理模式：<font color = "red">提供了对目标对象另外的访问方式，即通过代理访问目标对象。</font>  
-4. 装饰器模式：`可替代继承(有继承就可以改写装饰器模式)`，此设计模式重点在于对已有的功能进行扩展。实际开发中， **<font color = "red">大多数用于对老项目的某些功能进行扩展。</font>** 新项目中一般不怎么用此模式。`装饰器模式解决继承的【臃肿】`。      
+4. 装饰器模式：`可替代继承（有继承就可以改写装饰器模式）`，此设计模式重点在于对已有的功能进行扩展。实际开发中， **<font color = "red">大多数用于对老项目的某些功能进行扩展。</font>** 新项目中一般不怎么用此模式。`装饰器模式解决继承的【臃肿】`。      
 &emsp; Decorator，装饰角色，一般是一个抽象类，继承自或实现Component（抽象构件），在它的属性里面有一个变量指向Component抽象构件，这是装饰器最关键的地方。  
 &emsp; 在Mybatis中，Cache的实现类LruCache、FifoCache等都是装饰一个类PerpetualCache。常见代码格式，就是装饰类中会有个被装饰类的属性，并且这个属性还是构造方法的参数。  
 5. 桥接模式（if/else）
@@ -608,17 +610,17 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 * 框架：SpringAOP、池化（享元模式）、 mq
 * 不自觉使用的设计模式，如外观/门面模式、 **<font color = "clime">对象适配器模式（Service层调用）</font>** 。  
-* 需要编码：单例模式与static静态类，工厂模式，模板方法，3个if/else的优化：桥接模式、策略模式、责任链模式，观察者模式...  
+* 需要编码：单例模式与static静态类，工厂模式，模板方法，3个if/else的优化：桥接模式（结构型设计模式）、策略模式、责任链模式，观察者模式...  
 
 &emsp; Spring框架中用到了哪些设计模式：  
 
 * 工厂设计模式 : Spring使用工厂模式通过 BeanFactory、ApplicationContext 创建 bean 对象。  
 * 单例设计模式 : Spring 中的 Bean 默认都是单例的。  
-* 模板方法模式 : Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。  
-* 观察者模式: Spring事件驱动模型就是观察者模式很经典的一个应用。  
 * 代理设计模式 : Spring AOP 功能的实现。  
 * 适配器模式 :Spring AOP 的增强或通知(Advice)使用到了适配器模式、spring MVC 中也是用到了适配器模式适配Controller。  
 * 包装器设计模式 : 项目需要连接多个数据库，而且不同的客户在每次访问中根据需要会去访问不同的数据库。这种模式可以根据客户的需求能够动态切换不同的数据源。 
+* 模板方法模式 : Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。  
+* 观察者模式: Spring事件驱动模型就是观察者模式很经典的一个应用。  
 * ……
 
 ## 1.3. JVM
@@ -824,8 +826,6 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; 当一个线程抛出OOM异常后，它所占据的内存资源会全部被释放掉，从而不会影响其他线程的运行！  
 &emsp; **<font color = "red">其实发生OOM的线程一般情况下会死亡，也就是会被终结掉，该线程持有的对象占用的heap都会被gc了，释放内存。</font><font color = "clime">因为`发生OOM之前要进行gc，就算其他线程能够正常工作，也会因为频繁gc产生较大的影响。`</font>**  
 3. `~~堆外内存泄漏~~`
-
-
 
 ### 1.3.5. JVM执行
 &emsp; ...
