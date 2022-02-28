@@ -37,7 +37,11 @@
 
 
 # 1. Java8 ConcurrentHashMap  
-<!-- 
+<!--
+
+ConcurrentHashMap如何实现扩容机制之学习笔记
+https://blog.csdn.net/weixin_42022924/article/details/102865519
+
 ConcurrentHashMap 扩容
 https://blog.csdn.net/zzu_seu/article/details/106698150
 https://blog.csdn.net/ZOKEKAI/article/details/90051567
