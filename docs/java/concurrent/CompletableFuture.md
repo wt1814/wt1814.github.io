@@ -16,6 +16,9 @@
 
 # 1. ~~CompletableFuture<T>~~  
 <!--
+*** CompletableFuture实现原理和使用场景 
+https://mp.weixin.qq.com/s/vppkWAE42Rc8MCzOlWeFaw
+
 异步神器：CompletableFuture实现原理和使用场景
 https://mp.weixin.qq.com/s/w5aRflM1rtzrSKNbHWuwiQ
 CompletableFuture
@@ -70,6 +73,12 @@ https://mp.weixin.qq.com/s/R_-MX85FbaO7VnQedQbc2A
 * 进行计算密集型的操作，并且没有I/O，那么推荐使用Stream接口，因为实现简单，同时效率也可能是最高的(如果所有的线程都是计算密集型的，那就没有必要创建比处理器核数更多的线程)。  
 * 如果并行操作涉及到I/O的操作(网络连接，请求等)，那么使用CompletableFuture灵活性更好，通过控制线程数量来优化程序的运行。  
 -->
+
+&emsp; 为什么引入CompletableFuture?  
+&emsp; 对于jdk1.5的Future，虽然提供了异步处理任务的能力，但是获取结果的方式很不优雅，还是需要通过阻塞（或者轮训）的方式。如何避免阻塞呢？其实就是注册回调。  
+&emsp; 业界结合观察者模式实现异步回调。也就是当任务执行完成后去通知观察者。比如Netty的ChannelFuture，可以通过注册监听实现异步结果的处理。  
+
+
 ## 1.1. CompletableFuture简介
 &emsp; **<font color = "blue">CompletableFuture，组合式异步编程，异步回调。</font>**    
 &emsp;  **<font color = "blue">使用Future获得异步执行结果时，要么调用阻塞方法get()，要么轮询看isDone()是否为true，这两种方法都不是很好，因为主线程也会被迫等待。</font><font color = "red">从Java 8开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。</font>**  

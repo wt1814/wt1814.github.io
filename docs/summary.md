@@ -1266,6 +1266,12 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 
 #### 1.4.2.7. ~~CompletableFuture~~
+
+&emsp; 为什么引入CompletableFuture？  
+&emsp; 对于jdk1.5的Future，虽然提供了异步处理任务的能力，但是获取结果的方式很不优雅，还是需要通过阻塞（或者轮训）的方式。如何避免阻塞呢？其实就是注册回调。  
+&emsp; 业界结合观察者模式实现异步回调。也就是当任务执行完成后去通知观察者。比如Netty的ChannelFuture，可以通过注册监听实现异步结果的处理。   
+
+
 &emsp; CompletableFuture 可以很方便的实现异步任务的封装 **<font color = "clime">并实现结果的联合等一系列操作，</font>** 轻松实现 任务的并行。  
 
 * thenCombine：结合两个CompletionStage的结果，进行转化后返回。  

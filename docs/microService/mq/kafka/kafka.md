@@ -36,4 +36,8 @@ https://blog.csdn.net/feelwing1314/article/details/81206506?utm_term=kafka%E9%87
 
 Kafka消息中间件内核源码课程 
 https://mp.weixin.qq.com/s/yvGIikIlM0ErZ_ZYBZrJXg
+
+
+Kafka 面试大全
+https://mp.weixin.qq.com/s/jsDCHSHOHOUEMErglWQkZg
 -->
