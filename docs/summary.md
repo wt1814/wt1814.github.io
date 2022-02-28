@@ -260,7 +260,7 @@
         1. 扩容时机：JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。  
         2. JDK1.8扩容流程：  
             1. 新建数组，扩容为原数组两倍。  
-            2. 循环原table，把原table中的每个链表中的每个元素放入新table。 
+            2. 循环原table，把原table中的每个链表的每个元素放入新table。 
                 * 首先计算hash值：index = HashCode（Key） & （Length - 1）    
                 * 单节点迁移。  
                 * 如果节点是红黑树类型的话则需要进行红黑树的拆分：`拆分成高低位链表，如果链表长度大于6，需要把链表升级成红黑树。`
@@ -270,8 +270,8 @@
 ---------
 
 &emsp; <font color = "clime">对链表进行迁移的注意点：</font>JDK1.8HashMap扩容阶段重新映射元素时不需要像1.7版本那样重新去一个个计算元素的 hash 值，<font color = "clime">而是通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度，</font>为什么呢？具体原因如下：  
-&emsp; 因为使用的是2次幂的扩展(指长度扩为原来2倍)，所以，元素的位置要么是在原位置，要么是在原位置再移动2次幂的位置。因此，在扩充 HashMap 的时候，不需要像 JDK1.7 的实现那样重新计算 hash，只需要看看原来的 hash 值新增的那个 bit 是 1 还是 0 就好了，是 0 的话索引没变，是 1 的话索引变成“原索引 +oldCap。  
-&emsp; 这点其实也可以看做长度为 2 的幂次方的一个好处，也是 HashMap 1.7 和 1.8 之间的一个区别。  
+&emsp; `因为使用的是2次幂的扩展（指长度扩为原来2倍），所以，元素的位置要么是在原位置，要么是在原位置再移动2次幂的位置。`因此，在扩充 HashMap 的时候，不需要像 JDK1.7 的实现那样重新计算 hash，只需要看看原来的 hash 值新增的那个 bit 是 1 还是 0 就好了，是 0 的话索引没变，是 1 的话索引变成“原索引 +oldCap。  
+&emsp; 这点其实也可以看做长度为 2 的幂次方的一个好处，也是HashMap 1.7 和 1.8 之间的一个区别。  
 &emsp; 示例：扩容前 table 的容量为16，a 节点和 b 节点在扩容前处于同一索引位置。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-19.png)  
 &emsp; 扩容后，table 长度为32，新表的 n - 1 只比老表的 n - 1 在高位多了一个1（图中标红）。  
@@ -345,7 +345,6 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     3. 利用反射越过泛型检查  
     &emsp; 反射是获取类Class文件进行操作。通过反射获取对象后可以获得相应的add方法，并向方法里面传入任何对象。  
 
-
 ### 1.1.7. 自定义注解
 
 
@@ -356,7 +355,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 	1. 情景一，不得已而为之
 	2. 情景二，动态加载（可以最大限度的体现Java的灵活性，并降低类的耦合性：多态）
 	3. 情景三：避免将程序写死到代码里  
-	4. 开发通用框架 - 反射最重要的用途就是开发各种通用框架。很多框架（比如 Spring）都是配置化的（比如通过 XML 文件配置 JavaBean、Filter 等），为了保证框架的通用性，它们`可能需要根据配置文件加载不同的对象或类，调用不同的方法，这个时候就必须用到反射——运行时动态加载需要加载的对象。`  
+	4. `开发通用框架 - 反射最重要的用途就是开发各种通用框架。`很多框架（比如 Spring）都是配置化的（比如通过 XML 文件配置 JavaBean、Filter 等），为了保证框架的通用性，它们`可能需要根据配置文件加载不同的对象或类，调用不同的方法，这个时候就必须用到反射——运行时动态加载需要加载的对象。`  
 3. 反射的优缺点？  
 	* 优点：  
 		1）能够运行时动态获取类的实例，提高灵活性；
@@ -371,21 +370,21 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 		2）`相对不安全，破坏了封装性`（因为通过反射可以获得私有方法和属性）  
 4. 反射的原理：  
     1. 调用反射的总体流程如下：  
-    * 准备阶段：编译期装载所有的类，将每个类的元信息保存至Class类对象中，每一个类对应一个Class对象。  
-    * 获取Class对象：调用x.class/x.getClass()/Class.forName() 获取x的Class对象clz（这些方法的底层都是native方法，是在JVM底层编写好的，涉及到了JVM底层，就先不进行探究了）。  
-    * 进行实际反射操作：通过clz对象获取Field/Method/Constructor对象进行进一步操作。  
+        * 准备阶段：编译期装载所有的类，将每个类的元信息保存至Class类对象中，每一个类对应一个Class对象。  
+        * 获取Class对象：调用x.class/x.getClass()/Class.forName() 获取x的Class对象clz（这些方法的底层都是native方法，是在JVM底层编写好的，涉及到了JVM底层，就先不进行探究了）。  
+        * 进行实际反射操作：通过clz对象获取Field/Method/Constructor对象进行进一步操作。  
     2. 源码流程：  
-    * Class.forName 
-        * 通过JNI调用到C层，再将类名转换成Descriptor
-        * 通过Runtime获取ClassLinker对象
-        * 通过LookupClass在boot_class_path中寻找Class，找到则返回
-        * 通过BootClassLoader中寻找class，找到则返回
-        * 判断当前线程是否允许回调Java层函数，如果允许则开始校验描述符规则
-        * 通过VMStack.getCallingClassLoader获取当前ClassLoader，接着调用ClassLoader.loadClass返回Class
-        * 更新ClassLoader的ClassTable
-    * Class.getDeclaredMethods 
-        * 通过Class对象找到method_的值，即为方法区的地址  
-        * 通过8bit的大小来分割Method的地址  
+        * Class.forName 
+            * 通过JNI调用到C层，再将类名转换成Descriptor
+            * 通过Runtime获取ClassLinker对象
+            * 通过LookupClass在boot_class_path中寻找Class，找到则返回
+            * 通过BootClassLoader中寻找class，找到则返回
+            * 判断当前线程是否允许回调Java层函数，如果允许则开始校验描述符规则
+            * 通过VMStack.getCallingClassLoader获取当前ClassLoader，接着调用ClassLoader.loadClass返回Class
+            * 更新ClassLoader的ClassTable
+        * Class.getDeclaredMethods 
+            * 通过Class对象找到method_的值，即为方法区的地址  
+            * 通过8bit的大小来分割Method的地址  
 5. 自定义注解 + 反射 实际应用。  
 
 ### 1.1.9. IO
