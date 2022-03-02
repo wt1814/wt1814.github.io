@@ -7,20 +7,28 @@
 
 <!-- /TOC -->
 
+&emsp; CompletionService，内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
+
+&emsp; java.util.concurrent.CompletionService是对ExecutorService封装的一个增强类，优化了获取异步操作结果的接口。主要解决了Future阻塞的问题。  
+
+```java
+private final Executor executor;
+private final AbstractExecutorService aes;
+private final BlockingQueue<Future<V>> completionQueue;
+```
+
 
 # 1. ~~CompletionService~~  
 <!-- 
 https://blog.csdn.net/qq877728715/article/details/114446658
-https://www.cnblogs.com/dennyzhangdd/p/7010972.html#_label2
-
-https://blog.csdn.net/zangdaiyang1991/article/details/84333995
-https://www.cnblogs.com/zhjh256/p/11829397.html
 
 
 -->
 
 <!-- 
 ~~
+https://blog.csdn.net/zangdaiyang1991/article/details/84333995
+
 https://www.cnblogs.com/zhjh256/p/11829397.html
 https://mp.weixin.qq.com/s/Eo-WR1agGETF0hE3Eaivrg
 

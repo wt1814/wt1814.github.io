@@ -646,12 +646,12 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 2. 加载：查找并加载类的二进制数据。加载主要做三件事：找到类文件 -> 放入方法区 -> 开个入口（最后生成一个代表此类的java.lang.Class对象，作为访问方法区这些数据结构的入口）。  
 &emsp; **<font color = "red">一句话概括：把代码数据加载到内存中，加载完成后，在方法区实例化一个对应的Class对象。</font>**  
 3. 验证：确保被加载的类的正确性。验证阶段大致会完成4个阶段的检验动作：1. 文件格式验证、2. 元数据验证、3. 字节码验证、4. 符号引用验证。  
-4. 准备(Preparation)  
+4. 准备（Preparation）  
 &emsp; <font color = "red">为类的`静态变量`分配内存，并将其初始化为默认值，这些内存都将在`方法区`中分配。</font>对于该阶段有以下几点需要注意：  
     1. <font color = "red">这时候进行内存分配的仅包括类变量(static)，而不包括实例变量，实例变量会在对象实例化时随着对象一块分配在Java堆中。</font>  
     2. <font color = "red">这里所设置的初始值"通常情况"下是数据类型默认的零值（如0、0L、null、false等），比如定义了public static int value=111 ，那么 value 变量在准备阶段的初始值就是 0 而不是111（初始化阶段才会复制）。</font>  
     * <font color = "red">特殊情况：比如给value变量加上了fianl关键字public static final int value=111，那么准备阶段value的值就被赋值为 111。</font>  
-5. 解析(Resolution)： **<font color = "red">将常量池内的符号引用转换为直接引用</font>** ，得到类或者字段、方法在内存中的指针或者偏移量，确保类与类之间相互引用正确性，完成内存结构布局，以便直接调用该方法。  
+5. 解析（Resolution）： **<font color = "red">将常量池内的符号引用转换为直接引用</font>** ，得到类或者字段、方法在内存中的指针或者偏移量，确保类与类之间相互引用正确性，完成内存结构布局，以便直接调用该方法。  
 &emsp; `为什么要用符号引用呢？` **<font color = "blue">这是因为类加载之前，javac会将源代码编译成.class文件，这个时候javac是不知道被编译的类中所引用的类、方法或者变量它们的引用地址在哪里，所以只能用符号引用来表示。</font>**  
 &emsp; **<font color = "clime">解析过程在某些情况下可以在初始化阶段之后再开始，这是为了支持Java的动态绑定。</font>**   
 6. 初始化：执行`static代码块(cinit)进行初始化`，如果存在父类，先对父类进行初始化。  
@@ -675,8 +675,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 3. 破坏双亲委派模型：
     1. 破坏双亲委派的例子：
         1. ~~JDK~~  
-            1. `双亲委派模型有一个问题：顶层ClassLoader无法加载底层ClassLoader的类，典型例子JNDI、JDBC。`
-            &emsp; **<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器，而 JDBC 运行时又需要去访问子类加载器加载的驱动，就破坏了该模型。所以加入了`线程上下文类加载器(Thread Context ClassLoader)`，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
+            1. `双亲委派模型有一个问题：顶层ClassLoader无法加载底层ClassLoader的类，典型例子JNDI、JDBC。`  
+            &emsp; **<font color = "clime">`JDBC是启动类加载器加载，`但mysql驱动是应用类加载器，而JDBC运行时又需要去访问子类加载器加载的驱动，就破坏了该模型。所以加入了`线程上下文类加载器(Thread Context ClassLoader)`，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
             2. 热替换
         2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，`如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。`    
         3. Spring破坏双亲委派模型  
@@ -723,10 +723,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         2. 演进历程：  
             * jdk1.6及之前：有永久代(permanent generation)。静态变量存放在永久代上。  
             * jdk1.7：有永久代，但已经逐步“去永久代”。[字符串常量池](/docs/java/JVM/ConstantPool.md) <font color = "red">、静态变量</font>移除，保存在堆中。  
-            * jdk1.8及之后：无永久代。类型信息、字段、`方法`、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
+            * jdk1.8及之后：无永久代。<font color = "clime">字符串常量池、静态变量仍在堆，</font> 但类型信息、字段、`方法`、<font color = "red">常量</font>保存在本地内存的元空间。  
 6. MetaSpace存储类的元数据信息。  
 &emsp; 元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。元空间的内存大小受本地内存限制。  
-
 
 ##### 1.3.4.1.2. 类存储内存小结
 ###### 1.3.4.1.2.1. 变量
@@ -797,7 +796,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 ##### 1.3.4.2.3. 对象大小
 1. `在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充。`  
     * 实例数据：存放类的属性数据信息，包括父类的属性信息，如果是数组的实例部分还包括数组的长度，这部分内存按4字节对齐。    
-    * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍(8字节对齐)。填充数据不是必须存在的，仅仅是为了字节对齐。   
+    * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐）。填充数据不是必须存在的，仅仅是为了字节对齐。   
 2. JVM中对象头的方式有以下两种（以32位JVM为例）  
     &emsp; 普通对象：  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-60.png)   
@@ -808,7 +807,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     1. Mark Word：  
     &emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "clime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
     &emsp; 这部分主要用来存储对象自身的运行时数据，如hashcode、gc分代年龄等。mark word的位长度为JVM的一个Word大小，也就是说32位JVM的Mark word为32位，64位JVM为64位。
-    为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位，  
+    为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-67.png)   
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-68.png)   
     2. class pointer：  
@@ -845,7 +844,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 1. GC算法  
     * **<font color = "clime">标记-清除算法分为两个阶段：标记阶段和清除阶段。</font>** 不足：清除过程中，扫描两次，效率不高；清除后，产生空间碎片。  
     * `复制：1).（非标记-复制）只扫描一次；` 2). 没有碎片，空间连续； 3). 50%的内存空间始终空闲浪费。  
-    * 标记-整理：1). 没有碎片，空间连续； 2). 不会产生内存减半； 3). 扫描两次，指针需要调整(移动对象)，效率偏低。  
+    * 标记-整理：1). 没有碎片，空间连续； 2). 不会产生内存减半； 3). 扫描两次，指针需要调整（移动对象），效率偏低。  
     &emsp; **<font color = "clime">标记-清除和标记-整理都需要扫描两次。</font>**   
 2. 新生代采用复制算法；老年代采用标记-整理算法。 **<font color = "clime">注意：CMS回收老年代，但采用标记-清除算法；CMS收集器也会在内存空间的碎片化程度已经大到影响对象分配时，采用标记-整理算法收集一次（晋升失败(promotion failed) 或 并发模式失败(concurrent mode failure)），以获得规整的内存空间。</font>**    
     * `新生代采用复制算法。新生代存活率低，存活对象少。标记-清除算法效率高，搬运对象也比较少。`  
@@ -898,7 +897,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 2. ~~对象生存还是死亡？~~  
     1. Object#finalize()⽅法介绍：  
     &emsp; Object#finalize()⽅法什么时候被调⽤？析构函数(finalization)的⽬的是什么？  
-    &emsp; 垃圾回收器(garbage colector)决定回收某对象时，就会运⾏该对象的finalize()⽅法，但是在Java中很不幸，如果内存总是充⾜的，那么垃圾回收可能永远不会进⾏，也就是说filalize() 可能永远不被执⾏，显然指望它做收尾⼯作是靠不住的。  
+    &emsp; `垃圾回收器(garbage colector)决定回收某对象时，就会运⾏该对象的finalize()⽅法。`但是在Java中很不幸，如果内存总是充⾜的，那么垃圾回收可能永远不会进⾏，也就是说filalize() 可能永远不被执⾏，显然指望它做收尾⼯作是靠不住的。  
     &emsp; 那么finalize()究竟是做什么的呢？它最主要的⽤途是回收特殊渠道申请的内存。Java程序有垃圾回收器，所以⼀般情况下内存问题不⽤程序员操⼼。但有⼀种JNI(Java Native Interface)调⽤non-Java程序(C或C++)， finalize()的⼯作就是回收这部分的内存。  
     2. <font color = "red">在可达性分析算法中，不可达的对象也不是一定会死亡的，它们暂时都处于“缓刑”阶段，要真正宣告一个对象“死亡”，至少要经历两次标记过程。</font>  
         1. <font color = "red">判断有没有必要执行Object#finalize()方法</font>  
@@ -908,10 +907,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         &emsp; 如果这个对象被判定为有必要执行finalize()方法，那么此对象将会放置在一个叫做F-Queue的队列中，并在稍后由一个虚拟机自动建立的、低优先级的Finalizer线程去执行它。  
         3. <font color = "red">执行死亡还是逃脱死亡？</font>  
         &emsp; **<font color = "clime">首先，需要知道，finalize()方法是对象逃脱死亡命运的最后一次机会，稍后收集器将对F-Queue队列中的对象进行第二次小规模的标记。</font>**  
-        &emsp; 逃脱死亡：对象想在finalize()方法中成功拯救自己，只要重新与引用链上的任何一个对象建立关联即可，例如把自己(this关键字)赋值给某个类变量或者对象的成员变量，这样在第二次标记时它将被移出“即将回收”的集合。  
+        &emsp; 逃脱死亡：对象想在finalize()方法中成功拯救自己，只要重新与引用链上的任何一个对象建立关联即可，例如把自己（this关键字）赋值给某个类变量或者对象的成员变量，这样在第二次标记时它将被移出“即将回收”的集合。  
         &emsp; 执行死亡：对象没有执行逃脱死亡，那就是死亡了。  
         &emsp; 注：任何对象的finalize()方法都只会被系统调用一次。  
-
 
 ##### 1.3.6.3.2. 方法区(类和常量)回收/类的卸载阶段
 1. Java虚拟机规范对方法区是否实现垃圾回收没有做出强制的规定。存在未实现或未能完整实现方法区类型卸载的垃圾回收器（例如JDK 11的zGC收集器）。    
@@ -944,9 +942,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 收集频率：相对于应用程序的执行，收集操作发生的频率。  
     * 快速：一个对象从诞生到被回收所经历的时间。  
 
-&emsp; <font color  = "red">其中内存占用、吞吐量和停顿时间，三者共同构成了一个“不可能三角”。</font>   
-* 停顿时间越短就越适合需要和用户交互的程序，良好的响应速度能提升用户体验；  
-* 高吞吐量则可以高效地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。  
+    &emsp; <font color  = "red">其中内存占用、吞吐量和停顿时间，三者共同构成了一个“不可能三角”。</font>   
+    * 停顿时间越短就越适合需要和用户交互的程序，良好的响应速度能提升用户体验；  
+    * 高吞吐量则可以高效地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。  
 
 2. 根据运行时，线程执行方式分类：  
     * 串行收集器 -> Serial和Serial Old  
@@ -1143,7 +1141,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         * 被synchronized标记的代码，获取到同步监视器。  
         * 调用了thread.start()启动线程；
 3. **<font color = "red">阻塞状态（BLOCKED）：</font>**  
-    1. **<font color = "clime">阻塞状态是指线程因为某些原因`放弃CPU`，暂时停止运行。</font>** 当线程处于阻塞状态时，Java虚拟机不会给线程分配CPU。直到线程重新进入就绪状态(获取监视器锁)，它才有机会转到运行状态。  
+    1. **<font color = "clime">阻塞状态是指线程因为某些原因`放弃CPU`，暂时停止运行。</font>** 当线程处于阻塞状态时，Java虚拟机不会给线程分配CPU。直到线程重新进入就绪状态（获取监视器锁），它才有机会转到运行状态。  
     2. 操作  
         * **等待阻塞(o.wait->等待对列)：运行的线程执行wait()方法，JVM会把该线程放入等待池中。(wait会释放持有的锁)**
         * **同步阻塞(lock->锁池)：运行的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则JVM会把该线程放入锁池(lock pool)中。**
@@ -1188,8 +1186,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         * 工作任务就是Runnable/Callable接口的实现，可以被线程池执行。
     * **<font color = "red">执行机制（创建线程池的分类）：</font>** Executor接口、ExecutorService接口、ScheduledExecutorService接口
         * ThreadPoolExecutor 是最核心的线程池实现，用来执行被提交的任务。
-        * ScheduledThreadPoolExecutor 是任务调度的线程池实现，可以在给定的延迟后运行命令，或者定期执行命令(它比Timer更灵活)
-        * ForkJoinPool是一个并发执行框架
+        * ScheduledThreadPoolExecutor是任务调度的线程池实现，可以在给定的延迟后运行命令，或者定期执行命令（它比Timer更灵活）。  
+        * ForkJoinPool是一个并发执行框架。
     * 异步计算的结果：Future接口
         * 实现Future接口的FutureTask类，代表异步计算的结果。  
 3. 线程池执行，ExecutorService的API：execute()，提交不需要返回值的任务；`submit()，提交需要返回值的任务，返回值类型是Future`。   
@@ -1226,7 +1224,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 1. **<font color = "clime">线程池设置：</font>**   
     1. `使用自定义的线程池。`共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。`建议根据异步业务类型，合理设置隔离的线程池。`  
     2. `确定线程池的大小（CPU可同时处理线程数量大部分是CPU核数的两倍）`  
-        1. 线程数设置，`建议核心线程数core与最大线程数max一致`
+        1. 线程数设置，`建议核心线程数core与最大线程数max一致`  
             &emsp; `CPU密集型`的意思就是该任务需要`大量运算`，而没有阻塞，CPU一直全速运行。IO密集型，即该任务需要大量的IO，即大量的阻塞。  
             * 如果是CPU密集型应用（多线程处理复杂算法），则线程池大小设置为N+1。
             * 如果是IO密集型（网络IO/磁盘IO）应用（多线程用于数据库数据交互、文件上传下载、网络数据传输等），则线程池大小设置为2N。
@@ -1256,9 +1254,16 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 
 #### 1.4.2.5. ~~CompletionService~~
-&emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务， **<font color = "clime">并方便的集中处理上述任务的结果(且任务最先完成的先返回)。</font>**  
-&emsp; 内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
+&emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务， **<font color = "clime">并方便的集中处理上述任务的结果（且任务最先完成的先返回）。</font>**  
+&emsp; CompletionService，内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
 
+&emsp; java.util.concurrent.CompletionService是对ExecutorService封装的一个增强类，优化了获取异步操作结果的接口。主要解决了Future阻塞的问题。  
+
+```java
+private final Executor executor;
+private final AbstractExecutorService aes;
+private final BlockingQueue<Future<V>> completionQueue;
+```
 
 #### 1.4.2.6. Future相关
 1. **Future是一个接口，它可以对具体的Runnable或者Callable任务进行取消、判断任务是否已取消、查询任务是否完成、获取任务结果。**  
@@ -1340,7 +1345,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 2. 内存屏障  
     &emsp; Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。`内存屏障，禁止处理器重排序，保障缓存一致性。`  
     &emsp; `内存屏障的作用：（~~原子性~~、可见性、有序性）`  
-    1. `（保障可见性）它会强制将对缓存的修改操作立即写入主存；` 如果是写操作，会触发总线嗅探机制(MESI)，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。   
+    1. `（保障可见性）它会强制将对缓存的修改操作立即写入主存；` 如果是写操作，会触发总线嗅探机制（MESI），会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。   
     2. `（保障有序性）阻止屏障两侧的指令重排序。`   
 3. java并发原语：Java内存模型，除了定义了一套规范，还提供了一系列原语，封装了底层实现后，供开发者直接使用。  
 
@@ -1416,10 +1421,6 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 &emsp; 内置锁在Java中被抽象为监视器锁（monitor）。在JDK 1.6之前，监视器锁可以认为直接对应底层操作系统中的互斥量（mutex）。这种同步方式的成本非常高，包括系统调用引起的内核态与用户态切换、线程阻塞造成的线程切换等。因此，后来称这种锁为“重量级锁”。  
 
----
-
-
-&emsp; <font color = "clime">重量级锁是依赖对象内部的monitor锁来实现的，而monitor又依赖操作系统的MutexLock(互斥锁)来实现的，所以重量级锁也称为互斥锁。</font>  
 
 -----------------
 
@@ -1428,19 +1429,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 -----------------
 
-&emsp; **<font color = "clime">为什么说重量级线程开销很大？</font>**  
-&emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，被阻塞的线程不会消耗cpu。 **<font color = "clime">但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态(向内核申请)，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。</font>**  
-&emsp; <font color = "clime">重量级锁是依赖对象内部的monitor锁来实现的，而monitor又依赖操作系统的MutexLock(互斥锁)来实现的，所以重量级锁也称为互斥锁。</font>  
-
------------------
 
 &emsp; 互斥锁（Mutex）是在原子操作API的基础上实现的信号量行为。互斥锁不能进行递归锁定或解锁，能用于交互上下文但是不能用于中断上下文，同一时间只能有一个任务持有互斥锁，而且只有这个任务可以对互斥锁进行解锁。当无法获取锁时，线程进入睡眠等待状态。  
 &emsp; 互斥锁是信号量的特例。信号量的初始值表示有多少个任务可以同时访问共享资源，如果初始值为1，表示只有1个任务可以访问，信号量变成互斥锁（Mutex）。但是互斥锁和信号量又有所区别，互斥锁的加锁和解锁必须在同一线程里对应使用，所以互斥锁只能用于线程的互斥；信号量可以由一个线程释放，另一个线程得到，所以信号量可以用于线程的同步。   
-
------------------
-
-&emsp; **<font color = "clime">为什么说重量级线程开销很大？</font>**  
-&emsp; 当系统检查到锁是重量级锁之后，会把等待想要获得锁的线程进行阻塞，被阻塞的线程不会消耗cpu。 **<font color = "clime">但是阻塞或者唤醒一个线程时，都需要操作系统来帮忙，这就需要从用户态转换到内核态(向内核申请)，而转换状态是需要消耗很多时间的，有可能比用户执行代码的时间还要长。</font>**  
 
 
 ###### 1.4.3.2.3.2. Synchronized优化
@@ -1493,12 +1484,12 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     2. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**  
     3. <font color = "red">实现了有序性，禁止进行指令重排序。</font>  
 2. `Volatile底层原理（happens-before中Volatile的特殊规则）：`查看Volatile的汇编代码。    
-    * **<font color = "clime">在Volatile写前插入写-写[屏障](/docs/java/concurrent/ConcurrencySolve.md)（禁止上面的普通写与下面的Volatile写重排序），在Volatile写后插入写-读屏障（禁止上面的Volatile写与下面可能有的Volatile读/写重排序）。</font>**  
-    * **<font color = "clime">在Volatile读后插入读-读屏障（禁止下面的普通读操作与上面的Volatile读重排序）、读-写屏障（禁止下面所有的普通写操作和上面Volatile读重排序）。</font>**  
+    * **<font color = "clime">在Volatile写前插入`写`-写[屏障](/docs/java/concurrent/ConcurrencySolve.md)（禁止上面的普通写与下面的Volatile写重排序），在Volatile写后插入写-`读`屏障（禁止上面的Volatile写与下面可能有的Volatile读/写重排序）。</font>**  
+    * **<font color = "clime">在Volatile读后插入`读`-读屏障（禁止下面的普通读操作与上面的Volatile读重排序）、读-`写`屏障（禁止下面所有的普通写操作和上面Volatile读重排序）。</font>**  
 3. Volatile为什么不安全（不保证原子性，线程切换）？  
 &emsp; 两个线程执行i++（i++的过程可以分为三步，首先获取i的值，其次对i的值进行加1，最后将得到的新值写回到缓存中），线程1获取i值后被挂起，线程2执行...  
 4. volatile使用场景：  
-    &emsp; 关键字Volatile用于多线程环境下的单次操作（单次读或者单次写）。即Volatile主要使用的场合是在多个线程中可以感知实例变量被更改了，并且可以获得最新的值使用，也就是用多线程读取共享变量时可以获得最新值使用。  
+    &emsp; 关键字Volatile用于多线程环境下的`单次操作（单次读或者单次写）`。即Volatile主要使用的场合是在多个线程中可以感知实例变量被更改了，并且可以获得最新的值使用，也就是用多线程读取共享变量时可以获得最新值使用。  
     1. 全局状态标志。
     2. DCL详解：  
         1. 为什么两次判断？线程1调用第一个if(singleton==null)，可能会被挂起。  
@@ -1519,7 +1510,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-85.png)  
     &emsp; ThreadLocal之所以能达到变量的线程隔离，其实就是每个线程都有一个自己的ThreadLocalMap对象来存储同一个threadLocal实例set的值，而`取值的时候也是根据同一个threadLocal实例去自己的ThreadLocalMap里面找，自然就互不影响了，从而达到线程隔离的目的！`  
 3. **ThreadLocal内存泄露：**  
-    &emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key(ThreadLocal实例)会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
+    &emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key(ThreadLocal实例)会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thread线程退出以后，value的强引用链条才会断掉。</font>  
     &emsp; **<font color = "clime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  
     &emsp; 解决方案：`调用remove()方法`
 4. **ThreadLocalMap的key被回收后，如何获取值？**  
