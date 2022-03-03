@@ -119,5 +119,3 @@ public class CyclicBarrierExample {
 * <font color = "red">CountDownLatch的作用是允许1或N个线程等待其他线程完成执行；而CyclicBarrier则是允许N个线程相互等待。</font>  
 * CountDownLatch的计数器无法被重置；CyclicBarrier的计数器可以被重置后使用，因此它被称为是循环的barrier。  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/tools-1.png)
-
-

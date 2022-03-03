@@ -1585,6 +1585,7 @@ private final BlockingQueue<Future<V>> completionQueue;
         * 出列unparkSuccessor()：首节点的线程释放同步状态后，`将会唤醒(LockSupport.unpark)它的后继节点(next)`，而后继节点将会在获取同步状态成功时将自己设置为首节点。
         * 入列或出列都会使用到[LockSupport](/docs/java/concurrent/LockSupport.md)工具类来阻塞、唤醒线程。    
 2. 方法
+    0. 执行 加锁/解锁 、 阻塞/唤醒 、 队列 这3个步骤。    
     1. 独占模式：  
         * **<font color = "blue">获取同步状态</font>**   
             1. `调用使用者重写的tryAcquire方法，` **<font color = "blue">tryAcquire()尝试直接去获取资源，</font>** 如果成功则直接返回；
@@ -1604,8 +1605,8 @@ private final BlockingQueue<Future<V>> completionQueue;
 1. ReentrantLock与synchronized比较：非公平、非`阻塞`、超时/限时`等待`、可被`中断`、可实现选择性通知  
     1. （支持非公平）ReenTrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁。所谓的公平锁就是先等待的线程先获得锁。  
     2. （支持非阻塞）Lock接口可以尝试非阻塞地获取锁，当前线程尝试获取锁。如果这一时刻锁没有被其他线程获取到，则成功获取并持有锁。  
-    3. （支持超时/限时等待）Lock接口可以在指定的截止时间之前获取锁，如果截止时间到了依旧无法获取锁，则返回。可以让线程尝试获取锁，并在无法获取锁的时候立即返回或者等待一段时间；  
-    4. （可被中断）Lock接口能被中断地获取锁，与synchronized不同，获取到锁的线程能够响应中断，当获取到的锁的线程被中断时，中断异常将会被抛出，同时锁会被释放。可以使线程在等待锁的时候响应中断；  
+    3. （支持超时/限时等待）Lock接口可以在指定的截止时间之前获取锁，如果截止时间到了依旧无法获取锁，则返回。可以让线程尝试获取锁，并在无法获取锁的时候立即返回或者等待一段时间。  
+    4. （可被中断）Lock接口能被中断地获取锁，与synchronized不同，获取到锁的线程能够响应中断，当获取到的锁的线程被中断时，中断异常将会被抛出，同时锁会被释放。可以使线程在等待锁的时候响应中断。  
     5. （可实现选择性通知，锁可以绑定多个条件）ReenTrantLock提供了一个Condition(条件)类，用来实现分组唤醒需要唤醒的一些线程，而不是像synchronized要么随机唤醒一个线程要么唤醒全部线程。  
 2. **<font color = "red">lock()方法描述：</font>**  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-87.png)  
@@ -1617,7 +1618,7 @@ private final BlockingQueue<Future<V>> completionQueue;
         1. AQS#acquire()调用子类NonfairSync#tryAcquire()#nonfairTryAcquire()。 **<font color = "blue">如果锁状态是0，再次CAS抢占锁。</font>** 如果锁状态不是0，判断是否当前线程。    
         2. acquireQueued(addWaiter(Node.EXCLUSIVE), arg) )，其中addWaiter(Node.EXCLUSIVE)入等待队列。  
         3. acquireQueued(final Node node, int arg)，使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
-        4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。  
+        4. 如果线程在等待过程中被中断过，它是不响应的。`只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。`  
 
     &emsp; 用一张流程图总结一下非公平锁的获取锁的过程。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-75.png)  

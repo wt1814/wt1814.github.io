@@ -27,4 +27,6 @@ https://www.cnblogs.com/yougewe/p/9745198.html
 多线程进阶－CyclicBarrier 源码超详细解析，学到就赚到 
 https://mp.weixin.qq.com/s/odsutVotjJjXFX4nAhb54w
 
+java并发工具类
+https://souche.yuque.com/beijing-myye7/dvgaei/ver0q9
 -->
