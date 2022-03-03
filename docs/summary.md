@@ -1330,7 +1330,12 @@ private final BlockingQueue<Future<V>> completionQueue;
         2. 其他cpu通过 总线嗅探机制 可以感知到数据的变化从而将自己缓存里的数据失效。  
         &emsp; 总线嗅探， **<font color = "red">每个CPU不断嗅探总线上传播的数据来检查自己缓存值是否过期了，如果处理器发现自己的缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置为无效状态，当处理器对这个数据进行修改操作的时候，会重新从内存中把数据读取到处理器缓存中。</font>**    
         2. 总线嗅探会带来总线风暴。  
-2. 操作系统的内存屏障：    
+2. 操作系统的内存屏障：   
+    &emsp; 不同CPU硬件对于JVM的内存屏障规范实现指令不一样。  
+    &emsp; Intel CPU硬件级内存屏障实现指令：  
+    * Ifence：是一种Load Barrier读屏障，实现LoadLoad屏障
+    * sfence：是一种Store Barrier写屏障，实现StoreStore屏障
+    * mfence：是一种全能型的屏障，具备Ifencce和sfence的能留，具备所有屏障能力
 
 ##### 1.4.3.1.4. Java解决并发安全
 1. JMM中的happens-before原则：  
@@ -1343,6 +1348,9 @@ private final BlockingQueue<Future<V>> completionQueue;
     `happens-before原则有管理锁定（lock）规则、volatile变量规则、线程启动规则（Thread.start()）、线程终止规则（Thread.join()）、线程中断规则（Thread.interrupt()）...`    
     &emsp; volatile变量规则就是使用内存屏障保证线程可见性。  
 2. 内存屏障  
+    &emsp; JVM底层简化了内存屏障硬件指令的实现。  
+        * lock前缀：lock指令不是一种内存屏障，但是它能完成类似内存屏障的功能。  
+    
     &emsp; Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。`内存屏障，禁止处理器重排序，保障缓存一致性。`  
     &emsp; `内存屏障的作用：（~~原子性~~、可见性、有序性）`  
     1. `（保障可见性）它会强制将对缓存的修改操作立即写入主存；` 如果是写操作，会触发总线嗅探机制（MESI），会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。   
