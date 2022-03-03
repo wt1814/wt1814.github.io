@@ -1,88 +1,23 @@
 <!-- TOC -->
 
 - [1. ~~通信~~](#1-通信)
-    - [1.1. 线程通信](#11-线程通信)
-        - [1.1.1. wait() / notify()](#111-wait--notify)
-        - [1.1.2. 实现生产者和消费者问题](#112-实现生产者和消费者问题)
-            - [1.1.2.1. 仓库类](#1121-仓库类)
-            - [1.1.2.2. 生产者](#1122-生产者)
-            - [1.1.2.3. 消费者](#1123-消费者)
-            - [1.1.2.4. 测试](#1124-测试)
-        - [1.1.3. 多线程顺序打印ABC-join方法](#113-多线程顺序打印abc-join方法)
-    - [1.2. 进程通信](#12-进程通信)
+    - [1.1. 实现生产者和消费者问题](#11-实现生产者和消费者问题)
+        - [1.1.1. 仓库类](#111-仓库类)
+        - [1.1.2. 生产者](#112-生产者)
+        - [1.1.3. 消费者](#113-消费者)
+        - [1.1.4. 测试](#114-测试)
+    - [1.2. 线程通信](#12-线程通信)
+        - [1.2.1. wait() / notify()](#121-wait--notify)
+        - [1.2.2. 多线程顺序打印ABC-join方法](#122-多线程顺序打印abc-join方法)
+    - [1.3. 分布式通信](#13-分布式通信)
+    - [1.4. 进程通信](#14-进程通信)
 
 <!-- /TOC -->
 
 # 1. ~~通信~~
-## 1.1. 线程通信  
-<!-- 
-https://blog.csdn.net/yanpenglei/article/details/79556591
 
-&emsp; 生产者消费者问题，Java能实现的几种方法：  
 
-* wait() / notify()方法
-* await() / signal()方法
-* BlockingQueue阻塞队列方法
-* 信号量
-* 管道
--->
-&emsp; 分布式系统中说的两种通信机制：共享内存机制和消息通信机制。  
-
-&emsp; 单机中实现线程通信的方式：  
-1. 等待、通知机制。wait/notify\notifyAll（synchronized同步方法或同步块中使用）实现内存可见性，及生产消费模式的相互唤醒机制；  
-2. 等待、通知机制。同步锁（Lock）的Condition（await\signal\signalAll）；  
-3. Thread#join()；  
-4. 管道，共享内存，实现数据的共享，满足读写模式。管道通信就是使用java.io.PipedInputStream和java.io.PipedOutputStream进行通信。  
-
-&emsp; 生产者消费者问题，Java能实现的几种方法：  
-
-* wait() / notify()方法
-* await() / signal()方法
-* BlockingQueue阻塞队列方法
-* 信号量
-* 管道
-
-### 1.1.1. wait() / notify()  
-1. wait()、notify/notifyAll() 方法是Object的本地final方法，无法被重写。  
-2. wait()使当前线程阻塞，前提是必须先获得锁，一般配合synchronized关键字使用，即一般在synchronized同步代码块里使用 wait()、notify/notifyAll() 方法。  
-3. 由于 wait()、notify/notifyAll() 在synchronized 代码块执行，说明当前线程一定是获取了锁的。  
-&emsp; 当线程执行wait()方法时候，会释放当前的锁，然后让出CPU，进入等待状态。  
-&emsp; 只有当 notify/notifyAll() 被执行时候，才会唤醒一个或多个正处于等待状态的线程，然后继续往下执行，直到执行完synchronized 代码块的代码或是中途遇到wait() ，再次释放锁。  
-&emsp; 也就是说，notify/notifyAll() 的执行只是唤醒沉睡的线程，而不会立即释放锁，锁的释放要看代码块的具体执行情况。所以在编程中，尽量在使用了notify/notifyAll() 后立即退出临界区，以唤醒其他线程让其获得锁。  
-4. wait() 需要被try catch包围，以便发生异常中断也可以使wait等待的线程唤醒。
-5. notify 和wait 的顺序不能错，如果A线程先执行notify方法，B线程在执行wait方法，那么B线程是无法被唤醒的。
-6. notify 和 notifyAll的区别  
-&emsp; notify方法只唤醒一个等待(对象的)线程并使该线程开始执行。所以如果有多个线程等待一个对象，这个方法只会唤醒其中一个线程，选择哪个线程取决于操作系统对多线程管理的实现。notifyAll 会唤醒所有等待(对象的)线程，尽管哪一个线程将会第一个处理取决于操作系统的实现。如果当前情况下有多个线程需要被唤醒，推荐使用notifyAll 方法。比如在生产者-消费者里面的使用，每次都需要唤醒所有的消费者或是生产者，以判断程序是否可以继续往下执行。
-7. 在多线程中要测试某个条件的变化，使用if 还是while？  
-&emsp; 要注意，notify唤醒沉睡的线程后，线程会接着上次的执行继续往下执行。所以在进行条件判断时候，可以先把 wait 语句忽略不计来进行考虑；显然，要确保程序一定要执行，并且要保证程序直到满足一定的条件再执行，要使用while进行等待，直到满足条件才继续往下执行。如下代码：  
-
-    ```java
-    public class K {
-        //状态锁
-        private Object lock;
-        //条件变量
-        private int now,need;
-        public void produce(int num){
-            //同步
-            synchronized (lock){
-            //当前有的不满足需要，进行等待，直到满足条件
-                while(now < need){
-                    try {
-                        //等待阻塞
-                        lock.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    System.out.println("我被唤醒了！");
-                }
-            // 做其他的事情
-            }
-        }
-    }
-    ```
-    &emsp; 显然，只有当前值满足需要值的时候，线程才可以往下执行，所以，必须使用while 循环阻塞。注意，wait() 当被唤醒时候，只是让while循环继续往下走。如果此处用if的话，意味着if继续往下走，会跳出if语句块。  
-
-### 1.1.2. 实现生产者和消费者问题   
+## 1.1. 实现生产者和消费者问题   
 
 &emsp; 什么是生产者-消费者问题呢？  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-37.png)  
@@ -91,7 +26,16 @@ https://blog.csdn.net/yanpenglei/article/details/79556591
 2. 消费者消耗池子里的资源，前提是池子的资源不为空，否则消费者暂停消耗，进入等待直到池子里有资源数满足自己的需求。  
 
 
-#### 1.1.2.1. 仓库类  
+&emsp; 生产者消费者问题，Java能实现的几种方法：  
+
+* wait() / notify()方法
+* await() / signal()方法
+* BlockingQueue阻塞队列方法
+* 信号量
+* 管道
+
+
+### 1.1.1. 仓库类  
 
 ```java
 import java.util.LinkedList;
@@ -170,7 +114,7 @@ public interface AbstractStorage {
 }
 ```
 
-#### 1.1.2.2. 生产者  
+### 1.1.2. 生产者  
 
 ```java
 public class Producer extends Thread{
@@ -203,7 +147,7 @@ public class Producer extends Thread{
 }
 ```
 
-#### 1.1.2.3. 消费者  
+### 1.1.3. 消费者  
 
 ```java
 public class Consumer extends Thread{
@@ -237,7 +181,7 @@ public class Consumer extends Thread{
 }
 ```
 
-#### 1.1.2.4. 测试  
+### 1.1.4. 测试  
 
 ```java
 public class Test{
@@ -317,7 +261,70 @@ public class Test{
 ```
 
 
-### 1.1.3. 多线程顺序打印ABC-join方法
+## 1.2. 线程通信  
+<!-- 
+https://blog.csdn.net/yanpenglei/article/details/79556591
+
+&emsp; 生产者消费者问题，Java能实现的几种方法：  
+
+* wait() / notify()方法
+* await() / signal()方法
+* BlockingQueue阻塞队列方法
+* 信号量
+* 管道
+-->
+
+&emsp; 单机中实现线程通信的方式：  
+1. 等待、通知机制。wait/notify\notifyAll（synchronized同步方法或同步块中使用）实现内存可见性，及生产消费模式的相互唤醒机制；  
+2. 等待、通知机制。同步锁（Lock）的Condition（await\signal\signalAll）；  
+3. Thread#join()；  
+4. 管道，共享内存，实现数据的共享，满足读写模式。管道通信就是使用java.io.PipedInputStream和java.io.PipedOutputStream进行通信。  
+
+
+
+### 1.2.1. wait() / notify()  
+1. wait()、notify/notifyAll() 方法是Object的本地final方法，无法被重写。  
+2. wait()使当前线程阻塞，前提是必须先获得锁，一般配合synchronized关键字使用，即一般在synchronized同步代码块里使用 wait()、notify/notifyAll() 方法。  
+3. 由于 wait()、notify/notifyAll() 在synchronized 代码块执行，说明当前线程一定是获取了锁的。  
+&emsp; 当线程执行wait()方法时候，会释放当前的锁，然后让出CPU，进入等待状态。  
+&emsp; 只有当 notify/notifyAll() 被执行时候，才会唤醒一个或多个正处于等待状态的线程，然后继续往下执行，直到执行完synchronized 代码块的代码或是中途遇到wait() ，再次释放锁。  
+&emsp; 也就是说，notify/notifyAll() 的执行只是唤醒沉睡的线程，而不会立即释放锁，锁的释放要看代码块的具体执行情况。所以在编程中，尽量在使用了notify/notifyAll() 后立即退出临界区，以唤醒其他线程让其获得锁。  
+4. wait() 需要被try catch包围，以便发生异常中断也可以使wait等待的线程唤醒。
+5. notify 和wait 的顺序不能错，如果A线程先执行notify方法，B线程在执行wait方法，那么B线程是无法被唤醒的。
+6. notify 和 notifyAll的区别  
+&emsp; notify方法只唤醒一个等待(对象的)线程并使该线程开始执行。所以如果有多个线程等待一个对象，这个方法只会唤醒其中一个线程，选择哪个线程取决于操作系统对多线程管理的实现。notifyAll 会唤醒所有等待(对象的)线程，尽管哪一个线程将会第一个处理取决于操作系统的实现。如果当前情况下有多个线程需要被唤醒，推荐使用notifyAll 方法。比如在生产者-消费者里面的使用，每次都需要唤醒所有的消费者或是生产者，以判断程序是否可以继续往下执行。
+7. 在多线程中要测试某个条件的变化，使用if 还是while？  
+&emsp; 要注意，notify唤醒沉睡的线程后，线程会接着上次的执行继续往下执行。所以在进行条件判断时候，可以先把 wait 语句忽略不计来进行考虑；显然，要确保程序一定要执行，并且要保证程序直到满足一定的条件再执行，要使用while进行等待，直到满足条件才继续往下执行。如下代码：  
+
+    ```java
+    public class K {
+        //状态锁
+        private Object lock;
+        //条件变量
+        private int now,need;
+        public void produce(int num){
+            //同步
+            synchronized (lock){
+            //当前有的不满足需要，进行等待，直到满足条件
+                while(now < need){
+                    try {
+                        //等待阻塞
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("我被唤醒了！");
+                }
+            // 做其他的事情
+            }
+        }
+    }
+    ```
+    &emsp; 显然，只有当前值满足需要值的时候，线程才可以往下执行，所以，必须使用while 循环阻塞。注意，wait() 当被唤醒时候，只是让while循环继续往下走。如果此处用if的话，意味着if继续往下走，会跳出if语句块。  
+
+
+
+### 1.2.2. 多线程顺序打印ABC-join方法
 
 &emsp; 当B线程执行到了A线程的join()方法时，B就会等待，等A线程都运行完，B线程才会执行。  
 
@@ -378,7 +385,11 @@ class ThreadC extends Thread{
 }
 ```
 
-## 1.2. 进程通信  
+## 1.3. 分布式通信
+&emsp; 分布式系统中说的两种通信机制：共享内存机制和消息通信机制。  
+
+
+## 1.4. 进程通信  
 <!-- 
 https://mp.weixin.qq.com/s/mblyh6XrLj1bCwL0Evs-Vg
 -->
@@ -392,7 +403,3 @@ https://mp.weixin.qq.com/s/mblyh6XrLj1bCwL0Evs-Vg
 6. 内存映射(mapped memory)：内存映射允许任何多个进程间通信，每一个使用该机制的进程通过把一个共享的文件映射到自己的进程地址空间来实现它。 Java中有类 MappedByteBuffer实现内存映射。  
 7. 信号量(semaphore)：信号量是一个计数器，可以用来控制多个进程对共享资源的访问。它常作为一种锁机制，防止某进程正在访问共享资源时，其他进程也访问该资源。因此，主要作为进程间以及同一进程内不同线程之间的同步手段。  
 8. 套接口(Socket)：更为一般的进程间通信机制，可用于不同机器之间的进程间通信。起初是由Unix系统的BSD分支开发出来的，但现在一般可以移植到其它类Unix系统上：Linux和System V的变种都支持套接字。  
-
-
-
-

@@ -1537,19 +1537,19 @@ private final BlockingQueue<Future<V>> completionQueue;
 3. ThreadLocal优化：FastThreadLocal
 
 #### 1.4.3.3. 线程通信(生产者消费者问题)
-&emsp; 单机中实现线程通信的方式：  
-1. 等待、通知机制。wait/notify\notifyAll（synchronized同步方法或同步块中使用）实现内存可见性，及生产消费模式的相互唤醒机制；  
-2. 等待、通知机制。同步锁（Lock）的Condition（await\signal\signalAll）；  
-3. Thread#join()；  
-4. 管道，共享内存，实现数据的共享，满足读写模式。管道通信就是使用java.io.PipedInputStream和java.io.PipedOutputStream进行通信。  
 
-&emsp; 生产者消费者问题，Java能实现的几种方法：  
-
-* wait() / notify()方法
-* await() / signal()方法
-* BlockingQueue阻塞队列方法
-* 信号量
-* 管道
+1. 生产者消费者问题，Java能实现的几种方法：  
+    * wait() / notify()方法
+    * await() / signal()方法
+    * BlockingQueue阻塞队列方法
+    * 信号量
+    * 管道
+2. 单机中实现线程通信的方式：  
+    1. 等待、通知机制。wait/notify/notifyAll（synchronized同步方法或同步块中使用）实现内存可见性，及生产消费模式的相互唤醒机制；  
+    2. 等待、通知机制。同步锁（Lock）的Condition（await\signal\signalAll）；  
+    3. Thread#join()；  
+    4. 管道，共享内存，实现数据的共享，满足读写模式。管道通信就是使用java.io.PipedInputStream和java.io.PipedOutputStream进行通信。  
+3. 分布式系统中说的两种通信机制：共享内存机制和消息通信机制。  
 
 #### 1.4.3.4. 线程活跃性
 
