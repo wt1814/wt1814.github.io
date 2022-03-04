@@ -17,6 +17,11 @@
 # 1. 布谷鸟过滤器  
 <!-- 
 
+布谷鸟过滤器
+https://www.cnblogs.com/zhaodongge/p/15067657.html
+https://blog.csdn.net/qq_17305249/article/details/94996252
+https://www.cnblogs.com/Courage129/p/14337466.html
+
 https://www.cnblogs.com/wlxj/p/15492608.html
 
 http://www.linvon.cn/posts/cuckoo/
