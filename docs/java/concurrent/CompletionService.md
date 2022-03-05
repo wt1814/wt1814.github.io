@@ -17,12 +17,18 @@ private final AbstractExecutorService aes;
 private final BlockingQueue<Future<V>> completionQueue;
 ```
 
+------------
+
+&emsp; CompletionService 之所以能够做到这点，是因为它没有采取依次遍历 Future 的方式，而是在内部维护了一个保存Future类型的的结果队列，当任务的任务完成后马上将结果放入队列，那么从队列中取到的就是最早完成的结果。  
+&emsp; 通过使用BlockingQueue的take或poll方法，则可以得到结果。在BlockingQueue不存在元素时，这两个操作会阻塞，一旦有结果加入，则立即返回。  
+&emsp; 如果队列为空，那么 take() 方法会阻塞直到队列中出现结果为止。CompletionService 还提供一个 poll() 方法，返回值与 take() 方法一样，不同之处在于它不会阻塞，如果队列为空则立刻返回 null。这算是给用户多一种选择。  
+
 
 # 1. ~~CompletionService~~  
 <!-- 
 https://blog.csdn.net/qq877728715/article/details/114446658
 
-
+https://blog.csdn.net/qq877728715/article/details/114446658
 -->
 
 <!-- 

@@ -1265,6 +1265,11 @@ private final AbstractExecutorService aes;
 private final BlockingQueue<Future<V>> completionQueue;
 ```
 
+----------------
+&emsp; CompletionService 之所以能够做到这点，是因为它没有采取依次遍历 Future 的方式，而是在内部维护了一个保存Future类型的的结果队列，当任务的任务完成后马上将结果放入队列，那么从队列中取到的就是最早完成的结果。  
+&emsp; 通过使用BlockingQueue的take或poll方法，则可以得到结果。在BlockingQueue不存在元素时，这两个操作会阻塞，一旦有结果加入，则立即返回。  
+&emsp; 如果队列为空，那么 take() 方法会阻塞直到队列中出现结果为止。CompletionService 还提供一个 poll() 方法，返回值与 take() 方法一样，不同之处在于它不会阻塞，如果队列为空则立刻返回 null。这算是给用户多一种选择。  
+
 #### 1.4.2.6. Future相关
 1. **Future是一个接口，它可以对具体的Runnable或者Callable任务进行取消、判断任务是否已取消、查询任务是否完成、获取任务结果。**  
 2. JDK1.5为Future接口提供了一个实现类FutureTask，表示一个可以取消的异步运算。它有启动和取消运算、查询运算是否完成和取回运算结果等方法。  
@@ -1282,6 +1287,36 @@ private final BlockingQueue<Future<V>> completionQueue;
 * thenCombine：结合两个CompletionStage的结果，进行转化后返回。  
 * applyToEither：两个CompletionStage，谁计算的快，就用那个CompletionStage的结果进行下一步的处理。  
 * ...
+
+------------------
+
+
+&emsp; <font color = "red">从Java 8开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。</font>  
+&emsp; ⚠️注：异步回调，主线程不会阻塞。  
+&emsp; CompletableFuture提供了丰富的API对结果进行处理。  
+
+-----------
+
+
+&emsp; 在Java 8中, 新增加了一个包含50个方法左右的类: CompletableFuture，默认依靠fork/join框架启动新的线程实现异步与并发的，提供了非常强大的Future的扩展功能，可以帮助我们简化异步编程的复杂性，提供了函数式编程的能力，可以通过回调函数的方式处理返回结果，并且提供了转换和组合CompletableFuture的方法。   
+&emsp; 主要是为了解决Future模式的缺点：   
+1. Future虽然可以实现异步获取线程的执行结果，但是Future没有提供通知机制，调用方无法得知Future什么时候执行完的问题。  
+2. 想要获取Future的结果，要么使用阻塞， 在future.get()的地方等待Future返回结果，这时会变成同步操作。要么使用isDone()方法进行轮询，又会耗费无谓的 CPU 资源。  
+3. 从 Java 8 开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。  
+
+&emsp; **CompletionStage介绍：**    
+1. `CompletionStage（完成阶段）`  
+    &emsp; CompletionStage: 代表异步任务执行过程中的某一个阶段，一个阶段完成以后可能会触发另外一个阶段  
+    &emsp; 一个阶段的执行可以是一个Function，Consumer或者Runnable。比如：  
+	```java
+    stage.thenApply(x -> square(x))
+    	 .thenAccept(x -> System.out.print(x))
+    	 .thenRun(() -> System.out.println())
+	```
+    &emsp; 一个阶段的执行可能是被单个阶段的完成触发，也可能是由多个阶段一起触发  
+
+2. CompletionStage接口实现流式编程  
+    &emsp; 此接口包含38个方法、这些方法主要是为了支持函数式编程中流式处理。  
 
 
 ### 1.4.3. 并发编程

@@ -14,10 +14,34 @@
 &emsp; ⚠️注：异步回调，主线程不会阻塞。  
 &emsp; CompletableFuture提供了丰富的API对结果进行处理。  
 
+-----------
+
+
+&emsp; 在Java 8中, 新增加了一个包含50个方法左右的类: CompletableFuture，默认依靠fork/join框架启动新的线程实现异步与并发的，提供了非常强大的Future的扩展功能，可以帮助我们简化异步编程的复杂性，提供了函数式编程的能力，可以通过回调函数的方式处理返回结果，并且提供了转换和组合CompletableFuture的方法。   
+&emsp; 主要是为了解决Future模式的缺点：   
+1. Future虽然可以实现异步获取线程的执行结果，但是Future没有提供通知机制，调用方无法得知Future什么时候执行完的问题。  
+2. 想要获取Future的结果，要么使用阻塞， 在future.get()的地方等待Future返回结果，这时会变成同步操作。要么使用isDone()方法进行轮询，又会耗费无谓的 CPU 资源。  
+3. 从 Java 8 开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。  
+
+&emsp; **CompletionStage介绍：**    
+1. `CompletionStage（完成阶段）`  
+    &emsp; CompletionStage: 代表异步任务执行过程中的某一个阶段，一个阶段完成以后可能会触发另外一个阶段  
+    &emsp; 一个阶段的执行可以是一个Function，Consumer或者Runnable。比如：  
+	```java
+    stage.thenApply(x -> square(x))
+    	 .thenAccept(x -> System.out.print(x))
+    	 .thenRun(() -> System.out.println())
+	```
+    &emsp; 一个阶段的执行可能是被单个阶段的完成触发，也可能是由多个阶段一起触发  
+
+2. CompletionStage接口实现流式编程  
+    &emsp; 此接口包含38个方法、这些方法主要是为了支持函数式编程中流式处理。  
+
 # 1. ~~CompletableFuture<T>~~  
 <!--
 *** CompletableFuture实现原理和使用场景 
 https://mp.weixin.qq.com/s/vppkWAE42Rc8MCzOlWeFaw
+https://blog.csdn.net/qq877728715/article/details/114446658
 
 异步神器：CompletableFuture实现原理和使用场景
 https://mp.weixin.qq.com/s/w5aRflM1rtzrSKNbHWuwiQ
