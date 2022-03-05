@@ -32,6 +32,8 @@ https://mp.weixin.qq.com/s/i3wLeCSxqWKrTwgtfelumQ
 <!-- 
 SpringBoot集成MyBatis的分页插件PageHelper
 https://www.cnblogs.com/leeego-123/articles/10832926.html
+
+https://pagehelper.github.io/docs/howtouse/
 -->
 
 
