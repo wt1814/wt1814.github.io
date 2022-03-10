@@ -562,6 +562,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 #### Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
+[Redis安装](/docs/microService/Redis/RedisInstall.md)  
 [Redis数据类型](/docs/microService/Redis/RedisStructure.md)  
 &emsp; [Redis基本数据类型](/docs/microService/Redis/RedisBasicStructure.md)  
 &emsp; [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  

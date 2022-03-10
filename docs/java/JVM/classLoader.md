@@ -12,6 +12,7 @@
                 - [1.3.2.1.3. Tomcat](#13213-tomcat)
                 - [1.3.2.1.4. Spring](#13214-spring)
             - [1.3.2.2. 小结：两种破坏方式](#1322-小结两种破坏方式)
+        - [自己写的java.lang.String可以让jvm加载到吗？](#自己写的javalangstring可以让jvm加载到吗)
     - [1.4. 类加载器应用](#14-类加载器应用)
         - [1.4.1. 自定义类加载器](#141-自定义类加载器)
         - [1.4.2. 查看Boostrap ClassLoader 加载的类库](#142-查看boostrap-classloader-加载的类库)
@@ -196,6 +197,12 @@ https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 1. 继承ClassLoader，重写loadClass()方法。  
 2. `使用线程上下文类加载器(Thread Context ClassLoader)`
 
+
+### 自己写的java.lang.String可以让jvm加载到吗？  
+<!-- 
+
+https://zhuanlan.zhihu.com/p/311494771
+-->
 
 ## 1.4. 类加载器应用  
 ### 1.4.1. 自定义类加载器  

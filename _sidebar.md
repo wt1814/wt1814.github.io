@@ -415,6 +415,7 @@
     * [Redis热点key](/docs/cache/hotspotKey.md)  
     * [缓存更新](/docs/cache/CacheUpdate.md)  
     * [Redis](/docs/microService/Redis/RedisSummary.md)   
+    * [Redis安装](/docs/microService/Redis/RedisInstall.md)  
     * [Redis数据类型](/docs/microService/Redis/RedisStructure.md)  
         * [Redis基本数据类型](/docs/microService/Redis/RedisBasicStructure.md)  
         * [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
