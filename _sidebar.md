@@ -315,6 +315,7 @@
         * [PageHelper](/docs/SSM/MyBatis/PageHelper.md)    
     * [MyBatis解析](/docs/SSM/MyBatis/MybatisAnalysis.md)  
         * [MyBatis架构](/docs/SSM/MyBatis/MybatisFramework.md)  
+        * [MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
         * [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
         * [Spring整合MyBatis原理](/docs/SSM/MyBatis/SpringMybatisPrinciple.md)  
         * [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
