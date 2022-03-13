@@ -47,6 +47,9 @@
     - [Linux操作系统](#linux操作系统)
     - [常用工具](#常用工具)
     - [算法](#算法)
+    - [源码环境搭建](#源码环境搭建)
+        - [SSM](#ssm-1)
+        - [微服务](#微服务)
 
 <!-- /TOC -->
 
@@ -375,7 +378,6 @@
 ### Spring  
 [Spring](/docs/SSM/Spring/Spring.md)  
 [学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
-[Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
 [手写Spring](/docs/SSM/Spring/HandwrittenSpring.md)  
 [SpringIOC解析](/docs/SSM/Spring/SpringIOC.md)  
 &emsp; [容器初始化详解](/docs/SSM/Spring/ContainerInit.md)  
@@ -413,7 +415,6 @@
 &emsp; [PageHelper](/docs/SSM/MyBatis/PageHelper.md)  
 [MyBatis解析](/docs/SSM/MyBatis/MybatisAnalysis.md)  
 &emsp; [MyBatis架构](/docs/SSM/MyBatis/MybatisFramework.md)  
-&emsp; [MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
 &emsp; [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
 &emsp; [Spring整合MyBatis原理](/docs/SSM/MyBatis/SpringMybatisPrinciple.md)  
 &emsp; [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
@@ -433,7 +434,6 @@
 [学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
 [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
 [SpringBoot源码](/docs/microService/SpringBoot/SpringBootSource.md)  
-&emsp; [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
 &emsp; [SpringBoot启动过程](/docs/microService/SpringBoot/SpringBootRun.md)  
 &emsp; &emsp; [SpringApplication初始化](/docs/microService/SpringBoot/SpringApplicationInit.md)  
 &emsp; &emsp; [run()方法运行过程](/docs/microService/SpringBoot/runProcess.md)  
@@ -482,7 +482,6 @@
 &emsp; &emsp; [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
 &emsp; &emsp; [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
 [Dubbo运行流程源码解析](/docs/microService/dubbo/DubboSource.md)  
-&emsp; [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
 &emsp; [初始化源码解析](/docs/microService/dubbo/dubboSpring.md)  
 &emsp; [服务暴露源码解析](/docs/microService/dubbo/export.md)  
 &emsp; [服务引用源码解析](/docs/microService/dubbo/introduce.md)  
@@ -873,3 +872,14 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [HyperLogLog](/docs/function/HyperLogLog.md)  
 &emsp; [Trie](/docs/function/Trie.md)  
 [大数据和空间限制](/docs/function/bigdata.md)  
+
+
+## 源码环境搭建
+### SSM
+[Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
+[MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
+
+### 微服务
+[SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
+[Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
+[Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)    
