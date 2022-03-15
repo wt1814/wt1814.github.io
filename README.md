@@ -48,6 +48,7 @@
     - [常用工具](#常用工具)
     - [算法](#算法)
     - [源码环境搭建](#源码环境搭建)
+        - [JDK](#jdk)
         - [SSM](#ssm-1)
         - [微服务](#微服务)
 
@@ -61,7 +62,6 @@
 ## Java  
 ### Java基础
 [Java基础](/docs/java/basis/JavaBasic.md)  
-&emsp; [JDK源码](/docs/java/basis/JDKSource.md)  
 &emsp; [关键字](/docs/java/basis/keyword.md)  
 &emsp; [内部类](/docs/java/basis/InnerClass.md)  
 &emsp; [代码块](/docs/java/basis/CodeBlock.md)  
@@ -876,6 +876,9 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 
 ## 源码环境搭建
+### JDK
+[JDK1.8源码搭建](/docs/java/basis/JDKSource.md)  
+
 ### SSM
 [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
 [MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
