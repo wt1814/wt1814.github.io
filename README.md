@@ -48,6 +48,7 @@
     - [常用工具](#常用工具)
     - [算法](#算法)
     - [源码环境搭建](#源码环境搭建)
+    - [服务器软件搭建](#服务器软件搭建)
         - [SSM](#ssm-1)
         - [微服务](#微服务)
 
@@ -875,6 +876,11 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 
 ## 源码环境搭建
+## 服务器软件搭建
+<!-- 
+https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164718060116780255298678%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=164718060116780255298678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v29_name-2-102999744.nonecase&utm_term=%E9%98%BF%E9%87%8C%E4%BA%91&spm=1018.2226.3001.4450
+-->
+
 ### SSM
 [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
 [MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
