@@ -3,7 +3,6 @@
 * [大总结2](/docs/summaryTwo.md)  
 * Java  
     * [Java基础](/docs/java/basis/JavaBasic.md)  
-        * [JDK源码](/docs/java/basis/JDKSource.md)  
         * [关键字](/docs/java/basis/keyword.md)  
         * [内部类](/docs/java/basis/InnerClass.md)  
         * [代码块](/docs/java/basis/CodeBlock.md)  
@@ -415,6 +414,7 @@
     * [Redis热点key](/docs/cache/hotspotKey.md)  
     * [缓存更新](/docs/cache/CacheUpdate.md)  
     * [Redis](/docs/microService/Redis/RedisSummary.md)   
+    * [Redis安装](/docs/microService/Redis/RedisInstall.md)  
     * [Redis数据类型](/docs/microService/Redis/RedisStructure.md)  
         * [Redis基本数据类型](/docs/microService/Redis/RedisBasicStructure.md)  
         * [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
@@ -663,7 +663,9 @@
         * [HyperLogLog](/docs/function/HyperLogLog.md)  
         * [Trie](/docs/function/Trie.md)  
     * [大数据和空间限制](/docs/function/bigdata.md)  
+* 服务器软件搭建
 * 源码环境搭建
+    * [JDK源码](/docs/java/basis/JDKSource.md)  
     * SSM
         * [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
         * [MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
@@ -671,3 +673,5 @@
         * [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
         * [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
         * [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
+
+

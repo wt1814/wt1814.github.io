@@ -47,8 +47,9 @@
     - [Linux操作系统](#linux操作系统)
     - [常用工具](#常用工具)
     - [算法](#算法)
-    - [源码环境搭建](#源码环境搭建)
     - [服务器软件搭建](#服务器软件搭建)
+    - [源码环境搭建](#源码环境搭建)
+        - [JDK](#jdk)
         - [SSM](#ssm-1)
         - [微服务](#微服务)
 
@@ -62,7 +63,6 @@
 ## Java  
 ### Java基础
 [Java基础](/docs/java/basis/JavaBasic.md)  
-&emsp; [JDK源码](/docs/java/basis/JDKSource.md)  
 &emsp; [关键字](/docs/java/basis/keyword.md)  
 &emsp; [内部类](/docs/java/basis/InnerClass.md)  
 &emsp; [代码块](/docs/java/basis/CodeBlock.md)  
@@ -563,6 +563,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 #### Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
+[Redis安装](/docs/microService/Redis/RedisInstall.md)  
 [Redis数据类型](/docs/microService/Redis/RedisStructure.md)  
 &emsp; [Redis基本数据类型](/docs/microService/Redis/RedisBasicStructure.md)  
 &emsp; [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
@@ -874,12 +875,15 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [Trie](/docs/function/Trie.md)  
 [大数据和空间限制](/docs/function/bigdata.md)  
 
-
-## 源码环境搭建
 ## 服务器软件搭建
 <!-- 
 https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164718060116780255298678%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=164718060116780255298678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v29_name-2-102999744.nonecase&utm_term=%E9%98%BF%E9%87%8C%E4%BA%91&spm=1018.2226.3001.4450
 -->
+
+## 源码环境搭建
+
+### JDK
+[JDK1.8源码搭建](/docs/java/basis/JDKSource.md)  
 
 ### SSM
 [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
@@ -888,4 +892,4 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 ### 微服务
 [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
 [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
-[Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)    
+[Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  

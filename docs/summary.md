@@ -43,7 +43,7 @@
         - [1.3.2. 编译成Class字节码文件](#132-编译成class字节码文件)
         - [1.3.3. 类加载](#133-类加载)
             - [1.3.3.1. JVM类的加载](#1331-jvm类的加载)
-            - [1.3.3.2. JVM类加载器](#1332-jvm类加载器)
+            - [1.3.3.2. ~~JVM类加载器~~](#1332-jvm类加载器)
         - [1.3.4. 运行时数据区/内存结构](#134-运行时数据区内存结构)
             - [1.3.4.1. JVM内存结构](#1341-jvm内存结构)
                 - [1.3.4.1.1. JVM内存结构](#13411-jvm内存结构)
@@ -657,7 +657,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 6. 初始化：执行`static代码块(cinit)进行初始化`，如果存在父类，先对父类进行初始化。  
 7. 扩展：从class文件与JVM加载机制理解final、static、static final  
 
-#### 1.3.3.2. JVM类加载器
+#### 1.3.3.2. ~~JVM类加载器~~
 1. JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。  
 &emsp; 自定义类加载器：需要继承自ClassLoader，`重写方法findClass()`（⚠`破坏类加载器是重写loadClass()方法`）。      
 2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。  
@@ -687,6 +687,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     2. `破坏双亲委派两种方式：`  
         1. 继承ClassLoader，重写loadClass()方法。  
         2. `使用线程上下文类加载器(Thread Context ClassLoader)`
+4. 自己写的java.lang.String可以让jvm加载到吗？  
 
 ### 1.3.4. 运行时数据区/内存结构
 #### 1.3.4.1. JVM内存结构
