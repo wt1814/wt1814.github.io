@@ -220,7 +220,6 @@
 |boolean	|4|32	|false	| |
 
 &emsp; char的包装类型是Character。  
-
 &emsp; java对象大小查看【JVM内存】章节。  
 
 ### 1.1.3. Java集合框架
@@ -228,7 +227,7 @@
 1. `基本数据结构：数组、链表、Hash、树。`集合框架又有是否安全之分。  
 2. Java集合框架：  
     * List：有序，可重复。List有ArrayList、LinkedList、Vector。
-    * Set：无序，不可重复(唯一)。Set有HashSet、LinkedHashSet、TreeSet。
+    * Set：无序，不可重复（唯一）。Set有HashSet、LinkedHashSet、TreeSet。
     * Map：存储键值对。Map有HashMap、LinkedHashMap、TreeMap、HashTable。     
 3. 快速失败机制：单线程迭代器中直接删除元素或多线程使用非安全的容器都会抛出ConcurrentModificationException异常。  
 &emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，再在拷贝的集合上进行遍历。</font>**  
@@ -255,7 +254,7 @@
         2. 如果没碰撞，直接放到数组中；
         3. 如果碰撞了，如果key是相同的，则替换掉原来的值；
         4. 如果key不同，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。
-        5. 最后判断哈希表是否满了(当前哈希表大小*负载因子)，如果满了，则扩容。  
+        5. 最后判断哈希表是否满了（当前哈希表大小*负载因子），如果满了，则扩容。  
     2. 扩容机制：
         1. 扩容时机：JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。  
         2. JDK1.8扩容流程：  
