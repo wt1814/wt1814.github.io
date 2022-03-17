@@ -46,10 +46,13 @@
 3. `JDK 7u4后的7和JDK8默认使用的都是ParallelScavenge+ParallelOld。`  
 
     
-<!-- 
-
+<!--
 PLAB
 https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
+
+jdk1.8默认的垃圾收集器
+https://blog.csdn.net/weixin_47327232/article/details/115335557
+
 -->
 
 
