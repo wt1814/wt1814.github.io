@@ -20,6 +20,8 @@
 3. 服务调用方依赖接口，使用java.util.ServiceLoader类调用。  
 
 
+
+
 -----
 
 &emsp; 个人的简单理解：  
@@ -353,6 +355,10 @@ private static boolean isDriverAllowed(Driver driver, ClassLoader classLoader) {
 
 ## 1.5. JDK中SPI解析（SPI与线程上下文类加载器）  
 <!--
+https://www.jianshu.com/p/544eac09e770
+https://www.jianshu.com/p/d88c2b0d89cb
+https://blog.csdn.net/define_us/article/details/110482191
+https://blog.csdn.net/dongfangshuoshuo/article/details/100822803
 
 https://www.jianshu.com/p/304cb533ba2d
 

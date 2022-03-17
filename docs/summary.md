@@ -24,7 +24,7 @@
         - [1.1.7. 自定义注解](#117-自定义注解)
         - [1.1.8. 反射](#118-反射)
         - [1.1.9. IO](#119-io)
-        - [1.1.10. SPI与线程上下文类加载器](#1110-spi与线程上下文类加载器)
+        - [1.1.10. SPI与线程上下文类加载器（破坏双亲委派）](#1110-spi与线程上下文类加载器破坏双亲委派)
     - [1.2. 设计模式](#12-设计模式)
         - [1.2.1. 七大设计原则](#121-七大设计原则)
         - [1.2.2. 复用规则（继承和组合）详解](#122-复用规则继承和组合详解)
@@ -396,7 +396,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         * 内存文件映射，MappedByteBuffer。采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。
 
 
-### 1.1.10. SPI与线程上下文类加载器
+### 1.1.10. SPI与线程上下文类加载器（破坏双亲委派）
 &emsp; SPI，service provider interface，服务提供者接口，一种扩展机制。`相比面向接口的多态，实现动态编译。面向接口的多态，加载的实体类是在编码中，而SPI是写在配置文件中。`    
 &emsp; **<font color = "clime">JDK提供的SPI机制：</font>**  
 1. 提供一个接口；  
@@ -687,6 +687,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         1. 继承ClassLoader，重写loadClass()方法。  
         2. `使用线程上下文类加载器(Thread Context ClassLoader)`
 4. 自己写的java.lang.String可以让jvm加载到吗？  
+	1. 无论何种自定义类加载器，最终都会调用ClassLoader.defineClass。  
+	2. ClassLoader.defineClass中会检查类名，类名以java.开头的，不予加载。  
+
 
 ### 1.3.4. 运行时数据区/内存结构
 #### 1.3.4.1. JVM内存结构
