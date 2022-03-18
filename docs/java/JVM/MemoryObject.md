@@ -51,8 +51,6 @@
 <!-- 
 *** java中new一个对象和对象=null有什么区别
 https://www.cnblogs.com/zjdxr-up/p/7168357.html
-在JVM中的内存布局
-https://mp.weixin.qq.com/s/WPKhhFKdI38UzHHQ6FcGEg
 
 -->
 

@@ -12,7 +12,7 @@
                 - [1.3.2.1.3. Tomcat](#13213-tomcat)
                 - [1.3.2.1.4. Spring](#13214-spring)
             - [1.3.2.2. 小结：两种破坏方式](#1322-小结两种破坏方式)
-        - [1.3.3. 自己写的java.lang.String可以让jvm加载到吗？](#133-自己写的javalangstring可以让jvm加载到吗)
+        - [自己写的java.lang.String可以让jvm加载到吗？](#自己写的javalangstring可以让jvm加载到吗)
     - [1.4. 类加载器应用](#14-类加载器应用)
         - [1.4.1. 自定义类加载器](#141-自定义类加载器)
         - [1.4.2. 查看Boostrap ClassLoader 加载的类库](#142-查看boostrap-classloader-加载的类库)
@@ -35,9 +35,6 @@
         * **<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器，而 JDBC 运行时又需要去访问子类加载器加载的驱动，就破坏了该模型。所以加入了`线程上下文类加载器(Thread Context ClassLoader)`，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
     2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，`如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。`    
     3. Spring破坏类加载器  
-4. 自己写的java.lang.String可以让jvm加载到吗？  
-	1. 无论何种自定义类加载器，最终都会调用ClassLoader.defineClass。  
-	2. ClassLoader.defineClass中会检查类名，类名以java.开头的，不予加载。  
 
 
 # 1. 类加载的方式：类加载器 
@@ -201,16 +198,11 @@ https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 2. `使用线程上下文类加载器(Thread Context ClassLoader)`
 
 
-### 1.3.3. 自己写的java.lang.String可以让jvm加载到吗？  
+### 自己写的java.lang.String可以让jvm加载到吗？  
 <!-- 
 
 https://zhuanlan.zhihu.com/p/311494771
-
-
 -->
-
-1. 无论何种自定义类加载器，最终都会调用ClassLoader.defineClass
-2. ClassLoader.defineClass中会检查类名，类名以java.开头的，不予加载
 
 ## 1.4. 类加载器应用  
 ### 1.4.1. 自定义类加载器  

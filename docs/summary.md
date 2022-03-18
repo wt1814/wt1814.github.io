@@ -24,7 +24,7 @@
         - [1.1.7. 自定义注解](#117-自定义注解)
         - [1.1.8. 反射](#118-反射)
         - [1.1.9. IO](#119-io)
-        - [1.1.10. SPI与线程上下文类加载器（破坏双亲委派）](#1110-spi与线程上下文类加载器破坏双亲委派)
+        - [1.1.10. SPI与线程上下文类加载器](#1110-spi与线程上下文类加载器)
     - [1.2. 设计模式](#12-设计模式)
         - [1.2.1. 七大设计原则](#121-七大设计原则)
         - [1.2.2. 复用规则（继承和组合）详解](#122-复用规则继承和组合详解)
@@ -220,6 +220,7 @@
 |boolean	|4|32	|false	| |
 
 &emsp; char的包装类型是Character。  
+
 &emsp; java对象大小查看【JVM内存】章节。  
 
 ### 1.1.3. Java集合框架
@@ -227,7 +228,7 @@
 1. `基本数据结构：数组、链表、Hash、树。`集合框架又有是否安全之分。  
 2. Java集合框架：  
     * List：有序，可重复。List有ArrayList、LinkedList、Vector。
-    * Set：无序，不可重复（唯一）。Set有HashSet、LinkedHashSet、TreeSet。
+    * Set：无序，不可重复(唯一)。Set有HashSet、LinkedHashSet、TreeSet。
     * Map：存储键值对。Map有HashMap、LinkedHashMap、TreeMap、HashTable。     
 3. 快速失败机制：单线程迭代器中直接删除元素或多线程使用非安全的容器都会抛出ConcurrentModificationException异常。  
 &emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，再在拷贝的集合上进行遍历。</font>**  
@@ -254,7 +255,7 @@
         2. 如果没碰撞，直接放到数组中；
         3. 如果碰撞了，如果key是相同的，则替换掉原来的值；
         4. 如果key不同，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。
-        5. 最后判断哈希表是否满了（当前哈希表大小*负载因子），如果满了，则扩容。  
+        5. 最后判断哈希表是否满了(当前哈希表大小*负载因子)，如果满了，则扩容。  
     2. 扩容机制：
         1. 扩容时机：JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。  
         2. JDK1.8扩容流程：  
@@ -396,7 +397,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         * 内存文件映射，MappedByteBuffer。采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。
 
 
-### 1.1.10. SPI与线程上下文类加载器（破坏双亲委派）
+### 1.1.10. SPI与线程上下文类加载器
 &emsp; SPI，service provider interface，服务提供者接口，一种扩展机制。`相比面向接口的多态，实现动态编译。面向接口的多态，加载的实体类是在编码中，而SPI是写在配置文件中。`    
 &emsp; **<font color = "clime">JDK提供的SPI机制：</font>**  
 1. 提供一个接口；  
@@ -687,9 +688,6 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         1. 继承ClassLoader，重写loadClass()方法。  
         2. `使用线程上下文类加载器(Thread Context ClassLoader)`
 4. 自己写的java.lang.String可以让jvm加载到吗？  
-	1. 无论何种自定义类加载器，最终都会调用ClassLoader.defineClass。  
-	2. ClassLoader.defineClass中会检查类名，类名以java.开头的，不予加载。  
-
 
 ### 1.3.4. 运行时数据区/内存结构
 #### 1.3.4.1. JVM内存结构

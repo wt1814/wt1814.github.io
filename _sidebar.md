@@ -663,7 +663,6 @@
         * [HyperLogLog](/docs/function/HyperLogLog.md)  
         * [Trie](/docs/function/Trie.md)  
     * [大数据和空间限制](/docs/function/bigdata.md)  
-* 服务器软件搭建
 * 源码环境搭建
     * [JDK源码](/docs/java/basis/JDKSource.md)  
     * SSM
