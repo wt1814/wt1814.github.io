@@ -21,10 +21,10 @@
             - [1.1.4.5. DateTime](#1145-datetime)
         - [1.1.5. Java异常](#115-java异常)
         - [1.1.6. Java范型](#116-java范型)
-        - [1.1.7. 自定义注解](#117-自定义注解)
-        - [1.1.8. 反射](#118-反射)
-        - [1.1.9. IO](#119-io)
-        - [1.1.10. SPI与线程上下文类加载器](#1110-spi与线程上下文类加载器)
+        - [1.1.7. IO](#117-io)
+        - [1.1.8. SPI与线程上下文类加载器](#118-spi与线程上下文类加载器)
+        - [1.1.9. 反射](#119-反射)
+        - [1.1.10. 自定义注解](#1110-自定义注解)
     - [1.2. 设计模式](#12-设计模式)
         - [1.2.1. 七大设计原则](#121-七大设计原则)
         - [1.2.2. 复用规则（继承和组合）详解](#122-复用规则继承和组合详解)
@@ -228,7 +228,7 @@
 1. `基本数据结构：数组、链表、Hash、树。`集合框架又有是否安全之分。  
 2. Java集合框架：  
     * List：有序，可重复。List有ArrayList、LinkedList、Vector。
-    * Set：无序，不可重复(唯一)。Set有HashSet、LinkedHashSet、TreeSet。
+    * Set：无序，不可重复（唯一）。Set有HashSet、LinkedHashSet、TreeSet。
     * Map：存储键值对。Map有HashMap、LinkedHashMap、TreeMap、HashTable。     
 3. 快速失败机制：单线程迭代器中直接删除元素或多线程使用非安全的容器都会抛出ConcurrentModificationException异常。  
 &emsp; **<font color = "clime">采用安全失败(fail-safe)机制的集合容器，在遍历时不是直接在集合内容上访问的，而是先复制原有集合内容，再在拷贝的集合上进行遍历。</font>**  
@@ -264,12 +264,12 @@
                 * 首先计算hash值：index = HashCode（Key） & （Length - 1）    
                 * 单节点迁移。  
                 * 如果节点是红黑树类型的话则需要进行红黑树的拆分：`拆分成高低位链表，如果链表长度大于6，需要把链表升级成红黑树。`
-                * 对链表进行迁移。会对链表中的节点进行分组，进行迁移后，一类的节点位置在原索引，一类在原索引+旧数组长度。 ~~通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度~~  
+                * 对链表进行迁移。会对链表中的节点进行分组，进行迁移后，一类的节点位置在原索引，一类在原索引+旧数组长度。 ~~通过 hash & oldCap（原数组大小）的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度~~  
             3. 返回新数组。 
 
 ---------
 
-&emsp; <font color = "clime">对链表进行迁移的注意点：</font>JDK1.8HashMap扩容阶段重新映射元素时不需要像1.7版本那样重新去一个个计算元素的 hash 值，<font color = "clime">而是通过 hash & oldCap(原数组大小)的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度，</font>为什么呢？具体原因如下：  
+&emsp; <font color = "clime">对链表进行迁移的注意点：</font>JDK1.8HashMap扩容阶段重新映射元素时不需要像1.7版本那样重新去一个个计算元素的 hash 值，<font color = "clime">而是通过 hash & oldCap（原数组大小）的值来判断，若为0则索引位置不变，不为0则新索引=原索引+旧数组长度，</font>为什么呢？具体原因如下：  
 &emsp; `因为使用的是2次幂的扩展（指长度扩为原来2倍），所以，元素的位置要么是在原位置，要么是在原位置再移动2次幂的位置。`因此，在扩充 HashMap 的时候，不需要像 JDK1.7 的实现那样重新计算 hash，只需要看看原来的 hash 值新增的那个 bit 是 1 还是 0 就好了，是 0 的话索引没变，是 1 的话索引变成“原索引 +oldCap。  
 &emsp; 这点其实也可以看做长度为 2 的幂次方的一个好处，也是HashMap 1.7 和 1.8 之间的一个区别。  
 &emsp; 示例：扩容前 table 的容量为16，a 节点和 b 节点在扩容前处于同一索引位置。  
@@ -345,10 +345,49 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     3. 利用反射越过泛型检查  
     &emsp; 反射是获取类Class文件进行操作。通过反射获取对象后可以获得相应的add方法，并向方法里面传入任何对象。  
 
-### 1.1.7. 自定义注解
+### 1.1.7. IO
+1. **<font color = "clime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>** I/O读写大文件解决方案：  
+    * 使用BufferedInputStream进行包装。
+    * 逐行读取。
+    * 并发读取：1)逐行批次打包；2)大文件拆分成小文件。
+    * 零拷贝方案：
+        * FileChannel，分配读取到已分配固定长度的 java.nio.ByteBuffer。
+        * 内存文件映射，MappedByteBuffer。采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。
+
+### 1.1.8. SPI与线程上下文类加载器
+&emsp; SPI，service provider interface，服务提供者接口，一种扩展机制。`相比面向接口的多态，实现动态编译。面向接口的多态，加载的实体类是在编码中，而SPI是写在配置文件中。`    
+&emsp; **<font color = "clime">JDK提供的SPI机制：</font>**  
+1. 提供一个接口；  
+2. 服务提供方实现接口，并在META-INF/services/中暴露实现类地址；  
+3. 服务调用方依赖接口，使用java.util.ServiceLoader类调用。  
+
+&emsp; 这个是针对厂商或者插件的，第三方提供服务的功能。  
+
+--------
+
+&emsp; `JDK的SPI内部使用线程上下文类加载器Thread.currentThread().getContextClassLoader()实现，破坏了双亲委派模型，是为了适用所有场景。`ServiceLoader中的load方法：  
+
+```java
+public static <S> ServiceLoader<S> load(Class<S> service) {
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    return ServiceLoader.load(service, cl);
+}
+```
+
+&emsp; `Dubbo的SPI并没有破坏双亲委派模型。`自己实现的框架，接口类和实现类一般都是由SystemClassLoader加载器来加载的，这时候双亲委派模型仍然可以正常使用。很多框架使用SPI方式的原因，不是因为双亲委派模型满足不了类加载需求，而是看重了SPI的易扩展性。  
 
 
-### 1.1.8. 反射
+-----
+
+&emsp; 个人的简单理解：  
+&emsp; SPI（Service Provider Interface），服务提供发现接口。热插拔、动态替换。  
+&emsp; `SPI与多态比较：`  
+&emsp; 多态，一个接口在一个包中有多个实现；  
+&emsp; 而SPI提供的接口的实现一般在多个包中，例如JDBC的实现mysql、oracle，web容器有tomcat、jetty等。  
+&emsp; 一个接口在b、c包中有实现，在a包中可替换所依赖的包（b或c），动态实现某一个功能。  
+
+
+### 1.1.9. 反射
 1. 什么是反射？  
 	&emsp; 反射是在`运行状态`能够动态的获取该类的属性和方法，并且能够任意的使用该类的属性和方法，这种动态获取类信息以及动态的调用对象的方法的功能就是反射。  
 2. 反射的适用场景？ **<font color = "clime">平常开发涉及的框架中使用反射的有：动态代理、JDBC中的加载数据库驱动程序、Spring框架中加载bean对象。</font>**    
@@ -385,49 +424,9 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         * Class.getDeclaredMethods 
             * 通过Class对象找到method_的值，即为方法区的地址  
             * 通过8bit的大小来分割Method的地址  
-5. 自定义注解 + 反射 实际应用。  
 
-### 1.1.9. IO
-1. **<font color = "clime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>** I/O读写大文件解决方案：  
-    * 使用BufferedInputStream进行包装。
-    * 逐行读取。
-    * 并发读取：1)逐行批次打包；2)大文件拆分成小文件。
-    * 零拷贝方案：
-        * FileChannel，分配读取到已分配固定长度的 java.nio.ByteBuffer。
-        * 内存文件映射，MappedByteBuffer。采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。
-
-
-### 1.1.10. SPI与线程上下文类加载器
-&emsp; SPI，service provider interface，服务提供者接口，一种扩展机制。`相比面向接口的多态，实现动态编译。面向接口的多态，加载的实体类是在编码中，而SPI是写在配置文件中。`    
-&emsp; **<font color = "clime">JDK提供的SPI机制：</font>**  
-1. 提供一个接口；  
-2. 服务提供方实现接口，并在META-INF/services/中暴露实现类地址；  
-3. 服务调用方依赖接口，使用java.util.ServiceLoader类调用。  
-
-&emsp; 这个是针对厂商或者插件的，第三方提供服务的功能。  
-
---------
-
-&emsp; `JDK的SPI内部使用线程上下文类加载器Thread.currentThread().getContextClassLoader()实现，破坏了双亲委派模型，是为了适用所有场景。`ServiceLoader中的load方法：  
-
-```java
-public static <S> ServiceLoader<S> load(Class<S> service) {
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    return ServiceLoader.load(service, cl);
-}
-```
-
-&emsp; `Dubbo的SPI并没有破坏双亲委派模型。`自己实现的框架，接口类和实现类一般都是由SystemClassLoader加载器来加载的，这时候双亲委派模型仍然可以正常使用。很多框架使用SPI方式的原因，不是因为双亲委派模型满足不了类加载需求，而是看重了SPI的易扩展性。  
-
-
------
-
-&emsp; 个人的简单理解：  
-&emsp; SPI（Service Provider Interface），服务提供发现接口。热插拔、动态替换。  
-&emsp; `SPI与多态比较：`  
-&emsp; 多态，一个接口在一个包中有多个实现；  
-&emsp; 而SPI提供的接口的实现一般在多个包中，例如JDBC的实现mysql、oracle，web容器有tomcat、jetty等。  
-&emsp; 一个接口在b、c包中有实现，在a包中可替换所依赖的包（b或c），动态实现某一个功能。  
+### 1.1.10. 自定义注解
+&emsp; 自定义注解+反射实现AOP
 
 
 ## 1.2. 设计模式
