@@ -794,6 +794,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 ##### 1.3.4.2.3. 对象大小
 1. `在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充。`  
+    * 对象头
     * 实例数据：存放类的属性数据信息，包括父类的属性信息，如果是数组的实例部分还包括数组的长度，这部分内存按4字节对齐。    
     * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐）。填充数据不是必须存在的，仅仅是为了字节对齐。   
 2. JVM中对象头的方式有以下两种（以32位JVM为例）  
@@ -802,7 +803,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     &emsp; 数组对象：  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-61.png)   
 
-    对象头：包含Mark Word、class pointer、array length共3部分。  
+    &emsp; 对象头：包含Mark Word、class pointer、array length共3部分。  
     1. Mark Word：  
     &emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "clime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
     &emsp; 这部分主要用来存储对象自身的运行时数据，如hashcode、gc分代年龄等。mark word的位长度为JVM的一个Word大小，也就是说32位JVM的Mark word为32位，64位JVM为64位。
