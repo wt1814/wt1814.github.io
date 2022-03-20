@@ -663,12 +663,11 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; 双亲委派模型中，类加载器之间的父子关系一般不会以继承（Inheritance）的关系来实现，而是使用组合（Composition）关系来复用父加载器的代码的。  
 &emsp; `好处：避免类的重复加载；防止核心API被随意篡改。`   
 3. tomcat类加载器  
-    &emsp; 根据实际的应用场景，分析下 tomcat 类加载器需要解决的几个问题
+    &emsp; 根据实际的应用场景，分析下 tomcat 类加载器需要解决的几个问题：
 
     * 为了避免类冲突，每个 webapp 项目中各自使用的类库要有隔离机制
     * 不同 webapp 项目支持共享某些类库
     * 类加载器应该支持热插拔功能，比如对 jsp 的支持、webapp 的 reload 操作
-
     &emsp; 为了解决以上问题，tomcat设计了一套类加载器，如下图所示。在 Tomcat 里面最重要的是 Common 类加载器，它的父加载器是应用程序类加载器，负责加载 ${catalina.base}/lib、${catalina.home}/lib 目录下面所有的 .jar 文件和 .class 文件。下图的虚线部分，有 catalina 类加载器、share 类加载器，并且它们的 parent 是 common 类加载器，默认情况下被赋值为 Common 类加载器实例，即 Common 类加载器、catalina 类加载器、 share 类加载器都属于同一个实例。当然，如果通过修改 catalina.properties 文件的 server.loader 和 shared.loader 配置，从而指定其创建不同的类加载器。  
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/tomcat/tomcat-1.png)  
 3. 破坏双亲委派模型：
@@ -703,9 +702,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         &emsp; <font color = "red">Java虚拟机栈是由一个个栈帧组成，每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法出口信息。</font>  
         ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-9.png)  
         * 局部变量表，局部变量表用于保存函数参数和局部变量。  
-        * 操作数栈，操作数栈用于保存计算过程的中间结果，作为计算过程中变量临时的存储空间。  
-        * 动态连接：每个栈帧中包含一个在常量池中对当前方法的引用， 目的是支持方法调用过程的动态连接。  
         * 方法返回地址。
+        * 操作数栈，操作数栈用于保存计算过程的`中间结果`，作为计算过程中变量临时的存储空间。  
+        * 动态连接：每个栈帧中包含一个在常量池中`对当前方法的引用`，目的是支持方法调用过程的动态连接。  
     4. `为什么不把基本类型放堆中呢？`   
     &emsp; 因为其占用的空间一般是 1~8 个字节——需要空间比较少，而且因为是基本类型，所以不会出现动态增长的情况——长度固定，因此栈中存储就够了。  
 4. 【GC】【堆】  
@@ -721,9 +720,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
             1. 由于PermGen内存经常会溢出，引发java.lang.OutOfMemoryError: PermGen，因此JVM的开发者希望这一块内存可以更灵活地被管理，不要再经常出现这样的OOM。  
             2. 移除PermGen可以促进HotSpot JVM与JRockit VM的融合，因为JRockit没有永久代。  
         2. 演进历程：  
-            * jdk1.6及之前：有永久代(permanent generation)。静态变量存放在永久代上。  
+            * jdk1.6及之前：有永久代（permanent generation）。静态变量存放在永久代上。  
             * jdk1.7：有永久代，但已经逐步“去永久代”。[字符串常量池](/docs/java/JVM/ConstantPool.md) <font color = "red">、静态变量</font>移除，保存在堆中。  
-            * jdk1.8及之后：无永久代。<font color = "clime">字符串常量池、静态变量仍在堆，</font> 但类型信息、字段、`方法`、<font color = "red">常量</font>保存在本地内存的元空间。  
+            * jdk1.8及之后：无永久代。<font color = "clime">字符串常量池、静态变量（`值可变`）仍在堆，</font> 但类型信息、字段、`方法`、<font color = "red">常量（`值固定`）</font>保存在本地内存的元空间。  
 6. MetaSpace存储类的元数据信息。  
 &emsp; 元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。元空间的内存大小受本地内存限制。  
 
@@ -771,7 +770,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 堆内存分配策略：  
     &emsp; 分配策略有：对象优先在Eden分配、大对象直接进入老年代、长期存活的对象将进入老年代、动态对象年龄判定、空间分配担保。  
     &emsp; `空间分配担保：` **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的`连续空间`是否大于新生代所有对象的`总空间`。</font>**   
-    * **<font color = "blue">`内存分配全流程：`逃逸分析 ---> 没有逃逸，尝试栈上分配 ---> 是否满足直接进入老年代的条件 ---> `尝试TLAB分配` ---> `新生代Eden区分配`。</font>**  
+    * **<font color = "blue">`内存分配全流程：`逃逸分析 ---> 没有逃逸，尝试`栈`上分配 ---> 是否满足直接进入`老年代`的条件 ---> `尝试TLAB分配` ---> `新生代Eden区分配`。</font>**  
     * ~~分配内存两种方式：指针碰撞（内存空间绝对规整）；空闲列表（内存空间是不连续的）。~~
         * 标记-整理或复制 ---> 空间规整 ---> 指针碰撞； 
         * 标记-清除 ---> 空间不规整 ---> 空闲列表。       
