@@ -18,6 +18,9 @@ https://blog.csdn.net/pony_maggie/article/details/105478557
 https://www.cnblogs.com/hello-shf/p/11543453.html
 https://mp.weixin.qq.com/s/RhkLwO1X28gIbrXGH_Cl5g
 
+三种分页方式
+https://mp.weixin.qq.com/s/3sJajydXPmfLP3KXMs0Gmw
+
 -->
 
 ## 1.1. 深度分页问题

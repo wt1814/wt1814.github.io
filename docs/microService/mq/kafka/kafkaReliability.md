@@ -37,7 +37,8 @@
 
 
 # 1. kafka如何保证消息队列不丢失?
-<!-- 
+<!--
+https://mp.weixin.qq.com/s/EpY_U1vIGs-F0PyEfpgNOw
 Kafka消息中间件到底会不会丢消息 
 https://mp.weixin.qq.com/s/uxYUEJRTEIULeObRIl209A
 面试官问：Kafka 会不会丢消息？怎么处理的? 
