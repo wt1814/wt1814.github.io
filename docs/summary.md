@@ -96,7 +96,7 @@
                 - [1.4.3.2.2. Synchronized](#14322-synchronized)
                     - [1.4.3.2.2.1. Synchronized介绍](#143221-synchronized介绍)
                     - [1.4.3.2.2.2. Synchronized使用](#143222-synchronized使用)
-                - [1.4.3.2.3. Synchronized使用是否安全](#14323-synchronized使用是否安全)
+                - [1.4.3.2.3. ~~Synchronized使用是否安全~~](#14323-synchronized使用是否安全)
                     - [1.4.3.2.3.1. Synchronized底层原理](#143231-synchronized底层原理)
                     - [1.4.3.2.3.2. Synchronized优化](#143232-synchronized优化)
                 - [1.4.3.2.4. Volatile](#14324-volatile)
@@ -1121,7 +1121,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 
 &emsp; `⚠️⚠️⚠️线程的资源有不少，但应该包含CPU资源和锁资源这两类。`  
-&emsp; 只有runnable到running时才会占用cpu时间片，其他都会出让cpu时间片。  
+&emsp; **<font color = "clime">只有runnable到running时才会占用cpu时间片，其他都会出让cpu时间片。</font>**  
 
 * sleep(long mills)：让出CPU资源，但是不会释放锁资源。  
 * wait()：让出CPU资源和锁资源。  
@@ -1143,9 +1143,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 3. **<font color = "red">阻塞状态（BLOCKED）：</font>**  
     1. **<font color = "clime">阻塞状态是指线程因为某些原因`放弃CPU`，暂时停止运行。</font>** 当线程处于阻塞状态时，Java虚拟机不会给线程分配CPU。直到线程重新进入就绪状态（获取监视器锁），它才有机会转到运行状态。  
     2. 操作  
-        * **等待阻塞(o.wait->等待对列)：运行的线程执行wait()方法，JVM会把该线程放入等待池中。(wait会释放持有的锁)**
-        * **同步阻塞(lock->锁池)：运行的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则JVM会把该线程放入锁池(lock pool)中。**
-        * **其他阻塞状态(sleep/join)：当前线程执行了sleep()方法，或者调用了其他线程的join()方法，或者发出了I/O请求时，就会进入这个状态。**
+        * **等待阻塞（o.wait->等待对列）：运行的线程执行wait()方法，JVM会把该线程放入等待池中。(wait会释放持有的锁)**
+        * **同步阻塞（lock->锁池）：运行的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则JVM会把该线程放入锁池(lock pool)中。**
+        * **其他阻塞状态（sleep/join）：当前线程执行了sleep()方法，或者调用了其他线程的join()方法，或者发出了I/O请求时，就会进入这个状态。**
 4. **<font color = "red">等待状态（WAITING）：</font>**  
     1. **<font color = "clime">一个正在无限期等待另一个线程执行一个特别的动作的线程处于这一状态。</font>**  
     2. 操作  
@@ -1214,7 +1214,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; **<font color = "red">在线程池中，同一个线程可以从阻塞队列中不断获取新任务来执行，其核心原理在于线程池对Thread进行了封装（内部类Worker），并不是每次执行任务都会调用Thread.start() 来创建新线程，而是让每个线程去执行一个“循环任务”，在这个“循环任务”中不停的检查是否有任务需要被执行。</font>** 如果有则直接执行，也就是调用任务中的run方法，将run方法当成一个普通的方法执行，通过这种方式将只使用固定的线程就将所有任务的run方法串联起来。  
 &emsp; 源码解析：`runWorker()方法中，有任务时，while (task != null || (task = getTask()) != null) 循环获取；没有任务时，清除空闲线程。`  
 4. 线程池保证核心线程不被销毁？  
-    &emsp; `ThreadPoolExecutor回收线程都是等while死循环里getTask()获取不到任务，返回null时，调用processWorkerExit方法从Set集合中remove掉线程。`  
+    &emsp; `ThreadPoolExecutor回收线程都是等【while死循环】里getTask()获取不到任务，返回null时，调用processWorkerExit方法从Set集合中remove掉线程。`  
     1. getTask()返回null又分为2两种场景：  
         1. 线程正常执行完任务，`并且已经等到超过keepAliveTime时间，大于核心线程数，那么会返回null`，结束外层的runWorker中的while循环。
         2. 当调用shutdown()方法，会将线程池状态置为shutdown，并且需要等待正在执行的任务执行完，阻塞队列中的任务执行完才能返回null。
@@ -1230,7 +1230,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
             * 如果是IO密集型（网络IO/磁盘IO）应用（多线程用于数据库数据交互、文件上传下载、网络数据传输等），则线程池大小设置为2N。
             * 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。  
         2. 阻塞队列设置  
-        &emsp; `线程池的任务队列本来起缓冲作用，`但是如果设置的不合理会导致线程池无法扩容至max，这样无法发挥多线程的能力，导致一些服务响应变慢。队列长度要看具体使用场景，取决服务端处理能力以及客户端能容忍的超时时间等。队列长度要根据使用场景设置一个上限值，如果响应时间要求较高的系统可以设置为0。  
+        &emsp; `线程池的任务队列本来起缓冲作用，`但是如果设置的不合理会导致线程池无法扩容至max，这样无法发挥多线程的能力，导致一些服务响应变慢。队列长度要看具体使用场景，取决服务端处理能力以及客户端能容忍的超时时间等。队列长度要根据使用场景设置一个上限值， **<font color = "red">如果响应时间要求较高的系统可以设置为0。</font>**  
         &emsp; `队列大小200或500-1000。`  
     3. `线程池的优雅关闭：`处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
 2. **<font color = "clime">线程池使用：</font>**    
@@ -1241,7 +1241,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 3. **<font color = "clime">线程池的监控：</font>**  
 &emsp; 通过重写线程池的beforeExecute、afterExecute和shutdown等方式就可以实现对线程的监控。  
 4. @Async方法没有执行的问题分析：  
-&emsp; @Async异步方法默认使用Spring创建ThreadPoolTaskExecutor(参考TaskExecutionAutoConfiguration)，其中默认核心线程数为8，默认最大队列和默认最大线程数都是Integer.MAX_VALUE，队列使用LinkedBlockingQueue，容量是：Integet.MAX_VALUE，空闲线程保留时间：60s，线程池拒绝策略：AbortPolicy。创建新线程的条件是队列填满时，而这样的配置队列永远不会填满，如果有@Async注解标注的方法长期占用线程(比如HTTP长连接等待获取结果)，在核心8个线程数占用满了之后，新的调用就会进入队列，外部表现为没有执行。  
+&emsp; @Async异步方法默认使用Spring创建ThreadPoolTaskExecutor(参考TaskExecutionAutoConfiguration)，其中默认核心线程数为8，默认最大队列和默认最大线程数都是Integer.MAX_VALUE，队列使用LinkedBlockingQueue，容量是：Integet.MAX_VALUE，空闲线程保留时间：60s，线程池拒绝策略：AbortPolicy。创建新线程的条件是队列填满时，而这样的配置队列永远不会填满，如果有@Async注解标注的方法长期占用线程（比如HTTP长连接等待获取结果），在核心8个线程数占用满了之后，新的调用就会进入队列，外部表现为没有执行。  
 
 #### 1.4.2.4. ForkJoinPool详解
 1. <font color = "clime">ForkJoinPool的两大核心是 分而治之和工作窃取 算法。</font>  
@@ -1298,7 +1298,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 -----------
 
 
-&emsp; 在Java 8中, 新增加了一个包含50个方法左右的类: CompletableFuture，默认依靠fork/join框架启动新的线程实现异步与并发的，提供了非常强大的Future的扩展功能，可以帮助我们简化异步编程的复杂性，提供了函数式编程的能力，可以通过回调函数的方式处理返回结果，并且提供了转换和组合CompletableFuture的方法。   
+&emsp; 在Java 8中，新增加了一个包含50个方法左右的类: `CompletableFuture，默认依靠fork/join框架启动新的线程实现异步与并发的，`提供了非常强大的Future的扩展功能，可以帮助我们简化异步编程的复杂性，提供了函数式编程的能力， **<font color = 'clime">可以通过`回调函数`的方式处理返回结果，并且提供了转换和组合CompletableFuture的方法。   
 &emsp; 主要是为了解决Future模式的缺点：   
 1. Future虽然可以实现异步获取线程的执行结果，但是Future没有提供通知机制，调用方无法得知Future什么时候执行完的问题。  
 2. 想要获取Future的结果，要么使用阻塞， 在future.get()的地方等待Future返回结果，这时会变成同步操作。要么使用isDone()方法进行轮询，又会耗费无谓的 CPU 资源。  
@@ -1332,9 +1332,9 @@ private final BlockingQueue<Future<V>> completionQueue;
 ##### 1.4.3.1.2. 并发安全问题产生原因
 1. **并发安全的3个问题：**  
 
-    * 原子性：线程切换带来的原子性问题；（[Volatile](/docs/java/concurrent/Volatile.md)不保证原子性）
-    * 可见性：缓存不能及时刷新导致的可见性问题；
-    * 有序性：编译优化带来的有序性问题  
+    * 原子性：线程切换带来的原子性问题。（[Volatile](/docs/java/concurrent/Volatile.md)不保证原子性）
+    * 可见性：缓存不能及时刷新导致的可见性问题。
+    * 有序性：编译优化带来的有序性问题。  
 
 &emsp; **<font color = "clime">`【缓存不能及时刷新】/可见性 (【内存系统重排序】)` 和`【编译器优化】/有序性` 都是`重排序`的一种。</font>**   
 
@@ -1435,7 +1435,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 3. String锁：由于在JVM中具有String常量池缓存的功能，因此相同字面量是同一个锁。  
 
 
-##### 1.4.3.2.3. Synchronized使用是否安全
+##### 1.4.3.2.3. ~~Synchronized使用是否安全~~
 &emsp; 共有 `类锁 + 对象锁 + 类锁 * 对象锁`种情况。    
 1. 类锁
 2. 对象锁
@@ -1493,7 +1493,7 @@ private final BlockingQueue<Future<V>> completionQueue;
         4. 偏向锁的设置/取消：  
             &emsp; `偏向锁是默认开启的，而且开始时间一般是比应用程序启动慢几秒，`如果不想有这个延迟，那么可以使用-XX:BiasedLockingStartUpDelay=0；  
             &emsp; 如果不想要偏向锁，那么可以通过-XX:-UseBiasedLocking = false来设置；  
-            &emsp; 在启动代码的时候，要设置一个JVM参数， -XX:BiasedLockingStartupDelay=0，这个参数可以关闭JVM的偏向延迟，JVM默认会设置一个4秒钟的偏向延迟，也就是说 `★★★JVM启动4秒钟内创建出的所有对象都是不可偏向的（也就是上图中的无锁不可偏向状态），如果对这些对象去加锁，加的会是轻量锁而不是偏向锁。`  
+            &emsp; 在启动代码的时候，要设置一个JVM参数，-XX:BiasedLockingStartupDelay=0，这个参数可以关闭JVM的偏向延迟，JVM默认会设置一个4秒钟的偏向延迟，也就是说 `★★★JVM启动4秒钟内创建出的所有对象都是不可偏向的（也就是上图中的无锁不可偏向状态），如果对这些对象去加锁，加的会是轻量锁而不是偏向锁。`  
         2. 偏向锁获取： 
             1. 判断是偏向锁时，检查对象头Mark Word中记录的`Thread Id`是否是当前线程ID。  
             2. 如果对象头Mark Word中Thread Id不是当前线程ID，则`进行CAS操作，企图将当前线程ID替换进Mark Word`。如果当前对象锁状态处于匿名偏向锁状态（可偏向未锁定），则会替换成功（ **<font color = "clime">将Mark Word中的Thread id由匿名0改成当前线程ID，</font>** 在当前线程栈中找到内存地址最高的可用Lock Record，将线程ID存入）。  
