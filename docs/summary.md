@@ -1672,8 +1672,8 @@ private final BlockingQueue<Future<V>> completionQueue;
 2. StampedLock，Stamped，有邮戳的  
     1. StampedLock有3种模式：写锁writeLock、悲观读锁readLock、乐观读锁tryOptimisticRead。  
     2. StampedLock通过乐观读锁tryOptimisticRead解决ReentrantReadWriteLock的写锁饥饿问题。乐观读锁模式下，一个线程获取的乐观读锁之后，不会阻塞其他线程获取写锁。    
-    3. **<font color = "clime">同时允许多个乐观读和一个写线程同时进入临界资源操作，那读取的数据可能是错的怎么办？</font>**    
-    &emsp; **<font color = "clime">通过版本号控制。</font>** 乐观读不能保证读取到的数据是最新的，所以`将数据读取到局部变量的时候需要通过 lock.validate(stamp) 校验是否被写线程修改过`，若是修改过则需要上悲观读锁，再重新读取数据到局部变量。`即乐观读失败后，再次使用悲观读锁。`    
+    3. **<font color = "clime">同时允许多个乐观读和一个写线程同时进入临界资源操作，那`读取的数据可能是错的怎么办？`</font>**    
+    &emsp; **<font color = "clime">`通过版本号控制。`</font>** 乐观读不能保证读取到的数据是最新的，所以`将数据读取到局部变量的时候需要通过 lock.validate(stamp) 校验是否被写线程修改过`，若是修改过则需要上悲观读锁，再重新读取数据到局部变量。`即乐观读失败后，再次使用悲观读锁。`    
 
 #### 1.4.4.4. Atomic
 ##### 1.4.4.4.1. AtomicStampedReference与AtomicMarkableReference
@@ -1793,7 +1793,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 3. 服务器的优化。  
 
 #### 1.5.2.1. SQL分析
-1. **<font color = "clime">SQL分析语句有profiling（`资源`）、proceduer analyse（`表结构`）、EXPLAIN与explain extended、show warnings、trace。</font>**  
+1. `小结：`**<font color = "clime">SQL分析语句有profiling（`资源`）、proceduer analyse（`表结构`）、EXPLAIN与explain extended、show warnings（警告）、trace。</font>**  
 1. profiling  
 &emsp; 使用profiling命令可以了解SQL语句消耗`资源`的详细信息（每个执行步骤的开销）。可以清楚了解到SQL到底慢在哪个环节。   
 2. show warnings：显示上一个语句的错误、警告以及注意。  
@@ -1967,7 +1967,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 	（1）每个分库需要返回更多的数据，增大了网络传输量（耗网络）；  
 	（2）服务层还需要进行二次排序，增大了服务层的计算量（耗CPU）；   	
     （3）最致命的，这个算法随着页码的增大，性能会急剧下降，这是因为SQL改写后每个分库要返回X+Y行数据：返回第3页，offset中的X=200；假如要返回第100页，offset中的X=9900，即每个分库要返回100页数据，数据量和排序量都将大增，性能平方级下降。     
-2. 方法二：业务折衷法-禁止跳页查询(对应es中的scroll方法)   
+2. 方法二：业务折衷法-禁止跳页查询（对应es中的scroll方法）   
 	1. 流程：  
         &emsp; （1）用正常的方法取得第一页数据，并得到第一页记录的time_max  
         &emsp; （2）每次翻页，将order by time offset X limit Y，改写成order by time where time>$time_max limit Y  
@@ -1984,7 +1984,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 	4. 缺点: 数据不准确
 4. 终极武器-二次查询法  
     &emsp; 第一次查询：按照`limit 总数据/分库数,分页数`查询，获取到最小排序字段值和每个分库的最大排序字段值。  
-    &emsp; 第二次查询：between 最小排序字段值,最大排序字段值。
+    &emsp; 第二次查询：`between` 最小排序字段值,最大排序字段值。
 
     &emsp; （1）将order by time offset X limit Y，改写成order by time offset X/N limit Y   
     &emsp; （2）找到最小值time_min   
@@ -2014,8 +2014,8 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; tddl、MyCAT等都支持跨分片join。如果中间不支持，跨库Join的几种解决思路：  
 * `在程序中进行拼装。`  
 * 全局表
+&emsp; 所谓全局表，就是有可能系统中所有模块都可能会依赖到的一些表。比较类似“数据字典”。为了避免跨库join查询，可以将这类表在其他每个数据库中均保存一份。同时，这类数据通常也很少发生修改(甚至几乎不会)，所以也不用太担心“一致性”问题。  
 * 字段冗余 
-
 
 ###### 1.5.3.6.2.5. ~~**<font color = "blue">小结：分库分表分片键设计</font>**~~  
 &emsp; ~~分库分表的分片键设计多数参考查询场景。因此分库分表时设计拆分字段考虑因素：1). 是否有必要按照地区、时间拆分表；2)参考B2B模式（有买家、卖家），订单表采用`冗余法（买家库和卖家库）和基因法`结合。~~  
@@ -2040,7 +2040,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     1. 事务提交前 --- **<font color = "clime">内存操作</font>** ：  
         1. 数据加载到缓冲池buffer poll；  
         2. `写回滚日志undo log；`  
-        3. 更新缓冲池数据；  
+        3. 更新（update 语句）缓冲池数据；  
         4. 写redo log buffer。  
     2. 事务提交：`redo log与bin log两阶段提交。`  
     3. 事务提交后：后台线程将buffer poll中数据落盘。  
@@ -2074,7 +2074,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 
 &emsp; 内存数据落盘整体思路分析：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-173.png)  
-&emsp; `InnoDB内存缓冲池中的数据page要完成持久化的话，是通过两个流程来完成的，一个是脏页落盘；一个是预写redo log日志。`  
+&emsp; InnoDB`内存缓冲池中的数据page要完成持久化`的话，是通过两个流程来完成的，`一个是脏页落盘；一个是预写redo log日志`。  
 
 ###### 1.5.4.4.1.1. BufferPool
 1. 缓冲池是主内存中的一个区域，在InnoDB访问表和索引数据时会在其中进行高速缓存。**在专用服务器上，通常将多达80％的物理内存分配给缓冲池。**  
@@ -2181,7 +2181,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; <font color = "red">联合索引(复合索引)的底层实现？最佳左前缀原则？</font>  
 &emsp; 假设这是一个多列索引(col1, col2,col3)，对于叶子节点，是这样的：  
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-186.png)  
-&emsp; 联合索引(col1, col2,col3)也是一棵B+Tree，其非叶子节点存储的是第一个关键字的索引，而叶节点存储的则是三个关键字col1、col2、col3三个关键字的数据，且按照col1、col2、col3的顺序进行排序。  
+&emsp; 联合索引(col1, col2,col3)也是一棵B+Tree，其`非叶子节点存储的是第一个关键字的索引`，而`叶节点存储的则是三个关键字col1、col2、col3三个关键字的数据，且按照col1、col2、col3的顺序进行排序`。  
 &emsp; **<font color = "red">联合索引底层还是使用B+树索引，并且还是只有一棵树，只是此时的排序：首先按照第一个索引排序，在第一个索引相同的情况下，再按第二个索引排序，依此类推。</font>**  
 5. 无索引时的数据查询：查询数据时从磁盘中依次加载数据页到InnoDB的缓冲池中，然后对缓冲池中缓存页的每行数据，通过数据页的单向链表一个一个去遍历查找，如果没有找到，那么就会顺着数据页的双向链表数据结构，依次遍历加载磁盘中的其他数据页到缓冲池中遍历查询。 
 
@@ -2214,7 +2214,7 @@ private final BlockingQueue<Future<V>> completionQueue;
         2. 从应用层面，通过代码判断数据库数据是否有效，然后决定回滚还是提交数据！如果在事务里故意写出违反约束的代码，一致性还是无法保证的。
 
 #### 1.5.5.4. MVCC
-1. **<font color = "clime">多版本并发控制（MVCC）是一种用来解决读-写冲突的无锁并发控制。</font>**  
+1. **<font color = "clime">多版本并发控制（MVCC）是一种用来解决（1）读-写冲突的无锁并发控制、（2）解决并发事务问题（脏读、~~丢失修改~~、幻读、不可重复读）。</font>**  
 2. <font color = "clime">`MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。`两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
 2. **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC。</font>**   
     * 一个是undo log，用于记录数据的变化轨迹（版本链），用于数据回滚。  
