@@ -304,7 +304,7 @@
     2. @Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入。  
 
 ### 1.3.2. Spring IOC
-1. Spring容器就是个Map映射, IOC底层就是反射机制, AOP底层是动态代理。  
+1. Spring容器就是个Map映射, IOC底层就是反射机制，AOP底层是动态代理。  
 &emsp; Spring中的IoC的实现原理就是工厂模式加反射机制。  
 1. BeanFactory与ApplicationContext
     * BeanFactory作为最顶层的一个接口类，定义了IOC容器的基本功能规范。
@@ -432,7 +432,7 @@
 * 请求处理事件（RequestHandledEvent）：在Web应用中，当一个http请求（request）结束触发该事件。如果一个bean实现了ApplicationListener接口，当一个ApplicationEvent被发布以后，bean会自动被通知。  
 
 ##### 1.3.5.2.2. Aware接口
-&emsp; **<font color = "clime">容器管理的Bean一般不需要了解容器的状态和直接使用容器，但在某些情况下，是需要在Bean中直接对IOC容器进行操作的，这时候，就需要在Bean中设定对容器的感知。Spring IOC容器也提供了该功能，它是通过特定的aware接口来完成的。</font>** <font color = "red">aware接口有以下这些：
+&emsp; **<font color = "clime">容器管理的Bean一般不需要了解容器的状态和直接使用容器，但在某些情况下，是需要在Bean中直接对IOC容器进行操作的，这时候，就需要在Bean中设定对容器的感知。Spring IOC容器也提供了该功能，它是通过特定的aware接口来完成的。</font>** aware接口有以下这些：
 
 * BeanNameAware，可以在Bean中得到它在IOC容器中的Bean实例名称。  
 * BeanFactoryAware，可以在Bean中得到Bean所在的IOC容器，从而直接在Bean中使用IOC容器的服务。  
