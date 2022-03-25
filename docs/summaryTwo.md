@@ -304,6 +304,8 @@
     2. @Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入。  
 
 ### 1.3.2. Spring IOC
+1. Spring容器就是个Map映射, IOC底层就是反射机制, AOP底层是动态代理。  
+&emsp; Spring中的IoC的实现原理就是工厂模式加反射机制。  
 1. BeanFactory与ApplicationContext
     * BeanFactory作为最顶层的一个接口类，定义了IOC容器的基本功能规范。
     * <font color = "clime">ApplicationContext接口是BeanFactory的扩展，它除了具备BeanFactory接口所拥有的全部功能外，还有应用程序上下文的一层含义</font>，主要包括：  

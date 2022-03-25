@@ -1388,7 +1388,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     
     &emsp; Java中如何保证底层操作的有序性和可见性？可以通过内存屏障。`内存屏障，禁止处理器重排序，保障缓存一致性。`  
     &emsp; `内存屏障的作用：（~~原子性~~、可见性、有序性）`  
-    1. `（保障可见性）它会强制将对缓存的修改操作立即写入主存；` 如果是写操作，会触发总线嗅探机制（MESI），会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。   
+    1. `（保障可见性）它会强制将对缓存的修改操作立即写入主存`； `如果是写操作，会触发总线嗅探机制（MESI）`，会导致其他CPU中对应的缓存行无效，也有 [伪共享问题](/docs/java/concurrent/PseudoSharing.md)。   
     2. `（保障有序性）阻止屏障两侧的指令重排序。`   
 3. java并发原语：Java内存模型，除了定义了一套规范，还提供了一系列原语，封装了底层实现后，供开发者直接使用。  
 
@@ -2189,12 +2189,12 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; <font color = "red">InnoDB索引类型可以分为主键索引（聚簇索引）和辅助索引（非聚簇索引/非主键索引）。</font>  
 
 #### 1.5.5.3. MySql事务（还需要总结）  
-1. 事务的四大特性（ACID）：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability）。  
-2. 并发事务处理带来的问题：脏读、丢失修改、不可重复读、幻读。  
+1. 并发事务处理带来的问题：脏读、丢失修改、不可重复读、幻读。  
     * 脏`读`：一个事务读了另一个事务未提交的数据。
-    * 丢失`修改`：一个事务覆盖了另一个事务的数据。  
+    * 丢失`修改`（写写问题）：一个事务覆盖了另一个事务的数据。  
     * 不可重复读：一个事务多次读，另一事务中间修改了数据。  
     * 幻读：一个事务多次读，另一事务中间新增了数据。  
+2. 事务的四大特性（ACID）：原子性（Atomicity）、一致性（Consistency）、`隔离性（解决并发事务）`（Isolation）、持久性（Durability）。  
 3. SQL标准定义了四个隔离级别（隔离性）：读取未提交、读取已提交、可重复读（可以阻止脏读和不可重复读，幻读仍有可能发生，但MySql的可重复读解决了幻读）、可串行化。  
 4. Innodb事务实现原理：
     * 原子性的实现：采用回滚日志[undo log](/docs/SQL/undoLog.md)实现。  
@@ -2207,14 +2207,14 @@ private final BlockingQueue<Future<V>> completionQueue;
         &emsp; <font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
         * **<font color = "clime">当前读：</font>**   
         &emsp; 读取数据的最新版本。常见的update/insert/delete、还有 select ... for update、select ... lock in share mode都是当前读。  
-        &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用Gap Lock或Next-Key Lock（Gap Lock + Record Lock）来解决。  
+        &emsp; **<font color = "clime">对于当前读的幻读，MVCC是无法解决的。</font>** 需要使用Gap Lock或Next-Key Lock（Gap Lock + Record Lock）来解决。  
     * 一致性的实现  
         &emsp; Mysql怎么保证一致性的？这个问题分为两个层面来说。  
         1. 从数据库层面，数据库通过原子性、隔离性、持久性来保证一致性。也就是说ACID四大特性之中，C(一致性)是目的，A(原子性)、I(隔离性)、D(持久性)是手段，是为了保证一致性，数据库提供的手段。数据库必须要实现AID三大特性，才有可能实现一致性。例如，原子性无法保证，显然一致性也无法保证。  
         2. 从应用层面，通过代码判断数据库数据是否有效，然后决定回滚还是提交数据！如果在事务里故意写出违反约束的代码，一致性还是无法保证的。
 
 #### 1.5.5.4. MVCC
-1. **<font color = "clime">多版本并发控制（MVCC）是一种用来解决（1）读-写冲突的无锁并发控制、（2）解决并发事务问题（脏读、~~丢失修改~~、幻读、不可重复读）。</font>**  
+1. **<font color = "clime">多版本并发控制（MVCC）是一种用来解决`（1）读-写冲突的无锁并发控制`、`（2）解决并发事务问题（脏读、~~丢失修改~~、幻读、不可重复读）`。</font>**  
 2. <font color = "clime">`MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。`两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
 2. **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC。</font>**   
     * 一个是undo log，用于记录数据的变化轨迹（版本链），用于数据回滚。  
@@ -2226,7 +2226,7 @@ private final BlockingQueue<Future<V>> completionQueue;
         * m_ids：当前系统中那些活跃（未提交）的读写事务ID，数据结构为一个List。  
         * min_limit_id：表示在生成Read View时，当前系统中活跃的读写事务中最小的事务id，即m_ids中的最小值。  
         * max_limit_id：表示生成Read View时，系统中应该分配给下一个事务的id值。  
-        * creator_trx_id：创建当前Read View的事务ID  
+        * creator_trx_id：创建当前Read View的事务ID。  
     2. Read view匹配条件规则如下：  
         &emsp; 如果被访问版本的trx_id小于ReadView中的up_limit_id值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  
         &emsp; <font color = "red">如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。</font>如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；<font color = "clime">如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。</font>  
