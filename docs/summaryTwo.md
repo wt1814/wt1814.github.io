@@ -460,7 +460,6 @@
 &emsp; <font color = "red">同一对象内部方法嵌套调用，慎用this来调用被@Async、@Transactional、@Cacheable等注解标注的方法，this下注解可能不生效。</font>async方法中的this不是动态代理的子类对象，而是原始的对象，故this调用无法通过动态代理来增强。 
 3. **<font color = "red">过滤器，拦截器和aop的区别：</font>** 过滤器拦截的是URL；拦截器拦截的是URL；Spring AOP只能拦截Spring管理Bean的访问（业务层Service）。  
 
-
 ### 1.3.7. SpringAOP解析
 1. **<font color = "blue">自动代理触发的时机：AspectJAnnotationAutoProxyCreator是一个后置处理器BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
 2. **<font color = "clime">代理类的生成流程：1). `获取当前的Spring Bean适配的advisors；`2). `创建代理类`。</font>**   
@@ -480,7 +479,6 @@
         1. 创建AopProxy。根据ProxyConfig 获取到了对应的AopProxy的实现类，分别是JdkDynamicAopProxy和ObjenesisCglibAopProxy。 
         2. 获取代理类。
 
-
 ### 1.3.8. Spring事务
 #### 1.3.8.1. Spring事务使用  
 1. `@Transactional(rollbackFor = Exception.class) `，Transactional`默认只回滚RuntimeException，`但是可以指定要回滚的异常类型。    
@@ -489,7 +487,6 @@
     &emsp; <font color = "red">PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务，合并成一个事务；如果当前没有事务，则创建一个新的事务。这是默认值。</font>  
     * 事务的隔离级别，默认使用底层数据库的默认隔离级别。  
     * 事务只读，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。  
-
 
 #### 1.3.8.2. Spring事务问题
 1. 事务失效
@@ -533,7 +530,6 @@
 * API接口层：提供给外部使用的接口API，开发人员通过这些本地API来操纵数据库。接口层一接收到调用请求就会调用核心处理层来完成具体的数据处理。  
 * 核心处理层：负责具体的SQL查找、SQL解析、SQL执行和执行结果映射处理等。它主要的目的是根据调用的请求完成一次数据库操作。  
 * 基础支持层：负责最基础的功能支撑，包括连接管理、事务管理、配置加载和缓存处理，这些都是共用的东西，将它们抽取出来作为最基础的组件。为上层的数据处理层提供最基础的支撑。  
-
 
 ### 1.4.3. MyBatis SQL执行解析
 1. Mybatis Sql执行流程：   
@@ -611,9 +607,11 @@
 
 2. **<font color = "clime">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。`SpringBoot通过以下步骤实现自己的SPI机制：`</font>**  
 	1. 首先获取线程上下文类加载器;  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-10.png) 
 	2. 然后利用上下文类加载器从spring.factories配置文件中加载所有的SPI扩展实现类并放入缓存中；  
 	3. 根据SPI接口从缓存中取出相应的SPI扩展实现类；  
 	4. 实例化从缓存中取出的SPI扩展实现类并返回。  
+    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/boot/boot-11.png)  
 
 #### 1.6.2.2. run()方法运行过程
 1. **<font color = "clime">运行流程，分3步：</font>**  

@@ -271,6 +271,7 @@ private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] 
 -->
 
 ##### 1.2.1.2.1. 获得类加载器  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-10.png) 
 &emsp; Java的SPI机制默认是利用线程上下文类加载器去加载扩展类的。那么，SpringBoot实现的SPI机制是利用哪种类加载器去加载spring.factories配置文件中的扩展实现类的？  
 &emsp; ClassLoader classLoader = getClassLoader()解读：  
 
@@ -391,6 +392,7 @@ private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoad
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-5.png)  
 
 ##### 1.2.1.2.3. 实例化从spring.factories中加载的SPI扩展类  
+![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/boot/boot-11.png)  
 &emsp; 从spring.factories中获取到ApplicationContextInitializer接口对应的所有SPI扩展实现类后，此时会将这些SPI扩展类进行实例化。  
 &emsp; `List<T\> instances = createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names)`实例化SPI扩展类，代码解读：  
 
