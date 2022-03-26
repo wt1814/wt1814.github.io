@@ -2,25 +2,26 @@
 <!-- TOC -->
 
 - [1. git](#1-git)
-    - [git多用户](#git多用户)
-    - [1.1. Git分支命名](#11-git分支命名)
-    - [1.2. GIT本地库操作基本原理](#12-git本地库操作基本原理)
-    - [1.3. 分支](#13-分支)
-        - [1.3.1. 操作分支](#131-操作分支)
-        - [1.3.2. 基于Gitlab Issues为导向的分支管理](#132-基于gitlab-issues为导向的分支管理)
-    - [1.4. 命令](#14-命令)
-        - [1.4.1. git clone 文件大](#141-git-clone-文件大)
-        - [1.4.2. git tag](#142-git-tag)
-        - [1.4.3. ★★★git回滚](#143-★★★git回滚)
-            - [1.4.3.1. 场景](#1431-场景)
-            - [1.4.3.2. 撤销，commit](#1432-撤销commit)
-            - [1.4.3.3. 回滚，push](#1433-回滚push)
-                - [1.4.3.3.1. ★★★情况二：删除最后一次远程提交](#14331-★★★情况二删除最后一次远程提交)
-                - [1.4.3.3.2. ★★★情况三：回滚某次提交](#14332-★★★情况三回滚某次提交)
-            - [1.4.3.4. 删除某次提交](#1434-删除某次提交)
-    - [1.5. gitignore规则不生效](#15-gitignore规则不生效)
-    - [1.6. octotree，树形展示Github项目代码](#16-octotree树形展示github项目代码)
-    - [1.7. git迁移仓库](#17-git迁移仓库)
+    - [1.1. git多用户](#11-git多用户)
+    - [1.2. Git分支命名](#12-git分支命名)
+    - [1.3. GIT本地库操作基本原理](#13-git本地库操作基本原理)
+    - [1.4. 分支](#14-分支)
+        - [1.4.1. 操作分支](#141-操作分支)
+        - [1.4.2. git克隆指定分支的代码](#142-git克隆指定分支的代码)
+        - [1.4.3. 基于Gitlab Issues为导向的分支管理](#143-基于gitlab-issues为导向的分支管理)
+    - [1.5. 命令](#15-命令)
+        - [1.5.1. git clone 文件大](#151-git-clone-文件大)
+        - [1.5.2. git tag](#152-git-tag)
+        - [1.5.3. ★★★git回滚](#153-★★★git回滚)
+            - [1.5.3.1. 场景](#1531-场景)
+            - [1.5.3.2. 撤销，commit](#1532-撤销commit)
+            - [1.5.3.3. 回滚，push](#1533-回滚push)
+                - [1.5.3.3.1. ★★★情况二：删除最后一次远程提交](#15331-★★★情况二删除最后一次远程提交)
+                - [1.5.3.3.2. ★★★情况三：回滚某次提交](#15332-★★★情况三回滚某次提交)
+            - [1.5.3.4. 删除某次提交](#1534-删除某次提交)
+    - [1.6. gitignore规则不生效](#16-gitignore规则不生效)
+    - [1.7. octotree，树形展示Github项目代码](#17-octotree树形展示github项目代码)
+    - [1.8. git迁移仓库](#18-git迁移仓库)
 
 <!-- /TOC -->
 
@@ -53,20 +54,20 @@ https://mp.weixin.qq.com/s/bT7VXffqHuzUZUY5c4ce7A
 <!-- 本地仓库的位置 -->
 本地仓库的位置可设置为：\<localRepository\>${user.home}/.m2/repository\</localRepository\>
 
-## git多用户
+## 1.1. git多用户
 <!-- 
 一台电脑上配置并使用两个github账号
 https://zhuanlan.zhihu.com/p/191589172
 https://www.cnblogs.com/xjnotxj/p/5845574.html
 -->
 
-## 1.1. Git分支命名  
+## 1.2. Git分支命名  
 <!-- 
  别乱提交代码了，你必须知道的 Git 分支开发规范！ 
  https://mp.weixin.qq.com/s/w5gcDgQKYFmzel6Jnc0u4A
 -->
 
-## 1.2. GIT本地库操作基本原理  
+## 1.3. GIT本地库操作基本原理  
 
 ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/git/git-4.png)  
 &emsp; GIT作为分布式版本库软件，每个机器上都是一个版本库。  
@@ -76,11 +77,11 @@ https://www.cnblogs.com/xjnotxj/p/5845574.html
 * 暂存区是临时存储代码的地方，方便批量提交数据到本地库；  
 * 本地库是最终的历史版本文件的存储地；  
 
-## 1.3. 分支
+## 1.4. 分支
 <!-- 
 https://jingyan.baidu.com/article/a17d52854e164dc098c8f2b0.html
 -->
-### 1.3.1. 操作分支
+### 1.4.1. 操作分支
 &emsp; 查看分支：  
 * 查看本地分支：git branch
 * 查看远程分支：git branch -r
@@ -97,7 +98,13 @@ https://jingyan.baidu.com/article/a17d52854e164dc098c8f2b0.html
     ![image](https://gitee.com/wt1814/pic-host/raw/master/images/projectManage/git/git-3.png)  
 
 
-### 1.3.2. 基于Gitlab Issues为导向的分支管理
+### 1.4.2. git克隆指定分支的代码
+<!-- 
+
+https://www.cnblogs.com/nylcy/p/6569284.html
+--> 
+
+### 1.4.3. 基于Gitlab Issues为导向的分支管理
 <!--
 9种提高 GitHub 国内访问速度的方案
 https://juejin.cn/post/7043960479181438983?share_token=25e7cfba-e5e8-4a51-9237-6e922f9a15c4#heading-4
@@ -106,17 +113,17 @@ https://juejin.cn/post/7043960479181438983?share_token=25e7cfba-e5e8-4a51-9237-6
 https://blog.csdn.net/u011423145/article/details/107860812
 -->
 
-## 1.4. 命令
+## 1.5. 命令
 
-### 1.4.1. git clone 文件大
+### 1.5.1. git clone 文件大
 &emsp; git clone giturl --depth=1  
 
 
-### 1.4.2. git tag  
+### 1.5.2. git tag  
 &emsp; 常常在代码封板时，使用git 创建一个tag，这样一个不可修改的历史代码版本就像被封存起来一样，不论是运维发布拉取，或者以后的代码版本管理，都是十分方便的。  
 
 
-### 1.4.3. ★★★git回滚
+### 1.5.3. ★★★git回滚
 <!--
 https://blog.csdn.net/ligang2585116/article/details/71094887
 https://zhuanlan.zhihu.com/p/137856034
@@ -130,14 +137,14 @@ https://blog.csdn.net/tsq292978891/article/details/78965693
 git push -f origin master ## 这里假设只有一个master分支
 ```
 
-#### 1.4.3.1. 场景  
+#### 1.5.3.1. 场景  
 
-#### 1.4.3.2. 撤销，commit  
+#### 1.5.3.2. 撤销，commit  
 
 
-#### 1.4.3.3. 回滚，push
+#### 1.5.3.3. 回滚，push
 
-##### 1.4.3.3.1. ★★★情况二：删除最后一次远程提交  
+##### 1.5.3.3.1. ★★★情况二：删除最后一次远程提交  
 &emsp; 方式一：使用revert  
 
 ```text
@@ -158,7 +165,7 @@ $ git push origin master -f
 &emsp; reset 是指将HEAD指针指到指定提交，历史记录中不会出现放弃的提交记录。  
 
 
-##### 1.4.3.3.2. ★★★情况三：回滚某次提交  
+##### 1.5.3.3.2. ★★★情况三：回滚某次提交  
 
 ```text
 # 找到要回滚的commitID
@@ -167,11 +174,11 @@ $ git revert commitID
 ```
 
 
-#### 1.4.3.4. 删除某次提交
+#### 1.5.3.4. 删除某次提交
 
 
 
-## 1.5. gitignore规则不生效  
+## 1.6. gitignore规则不生效  
 &emsp; .gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的。所以一定要养成在项目开始就创建.gitignore文件的习惯。  
 &emsp; 解决方法就是先把本地缓存删除(改变成未track状态)，然后再提交：  
 
@@ -185,8 +192,8 @@ git commit -m "msg"
 
 &emsp; 使用`.ignore插件`。  
 
-## 1.6. octotree，树形展示Github项目代码
+## 1.7. octotree，树形展示Github项目代码
 
 
 
-## 1.7. git迁移仓库  
+## 1.8. git迁移仓库  

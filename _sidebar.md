@@ -325,6 +325,7 @@
     * [学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
     * [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
     * [SpringBoot源码](/docs/microService/SpringBoot/SpringBootSource.md)  
+        * [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
         * [SpringBoot启动过程](/docs/microService/SpringBoot/SpringBootRun.md)  
             * [SpringApplication初始化](/docs/microService/SpringBoot/SpringApplicationInit.md)  
             * [run()方法运行过程](/docs/microService/SpringBoot/runProcess.md)  
