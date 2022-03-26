@@ -79,7 +79,7 @@ https://cloud.tencent.com/developer/article/1745350
 &emsp; 布谷鸟哈希算法对待这种挤兑循环的态度就是认为数组太拥挤了，需要扩容（实际上并不是这样）。  
 
 ## 1.4. 布谷鸟过滤器算法  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/structure/structure-1.png)  
+![image](http://www.wt1814.com/static/view/images/structure/structure-1.png)  
 
 &emsp; 上图（a）(b)展示了一个基本的布谷鸟哈希表的插入操作，是由一个桶数组组成，每个插入项都有由散列函数h1(x)和h2(x)确定的两个候选桶，具体操作上文中已经描述，此处不再赘述。  
 

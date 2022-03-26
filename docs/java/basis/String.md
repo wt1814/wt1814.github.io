@@ -133,7 +133,7 @@ public boolean equals(Object anObject) {
 &emsp; String类重写了equals方法，比较的是组成字符串的每一个字符是否相同，如果都相同则返回true，否则返回false。  
 1. 首先会判断要比较的两个字符串它们的引用是否相等。如果引用相等的话，直接返回 true ，不相等的话继续下面的判断。  
 2. 然后再判断被比较的对象是否是 String 的实例，如果不是的话直接返回 false，如果是的话，再比较两个字符串的长度是否相等，如果长度不想等的话也就没有比较的必要了；长度如果相同，会比较字符串中的每个 字符 是否相等，一旦有一个字符不相等，就会直接返回 false。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/basics/java-4.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/basics/java-4.png)  
 
 #### 1.1.4.2. hashCode()方法  
 
@@ -230,7 +230,7 @@ System.out.println(str);//Vae
 
 &emsp; <font color = "red">StringBuffer和StringBuilder的3个区别：</font>  
 &emsp; StringBuffer和StringBuilder的类结构：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/basics/java-7.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/basics/java-7.png)  
 
 &emsp; 继承了一个抽象的字符串父类：AbstractStringBuilder。  
 

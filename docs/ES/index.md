@@ -45,7 +45,7 @@ PUT twitter
 &emsp; 索引的名称必须是小写的，不可重名。  
 
 &emsp; 创建结果：  
-&emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-25.png)  
+&emsp; ![image](http://www.wt1814.com/static/view/images/ES/es-25.png)  
 
 &emsp; 创建的命令还可以简写为：  
 
@@ -99,7 +99,7 @@ PUT twitter
 ```
 
 &emsp; 创建索引时返回的结果说明：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-26.png)  
+![image](http://www.wt1814.com/static/view/images/ES/es-26.png)  
 
 &emsp; **Get Index查看索引的定义信息**  
 &emsp; GET /twitter，可以一次获取多个索引(以逗号间隔)，获取所有索引_all或用通配符 *

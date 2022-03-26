@@ -44,14 +44,14 @@
 &emsp; 最常见的是，把入缓冲池的页放到LRU的头部，作为最近访问的元素，从而最晚被淘汰。这里又分两种情况：  
 &emsp; (1)页已经在缓冲池里，那就只做“移至”LRU头部的动作，而没有页被淘汰；  
 &emsp; (2)页不在缓冲池里，除了做“放入”LRU头部的动作，还要做“淘汰”LRU尾部页的动作；  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-106.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-106.png)  
 &emsp; 如上图，假如管理缓冲池的LRU长度为10，缓冲了页号为1，3，5…，40，7的页。  
 &emsp; 假如，接下来要访问的数据在页号为4的页中：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-107.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-107.png)  
 &emsp; (1)页号为4的页，本来就在缓冲池里；  
 &emsp; (2)把页号为4的页，放到LRU的头部即可，没有页被淘汰；  
 &emsp; 假如，再接下来要访问的数据在页号为50的页中：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-108.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-108.png)  
 &emsp; (1)页号为50的页，原来不在缓冲池里；  
 &emsp; (2)把页号为50的页，放到LRU头部，同时淘汰尾部页号为7的页；  
 &emsp; 传统的LRU缓冲池算法十分直观，OS，memcache等很多软件都在用，MySQL为什么不能直接用呢？  
@@ -74,13 +74,13 @@
     * **<font color = "red">如果数据真正被读取(预读成功)，才会加入到新生代的头部</font>**  
     * **<font color = "red">如果数据没有被读取，则会比新生代里的“热数据页”更早被淘汰出缓冲池</font>**   
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-109.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-109.png)  
 &emsp; 举个例子，整个缓冲池LRU如上图：  
 &emsp; (1)整个LRU长度是10；  
 &emsp; (2)前70%是新生代；  
 &emsp; (3)后30%是老生代；  
 &emsp; (4)新老生代首尾相连；  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-110.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-110.png)  
 &emsp; 假如有一个页号为50的新页被预读加入缓冲池：  
 &emsp; (1)50只会从老生代头部插入，老生代尾部(也是整体尾部)的页会被淘汰掉；  
 &emsp; (2)假设50这一页不会被真正读取，即预读失败，它将比新生代的数据更早淘汰出缓冲池；  
@@ -107,13 +107,13 @@ select * from user where name like "%shenjian%";
 2. <font color = "red">插入老生代头部的页，即使立刻被访问，并不会立刻放入新生代头部；</font>  
 3. <font color = "red">只有满足“被访问”并且“在老生代停留时间”大于T，才会被放入新生代头部；</font>  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-111.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-111.png)  
 &emsp; 继续举例，假如批量数据扫描，有51，52，53，54，55等五个页面将要依次被访问。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-112.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-112.png)  
 &emsp; 如果没有“老生代停留时间窗口”的策略，这些批量被访问的页面，会换出大量热数据。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-113.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-113.png)  
 &emsp; 加入“老生代停留时间窗口”策略后，短时间内被大量加载的页，并不会立刻插入新生代头部，而是优先淘汰那些，短期内仅仅访问了一次的页。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-114.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-114.png)  
 &emsp; 而只有在老生代呆的时间足够久，停留时间大于T，才会被插入新生代头部。  
 
 ## 1.3. 相关参数  

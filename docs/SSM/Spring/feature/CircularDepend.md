@@ -20,7 +20,7 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. Spring循环依赖的场景：均采用setter方法（属性注入）注入方式，可被解决；采用构造器和setter方法（属性注入）混合注入方式可能被解决。
 2. **<font color = "red">Spring通过3级缓存解决：</font>**  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
+    ![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-20.png)  
     * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
     * 二级缓存: Map<String,Object> earlySingletonObjects， **<font color = "blue">早期曝光对象</font>** ，`二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。`尚未经历了完整的Spring Bean初始化生命周期。
     * 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
@@ -83,7 +83,7 @@ https://mp.weixin.qq.com/s/YQRO2ZTn4T6A-iPUfs5ROg
 
 ## 1.2. 什么是循环依赖？  
 &emsp; 多个bean之间相互依赖，形成了一个闭环。比如：A依赖于B、B依赖于C、C依赖于A。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-5.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-5.png)  
 
 &emsp; 代码中表示：  
 <!-- https://mp.weixin.qq.com/s/qXvKA0sIzo3JbledSr4NNQ -->
@@ -191,16 +191,16 @@ https://www.cnblogs.com/leeego-123/p/12165278.html
 * 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
 
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-20.png)  
 
 ### 1.4.2. 图解  
 #### 1.4.2.1. 未发生依赖
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-21.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-21.png)  
 
 #### 1.4.2.2. 发生循环依赖
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-22.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-17.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-16.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-22.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-17.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-16.png)  
 
 &emsp; **<font color = "clime">单例模式下Spring解决循环依赖的流程：</font>**  
 1. Spring 创建bean主要分为两个步骤，创建原始 bean 对象，接着去填充对象属性和初始化  
@@ -330,7 +330,7 @@ https://www.cnblogs.com/grey-wolf/p/13034371.html
 
 4. **二级缓存能不能解决？为什么要三级缓存？**  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-20.png)  
 &emsp; 理论上来说是可以解决循环依赖的问题，但是注意：为什么要在三级缓存中放置匿名内部类？  
 &emsp; 本质在于为了创建代理对象，假如现在有A类，需要生成代理对象，A需要实例化。  
 &emsp; 在三级缓存中放置的是，生成具体对象的一个匿名内部类，这个匿名内部类可能是代理类，也可能是普通的实例对象，而使用三级缓存就保证了不管是否需要代理对象，都保证使用的是一个对象，而不会出现，前面使用普通bean，后面使用代理类。  
@@ -342,7 +342,7 @@ https://blog.csdn.net/szw906689771/article/details/112034259
 https://www.cnblogs.com/asker009/p/14376955.html
 -->
 &emsp; **<font color = "clime">跟踪源代码过程中注意区别下有AOP的依赖跟没有AOP的依赖两种情况，跟踪后会发现三级缓存的功能是只有真正发生循环依赖的时候，才去提前生成代理对象，否则只会创建一个工厂并将其放入到三级缓存中，但是不会去通过这个工厂去真正创建对象。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-18.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-18.png)  
 &emsp; 如上图所示，如果使用二级缓存解决循环依赖，意味着所有Bean在实例化后就要完成AOP代理，这样违背了Spring设计的原则，Spring在设计之初就是通过AnnotationAwareAspectJAutoProxyCreator这个后置处理器来在Bean生命周期的最后一步来完成AOP代理，而不是在实例化后就立马进行AOP代理。  
 
 <!-- 
@@ -355,4 +355,4 @@ Spring循环依赖，二级缓存能解决嘛？
 -->  
 
 5. **为什么第三级缓存要使用ObjectFactory？需要提前产生代理对象。**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-19.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-19.png)  

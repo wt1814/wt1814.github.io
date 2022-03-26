@@ -84,12 +84,12 @@ https://mp.weixin.qq.com/s/yIPIABpAzaHJvGoJ6pv0kg
 
 &emsp; 为什么 follower 副本不提供读服务？
 这个问题本质上是对性能和一致性的取舍。试想一下，如果 follower 副本也对外提供服务那会怎么样呢？首先，性能是肯定会有所提升的。但同时，会出现一系列问题。类似数据库事务中的幻读，脏读。比如你现在写入一条数据到 kafka 主题 a，消费者 b 从主题 a 消费数据，却发现消费不到，因为消费者 b 去读取的那个分区副本中，最新消息还没写入。而这个时候，另一个消费者 c 却可以消费到最新那条数据，因为它消费了 leader 副本。Kafka 通过 WH 和 Offset 的管理来决定 Consumer 可以消费哪些数据，已经当前写入的数据。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-30.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-30.png)  
 -->
 
 
 ## 1.3. 服务端Leader的选举(ISR副本)
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-117.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-117.png)  
 
 ### 1.3.1. ISR副本
 <!-- 
@@ -132,7 +132,7 @@ https://juejin.cn/post/6844903950009794567#heading-3
 副本的存在就会出现副本同步问题
 
 Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)，Producer 向 Broker 发送消息时会根据ack配置来确定需要等待几个副本已经同步了消息才相应成功，Broker 内部会ReplicaManager服务来管理 flower 与 leader 之间的数据同步。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-31.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-31.png)  
 -->
 
 2. **副本是否滞后的设置**  
@@ -168,7 +168,7 @@ unclean领导者选举。再回去看看刚刚我们说Leader挂了怎么办，�
 <!-- 
 kafka数据一致性，通过HW来保证  
 &emsp; 由于并不能保证 Kafka 集群中每时每刻 follower 的长度都和 leader 一致(即数据同步是有时延的)，那么当leader 挂掉选举某个 follower 为新的 leader 的时候(原先挂掉的 leader 恢复了成为了 follower)，可能会出现leader 的数据比 follower 还少的情况。为了解决这种数据量不一致带来的混乱情况，Kafka 提出了以下概念：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-27.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-27.png)  
 
 * LEO(Log End Offset)：指的是每个副本最后一个offset；  
 * HW(High Wather)：指的是消费者能见到的最大的 offset，ISR 队列中最小的 LEO。  
@@ -189,15 +189,15 @@ kafka数据一致性，通过HW来保证
 &emsp; ~~试想如果一个消息到达了Leader，而Follower副本还未来得及同步，但该消息能已被消费者消费了，这时候Leader宕机，Follower副本中选出新的Leader，消息将丢失，出现不一致的现象。所以Kafka引入HW的概念，当消息被同步副本同步完成时，才让消息可被消费。~~  
 -->
 &emsp; 副本的本质其实是一个消息日志，为了让副本正常同步，需要通过一些变量记录副本的状态，如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-75.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-112.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-75.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-112.png)  
 &emsp; **其中LEO(Last End Offset，低水位)记录了日志的下一条消息偏移量，即当前最新消息的偏移量加一。<font color = "red">**  
 &emsp; **而HW（High Watermark，高水位）界定了消费者可见的消息，消费者可以消费小于HW的消息，而大于等于HW的消息将无法消费。</font>** 是ISR队列中最小的LEO。  
 
 ### 1.4.2. ★★★~~副本上LEO和HW的更新~~
 &emsp; 上述即是LEO和HW的基本概念，下面看下具体是如何工作的。  
 &emsp; 在每个副本中都存有LEO和HW，而 **<font color = "clime">Leader副本中除了存有自身的LEO和HW，还存储了其他Follower副本的LEO和HW值，</font>** 为了区分把Leader上存储的Follower副本的LEO和HW值叫做远程副本的LEO和HW值，如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-76.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-76.png)  
 &emsp; 之所以这么设计，是为了HW的更新，Leader需保证HW是ISR副本集合中LEO的最小值。关于具体的更新，分为Follower副本和Leader副本来看。  
 
 #### 1.4.2.1. Follower副本上LEO和HW的更新
@@ -223,26 +223,26 @@ kafka数据一致性，通过HW来保证
 
 2. 除了这两种正常情况，当发生故障时，例如Leader宕机，Follower被选为新的Leader，会尝试更新HW。还有副本被踢出ISR时，也会尝试更新HW。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-113.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-113.png)  
 
 ### 1.4.3. 数据丢失和数据不一致场景
 <!-- 
 https://my.oschina.net/u/3379856/blog/4388538
 -->
 &emsp; 假设分区中有两个副本，min.insync.replica=1。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-77.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-77.png)  
 &emsp; 从上述过程中，可以看到remoteLEO、LeaderHW和FollowerHW的更新发生于Follower更新LEO后的第二轮Fetch请求，而这也意味着，更新需要额外一次Fetch请求。 **而这也将导致在Leader切换时，会存在数据丢失和数据不一致的问题。**  
 &emsp; 下面是数据丢失的示例：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-78.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-78.png)  
 &emsp; 当B作为Follower已经Fetch了最新的消息，但是在发送第二轮Fetch时，未来得及处理响应，宕机了。当重启时，会根据HW更新LEO，将发生日志截断，消息m1被丢弃。  
 &emsp; 这时再发送Fetch请求给A，A宕机了，则B未能同步到消息m1，同时B被选为Leader，而当A重启时，作为Follower同步B的消息时，会根据A的HW值更新HW和LEO，因此由2变成了1，也将发生日志截断，而已发送成功的消息m1将永久丢失。  
 ---
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-114.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-114.png)  
 
 ---
 
 &emsp; 数据不一致的情况如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-79.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-79.png)  
 &emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有m0消息，且HW为1。若A、B同时宕机，且B重启时，A还未恢复，则B被选为Leader。  
 
     集群处于上述这种状态有两种情况可能导致，一、宕机前，B不在ISR中，因此A未待B同步，即更新了HW，且unclear leader为true，允许B成为Leader；二、宕机前，B同步了消息m1，且发送了第二轮Fetch请求，Leader更新HW，但B未将消息m1落地到磁盘，宕机了，当再重启时，消息m1丢失，只剩m0。
@@ -251,7 +251,7 @@ https://my.oschina.net/u/3379856/blog/4388538
 
 ---
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-115.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-115.png)  
 
 ### 1.4.4. Leader Epoch 
 #### 1.4.4.1. 简介
@@ -280,7 +280,7 @@ https://my.oschina.net/u/3379856/blog/4388538
 #### 1.4.4.3. 如何解决数据丢失和数据不一致
 ##### 1.4.4.3.1. 数据丢失
 &emsp; 再回顾看下数据丢失和数据不一致的场景，在应用了LeaderEpoch后发生什么改变：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-80.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-80.png)  
 &emsp; 当B作为Follower已经Fetch了最新的消息，但是发送第二轮Fetch时，未来得及处理响应，宕机了。 **<font color = "red">当重启时，会向A发送LeaderEpochRequest请求。</font>** 如果A没宕机，由于 FollowerLastEpoch = LeaderLastEpoch，所以将LeaderLEO，即2作为LastOffset给A，又因为LastOffset=LEO，所以不会截断日志。这种情况比较简单。  
 
 &emsp; 而图中所画的情况是A宕机的情况，没返回LeaderEpochRequest的响应的情况。这时候B会被选作Leader，将当前LEO和新的Epoch写进leader-epoch-checkpoint文件中。  
@@ -288,7 +288,7 @@ https://my.oschina.net/u/3379856/blog/4388538
 
 ##### 1.4.4.3.2. 数据不一致
 &emsp; 下面是数据不一致情况：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-81.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-81.png)  
 &emsp; A作为Leader，A已写入m0、m1两条消息，且HW为2，而B作为Follower，只有消息m0，且HW为1，A、B同时宕机。B重启，被选为Leader，将写入新的LeaderEpoch(1, 1)。B开始工作，收到消息m2时。这时A重启，将作为Follower将发送LeaderEpochRequert(FollowerLastEpoch=0)，B返回大于FollowerLastEpoch的第一个LeaderEpoch的StartOffset，即1，小于当前LEO值，所以将发生日志截断，并发送Fetch请求，同步消息m2，避免了消息不一致问题。  
 &emsp; 但是此时m2消息会丢失，这种情况发生的根本原因在于min.insync.replicas的值设置为1，即没有任何其他副本同步的情况下，就认为m2消息为已提交状态。LeaderEpoch不能解决min.insync.replicas为1带来的数据丢失问题，但是可以解决其所带来的数据不一致问题。而之前所说能解决的数据丢失问题，是指消息已经成功同步到Follower上，但因HW未及时更新引起的数据丢失问题。  
 
@@ -296,4 +296,4 @@ https://my.oschina.net/u/3379856/blog/4388538
 &emsp; 在所有副本中，只有领导副本才能进行消息的读写处理。 **<font color = "red">由于不同分区的领导副本可能在不同的broker上，如果某个broker收到了一个分区请求，但是该分区的领导副本并不在该broker上，那么它就会向客户端返回一个Not a Leader for Partition的错误响应。为了解决这个问题，Kafka提供了元数据请求机制。</font>**  
 &emsp; **<font color = "red">首先集群中的每个broker都会缓存所有主题的分区副本信息，客户端会定期发送元数据请求，然后将获取的集群元数据信息进行缓存。</font>** 定时刷新元数据的时间间隔可以通过为客户端配置metadata.max.age.ms来进行指定。有了元数据信息后，客户端就知道了领导副本所在的broker，之后直接将读写请求发送给对应的broker即可。  
 &emsp; 如果在定时请求的时间间隔内发生的分区副本的选举，则意味着原来缓存的信息可能已经过时了，此时还有可能会收到Not a Leader  for Partition的错误响应，这种情况下客户端会再次求发出元数据请求，然后刷新本地缓存，之后再去正确的broker上执行对应的操作，过程如下图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-94.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-94.png)  

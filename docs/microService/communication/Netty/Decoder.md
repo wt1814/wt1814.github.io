@@ -111,9 +111,9 @@ public class NettyClient {
 ```
 
 &emsp; 以上代码中，第一反应理解的是，如果非异常情况下客户端所有数据发送成功，并且服务端全部接收到。那么从打印信息中可以看到客户端的发送次数i和服务端的接收消息计数i应该是相同的数。那么下面通过运行程序，查看打印结果。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-39.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-39.png)  
 &emsp; 如上图所示，【】中的最后一个数字与 []中数字对上的是已独立完整的包接收到(粘包/拆包示意图中的情况 I)。但是【】中为37和38的出现了粘包情况（粘包/拆包示意图中的情况 II），两条数据粘合在一起。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-40.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-40.png)  
 &emsp; 上图中可以看到【】中 167的数据被拆分为了两部分(图中画绿线数据)，该情况为拆包(粘包/拆包示意图中的情况 III)。  
 
 &emsp; 上面程序没有考虑到TCP的粘包/拆包问题，所以如果是实际应用的程序的话，不能保证数据的正常情况，就会导致程序异常。  
@@ -131,7 +131,7 @@ public class NettyClient {
 &emsp; 为了降低用户的开发难度，Netty对常用的功能和API做了装饰，以屏蔽底层的实现细节。编解码功能的定制，对于实现Netty底层实现的开发者而言，直接基于ChannelHandler扩展开发，难度并不是很大。但是对于大多数初学者或者不愿意去了解底层实现细节的用户，需要提供更简单的类库和API，而不是ChannelHandler。  
 &emsp; Netty针对编解码功能，它既提供了通用的编解码框架供用户扩展，又提供了常用的编解码类库供用户直接使用。在保证定制扩展性的基础之上，尽量降低用户的开发工作量和开发门槛，提升开发效率。  
 &emsp; Netty预置的编解码功能包括Base64、Bytes、Compresssion、JSON、Marshalling、Protobuf、Serializaton、XML等，如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-41.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-41.png)  
 
 #### 1.2.2.2. Netty提供的解码器
 &emsp; **<font color = "red">Netty默认提供了多种解码器来解决，可以进行分包操作，满足99%的编码需求。</font>** 分别如下：  
@@ -362,9 +362,9 @@ protected void initChannel(SocketChannel ch) throws Exception {
 
 ##### 1.2.2.2.3. LengthFieldBasedFrameDecoder与LengthFieldPrepender
 &emsp; 这里LengthFieldBasedFrameDecoder与LengthFieldPrepender需要配合起来使用，其实本质上来讲，这两者一个是解码，一个是编码的关系。它们处理粘拆包的主要思想是在生成的数据包中添加一个长度字段，用于记录当前数据包的长度。LengthFieldBasedFrameDecoder会按照参数指定的包长度偏移量数据对接收到的数据进行解码，从而得到目标消息体数据；而LengthFieldPrepender则会在响应的数据前面添加指定的字节数据，这个字节数据中保存了当前消息体的整体字节数据长度。LengthFieldBasedFrameDecoder的解码过程如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-42.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-42.png)  
 &emsp; LengthFieldPrepender的编码过程如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-43.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-43.png)  
 
 &emsp; 关于LengthFieldBasedFrameDecoder，这里需要对其构造函数参数进行介绍：  
 

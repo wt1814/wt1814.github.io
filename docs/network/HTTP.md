@@ -112,7 +112,7 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 
 ##### 1.4.1.1.2. 请求地址最后面的“/”加和不加到底有什么区别？  
 &emsp; 下图是一个完整的URI：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/http-3.jpg)  
+![image](http://www.wt1814.com/static/view/images/network/http-3.jpg)  
 &emsp; 这其中用户名、密码和端口号都可以省略，在浏览器拿到这样一个URI之后，首先会对其进行解析，比如上面这个地址，浏览器经过解析之后，知道要去获取 www.baidu.com 服务器上的/folder/index.html文件。不过，在实际应用中，有的时候URI并不是这么清晰，比如下面这个：http://wwww.baidu.com 。这种URI并没有直接指定要访问哪个文件，像这种没有路径的情况，就代表访问根目录下预先设置的默认文件，一般就是/index.html，/default.html一类的文件，在Java中，可以在web.xml中来配置这个默认文件。  
 &emsp; 有的时候还有可能遇到下面这种地址：http://www.baidu.com/folder/ 。这个URI 以一个 / 结尾，表示folder是一个目录，访问的是这个目录下的文件，但是又没有说明是这个目录下的哪个文件，此时依然是采用该目录下index.html或者 default.html一类的文件。  
 &emsp; 有的时候，还可以看到下面这种URI：http://www.baidu.com/folder 。即folder后面没有 /，此时会先将folder当作一个资源去访问(比如一个名为 folder 的 Servlet )，如果没有名为folder的资源，那么浏览器会自动在folder后面加上一个 / ，此时地址变为http://www.baidu.com/folder/ ，folder 是一个目录，然后就会去尝试访问folder目录下的 index.html或者default.html。  
@@ -131,12 +131,12 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 2. 请求头中主要包含了请求的各种条件  
 3. 空行CR+LF  
 4. 请求数据  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/http-4.png) 
+![image](http://www.wt1814.com/static/view/images/network/http-4.png) 
 
 ##### 1.4.1.2.2. 服务器响应消息  
 &emsp; HTTP响应报文也由四部分组成，分别是状态行（含三部分内容，分别是HTTP版本、状态码和原因短语）、响应头、空行以及响应正文，如下：   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/http-5.png) 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/http-6.png) 
+![image](http://www.wt1814.com/static/view/images/network/http-5.png) 
+![image](http://www.wt1814.com/static/view/images/network/http-6.png) 
 
 --------------------------
 #### 1.4.1.3. HTTP具体头信息  

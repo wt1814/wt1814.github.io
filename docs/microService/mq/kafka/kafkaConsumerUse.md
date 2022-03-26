@@ -135,15 +135,15 @@ public class ConsumerDemo {
 
 &emsp; **消费组示例：**  
 &emsp; 如下图所示，某个主题中共有4个分区（Partition）：PO、Pl、P2、P3。有两个消费组A和B都订阅了这个主题，消费组A中有4个消费者（CO、Cl、C2和C3），消费组B中有2个消费者（C4和C5）。按照Kafka默认的规则，最后的分配结果是消费组A中的每一个消费者分配到1个分区，消费组B中的每一个消费者分配到2个分区，两个消费组之间互不影响。每个消费者只能消费所分配到的分区中的消息。换言之，每一个分区只能被一个消费组中的一个消费者所消费。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-65.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-65.png)  
 &emsp; 再来看一下消费组内的消费者个数变化时所对应的分区分配的演变。假设目前某消费组内只有一个消费者CO，订阅了一个主题，这个主题包含7个分区：PO、Pl、P2、P3、P4、 P5、P6。也就是说，这个消费者CO订阅了7个分区，具体分配情形参考下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-66.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-66.png)  
 &emsp; 此时消费组内又加入了一个新的消费者C1，按照既定的逻辑，需要将原来消费者CO的部分分区分配给消费者C1消费，如下图所示。消费者CO和Cl各自负责消费所分配到的分区，彼此之间并无逻辑上的干扰。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-67.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-67.png)  
 &emsp; 紧接着消费组内又加入了一个新的消费者C2，消费者CO、Cl和C2按照下图中的方式 各自负责消费所分配到的分区。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-68.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-68.png)  
 &emsp; 消费者与消费组这种模型可以让整体的消费能力具备横向伸缩性，可以增加（或减少）消费者的个数来提高（或降低）整体的消费能力。 **<font color = "red">对于分区数固定的情况，一味地增加消费者并不会让消费能力一直得到提升，如果消费者过多，出现了消费者的个数大于分区个数的情况, 就会有消费者分配不到任何分区。</font>** 参考下图，一共有8个消费者，7个分区，那么最后的消费者C7由于分配不到任何分区而无法消费任何消息。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-69.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-69.png)  
 
 <!-- 
 * 实现基于队列的模型：所有consumer实例都属于相同的group，每条消息只会被一个consumer实例处理。  
@@ -166,12 +166,12 @@ https://www.kancloud.cn/nicefo71/kafka/1473378
 &emsp; **消费者组rebalance触发的条件，满足其一即可：**  
 1. 组成员发生变更，比如新consumer加入组，或已有consumer主动离开组，再或是已有consumer崩溃时则触rebalance。（consumer崩溃的情况，有可能是consumer进程“挂掉”或consumer进程所在的机器宕机，也有可能是consumer无法在指定的时间内完成消息的处理。）
     * 消费组内某消费者宕机，触发 Repartition 操作，如下图所示。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-91.png)    
+    ![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-91.png)    
     * 消费组内新增消费者，触发 Repartition 操作，如下图所示。一般这种情况是为了提高消费端的消费能力，从而加快消费进度。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-92.png)   
+    ![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-92.png)   
 2. 组订阅topic数发生变更，比如使用基于正则表达式的订阅，当匹配正则表达式的新topic被创建时则会触发rebalance。
 3. 组订阅topic的分区数发生变更，比如使用命令行脚本增加了订阅topic的分区数。如下图所示。一般这种调整 Partition 个数的情况也是为了提高消费端消费速度的，因为当消费者个数大于等于 Partition 个数时，在增加消费者个数是没有用的（原因是：在一个消费组内，消费者:Partition = 1:N，当 N 小于 1 时，相当于消费者过剩了）， **<font color = "clime">所以一方面增加 Partition 个数同时增加消费者个数可以提高消费端的消费速度。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-90.png)    
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-90.png)    
 
 #### 1.2.2.3. 重平衡流程
 <!-- 
@@ -198,7 +198,7 @@ https://mp.weixin.qq.com/s/UiSpj3WctvdcdXXAwjcI-Q
 4. **<font color = "red">Leader消费者收到JoinGroup响应后，根据消费者的订阅信息制定分配方案，把方案放在SyncGroup请求中，发送给协调者。</font>** 普通消费者在收到响应后，则直接发送SyncGroup请求，等待Leader的分配方案；  
 5. **<font color = "red">协调者收到分配方案后，再通过SyncGroup响应把分配方案发给所有消费组。</font>**  
 6. 当所有消费者收到分配方案后，就意味着再均衡的结束，可以正常开始消费工作了。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-70.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-70.png)  
 
 ##### 1.2.2.3.4. 分配策略  
 &emsp; kafka新版本consumer默认提供了3种分配策略，分别是range策略、round-robin策略和sticky策略。
@@ -349,15 +349,15 @@ kafka_test      0          7399            7399            0               consu
 
 1. 至少一次  
 &emsp; 消费者读取消息，先处理消息，在保存消费进度。消费者拉取到消息，先消费消息，然后在保存偏移量，当消费者消费消息后还没来得及保存偏移量，则会造成消息被重复消费。如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-87.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-87.png)  
 <center>先消费后保存消费进度</center>
 2. 至多一次  
 &emsp; 消费者读取消息，先保存消费进度，在处理消息。消费者拉取到消息，先保存了偏移量，当保存了偏移量后还没消费完消息，消费者挂了，则会造成未消费的消息丢失。如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-88.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-88.png)  
 <center>先保存消费进度后消费消息</center>
 3. 正好一次  
 &emsp; 正好消费一次的办法可以通过将消费者的消费进度和消息处理结果保存在一起。只要能保证两个操作是一个原子操作，就能达到正好消费一次的目的。通常可以将两个操作保存在一起，比如HDFS中。正好消费一次流程如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-89.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-89.png)  
 <center>正好消费一次</center>
 
 ### 1.4.5. 多线程消费实例  
@@ -380,15 +380,15 @@ https://blog.csdn.net/matrix_google/article/details/80035222?utm_source=blogxgwz
 &emsp; KafkaConsumer类不是线程安全的，所有的网络IO处理都是发生在用户主线程中。不能在多个线程中共享同一个 KafkaConsumer 实例，可以使用 KafkaConsumer.wakeup() 在其他线程中唤醒 Consumer。  
 &emsp; 实现多线程时通常由两种实现方法：  
 1. 消费者程序启动多个线程，每个线程维护专属的KafkaConsumer Instance，负责完整的消息获取、消息处理流程。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-59.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-59.png)  
 2. 消费者程序使用单或多线程获取消息，同时创建多个消费线程执行消息处理逻辑
     * 处理消息交由特定的线程池来做
     * 将消息获取与处理解耦
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-60.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-60.png)  
 
 &emsp; 两种方法的优缺点：   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-93.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-93.png)  
 
 |  | 优点| 缺点| 
 |--- |--- |--- | 

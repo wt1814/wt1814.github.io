@@ -43,13 +43,13 @@
 ## 1.2. ChannelHandler  
 &emsp; ChannelHandler是Netty中最常用的组件。 **ChannelHandler 主要用来处理各种事件，这里的事件很广泛，比如可以是连接、数据接收、异常、数据转换等。**  
 &emsp; ChannelHandler有两个核心子类ChannelInboundHandler和ChannelOutboundHandler，其中ChannelInboundHandler用于接收、处理入站( Inbound )的数据和事件，而ChannelOutboundHandler则相反，用于接收、处理出站( Outbound )的数据和事件。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-88.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-88.png)  
 
 
 ### 1.2.1. ChannelInboundHandler  
 &emsp; **ChannelInboundHandler处理入站数据以及各种状态变化，当Channel状态发生改变会调用ChannelInboundHandler中的一些生命周期方法。** 这些方法与Channel的生命密切相关。  
 &emsp; 入站数据，就是进入socket的数据。下面展示一些该接口的生命周期API：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-54.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-54.png)  
 &emsp; 当某个 ChannelInboundHandler的实现重写channelRead()方法时，它将负责显式地释放与池化的 ByteBuf 实例相关的内存。Netty 为此提供了一个实用方法ReferenceCountUtil.release()。  
 
 ```java
@@ -76,7 +76,7 @@ public class SimpleDiscardHandler
 
 ### 1.2.2. ChannelOutboundHandler   
 &emsp; 出站操作和数据将由ChannelOutboundHandler处理。它的方法将被Channel、ChannelPipeline以及 ChannelHandlerContext调用。ChannelOutboundHandler的一个强大的功能是可以按需推迟操作或者事件，这使得可以通过一些复杂的方法来处理请求。例如，如果到远程节点的写入被暂停了，那么可以推迟冲刷操作并在稍后继续。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-55.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-55.png)  
 &emsp; ChannelPromise与ChannelFuture: ChannelOutboundHandler中的大部分方法都需要一个ChannelPromise参数， 以便在操作完成时得到通知。ChannelPromise是ChannelFuture的一个子类，其定义了一些可写的方法，如setSuccess()和setFailure()，从而使ChannelFuture不可变。  
 
 ## 1.3. ChannelHandlerAdapter  
@@ -97,7 +97,7 @@ public class SslHandler extends ByteToMessageDecoder implements ChannelOutboundH
 * 当 ChannelInitializer.initChannel()方法被调用时，ChannelInitializer将在 ChannelPipeline中安装一组自定义的 ChannelHandler
 * ChannelInitializer 将它自己从 ChannelPipeline中移除  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-56.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-56.png)  
 &emsp; 如上图所示：这是一个同时具有入站和出站 ChannelHandler 的 ChannelPipeline的布局，并且印证了之前的关于 ChannelPipeline主要由一系列的 ChannelHandler 所组成的说法。ChannelPipeline还提供了通过 ChannelPipeline 本身传播事件的方法。如果一个入站事件被触发，它将被从 ChannelPipeline的头部开始一直被传播到 Channel Pipeline 的尾端。  
 &emsp; 从事件途经 ChannelPipeline的角度来看， ChannelPipeline的头部和尾端取决于该事件是入站的还是出站的。然而 Netty 总是将 ChannelPipeline的入站口(图 的左侧)作为头部，而将出站口(该图的右侧)作为尾端。当你完成了通过调用 ChannelPipeline.add*()方法将入站处理器( ChannelInboundHandler)和 出 站 处 理 器 ( ChannelOutboundHandler ) 混 合 添 加 到 ChannelPipeline之 后 ， 每 一 个ChannelHandler 从头部到尾端的顺序位置正如同方才所定义它们的一样。因此，如果你将图 6-3 中的处理器( ChannelHandler)从左到右进行编号，那么第一个被入站事件看到的 ChannelHandler 将是1，而第一个被出站事件看到的 ChannelHandler将是 5。  
 &emsp; 在 ChannelPipeline 传播事件时，它会测试 ChannelPipeline 中的下一个 ChannelHandler 的类型是否和事件的运动方向相匹配。如果不匹配， ChannelPipeline 将跳过该ChannelHandler 并前进到下一个，直到它找到和该事件所期望的方向相匹配的为止。(当然， ChannelHandler也可以同时实现ChannelInboundHandler接口和 ChannelOutboundHandler 接口。)  
@@ -106,13 +106,13 @@ public class SslHandler extends ByteToMessageDecoder implements ChannelOutboundH
 &emsp; 当 ChannelHandler 被添加到 ChannelPipeline 时，它将会被分配一个 ChannelHandlerContext ，它代表了 ChannelHandler 和 ChannelPipeline 之间的绑定。ChannelHandlerContext 的主要功能是管理它所关联的ChannelHandler和在同一个 ChannelPipeline 中的其他ChannelHandler之间的交互。  
 &emsp; 如果调用Channel或ChannelPipeline上的方法，会沿着整个ChannelPipeline传播，如果调用ChannelHandlerContext上的相同方法，则会从对应的当前ChannelHandler进行传播。  
 &emsp; ChannelHandlerContext API如下表所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-57.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-57.png)  
 
 * ChannelHandlerContext和ChannelHandler之间的关联(绑定)是永远不会改变的，所以缓存对它的引用是安全的；
 * 如同在本节开头所解释的一样，相对于其他类的同名方法，ChannelHandlerContext的方法将产生更短的事件流，应该尽可能地利用这个特性来获得最大的性能。  
 
 ## 1.6. 与ChannelHandler、ChannelPipeline的关联使用  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-58.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-58.png)  
 &emsp; 从ChannelHandlerContext访问channel  
 
 ```java
@@ -134,7 +134,7 @@ ChannelPipeline pipeline = ctx.pipeline();
 pipeline.write(Unpooled.copiedBuffer("Netty in Action",
 CharsetUtil.UTF_8));
 ```
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-59.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-59.png)  
 &emsp; 有时候不想从头传递数据，想跳过几个handler，从某个handler开始传递数据。必须获取目标handler之前的handler关联的ChannelHandlerContext。
 
 ```java
@@ -142,7 +142,7 @@ ChannelHandlerContext ctx = ..;
 // 直接通过ChannelHandlerContext写数据,发送到下一个handler
 ctx.write(Unpooled.copiedBuffer("Netty in Action", CharsetUtil.UTF_8));
 ```
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-60.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-60.png)  
 
 
 ## 1.7. ChannelFuture && ChannelPromise 

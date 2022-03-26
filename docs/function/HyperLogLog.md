@@ -57,7 +57,7 @@ https://www.jianshu.com/p/b517e976d953
 ### 1.2.2. 估算的优化，调和平均数
 &emsp; 在上面的3组例子中，称为一轮的估算。如果只是进行一轮的话，当 n 足够大的时候，估算的误差率会相对减少，但仍然不够小。  
 &emsp; 那么是否可以进行多轮呢？例如进行 100 轮或者更多轮次的试验，然后再取每轮的 k_max，再取平均数，即: k_mx/100。最终再估算出 n。下面是LogLog的估算公式：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-36.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-36.png)  
 &emsp; 上面公式的DVLL对应的就是n，constant是修正因子，它的具体值是不定的，可以根据实际情况而分支设置。m代表的是试验的轮数。头上有一横的R就是平均数：(k_max_1 + ... + k_max_m)/m。  
 &emsp; 这种通过增加试验轮次，再取k_max平均数的算法优化就是LogLog的做法。而 HyperLogLog和LogLog的区别就是，它采用的不是平均数，而是调和平均数。调和平均数比平均数的好处就是不容易受到大的数值的影响。下面举个例子：  
 
@@ -66,7 +66,7 @@ https://www.jianshu.com/p/b517e976d953
     采用调和平均数的方式就是： 2/(1/1000 + 1/30000) ≈ 1935.484
 
 &emsp; 明显地，调和平均数比平均数的效果是要更好的。下面是调和平均数的计算方式，∑ 是累加符号。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-37.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-37.png)  
 
 ## 1.3. HyperLogLog
 ### 1.3.1. HyperLogLog原理
@@ -102,5 +102,5 @@ https://www.jianshu.com/p/b517e976d953
 &emsp; 上面例子中，计算出桶号后，剩下的比特串是：10010110000，从低位到高位看，第一次出现 1 的位置是 5 。也就是说，此时第3个桶，第3轮的试验中，k_max = 5。5 对应的二进制是：101，又因为每个桶有 p 个比特位。当 p>=3 时，便可以将 101 存进去。  
 &emsp; 模仿上面的流程，多个不同的用户 id，就被分散到不同的桶中去了，且每个桶有其 k_max。然后当要统计出 mian 页面有多少用户点击量的时候，就是一次估算。最终结合所有桶中的 k_max，代入估算公式，便能得出估算值。  
 &emsp; 下面是 HyperLogLog 的结合了调和平均数的估算公式，变量释意和LogLog的一样：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-38.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-38.png)  
 

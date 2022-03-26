@@ -33,7 +33,7 @@
 # 1. SPI解析
 ## 1.1. 代码结构  
 &emsp; Dubbo SPI在dubbo-common的extension 包实现，如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-28.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-28.png)   
 &emsp; Dubbo SPI的相关逻辑被封装在了ExtensionLoader 类(拓展加载器)中，通过ExtensionLoader，可以加载指定的实现类。  
 
 ## 1.2. 获得指定拓展对象  

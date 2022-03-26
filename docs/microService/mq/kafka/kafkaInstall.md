@@ -29,7 +29,7 @@ producer.properties
 consumer.properties
 server.properties
 ```
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-15.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-15.png)  
 
 ### 1.2.1. producer.properties  
 &emsp; producer.properties（生产端的配置文件）  

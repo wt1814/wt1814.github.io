@@ -13,7 +13,7 @@
 <!-- /TOC -->
 
 # 1. collections
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-5.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-5.png)  
 &emsp; 14个并发容器按照线程安全模型分类：copy-on-write、CAS(JDK1.8 ConcurrentHashMap)、读写分离(LinkedBlockingQueue)。  
 
 ## 1.1. List，CopyOnWriteArrayList  
@@ -35,7 +35,7 @@
 &emsp; CopyOnWriteArraySet适用于读多写少的高并发场合，在需要并发写的场合，则可以使用 Set s = Collections.synchronizedSet(Set<T> s)得到一个线程安全的Set。 
 
 ## 1.4. Queue  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-6.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-6.png)  
 &emsp; <font color = "red">在并发队列上，JDK提供了两套实现，一个是以ConcurrentLinkedQueue为代表的高性能队列，一个是以BlockingQueue接口为代表的阻塞队列。</font>  
 &emsp; ConcurrentLinkedQueue是一个适用于高并发场景下的队列。它通过无锁的方式，实现了高并发状态下的高性能。通常，ConcurrentLinkedQueue的性能要好于BlockingQueue 。  
 &emsp; 与 ConcurrentLinkedQueue 的使用场景不同，[BlockingQueue](/docs/java/concurrent/BlockingQueue.md)的主要功能并不是在于提升高并发时的队列性能，而在于简化多线程间的数据共享。  

@@ -97,8 +97,8 @@ public class LockSupportDemo {
 
 &emsp; 再看看jdk的文档描述：  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-38.png)   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-39.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-38.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-39.png)   
 
 ## 1.4. park(Object blocker)
 &emsp; (Object blocker)就是方便在线程dump的时候看到具体的阻塞对象的信息。  

@@ -23,7 +23,7 @@
     * Hash索引适合精确查找，但是范围查找不适合。  
     * 二叉查找树，可能退化成单链表，相当于全表扫描。    
     * 平衡二叉树的不足：  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-93.png)  
+        ![image](http://www.wt1814.com/static/view/images/SQL/sql-93.png)  
         平衡二叉查找树定义为：节点的子节点高度差不能超过1,如上图中的节点20，左节点高度为1，右节点高度0，差为1，所以上图没有违反定义，它就是一个平衡二叉树。保证二叉树平衡的方式为左旋，右旋等操作，至于如何左旋右旋，可以自行去搜索相关的知识。  
 
         如果上图中平衡二叉树保存的是id索引，现在要查找id = 8的数据，过程如下：  
@@ -87,7 +87,7 @@ https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
     * 非叶子结点的key都是[key,data]二元组，其中key表示作为索引的键，data为键值所在行的数据；
 
     BTree的结构如下：  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-91.png)  
+    ![image](http://www.wt1814.com/static/view/images/SQL/sql-91.png)  
     &emsp; 在BTree的机构下，就可以使用二分查找的查找方式，查找复杂度为h*log(n)，一般来说树的高度是很小的，一般为3左右，因此BTree是一个非常高效的查找结构。  
 
 * B+Tree树  
@@ -99,7 +99,7 @@ https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
     
     
     &emsp; B+Tree的结构如下：  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-92.png)  
+    ![image](http://www.wt1814.com/static/view/images/SQL/sql-92.png)  
 
 &emsp; <font color = "red">为什么索引结构默认使用B+Tree，而不是BTree，二叉树，红黑树？</font>  
 1. 操作系统中以页这种结构作为读写的基本单位。  
@@ -113,7 +113,7 @@ https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
     3. **<font color = "clime">B树：</font>**  
         1. B树中每个节点中不仅包含数据的key值，还有data值。而每一个页的存储空间是有限的，<font color = "clime">如果data数据较大时将会导致每个节点(即一个页)能存储的key的数量很小。**当存储的数据量很大时同样会导致B树的深度较大，**增大查询时的磁盘I/O次数进而影响查询效率。</font>  
         2. `范围查询，磁盘I/O高。`示例：  
-            ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-93.png)  
+            ![image](http://www.wt1814.com/static/view/images/SQL/sql-93.png)  
             &emsp; 假设需要访问所有『大于 4，并且小于 9 的数据』：如果不考虑任何优化，在上面的简单 B 树中需要进行4次磁盘的随机 I/O 才能找到所有满足条件的数据行：
             1. 加载根节点所在的页，发现根节点的第一个元素是 6，大于 4；
             2. 通过根节点的指针加载左子节点所在的页，遍历页面中的数据，找到 5；
@@ -136,7 +136,7 @@ https://mp.weixin.qq.com/s/jWIdb4PFSF9o6zRlBnFMQA
 --------
 
 平衡二叉树：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-93.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-93.png)  
 平衡二叉查找树定义为：节点的子节点高度差不能超过1,如上图中的节点20，左节点高度为1，右节点高度0，差为1，所以上图没有违反定义，它就是一个平衡二叉树。保证二叉树平衡的方式为左旋，右旋等操作，至于如何左旋右旋，可以自行去搜索相关的知识。  
 
 如果上图中平衡二叉树保存的是id索引，现在要查找id = 8的数据，过程如下：  
@@ -165,7 +165,7 @@ https://mp.weixin.qq.com/s/3kJt34IXkvowL6E5xp-zoA
 https://mp.weixin.qq.com/s/6BoGlaYpdDjzZy19YhInEw
 https://zhuanlan.zhihu.com/p/98818611
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-78.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-78.png)  
 
 -->
 &emsp; InnoDB的B+tree的节点：  
@@ -188,7 +188,7 @@ https://blog.csdn.net/zgjdzwhy/article/details/84062105
 -->
 &emsp; <font color = "red">联合索引(复合索引)的底层实现？最佳左前缀原则？</font>  
 &emsp; 假设这是一个多列索引(col1, col2,col3)，对于叶子节点，是这样的：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-186.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-186.png)  
 &emsp; 联合索引(col1, col2,col3)也是一棵B+Tree，其非叶子节点存储的是第一个关键字的索引，而叶节点存储的则是三个关键字col1、col2、col3三个关键字的数据，且按照col1、col2、col3的顺序进行排序。  
 
 &emsp; **<font color = "red">联合索引底层还是使用B+树索引，并且还是只有一棵树，只是此时的排序：首先按照第一个索引排序，在第一个索引相同的情况下，再按第二个索引排序，依此类推。</font>**  
@@ -214,12 +214,12 @@ https://mp.weixin.qq.com/s/ZIRje8Fq6RdFIIfkzdf7wA
 
 ## 1.2. MyISAM引擎的索引  
 &emsp; <font color = "red">MyISAM也是B+树结构，但是MyISAM索引的叶子节点的数据保存的是行数据的地址。</font>因此，MyISAM中索引检索的算法首先在索引树中找到行数据的地址，然后根据地址找到对应的行数据。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-37.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-37.png)  
 &emsp; MyISAM的索引文件仅仅保存数据记录的地址。主键索引和辅助索引，只是主索引要求key是唯一的，而辅助索引的key可以重复。如果在Col2上建立一个辅助索引，则此索引的如下图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-38.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-38.png)  
 
 &emsp; <font color = "red">在MyISAM储存引擎中，数据和索引文件是分开储存的，Myisam的存储文件有三个，后缀名分别是 .frm、.MYD、MYI，其中 .frm 是表的定义文件，.MYD 是数据文件，.MYI 是索引文件。</font>  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-36.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-36.png)  
 
 * .frm文件：与表相关的元数据信息都存放在frm文件，包括表结构的定义信息等。
 * .MYD (MYData) 文件：MyISAM 存储引擎专用，用于存储MyISAM 表的数据。  
@@ -227,7 +227,7 @@ https://mp.weixin.qq.com/s/ZIRje8Fq6RdFIIfkzdf7wA
 
 ## 1.3. Hash索引介绍  
 &emsp; 哈希索引底层的数据结构就是哈希表。对于每一行数据，存储引擎都会对所有的索引列计算一个哈希码(hash code)，并且Hash索引将所有的哈希码存储在索引中，同时在索引表中保存指向每个数据行的指针。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-39.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-39.png)  
 &emsp; 在 MySQL 中，只有 Memory 存储引擎显式的支持哈希索引，而innodb是隐式支持哈希索引的。  
 
 &emsp; <font color = "red">哈希索引适用的场景</font>：等值查询。  

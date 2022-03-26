@@ -33,12 +33,12 @@
         4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。  
 
     &emsp; 用一张流程图总结一下非公平锁的获取锁的过程。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-75.png)  
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-75.png)  
 
 
 # 1.3. ReentrantLock解析  
 ## 1.3.1. ReentrantLock类层次结构  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-26.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-26.png)  
 
 &emsp; ReentrantLock实现了Lock接口，<font color = "red">内部有三个内部类：Sync、NonfairSync、FairSync。  
 
@@ -112,7 +112,7 @@ public Condition newCondition() {
 -->
 
 &emsp; 调用ReentrantLock中的lock()方法，源码的调用过程时序图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-27.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-27.png)   
 
 &emsp; lock()方法描述：  
 
@@ -244,7 +244,7 @@ public final void acquire(int arg) {
 
     &emsp; 这里体现了经典的自旋+CAS组合来实现非阻塞的原子操作。由于compareAndSetHead的实现使用了unsafe类提供的CAS操作，所以只有一个线程会创建head节点成功。假设线程B成功，之后B、C开始第二轮循环，此时tail已经不为空，两个线程都走到else里面。假设B线程compareAndSetTail成功，那么B就可以返回了，C由于入队失败还需要第三轮循环。最终所有线程都可以成功入队。  
     &emsp; 当B、C入等待队列后，此时AQS队列如下：  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-73.png)  
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-73.png)  
 3. 第三步，B和C相继执行acquireQueued(final Node node, int arg)。这个方法让已经入队的线程尝试获取锁，若失败则会被挂起。  
 
     ```java
@@ -313,15 +313,15 @@ public final void acquire(int arg) {
     &emsp; 线程入队后能够挂起的前提是，它的前驱节点的状态为SIGNAL，它的含义是“Hi，前面的兄弟，如果你获取锁并且出队后，记得把我唤醒！”。所以shouldParkAfterFailedAcquire会先判断当前节点的前驱是否状态符合要求，若符合则返回true，然后调用parkAndCheckInterrupt，将自己挂起。如果不符合，再看前驱节点是否>0(CANCELLED)，若是那么向前遍历直到找到第一个符合要求的前驱，若不是则将前驱节点的状态设置为SIGNAL。  
     &emsp; 整个流程中，如果前驱结点的状态不是SIGNAL，那么自己就不能安心挂起，需要去找个安心的挂起点，同时可以再尝试下看有没有机会去尝试竞争锁。  
     &emsp; 最终队列可能会如下图所示：  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-74.png) 
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-74.png) 
 
 
 &emsp; 用一张流程图总结一下非公平锁的获取锁的过程。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-75.png) 
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-75.png) 
 
 ### 1.3.4.2. 释放锁unlock()
 &emsp; unlock方法的时序图  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-72.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-72.png)  
 
 ```java
 public void unlock() {

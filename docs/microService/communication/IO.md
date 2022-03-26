@@ -33,7 +33,7 @@
     * 阻塞和非阻塞：在等待这个函数返回结果之前，当前的线程是处于挂起状态还是运行状态。 
 3. 同步阻塞I/O：  
     1. 流程：  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-1.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/netty/netty-1.png)  
         1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
         2. 内核等待I/O数据返回，此时用户进程处于【阻塞】，一直等待内核返回；
         3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
@@ -42,7 +42,7 @@
     2. BIO采用多线程时，`大量的线程占用很大的内存空间，并且线程切换会带来很大的开销，10000个线程真正发生读写事件的线程数不会超过20%，每次accept都开一个线程也是一种资源浪费。`  
 4. 同步非阻塞I/O：  
     1. 流程：  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-2.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/netty/netty-2.png)  
         1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
         2. 内核等待I/O数据返回。无I/O数据返回时，内核返回给用户进程ewouldblock结果。`【非阻塞】用户进程，立马返回结果。`但 **<font color = "clime">用户进程要主动轮询查询结果。</font>**  
         3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
@@ -54,7 +54,7 @@
     &emsp; 如果一个I/O流进来，就开启一个进程处理这个I/O流。那么假设现在有一百万个I/O流进来，那就需要开启一百万个进程一一对应处理这些I/O流（——这就是传统意义下的多进程并发处理）。思考一下，一百万个进程，CPU占有率会多高，这个实现方式及其的不合理。所以人们提出了I/O多路复用这个模型，一个线程，通过记录I/O流的状态来同时管理多个I/O，可以提高服务器的吞吐能力。  
     2. `多路是指多个socket套接字，复用是指复用同一个进程。`  
     3. 流程：  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-3.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/netty/netty-3.png)  
         1. 用户多进程或多线程发起select系统调用，复用器Selector会监听注册进来的进程事件。用户进程【同步】等待结果；
         2. 内核等待I/O数据返回，无数据返回时，select进程【阻塞】，进程也受阻于select调用；
         2. I/O数据返回后，内核将数据从内核空间拷贝到用户空间， **<font color = "clime">Selector`通知`哪个进程哪个事件；</font>**  
@@ -149,8 +149,8 @@ https://mp.weixin.qq.com/s/Tdtn3r1u-dn-cLl2Vzurrg
 ### 1.1.1. 流程
 &emsp; 在linux中，默认情况下所有的socket都是blocking。从进程发起IO操作，一直等待上述两个阶段完成。两阶段一起阻塞。  
 &emsp; 一个典型的读操作流程大概是这样：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-1.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-47.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-1.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-47.png)  
 
 1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
 2. 内核等待I/O数据返回，此时用户进程处于【阻塞】，一直等待内核返回；
@@ -204,8 +204,8 @@ while(1) {
 ### 1.2.1. 流程
 &emsp; Linux下，可以通过设置socket使其变为non-blocking。进程一直询问IO准备好了没有，准备好了再发起读取操作，这时才把数据从内核空间拷贝到用户空间。 **<font color = "red">第一阶段不阻塞但要轮询，第二阶段阻塞。</font>**  
 &emsp; 当对一个non-blocking socket执行读操作时，流程是这个样子：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-2.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-48.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-2.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-48.png)  
 
 1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
 2. 内核等待I/O数据返回。无I/O数据返回时，内核返回给用户进程ewouldblock结果。【非阻塞】用户进程，但用户进程要【轮询查询】结果。
@@ -266,8 +266,8 @@ https://zhuanlan.zhihu.com/p/115220699
 
 &emsp; 两阶段分开阻塞。  
 &emsp; IO multiplexing就是指select，poll，epoll，有些也称这种IO方式为event driven IO。select/epoll的好处就在于单个process就可以同时处理多个网络连接的IO。它的基本原理就是select，poll，epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-3.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-49.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-3.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-49.png)  
 
 
 1. 用户多进程或多线程发起select系统调用，复用器Selector会监听注册进来的进程事件。用户进程【同步】等待结果；
@@ -313,14 +313,14 @@ while(1) {
 https://blog.csdn.net/uestcprince/article/details/90734564
 -->
 &emsp; 进程发起读取操作会立即返回，当数据准备好了会以通知的形式告诉进程，进程再发起读取操作，把数据从内核空间拷贝到用户空间。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-4.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-4.png)  
 
 &emsp; 特点：第一阶段不阻塞，第二阶段阻塞。  
 
 ## 1.5. ~~异步IO~~
 &emsp; **进程发起读取操作会立即返回，等到数据准备好且已经拷贝到用户空间了再通知进程拿数据。两个阶段都不阻塞。**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-5.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-50.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-5.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-50.png)  
 &emsp; 用户进程发起read操作之后，立刻就可以开始去做其它的事。而另一方面，从kernel的角度，当它接收到一个asynchronous read之后，首先它会立刻返回，所以不会对用户进程产生任何block。然后，kernel会等待数据准备完成，然后将数据拷贝到用户内存，当这一切都完成之后，kernel会给用户进程发送一个signal，告诉它read操作完成了。  
 
 ## 1.6. 同步/异步、阻塞/非阻塞  
@@ -333,7 +333,7 @@ https://blog.csdn.net/uestcprince/article/details/90734564
 &emsp; 所以说，同步和异步最大的区别就是被调用方的执行方式和返回时机。同步指的是被调用方做完事情之后再返回，异步指的是被调用方先返回，然后再做事情，做完之后再想办法通知调用方。
 -->
 &emsp; 同步和异步其实是指获取CPU时间片到利用，**主要看请求发起方对消息结果的获取是主动发起的，还是被动通知的。**如下图所示，如果是请求方主动发起的，一直在等待应答结果(同步阻塞)，或者可以先去处理其他事情，但要不断轮询查看发起的请求是否由应答结果(同步非阻塞)，因为不管如何都要发起方主动获取消息结果，所以形式上还是同步操作。如果是由服务方通知的，也就是请求方发出请求后，要么一直等待通知(异步阻塞)，要么先去干自己的事(异步非阻塞)。当事情处理完成后，服务方会主动通知请求方，它的请求已经完成，这就是异步。异步通知的方式一般通过状态改变、消息通知或者回调函数来完成，大多数时候采用的都是回调函数。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-8.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-8.png)  
 
 ### 1.6.2. 阻塞和非阻塞  
 <!-- 
@@ -343,7 +343,7 @@ https://blog.csdn.net/uestcprince/article/details/90734564
 &emsp; 所以说，阻塞非阻塞最大的区别就是在被调用方返回结果之前的这段时间内，调用方是否一直等待。阻塞指的是调用方一直等待别的事情什么都不做。非阻塞指的是调用方先去忙别的事情。
 -->
 &emsp; 阻塞和非阻塞在计算机的世界里，通常指针对I/O的操作，如网络I/O和磁盘I/O等。那么什么是阻塞和非阻塞呢？简单地说，就是调用一个函数后，**在等待这个函数返回结果之前，当前的线程是处于挂起状态还是运行状态。**如果是挂起状态，就意味着当前线程什么都不能干，就等着获取结果，这就是同步阻塞；如果仍然是运行状态，就意味着当前线程是可以继续处理其他任务的，但要时不时地看一下是否由结果来，这就是同步非阻塞。具体如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-9.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-9.png)  
 
 ### 1.6.3. 小结  
 <!-- 
@@ -355,7 +355,7 @@ https://blog.csdn.net/uestcprince/article/details/90734564
 ## 1.7. ~~各I/O模型的对比与总结~~  
 &emsp; 前四种I/O模型都是同步I/O操作，它们的区别在于第一阶段，而第二阶段是一样的：在数据从内核拷贝到应用缓冲期间(用户空间)，进程阻塞于recvfrom调用。  
 &emsp; 下图是各I/O 模型的阻塞状态对比：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-6.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-6.png)  
 <!-- 
 
 通过上面的图片，可以发现non-blocking IO和asynchronous IO的区别还是很明显的。在non-blocking IO中，虽然进程大部分时间都不会被block，但是它仍然要求进程去主动的check，并且当数据准备完成以后，也需要进程主动的再次调用recvfrom来将数据拷贝到用户内存。而asynchronous IO则完全不同。它就像是用户进程将整个IO操作交给了他人(kernel)完成，然后他人做完后发信号通知。在此期间，用户进程不需要去检查IO操作的状态，也不需要主动的去拷贝数据。
@@ -364,5 +364,5 @@ https://blog.csdn.net/uestcprince/article/details/90734564
 
 <!-- 
 最后，再看一下下表，从多维度总结了各I/O模型之间到差异。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-7.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-7.png)  
 -->

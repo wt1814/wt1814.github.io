@@ -21,7 +21,7 @@ https://mp.weixin.qq.com/s/8tmjHoYvPW61C9fCnJoFdQ
 &emsp; BloomFilter是由一个固定大小的二进制向量或者位图(bitmap)和一系列(通常好几个)映射函数组成的。  
 &emsp; **1. 布隆过滤器的原理：**  
 &emsp; **<font color = "red">当一个变量被加入集合时，通过K个映射函数将这个变量映射成位图中的 K 个点，把它们置为1。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-2.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-2.png)  
 
 &emsp; 查询某个变量的时候，只要看看这些点是不是都是1，就可以大概率知道集合中有没有它了。  
 
@@ -59,7 +59,7 @@ http://www.javashuo.com/article/p-saxrpzqf-kp.html
 
 1. bitmap更适合用于数字比较：  
 &emsp; 比如比较两个数组是否有重叠，把第一个数组中的1,2,5,7,11分别映射到bitmap位置中  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/structure/structure-2.png)  
+![image](http://www.wt1814.com/static/view/images/structure/structure-2.png)  
 &emsp; 其他数组只需要把值当成索引号去bitmap中查看是否值=1  
 &emsp; 确定就是假如我是 1,100000000，那么其实只需要用到2位，但是却需要100000000位内存
 由此我们确定了布隆过滤  

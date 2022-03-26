@@ -50,7 +50,7 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 * 核心模块负责维持一个运行循环 ( run-loop )，执行网络请求处理的 不同阶段 的模块功能。比如：网络读写、存储读写、内容传输、外出过滤，以及将请求发往上游服务器等。  
 * 而其代码的模块化设计，也使得开发人员可以根据需要对功能模块进行适当的选择和修改，编译成具有特定功能的服务器。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Nginx/nginx-8.png)  
+![image](http://www.wt1814.com/static/view/images/Linux/Nginx/nginx-8.png)  
 
 ### 1.2.1. 核心模块  
 &emsp; 核心模块是 Nginx 服务器正常运行 必不可少的模块，提供错误日志记录 、 配置文件解析 、 事件驱动机制 、 进程管理 等核心功能。  

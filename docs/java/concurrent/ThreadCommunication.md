@@ -20,7 +20,7 @@
 ## 1.1. 实现生产者和消费者问题   
 
 &emsp; 什么是生产者-消费者问题呢？  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-37.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-37.png)  
 &emsp; 如上图，假设有一个公共的容量有限的池子，有两种人，一种是生产者，另一种是消费者。需要满足如下条件：  
 1. 生产者产生资源往池子里添加，前提是池子没有满，如果池子满了，则生产者暂停生产，直到自己的生成能放下池子。  
 2. 消费者消耗池子里的资源，前提是池子的资源不为空，否则消费者暂停消耗，进入等待直到池子里有资源数满足自己的需求。  

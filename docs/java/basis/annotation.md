@@ -213,7 +213,7 @@ public abstract @interface com/ATest implements java/lang/annotation/Annotation 
 
 ### 1.4.2. 和代码关联
 &emsp; 注解信息怎么和代码关联在一起，java所有事物都是类，注解也不例外，加入代码System.setProperty("sum.misc.ProxyGenerator.saveGeneratedFiles","true"); 可生成注解相应的代理类  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/basics/java-8.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/basics/java-8.png)  
 &emsp; 在代码里定义的注解，会被jvm利用反射技术生成一个代理类，然后和被注释的代码（类，方法，属性等）关联起来    
 
 ### 1.4.3. 使用动态代理机制处理注解  

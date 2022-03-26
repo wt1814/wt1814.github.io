@@ -12,7 +12,7 @@
 ## 1.1. 聚簇索引和非聚簇索引 
 &emsp; <font color = "red">InnoDB索引类型可以分为主键索引和辅助索引（非主键索引）。</font>  
 &emsp; **<font color = "clime">主键索引树中，叶子结点保存着主键和对应行的全部数据。主键索引又被称为聚簇索引。</font>**   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-34.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-34.png)  
 &emsp; **<font color = "clime">辅助索引树中，叶子结点保存着索引值和主键值。辅助索引又被称为非聚簇索引。当使用辅助索引进行查询时，一般需要进行回表操作。</font>**   
 
         什么是回表？  
@@ -29,7 +29,7 @@ InnoDB 中，对于主键索引，只需要走一遍主键索引的查询就能�
         索引覆盖，要查询的字段都建立了索引，那么引擎会直接在索引表中查询而不会访问原始数据(否则只要有一个字段没有建立索引就会做全表扫描)，这叫索引覆盖。
 
 &emsp; 总结：B+树在满足聚簇索引和覆盖索引的时候不需要回表查询数据。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-35.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-35.png)  
 
 ## 1.2. 普通索引和唯一索引的区别？
 &emsp; 唯一索引和普通索引的区别？  

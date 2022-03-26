@@ -134,7 +134,7 @@ public class JavaSPITest {
 }
 ```
 &emsp; 最后来看一下测试结果，如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-27.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-27.png)   
 &emsp; 从测试结果可以看出，两个实现类被成功的加载，并输出了相应的内容。关于Java SPI的演示先到这里，接下来演示Dubbo SPI。  
 
 ### 1.3.2. Dubbo SPI示例  
@@ -161,7 +161,7 @@ public class DubboSPITest {
 }
 ```
 &emsp; 测试结果如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-22.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-22.png)   
 
 &emsp; Dubbo SPI中常用的注解：  
 

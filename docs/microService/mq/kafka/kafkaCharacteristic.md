@@ -82,7 +82,7 @@ Kafka服务器在响应客户端读取的时候，底层使用ZeroCopy技术，�
 &emsp; at most once，最多一次，可以理解为可能发生消息丢失；at least once，至少一次，可以理解为可能发生重复消费。kafka通过ack的配置来实现这两种。  
 &emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。 **exactly once也被称为幂等性。**  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-119.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-119.png)  
 
 ### 1.3.2. 可靠性（如何保证消息队列不丢失?）  
 <!-- 

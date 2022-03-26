@@ -141,7 +141,7 @@
 
     SELECT * FROM USER WHERE username LIKE '%Am%' ORDER BY 'sex' ASC;
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-1.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-1.png)  
 
 &emsp; 这时，现改为${}测试效果：  
 
@@ -155,7 +155,7 @@
 
     SELECT * FROM USER WHERE username LIKE '%Am%' ORDER BY sex ASC;
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-2.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-2.png)  
 
 ## 1.2. 参数映射  
 ### 1.2.1. parameterType与@Param  
@@ -242,17 +242,17 @@ public List<user> getUserInformation(@Param("user") User user);
 * 第三种：XML中的SQL使用了$，那么参数中也需要@Param注解。  
 
 &emsp; $会有注入漏洞的问题，但是有的时候不得不使用$符号，例如要传入列名或者表名的时候，这个时候必须要添加@Param注解，例如：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-3.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-3.png)  
 
 &emsp; 对应的XML定义如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-4.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-4.png)  
 
 &emsp; 第四种，那就是动态SQL，如果在动态SQL中使用了参数作为变量，那么也需要@Param注解，即使只有一个参数。
 如果在动态SQL中用到了参数作为判断条件，那么也是一定要加@Param注解的，例如如下方法：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-5.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-5.png)  
 
 &emsp; 定义出来的SQL如下  ：
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-6.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-6.png)  
 
 #### 1.2.1.4. 标签paramType  
 &emsp; @Param与xml配置paramType的区别：@param适用于少量不同的参数。Xml配置paramType适用于list，多个复杂参数。    
@@ -298,21 +298,21 @@ public List<user> getUserInformation(@Param("user") User user);
 &emsp; resultType与resultMap不能同时使用。二者的使用场景：对于查询结构需要返回的简单pojo，结果都可以映射到一致的hashMap上，即数据库列名可以精确匹配到pojo属性的。一般都用resultType。其实这里有一个隐含的构建机制。映射到resultType的结果都是MyBatis在幕后自动创建了一个resultMap来处理的。简而言之，只要resultType能干的事情resultMap都能干。  
 &emsp; 二者定位是：resultType用来处理非常简单的结果集，就是列名能够与pojo属性匹配的的结果集。  
 &emsp; 示例：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-7.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-8.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-7.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-8.png)  
 
 &emsp; 也可以如上述所说使用resultMap，然后将上面的resultType转换为resultMap即可。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-9.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-9.png)  
 
 &emsp; resultMap更擅长来处理复杂映射的结果集。比如一对一、一对多的复杂关系。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-10.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-10.png)  
 
 &emsp; 对应的映射处理：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-11.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-11.png)  
 
 ## 1.3. Mybatis标签  
 &emsp; MyBatis通过OGNL来进行动态SQL的使用的。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Mybatis/mybatis-12.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-12.png)  
 
 ### 1.3.1. 定义sql语句  
 * select标签：  

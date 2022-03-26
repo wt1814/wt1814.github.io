@@ -77,7 +77,7 @@ https://mp.weixin.qq.com/s/-m-BSW6ggngdK9lRpKNTcA
 ## 1.1. 什么是秒杀？ 
 &emsp; 秒杀场景一般会在电商网站举行一些活动时遇到。  
 &emsp; 对于电商网站中一些<font color = "red">稀缺或者特价商品</font>，电商网站一般会在约定时间点对其进行限量销售，因为这些商品的特殊性，会吸引大量用户前来抢购，并且会在约定的时间点同时在秒杀页面进行抢购。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/web-3.png)  
+![image](http://www.wt1814.com/static/view/images/web/web-3.png)  
 
 &emsp; **<font color = "red">秒杀活动可以分为3个阶段：</font>**  
 
@@ -143,7 +143,7 @@ https://mp.weixin.qq.com/s/CUTG32SaLST9nmhBP1PgkA
 -->
 
 ## 1.3. 科普：常见的互联网分层架构  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/seckill/sec-1.png)  
+![image](http://www.wt1814.com/static/view/images/web/seckill/sec-1.png)  
 
 1. 客户端层：手机或PC端操作的客户端页面，域名通过DNS解析路由到NG。  
 2. 反向代理层：一般通过NG作为反向代理，将客户端请求均衡路由到后端站点服务，NG也可以水平扩展为多实例，且每个实例可单独部署为主从的高可用方案。  
@@ -177,7 +177,7 @@ https://mp.weixin.qq.com/s/cyR59SLxOqpC5my8vl8VnQ
 
 考虑到秒杀是运营同学提前安排的活动，要秒杀哪些商品、商品价格等信息在秒杀活动开始前已经确定下来，所以我们可以把秒杀商品详情页做成静态页面，把商品详情、商品价格等参数、评论评价等信息全部放在这个静态页面里，然后把这个静态页面上传到CDN上预热(CDN是内容分发网络，可以简单理解成互联网上的巨大的缓存，用于存放静态页面、图片、视频等，可以显著提高访问速度)，用CDN扛流量，这样大量的商品详情页的访问请求就不用访问自己的网站(源站)。这样既可以提高访问速度，也没有给网站增加压力，同时也减少了网站带宽压力。
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/seckill/sec-7.png)  
+![image](http://www.wt1814.com/static/view/images/web/seckill/sec-7.png)  
 
 -->
 ##### 1.4.1.1.1. 数据拆分  
@@ -209,7 +209,7 @@ https://mp.weixin.qq.com/s/cyR59SLxOqpC5my8vl8VnQ
 * 节点与主站间网络质量良好的地区
 
 &emsp; 基于以上因素，选择CDN的二级缓存比较合适，因为二级缓存数量偏少，容量也更大，访问量相对集中，这样就可以较好解决缓存的失效问题以及命中率问题，是当前比较理想的一种CDN化方案。部署方式如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/seckill/sec-9.png)  
+![image](http://www.wt1814.com/static/view/images/web/seckill/sec-9.png)  
 
 ##### 1.4.1.1.3. 数据整合
 &emsp; 分离出动静态数据之后，前端如何组织数据页就是一个新的问题，主要在于动态数据的加载处理，通常有两种方案：ESI(Edge Side Includes)方案和CSI(Client Side Include)方案。
@@ -232,9 +232,9 @@ https://mp.weixin.qq.com/s/cyR59SLxOqpC5my8vl8VnQ
 ###### 1.4.1.2.2.1. 热点隔离
 
 1. 业务隔离。<font color = "red">从业务上把秒杀和日常的售卖区分开来，把秒杀做为营销活动，要参与秒杀的商品需要提前报名参加活动，</font>这样就能提前知道哪些商家哪些商品要参与秒杀，可以根据提报的商品提前生成静态页面并上传到CDN预热，提报的商品库存也需要提前预热，可以将商品库存在活动开始前预热到Redis，避免秒杀开始后大量的缓存穿透。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/seckill/sec-5.png)  
+![image](http://www.wt1814.com/static/view/images/web/seckill/sec-5.png)  
 2. 部署隔离。秒杀相关服务和日常服务要分组部署，不能因为秒杀出问题影响日常售卖业务。可以申请单独的秒杀域名，从网络入口层就开始分流。网关也单独部署，秒杀走自己单独的网关，从而避免日常网关受到影响。秒杀可以复用订单，库存，支付等日常服务，只是需要一些小的改造(比如下单流程走消息队列，批量写入订单库，以及在Redis中扣减库存)。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/seckill/sec-6.png)  
+![image](http://www.wt1814.com/static/view/images/web/seckill/sec-6.png)  
 3. 数据隔离。为了避免秒杀活动影响到日常售卖业务，Redis缓存需要单独部署，甚至数据库也需要单独部署！数据隔离后，秒杀剩余的库存怎么办？秒杀活动结束后，剩余库存可以归还到日常库存继续做为普通商品售卖。数据隔离后，秒杀订单和日常订单不在相同的数据库，之后的订单查询怎么展示？可以在创建秒杀订单后发消息到消息队列，日常订单服务采取拉的方式消费消息，这时日常订单服务是主动方，可以采用线程池的方式，根据机器的性能来增加或缩小线程池的大小，控制拉取消息的速度，来控制订单数据库的写入压力。  
 
 ###### 1.4.1.2.2.2. 热点优化
@@ -304,7 +304,7 @@ https://mp.weixin.qq.com/s/cyR59SLxOqpC5my8vl8VnQ
 
 
 另外，秒杀过程网关压力会比较大，网关可以做成集群，多节点分摊访问压力。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/seckill/sec-4.png)  
+![image](http://www.wt1814.com/static/view/images/web/seckill/sec-4.png)  
 -->
 
 ##### 1.4.3.1.4. 小结
@@ -315,7 +315,7 @@ https://mp.weixin.qq.com/s/cyR59SLxOqpC5my8vl8VnQ
 #### 1.4.3.2. 高可用建设  
 &emsp; 当一个系统面临持续的高峰流量时，其实是很难单靠自身调整来恢复状态的，日常运维没有人能够预估所有情况，意外总是无法避免。尤其在秒杀这一场景下，为了保证系统的高可用，必须设计一个高可用方案来进行兜底。  
 &emsp; 高可用建设，其实是一个系统工程，贯穿在系统建设的整个生命周期。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/seckill/sec-8.png)  
+![image](http://www.wt1814.com/static/view/images/web/seckill/sec-8.png)  
 &emsp; 具体来说，系统的高可用建设涉及架构阶段、编码阶段、测试阶段、发布阶段、运行阶段，以及故障发生时，逐一进行分析：  
 
 * 架构阶段：考虑系统的可扩展性和容错性，避免出现单点问题。例如多地单元化部署，即使某个IDC甚至地市出现故障，仍不会影响系统运转
@@ -414,7 +414,7 @@ UPDATE item SET inventory = CASE WHEN inventory >= xxx THEN inventory-xxx ELSE i
 
 ## 1.5. 秒杀业务完整流程梳理  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/seckill/sec-3.png)  
+![image](http://www.wt1814.com/static/view/images/web/seckill/sec-3.png)  
 
 (1)页面端，如：  
 

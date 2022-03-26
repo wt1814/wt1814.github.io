@@ -24,9 +24,9 @@ https://mp.weixin.qq.com/s/AnRtCQDIkKgIdhKTk2sWeA
 https://mp.weixin.qq.com/s/RndRd9apu3tXEDGBZF7EbQ
 -->
 &emsp; 根据Java虚拟机规范，类文件由单个 ClassFile 结构组成：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-91.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-91.png)  
 &emsp; Class文件字节码结构组织示意图  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-90.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-90.png)  
 &emsp; 下面会按照上图结构按顺序详细介绍一下 Class 文件结构涉及到的一些组件。  
 1. 魔数: 确定这个文件是否为一个能被虚拟机接收的 Class 文件。
 2. Class 文件版本：Class 文件的版本号，保证编译正常执行。  

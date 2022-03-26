@@ -44,16 +44,16 @@ LinkedBlockingQueue<Runnable> addConnectionQueue = new LinkedBlockingQueue(confi
 ## 1.1. 类图和流程图
 &emsp; 开始前先来了解下HikariCP获取一个连接时类间的交互流程，方便下面详细流程的阅读。  
 &emsp; 获取连接时的类间交互：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-1.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/pool-1.png)  
 
 ## 1.2. 主流程1：获取连接流程  
 &emsp; HikariCP获取连接时的入口是HikariDataSource里的getConnection方法，现在来看下该方法的具体流程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-2.png)   
+![image](http://www.wt1814.com/static/view/images/SQL/pool-2.png)   
 主流程1  
 &emsp; 上述为HikariCP获取连接时的流程图，由图1可知，每个datasource对象里都会持有一个HikariPool对象，记为pool，初始化后的datasource对象pool是空的，所以第一次getConnection的时候会进行实例化pool属性(参考主流程1)，初始化的时候需要将当前datasource里的config属性传过去，用于pool的初始化，最终标记sealed，然后根据pool对象调用getConnection方法(参考流程1.1)，获取成功后返回连接对象。  
 
 ## 1.3. 主流程2：初始化池对象
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-3.png)   
+![image](http://www.wt1814.com/static/view/images/SQL/pool-3.png)   
 主流程2  
 &emsp; 该流程用于初始化整个连接池，这个流程会给连接池内所有的属性做初始化的工作，其中比较主要的几个流程上图已经指出，简单概括一下：  
 
@@ -65,14 +65,14 @@ LinkedBlockingQueue<Runnable> addConnectionQueue = new LinkedBlockingQueue(confi
 6. 初始化一个线程池对象closeConnectionExecutor，用于关闭一些连接对象，怎么触发关闭任务呢？可以参考流程1.1.2  
 
 ## 1.4. 流程1.1：通过HikariPool获取连接对象
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-4.png)   
+![image](http://www.wt1814.com/static/view/images/SQL/pool-4.png)   
 流程1.1  
 &emsp; 从最开始的结构图可知，每个HikariPool里都维护一个ConcurrentBag对象，用于存放连接对象，由上图可以看到，实际上HikariPool的getConnection就是从ConcurrentBag里获取连接的(调用其borrow方法获得，对应ConnectionBag主流程)，在长连接检查这块，与之前说的Druid不同，这里的长连接判活检查在连接对象没有被标记为“已丢弃”时，只要距离上次使用超过500ms每次取出都会进行检查(500ms是默认值，可通过配置com.zaxxer.hikari.aliveBypassWindowMs的系统参数来控制)，emmmm，也就是说HikariCP对长连接的活性检查很频繁，但是其并发性能依旧优于Druid，说明频繁的长连接检查并不是导致连接池性能高低的关键所在。  
 &emsp; 这个其实是由于HikariCP的无锁实现，在高并发时对CPU的负载没有其他连接池那么高而产生的并发性能差异，后面会说HikariCP的具体做法，即使是Druid，在获取连接、生成连接、归还连接时都进行了锁控制，因为通过上篇文章可以知道，Druid里的连接池资源是多线程共享的，不可避免的会有锁竞争，有锁竞争意味着线程状态的变化会很频繁，线程状态变化频繁意味着CPU上下文切换也将会很频繁。  
 &emsp; 回到流程1.1，如果拿到的连接为空，直接报错，不为空则进行相应的检查，如果检查通过，则包装成ConnectionProxy对象返回给业务方，不通过则调用closeConnection方法关闭连接(对应流程1.1.2，该流程会触发ConcurrentBag的remove方法丢弃该连接，然后把实际的驱动连接交给closeConnectionExecutor线程池，异步关闭驱动连接)。  
 
 ### 1.4.1. 流程1.1.1：连接判活
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-5.png)   
+![image](http://www.wt1814.com/static/view/images/SQL/pool-5.png)   
 流程1.1.1  
 
 &emsp; 承接上面的流程1.1里的判活流程，来看下判活是如何做的，首先说验证方法(注意这里该方法接受的这个connection对象不是poolEntry，而是poolEntry持有的实际驱动的连接对象)，在之前介绍Druid的时候就知道，Druid是根据驱动程序里是否存在ping方法来判断是否启用ping的方式判断连接是否存活，但是到了HikariCP则更加简单粗暴，仅根据是否配置了connectionTestQuery觉定是否启用ping：  
@@ -86,13 +86,13 @@ LinkedBlockingQueue<Runnable> addConnectionQueue = new LinkedBlockingQueue(confi
 &emsp; 这个值最终会被赋值给HikariCP的networkTimeout字段，这就是为什么最后那一步使用这个字段来还原驱动连接超时属性的原因；说到这里，最后那里为啥要再次还原呢？这就很容易理解了，因为验证结束了，连接对象还存活的情况下，它的networkTimeout的值这时仍然等于validationTimeout(不合预期)，显然在拿出去用之前，需要恢复成本来的值，也就是HikariCP里的networkTimeout属性。  
 
 ### 1.4.2. 流程1.1.2：关闭连接对象
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-6.png)   
+![image](http://www.wt1814.com/static/view/images/SQL/pool-6.png)   
 流程1.1.2  
 &emsp; 这个流程简单来说就是把流程1.1.1中验证不通过的死连接，主动关闭的一个流程，首先会把这个连接对象从ConnectionBag里移除，然后把实际的物理连接交给一个线程池去异步执行，这个线程池就是在主流程2里初始化池的时候初始化的线程池closeConnectionExecutor，然后异步任务内开始实际的关连接操作，因为主动关闭了一个连接相当于少了一个连接，所以还会触发一次扩充连接池(参考主流程5)操作。   
 
 ## 1.5. 流程2.1：HikariCP监控设置
 &emsp; 不同于Druid那样监控指标那么多，HikariCP会把我们非常关心的几项指标暴露给我们，比如当前连接池内闲置连接数、总连接数、一个连接被用了多久归还、创建一个物理连接花费多久等，HikariCP的连接池的监控我们这一节专门详细的分解一下，首先找到HikariCP下面的metrics文件夹，这下面放置了一些规范实现的监控接口等，还有一些现成的实现(比如HikariCP自带对prometheus、micrometer、dropwizard的支持，不太了解后面两个，prometheus下文直接称为普罗米修斯)：
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-7.png)   
+![image](http://www.wt1814.com/static/view/images/SQL/pool-7.png)   
 &emsp; 下面，来着重看下接口的定义：
 
 ```java
@@ -249,7 +249,7 @@ private HikariCPCollector getCollector() {
 &emsp; **过程详解**  
 
 &emsp; 该属性是ProxyLeakTaskFactory类型对象，且它还会持有houseKeepingExecutorService这个线程池对象，用于生产ProxyLeakTask对象，然后利用上面的houseKeepingExecutorService延时运行该对象里的run方法。该流程的触发点在上面的流程1.1最后包装成ProxyConnection对象的那一步，来看看具体的流程图：
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-8.png)   
+![image](http://www.wt1814.com/static/view/images/SQL/pool-8.png)   
 
 流程2.2
 &emsp; 每次在流程1.1那里生成ProxyConnection对象时，都会触发上面的流程，由流程图可以知道，ProxyConnection对象持有PoolEntry和ProxyLeakTask的对象，其中初始化ProxyLeakTask对象时就用到了leakTaskFactory对象，通过其schedule方法可以进行ProxyLeakTask的初始化，并将其实例传递给ProxyConnection进行初始化赋值(ps：由图知ProxyConnection在触发回收事件时，会主动取消这个泄漏检查任务，这也是ProxyConnection需要持有ProxyLeakTask对象的原因)。
@@ -328,7 +328,7 @@ private PoolEntry createPoolEntry() {
 }
 ```
 &emsp; 通过上面的流程，可以知道，HikariCP一般通过createEntry方法来新增一个连接入池，每个连接被包装成PoolEntry对象，在创建好对象时，同时会提交一个延时任务来关闭废弃该连接，这个时间就是我们配置的maxLifeTime，为了保证不在同一时间失效，HikariCP还会利用maxLifeTime减去一个随机数作为最终的延时任务延迟时间，然后在触发废弃任务时，还会触发addBagItem，进行连接添加任务(因为废弃了一个连接，需要往池子里补充一个)，该任务则交给由主流程2里定义好的addConnectionExecutor线程池执行，那么，现在来看下这个异步添加连接对象的任务流程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-9.png)   
+![image](http://www.wt1814.com/static/view/images/SQL/pool-9.png)   
 &emsp; addConnectionExecutor的call流程
 
 &emsp; 这个流程就是往连接池里加连接用的，跟createEntry结合起来说是因为这俩流程是紧密相关的，除此之外，主流程5(fillPool，扩充连接池)也会触发该任务。  
@@ -344,7 +344,7 @@ private PoolEntry createPoolEntry() {
 this.houseKeeperTask = houseKeepingExecutorService.scheduleWithFixedDelay(new HouseKeeper(), 100L, housekeepingPeriodMs, MILLISECONDS);
 ```
 &emsp; 那么本节主要来说下HouseKeeper这个类，该类实现了Runnable接口，回收逻辑主要在其run方法内，来看看run方法的逻辑流程图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/pool-10.png)   
+![image](http://www.wt1814.com/static/view/images/SQL/pool-10.png)   
 &emsp; 主流程4：连接池缩容
 
 &emsp; 上面的流程就是HouseKeeper的run方法里具体做的事情，由于系统时间回拨会导致该定时任务回收一些连接时产生误差，因此存在如下判断：

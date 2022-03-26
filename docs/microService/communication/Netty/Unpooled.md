@@ -31,15 +31,15 @@ protected ByteBuf newHeapBuffer(int initialCapacity, int maxCapacity) {
 }
 ```
 &emsp; 解读：堆内内存分配由newHeapBuffer方法负责，如果平台支持Unsafe则创建InstrumentedUnpooledUnsafeHeapByteBuf，否则创建InstrumentedUnpooledHeapByteBuf，下图为非池化相关类图，分别从两个类UnpooledDirectByteBuf和UnpooledHeapByteBuf延伸开来。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-126.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-126.png)  
 &emsp; 还是聚集到堆内存的分配上来，主要分析上图中红色部分。InstrumentedUnpooledUnsafeHeapByteBuf和InstrumentedUnpooledHeapByteBuf有啥区别？  
 
 ### 1.1.1. InstrumentedUnpooledUnsafeHeapByteBuf  
 &emsp; 下面看下InstrumentedUnpooledUnsafeHeapByteBuf其内存分配的行为allocateArray()。   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-127.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-128.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-129.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-130.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-127.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-128.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-129.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-130.png)  
 &emsp; 注解@1 调用了父类UnpooledUnsafeHeapByteBuf的allocateArray()  
 &emsp; 注解@2 父类UnpooledUnsafeHeapByteBuf调用了PlatformDependent#allocateUninitializedArray  
 &emsp; 注解@3/@4  Java9以上版本：如果待分配的内存小于1K使用堆内存，待分配的内存大于等于1K使用堆外内存。  
@@ -51,8 +51,8 @@ protected ByteBuf newHeapBuffer(int initialCapacity, int maxCapacity) {
 
 ### 1.1.2. InstrumentedUnpooledHeapByteBuf  
 &emsp; 下面为InstrumentedUnpooledHeapByteBuf的内存分配allocateArray().   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-131.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-132.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-131.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-132.png)  
 &emsp; 注解@1 调用父类 UnpooledHeapByteBuf的内存分配  
 &emsp; 注解@2 UnpooledHeapByteBuf的通过new byte直接在堆内存分配  
 &emsp; 小结：InstrumentedUnpooledHeapByteBuf直接在堆内存分配空间。  

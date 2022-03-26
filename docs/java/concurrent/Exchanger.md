@@ -11,7 +11,7 @@
 &emsp; <font color = "clime">Exchanger是一个用于线程间协作的工具类，用于两个线程间交换。Exchanger提供了一个交换的同步点，在这个同步点两个线程能够交换数据。</font>  
 
 &emsp; 具体交换数据是通过exchange()方法来实现的，如果一个线程先执行exchange方法，那么它会同步等待另一个线程也执行exchange方法，这个时候两个线程就都达到了同步点，两个线程就可以交换数据。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-34.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-34.png)  
 
 &emsp; 用一个简单的例子来看下Exchanger的具体使用。两方做交易，如果一方先到要等另一方也到了才能交易，交易就是执行exchange方法交换数据。  
 

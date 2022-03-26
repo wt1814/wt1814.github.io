@@ -35,16 +35,16 @@ https://mp.weixin.qq.com/s/16QtgkJiPSxK--QdFwf0vA
 ## 1.3. CPU + DMA(直接内存访问)  
 &emsp; 直接内存访问(Direct Memory Access，DMA)：DMA允许外设设备和内存存储器之间直接进行IO数据传输，其过程不需要CPU的参与。  
 &emsp; 有了DMA的参与之后的流程发生了一些变化：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-68.png)    
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-68.png)    
 &emsp; **<font color = "red">最主要的变化是，CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，之后的过程类似。</font>**
 
 
 
 ### 1.3.1. 流程
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-71.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-140.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-99.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-71.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-140.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-99.png)  
 
 
 <!-- 
@@ -124,14 +124,14 @@ DMA(DIRECT MEMORY ACCESS) 是现代计算机的重要功能，它有一个重要
 -->
 
 &emsp; 目前，`零拷贝技术的几个实现手段包括：mmap+write、sendfile、sendfile+DMA收集、splice等。`  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-72.png)
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-72.png)
 
 
 ## 1.5. mmap(内存映射) + write
 <!-- 
 include <sys/mman.h>
 void *mmap(void *start， size_t length， int prot， int flags， int fd， off_t offset)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-75.png)   
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-75.png)   
     1)发出mmap系统调用，导致用户空间到内核空间的上下文切换。然后通过DMA引擎将磁盘文件中的数据复制到内核空间缓冲区
     2)mmap系统调用返回，导致内核空间到用户空间的上下文切换
     3)这里不需要将数据从内核空间复制到用户空间，因为用户空间和内核空间共享了这个缓冲区
@@ -144,10 +144,10 @@ void *mmap(void *start， size_t length， int prot， int flags， int fd， of
 &emsp; 即将一个文件或者其它对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对映关系；这样就可以省掉原来内核read缓冲区copy数据到用户缓冲区，但是还是需要内核read缓冲区将数据copy到内核socket缓冲区。  
 
 ### 1.5.2. 流程
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-73.png)   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-142.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-30.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-100.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-73.png)   
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-142.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-30.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-100.png)  
 
 &emsp; 整个过程发生了4次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
 
@@ -183,12 +183,12 @@ void *mmap(void *start， size_t length， int prot， int flags， int fd， of
 ## 1.6. sendfile
 <!-- 
 sendfile系统调用在内核版本2.1中被引入，目的是简化通过网络在两个通道之间进行的数据传输过程。sendfile系统调用的引入，不仅减少了数据复制，还减少了上下文切换的次数，大致如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-74.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-74.png)  
 数据传送只发生在内核空间，所以减少了一次上下文切换；但是还是存在一次copy，能不能把这一次copy也省略掉，Linux2.4内核中做了改进，将Kernel buffer中对应的数据描述信息(内存地址，偏移量)记录到相应的socket缓冲区当中，这样连内核空间中的一次cpu copy也省掉了；  
 
 include <sys/sendfile.h>
 ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-76.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-76.png)  
     1)发出sendfile系统调用，导致用户空间到内核空间的上下文切换，然后通过DMA引擎将磁盘文件中的内容复制到内核空间缓冲区中，接着再将数据从内核空间缓冲区复制到socket相关的缓冲区  
     2)sendfile系统调用返回，导致内核空间到用户空间的上下文切换。DMA异步将内核空间socket缓冲区中的数据传递到网卡  
 
@@ -199,16 +199,16 @@ ssize_t sendfile(int out_fd， int in_fd， off_t *offset， size_t count);
 ### 1.6.1. 简介
 &emsp; 相比mmap来说，sendfile同样减少了一次CPU拷贝，而且还减少了2次上下文切换。  
 &emsp; sendfile是Linux2.1内核版本后引入的一个系统调用函数：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-147.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-147.png)  
 &emsp; **<font color = "red">它建立了两个文件之间的传输通道。</font>** 通过使用sendfile数据可以直接在内核空间进行传输，因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。  
 &emsp; senfile函数的作用是将一个文件描述符的内容发送给另一个文件描述符。而用户空间是不需要关心文件描述符的,所以整个的拷贝过程只会在内核空间操作,相当于减少了内核空间和用户空间之间数据的拷贝过程,而且还避免了CPU在内核空间和用户空间之间的来回切换过程。  
 
 
 ### 1.6.2. 流程 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-148.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-32.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-31.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-149.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-148.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-32.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-31.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-149.png)  
 
 
 

@@ -58,13 +58,13 @@ https://mp.weixin.qq.com/s/WfTEQagsRntOpMVIZZS_Rw
 代码级别监控：常见的全链路监控工具介绍 
 https://mp.weixin.qq.com/s/TIeC0v8vW29MKi1n6FBXZw
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-43.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-44.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-45.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-43.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-44.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-45.png)  
 
 
 ## 1.1. 全链路监控功能  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-42.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-42.png)  
 &emsp; 微服务分层架构之后，系统架构变得越来越复杂：  
 &emsp; （1）站点层会调用业务服务层；  
 &emsp; （2）业务服务会调用基础服务层；  
@@ -225,7 +225,7 @@ public class CustomExecutorConfig extends AsyncConfigurerSupport {
 }
 ```
 &emsp; 如果直接return executor就不会有新Span，也就不会有save-log这个 Span。如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-21.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-21.png)  
 
 ##### 1.2.3.2.4. 子线程或线程池中获取 Zipkin traceId 并打印  
 ......
@@ -267,7 +267,7 @@ public void saveLog2(String log) {
 }
 ```
 &emsp; 通过手动埋点的方式可以创建新的Span，在 Zipkin的UI中也可以看到这个本地方法执行所消耗的时间，可以看到savelog2花费了2秒的时间，如下图所示。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-22.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-22.png)  
 &emsp; 除了使用代码手动创建 Span，还有一种更简单的方式，那就是在方法上加上下面的注解：  
 
 ```java
@@ -290,7 +290,7 @@ public void saveLog2(String log) {
 ### 1.3.1. 与Zipkin整合  
 &emsp; 为了实现对分布式系统做延迟监控等与时间消耗相关等需求，引入了Zipkin。  
 &emsp; Zipkin的基础架构主要由4个核心组件构成。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-13.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-13.png)  
 
 * Collector：收集器组件，它主要处理从外部系统发送过来的跟踪信息，将这些信息转换为Zipkin内部处理的Span格式，以支待后续的存储、分析、展示等功能。  
 * Storage：存储组件，它主要处理收集器接收到的跟踪信息，默认会将这些信息存储在内存中。也可以修改此存储策略，通过使用其他存储组件将跟踪信息存储到数据库中。  
@@ -343,9 +343,9 @@ public void saveLog2(String log) {
 #### 1.3.1.1. 在Zipkin中图形化展示分布式链接监控数据
 &emsp; 访问zipkin服务端http://ip:port ，即可展示微服务链路。  
 &emsp; 如果一个服务的调用关系如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-14.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-14.png)  
 &emsp; 那么此时将Span和Trace在一个系统中使用Zipkin注解的过程图形化：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-15.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-15.png)  
 &emsp; 每个颜色的表明一个span(总计7个spans，从A到G)，每个span有类似的信息  
 
 ```text
@@ -356,13 +356,13 @@ Client Sent
 
 &emsp; 此span表示span的Trance Id是X，Span Id是D，同时它发送一个Client Sent事件。  
 &emsp; spans的parent/child关系图形化如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-16.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-16.png)  
 
 **1. spans在zipkin界面的信息解读**  
 &emsp; 在Zipkin中展示了上图的跟踪信息，红框里是对上图调用span的跟踪。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-17.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-17.png)  
 &emsp; 但是当点击这个trace时，只看到4个span。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-18.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-18.png)  
 &emsp; 为什么两个界面显示的span数量不同，一个是7，一个4。
 * 1个spans：来自servier1的接口http:/start 被调用，分别是Server Received (SR) 和 Server Sent (SS) annotations。  
 * 2个spans：来自service1调用service2的http:/foo接口。service1端有两个span，分别为Client Sent (CS)和Client Received (CR) annotations。service2端也有两个span，分别为Server Received (SR) 和Server Sent (SS) 。物理上有2个span，但是从逻辑上说这个它们组成一个RPC调用的span。  
@@ -383,9 +383,9 @@ Client Sent
     
 **2. Zipkin可视化错误**  
 &emsp; 如果调用链路中发生接口调用失败，zipkin会默认使用红色展示信息。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-19.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-19.png)  
 &emsp; 点击红色的span，可以看到详细的失败信息：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-20.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-20.png)  
 
 #### 1.3.1.2. 链路信息收集  
 ##### 1.3.1.2.1. 消息中间件收集  
@@ -399,7 +399,7 @@ Client Sent
 
 #### 1.3.1.4. API接口  
 &emsp; Zipkin不仅提供了UI模块让用户可以使用Web页面来方便地查看跟踪信息，它还提供了丰富的RESTful API接口供用户在第三方系统中调用来定制自己的跟踪信息展示或监控。可以在ZipkinServer启动时的控制台或日志中找到Zipkin服务端提供的RESTful API定义。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-32.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-32.png)  
 &emsp; 可以看到Zipkin Server提供的API接口都以/api/vl路径作为前缀，它们的具体功能整理如下：  
 
 |接口路径|请求方式|接口描述|

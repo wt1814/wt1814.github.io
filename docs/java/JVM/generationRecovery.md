@@ -76,8 +76,8 @@ https://mp.weixin.qq.com/s/AdF--fvDq63z0Inr2-JSHw
 ### 1.1.1. 标记-清除(Mark-Sweep)算法  
 1. <font color = "red">标记-清除算法是最基础的收集算法，是因为后续的收集算法大多都是以标记-清除算法为基础，对其缺点进行改进而得到的。</font>  
 2. **<font color = "clime">标记-清除算法分为两个阶段：标记阶段和清除阶段。</font>** 标记阶段是标记出所有需要被回收的对象，清除阶段就是回收被标记的对象所占用的空间。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-73.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-76.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-73.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-76.png)  
 3. 特点：  
     * 优点：  
         1. 算法相对简单
@@ -90,8 +90,8 @@ https://mp.weixin.qq.com/s/AdF--fvDq63z0Inr2-JSHw
 1. 标记-复制算法常被简称为复制算法。<font color = "red">为了解决标记-清除算法面对大量可回收对象时执行效率低的问题。</font>  
 2. 标记-复制算法的执行过程：  
 &emsp; 将可用内存按容量划分为大小相等的两块，每次只使用其中的一块。当这一块的内存用完了，就将还存活着的对象复制到另外一块上面，然后再把已使用过的内存空间一次清理掉。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-74.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-77.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-74.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-77.png)  
 &emsp; <font color = "red">如果内存中多数对象都是存活的，这种算法将会产生大量的内存间复制的开销</font>， **<font color = "clime">但对于多数对象都是可回收的情况，算法需要复制的就是占少数的存活对象，而且每次都是针对整个半区进行内存回收，分配内存时也就不用考虑有空间碎片的复杂情况，只要移动堆顶指针，按顺序分配即可。</font>** 这样实现简单，运行高效，不过其缺陷也显而易见，这种复制回收算法的代价是<font color = "red">将可用内存缩小为了原来的一半</font>，空间浪费多了一点。 
 3. 特点：  
     * 适用于存活对象较少的情况。  
@@ -104,8 +104,8 @@ https://mp.weixin.qq.com/s/AdF--fvDq63z0Inr2-JSHw
 
 ### 1.1.3. 标记-整理(Mark-Compact)算法  
 1. 为了解决标记-复制算法的缺陷，充分利用内存空间，提出了标记-整理算法。标记-整理算法的标记过程仍然与“标记-清除”算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活的对象都向内存空间一端移动，然后直接清理掉边界以外的内存。标记-整理算法的执行过程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-75.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-78.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-75.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-78.png)  
 
 3. 特点：  
     * 优点：
@@ -245,7 +245,7 @@ https://www.zhihu.com/question/41922036
 
 -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-98.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-98.png)  
 &emsp; 针对HotSpot VM的实现，它里面的GC其实准确分类只有两大种：  
 * Partial GC：并不收集整个GC堆的模式  
     * Young GC：只收集young gen的GC  
@@ -258,7 +258,7 @@ https://www.zhihu.com/question/41922036
 <!-- 
 https://www.cnblogs.com/williamjie/p/9516367.html
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-99.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-99.png)  
 
 #### 1.4.1.1. ~~YGC触发时机~~
 <!-- 
@@ -285,14 +285,14 @@ eden 快满的触发因素有两个，一个是为对象分配内存不够，一
 4. 每经过一次YGC，对象年龄加1，当对象寿命超过阈值时，会晋升至老年代，最大寿命15(4bit)。  
 
 ### 1.4.2. Major GC  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-100.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-100.png)  
 
 ### 1.4.3. Full GC  
 <!-- 
 https://zhidao.baidu.com/question/717236418134267765.html
 https://blog.csdn.net/qq_38384440/article/details/81710887
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-101.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-101.png)  
 
 #### 1.4.3.1. FGC的触发时机
 &emsp; **<font color = "red">Full GC的触发时机：( 系统调用--->  老年代或永久代不足 ---> 执行GC时，老年代或永久的不足 ---> 回收器(例如CMS))</font>**  

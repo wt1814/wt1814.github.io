@@ -49,7 +49,7 @@ class 声明类，extend声明继承, implement声明接口继承 {
 }
 ```
 &emsp; 设计原则如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-3.png)  
+![image](http://www.wt1814.com/static/view/images/java/design/design-3.png)  
 
 ## 1.1. 开闭原则  
 &emsp; 核心思想是对扩展开放，对修改关闭。也就是说， **<font color = "clime">对已经使用的类的改动是通过增加代码进行的，而不是修改现有代码，实现一个热插拔的效果。</font>**  

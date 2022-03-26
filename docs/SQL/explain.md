@@ -21,7 +21,7 @@ https://blog.csdn.net/zhangchaoyang/article/details/109501696
 ```sql
 EXPLAIN SELECT column_name FROM table_name;  
 ```
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-29.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-29.png)  
 &emsp; expain出来的信息列分别是id、select_type、table、partitions、 **<font color = "red">type</font>** 、possible_keys、 **<font color = "red">key</font>** 、 **<font color = "red">key_len</font>** 、ref、rows、filtered、 **<font color = "red">Extra</font>** 。  
 
 <!-- 
@@ -58,11 +58,11 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
 * id：SELECT识别符。这是SELECT的查询序列号。  
     * id值相同  
     &emsp; id值相同一般出现在多表关联的场景，访问表的顺序是从上到下。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-30.png)  
+    ![image](http://www.wt1814.com/static/view/images/SQL/sql-30.png)  
     &emsp; 两个id 都为1，先访问b表然后访问a表。  
     * id值不同  
     &emsp; id 值不同的情况，从大到小执行，值越大越先开始执行或者被访问。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-31.png)  
+    ![image](http://www.wt1814.com/static/view/images/SQL/sql-31.png)  
     &emsp; 从结果来看，id为2那一行的子查询先被执行。然后再去访问id=1中a表。  
     * id包含了相同和不同的情况。  
     &emsp; 该情况一般是先有2个表或者子查询和表join，然后再和第三个表关联查询。比如：  
@@ -70,7 +70,7 @@ id部分相同，执行顺序是先按照数字大的先执行，然后数字相
         ```sql
         EXPLAIN SELECT t2.* FROM(SELECT t3.id FROM t3 WHERE t3.other_column = '') s1,t2 WHERE s1.id = t2.id;
         ```
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-32.png)  
+        ![image](http://www.wt1814.com/static/view/images/SQL/sql-32.png)  
         &emsp; 分析结果可看出，先走id最大的2，也就是先走括号里面的查t3表的语句。走完查t3后，顺序执行，有一个，derived是衍生的意思，意思是在执行完t3查询后的s1虚表基础上，结果中的2，就是id为2的。最后执行的查t2表。  
 
 * select_type：常见的有如下6种SIMPLE、PRIMARY、SUBQUERY、DERIVED、UNION、UNION RESULT，指出查询的类型：普通查询、联合查询、子查询等复杂的查询。  

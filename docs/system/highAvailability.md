@@ -52,7 +52,7 @@ https://zhuanlan.zhihu.com/p/29097657
 * 6个9：(1-99.9999%)\*365\*24\*60\*60=31秒
 
 &emsp; 可以看到1个9和、2个9分别表示一年时间内业务可能中断的时间是36.5天、3.65天，这种级别的可靠性或许还不配使用“可靠性”这个词；而6个9则表示一年内业务中断时间最多是31秒，那么这个级别的可靠性并非实现不了，而是要做到从“5个9”到“6个9”的可靠性提升的话，后者需要付出比前者几倍的成本。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/availab/system-2.png)  
+![image](http://www.wt1814.com/static/view/images/system/availab/system-2.png)  
 
 
 ## 1.3. 高可用解决方案  
@@ -99,19 +99,19 @@ https://mp.weixin.qq.com/s/-pjql9bbqrJSOzb2icMTVg
 &emsp; 同城双活其实和前文提到的双机热备没有本质的区别，只是“距离”更远了，基本上还是一样（同城专线网速还是很快的）。双机热备提供了灾备能力，双机互备避免了过多的资源浪费。  
 &emsp; 在程序代码的辅助下，有的业务还可以做到真正的双活，即同一个业务，双主，同时提供读写，只要处理好冲突的问题即可。需要注意的是，并不是所有的业务都能做到。  
 &emsp; 业界更多采用的是 **<font color = "blue">两地三中心</font>** 的做法。远端的备份机房能更大的提供灾备能力，能更好的抵抗地震，恐袭等情况。双活的机器必须部署到同城，距离更远的城市作为灾备机房。灾备机房是不对外提供服务的，只作为备份使用，发生故障了才切流量到灾备机房；或者是只作为数据备份。原因主要在于：距离太远，网络延迟太大。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/availab/system-3.png)  
+![image](http://www.wt1814.com/static/view/images/system/availab/system-3.png)  
 &emsp; 如上图，用户流量通过负载均衡，将服务A的流量发送到IDC1，服务器集A；将服务B的流量发送到IDC2，服务器B；同时，服务器集a和b分别从A和B进行同城专线的数据同步，并且通过长距离的异地专线往IDC3进行同步。当任何一个IDC当机时，将所有流量切到同城的另一个IDC机房，完成了failover。当城市1发生大面积故障时，比如发生地震导致IDC1和2同时停止工作，则数据在IDC3得以保全。同时，如果负载均衡仍然有效，也可以将流量全部转发到IDC3中。不过，此时IDC3机房的距离非常远，网络延迟变得很严重，通常用户的体验的会受到严重影响的。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/availab/system-4.png)  
+![image](http://www.wt1814.com/static/view/images/system/availab/system-4.png)  
 &emsp; 上图是一种基于Master-Slave模式的两地三中心示意图。城市1中的两个机房作为1主1从，异地机房作为从。也可以采用同城双主+keepalived+vip的方式，或者MHA的方式进行failover。但城市2不能（最好不要）被选择为Master。  
 
 ### 1.3.4. 异地双活
 &emsp; 同城双活可以应对大部分的灾备情况，但是碰到大面积停电，或者自然灾害的时候，服务依然会中断。对上面的两地三中心进行改造，在异地也部署前端入口节点和应用，在城市1停止服务后将流量切到城市2，可以在降低用户体验的情况下，进行降级。但用户的体验下降程度非常大。  
 &emsp; 所以大多数的互联网公司采用了异地双活的方案。   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/availab/system-5.png)  
+![image](http://www.wt1814.com/static/view/images/system/availab/system-5.png)  
 &emsp; 上图是一个简单的异地双活的示意图。流量经过LB后分发到两个城市的服务器集群中，服务器集群只连接本地的数据库集群，只有当本地的所有数据库集群均不能访问，才failover到异地的数据库集群中。  
 &emsp; 在这种方式下，由于异地网络问题，双向同步需要花费更多的时间。更长的同步时间将会导致更加严重的吞吐量下降，或者出现数据冲突的情况。吞吐量和冲突是两个对立的问题，需要在其中进行权衡。例如，为了解决冲突，引入分布式锁/分布式事务；为了解决达到更高的吞吐量，利用中间状态、错误重试等手段，达到最终一致性；降低冲突，将数据进行恰当的sharding，尽可能在一个节点中完成整个事务。  
 &emsp; 对于一些无法接受最终一致性的业务，饿了么采用的是下图的方式：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/availab/system-6.png)  
+![image](http://www.wt1814.com/static/view/images/system/availab/system-6.png)  
 
 
     对于个别一致性要求很高的应用，我们提供了一种强一致的方案（Global Zone），Globa Zone是一种跨机房的读写分离机制，所有的写操作被定向到一个 Master 机房进行，以保证一致性，读操作可以在每个机房的 Slave库执行，也可以 bind 到 Master 机房进行，这一切都基于我们的数据库访问层（DAL）完成，业务基本无感知。
@@ -120,18 +120,18 @@ https://mp.weixin.qq.com/s/-pjql9bbqrJSOzb2icMTVg
 &emsp; 实际上，异地双活和异地多活已经很像了，双活的结构更为简单，所以在程序架构上不用做过多的考虑，只需要做传统的限流，failover等操作即可。但其实双活只是一个临时的步骤，最终的目的是切换到多活。因为双活除了有数据冲突上的问题意外，还无法进行横向扩展。  
 
 ### 1.3.5. 异地多活
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/availab/system-7.png)  
+![image](http://www.wt1814.com/static/view/images/system/availab/system-7.png)  
 &emsp; 根据异地双活的思路，我们可以画出异地多活的一种示意图。每个节点的出度和入度都是4，在这种情况下，任何节点下线都不会对业务有影响。但是，考虑到距离的问题，一次写操作将带来更大的时间开销。时间开销除了影响用户体验以外，还带来了更多的数据冲突。在严重的数据冲突下，使用分布式锁的代价也更大。这将导致系统的复杂度上升，吞吐量下降。所以上图的方案是无法使用的。  
 &emsp; 回忆一下我们在解决网状网络拓扑的时候是怎么优化的？引入中间节点，将网状改为星状：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/availab/system-8.png)  
+![image](http://www.wt1814.com/static/view/images/system/availab/system-8.png)  
 &emsp; 改造为上图后，每个城市下线都不会对数据造成影响。对于原有请求城市的流量，会被重新LoadBalance到新的节点（最好是LB到最近的城市）。为了解决数据安全的问题，我们只需要针对中心节点进行处理即可。但是这样，对于中心城市的要求，比其他城市会更高。比如恢复速度，备份完整性等，这里暂时不展开。我们先假定中心是完全安全的。  
 &emsp; 如果我们已经将异地多活的业务部署为上图的结构，很大程度解决了数据到处同步的问题，不过依然会存在大量的冲突，冲突的情况可以简单认为和双活差不多。那么还有没有更好的方式呢？  
 &emsp; 回顾一下前文提到的饿了么的GlobalZone方案，总体思路就是“去分布式”，也就是说将写的业务放到一个节点的（同城）机器上。阿里是这么思考的：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/availab/system-9.png)  
+![image](http://www.wt1814.com/static/view/images/system/availab/system-9.png)  
 &emsp; 实际上我猜测很多业务也是按照上图去实现的，比如滴滴打车业务这种，所有的业务都是按城市划分开的。用户、车主、目的地，他们的经纬度通常都是在同一个城市的。单个数据中心并不需要和其他数据中心进行数据交互，只有在统计出报表的时候才需要，但报表是不太注重实时性的。那么，在这种情况下，全国的业务其实可以被很好的sharding的。  
 
 &emsp; 但是对于电商这种复杂的场景和业务，按照前文说的方式进行sharding已经无法满足需求了。因为业务线非常复杂，数据依赖也非常复杂，每个数据中心相互进行数据同步的情况无可避免。淘宝的解决方式和我们切分微服务的方式有点类似：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/availab/system-10.png)  
+![image](http://www.wt1814.com/static/view/images/system/availab/system-10.png)  
 
 &emsp; 注意看图中的数据同步箭头。以交易单元为例，属于交易单元的业务数据，将与中心单元进行双向同步；不属于交易单元的业务数据，单向从中心单元同步。中心单元承担了最复杂的业务场景，业务单元承担了相对单一的场景。对于业务单元，可以进行弹性伸缩和容灾；对于中心单元，扩展能力较差，稳定性要求更高。可以遇见，大部分的故障都会出现在中心单元。  
 

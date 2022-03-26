@@ -57,10 +57,10 @@ https://mp.weixin.qq.com/s/CzU6jkMUtGGPHRjKXMiIoQ
 Zookeeper 是 Kafka 用来负责集群元数据管理、控制器选举等操作的。Producer 是负责将消息发送到 Broker 的，Broker 负责将消息持久化到磁盘，而 Consumer 是负责从Broker 订阅并消费消息。
 -->
 &emsp; kafka在zookeeper中的存储结构如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-21.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-21.png)  
 &emsp; kafka中Zookeeper作用：集群管理，元数据管理。  
 &emsp; 注意：producer不在zk中注册，消费者在zk中注册。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-4.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-4.png)  
 * Broker 注册：Broker 是分布式部署并且之间相互独立，Zookeeper 用来管理注册到集群的所有 Broker 节点。
 * Topic 注册：在 Kafka 中，同一个 Topic 的消息会被分成多个分区并将其分布在多个 Broker 上，这些分区信息及与 Broker 的对应关系也都是由Zookeeper在维护
 * 生产者负载均衡：由于同一个 Topic 消息会被分区并将其分布在多个 Broker 上，因此，生产者需要将消息合理地发送到这些分布式的Broker上。
@@ -81,7 +81,7 @@ Zookeeper 是 Kafka 用来负责集群元数据管理、控制器选举等操作
 &emsp; 控制器在选举成功之后会读取ZooKeeper中各个节点的数据来初始化上下文信息 （Controllercontext），并且需要管理这些上下文信息。比如为某个主题增加了若干分区，控制器在负责创建这些分区的同时要更新上下文信息，并且需要将这些变更信息同步到其他普通的broker节点中。不管是监听器触发的事件，还是定时任务触发的事件，或者是其他事件（比如ControlledShutdown）都会读取或更新控制器中的上下文信息，那么这样就会涉及多线程间的同步。如果单纯使用锁机制来实现，那么整体的性能会大打折扣。针对这一现象，Kafka的控制器使用单线程基于事件队列的模型，将每个事件都做一层封装，然后按照事件发生的先后顺序暂存到LinkedBlockingQueue中，最后使用一个专用的线程（ControllerEventThread）按照FIFO（First Input First Output，先入先出）的原则顺序处理各个事件，这样不需要锁机制就可以在多线程间维护线程安全。  
 &emsp; 在Kafka的早期版本中，并没有采用Kafka Controller这样一个概念来对分区和副本的状态进行管理，而是依赖于ZooKeeper，每个broker都会在ZooKeeper上为分区和副本注册大量的监听器（Watcher）。当分区或副本状态变化时，会唤醒很多不必要的监听器，这种严重依赖ZooKeeper的设计会有脑裂、羊群效应，以及造成ZooKeeper过载的隐患(旧版的消费者客户端存在同样的问题)。  
 &emsp; 在目前的新版本的设计中，只有Kafka Controller在ZooKeeper上注册相应的监听器，其他的broker极少需要再监听ZooKeeper中的数据变化， 这样省去了很多不必要的麻烦。不过每个broker还是会对/controller节点添加监听器，以此来监听此节点的数据变化(ControllerChangeHandler)。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-71.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-71.png)  
 
 ### 1.1.5. 优雅关闭  
 &emsp; 可以直接修改 kafka-server-step.sh 脚本的内容，将其中的第一行命令修改如下：  

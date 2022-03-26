@@ -135,9 +135,9 @@ public class KafkaConsumer {
 ```
 
 &emsp; 上面示例创建了一个生产者，发送消息到topic1，消费者监听topic1消费消息。监听器用@KafkaListener注解，topics表示监听的topic，支持同时监听多个，用英文逗号分隔。启动项目，postman调接口触发生产者发送消息。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-36.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-36.png)  
 &emsp; 可以看到监听器消费成功。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-37.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-37.png)  
 
 ## 1.3. topic管理  
 &emsp; ......
@@ -319,7 +319,7 @@ public void onMessage5(List<ConsumerRecord<?, ?>> records) throws Exception {
 }
 ```
 &emsp; 执行看一下效果，  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-38.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-38.png)  
 
 ### 1.5.4. 消息过滤器
 &emsp; 消息过滤器可以在消息抵达consumer之前被拦截，在实际应用中，可以根据自己的业务逻辑，筛选出需要的信息再交由KafkaListener处理，不需要的消息则过滤掉。  
@@ -358,7 +358,7 @@ public class KafkaConsumer {
 ```
 
 &emsp; 上面实现了一个"过滤奇数、接收偶数"的过滤策略，向topic1发送0-99总共100条消息，看一下监听器的消费情况，可以看到监听器只消费了偶数。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-39.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-39.png)  
 
 ### 1.5.5. 消息转发
 &emsp; 在实际开发中，可能有这样的需求，应用A从TopicA获取到消息，经过处理后转发到TopicB，再由应用B监听处理消息，即一个应用处理完成后将该消息转发至其他应用，完成消息的转发。  
@@ -436,9 +436,9 @@ public class CronTimer {
 }
 ```
 &emsp; 启动项目，触发生产者向topic1发送消息，可以看到consumer没有消费，因为这时监听器还没有开始工作。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-40.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-40.png)  
 &emsp; 11:42分监听器启动开始工作，消费消息。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-41.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-41.png)  
 
 
 

@@ -10,7 +10,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>**  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-77.png)  
+    ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-77.png)  
     * len保存了字符串的长度；
     * free表示buf数组中未使用的字节数量；
     * buf数组则是保存字符串的每一个字符元素。  
@@ -70,12 +70,12 @@ struct sdshdr{
 };
 ```
 &emsp; **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>** <font color = "red">len保存了字符串的长度，free表示buf数组中未使用的字节数量，buf数组则是保存字符串的每一个字符元素。</font>  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-77.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-77.png)  
 &emsp; Redis的字符串也会遵守C语言的字符串的实现规则，即最后一个字符为空字符。然而这个空字符不会被计算在len里头。  
 
 ## 1.2. ★★★SDS动态扩展特点
 &emsp; SDS的最厉害最奇妙之处在于它的Dynamic，动态变化长度。举个例子：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-78.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-78.png)  
 
 &emsp; 如上图所示刚开始s1 只有5个空闲位子，后面需要追加' world' 6个字符，很明显是不够的。 
 

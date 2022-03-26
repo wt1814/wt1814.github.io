@@ -41,7 +41,7 @@ https://mp.weixin.qq.com/s/vY1gZhp_g78IoXJ5QQvlFQ
 
 
 ## 1.1. Spring模块  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-1.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-1.png)  
 
 &emsp; **Spring的核心模块：**
 1. Spring Core【核心容器】：核心容器提供Spring框架的基本功能，管理着Spring应用中bean的创建、配置和管理。核心容器的主要组件是BeanFactory，它是工厂模式的实现。BeanFactory使用控制反转(IOC)模式将应用程序的配置和依赖性规范与实际的应用程序代码分开。  
@@ -56,7 +56,7 @@ https://mp.weixin.qq.com/s/vY1gZhp_g78IoXJ5QQvlFQ
 &emsp; Spring是轻量级框架，是因为创建对象交给了Spring容器，启动Web容器时，对象已经创建完成。避免程序运行时创建对象，消耗资源。  
 
 &emsp; Spring基本原理：控制反转和依赖注入。Spring反向控制应用程序所需要使用的外部资源。应用程序执行需要使用外部资源。由于资源已经完全由Spring进行统一管理，因此应用程序需要依赖Spring为其提供资源，提供资源的过程称为注入。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-2.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-2.png)  
 
 &emsp; Spring启动时读取应用程序提供的Bean配置信息，并在Spring容器中生成一份相应的Bean配置注册表，然后根据这张注册表实例化Bean，装配好Bean之间的依赖关系，为上层应用提供准备就绪的运行环境。其中Bean缓存池为HashMap实现。  
 

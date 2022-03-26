@@ -26,7 +26,7 @@ https://blog.csdn.net/qq_33404395/article/details/86498060
 <!-- 
 http://svip.iocoder.cn/Dubbo/intro/
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-17.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-17.png)   
 &emsp; 模块说明：
 
 * dubbo-common公共逻辑模块：包括 Util 类和通用模型。
@@ -50,13 +50,13 @@ http://svip.iocoder.cn/Dubbo/intro/
 
 1. 调用链  
 &emsp; 展开总设计图的红色调用链，如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-19.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-19.png)   
 
 2. 暴露服务时序  
 &emsp; 展开总设计图左边服务提供方暴露服务的蓝色初始化链，时序图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-20.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-20.png)   
 
 3. 引用服务时序
 &emsp; 展开总设计图右边服务消费方引用服务的蓝色初始化链，时序图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-21.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-21.png)   
 

@@ -69,7 +69,7 @@ https://www.yuque.com/happy-coder/qka0of/ekdfzb
 
 ### 1.2.1. 位图介绍    
 &emsp; Bitmaps是在字符串类型上面定义的位操作。一个字节由8个二进制位组成。每个二进制位只能存储0或1。   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-97.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-97.png)  
 
 &emsp; **优点与缺点：**  
 &emsp; Bitmaps的最大优点就是存储信息时可以节省大量的空间。例如在一个系统中，不同的用户被一个增长的用户ID表示。40亿(2^32≈40亿)用户只需要512M内存就能记住某种信息，例如用户是否登录过。  
@@ -312,5 +312,5 @@ https://mp.weixin.qq.com/s/3TcNbNNobn2QEJFat-f90A
 
 
 ## 1.7. 小结  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-105.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-105.png)  
 

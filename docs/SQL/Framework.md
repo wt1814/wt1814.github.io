@@ -22,7 +22,7 @@ https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
 -->
 &emsp; 很多的查询优化工作实际上就是遵循一些原则让MySQL的优化器能够按照预想的合理方式运行而已。  
 &emsp; 当向MySQL发送一个请求的时候，MySQL到底做了些什么呢？  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-51.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-51.png)  
 &emsp; MySQL整个查询执行过程，总的来说分为5个步骤：  
 1. 客户端向MySQL服务器发送一条查询请求，进行连接。服务端进行验证。    
 2. 服务器首先检查查询缓存，如果命中缓存，则立刻返回存储在缓存中的结果。否则进入下一阶段。  
@@ -35,7 +35,7 @@ https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
 
 ----------
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-44.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-44.png)  
 &emsp; **<font color = "clime">MySQL服务器主要分为Server层和存储引擎层。</font>**  
 1. <font color = "red">Server层包括连接器、查询缓存、分析器、优化器、执行器等。</font>涵盖MySQL的大多数核心服务功能，以及所有的内置函数(如日期、时间、数学和加密函数等)，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等，还有 **<font color = "clime">一个通用的日志模块binglog日志模块。</font>**     
 2. `存储引擎：主要负责数据的存储和读取，`采用可以替换的插件式架构，支持 InnoDB、MyISAM、Memory等多个存储引擎，其中InnoDB引擎有自有的日志模块redolog模块。  
@@ -69,7 +69,7 @@ https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
 &emsp; 如果用户名密码认证通过，连接器会到权限表里面查出拥有的权限。之后，这个连接里面的权限判断逻辑，都将依赖于此时读到的权限。  
 &emsp; 这就意味着，一个用户成功建立连接后，即使用管理员账号对这个用户的权限做了修改，也不会影响已经存在连接的权限。修改完成后，只有再新建的连接才会使用新的权限设置。  
 &emsp; 连接完成后，如果没有后续的动作，这个连接就处于空闲状态，可以在show processlist命令中看到它。文本中这个图是show processlist的结果，其中的Command列显示为“Sleep”的这一行，就表示现在系统里面有一个空闲连接。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-45.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-45.png)  
 &emsp; 客户端如果太长时间没动静，连接器就会自动将它断开。这个时间是由参数wait_timeout控制的，默认值是8小时。  
 &emsp; 如果在连接被断开之后，客户端再次发送请求的话，就会收到一个错误提醒： Lost connection to MySQL server during query。这时候如果你要继续，就需要重连，然后再执行请求了。  
 &emsp; 数据库里面，长连接是指连接成功后，如果客户端持续有请求，则一直使用同一个连接。短连接则是指每次执行完很少的几次查询就断开连接，下次查询再重新建立一个。  
@@ -134,7 +134,7 @@ https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
 
 &emsp; 参考[InnoDB插入更新流程](/docs/SQL/insert.md)  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-176.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-176.png)  
 
 &emsp; server层：bin log。  
 &emsp; 引擎层：updo log、redo log。  

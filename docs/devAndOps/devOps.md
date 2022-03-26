@@ -11,17 +11,17 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. DevOps框架  
 &emsp; 以下是一个DevOps框架。这个框架只指出那些被认可的概念和它们在某种程度上的关系。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-8.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-8.png)  
 &emsp; **<font color = "clime">敏捷开发指的是在 DevOps 中采用敏捷思想进行软件开发，敏捷宣言无疑是很重要的一项。有多种敏捷方法可以采用，比如Scrum、看板和极限编程。</font>**  
 &emsp; **<font color = "clime">持续集成提供了让多个程序员可以同时运行应用程序的最佳实践，可以频繁合并源代码、验证代码(静态测试用例)、编译和测试代码(动态测试用例)。</font>**  
 &emsp; **<font color = "clime">持续交忖关注从开发、测试、验收到生产环境的高频生产能力。基于高度的自动化，极端的发布上线时间可以达到分钟级。</font>**  
 2. DevOps流程  
 &emsp; 下图显示了一个DevOps流程。它不是DevOps流程的正式定义，而是表述了在大多数组织机构中，为了实现一个服务而会被循环执行的合乎逻辑顺序的一系列阶段。  
 &emsp; 深色部分表示开发流程，浅色部分表示运维流程。这两个流程构成了DevOps方法的核心。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-1.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-1.png)  
 3. 工具集  
 &emsp; **<font color = "clime">DevOps一般包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-3.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-3.png)  
 
 
 # 1. DevOps  
@@ -37,10 +37,10 @@ https://mp.weixin.qq.com/s/fVGTtXlurMfJV1gp93jUIQ
 &emsp; **DevOps是CI、CD思想的延伸，CI、CD是DevOps的基础核心。**如果没有CI、CD自动化的工具和流程，谈DevOps是没有意义的。  
 
 ## 1.1. 定义  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-4.png)   
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-4.png)   
 &emsp; **DevOps：Development和Operations的组合。可以把DevOps看作开发(软件工程)、技术运营和质量保障(QA)三者的交集。**  
 &emsp; DevOps并没有被定义成一组最佳实践和流程。尽管如此，一些常用概念的内在关联性仍可被识别出来，如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-8.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-8.png)  
 &emsp; 这是其中的一个DevOps框架。这个框架只指出那些被认可的概念和它们在某种程度上的关系。以下是对每个概念的简要说明。  
 
 * DevOps持续测试  
@@ -57,13 +57,13 @@ https://mp.weixin.qq.com/s/fVGTtXlurMfJV1gp93jUIQ
 &emsp; 敏捷流程重点关注在标准管理过程中，需要进行哪些调整改进，才能符合敏捷开发方法的要求。  
 
 ## 1.2. 流程  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-1.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-1.png)  
 &emsp; 上图显示了一个DevOps流程。它不是DevOps流程的正式定义，而是表述了在大多数组织机构中，为了实现一个服务而会被循环执行的合乎逻辑顺序的一系列阶段。  
 &emsp; 深色部分表示开发流程，浅色部分表示运维流程。这两个流程构成了DevOps方法的核心。    
 &emsp; 这两部分流程的每一部分又可以进一步细分为一系列阶段、过程，或被称作另一系列流程，它们都是由反复出现的步骤组成的。这些步骤都是为了达到同一个结果，实现相同的目的。  
 
 &emsp; DevOps框架结构关系：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-2.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-2.png)  
 &emsp; 上图是指示性的。图中没有画出清晰的线条，但它展示了其连贯性。以下是对上图的简要解释，需要说明的是这种关系不是纯粹的一对一的关系。  
 
 * 规划  
@@ -90,7 +90,7 @@ https://blog.csdn.net/hualinux/article/details/106586601?utm_medium=distribute.p
 https://blog.gitee.com/2020/04/26/tool-chain/
 -->
 &emsp; 对于DevOps架构，可以参照DevOps过程逐步核查。按过程中每步决定的所需功能，经测量去选择可用工具。 **<font color = "clime">DevOps一般包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-3.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-3.png)  
 
 * 版本控制&协作开发：GitHub、GitLab、BitBucket、SubVersion、Coding、Bazaar
 * 自动化构建和测试：Apache Ant、Maven 、Selenium、PyUnit、QUnit、JMeter、Gradle、PHPUnit、Nexus
@@ -103,7 +103,7 @@ https://blog.gitee.com/2020/04/26/tool-chain/
 * 监控，警告&分析：Nagios、Ganglia、Sensu、zabbix、ICINGA、Graphite、Kibana
 
 &emsp; 以下是关于Devops的工具链  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-5.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-6.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-7.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-5.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-6.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-7.png)  
 

@@ -72,7 +72,7 @@ https://mp.weixin.qq.com/s/0eotlFBTSl-HxInb4Xg1Iw
 5. Follower消息拉取完毕需要给Leader回复ACK确认消息；
 6. Kafka Leader和Follower分区同步完，Leader分区会给生产者回复ACK确认消息。
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-96.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-96.png)  
 
 &emsp; 生产者采用push模式将数据发布到broker，每条消息追加到分区中，顺序写入磁盘。消息写入Leader后，Follower是主动与Leader进行同步。  
 &emsp; Kafka消息发送有两种方式：同步（sync）和异步（async），默认是同步方式，可通过producer.type属性进行配置。  
@@ -100,11 +100,11 @@ https://mp.weixin.qq.com/s/0eotlFBTSl-HxInb4Xg1Iw
 
 &emsp; kafka producer 的参数acks 的默认值为1，所以默认的producer级别是at least once，并不能exactly once。
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-61.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-61.png)  
 &emsp; 设置为 1 时代表当 Leader 状态的 Partition 接收到消息并持久化时就认为消息发送成功，如果 ISR 列表的 Replica 还没来得及同步消息，Leader 状态的 Partition 对应的 Broker 宕机，则消息有可能丢失。    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-62.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-62.png)  
 &emsp; 设置为 0 时代表 Producer 发送消息后就认为成功，消息有可能丢失。    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-63.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-63.png)  
 &emsp; 设置为-1 时，代表 ISR 列表中的所有 Replica 将消息同步完成后才认为消息发送成功；但是如果只存在主Partition的时候，Broker异常时同样会导致消息丢失。所以此时就需要min.insync.replicas参数的配合，该参数需要设定值大于等于2，当Partition的个数小于设定的值时，Producer发送消息会直接报错。  
 
 &emsp; 上面这个过程看似已经很完美了，但是假设如果消息在同步到部分从Partition 上时，主 Partition 宕机，此时消息会重传，虽然消息不会丢失，但是会造成同一条消息会存储多次。在新版本中 Kafka 提出了幂等性的概念，通过给每条消息设置一个唯一 ID，并且该 ID 可以唯一映射到 Partition 的一个固定位置，从而避免消息重复存储的问题。 
@@ -120,7 +120,7 @@ https://mp.weixin.qq.com/s/0eotlFBTSl-HxInb4Xg1Iw
 ## 1.3. Broker端丢失消息
 <!-- 
 &emsp; Broker丢失消息是由于Kafka本身的原因造成的，kafka为了得到更高的性能和吞吐量，将数据异步批量的存储在磁盘中。消息的刷盘过程，为了提高性能，减少刷盘次数，kafka采用了批量刷盘的做法。即，按照一定的消息量，和时间间隔进行刷盘。这种机制也是由于linux操作系统决定的。将数据存储到linux操作系统种，会先存储到页缓存（Page cache）中，按照时间或者其他条件进行刷盘（从page cache到file），或者通过fsync命令强制刷盘。数据在page cache中时，如果系统挂掉，数据会丢失。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-95.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-95.png)  
 &emsp; 上图简述了broker写数据以及同步的一个过程。broker写数据只写到PageCache中，而pageCache位于内存。这部分数据在断电后是会丢失的。pageCache的数据通过linux的flusher程序进行刷盘。刷盘触发条件有三：  
 
 * 主动调用sync或fsync函数
@@ -135,8 +135,8 @@ https://mp.weixin.qq.com/s/0eotlFBTSl-HxInb4Xg1Iw
 <!-- 
 &emsp; 为了提升效率，减少IO，producer在发送数据时可以将多个请求进行合并后发送。被合并的请求咋发送一线缓存在本地buffer中。缓存的方式和前文提到的刷盘类似，producer可以将请求打包成“块”或者按照时间间隔，将buffer中的数据发出。通过buffer可以将生产者改造为异步的方式，而这可以提升发送效率。  
 &emsp; 但是，buffer中的数据就是危险的。在正常情况下，客户端的异步调用可以通过callback来处理消息发送失败或者超时的情况，但是，一旦producer被非法的停止了，那么buffer中的数据将丢失，broker将无法收到该部分数据。又或者，当Producer客户端内存不够时，如果采取的策略是丢弃消息（另一种策略是block阻塞），消息也会被丢失。抑或，消息产生（异步产生）过快，导致挂起线程过多，内存不足，导致程序崩溃，消息丢失。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-73.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-73.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-73.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-73.png)  
 
 &emsp; **根据上图，可以想到几个解决的思路：**  
 
@@ -147,7 +147,7 @@ https://mp.weixin.qq.com/s/0eotlFBTSl-HxInb4Xg1Iw
 
 ### 1.3.1. 消息持久化  
 &emsp; Kafka Broker接收到数据后会将数据进行持久化存储。持久化流程： 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-97.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-97.png)  
 &emsp; 操作系统本身有一层缓存，叫做 Page Cache，当往磁盘文件写入的时候，系统会先将数据流写入缓存中，至于什么时候将缓存的数据写入文件中是由操作系统自行决定。  
 &emsp; Kafka提供了一个参数 producer.type 来控制是不是主动flush，如果Kafka写入到mmap之后就立即 flush 然后再返回 Producer 叫同步 (sync)；写入mmap之后立即返回 Producer 不调用 flush 叫异步 (async)。  
 
@@ -168,7 +168,7 @@ https://mp.weixin.qq.com/s/0eotlFBTSl-HxInb4Xg1Iw
 
 &emsp; 消费者通过pull模式主动的去 kafka 集群拉取消息，与producer相同的是，消费者在拉取消息的时候也是找leader分区去拉取。  
 &emsp; 多个消费者可以组成一个消费者组（consumer group），每个消费者组都有一个组id。同一个消费组者的消费者可以消费同一topic下不同分区的数据，但是不会出现多个消费者消费同一分区的数据。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-98.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-98.png)  
 &emsp; 消费者消费的进度通过offset保存在kafka集群的__consumer_offsets这个topic中。  
 
 &emsp; 消费消息的时候主要分为两个阶段：  

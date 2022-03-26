@@ -196,7 +196,7 @@ class lambdasAsArgumentsDemo {
 ......
 
 ## 1.3. 方法引用、构造方法引用  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/java8/java-1.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/java8/java-1.png)  
 &emsp; **<font color= "clime">当Lambda表达式中只是执行一个方法调用时，可以舍弃Lambda表达式，直接通过方法引用的形式可读性更高一些。</font>** 方法引用是一种更简洁易懂的Lambda表达式。方法引用是用来直接访问类或者实例的已经存在的方法或者构造方法(如果是类，不用实例化对象)。方法引用提供了一种引用而不执行方法的方式，它需要由兼容的函数式接口构成的目标类型上下文。计算时，方法引用会创建函数式接口的一个实例。  
 &emsp; 方法引用的标准形式是：类名/对象的引用::方法名/new(注意：只需要写方法名，不需要写括号)。有以下四种形式的方法引用：  
 

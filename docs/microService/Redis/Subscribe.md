@@ -25,9 +25,9 @@ https://mp.weixin.qq.com/s/i9e_JHng_etzJcLkHCBiEQ
 &emsp; Redis 提供了基于“发布/订阅”模式的消息机制，发送者(publish)发送消息，订阅者(subscribe)接收消息。Redis作为消息发布和订阅之间的服务器，起到桥梁的作用，在Redis里面有一个channel的概念，也就是频道，发布者通过指定发布到某个频道，然后只要有订阅者订阅了该频道，该消息就会发送给订阅者。Redis客户端可以订阅任意数量的频道。  
 
 &emsp; 下图展示了频道channel1，以及订阅这个频道的三个客户端——client2、client5和client1之间的关系：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-100.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-100.png)  
 &emsp; 当有新消息通过 PUBLISH 命令发送给频道 channel1 时， 这个消息就会被发送给订阅它的三个客户端：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-101.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-101.png)  
 
 &emsp; **<font color = "red">使用场景：</font>**  
 &emsp; Redis的发布与订阅的功能应用还是比较广泛的，它的应用场景有很多。比如：最常见的就是实现实时聊天的功能，还有就是博客的粉丝文章的推送，当博主推送原创文章的时候，就会将文章实时推送给博主的粉丝。  

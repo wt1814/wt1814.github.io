@@ -81,18 +81,18 @@ https://mp.weixin.qq.com/s/-mCgBp-pjJzKqhYut3yYgw
 #### 1.1.1.2. 手动触发RDB持久化
 &emsp; 客户端通过向Redis服务器发送Save或Bgsave命令让服务器生成RDB文件。  
 1. save命令：是一个同步操作。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-31.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-31.png)  
 &emsp; 当客户端向服务器发送Save命令请求进行持久化时，服务器会阻塞Save命令之后的其他客户端的请求，直到数据同步完成。  
 &emsp; 如果数据量太大，同步数据会执行很久，而这期间Redis服务器也无法接收其他请求，所以，最好不要在生产环境使用Save命令。  
 2. Bgsave命令：  
 &emsp; 与Save命令不同，Bgsave命令是一个异步操作。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-32.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-32.png)  
 &emsp; bgsave，执行该命令时，Redis会在后台异步执行快照操作，此时Redis仍然可以处理客户端请求。具体操作是当客户端发服务发出Bgsave命令时，Redis服务器主进程会Forks操作创建一个子进程来数据同步问题，在将数据保存到RDB文件之后，子进程会退出。新RDB文件就会原子地替换旧的RDB文件。所以，与Save命令相比，Redis服务器在处理Bgsave采用子线程进行IO写入。而主进程仍然可以接收其他请求。  
 &emsp; 但Forks子进程是同步的，所以Forks子进程时，一样不能接收其他请求。这意味着，如果Forks一个子进程花费的时间太久(一般是很快的)，而且占用内存会加倍，Bgsave命令仍然有阻塞其他客户的请求的情况发生。  
 
 ### 1.1.2. RDB的流程  
 &emsp; bgsave是主流的触发RDB持久化方式。它的运行流程如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-53.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-53.png)  
 1. 执行bgsave命令，Redis父进程判断当前是否存在正在执行的子进程，如RDB/AOF子进程，如果存在bgsave命令直接返回。  
 2. 父进程执行fork操作创建子进程，fork操作过程中父进程会阻塞，通过info stats命令查看latest_fork_usec选项，可以获取最近一个fork操作的耗时，单位为微秒。  
 3. 父进程fork完成后，bgsave命令返回“Background saving started”信息并不再阻塞父进程，可以继续响应其他命令。  
@@ -149,7 +149,7 @@ https://mp.weixin.qq.com/s/8hJQhMMZx962OgKOUAEKDQ
 -->
 
 &emsp; AOF采用的是写后日志的方式，Redis先执行命令把数据写入内存，然后再记录日志到文件中。AOF日志记录的是操作命令，不是实际的数据，如果采用AOF方法做故障恢复时需要将全量日志都执行一遍。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-121.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-121.png)  
 
 &emsp; 平时用的MySQL则采用的是 “写前日志”，那 Redis为什么要先执行命令，再把数据写入日志呢？  
 
@@ -164,7 +164,7 @@ https://mp.weixin.qq.com/s/8hJQhMMZx962OgKOUAEKDQ
 
 ### 1.2.2. AOF持久化流程  
 &emsp; **<font color = "red">AOF的工作流程操作：命令写入 (append)、文件同步(sync)、文件重写(rewrite)、重启加载 (load)。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-52.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-52.png)  
 &emsp; 流程如下：  
 1. 所有的写入命令会追加到aof_buf(缓冲区)中。   
 2. AOF缓冲区根据对应的策略向硬盘做同步操作。   
@@ -208,11 +208,11 @@ https://www.cnblogs.com/wdliu/p/9377278.html
 &emsp; ......
 
 &emsp; 当触发AOF重写时，内部做了哪些事呢？下图介绍它的运行流程。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-86.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-86.png)  
 
 #### 1.2.2.2. 重启加载步骤(数据恢复流程)  
 &emsp; AOF和RDB文件都可以用于服务器重启时的数据恢复。如下图所示，表示Redis持久化文件加载流程。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-54.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-54.png)  
 &emsp; 流程说明：  
 1. AOF持久化开启且存在AOF文件时，优先加载AOF文件。  
 2. AOF关闭或者AOF文件不存在时，加载RDB文件。  

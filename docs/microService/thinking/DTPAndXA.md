@@ -53,7 +53,7 @@
 
 ## 1.1. DTP基本概念  
 &emsp; DTP是由X/Open组织提出的一种分布式事务模型——X/Open Distributed Transaction Processing Reference Model。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-3.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-3.png)  
 
 &emsp; **X/Open DTP中的角色：** 应用程序、事务管理器、资源管理器、XA接口  
 
@@ -87,7 +87,7 @@
 
 ### 1.2.2. 实现流程  
 &emsp; 二阶段提交的算法思路可以概括为：参与者将操作成败通知协调者，再由协调者根据所有参与者的反馈情报决定各参与者是否要提交操作还是中止操作。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-4.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-4.png)  
 &emsp; <font color = "clime">二阶段提交将分布式事务的提交拆分为2个阶段：准备阶段prepare和提交阶段commit/rollback。</font>  
 1. 第一阶段：准备阶段  
 &emsp; 协调者向所有参与者发送事务执行请求，并等待参与者反馈事务执行结果。  
@@ -146,7 +146,7 @@ rm：在3阶段，没收到tm的命令，默认提交。
 &emsp; **<font color = "clime">3PC的引入降低了2PC的同步阻塞，解决协调者和参与者同时挂掉的问题，减少了数据不一致的情况。</font>**  
 
 ### 1.3.1. 实现流程  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-5.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-5.png)  
 &emsp; **<font color = "blue">3PC也就是多了一个阶段(一个询问的阶段)，分别是准备、预提交和提交这三个阶段。</font>**  
 
 * 准备阶段单纯就是协调者去访问参与者，类似于你还好吗？能接请求不。  

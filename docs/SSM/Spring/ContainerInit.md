@@ -31,7 +31,7 @@ private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHash
 
 
 ## 1.1. 容器初始化时序图  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/Spring/Spring-1.png)  
+![image](http://www.wt1814.com/static/view/images/sourceCode/Spring/Spring-1.png)  
 
 ## 1.2. 创建容器  
 &emsp; AbstractApplicationContext#obtainFreshBeanFactory()方法调用子类容器的refreshBeanFactory()方法，启动容器载入Bean配置信息的过程，代码如下：  
@@ -196,8 +196,8 @@ public int loadBeanDefinitions(String... locations) throws BeanDefinitionStoreEx
 &emsp; AbstractRefreshableConfigApplicationContext的loadBeanDefinitions(Resource...resources)方法实际上是调用 AbstractBeanDefinitionReader的loadBeanDefinitions()方法。  
 &emsp; 从对AbstractBeanDefinitionReader的loadBeanDefinitions()方法源码分析可以看出该方法就做了两件事：   
 &emsp; 首先，调用资源加载器的获取资源方法 resourceLoader.getResource(location)，获取到要加载的资源。 其次，真正执行加载功能是其子类 XmlBeanDefinitionReader的loadBeanDefinitions()方法。在loadBeanDefinitions()方法中调用了AbstractApplicationContext的getResources()方法，跟进去之后发现getResources()方法其实定义在ResourcePatternResolver中，此时，有必要来看一下ResourcePatternResolver的全类图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-12.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-13.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-12.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-13.png)  
 &emsp; 从上面可以看到ResourceLoader与ApplicationContext的继承关系，可以看出其实际调用的是DefaultResourceLoader中的getSource()方法定位Resource，因为ClassPathXmlApplicationContext本身就是DefaultResourceLoader的实现类，所以此时又回到了ClassPathXmlApplicationContext中来。  
 
 ## 1.5. 将配置载入内存  
@@ -409,7 +409,7 @@ public static void registerBeanDefinition(BeanDefinitionHolder definitionHolder,
 
 ## 1.11. 向容器注册  
 &emsp; DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition，向IOC容器注册的主要源码如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-15.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-15.png)  
 
 ```java
 //DefaultListableBeanFactory.java

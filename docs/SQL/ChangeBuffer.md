@@ -73,7 +73,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; 对于数据库的写请求。  
 &emsp; **情况一：**  
 &emsp; 假如要修改页号为4的索引页，而这个页正好在缓冲池内。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-101.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-101.png)  
 &emsp; 如上图序号1-2：(1)直接修改缓冲池中的页，一次内存操作；(2)写入redo log，一次磁盘顺序写操作。这样的效率是最高的。 
  
 &emsp; 是否会出现一致性问题呢？并不会。  
@@ -86,7 +86,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 
 &emsp; **情况二：**  
 &emsp; 假如要修改页号为40的索引页，而这个页正好不在缓冲池内。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-102.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-102.png)  
 此时麻烦一点，如上图需要1-3：  
 &emsp; (1)先把需要为40的索引页，从磁盘加载到缓冲池，一次磁盘随机读操作；  
 &emsp; (2)修改缓冲池中的页，一次内存操作；  
@@ -96,7 +96,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 
 &emsp; InnoDB加入写缓冲优化，上文“情况二，没有命中缓冲池时”流程会有什么变化？  
 &emsp; 假如要修改页号为40的索引页，而这个页正好不在缓冲池内。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-103.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-103.png)  
 &emsp; **<font color = "clime">加入写缓冲优化后，流程优化为：</font>** (1)在写缓冲中记录这个操作，一次内存操作；(2)写入redo log，一次磁盘顺序写操作。其性能与，这个索引页在缓冲池中，相近。  
 
 &emsp; 是否会出现一致性问题呢？也不会。  
@@ -105,7 +105,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 &emsp; (3)数据读取时，有另外的流程，将数据合并到缓冲池；  
 
 &emsp; 不妨设，稍后的一个时间，有请求查询索引页40的数据。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-104.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-104.png)  
 &emsp; 此时的流程如序号1-3：  
 &emsp; (1)载入索引页，缓冲池未命中，这次磁盘IO不可避免；  
 &emsp; (2)从写缓冲读取相关信息；  
@@ -125,7 +125,7 @@ https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 
 ## 1.4. 相关参数
 &emsp; **有关写缓冲的参数：**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-100.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-100.png)  
 &emsp; 参数：innodb_change_buffer_max_size  
 &emsp; 介绍：配置写缓冲的大小，占整个缓冲池的比例，默认值是25%，最大值是50%。  
 &emsp; 参数：innodb_change_buffering  

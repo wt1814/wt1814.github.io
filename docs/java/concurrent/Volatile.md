@@ -99,14 +99,14 @@ https://mp.weixin.qq.com/s/DFCh1XE1hbikjBGEpYJguw
 * **<font color = "red">在每个Volatile写操作的前面插入一个StoreStore屏障(写-写 屏障)。禁止上面的普通写与下面的Volatile写重排序。</font>**  
 * **<font color = "red">在每个Volatile写操作的后面插入一个StoreLoad屏障(写-读 屏障)。禁止上面的Volatile写与下面可能有的Volatile读/写重排序。</font>**  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-48.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-48.png)  
 
 &emsp; **Volatile读场景如何插入内存屏障：**  
 
 * **<font color = "red">在每个Volatile读操作的后面插入一个LoadLoad屏障(读-读 屏障)。禁止下面的普通读操作与上面的Volatile读重排序。</font>**  
 * **<font color = "red">在每个Volatile读操作的后面插入一个LoadStore屏障(读-写 屏障)。禁止下面所有的普通写操作和上面Volatile读重排序。</font>**  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-49.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-49.png)  
 
 
 ## 1.3. Volatile为什么不安全？  

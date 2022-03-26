@@ -65,12 +65,12 @@ https://www.jianshu.com/p/26269ca2162f?utm_campaign=haruki&utm_content=note&utm_
     * 共享式：可以多个线程同时获取到锁，如：Semaphore/CountDownLatch。   
 
 ## 1.2. 类图  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-14.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-14.png)   
 
 ## 1.3. 属性  
 &emsp; AQS核心思想是，<font color = "red">如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。</font><font color = "clime">如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制。</font>  
 &emsp; <font color = "clime">AQS使用一个`private volatile int state`成员变量来表示同步状态，通过内置的FIFO队列来完成获取资源线程的排队工作，即将暂时获取不到锁的线程加入到队列中。AQS使用CAS对该同步状态进行原子操作实现对其值的修改。</font>  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-2.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-2.png)   
 
 ### 1.3.1. 同步状态state  
 
@@ -106,8 +106,8 @@ protected final boolean compareAndSetState(int expect, int update) {
 
 #### 1.3.2.1. 队列描述  
 &emsp; <font color = "red">AQS队列在内部维护了一个先进先出FIFO的双向链表，</font>在双向链表中，每个节点都有两个指针，分别指向直接前驱节点和直接后继节点。使用双向链表的优点之一，就是从任意一个节点开始都很容易访问它的前驱节点和后继节点。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-18.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-33.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-18.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-33.png)  
 
 ```java
 /*等待队列的队首结点(懒加载，这里体现为竞争失败的情况下，加入同步队列的线程执行到enq方法的时候会创
@@ -236,7 +236,7 @@ static final class Node {
 * PROPAGATE(-3)：共享模式下，前继结点不仅会唤醒其后继结点，同时也可能会唤醒后继的后继结点。  
 * 0：新结点入队时的默认状态。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-17.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-17.png)  
 &emsp; 注意，负值表示结点处于有效等待状态，而正值表示结点已被取消。所以源码中很多地方用>0、<0来判断结点的状态是否正常。  
 
 #### 1.3.2.2. 入列以及出列动作
@@ -244,7 +244,7 @@ static final class Node {
 
 ##### 1.3.2.2.1. 入列  
 &emsp; **<font color = "clime">未获取到锁的线程会创建节点，线程安全（CAS算法设置尾节点+死循环自旋）的加入队列尾部。</font>**   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-19.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-19.png)  
 &emsp; CLH队列入列就是tail指向新节点、新节点的prev指向当前最后的节点，当前最后一个节点的next指向当前节点。addWaiter方法如下：  
 
 1. 将当前线程封装成Node。  
@@ -300,7 +300,7 @@ private Node (final Node node) {
 
 ##### 1.3.2.2.2. 出列  
 &emsp; 首节点的线程释放同步状态后，将会唤醒它的后继节点(next)，而后继节点将会在获取同步状态成功时将自己设置为首节点。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-24.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-24.png)  
 
 ```java
 Node h = head;
@@ -337,7 +337,7 @@ https://mp.weixin.qq.com/s/WEV7fqPnyurDtSqMF0S2Wg
 ConditionObject实现了Condition接口，给AQS提供条件变量的支持 。  
 
 &emsp; Condition队列与CLH队列：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-15.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-15.png)  
 
 &emsp; ConditionObject队列与CLH队列的关系：  
 
@@ -368,7 +368,7 @@ https://www.cnblogs.com/waterystone/p/4920797.html
 ### 1.4.1. 独占模式
 #### 1.4.1.1. 获取同步状态--acquire()
 &emsp; **<font color = "red">每个节点自旋观察自己的前一节点是不是Header节点，如果是，就去尝试获取锁。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-20.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-20.png)  
 &emsp; acquire(int arg)是独占模式下线程获取同步状态的顶层入口。  
 &emsp; <font color = "clime">独占模式获取同步状态流程如下：</font>  
 1. **<font color = "clime">调用使用者重写的tryAcquire方法，tryAcquire()尝试直接去获取资源，如果成功则直接返回；</font>**  
@@ -379,7 +379,7 @@ https://www.cnblogs.com/waterystone/p/4920797.html
 
 &emsp; 如果获取到资源，线程直接返回，否则进入等待队列，直到获取到资源为止，且整个过程忽略中断的影响。这也正是lock()的语义，当然不仅仅只限于lock()。获取到资源后，线程就可以去执行其临界区代码了。 
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-31.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-31.png)  
 <!-- 
 　a.首先，调用使用者重写的tryAcquire方法，若返回true，意味着获取同步状态成功，后面的逻辑不再执行；若返回false，也就是获取同步状态失败，进入b步骤；
 　　　　b.此时，获取同步状态失败，构造独占式同步结点，通过addWatiter将此结点添加到同步队列的尾部(此时可能会有多个线程结点试图加入同步队列尾部，需要以线程安全的方  式添加)；
@@ -465,11 +465,11 @@ private void unparkSuccessor(Node node) {
 
 ### 1.4.2. 共享模式
 &emsp; 共享式与独占式的区别：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-22.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-22.png)  
 
 #### 1.4.2.1. 获取同步状态--acquireShared-1　　
 &emsp; 共享锁获取流程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-23.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-23.png)  
 
 #### 1.4.2.2. 释放同步状态--releaseShared  
 &emsp; releaseShared()是共享模式下线程释放共享资源的顶层入口。它会释放指定量的资源，如果成功释放且允许唤醒等待线程，它会唤醒等待队列里的其他线程来获取资源。  
@@ -638,4 +638,4 @@ public class NonReentrantLockDemoTest {
 }
 ```
 &emsp; 运行结果：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-32.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-32.png)  

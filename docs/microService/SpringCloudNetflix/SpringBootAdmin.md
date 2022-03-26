@@ -39,7 +39,7 @@
 management.security.enabled=false
 ```  
 &emsp; 重新启动应用。此时，可以在控制台中看到如下图所示的输出：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-26.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-26.png)  
 
 ## 1.2. actuator原生端点  
 &emsp; spring-boot-starter-actuator依赖中已经实现的一些原生端点。根据端点的作用，<font color = "clime">可以将原生端点分为以下三大类：</font>  

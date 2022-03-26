@@ -53,9 +53,9 @@
 &emsp; 因为使用的是2次幂的扩展(指长度扩为原来2倍)，所以，元素的位置要么是在原位置，要么是在原位置再移动2次幂的位置。因此，在扩充HashMap的时候，不需要像 JDK1.7 的实现那样重新计算 hash，只需要看看原来的 hash 值新增的那个 bit 是 1 还是 0 就好了，是 0 的话索引没变，是 1 的话索引变成“原索引 +oldCap。  
 &emsp; 这点其实也可以看做长度为 2 的幂次方的一个好处，也是 HashMap 1.7 和 1.8 之间的一个区别。  
 &emsp; 示例：扩容前 table 的容量为16，a 节点和 b 节点在扩容前处于同一索引位置。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-19.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-19.png)  
 &emsp; 扩容后，table 长度为32，新表的 n - 1 只比老表的 n - 1 在高位多了一个1（图中标红）。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-20.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-20.png)  
 &emsp; 因为 2 个节点在老表是同一个索引位置，因此计算新表的索引位置时，只取决于新表在高位多出来的这一位(图中标红)，而这一位的值刚好等于 oldCap。  
 &emsp; 因为只取决于这一位，所以只会存在两种情况：1)  (e.hash & oldCap) == 0 ，则新表索引位置为“原索引位置” ；2)(e.hash & oldCap) == 1，则新表索引位置为“原索引 + oldCap 位置”。  
 
@@ -70,7 +70,7 @@ public class HashMap<K,V> extends AbstractMap<K,V> implements Map<K,V>, Cloneabl
 &emsp; Cloneable空接口，表示可以克隆； Serializable序列化； AbstractMap，提供Map实现接口。  
 
 ## 1.2. 属性(数据结构)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-5.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-5.png)  
 
 ### 1.2.1. 源码
 ```java
@@ -158,7 +158,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 * initialCapacity数组的初始容量为16。可以在构造方法中指定。
 
     &emsp; static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;HashMap的默认初始容量是1 << 4 = 16， << 是一个左移操作，它相当于是   
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-11.png)  
+    ![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-11.png)  
     &emsp; <font color = "red">HashMap的数组长度为什么一定是2的幂次方？</font>  
     &emsp; **HashMap是通过一个名为tableSizeFor的方法来确保HashMap数组长度永远为2的幂次方的。源码查看构造函数部分。**  
     &emsp; 为什么要把数组长度设计为2的幂次方呢？  
@@ -262,7 +262,7 @@ static final int tableSizeFor(int cap) {
 3. <font color = "clime">运算符 |= ，它表示的是按位或，双方都转换为二进制，来进行与操作。</font>(「a+=b 的意思是 a=a+b」，那么同理：a |= b 就是 a = a | b。)  
 
 &emsp; 完整示例：  
-&emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-12.png)  
+&emsp; ![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-12.png)  
 &emsp; 上面采用了一个比较大的数字进行扩容，由上图可知 2^29 次方的数组经过一系列的或操作后，会算出来结果是2^30次方。所以扩容后的数组长度是原来的2倍。  
 
 ## 1.4. 成员方法  
@@ -305,7 +305,7 @@ static final int hash(Object key) {
 
 ### 1.4.2. put()，插入 
 #### 1.4.2.1. 时序图及说明
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-18.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-18.png)  
 
 &emsp; **<font color = "clime">插入元素方法：</font>**   
 &emsp; <font color = "clime">在put的时候，首先对key做hash运算，计算出该key所在的index。如果没碰撞，直接放到数组中，如果碰撞了，如果key是相同的，则替换掉原来的值。如果key不同，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。最后判断哈希表是否满了(当前哈希表大小*负载因子)，如果满了，则扩容。</font>  
@@ -484,7 +484,7 @@ resize();
 ```
 
 #### 1.4.3.1. 时序图及说明   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-15.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-15.png)  
 
 &emsp; <font color = "red">HashMap每次扩容都是建立一个新的table数组，长度和容量阈值都变为原来的两倍，然后把原数组元素重新映射到新数组上。</font>  
 &emsp; 具体步骤如下：  
@@ -501,9 +501,9 @@ resize();
 &emsp; 因为使用的是2次幂的扩展（指长度扩为原来2倍），所以，元素的位置要么是在原位置，要么是在原位置再移动2次幂的位置。因此，在扩充 HashMap 的时候，不需要像 JDK1.7 的实现那样重新计算 hash，只需要看看原来的 hash 值新增的那个 bit 是 1 还是 0 就好了，是 0 的话索引没变，是 1 的话索引变成“原索引 +oldCap。  
 &emsp; 这点其实也可以看做长度为 2 的幂次方的一个好处，也是 HashMap 1.7 和 1.8 之间的一个区别。  
 &emsp; 示例：扩容前 table 的容量为16，a 节点和 b 节点在扩容前处于同一索引位置。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-19.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-19.png)  
 &emsp; 扩容后，table 长度为32，新表的 n - 1 只比老表的 n - 1 在高位多了一个1（图中标红）。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-20.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-20.png)  
 &emsp; 因为 2 个节点在老表是同一个索引位置，因此计算新表的索引位置时，只取决于新表在高位多出来的这一位（图中标红），而这一位的值刚好等于 oldCap。  
 &emsp; 因为只取决于这一位，所以只会存在两种情况：1)  (e.hash & oldCap) == 0 ，则新表索引位置为“原索引位置” ；2)(e.hash & oldCap) == 1，则新表索引位置为“原索引 + oldCap 位置”。  
 

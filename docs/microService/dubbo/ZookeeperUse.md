@@ -69,7 +69,7 @@ https://blog.csdn.net/en_joker/article/details/78799737
 &emsp; 这个其实是zookeeper很经典的一个用法，简单来说，就好比，A系统发送个请求到mq，然后B系统消息消费之后处理了。那A系统如何知道B系统的处理结果？用zookeeper就可以实现分布式系统之间的协调工作。A系统发送请求之后可以在zookeeper上对某个节点的值注册个监听器，一旦B系统处理完了就修改zookeeper那个节点的值，A系统立马就可以收到通知，完美解决。  
 
 ### 1.1.6. 集群管理，HA高可用性
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-29.png) 
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-29.png) 
 
 &emsp; 所谓集群管理无在乎两点：是否有机器退出和加入、选举master。  
 &emsp; 对于第一点，所有机器约定在父目录GroupMembers下创建临时目录节点，然后监听父目录节点的子节点变化消息。一旦有机器挂掉，该机器与zookeeper的连接断开，其所创建的临时目录节点被删除，所有其他机器都收到通知。新机器加入也是类似，所有机器收到通知。  

@@ -365,7 +365,7 @@ public class Test implements Runnable{
 
 ----
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-19.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-19.png)  
 
 
 

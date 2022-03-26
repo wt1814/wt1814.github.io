@@ -35,7 +35,7 @@ https://m.baike.so.com/doc/5750133-5962891.html
 ## 1.1. DNS域名的层次结构  
 &emsp; 由于因特网的用户数量较多，所以因特网在命名时采用的是层次树状结构的命名方法。任何一个连接在因特网上的主机或路由器，都有一个唯一的层次结构的名字，即域名(domain name)。“域”(domain)是名字空间中一个可被管理的划分。  
 &emsp; DNS的域名树由根域，顶级域，二级域及其子域构成，其结构图与示例如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/DNS-1.png)  
+![image](http://www.wt1814.com/static/view/images/network/DNS-1.png)  
 
 * 根域，由互联网网络信息中心(InterNIC)负责管理，用点“.”表示，无名称，是域名系统中的最高级别域，标准域名结尾应包含根域“.”，但实际使用中该根域都是省略的，所以大家常见的网址末尾并没有“.”。  
 * 顶级域(Top-Level Domains = TLD)，隶属于根域，是仅次于根域的下一级域，顶级域名TLD分为三大类：  
@@ -63,9 +63,9 @@ https://m.baike.so.com/doc/5750133-5962891.html
 &emsp; 如果主机所询问的本地域名服务器不知道被查询的域名的IP地址，那么本地域名服务器就以DNS客户的身份，向其它根域名服务器继续发出查询请求报文(即替主机继续查询)，而不是让主机自己进行下一步查询。  
 &emsp; <font color = "red">此时，DNS 涉及两种查询方式：一种是递归查询(Recursive query) ，一种是迭代查询(Iteration query)。</font>递归查询和迭代查询的区别：  
     * 如果根域名服务器无法告知本地 DNS 服务器下一步需要访问哪个顶级域名服务器，就会使用递归查询；  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/DNS-2.png) 
+    ![image](http://www.wt1814.com/static/view/images/network/DNS-2.png) 
     * 如果根域名服务器能够告知 DNS 服务器下一步需要访问的顶级域名服务器，就会使用迭代查询。   
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/DNS-3.png)  
+    ![image](http://www.wt1814.com/static/view/images/network/DNS-3.png)  
 &emsp; 当根域名服务器收到本地域名服务器发出的迭代查询请求报文时，要么给出所要查询的IP地址，要么告诉本地服务器：“下一步应当向哪一个域名服务器进行查询”。然后让本地域名服务器进行后续的查询。根域名服务器通常是把自己知道的顶级域名服务器的IP地址告诉本地域名服务器，让本地域名服务器再向顶级域名服务器查询。顶级域名服务器在收到本地域名服务器的查询请求后，要么给出所要查询的IP地址，要么告诉本地服务器下一步应当向哪一个权限域名服务器进行查询。最后，知道了所要解析的IP地址或报错，然后把这个结果返回给发起查询的本地域名服务器，返回给主机。  
 5.  <font color = "red">返回解析结果给用户。</font>  
 &emsp; 解析结果将直接返回给用户，用户系统将缓存该IP地址，缓存时间由TTL来控制，至此，解析过程结束。  

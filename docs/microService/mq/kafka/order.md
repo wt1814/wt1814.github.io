@@ -138,9 +138,9 @@ https://www.cnblogs.com/sddai/p/11340870.html
 由于Kafka的一个Topic可以分为了多个Partition，Producer发送消息的时候，是分散在不同 Partition的。当Producer按顺序发消息给Broker，但进入Kafka之后，这些消息就不一定进到哪个Partition，会导致顺序是乱的。  
 
 因此要满足全局有序，需要1个Topic只能对应1个Partition。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-126.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-126.png)  
 而且对应的consumer也要使用单线程或者保证消费顺序的线程模型，否则会出现下图所示，消费端造成的消费乱序。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-127.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-127.png)  
 
 
 ### 1.3.2. 局部有序
@@ -152,7 +152,7 @@ https://www.cnblogs.com/sddai/p/11340870.html
 
 要满足局部有序，只需要在发消息的时候指定Partition Key，Kafka对其进行Hash计算，根据计算结果决定放入哪个Partition。这样Partition Key相同的消息会放在同一个Partition。此时，Partition的数量仍然可以设置多个，提升Topic的整体吞吐量。  
 如下图所示，在不增加partition数量的情况下想提高消费速度，可以考虑再次hash唯一标识（例如订单orderId）到不同的线程上，多个消费者线程并发处理消息（依旧可以保证局部有序）。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-128.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-128.png)  
 
 
 

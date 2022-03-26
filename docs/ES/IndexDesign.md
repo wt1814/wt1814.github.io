@@ -84,7 +84,7 @@ POST /logs_write/_rollover
 ```
 
 #### 1.2.2.1. 索引增量更新原理  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-66.png)  
+![image](http://www.wt1814.com/static/view/images/ES/es-66.png)  
 &emsp; 索引更新的时机是：当原始索引满足设置条件的三个中的一个的时候，就会更新为新的索引。为保证业务的全索引检索，一般采用别名机制。  
 &emsp; 在索引模板设计阶段，模板定义一个全局别名：用途是全局检索，如图所示的别名：indexall。每次更新到新的索引后，新索引指向一个用于实时新数据写入的别名，如图所示的别名：indexlatest。同时将旧索引的别名 index_latest 移除。  
 

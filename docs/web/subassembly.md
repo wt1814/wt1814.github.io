@@ -44,7 +44,7 @@ https://mp.weixin.qq.com/s/zMnQL2xXzQ8R4Zw4lGfYUg
 #### 1.1.3.1. 监听器简介  
 &emsp; 监听器，字面上的理解就是监听观察某个事件(程序)的发生情况，当被监听的事件真的发生了的时候，事件发生者(事件源) 就会给注册该事件的监听者(监听器)发送消息，告诉监听者某些信息，同时监听者也可以获得一份事件对象，根据这个对象可以获得相关属性和执行相关操作。  
 &emsp; 监听器模型涉及以下三个对象，模型图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/web-1.png)  
+![image](http://www.wt1814.com/static/view/images/web/web-1.png)  
 
 * 事件：用户对组件的一个操作，或者说程序执行某个方法，称之为一个事件，如机器人程序执行工作。  
 * 事件源：发生事件的组件就是事件源，也就是被监听的对象，如机器人可以工作，可以跳舞，那么就可以把机器人看做是一个事件源。  
@@ -68,7 +68,7 @@ https://mp.weixin.qq.com/s/zMnQL2xXzQ8R4Zw4lGfYUg
 3. <font color = "red">ServletRequest事件监听器：用于监听请求消息对象。</font>   
 
 &emsp; 这3种监听器共包含了8个监听接口、6个监听事件类。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/web/web-2.png)  
+![image](http://www.wt1814.com/static/view/images/web/web-2.png)  
 
 -----
 ## 1.2. SpringMVC拦截器  

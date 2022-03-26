@@ -67,7 +67,7 @@ https://mp.weixin.qq.com/s/ZCQPrgW6iv2IP_3RKk016g
 &emsp; **<font color = "clime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的ConcurrentHashMap效率又提升了许多。</font>**  
 
 ## 1.1. 存储结构  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-11.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-11.png)  
 
 &emsp; ConcurrentHashMap数据结构跟 jdk1.8 中 HashMap 结构保持一致，都是数组 + 链表 + 红黑树。和 HashMap1.8 相同的一些地方：  
 

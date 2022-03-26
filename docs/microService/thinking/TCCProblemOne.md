@@ -45,7 +45,7 @@ https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
 &emsp; 首先是空回滚。什么是空回滚？空回滚就是对于一个分布式事务，在没有调用 TCC 资源 Try 方法的情况下，调用了二阶段的 Cancel 方法，Cancel 方法需要识别出这是一个空回滚，然后直接返回成功。  
 &emsp; 什么样的情形会造成空回滚呢？可以看图中的第 2 步，前面讲过，注册分支事务是在调用 RPC 时，Seata 框架的切面会拦截到该次调用请求， **<font color = "red">先向 TC 注册一个分支事务，然后才去执行 RPC 调用逻辑。如果 RPC 调用逻辑有问题，比如调用方机器宕机、网络异常，都会造成 RPC 调用失败，即未执行 Try 方法。但是分布式事务已经开启了，需要推进到终态，因此，TC 会回调参与者二阶段 Cancel 接口，从而形成空回滚。</font>**  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-62.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-62.png)  
 
 &emsp; 那会不会有空提交呢？理论上来说不会的，如果调用方宕机，那分布式事务默认是回滚的。如果是网络异常，那 RPC 调用失败，发起方应该通知 TC 回滚分布式事务，这里可以看出为什么是理论上的，就是说发起方可以在 RPC 调用失败的情况下依然通知 TC 提交，这时就会发生空提交，这种情况要么是编码问题，要么开发同学明确知道需要这样做。  
 
@@ -57,12 +57,12 @@ https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
 
 &emsp; 什么样的情形会造成重复提交或回滚？从图中可以看到，提交或回滚是一次 TC 到参与者的网络调用。因此，网络故障、参与者宕机等都有可能造成参与者 TCC 资源实际执行了二阶段防范，但是 TC 没有收到返回结果的情况，这时，TC 就会重复调用，直至调用成功，整个分布式事务结束。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-63.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-63.png)  
 
 
 &emsp; 怎么解决重复执行的幂等问题呢？一个简单的思路就是记录每个分支事务的执行状态。在执行前状态，如果已执行，那就不再执行；否则，正常执行。前面在讲空回滚的时候，已经有一张事务控制表了，事务控制表的每条记录关联一个分支事务，那完全可以在这张事务控制表上加一个状态字段，用来记录每个分支事务的执行状态。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-64.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-64.png)  
 
 &emsp; 如图所示，该状态字段有三个值，分别是初始化、已提交、已回滚。Try 方法插入时，是初始化状态。二阶段 Confirm 和 Cancel 方法执行后修改为已提交或已回滚状态。当重复调用二阶段接口时，先获取该事务控制表对应记录，检查状态，如果已执行，则直接返回成功；否则正常执行。  
 
@@ -82,7 +82,7 @@ https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
 
 &emsp; 首先是 Try 方法。结合前面讲到空回滚和悬挂异常，Try 方法主要需要考虑两个问题，一个是 Try 方法需要能够告诉二阶段接口，已经预留业务资源成功。第二个是需要检查第二阶段是否已经执行完成，如果已完成，则不再执行。因此，Try 方法的逻辑可以如图所示：  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-65.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-65.png)  
 
 &emsp; 先插入事务控制表记录，如果插入成功，说明第二阶段还没有执行，可以继续执行第一阶段。如果插入失败，则说明第二阶段已经执行或正在执行，则抛出异常，终止即可。  
 
@@ -100,11 +100,11 @@ https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
 
 &emsp; 第一个优化方案是改为同库模式。同库模式简单来说，就是分支事务记录与业务数据在相同的库中。什么意思呢？之前提到，在注册分支事务记录的时候，框架的调用方切面会先向 TC 注册一个分支事务记录，注册成功后，才会继续往下执行 RPC 调用。TC 在收到分支事务记录注册请求后，会往自己的数据库里插入一条分支事务记录，从而保证事务数据的持久化存储。那同库模式就是调用方切面不再向 TC 注册了，而是直接往业务的数据库里插入一条事务记录。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-66.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-66.png)  
 
 &emsp; 在讲解同库模式的性能优化点之前，先给大家简单讲讲同库模式的恢复逻辑。一个分布式事务的提交或回滚还是由发起方通知 TC，但是由于分支事务记录保存在业务数据库，而不是 TC 端。因此，TC 不知道有哪些分支事务记录，在收到提交或回滚的通知后，仅仅是记录一下该分布式事务的状态。那分支事务记录怎么真正执行第二阶段呢？需要在各个参与者内部启动一个异步任务，定期捞取业务数据库中未结束的分支事务记录，然后向 TC 检查整个分布式事务的状态，即图中的 StateCheckRequest 请求。TC 在收到这个请求后，会根据之前保存的分布式事务的状态，告诉参与者是提交还是回滚，从而完成分支事务记录。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-67.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-67.png)  
 
 &emsp; 那这样做有什么好处呢？左边是采用同库模式前的调用关系图，在每次调用一个参与者的时候，都是先向 TC 注册一个分布式事务记录，TC 再持久化存储在自己的数据库中，也就是说，一个分支事务记录的注册，包含一次 RPC 和一次持久化存储。  
 

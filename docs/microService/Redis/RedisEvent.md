@@ -55,11 +55,11 @@ https://www.cnblogs.com/harvyxu/p/7499396.html
 
 ### 1.2.1. 文件事件处理器的构成
 &emsp; 下图展示了文件事件处理器的四个组成部分，它们分别是套接字、I/O多路复用程序、文件事件分派器(dispatcher)，以及事件处理器。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-56.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-56.png)  
 &emsp; 文件事件是对套接字操作的抽象，每当一个套接字准备好执行连接应答 (accept)、写入、读取、关闭等操作时，就会产生一个文件事件。因为一个服务器通常会连接多个套接字，所以多个文件事件有可能会并发地出现。  
 &emsp; I/O多路复用程序负责监听多个套接字，并向文件事件分派器传送那些产生了事件的套接字。  
 &emsp; 尽管多个文件事件可能会并发地出现，但I/O多路复用程序总是会将所有产生事件的套接字都放到一个队列里面，然后通过这个队列，以有序(sequentially)、同步 (synchronously )、每次一个套接字的方式向文件事件分派器传送套接字。当上一个套接字产 生的事件被处理完毕之后(该套接字为事件所关联的事件处理器执行完毕)，I/O多路复用 程序才会继续向文件事件分派器传送下一个套接字，如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-120.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-120.png)  
 &emsp; 文件事件分派器接收I/O多路复用程序传来的套接字，并根据套接字产生的事件的类型，调用相应的事件处理器。  
 &emsp; 服务器会为执行不同任务的套接字关联不同的事件处理器，这些处理器是一个个函数，它们定义了某个事件发生时，服务器应该执行的动作。  
 
@@ -113,6 +113,6 @@ def main():
     clean_server()
 ```
 &emsp; 从事件处理的角度来看，服务器运行流程如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-57.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-57.png)  
 
  

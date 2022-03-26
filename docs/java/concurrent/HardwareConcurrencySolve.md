@@ -51,7 +51,7 @@ https://www.cnblogs.com/Courage129/p/14401680.html
 
 ### 1.1.1. 总线锁  
 &emsp; 早期，cpu从主内存读取数据到高速缓存，会在总线对这个数据加锁，这样其他cpu无法去读或写这个数据，直到这个cpu使用完数据释放锁之后其他cpu才能读取该数据。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-46.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-46.png)  
 
 ### 1.1.2. 缓存锁  
 &emsp; 缓存锁：只要保证多个CPU缓存的同一份数据是一致的就可以了，基于缓存一致性协议来实现。  
@@ -68,11 +68,11 @@ https://mp.weixin.qq.com/s/SZl2E5NAhpYM4kKv9gyQOQ
 
 &emsp; **<font color = "clime">多个cpu从主内存读取同一个数据到各自的高速缓存，当其中某个cpu修改了缓存里的数据，该数据会马上同步回主内存，其他cpu通过</font>** **<font color = "clime">总线嗅探机制</font>** **<font color = "red">可以感知到数据的变化从而将自己缓存里的数据失效。</font>**  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-47.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-47.png)  
 
 #### 1.1.3.1. 总线嗅探  
 &emsp; **<font color = "red">每个CPU不断嗅探总线上传播的数据来检查自己缓存值是否过期了，如果处理器发现自己的缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置为无效状态，当处理器对这个数据进行修改操作的时候，会重新从内存中把数据读取到处理器缓存中。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-46.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-46.png)  
 
 #### 1.1.3.2. 总线风暴
 &emsp; 总线嗅探技术有哪些缺点？  

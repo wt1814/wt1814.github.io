@@ -51,7 +51,7 @@
 
 ## 1.2. 结构  
 &emsp; **模式角色组成：**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-13.png)  
+![image](http://www.wt1814.com/static/view/images/java/design/design-13.png)  
 
 * Target，目标接口，即期望转换成的接口。  
 * Adaptee，现有类，源角色，它是已经存在的，运行良好的类或对象，经过适配器角色的包装，转换成目标接口。  

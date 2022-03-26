@@ -56,7 +56,7 @@ https://www.cnblogs.com/gered/p/11388986.html#_label0_7
 ### 1.1.1. 大对象blog,text传输  
 &emsp; 如果应用中使用大的BLOG列或者长字符串，那么在从库上恢复时，可能会出现“log event entry exceeded max_allowed_packet”错误，这是因为含有大文本的记录无法通过网络进行传输导致。  
 &emsp; **<font color = "clime">解决的办法就是在主从库上增加max_allowed_packet参数的大小，这个参数的默认值为1MB，可以按照实际需要进行修改，比如下例中将其增大为16MB：</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-98.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-98.png)  
 
 
 ### 1.1.2. ~~主从不一致后锁表~~
@@ -106,7 +106,7 @@ slave-parallel-workers=2
 <!-- https://segmentfault.com/a/1190000018785903 -->
 
 &emsp; **<font color = "red">《高性能MySql》第10章</font>**
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-61.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-61.png)  
 
 &emsp; 中断MySQL的复制并不是件难事。因为实现简单，配置相当容易，但也意味着有很多方式会导致复制停止，陷入混乱并中断。  
 
@@ -176,7 +176,7 @@ slave-parallel-workers=2
 ### 1.2.6. ~~InnoDB加锁读导致主备数据不一致~~  
 &emsp; 使用共享锁，串行化更新，保证备库复制时数据一致。  
 &emsp; 某些情况下，加锁读可以防止混乱。假设有两张表：tab1 没有数据，tab2 只有一行数据，值为 99。此时，有两个事务更新数据。事务 1 将 tab2 的数据插入到 tab1，事务 2 更新 tab2。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-62.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-62.png)  
 1. 事务 1 使用获取 tab2 数据时，加入共享锁，并插入 tab1；  
 2. 同时，事务 2 更新 tab2 数据时，由于写操作的排它锁机制，无法获取 tab2 的锁，等待；  
 3. 事务 1 插入数据后，删除共享锁，提交事务，写入 binlog(此时 tab1 和 tab2 的记录值 都是 99)；  
@@ -185,7 +185,7 @@ slave-parallel-workers=2
 &emsp; 上述过程中，第二步非常重要。事务 2 尝试去更新 tab2 表，这需要在更新的行上加排他锁(写锁)。排他锁与其他锁不相容，包括事务 1 在行记录上加的共享锁。因此事务 2 需要等待事务 1 完成。备库在根据 binlog 进行复制时，会按同样的顺序先执行事务 1，再执行事务 2。主备数据一致。  
 
 &emsp; 同样的过程，如果事务 1 在第一步时没有加共享锁，流程就变成：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-63.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-63.png)  
 1. 事务 1 无锁读取 tab2 数据，并插入 tab1(此时 tab1 和 tab2 的记录值 都是 99)；  
 2. 同时，事务 2 更新 tab2 数据，先与事务 1 提交事务，写入 binlog(此时 tab1 的记录值为 99，tab2 的记录值为 100)；  
 3. 事务 1 提交事务，写入 binlog(此时记录值无变化)；  

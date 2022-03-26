@@ -54,7 +54,7 @@ https://blog.csdn.net/xiaobao5214/article/details/81674215
 https://blog.csdn.net/yangcheng33/article/details/52631940
 
 --> 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-6.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-6.png)  
 
 ## 1.1. 类加载器的分类  
 &emsp; <font color = "red">类加载子系统也可以称之为类加载器，JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。</font>  
@@ -290,7 +290,7 @@ file:/C:/Program%20Files/Java/jdk1.8.0_131/jre/classes
 
 ### 1.4.4. 观察特定类的加载上下文  
 &emsp; 由于加载的类数量众多，调试时很难捕捉到指定类的加载过程，这时可以使用条件断点功能。拿HashMap的加载过程为例，在ClassLoader#loadClass()处打个条件断点，效果如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-48.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-48.png)  
 
 
 ## 1.5. 类加载错误

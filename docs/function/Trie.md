@@ -30,7 +30,7 @@ Trie 树，又称前缀树，字典树，或单词查找树，是一种树形结
     Trie有很多变种，如后缀树，Radix Tree/Trie，PATRICIA tree，以及bitwise版本的crit-bit tree。当然很多名字的意义其实有交叉。   
 
 &emsp; Trie结构图(红色节点表示一个单词的结尾)：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-13.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-13.png)  
 <!-- 
 &emsp; 1、可以看到， trie 树每一层的节点数是 26^i 级别的。所以为了节省空间，还可以 用动态链表，或者用数组来模拟动态。而空间的花费，不会超过单词数× 单词长度。  
 &emsp; 2、实现： 对每个结点开一个字母集大小的数组， 每个结点挂一个链表， 使用左儿子右 兄弟表示法记录这棵树；  
@@ -56,7 +56,7 @@ Trie 树，又称前缀树，字典树，或单词查找树，是一种树形结
 
 ## 1.2. Trie实现 
 &emsp; Trie 树是一颗多叉树，那么多叉树该怎么表示呢，假设字符串都是由 26 个小写字母组成，则显然 Trie 树应该是一颗 26 叉树，每个节点包含 26 个子节点，如下  
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-39.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-39.png)  
 &emsp; 上图可以看出，26 个子节点我们可以用大小为 26 的数组表示，所以 Trie 树表示如下  
 
 ```java
@@ -102,7 +102,7 @@ static class TrieTree {
 2. 在 Trie 树中查找字符串是否存在
 
 &emsp; 先来看如何根据一组字符串构造 Trie 树，首先如何根据一个单词来构造 Trie 树呢，假设以单词 「and」 为例来看下 Trie 树的表现形式  
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-40.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-40.png)  
 &emsp; 注：图中的数字表示数组的元素位置  
 &emsp; 可以看到构建 Trie 树的主要步骤如下  
 
@@ -370,9 +370,9 @@ public class Trie
 
 ## 1.4. 使用Trie的建议  
 &emsp; 从前面的介绍中可以看到使用 Trie 树确实在能在快速查找字符串与词频统计上发挥重要作用，但天下没有免费的午餐，如果字符集比较大的话，用 Trie 树可能会造成空间的浪费，以上文中构建的 Trie 树为例  
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-41.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-41.png)  
 &emsp; 每个结点维护一个 26 个元素大小的数组，共有 4 个数组，也就是分配了 26 x 4 = 104  个元素的空间，但实际上只有三个元素空间(a，n，d)被分配了，浪费了 101 个空间，空间利率率很低，所以一般更适用于字符串前缀重复比较多的情况，当然也可以考虑对 Trie 树进行如下缩点优化，能节省一些空间  
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-42.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-42.png)  
 &emsp; 当然这么优化后也增加了代码的编码难度，所以要视情况而定。  
 &emsp; 另外如果用 Trie 树的话，一般需要我们自己编码，对工程师的编码能力要求较高，所以是否用 Trie 树一般建议如下：  
 

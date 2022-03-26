@@ -47,7 +47,7 @@ http://dubbo.apache.org/zh-cn/docs/source_code_guide/adaptive-extension.html
 
 ## 1.1. 代码结构  
 &emsp; Dubbo SPI 在 dubbo-common 的 extension 包实现，如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-28.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-28.png)   
 
 ## 1.2. ExtensionLoader  
 &emsp; Dubbo SPI 的相关逻辑被封装在了 ExtensionLoader 类(拓展加载器)中，通过 ExtensionLoader，可以加载指定的实现类。  
@@ -179,7 +179,7 @@ private Map<String, IllegalStateException> exceptions = new ConcurrentHashMap<St
 ```
 * 第 1 至 5 行：在 META-INF/dubbo/internal/ 和 META-INF/dubbo/ 目录下，放置 接口全限定名 配置文件，每行内容为：拓展名=拓展实现类全限定名。
     * META-INF/dubbo/internal/ 目录下，从名字上可以看出，用于 Dubbo 内部提供的拓展实现。下图是一个例子：  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-26.png)   
+    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-26.png)   
     * META-INF/dubbo/ 目录下，用于用户自定义的拓展实现。
     * META-INF/service/ 目录下，Java SPI 的配置目录。在 「加载拓展配置」 中，会看到 Dubbo SPI 对 Java SPI 做了兼容。  
 * 第 7 行：NAME_SEPARATOR ，拓展名分隔符，使用逗号。
@@ -451,7 +451,7 @@ private void loadFile(Map<String, Class<?>> extensionClasses, String dir) {
 
 * 第 9 行：获得完整的文件名( 相对路径 )。例如："META-INF/dubbo/internal/com.alibaba.dubbo.common.extension.ExtensionFactory" 。
 * 第 12 至 18 行：获得文件名对应的所有文件 URL 数组。例如：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-23.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-23.png)   
 * 第 21 至 24 行：逐个文件 URL 遍历。
 * 第 27 行：逐行遍历。
 * 第 29 至 32 行：跳过当前被 "#" 注释掉的情况，例如 #spring=xxxxxxxxx 。
@@ -955,7 +955,7 @@ private Class<?> createAdaptiveExtensionClass() {
 * 第 8 行：调用 #createAdaptiveExtensionClassCode 方法，自动生成自适应拓展的代码实现的字符串。
     * 代码比较简单，已经添加详细注释，胖友点击查看。
     * 如下是 ProxyFactory 的自适应拓展的代码实现的字符串生成例子
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-24.png)   
+    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-24.png)   
 * 第 9 至 12 行：使用 Dubbo SPI 加载 Compier 拓展接口对应的拓展实现对象，后调用 Compiler#compile(code, classLoader) 方法，进行编译。  
 
  
@@ -1200,7 +1200,7 @@ public interface ExtensionFactory {
 * ExtensionFactory 自身也是拓展接口，基于 Dubbo SPI 加载具体拓展实现类。
 * #getExtension(type, name) 方法，在 「injectExtension」 中，获得拓展对象，向创建的拓展对象注入依赖属性。在实际代码中，我们可以看到不仅仅获得的是拓展对象，也可以是 Spring 中的 Bean 对象。
 * ExtensionFactory 子类类图如下
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-25.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-25.png)  
 
 Dubbo 目前提供了两种 ExtensionFactory，分别是 SpiExtensionFactory 和 SpringExtensionFactory。前者用于创建自适应的拓展，后者是用于从 Spring 的 IOC 容器中获取所需的拓展。  
 

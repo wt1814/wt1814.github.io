@@ -29,7 +29,7 @@ https://mp.weixin.qq.com/s/sCbhQolu_BXBXsQwlFC81g
 # 1. HashMap使用
 
 ## 1.1. Map介绍
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-3.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-3.png)  
 
 * LikedHashMap  
 &emsp; LinkedHashMap是HashMap的一个子类，保存了记录的插入顺序，在用Iterator遍历LinkedHashMap时，先得到的记录肯定是先插入的，也可以在构造时带参数，按照访问次序排序。  

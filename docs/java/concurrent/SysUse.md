@@ -66,8 +66,8 @@ https://mp.weixin.qq.com/s/ewXpaeMYNx7FAW_fYoQbPg
     * 静态/类 方法
 
 ## 1.1. Synchronized使用简介
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-11.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-84.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-11.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-84.png)  
 &emsp; Synchronized可以使用在普通方法、静态方法、同步块中。 **<font color = "clime">Synchronized作用的对象应该是唯一的。</font>** Synchronized使用在同步块中，锁粒度更小。根据锁的具体实例，又可以分为类锁和对象锁。  
 &emsp; 关键字Synchronized取得的锁都是对象锁，而不是把一段代码或方法(函数)当作锁。  
 <!-- 

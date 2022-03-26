@@ -49,7 +49,7 @@ https://mp.weixin.qq.com/s/9gXSrw6llYy29OPH-rQuxQ
 -->
 
 ## 1.1. ThreadLocal使用  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-54.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-54.png)   
 
 &emsp; 常见的ThreadLocal用法主要有两种：
 1. 在线程级别传递变量。  
@@ -57,12 +57,12 @@ https://mp.weixin.qq.com/s/9gXSrw6llYy29OPH-rQuxQ
 &emsp; 最常见的ThreadLocal使用场景为用来解决数据库连接、Session管理等。  
 2. 保证线程安全。  
 &emsp; ThreadLocal为解决多线程程序的并发问题提供了一种新的思路。但是ThreadLocal也有局限性，阿里规范中  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-19.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-19.png)   
 &emsp; 每个线程往ThreadLocal中读写数据是线程隔离，互相之间不会影响的，所以ThreadLocal无法解决共享对象的更新问题！  
 &emsp; 由于不需要共享信息，自然就不存在竞争问题了，从而保证了某些情况下线程的安全，以及避免了某些情况需要考虑线程安全必须同步带来的性能损失！  
 
 ### 1.1.1. ※※※正确使用  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-20.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-20.png)   
 
 1. **<font color = "red">使用static定义threadLocal变量，是为了确保全局只有一个保存Integer对象的ThreadLocal实例。</font>**  
 2. **<font color = "clime">finally语句里调用threadLocal.remove()。</font>**
@@ -149,7 +149,7 @@ public class Service {
 }
 ```
 &emsp; 运行结果如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-25.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-25.png)   
 
 ### 1.2.1. 类InheritableThreadLocal的使用  
 &emsp; 使用类InheritableThreadLocal可以在子线程中取得父线程继承下来的值。  

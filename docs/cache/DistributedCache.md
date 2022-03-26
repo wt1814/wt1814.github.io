@@ -71,7 +71,7 @@ https://mp.weixin.qq.com/s/NUgsE7PYcZTujsEhJtMdIQ
 &emsp; 一种比较简单的解决办法，在第一次查询完不存在的数据后，将该key与对应的空值也放入缓存中，只不过设定为较短的失效时间，例如几分钟。这样则可以应对短时间的大量的该key攻击，设置为较短的失效时间是因为该值可能业务无关，存在意义不大，且该次的查询也未必是攻击者发起，无过久存储的必要，故可以早点失效。    
 2. 设置布隆过滤器：  
 &emsp; [布隆过滤器介绍](/docs/function/otherStructure.md)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-50.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-50.png)  
 &emsp; 设置布隆过滤器，预先将所有值哈希到一个足够大的BitMap中，每次请求都会经过BitMap的拦截，如果Key不存在，直接返回异常。这样就避免了对缓存以及底层数据库的查询压力。  
 
 #### 1.1.2.1. Springboot在redis中使用BloomFilter布隆过滤器机制

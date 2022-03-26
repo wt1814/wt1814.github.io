@@ -98,14 +98,14 @@ https://mp.weixin.qq.com/s/DaCTrm8y9vWeaJyHfbRoTw
 &emsp; CPU是计算机的心脏，所有运算和程序最终都要由它来执行。  
 &emsp; 主内存(RAM)是数据存放的地方，CPU 和主内存之间有好几级缓存，因为即使直接访问主内存也是非常慢的。  
 &emsp; 如果对一块数据做相同的运算多次，那么在执行运算的时候把它加载到离 CPU 很近的地方就有意义了，比如一个循环计数，不想每次循环都跑到主内存去取这个数据来增长它。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-50.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-50.png)  
 &emsp; <font color = "red">越靠近CPU的缓存越快也越小。</font>所以L1缓存很小但很快，并且紧靠着在使用它的 CPU 内核。L2大一些，也慢一些，并且仍然只能被一个单独的 CPU 核使用。L3 在现代多核机器中更普遍，仍然更大，更慢，并且被单个插槽上的所有 CPU 核共享。最后，主存保存着程序运行的所有数据，它更大，更慢，由全部插槽上的所有 CPU 核共享。  
 &emsp; 当 CPU 执行运算的时候，它先去 L1 查找所需的数据，再去 L2，然后是 L3，最后如果这些缓存中都没有，所需的数据就要去主内存拿。走得越远，运算耗费的时间就越长。所以如果进行一些很频繁的运算，要确保数据在 L1 缓存中。  
 
 ### 1.2.2. CPU缓存行  
 &emsp; 缓存是由缓存行组成的，通常是64字节（常用处理器的缓存行是64字节的，比较旧的处理器缓存行是 32 字节），并且它有效地引用主内存中的一块地址。  
 &emsp; <font color = "red">一个Java的long类型是8字节，因此在一个缓存行中可以存8个long类型的变量。</font>  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-51.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-51.png)  
 
 
 
@@ -120,7 +120,7 @@ https://mp.weixin.qq.com/s/DaCTrm8y9vWeaJyHfbRoTw
 
 ### 1.3.2. 重排序分类  
 &emsp; 从Java源代码到最终实际执行的指令序列，会分别经历下面三种重排序：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-2.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-2.png)  
 
 <!-- 
 1. 编译器优化的重排序。编译器在不改变单线程程序语义的前提下，可以重新安排语句的执行顺序。  
@@ -143,7 +143,7 @@ https://mp.weixin.qq.com/s/DaCTrm8y9vWeaJyHfbRoTw
 ### 1.3.3. 重排序规则  
 #### 1.3.3.1. 重排序遵守数据依赖性  
 &emsp; 如果两个操作访问同一个变量，且这两个操作中有一个为写操作，此时这两个操作之间就存在数据依赖性。数据依赖分下列三种类型：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-3.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-3.png)  
 &emsp; 上面三种情况，只要重排序两个操作的执行顺序，程序的执行结果将会被改变。  
 
 &emsp; 编译器和处理器可能会对操作做重排序。编译器和处理器在重排序时，会遵守数据依赖性，编译器和处理器不会改变存在数据依赖关系的两个操作的执行顺序。  
@@ -175,10 +175,10 @@ class Demo {
 &emsp; 由于操作1和2没有数据依赖关系，编译器和处理器可以对这两个操作重排序；操作3和操作4没有数据依赖关系，编译器和处理器也可以对这两个操作重排序。  
 
 1. 当操作1和操作2重排序时，可能会产生什么效果？  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-4.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-4.png)  
 &emsp; 如上图所示，操作1和操作2做了重排序。程序执行时，线程A首先写标记变量flag，随后线程B读这个变量。由于条件判断为真，线程B将读取变量a。此时，变量a还根本没有被线程A写入，在这里多线程程序的语义被重排序破坏了！  
 2. 当操作3和操作4重排序时会产生什么效果(借助这个重排序，可以顺便说明控制依赖性)。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-5.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-5.png)  
 &emsp; 在程序中，操作3和操作4存在控制依赖关系。当代码中存在控制依赖性时，会影响指令序列执行的并行度。为此，编译器和处理器会采用猜测(Speculation)执行来克服控制相关性对并行度的影响。以处理器的猜测执行为例，执行线程B 的处理器可以提前读取并计算a * a，然后把计算结果临时保存到一个名为重排序缓冲(reorder buffer ROB)的硬件缓存中。当接下来操作3的条件判断为真时，就把该计算结果写入变量i中。  
 
 &emsp; 从图中可以看出，猜测执行实质上对操作3和4做了重排序。重排序在这里破坏了多线程程序的语义！  
@@ -224,12 +224,12 @@ class Demo {
 
 &emsp; 操作系统做任务切换，可以发生在任何一条CPU指令执行完，所以并不是高级语言中的一条语句，不要被count += 1这个操作蒙蔽了双眼。假设count = 0，线程A执行完指令1 后，做任务切换到线程B执行了指令1、指令2、指令3后，再做任务切换回线程A。会发现虽然两个线程都执行了count += 1 操作。但是得到的结果并不是2，而是1。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-77.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-77.png)  
 &emsp; 如果 count += 1 是一个不可分割的整体，线程的切换可以发生在 count += 1 之前或之后，但是不会发生在中间，就像个原子一样。**把一个或者多个操作在 CPU 执行的过程中不被中断的特性称为原子性。**
 
 ### 1.4.3. 缓存导致了可见性问题/CPU的缓存一致性问题  
 &emsp; 目前操作系统都是多核的，cpu都有自己的缓存，这个时候就需要考虑数据的一致性问题。某一个变量被多个线程操作；相互的操作是不可见的。这个时候就会出现问题了，这就是可见性问题。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-78.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-78.png)  
 
 
 ----------
@@ -238,10 +238,10 @@ class Demo {
 
 &emsp; **缓存失效/缓存不一致/缓存可见性**  
 &emsp; 当CPU写数据时，如果发现操作的变量是共享变量，即在其它CPU中也存在该变量的副本，系统会发出信号通知其它CPU将该内存变量的缓存行设置为无效。如下图所示，CPU1和CPU3 中num=1已经失效了。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-44.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-44.png)  
 &emsp; 当其它CPU读取这个变量的时，发现自己缓存该变量的缓存行是无效的，那么它就会从内存中重新读取。  
 
 <!-- 
 &emsp; 如下图所示，CPU1和CPU3发现缓存的num值失效了，就重新从内存读取，num值更新为2。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-45.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-45.png)  
 -->

@@ -17,7 +17,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 类和类之间的关系有三种：is-a（继承或泛化）、has-a（关联或聚合）和use-a（依赖）。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-27.png)  
+![image](http://www.wt1814.com/static/view/images/java/design/design-27.png)  
 2. 组合的含义更像是一个对象(类)由各方面构成，这些方面并非来自于继承，但有时候却是必不可少的。`如果说继承是垂直结构，那么组合是横向结构。`  
 3. 对于委托，类与类之间或对象与对象之间可以没有任何逻辑上的关系(比如继承关系和组合关系)，仅仅只是委托方和被委托方的关系。不过，继承而来的方法本就会自动查找，所以这些方法不需要委托。`而组合经常会结合委托一起使用，或者说组合的过程中本就依赖于委托，`比如对于房子.煮饭()这个方法调用请求，应该委托或转发给厨房.煮饭()。  
 &emsp; ~~委托是将一部分功能分割出去完成，即委托者（delegator）将自己委托给受托者（delegatee），`受托者方法中参数为委托者对象`；然后委托者调用受托者类对象。~~  
@@ -57,7 +57,7 @@ https://www.junmajinlong.com/coding/inherit_composition_delegate/
 效果，接受请求的对象将自己传给被委托者（代理人），使被委托的操作可以引用接受请求的对象。  
 举例来说，我们可以在窗口类中保存一个矩形类的实例变量来代理矩形类的特定操作，这样窗口类可以复用矩形类的操作，而不必像继承时那样定义成矩形类的子类。也就是说，一个窗口拥有一个矩形，而不是一个窗口就是一个矩形。窗口现在必须显式的将请求转发给它的矩形实例，而不是像以前它必须继承矩形的操作。
 下面的图显示了窗口类将它的 A r e a操作委托给一个矩形实例。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-23.png)  
+![image](http://www.wt1814.com/static/view/images/java/design/design-23.png)  
 
 箭头线表示一个类对另一个类实例的引用关系。引用名是可选的，本例为“ r e c t a n g l e”。
 委托的主要优点在于它便于运行时刻组合对象操作以及改变这些操作的组合方式。假定
@@ -288,7 +288,7 @@ https://blog.csdn.net/zymx14/article/details/79605926
 
 ## 委托和组合的对比  
 委托是将一部分功能分割出去完成，即委托者（delegator）将自己委托给受托者（delegatee），受托者方法中参数为委托者对象；然后委托者调用受托者类对象。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-26.png)  
+![image](http://www.wt1814.com/static/view/images/java/design/design-26.png)  
 
 委托与组合的对比：  
 
@@ -332,7 +332,7 @@ delegateeB {
 
 ## 理解继承、组合和委托的关系
 &emsp; 类与类之间的关系，除了继承关系，还有组合(Composition)关系和委托关系：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-27.png)  
+![image](http://www.wt1814.com/static/view/images/java/design/design-27.png)  
 
 &emsp; 继承的含义自不必说，组合的含义更像是一个对象(类)由各方面构成，这些方面并非来自于继承，但有时候却是必不可少的。如果说继承是垂直结构，那么组合是横向结构。  
 

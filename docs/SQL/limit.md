@@ -28,7 +28,7 @@ https://mp.weixin.qq.com/s?__biz=Mzg4NDU0Mjk5OQ==&mid=2247491478&idx=1&sn=74ae76
 -->
 
 ## 1.1. 逻辑分页和物理分页  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-162.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-162.png)  
 
 ## 1.2. limit物理分页
 
@@ -91,7 +91,7 @@ SELECT * FROM vote_record_memory vrm  LIMIT 3600000,20000 ;
 SELECT * FROM vote_record_memory vrm WHERE vrm.id >= 3600000 LIMIT 20000 
 ```
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-163.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-163.png)  
 &emsp; 会发现，方法2的执行效率远比方法1的执行效率高，几乎是方法1的九分之一的时间。  
 
 &emsp; 为什么方法1的效率低，而方法二的效率高呢？  
@@ -100,8 +100,8 @@ SELECT * FROM vote_record_memory vrm WHERE vrm.id >= 3600000 LIMIT 20000
 &emsp; 因为在方法1中，使用的单纯的limit。limit随着行偏移量的增大，当大到一定程度后，会出现效率下降。而方法2用上索引加where和limit，性能基本稳定，受偏移量和行数的影响不大。  
 * 分析二、  
 &emsp; 用explain来分析  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-164.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-165.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-164.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-165.png)  
 &emsp; 可见，limit语句的执行效率未必很高，因为会进行全表扫描，这就是为什么方法1扫描的的行数是400万行的原因。方法2的扫描行数是47945行，这也是为什么方法2执行效率高的原因。尽量避免全表扫描查询，尤其是数据非常庞大，这张表仅有400万条数据，方法1和方法就有这么大差距，可想而知上千万条的数据呢。  
 
 

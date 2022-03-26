@@ -24,10 +24,10 @@
 &emsp; <font color = "red">缓冲区实际上是一个容器对象，其实就是一个数组</font>，是一块可以写入数据，然后可以从中读取数据的内存。这块内存被包装成NIO Buffer对象，并提供了一组方法，用来方便的访问该块内存。   
 &emsp; 在NIO库中，Channel提供从文件、网络读取数据的渠道，但是读取或写入的数据都必须经由Buffer。而在面向流I/O系统中，所有数据都是直接写入或者直接将数据读取到Stream对象中。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-15.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/NIO/NIO-15.png)  
 &emsp; 上面的图描述了从一个客户端向服务端发送数据，然后服务端接收数据的过程。客户端发送数据时，必须先将数据存入Buffer中，然后将Buffer中的内容写入通道。服务端这边接收数据必须通过Channel将数据读入到Buffer中，然后再从Buffer中取出数据来处理。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-7.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/NIO/NIO-7.png)  
 &emsp; 在NIO中使用的核心缓冲区有：CharBuffer、DoubleBuffer、IntBuffer、LongBuffer、[ByteBuffer](/docs/microService/communication/NIO/ByteBuffer.md) 、ShortBuffer、FloatBuffer。这七种主要的缓冲区类，每一种都具有一种Java语言中的非布尔类型的原始类型数据，覆盖了通过I/O发送的基本数据类型：characters，double，int，long，byte，short和float。  
 
 ## 1.1. 缓冲区属性  
@@ -48,19 +48,19 @@ private int capacity;
 &emsp; 这四个属性之间遵循以下关系：0 <=mark <=position <=limit <=capacity。<font color = "red">在写模式和读模式(先写后读)下，position和limit的位置有所不同。</font>  
 <!-- 
 见下图：  
-&emsp; ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-1.png)  
+&emsp; ![image](http://www.wt1814.com/static/view/images/microService/netty/NIO/NIO-1.png)  
 &emsp; **图解：**  
 -->
 1. 新建一个大小为8个字节的缓冲区，此时position为 0，而limit = capacity = 8。capacity变量不会改变。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-2.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/NIO/NIO-2.png)  
 2. 从输入通道中读取 5 个字节数据写入缓冲区中，此时position为5，limit保持不变。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-3.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/NIO/NIO-3.png)  
 3. 在将缓冲区的数据写到输出通道之前，需要先调用 flip() 方法，这个方法将 limit 设置为当前 position，并将 position 设置为 0。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-4.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/NIO/NIO-4.png)  
 4. 从缓冲区中取 4 个字节到输出缓冲中，此时 position 设为 4。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-5.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/NIO/NIO-5.png)  
 5. 最后需要调用 clear() 方法来清空缓冲区，此时position和limit都被设置为最初位置。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/NIO/NIO-6.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/NIO/NIO-6.png)  
 
 ## 1.2. 缓冲区API成员方法  
 

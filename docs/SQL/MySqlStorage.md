@@ -106,7 +106,7 @@ https://mp.weixin.qq.com/s/StjX9bi-YDANrMX21Pn_Uw
 * 如果对数据一致性要求比较高，需要事务支持，可以选择 InnoDB。比如OA自动化办公系统。  
 * 如果数据查询多更新少，对查询性能要求比较高，可以选择 MyISAM。比如博客系统、新闻门户网站。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-50.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-50.png)  
 
 <!-- 
 选择合适的存储引擎

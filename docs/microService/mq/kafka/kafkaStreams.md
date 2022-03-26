@@ -40,12 +40,12 @@
 &emsp; **什么是流式计算？**  
 &emsp; 通常情况下，流式计算与批处理计算会放在一起做比较分析。   
 1. **在流式计算模型中，数据的输入是持续不断的，这意味着永远不知道数据的上限是多少，因此，计算产生的结果也是持续输出的，**流程如下图所示。流式计算一般对实时性要求较高，为了提升计算效率，通常会采用增量计算来替代全量计算。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-42.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-42.png)  
 2. 在批处理计算模型中，通常数据上限是可知的，一般会先定义计算逻辑，然后进行全量计算，并将计算结果一次性输出。流程如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-43.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-43.png)  
 
 ## 1.3. 流处理的架构  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-44.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-44.png)  
 &emsp; <font color = "red">Kafka流处理输入的数据来源于Kafka系统中的业务主题，处理后的结果会存储到Kafka系统中新的业务主题中。</font>   
 &emsp; 上图中，消费者程序和生产者程序并不需要用户在应用程序中显式地实例化，而是通过Kafka流处理根据参数来隐式地实例化和管理，这让操作变得更加简单。用户只需关心核心业务逻辑（即上图中的任务模块）的编写，其他的都交由Kafka流处理来实现。  
 
@@ -63,7 +63,7 @@
         另外，一个处理流程可以被拆分为多个独立的子处理流程，只要保证子处理流程与其他子处理流程没有交集即可。通过这种方式可以让任务之间保持负载均衡。  
 
 &emsp; 下图展示了不同主题的两个分区的流处理过程。(不同主题的两个分区的流处理过程)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-45.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-45.png)  
 
     提示：  
     Kafka流处理不是一个资源管理器，而是一个类库。   
@@ -73,7 +73,7 @@
 &emsp; Kafka流处理允许用户配置多个线程，并通过多线程来均衡应用程序中的任务数。每个线程的处理流程可以执行一个或者多个任务。  
 1. 线程模型的处理流程  
 &emsp; 下图所示是使用一个线程来处理多个流任务。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-46.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-46.png)  
 &emsp; 启动多个流线程或更多的应用程序，只需要复制执行流程即可。比如，将一份业务逻辑处理代码复制到不同的主机上进行执行。这样做的好处是，通过多线程来并行处理不同Kafka系统主题分区中的数据，能提升处理效率。   
     
         提示：这些线程之间的状态是不共享的。因此，不需要线程间的协作。这使得运行一个多并发的处理流程实例变得非常简单。
@@ -92,16 +92,16 @@
     * 线程2包含一个任务，从两个分区（主题A的一个分区和主题B的一个分区）中读取数据。  
 
     具体实现流程如下图所示。(多线程多任务执行流程)  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-47.png)  
+    ![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-47.png)  
     随着业务数据量的增加，需要对现有的应用程序进行拓展。实施的 具体方案是，在另外一台主机上启动该应用程序，并设置线程数为1。具体实现流程如下图(新增应用程序和线程数)所示。  
     当前总分区数为6个，线程总数为3个。当任务被重新分配时，相同的分区、任务和存储状态，都会被移到新的线程中，从而使应用程序达到负载均衡。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-48.png)  
+    ![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-48.png)  
 
 ### 1.3.3. 本地状态存储  
 &emsp; Kafka流处理提供的状态存储机制，可用来保存和查询应用程序产生的状态数据。例如，在执行连接、聚合操作时，Kafka流处理会自动创建和管理这些状态存储。  
 &emsp; 下图（流处理任务本地状态存储）展示了两个流处理任务，以及它们专用的本地状态存储。  
 &emsp; 在Kafka流处理应用程序中，每个流任务可以集成一个或多个本地状态存储，这些本地状态存储可以通过应用接口来进行存储和查询。同时，Kafka 流处理也为本地状态存储提供了容错机制和自动恢复功能。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-49.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-49.png)  
 
 ### 1.3.4. 容错性（Failover）  
 &emsp; Kafka流处理继承了Kafka系统主题分区的两大能力——高可用能力、副本故障自动转移能力。因而，在流数据持久化到Kafka系统主题时，即使应用程序失败也会自动重新处理。  
@@ -160,7 +160,7 @@
 &emsp; 在处理流数据时，会把消息记录按照时间进行分组，每一组由一个窗口构成。Kafka目前支持四种窗口，下面分别介绍。  
 1. 翻滚时间窗口翻滚时间窗口是大小固定、不重叠、无间隙的一类窗口模型。窗口的间隔是由窗口大小来决定的，这样可以有效地保证窗口之间不会发生重叠现象，一条消息记录也仅属于一个窗口。  
 &emsp; 下图(翻滚时间窗口)是一个窗口大小为5min的翻滚时间窗口。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-50.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-50.png)  
 &emsp; 上图中，颜色相同的方块代表消息记录的键是相同的，而窗口的创建是根据每条消息记录的键来实现的。  
 &emsp; 需要注意的是，翻滚时间窗口的取值范围是闭区间到开区间，即，低位是闭区间，高位是开区间。而翻滚时间窗口规定，第一个窗口的取值必须从0开始。例如，窗口大小为5000ms的滚动时间窗口取值为[0, 5000)、[5000, 10000)等，并不是[1000,6000)、[6000,11000)或者一些其他随机的数字。 
  
@@ -168,7 +168,7 @@
         闭区间是指区间边界的两个值都包含在内，例如[0, 1]。  
         开区间是指区间边界的两个值都不包含在内，例如(0, 1)。  
 &emsp; 【实例】实现一个滚动时间窗口，大小为5min。 具体内容见下述代码（实现滚动时间窗口大小为5min）。    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-51.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-51.png)  
 
 2. 跳跃时间窗口  
 &emsp; 跳跃时间窗口是基于时间间隔的窗口模型，是一个大小固定、可能会出现重叠的窗口模型。  
@@ -179,10 +179,10 @@
         提示： 在 Kafka 流处理中，时间单位是ms，如果是每隔5min标记一 次，那换算成 ms 就是300000ms。  
 &emsp; 需要注意的是，跳跃时间窗口的取值范围是闭区间到开区间。即，低位是闭区间，高位是开区间。  
 &emsp; 另外，翻滚时间窗口规定第一个窗口的取值必须从0开始。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-52.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-52.png)  
 &emsp; 例如，窗口大小为5000ms，时间间隔为3000ms的跳跃时间窗口取值为[0, 5000)、[3000, 8000)等，并不是[1000,6000)、[4000,9000)或一些 其他随机的数字。  
 &emsp; 【实例】实现一个跳跃时间窗口，大小为5min，时间间隔为1min。具体实现见下述代码（设置跳跃时间窗口，大小为5min，时间间隔为1min）。     
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-53.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-53.png)  
 
 3. 滑动时间窗口  
 &emsp; 滑动时间窗口与翻滚时间窗口、跳跃时间窗口不同，它是大小固定、沿着时间轴连续滑动的窗口模型。  
@@ -196,10 +196,10 @@
 &emsp; 会话窗口需要先对消息记录的键做分组，然后根据实际的业务需求为分组后的数据定义一个起始点和结束点的窗口。  
 &emsp; 例如，使用会话窗口统计用户登录游戏的时长。用户在登录游戏时会产生一条唯一的消息记录，此时会话窗口生成一个起始点，当用户退出游戏或者当前会话自动超时时，该用户的会话窗口会在结束后生成一个结束点。  
 &emsp; 下图(会话窗口)中有三条消息记录，会话窗口大小为5min。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-54.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-54.png)  
 &emsp; 上图中，颜色相同的方块代表消息记录的键是相同的，而窗口的创建是根据每条消息记录的键来实现的。由于黑色方块的两条消息记录时间差超过5min，所以，黑色方块所代表的消息记录会产生两个会话窗口，白色方块所代表的消息记录会产生一个会话窗口。  
 &emsp; 如果此时探测到新的消息记录，则会话窗口会发生相应的变化，如下图（添加新的消息记录）所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-55.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-55.png)  
 &emsp; 由于新增的灰色方块所代表的消息记录与之前黑色方块所代表的消息记录时间差小于5min，所以会话窗口会发生合并，形成一个会话窗口。   
 
     * 新增的第一个白色方块所代表的消息记录和之前的消息记录时间 差小于5min，所以会在同一个会话窗口，  
@@ -209,7 +209,7 @@
 
 
 &emsp; 【实例】实现一个会话窗口大小为5min。具体见代码9-3。 代码9-3 设置会话窗口大小为5min
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-56.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-56.png)  
 
 #### 1.4.2.2. 连接操作  
 &emsp; 连接操作是通过消息记录键将两个流数据记录进行合并，生成一个新的流数据。  
@@ -223,7 +223,7 @@
 
 &emsp; Kafka流处理提供了三种连接操作——内连接、左连接、外连接，对应的函数分别是join()、leftJoin()、outerJoin()。    
 &emsp; 三种类型与三种连接操作的支持关系见下表。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-57.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-57.png)  
   
 
 #### 1.4.2.3. 转换操作  

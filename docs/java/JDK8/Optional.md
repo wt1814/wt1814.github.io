@@ -29,7 +29,7 @@ Java 8 中使用 Optional 处理 null 对象，超全指南
 https://mp.weixin.qq.com/s/Fq-dOg78VMyEfNFjCJ7Krw
 -->
 &emsp; 使用Optional可以解决业务中，减少值动不动就抛出空指针异常问题，也减少 null 值的判断，提高代码可读性等，这里介绍下，如果使用这个 Optional 类。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/java8/java-8.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/java8/java-8.png)  
 
 |方法|描述|
 |---|---|

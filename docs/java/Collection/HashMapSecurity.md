@@ -69,23 +69,23 @@ https://mp.weixin.qq.com/s?__biz=MzkzODE3OTI0Ng==&mid=2247491120&idx=1&sn=44228b
 -->
 
 #### 1.2.1.2. 死循环分析  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-21.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-21.png)  
 &emsp; 例子：有1个容量为2的 HashMap，loadFactor=0.75，此时线程1和线程2 同时往该 HashMap 插入一个数据，都触发了扩容流程，接着有以下流程。   
 
 &emsp; 1）在2个线程都插入节点，触发扩容流程之前，此时的结构如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-22.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-22.png)  
 &emsp; 2）线程1进行扩容，执行到代码：Entry<K,V> next = e.next 后被调度挂起，此时的结构如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-23.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-23.png)  
 &emsp; 3）线程1被挂起后，线程2进入扩容流程，并走完整个扩容流程，此时的结构如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-24.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-24.png)  
 &emsp; 由于两个线程操作的是同一个 table，所以该图又可以画成如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-25.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-25.png)  
 &emsp; 4）线程1恢复后，继续走完第一次的循环流程，此时的结构如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-26.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-26.png)  
 &emsp; 5）线程1继续走完第二次循环，此时的结构如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-27.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-27.png)  
 &emsp; 6）线程1继续执行第三次循环，执行到 e.next = newTable[i] 时形成环，执行完第三次循环的结构如下图。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-28.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-28.png)  
 
 
 ## 1.3. 线程安全的map

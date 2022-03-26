@@ -12,7 +12,7 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-79.png)  
+![image](http://www.wt1814.com/static/view/images/ES/es-79.png)  
 
 
 # 1. 基本查询
@@ -169,7 +169,7 @@ GET /product/_search
 ## 1.4. prefix 前缀匹配  
 * 核心功能：前缀匹配。  
 * 应用场景：前缀自动补全的业务场景。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-78.png)  
+![image](http://www.wt1814.com/static/view/images/ES/es-78.png)  
 * 适用类型：keyword。  
 
 &emsp; 如下能匹配到文档 id 为 1 的文章。  

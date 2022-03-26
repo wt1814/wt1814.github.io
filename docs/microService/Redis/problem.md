@@ -155,7 +155,7 @@ redis.clients.jedis.exceptions.JedisDataException: ERR max number of clients rea
 ### 1.2.1. Redis内存陡增  
 1. 现象   
 &emsp; 服务端现象：Redis主节点内存陡增，几乎用满maxmemory，而从节点内存并没有变化（正常情况下主从节点内存使用量基本相同），如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-112.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-112.png)  
 <center>主从节点内存不一致，主节点内存陡增</center>
 &emsp; 客户端现象：客户端产生了OOM异常，也就是Redis主节点使用的内存已经超过了maxmemory的设置，无法写入新的数据：  
 

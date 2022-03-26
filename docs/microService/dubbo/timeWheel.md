@@ -36,7 +36,7 @@ https://blog.csdn.net/mindfloating/article/details/8033340
 &emsp; 时间轮，从图片上来看，就和手表的表圈是一样，所以称为时间轮，是因为它是以时间作为刻度组成的一个环形队列，这个环形队列采用数组来实现，数组的每个元素称为槽，每个槽可以放一个定时任务列表，叫HashedWheelBucket，它是一个双向链表，量表的每一项表示一个定时任务项（HashedWhellTimeout），其中封装了真正的定时任务TimerTask。时间轮是由多个时间格组成，下图中有8个时间格，每个时间格代表当前时间轮的基本时间跨度（tickDuration），其中时间轮的时间格的个数是固定的。  
 &emsp; 在下图中，有8个时间格（槽），假设每个时间格的单位为1s，那么整个时间轮走完一圈需要8s钟。每秒钟指针会沿着顺时针方向移动一格，这个单位可以设置，比如以秒为单位，可以以一小时为单位，这个单位可以代表时间精度。  
 &emsp; 通过指针移动，来获得每个时间格中的任务列表，然后遍历这一个时间格中的双向链表来执行任务，以此循环。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-47.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-47.png)   
 &emsp; **时间轮的运行逻辑：**  
 &emsp; 首先，时间轮在启动的时候，会记录一下当前启动时间，并赋值给一个叫startTime的变量。然后当需要添加任务的时候，首先会计算延迟时间(deadline)，比如一个任务的延迟时间是24ms，那么在添加任务时，会将当前时间(currentTime)+24ms-时间轮的启动时间(startTime)，然后把这个任务封装成HashedWheelTimeout加入到链表中。  
 &emsp; 那么这个任务应该放在哪个时间格里面呢？ 通过 deadline%wheel.length 计算。时间轮在运行的时候，会从任务队列中取出10W个进行遍历处理。  
@@ -64,9 +64,9 @@ https://www.cnblogs.com/wuzhenzhao/p/13784469.html
 
 ### 1.3.1. 类图  
 &emsp; dubbo里面涉及到定时任务调度的是HashedWheelTimer。位于org.apache.dubbo.common.timer。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-48.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-48.png)   
 &emsp; UML类图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-49.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-49.png)   
 
 ### 1.3.2. HashedWheelTimer
 &emsp; HashedWheelTimer的构造：    
@@ -449,6 +449,6 @@ public class HashedWheelTimerTest {
 }
 ```
 &emsp; 运行结果   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-50.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-50.png)   
 
 

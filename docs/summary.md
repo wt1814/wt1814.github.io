@@ -273,9 +273,9 @@
 &emsp; `因为使用的是2次幂的扩展（指长度扩为原来2倍），所以，元素的位置要么是在原位置，要么是在原位置再移动2次幂的位置。`因此，在扩充 HashMap 的时候，不需要像 JDK1.7 的实现那样重新计算 hash，只需要看看原来的 hash 值新增的那个 bit 是 1 还是 0 就好了，是 0 的话索引没变，是 1 的话索引变成“原索引 +oldCap。  
 &emsp; 这点其实也可以看做长度为 2 的幂次方的一个好处，也是HashMap 1.7 和 1.8 之间的一个区别。  
 &emsp; 示例：扩容前 table 的容量为16，a 节点和 b 节点在扩容前处于同一索引位置。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-19.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-19.png)  
 &emsp; 扩容后，table 长度为32，新表的 n - 1 只比老表的 n - 1 在高位多了一个1（图中标红）。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/Collection/collection-20.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-20.png)  
 &emsp; 因为 2 个节点在老表是同一个索引位置，因此计算新表的索引位置时，只取决于新表在高位多出来的这一位(图中标红)，而这一位的值刚好等于 oldCap。  
 &emsp; 因为只取决于这一位，所以只会存在两种情况：1)  (e.hash & oldCap) == 0 ，则新表索引位置为“原索引位置” ；2)(e.hash & oldCap) == 1，则新表索引位置为“原索引 + oldCap 位置”。  
 
@@ -446,7 +446,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 ### 1.2.2. 复用规则（继承和组合）详解  
 1. 类和类之间的关系有三种：is-a（继承或泛化）、has-a（关联或聚合）和use-a（依赖）。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-27.png)  
+![image](http://www.wt1814.com/static/view/images/java/design/design-27.png)  
 2. `组合的含义更像是一个对象(类)由各方面构成`，这些方面并非来自于继承，但有时候却是必不可少的。`★★★如果说继承是垂直结构，那么组合是横向结构。`  
 3. `对于委托，类与类之间或对象与对象之间可以没有任何逻辑上的关系(比如继承关系和组合关系)，仅仅只是委托方和被委托方的关系。`不过，继承而来的方法本就会自动查找，所以这些方法不需要委托。`而组合经常会结合委托一起使用，或者说组合的过程中本就依赖于委托，`比如对于房子.煮饭()这个方法调用请求，应该委托或转发给厨房.煮饭()。  
 &emsp; ~~委托是将一部分功能分割出去完成，即委托者（delegator）将自己委托给受托者（delegatee），`受托者方法中参数为委托者对象`；然后委托者调用受托者类对象。~~  
@@ -626,8 +626,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; ~~待总结：堆外内存泄漏、跨代引用假说、finalize()~~  
 
 ### 1.3.1. JDK、JRE、JVM
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-4.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-145.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-4.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-145.png)  
 1. <font color = "red">JVM由4大部分组成：类加载器ClassLoader，运行时数据区Runtime Data Area，执行引擎Execution Engine，本地方法调用Native Interface。</font>  
 2. **<font color = "clime">JVM各组件的作用（JVM执行程序的过程）：</font>**   
     1. 编译：首先通过类加载器（ClassLoader）把Java代码转换成字节码；  
@@ -641,7 +641,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 ### 1.3.3. 类加载
 #### 1.3.3.1. JVM类的加载
 1. 类加载流程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-5.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-5.png)  
 2. 加载：查找并加载类的二进制数据。加载主要做三件事：找到类文件 -> 放入方法区 -> 开个入口（最后生成一个代表此类的java.lang.Class对象，作为访问方法区这些数据结构的入口）。  
 &emsp; **<font color = "red">一句话概括：把代码数据加载到内存中，加载完成后，在方法区实例化一个对应的Class对象。</font>**  
 3. 验证：确保被加载的类的正确性。验证阶段大致会完成4个阶段的检验动作：1. 文件格式验证、2. 元数据验证、3. 字节码验证、4. 符号引用验证。  
@@ -669,7 +669,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 不同 webapp 项目支持共享某些类库
     * 类加载器应该支持热插拔功能，比如对 jsp 的支持、webapp 的 reload 操作
     &emsp; 为了解决以上问题，tomcat设计了一套类加载器，如下图所示。在 Tomcat 里面最重要的是 Common 类加载器，它的父加载器是应用程序类加载器，负责加载 ${catalina.base}/lib、${catalina.home}/lib 目录下面所有的 .jar 文件和 .class 文件。下图的虚线部分，有 catalina 类加载器、share 类加载器，并且它们的 parent 是 common 类加载器，默认情况下被赋值为 Common 类加载器实例，即 Common 类加载器、catalina 类加载器、 share 类加载器都属于同一个实例。当然，如果通过修改 catalina.properties 文件的 server.loader 和 shared.loader 配置，从而指定其创建不同的类加载器。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/tomcat/tomcat-1.png)  
+    ![image](http://www.wt1814.com/static/view/images/tomcat/tomcat-1.png)  
 3. 破坏双亲委派模型：
     1. 破坏双亲委派的例子：
         1. ~~JDK~~  
@@ -691,7 +691,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 #### 1.3.4.1. JVM内存结构
 ##### 1.3.4.1.1. JVM内存结构
 &emsp; Java虚拟机在执行Java程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK1.8和之前的版本略有不同。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-7.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-7.png)  
 1. 运行时数据区。线程独享：程序计数器、JVM栈、本地方法栈；线程共享区：堆、方法区（元空间）。  
 2. 程序计数器看作是当前线程所执行的字节码的行号指示器。  
 3. JVM栈/【方法】【栈】  
@@ -700,7 +700,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     &emsp; Java虚拟机栈中出栈入栈的元素称为“栈帧”，栈对应线程，栈帧对应方法。每个方法被执行的时候，都会创建一个栈帧，把栈帧压入栈，当方法正常返回或者抛出未捕获的异常时，栈帧就会出栈。  
     3. 方法【栈】  
         &emsp; <font color = "red">Java虚拟机栈是由一个个栈帧组成，每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法出口信息。</font>  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-9.png)  
+        ![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-9.png)  
         * 局部变量表，局部变量表用于保存函数参数和局部变量。  
         * 方法返回地址。
         * 操作数栈，操作数栈用于保存计算过程的`中间结果`，作为计算过程中变量临时的存储空间。  
@@ -799,17 +799,17 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍（8字节对齐）。填充数据不是必须存在的，仅仅是为了字节对齐。   
 2. JVM中对象头的方式有以下两种（以32位JVM为例）  
     &emsp; 普通对象：  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-60.png)   
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-60.png)   
     &emsp; 数组对象：  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-61.png)   
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-61.png)   
 
     &emsp; 对象头：包含Mark Word、class pointer、array length共3部分。  
     1. Mark Word：  
     &emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "clime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
     &emsp; 这部分主要用来存储对象自身的运行时数据，如hashcode、gc分代年龄等。mark word的位长度为JVM的一个Word大小，也就是说32位JVM的Mark word为32位，64位JVM为64位。
     为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-67.png)   
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-68.png)   
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-67.png)   
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-68.png)   
     2. class pointer：  
     &emsp; 这一部分用于存储对象的类型指针，该指针指向它的类元数据，JVM通过这个指针确定对象是哪个类的实例。该指针的位长度为JVM的一个字大小，即32位的JVM为32位，64位的JVM为64位。 
     3. array length：  
@@ -1112,9 +1112,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 #### 1.4.1.1. 线程状态详解
 1. 通用的线程周期。操作系统层面有5个状态，分别是：New（新建）、Runnable（就绪）、Running（运行）、Blocked（阻塞）、Dead（死亡）。  
 2. Java线程状态均来自Thread类下的State这一内部枚举类中所定义的状态：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-2.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/thread-2.png)  
 &emsp; 线程状态切换图示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-5.png) 
+![image](http://www.wt1814.com/static/view/images/java/concurrent/thread-5.png) 
 &emsp; ⚠️⚠️⚠️`对象` `执行动作` 形成`线程`。`影响线程状态的相关java类：Object类、Synchronized关键字、Thread类。`  
 
 -----------
@@ -1164,7 +1164,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 调用stop：直接调用该线程的stop()方法来结束该线程—该方法通常容易导致死锁，不推荐使用。
 7. 注意：由于wait()/wait(time)导致线程处于Waiting/TimedWaiting状态，当线程被notify()/notifyAll()/wait等待时间到之后，如果没有获取到同步监视器。会直接进入Blocked阻塞状态。  
 8. 线程状态切换示意图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/thread-6.png) 
+![image](http://www.wt1814.com/static/view/images/java/concurrent/thread-6.png) 
 
 
 ### 1.4.2. 线程池-多线程
@@ -1174,7 +1174,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 提高响应速度。当有任务到达时，无需等待新线程的创建便能立即执行；  
     * 提高线程的可管理性。线程是稀缺资源，如果无限制的创建，不仅会消耗大量系统资源，还会降低系统的稳定性，使用线程池可以进行对线程进行统一的分配、调优和监控。  
 2. 线程池框架Executor：  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-21.png)   
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-21.png)   
     &emsp; Executor：所有线程池的接口。  
     &emsp; ExecutorService：扩展了Executor接口。添加了一些用来管理执行器生命周期和任务生命周期的方法。  
     &emsp; ThreadPoolExecutor（创建线程池方式一）：线程池的具体实现类。  
@@ -1200,9 +1200,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * [阻塞队列](/docs/java/concurrent/BlockingQueue.md)，线程池所使用的缓冲队列，常用的是：SynchronousQueue、ArrayBlockingQueue、LinkedBlockingQueue。   
     * 拒绝策略，默认AbortPolicy（拒绝任务，抛异常）， **<font color = "clime">可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。</font>**  
 2. 线程池中核心方法调用链路：  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-17.png)  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-14.png)  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/threadPool-20.png)  
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-17.png)  
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-14.png)  
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-20.png)  
     &emsp; 线程运行流程：查看execute方法。  
     &emsp; <font color = "clime">线程池创建时`没有设置成预启动加载`，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
     1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务（任务实例会传入直接用于构造工作线程实例）。  
@@ -1451,7 +1451,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 2. **<font color = "clime">Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor（也称为管程或监视器锁）的起始地址，每个对象都存在着一个monitor与之关联。</font>**  
 3. C++    
 &emsp; **<font color = "clime">在Java虚拟机（HotSpot）中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。</font><font color = "blue">monitor运行的机制过程如下：(_EntryList队列、_Owner区域、_WaitSet队列)</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-55.png)  
     * `想要获取monitor的线程，首先会进入_EntryList队列。`  
     * `当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程，`同时计数器count加1。  
     * **如果线程调用了wait()方法，则会进入WaitSet队列。** 它会释放monitor锁，即将owner赋值为null，count自减1，进入WaitSet队列阻塞等待。  
@@ -1481,11 +1481,11 @@ private final BlockingQueue<Future<V>> completionQueue;
 1. **<font color = "clime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时，如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>   
 2. 锁升级  
     &emsp; 锁主要存在四种状态，依次是：无锁状态（普通对象）、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。锁升级流程如下：   
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-79.png)   
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-80.png)   
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-86.png)   
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-79.png)   
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-80.png)   
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-86.png)   
 	1. 偏向锁：  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-81.png)   
+        ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-81.png)   
         1.  **<font color = "bule">偏向锁状态</font>**  
             * **<font color = "clime">匿名偏向(Anonymously biased)</font>** 。在此状态下thread pointer为NULL(0)，意味着还没有线程偏向于这个锁对象。第一个试图获取该锁的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。这是允许偏向锁的类对象的初始状态。
             * **<font color = "clime">可重偏向(Rebiasable)</font>** 。在此状态下，偏向锁的epoch字段是无效的（与锁对象对应的class的mark_prototype的epoch值不匹配）。下一个试图获取锁对象的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。**在批量重偏向的操作中，未被持有的锁对象都被置于这个状态，以便允许被快速重偏向。**
@@ -1550,7 +1550,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     2. **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map中`Key是一个ThreadLocal实例，Value是设置的值。`ThreadLocalMap结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。  
     &emsp; <font color = "clime">Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>** 一个线程可能有多个ThreadLocal实例，编码中定义多个ThreadLocal实例，即存在多个Entry的情况。    
 2. ThreadLocal是如何实现线程隔离的？   
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-85.png)  
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-85.png)  
     &emsp; ThreadLocal之所以能达到变量的线程隔离，其实就是每个线程都有一个自己的ThreadLocalMap对象来存储同一个threadLocal实例set的值，而`取值的时候也是根据同一个threadLocal实例去自己的ThreadLocalMap里面找，自然就互不影响了，从而达到线程隔离的目的！`  
 3. **ThreadLocal内存泄露：**  
     &emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key（ThreadLocal实例）会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thread线程退出以后，value的强引用链条才会断掉。</font>  
@@ -1651,7 +1651,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     4. （可被中断）Lock接口能被中断地获取锁，与synchronized不同，获取到锁的线程能够响应中断，当获取到的锁的线程被中断时，中断异常将会被抛出，同时锁会被释放。可以使线程在等待锁的时候响应中断。  
     5. （可实现选择性通知，锁可以绑定多个条件）ReenTrantLock提供了一个Condition(条件)类，用来实现分组唤醒需要唤醒的一些线程，而不是像synchronized要么随机唤醒一个线程要么唤醒全部线程。  
 2. **<font color = "red">lock()方法描述：</font>**  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-87.png)  
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-87.png)  
     1. 在初始化ReentrantLock的时候，如果不传参数是否公平，那么默认使用非公平锁，也就是NonfairSync。  
     2. 1). <font color = "clime">调用ReentrantLock的lock方法的时候，实际上是调用了NonfairSync的lock方法，这个方法①先用CAS操作`compareAndSetState(0, 1)`，去尝试抢占该锁。如果成功，就把当前线程设置在这个锁上，表示抢占成功。</font>         
         &emsp; `“非公平”体现在，如果占用锁的线程刚释放锁，state置为0，而排队等待锁的线程还未唤醒时，新来的线程就直接抢占了该锁，那么就“插队”了。`   
@@ -1663,7 +1663,7 @@ private final BlockingQueue<Future<V>> completionQueue;
         4. 如果线程在等待过程中被中断过，它是不响应的。`只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。`  
 
     &emsp; 用一张流程图总结一下非公平锁的获取锁的过程。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-75.png)  
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-75.png)  
 
 ###### 1.4.4.3.1.1. 读写锁
 1. ReentrantReadWriteLock  
@@ -2044,8 +2044,8 @@ private final BlockingQueue<Future<V>> completionQueue;
         4. 写redo log buffer。  
     2. 事务提交：`redo log与bin log两阶段提交。`  
     3. 事务提交后：后台线程将buffer poll中数据落盘。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-174.png)  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-183.png)  
+    ![image](http://www.wt1814.com/static/view/images/SQL/sql-174.png)  
+    ![image](http://www.wt1814.com/static/view/images/SQL/sql-183.png)  
 
 #### 1.5.4.2. Server层之binLog日志  
 1. **<font color = "clime">binlog是mysql的逻辑日志，并且由Server层进行记录，`使用任何存储引擎的mysql数据库都会记录binlog日志`。</font>**  
@@ -2064,7 +2064,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 
 #### 1.5.4.4. InnoDB体系结构
 &emsp; Innodb体系结构包含后台线程、内存池和磁盘上的结构。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-147.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-147.png)  
 1. `如果从内存上来看，Change Buffer和Adaptive Hash Index占用的内存都属于Buffer Pool`；redo Log Buffer占用的内存与Buffer Pool独立。`即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。`  
 2. `Buffer Pool有Changer Buffer；Redo Log有Double Write。`  
 
@@ -2073,7 +2073,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; 内存中的结构主要包括Buffer Pool，Change Buffer、Adaptive Hash Index以及redo Log Buffer四部分。 **<font color = "blue">如果从内存上来看，[Change Buffer](/docs/SQL/ChangeBuffer.md)和[Adaptive Hash Index](/docs/SQL/AdaptiveHashIndex.md)占用的内存都属于Buffer Pool，redo Log Buffer占用的内存与 [Buffer Pool](/docs/SQL/bufferPoolNew.md)独立。</font>** `即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。`  
 
 &emsp; 内存数据落盘整体思路分析：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-173.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-173.png)  
 &emsp; InnoDB`内存缓冲池中的数据page要完成持久化`的话，是通过两个流程来完成的，`一个是脏页落盘；一个是预写redo log日志`。  
 
 ###### 1.5.4.4.1.1. BufferPool
@@ -2110,7 +2110,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 3. 写入流程：`(Write-Ahead Logging，‘日志’先行)`   
 &emsp; 在计算机体系中，CPU处理速度和硬盘的速度，是不在同一个数量级上的，为了让它们速度匹配，从而催生了内存模块，但是内存有一个特点，就是掉电之后，数据就会丢失，不是持久的，我们需要持久化的数据，最后都需要存储到硬盘上。InnoDB引擎设计者也利用了类似的设计思想。   
 &emsp; 当有一条记录需要更新的时候，InnoDB引擎就会先把记录写到redo log(redolog buffer)里面，并更新内存(buffer pool)，这个时候更新就算完成了。`同时，InnoDB引擎会在适当的时候，`将这个redoLog操作记录更新到磁盘里面（刷脏页）。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-184.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-184.png)  
 4. 刷盘时机：重做日志的写盘，并不一定是随着事务的提交才写入重做日志文件的，而是随着事务的开始，逐步开始的。先写入redo log buffer。  
 
 ###### 1.5.4.4.2.3. DoubleWrite
@@ -2151,7 +2151,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; （1）当数据量大的时候，树的高度会比较高，数据量大的时候，查询会比较慢；  
     &emsp; （2）每个节点只存储一个记录，可能导致一次查询有很多次磁盘IO；    
     * 平衡二叉树：  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-93.png)  
+        ![image](http://www.wt1814.com/static/view/images/SQL/sql-93.png)  
         &emsp; 如果上图中平衡二叉树保存的是id索引，现在要查找id = 8的数据，过程如下：  
 
         1. 把根节点加载进内存，用8和10进行比较，发现8比10小，继续加载10的左子树。
@@ -2180,7 +2180,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 4. 联合索引：    
 &emsp; <font color = "red">联合索引(复合索引)的底层实现？最佳左前缀原则？</font>  
 &emsp; 假设这是一个多列索引(col1, col2,col3)，对于叶子节点，是这样的：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-186.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-186.png)  
 &emsp; 联合索引(col1, col2,col3)也是一棵B+Tree，其`非叶子节点存储的是第一个关键字的索引`，而`叶节点存储的则是三个关键字col1、col2、col3三个关键字的数据，且按照col1、col2、col3的顺序进行排序`。  
 &emsp; **<font color = "red">联合索引底层还是使用B+树索引，并且还是只有一棵树，只是此时的排序：首先按照第一个索引排序，在第一个索引相同的情况下，再按第二个索引排序，依此类推。</font>**  
 5. 无索引时的数据查询：查询数据时从磁盘中依次加载数据页到InnoDB的缓冲池中，然后对缓冲池中缓存页的每行数据，通过数据页的单向链表一个一个去遍历查找，如果没有找到，那么就会顺着数据页的双向链表数据结构，依次遍历加载磁盘中的其他数据页到缓冲池中遍历查询。 
@@ -2247,11 +2247,11 @@ private final BlockingQueue<Future<V>> completionQueue;
 #### 1.5.5.5. MySql锁
 1. 数据库锁  
     &emsp; **锁的分类：**  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-42.png)  
+    ![image](http://www.wt1814.com/static/view/images/SQL/sql-42.png)  
 
     * 按使用方式：乐观锁、悲观锁。  
     * 锁类别：有共享锁（读锁）和排他锁（写锁）。锁类别取决于存储引擎执行的sql语句。  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-47.png)  
+        ![image](http://www.wt1814.com/static/view/images/SQL/sql-47.png)  
     * 按粒度：锁的粒度的不同可以分为表锁、页锁、行锁。  
 2. InnoDB共有七种类型的锁：共享/排它锁、意向锁、记录锁（Record lock）、间隙锁（Gap lock）、临键锁（Next-key lock）、插入意向锁、自增锁。  
 3. 意向锁（`表级锁`）  

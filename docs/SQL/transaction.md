@@ -108,7 +108,7 @@ https://mp.weixin.qq.com/s/EYn1tFphkAyVDGnAlzRXKw
 &emsp; **<font color = "blue">以上是SQL-92标准中定义的四种隔离级别。在MySQL中，默认的隔离级别是REPEATABLE-READ(可重复读)，并且解决了幻读问题。</font>** 简单的来说，mysql的默认隔离级别解决了脏读、幻读、不可重复读问题。  
 
 &emsp; RR和RC区别：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-121.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-121.png)  
 
 ## 1.4. Innodb事务实现原理  
 &emsp; 实现事务采取了哪些技术以及思想？  

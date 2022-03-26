@@ -100,11 +100,11 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 #### 1.1.1.1. 引用计数法  
 &emsp; 给每个对象添加一个计数器，当有地方引用该对象时计数器加1，当引用失效时计数器减1。用对象计数器是否为0来判断对象是否可被回收。  
 &emsp; 缺点： **<font color = "red">无法解决循环引用的问题。</font>** 如果出现A引用了B，B又引用了A，这时候就算它们都不再使用了，但因为相互引用，计算器=1，永远无法被回收。Java中没有使用这种算法。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-16.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-16.png)  
 
 #### 1.1.1.2. 根可达性分析法  
 &emsp; 从GC Roots开始向下搜索，搜索所走过的路径称为引用链。当一个对象到GC Roots没有任何引用链相连时，则证明此对象是不可用的，那么虚拟机就判断是可回收对象。可达性分析可以解决循环引用的问题。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-17.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-17.png)  
 &emsp; 可作为GC ROOTs的对象：  
 
 * 虚拟机栈中引用的对象；  
@@ -123,8 +123,8 @@ https://blog.csdn.net/weixin_39565910/article/details/110721496
 #### 1.1.1.3. 对象的四种引用状态，强弱软虚    
 &emsp; 无论是通过引用计数算法判断对象的引用数量，还是通过根搜索算法判断对象的引用链是否可达，判定对象是否存活都与“引用”有关。  
 &emsp; 在JDK中提供了四个级别的引用：强引用，软引用，弱引用和虚引用。在这四个引用类型中，只有强引用Final Reference类是包内可见，其他三种引用类型均为public，可以在应用程序中直接使用。引用类型的类结构如图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-22.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-18.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-22.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-18.png)  
 &emsp; **<font color = "clime">Java中引入四种引用的目的是让程序自己决定对象的生命周期，JVM是通过垃圾回收器对这四种引用做不同的处理，来实现对象生命周期的改变。</font>**  
 
 <!--
@@ -148,27 +148,27 @@ Java设计这四种引用的主要目的有两个：
 &emsp; 软引用是除了强引用外，最强的引用类型。可以通过java.lang.ref.SoftReference使用软引用。一个持有软引用的对象，不会被JVM很快回收，JVM会根据当前堆的使用情况来判断何时回收。 **<font color = "red">当堆使用率临近阈值时，才会去回收软引用的对象。</font>** 因此，软引用可以用于实现对内存敏感的高速缓存。  
 &emsp; 软引用示例：  
 &emsp; 在IDE设置参数-Xmx2m -Xms2m规定堆内存大小为2m。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-19.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-19.png)  
 &emsp; 运行结果：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-20.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-20.png)  
 &emsp; 打开被注释掉的new byte[1024*100]语句，这条语句请求一块大的堆空间，使堆内存使用紧张。并显式的再调用一次GC，结果如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-21.png)说明在系统内存紧张的情况下，软引用被回收。  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-21.png)说明在系统内存紧张的情况下，软引用被回收。  
 
 ##### 1.1.1.3.3. 弱引用  
 &emsp; 弱引用是一种比软引用较弱的引用类型。在系统GC时， **<font color = "red">只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>** <font color = "clime">它可以作为简单的缓存表解决方案。</font>  
 &emsp; 在java中，可以用java.lang.ref.WeakReference实例来保存对一个Java对象的弱引用。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-23.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-23.png)  
 &emsp; 运行结果：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-24.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-24.png)  
 
 ##### 1.1.1.3.4. 虚引用  
 &emsp; 虚引用是所有类型中最弱的一个。 **<font color = "red">一个持有虚引用的对象，和没有引用几乎是一样的，随时可能被垃圾回收器回收。</font>** 当试图通过虚引用的get()方法取得强引用时，总是会失败。并且，虚引用必须和引用队列一起使用，它的作用在于跟踪垃圾回收过程。  
 &emsp; 当垃圾回收器准备回收一个对象时，如果发现它还有虚引用，就会在垃圾回收后，销毁这个对象，将这个虚引用加入引用队列。程序可以通过判断引用队列中是否已经加入了虚引用，来了解被引用的对象是否将要被垃圾回收。如果程序发现某个虚引用已经被加入到引用队列，那么就可以在所引用的对象的内存被回收之前采取必要的行动。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-25.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-25.png)  
 &emsp; 运行结果：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-26.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-26.png)  
 &emsp; 对虚引用的get()操作，总是返回null，因为sf.get()方法的实现如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-27.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-27.png)  
 
 ##### 1.1.1.3.5. ★★★软引用和弱引用的使用  
 &emsp; **<font color = "red">软引用，弱引用都非常适合来保存那些可有可无的缓存数据，如果这么做，当系统内存不足时，这些缓存数据会被回收，不会导致内存溢出。而当内存资源充足时，这些缓存数据又可以存在相当长的时间，从而起到加速系统的作用。</font>**  
@@ -287,7 +287,7 @@ public class FinalizeEscapeGC {
 		&emsp; 当Sample类被加载、连接和初始化后，它的生命周期就开始了，当代表Sample类的Class对象不在被引用，即不可触及时，Class对象就会结束生命周期，Sample类在方法区内的数据也会被卸载，从而结束Sample类的声明周期。  
 		&emsp; 由此可见，一个类何时结束生命周期，取决于代表它的Class对象何时结束生命周期。  
 		&emsp; 注：由java虚拟机自带的三种类加载加载的类在虚拟机的整个生命周期中是不会被卸载的，由用户自定义的类加载器所加载的类才可以被卸载。    
-		![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-161.png)  
+		![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-161.png)  
 
 ## 1.3. ~~null与GC~~  
 <!-- 

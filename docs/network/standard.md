@@ -77,7 +77,7 @@ https://mp.weixin.qq.com/s/Yjoh1BRJlfY6R5wpwAy3JQ
 * sar -n TCP，显示TCP的统计数据；
 
 &emsp; 比如，通过 sar 命令获取了网口的统计信息：   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/network-1.png)  
+![image](http://www.wt1814.com/static/view/images/network/network-1.png)  
 &emsp; 它们的含义：  
 
 * rxpck/s 和 txpck/s 分别是接收和发送的 PPS，单位为包 / 秒。
@@ -94,6 +94,6 @@ $ ethtool eth0 | grep Speed
 ### 1.2.2. 连通性和延时如何查看？
 &emsp; 要测试本机与远程主机的连通性和延时，通常是使用 ping 命令，它是基于 ICMP 协议的，工作在网络层。  
 &emsp; 比如，如果要测试本机到 192.168.12.20 IP 地址的连通性和延时：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/network-2.png)  
+![image](http://www.wt1814.com/static/view/images/network/network-2.png)  
 &emsp; 显示的内容主要包含icmp_seq（ICMP 序列号）、TTL（生存时间，或者跳数）以及 time（往返延时），而且最后会汇总本次测试的情况，如果网络没有丢包，packet loss的百分比就是0。  
 &emsp; 不过，需要注意的是，ping不通服务器并不代表HTTP请求也不通，因为有的服务器的防火墙是会禁用ICMP协议的。  

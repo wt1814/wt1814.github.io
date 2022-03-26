@@ -22,7 +22,7 @@
     2. AutoConfigurationImportSelector#getCandidateConfigurations()方法获取配置文件spring.factories所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
 
 # 1. SpringBoot自动配置
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-3.png)  
+![image](http://www.wt1814.com/static/view/images/sourceCode/springBoot/springBoot-3.png)  
 
 &emsp; SpringBoot的自动配置，指的是只需要引用功能的包，相关的配置完全不用管，SpringBoot会自动将一些配置类的bean注册进ioc容器，在需要的地方使用@autowired或者@resource等注解来使用它。  
 
@@ -163,9 +163,9 @@ private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoad
 
 ##### 1.4.1.1.1. spring.factories、@ConditionOnxxx注解和spring.provides  
 &emsp; SpringBoot本身的自动配置都在spring-boot-autoconfigure.jar包中。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-1.png)  
+![image](http://www.wt1814.com/static/view/images/sourceCode/springBoot/springBoot-1.png)  
 &emsp; 里面包含了很多自动配置属性。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-2.png)  
+![image](http://www.wt1814.com/static/view/images/sourceCode/springBoot/springBoot-2.png)  
 
 &emsp; <font color = "red">spring.factories中的配置，不是全量加载。例如：查看WebMvcAutoConfiguration源码，</font> <font color = "clime">是否加载是通过@ConditionalOnClass注解进行判断条件是否成立来判断。</font>  
 

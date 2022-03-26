@@ -23,7 +23,7 @@
 线程执行monitorenter指令时尝试获取对象的monitor的所有权，当monitor被占用时就会处于锁定状态。  
 2. **<font color = "clime">Java对象头的MarkWord中除了存储锁状态标记外，还存有ptr_to_heavyweight_monitor（也称为管程或监视器锁）的起始地址，每个对象都存在着一个monitor与之关联。</font>**  
 3. **<font color = "clime">在Java虚拟机（HotSpot）中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。</font><font color = "blue">monitor运行的机制过程如下：(_EntryList队列、_Owner区域、_WaitSet队列)</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-55.png)  
     * `想要获取monitor的线程，首先会进入_EntryList队列。`  
     * `当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程，`同时计数器count加1。  
     * **如果线程调用了wait()方法，则会进入WaitSet队列。** 它会释放monitor锁，即将owner赋值为null，count自减1，进入WaitSet队列阻塞等待。  
@@ -187,7 +187,7 @@ Java对象天生就是一个Monitor，当monitor被占用，它就处于锁定�
 JVM在完成monitorexit时的处理方式分为正常退出和出现异常时退出：
 
 常规同步方法完成时监视器退出由Java虚拟机的返回指令处理。也就是说程序正常执行完毕的时候，JVM有一个指令会隐式的完成monitor的退出---monitorexit，这个指令是athrow。如果同步语句出现了异常时，JVM的异常处理机制也能monitorexit。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-57.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-57.png)  
 简单的加锁解锁过程
 因此，执行同步代码块后首先要执行monitorenter指令，退出的时候monitorexit指令。  
 -->
@@ -207,16 +207,16 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 
 * **Java的对象：**  
 &emsp; java对象在内存中的存储结构如下：    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-12.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-12.png)   
 &emsp; 内存中的对象分为三部分：对象头、对象实例数据和对齐填充(数组对象多一个区域：记录数组长度)。  
 &emsp; Java对象头：对象头里的数据主要是一些运行时的数据。  
 &emsp; 在Hotspot虚拟机中，对象头包含2个部分：标记字段(Mark Word)和类型指针(Kass point)。其中Klass Point是是对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例，Mark Word用于存储对象自身的运行时数据，它是实现轻量级锁和偏向锁的关键。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-13.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-13.png)   
 &emsp; **Java对象头中的Mark Word：**  
 &emsp; Mark Word用于存储对象自身的运行时数据，如哈希码(Hash Code)、GC分代年龄、锁状态标志、线程持有锁、偏向线程ID、偏向时间戳等，这部分数据在32位和64位虚拟机中分别为32bit和64bit。一个对象头一般用2个机器码存储(在32位虚拟机中，一个机器码为4个字节即32bit),但如果对象是数组类型，则虚拟机用3个机器码来存储对象头，因为JVM虚拟机可以通过Java对象的元数据信息确定Java对象的大小，但是无法从数组的元数据来确认数组的大小，所以用一块来记录数组长度。在32位虚拟机中，Java对象头的Makr Word的默认存储结构如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-14.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-14.png)   
 &emsp; 在程序运行期间，对象头中锁表标志位会发生改变。Mark Word可能发生的变化如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-15.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-15.png)   
 
 * **Monitor：**  
 &emsp; Monitor是操作系统提出来的一种高级原语，但其具体的实现模式，不同的编程语言都有可能不一样。Monitor有一个重要特点那就是，同一个时刻，只有一个线程能进入到Monitor定义的临界区中，这使得Monitor能够达到互斥的效果。但仅仅有互斥的作用是不够的，无法进入Monitor临界区的线程，它们应该被阻塞，并且在必要的时候会被唤醒。显然，monitor作为一个同步工具，也应该提供这样的机制。  
@@ -229,7 +229,7 @@ Java对象头与monitor
 https://blog.csdn.net/kking_edc/article/details/108382333
 -->
 &emsp; 在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充，如下所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-65.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-65.png)   
 
 * 对象头：包含Mark Word、class pointer、array length共3部分。  
     * **第一部分用于存储对象自身的运行时数据，如哈希码、GC分代年龄、锁标识状态、线程持有的锁、偏向线程ID等。** 这部分数据的长度在32位和64位的Java虚拟机中分别会占用32个或64个比特，官方称它为“Mark Word”。这部分是实现轻量级锁和偏向锁的关键。  
@@ -241,9 +241,9 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 &emsp; JVM中对象头的方式有以下两种(以32位JVM为例)  
 
 * 普通对象：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-60.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-60.png)   
 * 数组对象：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-61.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-61.png)   
 
 <!--   
 工具：JOL = Java Object Layout   
@@ -264,18 +264,18 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位，不同标记位下的Mark Word示意如下：  
 
 &emsp; 64位下的标记字与32位的相似：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-41.png)   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-62.png)   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-64.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-41.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-62.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-64.png)   
 
 &emsp; 下面两张图是32位JVM和64位JVM中“Mark Word”所记录的信息  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-67.png)   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-68.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-67.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-68.png)   
 
 &emsp; 其中各部分的含义如下：(<font color = "red">用对象头中markword最低的三位代表锁状态，其中1位是偏向锁位，两位是普通锁位。</font>)  
 
 * lock：2位的锁状态标记位，由于希望用尽可能少的二进制位表示尽可能多的信息，所以设置了lock标记。该标记的值不同，整个mark word表示的含义不同。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-63.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-63.png)   
 * bias_lock：对象是否启动偏向锁标记，只占1个二进制位。为1时表示对象启动偏向锁，为0时表示对象没有偏向锁。  
 * age：4位的Java对象年龄。在GC中，如果对象在Survivor区复制一次，年龄增加1。当对象达到设定的阈值时，将会晋升到老年代。默认情况下，并行GC的年龄阈值为15，并发GC的年龄阈值为6。由于age只有4位，所以最大值为15，这就是-XX:MaxTenuringThreshold选项最大值为15的原因。  
 * identity_hashcode：25位的对象标识Hash码，采用延迟加载技术。调用方法System.identityHashCode()计算，并会将结果写到该对象头中。当对象被锁定时，该值会移动到管程Monitor中。  
@@ -283,8 +283,8 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 * epoch：偏向时间戳。  
 * ptr_to_lock_record：指向栈中锁记录的指针。  
 * **<font color = "clime">ptr_to_heavyweight_monitor：指向monitor对象(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联，对象与其monitor之间的关系有存在多种实现方式，如monitor对象可以与对象一起创建销毁或当前线程试图获取对象锁时自动生，但当一个monitor被某个线程持有后，它便处于锁定状态。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-56.png)   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-76.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-56.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-76.png)   
 
         为什么锁信息存放在对象头里？
         因为在Java中任意对象都可以用作锁，因此必定要有一个映射关系，存储该对象以及其对应的锁信息(比如当前哪个线程持有锁，哪些线程在等待)。一种很直观的方法是，用一个全局map，来存储这个映射关系，但这样会有一些问题：需要对map做线程安全保障，不同的Synchronized之间会相互影响，性能差；另外当同步对象较多时，该map可能会占用比较多的内存。
@@ -339,7 +339,7 @@ ObjectMonitor() {
 &emsp; ObjectMonitor中有两个队列，_WaitSet和_EntryList，用来保存ObjectWaiter对象列表(每个等待锁的线程都会被封装成ObjectWaiter对象)。  
 
 &emsp; **<font color = "red">monitor运行的机制过程如下：(_WaitSet队列和 _EntryList队列)</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-55.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-55.png)  
 
 * 想要获取monitor的线程，首先会进入_EntryList队列。  
 * 当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程,同时计数器count加1。  
@@ -363,7 +363,7 @@ ObjectMonitor() {
     有一个线程获取到monitor锁后，就赋值给当前线程，并且计数器+1
     如果线程调用wait方法，将释放锁，当前线程置为null，计数器-1，同时进入waitSet等待被唤醒，调用notify或者notifyAll之后又会进入entryList竞争锁
     如果线程执行完毕，同样释放锁，计数器-1，当前线程置为null
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-69.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-69.png)  
 
 -->
 &emsp; 下面再看一下加锁的代码：  

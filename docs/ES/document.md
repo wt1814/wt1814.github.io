@@ -71,7 +71,7 @@ PUT blog/_doc/1
     _seq_no 和 _primary_term 这两个也是版本控制用的(针对当前 index)。
 
 &emsp; 添加成功后，可以查看添加的文档：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-27.png)  
+![image](http://www.wt1814.com/static/view/images/ES/es-27.png)  
 &emsp; 当然，添加文档时，也可以不指定id，此时系统会默认给出一个id，如果不指定id，则需要使用POST请求，而不能使用PUT请求。  
 
 ```text
@@ -100,9 +100,9 @@ POST blog/_doc
 ```
 &emsp; 如果仅仅只是想探测某一个文档是否存在，可以使用 head 请求：  
 &emsp; 如果文档不存在，响应如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-28.png)  
+![image](http://www.wt1814.com/static/view/images/ES/es-28.png)  
 &emsp; 如果文档存在，响应如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-29.png)  
+![image](http://www.wt1814.com/static/view/images/ES/es-29.png)  
 &emsp; 当然也可以批量获取文档。  
 
 ```text
@@ -152,7 +152,7 @@ POST blog/_update/1
 }
 ```
 &emsp; 添加成功后的文档如下：   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-30.png)  
+![image](http://www.wt1814.com/static/view/images/ES/es-30.png)  
 &emsp; 通过脚本语言，也可以修改数组。例如再增加一个 tag：  
 
 ```text
@@ -235,7 +235,7 @@ POST blog/_delete_by_query
 &emsp; es 中通过Bulk API可以执行批量索引、批量删除、批量更新等操作。  
 &emsp; 首先需要将所有的批量操作写入一个JSON文件中，然后通过POST请求将该JSON文件上传并执行。    
 &emsp; 例如新建一个名为 aaa.json的文件，内容如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-31.png)  
+![image](http://www.wt1814.com/static/view/images/ES/es-31.png)  
 &emsp; 首先第一行：index表示要执行一个索引操作(这个表示一个action，其他的action还有create，delete，update)。_index定义了索引名称，这里表示要创建一个名为 user的索引，_id表示新建文档的id为666。  
 &emsp; 第二行是第一行操作的参数。  
 &emsp; 第三行的 update 则表示要更新。  
@@ -248,7 +248,7 @@ POST blog/_delete_by_query
 curl -XPOST "http://localhost:9200/user/_bulk" -H "content-type:application/json" --data-binary @aaa.json
 ```
 &emsp; 执行完成后，就会创建一个名为user的索引，同时向该索引中添加一条记录，再修改该记录，最终结果如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/ES/es-32.png)  
+![image](http://www.wt1814.com/static/view/images/ES/es-32.png)  
 
 ## 1.3. 索引词频率  
 &emsp; term vector是在Lucene中的一个概念，就是对于文档的某一列，如title、body这种文本类型的建立词频的多维向量空间，每一个词就是一个维度，这个维度的值就是这个词在这个列中的频率。在Elasticsearch中termvectors返回在索引中特定文档字段的统计信息，termvectors在Elasticsearch中是实时分析的，如果要想不实时分析，可以设置realtime参数为falseo默认情况下索引词频率统计是关闭的，需要在建索引的时候手工打开。  

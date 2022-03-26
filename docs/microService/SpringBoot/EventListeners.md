@@ -15,7 +15,7 @@
 <!-- /TOC -->
 
 # 1. SpringBoot事件监听机制  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-11.png)  
+![image](http://www.wt1814.com/static/view/images/sourceCode/springBoot/boot-11.png)  
 
 ## 1.1. 引言  
 &emsp; <font color = "red">在SpringBoot启动过程中，每个不同的启动阶段会分别广播不同的内置生命周期事件，然后相应的监听器会监听这些事件来执行一些初始化逻辑工作。</font>比如ConfigFileApplicationListener会监听onApplicationEnvironmentPreparedEvent事件，来加载配置文件application.properties的环境变量等。  
@@ -96,9 +96,9 @@ public ConfigurableApplicationContext run(String... args) {
 #### 1.3.1.1. 加载ApplicationListener监听器实现类  
 &emsp; <font color = "red">构建SpringApplication对象时，`this.setListeners(this.getSpringFactoriesInstances(ApplicationListener.class))`，从spring.factories中加载出ApplicationListener事件监听接口的SPI扩展实现类然后添加到SpringApplication对象的listeners集合中，用于后续监听SpringBoot启动过程中的事件，来执行一些初始化逻辑工作。</font>  
 &emsp; SpringBoot启动时的具体监听器都实现了ApplicationListener接口，其在spring.factories部分配置如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-8.png)  
+![image](http://www.wt1814.com/static/view/images/sourceCode/springBoot/boot-8.png)  
 &emsp; 在调试时，会从所有的spring.factories配置文件中加载监听器，最终加载了10个监听器。如下图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-9.png)  
+![image](http://www.wt1814.com/static/view/images/sourceCode/springBoot/boot-9.png)  
 
 #### 1.3.1.2. 加载SPI扩展类EventPublishingRunListener  
 &emsp; <font color = "red">在SpringBoot的启动过程run()方法中首先会先新建一个SpringApplicationRunListeners对象用于发布SpringBoot启动过程中的生命周期事件。</font>  
@@ -117,7 +117,7 @@ private SpringApplicationRunListeners getRunListeners(String[] args) {
 }
 ```
 &emsp; getSpringFactoriesInstances()方法，SpringBoot根据SpringApplicationRunListener这个SPI接口去spring.factories中加载相应的SPI扩展实现类。spring.factories中SpringApplicationRunListener有以下SPI实现类：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-10.png)  
+![image](http://www.wt1814.com/static/view/images/sourceCode/springBoot/boot-10.png)  
 &emsp; 由上图可以看到，SpringApplicationRunListener只有EventPublishingRunListener这个SPI实现类 EventPublishingRunListener在SpringBoot的启动过程中尤其重要，由其在SpringBoot启动过程的不同阶段发布不同的SpringBoot的生命周期事件，即SpringApplicationRunListeners对象没有承担广播事件的职责，而最终是委托EventPublishingRunListener来广播事件的。  
 &emsp; 从spring.factories中加载EventPublishingRunListener类后还会实例化该类。EventPublishingRunListener类源码如下，了解其如何承担发布SpringBoot生命周期事件这一职责的。    
 

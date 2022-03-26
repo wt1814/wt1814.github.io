@@ -42,7 +42,7 @@ https://www.hangge.com/blog/cache/detail_2519.html
 
 ## 1.1. Java异常基本概念  
 &emsp; Throwable是所有异常的超类，下一级可以分为Error和 Exception。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/exception/exception-1.png)  
+![image](http://www.wt1814.com/static/view/images/java/exception/exception-1.png)  
 * Error：Java虚拟机无法解决的严重问题。如：JVM系统内部错误、资源耗尽等严重情况。比如：StackOverflowError和OOM。一般不编写针对性的代码进行处理。
 * Exception：其它因编程错误或偶然的外在因素导致的一般性问题，可以使用针对性的代码进行处理。
 异常按照发生的时间可以分为两类：编译时异常和运行时异常。  

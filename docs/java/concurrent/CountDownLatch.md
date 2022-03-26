@@ -67,7 +67,7 @@ FutureTask在Executor框架中表示异步任务，此外还可以用来表示�
 &emsp; 所以使用CountDownLatch会比join方法更灵活。  
 
 ## 1.1. API  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/concurrent-8.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-8.png)  
 &emsp; **构造函数：**  
 
 ```java

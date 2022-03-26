@@ -38,11 +38,11 @@ https://zhuanlan.zhihu.com/p/98874444
 &emsp; 直到Spring Cloud Alibaba的出现，才得以解决这样的问题。Spring Cloud Alibaba是阿里巴巴提供的微服务开发一站式解决方案，是阿里巴巴开源中间件与 Spring Cloud 体系的融合。    
 &emsp; 依托 Spring Cloud Alibaba，只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。  
 &emsp; 作为 Spring Cloud 体系下的新实现，Spring Cloud Alibaba 跟官方的组件或其它的第三方实现如 Netflix, Consul，Zookeeper 等对比，具备了更多的功能：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-66.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-66.png)   
 
 ## 1.2. 包含组件  
 &emsp; 这幅图是Spring Cloud Alibaba 系列组件，其中包含了阿里开源组件，阿里云商业化组件，以及集成Spring Cloud组件。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-67.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-67.png)   
 
 ### 1.2.1. 阿里开源组件
 * Nacos：一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。

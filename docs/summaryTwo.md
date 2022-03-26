@@ -345,16 +345,16 @@
 #### 1.3.3.1. Spring DI中循环依赖
 1. Spring循环依赖的场景：均采用setter方法（属性注入）注入方式，可被解决；采用构造器和setter方法（属性注入）混合注入方式可能被解决。
 2. **<font color = "red">Spring通过3级缓存解决：</font>**  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-20.png)  
+    ![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-20.png)  
     * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
     * 二级缓存: Map<String,Object> earlySingletonObjects， **<font color = "blue">早期曝光对象</font>** ，`二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。`尚未经历了完整的Spring Bean初始化生命周期。
     * 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。  
 3. 未发生依赖  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-21.png)  
+    ![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-21.png)  
 4. **<font color = "clime">单例模式下Spring解决循环依赖的流程：</font>**  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-22.png)  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-17.png)  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-16.png)  
+    ![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-22.png)  
+    ![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-17.png)  
+    ![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-16.png)  
     1. Spring创建bean主要分为两个步骤，`创建原始bean对象`，`接着去填充对象属性和初始化`。  
     2. 每次创建bean之前，都会从缓存中查下有没有该bean，因为是单例，只能有一个。  
     3. `当创建beanA的原始对象后，并把它放到三级缓存中，`接下来就该填充对象属性了，这时候发现依赖了beanB，接着就又去创建 beanB，同样的流程，创建完beanB填充属性时又发现它依赖了beanA，又是同样的流程，不同的是，这时候可以在三级缓存中查到刚放进去的原始对象beanA，所以不需要继续创建，用它注入beanB，完成beanB的创建。`此时会将beanA从三级缓存删除，放到二级缓存。`   
@@ -379,7 +379,7 @@
     &emsp; Spring就是在对象外面包一层ObjectFactory（三级缓存存放），提前曝光的是ObjectFactory对象，在被注入时才在ObjectFactory.getObject方式内实时生成代理对象，并将生成好的代理对象放入到第二级缓存Map\<String, Object> earlySingletonObjects。  
 
 ### 1.3.4. Bean的生命周期
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-10.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-10.png)  
 &emsp; SpringBean的生命周期主要有4个阶段：  
 1. 实例化（Instantiation），可以理解为new一个对象；
 2. 属性赋值（Populate），可以理解为调用setter方法完成属性注入；
@@ -392,7 +392,7 @@
 
 ------
 &emsp; Spring Bean的生命周期管理的基本思路是：在Bean出现之前，先准备操作Bean的BeanFactory，然后操作完Bean，所有的Bean也还会交给BeanFactory进行管理。再所有Bean操作准备BeanPostProcessor作为回调。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-23.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-23.png)  
 
 ### 1.3.5. 容器相关特性
 #### 1.3.5.1. FactoryBean
@@ -607,15 +607,15 @@
 
 2. **<font color = "clime">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。`SpringBoot通过以下步骤实现自己的SPI机制：`</font>**  
 	1. 首先获取线程上下文类加载器;  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-10.png) 
+    ![image](http://www.wt1814.com/static/view/images/sourceCode/springBoot/boot-10.png) 
 	2. 然后利用上下文类加载器从spring.factories配置文件中加载所有的SPI扩展实现类并放入缓存中；  
 	3. 根据SPI接口从缓存中取出相应的SPI扩展实现类；  
 	4. 实例化从缓存中取出的SPI扩展实现类并返回。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/boot/boot-11.png)  
+    ![image](http://www.wt1814.com/static/view/images/microService/boot/boot-11.png)  
 
 #### 1.6.2.2. run()方法运行过程
 1. **<font color = "clime">运行流程，分3步：</font>**  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/boot/boot-9.png)  
+    ![image](http://www.wt1814.com/static/view/images/microService/boot/boot-9.png)  
 
     ```java
     // SpringApplication.java
@@ -906,7 +906,7 @@
     3. consumer生成代理对象，同时根据负载均衡策略，选择一台provider，同时定时向monitor记录接口的调用次数和时间信息。  
     4. **<font color = "clime">拿到代理对象之后，consumer通过`代理对象`发起接口调用。</font>**  
     5. provider收到请求后对数据进行反序列化，然后通过代理调用具体的接口实现。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-52.png)   
+    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-52.png)   
 
 
 &emsp; &emsp; [Dubbo负载、容错、降级](/docs/microService/dubbo/Load.md)  
@@ -914,7 +914,7 @@
 
 ### 1.8.4. Dubbo框架设计
 1. 分层架构设计  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-51.png)  
+    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-51.png)  
     1. 从大的范围来说，dubbo分为三层：
         * business业务逻辑层由开发人员来提供接口和实现，还有一些配置信息。
         * `RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理。`
@@ -942,8 +942,8 @@
 &emsp; **<font color = "clime">基于dubbo.jar内的META-INF/spring.handlers配置，Spring在遇到dubbo名称空间时，会回调DubboNamespaceHandler。所有dubbo的标签，都统一用DubboBeanDefinitionParser进行解析，基于一对一属性映射，将XML标签解析为Bean对象。</font>**  
 &emsp; ⚠️注：`在暴露服务ServiceConfig.export()或引用服务ReferenceConfig.get()时，会将Bean对象转换URL格式，所有Bean属性转成URL的参数。`然后将URL传给协议扩展点，基于扩展点的扩展点自适应机制，根据URL的协议头，进行不同协议的服务暴露或引用。  
 2. **服务提供者暴露服务的主过程：** `参考dubbo架构分层`，`主要分4步`。    
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-29.png)   
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-53.png)   
+    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-29.png)   
+    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-53.png)   
     1. ServiceConfig将Bean对象解析成URL格式。  
     2. `服务代理层proxy`：通过ProxyFactory类的getInvoker方法使用ref实际类生成一个AbstractProxyInvoker实例。`ProxyFactory #getInvoker(T proxy, Class<T> type, URL url)`  
     3. `远程调用层protocol`：通过Protocol协议类的export方法暴露服务。`DubboProtocol #export(Invoker<T> invoker)`  
@@ -951,8 +951,8 @@
         2. 注册中心暴露。  
     4. 如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心。  
 3. **服务消费者引用服务的主过程：** `与服务暴露相反` 
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-30.png)   
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-54.png)   
+    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-30.png)   
+    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-54.png)   
     1. ReferenceConfig解析引用的服务。  
     2. ReferenceConfig类的init方法调用Protocol的refer方法生成Invoker实例。  
     3. 把Invoker转换为客户端需要的接口。  
@@ -1046,8 +1046,8 @@
 1. ~~Watcher机制运行流程：Zookeeper客户端向服务端的某个Znode注册一个Watcher监听，当服务端的一些指定事件触发了这个Watcher，服务端会向指定客户端发送一个事件通知来实现分布式的通知功能，然后客户端根据Watcher通知状态和事件类型做出业务上的改变。  
 &emsp; 触发watch事件种类很多，如：节点创建，节点删除，节点改变，子节点改变等。~~  
 &emsp; 概括可以分为三个过程：1. 客户端注册 Watcher；2. 服务端处理 Watcher；3. 客户端回调 Watcher。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-5.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-6.png)  
+![image](http://www.wt1814.com/static/view/images/microService/zookeeper/zk-5.png)  
+![image](http://www.wt1814.com/static/view/images/microService/zookeeper/zk-6.png)  
 &emsp; 大致流程就是 Client 向ZK中注册 Watcher，如果注册成功的话，会将对应的 Watcher 存储在本地。当ZK服务器端触发 Watcher 事件之后，会向客户端发送通知，`客户端会从 ClientWatchManager 中取出对应的 Watcher 进行回调。`  
 2.  **watch的重要特性：**  
     * 异步发送
@@ -1107,7 +1107,7 @@
     &emsp; XA是DTP模型定义的接口，指的是模型中TM（事务管理器）和RM（资源管理器）之间进行通信的接口，用于向事务管理器提供该资源管理器（该数据库）的提交、回滚等能力。目前大多数实现XA的都是数据库或者MQ，所以提起`XA往往多指基于资源层的底层分布式事务解决方案`。其实现在也有些数据分片框架或者中间件也支持XA协议，毕竟它的兼容性、普遍性更好。  
 2. **2PC：** 
     1. 流程：  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-4.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/problems/problem-4.png)  
         &emsp; <font color = "clime">二阶段提交引入协调者，将`事务的提交`拆分为2个阶段：准备阶段prepare和提交阶段commit/rollback。</font>  
         &emsp; 尽量（不能100%）保证了数据的强一致，适合对数据强一致要求很高的关键领域。  
     2. **XA二阶段问题：** 
@@ -1119,7 +1119,7 @@
         4. 二阶段无法解决的问题：协调者和参与者同时宕机。  
 3. **~~3PC：解决2PC的问题。~~**  
     1. 3PC也就是多了一个阶段(一个询问的阶段)，分别是准备、预提交和提交这三个阶段。  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-5.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/problems/problem-5.png)  
         1. 准备阶段单纯就是协调者去访问参与者，类似于“你还好吗？能接请求不”。  
         2. 预提交其实就是2PC的准备阶段，除了事务的提交啥都干了。  
         3. 提交阶段和2PC的提交一致。
@@ -1139,7 +1139,7 @@
 ##### 1.10.3.2.1. TCC流程
 1. **<font color = "red">TCC是一种`业务层面或者是应用层`的`两阶段、【补偿型】`的事务。</font>**  
 2. TCC是`Try（检测及资源锁定或者预留）`、Commit（确认）、Cancel（取消）的缩写，业务层面需要写对应的三个方法。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-9.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-9.png)  
 3. 一个支付订单的场景：    
     * Try
         * 订单服务，订单状态修改为 UPDATING，也就是修改中的意思
@@ -1198,7 +1198,7 @@
     &emsp; 基本思想：调用方存储业务表和消息表；调用其他服务，如果成功修改消息表状态， **<font color = "clime">如果失败发起重试（重试方式可以基于定时任务、mq等）。</font>**    
     2. **基于mq提供的事务消息：** ~~相比于最终一致性方案可靠性高，但也非强一致性。~~   
 
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-48.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/problems/problem-48.png)  
         1. 调用方开启消息事务；
         2. 发送消息；
         3. 调用方执行本地事务；  
@@ -1216,7 +1216,7 @@
 1. 一阶段：执行用户SQL。`业务数据和回滚日志记录在同一个本地事务中提交，`释放本地锁和连接资源。    
 2. 二阶段：Seata框架自动生成。commit异步化快速完成；rollback通过一阶段的回滚日志进行反向补偿。    
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-68.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-68.png)  
 &emsp; 下面通过一个分支事务的执行过程来了解 Seata 的工作流程。  
 &emsp; 例如有一个业务表 product(id,name)，分支事务的业务逻辑：  
 
@@ -1320,7 +1320,7 @@ update product set name = 'TXC' where id = 1;
     * `方案七：多机实现的分布式锁Redlock`   
 3. `方案五：使用SET EX PX NX + 校验惟一随机值加锁；再删除释放（先查询再删除，非原子操作，需要使用lua脚本保证其原子性）。`  
 &emsp; 在这里，判断是否是当前线程加的锁和释放锁不是一个原子操做。若是调用jedis.del()释放锁的时候，可能这把锁已经不属于当前客户端，会解除他人加的锁。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-61.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-61.png)  
 &emsp; 为了更严谨，通常也是用lua脚本代替。lua脚本以下：  
     ```text
     if redis.call('get',KEYS[1]) == ARGV[1] then 
@@ -1342,7 +1342,7 @@ update product set name = 'TXC' where id = 1;
         * 如何避免死锁？设置锁过期时间。  
         * `锁过期。 增大冗余时间。`  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-69.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-69.png)  
 
 &emsp; 使用redis分布式锁的注意点：  
 
@@ -1508,7 +1508,7 @@ update product set name = 'TXC' where id = 1;
 &emsp; BloomFilter是由一个固定大小的二进制向量或者位图(bitmap)和一系列(通常好几个)映射函数组成的。  
 1. 布隆过滤器的原理：   
     &emsp; **<font color = "red">当一个变量被加入集合时，通过K个映射函数将这个变量映射成位图中的 K 个点，把它们置为1。</font>**  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-2.png)  
+    ![image](http://www.wt1814.com/static/view/algorithm/function-2.png)  
 
     &emsp; 查询某个变量的时候，只要看看这些点是不是都是1，就可以大概率知道集合中有没有它了。  
 
@@ -1556,7 +1556,7 @@ update product set name = 'TXC' where id = 1;
 	2. 备份热key  
     &emsp; 这个方案也很简单。不要让key走到同一台redis上不就行了。把这个key，在多个redis上都存一份不就好了。接下来，有热key请求进来的时候，我们就在有备份的redis上随机选取一台，进行访问取值，返回数据。  
     &emsp; 假设redis的集群数量为N，步骤如下图所示  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-71.png)  
+    ![image](http://www.wt1814.com/static/view/images/microService/problems/problem-71.png)  
     &emsp; 注:不一定是2N，你想取3N，4N都可以，看要求。  
     &emsp; 伪代码如下  
 
@@ -1612,28 +1612,28 @@ update product set name = 'TXC' where id = 1;
 3. 3种链表：  
     * 双端链表LinkedList  
         &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-62.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-62.png)  
     * 压缩列表Ziplist  
         &emsp; 在双端链表中，如果在一个链表节点中存储一个小数据，比如一个字节。那么对应的就要保存头节点，前后指针等额外的数据。这样就浪费了空间，同时由于反复申请与释放也容易导致内存碎片化。这样内存的使用效率就太低了。  
         &emsp; Redis设计了压缩列表：  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-110.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-110.png)  
         &emsp; ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>** 只用在字段个数少，字段值小的场景里。  
     * 快速列表Quicklist  
         &emsp; QuickList其实就是结合了LinkedList和ZipList的优点设计出来的。quicklist存储了一个双向链表，每个节点都是一个ziplist。  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-63.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-63.png)  
 4. 整数集合inset  
 &emsp; inset的数据结构：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-7.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-7.png)  
 &emsp; inset也叫做整数集合，用于保存整数值的数据结构类型，它可以保存int16_t、int32_t 或者int64_t 的整数值。  
 &emsp; 在整数集合中，有三个属性值encoding、length、contents[]，分别表示编码方式、整数集合的长度、以及元素内容，length就是记录contents里面的大小。  
 5. 跳跃表SkipList  
 &emsp; skiplist也叫做「跳跃表」，跳跃表是一种有序的数据结构，它通过每一个节点维持多个指向其它节点的指针，从而达到快速访问的目的。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-85.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-85.png)  
 &emsp; SkipList分为两部分，dict部分是由字典实现，Zset部分使用跳跃表实现，从图中可以看出，dict和跳跃表都存储了数据，实际上dict和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
 
 ###### 1.12.3.1.4.2. SDS详解
 1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>**  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-77.png)  
+    ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-77.png)  
     * len保存了字符串的长度；
     * free表示buf数组中未使用的字节数量；
     * buf数组则是保存字符串的每一个字符元素。  
@@ -1663,7 +1663,7 @@ update product set name = 'TXC' where id = 1;
 
 ###### 1.12.3.1.4.4. 数据类型  
 &emsp; **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-106.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-106.png)  
 
 * String字符串类型的内部编码有三种：
     1. int，存储8个字节的长整型（long，2^63-1）。当int数据不再是整数，或大小超过了long的范围（2^63-1 = 9223372036854775807）时，自动转化为embstr。  
@@ -1700,7 +1700,7 @@ update product set name = 'TXC' where id = 1;
 &emsp; 参考[Redis事件/Reactor](/docs/microService/Redis/RedisEvent.md)  
 &emsp; Redis基于Reactor模式开发了自己的网络事件处理器：这个处理器被称为文件事件处理器（file event handler）：文件事件处理器使用I/O多路复用（multiplexing）程序来同时监听多个套接字，并根据套接字目前执行的任务来为套接字关联不同的事件处理器。  
 &emsp; 下图展示了文件事件处理器的四个组成部分，它们分别是套接字、I/O多路复用程序、文件事件分派器(dispatcher)，以及事件处理器。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-56.png)    
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-56.png)    
 
 ##### 1.12.3.2.4. Redis多线程模型
 1. 为什么Redis一开始使用单线程？  
@@ -1765,7 +1765,7 @@ update product set name = 'TXC' where id = 1;
 
 
 6. AOF采用的是写后日志的方式，Redis先执行命令把数据写入内存，然后再记录日志到文件中。AOF日志记录的是操作命令，不是实际的数据，如果采用AOF方法做故障恢复时需要将全量日志都执行一遍。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-121.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-121.png)  
 
 &emsp; 平时用的MySQL则采用的是 “写前日志”，那 Redis为什么要先执行命令，再把数据写入日志呢？  
 
@@ -1902,7 +1902,7 @@ update product set name = 'TXC' where id = 1;
 3. `限流对象分类：基于请求限流、基于资源限流。` 阿里Sentinel是针对`qps和线程数`进行限流。   
 4. 限流算法：  
     * 固定窗口算法，有时会让通过请求量允许为限制的两倍。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-24.png)  
+    ![image](http://www.wt1814.com/static/view/images/microService/problems/problem-24.png)  
     * 滑动窗口算法， **<font color = "clime">`避免了固定窗口计数器带来的双倍突发请求。`</font>** 但时间区间的精度越高，算法所需的空间容量就越大。  
     * 漏桶算法，实现流量整形和流量控制。漏洞底部的设计大小固定，水流速度固定。漏桶算法的缺陷也很明显，当短时间内有大量的突发请求时，即便此时服务器没有任何负载，每个请求也都得在队列中等待一段时间才能被响应。  
     * 令牌桶算法，
@@ -1914,7 +1914,7 @@ update product set name = 'TXC' where id = 1;
     * 集群限流的应用场景有两个，一个是网关，常用的方案有Nginx限流和Spring Cloud Gateway，另一个场景是与外部或者下游服务接口的交互，可以使用redis+lua实现。阿里巴巴的开源限流系统Sentinel也可以针对接口限流。  
 
 ### 1.12.5. 服务降级
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-36.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-36.png)  
 
 
 ## 1.13. 分布式消息队列
@@ -2124,7 +2124,7 @@ update product set name = 'TXC' where id = 1;
 &emsp; at most once，最多一次，可以理解为可能发生消息丢失；at least once，至少一次，可以理解为可能发生重复消费。kafka通过ack的配置来实现这两种。  
 &emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。 **exactly once也被称为幂等性。**  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-119.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-119.png)  
 
 ###### 1.13.2.2.3.4. 幂等（重复消费）
 1. **幂等又称为exactly once（精确传递一次。消息被处理且只会被处理一次。不丢失不重复就一次）。**  
@@ -2173,7 +2173,7 @@ update product set name = 'TXC' where id = 1;
     * 阻塞和非阻塞：在等待这个函数返回结果之前，当前的线程是处于挂起状态还是运行状态。 
 3. 同步阻塞I/O：  
     1. 流程：  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-1.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/netty/netty-1.png)  
         1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
         2. 内核等待I/O数据返回，此时用户进程处于【阻塞】，一直等待内核返回；
         3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
@@ -2182,7 +2182,7 @@ update product set name = 'TXC' where id = 1;
     2. BIO采用多线程时，大量的线程占用很大的内存空间，并且线程切换会带来很大的开销，10000个线程真正发生读写事件的线程数不会超过20%，`每次accept都开一个线程也是一种资源浪费。`  
 4. 同步非阻塞I/O：  
     1. 流程：  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-2.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/netty/netty-2.png)  
         1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
         2. 内核等待I/O数据返回。无I/O数据返回时，内核返回给用户进程ewouldblock结果。`【`非阻塞`】用户进程，立马返回结果。`但 **<font color = "clime">用户进程要`【主动轮询】`查询结果。</font>**  
         3. I/O数据返回后，内核将数据从内核空间拷贝到用户空间；  
@@ -2194,7 +2194,7 @@ update product set name = 'TXC' where id = 1;
     &emsp; 如果一个I/O流进来，就开启一个进程处理这个I/O流。那么假设现在有一百万个I/O流进来，那就需要开启一百万个进程一一对应处理这些I/O流（这就是传统意义下的多进程并发处理）。思考一下，一百万个进程，CPU占有率会多高，这个实现方式及其的不合理。所以人们提出了 **<font color = "red">I/O多路复用这个模型，一个线程，通过记录I/O流的状态来同时管理多个I/O，可以提高服务器的吞吐能力。</font>**  
     &emsp; `多路是指多个socket套接字，复用是指复用同一个进程。`  
     2. 流程：  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-3.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/netty/netty-3.png)  
         1. 用户多进程或多线程发起select系统调用，复用器Selector会监听注册进来的进程事件。用户进程【同步】等待结果；
         2. 内核等待I/O数据返回，无数据返回时，进程【阻塞】于select调用；
         2. I/O数据返回后，内核将数据从内核空间拷贝到用户空间， **<font color = "clime">Selector`通知`哪个进程哪个事件；</font>**  
@@ -2223,7 +2223,7 @@ update product set name = 'TXC' where id = 1;
         * epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改。
         * 双向链表，用于存储准备就绪的事件，当epoll_wait调用时，仅查看这个rdllist双向链表数据即可。epoll_wait阻塞等待注册的事件发生，返回事件的数目，并将触发的事件写入events数组中。   
         -->
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-119.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/netty/netty-119.png)  
         1. 执行epoll_create()时，创建了红黑树和就绪链表（rdllist双向链表）；
         2. 执行epoll_ctl()时，如果增加socket句柄，则检查在红黑树中是否存在，存在立即返回，不存在则添加到树干上，然后向内核注册回调函数，用于当中断事件来临时向准备就绪链表中插入数据；
         3. 执行epoll_wait()时立刻返回准备就绪链表里的数据即可。  
@@ -2250,16 +2250,16 @@ update product set name = 'TXC' where id = 1;
     * `Reactor负责监听（建立连接）和处理请求（分发事件、读写）。`  
     * 线程池负责处理事件。  
 3. **单线程模型（单Reactor单线程）**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-91.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-91.png)  
 &emsp; ~~这是最基本的单Reactor单线程模型。其中Reactor线程，负责多路分离套接字，有新连接到来触发connect事件之后，交由Acceptor进行处理，有IO读写事件之后交给hanlder处理。~~  
 &emsp; ~~Acceptor主要任务就是构建handler，在获取到和client相关的SocketChannel之后，绑定到相应的hanlder上，对应的SocketChannel有读写事件之后，基于racotor分发，hanlder就可以处理了（所有的IO事件都绑定到selector上，有Reactor分发）。~~  
 &emsp; **<font color = "red">Reactor单线程模型，指的是所有的IO操作都在同一个NIO线程上面完成。</font>** 单个NIO线程会成为系统瓶颈，并且会有节点故障问题。   
 4. **多线程模型（单Reactor多线程）**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-92.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-92.png)  
 &emsp; ~~相对于第一种单线程的模式来说，在处理业务逻辑，也就是获取到IO的读写事件之后，交由线程池来处理，这样可以减小主reactor的性能开销，从而更专注的做事件分发工作了，从而提升整个应用的吞吐。~~  
 &emsp; Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作。在极个别特殊场景中，一个NIO线程（Acceptor线程）负责监听和处理所有的客户端连接可能会存在性能问题。    
 5. **主从多线程模型（多Reactor多线程）**    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-93.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-93.png)  
 &emsp; 主从Reactor多线程模型中，Reactor线程拆分为mainReactor和subReactor两个部分， **<font color = "clime">`mainReactor只处理连接事件`，`读写事件交给subReactor来处理`。</font>** 业务逻辑还是由线程池来处理。  
 &emsp; mainRactor只处理连接事件，用一个线程来处理就好。处理读写事件的subReactor个数一般和CPU数量相等，一个subReactor对应一个线程。  
 &emsp; ~~第三种模型比起第二种模型，是将Reactor分成两部分：~~  
@@ -2276,7 +2276,7 @@ update product set name = 'TXC' where id = 1;
     * CPU拷贝：内核态和用户态之间的复制。 **零拷贝："零"更多的是指在用户态和内核态之间的复制是0次。**   
     * DMA拷贝：设备（或网络）和内核态之间的复制。  
 3. 仅CPU方式：  
-	![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-66.png)  
+	![image](http://www.wt1814.com/static/view/images/microService/netty/netty-66.png)  
 	&emsp; **仅CPU方式读数据read流程：**  
 
 	* 当应用程序需要读取磁盘数据时，调用read()从用户态陷入内核态，read()这个系统调用最终由CPU来完成；
@@ -2287,7 +2287,7 @@ update product set name = 'TXC' where id = 1;
     `仅CPU方式有4次状态切换，4次CPU拷贝。`    
 
 4. CPU & DMA（Direct Memory Access，直接内存访问）方式   
-	![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-68.png)    
+	![image](http://www.wt1814.com/static/view/images/microService/netty/netty-68.png)    
 	&emsp; **<font color = "red">最主要的变化是，CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，因此减少了2次CPU拷贝。共2次CPU拷贝，2次DMA拷贝，4次状态切换。之后的过程类似。</font>**  
 
 	* 读过程涉及2次空间切换(需要CPU参与)、1次DMA拷贝、1次CPU拷贝；
@@ -2298,7 +2298,7 @@ update product set name = 'TXC' where id = 1;
     &emsp; mmap+write简单来说就是使用`mmap替换了read+write中的read操作`，减少了一次CPU的拷贝。  
     &emsp; `mmap主要实现方式是将读缓冲区的地址和用户缓冲区的地址进行映射，内核缓冲区和应用缓冲区共享，从而减少了从读缓冲区到用户缓冲区的一次CPU拷贝。`  
 
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-142.png)  
+    ![image](http://www.wt1814.com/static/view/images/microService/netty/netty-142.png)  
 
     &emsp; 整个过程发生了4次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
 
@@ -2313,7 +2313,7 @@ update product set name = 'TXC' where id = 1;
 7. sendfile（函数调用）：  
     1. **<font color = "red">sendfile建立了两个文件之间的传输通道。</font>** 通过使用sendfile数据可以直接在内核空间进行传输，因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。   
     2. 流程：  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-148.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/netty/netty-148.png)  
         &emsp; 整个过程发生了2次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
         1. 用户进程通过sendfile()方法向操作系统发起调用，上下文从用户态转向内核态。
         2. DMA控制器把数据从硬盘中拷贝到读缓冲区。
@@ -2325,7 +2325,7 @@ update product set name = 'TXC' where id = 1;
 &emsp; splice系统调用是Linux在2.6版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
 &emsp; splice系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
 &emsp; **<font color = "clime">splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-35.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-35.png)  
 
 ### 1.14.4. Socket编程
 &emsp; `Socket是对TCP/IP协议的封装。`Socket只是个接口不是协议，通过Socket才能使用TCP/IP协议，除了TCP，也可以使用UDP协议来传递数据。  
@@ -2357,7 +2357,7 @@ update product set name = 'TXC' where id = 1;
 &emsp; [Netty运行流程](/docs/microService/communication/Netty/operation.md)   
 
 &emsp; **<font color = "clime">一般来说，使用Bootstrap创建启动器的步骤可分为以下几步：</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-151.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-151.png)  
 1. 创建服务器启动辅助类，服务端是ServerBootstrap。  
     &emsp; 需要设置事件循环组EventLoopGroup，如果使用reactor主从模式，需要创建2个：   
     * <font color = "clime">`创建boss线程组（EventLoopGroup bossGroup）`用于服务端接受客户端的连接；  
@@ -2366,11 +2366,11 @@ update product set name = 'TXC' where id = 1;
 3. 绑定服务器端口并启动服务器，同步等待服务器启动完毕。  
 4. 阻塞启动线程，并同步等待服务器关闭，因为如果不阻塞启动线程，则会在finally块中执行优雅关闭，导致服务器也会被关闭了。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-150.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-44.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-150.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-44.png)  
 
 &emsp; Netty整体运行流程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-87.png) 
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-87.png) 
 
 1. `Netty基于Reactor，parentGroup用于处理连接，childGroup用于处理数据读写。`  
 2. 当一个连接到达时，Netty就会创建一个Channel，然后`从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上`，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
@@ -2402,7 +2402,7 @@ update product set name = 'TXC' where id = 1;
 
 #### 1.14.6.4. Netty逻辑架构
 &emsp; **<font color = "red">Netty采用了典型的三层网络架构进行设计和开发，逻辑架构如下图所示：</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-134.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-134.png)  
 1. 业务逻辑编排层 Service ChannelHandler：  
 &emsp; 业务逻辑编排层通常有两类，一类是纯粹的业务逻辑编排，一类是应用层协议插件，用于特定协议相关的会话和链路管理。由于应用层协议栈往往是开发一次到处运行，并且变动较小，故而将应用协议到 POJO 的转变和上层业务放到不同的 ChannelHandler 中，就可以实现协议层和业务逻辑层的隔离，实现架构层面的分层隔离。  
 2. 职责链 ChannelPipeline：  
@@ -2499,7 +2499,7 @@ update product set name = 'TXC' where id = 1;
 
 ## 1.18. 计算机网络
 ### 1.18.1. OSI七层网络模型
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/osi-2.png)  
+![image](http://www.wt1814.com/static/view/images/network/osi-2.png)  
 
 ### 1.18.2. 应用层
 #### 1.18.2.1. DNS
@@ -2511,7 +2511,7 @@ update product set name = 'TXC' where id = 1;
 
 #### 1.18.2.3. HTTPS
 1. **<font color = "clime">HTTPS的整体过程分为证书验证、协商密钥、数据传输阶段。</font>**  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/https-5.png)  
+    ![image](http://www.wt1814.com/static/view/images/network/https-5.png)  
     1. 证书验证阶段，一次交互，客户端发送请求，获取到服务端的证书，并进行校验。若不合法，进行警告。  
     2. 协商密钥阶段，采取非对称加密。`客户端用公钥对随机数进行加密和传输`；`服务端用私钥解密随机数`，获取到随机数，完成连接。 **<font color = "clime">~~注：非对称加密的目的就是让服务端得到这个随机值，以后客户端和服务端的通信就可以通过这个随机值来进行加密解密。~~</font>**  
     3. 完成连接后，采用对称加密进行数据传输。  
@@ -2524,11 +2524,11 @@ update product set name = 'TXC' where id = 1;
 ###### 1.18.3.1.1.1. 连接建立
 1. 连接建立
     1. 三次握手  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP-1.png)  
+        ![image](http://www.wt1814.com/static/view/images/network/TCP-1.png)  
         1. 为什么只有三次握手才能确认双方的接受与发送能力是否正常，而两次却不可以？  
         &emsp; <font color = "clime">第三次握手中，客户端向服务器发送确认包ACK，`防止了服务器端的一直等待而浪费资源`。</font>例如：已失效的连接请求报文突然又传送到了服务器，从而会产生错误。  
     2. 四次挥手  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP-2.png)  
+        ![image](http://www.wt1814.com/static/view/images/network/TCP-2.png)  
         1. **<font color = "clime">Client收到服务端F1N后，Client进入TIME_WAIT状态。</font>** 2MSL后自动关闭。 
         2. 为什么客户端最后还要等待2MSL？  
         &emsp; <font color = "red">保证客户端发送的最后一个`ACK报文`能够到达服务器，因为这个ACK报文可能丢失。</font>  
@@ -2552,7 +2552,7 @@ update product set name = 'TXC' where id = 1;
 	1. **<font color = "red">长连接，指在一个连接上可以连续发送多个数据包，在连接保持期间，如果没有数据包发送，需要双方发链路检测包。</font>**   
 	&emsp; `长连接没有条件能够判断读写什么时候结束，所以必须要加报文头的长度。`读函数先是读取报文头的长度，再根据这个长度去读相应长度的报文。  
 	2. 流程：TCP连接→数据包传输→保持连接(心跳)→数据传输→保持连接(心跳)→……→关闭连接（一个TCP连接通道有多个读写通信）。  
-	![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP-4.png)   
+	![image](http://www.wt1814.com/static/view/images/network/TCP-4.png)   
 	3. 优点：  
 	&emsp; 可以省去较多的TCP建立和关闭的操作，减少浪费，节约时间。 
 	4. 缺点：
@@ -2562,7 +2562,7 @@ update product set name = 'TXC' where id = 1;
 2. TCP短链接 
 	1. 短连接是指通信双方有数据交互时，就建立一个TCP连接，数据发送完成后，则断开此TCP连接（管理起来比较简单，存在的连接都是有用的连接，不需要额外的控制手段）。  
 	2. 流程：连接→数据传输→关闭连接→连接→数据传输→关闭连接。  
-	![image](https://gitee.com/wt1814/pic-host/raw/master/images/network/TCP-5.png)   
+	![image](http://www.wt1814.com/static/view/images/network/TCP-5.png)   
 	3. 优点：对于服务器来说管理较为简单，存在的连接都是有用的连接，不需要额外的控制手段。  
 	4. 缺点：但如果客户请求频繁，将在TCP的建立和关闭操作上浪费较多时间和带宽。  
 3. TCP长短连接使用场景：  
@@ -2632,17 +2632,17 @@ update product set name = 'TXC' where id = 1;
 ### 1.20.2. DevOps
 1. DevOps框架  
 &emsp; 以下是一个DevOps框架。这个框架只指出那些被认可的概念和它们在某种程度上的关系。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-8.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-8.png)  
 &emsp; **<font color = "clime">敏捷开发指的是在 DevOps 中采用敏捷思想进行软件开发，敏捷宣言无疑是很重要的一项。有多种敏捷方法可以采用，比如Scrum、看板和极限编程。</font>**  
 &emsp; **<font color = "clime">持续集成提供了让多个程序员可以同时运行应用程序的最佳实践，可以频繁合并源代码、验证代码（静态测试用例）、编译和测试代码（动态测试用例）。</font>**  
 &emsp; **<font color = "clime">持续交忖关注从开发、测试、验收到生产环境的高频生产能力。基于高度的自动化，极端的发布上线时间可以达到分钟级。</font>**  
 2. DevOps流程  
 &emsp; 下图显示了一个DevOps流程。它不是DevOps流程的正式定义，而是表述了在大多数组织机构中，为了实现一个服务而会被循环执行的合乎逻辑顺序的一系列阶段。  
 &emsp; 深色部分表示开发流程，浅色部分表示运维流程。这两个流程构成了DevOps方法的核心。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-1.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-1.png)  
 3. 工具集  
 &emsp; **<font color = "clime">DevOps一般包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/devops/devops-3.png)  
+![image](http://www.wt1814.com/static/view/images/devops/devops/devops-3.png)  
 
 ### 1.20.3. 从上往下学Docker
 
@@ -2656,7 +2656,7 @@ update product set name = 'TXC' where id = 1;
         * RUN命令：**run是在docker build构建镜像时，会执行的命令，** 比如安装一些软件、配置一些基础环境。  
     * **<font color = "clime">容器启动时执行指令</font>** （CMD、ENTRYPOINT）  
         * CMD命令： **cmd是在docker run启动容器时，会执行的命令，为启动的容器指定默认要运行的程序。** CMD指令指定的程序可被docker run命令行参数中指定要运行的程序所覆盖。 **<font color = "clime">注意：如果Dockerfile中如果存在多个CMD指令，仅最后一个生效。</font>**    
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-9.png)  
+    ![image](http://www.wt1814.com/static/view/images/devops/docker/docker-9.png)  
 
 
 #### 1.20.3.2. 镜像详解

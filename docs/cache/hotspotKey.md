@@ -20,7 +20,7 @@
 	2. 备份热key  
     &emsp; 这个方案也很简单。不要让key走到同一台redis上不就行了。把这个key，在多个redis上都存一份不就好了。接下来，有热key请求进来的时候，我们就在有备份的redis上随机选取一台，进行访问取值，返回数据。  
     &emsp; 假设redis的集群数量为N，步骤如下图所示  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-71.png)  
+    ![image](http://www.wt1814.com/static/view/images/microService/problems/problem-71.png)  
     &emsp; 注:不一定是2N，你想取3N，4N都可以，看要求。  
     &emsp; 伪代码如下  
 
@@ -53,7 +53,7 @@ https://www.cnblogs.com/rjzheng/p/10874537.html
 &emsp; 这个方式就是在操作redis之前，加入一行代码进行数据统计。那么这个数据统计的方式有很多种，也可以是给外部的通讯系统发送一个通知信息。缺点就是对客户端代码造成入侵。  
 &emsp; 方法三:在Proxy层做收集  
 &emsp; 有些集群架构是下面这样的，Proxy可以是Twemproxy，是统一的入口。可以在Proxy层做收集上报，但是缺点很明显，并非所有的redis集群架构都有proxy。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-70.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-70.png)  
 &emsp; 方法四:用redis自带命令  
 &emsp; (1)monitor命令，该命令可以实时抓取出redis服务器接收到的命令，然后写代码统计出热key是啥。当然，也有现成的分析工具可以给你使用，比如redis-faina。但是该命令在高并发的条件下，有内存增暴增的隐患，还会降低redis的性能。  
 &emsp; (2)hotkeys参数，redis 4.0.3提供了redis-cli的热点key发现功能，执行redis-cli时加上–hotkeys选项即可。但是该参数在执行的时候，如果key比较多，执行起来比较慢。  
@@ -71,7 +71,7 @@ https://www.cnblogs.com/rjzheng/p/10874537.html
 &emsp; (2)备份热key  
 &emsp; 这个方案也很简单。不要让key走到同一台redis上不就行了。把这个key，在多个redis上都存一份不就好了。接下来，有热key请求进来的时候，我们就在有备份的redis上随机选取一台，进行访问取值，返回数据。  
 &emsp; 假设redis的集群数量为N，步骤如下图所示  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-71.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-71.png)  
 &emsp; 注:不一定是2N，你想取3N，4N都可以，看要求。  
 &emsp; 伪代码如下  
 

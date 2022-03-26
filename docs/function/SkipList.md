@@ -12,7 +12,7 @@
 # 1. 跳跃表  
 ## 1.1. 跳跃表介绍
 &emsp; 跳跃表SkipList，一种基于有序链表的扩展，<font color = "red">是一个多层索引链表</font>，简称跳表。<font color = "red">跳表是一种空间换时间的数据结构，通过冗余数据，将链表一层一层索引，达到类似二分查找的效果。</font>  
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-1.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-1.png)  
 
 &emsp; 跳跃表和二叉查找树的区别：跳跃表的优点是维持结构平衡的成本比较低，完全依靠随机。而二叉查找树在多次插入删除后，需要自平衡来重新调整结构平衡。  
 

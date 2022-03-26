@@ -27,7 +27,7 @@ https://mp.weixin.qq.com/s/ODxGlLrohCveH-2m-BSDWQ
 <!-- 粘包拆包问题是处于网络比较底层的问题，在数据链路层、网络层以及传输层都有可能发生。我们日常的网络应用开发大都在传输层进行，由于UDP有消息保护边界，不会发生粘包拆包问题，而因此粘包拆包问题只发生在TCP协议中。具体讲TCP是个”流"协议，只有流的概念，没有包的概念，对于业务上层数据的具体含义和边界并不了解，它只会根据TCP缓冲区的实际情况进行包的划分。所以在业务上认为，一个完整的包可能会被TCP拆分成多个包进行发送，也有可能把多个小的包封装成一个大的数据包发送，这就是所谓的TCP粘包和拆包问题。
 
 &emsp; 下图中演示了粘包和拆包的三种情况：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-38.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-38.png)  
 
 * A和B两个包都刚好满足TCP缓冲区的大小，或者说其等待时间已经达到TCP等待时长，从而还是使用两个独立的包进行发送；  
 * A和B两次请求间隔时间内较短，并且数据包较小，因而合并为同一个包发送给服务端；  
@@ -39,13 +39,13 @@ https://mp.weixin.qq.com/s/ODxGlLrohCveH-2m-BSDWQ
 &emsp; **问题举例说明：**    
 &emsp; 下面针对客户端分别发送了两个数据表Packet1和Packet2给服务端的时候，TCP粘包和拆包会出现的情况进行列举说明：  
 1. 第一种情况，服务端分两次正常收到两个独立数据包，即没有发生拆包和粘包的现象；  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-78.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-78.png)  
 2. 第二种情况，接收端只收到一个数据包，由于TCP是不会出现丢包的，所以这一个数据包中包含了客户端发送的两个数据包的信息，这种现象即为粘包。这种情况由于接收端不知道这两个数据包的界限，所以对于服务接收端来说很难处理。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-79.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-79.png)  
 3. 第三种情况，服务端分两次读取到了两个数据包，第一次读取到了完整的Packet1和Packet2包的部分内容，第二次读取到了Packet2的剩余内容，这被称为TCP拆包；  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-80.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-80.png)  
 4. 第四种情况，服务端分两次读取到了两个数据包，第一次读取到了部分的Packet1内容，第二次读取到了Packet1剩余内容和Packet2的整包。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-81.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-81.png)  
 &emsp; 如果此时服务端TCP接收滑窗非常小，而数据包Packet1和Packet2比较大，很有可能服务端需要分多次才能将两个包接收完全，期间发生多次拆包。   
 
 

@@ -271,7 +271,7 @@ private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] 
 -->
 
 ##### 1.2.1.2.1. 获得类加载器  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/boot-10.png) 
+![image](http://www.wt1814.com/static/view/images/sourceCode/springBoot/boot-10.png) 
 &emsp; Java的SPI机制默认是利用线程上下文类加载器去加载扩展类的。那么，SpringBoot实现的SPI机制是利用哪种类加载器去加载spring.factories配置文件中的扩展实现类的？  
 &emsp; ClassLoader classLoader = getClassLoader()解读：  
 
@@ -389,10 +389,10 @@ private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoad
 &emsp; loadSpringFactories方法主要做的事情就是利用之前获取的线程上下文类加载器将classpath中的所有spring.factories配置文件中所有SPI接口的所有扩展实现类给加载出来，然后放入缓存中。注意，这里是一次性加载所有的SPI扩展实现类，所以之后根据SPI接口就直接从缓存中获取SPI扩展类了，就不用再次去spring.factories配置文件中获取SPI接口对应的扩展实现类了。比如之后的获取ApplicationListener,FailureAnalyzer和EnableAutoConfiguration接口的扩展实现类都直接从缓存中获取即可。  
 
 &emsp; 将所有的SPI扩展实现类加载出来后，此时再调用getOrDefault(factoryClassName, Collections.emptyList())方法根据SPI接口名去筛选当前对应的扩展实现类，比如这里传入的factoryClassName参数名为ApplicationContextInitializer接口，那么这个接口将会作为key从刚才缓存数据中取出ApplicationContextInitializer接口对应的SPI扩展实现类。其中从spring.factories中获取的ApplicationContextInitializer接口对应的所有SPI扩展实现类如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/sourceCode/springBoot/springBoot-5.png)  
+![image](http://www.wt1814.com/static/view/images/sourceCode/springBoot/springBoot-5.png)  
 
 ##### 1.2.1.2.3. 实例化从spring.factories中加载的SPI扩展类  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/boot/boot-11.png)  
+![image](http://www.wt1814.com/static/view/images/microService/boot/boot-11.png)  
 &emsp; 从spring.factories中获取到ApplicationContextInitializer接口对应的所有SPI扩展实现类后，此时会将这些SPI扩展类进行实例化。  
 &emsp; `List<T\> instances = createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names)`实例化SPI扩展类，代码解读：  
 

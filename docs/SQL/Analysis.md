@@ -169,7 +169,7 @@ https://baijiahao.baidu.com/s?id=1644815785057748879&wfr=spider&for=pc
 ```sql
 explain select * from test_table where a=90000 and b=90000 order by a;
 ```
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-171.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-171.png)  
 &emsp; 通过上面执行计划中 key 这个字段可以看出，该语句使用的是 b 字段的索引 idx_a。实际表 t1 中，a、b 两个字段都有索引，为什么条件中有这两个索引字段却偏偏选了a字段的索引呢？这时就可以使用trace进行分析。  
 
 &emsp; 大致步骤如下：  

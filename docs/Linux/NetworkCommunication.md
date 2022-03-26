@@ -16,7 +16,7 @@ https://mp.weixin.qq.com/s/uMK6QnJKK2MFERkfx6b-QA
 Linux 网络分析必备技能：tcpdump 实战详解 
 https://mp.weixin.qq.com/s/Tgxdyt1PdVkaNdlZGIDdbA
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/Linux/Linux/linux-5.png)  
+![image](http://www.wt1814.com/static/view/images/Linux/Linux/linux-5.png)  
 
 * ping命令  
 &emsp; ping命令用来测试主机之间网络的连通性。执行ping指令会使用ICMP传输协议，发出要求回应的信息，若远端主机的网络功能没有问题，就会回应该信息，因而得知该主机运作正常。  

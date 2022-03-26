@@ -124,7 +124,7 @@ public class ArthasDemo {
 
 ### 1.2.2. 下载并运行Arthas  
 &emsp; 前提：有一个正在运行的java应用。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-146.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-146.png)  
 
 1. wget(下载) https://alibaba.github.io/arthas/arthas-boot.jar
 2. 启动：java -jar arthas-boot.jar
@@ -147,7 +147,7 @@ https://blog.csdn.net/qq_39218530/article/details/117301113
 -->
 
 &emsp; 官方文档：https://arthas.aliyun.com/doc/commands.html  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-160.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-160.png)  
 
 **1、基础命令**  
 &emsp; help——查看命令帮助信息  
@@ -212,7 +212,7 @@ https://blog.csdn.net/qq_39218530/article/details/117301113
 sc -d *ArthasDemo*
 ```
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-147.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-147.png)  
 
 2. classloader  
 &emsp; 通过 classloader 查看 class 文件来自哪个 jar 包  
@@ -238,7 +238,7 @@ jar:file:/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home/jre/lib
 &emsp; 这两个命令都是用来查看方法调用过程的，不同的是 watch 命令是调用一次打印一次方法的调用情况，而 tt 命令可以先生成一个不断增加的调用列表，然后指定其中某一项进行观测。  
 
 1. 使用 watch 命令查看方法调用情况。我们要查看 ArthasDemo 这个类里面的 convert 方法调用情况。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-148.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-148.png)  
 
 ```text
 watch com.shockang.study.ArthasDemo convert "{params,target,returnObj}" -f -x 4
@@ -252,7 +252,7 @@ watch com.shockang.study.ArthasDemo convert "{params,target,returnObj}" -f -x 4
 
     使用 tt -t 记录下当前方法的每次调用环境现场
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-149.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-149.png)  
 
 ```text
 tt -t com.shockang.study.ArthasDemo convert
@@ -262,7 +262,7 @@ tt -t com.shockang.study.ArthasDemo convert
 
     对于具体一个时间片的信息而言，你可以通过 -i 参数后边跟着对应的 INDEX 编号查看到他的详细信息
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-150.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-150.png)  
 
     图中之所以可以打印兴趣列表，是调用了其 toString 方法，如果没有重写 java.lang.Object 类的 toString 方法，只会看到 hash 值。
 
@@ -366,8 +366,8 @@ private List<People> convert(String s) {
 ```
 
 &emsp; 这时我们就可以将新代码编译后的 class 文件热替换正在运行的 ArthasDemo 的代码。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-151.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-152.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-151.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-152.png)  
 <center>热替换 JVM 内存中（方法区）加载的类</center>
 &emsp; 从这张图可以明显的看出，明明源码中没有打印字符串 s 的逻辑，但是控制台还是打印了字符串，因为我们已经热替换了 JVM 内存中（方法区）加载的类。  
 
@@ -377,14 +377,14 @@ private List<People> convert(String s) {
 &emsp; 推荐使用 tt 命令并将命令行返回结果输出到一个文件中，后续可以选择异常的一行记录使用 tt -i 命令进行深入的分析。  
 &emsp; tee指令会从标准输入设备读取数据，将其内容输出到标准输出设备，同时保存成文件。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-153.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-153.png)  
 
 ```text
 tt -t com.shockang.study.ArthasDemo convert | tee /Users/shockang/Downloads/log
 ```
 
 &emsp; 此外还可以使用 monitor 命令统计方法调用成功失败情况。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-154.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-154.png)  
 
 ```text
 monitor -c 30 com.shockang.study.ArthasDemo convert | tee /Users/shockang/Downloads/log1
@@ -397,14 +397,14 @@ monitor -c 30 com.shockang.study.ArthasDemo convert | tee /Users/shockang/Downlo
 ### 1.3.5. 问题 5：是否有一个全局视角来查看系统的运行状况？
 
 &emsp; 使用 dashboard 命令可以查看当前系统的实时数据面板， 当运行在Ali-tomcat时，会显示当前tomcat的实时信息，如HTTP请求的qps, rt, 错误数, 线程池信息等等。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-155.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-155.png)  
 <center>dashboard实时数据面板</center>
 
 &emsp; 从图中可以看到线程情况，内存使用情况，系统参数等。  
 
 ### 1.3.6. 问题 6：有什么办法可以监控到JVM的实时运行状态？
 &emsp; 使用 jvm 命令可以查看 JVM 的实时运行状态。   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-156.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-156.png)  
 <center>JVM 的实时运行状态</center>
 
 ### 1.3.7. 问题 7：怎么快速定位应用的热点，生成火焰图？
@@ -412,13 +412,13 @@ monitor -c 30 com.shockang.study.ArthasDemo convert | tee /Users/shockang/Downlo
 
     默认情况下，生成的是 cpu 的火焰图，即 event 是 cpu，可以用--event 参数来指定。注意不同系统支持的 event 不同
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-157.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-157.png)  
 &emsp; 默认情况下，arthas使用3658端口，则可以打开：http://localhost:3658/arthas-output/ 查看到arthas-output目录下面的profiler结果：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-158.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-158.png)  
 <center>profiler目录</center>
 
 &emsp; 选择一项点击  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-159.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-159.png)  
 <center>profiler结果图</center>  
 
 ### 1.3.8. 问题 8：怎样直接从JVM内查找某个类的实例？

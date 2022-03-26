@@ -22,11 +22,11 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. 数据库锁
     &emsp; **锁的分类：**  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-42.png)  
+    ![image](http://www.wt1814.com/static/view/images/SQL/sql-42.png)  
 
     * 按使用方式：乐观锁、悲观锁。  
     * 锁类别：有共享锁(读锁)和排他锁(写锁)。锁类别取决于存储引擎执行的sql语句。  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-47.png)  
+        ![image](http://www.wt1814.com/static/view/images/SQL/sql-47.png)  
     * 按粒度：锁的粒度的不同可以分为表锁、页锁、行锁。  
 2. InnoDB共有七种类型的锁：共享/排它锁、意向锁、记录锁（Record lock）、间隙锁（Gap lock）、临键锁（Next-key lock）、插入意向锁、自增锁。  
 3. **<font color = "red">InnoDB存储引擎的锁的算法有三种：</font>**  
@@ -64,11 +64,11 @@ SERIALIZABLE 是限制性最强的隔离级别，因为该级别锁定整个范�
 3. 开启事务就自动加锁。  
 
 &emsp; **锁的分类：**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-42.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-42.png)  
 
 * 按使用方式：乐观锁、悲观锁。  
 * 锁类别：有共享锁(读锁)和排他锁(写锁)。锁类别取决于存储引擎执行的sql语句。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-47.png)  
+    ![image](http://www.wt1814.com/static/view/images/SQL/sql-47.png)  
 * 按粒度：锁的粒度的不同可以分为表锁、页锁、行锁。  
 
 ---
@@ -96,7 +96,7 @@ SERIALIZABLE 是限制性最强的隔离级别，因为该级别锁定整个范�
         对于普通索引：先锁住普通索引，接着锁住主键索引，这是因为一张表的索引可能存在多个，通过主键索引才能确保锁是唯一的，不然如果同时有2个事务对同1条数据的不同索引分别加锁，那就可能存在2个事务同时操作一条数据了。  
 
 &emsp; 不同的存储引擎支持的锁粒度是不一样的。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-43.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-43.png)  
 &emsp; **<font color = "red">InnoDB实现了行级锁，页级锁，表级锁。InnoDB只有通过索引条件检索数据才使用行级锁，否则，InnoDB将使用表锁。即InnoDB的行锁是基于索引的！</font><font color = "clime">这些锁的粒度之间也是会发生升级的，锁升级的意思就是将当前锁的粒度降低，数据库可以把一个表的1000个行锁升级为一个页锁，或者将页锁升级为表锁。</font>**  
 &emsp; MyISAM只支持表锁！  
 
@@ -114,7 +114,7 @@ mysql InnoDB引擎默认的修改数据语句：update,delete,insert都会自动
 * 读写阻塞：当前用户在读数据，其他的用户不能修改当前用户读的数据，会加锁！  
 * 写写阻塞：当前用户在修改数据，其他的用户不能修改当前用户正在修改的数据，会加锁！  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-48.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-48.png)  
 
 &emsp; <font color = "red">默认情况下，写锁比读锁具有更高的优先级：当一个锁释放时，这个锁会优先给写锁队列中等候的获取锁请求，然后再给读锁队列中等候的获取锁请求。</font>
 
@@ -152,21 +152,21 @@ mysql InnoDB引擎默认的修改数据语句：update,delete,insert都会自动
 &emsp; 意向共享锁和意向排他锁是数据库主动加的，不需要手动处理。对于 UPDATE、DELETE 和 INSERT 语句，InnoDB 会自动给数据集加排他锁。  
 
 &emsp; 行级锁和表级锁的兼容情况：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-49.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-49.png)  
 <center>共享锁，排他锁，意向共享锁，意向排他锁兼容图例</center>    
 &emsp; 如果一个事务请求的锁模式与当前的锁兼容， InnoDB 就将请求的锁授予该事务；反之， 如果两者不兼容，该事务就要等待锁释放。  
 
 ---
 
 #### 1.3.2.3. 记录锁(Record Locks) ，锁定记录 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-124.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-124.png)  
 &emsp; <font color = "red">record lock 是一个在索引行记录的锁。</font>  
 &emsp; 比如，SELECT c1 FROM t WHERE c1 = 10 FOR UPDATE，如果c1上的索引被使用到。防止任何其他事务变动 c1 = 10 的行。  
 &emsp; record lock总是会在索引行上加锁。即使一个表并没有设置任何索引，这种时候 innoDB 会创建一个隐式的聚集索引(primary Key)，然后在这个聚集索引上加锁。  
 &emsp; 当查询字段没有索引时，比如 update table set columnA="A" where columnB=“B"，如果columnB字段不存在索引(或者不是组合索引前缀)，这条语句会锁住所有记录也就是锁表。如果语句的执行能够执行一个columnB字段的索引，那么仅会锁住满足where的行(RecordLock)。  
 
 #### 1.3.2.4. 间隙锁(Gap Lock)，锁定范围  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-123.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-123.png)  
 
 &emsp; **<font color = "red">当使用范围条件(> 、< 、between......)检索数据，InnoDB会给符合条件的已有数据记录的索引项加锁。对于键值在条件范围内但并不存在的记录，叫做“间隙(GAP)”，InnoDB也会对这个“间隙”加锁，这就是间隙锁。</font>**  
 &emsp; **<font color = "red">InnoDB除了通过范围条件加锁时使用间隙锁外，如果使用相等条件请求给一个不存在的记录加锁，InnoDB 也会使用间隙锁。</font>**  
@@ -188,7 +188,7 @@ select * from emp where empid > 100 for update;
 &emsp; **<font color = "red">间隙锁和行锁合称临键锁(Next-Key锁)。</font>**  
 
 #### 1.3.2.5. 临键锁(Next-key Locks) ，锁定范围加记录 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-122.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-122.png)  
 
 &emsp; 临键锁，是记录锁与间隙锁的组合，它的封锁范围，既包含索引记录，又包含索引区间。  
 &emsp; <font color = "red">默认情况下，innodb使用next-key locks来锁定记录。</font><font color = "clime">但当查询的索引含有唯一属性的时候，Next-Key Lock会进行优化，将其降级为Record Lock，即仅锁住索引本身，不是范围。</font>  

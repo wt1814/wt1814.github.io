@@ -10,7 +10,7 @@
 
 # 1. MySql主从复制的高可用实现  
 ## 1.1. 主从复制拓扑结构 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-11.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-11.png)  
 
 * 一主一从：  
 &emsp; 主备架构。只有主库提供读写服务；备库冗余作故障转移，即主库挂了，keepalive(一种工具)会自动切换到备库。  
@@ -29,6 +29,6 @@
 * 双主+主从架构  
 &emsp; 存在问题：数据一致性问题、主键冲突问题。数据同步又多了一层，数据延迟更严重。  
 * 双主+级联  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-12.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-12.png)  
 
 ## 1.2. 主从复制实现  

@@ -55,7 +55,7 @@ https://mp.weixin.qq.com/s/oCOKYOgak3PjmHnFiAin7g
 * DNS服务启动运行。  
 
 &emsp; 系统的逻辑架构如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-4.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-4.png)  
 
 &emsp; 在各Node上运行一个Fluentd容器，釆集本节点/var/log和/var/lib/docker/containers两个目录下的日志进程，然后汇总到Elasticsearch集群，最终通过Kibana完成和用户的交互工作。  
 &emsp; 这里有一个特殊的需求，Fluentd必须在每个Node运行一份，为了满足这一需要，有以下几种不同的方式来部署Fluentdo：  
@@ -80,7 +80,7 @@ https://mp.weixin.qq.com/s/oCOKYOgak3PjmHnFiAin7g
 
 ### 1.1.5. Namespace：集群环境共享与隔离  
 &emsp; <font color = "clime">在一个组织内部，不同的工作组可以在同一个Kubemetes集群中工作，Kubemetes通过命名空间和Context的设置来对不同的工作组进行区分，使得它们既可以共享同一个Kubemetes集群的服务，也能够互不干扰，</font>如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-2.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-2.png)  
 &emsp; 假设有两个工作组：开发组和生产运维组。开发组在Kubemetes集群中需要不断创建、修改、删除各种Pod、RC. Service等资源对象，以便实现敏捷开发的过程。而生产运维组则需要使用严格的权限设置来确保生产系统中的Pod、RC、Service处于正常运行状态且不会被误操作。  
 
 ### 1.1.6. Kubemetes集群的高可用部署方案  

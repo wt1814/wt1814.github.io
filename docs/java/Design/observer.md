@@ -31,7 +31,7 @@
 
 ## 1.2. 结构  
 &emsp; **模式角色组成：**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-16.png)  
+![image](http://www.wt1814.com/static/view/images/java/design/design-16.png)  
 
 * Subject：抽象被观察者角色，也就是一个抽象主题，它把所有对观察者对象的引用保存在一个集合中，每个主题都可以有任意数量的观察者。抽象主题提供一个接口，可以增加和删除观察者角色。一般用一个抽象类和接口来实现。
 * ConcreteSubject：具体被观察者角色，也就是一个具体的主题，在集体主题的内部状态改变时，所有登记过的观察者发出通知。

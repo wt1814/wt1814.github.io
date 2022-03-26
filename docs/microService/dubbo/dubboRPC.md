@@ -13,7 +13,7 @@
 &emsp; dubbo­-rpc-­api模块是dubbo最为核心的一个模块，它定义了dubbo作为一个rpc框架最核心的一些接口和抽象实现。  
 
 &emsp; **简化的类图**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-38.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-38.png)  
 &emsp; 该图是经过简化后的rpc-­api模块的类图，去除了一些非关键的属性和方法定义，也去除了一些非核心的类和接口，只是一个简化了的的示意图。  
 
 **核心类说明**    
@@ -35,7 +35,7 @@
 ## 1.2. ~~dubbo­-rpc­-default模块~~  
 &emsp; dubbo-­rpc-­default模块是dubbo­-rpc-­api模块的默认实现，提供了默认的dubbo协议的实现，它是所有模块中最为复杂的一个模块，因为底层的协议都是它自己实现的。  
 &emsp; **简化类图**    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-39.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-39.png)  
 &emsp; 从图中可以看出该模块下的类主要是实现了dubbo­-rpc-­api和dubbo­-remoting-­api两个模块中定义的一些接口和抽象类。扩展了一种duubo框架自定义的dubbo协议，包括编解码和方法调用处理等。  
 &emsp; **核心类说明**    
 

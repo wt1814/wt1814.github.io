@@ -73,7 +73,7 @@ https://www.bilibili.com/video/BV1Jy4y127tb?from=search&seid=1427306049234575786
 &emsp; CMS回收老年代，能与CMS搭配使用的新生代垃圾收集器有Serial收集器和ParNew收集器。  
 
 ### 1.2.1. 《深入理解Java虚拟机》
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-122.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-122.png)  
 &emsp; 使用标记-清除算法，收集过程分为如下四步：  
 1. 初始标记，标记GCRoots能直接关联到的对象，时间很短。  
 2. 并发标记，进行GCRoots Tracing(可达性分析)过程，过程耗时较长但是不需要停顿用户线程，可以与垃圾收集线程一起并发运行。  
@@ -89,10 +89,10 @@ https://www.bilibili.com/read/cv6830986/
 https://segmentfault.com/a/1190000020625913?utm_source=tag-newest
 
 -->
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-131.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-131.png)  
 <center>CMS的整体流程</center>  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-126.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-126.png)  
 &emsp; CMS垃圾回收过程：  
 
 1. 初始化标记(CMS-initial-mark)，标记root，会导致stw；  
@@ -107,14 +107,14 @@ https://segmentfault.com/a/1190000020625913?utm_source=tag-newest
 &emsp; **<font color = "clime">这是CMS中两次stop-the-world事件中的一次。</font>** 这一步的作用是标记存活的对象，有两部分：  
 1. 标记老年代中所有的GC Roots对象，如下图节点1；  
 2. 标记年轻代中活着的对象引用到的老年代的对象（指的是年轻代中还存活的引用类型对象，引用指向老年代中的对象）如下图节点2、3；  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-127.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-127.png)  
 
 #### 1.2.2.2. 并发标记
 &emsp; 从“初始标记”阶段标记的对象开始找出所有存活的对象;  
 &emsp; 因为是并发运行的，在运行期间会发生新生代的对象晋升到老年代、或者是直接在老年代分配对象、或者更新老年代对象的引用关系等等，对于这些对象，都是需要进行重新标记的，否则有些对象就会被遗漏，发生漏标的情况。为了提高重新标记的效率，该阶段会把上述对象所在的Card标识为Dirty，后续只需扫描这些Dirty Card的对象，避免扫描整个老年代；  
 &emsp; **<font color = "clime">并发标记阶段只负责将引用发生改变的Card标记为Dirty状态，不负责处理；</font>**  
 &emsp; 如下图所示，也就是节点1、2、3，最终找到了节点4和5。并发标记的特点是和应用程序线程同时运行。并不是老年代的所有存活对象都会被标记，因为标记的同时应用程序会改变一些对象的引用等。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-128.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-128.png)  
 &emsp; 这个阶段因为是并发的容易导致concurrent mode failure。  
 
 #### 1.2.2.3. 预处理阶段
@@ -133,9 +133,9 @@ https://segmentfault.com/a/1190000020625913?utm_source=tag-newest
 ##### 1.2.2.3.1. 预清理阶段
 &emsp; 前一个阶段已经说明，不能标记出老年代全部的存活对象，是因为标记的同时应用程序会改变一些对象引用， **<font color = "red">这个阶段就是用来</font><font color = "blue">处理</font><font color = "clime">前一个阶段因为引用关系改变导致没有标记到的存活对象的，它会扫描所有标记为Direty的Card。</font>**  
 &emsp; 如下图所示，在并发清理阶段，节点3的引用指向了6；则会把节点3的card标记为Dirty；  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-129.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-129.png)  
 &emsp; 最后将6标记为存活，如下图所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-130.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-130.png)  
 
 --------
 
@@ -306,10 +306,10 @@ concurrent mode failure影响
 老年代的垃圾收集器从CMS退化为Serial Old，所有应用线程被暂停，停顿时间变长。
 -->
 #### 1.3.3.1. 简介
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-124.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-124.png)  
 &emsp; 晋升失败：当新生代发生垃圾回收，老年代有足够的空间可以容纳晋升的对象，但是由于空闲空间的碎片化，导致晋升失败。此时会触发单线程且带压缩动作的Full GC。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-123.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-123.png)  
 &emsp; 并发模式失败：当CMS在执行回收时，新生代发生垃圾回收，同时老年代又没有足够的空间容纳晋升的对象时。CMS 垃圾回收会退化成单线程的Full GC。所有的应用线程都会被暂停，老年代中所有的无效对象都被回收。  
 
 #### 1.3.3.2. 可能原因及解决方案

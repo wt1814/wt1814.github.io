@@ -46,16 +46,16 @@ https://kuboard.cn/learning/
 ## 1.2. Kubernetes架构
 &emsp; 当部署完 Kubernetes，即拥有了一个完整的集群。  
 &emsp; **Kubernetes是利用共享网络将多个物理机或者虚拟机组成一个集群，** 在各个服务器之间进行通信，该集群是配置Kubernetes的所有功能和负载的物理平台。 **<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-6.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-6.png)  
 <!--
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-11.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-11.png)  
 &emsp; Master：是集群的网关和中枢枢纽，主要作用：暴露API接口，跟踪其他服务器的健康状态、以最优方式调度负载，以及编排其他组件之间的通信。单个的Master节点可以完成所有的功能，但是考虑单点故障的痛点，生产环境中通常要部署多个Master节点，组成Cluster。  
 Master 节点主要负责存储集群的状态并为 Kubernetes 对象分配和调度资源。  
 -->  
 
 ### 1.2.1. Master组件
 &emsp; 作为管理集群状态的Master节点，它主要负责接收客户端的请求，安排容器的执行并且运行控制循环，将集群的状态向目标状态进行迁移。 **<font color = "clime">Master的组件包括：API Server、controller-manager、scheduler和etcd等几个组件。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-17.png)   
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-17.png)   
 <!-- 
 &emsp; 其中API Server负责处理来自用户的请求，其主要作用就是对外提供RESTful的接口，包括用于查看集群状态的读请求以及改变集群状态的写请求，也是唯一一个与 etcd集群通信的组件。  
 &emsp; 而Controller管理器运行了一系列的控制器进程，这些进程会按照用户的期望状态在后台不断地调节整个集群中的对象，当服务的状态发生了改变，控制器就会发现这个改变并且开始向目标状态迁移。  
@@ -85,7 +85,7 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 &emsp; Node主要负责提供容器的各种依赖环境，并接受Master管理。每个Node有以下几个组件构成。 
 -->
 &emsp; Node是Kubernetes的工作节点，负责接收来自Master的工作指令，并根据指令相应地创建和销毁Pod对象，以及调整网络规则进行合理路由和流量转发。生产环境中，Node节点可以有N个。 **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-18.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-18.png)  
 1. Container Runtime  
 &emsp; 每个Node都需要提供一个容器运行时(Container Runtime)环境，它负责下载镜像并运行容器。目前K8S支持的容器运行环境至少包括Docker、RKT、cri-o、Fraki等。
 2. Kubelet， **<font color = "red">Node与master交互</font>**  
@@ -98,7 +98,7 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 一个完整的K8S集群，还包括CoreDNS、Prometheus(或HeapSter)、Dashboard、Ingress Controller等几个附加组件。其中cAdivsor组件作用于各个节点(master和node节点)之上，用于收集及收集容器及节点的CPU、内存以及磁盘资源的利用率指标数据，这些统计数据由Heapster聚合后，可以通过apiserver访问。 
 -->
 &emsp; K8S集群中还有一些有用的插件，如：CoreDNS、Prometheus(或HeapSter)、Dashboard、Ingress Controller，通常是由第三方提供的特定应用程序。如下图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-12.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-12.png)  
 
 1. KubeDNS  
 &emsp; 在K8S集群中调度并运行提供DNS服务的Pod，同一集群内的其他Pod可以使用该DNS服务来解决主机名。K8S自1.11版本开始默认使用CoreDNS项目来为集群提供服务注册和服务发现的动态名称解析服务。
@@ -108,7 +108,7 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 &emsp; 容器和节点的性能监控与分析系统，它收集并解析多种指标数据，如资源利用率、生命周期时间，在最新的版本当中，其主要功能逐渐由Prometheus结合其他的组件进行代替。
 4. Ingress Controller  
 &emsp; Service是一种工作于4层的负载均衡器，而Ingress是在应用层实现的HTTP(S)的负载均衡。不过，Ingress资源自身并不能进行流量的穿透，它仅仅是一组路由规则的集合，这些规则需要通过Ingress控制器(Ingress Controller)发挥作用。目前该功能项目大概有：Nginx-ingress、Traefik、Envoy和HAproxy等。如下图就是Nginx-ingress的应用，具体可以查看博文： https://www.cnblogs.com/linuxk/p/9706720.html
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-13.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-13.png)  
 
 ## 1.3. Kubernetes的常用概念和术语
 <!--
@@ -132,14 +132,14 @@ https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%
 &emsp; K8S并不直接地运行容器，而是被一个抽象的资源对象--Pod所封装，它是K8S最小的调度单位。这里要注意的是，Pod可以封装一个或多个容器！同一个Pod中共享网络名称空间和存储资源，而容器之间可以通过本地回环接口直接通信，但是彼此之间又在Mount、User和Pid等名称空间上保持了隔离。  
 * **资源标签(Label)**  
 &emsp; 标签(Label)是将资源进行分类的标识符，就好像超市的商品分类一般。资源标签具体化的就是一个键值型(key/values)数据。使用标签是为了对指定对象进行辨识，比如Pod对象。标签可以在对象创建时进行附加，也可以创建后进行添加或修改。要知道的是一个对象可以有多个标签，一个标签页可以附加到多个对象。如图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-7.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-7.png)  
 * **标签选择器(Selector)**  
 &emsp; **有标签，当然就有标签选择器，它是根据Label进行过滤符合条件的资源对象的一种机制。** 比如将含有标签role: backend的所有Pod对象挑选出来归并为一组。通常在使用过程中，会通过标签对资源对象进行分类，然后再通过标签选择器进行筛选，最常见的应用就是将一组这样的Pod资源对象创建为某个Service的端点。如图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-8.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-8.png)  
 * **Pod控制器(Controller)**  
 &emsp; 虽然Pod是K8S的最小调度单位，但是K8S并不会直接地部署和管理Pod对象，而是要借助于另外一个抽象资源--Controller进行管理。**其实一种管理Pod生命周期的资源抽象，并且它是一类对象，并非单个的资源对象，其中包括：ReplicationController、ReplicaSet、Deployment、StatefulSet、Job等。**  
 &emsp; 以Deployment为例，它负责确保定义的Pod对象的副本数量符合预期的设置，这样用户只需要声明应用的期望状态，控制器就会自动地对其进行管理。如图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-9.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-9.png)  
     * 复制控制器(Replication Controller，RC)  
     &emsp; RC是K8s集群中最早的保证Pod高可用的API对象。通过监控运行中的Pod来保证集群中运行指定数目的Pod副本。指定的数目可以是多个也可以是1个；少于指定数目，RC就会启动运行新的Pod副本；多于指定数目，RC就会杀死多余的Pod副本。即使在指定数目为1的情况下，通过RC运行Pod也比直接运行Pod更明智，因为RC也可以发挥它高可用的能力，保证永远有1个Pod在运行。RC是K8s较早期的技术概念，只适用于长期伺服型的业务类型，比如控制小机器人提供高可用的Web服务。  
     * 副本集(Replica Set，RS)  
@@ -157,7 +157,7 @@ https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%
 * **服务资源(Service)**  
 &emsp; Service是建立在一组Pod对象之上的资源对象，它是通过标签选择器选择一组Pod对象，并为这组Pod对象定义一个统一的固定访问入口(通常是一个IP地址)，如果K8S存在DNS附件(如coredns)它就会在Service创建时为它自动配置一个DNS名称，用于客户端进行服务发现。  
 &emsp; 通常直接请求Service IP，该请求就会被负载均衡到后端的端点，即各个Pod对象，从这点上，是不是有点像负载均衡器呢，因此Service本质上是一个4层的代理服务，另外Service还可以将集群外部流量引入至集群，这就需要节点对Service的端口进行映射了。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-19.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-19.png)  
 &emsp; Kubernetes service背后是通过一个叫做kube-proxy的组件实现。kube-proxy实例运行在每个节点上，并提供了三种代理模式：userspace，iptables和IPVS。目前的默认值是iptables。   
 * **Ingress**  
 &emsp; K8S将Pod对象和外部的网络环境进行了隔离，Pod和Service等对象之间的通信需要通过内部的专用地址进行，如果需要将某些Pod对象提供给外部用户访问，则需要给这些Pod对象打开一个端口进行引入外部流量， **除了Service以外，Ingress也是实现提供外部访问的一种方式。**  
@@ -170,7 +170,7 @@ https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%
 &emsp; 名称(Name)是K8S集群中资源对象的标识符，通常作用于名称空间(Namespace)，因此名称空间是名称的额外的限定机制。在同一个名称空间中，同一类型资源对象的名称必须具有唯一性。  
 &emsp; 名称空间通常用于实现租户或项目的资源隔离，从而形成逻辑分组。关于此概念可以参考： https://www.jb51.net/article/136411.htm  
 &emsp; 如图：创建的Pod和Service等资源对象都属于名称空间级别，未指定时，都属于默认的名称空间。
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-10.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-10.png)  
 
 <!-- 
 * **集群联邦(Federation)**  
@@ -210,7 +210,7 @@ https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%
 https://www.cnblogs.com/justmine/p/8684564.html
 -->
 &emsp; K8S运行流程图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-5.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-5.png)  
 &emsp; Kubernetes遵循非常传统的客户端服务端架构，客户端通过RESTful接口或者直接使用kubectl与Kubernetes集群进行通信，这两者在实际上并没有太多的区别，后者也只是对Kubernetes提供的RESTful API进行封装并提供出来。  
 
 &emsp; **<font color = "clime">Pod的创建逻辑流程是怎样的？</font>**  
@@ -226,7 +226,7 @@ https://www.cnblogs.com/justmine/p/8684564.html
 
 ## 1.5. Kubernetes的网络模型  
 &emsp; K8S为Pod和Service资源对象分别使用了各自的专有网络，Pod网络由K8S的网络插件配置实现，而Service网络则由K8S集群进行指定。如下图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/k8s/k8s-14.png)  
+![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-14.png)  
 &emsp; K8S使用的网络插件需要为每个Pod配置至少一个特定的地址，即Pod IP。Pod IP地址实际存在于某个网卡(可以是虚拟机设备)上。  
 &emsp; <font color = "clime">而Service的地址却是一个虚拟IP地址，没有任何网络接口配置在此地址上，它由Kube-proxy借助iptables规则或ipvs规则重定向到本地端口，再将其调度到后端的Pod对象。</font>Service的IP地址是集群提供服务的接口，也称为Cluster IP。  
 &emsp; Pod网络和IP由K8S的网络插件负责配置和管理，具体使用的网络地址可以在管理配置网络插件时进行指定，如10.244.0.0/16网络。而Cluster网络和IP是由K8S集群负责配置和管理，如10.96.0.0/12网络。  

@@ -38,7 +38,7 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkwMzE3MDY0Ng==&action=getalbum&a
 &emsp; Spring Cloud对微服务基础框架Netflix的多个开源组件进行了封装，同时又实现了和云端平台以及和Spring Boot开发框架的集成。   
 
 &emsp; **SpringCloud子项目：**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-27.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-27.png)  
 &emsp; **<font color = "clime">Spring Cloud各组件运行流程：</font>**  
 1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关(Zuul)来访问内部服务。客户端的请求首先经过负载均衡(Ngnix)，再到达服务网关(Zuul集群)；  
 2. 网关接收到请求后，从注册中心(Eureka)获取可用服务；  

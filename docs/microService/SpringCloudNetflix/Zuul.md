@@ -116,7 +116,7 @@ ribbon:
 &emsp; 在使用 Zuul 搭建网关的时候，可以通过Hystrix 和 Ribbon 的参数来调整路由请求的各种超时时间等配置（参考 Ribbon 和 Hystrix 配置）。  
 
 ## 1.2. 请求过滤  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-23.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-23.png)  
 &emsp; **<font color = "red">Zuul提供了四种过滤器的API，分别为前置（Pre）、路由（Route）、后置（Post）和错误（Error）四种处理方式。</font>** 一个请求会先按顺序通过所有的前置过滤器，之后在路由过滤器中转发给后端应用，得到响应后又会通过所有的后置过滤器，最后响应给客户端。在整个流程中如果发生了异常则会跳转到错误过滤器中。  
 &emsp; 一般来说，<font color = "red">如果需要在请求到达后端应用前就进行处理的话，会选择前置过滤器，例如鉴权、请求转发、增加请求参数等行为。在请求完成后需要处理的操作放在后置过滤器，例如统计返回值和调用时间、记录日志、增加跨域头等行为。</font>路由过滤器一般只需要选择Zuul中内置的即可，错误过滤器一般只需要一个，这样可以在Gateway遇到错误逻辑时直接抛出异常中断流程，并直接统一处理返回结果。  
 
@@ -242,9 +242,9 @@ public class DemoFeignApplication {
 
 ### 1.4.1. Zuul客户端也注册到了Eureka Server上  
 &emsp; 只需将多个Zuul节点注册到Eureka Server上，就可实现Zuul的高可用。此时，Zuul的高可用与其他微服务的高可用没什么区别。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-24.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-24.png)  
 &emsp; 当Zuul客户端也注册到Eureka Server上时，只需部署多个Zuul节点即可实现其高可用。Zuul客户端会自动从Eureka Server中查询Zuul Server的列表，并使用Ribbon负载均衡地请求Zuul集群。  
 
 ### 1.4.2. Zuul客户端未注册到Eureka Server上  
 &emsp; Nginx、HAProxy、F5等负载均衡器来实现Zuul的高可用。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/SpringCloudNetflix/cloud-25.png)  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-25.png)  

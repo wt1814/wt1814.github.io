@@ -37,7 +37,7 @@ https://mp.weixin.qq.com/s/iCrgVlDdnLXV1v41RrSvyA
 
 ## 1.1. 什么是架构模式
 &emsp; 想知道如何设计大型企业级的系统吗？在开始主要的代码开发之前，必须选择一种合适的体系架构，它将提供所需的功能和质量属性。因此，在将它们应用到设计之前，应该先了解不同的体系结构。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/system/framework/framework-1.png)  
+![image](http://www.wt1814.com/static/view/images/system/framework/framework-1.png)  
 
 
 &emsp; **什么是架构模式？**  

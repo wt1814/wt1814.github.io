@@ -50,7 +50,7 @@ https://blog.csdn.net/qq_41701956/article/details/85014038
 ## 1.2. JVM编译执行的两种方式
 &emsp; 类加载器加载的类文件字节码数据流由基于JVM指令集架构的执行引擎来执行。执行引擎以指令为单位读取Java字节码。字节码可以通过字节码解释执行、编译执行两种方式之一转化为合适的语言。 
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-107.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-107.png)  
 
 
 ### 1.2.1. 字节码解释执行  
@@ -71,7 +71,7 @@ https://blog.csdn.net/qq_41701956/article/details/85014038
 
 
 ## 1.3. 解释器与编译器混合使用  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-108.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-108.png)  
 &emsp; HopSpot虚拟机采用混合模式，综合了解释执行与即时编译的优点。它会先执行解释执行字节码，而后将其中反复执行的热点代码，以此方法为代为单位进行即时编译。  
 即时编译建立在程序符合二八定律的假设上，也就是百分之20的代码占据了百分之80的计算机资源。  
 &emsp; 对于大部分不常用的代码，我们无需耗费时间将其编译成机器码，而是采用解释执行的方式运行；另一方面，对于仅占据小部分的热点代码，我们则可以将其编译成机器码，已达到理想的运行速度。  

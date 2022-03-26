@@ -15,7 +15,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 &emsp; Redis会根据当前值的类型和长度决定使用哪种内部编码实现。 **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-106.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-106.png)  
 
 * String字符串类型的内部编码有三种：
     1. int，存储8个字节的长整型(long，2^63-1)。当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
@@ -36,7 +36,7 @@ https://database.51cto.com/art/201906/598234.htm
 -->
 
 ## 1.1. 数据类型
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-106.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-106.png)  
 
 ### 1.1.1. String内部编码  
 <!-- 
@@ -91,7 +91,7 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 * Zset中保存的所有元素长度小于64byte。(通过修改zset-max-ziplist-values配置来修改)  
 
 &emsp; 和List的底层实现有些相似，对于Zset不同的是，其存储是以键值对的方式依次排列，键存储的是实际 value，值存储的是value对应的分值。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-84.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-84.png)  
 
 -------------
 

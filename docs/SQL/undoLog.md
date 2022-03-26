@@ -51,7 +51,7 @@ https://guobinhit.blog.csdn.net/article/details/79345359
 
 &emsp; 如果undo使用的共享表空间，这个共享表空间中又不仅仅是存储了undo的信息，共享表空间的默认为与MySQL的数据目录下面，其属性由参数innodb_data_file_path配置。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-81.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-81.png)  
 
 <!-- 
 &emsp; 默认情况下undo文件是保持在共享表空间的，也即ibdatafile文件中，当数据库中发生一些大的事务性操作的时候，要生成大量的undo信息，全部保存在共享表空间中的。  

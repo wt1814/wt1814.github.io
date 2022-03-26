@@ -52,7 +52,7 @@ insert into user2(id,name) values (2,"huhuamin");
 insert into user3(id,name) values (3,"wanghanao");
 ```
 &emsp; 具体流程可以用下图进行描述：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-14.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-14.png)  
 1. sql解析：首先对sql进行解析，得到需要插入的四条记录的id字段的值分别为1,2,3,4。  
 2. sql路由：sql路由包括库路由和表路由。库路由用于确定这条记录应该插入哪个库，表路由用于确定这条记录应该插入哪个表。  
 3. sql改写：因为一条记录只能插入到一个库中，而上述批量插入的语法将会在 每个库中都插入四条记录，明显是不合适的，因此需要对sql进行改写，每个库只插入一条记录。  

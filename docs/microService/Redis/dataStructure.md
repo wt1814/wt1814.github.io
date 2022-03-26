@@ -22,23 +22,23 @@
 3. 3种链表：  
     * 双端链表LinkedList  
         &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-62.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-62.png)  
     * 压缩列表Ziplist  
         &emsp; 在双端链表中，如果在一个链表节点中存储一个小数据，比如一个字节。那么对应的就要保存头节点，前后指针等额外的数据。这样就浪费了空间，同时由于反复申请与释放也容易导致内存碎片化。这样内存的使用效率就太低了。  
         &emsp; Redis设计了压缩列表  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-110.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-110.png)  
         &emsp; ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>** 只用在字段个数少，字段值小的场景里。  
     * 快速列表Quicklist  
         QuickList其实就是结合了ZipList和LinkedList的优点设计出来的。quicklist存储了一个双向链表，每个节点都是一个ziplist。  
-        ![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-63.png)  
+        ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-63.png)  
 4. 整数集合inset  
 &emsp; inset的数据结构：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-7.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-7.png)  
 &emsp; inset也叫做整数集合，用于保存整数值的数据结构类型，它可以保存int16_t、int32_t 或者int64_t 的整数值。  
 &emsp; 在整数集合中，有三个属性值encoding、length、contents[]，分别表示编码方式、整数集合的长度、以及元素内容，length就是记录contents里面的大小。  
 5. 跳跃表SkipList  
 &emsp; skiplist也叫做「跳跃表」，跳跃表是一种有序的数据结构，它通过每一个节点维持多个指向其它节点的指针，从而达到快速访问的目的。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-85.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-85.png)  
 &emsp; SkipList分为两部分，dict部分是由字典实现，Zset部分使用跳跃表实现，从图中可以看出，dict和跳跃表都存储了数据，实际上dict和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
 
 
@@ -81,7 +81,7 @@ typedef struct redisObject {
     void *ptr;
 } robj;
 ```
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-10.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-10.png)  
 * Type：是对象类型，代表一个value对象具体是何种数据类型，包括REDISSTRING，REDISLIST，REDISHASH，REDISSET和REDIS_ZSET。  
 * encoding是指对象使用的数据结构，是不同数据类型在redis内部的存储方式。<font color = "red">目前有8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。</font>  
 
@@ -111,7 +111,7 @@ https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 ### 1.3.2. 链表
 #### 1.3.2.1. 双端链表LinkedList  
 &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-62.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-62.png)  
 
 &emsp; 各部分作用说明：  
 
@@ -134,7 +134,7 @@ https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 #### 1.3.2.2. 压缩列表Ziplist
 &emsp; 在双端链表中，如果在一个链表节点中存储一个小数据，比如一个字节。那么对应的就要保存头节点，前后指针等额外的数据。这样就浪费了空间，同时由于反复申请与释放也容易导致内存碎片化。这样内存的使用效率就太低了。  
 &emsp; Redis设计了压缩列表  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-110.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-110.png)  
 
 &emsp; 它是经过特殊编码，专门为了提升内存使用效率设计的。所有的操作都是通过指针与解码出来的偏移量进行的。  
 &emsp; 并且压缩列表的内存是连续分配的，遍历的速度很快。  
@@ -143,7 +143,7 @@ https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 &emsp; ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>** 只用在字段个数少，字段值小的场景里。  
 
 &emsp; 压缩列表的内存结构图如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-79.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-79.png)  
 &emsp; 从图中可以看出ZipList没有前后指针。压缩列表中每一个节点表示的含义如下所示：
 1. zlbytes：4个字节的大小，记录压缩列表占用内存的字节数。
 2. zltail：4个字节大小，记录表尾节点距离起始地址的偏移量，用于快速定位到尾节点的地址。
@@ -163,7 +163,7 @@ https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 
 #### 1.3.2.3. 快速列表Quicklist
 &emsp; 在 Redis3.2 版本之后，Redis集合采用了QuickList作为List的底层实现，QuickList其实就是结合了ZipList和LinkedList的优点设计出来的。quicklist存储了一个双向链表，每个节点都是一个ziplist。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-63.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-63.png)  
 
 &emsp; 各部分作用说明：  
 
@@ -176,7 +176,7 @@ https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 
 ### 1.3.4. 整数集合inset  
 &emsp; inset的数据结构：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-7.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-7.png)  
 &emsp; inset也叫做整数集合，用于保存整数值的数据结构类型，它可以保存int16_t、int32_t 或者int64_t 的整数值。  
 &emsp; 在整数集合中，有三个属性值encoding、length、contents[]，分别表示编码方式、整数集合的长度、以及元素内容，length就是记录contents里面的大小。  
 
@@ -188,10 +188,10 @@ https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 ### 1.3.5. 跳跃表SkipList  
 <!-- 
 &emsp; 具体实现的结构图如下所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-82.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-82.png)  
 -->
 &emsp; skiplist也叫做「跳跃表」，跳跃表是一种有序的数据结构，它通过每一个节点维持多个指向其它节点的指针，从而达到快速访问的目的。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-85.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-85.png)  
 &emsp; SkipList分为两部分，dict部分是由字典实现，Zset部分使用跳跃表实现，从图中可以看出，dict和跳跃表都存储了数据，实际上dict和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
 
 &emsp; 在跳跃表的结构中有head和tail表示指向头节点和尾节点的指针，能快速的实现定位。level表示层数，len表示跳跃表的长度，BW表示后退指针，在从尾向前遍历的时候使用。BW下面还有两个值分别表示分值(score)和成员对象(各个节点保存的成员对象)。  
@@ -205,5 +205,5 @@ https://mp.weixin.qq.com/s/PMGYoySBrOMVZvRZIyTwXg
 &emsp; 跳跃表的上面层就相当于索引层，都是为了找到最后的数据而服务的，数据量越大，条表所体现的查询的效率就越高，和平衡树的查询效率相差无几。  
 
 &emsp; 如下图所示，红线是查找10的过程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-83.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-83.png)  
 

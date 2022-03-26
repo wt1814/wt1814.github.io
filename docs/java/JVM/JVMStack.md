@@ -77,7 +77,7 @@ int add(int x, int y) {
 ```
 
 &emsp; main()函数调用了add()函数，获取计算结果，并且与临时变量a相加，最后打印res的值。下图展示了在执行到add()函数时，函数调用栈的情况。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-8.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-8.png)  
 
 
 ## 1.3. 方法【栈】
@@ -87,7 +87,7 @@ https://juejin.cn/post/6844903983400632327
 -->
 &emsp; 存储内容：将线程私有的不可能被其他线程访问的对象打散分配在栈上，而不是分配在堆上。打散分配意思是将对象的不同属性分别分配给不同的局部变量。  
 &emsp; <font color = "red">Java虚拟机栈是由一个个栈帧组成，每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法出口信息。</font>  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-9.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-9.png)  
 
 ### 1.3.1. 局部变量表   
 &emsp; `局部变量表用于保存函数参数和局部变量。`  
@@ -102,7 +102,7 @@ publicint test(int a, int b) {
 }
 ```
 &emsp; 如果局部变量是Java的8种基本数据类型，则存在局部变量表中，如果是引用类型。如new出来的String，局部变量表中存的是引用，而实例在堆中。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-34.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-34.png)  
 &emsp; `为什么不把基本类型放堆中呢？`  
 <!-- 
 https://mp.weixin.qq.com/s/BnM2KL9CpEWlVXa_hEcEdg

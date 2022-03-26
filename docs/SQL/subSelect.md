@@ -67,25 +67,25 @@ https://blog.csdn.net/sinat_29774479/article/details/107555322
 &emsp; **水平分库分表，基于拆分策略为常用的hash法。**  
 ### 1.1.1. 端上除了partition key只有一个非partition key作为条件查询  
 * 映射法  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-19.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-19.png)  
 &emsp; 建立一张映射表，使用缓存存储。  
 
 * 基因法  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-20.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-20.png)  
 &emsp; 注：写入时，基因法生成user_id，如图。关于xbit基因，例如要分8张表，23=8，故x取3，即3bit基因。根据user_id查询时可直接取模路由到对应的分库或分表。根据user_name查询时，先通过user_name_code生成函数生成user_name_code再对其取模路由到对应的分库或分表。id生成常用snowflake算法。  
 
 ### 1.1.2. 端上除了partition key不止一个非partition key作为条件查询 
 * 映射法  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-21.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-21.png)  
 * 冗余法    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-22.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-22.png)  
 &emsp; 注：按照order_id或buyer_id查询时路由到db_o_buyer库中，按照seller_id查询时路由到db_o_seller库中。感觉有点本末倒置！有其他好的办法吗？改变技术栈呢？  
 
 ### 1.1.3. 后台除了partition key还有各种非partition key组合条件查询 
 * NoSQL法  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-23.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-23.png)  
 * 冗余法  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-24.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-24.png)  
 
 ### 1.1.4. ★★★基因法详解  
 <!--
@@ -95,7 +95,7 @@ https://blog.csdn.net/weixin_52346300/article/details/113104964
 
 &emsp; 如果一个业务里有多个key，例如订单中心，有buyer_id、order_id、seller_id等，希望相关的业务都入到同一个库或者同一个表，这样能减少跨库、跨表操作，增加效率。这该怎么办呢？  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-172.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-172.png)  
 &emsp; 在雪花算法的图下加入了订单id生成的示意图，假定需要分16张表，则需要截取二进制订单id的最后LOG(16,2)=4位，作为分库/分表基因。  
 &emsp; 然后对订单id用hash生成60位，加上从用户id那边获取的4位基因，形成最终的订单id。其他业务id也使用相同的办法处理。  
 &emsp; 分库/分表策略时，直接设定使用该id进行水平切分。由于所有业务都有相同的最后4位，这样sharding时都会进入相同的库/表。  
@@ -110,7 +110,7 @@ https://www.cnblogs.com/heqiyoujing/p/11297432.html
 ## 1.2. 跨分片的排序order by、分组group by以及聚合count等函数  
 &emsp; 这些是一类问题，因为它们<font color = "red">都需要基于全部数据集合进行计算。多数的代理都不会自动处理合并工作，部分支持聚合函数MAX、MIN、COUNT、SUM。</font>  
 &emsp; **<font color = "red">解决方案：分别在各个节点上执行相应的函数处理得到结果后，在应用程序端进行合并。</font>** 每个结点的查询可以并行执行，因此很多时候它的速度要比单一大表快很多。但如果结果集很大，对应用程序内存的消耗是一个问题。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-16.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-16.png)  
 
 ## 1.3. 跨分片的排序分页
 &emsp; [分库分表后分页查询](/docs/SQL/subSelectLimit.md)  

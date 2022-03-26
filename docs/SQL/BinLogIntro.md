@@ -100,5 +100,5 @@ https://mp.weixin.qq.com/s/CYPARs7o_X9PnMlkGxtOcw
 ## 1.5. 物理文件  
 &emsp; 配置文件的路径为log_bin_basename，binlog日志文件按照指定大小，当日志文件达到指定的最大的大小之后，进行滚动更新，生成新的日志文件。  
 &emsp; 对于每个binlog日志文件，通过一个统一的index文件来组织。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-83.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-83.png)  
 

@@ -13,7 +13,7 @@ List<Integer> queryGroupsByUserId(String var1, List<Integer> var2);
 ```
 
 &emsp; 敲代码，调试无果。再一次入炕。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/share/share-1.png)  
+![image](http://www.wt1814.com/static/view/images/share/share-1.png)  
 
 
 ## 通过CompletableFuture的allOf方法对多个异步执行结果进行处理

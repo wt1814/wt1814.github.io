@@ -52,11 +52,11 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 * 通知(Notification)：哨兵可以将故障转移的结果发送给客户端。  
 
 &emsp; <font color="clime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-89.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-89.png)  
 
 ## 1.1. 架构  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-28.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-29.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-28.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-29.png)  
 &emsp; <font color = "red">Redis哨兵架构中主要包括两个部分：Redis Sentinel集群和Redis数据集群。</font>  
 
 * 哨兵节点：哨兵系统由若干个哨兵节点组成。其实哨兵节点是一个特殊的 Redis 节点，<font color="red">哨兵节点不存储数据的和仅支持部分命令。配节点数量要满足2n+1(n>=1)的奇数个。</font>  
@@ -68,11 +68,11 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 
 #### 1.2.1.1. 定时任务一
 &emsp; 每隔10秒，每个Sentinel节点会向主节点和从节点发送info命令获取最新的拓扑结构，如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-107.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-107.png)  
 <center>Sentinel节点定时执行info命令</center>  
 
 &emsp; 下图是info 命令的响应。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-46.png)
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-46.png)
 &emsp; Sentinel节点通过对上述结果进行解析就可以找到相应的从节点。  
 &emsp; 这个定时任务的作用具体可以表现在三个方面：  
 
@@ -81,7 +81,7 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 * 节点不可达或者故障转移后，可以通过info命令实时更新节点拓扑信息。
 
 #### 1.2.1.2. 定时任务二  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-108.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-108.png)  
 <center>Sentinel节点发布和订阅__sentinel__hello频道</center>  
 &emsp; 每隔2秒，每个Sentinel节点会向Redis数据节点的__sentinel__：hello 频道上发送该Sentinel节点对于主节点的判断以及当前Sentinel节点的信息，同时每个Sentinel节点也会订阅该频道，来了解其他 Sentinel节点以及它们对主节点的判断，所以这个定时任务可以完成以下两个工作：  
 
@@ -96,12 +96,12 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
     <主数据库的名称>,<主数据库的地址>,<主数据库的端口>,<主数据库的配置版本>
 
 #### 1.2.1.3. 定时任务三  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-109.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-109.png)  
 <center>Sentinel节点向其余节点发送ping命令</center>  
 &emsp; 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令 **<font color = "clime">做一次心跳检测</font>** ，来确认这些节点当前是否可达。如上图所示。通过上面的定时任务，Sentinel节点对主节点、从节点、其余 Sentinel节点都建立起连接，实现了对每个节点的监控，这个定时任务是节点失败判定的重要依据。  
 
 ### 1.2.2. 主观下线、客观下线  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-88.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-88.png)  
 
 * 主观下线  
 &emsp; 在第三个定时任务(Sentinel通过三个定时任务来完成对各个节点的发现和监控)中，每隔一秒Sentinel节点会向每个Redis数据节点发送PING命令，若超过down-after-milliseconds设定的时间没有收到响应，<font color = "clime">则会对该节点做失败判定，这种行为叫做主观下线。因为该行为是当前节点的一家之言，所以会存在误判的可能。</font>  
@@ -140,7 +140,7 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 4. 如果该过程有多个Sentinel成为领导者，那么将等待一段时间重新进行选择，直到有且只有一个Sentinel节点成为领导者为止。    
 
 &emsp; 假如有A、B、C、D四个节点构成Sentinel集群。如果A率先完成客观下线，则A会向B、C、D发出成为领导者的申请，由于B、C、D没有同意过其他Sentinel节点，所以会将投票给A，A得到三票。B 则向A、C、D发起申请，由于C、D已经同意了A，所以会拒绝，但是它会得到A的同意，所以B得到一票，同理C、D得到零票，如下图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Redis/redis-47.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-47.png)  
 &emsp; 所以A会成为领导者，进行故障转移工作。一般来说，哨兵选择的过程很快，谁先完成客观下线，一般就能成为领导者。  
 
 ## 1.3. 部署及故障转移演示    

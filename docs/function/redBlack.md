@@ -40,7 +40,7 @@ https://blog.csdn.net/qq_38685503/article/details/103425572
 &emsp; **是性质4导致路径上不能有两个连续的红色节点确保了这个结果。**最短的可能路径都是黑色节点，最长的可能路径有交替的红色和黑色节点。 **因为根据性质5所有最长的路径都有相同数目的黑色节点，这就表明了没有路径能多于任何其他路径的两倍长。** 结果是这个树大致上是平衡的。  
 &emsp; 因为操作比如插入、删除和查找某个值的最坏情况时间都要求与树的高度成比例，这个在高度上的理论上限允许红黑树在最坏情况下都是高效的，而不同于普通的二叉查找树。     
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-6.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-6.png)  
 &emsp; 红黑树并不是一个完美平衡二叉查找树，从上图可以看到，根结点P的左子树显然比右子树高，但左子树和右子树的黑结点的层数是相等的，也即任意一个结点到到每个叶子结点的路径都包含数量相同的黑结点(性质5)。所以叫 **<font color = "clime">红黑树这种平衡为黑色完美平衡。</font>**  
 
 
@@ -84,12 +84,12 @@ https://mp.weixin.qq.com/s/oAyiRC_O-N5CHqAjt2va9w
 &emsp; 如果当前节点的父亲节点和叔叔节点均是红色，那么执行以下变色操作： **<font color = "clime">父 --> 黑 、 叔 --> 黑 、 爷 --> 红。</font>**    
 
 &emsp; 开始分析爷爷是否满足红黑树特性  
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-45.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-45.png)  
 
 ### 1.2.2. 左旋  
 &emsp; **<font color = "clime">条件：父亲是红色、叔叔是黑色、当前是右子树。</font>**  
 &emsp; 执行：以父亲进行旋转  
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-46.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-46.png)  
 
 ### 1.2.3. 右旋  
 &emsp;  **<font color = "clime">条件：父亲是红色、叔叔是黑色、当前是左子树。</font>**   
@@ -99,7 +99,7 @@ https://mp.weixin.qq.com/s/oAyiRC_O-N5CHqAjt2va9w
 * 爷爷节点变为红色
 * 再已爷爷节点进行旋转
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-47.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-47.png)  
 
 
 ## 1.3. 红黑树的应用  

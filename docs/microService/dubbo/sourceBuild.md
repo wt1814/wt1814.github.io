@@ -14,7 +14,7 @@ https://www.cnblogs.com/coderap/p/8746562.html
 
 
 ## 测试
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-68.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-68.png)   
 
 
 

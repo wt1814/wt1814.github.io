@@ -14,7 +14,7 @@
 
 <!-- /TOC -->
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-36.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-36.png)  
 
 
 # 1. 服务降级
@@ -28,7 +28,7 @@
 
 #### 1.1.2.1. 分布式开关  
 &emsp; 可以设置一个分布式开关，用于实现服务的人工降级，然后集中式管理开关配置信息即可。具体方案如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-34.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-34.png)  
 
 #### 1.1.2.2. 自动降级  
 &emsp; <font color = "clime">自动降级分类：</font>  
@@ -41,7 +41,7 @@
 
 #### 1.1.2.3. 配置中心  
 &emsp; 微服务降级的配置信息是集中式的管理，然后通过可视化界面进行友好型的操作。配置中心和应用之间需要网络通信，因此可能会因网络闪断或网络重启等因素，导致配置推送信息丢失、重启或网络恢复后不能再接受、变更不及时等等情况，因此服务降级的配置中心需要实现以下几点特性，从而尽可能的保证配置变更即使达到。    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-35.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-35.png)  
 
 * 启动主动拉取配置 —— 用于初始化配置(减少第一次定时拉取周期)  
 * 发布订阅配置 —— 用于实现配置及时变更(可以解决90%左右的配置变更)  

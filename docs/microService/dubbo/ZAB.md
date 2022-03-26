@@ -59,7 +59,7 @@ https://www.cnblogs.com/zz-ksw/p/12786067.html
 
 &emsp; Zxid 是 Zab 协议的一个事务编号，Zxid 是一个 64 位的数字，其中低 32 位是一个简单的单调递增计数器，针对客户端每一个事务请求，计数器加 1；而高 32 位则代表 Leader 周期年代的编号。  
 &emsp; 这里 Leader 周期的英文是 epoch，可以理解为当前集群所处的年代或者周期  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-1.png)  
+![image](http://www.wt1814.com/static/view/images/microService/zookeeper/zk-1.png)  
 &emsp; 每当有一个新的 Leader 选举出现时，就会从这个 Leader 服务器上取出其本地日志中最大事务的 Zxid，并从中读取 epoch 值，然后加 1，以此作为新的周期 ID。总结一下，高 32 位代表了每代 Leader 的唯一性，低 32 位则代表了每代 Leader 中事务的唯一性。  
 
 
@@ -111,7 +111,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 
 #### 1.3.1.3. 运行过程中的leader选举  
 &emsp; 当集群中的 leader 服务器出现宕机或者不可用的情况时，那么整个集群将无法对外提供服务，而是进入新一轮的 Leader 选举，服务器运行期间的 Leader 选举和启动时期的 Leader 选举基本过程是一致的。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-3.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-3.png)  
 1. 变更状态。 Leader挂后，余下的非Observer服务器都会将自己的服务器状态变更为LOOKING，然后开始进入Leader选举过程。  
 2. 每个 Server 会发出一个投票。在运行期间，每个服务器上的 ZXID 可能不同，此时假定 Server1 的 ZXID 为 123，Server3 的 ZXID 为 122；在第一轮投票中，Server1 和 Server3 都会投自己，产生投票(1, 123)，(3, 122)，然后各自将投票发送给集群中所有机器。接收来自各个服务器的投票。与启动时过程相同。  
 3. 处理投票。与启动时过程相同，此时， Server1 将会成为 Leader。  
@@ -124,7 +124,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 
 1.3.1.1. 读数据流程  
 &emsp; 当Client向zookeeper发出读请求时，无论是Leader还是Follower，都直接返回查询结果。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-2.png)  
+![image](http://www.wt1814.com/static/view/images/microService/zookeeper/zk-2.png)  
 &emsp; 如果是对zk进行读取操作，读取到的数据可能是过期的旧数据，不是最新的数据。  
 
 1.3.1.2. 写数据流程
@@ -135,7 +135,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 2. Leader将数据写入到本节点，并将数据发送到所有的Follower节点；
 3. 等待Follower节点返回；
 4. 当Leader接收到一半以上节点(包含自己)返回写成功的信息之后，返回写入成功消息给client;
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-3.png)  
+![image](http://www.wt1814.com/static/view/images/microService/zookeeper/zk-3.png)  
 
 &emsp; 写入请求发送到Follower节点的操作步骤如下：  
 1. Client向Follower发出写请求
@@ -144,7 +144,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 4. 等待Follower节点返回
 5. 当Leader接收到一半以上节点(包含自己)返回写成功的信息之后，返回写入成功消息给原来的Follower
 6. 原来的Follower返回写入成功消息给Client
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/zookeeper/zk-4.png)  
+![image](http://www.wt1814.com/static/view/images/microService/zookeeper/zk-4.png)  
 -->
 
 &emsp; 当集群中已经有过半的Follower节点完成了和Leader状态同步以后，那么整个集群就进入了消息广播模式。这个时候，在Leader节点正常工作时，启动一台新的服务器加入到集群，那这个服务器会直接进入数据恢复模式，和leader节点进行数据同步。同步完成后即可正常对外提供非事务请求的处理。  
@@ -158,7 +158,7 @@ ZXID展示了所有的ZooKeeper的变更顺序。每次变更会有一个唯一�
 3. 当follower接收到proposal，先把proposal写到磁盘，写入成功以后再向leader回复一个ack。  
 4. 当leader接收到合法数量(超过半数节点)的ACK后，leader就会向这些follower发送commit命令同时会在本地执行该消息。  
 5. 当follower收到消息的commit命令以后，会提交该消息。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-4.png)  
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-4.png)  
 
 &emsp; 注：和完整的2pc事务不一样的地方在于，zab协议不能终止事务，follower节点要么ACK给leader，要么抛弃leader，只需要保证过半数的节点响应这个消息并提交了即可，虽然在某一个时刻follower节点和leader节点的状态会不一致，但是也是这个特性提升了集群的整体性能。当然这种数据不一致的问题，zab协议提供了一种恢复模式来进行数据恢复。  
 &emsp; 这里需要注意的是leader的投票过程，不需要Observer的ack，也就是Observer不需要参与投票过程，但是Observer必须要同步Leader的数据从而在处理请求的时候保证数据的一致性。  

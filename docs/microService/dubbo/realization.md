@@ -46,9 +46,9 @@ https://mp.weixin.qq.com/s/YHFp58F1gbrWvZ91iX_WcA
 &emsp; 详解请看[服务暴露源码解析](/docs/microService/dubbo/export.md)  
 
 &emsp; 下图是服务提供者暴露服务的主过程：(包含3个步骤)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-29.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-29.png)   
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-53.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-53.png)   
 
 1. 首先ServiceConfig类拿到对外提供服务的实际类 ref(如：HelloWorldImpl)，将Bean对象解析成URL格式； ~~在容器启动的时候，通过ServiceConfig解析标签，创建dubbo标签解析器来解析dubbo的标签，容器创建完成之后，触发ContextRefreshEvent事件回调开始暴露服务~~  
     * 在没有注册中心，直接暴露提供者的情况下，ServiceConfig解析出的URL的格式为：dubbo://service-host/com.foo.FooService?version=1.0.0。
@@ -74,8 +74,8 @@ https://mp.weixin.qq.com/s/Cqh-sxjDvdGt6r2XE6vjoQ
 &emsp; 详解请看[服务引用源码解析](/docs/microService/dubbo/introduce.md)  
 
 &emsp; 服务暴露之后，客户端就要引用服务，最后才是调用的过程。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-30.png)   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-54.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-30.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-54.png)   
 
 0. 客户端启动，订阅服务。  
 1. ReferenceConfig 类的 init 方法调用 Protocol 的 refer 方法生成 Invoker 实例(如上图中的红色部分)，这是服务消费的关键。 ~~DubboProtocol根据订阅的得到provider地址和接口信息连接到服务端server，开启客户端client，然后创建invoker~~ 
@@ -101,7 +101,7 @@ https://mp.weixin.qq.com/s/Cqh-sxjDvdGt6r2XE6vjoQ
 ## 1.5. Invoker  
 &emsp; Invoker是Dubbo的核心模型，代表一个可执行体。在服务提供方，Invoker用于调用服务提供类。在服务消费方，Invoker用于执行远程调用。Invoker是由Protocol实现类构建而来。  
 &emsp; 下面用一个精简的图来说明<font color = "clime">最重要的两种Invoker：服务提供 Invoker和服务消费Invoker：</font>  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/Dubbo/dubbo-31.png)   
+![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-31.png)   
 &emsp; 为了更好的解释上面这张图，结合服务消费和提供者的代码示例来进行说明：  
 &emsp; 服务消费者代码：  
 

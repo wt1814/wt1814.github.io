@@ -31,7 +31,7 @@ https://blog.csdn.net/yongwan5637/article/details/80459881
 
 ### 1.2.2. 结构  
 &emsp; **模式角色组成：**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/design/design-4.png)  
+![image](http://www.wt1814.com/static/view/images/java/design/design-4.png)  
 
 * AbstractFactory，抽象工厂角色，这是工厂方法模式的核心。  
 * ConcreateFactory1，具体工厂角色，它含有和具体业务逻辑有关的代码。由应用程序调用以创建对应的具体产品的对象。   

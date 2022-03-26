@@ -98,7 +98,7 @@ https://mp.weixin.qq.com/s/Aq9Mwkpx18Zkt6iWL2bZEw
 * 根据来路IP实现灰度发布  
 
 ### 1.4.2. 微服务网关实现灰度发布  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/stability/stab-1.png)  
+![image](http://www.wt1814.com/static/view/images/stability/stab-1.png)  
 &emsp; 其中分为几个重要的部分：  
 &emsp; 接入层网关，接入客户端请求，根据下发的配置将符合条件的请求转发到新旧系统上。  
 &emsp; 配置管理后台，这个后台可以配置不同的转发策略给接入层网关。  

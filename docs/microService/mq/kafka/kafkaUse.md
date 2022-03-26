@@ -119,20 +119,20 @@ https://zhuanlan.zhihu.com/p/43702590
 &emsp; 简单来说producer把生产的消息放到页缓存上，如果两边版本一致，可以直接把此消息推给Consumer，或者Consumer直接拉取，这个过程是不需要把消息再放到堆缓存。但是要做向下转化或者版本不一致的话，就要额外把数据再堆上，然后再放回到Consumer上，速度特别慢。  
 1. Kafka调优 – 吞吐量  
 &emsp; **调优吞吐量就是想用更短的时间做更多的事情。**这里列出了客户端需要调整的参数。前面说过了producer是把消息放在缓存区，后端Sender线程从缓存区拿出来发到broker。这里面涉及到一个打包的过程，它是批处理的操作，不是一条一条发送的。因此这个包的大小就和TPS息息相关。通常情况下调大这个值都会让TPS提升，但是也不会无限制的增加。不过调高此值的劣处在于消息延迟的增加。除了调整batch.size，设置压缩也可以提升TPS，它能够减少网络传输IO。当前Lz4的压缩效果是最好的，如果客户端机器CPU资源很充足那么建议开启压缩。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-33.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-33.png)  
 &emsp; 对于消费者端而言，调优TPS并没有太好的办法，能够想到的就是调整fetch.min.bytes。适当地增加该参数的值能够提升consumer端的TPS。对于Broker端而言，通常的瓶颈在于副本拉取消息时间过长，因此可以适当地增加num.replica.fetcher值，利用多个线程同时拉取数据，可以加快这一进程。  
 2. Kafka调优 – 延时  
 &emsp; **所谓的延时就是指消息被处理的时间。**某些情况下自然是希望越快越好。针对这方面的调优，consumer端能做的不多，简单保持fetch.min.bytes默认值即可，这样可以保证consumer能够立即返回读取到的数据。讲到这里，可能有人会有这样的疑问：TPS和延时不是一回事吗？假设发一条消息延时是2ms，TPS自然就是500了，因为一秒只能发500消息，其实这两者关系并不是简单的。因为我发一条消息2毫秒，但是如果把消息缓存起来统一发，TPS会提升很多。假设发一条消息依然是2ms，但是我先等8毫秒，在这8毫秒之内可能能收集到一万条消息，然后再发。相当于在10毫秒内发了一万条消息，大家可以算一下TPS是多少。事实上，Kafka producer在设计上就是这样的实现原理。  
 3. Kafka调优 –消息持久性  
 &emsp; 消息持久化本质上就是消息不丢失。Kafka对消息不丢失的承诺是有条件的。以前碰到很多人说我给Kafka发消息，发送失败，消息丢失了，怎么办？严格来说Kafka不认为这种情况属于消息丢失，因为此时消息没有放到Kafka里面。Kafka只对已经提交的消息做有条件的不丢失保障。  
 &emsp; 如果要调优持久性，对于producer而言，首先要设置重试以防止因为网络出现瞬时抖动造成消息发送失败。一旦开启了重试，还需要防止乱序的问题。比如说我发送消息1与2，消息2发送成功，消息1发送失败重试，这样消息1就在消息2之后进入Kafka，也就是造成乱序了。如果用户不允许出现这样的情况，那么还需要显式地设置max.in.flight.requests.per.connection为1。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-34.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-34.png)  
 4. Kafka调优 –可用性  
 &emsp; 最后是可用性，与刚才的持久性是相反的，我允许消息丢失，只要保证系统高可用性即可。因此我需要把consumer心跳超时设置为一个比较小的值，如果给定时间内消费者没有处理完消息，该实例可能就被踢出消费者组。我想要其他消费者更快地知道这个决定，因此调小这个参数的值。  
 
 ### 1.5.3. 定位性能瓶颈  
 &emsp; 下面就是性能瓶颈，严格来说这不是调优，这是解决性能问题。对于生产者来说，如果要定位发送消息的瓶颈很慢，需要拆解发送过程中的各个步骤。就像这张图表示的那样，消息的发送共有6步。第一步就是生产者把消息放到Broker，第二、三步就是Broker把消息拿到之后，写到本地磁盘上，第四步是follower broker从Leader拉取消息，第五步是创建response；第六步是发送回去，告诉我已经处理完了。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/mq/kafka/kafka-35.png)  
+![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-35.png)  
 &emsp; 这六步当中你需要确定瓶颈在哪？怎么确定？——通过不同的JMX指标。比如说步骤1是慢的，可能你经常碰到超时，你如果在日志里面经常碰到request timeout，就表示1是很慢的，此时要适当增加超时的时间。如果2、3慢的情况下，则可能体现在磁盘IO非常高，导致往磁盘上写数据非常慢。倘若是步骤4慢的话，查看名为remote-time的JMX指标，此时可以增加fetcher线程的数量。如果5慢的话，表现为response在队列导致待的时间过长，这时可以增加网络线程池的大小。6与1是一样的，如果你发现1、6经常出问题的话，查一下你的网络。所以，就这样来分解整个的耗时。这是到底哪一步的瓶颈在哪，需要看看什么样的指标，做怎样的调优。  
 
 ### 1.5.4. Java Consumer的调优

@@ -102,9 +102,9 @@ https://blog.csdn.net/waltonhuang/article/details/105550331
 * 白色：尚未访问过。  
 
 ## 1.2. ~~三色标记流程~~  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-135.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-135.png)  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-1.gif)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-1.gif)  
 <center>三色标记法的标记过程</center>
 
 
@@ -124,7 +124,7 @@ https://blog.csdn.net/waltonhuang/article/details/105550331
 
 ### 1.3.1. 多标/错标（浮动垃圾）
 &emsp; 假设已经遍历到E（变为灰色了），此时应用执行了 objD.fieldE = null。    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-136.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-136.png)  
 <center>D 到 E 的引用断开</center>
 
 &emsp; 此刻之后，对象E/F/G是“应该”被回收的。然而因为E已经变为灰色了，其仍会被当作存活对象继续遍历下去。最终的结果是：这部分对象仍会被标记为存活，即本轮GC不会回收这部分内存。  
@@ -137,8 +137,8 @@ https://blog.csdn.net/waltonhuang/article/details/105550331
 
 #### 1.3.2.1. 漏标现象产生
 &emsp; 假设GC线程已经遍历到E（变为灰色了），此时应用线程先执行了：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-137.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-138.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-137.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-138.png)  
 <center>E 到 G 断开，D引用 G</center>
 
 
@@ -153,7 +153,7 @@ https://blog.csdn.net/waltonhuang/article/details/105550331
 &emsp; 2：删除了灰色对象到白色对象的直接或间接引用。  
 
 &emsp; 从代码的角度看：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-140.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-140.png)  
 1. 读取 对象E的成员变量fieldG的引用值，即对象G；
 2. 对象E 往其成员变量fieldG，写入 null值。
 3. 对象D 往其成员变量fieldG，写入 对象G ；
@@ -164,7 +164,7 @@ https://blog.csdn.net/waltonhuang/article/details/105550331
 &emsp; 注：这里的屏障非内存屏障。   
 
 #### 1.3.2.2. ~~新增对象算漏标问题么？~~
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-139.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-139.png)  
 
 &emsp; 答案是：不算。  
 &emsp; 不知大家在学习三色标记的时候是否有过这种疑惑。为什么漏标的对象必须要删除灰色对象到白色对象的直接或间接引用。 **<font color = "clime">那这种直接新增的对象为什么不会被三色标记判定为漏标呢？ </font>** 
@@ -182,11 +182,11 @@ https://blog.csdn.net/waltonhuang/article/details/105550331
 
 ----------
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-141.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-141.png)  
 &emsp; 增量更新打破了第一个条件。当A插入新的引用关系D时，就将这个插入的引用记录的A对象记录下来。等待扫描结束后的重新标记阶段，再把这些记录过的引用了新对象的对象（如上图A）再次变为灰色。就会重新对A再进行一次扫描。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-142.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-143.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-144.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-142.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-143.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-144.png)  
 &emsp; 由图可见，此方法再次执行可以处理漏标的D对象。但是B，C对象属于被重复扫描的对象。  
 
 

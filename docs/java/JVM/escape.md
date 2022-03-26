@@ -116,7 +116,7 @@ public class ObjectReturn{
 
 
 &emsp; 在HotSpot源码中的src/share/vm/opto/escape.hpp中定义了对象进行逃逸分析后的几种状态：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-94.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-94.png)  
 1. **全局逃逸(GlobalEscape)**  
 &emsp; 即一个对象的作用范围逃出了当前方法或者当前线程，有以下几种场景：  
 
@@ -141,30 +141,30 @@ public class ObjectReturn{
 
 ##### 1.2.2.1.2. 示例
 &emsp; 比如以下代码，在一个1千万次的循环中，分别创建EscapeTest对象 t1 和 t2。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-114.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-114.png)  
 &emsp; 使用如下命令执行上述代码  
 
     java -Xms2g -Xmx2g -XX:+PrintGCDetails -XX:-DoEscapeAnalysis EscapeTest
 
 &emsp; 通过参数 -XX:-DoEscapeAnalysis 关闭"逃逸分析"，然后代码会在 System.in.read() 处停住，此时使用 jps 和 jmap 命令查看内存中EscapeTest对象的详细情况，如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-115.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-115.png)  
 &emsp; 可以看出，此时堆内存中有2千万个EscapeTest的实例对象(t1和t2各1千万个)，GC日志如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-116.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-116.png)  
 &emsp; 没有发生GC回收事件，但是eden区已经占用96%，所有的EscapeTest对象都在"堆"中分配。  
 &emsp; 如果将执行命令修改为如下：  
 
     java -Xms2g -Xmx2g -XX:+PrintGCDetails -XX:+DoEscapeAnalysis EscapeTest
 
 &emsp; 将"逃逸分析"开关打开，并重新查看 EscapeTest 对象情况如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-117.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-117.png)  
 &emsp; 可以看出此时堆内存中只有30万个左右，并且GC日志如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-118.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-118.png)  
 &emsp; 没有发生GC回收时间，EscapeTest只占用eden区的8%，说明并没有在堆中创建 EscapeTest 对象，取而代之的是分配在"栈"中。  
 
 &emsp; 注意：  
 &emsp; 有的读者可能会有疑问：开启了"逃逸分析"，NoEscape状态的对象不是会在"栈"中分配吗？为什么这里还是会有30多万个对象在"堆"中分配？  
 &emsp; 这是因为使用的JDK是混合模式，通过 java -version 查看java的版本，结果如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-119.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-119.png)  
 
     mixed mode 代表混合模式
     在Hotspot中采用的是解释器和编译器并行的架构，所谓的混合模式就是解释器和编译器搭配使用，当程序启动初期，采用解释器执行（同时会记录相关的数据，比如函数的调用次数，循环语句执行次数），节省编译的时间。在使用解释器执行期间，记录的函数运行的数据，通过这些数据发现某些代码是热点代码，采用编译器对热点代码进行编译，以及优化（逃逸分析就是其中一种优化技术）。
@@ -184,10 +184,10 @@ public class ObjectReturn{
 
 ##### 1.2.2.2.2. 示例
 &emsp; 比如以下两个计算和的方法：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-120.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-120.png)  
 &emsp; 乍看一下，sumPrimitive方法比 sumMutableWrapper 方法简单的多，那执行效率也肯定快许多吧，但是结果却是两个方法的执行效率相差无几。这是为什么呢？  
 &emsp; 在 sumMutableWrapper 方法中，MutableWrapper是不可逃逸对象，也就是说没有必要再"堆"中创建真正的MutableWrapper对象，Java即时编译器会使用标量替换对其进行优化，优化结果为下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-121.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-121.png)  
 &emsp; 仔细查看，上述优化够的代码中的value也是一个中间变量，通过内联之后，会被优化为如下：  
 
     total += i;
@@ -204,17 +204,17 @@ public class ObjectReturn{
 
 ##### 1.2.2.3.2. 示例
 &emsp; 比如以下代码：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-109.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-109.png)  
 &emsp; 在lockElimination() 方法中，对象 a 永远不会被其它方法或者线程访问到，因此 a 是非逃逸对象，这就导致synchronized(a) 没有任何意义，因为在任何线程中，a 都是不同的锁对象。所以JVM会对上述代码进行优化，删除同步相关代码，以下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-110.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-110.png)  
 &emsp; 对于锁消除，还有一个比较经典的使用场景：StringBuffer。  
 &emsp; StringBuffer是一个使用同步方法的线程安全的类，可以用来高效地拼接不可变的字符串对象。StringBuffer内部对所有append方法都进行了同步操作，如下所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-111.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-111.png)  
 &emsp; 但是在平时开发中，有很多场景其实是不需要这层线程安全保障的，因此在Java 5中又引入了一个非同步的 StringBuilder 类来作为它的备选，StringBuilder中的 append 方法并没有使用synchronized标识，如下所示：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-112.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-112.png)  
 &emsp; 调用StringBuffer的append方法的线程，必须得获取到这个对象的内部锁（也叫监视器锁）才能进入到方法内部，在退出方法前也必须要释放掉这个锁。而StringBuilder就不需要进行这个操作，因此它的执行性能比StringBuffer的要高--至少乍看上去是这样的。  
 &emsp; 不过在HotSpot虚拟机引入了"逃逸分析"之后，在调用StringBuffer对象的同步方法时，就能够自动地把锁消除掉了。从而提高StringBuffer的性能，比如以下代码：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JVM/JVM-113.png)  
+![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-113.png)  
 &emsp; 在getString()方法中的StringBuffer是方法内部的局部变量，并且并没有被当做方法返回值返回给调用者，因此StringBuffer是一个"非逃逸(NoEscape)"对象。  
 &emsp; 执行上述代码，结果如下：  
 

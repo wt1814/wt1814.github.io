@@ -81,7 +81,7 @@ https://juejin.cn/post/6844903967143493640
 ### 1.1.1. BeanFactory  
 <!--  
 在Spring中有许多的 IOC 容器的实现供用户选择和使用，其相互关系如下：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-3.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-3.png)  
 -->
 &emsp; Spring Bean的创建是典型的工厂模式，这一系列的Bean工厂，也即IOC容器为开发者管理对象间的依赖关系提供了很多便利和基础服务。  
 &emsp; 其中BeanFactory作为最顶层的一个接口类，定义了IOC容器的基本功能规范。BeanFactory有三个重要的子类：ListableBeanFactory、HierarchicalBeanFactory和AutowireCapableBeanFactory。它们最终的默认实现类是<font color = "red">DefaultListableBeanFactory</font>，它实现了所有的接口。  
@@ -150,7 +150,7 @@ public interface BeanFactory {
 
 ### 1.1.3. BeanDefinition  
 &emsp; 在这些Spring提供的基本IoC容器的接口定义和实现的基础上， **<font color = "clime">Spring通过定义BeanDefinition来管理基于Spring的应用中的各种对象以及它们之间的相互依赖关系。BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SSM/Spring/spring-4.png)  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-4.png)  
 &emsp; BeanDefinition抽象了Bean的定义，是让容器起作用的主要数据类型。对IoC容器来说，BeanDefinition就是对依赖反转模式中管理的对象依赖关系的数据抽象，也是容器实现依赖反转功能的核心数据结构，依赖反转功能都是围绕对BeanDefinition的处理来完成的。  
 
 ### 1.1.4. BeanDefinitionReader  

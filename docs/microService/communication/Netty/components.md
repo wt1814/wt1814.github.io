@@ -59,7 +59,7 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 * Bootstrap通常使用connect()方法连接到远程的主机和端口，作为一个TCP客户端。
 * ServerBootstrap通常使用bind()方法绑定本地的端口，等待客户端来连接。
 * ServerBootstrap可以处理Accept事件，这里面childHandler是用来处理Channel请求的，可以查看chaildHandler()方法的注解：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-51.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-51.png)  
 * Bootstrap客户端引导只需要一个EventLoopGroup，但是一个ServerBootstrap通常需要两个(上面的boosGroup和workerGroup)。  
 
 ## 1.2. ~~线程模型之EventLoop~~  
@@ -79,7 +79,7 @@ https://mp.weixin.qq.com/s/eJ-dAtOYsxylGL7pBv7VVA
 
 -----------
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-137.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-137.png)  
 
 EventLoopGroup 包含多个 EventLoop（每一个 EventLoop 通常内部包含一个线程），上面我们已经说了 EventLoop 的主要作用实际就是负责监听网络事件并调用事件处理器进行相关 I/O 操作的处理。  
 并且 EventLoop 处理的 I/O 事件都将在它专有的 Thread 上被处理，即 Thread 和 EventLoop 属于 1 : 1 的关系，从而保证线程安全。  
@@ -91,14 +91,14 @@ EventLoopGroup 包含多个 EventLoop（每一个 EventLoop 通常内部包含�
 
 ## 1.4. ByteBuf  
 &emsp; 针对于NIO中的Buffer类，Netty提供了ByteBuf来替代。ByteBuf声明了两个指针：一个读指针，一个写指针，使得读写操作进行分离，简化buffer的操作流程。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-52.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-52.png)  
 &emsp; 另外Netty提供了几种ByteBuf的实现：  
 
 * Pooled和Unpooled池化和非池化
 * Heap和Direct，堆内存和堆外内存，NIO中创建Buffer也可以指定
 * Safe和Unsafe，安全和非安全
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-53.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-53.png)  
 &emsp; 对于多种创建Buffer的方式，可以直接使用：  
 
 ```java

@@ -32,14 +32,14 @@ https://mp.weixin.qq.com/s/JBX3M-LrNwCoGl4Xzcg18Q
 https://mp.weixin.qq.com/s/YRfDFeIcoFlIl5kE7A9Y0Q
 -->
 ### 1.2.1. API 分组和route维度
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-57.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-57.png)  
 
 
 ### 1.2.2. 网关限流规则 GatewayFlowRule
 &emsp; **<font color = "clime">阈值类型：qps和线程数</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-58.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-58.png)  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-59.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-59.png)  
 
 
 

@@ -19,8 +19,8 @@
 1. **<font color = "clime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时，如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>   
 2. 锁升级
     锁主要存在四种状态，依次是：无锁状态（普通对象）、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。锁升级流程如下：   
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-79.png)   
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-80.png)   
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-79.png)   
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-80.png)   
 	1. 偏向锁：  
         1.  **<font color = "bule">偏向锁状态</font>**  
             * **<font color = "clime">`匿名偏向(Anonymously biased)`</font>** 。在此状态下thread pointer为NULL(0)，意味着还没有线程偏向于这个锁对象。第一个试图获取该锁的线程将会面临这个情况，使用原子CAS指令可将该锁对象绑定于当前线程。这是允许偏向锁的类对象的初始状态。
@@ -124,8 +124,8 @@ https://zhuanlan.zhihu.com/p/28505703
 
 ## 1.4. 锁升级  
 &emsp; 锁主要存在四种状态，依次是：无锁状态（普通对象）、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。锁升级流程如下：   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-79.png)   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-80.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-79.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-80.png)   
 
 
 ### 1.4.1. 偏向锁  
@@ -144,9 +144,9 @@ https://baijiahao.baidu.com/s?id=1630535202760061296&wfr=spider&for=pc
 顾名思义，偏向锁会偏向某个线程，其不会造成用户态与内核态的切换。偏向锁在第一次加锁时会偏向拿到锁的线程，当这个线程再来加锁时，就可以直接拿到锁而不用做其他的逻辑判断，所以在这种场景下其性能最高。不过，如果有其他线程再来加锁的话，JVM就会把偏向锁膨胀为轻量锁(没有锁竞争)或重量锁(有锁竞争)了。
 -->
 &emsp; 偏向锁的获得和撤销流程图解：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-31.png)   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-81.png)   
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-86.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-31.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-81.png)   
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-86.png)   
 
 &emsp; 当JVM启用了偏向锁模式（JDK6以上默认开启），新创建对象的Mark Word中的Thread Id为0，说明此时处于可偏向但未偏向任何线程，也叫做匿名偏向状态(anonymously biased)。  
 
@@ -155,7 +155,7 @@ https://baijiahao.baidu.com/s?id=1630535202760061296&wfr=spider&for=pc
 1. 线程A第一次访问同步块时，先检测对象头Mark Word中的标志位是否为01，依此判断此时对象锁是否处于无锁状态或者偏向锁状态（匿名偏向锁）；  
 2. 然后判断偏向锁标志位是否为1，如果不是，则进入轻量级锁逻辑（使用CAS竞争锁），如果是，则进入下一步流程；  
 3. **判断是偏向锁时，检查对象头Mark Word中记录的Thread Id是否是当前线程ID，如果是，则表明当前线程已经获得对象锁，以后该线程进入同步块时，不需要CAS进行加锁，只会往当前线程的栈中添加一条Displaced Mark Word为空的Lock Record中，用来统计重入的次数（如图为当对象所处于偏向锁时，当前线程重入3次，线程栈帧中Lock Record记录）。**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-82.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-82.png)  
 &emsp; 退出同步块释放偏向锁时，则依次删除对应Lock Record，但是不会修改对象头中的Thread Id；  
 &emsp; 注：偏向锁撤销是指在获取偏向锁的过程中因不满足条件导致要将锁对象改为非偏向锁状态，而偏向锁释放是指退出同步块时的过程。  
 4. **如果对象头Mark Word中Thread Id不是当前线程ID，则进行CAS操作，企图将当前线程ID替换进Mark Word。如果当前对象锁状态处于匿名偏向锁状态（可偏向未锁定），则会替换成功（将Mark Word中的Thread id由匿名0改成当前线程ID，在当前线程栈中找到内存地址最高的可用Lock Record，将线程ID存入），获取到锁，执行同步代码块；**  
@@ -207,7 +207,7 @@ https://baijiahao.baidu.com/s?id=1630535202760061296&wfr=spider&for=pc
         如果存在锁的竞争情况，偏向锁就会被撤销并升级为轻量级锁。
 
 &emsp; 偏向锁、轻量级锁的状态转化及对象Mark Word的关系如下图所示。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-29.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-29.png)  
  
 &emsp; 图中，偏向锁的重偏向和撤销偏向时，如何判断对象是否已经锁定？  
 &emsp; HotSpot支持存储释放偏向锁，以及偏向锁的批量重偏向和撤销。这个特性可以通过JVM的参数进行切换，而且这是默认支持的。  
@@ -229,9 +229,9 @@ https://zhuanlan.zhihu.com/p/127884116
 
 #### 1.4.1.3. 偏向锁的失效  
 &emsp; 如果计算过对象的hashcode()，则对象无法进入偏向状态。    
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-39.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-70.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-40.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-39.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-70.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-40.png)  
 
 &emsp; 轻量级锁重量级锁的hashCode存在什么地方？  
 &emsp; 存在线程栈中，轻量级锁的LR中，或是代表重量级锁的ObjectMonitor的成员中。  
@@ -247,15 +247,15 @@ https://zhuanlan.zhihu.com/p/127884116
 &emsp; <font color = "red">JVM启动过程，一般会有很多线程竞争，所以默认情况启动时不打开偏向锁，过一段时间再打开。</font>  
 
 &emsp; 轻量级锁及锁膨胀流程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-30.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-30.png)  
 
 1. <font color = "red">偏向锁升级为轻量级锁之后，对象的Markword也会进行相应的的变化。</font>  
     1. <font color = "clime">线程在自己的栈桢中创建锁记录LockRecord。</font>  
     2. 将锁对象的对象头中的MarkWord复制到线程刚刚创建的锁记录中。  
     3. <font color = "clime">将锁记录中的Owner指针指向锁对象。</font>  
     4. 将锁对象的对象头的MarkWord替换为指向锁记录的指针。  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-32.png)  
-    ![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-33.png)  
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-32.png)  
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-33.png)  
 2. <font color = "red">自旋锁：</font>  
 &emsp; 轻量级锁在加锁过程中，用到了自旋锁。自旋锁分为固定次数自旋锁和自适应自旋锁。轻量级锁是针对竞争锁对象线程不多且线程持有锁时间不长的场景，因为阻塞线程需要CPU从用户态转到内核态，代价很大，如果一个刚刚阻塞不久就被释放代价有大。  
 &emsp;  自旋锁与自适应自旋：    
@@ -288,7 +288,7 @@ https://zhuanlan.zhihu.com/p/127884116
 
 ### 1.4.4. 锁状态总结  
 &emsp; JDK 1.6 引入了偏向锁和轻量级锁，从而让锁拥有了四个状态： **无锁状态(unlocked)(普通对象，MarkWord标志位01，没有线程执行同步方法/代码块时的状态)** 、偏向锁状态(biasble)、轻量级锁状态(lightweight locked)和重量级锁状态(inflated)。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/concurrent/multi-66.png)  
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-66.png)  
 
 
 |状态|标志位|描述|优点|缺点|应用场景|

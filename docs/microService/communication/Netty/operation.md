@@ -82,14 +82,14 @@ public final class EchoServer {
 ```
 
 &emsp; **<font color = "clime">一般来说，使用Bootstrap创建启动器的步骤可分为以下几步：</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-151.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-151.png)  
 1. 创建服务器启动辅助类，服务端是ServerBootstrap。  
 &emsp; 需要设置事件循环组EventLoopGroup，如果使用reactor主从模式，需要创建2个： **<font color = "clime">`创建boss线程组（EventLoopGroup bossGroup）`用于服务端接受客户端的连接；`创建worker线程组（EventLoopGroup workerGroup）`用于进行 SocketChannel的数据读写。</font>**  
 2. 对ServerBootstrap进行配置，配置项有channel,handler,option。  
 3. 绑定服务器端口并启动服务器，同步等待服务器启动完毕。  
 4. 阻塞启动线程，并同步等待服务器关闭，因为如果不阻塞启动线程，则会在finally块中执行优雅关闭，导致服务器也会被关闭了。  
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-150.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-150.png)  
 
 
 ## 1.2. Netty客户端启动  
@@ -162,6 +162,6 @@ public final class EchoClient {
 
 
 ## 1.3. Netty整体运行流程
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-87.png)  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/netty/netty-44.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-87.png)  
+![image](http://www.wt1814.com/static/view/images/microService/netty/netty-44.png)  
 

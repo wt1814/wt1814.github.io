@@ -71,7 +71,7 @@ https://mp.weixin.qq.com/s/_2VVj3AN-mAuguUIk9-8xg
 -->
 
 对于反射的执行过程的原理，我这里画了一张图，以供大家参考理解。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/JDK/java8/java-9.png)  
+![image](http://www.wt1814.com/static/view/images/java/JDK/java8/java-9.png)  
 
 我们看过JVM的相关书籍都会详细的了解到，Java文件首先要通过编译器编译，编译成Class文件，然后通过类加载器(ClassLoader)将class文件加载到JVM中。  
 

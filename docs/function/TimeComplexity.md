@@ -48,4 +48,4 @@ public void c(int n){
 
 
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/algorithm/function-49.png)  
+![image](http://www.wt1814.com/static/view/algorithm/function-49.png)  

@@ -70,7 +70,7 @@ LRU 缓存算法的核心数据结构就是哈希链表，双向链表和哈希�
 https://mp.weixin.qq.com/s/pGNIEOGvOYDM5yiyMM8bRQ
 -->   
 &emsp; **<font color = "red">哈希链表，双向链表和哈希表的结合体。哈希表查找快，但是数据无固定顺序；链表有顺序之分，插入删除快，但是查找慢。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/java/function/function-4.png)  
+![image](http://www.wt1814.com/static/view/images/java/function/function-4.png)  
 
 &emsp; LinkedHashMap是如何记录保存插入顺序的。LinkedHashMap重载了HashMap的newNode、newTreeNode方法，在每次添加一个新的条目entry时，通过linkNodeLast()方法将其添加到双向链表的`尾部`来记录保存插入顺序。  
 

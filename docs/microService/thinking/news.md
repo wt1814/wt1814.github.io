@@ -49,7 +49,7 @@ https://blog.51cto.com/u_15127576/4044486
 ### 1.1.1. 本地消息表/消息状态表(异步确保)-最终一致性  
 #### 1.1.1.1. 基本思想(eBay的论文)
 &emsp; eBay的架构师Dan Pritchett，曾在一篇解释BASE原理的论文《Base：An Acid Alternative》中提到一个eBay分布式系统一致性问题的解决方案。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-46.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-46.png)  
 &emsp; 它的核心思想是将需要分布式处理的任务通过消息或者日志的方式来异步执行，消息或日志可以存到本地文件、数据库或消息队列， **<font color = "red">再通过业务规则进行失败重试，</font>** 它要求各服务的接口是幂等的。  
 
 #### 1.1.1.2. 实现流程  
@@ -57,11 +57,11 @@ https://blog.51cto.com/u_15127576/4044486
 &emsp; 本地消息就是利用了本地事务，会在数据库中存放一张本地事务消息表。  
 1. 在进行本地事务操作中加入了本地消息的插入， **即将业务的执行和将消息放入消息表中的操作放在同一个事务中提交。** 这样本地事务执行成功的话，消息肯定也插入成功。  
 2. 然后再调用(调用方式可以是同步、异步、mq)其他服务，如果调用成功就修改这条本地消息的状态。 **<font color = "red">如果失败也不要紧，会有一个后台线程扫描，发现这些状态的消息，会一直调用相应的服务，一般会设置重试的次数，如果一直不行则特殊记录，待人工介入处理。</font>**  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-47.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-47.png)  
 
 ##### 1.1.1.2.2. 方案二：通过mq重试
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-6.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-6.png)  
 &emsp; **基本思路：**  
 &emsp; 消息生产方，需要额外建一个消息表，并记录消息发送状态。消息表和业务数据要在一个事务里提交，也就是说要在一个数据库里面。  
 &emsp; 然后消息会经过MQ发送到消息的消费方。如果消息发送失败，会进行重试发送。  
@@ -94,7 +94,7 @@ https://www.cnblogs.com/chjxbt/p/11412727.html
 
 #### 1.1.2.1. 实现流程  
 &emsp; 事务消息需要消息队列提供相应的功能才能实现，kafka和RocketMQ都提供了事务相关功能。  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-48.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-48.png)  
 
 * 对于订单系统：  
     * 首先，订单系统在消息队列上开启一个事务。  
@@ -106,7 +106,7 @@ https://www.cnblogs.com/chjxbt/p/11412727.html
 
 
 &emsp; 如果在第四步提交事务消息时失败了怎么办？Kafka和RocketMQ给出了2种不同的解决方案：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-48.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-48.png)  
 1. Kafka的解决方案：  
 &emsp; 直接抛出异常，让用户自行处理。可以在业务代码中反复重试提交，直到提交成功，或者删除之前创建的订单进行补偿。
 2. RocketMQ的解决方案：  
@@ -114,7 +114,7 @@ https://www.cnblogs.com/chjxbt/p/11412727.html
 
 
 &emsp; 综合上面讲的通用事务消息的实现和RocketMQ的事务反查机制，使用RocketMQ事务消息功能实现分布式事务的流程如下图：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-49.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-49.png)  
 
 #### 1.1.2.2. 特点  
 
@@ -141,7 +141,7 @@ https://www.cnblogs.com/chjxbt/p/11412727.html
 &emsp; **<font color = "red">此种模式可以认为是mq的一般使用。</font>**
 
 #### 1.1.3.1. 实现流程  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/microService/problems/problem-8.png)  
+![image](http://www.wt1814.com/static/view/images/microService/problems/problem-8.png)  
 &emsp; 在该系统中，A系统执行完本地事务，向MQ发送消息，最大努力通知服务消费消息，比如消息服务，然后调用B系统的接口，执行B系统的本地事务，如果B系统执行成功则OK，否则不断重试，重复多次之后还是失败的话就放弃执行。 
  
 #### 1.1.3.2. 特点  

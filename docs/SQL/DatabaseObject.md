@@ -14,7 +14,7 @@
 <!-- /TOC -->
 
 # 1. 数据库对象  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-69.png) ![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-70.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-69.png) ![image](http://www.wt1814.com/static/view/images/SQL/sql-70.png)  
 
 &emsp; 数据库对象有表格、索引、视图、图表、缺省值、规则、触发器、语法、存储过程、用户、序列、函数等。  
 

@@ -44,7 +44,7 @@ https://docs.docker.com/config/daemon/
 
 ## 1.4. Docker命令  
 &emsp; Docker一般的使用流程：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-39.png)  
+![image](http://www.wt1814.com/static/view/images/devops/docker/docker-39.png)  
 
 ### 1.4.1. 镜像操作命令  
 &emsp; **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)。</font>**  
@@ -65,7 +65,7 @@ https://docs.docker.com/config/daemon/
     * 使用docker commit命令  
     * 使用Dockerfile构建
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-8.png)  
+![image](http://www.wt1814.com/static/view/images/devops/docker/docker-8.png)  
 
 <!-- 
 
@@ -133,4 +133,4 @@ https://docs.docker.com/config/daemon/
         [root@localhost ~]# docker import centos_test.tar test/centos
         通过docker images命令可以看到增加了个test/centos镜像
 
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/devops/docker/docker-7.png)  
+![image](http://www.wt1814.com/static/view/images/devops/docker/docker-7.png)  

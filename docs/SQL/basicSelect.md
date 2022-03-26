@@ -81,7 +81,7 @@ ORDER BY
 LIMIT < limit_number >
 ```
 &emsp; 查询语句如上，sql的执行顺序：  
-![image](https://gitee.com/wt1814/pic-host/raw/master/images/SQL/sql-8.png)  
+![image](http://www.wt1814.com/static/view/images/SQL/sql-8.png)  
 
 * FROM 连接  
     &emsp; 首先，对SELECT语句执行查询时，<font color = "red">对FROM关键字两边的表执行连接，会形成笛卡尔积，</font>这时候会产生一个虚表VT1(virtual table)。  
