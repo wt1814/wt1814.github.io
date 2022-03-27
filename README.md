@@ -741,6 +741,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; &emsp; [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
 &emsp; &emsp; [Netty多协议开发](/docs/microService/communication/Netty/MultiProtocol.md)  
 &emsp; [Netty源码](/docs/microService/communication/Netty/source.md)    
+&emsp; &emsp; [Netty源码搭建](/docs/microService/communication/Netty/build.md)  
 &emsp; &emsp; [Netty服务端创建](/docs/microService/communication/Netty/principle.md)  
 &emsp; &emsp; [Netty客户端创建](/docs/microService/communication/Netty/customer.md)  
 &emsp; &emsp; [NioEventLoop](/docs/microService/communication/Netty/NioEventLoop.md)  

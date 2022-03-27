@@ -561,6 +561,7 @@
         * [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
         * [Netty多协议开发](/docs/microService/communication/Netty/MultiProtocol.md)  
     * [Netty源码](/docs/microService/communication/Netty/source.md)  
+        * [Netty源码搭建](/docs/microService/communication/Netty/build.md)  
         * [Netty服务端创建](/docs/microService/communication/Netty/principle.md)  
         * [Netty客户端创建](/docs/microService/communication/Netty/customer.md)  
         * [NioEventLoop](/docs/microService/communication/Netty/NioEventLoop.md)  
