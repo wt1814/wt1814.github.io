@@ -129,7 +129,7 @@
                     - [1.12.3.1.4.4. 数据类型](#1123144-数据类型)
             - [1.12.3.2. Redis原理](#11232-redis原理)
                 - [1.12.3.2.1. Redis为什么那么快？](#112321-redis为什么那么快)
-                - [1.12.3.2.2. Redis虚拟内存机制](#112322-redis虚拟内存机制)
+                - [1.12.3.2.2. Redis【虚拟内存】机制](#112322-redis虚拟内存机制)
                 - [1.12.3.2.3. Redis事件/Reactor](#112323-redis事件reactor)
                 - [1.12.3.2.4. Redis多线程模型](#112324-redis多线程模型)
                 - [1.12.3.2.5. Redis协议](#112325-redis协议)
@@ -1690,7 +1690,7 @@ update product set name = 'TXC' where id = 1;
     * [简单快速的Redis协议](/docs/microService/Redis/RESP.md)  
 3. ......
 
-##### 1.12.3.2.2. Redis虚拟内存机制
+##### 1.12.3.2.2. Redis【虚拟内存】机制
 &emsp; **<font color = "clime">通过VM功能可以实现冷热数据分离，使热数据仍在内存中、冷数据保存到磁盘。这样就可以避免因为内存不足而造成访问速度下降的问题。</font>**  
 &emsp; 使用虚拟内存把那些不经常访问的数据交换到磁盘上。需要特别注意的是Redis并没有使用OS提供的Swap，而是自己实现。  
 &emsp; **<font color = "clime">Redis为了保证查找的速度，只会将value交换出去，而在内存中保留所有的Key。</font>**  
@@ -1757,16 +1757,11 @@ update product set name = 'TXC' where id = 1;
     3. 在写入AOF日志文件时，如果Redis服务器宕机，则AOF日志文件文件会出格式错误。在重启Redis服务器时，Redis服务器会拒绝载入这个AOF文件，可以修复AOF 并恢复数据。 
 3. Redis4.0混合持久化，先RDB，后AOF。  
 4. ~~**<font color = "clime">RDB方式bgsave指令中fork子进程、AOF方式重写bgrewriteaof都会造成阻塞。</font>**~~  
-
-
 5. Redis 提供了两个命令来生成 RDB 快照文件，分别是 save 和 bgsave。save 命令在主线程中执行，会导致阻塞。而 bgsave 命令则会创建一个子进程，用于写入 RDB 文件的操作，避免了对主线程的阻塞，这也是 Redis RDB 的默认配置。   
-
-
-
-6. AOF采用的是写后日志的方式，Redis先执行命令把数据写入内存，然后再记录日志到文件中。AOF日志记录的是操作命令，不是实际的数据，如果采用AOF方法做故障恢复时需要将全量日志都执行一遍。  
+6. `AOF采用的是【写后日志】的方式`，Redis先执行命令把数据写入内存，然后再记录日志到文件中。AOF日志记录的是操作命令，不是实际的数据，如果采用AOF方法做故障恢复时需要将全量日志都执行一遍。  
 ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-121.png)  
 
-&emsp; 平时用的MySQL则采用的是 “写前日志”，那 Redis为什么要先执行命令，再把数据写入日志呢？  
+&emsp; `平时用的MySQL则采用的是 “写前日志”，`那 Redis为什么要先执行命令，再把数据写入日志呢？  
 
 &emsp; 这个主要是由于Redis在写入日志之前，不对命令进行语法检查，所以只记录执行成功的命令，避免出现记录错误命令的情况，而且在命令执行后再写日志不会阻塞当前的写操作。  
 
@@ -1841,7 +1836,7 @@ update product set name = 'TXC' where id = 1;
 ##### 1.12.3.4.2. Redis主从复制
 1. **<font color = "red">Redis主从复制架构常见的是`单副本`、双副本模式。</font>**  
 2. <font color = "red">主从复制过程大体可以分为3个阶段：连接建立阶段（即准备阶段）、数据同步阶段、命令传播阶段。</font>  
-&emsp; 一、连接建立阶段：1. 保存主节点(master)信息。2. 从节点(slave)内部通过每秒运行的定时任务维护复制相关逻辑，当定时任务发现存在新的主节点后，会尝试与该节点建立网络连接。</font>3. 发送ping命令。  
+&emsp; 一、连接建立阶段：1. 保存主节点（master）信息。2. 从节点（slave）内部通过每秒运行的定时任务维护复制相关逻辑，当定时任务发现存在新的主节点后，会尝试与该节点建立网络连接。</font>3. 发送ping命令。  
 &emsp; 二、数据同步阶段：5. 同步数据集。有两种复制方式：全量复制和部分复制。  
 &emsp; 三、命令传播阶段：6. 命令持续复制。  
 3. redis 2.8之前使用sync [runId] [offset]同步命令，redis2.8之后使用psync [runId] [offset]命令。两者不同在于，sync命令仅支持全量复制过程，psync支持全量和部分复制。    
@@ -1880,7 +1875,7 @@ update product set name = 'TXC' where id = 1;
             5. 复制结构只支持一层，从节点只能复制主节点，不支持嵌套树状复制结构。  
     * 故障转移：
         * 故障发现：主观下线(pfail)和客观下线(fail)。  
-        * 故障恢复：当从节点通过内部定时任务发现自身复制的主节点进入客观下线；从节点发起选举；其余主节点选举投票。  
+        * 故障恢复：当从节点通过内部定时任务发现自身复制的主节点进入客观下线； **<font color = "red">从节点发起选举；其余主节点选举投票。</font>**  
 3. **<font color = "clime">Redis集群的客户端：</font>**  
 &emsp; Redis集群对客户端通信协议做了比较大的修改，为了追求性能最大化，并没有采用代理的方式，而是采用客户端直连节点的方式。    
     * 请求重定向：在集群模式下，Redis接收任何键相关命令时首先计算键对应的槽，再根据槽找出所对应的节点，如果节点是自身，则处理键命令；否则回复MOVED重定向错误，通知客户端请求正确的节点。这个过程称为MOVED重定向。  
@@ -1971,9 +1966,9 @@ update product set name = 'TXC' where id = 1;
 
 ##### 1.13.2.1.2. 消息分区
 1. 分区说明  
-&emsp; 分区(Partition)的作用就是提供负载均衡的能力，单个topic的不同分区可存储在相同或不同节点机上，为实现系统的高伸缩性（Scalability），`不同的分区被放置到不同节点的机器上，`各节点机独立地执行各自分区的读写任务，如果性能不足，可通过添加新的节点机器来增加整体系统的吞吐量。  
+&emsp; 分区（Partition）的作用就是提供负载均衡的能力，单个topic的不同分区可存储在相同或不同节点机上，为实现系统的高伸缩性（Scalability），`不同的分区被放置到不同节点的机器上，`各节点机独立地执行各自分区的读写任务，如果性能不足，可通过添加新的节点机器来增加整体系统的吞吐量。  
 2. 服务端物理分区分配
-    1. 分区策略  
+    1. ★★★分区策略  
     在所有broker上均匀地分配分区副本； **<font color = " red">确保分区的每个副本分布在不同的broker上。</font>**  
     2. ~~分区存储数据~~
 3. 客户端怎么分区？
@@ -2149,7 +2144,7 @@ update product set name = 'TXC' where id = 1;
 ## 1.14. 网络IO
 
 ### 1.14.1. ~~服务器处理连接~~
-&emsp; 多线程模式和多进程模式是类似的，也是分为下面几种  
+&emsp; 多线程模式和多进程模式是类似的，也是分为下面几种：  
 
 1. 主进程accept，创建子线程处理
 2. 子线程accept
@@ -2179,7 +2174,7 @@ update product set name = 'TXC' where id = 1;
         4. 内核将数据返回给用户进程。  
     特点：两阶段都阻塞。  
     2. BIO采用多线程时，大量的线程占用很大的内存空间，并且线程切换会带来很大的开销，10000个线程真正发生读写事件的线程数不会超过20%，`每次accept都开一个线程也是一种资源浪费。`  
-4. 同步非阻塞I/O：  
+4. 同步 非阻塞（轮询）I/O：  
     1. 流程：  
         ![image](http://www.wt1814.com/static/view/images/microService/netty/netty-2.png)  
         1. 用户进程发起recvfrom系统调用内核。用户进程【同步】等待结果；
@@ -2229,8 +2224,8 @@ update product set name = 'TXC' where id = 1;
         
         -----------
         1. 首先epoll_create创建一个epoll文件描述符，底层同时创建一个红黑树，和一个就绪链表；红黑树存储所监控的文件描述符的节点数据，就绪链表存储就绪的文件描述符的节点数据；  
-        2. epoll_ctl将会添加新的描述符，首先判断是红黑树上是否有此文件描述符节点，如果有，则立即返回。如果没有， 则在树干上插入新的节点，并且告知内核注册回调函数。`当接收到某个文件描述符过来数据时，那么内核将该节点插入到就绪链表里面。`  
-        3. epoll_wait将会接收到消息，并且将数据拷贝到用户空间，清空链表。对于LT模式epoll_wait清空就绪链表之后会检查该文件描述符是哪一种模式，`如果为LT模式，且必须该节点确实有事件未处理，那么就会把该节点重新放入到刚刚删除掉的且刚准备好的就绪链表，`epoll_wait马上返回。ＥT模式不会检查，只会调用一次。  
+        2. epoll_ctl将会添加新的描述符，首先判断是红黑树上是否有此文件描述符节点，如果有，则立即返回。如果没有， 则在树干上插入新的节点，并且告知内核注册回调函数。`【当接收到某个文件描述符过来数据时，那么内核将该节点插入到就绪链表里面。】`  
+        3. epoll_wait将会接收到消息，并且将数据拷贝到用户空间，清空链表。对于LT模式epoll_wait清空就绪链表之后会检查该文件描述符是哪一种模式，`如果为LT模式，且必须该节点确实有事件未处理，那么就会把该节点重新放入到刚刚删除掉的且刚准备好的就绪链表，`epoll_wait马上返回。ET模式不会检查，只会调用一次。  
     2. **epoll机制的工作模式：**  
         * LT模式（默认，水平触发，level trigger）：当epoll_wait检测到某描述符事件就绪并通知应用程序时，应用程序可以不立即处理该事件； **<font color = "clime">下次调用epoll_wait时，会再次响应应用程序并通知此事件。</font>**    
         * ET模式（边缘触发，edge trigger）：当epoll_wait检测到某描述符事件就绪并通知应用程序时，应用程序必须立即处理该事件。如果不处理，下次调用epoll_wait时，不会再次响应应用程序并通知此事件。（直到做了某些操作导致该描述符变成未就绪状态了，也就是说 **<font color = "clime">边缘触发只在状态由未就绪变为就绪时只通知一次。</font>** ）   
@@ -2245,7 +2240,7 @@ update product set name = 'TXC' where id = 1;
 
 #### 1.14.3.3. 多路复用之Reactor模式
 1. `Reactor，是网络编程中基于IO多路复用的一种设计模式，是【event-driven architecture】的一种实现方式，处理多个客户端并发的向服务端请求服务的场景。`    
-2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font> **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
+2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font> <font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
     * `Reactor负责监听（建立连接）和处理请求（分发事件、读写）。`  
     * 线程池负责处理事件。  
 3. **单线程模型（单Reactor单线程）**  
@@ -2289,7 +2284,7 @@ update product set name = 'TXC' where id = 1;
 	![image](http://www.wt1814.com/static/view/images/microService/netty/netty-68.png)    
 	&emsp; **<font color = "red">最主要的变化是，CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，因此减少了2次CPU拷贝。共2次CPU拷贝，2次DMA拷贝，4次状态切换。之后的过程类似。</font>**  
 
-	* 读过程涉及2次空间切换(需要CPU参与)、1次DMA拷贝、1次CPU拷贝；
+	* 读过程涉及2次空间切换（需要CPU参与）、1次DMA拷贝、1次CPU拷贝；
 	* 写过程涉及2次空间切换、1次DMA拷贝、1次CPU拷贝；  
 5. `零拷贝技术的几个实现手段包括：mmap+write、sendfile、sendfile+DMA收集、splice等。`  
 6. **<font color = "blue">mmap（内存映射）：</font>**   
@@ -2310,7 +2305,7 @@ update product set name = 'TXC' where id = 1;
 
     &emsp; mmap的方式节省了一次CPU拷贝，同时由于用户进程中的内存是虚拟的，`只是映射到内核的读缓冲区，所以可以节省一半的内存空间，比较适合大文件的传输。`  
 7. sendfile（函数调用）：  
-    1. **<font color = "red">sendfile建立了两个文件之间的传输通道。</font>** 通过使用sendfile数据可以直接在内核空间进行传输，因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。   
+    1. **<font color = "red">sendfile建立了两个文件之间的传输通道。</font>** `通过使用【sendfile数据可以直接在内核空间进行传输，】因此避免了用户空间和内核空间的拷贝，`同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。   
     2. 流程：  
         ![image](http://www.wt1814.com/static/view/images/microService/netty/netty-148.png)  
         &emsp; 整个过程发生了2次用户态和内核态的上下文切换和3次拷贝，具体流程如下：  
@@ -2490,9 +2485,12 @@ update product set name = 'TXC' where id = 1;
 
 
 ## 1.16. 磁盘IO
-
+&emsp; 顺序读写磁盘  
 
 ## 1.17. 内存优化  
+&emsp; 虚拟内存  
+
+
 
 ------------------
 
