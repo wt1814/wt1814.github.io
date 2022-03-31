@@ -1,188 +1,188 @@
 
 <!-- TOC -->
 
-- [总结](#总结)
-    - [Java](#java)
-        - [Java基础](#java基础)
-        - [Java基础数据类型](#java基础数据类型)
-            - [String](#string)
-            - [Java基本数据类型](#java基本数据类型)
-        - [Java集合框架](#java集合框架)
-            - [Java集合框架](#java集合框架-1)
-            - [HashMap](#hashmap)
-                - [HashMap源码](#hashmap源码)
-                - [HashMap安全](#hashmap安全)
-            - [Collection](#collection)
-        - [JDK1.8](#jdk18)
-            - [接口的默认方法与静态方法](#接口的默认方法与静态方法)
-            - [Lambda表达式](#lambda表达式)
-            - [Stream](#stream)
-            - [Optional](#optional)
-            - [DateTime](#datetime)
-        - [Java异常](#java异常)
-        - [Java范型](#java范型)
-        - [IO](#io)
-        - [SPI与线程上下文类加载器](#spi与线程上下文类加载器)
-        - [反射](#反射)
-        - [自定义注解](#自定义注解)
-    - [设计模式](#设计模式)
-        - [七大设计原则](#七大设计原则)
-        - [复用规则（继承和组合）详解](#复用规则继承和组合详解)
-        - [设计模式详解](#设计模式详解)
-            - [5种创建型设计模式](#5种创建型设计模式)
-            - [7种结构型设计模式（横向4 + 纵向2 + 1）](#7种结构型设计模式横向4--纵向2--1)
-            - [两种动态代理](#两种动态代理)
-            - [11种行为型设计模式](#11种行为型设计模式)
-            - [设计模式大讨论](#设计模式大讨论)
-                - [结构型模式的讨论](#结构型模式的讨论)
-                - [行为型模式的讨论](#行为型模式的讨论)
-            - [设计模式混编](#设计模式混编)
-            - [日常使用的设计模式](#日常使用的设计模式)
-            - [Spring框架中用到了哪些设计模式](#spring框架中用到了哪些设计模式)
-    - [JVM](#jvm)
-        - [JDK、JRE、JVM](#jdkjrejvm)
-        - [编译成Class字节码文件](#编译成class字节码文件)
-        - [类加载](#类加载)
-            - [JVM类的加载](#jvm类的加载)
-            - [~~JVM类加载器~~](#jvm类加载器)
-        - [运行时数据区/内存结构](#运行时数据区内存结构)
-            - [JVM内存结构](#jvm内存结构)
-                - [JVM内存结构](#jvm内存结构-1)
-                - [类存储内存小结](#类存储内存小结)
-                    - [变量](#变量)
-                    - [静态方法和实例方法](#静态方法和实例方法)
-                - [常量池详解](#常量池详解)
-            - [内存(堆栈)中的对象](#内存堆栈中的对象)
-                - [创建对象](#创建对象)
-                - [对象生命周期](#对象生命周期)
-                - [对象大小](#对象大小)
-            - [内存泄露](#内存泄露)
-        - [JVM执行](#jvm执行)
-        - [GC](#gc)
-            - [GC-回收位置/安全点](#gc-回收位置安全点)
-            - [回收算法与分代回收](#回收算法与分代回收)
-            - [GC-回收对象](#gc-回收对象)
-                - [堆中对象的存活](#堆中对象的存活)
-                - [方法区(类和常量)回收/类的卸载阶段](#方法区类和常量回收类的卸载阶段)
-                - [null与GC](#null与gc)
-            - [GC-垃圾回收器](#gc-垃圾回收器)
-                - [垃圾回收器](#垃圾回收器)
-                - [CMS回收器](#cms回收器)
-                - [G1回收器](#g1回收器)
-                - [三色标记，并发标记阶段](#三色标记并发标记阶段)
-        - [JVM调优](#jvm调优)
-            - [JVM调优-基础](#jvm调优-基础)
-            - [JVM调优](#jvm调优-1)
-            - [JVM问题排查](#jvm问题排查)
-            - [Arthas工具](#arthas工具)
-    - [多线程和并发](#多线程和并发)
-        - [线程Thread](#线程thread)
-            - [线程状态详解](#线程状态详解)
-        - [线程池-多线程](#线程池-多线程)
-            - [线程池框架](#线程池框架)
-            - [ThreadPoolExecutor详解](#threadpoolexecutor详解)
-            - [线程池的正确使用](#线程池的正确使用)
-            - [ForkJoinPool详解](#forkjoinpool详解)
-            - [~~CompletionService~~](#completionservice)
-            - [Future相关](#future相关)
-            - [~~CompletableFuture~~](#completablefuture)
-        - [并发编程](#并发编程)
-            - [并发编程原理](#并发编程原理)
-                - [~~CPU多核缓存架构及JMM~~](#cpu多核缓存架构及jmm)
-                - [并发安全问题产生原因](#并发安全问题产生原因)
-                - [硬件解决并发安全](#硬件解决并发安全)
-                - [Java解决并发安全](#java解决并发安全)
-            - [线程安全解决](#线程安全解决)
-                - [线程安全解决方案](#线程安全解决方案)
-                - [Synchronized](#synchronized)
-                    - [Synchronized介绍](#synchronized介绍)
-                    - [Synchronized使用](#synchronized使用)
-                - [~~Synchronized使用是否安全~~](#synchronized使用是否安全)
-                    - [Synchronized底层原理](#synchronized底层原理)
-                    - [Synchronized优化](#synchronized优化)
-                - [Volatile](#volatile)
-                - [ThreadLocal](#threadlocal)
-                    - [ThreadLocal原理](#threadlocal原理)
-                    - [ThreadLocal应用](#threadlocal应用)
-            - [线程通信(生产者消费者问题)](#线程通信生产者消费者问题)
-            - [线程活跃性](#线程活跃性)
-        - [JUC](#juc)
-            - [CAS](#cas)
-            - [AQS](#aqs)
-                - [LockSupport类](#locksupport类)
-            - [LOCK](#lock)
-                - [ReentrantLock，重入锁](#reentrantlock重入锁)
-                    - [读写锁](#读写锁)
-            - [Atomic](#atomic)
-                - [AtomicStampedReference与AtomicMarkableReference](#atomicstampedreference与atomicmarkablereference)
-                - [LongAdder](#longadder)
-            - [Collections](#collections)
-                - [CopyOnWriteArrayList](#copyonwritearraylist)
-                - [ConcurrentHashMap](#concurrenthashmap)
-                - [BlockingQueue](#blockingqueue)
-            - [tools](#tools)
-                - [CountDownLatch](#countdownlatch)
-                - [CyclicBarrier](#cyclicbarrier)
-                - [Semaphore](#semaphore)
-    - [数据库](#数据库)
-        - [SQL语句](#sql语句)
-            - [基本查询语句](#基本查询语句)
-            - [连接查询](#连接查询)
-            - [~~高级查询~~](#高级查询)
-        - [MySql优化](#mysql优化)
-            - [SQL分析](#sql分析)
-                - [Expain](#expain)
-            - [SQL优化](#sql优化)
-            - [索引优化](#索引优化)
-            - [碎片优化](#碎片优化)
-        - [数据库分布式](#数据库分布式)
-            - [大数据量操作](#大数据量操作)
-            - [MySql瓶颈](#mysql瓶颈)
-            - [数据库分布式](#数据库分布式-1)
-            - [主从复制](#主从复制)
-                - [主从复制原理](#主从复制原理)
-                - [主从复制实现](#主从复制实现)
-                - [主从复制问题](#主从复制问题)
-                - [高可用实现](#高可用实现)
-                - [读写分离实现](#读写分离实现)
-            - [分区](#分区)
-            - [分库分表](#分库分表)
-                - [分库分表](#分库分表-1)
-                - [分库分表查询](#分库分表查询)
-                    - [非partition key的查询 / 分库分表多维度查询](#非partition-key的查询--分库分表多维度查询)
-                    - [跨分片的分组group by以及聚合count等函数](#跨分片的分组group-by以及聚合count等函数)
-                    - [跨分片的排序分页](#跨分片的排序分页)
-                    - [跨节点Join的问题](#跨节点join的问题)
-                    - [~~**<font color = "blue">小结：分库分表分片键设计</font>**~~](#font-color--blue小结分库分表分片键设计font)
-            - [数据迁移](#数据迁移)
-        - [MySql架构](#mysql架构)
-            - [MySql运行流程](#mysql运行流程)
-            - [Server层之binLog日志](#server层之binlog日志)
-            - [存储引擎层](#存储引擎层)
-            - [InnoDB体系结构](#innodb体系结构)
-                - [InnoDB内存结构-性能](#innodb内存结构-性能)
-                    - [BufferPool](#bufferpool)
-                    - [写缓冲ChangeBuffer](#写缓冲changebuffer)
-                    - [AdaptiveHashIndex](#adaptivehashindex)
-                - [InnoDB磁盘结构-可靠性](#innodb磁盘结构-可靠性)
-                    - [undoLog](#undolog)
-                    - [redoLog](#redolog)
-                    - [DoubleWrite](#doublewrite)
-                - [~~两阶段提交和崩溃恢复~~](#两阶段提交和崩溃恢复)
-                    - [BufferPool落盘表空间](#bufferpool落盘表空间)
-        - [索引事物锁](#索引事物锁)
-            - [索引底层原理](#索引底层原理)
-            - [~~各种索引~~（还需要总结）](#各种索引还需要总结)
-            - [MySql事务（还需要总结）](#mysql事务还需要总结)
-            - [MVCC](#mvcc)
-            - [MySql锁](#mysql锁)
-            - [MySql死锁和锁表](#mysql死锁和锁表)
+- [1. 总结](#1-总结)
+    - [1.1. Java](#11-java)
+        - [1.1.1. Java基础](#111-java基础)
+        - [1.1.2. Java基础数据类型](#112-java基础数据类型)
+            - [1.1.2.1. String](#1121-string)
+            - [1.1.2.2. Java基本数据类型](#1122-java基本数据类型)
+        - [1.1.3. Java集合框架](#113-java集合框架)
+            - [1.1.3.1. Java集合框架](#1131-java集合框架)
+            - [1.1.3.2. HashMap](#1132-hashmap)
+                - [1.1.3.2.1. HashMap源码](#11321-hashmap源码)
+                - [1.1.3.2.2. HashMap安全](#11322-hashmap安全)
+            - [1.1.3.3. Collection](#1133-collection)
+        - [1.1.4. JDK1.8](#114-jdk18)
+            - [1.1.4.1. 接口的默认方法与静态方法](#1141-接口的默认方法与静态方法)
+            - [1.1.4.2. Lambda表达式](#1142-lambda表达式)
+            - [1.1.4.3. Stream](#1143-stream)
+            - [1.1.4.4. Optional](#1144-optional)
+            - [1.1.4.5. DateTime](#1145-datetime)
+        - [1.1.5. Java异常](#115-java异常)
+        - [1.1.6. Java范型](#116-java范型)
+        - [1.1.7. IO](#117-io)
+        - [1.1.8. SPI与线程上下文类加载器](#118-spi与线程上下文类加载器)
+        - [1.1.9. 反射](#119-反射)
+        - [1.1.10. 自定义注解](#1110-自定义注解)
+    - [1.2. 设计模式](#12-设计模式)
+        - [1.2.1. 七大设计原则](#121-七大设计原则)
+        - [1.2.2. 复用规则（继承和组合）详解](#122-复用规则继承和组合详解)
+        - [1.2.3. 设计模式详解](#123-设计模式详解)
+            - [1.2.3.1. 种创建型设计模式](#1231-种创建型设计模式)
+            - [1.2.3.2. 7种结构型设计模式（横向4 + 纵向2 + 1）](#1232-7种结构型设计模式横向4--纵向2--1)
+            - [1.2.3.3. 两种动态代理](#1233-两种动态代理)
+            - [1.2.3.4. 种行为型设计模式](#1234-种行为型设计模式)
+            - [1.2.3.5. 设计模式大讨论](#1235-设计模式大讨论)
+                - [1.2.3.5.1. 结构型模式的讨论](#12351-结构型模式的讨论)
+                - [1.2.3.5.2. 行为型模式的讨论](#12352-行为型模式的讨论)
+            - [1.2.3.6. 设计模式混编](#1236-设计模式混编)
+            - [1.2.3.7. 日常使用的设计模式](#1237-日常使用的设计模式)
+            - [1.2.3.8. Spring框架中用到了哪些设计模式](#1238-spring框架中用到了哪些设计模式)
+    - [1.3. JVM](#13-jvm)
+        - [1.3.1. JDK、JRE、JVM](#131-jdkjrejvm)
+        - [1.3.2. 编译成Class字节码文件](#132-编译成class字节码文件)
+        - [1.3.3. 类加载](#133-类加载)
+            - [1.3.3.1. JVM类的加载](#1331-jvm类的加载)
+            - [1.3.3.2. ~~JVM类加载器~~](#1332-jvm类加载器)
+        - [1.3.4. 运行时数据区/内存结构](#134-运行时数据区内存结构)
+            - [1.3.4.1. JVM内存结构](#1341-jvm内存结构)
+                - [1.3.4.1.1. JVM内存结构](#13411-jvm内存结构)
+                - [1.3.4.1.2. 类存储内存小结](#13412-类存储内存小结)
+                    - [1.3.4.1.2.1. 变量](#134121-变量)
+                    - [1.3.4.1.2.2. 静态方法和实例方法](#134122-静态方法和实例方法)
+                - [1.3.4.1.3. 常量池详解](#13413-常量池详解)
+            - [1.3.4.2. 内存(堆栈)中的对象](#1342-内存堆栈中的对象)
+                - [1.3.4.2.1. 创建对象](#13421-创建对象)
+                - [1.3.4.2.2. 对象生命周期](#13422-对象生命周期)
+                - [1.3.4.2.3. 对象大小](#13423-对象大小)
+            - [1.3.4.3. 内存泄露](#1343-内存泄露)
+        - [1.3.5. JVM执行](#135-jvm执行)
+        - [1.3.6. GC](#136-gc)
+            - [1.3.6.1. GC-回收位置/安全点](#1361-gc-回收位置安全点)
+            - [1.3.6.2. 回收算法与分代回收](#1362-回收算法与分代回收)
+            - [1.3.6.3. GC-回收对象](#1363-gc-回收对象)
+                - [1.3.6.3.1. 堆中对象的存活](#13631-堆中对象的存活)
+                - [1.3.6.3.2. 方法区(类和常量)回收/类的卸载阶段](#13632-方法区类和常量回收类的卸载阶段)
+                - [1.3.6.3.3. null与GC](#13633-null与gc)
+            - [1.3.6.4. GC-垃圾回收器](#1364-gc-垃圾回收器)
+                - [1.3.6.4.1. 垃圾回收器](#13641-垃圾回收器)
+                - [1.3.6.4.2. CMS回收器](#13642-cms回收器)
+                - [1.3.6.4.3. G1回收器](#13643-g1回收器)
+                - [1.3.6.4.4. 三色标记，并发标记阶段](#13644-三色标记并发标记阶段)
+        - [1.3.7. JVM调优](#137-jvm调优)
+            - [1.3.7.1. JVM调优-基础](#1371-jvm调优-基础)
+            - [1.3.7.2. JVM调优](#1372-jvm调优)
+            - [1.3.7.3. JVM问题排查](#1373-jvm问题排查)
+            - [1.3.7.4. Arthas工具](#1374-arthas工具)
+    - [1.4. 多线程和并发](#14-多线程和并发)
+        - [1.4.1. 线程Thread](#141-线程thread)
+            - [1.4.1.1. 线程状态详解](#1411-线程状态详解)
+        - [1.4.2. 线程池-多线程](#142-线程池-多线程)
+            - [1.4.2.1. 线程池框架](#1421-线程池框架)
+            - [1.4.2.2. ThreadPoolExecutor详解](#1422-threadpoolexecutor详解)
+            - [1.4.2.3. 线程池的正确使用](#1423-线程池的正确使用)
+            - [1.4.2.4. ForkJoinPool详解](#1424-forkjoinpool详解)
+            - [1.4.2.5. ~~CompletionService~~](#1425-completionservice)
+            - [1.4.2.6. Future相关](#1426-future相关)
+            - [1.4.2.7. ~~CompletableFuture~~](#1427-completablefuture)
+        - [1.4.3. 并发编程](#143-并发编程)
+            - [1.4.3.1. 并发编程原理](#1431-并发编程原理)
+                - [1.4.3.1.1. ~~CPU多核缓存架构及JMM~~](#14311-cpu多核缓存架构及jmm)
+                - [1.4.3.1.2. 并发安全问题产生原因](#14312-并发安全问题产生原因)
+                - [1.4.3.1.3. 硬件解决并发安全](#14313-硬件解决并发安全)
+                - [1.4.3.1.4. Java解决并发安全](#14314-java解决并发安全)
+            - [1.4.3.2. 线程安全解决](#1432-线程安全解决)
+                - [1.4.3.2.1. 线程安全解决方案](#14321-线程安全解决方案)
+                - [1.4.3.2.2. Synchronized](#14322-synchronized)
+                    - [1.4.3.2.2.1. Synchronized介绍](#143221-synchronized介绍)
+                    - [1.4.3.2.2.2. Synchronized使用](#143222-synchronized使用)
+                - [1.4.3.2.3. ~~Synchronized使用是否安全~~](#14323-synchronized使用是否安全)
+                    - [1.4.3.2.3.1. Synchronized底层原理](#143231-synchronized底层原理)
+                    - [1.4.3.2.3.2. Synchronized优化](#143232-synchronized优化)
+                - [1.4.3.2.4. Volatile](#14324-volatile)
+                - [1.4.3.2.5. ThreadLocal](#14325-threadlocal)
+                    - [1.4.3.2.5.1. ThreadLocal原理](#143251-threadlocal原理)
+                    - [1.4.3.2.5.2. ThreadLocal应用](#143252-threadlocal应用)
+            - [1.4.3.3. 线程通信(生产者消费者问题)](#1433-线程通信生产者消费者问题)
+            - [1.4.3.4. 线程活跃性](#1434-线程活跃性)
+        - [1.4.4. JUC](#144-juc)
+            - [1.4.4.1. CAS](#1441-cas)
+            - [1.4.4.2. AQS](#1442-aqs)
+                - [1.4.4.2.1. LockSupport类](#14421-locksupport类)
+            - [1.4.4.3. LOCK](#1443-lock)
+                - [1.4.4.3.1. ReentrantLock，重入锁](#14431-reentrantlock重入锁)
+                    - [1.4.4.3.1.1. 读写锁](#144311-读写锁)
+            - [1.4.4.4. Atomic](#1444-atomic)
+                - [1.4.4.4.1. AtomicStampedReference与AtomicMarkableReference](#14441-atomicstampedreference与atomicmarkablereference)
+                - [1.4.4.4.2. LongAdder](#14442-longadder)
+            - [1.4.4.5. Collections](#1445-collections)
+                - [1.4.4.5.1. CopyOnWriteArrayList](#14451-copyonwritearraylist)
+                - [1.4.4.5.2. ConcurrentHashMap](#14452-concurrenthashmap)
+                - [1.4.4.5.3. BlockingQueue](#14453-blockingqueue)
+            - [1.4.4.6. tools](#1446-tools)
+                - [1.4.4.6.1. CountDownLatch](#14461-countdownlatch)
+                - [1.4.4.6.2. CyclicBarrier](#14462-cyclicbarrier)
+                - [1.4.4.6.3. Semaphore](#14463-semaphore)
+    - [1.5. 数据库](#15-数据库)
+        - [1.5.1. SQL语句](#151-sql语句)
+            - [1.5.1.1. 基本查询语句](#1511-基本查询语句)
+            - [1.5.1.2. 连接查询](#1512-连接查询)
+            - [1.5.1.3. ~~高级查询~~](#1513-高级查询)
+        - [1.5.2. MySql优化](#152-mysql优化)
+            - [1.5.2.1. SQL分析](#1521-sql分析)
+                - [1.5.2.1.1. Expain](#15211-expain)
+            - [1.5.2.2. SQL优化](#1522-sql优化)
+            - [1.5.2.3. 索引优化](#1523-索引优化)
+            - [1.5.2.4. 碎片优化](#1524-碎片优化)
+        - [1.5.3. 数据库分布式](#153-数据库分布式)
+            - [1.5.3.1. 大数据量操作](#1531-大数据量操作)
+            - [1.5.3.2. MySql瓶颈](#1532-mysql瓶颈)
+            - [1.5.3.3. 数据库分布式](#1533-数据库分布式)
+            - [1.5.3.4. 主从复制](#1534-主从复制)
+                - [1.5.3.4.1. 主从复制原理](#15341-主从复制原理)
+                - [1.5.3.4.2. 主从复制实现](#15342-主从复制实现)
+                - [1.5.3.4.3. 主从复制问题](#15343-主从复制问题)
+                - [1.5.3.4.4. 高可用实现](#15344-高可用实现)
+                - [1.5.3.4.5. 读写分离实现](#15345-读写分离实现)
+            - [1.5.3.5. 分区](#1535-分区)
+            - [1.5.3.6. 分库分表](#1536-分库分表)
+                - [1.5.3.6.1. 分库分表](#15361-分库分表)
+                - [1.5.3.6.2. 分库分表查询](#15362-分库分表查询)
+                    - [1.5.3.6.2.1. 非partition key的查询 / 分库分表多维度查询](#153621-非partition-key的查询--分库分表多维度查询)
+                    - [1.5.3.6.2.2. 跨分片的分组group by以及聚合count等函数](#153622-跨分片的分组group-by以及聚合count等函数)
+                    - [1.5.3.6.2.3. 跨分片的排序分页](#153623-跨分片的排序分页)
+                    - [1.5.3.6.2.4. 跨节点Join的问题](#153624-跨节点join的问题)
+                    - [1.5.3.6.2.5. ~~**<font color = "blue">小结：分库分表分片键设计</font>**~~](#153625-font-color--blue小结分库分表分片键设计font)
+            - [1.5.3.7. 数据迁移](#1537-数据迁移)
+        - [1.5.4. MySql架构](#154-mysql架构)
+            - [1.5.4.1. MySql运行流程](#1541-mysql运行流程)
+            - [1.5.4.2. Server层之binLog日志](#1542-server层之binlog日志)
+            - [1.5.4.3. 存储引擎层](#1543-存储引擎层)
+            - [1.5.4.4. InnoDB体系结构](#1544-innodb体系结构)
+                - [1.5.4.4.1. InnoDB内存结构-性能](#15441-innodb内存结构-性能)
+                    - [1.5.4.4.1.1. BufferPool](#154411-bufferpool)
+                    - [1.5.4.4.1.2. 写缓冲ChangeBuffer](#154412-写缓冲changebuffer)
+                    - [1.5.4.4.1.3. AdaptiveHashIndex](#154413-adaptivehashindex)
+                - [1.5.4.4.2. InnoDB磁盘结构-可靠性](#15442-innodb磁盘结构-可靠性)
+                    - [1.5.4.4.2.1. undoLog](#154421-undolog)
+                    - [1.5.4.4.2.2. redoLog](#154422-redolog)
+                    - [1.5.4.4.2.3. DoubleWrite](#154423-doublewrite)
+                - [1.5.4.4.3. ~~两阶段提交和崩溃恢复~~](#15443-两阶段提交和崩溃恢复)
+                    - [1.5.4.4.3.1. BufferPool落盘表空间](#154431-bufferpool落盘表空间)
+        - [1.5.5. 索引事物锁](#155-索引事物锁)
+            - [1.5.5.1. 索引底层原理](#1551-索引底层原理)
+            - [1.5.5.2. ~~各种索引~~（还需要总结）](#1552-各种索引还需要总结)
+            - [1.5.5.3. MySql事务（还需要总结）](#1553-mysql事务还需要总结)
+            - [1.5.5.4. MVCC](#1554-mvcc)
+            - [1.5.5.5. MySql锁](#1555-mysql锁)
+            - [1.5.5.6. MySql死锁和锁表](#1556-mysql死锁和锁表)
 
 <!-- /TOC -->
 
-# 总结  
-## Java
-### Java基础
+# 1. 总结  
+## 1.1. Java
+### 1.1.1. Java基础
 1. static关键字：  
     1. 方便在没有创建对象的情况下来进行调用（方法/变量）。  
     2. static使用： 1). static修饰变量、 2). 修饰方法、 3). static 可以修饰代码块，主要分为两种，一种直接定义在类中，使用static{}，这种被称为静态代码块，一种是在类中定义静态内部类，使用static class xxx来进行定义、 4). static可以和单例模式一起使用，通过双重检查锁来实现线程安全的单例模式、 5).静态导包。     
@@ -192,8 +192,8 @@
         2. static作为类变量，只被加载一次。  
         3. static变量被存放在方法区中。    
 
-### Java基础数据类型
-#### String
+### 1.1.2. Java基础数据类型
+#### 1.1.2.1. String
 1. String 类是用final关键字修饰的，所以认为其是不可变对象。反射可以改变String对象。  
 &emsp; **<font color = "clime">为什么Java字符串是不可变的？</font>** 原因大致有以下三个：  
     * 为了实现字符串常量池。字符串常量池可以节省大量的内存空间。  
@@ -206,7 +206,7 @@
 &emsp; `String str5 = str3 + "java";`创建了三个对象。
 3. String不可变，安全；StringBuilder可变，线程不安全；StringBuffer可变，线程安全。  
 
-#### Java基本数据类型
+#### 1.1.2.2. Java基本数据类型
 
 |数据类型|字节|位数|默认值|取值范围|
 |---|---|---|---|---|
@@ -223,8 +223,8 @@
 
 &emsp; java对象大小查看【JVM内存】章节。  
 
-### Java集合框架
-#### Java集合框架
+### 1.1.3. Java集合框架
+#### 1.1.3.1. Java集合框架
 1. `基本数据结构：数组、链表、Hash、树。`集合框架又有是否安全之分。  
 2. Java集合框架：  
     * List：有序，可重复。List有ArrayList、LinkedList、Vector。
@@ -236,8 +236,8 @@
     * Comparable，自然排序（自身属性，整数按照大小排序，字符串按照字典序）。  
     * Comparator，定制排序。  
 
-#### HashMap
-##### HashMap源码
+#### 1.1.3.2. HashMap
+##### 1.1.3.2.1. HashMap源码
 1. HashMap数据结构：  
     1. Hash表数据结构：  
     &emsp; 初始容量为16；  
@@ -282,7 +282,7 @@
 
 &emsp; **<font color = "red">~~JDK1.8 优化成直接把链表拆成高位和低位两部分，通过位运算来决定放在原索引处或者原索引加原数组长度的偏移量处。~~</font>**  
 
-##### HashMap安全
+##### 1.1.3.2.2. HashMap安全
 &emsp; HashMap的线程不安全体现在会造成死循环、数据丢失、数据覆盖这些问题。其中死循环和数据丢失是在JDK1.7中出现的问题，在JDK1.8中已经得到解决，然而1.8中仍会有数据覆盖这样的问题。  
 1. 在jdk1.8中，在多线程环境下，会发生数据覆盖的情况。  
 &emsp; 假设两个线程A、B都在进行put操作，并且hash函数计算出的插入下标是相同的，当线程A执行完第六行代码后由于时间片耗尽导致被挂起，而线程B得到时间片后在该下标处插入了元素，完成了正常的插入，`然后线程A获得时间片，由于之前已经进行了hash碰撞的判断，所以此时不会再进行判断，而是直接进行插入，这就导致了线程B插入的数据被线程A覆盖了，从而线程不安全。`  
@@ -292,29 +292,29 @@
 &emsp; 发生死循环后，剩余元素无法搬运，并且线程不会停止，因此会造成CPU100%。  
 3. 线程安全的hashMap：Hashtable、Collections.synchronizedMap、[ConcurrentHashMap](/docs/java/concurrent/ConcurrentHashMap.md)。 
 
-#### Collection
+#### 1.1.3.3. Collection
 1. HashSet基于HashMap实现： **<font color = "clime">存储在HashSet中的数据作为Map的key，而Map的value统一为PRESENT。</font>**  
     &emsp; 添加元素，如何保证值不重复？  
     &emsp; HashSet#add通过 map.put() 方法来添加元素。HashSet的add(E e)方法，会将e作为key，PRESENT作为value插入到map集合中。  
     * 如果e（新插入的key）存在，HashMap#put返回原key对应的value值（注意新插入的value会覆盖原value值），Hashset#add返回false，表示插入值重复，插入失败。  
     * 如果e（新插入的key）不存在，HashMap#put返回null值，Hashset#add返回true，表示插入值不重复，插入成功。  
 
-### JDK1.8
-#### 接口的默认方法与静态方法
+### 1.1.4. JDK1.8
+#### 1.1.4.1. 接口的默认方法与静态方法
 1. 接口的默认方法与静态方法  
     * <font color = "clime">接口中的default方法会被子接口继承，也可以被其实现类所调用。default方法被继承时，可以被子接口覆写。</font>  
     * <font color = "clime">接口中的`static方法`不能被继承，也不能被实现类调用，`只能被自身调用`。即不能通过接口实现类的方法调用静态方法，直接通过接口名称调用。但是静态变量会被继承。</font>  
 
-#### Lambda表达式
+#### 1.1.4.2. Lambda表达式
 1. **<font color = "clime">函数式接口的实例创建三种方式：lambda表达式；方法引用；构造方法引用。</font>**   
 2. Lambda表达式作用域，访问外层作用域定义的局部变量、类的属性：  
     * <font color = "clime">访问局部变量：lambda表达式若访问了局部变量，则局部变量必须是final的。若局部变量没有加final关键字，系统会自动添加，此后再修改该局部变量，会编译错误。</font>  
     * <font color = "clime">访问类的属性：lambda内部使用this关键字（或不使用）访问或修改全局变量、实例方法。</font>    
 
-#### Stream
+#### 1.1.4.3. Stream
 &emsp; **<font color = "clime">使用并行流parallelStream()有线程安全问题。例如：parallelStream().forEach()内部修改集合会有问题。解决方案：1.使用锁； 2.使用collect和reduce操作(Collections框架提供了同步的包装)。</font>**  
 
-#### Optional
+#### 1.1.4.4. Optional
 &emsp; 使用Optional时尽量不直接调用Optional.get()方法，Optional.isPresent()更应该被视为一个私有方法，应依赖于其他像Optional.orElse()，Optional.orElseGet()，Optional.map()等这样的方法。  
 
 &emsp; 抛出异常可以使用：  
@@ -324,10 +324,10 @@
 Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));  
 ```
 
-#### DateTime
+#### 1.1.4.5. DateTime
 
 
-### Java异常
+### 1.1.5. Java异常
 1. throws和throw：  
     * throws用在`函数上`，后面跟的是`异常类`，可以跟多个；
     * throw用在`函数内`，后面跟的是`异常对象`。  
@@ -337,7 +337,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
 3. 自定义异常
 4. 统一异常处理
 
-### Java范型
+### 1.1.6. Java范型
 1. 为什么使用范型？范型的优点：编译期类型检查。  
 &emsp; 在Java SE 1.5之前，没有泛型的情况的下，通过对类型Object的引用来实现参数的“任意化”，“任意化”带来的缺点是要做显式的强制类型转换，而这种转换是要求开发者对实际参数类型可以预知的情况下进行的。对于强制类型转换错误的情况，编译器可能不提示错误，在运行的时候才出现异常，这是一个安全隐患。  
 &emsp; 泛型和Object除了语法之外没有什么别的区别，不过为什么jdk1.5以后要出这个泛型；  
@@ -348,7 +348,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
     3. 利用反射越过泛型检查  
     &emsp; 反射是获取类Class文件进行操作。通过反射获取对象后可以获得相应的add方法，并向方法里面传入任何对象。  
 
-### IO
+### 1.1.7. IO
 1. **<font color = "clime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>** I/O读写大文件解决方案：  
     * 使用BufferedInputStream进行包装。
     * 逐行读取。
@@ -357,7 +357,7 @@ Optional.ofNullable(storeInfo).orElseThrow(()->new Exception("失败"));
         * FileChannel，分配读取到已分配固定长度的 java.nio.ByteBuffer。
         * 内存文件映射，MappedByteBuffer。采用内存文件映射不能读取超过2GB的文件。文件超过2GB，会报异常。
 
-### SPI与线程上下文类加载器
+### 1.1.8. SPI与线程上下文类加载器
 &emsp; SPI，service provider interface，服务提供者接口，一种扩展机制。`相比面向接口的多态，实现动态编译。面向接口的多态，加载的实体类是在编码中，而SPI是写在配置文件中。`    
 &emsp; **<font color = "clime">JDK提供的SPI机制：</font>**  
 1. 提供一个接口；  
@@ -389,7 +389,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; 而SPI提供的接口的实现一般在多个包中，例如JDBC的实现mysql、oracle，web容器有tomcat、jetty等。  
 &emsp; 一个接口在b、c包中有实现，在a包中可替换所依赖的包（b或c），动态实现某一个功能。  
 
-### 反射
+### 1.1.9. 反射
 1. 什么是反射？  
 	&emsp; 反射是在`运行状态`能够动态的获取该类的属性和方法，并且能够任意的使用该类的属性和方法，这种动态获取类信息以及动态的调用对象的方法的功能就是反射。  
 2. 反射的适用场景？ **<font color = "clime">平常开发涉及的框架中使用反射的有：动态代理、JDBC中的加载数据库驱动程序、Spring框架中加载bean对象。</font>**    
@@ -427,12 +427,12 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
             * 通过Class对象找到method_的值，即为方法区的地址  
             * 通过8bit的大小来分割Method的地址  
 
-### 自定义注解
+### 1.1.10. 自定义注解
 &emsp; 自定义注解+反射实现AOP
 
 
-## 设计模式
-### 七大设计原则
+## 1.2. 设计模式
+### 1.2.1. 七大设计原则
 * 针对单个类的设计原则：  
     * 单一职责原则。   
     * 开闭原则（ **<font color = "clime">对已经使用的类的改动是通过增加代码进行的，而不是修改现有代码，实现一个热插拔的效果</font>** ）；
@@ -446,18 +446,18 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 &emsp; `★★★如果说继承是垂直结构，那么组合是横向结构。`  
 
-### 复用规则（继承和组合）详解  
+### 1.2.2. 复用规则（继承和组合）详解  
 1. 类和类之间的关系有三种：is-a（继承或泛化）、has-a（关联或聚合）和use-a（依赖）。  
 ![image](http://www.wt1814.com/static/view/images/java/design/design-27.png)  
 2. `组合的含义更像是一个对象（类）由各方面构成`，这些方面并非来自于继承，但有时候却是必不可少的。`★★★【如果说继承是垂直结构，那么组合是横向结构。】`  
 3. `对于委托，类与类之间或对象与对象之间可以没有任何逻辑上的关系（比如继承关系和组合关系），仅仅只是委托方和被委托方的关系。`不过，继承而来的方法本就会自动查找，所以这些方法不需要委托。`而组合经常会结合委托一起使用，或者说组合的过程中本就依赖于委托，`比如对于房子.煮饭()这个方法调用请求，应该委托或转发给厨房.煮饭()。  
 &emsp; ~~委托是将一部分功能分割出去完成，即委托者（delegator）将自己委托给受托者（delegatee），`受托者方法中参数为委托者对象`；然后委托者调用受托者类对象。~~  
 
-### 设计模式详解
+### 1.2.3. 设计模式详解
 1. 常用设计模式有23种（不包含简单工厂模式）。 **<font color = "red">这23种设计模式的本质是面向对象设计原则的实际运用，是对类的封装性、继承性和多态性，以及类的关联关系和组合关系的充分理解。</font>**  
 2.  **<font color = "red">结构型设计模式：多个类协同完成一个功能； 行为型设计模式，算法模式。</font>**  
 
-#### 5种创建型设计模式
+#### 1.2.3.1. 种创建型设计模式
 1. 单例模式
     1. `单例模式与static静态类`：静态使用于一些非状态Bean，单例模式使用于状态Bean。  
     2. ~~单例模式适用场景~~：全局只有一个示例，例如：数据库连接池、Spring单例bean...  
@@ -520,7 +520,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * 浅复制: 对值类型的成员变量进行值的复制，对引用类型的成员变量只复制引用，不复制引用的对象。  
     * 深复制:  **<font color = "clime">对值类型的成员变量进行值的复制，对引用类型的成员变量也进行引用对象的复制。</font>**  
 
-#### 7种结构型设计模式（横向4 + 纵向2 + 1）
+#### 1.2.3.2. 7种结构型设计模式（横向4 + 纵向2 + 1）
 1. 适配器模式  
     &emsp; 适配器继承或依赖已有的对象，实现想要的目标接口。  
     1. 平时开发中，面向接口编程，注入其他类，从而进行调用。  
@@ -554,7 +554,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 &emsp; PS：外部状态在线程间需考虑并发问题，因此不适合共享，但当对象被使用完成后，通过修改外部状态，使其可以复用于下一次的访问需求。  
 
-#### 两种动态代理
+#### 1.2.3.3. 两种动态代理
 1. 动态编程  
 &emsp; 动态编程是相对于静态编程而言，平时大多讨论的都是静态编程，java便是一种静态编程语言，它的类型检查是在编译期间完成的。而动态编程是绕过了编译期间，在运行时完成类型检查。  
 &emsp; java有如下方法实现动态编程：`动态代理`，`动态编译`。    
@@ -584,15 +584,15 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         1. final声明的类是不能被代理的；
         2. `类中的private,final方法不能被代理，static方法不生成代理方法。`
 
-#### 11种行为型设计模式
+#### 1.2.3.4. 种行为型设计模式
 1. 模板方法模式
 2. 策略模式（if/else）
 3. 责任链模式（if/else）
 4. 观察者模式
 
-#### 设计模式大讨论
+#### 1.2.3.5. 设计模式大讨论
 
-##### 结构型模式的讨论
+##### 1.2.3.5.1. 结构型模式的讨论
 1. 代理模式VS装饰模式  
 &emsp; 对于两个模式，首先要说的是，装饰模式就是代理模式的一个特殊应用，两者的共同点是都具有相同的接口， **<font color = "red">不同点则是代理模式着重对代理过程的控制，而装饰模式则是对类的功能进行加强或减弱，它着重类的功能变化。</font>**   
 
@@ -600,34 +600,34 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; 装饰模式和适配器模式在通用类图上没有太多的相似点，差别比较大，但是它们的功能有相似的地方：都是包装作用，都是通过委托方式实现其功能。不同点是：<font color = "clime">装饰模式包装的是自己的兄弟类，隶属于同一个家族(相同接口或父类)，</font><font color = "red">适配器模式则修饰非血缘关系类，把一个非本家族的对象伪装成本家族的对象，注意是伪装，因此它的本质还是非相同接口的对象。</font>   
 
 
-##### 行为型模式的讨论
+##### 1.2.3.5.2. 行为型模式的讨论
 
 
-#### 设计模式混编
+#### 1.2.3.6. 设计模式混编
 
 
-#### 日常使用的设计模式
+#### 1.2.3.7. 日常使用的设计模式
 &emsp; 面试题：你使用过哪些设计模式？ 根据实际使用，设计模式分3类：  
 
 * 框架：SpringAOP、池化（享元模式）、 mq
 * 不自觉使用的设计模式，如外观/门面模式、 **<font color = "clime">对象适配器模式（Service层调用）</font>** 。  
 * 需要编码：单例模式与static静态类，工厂模式，模板方法，3个if/else的优化：桥接模式（结构型设计模式）、策略模式、责任链模式，观察者模式...  
 
-#### Spring框架中用到了哪些设计模式 
+#### 1.2.3.8. Spring框架中用到了哪些设计模式 
 
-* 工厂设计模式 : Spring使用工厂模式通过 BeanFactory、ApplicationContext 创建 bean 对象。  
-* 单例设计模式 : Spring 中的 Bean 默认都是单例的。  
-* 代理设计模式 : Spring AOP 功能的实现。  
-* 适配器模式 :Spring AOP 的增强或通知(Advice)使用到了适配器模式、spring MVC 中也是用到了适配器模式适配Controller。  
-* 包装器设计模式 : 项目需要连接多个数据库，而且不同的客户在每次访问中根据需要会去访问不同的数据库。这种模式可以根据客户的需求能够动态切换不同的数据源。 
-* 模板方法模式 : Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。  
-* 观察者模式: Spring事件驱动模型就是观察者模式很经典的一个应用。  
+* 工厂设计模式：Spring使用工厂模式通过 BeanFactory、ApplicationContext 创建 bean 对象。  
+* 单例设计模式：Spring 中的 Bean 默认都是单例的。  
+* 代理设计模式：Spring AOP 功能的实现。  
+* 适配器模式：Spring AOP 的增强或通知（Advice）使用到了适配器模式、spring MVC 中也是用到了适配器模式适配Controller。  
+* 包装器设计模式：项目需要连接多个数据库，而且不同的客户在每次访问中根据需要会去访问不同的数据库。这种模式可以根据客户的需求能够动态切换不同的数据源。 
+* 模板方法模式：Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。  
+* 观察者模式：Spring事件驱动模型就是观察者模式很经典的一个应用。  
 * ……
 
-## JVM
+## 1.3. JVM
 &emsp; ~~待总结：堆外内存泄漏、跨代引用假说、finalize()~~  
 
-### JDK、JRE、JVM
+### 1.3.1. JDK、JRE、JVM
 ![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-4.png)  
 ![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-145.png)  
 1. <font color = "red">JVM由4大部分组成：类加载器ClassLoader，运行时数据区Runtime Data Area，执行引擎Execution Engine，本地方法调用Native Interface。</font>  
@@ -637,11 +637,11 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     3. 运行：<font color = "red">而字节码文件只是JVM的一套指令集规范，并不能直接交给底层操作系统去执行，因此`需要特定的命令解析器执行引擎（Execution Engine），将字节码翻译成底层系统指令，再交由CPU去执行；`</font>  
     4. 而这个过程中需要调用其他语言的本地库接口（Native Interface）来实现整个程序的功能。  
 
-### 编译成Class字节码文件
+### 1.3.2. 编译成Class字节码文件
 &emsp; ......
 
-### 类加载
-#### JVM类的加载
+### 1.3.3. 类加载
+#### 1.3.3.1. JVM类的加载
 1. 类加载流程：  
 ![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-5.png)  
 2. 加载：查找并加载类的二进制数据。加载主要做三件事：找到类文件 -> 放入方法区 -> 开个入口（最后生成一个代表此类的java.lang.Class对象，作为访问方法区这些数据结构的入口）。  
@@ -658,7 +658,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 6. 初始化：执行`static代码块(cinit)进行初始化`，如果存在父类，先对父类进行初始化。  
 7. 扩展：从class文件与JVM加载机制理解final、static、static final  
 
-#### ~~JVM类加载器~~
+#### 1.3.3.2. ~~JVM类加载器~~
 1. JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。  
 &emsp; 自定义类加载器：需要继承自ClassLoader，`重写方法findClass()`（⚠`破坏类加载器是重写loadClass()方法`）。      
 2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。  
@@ -689,9 +689,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         2. `使用线程上下文类加载器(Thread Context ClassLoader)`
 4. 自己写的java.lang.String可以让jvm加载到吗？  
 
-### 运行时数据区/内存结构
-#### JVM内存结构
-##### JVM内存结构
+### 1.3.4. 运行时数据区/内存结构
+#### 1.3.4.1. JVM内存结构
+##### 1.3.4.1.1. JVM内存结构
 &emsp; Java虚拟机在执行Java程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK1.8和之前的版本略有不同。  
 ![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-7.png)  
 1. 运行时数据区。线程独享：程序计数器、JVM栈、本地方法栈；线程共享区：堆、方法区（元空间）。  
@@ -728,14 +728,14 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 6. MetaSpace存储类的元数据信息。  
 &emsp; 元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。元空间的内存大小受本地内存限制。  
 
-##### 类存储内存小结
-###### 变量
+##### 1.3.4.1.2. 类存储内存小结
+###### 1.3.4.1.2.1. 变量
 1. 常量final static
 2. 静态变量static
 3. 全局变量
 4. 局部变量 
 
-###### 静态方法和实例方法
+###### 1.3.4.1.2.2. 静态方法和实例方法
 &emsp; `静态方法`会在程序运行的时候`直接装载进入方法区`。而实例方法会在new的时候以对象的方法装载进入堆中。  
 &emsp; 最大的区别在于内存的区别，由于main函数为static静态方法，会直接在运行的时候装载进入内存区，实例方法必须new，在堆中创建内存区域，再进行引用。  
 
@@ -754,12 +754,12 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; 大部分静态方法是与类的实例有关的，如各种Parse方法，他做成静态的原因是他没有实例作为参数。其他的大多是出于语义或者其他目的的考虑。  
 
 
-##### 常量池详解
+##### 1.3.4.1.3. 常量池详解
 &emsp; **<font color = "clime">常量池分为以下三种：class文件常量池、运行时常量池、全局字符串常量池。</font>**   
 
 
-#### 内存(堆栈)中的对象
-##### 创建对象
+#### 1.3.4.2. 内存(堆栈)中的对象
+##### 1.3.4.2.1. 创建对象
 1. **<font color = "clime">对象创建过程：1. 检测类是否被加载；2. 为对象分配内存；3. 将分配内存空间的对象初始化零值；4. 对对象进行其他设置；5.执行init方法。</font>**   
 
         当类加载完成之后，紧接着就是对象分配内存空间和初始化的过程
@@ -792,9 +792,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         &emsp; **当JVM通过逃逸分析，确定要将对象分配到栈上时，即时编译可以将对象打散，将对象替换为一个个很小的局部变量，将这个打散的过程叫做标量替换。** 
         3. 消除同步锁 
 
-##### 对象生命周期
+##### 1.3.4.2.2. 对象生命周期
 
-##### 对象大小
+##### 1.3.4.2.3. 对象大小
 1. `在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充。`  
     * 对象头
     * 实例数据：存放类的属性数据信息，包括父类的属性信息，如果是数组的实例部分还包括数组的长度，这部分内存按4字节对齐。    
@@ -817,7 +817,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     3. array length：  
     &emsp; 如果对象是一个数组，那么对象头还需要有额外的空间用于存储数组的长度，这部分数据的长度也随着JVM架构的不同而不同：32位的JVM上，长度为32位；64位JVM则为64位。64位JVM如果开启+UseCompressedOops选项，该区域长度也将由64位压缩至32位。  
 
-#### 内存泄露
+#### 1.3.4.3. 内存泄露
 1. 内存溢出与内存泄露  
 &emsp; **<font color = "red">内存溢出out of memory</font>** ，是指<font color = "red">程序在申请内存时，`没有足够的内存空间供其使用`</font>，出现out of memory。  
 &emsp; **<font color = "blue">内存泄露memory leak</font>** ，是指<font color = "red">程序在申请内存后，`无法释放已申请的内存空间`</font>。一次内存泄露危害可以忽略，但内存泄露堆积后果很严重，无论多少内存，迟早会被占光。内存泄露，会导致频繁的Full GC。  
@@ -828,13 +828,13 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; **<font color = "red">其实发生OOM的线程一般情况下会死亡，也就是会被终结掉，该线程持有的对象占用的heap都会被gc了，释放内存。</font><font color = "clime">因为`发生OOM之前要进行gc，就算其他线程能够正常工作，也会因为频繁gc产生较大的影响。`</font>**  
 3. `~~堆外内存泄漏~~`
 
-### JVM执行
+### 1.3.5. JVM执行
 &emsp; ...
 
-### GC
+### 1.3.6. GC
 &emsp; ⚠️⚠️⚠️一句话小结：`垃圾回收器` 在 `安全点/安全区域` 采用`回收算法` `分代/整堆` 回收 `(堆)根不可达的对象 或 (方法区)类/常量`。  
 
-#### GC-回收位置/安全点
+#### 1.3.6.1. GC-回收位置/安全点
 1. 安全点  
 &emsp; **<font color = "clime">可达性分析算法必须是在一个确保一致性的内存快照中进行。</font>**   
 &emsp; **<font color = "clime">安全点意味着在这个点时，所有工作线程的状态是确定的，JVM可以安全地执行GC。</font>**  
@@ -842,7 +842,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; `在安全点上中断的是活跃运行的用户线程，对于已经挂起的线程该怎么处理呢？`**<font color = "blue">`已经挂起的线程`会被认定为处在`安全区域`内，中断的时候不需要考虑安全区域中的线程。</font>**  
 &emsp; 当前安全区域的线程要被唤醒离开安全区域时，先检查能否离开，如果GC完成了，那么线程可以离开，否则它必须等待，直到收到安全离开的信号为止。  
 
-#### 回收算法与分代回收
+#### 1.3.6.2. 回收算法与分代回收
 1. GC算法  
     * **<font color = "clime">标记-清除算法分为两个阶段：标记阶段和清除阶段。</font>** 不足：清除过程中，扫描两次，效率不高；清除后，产生空间碎片。  
     * `复制：1).（非标记-复制）只扫描一次；` 2). 没有碎片，空间连续； 3). 50%的内存空间始终空闲浪费。  
@@ -880,9 +880,9 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     3. <font color = "red">系统调用System.gc()</font>  
     &emsp; 只是建议虚拟机执行Full GC，但是虚拟机不一定真正去执行。不建议使用这种方式，而是让虚拟机管理内存。  
 
-#### GC-回收对象
+#### 1.3.6.3. GC-回收对象
 
-##### 堆中对象的存活
+##### 1.3.6.3.1. 堆中对象的存活
 1. 存活标准
     1. 引用计数法、根可达性分析法  
         1. **<font color = "clime">不可回收对象包含 1). 方法区中，类静态属性(static)引用的对象； 2). 方法区中，常量(final static)引用的对象；</font>** 
@@ -913,7 +913,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         &emsp; 执行死亡：对象没有执行逃脱死亡，那就是死亡了。  
         &emsp; 注：任何对象的finalize()方法都只会被系统调用一次。  
 
-##### 方法区(类和常量)回收/类的卸载阶段
+##### 1.3.6.3.2. 方法区(类和常量)回收/类的卸载阶段
 1. Java虚拟机规范对方法区是否实现垃圾回收没有做出强制的规定。存在未实现或未能完整实现方法区类型卸载的垃圾回收器（例如JDK 11的zGC收集器）。    
 &emsp; 方法区的回收效果比较难令人满意，条件很苛刻，但是回收又是很有必要的。在大量使用反射、动态代理、CGLib等字节码框架，动态生成JSP以及OSGi这类频繁自定义类加载器的场景中，通常都需要Java虚拟机具备类型卸载的能力，以保证不会对方法区造成过大的内存压力。  
 2. **<font color = "clime">方法区的垃圾收集主要回收两部分：废弃的常量和不再使用的类型。</font>**  
@@ -927,15 +927,15 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     3. `★★★方法区是在Full GC时回收。`  
     &emsp; Full GC: 收集整个堆，包括新生代，老年代，永久代(在 JDK 1.8 及以后，永久代被移除，换为 metaspace 元空间)等所有部分的模式。  
 
-##### null与GC  
+##### 1.3.6.3.3. null与GC  
 &emsp; 《深入理解Java虚拟机》作者的观点：在需要“不使用的对象应手动赋值为null”时大胆去用，但不应当对其有过多依赖，更不能当作是一个普遍规则来推广。  
 &emsp; **<font color = "red">虽然代码片段已经离开了变量xxx的`作用域`，但在此之后，没有任何对运行时栈的读写，placeHolder所在的索引还没有被其他变量重用，所以GC判断其为存活。</font>**    
 &emsp; 加上`int replacer = 1;`和将placeHolder赋值为null起到了同样的作用：断开堆中placeHolder和栈的联系，让GC判断placeHolder已经死亡。    
 &emsp; `“不使用的对象应手动赋值为null”的原理，一切根源都是来自于JVM的一个“bug”：代码离开变量作用域时，并不会自动切断其与堆的联系。`    
 
 
-#### GC-垃圾回收器
-##### 垃圾回收器
+#### 1.3.6.4. GC-垃圾回收器
+##### 1.3.6.4.1. 垃圾回收器
 1. 根据收集器的指标（性能考虑因素）分类（`两个关键指标，停顿时间和吞吐量`）：  
     * **<font color = "clime">吞吐量：运行用户代码时间/(运行用户代码时间+垃圾收集时间)。</font>**  
     * 停顿时间：执行垃圾收集时，程序的工作线程被暂停的时间。  
@@ -957,7 +957,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     &emsp; **<font color = "red">用户线程和垃圾收集线程同时执行</font><font color = "blue">（但并不一定是并行的，可能是交替执行的），</font><font color = "red">垃圾收集线程在执行的时候不会停顿用户线程的运行。</font>** 适用于相对时间有要求的场景，比如Web。  
 3. `JDK 7u4后的7和JDK8默认使用的都是ParallelScavenge+ParallelOld。`  
 
-##### CMS回收器
+##### 1.3.6.4.2. CMS回收器
 1. **<font color = "clime">CMS在某些阶段是并发，即CMS GC时并不是全部并发执行。大部分并发，但也有停顿(STW)，只是停顿时间更少。因为CMS是并发收集器，为了不影响用户线程使用，所以采用标记-清除算法。</font>**   
 2. CMS GC执行流程：(**<font color = "clime">3次标记、2次清除</font>**)  
     1. 初始标记：标记GCRoots能直接关联到的对象。   
@@ -983,7 +983,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         * 并发模式失败(concurrent mode failure)：`当CMS在执行回收时`，新生代发生垃圾回收，同时老年代又没有足够的空间容纳晋升的对象时。CMS垃圾回收会退化成单线程的Full GC。所有的应用线程都会被暂停，老年代中所有的无效对象都被回收。  
     6. 减少remark阶段停顿：在执行并发操作之前先做一次Young GC。  
 
-##### G1回收器
+##### 1.3.6.4.3. G1回收器
 1. G1是一种服务端应用使用的垃圾收集器，目标是用在`多核、大内存`的机器上， **<font color = "clime">G1在大多数情况下可以`实现指定的GC暂停时间，同时还能保持较高的吞吐量`。</font>**   
 2. G1特点（为什么要选择G1？）  
     1. 并行和并发
@@ -1005,7 +1005,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
             5. 清除垃圾
 
 
-##### 三色标记，并发标记阶段
+##### 1.3.6.4.4. 三色标记，并发标记阶段
 1. 三色：  
     * 黑色：本对象已访问过，而且本对象 引用到 的其他对象 也全部访问过了。  
     * 灰色：本对象已访问过，但是本对象 引用到 的其他对象 尚未全部访问完。全部访问后，会转换为黑色。  
@@ -1020,8 +1020,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 	3. G1采用开始时快照技术SATB， **<font color = "clime">关注引用的删除（灰色指向白色的引用消失），当B->D消失时，要把这个引用推到GC的堆栈，保证D还能被GC扫描到。破坏了条件“灰指向白的引用消失”。</font>** 保存在GC堆栈中的删除引用，会在`最终标记remark阶段处理`。    
 	4. 使用SATB会大大减少扫描对象。  
 
-### JVM调优
-#### JVM调优-基础
+### 1.3.7. JVM调优
+#### 1.3.7.1. JVM调优-基础
 1. JVM参数：
 
     |参数|描述|
@@ -1045,7 +1045,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * Jstat：虚拟机统计信息监视工具。  
     * Jinfo：java配置信息工具。  
 
-#### JVM调优
+#### 1.3.7.2. JVM调优
 1. 内存设置  
 &emsp; 如何将各分区调整到合适的大小，分析活跃数据的大小是很好的切入点。  
 &emsp; **活跃数据的大小是指，应用程序稳定运行时长期存活对象在堆中占用的空间大小，也就是Full GC后堆中老年代占用空间的大小。** 
@@ -1057,7 +1057,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         * Full GC执行频率不算频繁，不低于10分钟1次。
     2. Young GC、Full GC优化策略 参考 1.2.3节。
 
-#### JVM问题排查
+#### 1.3.7.3. JVM问题排查
 1. 快速恢复业务：隔离故障服务器。  
 2. FGC过高  
 &emsp; **<font color = "clime">`FGC过高可能是内存参数设置不合理，也有可能是代码中某个位置读取数据量较大导致系统内存耗尽。`FGC过高可能导致CPU飚高。</font>**  
@@ -1092,12 +1092,12 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
             1. 步骤一：查看对象占比；
             2. 步骤二：查看大对象的引用链。  
 
-#### Arthas工具
+#### 1.3.7.4. Arthas工具
 
 
-## 多线程和并发
+## 1.4. 多线程和并发
 
-### 线程Thread
+### 1.4.1. 线程Thread
 1. 创建线程的方式：Thread、Runnable、Callable、线程池相关（Future, ThreadPool, `@Async`）...  
 2. 线程状态 
 3. thread.yield()，线程让步     
@@ -1111,7 +1111,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * RUNNABLE和BLOCKED类似， **<font color = "cclime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中；</font>**  
     * WAITING/TIMED_WAITING状态下的线程对于中断操作是敏感的，它们会抛出异常并清空中断标志位。  
 
-#### 线程状态详解
+#### 1.4.1.1. 线程状态详解
 1. 通用的线程周期。操作系统层面有5个状态，分别是：New（新建）、Runnable（就绪）、Running（运行）、Blocked（阻塞）、Dead（死亡）。  
 2. Java线程状态均来自Thread类下的State这一内部枚举类中所定义的状态：  
 ![image](http://www.wt1814.com/static/view/images/java/concurrent/thread-2.png)  
@@ -1169,8 +1169,8 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 ![image](http://www.wt1814.com/static/view/images/java/concurrent/thread-6.png) 
 
 
-### 线程池-多线程
-#### 线程池框架
+### 1.4.2. 线程池-多线程
+#### 1.4.2.1. 线程池框架
 1. **线程池通过线程复用机制，并对线程进行统一管理，** 具有以下优点：  
     * 降低系统资源消耗。通过复用已存在的线程，降低线程创建和销毁造成的消耗；  
     * 提高响应速度。当有任务到达时，无需等待新线程的创建便能立即执行；  
@@ -1197,7 +1197,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。  
 	* CachedThreadPool和ScheduledThreadPool：允许创建的线程数量为Integer.MAX_VALUE，可能会创建大量线程，从而导致OOM。   
 
-#### ThreadPoolExecutor详解
+#### 1.4.2.2. ThreadPoolExecutor详解
 1. 理解构造函数中参数：核心线程数大小、最大线程数大小、空闲线程（超出corePoolSize的线程）的生存时间、参数keepAliveTime的单位、任务阻塞队列、创建线程的工厂（可以通过这个工厂来创建有业务意义的线程名字）。  
     * [阻塞队列](/docs/java/concurrent/BlockingQueue.md)，线程池所使用的缓冲队列，常用的是：SynchronousQueue、ArrayBlockingQueue、LinkedBlockingQueue。   
     * 拒绝策略，默认AbortPolicy（拒绝任务，抛异常）， **<font color = "clime">可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。</font>**  
@@ -1222,7 +1222,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         2. 当调用shutdown()方法，会将线程池状态置为shutdown，并且需要等待正在执行的任务执行完，阻塞队列中的任务执行完才能返回null。
     2. `getTask()不返回null的情况有获取到任务，或获取不到任务，但线程数小于等于核心线程数。`  
 
-#### 线程池的正确使用
+#### 1.4.2.3. 线程池的正确使用
 1. **<font color = "clime">线程池设置：</font>**   
     1. `使用自定义的线程池。`共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。`建议根据异步业务类型，合理设置隔离的线程池。`  
     2. `确定线程池的大小（CPU可同时处理线程数量大部分是CPU核数的两倍）`  
@@ -1245,7 +1245,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 4. @Async方法没有执行的问题分析：  
 &emsp; @Async异步方法默认使用Spring创建ThreadPoolTaskExecutor(参考TaskExecutionAutoConfiguration)，其中默认核心线程数为8，默认最大队列和默认最大线程数都是Integer.MAX_VALUE，队列使用LinkedBlockingQueue，容量是：Integet.MAX_VALUE，空闲线程保留时间：60s，线程池拒绝策略：AbortPolicy。创建新线程的条件是队列填满时，而这样的配置队列永远不会填满，如果有@Async注解标注的方法长期占用线程（比如HTTP长连接等待获取结果），在核心8个线程数占用满了之后，新的调用就会进入队列，外部表现为没有执行。  
 
-#### ForkJoinPool详解
+#### 1.4.2.4. ForkJoinPool详解
 1. <font color = "clime">ForkJoinPool的两大核心是 分而治之和工作窃取 算法。</font>  
 2. 分而治之：<font color = "red">ForkJoinPool的计算方式是大任务拆中任务，中任务拆小任务，最后再汇总。</font>  
 3. 工作窃取算法  
@@ -1255,7 +1255,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     3. **<font color = "clime">`当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；`</font>**    
 
 
-#### ~~CompletionService~~
+#### 1.4.2.5. ~~CompletionService~~
 &emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务， **<font color = "clime">并方便的集中处理上述任务的结果（且任务最先完成的先返回）。</font>**  
 &emsp; CompletionService，内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
 
@@ -1272,12 +1272,12 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; 通过使用BlockingQueue的take或poll方法，则可以得到结果。在BlockingQueue不存在元素时，这两个操作会阻塞，一旦有结果加入，则立即返回。  
 &emsp; 如果队列为空，那么 take() 方法会阻塞直到队列中出现结果为止。CompletionService 还提供一个 poll() 方法，返回值与 take() 方法一样，不同之处在于它不会阻塞，如果队列为空则立刻返回 null。这算是给用户多一种选择。  
 
-#### Future相关
+#### 1.4.2.6. Future相关
 1. **Future是一个接口，它可以对具体的Runnable或者Callable任务进行取消、判断任务是否已取消、查询任务是否完成、获取任务结果。**  
 2. JDK1.5为Future接口提供了一个实现类FutureTask，表示一个可以取消的异步运算。它有启动和取消运算、查询运算是否完成和取回运算结果等方法。  
 
 
-#### ~~CompletableFuture~~
+#### 1.4.2.7. ~~CompletableFuture~~
 
 &emsp; 为什么引入CompletableFuture？  
 &emsp; 对于jdk1.5的Future，虽然提供了异步处理任务的能力，但是获取结果的方式很不优雅，还是需要通过阻塞（或者轮训）的方式。如何避免阻塞呢？其实就是注册回调。  
@@ -1321,9 +1321,9 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; 此接口包含38个方法、这些方法主要是为了支持函数式编程中流式处理。  
 
 
-### 并发编程
-#### 并发编程原理
-##### ~~CPU多核缓存架构及JMM~~
+### 1.4.3. 并发编程
+#### 1.4.3.1. 并发编程原理
+##### 1.4.3.1.1. ~~CPU多核缓存架构及JMM~~
 &emsp; `⚠⚠⚠声明：并发安全并不是java独有的，其他语言，不同操作系统都存在并发安全。究其原因是因为cpu多级缓存架构。`  
 1. CPU多核缓存架构
 1. JMM
@@ -1331,7 +1331,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     2. 单个线程操作时，8种内存间交换操作指令。  
     3. 线程之间的通信和同步。线程之间的通信过程：线程对变量的操作（读取赋值等）必须在工作内存中进行，首先要将变量从主内存拷贝到自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，不能直接操作主内存中的变量，</font>各个线程中的工作内存中存储着主内存中的变量副本拷贝，<font color = "red">因此不同的线程间无法访问对方的工作内存，线程间的通信（传值）必须通过主内存来完成。</font>    
 
-##### 并发安全问题产生原因
+##### 1.4.3.1.2. 并发安全问题产生原因
 1. **并发安全的3个问题：**  
 
     * 原子性：线程切换带来的原子性问题。（[Volatile](/docs/java/concurrent/Volatile.md)不保证原子性）
@@ -1357,7 +1357,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; 高性能原子类[LongAdder](/docs/java/concurrent/LongAdder.md)可以解决类伪共享问题。   
 
 
-##### 硬件解决并发安全
+##### 1.4.3.1.3. 硬件解决并发安全
 1. 缓存一致性协议  
     1. 怎么解决缓存一致性问题呢？使用总线锁或缓存锁。  
         * 总线锁：cpu从主内存读取数据到高速缓存，会在总线对这个数据加锁，这样其他cpu无法去读或写这个数据，直到这个cpu使用完数据释放锁之后其他cpu才能读取该数据。  
@@ -1374,7 +1374,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     * sfence：是一种Store Barrier写屏障，实现StoreStore屏障
     * mfence：是一种全能型的屏障，具备Ifencce和sfence的能留，具备所有屏障能力
 
-##### Java解决并发安全
+##### 1.4.3.1.4. Java解决并发安全
 1. JMM中的happens-before原则：  
     &emsp; JSR-133内存模型 **<font color = "red">使用`happens-before`的概念来阐述操作之间的`内存可见性`。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
     &emsp; happens-before关系的定义如下：
@@ -1394,8 +1394,8 @@ private final BlockingQueue<Future<V>> completionQueue;
     2. `（保障有序性）阻止屏障两侧的指令重排序。`   
 3. java并发原语：Java内存模型，除了定义了一套规范，还提供了一系列原语，封装了底层实现后，供开发者直接使用。  
 
-#### 线程安全解决
-##### 线程安全解决方案
+#### 1.4.3.2. 线程安全解决
+##### 1.4.3.2.1. 线程安全解决方案
 1. 线程安全解决方案
 	1. 阻塞/互斥同步（悲观锁）
 	2. 非阻塞同步（乐观锁，CAS） 
@@ -1409,11 +1409,11 @@ private final BlockingQueue<Future<V>> completionQueue;
 	* 可见性可以通过Volatile、synchronized、final来实现。  
 	* 有序性可以通过synchronized或者Lock、volatile来实现。  
 
-##### Synchronized
-###### Synchronized介绍
+##### 1.4.3.2.2. Synchronized
+###### 1.4.3.2.2.1. Synchronized介绍
 
 
-###### Synchronized使用
+###### 1.4.3.2.2.2. Synchronized使用
 1. Java基础：对象和方法
     * 类和对象
         * xxx.Class
@@ -1437,14 +1437,14 @@ private final BlockingQueue<Future<V>> completionQueue;
 3. String锁：由于在JVM中具有String常量池缓存的功能，因此相同字面量是同一个锁。  
 
 
-##### ~~Synchronized使用是否安全~~
+##### 1.4.3.2.3. ~~Synchronized使用是否安全~~
 &emsp; 共有 `类锁 + 对象锁 + 类锁 * 对象锁`种情况。    
 1. 类锁
 2. 对象锁
 3. 类锁和对象锁
 4. 不安全场景
 
-###### Synchronized底层原理
+###### 1.4.3.2.3.1. Synchronized底层原理
 1. Synchronized底层实现：`查看Synchronized的字节码。`  
     * Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。  
     * Synchronized代码块同步：使用monitorenter和monitorexit指令实现。   
@@ -1479,7 +1479,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; 互斥锁是信号量的特例。信号量的初始值表示有多少个任务可以同时访问共享资源，如果初始值为1，表示只有1个任务可以访问，信号量变成互斥锁（Mutex）。但是互斥锁和信号量又有所区别，互斥锁的加锁和解锁必须在同一线程里对应使用，所以互斥锁只能用于线程的互斥；信号量可以由一个线程释放，另一个线程得到，所以信号量可以用于线程的同步。   
 
 
-###### Synchronized优化
+###### 1.4.3.2.3.2. Synchronized优化
 1. **<font color = "clime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时，如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>   
 2. 锁升级  
     &emsp; 锁主要存在四种状态，依次是：无锁状态（普通对象）、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。锁升级流程如下：   
@@ -1523,7 +1523,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; 偏向锁、自旋锁都是用户空间完成。重量级锁是需要向内核申请。  
   
 
-##### Volatile
+##### 1.4.3.2.4. Volatile
 1. **<font color = "clime">Volatile的特性：</font>**  
     1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>    
     2. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**  
@@ -1542,10 +1542,10 @@ private final BlockingQueue<Future<V>> completionQueue;
         &emsp; singleton = new Singleton()非原子性操作，包含3个步骤：分配内存 ---> 初始化对象 ---> 将singleton对象指向分配的内存空间。第3步一旦执行了，那singleton对象就不等于null了。  
         &emsp; **<font color = "clime">因为指令重排序，可能编程1->3->2。如果是这种顺序，会导致别的线程拿到半成品的实例。</font>**  
 
-##### ThreadLocal
+##### 1.4.3.2.5. ThreadLocal
 &emsp; ThreadLocal的作用是每一个线程创建一个副本。  
 
-###### ThreadLocal原理
+###### 1.4.3.2.5.1. ThreadLocal原理
 1. ThreadLocal源码/内存模型：  
     1. **<font color = "red">ThreadLocal的#set()、#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** 即当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
     &emsp; ~~Thread ---> ThreadLocal.ThreadLocalMap~~
@@ -1562,7 +1562,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; ThreadLocal#get() ---> setInitialValue() ---> ThreadLocalMap.set(this, value); 。  
     &emsp; 通过nextIndex()不断获取table上的槽位，直到遇到第一个为null的地方，此处也将是存放具体entry的位置，在线性探测法的不断冲突中，如果遇到非空entry中的key为null，可以表明key的弱引用已经被回收，但是由于线程仍未结束生命周期被回收，而导致该entry仍未从table中被回收，那么则会在这里尝试通过replaceStaleEntry()方法，将null key的entry回收掉并set相应的值。  
 
-###### ThreadLocal应用
+###### 1.4.3.2.5.2. ThreadLocal应用
 
         1. 在进行对象跨层次传递的时候，使用ThreadLocal可以避免多次传递，打破层次间的束缚。   
         2. 线程间层次隔离。  
@@ -1581,7 +1581,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     4. 并行流中线程上下文丢失。问题同线程池中线程上下文丢失。  
 3. ThreadLocal优化：FastThreadLocal
 
-#### 线程通信(生产者消费者问题)
+#### 1.4.3.3. 线程通信(生产者消费者问题)
 
 1. 生产者消费者问题，Java能实现的几种方法：  
     * wait() / notify()方法
@@ -1596,11 +1596,11 @@ private final BlockingQueue<Future<V>> completionQueue;
     4. 管道，共享内存，实现数据的共享，满足读写模式。管道通信就是使用java.io.PipedInputStream和java.io.PipedOutputStream进行通信。  
 3. 分布式系统中说的两种通信机制：共享内存机制和消息通信机制。  
 
-#### 线程活跃性
+#### 1.4.3.4. 线程活跃性
 
 
-### JUC
-#### CAS
+### 1.4.4. JUC
+#### 1.4.4.1. CAS
 1. **<font color = "clime">CAS，Compare And Swap，即比较并交换。一种无锁原子算法，CAS是一种乐观锁。</font>**  
 2. CAS函数  
 &emsp; **<font color = "clime">在函数CAS(V,E,N)中有3个参数：从内存中读取的值E，计算的结果值V，内存中的当前值N（可能已经被其他线程改变）。</font>**  
@@ -1622,7 +1622,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; **<font color = "red">ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。</font>**   
     &emsp; **<font color = "clime">从Java1.5开始JDK的atomic包里提供了[AtomicStampedReference](/docs/java/concurrent/6.AtomicStampedReference.md)和AtomicMarkableReference类来解决ABA问题。</font>**  
 
-#### AQS
+#### 1.4.4.2. AQS
 1. 属性
     1. 同步状态，通过state控制同步状态。  
     2. 同步队列，`双向链表`，每个节点代表一个线程，节点有5个状态。
@@ -1640,12 +1640,12 @@ private final BlockingQueue<Future<V>> completionQueue;
         * 释放同步状态  
     2. 共享模式下，获取同步状态、释放同步状态。  
 
-##### LockSupport类
+##### 1.4.4.2.1. LockSupport类
 &emsp; LockSupport（support，支持）是一个线程阻塞工具类，所有的方法都是静态方法，可以让线程在任意位置阻塞，当然阻塞之后肯定得有唤醒的方法。  
 &emsp; LockSupport主要有两类方法：park和unpark。 
 
-#### LOCK
-##### ReentrantLock，重入锁
+#### 1.4.4.3. LOCK
+##### 1.4.4.3.1. ReentrantLock，重入锁
 1. ReentrantLock与synchronized比较：非公平、非`阻塞`、超时/限时`等待`、可被`中断`、可实现选择性通知  
     1. （支持非公平）ReenTrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁。所谓的公平锁就是先等待的线程先获得锁。  
     2. （支持非阻塞）Lock接口可以尝试非阻塞地获取锁，当前线程尝试获取锁。如果这一时刻锁没有被其他线程获取到，则成功获取并持有锁。  
@@ -1667,7 +1667,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; 用一张流程图总结一下非公平锁的获取锁的过程。  
     ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-75.png)  
 
-###### 读写锁
+###### 1.4.4.3.1.1. 读写锁
 1. ReentrantReadWriteLock  
     1. 读写锁ReentrantReadWriteLock：读读共享，`读写互斥`，写写互斥。  
     2. **<font color = "red">ReentrantReadWriteLock缺点：`读写锁互斥`，只有当前没有线程持有读锁或者写锁时，才能获取到写锁，</font><font color = "clime">这`可能会导致写线程发生饥饿现象`，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
@@ -1677,19 +1677,19 @@ private final BlockingQueue<Future<V>> completionQueue;
     3. **<font color = "clime">同时允许多个乐观读和一个写线程同时进入临界资源操作，那`读取的数据可能是错的怎么办？`</font>**    
     &emsp; **<font color = "clime">`通过版本号控制。`</font>** 乐观读不能保证读取到的数据是最新的，所以`将数据读取到局部变量的时候需要通过 lock.validate(stamp) 校验是否被写线程修改过`，若是修改过则需要上悲观读锁，再重新读取数据到局部变量。`即乐观读失败后，再次使用悲观读锁。`    
 
-#### Atomic
-##### AtomicStampedReference与AtomicMarkableReference
+#### 1.4.4.4. Atomic
+##### 1.4.4.4.1. AtomicStampedReference与AtomicMarkableReference
 1. AtomicStampedReference每次修改都会让stamp值加1，类似于版本控制号。 
 2. **<font color = "clime">AtomicStampedReference可以知道引用变量中途被更改了几次。有时候，并不关心引用变量更改了几次，只是单纯的关心是否更改过，所以就有了AtomicMarkableReference。</font>**  
 
-##### LongAdder
+##### 1.4.4.4.2. LongAdder
 1. LongAdder重要属性：有一个全局变量`volatile long base`值、父类Striped64中存在一个`volatile Cell[] cells;`数组，其长度是2的幂次方。  
 2. LongAdder原理：  
     1. CAS操作：当并发不高的情况下都是通过CAS来直接操作base值，如果CAS失败，则针对LongAdder中的Cell[]数组中的Cell进行CAS操作，减少失败的概率。
     2. 解决伪共享：每个Cell都使用@Contended注解进行修饰，而@Contended注解可以进行缓存行填充，从而解决伪共享问题。  
 
-#### Collections
-##### CopyOnWriteArrayList
+#### 1.4.4.5. Collections
+##### 1.4.4.5.1. CopyOnWriteArrayList
 1. CopyOnWriteArrayList  
 &emsp; CopyOnWrite，写时复制。`读操作时不加锁以保证性能不受影响。`  
 &emsp; **<font color = "clime">`写操作时加锁，复制资源的一份副本，在副本上执行写操作，写操作完成后将资源的引用指向副本。`</font>** CopyOnWriteArrayList源码中，`基于ReentrantLock保证了增加元素和删除元素动作的互斥。`   
@@ -1697,7 +1697,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; **<font color = "clime">缺点：** **1.占内存（写时复制，new两个对象）；2.不能保证数据实时一致性。</font>**  
 &emsp; **使用场景：** <font color = "clime">CopyOnWrite并发容器用于读多写少的并发场景。比如白名单，黑名单，商品类目的访问和更新场景。</font>
 
-##### ConcurrentHashMap
+##### 1.4.4.5.2. ConcurrentHashMap
 1. ConcurrentHashMap，JDK1.8  
     &emsp; **<font color = "red">从jdk1.8开始，ConcurrentHashMap类取消了Segment分段锁，采用`Node + CAS + Synchronized`来保证并发安全。</font>**  
     &emsp; **<font color = "clime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的ConcurrentHashMap效率又提升了许多。</font>**  
@@ -1723,15 +1723,15 @@ private final BlockingQueue<Future<V>> completionQueue;
         1. 获取 ReentrantLock 独占锁，获取不到，scanAndLockForPut 获取。  
         2. scanAndLockForPut 这个方法可以确保返回时，当前线程一定是获取到锁的状态。  
 
-##### BlockingQueue
+##### 1.4.4.5.3. BlockingQueue
 1. 阻塞队列：当队列是空的时候，从队列中获取元素的操作将会被`阻塞`；或者当队列是满时，往队列里添加元素的操作会被`阻塞`。  
 2. `线程池所使用的缓冲队列，常用的是：SynchronousQueue（无缓冲等待队列）、ArrayBlockingQueue（有界缓冲等待队列）、LinkedBlockingQueue（无界缓冲等待队列）。`   
 3. SynchronousQueue，没有容量，是无缓冲等待队列，是一个不存储元素的阻塞队列，会直接将任务交给消费者，必须等队列中的元素被消费后才能继续添加新的元素。  
 4. LinkedBlockingQueue不同于ArrayBlockingQueue，它如果不指定容量，默认为Integer.MAX_VALUE，也就是无界队列。所以为了避免队列过大造成机器负载或者内存爆满的情况出现，在使用的时候建议手动传一个队列的大小。  
 5. <font color = "red">ArrayBlockingQueue与LinkedBlockingQueue：</font> ArrayBlockingQueue预先分配好一段连续内存，更稳定；LinkedBlockingQueue读写锁分离，吞吐量更大。  
 
-#### tools
-##### CountDownLatch
+#### 1.4.4.6. tools
+##### 1.4.4.6.1. CountDownLatch
 0. CountDownLatch中count down是倒数的意思，latch则是门闩的含义。整体含义可以理解为倒数的门栓，似乎有一点“三二一，芝麻开门”的感觉。CountDownLatch的作用也是如此，在构造CountDownLatch的时候需要传入一个整数n，在这个整数“倒数”到0之前，主线程需要等待在门口，而这个“倒数”过程则是由各个执行线程驱动的，每个线程执行完一个任务“倒数”一次。总结来说，CountDownLatch的作用就是等待其他的线程都执行完任务，必要时可以对各个任务的执行结果进行汇总，然后主线程才继续往下执行。  
 1. java.util.concurrent.CountDownLatch类， **<font color = "red">能够使一个线程等待其他线程完成各自的工作后再执行。</font>** <font color = "red">利用它可以实现类似计数器的功能。</font><font color = "blue">比如有一个任务A，它要等待其他4个任务执行完毕之后才能执行，此时就可以利用CountDownLatch来实现这种功能了。</font>  
 2. CountDownLatch的典型应用场景，大体可分为两类：结束信号、开始信号。  
@@ -1743,7 +1743,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     * await()方法调用获取锁的方法，由于AQS.state=count表示锁被占用且重入次数为count，所以获取不到锁线程被阻塞并进入AQS队列。  
     * countDown()方法调用释放锁的方法，每释放一次AQS.state减1，当AQS.state变为0时表示处于无锁状态了，就依次唤醒AQS队列中阻塞的线程来获取锁，继续执行逻辑代码。</font>  
 
-##### CyclicBarrier
+##### 1.4.4.6.2. CyclicBarrier
 &emsp; CyclicBarrier字面意思是回环栅栏， **<font color = "blue">允许一组线程互相等待，直到到达某个公共屏障点 (common barrier point)之后，再全部同时执行。</font>** 叫做回环是因为当所有等待线程都被释放以后，CyclicBarrier可以被重用。  
 
 &emsp; **<font color = "clime">CyclicBarrier用途有两个：</font>**   
@@ -1751,14 +1751,14 @@ private final BlockingQueue<Future<V>> completionQueue;
 * 让一组线程等待至某个状态后再同时执行。
 * 让一组线程等待至某个状态后，执行指定的任务。
 
-##### Semaphore
+##### 1.4.4.6.3. Semaphore
 &emsp; Semaphore类，一个计数信号量。从概念上讲，信号量维护了一个许可集合。如有必要，在许可可用前会阻塞每一个acquire()，然后再获取该许可。每个 release()添加一个许可，从而可能释放一个正在阻塞的获取者。但是，不使用实际的许可对象，Semaphore只对可用许可的号码进行计数，并采取相应的行动。  
 &emsp; 使用场景： **<font color = "red">Semaphore通常用于限制可以访问某些资源（物理或逻辑的）的线程数目。Semaphore可以用来构建一些对象池，资源池之类的，比如数据库连接池。</font>**   
 
 
-## 数据库
-### SQL语句  
-#### 基本查询语句
+## 1.5. 数据库
+### 1.5.1. SQL语句  
+#### 1.5.1.1. 基本查询语句
 1. 基本查询SQL执行顺序：from -> on -> join -> where -> group by ->  avg,sum.... ->having -> select -> distinct -> order by -> top,limit。 
 2. distinct关键字：Distinct与Count（聚合函数），COUNT()会过滤掉为NULL的项。  
 3. 分组函数  
@@ -1772,7 +1772,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; ORDER BY排序后，用LIMIT取前几条，发现返回的结果集的顺序与预期的不一样。    
 &emsp; 如果order by的列有相同的值时，`MySQL会随机选取这些行`，`为了保证每次都返回的顺序一致可以额外增加一个排序字段（比如：id），用两个字段来尽可能减少重复的概率。`  
 
-#### 连接查询
+#### 1.5.1.2. 连接查询
 1. **关键字in：**  
 &emsp; **<font color = "clime">in查询里面的数量最大只能1000。</font>**  
 &emsp; **<font color = "red">确定给定的值是否与子查询或列表中的值相匹配。in在查询的时候，首先查询子查询的表，然后将内表和外表做一个笛卡尔积，然后按照条件进行筛选。所以</font><font color = "clime">相对内表比较小的时候，in的速度较快。</font>**  
@@ -1780,10 +1780,10 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; **<font color = "clime">in和exists的区别：</font><font color = "red">如果子查询得出的结果集记录较少，主查询中的表较大且又有索引时应该用in，反之如果外层的主查询记录较少，子查询中的表大，又有索引时使用exists。</font>**  
 3. **UNION与UNION ALL：** 默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用UNION ALL。  
 
-#### ~~高级查询~~
+#### 1.5.1.3. ~~高级查询~~
 
 
-### MySql优化
+### 1.5.2. MySql优化
 &emsp; <font color = "red">MySql性能由综合因素决定，抛开业务复杂度，影响程度依次是硬件配置、MySQL配置、数据表设计、索引优化。</font>  
 1. SQL语句的优化。  
     &emsp; `对查询语句的监控、分析、优化是SQL优化的一般步骤。`常规调优思路：  
@@ -1794,7 +1794,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 2. 存储数据量较大： **<font color = "red">单库单表无法满足时，可以拆分表结构（主从复制、分库分表），或者使用ES搜索引擎。</font>**  
 3. 服务器的优化。  
 
-#### SQL分析
+#### 1.5.2.1. SQL分析
 1. `小结：`**<font color = "clime">SQL分析语句有profiling（`资源`）、proceduer analyse（`表结构`）、EXPLAIN与explain extended、show warnings（警告）、trace。</font>**  
 1. profiling  
 &emsp; 使用profiling命令可以了解SQL语句消耗`资源`的详细信息（每个执行步骤的开销）。可以清楚了解到SQL到底慢在哪个环节。   
@@ -1804,20 +1804,20 @@ private final BlockingQueue<Future<V>> completionQueue;
 4. trace  
 &emsp; 查看优化器如何选择执行计划，获取每个可能的索引选择的代价。  
 
-##### Expain
+##### 1.5.2.1.1. Expain
 &emsp; expain信息列分别是id、select_type、table、partitions、`type`、possible_keys、`key`、`key_len`、ref、`rows`、filtered、 `Extra`。  
 &emsp; `⚠注：一个表的连接类型，是否使用到了索引，索引长度，扫描行数，还有额外信息。`  
 * **<font color = "clime">`type，单表的访问方法。`单表查询类型要达到range级别（只检索给定范围的行，使用一个索引来选择行，非全表扫描）。</font>**  
 * key_len表示使用的索引长度，key_len可以衡量索引的好坏。key_len越小，索引效果越好。 **<font color = "blue">可以根据key_len来判断联合索引是否生效。</font>**  
 * **<font color = "red">extra：额外的信息，该列包含MySQL解决查询的详细信息。注意，常见的不太友好的值，如Using filesort（额外排序）、Using temporary（使用了临时表），意思MYSQL根本不能使用索引，常出现在使用order by。</font>**  
 
-#### SQL优化
+#### 1.5.2.2. SQL优化
 1. 基本查询优化：  
 2. 子查询优化：使用连接（JOIN）来代替子查询（Sub-Queries）。  
 2. 关联查询优化：使用索引、 **<font color = "bllue">驱动表选择、`条件谓词下推`</font>** ......  
 &emsp; 谓词下推，就是在将过滤条件下推到离数据源更近的地方，最好就是在table_scan时就能过滤掉不需要的数据。  
 
-#### 索引优化
+#### 1.5.2.3. 索引优化
 1. 创建索引：为了使索引的使用效率更高，在创建索引时，需要考虑在哪些字段上创建索引和创建什么类型的索引。  
     * 多表连接的字段、where条件字段、分组字段、排序字段、联合UNION字段、去重distinct字段上建立索引。  
     * 尽量选择区分度高的列作为索引。  
@@ -1829,15 +1829,15 @@ private final BlockingQueue<Future<V>> completionQueue;
     * 关闭ICP：索引 ---> 回表 ---> 条件过滤。  
     * 开启ICP：索引 ---> 条件过滤 ---> 回表。</font>在支持ICP后，`MySQL在取出索引数据的同时，判断是否可以进行where条件过滤，`<font color = "blue">将where的部分过滤操作放在存储引擎层提前过滤掉不必要的数据，</font>`减少了不必要数据被扫描带来的IO开销。`  
 
-#### 碎片优化
+#### 1.5.2.4. 碎片优化
 
 
-### 数据库分布式
+### 1.5.3. 数据库分布式
 
 
-#### 大数据量操作
+#### 1.5.3.1. 大数据量操作
 
-#### MySql瓶颈
+#### 1.5.3.2. MySql瓶颈
 1. MySql性能
 	* 最大并发数：并发数是指同一时刻数据库能处理多少个请求，由max_connections和max_user_connections决定。max_connections是指MySQL实例的最大连接数，上限值是16384，max_user_connections是指每个数据库用户的最大连接数。  
 	* 查询耗时0.5秒，0.5秒是个经验值。  
@@ -1851,7 +1851,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 	&emsp; 第一种：SQL问题，如SQL中包含join，group by，order by，非索引字段条件查询等，增加CPU运算的操作。 解决方案：SQL优化，建立合适的索引，在业务Service层进行业务计算。  
 	&emsp; 第二种：单表数据量太大（达到1000W或100G以后），查询时扫描的行太多，SQL效率低，CPU率先出现瓶颈。 解决方案：水平分表。  
 
-#### 数据库分布式
+#### 1.5.3.3. 数据库分布式
 &emsp; **`数据库拆分过程基本遵循的顺序是：`1).垂直拆分(业务拆分) ---> 2).读写分离 ---> 3).分库分表(水平拆分)。每个拆分过程都能解决业务上的一些问题，但同时也面临了一些挑战。**  
 1. **分库分表与读写分离：**   
     &emsp; `读写分离实现了数据库读能力的水平扩展，分库分表实现了写能力的水平扩展。`  
@@ -1871,8 +1871,8 @@ private final BlockingQueue<Future<V>> completionQueue;
             * 对于那些大访问量，并且表数据比较多的表，可以`采取分表和分区结合的方式`（如果merge这种分表方式，不能和分区配合的话，可以用其他的分表试）。  
             * `访问量不大，但是表数据很多的表，可以采取分区的方式等。`  
 
-#### 主从复制
-##### 主从复制原理  
+#### 1.5.3.4. 主从复制
+##### 1.5.3.4.1. 主从复制原理  
 1. 对于每一个主从复制的连接，都有三个线程。  
     * 拥有多个从库的主库为每一个连接到主库的从库创建一个binlog输出线程。  
     * 每一个从库都有它自己的I/O线程和SQL线程。  
@@ -1885,10 +1885,10 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; 注：Mysql到Elasticsearch实时增量同步，多采用基于行复制。    
     * MySQL5.1及其以后的版本推荐使用混合模式的复制，它是<font color = "clime">根据事件的类型实时的改变binlog的格式。当设置为混合模式时，默认为基于语句的格式，但在特定的情况下它会自动转变为基于行的模式。</font>  
 
-##### 主从复制实现
+##### 1.5.3.4.2. 主从复制实现
 
 
-##### 主从复制问题
+##### 1.5.3.4.3. 主从复制问题
 1. 复制过程
 	1. 大对象blog,text传输： **<font color = "clime">解决的办法就是在主从库上增加max_allowed_packet参数的大小。</font>**  
 2. 错误
@@ -1909,10 +1909,10 @@ private final BlockingQueue<Future<V>> completionQueue;
 	3. 并行复制  
 4. <font color = "red">复制问题要分清楚是master的问题，还是slave的问题。master问题找二进制日志binlog，slave问题找中继日志relaylog。</font>  
 
-##### 高可用实现
+##### 1.5.3.4.4. 高可用实现
 
 
-##### 读写分离实现
+##### 1.5.3.4.5. 读写分离实现
 &emsp; 读写分离的实现，`可以在应用层解决，也可以通过中间件实现。`  
 1. 应用层解决方案：  
     1. 驱动实现
@@ -1923,10 +1923,10 @@ private final BlockingQueue<Future<V>> completionQueue;
     4. Spring动态数据源 + mybatis plugin
 2. 常见代理中间件有MyCat...  
 
-#### 分区
+#### 1.5.3.5. 分区
 
-#### 分库分表
-##### 分库分表
+#### 1.5.3.6. 分库分表
+##### 1.5.3.6.1. 分库分表
 1. 数据切分方式：  
     * 垂直分库，一般根据业务维度拆分，分布式项目中单项目单库。  
     * **<font color = "clime">`水平分库`主要根据`用户属性（如地市）`拆分物理数据库。一种常见的方式是将全省划分为多个大区。`可以复合分片字段拆分，即按照用户属性（如地市）拆分后，再按照时间拆分。`</font>**  
@@ -1935,8 +1935,8 @@ private final BlockingQueue<Future<V>> completionQueue;
 2. 水平分库无论怎么分，只要能通过拆分字段和分片策略，找到具体的库就可以。  
 3. `水平分表面临的一系列问题：切分策略、库节点路由、表路由、全局主键生成、跨节点排序、分组、分页、表关联等操作、多数据源事务处理、数据库扩容等。`  
 
-##### 分库分表查询
-###### 非partition key的查询 / 分库分表多维度查询  
+##### 1.5.3.6.2. 分库分表查询
+###### 1.5.3.6.2.1. 非partition key的查询 / 分库分表多维度查询  
 
 * 冗余法
 * 基因法  
@@ -1946,12 +1946,12 @@ private final BlockingQueue<Future<V>> completionQueue;
     
     <font color = "blue">B2B模式（有买家、卖家），订单表采用`冗余法（买家库和卖家库）和基因法`结合。</font>  
 
-###### 跨分片的分组group by以及聚合count等函数  
+###### 1.5.3.6.2.2. 跨分片的分组group by以及聚合count等函数  
 &emsp; 这些是一类问题，因为它们<font color = "red">都需要基于全部数据集合进行计算。多数的代理都不会自动处理合并工作，部分支持聚合函数MAX、MIN、COUNT、SUM。</font>  
 &emsp; **<font color = "red">解决方案：分别在各个节点上执行相应的函数处理得到结果后，在应用程序端进行合并。</font>** 每个结点的查询可以并行执行，因此很多时候它的速度要比单一大表快很多。但如果结果集很大，对应用程序内存的消耗是一个问题。  
 
 
-###### 跨分片的排序分页  
+###### 1.5.3.6.2.3. 跨分片的排序分页  
 &emsp; <font color = "red">一般来讲，分页时需要按照指定字段进行排序。`当排序字段是分片字段时，通过分片规则可以比较容易定位到指定的分片；`而当排序字段非分片字段时，情况就会变得比较复杂了。</font>为了最终结果的准确性，需要在不同的分片节点中将数据进行排序并返回，并将不同分片返回的结果集进行汇总和再次排序，最后再返回给用户。  
 
 
@@ -2011,7 +2011,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 相对第一次查询，第二次查询条件放宽了，故第二次查询会返回比第一次查询结果集更多的数据  
 
 
-###### 跨节点Join的问题  
+###### 1.5.3.6.2.4. 跨节点Join的问题  
 
 &emsp; tddl、MyCAT等都支持跨分片join。如果中间不支持，跨库Join的几种解决思路：  
 * `在程序中进行拼装。`  
@@ -2019,16 +2019,16 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; 所谓全局表，就是有可能系统中所有模块都可能会依赖到的一些表。比较类似“数据字典”。为了避免跨库join查询，可以将这类表在其他每个数据库中均保存一份。同时，这类数据通常也很少发生修改(甚至几乎不会)，所以也不用太担心“一致性”问题。  
 * 字段冗余 
 
-###### ~~**<font color = "blue">小结：分库分表分片键设计</font>**~~  
+###### 1.5.3.6.2.5. ~~**<font color = "blue">小结：分库分表分片键设计</font>**~~  
 &emsp; ~~分库分表的分片键设计多数参考查询场景。因此分库分表时设计拆分字段考虑因素：1). 是否有必要按照地区、时间拆分表；2)参考B2B模式（有买家、卖家），订单表采用`冗余法（买家库和卖家库）和基因法`结合。~~  
 
-#### 数据迁移
+#### 1.5.3.7. 数据迁移
 1. 现在有一个未分库分表的系统，未来要分库分表，如何设计才可以让系统从未分库分表**动态切换**到分库分表上？
     * 停机迁移方案
     * 双写迁移方案 
 
-### MySql架构
-#### MySql运行流程
+### 1.5.4. MySql架构
+#### 1.5.4.1. MySql运行流程
 1. MySQL整个查询执行过程，总的来说分为5个步骤：  
     1. 客户端请求 ---> 连接器（验证用户身份，给予权限）；  
     2. 查询缓存（存在缓存则直接返回，不存在则执行后续操作）；
@@ -2049,13 +2049,13 @@ private final BlockingQueue<Future<V>> completionQueue;
     ![image](http://www.wt1814.com/static/view/images/SQL/sql-174.png)  
     ![image](http://www.wt1814.com/static/view/images/SQL/sql-183.png)  
 
-#### Server层之binLog日志  
+#### 1.5.4.2. Server层之binLog日志  
 1. **<font color = "clime">binlog是mysql的逻辑日志，并且由Server层进行记录，`使用任何存储引擎的mysql数据库都会记录binlog日志`。</font>**  
 2. 在实际应用中，主要用在两个场景：主从复制和数据恢复。  
 3. 写入流程：SQL修改语句先写Binlog Buffer，事务提交时，按照一定的格式刷到磁盘中。  
 &emsp; binlog刷盘时机：对于InnoDB存储引擎而言，mysql通过sync_binlog参数控制binlog的刷盘时机。  
 
-#### 存储引擎层
+#### 1.5.4.3. 存储引擎层
 1. **<font color = "red">InnoDB的特性：</font>**    
     * [支持事务](/docs/SQL/transaction.md)  
     * [支持行锁](/docs/SQL/lock.md)，采用[MVCC](/docs/SQL/MVCC.md)来支持高并发  
@@ -2064,21 +2064,21 @@ private final BlockingQueue<Future<V>> completionQueue;
     * 不支持全文索引  
     * InnoDB 不保存表的具体行数，执行`select count(*) from table`时需要全表扫描。  
 
-#### InnoDB体系结构
+#### 1.5.4.4. InnoDB体系结构
 &emsp; Innodb体系结构包含后台线程、内存池和磁盘上的结构。  
 ![image](http://www.wt1814.com/static/view/images/SQL/sql-147.png)  
 1. `如果从内存上来看，Change Buffer和Adaptive Hash Index占用的内存都属于Buffer Pool`；redo Log Buffer占用的内存与Buffer Pool独立。`即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。`  
 2. `Buffer Pool有Changer Buffer；Redo Log有Double Write。`  
 
 
-##### InnoDB内存结构-性能
+##### 1.5.4.4.1. InnoDB内存结构-性能
 &emsp; 内存中的结构主要包括Buffer Pool，Change Buffer、Adaptive Hash Index以及redo Log Buffer四部分。 **<font color = "blue">如果从内存上来看，[Change Buffer](/docs/SQL/ChangeBuffer.md)和[Adaptive Hash Index](/docs/SQL/AdaptiveHashIndex.md)占用的内存都属于Buffer Pool，redo Log Buffer占用的内存与 [Buffer Pool](/docs/SQL/bufferPoolNew.md)独立。</font>** `即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。`  
 
 &emsp; 内存数据落盘整体思路分析：  
 ![image](http://www.wt1814.com/static/view/images/SQL/sql-173.png)  
 &emsp; InnoDB`内存缓冲池中的数据page要完成持久化`的话，是通过两个流程来完成的，`一个是脏页落盘；一个是预写redo log日志`。  
 
-###### BufferPool
+###### 1.5.4.4.1.1. BufferPool
 1. 缓冲池是主内存中的一个区域，在InnoDB访问表和索引数据时会在其中进行高速缓存。**在专用服务器上，通常将多达80％的物理内存分配给缓冲池。**  
 1. **预读：**   
 &emsp; 数据访问，通常都遵循“集中读写”的原则，使用一些数据，大概率会使用附近的数据，这就是所谓的“局部性原理”，它表明提前加载是有效的，确实能够减少磁盘IO。  
@@ -2091,22 +2091,22 @@ private final BlockingQueue<Future<V>> completionQueue;
 5. **写操作：**    
 &emsp; **Buffer pool 另一个主要的功能是「加速写」，即当需要修改一个页面的时候，先将这个页面在缓冲池中进行修改，记下相关的重做日志，这个页面的修改就算已经完成了。**  
 
-###### 写缓冲ChangeBuffer
+###### 1.5.4.4.1.2. 写缓冲ChangeBuffer
 1. 在「非唯一」「普通」索引页（即非聚集索引）不在缓冲池中，对页进行了写操作， 1). 并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更， 2).`等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中`的技术。  
 2. **~~<font color = "red">如果辅助索引页已经在缓冲区了，则直接修改即可；如果不在，则先将修改保存到 Change Buffer。</font><font color = "blue">Change Buffer的数据在对应辅助索引页读取到缓冲区时合并到真正的辅助索引页中。Change Buffer 内部实现也是使用的 B+ 树。</font>~~**  
 
-###### AdaptiveHashIndex
+###### 1.5.4.4.1.3. AdaptiveHashIndex
 &emsp;对于InnoDB的哈希索引，确切的应该这么说：  
 &emsp;(1)InnoDB用户无法手动创建哈希索引，这一层上说，InnoDB确实不支持哈希索引；  
 &emsp;(2)InnoDB会自调优(self-tuning)，如果判定建立自适应哈希索引(Adaptive Hash Index, AHI)，能够提升查询效率，InnoDB自己会建立相关哈希索引，这一层上说，InnoDB又是支持哈希索引的。  
 
-##### InnoDB磁盘结构-可靠性
-###### undoLog
+##### 1.5.4.4.2. InnoDB磁盘结构-可靠性
+###### 1.5.4.4.2.1. undoLog
 1. **<font color = "clime">Undo log，回滚日志，是`逻辑日记`。undo log解决了事务原子性。</font>** 主要有两个作用，事务回滚和MVCC（Mutil-Version Concurrency Control）。      
 2. undo log主要记录了数据的逻辑变化，比如一条INSERT语句，对应一条DELETE的undo log，对于每个UPDATE语句，对应一条相反的UPDATE的undo log，这样在发生错误时，就能回滚到事务之前的数据状态。
 3. 事务开始之前，将当前的版本生成undo log。
 
-###### redoLog
+###### 1.5.4.4.2.2. redoLog
 1. redo log，物理格式的日志，记录的是物理数据页面的修改的信息。 **<font color = "red">`redo log实际上记录数据页的变更，而这种变更记录是没必要全部保存，`因此redo log实现上采用了大小固定，`循环写入`的方式，当写到结尾时，会回到开头循环写日志。</font>**    
 2. 解决事务的一致性，持久化数据。  
 3. 写入流程：`(Write-Ahead Logging，‘日志’先行)`   
@@ -2115,7 +2115,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 ![image](http://www.wt1814.com/static/view/images/SQL/sql-184.png)  
 4. 刷盘时机：重做日志的写盘，并不一定是随着事务的提交才写入重做日志文件的，而是随着事务的开始，逐步开始的。先写入redo log buffer。  
 
-###### DoubleWrite
+###### 1.5.4.4.2.3. DoubleWrite
 &emsp; double write：<font color = "blue">如果说写缓冲change buffer带给InnoDB存储引擎的是性能，那么两次写Double Write带给InnoDB存储引擎的是数据的可靠性。</font>  
 1. MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
 2. 在应用(apply)重做日志(redo log)前，需要一个页的副本，当`写入失效发生时`，`先通过页的副本来还原该页，再进行重做`，这就是doublewrite。即doublewrite是页的副本。  
@@ -2126,7 +2126,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     2. 第二步：doublewrite buffe的内存里，会先刷到`doublewrite buffe的磁盘`上；
     3. 第三步：doublewrite buffe的内存里，再刷到`数据磁盘`存储上； 
 
-##### ~~两阶段提交和崩溃恢复~~
+##### 1.5.4.4.3. ~~两阶段提交和崩溃恢复~~
 1. 两阶段提交
     1. **<font color = "clime">redo log和binlog都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。两阶段提交保证解决binlog和redo log的数据一致性。</font>**    
     2. `两阶段提交是很典型的分布式事务场景，因为redolog和binlog两者本身就是两个独立的个体，`要想保持一致，就必须使用分布式事务的解决方案来处理。 **<font color = "blue">而将redolog分成了两步，其实就是使用了两阶段提交协议(Two-phaseCommit，2PC)。</font>**  
@@ -2136,14 +2136,14 @@ private final BlockingQueue<Future<V>> completionQueue;
         3. 将redolog这个事务相关的记录状态设置为commit状态。
 2. 崩溃恢复： **<font color = "red">当重启数据库实例的时候，数据库做2个阶段性操作：redo log处理，undo log及binlog 处理。在崩溃恢复中还需要回滚没有提交的事务，提交没有提交成功的事务。由于回滚操作需要undo日志的支持，undo日志的完整性和可靠性需要redo日志来保证，所以崩溃恢复`先做redo前滚，然后做undo回滚`。</font>**    
 
-###### BufferPool落盘表空间
+###### 1.5.4.4.3.1. BufferPool落盘表空间
 1. 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间tablespace。表空间又由段segment，区extent，页page组成。  
 2. **<font color = "clime">相比较之下，使用独占表空间的效率以及性能会更高一点。</font>**  
 3. **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB（在操作系统中默认页大小是4KB）。</font>**  
 
 
-### 索引事物锁
-#### 索引底层原理 
+### 1.5.5. 索引事物锁
+#### 1.5.5.1. 索引底层原理 
 1. **<font color = "clime">评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中`磁盘I/O`操作次数的渐进复杂度。</font>**  
 &emsp; 操作系统中以页这种结构作为读写的基本单位。操作系统IO消耗：<font color = "red">一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储的磁盘上。</font>这样的话，索引查找过程中就要产生磁盘I/O消耗，相对于内存存取，I/O存取的消耗要高几个数量级，所以 **<font color = "clime">评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中磁盘I/O操作次数的渐进复杂度。</font>** 换句话说，索引的结构组织要尽量减少查找过程中磁盘I/O的存取次数。  
 2. InnoDB使用的数据结构选择：  
@@ -2187,10 +2187,10 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; **<font color = "red">联合索引底层还是使用B+树索引，并且还是只有一棵树，只是此时的排序：首先按照第一个索引排序，在第一个索引相同的情况下，再按第二个索引排序，依此类推。</font>**  
 5. 无索引时的数据查询：查询数据时从磁盘中依次加载数据页到InnoDB的缓冲池中，然后对缓冲池中缓存页的每行数据，通过数据页的单向链表一个一个去遍历查找，如果没有找到，那么就会顺着数据页的双向链表数据结构，依次遍历加载磁盘中的其他数据页到缓冲池中遍历查询。 
 
-#### ~~各种索引~~（还需要总结）
+#### 1.5.5.2. ~~各种索引~~（还需要总结）
 &emsp; <font color = "red">InnoDB索引类型可以分为主键索引（聚簇索引）和辅助索引（非聚簇索引/非主键索引）。</font>  
 
-#### MySql事务（还需要总结）  
+#### 1.5.5.3. MySql事务（还需要总结）  
 1. 并发事务处理带来的问题：脏读、丢失修改、不可重复读、幻读。  
     * 脏`读`：一个事务读了另一个事务未提交的数据。
     * 丢失`修改`（写写问题）：一个事务覆盖了另一个事务的数据。  
@@ -2215,7 +2215,7 @@ private final BlockingQueue<Future<V>> completionQueue;
         1. 从数据库层面，数据库通过原子性、隔离性、持久性来保证一致性。也就是说ACID四大特性之中，C(一致性)是目的，A(原子性)、I(隔离性)、D(持久性)是手段，是为了保证一致性，数据库提供的手段。数据库必须要实现AID三大特性，才有可能实现一致性。例如，原子性无法保证，显然一致性也无法保证。  
         2. 从应用层面，通过代码判断数据库数据是否有效，然后决定回滚还是提交数据！如果在事务里故意写出违反约束的代码，一致性还是无法保证的。
 
-#### MVCC
+#### 1.5.5.4. MVCC
 1. **<font color = "clime">多版本并发控制（MVCC）是一种用来解决`（1）读-写冲突的无锁并发控制`、`（2）解决并发事务问题（脏读、~~丢失修改~~、幻读、不可重复读）`。</font>**  
 2. <font color = "clime">`MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。`两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
 2. **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC。</font>**   
@@ -2246,7 +2246,7 @@ private final BlockingQueue<Future<V>> completionQueue;
         当前读:update、insert、delete
     &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了Gap Lock时，Gap锁会锁住id < 10的整个范围，因此其他事务无法插入id < 10的数据，从而防止了幻读。  
 
-#### MySql锁
+#### 1.5.5.5. MySql锁
 1. 数据库锁  
     &emsp; **锁的分类：**  
     ![image](http://www.wt1814.com/static/view/images/SQL/sql-42.png)  
@@ -2273,7 +2273,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; 对已有数据行的修改与删除，必须加强互斥锁(X锁)，那么对于数据的插入，是否还需要加这么强的锁，来实施互斥呢？插入意向锁，孕育而生。  
     &emsp; 插入意向锁，是间隙锁（Gap Locks）的一种（所以，也是实施在索引上的），它是专门针对insert操作的。多个事务，在同一个索引，同一个范围区间插入记录时，如果插入的位置不冲突，不会阻塞彼此。  
 
-#### MySql死锁和锁表
+#### 1.5.5.6. MySql死锁和锁表
 &emsp; ~~胡扯，死锁，mysql检测后，回滚一条事务，抛出异常。~~  
 1. 为什么发生死锁？  
 2. 发生死锁时，服务器报错：`Deadlock found when trying to get to lock; try restarting transaction`。  
