@@ -58,6 +58,7 @@
 
 # wt1814-note  
 ## 总结
+[知识点概况](/docs/survey.md)  
 [大总结1](/docs/summary.md)  
 [大总结2](/docs/summaryTwo.md)  
 
