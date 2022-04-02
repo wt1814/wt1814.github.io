@@ -76,54 +76,54 @@
             - [1.3.7.3. JVM问题排查](#1373-jvm问题排查)
             - [1.3.7.4. Arthas工具](#1374-arthas工具)
     - [1.4. 多线程和并发](#14-多线程和并发)
-        - [1.4.1. 线程Thread](#141-线程thread)
-            - [1.4.1.1. 线程状态详解](#1411-线程状态详解)
-        - [1.4.2. 线程池-多线程](#142-线程池-多线程)
-            - [1.4.2.1. 线程池框架](#1421-线程池框架)
-            - [1.4.2.2. ThreadPoolExecutor详解](#1422-threadpoolexecutor详解)
-            - [1.4.2.3. 线程池的正确使用](#1423-线程池的正确使用)
-            - [1.4.2.4. ForkJoinPool详解](#1424-forkjoinpool详解)
-            - [1.4.2.5. ~~CompletionService~~](#1425-completionservice)
-            - [1.4.2.6. Future相关](#1426-future相关)
-            - [1.4.2.7. ~~CompletableFuture~~](#1427-completablefuture)
-        - [1.4.3. 并发编程](#143-并发编程)
-            - [1.4.3.1. 并发编程原理](#1431-并发编程原理)
-                - [1.4.3.1.1. ~~CPU多核缓存架构及JMM~~](#14311-cpu多核缓存架构及jmm)
-                - [1.4.3.1.2. 并发安全问题产生原因](#14312-并发安全问题产生原因)
-                - [1.4.3.1.3. 硬件解决并发安全](#14313-硬件解决并发安全)
-                - [1.4.3.1.4. Java解决并发安全](#14314-java解决并发安全)
-            - [1.4.3.2. 线程安全解决](#1432-线程安全解决)
-                - [1.4.3.2.1. 线程安全解决方案](#14321-线程安全解决方案)
-                - [1.4.3.2.2. Synchronized](#14322-synchronized)
-                    - [1.4.3.2.2.1. Synchronized介绍](#143221-synchronized介绍)
-                    - [1.4.3.2.2.2. Synchronized使用](#143222-synchronized使用)
-                - [1.4.3.2.3. ~~Synchronized使用是否安全~~](#14323-synchronized使用是否安全)
-                    - [1.4.3.2.3.1. Synchronized底层原理](#143231-synchronized底层原理)
-                    - [1.4.3.2.3.2. Synchronized优化](#143232-synchronized优化)
-                - [1.4.3.2.4. Volatile](#14324-volatile)
-                - [1.4.3.2.5. ThreadLocal](#14325-threadlocal)
-                    - [1.4.3.2.5.1. ThreadLocal原理](#143251-threadlocal原理)
-                    - [1.4.3.2.5.2. ThreadLocal应用](#143252-threadlocal应用)
-            - [1.4.3.3. 线程通信(生产者消费者问题)](#1433-线程通信生产者消费者问题)
-            - [1.4.3.4. 线程活跃性](#1434-线程活跃性)
-        - [1.4.4. JUC](#144-juc)
-            - [1.4.4.1. CAS](#1441-cas)
-            - [1.4.4.2. AQS](#1442-aqs)
-                - [1.4.4.2.1. LockSupport类](#14421-locksupport类)
-            - [1.4.4.3. LOCK](#1443-lock)
-                - [1.4.4.3.1. ReentrantLock，重入锁](#14431-reentrantlock重入锁)
-                    - [1.4.4.3.1.1. 读写锁](#144311-读写锁)
-            - [1.4.4.4. Atomic](#1444-atomic)
-                - [1.4.4.4.1. AtomicStampedReference与AtomicMarkableReference](#14441-atomicstampedreference与atomicmarkablereference)
-                - [1.4.4.4.2. LongAdder](#14442-longadder)
-            - [1.4.4.5. Collections](#1445-collections)
-                - [1.4.4.5.1. CopyOnWriteArrayList](#14451-copyonwritearraylist)
-                - [1.4.4.5.2. ConcurrentHashMap](#14452-concurrenthashmap)
-                - [1.4.4.5.3. BlockingQueue](#14453-blockingqueue)
-            - [1.4.4.6. tools](#1446-tools)
-                - [1.4.4.6.1. CountDownLatch](#14461-countdownlatch)
-                - [1.4.4.6.2. CyclicBarrier](#14462-cyclicbarrier)
-                - [1.4.4.6.3. Semaphore](#14463-semaphore)
+        - [1.4.1. 线程池-多线程](#141-线程池-多线程)
+            - [1.4.1.1. 线程Thread](#1411-线程thread)
+                - [1.4.1.1.1. 线程状态详解](#14111-线程状态详解)
+            - [1.4.1.2. 线程池框架](#1412-线程池框架)
+            - [1.4.1.3. ThreadPoolExecutor详解](#1413-threadpoolexecutor详解)
+            - [1.4.1.4. 线程池的正确使用](#1414-线程池的正确使用)
+            - [1.4.1.5. ForkJoinPool详解](#1415-forkjoinpool详解)
+            - [1.4.1.6. ~~CompletionService~~](#1416-completionservice)
+            - [1.4.1.7. Future相关](#1417-future相关)
+            - [1.4.1.8. ~~CompletableFuture~~](#1418-completablefuture)
+        - [1.4.2. 并发编程](#142-并发编程)
+            - [1.4.2.1. 并发编程原理](#1421-并发编程原理)
+                - [1.4.2.1.1. ~~CPU多核缓存架构及JMM~~](#14211-cpu多核缓存架构及jmm)
+                - [1.4.2.1.2. 并发安全问题产生原因](#14212-并发安全问题产生原因)
+                - [1.4.2.1.3. 硬件解决并发安全](#14213-硬件解决并发安全)
+                - [1.4.2.1.4. Java解决并发安全](#14214-java解决并发安全)
+            - [1.4.2.2. 线程安全解决](#1422-线程安全解决)
+                - [1.4.2.2.1. 线程安全解决方案](#14221-线程安全解决方案)
+                - [1.4.2.2.2. Synchronized](#14222-synchronized)
+                    - [1.4.2.2.2.1. Synchronized介绍](#142221-synchronized介绍)
+                    - [1.4.2.2.2.2. Synchronized使用](#142222-synchronized使用)
+                - [1.4.2.2.3. ~~Synchronized使用是否安全~~](#14223-synchronized使用是否安全)
+                    - [1.4.2.2.3.1. Synchronized底层原理](#142231-synchronized底层原理)
+                    - [1.4.2.2.3.2. Synchronized优化](#142232-synchronized优化)
+                - [1.4.2.2.4. Volatile](#14224-volatile)
+                - [1.4.2.2.5. ThreadLocal](#14225-threadlocal)
+                    - [1.4.2.2.5.1. ThreadLocal原理](#142251-threadlocal原理)
+                    - [1.4.2.2.5.2. ThreadLocal应用](#142252-threadlocal应用)
+            - [1.4.2.3. 线程通信(生产者消费者问题)](#1423-线程通信生产者消费者问题)
+            - [1.4.2.4. 线程活跃性](#1424-线程活跃性)
+        - [1.4.3. JUC](#143-juc)
+            - [1.4.3.1. CAS](#1431-cas)
+            - [1.4.3.2. AQS](#1432-aqs)
+                - [1.4.3.2.1. LockSupport类](#14321-locksupport类)
+            - [1.4.3.3. LOCK](#1433-lock)
+                - [1.4.3.3.1. ReentrantLock，重入锁](#14331-reentrantlock重入锁)
+                    - [1.4.3.3.1.1. 读写锁](#143311-读写锁)
+            - [1.4.3.4. Atomic](#1434-atomic)
+                - [1.4.3.4.1. AtomicStampedReference与AtomicMarkableReference](#14341-atomicstampedreference与atomicmarkablereference)
+                - [1.4.3.4.2. LongAdder](#14342-longadder)
+            - [1.4.3.5. Collections](#1435-collections)
+                - [1.4.3.5.1. CopyOnWriteArrayList](#14351-copyonwritearraylist)
+                - [1.4.3.5.2. ConcurrentHashMap](#14352-concurrenthashmap)
+                - [1.4.3.5.3. BlockingQueue](#14353-blockingqueue)
+            - [1.4.3.6. tools](#1436-tools)
+                - [1.4.3.6.1. CountDownLatch](#14361-countdownlatch)
+                - [1.4.3.6.2. CyclicBarrier](#14362-cyclicbarrier)
+                - [1.4.3.6.3. Semaphore](#14363-semaphore)
     - [1.5. 数据库](#15-数据库)
         - [1.5.1. SQL语句](#151-sql语句)
             - [1.5.1.1. 基本查询语句](#1511-基本查询语句)
@@ -1097,7 +1097,11 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 ## 1.4. 多线程和并发
 
-### 1.4.1. 线程Thread
+
+
+### 1.4.1. 线程池-多线程
+
+#### 1.4.1.1. 线程Thread
 1. 创建线程的方式：Thread、Runnable、Callable、线程池相关（Future, ThreadPool, `@Async`）...  
 2. 线程状态 
 3. thread.yield()，线程让步     
@@ -1111,7 +1115,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     * RUNNABLE和BLOCKED类似， **<font color = "cclime">对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中；</font>**  
     * WAITING/TIMED_WAITING状态下的线程对于中断操作是敏感的，它们会抛出异常并清空中断标志位。  
 
-#### 1.4.1.1. 线程状态详解
+##### 1.4.1.1.1. 线程状态详解
 1. 通用的线程周期。操作系统层面有5个状态，分别是：New（新建）、Runnable（就绪）、Running（运行）、Blocked（阻塞）、Dead（死亡）。  
 2. Java线程状态均来自Thread类下的State这一内部枚举类中所定义的状态：  
 ![image](http://www.wt1814.com/static/view/images/java/concurrent/thread-2.png)  
@@ -1169,8 +1173,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 ![image](http://www.wt1814.com/static/view/images/java/concurrent/thread-6.png) 
 
 
-### 1.4.2. 线程池-多线程
-#### 1.4.2.1. 线程池框架
+#### 1.4.1.2. 线程池框架
 1. **线程池通过线程复用机制，并对线程进行统一管理，** 具有以下优点：  
     * 降低系统资源消耗。通过复用已存在的线程，降低线程创建和销毁造成的消耗；  
     * 提高响应速度。当有任务到达时，无需等待新线程的创建便能立即执行；  
@@ -1197,7 +1200,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。  
 	* CachedThreadPool和ScheduledThreadPool：允许创建的线程数量为Integer.MAX_VALUE，可能会创建大量线程，从而导致OOM。   
 
-#### 1.4.2.2. ThreadPoolExecutor详解
+#### 1.4.1.3. ThreadPoolExecutor详解
 1. 理解构造函数中参数：核心线程数大小、最大线程数大小、空闲线程（超出corePoolSize的线程）的生存时间、参数keepAliveTime的单位、任务阻塞队列、创建线程的工厂（可以通过这个工厂来创建有业务意义的线程名字）。  
     * [阻塞队列](/docs/java/concurrent/BlockingQueue.md)，线程池所使用的缓冲队列，常用的是：SynchronousQueue、ArrayBlockingQueue、LinkedBlockingQueue。   
     * 拒绝策略，默认AbortPolicy（拒绝任务，抛异常）， **<font color = "clime">可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。</font>**  
@@ -1222,7 +1225,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         2. 当调用shutdown()方法，会将线程池状态置为shutdown，并且需要等待正在执行的任务执行完，阻塞队列中的任务执行完才能返回null。
     2. `getTask()不返回null的情况有获取到任务，或获取不到任务，但线程数小于等于核心线程数。`  
 
-#### 1.4.2.3. 线程池的正确使用
+#### 1.4.1.4. 线程池的正确使用
 1. **<font color = "clime">线程池设置：</font>**   
     1. `使用自定义的线程池。`共享的问题在于会干扰，如果有一些异步操作的平均耗时是1秒，另外一些是100秒，这些操作放在一起共享一个线程池很可能会出现相互影响甚至饿死的问题。`建议根据异步业务类型，合理设置隔离的线程池。`  
     2. `确定线程池的大小（CPU可同时处理线程数量大部分是CPU核数的两倍）`  
@@ -1245,7 +1248,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 4. @Async方法没有执行的问题分析：  
 &emsp; @Async异步方法默认使用Spring创建ThreadPoolTaskExecutor(参考TaskExecutionAutoConfiguration)，其中默认核心线程数为8，默认最大队列和默认最大线程数都是Integer.MAX_VALUE，队列使用LinkedBlockingQueue，容量是：Integet.MAX_VALUE，空闲线程保留时间：60s，线程池拒绝策略：AbortPolicy。创建新线程的条件是队列填满时，而这样的配置队列永远不会填满，如果有@Async注解标注的方法长期占用线程（比如HTTP长连接等待获取结果），在核心8个线程数占用满了之后，新的调用就会进入队列，外部表现为没有执行。  
 
-#### 1.4.2.4. ForkJoinPool详解
+#### 1.4.1.5. ForkJoinPool详解
 1. <font color = "clime">ForkJoinPool的两大核心是 分而治之和工作窃取 算法。</font>  
 2. 分而治之：<font color = "red">ForkJoinPool的计算方式是大任务拆中任务，中任务拆小任务，最后再汇总。</font>  
 3. 工作窃取算法  
@@ -1255,7 +1258,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     3. **<font color = "clime">`当只剩下最后一个任务时，还是会存在竞争，是通过CAS来实现的；`</font>**    
 
 
-#### 1.4.2.5. ~~CompletionService~~
+#### 1.4.1.6. ~~CompletionService~~
 &emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务， **<font color = "clime">并方便的集中处理上述任务的结果（且任务最先完成的先返回）。</font>**  
 &emsp; CompletionService，内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
 
@@ -1272,12 +1275,12 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; 通过使用BlockingQueue的take或poll方法，则可以得到结果。在BlockingQueue不存在元素时，这两个操作会阻塞，一旦有结果加入，则立即返回。  
 &emsp; 如果队列为空，那么 take() 方法会阻塞直到队列中出现结果为止。CompletionService 还提供一个 poll() 方法，返回值与 take() 方法一样，不同之处在于它不会阻塞，如果队列为空则立刻返回 null。这算是给用户多一种选择。  
 
-#### 1.4.2.6. Future相关
+#### 1.4.1.7. Future相关
 1. **Future是一个接口，它可以对具体的Runnable或者Callable任务进行取消、判断任务是否已取消、查询任务是否完成、获取任务结果。**  
 2. JDK1.5为Future接口提供了一个实现类FutureTask，表示一个可以取消的异步运算。它有启动和取消运算、查询运算是否完成和取回运算结果等方法。  
 
 
-#### 1.4.2.7. ~~CompletableFuture~~
+#### 1.4.1.8. ~~CompletableFuture~~
 
 &emsp; 为什么引入CompletableFuture？  
 &emsp; 对于jdk1.5的Future，虽然提供了异步处理任务的能力，但是获取结果的方式很不优雅，还是需要通过阻塞（或者轮训）的方式。如何避免阻塞呢？其实就是注册回调。  
@@ -1321,9 +1324,9 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; 此接口包含38个方法、这些方法主要是为了支持函数式编程中流式处理。  
 
 
-### 1.4.3. 并发编程
-#### 1.4.3.1. 并发编程原理
-##### 1.4.3.1.1. ~~CPU多核缓存架构及JMM~~
+### 1.4.2. 并发编程
+#### 1.4.2.1. 并发编程原理
+##### 1.4.2.1.1. ~~CPU多核缓存架构及JMM~~
 &emsp; `⚠⚠⚠声明：并发安全并不是java独有的，其他语言，不同操作系统都存在并发安全。究其原因是因为cpu多级缓存架构。`  
 1. CPU多核缓存架构
 1. JMM
@@ -1331,7 +1334,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     2. 单个线程操作时，8种内存间交换操作指令。  
     3. 线程之间的通信和同步。线程之间的通信过程：线程对变量的操作（读取赋值等）必须在工作内存中进行，首先要将变量从主内存拷贝到自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，不能直接操作主内存中的变量，</font>各个线程中的工作内存中存储着主内存中的变量副本拷贝，<font color = "red">因此不同的线程间无法访问对方的工作内存，线程间的通信（传值）必须通过主内存来完成。</font>    
 
-##### 1.4.3.1.2. 并发安全问题产生原因
+##### 1.4.2.1.2. 并发安全问题产生原因
 1. **并发安全的3个问题：**  
 
     * 原子性：线程切换带来的原子性问题。（[Volatile](/docs/java/concurrent/Volatile.md)不保证原子性）
@@ -1357,7 +1360,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; 高性能原子类[LongAdder](/docs/java/concurrent/LongAdder.md)可以解决类伪共享问题。   
 
 
-##### 1.4.3.1.3. 硬件解决并发安全
+##### 1.4.2.1.3. 硬件解决并发安全
 1. 缓存一致性协议  
     1. 怎么解决缓存一致性问题呢？使用总线锁或缓存锁。  
         * 总线锁：cpu从主内存读取数据到高速缓存，会在总线对这个数据加锁，这样其他cpu无法去读或写这个数据，直到这个cpu使用完数据释放锁之后其他cpu才能读取该数据。  
@@ -1374,7 +1377,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     * sfence：是一种Store Barrier写屏障，实现StoreStore屏障
     * mfence：是一种全能型的屏障，具备Ifencce和sfence的能留，具备所有屏障能力
 
-##### 1.4.3.1.4. Java解决并发安全
+##### 1.4.2.1.4. Java解决并发安全
 1. JMM中的happens-before原则：  
     &emsp; JSR-133内存模型 **<font color = "red">使用`happens-before`的概念来阐述操作之间的`内存可见性`。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
     &emsp; happens-before关系的定义如下：
@@ -1394,8 +1397,8 @@ private final BlockingQueue<Future<V>> completionQueue;
     2. `（保障有序性）阻止屏障两侧的指令重排序。`   
 3. java并发原语：Java内存模型，除了定义了一套规范，还提供了一系列原语，封装了底层实现后，供开发者直接使用。  
 
-#### 1.4.3.2. 线程安全解决
-##### 1.4.3.2.1. 线程安全解决方案
+#### 1.4.2.2. 线程安全解决
+##### 1.4.2.2.1. 线程安全解决方案
 1. 线程安全解决方案
 	1. 阻塞/互斥同步（悲观锁）
 	2. 非阻塞同步（乐观锁，CAS） 
@@ -1409,11 +1412,11 @@ private final BlockingQueue<Future<V>> completionQueue;
 	* 可见性可以通过Volatile、synchronized、final来实现。  
 	* 有序性可以通过synchronized或者Lock、volatile来实现。  
 
-##### 1.4.3.2.2. Synchronized
-###### 1.4.3.2.2.1. Synchronized介绍
+##### 1.4.2.2.2. Synchronized
+###### 1.4.2.2.2.1. Synchronized介绍
 
 
-###### 1.4.3.2.2.2. Synchronized使用
+###### 1.4.2.2.2.2. Synchronized使用
 1. Java基础：对象和方法
     * 类和对象
         * xxx.Class
@@ -1437,14 +1440,14 @@ private final BlockingQueue<Future<V>> completionQueue;
 3. String锁：由于在JVM中具有String常量池缓存的功能，因此相同字面量是同一个锁。  
 
 
-##### 1.4.3.2.3. ~~Synchronized使用是否安全~~
+##### 1.4.2.2.3. ~~Synchronized使用是否安全~~
 &emsp; 共有 `类锁 + 对象锁 + 类锁 * 对象锁`种情况。    
 1. 类锁
 2. 对象锁
 3. 类锁和对象锁
 4. 不安全场景
 
-###### 1.4.3.2.3.1. Synchronized底层原理
+###### 1.4.2.2.3.1. Synchronized底层原理
 1. Synchronized底层实现：`查看Synchronized的字节码。`  
     * Synchronized方法同步：依靠的是方法修饰符上的ACC_Synchronized实现。  
     * Synchronized代码块同步：使用monitorenter和monitorexit指令实现。   
@@ -1479,7 +1482,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; 互斥锁是信号量的特例。信号量的初始值表示有多少个任务可以同时访问共享资源，如果初始值为1，表示只有1个任务可以访问，信号量变成互斥锁（Mutex）。但是互斥锁和信号量又有所区别，互斥锁的加锁和解锁必须在同一线程里对应使用，所以互斥锁只能用于线程的互斥；信号量可以由一个线程释放，另一个线程得到，所以信号量可以用于线程的同步。   
 
 
-###### 1.4.3.2.3.2. Synchronized优化
+###### 1.4.2.2.3.2. Synchronized优化
 1. **<font color = "clime">锁降级：</font>** <font color = "red">Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时，如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>   
 2. 锁升级  
     &emsp; 锁主要存在四种状态，依次是：无锁状态（普通对象）、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。锁升级流程如下：   
@@ -1523,7 +1526,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; 偏向锁、自旋锁都是用户空间完成。重量级锁是需要向内核申请。  
   
 
-##### 1.4.3.2.4. Volatile
+##### 1.4.2.2.4. Volatile
 1. **<font color = "clime">Volatile的特性：</font>**  
     1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>    
     2. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**  
@@ -1542,10 +1545,10 @@ private final BlockingQueue<Future<V>> completionQueue;
         &emsp; singleton = new Singleton()非原子性操作，包含3个步骤：分配内存 ---> 初始化对象 ---> 将singleton对象指向分配的内存空间。第3步一旦执行了，那singleton对象就不等于null了。  
         &emsp; **<font color = "clime">因为指令重排序，可能编程1->3->2。如果是这种顺序，会导致别的线程拿到半成品的实例。</font>**  
 
-##### 1.4.3.2.5. ThreadLocal
+##### 1.4.2.2.5. ThreadLocal
 &emsp; ThreadLocal的作用是每一个线程创建一个副本。  
 
-###### 1.4.3.2.5.1. ThreadLocal原理
+###### 1.4.2.2.5.1. ThreadLocal原理
 1. ThreadLocal源码/内存模型：  
     1. **<font color = "red">ThreadLocal的#set()、#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** 即当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
     &emsp; ~~Thread ---> ThreadLocal.ThreadLocalMap~~
@@ -1562,7 +1565,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; ThreadLocal#get() ---> setInitialValue() ---> ThreadLocalMap.set(this, value); 。  
     &emsp; 通过nextIndex()不断获取table上的槽位，直到遇到第一个为null的地方，此处也将是存放具体entry的位置，在线性探测法的不断冲突中，如果遇到非空entry中的key为null，可以表明key的弱引用已经被回收，但是由于线程仍未结束生命周期被回收，而导致该entry仍未从table中被回收，那么则会在这里尝试通过replaceStaleEntry()方法，将null key的entry回收掉并set相应的值。  
 
-###### 1.4.3.2.5.2. ThreadLocal应用
+###### 1.4.2.2.5.2. ThreadLocal应用
 
         1. 在进行对象跨层次传递的时候，使用ThreadLocal可以避免多次传递，打破层次间的束缚。   
         2. 线程间层次隔离。  
@@ -1581,7 +1584,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     4. 并行流中线程上下文丢失。问题同线程池中线程上下文丢失。  
 3. ThreadLocal优化：FastThreadLocal
 
-#### 1.4.3.3. 线程通信(生产者消费者问题)
+#### 1.4.2.3. 线程通信(生产者消费者问题)
 
 1. 生产者消费者问题，Java能实现的几种方法：  
     * wait() / notify()方法
@@ -1596,11 +1599,11 @@ private final BlockingQueue<Future<V>> completionQueue;
     4. 管道，共享内存，实现数据的共享，满足读写模式。管道通信就是使用java.io.PipedInputStream和java.io.PipedOutputStream进行通信。  
 3. 分布式系统中说的两种通信机制：共享内存机制和消息通信机制。  
 
-#### 1.4.3.4. 线程活跃性
+#### 1.4.2.4. 线程活跃性
 
 
-### 1.4.4. JUC
-#### 1.4.4.1. CAS
+### 1.4.3. JUC
+#### 1.4.3.1. CAS
 1. **<font color = "clime">CAS，Compare And Swap，即比较并交换。一种无锁原子算法，CAS是一种乐观锁。</font>**  
 2. CAS函数  
 &emsp; **<font color = "clime">在函数CAS(V,E,N)中有3个参数：从内存中读取的值E，计算的结果值V，内存中的当前值N（可能已经被其他线程改变）。</font>**  
@@ -1622,7 +1625,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; **<font color = "red">ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。</font>**   
     &emsp; **<font color = "clime">从Java1.5开始JDK的atomic包里提供了[AtomicStampedReference](/docs/java/concurrent/6.AtomicStampedReference.md)和AtomicMarkableReference类来解决ABA问题。</font>**  
 
-#### 1.4.4.2. AQS
+#### 1.4.3.2. AQS
 1. 属性
     1. 同步状态，通过state控制同步状态。  
     2. 同步队列，`双向链表`，每个节点代表一个线程，节点有5个状态。
@@ -1640,12 +1643,12 @@ private final BlockingQueue<Future<V>> completionQueue;
         * 释放同步状态  
     2. 共享模式下，获取同步状态、释放同步状态。  
 
-##### 1.4.4.2.1. LockSupport类
+##### 1.4.3.2.1. LockSupport类
 &emsp; LockSupport（support，支持）是一个线程阻塞工具类，所有的方法都是静态方法，可以让线程在任意位置阻塞，当然阻塞之后肯定得有唤醒的方法。  
 &emsp; LockSupport主要有两类方法：park和unpark。 
 
-#### 1.4.4.3. LOCK
-##### 1.4.4.3.1. ReentrantLock，重入锁
+#### 1.4.3.3. LOCK
+##### 1.4.3.3.1. ReentrantLock，重入锁
 1. ReentrantLock与synchronized比较：非公平、非`阻塞`、超时/限时`等待`、可被`中断`、可实现选择性通知  
     1. （支持非公平）ReenTrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁。所谓的公平锁就是先等待的线程先获得锁。  
     2. （支持非阻塞）Lock接口可以尝试非阻塞地获取锁，当前线程尝试获取锁。如果这一时刻锁没有被其他线程获取到，则成功获取并持有锁。  
@@ -1667,7 +1670,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; 用一张流程图总结一下非公平锁的获取锁的过程。  
     ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-75.png)  
 
-###### 1.4.4.3.1.1. 读写锁
+###### 1.4.3.3.1.1. 读写锁
 1. ReentrantReadWriteLock  
     1. 读写锁ReentrantReadWriteLock：读读共享，`读写互斥`，写写互斥。  
     2. **<font color = "red">ReentrantReadWriteLock缺点：`读写锁互斥`，只有当前没有线程持有读锁或者写锁时，才能获取到写锁，</font><font color = "clime">这`可能会导致写线程发生饥饿现象`，</font><font color = "red">即读线程太多导致写线程迟迟竞争不到锁而一直处于等待状态。StampedLock()可以解决这个问题。</font>**  
@@ -1677,19 +1680,19 @@ private final BlockingQueue<Future<V>> completionQueue;
     3. **<font color = "clime">同时允许多个乐观读和一个写线程同时进入临界资源操作，那`读取的数据可能是错的怎么办？`</font>**    
     &emsp; **<font color = "clime">`通过版本号控制。`</font>** 乐观读不能保证读取到的数据是最新的，所以`将数据读取到局部变量的时候需要通过 lock.validate(stamp) 校验是否被写线程修改过`，若是修改过则需要上悲观读锁，再重新读取数据到局部变量。`即乐观读失败后，再次使用悲观读锁。`    
 
-#### 1.4.4.4. Atomic
-##### 1.4.4.4.1. AtomicStampedReference与AtomicMarkableReference
+#### 1.4.3.4. Atomic
+##### 1.4.3.4.1. AtomicStampedReference与AtomicMarkableReference
 1. AtomicStampedReference每次修改都会让stamp值加1，类似于版本控制号。 
 2. **<font color = "clime">AtomicStampedReference可以知道引用变量中途被更改了几次。有时候，并不关心引用变量更改了几次，只是单纯的关心是否更改过，所以就有了AtomicMarkableReference。</font>**  
 
-##### 1.4.4.4.2. LongAdder
+##### 1.4.3.4.2. LongAdder
 1. LongAdder重要属性：有一个全局变量`volatile long base`值、父类Striped64中存在一个`volatile Cell[] cells;`数组，其长度是2的幂次方。  
 2. LongAdder原理：  
     1. CAS操作：当并发不高的情况下都是通过CAS来直接操作base值，如果CAS失败，则针对LongAdder中的Cell[]数组中的Cell进行CAS操作，减少失败的概率。
     2. 解决伪共享：每个Cell都使用@Contended注解进行修饰，而@Contended注解可以进行缓存行填充，从而解决伪共享问题。  
 
-#### 1.4.4.5. Collections
-##### 1.4.4.5.1. CopyOnWriteArrayList
+#### 1.4.3.5. Collections
+##### 1.4.3.5.1. CopyOnWriteArrayList
 1. CopyOnWriteArrayList  
 &emsp; CopyOnWrite，写时复制。`读操作时不加锁以保证性能不受影响。`  
 &emsp; **<font color = "clime">`写操作时加锁，复制资源的一份副本，在副本上执行写操作，写操作完成后将资源的引用指向副本。`</font>** CopyOnWriteArrayList源码中，`基于ReentrantLock保证了增加元素和删除元素动作的互斥。`   
@@ -1697,7 +1700,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; **<font color = "clime">缺点：** **1.占内存（写时复制，new两个对象）；2.不能保证数据实时一致性。</font>**  
 &emsp; **使用场景：** <font color = "clime">CopyOnWrite并发容器用于读多写少的并发场景。比如白名单，黑名单，商品类目的访问和更新场景。</font>
 
-##### 1.4.4.5.2. ConcurrentHashMap
+##### 1.4.3.5.2. ConcurrentHashMap
 1. ConcurrentHashMap，JDK1.8  
     &emsp; **<font color = "red">从jdk1.8开始，ConcurrentHashMap类取消了Segment分段锁，采用`Node + CAS + Synchronized`来保证并发安全。</font>**  
     &emsp; **<font color = "clime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的ConcurrentHashMap效率又提升了许多。</font>**  
@@ -1723,15 +1726,15 @@ private final BlockingQueue<Future<V>> completionQueue;
         1. 获取 ReentrantLock 独占锁，获取不到，scanAndLockForPut 获取。  
         2. scanAndLockForPut 这个方法可以确保返回时，当前线程一定是获取到锁的状态。  
 
-##### 1.4.4.5.3. BlockingQueue
+##### 1.4.3.5.3. BlockingQueue
 1. 阻塞队列：当队列是空的时候，从队列中获取元素的操作将会被`阻塞`；或者当队列是满时，往队列里添加元素的操作会被`阻塞`。  
 2. `线程池所使用的缓冲队列，常用的是：SynchronousQueue（无缓冲等待队列）、ArrayBlockingQueue（有界缓冲等待队列）、LinkedBlockingQueue（无界缓冲等待队列）。`   
 3. SynchronousQueue，没有容量，是无缓冲等待队列，是一个不存储元素的阻塞队列，会直接将任务交给消费者，必须等队列中的元素被消费后才能继续添加新的元素。  
 4. LinkedBlockingQueue不同于ArrayBlockingQueue，它如果不指定容量，默认为Integer.MAX_VALUE，也就是无界队列。所以为了避免队列过大造成机器负载或者内存爆满的情况出现，在使用的时候建议手动传一个队列的大小。  
 5. <font color = "red">ArrayBlockingQueue与LinkedBlockingQueue：</font> ArrayBlockingQueue预先分配好一段连续内存，更稳定；LinkedBlockingQueue读写锁分离，吞吐量更大。  
 
-#### 1.4.4.6. tools
-##### 1.4.4.6.1. CountDownLatch
+#### 1.4.3.6. tools
+##### 1.4.3.6.1. CountDownLatch
 0. CountDownLatch中count down是倒数的意思，latch则是门闩的含义。整体含义可以理解为倒数的门栓，似乎有一点“三二一，芝麻开门”的感觉。CountDownLatch的作用也是如此，在构造CountDownLatch的时候需要传入一个整数n，在这个整数“倒数”到0之前，主线程需要等待在门口，而这个“倒数”过程则是由各个执行线程驱动的，每个线程执行完一个任务“倒数”一次。总结来说，CountDownLatch的作用就是等待其他的线程都执行完任务，必要时可以对各个任务的执行结果进行汇总，然后主线程才继续往下执行。  
 1. java.util.concurrent.CountDownLatch类， **<font color = "red">能够使一个线程等待其他线程完成各自的工作后再执行。</font>** <font color = "red">利用它可以实现类似计数器的功能。</font><font color = "blue">比如有一个任务A，它要等待其他4个任务执行完毕之后才能执行，此时就可以利用CountDownLatch来实现这种功能了。</font>  
 2. CountDownLatch的典型应用场景，大体可分为两类：结束信号、开始信号。  
@@ -1743,7 +1746,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     * await()方法调用获取锁的方法，由于AQS.state=count表示锁被占用且重入次数为count，所以获取不到锁线程被阻塞并进入AQS队列。  
     * countDown()方法调用释放锁的方法，每释放一次AQS.state减1，当AQS.state变为0时表示处于无锁状态了，就依次唤醒AQS队列中阻塞的线程来获取锁，继续执行逻辑代码。</font>  
 
-##### 1.4.4.6.2. CyclicBarrier
+##### 1.4.3.6.2. CyclicBarrier
 &emsp; CyclicBarrier字面意思是回环栅栏， **<font color = "blue">允许一组线程互相等待，直到到达某个公共屏障点 (common barrier point)之后，再全部同时执行。</font>** 叫做回环是因为当所有等待线程都被释放以后，CyclicBarrier可以被重用。  
 
 &emsp; **<font color = "clime">CyclicBarrier用途有两个：</font>**   
@@ -1751,7 +1754,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 * 让一组线程等待至某个状态后再同时执行。
 * 让一组线程等待至某个状态后，执行指定的任务。
 
-##### 1.4.4.6.3. Semaphore
+##### 1.4.3.6.3. Semaphore
 &emsp; Semaphore类，一个计数信号量。从概念上讲，信号量维护了一个许可集合。如有必要，在许可可用前会阻塞每一个acquire()，然后再获取该许可。每个 release()添加一个许可，从而可能释放一个正在阻塞的获取者。但是，不使用实际的许可对象，Semaphore只对可用许可的号码进行计数，并采取相应的行动。  
 &emsp; 使用场景： **<font color = "red">Semaphore通常用于限制可以访问某些资源（物理或逻辑的）的线程数目。Semaphore可以用来构建一些对象池，资源池之类的，比如数据库连接池。</font>**   
 
