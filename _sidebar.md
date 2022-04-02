@@ -478,6 +478,7 @@
         * [如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
         * [kafka幂等性](/docs/microService/mq/kafka/kafkaIdempotent.md)  
         * [kafka事务](/docs/microService/mq/kafka/kafkaTraction.md)   
+    * [kafka使用问题](/docs/microService/mq/kafka/kafkaUseProblem.md)  
     * [kafka集群管理](/docs/microService/mq/kafka/kafkaUse.md)  
     * [kafka-SpringBoot](/docs/microService/mq/kafka/kafkaSpringBoot.md)  
     * [kafka高级应用](/docs/microService/mq/kafka/advanced.md)  

@@ -22,6 +22,8 @@
             - [1.4.1.4. CompletionService](#1414-completionservice)
             - [1.4.1.5. CompletableFuture](#1415-completablefuture)
         - [1.4.2. 并发编程](#142-并发编程)
+            - [并发编程原理](#并发编程原理)
+            - [并发安全解决](#并发安全解决)
 
 <!-- /TOC -->
 
@@ -177,7 +179,13 @@ private final BlockingQueue<Future<V>> completionQueue;
 
 
 ### 1.4.2. 并发编程  
+#### 并发编程原理 
 
-    
+
+
+#### 并发安全解决
+
+
+
 
 
