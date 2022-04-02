@@ -14,9 +14,14 @@
             - [1.3.3.3. 回收对象](#1333-回收对象)
             - [1.3.3.4. 垃圾回收器](#1334-垃圾回收器)
             - [1.3.3.5. JVM调优](#1335-jvm调优)
-    - [多线程和并发](#多线程和并发)
-        - [线程Thread](#线程thread)
-        - [多线程](#多线程)
+    - [1.4. 多线程和并发](#14-多线程和并发)
+        - [1.4.1. 多线程](#141-多线程)
+            - [1.4.1.1. 线程Thread](#1411-线程thread)
+            - [1.4.1.2. 多线程-ThreadPoolExecutor](#1412-多线程-threadpoolexecutor)
+            - [1.4.1.3. ForkJoinPool详解](#1413-forkjoinpool详解)
+            - [1.4.1.4. CompletionService](#1414-completionservice)
+            - [1.4.1.5. CompletableFuture](#1415-completablefuture)
+        - [1.4.2. 并发编程](#142-并发编程)
 
 <!-- /TOC -->
 
@@ -119,20 +124,59 @@
 2. JVM问题排查  
 
 
-## 多线程和并发  
-### 线程Thread  
+## 1.4. 多线程和并发  
+### 1.4.1. 多线程
+#### 1.4.1.1. 线程Thread  
 1. ⚠️⚠️⚠️`对象` `执行动作` 形成`线程`。`影响线程状态的相关java类：Object类、Synchronized关键字、Thread类。`  
 2. `⚠️⚠️⚠️线程的资源有不少，但应该包含CPU资源和锁资源这两类。`  
 &emsp; **<font color = "clime">只有runnable到running时才会占用cpu时间片，其他都会出让cpu时间片。</font>**  
 3. 线程状态切换  
 
-### 多线程  
-1. ThreadPoolExecutor#execute()执行机制  
-2. 线程池复用机制  
-3. 线程池保证核心线程不被销毁？    
+#### 1.4.1.2. 多线程-ThreadPoolExecutor  
+1. 线程池原理：  
+    1. ThreadPoolExecutor#execute()执行机制  
+    2. ~~线程池复用机制~~  
+    3. 线程池保证核心线程不被销毁？    
+2. 线程池的正确使用：  
+    1. 线程池设置：  
+        1. 使用自定义的线程池。合理设置隔离的线程池。  
+        2. 确定线程池的大小（CPU可同时处理线程数量大部分是CPU核数的两倍）  
+            1. CPU密集型的意思就是该任务需要大量运算，而没有阻塞，CPU一直全速运行。IO密集型，即该任务需要大量的IO，即大量的阻塞。  
+            2. 阻塞队列设置： 如果响应时间要求较高的系统可以设置为0。队列大小一般为200或500-1000。  
+    2. 线程池使用  
+        1. 线程池中线程中异常尽量手动捕获
+        &emsp; `当线程池中线程频繁出现未捕获的异常，那线程的复用率就大大降低了，需要不断地创建新线程。`  
+3. 线程池的监控  
+
+#### 1.4.1.3. ForkJoinPool详解  
 
 
+#### 1.4.1.4. CompletionService  
+&emsp; CompletionService 提供了异步任务的执行与结果的封装，轻松实现多线程任务， **<font color = "clime">并方便的集中处理上述任务的结果（且任务最先完成的先返回）。</font>**  
+&emsp; CompletionService，内部通过阻塞队列+FutureTask，实现了任务先完成可优先获取到，即结果按照完成先后顺序排序。  
 
+&emsp; java.util.concurrent.CompletionService是对ExecutorService封装的一个增强类，优化了获取异步操作结果的接口。主要解决了Future阻塞的问题。  
+
+```java
+private final Executor executor;
+private final AbstractExecutorService aes;
+private final BlockingQueue<Future<V>> completionQueue;
+```
+
+----------------
+&emsp; CompletionService 之所以能够做到这点，是因为它没有采取依次遍历 Future 的方式，而是在内部维护了一个保存Future类型的的结果队列，当任务的任务完成后马上将结果放入队列，那么从队列中取到的就是最早完成的结果。  
+&emsp; 通过使用BlockingQueue的take或poll方法，则可以得到结果。在BlockingQueue不存在元素时，这两个操作会阻塞，一旦有结果加入，则立即返回。  
+&emsp; 如果队列为空，那么 take() 方法会阻塞直到队列中出现结果为止。CompletionService 还提供一个 poll() 方法，返回值与 take() 方法一样，不同之处在于它不会阻塞，如果队列为空则立刻返回 null。这算是给用户多一种选择。  
+
+#### 1.4.1.5. CompletableFuture  
+&emsp; 对于jdk1.5的Future，虽然提供了异步处理任务的能力，但是获取结果的方式很不优雅，还是需要通过阻塞（或者轮训）的方式。如何避免阻塞呢？其实就是注册回调。  
+
+&emsp; <font color = "red">从Java 8开始引入了CompletableFuture，它针对Future做了改进，可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的回调方法。</font>  
+&emsp; ⚠️注：异步回调，主线程不会阻塞。  
+&emsp; CompletableFuture提供了丰富的API对结果进行处理。   
+
+
+### 1.4.2. 并发编程  
 
     
 
