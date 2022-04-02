@@ -1414,7 +1414,6 @@ private final BlockingQueue<Future<V>> completionQueue;
 ##### 1.4.2.2.2. Synchronized
 ###### 1.4.2.2.2.1. Synchronized介绍
 
-
 ###### 1.4.2.2.2.2. Synchronized使用
 1. Java基础：对象和方法
     * 类和对象
