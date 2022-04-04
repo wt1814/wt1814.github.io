@@ -1631,7 +1631,7 @@ private final BlockingQueue<Future<V>> completionQueue;
         * 出列unparkSuccessor()：首节点的线程释放同步状态后，`将会唤醒(LockSupport.unpark)它的后继节点(next)`，而后继节点将会在获取同步状态成功时将自己设置为首节点。
         * 入列或出列都会使用到[LockSupport](/docs/java/concurrent/LockSupport.md)工具类来阻塞、唤醒线程。    
 2. 方法
-    0. 执行 加锁/解锁 、 阻塞/唤醒 、 队列 这3个步骤。    
+    0. 执行 加锁/解锁（控制同步状态state） 、队列 、 阻塞/唤醒 这3个步骤。  
     1. 独占模式：  
         * **<font color = "blue">获取同步状态</font>**   
             1. `调用使用者重写的tryAcquire方法，` **<font color = "blue">tryAcquire()尝试直接去获取资源，</font>** 如果成功则直接返回。

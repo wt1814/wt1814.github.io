@@ -25,6 +25,10 @@
             - [1.4.2.1. 并发编程原理](#1421-并发编程原理)
             - [1.4.2.2. 并发安全解决](#1422-并发安全解决)
         - [1.4.3. JUC](#143-juc)
+            - [1.4.3.1. CAS](#1431-cas)
+            - [1.4.3.2. AQS](#1432-aqs)
+            - [1.4.3.3. 锁](#1433-锁)
+                - [1.4.3.3.1. ReentrantLock，重入锁](#14331-reentrantlock重入锁)
 
 <!-- /TOC -->
 
@@ -191,7 +195,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     1. 缓存一致性协议  
     2. 操作系统的内存屏障  
 4. Java解决并发安全  
-    1. JMM中的happens-before原则：JSR-133内存模型 **<font color = "red">使用`happens-before`的概念来阐述操作之间的`内存可见性`。  
+    1. JMM中的happens-before原则：JSR-133内存模型 **<font color = "red">使用`happens-before`的概念来阐述操作之间的`内存可见性`。</font>**  
     2. 内存屏障：，禁止处理器重排序，保障缓存一致性。    
         1. JVM底层简化了内存屏障硬件指令的实现。  
         2. 内存屏障两个作用：1).保障可见性；2）.保障有序性，阻止屏障两侧的指令重排序。   
@@ -223,5 +227,15 @@ private final BlockingQueue<Future<V>> completionQueue;
         3. ThreadLocal优化：FastThreadLocal
 
 ### 1.4.3. JUC  
+#### 1.4.3.1. CAS  
+1. CAS函数  
+2. CAS缺点  
+
+#### 1.4.3.2. AQS  
+1. 执行 加锁/解锁（控制同步状态state） 、队列 、 阻塞/唤醒 这3个步骤。  
+2. LockSupport（support，支持）是一个线程阻塞工具类，所有的方法都是静态方法，可以让线程在任意位置阻塞，当然阻塞之后肯定得有唤醒的方法。LockSupport主要有两类方法：park和unpark。  
+
+#### 1.4.3.3. 锁  
+##### 1.4.3.3.1. ReentrantLock，重入锁  
 
 
