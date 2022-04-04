@@ -233,7 +233,8 @@ private final BlockingQueue<Future<V>> completionQueue;
             2. ThreadLocal无法在`父子线程（new Thread()）`之间传递。使用类InheritableThreadLocal可以在子线程中取得父线程继承下来的值。   
             3. 线程池中线程上下文丢失。TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
             4. 并行流中线程上下文丢失。问题同线程池中线程上下文丢失。  
-        3. ThreadLocal优化：FastThreadLocal
+        3. ~~ThreadLocal优化：FastThreadLocal~~  
+        &emsp; FastThreadLocal直接使用数组避免了hash冲突的发生，具体做法是：每一个FastThreadLocal实例创建时，分配一个下标index；分配index使用AtomicInteger实现，每个FastThreadLocal都能获取到一个不重复的下标。  
 
 ### 1.4.3. JUC  
 #### 1.4.3.1. CAS  
