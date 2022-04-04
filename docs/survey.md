@@ -24,6 +24,7 @@
         - [1.4.2. 并发编程](#142-并发编程)
             - [1.4.2.1. 并发编程原理](#1421-并发编程原理)
             - [1.4.2.2. 并发安全解决](#1422-并发安全解决)
+        - [1.4.3. JUC](#143-juc)
 
 <!-- /TOC -->
 
@@ -211,6 +212,16 @@ private final BlockingQueue<Future<V>> completionQueue;
         1. ThreadLocal是如何实现线程隔离的？   
         2. ThreadLocal源码/内存模型   
         3. ThreadLocal内存泄露  
-        4. ThreadLocalMap的key被回收后，如何获取值？  
+        4. ThreadLocalMap的key被回收后，如何获取值？ 
+    2.  ThreadLocal使用  
+        1. 使用场景  
+        2. ~~ThreadLocal三大坑~~
+            1. 内存泄露
+            2. ThreadLocal无法在`父子线程（new Thread()）`之间传递。使用类InheritableThreadLocal可以在子线程中取得父线程继承下来的值。   
+            3. 线程池中线程上下文丢失。TransmittableThreadLocal是阿里巴巴开源的专门解决InheritableThreadLocal的局限性，实现线程本地变量在线程池的执行过程中，能正常的访问父线程设置的线程变量。  
+            4. 并行流中线程上下文丢失。问题同线程池中线程上下文丢失。  
+        3. ThreadLocal优化：FastThreadLocal
+
+### 1.4.3. JUC  
 
 
