@@ -1796,7 +1796,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 3. 服务器的优化。  
 
 #### 1.5.2.1. SQL分析
-1. `小结：`**<font color = "clime">SQL分析语句有profiling（`资源`）、proceduer analyse（`表结构`）、EXPLAIN与explain extended、show warnings（警告）、trace。</font>**  
+1. `小结：`**<font color = "clime">SQL分析语句有profiling（`资源`）、proceduer analyse（`表结构`）、EXPLAIN与explain extended、show warnings（警告）、trace（执行计划）。</font>**  
 1. profiling  
 &emsp; 使用profiling命令可以了解SQL语句消耗`资源`的详细信息（每个执行步骤的开销）。可以清楚了解到SQL到底慢在哪个环节。   
 2. show warnings：显示上一个语句的错误、警告以及注意。  
@@ -1806,7 +1806,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; 查看优化器如何选择执行计划，获取每个可能的索引选择的代价。  
 
 ##### 1.5.2.1.1. Expain
-&emsp; expain信息列分别是id、select_type、table、partitions、`type`、possible_keys、`key`、`key_len`、ref、`rows`、filtered、 `Extra`。  
+&emsp; expain信息列分别是id、select_type、table、partitions、`【type】`、possible_keys、`key`、`key_len`、ref、`rows`、filtered、 `【Extra】`。  
 &emsp; `⚠注：一个表的连接类型，是否使用到了索引，索引长度，扫描行数，还有额外信息。`  
 * **<font color = "clime">`type，单表的访问方法。`单表查询类型要达到range级别（只检索给定范围的行，使用一个索引来选择行，非全表扫描）。</font>**  
 * key_len表示使用的索引长度，key_len可以衡量索引的好坏。key_len越小，索引效果越好。 **<font color = "blue">可以根据key_len来判断联合索引是否生效。</font>**  
