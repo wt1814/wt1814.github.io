@@ -30,6 +30,14 @@
             - [1.4.3.3. 锁](#1433-锁)
                 - [1.4.3.3.1. ReentrantLock，重入锁](#14331-reentrantlock重入锁)
                 - [1.4.3.3.2. 读写锁](#14332-读写锁)
+            - [1.4.3.4. Atomic](#1434-atomic)
+                - [1.4.3.4.1. AtomicStampedReference与AtomicMarkableReference](#14341-atomicstampedreference与atomicmarkablereference)
+                - [1.4.3.4.2. LongAdder](#14342-longadder)
+            - [1.4.3.5. Collections](#1435-collections)
+                - [1.4.3.5.1. CopyOnWriteArrayList](#14351-copyonwritearraylist)
+                - [1.4.3.5.2. ConcurrentHashMap](#14352-concurrenthashmap)
+                - [1.4.3.5.3. BlockingQueue](#14353-blockingqueue)
+            - [1.4.3.6. tools](#1436-tools)
 
 <!-- /TOC -->
 
@@ -251,4 +259,38 @@ private final BlockingQueue<Future<V>> completionQueue;
     3. **<font color = "clime">同时允许多个乐观读和一个写线程同时进入临界资源操作，那`读取的数据可能是错的怎么办？`</font>**    
     &emsp; **<font color = "clime">`通过版本号控制。`</font>** 乐观读不能保证读取到的数据是最新的，所以`将数据读取到局部变量的时候需要通过 lock.validate(stamp) 校验是否被写线程修改过`，若是修改过则需要上悲观读锁，再重新读取数据到局部变量。`即乐观读失败后，再次使用悲观读锁。`  
 
+
+#### 1.4.3.4. Atomic
+##### 1.4.3.4.1. AtomicStampedReference与AtomicMarkableReference
+1. AtomicStampedReference每次修改都会让stamp值加1，类似于版本控制号。 
+2. **<font color = "clime">AtomicStampedReference可以知道引用变量中途被更改了几次。有时候，并不关心引用变量更改了几次，只是单纯的关心是否更改过，所以就有了AtomicMarkableReference。</font>**  
+
+##### 1.4.3.4.2. LongAdder
+1. LongAdder重要属性：有一个全局变量`volatile long base`值、父类Striped64中存在一个`volatile Cell[] cells;`数组，其长度是2的幂次方。  
+2. LongAdder原理：  
+    1. CAS操作：当并发不高的情况下都是通过CAS来直接操作base值，如果CAS失败，则针对LongAdder中的Cell[]数组中的Cell进行CAS操作，减少失败的概率。
+    2. 解决伪共享：每个Cell都使用@Contended注解进行修饰，而@Contended注解可以进行缓存行填充，从而解决伪共享问题。  
+
+
+#### 1.4.3.5. Collections  
+##### 1.4.3.5.1. CopyOnWriteArrayList
+1. CopyOnWriteArrayList  
+&emsp; CopyOnWrite，写时复制。`读操作时不加锁以保证性能不受影响。`  
+&emsp; **<font color = "clime">`写操作时加锁，复制资源的一份副本，在副本上执行写操作，写操作完成后将资源的引用指向副本。`</font>** CopyOnWriteArrayList源码中，`基于ReentrantLock保证了增加元素和删除元素动作的互斥。`   
+&emsp; **优点：** 可以对CopyOnWrite容器进行并发的读，而不需要加锁，因为当前容器不会添加任何元素。`所以CopyOnWrite容器也是一种读写分离的思想，读和写不同的容器。`  
+&emsp; **<font color = "clime">缺点：** **1.占内存（写时复制，new两个对象）；2.不能保证数据实时一致性。</font>**  
+&emsp; **使用场景：** <font color = "clime">CopyOnWrite并发容器用于读多写少的并发场景。比如白名单，黑名单，商品类目的访问和更新场景。</font>  
+
+##### 1.4.3.5.2. ConcurrentHashMap
+1. ConcurrentHashMap，JDK1.8  
+	1. put()流程  
+	2. 协助扩容  
+	&emsp; `ConcurrentHashMap并没有直接加锁，而是采用CAS实现无锁的并发同步策略，最精华的部分是它可以利用多线程来进行协同扩容。简单来说，它把Node数组当作多个线程之间共享的任务队列，然后通过维护一个指针来划分每个线程锁负责的区间，每个线程通过区间逆向遍历来实现扩容，一个已经迁移完的bucket会被替换为一个ForwardingNode节点，标记当前bucket已经被其他线程迁移完了。`   
+	3. &emsp; `ConcurrentHashMap并没有直接加锁，而是采用CAS实现无锁的并发同步策略，最精华的部分是它可以利用多线程来进行协同扩容。简单来说，它把Node数组当作多个线程之间共享的任务队列，然后通过维护一个指针来划分每个线程锁负责的区间，每个线程通过区间逆向遍历来实现扩容，一个已经迁移完的bucket会被替换为一个ForwardingNode节点，标记当前bucket已经被其他线程迁移完了。`   
+2. ConcurrentHashMap，JDK1.7  
+
+##### 1.4.3.5.3. BlockingQueue  
+
+
+#### 1.4.3.6. tools  
 
