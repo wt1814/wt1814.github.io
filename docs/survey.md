@@ -54,6 +54,9 @@
                 - [1.5.2.7.1. 分库分表](#15271-分库分表)
                 - [1.5.2.7.2. 分库分表查询](#15272-分库分表查询)
                 - [1.5.2.7.3. 数据迁移](#15273-数据迁移)
+        - [1.5.3. MySql架构](#153-mysql架构)
+            - [1.5.3.1. MySql运行流程](#1531-mysql运行流程)
+            - [1.5.3.2. Server层之binLog日志](#1532-server层之binlog日志)
 
 <!-- /TOC -->
 
@@ -377,6 +380,22 @@ private final BlockingQueue<Future<V>> completionQueue;
 ##### 1.5.2.7.3. 数据迁移  
 
 
+### 1.5.3. MySql架构
+#### 1.5.3.1. MySql运行流程
+1. MySQL整个查询执行过程，总的来说分为5个步骤。 
+3. `MySQL更新流程：`  
+    1. 事务提交前 --- **<font color = "clime">内存操作</font>** ：  
+        1. 数据加载到缓冲池buffer poll；  
+        2. `写回滚日志undo log；`  
+        3. 更新（update 语句）缓冲池数据；  
+        4. 写redo log buffer。  
+    2. 事务提交：`redo log与bin log两阶段提交。`  
+    3. 事务提交后：后台线程将buffer poll中数据落盘。  
+    ![image](http://www.wt1814.com/static/view/images/SQL/sql-174.png)  
+    ![image](http://www.wt1814.com/static/view/images/SQL/sql-183.png)  
 
+#### 1.5.3.2. Server层之binLog日志  
+1. **<font color = "clime">binlog是mysql的逻辑日志，并且由Server层进行记录，`使用任何存储引擎的mysql数据库都会记录binlog日志`。</font>**  
+2. 在实际应用中，主要用在两个场景：主从复制和数据恢复。  
 
 
