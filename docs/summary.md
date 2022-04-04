@@ -1426,10 +1426,10 @@ private final BlockingQueue<Future<V>> completionQueue;
 1. synchronized可以修饰代码块或者方法：  
     ```java
     synchronized (lock){
-        //被保护的代码块
+        // 被保护的代码块
     }
     public synchronized void method() {
-        被保护的方法
+        // 被保护的方法
     }
     ```
 2. 类锁和对象锁  
@@ -1502,7 +1502,7 @@ private final BlockingQueue<Future<V>> completionQueue;
             2. 如果对象头Mark Word中Thread Id不是当前线程ID，则`进行CAS操作，企图将当前线程ID替换进Mark Word`。如果当前对象锁状态处于匿名偏向锁状态（可偏向未锁定），则会替换成功（ **<font color = "clime">将Mark Word中的Thread id由匿名0改成当前线程ID，</font>** 在当前线程栈中找到内存地址最高的可用Lock Record，将线程ID存入）。  
             3. 如果对象锁已经被其他线程占用，则会替换失败，开始进行偏向锁撤销，`这也是偏向锁的特点，一旦出现线程竞争，就会撤销偏向锁；` 
         3. 偏向锁撤销： 
-            1. 等到安全点，检查持有偏向锁的`线程是否还存活`。如果线程还存活，则检查线程是否在执行同步代码块中的代码，如果是，则升级为轻量级锁，进行CAS竞争锁； 
+            1. 【等到安全点】，检查持有偏向锁的`线程是否还存活`。如果线程还存活，则检查线程是否在执行同步代码块中的代码，如果是，则升级为轻量级锁，进行CAS竞争锁； 
             2. `如果持有偏向锁的线程未存活，或者持有偏向锁的线程未在执行同步代码块中的代码`， **<font color = "red">则进行校验`是否允许重偏向`。</font>**   
                 1. **<font color = "clime">如果不允许重偏向，则撤销偏向锁，将Mark Word设置为无锁状态（未锁定不可偏向状态），然后升级为轻量级锁，进行CAS竞争锁；</font><font color = "blue">(偏向锁被重置为无锁状态，这种策略是为了提高获得锁和释放锁的效率。)</font>**     
                 2. 如果允许重偏向，设置为匿名偏向锁状态，CAS将偏向锁重新指向线程A（在对象头和线程栈帧的锁记录中存储当前线程ID）； 
@@ -1547,14 +1547,14 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; ThreadLocal的作用是每一个线程创建一个副本。  
 
 ###### 1.4.2.2.5.1. ThreadLocal原理
-1. ThreadLocal源码/内存模型：  
+1. ThreadLocal是如何实现线程隔离的？   
+    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-85.png)  
+    &emsp; ThreadLocal之所以能达到变量的线程隔离，其实就是每个线程都有一个自己的ThreadLocalMap对象来存储同一个threadLocal实例set的值，而`取值的时候也是根据同一个threadLocal实例去自己的ThreadLocalMap里面找，自然就互不影响了，从而达到线程隔离的目的！`  
+2. ThreadLocal源码/内存模型：  
     1. **<font color = "red">ThreadLocal的#set()、#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** 即当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
     &emsp; ~~Thread ---> ThreadLocal.ThreadLocalMap~~
     2. **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map中`Key是一个ThreadLocal实例，Value是设置的值。`ThreadLocalMap结构中Entry继承WeakReference，所以Entry对应key的引用（ThreadLocal实例）是一个弱引用，Entry对Value的引用是强引用。  
     &emsp; <font color = "clime">Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>** 一个线程可能有多个ThreadLocal实例，编码中定义多个ThreadLocal实例，即存在多个Entry的情况。    
-2. ThreadLocal是如何实现线程隔离的？   
-    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-85.png)  
-    &emsp; ThreadLocal之所以能达到变量的线程隔离，其实就是每个线程都有一个自己的ThreadLocalMap对象来存储同一个threadLocal实例set的值，而`取值的时候也是根据同一个threadLocal实例去自己的ThreadLocalMap里面找，自然就互不影响了，从而达到线程隔离的目的！`  
 3. **ThreadLocal内存泄露：**  
     &emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key（ThreadLocal实例）会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thread线程退出以后，value的强引用链条才会断掉。</font>  
     &emsp; **<font color = "clime">但如果当前线程迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value。永远无法回收，造成内存泄漏。</font>**  

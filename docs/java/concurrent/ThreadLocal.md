@@ -4,11 +4,11 @@
 
 - [1. ThreadLocal](#1-threadlocal)
     - [1.1. ThreadLocal简介](#11-threadlocal简介)
-    - [1.2. ThreadLocal源码](#12-threadlocal源码)
-        - [1.2.1. set()](#121-set)
-        - [1.2.2. ThreadLocalMap内部类](#122-threadlocalmap内部类)
-        - [1.2.3. get()](#123-get)
-    - [1.3. ThreadLocal是如何实现线程隔离的？](#13-threadlocal是如何实现线程隔离的)
+    - [1.2. ThreadLocal是如何实现线程隔离的？](#12-threadlocal是如何实现线程隔离的)
+    - [1.3. ThreadLocal源码](#13-threadlocal源码)
+        - [1.3.1. set()](#131-set)
+        - [1.3.2. ThreadLocalMap内部类](#132-threadlocalmap内部类)
+        - [1.3.3. get()](#133-get)
     - [1.4. ~~ThreadLocal内存泄露~~](#14-threadlocal内存泄露)
         - [1.4.1. ~~ThreadLocal内存模型~~](#141-threadlocal内存模型)
         - [1.4.2. ~~ThreadLocal可能的内存泄漏~~](#142-threadlocal可能的内存泄漏)
@@ -74,7 +74,16 @@ https://blog.csdn.net/qq_36744695/article/details/107945866
 * 性能开销：lock是通过时间换空间的做法；ThreadLocal是典型的通过空间换时间的做法。  
 * 当然它们的使用场景也是不同的，关键看资源是需要多线程之间共享的还是单线程内部共享的。  
 
-## 1.2. ThreadLocal源码  
+
+## 1.2. ThreadLocal是如何实现线程隔离的？  
+<!-- 
+http://www.noobyard.com/article/p-rthxinka-qa.html
+-->
+
+![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-85.png)  
+&emsp; ThreadLocal之所以能达到变量的线程隔离，其实就是每个线程都有一个自己的ThreadLocalMap对象来存储同一个threadLocal实例set的值，而取值的时候也是根据同一个threadLocal实例去自己的ThreadLocalMap里面找，自然就互不影响了，从而达到线程隔离的目的！  
+
+## 1.3. ThreadLocal源码  
 &emsp; ThreadLocal接口方法有4个。这些方法为每一个使用这个变量的线程都存有一份独立的副本，因此get总是返回由当前线程在调用set时设置的最新值。  
 
 ```java
@@ -84,7 +93,7 @@ public void remove() { }  //删除数据。将当前线程局部变量的值删�
 protected T initialValue() { } // 初始化的数据，用于子类自定义初始化值。返回该线程局部变量的初始值，该方法是一个protected的方法，显然是为了让子类覆盖而设计的。这个方法是一个延迟调用方法，在线程第1次调用get()或set(Object)时才执行，并且仅执行1次。ThreadLocal中的缺省实现直接返回一个null。
 ```
 
-### 1.2.1. set()  
+### 1.3.1. set()  
 ```java
 public void set(T value) {
     Thread t = Thread.currentThread();
@@ -148,7 +157,7 @@ ThreadLocalMap inheritableThreadLocals = null;
 &emsp; 从上面Thread类源代码可以看出Thread类中有一个threadLocals和一个inheritableThreadLocals变量，它们都是ThreadLocalMap类型的变量 <font color = "red">(ThreadLocalMap是ThreadLocal类的内部类)</font> 。即，具体的ThreadLocalMap实例并不是ThreadLocal保持，而是每个Thread持有，且不同的Thread持有不同的ThreadLocalMap实例，因此它们是不存在线程竞争的(不是一个全局的map)，另一个好处是每次线程死亡，所有map中引用到的对象都会随着这个Thread的死亡而被垃圾收集器一起收集。     
 &emsp; 默认情况下这两个变量都是null， **<font color = "red">只有当前线程调用ThreadLocal类的set或get方法时才创建它们，实际上调用这两个方法的时候，调用的是ThreadLocalMap类对应的 get()、set()方法。</font>**  
 
-### 1.2.2. ThreadLocalMap内部类
+### 1.3.2. ThreadLocalMap内部类
 &emsp; ThradLocal中内部类ThreadLocalMap：  
 <!-- https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig -->
 ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-23.png)   
@@ -162,7 +171,7 @@ ThreadLocalMap inheritableThreadLocals = null;
 ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-59.png)   
 &emsp; ⚠注： **<font color = "clime">一个线程可能存在多个ThreadLocal实例，即存在多个Entry节点。</font>**  
 
-### 1.2.3. get()  
+### 1.3.3. get()  
 &emsp; get是获取当前线程的对应的私有变量，是之前set或者通过initialValue指定的变量，其代码如下：  
 
 ```java
@@ -213,13 +222,6 @@ private T setInitialValue() {
 * 将value放入到当前线程对应的ThreadLocalMap中  
 * 如果map为空，先实例化一个map，然后赋值KV  
 
-## 1.3. ThreadLocal是如何实现线程隔离的？  
-<!-- 
-http://www.noobyard.com/article/p-rthxinka-qa.html
--->
-
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-85.png)  
-&emsp; ThreadLocal之所以能达到变量的线程隔离，其实就是每个线程都有一个自己的ThreadLocalMap对象来存储同一个threadLocal实例set的值，而取值的时候也是根据同一个threadLocal实例去自己的ThreadLocalMap里面找，自然就互不影响了，从而达到线程隔离的目的！  
 
 
 ## 1.4. ~~ThreadLocal内存泄露~~

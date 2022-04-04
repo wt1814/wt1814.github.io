@@ -191,13 +191,26 @@ private final BlockingQueue<Future<V>> completionQueue;
     2. 操作系统的内存屏障  
 4. Java解决并发安全  
     1. JMM中的happens-before原则：JSR-133内存模型 **<font color = "red">使用`happens-before`的概念来阐述操作之间的`内存可见性`。  
-    2. 内存屏障：  
+    2. 内存屏障：，禁止处理器重排序，保障缓存一致性。    
         1. JVM底层简化了内存屏障硬件指令的实现。  
         2. 内存屏障两个作用：1).保障可见性；2）.保障有序性，阻止屏障两侧的指令重排序。   
 
 #### 1.4.2.2. 并发安全解决  
-
-
-
+1. 线程安全解决方案  
+2. synchronized  
+    1. Synchronized使用  
+    2. Synchronized底层原理  
+    3. Synchronized优化
+3. Volatile  
+    1. Volatile的特性  
+    2. `Volatile底层原理（happens-before中Volatile的特殊规则）：`查看Volatile的汇编代码。  
+    3. Volatile为什么不安全（不保证原子性，线程切换）？  
+    4. volatile使用场景  
+4. ThreadLocal  
+    1. ThreadLocal原理  
+        1. ThreadLocal是如何实现线程隔离的？   
+        2. ThreadLocal源码/内存模型   
+        3. ThreadLocal内存泄露  
+        4. ThreadLocalMap的key被回收后，如何获取值？  
 
 
