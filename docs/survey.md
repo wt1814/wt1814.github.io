@@ -38,6 +38,12 @@
                 - [1.4.3.5.2. ConcurrentHashMap](#14352-concurrenthashmap)
                 - [1.4.3.5.3. BlockingQueue](#14353-blockingqueue)
             - [1.4.3.6. tools](#1436-tools)
+    - [1.5. 数据库](#15-数据库)
+        - [1.5.1. SQL优化](#151-sql优化)
+            - [1.5.1.1. SQL分析](#1511-sql分析)
+            - [1.5.1.2. SQL优化](#1512-sql优化)
+            - [1.5.1.3. 索引优化](#1513-索引优化)
+        - [1.5.2. 分布式数据库](#152-分布式数据库)
 
 <!-- /TOC -->
 
@@ -51,7 +57,6 @@
 1. SPI
 2. 泛型
     1. 为什么使用泛型？泛型的好处
-
 
 ## 1.2. 设计模式
 1. 设计原则
@@ -260,7 +265,6 @@ private final BlockingQueue<Future<V>> completionQueue;
     3. **<font color = "clime">同时允许多个乐观读和一个写线程同时进入临界资源操作，那`读取的数据可能是错的怎么办？`</font>**    
     &emsp; **<font color = "clime">`通过版本号控制。`</font>** 乐观读不能保证读取到的数据是最新的，所以`将数据读取到局部变量的时候需要通过 lock.validate(stamp) 校验是否被写线程修改过`，若是修改过则需要上悲观读锁，再重新读取数据到局部变量。`即乐观读失败后，再次使用悲观读锁。`  
 
-
 #### 1.4.3.4. Atomic
 ##### 1.4.3.4.1. AtomicStampedReference与AtomicMarkableReference
 1. AtomicStampedReference每次修改都会让stamp值加1，类似于版本控制号。 
@@ -271,7 +275,6 @@ private final BlockingQueue<Future<V>> completionQueue;
 2. LongAdder原理：  
     1. CAS操作：当并发不高的情况下都是通过CAS来直接操作base值，如果CAS失败，则针对LongAdder中的Cell[]数组中的Cell进行CAS操作，减少失败的概率。
     2. 解决伪共享：每个Cell都使用@Contended注解进行修饰，而@Contended注解可以进行缓存行填充，从而解决伪共享问题。  
-
 
 #### 1.4.3.5. Collections  
 ##### 1.4.3.5.1. CopyOnWriteArrayList
@@ -300,4 +303,22 @@ private final BlockingQueue<Future<V>> completionQueue;
     * countDown()方法调用释放锁的方法，每释放一次AQS.state减1，当AQS.state变为0时表示处于无锁状态了，就依次唤醒AQS队列中阻塞的线程来获取锁，继续执行逻辑代码。</font>  
 2. CyclicBarrier  
 3. Semaphore通常用于限制可以访问某些资源（物理或逻辑的）的线程数目。Semaphore可以用来构建一些对象池，资源池之类的，比如数据库连接池。  
+
+
+## 1.5. 数据库
+### 1.5.1. SQL优化  
+#### 1.5.1.1. SQL分析  
+
+
+
+#### 1.5.1.2. SQL优化  
+
+
+#### 1.5.1.3. 索引优化  
+
+
+### 1.5.2. 分布式数据库  
+
+
+
 
