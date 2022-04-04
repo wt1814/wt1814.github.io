@@ -304,7 +304,6 @@ private final BlockingQueue<Future<V>> completionQueue;
 2. CyclicBarrier  
 3. Semaphore通常用于限制可以访问某些资源（物理或逻辑的）的线程数目。Semaphore可以用来构建一些对象池，资源池之类的，比如数据库连接池。  
 
-
 ## 1.5. 数据库
 ### 1.5.1. SQL优化  
 #### 1.5.1.1. SQL分析  
@@ -315,12 +314,14 @@ private final BlockingQueue<Future<V>> completionQueue;
 * key_len表示使用的索引长度，key_len可以衡量索引的好坏。key_len越小，索引效果越好。 **<font color = "blue">可以根据key_len来判断联合索引是否生效。</font>**  
 * **<font color = "red">extra：额外的信息，该列包含MySQL解决查询的详细信息。注意，常见的不太友好的值，如Using filesort（外部排序）、Using temporary（使用了临时表），意思MYSQL根本不能使用索引，常出现在使用order by。</font>**  
 
-
 #### 1.5.1.2. SQL优化  
 
-
 #### 1.5.1.3. 索引优化  
-
+1. 创建索引  
+2. 索引失效
+3. 覆盖索引  
+4. 索引条件下推  
+&emsp; 索引下推简而言之就是在复合索引由于某些条件（比如 like %aa）失效的情况下，当存在失效的过滤字段在索引覆盖范围内，使用比较的方式在【不回表】的情况下进一步缩小查询的范围。其实就是对索引失效的进一步修复。 
 
 ### 1.5.2. 分布式数据库  
 
