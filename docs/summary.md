@@ -162,6 +162,7 @@
             - [1.5.4.4. InnoDB体系结构](#1544-innodb体系结构)
                 - [1.5.4.4.1. InnoDB内存结构-性能](#15441-innodb内存结构-性能)
                     - [1.5.4.4.1.1. BufferPool](#154411-bufferpool)
+                    - [1.5.4.4.3.1. BufferPool落盘表空间](#154431-bufferpool落盘表空间)
                     - [1.5.4.4.1.2. 写缓冲ChangeBuffer](#154412-写缓冲changebuffer)
                     - [1.5.4.4.1.3. AdaptiveHashIndex](#154413-adaptivehashindex)
                 - [1.5.4.4.2. InnoDB磁盘结构-可靠性](#15442-innodb磁盘结构-可靠性)
@@ -169,7 +170,6 @@
                     - [1.5.4.4.2.2. redoLog](#154422-redolog)
                     - [1.5.4.4.2.3. DoubleWrite](#154423-doublewrite)
                 - [1.5.4.4.3. ~~两阶段提交和崩溃恢复~~](#15443-两阶段提交和崩溃恢复)
-                    - [1.5.4.4.3.1. BufferPool落盘表空间](#154431-bufferpool落盘表空间)
         - [1.5.5. 索引事物锁](#155-索引事物锁)
             - [1.5.5.1. 索引底层原理](#1551-索引底层原理)
             - [1.5.5.2. ~~各种索引~~（还需要总结）](#1552-各种索引还需要总结)
@@ -2092,6 +2092,12 @@ private final BlockingQueue<Future<V>> completionQueue;
 5. **写操作：**    
 &emsp; **Buffer pool 另一个主要的功能是「加速写」，即当需要修改一个页面的时候，先将这个页面在缓冲池中进行修改，记下相关的重做日志，这个页面的修改就算已经完成了。**  
 
+
+###### 1.5.4.4.3.1. BufferPool落盘表空间
+1. 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间tablespace。表空间又由段segment，区extent，页page组成。  
+2. **<font color = "clime">相比较之下，使用独占表空间的效率以及性能会更高一点。</font>**  
+3. **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB（在操作系统中默认页大小是4KB）。</font>**  
+
 ###### 1.5.4.4.1.2. 写缓冲ChangeBuffer
 1. 在「非唯一」「普通」索引页（即非聚集索引）不在缓冲池中，对页进行了写操作， 1). 并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更， 2).`等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中`的技术。  
 2. **~~<font color = "red">如果辅助索引页已经在缓冲区了，则直接修改即可；如果不在，则先将修改保存到 Change Buffer。</font><font color = "blue">Change Buffer的数据在对应辅助索引页读取到缓冲区时合并到真正的辅助索引页中。Change Buffer 内部实现也是使用的 B+ 树。</font>~~**  
@@ -2137,11 +2143,6 @@ private final BlockingQueue<Future<V>> completionQueue;
         3. 将redolog这个事务相关的记录状态设置为commit状态。
 2. 崩溃恢复： **<font color = "red">当重启数据库实例的时候，数据库做2个阶段性操作：redo log处理，undo log及binlog 处理。在崩溃恢复中还需要回滚没有提交的事务，提交没有提交成功的事务。由于回滚操作需要undo日志的支持，undo日志的完整性和可靠性需要redo日志来保证，所以崩溃恢复`先做redo前滚，然后做undo回滚`。</font>**    
 
-###### 1.5.4.4.3.1. BufferPool落盘表空间
-1. 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间tablespace。表空间又由段segment，区extent，页page组成。  
-2. **<font color = "clime">相比较之下，使用独占表空间的效率以及性能会更高一点。</font>**  
-3. **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB（在操作系统中默认页大小是4KB）。</font>**  
-
 
 ### 1.5.5. 索引事物锁
 #### 1.5.5.1. 索引底层原理 
@@ -2181,7 +2182,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 3. ~~InnoDB索引B+tree实现过程~~  
 3. `InnoDB一棵B+树可以存放多少行数据？约2千万。`~~待总结~~ mysql系统瓶颈 
 4. 联合索引：    
-&emsp; <font color = "red">联合索引(复合索引)的底层实现？最佳左前缀原则？</font>  
+&emsp; <font color = "red">联合索引（复合索引）的底层实现？最佳左前缀原则？</font>  
 &emsp; 假设这是一个多列索引(col1, col2,col3)，对于叶子节点，是这样的：  
 ![image](http://www.wt1814.com/static/view/images/SQL/sql-186.png)  
 &emsp; 联合索引(col1, col2,col3)也是一棵B+Tree，其`非叶子节点存储的是第一个关键字的索引`，而`叶节点存储的则是三个关键字col1、col2、col3三个关键字的数据，且按照col1、col2、col3的顺序进行排序`。  
@@ -2217,7 +2218,7 @@ private final BlockingQueue<Future<V>> completionQueue;
         2. 从应用层面，通过代码判断数据库数据是否有效，然后决定回滚还是提交数据！如果在事务里故意写出违反约束的代码，一致性还是无法保证的。
 
 #### 1.5.5.4. MVCC
-1. **<font color = "clime">多版本并发控制（MVCC）是一种用来解决`（1）读-写冲突的无锁并发控制`、`（2）解决并发事务问题（脏读、~~丢失修改~~、幻读、不可重复读）`。</font>**  
+1. **<font color = "clime">多版本并发控制（MVCC）是MySql在在读取已提交、可重复读两种隔离级别解决`（1）读-写冲突的无锁并发控制`、`（2）解决并发事务问题（脏读、~~丢失修改~~、幻读、不可重复读）`。</font>**  
 2. <font color = "clime">`MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。`两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
 2. **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC。</font>**   
     * 一个是undo log，用于记录数据的变化轨迹（版本链），用于数据回滚。  
@@ -2252,10 +2253,10 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; **锁的分类：**  
     ![image](http://www.wt1814.com/static/view/images/SQL/sql-42.png)  
 
-    * 按使用方式：乐观锁、悲观锁。  
     * 锁类别：有共享锁（读锁）和排他锁（写锁）。锁类别取决于存储引擎执行的sql语句。  
-        ![image](http://www.wt1814.com/static/view/images/SQL/sql-47.png)  
     * 按粒度：锁的粒度的不同可以分为表锁、页锁、行锁。  
+    ![image](http://www.wt1814.com/static/view/images/SQL/sql-47.png)  
+    * 按使用方式（读写两步操作）：乐观锁、悲观锁。  
 2. InnoDB共有七种类型的锁：共享/排它锁、意向锁、记录锁（Record lock）、间隙锁（Gap lock）、临键锁（Next-key lock）、插入意向锁、自增锁。  
 3. 意向锁（`表级锁`）  
 	&emsp; InnoDB 存储引擎表锁：当没有对数据表中的索引数据进行查询时，会执行表锁操作。采用两种意向锁(Intention Locks)。  
