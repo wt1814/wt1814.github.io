@@ -74,6 +74,9 @@
             - [1.6.2.2. Bean生命周期](#1622-bean生命周期)
             - [1.6.2.3. 容器相关特性](#1623-容器相关特性)
         - [1.6.3. Spring AOP](#163-spring-aop)
+        - [1.6.4. Spring事务](#164-spring事务)
+        - [1.6.5. SpringMVC](#165-springmvc)
+    - [1.7. Mybatis](#17-mybatis)
 
 <!-- /TOC -->
 
@@ -524,3 +527,18 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
 
 ### 1.6.3. Spring AOP  
+1. AOP功能  
+2. AOP失效  
+3. SpringAOP解析  
+    1. **<font color = "blue">自动代理触发的时机：AspectJAnnotationAutoProxyCreator是一个后置处理器BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
+    2. **<font color = "clime">代理类的生成流程：1). `获取当前的Spring Bean适配的advisors；`2). `创建代理类`。</font>**   
+
+### 1.6.4. Spring事务  
+1. 事务属性  
+2. 事务失效  
+
+### 1.6.5. SpringMVC  
+
+## 1.7. Mybatis  
+
+
