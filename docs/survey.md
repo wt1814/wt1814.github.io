@@ -67,8 +67,13 @@
                 - [1.5.3.5.2. MySql事务](#15352-mysql事务)
                 - [1.5.3.5.3. MVCC](#15353-mvcc)
                 - [1.5.3.5.4. MySql锁](#15354-mysql锁)
-    - [Spring](#spring)
-        - [Spring IOC](#spring-ioc)
+    - [1.6. Spring](#16-spring)
+        - [1.6.1. Spring IOC](#161-spring-ioc)
+        - [1.6.2. Spring DI](#162-spring-di)
+            - [1.6.2.1. DI中循环依赖](#1621-di中循环依赖)
+            - [1.6.2.2. Bean生命周期](#1622-bean生命周期)
+            - [1.6.2.3. 容器相关特性](#1623-容器相关特性)
+        - [1.6.3. Spring AOP](#163-spring-aop)
 
 <!-- /TOC -->
 
@@ -475,12 +480,47 @@ private final BlockingQueue<Future<V>> completionQueue;
     2. 悲观锁  
 
 
-## Spring  
-### Spring IOC
+## 1.6. Spring  
+### 1.6.1. Spring IOC
 1. Spring容器就是个Map映射, IOC底层就是反射机制，AOP底层是动态代理。   
 &emsp; Spring中的IoC的实现原理就是工厂模式加反射机制。  
 2. Spring bean容器刷新的核心，12个步骤完成IoC容器的创建及初始化工作。  
 &emsp; **<font color = "blue">（⚠`利用工厂和反射创建Bean。主要包含3部分：1).容器本身--创建容器、2).容器扩展--预处理、后置处理器、3).事件，子容器，★★★实例化Bean。`）</font>**   
 
 
+### 1.6.2. Spring DI  
+1. 加载时机：SpringBean默认单例，非懒加载，即容器启动时就加载。  
+2. 加载流程：  
+    1. doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean()初始化。  
 
+#### 1.6.2.1. DI中循环依赖  
+
+
+#### 1.6.2.2. Bean生命周期  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-10.png)  
+&emsp; SpringBean的生命周期主要有4个阶段：  
+1. 实例化（Instantiation），可以理解为new一个对象；
+2. 属性赋值（Populate），可以理解为调用setter方法完成属性注入；
+3. 初始化（Initialization），包含：  
+    * 激活Aware方法  
+    * 【前置处理】  
+    * 激活自定义的init方法 
+    * 【后置处理】 
+4. 销毁（Destruction）---注册Destruction回调函数。 
+
+
+#### 1.6.2.3. 容器相关特性  
+1. FactoryBean  
+2. Spring可二次开发常用接口（扩展性） 
+    &emsp; Spring为了用户的开发方便和特性支持，开放了一些特殊接口和类，用户可进行实现或者继承，常见的有：  
+
+    &emsp; **Spring IOC阶段：**  
+    &emsp; [事件多播器](/docs/SSM/Spring/feature/EventMulticaster.md)  
+    &emsp; [事件](/docs/SSM/Spring/feature/Event.md)  
+
+    &emsp; **Spring DI阶段：**  
+    &emsp; [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
+    &emsp; [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
+    &emsp; [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
+
+### 1.6.3. Spring AOP  
