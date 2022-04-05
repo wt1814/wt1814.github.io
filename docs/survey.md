@@ -540,5 +540,8 @@ private final BlockingQueue<Future<V>> completionQueue;
 ### 1.6.5. SpringMVC  
 
 ## 1.7. Mybatis  
-
+1. Mybatis的功能架构分为三层：API接口层、核心处理层、基础支持层。  
+2. Mybatis Sql执行流程。  
+3. Mapper接口动态代理类的生成。  
+4. Mybaits插件的实现主要用了拦截器、责任链和动态代理。 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。 
 
