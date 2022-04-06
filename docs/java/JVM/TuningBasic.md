@@ -54,6 +54,9 @@
 
 <!-- 
 
+★★★jvm指令与工具jstat/jstack/jmap/jconsole/jps/visualVM
+https://www.bilibili.com/video/BV1QJ411P78Q?spm_id_from=333.999.0.0
+
 6 款 Java 8 自带工具，轻松分析定位 JVM 问题！ 
 https://mp.weixin.qq.com/s/YuML5GfzRhq5YBfIPXgbYg
 -->
