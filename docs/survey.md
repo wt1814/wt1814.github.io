@@ -78,6 +78,13 @@
         - [1.6.5. SpringMVC](#165-springmvc)
     - [1.7. Mybatis](#17-mybatis)
     - [1.8. SpringBoot](#18-springboot)
+    - [Spring Cloud](#spring-cloud)
+        - [Zuul](#zuul)
+        - [Hytrix](#hytrix)
+    - [Dubbo](#dubbo)
+        - [Dubbo和Spring Cloud](#dubbo和spring-cloud)
+        - [Dubbo](#dubbo-1)
+    - [Zookeeper](#zookeeper)
 
 <!-- /TOC -->
 
@@ -573,6 +580,53 @@ private final BlockingQueue<Future<V>> completionQueue;
     // 12）完成容器的刷新工作，并且调用生命周期处理器的onRefresh()方法，并且发布ContextRefreshedEvent事件
     ```
 3. SpringBoot自动配置  
-
+    1. 启动对象的注入  
+    2. 自动装配入口  
 4. 内置Tomcat  
 
+## Spring Cloud
+&emsp; **<font color = "clime">Spring Cloud各组件运行流程：</font>**  
+1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关（Zuul）来访问内部服务。客户端的请求首先经过负载均衡（Ngnix），再到达服务网关（Zuul集群）；  
+2. 网关接收到请求后，从注册中心（Eureka）获取可用服务；  
+3. 由Ribbon进行负载均衡后，分发到后端的具体实例；  
+4. 微服务之间也可通过Feign进行通信处理业务；  
+5. Hystrix负责处理服务超时熔断；Hystrix dashboard，Turbine负责监控Hystrix的熔断情况，并给予图形化的展示；  
+6. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
+
+
+### Zuul  
+&emsp; **<font color = "red">Zuul提供了四种过滤器的API，分别为前置（Pre）、路由（Route）、后置（Post）和错误（Error）四种处理方式。</font>**  
+
+### Hytrix  
+1. 服务雪崩  
+2. 熔断是一种降级策略。Hystrix中有三种降级方案(fallback，回退方案/降级处理方案)。  
+3. <font color = "clime">熔断的对象是服务之间的请求；`1).熔断策略会根据请求的数量（资源）分为信号量和线程池，2).还有请求的时间（即超时熔断），3).请求错误率（即熔断触发降级）。`</font>  
+&emsp; 信号量隔离：  
+![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-8.png)  
+
+
+## Dubbo  
+### Dubbo和Spring Cloud  
+1. 两个框架在开始目标就不一致：Dubbo定位服务治理；Spirng Cloud是一个生态。  
+2. Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。而SpringCloud是基于Http协议+Rest接口调用远程过程的通信。  
+
+### Dubbo  
+1. Dubbo分层  
+2. RPC层包含配置层config、代理层proxy、服务注册层register、路由层cluster、监控层monitor、远程调用层protocol。`⚠️dubbo远程调用可以分为2步：1.Invoker的生成；2.代理的生成。`      
+    1. **<font color = "red">`服务代理层proxy`：服务接口透明代理，生成服务的客户端Stub和服务器端Skeleton，以ServiceProxy为中心，扩展接口为ProxyFactory。</font>**  
+    &emsp; **<font color = "red">Proxy层封装了所有接口的透明化代理，而在其它层都以Invoker为中心，</font><font color = "blue">只有到了暴露给用户使用时，才用Proxy将Invoker转成接口，或将接口实现转成 Invoker，也就是去掉Proxy层RPC是可以Run的，只是不那么透明，不那么看起来像调本地服务一样调远程服务。</font>**  
+    &emsp; dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级......  
+    2. **<font color = "red">`远程调用层protocol`：封装RPC调用，以Invocation, Result为中心，扩展接口为Protocol, Invoker, Exporter。</font>**  
+3. 服务提供者暴露服务的主过程：  
+    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-29.png)   
+    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-53.png)   
+    服务代理层proxy生成Invoker，远程调用层protocol通过Protocol协议类的export方法暴露服务。  
+
+## Zookeeper  
+1. ZK服务端  
+    1. ZK服务端通过ZAB协议保证数据顺序一致性。消息广播（数据读写流程）和崩溃恢复。  
+    2. 数据一致性  
+2. ZK客户端  
+    1. zookeeper引入了watcher机制来实现客户端和服务端的发布/订阅功能。 
+3. ZK应用场景：统一命名服务，生成分布式ID、分布式锁、队列管理、元数据/配置信息管理，数据发布/订阅、分布式协调、集群管理，HA高可用性。  
+4. ZK羊群效应  

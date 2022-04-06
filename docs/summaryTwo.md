@@ -792,8 +792,8 @@
 
 ## 1.7. SpringCloud
 &emsp; **<font color = "clime">Spring Cloud各组件运行流程：</font>**  
-1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关(Zuul)来访问内部服务。客户端的请求首先经过负载均衡(Ngnix)，再到达服务网关(Zuul集群)；  
-2. 网关接收到请求后，从注册中心(Eureka)获取可用服务；  
+1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关（Zuul）来访问内部服务。客户端的请求首先经过负载均衡（Ngnix），再到达服务网关（Zuul集群）；  
+2. 网关接收到请求后，从注册中心（Eureka）获取可用服务；  
 3. 由Ribbon进行负载均衡后，分发到后端的具体实例；  
 4. 微服务之间也可通过Feign进行通信处理业务；  
 5. Hystrix负责处理服务超时熔断；Hystrix dashboard，Turbine负责监控Hystrix的熔断情况，并给予图形化的展示；  
@@ -927,7 +927,6 @@
         2. 数据序列化层：可复用的一些工具，扩展接口为Serialization, ObjectInput, ObjectOutput, ThreadPool。  
 2. ~~总体调用过程~~  
 
-
 2. **<font color = "red">为什么要通过代理对象通信？</font>**    
     &emsp; dubbo实现接口的`透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法`，同时还可以通过代理实现一些其他的策略，比如：  
     1. 调用的负载均衡策略  
@@ -948,7 +947,7 @@
         1. 本地各种协议暴露。  
         2. 注册中心暴露。  
     4. 如果通过注册中心暴露服务，RegistryProtocol保存URL地址和invoker的映射关系，同时注册到服务中心。  
-3. **服务消费者引用服务的主过程：** `与服务暴露相反` 
+3. **服务消费者引用服务的主过程：** `与服务暴露相反`  
     ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-30.png)   
     ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-54.png)   
     1. ReferenceConfig解析引用的服务。  
@@ -1022,7 +1021,7 @@
     * 如果是写请求，那么请求会被转发给 leader 提交事务，然后leader会广播事务，只要有超过半数节点写入成功，那么写请求就会被提交。   
     &emsp; ⚠️注：leader向follower写数据详细流程：类2pc(两阶段提交)。  
 2. 数据一致性  
-    &emsp; **<font color = "red">Zookeeper保证的是CP，即一致性(Consistency)和分区容错性(Partition-Tolerance)，而牺牲了部分可用性(Available)。</font>**  
+    &emsp; **<font color = "red">Zookeeper保证的是CP，即一致性（Consistency）和分区容错性（Partition-Tolerance），而牺牲了部分可用性（Available）。</font>**  
     * 为什么不满足AP模型？<font color = "red">zookeeper在选举leader时，会停止服务，直到选举成功之后才会再次对外提供服务。</font>
     * Zookeeper的CP模型：非强一致性， **<font color = "clime">而是单调一致性/顺序一致性。</font>**  
         1. <font color = "clime">假设有2n+1个server，在同步流程中，leader向follower同步数据，`当同步完成的follower数量大于n+1时同步流程结束，系统可接受client的连接请求。`</font><font color = "red">`如果client连接的并非同步完成的follower，那么得到的并非最新数据，但可以保证单调性。`</font> 未同步数据的情况，Zookeeper提供了同步机制（可选型），类似回调。   
@@ -1033,7 +1032,7 @@
     * 观察者Observer：与Follower不同的是不参与Leader选举。  
 2. **<font color = "clime">崩溃恢复</font>**  
     * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch) ---> 接受投票 ---> 处理投票(epoch>ZXID>myid) ---> 统计投票 ---> 改变服务器状态。</font>  
-        4. 统计投票。每次投票后，服务器都会统计投票信息，判断是否已经有过半机器接受到相同的投票信息，对于 Server1、 Server2 而言，都统计出集群中已经有两台机器接受了(2, 0)的投票信息，此时便认为已经选出了 Leader。  
+        4. 统计投票。每次投票后，服务器都会统计投票信息，判断是否已经有过半机器接受到相同的投票信息，对于 Server1、Server2 而言，都统计出集群中已经有两台机器接受了(2, 0)的投票信息，此时便认为已经选出了 Leader。  
         5. 改变服务器状态。一旦确定了 Leader，每个服务器就会更新自己的状态，如果是 Follower，那么就变更为 FOLLOWING，如果是 Leader，就变更为 LEADING。  
     * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态。
 2. 服务端脑裂：过半机制，要求集群内的节点数量为2N+1。  
