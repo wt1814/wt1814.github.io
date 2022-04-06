@@ -77,6 +77,7 @@
         - [1.6.4. Spring事务](#164-spring事务)
         - [1.6.5. SpringMVC](#165-springmvc)
     - [1.7. Mybatis](#17-mybatis)
+    - [1.8. SpringBoot](#18-springboot)
 
 <!-- /TOC -->
 
@@ -544,4 +545,34 @@ private final BlockingQueue<Future<V>> completionQueue;
 2. Mybatis Sql执行流程。  
 3. Mapper接口动态代理类的生成。  
 4. Mybaits插件的实现主要用了拦截器、责任链和动态代理。 动态代理可以对SQL语句执行过程中的某一点进行拦截，当配置多个插件时，责任链模式可以进行多次拦截。 
+
+
+## 1.8. SpringBoot
+1. SpringBoot特点  
+2. SpringBoot启动流程  
+    1. 创建SpringApplication对象；  
+        1. 构造过程一般是对构造函数的一些成员属性赋值，做一些初始化工作。SpringApplication有6个属性：资源加载器、资源类集合、应用类型、4).初始化器、5).监听器、包含main函数的主类。  
+        2. SpringApplication初始化中第4步和第5步都是利用SpringBoot的SPI机制来加载扩展实现类。  
+    2. 运行run()方法，分3步：创建 ---> 刷新 ---> 刷新后的后置处理   
+    ![image](http://www.wt1814.com/static/view/images/microService/boot/boot-9.png)  
+    ```text
+    // 【7】刷新容器，IOC 容器初始化（如果是 Web 应用还会创建嵌入式的 Tomcat），扫描、创建、加载所有组件
+    // 1）在context刷新前做一些准备工作，比如初始化一些属性设置，属性合法性校验和保存容器中的一些早期事件等；
+    // 2）让子类刷新其内部bean factory,注意SpringBoot和Spring启动的情况执行逻辑不一样
+    // 3）对bean factory进行配置，比如配置bean factory的类加载器，后置处理器等
+    // 4）完成bean factory的准备工作后，此时执行一些后置处理逻辑，子类通过重写这个方法来在BeanFactory创建并预准备完成以后做进一步的设置
+    // 在这一步，所有的bean definitions将会被加载，但此时bean还不会被实例化
+    // 5）执行BeanFactoryPostProcessor的方法即调用bean factory的后置处理器：
+    // BeanDefinitionRegistryPostProcessor（触发时机：bean定义注册之前）和BeanFactoryPostProcessor（触发时机：bean定义注册之后bean实例化之前）
+    // 6）注册bean的后置处理器BeanPostProcessor，注意不同接口类型的BeanPostProcessor；在Bean创建前后的执行时机是不一样的
+    // 7）初始化国际化MessageSource相关的组件，比如消息绑定，消息解析等
+    // 8）初始化事件广播器，如果bean factory没有包含事件广播器，那么new一个SimpleApplicationEventMulticaster广播器对象并注册到bean factory中
+    // 9）AbstractApplicationContext定义了一个模板方法onRefresh，留给子类覆写，比如ServletWebServerApplicationContext覆写了该方法来创建内嵌的tomcat容器
+    // 10）注册实现了ApplicationListener接口的监听器，之前已经有了事件广播器，此时就可以派发一些early application events
+    // 11）完成容器bean factory的初始化，并初始化所有剩余的单例bean。这一步非常重要，一些bean postprocessor会在这里调用。
+    // 12）完成容器的刷新工作，并且调用生命周期处理器的onRefresh()方法，并且发布ContextRefreshedEvent事件
+    ```
+3. SpringBoot自动配置  
+
+4. 内置Tomcat  
 
