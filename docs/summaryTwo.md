@@ -1499,6 +1499,7 @@ update product set name = 'TXC' where id = 1;
 
 ### 1.12.2. 数据结构：bitMap、布隆、布谷鸟
 #### 1.12.2.1. bitMap
+&emsp; [BitMap实现签到](/docs/microService/Redis/BitMap.md)  
 
 #### 1.12.2.2. 布隆
 &emsp; BloomFilter是由一个固定大小的二进制向量或者位图(bitmap)和一系列(通常好几个)映射函数组成的。  
