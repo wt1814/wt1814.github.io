@@ -78,13 +78,22 @@
         - [1.6.5. SpringMVC](#165-springmvc)
     - [1.7. Mybatis](#17-mybatis)
     - [1.8. SpringBoot](#18-springboot)
-    - [Spring Cloud](#spring-cloud)
-        - [Zuul](#zuul)
-        - [Hytrix](#hytrix)
-    - [Dubbo](#dubbo)
-        - [Dubbo和Spring Cloud](#dubbo和spring-cloud)
-        - [Dubbo](#dubbo-1)
-    - [Zookeeper](#zookeeper)
+    - [1.9. Spring Cloud](#19-spring-cloud)
+        - [1.9.1. Zuul](#191-zuul)
+        - [1.9.2. Hytrix](#192-hytrix)
+    - [1.10. Dubbo](#110-dubbo)
+        - [1.10.1. Dubbo和Spring Cloud](#1101-dubbo和spring-cloud)
+        - [1.10.2. Dubbo](#1102-dubbo)
+    - [1.11. Zookeeper](#111-zookeeper)
+    - [1.12. 分布式](#112-分布式)
+        - [1.12.1. CAP](#1121-cap)
+        - [1.12.2. 分布式ID](#1122-分布式id)
+        - [1.12.3. 分布式事务](#1123-分布式事务)
+            - [1.12.3.1. PC](#11231-pc)
+            - [1.12.3.2. PC](#11232-pc)
+            - [1.12.3.3. TCC](#11233-tcc)
+            - [1.12.3.4. saga](#11234-saga)
+            - [1.12.3.5. 消息模式，异步方式](#11235-消息模式异步方式)
 
 <!-- /TOC -->
 
@@ -584,7 +593,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     2. 自动装配入口  
 4. 内置Tomcat  
 
-## Spring Cloud
+## 1.9. Spring Cloud
 &emsp; **<font color = "clime">Spring Cloud各组件运行流程：</font>**  
 1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关（Zuul）来访问内部服务。客户端的请求首先经过负载均衡（Ngnix），再到达服务网关（Zuul集群）；  
 2. 网关接收到请求后，从注册中心（Eureka）获取可用服务；  
@@ -594,10 +603,10 @@ private final BlockingQueue<Future<V>> completionQueue;
 6. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
 
 
-### Zuul  
+### 1.9.1. Zuul  
 &emsp; **<font color = "red">Zuul提供了四种过滤器的API，分别为前置（Pre）、路由（Route）、后置（Post）和错误（Error）四种处理方式。</font>**  
 
-### Hytrix  
+### 1.9.2. Hytrix  
 1. 服务雪崩  
 2. 熔断是一种降级策略。Hystrix中有三种降级方案(fallback，回退方案/降级处理方案)。  
 3. <font color = "clime">熔断的对象是服务之间的请求；`1).熔断策略会根据请求的数量（资源）分为信号量和线程池，2).还有请求的时间（即超时熔断），3).请求错误率（即熔断触发降级）。`</font>  
@@ -605,12 +614,12 @@ private final BlockingQueue<Future<V>> completionQueue;
 ![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-8.png)  
 
 
-## Dubbo  
-### Dubbo和Spring Cloud  
+## 1.10. Dubbo  
+### 1.10.1. Dubbo和Spring Cloud  
 1. 两个框架在开始目标就不一致：Dubbo定位服务治理；Spirng Cloud是一个生态。  
 2. Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。而SpringCloud是基于Http协议+Rest接口调用远程过程的通信。  
 
-### Dubbo  
+### 1.10.2. Dubbo  
 1. Dubbo分层  
 2. RPC层包含配置层config、代理层proxy、服务注册层register、路由层cluster、监控层monitor、远程调用层protocol。`⚠️dubbo远程调用可以分为2步：1.Invoker的生成；2.代理的生成。`      
     1. **<font color = "red">`服务代理层proxy`：服务接口透明代理，生成服务的客户端Stub和服务器端Skeleton，以ServiceProxy为中心，扩展接口为ProxyFactory。</font>**  
@@ -622,7 +631,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-53.png)   
     服务代理层proxy生成Invoker，远程调用层protocol通过Protocol协议类的export方法暴露服务。  
 
-## Zookeeper  
+## 1.11. Zookeeper  
 1. ZK服务端  
     1. ZK服务端通过ZAB协议保证数据顺序一致性。消息广播（数据读写流程）和崩溃恢复。  
     2. 数据一致性  
@@ -630,3 +639,40 @@ private final BlockingQueue<Future<V>> completionQueue;
     1. zookeeper引入了watcher机制来实现客户端和服务端的发布/订阅功能。 
 3. ZK应用场景：统一命名服务，生成分布式ID、分布式锁、队列管理、元数据/配置信息管理，数据发布/订阅、分布式协调、集群管理，HA高可用性。  
 4. ZK羊群效应  
+
+## 1.12. 分布式  
+### 1.12.1. CAP  
+
+### 1.12.2. 分布式ID  
+
+### 1.12.3. 分布式事务  
+#### 1.12.3.1. PC  
+1. 流程：  
+    1). 执行事务，但不提交事务。  
+2. 二阶段提交问题： 
+    1). 正常运行：同步阻塞问题。2).丢失消息导致的数据不一致问题。 3).单点故障问题。 4). 二阶段无法解决的问题：协调者和参与者同时宕机。   
+
+#### 1.12.3.2. PC  
+1. 流程：3PC也就是多了一个阶段（一个询问的阶段），分别是准备、预提交和提交这三个阶段。  
+2. 特点：  
+    1. 【超时机制】也降低了参与者的阻塞范围，因为参与者不会一直持有事务资源并处于阻塞状态。  
+    2. 解决单点故障问题。  
+    3. 数据不一致问题依然存在。  
+
+#### 1.12.3.3. TCC  
+1. TCC是一种业务层面或者是应用层的两阶段、【补偿型】的事务。  
+2. TCC是Try（检测及资源锁定或者预留）、Commit（确认）、Cancel（取消）的缩写，业务层面需要写对应的三个方法。  
+3. TCC问题：  
+    1. 允许空回滚  
+    2. 接口幂等  
+    3. 防止资源悬挂  
+
+
+#### 1.12.3.4. saga  
+
+
+#### 1.12.3.5. 消息模式，异步方式  
+
+
+
+

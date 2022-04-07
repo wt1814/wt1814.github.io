@@ -258,6 +258,7 @@
 &emsp; [索引优化](/docs/SQL/index.md)  
 &emsp; [优化案例](/docs/SQL/case.md)  
 &emsp; [碎片优化](/docs/SQL/Fragment.md)  
+&emsp; [Mysql重要配置参数](/docs/SQL/mysqlConfiguration.md)  
 [数据库分布式](/docs/SQL/DistributedDatabase.md)  
 &emsp; [大数据量操作](/docs/SQL/largeData.md)  
 &emsp; [MySql瓶颈](/docs/SQL/Bottleneck.md)  
