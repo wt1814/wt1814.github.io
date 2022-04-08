@@ -102,7 +102,12 @@
             - [1.12.4.3. ZK分布式锁](#11243-zk分布式锁)
             - [1.12.4.4. MySql分布式锁](#11244-mysql分布式锁)
             - [1.12.4.5. 分布式锁选型（各种锁的对比）](#11245-分布式锁选型各种锁的对比)
-    - [并发系统三高](#并发系统三高)
+    - [1.13. 并发系统三高](#113-并发系统三高)
+    - [Redis](#redis)
+        - [Redis数据类型](#redis数据类型)
+        - [数据结构](#数据结构)
+        - [Redis原理](#redis原理)
+            - [Redis内存操作](#redis内存操作)
 
 <!-- /TOC -->
 
@@ -718,9 +723,60 @@ private final BlockingQueue<Future<V>> completionQueue;
 #### 1.12.4.5. 分布式锁选型（各种锁的对比）
 
 
-## 并发系统三高  
+## 1.13. 并发系统三高  
 &emsp; 三高：高性能、高可用，以及高可扩展。  
 
 
 &emsp; 从架构视角来看，<font color = "red">`★★★秒杀系统本质是一个（分布式）高一致、（高并发）高性能、（高并发）高可用的三高系统。`</font>  
+
+## Redis
+### Redis数据类型  
+1. Redis各个数据类型的使用场景：分析存储类型和可用的操作。  
+2. Redis扩展数据类型  
+&emsp; Bitmap：二值状态统计。常用场景：用户签到、统计活跃用户、用户在线状态。  
+&emsp; HyperLogLog用于基数统计，例如UV（独立访客数）。  
+3. redis Big key问题：  
+    1. bigKey如何发现？
+    2. 如何删除：Redis4.0支持异步删除。  
+    3. 如何优化：1). 拆分；2). 本地缓存。  
+
+### 数据结构  
+1. 底层数据结构  
+    1. 3种链表：双端链表LinkedList、压缩列表Ziplist、快速列表Quicklist。  
+    2. 整数集合  
+    3. 跳跃表  
+2. SDS详解    
+    1. 属性  
+    2. 字符串追加操作 
+    3. Redis字符串的性能优势：动态扩展、避免缓冲区溢出、内存分配优化（空间预分配、惰性空间回收）。 
+3. Dictht   
+    1. rehash
+    2. 渐进式rehash  
+4. 数据类型  
+    &emsp; **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**  
+    ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-106.png)  
+
+### Redis原理  
+&emsp; Redis的性能非常之高，每秒可以承受10W+的QPS，它如此优秀的性能主要取决于以下几个方面：  
+
+1. 磁盘I/O：
+    * 纯内存操作
+    * [虚拟内存机制](/docs/microService/Redis/RedisVM.md)  
+    * 合理的数据编码
+2. ~~网络I/O：~~  
+    * [Reids事件/使用IO多路复用技术Reactor](/docs/microService/Redis/RedisEvent.md)  
+    * [合理的线程模型](/docs/microService/Redis/RedisMultiThread.md)  
+    &emsp; 4核的机器建议设置为2或3个线程，8核的建议设置为6个线程， **<font color = "clime">`线程数一定要小于机器核数，尽量不超过8个。`</font>**    
+    * [简单快速的Redis协议](/docs/microService/Redis/RESP.md)  
+3. ......  
+
+#### Redis内存操作 
+1. Redis过期键的删除  
+2. Redis内存淘汰  
+    1. Redis内存淘汰算法  
+    2. Redis内存淘汰策略  
+
+
+
+
 

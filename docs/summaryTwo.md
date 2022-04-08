@@ -1494,8 +1494,7 @@ update product set name = 'TXC' where id = 1;
     2. `先更新数据库，再删除缓存，非原子操作。可以采用双删延迟策略，进行兜底，补偿方案。` **<font color = "clime">第二次删除前线程休眠冗余的读写时间，如果读从库，再加上延迟时间。</font>**  
     3. `采用`延时删除`策略中的问题：`  
         * **<font color = "clime">同步方式会降低吞吐量，可以采用异步，即异步延时删除。</font>**  
-        * **<font color = "clime">第二次删除可能失败，提供一个保障的重试机制。</font>** 方案一：采用消息队列，缺点对业务线代码造成大量的侵入；方案二：订阅binlog，订阅程序提取出所需要的数据以及key，另起一段非业务代码，获得该信息，尝试删除缓存操作，发现删除失败，将这些信息发送至消息队列，重新从消息队列中获得该数据，重试操作。
-
+        * **<font color = "clime">第二次删除可能失败，提供一个保障的重试机制。</font>** 方案一：采用消息队列，缺点对业务线代码造成大量的侵入；方案二：订阅binlog，订阅程序提取出所需要的数据以及key，另起一段非业务代码，获得该信息，尝试删除缓存操作，发现删除失败，将这些信息发送至消息队列，重新从消息队列中获得该数据，重试操作。  
 
 ### 1.12.2. 数据结构：bitMap、布隆、布谷鸟
 #### 1.12.2.1. bitMap
@@ -1554,7 +1553,7 @@ update product set name = 'TXC' where id = 1;
     &emsp; 这个方案也很简单。不要让key走到同一台redis上不就行了。把这个key，在多个redis上都存一份不就好了。接下来，有热key请求进来的时候，就在有备份的redis上随机选取一台，进行访问取值，返回数据。  
     &emsp; 假设redis的集群数量为N，步骤如下图所示  
     ![image](http://www.wt1814.com/static/view/images/microService/problems/problem-71.png)  
-    &emsp; 注:不一定是2N，你想取3N，4N都可以，看要求。  
+    &emsp; 注：不一定是2N，你想取3N，4N都可以，看要求。  
     &emsp; 伪代码如下  
 
     ```text
@@ -1696,7 +1695,7 @@ update product set name = 'TXC' where id = 1;
 ##### 1.12.3.2.3. Redis事件/Reactor
 &emsp; 参考[Redis事件/Reactor](/docs/microService/Redis/RedisEvent.md)  
 &emsp; Redis基于Reactor模式开发了自己的网络事件处理器：这个处理器被称为文件事件处理器（file event handler）：文件事件处理器使用I/O多路复用（multiplexing）程序来同时监听多个套接字，并根据套接字目前执行的任务来为套接字关联不同的事件处理器。  
-&emsp; 下图展示了文件事件处理器的四个组成部分，它们分别是套接字、I/O多路复用程序、文件事件分派器(dispatcher)，以及事件处理器。  
+&emsp; 下图展示了文件事件处理器的四个组成部分，它们分别是套接字、I/O多路复用程序、文件事件分派器（dispatcher），以及事件处理器。  
 ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-56.png)    
 
 ##### 1.12.3.2.4. Redis多线程模型
