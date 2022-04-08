@@ -103,11 +103,14 @@
             - [1.12.4.4. MySql分布式锁](#11244-mysql分布式锁)
             - [1.12.4.5. 分布式锁选型（各种锁的对比）](#11245-分布式锁选型各种锁的对比)
     - [1.13. 并发系统三高](#113-并发系统三高)
-    - [Redis](#redis)
-        - [Redis数据类型](#redis数据类型)
-        - [数据结构](#数据结构)
-        - [Redis原理](#redis原理)
-            - [Redis内存操作](#redis内存操作)
+    - [1.14. Redis](#114-redis)
+        - [1.14.1. Redis数据类型](#1141-redis数据类型)
+        - [1.14.2. 数据结构](#1142-数据结构)
+        - [1.14.3. Redis原理](#1143-redis原理)
+            - [1.14.3.1. Redis内存操作](#11431-redis内存操作)
+        - [1.14.4. Redis内置功能](#1144-redis内置功能)
+        - [1.14.5. Redis高可用](#1145-redis高可用)
+        - [1.14.6. Redis常见问题与优化](#1146-redis常见问题与优化)
 
 <!-- /TOC -->
 
@@ -729,8 +732,8 @@ private final BlockingQueue<Future<V>> completionQueue;
 
 &emsp; 从架构视角来看，<font color = "red">`★★★秒杀系统本质是一个（分布式）高一致、（高并发）高性能、（高并发）高可用的三高系统。`</font>  
 
-## Redis
-### Redis数据类型  
+## 1.14. Redis
+### 1.14.1. Redis数据类型  
 1. Redis各个数据类型的使用场景：分析存储类型和可用的操作。  
 2. Redis扩展数据类型  
 &emsp; Bitmap：二值状态统计。常用场景：用户签到、统计活跃用户、用户在线状态。  
@@ -740,7 +743,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     2. 如何删除：Redis4.0支持异步删除。  
     3. 如何优化：1). 拆分；2). 本地缓存。  
 
-### 数据结构  
+### 1.14.2. 数据结构  
 1. 底层数据结构  
     1. 3种链表：双端链表LinkedList、压缩列表Ziplist、快速列表Quicklist。  
     2. 整数集合  
@@ -756,7 +759,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**  
     ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-106.png)  
 
-### Redis原理  
+### 1.14.3. Redis原理  
 &emsp; Redis的性能非常之高，每秒可以承受10W+的QPS，它如此优秀的性能主要取决于以下几个方面：  
 
 1. 磁盘I/O：
@@ -770,12 +773,45 @@ private final BlockingQueue<Future<V>> completionQueue;
     * [简单快速的Redis协议](/docs/microService/Redis/RESP.md)  
 3. ......  
 
-#### Redis内存操作 
+#### 1.14.3.1. Redis内存操作 
 1. Redis过期键的删除  
 2. Redis内存淘汰  
     1. Redis内存淘汰算法  
     2. Redis内存淘汰策略  
+3. Redis持久化  
+    1. RDB  
+        1. bgsave 命令创建一个子进程，会有阻塞。  
+    2. AOF  
+        1. 写后日志  
+        2. AOF流程重写阻塞。  
+        3. 重写后的日志文件变小，降低了文件占用空间，除此之外，另一个目的是：更小的AOF 文件可以更快地被Redis加载。 
+    3. AOF重写阻塞详解  
 
+### 1.14.4. Redis内置功能  
+1. Redis事务  
+2. Redis和Lua  
+3. RedisPipeline/批处理  
+4. Redis实现消息队列  
+
+### 1.14.5. Redis高可用  
+1. Redis主从复制  
+2. Redis读写分离  
+3. Redis哨兵模式  
+4. Redis集群模式  
+    1. **<font color = "red">根据执行分片的位置，可以分为三种分片方式：</font>** 客户端分片、代理分片、服务器分片：官方Redis Cluster。  
+    2. Redis集群的服务端  
+        1. 数据分布  
+        2. 集群限制  
+        3. 故障转移  
+    3. Redis集群的客户端  
+        1. 采用客户端直连节点的方式。  
+        2. 请求重定向  
+        3. ASK重定向  
+        
+### 1.14.6. Redis常见问题与优化
+    
+
+    
 
 
 
