@@ -57,6 +57,7 @@
                 - [1.3.4.2.2. 对象生命周期](#13422-对象生命周期)
                 - [1.3.4.2.3. 对象大小](#13423-对象大小)
             - [1.3.4.3. 内存泄露](#1343-内存泄露)
+            - [JVM参数配置](#jvm参数配置)
         - [1.3.5. JVM执行](#135-jvm执行)
         - [1.3.6. GC](#136-gc)
             - [1.3.6.1. GC-回收位置/安全点](#1361-gc-回收位置安全点)
@@ -828,6 +829,12 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; **<font color = "red">其实发生OOM的线程一般情况下会死亡，也就是会被终结掉，该线程持有的对象占用的heap都会被gc了，释放内存。</font><font color = "clime">因为`发生OOM之前要进行gc，就算其他线程能够正常工作，也会因为频繁gc产生较大的影响。`</font>**  
 3. `~~堆外内存泄漏~~`
 
+
+#### JVM参数配置  
+&emsp; 8g的机器一般分配一半的最大内存就可以了，因为机器本上还要占用一定内存。    
+&emsp; 设置3g的新生代内存空间。  
+
+
 ### 1.3.5. JVM执行
 &emsp; ...
 
@@ -933,7 +940,6 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 &emsp; 加上`int replacer = 1;`和将placeHolder赋值为null起到了同样的作用：断开堆中placeHolder和栈的联系，让GC判断placeHolder已经死亡。    
 &emsp; `“不使用的对象应手动赋值为null”的原理，一切根源都是来自于JVM的一个“bug”：代码离开变量作用域时，并不会自动切断其与堆的联系。`    
 
-
 #### 1.3.6.4. GC-垃圾回收器
 ##### 1.3.6.4.1. 垃圾回收器
 1. 根据收集器的指标（性能考虑因素）分类（`两个关键指标，停顿时间和吞吐量`）：  
@@ -1033,6 +1039,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     |-XX：MaxPermGen|用于设置Perm Gen的最大尺寸|
     |-XX：SurvivorRatio|提供Eden区域的比例|
     |-XX：NewRatio|用于提供老年代/新生代大小的比例，默认值为2|
+
+&emsp; 8g的机器一般分配一半的最大内存就可以了，因为机器本上还要占用一定内存。    
+&emsp; 设置3g的新生代内存空间。  
+
 2. JVM命令行调优工具：  
     * Jps：虚拟机进程状况工具。  
     * Jstack：java线程堆栈跟踪工具。  

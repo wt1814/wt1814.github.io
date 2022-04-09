@@ -87,6 +87,7 @@
         * [内存中的对象](/docs/java/JVM/MemoryObject.md)  
             * [Java对象大小](/docs/java/basis/ObjectSize.md)  
         * [内存泄露](/docs/java/JVM/MemoryLeak.md)  
+        * [★★★JVM参数配置](/docs/java/JVM/ParameterConfiguration.md)  
     * [JVM执行](/docs/java/JVM/run.md)  
     * [GC](/docs/java/JVM/GC.md)  
         * [GC-回收对象](/docs/java/JVM/GCProject.md)   
