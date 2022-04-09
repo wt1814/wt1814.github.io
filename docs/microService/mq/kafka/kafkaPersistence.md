@@ -9,6 +9,9 @@
 
 # 1. kafka持久化  
 <!--
+Kafka零拷贝
+https://blog.csdn.net/weixin_42584758/article/details/112377491
+
 https://blog.csdn.net/gududedabai/article/details/80002453 
 https://www.jianshu.com/p/8a4154780204
 https://blog.csdn.net/zhaoyuqiang/article/details/106907496?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-1.control&spm=1001.2101.3001.4242

@@ -843,6 +843,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 		2. 消费者  
 	3. 分区数设置  
 	4. 分区后保持有序，查看顺序消费。  
+    5. 数据落盘：零拷贝、顺序读写、异步落盘。  
 3. kafka消费者  
 	1. 消费者/消费者组/消费者组重平衡  
 	2. 消费者位移管理  

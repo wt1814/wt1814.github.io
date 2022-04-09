@@ -474,7 +474,7 @@
     * [kafka特性](/docs/microService/mq/kafka/kafkaCharacteristic.md)  
         * [持久化/磁盘I/O-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
         * [内存](/docs/microService/mq/kafka/kafkaZeroCopy.md)  
-        * [网络IO优化](/docs/microService/mq/kafka/networkIO.md)  
+        * [零拷贝的使用](/docs/microService/mq/kafka/networkIO.md)  
         * [副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
         * [如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
         * [kafka幂等性](/docs/microService/mq/kafka/kafkaIdempotent.md)  
