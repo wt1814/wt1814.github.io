@@ -37,7 +37,8 @@
     3. Next-key lock：record+gap锁定一个范围，包含记录本身。  
     &emsp; 临键锁，是记录锁与间隙锁的组合，它的封锁范围，既包含索引记录，又包含索引区间。  
     &emsp; <font color = "red">默认情况下，innodb使用next-key locks来锁定记录。</font><font color = "clime">但当查询的索引含有唯一属性的时候，Next-Key Lock会进行优化，将其降级为Record Lock，即仅锁住索引本身，不是范围。</font>  
-
+4. 锁使用方式：乐观锁、悲观锁  
+&emsp; 乐观锁，开发自定义；悲观锁，Mysql内置。   
 
 
 # 1. MySql的锁  
@@ -203,6 +204,14 @@ select * from emp where empid > 100 for update;
 &emsp; 自增锁是一种特殊的表级别锁(table-level lock)，专门针对事务插入AUTO_INCREMENT类型的列。最简单的情况，如果一个事务正在往表中插入记录，所有其他事务的插入必须等待，以便第一个事务插入的行，是连续的主键值。  
 
 ## 1.4. 锁使用方式：乐观锁、悲观锁  
+<!--
+
+Mysql的乐观锁和悲观锁 
+https://www.cnblogs.com/lucky815/p/15244794.html
+https://blog.csdn.net/qq_37469055/article/details/117791459
+
+-->
+
 &emsp; 乐观锁是一种思想，具体实现是，表中有一个版本字段，第一次读的时候，获取到这个字段。处理完业务逻辑开始更新的时候，需要再次查看该字段的值是否和第一次的一样。如果一样更新，反之拒绝。之所以叫乐观，因为这个模式没有从数据库加锁，等到更新的时候再判断是否可以更新。  
 &emsp; 悲观锁是数据库层面加锁，都会阻塞去等待锁。  
 

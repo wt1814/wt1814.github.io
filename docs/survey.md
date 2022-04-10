@@ -522,6 +522,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 2. InnoDB共有七种类型的锁：共享/排它锁、（表级）意向锁、记录锁（Record lock）、间隙锁（Gap lock）、临键锁（Next-key lock）、插入意向锁、自增锁。  
 3. InnoDB存储引擎的锁的算法有三种：行锁、间隙锁、临键锁，是记录锁与间隙锁的组合，它的封锁范围，既包含索引记录，又包含索引区间。  
 4. 乐观锁和悲观锁：（修改数据都包含读和写两步） 
+&emsp; 乐观锁，开发自定义；悲观锁，Mysql内置。   
     1. 乐观锁
     2. 悲观锁  
 

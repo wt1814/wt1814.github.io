@@ -728,6 +728,11 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
             * jdk1.8及之后：无永久代。<font color = "clime">字符串常量池、静态变量（`值可变`）仍在堆，</font> 但类型信息、字段、`方法`、<font color = "red">常量（`值固定`）</font>保存在本地内存的元空间。  
 6. MetaSpace存储类的元数据信息。  
 &emsp; 元空间与永久代之间最大的区别在于：元数据空间并不在虚拟机中，而是使用本地内存。元空间的内存大小受本地内存限制。  
+7. 直接内存  
+    1. 直接内存  
+    &emsp; 直接内存：直接内存主要被 Java NIO 使用，某种程度上也就是指DirectByteBuffer对象占用的堆外内存。  
+    2. 直接内存的回收  
+    &emsp; 需注意堆外内存并不直接控制于JVM，这些内存只有在DirectByteBuffer回收掉之后才有机会被回收，而 Young GC 的时候只会将年轻代里不可达的DirectByteBuffer对象及其直接内存回收，如果这些对象大部分都晋升到了年老代，那么只能等到Full GC的时候才能彻底地回收DirectByteBuffer对象及其关联的堆外内存。因此，堆外内存的回收依赖于Full GC。  
 
 ##### 1.3.4.1.2. 类存储内存小结
 ###### 1.3.4.1.2.1. 变量
@@ -2284,6 +2289,8 @@ private final BlockingQueue<Future<V>> completionQueue;
 5. 插入意向锁  
     &emsp; 对已有数据行的修改与删除，必须加强互斥锁(X锁)，那么对于数据的插入，是否还需要加这么强的锁，来实施互斥呢？插入意向锁，孕育而生。  
     &emsp; 插入意向锁，是间隙锁（Gap Locks）的一种（所以，也是实施在索引上的），它是专门针对insert操作的。多个事务，在同一个索引，同一个范围区间插入记录时，如果插入的位置不冲突，不会阻塞彼此。  
+6. 锁使用方式：乐观锁、悲观锁  
+    &emsp; 乐观锁，开发自定义；悲观锁，Mysql内置。   
 
 #### 1.5.5.6. MySql死锁和锁表
 &emsp; ~~胡扯，死锁，mysql检测后，回滚一条事务，抛出异常。~~  

@@ -45,6 +45,9 @@
 # 1. JVM内存结构/运行时数据区  
 <!--
 
+元空间与直接内存的关系
+https://blog.csdn.net/Ethan_199402/article/details/110431404
+
 -->
 &emsp; **<font color = "red">部分参考《深入理解java虚拟机 第3版》第2章 Java内存区域与内存溢出异常</font>**   
 
