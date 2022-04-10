@@ -115,6 +115,9 @@
     - [1.16. mq](#116-mq)
         - [1.16.1. mq](#1161-mq)
         - [1.16.2. kafka](#1162-kafka)
+    - [1.17. 网络IO](#117-网络io)
+        - [1.17.1. IO模型](#1171-io模型)
+        - [1.17.2. IO性能优化之零拷贝](#1172-io性能优化之零拷贝)
 
 <!-- /TOC -->
 
@@ -881,6 +884,51 @@ private final BlockingQueue<Future<V>> completionQueue;
 			1. 根据不同的业务场景，以发送端或者消费端时间戳为准  
 
 
+## 1.17. 网络IO  
+### 1.17.1. IO模型  
+1. 五种I/O模型  
+	1. 网络IO的本质就是socket流的读取，通常一次IO读操作会涉及到两个对象和两个阶段。  
+	2. 同步阻塞I/O  
+	3. 同步 非阻塞（轮询）I/O  
+	4. 多路复用I/O  
+		1. 为什么有多路复用？  
+		2. 多路复用能支持更多的并发连接请求。  
+2. I/O多路复用详解  
+	1. ~~select,poll,epoll只是I/O多路复用模型中第一阶段，即获取网络数据、用户态和内核态之间的拷贝。~~ 此阶段会阻塞线程。   
+	2. select()  
+	3. poll()  
+	4. epoll()  
+		1. epoll的三个函数   
+		2. epoll机制的工作模式  
+		3. 
+3. 多路复用之Reactor模式  
+	1. Reactor模式核心组成部分包括Reactor线程和worker线程池， 而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。  
+		* Reactor负责监听（建立连接）和处理请求（分发事件、读写）。
+		* 线程池负责处理事件。 
+	2. 单线程模型（单Reactor单线程）  
+	&emsp; Reactor单线程模型，指的是所有的IO操作都在同一个NIO线程上面完成。 单个NIO线程会成为系统瓶颈，并且会有节点故障问题。   
+	3. 多线程模型（单Reactor多线程）  
+	&emsp; Rector多线程模型与单线程模型最大的区别就是有一组NIO线程处理IO操作。在极个别特殊场景中，一个NIO线程（Acceptor线程）负责监听和处理所有的客户端连接可能会存在性能问题。 
+	4. 主从多线程模型（多Reactor多线程）  
+	&emsp; 主从Reactor多线程模型中，Reactor线程拆分为mainReactor和subReactor两个部分， mainReactor只处理连接事件，读写事件交给subReactor来处理。 业务逻辑还是由线程池来处理。
+ 	&emsp; mainRactor只处理连接事件，用一个线程来处理就好。处理读写事件的subReactor个数一般和CPU数量相等，一个subReactor对应一个线程。  
+
+
+### 1.17.2. IO性能优化之零拷贝
+1. 仅CPU方式  
+2. CPU & DMA（Direct Memory Access，直接内存访问）方式  
+&emsp; 最主要的变化是，CPU不再和磁盘直接交互，而是DMA和磁盘交互并且将数据从磁盘缓冲区拷贝到内核缓冲区，因此减少了2次CPU拷贝。共2次CPU拷贝，2次DMA拷贝，4次状态切换。之后的过程类似。  
+3. 零拷贝技术的几个实现手段包括：mmap+write、sendfile、sendfile+DMA收集、splice等。  
+4. mmap（内存映射）  
+&emsp; mmap是Linux提供的一种内存映射文件的机制，它实现了将内核中读缓冲区地址与用户空间缓冲区地址进行映射，从而实现内核缓冲区与用户缓冲区的共享， 又减少了一次cpu拷贝。总共包含1次cpu拷贝，2次DMA拷贝，4次状态切换。此流程中，cpu拷贝从4次减少到1次，但状态切换还是4次。  
+&emsp; mmap+write简单来说就是使用mmap替换了read+write中的read操作，减少了一次CPU的拷贝。  
+5. sendfile（函数调用）  
+&emsp; sendfile建立了两个文件之间的传输通道。 通过使用【sendfile数据可以直接在内核空间进行传输，】因此避免了用户空间和内核空间的拷贝，同时由于使用sendfile替代了read+write从而节省了一次系统调用，也就是2次上下文切换。   
+6. sendfile+DMA收集   
+7. splice方式  
+&emsp; splice系统调用是Linux在2.6版本引入的，其不需要硬件支持，并且不再限定于socket上，实现两个普通文件之间的数据零拷贝。  
+&emsp; splice系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
+&emsp; splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。  
 
 
 
