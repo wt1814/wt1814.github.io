@@ -118,6 +118,8 @@
     - [1.17. 网络IO](#117-网络io)
         - [1.17.1. IO模型](#1171-io模型)
         - [1.17.2. IO性能优化之零拷贝](#1172-io性能优化之零拷贝)
+        - [1.17.3. Netty](#1173-netty)
+    - [1.18. WebSocket](#118-websocket)
 
 <!-- /TOC -->
 
@@ -930,8 +932,23 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; splice系统调用可以在内核缓冲区和socket缓冲区之间建立管道来传输数据，避免了两者之间的CPU拷贝操作。  
 &emsp; splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。  
 
+### 1.17.3. Netty  
+1. Netty整体运行流程：  
+	1. 当一个连接到达时，Netty就会创建一个Channel，然后从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
+	2. 职责链ChannelPipeline，负责事件在职责链中的有序传播，同时负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。 ChannelHandlerContext代表了ChannelHandler和ChannelPipeline之间的绑定。 
+2. TCP粘拆包与Netty编解码  
+    2. **<font color = "clime">Netty对半包或者粘包的处理：</font>** **每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，<font color = "red">所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。</font>** 
+    3. Netty默认提供了多种解码器来解决，可以进行分包操作。  
+        * 固定长度的拆包器 FixedLengthFrameDecoder
+        * 行拆包器 LineBasedFrameDecoder
+        * 分隔符拆包器 DelimiterBasedFrameDecoder
+        * 基于数据包长度的拆包器 LengthFieldBasedFrameDecoder  
 
-
-
+## 1.18. WebSocket  
+1. 4种Web端即时通信  
+&emsp; `Web端即时通讯技术：服务器端可以即时地将数据的更新或变化反应到客户端，例如消息即时推送等功能都是通过这种技术实现的。`但是在Web中，由于浏览器的限制，实现即时通讯需要借助一些方法。这种限制出现的主要原因是，一般的Web通信都是浏览器先发送请求到服务器，服务器再进行响应完成数据的显示更新。  
+&emsp; 实现Web端即时通讯的方法：`实现即时通讯主要有四种方式，它们分别是轮询、长轮询(comet)、长连接(SSE)、WebSocket。` **<font color = "blue">它们大体可以分为两类，一种是在HTTP基础上实现的，包括短轮询、comet和SSE；另一种不是在HTTP基础上实现，即WebSocket。</font>**    
+2. 配置中心使用长轮询推送
+3. WebSocket是基于TCP的应用层协议，用于在C/S架构的应用中实现双向通信。虽然WebSocket协议在建立连接时会使用HTTP协议，但这并不意味着WebSocket协议是基于HTTP协议实现的。   
 
 
