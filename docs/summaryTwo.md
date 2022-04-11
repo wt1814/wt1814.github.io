@@ -953,6 +953,9 @@
     1. ReferenceConfig解析引用的服务。  
     2. ReferenceConfig类的init方法调用Protocol的refer方法生成Invoker实例。  
     3. 把Invoker转换为客户端需要的接口。  
+4. Dubbo和ZK  
+&emsp; Dubbo在ZK上的节点 /dubbo/xxxService 节点是持久节点。  
+
 
 #### 1.8.5.1. Dubbo序列化和协议
 1. 不同服务在性能上适用不同协议进行传输，比如`大数据用短连接协议`，`小数据大并发用长连接协议`。  

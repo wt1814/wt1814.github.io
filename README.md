@@ -480,13 +480,12 @@
 [Dubbo详解](/docs/microService/dubbo/DubboExplanate.md)  
 &emsp; [Dubbo框架设计](/docs/microService/dubbo/design.md)  
 &emsp; [暴露和引用服务](/docs/microService/dubbo/realization.md)  
+&emsp; &emsp; [Dubbo和ZK](/docs/microService/dubbo/design.md)  
 &emsp; &emsp; [Dubbo序列化和协议](/docs/microService/dubbo/Agreement.md)  
 &emsp; &emsp; &emsp; [Dubbo协议长连接](/docs/microService/dubbo/LongConnection.md)  
 &emsp; &emsp; [Dubbo心跳机制](/docs/microService/dubbo/heartbeat.md)  
 &emsp; [远程调用](/docs/microService/dubbo/remote.md)  
 &emsp; &emsp; [Dubbo调用介绍](/docs/microService/dubbo/RemoteIntroduce.md)  
-&emsp; &emsp; 负载均衡  
-&emsp; &emsp; [Dubbo集群容错](/docs/microService/dubbo/Load.md)  
 &emsp; &emsp; [Dubbo降级、容错、负载](/docs/microService/dubbo/Load.md)  
 &emsp; &emsp; [Dubbo协议和序列化](/docs/microService/dubbo/Agreement.md)  
 &emsp; [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
@@ -861,6 +860,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [shell编程](/docs/Linux/shell.md)  
 [堡垒机](/docs/Linux/baolei.md)  
 [Linux系统](/docs/Linux/Linux.md)  
+[Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
 
 ----
 

@@ -13,6 +13,15 @@
 <!-- 
 dubbo系列
 https://juejin.cn/user/1943592291286557
+
+https://blog.csdn.net/weixin_43549578/article/details/85641605
+
+Dubbo服务降级
+https://blog.csdn.net/u012965203/article/details/98112890
+https://segmentfault.com/a/1190000040928437
+https://cloud.tencent.com/developer/article/1478779
+https://www.jianshu.com/p/9fccf654ed7a
+
 -->
 
 ## 1.1. 服务降级  

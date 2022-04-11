@@ -555,7 +555,6 @@ private final BlockingQueue<Future<V>> completionQueue;
     * 【后置处理】 
 4. 销毁（Destruction）---注册Destruction回调函数。 
 
-
 #### 1.6.2.3. 容器相关特性  
 1. FactoryBean  
 2. Spring可二次开发常用接口（扩展性） 
@@ -657,6 +656,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-29.png)   
     ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-53.png)   
     服务代理层proxy生成Invoker，远程调用层protocol通过Protocol协议类的export方法暴露服务。  
+4. Dubbo在ZK上的节点 /dubbo/xxxService 节点是持久节点。  
 
 ## 1.11. Zookeeper  
 1. ZK服务端  
