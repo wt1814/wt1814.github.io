@@ -29,6 +29,11 @@ https://juejin.cn/post/6844903861749055502
 谈谈布隆过滤器和布谷鸟过滤器的相同点和不同点？
 https://cloud.tencent.com/developer/article/1745350
 
+https://blog.csdn.net/feiying0canglang/article/details/121279365
+http://www.linvon.cn/posts/cuckoo/
+https://www.cnblogs.com/Courage129/p/14337466.html
+https://github.com/kristoff-it/redis-cuckoofilter
+
 -->
 
 
