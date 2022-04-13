@@ -10,6 +10,15 @@
 <!-- /TOC -->
 
 # 1. 跳跃表  
+<!--
+跳跃表（skip list）
+https://www.jianshu.com/p/9d78d8719afe
+
+-->
+
+&emsp; 二叉搜索算法能够高效的查询数据，但是需要一块连续的内存，而且增删改效率很低。  
+&emsp; 跳表，是基于链表实现的一种类似“二分”的算法。它可以快速的实现增，删，改，查操作。    
+
 ## 1.1. 跳跃表介绍
 &emsp; 跳跃表SkipList，一种基于有序链表的扩展，<font color = "red">是一个多层索引链表</font>，简称跳表。<font color = "red">跳表是一种空间换时间的数据结构，通过冗余数据，将链表一层一层索引，达到类似二分查找的效果。</font>  
 ![image](http://www.wt1814.com/static/view/algorithm/function-1.png)  

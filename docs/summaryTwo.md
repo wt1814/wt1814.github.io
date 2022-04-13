@@ -1630,6 +1630,9 @@ update product set name = 'TXC' where id = 1;
 ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-85.png)  
 &emsp; SkipList分为两部分，dict部分是由字典实现，Zset部分使用跳跃表实现，从图中可以看出，dict和跳跃表都存储了数据，实际上dict和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
 
+&emsp; 二叉搜索算法能够高效的查询数据，但是需要一块连续的内存，而且增删改效率很低。  
+&emsp; 跳表，是基于链表实现的一种类似“二分”的算法。它可以快速的实现增，删，改，查操作。    
+
 ###### 1.12.3.1.4.2. SDS详解
 1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>**  
     ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-77.png)  

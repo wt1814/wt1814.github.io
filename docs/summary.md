@@ -2071,7 +2071,9 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; binlog刷盘时机：对于InnoDB存储引擎而言，mysql通过sync_binlog参数控制binlog的刷盘时机。  
 
 #### 1.5.4.3. 存储引擎层
-1. **<font color = "red">InnoDB的特性：</font>**    
+1. 常见的几个MySQL存储引擎：  
+
+2. **<font color = "red">InnoDB的特性：</font>**    
     * [支持事务](/docs/SQL/transaction.md)  
     * [支持行锁](/docs/SQL/lock.md)，采用[MVCC](/docs/SQL/MVCC.md)来支持高并发  
     * 支持外键  
