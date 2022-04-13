@@ -45,7 +45,7 @@
                 - [1.6.2.3.1. 事件监听步骤](#16231-事件监听步骤)
                 - [1.6.2.3.2. 内置生命周期事件](#16232-内置生命周期事件)
             - [1.6.2.4. SpringBoot事件回调](#1624-springboot事件回调)
-        - [1.6.3. SpringBoot自动配置](#163-springboot自动配置)
+        - [1.6.3. SpringBoot自动配置（获取 ---> 注入 ---> 装配）](#163-springboot自动配置获取-----注入-----装配)
             - [1.6.3.1. 获取自动配置，注解@SpringBootApplication](#1631-获取自动配置注解springbootapplication)
             - [1.6.3.2. 加载自动配置流程](#1632-加载自动配置流程)
             - [1.6.3.3. 内置Tomcat](#1633-内置tomcat)
@@ -356,7 +356,7 @@
     ![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-16.png)  
     1. Spring创建bean主要分为两个步骤，`创建原始bean对象`，`接着去填充对象属性和初始化`。  
     2. 每次创建bean之前，都会从缓存中查下有没有该bean，因为是单例，只能有一个。  
-    3. `当创建beanA的原始对象后，并把它放到三级缓存中，`接下来就该填充对象属性了，这时候发现依赖了beanB，接着就又去创建 beanB，同样的流程，创建完beanB填充属性时又发现它依赖了beanA，又是同样的流程，不同的是，这时候可以在三级缓存中查到刚放进去的原始对象beanA，所以不需要继续创建，用它注入beanB，完成beanB的创建。`此时会将beanA从三级缓存删除，放到二级缓存。`   
+    3. `当创建beanA的原始对象后，并把它放到三级缓存中，`接下来就该填充对象属性了，这时候发现依赖了beanB，接着就又去创建 beanB，同样的流程，创建完beanB填充属性时又发现它依赖了beanA，又是同样的流程，不同的是，这时候可以在三级缓存中查到刚放进去的原始对象beanA，所以不需要继续创建，用它注入beanB，完成beanB的创建。`★★★此时会将beanA从三级缓存删除，放到二级缓存。`   
     4. 既然 beanB 创建好了，所以 beanA 就可以完成填充属性的步骤了，接着执行剩下的逻辑，闭环完成。  
     ---
     &emsp; 当A、B两个类发生循环引用时，在A完成实例化后，就使用实例化后的对象去创建一个对象工厂，并添加到三级缓存中。 **<font color = "blue">`如果A被AOP代理，那么通过这个工厂获取到的就是A代理后的对象，如果A没有被AOP代理，那么这个工厂获取到的就是A实例化的对象。`</font>** 当A进行属性注入时，会去创建B，同时B又依赖了A，所以创建B的同时又会去调用getBean(a)来获取需要的依赖，此时的getBean(a)会从缓存中获取：  
@@ -753,7 +753,7 @@
 * **<font color = "red">ApplicationRunner，容器启动完成后被回调；</font>**  
 * **<font color = "red">CommandLineRunner，ApplicationRunner之后被回调。</font>**  
 
-### 1.6.3. SpringBoot自动配置
+### 1.6.3. SpringBoot自动配置（获取 ---> 注入 ---> 装配）
 &emsp; 包含两部分：1. 注解@SpringBootApplication，获取自动配置；2. 加载自动配置流程。
 
 #### 1.6.3.1. 获取自动配置，注解@SpringBootApplication
