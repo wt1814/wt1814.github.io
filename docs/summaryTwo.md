@@ -13,28 +13,29 @@
         - [1.3.1. Spring基础](#131-spring基础)
         - [1.3.2. Spring IOC](#132-spring-ioc)
         - [1.3.3. Spring DI](#133-spring-di)
-            - [1.3.3.1. Spring DI中循环依赖](#1331-spring-di中循环依赖)
-        - [1.3.4. Bean的生命周期](#134-bean的生命周期)
-        - [1.3.5. 容器相关特性](#135-容器相关特性)
-            - [1.3.5.1. FactoryBean](#1351-factorybean)
-            - [1.3.5.2. Spring可二次开发常用接口（扩展性）](#1352-spring可二次开发常用接口扩展性)
-                - [1.3.5.2.1. 事件](#13521-事件)
-                - [1.3.5.2.2. Aware接口](#13522-aware接口)
-                - [1.3.5.2.3. 后置处理器](#13523-后置处理器)
-                - [1.3.5.2.4. InitializingBean](#13524-initializingbean)
-        - [1.3.6. SpringAOP教程](#136-springaop教程)
-        - [1.3.7. SpringAOP解析](#137-springaop解析)
-        - [1.3.8. Spring事务](#138-spring事务)
-            - [1.3.8.1. Spring事务使用](#1381-spring事务使用)
-            - [1.3.8.2. Spring事务问题](#1382-spring事务问题)
-        - [1.3.9. SpringMVC解析](#139-springmvc解析)
-        - [1.3.10. 过滤器、拦截器、监听器](#1310-过滤器拦截器监听器)
+            - [1.3.3.1. Bean的生命周期](#1331-bean的生命周期)
+            - [1.3.3.2. Spring DI中循环依赖](#1332-spring-di中循环依赖)
+        - [1.3.4. 容器相关特性](#134-容器相关特性)
+            - [1.3.4.1. FactoryBean](#1341-factorybean)
+            - [1.3.4.2. Spring可二次开发常用接口（扩展性）](#1342-spring可二次开发常用接口扩展性)
+                - [1.3.4.2.1. 事件](#13421-事件)
+                - [1.3.4.2.2. Aware接口](#13422-aware接口)
+                - [1.3.4.2.3. 后置处理器](#13423-后置处理器)
+                - [1.3.4.2.4. InitializingBean](#13424-initializingbean)
+        - [1.3.5. SpringAOP教程](#135-springaop教程)
+        - [1.3.6. SpringAOP解析](#136-springaop解析)
+        - [1.3.7. Spring事务](#137-spring事务)
+            - [1.3.7.1. Spring事务使用](#1371-spring事务使用)
+            - [1.3.7.2. Spring事务问题](#1372-spring事务问题)
+        - [1.3.8. SpringMVC解析](#138-springmvc解析)
+        - [1.3.9. 过滤器、拦截器、监听器](#139-过滤器拦截器监听器)
     - [1.4. MyBatis](#14-mybatis)
         - [1.4.1. MyBatis大数据量查询](#141-mybatis大数据量查询)
         - [1.4.2. MyBatis架构](#142-mybatis架构)
         - [1.4.3. MyBatis SQL执行解析](#143-mybatis-sql执行解析)
-        - [1.4.4. MyBatis缓存](#144-mybatis缓存)
-        - [1.4.5. MyBatis插件解析](#145-mybatis插件解析)
+        - [1.4.4. Spring集成Mybatis](#144-spring集成mybatis)
+        - [1.4.5. MyBatis缓存](#145-mybatis缓存)
+        - [1.4.6. MyBatis插件解析](#146-mybatis插件解析)
     - [1.5. 分布微服务和集群](#15-分布微服务和集群)
     - [1.6. SpringBoot](#16-springboot)
         - [1.6.1. SpringBoot基础知识](#161-springboot基础知识)
@@ -341,7 +342,23 @@
 2. 加载流程：  
     1. doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean()初始化。  
 
-#### 1.3.3.1. Spring DI中循环依赖
+#### 1.3.3.1. Bean的生命周期
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-10.png)  
+&emsp; SpringBean的生命周期主要有4个阶段：  
+1. 实例化（Instantiation），可以理解为new一个对象；
+2. 属性赋值（Populate），可以理解为调用setter方法完成属性注入；
+3. 初始化（Initialization），包含：  
+    * 激活Aware方法  
+    * 【前置处理】  
+    * 激活自定义的init方法 
+    * 【后置处理】 
+4. 销毁（Destruction）---注册Destruction回调函数。  
+
+------
+&emsp; Spring Bean的生命周期管理的基本思路是：在Bean出现之前，先准备操作Bean的BeanFactory，然后操作完Bean，所有的Bean也还会交给BeanFactory进行管理。再所有Bean操作准备BeanPostProcessor作为回调。  
+![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-23.png)  
+
+#### 1.3.3.2. Spring DI中循环依赖
 1. Spring循环依赖的场景：均采用setter方法（属性注入）注入方式，可被解决；采用构造器和setter方法（属性注入）混合注入方式可能被解决。
 2. **<font color = "red">Spring通过3级缓存解决：</font>**  
     ![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-20.png)  
@@ -377,24 +394,8 @@
     &emsp; **怎么做到提前曝光对象而又不生成代理呢？**   
     &emsp; Spring就是在对象外面包一层ObjectFactory（三级缓存存放），提前曝光的是ObjectFactory对象，在被注入时才在ObjectFactory.getObject方式内实时生成代理对象，并将生成好的代理对象放入到第二级缓存Map\<String, Object> earlySingletonObjects。  
 
-### 1.3.4. Bean的生命周期
-![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-10.png)  
-&emsp; SpringBean的生命周期主要有4个阶段：  
-1. 实例化（Instantiation），可以理解为new一个对象；
-2. 属性赋值（Populate），可以理解为调用setter方法完成属性注入；
-3. 初始化（Initialization），包含：  
-    * 激活Aware方法  
-    * 【前置处理】  
-    * 激活自定义的init方法 
-    * 【后置处理】 
-4. 销毁（Destruction）---注册Destruction回调函数。  
-
-------
-&emsp; Spring Bean的生命周期管理的基本思路是：在Bean出现之前，先准备操作Bean的BeanFactory，然后操作完Bean，所有的Bean也还会交给BeanFactory进行管理。再所有Bean操作准备BeanPostProcessor作为回调。  
-![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-23.png)  
-
-### 1.3.5. 容器相关特性
-#### 1.3.5.1. FactoryBean
+### 1.3.4. 容器相关特性
+#### 1.3.4.1. FactoryBean
 1. BeanFactory  
 &emsp; BeanFactory是个Factory，也就是IOC容器或对象工厂；FactoryBean是个Bean，也由BeanFactory管理。  
 2. FactoryBean：`⚠️FactoryBean，工厂Bean，首先是个Bean，其次再加上工厂模式。`  
@@ -402,7 +403,7 @@
 &emsp; **<font color = "red">FactoryBean接口的一些实现类，如Spring自身提供的ProxyFactoryBean、JndiObjectFactoryBean，还有Mybatis中的SqlSessionFactoryBean，</font>** 用于生产一些复杂的Bean。  
 
 
-#### 1.3.5.2. Spring可二次开发常用接口（扩展性）
+#### 1.3.4.2. Spring可二次开发常用接口（扩展性）
 &emsp; Spring为了用户的开发方便和特性支持，开放了一些特殊接口和类，用户可进行实现或者继承，常见的有：  
 
 &emsp; **Spring IOC阶段：**  
@@ -414,7 +415,7 @@
 &emsp; [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
 &emsp; [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
 
-##### 1.3.5.2.1. 事件
+##### 1.3.4.2.1. 事件
 &emsp; **<font color = "clime">★★★Spring事件机制的流程：</font>**   
 1. **<font color = "clime">事件机制的核心是事件。</font>** Spring中的事件是ApplicationEvent。Spring提供了5个标准事件，此外还可以自定义事件（继承ApplicationEvent）。  
 2. **<font color = "clime">确定事件后，要把事件发布出去。</font>** 在事件发布类的业务代码中调用ApplicationEventPublisher#publishEvent方法（或调用ApplicationEventPublisher的子类，例如调用ApplicationContext#publishEvent）。  
@@ -430,7 +431,7 @@
 * 上下文关闭事件（ContextClosedEvent）：当ApplicationContext被关闭时触发该事件。容器被关闭时，其管理的所有单例Bean都被销毁。  
 * 请求处理事件（RequestHandledEvent）：在Web应用中，当一个http请求（request）结束触发该事件。如果一个bean实现了ApplicationListener接口，当一个ApplicationEvent被发布以后，bean会自动被通知。  
 
-##### 1.3.5.2.2. Aware接口
+##### 1.3.4.2.2. Aware接口
 &emsp; **<font color = "clime">容器管理的Bean一般不需要了解容器的状态和直接使用容器，但在某些情况下，是需要在Bean中直接对IOC容器进行操作的，这时候，就需要在Bean中设定对容器的感知。Spring IOC容器也提供了该功能，它是通过特定的aware接口来完成的。</font>** aware接口有以下这些：
 
 * BeanNameAware，可以在Bean中得到它在IOC容器中的Bean实例名称。  
@@ -442,14 +443,14 @@
 
 &emsp; 在设置Bean的属性之后，调用初始化回调方法之前，Spring会调用aware接口中的setter方法。  
 
-##### 1.3.5.2.3. 后置处理器
+##### 1.3.4.2.3. 后置处理器
 1. <font color = "clime">实现BeanFactoryPostProcessor接口，可以`在spring的bean创建之前，修改bean的定义属性（BeanDefinition）`。</font>  
 2. <font color = "red">实现BeanPostProcessor接口，</font><font color = "blue">可以在spring容器实例化bean之后，`在执行bean的初始化方法前后，`添加一些自己的处理逻辑。</font>  
 
-##### 1.3.5.2.4. InitializingBean
+##### 1.3.4.2.4. InitializingBean
 &emsp; ......  
 
-### 1.3.6. SpringAOP教程
+### 1.3.5. SpringAOP教程
 1. SpringAOP的主要功能是：日志记录，性能统计，安全控制，事务处理，异常处理等。 
     * 慢请求记录  
     * 使用aop + redis + Lua接口限流
@@ -458,8 +459,8 @@
 &emsp; <font color = "red">同一对象内部方法嵌套调用，慎用this来调用被@Async、@Transactional、@Cacheable等注解标注的方法，this下注解可能不生效。</font>async方法中的this不是动态代理的子类对象，而是原始的对象，故this调用无法通过动态代理来增强。 
 3. **<font color = "red">过滤器，拦截器和aop的区别：</font>** 过滤器拦截的是URL；拦截器拦截的是URL；Spring AOP只能拦截Spring管理Bean的访问（业务层Service）。  
 
-### 1.3.7. SpringAOP解析
-1. **<font color = "blue">自动代理触发的时机：AspectJAnnotationAutoProxyCreator是一个后置处理器BeanPostProcessor，</font>** 因此Spring AOP是在这一步，进行代理增强！  
+### 1.3.6. SpringAOP解析
+1. **<font color = "blue">自动代理触发的时机：AspectJAnnotationAutoProxyCreator是一个【后置处理器BeanPostProcessor】，</font>** 因此Spring AOP是在这一步，进行代理增强！  
 2. **<font color = "clime">代理类的生成流程：1). `获取当前的Spring Bean适配的advisors；`2). `创建代理类`。</font>**   
     1. Spring AOP获取对应Bean适配的Advisors链的核心逻辑：
         1. 获取当前IoC容器中所有的Aspect类。
@@ -477,16 +478,30 @@
         1. 创建AopProxy。根据ProxyConfig 获取到了对应的AopProxy的实现类，分别是JdkDynamicAopProxy和ObjenesisCglibAopProxy。 
         2. 获取代理类。
 
-### 1.3.8. Spring事务
-#### 1.3.8.1. Spring事务使用  
+### 1.3.7. Spring事务
+#### 1.3.7.1. Spring事务使用  
 1. `@Transactional(rollbackFor = Exception.class) `，Transactional`默认只回滚RuntimeException，`但是可以指定要回滚的异常类型。    
 2. **<font color = "red">Spring事务属性通常由事务的传播行为、事务的隔离级别、事务的超时值、事务只读标志组成。</font>**  
     * 事务的传播行为主要分为支持当前事务和不支持当前事务。  
-    &emsp; <font color = "red">PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务，合并成一个事务；如果当前没有事务，则创建一个新的事务。这是默认值。</font>  
-    * 事务的隔离级别，默认使用底层数据库的默认隔离级别。  
+        &emsp; <font color = "red">PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务，合并成一个事务；如果当前没有事务，则创建一个新的事务。这是默认值。</font>  
+        &emsp; 下面的类型都是针对于被调用方法来说的，理解起来要想象成两个service 方法的调用才可以。  
+        &emsp; **支持当前事务的情况：**  
+        &emsp; 1. <font color = "red">PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务，合并成一个事务；如果当前没有事务，则创建一个新的事务。这是默认值。</font>  
+        &emsp; 2. PROPAGATION_SUPPORTS：如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务的方式继续运行。  
+        &emsp; 3. PROPAGATION_MANDATORY：如果当前存在事务，则加入该事务；如果当前没有事务，则抛出异常，即父级方法必须有事务。  
+
+        &emsp; **不支持当前事务的情况：**  
+        &emsp; 4. PROPAGATION_REQUIRES_NEW：创建一个新的事务，如果当前存在事务，则把当前事务挂起。这个方法会独立提交事务，不受调用者的事务影响，父级异常，它也是正常提交。  
+        &emsp; 5. PROPAGATION_NOT_SUPPORTED：以非事务方式运行，如果当前存在事务，则把当前事务挂起。  
+        &emsp; 6. PROPAGATION_NEVER：以非事务方式运行，如果当前存在事务，则抛出异常，即父级方法必须无事务。  
+
+        &emsp; **其他情况：**  
+        &emsp; 7. PROPAGATION_NESTED：如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；如果当前没有事务，则该取值等价于PROPAGATION_REQUIRED。  
+        &emsp; 嵌套事务是外部事务的一部分，只有外部事务结束后它才会被提交。由此可见，PROPAGATION_REQUIRES_NEW和PROPAGATION_NESTED的最大区别在于：PROPAGATION_REQUIRES_NEW完全是一个新的事务，而PROPAGATION_NESTED则是外部事务的子事务，如果外部事务commit，嵌套事务也会被commit， 这个规则同样适用于roll back。  
+    * 事务的隔离级别，包含数据库的4种隔离级别，默认使用底层数据库的默认隔离级别。  
     * 事务只读，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。  
 
-#### 1.3.8.2. Spring事务问题
+#### 1.3.7.2. Spring事务问题
 1. 事务失效
     1. <font color = "red">同一个类中方法调用。</font>  
     &emsp; 因为spring声明式事务是基于AOP实现的，是使用动态代理来达到事务管理的目的，当前类调用的方法上面加@Transactional 这个是没有任何作用的，因为 **<font color = "clime">调用这个方法的是this，没有经过 Spring 的代理类。</font>**  
@@ -495,7 +510,7 @@
     3. 抛出的异常不支持回滚。捕获了异常，未再抛出。  
 2. 大事务问题：将修改库的代码聚合在一起。  
 
-### 1.3.9. SpringMVC解析
+### 1.3.8. SpringMVC解析
 1. **SpringMVC的工作流程：**  
     1. 找到处理器：前端控制器DispatcherServlet ---> **<font color = "red">处理器映射器HandlerMapping</font>** ---> 找到处理器Handler；  
     2. 处理器处理：前端控制器DispatcherServlet ---> **<font color = "red">处理器适配器HandlerAdapter</font>** ---> 处理器Handler ---> 执行具体的处理器Controller（也叫后端控制器） ---> Controller执行完成返回ModelAndView；  
@@ -511,8 +526,8 @@
         2. 调用阶段。这一步是由请求触发的。入口为DispatcherServlet#doService() ---> DispatcherServlet#doDispatch()。 **<font color = "blue">`逻辑即为SpringMVC处理流程。`</font>**   
 
 
-### 1.3.10. 过滤器、拦截器、监听器
-&emsp; ......  
+### 1.3.9. 过滤器、拦截器、监听器
+&emsp; 过滤前-拦截前-action执行-拦截后-过滤后  
 
 ## 1.4. MyBatis
 
@@ -562,10 +577,20 @@
     }
     ```
 
-### 1.4.4. MyBatis缓存
+### 1.4.4. Spring集成Mybatis  
+0. MyBatis运行原理：1.创建SqlSessionFacory；2.从SqlSessionFactory对象中获取SqlSession对象；3.获取Mapper；4.执行操作；    
+1. 创建SqlSessionFacory  
+&emsp; MyBatis-Spring中创建SqlSessionFacory是由SqlSessionFactoryBean完成的。实现了InitializingBean接口、FactoryBean接口、ApplicationListener接口。  
+2. 创建SqlSession   
+&emsp; 在Spring中并没有直接使用DefaultSqlSession，DefaultSqlSession是线程不安全的。Spring对SqlSession 进行了一个封装，这个SqlSession的实现类就是SqlSessionTemplate。SqlSessionTemplate是线程安全的。SqlSessionTemplate通过动态代理的方式来保证DefaultSqlSession操作的线程安全性。  
+3. 接口的扫描注册  
+4. 接口注入使用  
+
+
+### 1.4.5. MyBatis缓存
 &emsp; ......  
 
-### 1.4.5. MyBatis插件解析
+### 1.4.6. MyBatis插件解析
 1. **<font color="clime">Mybaits插件的实现主要用了拦截器、责任链和动态代理。</font>** `动态代理可以对SQL语句执行过程中的某一点进行拦截`，`当配置多个插件时，责任链模式可以进行多次拦截`。  
 2. **<font color = "clime">mybatis扩展性很强，基于插件机制，基本上可以控制SQL执行的各个阶段，如执行器阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。</font>**   
     * 执行器Executor（update、query、commit、rollback等方法）；  
