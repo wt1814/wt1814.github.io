@@ -407,7 +407,6 @@
 &emsp; Spring为了用户的开发方便和特性支持，开放了一些特殊接口和类，用户可进行实现或者继承，常见的有：  
 
 &emsp; **Spring IOC阶段：**  
-&emsp; [事件多播器](/docs/SSM/Spring/feature/EventMulticaster.md)  
 &emsp; [事件](/docs/SSM/Spring/feature/Event.md)  
 
 &emsp; **Spring DI阶段：**  
@@ -812,6 +811,9 @@
     	* @EnableConfigurationProperties 启用配置，需要指定启用的配置类。
     	* @NestedConfigurationProperty 当一个类中引用了外部类，需要在该属性上加该注解。
 	3. 定义自动配置类，自动暴露功能接口。  
+        ```java
+        @ConditionalOnProperty(prefix = "xxxxx", name = "enable",havingValue = "true", matchIfMissing = true)
+        ```
 3. 第三步，应用加载starter的配置，有两种方式：主动加载、被动加载。  
 
 
@@ -925,7 +927,7 @@
 ### 1.8.3. Dubbo介绍
 1. Dubbo的工作原理：  
     1. 服务启动的时候，provider和consumer根据配置信息，连接到注册中心register，分别向注册中心注册和订阅服务。  
-    2. register根据服务订阅关系，返回provider信息到consumer，同时consumer会把provider信息缓存到本地。如果信息有变更，consumer会收到来自register的推送。  
+    2. register根据服务订阅关系，返回provider信息到consumer，同时 **<font color = "clime">consumer会把provider信息缓存到本地。如果信息有变更，consumer会收到来自register的推送。</font>**  
     3. consumer生成代理对象，同时根据负载均衡策略，选择一台provider，同时定时向monitor记录接口的调用次数和时间信息。  
     4. **<font color = "clime">拿到代理对象之后，consumer通过`代理对象`发起接口调用。</font>**  
     5. provider收到请求后对数据进行反序列化，然后通过代理调用具体的接口实现。  
@@ -1002,9 +1004,28 @@
 
 
 #### 1.8.6.2. Dubbo集群容错
-1. 负载均衡
-2. 集群容错策略
-3. 服务降级
+1. 服务降级  
+    &emsp; 最主要的两种形式是：  
+    &emsp; 1） mock='force:return+null'表示消费对该服务的方法调用都直接返回null值，不发起远程调用。用来屏蔽不重要服务不可用时对调用方的影响。  
+    &emsp; 2） 还可以改为mock=fail:return+null表示消费方对该服务的方法调用在失败后，再返回null。用来容忍不重要服务不稳定时对调用方的影响。  
+2. 集群容错策略  
+    &emsp; 下面列举dubbo支持的容错策略：  
+
+    * Failover(默认) - 失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过 retries="2" 来设置重试次数(不含第一次)。  
+    * Failfast - 快速失败，只发起一次调用，失败立即报错。通常用于非幂等性的写操作，比如新增记录。
+    * Failsafe - 失败安全，出现异常时，直接忽略。通常用于写入审计日志等操作。  
+    * Failback - 失败自动恢复，后台记录失败请求，定时重发。通常用于消息通知操作。  
+    * Forking - 并行调用多个服务器，只要一个成功即返回。通常用于实时性要求较高的读操作，但需要浪费更多服务资源。可通过 forks="2" 来设置最大并行数。  
+    * Broadcast - 广播调用所有提供者，逐个调用，任意一台报错则报错。通常用于通知所有提供者更新缓存或日志等本地资源信息。  
+3. 负载均衡  
+    * <font color = "red">Random(缺省)，随机，按权重设置随机概率。</font>在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。  
+    * <font color = "red">RoundRobin，轮循，按公约后的权重设置轮循比率。</font>  
+    &emsp; 轮询负载均衡算法的不足：存在慢的提供者累积请求的问题，比如：第二台机器很慢，但没挂，当请求调到第二台时就卡在那，久而久之，所有请求都卡在调到第二台上。  
+    * <font color = "red">LeastActive，最少活跃调用数，活跃数指调用前后计数差。</font>相同活跃数的随机。使慢的提供者收到更少请求，因为越慢的提供者的调用前后计数差会越大。  
+    * <font color = "clime">ConsistentHash，[分布式一致性哈希算法](/docs/microService/thinking/分布式算法-consistent.md)。</font>相同参数的请求总是发到同一提供者；当某一台提供者崩溃时，原本发往该提供者的请求，基于虚拟节点，平摊到其它提供者，不会引起剧烈变动。  
+    * 缺省只对第一个参数Hash，如果要修改，请配置`<dubbo:parameter key="hash.arguments" value="0,1" />`  
+    * 缺省用160份虚拟节点，如果要修改，请配置`<dubbo:parameter key="hash.nodes" value="320" />`  
+
 
 ### 1.8.7. ~~扩展点加载(SPI)~~
 0. ExtensionLoader是Dubbo SPI中用来加载扩展类的，有如下三个重要方法，搞懂这3个方法基本上就搞懂Dubbo SPI了。加载扩展类的三种方法如下

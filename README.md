@@ -821,6 +821,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [Gradle](/docs/devAndOps/Gradle.md)  
 [Maven](/docs/devAndOps/maven.md)  
 &emsp; [Maven冲突解决](/docs/devAndOps/conflict.md)  
+&emsp; 项目循环依赖  
 [Jmeter](/docs/devAndOps/Jmeter.md)  
 [JMH](/docs/java/JVM/JMH.md)  
 [多种发布方式](/docs/system/publishe.md)  
