@@ -681,7 +681,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
             2. 热替换
         2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，`如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。`    
         3. Spring破坏双亲委派模型  
-        &emsp; Spring要对用户程序进行组织和管理，而`用户程序一般放在WEB-INF目录下，由WebAppClassLoader类加载器加载，而Spring由Common类加载器或Shared类加载器加载。`   
+        &emsp; Spring要对用户程序进行组织和管理，而`用户程序一般放在【WEB-INF】目录下，由WebAppClassLoader类加载器加载，而Spring由Common类加载器或Shared类加载器加载。`   
         &emsp; 那么Spring是如何访问WEB-INF下的用户程序呢？   
         &emsp; 使用线程上下文类加载器。 Spring加载类所用的classLoader都是通过Thread.currentThread().getContextClassLoader()获取的。当线程创建时会默认创建一个AppClassLoader类加载器（对应Tomcat中的WebAppclassLoader类加载器）：setContextClassLoader(AppClassLoader)。   
         &emsp; 利用这个来加载用户程序。即任何一个线程都可通过getContextClassLoader()获取到WebAppclassLoader。  

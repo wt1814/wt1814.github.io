@@ -10,6 +10,8 @@
         - [1.4.1. Driver实现](#141-driver实现)
         - [1.4.2. Mysql DriverManager实现](#142-mysql-drivermanager实现)
     - [1.5. JDK中SPI解析（SPI与线程上下文类加载器）](#15-jdk中spi解析spi与线程上下文类加载器)
+    - [Dubbo中的SPI](#dubbo中的spi)
+    - [SpringBoot中的SPI](#springboot中的spi)
 
 <!-- /TOC -->
 
@@ -373,4 +375,14 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 ```
 
 &emsp; `Dubbo的SPI并没有破坏双亲委派模型。`自己实现的框架，接口类和实现类一般都是由SystemClassLoader加载器来加载的，这时候双亲委派模型仍然可以正常使用。很多框架使用SPI方式的原因，不是因为双亲委派模型满足不了类加载需求，而是看重了SPI的易扩展性。  
+
+## Dubbo中的SPI  
+
+
+## SpringBoot中的SPI  
+<!-- 
+https://blog.51cto.com/u_3631118/3121449
+
+-->
+
 

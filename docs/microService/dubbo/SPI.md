@@ -30,12 +30,30 @@
     * 如果扩展点加载失败，连扩展点的名称都拿不到了。  
     * 增加了对扩展点IoC和AOP的支持，一个扩展点可以直接setter注入其它扩展点。  
 
+--------------  
+1. JDK SPI的缺点：  
+&emsp; JDK标准的SPI会一次性实例化扩展点所有实现。如果扩展点加载失败，连扩展点的名称都拿不到了。   
+&emsp; 而Dubbo的SPI不会一次性全部加载并实例化，它会按需加载（指定、自适应、自动激活）。  
+
+    1. JDK标准的SPI会一次性实例化扩展点的所有实现。而Dubbo SPI能实现按需加载
+    2. Dubbo SPI增加了对扩展点Ioc和Aop的支持
+
+2. 扩展点自适应  
+&emsp; 使用@Adaptive注解，动态的通过URL中的参数来确定要使用哪个具体的实现类。  
+3. 扩展点自动激活  
+&emsp; 使用@Activate注解，可以标记对应的扩展点默认被激活使用，可以通过指定group或者value，在不同条件下获取自动激活的扩展点。  
+&emsp; Dubbo的激活扩展是指根据分组和url参数中的key，结合扩展类上的注解Activate，生成符合匹配条件的扩展实例，得到一个实例集合。  
+&emsp; 激活扩展在Dubbo中一个典型的应用场景就是过滤器(Filter), 在服务端收到请求之后，经过一系列过滤器去拦截请求，做一些处理工作，然后在真正去调用实现类。  
+
+
+
 # 1. Dubbo SPI  
 &emsp; **<font color = "red">官网：http://dubbo.apache.org/</font>** 
 <!--
 
 https://www.javashitang.com/md/dubbo/Dubbo%20SPI%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%20AOP%EF%BC%8CIOC%EF%BC%8C%E8%87%AA%E9%80%82%E5%BA%94%EF%BC%8C%E8%87%AA%E5%8A%A8%E6%BF%80%E6%B4%BB%E7%9A%84.html
 
+https://www.javashitang.com/md/dubbo/5%E5%88%86%E9%92%9F%E4%BA%86%E8%A7%A3%20Dubbo%20SPI%20%E7%9A%84%E7%89%B9%E6%80%A7.html
 
 Dubbo 扩展点加载机制：从 Java SPI 到 Dubbo SPI 
 https://mp.weixin.qq.com/s/PMF2kqT-XnAVmrxoutE0eQ
@@ -308,7 +326,15 @@ public interface Transporter {
 ```
 &emsp; 对于bind()方法，Adaptive实现先查找server key，如果该Key没有值则找 transport key值，来决定代理到哪个实际扩展点。  
 
-### 1.4.4. 扩展点自动激活
+### 1.4.4. 扩展点自动激活  
+<!-- 
+
+https://blog.csdn.net/yuanshangshenghuo/article/details/106437399
+-->
+
+&emsp; Dubbo的激活扩展是指根据分组和url参数中的key，结合扩展类上的注解Activate，生成符合匹配条件的扩展实例，得到一个实例集合。  
+&emsp; 激活扩展在Dubbo中一个典型的应用场景就是过滤器(Filter), 在服务端收到请求之后，经过一系列过滤器去拦截请求，做一些处理工作，然后在真正去调用实现类。  
+
 &emsp; 对于集合类扩展点，比如：Filter, InvokerListener, ExportListener, TelnetHandler, StatusChecker等，可以同时加载多个实现，此时，可以用自动激活来简化配置，如：  
 
 ```java
