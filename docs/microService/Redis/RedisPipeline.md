@@ -17,6 +17,8 @@ Redis pipeline
 https://mp.weixin.qq.com/s/54n1Q3_Zvyxr9Sj2Fqzhew
 批量处理
 https://www.jianshu.com/p/75137d23ae4a
+
+https://blog.csdn.net/w1lgy/article/details/84455579
 -->
 
 ## 1.1. 批处理  
@@ -34,8 +36,8 @@ https://www.jianshu.com/p/75137d23ae4a
 
 
 &emsp; 批量get/set(multi get/set)与管道：  
-1. 原生批命令是原子性，pipeline是非原子性。  
-2. 原生批命令一命令多个key, 但pipeline支持多命令（存在事务），非原子性。  
+1. 原生批命令（mset, mget）是原子性，pipeline是非原子性。  
+2. 原生批命令一命令多个key，但pipeline支持多命令（存在事务），非原子性。  
 3. 原生批命令是服务端实现，而pipeline需要服务端与客户端共同完成。  
 
 ## 1.2. Redis Pipeline

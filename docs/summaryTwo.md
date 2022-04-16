@@ -140,9 +140,9 @@
                 - [1.12.3.2.7. Redis持久化，磁盘操作](#112327-redis持久化磁盘操作)
                     - [1.12.3.2.7.1. ~~AOF重写阻塞~~](#1123271-aof重写阻塞)
             - [1.12.3.3. Redis内置功能](#11233-redis内置功能)
+                - [1.12.3.3.3. RedisPipeline/批处理](#112333-redispipeline批处理)
                 - [1.12.3.3.1. Redis事务](#112331-redis事务)
                 - [1.12.3.3.2. Redis和Lua](#112332-redis和lua)
-                - [1.12.3.3.3. RedisPipeline/批处理](#112333-redispipeline批处理)
                 - [1.12.3.3.4. Redis实现消息队列](#112334-redis实现消息队列)
             - [1.12.3.4. Redis高可用](#11234-redis高可用)
                 - [1.12.3.4.1. Redis高可用方案](#112341-redis高可用方案)
@@ -230,6 +230,7 @@
             - [1.20.3.3. 容器详解](#12033-容器详解)
         - [1.20.4. Kubernetes](#1204-kubernetes)
             - [1.20.4.1. k8s架构](#12041-k8s架构)
+    - [数据结构和算法](#数据结构和算法)
 
 <!-- /TOC -->
 
@@ -1738,7 +1739,9 @@ update product set name = 'TXC' where id = 1;
 * List，「有序」「可重复」集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  
 * Set，「无序」「不可重复」集合， **<font color = "clime">是特殊的Hash结构（value为null），</font>** 由intset（整数集合）或者dictht（字典）组成；
 * ZSet，「有序」「不可重复」集合，由skiplist（跳跃表）或者ziplist（压缩列表）组成。  
-
+    &emsp; ZSet为什么不使用红黑树？  
+    1. zset有个核心操作：范围查找，跳表效率比红黑树高。  
+    2. 跳表的实现比红黑树简单。可以有效的控制跳表层级，来控制内存的消耗。    
 
 #### 1.12.3.2. Redis原理
 &emsp; 从`CPU、内存、磁盘、网络IO`分析。  
@@ -1854,6 +1857,18 @@ update product set name = 'TXC' where id = 1;
 
 
 #### 1.12.3.3. Redis内置功能
+##### 1.12.3.3.3. RedisPipeline/批处理
+1. Redis主要提供了以下几种批量操作方式：  
+    * 批量get/set(multi get/set)。⚠️注意：Redis中有删除单个Key的指令DEL，但没有批量删除 Key 的指令。  
+    * 管道(pipelining)
+    * 事务(transaction)
+    * 基于事务的管道(transaction in pipelining)
+2. 批量get/set(multi get/set)与管道：  
+    1. 原生批命令（mset, mget）是原子性，pipeline是非原子性。  
+    2. 原生批命令一命令多个key，但pipeline支持多命令（存在事务），非原子性。  
+    3. 原生批命令是服务端实现，而pipeline需要服务端与客户端共同完成。  
+3. Pipeline指的是管道技术，指的是客户端允许将多个请求依次发给服务器，过程中而不需要等待请求的回复，在最后再一并读取结果即可。  
+
 
 ##### 1.12.3.3.1. Redis事务
 1. **<font color = "clime">Redis事务的三个阶段：</font>**  
@@ -1866,18 +1881,12 @@ update product set name = 'TXC' where id = 1;
 
     1. Redis 针对如上两种错误采用了不同的处理策略，对于发生在 EXEC 执行之前的错误，服务器会对命令入队失败的情况进行记录，并在客户端调用 EXEC 命令时，拒绝执行并自动放弃这个事务（Redis 2.6.5 之前的做法是检查命令入队所得的返回值：如果命令入队时返回 QUEUED ，那么入队成功；否则，就是入队失败）  
     2. 对于那些在 EXEC 命令执行之后所产生的错误，并没有对它们进行特别处理：即使事务中有某个/某些命令在执行时产生了错误，事务中的其他命令仍然会继续执行。 
-3. **带Watch的事务：**  
+3. **带Watch的事务（CAS）：**  
+&emsp; Redis Watch 命令给事务提供check-and-set (CAS) 机制。被Watch的Key被持续监控，如果key在Exec命令执行前有改变，那么整个事务被取消。   
 &emsp; WATCH命令用于在事务开始之前监视任意数量的键：当调用EXEC命令执行事务时，如果任意一个被监视的键已经被其他客户端修改了，那么整个事务将被打断，不再执行，直接返回失败。 
 
 ##### 1.12.3.3.2. Redis和Lua
 
-##### 1.12.3.3.3. RedisPipeline/批处理
-&emsp; Redis主要提供了以下几种批量操作方式：  
-
-* 批量get/set(multi get/set)。⚠️注意：Redis中有删除单个Key的指令DEL，但没有批量删除 Key 的指令。  
-* 管道(pipelining)
-* 事务(transaction)
-* 基于事务的管道(transaction in pipelining)
 
 
 ##### 1.12.3.3.4. Redis实现消息队列
@@ -2740,4 +2749,8 @@ update product set name = 'TXC' where id = 1;
         * **<font color = "red">controller-manager：负责管理集群各种资源，保证资源处于预期的状态。</font>** 
         * **<font color = "red">scheduler：资源调度，负责决定将Pod放到哪个Node上运行。</font>** 
     2. **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
+
+
+## 数据结构和算法  
+
 
