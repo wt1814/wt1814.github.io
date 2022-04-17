@@ -4,10 +4,11 @@
 - [1. HashMap源码](#1-hashmap源码)
     - [1.1. HashMap类定义](#11-hashmap类定义)
     - [1.2. 属性(数据结构)](#12-属性数据结构)
-        - [1.2.1. 源码](#121-源码)
-        - [1.2.2. Hash表数据结构](#122-hash表数据结构)
-        - [1.2.3. 树形化结构](#123-树形化结构)
-        - [1.2.4. HashMap的内部类](#124-hashmap的内部类)
+        - [1.2.1. 前言：Hash数据结构](#121-前言hash数据结构)
+        - [1.2.2. 源码](#122-源码)
+        - [1.2.3. Hash表数据结构](#123-hash表数据结构)
+        - [1.2.4. 树形化结构](#124-树形化结构)
+        - [1.2.5. HashMap的内部类](#125-hashmap的内部类)
     - [1.3. 构造函数](#13-构造函数)
     - [1.4. 成员方法](#14-成员方法)
         - [1.4.1. hash()函数(扰动函数)](#141-hash函数扰动函数)
@@ -24,6 +25,11 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
+1. 前言：Hash数据结构  
+    &emsp; 哈希数据结构的性能取决于三个因素：哈希函数、哈希因子、处理冲突方法。  
+    1. 常用Hash函数有：直接寻址法、数字分析法、平方取中法....  
+    2. 常用的哈希冲突解决方法有两类，开放寻址法和拉链法。  
+    &emsp; 处理冲突的方法决定了哈希表的数据结构。采用开放地址法，哈希表的数据结构是一维数组；采用链地址法，哈希表的数据结构是数组加链表。    
 1. HashMap数据结构：  
     1. Hash表数据结构：  
     &emsp; 初始容量为16；  
@@ -72,7 +78,13 @@ public class HashMap<K,V> extends AbstractMap<K,V> implements Map<K,V>, Cloneabl
 ## 1.2. 属性(数据结构)  
 ![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-5.png)  
 
-### 1.2.1. 源码
+### 1.2.1. 前言：Hash数据结构  
+&emsp; 哈希数据结构的性能取决于三个因素：哈希函数、哈希因子、处理冲突方法。  
+1. 常用Hash函数有：直接寻址法、数字分析法、平方取中法....  
+2. 常用的哈希冲突解决方法有两类，开放寻址法和拉链法。  
+&emsp; 处理冲突的方法决定了哈希表的数据结构。采用开放地址法，哈希表的数据结构是一维数组；采用链地址法，哈希表的数据结构是数组加链表。    
+
+### 1.2.2. 源码
 ```java
 //默认的初始化容量为16，必须是2的n次幂
 static final int DEFAULT_INITIAL_CAPACITY = 1 << 4; // aka 16
@@ -150,7 +162,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 }
 ```
 
-### 1.2.2. Hash表数据结构
+### 1.2.3. Hash表数据结构
 &emsp; **HashMap中hash函数设计：** 参考下文成员方法hash()章节。    
 &emsp; **HashMap在发生hash冲突的时候用的是链地址法。** **<font color = "red">JDK1.7中使用头插法，JDK1.8使用尾插法。</font>**  
 &emsp; **在HashMap的数据结构中，有两个参数可以影响HashMap的性能：初始容量(inital capacity)和负载因子(load factor)。** 初始容量和负载因子也可以修改，具体实现方式，可以在对象初始化的时候，指定参数。  
@@ -178,7 +190,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
         threshold除了用于存放扩容阈值还有其他作用吗？
         在新建HashMap对象时，threshold还会被用来存初始化时的容量。HashMap直到第一次插入节点时，才会对table进行初始化，避免不必要的空间浪费。
 
-### 1.2.3. 树形化结构
+### 1.2.4. 树形化结构
 &emsp; 在JDK1.8中，HashMap是由数组+链表+红黑树构成，新增了红黑树作为底层数据结构。链表长度大于8的时候，链表会转成红黑树；当红黑树的节点数小于6时，会转化成链表。  
 &emsp; **<font color = "clime">为什么使用红黑树？</font>**  
 &emsp; JDK1.7中，<font color = "red">如果哈希碰撞过多，拉链过长，</font>极端情况下，所有值都落入了同一个桶内，这就退化成了一个链表。<font color = "red">通过key值查找要遍历链表，效率较低。</font>JDK1.8在解决哈希冲突时，当链表长度大于阈值(默认为8)时，将链表转化为红黑树，以减少搜索时间。  
@@ -199,7 +211,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 
 &emsp; 小结：<font color = "clime">把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于 8；table 数组长度大于等于 64。</font>  
 
-### 1.2.4. HashMap的内部类
+### 1.2.5. HashMap的内部类
 &emsp; HashMap 内部有很多内部类，扩展了 HashMap 的一些功能，EntrySet类就是其中一种，该类较为简单，无内部属性，可以理解为一个工具类，对HashMap进行了简单的封装，提供了方便的遍历、删除等操作。  
 &emsp; 调用HashMap的entrySet()方法就可以返回EntrySet实例对象，为了不至于每次调用该方法都返回新的EntrySet对象，所以设置该属性，缓存EntrySet实例  。  
 
