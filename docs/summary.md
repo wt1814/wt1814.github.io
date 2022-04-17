@@ -56,8 +56,10 @@
                 - [1.3.4.2.1. 创建对象](#13421-创建对象)
                 - [1.3.4.2.2. 对象生命周期](#13422-对象生命周期)
                 - [1.3.4.2.3. 对象大小](#13423-对象大小)
+                    - [1.3.4.2.3.1. 分析java对象的组成](#134231-分析java对象的组成)
+                    - [1.3.4.2.3.2. 通过代码计算对象的大小](#134232-通过代码计算对象的大小)
             - [1.3.4.3. 内存泄露](#1343-内存泄露)
-            - [JVM参数配置](#jvm参数配置)
+            - [1.3.4.4. JVM参数配置](#1344-jvm参数配置)
         - [1.3.5. JVM执行](#135-jvm执行)
         - [1.3.6. GC](#136-gc)
             - [1.3.6.1. GC-回收位置/安全点](#1361-gc-回收位置安全点)
@@ -163,9 +165,9 @@
             - [1.5.4.4. InnoDB体系结构](#1544-innodb体系结构)
                 - [1.5.4.4.1. InnoDB内存结构-性能](#15441-innodb内存结构-性能)
                     - [1.5.4.4.1.1. BufferPool](#154411-bufferpool)
-                    - [1.5.4.4.3.1. BufferPool落盘表空间](#154431-bufferpool落盘表空间)
-                    - [1.5.4.4.1.2. 写缓冲ChangeBuffer](#154412-写缓冲changebuffer)
-                    - [1.5.4.4.1.3. AdaptiveHashIndex](#154413-adaptivehashindex)
+                    - [1.5.4.4.1.2. BufferPool落盘表空间](#154412-bufferpool落盘表空间)
+                    - [1.5.4.4.1.3. 写缓冲ChangeBuffer](#154413-写缓冲changebuffer)
+                    - [1.5.4.4.1.4. AdaptiveHashIndex](#154414-adaptivehashindex)
                 - [1.5.4.4.2. InnoDB磁盘结构-可靠性](#15442-innodb磁盘结构-可靠性)
                     - [1.5.4.4.2.1. undoLog](#154421-undolog)
                     - [1.5.4.4.2.2. redoLog](#154422-redolog)
@@ -623,11 +625,11 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 
 * 工厂设计模式：Spring使用工厂模式通过 BeanFactory、ApplicationContext 创建 bean 对象。  
 * 单例设计模式：Spring 中的 Bean 默认都是单例的。  
+* 模板方法模式：Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。  
+* 观察者模式：Spring事件驱动模型就是观察者模式很经典的一个应用。  
 * 代理设计模式：Spring AOP 功能的实现。  
 * 适配器模式：Spring AOP 的增强或通知（Advice）使用到了适配器模式、spring MVC 中也是用到了适配器模式适配Controller。  
 * 包装器设计模式：项目需要连接多个数据库，而且不同的客户在每次访问中根据需要会去访问不同的数据库。这种模式可以根据客户的需求能够动态切换不同的数据源。 
-* 模板方法模式：Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。  
-* 观察者模式：Spring事件驱动模型就是观察者模式很经典的一个应用。  
 * ……
 
 ## 1.3. JVM
@@ -805,6 +807,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 ##### 1.3.4.2.2. 对象生命周期
 
 ##### 1.3.4.2.3. 对象大小
+###### 1.3.4.2.3.1. 分析java对象的组成
 1. `在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充。`  
     * 对象头
     * 实例数据：存放类的属性数据信息，包括父类的属性信息，如果是数组的实例部分还包括数组的长度，这部分内存按4字节对齐。    
@@ -827,6 +830,10 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     3. array length：  
     &emsp; 如果对象是一个数组，那么对象头还需要有额外的空间用于存储数组的长度，这部分数据的长度也随着JVM架构的不同而不同：32位的JVM上，长度为32位；64位JVM则为64位。64位JVM如果开启+UseCompressedOops选项，该区域长度也将由64位压缩至32位。  
 
+###### 1.3.4.2.3.2. 通过代码计算对象的大小  
+
+
+
 #### 1.3.4.3. 内存泄露
 1. 内存溢出与内存泄露  
 &emsp; **<font color = "red">内存溢出out of memory</font>** ，是指<font color = "red">程序在申请内存时，`没有足够的内存空间供其使用`</font>，出现out of memory。  
@@ -839,7 +846,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 3. `~~堆外内存泄漏~~`
 
 
-#### JVM参数配置  
+#### 1.3.4.4. JVM参数配置  
 &emsp; 8g的机器一般分配一半的最大内存就可以了，因为机器本上还要占用一定内存。    
 &emsp; 设置3g的新生代内存空间。  
 
@@ -901,11 +908,11 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
 ##### 1.3.6.3.1. 堆中对象的存活
 1. 存活标准
     1. 引用计数法、根可达性分析法  
-        1. **<font color = "clime">不可回收对象包含 1). 方法区中，类静态属性(static)引用的对象； 2). 方法区中，常量(final static)引用的对象；</font>** 
+        1. **<font color = "clime">不可回收对象包含 1). 方法区中，类静态属性(static)引用的对象； 2). 方法区中，常量(final static)引用的对象； 3). 虚拟机栈中引用的对象； 4). 本地方法栈中，JNI(即Native方法)引用的对象。</font>** 
         2. `由以上可得java 全局变量 不可被回收。`  
     2. 四种引用  
-        * **<font color = "red">软引用：`SoftReference` object=new  SoftReference(new Object()); 。当堆使用率临近阈值时，才会去回收软引用的对象。</font>**  
-        * **<font color = "red">弱引用：WeakReference object=new  WeakReference (new Object();。ThreadLocal中有使用。只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>**  
+        * **<font color = "red">软引用：`SoftReference` object = new  SoftReference(new Object()); 。当堆使用率临近阈值时，才会去回收软引用的对象。</font>**  
+        * **<font color = "red">弱引用：WeakReference object = new  WeakReference (new Object();。ThreadLocal中有使用。只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>**  
 
                 软引用和弱引用的使用：
                 软引用，弱引用都非常适合来保存那些可有可无的缓存数据，如果这么做，当系统内存不足时，这些缓存数据会被回收，不会导致内存溢出。而当内存资源充足时，这些缓存数据又可以存在相当长的时间，从而起到加速系统的作用。  
@@ -941,7 +948,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     2. `一个类何时结束生命周期，取决于代表它的Class对象何时结束生命周期。`   
     &emsp; 注：`由java虚拟机自带的三种类加载器加载的类在虚拟机的整个生命周期中是不会被卸载的，`由用户自定义的类加载器所加载的类才可以被卸载。     
     3. `★★★方法区是在Full GC时回收。`  
-    &emsp; Full GC: 收集整个堆，包括新生代，老年代，永久代(在 JDK 1.8 及以后，永久代被移除，换为 metaspace 元空间)等所有部分的模式。  
+    &emsp; Full GC: 收集整个堆，包括新生代，老年代，永久代（在 JDK 1.8 及以后，永久代被移除，换为 metaspace 元空间）等所有部分的模式。  
 
 ##### 1.3.6.3.3. null与GC  
 &emsp; 《深入理解Java虚拟机》作者的观点：在需要“不使用的对象应手动赋值为null”时大胆去用，但不应当对其有过多依赖，更不能当作是一个普遍规则来推广。  
@@ -994,7 +1001,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
         * `降低-XX:CMSInitiatingOccupancyFraction参数（内存占用率，默认70%）以提早执行CMS GC动作，`虽然CMS GC不会进行内存碎片的压缩整理，但它会合并老年代中相邻的free空间。这样就可以容纳更多的新生代晋升行为。 
         * CMS收集器提供了一个-XX：+UseCMS-CompactAtFullCollection开关参数（默认是开启的，此参数从JDK 9开始废弃），用于在CMS收集器不得不进行Full GC时开启内存碎片的合并整理过程。`还提供了另外一个参数-XX：CMSFullGCsBefore-Compaction（此参数从JDK 9开始废弃），这个参数的作用是要求CMS收集器在执行过若干次（数量由参数值决定）不整理空间的Full GC之后，下一次进入Full GC前会先进行碎片整理（默认值为0，表示每次进入Full GC时都进行碎片整理）。`  
     4. `晋升失败（新生代垃圾回收）与并发模式失败（CMS垃圾回收）`：都会退化成单线程的Full GC。  
-        * 晋升失败(promotion failed)：`当新生代发生垃圾回收`， **老年代有足够的空间可以容纳晋升的对象，但是由于空闲空间的碎片化，导致晋升失败。** ~此时会触发单线程且带压缩动作的Full GC。~  
+        * 晋升失败(promotion failed)：`当新生代发生垃圾回收`， **老年代有足够的空间可以容纳晋升的对象，但是由于【空闲空间的碎片化】，导致晋升失败。** ~此时会触发单线程且带压缩动作的Full GC。~  
         * 并发模式失败(concurrent mode failure)：`当CMS在执行回收时`，新生代发生垃圾回收，同时老年代又没有足够的空间容纳晋升的对象时。CMS垃圾回收会退化成单线程的Full GC。所有的应用线程都会被暂停，老年代中所有的无效对象都被回收。  
     5. 减少remark阶段停顿：在执行并发操作之前先做一次Young GC。  
 
@@ -2120,16 +2127,16 @@ private final BlockingQueue<Future<V>> completionQueue;
 &emsp; **Buffer pool 另一个主要的功能是「加速写」，即当需要修改一个页面的时候，先将这个页面在缓冲池中进行修改，记下相关的重做日志，这个页面的修改就算已经完成了。**  
 
 
-###### 1.5.4.4.3.1. BufferPool落盘表空间
+###### 1.5.4.4.1.2. BufferPool落盘表空间
 1. 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间tablespace。表空间又由段segment，区extent，页page组成。  
 2. **<font color = "clime">相比较之下，使用独占表空间的效率以及性能会更高一点。</font>**  
 3. **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB（在操作系统中默认页大小是4KB）。</font>**  
 
-###### 1.5.4.4.1.2. 写缓冲ChangeBuffer
+###### 1.5.4.4.1.3. 写缓冲ChangeBuffer
 1. 在「非唯一」「普通」索引页（即非聚集索引）不在缓冲池中，对页进行了写操作， 1). 并不会立刻将磁盘页加载到缓冲池，而仅仅记录缓冲变更， 2).`等未来数据被读取时，再将数据合并(merge)恢复到缓冲池中`的技术。  
 2. **~~<font color = "red">如果辅助索引页已经在缓冲区了，则直接修改即可；如果不在，则先将修改保存到 Change Buffer。</font><font color = "blue">Change Buffer的数据在对应辅助索引页读取到缓冲区时合并到真正的辅助索引页中。Change Buffer 内部实现也是使用的 B+ 树。</font>~~**  
 
-###### 1.5.4.4.1.3. AdaptiveHashIndex
+###### 1.5.4.4.1.4. AdaptiveHashIndex
 &emsp;对于InnoDB的哈希索引，确切的应该这么说：  
 &emsp;(1)InnoDB用户无法手动创建哈希索引，这一层上说，InnoDB确实不支持哈希索引；  
 &emsp;(2)InnoDB会自调优(self-tuning)，如果判定建立自适应哈希索引(Adaptive Hash Index, AHI)，能够提升查询效率，InnoDB自己会建立相关哈希索引，这一层上说，InnoDB又是支持哈希索引的。  
