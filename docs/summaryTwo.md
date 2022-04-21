@@ -15,9 +15,9 @@
         - [1.3.3. Spring DI](#133-spring-di)
             - [1.3.3.1. Bean的生命周期](#1331-bean的生命周期)
             - [1.3.3.2. Spring DI中循环依赖](#1332-spring-di中循环依赖)
-        - [1.3.4. 容器相关特性](#134-容器相关特性)
-            - [1.3.4.1. FactoryBean](#1341-factorybean)
+        - [1.3.4. IOC容器扩展](#134-ioc容器扩展)
             - [1.3.4.2. Spring可二次开发常用接口（扩展性）](#1342-spring可二次开发常用接口扩展性)
+                - [1.3.4.1. FactoryBean](#1341-factorybean)
                 - [1.3.4.2.1. 事件](#13421-事件)
                 - [1.3.4.2.2. Aware接口](#13422-aware接口)
                 - [1.3.4.2.3. 后置处理器](#13423-后置处理器)
@@ -398,17 +398,13 @@
     &emsp; **怎么做到提前曝光对象而又不生成代理呢？**   
     &emsp; Spring就是在对象外面包一层ObjectFactory（三级缓存存放），提前曝光的是ObjectFactory对象，在被注入时才在ObjectFactory.getObject方式内实时生成代理对象，并将生成好的代理对象放入到第二级缓存Map\<String, Object> earlySingletonObjects。  
 
-### 1.3.4. 容器相关特性
-#### 1.3.4.1. FactoryBean
-1. BeanFactory  
-&emsp; BeanFactory是个Factory，也就是IOC容器或对象工厂；FactoryBean是个Bean，也由BeanFactory管理。  
-2. FactoryBean：`⚠️FactoryBean，工厂Bean，首先是个Bean，其次再加上工厂模式。`  
-&emsp; 一般情况下，Spring通过`反射机制`利用\<bean\>的class属性指定实现类实例化Bean。 **<font color = "red">在某些情况下，实例化Bean过程比较复杂，</font>** 如果按照传统的方式，则需要在\<bean>中提供大量的配置信息。配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。 **<font color = "red">Spring为此提供了一个org.springframework.bean.factory.FactoryBean的`工厂类接口，用户可以通过实现该接口定制实例化Bean的逻辑。`</font>**  
-&emsp; **<font color = "red">FactoryBean接口的一些实现类，如Spring自身提供的ProxyFactoryBean、JndiObjectFactoryBean，还有Mybatis中的SqlSessionFactoryBean，</font>** 用于生产一些复杂的Bean。  
-
+### 1.3.4. IOC容器扩展 
+&emsp; Spring的扩展点有IOC容器扩展、AOP扩展...  
 
 #### 1.3.4.2. Spring可二次开发常用接口（扩展性）
 &emsp; Spring为了用户的开发方便和特性支持，开放了一些特殊接口和类，用户可进行实现或者继承，常见的有：  
+
+&emsp; FactoryBean  
 
 &emsp; **Spring IOC阶段：**  
 &emsp; [事件](/docs/SSM/Spring/feature/Event.md)  
@@ -417,6 +413,14 @@
 &emsp; [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
 &emsp; [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
 &emsp; [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
+
+##### 1.3.4.1. FactoryBean
+1. BeanFactory  
+&emsp; BeanFactory是个Factory，也就是IOC容器或对象工厂；FactoryBean是个Bean，也由BeanFactory管理。  
+2. FactoryBean：`⚠️FactoryBean，工厂Bean，首先是个Bean，其次再加上工厂模式。`  
+&emsp; 一般情况下，Spring通过`反射机制`利用\<bean\>的class属性指定实现类实例化Bean。 **<font color = "red">在某些情况下，实例化Bean过程比较复杂，</font>** 如果按照传统的方式，则需要在\<bean>中提供大量的配置信息。配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。 **<font color = "red">Spring为此提供了一个org.springframework.bean.factory.FactoryBean的`工厂类接口，用户可以通过实现该接口定制实例化Bean的逻辑。`</font>**  
+&emsp; **<font color = "red">FactoryBean接口的一些实现类，如Spring自身提供的ProxyFactoryBean、JndiObjectFactoryBean，还有Mybatis中的SqlSessionFactoryBean，</font>** 用于生产一些复杂的Bean。  
+
 
 ##### 1.3.4.2.1. 事件
 &emsp; **<font color = "clime">★★★Spring事件机制的流程：</font>**   
