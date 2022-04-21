@@ -1876,11 +1876,11 @@ private final BlockingQueue<Future<V>> completionQueue;
 2. 数据库瓶颈  
 	&emsp; <font color = "clime">`不管是IO瓶颈，还是CPU瓶颈，最终都会导致数据库的活跃连接数增加，进而逼近甚至达到数据库可承载活跃连接数的阈值。在业务Service来看就是，可用数据库连接少甚至无连接可用。`</font>   
 	1. IO瓶颈：  
-	&emsp; 第一种：磁盘读IO瓶颈，热点数据太多，数据库缓存放不下，每次查询时会产生大量的IO，降低查询速度。 解决方案：分库和垂直分表。  
+	&emsp; 第一种：磁盘读IO瓶颈，热点数据太多，数据库缓存放不下，每次查询时会产生大量的IO，降低查询速度。解决方案：分库和垂直分表。  
 	&emsp; 第二种：网络IO瓶颈，请求的数据太多（MySql一般并发数200～5000），网络带宽不够。 解决方案：分库。  
 	2. CPU瓶颈：  
-	&emsp; 第一种：SQL问题，如SQL中包含join，group by，order by，非索引字段条件查询等，增加CPU运算的操作。 解决方案：SQL优化，建立合适的索引，在业务Service层进行业务计算。  
-	&emsp; 第二种：单表数据量太大（达到1000W或100G以后），查询时扫描的行太多，SQL效率低，CPU率先出现瓶颈。 解决方案：水平分表。  
+	&emsp; 第一种：SQL问题，如SQL中包含join，group by，order by，非索引字段条件查询等，增加CPU运算的操作。解决方案：SQL优化，建立合适的索引，在业务Service层进行业务计算。  
+	&emsp; 第二种：单表数据量太大（达到1000W或100G以后），查询时扫描的行太多，SQL效率低，CPU率先出现瓶颈。解决方案：水平分表。  
 
 #### 1.5.3.3. 数据库分布式
 &emsp; **`数据库拆分过程基本遵循的顺序是：`1).垂直拆分（业务拆分） ---> 2).读写分离 ---> 3).分库分表（水平拆分）。每个拆分过程都能解决业务上的一些问题，但同时也面临了一些挑战。**  
@@ -1934,7 +1934,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 	4. 未定义的服务器ID
 3. 性能
 	1. ~~如何查看主从延迟？~~  
-	2. 产生延迟的两种方式：
+	2. `【产生延迟的两种方式：】`  
 		1. `突然产生延迟，然后再跟上。可以通过备库上的慢查询日志来进行优化。`在备库上开启log_slow_slave_statement选项，可以在慢查询日志中记录复制线程执行的语句。
 		2. 稳定的延迟增大
 	3. 并行复制  
@@ -1994,7 +1994,7 @@ private final BlockingQueue<Future<V>> completionQueue;
         &emsp; （2）服务层对得到的N*(X+Y)条数据进行内存排序，内存排序后再取偏移量X后的Y条记录   
 		1. 如果要获取第N页的数据（每页S条数据），则将每一个子库的前N页（offset 0,limit N*S）的所有数据都先查出来（有筛选条件或排序规则的话都包含）。  
 		2. 然后将各个子库的结果合并起来之后，再做一次分页查询（可不用带上相同的筛选条件，但还要带上排序规则）即可得出最终结果，这种方式类似es分页的逻辑。  
-	2. 优点: 数据准确，可以跳页  
+	2. 优点：数据准确，可以跳页  
 	3. 缺点：  
 	（1）每个分库需要返回更多的数据，增大了网络传输量（耗网络）；  
 	（2）服务层还需要进行二次排序，增大了服务层的计算量（耗CPU）；   	
@@ -2016,17 +2016,17 @@ private final BlockingQueue<Future<V>> completionQueue;
 	4. 缺点: 数据不准确
 4. 终极武器-二次查询法  
     &emsp; 第一次查询：按照`limit 总数据/分库数,分页数`查询，获取到最小排序字段值和每个分库的最大排序字段值。  
-    &emsp; 第二次查询：`between` 最小排序字段值,最大排序字段值。
-
-    &emsp; （1）将order by time offset X limit Y，改写成order by time offset X/N limit Y   
-    &emsp; （2）找到最小值time_min   
-    &emsp; （3）between二次查询，order by time between $time_min and $time_i_max    
-    &emsp; （4）设置虚拟time_min，找到time_min在各个分库的offset，从而得到time_min在全局的offset    
-    &emsp; （5）得到了time_min在全局的offset，自然得到了全局的offset X limit Y    
+    &emsp; 第二次查询：`between` 最小排序字段值，最大排序字段值。  
+    
+        （1）将order by time offset X limit Y，改写成order by time offset X/N limit Y   
+        （2）找到最小值time_min   
+        （3）between二次查询，order by time between $time_min and $time_i_max    
+        （4）设置虚拟time_min，找到time_min在各个分库的offset，从而得到time_min在全局的offset    
+        （5）得到了time_min在全局的offset，自然得到了全局的offset X limit Y    
 
 ------------------
 查询二次改写   
-这也是"业界难题-跨库分页”中提到的一个方法，大致思路如下：在某 1 页的数据均摊到各分表的前提下(注：这个前提很重要，也就是说不会有一个分表的数据特别多或特别少)，换句话说：这个方案`不适用分段法`。    
+这也是"业界难题-跨库分页”中提到的一个方法，大致思路如下：在某 1 页的数据均摊到各分表的前提下（注：这个前提很重要，也就是说不会有一个分表的数据特别多或特别少），换句话说：这个方案`不适用分段法`。    
 第一次改写的SQL语句是select * from T order by time offset 333 limit 5  
 第二次要改写成一个between语句，between的起点是time_min，`between的终点是原来每个分库各自返回数据的最大值`：  
 第一个分库，第一次返回数据的最大值是1487501523  
@@ -2068,7 +2068,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 2. **<font color = "clime">MySQL服务器主要分为Server层和存储引擎层。</font>**  
 	1. <font color = "red">Server层包括连接器、查询缓存、分析器、优化器、执行器等。</font>涵盖MySQL的大多数核心服务功能，以及所有的内置函数（如日期、时间、数学和加密函数等），所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等，还有 **<font color = "clime">一个通用的日志模块binglog日志模块。</font>**   
 	2. `存储引擎：主要负责数据的存储和读取，`采用可以替换的插件式架构，支持 InnoDB、MyISAM、Memory等多个存储引擎，其中InnoDB引擎有自有的日志模块redolog模块。  
-3. `MySQL更新流程：`  
+3. `MySQL更新流程：（2大事务日志（redo log、undo log）和bin log）`  
     1. 事务提交前 --- **<font color = "clime">内存操作</font>** ：  
         1. 数据加载到缓冲池buffer poll；  
         2. `写回滚日志undo log；`  

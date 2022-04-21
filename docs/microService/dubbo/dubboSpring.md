@@ -10,6 +10,7 @@
     - [1.3. 服务消费者初始化](#13-服务消费者初始化)
         - [1.3.1. RefrenceBean生成过程](#131-refrencebean生成过程)
         - [1.3.2. 代理bean生成过程](#132-代理bean生成过程)
+    - [1.4. 小结：Dubbo和Spring](#14-小结dubbo和spring)
 
 <!-- /TOC -->
 
@@ -534,3 +535,5 @@ public java.lang.String sayHello(java.lang.String arg0){
     return (java.lang.String)ret;
 }
 ```
+
+## 1.4. 小结：Dubbo和Spring  

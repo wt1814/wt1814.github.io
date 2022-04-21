@@ -104,13 +104,13 @@ buffer=“8192” accepts=“1000” payload=“8388608” />
 &emsp; 适用场景：需同时给应用程序和浏览器JS使用的服务。  
 
 ### 1.1.5. webservice协议
-&emsp; 基于WebService的远程调用协议。 
-&emsp; 连接个数：多连接 
-&emsp; 连接方式：短连接 
-&emsp; 传输协议：HTTP 
-&emsp; 传输方式：同步传输 
-&emsp; 序列化：SOAP文本序列化 
-&emsp; 适用场景：系统集成，跨语言调用
+&emsp; 基于WebService的远程调用协议。  
+&emsp; 连接个数：多连接  
+&emsp; 连接方式：短连接  
+&emsp; 传输协议：HTTP  
+&emsp; 传输方式：同步传输  
+&emsp; 序列化：SOAP文本序列化  
+&emsp; 适用场景：系统集成，跨语言调用  
 
 ## 1.2. Dubbo支持哪些序列化方式？  
 &emsp; Dubbo默认使用Hessian序列化，还有Duddo、FastJson、Java自带序列化。   
@@ -119,3 +119,4 @@ buffer=“8192” accepts=“1000” payload=“8388608” />
 &emsp; hessian2序列化：hessian是一种跨语言的高效二进制序列化方式。但这里实际不是原生的hessian2序列化，而是阿里修改过的，它是dubbo RPC默认启用的序列化方式。  
 &emsp; json序列化：目前有两种实现，一种是采用的阿里的fastjson库，另一种是采用dubbo中自己实现的简单json库，但其实现都不是特别成熟，而且json这种文本序列化性能一般不如上面两种二进制序列化。  
 &emsp; java序列化：主要是采用JDK自带的Java序列化实现，性能很不理想。  
+
