@@ -17,9 +17,12 @@
 
 # 1. java.lang.Object类  
 
-<!-- 
- 面试官:为什么 wait() 方法需要写在while里,而不是if? 
- https://mp.weixin.qq.com/s/KhNX3xHJQbuYeUjY0G3bhw
+<!--
+泛型的作用，以及与Object的区别
+https://www.cnblogs.com/xiaoxiong2015/p/12705815.html
+
+面试官:为什么 wait() 方法需要写在while里,而不是if? 
+https://mp.weixin.qq.com/s/KhNX3xHJQbuYeUjY0G3bhw
 
 -->
 <!-- 

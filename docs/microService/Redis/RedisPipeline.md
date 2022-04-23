@@ -19,6 +19,9 @@ https://mp.weixin.qq.com/s/54n1Q3_Zvyxr9Sj2Fqzhew
 https://www.jianshu.com/p/75137d23ae4a
 
 https://blog.csdn.net/w1lgy/article/details/84455579
+
+redis通过pipeline提升吞吐量的方法
+https://www.jb51.net/article/134489.htm
 -->
 
 ## 1.1. 批处理  
