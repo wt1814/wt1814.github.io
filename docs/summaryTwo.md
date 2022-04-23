@@ -591,7 +591,9 @@
 2. 创建SqlSession   
 &emsp; 在Spring中并没有直接使用DefaultSqlSession，DefaultSqlSession是线程不安全的。Spring对SqlSession 进行了一个封装，这个SqlSession的实现类就是SqlSessionTemplate。SqlSessionTemplate是线程安全的。SqlSessionTemplate通过动态代理的方式来保证DefaultSqlSession操作的线程安全性。  
 3. 接口的扫描注册  
+&emsp; MapperScannerConfigurer 实现了BeanDefinitionRegistryPostProcessor接口， BeanDefinitionRegistryPostProcessor 是 BeanFactoryPostProcessor的子类。  
 4. 接口注入使用  
+&emsp; MapperFactoryBean，因为实现了 FactoryBean 接口，同样是调用getObject()方法。  
 
 
 ### 1.4.5. MyBatis缓存

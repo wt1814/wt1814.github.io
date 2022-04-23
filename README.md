@@ -578,6 +578,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [Redis基本数据类型](/docs/microService/Redis/RedisBasicStructure.md)  
 &emsp; [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
 &emsp; &emsp; [BitMap实现签到](/docs/microService/Redis/BitMap.md)  
+&emsp; &emsp; [Zset实现排行榜](/docs/microService/Redis/Leaderboard.md)  
 &emsp; [Redis底层实现](/docs/microService/Redis/RedisBottom.md)  
 &emsp; &emsp; [数据结构](/docs/microService/Redis/dataStructure.md)  
 &emsp; &emsp; [SDS](/docs/microService/Redis/SDS.md)  

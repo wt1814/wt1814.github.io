@@ -45,6 +45,9 @@
 
 # 1. 数据结构
 <!--
+面试官：讲讲 Zset 底层数据原理？为什么不用树而用跳表|Redis 面试
+https://www.bilibili.com/video/BV1kh411x7Jc?spm_id_from=333.337.search-card.all.click
+
 https://pdai.tech/md/db/nosql-redis/db-redis-x-redis-ds.html
 
 全面阐释Redis常见对象类型的底层数据结构 
