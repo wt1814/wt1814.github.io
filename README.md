@@ -896,6 +896,8 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 
 -->
 
+[elk](/docs/build/elk.md)   
+
 
 ## 源码环境搭建
 
