@@ -15,6 +15,7 @@
                 - [1.1.1.3.4. 虚引用](#11134-虚引用)
                 - [1.1.1.3.5. ★★★软引用和弱引用的使用](#11135-★★★软引用和弱引用的使用)
         - [1.1.2. 对象生存还是死亡](#112-对象生存还是死亡)
+            - [1.1.2.1. Object.finalize()方法](#1121-objectfinalize方法)
     - [1.2. 方法区(类和常量)回收/类的卸载阶段](#12-方法区类和常量回收类的卸载阶段)
     - [1.3. ~~null与GC~~](#13-null与gc)
 
@@ -36,7 +37,7 @@
 					假如⼀个应⽤需要读取⼤量的本地图⽚，如果每次读取图⽚都从硬盘读取会严重影响性能，如果⼀次性全部加载到内存⼜可能造成内存溢出，这时可以⽤软引⽤解决这个问题。  
 
 			* 虚引用：PhantomReference。虚引用是所有类型中最弱的一个。 **<font color = "red">一个持有虚引用的对象，和没有引用几乎是一样的，随时可能被垃圾回收器回收。</font>**    
-	2. 对象生存还是死亡？  
+	2. 对象生存还是死亡（Object#finalize()方法）？  
 	&emsp; **<font color = "clime">如果有必要执行父类`Object#finalize()`方法，放入F-Queue队列；收集器将对F-Queue队列中的对象进行第二次小规模的标记；如果对象在执行finalize()方法时重新与引用链上的任何一个对象建立关联则逃脱死亡，否则执行死亡。</font>**  
 	&emsp; ~~finalize 是 Object 类中的一个基础方法，它的设计目的是保证对象在被垃圾收集前完成特定资源的回收的，但其执行“不稳定”，且有一定的性能问题，已经在 JDK 9 中被设置为弃用的方法了。~~  
 2. 方法区(类和常量)回收/类的卸载阶段
@@ -64,6 +65,7 @@
 <!--
 finalize 介绍
 https://mp.weixin.qq.com/s/U3FdjfEWICDPSjgy_WEJSA
+https://blog.csdn.net/weixin_28801659/article/details/114100880
 
 亿级流量系统如何玩转 JVM 
 https://mp.weixin.qq.com/s/_uKSQjI--eT3n04Voel5_g
@@ -268,6 +270,14 @@ public class FinalizeEscapeGC {
 	}
 }
 ```
+
+#### 1.1.2.1. Object.finalize()方法  
+<!-- 
+
+finalize 介绍
+https://mp.weixin.qq.com/s/U3FdjfEWICDPSjgy_WEJSA
+https://blog.csdn.net/weixin_28801659/article/details/114100880
+-->
 
 ## 1.2. 方法区(类和常量)回收/类的卸载阶段
 1. Java虚拟机规范对方法区是否实现垃圾回收没有做出强制的规定。存在未实现或未能完整实现方法区类型卸载的垃圾回收器（例如JDK 11的zGC收集器）。~~方法区的回收效果比较难令人满意，条件很苛刻，但是回收又是很有必要的。~~  

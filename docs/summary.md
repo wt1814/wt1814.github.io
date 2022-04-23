@@ -919,7 +919,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
                 假如⼀个应⽤需要读取⼤量的本地图⽚，如果每次读取图⽚都从硬盘读取会严重影响性能，如果⼀次性全部加载到内存⼜可能造成内存溢出，这时可以⽤软引⽤解决这个问题。  
 
         * 虚引用：PhantomReference。虚引用是所有类型中最弱的一个。 **<font color = "red">一个持有虚引用的对象，和没有引用几乎是一样的，随时可能被垃圾回收器回收。</font>**    
-2. ~~对象生存还是死亡？（`【进行回收】`）~~  
+2. ~~对象生存还是死亡？（`【进行回收】`）（Object#finalize()方法）~~  
     1. Object#finalize()⽅法介绍：  
     &emsp; Object#finalize()⽅法什么时候被调⽤？析构函数(finalization)的⽬的是什么？  
     &emsp; `垃圾回收器(garbage colector)决定回收某对象时，就会运⾏该对象的finalize()⽅法。`但是在Java中很不幸，如果内存总是充⾜的，那么垃圾回收可能永远不会进⾏，也就是说filalize() 可能永远不被执⾏，显然指望它做收尾⼯作是靠不住的。  
