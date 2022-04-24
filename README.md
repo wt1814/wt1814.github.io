@@ -686,6 +686,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; &emsp; [多表关联](/docs/ES/multiTable.md)  
 &emsp; &emsp; [高亮显示](/docs/ES/highLight.md)  
 &emsp; &emsp; [检索模版](/docs/ES/searchTemplate.md)  
+&emsp; [ES自定义扩展词库](/docs/ES/thesaurus.md)  
 &emsp; [ES异步搜索](/docs/ES/AsyncSearch.md)  
 &emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
 [ES原理](/docs/ES/principle.md)  
