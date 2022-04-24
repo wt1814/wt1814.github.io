@@ -7,6 +7,7 @@
     - [1.2. 反射原理](#12-反射原理)
         - [1.2.1. Class.forName](#121-classforname)
         - [1.2.2. Class.getDeclaredMethods](#122-classgetdeclaredmethods)
+        - [1.2.3. Class.forName()和ClassLoader.loadClass()](#123-classforname和classloaderloadclass)
 
 <!-- /TOC -->
 
@@ -29,6 +30,7 @@
   * Class.getDeclaredMethods 
       * 通过Class对象找到method_的值，即为方法区的地址  
       * 通过8bit的大小来分割Method的地址  
+  * Class.forName()和ClassLoader.loadClass()
 
 
 # 1. ~~反射的实现原理~~
@@ -431,3 +433,10 @@ inline LengthPrefixedArray<ArtMethod>* Class::GetMethodsPtr() {
       static_cast<uintptr_t>(GetField64(OFFSET_OF_OBJECT_MEMBER(Class, methods_))));
 }
 ```
+
+### 1.2.3. Class.forName()和ClassLoader.loadClass()  
+<!--
+反射中Class.forName()和ClassLoader.loadClass()的区别
+https://www.cnblogs.com/zabulon/p/5826610.html
+-->
+

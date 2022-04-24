@@ -45,6 +45,9 @@
 
 # 1. 数据结构
 <!--
+Redis数据结构为什么既省内存又高效？
+https://mp.weixin.qq.com/s/RVAaC9umnenTs66TW4TOtw
+
 面试官：讲讲 Zset 底层数据原理？为什么不用树而用跳表|Redis 面试
 https://www.bilibili.com/video/BV1kh411x7Jc?spm_id_from=333.337.search-card.all.click
 
