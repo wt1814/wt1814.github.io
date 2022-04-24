@@ -36,6 +36,9 @@
 
 # 1. ES基本概念  
 <!--
+Elasticsearch 为什么能做到快速检索？— 倒排索引的秘密 
+https://mp.weixin.qq.com/s/vwTrRSfgJ-7bWQUJWhfaHQ
+
 核心概念介绍
 https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490655&idx=3&sn=c988118763c13d263dfabe745e43cebe&scene=21#wechat_redirect
 一文讲透Elasticsearch倒排索引与分词 

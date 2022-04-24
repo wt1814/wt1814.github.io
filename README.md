@@ -686,11 +686,13 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; &emsp; [多表关联](/docs/ES/multiTable.md)  
 &emsp; &emsp; [高亮显示](/docs/ES/highLight.md)  
 &emsp; &emsp; [检索模版](/docs/ES/searchTemplate.md)  
+&emsp; [ES异步搜索](/docs/ES/AsyncSearch.md)  
 &emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
 [ES原理](/docs/ES/principle.md)  
 &emsp; [Elasticsearch搜索为什么那么快？](/docs/ES/SearchFast.md)  
 &emsp; [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
 &emsp; [ES增删改原理](/docs/ES/write.md)  
+&emsp; [ES缓存](/docs/ES/ESCache.md)  
 [ES运维](/docs/ES/Operation.md)  
 &emsp; [ES集群操作](/docs/ES/ClusterOperation.md)  
 &emsp; [ES监控](/docs/ES/monitor.md)  
@@ -701,6 +703,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [EFK使用](/docs/ES/EFKUse.md)  
 &emsp; [Kibana用户手册](/docs/ES/Kibana.md)  
 &emsp; [Kibana查询](/docs/ES/KibanaQuery.md)  
+&emsp; [canal](/docs/ES/canal.md)  
 <!-- 
 logstash同步mysql数据到Elasticsearch实战,主要实现删除
 https://blog.csdn.net/Giggle1994/article/details/111194763

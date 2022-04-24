@@ -9,6 +9,11 @@ kibana设置中文
 https://www.cnblogs.com/gaohanghang/p/12099614.html
 在 Kibana 中显示图片及 Binary 字段类型介绍 
 https://mp.weixin.qq.com/s/c1myzUz7fJhcG_ZjM9wguw
+
+
+如何使用 Kibana 可视化地理位置数据 
+https://mp.weixin.qq.com/s/96TBRzABHol27KrMncUkTQ
+
 -->
 
 &emsp; **<font color = "clime">Kibana文档：https://www.elastic.co/guide/cn/kibana/current/index.html</font>**  

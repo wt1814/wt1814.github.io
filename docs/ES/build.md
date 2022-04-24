@@ -1,14 +1,8 @@
 
 <!-- 
- Elasticsearch 为什么能做到快速检索？— 倒排索引的秘密 
- https://mp.weixin.qq.com/s/vwTrRSfgJ-7bWQUJWhfaHQ
-
- Elasticsearch 异步搜索 Async search 实战 
- https://mp.weixin.qq.com/s/XYXp5Xn2r7Vnqxj3iswi9A
 
 ***  死磕 Elasticsearch 方法论认知清单
 https://mp.weixin.qq.com/s/GTDoSXTX263lc920u3N1_Q
-
 
 Elasticsearch 如何自定义扩展词库？ 
 https://mp.weixin.qq.com/s/zWRz8Lry7Szh8wJaBw-O4g
@@ -22,29 +16,9 @@ https://blog.csdn.net/laoyang360/article/details/79293493#comments_15296602
 Elasticsearch 生产环境集群部署最佳实践 
 https://mp.weixin.qq.com/s/RVaR0U-CVAmLOewYse7HKA
 
- 如何使用 Kibana 可视化地理位置数据 
- https://mp.weixin.qq.com/s/96TBRzABHol27KrMncUkTQ
-
-
-canal
-https://www.jianshu.com/p/9677ca6ca34e
-使用canal增量同步mysql数据库信息到ElasticSearch
-https://www.cnblogs.com/dalaoyang/p/11069850.html
-canal adapter没有同步成功无异常
-https://blog.csdn.net/lizz861109/article/details/113183990
-CanalAdapter1.1.5版本问题收集
-https://blog.csdn.net/lizz861109/article/details/112682680
-Elasticsearch 如何实现相似推荐功能？
-https://mp.weixin.qq.com/s/apPGngRQx6bJEmR82XlXhQ
-
 -->
 
 # ElasticSearch安装 
-<!-- 
-Elasticsearch 缓存深入详解 
-https://mp.weixin.qq.com/s/x-3C3Nekv3pYoagGgQ8Q-A
--->
-
 <!-- 
 ElasticSearch 从安装开始 
 https://mp.weixin.qq.com/s/QnBqoaptV5-xKIpOBKSfHQ
@@ -56,7 +30,6 @@ https://www.elastic.co/cn/start
 -->
 
 ## 单节点安装  
-
 
 ## HEAD插件安装
 
