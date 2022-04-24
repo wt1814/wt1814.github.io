@@ -333,6 +333,7 @@
         * [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
         * [SpringBoot启动过程](/docs/microService/SpringBoot/SpringBootRun.md)  
             * [SpringApplication初始化](/docs/microService/SpringBoot/SpringApplicationInit.md)  
+                * [SPI及SpringFactoriesLoader](/docs/microService/SpringBoot/SpringFactoriesLoader.md)  
             * [run()方法运行过程](/docs/microService/SpringBoot/runProcess.md)  
             * [SpringBoot事件监听机制](/docs/microService/SpringBoot/EventListeners.md)  
             * [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/SpringBootEvent.md)  
