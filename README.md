@@ -856,7 +856,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [k8s运维](/docs/devAndOps/k8s/tools.md)  
 &emsp; &emsp; [k8s监控](/docs/devAndOps/k8s/Monitor.md)  
 &emsp; [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
-
+[LDAP自助修改密码服务](/docs/devAndOps/LDAP.md)  
 
 ----
 
