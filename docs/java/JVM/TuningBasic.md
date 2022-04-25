@@ -20,7 +20,7 @@
                 - [1.4.1.3.1. ★★★jmap的几个操作要慎用](#14131-★★★jmap的几个操作要慎用)
                 - [1.4.1.3.2. ★★★live参数](#14132-★★★live参数)
             - [1.4.1.4. Jhat：虚拟机堆转储快照分析工具](#1414-jhat虚拟机堆转储快照分析工具)
-            - [1.4.1.5. Jstat：虚拟机统计信息监视工具](#1415-jstat虚拟机统计信息监视工具)
+            - [1.4.1.5. ★★★Jstat：虚拟机统计信息监视工具](#1415-★★★jstat虚拟机统计信息监视工具)
             - [1.4.1.6. Jinfo：java配置信息工具](#1416-jinfojava配置信息工具)
         - [1.4.2. 可视化调优工具](#142-可视化调优工具)
 
@@ -59,6 +59,9 @@ https://www.bilibili.com/video/BV1QJ411P78Q?spm_id_from=333.999.0.0
 
 6 款 Java 8 自带工具，轻松分析定位 JVM 问题！ 
 https://mp.weixin.qq.com/s/YuML5GfzRhq5YBfIPXgbYg
+
+jstack 命令解读
+https://blog.csdn.net/qq_19922839/article/details/115379649
 -->
 
 ## 1.1. 性能指标  
@@ -310,7 +313,11 @@ https://blog.csdn.net/shenzhenhair/article/details/8607366
 #### 1.4.1.4. Jhat：虚拟机堆转储快照分析工具  
 &emsp; **<font color = "clime">jhat(JVM Heap Analysis Tool)命令是与jmap搭配使用，用来分析jmap生成的dump，</font>** jhat内置了一个微型的HTTP/HTML服务器，生成dump的分析结果后，可以在浏览器中查看。在此要注意，一般不会直接在服务器上进行分析，因为jhat是一个耗时并且耗费硬件资源的过程，一般把服务器生成的dump文件复制到本地或其他机器上进行分析。    
 
-#### 1.4.1.5. Jstat：虚拟机统计信息监视工具
+#### 1.4.1.5. ★★★Jstat：虚拟机统计信息监视工具  
+<!-- 
+
+-->
+&emsp; jstat的主要作用就是对Java应用程序的资源和性能进行实时监控的命令行工具，主要包括GC情况和Heap Size资源使用情况。  
 &emsp; jstat(JVM statistics Monitoring)是用于监视虚拟机运行时状态信息的命令，它可以显示出虚拟机进程中的类装载、内存、垃圾收集、JIT编译等运行数据。  
 &emsp; 命令格式：jstat [option] PID [interval] [count]。参数：  
 

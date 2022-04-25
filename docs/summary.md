@@ -1068,7 +1068,7 @@ public static <S> ServiceLoader<S> load(Class<S> service) {
     &emsp; <font color = "red">jmap（JVM Memory Map）命令用于生成heap dump文件。如果不使用这个命令，</font> **<font color = "red">还可以使用-XX:+HeapDumpOnOutOfMemoryError参数来让虚拟机出现OOM的时候自动生成dump文件。</font>**   
     &emsp; jmap -dump:live,format=b,file=path pid。 **<font color = "blue">参数lime表示需要抓取目前在生命周期内的内存对象。</font>**   
     * Jhat：虚拟机堆转储快照分析工具。  
-    * Jstat：虚拟机统计信息监视工具。  
+    * Jstat：虚拟机统计信息监视工具。★★★jstat的主要作用就是对Java应用程序的资源和性能进行实时监控的命令行工具，主要包括GC情况和Heap Size资源使用情况。    
     * Jinfo：java配置信息工具。  
 
     -----------------  
