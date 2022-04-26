@@ -324,6 +324,7 @@
         * [Spring整合MyBatis原理](/docs/SSM/MyBatis/SpringMybatisPrinciple.md)  
         * [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
         * [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
+            * [MyBatis分页](/docs/SSM/MyBatis/MybatisPage.md)  
         * [MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)   
 * [分布式微服务和集群](/docs/system/distributed.md)  
 * SpringBoot  

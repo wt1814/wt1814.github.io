@@ -429,6 +429,7 @@
 &emsp; [Spring整合MyBatis原理](/docs/SSM/MyBatis/SpringMybatisPrinciple.md)  
 &emsp; [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
 &emsp; [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
+&emsp; &emsp; [MyBatis分页](/docs/SSM/MyBatis/MybatisPage.md)  
 &emsp; [MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)   
 
 <!-- 
