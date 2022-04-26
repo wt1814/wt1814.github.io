@@ -31,7 +31,9 @@
 4. 限流方式有服务降级、服务拒绝。 
 5. Java单机限流可以使用AtomicInteger、Semaphore或Guava的RateLimiter来实现，但是上述方案都不支持集群限流。集群限流的应用场景有两个，一个是网关，常用的方案有Nginx限流和Spring Cloud Gateway，另一个场景是与外部或者下游服务接口的交互，可以使用redis+lua实现。阿里巴巴的开源限流系统Sentinel也可以针对接口限流。  
 
-<!-- 
+<!--
+浅谈限流算法
+https://mp.weixin.qq.com/s/Zg25rLksjqqWaUzCjMMZgQ
 
 微服务接口限流的设计、思考
 https://blog.csdn.net/weixin_41850404/article/details/84616231

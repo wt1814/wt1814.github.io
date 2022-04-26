@@ -203,6 +203,13 @@ https://blog.csdn.net/qq_19922839/article/details/115379649
 
 ----
 ## 1.3. GC日志分析  
+<!-- 
+
+ 收藏，手把手教你Java GC算法日志解读与分析
+ https://mp.weixin.qq.com/s/ODKOXFUJmekjM3ykkML68w
+-->
+
+
 ### 1.3.1. GC日志详解  
 &emsp; 在某个应用中，配置`-XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:D:/gc.log`。启动后打印如下 GC 日志：  
 &emsp; YongGC  

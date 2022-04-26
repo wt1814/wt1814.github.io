@@ -20,6 +20,8 @@ Redis官方的高可用性解决方案
 https://mp.weixin.qq.com/s/8JPBNMGhBsq2jfW9v-H5vQ
 ***Redis中主、从库宕机如何恢复？
  https://mp.weixin.qq.com/s/pO23ASPrc46BoPkRnQsPXQ
+ Redis主从、哨兵、 Cluster集群一锅端！ 
+ https://mp.weixin.qq.com/s/u31mfJfY9yUAJp-vQ9us2w
 
 -->
 

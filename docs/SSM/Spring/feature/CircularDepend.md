@@ -51,6 +51,13 @@
 
 # 1. ~~循环依赖~~  
 <!--
+解决Java循环依赖的问题
+https://www.pianshen.com/article/77991517879/
+
+spring源码解析之原型模式下的循环依赖
+https://blog.csdn.net/lkp_kapila/article/details/105344252?utm_medium=distribute.wap_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_ecpm_v1~rank_v31_ecpm-1-105344252.wap_agg_so&utm_term=spring%E5%9C%A8%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E4%B8%8B%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96
+
+https://mp.weixin.qq.com/s/vouhebUZ1tt8x76LwtaU4w
 
 循环依赖示例
 https://mp.weixin.qq.com/s/WfY0jT2yukXgJ0pOkK6RuA

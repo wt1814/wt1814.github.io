@@ -47,6 +47,7 @@ AQS源码分析
 https://www.jianshu.com/p/26269ca2162f?utm_campaign=haruki&utm_content=note&utm_medium=reader_share&utm_source=weixin
  16 张图 | 揭开并发 AQS 的神秘面纱 
  https://mp.weixin.qq.com/s/iaF82t_tiFwz3sOFzQoWrA
+ https://mp.weixin.qq.com/s/9qsfw0ah9GaLNSm-ALCQcA
 -->
 
 ## 1.1. 简介  
