@@ -18,5 +18,7 @@ Jenkins自动化部署Hybris
 https://dayarch.top/p/jenkins-hybris-deploy.html
 Jenkins学习之邮箱配置 
 https://dayarch.top/p/jenkins-config-mail.html
+Jenkins 集成 Harbor 自动发布镜像
+https://mp.weixin.qq.com/s/IiZjuv23o8ui-gidyOJC2Q
 
 -->

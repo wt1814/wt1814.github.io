@@ -39,6 +39,10 @@ Class clazz = defineClass0(loader, proxyName, proxyClassFile, 0, proxyClassFile.
 3、利用clazz.newInstance反射机制生成代理类的对象；
 
 　　动态代理的局限性：它必须要求委托类实现一个接口，但是并非所有的类都有接口，对于没有实现接口的类，无法使用该方法实现代理；而且该方法无法 对委托类的方法内部逻辑作修改。
+
+private方法可以被代理吗？
+https://mp.weixin.qq.com/s/o45-1ceWtbJid0E4kcehWg
+
 -->
 &emsp; 动态代理实现方式由JDK自带的代理和Cglib提供的类库。这里只讨论JDK代理的使用。  
 
