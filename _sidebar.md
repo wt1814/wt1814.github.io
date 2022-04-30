@@ -544,6 +544,7 @@
 * [工作流](docs/middleware/workflow.md)  
 * 内存
     * [堆外内存](/docs/system/OutHeapMemory.md)  
+    * [centos增加内存](/docs/system/centosMemory.md)  
 * 磁盘
     * [页缓存](/docs/system/PageCache.md)  
 * [网络IO](/docs/microService/communication/Netty/basics.md)    

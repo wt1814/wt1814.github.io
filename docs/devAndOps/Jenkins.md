@@ -1,6 +1,8 @@
 
 # Jenkins
-<!-- 
+<!--
+jenkins自动化发布
+https://www.jianshu.com/p/e2bc52db9605?utm_campaign=haruki&utm_content=note&utm_medium=reader_share&utm_source=weixin
 
 三十二张图告诉你，Jenkins构建SpringBoot有多简单~ 
 https://mp.weixin.qq.com/s/1H4E-gTyYmoueFIpK0AFlw

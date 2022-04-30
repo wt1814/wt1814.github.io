@@ -723,6 +723,8 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 ## 内存优化
 [堆外内存](/docs/system/OutHeapMemory.md)  
+[centos增加内存](/docs/system/centosMemory.md)  
+
 
 ## 磁盘IO
 [页缓存](/docs/system/PageCache.md)  
