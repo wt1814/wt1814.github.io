@@ -62,6 +62,10 @@ https://mp.weixin.qq.com/s/YuML5GfzRhq5YBfIPXgbYg
 
 jstack 命令解读
 https://blog.csdn.net/qq_19922839/article/details/115379649
+
+ 6 款 Java 8 自带工具，轻松分析定位 JVM 问题！
+ https://mp.weixin.qq.com/s/xo6Cp37u3xl7mlzBNYKa5A
+
 -->
 
 ## 1.1. 性能指标  

@@ -46,6 +46,10 @@ https://mp.weixin.qq.com/s/Cdq5aVYXUGQqxUdsnLlA8w
 
 知识点：了解InnoDB的Checkpoint技术 
 https://mp.weixin.qq.com/s/rQX3AFivFDNIYXE7-r9U_w
+
+操作系统为什么要缓冲数据到OS cache里，而不直接刷盘呢？
+这里就是将“每次写”优化为“批量写”，以提高操作系统性能。
+https://mp.weixin.qq.com/s/4AipXwNmwcKvJiFrUYWzvA
 -->
 <!-- 
 redo 与检查点

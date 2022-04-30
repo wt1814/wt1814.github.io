@@ -14,6 +14,8 @@
 
 Spring-Retry重试实现原理 
 https://mp.weixin.qq.com/s/_qFK-ki7-mL4Nnv4zEfYrQ
+https://mp.weixin.qq.com/s/Tc7USvs_xZ6jPyyeR2jx1Q
+https://mp.weixin.qq.com/s/_Np5AX5CFU3eUhIHt9FVdQ
 
 -->
 

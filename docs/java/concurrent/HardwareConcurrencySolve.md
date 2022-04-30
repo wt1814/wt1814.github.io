@@ -36,6 +36,8 @@
 https://blog.csdn.net/w1453114339/article/details/107563613
 https://www.jianshu.com/p/06717ac8312c
 https://www.freesion.com/article/73021012217/
+Volatile如何保证线程可见性之总线锁、缓存一致性协议
+https://mp.weixin.qq.com/s/Qg9qJpnuel6kTd-Tp7nWbQ
 
 -->
 

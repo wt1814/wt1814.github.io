@@ -24,6 +24,8 @@
 https://blog.csdn.net/qq_38826019/article/details/117628192
 spring声明式事务底层源码分析+spring事务失效场景总结
 https://blog.csdn.net/aaa_bbb_ccc_123_456/article/details/103920130
+https://mp.weixin.qq.com/s/kU_sCwnkZvnFpaFesgrrGA
+https://mp.weixin.qq.com/s/32TDmCUuYS06lNOAkd60iw
 
 -->
 <!-- 

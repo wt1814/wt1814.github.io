@@ -30,6 +30,9 @@
 https://mp.weixin.qq.com/s/Ur-SWCwm-6yVF9vV2eLlHA
 男朋友连模糊匹配like %%怎么优化都不知道 
 https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
+8 种最坑的SQL错误用法
+https://mp.weixin.qq.com/s/rfKgNDc7r6JlZY1ZGS1nvQ
+
 -->
 
 ## 1.1. MySql性能和瓶颈

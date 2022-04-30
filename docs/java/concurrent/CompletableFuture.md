@@ -96,6 +96,10 @@ https://mp.weixin.qq.com/s/R_-MX85FbaO7VnQedQbc2A
 
 * 进行计算密集型的操作，并且没有I/O，那么推荐使用Stream接口，因为实现简单，同时效率也可能是最高的(如果所有的线程都是计算密集型的，那就没有必要创建比处理器核数更多的线程)。  
 * 如果并行操作涉及到I/O的操作(网络连接，请求等)，那么使用CompletableFuture灵活性更好，通过控制线程数量来优化程序的运行。  
+
+说说 CompletableFuture 的实现原理和使用场景？
+https://mp.weixin.qq.com/s/UraKyZCsFyPITEujRUgG-Q
+
 -->
 
 &emsp; 为什么引入CompletableFuture?  

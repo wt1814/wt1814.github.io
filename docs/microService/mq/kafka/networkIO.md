@@ -14,6 +14,10 @@
 <!-- 
 kafka——高效读写数据
 https://www.jianshu.com/p/ce8253609b6b
+
+内核缓冲区
+https://mp.weixin.qq.com/s/ovFmy1ehKKJkJNeu0nYRVw
+
 -->
 
 ## 1.1. 零拷贝

@@ -42,6 +42,9 @@
 
 # 1. Spring事务   
 <!--
+分析@Transactional实现原理
+https://mp.weixin.qq.com/s/Jq2NVorvGZV1qj_HRyj4ow
+
 spring事务失效的12种场景
 https://mp.weixin.qq.com/s/nMAsyH8z7E6XFYiKJTy4Cw
 https://mp.weixin.qq.com/s/RpA3RvYv4I4zYSzBmZaDiA

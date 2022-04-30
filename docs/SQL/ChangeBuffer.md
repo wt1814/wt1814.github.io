@@ -23,6 +23,7 @@ InnoDB的插入缓冲
 https://mp.weixin.qq.com/s/6t0_XByG8-yuyB0YaLuuBA
 https://mp.weixin.qq.com/s/PF21mUtpM8-pcEhDN4dOIw
 https://mp.weixin.qq.com/s/S7-LI5FdfDuogFrN8vJZ8Q
+https://mp.weixin.qq.com/s/OMntrDZsrDL29UhC4_DSBQ
 
 -->
 

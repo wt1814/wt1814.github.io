@@ -45,6 +45,9 @@
 # 1. JVM内存结构/运行时数据区  
 <!--
 
+ JVM 方法区的理解
+ https://mp.weixin.qq.com/s/u-7Oj_BNmvQsul-dEdxRog
+
 元空间与直接内存的关系
 https://blog.csdn.net/Ethan_199402/article/details/110431404
 
