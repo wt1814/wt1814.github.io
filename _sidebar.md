@@ -401,6 +401,7 @@
 * [分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
 * [分布式事务](/docs/microService/thinking/DistriTransaction.md)  
     * [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
+        *[JTA+Atomic](/docs/microService/thinking/JTA.md)  
     * [TCC](/docs/microService/thinking/TCC.md)   
     * [TCC问题1](/docs/microService/thinking/TCCProblemOne.md)   
     * [TCC问题](/docs/microService/thinking/TCCProblem.md)  
