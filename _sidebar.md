@@ -670,6 +670,10 @@
     * [堡垒机](/docs/Linux/baolei.md)  
     * [Linux系统](/docs/Linux/Linux.md)  
     * [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
+* Linux服务器搭建  
+    * [MySql](/docs/build/MySql.md)   
+    * [Redis](/docs/build/Redis.md)  
+    * [elk](/docs/build/elk.md)   
 * 常用工具  
     * [idea](/docs/software/idea/idea.md)  
     * [抓包Charles](/docs/software/charles.md)  
