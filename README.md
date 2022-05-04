@@ -668,6 +668,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 ### 分布式搜索引擎  
 [ES搭建](/docs/ES/build.md)  
+&emsp; [elk](/docs/build/elk.md)   
 &emsp; [ES配置文件](/docs/ES/configure.md)  
 &emsp; [内存设置](/docs/ES/heap.md)  
 [ES基本概念](/docs/ES/basicConcepts.md)  
