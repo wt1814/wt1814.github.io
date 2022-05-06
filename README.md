@@ -68,6 +68,7 @@
 &emsp; [关键字](/docs/java/basis/keyword.md)  
 &emsp; [内部类](/docs/java/basis/InnerClass.md)  
 &emsp; [代码块](/docs/java/basis/CodeBlock.md)  
+&emsp; [枚举和数据字典](/docs/java/basis/Enum.md)  
 [Java基础数据类型](/docs/java/basis/DataType.md)  
 &emsp; [Object](/docs/java/basis/Object.md)  
 &emsp; [String](/docs/java/basis/String.md)  

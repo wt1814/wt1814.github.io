@@ -7,6 +7,7 @@
         * [关键字](/docs/java/basis/keyword.md)  
         * [内部类](/docs/java/basis/InnerClass.md)  
         * [代码块](/docs/java/basis/CodeBlock.md)  
+        * [枚举和数据字典](/docs/java/basis/Enum.md)  
     * [Java基础数据类型](/docs/java/basis/DataType.md)  
         * [Object](/docs/java/basis/Object.md)  
         * [String](/docs/java/basis/String.md)  
