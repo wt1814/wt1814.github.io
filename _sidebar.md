@@ -598,6 +598,7 @@
     * [IM系统](/docs/webSocket/IM.md)  
 * [请求合并](/docs/webSocket/RequestMerge.md)  
 * 系统设计  
+    * [工具类](/docs/SystemDesign/tools.md)  
     * [登录-JWT和session](/docs/SystemDesign/JWT.md)  
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
