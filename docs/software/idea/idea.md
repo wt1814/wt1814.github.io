@@ -17,6 +17,11 @@
 
 
 # 1. Idea
+<!-- 
+Idea在debug模式下修改的java后，Recopile（ctrl+shift+f9）热部署失效
+https://blog.csdn.net/weixin_42170236/article/details/121637717
+-->
+
 
 ## 1.1. 安装
 <!-- 
