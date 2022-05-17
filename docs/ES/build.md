@@ -34,3 +34,8 @@ https://www.elastic.co/cn/start
 
 ## Kibana安装
 
+
+## 作为系统服务启动  
+
+
+

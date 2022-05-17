@@ -18,6 +18,8 @@ https://mp.weixin.qq.com/s/1yXNrSdyk_cR8V7wqJarRw
 https://mp.weixin.qq.com/s/8PjfMqZGDkOk_hv4iIaqNg
 
 
+Elasticsearch技术解析与实战 第6章集群管理  
+
 -->
 
 ## 1.1. 集群健康状态检查  

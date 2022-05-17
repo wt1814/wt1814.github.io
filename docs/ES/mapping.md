@@ -179,11 +179,17 @@ PUT my_index/_doc/1
 https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490952&idx=1&sn=bd34ff8633b3a101eb0f6a7dfd9a2c94&scene=21#wechat_redirects
 地理类型和特殊类型
 https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247490994&idx=1&sn=77ec1e677a9c77379956530808f30887&scene=21#wechat_redirect
+
+Elasticsearch技术解析与实战 第3.2章
 -->
 &emsp; 字段类型定义了该如何索引存储字段值。ES中提供了丰富的字段类型定义，请查看官网链接详细了解每种类型的特点：  
 https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html  
 
 ## 1.4. 元字段  
+<!-- 
+Elasticsearch技术解析与实战 第3.3章
+-->
+
 
 ## 1.5. 映射参数  
 <!-- 

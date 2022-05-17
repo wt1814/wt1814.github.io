@@ -7,14 +7,15 @@
         - [1.1.2. 获取配置](#112-获取配置)
         - [1.1.3. 更新索引配置](#113-更新索引配置)
         - [1.1.4. 索引状态管理](#114-索引状态管理)
-    - [1.2. 索引监控](#12-索引监控)
-        - [1.2.1. 索引统计](#121-索引统计)
-        - [1.2.2. 索引分片](#122-索引分片)
-        - [1.2.3. 索引恢复](#123-索引恢复)
-        - [1.2.4. 索引分片存储](#124-索引分片存储)
-    - [1.3. 重建索引](#13-重建索引)
-        - [1.3.1. ★★★Shrink Index收缩索引](#131-★★★shrink-index收缩索引)
-        - [1.3.2. Split Index拆分索引](#132-split-index拆分索引)
+    - [1.2. 索引模板](#12-索引模板)
+    - [1.3. 索引监控](#13-索引监控)
+        - [1.3.1. 索引统计](#131-索引统计)
+        - [1.3.2. 索引分片](#132-索引分片)
+        - [1.3.3. 索引恢复](#133-索引恢复)
+        - [1.3.4. 索引分片存储](#134-索引分片存储)
+    - [1.4. 重建索引](#14-重建索引)
+        - [1.4.1. ★★★Shrink Index收缩索引](#141-★★★shrink-index收缩索引)
+        - [1.4.2. Split Index拆分索引](#142-split-index拆分索引)
 
 <!-- /TOC -->
 
@@ -92,9 +93,14 @@ POST /kimchy,elasticsearch/_forcemerge
 POST /_forcemerge
 ```
 
+## 1.2. 索引模板  
+<!-- 
+Elasticsearch技术解析与实战 第2.4.4
+-->
 
-## 1.2. 索引监控
-### 1.2.1. 索引统计  
+
+## 1.3. 索引监控
+### 1.3.1. 索引统计  
 &emsp; **查看索引状态信息**  
 &emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-stats.html  
 
@@ -119,16 +125,16 @@ GET /index1,index2/_segments
 GET /_segments
 ```
 
-### 1.2.2. 索引分片
+### 1.3.2. 索引分片
 
-### 1.2.3. 索引恢复
+### 1.3.3. 索引恢复
 &emsp; **查看索引恢复信息**  
 &emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-recovery.html
 
 &emsp; GET index1,index2/_recovery?human  
 &emsp; GET /_recovery?human  
 
-### 1.2.4. 索引分片存储
+### 1.3.4. 索引分片存储
 &emsp; **查看索引分片的存储信息**  
 &emsp; 官网链接：https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-shards-stores.html
 
@@ -146,9 +152,9 @@ GET /_shard_stores?status=green
 
 
 
-## 1.3. 重建索引   
+## 1.4. 重建索引   
 
-### 1.3.1. ★★★Shrink Index收缩索引
+### 1.4.1. ★★★Shrink Index收缩索引
 &emsp; 索引的分片数是不可更改的，如要减少分片数可以通过收缩方式收缩为一个新的索引。新索引的分片数必须是原分片数的因子值，如原分片数是8，则新索引的分片数可以为4、2、1 。  
 &emsp; 什么时候需要收缩索引呢?  
 &emsp; 最初创建索引的时候分片数设置得太大，后面发现用不了那么多分片，这个时候就需要收缩了。  
@@ -196,7 +202,7 @@ GET _cat/recovery?v
 GET _cluster/health  
 ```
 
-### 1.3.2. Split Index拆分索引
+### 1.4.2. Split Index拆分索引
 &emsp; **当索引的分片容量过大时，可以通过拆分操作将索引拆分为一个倍数分片数的新索引。** 能拆分为几倍由创建索引时指定的index.number_of_routing_shards路由分片数决定。这个路由分片数决定了根据一致性hash路由文档到分片的散列空间。  
 &emsp; 如index.number_of_routing_shards = 30，指定的分片数是5，则可按如下倍数方式进行拆分：  
 
