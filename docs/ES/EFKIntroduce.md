@@ -3,6 +3,7 @@
 
 - [1. EFK介绍](#1-efk介绍)
     - [1.1. ELK/EFK简介](#11-elkefk简介)
+    - [Elastic Stack](#elastic-stack)
     - [1.2. EFK日志架构的演进](#12-efk日志架构的演进)
         - [1.2.1. Demo版](#121-demo版)
         - [1.2.2. 初级版](#122-初级版)
@@ -46,6 +47,15 @@ https://www.cnblogs.com/xianglei_/p/12047315.html
 &emsp; 数据分析与可视化平台，对Elasticsearch存储的数据进行可视化分析，通过表格的形式展现出来。  
 
 &emsp; **<font color = "red">EFK的流程：</font>** `Filebeat->【LogstashShipper ---> 缓冲中间件Kafka ---> LogstashIndexer】->【Elasticsearch <-> Kibana】`。由程序产生出日志，由Filebeat进行处理，将日志数据输出到Logstash中，Logstash再将数据输出到Elasticsearch中，Elasticsearch再与Kibana相结合展示给用户。
+
+## Elastic Stack
+<!-- 
+
+
+什么是Elastic Stack
+https://blog.csdn.net/qq_41106844/article/details/106577851
+-->
+
 
 ## 1.2. EFK日志架构的演进  
 <!-- 
