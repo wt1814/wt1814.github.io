@@ -685,6 +685,7 @@
     * [elk](/docs/build/elk.md)   
 * 常用工具  
     * [idea](/docs/software/idea/idea.md)  
+    * [postman](/docs/software/postman.md)  
     * [抓包Charles](/docs/software/charles.md)  
     * [markdown](/docs/software/markdown.md)  
     * [Json](/docs/software/Json.md)  
@@ -710,5 +711,4 @@
         * [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
         * [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
         * [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
-
 

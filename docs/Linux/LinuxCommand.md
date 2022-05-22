@@ -25,6 +25,9 @@
 # 1. Linux命令  
 <!--
 
+linux中的“~”、“/”、“./”分别代表什么？
+https://blog.csdn.net/wangjingyuing/article/details/123433527
+
 学会这21条，你离 Vim 大神就不远了！ 
 https://mp.weixin.qq.com/s/1HTanfvxXAUzWJwCHWbfFg
 Linux中ACL权限的学习 

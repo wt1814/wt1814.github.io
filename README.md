@@ -35,8 +35,9 @@
         - [分布式消息队列](#分布式消息队列)
             - [Kafka](#kafka)
     - [常用中间件](#常用中间件)
-        - [任务调度](#任务调度)
         - [分布式搜索引擎](#分布式搜索引擎)
+        - [任务调度](#任务调度)
+        - [安全框架shiro](#安全框架shiro)
         - [工作流](#工作流)
     - [内存优化](#内存优化)
     - [磁盘IO](#磁盘io)
@@ -662,12 +663,6 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 --------------------------
 
 ## 常用中间件
-### 任务调度
-[延时队列](/docs/frame/delayQueue.md)  
-[分布式调度](/docs/frame/taskSheduling.md)  
-&emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
-[时间轮算法](/docs/microService/dubbo/timeWheel.md)  
-
 ### 分布式搜索引擎  
 [ES搭建](/docs/ES/build.md)  
 &emsp; [elk](/docs/build/elk.md)   
@@ -722,8 +717,18 @@ logstash同步mysql数据到Elasticsearch实战,主要实现删除
 https://blog.csdn.net/Giggle1994/article/details/111194763
 -->
 
-
 [ES重制](/docs/ESRemake/ESRemake.md)    
+
+### 任务调度
+[延时队列](/docs/frame/delayQueue.md)  
+[分布式调度](/docs/frame/taskSheduling.md)  
+&emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
+[时间轮算法](/docs/microService/dubbo/timeWheel.md)  
+
+
+### 安全框架shiro  
+[shiro](/docs/system/shiro.md)  
+
 
 ### 工作流
 [工作流](docs/middleware/workflow.md)  
@@ -906,6 +911,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 
 ## 常用工具  
 [Idea](/docs/software/idea/idea.md)  
+[postman](/docs/software/postman.md)  
 [抓包Charles](/docs/software/charles.md)  
 [markdown](/docs/software/markdown.md)  
 [Json](/docs/software/Json.md)  
