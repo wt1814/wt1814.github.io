@@ -669,7 +669,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [ES配置文件](/docs/ES/configure.md)  
 &emsp; [内存设置](/docs/ES/heap.md)  
 [ES基本概念](/docs/ES/basicConcepts.md)  
-&emsp; [ES底层数据结构](/docs/ES/BottomStructure.md)  
+&emsp; [***ES底层数据结构](/docs/ES/BottomStructure.md)  
 [ES集群基本概念](/docs/ES/ClusterConcept.md)  
 &emsp; [ES集群优化](/docs/ES/ClusterOptimi.md)  
 [ES使用](/docs/ES/useTutorials.md)  
@@ -680,6 +680,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [索引管理](/docs/ES/indexMaintain.md)  
 &emsp; [映射详解](/docs/ES/mapping.md)  
 &emsp; [文档操作](/docs/ES/document.md)  
+&emsp; &emsp; [文档评分](/docs/ES/documentScore.md)  
 &emsp; [检索操作](/docs/ES/search.md)  
 &emsp; &emsp; [结构化检索](/docs/ES/Structured.md)  
 &emsp; &emsp; [全文检索](/docs/ES/fullText.md)  
@@ -915,6 +916,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [抓包Charles](/docs/software/charles.md)  
 [markdown](/docs/software/markdown.md)  
 [Json](/docs/software/Json.md)  
+[jd-jui](/docs/software/JDJUI.md)  
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
 
 

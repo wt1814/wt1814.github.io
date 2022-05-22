@@ -517,6 +517,7 @@
         * [索引管理](/docs/ES/indexMaintain.md)  
         * [映射详解](/docs/ES/mapping.md)  
         * [文档操作](/docs/ES/document.md)  
+            * [文档评分](/docs/ES/documentScore.md)  
         * [检索操作](/docs/ES/search.md)  
             * [结构化检索](/docs/ES/Structured.md)  
             * [全文检索](/docs/ES/fullText.md)  
@@ -689,6 +690,7 @@
     * [抓包Charles](/docs/software/charles.md)  
     * [markdown](/docs/software/markdown.md)  
     * [Json](/docs/software/Json.md)  
+    * [jd-jui](/docs/software/JDJUI.md)  
     * [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
 * 算法
     * [红黑树](/docs/function/redBlack.md)  
