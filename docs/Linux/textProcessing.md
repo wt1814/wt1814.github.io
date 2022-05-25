@@ -3,6 +3,7 @@
 <!-- TOC -->
 
 - [1. Linux文本处理](#1-linux文本处理)
+    - [vi](#vi)
     - [1.1. grep](#11-grep)
         - [1.1.1. 简介](#111-简介)
         - [1.1.2. 实际使用](#112-实际使用)
@@ -45,6 +46,12 @@ Linux 三剑客之 grep 教程详解
 https://mp.weixin.qq.com/s/vYmOk2fWRHu6HQWPSt1XAg
 -->
 &emsp; grep、sed、awk是Linux处理文本常用的命令。  
+
+## vi  
+&emsp; linux编辑文本时，查找内容关键字  
+&emsp; /关键字，回车就行；按n建会查找下一个；  
+&emsp; ?关键字，回车就行；按n建会查找下一个；  
+
 
 ## 1.1. grep  
 ### 1.1.1. 简介  

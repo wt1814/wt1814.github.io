@@ -42,8 +42,9 @@
     - [内存优化](#内存优化)
     - [磁盘IO](#磁盘io)
     - [网络IO/分布式通信](#网络io分布式通信)
-    - [系统设计](#系统设计)
+        - [源码搭建汇总](#源码搭建汇总)
     - [Error](#error)
+    - [系统设计](#系统设计)
     - [计算机网络](#计算机网络)
         - [负载均衡](#负载均衡)
     - [DevOps](#devops)
@@ -51,10 +52,6 @@
     - [Linux服务器搭建](#linux服务器搭建)
     - [常用工具](#常用工具)
     - [算法](#算法)
-    - [源码环境搭建](#源码环境搭建)
-        - [JDK](#jdk)
-        - [SSM](#ssm-1)
-        - [微服务](#微服务)
 
 <!-- /TOC -->
 
@@ -363,7 +360,6 @@
 [其他](/docs/web/other.md)  
 [前后端分离](/docs/web/separate.md)  
 &emsp; [跨域](/docs/web/Cross.md)  
-
 
 
 ## 架构设计  
@@ -794,10 +790,13 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [IM系统](/docs/webSocket/IM.md)  
 [请求合并](/docs/webSocket/RequestMerge.md)  
 
+------
 
-## 系统设计  
-[工具类](/docs/SystemDesign/tools.md)  
-[登录-JWT和session](/docs/SystemDesign/JWT.md)  
+
+### 源码搭建汇总
+[SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
+[Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
+[Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 
 
 ---
@@ -808,6 +807,13 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 [redis scan命令](/docs/Error/redisScan.md)  
 <!-- [雪花利用ZK生成workId]()   -->
+
+----------
+
+## 系统设计  
+[工具类](/docs/SystemDesign/tools.md)  
+[登录-JWT和session](/docs/SystemDesign/JWT.md)  
+
 
 ----
 
@@ -935,17 +941,3 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [大数据和空间限制](/docs/function/bigdata.md)  
 &emsp; [内存只有 2G，如何对 100 亿数据进行排序？](/docs/function/SmallMemory.md)  
 
-
-## 源码环境搭建
-
-### JDK
-[JDK1.8源码搭建](/docs/java/basis/JDKSource.md)  
-
-### SSM
-[Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
-[MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
-
-### 微服务
-[SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
-[Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
-[Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
