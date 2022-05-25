@@ -5,6 +5,7 @@
     - [1.1. 版本：5.7和8.0比较](#11-版本57和80比较)
         - [1.1.1. 新特性](#111-新特性)
         - [1.1.2. 性能对比](#112-性能对比)
+    - [四种安装方式](#四种安装方式)
 
 <!-- /TOC -->
 
@@ -25,4 +26,17 @@ https://blog.51cto.com/u_14299052/2935366
 https://blog.csdn.net/weixin_39754603/article/details/113302166
 -->
 
+
+## 四种安装方式
+<!-- 
+
+Linux之Mysql(两种安装方法)
+https://blog.csdn.net/llAl_lAll/article/details/119419178
+
+linux离线安装mysql5.7
+https://blog.csdn.net/weixin_43837034/article/details/121761316
+
+https://blog.csdn.net/qq_55752792/article/details/122149990
+
+-->
 
