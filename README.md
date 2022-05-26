@@ -12,7 +12,6 @@
     - [tomcat](#tomcat)
     - [项目构建基础](#项目构建基础)
     - [架构设计](#架构设计)
-        - [DDD](#ddd)
     - [SSM](#ssm)
         - [Spring](#spring)
         - [MyBatis](#mybatis)
@@ -371,18 +370,16 @@
 [系统瓶颈](/docs/system/Bottleneck.md)  
 [JAVA线上故障排查](/docs/Linux/problem.md)  
 [脚手架介绍](/docs/system/Scaffolding.md)  
+[消息与事件驱动](/docs/Linux/drive.md)  
+&emsp; [事件和驱动](/docs/system/EventsAndMessages.md)  
 
 <!-- 
 [Gateway](/docs/microService/microservices/Gateway.md)  
 
 软件工程
 
-### DDD
 [DDD](/docs/system/DDD.md)  
 -->
-
-&emsp; [消息与事件驱动](/docs/Linux/drive.md)  
-&emsp; [事件和驱动](/docs/system/EventsAndMessages.md)  
 
 -------
 
