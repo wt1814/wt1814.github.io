@@ -19,7 +19,6 @@
     - [分布式框架](#分布式框架)
         - [SpringBoot](#springboot)
         - [SpringCloud](#springcloud)
-        - [OpenAPI](#openapi)
         - [Dubbo](#dubbo)
         - [Zookeeper](#zookeeper)
     - [分布式](#分布式)
@@ -441,7 +440,6 @@
 ------------
 
 ## 分布式框架  
-[分布式微服务和集群](/docs/system/distributed.md)  
 
 ### SpringBoot  
 [学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
@@ -471,8 +469,6 @@
 [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
 
-### OpenAPI 
-[OpenAPI](/docs/system/OpenAPI.md)  
 
 ### Dubbo  
 [分布式服务治理](/docs/microService/dubbo/CloudAlibaba.md)  
@@ -660,6 +656,9 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 --------------------------
 
 ## 常用中间件
+[OpenAPI](/docs/system/OpenAPI.md)  
+
+
 ### 分布式搜索引擎  
 [ES搭建](/docs/ES/build.md)  
 &emsp; [elk](/docs/build/elk.md)   
