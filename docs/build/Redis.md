@@ -4,6 +4,7 @@
 - [1. Redis](#1-redis)
     - [1.1. Redis各版本](#11-redis各版本)
     - [1.2. 搭建Redis](#12-搭建redis)
+        - [搭建Redis伪集群](#搭建redis伪集群)
 
 <!-- /TOC -->
 
@@ -47,4 +48,16 @@ https://blog.csdn.net/tianyu_yunlong_1/article/details/123006028
 
 
 ## 1.2. 搭建Redis  
+
+
+### 搭建Redis伪集群  
+<!-- 
+windows搭建redis伪集群
+https://www.bianchengquan.com/article/438078.html
+Windows的Redis5.0+集群搭建
+https://blog.csdn.net/qq_37062156/article/details/121628324
+在window下创建redis服务
+https://blog.csdn.net/lejian/article/details/124339831
+
+-->
 
