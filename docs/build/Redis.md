@@ -4,12 +4,18 @@
 - [1. Redis](#1-redis)
     - [1.1. Redis各版本](#11-redis各版本)
     - [1.2. 搭建Redis](#12-搭建redis)
-        - [搭建Redis伪集群](#搭建redis伪集群)
+        - [1.2.1. 搭建Redis伪集群](#121-搭建redis伪集群)
+    - [1.3. 无法杀死Redis集群](#13-无法杀死redis集群)
 
 <!-- /TOC -->
 
 
 # 1. Redis  
+<!-- 
+
+
+-->
+
 ## 1.1. Redis各版本  
 <!--
 Redis各版本特性
@@ -50,7 +56,7 @@ https://blog.csdn.net/tianyu_yunlong_1/article/details/123006028
 ## 1.2. 搭建Redis  
 
 
-### 搭建Redis伪集群  
+### 1.2.1. 搭建Redis伪集群  
 <!-- 
 windows搭建redis伪集群
 https://www.bianchengquan.com/article/438078.html
@@ -58,6 +64,14 @@ Windows的Redis5.0+集群搭建
 https://blog.csdn.net/qq_37062156/article/details/121628324
 在window下创建redis服务
 https://blog.csdn.net/lejian/article/details/124339831
+
+-->
+
+## 1.3. 无法杀死Redis集群  
+<!-- 
+
+Linux上无法杀掉redis进程
+https://blog.csdn.net/u011191042/article/details/84528502?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-84528502-blog-121384286.pc_relevant_antiscanv2&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-84528502-blog-121384286.pc_relevant_antiscanv2&utm_relevant_index=1
 
 -->
 

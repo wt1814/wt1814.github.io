@@ -695,6 +695,10 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
 &emsp; [ES增删改原理](/docs/ES/write.md)  
 &emsp; [ES缓存](/docs/ES/ESCache.md)  
+[ES优化](/docs/ES/ESoptimization.md)  
+&emsp; [搜索速度优化](/docs/ES/SearchSpeed.md)  
+&emsp; [写入速度和磁盘使用量优化](/docs/ES/WriteSpeed.md)  
+&emsp; [故障判断](/docs/ES/FaultJudgment.md)  
 [ES运维](/docs/ES/Operation.md)  
 &emsp; [ES集群操作](/docs/ES/ClusterOperation.md)  
 &emsp; [ES监控](/docs/ES/monitor.md)  
@@ -899,7 +903,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
 
 ----
-
 
 
 ## Linux服务器搭建
