@@ -621,6 +621,7 @@
 * 系统设计  
     * [工具类](/docs/SystemDesign/tools.md)  
     * [登录-JWT和session](/docs/SystemDesign/JWT.md)  
+* [安全架构](/docs/system/safe/safe.md) 
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
@@ -651,6 +652,21 @@
         * [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
         * [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)   
         * [Nginx执行原理](/docs/system/loadBalance/Nginx/nginxPrinciple.md)  
+* Linux操作系统  
+    * [Linux版本](/docs/Linux/LinuxVersion.md)  
+    * [Linux命令](/docs/Linux/LinuxCommand.md)  
+        * [文本处理](/docs/Linux/textProcessing.md)  
+        * [网络通讯](/docs/Linux/NetworkCommunication.md)  
+        * [进程管理](/docs/Linux/ProcessManagement.md)  
+    * [shell编程](/docs/Linux/shell.md)  
+    * [堡垒机](/docs/Linux/baolei.md)  
+    * [Linux系统](/docs/Linux/Linux.md)  
+    * [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
+* Linux服务器搭建  
+    * [CentOS](/docs/build/centOS.md)  
+    * [MySql](/docs/build/MySql.md)   
+    * [Redis](/docs/build/Redis.md)  
+    * [elk](/docs/build/elk.md)   
 * DevOps  
     * [CI/CD](/docs/devAndOps/CICD.md)  
     * [Devops](/docs/devAndOps/devOps.md)  
@@ -663,7 +679,7 @@
     * [多种发布方式](/docs/system/publishe.md)  
         * [灰度发布](/docs/system/grayscalePublishe.md)  
     * [Jenkins](/docs/devAndOps/Jenkins.md)  
-    * [监控系统](/docs/devAndOps/monitor.md)  
+
     * [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
         * [容器化Docker](/docs/devAndOps/docker/introduce.md)  
         * [Docker架构](/docs/devAndOps/docker/principle.md)  
@@ -687,20 +703,10 @@
             * [k8s监控](/docs/devAndOps/k8s/Monitor.md)  
         * [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
     * [LDAP自助修改密码服务](/docs/devAndOps/LDAP.md)  
-* Linux操作系统  
-    * [Linux命令](/docs/Linux/LinuxCommand.md)  
-        * [文本处理](/docs/Linux/textProcessing.md)  
-        * [网络通讯](/docs/Linux/NetworkCommunication.md)  
-        * [进程管理](/docs/Linux/ProcessManagement.md)  
-    * [shell编程](/docs/Linux/shell.md)  
-    * [堡垒机](/docs/Linux/baolei.md)  
-    * [Linux系统](/docs/Linux/Linux.md)  
-    * [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
-* Linux服务器搭建  
-    * [CentOS](/docs/build/centOS.md)  
-    * [MySql](/docs/build/MySql.md)   
-    * [Redis](/docs/build/Redis.md)  
-    * [elk](/docs/build/elk.md)   
+* 监控
+    * [Linux监控指标](/docs/devAndOps/indicators.md)  
+    * [监控系统](/docs/devAndOps/monitor.md)  
+
 * 常用工具  
     * [idea](/docs/software/idea/idea.md)  
     * [postman](/docs/software/postman.md)  

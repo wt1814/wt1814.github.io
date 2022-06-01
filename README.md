@@ -41,13 +41,15 @@
     - [磁盘IO](#磁盘io)
     - [网络IO/分布式通信](#网络io分布式通信)
         - [源码搭建汇总](#源码搭建汇总)
-    - [Error](#error)
     - [系统设计](#系统设计)
+    - [互联网安全架构](#互联网安全架构)
+    - [Error](#error)
     - [计算机网络](#计算机网络)
         - [负载均衡](#负载均衡)
-    - [DevOps](#devops)
     - [Linux操作系统](#linux操作系统)
     - [Linux服务器搭建](#linux服务器搭建)
+    - [DevOps](#devops)
+    - [监控](#监控)
     - [常用工具](#常用工具)
     - [算法](#算法)
     - [前端知识](#前端知识)
@@ -793,14 +795,23 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 ------
 
-
 ### 源码搭建汇总
 [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
 [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
 [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 
 
+----------
+
+## 系统设计  
+[工具类](/docs/SystemDesign/tools.md)  
+[登录-JWT和session](/docs/SystemDesign/JWT.md)  
+
+## 互联网安全架构  
+[安全架构](/docs/system/safe/safe.md)  
+
 ---
+
 ## Error  
 [多线程串线了](/docs/Error/ThreadCrossed.md)  
 [熔断降级处理](/docs/Error/hystrix.md)  
@@ -808,12 +819,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 [redis scan命令](/docs/Error/redisScan.md)  
 <!-- [雪花利用ZK生成workId]()   -->
-
-----------
-
-## 系统设计  
-[工具类](/docs/SystemDesign/tools.md)  
-[登录-JWT和session](/docs/SystemDesign/JWT.md)  
 
 
 ----
@@ -849,6 +854,32 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
 &emsp; [Nginx执行原理](/docs/system/loadBalance/Nginx/nginxPrinciple.md)  
 
+----
+
+## Linux操作系统  
+[Linux版本](/docs/Linux/LinuxVersion.md)  
+[Linux命令](/docs/Linux/LinuxCommand.md)  
+&emsp; [文本处理](/docs/Linux/textProcessing.md)  
+&emsp; [网络通讯](/docs/Linux/NetworkCommunication.md)  
+&emsp; [进程管理](/docs/Linux/ProcessManagement.md)  
+[shell编程](/docs/Linux/shell.md)  
+[堡垒机](/docs/Linux/baolei.md)  
+[Linux系统](/docs/Linux/Linux.md)  
+[Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
+
+----
+
+
+## Linux服务器搭建
+<!-- 
+https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164718060116780255298678%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=164718060116780255298678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v29_name-2-102999744.nonecase&utm_term=%E9%98%BF%E9%87%8C%E4%BA%91&spm=1018.2226.3001.4450
+
+-->
+[CentOS](/docs/build/centOS.md)  
+[MySql](/docs/build/MySql.md)   
+[Redis](/docs/build/Redis.md)  
+[elk](/docs/build/elk.md)   
+
 
 ------
 
@@ -866,7 +897,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [多种发布方式](/docs/system/publishe.md)  
 &emsp; [灰度发布](/docs/system/grayscalePublishe.md)  
 [Jenkins](/docs/devAndOps/Jenkins.md)  
-[监控系统](/docs/devAndOps/monitor.md)  
+
 [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
 &emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
 &emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
@@ -890,30 +921,14 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
 [LDAP自助修改密码服务](/docs/devAndOps/LDAP.md)  
 
-----
+------------  
 
-## Linux操作系统  
-[Linux命令](/docs/Linux/LinuxCommand.md)  
-&emsp; [文本处理](/docs/Linux/textProcessing.md)  
-&emsp; [网络通讯](/docs/Linux/NetworkCommunication.md)  
-&emsp; [进程管理](/docs/Linux/ProcessManagement.md)  
-[shell编程](/docs/Linux/shell.md)  
-[堡垒机](/docs/Linux/baolei.md)  
-[Linux系统](/docs/Linux/Linux.md)  
-[Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
-
-----
+## 监控
+[Linux监控指标](/docs/devAndOps/indicators.md)  
+[监控系统](/docs/devAndOps/monitor.md)  
 
 
-## Linux服务器搭建
-<!-- 
-https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164718060116780255298678%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=164718060116780255298678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v29_name-2-102999744.nonecase&utm_term=%E9%98%BF%E9%87%8C%E4%BA%91&spm=1018.2226.3001.4450
-
--->
-[CentOS](/docs/build/centOS.md)  
-[MySql](/docs/build/MySql.md)   
-[Redis](/docs/build/Redis.md)  
-[elk](/docs/build/elk.md)   
+-----------------------
 
 
 ## 常用工具  
