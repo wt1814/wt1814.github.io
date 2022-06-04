@@ -842,17 +842,21 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [网络监控](/docs/network/NetMonitor.md)  
 
 ### 负载均衡  
-[负载均衡](/docs/system/loadBalance/loadBalance.md)  
-[DNS轮询](/docs/system/loadBalance/DNS.md)  
 [CDN](/docs/system/loadBalance/CDN.md)   
-[http重定向](/docs/system/loadBalance/redirect.md)  
-[LVS](/docs/system/loadBalance/LVS.md)  
-[Keepalived](/docs/system/loadBalance/Keepalived.md)  
-[Nginx](/docs/system/loadBalance/Nginx/nginx.md)  
-&emsp; [Nginx介绍](/docs/system/loadBalance/Nginx/nginxIntroduce.md)  
-&emsp; [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
-&emsp; [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
-&emsp; [Nginx执行原理](/docs/system/loadBalance/Nginx/nginxPrinciple.md)  
+[负载均衡](/docs/system/loadBalance/loadBalance.md)  
+[Http重定向](/docs/system/loadBalance/redirect.md)  
+[DNS轮询](/docs/system/loadBalance/DNS.md)  
+[反向代理负载均衡](/docs/system/loadBalance/AgentLoad.md)  
+&emsp; [LVS](/docs/system/loadBalance/LVS.md)  
+&emsp; [Keepalived](/docs/system/loadBalance/Keepalived.md)  
+&emsp; [Nginx](/docs/system/loadBalance/Nginx/nginx.md)  
+&emsp; &emsp; [Nginx介绍](/docs/system/loadBalance/Nginx/nginxIntroduce.md)  
+&emsp; &emsp; [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
+&emsp; &emsp; [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
+&emsp; &emsp; [Nginx执行原理](/docs/system/loadBalance/Nginx/nginxPrinciple.md)  
+[IP负载均衡](/docs/system/loadBalance/IPLoad.md)  
+[数据链路负载均衡](/docs/system/loadBalance/LinkLoad.md)  
+
 
 ----
 
