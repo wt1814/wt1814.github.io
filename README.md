@@ -565,6 +565,7 @@
 [缓存更新](/docs/cache/CacheUpdate.md)  
 [双缓存](/docs/cache/DoubleCache.md)  
 [本地缓存](/docs/cache/LocalCache.md)  
+[CDN前置缓存](/docs/system/loadBalance/CDN.md)   
 <!-- 
 [缓存](/docs/cache/Cache.md)  
 本地缓存
@@ -842,7 +843,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [网络监控](/docs/network/NetMonitor.md)  
 
 ### 负载均衡  
-[CDN](/docs/system/loadBalance/CDN.md)   
 [负载均衡](/docs/system/loadBalance/loadBalance.md)  
 [Http重定向](/docs/system/loadBalance/redirect.md)  
 [DNS轮询](/docs/system/loadBalance/DNS.md)  
