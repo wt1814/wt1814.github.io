@@ -50,6 +50,8 @@
     - [Linux服务器搭建](#linux服务器搭建)
     - [DevOps](#devops)
     - [监控](#监控)
+        - [服务器监控](#服务器监控)
+        - [业务监控](#业务监控)
     - [常用工具](#常用工具)
     - [算法](#算法)
     - [前端知识](#前端知识)
@@ -242,8 +244,7 @@
 
 ## 数据库  
 [数据建模](/docs/SQL/modeling.md)  
-&emsp; [时间类型选择](/docs/SQL/Date.md)  
-&emsp; [Json类型](/docs/SQL/JSON.md)  
+&emsp; [字段](/docs/SQL/Field.md)  
 [SQL语句](/docs/SQL/SQLSentence.md)  
 &emsp; [基本查询语句](/docs/SQL/basicSelect.md)  
 &emsp; &emsp; [limit](/docs/SQL/limit.md)  
@@ -287,6 +288,7 @@
 &emsp; &emsp; [Sharding-JDBC](/docs/SQL/Sharding-JDBC.md)  
 [数据库连接池](/docs/SQL/connectionPool.md)  
 [MySQL运维](/docs/SQL/MySqlMonitor.md)  
+&emsp; [MySql审核平台](/docs/SQL/examine.md)  
 [MySql架构](/docs/SQL/MySqlPrinciple.md)   
 &emsp; [MySql运行流程](/docs/SQL/Framework.md)   
 &emsp; [InnoDB插入更新流程](/docs/SQL/insert.md)  
@@ -322,6 +324,7 @@
 ## tomcat
 [tomcat](/docs/tomcat/tomcat.md)  
 [tomcat类加载器](/docs/tomcat/tomcatClassLoader.md)  
+[tomcat日志](/docs/tomcat/tomcatLog.md)  
 
 
 --------
@@ -928,8 +931,11 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 ------------  
 
 ## 监控
+### 服务器监控
 [Linux监控指标](/docs/devAndOps/indicators.md)  
 [监控系统](/docs/devAndOps/monitor.md)  
+
+### 业务监控  
 
 
 -----------------------
@@ -943,6 +949,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [Json](/docs/software/Json.md)  
 [jd-jui](/docs/software/JDJUI.md)  
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
+[博客搭建-vuepress](/docs/software/vuepress.md)  
 
 
 --------
