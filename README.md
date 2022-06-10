@@ -11,6 +11,9 @@
     - [数据库](#数据库)
     - [tomcat](#tomcat)
     - [项目构建基础](#项目构建基础)
+        - [脚手架](#脚手架)
+        - [前后端分离](#前后端分离)
+        - [互联网安全架构](#互联网安全架构)
     - [架构设计](#架构设计)
     - [SSM](#ssm)
         - [Spring](#spring)
@@ -42,7 +45,6 @@
     - [网络IO/分布式通信](#网络io分布式通信)
         - [源码搭建汇总](#源码搭建汇总)
     - [系统设计](#系统设计)
-    - [互联网安全架构](#互联网安全架构)
     - [Error](#error)
     - [计算机网络](#计算机网络)
         - [负载均衡](#负载均衡)
@@ -357,11 +359,18 @@
 &emsp; [格式化](/docs/web/Format.md)  
 &emsp; [数据脱敏](/docs/web/sensitive.md)  
 &emsp; [加密算法](/docs/web/encryption.md)  
-[源码安全](/docs/web/codeSecurity.md)   
 [其他](/docs/web/other.md)  
-[前后端分离](/docs/web/separate.md)  
-&emsp; [跨域](/docs/web/Cross.md)  
 
+### 脚手架  
+[项目循环依赖-分离接口](/docs/web/SeparationInterface.md)  
+
+
+### 前后端分离  
+&emsp; [跨域和内外网隔离](/docs/web/Cross.md)  
+
+### 互联网安全架构  
+[源码安全](/docs/web/codeSecurity.md)   
+[安全架构](/docs/system/safe/safe.md)  
 
 ## 架构设计  
 [架构的方方面面](/docs/system/AllAspects.md)  
@@ -729,6 +738,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 ### 安全框架shiro  
 [shiro](/docs/system/shiro.md)  
+[Spring Security](/docs/system/SpringSecurity.md)  
 
 
 ### 工作流
@@ -808,8 +818,6 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [工具类](/docs/SystemDesign/tools.md)  
 [登录-JWT和session](/docs/SystemDesign/JWT.md)  
 
-## 互联网安全架构  
-[安全架构](/docs/system/safe/safe.md)  
 
 ---
 
