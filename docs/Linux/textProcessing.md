@@ -3,22 +3,23 @@
 <!-- TOC -->
 
 - [1. Linux文本处理](#1-linux文本处理)
-    - [vi](#vi)
-    - [1.1. grep](#11-grep)
-        - [1.1.1. 简介](#111-简介)
-        - [1.1.2. 实际使用](#112-实际使用)
-    - [1.2. sed](#12-sed)
-    - [1.3. awk](#13-awk)
-        - [1.3.1. 语法](#131-语法)
-        - [1.3.2. 域](#132-域)
-        - [1.3.3. 模式&动作](#133-模式动作)
-        - [1.3.4. 结合正则](#134-结合正则)
-        - [1.3.5. 复合表达式](#135-复合表达式)
-        - [1.3.6. printf格式化输出](#136-printf格式化输出)
-        - [1.3.7. 内置变量](#137-内置变量)
-        - [1.3.8. 内置函数](#138-内置函数)
-        - [1.3.9. awk脚本](#139-awk脚本)
-    - [1.4. 管道命令|](#14-管道命令)
+    - [1.1. vi](#11-vi)
+    - [1.2. 查看文件：cat less more head tail命令比较](#12-查看文件cat-less-more-head-tail命令比较)
+    - [1.3. grep](#13-grep)
+        - [1.3.1. 简介](#131-简介)
+        - [1.3.2. 实际使用](#132-实际使用)
+    - [1.4. sed](#14-sed)
+    - [1.5. awk](#15-awk)
+        - [1.5.1. 语法](#151-语法)
+        - [1.5.2. 域](#152-域)
+        - [1.5.3. 模式&动作](#153-模式动作)
+        - [1.5.4. 结合正则](#154-结合正则)
+        - [1.5.5. 复合表达式](#155-复合表达式)
+        - [1.5.6. printf格式化输出](#156-printf格式化输出)
+        - [1.5.7. 内置变量](#157-内置变量)
+        - [1.5.8. 内置函数](#158-内置函数)
+        - [1.5.9. awk脚本](#159-awk脚本)
+    - [1.6. 管道命令|](#16-管道命令)
 
 <!-- /TOC -->
 
@@ -47,14 +48,31 @@ https://mp.weixin.qq.com/s/vYmOk2fWRHu6HQWPSt1XAg
 -->
 &emsp; grep、sed、awk是Linux处理文本常用的命令。  
 
-## vi  
+## 1.1. vi  
 &emsp; linux编辑文本时，查找内容关键字  
 &emsp; /关键字，回车就行；按n建会查找下一个；  
 &emsp; ?关键字，回车就行；按n建会查找下一个；  
 
+## 1.2. 查看文件：cat less more head tail命令比较
+<!-- 
 
-## 1.1. grep  
-### 1.1.1. 简介  
+https://blog.csdn.net/foreverling/article/details/82557939
+-->
+
+&emsp; linux查看文件内容常用命令有：cat、more、less、head、tail等。主要区别：  
+
+* cat命令可以一次显示整个文件，如果文件比较大，使用不是很方便；
+* more命令可以让屏幕在显示满一屏幕时暂停，按空格往前翻页，按b往后翻页。
+* less命令也可以分页显示文件，和more命令的区别就在于：
+    * 支持上下键卷动屏幕、查找。
+    * 不需要在一开始就读取整个文件，打开大文件时比more、vim更快。
+* head命令用于查看文件的前n行。
+* tail命令用于查看文件的后n行。加上-f命令，查看在线日志非常方便，可以打印最新增加的日志。
+
+
+
+## 1.3. grep  
+### 1.3.1. 简介  
 &emsp; <font color = "clime">grep是一款强大的文本搜索工具，支持正则表达式。</font>    
 &emsp; 全称（ global search regular expression(RE) and print out the line）  
 &emsp; 语法：grep \[option]... PATTERN \[FILE]...  
@@ -75,7 +93,7 @@ https://mp.weixin.qq.com/s/vYmOk2fWRHu6HQWPSt1XAg
     *$         以*结尾 
     ^$         空行 
 
-### 1.1.2. 实际使用
+### 1.3.2. 实际使用
 
 &emsp; 准备好一个小故事txt：  
 
@@ -187,7 +205,7 @@ Just before they reach the moon,the oldest monkey raises his head and happens to
 Just before they reach the moon,the oldest monkey raises his head and happens to see the moon in the sky,正好他们摸到月亮的时候,老猴子抬头发现月亮挂在天上呢
 ```
 
-## 1.2. sed  
+## 1.4. sed  
 &emsp; **<font color = "clime">sed是一种流编辑器，是一款处理文本比较优秀的工具，可以结合正则表达式一起使用。</font>**  
 &emsp; **sed执行过程：**  
 ![image](http://www.wt1814.com/static/view/images/Linux/linux/linux-4.png)   
@@ -387,10 +405,10 @@ Up above the world so high
 ```
 
 
-## 1.3. awk
+## 1.5. awk
 &emsp; 比起sed和grep，awk不仅仅是一个小工具，也可以算得上一种小型的编程语言了，支持if判断分支和while循环语句还有它的内置函数等，是一个要比grep和sed更强大的文本处理工具，但也就意味着要学习的东西更多了。  
 
-### 1.3.1. 语法  
+### 1.5.1. 语法  
 
 &emsp; 常用  
 
@@ -399,7 +417,7 @@ Usage: awk [POSIX or GNU style options] -f progfile [--] file ...
 Usage: awk [POSIX or GNU style options] [--] 'program' file ...
 ```
 
-### 1.3.2. 域  
+### 1.5.2. 域  
 &emsp; 类似数据库列的概念，但它是按照序号来指定的，比如第一个列就是1，第二列就是2，依此类推。$0就是输出整个文本的内容。默认用空格作为分隔符，当然可以自己通过-F设置适合自己情况的分隔符。  
 &emsp; 提前自己编了一段数据，学生以及学生成绩数据表。  
 
@@ -433,7 +451,7 @@ kerwin
 Fengzheng
 ```
 
-### 1.3.3. 模式&动作
+### 1.5.3. 模式&动作
 
     awk '{[pattern] action}' {filenames}    
 
@@ -478,7 +496,7 @@ Fengzheng 90  class-2
 continue to exert oneself
 ```
 
-### 1.3.4. 结合正则  
+### 1.5.4. 结合正则  
 &emsp; 使用方法：  
 &emsp; 符号 ~  后接正则表达式  
 &emsp; 此时再加入一条后来的新同学，并且没有分班。  
@@ -577,7 +595,7 @@ Yizhihua     70    66   50    80   90  class-1  java
 xman         -     -     -     -   -    class-3 php
 ```
 
-### 1.3.5. 复合表达式  
+### 1.5.5. 复合表达式  
 &emsp; && AND  
 &emsp; 查询数学成绩大于60并且语文成绩也大于60的童鞋。  
 
@@ -596,7 +614,7 @@ Fengzheng    90    78    62   40   62  class-2  java
 Fengzheng    90    78    62     40  62 class-2  java
 ```
 
-### 1.3.6. printf格式化输出  
+### 1.5.6. printf格式化输出  
 &emsp; 除了能达到功能以外，一个好看的格式也是必不可少的，因此格式化的输出看起来会更舒服。  
 &emsp; 语法  
 
@@ -641,7 +659,7 @@ Fengzheng    90    78    62     40  62 class-2  java
     [root@iz2ze76ybn73dvwmdij06zz ~]# awk 'BEGIN {printf "%x",996}'
     3e4
 
-### 1.3.7. 内置变量  
+### 1.5.7. 内置变量  
 
 &emsp; **频率较高常用内置变量**  
 
@@ -664,7 +682,7 @@ Fengzheng    90    78   62     40  62  class-2  java 8 4
 xman         -     -     -     -   -   class-3  php  8 5
 ```
 
-### 1.3.8. 内置函数
+### 1.5.8. 内置函数
 &emsp; 常用函数  
 
 * length(s)  返回s长度  
@@ -716,7 +734,7 @@ xman         -     -     -     -   -   class-3  php  8 5
     xiao
     ka
 
-### 1.3.9. awk脚本  
+### 1.5.9. awk脚本  
 &emsp; 前面说过awk是可以说是一个小型编程语言。如果命令比较短，可以直接在命令行执行，当命令行比较长的时候，可以使用脚本来处理，比命令行的可读性更高，还可以加上注释。  
 &emsp; 写一个完整的awk脚本并执行步骤  
 
@@ -742,7 +760,7 @@ xman         -     -     -     -   -   class-3  php  8 5
     [root@iz2ze76ybn73dvwmdij06zz ~]# ./printname.awk
     my name is 姓名
 
-## 1.4. 管道命令|
+## 1.6. 管道命令|
 
 <!-- 
 
