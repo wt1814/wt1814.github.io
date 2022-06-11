@@ -1,8 +1,14 @@
 
 
 # Spring Security  
-<!-- 
 
+1. 前后端分离  
+2. 使用JWT  
+3. 集成手机登录  
+
+<!-- 
+总结：
+https://blog.csdn.net/fengxianaa?type=blog
 
 SpringSecurity+JWT使用
 https://blog.csdn.net/qq_42218187/article/details/123623413
