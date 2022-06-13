@@ -716,11 +716,10 @@
         * [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
     * [LDAP自助修改密码服务](/docs/devAndOps/LDAP.md)  
 * 监控
-    * 服务器监控  
-        * [Linux监控指标](/docs/devAndOps/indicators.md)  
-        * [监控系统](/docs/devAndOps/monitor.md)  
-    * 业务监控  
-
+    * [Linux监控指标](/docs/devAndOps/monitor/indicators.md)  
+    * [中间件监控](/docs/devAndOps/monitor/middleware.md)  
+    * [业务监控](/docs/devAndOps/monitor/business.md)  
+    * [监控系统](/docs/devAndOps/monitor/monitor.md)  
 * 常用工具  
     * [idea](/docs/software/idea/idea.md)  
     * [postman](/docs/software/postman.md)  
