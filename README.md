@@ -902,9 +902,9 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 &emsp; [DevOps搭建](/docs/devAndOps/devOpsPractice.md)  
 [GIT](/docs/devAndOps/git/command.md)  
 [Gradle](/docs/devAndOps/Gradle.md)  
-[Maven](/docs/devAndOps/maven.md)  
-&emsp; [Maven冲突解决](/docs/devAndOps/conflict.md)  
-&emsp; 项目循环依赖  
+[Maven](/docs/devAndOps/maven/maven.md)  
+&emsp; [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
+&emsp; [Maven冲突解决](/docs/devAndOps/maven/conflict.md)  
 [Jmeter](/docs/devAndOps/Jmeter.md)  
 [JMH](/docs/java/JVM/JMH.md)  
 [多种发布方式](/docs/system/publishe.md)  
