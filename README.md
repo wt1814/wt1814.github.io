@@ -671,7 +671,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 ### 分布式搜索引擎  
 [ES搭建](/docs/ES/build.md)  
-&emsp; [elk](/docs/build/elk.md)   
+&emsp; [elk](/docs/devAndOps/centOS/elk.md)   
 &emsp; [ES配置文件](/docs/ES/configure.md)  
 &emsp; [内存设置](/docs/ES/heap.md)  
 [ES基本概念](/docs/ES/basicConcepts.md)  
@@ -888,12 +888,12 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164718060116780255298678%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=164718060116780255298678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v29_name-2-102999744.nonecase&utm_term=%E9%98%BF%E9%87%8C%E4%BA%91&spm=1018.2226.3001.4450
 
 -->
-
-[CentOS](/docs/build/centOS.md)  
+[CentOS](/docs/devAndOps/centOS/centOS.md)  
+&emsp; [扩容](/docs/devAndOps/centOS/dilatation.md)  
 [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
-[MySql](/docs/build/MySql.md)   
-[Redis](/docs/build/Redis.md)  
-[elk](/docs/build/elk.md)   
+[MySql](/docs/devAndOps/centOS/MySql.md)   
+[Redis](/docs/devAndOps/centOS/Redis.md)  
+[elk](/docs/devAndOps/centOS/elk.md)   
 
 
 ------

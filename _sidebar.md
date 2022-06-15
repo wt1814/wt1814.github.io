@@ -675,10 +675,11 @@
     * [Linux系统](/docs/Linux/Linux.md)  
     * [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
 * Linux服务器搭建  
-    * [CentOS](/docs/build/centOS.md)  
-    * [MySql](/docs/build/MySql.md)   
-    * [Redis](/docs/build/Redis.md)  
-    * [elk](/docs/build/elk.md)   
+    * [CentOS](/docs/devAndOps/centOS/centOS.md)  
+        * [扩容](/docs/devAndOps/centOS/dilatation.md)  
+    * [MySql](/docs/devAndOps/centOS/MySql.md)   
+    * [Redis](/docs/devAndOps/centOS/Redis.md)  
+    * [elk](/docs/devAndOps/centOS/elk.md)   
 * DevOps  
     * [CI/CD](/docs/devAndOps/CICD.md)  
     * [Devops](/docs/devAndOps/devOps.md)  
