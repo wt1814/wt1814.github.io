@@ -42,11 +42,13 @@ https://www.yuque.com/docs/share/23fc9e41-ad96-4343-aced-a35419117d89
 ### 1.2.1. ★★★License Server
 
 <!-- 
+*** https://www.cnblogs.com/xiang--liu/p/13883523.html
+https://www.cnblogs.com/jie-fang/p/10214170.html
 
 https://blog.csdn.net/sanmi8276/article/details/108522676
-https://www.cnblogs.com/jie-fang/p/10214170.html
+
 https://www.jianshu.com/p/46ac89620c0a
-https://www.cnblogs.com/xiang--liu/p/13883523.html
+
 -->
 
 
