@@ -26,6 +26,10 @@ https://blog.csdn.net/yangxiaochen_jk/article/details/122608793
 1. 下载
 2. 配置  
 3. 安装  
+4. **启动：**  
+
+    cd /usr/local/nexus-3.31.1-01/bin
+    ./nexus start 或者./nexus run
 
 ## 1.2. 使用  
 

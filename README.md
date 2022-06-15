@@ -470,6 +470,9 @@
 
 ### SpringCloud    
 [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
+[consul](/docs/microService/SpringCloudNetflix/consul.md)  
+&emsp; [consul安装](/docs/microService/SpringCloudNetflix/consulInstall.md)  
+&emsp; [consul使用](/docs/microService/SpringCloudNetflix/consulUse.md)  
 [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
 [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
 [Spring Cloud Feign](/docs/microService/SpringCloudNetflix/Feign.md)  
@@ -912,7 +915,6 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [多种发布方式](/docs/system/publishe.md)  
 &emsp; [灰度发布](/docs/system/grayscalePublishe.md)  
 [Jenkins](/docs/devAndOps/Jenkins.md)  
-
 [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
 &emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
 &emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
