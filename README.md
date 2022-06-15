@@ -888,7 +888,9 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164718060116780255298678%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=164718060116780255298678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v29_name-2-102999744.nonecase&utm_term=%E9%98%BF%E9%87%8C%E4%BA%91&spm=1018.2226.3001.4450
 
 -->
+
 [CentOS](/docs/build/centOS.md)  
+[Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
 [MySql](/docs/build/MySql.md)   
 [Redis](/docs/build/Redis.md)  
 [elk](/docs/build/elk.md)   
@@ -903,7 +905,6 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [GIT](/docs/devAndOps/git/command.md)  
 [Gradle](/docs/devAndOps/Gradle.md)  
 [Maven](/docs/devAndOps/maven/maven.md)  
-&emsp; [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
 &emsp; [Maven冲突解决](/docs/devAndOps/maven/conflict.md)  
 [Jmeter](/docs/devAndOps/Jmeter.md)  
 [JMH](/docs/java/JVM/JMH.md)  
@@ -943,8 +944,6 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [监控系统](/docs/devAndOps/monitor/monitor.md)  
 
 
-
-
 -----------------------
 
 
@@ -976,4 +975,3 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 
 ## 前端知识  
 [nodejs](/docs/front/nodejs.md)  
-
