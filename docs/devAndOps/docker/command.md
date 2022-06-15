@@ -4,6 +4,7 @@
 - [1. Docker命令](#1-docker命令)
     - [1.1. 镜像操作命令](#11-镜像操作命令)
     - [1.2. 容器操作指令](#12-容器操作指令)
+        - [1.2.1. docker run命令详解](#121-docker-run命令详解)
 
 <!-- /TOC -->
 
@@ -51,7 +52,10 @@
 
 ## 1.2. 容器操作指令
 &emsp; **<font color = "clime">容器操作常用命令：run、start、stop、exec。</font>**  
+* 查看有几个容器：  
 
+        docker ps -a 
+        
 * 创建并启动容器：  
 
         [root@localhost ~]# docker run centos:7 /bin/echo'hello world'
@@ -104,3 +108,15 @@
         通过docker images命令可以看到增加了个test/centos镜像
 
 ![image](http://www.wt1814.com/static/view/images/devops/docker/docker-7.png)  
+
+
+
+### 1.2.1. docker run命令详解  
+<!-- 
+https://blog.csdn.net/qq_38974638/article/details/121061590
+-->
+&emsp; docker run命令：-a、-d、-e、-h、-i、-m、-p、-t、-v、--cpuset、--dns、--env-file、--expose、--link、--name、--net  
+
+&emsp; -P：随机端口映射，容器内部端口随机映射到主机的端口。
+
+

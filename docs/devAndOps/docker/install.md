@@ -5,7 +5,8 @@
 - [1. docker安装](#1-docker安装)
     - [1.1. Docker安装及使用阿里云Doker镜像加速](#11-docker安装及使用阿里云doker镜像加速)
         - [1.1.1. 安装](#111-安装)
-        - [1.1.2. 启动及停止](#112-启动及停止)
+        - [1.1.2. centos8使用，缺少类库libseccomp-devel](#112-centos8使用缺少类库libseccomp-devel)
+        - [1.1.3. 启动及停止](#113-启动及停止)
     - [1.2. 镜像加速](#12-镜像加速)
     - [1.3. 私有仓库搭建](#13-私有仓库搭建)
 
@@ -16,7 +17,6 @@
 <!-- 
 
 *** https://blog.csdn.net/qq_44858888/article/details/124084408
-
 -->
 
 
@@ -28,8 +28,15 @@
 ### 1.1.1. 安装
 
 
+### 1.1.2. centos8使用，缺少类库libseccomp-devel  
+<!-- 
+https://blog.csdn.net/kfgauss/article/details/116744314
+-->
 
-### 1.1.2. 启动及停止  
+    yum install libseccomp-devel
+
+
+### 1.1.3. 启动及停止  
 1. 启动docker服务
 
     systemctl start docker
@@ -101,5 +108,4 @@ EOF
 https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
 
 -->
-
 
