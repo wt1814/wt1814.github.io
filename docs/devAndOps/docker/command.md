@@ -1,13 +1,9 @@
 
 <!-- TOC -->
 
-- [1. Docker使用教程](#1-docker使用教程)
-    - [1.1. Docker安装及使用阿里云Doker镜像加速](#11-docker安装及使用阿里云doker镜像加速)
-    - [1.2. 私有仓库搭建](#12-私有仓库搭建)
-    - [1.3. Docker守护进程配置](#13-docker守护进程配置)
-    - [1.4. Docker命令](#14-docker命令)
-        - [1.4.1. 镜像操作命令](#141-镜像操作命令)
-        - [1.4.2. 容器操作指令](#142-容器操作指令)
+- [1. Docker命令](#1-docker命令)
+    - [1.1. 镜像操作命令](#11-镜像操作命令)
+    - [1.2. 容器操作指令](#12-容器操作指令)
 
 <!-- /TOC -->
 
@@ -15,38 +11,12 @@
 1. **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)。</font>**  
 2. **<font color = "clime">容器操作常用命令：run(创建并启动)、start(启动已有)、stop、exec(进入运行的容器)。</font>**  
 
-# 1. Docker使用教程  
-<!-- 
-Docker从入门到干活，看这一篇足矣 
-https://mp.weixin.qq.com/s/QNo3pDlzxFjkmu0OEmcq3g
--->
 
-## 1.1. Docker安装及使用阿里云Doker镜像加速  
-......
-<!-- 
-Docker配置阿里云镜像仓库
-https://mp.weixin.qq.com/s/qp3BX2oq5dULOEBFt5XTAQ
--->
-
-## 1.2. 私有仓库搭建  
-......
-<!-- 
- Dockerfile构建镜像、registry私服搭建和阿里云的私服仓库构建
-https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
-
--->
-
-## 1.3. Docker守护进程配置
-<!-- 
-bibil
-https://docs.docker.com/config/daemon/
--->
-
-## 1.4. Docker命令  
+# 1. Docker命令  
 &emsp; Docker一般的使用流程：  
 ![image](http://www.wt1814.com/static/view/images/devops/docker/docker-39.png)  
 
-### 1.4.1. 镜像操作命令  
+## 1.1. 镜像操作命令  
 &emsp; **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)。</font>**  
 
 * 获取镜像：  
@@ -79,7 +49,7 @@ https://docs.docker.com/config/daemon/
 * docker rmi <-f> 镜像名:<tags\> - 删除镜像  
 -->
 
-### 1.4.2. 容器操作指令
+## 1.2. 容器操作指令
 &emsp; **<font color = "clime">容器操作常用命令：run、start、stop、exec。</font>**  
 
 * 创建并启动容器：  
