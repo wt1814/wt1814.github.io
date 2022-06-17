@@ -58,7 +58,6 @@ https://mp.weixin.qq.com/s/Abb2muE0GaVRYswqwxfJCw
  ~~
 -->
 
-
 ## 1.1. 客户端常见异常  
 ### 1.1.1. 无法从连接池获取到连接
 &emsp; JedisPool中的Jedis对象个数是有限的，默认是8个。这里假设使用的默认配置，如果有8个Jedis对象被占用，并且没有归还，此时调用者还要从JedisPool中借用Jedis，就需要进行等待（例如设置了maxWaitMillis>0），如果在maxWaitMillis时间内仍然无法获取到Jedis对象就会抛出如下异常：  
