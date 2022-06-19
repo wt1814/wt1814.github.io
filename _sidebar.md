@@ -243,6 +243,7 @@
         * [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
 * tomcat
 * 项目构建基础  
+    * [版本号](/docs/web/Version.md)  
     * [项目构建基础](/docs/web/BuildFoundation.md)  
         * [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
         * [Swagger](/docs/web/Swagger.md)  

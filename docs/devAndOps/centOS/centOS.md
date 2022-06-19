@@ -67,6 +67,11 @@ https://www.cnblogs.com/helong-123/p/16054732.html
 
 https://help.aliyun.com/document_detail/405635.htm?spm=a2c4g.11186623.0.0.68c94eb7uP6Rki#task-2182261
 
+
+
+centos8 解决yum重装
+https://blog.csdn.net/JineD/article/details/111396902
+
 -->
 
 ## 1.3. 环境变量  

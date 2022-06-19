@@ -36,7 +36,10 @@ https://blog.csdn.net/weixin_46768610/article/details/112256432
 -->
 
 ## 1.1. 前后端分离  
-<!-- 
+<!--
+springcloud+gateway+springsecurity+vue前后端登录
+https://www.jianshu.com/p/fbabb8684dfd
+
 https://blog.51cto.com/u_13929722/3425964
 https://blog.csdn.net/friendlytkyj/article/details/123886947
 

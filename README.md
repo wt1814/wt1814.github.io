@@ -330,6 +330,7 @@
 --------
 
 ## 项目构建基础  
+[版本号](/docs/web/Version.md)  
 [项目构建基础](/docs/web/BuildFoundation.md)  
 &emsp; [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
 &emsp; [Swagger](/docs/web/Swagger.md)  
