@@ -8,8 +8,9 @@
         - [1.2.1. 安装包类型](#121-安装包类型)
         - [1.2.2. 软件安装目录](#122-软件安装目录)
         - [1.2.3. yum](#123-yum)
+            - [1.2.3.1. 更换yum源](#1231-更换yum源)
+            - [1.2.3.2. yum重装](#1232-yum重装)
     - [1.3. 环境变量](#13-环境变量)
-    - [swap交换内存扩容](#swap交换内存扩容)
 
 <!-- /TOC -->
 
@@ -48,6 +49,8 @@ https://blog.csdn.net/Acx77/article/details/121702959?spm=1001.2101.3001.6650.13
 /usr/local/src：用户级的源码目录  
 
 ### 1.2.3. yum
+
+#### 1.2.3.1. 更换yum源
 <!--
 
 
@@ -69,12 +72,16 @@ https://help.aliyun.com/document_detail/405635.htm?spm=a2c4g.11186623.0.0.68c94e
 
 -->
 
+#### 1.2.3.2. yum重装  
+<!-- 
+centos8 解决yum重装
+https://blog.csdn.net/JineD/article/details/111396902
+-->
+
+
 ## 1.3. 环境变量  
 <!-- 
 
 https://blog.csdn.net/weixin_39270987/article/details/123181105?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-123181105-blog-118450790.pc_relevant_antiscanv4&spm=1001.2101.3001.4242.1&utm_relevant_index=3
 -->
-
-
-## swap交换内存扩容  
 
