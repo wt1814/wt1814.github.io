@@ -330,6 +330,7 @@
 --------
 
 ## 项目构建基础  
+[版本号](/docs/web/Version.md)  
 [项目构建基础](/docs/web/BuildFoundation.md)  
 &emsp; [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
 &emsp; [Swagger](/docs/web/Swagger.md)  
@@ -822,6 +823,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 ## 系统设计  
 [工具类](/docs/SystemDesign/tools.md)  
 [登录-JWT和session](/docs/SystemDesign/JWT.md)  
+[★★★系统搭建](/docs/SystemDesign/projectBuild.md)  
 
 
 ---

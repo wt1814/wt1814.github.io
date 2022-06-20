@@ -243,6 +243,7 @@
         * [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
 * tomcat
 * 项目构建基础  
+    * [版本号](/docs/web/Version.md)  
     * [项目构建基础](/docs/web/BuildFoundation.md)  
         * [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
         * [Swagger](/docs/web/Swagger.md)  
@@ -637,6 +638,7 @@
 * 系统设计  
     * [工具类](/docs/SystemDesign/tools.md)  
     * [登录-JWT和session](/docs/SystemDesign/JWT.md)  
+    * [★★★系统搭建](/docs/SystemDesign/projectBuild.md)  
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
