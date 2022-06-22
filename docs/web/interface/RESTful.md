@@ -2,12 +2,14 @@
 
 # RESTful
 <!-- 
+
+
+
 https://mp.weixin.qq.com/s/HePvXzEB5tg57cUfFkcUVA
 理解RESTful：理论与最佳实践 
 https://mp.weixin.qq.com/s/HJzvx8Nv-KZUKQ83oqfXuw
 
-REST架构风格详解 
-https://mp.weixin.qq.com/s/kzZxaG_C6q4d16D0APMHkw
+
 
 https://mp.weixin.qq.com/s/63sOcLwMYzuMFRWUe60PjQ
 
@@ -41,4 +43,11 @@ https://mp.weixin.qq.com/s/b40DHr0Wfc6t51M4lfi_Cw
 
 Restful 架构 API 接口经典设计误区 
 https://mp.weixin.qq.com/s/6EqfaiIwaYjEQS2F3ej-Lw
+
+
+
+REST架构风格详解 
+https://mp.weixin.qq.com/s/kzZxaG_C6q4d16D0APMHkw
+
+
 -->

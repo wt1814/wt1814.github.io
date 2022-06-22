@@ -12,6 +12,8 @@
 # 1. 重试请求
 <!-- 
 
+https://www.hangge.com/blog/cache/detail_2522.html
+
 Spring-Retry重试实现原理 
 https://mp.weixin.qq.com/s/_qFK-ki7-mL4Nnv4zEfYrQ
 https://mp.weixin.qq.com/s/Tc7USvs_xZ6jPyyeR2jx1Q
@@ -46,5 +48,4 @@ eureka-provider:
     MaxAutoRetriesNextServer: 2 #切换实例的重试次数
     MaxAutoRetries: 1 #对当前实例的重试次数
 ```
-
 
