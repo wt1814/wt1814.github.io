@@ -4,6 +4,7 @@
 - [1. Redis](#1-redis)
     - [1.1. Redis各版本](#11-redis各版本)
     - [1.2. 搭建Redis](#12-搭建redis)
+        - [redis哨兵](#redis哨兵)
         - [1.2.1. 搭建Redis伪集群](#121-搭建redis伪集群)
     - [1.3. 无法杀死Redis集群](#13-无法杀死redis集群)
 
@@ -54,6 +55,12 @@ https://blog.csdn.net/tianyu_yunlong_1/article/details/123006028
 
 
 ## 1.2. 搭建Redis  
+
+### redis哨兵  
+<!-- 
+
+https://www.jianshu.com/p/df4af68549a5
+-->
 
 
 ### 1.2.1. 搭建Redis伪集群  

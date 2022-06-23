@@ -3,6 +3,7 @@
 <!-- TOC -->
 
 - [1. I/O读写大批量数据](#1-io读写大批量数据)
+    - [上传本地报错 FileNotFoundException](#上传本地报错-filenotfoundexception)
     - [1.1. Java 读写大文本文件](#11-java-读写大文本文件)
         - [1.1.1. java读取大文件的困难](#111-java读取大文件的困难)
         - [1.1.2. 解决方案](#112-解决方案)
@@ -46,6 +47,15 @@ https://mp.weixin.qq.com/s/h3M2wiJU-QYONi4ewJnVyA
 https://www.cxymm.net/article/cheng9981/82386663
 
 -->
+
+## 上传本地报错 FileNotFoundException
+<!-- 
+Spring- 上传文件 MultipartFile.transferTo() 报错 FileNotFoundException
+https://blog.csdn.net/qq_26878363/article/details/122002244
+
+--> 
+
+
 
 ## 1.1. Java 读写大文本文件  
 &emsp; **<font color = "clime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>**  
