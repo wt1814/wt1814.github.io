@@ -47,6 +47,12 @@ https://pagehelper.github.io/docs/howtouse/
 ## 1.3. 树状查询
 <!-- 
 https://www.cnblogs.com/lgjava/p/13821653.html
+
+https://blog.csdn.net/qq_35558665/article/details/106310333
+1.collection 的column与id的column相同，property为实体类中子集合的名字，select与查询方法名字相同
+2.查询时一定要将id和parentId都查出来，否则mybaits无法完成递归，我用*查就更没问题了。实体类中也要有父id那个属性
+3、以上实现至针对传入参数为一个值的时候，parentId传进去的值要是最顶级的，这里就是0
+
 -->
 
 
