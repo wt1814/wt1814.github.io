@@ -27,6 +27,27 @@ logger.debug("Processing trade with id:[{}] and symbol : [{}] ", id, symbol);
 ```
 &emsp; 这样的格式写法，可读性更好，对于排查问题更有帮助。  
 
-## 日志配置文件  
+## Slf4j  
+### log4j2
+<!-- 
+
+https://blog.csdn.net/qq_43842093/article/details/123027783
+log4j2异步日志的使用
+https://blog.csdn.net/qq_26323323/article/details/124741008
+https://blog.csdn.net/w1047667241/article/details/115894754
+
+-->
+
+### logback
+
+#### logback性能
+&emsp; 修改logbcak配置，使用框架提供的异步输出代替同步输出。  
+
+<!-- 
+
+logback日志导致的性能问题
+https://blog.csdn.net/qq_38536878/article/details/123821072
+
+-->
 
 
