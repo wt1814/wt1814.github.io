@@ -1,4 +1,5 @@
 
+* [readme](/docs/java/basis/readme.md)  
 * [知识点概况](/docs/survey.md)  
 * [大总结1](/docs/summary.md)  
 * [大总结2](/docs/summaryTwo.md)  
@@ -696,7 +697,6 @@
     * [GIT](/docs/devAndOps/git/command.md)  
     * [Maven](/docs/devAndOps/maven/maven.md)  
         * [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
-        * [Maven冲突解决](/docs/devAndOps/maven/conflict.md)  
     * [Jmeter](/docs/devAndOps/Jmeter.md)  
     * [JMH](/docs/java/JVM/JMH.md)  
     * [多种发布方式](/docs/system/publishe.md)  
