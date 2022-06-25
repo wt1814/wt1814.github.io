@@ -4,8 +4,10 @@
 &emsp; 首先介绍一下自己，一个有“多年”开发经验的老鸟，一个普通人。就是喜欢看看Java相关技术。  
 &emsp; 最近汇总自己所学、所接触的技术，整合成自己的东西。各位可以直接下载使用，也可以就某一技术点“搬砖”。如果有什么不太好的设计，不太完善的地方，希望各位赐教。本人还是很好学的。    
 
+
 # 项目搭建  
 &emsp; gitee地址：https://gitee.com/wt1814/cloud-scaffolding  
+&emsp; 努力更新中，敬请期待...  
 
 ## 待解决  
 1. redis哨兵未搭建：1).@SpringBootApplication干掉自动配置，2).RedisTemplate自动装配@Autowired(required = false)  
