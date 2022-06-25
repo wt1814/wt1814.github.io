@@ -34,7 +34,8 @@ https://zhuanlan.zhihu.com/p/484975073
 ## maven-resource插件  
 <!-- 
 
-
+https://www.jianshu.com/p/c7f81095397c#comments
+https://blog.csdn.net/weixin_30896763/article/details/98988315
 -->
 
 
