@@ -1,5 +1,4 @@
 
-* [readme](/docs/java/basis/readme.md)  
 * [知识点概况](/docs/survey.md)  
 * [大总结1](/docs/summary.md)  
 * [大总结2](/docs/summaryTwo.md)  
@@ -295,6 +294,7 @@
     * [脚手架介绍](/docs/system/Scaffolding.md)  
     * [消息与事件驱动](/docs/Linux/drive.md)  
         * [事件和驱动](/docs/system/EventsAndMessages.md)  
+    * [项目搭建](/docs/system/BuildProject.md)  
 * Spring  
     * [Spring](/docs/SSM/Spring/Spring.md)  
     * [对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  

@@ -1,11 +1,12 @@
 
 
-
-
-
-
+# 写在前面  
+&emsp; 首先介绍一下自己，一个有“多年”开发经验的老鸟，一个普通人。就是喜欢看看Java相关技术。  
+&emsp; 最近汇总自己所学、所接触的技术，整合成自己的东西。各位可以直接下载使用，也可以就某一技术点“搬砖”。如果有什么不太好的设计，不太完善的地方，希望各位赐教。本人还是很好学的。    
 
 # 项目搭建  
+&emsp; gitee地址：https://gitee.com/wt1814/cloud-scaffolding  
+
 ## 待解决  
 1. redis哨兵未搭建：1).@SpringBootApplication干掉自动配置，2).RedisTemplate自动装配@Autowired(required = false)  
 2. 配置中心选择问题，目前注册中心使用consul。  
@@ -43,7 +44,8 @@
             </dependencies>
         </dependencyManagement>
     ```
-3. ~~Maven设置多环境~~  
+3. Maven设置多环境：https://www.likecs.com/show-204897168.html    
+&emsp; 已经集成，如果environment下有同名文件，会覆盖。目前只用到consul地址多环境。  
 4. 暂无maven私服，个人维护...  
     
 ## 项目介绍  
@@ -55,7 +57,8 @@
         * common-server，基础服务。  
     4. ucenter，用户项目
 2. 项目配置介绍：  
-    1. bootstrap.yml，项目启动配置，
+    1. bootstrap.yml，项目启动配置  
+    &emsp; application.yml配置文件引入其他的yml配置文件：https://blog.csdn.net/Zack_tzh/article/details/103728869?utm_term=yml%E5%8C%85%E5%90%AB%E5%8F%A6%E4%B8%80%E4%B8%AAyml&utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~all~sobaiduweb~default-0-103728869-null-null&spm=3001.4430  
     2. application.yml，系统级配置  
     3. application-dataSource，中间件配置  
     4. application-buiness.yml，业务配置  
@@ -74,12 +77,14 @@
 2. 工具  
     1. JavaBean
         1. BeanUtils：MapStuct：https://baijiahao.baidu.com/s?id=1710072420980854506&wfr=spider&for=pc    
-        2. 参数校验：https://blog.csdn.net/xnn_fjj/article/details/100603270  
+        2. 参数校验：  
+            1. https://blog.csdn.net/xnn_fjj/article/details/100603270  
+            2. 结合统一异常处理  
     2. http
         1. restTemplate（个人喜好）  
             1. 注意：@ComponentScan("com.wuw")扫描RestTemplateConfig类
             2. 使用：https://blog.csdn.net/jinjiniao1/article/details/100849237
-        2. 重试spring-retry：https://www.hangge.com/blog/cache/detail_2522.html  
+        2. http重试spring-retry：https://www.hangge.com/blog/cache/detail_2522.html  
 3. 异常：  
     1. 自定义业务异常：（两种方案，看个人喜好）    
         * 若service层以javaBean返回，则需在service逻辑代码里抛出业务异常BusinessException；
@@ -146,6 +151,4 @@
 
 
 ### 分布式锁  
-哨兵模式redisson：https://blog.csdn.net/weixin_45973130/article/details/122383689  
-
-
+&emsp; 哨兵模式redisson：https://blog.csdn.net/weixin_45973130/article/details/122383689  
