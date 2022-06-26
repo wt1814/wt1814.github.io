@@ -676,6 +676,7 @@
     * [数据链路负载均衡](/docs/system/loadBalance/LinkLoad.md)  
 * Linux操作系统  
     * [Linux版本](/docs/Linux/LinuxVersion.md)  
+    * [Linux命令-实操](/docs/Linux/operation.md)  
     * [Linux命令](/docs/Linux/LinuxCommand.md)  
         * [文本处理](/docs/Linux/textProcessing.md)  
         * [网络通讯](/docs/Linux/NetworkCommunication.md)  

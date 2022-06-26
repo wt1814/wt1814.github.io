@@ -591,6 +591,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 #### Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
 [Redis安装](/docs/microService/Redis/RedisInstall.md)  
+[SpringBoot整合Redis](/docs/microService/Redis/SpringBootRedis.md)  
 [Redis数据类型](/docs/microService/Redis/RedisStructure.md)  
 &emsp; [Redis基本数据类型](/docs/microService/Redis/RedisBasicStructure.md)  
 &emsp; [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
@@ -879,6 +880,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 
 ## Linux操作系统  
 [Linux版本](/docs/Linux/LinuxVersion.md)  
+[Linux命令-实操](/docs/Linux/operation.md)  
 [Linux命令](/docs/Linux/LinuxCommand.md)  
 &emsp; [文本处理](/docs/Linux/textProcessing.md)  
 &emsp; [网络通讯](/docs/Linux/NetworkCommunication.md)  

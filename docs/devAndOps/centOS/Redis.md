@@ -66,7 +66,14 @@ https://blog.csdn.net/tianyu_yunlong_1/article/details/123006028
 <!-- 
 
 https://www.jianshu.com/p/df4af68549a5
+
+https://blog.csdn.net/weixin_38879931/article/details/122901004
+
 -->
+
+1. 从节点监听数据主节点  
+2. 每个sentinel监听数据主节点   
+
 
 
 ### 1.2.1. 搭建Redis伪集群  
