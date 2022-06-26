@@ -4,6 +4,7 @@
 - [1. Redis](#1-redis)
     - [1.1. Redis各版本](#11-redis各版本)
     - [1.2. 搭建Redis](#12-搭建redis)
+        - [redis单节点](#redis单节点)
         - [redis哨兵](#redis哨兵)
         - [1.2.1. 搭建Redis伪集群](#121-搭建redis伪集群)
     - [1.3. 无法杀死Redis集群](#13-无法杀死redis集群)
@@ -55,8 +56,13 @@ https://blog.csdn.net/tianyu_yunlong_1/article/details/123006028
 
 
 ## 1.2. 搭建Redis  
+### redis单节点  
+
+
 
 ### redis哨兵  
+&emsp; redis哨兵模式使用三台机器，一台主机两台从机，分别在三台机器上安装redis并启动redis进程和sentinel进程。  
+
 <!-- 
 
 https://www.jianshu.com/p/df4af68549a5
