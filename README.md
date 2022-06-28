@@ -32,6 +32,7 @@
         - [高并发相关概念](#高并发相关概念)
         - [缓存](#缓存)
             - [Redis](#redis)
+            - [Caffeine+Redis二级缓存](#caffeineredis二级缓存)
         - [限流降级](#限流降级)
         - [分布式消息队列](#分布式消息队列)
             - [Kafka](#kafka)
@@ -629,6 +630,9 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 &emsp; [Redis常见延迟问题](/docs/microService/Redis/delayProblem.md)  
 &emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
+
+#### Caffeine+Redis二级缓存  
+[二级缓存](/docs/microService/Redis/doubleCache.md)  
 
 ### 限流降级
 [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   

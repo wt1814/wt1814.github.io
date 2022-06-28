@@ -482,6 +482,7 @@
         * [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
         * [Redis常见延迟问题](/docs/microService/Redis/delayProblem.md)  
         * [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
+* [二级缓存](/docs/microService/Redis/doubleCache.md)  
 * [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
     * [限流Sentinel](/docs/microService/thinking/Sentinel.md) 
     * [如何计算服务限流的配额？](/docs/microService/thinking/limitingQuota.md)  
