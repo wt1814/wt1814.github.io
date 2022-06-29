@@ -32,7 +32,6 @@ https://blog.csdn.net/weixin_39754603/article/details/113302166
 
 
 ## 1.2. 卸载MySql  
->>>>>>> 49b20c280353c5ca756715f7a1379852fdf7d28e
 <!-- 
 https://blog.csdn.net/qq_41437844/article/details/123255412
 https://www.csdn.net/tags/MtTaEgwsMTA4MTMtYmxvZwO0O0OO0O0O.html
@@ -53,6 +52,11 @@ https://blog.csdn.net/llAl_lAll/article/details/119419178
 
 ### 1.3.1. 安装8
 
+<!-- 
+https://blog.csdn.net/llAl_lAll/article/details/119419178
+https://blog.csdn.net/qq_43290288/article/details/115277393
+https://blog.csdn.net/sdutphp/article/details/125277467
+-->
 
 #### 1.3.1.1. MySQL8.0设置远程访问权限的方法
 
