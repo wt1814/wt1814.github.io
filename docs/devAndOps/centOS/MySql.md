@@ -8,7 +8,9 @@
     - [1.2. 卸载MySql](#12-卸载mysql)
     - [1.3. 四种安装方式](#13-四种安装方式)
         - [1.3.1. 安装8](#131-安装8)
-            - [1.3.1.1. MySQL8.0设置远程访问权限的方法](#1311-mysql80设置远程访问权限的方法)
+            - [1.3.1.1. 安装](#1311-安装)
+            - [1.3.1.2. MySQL8.0设置远程访问权限的方法](#1312-mysql80设置远程访问权限的方法)
+            - [1.3.1.3. 修改密码](#1313-修改密码)
         - [1.3.2. 安装5.7](#132-安装57)
 
 <!-- /TOC -->
@@ -51,19 +53,22 @@ https://blog.csdn.net/llAl_lAll/article/details/119419178
 -->
 
 ### 1.3.1. 安装8
-
+#### 1.3.1.1. 安装
 <!-- 
 https://blog.csdn.net/llAl_lAll/article/details/119419178
 https://blog.csdn.net/qq_43290288/article/details/115277393
 https://blog.csdn.net/sdutphp/article/details/125277467
 -->
 
-#### 1.3.1.1. MySQL8.0设置远程访问权限的方法
+#### 1.3.1.2. MySQL8.0设置远程访问权限的方法
 
 <!-- 
 https://www.jb51.net/article/200225.htm
 https://www.jianshu.com/p/147b3811699c
 -->
+
+#### 1.3.1.3. 修改密码  
+
 
 
 ### 1.3.2. 安装5.7
