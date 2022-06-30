@@ -58,6 +58,7 @@ https://blog.csdn.net/llAl_lAll/article/details/119419178
 https://blog.csdn.net/llAl_lAll/article/details/119419178
 https://blog.csdn.net/qq_43290288/article/details/115277393
 https://blog.csdn.net/sdutphp/article/details/125277467
+
 -->
 
 #### 1.3.1.2. MySQL8.0设置远程访问权限的方法
@@ -69,6 +70,16 @@ https://www.jianshu.com/p/147b3811699c
 
 #### 1.3.1.3. 修改密码  
 
+<!-- 
+
+https://blog.csdn.net/u012069313/article/details/123050671
+https://blog.51cto.com/u_13241097/2849775
+https://blog.csdn.net/qq_43218521/article/details/124640245
+
+
+https://blog.csdn.net/HaHa_Sir/article/details/80552663
+https://blog.csdn.net/qq_39344689/article/details/89674079
+-->
 
 
 ### 1.3.2. 安装5.7
