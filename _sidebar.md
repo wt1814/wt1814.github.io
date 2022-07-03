@@ -702,6 +702,7 @@
     * [GIT](/docs/devAndOps/git/command.md)  
     * [Maven](/docs/devAndOps/maven/maven.md)  
         * [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
+        * [Maven脚手架制作](/docs/devAndOps/maven/MavenScaffolding.md)  
     * [Jmeter](/docs/devAndOps/Jmeter.md)  
     * [JMH](/docs/java/JVM/JMH.md)  
     * [多种发布方式](/docs/system/publishe.md)  
