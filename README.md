@@ -11,7 +11,6 @@
     - [数据库](#数据库)
     - [tomcat](#tomcat)
     - [项目构建基础](#项目构建基础)
-        - [脚手架](#脚手架)
         - [前后端分离](#前后端分离)
         - [互联网安全架构](#互联网安全架构)
     - [架构设计](#架构设计)
@@ -35,6 +34,7 @@
             - [Caffeine+Redis二级缓存](#caffeineredis二级缓存)
         - [限流降级](#限流降级)
         - [分布式消息队列](#分布式消息队列)
+            - [RocketMQ](#rocketmq)
             - [Kafka](#kafka)
     - [常用中间件](#常用中间件)
         - [分布式搜索引擎](#分布式搜索引擎)
@@ -366,8 +366,6 @@
 &emsp; [加密算法](/docs/web/encryption.md)  
 [其他](/docs/web/other.md)  
 
-### 脚手架  
-[项目循环依赖-分离接口](/docs/web/SeparationInterface.md)  
 
 
 ### 前后端分离  
@@ -649,6 +647,10 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [消息推拉机制](/docs/microService/mq/PushPull.md)  
 [RocketMQ和Kafka](/docs/microService/mq/RocketMQAndKafka.md)  
 
+#### RocketMQ  
+[RocketMQ搭建](/docs/microService/mq/Rocket/RocketBuild.md)  
+[SpringBoot整合RocketMQ](/docs/microService/mq/Rocket/BootRocket.md)  
+
 
 #### Kafka  
 [kafka总结](/docs/microService/mq/kafka/kafka.md)   
@@ -924,6 +926,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [Gradle](/docs/devAndOps/Gradle.md)  
 [Maven](/docs/devAndOps/maven/maven.md)  
 &emsp; [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
+&emsp; [项目循环依赖-分离接口](/docs/web/SeparationInterface.md)  
 &emsp; [Maven脚手架制作](/docs/devAndOps/maven/MavenScaffolding.md)  
 [Jmeter](/docs/devAndOps/Jmeter.md)  
 [JMH](/docs/java/JVM/JMH.md)  

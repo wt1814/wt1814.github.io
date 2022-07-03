@@ -278,8 +278,6 @@
         * [加密算法](/docs/web/encryption.md)  
     
     * [其他](/docs/web/other.md)  
-* 脚手架  
-    * [项目循环依赖-分离接口](/docs/web/SeparationInterface.md)  
 * 前后端分离  
     * [跨域和内外网隔离](/docs/web/Cross.md)  
 * 互联网安全架构  
@@ -702,6 +700,7 @@
     * [GIT](/docs/devAndOps/git/command.md)  
     * [Maven](/docs/devAndOps/maven/maven.md)  
         * [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
+        * [项目循环依赖-分离接口](/docs/web/SeparationInterface.md)  
         * [Maven脚手架制作](/docs/devAndOps/maven/MavenScaffolding.md)  
     * [Jmeter](/docs/devAndOps/Jmeter.md)  
     * [JMH](/docs/java/JVM/JMH.md)  
