@@ -15,11 +15,6 @@
 https://www.douban.com/note/706714492/
 https://blog.csdn.net/yzj5208/article/details/81288436
 https://blog.csdn.net/qq_39720208/article/details/102758662
-https://mp.weixin.qq.com/s/RZ7b8IKC7N3E87DaZhWaVA
-
-
-mysql高可用方案对比
-https://blog.csdn.net/yzj5208/article/details/81288436
 
 -->
 ## 1.1. MMM架构  
