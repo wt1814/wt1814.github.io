@@ -7,6 +7,7 @@
         - [为什么使用私有桶](#为什么使用私有桶)
         - [1.2.1. 使用STS临时访问凭证上传](#121-使用sts临时访问凭证上传)
         - [1.2.2. 下载](#122-下载)
+    - [回源](#回源)
 
 <!-- /TOC -->
 
@@ -33,5 +34,12 @@ https://help.aliyun.com/document_detail/32016.htm?spm=a2c4g.11186623.0.0.c8861c9
 
 STS临时授权OSS操作权限报“Access denied by authorizer's policy”错误
 https://help.aliyun.com/document_detail/161911.html
+
+
+## 回源
+<!-- 
+
+https://help.aliyun.com/document_detail/65093.html
+-->
 
 

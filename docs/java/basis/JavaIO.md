@@ -4,6 +4,7 @@
 
 - [1. I/O读写大批量数据](#1-io读写大批量数据)
     - [上传本地报错 FileNotFoundException](#上传本地报错-filenotfoundexception)
+    - [上传优化：FileChannel上传文件](#上传优化filechannel上传文件)
     - [1.1. Java 读写大文本文件](#11-java-读写大文本文件)
         - [1.1.1. java读取大文件的困难](#111-java读取大文件的困难)
         - [1.1.2. 解决方案](#112-解决方案)
@@ -54,6 +55,12 @@ Spring- 上传文件 MultipartFile.transferTo() 报错 FileNotFoundException
 https://blog.csdn.net/qq_26878363/article/details/122002244
 
 --> 
+
+## 上传优化：FileChannel上传文件
+<!--
+
+https://blog.csdn.net/nmj2015/article/details/79913259
+-->
 
 
 
