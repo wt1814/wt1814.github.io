@@ -690,9 +690,13 @@
 * Linux服务器搭建  
     * [CentOS](/docs/devAndOps/centOS/centOS.md)  
         * [扩容](/docs/devAndOps/centOS/dilatation.md)  
+    * [防火墙](/docs/Linux/build/firewall.md)  
+    * [jdk安装](/docs/devAndOps/JDKBuild.md)  
+    * [Docker安装](/docs/devAndOps/docker/install.md)  
     * [MySql](/docs/devAndOps/centOS/MySql.md)   
     * [Redis](/docs/devAndOps/centOS/Redis.md)  
     * [elk](/docs/devAndOps/centOS/elk.md)   
+    * [vpn](/docs/Linux/enterprise/vpn.md)  
 * DevOps  
     * [CI/CD](/docs/devAndOps/CICD.md)  
     * [Devops](/docs/devAndOps/devOps.md)  
