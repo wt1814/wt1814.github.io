@@ -489,6 +489,7 @@
 [Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/Hytrix.md)  
 [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
+[nacos](/docs/microService/SpringCloudNetflix/nacos.md)  
 
 
 ### Dubbo  
@@ -920,6 +921,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
 [MySql](/docs/devAndOps/centOS/MySql.md)   
 [Redis](/docs/devAndOps/centOS/Redis.md)  
+[RocketMQ搭建](/docs/microService/mq/Rocket/RocketBuild.md)  
 [elk](/docs/devAndOps/centOS/elk.md)   
 
 
