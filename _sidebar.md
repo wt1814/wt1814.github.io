@@ -212,7 +212,6 @@
         * [冷热数据分离](/docs/SQL/HotAndColdSeparation.md)  
         * [数据库分布式实现](/docs/SQL/subRealize.md)  
             * [MyCat中间件](/docs/SQL/MyCat.md)  
-            * [Sharding-JDBC](/docs/SQL/Sharding-JDBC.md)  
     * [数据库连接池](/docs/SQL/connectionPool.md)  
     * [MySQL运维](/docs/SQL/MySqlMonitor.md)  
         * [MySql审核平台](/docs/SQL/examine.md)  
@@ -242,6 +241,9 @@
         * [MySql-MVCC](/docs/SQL/MVCC.md)  
         * [MySql锁](/docs/SQL/lock.md)  
         * [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
+    * Sharding-JDBC  
+        * [Sharding-JDBC](/docs/SQL/Sharding-JDBC.md)  
+        * [shardingsphere](/docs/SQL/shardingsphere.md)  
 * tomcat
 * 项目构建基础  
     * [版本号](/docs/web/Version.md)  
@@ -697,7 +699,8 @@
     * [MySql](/docs/devAndOps/centOS/MySql.md)   
     * [Redis](/docs/devAndOps/centOS/Redis.md)  
     * [elk](/docs/devAndOps/centOS/elk.md)   
-    * [vpn](/docs/Linux/enterprise/vpn.md)  
+    * [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
+    * [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
 * DevOps  
     * [CI/CD](/docs/devAndOps/CICD.md)  
     * [Devops](/docs/devAndOps/devOps.md)  
