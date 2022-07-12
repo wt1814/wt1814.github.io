@@ -18,6 +18,10 @@
 https://blog.csdn.net/u012190514/article/details/81383698
 很好？Sentinel 夺命连环 17 问
 https://mp.weixin.qq.com/s/JBX3M-LrNwCoGl4Xzcg18Q
+
+
+https://blog.csdn.net/lzq199528/article/details/109898038
+
 -->
 
 ## 1.1. 接入Sentinel
