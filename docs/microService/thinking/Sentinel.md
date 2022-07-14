@@ -22,6 +22,20 @@ https://mp.weixin.qq.com/s/JBX3M-LrNwCoGl4Xzcg18Q
 
 https://blog.csdn.net/lzq199528/article/details/109898038
 
+
+1. 搭建  
+&emsp; https://sentinelguard.io/zh-cn/docs/dashboard.html    
+2. 集成  
+    1. 官方使用文档：https://sentinelguard.io/zh-cn/docs/basic-api-resource-rule.html  
+    2. 普通接口和feign集成Sentinel  
+    &emsp; https://www.jb51.net/article/226839.htm  
+    &emsp; https://www.jianshu.com/p/f5cabdef0de1  
+    &emsp; ~~https://blog.csdn.net/MenBad/article/details/125118367~~  
+    3. ~~dubbo之使用sentinel限流~~  
+    &emsp; https://blog.csdn.net/wang0907/article/details/121356872  
+    4. gateway集成Sentinel https://blog.51cto.com/u_15284359/4874743  
+    5. dubbo之使用sentinel限流  https://blog.csdn.net/wang0907/article/details/121356872  
+
 -->
 
 ## 1.1. 接入Sentinel
