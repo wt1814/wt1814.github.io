@@ -17,8 +17,7 @@ https://blog.csdn.net/qq_43100406/article/details/97156661
 *** https://blog.csdn.net/qq_43100406/article/details/97156661
 *** https://blog.csdn.net/blackoon88/article/details/124404129
 
-***Ubuntu下搭建Nexus私服图文详解
-https://blog.csdn.net/yangxiaochen_jk/article/details/122608793
+https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&__biz=MzA4MTk3MjI0Mw==&scene=1&album_id=2415325568729841667&count=3#wechat_redirect
 
 -->
 

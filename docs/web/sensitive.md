@@ -14,4 +14,11 @@ https://mp.weixin.qq.com/s/_Dgekk1AJsIx0TTlnH6kUA
 身份证、手机号加密存储的一些思路 
 https://mp.weixin.qq.com/s/Pun61iQjHO7PugOoPySSWg
 
+
+日志脱敏
+https://mp.weixin.qq.com/s/0qOJGOjp_y8zWdhLuOYjvg
+https://mp.weixin.qq.com/s/cBiH6Jxf2N0eoTgLRe4p-g
+数据脱敏
+https://mp.weixin.qq.com/s/gL3bKtZB-DNGWK8NgGEiVQ
+
 -->

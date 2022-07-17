@@ -9,6 +9,19 @@
 
 <!-- /TOC -->
 
+<!-- 
+
+Spring Boot + Vue + CAS 前后端分离实现单点登录方案
+https://mp.weixin.qq.com/s/EgyzAQePnCO64ST2W4gtYw
+甭管什么登录都给你接入到项目中去
+https://mp.weixin.qq.com/s/8uqTXYLZ8FdSCe3HPTTDUw
+Spring Security 简单教程以及实现完全前后端分离
+https://blog.51cto.com/u_13929722/3425964
+Spring Security05--手机验证码登录
+https://blog.csdn.net/fengxianaa/article/details/124717610  
+
+-->
+
 
 # 1. Spring Security  
 
