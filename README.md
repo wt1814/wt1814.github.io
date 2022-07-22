@@ -970,6 +970,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 &emsp; &emsp; [DockerFile](/docs/devAndOps/docker/file.md)  
 &emsp; [镜像详解](/docs/devAndOps/docker/image.md)  
 &emsp; [容器详解](/docs/devAndOps/docker/container.md)  
+&emsp; [挂载目录](/docs/devAndOps/docker/mount.md)  
 &emsp; [Docker工具](/docs/devAndOps/docker/tools.md)  
 [Kubernetes](/docs/devAndOps/k8s/Kubernetes.md)      
 &emsp; [k8s使用教程](/docs/devAndOps/k8s/use.md)  

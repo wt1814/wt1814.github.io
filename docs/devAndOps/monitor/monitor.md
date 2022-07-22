@@ -51,6 +51,9 @@ https://mp.weixin.qq.com/s/zqXOYQV_kSYWp3ibr0rH7g
 全网最完整之实战 Prometheus 搭建监控系统 
 https://mp.weixin.qq.com/s/VAzATGHgYdKZY8Yk2PHKuw
 
+普罗米修斯
+https://zhuanlan.zhihu.com/p/474476816
+
 
 SkyWalking
 https://mp.weixin.qq.com/s/Z7dRtmj2T7F09Q8etoK3hg
