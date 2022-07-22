@@ -56,6 +56,7 @@
     - [1.19. Linux服务器搭建](#119-linux服务器搭建)
     - [1.20. DevOps](#120-devops)
     - [1.21. 监控](#121-监控)
+    - [网络](#网络)
     - [1.22. 常用工具](#122-常用工具)
     - [1.23. 算法](#123-算法)
     - [1.24. 前端知识](#124-前端知识)
@@ -916,6 +917,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [cpu](/docs/Linux/cpu.md)  
 &emsp; [内存](/docs/Linux/memory.md)  
 &emsp; [硬盘](/docs/Linux/HardDisk.md)  
+[Linux监控](/docs/Linux/LinuxMonitor.md)  
 [Linux系统内核](/docs/Linux/Linux.md)  
 
 ----
@@ -989,6 +991,13 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [中间件监控](/docs/devAndOps/monitor/middleware.md)  
 [业务监控](/docs/devAndOps/monitor/business.md)  
 [监控系统](/docs/devAndOps/monitor/monitor.md)  
+
+
+## 网络  
+<!-- 
+出口ip
+https://help.aliyun.com/document_detail/122217.html
+-->
 
 
 -----------------------
