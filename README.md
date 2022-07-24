@@ -917,6 +917,12 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 &emsp; [cpu](/docs/Linux/cpu.md)  
 &emsp; [内存](/docs/Linux/memory.md)  
 &emsp; [硬盘](/docs/Linux/HardDisk.md)  
+&emsp; [Linux性能优化实战-倪朋飞](/docs/Linux/Actual/Actual.md)  
+&emsp; &emsp; [如何学习Linux性能优化？](/docs/Linux/Actual/how.md)  
+&emsp; &emsp; [CPU性能篇](/docs/Linux/Actual/cpu.md)  
+&emsp; &emsp; &emsp; [基础篇：到底应该怎么理解“平均负载”？](/docs/Linux/Actual/AverageLoad.md)  
+&emsp; &emsp; &emsp; [基础篇：经常说的 CPU 上下文切换是什么意思？（上）](/docs/Linux/Actual/ContextSwitching-upper.md)  
+&emsp; &emsp; &emsp; [基础篇：经常说的 CPU 上下文切换是什么意思？（下）](/docs/Linux/Actual/ContextSwitching-down.md)  
 [Linux监控](/docs/Linux/LinuxMonitor.md)  
 [Linux系统内核](/docs/Linux/Linux.md)  
 
