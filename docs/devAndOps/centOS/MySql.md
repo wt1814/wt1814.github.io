@@ -56,9 +56,9 @@ https://blog.csdn.net/llAl_lAll/article/details/119419178
 ### 1.3.1. 安装8
 #### 1.3.1.1. 安装
 <!-- 
-https://blog.csdn.net/llAl_lAll/article/details/119419178
-https://blog.csdn.net/qq_43290288/article/details/115277393
-https://blog.csdn.net/sdutphp/article/details/125277467
+*** https://blog.csdn.net/llAl_lAll/article/details/119419178
+mysql-community-server Error：  https://blog.csdn.net/qq_43290288/article/details/115277393
+ open file /etc/pki/rpm-gpg/RPM-GPG-KEY-mysql-2022：  https://blog.csdn.net/sdutphp/article/details/125277467
 
 -->
 
