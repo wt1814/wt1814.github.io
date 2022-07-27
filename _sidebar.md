@@ -709,6 +709,7 @@
     * [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
     * [Docker安装](/docs/devAndOps/docker/install.md)  
     * [MySql](/docs/devAndOps/centOS/MySql.md)   
+    * [MySql高可用](/docs/devAndOps/centOS/MySqlAvailability.md)   
     * [Redis](/docs/devAndOps/centOS/Redis.md)  
     * [elk](/docs/devAndOps/centOS/elk.md)   
     * [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
