@@ -1,5 +1,16 @@
 
-# Redis运维  
+<!-- TOC -->
+
+- [1. Redis运维](#1-redis运维)
+    - [1.1. Redis可视化工具](#11-redis可视化工具)
+    - [1.2. Redis监控](#12-redis监控)
+        - [1.2.1. 指标](#121-指标)
+        - [1.2.2. 工具](#122-工具)
+
+<!-- /TOC -->
+
+
+# 1. Redis运维  
 
 <!-- 
 Redis集群管理工具
@@ -7,7 +18,7 @@ Redis集群管理工具
 -->
 
 
-## Redis可视化工具  
+## 1.1. Redis可视化工具  
 <!-- 
 这10款牛X的Redis可视化工具横向评测，犯了选择困难症！ 
 https://mp.weixin.qq.com/s/VoQgSi0oxsXciZgOAGDPbg
@@ -17,11 +28,16 @@ https://mp.weixin.qq.com/s/QayyJmQyogyr5wCdd48Jxg
 Redis 官方可视化工具
 https://mp.weixin.qq.com/s/GlHXfgN-AY3c5jzTReqLuA
 
+ 
+ Redis 可视化管理工具
+ https://mp.weixin.qq.com/s/82oGxqgbNXFtJ5THfnfdNQ
+ 
+
 -->
 
 
 
-## Redis监控  
+## 1.2. Redis监控  
 
 <!-- 
 
@@ -39,7 +55,7 @@ https://mp.weixin.qq.com/s/KuupYUFbOUmaM_WbvP0I0A
 
 -->
 
-### 指标
+### 1.2.1. 指标
 <!--
 那你讲讲Redis都有哪些监控指标？ 
 https://mp.weixin.qq.com/s/yeQ8xR0fPQGs7r66itV9KA
@@ -51,7 +67,7 @@ Redis几个重要的健康指标
 https://mp.weixin.qq.com/s?__biz=MzU5ODUwNzY1Nw==&mid=2247484177&idx=1&sn=f86f096e2881e24cdbe0bfe20870a6e0&chksm=fe426af7c935e3e14851f1ed68068ba8719a689c11fa9a7a230ebcce90a8d826f319a7769f4e&mpshare=1&scene=1&srcid=&sharer_sharetime=1566609558232&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=58e504541863490e2ca0e88c60d64de71e12be60abb0c00f5e6e2af5f28f4a2076b8dee6cab1f3933f1f5e856547c456ccce1bd70d9c1204f38acd64cb92f874c6c9d676e9c08c573c307c87c378b6f1&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=Px7sTPQuEit4xCXhE9ebox3l5%2BRMvk8%2FvRqHW2Lp7zkFhZf78OqdKam4pgcwbRY%2F
 -->
 
-### 工具
+### 1.2.2. 工具
 
 <!-- 
 Redis实用监控工具一览 

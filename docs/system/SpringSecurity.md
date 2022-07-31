@@ -20,6 +20,13 @@ https://blog.51cto.com/u_13929722/3425964
 Spring Security05--手机验证码登录
 https://blog.csdn.net/fengxianaa/article/details/124717610  
 
+ Spring Cloud Gateway + Oauth2 实现统一认证和鉴权！
+ https://mp.weixin.qq.com/s/Hlb_BDESR0Gs7dkYy9JDDw
+
+  Spring-Security & JWT 实现 token
+ https://mp.weixin.qq.com/s/Dlrxei-hTXh6rVTdb8Ddaw
+
+
 -->
 
 

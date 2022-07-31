@@ -9,7 +9,7 @@ https://blog.csdn.net/qq_31226223/article/details/123815551
 https://blog.csdn.net/bert589998/article/details/110629529
 
 -->
-
+&emsp; 官网：https://shardingsphere.apache.org/document/current/cn/features/  
 
 ## 读写分离  
 

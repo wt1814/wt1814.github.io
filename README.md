@@ -904,6 +904,13 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 ----
 
 ## 1.18. Linux操作系统  
+<!-- 
+xshell 工具Tabby 
+https://mp.weixin.qq.com/s/Cs-WzMm-8VZbLoq9CA-qWw
+https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
+
+-->
+
 [Linux版本](/docs/Linux/LinuxVersion.md)  
 [Linux命令](/docs/Linux/Command.md)
 &emsp; [Linux命令-实操](/docs/Linux/operation.md)  
