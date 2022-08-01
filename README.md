@@ -330,7 +330,6 @@
 [数据库连接池](/docs/SQL/connectionPool.md)  
 
 ### 1.3.3. shardingsphere
-[Sharding-JDBC](/docs/SQL/Sharding-JDBC.md)  
 [shardingsphere](/docs/SQL/shardingsphere.md)  
 
 ## 1.4. tomcat

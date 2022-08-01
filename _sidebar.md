@@ -243,7 +243,6 @@
         * [MySql锁](/docs/SQL/lock.md)  
         * [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
     * Sharding-JDBC  
-        * [Sharding-JDBC](/docs/SQL/Sharding-JDBC.md)  
         * [shardingsphere](/docs/SQL/shardingsphere.md)  
 * tomcat
 * 项目构建基础  
