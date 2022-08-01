@@ -584,6 +584,7 @@
 * 安全框架  
     * [shiro](/docs/system/shiro.md)  
     * [Spring Security](/docs/system/SpringSecurity.md)  
+    * [数据权限](/docs/system/DataPermissions.md)  
 * [工作流](docs/middleware/workflow.md)  
 * 内存
     * [堆外内存](/docs/system/OutHeapMemory.md)  
