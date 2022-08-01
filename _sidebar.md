@@ -420,7 +420,7 @@
 * [分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
 * [分布式事务](/docs/microService/thinking/DistriTransaction.md)  
     * [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
-        *[JTA+Atomic](/docs/microService/thinking/JTA.md)  
+        * [JTA+Atomic](/docs/microService/thinking/JTA.md)  
     * [TCC](/docs/microService/thinking/TCC.md)   
     * [TCC问题1](/docs/microService/thinking/TCCProblemOne.md)   
     * [TCC问题](/docs/microService/thinking/TCCProblem.md)  
@@ -583,6 +583,7 @@
 * 安全框架  
     * [shiro](/docs/system/shiro.md)  
     * [Spring Security](/docs/system/SpringSecurity.md)  
+    * [数据权限](/docs/system/DataPermissions.md)  
 * [工作流](docs/middleware/workflow.md)  
 * 内存
     * [堆外内存](/docs/system/OutHeapMemory.md)  

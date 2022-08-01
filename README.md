@@ -347,6 +347,7 @@
 &emsp; [接口管理](/docs/web/InterfaceManagement.md)  
 &emsp; &emsp; [Swagger](/docs/web/Swagger.md)  
 &emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
+&emsp; [统一响应处理](/docs/web/ResponseProcessing.md)  
 &emsp; [统一异常处理](/docs/web/ExceptionHandler.md)  
 &emsp; [统一日志记录](/docs/web/unifiedLog.md)  
 &emsp; [日志系统](/docs/web/log.md)  
@@ -772,7 +773,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 ### 1.11.3. 安全框架shiro  
 [shiro](/docs/system/shiro.md)  
 [Spring Security](/docs/system/SpringSecurity.md)  
-
+[数据权限](/docs/system/DataPermissions.md)  
 
 ### 1.11.4. 工作流
 [工作流](docs/middleware/workflow.md)  
