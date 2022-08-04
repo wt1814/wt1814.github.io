@@ -244,6 +244,7 @@
         * [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
     * Sharding-JDBC  
         * [shardingsphere](/docs/SQL/shardingsphere.md)  
+        * [shardingsphere分布式事务](/docs/SQL/shardingsphereTransaction.md)  
 * tomcat
 * 项目构建基础  
     * [版本号](/docs/web/Version.md)  
