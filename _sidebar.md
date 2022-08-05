@@ -247,6 +247,7 @@
 * tomcat
 * 项目构建基础  
     * [版本号](/docs/web/Version.md)  
+    * [MVC三层架构上再加一层Manager层](/docs/web/Manager.md)  
     * [项目构建基础](/docs/web/BuildFoundation.md)  
         * [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
         * [接口管理](/docs/web/InterfaceManagement.md)  
