@@ -776,6 +776,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [shiro](/docs/system/shiro.md)  
 [Spring Security](/docs/system/SpringSecurity.md)  
 [数据权限](/docs/system/DataPermissions.md)  
+[CAS集成](/docs/system/CAS.md)  
 
 ### 1.11.4. 工作流
 [工作流](docs/middleware/workflow.md)  
