@@ -248,6 +248,7 @@
 * tomcat
 * 项目构建基础  
     * [版本号](/docs/web/Version.md)  
+    * [MVC三层架构上再加一层Manager层](/docs/web/Manager.md)  
     * [项目构建基础](/docs/web/BuildFoundation.md)  
         * [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
         * [接口管理](/docs/web/InterfaceManagement.md)  
@@ -585,6 +586,7 @@
     * [shiro](/docs/system/shiro.md)  
     * [Spring Security](/docs/system/SpringSecurity.md)  
     * [数据权限](/docs/system/DataPermissions.md)  
+    * [CAS集成](/docs/system/CAS.md)  
 * [工作流](docs/middleware/workflow.md)  
 * 内存
     * [堆外内存](/docs/system/OutHeapMemory.md)  

@@ -343,6 +343,7 @@
 
 ## 1.5. 项目构建基础  
 [版本号](/docs/web/Version.md)  
+[MVC三层架构上再加一层Manager层](/docs/web/Manager.md)  
 [项目构建基础](/docs/web/BuildFoundation.md)  
 &emsp; [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
 &emsp; [接口管理](/docs/web/InterfaceManagement.md)  
@@ -775,6 +776,7 @@ https://blog.csdn.net/Giggle1994/article/details/111194763
 [shiro](/docs/system/shiro.md)  
 [Spring Security](/docs/system/SpringSecurity.md)  
 [数据权限](/docs/system/DataPermissions.md)  
+[CAS集成](/docs/system/CAS.md)  
 
 ### 1.11.4. 工作流
 [工作流](docs/middleware/workflow.md)  
