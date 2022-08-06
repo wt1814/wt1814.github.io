@@ -706,6 +706,7 @@
         * [扩容](/docs/devAndOps/centOS/dilatation.md)  
     * [防火墙](/docs/Linux/build/firewall.md)  
     * [jdk安装](/docs/devAndOps/JDKBuild.md)  
+    * [Git安装](/docs/devAndOps/GitBuild.md)  
     * [Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
     * [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
     * [Docker安装](/docs/devAndOps/docker/install.md)  

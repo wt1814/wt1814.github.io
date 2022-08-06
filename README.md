@@ -948,6 +948,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 &emsp; [扩容](/docs/devAndOps/centOS/dilatation.md)  
 [防火墙](/docs/Linux/build/firewall.md)  
 [jdk安装](/docs/devAndOps/JDKBuild.md)  
+[Git安装](/docs/devAndOps/GitBuild.md)  
 [Docker安装](/docs/devAndOps/docker/install.md)  
 [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
 [MySql](/docs/devAndOps/centOS/MySql.md)   
