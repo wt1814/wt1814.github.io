@@ -47,6 +47,12 @@
 
 # 1. Spring Cloud Sleuth
 <!-- 
+dubbo服务整合zipkin  
+&emsp; https://blog.csdn.net/zzqq12345/article/details/107187496  
+&emsp; https://www.jb51.net/article/218105.htm  
+
+
+
 链路日志
 https://mp.weixin.qq.com/s?__biz=MzIwMDY0Nzk2Mw==&mid=2650325282&idx=1&sn=49bdfb4acb903783031b7dc7e7164a27&fileGuid=Ty8hqrvhtDydKt8V&scene=21#wechat_redirect
 
