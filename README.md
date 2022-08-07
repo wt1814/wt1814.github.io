@@ -952,6 +952,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [jdk安装](/docs/devAndOps/JDKBuild.md)  
 [Git安装](/docs/devAndOps/GitBuild.md)  
 [Docker安装](/docs/devAndOps/docker/install.md)  
+[Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
 [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
 [MySql](/docs/devAndOps/centOS/MySql.md)   
 [MySql高可用](/docs/devAndOps/centOS/MySqlAvailability.md)   
