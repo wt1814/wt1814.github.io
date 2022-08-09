@@ -55,11 +55,13 @@
     - [1.18. Linux操作系统](#118-linux操作系统)
     - [1.19. Linux服务器搭建](#119-linux服务器搭建)
     - [1.20. DevOps](#120-devops)
+        - [研发](#研发)
+        - [需求和测试](#需求和测试)
     - [1.21. 监控](#121-监控)
-    - [网络](#网络)
-    - [1.22. 常用工具](#122-常用工具)
-    - [1.23. 算法](#123-算法)
-    - [1.24. 前端知识](#124-前端知识)
+    - [1.22. 网络](#122-网络)
+    - [1.23. 常用工具](#123-常用工具)
+    - [1.24. 算法](#124-算法)
+    - [1.25. 前端知识](#125-前端知识)
 
 <!-- /TOC -->
 
@@ -968,6 +970,8 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 
 ## 1.20. DevOps  
 [CI/CD](/docs/devAndOps/CICD.md)  
+
+### 研发  
 [Devops](/docs/devAndOps/devOps.md)  
 &emsp; [DevOps搭建](/docs/devAndOps/devOpsPractice.md)  
 [GIT](/docs/devAndOps/git/command.md)  
@@ -976,7 +980,6 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 &emsp; [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
 &emsp; [项目循环依赖-分离接口](/docs/web/SeparationInterface.md)  
 &emsp; [Maven脚手架制作](/docs/devAndOps/maven/MavenScaffolding.md)  
-[Jmeter](/docs/devAndOps/Jmeter.md)  
 [JMH](/docs/java/JVM/JMH.md)  
 [多种发布方式](/docs/system/publishe.md)  
 &emsp; [灰度发布](/docs/system/grayscalePublishe.md)  
@@ -1006,6 +1009,12 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 &emsp; [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
 [LDAP自助修改密码服务](/docs/devAndOps/LDAP.md)  
 
+### 需求和测试
+[jira](/docs/devAndOps/jira.md)  
+[Jmeter](/docs/devAndOps/Jmeter.md)  
+
+
+
 ------------  
 
 ## 1.21. 监控
@@ -1015,7 +1024,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [监控系统](/docs/devAndOps/monitor/monitor.md)  
 
 
-## 网络  
+## 1.22. 网络  
 <!-- 
 出口ip
 https://help.aliyun.com/document_detail/122217.html
@@ -1025,7 +1034,7 @@ https://help.aliyun.com/document_detail/122217.html
 -----------------------
 
 
-## 1.22. 常用工具  
+## 1.23. 常用工具  
 [Idea](/docs/software/idea/idea.md)  
 [postman](/docs/software/postman.md)  
 [抓包Charles](/docs/software/charles.md)  
@@ -1038,7 +1047,7 @@ https://help.aliyun.com/document_detail/122217.html
 
 --------
 
-## 1.23. 算法  
+## 1.24. 算法  
 [红黑树](/docs/function/redBlack.md)  
 [复杂数据结构](/docs/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/function/SkipList.md)  
@@ -1051,5 +1060,5 @@ https://help.aliyun.com/document_detail/122217.html
 [大数据和空间限制](/docs/function/bigdata.md)  
 &emsp; [内存只有 2G，如何对 100 亿数据进行排序？](/docs/function/SmallMemory.md)  
 
-## 1.24. 前端知识  
+## 1.25. 前端知识  
 [nodejs](/docs/front/nodejs.md)  
