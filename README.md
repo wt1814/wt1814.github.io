@@ -942,6 +942,7 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 &emsp; [shell编程](/docs/Linux/shell.md)  
 [堡垒机](/docs/Linux/baolei.md)  
 [Linux系统性能](/docs/Linux/systemPerformance.md)  
+&emsp; [Linux性能优化常用命令汇总](/docs/Linux/PerformanceCommand.md)  
 &emsp; [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
 &emsp; [cpu](/docs/Linux/cpu.md)  
 &emsp; [内存](/docs/Linux/memory.md)  

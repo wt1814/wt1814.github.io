@@ -282,7 +282,6 @@
         * [格式化](/docs/web/Format.md)  
         * [数据脱敏](/docs/web/sensitive.md)  
         * [加密算法](/docs/web/encryption.md)  
-    
     * [其他](/docs/web/other.md)  
 * 前后端分离  
     * [跨域和内外网隔离](/docs/web/Cross.md)  
@@ -699,6 +698,7 @@
         * [shell编程](/docs/Linux/shell.md)  
     * [堡垒机](/docs/Linux/baolei.md)  
     * [Linux系统性能](/docs/Linux/systemPerformance.md)  
+        * [Linux性能优化常用命令汇总](/docs/Linux/PerformanceCommand.md)  
         * [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
         * [cpu](/docs/Linux/cpu.md)  
         * [内存](/docs/Linux/memory.md)  
