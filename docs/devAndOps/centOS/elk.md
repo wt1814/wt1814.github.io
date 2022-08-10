@@ -2,6 +2,7 @@
 <!-- TOC -->
 
 - [1. elasticsearch安装使用](#1-elasticsearch安装使用)
+    - [Linux](#linux)
     - [1.1. mac系统](#11-mac系统)
     - [1.2. windowns系统](#12-windowns系统)
     - [1.3. 在本机启动多个项目启动多个节点](#13-在本机启动多个项目启动多个节点)
@@ -16,6 +17,15 @@ Docker部署多机单节点ELK集群【ES + Logstash + Kibana + IK】
 https://mp.weixin.qq.com/s/lXvBTja_B6l-z0oUgiLETQ
 
 -->
+
+
+## Linux  
+<!-- 
+
+https://blog.csdn.net/ECHOZCL/article/details/122740053
+https://blog.csdn.net/CX1544539968/article/details/120038113
+-->
+
 
 
 ## 1.1. mac系统
