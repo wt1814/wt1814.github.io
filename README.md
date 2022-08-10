@@ -955,7 +955,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
 [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
 [MySql](/docs/devAndOps/centOS/MySql.md)   
-[MySql高可用](/docs/devAndOps/centOS/MySqlAvailability.md)   
+[MHA搭建MySql主从](/docs/devAndOps/centOS/MySqlAvailability.md)   
 [Redis](/docs/devAndOps/centOS/Redis.md)  
 [RocketMQ搭建](/docs/microService/mq/Rocket/RocketBuild.md)  
 [elk](/docs/devAndOps/centOS/elk.md)   

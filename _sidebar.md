@@ -713,7 +713,7 @@
     * [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
     * [Docker安装](/docs/devAndOps/docker/install.md)  
     * [MySql](/docs/devAndOps/centOS/MySql.md)   
-    * [MySql高可用](/docs/devAndOps/centOS/MySqlAvailability.md)   
+    * [MHA搭建MySql主从](/docs/devAndOps/centOS/MySqlAvailability.md)   
     * [Redis](/docs/devAndOps/centOS/Redis.md)  
     * [elk](/docs/devAndOps/centOS/elk.md)   
     * [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
@@ -781,4 +781,3 @@
         * [Trie](/docs/function/Trie.md)  
     * [大数据和空间限制](/docs/function/bigdata.md)  
         * [内存只有 2G，如何对 100 亿数据进行排序？](/docs/function/SmallMemory.md)  
-

@@ -35,6 +35,11 @@ https://blog.csdn.net/weixin_30647423/article/details/114816675?spm=1001.2101.30
 
 
 ## 1.3. 第三步，高可用实现：MHA搭建  
+<!-- 
+
+MySQL高可用架构之 MHA 一主一从
+https://blog.csdn.net/u012599988/article/details/82625713?spm=1001.2101.3001.6650.5&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Edefault-5-82625713-blog-114328765.pc_relevant_multi_platform_whitelistv1&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Edefault-5-82625713-blog-114328765.pc_relevant_multi_platform_whitelistv1&utm_relevant_index=8
+-->
 
 
 
