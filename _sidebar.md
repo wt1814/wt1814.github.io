@@ -253,6 +253,7 @@
         * [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
         * [接口管理](/docs/web/InterfaceManagement.md)  
             * [Swagger](/docs/web/Swagger.md)  
+        * [Controller层简洁又优雅](/docs/web/Controller.md)  
         * [统一格式返回](/docs/web/UnifiedFormat.md)   
         * [统一异常处理](/docs/web/ExceptionHandler.md)  
         * [统一日志记录](/docs/web/unifiedLog.md)  
