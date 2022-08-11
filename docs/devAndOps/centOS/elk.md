@@ -6,6 +6,7 @@
         - [1.1.1. Elasticsearch](#111-elasticsearch)
         - [1.1.3. Kinaba](#113-kinaba)
         - [1.1.2. Logstash](#112-logstash)
+    - [Docker部署](#docker部署)
     - [1.2. mac系统](#12-mac系统)
     - [1.3. windowns系统](#13-windowns系统)
     - [1.4. 在本机启动多个项目启动多个节点](#14-在本机启动多个项目启动多个节点)
@@ -14,13 +15,6 @@
 
 
 # 1. elasticsearch安装使用
-<!-- 
-
-Docker部署多机单节点ELK集群【ES + Logstash + Kibana + IK】
-https://mp.weixin.qq.com/s/lXvBTja_B6l-z0oUgiLETQ
-
--->
-
 
 ## 1.1. Linux  
 <!-- 
@@ -52,10 +46,14 @@ https://blog.csdn.net/hnhroot/article/details/121497050
 2. 验证、访问： ip:9200
 
 
-
-
-
 ### 1.1.3. Kinaba  
+<!-- 
+
+Linux版本Kibana安装教程
+https://blog.csdn.net/qq_39706570/article/details/125293901
+kibana启动时遇到的坑
+https://blog.csdn.net/weixin_45495060/article/details/125183341
+-->
 1. 安装  
     1. 修改/usr/local/kibana-7.3.0-linux-x86_64/config/kibana.yml
     ```text
@@ -69,8 +67,20 @@ https://blog.csdn.net/hnhroot/article/details/121497050
 
 
 ### 1.1.2. Logstash  
+<!-- 
+https://www.elastic.co/cn/downloads/past-releases#logstash
+https://elasticstack.blog.csdn.net/article/details/99655350
+https://blog.csdn.net/CX1544539968/article/details/120038113
+-->
 
 
+
+## Docker部署  
+<!-- 
+Docker部署多机单节点ELK集群【ES + Logstash + Kibana + IK】
+https://mp.weixin.qq.com/s/lXvBTja_B6l-z0oUgiLETQ
+
+-->
 
 ## 1.2. mac系统
 cd /Users/wangtao/software/elk/elasticsearch-7.13.3
