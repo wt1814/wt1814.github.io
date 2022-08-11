@@ -3,21 +3,21 @@
 <!-- TOC -->
 
 - [1. I/O读写大批量数据](#1-io读写大批量数据)
-    - [上传本地报错 FileNotFoundException](#上传本地报错-filenotfoundexception)
-    - [上传优化：FileChannel上传文件](#上传优化filechannel上传文件)
-    - [1.1. Java 读写大文本文件](#11-java-读写大文本文件)
-        - [1.1.1. java读取大文件的困难](#111-java读取大文件的困难)
-        - [1.1.2. 解决方案](#112-解决方案)
-            - [1.1.2.1. 使用BufferedInputStream进行包装](#1121-使用bufferedinputstream进行包装)
-            - [1.1.2.2. 逐行读取](#1122-逐行读取)
-            - [1.1.2.3. 并发读取](#1123-并发读取)
-                - [1.1.2.3.1. 逐行批次打包](#11231-逐行批次打包)
-                - [1.1.2.3.2. 大文件拆分成小文件](#11232-大文件拆分成小文件)
-            - [1.1.2.4. 零拷贝方案](#1124-零拷贝方案)
-                - [1.1.2.4.1. 使用FileChannel](#11241-使用filechannel)
-                - [1.1.2.4.2. 内存文件映射](#11242-内存文件映射)
-    - [1.2. 大批量数据导入Excel](#12-大批量数据导入excel)
-    - [1.3. 多线程断点续传](#13-多线程断点续传)
+    - [1.1. 上传本地报错 FileNotFoundException](#11-上传本地报错-filenotfoundexception)
+    - [1.2. 上传优化：FileChannel上传文件](#12-上传优化filechannel上传文件)
+    - [1.3. Java 读写大文本文件](#13-java-读写大文本文件)
+        - [1.3.1. java读取大文件的困难](#131-java读取大文件的困难)
+        - [1.3.2. 解决方案](#132-解决方案)
+            - [1.3.2.1. 使用BufferedInputStream进行包装](#1321-使用bufferedinputstream进行包装)
+            - [1.3.2.2. 逐行读取](#1322-逐行读取)
+            - [1.3.2.3. 并发读取](#1323-并发读取)
+                - [1.3.2.3.1. 逐行批次打包](#13231-逐行批次打包)
+                - [1.3.2.3.2. 大文件拆分成小文件](#13232-大文件拆分成小文件)
+            - [1.3.2.4. 零拷贝方案](#1324-零拷贝方案)
+                - [1.3.2.4.1. 使用FileChannel](#13241-使用filechannel)
+                - [1.3.2.4.2. 内存文件映射](#13242-内存文件映射)
+    - [1.4. 大批量数据导入Excel](#14-大批量数据导入excel)
+    - [1.5. 分片上传和断点续传](#15-分片上传和断点续传)
 
 <!-- /TOC -->
 
@@ -49,14 +49,14 @@ https://www.cxymm.net/article/cheng9981/82386663
 
 -->
 
-## 上传本地报错 FileNotFoundException
+## 1.1. 上传本地报错 FileNotFoundException
 <!-- 
 Spring- 上传文件 MultipartFile.transferTo() 报错 FileNotFoundException
 https://blog.csdn.net/qq_26878363/article/details/122002244
 
 --> 
 
-## 上传优化：FileChannel上传文件
+## 1.2. 上传优化：FileChannel上传文件
 <!--
 
 https://blog.csdn.net/nmj2015/article/details/79913259
@@ -64,10 +64,10 @@ https://blog.csdn.net/nmj2015/article/details/79913259
 
 
 
-## 1.1. Java 读写大文本文件  
+## 1.3. Java 读写大文本文件  
 &emsp; **<font color = "clime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>**  
 
-### 1.1.1. java读取大文件的困难  
+### 1.3.1. java读取大文件的困难  
 &emsp; java读取文件的一般操作是将文件数据全部读取到内存中，然后再对数据进行操作。例如：  
 
 ```java
@@ -83,8 +83,8 @@ Exception in thread "main" java.lang.OutOfMemoryError: Required array size too l
 
 
 
-### 1.1.2. 解决方案 
-#### 1.1.2.1. 使用BufferedInputStream进行包装  
+### 1.3.2. 解决方案 
+#### 1.3.2.1. 使用BufferedInputStream进行包装  
 &emsp; 文件流边读边用，使用文件流的 BufferedInputStream#read() 方法每次读取指定长度的数据到内存中。这种方法可行但是效率不高。示例代码如下：  
 
 ```java
@@ -139,21 +139,21 @@ public class StreamFileReader {
 }
 ```
 
-#### 1.1.2.2. 逐行读取  
+#### 1.3.2.2. 逐行读取  
 <!-- https://mp.weixin.qq.com/s/K7oGTdN1UI3oXiFYYZ51pA -->
 
-#### 1.1.2.3. 并发读取  
+#### 1.3.2.3. 并发读取  
 
 <!-- https://mp.weixin.qq.com/s/K7oGTdN1UI3oXiFYYZ51pA -->
 
-##### 1.1.2.3.1. 逐行批次打包  
+##### 1.3.2.3.1. 逐行批次打包  
 
 
-##### 1.1.2.3.2. 大文件拆分成小文件  
+##### 1.3.2.3.2. 大文件拆分成小文件  
 
 
-#### 1.1.2.4. 零拷贝方案
-##### 1.1.2.4.1. 使用FileChannel
+#### 1.3.2.4. 零拷贝方案
+##### 1.3.2.4.1. 使用FileChannel
 &emsp; 对大文件建立 NIO 的 FileChannel，每次调用 read() 方法时会先将文件数据读取到已分配固定长度的 java.nio.ByteBuffer 中，接着从中获取读取的数据。这种用 NIO 通道的方法比传统文件流读取理论上要快一点。示例代码如下：  
 
 ```java
@@ -213,7 +213,7 @@ public class ChannelFileReader {
 }
 ```
 
-##### 1.1.2.4.2. 内存文件映射  
+##### 1.3.2.4.2. 内存文件映射  
 <!-- 
 Java逐行读取文件
 https://cloud.tencent.com/developer/article/1578606
@@ -373,7 +373,7 @@ public class MappedBiggerFileReader {
 ```
 
 
-## 1.2. 大批量数据导入Excel  
+## 1.4. 大批量数据导入Excel  
 
 <!-- 
  100000 行级别数据的 Excel 导入优化之路 
@@ -385,9 +385,12 @@ public class MappedBiggerFileReader {
 * 逐行查询数据库校验的时间成本主要在来回的网络IO中，优化方法也很简单。将参加校验的数据全部缓存到 HashMap 中。直接到 HashMap 去命中。    
 
 
-## 1.3. 多线程断点续传  
+## 1.5. 分片上传和断点续传  
 
 <!-- 
+
+https://mp.weixin.qq.com/s/pQZZbNCtX0u_qy09RaHnZw
+
 https://mp.weixin.qq.com/s/JYOa7iFhBLeG8vqIOr5tjA
 -->
 <!-- 

@@ -20,6 +20,9 @@
 
 # 1. 通信技术  
 <!-- 
+实时消息推送
+https://mp.weixin.qq.com/s/-6A-VZEdT06_88v98wPFQQ
+
 传统轮询、长轮询、服务器发送事件与WebSocket
 https://www.cnblogs.com/huchong/p/8595644.html
 https://cloud.tencent.com/developer/article/1821509
