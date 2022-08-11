@@ -2,10 +2,13 @@
 <!-- TOC -->
 
 - [1. elasticsearch安装使用](#1-elasticsearch安装使用)
-    - [Linux](#linux)
-    - [1.1. mac系统](#11-mac系统)
-    - [1.2. windowns系统](#12-windowns系统)
-    - [1.3. 在本机启动多个项目启动多个节点](#13-在本机启动多个项目启动多个节点)
+    - [1.1. Linux](#11-linux)
+        - [1.1.1. Elasticsearch](#111-elasticsearch)
+        - [1.1.3. Kinaba](#113-kinaba)
+        - [1.1.2. Logstash](#112-logstash)
+    - [1.2. mac系统](#12-mac系统)
+    - [1.3. windowns系统](#13-windowns系统)
+    - [1.4. 在本机启动多个项目启动多个节点](#14-在本机启动多个项目启动多个节点)
 
 <!-- /TOC -->
 
@@ -19,16 +22,57 @@ https://mp.weixin.qq.com/s/lXvBTja_B6l-z0oUgiLETQ
 -->
 
 
-## Linux  
+## 1.1. Linux  
 <!-- 
 
 https://blog.csdn.net/ECHOZCL/article/details/122740053
 https://blog.csdn.net/CX1544539968/article/details/120038113
 -->
 
+### 1.1.1. Elasticsearch
+<!-- 
+
+Linux环境下安装Elasticsearch，史上最详细的教程来啦~
+https://blog.csdn.net/smilehappiness/article/details/118466378
+JVM is using the client VM [Java HotSpot Client VM] but should be using a server VM for the best pe
+https://blog.csdn.net/hnhroot/article/details/121497050
+-->
+1. 安装  
+    1. 修改 /usr/local/elasticsearch-7.3.0/config/elasticsearch.yml 修改配置  
+
+    ```text
+    network.host: 0.0.0.0 
+    xpack.ml.enabled: false
+
+    bootstrap.memory_lock: false
+    bootstrap.system_call_filter: false
+    cluster.initial_master_nodes: ["node-1"]
+    ```
+    2. 启动 bin目录下 ./elasticsearch
+2. 验证、访问： ip:9200
 
 
-## 1.1. mac系统
+
+
+
+### 1.1.3. Kinaba  
+1. 安装  
+    1. 修改/usr/local/kibana-7.3.0-linux-x86_64/config/kibana.yml
+    ```text
+    server.port: 5601  #默认端口
+    server.host: "0.0.0.0"
+    i18n.locale: "zh-CN"
+    elasticsearch.hosts: ["http://8.142.23.42:9200"]  #elasticsearch所在的IP+端口
+    ```
+    2. 启动：./kibana --allow-root
+2. 验证、访问：ip:5601
+
+
+### 1.1.2. Logstash  
+
+
+
+## 1.2. mac系统
 cd /Users/wangtao/software/elk/elasticsearch-7.13.3
 bin/elasticsearch
 
@@ -58,7 +102,7 @@ POST wt/_doc
 }
 
 
-## 1.2. windowns系统
+## 1.3. windowns系统
 1. 安装elasticsearch  
 2. 启动elasticsearch
     1. 进入 G:\software\elasticsearch-7.10.0-windows-x86_64\elasticsearch-7.10.0\bin  
@@ -89,7 +133,7 @@ https://blog.csdn.net/qq_37554565/article/details/117250647
 
 -->
 
-## 1.3. 在本机启动多个项目启动多个节点  
+## 1.4. 在本机启动多个项目启动多个节点  
 <!-- 
 https://blog.csdn.net/qq_35463719/article/details/121940803
 -->

@@ -757,6 +757,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [写入速度和磁盘使用量优化](/docs/ES/WriteSpeed.md)  
 &emsp; [故障判断](/docs/ES/FaultJudgment.md)  
 [ES运维](/docs/ES/Operation.md)  
+&emsp; [ES可视化客户端](/docs/ES/visualization.md)  
 &emsp; [ES集群操作](/docs/ES/ClusterOperation.md)  
 &emsp; [ES监控](/docs/ES/monitor.md)  
 &emsp; [ES优化](/docs/ES/optimization.md)  

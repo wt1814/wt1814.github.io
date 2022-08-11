@@ -567,6 +567,7 @@
         * [写入速度和磁盘使用量优化](/docs/ES/WriteSpeed.md)  
         * [故障判断](/docs/ES/FaultJudgment.md)  
     * [ES运维](/docs/ES/Operation.md)  
+        * [ES可视化客户端](/docs/ES/visualization.md)  
         * [ES集群操作](/docs/ES/ClusterOperation.md) 
         * [ES监控](/docs/ES/monitor.md)  
         * [ES优化](/docs/ES/optimization.md)  
