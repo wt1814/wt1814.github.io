@@ -9,6 +9,7 @@
             - [1.1.3.1. 安装](#1131-安装)
             - [1.1.3.2. 整合SpringBoot](#1132-整合springboot)
             - [1.1.3.3. 整合MySql](#1133-整合mysql)
+        - [FileBeat](#filebeat)
     - [1.2. Docker部署](#12-docker部署)
     - [1.3. mac系统](#13-mac系统)
     - [1.4. windowns系统](#14-windowns系统)
@@ -111,6 +112,15 @@ output {
 
 #### 1.1.3.3. 整合MySql  
 
+
+
+### FileBeat  
+<!-- 
+
+https://www.elastic.co/cn/downloads/beats/filebeat
+
+-->
+1. 下载：  
 
 
 ## 1.2. Docker部署  
