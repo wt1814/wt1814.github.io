@@ -9,7 +9,7 @@
             - [1.1.3.1. 安装](#1131-安装)
             - [1.1.3.2. 整合SpringBoot](#1132-整合springboot)
             - [1.1.3.3. 整合MySql](#1133-整合mysql)
-        - [FileBeat](#filebeat)
+        - [1.1.4. FileBeat](#114-filebeat)
     - [1.2. Docker部署](#12-docker部署)
     - [1.3. mac系统](#13-mac系统)
     - [1.4. windowns系统](#14-windowns系统)
@@ -79,6 +79,11 @@ http://www.360doc.com/content/22/0727/17/10087950_1041609111.shtml
 https://www.elastic.co/cn/downloads/past-releases#logstash
 https://elasticstack.blog.csdn.net/article/details/99655350
 https://blog.csdn.net/CX1544539968/article/details/120038113
+
+https://www.cnblogs.com/zyb2016/p/14886589.html
+https://blog.csdn.net/u014527058/article/details/70495595
+
+
 -->
 
 #### 1.1.3.1. 安装
@@ -111,10 +116,13 @@ output {
 
 
 #### 1.1.3.3. 整合MySql  
+<!-- 
+
+https://blog.csdn.net/hanjun0612/article/details/123061711
+-->
 
 
-
-### FileBeat  
+### 1.1.4. FileBeat  
 <!-- 
 
 https://www.elastic.co/cn/downloads/beats/filebeat
