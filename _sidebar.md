@@ -719,7 +719,8 @@
         * [MySql](/docs/devAndOps/centOS/MySql.md)   
         * [MHA搭建MySql主从](/docs/devAndOps/centOS/MySqlAvailability.md)   
         * [Redis](/docs/devAndOps/centOS/Redis.md)  
-        * [elk](/docs/devAndOps/centOS/elk.md)   
+        * [RocketMQ搭建](/docs/microService/mq/Rocket/RocketBuild.md)  
+        * [elk搭建](/docs/devAndOps/centOS/elk.md)   
     * 需求、测试
         * [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
         * [多人协作confluence](/docs/Linux/enterprise/confluence.md)  

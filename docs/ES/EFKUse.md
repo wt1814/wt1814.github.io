@@ -5,8 +5,8 @@
 - [1. EFK使用](#1-efk使用)
     - [1.1. EFK搭建](#11-efk搭建)
     - [1.2. 日志收集](#12-日志收集)
-        - [1.2.1. fileBeat采集Spring日志](#121-filebeat采集spring日志)
-        - [1.2.2. Spring日志直接输出到logstash](#122-spring日志直接输出到logstash)
+        - [1.2.1. 方式一：FileBeat采集Spring日志](#121-方式一filebeat采集spring日志)
+        - [1.2.2. 方式二：Spring日志直接输出到logstash](#122-方式二spring日志直接输出到logstash)
     - [1.3. EFK监控](#13-efk监控)
 
 <!-- /TOC -->
@@ -34,13 +34,13 @@ TB级微服务海量日志监控平台
 https://mp.weixin.qq.com/s/TcuXAOnqHWlKpceP1T4BpA
 -->
 
-### 1.2.1. fileBeat采集Spring日志  
+### 1.2.1. 方式一：FileBeat采集Spring日志  
 <!-- 
 https://blog.csdn.net/zimou5581/article/details/90519307
 --> 
 &emsp; <font color = "red">无需修改项目工程文件。</font>  
 
-### 1.2.2. Spring日志直接输出到logstash  
+### 1.2.2. 方式二：Spring日志直接输出到logstash  
 &emsp; **无fileBeat组件时，日志需要直接输出到logstash。**
 
 1. maven  

@@ -4,12 +4,15 @@
 - [1. elasticsearch安装使用](#1-elasticsearch安装使用)
     - [1.1. Linux](#11-linux)
         - [1.1.1. Elasticsearch](#111-elasticsearch)
-        - [1.1.3. Kinaba](#113-kinaba)
-        - [1.1.2. Logstash](#112-logstash)
-    - [Docker部署](#docker部署)
-    - [1.2. mac系统](#12-mac系统)
-    - [1.3. windowns系统](#13-windowns系统)
-    - [1.4. 在本机启动多个项目启动多个节点](#14-在本机启动多个项目启动多个节点)
+        - [1.1.2. Kinaba](#112-kinaba)
+        - [1.1.3. Logstash](#113-logstash)
+            - [1.1.3.1. 安装](#1131-安装)
+            - [1.1.3.2. 整合SpringBoot](#1132-整合springboot)
+            - [1.1.3.3. 整合MySql](#1133-整合mysql)
+    - [1.2. Docker部署](#12-docker部署)
+    - [1.3. mac系统](#13-mac系统)
+    - [1.4. windowns系统](#14-windowns系统)
+    - [1.5. 在本机启动多个项目启动多个节点](#15-在本机启动多个项目启动多个节点)
 
 <!-- /TOC -->
 
@@ -42,11 +45,13 @@ https://blog.csdn.net/hnhroot/article/details/121497050
     bootstrap.system_call_filter: false
     cluster.initial_master_nodes: ["node-1"]
     ```
-    2. 启动 bin目录下 ./elasticsearch
+    2. 修改内存大小，jvm.options文件。  
+    问题：elasticsearch在启动过程中被自动killed方法，https://blog.csdn.net/weixin_39643007/article/details/110426519  
+    3. 启动 bin目录下 ./elasticsearch
 2. 验证、访问： ip:9200
 
 
-### 1.1.3. Kinaba  
+### 1.1.2. Kinaba  
 <!-- 
 
 Linux版本Kibana安装教程
@@ -66,23 +71,56 @@ https://blog.csdn.net/weixin_45495060/article/details/125183341
 2. 验证、访问：ip:5601
 
 
-### 1.1.2. Logstash  
+### 1.1.3. Logstash  
 <!-- 
+
+http://www.360doc.com/content/22/0727/17/10087950_1041609111.shtml
 https://www.elastic.co/cn/downloads/past-releases#logstash
 https://elasticstack.blog.csdn.net/article/details/99655350
 https://blog.csdn.net/CX1544539968/article/details/120038113
 -->
 
+#### 1.1.3.1. 安装
+1. 安装：tar -zxvf logstash-x.x.x-linux-x86_64.tar.gz   
+2. 启动：bin目录下，./logstash -e "input {stdin {}} output {stdout{}}"  
 
 
-## Docker部署  
+#### 1.1.3.2. 整合SpringBoot  
+1. 修改配置  
+&emsp; 在 /usr/local/logstash-7.3.0/config 添加logstash-springboot.conf文件
+
+```text
+input {
+  tcp {
+    mode => "server"
+    host => "0.0.0.0"
+    port => 4560
+    codec => json_lines
+  }
+}
+output {
+  elasticsearch {
+    hosts => "8.142.23.42:9200"
+    index => "springboot-logstash-%{+YYYY.MM.dd}"
+  }
+}
+```
+
+2. 启动：bin目录下执行 ./logstash -f ../config/logstash-springboot.conf  
+
+
+#### 1.1.3.3. 整合MySql  
+
+
+
+## 1.2. Docker部署  
 <!-- 
 Docker部署多机单节点ELK集群【ES + Logstash + Kibana + IK】
 https://mp.weixin.qq.com/s/lXvBTja_B6l-z0oUgiLETQ
 
 -->
 
-## 1.2. mac系统
+## 1.3. mac系统
 cd /Users/wangtao/software/elk/elasticsearch-7.13.3
 bin/elasticsearch
 
@@ -112,7 +150,7 @@ POST wt/_doc
 }
 
 
-## 1.3. windowns系统
+## 1.4. windowns系统
 1. 安装elasticsearch  
 2. 启动elasticsearch
     1. 进入 G:\software\elasticsearch-7.10.0-windows-x86_64\elasticsearch-7.10.0\bin  
@@ -143,7 +181,7 @@ https://blog.csdn.net/qq_37554565/article/details/117250647
 
 -->
 
-## 1.4. 在本机启动多个项目启动多个节点  
+## 1.5. 在本机启动多个项目启动多个节点  
 <!-- 
 https://blog.csdn.net/qq_35463719/article/details/121940803
 -->

@@ -60,8 +60,8 @@
     - [1.19. Linux操作系统](#119-linux操作系统)
     - [1.20. Linux服务器搭建](#120-linux服务器搭建)
         - [1.20.1. Linux基础](#1201-linux基础)
-        - [1.20.2. 研发](#1202-研发)
-        - [1.20.3. 需求、测试](#1203-需求测试)
+        - [1.20.2. 搭建-研发](#1202-搭建-研发)
+        - [1.20.3. 搭建-需求、测试](#1203-搭建-需求测试)
     - [1.21. DevOps](#121-devops)
     - [1.22. 监控](#122-监控)
     - [1.23. 网络](#123-网络)
@@ -971,7 +971,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 &emsp; [扩容](/docs/devAndOps/centOS/dilatation.md)  
 [防火墙](/docs/Linux/build/firewall.md)  
 
-### 1.20.2. 研发
+### 1.20.2. 搭建-研发
 [jdk安装](/docs/devAndOps/JDKBuild.md)  
 [Git安装](/docs/devAndOps/GitBuild.md)  
 [Docker安装](/docs/devAndOps/docker/install.md)  
@@ -981,9 +981,9 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [MHA搭建MySql主从](/docs/devAndOps/centOS/MySqlAvailability.md)   
 [Redis](/docs/devAndOps/centOS/Redis.md)  
 [RocketMQ搭建](/docs/microService/mq/Rocket/RocketBuild.md)  
-[elk](/docs/devAndOps/centOS/elk.md)   
+[elk搭建](/docs/devAndOps/centOS/elk.md)   
 
-### 1.20.3. 需求、测试
+### 1.20.3. 搭建-需求、测试
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
 [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
 [jira](/docs/devAndOps/jira.md)  
