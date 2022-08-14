@@ -136,19 +136,24 @@ https://www.jianshu.com/p/861091c71bcd
 -->
 1. 下载：https://www.elastic.co/cn/downloads/beats/filebeat  
 2. 配置：  
-
-3. 启动：  
+    1. FileBeat是直接发送到ELS还是通过LogStash? https://www.it1352.com/1529867.html  
+    2.   
+3. 启动：
+    1. windwos启动，https://blog.csdn.net/winsanity/article/details/120651928  
+    cmd， .\filebeat -e -c filebeat.yml
 
 
 ### 1.1.5. ES可视化客户端  
 &emsp; 可视化客户端选择：Kibana、ElasticHD、cerebro...    
 
 #### 1.1.5.1. ElasticHD  
+1. https://github.com/qax-os/ElasticHD  
+2. 启动：cmd进入目录，执行命令./ElasticHD -p 127.0.0.1:9800（自定义端口9800） 
+
 
 
 #### 1.1.5.2. cerebro
-1. https://github.com/qax-os/ElasticHD  
-2. 启动：cmd进入目录，执行命令./ElasticHD -p 127.0.0.1:9800（自定义端口9800） 
+
 
 
 ## 1.2. Docker部署  
