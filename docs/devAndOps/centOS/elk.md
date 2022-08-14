@@ -10,6 +10,9 @@
             - [1.1.3.2. 整合SpringBoot](#1132-整合springboot)
             - [1.1.3.3. 整合MySql](#1133-整合mysql)
         - [1.1.4. FileBeat](#114-filebeat)
+        - [1.1.5. ES可视化客户端](#115-es可视化客户端)
+            - [1.1.5.1. ElasticHD](#1151-elastichd)
+            - [1.1.5.2. cerebro](#1152-cerebro)
     - [1.2. Docker部署](#12-docker部署)
     - [1.3. mac系统](#13-mac系统)
     - [1.4. windowns系统](#14-windowns系统)
@@ -127,8 +130,25 @@ https://blog.csdn.net/hanjun0612/article/details/123061711
 
 https://www.elastic.co/cn/downloads/beats/filebeat
 
+rsyslog
+https://www.jianshu.com/p/861091c71bcd
+
 -->
-1. 下载：  
+1. 下载：https://www.elastic.co/cn/downloads/beats/filebeat  
+2. 配置：  
+
+3. 启动：  
+
+
+### 1.1.5. ES可视化客户端  
+&emsp; 可视化客户端选择：Kibana、ElasticHD、cerebro...    
+
+#### 1.1.5.1. ElasticHD  
+
+
+#### 1.1.5.2. cerebro
+1. https://github.com/qax-os/ElasticHD  
+2. 启动：cmd进入目录，执行命令./ElasticHD -p 127.0.0.1:9800（自定义端口9800） 
 
 
 ## 1.2. Docker部署  
