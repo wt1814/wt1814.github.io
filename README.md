@@ -979,6 +979,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
 [MySql](/docs/devAndOps/centOS/MySql.md)   
 [MHA搭建MySql主从](/docs/devAndOps/centOS/MySqlAvailability.md)   
+[MySql审核平台archery](/docs/devAndOps/centOS/archery.md)  
 [Redis](/docs/devAndOps/centOS/Redis.md)  
 [RocketMQ搭建](/docs/microService/mq/Rocket/RocketBuild.md)  
 [elk搭建](/docs/devAndOps/centOS/elk.md)   
@@ -987,8 +988,8 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
 [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
 [jira](/docs/devAndOps/jira.md)  
-[Jmeter](/docs/devAndOps/Jmeter.md)  
-
+[Jmeter](/docs/devAndOps/test/Jmeter.md)  
+[allure](/docs/devAndOps/test/allure.md)  
 
 ------
 

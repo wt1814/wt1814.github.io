@@ -147,9 +147,9 @@ https://www.jianshu.com/p/861091c71bcd
 &emsp; 可视化客户端选择：Kibana、ElasticHD、cerebro...    
 
 #### 1.1.5.1. ElasticHD  
-1. https://github.com/qax-os/ElasticHD  
+1. http://github.com/qax-os/ElasticHD  
 2. 启动：cmd进入目录，执行命令./ElasticHD -p 127.0.0.1:9800（自定义端口9800） 
-
+&emsp; Linux中执行./ElasticHD -p 0.0.0.0:9800。访问：8.142.23.42:9800  
 
 
 #### 1.1.5.2. cerebro

@@ -718,6 +718,7 @@
         * [Docker安装](/docs/devAndOps/docker/install.md)  
         * [MySql](/docs/devAndOps/centOS/MySql.md)   
         * [MHA搭建MySql主从](/docs/devAndOps/centOS/MySqlAvailability.md)   
+        * [MySql审核平台archery](/docs/devAndOps/centOS/archery.md)  
         * [Redis](/docs/devAndOps/centOS/Redis.md)  
         * [RocketMQ搭建](/docs/microService/mq/Rocket/RocketBuild.md)  
         * [elk搭建](/docs/devAndOps/centOS/elk.md)   
@@ -725,7 +726,8 @@
         * [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
         * [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
         * [jira](/docs/devAndOps/jira.md)  
-        * [Jmeter](/docs/devAndOps/Jmeter.md)  
+        * [Jmeter](/docs/devAndOps/test/Jmeter.md)  
+        * [allure](/docs/devAndOps/test/allure.md)  
 * DevOps  
     * [CI/CD](/docs/devAndOps/CICD.md)  
     * [Devops](/docs/devAndOps/devOps.md)  
@@ -764,7 +766,7 @@
         * [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
     * [LDAP自助修改密码服务](/docs/devAndOps/LDAP.md)  
     * [jira](/docs/devAndOps/jira.md)  
-    * [Jmeter](/docs/devAndOps/Jmeter.md)  
+    * [Jmeter](/docs/devAndOps/test/Jmeter.md)  
 * 监控
     * [Linux监控指标](/docs/devAndOps/monitor/indicators.md)  
     * [中间件监控](/docs/devAndOps/monitor/middleware.md)  
