@@ -89,6 +89,8 @@ https://blog.csdn.net/u014527058/article/details/70495595
 
 -->
 
+&emsp; 端口在配置文件里。  
+
 #### 1.1.3.1. 安装
 1. 安装：tar -zxvf logstash-x.x.x-linux-x86_64.tar.gz   
 2. 启动：bin目录下，./logstash -e "input {stdin {}} output {stdout{}}"  

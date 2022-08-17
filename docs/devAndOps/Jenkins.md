@@ -23,4 +23,6 @@ https://dayarch.top/p/jenkins-config-mail.html
 Jenkins 集成 Harbor 自动发布镜像
 https://mp.weixin.qq.com/s/IiZjuv23o8ui-gidyOJC2Q
 
+Jenkins +Docker+Git 实现自动部署
+https://www.cnblogs.com/seanRay/p/15126859.html
 -->
