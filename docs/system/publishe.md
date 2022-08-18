@@ -3,6 +3,8 @@
 
 ## 多种发布方式  
 <!--
+DevOps发布策略简介
+https://www.aisoutu.com/a/439114
 蓝绿部署、红黑部署、AB测试、灰度发布、金丝雀发布、滚动发布的概念与区别 
 https://mp.weixin.qq.com/s/fxQKvcIaWXwtg6ntEYiJBw
 蓝绿发布、滚动发布、灰度发布，有什么区别？ 

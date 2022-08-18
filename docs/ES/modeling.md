@@ -11,10 +11,15 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "clime">分片大小官方推荐值为20-40GB。</font>** 
+&emsp; **<font color = "clime">分片大小官方推荐值为20-40GB。</font>**  
+&emsp; 与关系型数据库（如 MySQL）不同的是， ES 中尽量考虑非范式化设计，即通过冗余字段，尽可能地消除 join 查询，以提高查询性能，本质上是一种以空间换时间的思想。  
 
 # 1. ~~ES建模~~  
 <!-- 
+***ES 数据建模
+与关系型数据库（如 MySQL）不同的是， ES 中尽量考虑非范式化设计，即通过冗余字段，尽可能地消除 join 查询，以提高查询性能，本质上是一种以空间换时间的思想。
+https://www.modb.pro/db/236056  
+
 Elasticsearch Nested 选型
 https://mp.weixin.qq.com/s/Fk-iXR0W48v2yIvJ-aJGKQ
 
