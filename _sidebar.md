@@ -259,6 +259,7 @@
         * [统一异常处理](/docs/web/ExceptionHandler.md)  
         * [统一日志记录](/docs/web/unifiedLog.md)  
         * [日志系统](/docs/web/log.md)   
+            * [log4j2](/docs/web/log4j2.md)  
         * [SpringTest](/docs/web/test.md)  
         * [乱码](/docs/web/garbled.md)  
         * [工具类hutool](/docs/web/hutool.md)  

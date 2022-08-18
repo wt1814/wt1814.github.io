@@ -363,6 +363,7 @@
 &emsp; [统一异常处理](/docs/web/ExceptionHandler.md)  
 &emsp; [统一日志记录](/docs/web/unifiedLog.md)  
 &emsp; [日志系统](/docs/web/log.md)  
+&emsp; &emsp; [log4j2](/docs/web/log4j2.md)  
 &emsp; [SpringTest](/docs/web/test.md)  
 &emsp; [乱码](/docs/web/garbled.md)  
 &emsp; [工具类hutool](/docs/web/hutool.md)  
