@@ -1,7 +1,17 @@
 
+<!-- TOC -->
 
-# 日志系统
-## 编码过程输出日志  
+- [1. 日志系统](#1-日志系统)
+    - [1.1. 编码过程输出日志](#11-编码过程输出日志)
+    - [1.2. Slf4j](#12-slf4j)
+        - [1.2.1. log4j2](#121-log4j2)
+        - [1.2.2. logback](#122-logback)
+            - [1.2.2.1. logback性能](#1221-logback性能)
+
+<!-- /TOC -->
+
+# 1. 日志系统
+## 1.1. 编码过程输出日志  
 <!-- 
 如何在12个小时，搞定日志监控？
 https://mp.weixin.qq.com/s/6Bjr1PUAC98IIaxBFcECNw
@@ -27,16 +37,16 @@ logger.debug("Processing trade with id:[{}] and symbol : [{}] ", id, symbol);
 ```
 &emsp; 这样的格式写法，可读性更好，对于排查问题更有帮助。  
 
-## Slf4j  
+## 1.2. Slf4j  
 
 
-### log4j2
+### 1.2.1. log4j2
 &emsp; 参考[log4j2](/docs/web/log4j2.md)  
 
 
-### logback
+### 1.2.2. logback
 
-#### logback性能
+#### 1.2.2.1. logback性能
 &emsp; 修改logbcak配置，使用框架提供的异步输出代替同步输出。  
 
 <!-- 
