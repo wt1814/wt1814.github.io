@@ -10,9 +10,10 @@
             - [1.1.3.2. 整合SpringBoot](#1132-整合springboot)
             - [1.1.3.3. 整合MySql](#1133-整合mysql)
         - [1.1.4. FileBeat](#114-filebeat)
-        - [1.1.5. ES可视化客户端](#115-es可视化客户端)
-            - [1.1.5.1. ElasticHD](#1151-elastichd)
-            - [1.1.5.2. cerebro](#1152-cerebro)
+        - [1.1.5. 安装IK分词器](#115-安装ik分词器)
+        - [1.1.6. ES可视化客户端](#116-es可视化客户端)
+            - [1.1.6.1. ElasticHD](#1161-elastichd)
+            - [1.1.6.2. cerebro](#1162-cerebro)
     - [1.2. Docker部署](#12-docker部署)
     - [1.3. mac系统](#13-mac系统)
     - [1.4. windowns系统](#14-windowns系统)
@@ -144,17 +145,27 @@ https://www.jianshu.com/p/861091c71bcd
     1. windwos启动，https://blog.csdn.net/winsanity/article/details/120651928  
     cmd， .\filebeat -e -c filebeat.yml
 
+### 1.1.5. 安装IK分词器  
 
-### 1.1.5. ES可视化客户端  
+<!-- 
+
+Elasticsearch 6 启动成功后 创建类型报错 analyzer [ik_smart] not found for field [methodDesc] 的原因
+https://blog.csdn.net/sdfadfsdf/article/details/107466784
+-->
+https://github.com/medcl/elasticsearch-analysis-ik/ 
+
+
+
+### 1.1.6. ES可视化客户端  
 &emsp; 可视化客户端选择：Kibana、ElasticHD、cerebro...    
 
-#### 1.1.5.1. ElasticHD  
+#### 1.1.6.1. ElasticHD  
 1. http://github.com/qax-os/ElasticHD  
 2. 启动：cmd进入目录，执行命令./ElasticHD -p 127.0.0.1:9800（自定义端口9800） 
 &emsp; Linux中执行./ElasticHD -p 0.0.0.0:9800。访问：8.142.23.42:9800  
 
 
-#### 1.1.5.2. cerebro
+#### 1.1.6.2. cerebro
 
 
 

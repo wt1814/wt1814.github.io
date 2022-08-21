@@ -727,10 +727,14 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [ES使用](/docs/ES/useTutorials.md)  
 &emsp; [***ES使用场景](/docs/ES/ESUse.md)  
 &emsp; [***ES建模](/docs/ES/modeling.md)  
-&emsp; [ElasticsearchREST](/docs/ES/ElasticsearchREST.md)  
+&emsp; [***同步数据到ES](/docs/ES/synES.md)  
+&emsp; [Elasticsearch操作客户端](/docs/ES/ElasticsearchREST.md)  
+&emsp; [ES可视化客户端](/docs/ES/visualization.md)  
+&emsp; &emsp; [Cerebro](/docs/ES/Cerebro.md)  
+&emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
 &emsp; [索引基本操作](/docs/ES/index.md)  
 &emsp; &emsp; [PB级别的大索引如何设计？](/docs/ES/IndexDesign.md)  
-&emsp; [索引管理](/docs/ES/indexMaintain.md)  
+&emsp; &emsp; [索引管理](/docs/ES/indexMaintain.md)  
 &emsp; [映射详解](/docs/ES/mapping.md)  
 &emsp; [文档操作](/docs/ES/document.md)  
 &emsp; &emsp; [***文档评分](/docs/ES/documentScore.md)  
@@ -749,7 +753,6 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; &emsp; [预匹配器](/docs/ES/PreMatching.md)  
 &emsp; [ES自定义扩展词库](/docs/ES/thesaurus.md)  
 &emsp; [ES异步搜索](/docs/ES/AsyncSearch.md)  
-&emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
 [ES原理](/docs/ES/principle.md)  
 &emsp; [Elasticsearch搜索为什么那么快？](/docs/ES/SearchFast.md)  
 &emsp; [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
@@ -760,8 +763,6 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [写入速度和磁盘使用量优化](/docs/ES/WriteSpeed.md)  
 &emsp; [故障判断](/docs/ES/FaultJudgment.md)  
 [ES运维](/docs/ES/Operation.md)  
-&emsp; [ES可视化客户端](/docs/ES/visualization.md)  
-&emsp; &emsp; [Cerebro](/docs/ES/Cerebro.md)  
 &emsp; [ES集群操作](/docs/ES/ClusterOperation.md)  
 &emsp; [ES监控](/docs/ES/monitor.md)  
 &emsp; [ES优化](/docs/ES/optimization.md)  
@@ -773,10 +774,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [Kibana用户手册](/docs/ES/Kibana.md)  
 &emsp; [Kibana查询](/docs/ES/KibanaQuery.md)  
 &emsp; [canal](/docs/ES/canal.md)  
-<!-- 
-logstash同步mysql数据到Elasticsearch实战,主要实现删除
-https://blog.csdn.net/Giggle1994/article/details/111194763
--->
+
 
 [ES重制](/docs/ESRemake/ESRemake.md)    
 
