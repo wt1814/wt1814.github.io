@@ -728,6 +728,7 @@
         * [Redis](/docs/devAndOps/centOS/Redis.md)  
         * [RocketMQ搭建](/docs/microService/mq/Rocket/RocketBuild.md)  
         * [elk搭建](/docs/devAndOps/centOS/elk.md)   
+        * [Nginx搭建](/docs/devAndOps/centOS/nginx.md)   
     * 需求、测试
         * [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
         * [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
