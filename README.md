@@ -937,7 +937,7 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 -->
 
 [Linux版本](/docs/Linux/LinuxVersion.md)  
-[Linux命令](/docs/Linux/Command.md)
+[Linux命令](/docs/Linux/Command.md)  
 &emsp; [Linux命令-实操](/docs/Linux/operation.md)  
 &emsp; [Linux命令](/docs/Linux/LinuxCommand.md)  
 &emsp; &emsp; [文本处理](/docs/Linux/textProcessing.md)  
@@ -986,6 +986,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [Redis](/docs/devAndOps/centOS/Redis.md)  
 [RocketMQ搭建](/docs/microService/mq/Rocket/RocketBuild.md)  
 [elk搭建](/docs/devAndOps/centOS/elk.md)   
+[Nginx搭建](/docs/devAndOps/centOS/nginx.md)   
 
 ### 1.20.3. 搭建-需求、测试
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
