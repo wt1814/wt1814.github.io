@@ -33,6 +33,13 @@
 
 
 <!-- 
+
+*** 彻底搞懂 Nginx 的五大应用场景
+*** https://cloud.tencent.com/developer/article/1845315
+https://www.zhihu.com/question/470370584
+
+
+
 https://mp.weixin.qq.com/s/trUWEfsxLWVASZckDOwqPQ
 https://mp.weixin.qq.com/s/kIIGCq_oN66nt4MMYaCJpQ
 
