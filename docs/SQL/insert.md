@@ -12,6 +12,8 @@
 
 # 1. ~~sql更新流程~~  
 <!--
+ innodb是如何存数据的？ 
+https://mp.weixin.qq.com/s/h_lIMxiQ5b7apT9jK_Pbcg
 一条 sql 的执行过程详解
 *** https://quxuecx.blog.csdn.net/article/details/112001274
 

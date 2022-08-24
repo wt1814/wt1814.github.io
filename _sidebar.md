@@ -710,6 +710,7 @@
         * [cpu](/docs/Linux/cpu.md)  
         * [内存](/docs/Linux/memory.md)  
         * [硬盘](/docs/Linux/HardDisk.md)  
+        * [网络](/docs/Linux/NetWork.md)  
     * [Linux系统内核](/docs/Linux/Linux.md)  
 * Linux服务器搭建  
     * Linux基础
@@ -718,7 +719,7 @@
         * [防火墙](/docs/Linux/build/firewall.md)  
     * 研发  
         * [jdk安装](/docs/devAndOps/JDKBuild.md)  
-        * [Git安装](/docs/devAndOps/GitBuild.md)  
+        * [Git安装](/docs/devAndOps/git/GitBuild.md)  
         * [Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
         * [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
         * [Docker安装](/docs/devAndOps/docker/install.md)  
@@ -746,7 +747,8 @@
     * [JMH](/docs/java/JVM/JMH.md)  
     * [多种发布方式](/docs/system/publishe.md)  
         * [灰度发布](/docs/system/grayscalePublishe.md)  
-    * [Jenkins](/docs/devAndOps/Jenkins.md)  
+    * [Jenkins](/docs/devAndOps/jenkins/Jenkins.md)  
+        * [Jenkins+Docker](/docs/devAndOps/jenkins/JenkinsDocker.md)  
     * [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
         * [容器化Docker](/docs/devAndOps/docker/introduce.md)  
         * [Docker架构](/docs/devAndOps/docker/principle.md)  
