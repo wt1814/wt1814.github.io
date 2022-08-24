@@ -10,6 +10,15 @@
 <!-- /TOC -->
 
 # 1. JavaRestClient  
+<!-- 
+
+
+****  springboot集成elasticsearch
+*** https://www.cnblogs.com/tanghaorong/p/16344391.html
+https://blog.csdn.net/u010833154/article/details/123919226
+
+-->
+
 
 ## 1.1. Java API介绍
 &emsp; ElasticSearch提供了官方的Java Api。这里包括两类：Low Level Rest Api(低级Rest Api)和 High Leve Rest Api(高级Rest Api)。  

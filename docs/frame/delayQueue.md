@@ -24,6 +24,10 @@ https://mp.weixin.qq.com/s/Xs9J0wy16XILRAt7myaNAw
 
 https://blog.csdn.net/deel_feel/article/details/91872366
 https://zhuanlan.zhihu.com/p/104285758
+
+ 延时任务(三)-基于redis zset的完整实现 
+https://mp.weixin.qq.com/s/-KcM9XhIbff-OiVt8c67bA
+
 -->
 
 ## 背景

@@ -27,6 +27,8 @@ http://www.yunweipai.com/35361.html
  Keepalived 高可用的三种路由方案
  https://mp.weixin.qq.com/s/F0Nl6MPPmEcfQ4eQ3AiFyA
  
+ Nginx + keepalived 实现高可用 
+ https://mp.weixin.qq.com/s/GhDA3gJP0RdN1yE_46MEZg
 -->
 
 ## 1.1. 介绍  
