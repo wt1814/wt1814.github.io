@@ -24,11 +24,18 @@
 <!-- 
 http://www.yunweipai.com/35361.html
 
- Keepalived 高可用的三种路由方案
- https://mp.weixin.qq.com/s/F0Nl6MPPmEcfQ4eQ3AiFyA
+Keepalived 高可用的三种路由方案
+https://mp.weixin.qq.com/s/F0Nl6MPPmEcfQ4eQ3AiFyA
+
+Nginx + keepalived 实现高可用 
+https://mp.weixin.qq.com/s/GhDA3gJP0RdN1yE_46MEZg
+
+Nginx + Keepalived 高可用之主从配置 
+https://mp.weixin.qq.com/s?__biz=MzA4MTk3MjI0Mw==&mid=2247492268&idx=1&sn=035cfef6874071e028d2a40840516d8f&chksm=9f8e7fd0a8f9f6c664b8103191974f28abf23b062880e16c382880dffec00b507af1a9806d93&scene=178&cur_album_id=1474377728786300933#rd
+
+Nginx + Keepalived 高可用之主从配置 二 
+https://mp.weixin.qq.com/s?__biz=MzA4MTk3MjI0Mw==&mid=2247492297&idx=1&sn=d274fd41ed77c28c7f40b7ca0b988c85&chksm=9f8e7fb5a8f9f6a3b3059b95c06c0a58a68d5f837fe8378eed3e8b7bad0aff210248a868b0d0&scene=178&cur_album_id=1474377728786300933#rd
  
- Nginx + keepalived 实现高可用 
- https://mp.weixin.qq.com/s/GhDA3gJP0RdN1yE_46MEZg
 -->
 
 ## 1.1. 介绍  
