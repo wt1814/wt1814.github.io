@@ -784,6 +784,8 @@
     * [中间件监控](/docs/devAndOps/monitor/middleware.md)  
     * [业务监控](/docs/devAndOps/monitor/business.md)  
     * [监控系统](/docs/devAndOps/monitor/monitor.md)  
+* 统计  
+    * [统计PV](/docs/devAndOps/monitor/StatisticsPV.md)  
 * 常用工具  
     * [idea](/docs/software/idea/idea.md)  
     * [postman](/docs/software/postman.md)  

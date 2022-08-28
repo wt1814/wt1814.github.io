@@ -64,8 +64,8 @@
         - [1.20.3. 搭建-需求、测试](#1203-搭建-需求测试)
     - [1.21. DevOps](#121-devops)
     - [1.22. 监控](#122-监控)
-        - [监控](#监控)
-        - [统计](#统计)
+        - [1.22.1. 监控](#1221-监控)
+        - [1.22.2. 统计](#1222-统计)
     - [1.23. 网络](#123-网络)
     - [1.24. 常用工具](#124-常用工具)
     - [1.25. 算法](#125-算法)
@@ -1049,19 +1049,14 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 ------------  
 
 ## 1.22. 监控
-### 监控
+### 1.22.1. 监控
 [Linux监控指标](/docs/devAndOps/monitor/indicators.md)  
 [中间件监控](/docs/devAndOps/monitor/middleware.md)  
 [业务监控](/docs/devAndOps/monitor/business.md)  
 [监控系统](/docs/devAndOps/monitor/monitor.md)  
 
-### 统计  
-
-<!-- 
-uv的统计
-https://mp.weixin.qq.com/s?__biz=MzA4MTk3MjI0Mw==&mid=2247489410&idx=1&sn=7ef570e5c59cd7c7cd594cb041f36851&chksm=9f8d8afea8fa03e82cfc7ef0632be80b7db161169ffe5bdbf6b7cc6bef3fc415c20c934a21a2&scene=178&cur_album_id=1474377728786300933#rd
-
--->
+### 1.22.2. 统计  
+[统计PV](/docs/devAndOps/monitor/StatisticsPV.md)  
 
 
 ## 1.23. 网络  
