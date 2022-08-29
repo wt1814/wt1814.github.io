@@ -25,15 +25,7 @@ https://mp.weixin.qq.com/s/i3wLeCSxqWKrTwgtfelumQ
 
 
 ## 1.1. mybatis-generator  
-&emsp; mybatis-generator，能够生成PO类，能生成mapper映射文件（其中包括基本的增删改查功能）、能生成mapper接口。  
-
-<!-- 
-
-去除classPathEntry属性  
-https://blog.csdn.net/fglxhlw/article/details/108735530
-
--->
-
+&emsp; [mybatis-generator](/docs/SSM/MyBatis/MybatisGenerator.md) 
 
 ## 1.2. PageHelper
 <!-- 
