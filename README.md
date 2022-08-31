@@ -949,6 +949,7 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 &emsp; &emsp; [文本处理](/docs/Linux/textProcessing.md)  
 &emsp; &emsp; [网络通讯](/docs/Linux/NetworkCommunication.md)  
 &emsp; &emsp; [进程管理](/docs/Linux/ProcessManagement.md)  
+&emsp; &emsp; [***日志操作命令](/docs/Linux/LogOperation.md)  
 &emsp; [shell编程](/docs/Linux/shell.md)  
 [堡垒机](/docs/Linux/baolei.md)  
 [Linux系统性能](/docs/Linux/systemPerformance.md)  

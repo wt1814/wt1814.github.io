@@ -706,6 +706,7 @@
             * [文本处理](/docs/Linux/textProcessing.md)  
             * [网络通讯](/docs/Linux/NetworkCommunication.md)  
             * [进程管理](/docs/Linux/ProcessManagement.md)  
+            * [***日志操作命令](/docs/Linux/LogOperation.md)  
         * [shell编程](/docs/Linux/shell.md)  
     * [堡垒机](/docs/Linux/baolei.md)  
     * [Linux系统性能](/docs/Linux/systemPerformance.md)  
