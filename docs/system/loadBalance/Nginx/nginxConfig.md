@@ -3,11 +3,16 @@
 
 <!-- TOC -->
 
-- [1. Nginx配置参数中文说明](#1-nginx配置参数中文说明)
+- [1. Nginx配置](#1-nginx配置)
+    - [1.1. Nginx配置参数中文说明](#11-nginx配置参数中文说明)
+    - [1.2. 增加nginx配置文件(conf.d), 管理多个项目](#12-增加nginx配置文件confd-管理多个项目)
+    - [1.3. Nginx 配置中root和alias的区别分析](#13-nginx-配置中root和alias的区别分析)
 
 <!-- /TOC -->
 
-# 1. Nginx配置参数中文说明 
+# 1. Nginx配置 
+
+## 1.1. Nginx配置参数中文说明
 &emsp; nginx.conf 配置文件主要分为三部分：全局块、Events 块、HTTPS 块。  
 
 ```
@@ -189,3 +194,16 @@ http
 }
 ```
 
+
+## 1.2. 增加nginx配置文件(conf.d), 管理多个项目
+
+<!-- 
+
+https://blog.csdn.net/weixin_43652507/article/details/124123540
+-->
+
+## 1.3. Nginx 配置中root和alias的区别分析
+
+<!-- 
+https://blog.csdn.net/tuoni123/article/details/79712246
+-->
