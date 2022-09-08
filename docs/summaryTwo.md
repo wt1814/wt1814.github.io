@@ -33,6 +33,7 @@
         - [1.4.1. MyBatis大数据量查询](#141-mybatis大数据量查询)
         - [1.4.2. MyBatis架构](#142-mybatis架构)
         - [1.4.3. MyBatis SQL执行解析](#143-mybatis-sql执行解析)
+        - [SqlSession详解](#sqlsession详解)
         - [1.4.4. Spring集成Mybatis](#144-spring集成mybatis)
         - [1.4.5. MyBatis缓存](#145-mybatis缓存)
         - [1.4.6. MyBatis插件解析](#146-mybatis插件解析)
@@ -583,6 +584,9 @@
         return (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), new Class[] { mapperInterface }, mapperProxy);
     }
     ```
+
+### SqlSession详解  
+
 
 ### 1.4.4. Spring集成Mybatis  
 0. MyBatis运行原理：1.创建SqlSessionFacory；2.从SqlSessionFactory对象中获取SqlSession对象；3.获取Mapper；4.执行操作；    
