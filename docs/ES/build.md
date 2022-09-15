@@ -26,6 +26,9 @@ https://blog.csdn.net/laoyang360/article/details/79293493#comments_15296602
 Elasticsearch 生产环境集群部署最佳实践 
 https://mp.weixin.qq.com/s/RVaR0U-CVAmLOewYse7HKA
 
+快速部署ElasticSearch 8.1单机多节点集群
+https://mp.weixin.qq.com/s/pBt8VcBZvkCz_kNpWqriYA
+
 -->
 
 # 1. ElasticSearch安装 

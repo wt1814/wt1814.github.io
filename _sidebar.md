@@ -370,6 +370,7 @@
 * Spring Cloud  
     * [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
     * [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
+    * [Spring Cloud GateWay](/docs/microService/SpringCloudNetflix/GateWay.md)  
     * [consul](/docs/microService/SpringCloudNetflix/consul.md)  
         * [consul安装](/docs/microService/SpringCloudNetflix/consulInstall.md)  
         * [consul使用](/docs/microService/SpringCloudNetflix/consulUse.md)  
