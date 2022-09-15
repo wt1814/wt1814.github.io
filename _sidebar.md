@@ -750,6 +750,8 @@
         * [DevOps搭建](/docs/devAndOps/devOpsPractice.md)   
     * [GIT](/docs/devAndOps/git/command.md)  
     * [Maven](/docs/devAndOps/maven/maven.md)  
+        * [Maven作用域](/docs/devAndOps/maven/MavenScope.md)  
+        * [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
         * [项目循环依赖-分离接口](/docs/web/SeparationInterface.md)  
         * [Maven脚手架制作](/docs/devAndOps/maven/MavenScaffolding.md)  
     * [JMH](/docs/java/JVM/JMH.md)  
