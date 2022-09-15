@@ -376,8 +376,9 @@ public class MappedBiggerFileReader {
 ## 1.4. 大批量数据导入Excel  
 
 <!-- 
- 100000 行级别数据的 Excel 导入优化之路 
- https://mp.weixin.qq.com/s/Y1feFfn8VeZsxXw65NYoWQ
+100000 行级别数据的 Excel 导入优化之路 
+https://mp.weixin.qq.com/s/Y1feFfn8VeZsxXw65NYoWQ
+https://mp.weixin.qq.com/s/teHAbU-1UpXdTJW_vx_z3Q
 -->
 
 &emsp; EasyExcel + 缓存数据库查询操作 + 批量插入：  
