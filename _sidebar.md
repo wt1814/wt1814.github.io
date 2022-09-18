@@ -26,6 +26,7 @@
     * [代码块](/docs/java/basis/CodeBlock.md)  
     * [IO](/docs/java/basis/JavaIO.md)  
         * [阿里云OSS](/docs/java/basis/IOOSS.md)  
+        * [读取到resources文件夹下的文件](/docs/java/basis/readResources.md)  
         * [excel，导入导出](/docs/java/basis/excel.md)  
     * [Java范型](/docs/java/basis/JavaParadigm.md)  
         * [范型使用](/docs/java/basis/ParadigmUse.md)  
