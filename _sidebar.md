@@ -247,7 +247,11 @@
     * Sharding-JDBC  
         * [shardingsphere](/docs/SQL/shardingsphere.md)  
         * [shardingsphere分布式事务](/docs/SQL/shardingsphereTransaction.md)  
-* tomcat
+* tomcat  
+    * [tomcat](/docs/tomcat/tomcat.md)  
+    * [tomcat类加载器](/docs/tomcat/tomcatClassLoader.md)  
+    * [tomcat日志](/docs/tomcat/tomcatLog.md)  
+    * [tomcat调优](/docs/tomcat/TomcatTuning)  
 * 项目构建基础  
     * [版本号](/docs/web/Version.md)  
     * [MVC三层架构上再加一层Manager层](/docs/web/Manager.md)  
@@ -305,6 +309,8 @@
     * [项目搭建](/docs/system/BuildProject.md)  
 * Spring  
     * [Spring](/docs/SSM/Spring/Spring.md)  
+        * [Autowired和Resource](/docs/SSM/Spring/Autowired和Resource.md)  
+        * [Spring使用](/docs/SSM/Spring/SpringUse.md)  
     * [对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
     * [手写Spring](/docs/SSM/Spring/HandwrittenSpring.md)  
         * [手写IOC](/docs/SSM/Spring/HandwrittenIOC.md)  
@@ -599,6 +605,8 @@
     * [数据权限](/docs/system/DataPermissions.md)  
     * [CAS集成](/docs/system/CAS.md)  
 * [工作流](docs/middleware/workflow.md)  
+* 系统设计  
+    * [权限系统](/docs/project/power.md)  
 * 内存
     * [堆外内存](/docs/system/OutHeapMemory.md)  
     * [centos增加内存](/docs/system/centosMemory.md)  

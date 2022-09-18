@@ -44,6 +44,7 @@
         - [1.11.2. 任务调度](#1112-任务调度)
         - [1.11.3. 安全框架shiro](#1113-安全框架shiro)
         - [1.11.4. 工作流](#1114-工作流)
+    - [系统设计](#系统设计)
     - [1.12. 内存优化](#112-内存优化)
     - [1.13. 磁盘IO](#113-磁盘io)
     - [1.14. 网络IO/分布式通信](#114-网络io分布式通信)
@@ -349,6 +350,7 @@
 [tomcat](/docs/tomcat/tomcat.md)  
 [tomcat类加载器](/docs/tomcat/tomcatClassLoader.md)  
 [tomcat日志](/docs/tomcat/tomcatLog.md)  
+[tomcat调优](/docs/tomcat/TomcatTuning)  
 
 
 --------
@@ -428,6 +430,8 @@
 ## 1.7. SSM  
 ### 1.7.1. Spring  
 [Spring](/docs/SSM/Spring/Spring.md)  
+&emsp; [Autowired和Resource](/docs/SSM/Spring/Autowired和Resource.md)  
+&emsp; [Spring使用](/docs/SSM/Spring/SpringUse.md)  
 [学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
 [手写Spring](/docs/SSM/Spring/HandwrittenSpring.md)  
 &emsp; [手写IOC](/docs/SSM/Spring/HandwrittenIOC.md)  
@@ -799,6 +803,11 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 ### 1.11.4. 工作流
 [工作流](docs/middleware/workflow.md)  
+
+
+## 系统设计  
+[权限系统](/docs/project/power.md)  
+
 
 -----------------
 
