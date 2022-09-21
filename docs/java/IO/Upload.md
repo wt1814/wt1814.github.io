@@ -16,6 +16,7 @@
             - [1.3.2.4. 零拷贝方案](#1324-零拷贝方案)
                 - [1.3.2.4.1. 使用FileChannel](#13241-使用filechannel)
                 - [1.3.2.4.2. 内存文件映射](#13242-内存文件映射)
+    - [1.4. 大批量数据导入Excel](#14-大批量数据导入excel)
     - [1.4. 分片上传和断点续传](#14-分片上传和断点续传)
 
 <!-- /TOC -->
@@ -348,7 +349,15 @@ public class MappedBiggerFileReader {
 ```
 
 
+## 1.4. 大批量数据导入Excel  
 
+<!-- 
+100000 行级别数据的 Excel 导入优化之路 
+https://mp.weixin.qq.com/s/Y1feFfn8VeZsxXw65NYoWQ
+https://mp.weixin.qq.com/s/teHAbU-1UpXdTJW_vx_z3Q
+-->
+
+&emsp; EasyExcel + 缓存数据库查询操作 + 批量插入：  
 
 ## 1.4. 分片上传和断点续传  
 

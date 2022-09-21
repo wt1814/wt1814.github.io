@@ -351,6 +351,7 @@
 [tomcat](/docs/tomcat/tomcat.md)  
 [tomcat类加载器](/docs/tomcat/tomcatClassLoader.md)  
 [tomcat日志](/docs/tomcat/tomcatLog.md)  
+[tomcat调优](/docs/tomcat/TomcatTuning)  
 
 
 --------
@@ -430,6 +431,8 @@
 ## 1.7. SSM  
 ### 1.7.1. Spring  
 [Spring](/docs/SSM/Spring/Spring.md)  
+&emsp; [Autowired和Resource](/docs/SSM/Spring/Autowired和Resource.md)  
+&emsp; [Spring使用](/docs/SSM/Spring/SpringUse.md)  
 [学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
 [手写Spring](/docs/SSM/Spring/HandwrittenSpring.md)  
 &emsp; [手写IOC](/docs/SSM/Spring/HandwrittenIOC.md)  
@@ -1025,6 +1028,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [GIT](/docs/devAndOps/git/command.md)  
 [Gradle](/docs/devAndOps/git/Gradle.md)  
 [Maven](/docs/devAndOps/maven/maven.md)  
+&emsp; [Maven作用域](/docs/devAndOps/maven/MavenScope.md)  
 &emsp; [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
 &emsp; [项目循环依赖-分离接口](/docs/web/SeparationInterface.md)  
 &emsp; [Maven脚手架制作](/docs/devAndOps/maven/MavenScaffolding.md)  
