@@ -1,6 +1,17 @@
 
 
-# excel  
+
+# 导入导出  
+
+<!-- 
+ 100000 行级别数据的 Excel 导入优化之路 
+ https://mp.weixin.qq.com/s/Y1feFfn8VeZsxXw65NYoWQ
+-->
+
+&emsp; EasyExcel + 缓存数据库查询操作 + 批量插入：  
+
+* 逐行查询数据库校验的时间成本主要在来回的网络IO中，优化方法也很简单。将参加校验的数据全部缓存到 HashMap 中。直接到 HashMap 去命中。    
+
 
 ## EasyExcel  
 <!-- 
@@ -19,5 +30,3 @@ http://www.bubuko.com/infodetail-3613922.html?cf_chl_jschl_tk=3e4633a1a7393b9add
 https://blog.csdn.net/qq_34789780/article/details/108620767
 https://blog.csdn.net/u012143730/article/details/111035167
 -->
-
-
