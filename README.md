@@ -810,9 +810,10 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 ## 1.12. 系统设计  
 [工具类](/docs/SystemDesign/tools.md)  
+[单点登录SSO](/docs/SystemDesign/SSO.md)  
 [登录-JWT和session](/docs/SystemDesign/JWT.md)  
-[★★★系统搭建](/docs/SystemDesign/projectBuild.md)  
-[权限系统](/docs/project/power.md)  
+[权限系统](/docs/SystemDesign/power.md)  
+
 
 ---
 

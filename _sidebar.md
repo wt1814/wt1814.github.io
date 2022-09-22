@@ -608,7 +608,10 @@
     * [CAS集成](/docs/system/CAS.md)  
 * [工作流](docs/middleware/workflow.md)  
 * 系统设计  
-    * [权限系统](/docs/project/power.md)  
+    * [工具类](/docs/SystemDesign/tools.md)  
+    * [单点登录SSO](/docs/SystemDesign/SSO.md)  
+    * [登录-JWT和session](/docs/SystemDesign/JWT.md)  
+    * [权限系统](/docs/SystemDesign/power.md)  
 * 内存
     * [堆外内存](/docs/system/OutHeapMemory.md)  
     * [centos增加内存](/docs/system/centosMemory.md)  
@@ -671,10 +674,6 @@
         * [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
         * [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
         * [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
-* 系统设计  
-    * [工具类](/docs/SystemDesign/tools.md)  
-    * [登录-JWT和session](/docs/SystemDesign/JWT.md)  
-    * [★★★系统搭建](/docs/SystemDesign/projectBuild.md)  
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
