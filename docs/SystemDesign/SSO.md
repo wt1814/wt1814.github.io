@@ -12,6 +12,12 @@ https://www.bilibili.com/read/cv9021757/
 单点登录，百度百科 https://baike.baidu.com/item/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/4940767?fr=aladdin
 单点登陆的三种实现方式  https://www.bilibili.com/read/cv9021757/
 
+
+OpenID Connect
+https://blog.51cto.com/u_15146142/2727498
+10 分钟理解什么是 OpenID Connect（OIDC） 协议
+https://deepzz.com/post/what-is-oidc-protocol.htmld
+
 -->
 
 &emsp; 登录认证，无论是什么样的场景，还是喜欢使用security框架。  
