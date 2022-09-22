@@ -735,7 +735,7 @@
             * [扩容](/docs/devAndOps/centOS/dilatation.md)  
         * [防火墙](/docs/Linux/build/firewall.md)  
     * 研发  
-        * [jdk安装](/docs/devAndOps/JDKBuild.md)  
+        * [jdk安装](/docs/devAndOps/build/JDKBuild.md)  
         * [Git安装](/docs/devAndOps/git/GitBuild.md)  
         * [Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
         * [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
@@ -750,13 +750,13 @@
     * 需求、测试
         * [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
         * [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
-        * [jira](/docs/devAndOps/jira.md)  
+        * [jira](/docs/devAndOps/build/jira.md)  
         * [Jmeter](/docs/devAndOps/test/Jmeter.md)  
         * [allure](/docs/devAndOps/test/allure.md)  
 * DevOps  
-    * [CI/CD](/docs/devAndOps/CICD.md)  
-    * [Devops](/docs/devAndOps/devOps.md)  
-        * [DevOps搭建](/docs/devAndOps/devOpsPractice.md)   
+    * [CI/CD](/docs/devAndOps/build/CICD.md)  
+    * [Devops](/docs/devAndOps/build/devOps.md)  
+        * [DevOps搭建](/docs/devAndOps/build/devOpsPractice.md)   
     * [GIT](/docs/devAndOps/git/command.md)  
     * [Maven](/docs/devAndOps/maven/maven.md)  
         * [Maven作用域](/docs/devAndOps/maven/MavenScope.md)  
@@ -792,8 +792,8 @@
         * [k8s运维](/docs/devAndOps/k8s/tools.md)  
             * [k8s监控](/docs/devAndOps/k8s/Monitor.md)  
         * [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
-    * [LDAP自助修改密码服务](/docs/devAndOps/LDAP.md)  
-    * [jira](/docs/devAndOps/jira.md)  
+    * [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
+    * [jira](/docs/devAndOps/build/jira.md)  
     * [Jmeter](/docs/devAndOps/test/Jmeter.md)  
 * 监控
     * [Linux监控指标](/docs/devAndOps/monitor/indicators.md)  

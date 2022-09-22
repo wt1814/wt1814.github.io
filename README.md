@@ -1000,7 +1000,8 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [防火墙](/docs/Linux/build/firewall.md)  
 
 ### 1.20.2. 搭建-研发
-[jdk安装](/docs/devAndOps/JDKBuild.md)  
+[Linux启动脚本](/docs/devAndOps/build/LinuxRestart.md)  
+[jdk安装](/docs/devAndOps/build/JDKBuild.md)  
 [Git安装](/docs/devAndOps/git/GitBuild.md)  
 [Docker安装](/docs/devAndOps/docker/install.md)  
 [Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
@@ -1016,16 +1017,16 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 ### 1.20.3. 搭建-需求、测试
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
 [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
-[jira](/docs/devAndOps/jira.md)  
+[jira](/docs/devAndOps/build/jira.md)  
 [Jmeter](/docs/devAndOps/test/Jmeter.md)  
 [allure](/docs/devAndOps/test/allure.md)  
 
 ------
 
 ## 1.21. DevOps  
-[CI/CD](/docs/devAndOps/CICD.md)  
-[Devops](/docs/devAndOps/devOps.md)  
-&emsp; [DevOps搭建](/docs/devAndOps/devOpsPractice.md)  
+[CI/CD](/docs/devAndOps/build/CICD.md)  
+[Devops](/docs/devAndOps/build/devOps.md)  
+&emsp; [DevOps搭建](/docs/devAndOps/build/devOpsPractice.md)  
 [GIT](/docs/devAndOps/git/command.md)  
 [Gradle](/docs/devAndOps/git/Gradle.md)  
 [Maven](/docs/devAndOps/maven/maven.md)  
@@ -1062,7 +1063,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 &emsp; [k8s运维](/docs/devAndOps/k8s/tools.md)  
 &emsp; &emsp; [k8s监控](/docs/devAndOps/k8s/Monitor.md)  
 &emsp; [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
-[LDAP自助修改密码服务](/docs/devAndOps/LDAP.md)  
+[LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
 
 
 ------------  
