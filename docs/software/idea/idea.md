@@ -12,6 +12,7 @@
     - [1.7. 插件](#17-插件)
         - [1.7.1. 代码质量检测插件](#171-代码质量检测插件)
         - [1.7.2. 查看字节码插件](#172-查看字节码插件)
+        - [IDEA的Redis插件](#idea的redis插件)
     - [1.8. 快捷键](#18-快捷键)
         - [1.8.1. 批量修改变量名方法名](#181-批量修改变量名方法名)
 
@@ -96,6 +97,17 @@ https://mp.weixin.qq.com/s/UwS0oGaHR5yV5PIAHx6QZg
 IDEA查看字节码插件
 https://blog.csdn.net/qq_38826019/article/details/119273641
 --> 
+
+
+### IDEA的Redis插件  
+<!-- 
+
+使用IDEA的Redis插件连接Redis服务器
+https://blog.csdn.net/m0_47503416/article/details/121397584
+
+-->
+
+
 
 ## 1.8. 快捷键  
 <!-- 
