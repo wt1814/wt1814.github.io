@@ -1000,10 +1000,11 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [CentOS](/docs/devAndOps/centOS/centOS.md)  
 &emsp; [扩容](/docs/devAndOps/centOS/dilatation.md)  
 [防火墙](/docs/Linux/build/firewall.md)  
+[1. yum](/docs/devAndOps/centOS/yum.md)  
 [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
 
 ### 1.20.2. 搭建-研发
-[Docker安装](/docs/devAndOps/docker/install.md)  
+[2. Docker安装](/docs/devAndOps/docker/install.md)  
 [Git安装](/docs/devAndOps/git/GitBuild.md)  
 [Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
 [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
@@ -1027,6 +1028,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 
 [elk搭建](/docs/devAndOps/build/elk.md)   
 
+[docsify](/docs/devAndOps/build/docsify.md)  
 [ideaServer](/docs/devAndOps/build/ideaServer.md)  
 
 ### 1.20.3. 搭建-需求、测试
