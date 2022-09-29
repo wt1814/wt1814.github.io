@@ -688,7 +688,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [RocketMQ和Kafka](/docs/microService/mq/RocketMQAndKafka.md)  
 
 #### 1.10.4.1. RocketMQ  
-[RocketMQ搭建](/docs/microService/mq/Rocket/RocketBuild.md)  
+[RocketMQ搭建](/docs/devAndOps/build/RocketBuild.md)  
 [SpringBoot整合RocketMQ](/docs/microService/mq/Rocket/BootRocket.md)  
 
 
@@ -728,7 +728,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 ### 1.11.1. 分布式搜索引擎  
 [ES搭建](/docs/ES/build.md)  
-&emsp; [elk](/docs/devAndOps/centOS/elk.md)   
+&emsp; [elk](/docs/devAndOps/build/elk.md)   
 &emsp; [ES配置文件](/docs/ES/configure.md)  
 &emsp; [内存设置](/docs/ES/heap.md)  
 [ES基本概念](/docs/ES/basicConcepts.md)  
@@ -993,27 +993,41 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 ## 1.20. Linux服务器搭建
 <!-- 
 https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164718060116780255298678%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=164718060116780255298678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v29_name-2-102999744.nonecase&utm_term=%E9%98%BF%E9%87%8C%E4%BA%91&spm=1018.2226.3001.4450
-
 -->
+
+
 ### 1.20.1. Linux基础  
 [CentOS](/docs/devAndOps/centOS/centOS.md)  
 &emsp; [扩容](/docs/devAndOps/centOS/dilatation.md)  
 [防火墙](/docs/Linux/build/firewall.md)  
+[Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
 
 ### 1.20.2. 搭建-研发
-[Linux启动脚本](/docs/devAndOps/build/LinuxRestart.md)  
-[jdk安装](/docs/devAndOps/build/JDKBuild.md)  
-[Git安装](/docs/devAndOps/git/GitBuild.md)  
 [Docker安装](/docs/devAndOps/docker/install.md)  
+[Git安装](/docs/devAndOps/git/GitBuild.md)  
 [Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
 [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
-[MySql](/docs/devAndOps/centOS/MySql.md)   
-[MHA搭建MySql主从](/docs/devAndOps/centOS/MySqlAvailability.md)   
-[MySql审核平台archery](/docs/devAndOps/centOS/archery.md)  
-[Redis](/docs/devAndOps/centOS/Redis.md)  
-[RocketMQ搭建](/docs/microService/mq/Rocket/RocketBuild.md)  
-[elk搭建](/docs/devAndOps/centOS/elk.md)   
-[Nginx搭建](/docs/devAndOps/centOS/nginx.md)   
+
+[jdk安装](/docs/devAndOps/build/JDKBuild.md)  
+[tomcat安装](/docs/devAndOps/build/tomcatBuild.md)  
+[arthas](/docs/devAndOps/build/arthas.md)  
+
+[MySql](/docs/devAndOps/build/MySql.md)   
+[MHA搭建MySql主从](/docs/devAndOps/build/MySqlAvailability.md)   
+[MySql审核平台archery](/docs/devAndOps/build/SqlArchery.md)  
+[Redis](/docs/devAndOps/build/Redis.md)  
+[RocketMQ搭建](/docs/devAndOps/build/RocketBuild.md)  
+
+[xxl-job搭建](/docs/devAndOps/build/xxljob.md)  
+[nacos搭建](/docs/devAndOps/build/nacosBuild.md)  
+[sentinel](/docs/devAndOps/build/sentinel.md)  
+[skywalking](/docs/devAndOps/build/skywalking.md)  
+
+[Nginx搭建](/docs/devAndOps/build/nginx.md)   
+
+[elk搭建](/docs/devAndOps/build/elk.md)   
+
+[ideaServer](/docs/devAndOps/build/ideaServer.md)  
 
 ### 1.20.3. 搭建-需求、测试
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
