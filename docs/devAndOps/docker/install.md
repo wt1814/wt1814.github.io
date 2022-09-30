@@ -5,7 +5,7 @@
 - [1. docker安装](#1-docker安装)
     - [1.1. Docker安装及使用阿里云Doker镜像加速](#11-docker安装及使用阿里云doker镜像加速)
         - [1.1.1. 安装](#111-安装)
-        - [1.1.2. centos8使用，缺少类库libseccomp-devel](#112-centos8使用缺少类库libseccomp-devel)
+            - [问题](#问题)
         - [1.1.3. 启动及停止](#113-启动及停止)
     - [1.2. 镜像加速](#12-镜像加速)
     - [1.3. 私有仓库搭建](#13-私有仓库搭建)
@@ -15,8 +15,6 @@
 
 # 1. docker安装  
 <!-- 
-
-*** https://blog.csdn.net/qq_44858888/article/details/124084408
 
 Docker 容器启动报错的解决方法
 https://blog.csdn.net/gybshen/article/details/119377092
@@ -30,14 +28,23 @@ https://blog.csdn.net/kfgauss/article/details/116744314
 ## 1.1. Docker安装及使用阿里云Doker镜像加速  
 
 ### 1.1.1. 安装
-
-
-### 1.1.2. centos8使用，缺少类库libseccomp-devel  
 <!-- 
-https://blog.csdn.net/kfgauss/article/details/116744314
+https://blog.csdn.net/m0_67390788/article/details/123830312
 -->
 
+
+#### 问题  
+<!-- 
+Unit file docker.service does not exist
+https://cloud.tencent.com/developer/article/1897235
+
+centos8使用，缺少类库libseccomp-devel  
+https://blog.csdn.net/kfgauss/article/details/116744314
+
     yum install libseccomp-devel
+
+-->
+
 
 
 ### 1.1.3. 启动及停止  

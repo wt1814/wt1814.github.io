@@ -12,9 +12,6 @@ linux开机启动脚本
 https://blog.csdn.net/User_bie/article/details/120226581
 
 
-编程Linux开机自启动服务脚本的方法
-
-过去Linux采用的是init.d的服务启动管理方式，新版的Linux采用systemd服务启动管理方式。  
 -->
 
 
@@ -26,5 +23,6 @@ https://blog.csdn.net/weixin_50518271/article/details/122712171
 -->
 
 
-## ***第二种：添加system启动文件
+## ***第二种：添加system启动文件  
+&emsp; 过去Linux采用的是init.d的服务启动管理方式，新版的Linux采用systemd服务启动管理方式。  
 
