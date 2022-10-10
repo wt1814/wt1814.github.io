@@ -22,6 +22,7 @@
     - [1.6. gitignore规则不生效](#16-gitignore规则不生效)
     - [1.7. octotree，树形展示Github项目代码](#17-octotree树形展示github项目代码)
     - [1.8. git迁移仓库](#18-git迁移仓库)
+    - [1.9. sourceTree](#19-sourcetree)
 
 <!-- /TOC -->
 
@@ -197,3 +198,14 @@ git commit -m "msg"
 
 
 ## 1.8. git迁移仓库  
+
+
+## 1.9. sourceTree
+sourceTree 添加 ssh key 方法
+https://blog.csdn.net/tengdazhang770960436/article/details/54171911
+sourceTree一直输入密码
+https://www.jianshu.com/p/24c56a97f80c
+https://www.jianshu.com/p/8f3254493cd6
+https://blog.csdn.net/gang544043963/article/details/47614697
+解决使用SourceTree下载GitLab服务器上的代码每次都需要输入密码问题
+http://www.pianshen.com/article/9250357091/
