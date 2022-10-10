@@ -22,6 +22,7 @@
     - [1.6. gitignore规则不生效](#16-gitignore规则不生效)
     - [1.7. octotree，树形展示Github项目代码](#17-octotree树形展示github项目代码)
     - [1.8. git迁移仓库](#18-git迁移仓库)
+    - [1.9. sourceTree](#19-sourcetree)
 
 <!-- /TOC -->
 
@@ -179,6 +180,10 @@ $ git revert commitID
 
 
 ## 1.6. gitignore规则不生效  
+git忽略idea生成的不必要文件，如.iml文件，.idea文件夹，target文件夹
+https://blog.csdn.net/gaotanpan3666/article/details/83047856
+
+
 &emsp; .gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的。所以一定要养成在项目开始就创建.gitignore文件的习惯。  
 &emsp; 解决方法就是先把本地缓存删除(改变成未track状态)，然后再提交：  
 
@@ -197,3 +202,14 @@ git commit -m "msg"
 
 
 ## 1.8. git迁移仓库  
+
+
+## 1.9. sourceTree
+sourceTree 添加 ssh key 方法
+https://blog.csdn.net/tengdazhang770960436/article/details/54171911
+sourceTree一直输入密码
+https://www.jianshu.com/p/24c56a97f80c
+https://www.jianshu.com/p/8f3254493cd6
+https://blog.csdn.net/gang544043963/article/details/47614697
+解决使用SourceTree下载GitLab服务器上的代码每次都需要输入密码问题
+http://www.pianshen.com/article/9250357091/

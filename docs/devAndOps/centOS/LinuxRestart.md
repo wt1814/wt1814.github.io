@@ -1,8 +1,18 @@
 
+<!-- TOC -->
+
+- [1. Linux启动脚本](#1-linux启动脚本)
+    - [1.1. 第一种：配置/etc/rc.local](#11-第一种配置etcrclocal)
+        - [1.1.1. 使用](#111-使用)
+        - [1.1.2. rc.local配置的启动项未生效原因总结](#112-rclocal配置的启动项未生效原因总结)
+    - [1.2. /etc/init.d目录下添加自启动脚本](#12-etcinitd目录下添加自启动脚本)
+    - [1.3. ***第二种：添加system启动文件](#13-第二种添加system启动文件)
+
+<!-- /TOC -->
 
 
-# Linux启动脚本  
 
+# 1. Linux启动脚本  
 <!--
 三种方式  
 Linux系统下如何设置开机自动运行脚本？
@@ -16,23 +26,45 @@ https://blog.csdn.net/User_bie/article/details/120226581
 
 
 
-## 第一种：配置/etc/rc.local  
+## 1.1. 第一种：配置/etc/rc.local  
+### 1.1.1. 使用
 <!-- 
 一、rc.local文件中添加自启动命令
 二、在/etc/init.d目录下添加自启动脚本
 https://m.php.cn/article/480523.html
-
-
+https://www.yisu.com/zixun/481840.html
 https://blog.csdn.net/weixin_50518271/article/details/122712171
 -->
 
-
-## ***第二种：添加system启动文件  
+### 1.1.2. rc.local配置的启动项未生效原因总结  
 <!-- 
 
+https://www.cnblogs.com/baihh/p/16435572.html
+-->
+
+
+
+## 1.2. /etc/init.d目录下添加自启动脚本  
+<!-- 
+
+https://m.php.cn/article/480523.html
+-->
+
+
+
+
+## 1.3. ***第二种：添加system启动文件  
+<!-- 
+https://blog.51cto.com/u_10473224/4286697
 Linux服务器，服务管理--systemctl命令详解，设置开机自启动 
 https://blog.51cto.com/u_10473224/4286697
 -->
-
+>>>>>>> 8a17eac3969e73a8d533ecb8015b47d0971f796f
 &emsp; 过去Linux采用的是init.d的服务启动管理方式，新版的Linux采用systemd服务启动管理方式。  
+
+&emsp; 设置开机自启动  
+
+```text
+systemctl enable nfs-server.service
+```
 
