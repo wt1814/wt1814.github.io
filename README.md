@@ -1005,7 +1005,8 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 
 ### 1.20.2. 搭建-研发
 [2. Docker安装](/docs/devAndOps/docker/install.md)  
-[Git安装](/docs/devAndOps/git/GitBuild.md)  
+[4. Git安装](/docs/devAndOps/git/GitBuild.md)  
+[5. GitLab搭建](/docs/devAndOps/git/GitLab.md)  
 [Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
 [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
 
@@ -1029,7 +1030,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 [elk搭建](/docs/devAndOps/build/elk.md)   
 
 [docsify](/docs/devAndOps/build/docsify.md)  
-[ideaServer](/docs/devAndOps/build/ideaServer.md)  
+[3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
 
 ### 1.20.3. 搭建-需求、测试
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  

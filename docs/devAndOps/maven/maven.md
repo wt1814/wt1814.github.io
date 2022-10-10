@@ -7,6 +7,8 @@
     - [maven-resource插件](#maven-resource插件)
     - [1.3. Maven冲突](#13-maven冲突)
         - [1.3.1. 背景](#131-背景)
+    - [Maven仓库](#maven仓库)
+    - [IDEA强制清除Maven缓存](#idea强制清除maven缓存)
 
 <!-- /TOC -->
 
@@ -68,4 +70,16 @@ https://mp.weixin.qq.com/s/ueK8XgmzdlcH-CsKH8o33A
 &emsp; 这是能够直观呈现的，当然还有隐性的异常，比如程序执行结果与预期不符等。下面，我们就分析一下Maven项目中Jar包的处理机制及引起冲突的原因。  
 
 
+## Maven仓库
+<!-- 
+
+****maven配置多仓库的方法
+https://mp.weixin.qq.com/s/_Of9mGw2Lcm-DnJ_10Nz6g
+https://www.cnblogs.com/hepengju/p/11610451.html
+-->
+
+
+## IDEA强制清除Maven缓存  
+IDEA强制清除Maven缓存
+https://www.cnblogs.com/-beyond/p/11557196.html
 
