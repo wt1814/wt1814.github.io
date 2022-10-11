@@ -180,6 +180,14 @@ $ git revert commitID
 
 
 ## 1.6. gitignore规则不生效  
+<!-- 
+idea忽略隐藏文件、文件夹的设置操作
+https://www.cnblogs.com/sxdcgaq8080/p/9007883.html
+
+https://blog.csdn.net/chao2016/article/details/81699358
+
+-->
+
 git忽略idea生成的不必要文件，如.iml文件，.idea文件夹，target文件夹
 https://blog.csdn.net/gaotanpan3666/article/details/83047856
 
