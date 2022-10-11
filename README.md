@@ -1042,6 +1042,7 @@ https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257
 ------
 
 ## 1.21. DevOps  
+[项目管理](/docs/devAndOps/build/projectManagement.md)  
 [CI/CD](/docs/devAndOps/build/CICD.md)  
 [Devops](/docs/devAndOps/build/devOps.md)  
 &emsp; [DevOps搭建](/docs/devAndOps/build/devOpsPractice.md)  

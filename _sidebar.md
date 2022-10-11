@@ -763,6 +763,7 @@
         * [Jmeter](/docs/devAndOps/test/Jmeter.md)  
         * [allure](/docs/devAndOps/test/allure.md)  
 * DevOps  
+    * [项目管理](/docs/devAndOps/build/projectManagement.md)  
     * [CI/CD](/docs/devAndOps/build/CICD.md)  
     * [Devops](/docs/devAndOps/build/devOps.md)  
         * [DevOps搭建](/docs/devAndOps/build/devOpsPractice.md)   

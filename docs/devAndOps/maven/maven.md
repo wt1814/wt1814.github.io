@@ -21,6 +21,10 @@ https://mp.weixin.qq.com/s/PxC-Siyxvt3GIkzh9VKKKg
 
 Maven打包跳过测试的三种方法
 https://www.jb51.net/article/199947.htm
+
+
+Maven optional(可选) 关键字
+https://mp.weixin.qq.com/s?__biz=MzkwNzI0MzQ2NQ==&mid=2247488941&idx=1&sn=ed6dc21082b3bd9ea1e807ab1c1d741b&source=41#wechat_redirect
 -->
 
 ## 1.1. 私服Nexus搭建  
