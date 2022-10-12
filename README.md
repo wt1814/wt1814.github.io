@@ -45,6 +45,7 @@
         - [1.11.3. 安全框架shiro](#1113-安全框架shiro)
         - [1.11.4. 工作流](#1114-工作流)
     - [1.12. 系统设计](#112-系统设计)
+    - [响应式编程](#响应式编程)
     - [1.13. Error](#113-error)
     - [1.14. 内存优化](#114-内存优化)
     - [1.15. 磁盘IO](#115-磁盘io)
@@ -817,6 +818,9 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [权限系统](/docs/SystemDesign/power.md)  
 
 
+## 响应式编程
+[响应式编程](/docs/SystemDesign/reactor.md)  
+
 ---
 
 ## 1.13. Error  
@@ -995,6 +999,18 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 ## 1.20. Linux服务器搭建
 <!-- 
 https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164718060116780255298678%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=164718060116780255298678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v29_name-2-102999744.nonecase&utm_term=%E9%98%BF%E9%87%8C%E4%BA%91&spm=1018.2226.3001.4450
+
+maven   git   jdk   tomcat
+
+ideaserver
+
+mysql  redis   rocketmq
+
+nacos  xxl-job  sentinel  skywalking-agent  skywalking-apm
+
+nginx
+
+es   esHD   kibana  logstash   filebeat
 -->
 
 
