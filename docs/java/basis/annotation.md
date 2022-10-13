@@ -40,6 +40,18 @@ https://mp.weixin.qq.com/s/1KGNUG9l12gibyfMj1caCg
 注解作用
 https://www.zhihu.com/question/47449512/answer/658228092
 https://wenku.baidu.com/view/327fbce90408763231126edb6f1aff00bed570be.html
+
+
+
+注解就这么简单
+https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&mid=2247484113&idx=1&sn=f5fd35b2f7dc45a256fee170cad0cdc9&chksm=ebd743d0dca0cac6a8fed8caf09f0d561b0358dece9b8e746e1e6726bca093287cf515638349&scene=21#wechat_redirect
+什么是注解？
+https://mp.weixin.qq.com/s/-UmUr57-ZcwlrQyVmrGkDA
+通过反射获取注解
+https://mp.weixin.qq.com/s/uuUuwauVO44s0pLucM7Udw
+
+https://blog.csdn.net/javazejian/article/details/71860633
+
 -->
 
 ## 1.1. 引入注解(注解和xml)  

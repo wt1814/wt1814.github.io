@@ -52,6 +52,12 @@
 
 ## 1.1. 动态编译和静态编译  
 <!--
+
+Java 反射完整过程源码解析
+https://mp.weixin.qq.com/s/F21gFuW2kiGXylcRyCZ6Hw
+Java 反射机制（二） 
+https://mp.weixin.qq.com/s/YQsUVaZOfbBFArM9L71Nvw
+
 ~~
 面试官：什么是Java反射？它的应用场景有哪些？ 
 https://mp.weixin.qq.com/s/TqSLUWYWfhHjpfI_srETJg
