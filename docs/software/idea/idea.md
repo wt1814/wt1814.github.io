@@ -13,6 +13,7 @@
         - [1.7.1. 代码质量检测插件](#171-代码质量检测插件)
         - [1.7.2. 查看字节码插件](#172-查看字节码插件)
         - [IDEA的Redis插件](#idea的redis插件)
+    - [集成JIRA、UML类图插件、SSH、FTP、Database管理...](#集成jirauml类图插件sshftpdatabase管理)
     - [1.8. 快捷键](#18-快捷键)
         - [1.8.1. 批量修改变量名方法名](#181-批量修改变量名方法名)
 
@@ -84,6 +85,8 @@ https://blog.csdn.net/a772304419/article/details/79680775
 <!-- 
  Stream Trace 
 https://mp.weixin.qq.com/s/-IZ9jDMXUlL4kFt-OZ-qQw
+https://mp.weixin.qq.com/s/jHSTmVR8NJtpaAEAxZayqw
+
 -->
 
 ### 1.7.1. 代码质量检测插件
@@ -107,6 +110,12 @@ https://blog.csdn.net/m0_47503416/article/details/121397584
 
 -->
 
+
+## 集成JIRA、UML类图插件、SSH、FTP、Database管理... 
+<!-- 
+
+https://mp.weixin.qq.com/s/UcNy1hybHz5u3_fOn3FhHw
+-->
 
 
 ## 1.8. 快捷键  
