@@ -1,6 +1,7 @@
 
 
 欢迎关注 **<font color = "red">个人公众号：走近Java</font>**   
+脚手架项目  https://gitee.com/wt1814/cloud-scaffolding  
 联系我：**wangtao1814@163.com**  
 
 由于自身水平有限，文章难免存在遗漏或者错误，欢迎广大读者批评指正。  
