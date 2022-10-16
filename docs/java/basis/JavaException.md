@@ -3,6 +3,8 @@
 <!-- TOC -->
 
 - [1. Java异常](#1-java异常)
+    - [***三种处理异常的套路](#三种处理异常的套路)
+    - [***三方异常包](#三方异常包)
     - [1.1. Java异常基本概念](#11-java异常基本概念)
     - [1.2. 常见异常](#12-常见异常)
         - [1.2.1. NullPointerException](#121-nullpointerexception)
@@ -40,6 +42,25 @@ https://www.cnblogs.com/qiumingcheng/p/9506201.html
 异常处理、请求失败处理
 https://www.hangge.com/blog/cache/detail_2519.html
 -->
+
+## ***三种处理异常的套路
+<!--
+
+ 国外大佬给出的三种处理异常的套路！ 
+ https://mp.weixin.qq.com/s/fQA43DRWXFiGx2SsKcovfQ
+
+-->
+
+## ***三方异常包
+获取异常堆栈消息：
+import org.apache.commons.lang3.exception.ExceptionUtils;
+ExceptionUtils.getStackTrace(e)
+
+
+自定义异常，google的一个包
+import com.google.protobuf.ServiceException;
+throw new ServiceException(e.getMessage(), e);
+
 
 ## 1.1. Java异常基本概念  
 &emsp; Throwable是所有异常的超类，下一级可以分为Error和 Exception。  

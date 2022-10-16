@@ -2,6 +2,8 @@
 <!-- TOC -->
 
 - [1. Java基础](#1-java基础)
+    - [可变参数](#可变参数)
+    - [值传递还是引用传递](#值传递还是引用传递)
     - [1.1. 流程控制语句](#11-流程控制语句)
         - [1.1.1. 顺序语句](#111-顺序语句)
         - [1.1.2. 条件语句](#112-条件语句)
@@ -12,6 +14,7 @@
             - [1.1.6.1. 三元运算符](#1161-三元运算符)
             - [1.1.6.2. 通配符](#1162-通配符)
             - [1.1.6.3. 占位符](#1163-占位符)
+    - [优化if/else](#优化ifelse)
     - [1.2. Java关键字](#12-java关键字)
     - [1.3. Java变量](#13-java变量)
         - [1.3.1. 声明、初始化、实例化](#131-声明初始化实例化)
@@ -50,6 +53,21 @@ https://www.runoob.com/java/java-inner-class.html
 https://www.zhihu.com/question/26954130/answer/708467570
 
 -->  
+
+## 可变参数  
+<!-- 
+
+http://www.justdojava.com/2019/06/19/java-varargs/
+-->
+
+## 值传递还是引用传递  
+<!-- 
+
+https://zhuanlan.zhihu.com/p/41389794
+https://www.cnblogs.com/zyy1688/p/9268056.html
+-->
+
+
 
 ## 1.1. 流程控制语句  
 <!-- 
@@ -156,6 +174,15 @@ public class Test {
     我叫小明，今年28岁。
 
 
+## 优化if/else
+<!-- 
+
+https://mp.weixin.qq.com/s/xJDBnZ-HIyIYum6gfbGRfA
+
+https://mp.weixin.qq.com/s?__biz=MzI5MzYzMDAwNw==&mid=2247488046&idx=3&sn=fdb11f394ec7608fbd0dbf48325a2f29&chksm=ec6e6b76db19e260957473f3794ac8012666a0a9689ee687ef1431be7f0190a461f49b48558b&mpshare=1&scene=1&srcid=&sharer_sharetime=1578707572523&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=699c3707751a70d24ca78934170cb732dea3458e0a4697d47ec6b98f9cebfa6580011fff868f4f7248980ec16b8f4c6c84d52579de4e35e07d5eac3ff36ca00ba80abd953484269b29ebd5dc09d90ea7&ascene=1&uin=MTE1MTYxNzY2MQ==&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=AQZQbRuUIv2Vg588u8AWjxA=&pass_ticket=xQOMGkcjtjy8P1gUMijzL6DdVkrqNtHfw6SoMxkXFbLWxWjC030y3Knk/cOTeHhO
+
+https://mp.weixin.qq.com/s?__biz=MzkwNzI0MzQ2NQ==&mid=2247488975&idx=1&sn=0bfed2928a60f6199bb692b65f423349&source=41#wechat_redirect
+-->
 
 ## 1.2. Java关键字  
 &emsp; 查看[关键字](/docs/java/basis/keyword.md)    
