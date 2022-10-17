@@ -19,7 +19,7 @@
         - [1.4.2. ★★★异常捕获后再次抛出](#142-★★★异常捕获后再次抛出)
         - [1.4.3. 自定义异常](#143-自定义异常)
         - [1.4.4. 统一异常处理](#144-统一异常处理)
-        - [1.4.5. Assert处理异常](#145-assert处理异常)
+        - [1.4.5. ***Assert处理异常](#145-assert处理异常)
 
 <!-- /TOC -->
 
@@ -159,5 +159,10 @@ https://mp.weixin.qq.com/s/r_HjHi92owNwh5VULiaKcQ
 &emsp; @ExceptionHandler结合@ControllerAdvice，可以提供全局的统一异常处理器。  
 &emsp; 实现HandlerExceptionResolver接口或继承其抽象实现AbstractHandlerExceptionResolver，也可以实现统一异常处理。  
 
-### 1.4.5. Assert处理异常  
+### 1.4.5. ***Assert处理异常  
+<!-- 
+
+https://mp.weixin.qq.com/s/nQtkqN9IwZek6LX1Bvgf6A
+-->
+
 
