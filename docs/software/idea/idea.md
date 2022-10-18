@@ -16,6 +16,7 @@
     - [集成JIRA、UML类图插件、SSH、FTP、Database管理...](#集成jirauml类图插件sshftpdatabase管理)
     - [1.8. 快捷键](#18-快捷键)
         - [1.8.1. 批量修改变量名方法名](#181-批量修改变量名方法名)
+    - [***高级调试](#高级调试)
 
 <!-- /TOC -->
 
@@ -130,3 +131,13 @@ https://www.pianshen.com/article/83811617038/
 -->
 
 &emsp; 选中要修改的然后按shift+F6 出现了红框后修改好点击回车就行了  
+
+
+
+## ***高级调试   
+<!--
+ 这几个 IntelliJ IDEA 高级调试技巧，用了都说爽！ 
+https://mp.weixin.qq.com/s?__biz=Mzg2MjEwMjI1Mg==&mid=2247491131&idx=3&sn=d072a649696b5b07411642067d51367d&chksm=ce0da9b8f97a20ae787ac263de162bc8c1d1843902341e1f5c4a2db0ece02276b85c5b76cfc6&mpshare=1&scene=1&srcid=&sharer_sharetime=1577187607880&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=6f32c57123495b976074ebfd1a889da106f7c9e51dd9e4429295af6cf4ef294ca7377d41701d83de6900e2ad7a0d82fe20da55d14f325c1cd2296f52a3b45a7ac0ab989b3ae24465df8a53af9481378a&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=Af6pZ1ErrZndhXyF%2FrpKbKA%3D&pass_ticket=fjo0TPQ4TftdXiH325uINjkxmTSYWN5xsY7SY8CPXJ8L70Z%2B9nqwLCPhjc61tfer
+-->
+
+

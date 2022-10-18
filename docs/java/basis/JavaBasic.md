@@ -46,6 +46,8 @@
 <!-- 
 断言+断路，彻底的优化掉“if else”
 https://www.bilibili.com/video/BV1Sk4y1q7rD
+8种优化if-else代码的方案请拿走 
+https://mp.weixin.qq.com/s?__biz=MzkwNzI0MzQ2NQ==&mid=2247488975&idx=1&sn=0bfed2928a60f6199bb692b65f423349&source=41#wechat_redirect
 
 Java四种内部类总结
 https://blog.csdn.net/sinat_37003267/article/details/80058544
