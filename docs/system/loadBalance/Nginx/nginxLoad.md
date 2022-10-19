@@ -82,6 +82,9 @@
 
 讲讲Nginx如何实现四层负载均衡
 https://blog.csdn.net/yihuliunian/article/details/108534708
+
+https://www.runoob.com/w3cnote/nginx-proxy-balancing.html
+
 -->
 
 &emsp; 负载均衡功能即是反向代理的应用，只不过负载均衡是代理多台服务器，更注重其均衡转发功能。    

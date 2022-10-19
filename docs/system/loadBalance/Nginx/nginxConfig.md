@@ -11,6 +11,11 @@
 <!-- /TOC -->
 
 # 1. Nginx配置 
+<!-- 
+
+https://www.runoob.com/w3cnote/nginx-setup-intro.html
+-->
+
 
 ## 1.1. Nginx配置参数中文说明
 &emsp; nginx.conf 配置文件主要分为三部分：全局块、Events 块、HTTPS 块。  

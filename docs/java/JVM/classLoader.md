@@ -87,7 +87,7 @@ https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 &emsp; 利用URLClassLoader进行加载  
 
 ## 1.2. tomcat类加载器
-&emsp; 参考[tomcat类加载器](/docs/tomcat/tomcatClassLoader.md)  
+&emsp; 参考[tomcat类加载器](/docs/webContainer/tomcat/tomcatClassLoader.md)  
 
 
 ## 1.3. 类加载器的加载机制  
