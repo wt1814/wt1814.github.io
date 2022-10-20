@@ -3,6 +3,7 @@
 <!-- TOC -->
 
 - [1. MyBatis高级使用](#1-mybatis高级使用)
+    - [批量插入或更新](#批量插入或更新)
     - [1.1. mybatis-generator](#11-mybatis-generator)
     - [1.2. PageHelper](#12-pagehelper)
     - [1.3. 树状查询](#13-树状查询)
@@ -22,6 +23,15 @@
 MySQL 千万数据量深分页优化, 拒绝线上故障！ 
 https://mp.weixin.qq.com/s/i3wLeCSxqWKrTwgtfelumQ
 -->
+
+
+## 批量插入或更新  
+<!-- 
+https://blog.csdn.net/qq_58772217/article/details/125281973
+-->
+1. ON DUPLICATE KEY UPDATE检查```主键或唯一索引字段```是否冲突。  
+2. update的字段值与现存的字段值相同，则不更新。  
+3. 动态更新字段值用VALUES(字段名称)。  
 
 
 ## 1.1. mybatis-generator  
