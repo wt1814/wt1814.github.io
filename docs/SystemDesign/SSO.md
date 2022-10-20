@@ -18,6 +18,9 @@ https://blog.51cto.com/u_15146142/2727498
 10 分钟理解什么是 OpenID Connect（OIDC） 协议
 https://deepzz.com/post/what-is-oidc-protocol.htmld
 
+https://mp.weixin.qq.com/s/Fcd7626X18_hwRRL_T88Og
+https://mp.weixin.qq.com/s/HfdG1P_7ZRfSp8su_z0nkg
+
 -->
 
 &emsp; 登录认证，无论是什么样的场景，还是喜欢使用security框架。  
@@ -27,7 +30,6 @@ https://deepzz.com/post/what-is-oidc-protocol.htmld
 	1. 以session、cookie的形式的话，可以分为父域、跨域  
 2. 登录信息可以在一个系统或多个系统中
 3. 怎么达到共享？  
-	1. 如果只有一个用户系统，后端将登录信息保存在数据库、redis
-	2. SSO认证服务器（未理解透彻）
-	3. 如果有多个用户系统  
+	1. 如果只有一个用户系统，后端将登录信息保存在数据库、redis。
+	2. 如果有多个用户系统，SSO认证服务器（未理解透彻），比较好。
 	
