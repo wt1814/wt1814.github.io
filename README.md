@@ -804,7 +804,6 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [Kibana查询](/docs/ES/KibanaQuery.md)  
 &emsp; [canal](/docs/ES/canal.md)  
 
-
 [ES重制](/docs/ESRemake/ESRemake.md)    
 
 ### 1.12.2. 任务调度
@@ -825,7 +824,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 
 ### 1.12.5. 分布式文件存储  
-
+[文件存储](/docs/File/FileStore.md)  
 
 
 ----------

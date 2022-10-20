@@ -20,9 +20,13 @@
 <!-- 
 https://www.cnblogs.com/ysocean/p/10541151.html#_label4_0
 http://www.heartthinkdo.com/?p=2899#12
+分布式任务调度平台XXL-JOB搭建教程
+https://www.cnblogs.com/ysocean/p/10541151.html
 -->
 
 # 1. XXL-JOB  
+&emsp; ***中文教程：https://www.xuxueli.com/xxl-job/#/  
+
 
 ## 1.1. XXL-JOB文档
 1. 源码下载地址
