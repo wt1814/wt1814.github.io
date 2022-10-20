@@ -1,6 +1,12 @@
 
 
 # MySql运维
+<!-- 
+ mysql常见故障汇总和处理 
+https://mp.weixin.qq.com/s/w_G1q0jh7JVayPNlydsACA
+-->
+
+
 ## MySql监控  
 <!-- 
 Prometheus + Granafa 构建高大上的MySQL监控平台 

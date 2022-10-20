@@ -222,6 +222,7 @@
             * [MyCat中间件](/docs/SQL/MyCat.md)  
     * [数据库连接池](/docs/SQL/connectionPool.md)  
     * [MySQL运维](/docs/SQL/MySqlMonitor.md)  
+        * [mysqldump，备份和恢复](/docs/SQL/MysqlDump.md)  
         * [MySql审核平台](/docs/SQL/examine.md)  
     * [MySql架构原理](/docs/SQL/MySqlPrinciple.md)    
         * [MySql运行流程](/docs/SQL/Framework.md)  
