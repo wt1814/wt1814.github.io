@@ -27,6 +27,9 @@ https://mp.weixin.qq.com/s/u6FNbplobMff4TawPHgRjQ
 https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzA4MTk3MjI0Mw==&action=getalbum&album_id=1612455701786787847&scene=173&from_msgid=2247491293&from_itemidx=1&count=3#wechat_redirect
 
 https://mp.weixin.qq.com/s/ewnxn3xIZNNIX84_kQ2qmg
+
+公众号：《程序员涨薪基地》  https://mp.weixin.qq.com/s/jzPjOGhYLFVWUYIAD33lYA
+
 -->
 <!-- 
 模板模式：一种体现多态的设计模式
@@ -40,6 +43,9 @@ https://refactoringguru.cn/design-patterns/catalog
 &emsp; **<font color = "blue">有关设计模式可参考网址：[refactoringguru.cn](https://refactoringguru.cn/design-patterns/catalog)</font>**  
 
 &emsp; 常用设计模式有23种(不包含简单工厂模式)。 **<font color = "red">这23种设计模式的本质是面向对象设计原则的实际运用，是对类的封装性、继承性和多态性，以及类的关联关系和组合关系的充分理解。</font>**  
+
+&emsp; 定义、使用场景、优缺点、模式角色、示例、与其他模式  
+
 
 ## 1.1. 如何判断哪里需要使用设计模式  
 ![image](http://www.wt1814.com/static/view/images/java/design/design-1.png)  

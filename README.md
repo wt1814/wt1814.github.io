@@ -46,33 +46,34 @@
         - [1.12.2. 任务调度](#1122-任务调度)
         - [1.12.3. 安全框架shiro](#1123-安全框架shiro)
         - [1.12.4. 工作流](#1124-工作流)
-        - [1.12.5. 分布式文件存储](#1125-分布式文件存储)
-    - [1.13. 系统设计](#113-系统设计)
-    - [1.14. 响应式编程](#114-响应式编程)
-    - [1.15. Error](#115-error)
-    - [1.16. 内存优化](#116-内存优化)
-    - [1.17. 磁盘IO](#117-磁盘io)
-    - [1.18. 网络IO/分布式通信](#118-网络io分布式通信)
-        - [1.18.1. 通信基础](#1181-通信基础)
-        - [1.18.2. NIO](#1182-nio)
-        - [1.18.3. Netty](#1183-netty)
-        - [1.18.4. webSocket](#1184-websocket)
-        - [1.18.5. 其他](#1185-其他)
-    - [1.19. 源码搭建汇总](#119-源码搭建汇总)
-    - [1.20. 计算机网络](#120-计算机网络)
-        - [1.20.1. 负载均衡](#1201-负载均衡)
-    - [1.21. Linux操作系统](#121-linux操作系统)
-    - [1.22. Linux服务器搭建](#122-linux服务器搭建)
-        - [1.22.1. Linux基础](#1221-linux基础)
-        - [1.22.2. 搭建-研发](#1222-搭建-研发)
-        - [1.22.3. 搭建-需求、测试](#1223-搭建-需求测试)
-    - [1.23. DevOps](#123-devops)
-    - [1.24. 监控](#124-监控)
-        - [1.24.1. 监控](#1241-监控)
-        - [1.24.2. 统计](#1242-统计)
-    - [1.25. 常用研发工具](#125-常用研发工具)
-    - [1.26. 算法](#126-算法)
-    - [1.27. 前端知识](#127-前端知识)
+    - [1.13. 规则引擎](#113-规则引擎)
+        - [1.13.1. 分布式文件存储](#1131-分布式文件存储)
+    - [1.14. 系统设计](#114-系统设计)
+    - [1.15. 响应式编程](#115-响应式编程)
+    - [1.16. Error](#116-error)
+    - [1.17. 内存优化](#117-内存优化)
+    - [1.18. 磁盘IO](#118-磁盘io)
+    - [1.19. 网络IO/分布式通信](#119-网络io分布式通信)
+        - [1.19.1. 通信基础](#1191-通信基础)
+        - [1.19.2. NIO](#1192-nio)
+        - [1.19.3. Netty](#1193-netty)
+        - [1.19.4. webSocket](#1194-websocket)
+        - [1.19.5. 其他](#1195-其他)
+    - [1.20. 源码搭建汇总](#120-源码搭建汇总)
+    - [1.21. 计算机网络](#121-计算机网络)
+        - [1.21.1. 负载均衡](#1211-负载均衡)
+    - [1.22. Linux操作系统](#122-linux操作系统)
+    - [1.23. Linux服务器搭建](#123-linux服务器搭建)
+        - [1.23.1. Linux基础](#1231-linux基础)
+        - [1.23.2. 搭建-研发](#1232-搭建-研发)
+        - [1.23.3. 搭建-需求、测试](#1233-搭建-需求测试)
+    - [1.24. DevOps](#124-devops)
+    - [1.25. 监控](#125-监控)
+        - [1.25.1. 监控](#1251-监控)
+        - [1.25.2. 统计](#1252-统计)
+    - [1.26. 常用研发工具](#126-常用研发工具)
+    - [1.27. 算法](#127-算法)
+    - [1.28. 前端知识](#128-前端知识)
 
 <!-- /TOC -->
 
@@ -163,8 +164,8 @@
 ### 1.2.3. JVM  
 [JVM总结](/docs/java/JVM/summary.md)  
 [JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM.md)   
-&emsp; [编译成Class字节码文件](/docs/java/JVM/Class.md)  
-[字节码和汇编代码](/docs/java/JVM/Bytecode.md)  
+[编译成Class字节码文件](/docs/java/JVM/Class.md)  
+&emsp; [字节码和汇编代码](/docs/java/JVM/Bytecode.md)  
 [类加载](/docs/java/JVM/classLoading.md)  
 &emsp; [JVM类的加载](/docs/java/JVM/classLoad.md)  
 &emsp; [JVM类加载器](/docs/java/JVM/classLoader.md)  
@@ -824,25 +825,28 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [工作流](docs/middleware/workflow.md)  
 
 
-### 1.12.5. 分布式文件存储  
+## 1.13. 规则引擎
+[规则引擎](docs/middleware/RulesEngine.md)  
+
+### 1.13.1. 分布式文件存储  
 [文件存储](/docs/File/FileStore.md)  
 
 
 ----------
 
-## 1.13. 系统设计  
+## 1.14. 系统设计  
 [工具类](/docs/SystemDesign/tools.md)  
 [单点登录SSO](/docs/SystemDesign/SSO.md)  
 [登录-JWT和session](/docs/SystemDesign/JWT.md)  
 [权限系统](/docs/SystemDesign/power.md)  
 
 
-## 1.14. 响应式编程
+## 1.15. 响应式编程
 [响应式编程](/docs/SystemDesign/reactor.md)  
 
 ---
 
-## 1.15. Error  
+## 1.16. Error  
 [多线程串线了](/docs/Error/ThreadCrossed.md)  
 [熔断降级处理](/docs/Error/hystrix.md)  
 [Redis高并发](/docs/Error/redisConcurrent.md)  
@@ -853,16 +857,16 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 -----------------
 
-## 1.16. 内存优化
+## 1.17. 内存优化
 [堆外内存](/docs/system/OutHeapMemory.md)  
 [centos增加内存](/docs/system/centosMemory.md)  
 
 
-## 1.17. 磁盘IO
+## 1.18. 磁盘IO
 [页缓存](/docs/system/PageCache.md)  
 
-## 1.18. 网络IO/分布式通信  
-### 1.18.1. 通信基础
+## 1.19. 网络IO/分布式通信  
+### 1.19.1. 通信基础
 [通信基础](/docs/microService/communication/Netty/basics.md)   
 &emsp; [序列化](/docs/microService/communication/serializbale.md)  
 &emsp; [网络IO](/docs/microService/communication/NetworkIO.md)  
@@ -874,14 +878,14 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; &emsp; [IO性能优化之零拷贝重制](/docs/microService/communication/Netty/zeroCopyRemake.md)  
 [Socket编程](/docs/microService/communication/Socket.md)  
 
-### 1.18.2. NIO 
+### 1.19.2. NIO 
 [NIO](/docs/microService/communication/NIO.md)  
 &emsp; [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
 &emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
 &emsp; [Java中的零拷贝](/docs/microService/communication/NIO/JavaZeroCopy.md)  
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 
-### 1.18.3. Netty
+### 1.19.3. Netty
 [Netty](/docs/microService/communication/Netty/netty.md)   
 &emsp; [Netty介绍](/docs/microService/communication/Netty/concepts.md)  
 &emsp; [Netty运行流程介绍](/docs/microService/communication/Netty/operation.md)   
@@ -909,7 +913,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
 &emsp; &emsp; &emsp; [池化内存分配](/docs/microService/communication/Netty/byteBufTwo.md)    
 
-### 1.18.4. webSocket
+### 1.19.4. webSocket
 [WebSocket](/docs/webSocket/Summary.md)  
 &emsp; [实时消息推送](/docs/webSocket/LongPolling.md)  
 &emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
@@ -917,12 +921,12 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
 &emsp; [IM系统](/docs/webSocket/IM.md)  
 
-### 1.18.5. 其他  
+### 1.19.5. 其他  
 [请求合并](/docs/webSocket/RequestMerge.md)  
 
 ------
 
-## 1.19. 源码搭建汇总
+## 1.20. 源码搭建汇总
 [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
 [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
 [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
@@ -931,7 +935,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 ----
 
-## 1.20. 计算机网络  
+## 1.21. 计算机网络  
 [OSI七层网络模型](/docs/network/OSI.md)  
 [应用层](/docs/network/application.md)  
 &emsp; [DNS](docs/network/DNS.md)  
@@ -955,7 +959,7 @@ https://help.aliyun.com/document_detail/122217.html
 -->
 
 
-### 1.20.1. 负载均衡  
+### 1.21.1. 负载均衡  
 [负载均衡](/docs/system/loadBalance/loadBalance.md)  
 [Http重定向](/docs/system/loadBalance/redirect.md)  
 [DNS轮询](/docs/system/loadBalance/DNS.md)  
@@ -976,7 +980,7 @@ https://help.aliyun.com/document_detail/122217.html
 
 ----
 
-## 1.21. Linux操作系统  
+## 1.22. Linux操作系统  
 <!-- 
 xshell 工具Tabby 
 https://mp.weixin.qq.com/s/Cs-WzMm-8VZbLoq9CA-qWw
@@ -1015,7 +1019,7 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 ----
 
 
-## 1.22. Linux服务器搭建
+## 1.23. Linux服务器搭建
 <!-- 
 https://blog.csdn.net/zzti_erlie/article/details/102999744?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164718060116780255298678%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=164718060116780255298678&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v29_name-2-102999744.nonecase&utm_term=%E9%98%BF%E9%87%8C%E4%BA%91&spm=1018.2226.3001.4450
 
@@ -1033,7 +1037,7 @@ es   esHD   kibana  logstash   filebeat
 -->
 
 
-### 1.22.1. Linux基础  
+### 1.23.1. Linux基础  
 [CentOS](/docs/devAndOps/centOS/centOS.md)  
 &emsp; [扩容](/docs/devAndOps/centOS/dilatation.md)  
 [防火墙](/docs/Linux/build/firewall.md)  
@@ -1041,7 +1045,7 @@ es   esHD   kibana  logstash   filebeat
 [1. yum](/docs/devAndOps/centOS/yum.md)  
 [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
 
-### 1.22.2. 搭建-研发
+### 1.23.2. 搭建-研发
 [2. Docker安装](/docs/devAndOps/docker/install.md)  
 [4. Git安装](/docs/devAndOps/git/GitBuild.md)  
 [5. GitLab搭建](/docs/devAndOps/git/GitLab.md)  
@@ -1070,7 +1074,7 @@ es   esHD   kibana  logstash   filebeat
 [docsify](/docs/devAndOps/build/docsify.md)  
 [3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
 
-### 1.22.3. 搭建-需求、测试
+### 1.23.3. 搭建-需求、测试
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
 [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
 [jira](/docs/devAndOps/build/jira.md)  
@@ -1079,7 +1083,7 @@ es   esHD   kibana  logstash   filebeat
 
 ------
 
-## 1.23. DevOps  
+## 1.24. DevOps  
 [项目管理](/docs/devAndOps/build/projectManagement.md)  
 [CI/CD](/docs/devAndOps/build/CICD.md)  
 [Devops](/docs/devAndOps/build/devOps.md)  
@@ -1125,22 +1129,22 @@ es   esHD   kibana  logstash   filebeat
 
 ------------  
 
-## 1.24. 监控
-### 1.24.1. 监控
+## 1.25. 监控
+### 1.25.1. 监控
 [Linux监控指标](/docs/devAndOps/monitor/indicators.md)  
 [监控系统](/docs/devAndOps/monitor/monitor.md)  
 [工具prometheus](/docs/devAndOps/monitor/prometheus.md)  
 [中间件监控](/docs/devAndOps/monitor/middleware.md)  
 [业务监控](/docs/devAndOps/monitor/business.md)  
 
-### 1.24.2. 统计  
+### 1.25.2. 统计  
 [统计PV](/docs/devAndOps/monitor/StatisticsPV.md)  
 
 
 -----------------------
 
 
-## 1.25. 常用研发工具  
+## 1.26. 常用研发工具  
 [Idea](/docs/software/idea/idea.md)  
 [postman](/docs/software/postman.md)  
 [抓包Charles](/docs/software/charles.md)  
@@ -1153,7 +1157,7 @@ es   esHD   kibana  logstash   filebeat
 
 --------
 
-## 1.26. 算法  
+## 1.27. 算法  
 [红黑树](/docs/function/redBlack.md)  
 [复杂数据结构](/docs/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/function/SkipList.md)  
@@ -1166,5 +1170,5 @@ es   esHD   kibana  logstash   filebeat
 [大数据和空间限制](/docs/function/bigdata.md)  
 &emsp; [内存只有 2G，如何对 100 亿数据进行排序？](/docs/function/SmallMemory.md)  
 
-## 1.27. 前端知识  
+## 1.28. 前端知识  
 [nodejs](/docs/front/nodejs.md)  

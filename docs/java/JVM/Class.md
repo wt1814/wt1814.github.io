@@ -22,6 +22,21 @@ https://mp.weixin.qq.com/s/AnRtCQDIkKgIdhKTk2sWeA
 
 2W 字的Java class类文件结构详解！
 https://mp.weixin.qq.com/s/RndRd9apu3tXEDGBZF7EbQ
+
+
+深入理解JVM类文件格式
+https://mp.weixin.qq.com/s/5pEJpM3hsCpVUfgjW2d8-g
+干货！Java字节码增强探秘
+https://mp.weixin.qq.com/s/Wa4JKQ5NAN_4_TVSO67ehQ
+JIT编译：
+https://baike.baidu.com/item/JIT%E7%BC%96%E8%AF%91/2886569?fr=aladdin
+
+JVM 深入学习：Java 解析Class文件过程解析
+https://mp.weixin.qq.com/s?__biz=MzUzMjA2NDU2OQ%3D%3D&mid=2247487315&idx=2&sn=788076fe66d19c97bce869339a18926c&scene=45#wechat_redirect
+
+面试官：解释一下Java字节码文件中的JVM指令 
+https://mp.weixin.qq.com/s?__biz=MzI1NTE3OTk4Nw==&mid=2653736632&idx=1&sn=a746d644d9c94a58b362671be30b0774&chksm=f1e18304c6960a12ef40bf0631b2967c91df81cf26280254af94e08067af1dab1871277a8b8d&mpshare=1&scene=1&srcid=&sharer_sharetime=1574232798045&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=0414aa86a61cc65de59c7b49120bf91d2260d333d14fe8835d39116ce8ec17c35d0dc79c13e654f78b0535a4fc40c8676543beca5f9f231b8d52f1286c707b3865109399459de6aafc0a61cfe14e7f60&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=WfLUVSCdR759nVfSaPrEbDJ5pQBJLzYUdmc8DOJ9hHJHHUoxvw5vHgy0hzLZZoMW
+
 -->
 &emsp; 根据Java虚拟机规范，类文件由单个 ClassFile 结构组成：  
 ![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-91.png)  

@@ -36,6 +36,25 @@
 
 
 # 1. ~~String~~
+<!-- 
+
+为什么Java字符串是不可变的？
+https://mp.weixin.qq.com/s?__biz=MzIxNzQwNjM3NA==&mid=2247486419&idx=1&sn=9591dfe5b6fd42bfb21bcc9a60123c8e&scene=21#wechat_redirect
+
+原因大致有以下三个：
+为了实现字符串常量池
+为了线程安全
+为了 HashCode 的不可变性
+
+
+为什么要重写hashcode和equals方法？ 
+https://mp.weixin.qq.com/s?__biz=MzA5NzgzODI5NA==&mid=2454036621&idx=2&sn=0cee25d9cb8a74983f22001a9e590373&chksm=872bb534b05c3c2264329e604207d35730f9fc84e9685b8d053fb8c8e1557b8e6496428a4010&mpshare=1&scene=1&srcid=&sharer_sharetime=1564621712738&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=58e504541863490e8749d6ad72ccd7d423de24183327cfd9286d8dcb2da835454d1dfbab22f24716ca79d85eac49ee583ba350b29fc3379b3ad2e94db6fd63c6a934a6573f1ba8c21c41910887cdb473&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060834&lang=zh_CN&pass_ticket=Mbhb8FaRfUTIY8b9kkeu8wiUoom0HSJs9Ql%2FZjQ3YT5H9f0SJWiPLFSbnehO49gB
+编写equals和hashcode方法
+https://juejin.im/post/5d8b4b3df265da5b591b513d
+https://mp.weixin.qq.com/s/Iix9FHKPhOu3ck7ysc6TJw
+-->
+
+
 ## 1.1. java.lang.String类  
 &emsp; **<font color = "clime">String对象一旦被创建就是固定不变的了，对String对象的任何改变都不影响到原对象，相关的任何change操作都会生成新的对象。</font>**  
 

@@ -21,6 +21,10 @@
 <!-- 
 JDK、JRE、JVM，是什么关系？
 https://mp.weixin.qq.com/s/-CbNU5uPH1cpMuZ-eQQgFw
+
+https://www.cnblogs.com/xiaofeixiang/p/4085159.html
+https://www.cnblogs.com/iskandar/p/8933340.html
+
 -->
 ## 1.1. JDK  
 &emsp; JDK(Java SE Development Kit)：是整个JAVA的核心，Java标准开发包。它提供了编译、运行Java程序所需的各种工具和资源，包括Java编译器即JDK中的javac.exe、Java运行环境JRE，以及Java基础的类库(即Java API，包括rt.jar)。  

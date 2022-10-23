@@ -37,6 +37,17 @@ https://blog.csdn.net/sigangjun/article/details/79071850
 https://mp.weixin.qq.com/s/B17Kvjb66iAAZmxDqBDWsA
 为什么要有 SPI
 https://mp.weixin.qq.com/s/4jA9MU-RFY8MttUbMmt76g
+
+
+jdk和dubbo的SPI机制你应该了
+https://mp.weixin.qq.com/s/lE2R-bPoB6OMZbm-GitYNQ
+  Java是如何实现自己的SPI机制的？ JDK源码（一） 
+ https://mp.weixin.qq.com/s/JMLQpNZzLPbPgXwS-nQXuA
+ JAVA拾遗--关于SPI机制 
+https://mp.weixin.qq.com/s?__biz=MzI0NzEyODIyOA==&mid=2247483791&idx=1&sn=0f2d9807c72ec8041e4ec28b10d75176&scene=21#wechat_redirect
+https://mp.weixin.qq.com/s?__biz=MzAwMDczMjMwOQ==&mid=2247483837&idx=1&sn=af903350c3146ee009e24ae6a7563c10&chksm=9ae53c47ad92b551448d657a30a9c9180596e34ff57ceaa370c67cff4bb1c04812a9a35c2382&scene=21#wechat_redirect
+
+https://mp.weixin.qq.com/s/lE2R-bPoB6OMZbm-GitYNQ
 -->
 
 ## 1.1. 什么是SPI？

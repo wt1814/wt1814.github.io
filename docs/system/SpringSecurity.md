@@ -4,9 +4,9 @@
 - [1. Spring Security](#1-spring-security)
     - [1.1. 前后端分离](#11-前后端分离)
     - [1.2. SpringSecurity+JWT](#12-springsecurityjwt)
-    - [SpringCloud Gateway + Jwt + Oauth2实现网关的鉴权操作](#springcloud-gateway--jwt--oauth2实现网关的鉴权操作)
-    - [1.3. 集成CAS（单点登录）](#13-集成cas单点登录)
-    - [1.4. 手机登录](#14-手机登录)
+    - [1.3. SpringCloud Gateway + Jwt + Oauth2实现网关的鉴权操作](#13-springcloud-gateway--jwt--oauth2实现网关的鉴权操作)
+    - [1.4. 集成CAS（单点登录）](#14-集成cas单点登录)
+    - [1.5. 手机登录](#15-手机登录)
 
 <!-- /TOC -->
 
@@ -26,7 +26,6 @@ https://blog.csdn.net/fengxianaa/article/details/124717610
 
   Spring-Security & JWT 实现 token
  https://mp.weixin.qq.com/s/Dlrxei-hTXh6rVTdb8Ddaw
-
 
 ***系列文章  
 https://blog.csdn.net/syc000666/category_9151932.html
@@ -72,7 +71,7 @@ https://blog.csdn.net/friendlytkyj/article/details/123886947
 ## 1.2. SpringSecurity+JWT
 
 
-## SpringCloud Gateway + Jwt + Oauth2实现网关的鉴权操作  
+## 1.3. SpringCloud Gateway + Jwt + Oauth2实现网关的鉴权操作  
 <!--
 SpringCloud Gateway + Jwt + Oauth2 实现网关的鉴权操作
 https://mp.weixin.qq.com/s/8mpf5C1ySd5W_lUpfA2TrQ
@@ -81,7 +80,7 @@ https://mp.weixin.qq.com/s/8mpf5C1ySd5W_lUpfA2TrQ
 
 
 
-## 1.3. 集成CAS（单点登录）  
+## 1.4. 集成CAS（单点登录）  
 
 <!-- 
 
@@ -93,7 +92,7 @@ https://www.jb51.net/article/240040.htm
 -->
 
 
-## 1.4. 手机登录
+## 1.5. 手机登录
 
 <!-- 
 https://blog.csdn.net/fengxianaa/article/details/124717610
