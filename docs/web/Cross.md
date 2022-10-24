@@ -5,6 +5,23 @@
 # 前后端分离
 ##  Nginx解决跨域和内外网隔离
 <!-- 
+
+
+前后端分离了，跨域问题如何解决？ 
+https://mp.weixin.qq.com/s?__biz=Mzg2MDYzODI5Nw==&mid=2247494099&idx=2&sn=1f9bd346c0853f112dd52080e0a8b565&source=41#wechat_redirect
+
+Cors跨域(三)：Access-Control-Allow-Origin多域名？ 
+https://mp.weixin.qq.com/s/IJIL2UwDACG5POojY37WZg
+
+Spring Boot 中三种跨域场景总结 
+https://mp.weixin.qq.com/s/FaSfN31z4BlxPI2QOa8t1Q
+java 后端 实现 CORS 跨域请求的方式
+https://mp.weixin.qq.com/s/zw67oOnA4t5IipRyes5gGQ
+Spring Boot 解决跨域问题的 3 种方案！ 
+https://mp.weixin.qq.com/s/NqfiqwV7oeKfOR6va256MQ
+
+
+
 前后端分开部署  
 https://mp.weixin.qq.com/s/VKtt9nC7PCHmiUI8oZ1CTw
 
