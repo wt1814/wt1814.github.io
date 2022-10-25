@@ -11,6 +11,40 @@
 <!-- /TOC -->
 
 # 1. 日志系统
+
+<!-- 
+
+日志门面slf4j
+https://mp.weixin.qq.com/s?__biz=Mzg3NzU5NTIwNg==&mid=2247488033&idx=1&sn=decbb336691a95825ef2abeda277c997&source=41#wechat_redirect
+https://mp.weixin.qq.com/s?__biz=Mzg2MjEwMjI1Mg==&mid=2247490130&idx=3&sn=899dc48623a00ad1fb204a63958045b0&chksm=ce0dadd1f97a24c7a54c8ba4049e3f011e79eda09acf0a3481daa10be433ff6e5b36a0d24ff3&mpshare=1&scene=1&srcid=&sharer_sharetime=1572953697601&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=f8a21a8df9909cbb19ae7eb4ea2a8e233043aacc6fde197e66e73e2fa167b5eeedf76b3ed4a7b357e627ad337b25ed67b836d2bdc741d9be20c72296d5cd695a9d0087eaae4312d7c1c124b0cb12be48&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=oO0JeKFHPK4ifYXARHWcz%2ByO29zMw9sI%2FiH99TTESnd8Wbv3LNtJVGdX%2BPzdWpL6
+
+
+log4j2
+https://www.jianshu.com/p/62c0ef1cc699
+https://mp.weixin.qq.com/s?__biz=Mzg2MDYzODI5Nw==&mid=2247493856&idx=1&sn=fcde3677771e69ed0e429a684681a1e7&source=41#wechat_redirect
+
+
+logback
+logback.xml配置如何按天输出日志文件  
+https://my.oschina.net/bootstrap/blog/414079
+java 中使用logback日志，并实现日志按天分类压缩保存
+https://www.cnblogs.com/devise/p/9974662.html
+java 中使用logback日志，并实现日志按天分类压缩保存。
+https://www.cnblogs.com/devise/p/9974662.html
+一文带你了解logback的一些常用配置
+http://www.justdojava.com/2019/09/12/logback-basic/
+
+
+日志收集
+SpringBoot使用Graylog日志收集 
+https://mp.weixin.qq.com/s/mVQ9YJL10_VDobumsj-PqA
+日志系统新贵 Loki，真香！！ 
+https://mp.weixin.qq.com/s/Hq1VGdHDP3o_bmYLFfbHIw
+
+-->
+
+
+
 ## 1.1. 编码过程输出日志  
 <!-- 
 如何在12个小时，搞定日志监控？

@@ -124,7 +124,7 @@
 [Java探针](/docs/java/basis/probe.md)  
 [SDK](/docs/java/basis/SDK.md)  
 [对象池](/docs/java/basis/ObjectPool.md)  
-[编码规范](/docs/java/Design/CodingSpecification.md)  
+
 
 ### 1.2.2. 设计模式  
 [七大设计原则](/docs/java/Design/principles.md)  
@@ -377,6 +377,7 @@
 
 ## 1.6. 项目构建基础  
 [版本号](/docs/web/Version.md)  
+[编码规范](/docs/java/Design/CodingSpecification.md)  
 [MVC三层架构上再加一层Manager层](/docs/web/Manager.md)  
 [项目构建基础](/docs/web/BuildFoundation.md)  
 &emsp; [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  

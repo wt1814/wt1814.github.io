@@ -24,6 +24,7 @@
 
 # 1. elasticsearch安装使用
 
+
 ## 1.1. Linux  
 <!-- 
 
@@ -173,6 +174,10 @@ https://github.com/medcl/elasticsearch-analysis-ik/
 <!-- 
 Docker部署多机单节点ELK集群【ES + Logstash + Kibana + IK】
 https://mp.weixin.qq.com/s/lXvBTja_B6l-z0oUgiLETQ
+
+使用Docker搭建ELK日志系统 
+https://mp.weixin.qq.com/s?__biz=MzAxMjY5NDU2Ng==&mid=2651854010&idx=2&sn=46f1f62cf15a1788da042f38d83d8a5a&chksm=804951f3b73ed8e5563e1d00bb2267a9d45a639955beaff6c03cfedbffd9aeeddf19e6fbf36c&mpshare=1&scene=1&srcid=&sharer_sharetime=1565741061263&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=36a99a852770fa03398d6d83b32183afed3cd3d1a3b4efe37bc5a5a3adc65c68adf852bc5aac9742c6ff7cce3b13adbc7ae3f843113389531a972cfe419ab100ddb13dfa6c31159f348959b7f6dbbe01&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=JLiKeNv%2F4KR6gCtdLZGhUXVH7BONlSBEY%2FTbKINtAXs2YG8At3hpMApp1DgxUdHh
+
 
 -->
 

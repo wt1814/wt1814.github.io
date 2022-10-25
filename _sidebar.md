@@ -42,7 +42,6 @@
     * [Java探针](/docs/java/basis/probe.md)  
     * [SDK](/docs/java/basis/SDK.md)  
     * [对象池](/docs/java/basis/ObjectPool.md)  
-    * [编码规范](/docs/java/Design/CodingSpecification.md)  
 * 设计模式  
     * [七大设计原则](/docs/java/Design/principles.md)  
         * [面向抽象和面向接口](/docs/java/Design/abstract.md)  
@@ -262,6 +261,7 @@
         * [tomcat调优](/docs/webContainer/tomcat/TomcatTuning)  
 * 项目构建基础  
     * [版本号](/docs/web/Version.md)  
+    * [编码规范](/docs/java/Design/CodingSpecification.md)  
     * [MVC三层架构上再加一层Manager层](/docs/web/Manager.md)  
     * [项目构建基础](/docs/web/BuildFoundation.md)  
         * [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
