@@ -30,6 +30,10 @@ https://mp.weixin.qq.com/s/ewnxn3xIZNNIX84_kQ2qmg
 
 公众号：《程序员涨薪基地》  https://mp.weixin.qq.com/s/jzPjOGhYLFVWUYIAD33lYA
 
+
+23种设计模式及案例整理分享（建议收藏） 
+https://mp.weixin.qq.com/s?__biz=MzI5ODI5NDkxMw==&mid=2247491308&idx=4&sn=6edbebb4445b4c5a9888983cdb41fc39&chksm=eca95502dbdedc14b0970bb520820f7b10af3f32383dd8551d9c9c4868f56d369003d09d8056&mpshare=1&scene=1&srcid=&sharer_sharetime=1575981916198&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=230ae5fe1ae034b7e2354455561be8ef54697b8d2224a141b4ac88cdf58959b11c6997a074d8c1936293e93278d527a9cd13149e3e85519e443d109e63d5be41f6ad76e2ba49a9619ee57437359b9f8b&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=AaIEdrg1ul3UAnIot7PvfIo%3D&pass_ticket=qZMK6abzstlbYjCf50eKgKnEyRFUSBrv1OZqpLAUyEY5YyVEDZS49ms3CGuq5S2j
+
 -->
 <!-- 
 模板模式：一种体现多态的设计模式

@@ -65,6 +65,13 @@ http://www.justdojava.com/2019/06/19/java-varargs/
 ## 值传递还是引用传递  
 <!-- 
 
+Java是值传递还是引用传递
+https://zhuanlan.zhihu.com/p/41389794
+ Java 只有值调用
+https://mp.weixin.qq.com/s/NfiNCPeVmMTXlPcHHPpFxA
+Java 到底是值传递还是引用传递？
+https://www.zhihu.com/question/31203609
+
 https://zhuanlan.zhihu.com/p/41389794
 https://www.cnblogs.com/zyy1688/p/9268056.html
 -->

@@ -5,3 +5,10 @@
 &emsp; &emsp; [SpringBoot事件监听](/docs/microService/SpringBoot/EventListeners.md)  
 &emsp; &emsp; [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/SpringBootEvent.md)  
 &emsp; &emsp; [SpringBoot事件回调机制](/docs/microService/SpringBoot/eventCallback.md)  
+
+
+<!-- 
+不懂SpringApplication生命周期事件体系？那就等于不会Spring Boot嘛
+https://blog.csdn.net/f641385712/article/details/105762050
+
+-->

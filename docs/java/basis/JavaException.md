@@ -3,23 +3,24 @@
 <!-- TOC -->
 
 - [1. Java异常](#1-java异常)
-    - [***三种处理异常的套路](#三种处理异常的套路)
-    - [***三方异常包](#三方异常包)
-    - [1.1. Java异常基本概念](#11-java异常基本概念)
-    - [1.2. 常见异常](#12-常见异常)
-        - [1.2.1. NullPointerException](#121-nullpointerexception)
-    - [1.3. Exception的API](#13-exception的api)
-    - [1.4. 异常使用教程](#14-异常使用教程)
-        - [1.4.1. 异常处理](#141-异常处理)
-            - [1.4.1.1. try、catch、finally](#1411-trycatchfinally)
-                - [1.4.1.1.1. 使用try...with...resources优雅关闭资源](#14111-使用trywithresources优雅关闭资源)
-            - [1.4.1.2. ~~throws和throw~~](#1412-throws和throw)
-            - [1.4.1.3. 异常处理原则](#1413-异常处理原则)
-        - [异常捕获还是抛出](#异常捕获还是抛出)
-        - [1.4.2. ★★★异常捕获后再次抛出](#142-★★★异常捕获后再次抛出)
-        - [1.4.3. 自定义异常](#143-自定义异常)
-        - [1.4.4. 统一异常处理](#144-统一异常处理)
-        - [1.4.5. ***Assert处理异常](#145-assert处理异常)
+    - [1.1. ***三种处理异常的套路](#11-三种处理异常的套路)
+    - [1.2. ***三方异常包](#12-三方异常包)
+    - [1.3. Java异常基本概念](#13-java异常基本概念)
+    - [1.4. 常见异常](#14-常见异常)
+        - [1.4.1. NullPointerException](#141-nullpointerexception)
+        - [1.4.2. ClassNotFoundException和NoClassDefFoundError](#142-classnotfoundexception和noclassdeffounderror)
+    - [1.5. Exception的API](#15-exception的api)
+    - [1.6. 异常使用教程](#16-异常使用教程)
+        - [1.6.1. 异常处理](#161-异常处理)
+            - [1.6.1.1. try、catch、finally](#1611-trycatchfinally)
+                - [1.6.1.1.1. 使用try...with...resources优雅关闭资源](#16111-使用trywithresources优雅关闭资源)
+            - [1.6.1.2. ~~throws和throw~~](#1612-throws和throw)
+            - [1.6.1.3. 异常处理原则](#1613-异常处理原则)
+        - [1.6.2. 异常捕获还是抛出](#162-异常捕获还是抛出)
+        - [1.6.3. ★★★异常捕获后再次抛出](#163-★★★异常捕获后再次抛出)
+        - [1.6.4. 自定义异常](#164-自定义异常)
+        - [1.6.5. 统一异常处理](#165-统一异常处理)
+        - [1.6.6. ***Assert处理异常](#166-assert处理异常)
 
 <!-- /TOC -->
 
@@ -43,7 +44,7 @@ https://www.cnblogs.com/qiumingcheng/p/9506201.html
 https://www.hangge.com/blog/cache/detail_2519.html
 -->
 
-## ***三种处理异常的套路
+## 1.1. ***三种处理异常的套路
 <!--
 
  国外大佬给出的三种处理异常的套路！ 
@@ -51,7 +52,7 @@ https://www.hangge.com/blog/cache/detail_2519.html
 
 -->
 
-## ***三方异常包
+## 1.2. ***三方异常包
 获取异常堆栈消息：
 import org.apache.commons.lang3.exception.ExceptionUtils;
 ExceptionUtils.getStackTrace(e)
@@ -62,7 +63,7 @@ import com.google.protobuf.ServiceException;
 throw new ServiceException(e.getMessage(), e);
 
 
-## 1.1. Java异常基本概念  
+## 1.3. Java异常基本概念  
 &emsp; Throwable是所有异常的超类，下一级可以分为Error和 Exception。  
 ![image](http://www.wt1814.com/static/view/images/java/exception/exception-1.png)  
 * Error：Java虚拟机无法解决的严重问题。如：JVM系统内部错误、资源耗尽等严重情况。比如：StackOverflowError和OOM。一般不编写针对性的代码进行处理。
@@ -88,8 +89,8 @@ throw new ServiceException(e.getMessage(), e);
         |IllegalStateException	|非法状态异常|
         |ClassCastException	|类型转换异常|
 
-## 1.2. 常见异常  
-### 1.2.1. NullPointerException  
+## 1.4. 常见异常  
+### 1.4.1. NullPointerException  
 &emsp; 发生空指针异常NullPointerException的情况(对null进行操作)：  
 1. 调用null对象的实例方法。  
 2. 访问或修改null对象的字段。  
@@ -97,8 +98,30 @@ throw new ServiceException(e.getMessage(), e);
 4. 如果一个数组为null，试图访问或修改其中某个元素时。  
 5. 在需要抛出一个异常对象，而该对象为null时。  
 
+### 1.4.2. ClassNotFoundException和NoClassDefFoundError  
+<!-- 
 
-## 1.3. Exception的API  
+ClassNotFoundException和NoClassDefFoundError
+NoClassDefFoundError异常
+https://blog.csdn.net/wdw131409/article/details/78316919
+https://blog.csdn.net/qq_33543634/article/details/81128096
+一道非常经典的面试题，NoClassDefFoundError 和 ClassNotFoundException 有什么区别？
+https://mp.weixin.qq.com/s/VreiPFOeDuQvJJD4eeCWBw
+基础考察：ClassNotFoundException 和 NoClassDefFoundError 有什么区别
+https://mp.weixin.qq.com/s/Fo4l1JfDc5eS95ckaxJ-dA
+ 
+java.lang.NoClassDefFoundError
+https://blog.csdn.net/qq_33543634/article/d
+etails/81128096
+https://blog.csdn.net/Cheng120636/article/details/80546160
+https://blog.csdn.net/qq_27576335/article/details/77102385
+https://www.jianshu.com/p/ee3efc3a9e61?utm_source=oschina-app
+https://www.cnblogs.com/xyhz0310/p/6803950.html
+-->
+
+
+
+## 1.5. Exception的API  
 
 ```java
 Exception e; 
@@ -108,14 +131,14 @@ e.printStackTrace();//void类型，在命令行打印异常信息在程序中出
 ```
 &emsp; **<font color = "red">e.printStackTrace();只在控制台打印信息，不会将异常堆栈输出到日志文件中。</font>**  
 
-## 1.4. 异常使用教程  
-### 1.4.1. 异常处理  
-#### 1.4.1.1. try、catch、finally  
+## 1.6. 异常使用教程  
+### 1.6.1. 异常处理  
+#### 1.6.1.1. try、catch、finally  
 
-##### 1.4.1.1.1. 使用try...with...resources优雅关闭资源  
+##### 1.6.1.1.1. 使用try...with...resources优雅关闭资源  
 
 
-#### 1.4.1.2. ~~throws和throw~~  
+#### 1.6.1.2. ~~throws和throw~~  
 &emsp; Throw和throws的区别：  
 &emsp; **位置不同：**  
 1. throws用在函数上，后面跟的是异常类，可以跟多个；而throw用在函数内，后面跟的是异常对象。  
@@ -125,18 +148,18 @@ e.printStackTrace();//void类型，在命令行打印异常信息在程序中出
 2. throws表示出现异常的一种可能性，并不一定会发生这些异常；throw则是抛出了异常，执行throw则一定抛出了某种异常对象。  
 3. 两者都是消极处理异常的方式，只是抛出或者可能抛出异常，但是不会由函数去处理异常，真正的处理异常由函数的上层调用处理。  
 
-#### 1.4.1.3. 异常处理原则  
+#### 1.6.1.3. 异常处理原则  
 &emsp; ......
 
 
-### 异常捕获还是抛出
+### 1.6.2. 异常捕获还是抛出
 <!-- 
 Java异常中，抛出异常和捕获异常的区别有哪些呀？实际工作中是抛出好还是捕获好呢？
 http://www.shouhuola.com/q-34247.html
 -->
 
 
-### 1.4.2. ★★★异常捕获后再次抛出
+### 1.6.3. ★★★异常捕获后再次抛出
 <!-- 
 https://www.cnblogs.com/yangyunnb/p/6058411.html
 -->
@@ -145,10 +168,10 @@ https://www.cnblogs.com/yangyunnb/p/6058411.html
 * 情况二：捕获后抛出新的异常，希望抛出完整的异常链－－initCause  
 
 
-### 1.4.3. 自定义异常 
+### 1.6.4. 自定义异常 
 &emsp; ......
 
-### 1.4.4. 统一异常处理  
+### 1.6.5. 统一异常处理  
 <!-- 
 
 SpringBoot优雅的全局异常处理 
@@ -159,7 +182,7 @@ https://mp.weixin.qq.com/s/r_HjHi92owNwh5VULiaKcQ
 &emsp; @ExceptionHandler结合@ControllerAdvice，可以提供全局的统一异常处理器。  
 &emsp; 实现HandlerExceptionResolver接口或继承其抽象实现AbstractHandlerExceptionResolver，也可以实现统一异常处理。  
 
-### 1.4.5. ***Assert处理异常  
+### 1.6.6. ***Assert处理异常  
 <!-- 
 
 https://mp.weixin.qq.com/s/nQtkqN9IwZek6LX1Bvgf6A

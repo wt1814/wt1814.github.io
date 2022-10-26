@@ -27,6 +27,15 @@ https://blog.csdn.net/aaa_bbb_ccc_123_456/article/details/103920130
 https://mp.weixin.qq.com/s/kU_sCwnkZvnFpaFesgrrGA
 https://mp.weixin.qq.com/s/32TDmCUuYS06lNOAkd60iw
 
+内部方法调用，事务不起作用的原因及解决办法
+https://juejin.im/post/5d4bea09f265da03db0764a7
+【原创】004 | 搭上SpringBoot事务诡异事件分析专车 
+https://mp.weixin.qq.com/s?__biz=MzAxMjEwMzQ5MA==&mid=2448888540&idx=2&sn=638239681c7c5d84ae5e16580ffa5f92&chksm=8fb548f1b8c2c1e7ad8fc94dfab856f951d0802af35f896f19a2801e48b0098a4e39ab2edde0&mpshare=1&scene=1&srcid=&sharer_sharetime=1573431932501&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2a4ff15fdd8463461fc172688f13005ff9d07ff4077d440ef372d590e51e26178d9d1f28303eb5f89463cf9998da9d89c0bc8eee258bf0679e2ab741afa73f56898ca4ea23103b2418c1a5a64bf1141e&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=jJEy3kCpzSU46vQnPYwujJ%2FMZDu5tpN7sY32I3V5fxoKvSV4rqdrYUcoZ5Odz%2FWZ
+一口气说出 6种 @Transactional 注解失效场景
+https://mp.weixin.qq.com/s/IcDEEft7bLhnqyo5knwUdw
+面试官：你知道哪几种事务失效的场景？ 
+https://mp.weixin.qq.com/s/JjzNEq26vhUO04T88uthHA
+
 -->
 <!-- 
 

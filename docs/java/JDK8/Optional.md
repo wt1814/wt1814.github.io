@@ -19,6 +19,15 @@
 <!-- 
 实例
 https://mp.weixin.qq.com/s/sYCE05xYN0kycKgT_P6cJw
+
+
+JAVA8之妙用Optional解决判断Null为空的问题
+https://mp.weixin.qq.com/s/qi1jM4O_CXsJ5k7CWjOrBQ
+Java8新特性之空指针异常的克星Optional类
+https://juejin.im/post/5da7a739518825044a13028c
+Jdk14都要出了，还不能使用 Optional优雅的处理空指针？
+https://juejin.im/post/5dccb61e6fb9a02b6b28b9c9
+
 -->
 &emsp; Java8引入Optional类，是一个可以为null的容器对象，是一个包含有可选值的包装类，可以保存类型T的值，或者保存null。Optional类的引入解决空指针异常。防止编写不必要的null检查。快速定位NullPointException。  
 &emsp; public final class Optional<T\>，<font color = "clime">构造函数私有化；不能new实例；不能被继承。</font>  

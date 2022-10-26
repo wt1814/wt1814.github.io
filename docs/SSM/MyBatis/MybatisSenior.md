@@ -3,18 +3,19 @@
 <!-- TOC -->
 
 - [1. MyBatis高级使用](#1-mybatis高级使用)
-    - [批量插入或更新](#批量插入或更新)
-    - [1.1. mybatis-generator](#11-mybatis-generator)
-    - [1.2. PageHelper](#12-pagehelper)
-    - [1.3. 树状查询](#13-树状查询)
-    - [1.4. insertOrUpdate](#14-insertorupdate)
-    - [1.5. Mybatis中if-test判断大坑](#15-mybatis中if-test判断大坑)
-    - [1.6. mybatis大数据](#16-mybatis大数据)
-        - [1.6.1. mybatis大数据查询](#161-mybatis大数据查询)
-        - [1.6.2. 批量插入大数据](#162-批量插入大数据)
-    - [1.7. 整合MyBatis](#17-整合mybatis)
-        - [1.7.1. Spring整合MyBatis](#171-spring整合mybatis)
-        - [1.7.2. SpringBoot整合MyBatis](#172-springboot整合mybatis)
+    - [1.1. 批量插入或更新](#11-批量插入或更新)
+    - [1.2. mybatis-generator](#12-mybatis-generator)
+    - [1.3. PageHelper](#13-pagehelper)
+    - [1.4. 树状查询](#14-树状查询)
+    - [1.5. insertOrUpdate](#15-insertorupdate)
+    - [1.6. Mybatis中if-test判断大坑](#16-mybatis中if-test判断大坑)
+    - [1.7. mybatis大数据](#17-mybatis大数据)
+        - [1.7.1. mybatis大数据查询](#171-mybatis大数据查询)
+        - [1.7.2. 批量插入大数据](#172-批量插入大数据)
+    - [1.8. 整合MyBatis](#18-整合mybatis)
+        - [1.8.1. Spring整合MyBatis](#181-spring整合mybatis)
+        - [1.8.2. SpringBoot整合MyBatis](#182-springboot整合mybatis)
+    - [Intellij IDEA中Mybatis Mapper自动注入警告的解决方案](#intellij-idea中mybatis-mapper自动注入警告的解决方案)
 
 <!-- /TOC -->
 
@@ -25,7 +26,7 @@ https://mp.weixin.qq.com/s/i3wLeCSxqWKrTwgtfelumQ
 -->
 
 
-## 批量插入或更新  
+## 1.1. 批量插入或更新  
 <!-- 
 https://blog.csdn.net/qq_58772217/article/details/125281973
 -->
@@ -34,10 +35,10 @@ https://blog.csdn.net/qq_58772217/article/details/125281973
 3. 动态更新字段值用VALUES(字段名称)。  
 
 
-## 1.1. mybatis-generator  
+## 1.2. mybatis-generator  
 &emsp; [mybatis-generator](/docs/SSM/MyBatis/MybatisGenerator.md) 
 
-## 1.2. PageHelper
+## 1.3. PageHelper
 <!-- 
 SpringBoot集成MyBatis的分页插件PageHelper
 https://www.cnblogs.com/leeego-123/articles/10832926.html
@@ -46,7 +47,7 @@ https://pagehelper.github.io/docs/howtouse/
 -->
 
 
-## 1.3. 树状查询
+## 1.4. 树状查询
 <!-- 
 https://www.cnblogs.com/lgjava/p/13821653.html
 
@@ -59,7 +60,7 @@ https://blog.csdn.net/qq_35558665/article/details/106310333
 
 
 
-## 1.4. insertOrUpdate
+## 1.5. insertOrUpdate
 &emsp; .......
 <!-- 
 存在则更新 ON DUPLICATE KEY UPDATE
@@ -68,7 +69,7 @@ https://blog.csdn.net/f327888576/article/details/89490442
 -->
 
 
-## 1.5. Mybatis中if-test判断大坑  
+## 1.6. Mybatis中if-test判断大坑  
 <!-- 
 mybatis 中 if-test 判断大坑
 https://www.cnblogs.com/grasp/p/11268049.html
@@ -78,20 +79,20 @@ https://www.cnblogs.com/grasp/p/11268049.html
 
 
 
-## 1.6. mybatis大数据  
+## 1.7. mybatis大数据  
 
-### 1.6.1. mybatis大数据查询 
+### 1.7.1. mybatis大数据查询 
 &emsp; [MyBatis大数据查询](/docs/SSM/MyBatis/BigData.md)  
 
-### 1.6.2. 批量插入大数据
+### 1.7.2. 批量插入大数据
 <!-- 
 【368期】阿里巴巴为什么禁止MyBatis批量插入几千条数据使用foreach？
 https://mp.weixin.qq.com/s/BW7YE8OPVe3IS03EOCm_fA
 -->
 
 
-## 1.7. 整合MyBatis  
-### 1.7.1. Spring整合MyBatis  
+## 1.8. 整合MyBatis  
+### 1.8.1. Spring整合MyBatis  
 
 &emsp; 添加配置文件  
 
@@ -107,7 +108,16 @@ https://mp.weixin.qq.com/s/BW7YE8OPVe3IS03EOCm_fA
 </bean>
 ```
 
-### 1.7.2. SpringBoot整合MyBatis  
+### 1.8.2. SpringBoot整合MyBatis  
 1. 引入jar包
 2. 使用硬编码的方式配置bean。比如SqlSessionFactory，SqlSessionTemplate, PlatformTransactionManager。
 3. 扫描接口包。
+
+
+## Intellij IDEA中Mybatis Mapper自动注入警告的解决方案
+<!-- 
+Intellij IDEA中Mybatis Mapper自动注入警告的6种解决方案 
+https://mp.weixin.qq.com/s?__biz=MzA4NjgxMjQ5Mg==&mid=2665762835&idx=1&sn=5794527649410ef35dc2382941345484&chksm=84d20230b3a58b2646ed333b3ae9ebf299d8d06da0c286302f74c86cfaeb3910b0b04805bbcb&mpshare=1&scene=1&srcid=&sharer_sharetime=1571876850857&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=6f23511bf9e1c01f24cbca42a703bf7244b1622f167e09344917306bbe5af0769908126efc68bd0fe3dc571d186dbc6c864e010fadc49798e3e7c63f72ced8c00fd3d27ff922fcd564c085580ad06213&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=tOysFrIpapzI%2FSWUdTcbYKvSoWjfuug2aUNd5keR9%2BIBFSeAaxr3gVVWD9yTgncJ
+
+-->
+

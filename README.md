@@ -437,13 +437,12 @@
 [消息与事件驱动](/docs/Linux/drive.md)  
 &emsp; [事件和驱动](/docs/system/EventsAndMessages.md)  
 [项目搭建](/docs/system/BuildProject.md)  
-
+[DDD](/docs/system/DDD.md)  
 <!-- 
 [Gateway](/docs/microService/microservices/Gateway.md)  
 
 软件工程
 
-[DDD](/docs/system/DDD.md)  
 -->
 
 -------

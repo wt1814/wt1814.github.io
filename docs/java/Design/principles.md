@@ -36,6 +36,15 @@ https://mp.weixin.qq.com/s/jzPjOGhYLFVWUYIAD33lYA
 https://mp.weixin.qq.com/s/38zETXT9jMxFg4quQkPgpg
 https://mp.weixin.qq.com/s/HVB6-w_V-aJ_pnCLcGuKfQ
 -->
+
+|书籍|内容|
+|---|---|
+|《java与模式》|	6大设计原则、定义、类图、模式角色组成、使用场景|
+|《大话设计模式》|	6大设计原则、定义、类图、简单例子|
+|《设计模式之禅》|	6大设计原则、定义、优点、缺点、使用场景、注意事项|
+|《设计模式-可复用面向对象软件的基础》|	使用场景|
+
+
 &emsp; 设计原则，指设计Java类、对象的结构应该遵循的规则，以提供更优质的结构设计。  
 &emsp; Java类、对象的定义：  
 

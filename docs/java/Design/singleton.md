@@ -26,6 +26,9 @@ https://mp.weixin.qq.com/s/_aQuVoD3tVNB3aTEFDky7g
 单例模式的优缺点和使用场景
 https://www.cnblogs.com/damsoft/p/6105122.html
 
+单例模式的 8 种写法，非常全！ 
+https://mp.weixin.qq.com/s/Qd7yrBes1zhMdHjf1N6V0w
+
 -->
 
 在我们的系统中，有一些对象其实我们只需要一个，比如说：线程池、缓存、对话框、注册表、日志对象、充当打印机、显卡等设备驱动程序的对象。事实上，这一类对象只能有一个实例，如果制造出多个实例就可能会导致一些问题的产生，比如：程序的行为异常、资源使用过量、或者不一致性的结果。  
