@@ -3,6 +3,11 @@
 
 <!--
 
+
+Shell脚本实战：日志关键字监控+自动告警
+
+
+
 如何快速深入理解监控知识？ 
 https://mp.weixin.qq.com/s/q4QxJi5KZKNNIvWMjfdM1A
 监控系统技术选型 

@@ -35,7 +35,10 @@
 
 
 # 1. 性能指标  
-<!-- 
+<!--
+
+Java 程序员必须清楚的 7 个性能指标
+https://mp.weixin.qq.com/s/WzlB96coV8SR7vLKzNqcNA
 一文搞清楚QPS、TPS、并发用户数、吞吐量 
 https://mp.weixin.qq.com/s/GM7_Q9sSdnt8gCznsE4Xbw
 

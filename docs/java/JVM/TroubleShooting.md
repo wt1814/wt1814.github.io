@@ -62,6 +62,13 @@
 <!-- 
 ★★★JVM故障分析及性能优化系列之五
 https://blog.csdn.net/z69183787/article/details/103955420
+
+
+带宽资源耗尽
+https://mp.weixin.qq.com/s?__biz=MzU5MTIyODk1Mg==&mid=2247483986&idx=1&sn=17589d7dc5bf5e37cd07b17117d8796f&source=41#wechat_redirect
+某个线程进入WAITING状态
+https://mp.weixin.qq.com/s/3dH0jLk7VSlJHtvnxqU2jA
+
 -->
 
     获取线程stack快照，排查CPU飚高；  

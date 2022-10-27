@@ -53,6 +53,11 @@ https://mp.weixin.qq.com/s/WVGZIBXsIVYPMfhkqToh_Q
 jdk1.8默认的垃圾收集器
 https://blog.csdn.net/weixin_47327232/article/details/115335557
 
+G1的优势
+https://mp.weixin.qq.com/s/PR4j0-We5k1CWj36sYENEw
+JDK1~JDK13十种垃圾收集器的吐血总结
+https://mp.weixin.qq.com/s/GuKuWVuWJGo_LUvwbH9qGQ
+
 -->
 
 

@@ -19,6 +19,11 @@
 <!-- 
 10张图告诉你多线程那些破事 
 https://mp.weixin.qq.com/s/FE2492BG9vag6_sPF7K_Rw
+
+并发编程
+https://mp.weixin.qq.com/s/AewllJ9HO7LjcGUFTLOtzQ
+https://mp.weixin.qq.com/s/o80xD9oQJgJGDrgOtf3Sig
+
 -->
 
 ## 1.1. 多线程带来的风险  

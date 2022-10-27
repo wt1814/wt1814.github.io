@@ -44,6 +44,11 @@
 # 1. ~~ThreadPoolExecutor~~
 <!--
 
+
+5种创建线程池方式、3种创建任务队列方式（Thread、Runnable、Callable）
+一般服务器的CPU核数为16或者32。
+
+
 https://mp.weixin.qq.com/s/hnulrvdxbLDQSN1_3PXtFQ
 
 https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
@@ -56,6 +61,11 @@ Java线程池是如何保证核心线程不被销毁的
 https://baijiahao.baidu.com/s?id=1685504428242841366&wfr=spider&for=pc
 https://blog.csdn.net/smile_from_2015/article/details/105259789
 https://blog.csdn.net/su20145104009/article/details/79042909
+
+
+https://mp.weixin.qq.com/s/b9zF6jcZQn6wdjzo8C-TmA
+https://mp.weixin.qq.com/s/why85dCrH8ej2wPA08e3nA
+https://mp.weixin.qq.com/s/0OsdfR3nmZTETw4p6B1dSA
 
 -->
 <!-- 

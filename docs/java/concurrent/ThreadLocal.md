@@ -49,6 +49,11 @@ https://mp.weixin.qq.com/s/IklA1Oil9kRh7Z_HwuAnyg
 ThreadLocal笔记  Entry数组的理解
 https://blog.csdn.net/qq_36744695/article/details/107945866
 
+Java并发之ThreadLocal 
+https://mp.weixin.qq.com/s/ntjmEHIj_aINhNmtwhMecA
+ThreadLocal源码
+https://mp.weixin.qq.com/s/UTpfsucHYsVWQHKZpa7FSw
+
 -->
 
 ## 1.1. ThreadLocal简介

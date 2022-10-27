@@ -136,6 +136,16 @@ https://juejin.cn/post/6844904040346681352#heading-6
 Java设计这四种引用的主要目的有两个：
     可以让程序员通过代码的方式来决定某个对象的生命周期；
     有利用垃圾回收。
+
+***字节跳动面试： 说说强引用、软引用、弱引用、虚引用吧 
+https://mp.weixin.qq.com/s/Hb1VeYh2PILfMbyC1wAzfQ
+
+强引用、弱引用、软引用、虚引用
+https://mp.weixin.qq.com/s/BAIGb52ZcMaLjdJrC00cIw
+四种引用：
+https://mp.weixin.qq.com/s?__biz=MzI5MzYzMDAwNw==&mid=2247486375&idx=2&sn=ebb13d79f6b8ab08ef59de2fac527adc&chksm=ec6e72ffdb19fbe91d8d727dce1efc8af66008c396c9363d4f9030bfca063ee892fc0cb957c3&mpshare=1&scene=1&srcid=&key=21004f35253426f7f38a0dad03a09c31b28ffb9324def4a1a8113bbf73def35c0781cf2b71d2cc3c475806ba4ad89b1274c3d51e3aa7edcc8a17890a0aa6268087aea8c8c8e7e98be053c34cca79b787&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060739&lang=zh_CN&pass_ticket=cFO0gQyFMSSjFnuhVycRJ9eT3NXmfPPhCwJ6qpaAXQR51Halg54Kt%2B8aImDktmk4
+强软弱虚引用，只有体会过了，才能记住
+https://mp.weixin.qq.com/s/VlZpfBTFCzUz00FQJSQ0cw
 -->
 
 ##### 1.1.1.3.1. 强引用  

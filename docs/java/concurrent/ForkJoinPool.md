@@ -26,6 +26,11 @@
 # 1. ForkJoinPool  
 <!-- 
 http://ifeve.com/talk-concurrency-forkjoin/
+
+
+fork/join 全面剖析，你可以不用，但是不能不懂！
+https://mp.weixin.qq.com/s/Zf_mQ_M5FoCkrRqm5NU_fQ
+
 -->
 &emsp; ForkJoinPool是java 7中新增的线程池类。  
 &emsp; 为什么使用ForkJoinPool？  
