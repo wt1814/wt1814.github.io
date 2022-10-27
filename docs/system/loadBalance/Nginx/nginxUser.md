@@ -174,22 +174,47 @@ https://mp.weixin.qq.com/s/qchaaVoOSJOqnRBlBIU--g
 <!-- 
 
 https://mp.weixin.qq.com/s?__biz=MzA4MTk3MjI0Mw==&mid=2247489372&idx=1&sn=096fcc379a6304a63049567a244af1c1&chksm=9f8d8a20a8fa0336329104640f983b481a4e970a84177df735b02aeeee49fa713d4f155975a3&scene=178&cur_album_id=1474377728786300933#rd
+
+同时支持http和https
+https://mp.weixin.qq.com/s?__biz=MzI3NzE0NjcwMg==&mid=2650124844&idx=2&sn=3750ae78f70526b6b9a2019ff07f574e&chksm=f36baf0dc41c261b73849a1a5b1dae819a5557c96ef2df594b8c06325dc818d0ea1a661b1225&mpshare=1&scene=1&srcid=&sharer_sharetime=1569688488710&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=6f23511bf9e1c01f58335462c0a5228e1a6d038723e752971fcd5a604eeeb6acf563bd6181e5e68ea0607c06d81fa3ae6ab713ff7e24671e92e90bfc568613c60b81d582abef7404408842a166371164&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=ZL%2FeHfhqz1QMMFsEMfVJBwZJ4lL9DTl1Z1M7e%2B%2FErhZY%2FUzuHIeMnYBVzJS6sOGw
+
+
+Nginx静态资源服务器开启https配置及http rewrite到https：
+https://blog.csdn.net/lhc1105/article/details/78774067
+
 -->
 &emsp; Nginx静态资源服务器开启https配置及http rewrite到https。  
 ......
 
 ### 1.2.4. ***动静分离    
+<!-- 
+静态服务器
+https://mp.weixin.qq.com/s/wfaveQ5qhiGNFbrktw6uYg
+https://mp.weixin.qq.com/s?__biz=MzIwNTk5NjEzNw==&mid=2247489052&idx=2&sn=c0c2a6369c58adac7ae93e64c7d616b6&chksm=97293f1aa05eb60cc17b5ebe42da6d659c29f03c8628efe17b9775ad0c5b43b134d65a941dae&mpshare=1&scene=1&srcid=&sharer_sharetime=1576754715335&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=e2a6a5ccea4b8ce425348ae2f33a47e4980610c921b3ec6454b8654afb1afa0614e428065a262e73c57c2aea95f428cc1428db437a8deed4edcb0a7e41a3eeaf669d64c1d19684e7cf4f6df800ea485a&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=AYiLjNlCt%2FZDqUGto2Ql71c%3D&pass_ticket=k6uZZByTo2fQFzVvUtvPyhmI5ViFLGhQCjyvg5cJhfo3p1d4O0tHI6%2F00fVufJCm
+-->
+
 &emsp; Nginx是一个http服务器，可以独立提供http服务，可以做网页静态服务器。  
 ......
 
 ### 1.2.5. ***跨域解决  
 <!-- 
 https://mp.weixin.qq.com/s/oTBEK0tp2jANosVtRRj1lQ
+
+前后端分离部署怎么解决跨域问题？
+https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247486541&idx=1&sn=40cec96a57eb1f4e70a033b24d8b184b&chksm=e9c35e2ddeb4d73bffe34324781916788eee61d6740fb9a91561846f68366fcc030e8d561215&mpshare=1&scene=1&srcid=&sharer_sharetime=1569342187668&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2a4ff15fdd846346bbd73870dc7974f76f264c07959c9a7e0c24282e0a89ecadb89dcd58c963cc3023b3a52cc0769bec3e9aae6ed97b88ad8135632e00d0f94154e189553c317e60f4fbd95d4e1f75af&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=%2BeyejsSYMk60ZUY%2FpK4YBKveSPIi8GUzrQvyveBksIipCvi8KhPkraBA4Eyx2jY%2F
+
+使用Nginx 实现纯前端跨域
+https://blog.csdn.net/u012302552/article/details/81738185
+
 -->
 ......
 
 
 ### 1.2.6. 地址重定向，Rewrite  
+<!-- 
+https://mp.weixin.qq.com/s?__biz=MjM5ODI5Njc2MA==&mid=2655828756&idx=1&sn=1e6e4203d84e85d4523073e5fb529656&chksm=bd74f6c38a037fd5c0812a775bd494c190395ee0d45b32e0349457e1488943ebc2d67f084dcc&mpshare=1&scene=1&srcid=&sharer_sharetime=1577187299959&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=7e51d7974732a32b94932fb1a25c33aa5e5fd789fb5c2d7129b5d1325b7946e8aa851c05f0c651ceb11382c510d18f69559b4b719cf1972c0e22d7f2de97c998b623ecd699f94c7d515d028f38457c01&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=AZfEi%2BIGtr%2FYmmJm5h2zfz8%3D&pass_ticket=fjo0TPQ4TftdXiH325uINjkxmTSYWN5xsY7SY8CPXJ8L70Z%2B9nqwLCPhjc61tfer
+-->
+
 &emsp; Rewrite 是 Nginx 服务器提供的一个重要的功能，它可以实现 URL 重写和重定向功能。  
 ......
 
@@ -209,6 +234,14 @@ https://mp.weixin.qq.com/s/oTBEK0tp2jANosVtRRj1lQ
 ......
 
 #### 1.2.9.2. 限流  
+<!--
+图解Nginx限流配置 
+https://mp.weixin.qq.com/s?__biz=MzIxNTAwNjA4OQ==&mid=2247485536&idx=1&sn=4eba961c92666a085d911b7b529aed84&chksm=979fa686a0e82f90a305471d46b52b1d66d321fe426d146dfb1b2655faab76856be81ed24b04&mpshare=1&scene=1&srcid=&sharer_sharetime=1567728523123&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=a1704a04d6cad8d0f19f8cf1b8875657e11dc85e1c91fc452db725245627087d7478cd8beef54caac40aece6ee6fa6afea6eee18b51858bd7f036c83fd81c5060ae5f2e8b21debb0671f01e1a9df24c1&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=z%2FwwCKX1VxUZIrB%2Fyurv7H3KYJfYtfEOC4f%2FPWwa0CuRWkVVV4TiFJiODLrgMPtY
+如何优雅地使用 Nginx 限流
+https://mp.weixin.qq.com/s/3rX8bm_giHUDMtXIZ7OguQ
+
+-->
+
 ......
 
 #### 1.2.9.3. 黑白名单  
@@ -218,6 +251,12 @@ https://mp.weixin.qq.com/s/oTBEK0tp2jANosVtRRj1lQ
 ......
 
 #### 1.2.9.5. 流量复制  
+<!-- 
+
+Nginx流量复制 
+https://mp.weixin.qq.com/s/1DX1E_j5eXo4-afXOow4vw
+-->
+
 ......
 
 #### 1.2.9.6. 正向代理  

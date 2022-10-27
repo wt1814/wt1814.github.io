@@ -13,6 +13,18 @@ https://mp.weixin.qq.com/s/dK_at5_VSWP2oiIBWowXFQ
 Linux内存、Swap、Cache、Buffer详细解析 
 https://mp.weixin.qq.com/s/263OGw93GoWs5Jlqv4VrkA
 
+
+Linux内核书籍
+https://www.jianshu.com/p/9d612dc89028
+https://zhuanlan.zhihu.com/p/72818398
+https://blog.csdn.net/qq_34870631/article/details/83013431
+
+ CPU缓存L1/L2/L3工作原理 
+https://mp.weixin.qq.com/s/2uYV2Z_5aoUIINr8g7kTQw
+
+ 干货，肝了一周的CPU缓存基础 
+https://juejin.cn/post/6932243675653095438
+
 -->
 
 
