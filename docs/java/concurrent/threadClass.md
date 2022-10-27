@@ -24,6 +24,8 @@
 
 # 1. Thread类详解  
 <!-- 
+为什么Java线程没有Running状态？ 
+https://mp.weixin.qq.com/s?__biz=MzIyNDU2ODA4OQ==&mid=2247484002&idx=1&sn=75809357f0ecc639cd1a672f97b9664f&chksm=e80db414df7a3d024d94991064191cca0063eefc94847009565c40598c4e20870dc2b053e40c&mpshare=1&scene=1&srcid=&sharer_sharetime=1573692299917&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=19d3af0bf483adc6059d97cfedda83421aaffc6820b1cbcecb26f5f93b224ca3d55d39ed83bd2efda6f1966dde0ac10f57db94d936c19d24b70d33047b007be19bfdcb08d0bbdbaf5ccb68b671766355&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=9PZBgG0W8u5aIQH8JwuoebfJbcWXVv%2F8Jwpab0URWoWCafXeDrv6e7zaSa2n%2B7Oa
 
 -->
 
