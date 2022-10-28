@@ -976,6 +976,7 @@ https://help.aliyun.com/document_detail/122217.html
 &emsp; [Keepalived](/docs/system/loadBalance/Keepalived.md)  
 [IP负载均衡](/docs/system/loadBalance/IPLoad.md)  
 [数据链路负载均衡](/docs/system/loadBalance/LinkLoad.md)  
+[CDN](/docs/system/loadBalance/CDN.md)  
 
 
 ----
@@ -1052,7 +1053,7 @@ es   esHD   kibana  logstash   filebeat
 [Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
 [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
 
-[jdk安装](/docs/devAndOps/build/JDKBuild.md)  
+[3. JDK安装](/docs/devAndOps/build/JDKBuild.md)  
 [tomcat安装](/docs/devAndOps/build/tomcatBuild.md)  
 [arthas](/docs/devAndOps/build/arthas.md)  
 

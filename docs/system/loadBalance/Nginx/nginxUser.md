@@ -28,6 +28,15 @@
 
 <!-- 
 
+Nginx如何处理一个请求
+http://tengine.taobao.org/nginx_docs/cn/docs/http/request_processing.html
+
+Nginx如何处理一个请求
+http://tengine.taobao.org/nginx_docs/cn/docs/http/request_processing.html
+
+实用篇-无处不在的Location
+https://mp.weixin.qq.com/s/ipGtkjTaiTMfUalaTASnCQ
+
 *** 彻底搞懂 Nginx 的五大应用场景
 *** https://cloud.tencent.com/developer/article/1845315
 https://www.zhihu.com/question/470370584
@@ -39,6 +48,9 @@ https://mp.weixin.qq.com/s/kIIGCq_oN66nt4MMYaCJpQ
 
  Nginx系列：配置跳转的常用方式 
  https://mp.weixin.qq.com/s/XEN_6Xz8Ayk1Z3qKugePjA
+
+【Nginx】实现负载均衡、限流、缓存、黑白名单和灰度发布，这是最全的一篇了！
+https://mp.weixin.qq.com/s/FdspSZ4_ETePyVALO_rNdg
 
 -->
 &emsp; **<font color = "red">总结：</font>**  
