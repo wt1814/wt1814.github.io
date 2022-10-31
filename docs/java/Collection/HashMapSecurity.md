@@ -29,6 +29,9 @@
 
 踩坑！JDK8中HashMap依然会死循环！ 
 https://mp.weixin.qq.com/s/BKPKvcENMEQSELPQ4C7ZvQ
+
+https://mp.weixin.qq.com/s/cxJIdMIAF2T5BqLxRDid8w
+https://mp.weixin.qq.com/s/tF-qQQNPKSvJb6v1ZDcwcg
 -->
 
 

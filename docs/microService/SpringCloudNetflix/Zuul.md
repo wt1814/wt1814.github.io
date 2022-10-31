@@ -35,6 +35,11 @@
 &emsp; 通过Zuul实现的API网关服务具备了动态路由和动态过滤器能力，可以在不重启API网关服务的前提下为其动态修改路由规则和添加或删除过滤器。   
 
 # 1. Spring Cloud Zuul
+<!-- 
+Zuul：构建高可用网关之多维度限流
+https://mp.weixin.qq.com/s/dHi_EuzKBr7FGihr0OEQmA
+-->
+
 &emsp; Spring Cloud Zuul，微服务网关，包含hystrix、ribbon、actuator。主要有路由转发、请求过滤功能。  
 
 ## 1.1. 路由转发  

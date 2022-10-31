@@ -26,7 +26,9 @@
 <!-- /TOC -->
 
 
-<!-- 
+<!--
+Nginx中文文档：http://www.nginx.cn/doc/
+在线一键生成Nginx配置：https://nginxconfig.io/
 
 *** 彻底搞懂 Nginx 的五大应用场景
 *** https://cloud.tencent.com/developer/article/1845315

@@ -31,6 +31,11 @@
 
 
 # 1. SpringBoot内置生命周期事件详解  
+<!--
+SpringBoot内置生命周期事件详解
+https://mp.weixin.qq.com/s?__biz=MzAwMDczMjMwOQ==&mid=2247483873&idx=1&sn=b115d1167b0e27c02baa4327bd113d1b&scene=19#wechat_redirect
+-->
+
 &emsp; SpringBoot的生命周期事件，类结构图如下：  
 ![image](http://www.wt1814.com/static/view/images/sourceCode/springBoot/boot-6.png)  
 

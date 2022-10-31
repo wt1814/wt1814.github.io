@@ -35,6 +35,9 @@ https://mp.weixin.qq.com/s?__biz=MzA4MTk3MjI0Mw==&mid=2247492268&idx=1&sn=035cfe
 
 Nginx + Keepalived 高可用之主从配置 二 
 https://mp.weixin.qq.com/s?__biz=MzA4MTk3MjI0Mw==&mid=2247492297&idx=1&sn=d274fd41ed77c28c7f40b7ca0b988c85&chksm=9f8e7fb5a8f9f6a3b3059b95c06c0a58a68d5f837fe8378eed3e8b7bad0aff210248a868b0d0&scene=178&cur_album_id=1474377728786300933#rd
+
+参考《构建企业级Nginx+Keepalived集群架构》。
+https://mp.weixin.qq.com/s?__biz=MzU2MTI4MjI0MQ==&mid=2247485699&idx=1&sn=e457ceb15d11c7a14b297ac6f430b3b9&chksm=fc7a64adcb0dedbb878a5b2f53a1a742908eab4f6d6d8ee424fc8c237247ca1060a9fec464ff&mpshare=1&scene=1&srcid=#rd
  
 -->
 

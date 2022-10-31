@@ -21,6 +21,22 @@
 
 
 # 1. Spring Cloud Admin
+<!-- 
+
+基于 Eureka 的 Spring Boot Admin 的搭建
+https://blog.csdn.net/A_Story_Donkey/article/details/81483781
+https://blog.csdn.net/hubo_88/article/details/80671192
+https://blog.csdn.net/yangqinfeng1121/article/details/80951989
+
+使用 SpringBoot Admin 监控你的 SpringBoot 程序
+https://mp.weixin.qq.com/s?__biz=MzU2MTI4MjI0MQ==&mid=2247488714&idx=2&sn=377e7280d0e3ee3f7e11df8999335724&chksm=fc7a7964cb0df07219133a551757ea4779001cc0f6fcb3c26e2902042fa5596790f8dd90d9a8&mpshare=1&scene=1&srcid=&sharer_sharetime=1577626683349&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=f774ade767760dde2b290c72a0fcd7be3dbbd74eac3bf2bcbcce473b2437ffc20ae21b92147e8ecbc619e390208162cefb1655546df9a64c50394169925950a113197191a75dd8eb87a404be061750ef&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=AXfDz07%2BiF0Muw12u5lcp90%3D&pass_ticket=IEJj8WR9o9bm52xS1gtlEz9nMuzFB%2FY6%2BZtZBPZob6QGyEKOfqoCURKWrn0iRayw
+重要端点：
+https://mp.weixin.qq.com/s/bGYO8QRiCDmBsAxw-crMPQ
+
+集成spring security
+https://www.cnblogs.com/forezp/p/10242004.html
+https://www.jianshu.com/p/d29663c1bddd
+-->
 
 ## 1.1. 在Spring Cloud中基于Eureka的Spring Boot Admin的搭建  
 &emsp; ......

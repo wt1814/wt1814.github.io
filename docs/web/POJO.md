@@ -84,6 +84,34 @@ https://www.cnblogs.com/zxf330301/p/6534643.html
 胡乱说一下我对于 BO VO PO DTO 的理解
 http://www.pianshen.com/article/215576304/
 
+
+POJO类属性建议使用包装数据类型
+https://blog.csdn.net/qq1139991268/article/details/79403660
+https://blog.csdn.net/ztchun/article/details/79561835
+
+
+
+
+
+
+浅析VO、DTO、DO、PO的概念、区别和用处 
+https://mp.weixin.qq.com/s?__biz=MzI4Njc5NjM1NQ==&mid=2247489353&idx=2&sn=96daf0b0af332139fe1c185ab008777c&chksm=ebd62865dca1a1733c6856fe13c7f2b7c5d442294ef6da71eb0097d03fd491e158ebcefb0fa3&mpshare=1&scene=1&srcid=&sharer_sharetime=1566480101434&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2c277c65c1da97beeb5f9e3653a7cb0cd4dd93eff990e340226888bad7dc918d2d02310ea2269b28874b0d95eb83417b06d56c0a141bef3a4fbc6e2cb0b78f21de2b2ddef4bbf25f1eaab4453749e29e&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=A9GdrK%2BGIZ%2FYWCdAaHOE3GnUlo0UqTuzQuI9gld%2Ba9TDzTQp2AxivJmK2ZbhCA3E
+
+https://juejin.im/post/5d5e021c6fb9a06af13d6f67
+
+
+https://mp.weixin.qq.com/s/nN72Z9sp_iDE-O4WB6Vs9g
+
+
+轻松高效玩转DTO（Data Transfer Object） 
+https://mp.weixin.qq.com/s?__biz=MzAxODcyNjEzNQ==&mid=2247487692&idx=3&sn=33be54416a1c8c9111e5eac4b9d202d2&chksm=9bd0bd54aca7344246c7a976973d7e0d27322b3381a401a9d82ff908176a7b3d6c29bc9a549a&mpshare=1&scene=1&srcid=&key=00a8e91eefd868fc86cf705618da7952bb212b6c0e0b50133e4d53dbdbb4e343fbb721bd135b9c6325ff9fc3f37abea540998647c55cb05eb7650ba08e15c68f3a1df6879f2c310f7349551f21cfbea4&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060834&lang=zh_CN&pass_ticket=roev39E9toCi%2FMQ779CZm9imAr3CgL1wNYqO7OEyyIZh9mcVA%2BWl0U8SVm9u8fJW
+
+浅析VO、DTO、DO、PO的概念、区别和用处
+
+https://www.cnblogs.com/zxf330301/p/6534643.html
+胡乱说一下我对于 BO VO PO DTO 的理解
+http://www.pianshen.com/article/215576304/
+
 -->
 
 
