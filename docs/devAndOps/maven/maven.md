@@ -25,6 +25,10 @@ https://www.jb51.net/article/199947.htm
 
 Maven optional(可选) 关键字
 https://mp.weixin.qq.com/s?__biz=MzkwNzI0MzQ2NQ==&mid=2247488941&idx=1&sn=ed6dc21082b3bd9ea1e807ab1c1d741b&source=41#wechat_redirect
+
+编码gbk的不可映射字符解决办法
+https://mp.weixin.qq.com/s?__biz=MzUyOTk5NDQwOA==&mid=2247489673&idx=3&sn=db4ce45b21188ec3461da7d8a3e34107&source=41#wechat_redirect
+
 -->
 
 ## 1.1. 私服Nexus搭建  
@@ -50,6 +54,24 @@ https://blog.csdn.net/weixin_30896763/article/details/98988315
 ## 1.3. Maven冲突
 
 <!-- 
+
+Maven 依赖管理
+什么情况下会出现依赖冲突？出现依赖冲突常见的异常有哪些？怎么及时发现项目中的依赖冲突？出现依赖冲突具体要怎么解决？
+
+查看依赖相关：
+maven项目重复依赖检测，并解决冲突jar
+https://blog.csdn.net/ChinaMuZhe/article/details/80407365
+maven项目查看依赖树
+https://blog.csdn.net/lzufeng/article/details/96857504
+Maven检查存储库中的更新依赖关系？
+https://cloud.tencent.com/developer/ask/52155
+使用maven命令来分析jar包之间的依赖关系
+https://www.cnblogs.com/duoshou/articles/7885630.html
+
+maven解决冲突不仅一种途径。
+
+
+
 Java依赖冲突高效解决之道 
 https://mp.weixin.qq.com/s/0G5kLzz8Mtwf2hchB8ba7A
 ***高手解决 Maven Jar 包冲突是有技巧的 
@@ -60,6 +82,11 @@ https://mp.weixin.qq.com/s/svXBS-D-GFlbMar6u9gdsA
 
 解决Maven依赖冲突的好帮手，这款IDEA插件了解一下？ 
 https://mp.weixin.qq.com/s/ueK8XgmzdlcH-CsKH8o33A
+
+
+Maven中的-D（Properties属性）和-P（Profiles配置文件）
+https://blog.csdn.net/yy193728/article/details/72847122
+
 -->
 
 ### 1.3.1. 背景

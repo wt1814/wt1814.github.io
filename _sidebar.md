@@ -831,6 +831,8 @@
     * [Json](/docs/software/Json.md)  
     * [jd-jui](/docs/software/JDJUI.md)  
     * [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
+    * [博客搭建-vuepress](/docs/software/vuepress.md)  
+    * [MAC系统](/docs/software/MAC.md)  
 * 算法
     * [红黑树](/docs/function/redBlack.md)  
     * [复杂数据结构](/docs/function/otherStructure.md)  

@@ -35,6 +35,36 @@ https://mp.weixin.qq.com/s/0x7_OXPDFX5BqF0jGxN2Vg
 *** Spring和Spring MVC父子容器？ 
 https://mp.weixin.qq.com/s/1uax_N0L7Kj7mBhF-2bYFw
 
+
+SpringMVC执行过程解析 
+https://mp.weixin.qq.com/s/LI3Vu0LT9j0fAL7c7H2kAw
+Spring 源码学习(十) Spring mvc
+http://www.justdojava.com/2019/07/21/spring-analysis-note-10/
+
+在使用 SpringMVC 时，Spring 容器是如何与 Servlet 容器进行交互的？
+https://mp.weixin.qq.com/s/4ixBidGlB7JlK2M_WOlYeQ
+
+
+
+
+SpringMVC源码分析系列
+https://www.cnblogs.com/fangjian0423/p/springMVC-directory-summary.html
+https://www.cnblogs.com/fangjian0423/tag/springmvc/
+
+
+面试官：你能给我谈谈Spring MVC的异常处理机制吗？ 
+https://mp.weixin.qq.com/s/axozBeV_6BdXXHmbhNsUCw
+
+面试官：给我说一下Spring MVC拦截器的原理？
+https://mp.weixin.qq.com/s/tcqWBffmNo2d0lQwqILESg
+Spring MVC拦截器的原理
+https://mp.weixin.qq.com/s/4oh4u2vZ4j8prkPatJt8xg
+
+
+SpringMvc启动源码解析
+https://mp.weixin.qq.com/s?__biz=MzIxNTAwNjA4OQ==&mid=2247485842&idx=3&sn=5577b587c367f78a38eb4412335807d3&chksm=979fa774a0e82e6292fcc12d8b9a0415c4ac71509773d659a6dd40326db3efae1b770bb5add8&mpshare=1&scene=1&srcid=&sharer_sharetime=1572282142513&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=f8a21a8df9909cbb0b12ee94365b1ad44b01ba7ef0ea6491614da039bfbac6bd5a5a632d00ac547e501c4a56ad7b216a84dde52657faedbb5949b728ec93a62a0402388c39f13fd79f34ee4ae8a54bae&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=K7hAwy0zGwSmCxFfRRw1Zo4L8YoZJJ6rR%2F42PNx%2BLDO%2BeM3VQBqr4QhBzEiVhUT%2B
+
+
 -->
 
 ## 1.1. SpringMVC的工作流程  

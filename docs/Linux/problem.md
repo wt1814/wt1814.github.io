@@ -41,6 +41,12 @@ https://mp.weixin.qq.com/s/znVGpJhtA52UKiekHWqD3w
 
  Java后端线上问题排查常用命令收藏 
 https://mp.weixin.qq.com/s/WJG9PU6c8wYcbFViW_lZtw
+
+ JAVA线上故障排查全套路 
+https://mp.weixin.qq.com/s/PReXs-_O1EFgAl7eNcfkmQ
+Java调优
+https://mp.weixin.qq.com/s/uUvzpkaZFXR_KH4ZYwcppg
+
 -->
 
 &emsp; 针对Java应用，性能诊断工具主要分为两层：OS层面和Java应用层面(包括应用代码诊断和GC诊断)。  

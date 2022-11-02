@@ -384,6 +384,7 @@
 &emsp; [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
 &emsp; [接口管理](/docs/web/InterfaceManagement.md)  
 &emsp; &emsp; [Swagger](/docs/web/Swagger.md)  
+&emsp; &emsp; [接口管理平台](/docs/web/Mock.md)  
 &emsp; [Controller层简洁又优雅](/docs/web/Controller.md)  
 &emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
 &emsp; [统一响应处理](/docs/web/ResponseProcessing.md)  
@@ -476,7 +477,6 @@
 &emsp; [SpringAOP解析](/docs/SSM/Spring/SpringAOPAnalysis.md)  
 [Spring事务](/docs/SSM/Spring/SpringTransaction.md)  
 [Spring事务问题](/docs/SSM/Spring/SpringTransactionInvalid.md)  
-
 [SpringMVC](/docs/SSM/Spring/SpringMVC.md)  
 &emsp; [SpringMVC使用教程](/docs/SSM/Spring/SpringMVCUse.md)  
 &emsp; [SpringMVC解析](/docs/SSM/Spring/SpringMVCAnalysis.md)    
@@ -1093,10 +1093,12 @@ es   esHD   kibana  logstash   filebeat
 [Devops](/docs/devAndOps/build/devOps.md)  
 &emsp; [DevOps搭建](/docs/devAndOps/build/devOpsPractice.md)  
 [GIT](/docs/devAndOps/git/command.md)  
+[GitLab](/docs/devAndOps/git/GitLab.md)  
 [Gradle](/docs/devAndOps/git/Gradle.md)  
 [Maven](/docs/devAndOps/maven/maven.md)  
 &emsp; [Maven作用域](/docs/devAndOps/maven/MavenScope.md)  
-&emsp; [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
+&emsp; [Maven配置](/docs/devAndOps/maven/MavenConfig.md)  
+&emsp; [Maven私服](/docs/devAndOps/maven/Nexus.md)  
 &emsp; [项目循环依赖-分离接口](/docs/web/SeparationInterface.md)  
 &emsp; [Maven脚手架制作](/docs/devAndOps/maven/MavenScaffolding.md)  
 [JMH](/docs/java/JVM/JMH.md)  
@@ -1157,6 +1159,7 @@ es   esHD   kibana  logstash   filebeat
 [jd-jui](/docs/software/JDJUI.md)  
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
 [博客搭建-vuepress](/docs/software/vuepress.md)  
+[MAC系统](/docs/software/MAC.md)  
 
 
 --------
