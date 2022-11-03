@@ -1,19 +1,21 @@
 
-<!-- TOC -->
-
-- [1. ES集群基本概念](#1-es集群基本概念)
-    - [1.1. 集群节点(Node)](#11-集群节点node)
-    - [1.2. 分片(Shard)](#12-分片shard)
-    - [1.3. 副本(Replica)](#13-副本replica)
-    - [1.4. 路由(routing)](#14-路由routing)
-
-<!-- /TOC -->
+<!-- TOC -->autoauto- [1. ES集群基本概念](#1-es集群基本概念)auto    - [1.1. 集群节点(Node)](#11-集群节点node)auto    - [1.2. 分片(Shard)](#12-分片shard)auto    - [1.3. 副本(Replica)](#13-副本replica)auto    - [1.4. 路由(routing)](#14-路由routing)autoauto<!-- /TOC -->
 
 &emsp; `ES天然支持分布式。`
  
 # 1. ES集群基本概念
 <!-- 
 Elasticsearch技术解析与实战 第6章集群管理  
+
+
+
+Elasticsearch集群发现机制
+https://mp.weixin.qq.com/s/K3m205DSnNY7SWfAc_cQVw
+https://mp.weixin.qq.com/s/4sZUOWyzYn9FFNXHBM06_Q
+
+split-brain(脑分裂问题)
+https://mp.weixin.qq.com/s?__biz=MzIxMTE0ODU5NQ==&mid=2650238166&idx=1&sn=f93737fbf547b4cbf5249ad6109d3496&chksm=8f5a068ab82d8f9ce9062aa43568c14cf2e167b04827cbfdfe3633862c0fc039a59d78911202&mpshare=1&scene=1&srcid=&sharer_sharetime=1564015764413&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=36a99a852770fa03ee3e26339e0b86105bb323342e47179ae06d9230d7ed5cd50a82f3c7229bb3162b6fefed6d469a2e6544490f1917920f7693619669f1b5e89756d43ff3805fd4f6f925f32c02db10&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060834&lang=zh_CN&pass_ticket=xUB8YY6QWYfNya3IQwwJZSaYRbtlkwhr6XfEN2O%2BPEVoirvTO%2BwraC8Njjqe%2BVNW
+
 
 
 -->

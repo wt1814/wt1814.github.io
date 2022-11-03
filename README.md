@@ -1,4 +1,3 @@
-
 <!-- TOC -->
 
 - [1. wt1814-note](#1-wt1814-note)
@@ -839,7 +838,9 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 ## 1.14. 系统设计  
 [工具类](/docs/SystemDesign/tools.md)  
+[登录](/docs/SystemDesign/Login.md)  
 [单点登录SSO](/docs/SystemDesign/SSO.md)  
+[OAuth2](/docs/SystemDesign/OAuth2.md)  
 [登录-JWT和session](/docs/SystemDesign/JWT.md)  
 [Token、Cookie、Session、跨域](/docs/SystemDesign/Token.md)  
 [权限系统](/docs/SystemDesign/power.md)  
@@ -1155,11 +1156,14 @@ es   esHD   kibana  logstash   filebeat
 [postman](/docs/software/postman.md)  
 [抓包Charles](/docs/software/charles.md)  
 [markdown](/docs/software/markdown.md)  
+[visual studio code](/docs/software/visualStudioCode.md)  
+[MAC系统](/docs/software/MAC.md)  
 [Json](/docs/software/Json.md)  
 [jd-jui](/docs/software/JDJUI.md)  
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
 [博客搭建-vuepress](/docs/software/vuepress.md)  
 [MAC系统](/docs/software/MAC.md)  
+
 
 
 --------

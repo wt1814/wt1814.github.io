@@ -1,25 +1,5 @@
 
-<!-- TOC -->
-
-- [1. elasticsearch安装使用](#1-elasticsearch安装使用)
-    - [1.1. Linux](#11-linux)
-        - [1.1.1. Elasticsearch](#111-elasticsearch)
-        - [1.1.2. Kinaba](#112-kinaba)
-        - [1.1.3. Logstash](#113-logstash)
-            - [1.1.3.1. 安装](#1131-安装)
-            - [1.1.3.2. 整合SpringBoot](#1132-整合springboot)
-            - [1.1.3.3. 整合MySql](#1133-整合mysql)
-        - [1.1.4. FileBeat](#114-filebeat)
-        - [1.1.5. 安装IK分词器](#115-安装ik分词器)
-        - [1.1.6. ES可视化客户端](#116-es可视化客户端)
-            - [1.1.6.1. ElasticHD](#1161-elastichd)
-            - [1.1.6.2. cerebro](#1162-cerebro)
-    - [1.2. Docker部署](#12-docker部署)
-    - [1.3. mac系统](#13-mac系统)
-    - [1.4. windowns系统](#14-windowns系统)
-    - [1.5. 在本机启动多个项目启动多个节点](#15-在本机启动多个项目启动多个节点)
-
-<!-- /TOC -->
+<!-- TOC -->autoauto- [1. elasticsearch安装使用](#1-elasticsearch安装使用)auto    - [1.1. Linux](#11-linux)auto        - [1.1.1. Elasticsearch](#111-elasticsearch)auto        - [1.1.2. Kinaba](#112-kinaba)auto        - [1.1.3. Logstash](#113-logstash)auto            - [1.1.3.1. 安装](#1131-安装)auto            - [1.1.3.2. 整合SpringBoot](#1132-整合springboot)auto            - [1.1.3.3. 整合MySql](#1133-整合mysql)auto        - [1.1.4. FileBeat](#114-filebeat)auto        - [1.1.5. 安装IK分词器](#115-安装ik分词器)auto        - [1.1.6. ES可视化客户端](#116-es可视化客户端)auto            - [1.1.6.1. ElasticHD](#1161-elastichd)auto            - [1.1.6.2. cerebro](#1162-cerebro)auto    - [1.2. Docker部署](#12-docker部署)auto    - [1.3. mac系统](#13-mac系统)auto    - [1.4. windowns系统](#14-windowns系统)auto    - [1.5. 在本机启动多个项目启动多个节点](#15-在本机启动多个项目启动多个节点)autoauto<!-- /TOC -->
 
 
 # 1. elasticsearch安装使用
@@ -27,6 +7,35 @@
 
 使用Docker搭建Elasticsearch集群服务教程 
 https://mp.weixin.qq.com/s/pxI-poDt5F8TbAL9Rr7A8g
+
+
+ELK日志架构的演进
+https://mp.weixin.qq.com/s/u5hqNTgZ7P235NQA0SIJiA
+https://www.cnblogs.com/aresxin/p/8035137.html
+
+
+ELK原理
+*** https://www.cnblogs.com/aresxin/p/8035137.html
+
+官方文档：
+Filebeat：
+https://www.elastic.co/cn/products/beats/filebeat
+https://www.elastic.co/guide/en/beats/filebeat/5.6/index.html
+
+Logstash：
+https://www.elastic.co/cn/products/logstash
+https://www.elastic.co/guide/en/logstash/5.6/index.html
+
+Kibana:
+https://www.elastic.co/cn/products/kibana
+https://www.elastic.co/guide/en/kibana/5.5/index.html
+
+Elasticsearch：
+https://www.elastic.co/cn/products/elasticsearch
+https://www.elastic.co/guide/en/elasticsearch/reference/5.6/index.html
+elasticsearch中文社区：
+https://elasticsearch.cn/
+
 -->
 
 
