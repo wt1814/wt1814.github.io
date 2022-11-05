@@ -3,6 +3,10 @@
 # shardingsphere
 
 <!-- 
+sharding-jdbc与Sharding-Proxy
+https://www.jianshu.com/p/20c0d4114632
+
+
 ***ShardingSphere-JDBC5.1.0读写分离配置示例（Java Config）
 https://blog.csdn.net/qq_31226223/article/details/123815551
 ~~shardingsphere 4.1新版 如何配置mybatis多数据源
