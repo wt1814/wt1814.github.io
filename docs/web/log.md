@@ -66,6 +66,9 @@ https://blog.csdn.net/u012693119/article/details/79716306
 Log4j写入日志到数据库
 https://blog.csdn.net/ziruobing/article/details/3919501
 
+正确的打日志姿势！
+https://mp.weixin.qq.com/s/jNVgfjg4edl6aWy6FsffEg
+
 -->
 
 

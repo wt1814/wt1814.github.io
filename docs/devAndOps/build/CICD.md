@@ -17,6 +17,12 @@
 <!-- /TOC -->
 
 # 1. CI/CD  
+
+<!-- 
+你需要知道的关于 CI/CD Pipeline的一切
+https://baijiahao.baidu.com/s?id=1744858741077430484&wfr=spider&for=pc
+-->
+
 <!--
 Spring Boot 项目部署方案
 https://mp.weixin.qq.com/s/K7J-RX-3e2cWaJkTnNvQmg

@@ -3,6 +3,9 @@
 # OAuth2
 <!-- 
 
+「OAuth2 系列：」
+https://mp.weixin.qq.com/s/EyAMTbKPqNNnEtZACIsMVw
+
  可能是第二好的 Spring OAuth 2.0 文章，艿艿端午在家写了 3 天~ 
 https://mp.weixin.qq.com/s/274jzNl6cCMglByYZNl_Cg
 https://mp.weixin.qq.com/s/in_E1pKqQc8wkPXT61g8gQ

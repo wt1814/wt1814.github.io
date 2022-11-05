@@ -47,6 +47,12 @@
 
 # 1. Spring Cloud Sleuth
 <!-- 
+分布式系统中如何优雅地追踪日志（原理篇）
+https://mp.weixin.qq.com/s?__biz=MzkxNDEyOTI0OQ==&mid=2247484363&idx=1&sn=ca667c6bff5c7411f981a99fe950f3a5&source=41#wechat_redirect
+
+-->
+
+<!-- 
 dubbo服务整合zipkin  
 &emsp; https://blog.csdn.net/zzqq12345/article/details/107187496  
 &emsp; https://www.jb51.net/article/218105.htm  

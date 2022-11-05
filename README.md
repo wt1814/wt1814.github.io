@@ -391,6 +391,7 @@
 &emsp; [统一日志记录](/docs/web/unifiedLog.md)  
 &emsp; [日志系统](/docs/web/log.md)  
 &emsp; &emsp; [log4j2](/docs/web/log4j2.md)  
+&emsp; [代码分层](/docs/web/CodeLayering.md)  
 &emsp; [SpringTest](/docs/web/test.md)  
 &emsp; [乱码](/docs/web/garbled.md)  
 &emsp; [工具类hutool](/docs/web/hutool.md)  
@@ -427,6 +428,7 @@
 [安全架构](/docs/system/safe/safe.md)  
 
 ## 1.7. 架构设计  
+[技术选型](/docs/system/TechnicalSelection.md)  
 [架构的方方面面](/docs/system/AllAspects.md)  
 [软件架构设计模式](/docs/system/designPattern.md)  
 [架构图](/docs/system/diagram.md)  
@@ -1155,13 +1157,12 @@ es   esHD   kibana  logstash   filebeat
 [Idea](/docs/software/idea/idea.md)  
 [postman](/docs/software/postman.md)  
 [抓包Charles](/docs/software/charles.md)  
-[markdown](/docs/software/markdown.md)  
+[markdown和博客](/docs/software/markdown.md)  
 [visual studio code](/docs/software/visualStudioCode.md)  
 [MAC系统](/docs/software/MAC.md)  
 [Json](/docs/software/Json.md)  
 [jd-jui](/docs/software/JDJUI.md)  
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
-[博客搭建-vuepress](/docs/software/vuepress.md)  
 [MAC系统](/docs/software/MAC.md)  
 
 
