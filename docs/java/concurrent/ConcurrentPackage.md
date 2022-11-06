@@ -17,7 +17,7 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzAxMjEwMzQ5MA==&action=getalbum&a
 ![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-1.png)  
 
 
-
+JUC类图：https://xmind.app/m/tJy5/#  
 <!-- 
 
 悲观锁： 总是假设最坏的情况， 每次去拿数据的时候都认为别人会修改， 所以每次在拿数据的时候都会上锁， 这样别人想拿这个数据就会阻塞直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制， 比如行锁， 表锁等， 读锁， 写锁等， 都是在做操作之前先上锁。再比如 Java 里面的同步原语 synchronized 关键字的实现也是悲观锁。

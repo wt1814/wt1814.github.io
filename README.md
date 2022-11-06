@@ -1,4 +1,3 @@
-
 <!-- TOC -->
 
 - [1. wt1814-note](#1-wt1814-note)
@@ -27,6 +26,7 @@
         - [1.9.2. SpringCloud](#192-springcloud)
         - [1.9.3. Dubbo](#193-dubbo)
         - [1.9.4. Zookeeper](#194-zookeeper)
+        - [ServiceMesh](#servicemesh)
     - [1.10. 分布式](#110-分布式)
         - [1.10.1. 分布式理论](#1101-分布式理论)
         - [1.10.2. 分布式ID](#1102-分布式id)
@@ -383,6 +383,7 @@
 &emsp; [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
 &emsp; [接口管理](/docs/web/InterfaceManagement.md)  
 &emsp; &emsp; [Swagger](/docs/web/Swagger.md)  
+&emsp; &emsp; [接口管理平台](/docs/web/Mock.md)  
 &emsp; [Controller层简洁又优雅](/docs/web/Controller.md)  
 &emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
 &emsp; [统一响应处理](/docs/web/ResponseProcessing.md)  
@@ -390,6 +391,7 @@
 &emsp; [统一日志记录](/docs/web/unifiedLog.md)  
 &emsp; [日志系统](/docs/web/log.md)  
 &emsp; &emsp; [log4j2](/docs/web/log4j2.md)  
+&emsp; [代码分层](/docs/web/CodeLayering.md)  
 &emsp; [SpringTest](/docs/web/test.md)  
 &emsp; [乱码](/docs/web/garbled.md)  
 &emsp; [工具类hutool](/docs/web/hutool.md)  
@@ -426,6 +428,7 @@
 [安全架构](/docs/system/safe/safe.md)  
 
 ## 1.7. 架构设计  
+[技术选型](/docs/system/TechnicalSelection.md)  
 [架构的方方面面](/docs/system/AllAspects.md)  
 [软件架构设计模式](/docs/system/designPattern.md)  
 [架构图](/docs/system/diagram.md)  
@@ -475,7 +478,6 @@
 &emsp; [SpringAOP解析](/docs/SSM/Spring/SpringAOPAnalysis.md)  
 [Spring事务](/docs/SSM/Spring/SpringTransaction.md)  
 [Spring事务问题](/docs/SSM/Spring/SpringTransactionInvalid.md)  
-
 [SpringMVC](/docs/SSM/Spring/SpringMVC.md)  
 &emsp; [SpringMVC使用教程](/docs/SSM/Spring/SpringMVCUse.md)  
 &emsp; [SpringMVC解析](/docs/SSM/Spring/SpringMVCAnalysis.md)    
@@ -591,6 +593,8 @@
 [Zookeeper使用](/docs/microService/dubbo/ZookeeperUse.md)  
 [Zookeeper问题](/docs/microService/dubbo/ZookeeperProblem.md)  
 
+
+### ServiceMesh
 
 ## 1.10. 分布式
 [分布式和集群](/docs/system/distributed.md)   
@@ -836,8 +840,11 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 ## 1.14. 系统设计  
 [工具类](/docs/SystemDesign/tools.md)  
+[登录](/docs/SystemDesign/Login.md)  
 [单点登录SSO](/docs/SystemDesign/SSO.md)  
+[OAuth2](/docs/SystemDesign/OAuth2.md)  
 [登录-JWT和session](/docs/SystemDesign/JWT.md)  
+[Token、Cookie、Session、跨域](/docs/SystemDesign/Token.md)  
 [权限系统](/docs/SystemDesign/power.md)  
 
 
@@ -1090,10 +1097,12 @@ es   esHD   kibana  logstash   filebeat
 [Devops](/docs/devAndOps/build/devOps.md)  
 &emsp; [DevOps搭建](/docs/devAndOps/build/devOpsPractice.md)  
 [GIT](/docs/devAndOps/git/command.md)  
+[GitLab](/docs/devAndOps/git/GitLab.md)  
 [Gradle](/docs/devAndOps/git/Gradle.md)  
 [Maven](/docs/devAndOps/maven/maven.md)  
 &emsp; [Maven作用域](/docs/devAndOps/maven/MavenScope.md)  
-&emsp; [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
+&emsp; [Maven配置](/docs/devAndOps/maven/MavenConfig.md)  
+&emsp; [Maven私服](/docs/devAndOps/maven/Nexus.md)  
 &emsp; [项目循环依赖-分离接口](/docs/web/SeparationInterface.md)  
 &emsp; [Maven脚手架制作](/docs/devAndOps/maven/MavenScaffolding.md)  
 [JMH](/docs/java/JVM/JMH.md)  
@@ -1149,11 +1158,14 @@ es   esHD   kibana  logstash   filebeat
 [Idea](/docs/software/idea/idea.md)  
 [postman](/docs/software/postman.md)  
 [抓包Charles](/docs/software/charles.md)  
-[markdown](/docs/software/markdown.md)  
+[markdown和博客](/docs/software/markdown.md)  
+[visual studio code](/docs/software/visualStudioCode.md)  
+[MAC系统](/docs/software/MAC.md)  
 [Json](/docs/software/Json.md)  
 [jd-jui](/docs/software/JDJUI.md)  
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
-[博客搭建-vuepress](/docs/software/vuepress.md)  
+[MAC系统](/docs/software/MAC.md)  
+
 
 
 --------

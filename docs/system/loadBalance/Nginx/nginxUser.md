@@ -26,7 +26,9 @@
 <!-- /TOC -->
 
 
-<!-- 
+<!--
+Nginx中文文档：http://www.nginx.cn/doc/
+在线一键生成Nginx配置：https://nginxconfig.io/
 
 Nginx如何处理一个请求
 http://tengine.taobao.org/nginx_docs/cn/docs/http/request_processing.html

@@ -67,6 +67,9 @@
 
 
 # 1. HashMap源码
+<!-- 
+https://mp.weixin.qq.com/s?__biz=MzkzODE3OTI0Ng==&mid=2247491193&idx=1&sn=8346d2dea610d895f8f30f5e3e2581b9&source=41#wechat_redirect
+-->
 
 ## 1.1. HashMap类定义  
 

@@ -26,6 +26,9 @@
 
 # 1. Kubernetes  
 <!--
+我花了10个小时，写出了这篇 K8S 架构解析 
+https://mp.weixin.qq.com/s/nRqywApFqiXIKjamjMlqKA
+
 ~~
 k8s中文文档
 https://www.kubernetes.org.cn/k8s

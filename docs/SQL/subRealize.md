@@ -20,6 +20,12 @@
 
 
 # 1. 数据库分布式实现  
+<!-- 
+sharding-proxy实战：解救分表后痛苦的测试小姐姐
+https://mp.weixin.qq.com/s?__biz=MzU5ODUwNzY1Nw==&mid=2247484440&idx=1&sn=ddc246e4d5d6c8ac2d5b8debb5ebaeae&chksm=fe426dfec935e4e8f7b831f7b00f3e79f34341f67ee27e440b7c617d0a75c01366a2b5356496&mpshare=1&scene=1&srcid=&sharer_sharetime=1566434225077&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=a98b434d6faae61683de99c3737998f4d1f939ad8d7e26f07d46cbfc361389785f9b4717785a9262c4e6f819f005d8fb1fc5144dd05699bec5dd22d93a868baed6ed9a1fb1ad6024e0d62affe87a143e&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=OzH8r4s9Va6DEZaWxmB%2BZFeLRG%2Fr0XoTKeHpvWhKxz6B1yLq0M6Eiym92%2FXw0mmm
+
+-->
+
 
 ## 1.1. 数据库中间件  
 &emsp; 数据库中间件的主要作用是向应用程序开发人员屏蔽读写分离和分库分表面临的挑战，并隐藏底层实现细节，使得开发人员可以像操作单库单表那样去操作数据。  

@@ -55,6 +55,10 @@ https://mp.weixin.qq.com/s/4ssGyiK_J2NXwZe4JqnKHQ
 * 可以扩展到上百台服务器，处理PB级别的结构化或非结构化数据(官网是这么说的)。也可以运行在单台PC上(已测试)。   
 * 支持插件机制，分词插件、同步插件、Hadoop插件、可视化插件等。
 --> 
+ElasticSearch java API：https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/index.html  
+文档：https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
+官网：https://www.elastic.co/cn/
+中文社区：https://elasticsearch.cn/
 
 ## 1.1. 什么是ES？  
 &emsp; Elasticsearch（ES）是一个基于Lucene构建的开源、分布式、RESTful接口的全文搜索引擎。  

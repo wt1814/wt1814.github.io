@@ -1,21 +1,16 @@
 
 
-<!-- TOC -->
-
-- [1. Linux问题排查](#1-linux问题排查)
-    - [1.1. OS诊断](#11-os诊断)
-        - [1.1.1. CPU](#111-cpu)
-        - [1.1.2. 内存占用](#112-内存占用)
-            - [1.1.2.1. 堆内内存](#1121-堆内内存)
-            - [1.1.2.2. 堆外内存](#1122-堆外内存)
-        - [1.1.3. I/O](#113-io)
-            - [1.1.3.1. 网络I/O](#1131-网络io)
-    - [1.2. Linux下性能分析工具总结](#12-linux下性能分析工具总结)
-
-<!-- /TOC -->
+<!-- TOC -->autoauto- [1. Linux问题排查](#1-linux问题排查)auto    - [1.1. OS诊断](#11-os诊断)auto        - [1.1.1. CPU](#111-cpu)auto        - [1.1.2. 内存占用](#112-内存占用)auto            - [1.1.2.1. 堆内内存](#1121-堆内内存)auto            - [1.1.2.2. 堆外内存](#1122-堆外内存)auto        - [1.1.3. I/O](#113-io)auto            - [1.1.3.1. 网络I/O](#1131-网络io)auto    - [1.2. Linux下性能分析工具总结](#12-linux下性能分析工具总结)autoauto<!-- /TOC -->
 
 # 1. Linux问题排查
 <!--
+
+故障
+ 为你总结了N个真实线上故障，从容应对面试官！ 
+ https://mp.weixin.qq.com/s?__biz=Mzg4MDYyNTQwOQ==&mid=2247492020&idx=1&sn=7af64bd9c35161717b64b57c93f9d924&source=41#wechat_redirect
+
+------------------
+
 Java后端线上问题排查常用命令收藏 
 https://mp.weixin.qq.com/s/48Z_niFVb2AVk2zDWkK-WA
 
@@ -41,6 +36,12 @@ https://mp.weixin.qq.com/s/znVGpJhtA52UKiekHWqD3w
 
  Java后端线上问题排查常用命令收藏 
 https://mp.weixin.qq.com/s/WJG9PU6c8wYcbFViW_lZtw
+
+ JAVA线上故障排查全套路 
+https://mp.weixin.qq.com/s/PReXs-_O1EFgAl7eNcfkmQ
+Java调优
+https://mp.weixin.qq.com/s/uUvzpkaZFXR_KH4ZYwcppg
+
 -->
 
 &emsp; 针对Java应用，性能诊断工具主要分为两层：OS层面和Java应用层面(包括应用代码诊断和GC诊断)。  

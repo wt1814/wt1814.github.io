@@ -26,6 +26,8 @@
 https://mp.weixin.qq.com/s/VtM5x_wZhdNAwqbQ1igXpA
 -->
 
+
+
 &emsp; **<font color = "clime">分库分表是为了支撑高并发、数据量大两个问题的。</font>**  
 
 ## 1.1. ~~数据切分方式~~

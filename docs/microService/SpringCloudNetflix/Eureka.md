@@ -37,6 +37,18 @@
 4. <font color = "red">高可用注册中心/AP模型：EurekaServer的高可用实际上就是将自己作为服务向其他服务注册中心注册自己，这样就可以形成一组互相注册的服务注册中心，以实现服务清单的互相同步，达到高可用的效果。</font>  
 
 # 1. Spring Cloud Eureka
+<!-- 
+
+https://www.jianshu.com/p/1a700a283107
+https://www.jianshu.com/p/2fa691d4a00a
+Eurka 工作流程
+ 
+Eureka工作原理
+https://blog.csdn.net/qwe86314/article/details/94552801
+ 
+Eureka源码
+https://mp.weixin.qq.com/s/etloMGMydBgC0Ll1yBgx8Q
+-->
 
 ## 1.1. 服务治理简介  
 &emsp; 系统功能越来越复杂， 相应的微服务应用也不断增加。  

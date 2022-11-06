@@ -47,11 +47,18 @@
 
 # 1. Spring Cloud Sleuth
 <!-- 
+分布式系统中如何优雅地追踪日志（原理篇）
+https://mp.weixin.qq.com/s?__biz=MzkxNDEyOTI0OQ==&mid=2247484363&idx=1&sn=ca667c6bff5c7411f981a99fe950f3a5&source=41#wechat_redirect
+
+-->
+
+<!-- 
 dubbo服务整合zipkin  
 &emsp; https://blog.csdn.net/zzqq12345/article/details/107187496  
 &emsp; https://www.jb51.net/article/218105.htm  
 
-
+***传递traceId到异步线程池
+https://www.jianshu.com/p/dce640cfcd36
 
 链路日志
 https://mp.weixin.qq.com/s?__biz=MzIwMDY0Nzk2Mw==&mid=2650325282&idx=1&sn=49bdfb4acb903783031b7dc7e7164a27&fileGuid=Ty8hqrvhtDydKt8V&scene=21#wechat_redirect
@@ -63,6 +70,10 @@ https://mp.weixin.qq.com/s/WfTEQagsRntOpMVIZZS_Rw
 
 代码级别监控：常见的全链路监控工具介绍 
 https://mp.weixin.qq.com/s/TIeC0v8vW29MKi1n6FBXZw
+
+子线程或线程池中获取 Zipkin traceId 并打印
+https://www.jianshu.com/p/ae855779f30b
+
 -->
 ![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-43.png)  
 ![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-44.png)  

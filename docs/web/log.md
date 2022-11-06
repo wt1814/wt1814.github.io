@@ -41,6 +41,34 @@ https://mp.weixin.qq.com/s/mVQ9YJL10_VDobumsj-PqA
 日志系统新贵 Loki，真香！！ 
 https://mp.weixin.qq.com/s/Hq1VGdHDP3o_bmYLFfbHIw
 
+
+
+ ***MDC工具类：快速过滤出一次请求的所有日志
+
+
+https://mp.weixin.qq.com/s?__biz=MzU2MTI4MjI0MQ==&mid=2247486475&idx=2&sn=5f94e533860c3977c1b2a410e849d70b&chksm=fc7a61a5cb0de8b3b5b58955b7fba2b9ad36a9ad888ce1ccf6765fcb4292a1f1247773e847e5&mpshare=1&scene=1&srcid=&key=00a8e91eefd868fc4b3eda558cb3a40f5375515011aa4e1850228ff13cf347d94b072b0f41ef9e1620233af5f9ddfe00e3895782b5a28c290b6780212035ecc8e490bcbee13d428b7f7cedd0fc4a2262&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060833&lang=zh_CN&pass_ticket=WvQRNfXTbzo8YbNsaaP3bvOrF4WWy2nhzya3QiHsgSx6qD6EFNaOiTxgL7MHqDsT
+
+logback日志与MDC机制 
+https://www.iteye.com/blog/shift-alt-ctrl-2345272
+slf4j中的MDC
+https://www.cnblogs.com/sealedbook/p/6227452.html
+
+
+
+logback自定义变量
+logback自定义变量获取hostname
+https://blog.csdn.net/weixin_33981932/article/details/92531278
+
+logback自定义PatternLayout
+ogback 实现 （ASNI）彩色日志（还原Spring boot 彩色日志）
+https://blog.csdn.net/u012693119/article/details/79716306
+
+Log4j写入日志到数据库
+https://blog.csdn.net/ziruobing/article/details/3919501
+
+正确的打日志姿势！
+https://mp.weixin.qq.com/s/jNVgfjg4edl6aWy6FsffEg
+
 -->
 
 
