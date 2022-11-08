@@ -9,6 +9,12 @@
 
 
 # 1. MySql主从复制的高可用实现  
+<!-- 
+docker搭建主从复制
+https://mp.weixin.qq.com/s/eEWMSTAUF1H-gFBx26jujw
+-->
+
+
 ## 1.1. 主从复制拓扑结构 
 ![image](http://www.wt1814.com/static/view/images/SQL/sql-11.png)  
 
