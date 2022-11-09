@@ -8,6 +8,7 @@
         * [内部类](/docs/java/basis/InnerClass.md)  
         * [代码块](/docs/java/basis/CodeBlock.md)  
         * [枚举和数据字典](/docs/java/basis/Enum.md)  
+        * [命名规范](/docs/java/basis/standard.md)  
     * [Java基础数据类型](/docs/java/basis/DataType.md)  
         * [Object](/docs/java/basis/Object.md)  
         * [String](/docs/java/basis/String.md)  
