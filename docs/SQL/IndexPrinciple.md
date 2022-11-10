@@ -62,6 +62,8 @@
 数据库索引，终于懂了 
 https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651967146&idx=1&sn=e11b8613a0d18bab4bd2abcb63175ad6&chksm=bd2d7b768a5af26073e275fd6556f35b48098576bb69304f04d4b28066e0bc7eb10a948a79ee&scene=21#wechat_redirect
 
+MySQL 中 InnoDB 的索引结构以及使用 B+ 树实现索引的原因
+https://mp.weixin.qq.com/s/BAmpZoOTlwf1Kcjo2ybSiQ
 -->
 
 
