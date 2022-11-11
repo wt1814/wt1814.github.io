@@ -286,6 +286,7 @@
 &emsp; [高级查询](/docs/SQL/trans.md)  
 &emsp; [联合主键与复合主键](/docs/SQL/CompositeKey.md)  
 &emsp; [null值](/docs/SQL/null.md)  
+&emsp; [加密数据模糊查询](/docs/SQL/EncryptedQuery.md)  
 [MySql函数](/docs/SQL/MySQLFunction.md)  
 [数据库对象](/docs/SQL/DatabaseObject.md)  
 [SQL优化](/docs/SQL/SQLOptimization.md)  
@@ -430,6 +431,7 @@
 [安全架构](/docs/system/safe/safe.md)  
 
 ## 1.7. 架构设计  
+[IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
 [技术选型](/docs/system/TechnicalSelection.md)  
 [架构的方方面面](/docs/system/AllAspects.md)  
 [软件架构设计模式](/docs/system/designPattern.md)  
@@ -516,6 +518,8 @@
 [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
 &emsp; [SpringBoot高级](/docs/microService/SpringBoot/BootHeigh.md)  
 &emsp; [慎用devtools](/docs/microService/SpringBoot/devtools.md)  
+&emsp; [Jar包瘦身](/docs/microService/SpringBoot/BootSlimming.md)  
+&emsp; [Gzip压缩超大对象](/docs/microService/SpringBoot/Gzip.md)  
 [SpringBoot源码](/docs/microService/SpringBoot/SpringBootSource.md)  
 &emsp; [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
 &emsp; [SpringBoot启动过程](/docs/microService/SpringBoot/SpringBootRun.md)  

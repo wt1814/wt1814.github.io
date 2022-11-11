@@ -21,6 +21,9 @@ https://mp.weixin.qq.com/s/Keway7ExLfTNunZTACoxnA
 
 CDN内容分发网络 + Varnish服务器集群
 
+全局负载均衡与 CDN 内容分发
+https://mp.weixin.qq.com/s/jtvsGgUNgSDGUIk_UIVqOA
+
 -->
 
 <!-- 
