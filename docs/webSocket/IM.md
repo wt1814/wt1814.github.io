@@ -14,6 +14,9 @@
 
 即时通讯IM
 https://mp.weixin.qq.com/s/eynMy_1vqxrPkgw0r-7heg
+
+即时消息技术剖析与实战
+https://time.geekbang.org/column/article/126450
 -->
 
 ## 1.1. 单方面推送消息  
