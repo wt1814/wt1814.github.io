@@ -6,6 +6,7 @@
         - [1.2.1. Java基础](#121-java基础)
         - [1.2.2. 设计模式](#122-设计模式)
         - [1.2.3. JVM](#123-jvm)
+        - [HotSpot](#hotspot)
         - [1.2.4. 并发编程](#124-并发编程)
     - [1.3. JAVA三大体系](#13-java三大体系)
     - [1.4. 数据库](#14-数据库)
@@ -205,6 +206,9 @@
 <!-- 
 &emsp; [JVM排查案例](/docs/java/JVM/case.md)  
 -->
+
+### HotSpot  
+[HotSpot](/docs/java/HotSpot/HotSpot.md)  
 
 ### 1.2.4. 并发编程  
 [并发编程总结](/docs/java/concurrent/summary.md)  
@@ -816,8 +820,8 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [ELK/EFK](/docs/ES/EFK.md)    
 &emsp; [EFK介绍](/docs/ES/EFKIntroduce.md)  
 &emsp; [EFK使用](/docs/ES/EFKUse.md)  
-&emsp; [Kibana权限验证](/docs/ES/KibanaVeri.md)  
-&emsp; [Kibana用户手册](/docs/ES/Kibana.md)  
+&emsp; [Logstash](/docs/ES/Logstash.md)  
+&emsp; [Kibana使用](/docs/ES/Kibana.md)  
 &emsp; [Kibana查询](/docs/ES/KibanaQuery.md)  
 &emsp; [canal](/docs/ES/canal.md)  
 

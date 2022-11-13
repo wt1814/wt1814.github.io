@@ -18,6 +18,21 @@ https://mp.weixin.qq.com/s/96TBRzABHol27KrMncUkTQ
 
 &emsp; **<font color = "clime">Kibana文档：https://www.elastic.co/guide/cn/kibana/current/index.html</font>**  
 
+## kibana查询与过滤  
+<!-- 
+kibana查询与过滤
+https://blog.csdn.net/weixin_39754616/article/details/110803809
+-->
+&emsp; [Kibana查询](/docs/ES/KibanaQuery.md)  
+
+## Kibana权限验证  
+<!-- 
+Kibana验证  
+https://www.lmlphp.com/user/18641/article/item/475053/
+
+-->
+
+
 ## 1.1. 日志检索  
 * 登录后界面  
 &emsp; 如图所示，检索日志需点击红框内的菜单  

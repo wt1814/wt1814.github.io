@@ -605,8 +605,8 @@
     * [ELK/EFK](/docs/ES/EFK.md)   
         * [EFK介绍](/docs/ES/EFKIntroduce.md)  
         * [EFK使用](/docs/ES/EFKUse.md)  
-        * [Kibana权限验证](/docs/ES/KibanaVeri.md)  
-        * [Kibana用户手册](/docs/ES/Kibana.md)  
+        * [Logstash](/docs/ES/Logstash.md)    
+        * [Kibana使用](/docs/ES/Kibana.md)  
         * [Kibana查询](/docs/ES/KibanaQuery.md)  
         * [canal](/docs/ES/canal.md)  
 * 任务调度
