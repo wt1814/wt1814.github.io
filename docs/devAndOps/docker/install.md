@@ -87,6 +87,9 @@ https://blog.csdn.net/kfgauss/article/details/116744314
 
 Docker配置阿里云镜像仓库
 https://mp.weixin.qq.com/s/qp3BX2oq5dULOEBFt5XTAQ
+
+镜像加速器地址
+https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors
 -->
 
 &emsp; 由于国内网络问题，需要配置加速器来加速。修改配置文件 /etc/docker/daemon.json  
