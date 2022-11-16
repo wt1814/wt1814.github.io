@@ -2,6 +2,7 @@
 <!-- TOC -->
 
 - [1. Docker](#1-docker)
+    - [***操作系统直接安装和docker安装的区别](#操作系统直接安装和docker安装的区别)
     - [1.1. 虚拟化技术](#11-虚拟化技术)
         - [1.1.1. 虚拟机结构介绍](#111-虚拟机结构介绍)
         - [1.1.2. 容器化技术Docker](#112-容器化技术docker)
@@ -26,6 +27,14 @@ https://mp.weixin.qq.com/s/oeKTX-E6W40IjLy5TJewLg
 &emsp; **<font color = "clime">Docker中文社区：</font>** https://www.docker.org.cn/dockershuji.html  
 
 
+## ***操作系统直接安装和docker安装的区别  
+<!-- 
+https://blog.csdn.net/wangxueying5172/article/details/122249993
+
+redis用docker和真机安装有区别吗？
+https://www.zhihu.com/question/388328735/answer/1158442899
+你想问的我理解是性能上的区别，鉴于redis主要是cpu密集型的程序，影响是非常小的，5%以内。如果是网络重负载的话，影响比较大。
+-->
 
 
 ## 1.1. 虚拟化技术  
