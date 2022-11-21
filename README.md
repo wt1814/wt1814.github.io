@@ -1067,7 +1067,7 @@ es   esHD   kibana  logstash   filebeat
 [堡垒机](/docs/Linux/build/FortressMachine.md)  
 [1. yum](/docs/devAndOps/centOS/yum.md)  
 [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
-
+[Python3](/docs/devAndOps/centOS/Python3.md)  
 
 ## 1.24. DevOps  
 
@@ -1088,7 +1088,7 @@ es   esHD   kibana  logstash   filebeat
 [多种发布方式](/docs/system/publishe.md)  
 &emsp; [灰度发布](/docs/system/grayscalePublishe.md)  
 [Jenkins](/docs/devAndOps/jenkins/Jenkins.md)  
-&emsp; [Jenkins+Docker](/docs/devAndOps/jenkins/JenkinsDocker.md)  
+&emsp; [6.Jenkins+Docker](/docs/devAndOps/jenkins/JenkinsDocker.md)  
 [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
 &emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
 &emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
@@ -1102,6 +1102,7 @@ es   esHD   kibana  logstash   filebeat
 &emsp; [容器详解](/docs/devAndOps/docker/container.md)  
 &emsp; [挂载目录](/docs/devAndOps/docker/mount.md)  
 &emsp; [Docker工具](/docs/devAndOps/docker/tools.md)  
+[docker-compose](/docs/devAndOps/docker/docker-compose.md)  
 [Kubernetes](/docs/devAndOps/k8s/Kubernetes.md)      
 &emsp; [k8s使用教程](/docs/devAndOps/k8s/use.md)  
 &emsp; &emsp; [k8s安装及常用命令](/docs/devAndOps/k8s/command.md)  

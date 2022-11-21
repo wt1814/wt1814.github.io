@@ -783,6 +783,7 @@
         * [容器详解](/docs/devAndOps/docker/container.md)  
         * [挂载目录](/docs/devAndOps/docker/mount.md)  
         * [Docker工具](/docs/devAndOps/docker/tools.md)   
+    * [docker-compose](/docs/devAndOps/docker/docker-compose.md)  
     * [Kubernetes](/docs/devAndOps/k8s/Kubernetes.md)  
         * [k8s使用教程](/docs/devAndOps/k8s/use.md)  
             * [k8s安装及常用命令](/docs/devAndOps/k8s/command.md)  

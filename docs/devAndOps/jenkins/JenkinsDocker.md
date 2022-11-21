@@ -1,6 +1,12 @@
 
 
-# Jenkins和Docker
+<!-- TOC -->
+
+- [1. Jenkins和Docker<!-- TOC -->](#1-jenkins和docker---toc---)
+    - [1.1. Docker搭建Jenkins](#11-docker搭建jenkins)
+    - [1.2. jenkins+docker自动化部署SpringBoot项目](#12-jenkinsdocker自动化部署springboot项目)
+
+<!-- /TOC -->
 
 <!-- 
 **** docker安装jenkins
@@ -19,6 +25,8 @@ docker run -d \
 
 Jenkins +Docker+Git 实现自动部署
 https://www.cnblogs.com/seanRay/p/15126859.html
+
+3. 编译
 Jenkins+Docker 一键自动化部署 SpringBoot 项目 
 https://mp.weixin.qq.com/s/C7o0SDNW-rajE0FywGGbTQ
 
@@ -30,9 +38,29 @@ https://blog.csdn.net/m0_50026910/article/details/124114199
 
 
 <!-- 
-***  
+********  
+1. 搭建 2. 配置全局环境
 docker使用dockerFile自定义Jenkins
 使用docker来启动jenkins才发现里面有一大堆坑，每次都要安装maven、jdk太麻烦。于是写了个dockerfile，一键生成装有maven、jdk1.8、jenkins的镜像。  
 https://blog.csdn.net/qq_35031494/article/details/125426380
 
 -->
+
+## 1.1. Docker搭建Jenkins  
+&emsp; 使用docker来启动jenkins才发现里面有一大堆坑，每次都要安装maven、jdk太麻烦。于是写了个dockerfile，一键生成装有maven、jdk1.8、jenkins的镜像。   
+
+1. 搭建  
+
+
+2. 配置全局环境  
+
+
+3. 编译  
+
+
+## 1.2. jenkins+docker自动化部署SpringBoot项目  
+<!-- 
+
+https://blog.csdn.net/shayopron/article/details/121167066
+-->
+
