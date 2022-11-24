@@ -114,6 +114,7 @@
     * [Arthas](/docs/java/JVM/ArthasSummary.md)  
         * [Arthas工具](/docs/java/JVM/Arthas.md)  
         * [Arthas常用命令](/docs/java/JVM/ArthasCommand.md)  
+* [HotSpot](/docs/java/HotSpot/HotSpot.md)  
 * 并发编程  
     * [并发编程总结](/docs/java/concurrent/summary.md)  
     * [多线程和并发](/docs/java/concurrent/MultithreadingAndConcurrency.md)  
@@ -252,9 +253,9 @@
         * [MySql锁](/docs/SQL/lock.md)  
         * [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
     * Sharding-JDBC  
-        * [shardingsphere](/docs/SQL/shardingsphere.md)  
-        * [shardingsphere分布式事务](/docs/SQL/shardingsphereTransaction.md)  
-* web服务器  
+        * [ShardingSphere](/docs/SQL/shardingsphere.md)  
+        * [ShardingSphere分布式事务](/docs/SQL/shardingsphereTransaction.md)  
+* Web服务器  
     * [***Undertow替换Tomcat](/docs/webContainer/Undertow.md)  
     * tomcat  
         * [tomcat](/docs/webContainer/tomcat/tomcat.md)  
