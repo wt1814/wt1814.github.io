@@ -1151,6 +1151,10 @@ es   esHD   kibana  logstash   filebeat
 [Jmeter](/docs/devAndOps/test/Jmeter.md)  
 [allure](/docs/devAndOps/test/allure.md)  
 
+------------
+[VMWare esxi创建虚拟机](/docs/devAndOps/centOS/VMWareEsxi.md)  
+
+
 
 ------------  
 

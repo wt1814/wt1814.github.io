@@ -1,5 +1,26 @@
 
-<!-- TOC -->autoauto- [1. elasticsearch安装使用](#1-elasticsearch安装使用)auto    - [1.1. Linux](#11-linux)auto        - [1.1.1. Elasticsearch](#111-elasticsearch)auto        - [1.1.2. Kinaba](#112-kinaba)auto        - [1.1.3. Logstash](#113-logstash)auto            - [1.1.3.1. 安装](#1131-安装)auto            - [1.1.3.2. 整合SpringBoot](#1132-整合springboot)auto            - [1.1.3.3. 整合MySql](#1133-整合mysql)auto        - [1.1.4. FileBeat](#114-filebeat)auto        - [1.1.5. 安装IK分词器](#115-安装ik分词器)auto        - [1.1.6. ES可视化客户端](#116-es可视化客户端)auto            - [1.1.6.1. ElasticHD](#1161-elastichd)auto            - [1.1.6.2. cerebro](#1162-cerebro)auto    - [1.2. Docker部署](#12-docker部署)auto    - [1.3. mac系统](#13-mac系统)auto    - [1.4. windowns系统](#14-windowns系统)auto    - [1.5. 在本机启动多个项目启动多个节点](#15-在本机启动多个项目启动多个节点)autoauto<!-- /TOC -->
+
+<!-- TOC -->
+
+- [1. elasticsearch安装使用](#1-elasticsearch安装使用)
+    - [1.1. Linux](#11-linux)
+        - [1.1.1. Elasticsearch](#111-elasticsearch)
+        - [1.1.2. Kinaba](#112-kinaba)
+        - [1.1.3. Logstash](#113-logstash)
+            - [1.1.3.1. 安装](#1131-安装)
+            - [1.1.3.2. 整合SpringBoot](#1132-整合springboot)
+            - [1.1.3.3. 整合MySql](#1133-整合mysql)
+        - [1.1.4. FileBeat](#114-filebeat)
+        - [1.1.5. 安装IK分词器](#115-安装ik分词器)
+        - [1.1.6. ES可视化客户端](#116-es可视化客户端)
+            - [1.1.6.1. ElasticHD](#1161-elastichd)
+            - [1.1.6.2. cerebro](#1162-cerebro)
+    - [1.2. Docker部署](#12-docker部署)
+    - [1.3. mac系统](#13-mac系统)
+    - [1.4. windowns系统](#14-windowns系统)
+    - [1.5. 在本机启动多个项目启动多个节点](#15-在本机启动多个项目启动多个节点)
+
+<!-- /TOC -->
 
 
 # 1. elasticsearch安装使用
@@ -186,14 +207,25 @@ https://github.com/medcl/elasticsearch-analysis-ik/
 
 ## 1.2. Docker部署  
 <!-- 
-Docker部署多机单节点ELK集群【ES + Logstash + Kibana + IK】
-https://mp.weixin.qq.com/s/lXvBTja_B6l-z0oUgiLETQ
+
 
 使用Docker搭建ELK日志系统 
 https://mp.weixin.qq.com/s?__biz=MzAxMjY5NDU2Ng==&mid=2651854010&idx=2&sn=46f1f62cf15a1788da042f38d83d8a5a&chksm=804951f3b73ed8e5563e1d00bb2267a9d45a639955beaff6c03cfedbffd9aeeddf19e6fbf36c&mpshare=1&scene=1&srcid=&sharer_sharetime=1565741061263&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=36a99a852770fa03398d6d83b32183afed3cd3d1a3b4efe37bc5a5a3adc65c68adf852bc5aac9742c6ff7cce3b13adbc7ae3f843113389531a972cfe419ab100ddb13dfa6c31159f348959b7f6dbbe01&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=JLiKeNv%2F4KR6gCtdLZGhUXVH7BONlSBEY%2FTbKINtAXs2YG8At3hpMApp1DgxUdHh
 
+Docker核心技术-企业级容器多主机ELK部署 Docker网络架构+数据管理+镜像+Dockerfile
+https://www.bilibili.com/video/BV1hS4y1s7FT/?p=49&vd_source=9a9cf49f6bf9bd6a6e6e556f641ae9cb
 
 -->
+
+<!-- 
+Docker-Compose部署ELK 
+https://www.cnblogs.com/xiaobaibuai/p/15662224.html
+
+Docker部署多机单节点ELK集群【ES + Logstash + Kibana + IK】
+https://mp.weixin.qq.com/s/lXvBTja_B6l-z0oUgiLETQ
+
+-->
+
 
 ## 1.3. mac系统
 cd /Users/wangtao/software/elk/elasticsearch-7.13.3
