@@ -605,9 +605,8 @@
     * [ELK/EFK](/docs/ES/EFK.md)   
         * [EFK介绍](/docs/ES/EFKIntroduce.md)  
         * [EFK使用](/docs/ES/EFKUse.md)  
-        * [Logstash](/docs/ES/Logstash.md)    
-        * [Kibana使用](/docs/ES/Kibana.md)  
-        * [Kibana查询](/docs/ES/KibanaQuery.md)  
+            * [Logstash](/docs/ES/Logstash.md)    
+            * [Kibana使用](/docs/ES/Kibana.md)  
         * [canal](/docs/ES/canal.md)  
 * 任务调度
     * [延时队列](/docs/frame/delayQueue.md)  
@@ -816,7 +815,7 @@
     * [sentinel](/docs/devAndOps/build/sentinel.md)  
     * [skywalking](/docs/devAndOps/build/skywalking.md)  
     * [Nginx搭建](/docs/devAndOps/build/nginx.md)   
-    * [elk搭建](/docs/devAndOps/build/elk.md)   
+    * [ELK搭建](/docs/devAndOps/build/elk.md)   
     * [ideaServer](/docs/devAndOps/build/ideaServer.md)  
 * 需求、测试
     * [连接内网vpn](/docs/Linux/enterprise/vpn.md)  

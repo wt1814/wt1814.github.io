@@ -820,9 +820,8 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [ELK/EFK](/docs/ES/EFK.md)    
 &emsp; [EFK介绍](/docs/ES/EFKIntroduce.md)  
 &emsp; [EFK使用](/docs/ES/EFKUse.md)  
-&emsp; [Logstash](/docs/ES/Logstash.md)  
-&emsp; [Kibana使用](/docs/ES/Kibana.md)  
-&emsp; [Kibana查询](/docs/ES/KibanaQuery.md)  
+&emsp; &emsp; [Logstash](/docs/ES/Logstash.md)  
+&emsp; &emsp; [Kibana使用](/docs/ES/Kibana.md)  
 &emsp; [canal](/docs/ES/canal.md)  
 
 [ES重制](/docs/ESRemake/ESRemake.md)    
@@ -1139,7 +1138,7 @@ es   esHD   kibana  logstash   filebeat
 
 [Nginx搭建](/docs/devAndOps/build/nginx.md)   
 
-[elk搭建](/docs/devAndOps/build/elk.md)   
+[6. ELK搭建](/docs/devAndOps/build/elk.md)   
 
 [docsify](/docs/devAndOps/build/docsify.md)  
 [3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
@@ -1153,7 +1152,6 @@ es   esHD   kibana  logstash   filebeat
 
 ------------
 [VMWare esxi创建虚拟机](/docs/devAndOps/centOS/VMWareEsxi.md)  
-
 
 
 ------------  

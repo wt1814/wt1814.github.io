@@ -61,6 +61,11 @@ https://blog.csdn.net/qq_41106844/article/details/106577851
 <!-- 
 从ELK到EFK演进
 https://www.cnblogs.com/panchanggui/p/10697548.html
+
+ELK日志架构的演进
+https://mp.weixin.qq.com/s/u5hqNTgZ7P235NQA0SIJiA
+https://www.cnblogs.com/aresxin/p/8035137.html
+
 -->
 ### 1.2.1. Demo版  
 &emsp; 这版算是Demo版，各位开发可以在自己电脑上搭建练练手，如下图所示：   

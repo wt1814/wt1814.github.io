@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. elasticsearch安装使用](#1-elasticsearch安装使用)
+- [1. ELK搭建](#1-elk搭建)
     - [1.1. Linux](#11-linux)
         - [1.1.1. Elasticsearch](#111-elasticsearch)
         - [1.1.2. Kinaba](#112-kinaba)
@@ -15,7 +15,7 @@
         - [1.1.6. ES可视化客户端](#116-es可视化客户端)
             - [1.1.6.1. ElasticHD](#1161-elastichd)
             - [1.1.6.2. cerebro](#1162-cerebro)
-    - [1.2. Docker部署](#12-docker部署)
+    - [1.2. ***Docker部署](#12-docker部署)
     - [1.3. mac系统](#13-mac系统)
     - [1.4. windowns系统](#14-windowns系统)
     - [1.5. 在本机启动多个项目启动多个节点](#15-在本机启动多个项目启动多个节点)
@@ -23,16 +23,14 @@
 <!-- /TOC -->
 
 
-# 1. elasticsearch安装使用
+# 1. ELK搭建
 <!-- 
 
 使用Docker搭建Elasticsearch集群服务教程 
 https://mp.weixin.qq.com/s/pxI-poDt5F8TbAL9Rr7A8g
 
 
-ELK日志架构的演进
-https://mp.weixin.qq.com/s/u5hqNTgZ7P235NQA0SIJiA
-https://www.cnblogs.com/aresxin/p/8035137.html
+
 
 
 ELK原理
@@ -94,7 +92,6 @@ https://blog.csdn.net/hnhroot/article/details/121497050
 
 ### 1.1.2. Kinaba  
 <!-- 
-
 Linux版本Kibana安装教程
 https://blog.csdn.net/qq_39706570/article/details/125293901
 kibana启动时遇到的坑
@@ -122,7 +119,6 @@ https://blog.csdn.net/CX1544539968/article/details/120038113
 
 https://www.cnblogs.com/zyb2016/p/14886589.html
 https://blog.csdn.net/u014527058/article/details/70495595
-
 
 -->
 
@@ -172,6 +168,9 @@ https://www.elastic.co/cn/downloads/beats/filebeat
 rsyslog
 https://www.jianshu.com/p/861091c71bcd
 
+**** https://www.cnblogs.com/linjiqin/p/12106462.html
+
+
 -->
 1. 下载：https://www.elastic.co/cn/downloads/beats/filebeat  
 2. 配置：  
@@ -205,7 +204,7 @@ https://github.com/medcl/elasticsearch-analysis-ik/
 
 
 
-## 1.2. Docker部署  
+## 1.2. ***Docker部署  
 <!-- 
 
 
@@ -223,6 +222,17 @@ https://www.cnblogs.com/xiaobaibuai/p/15662224.html
 
 Docker部署多机单节点ELK集群【ES + Logstash + Kibana + IK】
 https://mp.weixin.qq.com/s/lXvBTja_B6l-z0oUgiLETQ
+
+
+*** docker-compose安装ELK
+https://www.jianshu.com/p/2d78ce6bc504
+https://www.jianshu.com/p/50839769ffa3
+
+
+https://www.bilibili.com/video/BV1Sd4y1m7iq/?spm_id_from=333.337.search-card.all.click&vd_source=9a9cf49f6bf9bd6a6e6e556f641ae9cb
+
+Docker核心技术-企业级容器多主机ELK部署 Docker网络架构+数据管理+镜像+Dockerfile
+https://www.bilibili.com/video/BV1hS4y1s7FT/?p=49&vd_source=9a9cf49f6bf9bd6a6e6e556f641ae9cb
 
 -->
 
@@ -292,4 +302,3 @@ https://blog.csdn.net/qq_37554565/article/details/117250647
 <!-- 
 https://blog.csdn.net/qq_35463719/article/details/121940803
 -->
-
