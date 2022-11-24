@@ -607,9 +607,8 @@
 ### 1.8.5. ServiceMesh
 
 ## 1.9. 分布式
-[分布式和集群](/docs/system/distributed.md)   
-
 ### 1.9.1. 分布式理论  
+[分布式和集群](/docs/system/distributed.md)   
 [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
 &emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
 [分布式理论CAP](/docs/microService/thinking/DistributedTheory.md)  
@@ -846,7 +845,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [规则引擎](docs/middleware/RulesEngine.md)  
 
 ### 1.11.6. 分布式文件存储  
-[文件存储](/docs/File/FileStore.md)  
+[分布式文件存储](/docs/File/FileStore.md)  
 
 
 ----------
@@ -1153,7 +1152,7 @@ es   esHD   kibana  logstash   filebeat
 
 ------------  
 
-## 1.22. 监控
+## 1.22. 监控和统计
 ### 1.22.1. 监控
 [Linux监控指标](/docs/devAndOps/monitor/indicators.md)  
 [监控系统](/docs/devAndOps/monitor/monitor.md)  
