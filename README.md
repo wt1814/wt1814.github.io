@@ -15,11 +15,6 @@
         - [1.3.3. ShardingSphere](#133-shardingsphere)
     - [1.4. Web服务器](#14-web服务器)
         - [1.4.1. tomcat](#141-tomcat)
-    - [1.5. 项目构建](#15-项目构建)
-        - [1.5.1. 构建基础](#151-构建基础)
-        - [1.5.2. 前后端分离](#152-前后端分离)
-        - [1.5.3. 互联网安全架构](#153-互联网安全架构)
-    - [1.6. 架构设计](#16-架构设计)
     - [1.7. SSM](#17-ssm)
         - [1.7.1. Spring](#171-spring)
         - [1.7.2. MyBatis](#172-mybatis)
@@ -51,6 +46,11 @@
         - [1.11.4. 工作流](#1114-工作流)
         - [1.11.5. 规则引擎](#1115-规则引擎)
         - [1.11.6. 分布式文件存储](#1116-分布式文件存储)
+    - [1.5. 项目构建](#15-项目构建)
+        - [1.5.1. 构建基础](#151-构建基础)
+        - [1.5.2. 前后端分离](#152-前后端分离)
+        - [1.5.3. 互联网安全架构](#153-互联网安全架构)
+    - [1.6. 架构设计](#16-架构设计)
     - [1.12. 系统设计](#112-系统设计)
     - [1.13. 响应式编程](#113-响应式编程)
     - [1.14. Error](#114-error)
@@ -60,7 +60,7 @@
         - [1.17.1. 通信基础](#1171-通信基础)
         - [1.17.2. NIO](#1172-nio)
         - [1.17.3. Netty](#1173-netty)
-        - [1.17.4. webSocket](#1174-websocket)
+        - [1.17.4. WebSocket](#1174-websocket)
         - [1.17.5. 其他](#1175-其他)
     - [1.18. 源码搭建汇总](#118-源码搭建汇总)
     - [1.19. 计算机网络](#119-计算机网络)
@@ -71,7 +71,7 @@
         - [1.21.2. DevOps](#1212-devops)
         - [1.21.3. 搭建-研发](#1213-搭建-研发)
         - [1.21.4. 搭建-需求、测试](#1214-搭建-需求测试)
-    - [1.22. 监控](#122-监控)
+    - [1.22. 监控和统计](#122-监控和统计)
         - [1.22.1. 监控](#1221-监控)
         - [1.22.2. 统计](#1222-统计)
     - [1.23. 常用研发工具](#123-常用研发工具)
@@ -378,83 +378,6 @@
 [tomcat类加载器](/docs/webContainer/tomcat/tomcatClassLoader.md)  
 [tomcat日志](/docs/webContainer/tomcat/tomcatLog.md)  
 [tomcat调优](/docs/webContainer/tomcat/TomcatTuning)  
-
-
---------
-
-## 1.5. 项目构建
-### 1.5.1. 构建基础    
-[版本号](/docs/web/Version.md)  
-[编码规范](/docs/java/Design/CodingSpecification.md)  
-[MVC三层架构上再加一层Manager层](/docs/web/Manager.md)  
-[项目构建基础](/docs/web/BuildFoundation.md)  
-&emsp; [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
-&emsp; [接口管理](/docs/web/InterfaceManagement.md)  
-&emsp; &emsp; [Swagger](/docs/web/Swagger.md)  
-&emsp; &emsp; [接口管理平台](/docs/web/Mock.md)  
-&emsp; [Controller层简洁又优雅](/docs/web/Controller.md)  
-&emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
-&emsp; [统一响应处理](/docs/web/ResponseProcessing.md)  
-&emsp; [统一异常处理](/docs/web/ExceptionHandler.md)  
-&emsp; [统一日志记录](/docs/web/unifiedLog.md)  
-&emsp; [日志系统](/docs/web/log.md)  
-&emsp; &emsp; [log4j2](/docs/web/log4j2.md)  
-&emsp; [代码分层](/docs/web/CodeLayering.md)  
-&emsp; [SpringTest](/docs/web/test.md)  
-&emsp; [乱码](/docs/web/garbled.md)  
-&emsp; [工具类hutool](/docs/web/hutool.md)  
-&emsp; [跨域](/docs/web/Cross.md)  
-[JavaBean](/docs/web/JavaBean.md)  
-&emsp; [POJO](/docs/web/POJO.md)  
-&emsp; [BeanUtils](/docs/web/BeanUtils.md)  
-&emsp; [参数校验](/docs/web/Validation.md)  
-&emsp; &emsp; [普通项目参数校验](/docs/web/GeneralValidation.md)  
-&emsp; [Lombok](/docs/web/Lombok.md)  
-[API接口设计](/docs/web/API.md)    
-&emsp; [RESTful风格](/docs/web/interface/RESTful.md)  
-&emsp; [接口幂等](/docs/web/interface/idempotent.md)  
-&emsp; [接口防刷/反爬虫](/docs/web/interface/brush.md)  
-&emsp; [接口安全](/docs/web/interface/security.md)  
-&emsp; [★★★接口响应时间问题](/docs/web/interface/timeout.md)  
-&emsp; [接口预警](/docs/web/interface/EarlyWarn.md)  
-[Http](/docs/web/http.md)   
-&emsp; [RestTemplate](/docs/web/Resttemplate.md)  
-&emsp; [Http重试](/docs/web/httpRetry.md)   
-[数据相关](/docs/web/Data.md)  
-&emsp; [格式化](/docs/web/Format.md)  
-&emsp; [数据脱敏](/docs/web/sensitive.md)  
-&emsp; [加密算法](/docs/web/encryption.md)  
-[其他](/docs/web/other.md)  
-
-
-### 1.5.2. 前后端分离  
-&emsp; [跨域和内外网隔离](/docs/web/Cross.md)  
-
-### 1.5.3. 互联网安全架构  
-[源码安全](/docs/web/codeSecurity.md)   
-[安全架构](/docs/system/safe/safe.md)  
-
-## 1.6. 架构设计  
-[IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
-[技术选型](/docs/system/TechnicalSelection.md)  
-[架构的方方面面](/docs/system/AllAspects.md)  
-[软件架构设计模式](/docs/system/designPattern.md)  
-[架构图](/docs/system/diagram.md)  
-[架构质量属性](/docs/system/QualityAttribute.md)  
-&emsp; [容灾和备份](/docs/system/backups.md)  
-[系统瓶颈](/docs/system/Bottleneck.md)  
-[JAVA线上故障排查](/docs/Linux/problem.md)  
-[脚手架介绍](/docs/system/Scaffolding.md)  
-[消息与事件驱动](/docs/Linux/drive.md)  
-&emsp; [事件和驱动](/docs/system/EventsAndMessages.md)  
-[项目搭建](/docs/system/BuildProject.md)  
-[DDD](/docs/system/DDD.md)  
-<!-- 
-[Gateway](/docs/microService/microservices/Gateway.md)  
-
-软件工程
-
--->
 
 -------
 
@@ -850,6 +773,83 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 ----------
 
+
+
+## 1.5. 项目构建
+### 1.5.1. 构建基础    
+[版本号](/docs/web/Version.md)  
+[编码规范](/docs/java/Design/CodingSpecification.md)  
+[MVC三层架构上再加一层Manager层](/docs/web/Manager.md)  
+[项目构建基础](/docs/web/BuildFoundation.md)  
+&emsp; [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
+&emsp; [接口管理](/docs/web/InterfaceManagement.md)  
+&emsp; &emsp; [Swagger](/docs/web/Swagger.md)  
+&emsp; &emsp; [接口管理平台](/docs/web/Mock.md)  
+&emsp; [Controller层简洁又优雅](/docs/web/Controller.md)  
+&emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
+&emsp; [统一响应处理](/docs/web/ResponseProcessing.md)  
+&emsp; [统一异常处理](/docs/web/ExceptionHandler.md)  
+&emsp; [统一日志记录](/docs/web/unifiedLog.md)  
+&emsp; [日志系统](/docs/web/log.md)  
+&emsp; &emsp; [log4j2](/docs/web/log4j2.md)  
+&emsp; [代码分层](/docs/web/CodeLayering.md)  
+&emsp; [SpringTest](/docs/web/test.md)  
+&emsp; [乱码](/docs/web/garbled.md)  
+&emsp; [工具类hutool](/docs/web/hutool.md)  
+&emsp; [跨域](/docs/web/Cross.md)  
+[JavaBean](/docs/web/JavaBean.md)  
+&emsp; [POJO](/docs/web/POJO.md)  
+&emsp; [BeanUtils](/docs/web/BeanUtils.md)  
+&emsp; [参数校验](/docs/web/Validation.md)  
+&emsp; &emsp; [普通项目参数校验](/docs/web/GeneralValidation.md)  
+&emsp; [Lombok](/docs/web/Lombok.md)  
+[API接口设计](/docs/web/API.md)    
+&emsp; [RESTful风格](/docs/web/interface/RESTful.md)  
+&emsp; [接口幂等](/docs/web/interface/idempotent.md)  
+&emsp; [接口防刷/反爬虫](/docs/web/interface/brush.md)  
+&emsp; [接口安全](/docs/web/interface/security.md)  
+&emsp; [★★★接口响应时间问题](/docs/web/interface/timeout.md)  
+&emsp; [接口预警](/docs/web/interface/EarlyWarn.md)  
+[Http](/docs/web/http.md)   
+&emsp; [RestTemplate](/docs/web/Resttemplate.md)  
+&emsp; [Http重试](/docs/web/httpRetry.md)   
+[数据相关](/docs/web/Data.md)  
+&emsp; [格式化](/docs/web/Format.md)  
+&emsp; [数据脱敏](/docs/web/sensitive.md)  
+&emsp; [加密算法](/docs/web/encryption.md)  
+[其他](/docs/web/other.md)  
+
+
+### 1.5.2. 前后端分离  
+&emsp; [跨域和内外网隔离](/docs/web/Cross.md)  
+
+### 1.5.3. 互联网安全架构  
+[源码安全](/docs/web/codeSecurity.md)   
+[安全架构](/docs/system/safe/safe.md)  
+
+## 1.6. 架构设计  
+[IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
+[技术选型](/docs/system/TechnicalSelection.md)  
+[架构的方方面面](/docs/system/AllAspects.md)  
+[软件架构设计模式](/docs/system/designPattern.md)  
+[架构图](/docs/system/diagram.md)  
+[架构质量属性](/docs/system/QualityAttribute.md)  
+&emsp; [容灾和备份](/docs/system/backups.md)  
+[系统瓶颈](/docs/system/Bottleneck.md)  
+[JAVA线上故障排查](/docs/Linux/problem.md)  
+[脚手架介绍](/docs/system/Scaffolding.md)  
+[消息与事件驱动](/docs/Linux/drive.md)  
+&emsp; [事件和驱动](/docs/system/EventsAndMessages.md)  
+[项目搭建](/docs/system/BuildProject.md)  
+[DDD](/docs/system/DDD.md)  
+<!-- 
+[Gateway](/docs/microService/microservices/Gateway.md)  
+
+软件工程
+
+-->
+
+
 ## 1.12. 系统设计  
 [工具类](/docs/SystemDesign/tools.md)  
 [登录](/docs/SystemDesign/Login.md)  
@@ -932,7 +932,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
 &emsp; &emsp; &emsp; [池化内存分配](/docs/microService/communication/Netty/byteBufTwo.md)    
 
-### 1.17.4. webSocket
+### 1.17.4. WebSocket
 [WebSocket](/docs/webSocket/Summary.md)  
 &emsp; [实时消息推送](/docs/webSocket/LongPolling.md)  
 &emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
@@ -994,7 +994,6 @@ https://help.aliyun.com/document_detail/122217.html
 &emsp; [Keepalived](/docs/system/loadBalance/Keepalived.md)  
 [IP负载均衡](/docs/system/loadBalance/IPLoad.md)  
 [数据链路负载均衡](/docs/system/loadBalance/LinkLoad.md)  
-[CDN](/docs/system/loadBalance/CDN.md)  
 
 
 ----

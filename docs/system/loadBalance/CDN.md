@@ -27,6 +27,23 @@ https://mp.weixin.qq.com/s/jtvsGgUNgSDGUIk_UIVqOA
 -->
 
 <!-- 
+
+快速入门 CDN 原理及架构
+https://blog.csdn.net/Maxineeez/article/details/126141628?spm=1001.2014.3001.5502
+CDN基础入门：CDN域名添加
+https://blog.csdn.net/Maxineeez/article/details/126173609?spm=1001.2014.3001.5502
+CDN基础入门：CDN解析配置
+https://blog.csdn.net/Maxineeez/article/details/126176297?spm=1001.2014.3001.5502
+CDN基础入门：HTTPS配置
+https://blog.csdn.net/Maxineeez/article/details/126176801?spm=1001.2014.3001.5502
+CDN基础入门：CDN缓存配置及优化
+https://blog.csdn.net/Maxineeez/article/details/126176846?spm=1001.2014.3001.5502
+CDN基础入门：CDN缓存刷新与预热
+https://blog.csdn.net/Maxineeez/article/details/126177175?spm=1001.2014.3001.5502
+-->
+
+
+<!-- 
 ~~
 使用 CDN 的好处和注意事项
 https://www.imydl.com/work/4073.html
@@ -148,3 +165,7 @@ https://www.imydl.com/work/4073.html
 
 ![image](http://www.wt1814.com/static/view/images/system/loadBalance/cdn/cdn-4.png)  
 &emsp; 关于最后一条里提到的[将 CDN 节点 IP 加入到服务器防火墙“白名单”里]，这点对于使用“虚拟主机”的站点是需要服务器管理员来操作的，一般为了安全考虑都不愿给添加的，这个目前明月也没有很好的办法。至于说使用 ECS 类云主机的必须自己手动的来添加了，但是，添加之前一定要搞清楚自己的 ECS 主机使用的默认防火墙是什么以及如何使用等等问题，明月建议是使用 Linux 默认的 iptables 作为服务器的默认防火墙，因为 iptables 实在是太强大了，好处很多。但这些需要具备一定的 Linux 命令行操作的基本知识的，当然大家也可以借助“百度、谷歌”来搜索到众多的相关教程，虽然这些看似很复杂，但是要记得“一次折腾、受用终生”哦。  
+
+
+
+
