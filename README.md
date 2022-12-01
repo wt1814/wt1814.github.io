@@ -46,6 +46,8 @@
         - [1.11.4. 工作流](#1114-工作流)
         - [1.11.5. 规则引擎](#1115-规则引擎)
         - [1.11.6. 分布式文件存储](#1116-分布式文件存储)
+    - [1.14. Error](#114-error)
+    - [1.18. 源码搭建汇总](#118-源码搭建汇总)
     - [1.5. 项目构建](#15-项目构建)
         - [1.5.1. 构建基础](#151-构建基础)
         - [1.5.2. 前后端分离](#152-前后端分离)
@@ -53,7 +55,6 @@
     - [1.6. 架构设计](#16-架构设计)
     - [1.12. 系统设计](#112-系统设计)
     - [1.13. 响应式编程](#113-响应式编程)
-    - [1.14. Error](#114-error)
     - [1.15. 内存优化](#115-内存优化)
     - [1.16. 磁盘IO](#116-磁盘io)
     - [1.17. 网络IO/分布式通信](#117-网络io分布式通信)
@@ -62,7 +63,6 @@
         - [1.17.3. Netty](#1173-netty)
         - [1.17.4. WebSocket](#1174-websocket)
         - [1.17.5. 其他](#1175-其他)
-    - [1.18. 源码搭建汇总](#118-源码搭建汇总)
     - [1.19. 计算机网络](#119-计算机网络)
         - [1.19.1. 负载均衡](#1191-负载均衡)
     - [1.20. Linux操作系统](#120-linux操作系统)
@@ -774,6 +774,21 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 ----------
 
 
+## 1.14. Error  
+[多线程串线了](/docs/Error/ThreadCrossed.md)  
+[熔断降级处理](/docs/Error/hystrix.md)  
+[Redis高并发](/docs/Error/redisConcurrent.md)  
+[Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
+[redis scan命令](/docs/Error/redisScan.md)  
+<!-- [雪花利用ZK生成workId]()   -->
+
+
+## 1.18. 源码搭建汇总
+[SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
+[Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
+[Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
+
+--------
 
 ## 1.5. 项目构建
 ### 1.5.1. 构建基础    
@@ -863,16 +878,6 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 ## 1.13. 响应式编程
 [响应式编程](/docs/SystemDesign/reactor.md)  
 
----
-
-## 1.14. Error  
-[多线程串线了](/docs/Error/ThreadCrossed.md)  
-[熔断降级处理](/docs/Error/hystrix.md)  
-[Redis高并发](/docs/Error/redisConcurrent.md)  
-[Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-[redis scan命令](/docs/Error/redisScan.md)  
-<!-- [雪花利用ZK生成workId]()   -->
-
 
 -----------------
 
@@ -943,15 +948,8 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 ### 1.17.5. 其他  
 [请求合并](/docs/webSocket/RequestMerge.md)  
 
-------
 
-## 1.18. 源码搭建汇总
-[SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
-[Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
-[Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
-
-
-----
+---------
 
 ## 1.19. 计算机网络  
 [OSI七层网络模型](/docs/network/OSI.md)  
