@@ -22,7 +22,7 @@
 2.`限流对象分类：基于请求限流、基于资源限流。`  
 3. 限流算法：  
     * 固定窗口算法，有时会让通过请求量允许为限制的两倍。  
-    ![image](http://www.wt1814.com/static/view/images/microService/problems/problem-24.png)  
+    ![image](http://182.92.69.8:8081/img/microService/problems/problem-24.png)  
     * 滑动窗口算法， **<font color = "clime">避免了固定窗口计数器带来的双倍突发请求。</font>** 但时间区间的精度越高，算法所需的空间容量就越大。  
     * 漏桶算法，实现流量整形和流量控制。漏洞底部的设计大小固定，水流速度固定。漏桶算法的缺陷也很明显，当短时间内有大量的突发请求时，即便此时服务器没有任何负载，每个请求也都得在队列中等待一段时间才能被响应。  
     * 令牌桶算法，
@@ -85,7 +85,7 @@ https://mp.weixin.qq.com/s/SQ97zud27ioslcsoRI9OfA
 
 ### 1.3.1. 固定窗口计数器，控制并发数量  
 &emsp; 单位时间内，所接受的QPS的请求数目，如果超过阈值，则直接拒绝服务。  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-23.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-23.png)  
 
 &emsp; 固定窗口计数器算法概念如下：  
 
@@ -94,7 +94,7 @@ https://mp.weixin.qq.com/s/SQ97zud27ioslcsoRI9OfA
 * 如果计数器超过了限制数量，则本窗口内所有的请求都被丢弃当时间到达下一个窗口时，计数器重置。  
 
 &emsp; 固定窗口计数器是最为简单的算法，但<font color="red">固定窗口算法有时会让通过请求量允许为限制的两倍</font>。考虑如下情况：限制1秒内最多通过5个请求，在第一个窗口的最后半秒内通过了5个请求，第二个窗口的前半秒内又通过了5个请求。这样看来就是在1秒内通过了10个请求。  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-24.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-24.png)  
 &emsp; Java内部可以通过原子类计数器AtomicInteger、信号量Semaphore来做简单的限流。  
 
 ```java
@@ -129,7 +129,7 @@ public boolean limit(int maxCount, int interval) {
 ```
 
 ### 1.3.2. 滑动窗口  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-25.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-25.png)  
 &emsp; 滑动窗口计数器算法概念如下：  
 
 * 将时间划分为多个区间；  
@@ -175,7 +175,7 @@ private void doCheck(){
 
 ### 1.3.3. 漏桶算法，控制访问速率  
 &emsp; 漏桶算法也是一种非常常用的限流算法，可以用来<font color = "red">实现流量整形(Traffic Shaping)和流量控制(Traffic Policing)。</font><font color = "clime">漏洞底部的设计大小固定，水流速度固定。</font>  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-26.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-26.png)  
 
 &emsp; 漏桶算法概念如下：  
 
@@ -189,7 +189,7 @@ private void doCheck(){
 ### 1.3.4. 令牌桶算法  
 <!-- https://baike.baidu.com/item/%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/6597000?fr=aladdin
 -->
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-27.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-27.png)  
 
 &emsp; 令牌桶算法概念如下：  
 

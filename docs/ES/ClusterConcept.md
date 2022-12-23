@@ -22,7 +22,7 @@ https://mp.weixin.qq.com/s?__biz=MzIxMTE0ODU5NQ==&mid=2650238166&idx=1&sn=f93737
 
 
 &emsp; 在数据库系统中，为了保证高可用性，可能会做主从复制、分库分表等操作。在ES中也有相同的基本操作。`ES天然支持分布式。`ES集群架构如下：  
-![image](http://www.wt1814.com/static/view/images/ES/es-4.png)  
+![image](http://182.92.69.8:8081/img/ES/es-4.png)  
 &emsp; 上述图中Node-1是主节点，主节点有权限控制整个集群，有权限控制整个集群。每个节点都有三个分片，其中P0 P1 P2代表Primary为主分片，R开头的则代表为每个主分片对应的副本分片，一共是3个主分片，每个主分片有两个对应的副本分片。  
 
 
@@ -98,7 +98,7 @@ https://www.cnblogs.com/37yan/p/9928748.html
 这些很强大的功能对用户来说是透明的，你不需要做什么操作，系统会自动处理。  
 -->
 &emsp; 副本是一个分片的精确复制，每个分片可以有零个或多个副本。<font color = "red">副本的作用：一是提高系统的容错性，当某个节点某个分片损坏或丢失时可以从副本中恢复；</font><font color = "blue">二是提高es的查询效率，es会自动对搜索请求进行负载均衡。</font>  
-![image](http://www.wt1814.com/static/view/images/ES/es-75.png)  
+![image](http://182.92.69.8:8081/img/ES/es-75.png)  
 
 ## 1.4. 路由(routing)  
 &emsp; 当存储一个文档的时候，它会存储在唯一的主分片中，具体哪个分片是通过散列值进行选择：默认情况下，这个值是由文档的ID生成。如果文档有一个指定的父文档，则从父文档ID中生成，该值可以在存储文档的时候进行修改。   

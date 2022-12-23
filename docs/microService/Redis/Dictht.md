@@ -28,7 +28,7 @@ https://mp.weixin.qq.com/s/DG3fOoNf-Avuud2cwa3N5A
 ## 1.1. Dictht数据结构
 &emsp; 字典类型的底层是hashtable实现的，明白了字典的底层实现原理也就是明白了hashtable的实现原理，hashtable的实现原理可以与HashMap的是底层原理相类比。它是一个数组+链表的结构。Redis Hash使用MurmurHash2算法来计算键的哈希值，并且使用链地址法来解决键冲突，进行了一些rehash优化等。  
 &emsp; dictEntry与HashMap两者在新增时都会通过key计算出数组下标，不同的是计算法方式不同，HashMap中是以hash函数的方式，而hashtable中计算出hash值后，还要通过sizemask属性和哈希值再次得到数组下标。结构如下：  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-81.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-81.png)  
 
 ## 1.2. rehash与渐进式rehash
 ### 1.2.1. rehash  

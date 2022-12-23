@@ -56,7 +56,7 @@ https://blog.csdn.net/github_32521685/article/details/106354737
 ## 1.2. 什么是AOF重写
 &emsp; AOF重写是AOF持久化的一个机制，用来压缩AOF文件，通过fork一个子进程，重新写一个新的AOF文件，该次重写不是读取旧的AOF文件进行复制，而是读取内存中的Redis数据库，重写一份AOF文件，有点类似于RDB的快照方式。  
 &emsp; **<font color = "red">在子进程进行AOF重启期间，Redis主进程执行的命令会被保存在AOF重写缓冲区里面，</font>** 这个缓冲区在服务器创建子进程之后开始使用， **<font color = "clime">当Redis执行完一个写命令之后，它会同时将这个写命令发送给 AOF缓冲区和AOF重写缓冲区。</font>** 如下图：  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-113.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-113.png)  
 
 
 ## 1.3. 阻塞原因
@@ -67,7 +67,7 @@ https://blog.csdn.net/github_32521685/article/details/106354737
 * 继续处理客户端请求命令。  
 
 &emsp; **<font color = "blue">在整个AOF后台重写过程中，只有信号处理函数执行时会对Redis主进程造成阻塞，在其他时候，AOF后台重写都不会阻塞主进程，</font>** 如下图所示：
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-114.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-114.png)  
 
 ## 1.4. 解决方案
 &emsp; 这是当时的Redis配置：

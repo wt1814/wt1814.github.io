@@ -9,7 +9,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 分层架构设计  
-    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-51.png)  
+    ![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-51.png)  
     1. 从大的范围来说，dubbo分为三层：
         * business业务逻辑层由开发人员来提供接口和实现，还有一些配置信息。
         * `RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理。`
@@ -35,7 +35,7 @@ http://dubbo.apache.org/zh/docs/v2.7/dev/design/
 &emsp; **本节参考官方文档：http://dubbo.apache.org/zh/docs/v2.7/dev/design/**  
 
 ## 1.1. 分层架构  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-16.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-16.png)   
 &emsp; 图例说明：  
 
 * <font color = "red">图中左边淡蓝背景的为服务消费方使用的接口，右边淡绿色背景的为服务提供方使用的接口，位于中轴线上的为双方都用到的接口。</font>  
@@ -53,10 +53,10 @@ http://dubbo.apache.org/zh/docs/v2.7/dev/design/
 
 &emsp; Dubbo的总体分为业务层(Biz)、RPC层、Remote层。business业务逻辑层由开发人员来提供接口和实现还有一些配置信息，RPC层就是真正的RPC调用的核心层，封装整个RPC的调用过程、负载均衡、集群容错、代理，remoting则是对网络传输协议和数据转换的封装。  
 &emsp; 如果把每一层继续做细分，那么一共可以分为十层。其中，Monitor层在最新的官方PPT中并不再作为单独的一层。整个分层依赖由上至下，除开business业务逻辑之外，其他的几层都是SPI机制。如下图所示，图中左边是具体的分层，右边是该层中比较重要的接口。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-61.png)  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-51.png)  
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-61.png)  
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-51.png)  
 
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-62.png)  
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-62.png)  
 
 &emsp; **各层说明：**  
 
@@ -87,7 +87,7 @@ http://dubbo.apache.org/zh/docs/v2.7/dev/design/
 &emsp; 以上就是整个服务暴露的过程，消费方在启动时会通过Registry在注册中心订阅服务端的元数据（包括IP和端口）。这样就可以得到刚才暴露的服务了。  
 
 &emsp; 下面来看一下消费者调用服务提供者的总体流程，此处只介绍远程调用，本地调用是远程调用的子集，因此不在此展开。Dubbo组件调用总体流程如图1-8所示。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-63.png)  
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-63.png)  
 &emsp; 首先，调用过程也是从一个Proxy开始的，Proxy持有了一个Invoker对象。然后触发invoke调用。在invoke调用过程中，需要使用Cluster, Cluster负责容错，如调用失败的重试。Cluster在调用之前会通过Directory获取所有可以调用的远程服务Invoker列表（一个接口可能有多个节点提供服务）。由于可以调用的远程服务有很多，此时如果用户配置了路由规则（如指定某些方法只能调用某个节点），那么还会根据路由规则将Invoker列表过滤一遍。  
 &emsp; 然后，存活下来的Invoker可能还会有很多，此时要调用哪一个呢？于是会继续通过LoadBalance方法做负载均衡，最终选出一个可以调用的Invokero这个Invoker在调用之前又会经过一个过滤器链，这个过滤器链通常是处理上下文、限流、计数等。  
 &emsp; 接着，会使用Client做数据传输，如常见的Netty Client等。传输之前肯定要做一些私有协议的构造，此时就会用到Codec接口。构造完成后，就对数据包做序列化（Serialization) ，然后传输到服务提供者端。服务提供者收到数据包，也会使用Codec处理协议头及一些半包、粘包等。处理完成后再对完整的数据报文做反序列化处理。

@@ -53,7 +53,7 @@ https://www.xinnet.com/knowledge/2142330137.html
 ## 1.1. SSL/TLS  
 &emsp; SSL(Secure Sockets Layer安全套接层)，及其继任者传输层安全(Transport Layer Security，TLS)是为网络通信提供安全及数据完整性的一种安全协议。TLS/SSL在传输层与应用层之间对网络连接进行加密。  
 &emsp; **<font color = "red">TLS/SSL是介于TCP和HTTP之间的一层安全协议，</font>** 不影响原有的TCP协议和HTTP协议，所以使用HTTPS基本上不需要对HTTP页面进行太多的改造。  
-![image](http://www.wt1814.com/static/view/images/network/https-1.png)  
+![image](http://182.92.69.8:8081/img/network/https-1.png)  
 &emsp; **<font color = "clime">SSL协议提供的服务主要有：</font>**  
 1. 认证用户和服务器，确保数据发送到正确的客户机和服务器。  
 2. 加密数据以防止数据中途被窃取。  
@@ -61,7 +61,7 @@ https://www.xinnet.com/knowledge/2142330137.html
 
 ### 1.1.1. SSL的体系结构  
 &emsp; SSL的体系结构中包含两个协议子层，其中底层是SSL记录协议层(SSL Record Protocol Layer)；高层是SSL握手协议层(SSL HandShake Protocol Layer)。SSL的协议栈如图所示，其中阴影部分即SSL协议。  
-![image](http://www.wt1814.com/static/view/images/network/https-2.png)  
+![image](http://182.92.69.8:8081/img/network/https-2.png)  
 &emsp; SSL记录协议层的作用是为高层协议提供基本的安全服务。SSL记录协议针对HTTP协议进行了特别的设计，使得超文本的传输协议HTTP能够在SSL运行。纪录封装各种高层协议，具体实施压缩解压缩、加密解密、计算和校验MAC等与安全有关的操作。  
 &emsp; SSL握手协议层包括SSL握手协议(SSL HandShake Protocol)、SSL密码参数修改协议(SSL Change Cipher Spec Protocol)、应用数据协议(Application Data Protocol)和SSL告警协议(SSL Alert Protocol)。握手层的这些协议用于SSL管理信息的交换，允许应用协议传送数据之间相互验证，协商加密算法和生成密钥等。SSL握手协议的作用是协调客户和服务器的状态，使双方能够达到状态的同步。  
 
@@ -72,7 +72,7 @@ https://mp.weixin.qq.com/s/SNNxTHBrjGbbQbYkCfuzSQ
 https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 -->
 &emsp; **<font color = "red">为了防止中间人攻击。</font>** “中间人攻击”的具体过程如下：  
-![image](http://www.wt1814.com/static/view/images/network/https-4.png)  
+![image](http://182.92.69.8:8081/img/network/https-4.png)  
 &emsp; 过程原理如下：  
 
 * 本地请求被劫持(如 DNS 劫持等)，所有请求均发送到中间人的服务器。
@@ -99,8 +99,8 @@ https://mp.weixin.qq.com/s/Chwz0b8IBlkB6hoxI-_wyQ
 ## 1.2. HTTPS工作原理  
 ### 1.2.1. 工作流程  
 &emsp; **<font color = "red">HTTPS的整体过程分为证书验证、协商密钥、数据传输阶段。</font><font color = "clime">协商密钥使用非对称加密；数据传输使用对称加密。</font>** 具体的交互过程如下：  
-![image](http://www.wt1814.com/static/view/images/network/https-3.png)  
-![image](http://www.wt1814.com/static/view/images/network/https-5.png)  
+![image](http://182.92.69.8:8081/img/network/https-3.png)  
+![image](http://182.92.69.8:8081/img/network/https-5.png)  
 
 &emsp; &emsp; **<font color = "red">证书验证阶段：</font>**  
 1. 客户端发起HTTPS请求：浏览器将支持的加密算法信息发送给服务器；  

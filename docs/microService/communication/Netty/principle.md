@@ -99,7 +99,7 @@ public final class EchoServer {
 
 
 ## 1.2. Netty服务端创建时序图  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-28.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-28.png)  
 
 <!-- 
 &emsp; 上面是关于启动一个Netty的客户端或服务端的一个流程时序图。从步骤1可以看到，ServerBootstrap 是直接面对用户的，用户通过 ServerBootstrap 来进行设置的。ServerBootstrap 是 Netty 的启动辅助类。它的功能就是提供方法来配置启动的参数。底层是通过门面模式对各种能力进行抽象和封装，这样避免了像原生那样，需要认识并操作多个类才能启动一个应用，这是降低开发难度的途径之一。同时因为这样而引起需要配置或可以配置参数过多，ServerBootstrap 使用了 Builder 模式来解决了这个问题。  

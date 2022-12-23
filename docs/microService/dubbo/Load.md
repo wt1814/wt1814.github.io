@@ -31,7 +31,7 @@ https://mp.weixin.qq.com/s/7K0N_eSYCVuw-eQthiqhVw
 
 
 ## 1.2. 集群容错策略  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-13.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-13.png)   
 &emsp; <font color = "red">在集群调用失败时，Dubbo 提供了多种容错方案，缺省为 failover 重试。</font>下面列举dubbo支持的容错策略：  
 
 * Failover(默认) - 失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过 retries="2" 来设置重试次数(不含第一次)。  

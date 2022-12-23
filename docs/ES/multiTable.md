@@ -53,7 +53,7 @@ https://mp.weixin.qq.com/s?__biz=MzI2NDY1MTA3OQ==&mid=2247484382&idx=1&sn=da073a
 &emsp; 当使用父子文档时，使用has_child 或者has_parent做父子关联查询。  
 
 &emsp; **方案三、方案四选型对比：**  
-![image](http://www.wt1814.com/static/view/images/ES/es-70.png)  
+![image](http://182.92.69.8:8081/img/ES/es-70.png)  
 &emsp; 注意：方案三&方案四选型必须考虑性能问题。文档应该尽量通过合理的建模来提升检索效率。  
 &emsp; Join类型应该尽量避免使用。nested 类型检索使得检索效率慢几倍，父子Join类型检索会使得检索效率慢几百倍。  
 &emsp; 尽量将业务转化为没有关联关系的文档形式，在文档建模处多下功夫，以提升检索效率。  
@@ -62,7 +62,7 @@ https://mp.weixin.qq.com/s?__biz=MzI2NDY1MTA3OQ==&mid=2247484382&idx=1&sn=da073a
 &emsp; [干货 | Elasticsearch多表关联设计指南](https://mp.weixin.qq.com/s?__biz=MzI2NDY1MTA3OQ==&mid=2247484382&idx=1&sn=da073a257575867b8d979dac850c3f8e&chksm=eaa82bf6dddfa2e0bf920f0a3a63cb635277be2ae286a2a6d3fff905ad913ebf1f43051609e8&scene=21#wechat_redirect)  
 
 &emsp; 小结  
-![image](http://www.wt1814.com/static/view/images/ES/es-71.png)  
+![image](http://182.92.69.8:8081/img/ES/es-71.png)  
 
 
 -->
@@ -159,7 +159,7 @@ index.mapping.nested_objects.limit 缺省值是10000。
 ## 1.5. 小结  
 &emsp; 如果业务端对查询性能要求很高的话，还是<font color = "red">建议使用宽表化处理的方式</font>，这样也可以比较好地应对聚合的需求。在索引阶段需要做join处理，查询阶段可能需要做去重处理，分页方式可能也得权衡考虑下。  
 
-![image](http://www.wt1814.com/static/view/images/ES/es-74.png)  
+![image](http://182.92.69.8:8081/img/ES/es-74.png)  
 1. 在Elasticsearch开发实战中对于多表关联的设计要突破关系型数据库设计的思维定式。  
 2. 不建议在es做join操作，parent-child能实现部分功能，但是它的开销比较大，如果可能，尽量在设计时使用扁平的文档模型。  
 3. 尽量将业务转化为没有关联关系的文档形式，在文档建模处多下功夫，以提升检索效率。  

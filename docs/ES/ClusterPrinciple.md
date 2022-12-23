@@ -45,7 +45,7 @@
 ## 1.2. 集群容错  
 
 ### 1.2.1. 集群容错整体流程  
-![image](http://www.wt1814.com/static/view/images/ES/es-76.png)  
+![image](http://182.92.69.8:8081/img/ES/es-76.png)  
 &emsp; ①第一步：Master选举(假如宕机节点是Master)。  
 &emsp; &emsp; 1)脑裂：可能会产生多个Master节点。  
 &emsp; &emsp; 2)解决：discovery.zen.minimum_master_nodes=N/2+1。  
@@ -71,7 +71,7 @@ Elasticsearch 中的节点(比如共 20 个)，其中的 10 个 选了一个mast
 2、当候选数量为两个时， 只能修改为唯一的一个 master 候选， 其他作为 data 节 点， 避免脑裂问题。  
 -->
 &emsp; 在Elasticsearch集群中，master node非常重要，并且只有一个，相当于整个集群的大脑，控制将整个集群状态的更新，如果Elasticsearch集群节点之间出现区域性的网络中断，比如10个节点的Elasticsearch集群，4台node部署在机房A区，6台node部署在机房B区，如果A区与B区的交换机故障，导致两个区隔离开来了，那么没有master node的那个区，会触发master选举，如果选举了新的master，那么 **<font color = "red">整个集群会出现两个master node，这种现象叫做脑分裂。</font>**  
-![image](http://www.wt1814.com/static/view/images/ES/es-6.png)  
+![image](http://182.92.69.8:8081/img/ES/es-6.png)  
 &emsp; 这样现象很严重，会破坏集群的数据，该如何避免呢？  
 &emsp; **<font color = "clime">正确设置最少投票通过数量(discovery.zen.minimum_master_nodes)参数，可以避免脑分裂问题。</font>**  
 &emsp; discovery.zen.minimum_master_nodes参数表示至少需要多少个master eligible node，才可以成功地选举出master，否则不进行选举。  
@@ -84,13 +84,13 @@ Elasticsearch 中的节点(比如共 20 个)，其中的 10 个 选了一个mast
 &emsp; 所以一个Elasticsearch集群至少得有3个node，全部为master eligible node的话，quorum = 3/2 + 1 = 2。如果设置minimum_master_nodes=2，分析一下会不会出现脑分裂的问题。  
 
 &emsp; 场景一：A区一个node，为master，B区两个node，为master eligible node  
-![image](http://www.wt1814.com/static/view/images/ES/es-7.png)  
+![image](http://182.92.69.8:8081/img/ES/es-7.png)  
 &emsp; A区因为只剩下一个node，无法满足quorum的条件，此时master取消当前的master角色，且无法选举成功。  
 &emsp; B区两个master eligible node，满足quorum条件，成功选举出master。  
 &emsp; 此时集群还是只有一个master，待网络故障恢复后，集群数据正常。  
 
 &emsp; 场景二：A区一个node，为master eligible node，B区2个node，其中一个是master。  
-![image](http://www.wt1814.com/static/view/images/ES/es-8.png)    
+![image](http://182.92.69.8:8081/img/ES/es-8.png)    
 &emsp; A区只有一个master eligible node，不满足quorum的条件，无法进行选举。  
 &emsp; B区原本的master存在，不需要进行选举，并且满quorum的条件，master角色可以保留。  
 &emsp; 此时集群还是一个master，正常。  

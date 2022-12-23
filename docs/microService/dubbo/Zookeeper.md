@@ -62,7 +62,7 @@ ZooKeeper = 文件系统 + 监听通知机制。
 
 ## 1.2. ZooKeeper分层命名空间(逻辑存储结构)  
 &emsp; Zookeeper提供一个多层级的节点命名空间(节点称为znode)，这些节点都可以设置关联的数据。Zookeeper为了保证高吞吐和低延迟，在内存中维护了这个树状的目录结构，这种特性使得Zookeeper不能用于存放大量的数据，每个节点的存放数据上限为1M。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-1.png)  
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-1.png)  
 &emsp; znode的类型在创建时确定，并且之后不能再修改。  
 
 * 临时非顺序节点：客户端与zookeeper断开连接后，该节点被删除。  

@@ -75,7 +75,7 @@ https://www.linuxidc.com/Linux/2020-05/163174.htm
 2. top查看内存占用，shift+m按MEN占用降序。
 
 &emsp; 内存问题排查起来相对比CPU麻烦一些，场景也比较多。主要包括OOM、GC问题和堆外内存。一般来讲，会先用free命令先来检查一发内存的各种情况。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-82.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-82.png)  
 
 #### 1.1.2.1. 堆内内存
 
@@ -84,22 +84,22 @@ https://www.linuxidc.com/Linux/2020-05/163174.htm
 #### 1.1.2.2. 堆外内存  
 &emsp; 如果碰到堆外内存溢出，那可真是太不幸了。首先堆外内存溢出表现就是物理常驻内存增长快，报错的话视使用方式都不确定，如果由于使用Netty导致的，那错误日志里可能会出现OutOfDirectMemoryError错误，如果直接是DirectByteBuffer，那会报OutOfMemoryError: Direct buffer memory。  
 &emsp; 堆外内存溢出往往是和NIO的使用相关，一般先通过pmap来查看下进程占用的内存情况pmap -x pid | sort -rn -k3 | head -30，这段意思是查看对应pid倒序前30大的内存段。这边可以再一段时间后再跑一次命令看看内存增长情况，或者和正常机器比较可疑的内存段在哪里。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-83.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-83.png)  
 &emsp; 如果确定有可疑的内存端，需要通过gdb来分析gdb --batch --pid {pid} -ex "dump memory filename.dump {内存起始地址} {内存起始地址+内存块大小}"  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-84.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-84.png)  
 &emsp; 获取dump文件后可用heaxdump进行查看hexdump -C filename | less，不过大多数看到的都是二进制乱码。  
 &emsp; NMT是Java7U40引入的HotSpot新特性，配合jcmd命令我们就可以看到具体内存组成了。需要在启动参数中加入 -XX:NativeMemoryTracking=summary 或者 -XX:NativeMemoryTracking=detail，会有略微性能损耗。  
 &emsp; 一般对于堆外内存缓慢增长直到爆炸的情况来说，可以先设一个基线jcmd pid VM.native_memory baseline。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-85.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-85.png)  
 &emsp; 然后等放一段时间后再去看看内存增长的情况，通过jcmd pid VM.native_memory detail.diff(summary.diff)做一下summary或者detail级别的diff。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-86.png)  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-87.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-86.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-87.png)  
 &emsp; 可以看到jcmd分析出来的内存十分详细，包括堆内、线程以及gc(所以上述其他内存异常其实都可以用nmt来分析)，这边堆外内存我们重点关注Internal的内存增长，如果增长十分明显的话那就是有问题了。  
 &emsp; detail级别的话还会有具体内存段的增长情况，如下图。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-88.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-88.png)  
 &emsp; 此外在系统层面，我们还可以使用strace命令来监控内存分配 strace -f -e "brk,mmap,munmap" -p pid  
 &emsp; 这边内存分配信息主要包括了pid和内存地址。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-89.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-89.png)  
 &emsp; 不过其实上面那些操作也很难定位到具体的问题点，关键还是要看错误日志栈，找到可疑的对象，搞清楚它的回收机制，然后去分析对应的对象。比如DirectByteBuffer分配内存的话，是需要full GC或者手动system.gc来进行回收的(所以最好不要使用-XX:+DisableExplicitGC)。  
 &emsp; 那么其实可以跟踪一下DirectByteBuffer对象的内存情况，通过jmap -histo:live pid手动触发fullGC来看看堆外内存有没有被回收。如果被回收了，那么大概率是堆外内存本身分配的太小了，通过-XX:MaxDirectMemorySize进行调整。如果没有什么变化，那就要使用jmap去分析那些不能被gc的对象，以及和DirectByteBuffer之间的引用关系了。  
 
@@ -111,5 +111,5 @@ https://www.linuxidc.com/Linux/2020-05/163174.htm
 &emsp; 涉及到网络I/O的问题一般都比较复杂，场景多，定位难，成为了大多数开发的噩梦，应该是最复杂的了。这里会举一些例子，并从tcp层、应用层以及工具的使用等方面进行阐述。  
 
 ## 1.2. Linux下性能分析工具总结  
-![image](http://www.wt1814.com/static/view/images/Linux/Linux/linux-1.png) 
+![image](http://182.92.69.8:8081/img/Linux/Linux/linux-1.png) 
 

@@ -59,11 +59,11 @@ https://mp.weixin.qq.com/s/QIK1N-ePm6DQE4tMQ9N3Gw
 &emsp; 没有容量限制（相对于内存来说）的硬盘空间建立消息系统；  
 &emsp; 线性访问磁盘，速度快，可以保存任意一段时间！  
 4. 持久化的具体实现：  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-122.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-122.png)  
 5. 索引  
 &emsp; 为数据文件建索引：稀疏存储，每隔一定字节的数据建立一条索引（这样的目的是为了减少索引文件的大小）。   
 &emsp; 下图为一个partition的索引示意图：  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-123.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-123.png)  
 &emsp; 注：  
     1. 现在对6.和8建立了索引，如果要查找7，则会先查找到8然后，再找到8后的一个索引6，然后两个索引之间做二分法，找到7的位置  
     2. 每一个log文件中又分为多个segment  

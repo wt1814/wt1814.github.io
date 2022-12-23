@@ -41,7 +41,7 @@ https://blog.csdn.net/mengdonghui123456/article/details/53981976
 
 
 ## 1.2. ~~均衡技术~~   
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/load-3.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/load-3.png)  
 
 &emsp;常见的软件负载均衡技术有以下几种：  
 1. 基于DNS的负载均衡  
@@ -74,13 +74,13 @@ https://blog.csdn.net/mengdonghui123456/article/details/53981976
 
 ## 1.3. ★★★基于网络的负载均衡的分类  
 &emsp; OSI模型有7层结构，每层都可以有几个子层。OSI的7层从上到下分别是物理层、数据链路层、网络层、传输层、会话层、表示层、应用层：  
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/load-1.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/load-1.png)  
 &emsp; 根据负载均衡技术实现在OSI七层模型的不同层次，是可以给负载均衡分类的。大致可以分为以下几种，其中最常用的是四层和七层负载均衡：  
 &emsp; **二层负载均衡：**负载均衡服务器对外依然提供一个VIP(虚IP)，集群中不同的机器采用相同IP地址，但机器的MAC地址不一样。当负载均衡服务器接受到请求之后，通过改写报文的目标MAC地址的方式将请求转发到目标机器实现负载均衡。  
 &emsp; **三层负载均衡：**和二层负载均衡类似，负载均衡服务器对外依然提供一个VIP(虚IP)，但集群中不同的机器采用不同的IP地址。当负载均衡服务器接受到请求之后，根据不同的负载均衡算法，通过IP将请求转发至不同的真实服务器。  
 &emsp; **四层负载均衡：**四层负载均衡工作在OSI模型的传输层，由于在传输层，只有TCP/UDP协议，这两种协议中除了包含源IP、目标IP以外，还包含源端口号及目的端口号。四层负载均衡服务器在接受到客户端请求后，以后通过修改数据包的地址信息(IP+端口号)将流量转发到应用服务器。  
 &emsp; **七层负载均衡：**七层负载均衡工作在OSI模型的应用层，应用层协议较多，常用http、radius、DNS等。七层负载就可以基于这些协议来负载。这些应用层协议中会包含很多有意义的内容。比如同一个Web服务器的负载均衡，除了根据IP加端口进行负载外，还可根据七层的URL、浏览器类别、语言来决定是否要进行负载均衡。  
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/load-2.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/load-2.png)  
 &emsp; 对于一般的应用来说，有了Nginx就够了。Nginx可以用于七层负载均衡。但是对于一些大的网站，一般会采用DNS+四层负载+七层负载的方式进行多层次负载均衡。  
 
 <!-- 

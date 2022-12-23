@@ -13,7 +13,7 @@
 
 ## 1.1. 服务端启动
 &emsp; 首先我们结合下图看下Netty服务启动过程中，NioServerSocketChannel绑定的NioEventLoop启动流程  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-123.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-123.png)  
 &emsp; bind()部分源码我们在之前服务端启动过程中进行过说明，我们进一步跟踪进入doBind0()方法中可以看到channel.eventLoop().execute的执行，需要说明的是这里其实启动的NioServerSocketChannel绑定的 bossGroup，用来负责处理新连接接入的。  
 
 ```java
@@ -174,7 +174,7 @@ private void doStartThread() {
 
 ## 1.2. 新连接接入
 &emsp; 首先我们结合下图看下当有客户端接入时，创建NioSocketChannel，然后绑定NioEventLoop并启动的流程  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-124.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-124.png)  
 &emsp; 服务端启动时会在NioServerSocketChannel的任务链中添加ServerBootstrapAcceptor对象，这就是用来处理新新连接接入的  
 
 ```java

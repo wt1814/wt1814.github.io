@@ -58,7 +58,7 @@ https://www.cnblogs.com/knowledgesea/p/6813832.html
 而长轮询意味着浏览器只需启动一个HTTP请求，其连接的服务器会“hold”住此次连接，直到有新消息才返回响应信息并关闭连接，客户端处理完响应信息后再向服务器发送新的Http请求,以此类推。  
 -->
 &emsp; 客户端发送请求后服务器端不会立即返回数据，服务器端会阻塞请求连接不会立即断开，直到服务器端有数据更新或者是连接超时才返回，客户端才再次发出请求新建连接、如此反复从而获取最新数据。大致效果如下：  
-![image](http://www.wt1814.com/static/view/images/websocket/websocket-1.png)  
+![image](http://182.92.69.8:8081/img/websocket/websocket-1.png)  
 
 &emsp; 客户端的代码如下：  
 
@@ -115,7 +115,7 @@ https://juejin.cn/post/6844903955240058893
 -->
 
 &emsp; 四种Web即时通信技术比较它们的实现方式和各自的优缺点。 对比优缺点如下：  
-![image](http://www.wt1814.com/static/view/images/websocket/websocket-2.png)  
+![image](http://182.92.69.8:8081/img/websocket/websocket-2.png)  
 
 &emsp; 上面四种Web即时通信技术比较，可以从不同的角度考虑，它们的优先级是不同的，基本上可以分为两大类基于http和tcp两种通信中的一种。  
 

@@ -9,7 +9,7 @@ https://mp.weixin.qq.com/s/3EX7rnIrj_lESoReKf00FQ
  为什么一段看似正确的代码会导致DUBBO线程池被打满 
  https://mp.weixin.qq.com/s/OW6cSK3xl1fZfQwCjWWqqg
 -->
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-60.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-60.png)   
 
 ## 先启动客户端再启动服务端，注入消费者为null
 <!-- 

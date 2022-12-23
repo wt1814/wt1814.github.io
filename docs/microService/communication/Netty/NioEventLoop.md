@@ -14,7 +14,7 @@
 
 # 1. NioEventLoop
 <!-- 
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-102.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-102.png)  
 
 NioEventLoop
 https://www.jianshu.com/p/5c6466510d3b
@@ -37,18 +37,18 @@ https://www.jianshu.com/p/23820270e30a
 
 &emsp; 最简单地说，NioEventLoop 的首要职责就是为注册在它上的 channels 服务，发现这些 channels 上发生的新连接事件、读写等 I/O 事件，然后将事件转交 channel 流水线处理。  
 &emsp; 下表是一个服务端程序的一个简单快照。每一行代表一个 NioEventLoop，第一行是 parent，负责处理NioServerSocketChannel。随后是16行的 child，每一个 child 负责多个NioSocketChannel。  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-109.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-109.png)  
 <center>表1：一个服务端程序的 NioEventLoop及其负责的 channels</center>  
 &emsp; 随着程序的进行，表格的行数并不会变化，但是每行的 channels 会随着连接的建立和断开不断地变化着。Netty 并不保证每个 NioEventLoop 负责的 channels 个数要进行均衡， Netty 对新建立的连接采用简单的寻找下一个 NioEventLoop 的策略，并且在连接断开后也不会进行重新分布；或许某些极端情况下，可能出现某些 NioEventLoop 负责的 channels 比其他 NioEventLoop 负责的要多很多，但这似乎不是问题。  
 
 ### 1.1.2. 客户端
 &emsp; 客户端比服务端简单，客户端程序只有一类  NioEventLoop，直接就是 parent ，没有 child。一般地，由于客户端和服务端只保留一个连接，所以只有一个 channel，即一个 parent 只负责 NioEventChannel 的 I/O 事件。但对于需要同一个服务端保持多个连接的，或者需要和多个服务端保持连接的，则程序里依然会存在多个 NioEventChannel 实例，但在实践上还是建议这些不同的的连接使用同一个 NioEventLoop，即都统一归到 parent 负责：  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-110.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-110.png)  
 <center>表2：客户端程序的 NioEventLoop 只有一个，负责多个 NioSocketChannel</center>  
 
 ## 1.2. NioEventLoop的继承体系  
 &emsp; 下图清晰地呈现了 NioEventLoop 的继承体系：  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-111.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-111.png)  
 <center>NioEventLoop的继承体系</center>  
 
 &emsp; 图中呈现了 NioEventLoop 类的继承层级，虽然没有呈现它实现了哪些接口，不过不妨碍对这个图进行一些解读：  

@@ -35,7 +35,7 @@ https://mp.weixin.qq.com/s/0qelIYKkyNVsM29u-3yH1w
 
 ### 1.1.1. 什么是网络分区？  
 &emsp; **分布式系统中，多个节点之前的网络本来是连通的，但是因为某些故障(比如部分节点网络出了问题)，某些节点之间不连通了，整个网络就分成了几块区域，这就叫网络分区。**  
-![image](http://www.wt1814.com/static/view/images/microService/theory/theory-1.png)  
+![image](http://182.92.69.8:8081/img/microService/theory/theory-1.png)  
 
 ### 1.1.2. 数据一致性模型  
 &emsp; 数据的一致性模型可以分成以下几类：  

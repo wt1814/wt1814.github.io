@@ -57,7 +57,7 @@ Elasticsearch技术解析与实战 第6章集群管理
 &emsp; 如果Elasticsearch集群做了一些离线的维护操作时，如扩容磁盘，升级版本等，需要对集群进行启动，节点数较多时，从第一个节点开始启动，到最后一个节点启动完成，耗时可能较长，有时候还可能出现某几个节点因故障无法启动，排查问题、修复故障后才能加入到集群中，此时集群会干什么呢？    
 
 &emsp; 假设10个节点的集群，每个节点有1个shard，升级后重启节点，结果有3台节点因故障未能启动，需要耗费时间排查故障，如下图所示：  
-![image](http://www.wt1814.com/static/view/images/ES/es-9.png)    
+![image](http://182.92.69.8:8081/img/ES/es-9.png)    
 
 &emsp; 整个过程步骤如下：  
 1. 集群已完成master选举(node6)，master发现未加入集群的node1、node2、node3包含的shard丢失，便立即发出shard恢复的指令。

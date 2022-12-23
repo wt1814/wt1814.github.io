@@ -182,7 +182,7 @@
 ## 1.10. ★★★多协议  
 &emsp; Dubbo允许配置多协议。有以下2种方式：  
 1. **<font color = "clime">不同服务使用不同协议。不同的服务在性能上使用不同协议进行传输，比如大数据采用短连接协议，小数据大并发使用长连接协议。</font>**  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-5.png)  
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-5.png)  
 
 2. 同一服务上同时支持多种协议，需要与客户端互操作。  
 
@@ -270,7 +270,7 @@
 
 ## 1.14. 只注册  
 &emsp; 如果有两个镜像环境，两个注册中心，有一个服务只在其中一个注册中心有部署，另一个注册中心还没来得及部署，而两个注册中心的其它应用都需要依赖此服务。这个时候，可以让服务提供者方只注册服务到另一注册中心，而不从另一注册中心订阅服务。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-6.png)  
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-6.png)  
 
 &emsp; 禁用订阅配置：  
 
@@ -371,7 +371,7 @@ assert(status.equals("OK"));
 &emsp; 如果事件处理的逻辑能迅速完成，并且不会发起新的IO请求，比如只是在内存中记个标识，则直接在IO线程上处理更快，因为减少了线程池调度。  
 &emsp; 但如果事件处理逻辑较慢，或者需要发起新的IO请求，比如需要查询数据库，则必须派发到线程池，否则IO线程阻塞，将导致不能接收其它请求。  
 &emsp; 如果用IO线程处理事件，又在事件处理过程中发起新的IO请求，比如在连接事件中发起登录请求，会报“可能引发死锁”异常，但不会真死锁。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-7.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-7.png)   
 
 &emsp; 因此需要通过不同的派发策略和不同的线程池配置的组合来应对不同场景。  
 
@@ -415,7 +415,7 @@ public class XxxServiceImpl implements XxxService {
 
 ## 1.22. 异步调用  
 &emsp; 基于NIO的非阻塞实现并行调用，客户端不需要启动多线程即可完成并行调用多个远程服务，相对多线程开销较小。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-8.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-8.png)   
 
 &emsp; 在consumer.xml中配置  
 
@@ -474,7 +474,7 @@ Bar bar = barFuture.get();
 
 ## 1.25. 本地存根  
 &emsp; 远程服务后，客户端通常只剩下接口，而实现全在服务器端， **<font color = "clime">但提供方有时候想在客户端也执行部分逻辑，</font>** 比如：做ThreadLocal缓存，提前验证参数，调用失败后伪造容错数据等等，此时就需要在API中带上Stub，客户端生成Proxy实例，会把Proxy通过构造函数传给Stub，然后把Stub暴露给用户，Stub可以决定要不要去调Proxy。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-9.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-9.png)   
 
     <dubbo:service interface="com.foo.BarService" stub="true" />
     
@@ -535,7 +535,7 @@ public class BarServiceMock implements BarService {
 
 ## 1.28. 集群容错
 &emsp; 在集群调用失败时，Dubbo提供了多种容错方案，缺省为failover重试。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-10.png)  
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-10.png)  
 
 * Failover Cluster：失败自动切换，当出现失败，重试其它服务器。通常用于读操作，但重试会带来更长延迟。可通过retries="2"来设置重试次数(不含第一次)。  
 

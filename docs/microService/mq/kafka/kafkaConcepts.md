@@ -26,7 +26,7 @@ https://mp.weixin.qq.com/s/QPHPugWlbfeh8HhQvELSSQ
 
 ## 1.2. ~~kafka拓扑结构及相关概念~~  
 &emsp; 一个典型的Kafka包含若干Producer、Broker集群、若干Consumer以及一个Zookeeper集群。Kafka体系结构图如下所示：  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-3.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-3.png)  
 
 1. producer：  
 &emsp; 消息生产者，发布消息到kafka集群的终端或服务。  

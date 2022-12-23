@@ -115,7 +115,7 @@ https://haokan.baidu.com/v?pd=wisenatural&vid=12730932323983835698
 
 -----
 
-![image](http://www.wt1814.com/static/view/images/ES/es-83.png)  
-![image](http://www.wt1814.com/static/view/images/ES/es-87.png)  
+![image](http://182.92.69.8:8081/img/ES/es-83.png)  
+![image](http://182.92.69.8:8081/img/ES/es-87.png)  
 
 

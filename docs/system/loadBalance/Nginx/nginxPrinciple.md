@@ -35,7 +35,7 @@ https://blog.csdn.net/qq422431474/article/details/108244352
 
 * 主进程并不处理网络请求，主要负责调度工作进程：加载配置、启动工作进程、非停升级。  
 * 服务器实际处理网络请求及响应的是工作进程worker，在类unix系统上，Nginx可以配置多个worker，而每个worker进程都可以同时处理数以千计的网络请求。  
-![image](http://www.wt1814.com/static/view/images/Linux/Nginx/nginx-7.png) 
+![image](http://182.92.69.8:8081/img/Linux/Nginx/nginx-7.png) 
 
 ## 1.2. 多进程机制  
 &emsp; 服务器每当收到一个客户端请求时，就有服务器主进程(master process)生成一个子进程(worker process)出来和客户端建立连接进行交互，直到连接断开，该子进程结束。  
@@ -54,7 +54,7 @@ https://blog.csdn.net/qq422431474/article/details/108244352
 &emsp; 当一个 worker 进程在 accept 这个连接之后，就开始读取请求 ， 解析请求 ， 处理请求，产生数据后，再返回给客户端 ，最后才断开连接 ，一个完整的请求就是这样。  
 &emsp; 可以看到，一个请求，完全由 worker 进程来处理，而且只在一个 worker 进程中处理。  
 &emsp; 如下图所示：
-![image](http://www.wt1814.com/static/view/images/Linux/Nginx/nginx-10.png)  
+![image](http://182.92.69.8:8081/img/Linux/Nginx/nginx-10.png)  
 &emsp; 在 Nginx 服务器的运行过程中， 主进程 和 工作进程 需要进程交互。交互依赖于 Socket 实现的管道来实现。  
 
 ## 1.3. 基于异步及非阻塞的事件驱动模型  
@@ -68,7 +68,7 @@ https://blog.csdn.net/qq422431474/article/details/108244352
 ### 1.3.2. Nginx事件驱动模型  
 &emsp; 在Nginx的异步非阻塞机制中，工作进程在调用IO后，就去处理其他的请求，当IO调用返回后，会通知该工作进程。  
 &emsp; 对于这样的系统调用，主要使用Nginx服务器的事件驱动模型来实现。  
-![image](http://www.wt1814.com/static/view/images/Linux/Nginx/nginx-9.png)   
+![image](http://182.92.69.8:8081/img/Linux/Nginx/nginx-9.png)   
 &emsp; 如上图所示，<font color = "red">Nginx的事件驱动模型由事件收集器、事件发送器和事件处理器三部分基本单元组成。</font>  
 
 * 事件收集器：负责收集 worker 进程的各种 IO 请求；  

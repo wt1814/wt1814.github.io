@@ -68,7 +68,7 @@ https://www.cnblogs.com/aresxin/p/8035137.html
 -->
 ### 1.2.1. Demo版  
 &emsp; 这版算是Demo版，各位开发可以在自己电脑上搭建练练手，如下图所示：   
-![image](http://www.wt1814.com/static/view/images/ES/es-15.png)  
+![image](http://182.92.69.8:8081/img/ES/es-15.png)  
 &emsp; 这种架构下把Logstash实例与Elasticsearch实例直接相连。程序App将日志写入Log，然后Logstash将Log读出，进行过滤，写入Elasticsearch。最后浏览器访问Kibana，提供一个可视化输出。  
 
 &emsp; 该版的<font color = "red">缺点</font>主要是两个：  
@@ -78,7 +78,7 @@ https://www.cnblogs.com/aresxin/p/8035137.html
 
 ### 1.2.2. 初级版  
 &emsp; 在这版中， **<font color = "red">加入一个缓冲中间件Kafka</font>** 。另外对Logstash拆分为Shipper和Indexer。先说一下，LogStash自身没有什么角色，只是根据不同的功能、不同的配置给出不同的称呼而已。Shipper来进行日志收集，Indexer从缓冲中间件接收日志，过滤输出到Elasticsearch。具体如下图所示：  
-![image](http://www.wt1814.com/static/view/images/ES/es-16.png)  
+![image](http://182.92.69.8:8081/img/ES/es-16.png)  
 &emsp; 说一下，这个缓冲中间件的选择。  
 &emsp; 早期的博客，都是推荐使用redis。因为这是ELK Stack 官网建议使用 Redis 来做消息队列，但是很多大佬已经通过实践证明使用Kafka更加优秀。原因如下:  
 
@@ -95,14 +95,14 @@ https://www.cnblogs.com/aresxin/p/8035137.html
 ### 1.2.3. 中级版  
 &emsp; 这版引入组件Filebeat。当年，Logstash的作者用golang写了一个功能较少但是资源消耗也小的轻量级的Logstash-forwarder。后来加入Elasticsearch后，以logstash-forwarder为基础，研发了一个新项目就叫Filebeat。  
 &emsp; 相比于Logstash，Filebeat更轻量，占用资源更少，所占系统的 CPU 和内存几乎可以忽略不计。毕竟只是一个二进制文件。那么，这一版的架构图如下，直接画集群版。  
-![image](http://www.wt1814.com/static/view/images/ES/es-17.png)  
+![image](http://182.92.69.8:8081/img/ES/es-17.png)  
 &emsp; 至于这个Tribe Node，中文翻译为部落结点，它是一个特殊的客户端，它可以连接多个集群，在所有连接的集群上执行搜索和其他操作。在这里呢，负责将请求路由到正确的后端ES集群上。  
 &emsp; `缺点：`  
 &emsp; 这套架构的缺点在于对日志没有进行冷热分离。因为一般来说，对一个星期内的日志，查询的最多。以7天作为界限，区分冷热数据，可以大大的优化查询速度。  
 
 ### 1.2.4. 高级版  
 &emsp; 这一版，对数据进行冷热分离。每个业务准备两个Elasticsearch集群，可以理解为冷热集群。7天以内的数据，存入热集群，以SSD存储索引。超过7天，就进入冷集群，以SATA存储索引。这么一改动，性能又得到提升，这一版架构图如下(为了方便画图，只画了两个业务Elasticsearch集群)  
-![image](http://www.wt1814.com/static/view/images/ES/es-18.png)  
+![image](http://182.92.69.8:8081/img/ES/es-18.png)  
 &emsp; **隐患:** 这个高级版，非要说有什么隐患，就是敏感数据没有进行处理，就直接写入日志了。关于这点，其实现在JAVA这边，现成的日志组件，比如log4j都有提供这种日志过滤功能，可以将敏感信息进行脱敏后，再记录日志。  
 
 
@@ -131,7 +131,7 @@ https://www.cnblogs.com/aresxin/p/8035137.html
 
 ### 1.3.1. Filebeat工作原理  
 &emsp; Filebeat由两个主要组件组成：prospectors 和 harvesters。这两个组件协同工作将文件变动发送到指定的输出中。    
-![image](http://www.wt1814.com/static/view/images/ES/es-19.png)  
+![image](http://182.92.69.8:8081/img/ES/es-19.png)  
 &emsp; Harvester（收割机）：负责读取单个文件内容。每个文件会启动一个Harvester，每个Harvester会逐行读取各个文件，并将文件内容发送到制定输出中。Harvester负责打开和关闭文件，意味在Harvester运行的时候，文件描述符处于打开状态，如果文件在收集中被重命名或者被删除，Filebeat会继续读取此文件。所以在Harvester关闭之前，磁盘不会被释放。默认情况filebeat会保持文件打开的状态，直到达到close_inactive（如果此选项开启，filebeat会在指定时间内将不再更新的文件句柄关闭，时间从harvester读取最后一行的时间开始计时。若文件句柄被关闭后，文件发生变化，则会启动一个新的harvester。关闭文件句柄的时间不取决于文件的修改时间，若此参数配置不当，则可能发生日志不实时的情况，由scan_frequency参数决定，默认10s。Harvester使用内部时间戳来记录文件最后被收集的时间。例如：设置5m，则在Harvester读取文件的最后一行之后，开始倒计时5分钟，若5分钟内文件无变化，则关闭文件句柄。默认5m）。  
 
 &emsp; Prospector（勘测者）：负责管理Harvester并找到所有读取源。    
@@ -151,7 +151,7 @@ https://www.cnblogs.com/aresxin/p/8035137.html
 
 ### 1.3.2. Logstash工作原理  
 &emsp; Logstash事件处理有三个阶段：inputs → filters → outputs。是一个接收，处理，转发日志的工具。支持系统日志，webserver日志，错误日志，应用日志，总之包括所有可以抛出来的日志类型。  
-![image](http://www.wt1814.com/static/view/images/ES/es-20.png)  
+![image](http://182.92.69.8:8081/img/ES/es-20.png)  
 
 &emsp; `Input：输入数据到logstash。`  
 &emsp; 一些常用的输入为：  

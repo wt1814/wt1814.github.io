@@ -39,12 +39,12 @@ https://www.cnblogs.com/ysocean/p/10541151.html
 
 ## 1.2. 源码结构  
 &emsp; 通过上面给出的源码下载地址，将源码clone到IDEA中，如下：  
-![image](http://www.wt1814.com/static/view/images/frame/xxl-2.png)  
+![image](http://182.92.69.8:8081/img/frame/xxl-2.png)  
 
 ## 1.3. 初始化数据库  
 &emsp; 初始化脚本在上面源码目录的/doc/db/tables_xxl_job.sql，将此脚本在MySQL数据库中执行一遍。  
 &emsp; 执行完毕，会在MySQL数据库中生成如下16张表：  
-![image](http://www.wt1814.com/static/view/images/frame/xxl-3.png)  
+![image](http://182.92.69.8:8081/img/frame/xxl-3.png)  
 
 
 ## 1.4. 配置调度中心  
@@ -108,7 +108,7 @@ xxl.job.i18n=
 
 ### 1.4.1. 单机部署
 该工程是一个springboot项目，只需要在IDEA中执行 XxlJobAdminApplication 类即可运行该工程：  
-![image](http://www.wt1814.com/static/view/images/frame/xxl-4.png)  
+![image](http://182.92.69.8:8081/img/frame/xxl-4.png)  
 
 
 ### 1.4.2. 高可用集群搭建  
@@ -120,7 +120,7 @@ xxl.job.i18n=
 * 登陆账号配置保持一致；  
 * 集群机器时钟保持一致（单机集群忽视）；  
 
-![image](http://www.wt1814.com/static/view/images/frame/xxl-5.png)  
+![image](http://182.92.69.8:8081/img/frame/xxl-5.png)  
 &emsp; 操作的数据库都是相同的，集群是tomcat服务器集群，但是连接的都是相同的数据库同表，不会产生Job的重复执行问题。  
 
 &emsp; 最终执行的时候是只有一个admin去执行的  
@@ -309,7 +309,7 @@ public class JobHandlerDemo extends IJobHandler{
 
 ## 1.7. 在调度中心中配置执行器  
 &emsp; 新增一个任务时属性如下：  
-![image](http://www.wt1814.com/static/view/images/frame/xxl-1.png)  
+![image](http://182.92.69.8:8081/img/frame/xxl-1.png)  
 &emsp; 配置属性如下：  
 
 ```text

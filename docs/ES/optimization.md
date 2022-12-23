@@ -101,7 +101,7 @@ https://www.cnblogs.com/huanglog/p/9021073.html
 -->
 
 &emsp; 往 ES 里写的数据，实际上都写到磁盘文件里去了，查询的时候，操作系统会将磁盘文件里的数据自动缓存到 Filesystem Cache 里面去。  
-![image](http://www.wt1814.com/static/view/images/ES/es-14.png)  
+![image](http://182.92.69.8:8081/img/ES/es-14.png)  
 &emsp; ES 的搜索引擎严重依赖于底层的 Filesystem Cache，如果给 Filesystem Cache 更多的内存，尽量让内存可以容纳所有的 IDX Segment File 索引数据文件，那么搜索的时候就基本都是走内存的，性能会非常高。  
 &emsp; 真实的案例：某个公司 ES 节点有 3 台机器，每台机器看起来内存很多 64G，总内存就是 64 * 3 = 192G。  
 &emsp; 每台机器给ES JVM Heap是 32G，那么剩下来留给Filesystem Cache的就是每台机器才32G，总共集群里给Filesystem Cache 的就是 32 * 3 = 96G 内存。  

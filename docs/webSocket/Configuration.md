@@ -48,8 +48,8 @@ https://zhuanlan.zhihu.com/p/351196920
 * 服务端压力。长轮询的间隔期一般很长，例如 30s、60s，并且服务端 hold 住连接不会消耗太多服务端资源。
 
 &emsp; 以Nacos为例的长轮询流程如下：  
-![image](http://www.wt1814.com/static/view/images/websocket/websocket-3.png)  
-![image](http://www.wt1814.com/static/view/images/websocket/websocket-4.png)  
+![image](http://182.92.69.8:8081/img/websocket/websocket-3.png)  
+![image](http://182.92.69.8:8081/img/websocket/websocket-4.png)  
 
 
 ## 1.3. 配置中心长轮询设计  

@@ -35,7 +35,7 @@ https://mp.weixin.qq.com/s/3OtbG6jegOS4m2GbyOF2lQ
 
 ## 1.2. 选择器基础：选择器、可选择通道、选择键   
 &emsp; 选择器(Selector)使用单个线程处理多个通道。流程结构如图：  
-![image](http://www.wt1814.com/static/view/images/microService/netty/NIO/NIO-12.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/NIO/NIO-12.png)  
 
 * 选择器(Selector)：在Java NIO中，选择器(Selector)是可选择通道的多路复用器。选择器类管理着一个被注册的通道集合的信息和它们的就绪状态。通道是和选择器一起被注册的，并且使用选择器来更新通道的就绪状态。当这样使用的时候，可以选择将被激发的线程挂起，直到有就绪的的通道。  
 当Channel(通道)注册至Selector内后，便会产生一个对应的SelectionKey，存储与此Channel相关的数据。
@@ -94,7 +94,7 @@ readyCount = selector.select (10000);
 
 ### 1.3.2. 选择键的使用，SelectionKey类的API  
 &emsp; SelectionKey类的API：  
-![image](http://www.wt1814.com/static/view/images/microService/netty/NIO/NIO-13.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/NIO/NIO-13.png)  
 &emsp; 请注意对register()的调用的返回值是一个SelectionKey。SelectionKey代表这个通道在此Selector上的这个注册。当某个Selector通知某个传入事件时，它是通过提供对应于该事件的SelectionKey来进行的。SelectionKey还可以用于取消通道的注册。   
 &emsp; SelectionKey内包含有如下属性：  
 

@@ -39,7 +39,7 @@ https://zhuanlan.zhihu.com/p/224938929
 &emsp; **<font color = "red">在Dubbo中，可以通过两种方式引用远程服务。第一种是使用服务直连的方式引用服务，第二种方式是基于注册中心进行引用。</font>** 服务直连的方式仅适合在调试或测试服务的场景下使用，不适合在线上环境使用。因此，本文将重点分析通过注册中心引用服务的过程。从注册中心中获取服务配置只是服务引用过程中的一环，除此之外，服务消费者还需要经历Invoker创建、代理类创建等步骤。  
 
 &emsp; **服务引用流程**  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-41.png)  
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-41.png)  
 &emsp; 首先ReferenceConfig类的init方法调用Protocol的refer方法生成Invoker实例(如上图中的红色部分)，这是服务消费的关键。接下来把Invoker转换为客户端需要的接口。 
 
 ## 1.1. 服务引用原理  
@@ -68,7 +68,7 @@ public synchronized T get() {
 }
 ```
 &emsp; 以上两个方法的代码比较简短，并不难理解。这里需要特别说明一下，如果对2.6.4及以下版本的 getObject方法进行调试时，会碰到比较奇怪的的问题。这里假设使用IDEA，且保持了IDEA的默认配置。当调试到get方法的if(ref == null)时，会发现ref不为空，导致无法进入到init方法中继续调试。导致这个现象的原因是 Dubbo 框架本身有一些小问题。该问题已经在 pull request #2754 修复了此问题，并跟随 2.6.5 版本发布了。如果正在学习 2.6.4 及以下版本，可通过修改 IDEA 配置规避这个问题。首先 IDEA 配置弹窗中搜索 toString，然后取消Enable 'toString' object view勾选。具体如下：  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-32.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-32.png)   
 
 ### 1.2.1. 处理配置
 &emsp; Dubbo 提供了丰富的配置，用于调整和优化框架行为，性能等。Dubbo 在引用或导出服务时，首先会对这些配置进行检查和处理，以保证配置的正确性。配置解析逻辑封装在 ReferenceConfig 的 init 方法中，下面进行分析。  

@@ -108,7 +108,7 @@ lock->set(key)，成功->执行业务，业务执行完毕->unlock->del(key)。
 1. 业务机器宕机  
 &emsp; **因为业务不知道要执行多久才能结束，所以这个key一般不会设置过期时间。** 这样如果在执行业务的过程中， **<font color = "clime">业务机器宕机，unlock操作不会执行，所以这个锁不会被释放，其他机器拿不到锁，从而形成了死锁。</font>**  
 &emsp; **<font color = "clime">Redisson为了解决这种情况，设定了一个叫做lockWatchdogTimeout的参数，默认为30秒钟。</font>** 这样当业务方调用加锁操作的时候，  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-45.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-45.png)  
 &emsp; **<font color = "clime">默认的leaseTime是-1，这个时候会启动一个定时任务，在业务方释放锁之前，会一直不停的增加这个锁的生命周期时间，保证在业务执行完毕之前，这个锁一直不会因为redis的超时而被释放。</font>**  
 
 &emsp; **<font color = "clime">注意：看门狗线程是针对未设置过期时间的情况，如果设置了失效时间，看门狗设置是无效的。</font>**  
@@ -130,7 +130,7 @@ lock->set(key)，成功->执行业务，业务执行完毕->unlock->del(key)。
     * 锁存在，检测(hexists)是当前线程持有锁，锁重入(hincrby)，并且重新设置(pexpire)该锁的有效时间；
     * 锁存在，但不是当前线程的，返回(pttl)锁的过期时间。 
 
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-41.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-41.png)  
 
 ```java
 Future<Long> tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {

@@ -26,8 +26,8 @@ https://cloud.tencent.com/developer/article/1648640
 1. Watcher机制运行流程：Zookeeper客户端向服务端的某个Znode注册一个Watcher监听，当服务端的一些指定事件触发了这个Watcher，服务端会向指定客户端发送一个事件通知来实现分布式的通知功能，然后客户端根据Watcher通知状态和事件类型做出业务上的改变。  
 &emsp; 触发watch事件种类很多，如：节点创建，节点删除，节点改变，子节点改变等。  
 &emsp; 概括可以分为三个过程：1. 客户端注册 Watcher；2. 服务端处理 Watcher；3. 客户端回调 Watcher。  
-![image](http://www.wt1814.com/static/view/images/microService/zookeeper/zk-5.png)  
-![image](http://www.wt1814.com/static/view/images/microService/zookeeper/zk-6.png)  
+![image](http://182.92.69.8:8081/img/microService/zookeeper/zk-5.png)  
+![image](http://182.92.69.8:8081/img/microService/zookeeper/zk-6.png)  
 &emsp; 大致流程就是 Client 向ZK中注册 Watcher，如果注册成功的话，会将对应的 Watcher 存储在本地。当ZK服务器端触发 Watcher 事件之后，会向客户端发送通知，客户端会从 ClientWatchManager 中取出对应的 Watcher 进行回调。  
 
 ### 1.1.1. Watcher接口

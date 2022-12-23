@@ -24,8 +24,8 @@ https://mp.weixin.qq.com/s/5vdAd8_x056HGYvRjsdzcQ
 * kibana  
 
 &emsp; 开发实战环节，推荐使用：kibana Dev-tools。  
-![image](http://www.wt1814.com/static/view/images/ES/es-108.png)  
-![image](http://www.wt1814.com/static/view/images/ES/es-22.png)  
+![image](http://182.92.69.8:8081/img/ES/es-108.png)  
+![image](http://182.92.69.8:8081/img/ES/es-22.png)  
 
 ## 1.1. Elasticsearch REST语法   
 ### 1.1.1. REST URL和选项概述  

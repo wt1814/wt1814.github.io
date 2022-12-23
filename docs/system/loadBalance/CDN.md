@@ -128,11 +128,11 @@ https://blog.csdn.net/u014209205/article/details/89892359
 -->
 &emsp; 考虑没有CDN的情况，发布了一些静态资源服务，然后来自世界各地的用户开始请求资源。  
 &emsp; 假设静态资源服务接入的是浙江移动的ISP，而世界各地的用户接入的ISP是各种各样的。同样假设北京到杭州之间的通信延时是3ms，对于一次web请求就至少是6ms的延时（请求+响应），因此ISP之间的通信互联成为影响静态资源加载速度的一个重要瓶颈！
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/cdn/cdn-1.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/cdn/cdn-1.png)  
 &emsp; 具体看一下没有CDN的web请求过程，主要分为两步：1. 域名服务器解析IP地址；2. 和目标机器建立连接请求资源。  
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/cdn/cdn-2.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/cdn/cdn-2.png)  
 &emsp; 在域名解析的过程中，由于域名和IP映射存储在server-isp-DNS服务器(A记录解析)，发起请求之后，需要通过根域名服务器依次迭代查询。最后返回源站的IP地址给客户端，开始建立连接请求资源。而对于使用CDN服务的架构，通常是下面这样的：  
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/cdn/cdn-3.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/cdn/cdn-3.png)  
 &emsp; server-isp-DNS服务器不是直接把域名做A记录映射到源站，而是CNAME记录到调度中心，调度中心根据用户请求的来源，选择一个最近的CDN节点的IP地址(通常是虚拟IP地址)。用户和CDN节点IP地址建立连接开始请求资源，CDN节点内部进行负载均衡后，负责响应的机器查询是否有该资源(第一次请求的延时和没有使用CDN服务是一样的)，如果没有则回源站进行请求(同时进行缓存)，然后响应请求。  
 <!-- 
 看完原理和架构之后，再来看你的问题，当然就是看看web请求是否存在跨ISP通信的情况了。 
@@ -163,7 +163,7 @@ https://www.imydl.com/work/4073.html
 
     如果是个喜欢折腾的站长，比如经常会改动站点主题的 CSS、JS 文件的可以 CDN 控制后台里取消 CSS、JS 文件的缓存即可，毕竟频繁的让 CDN 更新缓存会对服务器造成一定的负载压力的。
 
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/cdn/cdn-4.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/cdn/cdn-4.png)  
 &emsp; 关于最后一条里提到的[将 CDN 节点 IP 加入到服务器防火墙“白名单”里]，这点对于使用“虚拟主机”的站点是需要服务器管理员来操作的，一般为了安全考虑都不愿给添加的，这个目前明月也没有很好的办法。至于说使用 ECS 类云主机的必须自己手动的来添加了，但是，添加之前一定要搞清楚自己的 ECS 主机使用的默认防火墙是什么以及如何使用等等问题，明月建议是使用 Linux 默认的 iptables 作为服务器的默认防火墙，因为 iptables 实在是太强大了，好处很多。但这些需要具备一定的 Linux 命令行操作的基本知识的，当然大家也可以借助“百度、谷歌”来搜索到众多的相关教程，虽然这些看似很复杂，但是要记得“一次折腾、受用终生”哦。  
 
 

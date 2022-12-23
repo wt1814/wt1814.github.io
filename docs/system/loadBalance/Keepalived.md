@@ -54,7 +54,7 @@ VRRP是一种选择协议，它可以把一个虚拟路由器的责任动态分�
 VRRP是一种路由容错协议，也可以叫做备份路由协议。一个局域网络内的所有主机都设置缺省路由，当网内主机发出的目的地址不在本网段时，报文将被通过缺省路由发往外部路由器，从而实现了主机与外部网络的通信。当缺省路由器down掉(即端口关闭)之后，内部主机将无法与外部通信，如果路由器设置了VRRP时，那么这时，虚拟路由将启用备份路由器，从而实现全网通信。
 在VRRP协议中，有两组重要的概念：VRRP路由器和虚拟路由器，主控路由器和备份路由器。VRRP路由器是指运行VRRP的路由器，是物理实体；虚拟路由器是指VRRP协议创建的，是逻辑概念。一组VRRP路由器协同工作，共同构成一台虚拟路由器。该虚拟路由器对外表现为一个具有唯一固定的IP地址和MAC地址的逻辑路由器。处于同一个VRRP组中的路由器具有两种互斥的角色：主控路由器和备份路由器，一个VRRP组中有且只有一台处于主控角色的路由器，可以有一个或者多个处于备份角色的路由器VRRP协议从路由器组中选出一台作为主控路由器，负责ARP解析和转发IP数据包，组中的其他路由器作为备份的角色并处于待命状态，当由于某种原因主控路由器发生故障时，其中的一台备份路由器能在瞬间的时延后升级为主控路由器，由于此切换非常迅速而且不用改变IP地址和MAC地址，故对终端使用者系统是透明的。
 -->
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/keep/keep-1.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/keep/keep-1.png)  
 &emsp; **VRRP术语：**  
 1. Virtual Router  
 &emsp; 虚拟路由器，一个抽象对象，基于子网接口，包括一个虚拟路由器标识符(VRID)和一个或多个IP地址，这个(些)IP地址又称为虚拟IP地址，虚拟IP地址作为主机的默认网关。  
@@ -97,7 +97,7 @@ VRRP是一种路由容错协议，也可以叫做备份路由协议。一个局�
 3. 比较IP地址。在没有Ip地址拥有者和优先级相同的情况下，IP地址大的作为主路由器。
 
 &emsp; 如下图所示，虚拟IP为10.1.1.254，在VRRP组中没有IP地址拥有者，则比较优先级，很明显RB和RA的优先级要大于RC，则比较RA和RB的IP地址，RB的IP地址大。所以RB为组中的主路由器。  
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/keep/keep-2.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/keep/keep-2.png)  
 
 &emsp; **工作过程**  
 &emsp; 路由器使用VRRP功能后，会根据优先级确定自己在备份组中的角色。优先级高的路由器成为Master 路由器，优先级低的成为Backup路由器。Master拥有对外服务的虚拟IP，提供各种网络功能，并定期发送VRRP报文，通知备份组内的其他设备自己工作正常；Backup路由器只接收Master发来的报文信息，用来监控Master的运行状态。当Master失效时，Backup路由器进行选举，优先级高的Backup将成为新的Master。  
@@ -189,7 +189,7 @@ https://www.jianshu.com/p/a6b5ab36292a
 4. 在Keepalived+nginx 架构中，当Nginx宕机，会导致用户请求失败，但是keepalived不会进行切换，所以需要编写一个检测nginx的存活状态的脚本，如果nginx不存活，则kill掉宕掉的nginx主机上面的keepalived。(所有的keepalived都要配置)  
 
 &emsp; 架构如下：  
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/keep/keep-3.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/keep/keep-3.png)  
 
 &emsp; 脚本如下：  
 

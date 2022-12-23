@@ -3,7 +3,7 @@
 
 # Dubbo调用介绍
 &emsp; Dubbo在一次完整的RPC调用流程中经过的步骤，如图6.1所示。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-64.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-64.png)   
 &emsp; 首先在客户端启动时会从注册中心拉取和订阅对应的服务列表，Cluster会把拉取的服务列表聚合成一个Invoker，每次RPC调用前会通过Directory#list获取providers地址（已经生成好的Invoker列表），获取这些服务列表给后续路由和负载均衡使用。对应图6.1，在①中主要是将多个服务提供者做聚合。在框架内部另外一个实现Directory接口是RegistryDirectory类，它和接口名是一对一的关系（每一个接口都有一个RegistryDirectory实例），主要负责拉取和订阅服务提供者、动态配置和路由项。  
 
 &emsp; 在Dubbo发起服务调用时，所有路由和负载均衡都是在客户端实现的。客户端服务调用首先会触发路由操作，然后将路由结果得到的服务列表作为负载均衡参数，经过负载均衡后会选出一台机器进行RPC调用，这3个步骤依次对应于②、③和④。客户端经过路由和负载均衡后，会将请求交给底层I/O线程池（比如Netty 处理，I/O线程池主要处理读写、序列化和反序列化等逻辑，因此这里一定不能阻塞操作，Dubbo也提供参数控制decode.in.io参数，在处理反序列化对象时会在业务线程池中处理。在⑤中包含两种类似的线程池，一种是I/O线程池Netty，另一种是Dubbo业务线程池（承载业务方法调用）。  

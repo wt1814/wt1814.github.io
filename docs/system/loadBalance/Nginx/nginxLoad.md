@@ -21,11 +21,11 @@
 3. 突破访问限制：互联网上有许多开发的代理服务器，客户机在访问受限时，可通过不受限的代理服务器访问目标站点，通俗说，使用的翻墙浏览器就是利用了代理服务器，可以直接访问外网。  
 
 ### 1.1.1. 正向代理  
-![image](http://www.wt1814.com/static/view/images/Linux/Nginx/nginx-1.png)  
+![image](http://182.92.69.8:8081/img/Linux/Nginx/nginx-1.png)  
 &emsp; 正向代理：内网服务器主动去请求外网的服务的一种行为。正向代理其实就是说客户端无法主动或者不打算完成主动去向某服务器发起请求，而是委托了nginx代理服务器去向服务器发起请求，并且获得处理结果，返回给客户端。  
 &emsp; 正向代理主要应用于内网环境中只有某台特定服务器支持连接互联网，而其它同一局域网的服务器IP都不支持直接连接互联网，此时可以在支持连接公网的服务器配置nginx的正向代理，局域网内其它机器可通过此台服务器连接公网。  
 &emsp; 如图，服务器①的IP没有访问公网的权限，nginx服务器同时连接了内网和公网，则服务器①可通过nginx服务器访问公网。  
-![image](http://www.wt1814.com/static/view/images/Linux/Nginx/nginx-2.png)   
+![image](http://182.92.69.8:8081/img/Linux/Nginx/nginx-2.png)   
 &emsp; (1)访问原来无法访问的资源，如google。  
 &emsp; (2)可以做缓存，加速访问资源。  
 &emsp; (3)对客户端访问授权，上网进行认证。  
@@ -35,15 +35,15 @@
 &emsp; 反向代理(Reverse Proxy)指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。  
 &emsp; 对反向代理服务器的攻击并不会使得网页信息遭到破坏，这样就增强了Web服务器的安全性。这种方式通过降低了向WEB服务器的请求数从而降低了WEB服务器的负载。  
 &emsp; 当网站的访问量达到一定程度后，单台服务器不能满足用户的请求时，需要用多台服务器集群可以使用nginx做反向代理。并且多台服务器可以平均分担负载，不会因为某台服务器负载高宕机而某台服务器闲置的情况。  
-![image](http://www.wt1814.com/static/view/images/Linux/Nginx/nginx-3.png) 
+![image](http://182.92.69.8:8081/img/Linux/Nginx/nginx-3.png) 
 
 &emsp; 反向代理的作用：  
 * 保证内网的安全，可以使用反向代理提供WAF功能，阻止web攻击大型网站，通常将反向代理作为公网访问地址，Web服务器是内网。    
 * 负载均衡，通过反向代理服务器来优化网站的负载。    
 
 ### 1.1.3. 正向代理和反向代理对比  
-![image](http://www.wt1814.com/static/view/images/Linux/Nginx/nginx-4.png) 
-![image](http://www.wt1814.com/static/view/images/Linux/Nginx/nginx-5.png) 
+![image](http://182.92.69.8:8081/img/Linux/Nginx/nginx-4.png) 
+![image](http://182.92.69.8:8081/img/Linux/Nginx/nginx-5.png) 
 
 * 位置不同  
 
@@ -88,7 +88,7 @@ https://www.runoob.com/w3cnote/nginx-proxy-balancing.html
 -->
 
 &emsp; 负载均衡功能即是反向代理的应用，只不过负载均衡是代理多台服务器，更注重其均衡转发功能。    
-![image](http://www.wt1814.com/static/view/images/Linux/Nginx/nginx-5.png) 
+![image](http://182.92.69.8:8081/img/Linux/Nginx/nginx-5.png) 
 
 &emsp; **<font color = "red">Nginx支持的负载均衡调度算法方式如下：</font>**  
 * **<font color = "red">轮询(默认)</font>** ：接收到的请求按照顺序逐一分配到不同的后端服务器，即使在使用过程中，某一台后端服务器宕机，Nginx会自动将该服务器剔除出队列，请求受理情况不会受到任何影响。 

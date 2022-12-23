@@ -35,7 +35,7 @@ https://www.cnblogs.com/caoxb/p/13140347.html
 -->
 &emsp; Dubbo 服务调用过程比较复杂，包含众多步骤，比如发送请求、编解码、服务降级、过滤器链处理、序列化、线程派发以及响应请求等步骤。限于篇幅原因，本篇文章无法对所有的步骤一一进行分析。本篇文章将会重点分析请求的发送与接收、编解码、线程派发以及响应的发送与接收等过程。  
 &emsp; 在进行源码分析之前，先来通过一张图了解 Dubbo 服务调用过程。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-33.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-33.png)   
 &emsp; <font color = "red">首先服务消费者通过代理对象Proxy发起远程调用，接着通过网络客户端Client将编码后的请求发送给服务提供方的网络层上，也就是Server。Server在收到请求后，首先要做的事情是对数据包进行解码。然后将解码后的请求发送至分发器Dispatcher，再由分发器将请求派发到指定的线程池上，最后由线程池调用具体的服务。这就是一个远程调用请求的发送与接收过程。</font>  
 
 ## 1.1. 服务调用方式  
@@ -386,7 +386,7 @@ public class DefaultFuture implements ResponseFuture {
 ## 1.2. 服务消费方发送请求  
 ### 1.2.1. 发送请求  
 &emsp; 本节来看一下同步调用模式下，服务消费方是如何发送调用请求的。在深入分析源码前，先来看一张图。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-34.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-34.png)   
 &emsp; 这张图展示了服务消费方发送请求过程的部分调用栈，略为复杂。从上图可以看出，经过多次调用后，才将请求数据送至 Netty NioClientSocketChannel。这样做的原因是通过 Exchange 层为框架引入 Request 和 Response 语义，这一点会在接下来的源码分析过程中会看到。其他的就不多说了，下面开始进行分析。首先分析 ReferenceCountExchangeClient 的源码。
 
 ```java
@@ -726,7 +726,7 @@ proxy0#sayHello(String)
 
 ### 1.2.2. 请求编码
 &emsp; 在分析请求编码逻辑之前，先来看一下 Dubbo 数据包结构。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-35.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-35.png)   
 &emsp; Dubbo 数据包分为消息头和消息体，消息头用于存储一些元信息，比如魔数（Magic），数据包类型（Request/Response），消息体长度（Data Length）等。消息体中用于存储具体的调用消息，比如方法名称，参数列表等。下面简单列举一下消息头的内容。  
 
 |偏移量(Bit)| 字段 |取值|
@@ -1147,7 +1147,7 @@ public class NettyHandler extends SimpleChannelHandler {
 #### 1.3.2.1. 线程派发模型
 &emsp; Dubbo 将底层通信框架中接收请求的线程称为 IO 线程。如果一些事件处理逻辑可以很快执行完，比如只在内存打一个标记，此时直接在 IO 线程上执行该段逻辑即可。但如果事件的处理逻辑比较耗时，比如该段逻辑会发起数据库查询或者 HTTP 请求。此时就不应该让事件处理逻辑在 IO 线程上执行，而是应该派发到线程池中去执行。原因也很简单，IO 线程主要用于接收请求，如果 IO 线程被占满，将导致它不能接收新的请求。  
 &emsp; 以上就是线程派发的背景，下面再来通过 Dubbo 调用图，看一下线程派发器所处的位置。  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-36.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-36.png)   
 &emsp; 如上图，红框中的 Dispatcher 就是线程派发器。需要说明的是，Dispatcher 真实的职责创建具有线程派发能力的 ChannelHandler，比如 AllChannelHandler、MessageOnlyChannelHandler 和 ExecutionChannelHandler 等，其本身并不具备线程派发能力。Dubbo 支持 5 种不同的线程派发策略，下面通过一个表格列举一下。  
 
 |策略 |	用途|
@@ -1929,7 +1929,7 @@ public class DefaultFuture implements ResponseFuture {
 ```
 &emsp; 以上逻辑是将响应对象保存到相应的 DefaultFuture 实例中，然后再唤醒用户线程，随后用户线程即可从 DefaultFuture 实例中获取到相应结果。  
 &emsp; 本篇文章在多个地方都强调过调用编号很重要，但一直没有解释原因，这里简单说明一下。一般情况下，服务消费方会并发调用多个服务，每个用户线程发送请求后，会调用不同 DefaultFuture 对象的 get 方法进行等待。 一段时间后，服务消费方的线程池会收到多个响应对象。这个时候要考虑一个问题，如何将每个响应对象传递给相应的 DefaultFuture 对象，且不出错。答案是通过调用编号。DefaultFuture 被创建时，会要求传入一个 Request 对象。此时 DefaultFuture 可从 Request 对象中获取调用编号，并将 <调用编号, DefaultFuture 对象> 映射关系存入到静态 Map 中，即 FUTURES。线程池中的线程在收到 Response 对象后，会根据 Response 对象中的调用编号到 FUTURES 集合中取出相应的 DefaultFuture 对象，然后再将 Response 对象设置到 DefaultFuture 对象中。最后再唤醒用户线程，这样用户线程即可从 DefaultFuture 对象中获取调用结果了。整个过程大致如下图：  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-37.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-37.png)   
 
 ## 1.6. 总结
 &emsp; 本篇文章主要对 Dubbo 中的几种服务调用方式，以及从双向通信的角度对整个通信过程进行了详细的分析。按照通信顺序，通信过程包括服务消费方发送请求，服务提供方接收请求，服务提供方返回响应数据，服务消费方接收响应数据等过程。理解这些过程需要大家对网络编程，尤其是 Netty 有一定的了解。限于篇幅原因，本篇文章无法将服务调用的所有内容都一一进行分析。对于本篇文章未讲到或未详细分析的内容，比如服务降级、过滤器链、以及序列化等。大家若感兴趣，可自行进行分析。

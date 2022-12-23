@@ -28,7 +28,7 @@ https://mp.weixin.qq.com/s/xY-hJl5qJv3QtttcMqHZRQ
 
 ----------
 &emsp; netty提供了零拷贝的buffer，在传输数据时，最终处理的数据会需要对单个传输的报文，进行组合和拆分，Nio原生的ByteBuffer无法做到，netty通过提供的Composite(组合)和Slice(拆分)两种buffer来实现零拷贝；看下面一张图会比较清晰：  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-89.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-89.png)  
 &emsp; TCP层HTTP报文被分成了两个ChannelBuffer，这两个Buffer对我们上层的逻辑(HTTP处理)是没有意义的。但是两个ChannelBuffer被组合起来，就成为了一个有意义的HTTP报文，这个报文对应的ChannelBuffer，才是能称之为”Message”的东西，这里用到了一个词“Virtual Buffer”。可以看一下netty提供的CompositeChannelBuffer源码：  
 
 ```javva

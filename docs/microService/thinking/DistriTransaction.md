@@ -48,9 +48,9 @@ https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487531&idx=1&sn=b3fbc4
 
 ## 1.1. 分布式事务产生的原因  
 * 数据库分库分表：如果一个操作既访问01库，又访问02库，而且要保证数据的一致性，那么就要用到分布式事务。  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-1.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-1.png)  
 * 应用SOA化：所谓的SOA化，就是业务的服务化。将一个整体的系统拆分为多个子系统，每个子系统都有自己的数据库，为了保证数据一致性，就需要用到分布式事务。  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-2.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-2.png)  
 
 
 ## 1.2. 分布式事务解决方案  

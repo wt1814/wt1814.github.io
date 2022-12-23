@@ -34,7 +34,7 @@
     * `方案七：多机实现的分布式锁Redlock`   
 3. `方案五：SET EX PX NX + 校验惟一随机值，再删除释放（先查询再删除，非原子操作，需要使用lua脚本保证其原子性）。`  
 &emsp; 在这里，判断是否是当前线程加的锁和释放锁不是一个原子操做。若是调用jedis.del()释放锁的时候，可能这把锁已经不属于当前客户端，会解除他人加的锁。  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-61.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-61.png)  
 &emsp; 为了更严谨，通常也是用lua脚本代替。lua脚本以下：  
     ```text
     if redis.call('get',KEYS[1]) == ARGV[1] then 
@@ -179,7 +179,7 @@ if（jedis.set(key_resource_id, uni_request_id, "NX", "EX", 100s) == 1）{ //加
 ```
 
 &emsp; 在这里，判断是否是当前线程加的锁和释放锁不是一个原子操做。若是调用jedis.del()释放锁的时候，可能这把锁已经不属于当前客户端，会解除他人加的锁。  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-61.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-61.png)  
 
 &emsp; 为了更严谨，通常也是用lua脚本代替。lua脚本以下：  
 

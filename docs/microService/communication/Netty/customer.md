@@ -99,7 +99,7 @@ public final class EchoClient {
 6. 连接服务器。
 
 ## 1.2. Netty客户端创建时序图  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-29.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-29.png)  
 
 <!-- 
 &emsp; <font color = "lime">**客户端创建的流程有以下步骤：**</font>

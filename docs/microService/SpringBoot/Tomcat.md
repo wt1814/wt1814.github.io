@@ -43,19 +43,19 @@ https://www.cnblogs.com/sword-successful/p/11383723.html
 ## 1.3. SpringBoot内置Tomcat原理  
 ### 1.3.1. Tomcat的自动装配  
 &emsp; 自动装配过程中，查找classpath上所有jar包中的META-INF/spring.factories，找出其中的自动配置类并导入到容器中，其中Web容器所对应的自动配置类为ServletWebServerFactoryAutoConfiguration。  
-![image](http://www.wt1814.com/static/view/images/microService/boot/boot-1.png)  
+![image](http://182.92.69.8:8081/img/microService/boot/boot-1.png)  
 &emsp; ServletWebServerFactoryAutoConfiguration主要导入了BeanPostProcessorRegister，该类实现了ImportBeanDefinitionRegister接口，可以用来注册额外的BeanDefinition，同时，该类还导入了EmbeddedTomcat，EmbeddedJetty，EmbeddedUndertow三个类，可以根据用户的需求去选择使用哪一个web服务器，默认情况下使用的是tomcat。    
-![image](http://www.wt1814.com/static/view/images/microService/boot/boot-2.png)  
+![image](http://182.92.69.8:8081/img/microService/boot/boot-2.png)  
 &emsp; EmbeddedTomcat本身是一个FactoryBean，用来实例化TomcatServletWebServerFactory。此时TomcatServletWebServerFactory中就包含了创建和启动Tomcat的方法getWebServer()。  
-![image](http://www.wt1814.com/static/view/images/microService/boot/boot-3.png)  
+![image](http://182.92.69.8:8081/img/microService/boot/boot-3.png)  
 
 ### 1.3.2. Tomcat的启动  
 &emsp; SpringBoot是在项目启动的时候才同时启动Tomcat的，很显然getWebServer()是在项目启动的过程中调用的。跟踪SpringApplication的run()，其中存在refreshContext(context)，此时主要完成容器的刷新。  
-![image](http://www.wt1814.com/static/view/images/microService/boot/boot-4.png)  
+![image](http://182.92.69.8:8081/img/microService/boot/boot-4.png)  
 &emsp; 容器刷新跟踪到最后是AbstractApplicationContext中的onRefresh()，显然这是一个钩子函数，应用了模板方法，查看所有的实现方法，其中有一个ServletWebServerApplicationContext，则是当前Web容器的实现。  
-![image](http://www.wt1814.com/static/view/images/microService/boot/boot-5.png)  
+![image](http://182.92.69.8:8081/img/microService/boot/boot-5.png)  
 &emsp; 而ServletWebServerApplicationContext中主要是去获得ServletWebServerFactory对象，同时调用getWebServer创建WebServer对象。  
-![image](http://www.wt1814.com/static/view/images/microService/boot/boot-6.png)  
+![image](http://182.92.69.8:8081/img/microService/boot/boot-6.png)  
 
 ```java
 private void createWebServer() {
@@ -81,8 +81,8 @@ private void createWebServer() {
 ```
 
 &emsp; 此时，主要处理的是Tomcat容器对象的创建、环境配置和启动。  
-![image](http://www.wt1814.com/static/view/images/microService/boot/boot-7.png)  
-![image](http://www.wt1814.com/static/view/images/microService/boot/boot-8.png)  
+![image](http://182.92.69.8:8081/img/microService/boot/boot-7.png)  
+![image](http://182.92.69.8:8081/img/microService/boot/boot-8.png)  
 
 
 <!-- 

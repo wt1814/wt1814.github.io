@@ -114,7 +114,7 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 2. 中间的服务器集群层，用 Server Array 表示。
 3. 最底端的数据共享存储层，用 Shared Storage 表示。
 
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/lvs/lvs-1.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/lvs/lvs-1.png)  
 &emsp; LVS的各个层次的详细介绍：  
 &emsp; Load Balancer层：位于整个集群系统的最前端，有一台或者多台负载调度器(Director Server)组成，LVS模块就安装在Director Server上，而Director的主要作用类似于一个路由器，它含有完成LVS功能所设定的路由表，通过这些路由表把用户的请求分发给Server Array层的应用服务器(Real Server)上。同时，在Director Server上还要安装对Real Server服务的监控模块Ldirectord，此模块用于监测各个Real Server服务的健康状况。在Real Server不可用时把它从LVS路由表中剔除，恢复时重新加入。  
 &emsp; Server Array层：由一组实际运行应用服务的机器组成，Real Server可以是Web服务器、Mail服务器、FTP服务器、DNS服务器、视频服务器中的一个或者多个，每个Real Server之间通过高速的LAN或分布在各地的WAN相连接。在实际的应用中，Director Server也可以同时兼任Real Server的角色。  
@@ -146,7 +146,7 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
  
 4.当Driector Server收到一个源地址为RealServer1 的IP 目标地址为CIP的数据包,此时Driector Server 会将源地址修改为VIP,然后再将数据包发送给用户
 -->
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/lvs/lvs-2.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/lvs/lvs-2.png)  
 &emsp; 当包到达 LVS 时，LVS 做目标地址转换(DNAT)，将目标 IP 改为 RS 的 IP。RS 接收到包以后，仿佛是客户端直接发给它的一样。RS 处理完，返回响应时，源 IP 是 RS IP，目标 IP 是客户端的 IP。这时 RS 的包通过网关(LVS)中转，LVS 会做源地址转换(SNAT)，将包的源地址改为 VIP，这样，这个包对客户端看起来就仿佛是 LVS 直接返回给它的。  
 
 &emsp; **LVS-NAT的性能瓶颈：**  
@@ -154,7 +154,7 @@ https://mp.weixin.qq.com/s/3Ahb299iBScC3Znrc7NUNQ
 &emsp; 大多数Internet服务都有这样的特点：请求报文较短而响应报文往往包含大量的数据。如果能将请求和响应分开处理，即在负载调度器(Director)中只负责调度请求而响应直接(RealServer)返回给客户，将极大地提高整个集群系统的吞吐量。  
 
 &emsp; **部署：**  
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/lvs/lvs-3.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/lvs/lvs-3.png)  
 <!-- 
 https://blog.csdn.net/qq_37165604/article/details/79802390
 -->
@@ -162,7 +162,7 @@ https://blog.csdn.net/qq_37165604/article/details/79802390
 ### 1.4.2. DR(直接路由)  
 &emsp; DR 模式下需要 LVS 和 RS 集群绑定同一个 VIP(RS 通过将 VIP 绑定在 loopback 实现)，但与 NAT 的不同点在于：请求由 LVS 接受，由真实提供服务的服务器(RealServer，RS)直接返回给用户，返回的时候不经过 LVS。  
 &emsp; 详细来看，一个请求过来时，LVS 只需要将网络帧的 MAC 地址修改为某一台 RS 的 MAC，该包就会被转发到相应的 RS 处理，注意此时的源 IP 和目标 IP 都没变，LVS 只是做了一下移花接木。RS 收到 LVS 转发来的包时，链路层发现 MAC 是自己的，到上面的网络层，发现 IP 也是自己的，于是这个包被合法地接受，RS 感知不到前面有 LVS 的存在。而当 RS 返回响应时，只要直接向源 IP(即用户的 IP)返回即可，不再经过 LVS。  
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/lvs/lvs-4.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/lvs/lvs-4.png)  
 &emsp; DR 负载均衡模式数据分发过程中不修改 IP 地址，只修改 mac 地址，由于实际处理请求的真实物理 IP 地址和数据请求目的 IP 地址一致，所以不需要通过负载均衡服务器进行地址转换，可将响应数据包直接返回给用户浏览器，避免负载均衡服务器网卡带宽成为瓶颈。因此，DR 模式具有较好的性能，也是目前大型网站使用最广泛的一种负载均衡手段。  
 
 &emsp; **编辑DR有三种方式(目的是让用户请求的数据都通过Director Server)**  
@@ -190,7 +190,7 @@ https://blog.csdn.net/qq_37165604/article/details/79802390
 ```
 
 &emsp; **部署：**  
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/lvs/lvs-5.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/lvs/lvs-5.png)  
 
 ### 1.4.3. TUN(隧道)  
 &emsp; **工作方式：**  
@@ -210,7 +210,7 @@ https://blog.csdn.net/qq_37165604/article/details/79802390
 &emsp; 为了让Director更人性化、可靠还要给director提供健康检查功能；如何实现？Director没有自带检查工具，只有手动编写脚本给director实现健康状态检查功能！  
 
 &emsp; **部署：**  
-![image](http://www.wt1814.com/static/view/images/system/loadBalance/lvs/lvs-6.png)  
+![image](http://182.92.69.8:8081/img/system/loadBalance/lvs/lvs-6.png)  
 
 ## 1.5. LVS的十种负载调度算法  
 <!-- 

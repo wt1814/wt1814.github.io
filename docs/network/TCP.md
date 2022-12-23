@@ -20,11 +20,11 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 三次握手  
-    ![image](http://www.wt1814.com/static/view/images/network/TCP-1.png)  
+    ![image](http://182.92.69.8:8081/img/network/TCP-1.png)  
     1. 为什么只有三次握手才能确认双方的接受与发送能力是否正常，而两次却不可以？  
     &emsp; <font color = "clime">第三次握手中，客户端向服务器发送确认包ACK，防止了服务器端的一直等待而浪费资源。</font>例如：已失效的连接请求报文突然又传送到了服务器，从而会产生错误。  
 2. 四次挥手  
-    ![image](http://www.wt1814.com/static/view/images/network/TCP-2.png)  
+    ![image](http://182.92.69.8:8081/img/network/TCP-2.png)  
     1. **<font color = "clime">Client收到服务端F1N后，Client进入TIME_WAIT状态。</font>** 2MSL后自动关闭。 
     2. 为什么客户端最后还要等待2MSL？  
     &emsp; <font color = "red">保证客户端发送的最后一个`ACK报文`能够到达服务器，因为这个ACK报文可能丢失。</font>  
@@ -46,7 +46,7 @@ https://blog.csdn.net/a159357445566/article/details/106411680/
 &emsp; 传输控制协议(TCP，Transmission Control Protocol)是一种面向<font color = "red">连接的、可靠的、基于字节流的</font>传输层通信协议。  
 
 ## 1.2. TCP头部格式  
-![image](http://www.wt1814.com/static/view/images/network/TCP-3.png)   
+![image](http://182.92.69.8:8081/img/network/TCP-3.png)   
 
 * <font color = "red">序列号seq</font>：在建立连接时由计算机生成的随机数作为其初始值，通过 SYN 包传给接收端主机，每发送一次数据，就「累加」一次该「数据字节数」的大小。用来解决网络包乱序问题。  
 * <font color = "red">确认应答号ack</font>：指下一次「期望」收到的数据的序列号，发送端收到这个确认应答以后可以认为在这个序号以前的数据都已经被正常接收。用来解决不丢包的问题。  
@@ -65,7 +65,7 @@ https://blog.csdn.net/a159357445566/article/details/106411680/
 &emsp; TCP三次握手的过程掌握最重要的两点就是客户端和服务端状态的变化和三次握手过程标志信息的变化。  
 
 ##### 1.3.1.1.1. 流程  
-![image](http://www.wt1814.com/static/view/images/network/TCP-1.png)  
+![image](http://182.92.69.8:8081/img/network/TCP-1.png)  
 &emsp; 初始状态：客户端处于closed(关闭) 状态，服务端处于listen(监听) 状态。  
 &emsp; 第一次握手：建立连接时，客户端发送SYN包(SYN=1，sql=x)到服务器。并进入SYN_SEND发送等待状态，等待服务器确认；  
 &emsp; 第二次握手： **<font color = "red">服务器收到SYN包，必须确认客户的SYN(ACK=1，ack+1)，**</font> 同时自己也发送一个SYN包(SYN=1，sql=Y)，即SYN+ACK包，此时服务器进入SYN_RECV确认接收状态；  
@@ -84,7 +84,7 @@ https://blog.csdn.net/a159357445566/article/details/106411680/
 
 #### 1.3.1.2. 四次挥手，连接终止  
 ##### 1.3.1.2.1. 流程  
-![image](http://www.wt1814.com/static/view/images/network/TCP-2.png)  
+![image](http://182.92.69.8:8081/img/network/TCP-2.png)  
 &emsp; TCP采用四次挥手来释放连接：刚开始双方都处于establised状态。  
 1. 第一次挥手：第一次挥手无论是客户端还是服务端都可以发起，因为TCP是全双工的。假如是客户端先发起关闭请求，Client发送一个FIN，用来关闭Client到Server的数据传送，Client进入FIN_WAIT_1状态；  
 2. 第二次挥手：Server收到FIN后，发送一个ACK给Client，确认序号为收到序号+1 (与SYN相同，一个FIN占用一个序号)，<font color = "red">Server进入CLOSE_WAIT状态；</font>  
