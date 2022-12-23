@@ -42,10 +42,10 @@ https://www.zhihu.com/question/388328735/answer/1158442899
 https://kubernetes.io/zh/docs/concepts/overview/what-is-kubernetes/
 -->
 &emsp; 应用部署化的演变：  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-40.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-40.png)  
 
 ### 1.1.1. 虚拟机结构介绍    
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-31.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-31.png)  
 
 * 基础设施(Infrastructure)。它可以是个人电脑，数据中心的服务器，或者是云主机。
 * 主操作系统(Host Operating System)。个人电脑之上，运行的可能是MacOS，Windows或者某个Linux发行版。
@@ -60,7 +60,7 @@ https://kubernetes.io/zh/docs/concepts/overview/what-is-kubernetes/
 
 ### 1.1.2. 容器化技术Docker  
 &emsp; Docker可以说是容器化技术的代名词。
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-32.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-32.png)  
 
 * 基础设施(Infrastructure)。
 * 主操作系统(Host Operating System)。所有主流的Linux发行版都可以运行Docker。对于MacOS和Windows，也有一些办法“运行”Docker。
@@ -72,9 +72,9 @@ https://kubernetes.io/zh/docs/concepts/overview/what-is-kubernetes/
 &emsp; 在容器模型中。服务器启动之后，所选择的操作系统会启动。那么启动的操作系统会占用了全部硬件资源。在 OS 层之上，需要安装容器引擎，比如 docker。<font color = "clime">容器引擎会获取系统资源，然后将这些资源分割成安全的互相隔离的资源结构，称之为容器。此时，每个容器在其内部运行应用。</font>  
 
 ### 1.1.3. 虚拟机和容器对比  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-12.png)![image](http://www.wt1814.com/static/view/images/devops/docker/docker-13.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-12.png)![image](http://182.92.69.8:8081/img/devops/docker/docker-13.png)  
 
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-11.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-11.png)  
 
 &emsp; **<font color = "clime">物理机部署不能充分利用资源，造成资源浪费。虚拟机方式部署，虚拟机本身会占用大量资源，导致资源浪费，另外虚拟机性能也很差。而容器化部署比较灵活，且轻量级，性能较好。</font>**    
 
@@ -104,7 +104,7 @@ https://kubernetes.io/zh/docs/concepts/overview/what-is-kubernetes/
 ## 1.2. Docker简介  
 &emsp; Docker是提供应用打包部署与运行应用的容器化平台。Docker本身并不是容器，它是创建容器的工具，是应用容器引擎。 
 
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-1.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-1.png)  
 
 &emsp; Docker的特点：  
 

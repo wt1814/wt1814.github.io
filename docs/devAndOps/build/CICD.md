@@ -62,13 +62,13 @@ https://www.redhat.com/zh/topics/devops/what-is-ci-cd
 &emsp; CI/CD 阶段：理解参与者、流程、技术  
 
 &emsp; 企业应用程序开发参与者通常由开发人员，测试人员/QA工程师，运维工程师以及SRE（站点可靠性工程师）或IT运营团队组成。他们紧密合作，目标是高质量软件交付。`CI/CD是两个独立过程的组合：持续集成和持续部署。`下面列出了每个步骤中的主要步骤：  
-![image](http://www.wt1814.com/static/view/images/devops/devops/devops-9.png)  
+![image](http://182.92.69.8:8081/img/devops/devops/devops-9.png)  
 
 ## 1.1. 持续集成
 &emsp; 持续集成（CI）是构建软件和完成初始测试的过程。持续部署（CD）是将代码与基础设施相结合的过程，确保完成所有测试并遵循策略，然后将代码部署到预期环境中。当然，许多公司也有自己特有流程，但主要步骤如下。  
 
 ### 1.1.1. CI：代码提交阶段
-![image](http://www.wt1814.com/static/view/images/devops/devops/devops-10.png)  
+![image](http://182.92.69.8:8081/img/devops/devops/devops-10.png)  
 * 参与者：开发工程师，数据库管理员（DBA），基础架构团队  
 * 技术：GitHub，GitLab，SVM，BitBucket  
 * 流程：代码提交阶段也称为版本控制。提交是将开发人员编写的最新代码变更发送到代码存储库的操作。开发人员编写的代码的每个版本都被无限期地存储。在与合作者讨论和审查变更之后，开发人员将编写代码，并在软件需求、特性增强、bug修复或变更请求完成后提交。管理编辑和提交变更的存储库称为源代码管理工具（配置管理工具）。在开发人员提交代码（代码推送请求）后，代码更改被合并到主线代码分支中，这些主线代码分支存储在GitHub这样的中央存储库中。  
@@ -81,7 +81,7 @@ https://www.redhat.com/zh/topics/devops/what-is-ci-cd
 &emsp; 将额外的策略检查加入自动化流水线中可以显著减少流程中稍后发现的错误数量。  
 
 ### 1.1.3. CI：构建
-![image](http://www.wt1814.com/static/view/images/devops/devops/devops-11.png)  
+![image](http://182.92.69.8:8081/img/devops/devops/devops-11.png)  
 
 * 参与者：开发工程师
 * 技术：Jenkins，Bamboo CI，Circle CI，Travis CI，Maven，Azure DevOps
@@ -97,7 +97,7 @@ https://www.redhat.com/zh/topics/devops/what-is-ci-cd
 &emsp; 一旦构建就绪，程序包就会存储在称为Artifactory或Repository工具的中央数据库。随着每天构建量的增加，跟踪所有构建产物也会变得愈加困难。因此，一旦生成并验证了构建产物，就将其发送到存储库进行存储管理。诸如Jfrog Artifactory之类的存储库工具可用于存储诸如.rar，.war，.exe，Msi等之类的二进制文件。测试人员可以从此处手动进行选择，并在测试环境中部署构建产物以进行测试。  
 
 ### 1.1.4. CI：测试阶段
-![image](http://www.wt1814.com/static/view/images/devops/devops/devops-12.png)  
+![image](http://182.92.69.8:8081/img/devops/devops/devops-12.png)  
 
 * 参与者：测试人员、QA
 * 技术：Selenium，Appium，Jmeter，SOAP UI，Tarantula
@@ -112,7 +112,7 @@ https://www.redhat.com/zh/topics/devops/what-is-ci-cd
 &emsp; Selenium、JMeter等自动化测试工具也可执行性能和压力测试，以检查应用程序在面对高负载时是否稳定和性能良好。该测试流程通常不会在每个更新提交上运行，因为完整的压力测试是长期运行的。当发布主要的新功能时，将对多个更新进行分组，并完成完整的性能测试。在单个更新被转移到下一阶段的情况下，流水线可能将金丝雀测试加入作为可选。  
 
 ## 1.2. 持续部署：Bake和部署
-![image](http://www.wt1814.com/static/view/images/devops/devops/devops-13.png)  
+![image](http://182.92.69.8:8081/img/devops/devops/devops-13.png)  
 
 * 参与者：基础架构工程师，SRE，运维工程师  
 * 技术：Spinnaker，Argo CD，Tekton CD  
@@ -136,7 +136,7 @@ https://www.redhat.com/zh/topics/devops/what-is-ci-cd
 
 
 ## 1.3. 持续交付（CD）：反馈和协作工具
-![image](http://www.wt1814.com/static/view/images/devops/devops/devops-14.png)  
+![image](http://182.92.69.8:8081/img/devops/devops/devops-14.png)  
 
 * 参与者：站点可靠性工程师（SRE）、运营和维护团队。  
 * 技术：JIRA、ServiceNow、Slack、电子邮件、Hipchat。  

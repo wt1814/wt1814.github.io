@@ -70,7 +70,7 @@ https://www.cnblogs.com/xjnotxj/p/5845574.html
 
 ## 1.3. GIT本地库操作基本原理  
 
-![image](http://www.wt1814.com/static/view/images/projectManage/git/git-4.png)  
+![image](http://182.92.69.8:8081/img/projectManage/git/git-4.png)  
 &emsp; GIT作为分布式版本库软件，每个机器上都是一个版本库。  
 &emsp; git初始化后，有三个区，分别是 工作区，暂存区，本地库；  
 
@@ -93,10 +93,10 @@ https://jingyan.baidu.com/article/a17d52854e164dc098c8f2b0.html
 * 删除远程分支tmp：git push origin --delete tmp(分支名称) 
 * Git删除在本地有但在远程库中已经不存在的分支，两种方式：  
     * 方式一：  
-    ![image](http://www.wt1814.com/static/view/images/projectManage/git/git-1.png)  
-    ![image](http://www.wt1814.com/static/view/images/projectManage/git/git-2.png)  
+    ![image](http://182.92.69.8:8081/img/projectManage/git/git-1.png)  
+    ![image](http://182.92.69.8:8081/img/projectManage/git/git-2.png)  
     * 方式二：git fetch -p    
-    ![image](http://www.wt1814.com/static/view/images/projectManage/git/git-3.png)  
+    ![image](http://182.92.69.8:8081/img/projectManage/git/git-3.png)  
 
 
 ### 1.4.2. git克隆指定分支的代码

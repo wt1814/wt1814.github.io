@@ -208,7 +208,7 @@ Just before they reach the moon,the oldest monkey raises his head and happens to
 ## 1.4. sed  
 &emsp; **<font color = "clime">sed是一种流编辑器，是一款处理文本比较优秀的工具，可以结合正则表达式一起使用。</font>**  
 &emsp; **sed执行过程：**  
-![image](http://www.wt1814.com/static/view/images/Linux/linux/linux-4.png)   
+![image](http://182.92.69.8:8081/img/Linux/linux/linux-4.png)   
 
 &emsp; **sed命令**  
 &emsp; 语法 :  sed \[选项]... {命令集} \[输入文件]...  

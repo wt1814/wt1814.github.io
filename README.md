@@ -1064,7 +1064,6 @@ es   esHD   kibana  logstash   filebeat
 [Python3](/docs/devAndOps/centOS/Python3.md)  
 
 ### 1.21.2. DevOps  
-
 [项目管理](/docs/devAndOps/build/projectManagement.md)  
 [CI/CD](/docs/devAndOps/build/CICD.md)  
 [Devops](/docs/devAndOps/build/devOps.md)  
@@ -1162,9 +1161,7 @@ es   esHD   kibana  logstash   filebeat
 ### 1.22.2. 统计  
 [统计PV](/docs/devAndOps/monitor/StatisticsPV.md)  
 
-
 -----------------------
-
 
 ## 1.23. 常用研发工具  
 [Idea](/docs/software/idea/idea.md)  

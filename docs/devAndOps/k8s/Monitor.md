@@ -22,6 +22,6 @@ https://mp.weixin.qq.com/s/9MRvBGDlEKKbUabhNsVIHQ
 * Grafana：通过Dashboard将InfluxDB中的时序数据展现成图表或曲线等形式，便于运维人员查看集群的运行状态。Grafana的主页为http://grafana.orgo  
 
 &emsp; 基于Heapster+InfluxDB+Grafana的集群监控系统总体架构如下图所示。  
-![image](http://www.wt1814.com/static/view/images/devops/k8s/k8s-3.png)  
+![image](http://182.92.69.8:8081/img/devops/k8s/k8s-3.png)  
 
 &emsp; HeapsterInfluxDB和Grafana均以Pod的形式启动和运行。由于Heapster需要与Kubemetes Master进行安全连接，所以需要设置Master的CA证书安全策略。  

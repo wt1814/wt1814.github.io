@@ -59,7 +59,7 @@ http://www.javashuo.com/article/p-saxrpzqf-kp.html
 
 1. bitmap更适合用于数字比较：  
 &emsp; 比如比较两个数组是否有重叠，把第一个数组中的1,2,5,7,11分别映射到bitmap位置中  
-![image](http://www.wt1814.com/static/view/images/structure/structure-2.png)  
+![image](http://182.92.69.8:8081/img/structure/structure-2.png)  
 &emsp; 其他数组只需要把值当成索引号去bitmap中查看是否值=1  
 &emsp; 确定就是假如我是 1,100000000，那么其实只需要用到2位，但是却需要100000000位内存
 由此我们确定了布隆过滤  
