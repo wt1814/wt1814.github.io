@@ -20,18 +20,18 @@
     * 对齐填充：JVM要求对象起始地址必须是8字节的整数倍(8字节对齐)。填充数据不是必须存在的，仅仅是为了字节对齐。   
 2. JVM中对象头的方式有以下两种(以32位JVM为例)  
     * 普通对象：  
-    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-60.png)   
+    ![image](http://182.92.69.8:8081/img/java/concurrent/multi-60.png)   
     * 数组对象：  
-    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-61.png)   
+    ![image](http://182.92.69.8:8081/img/java/concurrent/multi-61.png)   
 
     对象头：包含Mark Word、class pointer、array length共3部分。  
     1. Mark Word：  
     &emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "clime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
     &emsp; 这部分主要用来存储对象自身的运行时数据，如hashcode、gc分代年龄等。mark word的位长度为JVM的一个Word大小，也就是说32位JVM的Mark word为32位，64位JVM为64位。
     为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位，
-    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-67.png)   
+    ![image](http://182.92.69.8:8081/img/java/concurrent/multi-67.png)   
 
-    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-68.png)   
+    ![image](http://182.92.69.8:8081/img/java/concurrent/multi-68.png)   
     2. class pointer：  
     &emsp; 这一部分用于存储对象的类型指针，该指针指向它的类元数据，JVM通过这个指针确定对象是哪个类的实例。该指针的位长度为JVM的一个字大小，即32位的JVM为32位，64位的JVM为64位。 
     3. array length：  
@@ -81,7 +81,7 @@ Java对象头与monitor
 https://blog.csdn.net/kking_edc/article/details/108382333
 -->
 &emsp; 在JVM中，对象在内存中的布局分为三块区域：对象头、实例数据和对齐填充，如下所示：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-65.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-65.png)   
 
 * 对象头：包含Mark Word、class pointer、array length共3部分。  
     * **第一部分用于存储对象自身的运行时数据，如哈希码、GC分代年龄、锁标识状态、线程持有的锁、偏向线程ID等。** 这部分数据的长度在32位和64位的Java虚拟机中分别会占用32个或64个比特，官方称它为“Mark Word”。这部分是实现轻量级锁和偏向锁的关键。  
@@ -105,9 +105,9 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 &emsp; JVM中对象头的方式有以下两种(以32位JVM为例)  
 
 * 普通对象：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-60.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-60.png)   
 * 数组对象：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-61.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-61.png)   
 
 &emsp; `对象头32位与64位占用空间不同。在32位中： hash(25)+age(4)+lock(3)=32bit； 64位中：unused(25+1)+hash(31)+age(4)+lock(3)=64bit。`  
 
@@ -117,19 +117,19 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 &emsp; 为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位，不同标记位下的Mark Word示意如下：  
 
 &emsp; 64位下的标记字与32位的相似：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-41.png)   
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-62.png)   
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-64.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-41.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-62.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-64.png)   
 
 &emsp; 下面两张图是32位JVM和64位JVM中“Mark Word”所记录的信息  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-67.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-67.png)   
 
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-68.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-68.png)   
 
 &emsp; 其中各部分的含义如下：(<font color = "red">用对象头中markword最低的三位代表锁状态，其中1位是偏向锁位，两位是普通锁位。</font>)  
 
 * lock：2位的锁状态标记位，由于希望用尽可能少的二进制位表示尽可能多的信息，所以设置了lock标记。该标记的值不同，整个mark word表示的含义不同。  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-63.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-63.png)   
 * bias_lock：对象是否启动偏向锁标记，只占1个二进制位。为1时表示对象启动偏向锁，为0时表示对象没有偏向锁。  
 * age：4位的Java对象年龄。在GC中，如果对象在Survivor区复制一次，年龄增加1。当对象达到设定的阈值时，将会晋升到老年代。默认情况下，并行GC的年龄阈值为15，并发GC的年龄阈值为6。由于age只有4位，所以最大值为15，这就是-XX:MaxTenuringThreshold选项最大值为15的原因。  
 * identity_hashcode：25位的对象标识Hash码，采用延迟加载技术。调用方法System.identityHashCode()计算，并会将结果写到该对象头中。当对象被锁定时，该值会移动到管程Monitor中。  
@@ -137,8 +137,8 @@ https://blog.csdn.net/kking_edc/article/details/108382333
 * epoch：偏向时间戳。  
 * ptr_to_lock_record：指向栈中锁记录的指针。  
 * **<font color = "clime">ptr_to_heavyweight_monitor：指向monitor对象(也称为管程或监视器锁)的起始地址，每个对象都存在着一个monitor与之关联，对象与其monitor之间的关系有存在多种实现方式，如monitor对象可以与对象一起创建销毁或当前线程试图获取对象锁时自动生，但当一个monitor被某个线程持有后，它便处于锁定状态。</font>**  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-56.png)   
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-76.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-56.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-76.png)   
 
         为什么锁信息存放在对象头里？
         因为在Java中任意对象都可以用作锁，因此必定要有一个映射关系，存储该对象以及其对应的锁信息(比如当前哪个线程持有锁，哪些线程在等待)。一种很直观的方法是，用一个全局map，来存储这个映射关系，但这样会有一些问题：需要对map做线程安全保障，不同的Synchronized之间会相互影响，性能差；另外当同步对象较多时，该map可能会占用比较多的内存。

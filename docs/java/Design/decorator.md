@@ -60,7 +60,7 @@ https://www.cnblogs.com/volcano-liu/p/10897897.html
 https://www.cnblogs.com/volcano-liu/p/10897897.html
 -->
 &emsp; **模式角色组成：**  
-![image](http://www.wt1814.com/static/view/images/java/design/design-11.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-11.png)  
 
 * Component，抽象构件角色，是一个abstract class，组件对象的接口，可以给这些对象动态的添加职责。  
 * ConcreteComponent，具体的处理类，用于实现operation方法。具体的组件对象，实现了组件接口。该对象通常就是被装饰器装饰的原始对象，可以给这个对象添加职责。  
@@ -68,7 +68,7 @@ https://www.cnblogs.com/volcano-liu/p/10897897.html
 &emsp; 一般是一个抽象类，继承自或实现Component（抽象构件），在它的属性里面有一个变量指向Component抽象构件，这是装饰器最关键的地方。  
 * ConcreteDecorator，具体的装饰器类，实现具体要向被装饰对象添加的功能。用来装饰具体的组件对象或者另外一个具体的装饰器对象。  
 
-![image](http://www.wt1814.com/static/view/images/java/design/design-25.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-25.png)  
 * Component: 抽象构件。是定义一个对象接口，可以给这些对象动态地添加职责。
 * ConcreteComponent:具体构件。是定义了一个具体的对象，也可以给这个对象添加一些职责。
 * Decorator: 抽象装饰类。是装饰抽象类，继承了Component,从外类来扩展Component类的功能，但对于Component来说，是无需知道Decorator存在的。

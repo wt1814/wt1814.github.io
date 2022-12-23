@@ -114,7 +114,7 @@ public class Main {
 }
 ```
 &emsp; 反编译class文件之后得到如下内容：  
-![image](http://www.wt1814.com/static/view/images/java/JDK/basics/java-6.png)  
+![image](http://182.92.69.8:8081/img/java/JDK/basics/java-6.png)  
 
 &emsp; 从反编译得到的字节码内容可以看出，在装箱的时候自动调用的是Integer的valueOf(int)方法。而在拆箱的时候自动调用的是Integer的intValue方法。  
 &emsp; 其他的也类似，比如Double、Character。  

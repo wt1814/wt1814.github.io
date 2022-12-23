@@ -81,6 +81,8 @@
 <!-- /TOC -->
 
 # 1. wt1814-note  
+http://182.92.69.8:8081/img/  
+
 ## 1.1. 总结
 [知识点概况](/docs/survey.md)  
 [大总结1](/docs/summary.md)  

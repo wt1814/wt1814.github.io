@@ -30,7 +30,7 @@
 
 ## 1.2. 结构  
 &emsp; **模式角色组成：**  
-![image](http://www.wt1814.com/static/view/images/java/design/design-12.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-12.png)  
 
 * Facade门面角色：外观模式的核心。它被客户角色调用，它熟悉子系统的功能。门面角色内部根据客户角色的需求预定了几种功能的组合。一般情况下，门面角色会将所有从客户端发来的请求委派到相应的子系统去，也就说该角色没有实际的业务逻辑，只是一个委托类。  
 * subsystem子系统角色：实现了子系统的功能。  

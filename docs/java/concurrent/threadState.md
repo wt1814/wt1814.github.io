@@ -54,7 +54,7 @@ https://www.jianshu.com/p/3e79ae25bfb6
 
 ### 1.2.2. Java中线程的生命周期
 &emsp; Java线程状态均来自Thread类下的State这一内部枚举类中所定义的状态：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/thread-2.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/thread-2.png)  
 1. 新建状态（NEW）：一个尚未启动的线程处于这一状态。用new语句创建的线程处于新建状态，此时它和其他Java对象一样，仅仅在堆区中被分配了内存，并初始化其成员变量的值。
     * new Thread()
 2. 就绪状态(Runnable)：当一个线程对象创建后，其他线程调用它的start()方法，该线程就进入就绪状态，Java虚拟机会为它创建方法调用栈和程序计数器。处于这个状态的线程位于可运行池中，等待获得CPU的使用权。<!-- Runnable (可运行/运行状态，等待CPU的调度)(要注意：即使是正在运行的线程，状态也是Runnable，而不是Running) -->  
@@ -90,9 +90,9 @@ https://blog.csdn.net/zl18310999566/article/details/87931473
 
 ## 1.3. 线程状态切换
 &emsp; 线程状态切换图示：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/thread-1.png)  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/thread-4.png)  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/thread-5.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/thread-1.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/thread-4.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/thread-5.png)  
 
 
 

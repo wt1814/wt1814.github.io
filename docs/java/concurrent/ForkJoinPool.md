@@ -42,11 +42,11 @@ https://mp.weixin.qq.com/s/Zf_mQ_M5FoCkrRqm5NU_fQ
 
 ### 1.1.1. 分而治之  
 &emsp; <font color = "red">ForkJoinPool的计算方式是大任务拆中任务，中任务拆小任务，最后再汇总。</font>  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-12.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-12.png)   
 
 ### 1.1.2. 工作窃取(Work Stealing)算法  
 &emsp; ForkJoinPool会把大任务拆分成多个子任务，但是ForkJoinPool并不会为每个子任务创建单独的线程。  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-13.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-13.png)   
 
 ```java
 public class ForkJoinWorkerThread extends Thread {
@@ -61,7 +61,7 @@ public class ForkJoinWorkerThread extends Thread {
 
 ## 1.2. API 描述
 &emsp; ForkJoinPool继承体系  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-6.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-6.png)  
 &emsp; ForkJoinPool和ThreadPoolExecutor都是继承AbstractExecutorService抽象类，所以它和ThreadPoolExecutor的使用几乎没有多少区别，除了任务变成了ForkJoinTask以外。   
 &emsp; 注意：这里运用到了一种很重要的设计原则——开闭原则——对修改关闭，对扩展开放。可见整个线程池体系一开始的接口设计就很好，新增一个线程池类，不会对原有的代码造成干扰，还能利用原有的特性。  
 

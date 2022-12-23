@@ -136,7 +136,7 @@ executorService.execute(()->{
 ```
 
 ### 1.1.2. 线程池执行，ExecutorService的API  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/pool-14.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/pool-14.png)   
 
 #### 1.1.2.1. execute()，提交不需要返回值的任务  
 &emsp; void execute(Runnable command); execute()的参数是一个Runnable，也没有返回值。因此提交后无法判断该任务是否被线程池执行成功。  

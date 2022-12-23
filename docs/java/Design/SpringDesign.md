@@ -107,7 +107,7 @@ if(mappedHandler.getHandler() instanceof MultiActionController){
 
 ## 1.7. 装饰者模式  
 &emsp; 装饰者模式可以动态地给对象添加一些额外的属性或行为。相比于使用继承，装饰者模式更加灵活。简单点儿说就是当我们需要修改原有的功能，但我们又不愿直接去修改原有的代码时，设计一个Decorator套在原有代码外面。其实在 JDK 中就有很多地方用到了装饰者模式，比如 InputStream家族，InputStream 类下有 FileInputStream (读取文件)、BufferedInputStream (增加缓存,使读取文件速度大大提升)等子类都在不修改InputStream 代码的情况下扩展了它的功能。  
-![image](http://www.wt1814.com/static/view/images/java/design/design-28.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-28.png)  
 ​<center>装饰者模式示意图</center>
 
 &emsp; Spring中配置DataSource的时候，DataSource 可能是不同的数据库和数据源。我们能否根据客户的需求在少修改原有类的代码下动态切换不同的数据源？这个时候就要用到装饰者模式(这一点我自己还没太理解具体原理)。Spring 中用到的包装器模式在类名上含有 Wrapper或者 Decorator。这些类基本上都是动态地给一个对象添加一些额外的职责。  

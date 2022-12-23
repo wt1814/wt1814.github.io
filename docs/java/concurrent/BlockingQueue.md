@@ -31,7 +31,7 @@ https://blog.csdn.net/qq_26881739/article/details/80983495
 -->
 
 &emsp; **<font color = "clime">阻塞队列与普通队列的区别在于，</font>** 试图从空的阻塞队列中获取元素的线程将会被阻塞，直到其他的线程往空的队列插入新的元素。同样，试图往已满的阻塞队列中添加新元素的线程同样也会被阻塞，直到其他的线程使队列重新变得空闲起来，如从队列中移除一个或者多个元素，或者完全清空队列，下图展示了如何通过阻塞队列来合作：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-34.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-34.png)  
 <!-- 
 阻塞队列是一个在队列基础上又支持了两个附加操作的队列。  
 2个附加操作：  
@@ -42,7 +42,7 @@ https://blog.csdn.net/qq_26881739/article/details/80983495
 &emsp; <font color = "clime">阻塞队列常用于生产者和消费者的场景，生产者是向队列里添加元素的线程，消费者是从队列里取元素的线程。</font>简而言之，阻塞队列是生产者用来存放元素、消费者获取元素的容器。  
 
 ## 1.1. BlockingQueue接口  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-35.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-35.png)  
 &emsp; BlockingQueue是继承自Queue的接口，在Queue的基础上增加了阻塞操作。相比Queue接口有两种形式的api，BlockingQueue则有四种形式的api，阻塞队列定义如果调用了某个函数可能当时不能立即满足结果，但很有可能在未来的某个时刻会满足。四种api定义：  
 * 添加数据方法：  
     * add(e)：将元素添加到队列末尾，成功则返回true；<font color = "red">如果队列已满，则插入失败，抛出异常。</font>  
@@ -55,9 +55,9 @@ https://blog.csdn.net/qq_26881739/article/details/80983495
     * take()：从队首取元素，若队列为空，队列会一直阻塞消费者线程。
     * poll(time,unit)：从队首取元素，如果队列为空，则等待一定的时间，当时间期限达到时，如果还没有取出元素，则返回null；否则返回队首元素。
 
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-36.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-36.png)  
 &emsp; 检查是在有数据时返回队列的第一个数据，并不会从队列中移除该数据。内部使用 ReentrantLock进行同步控制的。  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-71.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-71.png)  
 <!-- 
 * 调用函数失败，抛出异常
 * 调用失败，返回null或者false

@@ -29,7 +29,7 @@ https://blog.csdn.net/qq_33591903/article/details/106634270
 
 ## 1.1. 存储结构  
 &emsp; 在 JDK1.7 中，ConcurrentHashMap 类采用了分段锁的思想，Segment(段) + HashEntry(哈希条目) + ReentrantLock。  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-10.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/concurrent-10.png)  
 
 &emsp; 将HashMap进行切割，把HashMap中的哈希数组切分成Segment；每一个Segment是一个类似于HashMap的结构，包含有若干个HashEntry。  
 1. <font color = "red">Segment继承ReentrantLock(可重入锁)，从而实现并发控制。 Segment的个数一旦初始化就不能改变，默认Segment的个数是16个，也可以认为ConcurrentHashMap默认支持最多16个线程并发。 </font> 

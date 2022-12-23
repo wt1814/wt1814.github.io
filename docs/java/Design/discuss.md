@@ -58,9 +58,9 @@
 
 ### 1.3.2. 状态模式与策略模式区别  
 &emsp; **策略模式结构图：** 
-![image](http://www.wt1814.com/static/view/images/java/design/design-19.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-19.png)  
 &emsp; **状态模式结构图：**  
-![image](http://www.wt1814.com/static/view/images/java/design/design-20.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-20.png)  
 
 &emsp; 1、状态模式重点在各状态之间的切换从而做不同的事情，而策略模式更侧重于根据具体情况选择策略，并不涉及切换。  
 &emsp; 2、状态模式不同状态下做的事情不同，而策略模式做的都是同一件事，例如聚合支付平台，有支付宝、微信支付、银联支付，虽然策略不同，但最终做的事情都是支付，也就是说它们之间是可替换的。反观状态模式，各个状态的同一方法做的是不同的事，不能互相替换。  

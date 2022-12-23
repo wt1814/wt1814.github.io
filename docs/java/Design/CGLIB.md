@@ -35,7 +35,7 @@ https://blog.csdn.net/danchu/article/details/70238002
 &emsp; **<font color = "blue">针对接口，生成实现接口的类，即implements方式；针对类，生成继承父类的类，即extends方式。</font>**    
 
 &emsp; Cglib与字节码的关系：  
-![image](http://www.wt1814.com/static/view/images/java/design/design-24.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-24.png)  
 &emsp; 对此图总结一下：
 
 * 最底层的是字节码Bytecode，字节码是Java为了保证“一次编译、到处运行”而产生的一种虚拟指令格式，例如iload_0、iconst_1、if_icmpne、dup等  

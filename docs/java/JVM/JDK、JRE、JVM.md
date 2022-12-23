@@ -29,7 +29,7 @@ https://www.cnblogs.com/iskandar/p/8933340.html
 ## 1.1. JDK  
 &emsp; JDK(Java SE Development Kit)：是整个JAVA的核心，Java标准开发包。它提供了编译、运行Java程序所需的各种工具和资源，包括Java编译器即JDK中的javac.exe、Java运行环境JRE，以及Java基础的类库(即Java API，包括rt.jar)。  
 &emsp; 下图是JDK的安装目录：  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-1.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-1.png)  
 
 * bin：一堆EXE可执行文件，java.exe、javac.exe、javadoc.exe，以及密钥管理工具等。  
 * db：内置了Derby数据库，体积小，免安装。  
@@ -63,13 +63,13 @@ https://www.cnblogs.com/iskandar/p/8933340.html
 * appletviewer：小程序浏览器，一种执行HTML文件上的Java小程序的Java浏览器
 
 &emsp; Java程序从源代码到运行一般有下面3步：  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-2.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-2.png)  
 &emsp; Java源文件，通过编译器，能够生产相应的.Class文件，也就是字节码文件；而字节码文件又通过Java虚拟机中的解释器，编译成特定机器上的机器码。  
 
 ## 1.2. JRE  
 &emsp; JRE：Java运行时环境，如果仅仅是用来部署和运行Java程序，只需要安装jre。它主要包含两个部分，jvm的标准实现和Java的一些基本类库。  
 &emsp; 下图是JRE的安装目录：里面有两个文件夹bin和lib，在这里可以认为bin里的就是jvm，lib中则是jvm工作所需要的类库，而jvm和lib合起来就称为jre。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-3.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-3.png)  
 &emsp; 如果安装了JDK，会发现电脑中有两套JRE，一套位于/Java/jre.../下，一套位于/Java/jdk.../jre下。一台机器上有两套以上JRE，java.exe选择合适的JRE来运行java程序。java.exe按照以下的顺序来选择JRE，找到JVM的绝对路径：  
 1. 自己目录下有没有JRE；  
 2. 父目录下有没有JRE；  
@@ -78,8 +78,8 @@ https://www.cnblogs.com/iskandar/p/8933340.html
 ## 1.3. JVM  
 &emsp; JVM(Java Virtual Mechinal)：Java虚拟机，是JRE的一部分，是整个java实现跨平台的最核心的部分，是可运行java字节码文件.class的虚拟计算机。  
 &emsp; **JVM标准结构：**  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-4.png)  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-145.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-4.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-145.png)  
 &emsp; <font color = "red">JVM由4大部分组成：类加载器ClassLoader，运行时数据区Runtime Data Area，执行引擎Execution Engine，本地方法调用Native Interface。</font>  
 
 <!-- 

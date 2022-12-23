@@ -52,12 +52,12 @@ https://refactoringguru.cn/design-patterns/catalog
 
 
 ## 1.1. 如何判断哪里需要使用设计模式  
-![image](http://www.wt1814.com/static/view/images/java/design/design-1.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-1.png)  
 
 &emsp; 在编码实现中，有一些代码是一次写好后续基本不会改变的，或者不太需要扩展的，比如一些工具类等。有一部分是会经常变得，设计模式大多都应用在需求会变化的这一部分。分析这些代码会如何变，选择合适的设计模式来优化这部分代码。  
 
 ## 1.2. ~~分类~~  
-![image](http://www.wt1814.com/static/view/images/java/design/design-22.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-22.png)  
 
 &emsp; 根据两条准则对模式进行分类：   
 * 第一是目的准则，即模式是用来完成什么工作的。模式依据其目的可分为创建型（Creational）、结构型（Structural）、或行为型（Behavioral）三种。  
@@ -81,7 +81,7 @@ https://refactoringguru.cn/design-patterns/catalog
 &emsp; 还有其他组织模式的方式。有些模式经常会被绑在一起使用，例如，Composite常和Iterator或Visitor—起使用；有些模式是可替代的，例如，Prototype常用来替代Abstract Factory有些模式尽管使用意图不同，但产生的设计结果是很相似的，例如，Composite和Decorator的结构图是相似的。  
 
 &emsp; 还有一种方式是根据模式的"相关模式"部分所描述的它们怎样互相引用来组织设计模式。下图给出了模式关系的图形说明。显然，存在着许多组织设计模式的方法。从多角度去思考模式有助于对它们的功能、差异和应用场合的更深入理解。   
-![image](http://www.wt1814.com/static/view/images/java/design/design-21.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-21.png)  
 
 <!--
 &emsp; 根据模式是主要用于类上还是主要用于对象上来分，这种方式可分为类模式和对象模式两种。  
@@ -97,7 +97,7 @@ https://refactoringguru.cn/design-patterns/catalog
 
 ## 1.3. 设计模式详解  
 &emsp; 根据模式是用来完成什么工作来划分，这种方式可分为创建型模式、结构型模式和行为型模式3种。  
-![image](http://www.wt1814.com/static/view/images/java/design/design-2.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-2.png)  
 
 &emsp; **创建型模式有5种：**  
 

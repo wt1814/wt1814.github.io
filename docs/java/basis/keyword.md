@@ -25,7 +25,7 @@
 # 1. Java关键字
 ## 1.1. Java访问控制符  
 &emsp; JAVA语言中有公共的(public)，私有的(private)，保护的(protacted)和默认的(default)四种访问控制符。　  
-![image](http://www.wt1814.com/static/view/images/java/JDK/basics/java-2.png)  
+![image](http://182.92.69.8:8081/img/java/JDK/basics/java-2.png)  
 &emsp; 访问属性：在外部类中访问public和default的属性，可以通过类的对象名.属性名直接访问。在外部类中访问private的属性，必须通过对象的get、set方法(get、set方法声明为public)。  
 &emsp; 访问方法：在外部类中访问private的方法，必须通过反射。  
 

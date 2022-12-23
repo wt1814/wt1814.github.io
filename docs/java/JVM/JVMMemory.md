@@ -55,7 +55,7 @@ https://blog.csdn.net/Ethan_199402/article/details/110431404
 &emsp; **<font color = "red">部分参考《深入理解java虚拟机 第3版》第2章 Java内存区域与内存溢出异常</font>**   
 
 &emsp; Java虚拟机在执行Java程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK1.8和之前的版本略有不同。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-7.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-7.png)  
 
 &emsp; JVM内存区域主要分为线程私有区域【程序计数器、虚拟机栈、本地方法区】、线程共享区域【Java堆、方法区、直接内存】。  
 
@@ -65,7 +65,7 @@ https://blog.csdn.net/Ethan_199402/article/details/110431404
 ## 1.1. 程序计数器(Program Counter Register)  
 &emsp; <font color = "red">程序计数器是一块较小的内存空间，可以看作是当前线程所执行的字节码的行号指示器。</font>  
 &emsp; PC 寄存器用来存储指向下一条指令的地址，即将要执行的指令代码。由执行引擎读取下一条指令。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-93.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-93.png)  
 &emsp; (分析：进入class文件所在目录，执行javap -v xx.class反解析(或者通过IDEA插件Jclasslib直接查看，上图)，可以看到当前类对应的Code区(汇编指令)、本地变量表、异常表和代码行偏移量映射表、常量池等信息。)  
 
 1. 存储内容：  
@@ -92,7 +92,7 @@ https://blog.csdn.net/Ethan_199402/article/details/110431404
 &emsp; 存储内容：Java堆存储所有由new创建的对象(包括该对象其中的所有成员变量)和数组。  
 &emsp; 堆中对象的内存需要等待GC进行回收。Java堆是垃圾收集器管理的主要区域，因此也被称作GC堆(Garbage Collected Heap)。  
 &emsp; **<font color = "red">堆分类：从垃圾回收的角度，由于现在收集器基本都采用分代垃圾收集算法，所以Java堆还可以细分为：新生代和老年代，默认1: 2。新生代内存又被分成三部分，Eden、From Survivor、To Survivor，默认情况下年轻代按照8 :1 :1的比例来分配。</font>**  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-10.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-10.png)  
 
 &emsp; **<font color = "clime">在Eden区中，JVM为每个线程分配了一个私有缓存区域[TLAB(Thread Local Allocation Buffer)](/docs/java/JVM/MemoryObject.md)。</font>**    
 
@@ -100,7 +100,7 @@ https://blog.csdn.net/Ethan_199402/article/details/110431404
 &emsp; 请参考[逃逸分析](/docs/java/JVM/escape.md)  
 
 ### 1.4.3. Java堆内存配置项  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-11.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-11.png)  
 &emsp; **堆内存扩展：通过 -Xmx -Xms 控制。**  
 &emsp; 没有直接设置老年代的参数，但是可以设置堆空间大小和新生代空间大小两个参数来间接控制。老年代空间大小=堆空间大小-年轻代大空间大小。  
 
@@ -146,9 +146,9 @@ https://mp.weixin.qq.com/s/n4w_qQxHp6d2TB_d5FC5LA
 * jdk1.6及之前：有永久代(permanent generation) 。静态变量存放在永久代上  
 * jdk1.7：有永久代，但已经逐步“去永久代”。[字符串常量池](/docs/java/JVM/ConstantPool.md) <font color = "red">、静态变量</font>移除，保存在堆中。  
 * jdk1.8及之后：无永久代。类型信息、字段、方法、<font color = "red">常量</font>保存在本地内存的元空间，<font color = "clime">但字符串常量池、静态变量仍在堆。</font>  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-68.png)  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-69.png)  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-70.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-68.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-69.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-70.png)  
 
 &emsp; <font color = "red">Java 8中PermGen为什么被移出HotSpot JVM了？</font>(详见：JEP 122: Remove the Permanent Generation)：  
 1. 由于PermGen内存经常会溢出，引发java.lang.OutOfMemoryError: PermGen，因此JVM的开发者希望这一块内存可以更灵活地被管理，不要再经常出现这样的OOM。  

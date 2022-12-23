@@ -31,7 +31,7 @@ https://mp.weixin.qq.com/s/qfm-Xq1ZNJFJdSZ58qSLLA
 -->
 
 &emsp; Object类的结构图：  
-![image](http://www.wt1814.com/static/view/images/java/JDK/basics/java-1.png)  
+![image](http://182.92.69.8:8081/img/java/JDK/basics/java-1.png)  
 
 ## 1.1. 类构造器
 &emsp; 类构造器是创建Java对象的方法之一。一般都使用new关键字来进行实例，还可以在构造器中进行相应的初始化操作。  

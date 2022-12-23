@@ -38,7 +38,7 @@ https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
 &emsp; <font color = "clime">~~LongAdder会将这个原子变量分离成一个Cell数组，每个线程通过Hash获取到自己数组，这样就减少了乐观锁的重试次数，从而在高竞争下获得优势；</font>而在低竞争下表现的又不是很好，可能是因为自己本身机制的执行时间大于了锁竞争的自旋时间，因此在低竞争下表现性能不如AtomicInteger。~~  
 &emsp; <font color = "clime">~~同时LongAdder也解决了[伪共享问题](/docs/java/concurrent/PseudoSharing.md)。~~</font>  
 
-![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-35.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/concurrent-35.png)   
 1. 设计思想上，LongAdder采用"分段"的方式降低CAS失败的频次。(以空间换时间)  
 &emsp; 这里先简单的说下LongAdder的思路，后面还会详述LongAdder的原理。  
 &emsp; AtomicLong中有个内部变量value保存着实际的long值，所有的操作都是针对该变量进行。也就是说，高并发环境下，value变量其实是一个热点数据，也就是N个线程竞争一个热点。  
@@ -46,7 +46,7 @@ https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
 &emsp; **<font color = "clime">LongAdder有一个全局变量volatile long base值，当并发不高的情况下都是通过CAS来直接操作base值，如果CAS失败，则针对LongAdder中的Cell[]数组中的Cell进行CAS操作，减少失败的概率。</font>**  
 &emsp; 例如当前类中base = 10，有三个线程进行CAS原子性的+1操作，线程一执行成功，此时base=11，线程二、线程三执行失败后开始针对于Cell[]数组中的Cell元素进行+1操作，同样也是CAS操作，此时数组index=1和index=2中Cell的value都被设置为了1。  
 &emsp; 执行完成后，统计累加数据：`sum = 11 + 1 + 1 = 13`，利用LongAdder进行累加的操作就执行完了，流程图如下：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-36.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/concurrent-36.png)   
 2. 使用Contended注解来消除伪共享  
 &emsp; 在 LongAdder 的父类 Striped64 中存在一个`volatile Cell[] cells;` 数组，其长度是2 的幂次方，每个Cell都使用@Contended注解进行修饰，而@Contended注解可以进行缓存行填充，从而解决伪共享问题。伪共享会导致缓存行失效，缓存一致性开销变大。  
 
@@ -68,7 +68,7 @@ https://mp.weixin.qq.com/s/lpk5l4m0oFpPDDf6fl8mmQ
     * Cell[\]数组：竞争条件下，累加个各个线程自己的槽Cell[i]中  
 
 &emsp;最终结果的计算是下面这个形式：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-37.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/concurrent-37.png)   
 -->
 
 ## 1.4. ~~源码分析~~  
