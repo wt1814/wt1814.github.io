@@ -207,11 +207,11 @@ select * from employee where name like '小%' and age=28 and sex='0';
 ```
 
 &emsp; 「解析：」 这里考察索引下推的知识点，如果是「Mysql5.6之前」，在idx_name_age索引树，找出所有名字第一个字是“小”的人，拿到它们的主键id，然后回表找出数据行，再去对比年龄和性别等其他字段。如图：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-152.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-152.png)  
 &emsp; 有些朋友可能觉得奇怪，(name,age)不是联合索引嘛？为什么选出包含“小”字后，不再顺便看下年龄age再回表呢，不是更高效嘛？所以呀， **<font color = "clime">MySQL 5.6 引入了「索引下推优化」，可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。</font>**  
 
 &emsp; 因此，MySQL5.6版本之后，选出包含“小”字后，顺表过滤age=28，所以就只需一次回表。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-153.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-153.png)  
 
 
 ## 1.5. 索引维护

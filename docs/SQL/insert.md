@@ -29,19 +29,19 @@ https://mp.weixin.qq.com/s/S9dQd1hgYzMBoDqV5bPuiQ
 *** InnoDB插入更新流程
 https://mp.weixin.qq.com/s/e-5plTcE4n47L_3JzMS6kw#
 -->
-![image](http://www.wt1814.com/static/view/images/SQL/sql-183.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-183.png)  
 
 1. 事务提交前 --- 内存操作： “1)数据加载到缓冲池buffer poll；” 2)写回滚日志undo log； 3)更新缓冲池数据 4) 写redo log buffer
 2. 事务提交：redo log与bin log两阶段提交。  
 3. 事务提交后：后台线程将buffer poll中数据落盘。  
 
 ## 1.2. insert插入流程
-![image](http://www.wt1814.com/static/view/images/SQL/sql-166.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-166.png)  
 
 
 ### 1.2.1. 事务提交前的日志文件写入  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-174.png)  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-150.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-174.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-150.png)  
 
 1. 首先 insert 进入 server 层后，会进行一些必要的检查，检查的过程中并不会涉及到磁盘的写入。
 2. 检查没有问题之后，便进入引擎层开始正式的提交。InnoDB会将数据页缓存至内存中的buffer pool，所以insert语句到了这里并不需要立刻将数据写入磁盘文件中，只需要修改 buffer pool当中对应的数据页就可以了。
@@ -54,7 +54,7 @@ https://mp.weixin.qq.com/s/e-5plTcE4n47L_3JzMS6kw#
 &emsp; 综上（在 InnoDB buffer pool足够大且上述的两个参数设置为双一时），insert语句成功提交时，真正发生磁盘数据写入的，并不是MySQL的数据文件，而是redo log和binlog文件。然而，InnoDB buffer pool不可能无限大，redo log也需要定期轮换，很难容下所有的数据，下面来看看buffer pool与磁盘数据文件的交互方式。
 
 ### 1.2.2. 事务提交后的数据文件写入  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-151.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-151.png)  
 1. 当 buffer pool 中的数据页达到一定量的脏页或 InnoDB 的 IO 压力较小 时，都会触发脏页的刷盘操作。
 2. 当开启 double write 时，InnoDB 刷脏页时首先会复制一份刷入 double write，在这个过程中，由于double write的页是连续的，对磁盘的写入也是顺序操作，性能消耗不大。
 3. 无论是否经过 double write，脏页最终还是需要刷入表空间的数据文件。刷入完成后才能释放 buffer pool 当中的空间。
@@ -68,7 +68,7 @@ https://mp.weixin.qq.com/s/e-5plTcE4n47L_3JzMS6kw#
 &emsp; 汇总两张图，一条 insert 语句的所有涉及到的数据在磁盘上会依次写入 redo log，binlog，(double write，insert buffer) 共享表空间，最后在自己的用户表空间落定为安。  
 
 ## 1.3. update更新流程
-![image](http://www.wt1814.com/static/view/images/SQL/sql-174.png)  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-175.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-174.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-175.png)  
 
 

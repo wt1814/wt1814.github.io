@@ -72,7 +72,7 @@ https://mp.weixin.qq.com/s/9eJ-xQyIdu-qx2ePUv1bEw
 -->
 
 ## 1.1. Mybatis工作流程概述  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-13.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-13.png)  
 &emsp; **<font color = "clime">Mybatis工作流程概述：</font>**  
 1. 读取核心配置文件并返回InputStream流对象。
 2. 根据InputStream流对象解析出Configuration对象，然后创建SqlSessionFactory工厂对象。
@@ -83,7 +83,7 @@ https://mp.weixin.qq.com/s/9eJ-xQyIdu-qx2ePUv1bEw
 
 &emsp; **<font color = "clime">定义XXXMapper接口类并利用它来做CRUD操作时，Mybatis是利用了动态代理的技术生成代理类。</font>**   
 
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-15.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-15.png)  
  
 &emsp; MyBatis的初始化可以有两种方式：  
 
@@ -119,7 +119,7 @@ public static void main(String[] args) throws Exception {
 ## 1.2. 配置文件加载  
 &emsp; Resources.getResourceAsStream(resource)解读：  
 &emsp; Resources是mybatis提供的一个加载资源文件的工具类。  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-16.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-16.png)  
 &emsp; #getResourceAsStream方法:  
 
 ```java
@@ -1046,4 +1046,4 @@ private void handleResultSet(ResultSetWrapper rsw, ResultMap resultMap, List<Obj
 ```
 
 ## 1.6. 执行阶段总结  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-17.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-17.png)  

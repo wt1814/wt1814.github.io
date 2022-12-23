@@ -145,7 +145,7 @@ LRU列表用来管理已经读取的页，但当数据库刚启动时，LRU列�
 &emsp; 另外会在每个 Free 链表的节点中都记录了某个「缓存页控制块」的地址，而每个「缓存页控制块」都记录着对应的「缓存页地址」，所以相当于每个 Free 链表节点都对应一个空闲的缓存页。  
 
 &emsp; 结构如下图：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-105.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-105.png)  
 
 #### 1.2.3.2. 改进的Lru链表  
 &emsp; Lru 链表用来管理已经读取的页，当数据库刚启动时，Lru 链表是空的，此时页也都放在 Free 列表中，当需要读取数据时，会从Free链表中申请一个页，把从放入到磁盘读取的数据放入到申请的页中，这个页的集合叫做Lru链表。  
@@ -166,7 +166,7 @@ LRU列表用来管理已经读取的页，但当数据库刚启动时，LRU列�
 -->
 &emsp; Flush 链表用来管理被修改的页，Buffer Pool 中被修改的页也被称之为「脏页」，脏页既存在于 Lru 链表中，也存在于 Flush 链表中，Flush 链表中存的是一个指向 Lru 链表中具体数据的指针。  
 &emsp; 因此只有 Lru 链表中的页第一次被修改时，对应的指针才会存入到 Flush 中，若之后再修改这个页，则是直接更新 Lru 链表中的页对应的数据。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-149.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-149.png)  
 
 ### 1.2.4. 读写操作再次讲解  
 #### 1.2.4.1. 读操作  
@@ -208,7 +208,7 @@ LRU列表用来管理已经读取的页，但当数据库刚启动时，LRU列�
 -->
 
 &emsp; 有三个比较重要的参数。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-105.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-105.png)  
 &emsp; 参数：innodb_buffer_pool_size  
 &emsp; 介绍：配置缓冲池的大小，在内存允许的情况下，DBA往往会建议调大这个参数，越多数据和索引放到内存里，数据库的性能会越好。  
 

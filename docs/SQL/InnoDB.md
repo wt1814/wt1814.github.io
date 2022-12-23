@@ -22,11 +22,11 @@ https://mp.weixin.qq.com/s/nrb0OaiD_QRtPGREpUr0HA
 
 -->
 &emsp; Innodb体系结构图：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-131.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-131.png)  
 &emsp; Innodb体系结构包含后台线程、内存池和磁盘上的结构。  
 
 &emsp; InnoDB架构图二(来自官方文档 https://dev.mysql.com/doc/refman/5.7/en/innodb-architecture.html )
-![image](http://www.wt1814.com/static/view/images/SQL/sql-132.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-132.png)  
 
 ## 1.1. Innodb后台线程 
 <!-- 
@@ -50,8 +50,8 @@ https://mp.weixin.qq.com/s/2dUIAot8OKHiWar44qRi-A
 https://mp.weixin.qq.com/s/nrb0OaiD_QRtPGREpUr0HA
 -->
 &emsp; 官网：https://dev.mysql.com/doc/refman/5.7/en/innodb-in-memory-structures.html  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-141.png)  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-147.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-141.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-147.png)  
 
 
 &emsp; 内存中的结构主要包括Buffer Pool，Change Buffer、Adaptive Hash Index以及redo Log Buffer四部分。`如果从内存上来看，Change Buffer和Adaptive Hash Index占用的内存都属于Buffer Pool，redo Log Buffer占用的内存与 Buffer Pool独立。即InnoDB内存主要有两大部分：缓冲池、重做日志缓冲。`  
@@ -62,7 +62,7 @@ https://mp.weixin.qq.com/s/nrb0OaiD_QRtPGREpUr0HA
 
 ## 1.3. InnoDB磁盘上的结构-稳定性  
 &emsp; 官方文档：https://dev.mysql.com/doc/refman/5.7/en/innodb-on-disk-structures.html  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-133.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-133.png)  
 
 * [表空间](/docs/SQL/TableSpace.md) 
 * [Double Write](/docs/SQL/DoubleWrite.md)  

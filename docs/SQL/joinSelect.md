@@ -64,18 +64,18 @@ https://mp.weixin.qq.com/s/u66ll2Rg9mqP4WSfEK8R1g
 1. INNER JOIN  
 &emsp; INNER JOIN 一般被译作内连接。内连接查询能将左表(表 A)和右表(表 B)中能关联起来的数据连接后返回。  
 &emsp; 文氏图：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-65.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-65.png)  
 2. LEFT JOIN  
 &emsp; LEFT JOIN 一般被译作左连接，也写作 LEFT OUTER JOIN。左连接查询会返回左表(表 A)中所有记录，不管右表(表 B)中有没有关联的数据。在右表中找到的关联数据列也会被一起返回。  
 &emsp; 文氏图：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-66.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-66.png)  
 3. RIGHT JOIN  
 &emsp; RIGHT JOIN 一般被译作右连接，也写作 RIGHT OUTER JOIN。右连接查询会返回右表(表 B)中所有记录，不管左表(表 A)中有没有关联的数据。在左表中找到的关联数据列也会被一起返回。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-67.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-67.png)  
 4. FULL OUTER JOIN  
 &emsp; FULL OUTER JOIN 一般被译作外连接、全连接，实际查询语句中可以写作 FULL OUTER JOIN 或 FULL JOIN。外连接查询能返回左右表里的所有记录，其中左右表里能关联起来的记录被连接后返回。  
 &emsp; 文氏图：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-68.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-68.png)  
 
 #### 1.1.1.2. 延伸用法  
 &emsp; ......
@@ -130,9 +130,9 @@ SELECT * FROM students WHERE (height,age) = (SELECT MAX(height),MAX(age) FROM st
 ### 1.2.4. 关键字In与exists
 &emsp; 示例：一个user和一个order表，具体表的内容如下  
 &emsp; user表：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-1.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-1.png)  
 &emsp; order表：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-2.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-2.png)  
 
 #### 1.2.4.1. 关键字In
 &emsp; **<font color = "clime">in查询里面的数量最大只能1000。</font>**  
@@ -144,11 +144,11 @@ select * from user where user.id in (select order.user_id from order)
 ```
 &emsp; 执行流程：  
 1. 在数据库内部，执行子查询语句，执行如下代码：select order.user_id from order;执行完毕后，得到结果如下：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-3.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-3.png)  
 2. 将查询到的结果和原有的user表做一个笛卡尔积，结果如下：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-4.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-4.png)  
 3. 再根据user.id IN order.user_id的条件，将结果进行筛选（既比较id列和user_id 列的值是否相等，将不相等的删除）。最后，得到两条符合条件的数据。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-5.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-5.png)  
 
 ##### 1.2.4.1.1. 关键字in与关键字or与关键字between  
 &emsp; number in(01,02,03)等效于numer = 01 or number = 02 or number = 03  
@@ -163,10 +163,10 @@ select * from user where user.id in (select order.user_id from order)
 select user.* from user where exists(select order.user_id from order where user.id = order.user_id);
 ```
 &emsp; 这条sql语句的执行结果和上面的in的执行结果是一样的。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-6.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-6.png)  
 &emsp; 但是，不一样的是它们的执行流程完全不一样：  
 1. 使用exists关键字进行查询的时候，首先查询的不是子查询的内容，而是查主查询的表，即先执行的sql语句是：`select user.* from user;`。得到的结果如下：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-7.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-7.png)  
 2. 然后，根据表的每一条记录，执行exists(select order.user_id from order where user.id = order.user_id)，依次去判断where后面的条件是否成立。如果成立则返回true不成立则返回false。如果返回的是true的话，则该行结果保留，如果返回的是false的话，则删除该行，最后将得到的结果返回。  
 
 #### 1.2.4.3. In与Exists区别  

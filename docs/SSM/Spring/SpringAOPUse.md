@@ -48,7 +48,7 @@ https://mp.weixin.qq.com/s/3Elf_HQXXl1tObq3HRlrfA
 &emsp; .......
 
 ### 1.1.2. 切点Execution表达式详解  
-![image](http://www.wt1814.com/static/view/images/SSM/AOP/AOP-3.png)  
+![image](http://182.92.69.8:8081/img/SSM/AOP/AOP-3.png)  
 
 #### 1.1.2.1. 通配符  
 
@@ -78,7 +78,7 @@ https://mp.weixin.qq.com/s/3Elf_HQXXl1tObq3HRlrfA
 &emsp; execution(\* joke(Object+)))，匹配目标类中的joke()方法，方法拥有一个入参，且入参是Object类型或该类的子类。它匹配joke(String s1)和joke(Client c)。如果定义的切点是execution(* joke(Object))，则只匹配joke(Object object)而不匹配joke(String cc)或joke(Client c)。  
 
 &emsp; 在多个表达式之间使用||、or表示或；&&、and表示与；！表示非。  
-![image](http://www.wt1814.com/static/view/images/SSM/AOP/AOP-4.png)  
+![image](http://182.92.69.8:8081/img/SSM/AOP/AOP-4.png)  
 
 ### 1.1.3. AOP切面传参  
 #### 1.1.3.1. 具体形参类型  

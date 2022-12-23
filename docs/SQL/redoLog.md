@@ -87,7 +87,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 ## 1.1.3. redo log详解
 ### 1.1.3.1. 记录形式
 &emsp; **<font color = "red">redo log实际上记录数据页的变更，而这种变更记录是没必要全部保存，因此redo log实现上采用了大小固定，循环写入的方式，当写到结尾时，会回到开头循环写日志。</font>** 如下图：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-143.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-143.png)  
 &emsp; 在innodb中，既有redo log需要刷盘，还有数据页也需要刷盘，redo log存在的意义主要就是降低对数据页刷盘的要求。  
 &emsp; 在上图中，write pos表示redo log当前记录的LSN(逻辑序列号)位置，check point表示数据页更改记录刷盘后对应redo log所处的LSN(逻辑序列号)位置。write pos到check point之间的部分是redo log空着的部分，用于记录新的记录；check point到write pos之间是redo log待落盘的数据页更改记录。当write pos追上check point时，会先推动check point向前移动，空出位置再记录新的日志。  
 
@@ -95,7 +95,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 
 &emsp; <font color = "clime">redo log是循环写的，redo log不是记录数据页更新之后的状态，而是记录这个页做了什么改动。</font>  
 &emsp; redo log是固定大小的，比如可以配置为一组4个文件，每个文件的大小是1GB，那么日志总共就可以记录4GB的操作。从头开始写，写到末尾就又回到开头循环写，如下图所示。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-94.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-94.png)  
 &emsp; 图中展示了一组4个文件的redo log日志，checkpoint是当前要擦除的位置，擦除记录前需要先把对应的数据落盘(更新内存页，等待刷脏页)。write pos到 checkpoint之间的部分可以用来记录新的操作，如果write pos和checkpoint 相遇，说明 redolog 已满，这个时候数据库停止进行数据库更新语句的执行，转而进行 redo log 日志同步到磁盘中。checkpoint 到 write pos 之间的部分等待落盘(先更新内存页，然后等待刷脏页)。  
 
 ### 1.1.3.2. ★★★写入流程，Write-Ahead Logging
@@ -114,7 +114,7 @@ InnoDB 通过 redo 日志来保证数据的一致性。如果保存所有的重�
 
 InnoDB引擎设计者也利用了类似的设计思想，先写内存，再写硬盘，这样就不会因为redo log写硬盘IO而导致数据库性能问题。在InnoDB中，这种技术有一个专业名称，叫做Write-Ahead Log（预先日志持久化）  
 
-![image](http://www.wt1814.com/static/view/images/SQL/sql-184.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-184.png)  
 
 
 
@@ -128,13 +128,13 @@ InnoDB引擎设计者也利用了类似的设计思想，先写内存，再写�
 |1(实时写，实时刷)	|事务每次提交都会将redo log buffer中的日志写入os buffer并调用fsync()刷到redo log file中。这种方式即使系统崩溃也不会丢失任何数据，但是因为每次提交都写入磁盘，IO的性能较差。|
 |2(实时写，延迟刷)	|每次提交都仅写入到os buffer，然后是每秒调用fsync()将os buffer中的日志写入到redo log file。|
 
-![image](http://www.wt1814.com/static/view/images/SQL/sql-142.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-142.png)  
 
 -----
 
 &emsp; **<font color = "red">很重要一点，redo log是什么时候写盘的？前面说了是在事物开始之后逐步写盘的。</font>**  
 &emsp; <font color = "clime">之所以说重做日志是在事务开始之后逐步写入重做日志文件，而不一定是事务提交才写入重做日志缓存，原因就是，重做日志有一个缓存区redo log buffer，Innodb存储引擎先将重做日志写入redo log buffer中。</font>redo log buffer的默认大小为8M(这里设置的16M)。  
-    ![image](http://www.wt1814.com/static/view/images/SQL/sql-80.png)  
+    ![image](http://182.92.69.8:8081/img/SQL/sql-80.png)  
 
 &emsp; <font color = "clime">然后会通过以下三种方式将innodb日志缓冲区的日志刷新到磁盘。</font>  
 

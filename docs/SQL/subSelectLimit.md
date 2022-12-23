@@ -89,9 +89,9 @@ https://mp.weixin.qq.com/s/m45F4-kk7oQ5312O5NEu3w
 
 
 &emsp; 为了最终结果的准确性，需要在不同的分片节点中将数据进行排序并返回，并将不同分片返回的结果集进行汇总和再次排序，最后再返回给用户。如下图所示：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-17.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-17.png)  
 &emsp; 上面图中所描述的只是最简单的一种情况(取第一页数据)，看起来对性能的影响并不大。但是，如果想取出第10页数据，情况又将变得复杂很多，如下图所示：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-18.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-18.png)  
 &emsp; 有些读者可能并不太理解，为什么不能像获取第一页数据那样简单处理(排序取出前10条再合并、排序)。其实并不难理解，因为各分片节点中的数据可能是随机的，为了排序的准确性，必须把所有分片节点的前N页数据都排序好后做合并，最后再进行整体的排序。很显然，这样的操作是比较消耗资源的，用户越往后翻页，系统性能将会越差。 
 
 ### 1.2.2. 优缺点
@@ -155,11 +155,11 @@ https://mp.weixin.qq.com/s/h99sXP4mvVFsJw6Oh3aU5A?
 改写为select * from T order by time offset 500 limit 5，并投递给所有的分库，注意，这个offset的500，来自于全局offset的总偏移量1000，除以水平切分数据库个数2。  
 如果是3个分库，则可以改写为select * from T order by time offset 333 limit 5  
 假设这三个分库返回的数据(time, uid)如下：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-178.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-178.png)  
 每个分库都返回的按照time排序的一页数据。  
 
 2. 找到所返回3页全部数据的最小值  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-179.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-179.png)  
 第一个库，5条数据的time最小值是1487501123  
 第二个库，5条数据的time最小值是1487501133  
 第三个库，5条数据的time最小值是1487501143  
@@ -174,10 +174,10 @@ https://mp.weixin.qq.com/s/h99sXP4mvVFsJw6Oh3aU5A?
 第三个分库，第一次返回数据的最大值是1487501553  
 所以查询改写为select * from T order by time where time between time_min and 1487501553  
 第二次查询会返回比第一次查询结果集更多的数据，假设这三个分库返回的数据(time, uid)如下：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-180.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-180.png)  
 
 4. 在每个结果集中虚拟一个time_min记录，找到time_min在全局的offset  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-181.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-181.png)  
 故：  
 time_min在第一个库的offset是333；  
 time_min在第二个库的offset是331；  
@@ -185,7 +185,7 @@ time_min在第三个库的offset是330；
 综上，time_min在全局的offset是333+331+330=994；  
 
 5. 得到time_min在全局的offset，就相当于有了全局视野，根据第二次的结果集，就能够得到全局offset 1000 limit 5的记录  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-182.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-182.png)  
 第二次查询在各个分库返回的结果集是有序的，又知道了time_min在全局的offset是994，一路排下来，容易知道全局offset 1000 limit 5的一页记录（上图中黄色记录）。  
 
 

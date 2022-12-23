@@ -379,7 +379,7 @@ http://182.92.69.8:8081/img/
 [tomcat](/docs/webContainer/tomcat/tomcat.md)  
 [tomcat类加载器](/docs/webContainer/tomcat/tomcatClassLoader.md)  
 [tomcat日志](/docs/webContainer/tomcat/tomcatLog.md)  
-[tomcat调优](/docs/webContainer/tomcat/TomcatTuning)  
+[tomcat调优](/docs/webContainer/tomcat/TomcatTuning.md)  
 
 -------
 

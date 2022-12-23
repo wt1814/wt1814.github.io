@@ -193,7 +193,7 @@ https://mp.weixin.qq.com/s/Ta5GQYj2KtFIRDYLo4xAFg
 * WebLogicJtaTransactionManager：位于org.springframework.transaction.jta包中，Spring提供的对WebLogic 8.1+应用服务器事务管理器的适配器，此适配器用于对应用服务器提供的高级事务的支持。  
 
 &emsp; Spring不仅提供这些事务管理器，还提供对如JMS事务管理的管理器等，Spring提供一致的事务抽象如下图所示。  
-![image](http://www.wt1814.com/static/view/images/SSM/AOP/aop-9.png)  
+![image](http://182.92.69.8:8081/img/SSM/AOP/aop-9.png)  
 -->
 
 ## 1.5. ★★★Spring事务失效  

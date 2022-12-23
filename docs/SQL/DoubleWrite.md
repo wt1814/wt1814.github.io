@@ -48,19 +48,19 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 &emsp; <font color = "red">当数据库宕机时，可能发生数据库正在写一个页面，而这个页只写了一部分(比如16K的页，只写前4K的页)的情况，称之为部分写失效(partial page write)。</font>在InnoDB存储引擎未使用double write技术前，曾出现过因为部分写失效而导致数据丢失的情况。  
 
 &emsp; MySQL的buffer一页的大小是16K，文件系统一页的大小是4K，也就是说，<font color = "clime">MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。</font>  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-118.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-118.png)  
 &emsp; 如上图所示，MySQL里page=1的页，物理上对应磁盘上的1+2+3+4四个格。  
 &emsp; 那么，问题来了，这个操作并非原子，如果执行到一半断电，会不会出现问题呢？  
 &emsp; 会，这就是所谓的“页数据损坏”。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-120.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-120.png)  
 &emsp; 如上图所示，MySQL内page=1的页准备刷入磁盘，才刷了3个文件系统里的页，掉电了，则会出现：重启后，page=1的页，物理上对应磁盘上的1+2+3+4四个格，数据完整性被破坏。  
 
 &emsp; 有人也许会想，如果发生写失效，可以通过重做日志进行恢复。这是一个办法。但是必须清楚的是，重做日志中记录的是对页的物理操作，如偏移量800，写'aaaa'记录。如果这个页本身已经损坏，再对其进行重做是没有意义的。 **<font color = "clime">因此，在应用(apply)重做日志前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。</font>**  
 
 ## 1.2. doublewrite架构及流程
 &emsp; InnoDB存储引擎doublewrite的体系架构如下图所示  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-90.png)  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-117.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-90.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-117.png)  
 &emsp; <font color = "red">doublewrite分为内存和磁盘的两层架构：</font>一部分是内存中的doublewrite buffer，大小为2MB；另一部分是物理磁盘上共享表空间中连续的128个页，即两个区(extent)，大小同样为2MB(页的副本)。    
 
 &emsp; 如上图所示，当有页数据要刷盘时：  
@@ -76,10 +76,10 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 **<font color = "clime">1. 当缓冲池的脏页刷新时，并不直接写磁盘，而是会通过memcpy函数将脏页先拷贝到内存中的doublewrite buffer，</font>**     
 2. 之后通过doublewrite buffer再分两次，每次写入1MB到共享表空间的物理磁盘上，  
 3. 然后马上调用fsync函数，同步磁盘，避免缓冲写带来的问题。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-115.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-115.png)  
 
 &emsp; 再看redo log写入关系，可以用下图演示  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-116.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-116.png)  
 -->
 
 ## 1.3. 性能  
@@ -104,7 +104,7 @@ doublewrite 就是用来解决该问题的。doublewrite 由两部分组成，�
 &emsp; 记录DWB写操作的次数。  
 
 &emsp; 可以通过以下命令观察到doublewrite运行的情况：show global status like 'innodb_dblwr%'\G  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-87.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-87.png)  
 &emsp; doublewrite一共写了18 445个页，但实际的写入次数为434，(42:1)   基本上符合64:1。  
 &emsp; 如果发现系统在高峰时Innodb_dblwr_pages_written:Innodb_dblwr_writes远小于64:1，那么说明系统写入压力并不是很高。  
 &emsp; 如果操作系统在将页写入磁盘的过程中崩溃了，在恢复过程中，InnoDB存储引擎可以从共享表空间中的doublewrite中找到该页的一个副本，将其拷贝到表空间文件，再应用重做日志。下面显示了由doublewrite进行恢复的一种情况：  

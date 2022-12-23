@@ -18,7 +18,7 @@
 
 # 1. Mybatis架构
 ## 1.1. Mybatis工作流程概述  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-13.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-13.png)  
 &emsp; **<font color = "clime">Mybatis工作流程概述：</font>**  
 1. 读取核心配置文件并返回InputStream流对象。
 2. 根据InputStream流对象解析出Configuration对象，然后创建SqlSessionFactory工厂对象。
@@ -58,7 +58,7 @@
                 └── type   
 
 &emsp; MyBatis按照功能职责的不同，所有的package可以分成不同的工作层次。  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-14.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-14.png)  
 &emsp; **<font color = "red">Mybatis的功能架构分为三层：</font>**  
 
 * API接口层：提供给外部使用的接口API，开发人员通过这些本地API来操纵数据库。接口层一接收到调用请求就会调用核心处理层来完成具体的数据处理。  

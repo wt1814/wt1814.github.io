@@ -72,11 +72,11 @@ public void preInstantiateSingletons() throws BeansException {
 
 ## 1.2. SpringDI时序图  
 
-![image](http://www.wt1814.com/static/view/images/sourceCode/Spring/SpringDI-1.png)  
+![image](http://182.92.69.8:8081/img/sourceCode/Spring/SpringDI-1.png)  
 
 ## 1.3. AbstractBeanFactory#getBean()，获取Bean  
 &emsp; getBean()方法定义在BeanFactory接口中，可以通过分析其子类的具体实现，理解Spring IOC容器在用户索取 Bean时如何完成依赖注入。  
-![image](http://www.wt1814.com/static/view/images/sourceCode/Spring/SpringDI-2.png)  
+![image](http://182.92.69.8:8081/img/sourceCode/Spring/SpringDI-2.png)  
 &emsp; 在BeanFactory中可以看到getBean(String...)方法，但它具体实现在AbstractBeanFactory中。  
 
 &emsp; AbstractBeanFactory的getBean()相关方法的源码如下：  
@@ -112,7 +112,7 @@ public <T> T getBean(String name, @Nullable Class<T> requiredType, @Nullable Obj
 &emsp; #getBean()调用#doGetBean()方法。  
 
 ### 1.3.1. AbstractBeanFactory#doGetBean()，获取Bean  
-![image](http://www.wt1814.com/static/view/images/sourceCode/Spring/SpringDI-3.png)  
+![image](http://182.92.69.8:8081/img/sourceCode/Spring/SpringDI-3.png)  
 
 &emsp; **主要流程：**  
 1. 先处理Bean的名称，因为如果以“&”开头的Bean名称表示获取的是对应的FactoryBean对象；  
@@ -293,7 +293,7 @@ protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredTy
 &emsp; 上面的源码只是定义了根据Bean定义的模式，采取的不同创建Bean实例对象的策略，具体的Bean实例对象的创建过程由实现了ObjectFactory接口的匿名内部类的createBean()方法完成，ObjectFactory使用委派模式，具体的Bean实例创建过程交由其实现类AbstractAutowireCapableBeanFactory完成，继续分析AbstractAutowireCapableBeanFactory的createBean()方法的源码，理解其创建Bean实例的具体实现过程。  
 
 ## 1.4. AbstractAutowireCapableBeanFactory#createBean()，实例化Bean  
-![image](http://www.wt1814.com/static/view/images/sourceCode/Spring/SpringDI-4.png)  
+![image](http://182.92.69.8:8081/img/sourceCode/Spring/SpringDI-4.png)  
 &emsp; **主要流程：**  
 1. 这里会先获取 RootBeanDefinition对象中的Class对象并确保已经关联了要创建的Bean的Class。  
 2. 这里会检查3个条件  
@@ -360,7 +360,7 @@ protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable O
 ```
 
 ### 1.4.1. doCreateBean()  
-![image](http://www.wt1814.com/static/view/images/sourceCode/Spring/SpringDI-5.png)  
+![image](http://182.92.69.8:8081/img/sourceCode/Spring/SpringDI-5.png)  
 &emsp; **主要流程：**  
 1. 先检查 instanceWrapper变量是不是null，这里一般是null，除非当前正在创建的Bean在 factoryBeanInstanceCache中存在这个是保存还没创建完成的FactoryBean的集合。  
 2. **<font color = "clime">调用createBeanInstance方法实例化Bean。</font>**  
@@ -473,7 +473,7 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
 ```
 
 #### 1.4.1.1. createBeanInstance  
-![image](http://www.wt1814.com/static/view/images/sourceCode/Spring/SpringDI-6.png)  
+![image](http://182.92.69.8:8081/img/sourceCode/Spring/SpringDI-6.png)  
 &emsp; **主要流程：**  
 1. 先检查Class是否已经关联了，并且对应的修饰符是否是public的  
 2. 如果用户定义了Bean实例化的函数，则调用并返回  
@@ -575,7 +575,7 @@ protected BeanWrapper instantiateBean(final String beanName, final RootBeanDefin
 ```
 
 #### 1.4.1.2. populateBean  
-![image](http://www.wt1814.com/static/view/images/sourceCode/Spring/SpringDI-7.png)  
+![image](http://182.92.69.8:8081/img/sourceCode/Spring/SpringDI-7.png)  
 1. 检查当前Bean是否实现了 InstantiationAwareBeanPostProcessor的 postProcessAfterInstantiation方法则调用，并结束Bean的填充。  
 2. 将按照类型跟按照名称注入的Bean分开，如果注入的Bean还没有实例化的这里会实例化，然后放到 PropertyValues对象中。  
 3. 如果实现了 InstantiationAwareBeanPostProcessor类的 postProcessProperties则调用这个方法并获取返回值，如果返回值是null，则有可能是实现了过期的 postProcessPropertyValues方法，这里需要进一步调用postProcessPropertyValues方法。  
@@ -654,7 +654,7 @@ protected void populateBean(String beanName, RootBeanDefinition mbd, @Nullable B
 ```
 
 #### 1.4.1.3. initializeBean  
-![image](http://www.wt1814.com/static/view/images/sourceCode/Spring/SpringDI-9.png)  
+![image](http://182.92.69.8:8081/img/sourceCode/Spring/SpringDI-9.png)  
 &emsp; **流程解析：**  
 1. **<font color = "clime">如果Bean实现了BeanNameAware，BeanClassLoaderAware，BeanFactoryAware则调用对应实现的方法</font>**  
 2. Bean不为null并且bean不是合成的，如果实现了BeanPostProcessor的postProcessBeforeInitialization则会调用实现的postProcessBeforeInitialization方法。在ApplicationContextAwareProcessor类中实现了postProcessBeforeInitialization方法。而这个类会在Spring刷新容器准备beanFactory的时候会加进去，这里就会被调用，而调用里面会检查Bean是不是EnvironmentAware,EmbeddedValueResolverAware,ResourceLoaderAware,ApplicationEventPublisherAware,MessageSourceAware,ApplicationContextAware的实现类。这里就会调用对应的实现方法。  

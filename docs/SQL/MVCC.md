@@ -86,7 +86,7 @@ MCVV这种读取历史数据的方式称为快照读(snapshot read)，而读取�
 -->
 
 ## 1.1. 什么是当前读和快照读？  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-145.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-145.png)  
 &emsp; 在学习MVCC多版本并发控制之前，必须先了解一下，什么是MySQL InnoDB下的当前读和快照读?  
 * 当前读  
 &emsp; 像select lock in share mode(共享锁)，select for update；update，insert，delete(排他锁)这些操作都是一种当前读，为什么叫当前读？就是它读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加锁。  
@@ -123,7 +123,7 @@ MCVV这种读取历史数据的方式称为快照读(snapshot read)，而读取�
 &emsp; <font color = "red">MVCC就是为了实现读-写冲突不加锁，而这个读指的就是快照读，而非当前读，当前读实际上是一种加锁的操作，是悲观锁的实现。</font>  
 
 <!-- 
-![image](http://www.wt1814.com/static/view/images/SQL/sql-77.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-77.png)  
 
 &emsp; 回顾并发存在哪些可能冲突的情况：  
 
@@ -154,7 +154,7 @@ roll_pointer：每次有修改的时候，都会把老版本写入undo日志中�
     commit;
 
 &emsp; 当执行完上面两条语句之后，但是还没有提交事务之前，它的版本链如下图所示：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-74.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-74.png)  
 
 ### 1.3.2. Read View，一致读快照  
 <!-- 
@@ -170,7 +170,7 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
     在事务中，只有执行插入、更新、删除操作时才会分配到一个事务id。如果事务只是一个单纯的读取事务，那么它的事务 id 就是默认的 0。
 
 &emsp; Read View的结构如下：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-75.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-75.png)  
 * rw_trx_ids：表示在生成 Read View 时，<font color = "red">当前活跃的读写事务数组。</font>
 * up_limit_id：表示在生成 Read View 时，当前已提交的事务号 + 1，也就是在 rw_trx_ids 中的最小事务号。<font color = "clime">trx_id 小于该值都能看到。</font>
 * low_limit_id：表示在生成 Read View 时，当前已分配的事务号 + 1，也就是将要分配给下一个事务的事务号。<font color = "clime">trx_id 大于等于该值都不能看到。</font>
@@ -178,9 +178,9 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
 
 &emsp; <font color = "red">有了ReadView，在访问某条记录时，MySQL会根据以下规则来判断版本链中的哪个版本(记录)是在本次事务中可见的：</font>  
 
-![image](http://www.wt1814.com/static/view/images/SQL/sql-85.png)  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-86.png)  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-154.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-85.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-86.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-154.png)  
 
 1. 如果被访问版本的trx_id与ReadView中的creator_trx_id值相同，意味着当前事务在访问它自己修改过的记录，所以该版本可以被当前事务访问。  
 2. 如果被访问版本的trx_id小于ReadView中的up_limit_id值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  
@@ -200,7 +200,7 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
 5. 如果TRX_ID在Read View列表中最小TRX_ID和最大TRX_ID之间，判断TRX_ID是否在Read View中，如果在，则根据行上的回滚指针找到回滚段中的对应undo log记录返回，否则直接返回。
 -->
 <!--
-![image](http://www.wt1814.com/static/view/images/SQL/sql-76.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-76.png)  
 当执行查询sql时会生成一致性视图read-view，它由执行查询时所有未提交事务id数组(数组里最小的id为min_id)和已创建的最大事务id(max_id)组成，查询的数据结果需要跟read-view做比对从而得到快走结果。  
 
 版本链比对规则：  
@@ -213,7 +213,7 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
 对于删除的情况可以认为是update的特色情况，会将版本链上最新的数据复制一份，然后将trx_id修改成删除操作的trx_id，同时在该条记录的头信息(record header)里的(deleted_flag)标记位写上true，来表示当前记录已经被删除，在查询时按照上面的规则查到对应的记录，如果delete_flag标记为true，意味着记录已经被删除，则不返回数据。   
 -->
 ---
-![image](http://www.wt1814.com/static/view/images/SQL/sql-146.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-146.png)  
 &emsp; 执行过程如下：  
 1. 如果被访问版本的trx_id=creator_id，意味着当前事务在访问它自己修改过的记录，所以该版本可以被当前事务访问。  
 2. 如果被访问版本的trx_id\<min_trx_id，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。
@@ -225,7 +225,7 @@ https://mp.weixin.qq.com/s/N5nK7q0vUD9Ouqdi5EYdSw
 ----
 
 &emsp; 如下，它是一段MySQL判断可见性的一段源码  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-97.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-97.png)  
 
 &emsp; 查看数据库中正在执行的事务：  
 
