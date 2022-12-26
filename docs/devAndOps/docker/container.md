@@ -45,7 +45,7 @@ https://docs.docker.com/config/containers/start-containers-automatically/
 &emsp; 运行的容器是共享宿主机内核的，也就是相当于容器在执行时还是依靠主机的内核代码的。这也就意味着一个基于Windows的容器化应用在Linux主机上无法运行的。也可以简单地理解为Windows容器需要运行在Windows宿主机之上，Linux容器需要运行在Linux宿主机上。Docker推荐单个容器只运行一个应用程序或进程，但是其实也可以运行多个应用程序。  
 
 ## 1.1. 容器生命周期  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-4.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-4.png)  
 &emsp; <font color = "clime">容器的生命周期大致可分为4个：创建、运行、休眠和销毁。</font>  
 
 ### 1.1.1. 创建和运行
@@ -56,7 +56,7 @@ https://docs.docker.com/config/containers/start-containers-automatically/
 &emsp; 当运行上述的命令之后，Docker客户端会选择合适的API来调用Docker daemon接收到命令并搜索Docker本地缓存，观察是否有命令所请求的镜像。如果没有，就去查询Docker Hub是否存在相应镜像。找到镜像后，就将其拉取到本地，并存储在本地。一旦镜像拉取到本地之后，Docker daemon就会创建容器并在其中运行指定应用。  
 
 &emsp; ps -elf命令可以看到会显示两个，那么其中一个是运行ps -elf产生的。  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-22.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-22.png)  
 
 &emsp; 假如，此时输入exit退出Bash Shell之后，那么容器也会退出(休眠)。因为容器如果不运行任何进程则无法存在，上面将容器的唯一进程杀死之后，容器也就没了。其实，当把进程的PID为1的进程杀死就会杀死容器。  
 
@@ -79,18 +79,18 @@ https://docs.docker.com/config/containers/start-containers-automatically/
 ## 1.2. 容器隔离原理  
 ### 1.2.1. Namespaces，命名空间  
 &emsp; <font color = "clime">命名空间(namespaces)是Linux提供的用于分离进程树、网络接口、挂载点以及进程间通信等资源的方法。</font>在日常使用Linux或者macOS时，并没有运行多个完全分离的服务器的需要，但是如果在服务器上启动了多个服务，这些服务其实会相互影响的，每一个服务都能看到其他服务的进程，也可以访问宿主机器上的任意文件，这是很多时候不愿意看到的，更希望运行在同一台机器上的不同服务能做到完全隔离，就像运行在多台不同的机器上一样。  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-34.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-34.png)  
 &emsp; 在这种情况下，一旦服务器上的某一个服务被入侵，那么入侵者就能够访问当前机器上的所有服务和文件，这也是不想看到的，而Docker其实就通过Linux的Namespaces对不同的容器实现了隔离。  
 &emsp; Linux 的命名空间机制提供了以下七种不同的命名空间，包括CLONE_NEWCGROUP、CLONE_NEWIPC、CLONE_NEWNET、CLONE_NEWNS、CLONE_NEWPID、CLONE_NEWUSER和CLONE_NEWUTS，通过这七个选项能在创建新的进程时设置新进程应该在哪些资源上与宿主机器进行隔离。  
 
 ### 1.2.2. CGroups  
 &emsp; Linux的命名空间为新创建的进程隔离了文件系统、网络并与宿主机器之间的进程相互隔离，但是命名空间并不能够提供物理资源上的隔离，比如CPU或者内存，如果在同一台机器上运行了多个对彼此以及宿主机器一无所知的『容器』，这些容器却共同占用了宿主机器的物理资源。  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-35.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-35.png)  
 &emsp; 如果其中的某一个容器正在执行CPU密集型的任务，那么就会影响其他容器中任务的性能与执行效率，导致多个容器相互影响并且抢占资源。如何对多个容器的资源使用进行限制就成了解决进程虚拟资源隔离之后的主要问题，<font color = "red">而Control Groups(简称 CGroups)就是能够隔离宿主机器上的物理资源，例如 CPU、内存、磁盘I/O和网络带宽。</font>  
 &emsp; 每一个CGroup都是一组被相同的标准和参数限制的进程，不同的CGroup之间是有层级关系的，也就是说它们之间可以从父类继承一些用于限制资源使用的标准和参数。  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-36.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-36.png)  
 &emsp; Linux的CGroup能够为一组进程分配资源，也就是在上面提到的CPU、内存、网络带宽等资源，通过对资源的分配，CGroup能够提供以下的几种功能：  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-37.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-37.png)  
 
     在CGroup中，所有的任务就是一个系统的一个进程，而CGroup就是一组按照某种标准划分的进程，在CGroup这种机制中，所有的资源控制都是以CGroup作为单位实现的，每一个进程都可以随时加入一个CGroup也可以随时退出一个CGroup。
 
@@ -103,7 +103,7 @@ https://docs.docker.com/config/containers/start-containers-automatically/
 * 再来看可读写层，这一层的作用非常大，Docker的镜像层以及顶上的两层加起来，Docker容器内的进程只对可读写层拥有写权限，其他层对进程而言都是只读的(Read-Only)。比如想修改一个文件，这个文件会从该读写层下面的只读层复制到该读写层，该文件的只读版本仍然存在，但是已经被读写层中的该文件副本所隐藏了。这种机制被称为写时复制(copy on write)(在 AUFS 等文件系统下，写下层镜像内容就会涉及COW(Copy-on-Write)技术)。另外，关于VOLUME以及容器的hosts、hostname、resolv.conf文件等都会挂载到这里。需要额外注意的是，虽然Docker容器有能力在可读写层看到VOLUME以及hosts文件等内容，但那都仅仅是挂载点，真实内容位于宿主机上。  
 
 &emsp; 在运行阶段时，容器产生的新文件、文件的修改都会在可读写层上，当停止容器(stop)运行之后并不会被损毁，但是删除容器会丢弃其中的数据。  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-23.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-23.png)  
 
 ### 1.3.2. 数据卷(Volume)
 <!--
@@ -207,7 +207,7 @@ https://www.docker.org.cn/docker/187.html
 * bridge模式，使用 --net=bridge 指定，默认设置。
 
 &emsp; 可以使用docker network ls查看当前主机的网络模式。  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-44.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-44.png)  
 
 * host 模式  
 &emsp; 如果启动容器的时候使用 host 模式，那么这个容器将不会获得一个独立的Network Namespace，而是和宿主机共用一个Network Namespace。容器将不会虚拟出自己的网卡，配置自己的IP等，而是使用宿主机的IP和端口。  
@@ -222,7 +222,7 @@ https://www.docker.org.cn/docker/187.html
 #### 1.4.2.2. 容器间单向通信(Link)  
 &emsp; 在docker环境下，容器创建后，都会默认分配一个虚拟ip，该ip无法从外界直接访问，但是在docker环境下各个ip直接是互通互联的。下图假设Tomcat分配的虚拟ip为107.1.31.22，Mysql分配的虚拟ip为107.1.31.24。  
 &emsp; 虽然在Docker环境下可以通过虚拟ip互相访问，但是局限性很大，原因是容器是随时可能宕机，重启的，宕机重启后会为容器重新分配ip，这样原来直接通信的ip就消失了。所以容器间通信不建议通过ip进行通信。  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-42.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-42.png)  
 &emsp; 可以通过为容器命名，通过名称通信，这样无论该容器重启多少次，ip如何改变，都不会存在通信不可用的情形。  
 
 * 通过docker run -d --name myweb tomcat命令，使用tomcat镜像运行一个名称为myweb的容器。通过docker run -d --name mydatabases mysql命令，使用mysql镜像运行一个名称为mydatabases的容器。  
@@ -240,7 +240,7 @@ https://www.docker.org.cn/docker/187.html
 
 ##### 1.4.2.3.1. Docker中的虚拟网桥  
 &emsp; docker网桥组件概览图：  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-41.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-41.png)  
 &emsp; Docker中的网桥也是虚拟出来的，网桥的主要用途是用来实现docker环境和外部的通信。在某个容器内部ping外部的ip例如百度。是可以ping通的。实际上是容器发出的数据包，通过虚拟网桥，发送给宿主机的物理网卡，实际上是借助物理网卡与外界通信的，反之物理网卡也会通过虚拟网桥把相应的数据包送回给相应的容器。  
 
 ##### 1.4.2.3.2. 借助网桥进行容器间通信
@@ -285,7 +285,7 @@ rtt min/avg/max/mdev = 0.196/0.297/0.417/0.091 ms
 
 ##### 1.4.2.3.3. 网桥通信原理  
 &emsp; 网桥为什么可以实现容器间的互联互通？实际上，每当创建一个网桥，docker都会在宿主机上安装一个虚拟网卡，该虚拟网卡也充当了一个网关的作用。与该网桥(虚拟网关)绑定的容器，相当于处在一个局域网，所以可以通信。虚拟网卡毕竟是虚拟的，如果容器想要和外部通信，仍然需要借助外部(宿主机)的物理网卡。虚拟网卡的数据包进行地址转换，转换为物理网卡的数据包发送出去，反之外部和内部容器通信，也需要进行数据包地址转换。  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-44.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-44.png)  
 
 #### 1.4.2.4. 不同主机间容器通信  
 <!-- 

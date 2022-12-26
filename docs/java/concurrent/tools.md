@@ -1,7 +1,7 @@
 
 
 
-![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-9.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/concurrent-9.png)  
 &emsp; Java提供了同步工具类：[CountDownLatch（计数器）](/docs/java/concurrent/CountDownLatch.md)、[CyclicBarrier（栅栏）](/docs/java/concurrent/CyclicBarrier.md)、[Semaphore（信号量）](/docs/java/concurrent/Semaphore.md)、[Exchanger（交换器）](/docs/java/concurrent/Exchanger.md)，这几个工具类是为了能够更好控制线程之间的通讯问题。  
 
 

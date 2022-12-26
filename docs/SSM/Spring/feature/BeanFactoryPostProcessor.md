@@ -39,7 +39,7 @@ public interface BeanFactoryPostProcessor {
 * org.springframework.beans.factory.config.PropertyOverrideConfigurer  
 * org.springframework.beans.factory.config.CustomEditorConfigurer：用来注册自定义的属性编辑器  
 
-![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-6.png)  
+![image](http://182.92.69.8:8081/img/SSM/Spring/spring-6.png)  
 
 ## 1.2. BeanPostProcessor接口  
 &emsp; 该接口的定义如下：  
@@ -72,7 +72,7 @@ public interface BeanPostProcessor {
 
 
 &emsp; Spring中Bean的实例化过程图示：  
-![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-7.png)  
+![image](http://182.92.69.8:8081/img/SSM/Spring/spring-7.png)  
 
 &emsp; 注意：BeanPostProcessor是在spring容器加载了bean的定义文件并且实例化bean之后执行的。BeanPostProcessor的执行顺序是在BeanFactoryPostProcessor之后。  
 

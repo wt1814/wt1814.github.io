@@ -67,7 +67,7 @@ TCC的特点在于业务资源检查与加锁，一阶段进行校验，资源�
 * 持久性：基于本地事务，所以这个特性可以很好实现。
 
 &emsp; 从数据隔离性上分析，可以发现Saga模型无法保证外部的原子性和隔离性，因为可以查看其他sagas的部分结果，论文中有对应的表述：  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-42.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-42.png)  
 
 -->
 
@@ -113,7 +113,7 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 &emsp; **<font color = "red">该实现第一个服务执行一个事务，然后发布一个事件。该事件被一个或多个服务进行监听，这些服务再执行本地事务并发布(或不发布)新的事件，当最后一个服务执行本地事务并且不发布任何事件时，意味着分布式事务结束，或者它发布的事件没有被任何Saga参与者听到都意味着事务结束。</font>**  
 
 #### 1.3.1.1. ★★★实现流程  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-30.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-30.png)  
 1. 订单服务保存新订单，将状态设置为pengding挂起状态，并发布名为ORDER_CREATED_EVENT的事件。
 2. 支付服务监听ORDER_CREATED_EVENT，并公布事件BILLED_ORDER_EVENT。
 3. 库存服务监听BILLED_ORDER_EVENT，更新库存，并发布ORDER_PREPARED_EVENT。
@@ -134,7 +134,7 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 &emsp; saga协调器orchestrator以命令/回复的方式与每项服务进行通信，告诉服务应该执行哪些操作。  
 
 #### 1.3.2.1. ★★★实现流程  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-31.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-31.png)  
 1. 订单服务保存pending状态，并要求订单Saga协调器(简称OSO)开始启动订单事务。
 2. OSO向收款服务发送执行收款命令，收款服务回复Payment Executed消息。
 3. OSO向库存服务发送准备订单命令，库存服务将回复OrderPrepared消息。
@@ -144,7 +144,7 @@ https://mp.weixin.qq.com/s/HDSWK2eCOtusroV3Elv1jA
 
 ##### 1.3.2.1.1. 使用状态机建模SAGA ORCHESTRATORS  
 &emsp; 建模saga orchestrator的好方法是作为状态机。状态机由一组状态和一组由事件触发的状态之间的转换组成。每个transition都可以有一个action，对于一个saga来说是一个saga参与者的调用。状态之间的转换由saga参与者执行的本地事务的完成触发。当前状态和本地事务的特定结果决定了状态转换以及执行的操作(如果有的话)。对状态机也有有效的测试策略。因此，使用状态机模型可以更轻松地设计、实施和测试。  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-44.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-44.png)  
 
 &emsp; 图显示了Create Order Saga的状态机模型。此状态机由多个状态组成，包括以下内容：
 

@@ -104,7 +104,7 @@ Saga 事务和 TCC 事务一样，对业务实现要求高，要求业务设计�
 ## 1.3. 幂等处理
 ### 1.3.1. 产生原因  
 &emsp; 因为网络抖动等原因，分布式事务框架可能会重复调用同一个分布式事务中的一个分支事务的二阶段接口。所以分支事务的二阶段接口Confirm/Cancel需要能够保证幂等性。如果二阶段接口不能保证幂等性，则会产生严重的问题，造成资源的重复使用或者重复释放，进而导致业务故障。  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-51.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-51.png)  
 &emsp; 从上图中红色部分可以看到：如果当TC调用参与者的二阶段方法时，发生了异常(TC本身异常或者网络异常丢失结果)。此时TC无法感知到调用的结果。为了保证分布式事务能够走到终态，此时TC会按照一定的规则重复调用参与者的二阶段方法。  
 
 ### 1.3.2. 应对策略
@@ -123,12 +123,12 @@ Saga 事务和 TCC 事务一样，对业务实现要求高，要求业务设计�
 &emsp; **<font color= "clime">幂等记录的插入时机是参与者的Try方法，此时的分支事务状态会被初始化为INIT。然后当二阶段的Confirm/Cancel执行时会将其状态置为CONFIRMED/ROLLBACKED。</font>**  
 
 &emsp; 当TC重复调用二阶段接口时，参与者会先获取事务状态控制表的对应记录查看其事务状态。如果状态已经为CONFIRMED/ROLLBACKED，那么表示参与者已经处理完其分内之事，不需要再次执行，可以直接返回幂等成功的结果给TC，帮助其推进分布式事务。增加了幂等记录的写入和读取判断后，时序图如下(蓝色部分)：  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-52.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-52.png)  
 
 ## 1.4. 空回滚
 ### 1.4.1. 产生原因
 &emsp; 先来说定义，当没有调用参与方Try方法的情况下，就调用了二阶段的Cancel方法，Cancel方法需要有办法识别出此时Try有没有执行。如果Try还没执行，表示这个Cancel操作是无效的，即本次Cancel属于空回滚；如果Try已经执行，那么执行的是正常的回滚逻辑。  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-53.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-53.png)  
 &emsp; 如上图所示，红色部分的一阶段Try可能失败。  
 
 &emsp; 首先发起方在调用参与者之前，会向TC申请开始一笔分布式事务。然后发起方调用参与者的一阶段方法，在调用实际发生之前，一般会有切面拦截器感知到此次Try调用，然后写入一条分支事务记录。紧接着，在实际调用参与者的Try方法时发生了异常。异常原因可以是发起方宕机，网络抖动等。  
@@ -148,7 +148,7 @@ Saga 事务和 TCC 事务一样，对业务实现要求高，要求业务设计�
 &emsp; 前面提到过为了保证幂等性，当Try方法被成功执行后，会插入一条记录，标识该分支事务处于INIT状态。所以后续 **<font color = "red">当二阶段的Cancel方法被调用时，可以通过查询控制表的对应记录进行判断。如果记录存在且状态为INIT，就表示一阶段已成功执行，可以正常执行回滚操作，释放预留的资源；如果记录不存在则表示一阶段未执行，本次为空回滚，不释放任何资源。</font>**  
 
 &emsp; 时序图如下所示：  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-54.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-54.png)  
 
 ## 1.5. 资源悬挂
 ### 1.5.1. 产生原因
@@ -166,7 +166,7 @@ Saga 事务和 TCC 事务一样，对业务实现要求高，要求业务设计�
 3. 参与方空回滚后，发起方对参与者的一阶段Try才开始执行，进行资源预留从而形成悬挂
 
 &emsp; 使用时序图来描述，红色部分为产生资源悬挂的关键步骤：  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-55.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-55.png)  
 
 ### 1.5.2. 应对策略
 &emsp; 资源悬挂的本质原因在于，一阶段和二阶段的执行顺序没有被严格地保证。所以相应的解决方案还是通过读取事务状态控制表的事务状态。  
@@ -185,7 +185,7 @@ Saga 事务和 TCC 事务一样，对业务实现要求高，要求业务设计�
 2. 二阶段插入了防悬挂记录，一阶段不可继续执行
 
 &emsp; 时序图描述如下，蓝色部分为防止资源悬挂增加的检查项：  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-56.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-56.png)  
 
 ## 1.6. 三种异常总结
 &emsp; 前面讨论了分布式事务三种典型的异常类型，它们的解决方案都依赖于一张事务状态控制表。来尝试总结一下它们各自的特点。  

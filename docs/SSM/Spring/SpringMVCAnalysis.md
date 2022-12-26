@@ -68,7 +68,7 @@ https://mp.weixin.qq.com/s?__biz=MzIxNTAwNjA4OQ==&mid=2247485842&idx=3&sn=5577b5
 -->
 
 ## 1.1. SpringMVC的工作流程  
-![image](http://www.wt1814.com/static/view/images/SSM/SpringMVC/springmvc-2.png)  
+![image](http://182.92.69.8:8081/img/SSM/SpringMVC/springmvc-2.png)  
 1. 用户发送请求至前端控制器DispatcherServlet。  
 2. 前端控制器DispatcherServlet收到请求调用处理器映射器HandlerMapping。  
 3. <font color = "red">处理器映射器HandlerMapping根据请求url找到具体的处理器Handler，生成处理器对象及处理器拦截器（如果有则生成）一并返回给DispatcherServlet。</font>  
@@ -166,7 +166,7 @@ https://blog.csdn.net/ZhongGuoZhiChuang/article/details/71106680?locationNum=1&f
 
 ### 1.2.1. 上下文在web容器中的启动  
 &emsp; IOC容器的启动过程就是建立上下文的过程，该上下文是与ServletContext相伴而生的，同时也是IOC容器在Web应用环境中的具体表现之一。<font color = "red">由ContextLoaderListener启动的上下文为根上下文。在根上下文的基础上，还有一个与Web MVC相关的上下文用来保存控制器(DispatcherServlet)需要的MVC对象，作为根上下文的子上下文，构成一个层次化的上下文体系。</font>在Web容器中启动Spring应用程序时，首先建立根上下文，然后建立这个上下文体系，这个上下文体系的建立是由ContextLoder来完成的，具体过程如下图所示。  
-![image](http://www.wt1814.com/static/view/images/SSM/SpringMVC/springmvc-3.png)  
+![image](http://182.92.69.8:8081/img/SSM/SpringMVC/springmvc-3.png)  
 
 &emsp; ContextLoaderListener监听器的源码：  
 
@@ -265,7 +265,7 @@ public WebApplicationContext initWebApplicationContext(ServletContext servletCon
 ```
 
 ### 1.2.2. DispatcherServlet初始化和使用  
-![image](http://www.wt1814.com/static/view/images/SSM/SpringMVC/springmvc-4.png)  
+![image](http://182.92.69.8:8081/img/SSM/SpringMVC/springmvc-4.png)  
 
 
 #### 1.2.2.1. 初始化阶段  

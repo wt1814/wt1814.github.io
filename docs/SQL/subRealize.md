@@ -33,7 +33,7 @@ https://mp.weixin.qq.com/s?__biz=MzU5ODUwNzY1Nw==&mid=2247484440&idx=1&sn=ddc246
 
 ### 1.1.1. 设计方案  
 &emsp; **<font color = "red">典型的数据库中间件设计方案有2种：代理proxy、客户端分片smart-client。</font>** 下图演示了这两种方案的架构：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-25.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-25.png)  
 &emsp; 不论是proxy还是smart-client，底层都操作了多个数据库实例。不论是分库分表，还是读写分离，都是在数据库中间件层面对业务开发同学进行屏蔽。  
 
 #### 1.1.1.1. 代理模式  
@@ -61,7 +61,7 @@ https://mp.weixin.qq.com/s?__biz=MzU5ODUwNzY1Nw==&mid=2247484440&idx=1&sn=ddc246
 
 ### 1.1.2. 业界产品  
 &emsp; 无论是proxy，还是smart-client，二者的作用都是类似的。以下列出了这两种方案目前已有的实现以及各自的优缺点：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-26.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-26.png)  
 &emsp; proxy实现，目前的已有的实现方案有：  
 
     阿里巴巴开源的cobar  

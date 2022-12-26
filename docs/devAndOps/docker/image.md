@@ -19,7 +19,7 @@ https://mp.weixin.qq.com/s/xq9lrHqBOWjQ65-V4Jrttg
 <!-- 
 &emsp; docker本质就是宿主机的一个进程，docker是通过namespace实现资源隔离，通过cgroup实现资源限制，通过写时复制技术(copy-on-write)实现了高效的文件操作(类似虚拟机的磁盘比如分配500g并不是实际占用物理磁盘500g)  
 &emsp; 1)namespaces 名称空间  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-18.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-18.png)  
 &emsp; 2)control Group 控制组  
 cgroup的特点是：  　　　
 
@@ -29,7 +29,7 @@ cgroup的特点是：  　　　
 
 
 &emsp; Docker虚拟化技术需要以下核心技术的支撑：  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-33.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-33.png)  
 
 &emsp; 首先，Docker 的出现一定是因为目前的后端在开发和运维阶段确实需要一种虚拟化技术解决开发环境和生产环境环境一致的问题，通过 Docker 可以将程序运行的环境也纳入到版本控制中，排除因为环境造成不同运行结果的可能。但是上述需求虽然推动了虚拟化技术的产生，但是如果没有合适的底层技术支撑，那么仍然得不到一个完美的产品。本文剩下的内容会介绍几种 Docker 使用的核心技术，如果了解它们的使用方法和原理，就能清楚 Docker 的实现原理。  
 -->
@@ -44,18 +44,18 @@ RUN make /app
 CMD python /app/app.py
 ```
 &emsp; 以上四条指令会创建四层，分别对应基础镜像、复制文件、编译文件以及入口文件，每层只记录本层所做的更改，而这些层都是只读层。 **<font color = "red">当启动一个容器，Docker会在最顶部添加读写层，在容器内做的所有更改，如写日志、修改、删除文件等，都保存到了读写层内，一般称该层为容器层，</font>** 如下图所示：  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-15.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-15.png)  
 &emsp; 每个镜像可依赖其他镜像进行构建，每一层的镜像可被多个镜像引用，下图的镜像依赖关系，K8S镜像其实是CentOS+GCC+GO+K8S这四个软件结合的镜像。  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-19.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-19.png)  
 
 ## 1.2. 读写层  
 &emsp; 下图形象的表现出了镜像和容器的关系：  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-20.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-20.png)  
 &emsp; 上图中Apache应用基于emacs镜像构建，emacs基于Debian系统镜像构建，在启动为容器时，在Apache镜像层之上构造了一个可写层，对容器本身的修改操作都在可写层中进行。Debian是该镜像的基础镜像(Base Image)，它提供了内核Kernel的更高级的封装。同时其他的镜像也是基于同一个内核来构建的。  
 &emsp; 事实上，<font color = "clime">容器(container)和镜像(image)的最主要区别就是容器加上了顶层的读写层。</font>所有对容器的修改都发生在此层，镜像并不会被修改。容器需要读取某个文件时，直接从底部只读层去读即可，而如果需要修改某文件，则将该文件拷贝到顶部读写层进行修改，只读层保持不变。  
 &emsp; **每个容器都有自己的读写层，因此多个容器可以使用同一个镜像，**另外容器被删除时，其对应的读写层也会被删除（如果希望多个容器共享或者持久化数据，可以使用Docker volume）。  
 &emsp; 最后，执行命令 docker ps -s，可以看到最后有两列 size 和 virtual size。其中 size就是容器读写层占用的磁盘空间，而 virtual size 就是读写层加上对应只读层所占用的磁盘空间。如果两个容器是从同一个镜像创建，那么只读层就是100%共享，即使不是从同一镜像创建，其镜像仍然可能共享部分只读层(如一个镜像是基于另一个创建)。因此，docker 实际占用的磁盘空间远远小于virtual size 的总和。  
-![image](http://www.wt1814.com/static/view/images/devops/docker/docker-14.png)  
+![image](http://182.92.69.8:8081/img/devops/docker/docker-14.png)  
 &emsp; **这种分层结构能充分共享镜像层，能大大减少镜像仓库占用的空间。**  
 
 ## 1.3. 联合文件系统UnionFS  

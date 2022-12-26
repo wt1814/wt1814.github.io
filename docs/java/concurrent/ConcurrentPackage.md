@@ -14,7 +14,7 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzAxMjEwMzQ5MA==&action=getalbum&a
     * [executor](/docs/java/concurrent/ThreadPool.md)：线程池相关；  
     * [tools](/docs/java/concurrent/tools.md)：同步工具相关，如信号量、闭锁、栅栏等功能；  
 
-![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-1.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/concurrent-1.png)  
 
 
 JUC类图：https://xmind.app/m/tJy5/#  

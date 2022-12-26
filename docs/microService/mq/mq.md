@@ -90,24 +90,24 @@ https://mp.weixin.qq.com/s/7MGeSFjg6HlKzjQidRJeXw
 &emsp; 先说一下消息队列的常见使用场景吧，其实场景有很多，但是比较核心的有3个：解耦、异步、削峰。  
 
 * 解耦：现场画个图来说明一下：  
-    ![image](http://www.wt1814.com/static/view/images/microService/mq/mq-6.png)  
+    ![image](http://182.92.69.8:8081/img/microService/mq/mq-6.png)  
     &emsp; A系统发送个数据到BCD三个系统，接口调用发送，那如果E系统也要这个数据呢？那如果C系统现在不需要了呢？现在A系统又要发送第二种数据了呢？A系统负责人濒临崩溃中。。。再来点更加崩溃的事儿，A系统要时时刻刻考虑BCDE四个系统如果挂了咋办？我要不要重发？我要不要把消息存起来？头发都白了啊。。。  
-    ![image](http://www.wt1814.com/static/view/images/microService/mq/mq-7.png)  
+    ![image](http://182.92.69.8:8081/img/microService/mq/mq-7.png)  
     &emsp; **<font color = "clime">你需要去考虑一下你负责的系统中是否有类似的场景，就是一个系统或者一个模块，调用了多个系统或者模块，互相之间的调用很复杂，维护起来很麻烦。但是其实这个调用是不需要直接同步调用接口的，如果用MQ给他异步化解耦，也是可以的，你就需要去考虑在你的项目里，是不是可以运用这个MQ去进行系统的解耦。</font>**  
 * 异步：现场画个图来说明一下，  
-    ![image](http://www.wt1814.com/static/view/images/microService/mq/mq-8.png)  
-    ![image](http://www.wt1814.com/static/view/images/microService/mq/mq-9.png)  
+    ![image](http://182.92.69.8:8081/img/microService/mq/mq-8.png)  
+    ![image](http://182.92.69.8:8081/img/microService/mq/mq-9.png)  
     &emsp; A系统接收一个请求，需要在自己本地写库，还需要在BCD三个系统写库，自己本地写库要3ms，BCD三个系统分别写库要300ms、450ms、200ms。最终请求总延时是3 + 300 + 450 + 200 = 953ms，接近1s，用户感觉搞个什么东西，慢死了慢死了。  
 * 削峰：  
     &emsp; 每天0点到11点，A系统风平浪静，每秒并发请求数量就100个。结果每次一到11点~1点，每秒并发请求数量突然会暴增到1万条。但是系统最大的处理能力就只能是每秒钟处理1000个请求啊。。。尴尬了，系统会死。。。  
 
         说明，一般的MySQL扛到每秒2000个请求就差不多了，如果每秒请求到5000点话，可能就直接把MySql给打死了。  
 
-    ![image](http://www.wt1814.com/static/view/images/microService/mq/mq-10.png)  
-    ![image](http://www.wt1814.com/static/view/images/microService/mq/mq-11.png)  
+    ![image](http://182.92.69.8:8081/img/microService/mq/mq-10.png)  
+    ![image](http://182.92.69.8:8081/img/microService/mq/mq-11.png)  
 
 ### 1.2.2. 消息队列缺点  
-![image](http://www.wt1814.com/static/view/images/microService/mq/mq-12.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/mq-12.png)  
 &emsp; **系统可用性降低：** 系统引入的外部依赖越多，越容易挂掉，本来你就是A系统调用BCD三个系统的接口就好了，人ABCD四个系统好好的，没啥问题，你偏加个MQ进来，万一MQ挂了咋整？MQ挂了，整套系统崩溃了，你不就完了么。  
 &emsp; **系统复杂性提高：** 硬生生加个MQ进来，你怎么保证消息没有重复消费？怎么处理消息丢失的情况？怎么保证消息传递的顺序性？头大头大，问题一大堆，痛苦不已。  
 &emsp; **一致性问题：** A系统处理完了直接返回成功了，人都以为你这个请求就成功了；但是问题是，要是BCD三个系统那里，BD两个系统写库成功了，结果C系统写库失败了，咋整？你这数据就不一致了。  

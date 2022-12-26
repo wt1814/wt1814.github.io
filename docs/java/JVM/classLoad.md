@@ -25,7 +25,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 类加载流程：  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-5.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-5.png)  
 2. 加载：查找并加载类的二进制数据。加载主要做三件事：找到类文件 -> 放入方法区 -> 开个入口（最后生成一个代表此类的java.lang.Class对象，作为访问方法区这些数据结构的入口）。  
 &emsp; **<font color = "red">一句话概括：把代码数据加载到内存中，加载完成后，在方法区实例化一个对应的Class对象。</font>**  
 3. 验证：确保被加载的类的正确性。验证阶段大致会完成4个阶段的检验动作：1. 文件格式验证、2. 元数据验证、3. 字节码验证、4. 符号引用验证。  
@@ -74,7 +74,7 @@ https://mp.weixin.qq.com/s/AoACDnVLfXTKEjUcnRZqog
 
 ## 1.2. 类加载的过程  
 &emsp; 类从被加载到虚拟机内存中开始，到卸载出内存为止，它的整个生命周期包括：加载(Loading)、验证(Verification)、准备(Preparation)、解析(Resolution)、初始化(Initialization)、使用(Using)和卸载(Unloading) 7个阶段。<font color = "red">类的加载包括前5个阶段，其屮验证、准备、解析3个部分统称为连接(Linking)。</font>这7个阶段的发生顺序如图所示。    
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-5.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-5.png)  
 &emsp; 加载、验证、准备、初始化和卸载这5个阶段的顺序是确定的，类的加载过程必须按照这种顺序按部就班地开始，**而解析阶段则不一定：它在某些情况下可以在初始化阶段之后再开始，这是为了支持Java语言的运行时绑定(也称为动态绑定或晚期绑定)。**  
 
 ### 1.2.1. 加载  

@@ -78,7 +78,7 @@
     集群基于ZooKeeper管理，在线升级，扩容，智能优化，大数据处理(2.0开发版)。
 
 ### 1.1.2. 原理  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-40.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-40.png)  
 &emsp; 原理：拦截，分片分析、路由分析、读写分离分析、缓存分析。  
 &emsp; 当Mycat收到一个SQL时，会先解析这个SQL，查找涉及到的表，然后看此表的定义，如果有分片规则，则获取到SQL里分片字段的值，并匹配分片函数，得到该SQL对应的分片列表，然后将SQL发往这些分片去执行，最后收集和处理所有分片返回的结果数据，并输出到客户端。以select * from Orders where prov=?语句为例，查到prov=wuhan，按照分片函数，wuhan返回dn1，于是SQL就发给了MySQL1，去取DB1上的查询结果，并返回给用户。  
 

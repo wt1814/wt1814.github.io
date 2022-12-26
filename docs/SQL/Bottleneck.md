@@ -36,7 +36,7 @@
 
 * 最大数据量：  
 &emsp; MySQL没有限制单表最大记录数，它取决于操作系统对文件大小的限制。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-28.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-28.png)  
 &emsp; <font color = "red">《阿里巴巴Java开发手册》提出单表行数超过500万行或者单表容量超过2GB，才推荐分库分表。</font>500万仅供参考，并非铁律。  
 
 

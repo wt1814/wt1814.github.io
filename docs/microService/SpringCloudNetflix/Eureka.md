@@ -71,7 +71,7 @@ https://mp.weixin.qq.com/s/etloMGMydBgC0Ll1yBgx8Q
 
 * Eureka服务端，也称为服务注册中心。它同其他服务注册中心一样，支持高可用配置。它依托于强一致性提供良好的服务实例可用性，可以应对多种不同的故障场景。 **<font color = "red">如果Eureka以集群模式部署，当集群中有分片出现故障时，那么Eureka就转入自我保护模式。它允许在分片故障期间继续提供服务的发现和注册，当故障分片恢复运行时，集群中的其他分片会把它们的状态再次同步回来。</font>** 以在AWS上的实践为例， Netflix推荐每个可用的区域运行一个Eureka服务端，通过它来形成集群。不同可用区域的服务注册中心通过异步模式互相复制各自的状态，这意味着在任意给定的时间点每个实例关于所有服务的状态是有细微差别的。  
 * Eureka客户端，主要处理服务的注册与发现。客户端服务通过注解和参数配置的方式，嵌入在客户端应用程序的代码中，<font color = "red">在应用程序运行时，Eueka客户端向注册中心注册自身提供的服务并周期性地发送心跳来更新它的服务租约。</font>同时，<font color = "red">它也能从服务端查询当前注册的服务信息并把它们缓存到本地并周期性地刷新服务状态。</font>  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-35.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-35.png)  
 
 &emsp; **Eureka服务治理体系包含三个核心角色：服务注册中心、服务提供者以及服务消费者。**  
 
@@ -80,7 +80,7 @@ https://mp.weixin.qq.com/s/etloMGMydBgC0Ll1yBgx8Q
 * 服务消费者：消费者应用从服务注册中心获取服务列表，从而使消费者可以知道去何处调用其所需要的服务，可以使用Ribbon来实现服务消费，也可以使用Feign的消费方式。  
 
 ### 1.2.2. 服务治理机制  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-1.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-1.png)  
 &emsp; 根据上面的结构，下面详细了解一下，从服务注册开始到服务调用，及各个元素所涉及的一些重要通信行为。  
 
 #### 1.2.2.1. 服务提供者  
@@ -128,7 +128,7 @@ https://www.jianshu.com/p/cb7fa0aa47a8
 &emsp; <font color = "clime">注：自我保护是只在服务端开启。</font>   
 
 &emsp; 当在本地调试基于Eureka的程序时， 基本上都会碰到这样一个问题， 在服务注册中心的信息面板中出现类似下面的红色警告信息：  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-2.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-2.png)  
 &emsp; 实际上，该警告就是触发了EurekaServer的自我保护机制。服务注册Eureka Server之后，会维护一个心跳连接，告诉Eureka Server自己还活着。 **<font color = "red">Eureka Server在运行期间，会统计心跳失败的比例在15分钟之内是否低于85%, 如果出现低于的情况</font><font color = "clime">（在单机调试的时候很容易满足，实际在生产环境上通常是由于网络不稳定导致多数服务器心跳失败）</font><font color = "red">，Eureka Server会将当前的实例注册信息保护起来，让这些实例不会过期，尽可能保护这些注册信息。</font>**  
 
 &emsp; **<font color = "clime">Eureka Server进入自我保护状态后</font>，会出现以下几种情况：**  
@@ -140,7 +140,7 @@ https://www.jianshu.com/p/cb7fa0aa47a8
 &emsp; 由于本地调试很容易触发注册中心的保护机制，这会使得注册中心维护的服务实例不那么准确。所以，在本地进行开发的时候，可以使用eureka.server.enable-self-preservation = false参数来关闭自我保护机制，以确保注册中心可以将不可用的实例正确剔除。  
 
 ###### 1.2.2.3.2.1. 自我保护实现逻辑  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-37.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-37.png)  
 &emsp; 在Eureka的自我保护机制中，有两个很重要的变量，Eureka的自我保护机制，都是围绕这两个变量来实现的，在AbstractInstanceRegistry这个类中定义的  
 
 ```java
@@ -149,8 +149,8 @@ protected volatile int expectedNumberOfClientsSendingRenews; //预期每分钟�
 ```
 &emsp; numberOfRenewsPerMinThreshold 表示每分钟的最小续约数量，就是Eureka Server期望每分钟收到客户端实例续约的总数的阈值。如果小于这个阈值，就会触发自我保护机制。  
 
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-38.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-38.png)  
 
 ### 1.2.3. 高可用注册中心/AP模型  
 &emsp; <font color = "red">EurekaServer的高可用实际上就是将自己作为服务向其他服务注册中心注册自己，这样就可以形成一组互相注册的服务注册中心，以实现服务清单的互相同步，达到高可用的效果。</font>  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-36.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-36.png)  

@@ -98,14 +98,14 @@ QUEUED
 * discard：取消事务，放弃事务块中的所有命令
 * watch key1 key2 ...：<font color = "red">监视一或多个key，如果在事务执行之前，被监视的key被其他命令改动，则事务被打断(类似乐观锁)</font>
 * unwatch：取消watch对所有key的监控
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-98.png)  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-99.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-98.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-99.png)  
 
 ## 1.3. Redis事务使用案例  
 &emsp; (1)正常执行。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-91.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-91.png)  
 &emsp; (2)放弃事务。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-92.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-92.png)  
 
 ## 1.4. 事务中的错误
 <!-- 
@@ -132,9 +132,9 @@ https://blog.csdn.net/csdn18740599042/article/details/109268025
 ----
 
 &emsp; (3)<font color = "clime">若在事务队列中存在命令性错误(类似于java编译性错误)，</font><font color = "red">则执行EXEC命令时，所有命令都不会执行。</font>  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-93.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-93.png)  
 &emsp; (4)<font color = "clime">若在事务队列中存在语法性错误(类似于java的1/0的运行时异常)，</font><font color = "red">则执行EXEC命令时，其他正确命令会被执行，错误命令抛出异常。</font>  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-94.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-94.png)  
 
 ## 1.5. 为什么Redis不支持回滚  
 &emsp; 如果有使用关系式数据库的经验，那么 “Redis 在事务失败时不进行回滚，而是继续执行余下的命令”，这种做法可能会让人觉得有点奇怪。  
@@ -166,9 +166,9 @@ OK
 
 &emsp; (5)使用watch  
 &emsp; 案例一：使用watch检测balance，事务期间balance数据未变动，事务执行成功  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-95.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-95.png)  
 &emsp; 案例二：使用watch检测balance，在开启事务后(标注1处)，在新窗口执行标注2中的操作，更改balance的值，模拟其他客户端在事务执行期间更改watch监控的数据，然后再执行标注1后命令，执行EXEC后，事务未成功执行。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-96.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-96.png)  
 &emsp; 一但执行EXEC开启事务的执行后，无论事务使用执行成功，WARCH对变量的监控都将被取消。  
 &emsp; 故当事务执行失败后，需重新执行WATCH命令对变量进行监控，并开启新的事务进行操作。  
 
@@ -183,17 +183,17 @@ OK
 1.1. Redis事务的使用  
 &emsp; Redis 的事务涉及到四个命令：multi(开启事务)，exec(执行事务)，discard (取消事务)，watch(监视)。  
 1. 使用Multi命令表示开启一个事务；  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-36.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-36.png)  
 2. 开启一个事务过后中间输入的所有命令都不会被立即执行，而是被加入到队列中缓存起来，当收到Exec命令的时候Redis服务会按入队顺序依次执行命令。  
 &emsp; 在multi命令后输入的命令不会被立即执行，而是被加入的队列中，并且加入成功redis会返回QUEUED，表示加入队列成功，如果这里的命令输入错误了，或者命令参数不对，Redis会返回ERR 如下图，并且此次事务无法继续执行了。这里需要注意的是在 Redis 2.6.5 版本后是会取消事务的执行，但是在 2.6.5 之前Redis是会执行所有成功加入队列的命令。详细信息可以看官方文档。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-37.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-37.png)  
 3. 输入exec命令后会依次执行加入到队列中的命令。  
 
 1.2. Redis事务中的错误  
 
 1. 在Redis的事务中，命令在加入队列的时候如果出错，那么此次事务是会被取消执行的。这种错误在执行exec命令前Redis服务就可以探测到。  
 2. 在 Redis 事务中还有一种错误，那就是所有命令都加入队列成功了，但是在执行exec命令的过程中出现了错误，这种错误 Redis 是无法提前探测到的，那么这种情况下 Redis 的事务是怎么处理的呢？  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-38.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-38.png)  
 &emsp; 上面测试的过程是先通过命令get a获取a的值为 5，然后开启一个事务，在事务中执行两个动作，第一个是自增a的值，另一个是通过命令hset a b 3来设置a中b的值，可以看到这里a的类型是字符串，但是第二个命令也成功的加入到了队列，Redis并没有报错。但是最后在执行exec命令的时候，第一条命令执行成功了，看到返回结果是6，第二条命令执行失败了，提示的错误信息表示类型不对。  
 &emsp; 然后再通过get a命令发现a的值已经被改变了，不再是之前的5了，说明虽然事务失败了但是命令执行的结果并没有回滚！  
 
@@ -208,7 +208,7 @@ OK
 &emsp; 当事务执行时，也就是服务器收到了exec指令要顺序执行缓存的事务队列时，Redis会检查关键变量自Watch 之后，是否被修改了。  
 &emsp; 如果开启事务之后，至少有一个被监视 key 键在 exec 执行之前被修改了， 那么整个事务都会被取消(key 提前过期除外)。  
 &emsp; 可以用 unwatch 取消。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-39.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-39.png)  
 -->
 
 ---------

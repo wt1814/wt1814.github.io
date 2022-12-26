@@ -26,7 +26,7 @@ https://blog.csdn.net/qq_28119741/article/details/102815659
 ## 1.1. CPU缓存行读取
 &emsp; 缓存是由缓存行组成的，通常是64字节(常用处理器的缓存行是64字节的，比较旧的处理器缓存行是 32 字节)，并且它有效地引用主内存中的一块地址。  
 &emsp; <font color = "red">一个Java的long类型是8字节，因此在一个缓存行中可以存8个long类型的变量。</font>  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-51.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-51.png)  
 
 ## 1.2. 伪共享问题
 &emsp; <font color = "red">在程序运行的过程中，缓存每次更新都从主内存中加载连续的64个字节。因此，如果访问一个long类型的数组时，当数组中的一个值被加载到缓存中时，另外7个元素也会被加载到缓存中。</font>  
@@ -36,7 +36,7 @@ https://blog.csdn.net/qq_28119741/article/details/102815659
 &emsp; 当前者修改 a 时，会把 a 和 b 同时加载到前者核心的缓存行中，更新完 a 后其它所有包含 a 的缓存行都将失效，因为其它缓存中的 a 不是最新值了。  
 &emsp; 而当后者读取 b 时，发现这个缓存行已经失效了，需要从主内存中重新加载。  
 &emsp; 请记住，缓存都是以缓存行作为一个单位来处理的，所以失效 a 的缓存的同时，也会把 b 失效，反之亦然。  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-52.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-52.png)  
 &emsp; 这样就出现了一个问题，<font color = "clime">b和a完全不相干，每次却要因为a的更新需要从主内存重新读取，它被缓存未命中给拖慢了。</font>  
 &emsp; 这就是伪共享问题： **<font color = "clime">当多线程修改互相独立的变量时，如果这些变量共享同一个缓存行，就会无意中影响彼此的性能。</font>**  
 

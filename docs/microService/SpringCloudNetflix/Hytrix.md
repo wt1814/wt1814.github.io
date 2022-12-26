@@ -145,7 +145,7 @@ execution.isolation.thread.interruptOnTimeout
 https://mp.weixin.qq.com/s/nCifoTiqhBT2Eai2UJinag
 -->
 &emsp; Hystrix是如何处理请求，在官网有详细介绍：https://github.com/Netflix/Hystrix/wiki/How-it-Works 。  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-29.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-29.png)  
 1. <font color = "red">包装请求：</font>  
 &emsp; **<font color = "red">可以使用继承HystrixCommand或HystrixObservableCommand来包装业务方法；</font>**  
 2. <font color = "red">发起请求：</font>  
@@ -205,7 +205,7 @@ public String queryOrder(@PathVariable("num")int num){
     return  restTemplate.getForObject("http://localhost:8082/orders",String.class);
 }
 ```
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-3.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-3.png)  
 &emsp; <font color = "red">熔断器开关由关闭到打开的状态转换是通过当前服务健康状况（服务的健康状况 = 请求失败数 / 请求总数 ）和设定阈值比较决定的。</font>熔断器模式定义了熔断器开关相互转换的逻辑：  
 1. 当熔断器开关关闭时，请求被允许通过熔断器。如果当前健康状况高于设定阈值，开关继续保持关闭。如果当前健康状况低于设定阈值，开关则切换为打开状态。  
 
@@ -234,11 +234,11 @@ publicStringqueryOrderTimeout(){
  
 * 线程池隔离：  
     * 未使用线程池隔离：  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-9.png)  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-10.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-9.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-10.png)  
     * 使用线程池隔离：  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-11.png)  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-12.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-11.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-12.png)  
 
 ```java
 @HystrixCommand(groupKey="order-service",
@@ -254,7 +254,7 @@ publicStringqueryOrderTimeout(){
 ```
 
 * 信号量隔离：  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-8.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-8.png)  
 
 ```java
 @HystrixCommand(fallbackMethod="semaphoreQuarantineFallback",
@@ -284,7 +284,7 @@ publicStringqueryOrderTimeout(){
 &emsp; 可以使用Hystrix中的核心注解@HystrixCommand，通过它创建HystrixCommand的实现。同时利用fallback属性指定服务降级的实现方法。  
 &emsp; 然而这些还只是Hystrix使用的一小部分，在实现一个大型分布式系统时，往往还需要更多高级的配置功能。  
 
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-41.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-41.png)  
 
 
 ### 1.4.1. Hystrix配置信息  
@@ -354,7 +354,7 @@ hystrix:
 ### 1.4.8. Hystrix仪表盘  
 &emsp; Hystrix Dashboard主要用来实时监控Hystrix的各项指标信息。Hystrix的数据统计是采用的滑动窗口。  
 &emsp; 访问Hystrix仪表盘地址：http://ip:port/hystrix  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-5.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-5.png)  
 &emsp; Hystrix Dashboard共支持三种不同的监控方式， 如下所示。
 
 * 默认的集群监控：通过URL http://turbine-hostname:port/turbine.stream 开启，实现对默认集群的监控。  
@@ -369,13 +369,13 @@ hystrix:
 * Title：该参数对应了上图头部标题Hystrix Stream之后的内容，默认会使用具体监控实例的URL，可以通过配置该信息来展示更合适的标题。  
 
 &emsp; 输入URL，单击单击Monitor Stream按钮。  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-6.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-6.png)  
 
 -----
 ## 1.5. Turbine集群监控  
 ### 1.5.1. 构建监控聚合服务  
 &emsp; 微服务集群中，Hystrix的度量信息通过Turbine来汇集监控信息，并将聚合后的信息提供给Hystrix Dashboard来集中展示和监控。  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-7.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-7.png)  
 
 ### 1.5.2. 与消息代理结合  
 &emsp; Spring Cloud在封装Turbine的时候，还封装了基于消息代理的收集实现。所以，可以将所有需要收集的监控信息都输出到消息代理中，然后Turbine服务再从消息代理中异步获取这些监控信息，最后将这些监控信息聚合并输出到Hystrix Dashboard中。通过引入消息代理。  

@@ -23,7 +23,7 @@ https://mp.weixin.qq.com/s/CJQKtGOEQLzuUOUjSCvEuA
 
 &emsp; 在分布式系统中，由于redis分布式锁相对于更简单和高效，成为了分布式锁的首先，被我们用到了很多实际业务场景当中。  
 &emsp; 但不是说用了redis分布式锁，就可以高枕无忧了，如果没有用好或者用对，也会引来一些意想不到的问题。  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-69.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-69.png)  
 
 
 ## 1.1. 非原子操作

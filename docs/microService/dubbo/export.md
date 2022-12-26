@@ -46,10 +46,10 @@ https://mp.weixin.qq.com/s/TK9ZU3Vm4IoTrrwmbvV-uQ
 
 ## 1.1. 服务暴露时序  
 &emsp; **暴露服务时序图**  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-20.png)   
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-20.png)   
 
 &emsp; **服务暴露流程**  
-![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-40.png)  
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-40.png)  
 &emsp; 首先ServiceConfig类拿到对外提供服务的实际类ref(如：HelloWorldImpl)，然后通过ProxyFactory类的getInvoker方法使用ref生成一个AbstractProxyInvoker实例，到这一步就完成具体服务到Invoker的转化。接下来就是Invoker转换到Exporter的过程。  
 &emsp; Dubbo处理服务暴露的关键就在Invoker转换到Exporter的过程(如上图中的红色部分)。  
 

@@ -31,7 +31,7 @@
 3. **poll()：** 运行机制与select()相似。将fd_set数组改为采用链表方式pollfds，没有连接数的限制，并且pollfds可重用。   
 4. **epoll()：**   
     1. **epoll的三个函数：**  
-        ![image](http://www.wt1814.com/static/view/images/microService/netty/netty-119.png)  
+        ![image](http://182.92.69.8:8081/img/microService/netty/netty-119.png)  
         * 调用epoll_create，会在内核cache里建个红黑树，同时也会再建立一个rdllist双向链表。 
         * epoll_ctl将被监听的描述符添加到红黑树或从红黑树中删除或者对监听事件进行修改。
         * 双向链表，用于存储准备就绪的事件，当epoll_wait调用时，仅查看这个rdllist双向链表数据即可。epoll_wait阻塞等待注册的事件发生，返回事件的数目，并将触发的事件写入events数组中。   
@@ -113,7 +113,7 @@ https://mp.weixin.qq.com/s/JPcOKoWhBDW59GpO37Jq4w
 ```c
 int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout); 
 ```
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-45.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-45.png)  
 
 &emsp; 【参数说明】  
 &emsp; int maxfdp1，指定待测试的文件描述符个数，它的值是待测试的最大描述符加1。  
@@ -124,8 +124,8 @@ int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct 
 &emsp; int，若有就绪描述符返回其数目，若超时则为0，若出错则为-1。  
 
 &emsp; 【运行机制】  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-103.png)  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-94.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-103.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-94.png)  
 &emsp; select()运行时会将fd_set集合从用户态拷贝到内核态。在内核态中线性扫描socket，即采用轮询。如果有事件返回，会将内核态的数组相应的FD置位。最后再将内核态的数据返回用户态。  
 
 
@@ -138,7 +138,7 @@ int select (int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct 
 5. 步骤5的解法：select对于事件的监控是建立在内核的修改之上的，也就是说经过一次监控之后，内核会修改位，因此再次监控时需要再次从用户态向内核态进行拷贝（第N次拷贝）  
 
 ### 1.1.2. 调用select()函数示例
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-95.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-95.png)  
 
 
 ### 1.1.3. select机制的问题总结
@@ -175,7 +175,7 @@ int 函数返回fds集合中就绪的读、写，或出错的描述符数量，�
 
 &emsp; **<font color = "red">在poll()函数中采用链表的方式替换原有fd_set数据结构。使其没有连接数的限制。</font>**  
 
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-45.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-45.png)  
 &emsp; **<font color = "red">在内核中只将revents字段置位，pollfds链表可重用。</font>**   
 
 ## 1.3. epoll
@@ -189,7 +189,7 @@ https://mp.weixin.qq.com/s/qVUXY7t515xmXIL8gQ1nBQ
 
 ### 1.3.1. ~~epoll()操作函数~~
 &emsp; epoll主要有epoll_create,epoll_ctl和epoll_wait三个函数。  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-119.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-119.png)  
 
 * int epoll_create(int size)  
 &emsp; 函数创建epoll文件描述符，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。返回是epoll描述符。-1表示创建失败。  
@@ -204,7 +204,7 @@ https://mp.weixin.qq.com/s/qVUXY7t515xmXIL8gQ1nBQ
 
 
 &emsp; 在select/poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描， **而epoll事先通过epoll_ctl()来注册一个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait()时便得到通知。**  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-104.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-104.png)  
 
 
 ---------
@@ -218,7 +218,7 @@ https://mp.weixin.qq.com/s/qVUXY7t515xmXIL8gQ1nBQ
 
 
 ### 1.3.2. 调用epoll()函数
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-97.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-97.png)  
 
 
 ### 1.3.3. epoll工作模式

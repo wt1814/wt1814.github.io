@@ -101,9 +101,9 @@ https://mp.weixin.qq.com/s/GuKuWVuWJGo_LUvwbH9qGQ
 
 ## 1.3. 收集器详解
 &emsp; HotSpot虚拟机所包含的所有收集器如图：  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-55.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-55.png)  
 &emsp; 上图展示了多种作用于不同分代的收集器。如果两个收集器之间存在连线，那说明它们可以搭配使用。虚拟机所处的区域说明它是属于新生代收集器还是老年代收集器。选择对具体应用最合适的收集器。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-67.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-67.png)  
 
 * Serial串行收集器：新生代收集器、最基本、发展历史最久(jdk1.3之前)、单线程、基于复制算法。  
 * Serial Old串行老年代收集器：老年代版本的Serial收集器、单线程、基于标记-整理算法。  
@@ -132,7 +132,7 @@ https://blog.csdn.net/wszb2012/article/details/109075575?utm_medium=distribute.p
     -XX:+UseSerialGC 串行收集器
     
 &emsp; Serial收集器运行过程如下图所示：  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-29.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-29.png)  
 <!-- &emsp; 说明：1.需要STW(Stop The World)，停顿时间长。2.简单高效，对于单个CPU环境而言，Serial收集器由于没有线程交互开销，可以获取最高的单线程收集效率。  -->
 
 &emsp; **<font color = "red">一句话概括：Serial收集器，采用复制算法的单线程的收集器，运行在Client模式下的默认新生代收集器，适用于用户桌面应用中。</font>**
@@ -147,7 +147,7 @@ https://blog.csdn.net/wszb2012/article/details/109075575?utm_medium=distribute.p
     -XX:ParallelGCThreads 限制线程数量
     
 &emsp; ParNew收集器运行过程如下图所示：  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-30.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-30.png)  
 
 &emsp; **<font color = "red">一句话概括：Serial收集器的多线程版本，降低停顿时间，JDK7之前Server模式下的虚拟机首选的新生代收集器，能与CMS收集器配合。</font>**
 
@@ -173,7 +173,7 @@ https://blog.csdn.net/wszb2012/article/details/109075575?utm_medium=distribute.p
     -XX:+UseParallelOldGC 使用Parallel收集器+ 老年代并行
 
 &emsp; 运行过程如下图所示：  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-31.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-31.png)  
 
 
 ### 1.3.3. CMS收集器  
@@ -238,7 +238,7 @@ https://mp.weixin.qq.com/s/r9TSqka8y1qV4QIiD3qXKw
 
 &emsp; 3. 染色指针是一种直接将少量额外的信息存储在指针上的技术  
 &emsp; 目前在Linux下64位的操作系统中高18位是不能用来寻址的，但是剩余的46为却可以支持64T的空间，到目前为止我们几乎还用不到这么多内存。于是ZGC将46位中的高4位取出，用来存储4个标志位，剩余的42位可以支持4T的内存  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-62.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-62.png)  
 
 &emsp; 4. ZGC收集器之三色标记  
 &emsp; 在并发的可达性分析算法中我们使用三色标记(Tri-color Marking)来标记对象是否被收集器访问过  
@@ -290,15 +290,15 @@ https://mp.weixin.qq.com/s/r9TSqka8y1qV4QIiD3qXKw
 
 &emsp; Shenandoah 收集器之连接矩阵  
 &emsp; 连接矩阵可以简单理解为一张二维表格，如果Region N有对象指向RegionM，就在表格的N行M列中打上一个标记，如右图所示，如果Region 5中的对象Baz引用了Region 3的Foo，Foo又引用了Region 1的Bar，那连接矩阵中的5行3列、3行1列就应该被打上标记。在回收时通过这张表格就可以得出哪些Region之间产生了跨代引用  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-64.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-64.png)  
 
 &emsp; Shenandoah 收集器之转发指针  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-65.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-65.png)  
 &emsp; 转发指针(Forwarding Pointer，也常被称为Indirection Pointer)来实现对象移动与用户程序并发的一种解决方案  
 &emsp; Brooks提出的新方案不需要用到内存保护陷阱，而是在原有对象布局结构的最前面统一增加一个新的引用字段，在正常不处于并发移动的情况下，该引用指向对象自己。从结构上来看，Brooks提出的转发指针与某些早期Java虚拟机使用过的句柄定位，有一些相似之处，两者都是一种间接性的对象访问方式，差别是句柄通常会统一存储在专门的句柄池中，而转发指针是分散存放在每一个对象头前面  
 
 &emsp; Shenandoah 收集器之读写屏障  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-66.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-66.png)  
 &emsp; Brooks形式的转发指针在设计上决定了它是必然会出现多线程竞争问题的，如果收集器线程与用户线程发生的只是并发读取，那无论读到旧对象还是新对象上的字段，返回的结果都应该是一样的，这个场景还可以有一些“偷懒”的处理余地；但如果发生的是并发写入，就一定必须保证写操作只能发生在新复制的对象上，而不是写入旧对象的内存中  
 &emsp; 解决方案：Shenandoah不得不同时设置读、写屏障去拦截  
 

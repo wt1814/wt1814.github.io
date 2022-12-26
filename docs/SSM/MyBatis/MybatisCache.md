@@ -58,7 +58,7 @@ public void testSqlSession() throws Exception{
 }
 ```
 &emsp; 运行一下代码。查看控制台，有一下输出。  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-21.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-21.png)  
 &emsp; 这说明<font color = "red">在同一个方法，Mybatis多次请求数据库且没有事务的情况下，创建了多个SqlSession会话！</font>  
 &emsp; 然后，在testSqlSession方法上加上@Transactional注解看看效果。  
 
@@ -70,7 +70,7 @@ public void testSqlSession(){
 }
 ```
 &emsp; 运行效果截图如下：  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-22.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-22.png)  
 &emsp; 这说明，<font color = "red">在有事务的情况下，同一个方法，Mybatis多次请求数据库，只创建了一个SqlSession会话！</font>  
 
 &emsp; 如果有事务，并且方法内存在多个线程的情况下，代码如下：  
@@ -93,7 +93,7 @@ public void testSqlSession(){
 }
 ```
 &emsp; 运行结果如下：  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-23.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-23.png)  
 &emsp; <font color= "red">在有事务的情况下，同一个方法内，有多个线程 Mybatis 多次请求数据库的情况下，创建了多个 SqlSession 会话！</font>  
 
 &emsp; 为什么在同一个事务下，又开启了两个SqlSession？  
@@ -186,10 +186,10 @@ public void testSqlSession(){
 
 &emsp; Mybatis缓存体系结构介绍：    
 &emsp; MyBatis跟缓存相关的类都在cache包里面，其中有一个 Cache 接口，只有一个默认的实现类PerpetualCache，它是用HashMap实现的。除此之外，还有很多的装饰器，通过这些装饰器可以额外实现很多的功能：回收策略、日志记录、定时刷新等等。但是无论怎么装饰，经过多少层装饰，最后使用的还是基本的实现类（默认 PerpetualCache）。 
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-18.png)  
-<!-- ![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-19.png) --> 
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-18.png)  
+<!-- ![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-19.png) --> 
 &emsp; 所有的缓存实现类总体上可分为三类：基本缓存、淘汰算法缓存、装饰器缓存。  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-20.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-20.png)  
 
 
 

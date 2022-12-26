@@ -111,7 +111,7 @@ update product set name = 'TXC' where id = 1;
 &emsp; 有个充值业务，现在有两个服务，一个负责管理用户的余额，另外一个负责管理用户的积分。  
 &emsp; 当用户充值的时候，首先增加用户账户上的余额，然后增加用户的积分。  
 &emsp; AT流程分为两阶段，主要逻辑全部在第一阶段，第二阶段主要做回滚或日志清理的工作。其中，第一阶段流程如下：  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-68.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-68.png)  
 &emsp; 积分服务中也有TM，但是由于没有用到，因此直接可以忽略。  
 &emsp; 1）余额服务中的TM，向TC申请开启一个全局事务，TC会返回一个全局的事务ID。  
 &emsp; 2）余额服务在执行本地业务之前，RM会先向TC注册分支事务。  

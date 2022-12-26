@@ -366,7 +366,7 @@ public class Test implements Runnable{
 
 ----
 
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-19.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-19.png)  
 
 
 ## Spring内置线程池

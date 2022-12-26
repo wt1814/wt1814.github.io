@@ -57,9 +57,9 @@ https://www.cnblogs.com/zjdxr-up/p/7168357.html
 ## 1.1. 对象的创建过程  
 &emsp; 简述一下Java中创建一个对象的过程？  
 &emsp; 解析：回答这个问题首先就要清楚类的生命周期  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-5.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-5.png)  
 &emsp; Java中对象的创建就是在堆上分配内存空间的过程，此处说的对象创建仅限于new关键字创建的普通Java对象，不包括数组对象的创建。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-61.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-61.png)  
 1. <font color = "red">检测类是否被加载</font>  
 &emsp; 当虚拟机执行到new时，会先去常量池中查找这个类的符号引用。如果能找到符号引用，说明此类已经被加载到方法区(方法区存储虚拟机已经加载的类的信息)，可以继续执行；如果找不到符号引用，就会使用类加载器执行类的加载过程，类加载完成后继续执行。  
 2. <font color = "clime">类加载完成以后，虚拟机就开始为对象分配内存，此时所需内存的大小就已经确定了。只需要在堆上分配所需要的内存即可。  </font>  
@@ -144,7 +144,7 @@ TLAB本身占用eEden区空间，在开启TLAB的情况下，虚拟机会为每�
 
 
 &emsp; 一般而言生成对象需要向堆中的新生代申请内存空间，而堆又是全局共享的，像新生代内存又是规整的，是通过一个指针来划分的。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-105.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-105.png)  
 &emsp; 内存是紧凑的，新对象创建指针就右移对象大小 size 即可，这叫指针加法(bump [up] the pointer)。  
 &emsp; 可想而知如果多个线程都在分配对象，那么这个指针就会成为热点资源，需要互斥，那分配的效率就低了。  
 &emsp; 为了降低规整内存的分配指针碰撞问题，引入了TLAB(线程本地存储)。  
@@ -167,7 +167,7 @@ TLAB本身占用eEden区空间，在开启TLAB的情况下，虚拟机会为每�
 好看视频
 https://www.bilibili.com/video/BV15U4y1p75L?from=search&seid=15758145935432254065
 -->
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-106.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-106.png)  
 &emsp; ~~对象分配的大致流程如下：如果JVM开启了栈上分配和标量替换，且经过JIT逃逸分析判定该对象的引用不会逃逸到线程外，则该对象为栈分配候选；如果不满足栈上分配的条件，则尝试TLAB分配；如果TLAB分配不成功，则尝试堆上分配，如果满足进入老年代的条件，则对象直接分配到老年代，否则对象分配在新生代的eden区域。~~  
 
 
@@ -195,7 +195,7 @@ https://www.bilibili.com/video/BV15U4y1p75L?from=search&seid=1575814593543225406
 &emsp; **<font color = "clime">JVM在发生Minor GC之前，虚拟机会检查老年代最大可用的连续空间是否大于新生代所有对象的总空间，</font>** 如果大于，则此次Minor GC是安全的；如果小于，则虚拟机会查看HandlePromotionFailure设置项的值是否允许担保失败。如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。  
 
 #### 1.2.5.6. ~~小结：对象何时进入老年代？~~  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-79.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-79.png)  
 
 
 
@@ -206,8 +206,8 @@ https://www.bilibili.com/video/BV15U4y1p75L?from=search&seid=1575814593543225406
 &emsp; <font color = "red">对象的访问定位有两种：句柄定位和直接指针。</font>  
 
 * 句柄定位：Java 堆会画出一块内存来作为句柄池，reference中存储的就是对象的句柄地址，而句柄中包含了对象实例数据与类型数据各自的具体地址信息。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-58.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-58.png)  
 * 直接指针访问：java堆对象的不居中就必须考虑如何放置访问类型数据的相关信息，而reference中存储的直接就是对象地址。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-59.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-59.png)  
 
 

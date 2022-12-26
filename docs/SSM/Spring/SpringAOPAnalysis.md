@@ -137,7 +137,7 @@ private static BeanDefinition registerOrEscalateApcAsRequired(Class<?> cls, Bean
 
 ## 1.2. 自动代理的触发时机  
 &emsp; 首先看一下AspectJAnnotationAutoProxyCreator的继承体系。  
-![image](http://www.wt1814.com/static/view/images/SSM/AOP/AOP-5.png)  
+![image](http://182.92.69.8:8081/img/SSM/AOP/AOP-5.png)  
 &emsp; AspectJAnnotationAutoProxyCreator继承了BeanPostProcessor 。  
 &emsp; BeanPostProcessor源码：  
 
@@ -167,7 +167,7 @@ public interface BeanPostProcessor {
 
 ## 1.3. 代理类的生成流程  
 &emsp; 在开启AOP自动代理解析阶段中的AnnotationAwareAspectJAutoProxyCreator是一种具体的创建创建AOP代理对象的子类。  
-![image](http://www.wt1814.com/static/view/images/SSM/AOP/AOP-6.png)  
+![image](http://182.92.69.8:8081/img/SSM/AOP/AOP-6.png)  
 &emsp; 可以看到实际回调的postProcessBeforeInitialization和postProcessAfterInitialization这两个方式是在AbstractAdvisorAutoProxyCreator中override的。  
 
 &emsp; AbstractAdvisorAutoProxyCreator继承了AbstractAutoProxyCreator。  

@@ -113,18 +113,18 @@ https://mp.weixin.qq.com/s/4d-zeaVbQFn7qT4DWagjOg
 ### 1.3.1. 复制流程概述  
 &emsp; <font color = "red">主从复制过程大体可以分为3个阶段：连接建立阶段(即准备阶段)、数据同步阶段、命令传播阶段。</font>  
 &emsp; 在从节点执行slaveof命令后，复制过程便开始运作，从下图中可以看出复制过程大致分为6个过程。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-20.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-20.png)  
 
 一、连接建立阶段  
 
 &emsp; <font color = "red">1. 保存主节点(master)信息。</font>  
 &emsp; 执行slaveof后Redis会打印如下日志：  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-21.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-21.png)  
 
 &emsp; **<font color = "clime">2. 从节点(slave)内部通过每秒运行的定时任务维护复制相关逻辑，当定时任务发现存在新的主节点后，会尝试与该节点建立网络连接。</font>**  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-22.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-22.png)  
 &emsp; 从节点与主节点建立网络连接：从节点会建立一个socket套接字，从节点建立了一个端口为51234的套接字，专门用于接受主节点发送的复制命令。从节点连接成功后打印如下日志。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-23.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-23.png)  
 
 &emsp; 如果从节点无法建立连接，定时任务会无限重试直到连接成功或者执行slaveof no one取消复制。  
 
@@ -141,9 +141,9 @@ https://mp.weixin.qq.com/s/4d-zeaVbQFn7qT4DWagjOg
 * 检测主节点当前是否可接受处理命令。  
 
 &emsp; 如果发送 ping 命令后，从节点没有收到主节点的 pong 回复或者超时，比如网络超时或者主节点正在阻塞无法响应命令，从节点会断开复制连接，下次定时任务会发起重连。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-24.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-24.png)  
 &emsp; 从节点发送的 ping 命令成功返回，Redis 打印如下日志，并继续后续复制流程：  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-25.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-25.png)  
 &emsp; <font color = "red">4. 权限验证。</font>  
 &emsp; 如果主节点设置了 requirepass 参数，则需要密码验证，从节点必须配置 masterauth 参数保证与主节点相同的密码才能通过验证；如果验证失败复制将终止，从节点重新发起复制流程。  
 
@@ -165,7 +165,7 @@ https://mp.weixin.qq.com/s/4d-zeaVbQFn7qT4DWagjOg
 
 #### 1.3.2.1. 全量复制  
 &emsp; 全量复制的流程图如下：  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-40.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-40.png)  
 
 &emsp; 1. 由于是第一次进行数据同步，从节点并不知道主节点的 runid，所以发送 psync ? -1  
 &emsp; 2. 主节点接收从节点的命令后，判定是进行全量复制，所以回复 +FULLRESYNC ，同时也会将自身的 runid 和 偏移量发送给从节点，响应为 +FULLRESYNC{runid}{offset}  
@@ -231,9 +231,9 @@ https://mp.weixin.qq.com/s/4d-zeaVbQFn7qT4DWagjOg
 &emsp; 主从节点都维护这一个复制偏移量(offset)，它代表着当前节点接受数据的字节数，主节点表示接收客户端的字节数，从节点表示接收主节点的字节数，比如从节点接收主节点传来的 N 个字节数据时，从节点的 offset 会增加 N。  
 &emsp; 偏移量的作用非常大，它是用来衡量主从节点数据是否一直的唯一标准，如果主从节点的 offset 相等，表明数据一直，否则表明数据不一致。在不一致的情况下，可以根据两个节点的 offset 找出从节点的缺少的那部分数据。比如，主节点的 offset 是 500，从节点的 offset 是 400，那么主节点在进行数据传输时只需要将 401 ~ 500 传递给从节点即可，这就是部分复制。  
 &emsp; 从节点通过心跳每秒都会将自身的偏移量告知主节点，所以主节点会保存从节点的偏移量。同时，主节点处理完命令后，会将命令的字节长度累加到自身的偏移量中，如下图：  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-41.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-41.png)  
 &emsp; 从节点每次接受到主节点发送的命令后，也会累加到自身的偏移量中，主节点，如下图  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-42.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-42.png)  
 
 ###### 1.3.2.2.1.2. 复制积压缓冲区
 &emsp; 复制积压缓冲区是一个由主节点维护的缓存队列，它具有如下几个特点：  
@@ -259,7 +259,7 @@ https://mp.weixin.qq.com/s/4d-zeaVbQFn7qT4DWagjOg
 
 ##### 1.3.2.2.2. 部分复制流程  
 &emsp; 当主从节点在命令传播节点发生了网络中断，出现数据丢失情况，则从节点会向主节点请求发送丢失的数据，如果请求的偏移量在复制积压缓冲区中，则主节点就将剩余的数据补发给从节点，保持主从节点数据一致，由于补发的数据一般都会比较小，所以开销相当于全量复制而言也会很小，流程如下：  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-43.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-43.png)  
 &emsp; 1. 当主从节点出现网络闪退时，如果超过了repl-timeout 时间，主节点会认为从节点出现故障不可达，打印日志如下：  
 
     -- master
@@ -300,7 +300,7 @@ https://mp.weixin.qq.com/s/4d-zeaVbQFn7qT4DWagjOg
 
 #### 1.3.2.3. psync 命令的执行过程详解  
 &emsp; 在Redis 2.8以前一直都是通过命令sync进行全量复制，但是Redis 2.8以后都是通过命令psync进行全量复制和部分复制了，所以有必要了解下psync命令的执行过程，如下图：  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-44.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-44.png)  
 1. 首先从节点根据当前状态来决定如何调用psync命令
     * 如果主从节点从未建立过连接或者之间执行过slave of none，则从节点发送命令 psync?-1，向主节点请求全量复制。
     * 如果主从节点建立过连接，则发送命令 psync{runid}{offset} 尝试部分复制，具体是全量还是部分复制，则需要根据主节点的情况来确定。  

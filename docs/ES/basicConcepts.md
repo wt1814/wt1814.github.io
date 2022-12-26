@@ -68,8 +68,8 @@ ElasticSearch java API：https://www.elastic.co/guide/en/elasticsearch/client/ja
 
 ## 1.2. ~~ES数据架构~~  
 &emsp; **与mysql的对比**  
-![image](http://www.wt1814.com/static/view/images/ES/es-2.png)  
-![image](http://www.wt1814.com/static/view/images/ES/es-82.png)  
+![image](http://182.92.69.8:8081/img/ES/es-2.png)  
+![image](http://182.92.69.8:8081/img/ES/es-82.png)  
 
 |关系型数据库|ES|
 |---|---|
@@ -119,7 +119,7 @@ ID是一个文件的唯一标识，如果在存库的时候没有提供ID,系统
 
 &emsp; **<font color = "red">每个索引都有一个映射类型，它决定了文档的索引方式。</font>**  
 &emsp;ES中的数据类型：    
-![image](http://www.wt1814.com/static/view/images/ES/es-1.png)  
+![image](http://182.92.69.8:8081/img/ES/es-1.png)  
 
 ### 1.2.4. 文档(document)  
 &emsp; 文档是可搜索数据的最小单位。  
@@ -272,7 +272,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247491016&idx=1&sn=843b7e
 &emsp; 首先，字符串按顺序通过每个字符过滤器 。它们的任务是在分词前整理字符串。一个字符过滤器可以用来去掉HTML，或者将 & 转化成and。  
 2. 分词器 tokenizer  
 &emsp; 其次，字符串被分词器分为单个的词条。一个whitespace的分词器遇到空格和标点的时候，可能会将文本拆分成词条。  
-![image](http://www.wt1814.com/static/view/images/ES/es-3.png)  
+![image](http://182.92.69.8:8081/img/ES/es-3.png)  
 3. 令牌过滤器token filter  
 &emsp; 最后，词条按顺序通过每个token过滤器。这个过程可能会改变词条，例如，lowercase token filter小写化(将ES转为es)、stop token filter删除词条(例如，像a，and，the等无用词)，或者synonym token filter增加词条(例如，像jump和leap这种同义词)。  
 

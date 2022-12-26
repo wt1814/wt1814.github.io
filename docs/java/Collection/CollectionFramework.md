@@ -38,7 +38,7 @@
 # 1. 集合类框架
 ## 1.1. 集合类分类  
 ### 1.1.1. Collection和Map
-![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-1.png)  
+![image](http://182.92.69.8:8081/img/java/JDK/Collection/collection-1.png)  
 
      Collection(单列集合)
          List(有序,可重复)
@@ -216,7 +216,7 @@
 * Iterator只能正向遍历集合，适用于获取移除元素。ListIterator继承自Iterator，专门针对List，可以从两个方向来遍历List，同时支持元素的修改。  
 
 &emsp; ListIterator接口常用方法：  
-![image](http://www.wt1814.com/static/view/images/java/JDK/Collection/collection-2.png)  
+![image](http://182.92.69.8:8081/img/java/JDK/Collection/collection-2.png)  
 &emsp; 方法演示：  
 
 ```java

@@ -41,14 +41,14 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 * 实际的node上的primary shard处理请求，然后将数据同步到replica node。  
 * coordinating node如果发现primary node和所有replica node都搞定之后，就返回响应结果给客户端。  
 
-![image](http://www.wt1814.com/static/view/images/ES/es-80.png)  
+![image](http://182.92.69.8:8081/img/ES/es-80.png)  
 
 ### 1.1.2. ★★★写数据的底层原理
-![image](http://www.wt1814.com/static/view/images/ES/es-84.png)  
+![image](http://182.92.69.8:8081/img/ES/es-84.png)  
 
 #### 1.1.2.1. 写入流程
-![image](http://www.wt1814.com/static/view/images/ES/es-81.png)  
-![image](http://www.wt1814.com/static/view/images/ES/es-85.png)  
+![image](http://182.92.69.8:8081/img/ES/es-81.png)  
+![image](http://182.92.69.8:8081/img/ES/es-85.png)  
 
 
 &emsp; **<font color = "clime">写入流程：</font>**  
@@ -83,7 +83,7 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 
 
 #### 1.1.2.2. 崩溃恢复
-![image](http://www.wt1814.com/static/view/images/ES/es-86.png)  
+![image](http://182.92.69.8:8081/img/ES/es-86.png)  
 
 &emsp; **崩溃恢复：**  
 &emsp; translog 日志文件的作用是什么？执行 commit 操作之前，数据要么是停留在 buffer 中，要么是停留在 os cache 中，无论是 buffer 还是 os cache 都是内存，一旦这台机器死了，内存中的数据就全丢了。所以需要将数据对应的操作写入一个专门的日志文件 translog 中，一旦此时机器宕机，再次重启的时候，es 会自动读取 translog 日志文件中的数据，恢复到内存 buffer 和 os cache 中去。  
@@ -131,7 +131,7 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 
  1.1. 写索引原理  
 &emsp; 下图描述了 3 个节点的集群，共拥有 12 个分片，其中有 4 个主分片(S0、S1、S2、S3)和 8 个副本分片(R0、R1、R2、R3)，每个主分片对应两个副本分片，节点 1 是主节点(Master 节点)负责整个集群的状态。  
-![image](http://www.wt1814.com/static/view/images/ES/es-10.png)  
+![image](http://182.92.69.8:8081/img/ES/es-10.png)  
 &emsp; 写索引是只能写在主分片上，然后同步到副本分片。这里有四个主分片，一条数据 ES 是根据什么规则写到特定分片上的呢？
 这条索引数据为什么被写到 S0 上而不写到 S1 或 S2 上？那条数据为什么又被写到 S3 上而不写到 S0 上了？  
 &emsp; 实际上，这个过程是根据下面这个公式决定的：  
@@ -142,7 +142,7 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 &emsp; 这就解释了为什么要在创建索引的时候就确定好主分片的数量并且永远不会改变这个数量：因为如果数量变化了，那么所有之前路由的值都会无效，文档也再也找不到了。  
 &emsp; 由于在ES集群中每个节点通过上面的计算公式都知道集群中的文档的存放位置，所以每个节点都有处理读写请求的能力。
 在一个写请求被发送到某个节点后，该节点即为前面说过的协调节点，协调节点会根据路由公式计算出需要写到哪个分片上，再将请求转发到该分片的主分片节点上。   
-![image](http://www.wt1814.com/static/view/images/ES/es-11.png)  
+![image](http://182.92.69.8:8081/img/ES/es-11.png)  
 &emsp; 假如此时数据通过路由计算公式取余后得到的值是 shard=hash(routing)%4=0。  
 &emsp; 则具体流程如下：  
 
@@ -197,7 +197,7 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 &emsp; 这时可以在创建索引时在 Settings 中通过调大 refresh_interval = "30s" 的值 ， 降低每个索引的刷新频率，设值时需要注意后面带上时间单位，否则默认是毫秒。当 refresh_interval=-1 时表示关闭索引的自动刷新。  
 &emsp; 虽然通过延时写的策略可以减少数据往磁盘上写的次数提升了整体的写入能力，但是文件缓存系统也是内存空间，属于操作系统的内存，只要是内存都存在断电或异常情况下丢失数据的危险。  
 &emsp; 为了避免丢失数据，Elasticsearch 添加了事务日志(Translog)，事务日志记录了所有还没有持久化到磁盘的数据。  
-![image](http://www.wt1814.com/static/view/images/ES/es-12.png)  
+![image](http://182.92.69.8:8081/img/ES/es-12.png)  
 
 &emsp; 添加了事务日志后整个写索引的流程如上图所示：  
 
@@ -213,7 +213,7 @@ https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 &emsp; 每一个段都会消耗文件句柄、内存和 CPU 运行周期。更重要的是，每个搜索请求都必须轮流检查每个段然后合并查询结果，所以段越多，搜索也就越慢。  
 &emsp; Elasticsearch 通过在后台定期进行段合并来解决这个问题。小的段被合并到大的段，然后这些大的段再被合并到更大的段。
 段合并的时候会将那些旧的已删除文档从文件系统中清除。被删除的文档不会被拷贝到新的大段中。合并的过程中不会中断索引和搜索。  
-![image](http://www.wt1814.com/static/view/images/ES/es-13.png)  
+![image](http://182.92.69.8:8081/img/ES/es-13.png)  
 &emsp; 段合并在进行索引和搜索时会自动进行，合并进程选择一小部分大小相似的段，并且在后台将它们合并到更大的段中，这些段既可以是未提交的也可以是已提交的。合并结束后老的段会被删除，新的段被 Flush 到磁盘，同时写入一个包含新段且排除旧的和较小的段的新提交点，新的段被打开可以用来搜索。  
 &emsp; 段合并的计算量庞大， 而且还要吃掉大量磁盘 I/O，段合并会拖累写入速率，如果任其发展会影响搜索性能。  
 &emsp; Elasticsearch 在默认情况下会对合并流程进行资源限制，所以搜索仍然有足够的资源很好地执行。  

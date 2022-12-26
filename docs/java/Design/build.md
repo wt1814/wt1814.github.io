@@ -38,7 +38,7 @@ https://mp.weixin.qq.com/s/Taja_UD0r0l2BP-mFbwU_Q
 
 ## 1.2. 结构  
 &emsp; **模式角色组成：**   
-![image](http://www.wt1814.com/static/view/images/java/design/design-10.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-10.png)  
 
 * 产品(Product)角色：要创建的产品类对象。
 * 抽象建造者(Builder)角色：建造者的抽象类，规范产品对象的各个组成部分的构造，一般由子类实现具体的构造过程。

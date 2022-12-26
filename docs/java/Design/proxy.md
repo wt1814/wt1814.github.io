@@ -20,7 +20,7 @@ https://mp.weixin.qq.com/s/RjRzacdmx3DMHlhjj1GM3g
 &emsp; 代理模式，是指为其他对象提供一种代理，以控制对这个对象的访问。在某些情况下，一个对象不适合或者不能直接引用另一个对象，而代理对象可以在客户端和目标对象之间起到中介的作用。使用代理模式主要有两个目的：一保护目标对象，二增强目标对象。  
 
 &emsp; <font color = "red">代理设计模式，提供了对目标对象另外的访问方式；即通过代理访问目标对象。</font>代理好处：可以在目标对象实现的基础上，增强额外的功能操作（扩展目标对象的功能）。  
-![image](http://www.wt1814.com/static/view/images/SSM/AOP/AOP-1.png)  
+![image](http://182.92.69.8:8081/img/SSM/AOP/AOP-1.png)  
 
 ## 1.2. 静态代理  
 

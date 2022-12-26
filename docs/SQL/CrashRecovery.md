@@ -91,7 +91,7 @@ Redo log 两阶段提交
 &emsp; 从上面可以看出，因为redolog影响主库的数据，binlog影响从库的数据，所以redolog和binlog必须保持一致才能保证主从数据一致，这是前提。  
 &emsp; 相信很多有过开发经验的同学都知道分布式事务， **<font color = "clime">这里的redolog和binlog其实就是很典型的分布式事务场景，因为两者本身就是两个独立的个体，要想保持一致，就必须使用分布式事务的解决方案来处理。而将redolog分成了两步，其实就是使用了两阶段提交协议(Two-phaseCommit，2PC)。</font>**  
 &emsp; 下面对更新语句的执行流程进行简化，看一下MySQL的两阶段提交是如何实现的：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-167.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-167.png)  
 &emsp; 从图中可看出，事务的提交过程有两个阶段，就是将redolog的写入拆成了两个步骤：prepare和commit，中间再穿插写入binlog。  
 &emsp; 如果这时候你很疑惑，为什么一定要用两阶段提交呢，如果不用两阶段提交会出现什么情况，比如先写redolog，再写binlog或者先写binlog，再写redolog不行吗？下面我们用反证法来进行论证。  
 &emsp; 我们继续用`update T set c=c+1 where id=2`这个例子，假设id=2这一条数据的c初始值为0。那么在redolog写完，binlog还没有写完的时候，MySQL进程异常重启。由于redolog已经写完了，系统重启后会通过redolog将数据恢复回来，所以恢复后这一？c的值是1。但是由于binlog没写完就crash？，这时候binlog？面就没有记录这个语？。因此，不管是现在的从库还是之后通过这份binlog还原临时库都没有这一次更新，c的值还是0，与原库的值不同。  
@@ -105,11 +105,11 @@ Redo log 两阶段提交
 
 -------------------------
 
-![image](http://www.wt1814.com/static/view/images/SQL/sql-144.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-144.png)  
 
 &emsp; **<font color = "clime">MySQL使用两阶段提交主要解决binlog 和 redo log的数据一致性的问题。</font>**  
 &emsp; **<font color = "clime">redo log和binlog都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。</font>** 下图为MySQL两阶段提交简图：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-96.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-96.png)  
 &emsp; <font color = "clime">两阶段提交原理描：（redolog要分两步写，中间再穿插写binlog）</font> 
 
 1. InnoDB redo log写盘，InnoDB事务进入prepare状态。  
@@ -119,7 +119,7 @@ Redo log 两阶段提交
 
 
 ## 1.3. ~~MySQL中更新一条语句的流程~~
-![image](http://www.wt1814.com/static/view/images/SQL/sql-169.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-169.png)  
 &emsp; 具体流程：  
 
 1. server层中的执行器先找引擎取id=2这一行。id是主键，引擎直接用树搜索找到这一行。如果id=2这一行所在的数据页本来就在内存中，就直接返回给执行器；否则，需要先从磁盘读入内存，然后再返回；  
@@ -132,7 +132,7 @@ Redo log 两阶段提交
 
 
 ## 1.4. ~~两阶段提交中，MySQL异常重启（crash），是如何保证数据完整性的？~~  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-170.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-170.png)  
 
 1. 在上图时刻A中，也就是写入redo log处于prepare阶段以后、写binlog之前，发生了崩溃（crash）：由于此时binlog还没写，redo log也还没提交（commit），所以崩溃恢复的时候，这个事务会回滚。这时候，binlog还没写，所以也不会传到备库，数据一致；  
 2. 在上图时刻B中，也就是写完binlog之后，发生crash：如果redo log里面的事务有commit标识（事务是完整的）则直接提交；如果redo log里面的事务只有prepare没有commit，则判断对应的事务在binlog是否存在并完整，完整则提交事务，否则回滚事务；  
@@ -187,7 +187,7 @@ MySQL的处理过程如下
 &emsp; 启动innodb的时候，不管上次是正常关闭还是异常关闭，总是会进行恢复操作。因为redo log记录的是数据页的物理变化，因此恢复的时候速度比逻辑日志(如binlog)要快很多。重启innodb时，会先检查数据页中的LSN，如果这个 LSN 小于 redo log 中的LSN，即write pos位置，说明在redo log上记录着数据页上尚未完成的操作，接着就会从最近的一个check point出发，开始同步数据。  
 
 &emsp; 简单理解，比如：redo log的LSN是500，数据页的LSN是300，表明重启前有部分数据未完全刷入到磁盘中，那么系统则将redo log中LSN序号300到500的记录进行重放刷盘。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-168.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-168.png)  
 
 
 -----------

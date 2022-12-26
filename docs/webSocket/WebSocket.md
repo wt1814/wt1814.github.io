@@ -1,6 +1,4 @@
 
-
-
 <!-- TOC -->
 
 - [1. WebSocket协议](#1-websocket协议)
@@ -11,8 +9,6 @@
     - [1.2. 为什么要使用WebSocket](#12-为什么要使用websocket)
 
 <!-- /TOC -->
-
-
 
 
 # 1. WebSocket协议
@@ -33,7 +29,7 @@ https://www.upyun.com/tech/article/508/%E8%AF%B4%E8%AF%B4%20WebSocket%EF%BC%8C3%
 ### 1.1.1. WebSocket是应用层协议
 &emsp; WebSocket是基于TCP的应用层协议，用于在C/S架构的应用中实现双向通信，关于WebSocket协议的详细规范和定义参见[rfc6455](https://tools.ietf.org/html/rfc6455)。  
 &emsp; 需要特别注意的是：虽然WebSocket协议在建立连接时会使用HTTP协议，但这并不意味着WebSocket协议是基于HTTP协议实现的。  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-135.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-135.png)  
 
 ### 1.1.2. WebSocket与Http的区别
 <!-- 
@@ -42,7 +38,7 @@ https://www.jianshu.com/p/56ba05083699
 &emsp; 实际上，WebSocket协议与Http协议有着本质的区别：  
 1. 通信方式不同  
 &emsp; WebSocket是双向通信模式，客户端与服务器之间只有在握手阶段是使用HTTP协议的“请求-响应”模式交互，而一旦连接建立之后的通信则使用双向模式交互，不论是客户端还是服务端都可以随时将数据发送给对方；而HTTP协议则至始至终都采用“请求-响应”模式进行通信。也正因为如此，HTTP协议的通信效率没有WebSocket高。  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-136.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-136.png)  
 2. 协议格式不同  
 &emsp; WebSocket与HTTP的协议格式是完全不同的，具体来讲：  
 &emsp; （1）HTTP协议（参见：rfc2616）比较臃肿，而WebSocket协议比较轻量。  

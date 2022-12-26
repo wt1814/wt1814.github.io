@@ -57,7 +57,7 @@ https://www.cnblogs.com/jackson0714/p/java_Volatile.html
 ## 1.1. JMM  
 <!-- 
 &emsp; Java内存模型(Java Memory Model，JMM)是一种符合顺序一致内存模型规范的，屏蔽了各种硬件和操作系统的访问差异的，保证了Java程序在各种平台下对内存的访问都能保证效果一致的机制及规范。  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-6.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-6.png)  
 -->
 &emsp; JMM是指Java内存模型(Java Memory Model)，本身是一种抽象的概念，实际上并不存在，它描述的是一组规则或规范，通过这组规范定义了程序中各个变量(包括实例字段，静态字段和构成数组对象的元素)的访问方式。  
 
@@ -67,7 +67,7 @@ https://www.cnblogs.com/jackson0714/p/java_Volatile.html
 
 ### 1.1.1. JMM中内存划分(主内存，工作内存和线程三者的交互关系)
 &emsp; Java线程内存模型跟cpu缓存模型类似，是基于cpu缓存模型来建立的，Java线程内存模型是标准化的，屏蔽掉了底层不同计算机的区别。  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-7.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-7.png)   
 &emsp; Java内存模型划分： 
 
 * 主内存：Java内存模型规定了所有变量都存储在主内存(Main Memory)中。此处的主内存与物理硬件的主内存RAM名字一样，两者可以互相类比，但此处仅是虚拟机内存的一部分。  
@@ -90,7 +90,7 @@ https://www.cnblogs.com/jackson0714/p/java_Volatile.html
 
 ### 1.1.2. JMM内存间的交互操作  
 &emsp; Java内存模型为主内存和工作内存间的变量拷贝及同步定义了8种原子性操作指令。  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-8.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-8.png)   
 
 * read(读取)：从主内存读取数据。  
 * load(载入)：将主内存读取到的数据。  
@@ -140,7 +140,7 @@ https://www.cnblogs.com/jackson0714/p/java_Volatile.html
 #### 1.1.3.1. ★★★线程之间的通信过程  
 &emsp; 由于JVM运行程序的实体是线程，而每个线程创建时JVM都会为其创建一个工作内存(有些地方称为栈空间)，工作内存是每个线程的私有数据区域。  
 &emsp; 而Java内存模型中规定所有变量都存储在主内存，主内存是共享内存区域，所有线程都可以访问，<font color = "clime">但线程对变量的操作(读取赋值等)必须在工作内存中进行，首先要将变量从主内存拷贝到自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，不能直接操作主内存中的变量，</font>各个线程中的工作内存中存储着主内存中的变量副本拷贝，<font color = "red">因此不同的线程间无法访问对方的工作内存，线程间的通信(传值)必须通过主内存来完成。</font>其简要访问过程：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-42.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-42.png)   
 
 
 

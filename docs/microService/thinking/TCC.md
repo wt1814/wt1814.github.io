@@ -41,7 +41,7 @@ https://www.cnblogs.com/rjzheng/p/10164667.html
 -->
 
 ### 实现流程一
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-9.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-9.png)  
 &emsp; TCC是两阶段型、补偿型的事务。TCC采用的补偿机制，其逻辑模式类似于XA两阶段提交。其核心思想是：<font color = "red">针对每个操作，都要注册一个与其对应的确认和补偿(撤销)操作。</font>TCC模型是把锁的粒度完全交给业务处理。业务实现TCC服务之后，该TCC服务将作为分布式事务的其中一个资源，参与到整个分布式事务中；<font color = "clime">事务管理器分两阶段协调的TCC服务，第一阶段调用所有TCC服务的Try方法，在第二阶段执行所有TCC服务的Confirm或者Cancel方法。</font>  
 &emsp; TCC模型中有个事务管理者的角色，用来记录TCC全局事务状态并提交或者回滚事务。  
 
@@ -55,7 +55,7 @@ https://www.cnblogs.com/rjzheng/p/10164667.html
 &emsp; 其实从思想上看和2PC差不多，都是先试探性的执行，如果都可以，那就真正的执行；如果不行，就回滚。比如说一个事务要执行A、B、C三个操作，那么先对三个操作执行预留动作。如果都预留成功了那么就执行确认操作，如果有一个预留失败那就都执行撤销动作。  
 
 &emsp; 示例：TCC模式下，A账户往B账户汇款100元为例子，对业务的改造进行详细的分析：  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-40.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-40.png)  
 &emsp; 汇款服务和收款服务分别需要实现，Try-Confirm-Cancel接口，并在业务初始化阶段将其注入到TCC事务管理器中。  
 
 ```text

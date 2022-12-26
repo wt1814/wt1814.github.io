@@ -26,7 +26,7 @@ https://mp.weixin.qq.com/s/FaM3jCJeLQYIcfZZlpZXeA
 
 
 ### 1.2.1. 源码分析  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-28.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/concurrent-28.png)  
 &emsp; **内部类**  
 
 ```java

@@ -24,7 +24,7 @@
     3. 每个Thread对象中都持有一个ThreadLocalMap的成员变量。`每个ThreadLocalMap内部又维护了N个Entry节点，也就是Entry数组，每个Entry代表一个完整的对象，key是ThreadLocal本身，value是ThreadLocal的泛型值。`   
     &emsp; 业务代码能new好多个ThreadLocal对象，各司其职。但是在一次请求里，也就是一个线程里，ThreadLocalMap是同一个，而不是多个，不管你new几次ThreadLocal，ThreadLocalMap在一个线程里就一个，因为再说一次，ThreadLocalMap的引用是在Thread里的，所以它里面的Entry数组存放的是一个线程里你new出来的多个ThreadLocal对象。  
 2. ThreadLocal是如何实现线程隔离的？   
-    ![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-85.png)  
+    ![image](http://182.92.69.8:8081/img/java/concurrent/multi-85.png)  
     &emsp; ThreadLocal之所以能达到变量的线程隔离，其实就是每个线程都有一个自己的ThreadLocalMap对象来存储同一个threadLocal实例set的值，而取值的时候也是根据同一个threadLocal实例去自己的ThreadLocalMap里面找，自然就互不影响了，从而达到线程隔离的目的！  
 3. **ThreadLocal内存泄露：**  
     &emsp; ThreadLocalMap使用ThreadLocal的弱引用作为key，<font color = "red">如果一个ThreadLocal不存在外部强引用时，Key(ThreadLocal实例)会被GC回收，这样就会导致ThreadLocalMap中key为null，而value还存在着强引用，只有thead线程退出以后，value的强引用链条才会断掉。</font>  
@@ -85,7 +85,7 @@ https://mp.weixin.qq.com/s/UTpfsucHYsVWQHKZpa7FSw
 http://www.noobyard.com/article/p-rthxinka-qa.html
 -->
 
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-85.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-85.png)  
 &emsp; ThreadLocal之所以能达到变量的线程隔离，其实就是每个线程都有一个自己的ThreadLocalMap对象来存储同一个threadLocal实例set的值，而取值的时候也是根据同一个threadLocal实例去自己的ThreadLocalMap里面找，自然就互不影响了，从而达到线程隔离的目的！  
 
 ## 1.3. ThreadLocal源码  
@@ -165,15 +165,15 @@ ThreadLocalMap inheritableThreadLocals = null;
 ### 1.3.2. ThreadLocalMap内部类
 &emsp; ThradLocal中内部类ThreadLocalMap：  
 <!-- https://mp.weixin.qq.com/s/op_ix4tPWa7l8VPg4Al1ig -->
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-23.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-23.png)   
 &emsp; **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。<font color = "clime">Key是一个ThreadLocal实例，Value是设置的值。Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**   
  
         ThreadLocalMap如何解决Hash冲突？
         ThreadLocalMap虽然是类似Map结构的数据结构，但它并没有实现Map接口。它不支持Map接口中的next方法，这意味着ThreadLocalMap中解决Hash冲突的方式并非拉链表方式。
         实际上，ThreadLocalMap 采用线性探测的方式来解决Hash冲突。所谓线性探测，就是根据初始 key 的 hashcode 值确定元素在 table 数组中的位置，如果发现这个位置上已经被其他的 key 值占用，则利用固定的算法寻找一定步长的下个位置，依次判断，直至找到能够存放的位置。
 
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-24.png)   
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-59.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-24.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-59.png)   
 &emsp; ⚠注： **<font color = "clime">一个线程可能存在多个ThreadLocal实例，即存在多个Entry节点。</font>**  
 
 ### 1.3.3. get()  
@@ -232,7 +232,7 @@ private T setInitialValue() {
 ## 1.4. ~~ThreadLocal内存泄露~~
 ### 1.4.1. ~~ThreadLocal内存模型~~  
 &emsp; 通过上一节的分析，其实已经很清楚ThreadLocal的相关设计了，对数据存储的具体分布也会有个比较清晰的概念。  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/multi-58.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/multi-58.png)  
 &emsp; Thread运行时，线程的的一些局部变量和引用使用的内存属于Stack(栈)区，而普通的对象是存储在Heap(堆)区。根据上图，基本分析如下：  
 
 * 线程运行时，定义的TheadLocal对象被初始化，存储在Heap，同时线程运行的栈区保存了指向该实例的引用，也就是图中的ThreadLocalRef。

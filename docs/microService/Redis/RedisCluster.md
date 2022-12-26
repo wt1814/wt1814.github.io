@@ -68,13 +68,13 @@
 * 服务器分片：官方Redis Cluster。  
 
 ### 1.1.1. 基于客户端分片  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-18.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-18.png)  
 &emsp; Redis Sharding是Redis Cluster出来之前，业界普遍使用的多Redis实例集群方法。其主要思想是基于哈希算法，根据Redis数据的key的哈希值对数据进行分片，将数据映射到各自节点上。  
 &emsp; 优点在于实现简单，缺点在于当Redis集群调整，每个客户端都需要更新调整。  
 &emsp; **在redis3.0版本之前的版本，可以通过redis客户端做sharding分片，比如jedis实现的ShardedJedisPool。**  
 
 ### 1.1.2. 基于代理服务器分片
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-19.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-19.png)  
 &emsp; 客户端发送请求到独立部署代理组件，代理组件解析客户端的数据，并将请求转发至正确的节点，最后将结果回复给客户端。  
 &emsp; 优点在于透明接入，容易集群扩展，缺点在于多了一层代理转发，性能有所损耗。  
 &emsp; 典型的代理分区方案有Twitter开源的Twemproxy和国内的豌豆荚开源的Codis。  
@@ -110,7 +110,7 @@
 
 ### 1.2.1. 架构  
 &emsp; 服务器节点：3主3从，最少6个节点。其Redis Cluster架构图如下：  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-30.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-30.png)  
 
 <!-- 
 看看你了解不了解你们公司的 redis 生产集群的部署架构，如果你不了解，那么确实你就很失职了，你的redis 是主从架构？集群架构？用了哪种集群方案？有没有做高可用保证？有没有开启持久化机制确保可以进行数据恢复？线上 redis 给几个 G 的内存？设置了哪些参数？压测后你们 redis 集群承载多少QPS？
@@ -147,7 +147,7 @@
 https://mp.weixin.qq.com/s/dfj-_qYdK3emt965hj9_jw
 -->
 &emsp; 在分布式存储中需要提供维护节点元数据信息的机制，所谓元数据是指：节点负责哪些数据，是否出现故障等状态信息。常见的元数据维护方式分为：集中式和P2P方式。Redis集群采用P2P的Gossip(流言)协议，Gossip协议工作原理就是节点彼此不断通信交换信息，一段时间后所有的节点都会知道集群完整的信息，这种方式类似流言传播，如下图所示。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-87.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-87.png)  
 &emsp; 通信过程说明：  
 1. <font color = "clime">集群中的每个节点都会单独开辟一个TCP通道，用于节点之间彼此通信，通信端口号在基础端口上加10000。</font>  
 2. 每个节点在固定周期内通过特定规则选择几个节点发送ping消息。  
@@ -184,7 +184,7 @@ https://mp.weixin.qq.com/s/dfj-_qYdK3emt965hj9_jw
 &emsp; **<font color = "clime">一句话概述：当从节点通过内部定时任务发现自身复制的主节点进入客观下线；从节点发起选举；其余主节点选举投票。</font>**  
 
 &emsp; 故障节点变为客观下线后，如果下线节点是持有槽的主节点则需要在它的从节点中选出一个替换它，从而保证集群的高可用。下线主节点的所有从节点承担故障恢复的义务，<font color = "red">当从节点通过内部定时任务发现自身复制的主节点进入客观下线时，将会触发故障恢复流程。</font>  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-50.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-50.png)  
 
 1. 资格检查  
 &emsp; 每个从节点都要检查最后与主节点断线时间，判断是否有资格替换故障的主节点。如果从节点与主节点断线时间超过cluster-node-timeout*cluster-slave-validity-factor，则当前从节点不具备故障转移资格。  
@@ -210,7 +210,7 @@ https://mp.weixin.qq.com/s/dfj-_qYdK3emt965hj9_jw
 
 ###### 1.2.2.2.1.1. 请求重定向  
 &emsp; **<font color = "clime">在集群模式下，Redis接收任何键相关命令时首先计算键对应的槽，再根据槽找出所对应的节点，如果节点是自身，则处理键命令；否则回复MOVED重定向错误，通知客户端请求正确的节点。这个过程称为MOVED重定向。</font>**  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-48.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-48.png)  
 
 ###### 1.2.2.2.1.2. Smart客户端  
 &emsp; 大多数开发语言的Redis客户端都采用Smart客户端支持集群协议。客户端如何选择见：http://redis.io/clients ，从中找出符合自己要求的客户端类库。  
@@ -220,7 +220,7 @@ https://mp.weixin.qq.com/s/dfj-_qYdK3emt965hj9_jw
 ###### 1.2.2.2.1.3. ASK重定向  
 &emsp; **<font color = "clime">Redis集群支持在线迁移槽(slot)和数据来完成水平伸缩，当slot对应的数据从源节点到目标节点迁移过程中，客户端需要做到智能识别，保证键命令可正常执行。例如当一个slot数据从源节点迁移到目标节点时，期间可能出现一部分数据在源节点，而另一部分在目标节点。</font>**   
 &emsp; 当出现上述情况时，客户端键命令执行流程将发生变化，如下所示： 
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-49.png)   
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-49.png)   
 1. 客户端根据本地slots缓存发送命令到源节点，如果存在键对象则直接执行并返回结果给客户端。  
 2. **<font color = "clime">如果键对象不存在，则可能存在于目标节点，这时源节点会回复ASK重定向异常。格式如下：(error)ASK{slot}{targetIP}：{targetPort}。</font>**   
 3. 客户端从ASK重定向异常提取出目标节点信息，发送asking命令到目标节点打开客户端连接标识，再执行键命令。如果存在则执行，不存在则返回不存在信息。   
@@ -259,7 +259,7 @@ https://mp.weixin.qq.com/s/KT8kGgzn6TQwBGCUkMw_4g
 &emsp; 程序如果能够知道Redis集群地址产生了变化，重新设置一下jedis客户端的连接配置。现在的问题就是如何知道Redis集群地址发生了改变？
 可以采用把Redis的集群地址配置在zookeeper中，应用在启动的时候，获取zk上的集群地址的值，进行初始化。如果想要改变集群地址，要在zk上面进行设置。  
 &emsp; zk重要的特性就是监听特性，节点发生变化，就会立刻把变化发送给应用，从而应用获取到值，重新设置jedis客户端连接。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-26.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-26.png)  
 -->
 
 

@@ -86,8 +86,8 @@ public class KafkaProducerTest {
 ## 1.2. kafka生产者发送消息过程  
 &emsp; **<font color = "red">Producer发送消息的过程如下图所示（详情可参考kafka生产者源码部分），需要经过拦截器，序列化器和分区器，最终由累加器批量发送至Broker。</font>**  
 
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-7.png)  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-8.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-7.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-8.png)  
 
 ### 1.2.1. producer拦截器  
 &emsp; producer拦截器主要用于实现clients端的定制化控制逻辑。interceptor使得用户在消息发送前以及producer回调逻辑前有机会对消息做一些定制化需求，比如修改消息等。  

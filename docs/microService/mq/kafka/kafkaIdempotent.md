@@ -47,7 +47,7 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 
 &emsp; 因此，Kafka本身对Exactly Once语义的支持就非常必要。  
 &emsp; ~~**影响Kafka幂等性的因素：**在分布式系统中，一些不可控因素有很多，比如网络、OOM、FullGC等。在Kafka Broker确认Ack时，出现网络异常、FullGC、OOM等问题时导致Ack超时，Producer会进行重复发送。可能出现的情况如下：~~  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-99.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-99.png)  
 <!-- 
 &emsp; 生产者进行retry重试，会重复产生消息。Kafka在0.11版本引入幂等性，brocker只持久化一条。  
 &emsp; 幂等性结合At Least Once语义，就构成了Kafka的Exactily Once语义，即：At Least Once + 幂等性 = Exactly Once。  
@@ -78,16 +78,16 @@ https://blog.csdn.net/BeiisBei/article/details/104737298
 
 ### 1.2.1. ~~幂等性引入之前的问题？~~  
 &emsp; Kafka在引入幂等性之前，Producer向Broker发送消息，然后Broker将消息追加到消息流中后给Producer返回Ack信号值。实现流程如下：  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-100.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-100.png)  
 &emsp; 上图的实现流程是一种理想状态下的消息发送情况，但是实际情况中，会出现各种不确定的因素，比如在Producer在发送给Broker的时候出现网络异常。比如以下这种异常情况的出现：  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-101.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-101.png)  
 &emsp; 上图这种情况，当Producer第一次发送消息给Broker时，Broker将消息(x2,y2)追加到了消息流中，但是在返回Ack信号给Producer时失败了（比如网络异常） 。此时，Producer端触发重试机制，将消息(x2,y2)重新发送给Broker，Broker接收到消息后，再次将该消息追加到消息流中，然后成功返回Ack信号给Producer。这样下来，消息流中就被重复追加了两条相同的(x2,y2)的消息。  
 
 ### 1.2.2. ~~幂等性引入之后解决了什么问题？~~  
 &emsp; 面对这样的问题，Kafka引入了幂等性。那么幂等性是如何解决这类重复发送消息的问题的呢？下面先来看看流程图：
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-102.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-102.png)  
 &emsp; 同样，这是一种理想状态下的发送流程。实际情况下，会有很多不确定的因素，比如Broker在发送Ack信号给Producer时出现网络异常，导致发送失败。异常情况如下图所示：  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-103.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-103.png)  
 &emsp; 当Producer发送消息(x2,y2)给Broker时，Broker接收到消息并将其追加到消息流中。此时，Broker返回Ack信号给Producer时，发生异常导致Producer接收Ack信号失败。对于Producer来说，会触发重试机制，将消息(x2,y2)再次发送，但是，由于引入了幂等性，在每条消息中附带了PID（ProducerID）和SequenceNumber。相同的PID和SequenceNumber发送给Broker，而之前Broker缓存过之前发送的相同的消息，那么在消息流中的消息就只有一条(x2,y2)，不会出现重复发送的情况。  
 
 ### 1.2.3. ProducerID是如何生成的？  
@@ -133,7 +133,7 @@ private void maybeWaitForPid() {
 ## 1.3. 幂等性的应用实例  
 &emsp; **开启幂等性：** 要启用幂等性，只需要将Producer的参数中enable.idompotence设置为true即可。此时会默认把acks设置为all，所以不需要再设置acks属性。  
 
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-116.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-116.png)  
 
 &emsp; **编码示例：**  
 

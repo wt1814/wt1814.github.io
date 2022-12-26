@@ -23,8 +23,8 @@
 
 
 ## 1.2. 线程池框架Executor
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-2.png)   
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-21.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-2.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-21.png)   
 
 
 &emsp; Executor：所有线程池的接口。  

@@ -37,7 +37,7 @@ https://mp.weixin.qq.com/s?__biz=MzAwMDczMjMwOQ==&mid=2247483873&idx=1&sn=b115d1
 -->
 
 &emsp; SpringBoot的生命周期事件，类结构图如下：  
-![image](http://www.wt1814.com/static/view/images/sourceCode/springBoot/boot-6.png)  
+![image](http://182.92.69.8:8081/img/sourceCode/springBoot/boot-6.png)  
 
 &emsp; 事件类之间的关系：  
 1. 最顶级的父类是JDK的事件基类EventObject；  

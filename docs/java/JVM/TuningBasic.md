@@ -288,7 +288,7 @@ https://mp.weixin.qq.com/s/MC2y6JAbZyjIVp7yTxT7fQ
 * -l : 除堆栈外，显示关于锁的附加信息
 * -m : 如果调用到本地方法的话，可以显示C/C++的堆栈
 
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-35.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-35.png)  
 
 #### 1.4.1.3. Jmap：java内存映像工具  
 &emsp; <font color = "red">jmap(JVM Memory Map)命令用于生成heap dump文件，如果不使用这个命令，</font>**<font color = "red">还可以使用-XX:+HeapDumpOnOutOfMemoryError参数来让虚拟机出现OOM的时候自动生成dump文件。</font>**    
@@ -305,7 +305,7 @@ https://mp.weixin.qq.com/s/MC2y6JAbZyjIVp7yTxT7fQ
 
 &emsp; jmap -dump:format=b,file=heap.hprof PID。  
 &emsp; format指定输出格式，live指明是活着的对象，file指定文件名。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-37.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-37.png)  
 
 ##### 1.4.1.3.1. ★★★jmap的几个操作要慎用  
 &emsp; 生产环境中最主要的危险操作是下面这三种：
@@ -339,10 +339,10 @@ https://blog.csdn.net/shenzhenhair/article/details/8607366
 
 1. 查看类装载信息  
 &emsp; jstat -class PID 1000 10查看某个java进程的类装载信息，每1000毫秒输出一次，共输出10次  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-38.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-38.png)  
 2. 查看垃圾收集信息  
 &emsp; jstat -gc PID 1000 10  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-39.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-39.png)  
 
 #### 1.4.1.6. Jinfo：java配置信息工具
 &emsp; jinfo(JVM Configuration info)，实时查看和调整虚拟机运行参数。之前的jps -v口令只能查看到显示指定的参数，如果想要查看未被显示指定的参数的值就要使用jinfo口令。  
@@ -356,7 +356,7 @@ https://blog.csdn.net/shenzhenhair/article/details/8607366
 jinfo -flag name PID查看某个java进程的name属性的值  
 jinfo -flag MaxHeapSize PID  
 jinfo -flag UseG1GC PID  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-40.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-40.png)  
 
 2. 修改  
 参数只有被标记为manageable的flags可以被实时修改  
@@ -365,7 +365,7 @@ jinfo -flag = PID
 
 3. 查看曾经赋过值的一些参数  
 jinfo -flags PID  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-41.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-41.png)  
 
 ----
 ### 1.4.2. 可视化调优工具  

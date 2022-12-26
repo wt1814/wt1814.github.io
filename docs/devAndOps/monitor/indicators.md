@@ -61,7 +61,7 @@ https://mp.weixin.qq.com/s/q4QxJi5KZKNNIvWMjfdM1A
 ### 1.1.1. 硬件监控
 &emsp; 早期我们通过机房巡检的方式，查看硬件设备灯光闪烁情况判断是否故障，这样非常浪费人力，并且是重复性无技术含量的工作，大家懂得。  
 
-![image](http://www.wt1814.com/static/view/images/monitor/monitor-6.png)  
+![image](http://182.92.69.8:8081/img/monitor/monitor-6.png)  
 
 
 &emsp; 当然我们现在可以通过IPMI对硬件详细情况进行监控，并对CPU、内存、磁盘、温度、风扇、电压等设置报警设置报警阈值(自行对监控报警内容编写合理的报警范围)  
@@ -71,7 +71,7 @@ https://mp.weixin.qq.com/s/q4QxJi5KZKNNIvWMjfdM1A
 &emsp; 中小型企业基本全是Linux服务器，那么我们肯定是要监控起系统资源的使用情况，系统监控是监控体系的基础。
 
 &emsp; 监控主要对象：  
-![image](http://www.wt1814.com/static/view/images/monitor/monitor-7.png)  
+![image](http://182.92.69.8:8081/img/monitor/monitor-7.png)  
 
 #### 1.1.2.1. CPU
 &emsp; CPU有几个重要的概念:上下文切换、运行队列和使用率。  
@@ -141,11 +141,11 @@ logstash（收集） + elasticsearch（存储+搜索） + kibana（展示）
 
 ### 1.1.11. 监控报警  
 &emsp; 故障报警通知的方式有很多种，当然我们最常用的还是短信，邮件  
-![image](http://www.wt1814.com/static/view/images/monitor/monitor-8.png)  
+![image](http://182.92.69.8:8081/img/monitor/monitor-8.png)  
 
 ### 1.1.12. 报警处理  
 &emsp; 一般报警后我们故障如何处理，首先，我们可以通过告警升级机制先自动处理，比如nginx服务down了，可以设置告警升级自动启动nginx。  
 &emsp; 但是如果一般业务出现了严重故障，我们通常根据故障的级别，故障的业务，来指派不同的运维人员进行处理。  
 &emsp; 当然不同业务形态、不同架构、不同服务可能采用的方式都不同，这个没有一个固定的模式套用。  
-![image](http://www.wt1814.com/static/view/images/monitor/monitor-9.png)  
+![image](http://182.92.69.8:8081/img/monitor/monitor-9.png)  
 

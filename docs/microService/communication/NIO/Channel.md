@@ -135,7 +135,7 @@ public interface Channel{
 
 ### 1.3.1. 分散读取   
 &emsp; “分散读取”用于将数据从单个通道读取多个缓冲区中的数据。  
-![image](http://www.wt1814.com/static/view/images/microService/netty/NIO/NIO-8.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/NIO/NIO-8.png)  
 &emsp; Rread()的API：  
 
 ```java
@@ -158,7 +158,7 @@ channel.read(bufferArray);
 
 ### 1.3.2. 聚集写入  
 &emsp; “聚集写入”用于将数据从多个缓冲区写入单个通道。  
-![image](http://www.wt1814.com/static/view/images/microService/netty/NIO/NIO-9.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/NIO/NIO-9.png)  
 &emsp; write()的API：  
 
 ```java

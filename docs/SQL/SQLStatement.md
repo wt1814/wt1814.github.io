@@ -61,11 +61,11 @@ https://mp.weixin.qq.com/s/YXVRNQz0HJu_qvJktxQuMw
 
 &emsp; 那么就会有这样的情况出现，对查询到的结果是否已经排序不在乎时，可以使用ORDER BY NULL禁止排序达到优化目的。下面使用EXPLAIN命令分析SQL。  
 &emsp; 在user_1中执行select id, sum(money) form user_1 group by name时，会默认排序(注意group by后的column是非index才会体现group by的排序，如果是primary key，那之前说过了InnoDB默认是按照主键index排好序的)  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-53.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-53.png)  
 &emsp; 不禁止排序，即不使用ORDER BY NULL时：有明显的Using filesort。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-54.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-54.png)  
 &emsp; 当使用ORDER BY NULL禁止排序后，Using filesort不存在  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-55.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-55.png)  
 
 ### 1.1.3. Order by优化 
 <!-- 

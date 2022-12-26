@@ -41,7 +41,7 @@ https://mp.weixin.qq.com/s/lS6BZ9PvyReTleJ_CuQrsA
 8、可视化运维：提供可视化的页面，可实时监控应用、集群、硬件的各种状态。  
 为了满足以上 8 点要求，设计出的 DevOps 开发环境如下图所示。  
 
-![image](http://www.wt1814.com/static/view/images/devops/devops/devops-15.png)  
+![image](http://182.92.69.8:8081/img/devops/devops/devops-15.png)  
 
 
 整个环境主要由 6 部分组成。   

@@ -114,7 +114,7 @@ class SubThread implements Runnable{
 
 }
 ```
-![image](http://www.wt1814.com/static/view/images/java/concurrent/thread-3.png)
+![image](http://182.92.69.8:8081/img/java/concurrent/thread-3.png)
 
 ### 1.3.2. Thread.sleep()与Object.wait()
 &emsp; Thead.sleep()和Object.wait()都可以让线程阻塞，也都可以指定超时时间，**甚至还都会抛出中断异常InterruptedException。**

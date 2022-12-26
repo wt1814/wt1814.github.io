@@ -92,7 +92,7 @@ https://segmentfault.com/a/1190000039010754
 
 消息在分区上的存储（Partition、Replica、Log和LogSegment的关系）
 &emsp; 假设有一个 Kafka 集群，Broker 个数为 3，Topic 个数为 1，Partition 个数为 3，Replica 个数为 2。Partition 的物理分布如下图所示。  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-83.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-83.png)  
 &emsp; 从上图可以看出，该 Topic 由三个 Partition 构成，并且每个 Partition 由主从两个副本构成。每个 Partition 的主从副本分布在不同的 Broker 上，通过这点也可以看出，当某个 Broker 宕机时，可以将分布在其他 Broker 上的从副本设置为主副本，因为只有主副本对外提供读写请求，当然在最新的 2.x 版本中从副本也可以对外读请求了。将主从副本分布在不同的Broker上从而提高系统的可用性。   
 &emsp; Partition 的实际物理存储是以 Log 文件的形式展示的，而每个Log文件又以多个LogSegment组成。Kafka 为什么要这么设计呢？其实原因比较简单，随着消息的不断写入，Log 文件肯定是越来越大，Kafka 为了方便管理，将一个大文件切割成一个一个的LogSegment来进行管理；每个LogSegment由数据文件和索引文件构成，数据文件是用来存储实际的消息内容，而索引文件是为了加快消息内容的读取。  
 &emsp; 可能又有朋友会问，Kafka本身消费是以Partition维度顺序消费消息的，磁盘在顺序读的时候效率很高完全没有必要使用索引啊。其实Kafka为了满足一些特殊业务需求，比如要随机消费 Partition 中的消息，此时可以先通过索引文件快速定位到消息的实际存储位置，然后进行处理。  
@@ -113,16 +113,16 @@ https://segmentfault.com/a/1190000039010754
 1. 分区文件存储  
 &emsp; 在 Kafka 系统中，一个主题（Topic）下包含多个不同的分区（Partition），每个分区为单独的一个目录。分区的命名规则为：主题名+有序序号。第一个分区的序号从0开始，序号最大值等于分区总数减1。  
 &emsp; 主题的存储路径由“log.dirs”属性决定。代理节点中主题分区的存储分布如下图所示。  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-108.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-108.png)  
 &emsp; 每个分区相当于一个超大的文件被均匀分割成的若干个大小相等的片段（Segment），但是每个片段的消息数据量不一定相等。因此，过期的片段数据才能被快速地删除。  
 &emsp; 片段文件的生命周期由代理节点server.properties文件中配置的参数决定，这样，快速删除无用的数据可以有效地提高磁盘利用率。  
 
 2. 片段文件存储  
 &emsp; 片段文件由索引文件和数据文件组成：后缀为“.index”的是索引文件，后缀为“.log”的是数据文件。  
 &emsp; 查看某一个分区的片段，输出结果如下图所示。  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-109.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-109.png)  
 &emsp; Kafka系统中，索引文件并没有给数据文件中的每条消息记录都建立索引，而是采用了稀疏存储的方式——每隔一定字节的数据建立一条索引，如下图所示。  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-110.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-110.png)  
 &emsp; 提示：  
 &emsp; 稀疏存储索引避免了索引文件占用过多的磁盘空间。  
 &emsp; 将索引文件存储在内存中，虽然没有建立索引的Message，不能一次就定位到所在的数据文件上的位置，但是稀疏索引的存在会极大地减少顺序扫描的范围。  
@@ -131,7 +131,7 @@ https://segmentfault.com/a/1190000039010754
 
 * Kafka分区下数据使用消息日志（Log）方式保存数据，具体方式是在磁盘上创建只能追加写（Append-only）消息的物理文件。因为只能追加写入，因此避免了缓慢的随机I/O操作，改为性能较好的顺序I/O写操作。Kafka日志文件分为多个日志段（Log Segment），消息被追加写到当前最新的日志段中，当写满一个日志段后Kafka会自动切分出一个新的日志段，并将旧的日志段封存。  
 * Kafka将消息数据根据Partition进行存储，Partition分为若干Segment，每个Segment的大小相等。Segment由index file、log file、timeindex file等组成，后缀为".index"和".log"，分别表示为Segment索引文件、数据文件，每一个Segment存储着多条信息。   
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-125.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-125.png)  
 
 
 
@@ -168,7 +168,7 @@ org.apache.kafka.clients.producer.internals.DefaultPartitioner
 #### 1.2.3.1. 消费者分组
 &emsp; 消费者以组的名义订阅主题，主题有多个分区，消费者组中有多个消费者实例，那么消费者实例和分区之前的对应关系是怎样的呢？  
 &emsp; 换句话说，就是组中的每一个消费者负责那些分区，这个分配关系是如何确定的呢？  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-124.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-124.png)  
 
 &emsp; 同一时刻，一条消息只能被组中的一个消费者实例消费  
 &emsp; 消费者组订阅这个主题，意味着主题下的所有分区都会被组中的消费者消费到，如果按照从属关系来说的话就是，主题下的每个分区只从属于组中的一个消费者，不可能出现组中的两个消费者负责同一个分区。  

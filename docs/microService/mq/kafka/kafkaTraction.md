@@ -56,7 +56,7 @@ kafka事务的应用场景
 
 1. 生产者发送多条消息可以封装在一个事务中，形成一个原子操作。多条消息要么都发送成功，要么都发送失败。  
 2. **<font color = "clime">read-process-write模式(消费消息-业务处理-生产消息)</font>** ：将消息生产和消费封装在一个事务中，形成一个原子操作。在一个流式处理的应用中，常常一个服务需要从上游接收消息，然后经过处理后送达到下游，这就对应着消息的消费和生成。  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-120.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-120.png)  
 &emsp; 在此场景中，往往需要实现，从读取source数据，至业务处理，至处理结果写入kafka的整个流程，具备原子性(要么全流程成功，要么全部失败)。  
 &emsp; 也就是说，处理且输出结果成功，才会提交消费端偏移量；如果处理或输出结果失败，则消费偏移量也不会提交。  
 &emsp; 要实现上述的需求，可以利用Kafka中的事务机制：它可以使应用程序消费消息、生产消息、提交消费位移当作原子操作来处理。即使该生产或消费跨多个分区。    
@@ -76,7 +76,7 @@ kafka事务的应用场景
 #### 1.1.3.3. 读事务消息  
 &emsp; 为了保证事务特性，Consumer如果设置了isolation.level = read_committed，那么它只会读取已经提交了的消息。在Producer成功提交事务后，Kafka会将所有该事务中的消息的Transaction Marker从uncommitted标记为committed状态，从而所有的Consumer都能够消费。  
 
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-121.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-121.png)  
 
 ## 1.2. ~~kafka事务原理~~
 <!-- 
@@ -116,15 +116,15 @@ https://www.cnblogs.com/middleware/p/9477133.html
 
 &emsp; **tranaction id 、productid 和 epoch**  
 &emsp; 一个app有一个tid，同一个应用的不同实例PID是一样的，只是epoch的值不同。如：  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-82.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-82.png)  
 
 
 ### 1.2.2. ★★★事务流程  
 <!-- 
 https://www.cnblogs.com/middleware/p/9477133.html
 -->
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-64.png)  
-![image](http://www.wt1814.com/static/view/images/microService/mq/kafka/kafka-111.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-64.png)  
+![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-111.png)  
 
 1. 查找事务协调者Tranaction Corordinator  
 &emsp; 生产者会首先发起一个查找事务协调者的请求(FindCoordinatorRequest)。协调者会负责分配一个PID给生产者。类似于消费组的协调者。  

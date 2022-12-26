@@ -11,7 +11,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-10.png)  
+![image](http://182.92.69.8:8081/img/SSM/Spring/spring-10.png)  
 &emsp; SpringBean的生命周期主要有4个阶段：  
 1. 实例化（Instantiation），可以理解为new一个对象；
 2. 属性赋值（Populate），可以理解为调用setter方法完成属性注入；
@@ -40,7 +40,7 @@ https://mp.weixin.qq.com/s/quVNLHjJReq4kuJ3SvMQFQ
 
 ## 1.1. ★★★SpringBean生命周期的概要流程  
 &emsp; **<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>**  
-![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-10.png)  
+![image](http://182.92.69.8:8081/img/SSM/Spring/spring-10.png)  
 
 &emsp; SpringBean的生命周期主要有4个阶段：  
 1. 实例化(Instantiation)，可以理解为new一个对象；
@@ -104,7 +104,7 @@ https://mp.weixin.qq.com/s/quVNLHjJReq4kuJ3SvMQFQ
 
 ## 1.3. 源码解析  
 
-![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-10.png)  
+![image](http://182.92.69.8:8081/img/SSM/Spring/spring-10.png)  
 1. 实例化：第 1 步，实例化一个 bean 对象；
 2. 属性赋值：第 2 步，为 bean 设置相关属性和依赖；
 3. 初始化：第 3~7 步，步骤较多， **<font color = "clime">其中第 5、6 步为初始化操作，</font>** <font color = "red">第 3、4 步为在初始化前执行，第7步在初始化后执行，该阶段结束，才能被用户使用；</font>

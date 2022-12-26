@@ -13,9 +13,7 @@
 
 # 1. EFK使用  
 <!-- 
-https://blog.csdn.net/HuaZi_Myth/article/details/102770893?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromBaidu-1.control&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromBaidu-1.control
 
-https://blog.csdn.net/ct1150/article/details/88058345
 -->
 &emsp; kubernetes可以实现efk的快速部署和使用，通过statefulset控制器部署elasticsearch组件，用来存储日志数据，还可通过volumenclaimtemplate动态生成pv实现es数据的持久化。通过deployment部署kibana组件，实现日志的可视化管理。通过daemonset控制器部署fluentd组件，来收集各节点和k8s集群的日志。  
 &emsp; EFK可以收集Java服务、MySQL、Nginx等系统的日志。  

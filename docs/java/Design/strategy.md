@@ -45,7 +45,7 @@ https://my.oschina.net/u/1187187/blog/192706?p={{page}}
 
 ## 1.2. 结构  
 &emsp; **模式角色组成：**  
-![image](http://www.wt1814.com/static/view/images/java/design/design-14.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-14.png)  
 
 * Strategy：抽象策略类，定义所有支持的算法的公共接口。     
 * ConcreteStrategy：具体策略类，包装了相关的算法或行为。  

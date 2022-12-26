@@ -49,7 +49,7 @@
 
 ## 1.2. Netty的整体架构  
 &emsp; 官方文档：https://netty.io/3.8/guide/#architecture.5   
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-25.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-25.png)  
 
 * Core：核心部分，是底层的网络通用抽象和部分实现。
     * Extensible Event Model：可拓展的事件模型。Netty是基于事件模型的网络应用框架。
@@ -64,7 +64,7 @@
 
 ## 1.3. Netty项目架构  
 &emsp; **Netty的项目结构：**  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-26.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-26.png)  
 
 &emsp; **各个项目作用：**  
 

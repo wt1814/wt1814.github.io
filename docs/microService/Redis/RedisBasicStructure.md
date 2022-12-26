@@ -138,7 +138,7 @@ https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
 &emsp; 为了安全考虑，有些网站会对IP进行限制，限制同一IP在一定时间内访问次数不能超过n次。  
 
 ### 1.2.3. Hash哈希
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-58.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-58.png)  
 &emsp; Hash存储键值对的无序散列表。  
 
 &emsp; <font color = "clime">Hash与String同样是存储字符串(存储单个字符串时使用String；存储对象时使用Hash，勿将对象序列化后存String类型)，它们的主要区别：</font>  
@@ -159,16 +159,16 @@ https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
 * 存储对象类型的数据  
 &emsp; 比如对象或者一张表的数据，比String节省了更多key的空间，也更加便于集中管理。  
 * 购物车功能  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-60.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-60.png)  
 &emsp; key：用户 id；field：商品 id；value：商品数量。  
 &emsp; +1：hincr。-1：hdecr。删除：hdel。全选：hgetall。商品数：hlen。  
 
 ### 1.2.4. List列表  
 &emsp; 存储有序的字符串(从左到右)，元素可以重复。一个列表最多可以存储2^32-1个元素，列表的两端都可以插入和弹出元素，可以充当队列和栈的角色。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-61.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-61.png)  
 
 #### 1.2.4.1. 常用操作
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-64.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-64.png)  
 &emsp; List中分页查询命令LRANGE  
 
 
@@ -192,7 +192,7 @@ https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
 &emsp; 由于列表存储的是有序字符串，满足队列的特点，也就能满足栈先进后出的特点，使用lpush+lpop或者rpush+rpop实现栈。  
 * 文章列表  
 &emsp; <font color = "clime">每个用户有属于自己的文章列表，现需要分页展示文章列表。此时可以考虑使用列表，因为列表不但是有序的，同时支持按照索引范围获取元素。</font>  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-111.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-111.png)  
 &emsp; 使用列表类型保存和获取文章列表会存在两个问题。第一，如果每次分页获取的文章个数较多，需要执行多次hgetall操作，此时可以考虑使用Pipeline批量获取，或者考虑将文章数据序列化为字符串类型，使用mget批量获取。第二，分页获取文章列表时，lrange命令在列表两端性能较好，但是如果列表较大，获取列表中间范围的元素性能会变差，此时可以考虑将列表做二级拆分，或者使用Redis3.2的quicklist内部编码实现，它结合ziplist和linkedlist的特点，获取列表中间范围的元素时也可以高效完成。  
 
 
@@ -206,7 +206,7 @@ https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
 
 ### 1.2.5. Set集合
 &emsp; 集合类型也可以保存多个字符串元素，与列表不同的是，**集合中不允许有重复元素并且集合中的元素是无序的。**一个集合最多可以存储2^32-1个元素。    
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-65.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-65.png)  
 
 
 &emsp; **<font color = "red">Set集合的交差并的计算复杂度很高，如果数据量很大的情况下，可能会造成Redis的阻塞。</font>**  
@@ -230,12 +230,12 @@ https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
  
 * 商品标签  
 &emsp; 用 tags:i5001 来维护商品所有的标签。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-67.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-67.png)  
 &emsp; sadd tags:i5001 画面清晰细腻  
 &emsp; sadd tags:i5001 真彩清晰显示屏  
 &emsp; sadd tags:i5001 流畅至极  
 * 点赞、签到  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-66.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-66.png)  
 &emsp; 这条微博的 ID 是 t1001，用户 ID 是 u3001。 用 like:t1001 来维护 t1001 这条微博的所有点赞用户。   
 &emsp; 点赞了这条微博：sadd like:t1001 u3001  
 &emsp; 取消点赞：srem like:t1001 u3001  
@@ -257,7 +257,7 @@ https://mp.weixin.qq.com/s/8hBrUb1Tn6cuSzQITCDReQ
 &emsp; 获取差集 sdiff set1 set2   
 &emsp; 获取交集(intersection ) sinter set1 set2  
 &emsp; 获取并集 sunion set1 set2  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-68.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-68.png)  
 &emsp; iPhone11 上市了。 sadd brand:apple iPhone11  
 &emsp; sadd brand:ios iPhone11  
 &emsp; sad screensize:6.0-6.24 iPhone11  
@@ -276,7 +276,7 @@ https://www.jianshu.com/p/0cccf031da00
 &emsp; **<font color = "red">sorted set，有序的集合，每个元素有个 score。</font>** 有序集合中的元素不能重复。可以排序，它给每个元素设置一个score作为排序的依据。最多可以存储2^32-1个元素。  
 &emsp; score可以重复。score 相同时，按照 key 的 ASCII 码排序。  
 &emsp; 有序集合(sort set)是在集合类型的基础上为每个元素关联一个分数，不仅可以完成插入，删除和判断元素是否存在等集合操作，还能够获得分数最高(或最低)的前N个元素，获得指定分数范围内的元素等分数有关的操作。虽然集合中每个元素都是不相同的，但是分数可以相同。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-70.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-70.png)  
 
 #### 1.2.6.1. 常用操作
 &emsp; 可以分为集合内操作、集合间操作。  
@@ -289,7 +289,7 @@ https://www.jianshu.com/p/0cccf031da00
 读懂才会用：Redis ZSet 的几种使用场景
 https://zhuanlan.zhihu.com/p/147912757
 -->
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-104.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-104.png)  
 
 * 排行榜  
 &emsp; 用户发布了n篇文章，其他人看到文章后给喜欢的文章点赞，使用score来记录点赞数，有序集合会根据score排行。流程如下   

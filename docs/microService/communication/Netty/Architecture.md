@@ -6,7 +6,7 @@
 -->
 
 &emsp; **<font color = "red">Netty采用了典型的三层网络架构进行设计和开发，逻辑架构如下图所示：</font>**  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-134.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-134.png)  
 1. 业务逻辑编排层 Service ChannelHandler：  
 &emsp; 业务逻辑编排层通常有两类，一类是纯粹的业务逻辑编排，一类是应用层协议插件，用于特定协议相关的会话和链路管理。由于应用层协议栈往往是开发一次到处运行，并且变动较小，故而将应用协议到 POJO 的转变和上层业务放到不同的 ChannelHandler 中，就可以实现协议层和业务逻辑层的隔离，实现架构层面的分层隔离。  
 2. 职责链 ChannelPipeline：  

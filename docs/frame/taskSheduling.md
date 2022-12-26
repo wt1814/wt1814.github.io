@@ -52,13 +52,13 @@
 
 &emsp; elastic-job结合了quartz非常优秀的时间调度功能，并且利用ZooKeeper实现了灵活的分片策略。除此之外，还加入了大量实用的监控和管理功能，以及其开源社区活跃、文档齐全、代码优雅等优点，是分布式任务调度框架的推荐选择。  
 &emsp; 由于elastic-job-lite不支持动态添加作业，此处仅贴上elastic-job-Cloud架构图  
-![image](http://www.wt1814.com/static/view/images/frame/frame-1.png)  
+![image](http://182.92.69.8:8081/img/frame/frame-1.png)  
 
 ### 1.2.2. xxl-job  
 &emsp; 由个人开源的一个轻量级分布式任务调度框架，主要分为调度中心和执行器两部分，调度中心在启动初始化的时候，会默认生成执行器的RPC代理。  
 &emsp; 对象（http协议调用），执行器项目启动之后， 调度中心在触发定时器之后通过jobHandle来调用执行器项目里面的代码，核心功能和elastic-job差不多，同时技术文档比较完善。  
 &emsp; 系统架构图  
-![image](http://www.wt1814.com/static/view/images/frame/frame-2.png)  
+![image](http://182.92.69.8:8081/img/frame/frame-2.png)  
 
 ### 1.2.3. quartz  
 &emsp; quartz的常见集群方案如下，通过在数据库中配置定时器信息， 以数据库悲观锁的方式达到同一个任务始终只有一个节点在运行。  
@@ -98,11 +98,11 @@
     * 文档不多，开源社区不够活跃
 
 &emsp; 系统架构图如下：  
-![image](http://www.wt1814.com/static/view/images/frame/frame-3.png)  
+![image](http://182.92.69.8:8081/img/frame/frame-3.png)  
 
 ### 1.2.7. 几种方案对比  
-![image](http://www.wt1814.com/static/view/images/frame/frame-4.png)  
-![image](http://www.wt1814.com/static/view/images/frame/frame-5.png)  
+![image](http://182.92.69.8:8081/img/frame/frame-4.png)  
+![image](http://182.92.69.8:8081/img/frame/frame-5.png)  
 
 
 ### 1.2.8. 定时任务的其他方案  

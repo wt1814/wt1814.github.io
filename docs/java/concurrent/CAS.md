@@ -50,7 +50,7 @@ http://www.flydean.com/aba-cas-stamp/
 CAS包含了 3个操作数：需要读写的内存位置V、进行比较的值A和拟写入的新值 B。当且仅当V的值等于A时，CAS才会通过原子方式用新值B来更新V的值，否则不会执 行任何操作。无论位置V的值是否等于A,都将返回V原有的值。(这种变化形式被称为比较 并设置，无论操作是否成功都会返回。)
 -->
 &emsp; **<font color = "clime">CAS，Compare And Swap，即比较并交换。一种无锁原子算法，CAS是一种乐观锁。</font>**  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/concurrent-29.png)   
+![image](http://182.92.69.8:8081/img/java/concurrent/concurrent-29.png)   
 &emsp; **<font color = "clime">在函数CAS(V,E,N)中有3个参数：从内存中读取的值E，计算的结果值V，内存中的当前值N(可能已经被其他线程改变)。</font>**  
 &emsp; **<font color = "clime">函数流程：</font>** 1. 读取当前值E，2. 计算结果值V，<font color = "clime">3. 将读取的当前值E和当前新值N作比较，如果相等，更新为V；</font>4. 如果不相等，再次读取当前值E计算结果V，将E再和新的当前值N比较，直到相等。  
 &emsp; 注：当多个线程同时使用CAS操作一个变量时，只有一个会胜出，并成功更新，其余均会失败。**一般，失败的线程不会挂起，仅是被告知失败，并且允许再次尝试，当然也允许实现的线程放弃操作(一般情况下，这是一个自旋操作，即不断的重试)。**基于这样的原理，CAS操作即使没有锁，也可以发现其他线程对当前线程的干扰。  

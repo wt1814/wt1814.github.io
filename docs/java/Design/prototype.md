@@ -45,7 +45,7 @@
 
 ## 1.2. 结构  
 &emsp; **模式角色组成：**  
-![image](http://www.wt1814.com/static/view/images/java/design/design-8.png)  
+![image](http://182.92.69.8:8081/img/java/design/design-8.png)  
 
 * Prototype：抽象原型类。声明克隆自身的接口。 
 * ConcretePrototype：具体原型类。实现克隆的具体操作。它是可被复制的对象。 

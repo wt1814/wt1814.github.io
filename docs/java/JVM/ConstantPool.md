@@ -37,7 +37,7 @@ https://blog.csdn.net/qq_34039868/article/details/103957965
 <!-- 
 https://blog.csdn.net/luzhensmart/article/details/86565496
 -->
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-132.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-132.png)  
 
 ### 1.1.2. 常量池
 <!-- 

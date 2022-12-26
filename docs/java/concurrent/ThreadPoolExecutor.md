@@ -21,9 +21,9 @@
     * [阻塞队列](/docs/java/concurrent/BlockingQueue.md)，线程池所使用的缓冲队列，常用的是：SynchronousQueue、ArrayBlockingQueue、LinkedBlockingQueue。   
     * 拒绝策略，默认AbortPolicy（拒绝任务，抛异常）， **<font color = "clime">可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。</font>**  
 2. 线程池中核心方法调用链路：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-17.png)  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-14.png)  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-20.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-17.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-14.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-20.png)  
 2. 线程运行流程：查看execute方法。  
     &emsp; <font color = "clime">线程池创建时`没有设置成预启动加载`，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
     1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务（任务实例会传入直接用于构造工作线程实例）。  
@@ -198,7 +198,7 @@ private void decrementWorkerCount() {
 * RUNNING -> STOP -> TIDYING -> TERMINATED
 
 &emsp; 线程池状态切换图：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-4.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-4.png)  
 
 ## 1.2. 构造函数  
 <!-- 
@@ -259,7 +259,7 @@ public ThreadPoolExecutor(int corePoolSize,
     |pool-5-thread-1|testPool-1-thread-1|
 
     &emsp; 阿里开发手册也有明确说到，需要指定有意义的线程名字。  
-    ![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-18.png)  
+    ![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-18.png)  
 
 * RejectedExecutionHandler handler：  
 &emsp; <font color = "red">当提交任务数超过maxmumPoolSize+workQueue之和时，任务会交给RejectedExecutionHandler来处理，执行拒绝策略。</font>有四种策略，<font color = "clime">默认是AbortPolicy(丢弃任务并抛出RejectedExecutionException异常)</font>。内置拒绝策略均实现了RejectedExecutionHandler接口，若以下策略仍无法满足实际需要，可以扩展RejectedExecutionHandler接口。  
@@ -279,9 +279,9 @@ https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
 -->
 ### 1.3.1. 整体流程  
 &emsp; 线程池中核心方法调用链路：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-17.png)  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-14.png)  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-20.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-17.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-14.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-20.png)  
 &emsp; 流程概述：  
 &emsp; <font color = "clime">线程池创建时没有设置成预启动加载，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
 1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务（任务实例会传入直接用于构造工作线程实例）。  
@@ -298,7 +298,7 @@ https://mp.weixin.qq.com/s/L4u374rmxEq9vGMqJrIcvw
 <!-- 
 1. 线程池刚创建时，里面没有一个线程。任务队列是作为参数传进来的。不过，就算队列里面有任务，线程池也不会马上执行它们，而是创建线程。当一个线程完成任务时，它会从队列中取下一个任务来执行。  
 2. 当调用execute()方法添加一个任务时，线程池会做如下判断：  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-5.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-5.png)  
 	1. 如果线程池中的线程数量少于corePoolSize(核心线程数量)，那么会直接开启一个新的核心线程来执行任务，即使此时有空闲线程存在。   
 	2. 如果线程池中线程数量大于等于corePoolSize(核心线程数量)，那么任务会被插入到任务队列中排队，等待被执行。此时并不添加新的线程。如果是无界队列，则线程大小一直会是核心线程池的大小。   
 	3. 如果在步骤2中由于任务队列已满导致无法将新任务进行排队，这个时候有两种情况：  
@@ -575,7 +575,7 @@ thread.start();
 
 -->
 
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-16.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-16.png)  
 
 &emsp; **从runWorker()方法的实现可以看出，runWorker()方法中主要调用了getTask()方法(从任务队列中获取任务)和processWorkerExit()方法(处理线程退出的后续工作)。**  
 

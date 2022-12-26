@@ -26,7 +26,7 @@ https://blog.csdn.net/maobois/article/details/120931048
 
 
 
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-162.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-162.png)  
 
 
 

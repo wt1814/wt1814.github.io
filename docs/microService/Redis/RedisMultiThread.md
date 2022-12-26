@@ -45,7 +45,7 @@ https://www.hollischuang.com/archives/6198
 
 &emsp; （1）IO多路复用
 &emsp; 看一下Redis顶层设计。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-115.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-115.png)  
 &emsp; FD是一个文件描述符，意思是表示当前文件处于可读、可写还是异常状态。使用 I/O 多路复用机制同时监听多个文件描述符的可读和可写状态。  
 &emsp; 一旦受到网络请求就会在内存中快速处理，由于绝大多数的操作都是纯内存的，所以处理的速度会非常地快。也就是说在单线程模式下，即使连接的网络处理很多，因为有IO多路复用，依然可以在高速的内存处理中得到忽略。  
 
@@ -62,13 +62,13 @@ https://www.hollischuang.com/archives/6198
 &emsp; 刚刚说了一堆使用单线程的好处，现在话锋一转，又要说为什么要引入多线程，别不适应。引入多线程说明Redis在有些方面，单线程已经不具有优势了。  
 &emsp; **<font color = "clime">因为读写网络的read/write系统调用在Redis执行期间占用了大部分CPU时间，如果把网络读写做成多线程的方式对性能会有很大提升。</font>**  
 &emsp; **<font color = "clime">Redis的多线程部分只是用来处理网络数据的读写和协议解析，执行命令仍然是单线程。</font>** 之所以这么设计是不想 Redis 因为多线程而变得复杂，需要去控制 key、lua、事务，LPUSH/LPOP 等等的并发问题。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-119.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-119.png)  
 &emsp; 单线程执行两个命令需要6个时间维度，多线程执行只需要4个时间维度。  
 
 
 &emsp; Redis 在最新的几个版本中加入了一些可以被其他线程异步处理的删除操作，如UNLINK、FLUSHALL ASYNC 和 FLUSHDB ASYNC，为什么会需要这些删除操作，而它们为什么需要通过多线程的方式异步处理？  
 &emsp; Redis可以使用del命令删除一个元素，如果这个元素非常大，可能占据了几十兆或者是几百兆，那么在短时间内是不能完成的，这样一来就需要多线程的异步支持。  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-116.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-116.png)  
 &emsp; 现在删除工作可以在后台进行。  
 
 ## 1.3. Redis 6.0 默认是否开启了多线程？
@@ -81,7 +81,7 @@ io-threads 线程数
 &emsp; 官方建议：4 核的机器建议设置为 2 或 3 个线程，8 核的建议设置为 6 个线程， **<font color = "clime">线程数一定要小于机器核数，尽量不超过8个。</font>**   
 
 ## 1.4. Redis 6.0 多线程的实现机制？  
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-117.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-117.png)  
 &emsp; 流程简述如下：  
 
 * 主线程负责接收建立连接请求，获取 Socket 放入全局等待读处理队列。  
@@ -91,7 +91,7 @@ io-threads 线程数
 * 主线程阻塞等待 IO 线程将数据回写 Socket 完毕。  
 * 解除绑定，清空等待队列。  
 
-![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-118.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-118.png)  
 
 &emsp; 该设计有如下特点：  
 

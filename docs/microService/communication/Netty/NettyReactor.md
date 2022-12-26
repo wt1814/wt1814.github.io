@@ -57,7 +57,7 @@ https://mp.weixin.qq.com/s/rqzzHAhntBJpEHpzz1o5HA
                 .childHandler(new ServerHandlerInitializer());
 ```
 &emsp; 它的工作流程大致如下：  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-15.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-15.png)  
 
 ### 1.2.2. 多线程模型  
 &emsp; 多线程模型就是在一个单Reactor中进行客户端连接处理，然后业务处理交给线程池，核心代码如下：  
@@ -80,7 +80,7 @@ public ServerBootstrap group(EventLoopGroup group) {
 }
 ```
 &emsp; 工作流程如下：  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-16.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-16.png)  
 
 ### 1.2.3. 主从多线程模型 (最常使用)
 &emsp; 主从多线程模型是有多个Reactor，也就是存在多个selector，所以定义一个bossGroup和一个workGroup，核心代码如下：  
@@ -99,5 +99,5 @@ bootstrap.group(bossGroup，workerGroup)
         .childHandler(new ServerHandlerInitializer());
 ```
 &emsp; 工作流程如下：  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-17.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-17.png)  
 &emsp; **注意：其实在Netty中，bossGroup线程池最终还是只会随机选择一个线程用于处理客户端连接，与此同时，NioServerSocetChannel绑定到bossGroup的线程中，NioSocketChannel绑定到workGroup的线程中。**  

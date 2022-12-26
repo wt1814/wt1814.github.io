@@ -30,9 +30,9 @@
 ### 1.1.1. 本地调用和远程调用
 &emsp; 远程是相对于本地来说的，有远程调用就有本地调用，那么先说说本地调用是什么。    
 &emsp; 比如下图，代码在同一个进程中（或者说同一个地址空间）调用另外一个方法，得到需要的结果，这就是本地调用。  
-![image](http://www.wt1814.com/static/view/images/microService/RPC/rpc-8.png)   
+![image](http://182.92.69.8:8081/img/microService/RPC/rpc-8.png)   
 &emsp; 那么想象一下，如果这里的add方法是一个很复杂的方法，很多系统都想用这个方法，那么可以把这个方法单独拆成一个服务，提供给各个系统进行调用，那么本地就会变成远程，就会变成这样：  
-![image](http://www.wt1814.com/static/view/images/microService/RPC/rpc-9.png)   
+![image](http://182.92.69.8:8081/img/microService/RPC/rpc-9.png)   
 
 ### 1.1.2. RPC
 &emsp; **RPC：让远程调用变得和本地调用一样。**  
@@ -75,7 +75,7 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 10. 客户端存根(client stub)接收到消息，并进行解码(反序列化)。  
 11. 服务消费方得到最终结果。  
 
-![image](http://www.wt1814.com/static/view/images/microService/RPC/rpc-6.png)  
+![image](http://182.92.69.8:8081/img/microService/RPC/rpc-6.png)  
 &emsp; 而RPC框架的实现目标则是将上面的第2-10步完好地封装起来，也就是把调用、编码/解码的过程给封装起来，让用户感觉上像调用本地服务一样的调用远程服务。  
 
 
@@ -83,14 +83,14 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 
 &emsp; Nelson的论文中指出 **<font color = "red">实现RPC的程序包括5个部分：1. User、2. User-stub、3. RPCRuntime(RPC通信包)、4. Server-stub、5. Server。</font>**  
 &emsp; 这5个部分的关系如下图所示：  
-![image](http://www.wt1814.com/static/view/images/microService/RPC/rpc-1.png)   
+![image](http://182.92.69.8:8081/img/microService/RPC/rpc-1.png)   
 &emsp; 这里user就是client端，当user发起一个远程调用时，它实际是通过本地调用user-stub。user-stub负责将调用的接口、方法和参数通过约定的协议规范进行编码并通过本地的RPCRuntime实例传输到远端的实例。远端RPCRuntime实例收到请求后交给server-stub进行解码后发起本地端调用，调用结果再返回给user端。  
 
 
 --------
 
 &emsp; 完整的RPC过程，如图：  
-![image](http://www.wt1814.com/static/view/images/microService/RPC/rpc-10.png)  
+![image](http://182.92.69.8:8081/img/microService/RPC/rpc-10.png)  
 
 * 服务调用方(Client)调用以本地调用方式调用服务；
 * Client stub负责将方法名、参数组装成消息体并进行序列化，找到服务地址，将消息发送到服务端；
@@ -104,7 +104,7 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 ----
 ~~RPC结构拆解~~  
 &emsp; 如下图所示：  
-![image](http://www.wt1814.com/static/view/images/microService/RPC/rpc-3.png)   
+![image](http://182.92.69.8:8081/img/microService/RPC/rpc-3.png)   
 &emsp; RPC服务方通过RpcServer去导出(export)远程接口方法，而客户方通过RpcClient去引入(import)远程接口方法。客户方像调用本地方法一样去调用远程接口方法，RPC框架提供接口的代理实现，实际的调用将委托给代理RpcProxy。代理封装调用信息并将调用转交给RpcInvoker 去实际执行。在客户端的RpcInvoker通过连接器RpcConnector去维持与服务端的通道RpcChannel，并使用RpcProtocol执行协议编码(encode)并将编码后的请求消息通过通道发送给服务方。  
 &emsp; RPC服务端接收器RpcAcceptor接收客户端的调用请求，同样使用RpcProtocol执行协议解码(decode)。解码后的调用信息传递给RpcProcessor去控制处理调用过程，最后再委托调用给RpcInvoker去实际执行并返回调用结果。  
 
@@ -136,7 +136,7 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 
 ## 1.4. ★★★RPC框架使用了哪些技术？  
 &emsp; 一个比较完善的RPC框架  
-![image](http://www.wt1814.com/static/view/images/microService/RPC/rpc-7.png)  
+![image](http://182.92.69.8:8081/img/microService/RPC/rpc-7.png)  
 
 &emsp; RPC框架需要解决的问题？  
 1. 如何确定客户端和服务端之间的通信协议？  
@@ -170,7 +170,7 @@ https://www.jianshu.com/p/91be39f72c74?utm_content=note&utm_medium=reader_share&
 https://blog.csdn.net/u013952133/article/details/79256799
 -->
 
-![image](http://www.wt1814.com/static/view/images/microService/RPC/rpc-5.png)   
+![image](http://182.92.69.8:8081/img/microService/RPC/rpc-5.png)   
 &emsp; RPC支持哪些协议？最早的CORBA、Java RMI，WebService方式的RPC风格，Hessian,Thrift甚至Rest API。  
 
 * 基于TCP的RPC  

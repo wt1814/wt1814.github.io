@@ -1,13 +1,13 @@
 
 
 &emsp; 内存数据落盘整体思路分析：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-173.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-173.png)  
 &emsp; `InnoDB内存缓冲池中的数据page要完成持久化的话，是通过两个流程来完成的，一个是脏页落盘；一个是预写redo log日志。`  
 
 
 
 &emsp; 官方文档：https://dev.mysql.com/doc/refman/5.7/en/innodb-on-disk-structures.html  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-133.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-133.png)  
 
 &emsp; [表空间](/docs/SQL/TableSpace.md)  
 &emsp; [MySql事务日志](/docs/SQL/log.md)  

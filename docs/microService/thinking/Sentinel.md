@@ -50,14 +50,14 @@ https://blog.csdn.net/lzq199528/article/details/109898038
 https://mp.weixin.qq.com/s/YRfDFeIcoFlIl5kE7A9Y0Q
 -->
 ### 1.2.1. API 分组和route维度
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-57.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-57.png)  
 
 
 ### 1.2.2. 网关限流规则 GatewayFlowRule
 &emsp; **<font color = "clime">阈值类型：qps和线程数</font>**  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-58.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-58.png)  
 
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-59.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-59.png)  
 
 
 

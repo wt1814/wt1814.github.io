@@ -9,7 +9,7 @@
 
 
 # 1. AOP
-![image](http://www.wt1814.com/static/view/images/SSM/AOP/AOP-2.png)  
+![image](http://182.92.69.8:8081/img/SSM/AOP/AOP-2.png)  
 &emsp; AOP（Aspect-Oriented Programming面向切面编程）能够将那些与业务无关，却为业务模块所共同调用的逻辑或责任（例如事务处理、日志管理、权限控制等）封装起来，便于减少系统的重复代码，降低模块间的耦合度，并有利于未来的可拓展性和可维护性。  
 &emsp; AOP可以算作是代理模式的一个典型应用。AOP提供了对通知（advice）的支持。通知不同于必须显式调用的方法，每当发生匹配的触发事件时，它就自动地执行。  
 
@@ -29,7 +29,7 @@ https://mp.weixin.qq.com/s/ZC9WMbOZJ6V3RkaFm6UZYQ
         最终通知(After (finally) advice)：当某连接点退出的时候执行的通知(不论是正常返回还是异常退出)。
         后置通知(After returning advice)，方法执行之后执行一段代码，无论该方法是否出现异常。
         环绕通知(Around Advice)(优先级最高)：包围一个连接点的通知，如方法调用。这是最强大的一种通知类型。环绕通知可以在方法调用前后完成自定义的行为。也会选择是否继续执行连接点或直接返回自己的返回值或抛出异常来结束执行。环绕通知是最常用的通知类型。和AspectJ一样，Spring提供所有类型的通知，推荐使用尽可能简单的通知类型来实现需要的功能。
-    ![image](http://www.wt1814.com/static/view/images/SSM/AOP/aop-10.png)  
+    ![image](http://182.92.69.8:8081/img/SSM/AOP/aop-10.png)  
 4. 切面(aspect)：切面是要实现的交叉功能。就是通知和切入点的结合。通知和切入点共同定义了关于切面的全部内容：它的功能、在何时和何地完成功能。  
 &emsp; Spring中的切面类型：  
     * Advisor：都是有一个切点和一个通知组合。Spring中传统切面。  

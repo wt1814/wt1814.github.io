@@ -143,21 +143,21 @@ Exception in thread "customThread 5" java.lang.ArithmeticException: / by zero
 
 #### 1.2.2.1. 自定义线程池  
 &emsp; 自定义线程池，继承ThreadPoolExecutor并复写其afterExecute(Runnable r, Throwable t)方法。  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-7.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-7.png)  
 
 #### 1.2.2.2. 实现Thread.UncaughtExceptionHandler接口  
 &emsp; 实现Thread.UncaughtExceptionHandler接口，实现void uncaughtException(Thread t, Throwable e)方法，并将该handler传递给线程池的ThreadFactory。  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-8.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-8.png)  
 
 #### 1.2.2.3. 继承ThreadGroup  
 &emsp; 覆盖uncaughtException方法。(与实现Thread.UncaughtExceptionHandler接口类似，因为ThreadGroup类本身就实现了Thread.UncaughtExceptionHandler接口)  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-9.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-9.png)  
 &emsp; 注意：上面三种方式针对的都是通过execute(xx)的方式提交任务，如果提交任务用的是submit()方法，那么上面的三种方式都将不起作用，而应该使用下面的方式。  
 
 #### 1.2.2.4. 采用Future模式  
 &emsp; <font color = "red">如果提交任务的时候使用的方法是submit，那么该方法将返回一个Future对象，所有的异常以及处理结果都可以通过future对象获取。</font>  
 &emsp; 采用Future模式，将返回结果以及异常放到Future中，在Future中处理  
-![image](http://www.wt1814.com/static/view/images/java/concurrent/threadPool-11.png)  
+![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-11.png)  
 
 ## 1.3. 总结
 &emsp; 1、线程池中线程中异常尽量手动捕获  

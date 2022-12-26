@@ -59,7 +59,7 @@ https://mp.weixin.qq.com/s/RtgLZW9ifNoB9wfAlflGKQ
 ### 1.2.1. 复制流程  
 
 &emsp; 主从复制如图：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-129.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-129.png)  
 &emsp; ~~对于每一个主从复制的连接，都有三个线程。拥有多个从库的主库为每一个连接到主库的从库创建一个binlog输出线程，每一个从库都有它自己的I/O线程和SQL线程。~~  
 
 * 主库binlog输出线程：每当有从库连接到主库的时候，主库都会创建一个线程，然后发送binlog内容到从库。  
@@ -68,7 +68,7 @@ https://mp.weixin.qq.com/s/RtgLZW9ifNoB9wfAlflGKQ
 
 ----
 &emsp; 原理图2，帮助理解!   
-![image](http://www.wt1814.com/static/view/images/SQL/sql-130.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-130.png)  
 &emsp; 步骤一：主库db的更新事件(update、insert、delete)被写到binlog。  
 &emsp; 步骤二：从库发起连接，连接到主库。  
 &emsp; 步骤三：此时主库创建一个binlog dump thread线程，把binlog的内容发送到从库。  

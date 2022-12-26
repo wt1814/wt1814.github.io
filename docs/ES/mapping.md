@@ -61,7 +61,7 @@ PUT data/_doc/1
 
 ### 1.1.1. 字段动态映射规则(字段类型)  
 
-![image](http://www.wt1814.com/static/view/images/ES/es-34.png)  
+![image](http://182.92.69.8:8081/img/ES/es-34.png)  
 &emsp; JSON数据类型映射到 ElasticSearch 定义的类型，常用的简单类型有：  
 
 |JSON中的数据|自动推断出来的数据类型|
@@ -137,7 +137,7 @@ PUT my_index/_doc/1
 &emsp; 使用dynamic控制映射是否可以被更新。  
 * dynamic-true  
 &emsp; 设置dynamic为true是默认dynamic的默认值，新增字段数据可以写入，同时也可以被索引，Mapping结构也会被更新。  
-![image](http://www.wt1814.com/static/view/images/ES/es-45.png)  
+![image](http://182.92.69.8:8081/img/ES/es-45.png)  
 &emsp; 添加数据，同时多添加一个没被定义的gender字段。  
 
   ```text
@@ -156,22 +156,22 @@ PUT my_index/_doc/1
   ```
 
   &emsp; 添加成功，搜索gender字段：  
-  ![image](http://www.wt1814.com/static/view/images/ES/es-46.png)  
+  ![image](http://182.92.69.8:8081/img/ES/es-46.png)  
   &emsp; 查看Mapping结构：   
-  ![image](http://www.wt1814.com/static/view/images/ES/es-47.png)  
+  ![image](http://182.92.69.8:8081/img/ES/es-47.png)  
   &emsp; 新添加的字段值，在添加过程中Mapping已自动添加字段。  
 
 * dynamic-false  
 &emsp; 设置dynamic为false时，新增字段数据可以写入，不可以被索引，Mapping结构会被更新。同样先将dynamic设置为false，然后向里面添加数据，其他步骤和上面true操作一样。定义Mapping，添加数据。搜索gender字段：   
-![image](http://www.wt1814.com/static/view/images/ES/es-48.png)   
+![image](http://182.92.69.8:8081/img/ES/es-48.png)   
 &emsp; 此时新增字段数据无法被索引，但数据可以写入。  
-![image](http://www.wt1814.com/static/view/images/ES/es-49.png)  
+![image](http://182.92.69.8:8081/img/ES/es-49.png)  
 &emsp; Mappnig也不会添加新增的字段：  
-![image](http://www.wt1814.com/static/view/images/ES/es-50.png)  
+![image](http://182.92.69.8:8081/img/ES/es-50.png)  
 
 * dynamic-strict  
 &emsp; 设置dynamic为strict时，从字面上意思也可以看出，对于动态映射是较严格的，新增字段数据不可以写入，不可以被索引，Mapping结构不会被更新。只能按照定义好的 Mapping结构添加数据。在添加新字段数据时，就马上会抛出异常：  
-![image](http://www.wt1814.com/static/view/images/ES/es-51.png)  
+![image](http://182.92.69.8:8081/img/ES/es-51.png)  
 
 ## 1.3. 字段数据类型  
 <!--
@@ -218,9 +218,9 @@ PUT person/_doc/1
 }
 ```
 &emsp; 查询 address数据。  
-![image](http://www.wt1814.com/static/view/images/ES/es-43.png)  
+![image](http://182.92.69.8:8081/img/ES/es-43.png)  
 &emsp; 查询 address.keyword数据。  
-![image](http://www.wt1814.com/static/view/images/ES/es-44.png)  
+![image](http://182.92.69.8:8081/img/ES/es-44.png)  
 &emsp; 通过 keyword检索时，由于不会建立分词索引，并没有获取到数据。  
 
 ### 1.5.2. 控制索引  
@@ -230,9 +230,9 @@ PUT person/_doc/1
 DELETE person
 ```
 &emsp; 创建 Mapping，设置 name属性的 index 为 false。  
-![image](http://www.wt1814.com/static/view/images/ES/es-41.png)  
+![image](http://182.92.69.8:8081/img/ES/es-41.png)  
 &emsp; 再次添加上面的数据后搜索 name字段：  
-![image](http://www.wt1814.com/static/view/images/ES/es-42.png)  
+![image](http://182.92.69.8:8081/img/ES/es-42.png)  
 &emsp; 字段 index 设置 false 后，由于没有被索引，所以搜索无法获取到索引。  
 
 ### 1.5.3. ★★★空值处理
@@ -252,11 +252,11 @@ PUT person/_doc/2
 }
 ```
 &emsp; 搜索 address.keyword 为空的数据： 
-![image](http://www.wt1814.com/static/view/images/ES/es-36.png)  
+![image](http://182.92.69.8:8081/img/ES/es-36.png)  
 &emsp; 搜索返回异常，默认是不被允许搜索NUll。这是需要在Mapping指定null_value属性，并且不能在text类型中声明。  
-![image](http://www.wt1814.com/static/view/images/ES/es-88.png)  
+![image](http://182.92.69.8:8081/img/ES/es-88.png)  
 &emsp; 搜索address.keyword 为空的数据：  
-![image](http://www.wt1814.com/static/view/images/ES/es-38.png)  
+![image](http://182.92.69.8:8081/img/ES/es-38.png)  
 &emsp; 设置 "null_value":"NULL" 后，空值可以处理搜索。  
 
 ### 1.5.4. 聚合多个字段  
@@ -288,8 +288,8 @@ PUT person/_doc/2
     "isStrong": true
 }
 ```
-![image](http://www.wt1814.com/static/view/images/ES/es-39.png)  
+![image](http://182.92.69.8:8081/img/ES/es-39.png)  
 &emsp; 查询 full_name 的值，会返回 name 和 address 相关的值的对象。  
-![image](http://www.wt1814.com/static/view/images/ES/es-40.png)  
+![image](http://182.92.69.8:8081/img/ES/es-40.png)  
 &emsp; 从上面返回结果看到，_source 中的字段没有增加相应的 copy_to 字段名，所以 copy_to 只会拷贝字段内容至索引，并不会改变包含的字段。  
 

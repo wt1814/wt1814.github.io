@@ -97,7 +97,7 @@ https://mp.weixin.qq.com/s/3dH0jLk7VSlJHtvnxqU2jA
 
 ## 1.3. FGC过高  
 &emsp; ~~使用jstack来分析GC是不是太频繁， **<font color = "clime">使用jstat -gc pid 1000命令来对gc分代变化情况进行观察，</font>** 1000表示采样间隔(ms)，S0C/S1C、S0U/S1U、EC/EU、OC/OU、MC/MU分别代表两个Survivor区、Eden区、老年代、元数据区的容量和使用量。YGC/YGT、FGC/FGCT、GCT则代表YoungGc、FullGc的耗时和次数以及总耗时。如果看到gc比较频繁，再针对gc方面做进一步分析。~~   
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-81.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-81.png)  
 
 &emsp; **<font color = "clime">FGC过高 1)可能是内存参数设置不合理，2)也有可能是代码中某个位置读取数据量较大导致系统内存耗尽。FGC过高可能导致CPU飚高。</font>** ⚠注意：FGC过高，会导致CPU飚高；但CPU飚高不一定是FGC过高。  
 &emsp; **<font color = "clime">解决思路：打印线程堆栈信息。查看线程堆栈是用户线程，还是GC线程。如果是GC线程，打印内存快照进行分析。</font>**  
@@ -129,7 +129,7 @@ https://www.cnblogs.com/klvchen/p/11089632.html
 
 &emsp; **<font color = "clime">怎么区分导致CPU过高的原因具体是Full GC次数过多还是代码中有比较耗时的计算？</font>**  
 &emsp; 如果是Full GC次数过多，那么通过jstack得到的线程信息会是类似于VM Thread之类的线程，而如果是代码中有比较耗时的计算，那么得到的就是一个线程的具体堆栈信息。如下是一个代码中有比较耗时的计算，导致CPU过高的线程信息：  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-47.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-47.png)  
 &emsp; 这里可以看到，在请求UserController的时候，由于该Controller进行了一个比较耗时的调用，导致该线程的CPU一直处于100%。可以根据堆栈信息，直接定位到UserController的34行，查看代码中具体是什么原因导致计算量如此之高。  
 
 ### 1.4.2. 排查步骤  
@@ -143,11 +143,11 @@ https://www.cnblogs.com/klvchen/p/11089632.html
 1. 查找消耗cpu最高的进程PID  
 &emsp; 执行top -c，显示进程运行信息列表。按下P，进程按照cpu使用率排序。  
 &emsp; 如下图所示，PID为3033的进程耗费cpu最高。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-42.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-42.png)  
 2. 查找该进程下消耗cpu最高的线程号  
 &emsp; 执行命令top -Hp 3033 ，显示一个进程的线程运行信息列表。按下P，进程按照cpu使用率排序。  
 &emsp; 如下图所示，PID为3034的线程耗费cpu最高。  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-43.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-43.png)  
 &emsp; 这是十进制的数据，需转成十六进制为0xbda。  
 
 3. 通过JDK提供的jstack工具dump线程堆栈信息到指定文件中。  
@@ -167,7 +167,7 @@ https://www.cnblogs.com/klvchen/p/11089632.html
     ```
 
 &emsp; 输出如下：  
-![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-44.png)  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-44.png)  
 
 
 &emsp; **<font color = "cclime">注意，这里又分为两种情况：</font>**    
@@ -241,7 +241,7 @@ https://blog.csdn.net/prestigeding/article/details/89075661
 
             -Xms10M -Xmx10M -Xmn2M -XX:SurvivorRatio=8 -XX:+HeapDumpOnOutOfMemoryError 
             -XX:HeapDumpPath=D:\study\log_hprof\gc.hprof
-    ![image](http://www.wt1814.com/static/view/images/java/JVM/JVM-45.png)  
+    ![image](http://182.92.69.8:8081/img/java/JVM/JVM-45.png)  
     2. jmap命令：先运行对应的jar进程，jps找到该进程ID，然后jmap设置导出格式。  
     &emsp; **<font color = "clime">`注：线上环境不能直接使用jmap命令。找到未进行GC的一个节点，从线上环境摘除。然后再使用jmap命令。`</font>**    
 

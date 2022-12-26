@@ -139,7 +139,7 @@ protected void run() {
 &emsp; 2、通过processSelectedKeys()处理IO事件；  
 &emsp; 3、runAllTasks()处理线程任务队列；  
 
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-126.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-126.png)  
 
 &emsp; 接下来我们就从这三个方面入手，对NioEventLoop的具体执行代码进行解析。  
 
@@ -767,23 +767,23 @@ public int compareTo(Delayed o) {
 ### 1.2.1. NIO的空轮询bug  
 &emsp; JDK1.5开始引入了epoll基于事件响应机制来优化NIO。相较于select和poll机制来说，epoll机制将事件处理交给了操作系统内核(操作系统硬中断)来处理，优化了elect和poll模型的无效遍历问题。  
 &emsp; 但是JDK中epoll的实现却是有漏洞的，其中最有名的就是NIO空轮询bug。理论上无客户端连接时Selector.select() 方法会阻塞，但空轮询bug导致：即使无客户端连接，NIO照样不断的从select本应该阻塞的Selector.select()中wake up出来，导致CPU100%问题。如下图所示：  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-118.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-118.png)  
 
 
 &emsp; 如上图所示，NIO程序一直处于while死循环中，不断向cpu申请资源导致CPU 100%！官方声称在JDK1.6版本的update18修复了该问题，但是直到JDK1.7、JDK1.8版本该问题仍旧存在，只不过该BUG发生概率降低了一些而已，它并没有被根本解决。  
 
 ### 1.2.2. netty如何解决NIO空轮询bug的？  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-113.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-113.png)  
 &emsp; **selectCnt在正常逻辑时，会被重新赋值为1，在出现空轮询bug时会累加，直到大于阈值512，则触发重构selector操作。从这里可以看到netty并没有真正解决NIO的epoll模型的bug，而是采用替换selector的操作巧妙的避开了空轮询bug！**  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-114.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-114.png)  
 
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-115.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-115.png)  
 
 &emsp; **把旧的Selector中已注册的SelectionKey，全部挪到新的 Selector中去。**  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-116.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-116.png)  
 
 &emsp; 成员变量this.selector 指向新的Selector的引用  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-117.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-117.png)  
 
 
 <!-- 
@@ -821,7 +821,7 @@ public int compareTo(Delayed o) {
 -----------
 
 &emsp; NioEventLoop的执行都是在run()方法的for循环中完成的。  
-![image](http://www.wt1814.com/static/view/images/microService/netty/netty-112.png)  
+![image](http://182.92.69.8:8081/img/microService/netty/netty-112.png)  
 &emsp; NioEventLoop中维护了一个线程，线程启动时会调用NioEventLoop的run方法，执行I/O任务和非I/O任务：  
 
 * I/O任务  

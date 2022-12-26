@@ -79,7 +79,7 @@ https://mp.weixin.qq.com/s/-EErLaPPbO9gItIzefjTuw
 ### 1.2.1. 使用辅助队列  
 &emsp; 3. <font color = "red">使用队列辅助，提供一个保障的重试机制。如果第二次缓存删除失败，就放进队列，然后另一个任务从队列中取出消息，不断去重试删除相应的key。</font>给出两套方案：  
 &emsp; 方案一：  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-21.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-21.png)  
 &emsp; 流程如下所示：  
 1. 更新数据库数据；  
 2. 缓存因为种种问题删除失败；  
@@ -90,7 +90,7 @@ https://mp.weixin.qq.com/s/-EErLaPPbO9gItIzefjTuw
 &emsp; 该方案有一个缺点，对业务线代码造成大量的侵入。于是有了方案二，在方案二中，启动一个订阅程序去订阅数据库的binlog，获得需要操作的数据。在应用程序中，另起一段程序，获得这个订阅程序传来的信息，进行删除缓存操作。  
 
 &emsp; 方案二：  
-![image](http://www.wt1814.com/static/view/images/microService/problems/problem-22.png)  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-22.png)  
 &emsp; 流程如下图所示：  
 1. 更新数据库数据；  
 2. 数据库会将操作信息写入binlog日志当中；  

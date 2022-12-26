@@ -1,22 +1,33 @@
 
+<!-- TOC -->
+
+- [1. FileBeat和Logstash](#1-filebeat和logstash)
+    - [1.1. FileBeat](#11-filebeat)
+        - [1.1.1. 模板](#111-模板)
+        - [1.1.2. 输入](#112-输入)
+        - [1.1.3. 输出](#113-输出)
+    - [1.2. Logstash](#12-logstash)
+
+<!-- /TOC -->
+
+# 1. FileBeat和Logstash  
+
+## 1.1. FileBeat
+官方配置：https://www.elastic.co/guide/en/beats/filebeat/current/configuring-howto-filebeat.html  
+
+### 1.1.1. 模板
+
+### 1.1.2. 输入  
+https://www.elastic.co/guide/en/beats/filebeat/current/configuration-filebeat-options.html  
 
 
-# Logstash  
 
-<!-- 
-
-logstash mysql 准实时同步到 elasticsearch
-https://www.cnblogs.com/hatlonely/p/8836580.html
-logstash实现mysql数据库表实时同步
-https://blog.csdn.net/xyh930929/article/details/101197733
-logstash一次同步Mysql多张表到ES深入详解
-https://blog.csdn.net/laoyang360/article/details/75452953?utm_source=app&app_version=4.12.0&code=app_1562916241&uLinkId=usr1mkqgl919blen
-Logstash实时同步MySQL数据到ElasticSearch的经验总结
-https://blog.csdn.net/xdshust/article/details/117550313
-Logstash 将 MySQL 数据同步至 ElasticSearch
-https://blog.csdn.net/caidewei121/article/details/115487444
+### 1.1.3. 输出  
+https://www.elastic.co/guide/en/beats/filebeat/current/configuring-output.html  
+https://www.elastic.co/guide/en/beats/filebeat/current/logstash-output.html
 
 
-mysql多表关联查询同步到es_如何通过Logstash同步多表关联数据至Elasticsearch
-https://blog.csdn.net/weixin_42400518/article/details/113386003
--->
+
+## 1.2. Logstash  
+http://doc.yonyoucloud.com/doc/logstash-best-practice-cn/output/elasticsearch.html  
+

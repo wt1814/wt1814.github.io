@@ -30,7 +30,7 @@ https://blog.csdn.net/baidu_29609961/article/details/105106975
 -->
 
 ## 1.1. 脏页落盘  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-177.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-177.png)  
 &emsp; InnoDB内存缓冲池中的数据page要完成持久化的话，是通过两个流程来完成的，一个是脏页落盘；一个是预写redo log日志。  
 
 ### 1.1.1. 保证数据的持久性  
@@ -63,8 +63,8 @@ https://blog.csdn.net/baidu_29609961/article/details/105106975
 
 ## 1.2. MySql逻辑存储结构  
 &emsp; 从InnoDb存储引擎的逻辑存储结构看，所有数据都被逻辑地存放在一个空间中，称之为表空间(tablespace)。表空间又由段(segment)，区(extent)，页(page)组成。页在一些文档中有时候也称为块(block)。InnoDb逻辑存储结构图如下：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-41.png)  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-134.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-41.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-134.png)  
 
 * 段(segment)：表空间由段组成，常见的段有数据段、索引段、回滚段等。  
 &emsp; InnoDB存储引擎表是索引组织的，因此数据即索引，索引即数据。数据段即为B+树的叶子结点，索引段即为B+树的非索引结点。  
@@ -115,11 +115,11 @@ https://blog.csdn.net/baidu_29609961/article/details/105106975
 https://zhuanlan.zhihu.com/p/111958646
 -->
 &emsp; 页是InnoDB磁盘管理的最小单位，每次读取数据都会读取一个页大小的数据。 **<font color = "clime">在InnoDB存储引擎中，默认每个页的大小为16KB(在操作系统中默认页大小是4KB)。</font>** 可以使用命令SHOW GLOBAL STATUS LIKE 'Innodb_page_size' 查看。  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-99.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-99.png)  
 
 &emsp; 页结构如下：  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-135.png)  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-136.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-135.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-136.png)  
 
 #### 1.2.2.1. InnoDB行格式
 <!-- 
@@ -132,12 +132,12 @@ https://juejin.cn/post/6844904190477598733#heading-14
 先说一个结论：页中放的行越多，innodb性能越高。所以在mysql 5.0中引入了compact行记录格式。  
 -->
 ##### 1.2.2.1.1. Compact行记录格式    
-![image](http://www.wt1814.com/static/view/images/SQL/sql-137.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-137.png)  
 
 * 变长字段长度列表：变长列中存储多少字节数据是不固定的，所以在存储数据时候也需要把这些数据占用的字节数存储起来。varchar(M) M代表的是存储多少字符(mysql5.0.3之前是字节，之后是字符)。  
 * NULL标志位：bit向量标识的null列  
 * 记录头信息：固定占用5个字节   
-    ![image](http://www.wt1814.com/static/view/images/SQL/sql-138.png)  
+    ![image](http://182.92.69.8:8081/img/SQL/sql-138.png)  
 * **<font color = "red">隐藏列：</font>** 每行数据除了用户定义的列之外还有可能三种隐藏列。  
 * **<font color = "red">事务id列：</font>** 占用6个字节，标识当前列的事务id。  
 * **<font color = "red">回滚指针列：</font>** 占用7个字节行id：如果该表没有指定主键的话，会有占用6字节的。
@@ -149,15 +149,15 @@ https://juejin.cn/post/6844904190477598733#heading-14
 &emsp; 一个页中至少要放两行数据，否则B+树就成了链表，所以如果行数据超出一定长度，innodb就会将行数据放到溢出页中。  
 
 &emsp; **compact和redundant**  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-139.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-139.png)  
 &emsp; 如果列数据大于768字节，数据页只保存前768字节数据前缀，剩余数据保存于溢出页。  
 &emsp; **dynamic和compressed**  
-![image](http://www.wt1814.com/static/view/images/SQL/sql-140.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-140.png)  
 &emsp; 数据页中只存放20字节的Off Page指针，实际数据都在溢出页。  
 
 ## 1.3. InnoDB表数据文件  
 &emsp; <font color = "red">在InnoDB中，数据和索引文件是合起来储存的，如图所示，InnoDB 的存储文件有两个，后缀名分别是 .frm 和 .idb，其中 .frm 是表的定义文件，</font> **<font color = "clime">而idb是数据文件/索引文件。</font>**   
-![image](http://www.wt1814.com/static/view/images/SQL/sql-33.png)  
+![image](http://182.92.69.8:8081/img/SQL/sql-33.png)  
 
 * .frm文件：与表相关的元数据信息都存放在frm文件，包括表结构的定义信息等。  
 * .ibd文件或.ibdata文件：这两种文件都是存放InnoDB数据的文件，之所以有两种文件形式存放 InnoDB 的数据，是因为InnoDB的数据存储方式能够通过配置来决定是使用共享表空间存放存储数据，还是用独享表空间存放存储数据。  

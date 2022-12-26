@@ -19,7 +19,7 @@
 
 ## 1.1. 创建SqlSessionFacory  
 &emsp; <font color = "red">MyBatis-Spring中创建SqlSessionFacory是由SqlSessionFactoryBean完成的。</font>  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-24.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-24.png)  
 
 * InitializingBean接口：实现了这个接口，那么当bean初始化的时候，spring就会调用该接口的实现类的afterPropertiesSet方法，去实现当spring初始化该Bean的时候所需要的逻辑。afterPropertiesSet()会在 bean 的属性值设置完的时候被调用。  
 * FactoryBean接口：实现了该接口的类，在调用getBean进行实例化的时候会返回该工厂返回的实例对象。实际上调用的是getObject()方法，getObject() 方法里面调用的也是 afterPropertiesSet()方法。  
@@ -58,7 +58,7 @@ this.sqlSessionProxy = (SqlSession) newProxyInstance( SqlSessionFactory.class.ge
 ## 1.3. 接口的扫描注册  
 &emsp; 获取Mapper接口。在Service层可以使用@Autowired自动注入的Mapper接口，需要保存在 BeanFactory（比如 XmlWebApplicationContext）中。也就是说接口是在 Spring 启动的时候，会被扫描、注册。     
 &emsp; 扫描注册Mapper接口是在 applicationContext.xml里面配置了MapperScannerConfigurer或者使用注解@MapperScan完成的。  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-25.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-25.png)  
 &emsp; <font color = "red">MapperScannerConfigurer 实现了BeanDefinitionRegistryPostProcessor接口， BeanDefinitionRegistryPostProcessor 是 BeanFactoryPostProcessor的子类。</font>  
 
 &emsp; MapperScannerConfigurer#postProcessBeanDefinitionRegistry()方法：  
@@ -86,12 +86,12 @@ public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
 }
 ```
 &emsp; 这个方法中创建了一个ClassPathMapperScanner扫描器，这个扫描器继承了Spring的ClassPathBeanDefinitionScanner。  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-27.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-27.png)  
 
 &emsp; ClassPathMapperScanner这个扫描器的主要的作用有以下几个：  
 &emsp; 第一扫描basePackage包下面所有的class类。  
 &emsp; 第二将所有的class类封装成为spring的ScannedGenericBeanDefinition sbd对象。  
-![image](http://www.wt1814.com/static/view/images/SSM/Mybatis/mybatis-28.png)  
+![image](http://182.92.69.8:8081/img/SSM/Mybatis/mybatis-28.png)  
 &emsp; 第三过滤sbd对象，只接受接口类，从下面的代码中可以看出。  
 
 ```java

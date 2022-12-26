@@ -454,8 +454,8 @@ private final BlockingQueue<Future<V>> completionQueue;
         4. 写redo log buffer。  
     2. 事务提交：`redo log与bin log两阶段提交。`  
     3. 事务提交后：后台线程将buffer poll中数据落盘。  
-    ![image](http://www.wt1814.com/static/view/images/SQL/sql-174.png)  
-    ![image](http://www.wt1814.com/static/view/images/SQL/sql-183.png)  
+    ![image](http://182.92.69.8:8081/img/SQL/sql-174.png)  
+    ![image](http://182.92.69.8:8081/img/SQL/sql-183.png)  
 
 #### 1.5.3.2. Server层之binLog日志  
 1. **<font color = "clime">binlog是mysql的逻辑日志，并且由Server层进行记录，`使用任何存储引擎的mysql数据库都会记录binlog日志`。</font>**  
@@ -544,7 +544,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 
 
 #### 1.6.2.2. Bean生命周期  
-![image](http://www.wt1814.com/static/view/images/SSM/Spring/spring-10.png)  
+![image](http://182.92.69.8:8081/img/SSM/Spring/spring-10.png)  
 &emsp; SpringBean的生命周期主要有4个阶段：  
 1. 实例化（Instantiation），可以理解为new一个对象；
 2. 属性赋值（Populate），可以理解为调用setter方法完成属性注入；
@@ -597,7 +597,7 @@ private final BlockingQueue<Future<V>> completionQueue;
         1. 构造过程一般是对构造函数的一些成员属性赋值，做一些初始化工作。SpringApplication有6个属性：资源加载器、资源类集合、应用类型、4).初始化器、5).监听器、包含main函数的主类。  
         2. SpringApplication初始化中第4步和第5步都是利用SpringBoot的SPI机制来加载扩展实现类。  
     2. 运行run()方法，分3步：创建 ---> 刷新 ---> 刷新后的后置处理   
-    ![image](http://www.wt1814.com/static/view/images/microService/boot/boot-9.png)  
+    ![image](http://182.92.69.8:8081/img/microService/boot/boot-9.png)  
     ```text
     // 【7】刷新容器，IOC 容器初始化（如果是 Web 应用还会创建嵌入式的 Tomcat），扫描、创建、加载所有组件
     // 1）在context刷新前做一些准备工作，比如初始化一些属性设置，属性合法性校验和保存容器中的一些早期事件等；
@@ -638,7 +638,7 @@ private final BlockingQueue<Future<V>> completionQueue;
 2. 熔断是一种降级策略。Hystrix中有三种降级方案(fallback，回退方案/降级处理方案)。  
 3. <font color = "clime">熔断的对象是服务之间的请求；`1).熔断策略会根据请求的数量（资源）分为信号量和线程池，2).还有请求的时间（即超时熔断），3).请求错误率（即熔断触发降级）。`</font>  
 &emsp; 信号量隔离：  
-![image](http://www.wt1814.com/static/view/images/microService/SpringCloudNetflix/cloud-8.png)  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-8.png)  
 
 
 ## 1.10. Dubbo  
@@ -654,8 +654,8 @@ private final BlockingQueue<Future<V>> completionQueue;
     &emsp; dubbo实现接口的透明代理，封装调用细节，让用户可以像调用本地方法一样调用远程方法，同时还可以通过代理实现一些其他的策略，比如：负载、降级......  
     2. **<font color = "red">`远程调用层protocol`：封装RPC调用，以Invocation, Result为中心，扩展接口为Protocol, Invoker, Exporter。</font>**  
 3. 服务提供者暴露服务的主过程：  
-    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-29.png)   
-    ![image](http://www.wt1814.com/static/view/images/microService/Dubbo/dubbo-53.png)   
+    ![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-29.png)   
+    ![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-53.png)   
     服务代理层proxy生成Invoker，远程调用层protocol通过Protocol协议类的export方法暴露服务。  
 4. Dubbo在ZK上的节点 /dubbo/xxxService 节点是持久节点。  
 
@@ -768,7 +768,7 @@ private final BlockingQueue<Future<V>> completionQueue;
     2. 渐进式rehash  
 4. 数据类型  
     &emsp; **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**  
-    ![image](http://www.wt1814.com/static/view/images/microService/Redis/redis-106.png)  
+    ![image](http://182.92.69.8:8081/img/microService/Redis/redis-106.png)  
 
 ### 1.14.3. Redis原理  
 &emsp; Redis的性能非常之高，每秒可以承受10W+的QPS，它如此优秀的性能主要取决于以下几个方面：  

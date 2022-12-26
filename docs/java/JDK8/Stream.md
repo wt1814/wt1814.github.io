@@ -52,7 +52,7 @@ https://juejin.im/post/6888549645908181005
 
 ### 1.2.2. ~~流的操作~~  
 
-![image](http://www.wt1814.com/static/view/images/java/JDK/java8/java-7.png)  
+![image](http://182.92.69.8:8081/img/java/JDK/java8/java-7.png)  
 
 &emsp; **Intermediate和Terminal联系：**  
 &emsp; 在对于一个Stream进行多次转换操作(Intermediate操作)，每次都对 Stream的每个元素进行转换，而且是执行多次，这样时间复杂度就是N(转换次数)个for循环里把所有操作的总和吗？  
@@ -129,7 +129,7 @@ T reduce(T identity, BinaryOperator<T> accumulator);
 * accumulator: 其类型是BiFunction，输入是U与T两个类型的数据，而返回的是U类型；也就是说返回的类型与输入的第一个参数类型是一样的，而输入的第二个参数类型与Stream中元素类型是一样的。  
 * combiner: 其类型是BinaryOperator，支持的是对U类型的对象进行操作。combiner主要是使用在并行计算的场景下；如果Stream是非并行时，第三个参数实际上是不生效的。因此针对这个方法的分析需要分并行与非并行两个场景。 
 
-![image](http://www.wt1814.com/static/view/images/java/JDK/java8/java-2.png)  
+![image](http://182.92.69.8:8081/img/java/JDK/java8/java-2.png)  
 &emsp; Stream.reduce常用的操作有average、sum、min、max、count，返回单个的结果值，并且reduce操作每处理一个元素总是创建一个新值。  
 
 ```java
@@ -233,10 +233,10 @@ private static void setInteger(List<Integer> integerList, Integer e) {
 ## 1.3. intellij debug 技巧:java 8 stream  
 &emsp; 使用插件Java Stream Debugger。  
 &emsp; 示例代码：  
-![image](http://www.wt1814.com/static/view/images/java/JDK/java8/java-3.png)  
+![image](http://182.92.69.8:8081/img/java/JDK/java8/java-3.png)  
 &emsp; 开始调试，打个断点：  
-![image](http://www.wt1814.com/static/view/images/java/JDK/java8/java-4.png)  
+![image](http://182.92.69.8:8081/img/java/JDK/java8/java-4.png)  
 &emsp; 然后在debug的窗口找到该按钮  
-![image](http://www.wt1814.com/static/view/images/java/JDK/java8/java-5.png)  
+![image](http://182.92.69.8:8081/img/java/JDK/java8/java-5.png)  
 &emsp; 然后可以看到每一步操作的结果  
-![image](http://www.wt1814.com/static/view/images/java/JDK/java8/java-6.png)  
+![image](http://182.92.69.8:8081/img/java/JDK/java8/java-6.png)  

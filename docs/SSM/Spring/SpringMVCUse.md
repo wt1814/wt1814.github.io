@@ -61,7 +61,7 @@ public @interface RequestMapping {
 
 #### 1.1.1.1. Content-Type介绍   
 &emsp; MediaType即是Internet Media Type，互联网媒体类型；也叫做MIME类型。在Http协议消息头中，使用Content-Type来表示具体请求中的媒体类型信息。  
-![image](http://www.wt1814.com/static/view/images/SSM/SpringMVC/springmvc-1.png)  
+![image](http://182.92.69.8:8081/img/SSM/SpringMVC/springmvc-1.png)  
 
 &emsp; 常见的媒体格式类型如下：  
 
