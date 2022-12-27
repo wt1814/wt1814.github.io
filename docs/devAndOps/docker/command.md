@@ -25,7 +25,7 @@
 &emsp; docker pull centos (默认获取centos最新的镜像)  
 &emsp; docker pull centos:7 (获取指定标签镜像)
 * 查看本地镜像：  
-&emsp; docker images  
+&emsp; **docker images**  
 * 查看镜像详细信息：  
 &emsp; docker inspect centos:7  
 * 查看镜像历史：  
@@ -107,6 +107,14 @@
         把导出的文件centos_test.tar通过docker import导入变成镜像
         [root@localhost ~]# docker import centos_test.tar test/centos
         通过docker images命令可以看到增加了个test/centos镜像
+
+* **进入容器**  
+
+        docker exec -it 775c7c9ee1e1 /bin/bash
+
+* **查看容器实例日志**  
+
+        docker logs -f -t --tail 行数 容器id
 
 ![image](http://182.92.69.8:8081/img/devops/docker/docker-7.png)  
 

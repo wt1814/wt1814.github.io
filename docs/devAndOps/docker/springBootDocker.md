@@ -2,12 +2,13 @@
 <!-- TOC -->
 
 - [1. Docker部署SpringBoot](#1-docker部署springboot)
-    - [1.1. 方式一：Dockerfile文件](#11-方式一dockerfile文件)
+    - [1.1. 方式一：Dockerfile部署Jar包](#11-方式一dockerfile部署jar包)
         - [1.1.1. 编写Dockerfile](#111-编写dockerfile)
         - [1.1.2. 制作镜像](#112-制作镜像)
         - [1.1.3. 启动容器](#113-启动容器)
         - [1.1.4. 踩炕](#114-踩炕)
     - [1.2. 方式二：maven插件](#12-方式二maven插件)
+    - [1.3. DockerFile部署war包](#13-dockerfile部署war包)
 
 <!-- /TOC -->
 
@@ -15,11 +16,11 @@
 <!-- 
 
 http://www.3qphp.com/java/framework/3717.html
-https://zhuanlan.zhihu.com/p/534014249
+整体流程： https://zhuanlan.zhihu.com/p/534014249
 -->
 
 
-## 1.1. 方式一：Dockerfile文件  
+## 1.1. 方式一：Dockerfile部署Jar包    
 ### 1.1.1. 编写Dockerfile  
 
 ```text
@@ -37,7 +38,8 @@ ENTRYPOINT ["java","-jar","/wt1814-note.jar","--server.port=8081"]
 ### 1.1.2. 制作镜像  
 1. cd Dockerfile目录
 2. docker build -t 别名 .
-
+3. 报错：Use ‘docker scan‘ to run Snyk tests against images to find vulnerabilities and learn how to fix th： https://blog.csdn.net/W_317/article/details/127164024  
+     
 
 ### 1.1.3. 启动容器
 1. doker ps查看容器id  
@@ -55,4 +57,10 @@ ENTRYPOINT ["java","-jar","/wt1814-note.jar","--server.port=8081"]
 ## 1.2. 方式二：maven插件  
 
 
+
+## 1.3. DockerFile部署war包   
+<!-- 
+
+https://blog.51cto.com/u_15127559/4720269
+-->
 
