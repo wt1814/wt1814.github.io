@@ -45,7 +45,7 @@ ENTRYPOINT ["java","-jar","/wt1814-note.jar","--server.port=8081"]
 
 
 ### 1.1.4. 踩炕
-java -jar命令启动jar包默认8080端口，Dockerfile中指定端口。    
+&emsp; java -jar命令启动jar包默认8080端口，Dockerfile中指定端口。    
 
 ```text
 #启动工程，指定端口
