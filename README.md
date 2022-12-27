@@ -81,7 +81,6 @@
 <!-- /TOC -->
 
 # 1. wt1814-note  
-http://182.92.69.8:8081/img/  
 
 ## 1.1. 总结
 [知识点概况](/docs/survey.md)  
@@ -1086,11 +1085,12 @@ es   esHD   kibana  logstash   filebeat
 &emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
 &emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
 &emsp; [Docker使用教程](/docs/devAndOps/docker/use.md)  
-&emsp; &emsp; [2.Docker安装](/docs/devAndOps/docker/install.md)  
+&emsp; &emsp; [2.1.Docker安装](/docs/devAndOps/docker/install.md)  
 &emsp; &emsp; [Docker常用命令](/docs/devAndOps/docker/command.md)  
 &emsp; &emsp; [Docker实用命令](/docs/devAndOps/docker/UtilityCommand.md)  
 &emsp; &emsp; [对象标签使用](/docs/devAndOps/docker/objectLabel.md)  
 &emsp; &emsp; [DockerFile](/docs/devAndOps/docker/file.md)  
+&emsp; [2.2.Docker私服](/docs/devAndOps/docker/registry.md)  
 &emsp; [镜像详解](/docs/devAndOps/docker/image.md)  
 &emsp; [容器详解](/docs/devAndOps/docker/container.md)  
 &emsp; [挂载目录](/docs/devAndOps/docker/mount.md)  
@@ -1125,15 +1125,15 @@ es   esHD   kibana  logstash   filebeat
 [Redis](/docs/devAndOps/build/Redis.md)  
 [RocketMQ搭建](/docs/devAndOps/build/RocketBuild.md)  
 
+[docker部署springBoot](/docs/devAndOps/docker/springBootDocker.md)  
+
 [xxl-job搭建](/docs/devAndOps/build/xxljob.md)  
 [nacos搭建](/docs/devAndOps/build/nacosBuild.md)  
 [sentinel](/docs/devAndOps/build/sentinel.md)  
 [skywalking](/docs/devAndOps/build/skywalking.md)  
 
 [Nginx搭建](/docs/devAndOps/build/nginx.md)   
-
 [6. ELK搭建](/docs/devAndOps/build/elk.md)   
-
 [docsify](/docs/devAndOps/build/docsify.md)  
 [3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
 

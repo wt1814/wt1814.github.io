@@ -4,6 +4,7 @@
 - [1. Docker命令](#1-docker命令)
     - [1.1. 镜像操作命令](#11-镜像操作命令)
     - [1.2. 容器操作指令](#12-容器操作指令)
+        - [docker run和docker start的区别](#docker-run和docker-start的区别)
         - [1.2.1. docker run命令详解](#121-docker-run命令详解)
 
 <!-- /TOC -->
@@ -109,6 +110,13 @@
 
 ![image](http://182.92.69.8:8081/img/devops/docker/docker-7.png)  
 
+### docker run和docker start的区别
+<!-- 
+docker run和docker start的区别
+https://blog.csdn.net/weixin_44455388/article/details/120947771
+-->
+1. docker run ：创建一个新的容器并运行一个命令，是将镜像放入容器并启动容器。  
+2. docker start :启动一个或多个已经被停止的容器。类似用法的还有docker stop和docker restart。  
 
 
 ### 1.2.1. docker run命令详解  

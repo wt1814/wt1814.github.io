@@ -2,7 +2,7 @@
 
 - [1. Nginx搭建](#1-nginx搭建)
     - [1.1. Nginx搭建](#11-nginx搭建)
-    - [1.2. Nginx重启](#12-nginx重启)
+    - [1.2. Nginx启动](#12-nginx启动)
     - [1.3. Nginx日志查看](#13-nginx日志查看)
     - [1.4. 搭建图片服务器](#14-搭建图片服务器)
 
@@ -29,7 +29,7 @@ https://blog.csdn.net/weixin_43424481/article/details/124236742
 &emsp; 注：nginx的安装目录和解压目录非一个目录，并且 **都有conf配置**。    
 
 
-## 1.2. Nginx重启  
+## 1.2. Nginx启动  
 <!-- 
 
 Linux中nginx如何重启、启动与停止/设置开机自启动

@@ -8,7 +8,7 @@
             - [1.1.1.1. 问题](#1111-问题)
         - [1.1.2. 启动及停止](#112-启动及停止)
     - [1.2. 镜像加速](#12-镜像加速)
-    - [1.3. 私有仓库搭建](#13-私有仓库搭建)
+    - [windows安装docker](#windows安装docker)
 
 <!-- /TOC -->
 
@@ -31,6 +31,14 @@ https://blog.csdn.net/kfgauss/article/details/116744314
 <!-- 
 https://blog.csdn.net/m0_67390788/article/details/123830312
 -->
+
+启动命令如下：  
+    
+    systemctl start docker
+
+重启：
+
+    systemctl restart docker
 
 
 #### 1.1.1.1. 问题  
@@ -115,11 +123,11 @@ EOF
 ```
 
 
-## 1.3. 私有仓库搭建  
-......
+## windows安装docker  
 <!-- 
- Dockerfile构建镜像、registry私服搭建和阿里云的私服仓库构建
-https://mp.weixin.qq.com/s/3Lz9CcgIZXjwtwkPdkkqsA
+win11家庭中文版 安装docker 步骤
+https://blog.csdn.net/weixin_43841924/article/details/125600106
 
 -->
+
 
