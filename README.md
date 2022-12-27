@@ -1079,8 +1079,6 @@ es   esHD   kibana  logstash   filebeat
 [JMH](/docs/java/JVM/JMH.md)  
 [多种发布方式](/docs/system/publishe.md)  
 &emsp; [灰度发布](/docs/system/grayscalePublishe.md)  
-[Jenkins](/docs/devAndOps/jenkins/Jenkins.md)  
-&emsp; [6.Jenkins+Docker](/docs/devAndOps/jenkins/JenkinsDocker.md)  
 [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
 &emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
 &emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
@@ -1107,6 +1105,9 @@ es   esHD   kibana  logstash   filebeat
 &emsp; [k8s运维](/docs/devAndOps/k8s/tools.md)  
 &emsp; &emsp; [k8s监控](/docs/devAndOps/k8s/Monitor.md)  
 &emsp; [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
+[Jenkins](/docs/devAndOps/jenkins/Jenkins.md)  
+&emsp; [6.Docker搭建Jenkins](/docs/devAndOps/jenkins/DockerJenkins.md)  
+&emsp; [6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)  
 [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
 
 
