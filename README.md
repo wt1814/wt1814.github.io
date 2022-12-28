@@ -1091,7 +1091,7 @@ es   esHD   kibana  logstash   filebeat
 &emsp; [2.2.Docker私服](/docs/devAndOps/docker/registry.md)  
 &emsp; [镜像详解](/docs/devAndOps/docker/image.md)  
 &emsp; [容器详解](/docs/devAndOps/docker/container.md)  
-&emsp; [挂载目录](/docs/devAndOps/docker/mount.md)  
+&emsp; &emsp; [挂载/修改内部文件](/docs/devAndOps/docker/mount.md)  
 &emsp; [Docker工具](/docs/devAndOps/docker/tools.md)  
 [docker-compose](/docs/devAndOps/docker/docker-compose.md)  
 [Kubernetes](/docs/devAndOps/k8s/Kubernetes.md)      

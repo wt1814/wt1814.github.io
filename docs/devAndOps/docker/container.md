@@ -113,7 +113,6 @@ https://blog.csdn.net/dkfajsldfsdfsd/article/details/88789360
 https://www.baidu.com/index.php?tn=monline_3_dg
 https://blog.csdn.net/lucky_ykcul/article/details/96474854
 
-
 容器间数据共享的原理，是在宿主机上开辟一块空间，该空间会被其他容器同时共享。我们可以把页面文件存放一份到宿主机的这块磁盘空间中，其他容器挂载这个文件即可。以后更新所有的web服务的页面，我们只需要更改宿主机的这份页面文件即可。
 
 容器间共享数据-挂载

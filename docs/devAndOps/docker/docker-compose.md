@@ -5,7 +5,7 @@
 - [1. docker-compose](#1-docker-compose)
     - [1.1. 是什么？](#11-是什么)
     - [1.2. 二进制包安装](#12-二进制包安装)
-    - [执行](#执行)
+    - [1.3. 基础操作](#13-基础操作)
 
 <!-- /TOC -->
 
@@ -32,6 +32,20 @@ linux安装docker-compose
 https://www.cnblogs.com/demoduan/p/15434532.html
 
 
-## 执行
+## 1.3. 基础操作
+
+<!-- 
 docker-compose命令通过指定文件运行
 https://blog.csdn.net/weixin_40959890/article/details/125524383
+
+-->
+
+启动服务
+docker-compose -f docker-compose_wws.yml up -d
+
+停止服务
+docker-compose -f docker-compose_wws.yml stop
+
+停止并删除服务(可能会切断容器间的网络)
+docker-compose -f docker-compose_jenkins.yml down
+
