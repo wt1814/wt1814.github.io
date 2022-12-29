@@ -11,7 +11,7 @@
 <!-- 
 XXX docker使用dockerFile自定义Jenkins
 使用docker来启动jenkins才发现里面有一大堆坑，每次都要安装maven、jdk太麻烦。于是写了个dockerfile，一键生成装有maven、jdk1.8、jenkins的镜像。  
-https://blog.csdn.net/qq_35031494/article/details/125426380
+https://blog.csdn.net/qq_35031494/article/details/125426380  文档中dockerfile文件maven目录有问题  
 按照这份文档配置jdk和maven时， cd /etc -> cat profile 查看系统环境变量
 查看数据卷信息 https://blog.csdn.net/m0_64284147/article/details/126571316
 

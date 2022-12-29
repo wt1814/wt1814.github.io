@@ -68,8 +68,9 @@
     - [1.20. Linux操作系统](#120-linux操作系统)
     - [1.21. Linux服务器搭建](#121-linux服务器搭建)
         - [1.21.1. Linux基础](#1211-linux基础)
-        - [1.21.2. DevOps](#1212-devops)
+        - [1.21.2. DevOps介绍](#1212-devops介绍)
         - [1.21.3. 搭建-研发](#1213-搭建-研发)
+    - [Docker和k8s](#docker和k8s)
         - [1.21.4. 搭建-需求、测试](#1214-搭建-需求测试)
     - [1.22. 监控和统计](#122-监控和统计)
         - [1.22.1. 监控](#1221-监控)
@@ -1062,7 +1063,7 @@ es   esHD   kibana  logstash   filebeat
 [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
 [Python3](/docs/devAndOps/centOS/Python3.md)  
 
-### 1.21.2. DevOps  
+### 1.21.2. DevOps介绍    
 [项目管理](/docs/devAndOps/build/projectManagement.md)  
 [CI/CD](/docs/devAndOps/build/CICD.md)  
 [Devops](/docs/devAndOps/build/devOps.md)  
@@ -1079,6 +1080,41 @@ es   esHD   kibana  logstash   filebeat
 [JMH](/docs/java/JVM/JMH.md)  
 [多种发布方式](/docs/system/publishe.md)  
 &emsp; [灰度发布](/docs/system/grayscalePublishe.md)  
+[Jenkins](/docs/devAndOps/jenkins/Jenkins.md)  
+&emsp; [6.Docker搭建Jenkins](/docs/devAndOps/jenkins/DockerJenkins.md)  
+&emsp; [Jenkins构建Java项目](/docs/devAndOps/jenkins/JenkinsJava.md)  
+
+
+### 1.21.3. 搭建-研发
+[3. JDK安装](/docs/devAndOps/build/JDKBuild.md)  
+[4. Git安装](/docs/devAndOps/git/GitBuild.md)  
+[5. GitLab搭建](/docs/devAndOps/git/GitLab.md)  
+[Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
+[Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
+[tomcat安装](/docs/devAndOps/build/tomcatBuild.md)  
+[arthas](/docs/devAndOps/build/arthas.md)  
+
+[MySql](/docs/devAndOps/build/MySql.md)   
+[MHA搭建MySql主从](/docs/devAndOps/build/MySqlAvailability.md)   
+[MySql审核平台archery](/docs/devAndOps/build/SqlArchery.md)  
+[Redis](/docs/devAndOps/build/Redis.md)  
+[RocketMQ搭建](/docs/devAndOps/build/RocketBuild.md)  
+
+[Docker部署springBoot](/docs/devAndOps/docker/springBootDocker.md)  
+
+
+
+[xxl-job搭建](/docs/devAndOps/build/xxljob.md)  
+[nacos搭建](/docs/devAndOps/build/nacosBuild.md)  
+[sentinel](/docs/devAndOps/build/sentinel.md)  
+[skywalking](/docs/devAndOps/build/skywalking.md)  
+
+[Nginx搭建](/docs/devAndOps/build/nginx.md)   
+[6. ELK搭建](/docs/devAndOps/build/elk.md)   
+[docsify](/docs/devAndOps/build/docsify.md)  
+[3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
+
+## Docker和k8s
 [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
 &emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
 &emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
@@ -1105,38 +1141,8 @@ es   esHD   kibana  logstash   filebeat
 &emsp; [k8s运维](/docs/devAndOps/k8s/tools.md)  
 &emsp; &emsp; [k8s监控](/docs/devAndOps/k8s/Monitor.md)  
 &emsp; [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
-[Jenkins](/docs/devAndOps/jenkins/Jenkins.md)  
-&emsp; [6.Docker搭建Jenkins](/docs/devAndOps/jenkins/DockerJenkins.md)  
-&emsp; [6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)  
-[LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
+[6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)  
 
-
-### 1.21.3. 搭建-研发
-[3. JDK安装](/docs/devAndOps/build/JDKBuild.md)  
-[4. Git安装](/docs/devAndOps/git/GitBuild.md)  
-[5. GitLab搭建](/docs/devAndOps/git/GitLab.md)  
-[Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
-[Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
-[tomcat安装](/docs/devAndOps/build/tomcatBuild.md)  
-[arthas](/docs/devAndOps/build/arthas.md)  
-
-[MySql](/docs/devAndOps/build/MySql.md)   
-[MHA搭建MySql主从](/docs/devAndOps/build/MySqlAvailability.md)   
-[MySql审核平台archery](/docs/devAndOps/build/SqlArchery.md)  
-[Redis](/docs/devAndOps/build/Redis.md)  
-[RocketMQ搭建](/docs/devAndOps/build/RocketBuild.md)  
-
-[docker部署springBoot](/docs/devAndOps/docker/springBootDocker.md)  
-
-[xxl-job搭建](/docs/devAndOps/build/xxljob.md)  
-[nacos搭建](/docs/devAndOps/build/nacosBuild.md)  
-[sentinel](/docs/devAndOps/build/sentinel.md)  
-[skywalking](/docs/devAndOps/build/skywalking.md)  
-
-[Nginx搭建](/docs/devAndOps/build/nginx.md)   
-[6. ELK搭建](/docs/devAndOps/build/elk.md)   
-[docsify](/docs/devAndOps/build/docsify.md)  
-[3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
 
 ### 1.21.4. 搭建-需求、测试
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
@@ -1144,6 +1150,7 @@ es   esHD   kibana  logstash   filebeat
 [jira](/docs/devAndOps/build/jira.md)  
 [Jmeter](/docs/devAndOps/test/Jmeter.md)  
 [allure](/docs/devAndOps/test/allure.md)  
+[LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
 
 ------------
 [VMWare esxi创建虚拟机](/docs/devAndOps/centOS/VMWareEsxi.md)  
@@ -1174,8 +1181,6 @@ es   esHD   kibana  logstash   filebeat
 [Json](/docs/software/Json.md)  
 [jd-jui](/docs/software/JDJUI.md)  
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
-[MAC系统](/docs/software/MAC.md)  
-
 
 
 --------
