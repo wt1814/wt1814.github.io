@@ -16,5 +16,11 @@
 
 
 ## 1.2. 推送服务器  
+<!-- 
+Jenkins部署springboot项目至远程服务器
+https://blog.csdn.net/HIM2014/article/details/126579634
+
+-->
+
 
 

@@ -47,6 +47,14 @@ docker run -d \
 
 3. 编译  
     1. 安装maven插件  
-    
+
+
+<!-- 
+
+用最新jenkins.war包 构建jenkins
+https://blog.csdn.net/whh18254122507/article/details/81783430
+https://www.cnblogs.com/namedgx/p/15420711.html
+-->
+
 
 
