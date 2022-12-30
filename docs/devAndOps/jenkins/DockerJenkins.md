@@ -33,6 +33,13 @@ docker run -d \
 /var/jenkins_home已经挂载到/data/jenkins/
 -->
 
+
+<!-- 
+jenkins官网：https://www.jenkinschina.com/doc/book/installing/  
+建议使用的Docker映像是jenkinsci/blueocean image(来自 the Docker Hub repository)。  
+
+-->
+
 &emsp; 使用docker来启动jenkins才发现里面有一大堆坑，每次都要安装maven、jdk太麻烦。于是写了个dockerfile，一键生成装有maven、jdk1.8、jenkins的镜像。   
 
 1. DockerFile安装jenkins  
