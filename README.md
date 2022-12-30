@@ -33,8 +33,7 @@
         - [1.8.1. 高并发相关概念](#181-高并发相关概念)
         - [1.8.2. 缓存](#182-缓存)
             - [1.8.2.1. Redis](#1821-redis)
-            - [1.8.2.2. Caffeine+Redis二级缓存](#1822-caffeineredis二级缓存)
-            - [1.8.2.3. 集成两级缓存j2Cache](#1823-集成两级缓存j2cache)
+            - [1.8.2.2. 二级缓存](#1822-二级缓存)
         - [1.8.3. 限流降级](#183-限流降级)
         - [1.8.4. 分布式消息队列](#184-分布式消息队列)
             - [1.8.4.1. RocketMQ](#1841-rocketmq)
@@ -368,7 +367,7 @@
 
 ### 1.3.3. ShardingSphere
 [ShardingSphere](/docs/SQL/shardingsphere.md)  
-[ShardingSphere](/docs/SQL/shardingsphereTransaction.md)  
+[shardingsphere分布式事务](/docs/SQL/shardingsphereTransaction.md)  
 
 
 ## 1.4. Web服务器  
@@ -420,7 +419,7 @@
 [MyBatis使用](/docs/SSM/MyBatis/MybatisUse.md)  
 &emsp; [MyBatis使用教程](/docs/SSM/MyBatis/Mybatis.md)  
 &emsp; [MyBatis高级使用](/docs/SSM/MyBatis/MybatisSenior.md)  
-&emsp; &emsp; [mybatis-generator](/docs/SSM/MyBatis/MybatisGenerator.md) 
+&emsp; &emsp; [mybatis-generator](/docs/SSM/MyBatis/MybatisGenerator.md)  
 &emsp; [MyBatis大数据量查询](/docs/SSM/MyBatis/BigData.md)  
 &emsp; [MyBatis批量插入或更新](/docs/SSM/MyBatis/BigData.md)  
 &emsp; [PageHelper](/docs/SSM/MyBatis/PageHelper.md)  
@@ -629,11 +628,9 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [Redis常见延迟问题](/docs/microService/Redis/delayProblem.md)  
 &emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
 
-#### 1.8.2.2. Caffeine+Redis二级缓存  
-[二级缓存](/docs/microService/Redis/doubleCache.md)  
-
-#### 1.8.2.3. 集成两级缓存j2Cache  
-[二级缓存](/docs/microService/Redis/j2Cache.md)  
+#### 1.8.2.2. 二级缓存  
+[Caffeine+Redis二级缓存](/docs/microService/Redis/doubleCache.md)  
+[集成两级缓存j2Cache](/docs/microService/Redis/j2Cache.md)  
 
 
 ### 1.8.3. 限流降级
@@ -838,7 +835,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 
 
 ### 1.12.2. 前后端分离  
-&emsp; [跨域和内外网隔离](/docs/web/Cross.md)  
+[跨域和内外网隔离](/docs/web/Cross.md)  
 
 ### 1.12.3. 互联网安全架构  
 [源码安全](/docs/web/codeSecurity.md)   
