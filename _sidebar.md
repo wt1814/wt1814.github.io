@@ -832,8 +832,6 @@
         * [Linux监控指标](/docs/devAndOps/monitor/indicators.md)  
         * [工具prometheus](/docs/devAndOps/monitor/prometheus.md)  
         * [监控系统](/docs/devAndOps/monitor/monitor.md)  
-        * [中间件监控](/docs/devAndOps/monitor/middleware.md)  
-        * [业务监控](/docs/devAndOps/monitor/business.md)  
     * 统计  
         * [统计PV](/docs/devAndOps/monitor/StatisticsPV.md)  
 * 常用工具  
