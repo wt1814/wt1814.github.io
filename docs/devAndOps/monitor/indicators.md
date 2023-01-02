@@ -50,7 +50,7 @@ https://forum.huawei.com/enterprise/zh/thread-663521.html
 &emsp; Zabbix是一个分布式监控系统，支持多种采集方式和采集客户端，有专用的Agent代理，也支持SNMP、IPMI、JMX、Telnet、SSH等多种协议，它将采集到的数据存放到数据库，然后对其进行分析整理，达到条件触发告警。其灵活的扩展性和丰富的功能是其他监控系统所不能比的。相对来说，它的总体功能做的非常优秀。从以上各种监控系统的对比来看，Zabbix都是具有优势的，其丰富的功能、可扩展的能力、二次开发的能力和简单易用的特点，读者只要稍加学习，即可构建自己的监控系统。  
 
 &emsp; prometheus  
-&emsp; Prometheus 是一套开源的系统监控报警框架。它启发于Google的borgmon 监控系统，由工作在 SoundCloud 的 google 前员工在 2012 年创建，作为社区开源项目进行开发，并于 2015 年正式发布。Prometheus是最近几年开始流行的一个新兴监控告警工具，特别是kubernetes的流行带动了prometheus的应用。  
+&emsp; Prometheus 是一套开源的系统监控报警框架。它启发于Google的borgmon 监控系统，由工作在SoundCloud 的 google 前员工在 2012 年创建，作为社区开源项目进行开发，并于 2015 年正式发布。Prometheus是最近几年开始流行的一个新兴监控告警工具，特别是kubernetes的流行带动了prometheus的应用。  
 
 &emsp; 小米的监控系统：open-falcon。open-falcon的目标是做最开放、最好用的互联网企业级监控产品。  
 
