@@ -1154,8 +1154,8 @@ es   esHD   kibana  logstash   filebeat
 
 ## 1.22. 监控和统计
 ### 1.22.1. 监控
-[Linux监控指标](/docs/devAndOps/monitor/indicators.md)  
-[监控系统](/docs/devAndOps/monitor/monitor.md)  
+[监控](/docs/devAndOps/monitor/indicators.md)  
+&emsp; [监控系统](/docs/devAndOps/monitor/monitor.md)  
 [工具prometheus](/docs/devAndOps/monitor/prometheus.md)  
 
 ### 1.22.2. 统计  

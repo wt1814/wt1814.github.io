@@ -55,6 +55,8 @@ https://forum.huawei.com/enterprise/zh/thread-663521.html
 &emsp; 小米的监控系统：open-falcon。open-falcon的目标是做最开放、最好用的互联网企业级监控产品。  
 
 ## 1.2. 监控系统
+
+
 ### 1.2.1. 硬件监控
 &emsp; 早期我们通过机房巡检的方式，查看硬件设备灯光闪烁情况判断是否故障，这样非常浪费人力，并且是重复性无技术含量的工作，大家懂得。  
 
