@@ -5,6 +5,8 @@
 - [1. Dockerfile搭建Jenkins](#1-dockerfile搭建jenkins)
     - [1.1. Dockerfile搭建Jenkins](#11-dockerfile搭建jenkins)
     - [1.2. Dockerfile使用jenkins.war包构建jenkins](#12-dockerfile使用jenkinswar包构建jenkins)
+    - [1.3. 使用rpm包安装jenkins](#13-使用rpm包安装jenkins)
+    - [1.4. 小结](#14-小结)
 
 <!-- /TOC -->
 
@@ -76,4 +78,20 @@ https://blog.csdn.net/weixin_44663310/article/details/125565946
 -->
 
 
+## 1.3. 使用rpm包安装jenkins
+<!-- 
 
+https://blog.csdn.net/weixin_43895083/article/details/127226397
+-->
+
+
+## 1.4. 小结
+<!-- 
+根据下面文章自己写Dockerfile
+
+https://blog.csdn.net/qq_35031494/article/details/125426380 
+https://blog.csdn.net/weixin_43895083/article/details/127226397
+
+shell脚本修改文件
+https://blog.51cto.com/u_12660945/5161654
+-->
