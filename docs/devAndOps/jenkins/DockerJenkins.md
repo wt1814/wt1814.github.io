@@ -3,11 +3,15 @@
 <!-- TOC -->
 
 - [1. Dockerfile搭建Jenkins](#1-dockerfile搭建jenkins)
+    - [1.1. Dockerfile搭建Jenkins](#11-dockerfile搭建jenkins)
+    - [1.2. Dockerfile使用jenkins.war包构建jenkins](#12-dockerfile使用jenkinswar包构建jenkins)
 
 <!-- /TOC -->
 
 
 # 1. Dockerfile搭建Jenkins  
+
+## 1.1. Dockerfile搭建Jenkins
 <!-- 
 XXX docker使用dockerFile自定义Jenkins
 使用docker来启动jenkins才发现里面有一大堆坑，每次都要安装maven、jdk太麻烦。于是写了个dockerfile，一键生成装有maven、jdk1.8、jenkins的镜像。  
@@ -56,11 +60,19 @@ jenkins官网：https://www.jenkinschina.com/doc/book/installing/
     1. 安装maven插件  
 
 
+## 1.2. Dockerfile使用jenkins.war包构建jenkins
+
 <!-- 
 
 用最新jenkins.war包 构建jenkins
 https://blog.csdn.net/whh18254122507/article/details/81783430
 https://www.cnblogs.com/namedgx/p/15420711.html
+https://www.bbsmax.com/A/gVdnMXBN5W/
+
+
+dockerfile构建jenkins流水线
+https://blog.csdn.net/weixin_44663310/article/details/125565946
+
 -->
 
 
