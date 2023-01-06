@@ -95,3 +95,52 @@ https://blog.csdn.net/weixin_43895083/article/details/127226397
 shell脚本修改文件
 https://blog.51cto.com/u_12660945/5161654
 -->
+
+
+```text
+FROM  centos:centos7.9.2009
+
+MAINTAINER wt1814@163.com
+
+# wget和建目录
+RUN yum install wget lrzsz -y
+RUN yum install -y git 
+RUN mkdir -p /usr/local/java
+RUN mkdir -p /usr/local/maven
+RUN mkdir -p /usr/local/jenkins
+
+# 安装jdk
+RUN cd /usr/local/java && wget https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u201-linux-x64.tar.gz && tar -zxvf jdk-8u201-linux-x64.tar.gz
+
+# 配置jdk环境  
+# RUN echo 'export JAVA_HOME=/usr/local/java/jdk1.8.0_201'>>/etc/profile && echo 'export JRE_HOME=\${JAVA_HOME}/jre'>>/etc/profile && echo 'export CLASSPATH=.:\${JAVA_HOME}/lib:\${JRE_HOME}/lib'>>/etc/profile && echo 'export PATH=\${JAVA_HOME}/bin:\$PATH'>>/etc/profile
+
+# 配置jdk环境
+RUN echo 'JAVA_HOME=/usr/local/java/jdk1.8.0_201'>>/etc/profile &&  echo 'CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/'>>/etc/profile &&  echo 'PATH=$PATH:$JAVA_HOME/bin'>>/etc/profile &&  echo 'PATH=$PATH:$JAVA_HOME/bin'>>/etc/profile &&  echo 'export PATH JAVA_HOME CLASSPATH'>>/etc/profile
+
+#
+RUN /bin/bash -c "source /etc/profile"
+
+# 安装maven
+RUN cd /usr/local/maven && wget https://mirrors.aliyun.com/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz && tar -zxvf apache-maven-3.6.3-bin.tar.gz
+
+
+# 配置maven环境变量
+RUN echo "export MAVEN_HOME=/usr/local/maven/apache-maven-3.6.3">>/etc/profile && echo 'export PATH=$PATH:$MAVEN_HOME/bin'>>/etc/profile && ln -s /usr/local/maven/apache-maven-3.6.3/bin/mvn /usr/bin/
+
+# 
+RUN /bin/bash -c "source /etc/profile"
+
+
+# 安装openjdk
+RUN yum install -y java-1.8.0-openjdk
+
+
+# 安装jenkins
+RUN cd /usr/local/jenkins
+RUN wget --no-check-certificate https://mirrors.jenkins.io/war-stable/2.346.3/jenkins.war  
+# cmd nohup java -jar jenkins.war --httpPort=8097 &
+ENTRYPOINT ["java","-jar","jenkins.war","--httpPort=8097"]
+
+EXPOSE 8097
+```
