@@ -114,6 +114,7 @@
     * [Arthas](/docs/java/JVM/ArthasSummary.md)  
         * [Arthas工具](/docs/java/JVM/Arthas.md)  
         * [Arthas常用命令](/docs/java/JVM/ArthasCommand.md)  
+        * [线上Debu](/docs/java/JVM/OnlineDebug.md)    
 * [HotSpot](/docs/java/HotSpot/HotSpot.md)  
 * 并发编程  
     * [并发编程总结](/docs/java/concurrent/summary.md)  
@@ -781,6 +782,7 @@
             * [Docker常用命令](/docs/devAndOps/docker/command.md)  
             * [对象标签使用](/docs/devAndOps/docker/objectLabel.md)  
             * [DockerFile](/docs/devAndOps/docker/file.md)  
+            * [ENTRYPOINT和CMD](/docs/devAndOps/docker/ENTRYPOINT.md)    
         * [镜像详解](/docs/devAndOps/docker/image.md)  
         * [容器详解](/docs/devAndOps/docker/container.md)  
         * [挂载目录](/docs/devAndOps/docker/mount.md)  

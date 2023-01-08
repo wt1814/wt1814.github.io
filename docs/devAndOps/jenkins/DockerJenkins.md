@@ -54,12 +54,13 @@ jenkins官网：https://www.jenkinschina.com/doc/book/installing/
     1. ip:映射端口
     2. 进入容器docker exec查看密码
 
-2. 配置全局环境  
+2. 配置全局环境jdk和maven  
     1. 进入容器
     2. cd /ect -> cat profile 查看系统环境变量 
 
-3. 编译  
-    1. 安装maven插件  
+3. 安装插件  
+    1. 安装maven插件Maven Integration
+    2. Publish Over SSH      
 
 
 ## 1.2. Dockerfile使用jenkins.war包构建jenkins
