@@ -4,7 +4,7 @@
 - [1. Jenkins构建Java项目](#1-jenkins构建java项目)
     - [1.1. 打包](#11-打包)
     - [1.2. 推送服务器](#12-推送服务器)
-    - [启动脚本restart.sh](#启动脚本restartsh)
+    - [1.3. 启动脚本restart.sh](#13-启动脚本restartsh)
 
 <!-- /TOC -->
 
@@ -38,7 +38,7 @@ Send files or execute commands over SSH
 ![image](http://182.92.69.8:8081/img/devops/jenkins/jenkins-5.png)    
 
 
-## 启动脚本restart.sh
+## 1.3. 启动脚本restart.sh
 
 ```text
 #!/bin/bash -ilex
