@@ -114,31 +114,26 @@ FROM  centos:centos7.9.2009
 MAINTAINER wangtap1814@163.com
 
 # wget和建目录
-RUN yum install wget lrzsz -y
-RUN yum install -y git 
-RUN mkdir -p /usr/local/java
-RUN mkdir -p /usr/local/maven
-RUN mkdir -p /usr/local/jenkins
+RUN yum install wget lrzsz -y     && yum install -y git      && mkdir -p /usr/local/java        && mkdir -p /usr/local/maven        &&  mkdir -p /usr/local/jenkins
 
-# 安装jdk
+# 安装jdk 和配置jdk
 RUN cd /usr/local/java && wget https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u201-linux-x64.tar.gz && tar -zxvf jdk-8u201-linux-x64.tar.gz
 # 配置jdk环境
 RUN echo 'JAVA_HOME=/usr/local/java/jdk1.8.0_201'>>/etc/profile &&  echo 'CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/'>>/etc/profile &&  echo 'PATH=$PATH:$JAVA_HOME/bin'>>/etc/profile &&  echo 'PATH=$PATH:$JAVA_HOME/bin'>>/etc/profile &&  echo 'export PATH JAVA_HOME CLASSPATH'>>/etc/profile
-#
-RUN /bin/bash -c "source /etc/profile"
 
 # 安装maven
 RUN cd /usr/local/maven && wget https://mirrors.aliyun.com/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz && tar -zxvf apache-maven-3.6.3-bin.tar.gz
 # 配置maven环境变量
 RUN echo "export MAVEN_HOME=/usr/local/maven/apache-maven-3.6.3">>/etc/profile && echo 'export PATH=$PATH:$MAVEN_HOME/bin'>>/etc/profile && ln -s /usr/local/maven/apache-maven-3.6.3/bin/mvn /usr/bin/
-# 
+
+# 更新环境变量
 RUN /bin/bash -c "source /etc/profile"
 
 # 安装openjdk
 RUN yum install -y java-1.8.0-openjdk
 
 # 安装jenkins
-RUN cd /usr/local/jenkins
+RUN cd /usr/local/jenkins    
 RUN wget --no-check-certificate https://mirrors.jenkins.io/war-stable/2.346.3/jenkins.war  
 
 # 容器启动时执行的命令  
