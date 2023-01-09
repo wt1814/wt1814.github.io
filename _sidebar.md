@@ -742,7 +742,6 @@
             * [进程管理](/docs/Linux/ProcessManagement.md)  
             * [***日志操作命令](/docs/Linux/LogOperation.md)  
         * [shell编程](/docs/Linux/shell.md)  
-    * [堡垒机](/docs/Linux/baolei.md)  
     * [Linux系统性能](/docs/Linux/systemPerformance.md)  
         * [Linux性能优化常用命令汇总](/docs/Linux/PerformanceCommand.md)  
         * [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  

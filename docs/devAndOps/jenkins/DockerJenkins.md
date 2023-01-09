@@ -79,6 +79,16 @@ https://blog.csdn.net/weixin_44663310/article/details/125565946
 -->
 
 
+docker build -f dockerfile .
+
+docker build -t="jenkins:v1" .
+docker run --name test1 -itd -p 8080:8080 jenkins:v3 /bin/bash
+
+
+docker build ./ -t="myjenkins"
+docker run -d -p 8097:8097 --name jenkins -v /home/jenkins_home:/var/jenkins_home -v /etc/localtime:/etc/localtime myjenkins:v1  
+
+
 ## 1.3. 使用rpm包安装jenkins
 <!-- 
 
@@ -130,6 +140,8 @@ RUN yum install -y java-1.8.0-openjdk
 # 安装jenkins
 RUN cd /usr/local/jenkins
 RUN wget --no-check-certificate https://mirrors.jenkins.io/war-stable/2.346.3/jenkins.war  
+
+# 容器启动时执行的命令  
 # cmd nohup java -jar jenkins.war --httpPort=8097 &
 ENTRYPOINT ["java","-jar","jenkins.war","--httpPort=8097"]
 

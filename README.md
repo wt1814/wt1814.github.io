@@ -69,14 +69,14 @@
         - [1.21.1. Linux基础](#1211-linux基础)
         - [1.21.2. DevOps介绍](#1212-devops介绍)
         - [1.21.3. 搭建-研发](#1213-搭建-研发)
-    - [Docker和k8s](#docker和k8s)
-        - [1.21.4. 搭建-需求、测试](#1214-搭建-需求测试)
-    - [1.22. 监控和统计](#122-监控和统计)
-        - [1.22.1. 监控](#1221-监控)
-        - [1.22.2. 统计](#1222-统计)
-    - [1.23. 常用研发工具](#123-常用研发工具)
-    - [1.24. 算法](#124-算法)
-    - [1.25. 前端知识](#125-前端知识)
+    - [1.22. Docker和k8s](#122-docker和k8s)
+        - [1.22.1. 搭建-需求、测试](#1221-搭建-需求测试)
+    - [1.23. 监控和统计](#123-监控和统计)
+        - [1.23.1. 监控](#1231-监控)
+        - [1.23.2. 统计](#1232-统计)
+    - [1.24. 常用研发工具](#124-常用研发工具)
+    - [1.25. 算法](#125-算法)
+    - [1.26. 前端知识](#126-前端知识)
 
 <!-- /TOC -->
 
@@ -1058,6 +1058,7 @@ es   esHD   kibana  logstash   filebeat
 &emsp; [扩容](/docs/devAndOps/centOS/dilatation.md)  
 [防火墙](/docs/Linux/build/firewall.md)  
 [堡垒机](/docs/Linux/build/FortressMachine.md)  
+[Linux多种安装软件方式](/docs/Linux/build/InstallMethod.md) 
 [1. yum](/docs/devAndOps/centOS/yum.md)  
 [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
 [Python3](/docs/devAndOps/centOS/Python3.md)  
@@ -1109,7 +1110,7 @@ es   esHD   kibana  logstash   filebeat
 [docsify](/docs/devAndOps/build/docsify.md)  
 [3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
 
-## Docker和k8s
+## 1.22. Docker和k8s
 [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
 &emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
 &emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
@@ -1141,7 +1142,8 @@ es   esHD   kibana  logstash   filebeat
 [6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)  
 
 
-### 1.21.4. 搭建-需求、测试
+### 1.22.1. 搭建-需求、测试
+
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
 [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
 [jira](/docs/devAndOps/build/jira.md)  
@@ -1155,18 +1157,18 @@ es   esHD   kibana  logstash   filebeat
 
 ------------  
 
-## 1.22. 监控和统计
-### 1.22.1. 监控
+## 1.23. 监控和统计
+### 1.23.1. 监控
 [监控](/docs/devAndOps/monitor/indicators.md)  
 &emsp; [监控系统](/docs/devAndOps/monitor/monitor.md)  
 [工具prometheus](/docs/devAndOps/monitor/prometheus.md)  
 
-### 1.22.2. 统计  
+### 1.23.2. 统计  
 [统计PV](/docs/devAndOps/monitor/StatisticsPV.md)  
 
 -----------------------
 
-## 1.23. 常用研发工具  
+## 1.24. 常用研发工具  
 [Idea](/docs/software/idea/idea.md)  
 [postman](/docs/software/postman.md)  
 [抓包Charles](/docs/software/charles.md)  
@@ -1180,7 +1182,7 @@ es   esHD   kibana  logstash   filebeat
 
 --------
 
-## 1.24. 算法  
+## 1.25. 算法  
 [红黑树](/docs/function/redBlack.md)  
 [复杂数据结构](/docs/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/function/SkipList.md)  
@@ -1193,5 +1195,5 @@ es   esHD   kibana  logstash   filebeat
 [大数据和空间限制](/docs/function/bigdata.md)  
 &emsp; [内存只有 2G，如何对 100 亿数据进行排序？](/docs/function/SmallMemory.md)  
 
-## 1.25. 前端知识  
+## 1.26. 前端知识  
 [nodejs](/docs/front/nodejs.md)  
