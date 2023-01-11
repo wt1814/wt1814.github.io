@@ -18,8 +18,10 @@
 http://www.3qphp.com/java/framework/3717.html
 整体流程： https://zhuanlan.zhihu.com/p/534014249
 
-
 https://zhuanlan.zhihu.com/p/534014249
+
+
+
 Docker：使用dockerFile创建镜像（演示war包和jar包）
 https://blog.csdn.net/weixin_60670696/article/details/125442933?spm=1001.2101.3001.6650.11&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-11-125442933-blog-125921262.pc_relevant_recovery_v2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-11-125442933-blog-125921262.pc_relevant_recovery_v2&utm_relevant_index=15
 Docker 部署war包项目
@@ -28,9 +30,16 @@ https://blog.51cto.com/u_15127559/4720269
 
 -->
 
+将docker项目包和Dockerfile一起上上传到服务器同一个目录下，进入后构建镜像  
+
 
 ## 1.1. 方式一：Dockerfile部署Jar包    
+
+
+
 ### 1.1.1. 编写Dockerfile  
+**注意Dockerfile放到根目录下，否则【ADD target/jenkinstest.jar app.jar】问题不好解决**  
+  
 
 ```text
 #基础镜像
