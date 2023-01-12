@@ -107,6 +107,12 @@ echo "System Stop"
 ```
 
 ## 1.2. jenkins通过docker启动项目  
+<!-- 
+docker in docker
+https://juejin.cn/post/6855559520950452238
+
+-->
+
 ### 1.2.1. 推送jar和Dockerfile到远程服务器  
 <!-- 
 Jenkins+Docker 一键自动化部署 SpringBoot 项目
