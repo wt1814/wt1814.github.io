@@ -107,11 +107,20 @@ echo "System Stop"
 ## 1.2. jenkins通过docker启动项目  
 将workspace下的jar和docker一起推送到远程同一目录下，然后执行shell脚本。  
 
+推送Dockerfile到目标服务器  
+![image](http://182.92.69.8:8081/img/devops/jenkins/jenkins-6.png)    
 
-cd /root/.jenkins/workspace/jenkinstestdocker/jenkinstest
-docker stop jenkinstest || true
-docker rm jenkinstest || true
+shell脚本  
+
+```text
+cd /usr/work/jenkinstest
+# 删除容器
+docker stop `docker ps -a| grep jenkinstest | awk '{print $1}' `
+docker rm   `docker ps -a| grep jenkinstest | awk '{print $1}' `
+# 删除旧镜像
 docker rmi jenkinstest || true
+# 构建新镜像
 docker build -t jenkinstest .
-docker run -d -p 8089:8089 jenkinstest
-
+# 启动容器
+docker run -d -p 8090:8089 jenkinstest
+```
