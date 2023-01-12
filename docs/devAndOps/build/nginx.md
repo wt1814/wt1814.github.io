@@ -8,17 +8,14 @@
     - [1.5. HTTP服务器](#15-http服务器)
     - [1.6. 反向代理](#16-反向代理)
     - [1.7. 负载均衡](#17-负载均衡)
-    - [1.8. 动静分离](#18-动静分离)
 
 <!-- /TOC -->
 
 
 # 1. Nginx搭建  
 <!-- 
-
 基于Docker实现nginx+keepalived实现web高可用web系统集群视频教程
 https://mp.weixin.qq.com/s/UaGeAXiTqiG_wstxke5N4Q
-
 Nginx 高可用集群解决方案 Nginx + Keepalived
 https://mp.weixin.qq.com/s/0OqutgVQuBiCcjuZNL8vFw
 -->
@@ -79,7 +76,7 @@ server {
 	   access_log off;
    }
 
-
+   # 搭建图片服务器  
    location  /img/ {
 		alias  /usr/work/workspace/pic-host/images/;
 		autoindex on;
@@ -100,8 +97,7 @@ server {
 
 ## 1.6. 反向代理
 
+
 ## 1.7. 负载均衡 
 
-
-## 1.8. 动静分离  
 
