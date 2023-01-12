@@ -2,7 +2,11 @@
 
 &emsp; [Nginx介绍](/docs/system/loadBalance/Nginx/nginxIntroduce.md)  
 &emsp; [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
+&emsp; &emsp; [Nginx配置参数中文说明](/docs/system/loadBalance/Nginx/nginxConfig.md)   
+&emsp; &emsp; [Nginx负载](/docs/system/loadBalance/Nginx/nginxLoad.md)   
+&emsp; &emsp; [Nginx日志](/docs/system/loadBalance/Nginx/nginxLog.md)   
 &emsp; [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
+&emsp; [Nginx执行原理](/docs/system/loadBalance/Nginx/nginxPrinciple.md)  
 
 
 <!-- 
