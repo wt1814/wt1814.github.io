@@ -7,6 +7,8 @@
         - [1.1.2. 推送服务器](#112-推送服务器)
         - [1.1.3. 启动脚本restart.sh](#113-启动脚本restartsh)
     - [1.2. jenkins通过docker启动项目](#12-jenkins通过docker启动项目)
+        - [1.2.1. 推送jar和Dockerfile到远程服务器](#121-推送jar和dockerfile到远程服务器)
+        - [1.2.2. 上传镜像方式](#122-上传镜像方式)
 
 <!-- /TOC -->
 
@@ -105,12 +107,13 @@ echo "System Stop"
 ```
 
 ## 1.2. jenkins通过docker启动项目  
+### 1.2.1. 推送jar和Dockerfile到远程服务器  
 <!-- 
 Jenkins+Docker 一键自动化部署 SpringBoot 项目
 https://blog.csdn.net/weixin_36380516/article/details/126326838
 -->
 
-将workspace下的jar和docker一起推送到远程同一目录下，然后执行shell脚本。  
+将workspace下的jar和Dockerfile一起推送到远程同一目录下，然后执行shell脚本。  
 
 推送Dockerfile到目标服务器  
 ![image](http://182.92.69.8:8081/img/devops/jenkins/jenkins-6.png)    
@@ -129,3 +132,11 @@ docker build -t jenkinstest .
 # 启动容器
 docker run -d -p 8090:8089 jenkinstest
 ```
+
+
+### 1.2.2. 上传镜像方式  
+<!-- 
+
+在jenkins本机就把镜像构建好，上传镜像到harbor仓库后再去通知目标服务器去自动拉取镜像部署
+https://blog.csdn.net/qq_42883074/article/details/126009573
+-->
