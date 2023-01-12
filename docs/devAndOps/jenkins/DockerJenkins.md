@@ -13,6 +13,13 @@
 
 # 1. Dockerfile搭建Jenkins  
 
+<!-- 
+镜像 jenkins/jenkins:2.339-centos7-jdk8
+https://blog.csdn.net/weixin_61027779/article/details/123633689
+
+-->
+
+
 ## 1.1. Dockerfile搭建Jenkins
 <!-- 
 XXX docker使用dockerFile自定义Jenkins

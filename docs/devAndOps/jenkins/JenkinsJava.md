@@ -105,6 +105,11 @@ echo "System Stop"
 ```
 
 ## 1.2. jenkins通过docker启动项目  
+<!-- 
+Jenkins+Docker 一键自动化部署 SpringBoot 项目
+https://blog.csdn.net/weixin_36380516/article/details/126326838
+-->
+
 将workspace下的jar和docker一起推送到远程同一目录下，然后执行shell脚本。  
 
 推送Dockerfile到目标服务器  
