@@ -2,21 +2,24 @@
 <!-- TOC -->
 
 - [1. Jenkins构建Java项目](#1-jenkins构建java项目)
-    - [1.1. 打包](#11-打包)
-    - [1.2. 推送服务器](#12-推送服务器)
-    - [1.3. 启动脚本restart.sh](#13-启动脚本restartsh)
+    - [1.1. Jenkins通过jar包启动项目](#11-jenkins通过jar包启动项目)
+        - [1.1.1. 打包](#111-打包)
+        - [1.1.2. 推送服务器](#112-推送服务器)
+        - [1.1.3. 启动脚本restart.sh](#113-启动脚本restartsh)
+    - [1.2. jenkins通过docker启动项目](#12-jenkins通过docker启动项目)
 
 <!-- /TOC -->
 
 
 # 1. Jenkins构建Java项目  
 
-## 1.1. 打包
+## 1.1. Jenkins通过jar包启动项目
+### 1.1.1. 打包
 多模块项目打包：  
 ![image](http://182.92.69.8:8081/img/devops/jenkins/jenkins-1.png)    
 
 
-## 1.2. 推送服务器  
+### 1.1.2. 推送服务器  
 <!-- 
 Jenkins部署springboot项目至远程服务器
 https://blog.csdn.net/HIM2014/article/details/126579634
@@ -38,7 +41,7 @@ Send files or execute commands over SSH
 ![image](http://182.92.69.8:8081/img/devops/jenkins/jenkins-5.png)    
 
 
-## 1.3. 启动脚本restart.sh
+### 1.1.3. 启动脚本restart.sh
 
 ```text
 #!/bin/bash -ilex
@@ -101,4 +104,14 @@ sudo nohup java -jar -Duser.timezone=GMT+08 /usr/work/$project_name/online/$proj
 echo "System Stop"
 ```
 
+## 1.2. jenkins通过docker启动项目  
+将workspace下的jar和docker一起推送到远程同一目录下，然后执行shell脚本。  
+
+
+cd /root/.jenkins/workspace/jenkinstestdocker/jenkinstest
+docker stop jenkinstest || true
+docker rm jenkinstest || true
+docker rmi jenkinstest || true
+docker build -t jenkinstest .
+docker run -d -p 8089:8089 jenkinstest
 
