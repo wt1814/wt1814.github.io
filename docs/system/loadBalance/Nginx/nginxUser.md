@@ -7,21 +7,23 @@
         - [1.1.1. IP和域名部分的处理](#111-ip和域名部分的处理)
         - [1.1.2. Location详解](#112-location详解)
     - [1.2. Nginx使用场景](#12-nginx使用场景)
-        - [1.2.1. ***反向代理](#121-反向代理)
-        - [1.2.2. ***静态资源WEB服务](#122-静态资源web服务)
-        - [1.2.3. ***HTTPS反向代理配置](#123-https反向代理配置)
-        - [1.2.4. ~~动静分离~~](#124-动静分离)
-        - [1.2.5. ***跨域解决](#125-跨域解决)
-        - [1.2.6. 地址重定向，Rewrite](#126-地址重定向rewrite)
-        - [1.2.7. 虚拟主机](#127-虚拟主机)
-        - [1.2.8. 多个webapp的配置](#128-多个webapp的配置)
-        - [1.2.9. 其他功能](#129-其他功能)
-            - [1.2.9.1. 缓存](#1291-缓存)
-            - [1.2.9.2. 限流](#1292-限流)
-            - [1.2.9.3. 黑白名单](#1293-黑白名单)
-            - [1.2.9.4. 防盗链](#1294-防盗链)
-            - [1.2.9.5. 流量复制](#1295-流量复制)
-            - [1.2.9.6. 正向代理](#1296-正向代理)
+        - [1.2.1. 前端](#121-前端)
+            - [1.2.1.1. ***静态资源WEB服务](#1211-静态资源web服务)
+            - [1.2.1.2. ***跨域解决](#1212-跨域解决)
+            - [1.2.1.3. ***HTTPS](#1213-https)
+            - [1.2.1.4. ~~动静分离~~](#1214-动静分离)
+        - [1.2.2. ***反向代理和负载均衡](#122-反向代理和负载均衡)
+        - [1.2.3. 其他](#123-其他)
+            - [1.2.3.1. 地址重定向，Rewrite](#1231-地址重定向rewrite)
+            - [1.2.3.2. 虚拟主机](#1232-虚拟主机)
+            - [1.2.3.3. 多个webapp的配置](#1233-多个webapp的配置)
+        - [1.2.4. 其他功能](#124-其他功能)
+            - [1.2.4.1. ***缓存](#1241-缓存)
+            - [1.2.4.2. 限流](#1242-限流)
+            - [1.2.4.3. 黑白名单](#1243-黑白名单)
+            - [1.2.4.4. 防盗链](#1244-防盗链)
+            - [1.2.4.5. 流量复制](#1245-流量复制)
+            - [1.2.4.6. 正向代理](#1246-正向代理)
 
 <!-- /TOC -->
 
@@ -172,11 +174,9 @@ https://mp.weixin.qq.com/s/qchaaVoOSJOqnRBlBIU--g
 ## 1.2. Nginx使用场景  
 &emsp; Nginx基本功能：作为http server、虚拟主机、反向代理服务器(负载均衡)、电子邮件(IMAP/POP3)代理服务器。  
 
-### 1.2.1. ***反向代理  
-&emsp; [Nginx负载](/docs/system/loadBalance/Nginx/nginxLoad.md)   
 
-
-### 1.2.2. ***静态资源WEB服务 
+### 1.2.1. 前端 
+#### 1.2.1.1. ***静态资源WEB服务 
 1. 静态资源类型  
 &emsp; 非服务器动态运行生成的文件，换句话说，就是可以直接在服务器上找到对应文件的请求。  
     * 浏览器端渲染：HTML,CSS,JS
@@ -184,7 +184,20 @@ https://mp.weixin.qq.com/s/qchaaVoOSJOqnRBlBIU--g
     * 视频：FLV,MPEG
     * 文件：TXT，任意下载文件
 
-### 1.2.3. ***HTTPS反向代理配置  
+#### 1.2.1.2. ***跨域解决  
+<!-- 
+https://mp.weixin.qq.com/s/oTBEK0tp2jANosVtRRj1lQ
+
+前后端分离部署怎么解决跨域问题？
+https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247486541&idx=1&sn=40cec96a57eb1f4e70a033b24d8b184b&chksm=e9c35e2ddeb4d73bffe34324781916788eee61d6740fb9a91561846f68366fcc030e8d561215&mpshare=1&scene=1&srcid=&sharer_sharetime=1569342187668&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2a4ff15fdd846346bbd73870dc7974f76f264c07959c9a7e0c24282e0a89ecadb89dcd58c963cc3023b3a52cc0769bec3e9aae6ed97b88ad8135632e00d0f94154e189553c317e60f4fbd95d4e1f75af&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=%2BeyejsSYMk60ZUY%2FpK4YBKveSPIi8GUzrQvyveBksIipCvi8KhPkraBA4Eyx2jY%2F
+
+使用Nginx 实现纯前端跨域
+https://blog.csdn.net/u012302552/article/details/81738185
+
+-->
+......
+
+#### 1.2.1.3. ***HTTPS 
 <!-- 
 
 https://mp.weixin.qq.com/s?__biz=MzA4MTk3MjI0Mw==&mid=2247489372&idx=1&sn=096fcc379a6304a63049567a244af1c1&chksm=9f8d8a20a8fa0336329104640f983b481a4e970a84177df735b02aeeee49fa713d4f155975a3&scene=178&cur_album_id=1474377728786300933#rd
@@ -200,7 +213,7 @@ https://blog.csdn.net/lhc1105/article/details/78774067
 &emsp; Nginx静态资源服务器开启https配置及http rewrite到https。  
 ......
 
-### 1.2.4. ~~动静分离~~    
+#### 1.2.1.4. ~~动静分离~~    
 <!-- 
 静态服务器
 https://mp.weixin.qq.com/s/wfaveQ5qhiGNFbrktw6uYg
@@ -210,21 +223,15 @@ https://mp.weixin.qq.com/s?__biz=MzIwNTk5NjEzNw==&mid=2247489052&idx=2&sn=c0c2a6
 &emsp; Nginx是一个http服务器，可以独立提供http服务，可以做网页静态服务器。  
 ......
 
-### 1.2.5. ***跨域解决  
-<!-- 
-https://mp.weixin.qq.com/s/oTBEK0tp2jANosVtRRj1lQ
-
-前后端分离部署怎么解决跨域问题？
-https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247486541&idx=1&sn=40cec96a57eb1f4e70a033b24d8b184b&chksm=e9c35e2ddeb4d73bffe34324781916788eee61d6740fb9a91561846f68366fcc030e8d561215&mpshare=1&scene=1&srcid=&sharer_sharetime=1569342187668&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=2a4ff15fdd846346bbd73870dc7974f76f264c07959c9a7e0c24282e0a89ecadb89dcd58c963cc3023b3a52cc0769bec3e9aae6ed97b88ad8135632e00d0f94154e189553c317e60f4fbd95d4e1f75af&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=%2BeyejsSYMk60ZUY%2FpK4YBKveSPIi8GUzrQvyveBksIipCvi8KhPkraBA4Eyx2jY%2F
-
-使用Nginx 实现纯前端跨域
-https://blog.csdn.net/u012302552/article/details/81738185
-
--->
-......
 
 
-### 1.2.6. 地址重定向，Rewrite  
+### 1.2.2. ***反向代理和负载均衡  
+&emsp; [Nginx负载](/docs/system/loadBalance/Nginx/nginxLoad.md)   
+
+
+### 1.2.3. 其他
+
+#### 1.2.3.1. 地址重定向，Rewrite  
 <!-- 
 https://mp.weixin.qq.com/s?__biz=MjM5ODI5Njc2MA==&mid=2655828756&idx=1&sn=1e6e4203d84e85d4523073e5fb529656&chksm=bd74f6c38a037fd5c0812a775bd494c190395ee0d45b32e0349457e1488943ebc2d67f084dcc&mpshare=1&scene=1&srcid=&sharer_sharetime=1577187299959&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=7e51d7974732a32b94932fb1a25c33aa5e5fd789fb5c2d7129b5d1325b7946e8aa851c05f0c651ceb11382c510d18f69559b4b719cf1972c0e22d7f2de97c998b623ecd699f94c7d515d028f38457c01&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070158&lang=zh_CN&exportkey=AZfEi%2BIGtr%2FYmmJm5h2zfz8%3D&pass_ticket=fjo0TPQ4TftdXiH325uINjkxmTSYWN5xsY7SY8CPXJ8L70Z%2B9nqwLCPhjc61tfer
 -->
@@ -233,21 +240,34 @@ https://mp.weixin.qq.com/s?__biz=MjM5ODI5Njc2MA==&mid=2655828756&idx=1&sn=1e6e42
 ......
 
 
-### 1.2.7. 虚拟主机  
+#### 1.2.3.2. 虚拟主机  
 <!-- 
  如何在服务器上添加虚拟IP
  https://mp.weixin.qq.com/s/K5r0UPCzG_FALD_H8Dibyg
 -->
 ......
 
-### 1.2.8. 多个webapp的配置  
-......
+#### 1.2.3.3. 多个webapp的配置  
+在一个端口号下部署多个应用  
 
-### 1.2.9. 其他功能  
-#### 1.2.9.1. 缓存  
-......
+<!-- 
 
-#### 1.2.9.2. 限流  
+https://blog.csdn.net/ManGooo0/article/details/124594170
+-->
+
+
+### 1.2.4. 其他功能  
+#### 1.2.4.1. ***缓存  
+&emsp; 通常对于静态资源，即较少经常更新的资源，如图片，css或js等进行缓存，从而在每次刷新浏览器的时候，不用重新请求，而是从缓存里面读取，这样就可以减轻服务器的压力。  
+&emsp; Nginx设置缓存有两种方式：  
+
+    proxy_cache_path和proxy_cache
+    Cache-Control和Pragma
+
+&emsp; 对于站点中不经常修改的静态内容（如图片，JS，CSS），可以在服务器中设置expires过期时间，控制浏览器缓存，达到有效减小带宽流量，降低服务器压力的目的。  
+
+
+#### 1.2.4.2. 限流  
 <!--
 图解Nginx限流配置 
 https://mp.weixin.qq.com/s?__biz=MzIxNTAwNjA4OQ==&mid=2247485536&idx=1&sn=4eba961c92666a085d911b7b529aed84&chksm=979fa686a0e82f90a305471d46b52b1d66d321fe426d146dfb1b2655faab76856be81ed24b04&mpshare=1&scene=1&srcid=&sharer_sharetime=1567728523123&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=a1704a04d6cad8d0f19f8cf1b8875657e11dc85e1c91fc452db725245627087d7478cd8beef54caac40aece6ee6fa6afea6eee18b51858bd7f036c83fd81c5060ae5f2e8b21debb0671f01e1a9df24c1&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=z%2FwwCKX1VxUZIrB%2Fyurv7H3KYJfYtfEOC4f%2FPWwa0CuRWkVVV4TiFJiODLrgMPtY
@@ -258,13 +278,13 @@ https://mp.weixin.qq.com/s/3rX8bm_giHUDMtXIZ7OguQ
 
 ......
 
-#### 1.2.9.3. 黑白名单  
+#### 1.2.4.3. 黑白名单  
 ......
 
-#### 1.2.9.4. 防盗链  
+#### 1.2.4.4. 防盗链  
 ......
 
-#### 1.2.9.5. 流量复制  
+#### 1.2.4.5. 流量复制  
 <!-- 
 
 Nginx流量复制 
@@ -273,6 +293,6 @@ https://mp.weixin.qq.com/s/1DX1E_j5eXo4-afXOow4vw
 
 ......
 
-#### 1.2.9.6. 正向代理  
+#### 1.2.4.6. 正向代理  
 ......
 
