@@ -42,8 +42,6 @@ https://mp.weixin.qq.com/s/pmS-9Z-RAkVatdwlyNuFaQ
 * <font color = "red">Nginx原理：两种进程、多进程单线程、基于异步非阻塞的事件驱动模型、模块化设计。</font>
 
 
-
----
 ## 1.2. 模块化设计  
 &emsp; Nginx的worker进程，包括核心和功能性模块。高度模块化的设计是 Nginx 的架构基础。Nginx 服务器被分解为多个模块 ，每个模块就是一个功能模块 ，只负责自身的功能，模块之间严格遵循 “高内聚，低耦合” 的原则。  
 
