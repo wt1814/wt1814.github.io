@@ -211,7 +211,12 @@ https://blog.csdn.net/lhc1105/article/details/78774067
 
 -->
 &emsp; Nginx静态资源服务器开启https配置及http rewrite到https。  
-......
+......  
+
+
+&emsp; **nginx 使用 https 后，代理的 tomcat 是否还需要配置 https？**  
+一般不是需要不需要的问题，而是尽量不要https，不必要的降低性能。除非ng和tomcat之间走公网。  
+
 
 #### 1.2.1.4. ***缓存  
 &emsp; 通常对于静态资源，即较少经常更新的资源，如图片，css或js等进行缓存，从而在每次刷新浏览器的时候，不用重新请求，而是从缓存里面读取，这样就可以减轻服务器的压力。  
