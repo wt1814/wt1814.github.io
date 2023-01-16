@@ -1107,6 +1107,8 @@ es   esHD   kibana  logstash   filebeat
 [sentinel](/docs/devAndOps/build/sentinel.md)  
 [skywalking](/docs/devAndOps/build/skywalking.md)  
 
+
+[VMWare esxi创建虚拟机](/docs/devAndOps/centOS/VMWareEsxi.md)  
 [网络](/docs/devAndOps/build/network.md)  
 [Nginx搭建](/docs/devAndOps/build/nginx.md)   
 
@@ -1156,8 +1158,7 @@ es   esHD   kibana  logstash   filebeat
 [allure](/docs/devAndOps/test/allure.md)  
 [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
 
-------------
-[VMWare esxi创建虚拟机](/docs/devAndOps/centOS/VMWareEsxi.md)  
+
 
 
 ------------  
