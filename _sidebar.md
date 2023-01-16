@@ -821,6 +821,7 @@
         * [nacos搭建](/docs/devAndOps/build/nacosBuild.md)  
         * [sentinel](/docs/devAndOps/build/sentinel.md)  
         * [skywalking](/docs/devAndOps/build/skywalking.md)  
+        * [网络](/docs/devAndOps/build/network.md)  
         * [Nginx搭建](/docs/devAndOps/build/nginx.md)   
         * [ELK搭建](/docs/devAndOps/build/elk.md)   
         * [ideaServer](/docs/devAndOps/build/ideaServer.md)  

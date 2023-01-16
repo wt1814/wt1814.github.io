@@ -1107,8 +1107,11 @@ es   esHD   kibana  logstash   filebeat
 [sentinel](/docs/devAndOps/build/sentinel.md)  
 [skywalking](/docs/devAndOps/build/skywalking.md)  
 
+[网络](/docs/devAndOps/build/network.md)  
 [Nginx搭建](/docs/devAndOps/build/nginx.md)   
+
 [6. ELK搭建](/docs/devAndOps/build/elk.md)   
+
 [docsify](/docs/devAndOps/build/docsify.md)  
 [3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
 
