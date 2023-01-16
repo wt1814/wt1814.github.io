@@ -35,16 +35,12 @@ Nginx中文文档：http://www.nginx.cn/doc/
 Nginx如何处理一个请求
 http://tengine.taobao.org/nginx_docs/cn/docs/http/request_processing.html
 
-Nginx如何处理一个请求
-http://tengine.taobao.org/nginx_docs/cn/docs/http/request_processing.html
-
 实用篇-无处不在的Location
 https://mp.weixin.qq.com/s/ipGtkjTaiTMfUalaTASnCQ
 
 *** 彻底搞懂 Nginx 的五大应用场景
 *** https://cloud.tencent.com/developer/article/1845315
 https://www.zhihu.com/question/470370584
-
 
 
 https://mp.weixin.qq.com/s/trUWEfsxLWVASZckDOwqPQ
