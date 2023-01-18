@@ -1,6 +1,15 @@
 
 
-# prometheus介绍
+<!-- TOC -->
+
+- [1. prometheus介绍](#1-prometheus介绍)
+    - [1.1. 架构图](#11-架构图)
+    - [1.2. 各组件运行流程](#12-各组件运行流程)
+
+<!-- /TOC -->
+
+
+# 1. prometheus介绍
 <!--
 Prometheus
 https://mp.weixin.qq.com/s/W38FcwGmwPj1tp_87FVC1A
@@ -52,7 +61,7 @@ https://zhuanlan.zhihu.com/p/474476816
 
 
 
-## 架构图  
+## 1.1. 架构图  
 ![image](http://182.92.69.8:8081/img/devops/prometheus/prometheus-1.png)  
 Prometheus  Server: 收集指标和存储时间序列数据，并提供查询接口  
 ClientLibrary:客户端库  
@@ -62,7 +71,7 @@ Alertmanager:告警
 Web  UI :简单的web控制台  
 
 
-## Prometheus各组件运行流程  
+## 1.2. 各组件运行流程  
 <!--
 
 https://www.jianshu.com/p/268489bf5756?utm_campaign=haruki&utm_content=note&utm_medium=reader_share&utm_source=weixin
