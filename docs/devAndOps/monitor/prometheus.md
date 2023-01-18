@@ -1,57 +1,19 @@
 
 
 # prometheus
-
-<!-- 
-如何在Kubernetes中实现微服务应用监控？
-https://mp.weixin.qq.com/s/L7fdIA6HyoNaQE4oUQ_iMg
-
--->
-
-
 <!--
-
-Shell脚本实战：日志关键字监控+自动告警
-
-如何快速深入理解监控知识？ 
-https://mp.weixin.qq.com/s/q4QxJi5KZKNNIvWMjfdM1A
-监控系统技术选型 
-https://mp.weixin.qq.com/s/hjSs8SApGzh8vXEDO7rdIw
-监控系统选型，这篇不可不读！ 
-https://mp.weixin.qq.com/s/HEW8rSPhWk82NinQcEzPhQ
-怎样的监控，才真正说明系统有问题？ 
-https://mp.weixin.qq.com/s/1lSdfafmJeNgCrXDe7pLhw
-
-全面解析微服务系统监控分层，啃透服务治理核心！ 
-https://mp.weixin.qq.com/s/5xCL7KkMpnsfB6ivG4-0MQ
-
-14款备受好评的开源监控工具 
-https://mp.weixin.qq.com/s/M-ygzU0V8hgITqx0Wdl6iQ
-这5种常用运维监控工具都不会用
-https://mp.weixin.qq.com/s/Z4SGXTqv0u1mzHI-2IZDyg
-
- Prometheus
- https://mp.weixin.qq.com/s/W38FcwGmwPj1tp_87FVC1A
-
-
 Prometheus
-
-SpringBoot+Prometheus+Grafana 打造一款高逼格的可视化监控系统
-https://mp.weixin.qq.com/s/OgJDp_rCHQT8rVTxut0UiQ
+https://mp.weixin.qq.com/s/W38FcwGmwPj1tp_87FVC1A
 
 搭建Prometheus+Grafana的云平台监控系统
 https://www.jianshu.com/p/268489bf5756?utm_campaign=haruki&utm_content=note&utm_medium=reader_share&utm_source=weixin
 
 Prometheus完整的部署方案+实战实例 
 https://mp.weixin.qq.com/s/mFczwFdtO1eWzXAfKQ1Wfw
-Prometheus+Grafana
-https://mp.weixin.qq.com/s/i4lYNHiJKNi9SSvkodBK3A
-性能监控工具之 Grafana + Prometheus + Exporters 
-https://mp.weixin.qq.com/s/HKWga3DxbPWx0lGMyaQsgQ
-接近完美的监控系统—普罗米修斯 
-https://mp.weixin.qq.com/s/OgvbYm7PoTLGbcZeehIU9w
 Java监控开源工具（Prometheus+Grafna）
 https://zhuanlan.zhihu.com/p/474476816
+
+
 高可用 Prometheus 的常见问题 
 https://mp.weixin.qq.com/s/cS8X7hBYpFwcZOWcpLt3OQ
 自从上线了 Prometheus 监控告警，真香！ 
@@ -65,12 +27,6 @@ https://mp.weixin.qq.com/s/VAzATGHgYdKZY8Yk2PHKuw
 
 普罗米修斯
 https://zhuanlan.zhihu.com/p/474476816
-
-
-SkyWalking
-https://mp.weixin.qq.com/s/Z7dRtmj2T7F09Q8etoK3hg
-用了3年CAT，这次我想选择SkyWalking，老板反手就是一个赞！ 
-https://mp.weixin.qq.com/s/foYoz8qjalO0AhlBcM0BpA
 
 
 某生鲜电商平台的监控模块设计
@@ -95,3 +51,54 @@ Java业务监控中间件_不得不知道的25个中间件监控指标
 https://blog.csdn.net/weixin_35172715/article/details/114824837
 
 -->
+
+<!-- 
+性能监控工具之 Grafana + Prometheus + Exporters 
+https://mp.weixin.qq.com/s/HKWga3DxbPWx0lGMyaQsgQ
+-->
+
+<!-- 
+Prometheus + boot
+如何在Kubernetes中实现微服务应用监控？
+https://mp.weixin.qq.com/s/L7fdIA6HyoNaQE4oUQ_iMg
+SpringBoot+Prometheus+Grafana 打造一款高逼格的可视化监控系统
+https://mp.weixin.qq.com/s/OgJDp_rCHQT8rVTxut0UiQ
+
+-->
+
+
+1. 怎么采集监控数据？  
+要采集目标（主机或服务）的监控数据，首先就要在被采集目标上安装采集组件，这种采集组件被称为Exporter。prometheus.io官网上有很多这种exporter，比如：  
+
+    Consul exporter (official)
+    Memcached exporter (official)
+    MySQL server exporter (official)
+    Node/system metrics exporter (official)
+    HAProxy exporter (official)
+    RabbitMQ exporter
+    Grok exporter
+    InfluxDB exporter (official)
+
+这些exporter能为我们采集目标的监控数据，然后传输给普罗米修斯。这时候，exporter会暴露一个http接口，普罗米修斯通过HTTP协议使用Pull的方式周期性拉取相应的数据。  
+
+输出被监控组件信息的HTTP接口被叫做exporter。目前互联网公司常用的组件大部分都有exporter可以直接使用，比如Varnish、Haproxy、Nginx、MySQL、Linux 系统信息 (包括磁盘、内存、CPU、网络等等)，具体支持的源看：https://github.com/prometheus。  
+
+
+
+
+## 架构图  
+![image](http://182.92.69.8:8081/img/devops/prometheus/prometheus-1.png)  
+Prometheus  Server: 收集指标和存储时间序列数据，并提供查询接口  
+ClientLibrary:客户端库  
+Push Gateway: 短期存储指标数据。主要用于临时性的任务  
+**Exporters:采集已有的第三方服务监控指标并暴露metrics**    
+Alertmanager:告警  
+Web  UI :简单的web控制台  
+
+
+## Prometheus各组件运行流程  
+<!--
+
+https://www.jianshu.com/p/268489bf5756?utm_campaign=haruki&utm_content=note&utm_medium=reader_share&utm_source=weixin
+-->
+
