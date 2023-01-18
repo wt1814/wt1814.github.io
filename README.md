@@ -1088,6 +1088,7 @@ es   esHD   kibana  logstash   filebeat
 
 
 ### 1.21.3. 搭建-研发
+[Linux定时执行脚本](/docs/devAndOps/build/TimingScript.md)  
 [3. JDK安装](/docs/devAndOps/build/JDKBuild.md)  
 [4. Git安装](/docs/devAndOps/git/GitBuild.md)  
 [5. GitLab搭建](/docs/devAndOps/git/GitLab.md)  
@@ -1157,8 +1158,6 @@ es   esHD   kibana  logstash   filebeat
 [Jmeter](/docs/devAndOps/test/Jmeter.md)  
 [allure](/docs/devAndOps/test/allure.md)  
 [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
-
-
 
 
 ------------  

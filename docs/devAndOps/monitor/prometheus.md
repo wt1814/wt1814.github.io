@@ -2,7 +2,6 @@
 
 # prometheus
 
-
 <!-- 
 如何在Kubernetes中实现微服务应用监控？
 https://mp.weixin.qq.com/s/L7fdIA6HyoNaQE4oUQ_iMg
@@ -10,13 +9,9 @@ https://mp.weixin.qq.com/s/L7fdIA6HyoNaQE4oUQ_iMg
 -->
 
 
-
 <!--
 
-
 Shell脚本实战：日志关键字监控+自动告警
-
-
 
 如何快速深入理解监控知识？ 
 https://mp.weixin.qq.com/s/q4QxJi5KZKNNIvWMjfdM1A
@@ -29,7 +24,6 @@ https://mp.weixin.qq.com/s/1lSdfafmJeNgCrXDe7pLhw
 
 全面解析微服务系统监控分层，啃透服务治理核心！ 
 https://mp.weixin.qq.com/s/5xCL7KkMpnsfB6ivG4-0MQ
-
 
 14款备受好评的开源监控工具 
 https://mp.weixin.qq.com/s/M-ygzU0V8hgITqx0Wdl6iQ

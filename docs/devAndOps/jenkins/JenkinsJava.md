@@ -9,6 +9,7 @@
     - [1.2. jenkins通过docker启动项目](#12-jenkins通过docker启动项目)
         - [1.2.1. 推送jar和Dockerfile到远程服务器](#121-推送jar和dockerfile到远程服务器)
         - [1.2.2. 上传镜像方式](#122-上传镜像方式)
+    - [jenkins通过k8s构建项目](#jenkins通过k8s构建项目)
 
 <!-- /TOC -->
 
@@ -146,3 +147,11 @@ docker run -d -p 8090:8089 jenkinstest
 在jenkins本机就把镜像构建好，上传镜像到harbor仓库后再去通知目标服务器去自动拉取镜像部署
 https://blog.csdn.net/qq_42883074/article/details/126009573
 -->
+
+
+## jenkins通过k8s构建项目  
+<!-- 
+
+
+-->
+
