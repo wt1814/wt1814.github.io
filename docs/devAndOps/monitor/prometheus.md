@@ -17,29 +17,9 @@ https://mp.weixin.qq.com/s/W38FcwGmwPj1tp_87FVC1A
 搭建Prometheus+Grafana的云平台监控系统
 https://www.jianshu.com/p/268489bf5756?utm_campaign=haruki&utm_content=note&utm_medium=reader_share&utm_source=weixin
 
-Prometheus完整的部署方案+实战实例 
-https://mp.weixin.qq.com/s/mFczwFdtO1eWzXAfKQ1Wfw
-
-
-全网最完整之实战 Prometheus 搭建监控系统 
-https://mp.weixin.qq.com/s/VAzATGHgYdKZY8Yk2PHKuw
-
 -->
 
-<!-- 
-性能监控工具之 Grafana + Prometheus + Exporters 
-https://mp.weixin.qq.com/s/HKWga3DxbPWx0lGMyaQsgQ
--->
 
-<!-- 
-Prometheus + boot
-如何在Kubernetes中实现微服务应用监控？
-https://mp.weixin.qq.com/s/L7fdIA6HyoNaQE4oUQ_iMg
-SpringBoot+Prometheus+Grafana 打造一款高逼格的可视化监控系统
-https://mp.weixin.qq.com/s/OgJDp_rCHQT8rVTxut0UiQ
-
-https://zhuanlan.zhihu.com/p/474476816
--->
 
 
 1. 怎么采集监控数据？  
@@ -58,10 +38,21 @@ https://zhuanlan.zhihu.com/p/474476816
 
 输出被监控组件信息的HTTP接口被叫做exporter。目前互联网公司常用的组件大部分都有exporter可以直接使用，比如Varnish、Haproxy、Nginx、MySQL、Linux 系统信息 (包括磁盘、内存、CPU、网络等等)，具体支持的源看：https://github.com/prometheus。  
 
+--------------------
+
+Prometheus基本原理是通过HTTP协议周期性抓取被监控组件的状态，这样做的好处是任意组件只要提供HTTP接口就可以接入监控系统，不需要任何SDK或者其他的集成过程。这样做非常适合虚拟化环境比如VM或者Docker 。
+
+输出被监控组件信息的HTTP接口被叫做exporter。目前互联网公司常用的组件大部分都有exporter可以直接使用，比如Varnish、Haproxy、Nginx、MySQL、Linux 系统信息 (包括磁盘、内存、CPU、网络等等)，具体支持的源看：https://github.com/prometheus。
+
 
 
 
 ## 1.1. 架构图  
+
+Prometheus提供了从指标暴露，到指标抓取、存储和可视化，以及最后的监控告警等一系列组件。  
+![image](http://182.92.69.8:8081/img/devops/prometheus/prometheus-2.png)  
+
+
 ![image](http://182.92.69.8:8081/img/devops/prometheus/prometheus-1.png)  
 Prometheus  Server: 收集指标和存储时间序列数据，并提供查询接口  
 ClientLibrary:客户端库  
