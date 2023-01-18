@@ -26,6 +26,15 @@ https://forum.huawei.com/enterprise/zh/thread-663521.html
 全面解析微服务系统监控分层，啃透服务治理核心！
 https://mp.weixin.qq.com/s/5xCL7KkMpnsfB6ivG4-0MQ
 
+
+某生鲜电商平台的监控模块设计
+https://mp.weixin.qq.com/s/m9tTCrOYrbuMbsiGpzsJHw
+
+想监控主机性能的话，个人建议这本《SystemsPerformance》就足够了。
+
+Java业务监控中间件_不得不知道的25个中间件监控指标
+https://blog.csdn.net/weixin_35172715/article/details/114824837
+
 -->
 
 

@@ -1,6 +1,6 @@
 
 
-# prometheus
+# prometheus介绍
 <!--
 Prometheus
 https://mp.weixin.qq.com/s/W38FcwGmwPj1tp_87FVC1A
@@ -10,45 +10,10 @@ https://www.jianshu.com/p/268489bf5756?utm_campaign=haruki&utm_content=note&utm_
 
 Prometheus完整的部署方案+实战实例 
 https://mp.weixin.qq.com/s/mFczwFdtO1eWzXAfKQ1Wfw
-Java监控开源工具（Prometheus+Grafna）
-https://zhuanlan.zhihu.com/p/474476816
 
 
-高可用 Prometheus 的常见问题 
-https://mp.weixin.qq.com/s/cS8X7hBYpFwcZOWcpLt3OQ
-自从上线了 Prometheus 监控告警，真香！ 
-https://mp.weixin.qq.com/s/kBDB2wa2R_YczwRFFN4-Wg
-Prometheus 高可用
-https://mp.weixin.qq.com/s/aXjUQOBMsP90nCi4yiWaPg
-号称下一代监控系统，来看看它有多强！ 
-https://mp.weixin.qq.com/s/zqXOYQV_kSYWp3ibr0rH7g
 全网最完整之实战 Prometheus 搭建监控系统 
 https://mp.weixin.qq.com/s/VAzATGHgYdKZY8Yk2PHKuw
-
-普罗米修斯
-https://zhuanlan.zhihu.com/p/474476816
-
-
-某生鲜电商平台的监控模块设计
-https://mp.weixin.qq.com/s/m9tTCrOYrbuMbsiGpzsJHw
-
-
-Linux中一个高效的资源监控器 – Bpytop 
-https://mp.weixin.qq.com/s/usrepOGS5V8cO4uwYgFDFw
-Sampler，命令行下的可视化展示工具
-https://www.oschina.net/p/sampler?hmsr=aladdin1e1
-https://mp.weixin.qq.com/s/l3fBjFhdvH-eE6RHYhy2Aw
-如何在Linux中安装vnStat和vnStati监视网络流量 
-https://mp.weixin.qq.com/s/gPrrIfFouDzI2T-_B-OCEw
-
-
-想监控主机性能的话，个人建议这本《SystemsPerformance》就足够了。
-
-三分钟构建自动化运维平台-nightingale(夜莺) 
-https://mp.weixin.qq.com/s/LwsR3o0Ze6fQiYXgGVZrqw
-
-Java业务监控中间件_不得不知道的25个中间件监控指标
-https://blog.csdn.net/weixin_35172715/article/details/114824837
 
 -->
 
@@ -64,6 +29,7 @@ https://mp.weixin.qq.com/s/L7fdIA6HyoNaQE4oUQ_iMg
 SpringBoot+Prometheus+Grafana 打造一款高逼格的可视化监控系统
 https://mp.weixin.qq.com/s/OgJDp_rCHQT8rVTxut0UiQ
 
+https://zhuanlan.zhihu.com/p/474476816
 -->
 
 

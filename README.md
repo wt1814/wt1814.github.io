@@ -1166,7 +1166,9 @@ es   esHD   kibana  logstash   filebeat
 ### 1.23.1. 监控
 [监控](/docs/devAndOps/monitor/indicators.md)  
 &emsp; [监控系统](/docs/devAndOps/monitor/monitor.md)  
-[工具prometheus](/docs/devAndOps/monitor/prometheus.md)  
+[prometheus介绍](/docs/devAndOps/monitor/prometheus.md)  
+[prometheus使用](/docs/devAndOps/monitor/prometheusUse.md)  
+
 
 ### 1.23.2. 统计  
 [统计PV](/docs/devAndOps/monitor/StatisticsPV.md)  
