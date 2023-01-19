@@ -9,7 +9,7 @@
     - [1.2. jenkins通过docker启动项目](#12-jenkins通过docker启动项目)
         - [1.2.1. 推送jar和Dockerfile到远程服务器](#121-推送jar和dockerfile到远程服务器)
         - [1.2.2. 上传镜像方式](#122-上传镜像方式)
-    - [jenkins通过k8s构建项目](#jenkins通过k8s构建项目)
+    - [1.3. jenkins通过k8s构建项目](#13-jenkins通过k8s构建项目)
 
 <!-- /TOC -->
 
@@ -149,9 +149,10 @@ https://blog.csdn.net/qq_42883074/article/details/126009573
 -->
 
 
-## jenkins通过k8s构建项目  
+## 1.3. jenkins通过k8s构建项目  
 <!-- 
 
-
+采用 jenkins pipeline 实现自动构建并部署至 k8s
+https://segmentfault.com/a/1190000039251002
 -->
 
