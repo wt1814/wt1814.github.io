@@ -19,6 +19,8 @@ https://www.jianshu.com/p/268489bf5756?utm_campaign=haruki&utm_content=note&utm_
 
 -->
 
+&emsp; Prometheus 中文文档：https://www.prometheus.wang/
+
 1. 怎么采集监控数据？  
 &emsp; 要采集目标（主机或服务）的监控数据，首先就要在被采集目标上安装采集组件，这种采集组件被称为Exporter。prometheus.io官网上有很多这种exporter，比如：  
 

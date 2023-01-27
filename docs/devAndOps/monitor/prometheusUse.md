@@ -20,5 +20,12 @@ Prometheus 高可用
 https://mp.weixin.qq.com/s/aXjUQOBMsP90nCi4yiWaPg
 -->
 
+## 搭建  
+### Linux搭建Prometheus
+<!-- 
+
+https://www.cnblogs.com/demoduan/p/16557219.html
+-->
 
 
+### Docker搭建Prometheus
