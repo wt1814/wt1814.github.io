@@ -550,7 +550,7 @@
     * [ELK/EFK](/docs/ES/EFK.md)   
         * [EFK介绍](/docs/ES/EFKIntroduce.md)  
         * [EFK使用](/docs/ES/EFKUse.md)  
-            * [FileBeat和Logstash](/docs/ES/Logstash.md)    
+            * [FileBeat和Logstash详解](/docs/ES/Logstash.md)    
             * [Kibana使用](/docs/ES/Kibana.md)  
         * [canal](/docs/ES/canal.md)  
 * 任务调度
