@@ -4,10 +4,11 @@
 
 - [1. ELK搭建](#1-elk搭建)
     - [1.1. ***Docker部署](#11-docker部署)
-        - [1.1.1. Docker分别部署ElasticSearch、Kibana](#111-docker分别部署elasticsearchkibana)
-        - [1.1.2. Docker-Compose部署ELK](#112-docker-compose部署elk)
-            - [1.1.2.1. 单机部署](#1121-单机部署)
-            - [1.1.2.2. 集群部署](#1122-集群部署)
+        - [1.1.1. 步骤一：Dockerfile构建FileBeat](#111-步骤一dockerfile构建filebeat)
+        - [1.1.2. 步骤二，单机版：Docker分别部署ElasticSearch、Kibana](#112-步骤二单机版docker分别部署elasticsearchkibana)
+        - [1.1.3. 步骤二，集群版：Docker-Compose部署ELK](#113-步骤二集群版docker-compose部署elk)
+            - [1.1.3.1. 单机部署](#1131-单机部署)
+            - [1.1.3.2. 集群部署](#1132-集群部署)
     - [1.2. Linux](#12-linux)
         - [1.2.1. Elasticsearch](#121-elasticsearch)
         - [1.2.2. Kinaba](#122-kinaba)
@@ -56,7 +57,19 @@ https://elasticsearch.cn/
 -->
 
 ## 1.1. ***Docker部署  
-### 1.1.1. Docker分别部署ElasticSearch、Kibana
+
+### 1.1.1. 步骤一：Dockerfile构建FileBeat
+<!-- 
+
+https://blog.csdn.net/weixin_46329906/article/details/116561864
+http://testingpai.com/article/1606896558221
+https://blog.51cto.com/u_14834727/3012235
+https://zhuanlan.zhihu.com/p/336945029
+
+-->
+
+
+### 1.1.2. 步骤二，单机版：Docker分别部署ElasticSearch、Kibana
 <!-- 
 使用Docker搭建ELK日志系统 
 https://mp.weixin.qq.com/s?__biz=MzAxMjY5NDU2Ng==&mid=2651854010&idx=2&sn=46f1f62cf15a1788da042f38d83d8a5a&chksm=804951f3b73ed8e5563e1d00bb2267a9d45a639955beaff6c03cfedbffd9aeeddf19e6fbf36c&mpshare=1&scene=1&srcid=&sharer_sharetime=1565741061263&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=36a99a852770fa03398d6d83b32183afed3cd3d1a3b4efe37bc5a5a3adc65c68adf852bc5aac9742c6ff7cce3b13adbc7ae3f843113389531a972cfe419ab100ddb13dfa6c31159f348959b7f6dbbe01&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=JLiKeNv%2F4KR6gCtdLZGhUXVH7BONlSBEY%2FTbKINtAXs2YG8At3hpMApp1DgxUdHh
@@ -66,8 +79,8 @@ https://www.bilibili.com/video/BV1hS4y1s7FT/?p=49&vd_source=9a9cf49f6bf9bd6a6e6e
 
 -->
 
-### 1.1.2. Docker-Compose部署ELK  
-#### 1.1.2.1. 单机部署  
+### 1.1.3. 步骤二，集群版：Docker-Compose部署ELK  
+#### 1.1.3.1. 单机部署  
 <!-- 
 Docker-Compose部署ELK 
 https://www.cnblogs.com/xiaobaibuai/p/15662224.html
@@ -87,7 +100,7 @@ https://www.bilibili.com/video/BV1hS4y1s7FT/?p=49&vd_source=9a9cf49f6bf9bd6a6e6e
 
 
 
-#### 1.1.2.2. 集群部署  
+#### 1.1.3.2. 集群部署  
 <!-- 
 
 Docker部署多机单节点ELK【集群】【ES + Logstash + Kibana + IK】

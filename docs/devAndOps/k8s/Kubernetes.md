@@ -29,4 +29,8 @@ https://mp.weixin.qq.com/s/nLt0Tdfw7KX3NWytL4jOpg
  CentOS7及Docker配置中文字符集问题 
  https://mp.weixin.qq.com/s?__biz=MzI5ODQ2MzI3NQ==&mid=2247487807&idx=1&sn=6984a14517b85fcfd4ba8fb2a1e016ce&chksm=eca4287bdbd3a16deed8b697ac1b3b200d7677a7bcd0b2ebbb323327f1cd5e69e1b0430a90aa&mpshare=1&scene=1&srcid=&sharer_sharetime=1567427284287&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=a1704a04d6cad8d0cc8f33e752c4454263f3e504769d8c9c68b8f4d6a66a9ff6ca8bf604957e8b1f5aa5b632dc5d1807be2bff9b77801b087ac8ff6ca84dacae98b741ee4d20ec0c67483d0cb65c08a4&ascene=1&uin=MTE1MTYxNzY2MQ==&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=HQS/HC1EBFr1mNgJ+1LdRuAM+mwEzCIytKI+eNti/lmNJ1ubA1cRpCtB/VHkIZ0Q
 
+
+如何在Kubernetes中实现微服务SpringBoot应用监控？
+https://mp.weixin.qq.com/s/L7fdIA6HyoNaQE4oUQ_iMg
+
 -->
