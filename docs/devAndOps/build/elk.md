@@ -7,7 +7,7 @@
         - [1.1.1. 步骤一：Dockerfile构建FileBeat](#111-步骤一dockerfile构建filebeat)
         - [1.1.2. 步骤二，单机版：Docker分别部署ElasticSearch、Kibana](#112-步骤二单机版docker分别部署elasticsearchkibana)
         - [1.1.3. 步骤二，集群版：Docker-Compose部署ELK](#113-步骤二集群版docker-compose部署elk)
-            - [1.1.3.1. 单机部署](#1131-单机部署)
+            - [1.1.3.1. ***单机部署](#1131-单机部署)
             - [1.1.3.2. 集群部署](#1132-集群部署)
     - [1.2. Linux](#12-linux)
         - [1.2.1. Elasticsearch](#121-elasticsearch)
@@ -80,17 +80,10 @@ https://www.bilibili.com/video/BV1hS4y1s7FT/?p=49&vd_source=9a9cf49f6bf9bd6a6e6e
 -->
 
 ### 1.1.3. 步骤二，集群版：Docker-Compose部署ELK  
-#### 1.1.3.1. 单机部署  
+#### 1.1.3.1. ***单机部署  
 <!-- 
 Docker-Compose部署ELK 
-https://www.cnblogs.com/xiaobaibuai/p/15662224.html
-
-
-
-*** docker-compose安装ELK
-https://www.jianshu.com/p/2d78ce6bc504
-https://www.jianshu.com/p/50839769ffa3
-
+*************** https://www.cnblogs.com/xiaobaibuai/p/15662224.html
 
 视频  
 https://www.bilibili.com/video/BV1Sd4y1m7iq/?spm_id_from=333.337.search-card.all.click&vd_source=9a9cf49f6bf9bd6a6e6e556f641ae9cb
@@ -98,6 +91,81 @@ Docker核心技术-企业级容器多主机ELK部署 Docker网络架构+数据�
 https://www.bilibili.com/video/BV1hS4y1s7FT/?p=49&vd_source=9a9cf49f6bf9bd6a6e6e556f641ae9cb
 -->
 
+&emsp; docker-compose.yml  
+
+```text
+version: '7.2'
+services:
+  elasticsearch:
+    image: elasticsearch:7.2.0
+    container_name: elasticsearch
+    privileged: true
+    user: root
+    environment:
+      #设置集群名称为elasticsearch
+      - cluster.name=elasticsearch 
+      #以单一节点模式启动
+      - discovery.type=single-node 
+      #设置使用jvm内存大小
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m 
+    volumes:
+      - G:\software\elkDocker\elasticsearch/plugins:/usr/share/elasticsearch/plugins
+      - G:\software\elkDocker\elasticsearch/data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  logstash:
+    image: logstash:7.2.0
+    container_name: logstash
+    ports:
+       - 4560:4560
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      #挂载logstash的配置文件
+      - G:\software\elkDocker\logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf 
+    depends_on:
+      - elasticsearch 
+    links:
+      #可以用es这个域名访问elasticsearch服务
+      - elasticsearch:es 
+    
+
+  kibana:
+    image: kibana:7.2.0
+    container_name: kibana
+    ports:
+        - 5601:5601
+    privileged: true
+    links:
+      #可以用es这个域名访问elasticsearch服务
+      - elasticsearch:es 
+    depends_on:
+      - elasticsearch 
+    environment:
+      #设置访问elasticsearch的地址
+      - elasticsearch.hosts=http://elasticsearch:9200
+```
+
+
+&emsp; logstash.conf  
+
+```text
+input {
+	tcp {
+		host => "0.0.0.0"
+		port => 5044
+	}
+}
+output {
+	elasticsearch {
+		hosts => "elasticsearch:9200"
+		index => "logstash-%{+YYYY.MM.dd}"
+	}
+}
+```
 
 
 #### 1.1.3.2. 集群部署  
