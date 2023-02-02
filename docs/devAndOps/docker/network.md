@@ -23,6 +23,9 @@ clickhouse docker, as it does not belong to the default network
 https://blog.csdn.net/The_Time_Runner/article/details/114434710
 
 
+使用已存在的网络
+https://blog.csdn.net/gezhonglei2007/article/details/51627969
+
 -->
 
 --link clickhouse_name:clickhouse-server --network compose_default   

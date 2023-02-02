@@ -56,12 +56,12 @@ https://blog.51cto.com/u_14834727/3012235
 
 *******【解决方案：把宿主机的filebeat.yml改成只读权限，再docker run】
 
-
 &emsp; filebeat调试：  
 1. 进入filebeat.yml目录  
 2. https://blog.csdn.net/qq_41712271/article/details/123384250  
 
-
+Filebeat 连接 Logstash 常见问题  Failed to connect to backoff(async(tcp://ip:5044)): dial tcp ip:5044: i/o timeout  
+https://blog.csdn.net/xy707707/article/details/100073701  
 
 
 ### 1.1.2. 步骤二，单机版：Docker分别部署ElasticSearch、Kibana
@@ -79,6 +79,9 @@ https://www.bilibili.com/video/BV1hS4y1s7FT/?p=49&vd_source=9a9cf49f6bf9bd6a6e6e
 <!-- 
 Docker-Compose部署ELK 
 *************** https://www.cnblogs.com/xiaobaibuai/p/15662224.html
+
+logstash6.8.12动态生成elasticsearch的index的正确方法  
+https://baijiahao.baidu.com/s?id=1676803444228068371&wfr=spider&for=pc
 
 视频  
 https://www.bilibili.com/video/BV1Sd4y1m7iq/?spm_id_from=333.337.search-card.all.click&vd_source=9a9cf49f6bf9bd6a6e6e556f641ae9cb
