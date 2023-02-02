@@ -49,7 +49,7 @@ http://testingpai.com/article/1606896558221
 
 docker run -d --name=filebeat -v g:\software\elkDocker\filebeat\filebeat.yml:/usr/share/filebeat/filebeat.yml -v g:\software\elkDocker\filebeat\log:/var/log/filebeat/  docker.elastic.co/beats/filebeat:7.2.0  
 
-1. 收集宿主机目录日志，要收集的日志目录从外面挂进来。  
+1. 收集【宿主机目录】日志，要收集的日志目录从外面挂进来。  
 https://blog.51cto.com/u_14834727/3012235  
 
 2. 错误日志：Exiting: error loading config file: config file ("/opt/filebeat/filebeat.yml") can only be writable by the owner but the permissions are "-rwxrwxrwx" (to fix the permissions use: 'chmod go-w /opt/filebeat/filebeat.yml')
