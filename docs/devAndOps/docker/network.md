@@ -17,6 +17,20 @@
 # 1. 容器间通信  
 <!-- 
 
+Docker使用Link与newwork在容器之间建立连接
+https://www.bbsmax.com/A/RnJWwE8YJq/
+clickhouse docker, as it does not belong to the default network
+https://blog.csdn.net/The_Time_Runner/article/details/114434710
+
+
+-->
+
+--link clickhouse_name:clickhouse-server --network compose_default   
+
+--link  和 --network
+
+<!-- 
+
 Docker容器网络
 http://www.itmuch.com/docker/15-docker-network/
 network命令
