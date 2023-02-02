@@ -36,24 +36,6 @@ https://mp.weixin.qq.com/s/pxI-poDt5F8TbAL9Rr7A8g
 ELK原理
 *** https://www.cnblogs.com/aresxin/p/8035137.html
 
-官方文档：
-Filebeat：
-https://www.elastic.co/cn/products/beats/filebeat
-https://www.elastic.co/guide/en/beats/filebeat/5.6/index.html
-
-Logstash：
-https://www.elastic.co/cn/products/logstash
-https://www.elastic.co/guide/en/logstash/5.6/index.html
-
-Kibana:
-https://www.elastic.co/cn/products/kibana
-https://www.elastic.co/guide/en/kibana/5.5/index.html
-
-Elasticsearch：
-https://www.elastic.co/cn/products/elasticsearch
-https://www.elastic.co/guide/en/elasticsearch/reference/5.6/index.html
-elasticsearch中文社区：
-https://elasticsearch.cn/
 -->
 
 ## 1.1. ***Docker部署  
