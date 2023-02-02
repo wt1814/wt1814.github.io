@@ -61,12 +61,25 @@ https://elasticsearch.cn/
 ### 1.1.1. 步骤一：Dockerfile构建FileBeat
 <!-- 
 
-https://blog.csdn.net/weixin_46329906/article/details/116561864
-http://testingpai.com/article/1606896558221
-https://blog.51cto.com/u_14834727/3012235
-https://zhuanlan.zhihu.com/p/336945029
-
 -->
+
+http://testingpai.com/article/1606896558221
+
+docker run -d --name=filebeat -v g:\software\elkDocker\filebeat\filebeat.yml:/usr/share/filebeat/filebeat.yml -v g:\software\elkDocker\filebeat\log:/var/log/filebeat/  docker.elastic.co/beats/filebeat:7.2.0  
+
+1. 收集宿主机目录日志，要收集的日志目录从外面挂进来。  
+https://blog.51cto.com/u_14834727/3012235  
+
+2. 错误日志：Exiting: error loading config file: config file ("/opt/filebeat/filebeat.yml") can only be writable by the owner but the permissions are "-rwxrwxrwx" (to fix the permissions use: 'chmod go-w /opt/filebeat/filebeat.yml')
+
+*******【解决方案：把宿主机的filebeat.yml改成只读权限，再docker run】
+
+
+&emsp; filebeat调试：  
+1. 进入filebeat.yml目录  
+2. https://blog.csdn.net/qq_41712271/article/details/123384250  
+
+
 
 
 ### 1.1.2. 步骤二，单机版：Docker分别部署ElasticSearch、Kibana
@@ -90,6 +103,8 @@ https://www.bilibili.com/video/BV1Sd4y1m7iq/?spm_id_from=333.337.search-card.all
 Docker核心技术-企业级容器多主机ELK部署 Docker网络架构+数据管理+镜像+Dockerfile
 https://www.bilibili.com/video/BV1hS4y1s7FT/?p=49&vd_source=9a9cf49f6bf9bd6a6e6e556f641ae9cb
 -->
+
+  docker-compose up -d  
 
 &emsp; docker-compose.yml  
 
