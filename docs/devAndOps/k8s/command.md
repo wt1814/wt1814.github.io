@@ -9,7 +9,8 @@
         - [1.2.3. 基于NFS文件集群共享](#123-基于nfs文件集群共享)
         - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
     - [1.3. kubectl命令行工具](#13-kubectl命令行工具)
-    - [1.4. IDE插件](#14-ide插件)
+    - [1.4. 安装应用](#14-安装应用)
+    - [1.5. IDE插件](#15-ide插件)
 
 <!-- /TOC -->
 
@@ -72,15 +73,7 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 2. 基于HTTP BASE TOKEN 的简单认证方式  
 
 ### 1.2.2. Kubernetes集群的网络配置
-<!--
- Kubernetes中容器到容器通信 
- https://mp.weixin.qq.com/s/P-xKd6HeOGxyt-YXCnZjmQ
-
-kubernetes集群网络
-https://www.cnblogs.com/yuezhimi/p/13042037.html
-
--->
-&emsp; 在多个Node组成的Kubernetes集群内，跨主机的容器间网络互通是Kubernetes集群能够正常工作的前提条件。Kubernetes本身并不会对跨主机的容器网络进行设置，这需要额外的工具来实现。除了谷歌公有云GCE平台提供的网络设置，一些开源的工具包括Flannel, Open vSwitch. Weave> Calico等都能够实现跨主机的容器间网络互通。  
+&emsp; [k8s网络配置](/docs/devAndOps/k8s/k8snetwork.md)  
 
 ### 1.2.3. 基于NFS文件集群共享  
 <!-- 
@@ -99,7 +92,6 @@ https://blog.csdn.net/zuozewei/article/details/108165523
 从私有仓库拉取镜像
 https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-registry/
 -->
-
 
 <!--   
 1. Docker Private Registry (私有 Docker 镜像库)  
@@ -134,12 +126,14 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
     &emsp; 通过以上设置就在内网环境中搭建了一个企业内部的私有容器云平台。  
 -->
 
-
 ## 1.3. kubectl命令行工具  
 &emsp; [k8s常用命令](/docs/devAndOps/k8s/k8scommand.md)  
 
 
-## 1.4. IDE插件  
+## 1.4. 安装应用  
+
+
+## 1.5. IDE插件  
 <!-- 
 IDE 插件
 https://mp.weixin.qq.com/s/KbcUxGJ3JK7ANtuDRvPzZQ
