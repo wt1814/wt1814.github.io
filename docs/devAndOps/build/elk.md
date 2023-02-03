@@ -56,19 +56,41 @@ http://testingpai.com/article/1606896558221
 
 docker run -d --name=filebeat -v g:\software\elkDocker\filebeat\filebeat.yml:/usr/share/filebeat/filebeat.yml -v g:\software\elkDocker\filebeat\log:/var/log/filebeat/  docker.elastic.co/beats/filebeat:7.2.0  
 
-1. 收集【宿主机目录】日志，要收集的日志目录从外面挂进来。  
+
+&emsp; filebeat调试：  
+
+  1. 进入filebeat.yml目录  
+  2. https://blog.csdn.net/qq_41712271/article/details/123384250  
+
+
+1. ***收集【宿主机目录】日志，要收集的日志目录从外面挂进来。***  
 https://blog.51cto.com/u_14834727/3012235  
 
-2. 错误日志：Exiting: error loading config file: config file ("/opt/filebeat/filebeat.yml") can only be writable by the owner but the permissions are "-rwxrwxrwx" (to fix the permissions use: 'chmod go-w /opt/filebeat/filebeat.yml')
+2. ***错误日志：Exiting: error loading config file: config file ("/opt/filebeat/filebeat.yml") can only be writable by the owner but the permissions are "-rwxrwxrwx" (to fix the permissions use: 'chmod go-w /opt/filebeat/filebeat.yml')***
 
 *******【解决方案：把宿主机的filebeat.yml改成只读权限，再docker run】
 
-&emsp; filebeat调试：  
-1. 进入filebeat.yml目录  
-2. https://blog.csdn.net/qq_41712271/article/details/123384250  
 
-Filebeat 连接 Logstash 常见问题  Failed to connect to backoff(async(tcp://ip:5044)): dial tcp ip:5044: i/o timeout  
+Filebeat 连接 Logstash 常见问题  Failed to connect to backoff(async(tcp://ip:5044)): dial tcp ip:5044:i/o timeout  
 https://blog.csdn.net/xy707707/article/details/100073701  
+
+
+----------------------------
+1. 网络，新建elk inspect  
+2. filebeat.yml。hosts: ["logstash"]，logstash为网络卷中的别称  
+
+```
+filebeat.inputs:
+- type: log				##文本日志
+  paths: 
+      - /var/log/app/*.log
+output:
+  logstash:  			#输出到logstash
+    hosts: ["logstash"]
+```
+3. 启动命令：1收集的日志目录从外面挂进来；2使用--network elk加入网络卷elk和--link logstash链接logstash。
+
+  docker run -d --name=filebeat -v g:\software\elkDocker\filebeat\filebeat.yml:/usr/share/filebeat/filebeat.yml -v g:\software\elkDocker\filebeat\log\all.log:/var/log/filebeat/  -v G:\logs:/var/log/app  --network elk   --link logstash docker.elastic.co/beats/filebeat:7.2.0
 
 
 
@@ -98,6 +120,9 @@ https://www.bilibili.com/video/BV1Sd4y1m7iq/?spm_id_from=333.337.search-card.all
 Docker核心技术-企业级容器多主机ELK部署 Docker网络架构+数据管理+镜像+Dockerfile
 https://www.bilibili.com/video/BV1hS4y1s7FT/?p=49&vd_source=9a9cf49f6bf9bd6a6e6e556f641ae9cb
 -->
+
+1. 网络，新建elk inspect
+
 
   docker-compose up -d  
 
@@ -141,7 +166,6 @@ services:
     links:
       #可以用es这个域名访问elasticsearch服务
       - elasticsearch:es 
-    
 
   kibana:
     image: kibana:7.2.0
@@ -157,6 +181,11 @@ services:
     environment:
       #设置访问elasticsearch的地址
       - elasticsearch.hosts=http://elasticsearch:9200
+
+networks:  ### 网络，新建elk inspect
+  default:
+    external:
+      name: elk
 ```
 
 
@@ -164,16 +193,17 @@ services:
 
 ```text
 input {
-	tcp {
-		host => "0.0.0.0"
-		port => 5044
-	}
+    beats {
+        port => "5044"
+    }
 }
+
 output {
 	elasticsearch {
 		hosts => "elasticsearch:9200"
 		index => "logstash-%{+YYYY.MM.dd}"
 	}
+	stdout { codec => rubydebug }
 }
 ```
 
