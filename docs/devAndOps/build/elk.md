@@ -4,12 +4,11 @@
 
 - [1. ELK搭建](#1-elk搭建)
     - [1.1. ***Docker部署](#11-docker部署)
-        - [1.1.1. 步骤一：Dockerfile构建FileBeat](#111-步骤一dockerfile构建filebeat)
-        - [1.1.2. 步骤二，单机版：Docker分别部署ElasticSearch、Kibana](#112-步骤二单机版docker分别部署elasticsearchkibana)
-        - [1.1.3. 步骤二，集群版：Docker-Compose部署ELK](#113-步骤二集群版docker-compose部署elk)
-            - [1.1.3.1. ***单机部署](#1131-单机部署)
-            - [1.1.3.2. 集群部署](#1132-集群部署)
-    - [1.2. Linux](#12-linux)
+        - [1.1.1. 步骤一：Docker构建FileBeat](#111-步骤一docker构建filebeat)
+        - [1.1.2. 步骤二，Docker-Compose部署ELK](#112-步骤二docker-compose部署elk)
+            - [1.1.2.1. ***单机部署](#1121-单机部署)
+            - [1.1.2.2. 集群部署](#1122-集群部署)
+    - [1.2. Linux系统搭建](#12-linux系统搭建)
         - [1.2.1. Elasticsearch](#121-elasticsearch)
         - [1.2.2. Kinaba](#122-kinaba)
         - [1.2.3. Logstash](#123-logstash)
@@ -21,14 +20,22 @@
         - [1.2.6. ES可视化客户端](#126-es可视化客户端)
             - [1.2.6.1. ElasticHD](#1261-elastichd)
             - [1.2.6.2. cerebro](#1262-cerebro)
-    - [1.3. mac系统](#13-mac系统)
-    - [1.4. windowns系统](#14-windowns系统)
-    - [1.5. 在本机启动多个项目启动多个节点](#15-在本机启动多个项目启动多个节点)
 
 <!-- /TOC -->
 
 
 # 1. ELK搭建
+<!-- 
+kibana设置中文
+https://blog.csdn.net/qq_18671415/article/details/109690002
+
+Kibana启动报错：[resource_already_exists_exception]
+https://blog.csdn.net/m0_37710023/article/details/111357638
+Windows安装ES的head
+https://blog.csdn.net/qq_37554565/article/details/117250647
+
+-->
+
 <!-- 
 使用Docker搭建Elasticsearch集群服务教程 
 https://mp.weixin.qq.com/s/pxI-poDt5F8TbAL9Rr7A8g
@@ -40,7 +47,7 @@ ELK原理
 
 ## 1.1. ***Docker部署  
 
-### 1.1.1. 步骤一：Dockerfile构建FileBeat
+### 1.1.1. 步骤一：Docker构建FileBeat
 <!-- 
 
 -->
@@ -64,7 +71,9 @@ Filebeat 连接 Logstash 常见问题  Failed to connect to backoff(async(tcp://
 https://blog.csdn.net/xy707707/article/details/100073701  
 
 
-### 1.1.2. 步骤二，单机版：Docker分别部署ElasticSearch、Kibana
+
+### 1.1.2. 步骤二，Docker-Compose部署ELK  
+
 <!-- 
 使用Docker搭建ELK日志系统 
 https://mp.weixin.qq.com/s?__biz=MzAxMjY5NDU2Ng==&mid=2651854010&idx=2&sn=46f1f62cf15a1788da042f38d83d8a5a&chksm=804951f3b73ed8e5563e1d00bb2267a9d45a639955beaff6c03cfedbffd9aeeddf19e6fbf36c&mpshare=1&scene=1&srcid=&sharer_sharetime=1565741061263&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=36a99a852770fa03398d6d83b32183afed3cd3d1a3b4efe37bc5a5a3adc65c68adf852bc5aac9742c6ff7cce3b13adbc7ae3f843113389531a972cfe419ab100ddb13dfa6c31159f348959b7f6dbbe01&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=JLiKeNv%2F4KR6gCtdLZGhUXVH7BONlSBEY%2FTbKINtAXs2YG8At3hpMApp1DgxUdHh
@@ -74,8 +83,9 @@ https://www.bilibili.com/video/BV1hS4y1s7FT/?p=49&vd_source=9a9cf49f6bf9bd6a6e6e
 
 -->
 
-### 1.1.3. 步骤二，集群版：Docker-Compose部署ELK  
-#### 1.1.3.1. ***单机部署  
+
+#### 1.1.2.1. ***单机部署  
+
 <!-- 
 Docker-Compose部署ELK 
 *************** https://www.cnblogs.com/xiaobaibuai/p/15662224.html
@@ -168,7 +178,7 @@ output {
 ```
 
 
-#### 1.1.3.2. 集群部署  
+#### 1.1.2.2. 集群部署  
 <!-- 
 
 Docker部署多机单节点ELK【集群】【ES + Logstash + Kibana + IK】
@@ -176,8 +186,7 @@ https://mp.weixin.qq.com/s/lXvBTja_B6l-z0oUgiLETQ
 -->
 
 
-
-## 1.2. Linux  
+## 1.2. Linux系统搭建  
 <!-- 
 
 https://blog.csdn.net/ECHOZCL/article/details/122740053
@@ -322,70 +331,3 @@ https://github.com/medcl/elasticsearch-analysis-ik/
 #### 1.2.6.2. cerebro
 
 
-
-
-## 1.3. mac系统
-cd /Users/wangtao/software/elk/elasticsearch-7.13.3
-bin/elasticsearch
-
-http://localhost:5601/app/dev_tools#/console
-GET canal_product/_search
-
-
-
-GET canal_product/_search
-
-
-
-POST wt/_doc
-{
-    "mappings":{
-        "_doc":{
-            "properties":{
-                "testid":{
-                    "type":"long"
-                },
-                "name":{
-                    "type":"text"
-                }
-            }
-        }
-    }
-}
-
-
-## 1.4. windowns系统
-1. 安装elasticsearch  
-2. 启动elasticsearch
-    1. 进入 G:\software\elasticsearch-7.10.0-windows-x86_64\elasticsearch-7.10.0\bin  
-    2. 双击elasticsearch.bat  
-3. 访问elasticsearch：http://localhost:9200/
-4. 安装Kibana  
-5. 启动Kibana 
-    1. 进入G:\software\kibana-7.10.0-windows-x86_64\kibana-7.10.0-windows-x86_64\bin  
-    2. 双击kibana.bat  
-6. 访问Kibana：http://localhost:5601/  
-7. 安装head插件 
-    1. 安装head插件环境nodejs  
-    2. 安装grunt  
-    3. 安装head插件  
-    4. 启动head：  
-        1. G:\software\elasticsearch-head-master\elasticsearch-head-master
-        2. npm run start
-4. 访问head：http://localhost:9100/
-
-<!-- 
-kibana设置中文
-https://blog.csdn.net/qq_18671415/article/details/109690002
-
-Kibana启动报错：[resource_already_exists_exception]
-https://blog.csdn.net/m0_37710023/article/details/111357638
-Windows安装ES的head
-https://blog.csdn.net/qq_37554565/article/details/117250647
-
--->
-
-## 1.5. 在本机启动多个项目启动多个节点  
-<!-- 
-https://blog.csdn.net/qq_35463719/article/details/121940803
--->
