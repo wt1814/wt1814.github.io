@@ -1139,6 +1139,7 @@ prometheus
 &emsp; [k8s使用教程](/docs/devAndOps/k8s/use.md)  
 &emsp; &emsp; [k8s安装及常用命令](/docs/devAndOps/k8s/command.md)  
 &emsp; &emsp; [Yaml文件配置](/docs/devAndOps/k8s/yaml.md)  
+&emsp; &emsp; [k8s常用命令](/docs/devAndOps/k8s/k8scommand.md)  
 &emsp; [k8s架构](/docs/devAndOps/k8s/principle.md)  
 &emsp; &emsp; [Pod详解](/docs/devAndOps/k8s/pod.md)  
 &emsp; &emsp; &emsp; [k8s自动伸缩](/docs/devAndOps/k8s/Stretch.md)  
