@@ -1128,6 +1128,7 @@ prometheus
 &emsp; &emsp; [对象标签使用](/docs/devAndOps/docker/objectLabel.md)  
 &emsp; &emsp; [DockerFile](/docs/devAndOps/docker/file.md)  
 &emsp; &emsp; [ENTRYPOINT和CMD](/docs/devAndOps/docker/ENTRYPOINT.md)  
+&emsp; &emsp; [【Docker自启动】](/docs/devAndOps/docker/SelfStart.md)  
 &emsp; [2.2.Docker私服](/docs/devAndOps/docker/registry.md)  
 &emsp; [镜像详解](/docs/devAndOps/docker/image.md)  
 &emsp; [容器详解](/docs/devAndOps/docker/container.md)  
