@@ -10,7 +10,6 @@
         - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
     - [1.3. kubectl命令行工具](#13-kubectl命令行工具)
     - [1.4. 安装应用](#14-安装应用)
-    - [1.5. IDE插件](#15-ide插件)
 
 <!-- /TOC -->
 
@@ -132,9 +131,3 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
 
 ## 1.4. 安装应用  
 
-
-## 1.5. IDE插件  
-<!-- 
-IDE 插件
-https://mp.weixin.qq.com/s/KbcUxGJ3JK7ANtuDRvPzZQ
--->

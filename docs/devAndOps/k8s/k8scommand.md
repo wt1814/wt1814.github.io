@@ -5,6 +5,7 @@
 - [1. kubectl命令行工具](#1-kubectl命令行工具)
     - [1.1. ★★★kubectl用法概述](#11-★★★kubectl用法概述)
     - [1.2. ~~kubectl常用命令~~](#12-kubectl常用命令)
+    - [1.3. IDE插件](#13-ide插件)
 
 <!-- /TOC -->
 
@@ -112,3 +113,11 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     ```text
     $ kubectl logs -f <pod-name> -c <container-name> 
     ``` 
+
+
+## 1.3. IDE插件  
+<!-- 
+IDE 插件
+https://mp.weixin.qq.com/s/KbcUxGJ3JK7ANtuDRvPzZQ
+-->
+
