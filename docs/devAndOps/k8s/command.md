@@ -29,6 +29,11 @@ https://www.cnblogs.com/linu/p/10955823.html
 
 &emsp; <font color = "red">整体参考《Kubernetes权威指南》</font>  
 
+
+&emsp; 通过 kubeadm 能够快速部署一个 Kubern tes 集群，但是如果需要精细调整 Kubernetes各组件服务的参数及安全设置、高可用模式等，管理员就可以使用 Kubernetes 二进制文件进行部署。  
+
+
+
 ## 1.1. Kubernetes的安装
 <!-- 
 
