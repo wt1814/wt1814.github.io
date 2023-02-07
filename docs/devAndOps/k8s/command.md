@@ -8,8 +8,7 @@
         - [1.2.2. Kubernetes集群的网络配置](#122-kubernetes集群的网络配置)
         - [1.2.3. 基于NFS文件集群共享](#123-基于nfs文件集群共享)
         - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
-    - [1.3. kubectl命令行工具](#13-kubectl命令行工具)
-    - [1.4. 安装应用](#14-安装应用)
+    - [1.3. 安装应用](#13-安装应用)
 
 <!-- /TOC -->
 
@@ -24,13 +23,7 @@
 <!-- 
 k8s的快速使用手册
 https://www.cnblogs.com/linu/p/10955823.html
-
 -->
-
-&emsp; <font color = "red">整体参考《Kubernetes权威指南》</font>  
-
-
-&emsp; 通过 kubeadm 能够快速部署一个 Kubern tes 集群，但是如果需要精细调整 Kubernetes各组件服务的参数及安全设置、高可用模式等，管理员就可以使用 Kubernetes 二进制文件进行部署。  
 
 
 
@@ -45,6 +38,13 @@ https://blog.csdn.net/sumengnan/article/details/120932201
 https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
 
 -->
+&emsp; <font color = "red">整体参考《Kubernetes权威指南》</font>  
+
+
+&emsp; 通过 kubeadm 能够快速部署一个 Kubernetes 集群，但是如果需要精细调整 Kubernetes各组件服务的参数及安全设置、高可用模式等，管理员就可以使用 Kubernetes 二进制文件进行部署。  
+
+
+
 &emsp; CentOS Linux 7默认启动了防火墙服务(firewalld)，而Kubernetes的Master与工作Node之间会有大量的网络通信，安全的做法是在防火墙上配置各组件需要相互通信的端口号，具体要配置的端口号详见「内网中的Kubemetes相关配置」节中各服务监听的端口号说明。在一个安全的内部网络环境中可以关闭防火墙服务：  
 
 ```text
@@ -62,7 +62,7 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 * **(推荐)使用<font color = "red">kubeadmin</font>通过离线镜像安装；**  
 * 使用阿里公有云平台k8s；  
 * 通过yum官方仓库安装；  
-* 二进制包的形式进行安装，kubeasz (github)；  
+* 【二进制包的形式进行安装，kubeasz (github)；】  
 
 
         kubeadm/kubelet/kubectl区别？  
@@ -130,9 +130,6 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
     &emsp; 通过以上设置就在内网环境中搭建了一个企业内部的私有容器云平台。  
 -->
 
-## 1.3. kubectl命令行工具  
-&emsp; [k8s常用命令](/docs/devAndOps/k8s/k8scommand.md)  
 
-
-## 1.4. 安装应用  
+## 1.3. 安装应用  
 
