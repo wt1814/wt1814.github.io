@@ -15,6 +15,9 @@
 
 
 # 1. Jenkins构建Java项目  
+&emsp; 一句话总结步骤：1.配置git源码信息，将源码下载到jenkins的workspace目录下；2.在jenkins的workspace目录下执行编译（mvn clean package）；3.推送代码到远程服务器；4.执行远程服务器的启动脚本。     
+
+
 
 ## 1.1. Jenkins通过jar包启动项目
 ### 1.1.1. 打包

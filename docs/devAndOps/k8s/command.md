@@ -2,44 +2,37 @@
 <!-- TOC -->
 
 - [1. Kubemetes实践](#1-kubemetes实践)
-    - [1.1. Kubernetes的安装](#11-kubernetes的安装)
-    - [1.2. Kubernetes的配置](#12-kubernetes的配置)
-        - [1.2.1. Kubernetes集群的安全设置](#121-kubernetes集群的安全设置)
-        - [1.2.2. Kubernetes集群的网络配置](#122-kubernetes集群的网络配置)
-        - [1.2.3. 基于NFS文件集群共享](#123-基于nfs文件集群共享)
-        - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
-    - [1.3. kubectl命令行工具](#13-kubectl命令行工具)
-    - [1.4. 安装应用](#14-安装应用)
+    - [1.1. 单机安装](#11-单机安装)
+    - [1.2. 集群安装](#12-集群安装)
+    - [1.3. 配置](#13-配置)
+        - [1.3.1. Kubernetes集群的安全设置](#131-kubernetes集群的安全设置)
+        - [1.3.2. Kubernetes集群的网络配置](#132-kubernetes集群的网络配置)
+        - [1.3.3. 基于NFS文件集群共享](#133-基于nfs文件集群共享)
+        - [1.3.4. 内网中搭建私有仓库](#134-内网中搭建私有仓库)
 
 <!-- /TOC -->
 
 
-&emsp; **<font color = "red">总结：</font>**  
-
-&emsp; kubectl命令行的语法如下： $ kubectl [command] [TYPE] [NAME] [flags]  
-* [command]：子命令，用于操作Kubemetes集群资源对象的命令，例如create、delete、describe、get、exec等。  
-
-
 # 1. Kubemetes实践  
+
+## 1.1. 单机安装
 <!-- 
-k8s的快速使用手册
-https://www.cnblogs.com/linu/p/10955823.html
-
--->
-
-&emsp; <font color = "red">整体参考《Kubernetes权威指南》</font>  
-
-## 1.1. Kubernetes的安装
-<!-- 
-
-Centos7搭建k8s环境教程  https://mp.weixin.qq.com/s/4zsGwYBLoiZx0l68NQPPMA
+kubeadm安装单机k8s
+https://blog.csdn.net/zjcjava/article/details/99317569
 centos7安装kubernetes
 https://blog.csdn.net/sumengnan/article/details/120932201
 
-
-https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
-
 -->
+
+
+## 1.2. 集群安装
+<!-- 
+https://mp.weixin.qq.com/s/4zsGwYBLoiZx0l68NQPPMA
+https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
+-->
+&emsp; <font color = "red">整体参考《Kubernetes权威指南》</font>  
+
+
 &emsp; CentOS Linux 7默认启动了防火墙服务(firewalld)，而Kubernetes的Master与工作Node之间会有大量的网络通信，安全的做法是在防火墙上配置各组件需要相互通信的端口号，具体要配置的端口号详见「内网中的Kubemetes相关配置」节中各服务监听的端口号说明。在一个安全的内部网络环境中可以关闭防火墙服务：  
 
 ```text
@@ -57,7 +50,9 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 * **(推荐)使用<font color = "red">kubeadmin</font>通过离线镜像安装；**  
 * 使用阿里公有云平台k8s；  
 * 通过yum官方仓库安装；  
-* 二进制包的形式进行安装，kubeasz (github)；  
+* 【二进制包的形式进行安装，kubeasz (github)；】  
+
+&emsp; **通过kubeadm能够快速部署一个Kubernetes集群，但是如果需要精细调整Kubernetes各组件服务的参数及安全设置、高可用模式等，管理员就可以使用Kubernetes二进制文件进行部署。**  
 
 
         kubeadm/kubelet/kubectl区别？  
@@ -65,16 +60,18 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
         kubelet运行在所有节点上，负责启动POD和容器，以系统服务形式出现。
         kubectl：kubectl是kubenetes命令行工具，提供指令。
 
-## 1.2. Kubernetes的配置
-### 1.2.1. Kubernetes集群的安全设置
+
+## 1.3. 配置
+
+### 1.3.1. Kubernetes集群的安全设置
 
 1. 基于CA签名的双向数字证书认证方式
-2. 基于HTTP BASE TOKEN 的简单认证方式  
+2. 基于HTTP BASE TOKEN的简单认证方式  
 
-### 1.2.2. Kubernetes集群的网络配置
+### 1.3.2. Kubernetes集群的网络配置
 &emsp; [k8s网络配置](/docs/devAndOps/k8s/k8snetwork.md)  
 
-### 1.2.3. 基于NFS文件集群共享  
+### 1.3.3. 基于NFS文件集群共享  
 <!-- 
 Kubernetes 集群部署NFS网络存储
 https://blog.csdn.net/zuozewei/article/details/108165523
@@ -85,7 +82,7 @@ https://blog.csdn.net/zuozewei/article/details/108165523
 &emsp; **Kubernetes集群网络存储与Pod挂载点的区别：**  
 &emsp; <font color = "clime">Kubernetes集群网络存储是不同宿主机实现文件共享；Pod挂载点是容器与宿主机实现文件共享。</font>  
 
-### 1.2.4. 内网中搭建私有仓库  
+### 1.3.4. 内网中搭建私有仓库  
 &emsp; ......
 <!-- 
 从私有仓库拉取镜像
@@ -124,10 +121,4 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
     ```
     &emsp; 通过以上设置就在内网环境中搭建了一个企业内部的私有容器云平台。  
 -->
-
-## 1.3. kubectl命令行工具  
-&emsp; [k8s常用命令](/docs/devAndOps/k8s/k8scommand.md)  
-
-
-## 1.4. 安装应用  
 

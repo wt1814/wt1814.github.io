@@ -5,6 +5,7 @@
 <!-- TOC -->
 
 - [1. Service详解](#1-service详解)
+    - [无状态集群Deployment和有状态集群Operator](#无状态集群deployment和有状态集群operator)
     - [1.1. Service基本用法](#11-service基本用法)
     - [1.2. 集群外部访问Pod或Service](#12-集群外部访问pod或service)
         - [1.2.1. 利用Rinetd实现Service负载均衡](#121-利用rinetd实现service负载均衡)
@@ -21,6 +22,9 @@
 https://blog.csdn.net/PpikachuP/article/details/89674578
 -->
 &emsp; **<font color = "clime">Service是Kubernetes最核心的概念，通过创建Service，可以为一组具有相同功能的容器应用提供一个统一的入口地址，并且将请求负载分发到后端的各个容器应用上。</font>** 本节对Service的使用进行详细说明，包括Service的负载均衡、外网访问、DNS服务的搭建、Ingress7层路由机制等。  
+
+## 无状态集群Deployment和有状态集群Operator  
+  
 
 ## 1.1. Service基本用法  
 &emsp; 在某些环境中，应用系统需要将一个外部数据库作为后端服务进行连接，或将另一个集群或Namespace中的服务作为服务的后端，这时可以通过创建一个无Label Selector的Service来实现。  
