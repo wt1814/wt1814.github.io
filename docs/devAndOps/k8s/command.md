@@ -2,28 +2,33 @@
 <!-- TOC -->
 
 - [1. Kubemetes实践](#1-kubemetes实践)
-    - [1.1. Kubernetes的安装](#11-kubernetes的安装)
-    - [1.2. Kubernetes的配置](#12-kubernetes的配置)
-        - [1.2.1. Kubernetes集群的安全设置](#121-kubernetes集群的安全设置)
-        - [1.2.2. Kubernetes集群的网络配置](#122-kubernetes集群的网络配置)
-        - [1.2.3. 基于NFS文件集群共享](#123-基于nfs文件集群共享)
-        - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
+    - [1.1. 单机安装](#11-单机安装)
+    - [1.2. 集群安装](#12-集群安装)
+    - [1.3. 配置](#13-配置)
+        - [1.3.1. Kubernetes集群的安全设置](#131-kubernetes集群的安全设置)
+        - [1.3.2. Kubernetes集群的网络配置](#132-kubernetes集群的网络配置)
+        - [1.3.3. 基于NFS文件集群共享](#133-基于nfs文件集群共享)
+        - [1.3.4. 内网中搭建私有仓库](#134-内网中搭建私有仓库)
 
 <!-- /TOC -->
 
 
 # 1. Kubemetes实践  
 
-## 1.1. Kubernetes的安装
+## 1.1. 单机安装
 <!-- 
-Centos7搭建k8s环境教程  https://mp.weixin.qq.com/s/4zsGwYBLoiZx0l68NQPPMA
+kubeadm安装单机k8s
+https://blog.csdn.net/zjcjava/article/details/99317569
 centos7安装kubernetes
 https://blog.csdn.net/sumengnan/article/details/120932201
 
-https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
+-->
 
-k8s的快速使用手册
-https://www.cnblogs.com/linu/p/10955823.html
+
+## 1.2. 集群安装
+<!-- 
+https://mp.weixin.qq.com/s/4zsGwYBLoiZx0l68NQPPMA
+https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
 -->
 &emsp; <font color = "red">整体参考《Kubernetes权威指南》</font>  
 
@@ -56,19 +61,17 @@ https://www.cnblogs.com/linu/p/10955823.html
         kubectl：kubectl是kubenetes命令行工具，提供指令。
 
 
+## 1.3. 配置
 
-
-## 1.2. Kubernetes的配置
-
-### 1.2.1. Kubernetes集群的安全设置
+### 1.3.1. Kubernetes集群的安全设置
 
 1. 基于CA签名的双向数字证书认证方式
 2. 基于HTTP BASE TOKEN的简单认证方式  
 
-### 1.2.2. Kubernetes集群的网络配置
+### 1.3.2. Kubernetes集群的网络配置
 &emsp; [k8s网络配置](/docs/devAndOps/k8s/k8snetwork.md)  
 
-### 1.2.3. 基于NFS文件集群共享  
+### 1.3.3. 基于NFS文件集群共享  
 <!-- 
 Kubernetes 集群部署NFS网络存储
 https://blog.csdn.net/zuozewei/article/details/108165523
@@ -79,7 +82,7 @@ https://blog.csdn.net/zuozewei/article/details/108165523
 &emsp; **Kubernetes集群网络存储与Pod挂载点的区别：**  
 &emsp; <font color = "clime">Kubernetes集群网络存储是不同宿主机实现文件共享；Pod挂载点是容器与宿主机实现文件共享。</font>  
 
-### 1.2.4. 内网中搭建私有仓库  
+### 1.3.4. 内网中搭建私有仓库  
 &emsp; ......
 <!-- 
 从私有仓库拉取镜像
