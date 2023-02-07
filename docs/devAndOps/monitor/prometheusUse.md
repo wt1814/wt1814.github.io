@@ -1,7 +1,14 @@
 
+<!-- TOC -->
 
+- [1. prometheus使用](#1-prometheus使用)
+    - [1.1. 搭建](#11-搭建)
+        - [1.1.1. Linux搭建Prometheus](#111-linux搭建prometheus)
+        - [1.1.2. Docker搭建Prometheus](#112-docker搭建prometheus)
 
-# prometheus使用
+<!-- /TOC -->
+
+# 1. prometheus使用
 <!-- 
 
 号称下一代监控系统，来看看它有多强！ 
@@ -20,12 +27,12 @@ Prometheus 高可用
 https://mp.weixin.qq.com/s/aXjUQOBMsP90nCi4yiWaPg
 -->
 
-## 搭建  
-### Linux搭建Prometheus
+## 1.1. 搭建  
+### 1.1.1. Linux搭建Prometheus
 <!-- 
 
 https://www.cnblogs.com/demoduan/p/16557219.html
 -->
 
 
-### Docker搭建Prometheus
+### 1.1.2. Docker搭建Prometheus
