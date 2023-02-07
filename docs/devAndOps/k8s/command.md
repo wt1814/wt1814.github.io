@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. Kubemetes实践](#1-kubemetes实践)
+- [1. Kubemetes安装](#1-kubemetes安装)
     - [1.1. 单机安装](#11-单机安装)
     - [1.2. 集群安装](#12-集群安装)
     - [1.3. 配置](#13-配置)
@@ -13,7 +13,7 @@
 <!-- /TOC -->
 
 
-# 1. Kubemetes实践  
+# 1. Kubemetes安装  
 
 ## 1.1. 单机安装
 <!-- 
@@ -53,12 +53,6 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 * 【二进制包的形式进行安装，kubeasz (github)；】  
 
 &emsp; **通过kubeadm能够快速部署一个Kubernetes集群，但是如果需要精细调整Kubernetes各组件服务的参数及安全设置、高可用模式等，管理员就可以使用Kubernetes二进制文件进行部署。**  
-
-
-        kubeadm/kubelet/kubectl区别？  
-        kubeadm是kubernetes集群快速构建工具。
-        kubelet运行在所有节点上，负责启动POD和容器，以系统服务形式出现。
-        kubectl：kubectl是kubenetes命令行工具，提供指令。
 
 
 ## 1.3. 配置
