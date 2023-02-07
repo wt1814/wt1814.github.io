@@ -8,17 +8,11 @@
         - [1.2.2. Kubernetes集群的网络配置](#122-kubernetes集群的网络配置)
         - [1.2.3. 基于NFS文件集群共享](#123-基于nfs文件集群共享)
         - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
-    - [1.3. 安装应用](#13-安装应用)
 
 <!-- /TOC -->
 
 
 # 1. Kubemetes实践  
-<!-- 
-k8s的快速使用手册
-https://www.cnblogs.com/linu/p/10955823.html
--->
-
 
 ## 1.1. Kubernetes的安装
 <!-- 
@@ -27,6 +21,9 @@ centos7安装kubernetes
 https://blog.csdn.net/sumengnan/article/details/120932201
 
 https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
+
+k8s的快速使用手册
+https://www.cnblogs.com/linu/p/10955823.html
 -->
 &emsp; <font color = "red">整体参考《Kubernetes权威指南》</font>  
 
@@ -59,11 +56,14 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
         kubectl：kubectl是kubenetes命令行工具，提供指令。
 
 
+
+
 ## 1.2. Kubernetes的配置
+
 ### 1.2.1. Kubernetes集群的安全设置
 
 1. 基于CA签名的双向数字证书认证方式
-2. 基于HTTP BASE TOKEN 的简单认证方式  
+2. 基于HTTP BASE TOKEN的简单认证方式  
 
 ### 1.2.2. Kubernetes集群的网络配置
 &emsp; [k8s网络配置](/docs/devAndOps/k8s/k8snetwork.md)  
@@ -118,7 +118,4 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
     ```
     &emsp; 通过以上设置就在内网环境中搭建了一个企业内部的私有容器云平台。  
 -->
-
-
-## 1.3. 安装应用  
 

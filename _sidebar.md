@@ -794,7 +794,7 @@
     * [Kubernetes](/docs/devAndOps/k8s/Kubernetes.md)  
         * [k8s使用教程](/docs/devAndOps/k8s/use.md)  
             * [k8s安装](/docs/devAndOps/k8s/command.md)  
-                * [Yaml文件配置](/docs/devAndOps/k8s/yaml.md)  
+            * [k8s安装应用](/docs/devAndOps/k8s/application.md)  
             * [k8s常用命令](/docs/devAndOps/k8s/k8scommand.md)  
         * [k8s架构](/docs/devAndOps/k8s/principle.md)  
             * [Pod详解](/docs/devAndOps/k8s/pod.md)  
