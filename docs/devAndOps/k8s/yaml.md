@@ -31,7 +31,6 @@ https://blog.51cto.com/wutengfei/2482187
 ## 1.1. k8s的yaml文件配置详解  
 
 <!-- 
-
 k8s配置文件模板
 https://www.cnblogs.com/g2thend/p/11837649.html
 -->
