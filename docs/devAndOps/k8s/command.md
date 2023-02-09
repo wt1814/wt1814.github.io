@@ -16,13 +16,18 @@
 # 1. Kubemetes安装  
 
 ## 1.1. 单机安装
+
+
 <!-- 
 kubeadm安装单机k8s
 https://blog.csdn.net/zjcjava/article/details/99317569
 centos7安装kubernetes
 https://blog.csdn.net/sumengnan/article/details/120932201
-
 -->
+![image](http://182.92.69.8:8081/img/devops/k8s/k8s-20.png)  
+1. 安装数据库etcd  
+1. master节点安装组件：在 Kubemetes 的 Master 节点上需要部署的服务包括 etcd 、 kube-apiserver 、kube-controller-manager 和 kube-scheduler。    
+2. node节点安装组件：在工作节点 (Worker Node ) 上需要部署的服务包括 docker 、 kubelet 和 kube-proxy 。    
 
 
 ## 1.2. 集群安装
