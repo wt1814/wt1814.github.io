@@ -16,13 +16,12 @@
 # 1. Kubemetes安装  
 
 ## 1.1. 单机安装
-
-
-<!-- 
-kubeadm安装单机k8s
-https://blog.csdn.net/zjcjava/article/details/99317569
+<!--
 centos7安装kubernetes
 https://blog.csdn.net/sumengnan/article/details/120932201
+kubeadm安装单机k8s
+https://blog.csdn.net/zjcjava/article/details/99317569
+
 -->
 ![image](http://182.92.69.8:8081/img/devops/k8s/k8s-20.png)  
 1. 安装数据库etcd  
