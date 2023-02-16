@@ -3,6 +3,8 @@
 
 - [1. Kubemetes安装](#1-kubemetes安装)
     - [1.1. 单机安装](#11-单机安装)
+        - [kubemetes安装](#kubemetes安装)
+        - [kubemetes-dashboard仪表盘安装](#kubemetes-dashboard仪表盘安装)
     - [1.2. 集群安装](#12-集群安装)
     - [1.3. 配置](#13-配置)
         - [1.3.1. Kubernetes集群的安全设置](#131-kubernetes集群的安全设置)
@@ -16,7 +18,12 @@
 # 1. Kubemetes安装  
 
 ## 1.1. 单机安装
+
+### kubemetes安装
 <!--
+kubernetes(k8s) 集群 安装总流程
+http://blog.51yip.com/cloud/2399.html
+
 kubeadm安装单机k8s
 *** https://blog.csdn.net/zjcjava/article/details/99317569
 centos7安装kubernetes
@@ -26,13 +33,53 @@ https://blog.csdn.net/sumengnan/article/details/120932201
 https://ceshiren.com/t/topic/22431
 
 
+
+-->
+
+<!-- 
+Unable to register node with API server
+https://blog.csdn.net/hawk199/article/details/125058030
+
 *** 问题 使用kubeadm创建集群失败报Unable to register node with API server
 https://blog.csdn.net/hawk199/article/details/125058030
+The connection to the server localhost:8080 was refused - did you specify the right host or port?解决
+https://blog.csdn.net/CEVERY/article/details/108753379
+
+failed to get sandbox image “k8s.gcr.io/pause:3.6“: failed to pull image “k8s.gcr.io/pause:3.6“
+https://blog.csdn.net/Haskei/article/details/128474534
+
+
 -->
+
 ![image](http://182.92.69.8:8081/img/devops/k8s/k8s-20.png)  
 1. 安装数据库etcd  
 1. master节点安装组件：在 Kubemetes 的 Master 节点上需要部署的服务包括 etcd 、 kube-apiserver 、kube-controller-manager 和 kube-scheduler。    
 2. node节点安装组件：在工作节点 (Worker Node ) 上需要部署的服务包括 docker 、 kubelet 和 kube-proxy 。    
+
+
+### kubemetes-dashboard仪表盘安装  
+<!-- 
+
+安装
+k8s入门：kubernetes-dashboard 安装
+https://blog.csdn.net/qq_41538097/article/details/125561769
+
+-->
+
+<!-- 
+
+彻底搞懂 K8S Pod Pending 故障原因及解决方案
+https://blog.csdn.net/xcbeyond/article/details/124580730
+
+主节点无法调度 0/1 nodes are available: 1 node(s) had untolerated taint {node.kubernetes.io/not-ready: }
+https://blog.csdn.net/hzwy23/article/details/128111446
+https://cloud.tencent.com/developer/article/2090770
+
+【Kubernetes系列】Kubernetes常见报错
+https://blog.csdn.net/u012069313/article/details/125264651
+-->
+
+
 
 
 ## 1.2. 集群安装
