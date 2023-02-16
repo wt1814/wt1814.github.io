@@ -2,7 +2,9 @@
 <!-- TOC -->
 
 - [1. Docker命令](#1-docker命令)
-    - [1.1. 镜像操作命令](#11-镜像操作命令)
+    - [1.1. 镜像操作](#11-镜像操作)
+        - [常用命令](#常用命令)
+        - [Docker镜像有哪些Tag](#docker镜像有哪些tag)
     - [1.2. 容器操作指令](#12-容器操作指令)
         - [docker run和docker start的区别](#docker-run和docker-start的区别)
         - [1.2.1. docker run命令详解](#121-docker-run命令详解)
@@ -18,7 +20,8 @@
 &emsp; Docker一般的使用流程：  
 ![image](http://182.92.69.8:8081/img/devops/docker/docker-39.png)  
 
-## 1.1. 镜像操作命令  
+## 1.1. 镜像操作
+### 常用命令
 &emsp; **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)。</font>**  
 
 * 获取镜像：  
@@ -50,6 +53,13 @@
 * docker rm <-f> 容器id - 删除容器  
 * docker rmi <-f> 镜像名:<tags\> - 删除镜像  
 -->
+
+### Docker镜像有哪些Tag
+<!-- 
+
+http://www.zztongyun.com/article/docker%20%E6%9F%A5%E7%9C%8B%E9%95%9C%E5%83%8F%E7%9A%84%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF
+-->
+
 
 ## 1.2. 容器操作指令
 &emsp; **<font color = "clime">容器操作常用命令：run、start、stop、exec。</font>**  
