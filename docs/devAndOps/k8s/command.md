@@ -17,11 +17,17 @@
 
 ## 1.1. 单机安装
 <!--
+kubeadm安装单机k8s
+*** https://blog.csdn.net/zjcjava/article/details/99317569
 centos7安装kubernetes
 https://blog.csdn.net/sumengnan/article/details/120932201
-kubeadm安装单机k8s
-https://blog.csdn.net/zjcjava/article/details/99317569
 
+*** 本质是第一步的报错，failed to pull image \"k8s.gcr.io/pause:3.6\"
+https://ceshiren.com/t/topic/22431
+
+
+*** 问题 使用kubeadm创建集群失败报Unable to register node with API server
+https://blog.csdn.net/hawk199/article/details/125058030
 -->
 ![image](http://182.92.69.8:8081/img/devops/k8s/k8s-20.png)  
 1. 安装数据库etcd  

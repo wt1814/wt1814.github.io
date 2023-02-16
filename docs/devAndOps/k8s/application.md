@@ -1,6 +1,7 @@
 <!-- TOC -->
 
-- [1. Yaml文件配置详解](#1-yaml文件配置详解)
+- [1. k8s安装应用](#1-k8s安装应用)
+    - [***K8S Pod Pending 故障原因及解决方案](#k8s-pod-pending-故障原因及解决方案)
     - [1.1. 安装应用](#11-安装应用)
     - [1.2. k8s的yaml文件配置详解](#12-k8s的yaml文件配置详解)
     - [1.3. ★★★资源限制](#13-★★★资源限制)
@@ -15,7 +16,7 @@
 * 零停机滚动更新
 * 自动扩缩容
 
-# 1. Yaml文件配置详解
+# 1. k8s安装应用
 <!-- 
 k8s的yaml文件配置详解
 https://www.cnblogs.com/arrow-kejin/p/10058758.html
@@ -28,6 +29,14 @@ https://www.cnblogs.com/tylerzhou/p/11023157.html
 K8S配置中的port、targetPort、nodePort和containerPort区别
 https://blog.51cto.com/wutengfei/2482187
 -->
+
+## ***K8S Pod Pending 故障原因及解决方案
+<!-- 
+彻底搞懂 K8S Pod Pending 故障原因及解决方案
+https://blog.csdn.net/xcbeyond/article/details/124580730
+-->
+
+
 
 ## 1.1. 安装应用  
 
