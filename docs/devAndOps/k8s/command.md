@@ -3,8 +3,8 @@
 
 - [1. Kubemetes安装](#1-kubemetes安装)
     - [1.1. 单机安装](#11-单机安装)
-        - [kubemetes安装](#kubemetes安装)
-        - [kubemetes-dashboard仪表盘安装](#kubemetes-dashboard仪表盘安装)
+        - [1.1.1. kubemetes安装](#111-kubemetes安装)
+        - [1.1.2. kubemetes-dashboard仪表盘安装](#112-kubemetes-dashboard仪表盘安装)
     - [1.2. 集群安装](#12-集群安装)
     - [1.3. 配置](#13-配置)
         - [1.3.1. Kubernetes集群的安全设置](#131-kubernetes集群的安全设置)
@@ -19,7 +19,7 @@
 
 ## 1.1. 单机安装
 
-### kubemetes安装
+### 1.1.1. kubemetes安装
 <!--
 kubernetes(k8s) 集群 安装总流程
 http://blog.51yip.com/cloud/2399.html
@@ -57,7 +57,7 @@ https://blog.csdn.net/Haskei/article/details/128474534
 2. node节点安装组件：在工作节点 (Worker Node ) 上需要部署的服务包括 docker 、 kubelet 和 kube-proxy 。    
 
 
-### kubemetes-dashboard仪表盘安装  
+### 1.1.2. kubemetes-dashboard仪表盘安装  
 <!-- 
 
 安装
