@@ -4,13 +4,14 @@
 - [1. Kubemetes安装](#1-kubemetes安装)
     - [1.1. 单机安装](#11-单机安装)
         - [1.1.1. kubemetes安装](#111-kubemetes安装)
-        - [1.1.2. kubemetes-dashboard仪表盘安装](#112-kubemetes-dashboard仪表盘安装)
-    - [1.2. 集群安装](#12-集群安装)
-    - [1.3. 配置](#13-配置)
-        - [1.3.1. Kubernetes集群的安全设置](#131-kubernetes集群的安全设置)
-        - [1.3.2. Kubernetes集群的网络配置](#132-kubernetes集群的网络配置)
-        - [1.3.3. 基于NFS文件集群共享](#133-基于nfs文件集群共享)
-        - [1.3.4. 内网中搭建私有仓库](#134-内网中搭建私有仓库)
+    - [1.2. 安装flannel组件](#12-安装flannel组件)
+        - [1.2.1. kubemetes-dashboard仪表盘安装](#121-kubemetes-dashboard仪表盘安装)
+    - [1.3. 集群安装](#13-集群安装)
+    - [1.4. 配置](#14-配置)
+        - [1.4.1. Kubernetes集群的安全设置](#141-kubernetes集群的安全设置)
+        - [1.4.2. Kubernetes集群的网络配置](#142-kubernetes集群的网络配置)
+        - [1.4.3. 基于NFS文件集群共享](#143-基于nfs文件集群共享)
+        - [1.4.4. 内网中搭建私有仓库](#144-内网中搭建私有仓库)
 
 <!-- /TOC -->
 
@@ -47,7 +48,7 @@ https://blog.csdn.net/CEVERY/article/details/108753379
 
 failed to get sandbox image “k8s.gcr.io/pause:3.6“: failed to pull image “k8s.gcr.io/pause:3.6“
 https://blog.csdn.net/Haskei/article/details/128474534
-
+https://blog.csdn.net/hawk199/article/details/125058030
 
 -->
 
@@ -57,7 +58,16 @@ https://blog.csdn.net/Haskei/article/details/128474534
 2. node节点安装组件：在工作节点 (Worker Node ) 上需要部署的服务包括 docker 、 kubelet 和 kube-proxy 。    
 
 
-### 1.1.2. kubemetes-dashboard仪表盘安装  
+安装kubelt的时候，已经安装了etcd数据库
+
+## 1.2. 安装flannel组件
+<!-- 
+安装flannel组件
+https://blog.csdn.net/weixin_45067241/article/details/126531465
+-->
+
+
+### 1.2.1. kubemetes-dashboard仪表盘安装  
 <!-- 
 
 安装
@@ -77,12 +87,22 @@ https://cloud.tencent.com/developer/article/2090770
 
 【Kubernetes系列】Kubernetes常见报错
 https://blog.csdn.net/u012069313/article/details/125264651
+
+
+*** k8s 1.24 taint污点修改
+https://i4t.com/5471.html
+
+查日志命令  k8s启动Pod遇到CrashLoopBackOff的解决方法
+https://www.jianshu.com/p/bcc05427990d
+
 -->
 
 
 
 
-## 1.2. 集群安装
+
+
+## 1.3. 集群安装
 <!-- 
 https://mp.weixin.qq.com/s/4zsGwYBLoiZx0l68NQPPMA
 https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
@@ -112,17 +132,17 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 &emsp; **通过kubeadm能够快速部署一个Kubernetes集群，但是如果需要精细调整Kubernetes各组件服务的参数及安全设置、高可用模式等，管理员就可以使用Kubernetes二进制文件进行部署。**  
 
 
-## 1.3. 配置
+## 1.4. 配置
 
-### 1.3.1. Kubernetes集群的安全设置
+### 1.4.1. Kubernetes集群的安全设置
 
 1. 基于CA签名的双向数字证书认证方式
 2. 基于HTTP BASE TOKEN的简单认证方式  
 
-### 1.3.2. Kubernetes集群的网络配置
+### 1.4.2. Kubernetes集群的网络配置
 &emsp; [k8s网络配置](/docs/devAndOps/k8s/k8snetwork.md)  
 
-### 1.3.3. 基于NFS文件集群共享  
+### 1.4.3. 基于NFS文件集群共享  
 <!-- 
 Kubernetes 集群部署NFS网络存储
 https://blog.csdn.net/zuozewei/article/details/108165523
@@ -133,7 +153,7 @@ https://blog.csdn.net/zuozewei/article/details/108165523
 &emsp; **Kubernetes集群网络存储与Pod挂载点的区别：**  
 &emsp; <font color = "clime">Kubernetes集群网络存储是不同宿主机实现文件共享；Pod挂载点是容器与宿主机实现文件共享。</font>  
 
-### 1.3.4. 内网中搭建私有仓库  
+### 1.4.4. 内网中搭建私有仓库  
 &emsp; ......
 <!-- 
 从私有仓库拉取镜像
