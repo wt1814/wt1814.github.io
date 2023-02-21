@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. Kubemetes安装](#1-kubemetes安装)
+- [1. Kubemetes Master安装](#1-kubemetes-master安装)
     - [1.1. 单机安装](#11-单机安装)
         - [1.1.1. kubemetes安装](#111-kubemetes安装)
     - [1.2. 安装flannel组件](#12-安装flannel组件)
@@ -16,7 +16,13 @@
 <!-- /TOC -->
 
 
-# 1. Kubemetes安装  
+# 1. Kubemetes Master安装  
+
+|节点|组件|
+|---|---|
+|master|etcd <br> kube-apiserver <br> kube-controller-manager <br> kube-scheduler|
+|node|kubelet <br> kube-proxy <br> docker|
+
 
 ## 1.1. 单机安装
 
@@ -75,6 +81,7 @@ https://blog.csdn.net/qq_41538097/article/details/125561769
 
 *** 配置用户
 http://www.manongjc.com/detail/62-twpjlhgearkhued.html
+https://www.soulchild.cn/post/2945
 
 
 Dashboard 认证 - 配置登录权限
@@ -84,6 +91,9 @@ https://blog.csdn.net/qq_41619571/article/details/127217339
 https://blog.csdn.net/weixin_42350212/article/details/125460396
 
 -->
+
+ kubectl describe secrets cluster-admin-dashboard-wt
+ 
 
 <!-- 
 
