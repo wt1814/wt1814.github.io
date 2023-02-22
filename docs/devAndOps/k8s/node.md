@@ -11,4 +11,17 @@ docker
 2. 初始化主节点（只在master节点上执行）kubeadm init  
 
 
+<!-- 
+kubelet启动失败：  
+
+升级containerd   https://blog.csdn.net/weixin_46476452/article/details/127837404
+
+-->
+
+
+sudo kubelet --container-runtime-endpoint=unix:///run/containerd/containerd.sock
+
+
+
+
 
