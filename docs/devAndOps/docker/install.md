@@ -50,9 +50,7 @@ centos8使用，缺少类库libseccomp-devel
 https://blog.csdn.net/kfgauss/article/details/116744314
 
     yum install libseccomp-devel
-
 -->
-
 
 
 ### 1.1.2. 启动及停止  

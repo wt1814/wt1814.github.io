@@ -38,9 +38,6 @@ https://blog.csdn.net/sumengnan/article/details/120932201
 
 *** 本质是第一步的报错，failed to pull image \"k8s.gcr.io/pause:3.6\"
 https://ceshiren.com/t/topic/22431
-
-
-
 -->
 
 <!-- 
@@ -65,6 +62,11 @@ https://blog.csdn.net/hawk199/article/details/125058030
 
 
 安装kubelt的时候，已经安装了etcd数据库
+
+
+journalctl -u kubelet -n 25
+查看kubelet日志： journalctl -xefu kubelet
+
 
 ## 1.2. 安装flannel组件
 <!-- 
