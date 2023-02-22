@@ -18,6 +18,8 @@
 
 # 1. Kubemetes Master安装  
 
+k8s安装1.2.6版本以下的，好安装
+
 |节点|组件|
 |---|---|
 |master|etcd <br> kube-apiserver <br> kube-controller-manager <br> kube-scheduler|
