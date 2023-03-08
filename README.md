@@ -75,8 +75,9 @@
         - [1.23.1. 监控](#1231-监控)
         - [1.23.2. 统计](#1232-统计)
     - [1.24. 常用研发工具](#124-常用研发工具)
-    - [1.25. 算法](#125-算法)
-    - [1.26. 前端知识](#126-前端知识)
+    - [1.25. 软件工程](#125-软件工程)
+    - [1.26. 算法](#126-算法)
+    - [1.27. 前端知识](#127-前端知识)
 
 <!-- /TOC -->
 
@@ -1191,7 +1192,7 @@ prometheus
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
 
 
-## 软件工程
+## 1.25. 软件工程
 [软件工程](/docs/softwareEngineering/Engineering.md)  
 [需求](/docs/softwareEngineering/Demand.md)  
 [设计](/docs/softwareEngineering/Design.md)  
@@ -1201,7 +1202,7 @@ prometheus
 
 --------
 
-## 1.25. 算法  
+## 1.26. 算法  
 [红黑树](/docs/function/redBlack.md)  
 [复杂数据结构](/docs/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/function/SkipList.md)  
@@ -1214,5 +1215,5 @@ prometheus
 [大数据和空间限制](/docs/function/bigdata.md)  
 &emsp; [内存只有 2G，如何对 100 亿数据进行排序？](/docs/function/SmallMemory.md)  
 
-## 1.26. 前端知识  
+## 1.27. 前端知识  
 [nodejs](/docs/front/nodejs.md)  
