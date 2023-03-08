@@ -1191,6 +1191,14 @@ prometheus
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
 
 
+## 软件工程
+[软件工程](/docs/softwareEngineering/Engineering.md)  
+[需求](/docs/softwareEngineering/Demand.md)  
+[设计](/docs/softwareEngineering/Design.md)  
+[编码](/docs/softwareEngineering/Code.md)  
+[测试](/docs/softwareEngineering/Test.md)  
+[开发过程复盘](/docs/softwareEngineering/Replay.md)  
+
 --------
 
 ## 1.25. 算法  
