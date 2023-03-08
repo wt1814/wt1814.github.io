@@ -544,6 +544,8 @@
 
 ### 1.7.3. 分布式事务
 [分布式事务](/docs/microService/thinking/DistriTransaction.md)  
+&emsp; [分布式事务场景](/docs/microService/thinking/DistriTransactioncene.md)  
+&emsp; [单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/SingleServiceMultipleSources.md)  
 &emsp; [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
 &emsp; &emsp; [JTA+Atomic](/docs/microService/thinking/JTA.md)  
 &emsp; [TCC](/docs/microService/thinking/TCC.md)   

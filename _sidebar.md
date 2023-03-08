@@ -391,6 +391,8 @@
     * [分布式理论CAP](/docs/microService/thinking/DistributedTheory.md)  
 * [分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
 * [分布式事务](/docs/microService/thinking/DistriTransaction.md)  
+    * [分布式事务场景](/docs/microService/thinking/DistriTransactioncene.md)    
+    * [单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/SingleServiceMultipleSources.md)    
     * [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
         * [JTA+Atomic](/docs/microService/thinking/JTA.md)  
     * [TCC](/docs/microService/thinking/TCC.md)   
