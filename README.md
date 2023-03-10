@@ -1065,6 +1065,7 @@ prometheus
 [Linux多种安装软件方式](/docs/Linux/build/InstallMethod.md) 
 [1. yum](/docs/devAndOps/centOS/yum.md)  
 [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
+[nohup xxx &后台进程关闭](/docs/devAndOps/centOS/nohup.md)  
 [Python3](/docs/devAndOps/centOS/Python3.md)  
 
 ### 1.21.2. DevOps介绍    
