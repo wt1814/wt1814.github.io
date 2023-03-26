@@ -17,6 +17,10 @@ https://mp.weixin.qq.com/s/eynMy_1vqxrPkgw0r-7heg
 
 即时消息技术剖析与实战
 https://time.geekbang.org/column/article/126450
+
+太顶了，用Netty实现一个IM即时通讯系统~
+https://mp.weixin.qq.com/s/0pu0-7SdeVniaCzhbqS-JQ
+
 -->
 
 ## 1.1. 单方面推送消息  
