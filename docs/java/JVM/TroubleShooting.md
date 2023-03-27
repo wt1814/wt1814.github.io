@@ -69,6 +69,9 @@ https://mp.weixin.qq.com/s?__biz=MzU5MTIyODk1Mg==&mid=2247483986&idx=1&sn=17589d
 某个线程进入WAITING状态
 https://mp.weixin.qq.com/s/3dH0jLk7VSlJHtvnxqU2jA
 
+网易二面：CPU狂飙900%，该怎么处理？
+https://mp.weixin.qq.com/s/MZam941snuuV5AXlLDEj2A
+
 -->
 
     获取线程stack快照，排查CPU飚高；  
