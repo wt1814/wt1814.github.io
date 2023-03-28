@@ -755,11 +755,18 @@
         * [网络](/docs/Linux/NetWork.md)  
     * [Linux系统内核](/docs/Linux/Linux.md)  
 * Linux服务器搭建  
-    * [CentOS](/docs/devAndOps/centOS/centOS.md)  
-        * [扩容](/docs/devAndOps/centOS/dilatation.md)  
-    * [防火墙](/docs/Linux/build/firewall.md)  
-    * [堡垒机](/docs/Linux/build/FortressMachine.md)  
-    * [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
+    * Linux基础
+        * [CentOS](/docs/devAndOps/centOS/centOS.md)  
+            * [扩容](/docs/devAndOps/centOS/dilatation.md)  
+        * [Linux多种安装软件方式](/docs/Linux/build/InstallMethod.md) 
+        * [1. yum](/docs/devAndOps/centOS/yum.md)  
+        * [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
+        * [nohup xxx &后台进程关闭](/docs/devAndOps/centOS/nohup.md)  
+        * [Python3](/docs/devAndOps/centOS/Python3.md)  
+    * Linux服务器  
+        * [防火墙](/docs/Linux/build/firewall.md)  
+        * [堡垒机](/docs/Linux/build/FortressMachine.md)  
+        * [DNS服务器](/docs/Linux/build/DNS.md)  
 * DevOps  
     * [项目管理](/docs/devAndOps/build/projectManagement.md)  
     * [CI/CD](/docs/devAndOps/build/CICD.md)  
