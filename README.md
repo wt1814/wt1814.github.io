@@ -67,6 +67,7 @@
     - [1.20. Linux操作系统](#120-linux操作系统)
     - [1.21. Linux服务器搭建](#121-linux服务器搭建)
         - [1.21.1. Linux基础](#1211-linux基础)
+        - [Linux服务器](#linux服务器)
         - [1.21.2. DevOps介绍](#1212-devops介绍)
         - [1.21.3. 搭建-研发](#1213-搭建-研发)
     - [1.22. Docker和k8s](#122-docker和k8s)
@@ -1065,13 +1066,16 @@ prometheus
 ### 1.21.1. Linux基础  
 [CentOS](/docs/devAndOps/centOS/centOS.md)  
 &emsp; [扩容](/docs/devAndOps/centOS/dilatation.md)  
-[防火墙](/docs/Linux/build/firewall.md)  
-[堡垒机](/docs/Linux/build/FortressMachine.md)  
 [Linux多种安装软件方式](/docs/Linux/build/InstallMethod.md) 
 [1. yum](/docs/devAndOps/centOS/yum.md)  
 [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
 [nohup xxx &后台进程关闭](/docs/devAndOps/centOS/nohup.md)  
 [Python3](/docs/devAndOps/centOS/Python3.md)  
+
+### Linux服务器  
+[防火墙](/docs/Linux/build/firewall.md)  
+[堡垒机](/docs/Linux/build/FortressMachine.md)  
+[DNS服务器](/docs/Linux/build/DNS.md)  
 
 ### 1.21.2. DevOps介绍    
 [项目管理](/docs/devAndOps/build/projectManagement.md)  
