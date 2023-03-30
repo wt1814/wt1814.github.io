@@ -45,7 +45,7 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     ```text 
     $ kubectl create -f <directory>  
     ```
-2. 查看资源对象  
+2. **查看资源对象**  
     &emsp; 查看所有Pod列表：  
     ```text
     $ kubectl get pods 
@@ -54,7 +54,7 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     ```text
     $ kubectl get rc,service 
     ``` 
-3. 描述资源对象  
+3. **描述资源对象**  
     &emsp; 显示Node的详细信息：  
 
     ```text
