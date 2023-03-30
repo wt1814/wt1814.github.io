@@ -45,7 +45,7 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     ```text 
     $ kubectl create -f <directory>  
     ```
-2. **查看资源对象**  
+2. **<font color = "clime">查看资源对象</font>**  
     &emsp; 查看所有Pod列表：  
     ```text
     $ kubectl get pods 
@@ -54,7 +54,7 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     ```text
     $ kubectl get rc,service 
     ``` 
-3. **描述资源对象**  
+3. **<font color = "clime">描述资源对象</font>**  
     &emsp; 显示Node的详细信息：  
 
     ```text
@@ -102,7 +102,7 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     ```text
     $ kubectl exec -ti <pod-name> -c <container-name> /bin/bash  
     ```
-6. 查看容器的日志  
+6. **<font color = "clime">查看容器的日志</font>**  
     &emsp; 查看容器输出到stdout的日志：  
 
     ```text
@@ -113,6 +113,9 @@ $ kubectl [command] [TYPE] [NAME] [flags]
     ```text
     $ kubectl logs -f <pod-name> -c <container-name> 
     ``` 
+7. **<font color = "clime">查看kubectl本身日志</font>**  
+    &emsp; journalctl -u kubelet -n 25
+    &emsp; 查看kubelet日志： journalctl -xefu kubelet
 
 
 ## 1.3. IDE插件  

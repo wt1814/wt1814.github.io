@@ -1,17 +1,12 @@
 <!-- TOC -->
 
 - [1. Kubemetes Master安装](#1-kubemetes-master安装)
-    - [1.1. 单机安装](#11-单机安装)
-        - [1.1.1. kubemetes安装](#111-kubemetes安装)
-    - [1.2. 安装flannel组件](#12-安装flannel组件)
-    - [1.3. kubemetes-dashboard仪表盘安装](#13-kubemetes-dashboard仪表盘安装)
-    - [1.4. 集群安装](#14-集群安装)
-    - [1.5. 配置](#15-配置)
-        - [1.5.1. Kubernetes集群的安全设置](#151-kubernetes集群的安全设置)
-        - [1.5.2. Kubernetes集群的网络配置](#152-kubernetes集群的网络配置)
-        - [1.5.3. 基于NFS文件集群共享](#153-基于nfs文件集群共享)
-        - [1.5.4. 内网中搭建私有仓库](#154-内网中搭建私有仓库)
-    - [卸载k8s](#卸载k8s)
+    - [1.1. Master节点安装](#11-master节点安装)
+    - [1.2. 配置](#12-配置)
+        - [1.2.1. Kubernetes集群的安全设置](#121-kubernetes集群的安全设置)
+        - [1.2.2. 安装网络插件](#122-安装网络插件)
+        - [1.2.3. 基于NFS文件集群共享](#123-基于nfs文件集群共享)
+        - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
 
 <!-- /TOC -->
 
@@ -21,12 +16,10 @@ k8s安装1.2.6版本以下的，好安装
 
 | 节点   | 组件 |
 | ------ | ------------------------------------------------------------------------------------ |
-| master | etcd`<br>` kube-apiserver `<br>` kube-controller-manager `<br>` kube-scheduler |
-| node   | kubelet`<br>` kube-proxy `<br>` docker                                           |
+| master | etcd </br> kube-apiserver </br> kube-controller-manager </br> kube-scheduler |
+| node   | kubelet </br> kube-proxy </br> docker |                                          |
 
-## 1.1. 单机安装
-
-### 1.1.1. kubemetes安装
+## 1.1. Master节点安装
 
 <!--
 kubernetes(k8s) 集群 安装总流程
@@ -58,68 +51,10 @@ https://blog.csdn.net/hawk199/article/details/125058030
 
 ![image](http://182.92.69.8:8081/img/devops/k8s/k8s-20.png)  
 
-1. 安装数据库etcd
 2. master节点安装组件：在 Kubemetes 的 Master 节点上需要部署的服务包括 etcd 、 kube-apiserver 、kube-controller-manager 和 kube-scheduler。
 3. node节点安装组件：在工作节点 (Worker Node ) 上需要部署的服务包括 docker 、 kubelet 和 kube-proxy 。
 
-安装kubelt的时候，已经安装了etcd数据库
 
-journalctl -u kubelet -n 25
-查看kubelet日志： journalctl -xefu kubelet
-
-## 1.2. 安装flannel组件
-
-<!-- 
-安装flannel组件
-https://blog.csdn.net/weixin_45067241/article/details/126531465
--->
-
-## 1.3. kubemetes-dashboard仪表盘安装
-
-<!-- 
-安装
-k8s入门：kubernetes-dashboard 安装
-https://blog.csdn.net/qq_41538097/article/details/125561769
-
-*** 配置用户
-http://www.manongjc.com/detail/62-twpjlhgearkhued.html
-https://www.soulchild.cn/post/2945
-
-
-Dashboard 认证 - 配置登录权限
-https://blog.csdn.net/qq_41619571/article/details/127217339
-
-查看用户列表
-https://blog.csdn.net/weixin_42350212/article/details/125460396
-
--->
-
- kubectl describe secrets cluster-admin-dashboard-wt
-
-<!-- 
-
-彻底搞懂 K8S Pod Pending 故障原因及解决方案
-https://blog.csdn.net/xcbeyond/article/details/124580730
-
-主节点无法调度 0/1 nodes are available: 1 node(s) had untolerated taint {node.kubernetes.io/not-ready: }
-https://blog.csdn.net/hzwy23/article/details/128111446
-https://cloud.tencent.com/developer/article/2090770
-
-【Kubernetes系列】Kubernetes常见报错
-https://blog.csdn.net/u012069313/article/details/125264651
-
-
-*** k8s 1.24 taint污点修改
-https://i4t.com/5471.html
-
-查日志命令  k8s启动Pod遇到CrashLoopBackOff的解决方法
-https://www.jianshu.com/p/bcc05427990d
-
--->
-
-
-
-## 1.4. 集群安装
 
 <!-- 
 https://mp.weixin.qq.com/s/4zsGwYBLoiZx0l68NQPPMA
@@ -152,18 +87,26 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 
 &emsp; **通过kubeadm能够快速部署一个Kubernetes集群，但是如果需要精细调整Kubernetes各组件服务的参数及安全设置、高可用模式等，管理员就可以使用Kubernetes二进制文件进行部署。**
 
-## 1.5. 配置
+## 1.2. 配置
 
-### 1.5.1. Kubernetes集群的安全设置
+### 1.2.1. Kubernetes集群的安全设置
 
 1. 基于CA签名的双向数字证书认证方式
 2. 基于HTTP BASE TOKEN的简单认证方式
 
-### 1.5.2. Kubernetes集群的网络配置
+### 1.2.2. 安装网络插件
 
-&emsp; [k8s网络配置](/docs/devAndOps/k8s/k8snetwork.md)
+&emsp; [k8s网络配置](/docs/devAndOps/k8s/k8snetwork.md)  
 
-### 1.5.3. 基于NFS文件集群共享
+
+<!-- 
+安装flannel组件
+https://blog.csdn.net/weixin_45067241/article/details/126531465
+-->
+
+虽然现在k8s集群已经有1个master节点，2个worker节点，但是此时三个节点的状态都是NotReady的，原因是没有CNI网络插件，为了节点间的通信，需要安装cni网络插件，常用的cni网络插件有calico和flannel，两者区别为：flannel不支持复杂的网络策略，calico支持网络策略，因为今后还要配置k8s网络策略networkpolicy，所以本文选用的cni网络插件为calico！
+
+### 1.2.3. 基于NFS文件集群共享
 
 <!-- 
 Kubernetes 集群部署NFS网络存储
@@ -176,7 +119,7 @@ https://blog.csdn.net/zuozewei/article/details/108165523
 &emsp; **Kubernetes集群网络存储与Pod挂载点的区别：**
 &emsp; `<font color = "clime">`Kubernetes集群网络存储是不同宿主机实现文件共享；Pod挂载点是容器与宿主机实现文件共享。`</font>`
 
-### 1.5.4. 内网中搭建私有仓库
+### 1.2.4. 内网中搭建私有仓库
 
 &emsp; ......
 
@@ -217,11 +160,3 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
     ```
       通过以上设置就在内网环境中搭建了一个企业内部的私有容器云平台。  
 -->
-
-## 卸载k8s
-
-<!-- 
-https://blog.csdn.net/weixin_47752736/article/details/124855784
--->
-
-

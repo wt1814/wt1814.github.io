@@ -24,4 +24,7 @@ sudo kubelet --container-runtime-endpoint=unix:///run/containerd/containerd.sock
 
 
 
+如果加入集群的token忘了，可以使用如下的命令获取最新的加入命令token
 
+[root@k8scloude1 ~]# kubeadm token create --print-join-command
+kubeadm join 192.168.110.130:6443 --token 8e3haz.m1wrpuf357g72k1u --discovery-token-ca-cert-hash sha256:9add1314177ac5660d9674dab8c13aa996520028514246c4cd103cf08a211cc8 

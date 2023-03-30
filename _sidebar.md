@@ -806,6 +806,7 @@
             * [k8s常用命令](/docs/devAndOps/k8s/k8scommand.md)  
             * [k8s master节点安装](/docs/devAndOps/k8s/master.md)  
             * [k8s node节点安装](/docs/devAndOps/k8s/node.md)    
+            * [k8s卸载和dashboard安装](/docs/devAndOps/k8s/dashboard.md)  
             * [k8s安装应用](/docs/devAndOps/k8s/application.md)  
         * [k8s架构](/docs/devAndOps/k8s/principle.md)  
             * [Pod详解](/docs/devAndOps/k8s/pod.md)  
