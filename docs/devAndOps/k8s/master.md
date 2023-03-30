@@ -3,8 +3,8 @@
 - [1. Kubemetes Master安装](#1-kubemetes-master安装)
     - [1.1. Master节点安装](#11-master节点安装)
     - [1.2. 配置](#12-配置)
-        - [1.2.1. Kubernetes集群的安全设置](#121-kubernetes集群的安全设置)
-        - [1.2.2. 安装网络插件](#122-安装网络插件)
+        - [1.2.1. 安装网络插件](#121-安装网络插件)
+        - [1.2.2. Kubernetes集群的安全设置](#122-kubernetes集群的安全设置)
         - [1.2.3. 基于NFS文件集群共享](#123-基于nfs文件集群共享)
         - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
 
@@ -88,13 +88,7 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 &emsp; **通过kubeadm能够快速部署一个Kubernetes集群，但是如果需要精细调整Kubernetes各组件服务的参数及安全设置、高可用模式等，管理员就可以使用Kubernetes二进制文件进行部署。**
 
 ## 1.2. 配置
-
-### 1.2.1. Kubernetes集群的安全设置
-
-1. 基于CA签名的双向数字证书认证方式
-2. 基于HTTP BASE TOKEN的简单认证方式
-
-### 1.2.2. 安装网络插件
+### 1.2.1. 安装网络插件
 
 &emsp; [k8s网络配置](/docs/devAndOps/k8s/k8snetwork.md)  
 
@@ -105,6 +99,16 @@ https://blog.csdn.net/weixin_45067241/article/details/126531465
 -->
 
 虽然现在k8s集群已经有1个master节点，2个worker节点，但是此时三个节点的状态都是NotReady的，原因是没有CNI网络插件，为了节点间的通信，需要安装cni网络插件，常用的cni网络插件有calico和flannel，两者区别为：flannel不支持复杂的网络策略，calico支持网络策略，因为今后还要配置k8s网络策略networkpolicy，所以本文选用的cni网络插件为calico！
+
+
+### 1.2.2. Kubernetes集群的安全设置
+<!--
+https://blog.csdn.net/qq_42956653/article/details/123284563
+-->
+
+1. 基于CA签名的双向数字证书认证方式
+2. 基于HTTP BASE TOKEN的简单认证方式
+
 
 ### 1.2.3. 基于NFS文件集群共享
 
