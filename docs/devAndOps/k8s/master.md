@@ -6,16 +6,18 @@
         - [1.1.2. 搭建容器服务](#112-搭建容器服务)
         - [1.1.3. 安装](#113-安装)
     - [1.2. 配置](#12-配置)
-        - [1.2.1. 安装网络插件](#121-安装网络插件)
+        - [1.2.1. Master安装网络插件](#121-master安装网络插件)
+            - [1.2.1.1. flannel](#1211-flannel)
         - [1.2.2. Kubernetes集群的安全设置](#122-kubernetes集群的安全设置)
         - [1.2.3. 基于NFS文件集群共享](#123-基于nfs文件集群共享)
         - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
+    - [1.3. 常见问题](#13-常见问题)
 
 <!-- /TOC -->
 
 # 1. Kubemetes Master安装
 
-k8s安装1.2.6版本以下的，好安装
+&emsp; k8s安装1.2.6版本以下的，好安装
 
 &emsp; **Kubernetes的安装方式：**
 
@@ -26,39 +28,20 @@ k8s安装1.2.6版本以下的，好安装
 
 &emsp; **通过kubeadm能够快速部署一个Kubernetes集群，但是如果需要精细调整Kubernetes各组件服务的参数及安全设置、高可用模式等，管理员就可以使用Kubernetes二进制文件进行部署。**
 
-
 | 节点   | 组件 |
 | ------ | ------------------------------------------------------------------------------------ |
 | master | etcd </br> kube-apiserver </br> kube-controller-manager </br> kube-scheduler |
 | node   | kubelet </br> kube-proxy </br> docker |                                          |
 
 ## 1.1. Master节点安装
-
-<!--
-kubernetes(k8s) 集群 安装总流程
-http://blog.51yip.com/cloud/2399.html
-
-kubeadm安装单机k8s
-*** https://blog.csdn.net/zjcjava/article/details/99317569
-centos7安装kubernetes
-https://blog.csdn.net/sumengnan/article/details/120932201
-
-*** 本质是第一步的报错，failed to pull image \"k8s.gcr.io/pause:3.6\"
-https://ceshiren.com/t/topic/22431
--->
-
 <!-- 
-Unable to register node with API server
-https://blog.csdn.net/hawk199/article/details/125058030
 
-*** 问题 使用kubeadm创建集群失败报Unable to register node with API server
-https://blog.csdn.net/hawk199/article/details/125058030
-The connection to the server localhost:8080 was refused - did you specify the right host or port?解决
-https://blog.csdn.net/CEVERY/article/details/108753379
+https://blog.csdn.net/u010800804/article/details/127709691
+http://blog.51yip.com/cloud/2399.html
+https://blog.csdn.net/sumengnan/article/details/120932201
+https://ceshiren.com/t/topic/22431/2
+https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
 
-failed to get sandbox image “k8s.gcr.io/pause:3.6“: failed to pull image “k8s.gcr.io/pause:3.6“
-https://blog.csdn.net/Haskei/article/details/128474534
-https://blog.csdn.net/hawk199/article/details/125058030
 
 -->
 
@@ -67,15 +50,8 @@ https://blog.csdn.net/hawk199/article/details/125058030
 2. master节点安装组件：在 Kubemetes 的 Master 节点上需要部署的服务包括 etcd 、 kube-apiserver 、kube-controller-manager 和 kube-scheduler。
 3. node节点安装组件：在工作节点 (Worker Node ) 上需要部署的服务包括 docker 、 kubelet 和 kube-proxy 。
 
-
-
-<!-- 
-https://mp.weixin.qq.com/s/4zsGwYBLoiZx0l68NQPPMA
-https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
--->
-
 &emsp; `<font color = "red">`整体参考《Kubernetes权威指南》`</font>`
-
+&emsp; 单机版即只安装master节点，注意污点。  
 
 
 ### 1.1.1. 服务器配置  
@@ -95,6 +71,14 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 &emsp; 或修改系统文件/etc/sysconfig/selinux，将SELINUX=enfbrcing修改成SELINUX=disabled，然后重启Linux。
 
 
+配置内核参数  
+```
+# cat > /etc/sysctl.d/k8s.conf <<EOF  
+net.bridge.bridge-nf-call-ip6tables = 1  
+net.bridge.bridge-nf-call-iptables = 1  
+net.ipv4.ip_forward = 1  
+EOF  
+```
 
 ### 1.1.2. 搭建容器服务
 
@@ -102,22 +86,49 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 ### 1.1.3. 安装  
 1. 安装
 2. 下载jar包
+下载jar包  
+https://blog.csdn.net/qq_46595591/article/details/107584320
+kubeadm config images pull 拉取镜像失败的问题
+https://blog.csdn.net/qq_40279964/article/details/125430992
+3. 配置10-kubeadm.conf  https://blog.csdn.net/opp003/article/details/126467117  
 3. 初始化(为了kubectl.config文件)
+
+    ```text
+    kubeadm init \
+    --apiserver-advertise-address=172.24.214.110 \
+    --image-repository registry.aliyuncs.com/google_containers \
+    --kubernetes-version v1.25.0 \
+    --service-cidr=10.10.0.0/12 \
+    --pod-network-cidr=172.17.0.0/16 \
+    --cri-socket /var/run/cri-dockerd.sock \
+    --ignore-preflight-errors=all
+    ```
 4. kubectl开启  
 5. 初始化  
 
+
+kubeadm init    --cri-socket /run/containerd/containerd.sock --image-repository registry.aliyuncs.com/google_containers 
+--kubernetes-version v1.25.8
+
+kubeadm reset  --cri-socket /run/containerd/containerd.sock
+
 ## 1.2. 配置
-### 1.2.1. 安装网络插件
+### 1.2.1. Master安装网络插件
 
 &emsp; [k8s网络配置](/docs/devAndOps/k8s/k8snetwork.md)  
 
+&emsp; 虽然现在k8s集群已经有1个master节点，2个worker节点，但是此时三个节点的状态都是NotReady的，原因是没有CNI网络插件，为了节点间的通信，需要安装cni网络插件，常用的cni网络插件有calico和flannel，两者区别为：flannel不支持复杂的网络策略，calico支持网络策略，因为今后还要配置k8s网络策略networkpolicy，所以本文选用的cni网络插件为calico！
 
+
+#### 1.2.1.1. flannel
 <!-- 
 安装flannel组件
 https://blog.csdn.net/weixin_45067241/article/details/126531465
+open /run/flannel/subnet.env: no such file or directory
+https://blog.csdn.net/ANXIN997483092/article/details/86711006
+failed to find plugin “flannel” in path [/opt/cni/bin]，k8sNotReady解决方案
+https://blog.csdn.net/qq_29385297/article/details/127682552
 -->
-
-虽然现在k8s集群已经有1个master节点，2个worker节点，但是此时三个节点的状态都是NotReady的，原因是没有CNI网络插件，为了节点间的通信，需要安装cni网络插件，常用的cni网络插件有calico和flannel，两者区别为：flannel不支持复杂的网络策略，calico支持网络策略，因为今后还要配置k8s网络策略networkpolicy，所以本文选用的cni网络插件为calico！
 
 
 ### 1.2.2. Kubernetes集群的安全设置
@@ -156,30 +167,36 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/pull-image-private-r
   使用Docker提供的Registry镜像创建一个私有镜像仓库。  
   详细的安装步骤请参考Docker的官方文档 https://docs.docker.eom/registry/deploying/o  
 2. kubelet配置  
-      由于在Kubemetes中是以Pod而不是以Docker容器为管理单元的，在kubelet创建Pod时，还通过启动一个名为ger.io/google_containers/pause的镜像来实现Pod的概念。  
-      该镜像存在于谷歌镜像库http://gcr.io 中，需要通过一台能够连上Internet的服务器将其下载，导出文件，再push到私有Docker Registry中。  
-      之后，可以给每台Node的kubelet服务加上启动参数-pod-infra-container-image，指定为私有Docker Registry中pause镜像的地址。例如：  
+  由于在Kubemetes中是以Pod而不是以Docker容器为管理单元的，在kubelet创建Pod时，还通过启动一个名为ger.io/google_containers/pause的镜像来实现Pod的概念。  
+  该镜像存在于谷歌镜像库http://gcr.io 中，需要通过一台能够连上Internet的服务器将其下载，导出文件，再push到私有Docker Registry中。  
+  之后，可以给每台Node的kubelet服务加上启动参数-pod-infra-container-image，指定为私有Docker Registry中pause镜像的地址。例如：  
 
-    ```text
-    #cat /etc/kubemetes/kubelet
-    KUBELET_ARGS="--api-servers=http://192.168.18.3:8080
-    一一hostname-override=l92.168.18.3 一一log-dir=/var/log/kubemetes 一一v=2
-    --pod-infra-container-image=gcr.io/google_containers/pause-amd64:3.0"
-    ```
-      如果该镜像无法从gcr.io下载，则也可以从Docker Hub上进行下载：  
+```text
+#cat /etc/kubemetes/kubelet
+KUBELET_ARGS="--api-servers=http://192.168.18.3:8080
+一一hostname-override=l92.168.18.3 一一log-dir=/var/log/kubemetes 一一v=2
+--pod-infra-container-image=gcr.io/google_containers/pause-amd64:3.0"
+```
+  如果该镜像无法从gcr.io下载，则也可以从Docker Hub上进行下载：  
 
-    ```text
-    #docker pull kubeguide/pause-amd64:3.0
-    ```
-      修改kubelet配置文件中的-pod_infra_container_image参数：  
+```text
+#docker pull kubeguide/pause-amd64:3.0
+```
+  修改kubelet配置文件中的-pod_infra_container_image参数：  
 
-    ```
-    --pod-infra-container-image=kubeguide/pause-amd64:3.0
-    ```
-      然后重启kubelet服务：  
+```
+--pod-infra-container-image=kubeguide/pause-amd64:3.0
+```
+  然后重启kubelet服务：  
 
-    ```
-    #systemctl restart kubelet
-    ```
-      通过以上设置就在内网环境中搭建了一个企业内部的私有容器云平台。  
+```
+#systemctl restart kubelet
+```
+  通过以上设置就在内网环境中搭建了一个企业内部的私有容器云平台。  
 -->
+
+## 1.3. 常见问题  
+is different from docker cgroup driver: “cgroupfs”  
+https://blog.csdn.net/cfanllm/article/details/124378445
+
+污点  

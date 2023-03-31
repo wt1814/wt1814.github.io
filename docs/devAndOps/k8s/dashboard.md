@@ -20,6 +20,17 @@ https://blog.csdn.net/weixin_47752736/article/details/124855784
 ## 1.2. kubemetes-dashboard仪表盘安装
 
 <!-- 
+kubernetes dashboard 开启http 免密登陆
+https://www.jianshu.com/p/acf1e15e9200?utm_campaign=maleskine...&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
+kubernetes dashboard支持所有浏览器访问
+https://blog.51cto.com/u_2837193/4926706
+https://blog.csdn.net/wuchenlhy/article/details/128578633
+K8s v1.25版本下可视化管理工具dashboardv2.7.0部署实践
+https://baijiahao.baidu.com/s?id=1747656931703581518&wfr=spider&for=pc
+
+-->
+
+<!-- 
 安装
 k8s入门：kubernetes-dashboard 安装
 https://blog.csdn.net/qq_41538097/article/details/125561769
