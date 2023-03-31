@@ -41,4 +41,9 @@ https://blog.csdn.net/weixin_42350212/article/details/125460396
 <!-- 
 kubernetes dashboard 2.x 配置https证书
 https://blog.csdn.net/weixin_35306450/article/details/112805986
+
+kubernetes学习笔记之十一：kubernetes dashboard认证及分级授权
+https://www.cnblogs.com/panwenbin-logs/p/10052554.html
+https://www.sklinux.com/posts/devops/k8s%E9%9D%A2%E6%9D%BFhttps%E4%BF%AE%E7%90%86/
+
 -->
