@@ -67,9 +67,9 @@
     - [1.20. Linux操作系统](#120-linux操作系统)
     - [1.21. Linux服务器搭建](#121-linux服务器搭建)
         - [1.21.1. Linux基础](#1211-linux基础)
-        - [Linux服务器](#linux服务器)
-        - [1.21.2. DevOps介绍](#1212-devops介绍)
-        - [1.21.3. 搭建-研发](#1213-搭建-研发)
+        - [1.21.2. Linux服务器](#1212-linux服务器)
+        - [1.21.3. DevOps介绍](#1213-devops介绍)
+        - [1.21.4. 搭建-研发](#1214-搭建-研发)
     - [1.22. Docker和k8s](#122-docker和k8s)
         - [1.22.1. 搭建-需求、测试](#1221-搭建-需求测试)
     - [1.23. 监控和统计](#123-监控和统计)
@@ -1072,12 +1072,12 @@ prometheus
 [nohup xxx &后台进程关闭](/docs/devAndOps/centOS/nohup.md)  
 [Python3](/docs/devAndOps/centOS/Python3.md)  
 
-### Linux服务器  
+### 1.21.2. Linux服务器  
 [防火墙](/docs/Linux/build/firewall.md)  
 [堡垒机](/docs/Linux/build/FortressMachine.md)  
 [DNS服务器](/docs/Linux/build/DNS.md)  
 
-### 1.21.2. DevOps介绍    
+### 1.21.3. DevOps介绍    
 [项目管理](/docs/devAndOps/build/projectManagement.md)  
 [CI/CD](/docs/devAndOps/build/CICD.md)  
 [Devops](/docs/devAndOps/build/devOps.md)  
@@ -1099,7 +1099,7 @@ prometheus
 &emsp; [Jenkins构建Java项目](/docs/devAndOps/jenkins/JenkinsJava.md)  
 
 
-### 1.21.3. 搭建-研发
+### 1.21.4. 搭建-研发
 [Linux定时执行脚本](/docs/devAndOps/build/TimingScript.md)  
 [3. JDK安装](/docs/devAndOps/build/JDKBuild.md)  
 [4. Git安装](/docs/devAndOps/git/GitBuild.md)  

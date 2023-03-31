@@ -2,6 +2,9 @@
 
 - [1. Kubemetes Master安装](#1-kubemetes-master安装)
     - [1.1. Master节点安装](#11-master节点安装)
+        - [1.1.1. 服务器配置](#111-服务器配置)
+        - [1.1.2. 搭建容器服务](#112-搭建容器服务)
+        - [1.1.3. 安装](#113-安装)
     - [1.2. 配置](#12-配置)
         - [1.2.1. 安装网络插件](#121-安装网络插件)
         - [1.2.2. Kubernetes集群的安全设置](#122-kubernetes集群的安全设置)
@@ -13,6 +16,16 @@
 # 1. Kubemetes Master安装
 
 k8s安装1.2.6版本以下的，好安装
+
+&emsp; **Kubernetes的安装方式：**
+
+* **(推荐)使用`<font color = "red">`kubeadmin`</font>`通过离线镜像安装；**
+* 使用阿里公有云平台k8s；
+* 通过yum官方仓库安装；
+* 【二进制包的形式进行安装，kubeasz (github)；】
+
+&emsp; **通过kubeadm能够快速部署一个Kubernetes集群，但是如果需要精细调整Kubernetes各组件服务的参数及安全设置、高可用模式等，管理员就可以使用Kubernetes二进制文件进行部署。**
+
 
 | 节点   | 组件 |
 | ------ | ------------------------------------------------------------------------------------ |
@@ -63,6 +76,9 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 
 &emsp; `<font color = "red">`整体参考《Kubernetes权威指南》`</font>`
 
+
+
+### 1.1.1. 服务器配置  
 &emsp; CentOS Linux 7默认启动了防火墙服务(firewalld)，而Kubernetes的Master与工作Node之间会有大量的网络通信，安全的做法是在防火墙上配置各组件需要相互通信的端口号，具体要配置的端口号详见「内网中的Kubemetes相关配置」节中各服务监听的端口号说明。在一个安全的内部网络环境中可以关闭防火墙服务：
 
 ```text
@@ -78,14 +94,17 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 
 &emsp; 或修改系统文件/etc/sysconfig/selinux，将SELINUX=enfbrcing修改成SELINUX=disabled，然后重启Linux。
 
-&emsp; **Kubernetes的安装方式：**
 
-* **(推荐)使用`<font color = "red">`kubeadmin`</font>`通过离线镜像安装；**
-* 使用阿里公有云平台k8s；
-* 通过yum官方仓库安装；
-* 【二进制包的形式进行安装，kubeasz (github)；】
 
-&emsp; **通过kubeadm能够快速部署一个Kubernetes集群，但是如果需要精细调整Kubernetes各组件服务的参数及安全设置、高可用模式等，管理员就可以使用Kubernetes二进制文件进行部署。**
+### 1.1.2. 搭建容器服务
+
+
+### 1.1.3. 安装  
+1. 安装
+2. 下载jar包
+3. 初始化(为了kubectl.config文件)
+4. kubectl开启  
+5. 初始化  
 
 ## 1.2. 配置
 ### 1.2.1. 安装网络插件
