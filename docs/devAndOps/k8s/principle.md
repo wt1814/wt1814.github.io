@@ -96,7 +96,7 @@ https://mp.weixin.qq.com/s/jtNEux2ix0ZqBr-AFXtqXA
 2. Kubelet， **<font color = "red">Node与master交互</font>**  
 &emsp; kubelet是node的agent，当Scheduler确定在某个Node上运行Pod后，会将Pod的具体配置信息(image、volume等)发送给该节点的kubelet，kubelet会根据这些信息创建和运行容器，并向master报告运行状态。  
 3. Kube-proxy， **<font color = "red">Node与外部交互</font>**  
-&emsp; service在逻辑上代表了后端的多个Pod，外界通过service访问Pod。service接收到请求就需要kube-proxy完成转发到Pod。每个Node都会运行kube-proxy服务，负责将访问的service的TCP/UDP数据流转发到后端的容器，如果有多个副本，kube-proxy会实现负载均衡，有2种方式：LVS或者Iptables。  
+&emsp; service在逻辑上代表了后端的多个Pod，外界通过service访问Pod。 **<font color = "red">service接收到请求就需要kube-proxy完成转发到Pod。每个Node都会运行kube-proxy服务，负责将访问的service的TCP/UDP数据流转发到后端的容器，</font>** 如果有多个副本，kube-proxy会实现负载均衡，有2种方式：LVS或者Iptables。  
 
 ### 1.2.3. 插件  
 <!-- 
@@ -160,7 +160,7 @@ https://kuboard.cn/learning/k8s-intermediate/obj/labels.html#%E4%B8%BA%E4%BB%80%
     * **任务(Job)**  
     &emsp; Job是K8s用来控制批处理型任务的API对象。批处理业务与长期伺服业务的主要区别是批处理业务的运行有头有尾，而长期伺服业务在用户不停止的情况下永远运行。Job管理的Pod根据用户的设置把任务成功完成就自动退出了。成功完成的标志根据不同的spec.completions策略而不同：单Pod型任务有一个Pod成功就标志完成；定数成功型任务保证有N个任务全部成功；工作队列型任务根据应用确认的全局成功而标志成功。  
 * **服务资源(Service)**  
-&emsp; Service是建立在一组Pod对象之上的资源对象，它是通过标签选择器选择一组Pod对象，并为这组Pod对象定义一个统一的固定访问入口(通常是一个IP地址)，如果K8S存在DNS附件(如coredns)它就会在Service创建时为它自动配置一个DNS名称，用于客户端进行服务发现。  
+&emsp; **<font color = "clime">Service是建立在一组Pod对象之上的资源对象，它是通过标签选择器选择一组Pod对象，并为这组Pod对象定义一个统一的固定访问入口(通常是一个IP地址)，</font>** 如果K8S存在DNS附件(如coredns)它就会在Service创建时为它自动配置一个DNS名称，用于客户端进行服务发现。  
 &emsp; 通常直接请求Service IP，该请求就会被负载均衡到后端的端点，即各个Pod对象，从这点上，是不是有点像负载均衡器呢，因此Service本质上是一个4层的代理服务，另外Service还可以将集群外部流量引入至集群，这就需要节点对Service的端口进行映射了。  
 ![image](http://182.92.69.8:8081/img/devops/k8s/k8s-19.png)  
 &emsp; Kubernetes service背后是通过一个叫做kube-proxy的组件实现。kube-proxy实例运行在每个节点上，并提供了三种代理模式：userspace，iptables和IPVS。目前的默认值是iptables。   
