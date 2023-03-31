@@ -9,6 +9,7 @@
         - [1.2.1. Master安装网络插件](#121-master安装网络插件)
             - [1.2.1.1. flannel](#1211-flannel)
         - [1.2.2. Kubernetes集群的安全设置](#122-kubernetes集群的安全设置)
+            - [设置https证书](#设置https证书)
         - [1.2.3. 基于NFS文件集群共享](#123-基于nfs文件集群共享)
         - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
     - [1.3. 常见问题](#13-常见问题)
@@ -16,6 +17,28 @@
 <!-- /TOC -->
 
 # 1. Kubemetes Master安装
+
+1. 服务器配置  
+	1. 关闭防火墙  
+	2. 关闭selinux  
+	3. 关闭swap  
+	4. 配置iptables的ACCEPT规则  
+2. 搭建容器服务  
+	1. 搭建Docker
+	2. 搭建cri-dockerd
+3. 安装Kubemete    
+	1. 更换Kubemetes源
+    2. 安装：yum install kubelet kubeadm kubectl
+    3. 下载jar包
+        kubeadm config images list 
+    4. 配置10-kubeadm.conf    
+    5. 首次执行初始化，生成kubectl.config文件  
+    6. 启动kubectl
+    7. 初始化  
+4. 配置  
+    1. 网络插件：常用的cni网络插件有calico和flannel，两者区别为：flannel不支持复杂的网络策略，calico支持网络策略。   
+
+
 
 &emsp; k8s安装1.2.6版本以下的，好安装
 
@@ -84,7 +107,24 @@ EOF
 
 
 ### 1.1.3. 安装  
-1. 安装
+1. 更换Kubemetes源
+
+    ```text
+    # cat <<EOF > /etc/yum.repos.d/kubernetes.repo  
+    [kubernetes]  
+    name=Kubernetes  
+    baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/  
+    enabled=1  
+    gpgcheck=1  
+    repo_gpgcheck=1  
+    gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg  
+    EOF  
+    ```
+
+1. 安装  
+
+    
+
 2. 下载jar包
 下载jar包  
 https://blog.csdn.net/qq_46595591/article/details/107584320
@@ -138,6 +178,12 @@ https://blog.csdn.net/qq_42956653/article/details/123284563
 
 1. 基于CA签名的双向数字证书认证方式
 2. 基于HTTP BASE TOKEN的简单认证方式
+
+#### 设置https证书
+<!-- 
+https://blog.csdn.net/grace_yi/article/details/80069919
+
+-->
 
 
 ### 1.2.3. 基于NFS文件集群共享
