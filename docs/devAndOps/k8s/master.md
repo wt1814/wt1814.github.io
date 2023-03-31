@@ -36,7 +36,8 @@
     6. 启动kubectl
     7. 初始化  
 4. 配置  
-    1. 网络插件：常用的cni网络插件有calico和flannel，两者区别为：flannel不支持复杂的网络策略，calico支持网络策略。   
+    1. 设置https  
+    2. 网络插件：常用的cni网络插件有calico和flannel，两者区别为：flannel不支持复杂的网络策略，calico支持网络策略。   
 
 
 
