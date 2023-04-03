@@ -62,7 +62,7 @@
 ![image](http://182.92.69.8:8081/img/java/JDK/Collection/collection-19.png)  
 &emsp; 扩容后，table 长度为32，新表的 n - 1 只比老表的 n - 1 在高位多了一个1（图中标红）。  
 ![image](http://182.92.69.8:8081/img/java/JDK/Collection/collection-20.png)  
-&emsp; 因为 2 个节点在老表是同一个索引位置，因此计算新表的索引位置时，只取决于新表在高位多出来的这一位(图中标红)，而这一位的值刚好等于 oldCap。  
+&emsp; 因为 2 个节点在老表是同一个索引位置，因此计算新表的索引位置时，只取决于新表在高位多出来的这一位(图中标红)，而这一位的值刚好等于oldCap。  
 &emsp; 因为只取决于这一位，所以只会存在两种情况：1)  (e.hash & oldCap) == 0 ，则新表索引位置为“原索引位置” ；2)(e.hash & oldCap) == 1，则新表索引位置为“原索引 + oldCap 位置”。  
 
 
@@ -215,7 +215,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 &emsp; 小结：<font color = "clime">把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于 8；table 数组长度大于等于 64。</font>  
 
 ### 1.2.5. HashMap的内部类
-&emsp; HashMap 内部有很多内部类，扩展了 HashMap 的一些功能，EntrySet类就是其中一种，该类较为简单，无内部属性，可以理解为一个工具类，对HashMap进行了简单的封装，提供了方便的遍历、删除等操作。  
+&emsp; HashMap内部有很多内部类，扩展了 HashMap 的一些功能，EntrySet类就是其中一种，该类较为简单，无内部属性，可以理解为一个工具类，对HashMap进行了简单的封装，提供了方便的遍历、删除等操作。  
 &emsp; 调用HashMap的entrySet()方法就可以返回EntrySet实例对象，为了不至于每次调用该方法都返回新的EntrySet对象，所以设置该属性，缓存EntrySet实例  。  
 
 ## 1.3. 构造函数  
