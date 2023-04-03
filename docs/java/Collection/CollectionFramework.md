@@ -262,7 +262,7 @@ public class ListIteratorDemo {
         }
     }
     ```  
-    &emsp; 运行抛出异常:ConcurrentModificationException。  
+    &emsp; 运行抛出异常：ConcurrentModificationException。  
     &emsp; 抛出上述异常的主要原因是当调用容器的iterator()方法返回Iterator对象时，把容器中包含对象的个数赋值给了一个变量expectedModCount，在调用next()方法时会比较变量expectedModCount与容器中实际对象的个数modCount的值是否相等，若二者不相等，则会抛出ConcurrentModificationException异常，因此在使用Iterator遍历容器的过程中，如果对容器进行增加或删除操作，就会改变容器中对象的数量，从而导致抛出异常。解决办法如下：在遍历的过程中把需要删除的对象保存到一个集合中，等遍历结束后再调用removeAll()方法来删除，或者使用iterator.remove()方法。  
 2. 在多线程的环境中，线程是交替运行的(时间片轮转调度)。这就意味着，如果有两个线程A、B，线程A对集合使用Iterator迭代遍历，线程B则对集合进行增删操作。线程A、B一旦交替运行，就会出现在迭代的同时对集合增删的效果，也会抛出异常。解决办法就是加锁变成原子操作。  
     &emsp; 多线程访问容器的过程中防止抛出ConcurrentModificationException异常：  

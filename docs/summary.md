@@ -5,6 +5,7 @@
     - [1.1. Java](#11-java)
         - [1.1.1. Java基础](#111-java基础)
         - [1.1.2. Java基础数据类型](#112-java基础数据类型)
+            - [Object](#object)
             - [1.1.2.1. String](#1121-string)
             - [1.1.2.2. Java基本数据类型](#1122-java基本数据类型)
         - [1.1.3. Java集合框架](#113-java集合框架)
@@ -204,6 +205,13 @@
         3. static变量被存放在方法区中。    
 
 ### 1.1.2. Java基础数据类型
+#### Object  
+1. 为什么equals方法重写，建议也一起重写hashcode方法？   
+&emsp; **<font color = "blue">在某些业务场景下，需要使用自定义类作为哈希表的键。用HashMap存入自定义的类时，如果不重写这个自定义类的equals和hashCode方法，得到的结果会和预期的不一样。</font>**  
+2. notify()/notifyAll()/wait()-1  
+
+
+
 #### 1.1.2.1. String
 1. String 类是用final关键字修饰的，所以认为其是不可变对象。反射可以改变String对象。  
 &emsp; **<font color = "clime">为什么Java字符串是不可变的？</font>** 原因大致有以下三个：  
