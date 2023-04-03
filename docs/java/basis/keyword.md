@@ -5,7 +5,7 @@
     - [1.1. Java访问控制符](#11-java访问控制符)
     - [1.2. static](#12-static)
         - [1.2.1. 静态方法可以调用成员变量吗？](#121-静态方法可以调用成员变量吗)
-        - [static与JVM](#static与jvm)
+        - [1.2.2. static与JVM](#122-static与jvm)
     - [1.3. final](#13-final)
 
 <!-- /TOC -->
@@ -70,7 +70,7 @@ static{
 https://blog.csdn.net/bulubuluu/article/details/75688584
 -->
 
-### static与JVM
+### 1.2.2. static与JVM
 <!-- 
 静态变量与JVM内存分配
 https://blog.csdn.net/ziyonghong/article/details/81163060
