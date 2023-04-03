@@ -112,10 +112,10 @@ https://refactoringguru.cn/design-patterns/catalog
 
 * [外观/门面(Facade)模式](/docs/java/Design/facade.md)：对外提供一个统一的接口用来访问子系统。  
 * [适配器(Adapter)模式](/docs/java/Design/adapter.md)：将原来不兼容的两个类融合在一起。  
-* **<font color = "clime">[代理(Proxy)模式](/docs/java/Design/proxy.md)：控制客户端对对象的访问。</font>**  
+* [代理(Proxy)模式](/docs/java/Design/proxy.md)：**<font color = "clime">控制客户端对对象的访问。</font>**  
     * [JDK动态代理](/docs/java/Design/DynamicProxy.md)   
     * [CGLIB代理](/docs/java/Design/CGLIB.md)   
-* **<font color = "red">[装饰者(Decorator)模式](/docs/java/Design/decorator.md)：为对象添加新功能。</font>** 
+* [装饰者(Decorator)模式](/docs/java/Design/decorator.md)：**<font color = "red">为对象添加新功能。</font>** 
 * 桥接(Bridge)模式：将两个能够独立变化的部分分离开来。  
 * 组合(Composite)模式：将整体与局部(树形结构)进行递归组合，让客户端能够以一种的方式对其进行处理。  
 * 享元(Flyweight)模式： **使用对象池来减少重复对象的创建。**  

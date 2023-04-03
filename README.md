@@ -138,7 +138,7 @@
 &emsp; [面向抽象和面向接口](/docs/java/Design/abstract.md)  
 &emsp; [UML](/docs/java/Design/UML.md)  
 &emsp; [继承和组合/复用规则](/docs/java/Design/compose.md)  
-[设计模式详解](/docs/java/Design/design.md)  
+[设计模式介绍](/docs/java/Design/design.md)  
 &emsp; [创建型设计模式](/docs/java/Design/establish.md)  
 &emsp; &emsp; [单例模式](/docs/java/Design/singleton.md)  
 &emsp; &emsp; [单例与多例](/docs/java/Design/singletonMultiple.md)  
