@@ -1,12 +1,11 @@
 
 
-
-
 1. IO操作包含上传、读取、下载：  
 &emsp; [读取项目Resources下文件](/docs/java/IO/readResources.md)  
 &emsp; [上传下载](/docs/java/IO/Upload.md)  
 &emsp; [导入导出](/docs/java/IO/Import.md)  
 &emsp; [阿里云OSS](/docs/java/IO/OSS.md)  
+&emsp; [文件预览](/docs/java/IO/preview.md)  
 
 
 2. **<font color = "clime">将大文件数据全部读取到内存中，可能会发生OOM异常。</font>** I/O读写大文件解决方案：  

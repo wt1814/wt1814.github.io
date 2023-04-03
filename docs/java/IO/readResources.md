@@ -2,7 +2,7 @@
 
 
 
-# 1.2. 读取服务器本地Resources文件
+# 读取服务器本地Resources文件
 <!-- 
 
 cannot be resolved to absolute file path because it does not reside in the file system
