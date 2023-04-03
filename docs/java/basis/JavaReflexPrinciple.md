@@ -43,11 +43,8 @@
 
 &emsp; 那么在运行时期，无论是通过字面量还是forName方法获取Class对象，都是去根据这个类的全限定名（全限定名必须是唯一的，这也间接回答了为什么类名不能重复这个问题。）然后获取对应的Class对象。  
 
-&emsp; 总结: java虚拟机帮我们生成了类的class对象,而通过类的全限定名，我们可以去获取这个类的字节码.class文件，然后再获取这个类对应的class对象，再通过class对象提供的方法结合类Method,Filed,Constructor，就能获取到这个类的所有相关信息. 获取到这些信息之后，就可以使用Constructor创建对象，用get和set方法读取和修改与Field对象相关的字段，用invoke方法调用与Method对象关联的方法。  
+&emsp; 总结：java虚拟机帮我们生成了类的class对象，而通过类的全限定名，可以去获取这个类的字节码.class文件，然后再获取这个类对应的class对象，再通过class对象提供的方法结合类Method,Filed,Constructor，就能获取到这个类的所有相关信息. 获取到这些信息之后，就可以使用Constructor创建对象，用get和set方法读取和修改与Field对象相关的字段，用invoke方法调用与Method对象关联的方法。  
 
-
-
------------
 
 
 ## 1.1. 动态编译和静态编译  

@@ -59,7 +59,7 @@ https://mp.weixin.qq.com/s/lE2R-bPoB6OMZbm-GitYNQ
 
 &emsp; <font color = "red">~~SPI接口的定义在调用方，在概念上更依赖调用方；组织上位于调用方所在的包中，实现位于独立的包中。~~</font>
 
-&emsp; **<font color = "red">当服务的提供者提供了一种接口的实现之后，服务的消费者需要在classpath下的META-INF/services/目录里创建一个以服务接口命名的文件，这个文件里的内容就是这个接口的具体的实现类。服务消费者依赖服务提供者。</font>** 当服务消费者的程序需要这个服务的时候，就可以通过查找这个jar包(一般都是以jar包做依赖)的META-INF/services/中的配置文件，配置文件中有接口的具体实现类名，可以根据这个类名进行加载实例化，就可以使用该服务了。  
+&emsp; **<font color = "red">当服务的提供者提供了一种接口的实现之后，服务的消费者需要在classpath下的META-INF/services/目录里创建一个以服务接口命名的文件，这个文件里的内容就是这个接口的具体的实现类。服务消费者依赖服务提供者。</font>** 当服务消费者的程序需要这个服务的时候，就可以通过查找这个jar包（一般都是以jar包做依赖）的META-INF/services/中的配置文件，配置文件中有接口的具体实现类名，可以根据这个类名进行加载实例化，就可以使用该服务了。  
 &emsp; **<font color = "clime">JDK中查找服务实现的工具类是：java.util.ServiceLoader。</font>**
 
 ## 1.2. SPI案例  
