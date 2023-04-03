@@ -2,7 +2,6 @@
 
 &emsp; &emsp; [适配器模式](/docs/java/Design/adapter.md)   
 &emsp; &emsp; [代理模式](/docs/java/Design/proxy.md)   
-&emsp; &emsp; &emsp; [动态编程](/docs/java/Design/DynamicProgramming.md)  
 &emsp; &emsp; &emsp; [JDK动态代理](/docs/java/Design/DynamicProxy.md)   
 &emsp; &emsp; &emsp; [CGLIB代理](/docs/java/Design/CGLIB.md)   
 &emsp; &emsp; [装饰器模式](/docs/java/Design/decorator.md)  
