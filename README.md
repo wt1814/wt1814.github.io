@@ -206,7 +206,7 @@
 [Arthas](/docs/java/JVM/ArthasSummary.md)  
 &emsp; [Arthas工具](/docs/java/JVM/Arthas.md)  
 &emsp; [Arthas常用命令](/docs/java/JVM/ArthasCommand.md)  
-&emsp; [线上Debu](/docs/java/JVM/OnlineDebug.md)  
+&emsp; [线上Debug](/docs/java/JVM/OnlineDebug.md)  
 
 
 <!-- 
