@@ -87,7 +87,7 @@ https://mp.weixin.qq.com/s/PodAB7knKJm6qjLfPEFIaw
         2. 存活对象比较多的情况下效率比较高
     * 缺点：
         1. **<font color = "red">执行过程中：</font>** 效率偏低，两遍扫描，标记和清除都比较耗时。执行效率不稳定，如果Java堆中包含大量对象，而且其中大部分是需要被回收的，这时必须进行大量标记和清除的动作，导致标记和清除两个过程的执行效率都随对象数量增长而降低；  
-        2. **<font color = "red">执行后：</font>** (位置不连续，产生碎片)<font color = "clime">内存空间的碎片化问题，</font>清除后产生大量不连续的内存碎片。如果有大对象会出现空间不够的现象，从而不得不提前触发另一次垃圾收集动作。 
+        2. **<font color = "red">执行后：</font>**（位置不连续，产生碎片）<font color = "clime">内存空间的碎片化问题，</font>清除后产生大量不连续的内存碎片。如果有大对象会出现空间不够的现象，从而不得不提前触发另一次垃圾收集动作。 
 
 ### 1.1.2. 标记-复制(Copying)算法 
 1. 标记-复制算法常被简称为复制算法。<font color = "red">为了解决标记-清除算法面对大量可回收对象时执行效率低的问题。</font>  
@@ -284,7 +284,7 @@ eden 快满的触发因素有两个，一个是为对象分配内存不够，一
 &emsp; **YGC执行流程：(young GC中有部分存活对象会晋升到old gen，所以young GC后old gen的占用量通常会有所升高)**  
 1. 大部分对象在Eden区中生成。当Eden占用完时，垃圾回收器进行回收。  
 2. 回收时先将eden区存活对象复制到一个survivor0区，然后清空eden区。   
-3. 当这个survivor0区也存放满了时，则将eden区和survivor0区(使用的survivor中的对象也可能失去引用)存活对象复制到另一个survivor1区，然后清空eden和这个survivor0区，此时survivor0区是空的，然后将survivor0区和survivor1区交换，即保持survivor1区为空， 如此往复。  
+3. 当这个survivor0区也存放满了时，则将eden区和survivor0区（使用的survivor中的对象也可能失去引用）存活对象复制到另一个survivor1区，然后清空eden和这个survivor0区，此时survivor0区是空的，然后将survivor0区和survivor1区交换，即保持survivor1区为空， 如此往复。  
 4. 每经过一次YGC，对象年龄加1，当对象寿命超过阈值时，会晋升至老年代，最大寿命15(4bit)。  
 
 ### 1.4.2. Major GC  

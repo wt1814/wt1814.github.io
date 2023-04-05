@@ -27,8 +27,7 @@
     对象头：包含Mark Word、class pointer、array length共3部分。  
     1. Mark Word：  
     &emsp; **<font color = "red">由于对象头信息是与对象自身定义的数据无关的额外存储成本，考虑到Java虚拟机的空间使用效率，</font>** **<font color = "clime">Mark Word被设计成一个非固定的动态数据结构，</font>** 以便在极小的空间内存储尽量多的信息。它会根据对象的状态复用自己的存储空间。  
-    &emsp; 这部分主要用来存储对象自身的运行时数据，如hashcode、gc分代年龄等。mark word的位长度为JVM的一个Word大小，也就是说32位JVM的Mark word为32位，64位JVM为64位。
-    为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位，
+    &emsp; 这部分主要用来存储对象自身的运行时数据，如hashcode、gc分代年龄等。mark word的位长度为JVM的一个Word大小，也就是说32位JVM的Mark word为32位，64位JVM为64位。为了让一个字大小存储更多的信息，JVM将字的最低两个位设置为标记位，
     ![image](http://182.92.69.8:8081/img/java/concurrent/multi-67.png)   
 
     ![image](http://182.92.69.8:8081/img/java/concurrent/multi-68.png)   
