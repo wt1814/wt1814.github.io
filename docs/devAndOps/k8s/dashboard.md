@@ -39,6 +39,10 @@ https://blog.csdn.net/weixin_42350212/article/details/125460396
 
 
 <!-- 
+
+k8s 给dashboard配置自定义证书
+https://www.cnblogs.com/RRecal/p/15747097.html
+
 kubernetes dashboard 2.x 配置https证书
 https://blog.csdn.net/weixin_35306450/article/details/112805986
 
