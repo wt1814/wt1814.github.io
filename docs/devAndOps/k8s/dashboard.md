@@ -62,3 +62,7 @@ https://www.cnblogs.com/RRecal/p/15747097.html
 	2. kubectl create secret tls mycentos-cert --key 9161214_www.wt1814.com.key --cert 9161214_www.wt1814.com.pem -n kubernetes-dashboard 
     3. 查看证书内容  kubectl describe secrets/证书名称  
 5. 查看token
+
+
+
+
