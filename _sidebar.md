@@ -120,7 +120,6 @@
     * [多线程和并发](/docs/java/concurrent/MultithreadingAndConcurrency.md)  
     * [线程池-多线程](/docs/java/concurrent/ThreadPool.md)  
         * [线程Thread](/docs/java/concurrent/thread.md)  
-            * [线程基本知识](/docs/java/concurrent/threadConcepts.md)  
             * [Thread类详解](/docs/java/concurrent/threadClass.md)  
                 * [线程状态](/docs/java/concurrent/threadState.md)  
                 * [线程停止与中断](/docs/java/concurrent/interrupt.md)  
