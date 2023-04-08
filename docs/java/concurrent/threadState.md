@@ -49,7 +49,7 @@ https://jingyan.baidu.com/article/ed15cb1b248bd05be2698116.html
 <!-- 
 https://www.jianshu.com/p/3e79ae25bfb6
 -->
-&emsp; 操作系统层面有5个状态，分别是:New（新建）、Runnable（就绪）、Running（运行）、Blocked（阻塞）、Dead（死亡）。
+&emsp; 操作系统层面有5个状态，分别是：New（新建）、Runnable（就绪）、Running（运行）、Blocked（阻塞）、Dead（死亡）。
 
 
 ### 1.2.2. Java中线程的生命周期
