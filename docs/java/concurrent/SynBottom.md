@@ -313,7 +313,7 @@ https://www.cnblogs.com/bjlhx/p/10555194.html
 &emsp; monitor对象介绍：  
 &emsp; 每个对象有一个监视器锁(monitor)，monitor本质是基于操作系统互斥(mutex)实现的，操作系统实现线程之间切换需要从用户态到内核态切换，成本非常高。一个monitor只能被一个线程拥有。
 -->
-&emsp; 每个对象实例都会有个Monitor对象，Monitor对象和Java对象一同创建并消毁， **<font color = "clime">在Java虚拟机(HotSpot)中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。</font>ObjectMonitor的成员变量如下( Hospot 1.8) ：  
+&emsp; 每个对象实例都会有个Monitor对象，Monitor对象和Java对象一同创建并消毁， <font color = "clime">在Java虚拟机(HotSpot)中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。</font>ObjectMonitor的成员变量如下( Hospot 1.8) ：  
 
 ```C
 ObjectMonitor() {
@@ -342,7 +342,7 @@ ObjectMonitor() {
 ![image](http://182.92.69.8:8081/img/java/concurrent/multi-55.png)  
 
 * 想要获取monitor的线程，首先会进入_EntryList队列。  
-* 当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程,同时计数器count加1。  
+* 当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程，同时计数器count加1。  
 * **如果线程调用了wait()方法，则会进入WaitSet队列。** 它会释放monitor锁，即将owner赋值为null，count自减1，进入WaitSet队列阻塞等待。  
 * 如果其他线程调用 notify() / notifyAll()，会唤醒WaitSet中的某个线程，该线程再次尝试获取monitor锁，成功即进入Owner区域。  
 * 同步方法执行完毕了，线程退出临界区，会将monitor的owner设为null，并释放监视锁。  
