@@ -72,7 +72,7 @@ https://mp.weixin.qq.com/s/YXVRNQz0HJu_qvJktxQuMw
 MySQL中order by语句的实现原理以及优化手段 
 https://mp.weixin.qq.com/s/FykC_mfqJH5oics3wIzBQA
 -->
-&emsp; MySQL可以使用一个索引来满足ORDER BY子句的排序，而不需要额外的排序，但是需要满足以下几个条件：  
+&emsp; 一：MySQL可以使用一个索引来满足ORDER BY子句的排序，而不需要额外的排序，但是需要满足以下几个条件：  
 1. WHERE 条件和OREDR BY使用相同的索引：即key_part1与key_part2是复合索引，where中使用复合索引中的key_part1  
 ```sql
 SELECT*FROM user WHERE key_part1=1 ORDER BY key_part1 DESC, key_part2 DESC;
@@ -87,7 +87,7 @@ SELECT*FROM user ORDER BY key_part1 DESC, key_part2 DESC;
 ```
 
 
-&emsp; 但<font color = "clime">以下几种情况则不使用索引</font>：  
+&emsp; 二：但<font color = "clime">以下几种情况则不使用索引</font>：  
 
 1. ORDER BY中混合ASC和DESC：  
 ```sql

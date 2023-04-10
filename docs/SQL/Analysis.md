@@ -19,7 +19,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结</font>**  
-1. **<font color = "clime">SQL分析语句有EXPLAIN与explain extended、show warnings、proceduer analyse、profiling、trace。</font>**  
+1. **<font color = "clime">6个关键字从各个维度分析SQL语句：EXPLAIN与explain extended、show warnings、proceduer analyse、profiling、trace。</font>**  
 2. <font color = "red">用explain extended查看执行计划会比explain多一列filtered。filtered列给出了一个百分比的值，这个百分比值和rows列的值一起使用，可以估计出那些将要和explain中的前一个表进行连接的行的数目。前一个表就是指explain的id列的值比当前表的id小的表。</font>  
 &emsp; mysql中有一个explain 命令可以用来分析select 语句的运行效果，例如explain可以获得select语句使用的索引情况、排序的情况等等。除此以外，explain 的extended 扩展能够在原本explain的基础上额外的提供一些查询优化的信息，这些信息可以通过mysql的show warnings命令得到。  
 3. profiling  

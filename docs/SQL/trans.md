@@ -86,8 +86,8 @@ ORDER BY
 
 &emsp; 查询结果如下：  
 ![image](http://182.92.69.8:8081/img/SQL/sql-157.png)  
-&emsp; 解释一下：LEVEL 列表示当前产品属于第几层级。START WITH 表示从哪一个产品开始查询,CONNECT BY PRIOR 表示父节点与子节点的关系，每一个产品的 ID 指向一个父产品。  
-&emsp; 如果把 START WITH 的查询起点改为 id = 2,重新运行上面的 SQL 语句将会得到如下结果：  
+&emsp; 解释一下：LEVEL 列表示当前产品属于第几层级。START WITH 表示从哪一个产品开始查询，CONNECT BY PRIOR表示父节点与子节点的关系，每一个产品的 ID 指向一个父产品。  
+&emsp; 如果把 START WITH 的查询起点改为 id = 2，重新运行上面的 SQL 语句将会得到如下结果：  
 ![image](http://182.92.69.8:8081/img/SQL/sql-158.png)  
 &emsp; 因为 id=2 的产品是车身，就只能查到车身下面的子产品。  
 &emsp; 当然，可以把查询结果美化一下，使其更有层次感，让根节点下面的 LEVEL 前面加几个空格即可。把上面的 SQL 稍微修改一下。为每个 LEVEL 前面增加 2*(LEVEL-1)个空格，这样第二层就会增加两个空格，第三层会增加四个空格。  
