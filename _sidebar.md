@@ -181,7 +181,7 @@
 * 数据库  
     * [数据建模](/docs/SQL/modeling.md)  
         * [字段](/docs/SQL/Field.md)  
-        * [比较数据结构](/docs/SQL/Compare.md)  
+        * [工具](/docs/SQL/modelingTools.md)  
     * [SQL语句](/docs/SQL/SQLSentence.md)  
         * [基本查询语句](/docs/SQL/basicSelect.md)  
             * [limit](/docs/SQL/limit.md)
