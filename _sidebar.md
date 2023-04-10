@@ -220,7 +220,6 @@
             * [分库分表后聚合查询](/docs/SQL/aggregate.md)  
         * [数据库分布式实现](/docs/SQL/subRealize.md)  
             * [MyCat中间件](/docs/SQL/MyCat.md)  
-        
         * [数据迁移](/docs/projectImplement/implementation.md)   
         * [冷热数据分离](/docs/SQL/HotAndColdSeparation.md)  
     * [数据库连接池](/docs/SQL/connectionPool.md)  

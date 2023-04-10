@@ -364,7 +364,6 @@
 &emsp; [HikariCP原理](/docs/SQL/HikariCPPrinciple.md)  
 &emsp; [HikariCP监控与故障排查](/docs/SQL/HikariCPMonitor.md)  
 -->
-[大数据量解决方案]()  
 
 ### 1.3.2. 连接池  
 [数据库连接池](/docs/SQL/connectionPool.md)  
