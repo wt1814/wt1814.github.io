@@ -12,11 +12,11 @@
         - [1.4.2. ThreadPoolExecutor#awaitTermination](#142-threadpoolexecutorawaittermination)
         - [1.4.3. 总结：优雅关闭线程池](#143-总结优雅关闭线程池)
     - [1.5. ★★★线程池的监控](#15-★★★线程池的监控)
-    - [Spring内置线程池](#spring内置线程池)
-    - [1.6. SpringBoot整合线程池](#16-springboot整合线程池)
-        - [1.6.1. ★★★@Async没有执行的问题分析(@Async线程默认配置)](#161-★★★async没有执行的问题分析async线程默认配置)
-        - [1.6.2. 重写spring默认线程池](#162-重写spring默认线程池)
-        - [1.6.3. 自定义线程池](#163-自定义线程池)
+    - [1.6. Spring内置线程池](#16-spring内置线程池)
+    - [1.7. SpringBoot整合线程池](#17-springboot整合线程池)
+        - [1.7.1. ★★★@Async没有执行的问题分析(@Async线程默认配置)](#171-★★★async没有执行的问题分析async线程默认配置)
+        - [1.7.2. 重写spring默认线程池](#172-重写spring默认线程池)
+        - [1.7.3. 自定义线程池](#173-自定义线程池)
 
 <!-- /TOC -->
 
@@ -83,7 +83,7 @@ https://www.cnblogs.com/wang-meng/p/10163855.html
 * 如果是IO密集型应用(多线程用于数据库数据交互、文件上传下载、网络数据传输等)，则线程池大小设置为2N。  
 * 如果是混合型，将任务分为CPU密集型和IO密集型，然后分别使用不同的线程池去处理，从而使每个线程池可以根据各自的工作负载来调整。   
 
-&emsp; N表示CPU数量，可以根据Runtime.availableProcessors方法获取.   
+&emsp; N表示CPU数量，可以根据Runtime.availableProcessors方法获取。   
 
 ```java
 private static int corePoolSize = Runtime.getRuntime().availableProcessors();
@@ -369,17 +369,17 @@ public class Test implements Runnable{
 ![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-19.png)  
 
 
-## Spring内置线程池
+## 1.6. Spring内置线程池
 <!-- 
 快速搞懂Spring中实现异步调用的方式有哪些？
 https://mp.weixin.qq.com/s/QQ08ynid7cpoC8YhMz1Q1Q
 -->
 
 
-## 1.6. SpringBoot整合线程池
+## 1.7. SpringBoot整合线程池
 &emsp; SpringBoot框架提供了@Async注解使用ThreadPoolExecutor。可以重写spring默认的线程池或自定义线程池。  
 
-### 1.6.1. ★★★@Async没有执行的问题分析(@Async线程默认配置)  
+### 1.7.1. ★★★@Async没有执行的问题分析(@Async线程默认配置)  
 <!-- 
 ~~
 https://www.cnblogs.com/kiko2014551511/p/12754927.html
@@ -395,7 +395,7 @@ https://www.cnblogs.com/kiko2014551511/p/12754927.html
 &emsp; @Async异步方法默认使用Spring创建ThreadPoolTaskExecutor(参考TaskExecutionAutoConfiguration)，其中默认核心线程数为8，默认最大队列和默认最大线程数都是Integer.MAX_VALUE，队列使用LinkedBlockingQueue，容量是：Integet.MAX_VALUE，空闲线程保留时间：60s，线程池拒绝策略：AbortPolicy。创建新线程的条件是队列填满时，而这样的配置队列永远不会填满，如果有@Async注解标注的方法长期占用线程(比如HTTP长连接等待获取结果)，在核心8个线程数占用满了之后，新的调用就会进入队列，外部表现为没有执行。  
 
 &emsp; 解决：  
-&emsp; 手动配置相应属性即可. 比如  
+&emsp; 手动配置相应属性即可。比如  
 
 ```
 #核心线程数
@@ -412,7 +412,7 @@ spring.task.execution.thread-name-prefix=test-thread-
 
 &emsp; 配置类是TaskExecutionProperties【org.springframework.boot.autoconfigure.task.TaskExecutionProperties】  
 
-### 1.6.2. 重写spring默认线程池
+### 1.7.2. 重写spring默认线程池
 
 ```java
 @Slf4j
@@ -456,7 +456,7 @@ public class NativeAsyncTaskExecutePool implements AsyncConfigurer{
 ```
 &emsp; 重写spring默认线程池的方式，使用时只需要加@Async注解。  
 
-### 1.6.3. 自定义线程池
+### 1.7.3. 自定义线程池
 &emsp; 创建线程池配置类TaskExecutePool.java。使用@Configuration和@EnableAsync这两个注解，表示这是个配置类，并且是线程池的配置类。  
 &emsp; <font color = "clime">SpringCloud如果自定义了异步任务的线程池，会导致无法新创建一个 Span，需要使用 Sleuth提供的LazyTraceExecutor来包装下。</font>   
 

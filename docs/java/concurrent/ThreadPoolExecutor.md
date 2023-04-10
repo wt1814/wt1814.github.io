@@ -254,9 +254,10 @@ public ThreadPoolExecutor(int corePoolSize,
 * ThreadFactory threadFactory：  
 &emsp; 用户设置创建线程的工厂，可以通过这个工厂来创建有业务意义的线程名字。可以对比下自定义的线程工厂和默认的线程工厂创建的名字。   
     
-    |默认产生线程的名字	|自定义线程工厂产生名字|
-    |---|---|
-    |pool-5-thread-1|testPool-1-thread-1|
+    
+        |默认产生线程的名字	|自定义线程工厂产生名字|
+        |---|---|
+        |pool-5-thread-1|testPool-1-thread-1|
 
     &emsp; 阿里开发手册也有明确说到，需要指定有意义的线程名字。  
     ![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-18.png)  
@@ -264,12 +265,12 @@ public ThreadPoolExecutor(int corePoolSize,
 * RejectedExecutionHandler handler：  
 &emsp; <font color = "red">当提交任务数超过maxmumPoolSize+workQueue之和时，任务会交给RejectedExecutionHandler来处理，执行拒绝策略。</font>有四种策略，<font color = "clime">默认是AbortPolicy(丢弃任务并抛出RejectedExecutionException异常)</font>。内置拒绝策略均实现了RejectedExecutionHandler接口，若以下策略仍无法满足实际需要，可以扩展RejectedExecutionHandler接口。  
 
-    | 名称 | Condition |  
-    |----|----|  
-    |AbortPolicy (默认)|丢弃任务并抛出RejectedExecutionException异常。| 
-    |<font color = "clime">CallerRunsPolicy</font>|<font color = "clime">在线程池当前正在运行的Thread线程池中处理被拒绝的任务。主线程会被阻塞，其余任务只能在被拒绝的任务执行完之后才会继续被提交到线程池执行。</font>|
-    |DiscardOldestPolicy|丢弃队列最前面的任务，将被拒绝的任务添加到等待队列中。|
-    |DiscardPolicy|丢弃任务，但是不抛出异常。|
+        | 名称 | Condition |  
+        |----|----|  
+        |AbortPolicy (默认)|丢弃任务并抛出RejectedExecutionException异常。| 
+        |<font color = "clime">CallerRunsPolicy</font>|<font color = "clime">在线程池当前正在运行的Thread线程池中处理被拒绝的任务。主线程会被阻塞，其余任务只能在被拒绝的任务执行完之后才会继续被提交到线程池执行。</font>|
+        |DiscardOldestPolicy|丢弃队列最前面的任务，将被拒绝的任务添加到等待队列中。|
+        |DiscardPolicy|丢弃任务，但是不抛出异常。|
 
 
 ## 1.3. 线程池工作流程(execute成员方法的源码)

@@ -38,6 +38,7 @@
     |-XX：MaxPermGen|用于设置Perm Gen的最大尺寸|
     |-XX：SurvivorRatio|提供Eden区域的比例|
     |-XX：NewRatio|用于提供老年代/新生代大小的比例，默认值为2|
+    
 2. JVM命令行调优工具：  
     * Jps：虚拟机进程状况工具。  
     * Jstack：java线程堆栈跟踪工具。  
@@ -101,6 +102,7 @@ https://blog.csdn.net/qq_19922839/article/details/115379649
 * 标准参数(-)，所有的JVM实现都必须实现这些参数的功能，而且向后兼容。例如 -verbose:gc(输出每次GC的相关情况)。  
 * 非标准参数(-X)，默认JVM实现这些参数的功能，但是并不保证所有JVM实现都满足，且不保证向后兼容。栈，堆大小的设置都是通过这个参数来配置的，用得最多的如下。   
 
+
     |参数	|描述|
     |---|---|
     |-Xms512m|JVM 启动时设置的初始堆大小为 512M|
@@ -123,23 +125,23 @@ https://blog.csdn.net/qq_19922839/article/details/115379649
     * 分行为参数、性能调优、调试参数：  
         * 行为参数(Behavioral Options)：用于改变JVM的一些基础行为，如启用串行/并行 GC。    
             
-            |参数	|描述|
-            |---|---|
-            |-XX:-DisableExplicitGC	|禁止调用System.gc()；但jvm的gc仍然有效|
-            |-XX:-UseConcMarkSweepGC|对老生代采用并发标记交换算法进行GC|
-            |-XX:-UseParallelGC	|启用并行GC|
-            |-XX:-UseParallelOldGC	|对Full GC启用并行，当-XX:-UseParallelGC启用时该项自动启用|
-            |-XX:-UseSerialGC	|启用串行GC|
+                |参数	|描述|
+                |---|---|
+                |-XX:-DisableExplicitGC	|禁止调用System.gc()；但jvm的gc仍然有效|
+                |-XX:-UseConcMarkSweepGC|对老生代采用并发标记交换算法进行GC|
+                |-XX:-UseParallelGC	|启用并行GC|
+                |-XX:-UseParallelOldGC	|对Full GC启用并行，当-XX:-UseParallelGC启用时该项自动启用|
+                |-XX:-UseSerialGC	|启用串行GC|
         
         * 性能调优(Performance Tuning)：用于jvm的性能调优，如设置新老生代内存容量比例。    
             
-            |参数|描述|
-            |---|---|
-            |-XX:MaxHeapFreeRatio=70	|GC后java堆中空闲量占的最大比例|
-            |-XX:NewRatio=2	|新生代内存容量与老生代内存容量的比例|
-            |-XX:NewSize=2.125m	|新生代对象生成时占用内存的默认值|
-            |-XX:ReservedCodeCacheSize=32m	|保留代码占用的内存容量|
-            |-XX:ThreadStackSize=512	|设置线程栈大小，若为0则使用系统默认值|
+                |参数|描述|
+                |---|---|
+                |-XX:MaxHeapFreeRatio=70	|GC后java堆中空闲量占的最大比例|
+                |-XX:NewRatio=2	|新生代内存容量与老生代内存容量的比例|
+                |-XX:NewSize=2.125m	|新生代对象生成时占用内存的默认值|
+                |-XX:ReservedCodeCacheSize=32m	|保留代码占用的内存容量|
+                |-XX:ThreadStackSize=512	|设置线程栈大小，若为0则使用系统默认值|
         
         * 调试参数(Debugging Options)：一般用于打开跟踪、打印、输出等JVM参数，用于显示JVM更加详细的信息。    
 
