@@ -12,7 +12,6 @@
     - [1.3. 数据库](#13-数据库)
         - [1.3.1. MySql](#131-mysql)
         - [1.3.2. 连接池](#132-连接池)
-        - [1.3.3. ShardingSphere](#133-shardingsphere)
     - [1.4. Web服务器](#14-web服务器)
         - [1.4.1. tomcat](#141-tomcat)
     - [1.5. SSM](#15-ssm)
@@ -329,6 +328,7 @@
 &emsp; &emsp; [分库分表后分页查询](/docs/SQL/subSelectLimit.md)  
 &emsp; &emsp; [分库分表后聚合查询](/docs/SQL/aggregate.md)  
 &emsp; [数据库分布式实现](/docs/SQL/subRealize.md)  
+&emsp; &emsp; [ShardingSphere](/docs/SQL/shardingsphere.md)  
 &emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md)  
 &emsp; [数据迁移](/docs/projectImplement/implementation.md)  
 &emsp; [冷热数据分离](/docs/SQL/HotAndColdSeparation.md)  
@@ -367,10 +367,6 @@
 
 ### 1.3.2. 连接池  
 [数据库连接池](/docs/SQL/connectionPool.md)  
-
-### 1.3.3. ShardingSphere
-[ShardingSphere](/docs/SQL/shardingsphere.md)  
-[shardingsphere分布式事务](/docs/SQL/shardingsphereTransaction.md)  
 
 
 ## 1.4. Web服务器  

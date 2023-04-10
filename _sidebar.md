@@ -219,6 +219,7 @@
             * [分库分表后分页查询](/docs/SQL/subSelectLimit.md)  
             * [分库分表后聚合查询](/docs/SQL/aggregate.md)  
         * [数据库分布式实现](/docs/SQL/subRealize.md)  
+            * [ShardingSphere](/docs/SQL/shardingsphere.md)  
             * [MyCat中间件](/docs/SQL/MyCat.md)  
         * [数据迁移](/docs/projectImplement/implementation.md)   
         * [冷热数据分离](/docs/SQL/HotAndColdSeparation.md)  
@@ -251,9 +252,6 @@
         * [MySql-MVCC](/docs/SQL/MVCC.md)  
         * [MySql锁](/docs/SQL/lock.md)  
         * [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
-    * Sharding-JDBC  
-        * [ShardingSphere](/docs/SQL/shardingsphere.md)  
-        * [ShardingSphere分布式事务](/docs/SQL/shardingsphereTransaction.md)  
 * Web服务器  
     * [***Undertow替换Tomcat](/docs/webContainer/Undertow.md)  
     * tomcat  

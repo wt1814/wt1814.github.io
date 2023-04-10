@@ -20,7 +20,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 数据库锁
+1. 数据库锁  
     &emsp; **锁的分类：**  
     ![image](http://182.92.69.8:8081/img/SQL/sql-42.png)  
 

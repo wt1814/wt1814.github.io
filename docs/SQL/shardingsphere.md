@@ -1,6 +1,15 @@
 
+<!-- TOC -->
 
-# shardingsphere
+- [1. shardingsphere](#1-shardingsphere)
+    - [1.1. 读写分离](#11-读写分离)
+    - [1.2. 分库分表](#12-分库分表)
+    - [1.3. shardingsphere分布式事务](#13-shardingsphere分布式事务)
+
+<!-- /TOC -->
+
+
+# 1. shardingsphere
 
 <!-- 
 sharding-jdbc与Sharding-Proxy
@@ -43,13 +52,19 @@ https://blog.csdn.net/zwjzone/article/details/124387026
 
 &emsp; 官网：https://shardingsphere.apache.org/document/current/cn/features/  
 
-## 读写分离  
+## 1.1. 读写分离  
 
 
 
-## 分库分表  
+## 1.2. 分库分表  
 
 
 
+## 1.3. shardingsphere分布式事务  
+
+<!--
+
+https://shardingsphere.apache.org/document/legacy/4.x/document/cn/manual/sharding-jdbc/usage/transaction/#%E9%85%8D%E7%BD%AEspring-boot%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86%E5%99%A8
+-->
 
 
