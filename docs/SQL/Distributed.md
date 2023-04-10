@@ -1,20 +1,22 @@
 
 
 # 数据库分布式
-&emsp; 数据库分布式核心内容是数据切分(Sharding)，以及切分后对数据的定位、整合。数据切分就是将数据分散存储到多个数据库中，使得单一数据库中的数据量变小，通过扩充主机的数量缓解单一数据库的性能问题，从而达到提升数据库操作性能的目的。 **数据库拆分过程基本遵循的顺序是：1).垂直拆分(业务拆分)、2).读写分离、3).分库分表(水平拆分)。每个拆分过程都能解决业务上的一些问题，但同时也面临了一些挑战。**  
+&emsp; 数据库分布式核心内容是数据切分(Sharding)，以及切分后对数据的定位、整合。数据切分就是将数据分散存储到多个数据库中，使得单一数据库中的数据量变小，通过扩充主机的数量缓解单一数据库的性能问题，从而达到提升数据库操作性能的目的。 **<font color = "clime">数据库拆分过程基本遵循的顺序是：1).垂直拆分(业务拆分)、2).读写分离、3).分库分表(水平拆分)。每个拆分过程都能解决业务上的一些问题，但同时也面临了一些挑战。</font>**  
 
 
 &emsp; [主从复制](/docs/SQL/replication.md)  
 &emsp; &emsp; [主从复制原理](/docs/SQL/ReplicationPrinciple.md)  
 &emsp; &emsp; [主从复制实现](/docs/SQL/ReplicationRealize.md)  
 &emsp; &emsp; [主从复制的问题](/docs/SQL/replicationProblem.md)  
+&emsp; &emsp; &emsp; [主从复制延迟](/docs/SQL/delay.md)  
+&emsp; &emsp; [高可用实现方案](/docs/SQL/Available.md)  
 &emsp; &emsp; [读写分离实现](/docs/SQL/ReadWrite.md)  
-&emsp; [高可用实现方案](/docs/SQL/Available.md)  
 &emsp; [分区](/docs/SQL/partition.md)  
 &emsp; [分库分表](/docs/SQL/sub.md)  
 &emsp; &emsp; [分库分表带来的问题](/docs/SQL/subProblem.md)  
 &emsp; &emsp; [分库分表查询](/docs/SQL/subSelect.md)  
-
+&emsp; &emsp; [分库分表后分页查询](/docs/SQL/subSelectLimit.md)  
+&emsp; &emsp; [分库分表后聚合查询](/docs/SQL/aggregate.md)  
 1.  **分表和分区的区别：**  
     1. 实现方式上：
         * mysql的分表是真正的分表，一张表分成很多表后，每一个小表都是完整的一张表，都对应三个文件，一个.MYD数据文件，.MYI索引文件，.frm表结构文件。  
