@@ -1152,7 +1152,7 @@ prometheus
 &emsp; [k8s整体架构](/docs/devAndOps/k8s/principle.md)  
 &emsp; [k8s使用教程](/docs/devAndOps/k8s/use.md)  
 &emsp; &emsp; [k8s常用命令](/docs/devAndOps/k8s/k8scommand.md)  
-&emsp; &emsp; [k8s master节点安装与卸载](/docs/devAndOps/k8s/master.md)  
+&emsp; &emsp; [k8s master节点安装](/docs/devAndOps/k8s/master.md)  
 &emsp; &emsp; [k8s node节点安装](/docs/devAndOps/k8s/node.md)  
 &emsp; &emsp; [k8s卸载和dashboard安装](/docs/devAndOps/k8s/dashboard.md)  
 &emsp; &emsp; [k8s安装应用](/docs/devAndOps/k8s/application.md)  

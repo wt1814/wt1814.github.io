@@ -1,7 +1,7 @@
 <!-- TOC -->
 
 - [1. Kubemetes Master安装](#1-kubemetes-master安装)
-    - [1.1. Master节点安装](#11-master节点安装)
+    - [1.1. Master节点安装（v1.2.5）](#11-master节点安装v125)
         - [1.1.1. 服务器配置](#111-服务器配置)
         - [1.1.2. 搭建容器服务](#112-搭建容器服务)
         - [1.1.3. 安装](#113-安装)
@@ -9,14 +9,12 @@
         - [1.2.1. Master安装网络插件](#121-master安装网络插件)
             - [1.2.1.1. flannel](#1211-flannel)
         - [1.2.2. Kubernetes集群的安全设置](#122-kubernetes集群的安全设置)
-            - [设置https证书](#设置https证书)
+            - [1.2.2.1. ~~设置https证书~~](#1221-设置https证书)
         - [1.2.3. 基于NFS文件集群共享](#123-基于nfs文件集群共享)
         - [1.2.4. 内网中搭建私有仓库](#124-内网中搭建私有仓库)
     - [1.3. 常见问题](#13-常见问题)
 
 <!-- /TOC -->
-
-# 1. Kubemetes Master安装
 
 1. 服务器配置  
 	1. 关闭防火墙  
@@ -25,6 +23,9 @@
 	4. 配置iptables的ACCEPT规则  
 2. 搭建容器服务  
 	1. 搭建Docker
+        1. 下载
+        2. 配置
+        3. 启动
 	2. 搭建cri-dockerd
 3. 安装Kubemete    
 	1. 更换Kubemetes源
@@ -40,35 +41,33 @@
     2. 网络插件：常用的cni网络插件有calico和flannel，两者区别为：flannel不支持复杂的网络策略，calico支持网络策略。   
 
 
+<!-- 
+https://blog.csdn.net/u010800804/article/details/127709691
+https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
+-->
 
-&emsp; k8s安装1.2.6版本以下的，好安装
 
-&emsp; **Kubernetes的安装方式：**
+# 1. Kubemetes Master安装
 
-* **(推荐)使用`<font color = "red">`kubeadmin`</font>`通过离线镜像安装；**
-* 使用阿里公有云平台k8s；
-* 通过yum官方仓库安装；
-* 【二进制包的形式进行安装，kubeasz (github)；】
+1. 安装版本：k8s安装1.2.6版本以下的，好安装
+2. **Kubernetes的安装方式：**
+
+    * **(推荐)使用`<font color = "red">`kubeadmin`</font>`通过离线镜像安装；**
+    * 使用阿里公有云平台k8s；
+    * 通过yum官方仓库安装；
+    * 【二进制包的形式进行安装，kubeasz (github)；】
+
 
 &emsp; **通过kubeadm能够快速部署一个Kubernetes集群，但是如果需要精细调整Kubernetes各组件服务的参数及安全设置、高可用模式等，管理员就可以使用Kubernetes二进制文件进行部署。**
 
 | 节点   | 组件 |
 | ------ | ------------------------------------------------------------------------------------ |
 | master | etcd </br> kube-apiserver </br> kube-controller-manager </br> kube-scheduler |
-| node   | kubelet </br> kube-proxy </br> docker |                                          |
-
-## 1.1. Master节点安装
-<!-- 
-
-https://blog.csdn.net/u010800804/article/details/127709691
-http://blog.51yip.com/cloud/2399.html
-https://blog.csdn.net/sumengnan/article/details/120932201
-https://ceshiren.com/t/topic/22431/2
-https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
+| node   | kubelet </br> kube-proxy </br> docker |      
 
 
--->
 
+## 1.1. Master节点安装（v1.2.5）
 ![image](http://182.92.69.8:8081/img/devops/k8s/k8s-20.png)  
 
 2. master节点安装组件：在 Kubemetes 的 Master 节点上需要部署的服务包括 etcd 、 kube-apiserver 、kube-controller-manager 和 kube-scheduler。
@@ -79,6 +78,11 @@ https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribut
 
 
 ### 1.1.1. 服务器配置  
+<!-- 
+https://blog.csdn.net/u010800804/article/details/127709691
+https://blog.csdn.net/qq_46595591/article/details/107520114?utm_medium=distribute.wap_relevant.none-task-blog-title-4
+-->
+
 &emsp; CentOS Linux 7默认启动了防火墙服务(firewalld)，而Kubernetes的Master与工作Node之间会有大量的网络通信，安全的做法是在防火墙上配置各组件需要相互通信的端口号，具体要配置的端口号详见「内网中的Kubemetes相关配置」节中各服务监听的端口号说明。在一个安全的内部网络环境中可以关闭防火墙服务：
 
 ```text
@@ -105,6 +109,22 @@ EOF
 ```
 
 ### 1.1.2. 搭建容器服务
+1. 搭建Docker
+    1. 下载
+    2. 配置  
+
+        文件：/etc/docker/daemon.json  
+        ```text
+        {
+            "registry-mirrors": ["https://k2h46htd.mirror.aliyuncs.com", "https://docker.mirrors.ustc.edu.cn", "https://hub-mirror.c.163.com", "https://reg-mirror.qiniu.com"],
+            "exec-opts": ["native.cgroupdriver=systemd"]
+        }
+        ```
+        
+    3. 启动
+
+2. 搭建cri-docker  
+
 
 
 ### 1.1.3. 安装  
@@ -122,17 +142,33 @@ EOF
     EOF  
     ```
 
-1. 安装  
-
+2. 安装  
     
 
-2. 下载jar包
-下载jar包  
-https://blog.csdn.net/qq_46595591/article/details/107584320
-kubeadm config images pull 拉取镜像失败的问题
-https://blog.csdn.net/qq_40279964/article/details/125430992
-3. 配置10-kubeadm.conf  https://blog.csdn.net/opp003/article/details/126467117  
-3. 初始化(为了kubectl.config文件)
+3. 下载jar包   https://blog.csdn.net/qq_46595591/article/details/107584320   https://blog.csdn.net/qq_40279964/article/details/125430992
+    1. kubeadm config images list  
+    2. docker tag  
+
+4. 配置10-kubeadm.conf  https://blog.csdn.net/opp003/article/details/126467117  
+
+    /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+
+    ```text
+    # Note: This dropin only works with kubeadm and kubelet v1.11+
+    [Service]
+    Environment="KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf"
+    Environment="KUBELET_CONFIG_ARGS=--config=/var/lib/kubelet/config.yaml"
+    # This is a file that "kubeadm init" and "kubeadm join" generates at runtime, populating the KUBELET_KUBEADM_ARGS variable dynamically
+    EnvironmentFile=-/var/lib/kubelet/kubeadm-flags.env
+    # This is a file that the user can use for overrides of the kubelet args as a last resort. Preferably, the user should use
+    # the .NodeRegistration.KubeletExtraArgs object in the configuration files instead. KUBELET_EXTRA_ARGS should be sourced from this file.
+    EnvironmentFile=-/etc/sysconfig/kubelet
+    ExecStart=
+    ExecStart=/usr/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS
+    ```
+
+
+5. 初始化(为了kubectl.config文件)
 
     ```text
     kubeadm init \
@@ -144,18 +180,19 @@ https://blog.csdn.net/qq_40279964/article/details/125430992
     --cri-socket /var/run/cri-dockerd.sock \
     --ignore-preflight-errors=all
     ```
-4. kubectl开启  
-5. 初始化  
+6. kubectl开启  
 
+7. 初始化  
 
-kubeadm init    --cri-socket /run/containerd/containerd.sock --image-repository registry.aliyuncs.com/google_containers 
---kubernetes-version v1.25.8
+    ```text
+    kubeadm init --cri-socket /run/containerd/containerd.sock --image-repository registry.aliyuncs.com/google_containers 
+    --kubernetes-version v1.25.8
+    kubeadm reset  --cri-socket /run/containerd/containerd.sock
+    ```
 
-kubeadm reset  --cri-socket /run/containerd/containerd.sock
 
 ## 1.2. 配置
 ### 1.2.1. Master安装网络插件
-
 &emsp; [k8s网络配置](/docs/devAndOps/k8s/k8snetwork.md)  
 
 &emsp; 虽然现在k8s集群已经有1个master节点，2个worker节点，但是此时三个节点的状态都是NotReady的，原因是没有CNI网络插件，为了节点间的通信，需要安装cni网络插件，常用的cni网络插件有calico和flannel，两者区别为：flannel不支持复杂的网络策略，calico支持网络策略，因为今后还要配置k8s网络策略networkpolicy，所以本文选用的cni网络插件为calico！
@@ -180,7 +217,7 @@ https://blog.csdn.net/qq_42956653/article/details/123284563
 1. 基于CA签名的双向数字证书认证方式
 2. 基于HTTP BASE TOKEN的简单认证方式
 
-#### 设置https证书
+#### 1.2.2.1. ~~设置https证书~~
 <!-- 
 https://blog.csdn.net/grace_yi/article/details/80069919
 
@@ -201,7 +238,6 @@ https://blog.csdn.net/zuozewei/article/details/108165523
 &emsp; `<font color = "clime">`Kubernetes集群网络存储是不同宿主机实现文件共享；Pod挂载点是容器与宿主机实现文件共享。`</font>`
 
 ### 1.2.4. 内网中搭建私有仓库
-
 &emsp; ......
 
 <!-- 

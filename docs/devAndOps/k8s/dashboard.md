@@ -51,17 +51,23 @@ https://www.cnblogs.com/panwenbin-logs/p/10052554.html
 https://www.sklinux.com/posts/devops/k8s%E9%9D%A2%E6%9D%BFhttps%E4%BF%AE%E7%90%86/
 
 -->
-k8s 给dashboard配置自定义证书
-https://www.cnblogs.com/RRecal/p/15747097.html  
 
-1. 下载recommended.yaml
+
+1. 下载recommended.yaml，移除创建namespace的配置  
 2. 修改nodePort
 3. 修改jar包地址
 4. 修改http证书  
-    1. kubectl create namespace kubernetes-dashboard
-	2. kubectl create secret tls mycentos-cert --key 9161214_www.wt1814.com.key --cert 9161214_www.wt1814.com.pem -n kubernetes-dashboard 
+    1. 创建namespace：kubectl create namespace kubernetes-dashboard
+	2. 创建证书（采用的阿里云证书）：kubectl create secret tls mycentos-cert --key 9161214_www.wt1814.com.key --cert 9161214_www.wt1814.com.pem -n kubernetes-dashboard 
     3. 查看证书内容  kubectl describe secrets/证书名称  
-5. 查看token
+    4. 修改证书内容：https://www.cnblogs.com/RRecal/p/15747097.html
+5. 创建token
+    1. 创建拥有权限的ServiceAccount 
+    2. 创建token： kubectl create token oke-admin -n kube-system
+6. ~~再次查看token~~
+    1. 获取
+    2. 查看token  
+
 
 
 
