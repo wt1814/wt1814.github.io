@@ -28,7 +28,7 @@ https://blog.csdn.net/qq_39720208/article/details/102758662
 MMM与MHA的区别
 https://blog.csdn.net/LS19990712/article/details/103514624
 -->
-解决mysql主服务器单点故障的方法一般常用的有两个mmm和mha，但是一般从真正的高可用的场合，其实最常用的是mha。  
+&emsp; 解决mysql主服务器单点故障的方法一般常用的有两个mmm和mha，但是一般从真正的高可用的场合，其实最常用的是mha。  
 
 ### 1.1.1. MMM架构  
 &emsp; Multi_Master Replication Manager，就是mysql**多主复制管理器的简称，它是由一套perl语言开发的用于管理mysql**主主同步架构的工具集，主要作用是监控和管理mysql主主复制拓扑，并在当前的主服务器失效时，进行主和主备服务器之间的主从切换和故障转移等工作。  

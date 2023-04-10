@@ -6,6 +6,7 @@
     - [1.2. ~~大表添加索引~~](#12-大表添加索引)
     - [1.3. ~~插入千万条数据~~](#13-插入千万条数据)
     - [1.4. ~~快速删除大量(百万级)数据~~](#14-快速删除大量百万级数据)
+    - [亿级订单系统](#亿级订单系统)
 
 <!-- /TOC -->
 
@@ -86,3 +87,26 @@ https://jingyan.baidu.com/article/48b37f8d2e0cad1a65648879.html
 -->
 
 &emsp; 采取分批删除的方法。  
+
+## 亿级订单系统
+<!-- 
+
+亿级订单表数据存储
+https://blog.csdn.net/ThreeAspects/article/details/103414095
+
+https://blog.csdn.net/jokemqc/article/details/82834748
+https://mp.weixin.qq.com/s/Sfs8HtkL1C_pckkzLG--2g
+
+
+亿级订单数据分库分表设计方案（满足多维度查询：订单号、用户、商家、渠道）
+https://www.jianshu.com/p/11d10910247b
+10亿级订单系统分库分表设计思路
+https://blog.csdn.net/jokemqc/article/details/82834748
+亿级大表分库分表实战总结
+https://segmentfault.com/a/1190000038577217
+-->
+<!-- 
+https://www.jianshu.com/p/11d10910247b
+--> 
+
+
