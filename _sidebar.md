@@ -307,9 +307,6 @@
 * SpringBoot  
     * [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
         * [SpringBoot高级](/docs/microService/SpringBoot/BootHeigh.md)  
-        * [慎用devtools](/docs/microService/SpringBoot/devtools.md)  
-        * [Jar包瘦身](/docs/microService/SpringBoot/BootSlimming.md)  
-        * [Gzip压缩超大对象](/docs/microService/SpringBoot/Gzip.md)  
     * [SpringBoot源码](/docs/microService/SpringBoot/SpringBootSource.md)  
         * [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
         * [SpringBoot启动过程](/docs/microService/SpringBoot/SpringBootRun.md)  

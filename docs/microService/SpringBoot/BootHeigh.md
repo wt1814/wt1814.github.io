@@ -5,6 +5,8 @@
     - [1.1. 自动部署](#11-自动部署)
     - [1.2. 优雅停机](#12-优雅停机)
     - [1.3. 如何关闭自动配置](#13-如何关闭自动配置)
+    - [1.4. 慎用devtools](#14-慎用devtools)
+    - [1.5. Gzip压缩超大对象](#15-gzip压缩超大对象)
 
 <!-- /TOC -->
 
@@ -82,3 +84,22 @@ https://mp.weixin.qq.com/s?__biz=MzAxODcyNjEzNQ==&mid=2247487908&idx=2&sn=477374
 https://www.jb51.net/article/222489.htm
 http://www.zzvips.com/article/215505.html
 -->
+
+## 1.4. 慎用devtools
+SpringBoot使用devtools导致的类型转换异常  
+<!-- 
+
+https://blog.csdn.net/m0_38043362/article/details/78064539
+-->
+
+
+## 1.5. Gzip压缩超大对象   
+<!-- 
+
+Springboot 之 Filter 实现 Gzip 压缩超大 json 对象
+https://mp.weixin.qq.com/s/CrlS0thKzjPbclYL50Mj0A
+
+Springboot 之 Filter 实现超大响应 JSON 数据压缩
+https://mp.weixin.qq.com/s/oyUDJMDajROihpBJSHLK9Q
+
+-->  
