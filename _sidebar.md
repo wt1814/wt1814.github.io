@@ -181,15 +181,13 @@
 * 数据库  
     * [数据建模](/docs/SQL/modeling.md)  
         * [字段](/docs/SQL/Field.md)  
-        * [比较数据结构](/docs/SQL/Compare.md)  
+        * [工具](/docs/SQL/modelingTools.md)  
     * [SQL语句](/docs/SQL/SQLSentence.md)  
         * [基本查询语句](/docs/SQL/basicSelect.md)  
             * [limit](/docs/SQL/limit.md)
         * [连接查询](/docs/SQL/joinSelect.md)  
         * [高级查询](/docs/SQL/trans.md)  
         * [联合主键与复合主键](/docs/SQL/CompositeKey.md)  
-        * [null值](/docs/SQL/null.md)  
-        * [加密数据模糊查询](/docs/SQL/EncryptedQuery.md)  
     * [MySql函数](/docs/SQL/MySQLFunction.md)  
     * [数据库对象](/docs/SQL/DatabaseObject.md)  
     * [SQL优化](/docs/SQL/SQLOptimization.md)  
@@ -199,7 +197,7 @@
         * [~~SQL语句优化~~](/docs/SQL/SQLStatement.md)  
         * [索引优化](/docs/SQL/index.md)  
         * [优化案例](/docs/SQL/case.md)  
-        * [碎片优化](/docs/SQL/Fragment.md) 
+        * [系统优化](/docs/SQL/Fragment.md)  
     * [数据库分布式](/docs/SQL/DistributedDatabase.md)  
         * [大数据量操作](/docs/SQL/largeData.md)  
         * [MySql瓶颈](/docs/SQL/Bottleneck.md)  
@@ -219,6 +217,7 @@
             * [分库分表后分页查询](/docs/SQL/subSelectLimit.md)  
             * [分库分表后聚合查询](/docs/SQL/aggregate.md)  
         * [数据库分布式实现](/docs/SQL/subRealize.md)  
+            * [ShardingSphere](/docs/SQL/shardingsphere.md)  
             * [MyCat中间件](/docs/SQL/MyCat.md)  
         * [数据迁移](/docs/projectImplement/implementation.md)   
         * [冷热数据分离](/docs/SQL/HotAndColdSeparation.md)  
@@ -251,9 +250,6 @@
         * [MySql-MVCC](/docs/SQL/MVCC.md)  
         * [MySql锁](/docs/SQL/lock.md)  
         * [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
-    * Sharding-JDBC  
-        * [ShardingSphere](/docs/SQL/shardingsphere.md)  
-        * [ShardingSphere分布式事务](/docs/SQL/shardingsphereTransaction.md)  
 * Web服务器  
     * [***Undertow替换Tomcat](/docs/webContainer/Undertow.md)  
     * tomcat  

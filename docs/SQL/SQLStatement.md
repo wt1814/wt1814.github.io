@@ -114,7 +114,7 @@ https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
 https://mp.weixin.qq.com/s/lQ8CGYFpmPnxSzghxFYe9g
 -->
 
-&emsp; <font color = "red">使用子查询有时候可以使用更有效的JOIN连接代替，这是因为MySQL中不需要在内存中创建临时表完成SELECT子查询与主查询两部分查询工作。但是并不是所有的时候都成立，最好是在on关键字后面的列有索引的话，效果会更好！</font>  
+&emsp; <font color = "red">使用子查询有时候可以使用更有效的JOIN连接代替，这是因为MySQL中不需要在内存中创建临时表完成SELECT子查询与主查询两部分查询工作。但是并不是所有的时候都成立， **最好是在on关键字后面的列有索引的话，** 效果会更好！</font>  
 &emsp; 比如在表major中major_id是有索引的：  
 
 ```sql
