@@ -11,6 +11,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
+&emsp; **<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>**  
 ![image](http://182.92.69.8:8081/img/SSM/Spring/spring-10.png)  
 &emsp; SpringBean的生命周期主要有4个阶段：  
 1. 实例化（Instantiation），可以理解为new一个对象；

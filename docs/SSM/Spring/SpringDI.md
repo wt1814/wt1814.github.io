@@ -18,24 +18,17 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. 加载时机：SpringBean默认单例，非懒加载，即容器启动时就加载。  
 2. 加载流程：  
+    1. doGetBean()，获取Bean。  
     1. doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean()初始化。  
 
 # 1. SpringDI解析
 ## 1.1. ~~依赖注入发生的时间(懒加载相关)~~  
-&emsp; [lazy-init](/docs/SSM/Spring/feature/lazy-init.md)  
+&emsp; 当scope=“prototype” (多例)时，默认以懒加载的方式产生对象；当scope=“singleton” (单例)时，默认以非懒加载的方式产生对象。
+
 &emsp; 当Spring IOC容器完成了Bean定义资源的定位、载入和解析注册以后，IOC容器中已经管理类Bean定义的相关数据，但是此时IOC容器还没有对所管理的Bean进行依赖注入，<font color= "red">依赖注入在以下两种情况发生</font>：  
 
-* 用户第一次调用getBean()方法时，IOC容器触发依赖注入。  
-* 当用户在配置文件中将<bean\>元素配置了lazy-init=false属性，即让容器在解析注册Bean定义时进行预实例化，触发依赖注入。  
-
-
----------
-
-
-&emsp; 懒加载：对象使用的时候才去创建，节省资源，但是不利于提前发现错误。  
-&emsp; 非懒加载：容器启动的时候立刻创建对象。消耗资源。利于提前发现错误。  
-&emsp; 当scope=“prototype” (多例)时，默认以懒加载的方式产生对象。  
-&emsp; 当scope=“singleton” (单例)时，默认以非懒加载的方式产生对象。
+* 懒加载：用户第一次调用getBean()方法时，IOC容器触发依赖注入。~~对象使用的时候才去创建，节省资源，但是不利于提前发现错误。~~    
+* 非懒加载：当用户在配置文件中将<bean\>元素配置了[lazy-init=false](/docs/SSM/Spring/feature/lazy-init.md)属性，即让容器在解析注册Bean定义时进行预实例化，触发依赖注入。 ~~容器启动的时候立刻创建对象。消耗资源。利于提前发现错误。~~  
 
 
 ------
