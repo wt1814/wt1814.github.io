@@ -437,7 +437,6 @@
 ## 1.6. 分布式框架  
 
 ### 1.6.1. SpringBoot  
-[学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
 [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
 &emsp; [SpringBoot高级](/docs/microService/SpringBoot/BootHeigh.md)  
 &emsp; [慎用devtools](/docs/microService/SpringBoot/devtools.md)  

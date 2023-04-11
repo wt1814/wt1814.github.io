@@ -305,7 +305,6 @@
             * [MyBatis分页](/docs/SSM/MyBatis/MybatisPage.md)  
         * [MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)   
 * SpringBoot  
-    * [学习SpringBoot源码的感悟](/docs/microService/SpringBoot/thinking.md)  
     * [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
         * [SpringBoot高级](/docs/microService/SpringBoot/BootHeigh.md)  
         * [慎用devtools](/docs/microService/SpringBoot/devtools.md)  
