@@ -3,9 +3,9 @@
 
 - [1. Dubbo和Spring Cloud](#1-dubbo和spring-cloud)
     - [1.1. Dubbo和Spring Cloud](#11-dubbo和spring-cloud)
-    - [Spring Cloud Alibaba](#spring-cloud-alibaba)
-    - [1.2. Dubbo生态](#12-dubbo生态)
-        - [1.2.1. Dubbo与分布式事务](#121-dubbo与分布式事务)
+    - [1.2. Spring Cloud Alibaba](#12-spring-cloud-alibaba)
+    - [1.3. Dubbo生态](#13-dubbo生态)
+        - [1.3.1. Dubbo与分布式事务](#131-dubbo与分布式事务)
 
 <!-- /TOC -->
 
@@ -17,14 +17,14 @@
 2. <font color = "red">Dubbo底层是使用Netty这样的NIO框架，是基于TCP协议传输的，配合以Hession序列化完成RPC通信。</font><font color = "clime">而SpringCloud是基于Http协议+Rest接口调用远程过程的通信，</font>相对来说，Http请求会有更大的报文，占的带宽也会更多。但是REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更为合适，至于注重通信速度还是方便灵活性，具体情况具体考虑。  
 ![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-14.png)  
 
-## Spring Cloud Alibaba
+## 1.2. Spring Cloud Alibaba
 &emsp; 参考[Spring Cloud Alibaba](/docs/microService/dubbo/SpringCloudAlibaba.md)  
 
 
 
-## 1.2. Dubbo生态
+## 1.3. Dubbo生态
 ![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-65.png)   
 
-### 1.2.1. Dubbo与分布式事务  
+### 1.3.1. Dubbo与分布式事务  
 &emsp; Dubbo支持分布式事务吗？   
 &emsp; 目前暂时不支持，可与通过tcc-transaction框架实现。TCC-Transaction通过Dubbo隐式传参的功能，避免自己对业务代码的入侵。 
