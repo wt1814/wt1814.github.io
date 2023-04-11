@@ -268,7 +268,7 @@
     * [SpringDI解析](/docs/SSM/Spring/SpringDI.md)  
         * [循环依赖](/docs/SSM/Spring/feature/CircularDepend.md)  
     * [SpringBean生命周期](/docs/SSM/Spring/SpringBean.md)  
-    * [IOC容器扩展](/docs/SSM/Spring/feature/ContainerFeature.md)  
+    * [Spring容器扩展](/docs/SSM/Spring/feature/ContainerFeature.md)  
         * [可二次开发常用接口(扩展性)](/docs/SSM/Spring/feature/SecendDeve.md)  
             * [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
             * [事件多播器](/docs/SSM/Spring/feature/EventMulticaster.md)  

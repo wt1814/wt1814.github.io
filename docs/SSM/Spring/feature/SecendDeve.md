@@ -4,6 +4,7 @@
 &emsp; Spring为了用户的开发方便和特性支持，开放了一些特殊接口和类，用户可进行实现或者继承，常见的有：  
 
 &emsp; **Spring IOC阶段：**  
+&emsp; [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
 &emsp; [事件多播器](/docs/SSM/Spring/feature/EventMulticaster.md)  
 &emsp; [事件](/docs/SSM/Spring/feature/Event.md)  
 
