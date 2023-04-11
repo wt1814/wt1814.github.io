@@ -94,6 +94,7 @@ https://www.cnblogs.com/hello-shf/p/10864977.html
 
     &emsp; ~~各种condition注解：~~  
 
+    
     |类型|注解|说明|
     |---|---|---|
     |Class| Conditions类条件注解|@ConditionalOnClass当前classpath下有指定类才加载|
