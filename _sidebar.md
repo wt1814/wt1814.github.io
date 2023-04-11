@@ -262,9 +262,8 @@
         * [tomcat日志](/docs/webContainer/tomcat/tomcatLog.md)  
         * [tomcat调优](/docs/webContainer/tomcat/TomcatTuning)  
 * Spring  
-    * [Spring](/docs/SSM/Spring/Spring.md)  
-        * [Autowired和Resource](/docs/SSM/Spring/Autowired和Resource.md)  
-        * [Spring使用](/docs/SSM/Spring/SpringUse.md)  
+    * [Spring介绍](/docs/SSM/Spring/Spring.md)  
+    * [Spring使用](/docs/SSM/Spring/SpringUse.md)  
     * [对于学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
     * [手写Spring](/docs/SSM/Spring/HandwrittenSpring.md)  
         * [手写IOC](/docs/SSM/Spring/HandwrittenIOC.md)  
@@ -344,7 +343,6 @@
     * [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
     * [链路SkyWalking](/docs/microService/SpringCloudNetflix/SkyWalking.md)  
     * [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
-
 * Dubbo  
     * [分布式服务治理](/docs/microService/dubbo/CloudAlibaba.md)   
     * [Spring Cloud Alibaba](/docs/microService/dubbo/SpringCloudAlibaba.md)  

@@ -1,6 +1,15 @@
 
 
-# BinLog使用
+<!-- TOC -->
+
+- [1. BinLog使用](#1-binlog使用)
+    - [1.1. 使用场景](#11-使用场景)
+    - [1.2. 工具](#12-工具)
+
+<!-- /TOC -->
+
+
+# 1. BinLog使用
 <!-- 
 MySQL 的 Binlog 日志处理工具(Canal，Maxwell，Databus，DTS)对比 
 https://mp.weixin.qq.com/s/zuJyYOgJrfydTasIATuijA
@@ -14,7 +23,10 @@ https://mp.weixin.qq.com/s/RbICmCM9REIoDFEZP28fGA
 -->
 
 
-## 使用场景
+## 1.1. 使用场景
 
 
-## 工具
+## 1.2. 工具
+
+
+

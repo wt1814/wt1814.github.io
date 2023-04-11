@@ -387,9 +387,8 @@
 
 ## 1.5. SSM  
 ### 1.5.1. Spring  
-[Spring](/docs/SSM/Spring/Spring.md)  
-&emsp; [Autowired和Resource](/docs/SSM/Spring/Autowired和Resource.md)  
-&emsp; [Spring使用](/docs/SSM/Spring/SpringUse.md)  
+[Spring介绍](/docs/SSM/Spring/Spring.md)  
+[Spring使用](/docs/SSM/Spring/SpringUse.md)  
 [学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
 [手写Spring](/docs/SSM/Spring/HandwrittenSpring.md)  
 &emsp; [手写IOC](/docs/SSM/Spring/HandwrittenIOC.md)  
