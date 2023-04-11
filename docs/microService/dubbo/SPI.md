@@ -15,8 +15,8 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-0. ExtensionLoader是Dubbo SPI中用来加载扩展类的，有如下三个重要方法，搞懂这3个方法基本上就搞懂Dubbo SPI了。
-&emsp; 加载扩展类的三种方法如下
+0. ExtensionLoader是Dubbo SPI中用来加载扩展类的，有如下三个重要方法，搞懂这3个方法基本上就搞懂Dubbo SPI了。  
+&emsp; 加载扩展类的三种方法如下  
     * getExtension()，获取普通扩展类
     * getAdaptiveExtension()，获取自适应扩展类
     * getActivateExtension()，获取自动激活的扩展类

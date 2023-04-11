@@ -56,7 +56,7 @@ http://svip.iocoder.cn/Dubbo/intro/
 &emsp; 展开总设计图左边服务提供方暴露服务的蓝色初始化链，时序图如下：  
 ![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-20.png)   
 
-3. 引用服务时序
+3. 引用服务时序  
 &emsp; 展开总设计图右边服务消费方引用服务的蓝色初始化链，时序图如下：  
 ![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-21.png)   
 
