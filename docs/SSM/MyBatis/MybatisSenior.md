@@ -15,7 +15,7 @@
     - [1.8. 整合MyBatis](#18-整合mybatis)
         - [1.8.1. Spring整合MyBatis](#181-spring整合mybatis)
         - [1.8.2. SpringBoot整合MyBatis](#182-springboot整合mybatis)
-    - [Intellij IDEA中Mybatis Mapper自动注入警告的解决方案](#intellij-idea中mybatis-mapper自动注入警告的解决方案)
+    - [1.9. Intellij IDEA中Mybatis Mapper自动注入警告的解决方案](#19-intellij-idea中mybatis-mapper自动注入警告的解决方案)
 
 <!-- /TOC -->
 
@@ -114,7 +114,7 @@ https://mp.weixin.qq.com/s/BW7YE8OPVe3IS03EOCm_fA
 3. 扫描接口包。
 
 
-## Intellij IDEA中Mybatis Mapper自动注入警告的解决方案
+## 1.9. Intellij IDEA中Mybatis Mapper自动注入警告的解决方案
 <!-- 
 Intellij IDEA中Mybatis Mapper自动注入警告的6种解决方案 
 https://mp.weixin.qq.com/s?__biz=MzA4NjgxMjQ5Mg==&mid=2665762835&idx=1&sn=5794527649410ef35dc2382941345484&chksm=84d20230b3a58b2646ed333b3ae9ebf299d8d06da0c286302f74c86cfaeb3910b0b04805bbcb&mpshare=1&scene=1&srcid=&sharer_sharetime=1571876850857&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=6f23511bf9e1c01f24cbca42a703bf7244b1622f167e09344917306bbe5af0769908126efc68bd0fe3dc571d186dbc6c864e010fadc49798e3e7c63f72ced8c00fd3d27ff922fcd564c085580ad06213&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62070152&lang=zh_CN&pass_ticket=tOysFrIpapzI%2FSWUdTcbYKvSoWjfuug2aUNd5keR9%2BIBFSeAaxr3gVVWD9yTgncJ

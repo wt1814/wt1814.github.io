@@ -89,6 +89,7 @@ sqlSession = factory.openSession();
 &emsp; 执行 SQL 语句；处理结果集，并映射成 Java 对象。  
 &emsp; <font color = "red">SQL语句的执行涉及多个组件Configuration 、 SqlSessionFactory 、 Session 、 Executor 、 MappedStatement 、StatementHandler、ResultSetHandler。</font> **<font color = "clime">包括 MyBatis 的四大核心，它们是: Executor、StatementHandler、ParameterHandler、ResultSetHandler。</font>**  
 
+    
     |名称 |意义 |
     |---|---|
     |Configuration |管理 mybatis-config.xml 全局配置关系类 |
