@@ -597,9 +597,6 @@
         * [源码安全](/docs/web/codeSecurity.md)  
         * [安全架构](/docs/system/safe/safe.md)  
     * [其他](/docs/web/other.md)  
-* 前后端分离  
-    * [跨域和内外网隔离](/docs/web/Cross.md)  
-
 * 架构设计  
     * [IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
     * [技术选型](/docs/system/TechnicalSelection.md)  
@@ -614,6 +611,8 @@
     * [消息与事件驱动](/docs/Linux/drive.md)  
         * [事件和驱动](/docs/system/EventsAndMessages.md)  
     * [项目搭建](/docs/system/BuildProject.md)  
+    * [前后端分离-跨域和内外网隔离](/docs/web/Cross.md)  
+    * [DDD](/docs/system/DDD.md)  
 * 系统设计  
     * [工具类](/docs/SystemDesign/tools.md)  
     * [登录](/docs/SystemDesign/Login.md)  

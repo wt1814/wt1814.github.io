@@ -46,7 +46,6 @@
         - [1.9.6. 分布式文件存储](#196-分布式文件存储)
     - [1.12. 项目构建](#112-项目构建)
         - [1.12.1. 构建基础](#1121-构建基础)
-        - [1.12.2. 前后端分离](#1122-前后端分离)
     - [1.13. 架构设计](#113-架构设计)
     - [1.14. 系统设计](#114-系统设计)
     - [1.15. 响应式编程](#115-响应式编程)
@@ -811,9 +810,6 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [其他](/docs/web/other.md)  
 
 
-### 1.12.2. 前后端分离  
-[跨域和内外网隔离](/docs/web/Cross.md)  
-
 
 ## 1.13. 架构设计  
 [IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
@@ -829,6 +825,7 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [消息与事件驱动](/docs/Linux/drive.md)  
 &emsp; [事件和驱动](/docs/system/EventsAndMessages.md)  
 [项目搭建](/docs/system/BuildProject.md)  
+[前后端分离-跨域和内外网隔离](/docs/web/Cross.md)  
 [DDD](/docs/system/DDD.md)  
 <!-- 
 [Gateway](/docs/microService/microservices/Gateway.md)  
