@@ -44,15 +44,14 @@
         - [1.9.4. 工作流](#194-工作流)
         - [1.9.5. 规则引擎](#195-规则引擎)
         - [1.9.6. 分布式文件存储](#196-分布式文件存储)
-    - [1.10. Error](#110-error)
-    - [1.11. 源码搭建汇总](#111-源码搭建汇总)
     - [1.12. 项目构建](#112-项目构建)
         - [1.12.1. 构建基础](#1121-构建基础)
         - [1.12.2. 前后端分离](#1122-前后端分离)
-        - [1.12.3. 互联网安全架构](#1123-互联网安全架构)
     - [1.13. 架构设计](#113-架构设计)
     - [1.14. 系统设计](#114-系统设计)
     - [1.15. 响应式编程](#115-响应式编程)
+    - [1.10. Error](#110-error)
+    - [1.11. 源码搭建汇总](#111-源码搭建汇总)
     - [1.16. 内存优化](#116-内存优化)
     - [1.17. 磁盘IO](#117-磁盘io)
     - [1.18. 网络IO/分布式通信](#118-网络io分布式通信)
@@ -761,22 +760,6 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 [分布式文件存储](/docs/File/FileStore.md)  
 
 
-----------
-
-
-## 1.10. Error  
-[多线程串线了](/docs/Error/ThreadCrossed.md)  
-[熔断降级处理](/docs/Error/hystrix.md)  
-[Redis高并发](/docs/Error/redisConcurrent.md)  
-[Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-[redis scan命令](/docs/Error/redisScan.md)  
-<!-- [雪花利用ZK生成workId]()   -->
-
-
-## 1.11. 源码搭建汇总
-[SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
-[Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
-[Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 
 --------
 
@@ -822,15 +805,15 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [格式化](/docs/web/Format.md)  
 &emsp; [数据脱敏](/docs/web/sensitive.md)  
 &emsp; [加密算法](/docs/web/encryption.md)  
+[安全检查](/docs/web/safe.md)  
+&emsp; [源码安全](/docs/web/codeSecurity.md)   
+&emsp; [安全架构](/docs/system/safe/safe.md)  
 [其他](/docs/web/other.md)  
 
 
 ### 1.12.2. 前后端分离  
 [跨域和内外网隔离](/docs/web/Cross.md)  
 
-### 1.12.3. 互联网安全架构  
-[源码安全](/docs/web/codeSecurity.md)   
-[安全架构](/docs/system/safe/safe.md)  
 
 ## 1.13. 架构设计  
 [IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
@@ -868,6 +851,23 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 ## 1.15. 响应式编程
 [响应式编程](/docs/SystemDesign/reactor.md)  
 
+
+----------
+
+
+## 1.10. Error  
+[多线程串线了](/docs/Error/ThreadCrossed.md)  
+[熔断降级处理](/docs/Error/hystrix.md)  
+[Redis高并发](/docs/Error/redisConcurrent.md)  
+[Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
+[redis scan命令](/docs/Error/redisScan.md)  
+<!-- [雪花利用ZK生成workId]()   -->
+
+
+## 1.11. 源码搭建汇总
+[SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
+[Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
+[Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 
 -----------------
 

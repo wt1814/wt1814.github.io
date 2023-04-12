@@ -554,18 +554,6 @@
 * [工作流](docs/middleware/workflow.md)  
 * [规则引擎](docs/middleware/RulesEngine.md)  
 * [分布式文件存储](/docs/File/FileStore.md)  
-* Error  
-    * [多线程串线了](/docs/Error/ThreadCrossed.md)  
-    * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-* 源码环境搭建
-    * [JDK源码](/docs/java/basis/JDKSource.md)  
-    * SSM
-        * [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
-        * [MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
-    * 微服务
-        * [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
-        * [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
-        * [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 * 项目构建基础  
     * [版本号](/docs/web/Version.md)  
     * [编码规范](/docs/java/Design/CodingSpecification.md)  
@@ -605,12 +593,13 @@
         * [格式化](/docs/web/Format.md)  
         * [数据脱敏](/docs/web/sensitive.md)  
         * [加密算法](/docs/web/encryption.md)  
+    * [安全检查](/docs/web/safe.md)  
+        * [源码安全](/docs/web/codeSecurity.md)  
+        * [安全架构](/docs/system/safe/safe.md)  
     * [其他](/docs/web/other.md)  
 * 前后端分离  
     * [跨域和内外网隔离](/docs/web/Cross.md)  
-* 互联网安全架构  
-    * [源码安全](/docs/web/codeSecurity.md)  
-    * [安全架构](/docs/system/safe/safe.md)  
+
 * 架构设计  
     * [IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
     * [技术选型](/docs/system/TechnicalSelection.md)  
@@ -632,6 +621,18 @@
     * [登录-JWT和session](/docs/SystemDesign/JWT.md)  
     * [权限系统](/docs/SystemDesign/power.md)  
 * [响应式编程](/docs/SystemDesign/reactor.md)  
+* Error  
+    * [多线程串线了](/docs/Error/ThreadCrossed.md)  
+    * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
+* 源码环境搭建
+    * [JDK源码](/docs/java/basis/JDKSource.md)  
+    * SSM
+        * [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
+        * [MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
+    * 微服务
+        * [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
+        * [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
+        * [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 * 内存
     * [堆外内存](/docs/system/OutHeapMemory.md)  
     * [centos增加内存](/docs/system/centosMemory.md)  
