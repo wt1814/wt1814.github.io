@@ -31,8 +31,8 @@
     - [1.8. 高并发](#18-高并发)
         - [1.8.1. 高并发相关概念](#181-高并发相关概念)
         - [1.8.2. 缓存](#182-缓存)
-            - [1.8.2.1. Redis](#1821-redis)
-            - [1.8.2.2. 二级缓存](#1822-二级缓存)
+            - [1.8.2.1. 缓存介绍](#1821-缓存介绍)
+            - [1.8.2.2. Redis](#1822-redis)
         - [1.8.3. 限流降级](#183-限流降级)
         - [1.8.4. 分布式消息队列](#184-分布式消息队列)
             - [1.8.4.1. RocketMQ](#1841-rocketmq)
@@ -75,8 +75,8 @@
         - [1.23.1. 监控](#1231-监控)
         - [1.23.2. 统计](#1232-统计)
     - [1.24. 常用研发工具](#124-常用研发工具)
-    - [1.26. 算法](#126-算法)
-    - [1.27. 前端知识](#127-前端知识)
+    - [1.25. 算法](#125-算法)
+    - [1.26. 前端知识](#126-前端知识)
 
 <!-- /TOC -->
 
@@ -561,20 +561,27 @@
 [资源限制](/docs/system/ResourceConstraints.md)  
 
 ### 1.8.2. 缓存  
+[缓存](/docs/cache/Cache.md)  
+
+
+#### 1.8.2.1. 缓存介绍
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
 [Redis热点key](/docs/cache/hotspotKey.md)  
 [缓存更新](/docs/cache/CacheUpdate.md)  
-[双缓存](/docs/cache/DoubleCache.md)  
 [本地缓存](/docs/cache/LocalCache.md)  
 [CDN前置缓存](/docs/system/loadBalance/CDN.md)   
+[二级缓存](/docs/microService/Redis/doubleCache.md)   
+&emsp; [Caffeine+Redis二级缓存](/docs/microService/Redis/Caffeine.md)  
+&emsp; [集成两级缓存j2Cache](/docs/microService/Redis/j2Cache.md)  
 <!-- 
 [缓存](/docs/cache/Cache.md)  
 本地缓存
 https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 -->
 
-#### 1.8.2.1. Redis
+
+#### 1.8.2.2. Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
 [Redis安装](/docs/microService/Redis/RedisInstall.md)  
 [SpringBoot整合Redis](/docs/microService/Redis/SpringBootRedis.md)  
@@ -615,10 +622,6 @@ https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
 &emsp; [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 &emsp; [Redis常见延迟问题](/docs/microService/Redis/delayProblem.md)  
 &emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
-
-#### 1.8.2.2. 二级缓存  
-[Caffeine+Redis二级缓存](/docs/microService/Redis/doubleCache.md)  
-[集成两级缓存j2Cache](/docs/microService/Redis/j2Cache.md)  
 
 
 ### 1.8.3. 限流降级
@@ -1183,7 +1186,7 @@ prometheus
 
 --------
 
-## 1.26. 算法  
+## 1.25. 算法  
 [红黑树](/docs/function/redBlack.md)  
 [复杂数据结构](/docs/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/function/SkipList.md)  
@@ -1196,6 +1199,6 @@ prometheus
 [大数据和空间限制](/docs/function/bigdata.md)  
 &emsp; [内存只有 2G，如何对 100 亿数据进行排序？](/docs/function/SmallMemory.md)  
 
-## 1.27. 前端知识  
+## 1.26. 前端知识  
 [跨平台uni-app](/docs/front/uniapp.md)  
 [nodejs](/docs/front/nodejs.md)  
