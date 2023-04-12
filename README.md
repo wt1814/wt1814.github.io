@@ -509,7 +509,6 @@
 -->
 
 ### 1.6.4. Zookeeper
-[如何理解分布式协调技术](/docs/microService/dubbo/coordinate.md)  
 [Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
 &emsp; [ZAB](/docs/microService/dubbo/ZAB.md)  
 &emsp; [Watcher](/docs/microService/dubbo/Watcher.md)  

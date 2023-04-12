@@ -365,7 +365,6 @@
         * [netty在dubbo中的使用](/docs/microService/dubbo/dubboNetty.md)  
     * [Dubbo常见问题](/docs/microService/dubbo/problem.md)  
 * Zookeeper
-    * [如何理解分布式协调技术](/docs/microService/dubbo/coordinate.md)  
     * [Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
         * [ZAB](/docs/microService/dubbo/ZAB.md)  
         * [Watcher](/docs/microService/dubbo/Watcher.md)  
