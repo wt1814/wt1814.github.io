@@ -21,7 +21,7 @@
     1. Zookeeper集群角色：  
         * 领导者Leader：同一时间，集群只允许有一个Leader，提供对客户端的读写功能，负责将数据同步至各个节点；  
         * 跟随者Follower：提供对客户端读功能，写请求则转发给Leader处理，当Leader崩溃失联之后参与Leader选举；  
-        * 观察者Observer：与Follower不同的是但不参与Leader选举。  
+        * 观察者Observer：与Follower不同的是不参与Leader选举。  
     2. **<font color = "clime">崩溃恢复</font>**  
         * 服务器启动时的leader选举：每个server发出投票，投票信息包含(myid, ZXID,epoch)；接受投票；处理投票(epoch>ZXID>myid)；统计投票；改变服务器状态。</font>  
         * 运行过程中的leader选举：变更状态 ---> 发出投票 ---> 处理投票 ---> 统计投票 ---> 改变服务器的状态。
@@ -175,7 +175,7 @@ https://blog.csdn.net/weixin_47727457/article/details/106439452
 
         高可用方案：  
             两台机器：  
-                    主从复制主备复制主主复制主从切换主备切换  
+                    主从复制 主备复制 主主复制 主从切换 主备切换  
             两台以上机器：
                 集中式集群
                     一主多备一主多从
