@@ -3,9 +3,9 @@
 
 - [1. xxxTCC模式-强一致性xxx](#1-xxxtcc模式-强一致性xxx)
     - [1.1. ~~实现流程~~](#11-实现流程)
-        - [实现流程一](#实现流程一)
-        - [★★★实现流程二](#★★★实现流程二)
-        - [实现流程三](#实现流程三)
+        - [1.1.1. 实现流程一](#111-实现流程一)
+        - [1.1.2. ★★★实现流程二](#112-★★★实现流程二)
+        - [1.1.3. 实现流程三](#113-实现流程三)
     - [1.2. 特点](#12-特点)
     - [1.3. TCC与二阶段比较](#13-tcc与二阶段比较)
 
@@ -40,7 +40,7 @@ https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
 https://www.cnblogs.com/rjzheng/p/10164667.html
 -->
 
-### 实现流程一
+### 1.1.1. 实现流程一
 ![image](http://182.92.69.8:8081/img/microService/problems/problem-9.png)  
 &emsp; TCC是两阶段型、补偿型的事务。TCC采用的补偿机制，其逻辑模式类似于XA两阶段提交。其核心思想是：<font color = "red">针对每个操作，都要注册一个与其对应的确认和补偿(撤销)操作。</font>TCC模型是把锁的粒度完全交给业务处理。业务实现TCC服务之后，该TCC服务将作为分布式事务的其中一个资源，参与到整个分布式事务中；<font color = "clime">事务管理器分两阶段协调的TCC服务，第一阶段调用所有TCC服务的Try方法，在第二阶段执行所有TCC服务的Confirm或者Cancel方法。</font>  
 &emsp; TCC模型中有个事务管理者的角色，用来记录TCC全局事务状态并提交或者回滚事务。  
@@ -80,7 +80,7 @@ Cancel：
     不做任何操作。
 ```
 
-### ★★★实现流程二
+### 1.1.2. ★★★实现流程二
 <!-- 
 https://www.cnblogs.com/jajian/p/10014145.html
 -->
@@ -100,7 +100,7 @@ https://www.cnblogs.com/jajian/p/10014145.html
 	* 库存服务，
 	* 积分服务，
 
-### 实现流程三
+### 1.1.3. 实现流程三
 <!-- 
 分布式事务 Seata TCC 模式深度解析 | SOFAChannel#4 直播整理 
 https://www.sofastack.tech/blog/sofa-channel-4-retrospect/
