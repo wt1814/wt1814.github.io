@@ -851,13 +851,6 @@
     * [jd-jui](/docs/software/JDJUI.md)  
     * [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
     * [MAC系统](/docs/software/MAC.md)  
-* 软件工程
-    * [软件工程](/docs/softwareEngineering/Engineering.md)  
-    * [需求](/docs/softwareEngineering/Demand.md)  
-    * [设计](/docs/softwareEngineering/Design.md)  
-    * [编码](/docs/softwareEngineering/Code.md)  
-    * [测试](/docs/softwareEngineering/Test.md)  
-    * [开发过程复盘](/docs/softwareEngineering/Replay.md)  
 * 算法
     * [红黑树](/docs/function/redBlack.md)  
     * [复杂数据结构](/docs/function/otherStructure.md)  

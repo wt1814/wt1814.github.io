@@ -75,7 +75,6 @@
         - [1.23.1. 监控](#1231-监控)
         - [1.23.2. 统计](#1232-统计)
     - [1.24. 常用研发工具](#124-常用研发工具)
-    - [1.25. 软件工程](#125-软件工程)
     - [1.26. 算法](#126-算法)
     - [1.27. 前端知识](#127-前端知识)
 
@@ -1183,15 +1182,6 @@ prometheus
 [Json](/docs/software/Json.md)  
 [jd-jui](/docs/software/JDJUI.md)  
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
-
-
-## 1.25. 软件工程
-[软件工程](/docs/softwareEngineering/Engineering.md)  
-[需求](/docs/softwareEngineering/Demand.md)  
-[设计](/docs/softwareEngineering/Design.md)  
-[编码](/docs/softwareEngineering/Code.md)  
-[测试](/docs/softwareEngineering/Test.md)  
-[开发过程复盘](/docs/softwareEngineering/Replay.md)  
 
 --------
 
