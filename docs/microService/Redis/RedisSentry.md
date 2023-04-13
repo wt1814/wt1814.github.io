@@ -98,7 +98,7 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 #### 1.2.1.3. 定时任务三  
 ![image](http://182.92.69.8:8081/img/microService/Redis/redis-109.png)  
 <center>Sentinel节点向其余节点发送ping命令</center>  
-&emsp; 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令 **<font color = "clime">做一次心跳检测</font>** ，来确认这些节点当前是否可达。如上图所示。通过上面的定时任务，Sentinel节点对主节点、从节点、其余 Sentinel节点都建立起连接，实现了对每个节点的监控，这个定时任务是节点失败判定的重要依据。  
+&emsp; 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点 发送一条ping命令 <font color = "clime">做一次心跳检测</font>，来确认这些节点当前是否可达。如上图所示。通过上面的定时任务，Sentinel节点对主节点、从节点、其余 Sentinel节点都建立起连接，实现了对每个节点的监控，这个定时任务是节点失败判定的重要依据。  
 
 ### 1.2.2. 主观下线、客观下线  
 ![image](http://182.92.69.8:8081/img/microService/Redis/redis-88.png)  

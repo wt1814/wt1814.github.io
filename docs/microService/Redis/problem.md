@@ -1,19 +1,20 @@
 <!-- TOC -->
 
 - [1. Redis常见问题与优化](#1-redis常见问题与优化)
-    - [1.1. 客户端常见异常](#11-客户端常见异常)
-        - [1.1.1. 无法从连接池获取到连接](#111-无法从连接池获取到连接)
-        - [1.1.2. 客户端读写超时](#112-客户端读写超时)
-        - [1.1.3. 客户端连接超时](#113-客户端连接超时)
-        - [1.1.4. Redis使用的内存超过maxmemory配置](#114-redis使用的内存超过maxmemory配置)
-        - [1.1.5. 客户端连接数过大](#115-客户端连接数过大)
-    - [1.2. 客户端案例分析](#12-客户端案例分析)
-        - [1.2.1. Redis内存陡增](#121-redis内存陡增)
-        - [1.2.2. 客户端周期性的超时](#122-客户端周期性的超时)
-    - [1.3. Redis的噩梦：阻塞](#13-redis的噩梦阻塞)
-    - [1.4. 持久化问题定位与优化](#14-持久化问题定位与优化)
-    - [1.5. 内存优化](#15-内存优化)
-    - [1.6. redis内存中的key分析](#16-redis内存中的key分析)
+    - [1.1. Redis常见延迟问题定位与分析](#11-redis常见延迟问题定位与分析)
+    - [1.2. 客户端常见异常](#12-客户端常见异常)
+        - [1.2.1. 无法从连接池获取到连接](#121-无法从连接池获取到连接)
+        - [1.2.2. 客户端读写超时](#122-客户端读写超时)
+        - [1.2.3. 客户端连接超时](#123-客户端连接超时)
+        - [1.2.4. Redis使用的内存超过maxmemory配置](#124-redis使用的内存超过maxmemory配置)
+        - [1.2.5. 客户端连接数过大](#125-客户端连接数过大)
+    - [1.3. 客户端案例分析](#13-客户端案例分析)
+        - [1.3.1. Redis内存陡增](#131-redis内存陡增)
+        - [1.3.2. 客户端周期性的超时](#132-客户端周期性的超时)
+    - [1.4. Redis的噩梦：阻塞](#14-redis的噩梦阻塞)
+    - [1.5. 持久化问题定位与优化](#15-持久化问题定位与优化)
+    - [1.6. 内存优化](#16-内存优化)
+    - [1.7. redis内存中的key分析](#17-redis内存中的key分析)
 
 <!-- /TOC -->
 &emsp; **<font color = "red">总结：</font>**  
@@ -58,8 +59,16 @@ https://mp.weixin.qq.com/s/Abb2muE0GaVRYswqwxfJCw
  ~~
 -->
 
-## 1.1. 客户端常见异常  
-### 1.1.1. 无法从连接池获取到连接
+## 1.1. Redis常见延迟问题定位与分析  
+<!-- 
+
+Redis常见延迟问题定位与分析
+https://blog.csdn.net/weixin_35973945/article/details/124198769
+-->
+
+
+## 1.2. 客户端常见异常  
+### 1.2.1. 无法从连接池获取到连接
 &emsp; JedisPool中的Jedis对象个数是有限的，默认是8个。这里假设使用的默认配置，如果有8个Jedis对象被占用，并且没有归还，此时调用者还要从JedisPool中借用Jedis，就需要进行等待（例如设置了maxWaitMillis>0），如果在maxWaitMillis时间内仍然无法获取到Jedis对象就会抛出如下异常：  
 
 ```text
@@ -85,7 +94,7 @@ Caused by: java.util.NoSuchElementException: Pool exhausted at org.apache.common
 &emsp; 可以看到造成这个异常的原因是多个方面的，不要被异常的表象所迷惑，而且并不存在万能钥匙解决所有问题，开发和运维只能不断加强对于Redis的理解，顺藤摸瓜逐渐找到问题所在。
 
 
-### 1.1.2. 客户端读写超时  
+### 1.2.2. 客户端读写超时  
 &emsp; Jedis在调用Redis时，如果出现了读写超时后，会出现下面的异常：  
 
 ```text
@@ -101,7 +110,7 @@ java.net.SocketTimeoutException: Read timed out
 * Redis自身发生阻塞。  
 
 
-### 1.1.3. 客户端连接超时  
+### 1.2.3. 客户端连接超时  
 &emsp; Jedis在调用Redis时，如果出现了连接超时后，会出现下面的异常：  
 
 ```text
@@ -121,7 +130,7 @@ jedis.getClient().setConnectionTimeout(time);
 &emsp; 2）Redis发生阻塞，造成tcp-backlog已满，造成新的连接失败。  
 &emsp; 3）客户端与服务端网络不正常。  
 
-### 1.1.4. Redis使用的内存超过maxmemory配置  
+### 1.2.4. Redis使用的内存超过maxmemory配置  
 &emsp; Jedis执行写操作时，如果Redis的使用内存大于maxmemory的设置，会收到下面的异常，此时应该调整maxmemory并找到造成内存增长的原因：  
 
 ```text
@@ -129,7 +138,7 @@ redis.clients.jedis.exceptions.JedisDataException:
 OOM command not allowed when used memory > 'maxmemory'.
 ```
 
-### 1.1.5. 客户端连接数过大
+### 1.2.5. 客户端连接数过大
 &emsp; 如果客户端连接数超过了maxclients，新申请的连接就会出现如下异常：  
 
 ```text
@@ -150,8 +159,8 @@ redis.clients.jedis.exceptions.JedisDataException: ERR max number of clients rea
 
 &emsp; 此问题不存在确定的解决方式，但是无论从哪个方面进行处理，故障的快速恢复极为重要，当然更为重要的是找到问题的所在，否则一段时间后客户端连接数依然会超过maxclients。
 
-## 1.2. 客户端案例分析  
-### 1.2.1. Redis内存陡增  
+## 1.3. 客户端案例分析  
+### 1.3.1. Redis内存陡增  
 1. 现象   
 &emsp; 服务端现象：Redis主节点内存陡增，几乎用满maxmemory，而从节点内存并没有变化（正常情况下主从节点内存使用量基本相同），如下图所示。  
 ![image](http://182.92.69.8:8081/img/microService/Redis/redis-112.png)  
@@ -207,20 +216,20 @@ redis.clients.jedis.exceptions.JedisDataException: ERR max number of clients rea
 &emsp; 使用专业的Redis运维工具，例如CacheCloud，上述问题在Cachecloud中会收到相应的报警，快速发现和定位问题。
 
 
-### 1.2.2. 客户端周期性的超时  
+### 1.3.2. 客户端周期性的超时  
 ......
 
-## 1.3. Redis的噩梦：阻塞  
+## 1.4. Redis的噩梦：阻塞  
 ......
 
-## 1.4. 持久化问题定位与优化
+## 1.5. 持久化问题定位与优化
 ......
 
-## 1.5. 内存优化  
+## 1.6. 内存优化  
 ......
 
 
-## 1.6. redis内存中的key分析
+## 1.7. redis内存中的key分析
 
 <!-- 
 
