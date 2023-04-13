@@ -564,19 +564,13 @@
 
 #### 1.8.2.1. 缓存介绍
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
-[分布式缓存问题](/docs/cache/DistributedCache.md)  
-[Redis热点key](/docs/cache/hotspotKey.md)  
-[缓存更新](/docs/cache/CacheUpdate.md)  
-[本地缓存](/docs/cache/LocalCache.md)  
 [CDN前置缓存](/docs/system/loadBalance/CDN.md)   
 [二级缓存](/docs/microService/Redis/doubleCache.md)   
 &emsp; [Caffeine+Redis二级缓存](/docs/microService/Redis/Caffeine.md)  
 &emsp; [集成两级缓存j2Cache](/docs/microService/Redis/j2Cache.md)  
-<!-- 
-[缓存](/docs/cache/Cache.md)  
-本地缓存
-https://mp.weixin.qq.com/s/JdawZKAeVzDnZ8ZQF0XVuA
--->
+[分布式缓存问题](/docs/cache/DistributedCache.md)  
+[缓存更新](/docs/cache/CacheUpdate.md)  
+[Redis热点key](/docs/cache/hotspotKey.md)  
 
 
 #### 1.8.2.2. Redis
