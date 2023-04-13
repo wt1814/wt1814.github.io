@@ -80,8 +80,8 @@ https://mp.weixin.qq.com/s/8Aw-A-8FdZeXBY6hQlhYUw
 
 &emsp; Redis 用intset或dictEntry存储set。当满足如下两个条件的时候，采用整数集合实现；一旦有一个条件不满足时则采用字典来实现。  
 
-* Set 集合中的所有元素都为整数
-* Set 集合中的元素个数不大于 512(默认 512，可以通过修改 set-max-intset-entries 配置调整集合大小) 
+* Set集合中的所有元素都为整数。
+* Set集合中的元素个数不大于 512(默认 512，可以通过修改 set-max-intset-entries 配置调整集合大小)。 
 
 
 ### 1.1.5. Zset内部编码   

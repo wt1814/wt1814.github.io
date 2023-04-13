@@ -665,8 +665,6 @@
 --------------------------
 
 ## 1.9. 常用中间件
-[OpenAPI](/docs/system/OpenAPI.md)  
-
 
 ### 1.9.1. 分布式搜索引擎  
 [ES搭建](/docs/ES/build.md)  

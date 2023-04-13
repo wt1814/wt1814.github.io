@@ -483,7 +483,6 @@
     * [kafka源码](/docs/microService/mq/kafka/kafkaSource.md)  
         * [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
         * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md)  
-* [OpenAPI](/docs/system/OpenAPI.md)  
 * 分布式搜索引擎  
     * [ES搭建](/docs/ES/build.md)   
         * [ES配置文件](/docs/ES/configure.md)  
