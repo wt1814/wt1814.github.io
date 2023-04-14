@@ -13,7 +13,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 * 高并发：支持百万级TPS。   
-    * 高性能：磁盘I/O-顺序读写、基于Sendfile实现零拷贝。  
+    * 高性能：磁盘IO-顺序读写、基于Sendfile实现零拷贝。  
     * 高可用：Kafka副本机制。  
 * 分布式：  
     * 可靠性：副本的一致性保证、可以保证消息队列不丢失、幂等（重复消费）和事务。  
@@ -42,7 +42,7 @@ Kafka服务器在响应客户端读取的时候，底层使用ZeroCopy技术，�
 
 &emsp; [网络IO优化](/docs/microService/mq/kafka/networkIO.md)  
 &emsp; [内存](/docs/microService/mq/kafka/Memory.md)  
-&emsp; [持久化/磁盘I/O-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
+&emsp; [持久化/磁盘IO-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
 
 ## 1.2. 高可用与数据一致性(副本机制)
 &emsp; 参考[kafka副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
@@ -80,7 +80,7 @@ Kafka服务器在响应客户端读取的时候，底层使用ZeroCopy技术，�
 
 
 &emsp; at most once，最多一次，可以理解为可能发生消息丢失；at least once，至少一次，可以理解为可能发生重复消费。kafka通过ack的配置来实现这两种。  
-&emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。 **exactly once也被称为幂等性。**  
+&emsp; 理想情况下肯定是希望系统的消息传递是严格exactly once，也就是保证不丢失、只会被处理一次，但是很难做到。**exactly once也被称为幂等性。**  
 
 ![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-119.png)  
 
@@ -94,5 +94,3 @@ https://zhuanlan.zhihu.com/p/380956215
 ### 1.3.3. 幂等（重复消费）和事务
 &emsp; [kafka幂等性](/docs/microService/mq/kafka/kafkaIdempotent.md)  
 &emsp; [kafka事务](/docs/microService/mq/kafka/kafkaTraction.md)  
-
-

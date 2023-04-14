@@ -644,7 +644,7 @@
 &emsp; [kafka服务端](/docs/microService/mq/kafka/kafkaServer.md)  
 [kafka特性](/docs/microService/mq/kafka/kafkaCharacteristic.md)  
 &emsp; [内存](/docs/microService/mq/kafka/Memory.md)  
-&emsp; [持久化/磁盘I/O-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
+&emsp; [持久化/磁盘IO-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
 &emsp; [零拷贝的使用](/docs/microService/mq/kafka/networkIO.md)  
 &emsp; [副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
 &emsp; [如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
