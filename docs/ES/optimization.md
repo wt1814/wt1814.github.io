@@ -61,8 +61,8 @@ c.  如果使用场景是聚合或排序，并且都是基于analyzed 字符数�
 
             index.translog.flush_threshold_size：512mb(默认)
             
-4. _id字段的使用，应尽可能避免自定义_id, 以避免针对ID的版本管理；建议使用ES的默认ID生成策略或使用数字类型ID做为主键。
-5. _all字段及_source字段的使用，应该注意场景和需要，_all字段包含了所有的索引字段，方便做全文检索，如果无此需求，可以禁用；_source存储了原始的document内容，如果没有获取原始文档数据的需求，可通过设置includes、excludes 属性来定义放入_source的字段。
+4. \_id字段的使用，应尽可能避免自定义\_id, 以避免针对ID的版本管理；建议使用ES的默认ID生成策略或使用数字类型ID做为主键。
+5. \_all字段及_source字段的使用，应该注意场景和需要，\_all字段包含了所有的索引字段，方便做全文检索，如果无此需求，可以禁用；_source存储了原始的document内容，如果没有获取原始文档数据的需求，可通过设置includes、excludes 属性来定义放入_source的字段。
 6. 合理的配置使用index属性，analyzed 和not_analyzed，根据业务需求来控制字段是否分词或不分词。只有 groupby需求的字段，配置时就设置成not_analyzed, 以提高查询或聚类的效率。
 
 ### 1.1.2.2. 查询优化
