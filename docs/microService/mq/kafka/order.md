@@ -135,23 +135,23 @@ https://www.cnblogs.com/sddai/p/11340870.html
 
 -------------
 
-由于Kafka的一个Topic可以分为了多个Partition，Producer发送消息的时候，是分散在不同 Partition的。当Producer按顺序发消息给Broker，但进入Kafka之后，这些消息就不一定进到哪个Partition，会导致顺序是乱的。  
+&emsp; 由于Kafka的一个Topic可以分为了多个Partition，Producer发送消息的时候，是分散在不同 Partition的。当Producer按顺序发消息给Broker，但进入Kafka之后，这些消息就不一定进到哪个Partition，会导致顺序是乱的。  
 
-因此要满足全局有序，需要1个Topic只能对应1个Partition。  
+&emsp; 因此要满足全局有序，需要1个Topic只能对应1个Partition。  
 ![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-126.png)  
-而且对应的consumer也要使用单线程或者保证消费顺序的线程模型，否则会出现下图所示，消费端造成的消费乱序。  
+&emsp; 而且对应的consumer也要使用单线程或者保证消费顺序的线程模型，否则会出现下图所示，消费端造成的消费乱序。  
 ![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-127.png)  
 
 
 ### 1.3.2. 局部有序
-其实在大部分业务场景下，只需要保证消息局部有序即可，什么是局部有序？局部有序是指在某个业务功能场景下保证消息的发送和接收顺序是一致的。如：订单场景，要求订单的创建、付款、发货、收货、完成消息在同一订单下是有序发生的，即消费者在接收消息时需要保证在接收到订单发货前一定收到了订单创建和付款消息。  
+&emsp; 其实在大部分业务场景下，只需要保证消息局部有序即可，什么是局部有序？局部有序是指在某个业务功能场景下保证消息的发送和接收顺序是一致的。如：订单场景，要求订单的创建、付款、发货、收货、完成消息在同一订单下是有序发生的，即消费者在接收消息时需要保证在接收到订单发货前一定收到了订单创建和付款消息。  
 
-针对这种场景的处理思路是：针对部分消息有序（message.key相同的message要保证消费顺序）场景，可以在producer往kafka插入数据时控制，同一key分发到同一partition上面。因为每个partition是固定分配给某个消费者线程进行消费的，所以对于在同一个分区的消息来说，是严格有序的（在kafka 0.10.x以前的版本中，kafka因消费者重启或者宕机可能会导致分区的重新分配消费，可能会导致乱序的发生，0.10.x版本进行了优化，减少重新分配的可能性）。  
+&emsp; 针对这种场景的处理思路是：针对部分消息有序（message.key相同的message要保证消费顺序）场景，可以在producer往kafka插入数据时控制，同一key分发到同一partition上面。因为每个partition是固定分配给某个消费者线程进行消费的，所以对于在同一个分区的消息来说，是严格有序的（在kafka 0.10.x以前的版本中，kafka因消费者重启或者宕机可能会导致分区的重新分配消费，可能会导致乱序的发生，0.10.x版本进行了优化，减少重新分配的可能性）。  
 
 ------------
 
-要满足局部有序，只需要在发消息的时候指定Partition Key，Kafka对其进行Hash计算，根据计算结果决定放入哪个Partition。这样Partition Key相同的消息会放在同一个Partition。此时，Partition的数量仍然可以设置多个，提升Topic的整体吞吐量。  
-如下图所示，在不增加partition数量的情况下想提高消费速度，可以考虑再次hash唯一标识（例如订单orderId）到不同的线程上，多个消费者线程并发处理消息（依旧可以保证局部有序）。  
+&emsp; 要满足局部有序，只需要在发消息的时候指定Partition Key，Kafka对其进行Hash计算，根据计算结果决定放入哪个Partition。这样Partition Key相同的消息会放在同一个Partition。此时，Partition的数量仍然可以设置多个，提升Topic的整体吞吐量。  
+&emsp; 如下图所示，在不增加partition数量的情况下想提高消费速度，可以考虑再次hash唯一标识（例如订单orderId）到不同的线程上，多个消费者线程并发处理消息（依旧可以保证局部有序）。  
 ![image](http://182.92.69.8:8081/img/microService/mq/kafka/kafka-128.png)  
 
 
@@ -164,30 +164,29 @@ https://www.cnblogs.com/sddai/p/11340870.html
 
 #### 1.3.3.1. 消息重试对顺序消息的影响
 
-对于一个有着先后顺序的消息A、B，正常情况下应该是A先发送完成后再发送B，但是在异常情况下，在A发送失败的情况下，B发送成功，而A由于重试机制在B发送完成之后重试发送成功了。这时对于本身顺序为AB的消息顺序变成了BA。  
+&emsp; 对于一个有着先后顺序的消息A、B，正常情况下应该是A先发送完成后再发送B，但是在异常情况下，在A发送失败的情况下，B发送成功，而A由于重试机制在B发送完成之后重试发送成功了。这时对于本身顺序为AB的消息顺序变成了BA。  
 
-针对这种问题，严格的顺序消费还需要max.in.flight.requests.per.connection参数的支持。  
+&emsp; 针对这种问题，严格的顺序消费还需要max.in.flight.requests.per.connection参数的支持。  
 
-该参数指定了生产者在收到服务器响应之前可以发送多少个消息。它的值越高，就会占用越多的内存，同时也会提升吞吐量。把它设为1就可以保证消息是按照发送的顺序写入服务器的。  
+&emsp; 该参数指定了生产者在收到服务器响应之前可以发送多少个消息。它的值越高，就会占用越多的内存，同时也会提升吞吐量。把它设为1就可以保证消息是按照发送的顺序写入服务器的。  
 
-此外，对于某些业务场景，设置max.in.flight.requests.per.connection=1会严重降低吞吐量，如果放弃使用这种同步重试机制，则可以考虑在消费端增加失败标记的记录，然后用定时任务轮询去重试这些失败的消息并做好监控报警。  
+&emsp; 此外，对于某些业务场景，设置max.in.flight.requests.per.connection=1会严重降低吞吐量，如果放弃使用这种同步重试机制，则可以考虑在消费端增加失败标记的记录，然后用定时任务轮询去重试这些失败的消息并做好监控报警。  
 
 -------------
 
-消息重试对顺序消息的影响  
+&emsp; 消息重试对顺序消息的影响  
 
-对于一个有着先后顺序的消息A、B，正常情况下应该是A先发送完成后再发送B，但是在异常情况下，在A发送失败的情况下，B发送成功，而A由于重试机制在B发送完成之后重试发送成功了。
+&emsp; 对于一个有着先后顺序的消息A、B，正常情况下应该是A先发送完成后再发送B，但是在异常情况下，在A发送失败的情况下，B发送成功，而A由于重试机制在B发送完成之后重试发送成功了。
 这时对于本身顺序为AB的消息顺序变成了BA  
 
 #### 1.3.3.2. 消息producer发送逻辑的控制
-
-消息producer在发送消息的时候，对于同一个broker连接是存在多个未确认的消息在同时发送的，也就是存在上面场景说到的情况，虽然A和B消息是顺序的，但是由于存在未知的确认关系，有可能存在A发送失败，B发送成功，A需要重试的时候顺序关系就变成了BA。简之一句就是在发送B时A的发送状态是未知的。  
-针对以上的问题，严格的顺序消费还需要以下参数支持：max.in.flight.requests.per.connection
-这个参数官方文档的解释是：  
+&emsp; 消息producer在发送消息的时候，对于同一个broker连接是存在多个未确认的消息在同时发送的，也就是存在上面场景说到的情况，虽然A和B消息是顺序的，但是由于存在未知的确认关系，有可能存在A发送失败，B发送成功，A需要重试的时候顺序关系就变成了BA。简之一句就是在发送B时A的发送状态是未知的。  
+&emsp; 针对以上的问题，严格的顺序消费还需要以下参数支持：max.in.flight.requests.per.connection
+&emsp; 这个参数官方文档的解释是：  
 
     The maximum number of unacknowledged requests the client will send on a single connection before blocking. Note that if this setting is set to be greater than 1 and there are failed sends, there is a risk of message re-ordering due to retries (i.e., if retries are enabled).
 
-大体意思是：
+&emsp; 大体意思是：
 
     在发送阻塞前对于每个连接，正在发送但是发送状态未知的最大消息数量。如果设置大于1，那么就有可能存在有发送失败的情况下，因为重试发送导致的消息乱序问题。
     所以应该将其设置为1，保证在后一条消息发送前，前一条的消息状态已经是可知的。
