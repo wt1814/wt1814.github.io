@@ -635,7 +635,6 @@
 
 #### 1.8.4.2. Kafka  
 [kafka](/docs/microService/mq/kafka/kafka.md)   
-[kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
 [kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  
 &emsp; [kafka生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
 &emsp; [消息分区](/docs/microService/mq/kafka/topic.md)  
@@ -652,6 +651,7 @@
 &emsp; [kafka事务](/docs/microService/mq/kafka/kafkaTraction.md)  
 [kafka集群管理](/docs/microService/mq/kafka/colony.md)  
 [kafka应用](/docs/microService/mq/kafka/kafkaUse.md)  
+&emsp; [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
 &emsp; [kafka-SpringBoot](/docs/microService/mq/kafka/kafkaSpringBoot.md)  
 &emsp; [kafka高级应用](/docs/microService/mq/kafka/advanced.md)  
 [kafka源码](/docs/microService/mq/kafka/kafkaSource.md)  
