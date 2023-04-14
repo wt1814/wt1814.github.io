@@ -26,7 +26,7 @@
 2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font><font color = "blue">`其中Reactor负责监听和分发事件，线程池负责处理事件。`</font>** **<font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
 3. **单线程模型(单Reactor单线程)**  
 &emsp; ~~这是最基本的单Reactor单线程模型。其中Reactor线程，负责多路分离套接字，有新连接到来触发connect事件之后，交由Acceptor进行处理，有IO读写事件之后交给hanlder处理。~~  
-&emsp; ~~Acceptor主要任务就是构建handler，在获取到和client相关的SocketChannel之后，绑定到相应的hanlder上，对应的SocketChannel有读写事件之后，基于racotor分发,hanlder就可以处理了（所有的IO事件都绑定到selector上，有Reactor分发）。~~  
+&emsp; ~~Acceptor主要任务就是构建handler，在获取到和client相关的SocketChannel之后，绑定到相应的hanlder上，对应的SocketChannel有读写事件之后，基于racotor分发，hanlder就可以处理了（所有的IO事件都绑定到selector上，有Reactor分发）。~~  
 &emsp; **<font color = "red">Reactor单线程模型，指的是所有的IO操作都在同一个NIO线程上面完成。</font>** 单个NIO线程会成为系统瓶颈，并且会有节点故障问题。   
 4. **多线程模型(单Reactor多线程)**  
 &emsp; ~~相对于第一种单线程的模式来说，在处理业务逻辑，也就是获取到IO的读写事件之后，交由线程池来处理，这样可以减小主reactor的性能开销，从而更专注的做事件分发工作了，从而提升整个应用的吞吐。~~  
