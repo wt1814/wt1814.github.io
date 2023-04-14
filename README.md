@@ -634,7 +634,7 @@
 
 
 #### 1.8.4.2. Kafka  
-[kafka总结](/docs/microService/mq/kafka/kafka.md)   
+[kafka](/docs/microService/mq/kafka/kafka.md)   
 [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
 [kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  
 &emsp; [kafka生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
