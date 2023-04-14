@@ -139,13 +139,13 @@ https://www.cnblogs.com/middleware/p/9477133.html
 4. 消费和生产配合过程  
 &emsp; 这一步是消费和生成互相配合完成事务的过程，其中涉及多个请求：  
     * 增加分区到事务请求  
-    当生产者有新分区要写入数据，则会发送AddPartitionToTxnRequest到事务协调者。协调者会处理请求，主要做的事情是更新事务元数据信息，并把信息写入到事务日志中(事务Topic)。  
+    &emsp; 当生产者有新分区要写入数据，则会发送AddPartitionToTxnRequest到事务协调者。协调者会处理请求，主要做的事情是更新事务元数据信息，并把信息写入到事务日志中(事务Topic)。  
     * 生产请求  
-    生产者通过调用send接口发送数据到分区，这些请求新增pid，epoch和sequence number字段。
+    &emsp; 生产者通过调用send接口发送数据到分区，这些请求新增pid，epoch和sequence number字段。
     * 增加消费offset到事务  
-    生产者通过新增的snedOffsets ToTransaction接口，会发送某个分区的Offset信息到事务协调者。协调者会把分区信息增加到事务中。  
+    &emsp; 生产者通过新增的snedOffsets ToTransaction接口，会发送某个分区的Offset信息到事务协调者。协调者会把分区信息增加到事务中。  
     * 事务提交offset请求  
-    当生产者调用事务提交offset接口后，会发送一个TxnOffsetCommitRequest请求到消费组协调者，消费组协调者会把offset存储在__consumer-offsets Topic中。协调者会根据请求的PID和epoch验证生产者是否允许发起这个请求。 消费offset只有当事务提交后才对外可见。  
+    &emsp; 当生产者调用事务提交offset接口后，会发送一个TxnOffsetCommitRequest请求到消费组协调者，消费组协调者会把offset存储在__consumer-offsets Topic中。协调者会根据请求的PID和epoch验证生产者是否允许发起这个请求。消费offset只有当事务提交后才对外可见。  
 5. 提交或回滚事务  
 &emsp; 用户通过调用commitTransaction或abortTranssaction方法提交或回滚事务。  
 
