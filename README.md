@@ -968,7 +968,7 @@ https://help.aliyun.com/document_detail/122217.html
 &emsp; [Keepalived](/docs/system/loadBalance/Keepalived.md)  
 [IP负载均衡](/docs/system/loadBalance/IPLoad.md)  
 [数据链路负载均衡](/docs/system/loadBalance/LinkLoad.md)  
-
+[CDN](/docs/system/loadBalance/CDN.md)  
 
 ----
 
