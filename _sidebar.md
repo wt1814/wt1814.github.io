@@ -655,13 +655,13 @@
     * [事件和驱动](/docs/system/EventsAndMessages.md)  
     * [前后端分离-跨域和内外网隔离](/docs/web/Cross.md)  
     * [DDD](/docs/system/DDD.md)  
+    * [响应式编程](/docs/SystemDesign/reactor.md)  
 * 系统设计  
     * [工具类](/docs/SystemDesign/tools.md)  
     * [登录](/docs/SystemDesign/Login.md)  
     * [单点登录SSO](/docs/SystemDesign/SSO.md)  
     * [登录-JWT和session](/docs/SystemDesign/JWT.md)  
     * [权限系统](/docs/SystemDesign/power.md)  
-* [响应式编程](/docs/SystemDesign/reactor.md)  
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  

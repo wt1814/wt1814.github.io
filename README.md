@@ -54,7 +54,6 @@
         - [1.11.1. 构建基础](#1111-构建基础)
     - [1.12. 架构设计](#112-架构设计)
     - [1.13. 系统设计](#113-系统设计)
-    - [1.14. 响应式编程](#114-响应式编程)
     - [1.15. Error](#115-error)
     - [1.16. 源码搭建汇总](#116-源码搭建汇总)
     - [1.17. 内存优化](#117-内存优化)
@@ -876,10 +875,9 @@
 [事件和驱动](/docs/system/EventsAndMessages.md)  
 [前后端分离-跨域和内外网隔离](/docs/web/Cross.md)  
 [DDD](/docs/system/DDD.md)  
+[响应式编程](/docs/SystemDesign/reactor.md)  
 <!-- 
 [Gateway](/docs/microService/microservices/Gateway.md)  
-
-软件工程
 
 -->
 
@@ -892,10 +890,6 @@
 [登录-JWT和session](/docs/SystemDesign/JWT.md)  
 [Token、Cookie、Session、跨域](/docs/SystemDesign/Token.md)  
 [权限系统](/docs/SystemDesign/power.md)  
-
-
-## 1.14. 响应式编程
-[响应式编程](/docs/SystemDesign/reactor.md)  
 
 
 ----------
