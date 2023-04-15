@@ -590,7 +590,7 @@
     * [分布式调度](/docs/frame/taskSheduling.md)  
         * [XXL-JOB](/docs/frame/XXL-JOB.md)  
     * [时间轮算法](/docs/microService/dubbo/timeWheel.md)  
-* 安全框架  
+* [安全框架](/docs/system/safe.md)      
     * [shiro](/docs/system/shiro.md)  
     * [Spring Security](/docs/system/SpringSecurity.md)  
     * [数据权限](/docs/system/DataPermissions.md)  
