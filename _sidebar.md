@@ -644,16 +644,15 @@
 * 架构设计  
     * [IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
     * [技术选型](/docs/system/TechnicalSelection.md)  
-    * [架构的方方面面](/docs/system/AllAspects.md)  
     * [软件架构设计模式](/docs/system/designPattern.md)  
     * [架构图](/docs/system/diagram.md)   
+    * [架构的方方面面](/docs/system/AllAspects.md)  
     * [架构质量属性](/docs/system/QualityAttribute.md)  
         * [容灾和备份](/docs/system/backups.md)  
     * [系统瓶颈](/docs/system/Bottleneck.md)  
     * [JAVA线上故障排查](/docs/Linux/problem.md)   
     * [脚手架介绍](/docs/system/Scaffolding.md)  
     * [事件和驱动](/docs/system/EventsAndMessages.md)  
-    * [项目搭建](/docs/system/BuildProject.md)  
     * [前后端分离-跨域和内外网隔离](/docs/web/Cross.md)  
     * [DDD](/docs/system/DDD.md)  
 * 系统设计  
