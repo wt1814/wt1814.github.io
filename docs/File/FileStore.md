@@ -1,17 +1,25 @@
 
 
+<!-- TOC -->
 
-# 文件存储  
+- [1. 文件存储](#1-文件存储)
+    - [1.1. FTP](#11-ftp)
+    - [1.2. FastDFS](#12-fastdfs)
+
+<!-- /TOC -->
+
+
+# 1. 文件存储  
 <!-- 
 
 -->
 
 &emsp; 文件存储的服务器地址的不同：远程服务器、跨服务器、阿里云服务器。  
 
-## FTP
+## 1.1. FTP
 
 
-## FastDFS
+## 1.2. FastDFS
 <!-- 
  五分钟带你了解FastDFS 
 https://mp.weixin.qq.com/s/33aejIZ75Z4WGq8-4156mQ

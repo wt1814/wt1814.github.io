@@ -1,6 +1,14 @@
 
+<!-- TOC -->
 
-# 架构图
+- [1. 架构图](#1-架构图)
+    - [1.1. 时序图](#11-时序图)
+    - [1.2. UML类图](#12-uml类图)
+
+<!-- /TOC -->
+
+
+# 1. 架构图
 
 <!--
 
@@ -88,7 +96,7 @@ https://mp.weixin.qq.com/s?__biz=Mzg2MDYzODI5Nw==&mid=2247493910&idx=2&sn=923e99
 -->
 
 
-## 时序图  
+## 1.1. 时序图  
 <!-- 
 
 时序图元素Combined Fragments
@@ -96,7 +104,7 @@ https://www.cnblogs.com/ywqu/archive/2009/12/22/1629426.html
 -->
 
 
-## UML类图  
+## 1.2. UML类图  
 <!-- 
  五分钟带你读懂UML类图 
  https://mp.weixin.qq.com/s/2OlQ-efyG1fi2V4KSWyGSA
