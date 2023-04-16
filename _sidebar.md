@@ -840,7 +840,6 @@
     * [markdown和博客](/docs/software/markdown.md)  
     * [visual studio code](/docs/software/visualStudioCode.md)  
     * [Json](/docs/software/Json.md)  
-    * [jd-jui](/docs/software/JDJUI.md)  
     * [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
     * [MAC系统](/docs/software/MAC.md)  
 * 算法

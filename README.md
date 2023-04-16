@@ -1160,7 +1160,6 @@ prometheus
 [visual studio code](/docs/software/visualStudioCode.md)  
 [MAC系统](/docs/software/MAC.md)  
 [Json](/docs/software/Json.md)  
-[jd-jui](/docs/software/JDJUI.md)  
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
 
 --------
