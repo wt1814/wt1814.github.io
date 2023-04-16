@@ -1042,7 +1042,6 @@ prometheus
 [DNS服务器](/docs/Linux/build/DNS.md)  
 
 ### 1.21.3. DevOps介绍    
-[项目管理](/docs/devAndOps/build/projectManagement.md)  
 [CI/CD](/docs/devAndOps/build/CICD.md)  
 [Devops](/docs/devAndOps/build/devOps.md)  
 &emsp; [DevOps搭建](/docs/devAndOps/build/devOpsPractice.md)  

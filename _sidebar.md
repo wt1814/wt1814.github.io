@@ -748,7 +748,6 @@
         * [堡垒机](/docs/Linux/build/FortressMachine.md)  
         * [DNS服务器](/docs/Linux/build/DNS.md)  
 * DevOps  
-    * [项目管理](/docs/devAndOps/build/projectManagement.md)  
     * [CI/CD](/docs/devAndOps/build/CICD.md)  
     * [Devops](/docs/devAndOps/build/devOps.md)  
         * [DevOps搭建](/docs/devAndOps/build/devOpsPractice.md)   
