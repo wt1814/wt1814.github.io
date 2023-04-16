@@ -1142,9 +1142,10 @@ prometheus
 ### 1.23.1. 监控
 [监控](/docs/devAndOps/monitor/indicators.md)  
 &emsp; [监控系统](/docs/devAndOps/monitor/monitor.md)  
-[prometheus介绍](/docs/devAndOps/monitor/prometheus.md)  
-[prometheus使用](/docs/devAndOps/monitor/prometheusUse.md)  
-[prometheus+SpringBoot](/docs/devAndOps/monitor/prometheusSpringBoot.md)  
+[prometheus](/docs/devAndOps/monitor/prometheus.md)  
+&emsp; [prometheus介绍](/docs/devAndOps/monitor/prometheusDesc.md)  
+&emsp; [prometheus使用](/docs/devAndOps/monitor/prometheusUse.md)  
+&emsp; [prometheus+SpringBoot](/docs/devAndOps/monitor/prometheusSpringBoot.md)  
 
 ### 1.23.2. 统计  
 [统计PV](/docs/devAndOps/monitor/StatisticsPV.md)  
