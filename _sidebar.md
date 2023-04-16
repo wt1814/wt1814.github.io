@@ -750,7 +750,6 @@
 * DevOps  
     * [CI/CD](/docs/devAndOps/build/CICD.md)  
     * [Devops](/docs/devAndOps/build/devOps.md)  
-        * [DevOps搭建](/docs/devAndOps/build/devOpsPractice.md)   
     * [GIT](/docs/devAndOps/git/command.md)  
     * [Maven](/docs/devAndOps/maven/maven.md)  
         * [Maven作用域](/docs/devAndOps/maven/MavenScope.md)  

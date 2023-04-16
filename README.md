@@ -1044,7 +1044,6 @@ prometheus
 ### 1.21.3. DevOps介绍    
 [CI/CD](/docs/devAndOps/build/CICD.md)  
 [Devops](/docs/devAndOps/build/devOps.md)  
-&emsp; [DevOps搭建](/docs/devAndOps/build/devOpsPractice.md)  
 [GIT](/docs/devAndOps/git/command.md)  
 [GitLab](/docs/devAndOps/git/GitLab.md)  
 [Gradle](/docs/devAndOps/git/Gradle.md)  
