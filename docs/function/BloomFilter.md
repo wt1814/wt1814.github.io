@@ -5,7 +5,7 @@
 - [1. 布隆过滤器](#1-布隆过滤器)
     - [1.1. 布隆过滤器介绍](#11-布隆过滤器介绍)
     - [1.2. 布隆算法实现](#12-布隆算法实现)
-    - [bitmap和布隆过滤器的区别](#bitmap和布隆过滤器的区别)
+    - [1.3. bitmap和布隆过滤器的区别](#13-bitmap和布隆过滤器的区别)
 
 <!-- /TOC -->
 
@@ -52,7 +52,7 @@ https://mp.weixin.qq.com/s/8tmjHoYvPW61C9fCnJoFdQ
 &emsp; 布隆算法实现有RedisBloom、guava的BloomFilter。  
 
 
-## bitmap和布隆过滤器的区别
+## 1.3. bitmap和布隆过滤器的区别
 <!--
 
 http://www.javashuo.com/article/p-saxrpzqf-kp.html
