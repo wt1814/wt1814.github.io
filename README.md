@@ -979,8 +979,7 @@ https://mp.weixin.qq.com/s/Cs-WzMm-8VZbLoq9CA-qWw
 https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 -->
 [操作系统](/docs/Linux/operating.md)  
-[Linux版本](/docs/Linux/LinuxVersion.md)  
-[Linux系统目录](/docs/Linux/catalogue.md)  
+[Linux目录和版本](/docs/Linux/catalogue.md)  
 [Linux命令](/docs/Linux/Command.md)  
 &emsp; [Linux命令-实操](/docs/Linux/operation.md)  
 &emsp; [Linux命令](/docs/Linux/LinuxCommand.md)  
