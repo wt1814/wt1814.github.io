@@ -24,7 +24,6 @@ https://blog.csdn.net/weixin_40814247/article/details/102942360
 
 
 ## 1.2. 二进制包安装
-***docker-compose安装
 https://www.cnblogs.com/zccoming/p/15424237.html     
 二进制包docker-compose-Linux-x86_64下载：  https://github.com/docker/compose/releases
 
