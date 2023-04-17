@@ -81,23 +81,29 @@ https://www.cnblogs.com/dudadi/p/Java.html
 ### 1.2.4. 循环语句
 1. 当型循环：  
 
+    ```java
     while(循环条件){
         循环体;
     }
+    ```
 
 2. 直到型循环：  
 
+    ```java
     do{
         循环体;
     }while(循环条件)
+    ```
 
 &emsp; 二者的区别：在表达式相同的情况下，直到型循环比当型循环要多执行一次循环体。
 
 3. for循环：  
 
+    ```java
     for(初始化语句;循环条件;迭代语句){
         循环体;
     }
+    ```
 
 &emsp; **<font color = "red">for循环和while循环的区别及用法：</font>**   
 1. 使用场景不同：  

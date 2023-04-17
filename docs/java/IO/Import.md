@@ -1,7 +1,14 @@
 
+<!-- TOC -->
+
+- [1. 导入导出](#1-导入导出)
+    - [1.1. EasyExcel](#11-easyexcel)
+    - [1.2. 合并](#12-合并)
+
+<!-- /TOC -->
 
 
-# 导入导出  
+# 1. 导入导出  
 
 <!-- 
  100000 行级别数据的 Excel 导入优化之路 
@@ -13,7 +20,7 @@
 * 逐行查询数据库校验的时间成本主要在来回的网络IO中，优化方法也很简单。将参加校验的数据全部缓存到 HashMap 中。直接到 HashMap 去命中。    
 
 
-## EasyExcel  
+## 1.1. EasyExcel  
 <!-- 
 https://easyexcel.opensource.alibaba.com/docs/current/
 -->
@@ -22,7 +29,7 @@ https://easyexcel.opensource.alibaba.com/docs/current/
 3. 填充Excel  
 
 
-## 合并  
+## 1.2. 合并  
 <!-- 
 
 https://blog.csdn.net/tang_sy/article/details/124018099
