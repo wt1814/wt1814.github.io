@@ -123,12 +123,10 @@ if(mappedHandler.getHandler() instanceof MultiActionController){
 
 
 ## 1.6. 模板方法  
-Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。一般情况下，我们都是使用继承的方式来实现模板模式，但是 Spring 并没有使用这种方式，而是使用Callback 模式与模板方法模式配合，既达到了代码复用的效果，同时增加了灵活性。  
+&emsp; Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。一般情况下，我们都是使用继承的方式来实现模板模式，但是 Spring 并没有使用这种方式，而是使用Callback 模式与模板方法模式配合，既达到了代码复用的效果，同时增加了灵活性。  
 
 ## 1.7. 观察者
-Spring 事件驱动模型就是观察者模式很经典的一个应用。  
-
-
+&emsp; Spring 事件驱动模型就是观察者模式很经典的一个应用。  
 
 
 ## 1.8. 小结

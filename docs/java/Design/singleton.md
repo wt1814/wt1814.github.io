@@ -16,6 +16,58 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. ~~单例模式适用场景~~：全局只有一个示例，例如：数据库连接池、spring单例bean、全局熟悉...  
 2. 单例模式双重校验锁的形式  
+&emsp; DCL详解参考[Volatile](/docs/java/concurrent/Volatile.md)  
+
+```java
+public class LazyDoubleCheckSingleton {
+    
+    private static volatile LazyDoubleCheckSingleton lazy = null;
+
+    private LazyDoubleCheckSingleton(){
+        
+    }
+    
+    public static LazyDoubleCheckSingleton getInstance(){
+        // 第一重检测
+        if(lazy == null){
+            // 锁定代码块
+            synchronized (LazyDoubleCheckSingleton.class){
+                // 第二重检测
+                if(lazy == null){
+                    // 实例化对象
+                    lazy = new LazyDoubleCheckSingleton();
+                    //1.分配内存给这个对象
+                    //2.初始化对象
+                    //3.设置 lazy 指向刚分配的内存地址
+                }
+            }
+        } 
+        // todo 返回实例
+        return lazy;
+    }
+    
+    /**
+    * 逻辑操作
+    **/
+    public void showMessage(){
+      System.out.println("Hello World!");
+   }
+   
+}
+```
+
+```java
+public static void main(String[] args){
+    // 
+    LazyDoubleCheckSingleton instance = LazyDoubleCheckSingleton.getInstance();
+    //
+    instance.methodOne();
+}
+```
+&emsp; <font color = "red">只有在singleton == null的情况下再进行加锁创建对象，如果singleton!=null，就直接返回就行了，并没有进行并发控制。大大的提升了效率。</font>   
+&emsp; <font color = "clime">从上面的代码中可以看到，其实整个过程中进行了两次singleton == null的判断，所以这种方法被称之为"双重校验锁"。</font>   
+&emsp; <font color = "clime">还有值得注意的是，双重校验锁的实现方式中，静态成员变量singleton必须通过volatile来修饰，保证其初始化不被重排，否则可能被引用到一个未初始化完成的对象。</font>   
+&emsp; **<font color = "clime">详见[Volatile](/docs/java/concurrent/Volatile.md)中双重校验锁的解释。</font>**  
 3. `单例模式与static静态类`：静态使用于一些非状态Bean，单例使用于状态Bean。  
 &emsp; 1）首先单例模式会提供一个全局唯一的对象，静态类只是提供给很多静态方法，这些方法不用创建对象，通过类就可以直接调用；  
 &emsp; 2）如果是一个非常重的对象，单例模式可以懒加载，静态类就无法做到；  
