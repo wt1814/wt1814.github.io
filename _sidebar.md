@@ -40,10 +40,10 @@
     * [自定义注解](/docs/java/basis/annotation.md)  
         * [自定义注解+反射实现AOP](/docs/java/basis/annotationAndReflex.md)  
     * [SPI与线程上下文类加载器](/docs/java/basis/SPI.md)  
-    * [Java探针](/docs/java/basis/probe.md)  
     * [SDK](/docs/java/basis/SDK.md)  
+    * [Java探针](/docs/java/basis/probe.md)  
     * [对象池](/docs/java/basis/ObjectPool.md)  
-* 设计模式  
+* [设计模式](/docs/java/Design/DesignPatterns.md)    
     * [七大设计原则](/docs/java/Design/principles.md)  
         * [面向抽象和面向接口](/docs/java/Design/abstract.md)  
         * [UML](/docs/java/Design/UML.md)  
