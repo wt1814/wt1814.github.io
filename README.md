@@ -226,7 +226,7 @@
 &emsp; [线程池的正确使用](/docs/java/concurrent/ThreadPoolUse.md)  
 &emsp; &emsp; [线程池的异常](/docs/java/concurrent/ThreadPoolException.md)  
 &emsp; [ForkJoinPool详解](/docs/java/concurrent/ForkJoinPool.md)  
-&emsp; [Future相关](/docs/java/concurrent/Future.md)  
+&emsp; [任务执行Future](/docs/java/concurrent/Future.md)  
 &emsp; &emsp; [CompletionService](/docs/java/concurrent/CompletionService.md)  
 &emsp; &emsp; [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
 [并发编程](/docs/java/concurrent/MultiThread.md)  
