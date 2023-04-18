@@ -29,15 +29,15 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. JVM参数：
 
-    |参数|描述|
-    |---|---|
-    |-Xms|用于在JVM启动时设置初始堆大小|
-    |-Xmx|用于设置最大堆大小|
-    |-Xmn|设置新生区的大小，剩下的空间用于老年区|
-    |-XX：PermGen|用于设置永久区存初始大小|
-    |-XX：MaxPermGen|用于设置Perm Gen的最大尺寸|
-    |-XX：SurvivorRatio|提供Eden区域的比例|
-    |-XX：NewRatio|用于提供老年代/新生代大小的比例，默认值为2|
+|参数|描述|
+|---|---|
+|-Xms|用于在JVM启动时设置初始堆大小|
+|-Xmx|用于设置最大堆大小|
+|-Xmn|设置新生区的大小，剩下的空间用于老年区|
+|-XX：PermGen|用于设置永久区存初始大小|
+|-XX：MaxPermGen|用于设置Perm Gen的最大尺寸|
+|-XX：SurvivorRatio|提供Eden区域的比例|
+|-XX：NewRatio|用于提供老年代/新生代大小的比例，默认值为2|
     
 2. JVM命令行调优工具：  
     * Jps：虚拟机进程状况工具。  
@@ -102,13 +102,12 @@ https://blog.csdn.net/qq_19922839/article/details/115379649
 * 标准参数(-)，所有的JVM实现都必须实现这些参数的功能，而且向后兼容。例如 -verbose:gc(输出每次GC的相关情况)。  
 * 非标准参数(-X)，默认JVM实现这些参数的功能，但是并不保证所有JVM实现都满足，且不保证向后兼容。栈，堆大小的设置都是通过这个参数来配置的，用得最多的如下。   
 
-
-    |参数	|描述|
-    |---|---|
-    |-Xms512m|JVM 启动时设置的初始堆大小为 512M|
-    |-Xmx512m|	JVM 可分配的最大堆大小为 512M|
-    |-Xmn200m|	设置的年轻代大小为 200M|
-    |-Xss128k|	设置每个线程的栈大小为 128k|
+|参数	|描述|
+|---|---|
+|-Xms512m|JVM 启动时设置的初始堆大小为 512M|
+|-Xmx512m|	JVM 可分配的最大堆大小为 512M|
+|-Xmn200m|	设置的年轻代大小为 200M|
+|-Xss128k|	设置每个线程的栈大小为 128k|
 
 * 非标准参数(-XX)，此类参数各个JVM实现会有所不同，将来可能会随时取消，需要慎重使用。
     * 分Boolean类型和非Boolean类型：  
@@ -125,32 +124,32 @@ https://blog.csdn.net/qq_19922839/article/details/115379649
     * 分行为参数、性能调优、调试参数：  
         * 行为参数(Behavioral Options)：用于改变JVM的一些基础行为，如启用串行/并行 GC。    
             
-                |参数	|描述|
-                |---|---|
-                |-XX:-DisableExplicitGC	|禁止调用System.gc()；但jvm的gc仍然有效|
-                |-XX:-UseConcMarkSweepGC|对老生代采用并发标记交换算法进行GC|
-                |-XX:-UseParallelGC	|启用并行GC|
-                |-XX:-UseParallelOldGC	|对Full GC启用并行，当-XX:-UseParallelGC启用时该项自动启用|
-                |-XX:-UseSerialGC	|启用串行GC|
+        |参数	|描述|
+        |---|---|
+        |-XX:-DisableExplicitGC	|禁止调用System.gc()；但jvm的gc仍然有效|
+        |-XX:-UseConcMarkSweepGC|对老生代采用并发标记交换算法进行GC|
+        |-XX:-UseParallelGC	|启用并行GC|
+        |-XX:-UseParallelOldGC	|对Full GC启用并行，当-XX:-UseParallelGC启用时该项自动启用|
+        |-XX:-UseSerialGC	|启用串行GC|
         
         * 性能调优(Performance Tuning)：用于jvm的性能调优，如设置新老生代内存容量比例。    
             
-                |参数|描述|
-                |---|---|
-                |-XX:MaxHeapFreeRatio=70	|GC后java堆中空闲量占的最大比例|
-                |-XX:NewRatio=2	|新生代内存容量与老生代内存容量的比例|
-                |-XX:NewSize=2.125m	|新生代对象生成时占用内存的默认值|
-                |-XX:ReservedCodeCacheSize=32m	|保留代码占用的内存容量|
-                |-XX:ThreadStackSize=512	|设置线程栈大小，若为0则使用系统默认值|
+        |参数|描述|
+        |---|---|
+        |-XX:MaxHeapFreeRatio=70	|GC后java堆中空闲量占的最大比例|
+        |-XX:NewRatio=2	|新生代内存容量与老生代内存容量的比例|
+        |-XX:NewSize=2.125m	|新生代对象生成时占用内存的默认值|
+        |-XX:ReservedCodeCacheSize=32m	|保留代码占用的内存容量|
+        |-XX:ThreadStackSize=512	|设置线程栈大小，若为0则使用系统默认值|
         
         * 调试参数(Debugging Options)：一般用于打开跟踪、打印、输出等JVM参数，用于显示JVM更加详细的信息。    
 
-            |参数	|描述|
-            |---|---|
-            |-XX:HeapDumpPath=./java_pid.hprof	|指定导出堆信息时的路径或文件名|
-            |-XX:-HeapDumpOnOutOfMemoryError	|当首次遭遇OOM时导出此时堆中相关信息|
-            |-XX:-PrintGC	|每次GC时打印相关信息|
-            |-XX:-PrintGC Details	|每次GC时打印详细信息|
+        |参数	|描述|
+        |---|---|
+        |-XX:HeapDumpPath=./java_pid.hprof	|指定导出堆信息时的路径或文件名|
+        |-XX:-HeapDumpOnOutOfMemoryError	|当首次遭遇OOM时导出此时堆中相关信息|
+        |-XX:-PrintGC	|每次GC时打印相关信息|
+        |-XX:-PrintGC Details	|每次GC时打印详细信息|
 
 
 ### 1.2.2. 需要掌握的JVM参数  
