@@ -15,7 +15,7 @@
 &emsp; **<font color = "clime">函数流程：</font>** 1. 读取当前值E；2. 计算结果值V；<font color = "clime">3. 将读取的当前值E和当前新值N作比较，如果相等，更新为V；</font>4. 如果不相等，再次读取当前值E计算结果V，将E再和新的当前值N比较，直到相等。 
 3. **CAS缺点：**  
     * 循环时间长开销大。自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。  
-    * **<font color = "red">只能保证一个共享变量的原子操作。</font> <font color = "clime">从Java1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个对象里来进行CAS操作。</font>**  
+    * **<font color = "red">只能保证一个共享变量的原子操作。</font> <font color = "clime">从Java1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个对象里进行CAS操作。</font>**  
     * ABA问题。  
 4. ABA问题详解
     1. 什么是ABA问题？  
@@ -62,7 +62,7 @@ CAS包含了 3个操作数：需要读写的内存位置V、进行比较的值A�
 &emsp; **<font color = "clime">自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。</font>** ~~如果JVM能支持处理器提供的pause指令那么效率会有一定的提升，pause指令有两个作用，第一它可以延迟流水线执行指令(de-pipeline)，使CPU不会消耗过多的执行资源，延迟的时间取决于具体实现的版本，在一些处理器上延迟时间是零。第二它可以避免在退出循环的时候因内存顺序冲突(memory order violation)而引起CPU流水线被清空(CPU pipeline flush)，从而提高CPU的执行效率。~~  
 * **<font color = "red">只能保证一个共享变量的原子操作：</font>**  
 &emsp; 当对一个共享变量执行操作时，可以使用循环CAS的方式来保证原子操作，但是对多个共享变量操作时，循环CAS就无法保证操作的原子性，这个时候就可以用锁，或者有一个取巧的办法，就是把多个共享变量合并成一个共享变量来操作。比如有两个共享变量i＝2，j=a，合并一下ij=2a，然后用CAS来操作ij。  
-&emsp; **<font color = "clime">从Java1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个对象里来进行CAS操作。</font>**    
+&emsp; **<font color = "clime">从Java1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，可以把多个变量放在一个对象里进行CAS操作。</font>**    
 * **<font color = "red">ABA问题(A修改为B，再修改为A)：其他线程修改数次后的值和原值相同。</font>**  
     1. 什么是ABA问题？  
     &emsp; ABA示例：  

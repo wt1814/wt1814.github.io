@@ -1,6 +1,16 @@
 
 
-# FastThreadLocal  
+<!-- TOC -->
+
+- [1. FastThreadLocal](#1-fastthreadlocal)
+    - [1.1. FastThreadLocal 为什么快?](#11-fastthreadlocal-为什么快)
+    - [1.2. FastThreadLocal 实战](#12-fastthreadlocal-实战)
+    - [1.3. 总结](#13-总结)
+
+<!-- /TOC -->
+
+
+# 1. FastThreadLocal  
 <!--
 https://cloud.tencent.com/developer/article/1877813
 
@@ -12,7 +22,7 @@ https://blog.csdn.net/w13485673086/article/details/106529908
 
 
 
-## FastThreadLocal 为什么快?  
+## 1.1. FastThreadLocal 为什么快?  
 &emsp; 在 FastThreadLocal 内部，使用了索引常量代替了 Hash Code 和哈希表，源代码如下：  
 
 ```java
@@ -44,10 +54,10 @@ public static int nextVariableIndex() {
 
 
 
-## FastThreadLocal 实战  
+## 1.2. FastThreadLocal 实战  
 
 
-## 总结  
+## 1.3. 总结  
 &emsp; Netty 中的 FastThreadLocal 在大量频繁读写操作时效率要高于 ThreadLocal，但要注意结合 Netty 自带的线程类使用，这可能就是 Netty 为什么高性能的奥妙之一吧！  
 &emsp; 如果没有大量频繁读写操作的场景，JDK 自带的 ThreadLocal 足矣，并且性能还要优于 FastThreadLocal。  
 

@@ -1,8 +1,14 @@
 
 
+<!-- TOC -->
 
+- [1. ReentrantLock，重入锁](#1-reentrantlock重入锁)
+    - [1.1. ReentrantLock与synchronized比较](#11-reentrantlock与synchronized比较)
+    - [1.2. 使用示例](#12-使用示例)
 
-# ReentrantLock，重入锁
+<!-- /TOC -->
+
+# 1. ReentrantLock，重入锁
 <!--
 ReentrantLock
 https://mp.weixin.qq.com/s/EALE52sIS7OH4bIRTczPPw
@@ -16,9 +22,7 @@ https://mp.weixin.qq.com/s/GDno-X1N8zc98h9MZ8_KoA
 <!-- 
 到底什么是重入锁？拜托，一次搞清楚！ 
 https://mp.weixin.qq.com/s/c70bsOVJxtXMiJijkfzLzQ
-
 -->
-
 &emsp; Java提供了两种锁机制来控制多个线程对共享资源的互斥访问，第一个是JVM实现的synchronized，而另一个是JDK实现的ReentrantLock。  
 &emsp; ReentrantLock与synchronized的联系：Lock接口提供了与synchronized关键字类似的同步功能，但需要在使用时手动获取锁和释放锁。ReentrantLock和synchronized都是可重入的互斥锁。  
 &emsp; **<font color = "red">Lock接口与synchronized关键字的区别(Lock的优势全部体现在构造函数、方法中)：</font>**  

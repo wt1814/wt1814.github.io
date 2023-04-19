@@ -70,7 +70,7 @@ https://www.jianshu.com/p/26269ca2162f?utm_campaign=haruki&utm_content=note&utm_
 
 ## 1.3. 属性  
 &emsp; AQS核心思想是，<font color = "red">如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。</font><font color = "clime">如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制。</font>  
-&emsp; <font color = "clime">AQS使用一个`private volatile int state`成员变量来表示同步状态，通过内置的FIFO队列来完成获取资源线程的排队工作，即将暂时获取不到锁的线程加入到队列中。AQS使用CAS对该同步状态进行原子操作实现对其值的修改。</font>  
+&emsp; <font color = "clime">AQS使用一个`private volatile int state`成员变量来表示同步状态，通过内置FIFO队列来完成获取资源线程的排队工作，即将暂时获取不到锁的线程加入到队列中。AQS使用CAS对该同步状态进行原子操作实现对其值的修改。</font>  
 ![image](http://182.92.69.8:8081/img/java/concurrent/concurrent-2.png)   
 
 ### 1.3.1. 同步状态state  
@@ -248,9 +248,9 @@ static final class Node {
 ![image](http://182.92.69.8:8081/img/java/concurrent/concurrent-19.png)  
 &emsp; CLH队列入列就是tail指向新节点、新节点的prev指向当前最后的节点，当前最后一个节点的next指向当前节点。addWaiter方法如下：  
 
-1. 将当前线程封装成Node。  
-2. <font color = "clime">当前链表中的tail节点是否为空，如果不为空，则通过cas操作把当前线程的node添加到AQS队列。</font>  
-3. <font color = "clime">如果为空或者cas失败，调用enq将节点添加到AQS队列。</font>  
+&emsp; 1. 将当前线程封装成Node。  
+&emsp; 2. <font color = "clime">当前链表中的tail节点是否为空，如果不为空，则通过cas操作把当前线程的node添加到AQS队列。</font>  
+&emsp; 3. <font color = "clime">如果为空或者cas失败，调用enq将节点添加到AQS队列。</font>  
 
 ```java
 /**
@@ -510,7 +510,7 @@ private void doReleaseShared() {
 ```
 
 ### 1.4.3. AQS的模板方法设计模式，自定义同步器  
-&emsp; AQS的设计是基于模板方法模式的，如果需要自定义同步器一般的方式是这样(模板方法模式很经典的一个应用)：  
+&emsp; AQS的设计是基于模板方法模式的，如果需要自定义同步器一般的方式是这样（模板方法模式很经典的一个应用）：  
 1. 使用者继承AbstractQueuedSynchronizer并重写指定的方法。  
 2. 将AQS组合在自定义同步组件的实现中，并调用其模板方法，而这些模板方法会调用使用者重写的方法。  
 
