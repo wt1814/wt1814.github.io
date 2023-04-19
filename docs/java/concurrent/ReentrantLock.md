@@ -1,16 +1,16 @@
 
 <!-- TOC -->
 
-- [1.3. ReentrantLock解析](#13-reentrantlock解析)
-    - [1.3.1. ReentrantLock类层次结构](#131-reentrantlock类层次结构)
-    - [1.3.2. 构造函数](#132-构造函数)
-    - [1.3.3. 成员方法](#133-成员方法)
-    - [1.3.4. 非公平锁NonfairSync解析](#134-非公平锁nonfairsync解析)
-        - [1.3.4.1. 获取锁lock()](#1341-获取锁lock)
-            - [1.3.4.1.1. 时序图](#13411-时序图)
-            - [1.3.4.1.2. ~~源码解析~~](#13412-源码解析)
-        - [1.3.4.2. 释放锁unlock()](#1342-释放锁unlock)
-    - [1.3.5. 公平锁FairSync](#135-公平锁fairsync)
+- [1. ReentrantLock解析](#1-reentrantlock解析)
+    - [1.1. ReentrantLock类层次结构](#11-reentrantlock类层次结构)
+    - [1.2. 构造函数](#12-构造函数)
+    - [1.3. 成员方法](#13-成员方法)
+    - [1.4. 非公平锁NonfairSync解析](#14-非公平锁nonfairsync解析)
+        - [1.4.1. 获取锁lock()](#141-获取锁lock)
+            - [1.4.1.1. 时序图](#1411-时序图)
+            - [1.4.1.2. ~~源码解析~~](#1412-源码解析)
+        - [1.4.2. 释放锁unlock()](#142-释放锁unlock)
+    - [1.5. 公平锁FairSync](#15-公平锁fairsync)
 
 <!-- /TOC -->
 
@@ -36,8 +36,8 @@
     ![image](http://182.92.69.8:8081/img/java/concurrent/multi-75.png)  
 
 
-# 1.3. ReentrantLock解析  
-## 1.3.1. ReentrantLock类层次结构  
+# 1. ReentrantLock解析  
+## 1.1. ReentrantLock类层次结构  
 ![image](http://182.92.69.8:8081/img/java/concurrent/concurrent-26.png)  
 
 &emsp; ReentrantLock实现了Lock接口，<font color = "red">内部有三个内部类：Sync、NonfairSync、FairSync。  
@@ -45,7 +45,7 @@
 * </font>Sync是一个抽象类型，它继承[AbstractQueuedSynchronizer](/docs/java/concurrent/AQS.md)。AbstractQueuedSynchronizer是一个模板类，它实现了许多和锁相关的功能，并提供了钩子方法供用户实现，比如tryAcquire，tryRelease等。Sync实现了AbstractQueuedSynchronizer的tryRelease方法。
 * NonfairSync和FairSync两个类继承自Sync，实现了lock方法，然后分别公平抢占和非公平抢占针对tryAcquire有不同的实现。  
 
-## 1.3.2. 构造函数  
+## 1.2. 构造函数  
 
 ```java
 //创建 ReentrantLock实例
@@ -58,7 +58,7 @@ public ReentrantLock(boolean fair) {
 }
 ```
 
-## 1.3.3. 成员方法  
+## 1.3. 成员方法  
 
 ```java
 /*获取锁，有以下三种情况：
@@ -96,9 +96,9 @@ public Condition newCondition() {
 }
 ```
 
-## 1.3.4. 非公平锁NonfairSync解析  
-### 1.3.4.1. 获取锁lock()  
-#### 1.3.4.1.1. 时序图
+## 1.4. 非公平锁NonfairSync解析  
+### 1.4.1. 获取锁lock()  
+#### 1.4.1.1. 时序图
 <!-- 
 &emsp; **<font color = "clime">一句话概述：</font>**  
 &emsp; ReentrantLock默认使用非公平锁NonfairSync，调用ReentrantLock.lock()也是调用NonfairSync.lock()。流程：  
@@ -124,7 +124,7 @@ public Condition newCondition() {
     3. acquireQueued(final Node node, int arg)，使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
     4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。  
 
-#### 1.3.4.1.2. ~~源码解析~~
+#### 1.4.1.2. ~~源码解析~~
 ```java
 static final class NonfairSync extends Sync {
     private static final long serialVersionUID = 7316153563782823691L;
@@ -319,7 +319,7 @@ public final void acquire(int arg) {
 &emsp; 用一张流程图总结一下非公平锁的获取锁的过程。  
 ![image](http://182.92.69.8:8081/img/java/concurrent/multi-75.png) 
 
-### 1.3.4.2. 释放锁unlock()
+### 1.4.2. 释放锁unlock()
 &emsp; unlock方法的时序图  
 ![image](http://182.92.69.8:8081/img/java/concurrent/multi-72.png)  
 
@@ -376,5 +376,5 @@ protected final boolean tryRelease(int releases) {
 &emsp; 这里入参为1。tryRelease的过程为：当前释放锁的线程若不持有锁，则抛出异常。若持有锁，计算释放后的state值是否为0，若为0表示锁已经被成功释放，并且则清空独占线程，最后更新state值，返回free。   
 
 
-## 1.3.5. 公平锁FairSync  
+## 1.5. 公平锁FairSync  
 &emsp; 公平锁和非公平锁不同之处在于，公平锁在获取锁的时候，不会先去检查state状态，而是直接执行aqcuire(1)。
