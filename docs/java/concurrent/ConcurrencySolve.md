@@ -28,15 +28,13 @@
         2. （`保障有序性`）阻止屏障两侧的指令重排序。 
 3. JMM中的happens-before原则：  
     &emsp; JSR-133内存模型 **<font color = "red">使用`happens-before`的概念来阐述操作之间的`内存可见性`。在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关系。</font>** 这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。  
-    * 如果操作1 happens-before 操作2，那么第操作1的执行结果将对操作2可见，而且操作1的执行顺序排在第操作2之前。
+    * 如果操作1 happens-before 操作2，那么操作1的执行结果将对操作2可见，而且操作1的执行顺序排在操作2之前。
     * 两个操作之间存在happens-before关系，并不意味着一定要按照happens-before原则制定的顺序来执行。如果重排序之后的执行结果与按照happens-before关系来执行的结果一致，那么这种重排序并不非法。  
 
     &emsp; happens-before原则有管理锁定（lock）规则、volatile变量规则（参考volatile原理，即内存屏障）、线程启动规则（Thread.start()）、线程终止规则（Thread.join()）、线程中断规则（Thread.interrupt()）...  
-    
 
 
 # 1. Java解决并发安全
-
 <!-- 
 java内存屏障
 https://blog.csdn.net/breakout_alex/article/details/94379895
