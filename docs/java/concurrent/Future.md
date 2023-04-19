@@ -4,8 +4,8 @@
 - [1. Future相关](#1-future相关)
     - [1.1. Future接口](#11-future接口)
     - [1.2. FutureTask类](#12-futuretask类)
-    - [1.3. CompletableFuture](#13-completablefuture)
-    - [1.4. CompletionService](#14-completionservice)
+    - [1.3. CompletionService](#13-completionservice)
+    - [1.4. CompletableFuture](#14-completablefuture)
 
 <!-- /TOC -->
 
@@ -108,11 +108,12 @@ String result = ft.get();
 System.out.println(result);//输出:aaaa
 ```
 
+## 1.3. CompletionService  
+&emsp; [CompletionService](/docs/java/concurrent/CompletionService.md)  
 
-## 1.3. CompletableFuture
+## 1.4. CompletableFuture
 &emsp; [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
 
 
-## 1.4. CompletionService  
-&emsp; [CompletionService](/docs/java/concurrent/CompletionService.md)  
+
 
