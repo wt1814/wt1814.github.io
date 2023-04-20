@@ -2,7 +2,7 @@
 
 &emsp; 内存数据落盘整体思路分析：  
 ![image](http://182.92.69.8:8081/img/SQL/sql-173.png)  
-&emsp; `InnoDB内存缓冲池中的数据page要完成持久化的话，是通过两个流程来完成的，一个是脏页落盘；一个是预写redo log日志。`  
+&emsp; `InnoDB内存缓冲池中的数据page要完成持久化的话，是通过两个流程来完成的，一个是脏页（数据）落盘；一个是预写redo log日志。（对应Mysql的两个内存区域：buffer pool和redo log buffer。）`  
 
 
 

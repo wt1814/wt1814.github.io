@@ -71,4 +71,17 @@ https://mp.weixin.qq.com/s/e-5plTcE4n47L_3JzMS6kw#
 ![image](http://182.92.69.8:8081/img/SQL/sql-174.png)  
 ![image](http://182.92.69.8:8081/img/SQL/sql-175.png)  
 
+<!-- 
+
+浅谈 MySQL InnoDB 的内存组件 
+*** https://mp.weixin.qq.com/s/7Kab4IQsNcU_bZdbv_MuOg
+*** https://www.cnblogs.com/mengxinJ/p/14045520.html#_label1
+
+-->
+
+
+![image](http://182.92.69.8:8081/img/SQL/sql-176.png)  
+
+&emsp; server层：bin log。  
+&emsp; 引擎层：updo log、redo log。  
 

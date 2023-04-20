@@ -12,7 +12,7 @@
 
 
 **<font color = "red">总结：</font>**  
-1. **<font color = "clime">binlog是mysql的逻辑日志，并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。</font>**  
+1. **<font color = "clime">binlog是mysql的逻辑日志（记录Sql语句），并且由Server层进行记录，使用任何存储引擎的mysql数据库都会记录binlog日志。</font>**  
 2. 在实际应用中，主要用在两个场景：主从复制和数据恢复。  
 3. 写入流程：SQL修改语句先写Binlog Buffer，事务提交时，按照一定的格式刷到磁盘中。binlog刷盘时机：对于InnoDB存储引擎而言，mysql通过sync_binlog参数控制binlog的刷盘时机。  
 

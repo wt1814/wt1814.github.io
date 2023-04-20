@@ -3,14 +3,16 @@
 
 - [1. MySql架构](#1-mysql架构)
     - [1.1. MySQL查询流程](#11-mysql查询流程)
-    - [1.2. MySql更新流程](#12-mysql更新流程)
+    - [1.2. MySQL服务器介绍](#12-mysql服务器介绍)
 
 <!-- /TOC -->
 
-# 1. MySql架构  
-<!-- 
+**<font color = "red">总结：</font>**  
+1. MySQL查询流程  
+2. MySQL服务器主要分为Server层和存储引擎层。  
 
---> 
+# 1. MySql架构  
+
 
 ## 1.1. MySQL查询流程  
 <!-- 
@@ -33,7 +35,7 @@ https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
 &emsp; `1). 客户端请求 ---> 连接器（验证用户身份，给予权限）  ---> 2). 查询缓存（存在缓存则直接返回，不存在则执行后续操作） ---> 3). 分析器（对SQL进行词法分析和语法分析操作）  ---> 优化器（主要对执行的sql优化选择最优的执行方案方法）  ---> 4). 执行器（执行时会先看用户是否有执行权限，有才去使用这个引擎提供的接口） ---> 5). 去引擎层获取数据返回（如果开启查询缓存则会缓存查询结果）。`  
 
 
-----------
+## 1.2. MySQL服务器介绍
 
 ![image](http://182.92.69.8:8081/img/SQL/sql-44.png)  
 &emsp; **<font color = "clime">MySQL服务器主要分为Server层和存储引擎层。</font>**  
@@ -122,19 +124,3 @@ https://mp.weixin.qq.com/s/z175Z6OrLONcWUrotmjkVQ
 &emsp; 在有些场景下，执行器调用一次，在引擎内部则扫描了多行，因此引擎扫描行数跟rows_examined并不是完全相同的。  
 -->
 
-
-## 1.2. MySql更新流程
-<!-- 
-
-浅谈 MySQL InnoDB 的内存组件 
-*** https://mp.weixin.qq.com/s/7Kab4IQsNcU_bZdbv_MuOg
-*** https://www.cnblogs.com/mengxinJ/p/14045520.html#_label1
-
--->
-
-&emsp; 参考[InnoDB插入更新流程](/docs/SQL/insert.md)  
-
-![image](http://182.92.69.8:8081/img/SQL/sql-176.png)  
-
-&emsp; server层：bin log。  
-&emsp; 引擎层：updo log、redo log。  
