@@ -28,6 +28,7 @@
     * 关闭ICP：索引--->回表--->条件过滤。  
     * 开启ICP：索引--->条件过滤--->回表。</font>在支持ICP后，`MySQL在取出索引数据的同时，判断是否可以进行where条件过滤，`<font color = "blue">将where的部分过滤操作放在存储引擎层提前过滤掉不必要的数据，</font>减少了不必要数据被扫描带来的IO开销。  
 
+
 # 1. Sql索引优化  
 <!-- 
 *****Mysql：好好的索引，为什么要下推？ 
@@ -174,7 +175,7 @@ https://mp.weixin.qq.com/s/8e8rz6FFSSNIJLNmh_MoLQ
 https://mp.weixin.qq.com/s/ygvuP35B_sJAlBHuuEJhfg
 -->
 ### 1.4.1. 概念
-&emsp; MySQL5.6引入了索引条件下推优化(Index Condition Pushdown，ICP)，默认开启。官方文档：https://dev.mysql.com/doc/refman/5.7/en/index-condition-pushdown-optimization.html 。  
+&emsp; MySQL5.6引入了索引条件下推优化(Index Condition Pushdown，ICP)，默认开启。官方文档： https://dev.mysql.com/doc/refman/5.7/en/index-condition-pushdown-optimization.html 。  
 
     理解索引条件下推：1. 【什么是索引条件？】 2. 什么是下推？ 
 
