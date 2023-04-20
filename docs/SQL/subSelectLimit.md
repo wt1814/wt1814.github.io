@@ -119,7 +119,7 @@ https://mp.weixin.qq.com/s/h99sXP4mvVFsJw6Oh3aU5A?
 &emsp; “任何脱离业务的架构设计都是耍流氓”，技术方案需要折衷，在技术难度较大的情况下，业务需求的折衷能够极大的简化技术方案。  
 
 ### 1.3.1. 业务折衷一：禁止跳页查询  
-禁止跳页查询。只提供“下一页”的功能。  
+&emsp; 禁止跳页查询。只提供“下一页”的功能。  
 1. 查询第1页数据
     每个库执行order by time where time>0 limit y
     得到 n*y条数据，内存排序，得到前y条，即为第1页。
@@ -130,63 +130,60 @@ https://mp.weixin.qq.com/s/h99sXP4mvVFsJw6Oh3aU5A?
     一共得到n*y条数据，取time最小的y条为第2页数据。
     $time_max=第2页最大的time
     
-数据的传输量和排序的数据量不会随着不断翻页而导致性能下降。
+&emsp; 数据的传输量和排序的数据量不会随着不断翻页而导致性能下降。
 
 ### 1.3.2. 允许数据精度损失
-分库数为2的情况下：  
+&emsp; 分库数为2的情况下：  
 
-“全局视野法”能够返回业务无损的精确数据，在查询页数较大，例如第100页时，会有性能问题，此时业务上是否能够接受，返回的100页不是精准的数据，而允许有一些数据偏差呢？  
+&emsp; “全局视野法”能够返回业务无损的精确数据，在查询页数较大，例如第100页时，会有性能问题，此时业务上是否能够接受，返回的100页不是精准的数据，而允许有一些数据偏差呢？  
 
- 
+&emsp; 数据库分库-数据均衡原理  
 
-数据库分库-数据均衡原理  
+&emsp; 使用patition key进行分库，在数据量较大，数据分布足够随机的情况下，各分库所有非patition key属性，在各个分库上的数据分布，统计概率情况是一致的。  
 
-使用patition key进行分库，在数据量较大，数据分布足够随机的情况下，各分库所有非patition key属性，在各个分库上的数据分布，统计概率情况是一致的。  
-
-
-利用这一原理，要查询全局100页数据，offset 9900 limit 100改写为offset 4950 limit 50，每个分库偏移4950（一半），获取50条数据（半页），得到的数据集的并集，基本能够认为，是全局数据的offset 9900 limit 100的数据，当然，这一页数据的精度，并不是精准的。  
+&emsp; 利用这一原理，要查询全局100页数据，offset 9900 limit 100改写为offset 4950 limit 50，每个分库偏移4950（一半），获取50条数据（半页），得到的数据集的并集，基本能够认为，是全局数据的offset 9900 limit 100的数据，当然，这一页数据的精度，并不是精准的。  
 根据实际业务经验，用户都要查询第100页网页、帖子、邮件的数据了，这一页数据的精准性损失，业务上往往是可以接受的，但此时技术方案的复杂度便大大降低了，既不需要返回更多的数据，也不需要进行服务内存排序了。  
 
 
 ## 1.4. 二次查询法
-为了方便举例，假设2个库，一页5条数据，查询第200页的SQL语句为select * from T order by time offset 1000 limit 5;  
+&emsp; 为了方便举例，假设2个库，一页5条数据，查询第200页的SQL语句为select * from T order by time offset 1000 limit 5;  
 
 1. 查询改写  
-改写为select * from T order by time offset 500 limit 5，并投递给所有的分库，注意，这个offset的500，来自于全局offset的总偏移量1000，除以水平切分数据库个数2。  
-如果是3个分库，则可以改写为select * from T order by time offset 333 limit 5  
-假设这三个分库返回的数据(time, uid)如下：  
+&emsp; 改写为select * from T order by time offset 500 limit 5，并投递给所有的分库，注意，这个offset的500，来自于全局offset的总偏移量1000，除以水平切分数据库个数2。  
+&emsp; 如果是3个分库，则可以改写为select * from T order by time offset 333 limit 5  
+&emsp; 假设这三个分库返回的数据(time, uid)如下：  
 ![image](http://182.92.69.8:8081/img/SQL/sql-178.png)  
-每个分库都返回的按照time排序的一页数据。  
+&emsp; 每个分库都返回的按照time排序的一页数据。  
 
 2. 找到所返回3页全部数据的最小值  
 ![image](http://182.92.69.8:8081/img/SQL/sql-179.png)  
-第一个库，5条数据的time最小值是1487501123  
-第二个库，5条数据的time最小值是1487501133  
-第三个库，5条数据的time最小值是1487501143  
-故，三页数据中，time最小值来自第一个库，time_min=1487501123，这个过程只需要比较各个分库第一条数据。  
+&emsp; 第一个库，5条数据的time最小值是1487501123  
+&emsp; 第二个库，5条数据的time最小值是1487501133  
+&emsp; 第三个库，5条数据的time最小值是1487501143  
+&emsp; 故，三页数据中，time最小值来自第一个库，time_min=1487501123，这个过程只需要比较各个分库第一条数据。  
 
 3. 查询二次改写  
-第二次要改写成一个between语句，between的起点是time_min，between的终点是原来每个分库各自返回数据的最大值：  
-第一个分库，第一次返回数据的最大值是1487501523  
-所以查询改写为select * from T order by time where time between time_min and 1487501523  
-第二个分库，第一次返回数据的最大值是1487501323  
-所以查询改写为select\ * from T order by time where time between time_min and 1487501323  
-第三个分库，第一次返回数据的最大值是1487501553  
-所以查询改写为select * from T order by time where time between time_min and 1487501553  
-第二次查询会返回比第一次查询结果集更多的数据，假设这三个分库返回的数据(time, uid)如下：  
+&emsp; 第二次要改写成一个between语句，between的起点是time_min，between的终点是原来每个分库各自返回数据的最大值：  
+&emsp; 第一个分库，第一次返回数据的最大值是1487501523  
+&emsp; 所以查询改写为select * from T order by time where time between time_min and 1487501523  
+&emsp; 第二个分库，第一次返回数据的最大值是1487501323  
+&emsp; 所以查询改写为select\ * from T order by time where time between time_min and 1487501323  
+&emsp; 第三个分库，第一次返回数据的最大值是1487501553  
+&emsp; 所以查询改写为select * from T order by time where time between time_min and 1487501553  
+&emsp; 第二次查询会返回比第一次查询结果集更多的数据，假设这三个分库返回的数据(time, uid)如下：  
 ![image](http://182.92.69.8:8081/img/SQL/sql-180.png)  
 
 4. 在每个结果集中虚拟一个time_min记录，找到time_min在全局的offset  
 ![image](http://182.92.69.8:8081/img/SQL/sql-181.png)  
-故：  
-time_min在第一个库的offset是333；  
-time_min在第二个库的offset是331；  
-time_min在第三个库的offset是330；  
-综上，time_min在全局的offset是333+331+330=994；  
+&emsp; 故：  
+&emsp; time_min在第一个库的offset是333；  
+&emsp; time_min在第二个库的offset是331；  
+&emsp; time_min在第三个库的offset是330；  
+&emsp; 综上，time_min在全局的offset是333+331+330=994；  
 
 5. 得到time_min在全局的offset，就相当于有了全局视野，根据第二次的结果集，就能够得到全局offset 1000 limit 5的记录  
 ![image](http://182.92.69.8:8081/img/SQL/sql-182.png)  
-第二次查询在各个分库返回的结果集是有序的，又知道了time_min在全局的offset是994，一路排下来，容易知道全局offset 1000 limit 5的一页记录（上图中黄色记录）。  
+&emsp; 第二次查询在各个分库返回的结果集是有序的，又知道了time_min在全局的offset是994，一路排下来，容易知道全局offset 1000 limit 5的一页记录（上图中黄色记录）。  
 
 
 ## 1.5. 小结  
