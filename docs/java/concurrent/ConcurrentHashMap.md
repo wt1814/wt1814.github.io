@@ -17,6 +17,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
+&emsp; ConcurrentHashMap写操作安全、性能好（协助扩容）；写操作性能好（不加锁）。    
 &emsp; **<font color = "red">从jdk1.8开始，ConcurrentHashMap类取消了Segment分段锁，采用Node + CAS + Synchronized来保证并发安全。</font>**  
 &emsp; **<font color = "clime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的ConcurrentHashMap效率又提升了许多。</font>**  
 1. **<font color = "clime">put()流程：</font>**
