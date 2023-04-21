@@ -24,7 +24,7 @@
     &emsp; **锁的分类：**  
     ![image](http://182.92.69.8:8081/img/SQL/sql-42.png)  
 
-    * 按使用方式：乐观锁、悲观锁。  
+    * 按使用方式：乐观锁、悲观锁。乐观锁，开发自定义；悲观锁，Mysql内置。     
     * 按粒度：锁的粒度的不同可以分为表锁、页锁、行锁。  
     * 锁类别：有共享锁(读锁)和排他锁(写锁)。锁类别取决于存储引擎执行的sql语句。  
     ![image](http://182.92.69.8:8081/img/SQL/sql-47.png)  
@@ -33,12 +33,11 @@
     1. Record lock：单个行记录上的锁。  
     2. Gap lock：间隙锁，锁定一个范围，不包括记录本身。  
     &emsp; **<font color = "red">当使用范围条件（> 、< 、between...）检索数据，InnoDB会给符合条件的已有数据记录的索引项加锁。对于键值在条件范围内但并不存在的记录，叫做“间隙（GAP）”，InnoDB也会对这个“间隙”加锁，这就是间隙锁。</font>**  
-    &emsp; **<font color = "red">InnoDB除了通过范围条件加锁时使用间隙锁外，如果使用相等条件请求给一个不存在的记录加锁，InnoDB 也会使用间隙锁。</font>**  
+    &emsp; **<font color = "red">InnoDB除了通过范围条件加锁时使用间隙锁外，如果使用相等条件请求给一个不存在的记录加锁，InnoDB也会使用间隙锁。</font>**  
     3. Next-key lock：record+gap锁定一个范围，包含记录本身。  
     &emsp; 临键锁，是记录锁与间隙锁的组合，它的封锁范围，既包含索引记录，又包含索引区间。  
     &emsp; <font color = "red">默认情况下，innodb使用next-key locks来锁定记录。</font><font color = "clime">但当查询的索引含有唯一属性的时候，Next-Key Lock会进行优化，将其降级为Record Lock，即仅锁住索引本身，不是范围。</font>  
-4. 锁使用方式：乐观锁、悲观锁  
-&emsp; 乐观锁，开发自定义；悲观锁，Mysql内置。   
+
 
 
 # 1. MySql的锁  
