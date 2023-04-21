@@ -8,7 +8,10 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+
 # 1. 各种索引  
+
 ## 1.1. 聚簇索引和非聚簇索引 
 &emsp; <font color = "red">InnoDB索引类型可以分为主键索引和辅助索引（非主键索引）。</font>  
 &emsp; **<font color = "clime">主键索引树中，叶子结点保存着主键和对应行的全部数据。主键索引又被称为聚簇索引。</font>**   
