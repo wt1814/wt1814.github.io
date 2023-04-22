@@ -2,10 +2,12 @@
 
 &emsp; [MyBatis架构](/docs/SSM/MyBatis/MybatisFramework.md)  
 &emsp; [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
+&emsp; &emsp; [sqlSession详解](/docs/SSM/MyBatis/selSession.md)  
 &emsp; [Spring整合MyBatis原理](/docs/SSM/MyBatis/SpringMybatisPrinciple.md)  
 &emsp; [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
 &emsp; [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
-&emsp; [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
+&emsp; &emsp; [MyBatis分页](/docs/SSM/MyBatis/MybatisPage.md)  
+&emsp; [MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)   
 
 <!-- 
 https://blog.csdn.net/qq32933432/category_9725651.html
