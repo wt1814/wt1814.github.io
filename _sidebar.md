@@ -330,13 +330,14 @@
     * [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
     * [链路SkyWalking](/docs/microService/SpringCloudNetflix/SkyWalking.md)  
     * [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
-* Dubbo  
+* [Dubbo](/docs/microService/dubbo/DubboSummary.md)    
     * [分布式服务治理](/docs/microService/dubbo/CloudAlibaba.md)   
     * [Spring Cloud Alibaba](/docs/microService/dubbo/SpringCloudAlibaba.md)  
     * [RPC介绍](/docs/microService/RPC.md)  
     * [Dubbo介绍](/docs/microService/dubbo/Dubbo.md)   
     * [Dubbo使用教程](/docs/microService/dubbo/DubboUse.md)  
         * [Dubbo高级特性](/docs/microService/dubbo/DubboActualCombat.md)  
+        * [dubbo-admin](/docs/microService/dubbo/DubboAdmin.md)  
     * [Dubbo详解](/docs/microService/dubbo/DubboExplanate.md)  
         * [Dubbo框架设计](/docs/microService/dubbo/design.md)  
         * [暴露和引用服务](/docs/microService/dubbo/realization.md)  
@@ -346,7 +347,6 @@
             * [Dubbo心跳机制](/docs/microService/dubbo/heartbeat.md)  
         * [远程调用](/docs/microService/dubbo/remote.md)  
             * [Dubbo调用介绍](/docs/microService/dubbo/RemoteIntroduce.md)  
-            * 负载均衡  
             * [Dubbo降级、容错、负载](/docs/microService/dubbo/Load.md)  
             * [Dubbo协议和序列化](/docs/microService/dubbo/Agreement.md)  
         * [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  

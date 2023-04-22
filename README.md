@@ -464,12 +464,14 @@
 
 
 ### 1.6.3. Dubbo  
+[Dubbo总结](/docs/microService/dubbo/DubboSummary.md)  
 [分布式服务治理](/docs/microService/dubbo/CloudAlibaba.md)  
 [Spring Cloud Alibaba](/docs/microService/dubbo/SpringCloudAlibaba.md)  
 [RPC介绍](/docs/microService/RPC.md)  
 [Dubbo介绍](/docs/microService/dubbo/Dubbo.md)   
 [Dubbo使用教程](/docs/microService/dubbo/DubboUse.md)  
 &emsp; [Dubbo高级特性](/docs/microService/dubbo/DubboActualCombat.md)  
+&emsp; [dubbo-admin](/docs/microService/dubbo/DubboAdmin.md)  
 [Dubbo详解](/docs/microService/dubbo/DubboExplanate.md)  
 &emsp; [Dubbo框架设计](/docs/microService/dubbo/design.md)  
 &emsp; [暴露和引用服务](/docs/microService/dubbo/realization.md)  
