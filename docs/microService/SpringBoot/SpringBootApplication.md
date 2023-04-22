@@ -12,12 +12,13 @@
 
 <!-- /TOC -->
 
+
 &emsp; **<font color = "red">总结：</font>**  
 1. @SpringBootApplication  
     * @ComponentScan  
     * @SpringBootConfiguration  
     * @EnableAutoConfiguration  
-2. @EnableAutoConfiguration使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。   
+2. @EnableAutoConfiguration：1).@AutoConfigurationPackage自动配置包；2).使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。   
     1. @Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。  
     2. AutoConfigurationImportSelector#getCandidateConfigurations()方法获取配置文件spring.factories所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
 
