@@ -45,13 +45,14 @@ https://mp.weixin.qq.com/s/TK9ZU3Vm4IoTrrwmbvV-uQ
 -->
 
 ## 1.1. 服务暴露时序  
-&emsp; **暴露服务时序图**  
-![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-20.png)   
-
 &emsp; **服务暴露流程**  
 ![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-40.png)  
 &emsp; 首先ServiceConfig类拿到对外提供服务的实际类ref(如：HelloWorldImpl)，然后通过ProxyFactory类的getInvoker方法使用ref生成一个AbstractProxyInvoker实例，到这一步就完成具体服务到Invoker的转化。接下来就是Invoker转换到Exporter的过程。  
 &emsp; Dubbo处理服务暴露的关键就在Invoker转换到Exporter的过程(如上图中的红色部分)。  
+
+&emsp; **暴露服务时序图**  
+![image](http://182.92.69.8:8081/img/microService/Dubbo/dubbo-20.png)   
+
 
 ## 1.2. 服务暴露总体流程
 &emsp; **<font color = "red">Dubbo服务暴露过程始于Spring容器发布刷新事件，Dubbo在接收到事件后，会立即执行服务暴露逻辑。</font>** <font color = "clime">整个逻辑大致可分为三个部分，第一部分是前置工作，主要用于检查参数，组装URL。第二部分是导出服务，包含导出服务到本地(JVM)，和导出服务到远程两个过程。第三部分是向注册中心注册服务，用于服务发现。</font>本篇文章将会对这三个部分代码进行详细的分析。  

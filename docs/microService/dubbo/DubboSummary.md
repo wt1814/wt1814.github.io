@@ -7,6 +7,7 @@
 [Dubbo介绍](/docs/microService/dubbo/Dubbo.md)   
 [Dubbo使用教程](/docs/microService/dubbo/DubboUse.md)  
 &emsp; [Dubbo高级特性](/docs/microService/dubbo/DubboActualCombat.md)  
+&emsp; [dubbo-admin](/docs/microService/dubbo/DubboAdmin.md)  
 [Dubbo详解](/docs/microService/dubbo/DubboExplanate.md)  
 &emsp; [Dubbo框架设计](/docs/microService/dubbo/design.md)  
 &emsp; [暴露和引用服务](/docs/microService/dubbo/realization.md)  
@@ -28,5 +29,4 @@
 &emsp; [服务调用源码解析](/docs/microService/dubbo/call.md)  
 &emsp; [再次理解dubbo-rpc包](/docs/microService/dubbo/dubboRPC.md)  
 &emsp; [netty在dubbo中的使用](/docs/microService/dubbo/dubboNetty.md)  
-[Dubbo常见问题](/docs/microService/dubbo/problem.md)  
-
+[Dubbo使用常见问题](/docs/microService/dubbo/problem.md)  
