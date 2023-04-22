@@ -284,7 +284,7 @@
         * [SpringMVC使用教程](/docs/SSM/Spring/SpringMVCUse.md)  
         * [SpringMVC解析](/docs/SSM/Spring/SpringMVCAnalysis.md)    
         * [过滤器、拦截器、监听器](docs/web/subassembly.md)  
-* [MyBatis](/docs/SSM/MyBatis/Mybatis.md)    
+* [MyBatis](/docs/SSM/MyBatis/MybatisSummary.md)    
     * [MyBatis使用](/docs/SSM/MyBatis/MybatisUse.md)  
         * [MyBatis使用教程](/docs/SSM/MyBatis/Mybatis.md)  
         * [MyBatis高级使用](/docs/SSM/MyBatis/MybatisSenior.md)  
