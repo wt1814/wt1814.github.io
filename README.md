@@ -402,6 +402,7 @@
 &emsp; [过滤器、拦截器、监听器](docs/web/subassembly.md)  
 
 ### 1.5.2. MyBatis  
+[MyBatis](/docs/SSM/MyBatis/Mybatis.md)  
 [MyBatis使用](/docs/SSM/MyBatis/MybatisUse.md)  
 &emsp; [MyBatis使用教程](/docs/SSM/MyBatis/Mybatis.md)  
 &emsp; [MyBatis高级使用](/docs/SSM/MyBatis/MybatisSenior.md)  

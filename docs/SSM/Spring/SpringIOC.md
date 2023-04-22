@@ -38,8 +38,7 @@
     -----------
     3. 对IoC容器进行一些预处理。  
     &emsp; 为BeanFactory配置容器特性，例如设置BeanFactory的类加载器，配置了BeanPostProcessor，注册了三个默认bean实例，分别是“environment”、“systemProperties”、“systemEnvironment”。  
-    4. 允许在上下文子类中对bean工厂进行后处理。  
-    &emsp; 本方法没有具体实现，是一个扩展点，开发人员可以根据自己的情况做具体的实现。  
+    4. 允许在上下文子类中对bean工厂进行后处理。开发者定义自己的后置处理器。    
     5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理（修改BeanDefinition对象）。</font>**  
     6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
     7. 初始化一些消息源（比如处理国际化的i18n等消息源）。 
