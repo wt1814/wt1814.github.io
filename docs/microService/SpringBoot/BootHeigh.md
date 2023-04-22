@@ -43,7 +43,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247486119&idx=1&sn=c2cbf2
 
 -->
 
-其他项目：  
+&emsp; 其他项目：  
 
 ```xml
 <profile>
@@ -86,7 +86,7 @@ http://www.zzvips.com/article/215505.html
 -->
 
 ## 1.4. 慎用devtools
-SpringBoot使用devtools导致的类型转换异常  
+&emsp; SpringBoot使用devtools导致的类型转换异常  
 <!-- 
 
 https://blog.csdn.net/m0_38043362/article/details/78064539
