@@ -2,6 +2,7 @@
 
 
 # 集成两级缓存j2Cache  
+
 J2Cache是一个两级缓存框架，第1级为JVM堆内缓存（通常选用caffeine），第2级为堆外缓存（Redis）。
 J2Cache能自动进行堆内堆外缓存的协调使用（基于消息通知方式）。
 4.7.3.2.1添加依赖
@@ -30,6 +31,8 @@ J2Cache能自动进行堆内堆外缓存的协调使用（基于消息通知方�
 		</dependency>
 4.7.3.2.2配置
 以下参数为默认值，如需修改，请将相应参数配置在application.properties或application.yml中
+
+```text
 # 是否开启springcache
 j2cache.open-spring-cache=true
 # springcache类型(不可修改)
@@ -111,5 +114,5 @@ redis.testWhileIdle=true
 redis.timeBetweenEvictionRunsMillis=300000
 redis.blockWhenExhausted=false
 redis.jmxEnabled=false
-
+```
 
