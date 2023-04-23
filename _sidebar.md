@@ -381,7 +381,7 @@
     * [TCC问题1](/docs/microService/thinking/TCCProblemOne.md)   
     * [Saga](/docs/microService/thinking/Event.md)  
     * [消息模式](/docs/microService/thinking/news.md)   
-    * [分布式事务的选型](/docs/microService/thinking/DistributedTransactionSelection.md)  
+    * [分布式事务的选型和使用](/docs/microService/thinking/DistributedTransactionSelection.md)  
     * [阿里Seata](/docs/microService/thinking/Seata.md)  
 * [分布式锁](/docs/microService/thinking/Lock.md)  
     * [RedisLock](/docs/microService/thinking/redisLock.md)  
