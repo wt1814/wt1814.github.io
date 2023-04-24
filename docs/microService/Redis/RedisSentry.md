@@ -26,7 +26,7 @@ https://mp.weixin.qq.com/s/uUNIdeRLDZb-Unx_HmxL9g
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. <font color="clime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
+1. <font color="clime">【监控和自动故障转移】使得Sentinel能够完成主节点【故障发现和自动转移】，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
 2. <font color = "clime">Redis哨兵架构中主要包括两个部分：Redis Sentinel集群和Redis数据集群。</font>  
 3. **<font color = "clime">哨兵原理：</font>**  
     * **<font color = "red">心跳检查：Sentinel通过三个定时任务来完成对各个节点的发现和监控，这是保证Redis高可用的重要机制。</font>**  
