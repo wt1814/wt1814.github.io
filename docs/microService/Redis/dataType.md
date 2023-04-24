@@ -22,7 +22,7 @@
     2. embstr，代表 embstr 格式的 SDS(Simple Dynamic String 简单动态字符串)，存储小于44个字节的字符串。  
     3. raw，存储大于 44 个字节的字符串(3.2 版本之前是 39 字节)。  
 * Hash由ziplist(压缩列表)或者dictht(字典)组成；  
-* List，「有序」「可重复」集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  
+* List，「有序」「可重复」集合，由ziplist压缩列表或linkedlist双端链表组成，在 3.2 之后采用QuickList；  
 * Set，「无序」「不可重复」集合， **<font color = "clime">是特殊的Hash结构(value为null)，</font>** 由intset(整数集合)或者dictht(字典)组成；
 * ZSet，「有序」「不可重复」集合，由skiplist(跳跃表)或者ziplist(压缩列表)组成。  
 
