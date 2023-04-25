@@ -785,7 +785,7 @@
 [其他中间件](/docs/frame/OtherMiddleware.md)  
 
 ### 1.10.1. 任务调度
-[任务调度目录][延时队列](/docs/frame/dispatch.md)  
+[任务调度目录](/docs/frame/dispatch.md)  
 [延时队列/延时任务](/docs/frame/delayQueue.md)  
 [分布式调度](/docs/frame/taskSheduling.md)  
 &emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
