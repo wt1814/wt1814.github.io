@@ -3,7 +3,7 @@
 - [1. Netty核心组件](#1-netty核心组件)
     - [1.1. Bootstrap & ServerBootstrap](#11-bootstrap--serverbootstrap)
     - [1.2. ~~线程模型之EventLoop~~](#12-线程模型之eventloop)
-    - [channel相关](#channel相关)
+    - [1.3. channel相关](#13-channel相关)
     - [1.4. ByteBuf](#14-bytebuf)
     - [1.5. 总结：核心组件之间的关系](#15-总结核心组件之间的关系)
 
@@ -86,7 +86,7 @@ EventLoopGroup 包含多个 EventLoop（每一个 EventLoop 通常内部包含�
 上图是一个服务端对 EventLoopGroup 使用的大致模块图，其中 Boss EventloopGroup 用于接收连接，Worker EventloopGroup 用于具体的处理（消息的读写以及其他逻辑处理）。  
 从上图可以看出：当客户端通过 connect 方法连接服务端时，bossGroup 处理客户端连接请求。当客户端处理完成后，会将这个连接提交给 workerGroup 来处理，然后 workerGroup 负责处理其 IO 相关操作。  
 
-## channel相关  
+## 1.3. channel相关  
 &emsp; 参考[Channel相关](/docs/microService/communication/Netty/channel.md)  
 
 ## 1.4. ByteBuf  

@@ -584,7 +584,7 @@
         * [IM系统](/docs/webSocket/IM.md)  
     * [请求合并](/docs/webSocket/RequestMerge.md)  
 * [其他中间件](/docs/frame/OtherMiddleware.md)  
-    * [任务调度目录][延时队列](/docs/frame/dispatch.md)  
+    * [任务调度目录](/docs/frame/dispatch.md)  
         * [延时队列](/docs/frame/delayQueue.md)  
         * [分布式调度](/docs/frame/taskSheduling.md)  
             * [XXL-JOB](/docs/frame/XXL-JOB.md)  
