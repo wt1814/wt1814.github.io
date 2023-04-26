@@ -11,8 +11,6 @@
     - [1.3. 数据库](#13-数据库)
         - [1.3.1. MySql](#131-mysql)
         - [1.3.2. 连接池](#132-连接池)
-    - [1.4. Web服务器](#14-web服务器)
-        - [1.4.1. tomcat](#141-tomcat)
     - [1.5. SSM](#15-ssm)
         - [1.5.1. Spring](#151-spring)
         - [1.5.2. MyBatis](#152-mybatis)
@@ -43,7 +41,9 @@
         - [1.9.3. Netty](#193-netty)
         - [1.9.4. WebSocket](#194-websocket)
         - [1.9.5. 其他](#195-其他)
-    - [1.10. 其他中间件](#110-其他中间件)
+    - [1.10. Web服务器与中间件](#110-web服务器与中间件)
+        - [1.4. Web服务器](#14-web服务器)
+            - [1.4.1. tomcat](#141-tomcat)
         - [1.10.1. 任务调度](#1101-任务调度)
         - [1.10.2. 安全框架shiro](#1102-安全框架shiro)
         - [1.10.3. 工作流](#1103-工作流)
@@ -351,17 +351,6 @@
 ### 1.3.2. 连接池  
 [数据库连接池](/docs/SQL/connectionPool.md)  
 
-
-## 1.4. Web服务器  
-[***Undertow替换Tomcat](/docs/webContainer/tomcat/Undertow.md)  
-
-### 1.4.1. tomcat
-[Java应用服务器](/docs/webContainer/tomcat/applicationServer.md)  
-[tomcat](/docs/webContainer/tomcat/tomcat.md)  
-[tomcat类加载器](/docs/webContainer/tomcat/tomcatClassLoader.md)  
-[tomcat日志](/docs/webContainer/tomcat/tomcatLog.md)  
-[tomcat调优](/docs/webContainer/tomcat/TomcatTuning.md)  
-
 -------
 
 ## 1.5. SSM  
@@ -415,10 +404,6 @@
 &emsp; [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
 &emsp; &emsp; [MyBatis分页](/docs/SSM/MyBatis/MybatisPage.md)  
 &emsp; [MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)   
-
-<!-- 
-&emsp; [MyBatis中的设计模式](/docs/SSM/MyBatis/MybatisDesign.md)  
--->
 
 ------------
 
@@ -776,8 +761,19 @@
 
 --------------------------
 
-## 1.10. 其他中间件
-[其他中间件](/docs/frame/OtherMiddleware.md)  
+## 1.10. Web服务器与中间件  
+[Web服务器与中间件](/docs/frame/OtherMiddleware.md)  
+
+### 1.4. Web服务器  
+[Java应用服务器](/docs/webContainer/tomcat/applicationServer.md)  
+[***Undertow替换Tomcat](/docs/webContainer/tomcat/Undertow.md)  
+
+#### 1.4.1. tomcat
+[tomcat](/docs/webContainer/tomcat/tomcat.md)  
+[tomcat类加载器](/docs/webContainer/tomcat/tomcatClassLoader.md)  
+[tomcat日志](/docs/webContainer/tomcat/tomcatLog.md)  
+[tomcat调优](/docs/webContainer/tomcat/TomcatTuning.md)  
+
 
 ### 1.10.1. 任务调度
 [任务调度目录](/docs/frame/dispatch.md)  
