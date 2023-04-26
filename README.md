@@ -559,7 +559,7 @@
 
 #### 1.8.2.1. 缓存介绍
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
-[CDN前置缓存](/docs/system/loadBalance/CDN.md)   
+[CDN前置缓存](/docs/system/loadBalance/CDNCache.md)   
 [二级缓存](/docs/microService/Redis/doubleCache.md)   
 &emsp; [Caffeine+Redis二级缓存](/docs/microService/Redis/Caffeine.md)  
 &emsp; [集成两级缓存j2Cache](/docs/microService/Redis/j2Cache.md)  

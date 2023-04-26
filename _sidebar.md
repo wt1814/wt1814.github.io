@@ -400,7 +400,7 @@
 * 缓存  
     * [缓存介绍](/docs/cache/Cache.md)  
         * [缓存算法](/docs/cache/CacheAlgorithm.md)  
-        * [CDN前置缓存](/docs/system/loadBalance/CDN.md)   
+        * [CDN前置缓存](/docs/system/loadBalance/CDNCache.md)   
         * [二级缓存](/docs/microService/Redis/doubleCache.md)   
             * [Caffeine+Redis二级缓存](/docs/microService/Redis/doubleCache.md)   
             * [集成两级缓存j2Cache](/docs/microService/Redis/j2Cache.md)   

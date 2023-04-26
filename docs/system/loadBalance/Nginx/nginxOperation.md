@@ -7,7 +7,7 @@
     - [1.3. 采集Nginx的日志](#13-采集nginx的日志)
     - [1.4. Nginx监控](#14-nginx监控)
     - [1.5. Nginx常见的优化配置](#15-nginx常见的优化配置)
-    - [Nginx访问控制](#nginx访问控制)
+    - [1.6. Nginx访问控制](#16-nginx访问控制)
 
 <!-- /TOC -->
 
@@ -116,5 +116,5 @@ https://mp.weixin.qq.com/s?__biz=MzI0MDQ4MTM5NQ==&mid=2247486476&idx=1&sn=44e306
 * 为静态文件启用缓存。  
 * 禁用 access_logs：访问日志记录，它记录每个 Nginx 请求，因此消耗了大量 CPU 资源，从而降低了 Nginx 性能。  
 
-## Nginx访问控制
+## 1.6. Nginx访问控制
 参考《nginx安全配置指南技术手册》。  
