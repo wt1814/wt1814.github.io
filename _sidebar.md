@@ -822,15 +822,13 @@
         * [jira](/docs/devAndOps/build/jira.md)  
         * [Jmeter](/docs/devAndOps/test/Jmeter.md)  
         * [allure](/docs/devAndOps/test/allure.md)  
-* 监控和统计  
-    * 监控
+    * 监控和统计  
         * [监控](/docs/devAndOps/monitor/indicators.md)  
             * [监控系统](/docs/devAndOps/monitor/monitor.md)  
         * [prometheus](/docs/devAndOps/monitor/prometheus.md)  
             * [prometheus介绍](/docs/devAndOps/monitor/prometheusDesc.md)  
             * [prometheus使用](/docs/devAndOps/monitor/prometheusUse.md)  
             * [prometheus+SpringBoot](/docs/devAndOps/monitor/prometheusSpringBoot.md)    
-    * 统计  
         * [统计PV](/docs/devAndOps/monitor/StatisticsPV.md)  
 * 常用工具  
     * [idea](/docs/software/idea/idea.md)  

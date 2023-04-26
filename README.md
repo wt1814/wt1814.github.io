@@ -67,9 +67,7 @@
         - [1.21.4. 搭建-研发](#1214-搭建-研发)
     - [1.22. Docker和k8s](#122-docker和k8s)
         - [1.22.1. 搭建-需求、测试](#1221-搭建-需求测试)
-    - [1.23. 监控和统计](#123-监控和统计)
-        - [1.23.1. 监控](#1231-监控)
-        - [1.23.2. 统计](#1232-统计)
+        - [1.23. 监控和统计](#123-监控和统计)
     - [1.24. 常用研发工具](#124-常用研发工具)
     - [1.25. 算法](#125-算法)
     - [1.26. 前端知识](#126-前端知识)
@@ -459,7 +457,6 @@
 [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
 [链路SkyWalking](/docs/microService/SpringCloudNetflix/SkyWalking.md)  
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
-
 
 
 ### 1.6.3. Dubbo  
@@ -875,7 +872,6 @@
 
 <!-- 
 [Gateway](/docs/microService/microservices/Gateway.md)  
-
 -->
 
 
@@ -1130,18 +1126,14 @@ prometheus
 [allure](/docs/devAndOps/test/allure.md)  
 [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
 
-------------  
 
-## 1.23. 监控和统计
-### 1.23.1. 监控
+### 1.23. 监控和统计
 [监控](/docs/devAndOps/monitor/indicators.md)  
 &emsp; [监控系统](/docs/devAndOps/monitor/monitor.md)  
 [prometheus](/docs/devAndOps/monitor/prometheus.md)  
 &emsp; [prometheus介绍](/docs/devAndOps/monitor/prometheusDesc.md)  
 &emsp; [prometheus使用](/docs/devAndOps/monitor/prometheusUse.md)  
 &emsp; [prometheus+SpringBoot](/docs/devAndOps/monitor/prometheusSpringBoot.md)  
-
-### 1.23.2. 统计  
 [统计PV](/docs/devAndOps/monitor/StatisticsPV.md)  
 
 -----------------------
