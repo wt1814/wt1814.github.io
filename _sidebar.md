@@ -699,8 +699,6 @@
             * [Nginx介绍](/docs/system/loadBalance/Nginx/nginxIntroduce.md)  
             * [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
                 * [Nginx配置参数中文说明](/docs/system/loadBalance/Nginx/nginxConfig.md)   
-                    * [***conf.d](/docs/system/loadBalance/Nginx/confd.md)   
-                    * [***root和alias的区别](/docs/system/loadBalance/Nginx/rootAlias.md)    
                 * [Nginx负载](/docs/system/loadBalance/Nginx/nginxLoad.md)   
                 * [Nginx日志](/docs/system/loadBalance/Nginx/nginxLog.md)   
             * [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)   
