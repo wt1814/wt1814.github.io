@@ -673,11 +673,6 @@
         * [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
         * [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
         * [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
-* 内存
-    * [堆外内存](/docs/system/OutHeapMemory.md)  
-    * [centos增加内存](/docs/system/centosMemory.md)  
-* 磁盘
-    * [页缓存](/docs/system/PageCache.md)  
 * 计算机网络  
     * [OSI七层网络模型](/docs/network/OSI.md)  
     * [应用层](/docs/network/application.md)  
@@ -716,15 +711,6 @@
     * [CDN](/docs/system/loadBalance/CDN.md)  
 * Linux操作系统  
     * [操作系统](/docs/Linux/operating.md)  
-    * [Linux目录和版本](/docs/Linux/catalogue.md)  
-    * [Linux命令](/docs/Linux/Command.md)
-        * [Linux命令-实操](/docs/Linux/operation.md)  
-        * [Linux命令](/docs/Linux/LinuxCommand.md)  
-            * [文本处理](/docs/Linux/textProcessing.md)  
-            * [网络通讯](/docs/Linux/NetworkCommunication.md)  
-            * [进程管理](/docs/Linux/ProcessManagement.md)  
-            * [***日志操作命令](/docs/Linux/LogOperation.md)  
-        * [shell编程](/docs/Linux/shell.md)  
     * [Linux系统性能](/docs/Linux/systemPerformance.md)  
         * [Linux性能优化常用命令汇总](/docs/Linux/PerformanceCommand.md)  
         * [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
@@ -733,10 +719,21 @@
         * [硬盘](/docs/Linux/HardDisk.md)  
         * [网络](/docs/Linux/NetWork.md)  
     * [Linux系统内核](/docs/Linux/Linux.md)  
+    * [堆外内存](/docs/system/OutHeapMemory.md)  
+    * [centos增加内存](/docs/system/centosMemory.md)  
+    * [页缓存](/docs/system/PageCache.md)  
 * Linux服务器搭建  
     * Linux基础
         * [CentOS](/docs/devAndOps/centOS/centOS.md)  
-            * [扩容](/docs/devAndOps/centOS/dilatation.md)  
+        * [Linux目录和版本](/docs/Linux/catalogue.md)  
+        * [Linux命令](/docs/Linux/Command.md)
+            * [Linux命令-实操](/docs/Linux/operation.md)  
+            * [Linux命令](/docs/Linux/LinuxCommand.md)  
+                * [文本处理](/docs/Linux/textProcessing.md)  
+                * [网络通讯](/docs/Linux/NetworkCommunication.md)  
+                * [进程管理](/docs/Linux/ProcessManagement.md)  
+                * [***日志操作命令](/docs/Linux/LogOperation.md)  
+            * [shell编程](/docs/Linux/shell.md)    
         * [Linux多种安装软件方式](/docs/Linux/build/InstallMethod.md) 
         * [1. yum](/docs/devAndOps/centOS/yum.md)  
         * [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
@@ -746,6 +743,7 @@
         * [防火墙](/docs/Linux/build/firewall.md)  
         * [堡垒机](/docs/Linux/build/FortressMachine.md)  
         * [DNS服务器](/docs/Linux/build/DNS.md)  
+        * [扩容](/docs/devAndOps/centOS/dilatation.md)  
 * DevOps  
     * [CI/CD](/docs/devAndOps/build/CICD.md)  
     * [Devops](/docs/devAndOps/build/devOps.md)  

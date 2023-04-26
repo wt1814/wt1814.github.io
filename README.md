@@ -55,8 +55,6 @@
     - [1.13. 系统设计](#113-系统设计)
     - [1.15. Error](#115-error)
     - [1.16. 源码搭建汇总](#116-源码搭建汇总)
-    - [1.17. 内存优化](#117-内存优化)
-    - [1.18. 磁盘IO](#118-磁盘io)
     - [1.19. 计算机网络](#119-计算机网络)
         - [1.19.1. 负载均衡](#1191-负载均衡)
     - [1.20. Linux操作系统](#120-linux操作系统)
@@ -907,13 +905,7 @@
 
 -----------------
 
-## 1.17. 内存优化
-[堆外内存](/docs/system/OutHeapMemory.md)  
-[centos增加内存](/docs/system/centosMemory.md)  
 
-
-## 1.18. 磁盘IO
-[页缓存](/docs/system/PageCache.md)  
 
 ---------
 
@@ -971,16 +963,6 @@ https://mp.weixin.qq.com/s/Cs-WzMm-8VZbLoq9CA-qWw
 https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 -->
 [操作系统](/docs/Linux/operating.md)  
-[Linux目录和版本](/docs/Linux/catalogue.md)  
-[Linux命令](/docs/Linux/Command.md)  
-&emsp; [Linux命令-实操](/docs/Linux/operation.md)  
-&emsp; [Linux命令](/docs/Linux/LinuxCommand.md)  
-&emsp; &emsp; [文本处理](/docs/Linux/textProcessing.md)  
-&emsp; &emsp; [网络通讯](/docs/Linux/NetworkCommunication.md)  
-&emsp; &emsp; [进程管理](/docs/Linux/ProcessManagement.md)  
-&emsp; &emsp; [***日志操作命令](/docs/Linux/LogOperation.md)  
-&emsp; [shell编程](/docs/Linux/shell.md)  
-[堡垒机](/docs/Linux/baolei.md)  
 [Linux系统性能](/docs/Linux/systemPerformance.md)  
 &emsp; [Linux性能优化常用命令汇总](/docs/Linux/PerformanceCommand.md)  
 &emsp; [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
@@ -998,7 +980,11 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 &emsp; &emsp; &emsp; [案例篇：系统的 CPU 使用率很高，但为啥却找不到高 CPU 的应用？](/docs/Linux/Actual/CpuTop.md)  
 [Linux系统内核](/docs/Linux/Linux.md)  
 
-----
+[堆外内存](/docs/system/OutHeapMemory.md)  
+[centos增加内存](/docs/system/centosMemory.md)  
+
+
+[页缓存](/docs/system/PageCache.md)  
 
 ## 1.21. Linux服务器搭建
 <!-- 
@@ -1017,9 +1003,18 @@ maven   git  jenkins docker  Kubernetes
 prometheus
 -->
 
+
 ### 1.21.1. Linux基础  
 [CentOS](/docs/devAndOps/centOS/centOS.md)  
-&emsp; [扩容](/docs/devAndOps/centOS/dilatation.md)  
+[Linux目录和版本](/docs/Linux/catalogue.md)  
+[Linux命令](/docs/Linux/Command.md)  
+&emsp; [Linux命令-实操](/docs/Linux/operation.md)  
+&emsp; [Linux命令](/docs/Linux/LinuxCommand.md)  
+&emsp; &emsp; [文本处理](/docs/Linux/textProcessing.md)  
+&emsp; &emsp; [网络通讯](/docs/Linux/NetworkCommunication.md)  
+&emsp; &emsp; [进程管理](/docs/Linux/ProcessManagement.md)  
+&emsp; &emsp; [***日志操作命令](/docs/Linux/LogOperation.md)  
+&emsp; [shell编程](/docs/Linux/shell.md)  
 [Linux多种安装软件方式](/docs/Linux/build/InstallMethod.md) 
 [1. yum](/docs/devAndOps/centOS/yum.md)  
 [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
@@ -1030,6 +1025,7 @@ prometheus
 [防火墙](/docs/Linux/build/firewall.md)  
 [堡垒机](/docs/Linux/build/FortressMachine.md)  
 [DNS服务器](/docs/Linux/build/DNS.md)  
+[扩容](/docs/devAndOps/centOS/dilatation.md)  
 
 ### 1.21.3. DevOps介绍    
 [CI/CD](/docs/devAndOps/build/CICD.md)  
