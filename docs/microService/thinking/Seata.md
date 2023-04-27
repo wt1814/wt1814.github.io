@@ -16,6 +16,18 @@
 <!-- 
 【Seata】之 初识（四种模式）
 https://blog.csdn.net/fanfan4569/article/details/102522210
+
+https://blog.csdn.net/pengjianglilive/article/details/121288241
+Seata AT 模式事务隔离级别与全局锁设计
+https://blog.csdn.net/hundan_520520/article/details/128833977
+Seata AT 模式代码级详解
+https://zhuanlan.zhihu.com/p/566683139?utm_id=0
+seata分布式事务
+https://blog.csdn.net/weixin_42420663/article/details/126276049
+深入浅出Seata的AT模式
+https://baijiahao.baidu.com/s?id=1751062475741532450&wfr=spider&for=pc&searchword=seata%20at%20%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB
+
+
 -->
 
 ## 1.1. AT模式
