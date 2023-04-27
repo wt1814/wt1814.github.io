@@ -11,6 +11,16 @@ https://mp.weixin.qq.com/s/8u0GTnLkj7pP_Lh67Z1UGQ
 https://mp.weixin.qq.com/s/KM-mWwd5TivJScBVCQyEBQ
 如何系统学习计算机网络？ 
 https://mp.weixin.qq.com/s/wL5YI5TZXl1zRY8qS--awQ
+
+
+OSI七层网络模型
+https://blog.csdn.net/qfikh/article/details/52661745
+ 一图了解，网络7层协议之间的关系 
+https://mp.weixin.qq.com/s/CTt0E5-B3Z_xCYEU6K_OVA
+ 36张图详解网络基础知识 
+https://mp.weixin.qq.com/s/7KqYI2CDIOKusrSsb4tEeQ
+ 75张图带你了解网络设备、网络地址规划、静态路由、实战演练 
+https://mp.weixin.qq.com/s/cHVsxIDPo8wXPTqvvdnvXQ
 -->
 
 
