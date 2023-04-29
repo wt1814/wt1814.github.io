@@ -3,54 +3,68 @@
 
 - [1. Seata分布式事务框架](#1-seata分布式事务框架)
     - [1.1. AT模式](#11-at模式)
-        - [1.1.1. 模块组成](#111-模块组成)
-        - [1.1.2. 工作流程](#112-工作流程)
-        - [1.1.3. AT模式解析](#113-at模式解析)
-        - [1.1.4. AT缺点](#114-at缺点)
+        - [1.1.1. ※※※架构及模块组成](#111-※※※架构及模块组成)
+        - [1.1.2. 工作流程示例](#112-工作流程示例)
+        - [1.1.3. ACID](#113-acid)
+        - [1.1.4. AT模式解析](#114-at模式解析)
 
 <!-- /TOC -->
 
 # 1. Seata分布式事务框架
 &emsp; Seata 是一款开源的分布式事务解决方案，致力于提供高性能和简单易用的分布式事务服务。Seata 将为用户提供了 AT、TCC、SAGA 和 XA 事务模式，为用户打造一站式的分布式解决方案。  
 
-<!-- 
-【Seata】之 初识（四种模式）
-https://blog.csdn.net/fanfan4569/article/details/102522210
-
-https://blog.csdn.net/pengjianglilive/article/details/121288241
-Seata AT 模式事务隔离级别与全局锁设计
-https://blog.csdn.net/hundan_520520/article/details/128833977
-Seata AT 模式代码级详解
-https://zhuanlan.zhihu.com/p/566683139?utm_id=0
-seata分布式事务
-https://blog.csdn.net/weixin_42420663/article/details/126276049
-深入浅出Seata的AT模式
-https://baijiahao.baidu.com/s?id=1751062475741532450&wfr=spider&for=pc&searchword=seata%20at%20%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB
-
-
--->
-
 ## 1.1. AT模式
+&emsp; AT模式的前提是基于支持本地 ACID 事务的关系型数据库和Java应用基于JDBC访问数据库。AT模式是二阶段提交协议的演变：  
+
+* 一阶段：业务数据和回滚日志记录在同一个本地事务中提交，释放本地锁和连接资源。  
+* 二阶段：commit异步化快速完成；rollback通过一阶段的回滚日志进行反向补偿。  
+
+
+### 1.1.1. ※※※架构及模块组成
 <!-- 
-Seata AT模式
+
+*** Seata AT模式
 https://blog.csdn.net/a315157973/article/details/103113483
 
-http://www.dreamwu.com/post-1741.html
 
-工作机制
-https://zhuanlan.zhihu.com/p/344220223
-
-
+https://baijiahao.baidu.com/s?id=1751062475741532450&wfr=spider&for=pc&searchword=seata%20at%20%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB
 -->
 
-### 1.1.1. 模块组成
 &emsp; 1）TM：事务发起者。定义事务的边界，负责告知 TC，分布式事务的开始，提交，回滚。  
 &emsp; 2）RM：资源管理者。管理每个分支事务的资源，每一个 RM 都会作为一个分支事务注册在 TC。  
 &emsp; 3）TC ：事务协调者。负责我们的事务ID的生成，事务注册、提交、回滚等。  
 &emsp; 在Seata的AT模式中，TM和RM都作为SDK的一部分和业务服务在一起，我们可以认为是Client。TC是一个独立的服务，通过服务的注册、发现将自己暴露给Client们。  
 
 
-### 1.1.2. 工作流程
+&emsp; 从宏观上梳理一下 Seata 的工作过程：  
+![image](http://182.92.69.8:8081/img/microService/problems/problem-72.png)  
+&emsp; TM 请求 TC，开始一个新的全局事务，TC 会为这个全局事务生成一个 XID。  
+&emsp; XID 通过微服务的调用链传递到其他微服务。  
+&emsp; RM 把本地事务作为这个XID的分支事务注册到TC。  
+&emsp; TM 请求 TC 对这个 XID 进行提交或回滚。  
+&emsp; TC 指挥这个 XID 下面的所有分支事务进行提交、回滚。  
+
+------------
+
+![image](http://182.92.69.8:8081/img/microService/problems/problem-73.png)  
+
+&emsp; 三大组件
+
+&emsp; TC：事务协调者
+&emsp; 即Transaction Coordinator，维护全局和分支事务的状态，驱动全局事务提交或回滚。
+
+&emsp; TM：事务管理器
+&emsp; 即Transaction Manager，定义全局事务的范围，开始事务、提交事务，回滚事务。
+
+&emsp; RM：资源管理器
+&emsp; 即Resource Manager，管理分支事务处理的资源，向TC注册分支事务，报告分支事务的状态，驱动分支事务提交或回滚。
+
+&emsp; 基础交互
+&emsp; TC是需要独立部署的服务，TM和RM是集成在服务中，三大组件相互协作，共同完成分布事务的管理；
+
+
+
+### 1.1.2. 工作流程示例
 &emsp; AT 模式分为两个阶段：
 
 1. 一阶段：执行用户SQL。业务数据和回滚日志记录在同一个本地事务中提交，释放本地锁和连接资源。    
@@ -189,9 +203,30 @@ update product set name = 'TXC' where id = 1;
         ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
         ```
 
+### 1.1.3. ACID  
+<!-- 
+工作机制
+https://zhuanlan.zhihu.com/p/344220223
 
-### 1.1.3. AT模式解析
+seata AT模式是如何实现的
+https://blog.csdn.net/zzti_erlie/article/details/120939588
 
+Seata AT 模式事务隔离级别与全局锁设计 
+https://mp.weixin.qq.com/s/dDAXVyio2ANYvjg_oIFxRg
+
+Seata AT 模式事务隔离级别与全局锁设计
+https://blog.csdn.net/hundan_520520/article/details/128833977
+Seata AT 模式代码级详解
+https://zhuanlan.zhihu.com/p/566683139?utm_id=0
+seata分布式事务
+https://blog.csdn.net/weixin_42420663/article/details/126276049
+深入浅出Seata的AT模式
+https://baijiahao.baidu.com/s?id=1751062475741532450&wfr=spider&for=pc&searchword=seata%20at%20%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB
+
+-->
+
+
+### 1.1.4. AT模式解析
 <!-- 
 seata AT模式是如何实现的
 https://blog.csdn.net/zzti_erlie/article/details/120939588
@@ -200,9 +235,4 @@ https://www.jianshu.com/p/ea454a710908
 -->
 
 
-### 1.1.4. AT缺点
-<!-- 
-Seata AT 模式事务隔离级别与全局锁设计 
-https://mp.weixin.qq.com/s/dDAXVyio2ANYvjg_oIFxRg
 
--->
