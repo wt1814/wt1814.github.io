@@ -20,7 +20,10 @@
 1. ThreadLocal源码/内存模型：  
     1. **<font color = "red">ThreadLocal#set()#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** 即，当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
     &emsp; ~~Thread ---> ThreadLocal.ThreadLocalMap~~
-    2. **<font color = "clime">ThreadLocal.ThreadLocalMap，</font>Map结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。<font color = "clime">`Key是一个ThreadLocal实例，Value是设置的值。`Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。</font>**  
+    2. **<font color = "clime">ThreadLocal.ThreadLocalMap：</font>**  
+    &emsp; 1).Map结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。  
+    &emsp; 2).<font color = "clime">`Key是一个ThreadLocal实例，Value是设置的值。</font>    
+    &emsp; `Entry的作用即是：为其属主线程建立起一个ThreadLocal实例与一个线程持有对象之间的对应关系。 
     ![image](http://182.92.69.8:8081/img/java/concurrent/multi-24.png)   
     ![image](http://182.92.69.8:8081/img/java/concurrent/multi-59.png)   
     3. 每个Thread对象中都持有一个ThreadLocalMap的成员变量。`每个ThreadLocalMap内部又维护了N个Entry节点，也就是Entry数组，每个Entry代表一个完整的对象，key是ThreadLocal本身，value是ThreadLocal的泛型值。`   

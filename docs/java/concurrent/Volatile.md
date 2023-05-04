@@ -18,8 +18,8 @@
 &emsp; **<font color = "red">总结：</font>**  
 1. **<font color = "clime">Volatile的特性：</font>**  
     1. 不支持原子性。<font color = "red">它只对Volatile变量的单次读/写具有原子性；</font><font color = "clime">但是对于类似i++这样的复合操作不能保证原子性。</font>    
-    **<font color = "clime">Volatile为什么不安全（不保证原子性，线程切换）？</font>**    
-    两个线程执行i++（i++的过程可以分为三步，首先获取i的值，其次对i的值进行加1，最后将得到的新值写回到缓存中），线程1获取i值后被挂起，线程2执行...  
+    &emsp; **<font color = "clime">Volatile为什么不安全（不保证原子性，线程切换）？</font>**    
+    &emsp; 两个线程执行i++（i++的过程可以分为三步，首先获取i的值，其次对i的值进行加1，最后将得到的新值写回到缓存中），线程1获取i值后被挂起，线程2执行...  
     2. 实现了可见性。 **Volatile提供happens-before的保证，使变量在多个线程间可见。**  
     3. <font color = "red">实现了有序性，禁止进行指令重排序。</font>  
 2. Volatile底层原理：  
