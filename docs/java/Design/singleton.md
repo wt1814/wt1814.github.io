@@ -23,10 +23,16 @@ public class LazyDoubleCheckSingleton {
     
     private static volatile LazyDoubleCheckSingleton lazy = null;
 
+    /**
+    * 构造函数    
+    **/
     private LazyDoubleCheckSingleton(){
         
     }
     
+    /**
+    * 静态方法  
+    **/
     public static LazyDoubleCheckSingleton getInstance(){
         // 第一重检测
         if(lazy == null){

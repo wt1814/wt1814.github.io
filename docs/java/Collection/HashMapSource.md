@@ -46,7 +46,7 @@
 2. HashMap成员方法：  
     1. hash()函数/扰动函数：  
     &emsp; hash函数会根据传递的key值进行计算， 1)首先计算key的hashCode值， 2)然后再对hashcode进行无符号右移操作， 3)最后再和hashCode进行异或 ^ 操作。（即让hashcode的高16位和低16位进行异或操作。）   
-    &emsp; **<font color = "clime">`看似“多余”的2、3步`的好处是增加了随机性，减少了碰撞冲突的可能性。</font>**    
+    &emsp; **<font color = "clime">`看似“多余”的2、3步`的好处是`增加了随机性`，`减少了碰撞冲突`的可能性。</font>**    
     2. put()函数：
         1. 在put的时候，首先对key做hash运算，计算出该key所在的index。
         2. 如果没碰撞，直接放到数组中；

@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. 种Mybatis里的设计模式](#1-种mybatis里的设计模式)
+- [1. 8种Mybatis里的设计模式](#1-8种mybatis里的设计模式)
     - [1.1. 单例模式](#11-单例模式)
     - [1.2. 装饰器模式](#12-装饰器模式)
 
@@ -9,7 +9,7 @@
 
 
 
-# 1. 种Mybatis里的设计模式
+# 1. 8种Mybatis里的设计模式
 <!-- 
 https://segmentfault.com/a/1190000038551120
 https://cloud.tencent.com/developer/article/1447253
