@@ -131,6 +131,7 @@
         * [任务执行Future](/docs/java/concurrent/Future.md)  
             * [CompletionService](/docs/java/concurrent/CompletionService.md)  
             * [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
+            * [获取多线程执行结果](/docs/java/concurrent/execResult.md)  
     * [并发编程](/docs/java/concurrent/MultiThread.md)  
         * [并发编程原理](/docs/java/concurrent/ConcurrentPrinciple.md)  
             * [CPU多核缓存及并发安全](/docs/java/concurrent/ConcurrencyProblem.md)  
@@ -171,9 +172,6 @@
             * [CyclicBarrier](/docs/java/concurrent/CyclicBarrier.md)  
             * [Semaphore](/docs/java/concurrent/Semaphore.md)  
             * [Exchanger](/docs/java/concurrent/Exchanger.md)  
-    * 其他  
-        * [获取多线程执行结果](/docs/java/concurrent/execResult.md)  
-        * [深入并发之线程、进程、纤程、协程、管程](/docs/java/concurrent/Coprocessor.md)  
 * 数据库  
     * [数据建模](/docs/SQL/modeling.md)  
         * [字段](/docs/SQL/Field.md)  

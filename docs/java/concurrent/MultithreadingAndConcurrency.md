@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [1. 多线程和并发](#1-多线程和并发)
+- [1. 线程、进程、纤程、协程、管程](#1-线程进程纤程协程管程)
     - [1.1. 线程](#11-线程)
     - [1.2. 多线程](#12-多线程)
 
@@ -22,8 +22,14 @@ https://mp.weixin.qq.com/s/k1cd4s18tmF4kqHj4unOTA
 https://mp.weixin.qq.com/s/bc4KWuseoqGG6xJZiG49AA
 -->
 
+<!--
 
-# 1. 多线程和并发  
+https://zhuanlan.zhihu.com/p/473680974
+-->
+
+
+
+# 1. 线程、进程、纤程、协程、管程   
 &emsp; <font color = "red">~~操作系统熟悉一波...~~</font>  
 
 ## 1.1. 线程
