@@ -230,7 +230,6 @@
             * [主从复制原理](/docs/SQL/ReplicationPrinciple.md)  
             * [主从复制实现](/docs/SQL/ReplicationRealize.md)  
             * [主从复制的问题](/docs/SQL/replicationProblem.md)  
-                * [主从复制延迟](/docs/SQL/delay.md)  
             * [高可用实现方案](/docs/SQL/Available.md)  
             * [读写分离实现](/docs/SQL/ReadWrite.md)  
             * [多数据源](/docs/SQL/MultipleSources.md)  
