@@ -344,6 +344,7 @@
 &emsp; [数据库分布式实现](/docs/SQL/subRealize.md)  
 &emsp; &emsp; [ShardingSphere](/docs/SQL/shardingsphere.md)  
 &emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md)  
+[【分库分表和ES】](/docs/SQL/shardingAndEs.md)  
 
 ### 1.7.5. 搜索引擎ES  
 [ES基本概念](/docs/ES/basicConcepts.md)  
