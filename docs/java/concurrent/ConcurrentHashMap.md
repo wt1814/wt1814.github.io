@@ -24,11 +24,12 @@
     1. 根据 key 计算出 hashcode 。  
     2. 整个过程自旋添加节点。  
     2. 判断是否需要进行初始化数组。  
-    3. <font color = "red">为当前key定位出Node，如果为空表示此数组下无节点，当前位置可以直接写入数据，利用CAS尝试写入，失败则进入下一次循环。</font>  
-    4. **<font color = "blue">如果当前位置的hashcode == MOVED == -1，表示其他线程插入成功正在进行扩容，则当前线程`帮助进行扩容`。</font>**  
-    5. <font color = "red">如果都不满足，则利用synchronized锁写入数据。</font>  
-    6. 如果数量大于TREEIFY_THRESHOLD则要转换为红黑树。 
-    7. 最后通过addCount来增加ConcurrentHashMap的长度，并且还可能触发扩容操作。  
+    3. <font color = "red">为当前key定位出Node。</font>  
+        1. 如果为空表示此数组下无节点，当前位置可以直接写入数据，利用CAS尝试写入，失败则进入下一次循环。  
+        2. **<font color = "blue">如果当前位置的hashcode == MOVED == -1，表示其他线程插入成功正在进行扩容，则当前线程`帮助进行扩容`。</font>**  
+        3. <font color = "red">如果都不满足，则利用synchronized锁写入数据。</font>  
+        4. 如果数量大于TREEIFY_THRESHOLD则要转换为红黑树。 
+    4. 最后通过addCount来增加ConcurrentHashMap的长度，并且还可能触发扩容操作。  
 2. 协助扩容  
 &emsp; `ConcurrentHashMap并没有直接加锁，而是采用CAS实现无锁的并发同步策略，最精华的部分是它可以利用多线程来进行协同扩容。简单来说，它把Node数组当作多个线程之间共享的任务队列，然后通过维护一个指针来划分每个线程锁负责的区间，每个线程通过区间逆向遍历来实现扩容，一个已经迁移完的bucket会被替换为一个ForwardingNode节点，标记当前bucket已经被其他线程迁移完了。`   
 3. **<font color = "clime">get()流程：为什么ConcurrentHashMap的读操作不需要加锁？</font>**  
