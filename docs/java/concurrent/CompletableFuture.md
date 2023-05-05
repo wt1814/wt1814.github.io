@@ -4,9 +4,9 @@
     - [1.1. CompletableFuture简介](#11-completablefuture简介)
     - [1.2. ~~CompletableFuture类分析~~](#12-completablefuture类分析)
     - [1.3. CompletableFuture使用](#13-completablefuture使用)
-    - [CompletableFuture实战](#completablefuture实战)
-    - [背景](#背景)
-    - [通过CompletableFuture的allOf方法对多个异步执行结果进行处理](#通过completablefuture的allof方法对多个异步执行结果进行处理)
+    - [1.4. CompletableFuture实战](#14-completablefuture实战)
+        - [1.4.1. 背景](#141-背景)
+        - [1.4.2. 通过CompletableFuture的allOf方法对多个异步执行结果进行处理](#142-通过completablefuture的allof方法对多个异步执行结果进行处理)
 
 <!-- /TOC -->
 
@@ -19,7 +19,7 @@
 -----------
 
 
-&emsp; 在Java 8中, 新增加了一个包含50个方法左右的类: CompletableFuture，默认依靠fork/join框架启动新的线程实现异步与并发的，提供了非常强大的Future的扩展功能，可以帮助我们简化异步编程的复杂性，提供了函数式编程的能力，可以通过回调函数的方式处理返回结果，并且提供了转换和组合CompletableFuture的方法。   
+&emsp; 在Java 8中，新增加了一个包含50个方法左右的类: CompletableFuture，默认依靠fork/join框架启动新的线程实现异步与并发的，提供了非常强大的Future的扩展功能，可以简化异步编程的复杂性，提供了函数式编程的能力，可以通过回调函数的方式处理返回结果，并且提供了转换和组合CompletableFuture的方法。   
 &emsp; 主要是为了解决Future模式的缺点：   
 1. Future虽然可以实现异步获取线程的执行结果，但是Future没有提供通知机制，调用方无法得知Future什么时候执行完的问题。  
 2. 想要获取Future的结果，要么使用阻塞， 在future.get()的地方等待Future返回结果，这时会变成同步操作。要么使用isDone()方法进行轮询，又会耗费无谓的 CPU 资源。  
@@ -193,9 +193,9 @@ https://www.cnblogs.com/happyliu/p/9462703.html
     public CompletionStage<T> exceptionally(Function<Throwable, ? extends T> fn);
     ```
 
-## CompletableFuture实战
+## 1.4. CompletableFuture实战
 
-## 背景  
+### 1.4.1. 背景  
 &emsp; app改版，代码重构。  
 &emsp; 还记得刚接手这块内容的时候，有个for循环【串行】调用远程，稍微改点东西，就会导致接口超时。  
 &emsp; 这次重构，想着优化一下。看调用的对方接口说明：  
@@ -209,7 +209,7 @@ List<Integer> queryGroupsByUserId(String var1, List<Integer> var2);
 ![image](http://www.wt1814.com/static/view/images/share/share-1.png)  
 
 
-## 通过CompletableFuture的allOf方法对多个异步执行结果进行处理
+### 1.4.2. 通过CompletableFuture的allOf方法对多个异步执行结果进行处理
 &emsp; CompletableFuture和CompletionService的知识，可以查看之前的文章。  
 
 ```java

@@ -36,10 +36,10 @@
 &emsp; 源码解析：`runWorker()方法中，有任务时，while (task != null || (task = getTask()) != null) 循环获取；没有任务时，清除空闲线程。`  
 4. 线程池保证核心线程不被销毁？  
     &emsp; ThreadPoolExecutor回收线程都是等while死循环里getTask()获取不到任务，【返回null时，调用processWorkerExit方法从Set集合中remove掉线程】。  
-    &emsp; getTask()返回null又分为2两种场景：  
+    1. getTask()返回null又分为2两种场景：  
         1. 线程正常执行完任务，`并且已经等到超过keepAliveTime时间，大于核心线程数，那么会返回null`，结束外层的runWorker中的while循环。
         2. 当调用shutdown()方法，会将线程池状态置为shutdown，并且需要等待正在执行的任务执行完，阻塞队列中的任务执行完才能返回null。
-    &emsp; `getTask()不返回null的情况有获取到任务，或获取不到任务，但线程数小于等于核心线程数。`  
+    2. `getTask()不返回null的情况有获取到任务，或获取不到任务，但线程数小于等于核心线程数。`  
 
 
 # 1. ~~ThreadPoolExecutor~~

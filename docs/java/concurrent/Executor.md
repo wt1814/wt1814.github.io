@@ -41,17 +41,17 @@
 * ForkJoinPool：JDK1.7加入的成员，也是线程池的一种。只允许执行 ForkJoinTask 任务，它是为那些能够被递归地拆解成子任务的工作类型量身设计的。其目的在于能够使用所有可用的运算资源来提升应用性能。  
 * Executors：创建各种线程池的工具类。  
 
-&emsp; 简单来说，线程池分为三种：基础线程池ThreadPoolExecutor、延时任务线程池 ScheduledThreadPoolExecutor 和分治线程池ForkJoinPool。每种线程池中都有其支持的任务类型，后面我们在源码分析中，会穿插讲解各个线程池中遇到的各种任务类型。  
+&emsp; 简单来说，线程池分为三种：基础线程池ThreadPoolExecutor、延时任务线程池 ScheduledThreadPoolExecutor 和分治线程池ForkJoinPool。每种线程池中都有其支持的任务类型，后面在源码分析中，会穿插讲解各个线程池中遇到的各种任务类型。  
 
 ---------
 
-&emsp; Executor框架由三个部分组成：  
+&emsp; **<font color = "color">Executor框架由三个部分组成：</font>**  
 
 * 工作任务：Runnable/Callable 接口
     * 工作任务就是Runnable/Callable接口的实现，可以被线程池执行
 * 执行机制：Executor接口、ExecutorService接口、ScheduledExecutorService接口
     * ThreadPoolExecutor 是最核心的线程池实现，用来执行被提交的任务
-    * ScheduledThreadPoolExecutor 是任务调度的线程池实现，可以在给定的延迟后运行命令，或者定期执行命令(它比Timer更灵活)
+    * ScheduledThreadPoolExecutor 是任务调度的线程池实现，可以在给定的延迟后运行命令，或者定期执行命令（它比Timer更灵活）
     * ForkJoinPool是一个并发执行框架
 * 异步计算的结果：Future接口
     * 实现Future接口的FutureTask类，代表异步计算的结果
