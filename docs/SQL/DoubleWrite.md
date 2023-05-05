@@ -12,9 +12,9 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-&emsp; doublewrite：<font color = "blue">如果说写缓冲change buffer带给InnoDB存储引擎的是性能，那么两次写Double Write带给InnoDB存储引擎的是数据的可靠性。</font>  
 1. MySQL将buffer中一页数据刷入磁盘，要写4个文件系统里的页。  
-2. 在应用(apply)重做日志(redo log)前，需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。  
+2. doublewrite是什么？<font color = "blue">如果说写缓冲change buffer带给InnoDB存储引擎的是性能，那么两次写Double Write带给InnoDB存储引擎的是数据的可靠性。</font>    
+&emsp; 在应用(apply)重做日志(redo log)前，需要一个页的副本，当【写入失效发生】时，先通过页的副本来还原该页，再进行重做，这就是doublewrite。即doublewrite是页的副本。  
     1. 在异常崩溃时，如果不出现“页数据损坏”，能够通过redo恢复数据；
     2. 在出现“页数据损坏”时，能够通过double write buffer恢复页数据； 
 3. doublewrite分为内存和磁盘的两层架构。当有页数据要刷盘时：  
@@ -29,6 +29,8 @@ InnoDB的Double Write
 https://mp.weixin.qq.com/s?__biz=MzI0MjE4NTM5Mg==&mid=2648976025&idx=1&sn=3ee3d20a3f22528f9ba600dbbd338a64&chksm=f110af46c6672650cca073fd7f6ebd1a87944f98ba40843cdcfaca6ceff8745f1c079555af69&scene=178&cur_album_id=1536468200543027201#rd
 double write buffer，你居然没听过？ 
 https://mp.weixin.qq.com/s/bkoQ9g4cIcFFZBnpVh8ERQ
+
+https://www.cnblogs.com/geaozhang/p/7241744.html
 -->
 <!-- 
 脏页刷盘风险：InnoDB 的 page size一般是16KB，操作系统写文件是以4KB作为单位，那么每写一个 InnoDB 的 page 到磁盘上，操作系统需要写4个块。于是可能出现16K的数据，写入4K 时，发生了系统断电或系统崩溃，只有一部分写是成功的，这就是 partial page write(部分页写入)问题。这时会出现数据不完整的问题。

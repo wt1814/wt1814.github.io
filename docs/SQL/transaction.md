@@ -27,8 +27,8 @@
 4. Innodb事务实现原理
     * 原子性的实现：采用[undo log](/docs/SQL/undoLog.md)实现。  
     * 持久性的实现：采用[redo log](/docs/SQL/redoLog.md)实现。  
-    * 隔离性(事务的隔离级别)的实现
-        在MySQL中，默认的隔离级别是REPEATABLE-READ（可重复读），阻止脏读和不可重复读，并且解决了幻读问题。  
+    * 隔离性(事务的隔离级别)的实现：  
+        &emsp; 在MySQL中，默认的隔离级别是REPEATABLE-READ（可重复读），阻止脏读和不可重复读，并且解决了幻读问题。  
         &emsp; 隔离性(事务的隔离级别)的实现，利用的是锁和MVCC机制。 
         * **<font color = "blue">快照读：生成一个事务快照（ReadView），之后都从这个快照获取数据。</font>** 普通select语句就是快照读。  
         &emsp; <font color = "blue">对于快照读，MVCC因为从ReadView读取，所以必然不会看到新插入的行，所以天然就解决了幻读的问题。</font>  
