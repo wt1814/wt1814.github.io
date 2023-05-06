@@ -366,7 +366,7 @@
 &emsp; [***ES建模](/docs/ES/modeling.md)  
 &emsp; [***同步数据到ES](/docs/ES/synES.md)  
 &emsp; [Elasticsearch操作客户端](/docs/ES/ElasticsearchREST.md)  
-&emsp; [ES可视化客户端](/docs/ES/visualization.md)  
+&emsp; &emsp; [ES可视化客户端](/docs/ES/visualization.md)  
 &emsp; &emsp; [Cerebro](/docs/ES/Cerebro.md)  
 &emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
 &emsp; &emsp; [ES异步搜索](/docs/ES/AsyncSearch.md)  
