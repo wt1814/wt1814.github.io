@@ -574,6 +574,9 @@
         * [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
         * [IM系统](/docs/webSocket/IM.md)  
     * [请求合并](/docs/webSocket/RequestMerge.md)  
+* Error  
+    * [多线程串线了](/docs/Error/ThreadCrossed.md)  
+    * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 * 项目构建基础  
     * [版本号](/docs/web/Version.md)  
     * [编码规范](/docs/java/Design/CodingSpecification.md)  
@@ -660,9 +663,6 @@
     * [工作流](docs/middleware/workflow.md)  
     * [规则引擎](docs/middleware/RulesEngine.md)  
     * [分布式文件存储](/docs/File/FileStore.md)  
-* Error  
-    * [多线程串线了](/docs/Error/ThreadCrossed.md)  
-    * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 * 源码环境搭建
     * [JDK源码](/docs/java/basis/JDKSource.md)  
     * SSM

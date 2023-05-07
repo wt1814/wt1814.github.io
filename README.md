@@ -40,6 +40,7 @@
         - [1.8.3. Netty](#183-netty)
         - [1.8.4. WebSocket](#184-websocket)
         - [1.8.5. 其他](#185-其他)
+    - [1.13. Error](#113-error)
     - [1.9. 项目构建](#19-项目构建)
         - [1.9.1. 构建基础](#191-构建基础)
     - [1.10. 架构设计](#110-架构设计)
@@ -52,7 +53,6 @@
         - [1.12.4. 工作流](#1124-工作流)
         - [1.12.5. 规则引擎](#1125-规则引擎)
         - [1.12.6. 分布式文件存储](#1126-分布式文件存储)
-    - [1.13. Error](#113-error)
     - [1.14. 源码搭建汇总](#114-源码搭建汇总)
     - [1.15. 计算机网络](#115-计算机网络)
         - [1.15.1. 负载均衡](#1151-负载均衡)
@@ -759,6 +759,15 @@
 ### 1.8.5. 其他  
 [请求合并](/docs/webSocket/RequestMerge.md)  
 
+--------------------
+
+## 1.13. Error  
+[多线程串线了](/docs/Error/ThreadCrossed.md)  
+[熔断降级处理](/docs/Error/hystrix.md)  
+[Redis高并发](/docs/Error/redisConcurrent.md)  
+[Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
+[redis scan命令](/docs/Error/redisScan.md)  
+<!-- [雪花利用ZK生成workId]()   -->
 
 --------
 
@@ -880,14 +889,6 @@
 
 ----------
 
-
-## 1.13. Error  
-[多线程串线了](/docs/Error/ThreadCrossed.md)  
-[熔断降级处理](/docs/Error/hystrix.md)  
-[Redis高并发](/docs/Error/redisConcurrent.md)  
-[Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-[redis scan命令](/docs/Error/redisScan.md)  
-<!-- [雪花利用ZK生成workId]()   -->
 
 
 ## 1.14. 源码搭建汇总  
