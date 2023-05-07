@@ -590,6 +590,7 @@
 
 ## 1.7. 高并发
 ### 1.7.1. 高并发相关概念
+[高并发相关概念](/docs/system/DistributedHighConcurrency.md)   
 [系统性能指标](/docs/system/performance.md)  
 [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; [高可用建设](/docs/system/highAvailability.md)  
