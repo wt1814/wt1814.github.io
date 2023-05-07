@@ -578,9 +578,9 @@
 ### 1.6.4. 分布式锁
 [分布式锁](/docs/microService/thinking/Lock.md)  
 &emsp; [RedisLock](/docs/microService/thinking/redisLock.md)  
+&emsp; [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
 &emsp; [Redisson](/docs/microService/thinking/Redisson.md)  
 &emsp; &emsp; [Boot整合Redisson](/docs/microService/thinking/BootRedisson.md)  
-&emsp; [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
 &emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
 
@@ -898,9 +898,6 @@
 [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
 [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
 [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
-
------------------
-
 
 
 ---------
