@@ -564,7 +564,7 @@
 [分布式事务](/docs/microService/thinking/DistriTransaction.md)  
 &emsp; [单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/SingleServiceMultipleSources.md)  
 &emsp; [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
-&emsp; &emsp; [JTA+Atomic](/docs/microService/thinking/JTA.md)  
+&emsp; &emsp; [JTA+Atomic/单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/JTA.md)  
 &emsp; [TCC](/docs/microService/thinking/TCC.md)   
 &emsp; [TCC问题](/docs/microService/thinking/TCCProblem.md)   
 &emsp; [TCC问题1](/docs/microService/thinking/TCCProblemOne.md)   
