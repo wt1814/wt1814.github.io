@@ -486,9 +486,9 @@
 
 ### 1.5.2. SpringCloud    
 [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
-[Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
-[consul](/docs/microService/SpringCloudNetflix/consul.md)  
-[nacos](/docs/microService/SpringCloudNetflix/nacos.md)  
+[注册中心和配置中心](/docs/microService/SpringCloudNetflix/register.md)  
+&emsp; [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
+&emsp; [nacos](/docs/microService/SpringCloudNetflix/nacos.md)  
 [Spring Cloud GateWay](/docs/microService/SpringCloudNetflix/GateWay.md)  
 [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
 [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
@@ -551,6 +551,7 @@
 
 ## 1.6. 分布式
 ### 1.6.1. 分布式理论  
+
 [分布式和集群](/docs/system/distributed.md)   
 [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
 &emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
