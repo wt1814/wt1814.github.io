@@ -494,7 +494,6 @@
             * [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
         * [Redis运维](/docs/microService/Redis/RedisOperation.md)  
             * [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
-            * [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
 * [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
     * [限流Sentinel](/docs/microService/thinking/Sentinel.md) 
     * [Sentinel使用](/docs/microService/thinking/SentinelUse.md)  

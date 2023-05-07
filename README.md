@@ -638,6 +638,7 @@
 &emsp; [Redis过期键删除](/docs/microService/Redis/Keydel.md)  
 &emsp; [Redis内存淘汰](/docs/microService/Redis/RedisEliminate.md)  
 &emsp; [Redis持久化](/docs/microService/Redis/RedisPersistence.md)  
+&emsp; &emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
 [Redis内置功能](/docs/microService/Redis/BuiltIn.md)    
 &emsp; [RedisPipeline/批处理](/docs/microService/Redis/RedisPipeline.md)  
 &emsp; [Redis事务](/docs/microService/Redis/RedisTransaction.md)  
@@ -651,7 +652,7 @@
 &emsp; [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
 [Redis运维](/docs/microService/Redis/RedisOperation.md)  
 &emsp; [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
-&emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
+
 
 
 ### 1.7.3. 限流降级
