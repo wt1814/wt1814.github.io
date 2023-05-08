@@ -665,7 +665,7 @@
 ### 1.7.4. 分布式消息队列  
 [MQ](/docs/microService/mq/mq.md)  
 &emsp; [消息积压](/docs/microService/mq/MessageBacklog.md)  
-[消息推拉机制](/docs/microService/mq/PushPull.md)  
+&emsp; [消息推拉机制](/docs/microService/mq/PushPull.md)  
 [RocketMQ和Kafka](/docs/microService/mq/RocketMQAndKafka.md)  
 
 #### 1.7.4.1. RocketMQ  
