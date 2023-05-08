@@ -232,7 +232,12 @@ $ classloader -c 1b6d3586 -r java/lang/String.class
 jar:file:/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home/jre/lib/rt.jar!/java/lang/String.class
 ```
 
-### 1.3.2. 问题 2：我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？
+### 1.3.2. 问题 2：我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？  
+<!-- 
+Arthas——热替换
+https://blog.csdn.net/m0_37657585/article/details/112616441
+-->
+
 &emsp; 推荐使用 watch 和 tt 命令，非常好用。  
 
 &emsp; 这两个命令都是用来查看方法调用过程的，不同的是 watch 命令是调用一次打印一次方法的调用情况，而 tt 命令可以先生成一个不断增加的调用列表，然后指定其中某一项进行观测。  
