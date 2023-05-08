@@ -1,79 +1,79 @@
 <!-- TOC -->
 
-- [1. wt1814-note](#1-wt1814-note)
-    - [1.1. 总结](#11-总结)
-    - [1.2. Java](#12-java)
-        - [1.2.1. Java基础](#121-java基础)
-        - [1.2.2. 设计模式](#122-设计模式)
-        - [1.2.3. JVM](#123-jvm)
-        - [1.2.4. HotSpot](#124-hotspot)
-        - [1.2.5. 并发编程](#125-并发编程)
-    - [1.3. 数据库](#13-数据库)
-        - [1.3.1. MySql](#131-mysql)
-        - [1.3.2. 搜索引擎ES](#132-搜索引擎es)
-    - [1.4. SSM](#14-ssm)
-        - [1.4.1. Spring](#141-spring)
-        - [1.4.2. MyBatis](#142-mybatis)
-    - [1.5. 分布式框架](#15-分布式框架)
-        - [1.5.1. SpringBoot](#151-springboot)
-        - [1.5.2. SpringCloud](#152-springcloud)
-        - [1.5.3. Dubbo](#153-dubbo)
-        - [1.5.4. Zookeeper](#154-zookeeper)
-        - [1.5.5. ServiceMesh](#155-servicemesh)
-    - [1.6. 分布式](#16-分布式)
-        - [1.6.1. 分布式理论](#161-分布式理论)
-        - [1.6.2. 分布式ID](#162-分布式id)
-        - [1.6.3. 分布式事务](#163-分布式事务)
-        - [1.6.4. 分布式锁](#164-分布式锁)
-    - [1.7. 高并发](#17-高并发)
-        - [1.7.1. 高并发相关概念](#171-高并发相关概念)
-        - [1.7.2. 缓存](#172-缓存)
-            - [1.7.2.1. 缓存介绍](#1721-缓存介绍)
-            - [1.7.2.2. Redis](#1722-redis)
-        - [1.7.3. 限流降级](#173-限流降级)
-        - [1.7.4. 分布式消息队列](#174-分布式消息队列)
-            - [1.7.4.1. RocketMQ](#1741-rocketmq)
-            - [1.7.4.2. Kafka](#1742-kafka)
-    - [1.8. 网络IO/分布式通信](#18-网络io分布式通信)
-        - [1.8.1. 通信基础](#181-通信基础)
-        - [1.8.2. NIO](#182-nio)
-        - [1.8.3. Netty](#183-netty)
-        - [1.8.4. WebSocket](#184-websocket)
-        - [1.8.5. 其他](#185-其他)
-    - [1.9. Error](#19-error)
-    - [1.10. 项目构建基础](#110-项目构建基础)
-    - [1.11. 架构设计](#111-架构设计)
-    - [1.12. 系统设计](#112-系统设计)
-    - [1.13. Web服务器与中间件](#113-web服务器与中间件)
-        - [1.13.1. Web服务器](#1131-web服务器)
-            - [1.13.1.1. tomcat](#11311-tomcat)
-        - [1.13.2. 任务调度](#1132-任务调度)
-        - [1.13.3. 安全框架shiro](#1133-安全框架shiro)
-        - [1.13.4. 工作流](#1134-工作流)
-        - [1.13.5. 规则引擎](#1135-规则引擎)
-        - [1.13.6. 分布式文件存储](#1136-分布式文件存储)
-    - [1.14. 源码搭建汇总](#114-源码搭建汇总)
-    - [1.15. 计算机网络](#115-计算机网络)
-        - [1.15.1. 负载均衡](#1151-负载均衡)
-    - [1.16. Linux操作系统](#116-linux操作系统)
-    - [1.17. Linux服务器搭建](#117-linux服务器搭建)
-        - [1.17.1. Linux基础](#1171-linux基础)
-        - [1.17.2. Linux服务器](#1172-linux服务器)
-        - [1.17.3. DevOps介绍](#1173-devops介绍)
-        - [1.17.4. 搭建-研发](#1174-搭建-研发)
-    - [1.18. Docker和k8s](#118-docker和k8s)
-        - [1.18.1. 搭建-需求、测试](#1181-搭建-需求测试)
-        - [1.18.2. 监控和统计](#1182-监控和统计)
-    - [1.19. 常用研发工具](#119-常用研发工具)
-    - [1.20. 算法](#120-算法)
-    - [1.21. 前端知识](#121-前端知识)
-    - [1.22. 测试](#122-测试)
+- [wt1814-note](#wt1814-note)
+    - [总结](#总结)
+    - [Java](#java)
+        - [Java基础](#java基础)
+        - [设计模式](#设计模式)
+        - [JVM](#jvm)
+        - [HotSpot](#hotspot)
+        - [并发编程](#并发编程)
+    - [数据库](#数据库)
+        - [MySql](#mysql)
+        - [搜索引擎ES](#搜索引擎es)
+    - [SSM](#ssm)
+        - [Spring](#spring)
+        - [MyBatis](#mybatis)
+    - [分布式框架](#分布式框架)
+        - [SpringBoot](#springboot)
+        - [SpringCloud](#springcloud)
+        - [Dubbo](#dubbo)
+        - [Zookeeper](#zookeeper)
+        - [ServiceMesh](#servicemesh)
+    - [分布式](#分布式)
+        - [分布式理论](#分布式理论)
+        - [分布式ID](#分布式id)
+        - [分布式事务](#分布式事务)
+        - [分布式锁](#分布式锁)
+    - [高并发](#高并发)
+        - [高并发相关概念](#高并发相关概念)
+        - [缓存](#缓存)
+            - [缓存介绍](#缓存介绍)
+            - [Redis](#redis)
+        - [限流降级](#限流降级)
+        - [分布式消息队列](#分布式消息队列)
+            - [RocketMQ](#rocketmq)
+            - [Kafka](#kafka)
+    - [网络IO/分布式通信](#网络io分布式通信)
+        - [通信基础](#通信基础)
+        - [NIO](#nio)
+        - [Netty](#netty)
+        - [WebSocket](#websocket)
+        - [其他](#其他)
+    - [Error](#error)
+    - [项目构建基础](#项目构建基础)
+    - [架构设计](#架构设计)
+    - [系统设计](#系统设计)
+    - [Web服务器与中间件](#web服务器与中间件)
+        - [Web服务器](#web服务器)
+            - [tomcat](#tomcat)
+        - [任务调度](#任务调度)
+        - [安全框架shiro](#安全框架shiro)
+        - [工作流](#工作流)
+        - [规则引擎](#规则引擎)
+        - [分布式文件存储](#分布式文件存储)
+    - [源码搭建汇总](#源码搭建汇总)
+    - [计算机网络](#计算机网络)
+        - [负载均衡](#负载均衡)
+    - [Linux操作系统](#linux操作系统)
+    - [Linux服务器搭建](#linux服务器搭建)
+        - [Linux基础](#linux基础)
+        - [Linux服务器](#linux服务器)
+        - [DevOps介绍](#devops介绍)
+        - [搭建-研发](#搭建-研发)
+    - [Docker和k8s](#docker和k8s)
+        - [搭建-需求、测试](#搭建-需求测试)
+        - [监控和统计](#监控和统计)
+    - [常用研发工具](#常用研发工具)
+    - [算法](#算法)
+    - [前端知识](#前端知识)
+    - [测试](#测试)
 
 <!-- /TOC -->
 
 
 
-# 1. wt1814-note  
+# wt1814-note  
 
 ```mermaid
 graph LR
@@ -84,13 +84,13 @@ graph LR
     1[架构] --> 6[系统优化]
 ```
 
-## 1.1. 总结
+## 总结
 [知识点概况](/docs/survey.md)  
 [大总结1](/docs/summary.md)  
 [大总结2](/docs/summaryTwo.md)  
 
-## 1.2. Java  
-### 1.2.1. Java基础
+## Java  
+### Java基础
 [Java基础](/docs/java/basis/JavaBasic.md)  
 &emsp; [关键字](/docs/java/basis/keyword.md)  
 &emsp; [内部类](/docs/java/basis/InnerClass.md)  
@@ -133,7 +133,7 @@ graph LR
 [对象池](/docs/java/basis/ObjectPool.md)  
 
 
-### 1.2.2. 设计模式  
+### 设计模式  
 [七大设计原则](/docs/java/Design/principles.md)  
 &emsp; [面向抽象和面向接口](/docs/java/Design/abstract.md)  
 &emsp; [UML](/docs/java/Design/UML.md)  
@@ -168,7 +168,7 @@ graph LR
 &emsp; [8种Mybatis里的设计模式](/docs/java/Design/MybatisDesign.md)  
 &emsp; [★★★常用的设计模式](/docs/java/Design/UsedDesign.md)  
 
-### 1.2.3. JVM  
+### JVM  
 [JVM总结](/docs/java/JVM/summary.md)  
 [JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM.md)   
 [编译成Class字节码文件](/docs/java/JVM/Class.md)  
@@ -213,10 +213,10 @@ graph LR
 &emsp; [JVM排查案例](/docs/java/JVM/case.md)  
 -->
 
-### 1.2.4. HotSpot  
+### HotSpot  
 [HotSpot](/docs/java/HotSpot/HotSpot.md)  
 
-### 1.2.5. 并发编程  
+### 并发编程  
 [并发编程总结](/docs/java/concurrent/summary.md)  
 [多线程和并发](/docs/java/concurrent/MultithreadingAndConcurrency.md)  
 &emsp; [Thread.java](/docs/java/concurrent/thread.md)  
@@ -282,8 +282,8 @@ graph LR
 -->
 
 
-## 1.3. 数据库  
-### 1.3.1. MySql
+## 数据库  
+### MySql
 [数据建模](/docs/SQL/modeling.md)  
 &emsp; [字段](/docs/SQL/Field.md)  
 &emsp; [工具](/docs/SQL/modelingTools.md)  
@@ -356,7 +356,7 @@ graph LR
 &emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md)  
 [【分库分表和ES】](/docs/SQL/shardingAndEs.md)  
 
-### 1.3.2. 搜索引擎ES  
+### 搜索引擎ES  
 [ES基本概念](/docs/ES/basicConcepts.md)  
 &emsp; [***ES底层数据结构](/docs/ES/BottomStructure.md)  
 [ES集群基本概念](/docs/ES/ClusterConcept.md)  
@@ -419,8 +419,8 @@ graph LR
 
 -------
 
-## 1.4. SSM  
-### 1.4.1. Spring  
+## SSM  
+### Spring  
 [Spring汇总](/docs/SSM/Spring/SpringSummary.md)  
 [Spring介绍](/docs/SSM/Spring/Spring.md)  
 [Spring使用](/docs/SSM/Spring/SpringUse.md)  
@@ -453,7 +453,7 @@ graph LR
 &emsp; [SpringMVC解析](/docs/SSM/Spring/SpringMVCAnalysis.md)    
 &emsp; [过滤器、拦截器、监听器](docs/web/subassembly.md)  
 
-### 1.4.2. MyBatis  
+### MyBatis  
 [MyBatis](/docs/SSM/MyBatis/MybatisSummary.md)  
 [MyBatis使用](/docs/SSM/MyBatis/MybatisUse.md)  
 &emsp; [MyBatis使用教程](/docs/SSM/MyBatis/Mybatis.md)  
@@ -474,9 +474,9 @@ graph LR
 
 ------------
 
-## 1.5. 分布式框架  
+## 分布式框架  
 
-### 1.5.1. SpringBoot  
+### SpringBoot  
 [SpringBoot总结](/docs/microService/SpringBoot/SpringBootSummary.md)  
 [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
 &emsp; [SpringBoot高级](/docs/microService/SpringBoot/BootHeigh.md)  
@@ -494,7 +494,7 @@ graph LR
 &emsp; &emsp; [内置Tomcat](/docs/microService/SpringBoot/Tomcat.md)  
 [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
-### 1.5.2. SpringCloud    
+### SpringCloud    
 [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
 [注册中心和配置中心](/docs/microService/SpringCloudNetflix/register.md)  
 &emsp; [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
@@ -509,7 +509,7 @@ graph LR
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
 
 
-### 1.5.3. Dubbo  
+### Dubbo  
 [Dubbo总结](/docs/microService/dubbo/DubboSummary.md)  
 [分布式服务治理](/docs/microService/dubbo/CloudAlibaba.md)  
 [Spring Cloud Alibaba](/docs/microService/dubbo/SpringCloudAlibaba.md)  
@@ -549,7 +549,7 @@ graph LR
 &emsp; [负载均衡源码解析](/docs/microService/dubbo/LoadBalance.md)  
 -->
 
-### 1.5.4. Zookeeper
+### Zookeeper
 [Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
 &emsp; [ZAB](/docs/microService/dubbo/ZAB.md)  
 &emsp; [Watcher](/docs/microService/dubbo/Watcher.md)  
@@ -557,20 +557,20 @@ graph LR
 [Zookeeper问题](/docs/microService/dubbo/ZookeeperProblem.md)  
 
 
-### 1.5.5. ServiceMesh
+### ServiceMesh
 
-## 1.6. 分布式
-### 1.6.1. 分布式理论  
+## 分布式
+### 分布式理论  
 
 [分布式和集群](/docs/system/distributed.md)   
 [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
 &emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
 [分布式理论CAP](/docs/microService/thinking/DistributedTheory.md)  
 
-### 1.6.2. 分布式ID
+### 分布式ID
 [分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
 
-### 1.6.3. 分布式事务
+### 分布式事务
 [分布式事务](/docs/microService/thinking/DistriTransaction.md)  
 &emsp; [单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/SingleServiceMultipleSources.md)  
 &emsp; [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
@@ -585,7 +585,7 @@ graph LR
 &emsp; [分布式事务框架](/docs/microService/thinking/framework.md)   
 &emsp; &emsp; [阿里Seata](/docs/microService/thinking/Seata.md)  
 
-### 1.6.4. 分布式锁
+### 分布式锁
 [分布式锁](/docs/microService/thinking/Lock.md)  
 &emsp; [RedisLock](/docs/microService/thinking/redisLock.md)  
 &emsp; [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
@@ -596,8 +596,8 @@ graph LR
 
 ------------
 
-## 1.7. 高并发
-### 1.7.1. 高并发相关概念
+## 高并发
+### 高并发相关概念
 [高并发相关概念](/docs/system/DistributedHighConcurrency.md)   
 [系统性能指标](/docs/system/performance.md)  
 [并发系统三高](/docs/system/threeHigh.md)  
@@ -606,11 +606,11 @@ graph LR
 &emsp; &emsp; [Redis实现库存扣减](/docs/system/stock.md)  
 [资源限制](/docs/system/ResourceConstraints.md)  
 
-### 1.7.2. 缓存  
+### 缓存  
 [缓存](/docs/cache/Cache.md)  
 
 
-#### 1.7.2.1. 缓存介绍
+#### 缓存介绍
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
 [二级缓存](/docs/microService/Redis/doubleCache.md)   
 &emsp; [Caffeine+Redis二级缓存](/docs/microService/Redis/Caffeine.md)  
@@ -620,7 +620,7 @@ graph LR
 [Redis热点key](/docs/cache/hotspotKey.md)  
 
 
-#### 1.7.2.2. Redis
+#### Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
 [Redis安装](/docs/microService/Redis/RedisInstall.md)  
 &emsp; [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
@@ -663,25 +663,25 @@ graph LR
 
 
 
-### 1.7.3. 限流降级
+### 限流降级
 [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
 &emsp; [限流Sentinel](/docs/microService/thinking/Sentinel.md)  
 &emsp; [Sentinel使用](/docs/microService/thinking/SentinelUse.md)  
 &emsp; [如何计算服务限流的配额？](/docs/microService/thinking/limitingQuota.md)  
 [服务降级](/docs/microService/thinking/Demotion.md)  
 
-### 1.7.4. 分布式消息队列  
+### 分布式消息队列  
 [MQ](/docs/microService/mq/mq.md)  
 &emsp; [消息积压](/docs/microService/mq/MessageBacklog.md)  
 &emsp; [消息推拉机制](/docs/microService/mq/PushPull.md)  
 [RocketMQ和Kafka](/docs/microService/mq/RocketMQAndKafka.md)  
 
-#### 1.7.4.1. RocketMQ  
+#### RocketMQ  
 [RocketMQ搭建](/docs/devAndOps/build/RocketBuild.md)  
 [SpringBoot整合RocketMQ](/docs/microService/mq/Rocket/BootRocket.md)  
 
 
-#### 1.7.4.2. Kafka  
+#### Kafka  
 [kafka](/docs/microService/mq/kafka/kafka.md)   
 [kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  
 &emsp; [kafka生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
@@ -711,8 +711,8 @@ graph LR
 
 
 
-## 1.8. 网络IO/分布式通信  
-### 1.8.1. 通信基础
+## 网络IO/分布式通信  
+### 通信基础
 [通信基础](/docs/microService/communication/Netty/basics.md)   
 &emsp; [序列化](/docs/microService/communication/serializbale.md)  
 &emsp; [网络IO](/docs/microService/communication/NetworkIO.md)  
@@ -724,14 +724,14 @@ graph LR
 &emsp; &emsp; [IO性能优化之零拷贝重制](/docs/microService/communication/Netty/zeroCopyRemake.md)  
 [Socket编程](/docs/microService/communication/Socket.md)  
 
-### 1.8.2. NIO 
+### NIO 
 [NIO](/docs/microService/communication/NIO.md)  
 &emsp; [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
 &emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
 &emsp; [Java中的零拷贝](/docs/microService/communication/NIO/JavaZeroCopy.md)  
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 
-### 1.8.3. Netty
+### Netty
 [Netty总结](/docs/microService/communication/Netty/netty.md)   
 [Netty介绍](/docs/microService/communication/Netty/concepts.md)  
 [Netty运行流程介绍](/docs/microService/communication/Netty/operation.md)   
@@ -759,7 +759,7 @@ graph LR
 &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
 &emsp; &emsp; [池化内存分配](/docs/microService/communication/Netty/byteBufTwo.md)    
 
-### 1.8.4. WebSocket
+### WebSocket
 [WebSocket](/docs/webSocket/Summary.md)  
 &emsp; [4种Web端即时通信](/docs/webSocket/LongPolling.md)  
 &emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
@@ -767,12 +767,12 @@ graph LR
 &emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
 &emsp; [IM系统](/docs/webSocket/IM.md)  
 
-### 1.8.5. 其他  
+### 其他  
 [请求合并](/docs/webSocket/RequestMerge.md)  
 
 --------------------
 
-## 1.9. Error  
+## Error  
 [多线程串线了](/docs/Error/ThreadCrossed.md)  
 [熔断降级处理](/docs/Error/hystrix.md)  
 [Redis高并发](/docs/Error/redisConcurrent.md)  
@@ -782,7 +782,7 @@ graph LR
 
 --------
 
-## 1.10. 项目构建基础
+## 项目构建基础
 [版本号](/docs/web/Version.md)  
 [编码规范](/docs/java/Design/CodingSpecification.md)  
 [MVC三层架构上再加一层Manager层](/docs/web/Manager.md)  
@@ -830,7 +830,7 @@ graph LR
 
 
 
-## 1.11. 架构设计  
+## 架构设计  
 [IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
 [软件架构设计模式](/docs/system/designPattern.md)  
 &emsp; [DDD](/docs/system/DDD.md)  
@@ -851,7 +851,7 @@ graph LR
 -->
 
 
-## 1.12. 系统设计  
+## 系统设计  
 [工具类](/docs/SystemDesign/tools.md)  
 [登录](/docs/SystemDesign/Login.md)  
 [单点登录SSO](/docs/SystemDesign/SSO.md)  
@@ -861,46 +861,46 @@ graph LR
 [权限系统](/docs/SystemDesign/power.md)  
 
 
-## 1.13. Web服务器与中间件  
+## Web服务器与中间件  
 [Web服务器与中间件](/docs/frame/OtherMiddleware.md)  
 
-### 1.13.1. Web服务器  
+### Web服务器  
 [Java应用服务器](/docs/webContainer/tomcat/applicationServer.md)  
 [***Undertow替换Tomcat](/docs/webContainer/tomcat/Undertow.md)  
 
-#### 1.13.1.1. tomcat
+#### tomcat
 [tomcat](/docs/webContainer/tomcat/tomcat.md)  
 [tomcat类加载器](/docs/webContainer/tomcat/tomcatClassLoader.md)  
 [tomcat日志](/docs/webContainer/tomcat/tomcatLog.md)  
 [tomcat调优](/docs/webContainer/tomcat/TomcatTuning.md)  
 
 
-### 1.13.2. 任务调度
+### 任务调度
 [任务调度目录](/docs/frame/dispatch.md)  
 [延时队列/延时任务](/docs/frame/delayQueue.md)  
 [分布式调度](/docs/frame/taskSheduling.md)  
 &emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
 [时间轮算法](/docs/microService/dubbo/timeWheel.md)  
 
-### 1.13.3. 安全框架shiro  
+### 安全框架shiro  
 [shiro](/docs/system/shiro.md)  
 [Spring Security](/docs/system/SpringSecurity.md)  
 [数据权限](/docs/system/DataPermissions.md)  
 [CAS集成](/docs/system/CAS.md)  
 
-### 1.13.4. 工作流
+### 工作流
 [工作流](docs/middleware/workflow.md)  
 
-### 1.13.5. 规则引擎
+### 规则引擎
 [规则引擎](docs/middleware/RulesEngine.md)  
 
-### 1.13.6. 分布式文件存储  
+### 分布式文件存储  
 [分布式文件存储](/docs/File/FileStore.md)  
 
 ----------
 
 
-## 1.14. 源码搭建汇总  
+## 源码搭建汇总  
 [JDK源码](/docs/java/basis/JDKSource.md)  
 [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
 [MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
@@ -910,7 +910,7 @@ graph LR
 
 ---------
 
-## 1.15. 计算机网络  
+## 计算机网络  
 [OSI七层网络模型](/docs/network/OSI.md)  
 [应用层](/docs/network/application.md)  
 &emsp; [DNS](docs/network/DNS.md)  
@@ -934,7 +934,7 @@ https://help.aliyun.com/document_detail/122217.html
 -->
 
 
-### 1.15.1. 负载均衡  
+### 负载均衡  
 [负载均衡](/docs/system/loadBalance/loadBalance.md)  
 [Http重定向](/docs/system/loadBalance/redirect.md)  
 [DNS轮询](/docs/system/loadBalance/DNS.md)  
@@ -955,7 +955,7 @@ https://help.aliyun.com/document_detail/122217.html
 
 ----
 
-## 1.16. Linux操作系统  
+## Linux操作系统  
 <!-- 
 xshell 工具Tabby 
 https://mp.weixin.qq.com/s/Cs-WzMm-8VZbLoq9CA-qWw
@@ -985,7 +985,7 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 
 [页缓存](/docs/system/PageCache.md)  
 
-## 1.17. Linux服务器搭建
+## Linux服务器搭建
 <!-- 
 ideaserver jdk   tomcat
 
@@ -1003,7 +1003,7 @@ prometheus
 -->
 
 
-### 1.17.1. Linux基础  
+### Linux基础  
 [CentOS](/docs/devAndOps/centOS/centOS.md)  
 [Linux目录和版本](/docs/Linux/catalogue.md)  
 [Linux命令](/docs/Linux/Command.md)  
@@ -1020,13 +1020,13 @@ prometheus
 [nohup xxx &后台进程关闭](/docs/devAndOps/centOS/nohup.md)  
 [Python3](/docs/devAndOps/centOS/Python3.md)  
 
-### 1.17.2. Linux服务器  
+### Linux服务器  
 [防火墙](/docs/Linux/build/firewall.md)  
 [堡垒机](/docs/Linux/build/FortressMachine.md)  
 [DNS服务器](/docs/Linux/build/DNS.md)  
 [扩容](/docs/devAndOps/centOS/dilatation.md)  
 
-### 1.17.3. DevOps介绍    
+### DevOps介绍    
 [CI/CD](/docs/devAndOps/build/CICD.md)  
 [Devops](/docs/devAndOps/build/devOps.md)  
 [GIT](/docs/devAndOps/git/command.md)  
@@ -1045,7 +1045,7 @@ prometheus
 &emsp; [Jenkins构建Java项目](/docs/devAndOps/jenkins/JenkinsJava.md)  
 
 
-### 1.17.4. 搭建-研发
+### 搭建-研发
 [Linux定时执行脚本](/docs/devAndOps/build/TimingScript.md)  
 [3. JDK安装](/docs/devAndOps/build/JDKBuild.md)  
 [4. Git安装](/docs/devAndOps/git/GitBuild.md)  
@@ -1075,7 +1075,7 @@ prometheus
 [docsify](/docs/devAndOps/build/docsify.md)  
 [3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
 
-## 1.18. Docker和k8s
+## Docker和k8s
 [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
 &emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
 &emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
@@ -1113,7 +1113,7 @@ prometheus
 [6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)  
 
 
-### 1.18.1. 搭建-需求、测试
+### 搭建-需求、测试
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
 [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
 [jira](/docs/devAndOps/build/jira.md)  
@@ -1122,7 +1122,7 @@ prometheus
 [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
 
 
-### 1.18.2. 监控和统计
+### 监控和统计
 [监控](/docs/devAndOps/monitor/indicators.md)  
 &emsp; [监控系统](/docs/devAndOps/monitor/monitor.md)  
 [prometheus](/docs/devAndOps/monitor/prometheus.md)  
@@ -1133,7 +1133,7 @@ prometheus
 
 -----------------------
 
-## 1.19. 常用研发工具  
+## 常用研发工具  
 [Idea](/docs/software/idea/idea.md)  
 [postman](/docs/software/postman.md)  
 [抓包Charles](/docs/software/charles.md)  
@@ -1145,7 +1145,7 @@ prometheus
 
 --------
 
-## 1.20. 算法  
+## 算法  
 [红黑树](/docs/function/redBlack.md)  
 [复杂数据结构](/docs/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/function/SkipList.md)  
@@ -1158,9 +1158,9 @@ prometheus
 [大数据和空间限制](/docs/function/bigdata.md)  
 &emsp; [内存只有 2G，如何对 100 亿数据进行排序？](/docs/function/SmallMemory.md)  
 
-## 1.21. 前端知识  
+## 前端知识  
 [跨平台uni-app](/docs/front/uniapp.md)  
 [nodejs](/docs/front/nodejs.md)  
 
-## 1.22. 测试  
+## 测试  
 [测试](/docs/test/test.md)  
