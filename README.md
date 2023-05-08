@@ -762,7 +762,7 @@ graph LR
 
 ### 1.8.4. WebSocket
 [WebSocket](/docs/webSocket/Summary.md)  
-&emsp; [实时消息推送](/docs/webSocket/LongPolling.md)  
+&emsp; [4种Web端即时通信](/docs/webSocket/LongPolling.md)  
 &emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
 &emsp; [WebSocket协议](/docs/webSocket/WebSocket.md)  
 &emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
@@ -811,9 +811,9 @@ graph LR
 &emsp; [参数校验](/docs/web/Validation.md)  
 &emsp; &emsp; [普通项目参数校验](/docs/web/GeneralValidation.md)  
 &emsp; [Lombok](/docs/web/Lombok.md)  
-[API接口设计](/docs/web/API.md)    
+[★★★API接口设计](/docs/web/API.md)    
 &emsp; [RESTful风格](/docs/web/interface/RESTful.md)  
-&emsp; [接口幂等](/docs/web/interface/idempotent.md)  
+&emsp; [★★★接口幂等](/docs/web/interface/idempotent.md)  
 &emsp; [接口防刷/反爬虫](/docs/web/interface/brush.md)  
 &emsp; [接口安全](/docs/web/interface/security.md)  
 &emsp; [★★★接口响应时间问题](/docs/web/interface/timeout.md)  
@@ -902,7 +902,6 @@ graph LR
 ----------
 
 
-
 ## 1.14. 源码搭建汇总  
 [JDK源码](/docs/java/basis/JDKSource.md)  
 [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
@@ -910,7 +909,6 @@ graph LR
 [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
 [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
 [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
-
 
 ---------
 
