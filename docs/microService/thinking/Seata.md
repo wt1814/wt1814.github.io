@@ -5,7 +5,10 @@
     - [1.1. AT模式](#11-at模式)
         - [1.1.1. ※※※架构及模块组成](#111-※※※架构及模块组成)
         - [1.1.2. 工作流程示例](#112-工作流程示例)
-        - [1.1.3. ACID](#113-acid)
+        - [1.1.3. 全局锁与读写隔离](#113-全局锁与读写隔离)
+            - [1.1.3.1. 读写隔离和全局锁](#1131-读写隔离和全局锁)
+            - [1.1.3.2. 全局锁实现](#1132-全局锁实现)
+            - [1.1.3.3. 防止脏读和脏写](#1133-防止脏读和脏写)
         - [1.1.4. AT模式解析](#114-at模式解析)
 
 <!-- /TOC -->
@@ -29,11 +32,20 @@ https://blog.csdn.net/a315157973/article/details/103113483
 
 https://baijiahao.baidu.com/s?id=1751062475741532450&wfr=spider&for=pc&searchword=seata%20at%20%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB
 -->
+![image](http://182.92.69.8:8081/img/microService/problems/problem-73.png)  
+&emsp; 三大组件
+&emsp; TC：事务协调者。即Transaction Coordinator，维护全局和分支事务的状态，驱动全局事务提交或回滚。  
+&emsp; TM：事务管理器。即Transaction Manager，定义全局事务的范围，开始事务、提交事务，回滚事务。  
+&emsp; RM：资源管理器。即Resource Manager，管理分支事务处理的资源，向TC注册分支事务，报告分支事务的状态，驱动分支事务提交或回滚。
+
+&emsp; 基础交互：TC是需要独立部署的服务，TM和RM是集成在服务中，三大组件相互协作，共同完成分布事务的管理；
+
+------------
 
 &emsp; 1）TM：事务发起者。定义事务的边界，负责告知 TC，分布式事务的开始，提交，回滚。  
 &emsp; 2）RM：资源管理者。管理每个分支事务的资源，每一个 RM 都会作为一个分支事务注册在 TC。  
-&emsp; 3）TC ：事务协调者。负责我们的事务ID的生成，事务注册、提交、回滚等。  
-&emsp; 在Seata的AT模式中，TM和RM都作为SDK的一部分和业务服务在一起，我们可以认为是Client。TC是一个独立的服务，通过服务的注册、发现将自己暴露给Client们。  
+&emsp; 3）TC ：事务协调者。负责事务ID的生成，事务注册、提交、回滚等。  
+&emsp; 在Seata的AT模式中，TM和RM都作为SDK的一部分和业务服务在一起，可以认为是Client。TC是一个独立的服务，通过服务的注册、发现将自己暴露给Client。  
 
 
 &emsp; 从宏观上梳理一下 Seata 的工作过程：  
@@ -43,25 +55,6 @@ https://baijiahao.baidu.com/s?id=1751062475741532450&wfr=spider&for=pc&searchwor
 &emsp; RM 把本地事务作为这个XID的分支事务注册到TC。  
 &emsp; TM 请求 TC 对这个 XID 进行提交或回滚。  
 &emsp; TC 指挥这个 XID 下面的所有分支事务进行提交、回滚。  
-
-------------
-
-![image](http://182.92.69.8:8081/img/microService/problems/problem-73.png)  
-
-&emsp; 三大组件
-
-&emsp; TC：事务协调者
-&emsp; 即Transaction Coordinator，维护全局和分支事务的状态，驱动全局事务提交或回滚。
-
-&emsp; TM：事务管理器
-&emsp; 即Transaction Manager，定义全局事务的范围，开始事务、提交事务，回滚事务。
-
-&emsp; RM：资源管理器
-&emsp; 即Resource Manager，管理分支事务处理的资源，向TC注册分支事务，报告分支事务的状态，驱动分支事务提交或回滚。
-
-&emsp; 基础交互
-&emsp; TC是需要独立部署的服务，TM和RM是集成在服务中，三大组件相互协作，共同完成分布事务的管理；
-
 
 
 ### 1.1.2. 工作流程示例
@@ -133,7 +126,7 @@ update product set name = 'TXC' where id = 1;
 
 ----------------
 
-&emsp; 我们用一个比较简单的业务场景来描述一下Seata AT模式的工作过程。  
+&emsp; 用一个比较简单的业务场景来描述一下Seata AT模式的工作过程。  
 &emsp; 有个充值业务，现在有两个服务，一个负责管理用户的余额，另外一个负责管理用户的积分。  
 &emsp; 当用户充值的时候，首先增加用户账户上的余额，然后增加用户的积分。  
 &emsp; AT流程分为两阶段，主要逻辑全部在第一阶段，第二阶段主要做回滚或日志清理的工作。其中，第一阶段流程如下：  
@@ -150,9 +143,9 @@ update product set name = 'TXC' where id = 1;
 &emsp; 9）积分服务返回远程调用成功给余额服务。  
 &emsp; 10）余额服务的TM向TC申请全局事务的提交/回滚。  
 
-&emsp; 我们如果使用Spring框架的注解式事务，远程调用会在本地事务提交之前发生。先发起远程调用还是先提交本地事务，这个其实没有任何影响。  
+&emsp; 如果使用Spring框架的注解式事务，远程调用会在本地事务提交之前发生。先发起远程调用还是先提交本地事务，这个其实没有任何影响。  
 &emsp; 第二阶段的逻辑就比较简单了。Client和TC之间是有长连接的，如果是正常全局提交，则TC通知多个RM异步清理掉本地的redo和undo log即可。如果是回滚，则TC通知每个RM回滚数据即可。  
-&emsp; 这里就会引出一个问题，由于本地事务都是自己直接提交了，后面如何回滚，由于我们在操作本地业务操作的前后，做记录了undo和redo log，因此可以通过undo log进行回滚。  
+&emsp; 这里就会引出一个问题，由于本地事务都是自己直接提交了，后面如何回滚，由于在操作本地业务操作的前后，做记录了undo和redo log，因此可以通过undo log进行回滚。  
 &emsp; 由于undo和redo log和业务操作在同一个事务中，因此肯定会同时成功或同时失败。  
 &emsp; 但是还会存在一个问题，因为每个事务从本地提交到通知回滚这段时间里，可能这条数据已经被别的事务修改，如果直接用undo log回滚，会导致数据不一致的情况。  
 &emsp; 此时，RM会用redo log进行校验，对比数据是否一样，从而得知数据是否有别的事务修改过。注意：undo log是被修改前的数据，可以用于回滚；redo log是被修改后的数据，用于回滚校验。  
@@ -203,27 +196,37 @@ update product set name = 'TXC' where id = 1;
         ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
         ```
 
-### 1.1.3. ACID  
-<!-- 
-工作机制
-https://zhuanlan.zhihu.com/p/344220223
+### 1.1.3. 全局锁与读写隔离    
+<!--
+***Seata AT 模式事务隔离级别与全局锁设计
+https://blog.csdn.net/hundan_520520/article/details/128833977
 
 seata AT模式是如何实现的
 https://blog.csdn.net/zzti_erlie/article/details/120939588
 
-Seata AT 模式事务隔离级别与全局锁设计 
-https://mp.weixin.qq.com/s/dDAXVyio2ANYvjg_oIFxRg
 
-Seata AT 模式事务隔离级别与全局锁设计
-https://blog.csdn.net/hundan_520520/article/details/128833977
 Seata AT 模式代码级详解
 https://zhuanlan.zhihu.com/p/566683139?utm_id=0
 seata分布式事务
 https://blog.csdn.net/weixin_42420663/article/details/126276049
-深入浅出Seata的AT模式
-https://baijiahao.baidu.com/s?id=1751062475741532450&wfr=spider&for=pc&searchword=seata%20at%20%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB
+
 
 -->
+#### 1.1.3.1. 读写隔离和全局锁
+&emsp; Seata AT模式的事务隔离是建立在支事务的本地隔离级别基础之上的，在数据库本地隔离级别读已提交或以上的前提下，Seata 设计了由事务协调器维护的全局写排他锁，来保证事务间的写隔离，同时，将全局事务默认定义在读未提交的隔离级别上。  
+
+&emsp; 脏读脏写： Seata 的事务是一个全局事务，它包含了若干个分支本地事务，在全局事务执行过程中（全局事务还没执行完），某个本地事务提交了，如果 Seata 没有采取任务措施，则会导致已提交的本地事务被读取，造成脏读，如果数据在全局事务提交前已提交的本地事务被修改，则会造成脏写。  
+
+&emsp; 传统意义的脏读是读到了未提交的数据，Seata 脏读是读到了全局事务下未提交的数据，全局事务可能包含多个本地事务，某个本地事务提交了不代表全局事务提交了。  
+&emsp; 在绝大部分应用在读已提交的隔离级别下工作是没有问题的，而实际上，这当中又有绝大多数的应用场景，实际上工作在读未提交的隔离级别下同样没有问题。  
+&emsp; 在极端场景下，应用如果需要达到全局的读已提交，Seata 也提供了全局锁机制实现全局事务读已提交。但是默认情况下，Seata 的全局事务是工作在读未提交隔离级别的，保证绝大多数场景的高效性。  
+
+
+#### 1.1.3.2. 全局锁实现
+
+
+#### 1.1.3.3. 防止脏读和脏写  
+
 
 
 ### 1.1.4. AT模式解析

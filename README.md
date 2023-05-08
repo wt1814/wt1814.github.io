@@ -10,7 +10,7 @@
         - [1.2.5. 并发编程](#125-并发编程)
     - [1.3. 数据库](#13-数据库)
         - [1.3.1. MySql](#131-mysql)
-        - [1.7.5. 搜索引擎ES](#175-搜索引擎es)
+        - [1.3.2. 搜索引擎ES](#132-搜索引擎es)
     - [1.4. SSM](#14-ssm)
         - [1.4.1. Spring](#141-spring)
         - [1.4.2. MyBatis](#142-mybatis)
@@ -40,19 +40,19 @@
         - [1.8.3. Netty](#183-netty)
         - [1.8.4. WebSocket](#184-websocket)
         - [1.8.5. 其他](#185-其他)
-    - [1.9. Web服务器与中间件](#19-web服务器与中间件)
-        - [1.9.1. Web服务器](#191-web服务器)
-            - [1.9.1.1. tomcat](#1911-tomcat)
-        - [1.9.2. 任务调度](#192-任务调度)
-        - [1.9.3. 安全框架shiro](#193-安全框架shiro)
-        - [1.9.4. 工作流](#194-工作流)
-        - [1.9.5. 规则引擎](#195-规则引擎)
-        - [1.9.6. 分布式文件存储](#196-分布式文件存储)
+    - [1.9. Error](#19-error)
     - [1.10. 项目构建](#110-项目构建)
         - [1.10.1. 构建基础](#1101-构建基础)
     - [1.11. 架构设计](#111-架构设计)
     - [1.12. 系统设计](#112-系统设计)
-    - [1.13. Error](#113-error)
+    - [1.13. Web服务器与中间件](#113-web服务器与中间件)
+        - [1.13.1. Web服务器](#1131-web服务器)
+            - [1.13.1.1. tomcat](#11311-tomcat)
+        - [1.13.2. 任务调度](#1132-任务调度)
+        - [1.13.3. 安全框架shiro](#1133-安全框架shiro)
+        - [1.13.4. 工作流](#1134-工作流)
+        - [1.13.5. 规则引擎](#1135-规则引擎)
+        - [1.13.6. 分布式文件存储](#1136-分布式文件存储)
     - [1.14. 源码搭建汇总](#114-源码搭建汇总)
     - [1.15. 计算机网络](#115-计算机网络)
         - [1.15.1. 负载均衡](#1151-负载均衡)
@@ -71,6 +71,8 @@
     - [1.22. 测试](#122-测试)
 
 <!-- /TOC -->
+
+
 
 # 1. wt1814-note  
 
@@ -346,7 +348,7 @@
 &emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md)  
 [【分库分表和ES】](/docs/SQL/shardingAndEs.md)  
 
-### 1.7.5. 搜索引擎ES  
+### 1.3.2. 搜索引擎ES  
 [ES基本概念](/docs/ES/basicConcepts.md)  
 &emsp; [***ES底层数据结构](/docs/ES/BottomStructure.md)  
 [ES集群基本概念](/docs/ES/ClusterConcept.md)  
@@ -486,9 +488,9 @@
 
 ### 1.5.2. SpringCloud    
 [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
-[Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
-[consul](/docs/microService/SpringCloudNetflix/consul.md)  
-[nacos](/docs/microService/SpringCloudNetflix/nacos.md)  
+[注册中心和配置中心](/docs/microService/SpringCloudNetflix/register.md)  
+&emsp; [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
+&emsp; [nacos](/docs/microService/SpringCloudNetflix/nacos.md)  
 [Spring Cloud GateWay](/docs/microService/SpringCloudNetflix/GateWay.md)  
 [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
 [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
@@ -551,6 +553,7 @@
 
 ## 1.6. 分布式
 ### 1.6.1. 分布式理论  
+
 [分布式和集群](/docs/system/distributed.md)   
 [分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
 &emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
@@ -563,10 +566,11 @@
 [分布式事务](/docs/microService/thinking/DistriTransaction.md)  
 &emsp; [单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/SingleServiceMultipleSources.md)  
 &emsp; [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
-&emsp; &emsp; [JTA+Atomic](/docs/microService/thinking/JTA.md)  
-&emsp; [TCC](/docs/microService/thinking/TCC.md)   
-&emsp; [TCC问题](/docs/microService/thinking/TCCProblem.md)   
-&emsp; [TCC问题1](/docs/microService/thinking/TCCProblemOne.md)   
+&emsp; &emsp; [JTA+Atomic/单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/JTA.md)  
+&emsp; [TCC汇总](/docs/microService/thinking/TCCSummary.md)  
+&emsp; &emsp; [TCC](/docs/microService/thinking/TCC.md)   
+&emsp; &emsp; [TCC问题](/docs/microService/thinking/TCCProblem.md)   
+&emsp; &emsp; [TCC问题1](/docs/microService/thinking/TCCProblemOne.md)   
 &emsp; [Saga](/docs/microService/thinking/Event.md)  
 &emsp; [消息模式](/docs/microService/thinking/news.md)   
 &emsp; [分布式事务的选型和使用](/docs/microService/thinking/DistributedTransactionSelection.md)  
@@ -576,9 +580,9 @@
 ### 1.6.4. 分布式锁
 [分布式锁](/docs/microService/thinking/Lock.md)  
 &emsp; [RedisLock](/docs/microService/thinking/redisLock.md)  
+&emsp; [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
 &emsp; [Redisson](/docs/microService/thinking/Redisson.md)  
 &emsp; &emsp; [Boot整合Redisson](/docs/microService/thinking/BootRedisson.md)  
-&emsp; [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
 &emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
 
@@ -586,6 +590,7 @@
 
 ## 1.7. 高并发
 ### 1.7.1. 高并发相关概念
+[高并发相关概念](/docs/system/DistributedHighConcurrency.md)   
 [系统性能指标](/docs/system/performance.md)  
 [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; [高可用建设](/docs/system/highAvailability.md)  
@@ -599,7 +604,6 @@
 
 #### 1.7.2.1. 缓存介绍
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
-[CDN前置缓存](/docs/system/loadBalance/CDNCache.md)   
 [二级缓存](/docs/microService/Redis/doubleCache.md)   
 &emsp; [Caffeine+Redis二级缓存](/docs/microService/Redis/Caffeine.md)  
 &emsp; [集成两级缓存j2Cache](/docs/microService/Redis/j2Cache.md)  
@@ -611,20 +615,20 @@
 #### 1.7.2.2. Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
 [Redis安装](/docs/microService/Redis/RedisInstall.md)  
+&emsp; [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
 [SpringBoot整合Redis](/docs/microService/Redis/SpringBootRedis.md)  
+[Redis客户端使用及开发规范](/docs/microService/Redis/RedisStandard.md)  
+&emsp; [BigKey](/docs/microService/Redis/BigKey.md)  
 [Redis数据类型](/docs/microService/Redis/RedisStructure.md)  
 &emsp; [Redis基本数据类型](/docs/microService/Redis/RedisBasicStructure.md)  
+&emsp; &emsp;  [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
 &emsp; [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
 &emsp; &emsp; [BitMap实现签到](/docs/microService/Redis/BitMap.md)  
-&emsp; &emsp; [Zset实现排行榜](/docs/microService/Redis/Leaderboard.md)  
 &emsp; [Redis底层实现](/docs/microService/Redis/RedisBottom.md)  
 &emsp; &emsp; [数据结构](/docs/microService/Redis/dataStructure.md)  
 &emsp; &emsp; [SDS](/docs/microService/Redis/SDS.md)  
 &emsp; &emsp; [Dictht](/docs/microService/Redis/Dictht.md)  
 &emsp; &emsp; [数据类型](/docs/microService/Redis/dataType.md)  
-[Redis客户端使用及开发规范](/docs/microService/Redis/RedisStandard.md)  
-&emsp; [BigKey](/docs/microService/Redis/BigKey.md)  
-[Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
 [Redis原理](/docs/microService/Redis/RedisPrinciple.md)  
 &emsp; [Redis为什么那么快？](/docs/microService/Redis/RedisFast.md)  
 &emsp; &emsp; [Redis虚拟内存机制](/docs/microService/Redis/RedisVM.md)  
@@ -634,6 +638,7 @@
 &emsp; [Redis过期键删除](/docs/microService/Redis/Keydel.md)  
 &emsp; [Redis内存淘汰](/docs/microService/Redis/RedisEliminate.md)  
 &emsp; [Redis持久化](/docs/microService/Redis/RedisPersistence.md)  
+&emsp; &emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
 [Redis内置功能](/docs/microService/Redis/BuiltIn.md)    
 &emsp; [RedisPipeline/批处理](/docs/microService/Redis/RedisPipeline.md)  
 &emsp; [Redis事务](/docs/microService/Redis/RedisTransaction.md)  
@@ -647,7 +652,7 @@
 &emsp; [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
 [Redis运维](/docs/microService/Redis/RedisOperation.md)  
 &emsp; [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
-&emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
+
 
 
 ### 1.7.3. 限流降级
@@ -757,43 +762,15 @@
 ### 1.8.5. 其他  
 [请求合并](/docs/webSocket/RequestMerge.md)  
 
---------------------------
+--------------------
 
-## 1.9. Web服务器与中间件  
-[Web服务器与中间件](/docs/frame/OtherMiddleware.md)  
-
-### 1.9.1. Web服务器  
-[Java应用服务器](/docs/webContainer/tomcat/applicationServer.md)  
-[***Undertow替换Tomcat](/docs/webContainer/tomcat/Undertow.md)  
-
-#### 1.9.1.1. tomcat
-[tomcat](/docs/webContainer/tomcat/tomcat.md)  
-[tomcat类加载器](/docs/webContainer/tomcat/tomcatClassLoader.md)  
-[tomcat日志](/docs/webContainer/tomcat/tomcatLog.md)  
-[tomcat调优](/docs/webContainer/tomcat/TomcatTuning.md)  
-
-
-### 1.9.2. 任务调度
-[任务调度目录](/docs/frame/dispatch.md)  
-[延时队列/延时任务](/docs/frame/delayQueue.md)  
-[分布式调度](/docs/frame/taskSheduling.md)  
-&emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
-[时间轮算法](/docs/microService/dubbo/timeWheel.md)  
-
-### 1.9.3. 安全框架shiro  
-[shiro](/docs/system/shiro.md)  
-[Spring Security](/docs/system/SpringSecurity.md)  
-[数据权限](/docs/system/DataPermissions.md)  
-[CAS集成](/docs/system/CAS.md)  
-
-### 1.9.4. 工作流
-[工作流](docs/middleware/workflow.md)  
-
-### 1.9.5. 规则引擎
-[规则引擎](docs/middleware/RulesEngine.md)  
-
-### 1.9.6. 分布式文件存储  
-[分布式文件存储](/docs/File/FileStore.md)  
+## 1.9. Error  
+[多线程串线了](/docs/Error/ThreadCrossed.md)  
+[熔断降级处理](/docs/Error/hystrix.md)  
+[Redis高并发](/docs/Error/redisConcurrent.md)  
+[Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
+[redis scan命令](/docs/Error/redisScan.md)  
+<!-- [雪花利用ZK生成workId]()   -->
 
 --------
 
@@ -877,16 +854,44 @@
 [权限系统](/docs/SystemDesign/power.md)  
 
 
+## 1.13. Web服务器与中间件  
+[Web服务器与中间件](/docs/frame/OtherMiddleware.md)  
+
+### 1.13.1. Web服务器  
+[Java应用服务器](/docs/webContainer/tomcat/applicationServer.md)  
+[***Undertow替换Tomcat](/docs/webContainer/tomcat/Undertow.md)  
+
+#### 1.13.1.1. tomcat
+[tomcat](/docs/webContainer/tomcat/tomcat.md)  
+[tomcat类加载器](/docs/webContainer/tomcat/tomcatClassLoader.md)  
+[tomcat日志](/docs/webContainer/tomcat/tomcatLog.md)  
+[tomcat调优](/docs/webContainer/tomcat/TomcatTuning.md)  
+
+
+### 1.13.2. 任务调度
+[任务调度目录](/docs/frame/dispatch.md)  
+[延时队列/延时任务](/docs/frame/delayQueue.md)  
+[分布式调度](/docs/frame/taskSheduling.md)  
+&emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
+[时间轮算法](/docs/microService/dubbo/timeWheel.md)  
+
+### 1.13.3. 安全框架shiro  
+[shiro](/docs/system/shiro.md)  
+[Spring Security](/docs/system/SpringSecurity.md)  
+[数据权限](/docs/system/DataPermissions.md)  
+[CAS集成](/docs/system/CAS.md)  
+
+### 1.13.4. 工作流
+[工作流](docs/middleware/workflow.md)  
+
+### 1.13.5. 规则引擎
+[规则引擎](docs/middleware/RulesEngine.md)  
+
+### 1.13.6. 分布式文件存储  
+[分布式文件存储](/docs/File/FileStore.md)  
+
 ----------
 
-
-## 1.13. Error  
-[多线程串线了](/docs/Error/ThreadCrossed.md)  
-[熔断降级处理](/docs/Error/hystrix.md)  
-[Redis高并发](/docs/Error/redisConcurrent.md)  
-[Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-[redis scan命令](/docs/Error/redisScan.md)  
-<!-- [雪花利用ZK生成workId]()   -->
 
 
 ## 1.14. 源码搭建汇总  
@@ -896,9 +901,6 @@
 [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
 [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
 [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
-
------------------
-
 
 
 ---------
