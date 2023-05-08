@@ -10,7 +10,39 @@
 </head>
 <body>
   <div id="app"></div>
+
+  <!-- Docsify v4 -->
+  <!--
+    
+    http://www.missfoxw.cn/200324/
+      官网访问不了，手动下载js和css
+    https://github.com/missfoxw/docsify-template
+    https://github.com/iPeng6/docsify-sidebar-collapse
+
+  -->
+  <!-- <script src="//cdn.jsdelivr.net/npm/docsify@4"></script> -->
+
+  <!-- 
+  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-java.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-sql.min.js"></script>
+  <script src="//unpkg.com/docsify/lib/plugins/search.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+  -->
+  
+  <script src="./static/docsify/lib/docsify.min.js"></script>
+  <script src="./static/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  <script src="./static/docsify-pagination/dist/docsify-sidebar-collapse.min.js"></script>
+  <!-- 支持流程图 -->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+  <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
   <script>
+
+    var num = 0;
+    mermaid.initialize({ startOnLoad: false });
+
     window.$docsify = {
       coverpage: true, //封面
       themeable: {
@@ -38,33 +70,24 @@
             nextText: '下一篇',
             crossChapter: true,
             crossChapterText: false
+        },
+        markdown: {
+          renderer: {
+            code: function(code, lang) {
+                // 判断语言是否为 mermaid
+              if (lang === "mermaid") {
+                  // 将div 返回
+                return (
+                  '<div class="mermaid">' + mermaid.render('mermaid-svg-' + num++, code) + "</div>"
+                );
+              }
+              return this.origin.code.apply(this, arguments);
+            }
+          }
         }
+
     }
   </script>
-  <!-- Docsify v4 -->
 
-  <script src="./static/docsify/lib/docsify.min.js"></script>
-  <script src="./static/docsify-pagination/dist/docsify-pagination.min.js"></script>
-  <script src="./static/docsify-pagination/dist/docsify-sidebar-collapse.min.js"></script>
-
-  <!--
-    
-    http://www.missfoxw.cn/200324/
-      官网访问不了，手动下载js和css
-    https://github.com/missfoxw/docsify-template
-    https://github.com/iPeng6/docsify-sidebar-collapse
-
-  -->
-  <!-- <script src="//cdn.jsdelivr.net/npm/docsify@4"></script> -->
-
-  <!-- 
-
-  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
-  <script src="//unpkg.com/prismjs/components/prism-java.js"></script>
-  <script src="//unpkg.com/prismjs/components/prism-sql.min.js"></script>
-  <script src="//unpkg.com/docsify/lib/plugins/search.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
-  -->
 </body>
 </html>
