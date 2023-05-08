@@ -21,6 +21,10 @@ https://www.cnblogs.com/flydean/p/12680281.html
 https://baijiahao.baidu.com/s?id=1671811356385033078&wfr=spider&for=pc&searchword=java%20future
 https://zhuanlan.zhihu.com/p/42682411
 
+
+CompletionService 和 CompletableFuture
+https://blog.csdn.net/weixin_39795049/article/details/127839452
+
 -->
 
 ## 1.1. Future接口

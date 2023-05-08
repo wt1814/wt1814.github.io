@@ -39,6 +39,12 @@
 2. CompletionStage接口实现流式编程  
     &emsp; 此接口包含38个方法、这些方法主要是为了支持函数式编程中流式处理。  
 
+
+---------------
+
+&emsp; CompletableFuture实现了Future接口，是对Future的扩展和增强。 同时CompletableFuture实现了对任务编排的能力，可以组织不同任务的运行顺序、规则以及方式。  
+
+
 # 1. ~~CompletableFuture<T>~~  
 <!--
 *** CompletableFuture实现原理和使用场景 
