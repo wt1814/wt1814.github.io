@@ -351,11 +351,11 @@ graph LR
 &emsp; &emsp; [分库分表后分页查询](/docs/SQL/subSelectLimit.md)  
 &emsp; &emsp; [分库分表后聚合查询](/docs/SQL/aggregate.md)  
 &emsp; [冷热数据分离](/docs/SQL/HotAndColdSeparation.md)  
-&emsp; [数据迁移](/docs/projectImplement/implementation.md)  
+&emsp; [★★★数据迁移](/docs/projectImplement/implementation.md)  
 &emsp; [数据库分布式实现](/docs/SQL/subRealize.md)  
 &emsp; &emsp; [ShardingSphere](/docs/SQL/shardingsphere.md)  
 &emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md)  
-[【分库分表和ES】](/docs/SQL/shardingAndEs.md)  
+[★★★分库分表和ES](/docs/SQL/shardingAndEs.md)  
 
 ### 搜索引擎ES  
 [ES基本概念](/docs/ES/basicConcepts.md)  
