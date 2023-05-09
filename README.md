@@ -75,6 +75,14 @@
 
 # wt1814-note  
 
+```mermaid
+graph LR
+    1[架构] --> 2[基础]
+    1[架构] --> 3[架构]
+    1[架构] --> 4[分布式]
+    1[架构] --> 5[高并发]
+    1[架构] --> 6[系统优化]
+```
 
 
 ## 总结
@@ -929,8 +937,8 @@ https://help.aliyun.com/document_detail/122217.html
 
 ### 负载均衡  
 [负载均衡](/docs/system/loadBalance/loadBalance.md)  
-[Http重定向](/docs/system/loadBalance/redirect.md)  
 [DNS轮询](/docs/system/loadBalance/DNS.md)  
+[Http重定向](/docs/system/loadBalance/redirect.md)  
 [反向代理负载均衡](/docs/system/loadBalance/AgentLoad.md)  
 &emsp; [LVS](/docs/system/loadBalance/LVS.md)  
 &emsp; [Nginx](/docs/system/loadBalance/Nginx/nginx.md)  

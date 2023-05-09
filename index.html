@@ -11,11 +11,6 @@
 <body>
   <div id="app"></div>
 
-
-
- 
-  
-
   <!--
     
     http://www.missfoxw.cn/200324/
@@ -33,14 +28,17 @@
   <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
   -->
-
+  <script src="./static/docsify/npm/mermaid/dist/mermaid.min.js"></script>
   <script>
+    var num = 0;
+
     window.$docsify = {
       coverpage: true, //封面
       themeable: {
         readyTransition: true, // default
         responsiveTables: true  // default
       },
+
       //loadSidebar设置为true，定制侧边栏_sidebar.md
       loadSidebar: true,
       maxLevel: 4,//最大支持渲染的标题层级
@@ -63,8 +61,7 @@
             crossChapter: true,
             crossChapterText: false
         }
-
-    }
+}
   </script>
 
 
@@ -75,7 +72,7 @@
    <!-- 流程图
   
   -->
-  <script src="./static/docsify/npm/mermaid/dist/mermaid.min.js"></script>
+  
 
 </body>
 </html>
