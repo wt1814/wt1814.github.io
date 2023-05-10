@@ -74,7 +74,7 @@
 
 
 # wt1814-note  
-
+★★★  
 ```mermaid
 graph LR
     1[架构] --> 2[基础]
