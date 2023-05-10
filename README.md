@@ -104,8 +104,8 @@ graph LR
 &emsp; [Java基本数据类型](/docs/java/basis/BasicsDataType.md)  
 [Java集合框架](/docs/java/Collection/CollectionFramework.md)  
 &emsp; [HashMap使用](/docs/java/Collection/HashMapUse.md)  
-&emsp; [HashMap源码](/docs/java/Collection/HashMapSource.md)  
-&emsp; [HashMap安全](/docs/java/Collection/HashMapSecurity.md)  
+&emsp; [★★★HashMap源码](/docs/java/Collection/HashMapSource.md)  
+&emsp; [★★★HashMap安全](/docs/java/Collection/HashMapSecurity.md)  
 &emsp; [List和Set](/docs/java/Collection/Collection.md)  
 [JDK1.8](/docs/java/JDK8/JDK8.md)  
 &emsp; [Lambda](/docs/java/JDK8/Lambda.md)  
@@ -113,7 +113,6 @@ graph LR
 &emsp; [Optional](/docs/java/JDK8/Optional.md)  
 &emsp; [DateTime](/docs/java/JDK8/DateTime.md)  
 [Java异常](/docs/java/basis/JavaException.md)  
-[代码块](/docs/java/basis/CodeBlock.md)  
 [IO](/docs/java/IO/JavaIO.md)  
 &emsp; [读取项目Resources下文件](/docs/java/IO/readResources.md)  
 &emsp; [上传下载](/docs/java/IO/Upload.md)  
@@ -166,7 +165,7 @@ graph LR
 [设计模式混编](/docs/java/Design/zlc.md)  
 [设计模式使用](/docs/java/Design/CommonlyUsed.md)  
 &emsp; [Spring中经典的9种设计模式](/docs/java/Design/SpringDesign.md)  
-&emsp; [8种Mybatis里的设计模式](/docs/java/Design/MybatisDesign.md)  
+&emsp; [8种Mybatis的设计模式](/docs/java/Design/MybatisDesign.md)  
 &emsp; [★★★常用的设计模式](/docs/java/Design/UsedDesign.md)  
 
 ### JVM  
