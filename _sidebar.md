@@ -266,6 +266,7 @@
             * [ES可视化客户端](/docs/ES/visualization.md)  
             * [Cerebro](/docs/ES/Cerebro.md)  
         * [Java客户端](/docs/ES/JavaRestClient.md)  
+            * [Java API](/docs/ES/JavaSearch.md)    
             * [ES异步搜索](/docs/ES/AsyncSearch.md)  
         * [索引基本操作](/docs/ES/index.md)  
             * [PB级别的大索引如何设计？](/docs/ES/IndexDesign.md)  

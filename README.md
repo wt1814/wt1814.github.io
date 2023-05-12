@@ -379,6 +379,7 @@ graph LR
 &emsp; &emsp; [ES可视化客户端](/docs/ES/visualization.md)  
 &emsp; &emsp; [Cerebro](/docs/ES/Cerebro.md)  
 &emsp; [Java客户端](/docs/ES/JavaRestClient.md)  
+&emsp; &emsp; [Java API](/docs/ES/JavaSearch.md)  
 &emsp; &emsp; [ES异步搜索](/docs/ES/AsyncSearch.md)  
 &emsp; [索引基本操作](/docs/ES/index.md)  
 &emsp; &emsp; [PB级别的大索引如何设计？](/docs/ES/IndexDesign.md)  
