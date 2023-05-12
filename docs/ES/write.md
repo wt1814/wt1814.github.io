@@ -22,6 +22,9 @@
 &emsp; **<font color = "red">参考中华石衫老师的《ES顶尖高手系列课程》</font>**  
 
 <!--
+
+Elasticsearch Lucene 数据写入原理
+https://www.jianshu.com/p/9689fe39a791
 http://blog.itpub.net/31545820/viewspace-2656265/
 https://blog.csdn.net/jiaojiao521765146514/article/details/83753215
 &emsp; 搜索分为两个过程：  

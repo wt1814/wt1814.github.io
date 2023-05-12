@@ -246,8 +246,6 @@
 * 搜索引擎ES  
     * [ES基本概念](/docs/ES/basicConcepts.md)  
         * [ES底层数据结构](/docs/ES/BottomStructure.md)  
-    * [ES集群基本概念](/docs/ES/ClusterConcept.md)  
-        * [ES集群优化](/docs/ES/ClusterOptimi.md)  
     * [ES原理](/docs/ES/principle.md)  
         * [Elasticsearch搜索为什么那么快？](/docs/ES/SearchFast.md)  
         * [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
