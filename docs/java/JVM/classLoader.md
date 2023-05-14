@@ -19,6 +19,11 @@
         - [1.4.3. 如何在启动时观察加载了哪个jar包中的哪个类？](#143-如何在启动时观察加载了哪个jar包中的哪个类)
         - [1.4.4. 观察特定类的加载上下文](#144-观察特定类的加载上下文)
     - [1.5. 类加载错误](#15-类加载错误)
+    - [java.lang.ClassLoader](#javalangclassloader)
+        - [loadClass方法](#loadclass方法)
+        - [findClass方法](#findclass方法)
+        - [defineClass方法](#defineclass方法)
+        - [小结](#小结)
 
 <!-- /TOC -->
 
@@ -38,26 +43,23 @@
     2. 破坏双亲委派模型的方式  
         1. 继承ClassLoader，重写loadClass()方法。  
         2. `使用线程上下文类加载器(Thread Context ClassLoader)`  
-4. 类加载器使用小结    
+4. java.lang.ClassLoader   
+    1. java.lang.ClassLoader3个主要方法  
+        * loadClass() 就是主要进行类加载的方法，默认的双亲委派机制就实现在这个方法中。
+        * findClass() 根据名称或位置加载.class字节码
+        * definclass() 把字节码转化为Class
     1. `自定义类加载器`：需要继承自ClassLoader，`重写方法findClass()`。   
+        1. 继承ClassLoader  
+        2. 继承ClassLoader   
+        3. 调用defineClass()方法 
     2. `破坏双亲委派模型`：继承ClassLoader，`重写loadClass()方法`；或`使用线程上下文类加载器(Thread Context ClassLoader)`。    
 
 
 # 1. 类加载的方式：类加载器 
 <!-- 
-
-https://mp.weixin.qq.com/s/36GeZelS5GU_PKZimes10g
-JDK为何自己先破坏双亲委派模型? 
-https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
-https://segmentfault.com/a/1190000020858126
-https://www.zhihu.com/question/45022217
+*** https://www.zhihu.com/question/45022217
 
 https://blog.csdn.net/xiaobao5214/article/details/81674215
-*** https://www.jianshu.com/p/22d9c0a2d2e9
-*** https://blog.csdn.net/cy973071263/article/details/104129163
-
-真正理解线程上下文类加载器（多案例分析）
-https://blog.csdn.net/yangcheng33/article/details/52631940
 
 --> 
 ![image](http://182.92.69.8:8081/img/java/JVM/JVM-6.png)  
@@ -153,16 +155,18 @@ protected synchronized Class<?> loadClass(String name, boolean resolve)throws Cl
 
 ### 1.3.2. ~~破坏双亲委派模型~~  
 <!-- 
-为什么需要破坏双亲委派模型
-https://mp.weixin.qq.com/s/2iGaiOpxBIM3msAZYPUOnQ
+
 Java历史上有三次破坏双亲委派模型，是哪三次？ 
 https://mp.weixin.qq.com/s/zZmsi7lpuQHECOHA2ohOvA
-我竟然被“双亲委派”给虐了 
-https://mp.weixin.qq.com/s/Q0MqcvbeI7gAcJH5ZaQWgA
-搞个双亲委派然后再破坏，图啥？ 
-https://mp.weixin.qq.com/s/11P6NwmFsi_EsTxAuul4gQ
-Spring破坏双亲委派模型 
-https://blog.csdn.net/luzhensmart/article/details/82665122
+
+双亲委派机制的破坏不是什么稀奇的事情，很多框架、容器等都会破坏这种机制来实现某些功能。
+第一种被破坏的情况是在双亲委派出现之前。
+由于双亲委派模型是在JDK1.2之后才被引入的，而在这之前已经有用户自定义类加载器在用了。所以，这些是没有遵守双亲委派原则的。
+第二种，是JNDI、JDBC等需要加载SPI接口实现类的情况。
+第三种是为了实现热插拔热部署工具。为了让代码动态生效而无需重启，实现方式时把模块连同类加载器一起换掉就实现了代码的热替换。
+第四种时tomcat等web容器的出现。
+第五种时OSGI、Jigsaw等模块化技术的应用。
+
 -->
 &emsp; 双亲委派模型并不是一个强制性的约束模型，而是Java设计者推荐给开发者的类加载器实现方式，可以“被破坏”。  
 
@@ -212,6 +216,9 @@ https://zhuanlan.zhihu.com/p/311494771
 
 ## 1.4. 类加载器应用  
 ### 1.4.1. 自定义类加载器  
+<!-- 
+*** 编码：https://www.jianshu.com/p/22d9c0a2d2e9
+-->
 
 &emsp; <font color = "red">什么情况下需要自定义类加载器？</font>  
 1. **隔离加载类。**在某些框架内进行中间件与应用的模块隔离，把类加载到不同的环境。
@@ -306,3 +313,102 @@ file:/C:/Program%20Files/Java/jdk1.8.0_131/jre/classes
     [Loaded com.alibaba.dubbo.rpc.InvokerListener from file:/D:/tomcat/webapps/touch/WEB-INF/lib/dubbo-2.5.3.jar]
     [Loaded com.alibaba.dubbo.common.bytecode.Wrapper from file:/D:/tomcat/webapps/touch/WEB-INF/lib/dubbo-2.5.3.jar]
 
+
+## java.lang.ClassLoader  
+&emsp; java.lang.ClassLoader中很重要的三个方法：loadClass方法、findClass方法、defineClass方法。  
+
+### loadClass方法  
+
+```java
+public Class<?> loadClass(String name) throws ClassNotFoundException {
+    return loadClass(name, false);
+}
+protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException{
+    //使用了同步锁，保证不出现重复加载
+    synchronized (getClassLoadingLock(name)) {
+        // 首先检查自己是否已经加载过
+        Class<?> c = findLoadedClass(name);
+        //没找到
+        if (c == null) {
+            long t0 = System.nanoTime();
+            try {
+                //有父类
+                if (parent != null) {
+                    //让父类去加载
+                    c = parent.loadClass(name, false);
+                } else {
+                    //如果没有父类，则委托给启动加载器去加载
+                    c = findBootstrapClassOrNull(name);
+                }
+            } catch (ClassNotFoundException e) {
+                // ClassNotFoundException thrown if class not found
+                // from the non-null parent class loader
+            }
+
+            if (c == null) {
+                // If still not found, then invoke findClass in order
+                // to find the class.
+                long t1 = System.nanoTime();
+                // 如果都没有找到，则通过自定义实现的findClass去查找并加载
+                c = findClass(name);
+
+                // this is the defining class loader; record the stats
+                sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);
+                sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);
+                sun.misc.PerfCounter.getFindClasses().increment();
+            }
+        }
+        //是否需要在加载时进行解析
+        if (resolve) {
+            resolveClass(c);
+        }
+        return c;
+    }
+}
+```
+
+&emsp; 正如loadClass方法所展示的，当类加载请求到来时，先从缓存中查找该类对象，如果存在直接返回，如果不存在则交给该类加载去的父加载器去加载，倘若没有父加载则交给顶级启动类加载器去加载，最后倘若仍没有找到，则使用findClass()方法去加载（关于findClass()稍后会进一步介绍）。从loadClass实现也可以知道如果不想重新定义加载类的规则，也没有复杂的逻辑，只想在运行时加载自己指定的类，那么我们可以直接使用this.getClass().getClassLoder.loadClass("className")，这样就可以直接调用ClassLoader的loadClass方法获取到class对象。  
+
+
+### findClass方法  
+
+```java
+protected Class<?> findClass(String name) throws ClassNotFoundException {
+            throw new ClassNotFoundException(name);
+}
+```
+
+&emsp; 在JDK1.2之前，在自定义类加载时，总会去继承ClassLoader类并重写loadClass方法，从而实现自定义的类加载类，但是在JDK1.2之后已不再建议用户去覆盖loadClass()方法，而是建议把自定义的类加载逻辑写在findClass()方法中，从前面的分析可知，findClass()方法是在loadClass()方法中被调用的，当loadClass()方法中父加载器加载失败后，则会调用自己的findClass()方法来完成类加载，这样就可以保证自定义的类加载器也符合双亲委托模式。  
+
+&emsp; 需要注意的是ClassLoader类中并没有实现findClass()方法的具体代码逻辑，取而代之的是抛出ClassNotFoundException异常，同时应该知道的是findClass方法通常是和defineClass方法一起使用的。  
+
+
+### defineClass方法
+
+```java
+protected final Class<?> defineClass(String name, byte[] b, int off, int len,
+                                ProtectionDomain protectionDomain) throws ClassFormatError{
+    protectionDomain = preDefineClass(name, protectionDomain);
+    String source = defineClassSourceLocation(protectionDomain);
+    Class<?> c = defineClass1(name, b, off, len, protectionDomain, source);
+    postDefineClass(c, protectionDomain);
+    return c;
+}
+```
+
+&emsp; defineClass()方法是用来将byte字节流解析成JVM能够识别的Class对象。通过这个方法不仅能够通过class文件实例化class对象，也可以通过其他方式实例化class对象，如通过网络接收一个类的字节码，然后转换为byte字节流创建对应的Class对象 。  
+
+
+### 小结  
+&emsp; 用户根据需求自己定义的。需要继承自ClassLoader,重写方法findClass()。
+
+&emsp; 如果想要编写自己的类加载器，只需要两步：
+
+* 继承ClassLoader类
+* 覆盖findClass(String className)方法
+
+&emsp; ClassLoader超类的loadClass方法用于将类的加载操作委托给其父类加载器去进行，只有当该类尚未加载并且父类加载器也无法加载该类时，才调用findClass方法。  
+
+&emsp; 如果要实现该方法，必须做到以下几点：  
+1. 为来自本地文件系统或者其他来源的类加载其字节码。
+2. 调用ClassLoader超类的defineClass方法，向虚拟机提供字节码。
