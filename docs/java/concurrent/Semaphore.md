@@ -24,7 +24,7 @@ Semaphore可以用于实现资源池，例如数据库连接池。我们可以�
 &emsp; 使用场景： **<font color = "red">Semaphore通常用于限制可以访问某些资源（物理或逻辑的）的线程数目。Semaphore可以用来构建一些对象池，资源池之类的，比如数据库连接池。</font>**   
 
 &emsp; **Semaphore与ReentrantLock：**  
-&emsp; 信号量为多线程协作提供了更为强大的控制方法。信号量是对锁的扩展。无论是内部锁synchronized还是重入锁ReentrantLock，一次都允许一个线程访问一个资源，而信号量却可以指定多个线程同时访问某一个资源。  
+&emsp; 信号量为多线程协作提供了更为强大的控制方法。信号量是对锁的扩展。`无论是内部锁synchronized还是重入锁ReentrantLock，一次都允许一个线程访问一个资源`，而`信号量却可以指定多个线程同时访问某一个资源`。  
 &emsp; Semaphore基本能完成ReentrantLock的所有工作，使用方法也与之类似，通过acquire()与release()方法来获得和释放临界资源。经实测，Semaphone.acquire()方法默认为可响应中断锁，与ReentrantLock.lockInterruptibly()作用效果一致，也就是说在等待临界资源的过程中可以被Thread.interrupt()方法中断。  
 &emsp; 此外，Semaphore 也实现了可轮询的锁请求与定时锁的功能，除了方法名tryAcquire与tryLock不同，其使用方法与ReentrantLock几乎一致。Semaphore也提供了公平与非公平锁的机制，也可在构造函数中进行设定。  
 &emsp; Semaphore的锁释放操作也由手动进行，因此与ReentrantLock一样，为避免线程因抛出异常而无法正常释放锁的情况发生，释放锁的操作也必须在finally代码块中完成。  

@@ -27,7 +27,7 @@
     &emsp; `“非公平”体现在，如果占用锁的线程刚释放锁，state置为0，而排队等待锁的线程还【未唤醒】时，新来的线程就直接抢占了该锁，那么就“插队”了。`    
     &emsp; 2). ②如果失败，则调用acquire模板方法，等待抢占。   
     3. AQS的acquire模板方法：  
-        1. AQS#acquire()调用子类NonfairSync#tryAcquire()#nonfairTryAcquire()。 **<font color = "blue">如果锁状态是0，再次CAS抢占锁。</font>** 如果锁状态不是0，判断是否当前线程。    
+        1. AQS#acquire()调用子类NonfairSync#tryAcquire()#nonfairTryAcquire()。 **<font color = "blue">如果锁状态是0，再次CAS抢占锁。</font>** 如果锁状态不是0，判断是否当前线程，是当前线程，占用锁；不是当前线程，线程入队。      
         2. acquireQueued(addWaiter(Node.EXCLUSIVE), arg) )，其中addWaiter(Node.EXCLUSIVE)入等待队列。  
         3. acquireQueued(final Node node, int arg)，使线程阻塞在等待队列中获取资源，一直获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。
         4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。  
