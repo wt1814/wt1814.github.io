@@ -28,7 +28,7 @@
     * 按粒度：锁的粒度的不同可以分为表锁、页锁、行锁。  
     * 锁类别：有共享锁(读锁)和排他锁(写锁)。锁类别取决于存储引擎执行的sql语句。  
     ![image](http://182.92.69.8:8081/img/SQL/sql-47.png)  
-2. InnoDB共有七种类型的锁：共享/排它锁、意向锁、记录锁（Record lock）、间隙锁（Gap lock）、临键锁（Next-key lock）、插入意向锁、自增锁。  
+2. ~~InnoDB共有七种类型的锁：共享/排它锁、意向锁、记录锁（Record lock）、间隙锁（Gap lock）、临键锁（Next-key lock）、插入意向锁、自增锁。~~  
 3. **<font color = "red">InnoDB存储引擎的锁的算法有三种：</font>**  
     1. Record lock：单个行记录上的锁。  
     2. Gap lock：间隙锁，锁定一个范围，不包括记录本身。  
