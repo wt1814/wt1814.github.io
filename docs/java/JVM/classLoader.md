@@ -12,18 +12,18 @@
                 - [1.3.2.1.3. Tomcat](#13213-tomcat)
                 - [1.3.2.1.4. Spring](#13214-spring)
             - [1.3.2.2. 小结：两种破坏方式](#1322-小结两种破坏方式)
-        - [自己写的java.lang.String可以让jvm加载到吗？](#自己写的javalangstring可以让jvm加载到吗)
+        - [1.3.3. 自己写的java.lang.String可以让jvm加载到吗？](#133-自己写的javalangstring可以让jvm加载到吗)
     - [1.4. 类加载器应用](#14-类加载器应用)
         - [1.4.1. 自定义类加载器](#141-自定义类加载器)
         - [1.4.2. 查看Boostrap ClassLoader 加载的类库](#142-查看boostrap-classloader-加载的类库)
         - [1.4.3. 如何在启动时观察加载了哪个jar包中的哪个类？](#143-如何在启动时观察加载了哪个jar包中的哪个类)
         - [1.4.4. 观察特定类的加载上下文](#144-观察特定类的加载上下文)
     - [1.5. 类加载错误](#15-类加载错误)
-    - [java.lang.ClassLoader](#javalangclassloader)
-        - [loadClass方法](#loadclass方法)
-        - [findClass方法](#findclass方法)
-        - [defineClass方法](#defineclass方法)
-        - [小结](#小结)
+    - [1.6. java.lang.ClassLoader](#16-javalangclassloader)
+        - [1.6.1. loadClass方法](#161-loadclass方法)
+        - [1.6.2. findClass方法](#162-findclass方法)
+        - [1.6.3. defineClass方法](#163-defineclass方法)
+        - [1.6.4. 小结](#164-小结)
 
 <!-- /TOC -->
 
@@ -59,7 +59,7 @@
 <!-- 
 *** https://www.zhihu.com/question/45022217
 
-https://blog.csdn.net/xiaobao5214/article/details/81674215
+
 
 --> 
 ![image](http://182.92.69.8:8081/img/java/JVM/JVM-6.png)  
@@ -159,6 +159,9 @@ protected synchronized Class<?> loadClass(String name, boolean resolve)throws Cl
 Java历史上有三次破坏双亲委派模型，是哪三次？ 
 https://mp.weixin.qq.com/s/zZmsi7lpuQHECOHA2ohOvA
 
+三次 jdk 破坏双亲委派模型
+https://www.jianshu.com/p/166c5360a40b
+
 双亲委派机制的破坏不是什么稀奇的事情，很多框架、容器等都会破坏这种机制来实现某些功能。
 第一种被破坏的情况是在双亲委派出现之前。
 由于双亲委派模型是在JDK1.2之后才被引入的，而在这之前已经有用户自定义类加载器在用了。所以，这些是没有遵守双亲委派原则的。
@@ -208,7 +211,7 @@ https://mp.weixin.qq.com/s/_BtYDuMachG5YY6giOEMAg
 2. `使用线程上下文类加载器(Thread Context ClassLoader)`  
 
 
-### 自己写的java.lang.String可以让jvm加载到吗？  
+### 1.3.3. 自己写的java.lang.String可以让jvm加载到吗？  
 <!-- 
 
 https://zhuanlan.zhihu.com/p/311494771
@@ -314,10 +317,10 @@ file:/C:/Program%20Files/Java/jdk1.8.0_131/jre/classes
     [Loaded com.alibaba.dubbo.common.bytecode.Wrapper from file:/D:/tomcat/webapps/touch/WEB-INF/lib/dubbo-2.5.3.jar]
 
 
-## java.lang.ClassLoader  
+## 1.6. java.lang.ClassLoader  
 &emsp; java.lang.ClassLoader中很重要的三个方法：loadClass方法、findClass方法、defineClass方法。  
 
-### loadClass方法  
+### 1.6.1. loadClass方法  
 
 ```java
 public Class<?> loadClass(String name) throws ClassNotFoundException {
@@ -370,7 +373,7 @@ protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundE
 &emsp; 正如loadClass方法所展示的，当类加载请求到来时，先从缓存中查找该类对象，如果存在直接返回，如果不存在则交给该类加载去的父加载器去加载，倘若没有父加载则交给顶级启动类加载器去加载，最后倘若仍没有找到，则使用findClass()方法去加载（关于findClass()稍后会进一步介绍）。从loadClass实现也可以知道如果不想重新定义加载类的规则，也没有复杂的逻辑，只想在运行时加载自己指定的类，那么我们可以直接使用this.getClass().getClassLoder.loadClass("className")，这样就可以直接调用ClassLoader的loadClass方法获取到class对象。  
 
 
-### findClass方法  
+### 1.6.2. findClass方法  
 
 ```java
 protected Class<?> findClass(String name) throws ClassNotFoundException {
@@ -383,7 +386,7 @@ protected Class<?> findClass(String name) throws ClassNotFoundException {
 &emsp; 需要注意的是ClassLoader类中并没有实现findClass()方法的具体代码逻辑，取而代之的是抛出ClassNotFoundException异常，同时应该知道的是findClass方法通常是和defineClass方法一起使用的。  
 
 
-### defineClass方法
+### 1.6.3. defineClass方法
 
 ```java
 protected final Class<?> defineClass(String name, byte[] b, int off, int len,
@@ -399,7 +402,7 @@ protected final Class<?> defineClass(String name, byte[] b, int off, int len,
 &emsp; defineClass()方法是用来将byte字节流解析成JVM能够识别的Class对象。通过这个方法不仅能够通过class文件实例化class对象，也可以通过其他方式实例化class对象，如通过网络接收一个类的字节码，然后转换为byte字节流创建对应的Class对象 。  
 
 
-### 小结  
+### 1.6.4. 小结  
 &emsp; 用户根据需求自己定义的。需要继承自ClassLoader,重写方法findClass()。
 
 &emsp; 如果想要编写自己的类加载器，只需要两步：
