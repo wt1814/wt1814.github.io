@@ -11,8 +11,11 @@
 
 <!-- /TOC -->
 
-&emsp; **<font color = "clime">分片大小官方推荐值为20-40GB。</font>**  
-&emsp; 与关系型数据库（如 MySQL）不同的是，ES中尽量考虑非范式化设计，即通过冗余字段，尽可能地消除 join 查询，以提高查询性能，本质上是一种以空间换时间的思想。  
+
+&emsp; **<font color = "red">总结：</font>**  
+1. Mapping的设计  
+2. 文档document设计  
+3. 分片设计：**<font color = "clime">分片大小官方推荐值为20-40GB。</font>** 副本数设置：对于集群数据节点 >=2 的场景：建议副本至少设置为1。         
 
 
 # 1. ~~ES建模~~  
@@ -122,7 +125,7 @@ Mapping建模:
 
 -->
 
-&emsp; **<font color = "red">索引分为静态Mapping(自定义字段)+动态Mapping(ES 自动根据导入数据适配)。</font>**  
+&emsp; **<font color = "red">索引分为静态Mapping（自定义字段） + 动态Mapping（ES自动根据导入数据适配）。</font>**  
 &emsp; 实战业务场景建议：选用静态Mapping，根据业务类型自己定义字段类型。好处：可控；节省存储空间（默认string是text+keyword，实际业务不一定需要）。  
 &emsp; **Mapping建议结合[索引模板](/docs/ES/index.md)定义。**  
 

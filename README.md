@@ -358,13 +358,13 @@ graph LR
 
 ### 搜索引擎ES  
 [ES基本概念](/docs/ES/basicConcepts.md)  
-&emsp; [***ES底层数据结构](/docs/ES/BottomStructure.md)  
-[ES原理](/docs/ES/principle.md)  
+&emsp; [★★★ES底层数据结构](/docs/ES/BottomStructure.md)  
+[★★★ES原理](/docs/ES/principle.md)  
 &emsp; [Elasticsearch搜索为什么那么快？](/docs/ES/SearchFast.md)  
 &emsp; [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
 &emsp; [ES增删改原理](/docs/ES/write.md)  
 &emsp; [ES缓存](/docs/ES/ESCache.md)  
-[ES优化](/docs/ES/ESoptimization.md)  
+[★★★ES优化](/docs/ES/ESoptimization.md)  
 &emsp; [ES优化](/docs/ES/optimization.md)  
 &emsp; [搜索速度优化](/docs/ES/SearchSpeed.md)  
 &emsp; [写入速度和磁盘使用量优化](/docs/ES/WriteSpeed.md)  
