@@ -260,7 +260,6 @@
         * [★★★同步数据到ES](/docs/ES/synES.md)  
         * [Elasticsearch操作客户端](/docs/ES/ElasticsearchREST.md)  
             * [ES可视化客户端](/docs/ES/visualization.md)  
-            * [Cerebro](/docs/ES/Cerebro.md)  
         * [Java客户端](/docs/ES/JavaRestClient.md)  
             * [Java API](/docs/ES/JavaSearch.md)    
             * [ES异步搜索](/docs/ES/AsyncSearch.md)  
