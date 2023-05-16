@@ -370,7 +370,6 @@ graph LR
 &emsp; [写入速度和磁盘使用量优化](/docs/ES/WriteSpeed.md)  
 &emsp; [故障判断](/docs/ES/FaultJudgment.md)  
 [ES使用](/docs/ES/useTutorials.md)  
-&emsp; [***ES使用场景](/docs/ES/ESUse.md)  
 &emsp; [***ES建模](/docs/ES/modeling.md)  
 &emsp; [***同步数据到ES](/docs/ES/synES.md)  
 &emsp; [Elasticsearch操作客户端](/docs/ES/ElasticsearchREST.md)  

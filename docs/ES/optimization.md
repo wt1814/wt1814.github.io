@@ -32,7 +32,7 @@
 &emsp; ElasticSearch是基于Lucene开发的，而Lucene是使用Java开发的，所以也需要针对JVM进行调优。
 
 * 确保堆内存最小值(Xms)与最大值(Xmx)的大小是相同的，防止程序在运行时改变堆内存大小。  
-* **Elasticsearch 默认安装后设置的堆内存是 1GB。可通过 ../config/jvm.option 文件进行配置，但是最好不要超过物理内存的50%和超过 32GB。**  
+* **Elasticsearch 默认安装后设置的堆内存是 1GB。可通过 ../config/jvm.option 文件进行配置，但是最好`不要超过物理内存的50%和超过32GB`。**  
 * GC 默认采用 CMS 的方式，并发但是有 STW 的问题，可以考虑使用 G1 收集器。  
 
 <!-- 
