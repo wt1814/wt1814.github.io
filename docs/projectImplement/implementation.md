@@ -6,8 +6,8 @@
     - [1.1. 从未分库分表动态切换到分库分表](#11-从未分库分表动态切换到分库分表)
         - [1.1.1. 停机迁移方案](#111-停机迁移方案)
         - [1.1.2. 双写迁移方案](#112-双写迁移方案)
-    - [Canal+Proxy同步](#canalproxy同步)
-    - [1.2. MySql现有的未分区表进行分区](#12-mysql现有的未分区表进行分区)
+    - [1.2. Canal+Proxy同步](#12-canalproxy同步)
+    - [1.3. MySql现有的未分区表进行分区](#13-mysql现有的未分区表进行分区)
 
 <!-- /TOC -->
 
@@ -48,14 +48,14 @@ https://mp.weixin.qq.com/s/gJy3N5UtSdb3FhJ9HUlO6A
 
 ![image](http://182.92.69.8:8081/img/SQL/sql-128.png)  
 
-## Canal+Proxy同步  
+## 1.2. Canal+Proxy同步  
 <!-- 
 
 https://blog.csdn.net/qq_20545159/article/details/121760472
 -->
 
 
-## 1.2. MySql现有的未分区表进行分区
+## 1.3. MySql现有的未分区表进行分区
 <!-- 
 
 https://blog.csdn.net/sunvince/article/details/7752662
