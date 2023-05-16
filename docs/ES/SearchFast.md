@@ -16,12 +16,6 @@ Elasticsearch：ES 倒排索引为什么查询速度会这么快
 https://www.jianshu.com/p/addefe15f3e9
 -->
 
-<!-- 
-ES和lucene
-https://blog.csdn.net/universsky2015/article/details/108465744
-https://blog.csdn.net/mijichui2153/article/details/107303579
-
--->
 
 ## 1.1. 架构
 &emsp; ES是天然的分布式架构，由多台机器组成。  

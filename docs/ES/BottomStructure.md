@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. ES底层数据结构](#1-es底层数据结构)
+- [1. ~~ES底层数据结构~~](#1-es底层数据结构)
     - [1.1. ES与lucene的关联](#11-es与lucene的关联)
     - [1.2. 倒排索引简介](#12-倒排索引简介)
         - [1.2.1. 示例](#121-示例)
@@ -12,6 +12,7 @@
     - [1.3. 分析(建索引与检索)](#13-分析建索引与检索)
         - [1.3.1. ~~索引与查询~~](#131-索引与查询)
         - [1.3.2. ik中文分词器](#132-ik中文分词器)
+    - [1.4. FST](#14-fst)
 
 <!-- /TOC -->
 
@@ -21,10 +22,11 @@
 &emsp; **<font color = "red">倒排序索引包含两个部分：单词词典和倒排列表。</font>** 单词词典：记录所有文档单词；记录单词到倒排列表的关联关系。倒排列表：记录单词与对应文档结合，由倒排索引项组成。  
 2. 分析（建索引与检索）  
 &emsp; 文本分析由分析器来执行，而分析器由分词器、过滤器和字符映射器组成。  
-&emsp; **<font color = "clime">有一点需要牢记，Elasticsearch有些查询会被分析，而有些则不会。例如，前缀查询不会被分析，而匹配查询会被分析。</font>**     
+&emsp; **<font color = "clime">有一点需要牢记，Elasticsearch有些查询会被分析，而有些则不会。例如，前缀查询不会被分析，而匹配查询会被分析。</font>**   
+3. FST  
 
 
-# 1. ES底层数据结构  
+# 1. ~~ES底层数据结构~~  
 <!-- 
 
 https://blog.csdn.net/weixin_42128977/article/details/127705236
@@ -34,8 +36,15 @@ https://zhuanlan.zhihu.com/p/344550528
 
 视频  
 https://www.bilibili.com/video/BV17S4y1U7xb?spm_id_from=333.337.search-card.all.click
-
 -->
+
+<!-- 
+Elasticsearch 搜索为什么那么快？
+https://www.jianshu.com/p/9c7d4bb3b093
+Elasticsearch：ES 倒排索引为什么查询速度会这么快
+https://www.jianshu.com/p/addefe15f3e9
+-->
+
 
 ## 1.1. ES与lucene的关联
 <!-- 
@@ -198,6 +207,13 @@ https://mp.weixin.qq.com/s?__biz=MzI1NDY0MTkzNQ==&mid=2247491016&idx=1&sn=843b7e
 https://mp.weixin.qq.com/s/wpLeWIgq6yQEolKcv_P8hA
 -->
 
+
+## 1.4. FST  
+<!-- 
+
+https://www.jianshu.com/p/addefe15f3e9
+https://www.jianshu.com/p/9c7d4bb3b093
+-->
 
 
 
