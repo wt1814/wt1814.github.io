@@ -500,8 +500,9 @@ graph LR
 [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
 [Spring Cloud Feign](/docs/microService/SpringCloudNetflix/Feign.md)  
 [Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/Hytrix.md)  
-[Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
-[链路SkyWalking](/docs/microService/SpringCloudNetflix/SkyWalking.md)  
+[链路](/docs/microService/SpringCloudNetflix/link.md)   
+&emsp; [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
+&emsp; [链路SkyWalking](/docs/microService/SpringCloudNetflix/SkyWalking.md)  
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
 
 
