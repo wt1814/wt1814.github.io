@@ -19,8 +19,10 @@
     * @SpringBootConfiguration  
     * @EnableAutoConfiguration  
 2. @EnableAutoConfiguration：1).@AutoConfigurationPackage自动配置包；2).使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。   
-    1. @Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。  
+    1. @Import({AutoConfigurationImportSelector.class})，开启自动配置，导入AutoConfigurationImportSelector类。  
     2. AutoConfigurationImportSelector#getCandidateConfigurations()方法获取配置文件spring.factories所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
+
+
 
 # 1. SpringBoot自动配置
 ![image](http://182.92.69.8:8081/img/sourceCode/springBoot/springBoot-3.png)  

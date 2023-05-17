@@ -17,7 +17,6 @@
 https://blog.csdn.net/zzhuan_1/article/details/85312053
 -->
 
-## 事件回调机制  
 &emsp; SpringBoot涉及了几个比较重要的事件回调机制。回调接口有：ApplicationContextInitializer、SpringApplicationRunListener、CommandLineRunner、ApplicationRunner。 
 
 |类型|描述|获取方式|
