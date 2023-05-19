@@ -525,7 +525,6 @@ graph LR
 &emsp; [远程调用](/docs/microService/dubbo/remote.md)  
 &emsp; &emsp; [Dubbo调用介绍](/docs/microService/dubbo/RemoteIntroduce.md)  
 &emsp; &emsp; [Dubbo降级、容错、负载](/docs/microService/dubbo/Load.md)  
-&emsp; &emsp; [Dubbo协议和序列化](/docs/microService/dubbo/Agreement.md)  
 &emsp; [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
 &emsp; &emsp; [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
 &emsp; &emsp; [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  

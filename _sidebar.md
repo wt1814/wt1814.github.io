@@ -391,7 +391,6 @@
         * [远程调用](/docs/microService/dubbo/remote.md)  
             * [Dubbo调用介绍](/docs/microService/dubbo/RemoteIntroduce.md)  
             * [Dubbo降级、容错、负载](/docs/microService/dubbo/Load.md)  
-            * [Dubbo协议和序列化](/docs/microService/dubbo/Agreement.md)  
         * [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
             * [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
             * [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
