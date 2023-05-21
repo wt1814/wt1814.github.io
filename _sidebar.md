@@ -521,8 +521,8 @@
     * [kafka源码](/docs/microService/mq/kafka/kafkaSource.md)  
         * [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
         * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md)  
-* 网络  
-    * [网络IO](/docs/microService/communication/Netty/basics.md)    
+* 网络IO/分布式通信    
+    * [通信基础](/docs/microService/communication/Netty/basics.md)    
         * [序列化](/docs/microService/communication/serializbale.md)  
         * [网络IO](/docs/microService/communication/NetworkIO.md)  
             * [服务器处理连接的架构演变](/docs/microService/communication/ProcessingLinks.md)  
