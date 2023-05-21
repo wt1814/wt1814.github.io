@@ -637,7 +637,7 @@ graph LR
 [Redis原理](/docs/microService/Redis/RedisPrinciple.md)  
 &emsp; [Redis为什么那么快？](/docs/microService/Redis/RedisFast.md)  
 &emsp; &emsp; [Redis虚拟内存机制](/docs/microService/Redis/RedisVM.md)  
-&emsp; &emsp; [Redis事件/Reactor](/docs/microService/Redis/RedisEvent.md)  
+&emsp; &emsp; [Redis事件/Reactor（IO多路复用）](/docs/microService/Redis/RedisEvent.md)  
 &emsp; &emsp; [Redis多线程模型](/docs/microService/Redis/RedisMultiThread.md)  
 &emsp; &emsp; [Redis协议](/docs/microService/Redis/RESP.md)  
 &emsp; [Redis过期键删除](/docs/microService/Redis/Keydel.md)  
