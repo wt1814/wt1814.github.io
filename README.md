@@ -31,7 +31,7 @@
             - [缓存介绍](#缓存介绍)
             - [Redis](#redis)
         - [限流降级](#限流降级)
-        - [分布式消息队列](#分布式消息队列)
+        - [MQ](#mq)
             - [RocketMQ](#rocketmq)
             - [Kafka](#kafka)
     - [网络IO/分布式通信](#网络io分布式通信)
@@ -667,7 +667,7 @@ graph LR
 &emsp; [如何计算服务限流的配额？](/docs/microService/thinking/limitingQuota.md)  
 [服务降级](/docs/microService/thinking/Demotion.md)  
 
-### 分布式消息队列  
+### MQ    
 [MQ](/docs/microService/mq/mq.md)  
 &emsp; [消息积压](/docs/microService/mq/MessageBacklog.md)  
 &emsp; [消息推拉机制](/docs/microService/mq/PushPull.md)  
@@ -687,9 +687,9 @@ graph LR
 &emsp; [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
 &emsp; [kafka服务端](/docs/microService/mq/kafka/kafkaServer.md)  
 [【kafka特性】](/docs/microService/mq/kafka/kafkaCharacteristic.md)  
-&emsp; [高性能-内存](/docs/microService/mq/kafka/Memory.md)  
-&emsp; [高性能-持久化/磁盘IO-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
-&emsp; [高性能-零拷贝的使用](/docs/microService/mq/kafka/networkIO.md)  
+&emsp; [【高性能】-内存](/docs/microService/mq/kafka/Memory.md)  
+&emsp; [【高性能】-持久化/磁盘IO-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
+&emsp; [【高性能】-零拷贝的使用](/docs/microService/mq/kafka/networkIO.md)  
 &emsp; [副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
 &emsp; [如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
 &emsp; [kafka幂等性](/docs/microService/mq/kafka/kafkaIdempotent.md)  

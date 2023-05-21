@@ -494,7 +494,7 @@
     * [Sentinel使用](/docs/microService/thinking/SentinelUse.md)  
     * [如何计算服务限流的配额？](/docs/microService/thinking/limitingQuota.md)  
 * [服务降级](/docs/microService/thinking/Demotion.md)  
-* 分布式消息队列
+* MQ  
     * [MQ](/docs/microService/mq/mq.md)  
         * [消息积压](/docs/microService/mq/MessageBacklog.md)  
         * [消息推拉机制](/docs/microService/mq/PushPull.md)  
@@ -506,9 +506,9 @@
         * [kafka消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
         * [kafka服务端](/docs/microService/mq/kafka/kafkaServer.md)  
     * [【kafka特性】](/docs/microService/mq/kafka/kafkaCharacteristic.md)  
-        * [高性能-内存](/docs/microService/mq/kafka/Memory.md)    
-        * [高性能-持久化/磁盘IO-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
-        * [高性能-零拷贝的使用](/docs/microService/mq/kafka/networkIO.md)  
+        * [【高性能】-内存](/docs/microService/mq/kafka/Memory.md)    
+        * [【高性能】-持久化/磁盘IO-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
+        * [【高性能】-零拷贝的使用](/docs/microService/mq/kafka/networkIO.md)  
         * [副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
         * [如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
         * [kafka幂等性](/docs/microService/mq/kafka/kafkaIdempotent.md)  
