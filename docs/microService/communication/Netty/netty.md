@@ -1,4 +1,5 @@
 
+&emsp; websocket是一个通信协议，而netty是一个Java网络编程框架。可以利用netty实现websocket通信，也可以用其他的。  
 
 [Netty介绍](/docs/microService/communication/Netty/concepts.md)  
 [Netty运行流程介绍](/docs/microService/communication/Netty/operation.md)   

@@ -719,10 +719,11 @@ graph LR
 &emsp; &emsp; [多路复用之Reactor模式](/docs/microService/communication/Netty/Reactor.md)  
 &emsp; &emsp; [IO性能优化之零拷贝](/docs/microService/communication/Netty/zeroCopy.md)  
 &emsp; &emsp; [IO性能优化之零拷贝重制](/docs/microService/communication/Netty/zeroCopyRemake.md)  
-[Socket编程](/docs/microService/communication/Socket.md)  
 
-### webSocket协议
+
+### webSocket协议  
 [webSocket协议](/docs/webSocket/Summary.md)  
+&emsp; [Socket编程](/docs/microService/communication/Socket.md)  
 &emsp; [4种Web端即时通信](/docs/webSocket/LongPolling.md)  
 &emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
 &emsp; [WebSocket协议](/docs/webSocket/WebSocket.md)  
