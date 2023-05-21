@@ -33,7 +33,7 @@ https://blog.csdn.net/a315157973/article/details/103113483
 https://baijiahao.baidu.com/s?id=1751062475741532450&wfr=spider&for=pc&searchword=seata%20at%20%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB
 -->
 ![image](http://182.92.69.8:8081/img/microService/problems/problem-73.png)  
-&emsp; 三大组件
+&emsp; 三大组件  
 &emsp; TC：事务协调者。即Transaction Coordinator，维护全局和分支事务的状态，驱动全局事务提交或回滚。  
 &emsp; TM：事务管理器。即Transaction Manager，定义全局事务的范围，开始事务、提交事务，回滚事务。  
 &emsp; RM：资源管理器。即Resource Manager，管理分支事务处理的资源，向TC注册分支事务，报告分支事务的状态，驱动分支事务提交或回滚。

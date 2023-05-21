@@ -17,7 +17,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！  
+1. 很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占用！！！  
 2. redis底层8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。  
 3. 3种链表：  
     * 双端链表LinkedList  
@@ -67,7 +67,7 @@ https://blog.csdn.net/u014563989/article/details/81066074?utm_medium=distribute.
 -->
 
 ## 1.2. 对象系统RedisObject  
-&emsp; **<font color = "clime">(很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！)</font>**  
+&emsp; **<font color = "clime">(很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占用！！！)</font>**  
 &emsp; Redis并没有直接使用数据结构来实现数据类型，而是基于这些数据结构创建了一个对象系统RedisObject，每个对象都使用到了至少一种底层数据结构。 **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
 
 <!-- 
