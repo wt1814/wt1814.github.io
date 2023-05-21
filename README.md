@@ -36,9 +36,9 @@
             - [Kafka](#kafka)
     - [网络IO/分布式通信](#网络io分布式通信)
         - [通信基础](#通信基础)
+        - [webSocket协议](#websocket协议)
         - [NIO](#nio)
-        - [Netty](#netty)
-        - [WebSocket](#websocket)
+        - [Netty通信框架](#netty通信框架)
         - [其他](#其他)
     - [Error](#error)
     - [项目构建基础](#项目构建基础)
@@ -721,6 +721,15 @@ graph LR
 &emsp; &emsp; [IO性能优化之零拷贝重制](/docs/microService/communication/Netty/zeroCopyRemake.md)  
 [Socket编程](/docs/microService/communication/Socket.md)  
 
+### webSocket协议
+[webSocket协议](/docs/webSocket/Summary.md)  
+&emsp; [4种Web端即时通信](/docs/webSocket/LongPolling.md)  
+&emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
+&emsp; [WebSocket协议](/docs/webSocket/WebSocket.md)  
+&emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
+&emsp; [IM系统](/docs/webSocket/IM.md)  
+
+
 ### NIO 
 [NIO](/docs/microService/communication/NIO.md)  
 &emsp; [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
@@ -728,7 +737,7 @@ graph LR
 &emsp; [Java中的零拷贝](/docs/microService/communication/NIO/JavaZeroCopy.md)  
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 
-### Netty
+### Netty通信框架
 [Netty总结](/docs/microService/communication/Netty/netty.md)   
 [Netty介绍](/docs/microService/communication/Netty/concepts.md)  
 [Netty运行流程介绍](/docs/microService/communication/Netty/operation.md)   
@@ -756,13 +765,6 @@ graph LR
 &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
 &emsp; &emsp; [池化内存分配](/docs/microService/communication/Netty/byteBufTwo.md)    
 
-### WebSocket
-[WebSocket](/docs/webSocket/Summary.md)  
-&emsp; [4种Web端即时通信](/docs/webSocket/LongPolling.md)  
-&emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
-&emsp; [WebSocket协议](/docs/webSocket/WebSocket.md)  
-&emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
-&emsp; [IM系统](/docs/webSocket/IM.md)  
 
 ### 其他  
 [请求合并](/docs/webSocket/RequestMerge.md)  
