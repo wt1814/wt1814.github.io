@@ -42,8 +42,8 @@
         - [Netty通信框架](#netty通信框架)
         - [其他](#其他)
     - [Error](#error)
-    - [项目构建基础](#项目构建基础)
     - [架构设计](#架构设计)
+    - [项目构建基础](#项目构建基础)
     - [系统设计](#系统设计)
     - [Web服务器与中间件](#web服务器与中间件)
         - [Web服务器](#web服务器)
@@ -496,8 +496,9 @@ graph LR
 [注册中心和配置中心](/docs/microService/SpringCloudNetflix/register.md)  
 &emsp; [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
 &emsp; [nacos](/docs/microService/SpringCloudNetflix/nacos.md)  
-[Spring Cloud GateWay](/docs/microService/SpringCloudNetflix/GateWay.md)  
-[Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
+[GateWay](/docs/microService/SpringCloudNetflix/GateWay.md)  
+&emsp; [Spring Cloud GateWay](/docs/microService/SpringCloudNetflix/CloudGateWay.md)  
+&emsp; [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
 [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
 [Spring Cloud Feign](/docs/microService/SpringCloudNetflix/Feign.md)  
 [Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/Hytrix.md)  
@@ -782,6 +783,24 @@ graph LR
 
 --------
 
+## 架构设计  
+[IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
+[软件架构设计模式](/docs/system/designPattern.md)  
+&emsp; [DDD](/docs/system/DDD.md)  
+&emsp; [响应式编程](/docs/SystemDesign/reactor.md)  
+[架构图](/docs/system/diagram.md)  
+[技术选型](/docs/system/TechnicalSelection.md)  
+[架构的方方面面](/docs/system/AllAspects.md)  
+[架构质量属性](/docs/system/QualityAttribute.md)  
+&emsp; [容灾和备份](/docs/system/backups.md)  
+&emsp; [系统瓶颈](/docs/system/Bottleneck.md)  
+&emsp; [JAVA线上故障排查](/docs/Linux/problem.md)  
+[脚手架介绍](/docs/system/Scaffolding.md)  
+[事件和驱动](/docs/system/EventsAndMessages.md)  
+[前后端分离-跨域和内外网隔离](/docs/web/Cross.md)  
+
+ 
+
 ## 项目构建基础
 [版本号](/docs/web/Version.md)  
 [编码规范](/docs/java/Design/CodingSpecification.md)  
@@ -828,27 +847,6 @@ graph LR
 &emsp; [安全架构](/docs/system/safe/safe.md)  
 [其他](/docs/web/other.md)  
 
-
-
-## 架构设计  
-[IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
-[软件架构设计模式](/docs/system/designPattern.md)  
-&emsp; [DDD](/docs/system/DDD.md)  
-&emsp; [响应式编程](/docs/SystemDesign/reactor.md)  
-[架构图](/docs/system/diagram.md)  
-[技术选型](/docs/system/TechnicalSelection.md)  
-[架构的方方面面](/docs/system/AllAspects.md)  
-[架构质量属性](/docs/system/QualityAttribute.md)  
-&emsp; [容灾和备份](/docs/system/backups.md)  
-&emsp; [系统瓶颈](/docs/system/Bottleneck.md)  
-&emsp; [JAVA线上故障排查](/docs/Linux/problem.md)  
-[脚手架介绍](/docs/system/Scaffolding.md)  
-[事件和驱动](/docs/system/EventsAndMessages.md)  
-[前后端分离-跨域和内外网隔离](/docs/web/Cross.md)  
-
-<!-- 
-[Gateway](/docs/microService/microservices/Gateway.md)  
--->
 
 
 ## 系统设计  
