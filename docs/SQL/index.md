@@ -22,7 +22,7 @@
     * 尽量选择区分度高的列作为索引。  
     * ...  
 2. 索引失效：进行null值运算、进行运算、隐式转换、对索引列使用函数 导致索引失效，进行模糊查询like时可能使索引失效(以%开头)，不满足联合索引最左前缀匹配原则。    
-3. 附：避免全表查询  
+3. 附：~~避免全表查询~~  
 
 4. 【索引条件】下推：  
 &emsp; 理解索引条件下推：1. 【什么是索引条件？】 2. 什么是下推？  
@@ -173,6 +173,10 @@ https://mp.weixin.qq.com/s/xIdglQdGvgeDHdGCb5KUpg
 <!-- 
 
 https://wenku.baidu.com/view/200a7de56237ee06eff9aef8941ea76e58fa4a79.html?_wkts_=1684135424017&bdQuery=%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%BF%9B%E8%A1%8C%E5%85%A8%E8%A1%A8%E6%9F%A5%E8%AF%A2
+
+https://zhuanlan.zhihu.com/p/429402610
+
+https://www.cnblogs.com/lqh969696/p/13432700.html
 -->
 
 
