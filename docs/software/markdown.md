@@ -25,4 +25,13 @@ https://mp.weixin.qq.com/s/rzjYBAQYnBKfLamsu3ZNlg
 vuepress  
 https://www.moyundong.com/frontend/vuepress/1%E4%BB%8B%E7%BB%8D.html#%E4%BB%80%E4%B9%88%E6%98%AFvuepress
 -->
+
+  <!--
+    docsify
+    http://www.missfoxw.cn/200324/
+      官网访问不了，手动下载js和css
+    https://github.com/missfoxw/docsify-template
+    https://github.com/iPeng6/docsify-sidebar-collapse
+  -->
+
 &emsp; Chrome查看Markdown并转为PDF。  
