@@ -34,4 +34,12 @@ https://www.moyundong.com/frontend/vuepress/1%E4%BB%8B%E7%BB%8D.html#%E4%BB%80%E
     https://github.com/iPeng6/docsify-sidebar-collapse
   -->
 
+
+<!-- 
+Docsify 调整图片大小
+https://gitcode.net/wugenqiang/NoteBook/-/blob/master/docsify/mdNotes.md?from_codechina=yes
+markdown 图片大小设置
+https://jingyan.baidu.com/article/3d69c55127665af0cf02d78f.html
+-->
+
 &emsp; Chrome查看Markdown并转为PDF。  
