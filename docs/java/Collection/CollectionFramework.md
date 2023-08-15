@@ -450,7 +450,7 @@ https://blog.csdn.net/weixin_40304387/article/details/81054080
 &emsp; Comparable接口和Comparator接口的区别：  
 
 * <font color = "red">Comparable接口位于java.lang包下；Comparator位于java.util包下。</font>  
-* <font color = "red">Comparable接口只提供了一个compareTo()方法；Comparator接口不仅提供了compara()方法，还提供了其他默认方法，如reversed()、thenComparing()，使我们可以按照更多的方式进行排序。</font>  
+* <font color = "red">Comparable接口只提供了一个compareTo()方法；Comparator接口不仅提供了compara()方法，还提供了其他默认方法，如reversed()、thenComparing()，可以按照更多的方式进行排序。</font>  
 * <font color = "clime">如果对象的排序需要基于自然顺序(它本身是可比较的)，则使用 Comparable，而如果需要根据业务来对不同属性进行排序，请使用 Comparator。</font>  
 * 如果要用Comparable接口，则必须实现这个接口，并重写comparaTo()方法；但是Comparator接口可以在类外部使用，通过将该接口的一个匿名类对象当做参数传递给Collections.sort()方法或者Arrays.sort()方法实现排序。Comparator体现了一种策略模式，即可以不用要把比较方法嵌入到类中，而是可以单独在类外部使用，这样就可有不用改变类本身的代码而实现对类对象进行排序。    
 

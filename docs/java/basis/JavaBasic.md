@@ -55,6 +55,10 @@ https://www.zhihu.com/question/26954130/answer/708467570
 
 -->  
 
+&emsp; **<font color = "red">总结：</font>**  
+1. Java是值传递还是引用传递？  
+
+
 ## 1.1. 可变参数  
 <!-- 
 
