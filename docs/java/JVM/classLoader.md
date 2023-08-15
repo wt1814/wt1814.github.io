@@ -318,6 +318,9 @@ file:/C:/Program%20Files/Java/jdk1.8.0_131/jre/classes
 
 
 ## 1.6. java.lang.ClassLoader  
+<!-- 
+https://www.jianshu.com/p/abf7ea794a70
+-->
 &emsp; java.lang.ClassLoader中很重要的三个方法：loadClass方法、findClass方法、defineClass方法。  
 
 ### 1.6.1. loadClass方法  
