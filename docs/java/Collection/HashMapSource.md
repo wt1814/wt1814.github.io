@@ -38,14 +38,14 @@
     &emsp; HashMap在发生hash冲突的时候用的是链地址法。JDK1.7中使用头插法，JDK1.8使用尾插法。  
     &emsp; loadFactor加载因子0.75f；  
     2. 树形化结构：  
-        1. ~~为什么使用红黑树？~~  
+        1. ~~为什么使用[红黑树](/docs/function/redBlack.md)？~~  
         &emsp; 这样可以利用链表对内存的使用率以及红黑树的高效检索，是一种很有效率的数据结构。AVL树是一种高度平衡的二叉树，所以查找的非常高，但是，有利就有弊，AVL树为了维持这种高度的平衡，就要付出更多代价。每次插入、删除都要做调整，复杂、耗时。所以，hashmap用红黑树。  
         2. 树形化结构：
             1. 树形化：把链表转换成红黑树，树化需要满足以下两个条件：链表长度大于等于8；table数组长度大于等于64。  
             2. 解除树形化：阈值6。
 2. HashMap成员方法：  
     1. hash()函数/扰动函数：  
-    &emsp; hash函数会根据传递的key值进行计算， 1)首先计算key的hashCode值， 2)然后再对hashcode进行无符号右移操作， 3)最后再和hashCode进行异或 ^ 操作。（即让hashcode的高16位和低16位进行异或操作。）   
+    &emsp; hash函数会根据传递的key值进行计算， 1)首先`计算`key的hashCode值， 2)然后再对hashcode进行`无符号右移`操作， 3)最后再和hashCode进行`异或 ^` 操作。（即让hashcode的高16位和低16位进行异或操作。）   
     &emsp; **<font color = "clime">`看似“多余”的2、3步`的好处是`增加了随机性`，`减少了碰撞冲突`的可能性。</font>**    
     2. put()函数：
         1. 在put的时候，首先对key做hash运算，计算出该key所在的index。
@@ -200,6 +200,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
 
 ### 1.2.4. 树形化结构
 #### 1.2.4.1. 为什么使用红黑树？
+&emsp; [红黑树介绍](/docs/function/redBlack.md)
 <!-- 
 https://worktile.com/blog/pingcode-68/
 https://www.jianshu.com/p/ba1f07debaf8
