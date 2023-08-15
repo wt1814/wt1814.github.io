@@ -112,12 +112,12 @@ public class Java8Tester {
 
 ### 1.1.3. Instant  
 &emsp; 当计算程序的运行时间时，应当使用时间戳Instant。  
-&emsp; Instant用于表示一个时间戳，它与使用的System.currentTimeMillis()有些类似，不过Instant可以精确到纳秒（Nano-Second），System.currentTimeMillis()方法只精确到毫秒（Milli-Second）。如果查看Instant源码，发现它的内部使用了两个常量，seconds表示从1970-01-01 00:00:00开始到现在的秒数，nanos表示纳秒部分（nanos的值不会超过999,999,999）。Instant除了使用now()方法创建外，还可以通过ofEpochSecond方法创建：  
+&emsp; Instant用于表示一个时间戳，它与使用的System.currentTimeMillis()有些类似，不过Instant可以精确到纳秒（Nano-Second），System.currentTimeMillis()方法只精确到毫秒（Milli-Second）。如果查看Instant源码，发现它的内部使用了两个常量，seconds表示从1970-01-01 00 :00 :00开始到现在的秒数，nanos表示纳秒部分（nanos的值不会超过999,999,999）。Instant除了使用now()方法创建外，还可以通过ofEpochSecond方法创建：  
 
 ```java
 Instant instant = Instant.ofEpochSecond(120, 100000);  
 ```
-&emsp; ofEpochSecond()方法的第一个参数为秒，第二个参数为纳秒，上面的代码表示从1970-01-01 00:00:00开始后两分钟的10万纳秒的时刻，控制台上的输出为：
+&emsp; ofEpochSecond()方法的第一个参数为秒，第二个参数为纳秒，上面的代码表示从1970-01-01 00 :00 :00开始后两分钟的10万纳秒的时刻，控制台上的输出为：
 
 
 ## 1.2. 与日期和日历（旧的时间API）的兼容性  
@@ -219,7 +219,7 @@ public class LocalDateTimeConverter extends JsonSerializer<LocalDateTime> {
 protected LocalDateTime gmtModified;
 ```
 
-&emsp; 将LocalDateTime字段以指定格式化日期的方式返回给前端 在LocalDateTime字段上添加@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")注解即可，如下：  
+&emsp; 将LocalDateTime字段以指定格式化日期的方式返回给前端 在LocalDateTime字段上添加@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH :mm :ss")注解即可，如下：  
 
 ```java
 @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
