@@ -30,11 +30,11 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。  
-&emsp; `自定义类加载器`：需要继承自ClassLoader，`重写方法findClass()`。   
-2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。  
+2. `自定义类加载器`：需要继承自ClassLoader，`重写方法findClass()`。   
+3. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。  
 &emsp; 双亲委派模型中，类加载器之间的父子关系一般不会以继承（Inheritance）的关系来实现，而是使用组合（Composition）关系来复用父加载器的代码的。  
 &emsp; 好处：避免类的重复加载；防止核心API被随意篡改。   
-3. ~~破坏双亲委派模型：~~  
+4. ~~破坏双亲委派模型：~~  
     1. 破坏双亲委派模型的例子  
         1. `双亲委派模型有一个问题：顶层ClassLoader无法加载底层ClassLoader的类，典型例子JNDI、JDBC。`
             * **<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器，而 JDBC 运行时又需要去访问子类加载器加载的驱动，就破坏了该模型。所以加入了`线程上下文类加载器(Thread Context ClassLoader)`，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
@@ -43,16 +43,16 @@
     2. 破坏双亲委派模型的方式  
         1. 继承ClassLoader，重写loadClass()方法。  
         2. `使用线程上下文类加载器(Thread Context ClassLoader)`  
-4. java.lang.ClassLoader   
+5. java.lang.ClassLoader   
     1. java.lang.ClassLoader3个主要方法  
         * loadClass() 就是主要进行类加载的方法，默认的双亲委派机制就实现在这个方法中。
         * findClass() 根据名称或位置加载.class字节码
         * definclass() 把字节码转化为Class
-    1. `自定义类加载器`：需要继承自ClassLoader，`重写方法findClass()`。   
+    2. `自定义类加载器`：需要继承自ClassLoader，`重写方法findClass()`。   
         1. 继承ClassLoader  
         2. 继承ClassLoader   
         3. 调用defineClass()方法 
-    2. `破坏双亲委派模型`：继承ClassLoader，`重写loadClass()方法`；或`使用线程上下文类加载器(Thread Context ClassLoader)`。    
+    3. `破坏双亲委派模型`：继承ClassLoader，`重写loadClass()方法`；或`使用线程上下文类加载器(Thread Context ClassLoader)`。    
 
 
 # 1. 类加载的方式：类加载器 
@@ -403,7 +403,7 @@ protected final Class<?> defineClass(String name, byte[] b, int off, int len,
 
 
 ### 1.6.4. 小结  
-&emsp; 用户根据需求自己定义的。需要继承自ClassLoader,重写方法findClass()。
+&emsp; 用户根据需求自己定义的。需要继承自ClassLoader，重写方法findClass()。
 
 &emsp; 如果想要编写自己的类加载器，只需要两步：
 
