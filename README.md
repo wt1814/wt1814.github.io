@@ -236,7 +236,7 @@ graph LR
 &emsp; &emsp; [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
 &emsp; &emsp; [获取多线程执行结果](/docs/java/concurrent/execResult.md)  
 [并发编程](/docs/java/concurrent/MultiThread.md)  
-&emsp; [并发编程原理](/docs/java/concurrent/ConcurrentPrinciple.md)  
+&emsp; [线程安全问题](/docs/java/concurrent/ConcurrentPrinciple.md)  
 &emsp; &emsp; [CPU多核缓存及并发安全](/docs/java/concurrent/ConcurrencyProblem.md)  
 &emsp; &emsp; [伪共享问题](/docs/java/concurrent/PseudoSharing.md)  
 &emsp; &emsp; [硬件层解决并发安全](/docs/java/concurrent/HardwareConcurrencySolve.md)  
