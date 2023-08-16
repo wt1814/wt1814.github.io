@@ -29,6 +29,7 @@
 			1. **<font color = "clime">不可回收对象包含 1). 方法区中，类静态属性(static)引用的对象； 2). 方法区中，常量(final static)引用的对象；</font>** 
 			2. `由以上可得java 全局变量 不可被回收。`  
 		2. 四种引用  
+			* 强引用  
 			* **<font color = "red">软引用：SoftReference object=new  SoftReference(new Object()); 。当堆使用率临近阈值时，才会去回收软引用的对象。</font>**  
 			* **<font color = "red">弱引用：WeakReference object=new  WeakReference (new Object();，ThreadLocal中有使用。只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。</font>**  
 
@@ -40,7 +41,7 @@
 	2. 对象生存还是死亡（Object#finalize()方法）？  
 	&emsp; **<font color = "clime">如果有必要执行父类`Object#finalize()`方法，放入F-Queue队列；收集器将对F-Queue队列中的对象进行第二次小规模的标记；如果对象在执行finalize()方法时重新与引用链上的任何一个对象建立关联则逃脱死亡，否则执行死亡。</font>**  
 	&emsp; ~~finalize 是 Object 类中的一个基础方法，它的设计目的是保证对象在被垃圾收集前完成特定资源的回收的，但其执行“不稳定”，且有一定的性能问题，已经在 JDK 9 中被设置为弃用的方法了。~~  
-2. 方法区（类和常量）回收/类的卸载阶段
+2. 回收方法区（类和常量）/类的卸载阶段  
 	1. Java虚拟机规范对方法区是否实现垃圾回收没有做出强制的规定。存在未实现或未能完整实现方法区类型卸载的垃圾回收器（例如JDK 11的zGC收集器）。  
 	&emsp; 方法区的回收效果比较难令人满意，条件很苛刻，但是回收又是很有必要的。在大量使用反射、动态代理、CGLib等字节码框架，动态生成JSP以及OSGi这类频繁自定义类加载器的场景中，通常都需要Java虚拟机具备类型卸载的能力，以保证不会对方法区造成过大的内存压力。  
 	
