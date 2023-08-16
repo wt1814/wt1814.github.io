@@ -44,7 +44,7 @@
     * 并发收集器【停顿时间优先】 -> CMS、G1  
     &emsp; **<font color = "red">用户线程和垃圾收集线程同时执行</font><font color = "blue">（但并不一定是并行的，可能是交替执行的），</font><font color = "red">垃圾收集线程在执行的时候不会停顿用户线程的运行。</font>** `适用于相对时间有要求的场景，比如Web`。  
 3. `JDK 7u4后的7和JDK8默认使用的都是ParallelScavenge+ParallelOld。`  
-4. 根据实际情况选择合适垃圾收集器  
+4. `根据实际情况选择合适垃圾收集器`  
 &emsp; 堆内存4G以下可以用parallel，4-8G可以用ParNew + CMS，8G以上可以用G1，几百级以上用ZGC。
 
     
