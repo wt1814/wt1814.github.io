@@ -9,8 +9,8 @@
             - [1.1.3.1. ★★★线程之间的通信过程](#1131-★★★线程之间的通信过程)
     - [1.2. 内存屏障，禁止处理器重排序 / 【有序性】](#12-内存屏障禁止处理器重排序--有序性)
     - [1.3. JMM中的happens-before原则](#13-jmm中的happens-before原则)
-        - [1.2.1. JVM中的内存屏障](#121-jvm中的内存屏障)
-    - [Java并发原语](#java并发原语)
+        - [1.3.1. JVM中的内存屏障](#131-jvm中的内存屏障)
+    - [1.4. Java并发原语](#14-java并发原语)
 
 <!-- /TOC -->
 
@@ -222,7 +222,7 @@ happens-before：正确同步的 多线程 程序是按happens-before指定的�
 
 
 
-### 1.2.1. JVM中的内存屏障
+### 1.3.1. JVM中的内存屏障
 <!-- 
 https://blog.csdn.net/breakout_alex/article/details/94379895
 
@@ -259,7 +259,7 @@ https://blog.csdn.net/breakout_alex/article/details/94379895
 &emsp; 对于上面的一组CPU指令(Store表示写入指令，Load表示读取指令)，StoreLoad 屏障之前的Store指令无法与StoreLoad 屏障之后的Load指令进行交换位置，即重排序。但是StoreLoad屏障之前和之后的指令是可以互换位置的，即Store1可以和Store2互换，Load2可以和Load3互换。  
 
 
-## Java并发原语
+## 1.4. Java并发原语
 &emsp; **java并发原语：**  
 &emsp; Java内存模型，除了定义了一套规范，还提供了一系列原语，封装了底层实现后，供开发者直接使用。  
 
