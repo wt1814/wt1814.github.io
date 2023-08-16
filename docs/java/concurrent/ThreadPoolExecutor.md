@@ -21,10 +21,10 @@
     * [阻塞队列](/docs/java/concurrent/BlockingQueue.md)，线程池所使用的缓冲队列，常用的是：SynchronousQueue、ArrayBlockingQueue、LinkedBlockingQueue。参考[BlockingQueue](/docs/java/concurrent/BlockingQueue.md)。     
     * 拒绝策略，默认AbortPolicy（拒绝任务，抛异常）， **<font color = "clime">可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。</font>**  
 2. 线程池中核心方法调用链路：  
-![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-17.png)  
-![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-14.png)  
-![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-20.png)  
-2. 线程运行流程：查看execute方法。  
+    ![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-17.png)  
+    ![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-14.png)  
+    ![image](http://182.92.69.8:8081/img/java/concurrent/threadPool-20.png)  
+    &emsp; 线程运行流程：查看execute方法。  
     &emsp; <font color = "clime">线程池创建时`没有设置成预启动加载`，首发线程数为0。</font><font color = "red">任务队列是作为参数传进来的。即使队列里面有任务，线程池也不会马上执行它们，而是创建线程。</font>当一个线程完成任务时，它会从队列中取下一个任务来执行。当调用execute()方法添加一个任务时，线程池会做如下判断：  
     1. 如果当前工作线程总数小于corePoolSize，则直接创建核心线程执行任务（任务实例会传入直接用于构造工作线程实例）。  
     2. 如果当前工作线程总数大于等于corePoolSize，判断线程池是否处于运行中状态，同时尝试用非阻塞方法向任务队列放入任务，这里会二次检查线程池运行状态，如果当前工作线程数量为0，则创建一个非核心线程并且传入的任务对象为null。  
