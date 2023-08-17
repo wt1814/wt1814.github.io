@@ -13,13 +13,23 @@
         - [1.3.1. ~~索引与查询~~](#131-索引与查询)
         - [1.3.2. ik中文分词器](#132-ik中文分词器)
     - [1.4. FST](#14-fst)
+    - [1.5. ES中正排索引](#15-es中正排索引)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 倒排索引的结构  
-&emsp; 简单来讲就是<font color="clime">“以内容的关键词”建立索引，映射关系为“内容的关键词->文档ID”。`这样只需要在“关键词”中进行检索，效率肯定更快。`</font>  
-&emsp; **<font color = "red">倒排序索引包含两个部分：单词词典和倒排列表。</font>** 单词词典：记录所有文档单词；记录单词到倒排列表的关联关系。倒排列表：记录单词与对应文档结合，由倒排索引项组成。  
+  1. 简单来讲就是<font color="clime">“以内容的关键词”建立索引，映射关系为“内容的关键词->文档ID”。`这样只需要在“关键词”中进行检索，效率肯定更快。`</font>  
+  2. **<font color = "red">倒排序索引包含两个部分：单词词典和倒排列表。</font>**   
+  ![image](http://182.92.69.8:8081/img/ES/es-109.png)  
+  &emsp; ~~单词词典：记录所有文档单词；记录单词到倒排列表的关联关系。倒排列表：记录单词与对应文档结合，由倒排索引项组成。~~  
+  &emsp; 根据倒排索引的概念，可以用一个 Map来简单描述这个结构。这个 Map 的 Key 的即是分词后的单词，这里的单词称为 Term，这一系列的 Term 组成了倒排索引的第一个部分 —— Term Dictionary (索引表，可简称为 Dictionary)。  
+  &emsp; 倒排索引的另一部分为 Postings List（记录表），也对应上述 Map 结构的 Value 部分集合。  
+  &emsp; 记录表由所有的 Term 对应的数据（Postings） 组成，它不仅仅为文档 id 信息，可能包含以下信息：  
+    * 文档 id（DocId, Document Id），包含单词的所有文档唯一 id，用于去正排索引中查询原始数据。  
+    * 词频（TF，Term Frequency），记录 Term 在每篇文档中出现的次数，用于后续相关性算分。  
+    * 位置（Position），记录 Term 在每篇文档中的分词位置（多个），用于做词语搜索（Phrase Query）。  
+    * 偏移（Offset），记录 Term 在每篇文档的开始和结束位置，用于高亮显示等。  
 2. 分析（建索引与检索）  
 &emsp; 文本分析由分析器来执行，而分析器由分词器、过滤器和字符映射器组成。  
 &emsp; **<font color = "clime">有一点需要牢记，Elasticsearch有些查询会被分析，而有些则不会。例如，前缀查询不会被分析，而匹配查询会被分析。</font>**   
@@ -28,6 +38,8 @@
 
 # 1. ~~ES底层数据结构~~  
 <!-- 
+ES之倒排索引详解
+https://blog.csdn.net/qq_31960623/article/details/118860928
 
 https://blog.csdn.net/weixin_42128977/article/details/127705236
 
@@ -36,6 +48,8 @@ https://zhuanlan.zhihu.com/p/344550528
 
 视频  
 https://www.bilibili.com/video/BV17S4y1U7xb?spm_id_from=333.337.search-card.all.click
+
+
 -->
 
 <!-- 
@@ -43,6 +57,11 @@ Elasticsearch 搜索为什么那么快？
 https://www.jianshu.com/p/9c7d4bb3b093
 Elasticsearch：ES 倒排索引为什么查询速度会这么快
 https://www.jianshu.com/p/addefe15f3e9
+-->
+
+<!-- 
+ES中正排索引
+https://www.modb.pro/db/397723#23_39
 -->
 
 
@@ -215,5 +234,6 @@ https://www.jianshu.com/p/addefe15f3e9
 https://www.jianshu.com/p/9c7d4bb3b093
 -->
 
+## 1.5. ES中正排索引
 
 

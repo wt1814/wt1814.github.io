@@ -22,6 +22,9 @@
  30 个 ElasticSearch 调优知识点，都给你整理好了！ 
  https://mp.weixin.qq.com/s/ORhWtUNQ--kGKuBPu00v7w
 
+写入调优  查询调优
+https://www.zhihu.com/column/c_1452677051903381504
+
 -->
 
 ## 1.1.1. 集群搭建阶段  
