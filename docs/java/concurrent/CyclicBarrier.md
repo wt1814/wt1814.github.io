@@ -11,6 +11,12 @@
 <!-- /TOC -->
 
 # 1. ~~CyclicBarrier，回环栅栏~~  
+<!-- 
+CyclicBarrier场景使用
+https://souche.yuque.com/beijing-myye7/dvgaei/ver0q9#Iv333
+-->
+
+
 <!--
 https://blog.csdn.net/weixin_38481963/article/details/88070679
 https://blog.csdn.net/wz122330/article/details/107634077

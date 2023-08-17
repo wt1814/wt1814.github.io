@@ -10,7 +10,6 @@
         - [1.3.2. countDown()](#132-countdown)
     - [1.4. 总结](#14-总结)
     - [CountDownLatch场景使用](#countdownlatch场景使用)
-    - [CyclicBarrier场景使用](#cyclicbarrier场景使用)
 
 <!-- /TOC -->
 
@@ -375,9 +374,4 @@ System.out.println("主线程:在所有任务运行完成后，进行结果汇�
 ```
 
 
-## CyclicBarrier场景使用
-<!-- 
-
-https://souche.yuque.com/beijing-myye7/dvgaei/ver0q9#Iv333
--->
 
