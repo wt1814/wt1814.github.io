@@ -388,6 +388,7 @@ graph LR
 &emsp; &emsp; [脚本查询](/docs/ES/ScriptQuery.md)  
 &emsp; &emsp; [预匹配器](/docs/ES/PreMatching.md)  
 &emsp; [ES自定义扩展词库](/docs/ES/thesaurus.md)  
+&emsp; [★★★使用ES中的一些问题](/docs/ES/problem.md)  
 [★★★ES原理](/docs/ES/principle.md)  
 &emsp; [Elasticsearch搜索为什么那么快？](/docs/ES/SearchFast.md)  
 &emsp; [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
