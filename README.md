@@ -359,9 +359,9 @@ graph LR
 ### 搜索引擎ES  
 [ES基本概念](/docs/ES/basicConcepts.md)  
 &emsp; [★★★ES底层数据结构](/docs/ES/BottomStructure.md)  
-&emsp; [★★★ES分片](/docs/ES/ESShare.md)  
 [ES使用](/docs/ES/useTutorials.md)  
 &emsp; [★★★ES建模](/docs/ES/modeling.md)  
+&emsp; &emsp; [★★★ES分片](/docs/ES/ESShare.md)  
 &emsp; [★★★同步数据到ES](/docs/ES/synES.md)  
 &emsp; [Elasticsearch操作客户端](/docs/ES/ElasticsearchREST.md)  
 &emsp; &emsp; [ES可视化客户端](/docs/ES/visualization.md)  

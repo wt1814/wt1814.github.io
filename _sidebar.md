@@ -247,9 +247,9 @@
 * 搜索引擎ES  
     * [ES基本概念](/docs/ES/basicConcepts.md)  
         * [ES底层数据结构](/docs/ES/BottomStructure.md)  
-        * [★★★ES分片](/docs/ES/ESShare.md)   
     * [ES使用](/docs/ES/useTutorials.md)  
         * [★★★ES建模](/docs/ES/modeling.md)  
+            * [★★★ES分片](/docs/ES/ESShare.md)   
         * [★★★同步数据到ES](/docs/ES/synES.md)  
         * [Elasticsearch操作客户端](/docs/ES/ElasticsearchREST.md)  
             * [ES可视化客户端](/docs/ES/visualization.md)  
