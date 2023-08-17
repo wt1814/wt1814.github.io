@@ -50,8 +50,8 @@ POST products/_search?size=0
 &emsp; REST调用的 GET，PUT，POST和DELETE部分。在Kibana中，可以直接指定这些名称，对于cURL，请使用-X选项。  
 &emsp; 对应示例中的：POST  
 * 路径  
-&emsp; API和路径。例如：/_cluster/health或/logstash-cron-2020.07.03/_mapping-路径的第一部分通常是索引名称，除非它以_开头。  
-&emsp; 对应示例中的：products/_search，其中products是索引。  
+&emsp; API和路径。例如：/\_cluster/health或/logstash-cron-2020.07.03/_mapping-路径的第一部分通常是索引名称，除非它以\_开头。  
+&emsp; 对应示例中的：products/\_search，其中products是索引。  
 * 参数  
 &emsp; 后面的各种选项。例如?h或?v    
 &emsp; 对应示例中的：?size=0。参数设定部分。  

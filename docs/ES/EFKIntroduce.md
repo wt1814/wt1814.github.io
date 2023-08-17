@@ -3,15 +3,15 @@
 
 - [1. EFK介绍](#1-efk介绍)
     - [1.1. ELK/EFK简介](#11-elkefk简介)
-    - [Elastic Stack](#elastic-stack)
-    - [1.2. EFK日志架构的演进](#12-efk日志架构的演进)
-        - [1.2.1. Demo版](#121-demo版)
-        - [1.2.2. 初级版](#122-初级版)
-        - [1.2.3. 中级版](#123-中级版)
-        - [1.2.4. 高级版](#124-高级版)
-    - [1.3. EFK原理](#13-efk原理)
-        - [1.3.1. Filebeat工作原理](#131-filebeat工作原理)
-        - [1.3.2. Logstash工作原理](#132-logstash工作原理)
+    - [1.2. Elastic Stack](#12-elastic-stack)
+    - [1.3. EFK日志架构的演进](#13-efk日志架构的演进)
+        - [1.3.1. Demo版](#131-demo版)
+        - [1.3.2. 初级版](#132-初级版)
+        - [1.3.3. 中级版](#133-中级版)
+        - [1.3.4. 高级版](#134-高级版)
+    - [1.4. EFK原理](#14-efk原理)
+        - [1.4.1. Filebeat工作原理](#141-filebeat工作原理)
+        - [1.4.2. Logstash工作原理](#142-logstash工作原理)
 
 <!-- /TOC -->
 
@@ -48,7 +48,7 @@ https://www.cnblogs.com/xianglei_/p/12047315.html
 
 &emsp; **<font color = "red">EFK的流程：</font>** `Filebeat->【LogstashShipper ---> 缓冲中间件Kafka ---> LogstashIndexer】->【Elasticsearch <-> Kibana】`。由程序产生出日志，由Filebeat进行处理，将日志数据输出到Logstash中，Logstash再将数据输出到Elasticsearch中，Elasticsearch再与Kibana相结合展示给用户。
 
-## Elastic Stack
+## 1.2. Elastic Stack
 <!-- 
 
 什么是Elastic Stack
@@ -56,7 +56,7 @@ https://blog.csdn.net/qq_41106844/article/details/106577851
 -->
 
 
-## 1.2. EFK日志架构的演进  
+## 1.3. EFK日志架构的演进  
 <!-- 
 从ELK到EFK演进
 https://www.cnblogs.com/panchanggui/p/10697548.html
@@ -66,7 +66,7 @@ https://mp.weixin.qq.com/s/u5hqNTgZ7P235NQA0SIJiA
 https://www.cnblogs.com/aresxin/p/8035137.html
 
 -->
-### 1.2.1. Demo版  
+### 1.3.1. Demo版  
 &emsp; 这版算是Demo版，各位开发可以在自己电脑上搭建练练手，如下图所示：   
 ![image](http://182.92.69.8:8081/img/ES/es-15.png)  
 &emsp; 这种架构下把Logstash实例与Elasticsearch实例直接相连。程序App将日志写入Log，然后Logstash将Log读出，进行过滤，写入Elasticsearch。最后浏览器访问Kibana，提供一个可视化输出。  
@@ -76,7 +76,7 @@ https://www.cnblogs.com/aresxin/p/8035137.html
 * 在大并发情况下，日志传输峰值比较大。如果直接写入ES，ES的HTTP API处理能力有限，在日志写入频繁的情况下可能会超时、丢失，所以需要一个缓冲中间件。  
 * 注意了，Logstash将Log读出、过滤、输出都是在应用服务器上进行的，这势必会造成服务器上占用系统资源较高，性能不佳，需要进行拆分。  
 
-### 1.2.2. 初级版  
+### 1.3.2. 初级版  
 &emsp; 在这版中， **<font color = "red">加入一个缓冲中间件Kafka</font>** 。另外对Logstash拆分为Shipper和Indexer。先说一下，LogStash自身没有什么角色，只是根据不同的功能、不同的配置给出不同的称呼而已。Shipper来进行日志收集，Indexer从缓冲中间件接收日志，过滤输出到Elasticsearch。具体如下图所示：  
 ![image](http://182.92.69.8:8081/img/ES/es-16.png)  
 &emsp; 说一下，这个缓冲中间件的选择。  
@@ -92,7 +92,7 @@ https://www.cnblogs.com/aresxin/p/8035137.html
 * Logstash Shipper是jvm跑的，非常占用JAVA内存！据《ELK系统使用filebeat替代logstash进行日志采集》这篇文章说明，8线程8GB内存下，Logstash常驻内存660M（JAVA）。因此，这么一个巨无霸部署在应用服务器端就不大合适了，需要一个更加轻量级的日志采集组件。  
 * 上述架构如果部署成集群，所有业务放在一个大集群中相互影响。一个业务系统出问题了，就会拖垮整个日志系统。因此，需要进行业务隔离！  
 
-### 1.2.3. 中级版  
+### 1.3.3. 中级版  
 &emsp; 这版引入组件Filebeat。当年，Logstash的作者用golang写了一个功能较少但是资源消耗也小的轻量级的Logstash-forwarder。后来加入Elasticsearch后，以logstash-forwarder为基础，研发了一个新项目就叫Filebeat。  
 &emsp; 相比于Logstash，Filebeat更轻量，占用资源更少，所占系统的 CPU 和内存几乎可以忽略不计。毕竟只是一个二进制文件。那么，这一版的架构图如下，直接画集群版。  
 ![image](http://182.92.69.8:8081/img/ES/es-17.png)  
@@ -100,13 +100,13 @@ https://www.cnblogs.com/aresxin/p/8035137.html
 &emsp; `缺点：`  
 &emsp; 这套架构的缺点在于对日志没有进行冷热分离。因为一般来说，对一个星期内的日志，查询的最多。以7天作为界限，区分冷热数据，可以大大的优化查询速度。  
 
-### 1.2.4. 高级版  
+### 1.3.4. 高级版  
 &emsp; 这一版，对数据进行冷热分离。每个业务准备两个Elasticsearch集群，可以理解为冷热集群。7天以内的数据，存入热集群，以SSD存储索引。超过7天，就进入冷集群，以SATA存储索引。这么一改动，性能又得到提升，这一版架构图如下(为了方便画图，只画了两个业务Elasticsearch集群)  
 ![image](http://182.92.69.8:8081/img/ES/es-18.png)  
 &emsp; **隐患:** 这个高级版，非要说有什么隐患，就是敏感数据没有进行处理，就直接写入日志了。关于这点，其实现在JAVA这边，现成的日志组件，比如log4j都有提供这种日志过滤功能，可以将敏感信息进行脱敏后，再记录日志。  
 
 
-## 1.3. EFK原理  
+## 1.4. EFK原理  
 &emsp; `官方文档：`  
 &emsp; `Filebeat：`  
 
@@ -129,7 +129,7 @@ https://www.cnblogs.com/aresxin/p/8035137.html
     https://www.elastic.co/guide/en/elasticsearch/reference/5.6/index.html
     elasticsearch中文社区：https://elasticsearch.cn/
 
-### 1.3.1. Filebeat工作原理  
+### 1.4.1. Filebeat工作原理  
 &emsp; Filebeat由两个主要组件组成：prospectors 和 harvesters。这两个组件协同工作将文件变动发送到指定的输出中。    
 ![image](http://182.92.69.8:8081/img/ES/es-19.png)  
 &emsp; Harvester（收割机）：负责读取单个文件内容。每个文件会启动一个Harvester，每个Harvester会逐行读取各个文件，并将文件内容发送到制定输出中。Harvester负责打开和关闭文件，意味在Harvester运行的时候，文件描述符处于打开状态，如果文件在收集中被重命名或者被删除，Filebeat会继续读取此文件。所以在Harvester关闭之前，磁盘不会被释放。默认情况filebeat会保持文件打开的状态，直到达到close_inactive（如果此选项开启，filebeat会在指定时间内将不再更新的文件句柄关闭，时间从harvester读取最后一行的时间开始计时。若文件句柄被关闭后，文件发生变化，则会启动一个新的harvester。关闭文件句柄的时间不取决于文件的修改时间，若此参数配置不当，则可能发生日志不实时的情况，由scan_frequency参数决定，默认10s。Harvester使用内部时间戳来记录文件最后被收集的时间。例如：设置5m，则在Harvester读取文件的最后一行之后，开始倒计时5分钟，若5分钟内文件无变化，则关闭文件句柄。默认5m）。  
@@ -149,7 +149,7 @@ https://www.cnblogs.com/aresxin/p/8035137.html
 &emsp; `Filebeat如何保证事件至少被输出一次：`    
 &emsp; Filebeat之所以能保证事件至少被传递到配置的输出一次，没有数据丢失，是因为filebeat将每个事件的传递状态保存在文件中。在未得到输出方确认时，filebeat会尝试一直发送，直到得到回应。若filebeat在传输过程中被关闭，则不会再关闭之前确认所有时事件。任何在filebeat关闭之前为确认的时间，都会在filebeat重启之后重新发送。这可确保至少发送一次，但有可能会重复。可通过设置shutdown_timeout 参数来设置关闭之前的等待事件回应的时间（默认禁用）。   
 
-### 1.3.2. Logstash工作原理  
+### 1.4.2. Logstash工作原理  
 &emsp; Logstash事件处理有三个阶段：inputs → filters → outputs。是一个接收，处理，转发日志的工具。支持系统日志，webserver日志，错误日志，应用日志，总之包括所有可以抛出来的日志类型。  
 ![image](http://182.92.69.8:8081/img/ES/es-20.png)  
 

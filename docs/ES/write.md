@@ -14,8 +14,9 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **数据先写入内存buffer，然后每隔1s，将数据refresh到os cache，到了os cache数据就能被搜索到（所以说es从写入到能被搜索到，中间有1s的延迟）。**    
-2. **每隔5s，将数据写入translog文件(这样如果机器宕机，内存数据全没，最多会有5s的数据丢失)，translog大到一定程度，或者默认每隔30mins，会触发commit操作，将缓冲区的数据都flush到segment file磁盘文件中。数据写入segment file之后，同时就建立好了倒排索引。**  
+1. 写入流程：  
+    1. **数据先写入内存buffer，然后每隔1s，将数据refresh到os cache，到了os cache数据就能被搜索到（所以说es从写入到能被搜索到，中间有1s的延迟）。**    
+    2. **每隔5s，将数据写入translog文件(这样如果机器宕机，内存数据全没，最多会有5s的数据丢失)，translog大到一定程度，或者默认每隔30mins，会触发commit操作，将缓冲区的数据都flush到segment file磁盘文件中。数据写入segment file之后，同时就建立好了倒排索引。**  
 3. es丢数据？ es第一是准实时的，数据写入1秒后可以搜索到；可能会丢失数据的。有5秒的数据，停留在buffer、translog os cache、segment file os cache中，而不在磁盘上，此时如果宕机，会导致5秒的数据丢失。  
 
 # 1. ES机制原理
