@@ -299,7 +299,6 @@
         * [EFK使用](/docs/ES/EFKUse.md)  
             * [FileBeat和Logstash详解](/docs/ES/Logstash.md)    
             * [Kibana使用](/docs/ES/Kibana.md)  
-        * [canal](/docs/ES/canal.md)  
 ------------------------------------------
 * [Spring](/docs/SSM/Spring/SpringSummary.md)    
     * [Spring介绍](/docs/SSM/Spring/Spring.md)  

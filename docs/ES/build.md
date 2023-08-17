@@ -50,6 +50,7 @@ https://www.elastic.co/cn/start
 https://github.com/medcl/elasticsearch-analysis-ik/
 
 ## 1.4. 集群安装  
+&emsp; 参考[Elk搭建](/docs/devAndOps/build/elk.md)   
 
 ## 1.5. Kibana安装
 

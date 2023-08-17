@@ -401,7 +401,6 @@ graph LR
 &emsp; [故障判断](/docs/ES/FaultJudgment.md)  
 [ES运维](/docs/ES/Operation.md)  
 &emsp; [ES搭建](/docs/ES/build.md)  
-&emsp; &emsp; [elk](/docs/devAndOps/build/elk.md)   
 &emsp; &emsp; [ES配置文件](/docs/ES/configure.md)  
 &emsp; &emsp; [内存设置](/docs/ES/heap.md)  
 &emsp; [ES集群操作](/docs/ES/ClusterOperation.md)  
@@ -409,10 +408,10 @@ graph LR
 &emsp; [使用ES中的一些问题](/docs/ES/problem.md)  
 [ELK/EFK](/docs/ES/EFK.md)    
 &emsp; [EFK介绍](/docs/ES/EFKIntroduce.md)  
+&emsp; [Elk搭建](/docs/devAndOps/build/elk.md)   
 &emsp; [EFK使用](/docs/ES/EFKUse.md)  
 &emsp; &emsp; [FileBeat和Logstash详解](/docs/ES/Logstash.md)  
 &emsp; &emsp; [Kibana使用](/docs/ES/Kibana.md)  
-&emsp; [canal](/docs/ES/canal.md)  
 
 [ES重制](/docs/ESRemake/ESRemake.md)    
 
