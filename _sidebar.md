@@ -282,6 +282,7 @@
         * [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
         * [ES增删改原理](/docs/ES/write.md)  
         * [ES缓存](/docs/ES/ESCache.md)  
+        * [相关性和打分过程](/docs/ES/correlation.md)    
     * [ES优化](/docs/ES/ESoptimization.md)  
         * [ES优化](/docs/ES/optimization.md)  
         * [搜索速度优化](/docs/ES/SearchSpeed.md)  
