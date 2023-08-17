@@ -358,7 +358,7 @@ graph LR
 
 ### 搜索引擎ES  
 [ES基本概念](/docs/ES/basicConcepts.md)  
-&emsp; [★★★ES底层数据结构](/docs/ES/BottomStructure.md)  
+&emsp; [★★★~~ES底层数据结构~~](/docs/ES/BottomStructure.md)  
 [ES使用](/docs/ES/useTutorials.md)  
 &emsp; [★★★ES建模](/docs/ES/modeling.md)  
 &emsp; &emsp; [★★★ES分片](/docs/ES/ESShare.md)  
