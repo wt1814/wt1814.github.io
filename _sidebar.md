@@ -854,4 +854,5 @@
     * [跨平台uni-app](/docs/front/uniapp.md)    
     * [nodejs](/docs/front/nodejs.md)   
 * [测试](/docs/test/test.md)  
+* [python](/docs/python/python.md)   
 

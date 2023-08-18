@@ -69,6 +69,7 @@
     - [算法](#算法)
     - [前端知识](#前端知识)
     - [测试](#测试)
+    - [python](#python)
 
 <!-- /TOC -->
 
@@ -1157,4 +1158,7 @@ prometheus
 
 ## 测试  
 [测试](/docs/test/test.md)  
+
+## python
+[python](/docs/python/python.md)  
 
