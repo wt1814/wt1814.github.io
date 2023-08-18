@@ -93,7 +93,7 @@ https://mp.weixin.qq.com/s/etloMGMydBgC0Ll1yBgx8Q
 
 ##### 1.2.2.1.2. 服务续约  
 &emsp; 在注册完服务之后，服务提供者会维护一个心跳用来持续告诉Eureka Server: "我还活着”，以防止Eureka Server的“剔除任务”将该服务实例从服务列表中排除出去，该操作为服务续约(Renew)。  
-&emsp; 关千服务续约有两个重要属性，可以关注并根据需要来进行调整：  
+&emsp; 关于服务续约有两个重要属性，可以关注并根据需要来进行调整：  
 
 ```
 eureka.instance.lease-renewal-interval-in-seconds=30 
