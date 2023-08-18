@@ -458,7 +458,6 @@ graph LR
 &emsp; [MyBatis高级使用](/docs/SSM/MyBatis/MybatisSenior.md)  
 &emsp; &emsp; [mybatis-generator](/docs/SSM/MyBatis/MybatisGenerator.md)  
 &emsp; &emsp; [MyBatis大数据量查询](/docs/SSM/MyBatis/BigData.md)  
-&emsp; &emsp; [MyBatis批量插入或更新](/docs/SSM/MyBatis/BigData.md)  
 &emsp; &emsp; [PageHelper](/docs/SSM/MyBatis/PageHelper.md)  
 [MyBatis解析](/docs/SSM/MyBatis/MybatisAnalysis.md)  
 &emsp; [MyBatis架构](/docs/SSM/MyBatis/MybatisFramework.md)  

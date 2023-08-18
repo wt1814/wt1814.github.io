@@ -337,7 +337,6 @@
         * [MyBatis高级使用](/docs/SSM/MyBatis/MybatisSenior.md)  
             * [mybatis-generator](/docs/SSM/MyBatis/MybatisGenerator.md) 
             * [MyBatis大数据量查询](/docs/SSM/MyBatis/BigData.md)  
-            * [MyBatis批量插入或更新](/docs/SSM/MyBatis/BigData.md)   
             * [PageHelper](/docs/SSM/MyBatis/PageHelper.md)    
     * [MyBatis解析](/docs/SSM/MyBatis/MybatisAnalysis.md)  
         * [MyBatis架构](/docs/SSM/MyBatis/MybatisFramework.md)  
@@ -855,3 +854,4 @@
     * [跨平台uni-app](/docs/front/uniapp.md)    
     * [nodejs](/docs/front/nodejs.md)   
 * [测试](/docs/test/test.md)  
+
