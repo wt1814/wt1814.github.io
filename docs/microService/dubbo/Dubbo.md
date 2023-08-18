@@ -4,7 +4,7 @@
 
 - [1. Dubbo](#1-dubbo)
     - [1.1. Dubbo工作流程](#11-dubbo工作流程)
-    - [1.2. dubbo相关知识点](#12-dubbo相关知识点)
+    - [1.2. Dubbo相关知识点](#12-dubbo相关知识点)
         - [1.2.1. Dubbo需要Web容器吗？内置了哪几种服务容器？](#121-dubbo需要web容器吗内置了哪几种服务容器)
         - [1.2.2. Dubbo有哪些注册中心？](#122-dubbo有哪些注册中心)
         - [1.2.3. Dubbo序列化和协议](#123-dubbo序列化和协议)
@@ -76,7 +76,7 @@ https://mp.weixin.qq.com/s/2Wm2SsRa1xOMX6pV9NyCrA
 3. 做一些过滤操作，比如加入缓存、mock数据  
 4. 接口调用数据统计  
 
-## 1.2. dubbo相关知识点
+## 1.2. Dubbo相关知识点
 ### 1.2.1. Dubbo需要Web容器吗？内置了哪几种服务容器？  
 &emsp; 不需要，如果强制使用Web容器，只会增加复杂性，也浪费资源。  
 &emsp; Dubbo内置了Spring Container、Jetty Container、Log4j Container。   
