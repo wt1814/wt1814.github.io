@@ -19,11 +19,11 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. Spring循环依赖的场景：均采用setter方法（属性注入）注入方式，可被解决；采用构造器和setter方法（属性注入）混合注入方式可能被解决。
-2. **<font color = "red">Spring通过3级缓存解决：</font>**  
+2. **<font color = "red">Spring通过`三级缓存`解决：</font>**  
     ![image](http://182.92.69.8:8081/img/SSM/Spring/spring-20.png)  
-    * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
-    * 二级缓存: Map<String,Object> earlySingletonObjects， **<font color = "blue">早期曝光对象</font>** ，`二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。`尚未经历了完整的Spring Bean初始化生命周期。
-    * 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
+    * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，`早期曝光对象工厂`，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
+    * 二级缓存: Map<String,Object> earlySingletonObjects， **<font color = "blue">`早期曝光对象`</font>** ，`二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。`尚未经历了完整的Spring Bean初始化生命周期。
+    * 一级缓存: Map<String,Object> singletonObjects，`单例对象池`，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
 3. **<font color = "clime">单例模式下Spring解决循环依赖的流程：</font>**  
     1. Spring创建bean主要分为两个步骤，创建原始bean对象，接着去填充对象属性和初始化。  
     2. 每次创建bean之前，都会从缓存中查下有没有该bean，因为是单例，只能有一个。  

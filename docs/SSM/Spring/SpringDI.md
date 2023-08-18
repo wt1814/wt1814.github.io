@@ -16,10 +16,17 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 加载时机：SpringBean默认单例，非懒加载，即容器启动时就加载。  
+1. 加载时机：  
+    1. 非懒加载，即容器启动时就加载。SpringBean默认单例。  
+    &emsp; 查看AbstractApplicationContext.`refresh()`方法中实例化所有非懒加载的bean过程即方法`finishBeanFactoryInitialization`，查看此方法最后一行beanFactory.preInstantiateSingletons()实际调用此方法。  
 2. 加载流程：  
     1. doGetBean()，获取Bean。  
-    1. doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean()初始化。  
+    2. doCreateBean()创建Bean有三个关键步骤：  
+    &emsp; 2.createBeanInstance()实例化、  
+    &emsp; 5.populateBean()属性填充、  
+    &emsp; 6.initializeBean()初始化。  
+
+
 
 # 1. SpringDI解析
 ## 1.1. ~~依赖注入发生的时间(懒加载相关)~~  
@@ -42,9 +49,8 @@
 &emsp;        （3）：如果bean的scope是prototype的，则该Bean的实例化是在第一次使用该Bean的时候进行实例化   
 
 ------
-&emsp; 查看AbstractApplicationContext.refresh()方法中实例化所有非懒加载的bean过程即
-这个方法finishBeanFactoryInitialization查看此方法最后一行beanFactory.preInstantiateSingletons();实际调用此方法，来看此单例实例化过程
-为DefaultListBeanFactory.preInstantiateSingletons源码如下  
+
+&emsp; 查看AbstractApplicationContext.`refresh()`方法中实例化所有非懒加载的bean过程即方法`finishBeanFactoryInitialization`，查看此方法最后一行beanFactory.preInstantiateSingletons()实际调用此方法，来看此单例实例化过程为DefaultListBeanFactory.preInstantiateSingletons，源码如下  
 
 ```java
 public void preInstantiateSingletons() throws BeansException {
