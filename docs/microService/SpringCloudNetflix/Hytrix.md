@@ -29,9 +29,8 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 服务雪崩：在微服务架构中，存在着那么多的服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统的瘫痪。  
-2. Hystrix工作流程：1. 包装请求 ---> 2. 发起请求 ---> 3. 缓存处理 ---> 4. 判断断路器是否打开（熔断） ---> 5. 判断是否进行业务请求（请求是否需要隔离或降级） ---> 6. 执行业务请求 ---> 7. 健康监测 ---> 8. fallback处理或返回成功的响应。  
-3. 熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。Hystrix中的降级方案：熔断触发降级、请求超时触发降级、资源（信号量、线程池）隔离触发降级 / 依赖隔离。  
-&emsp; <font color = "clime">熔断的对象是服务之间的请求；`熔断策略有根据请求的数量分为信号量和线程池，还有请求的时间（即超时熔断），请求错误率（即熔断触发降级）。`</font>  
+2. Hystrix工作流程：1. 包装请求 ---> 2. 发起请求 ---> 3. 缓存处理 ---> 4. 判断断路器是否打开（熔断） ---> 5. 判断是否进行业务请求（请求是否需要隔离或降级） ---> 6. 执行业务请求 ---> 7. 健康监测 ---> 8. `fallback处理`或返回成功的响应。  
+3. 熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。Hystrix中的降级方案：熔断触发降级、请求超时触发降级、`资源（信号量、线程池）`隔离触发降级 / 依赖隔离。（<font color = "clime">熔断的对象是服务之间的请求；`熔断策略有根据请求的数量分为信号量和线程池，还有请求的时间（即超时熔断），请求错误率（即熔断触发降级）。`</font>）  
 4. 线程池隔离与信号量隔离  
   1. 线程池隔离：请求线程和每个服务单独用线程池。  
     &emsp; 比如现在有3个业务调用分别是查询订单、查询商品、查询用户，且这三个业务请求都是依赖第三方服务-订单服务、商品服务、用户服务。`为每一个服务接口单独开辟一个线程池，`保持与其他服务接口线程的隔离，提高该服务接口的独立性和高可用。    
@@ -375,6 +374,25 @@ hystrix:
 ### 1.6.1. 构建监控聚合服务  
 &emsp; 微服务集群中，Hystrix的度量信息通过Turbine来汇集监控信息，并将聚合后的信息提供给Hystrix Dashboard来集中展示和监控。  
 ![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-7.png)  
+
+---------
+
+&emsp; <font color = "clime">微服务集群中，Hystrix的度量信息通过`Turbine`来汇集监控信息，并将聚合后的信息提供给Hystrix Dashboard来集中展示和监控。</font>  
+
+```properties
+#开启熔断机制
+feign.hystrix.enabled=true
+# 设置hystrix超时时间，默认1000ms
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=60000
+# 是否开启超时，默认false，不建议开启
+# hystrix.command.default.execution.isolation.thread.interruptOnTimeout=false
+# 最大线程数量，默认10，Fast Fail 应用，建议使用默认值。
+# hystrix.threadpool.default.coreSize=20
+# 允许在队列中的等待的任务数量，默认5，Fast Fail 应用，建议使用默认值。
+# hystrix.threadpool.default.queueSizeRejectionThreshold=10
+
+# queueSizeRejectionThreshold默认值是5，允许在队列中的等待的任务数量。maxQueueSize默认值是-1，队列大小。如果是Fast Fail 应用，建议使用默认值。线程池饱满后直接拒绝后续的任务，不再进行等待。即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝。
+```
 
 ### 1.6.2. 与消息代理结合  
 &emsp; Spring Cloud在封装Turbine的时候，还封装了基于消息代理的收集实现。所以，可以将所有需要收集的监控信息都输出到消息代理中，然后Turbine服务再从消息代理中异步获取这些监控信息，最后将这些监控信息聚合并输出到Hystrix Dashboard中。通过引入消息代理。  
