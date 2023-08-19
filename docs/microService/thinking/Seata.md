@@ -210,7 +210,6 @@ https://zhuanlan.zhihu.com/p/566683139?utm_id=0
 seata分布式事务
 https://blog.csdn.net/weixin_42420663/article/details/126276049
 
-
 -->
 #### 1.1.3.1. 读写隔离和全局锁
 &emsp; Seata AT模式的事务隔离是建立在支事务的本地隔离级别基础之上的，在数据库本地隔离级别读已提交或以上的前提下，Seata 设计了由事务协调器维护的全局写排他锁，来保证事务间的写隔离，同时，将全局事务默认定义在读未提交的隔离级别上。  
@@ -236,6 +235,5 @@ https://blog.csdn.net/zzti_erlie/article/details/120939588
 分布式事务Seata——AT模式解析
 https://www.jianshu.com/p/ea454a710908
 -->
-
 
 
