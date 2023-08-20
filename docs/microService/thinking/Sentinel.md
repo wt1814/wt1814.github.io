@@ -3,6 +3,7 @@
 
 - [1. Sentinel](#1-sentinel)
     - [1.1. 接入Sentinel](#11-接入sentinel)
+    - [gateway集成sentinel](#gateway集成sentinel)
     - [1.2. Sentinel控制台](#12-sentinel控制台)
         - [1.2.1. API 分组和route维度](#121-api-分组和route维度)
         - [1.2.2. 网关限流规则 GatewayFlowRule](#122-网关限流规则-gatewayflowrule)
@@ -44,6 +45,14 @@ https://blog.csdn.net/lzq199528/article/details/109898038
 异常处理 https://mp.weixin.qq.com/s?__biz=MzkwNzI0MzQ2NQ==&mid=2247489058&idx=3&sn=2a9abd84a257e49869689079bccfa733&source=41#wechat_redirect
 -->
 &emsp; 查看[官方文档](https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel)  
+
+## gateway集成sentinel
+<!--
+
+https://blog.csdn.net/lzq199528/article/details/109898038
+
+-->
+
 
 ## 1.2. Sentinel控制台
 <!-- 

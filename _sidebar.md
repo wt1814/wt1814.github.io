@@ -497,7 +497,6 @@
             * [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 * [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
     * [限流Sentinel](/docs/microService/thinking/Sentinel.md) 
-    * [Sentinel使用](/docs/microService/thinking/SentinelUse.md)  
     * [如何计算服务限流的配额？](/docs/microService/thinking/limitingQuota.md)  
 * [服务降级](/docs/microService/thinking/Demotion.md)  
 * MQ  

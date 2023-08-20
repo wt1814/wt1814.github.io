@@ -663,7 +663,6 @@ graph LR
 ### 限流降级
 [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
 &emsp; [限流Sentinel](/docs/microService/thinking/Sentinel.md)  
-&emsp; [Sentinel使用](/docs/microService/thinking/SentinelUse.md)  
 &emsp; [如何计算服务限流的配额？](/docs/microService/thinking/limitingQuota.md)  
 [服务降级](/docs/microService/thinking/Demotion.md)  
 
