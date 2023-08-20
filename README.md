@@ -35,14 +35,14 @@
         - [MQ](#mq)
             - [RocketMQ](#rocketmq)
             - [Kafka](#kafka)
+    - [计算机网络](#计算机网络)
+        - [负载均衡](#负载均衡)
     - [网络IO/分布式通信](#网络io分布式通信)
         - [通信基础](#通信基础)
         - [webSocket协议](#websocket协议)
         - [NIO](#nio)
         - [Netty通信框架](#netty通信框架)
         - [其他](#其他)
-    - [计算机网络](#计算机网络)
-        - [负载均衡](#负载均衡)
     - [Error](#error)
     - [架构设计](#架构设计)
     - [项目构建基础](#项目构建基础)
@@ -705,6 +705,50 @@ graph LR
 [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
 -->
 
+-------------
+
+## 计算机网络  
+[OSI七层网络模型](/docs/network/OSI.md)  
+[应用层](/docs/network/application.md)  
+&emsp; [DNS](docs/network/DNS.md)  
+&emsp; [HTTP](/docs/network/HTTP.md)  
+&emsp; [HTTPS](/docs/network/HTTPS.md)  
+[传输层](/docs/network/transfer.md)  
+&emsp; [TCP](/docs/network/TCP.md)  
+&emsp; &emsp; [TCP传输阶段](/docs/network/TCPTransfer.md)  
+&emsp; &emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
+&emsp; &emsp; [TCP粘包](/docs/network/TCPSticking.md)   
+&emsp; &emsp; [长短连接](/docs/network/connection.md)  
+&emsp; [UDP](/docs/network/UDP.md)  
+[网络的性能指标](/docs/network/standard.md)  
+[网络工具](/docs/network/NetTools.md)  
+&emsp; [网络抓包](/docs/network/wireshark.md)  
+&emsp; [网络监控](/docs/network/NetMonitor.md)  
+
+<!-- 
+出口ip
+https://help.aliyun.com/document_detail/122217.html
+-->
+
+
+### 负载均衡  
+[负载均衡](/docs/system/loadBalance/loadBalance.md)  
+[DNS轮询](/docs/system/loadBalance/DNS.md)  
+[Http重定向](/docs/system/loadBalance/redirect.md)  
+[反向代理负载均衡](/docs/system/loadBalance/AgentLoad.md)  
+&emsp; [LVS](/docs/system/loadBalance/LVS.md)  
+&emsp; [Nginx](/docs/system/loadBalance/Nginx/nginx.md)  
+&emsp; &emsp; [Nginx介绍](/docs/system/loadBalance/Nginx/nginxIntroduce.md)  
+&emsp; &emsp; [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
+&emsp; &emsp; &emsp; [Nginx配置参数中文说明](/docs/system/loadBalance/Nginx/nginxConfig.md)   
+&emsp; &emsp; &emsp; [Nginx负载](/docs/system/loadBalance/Nginx/nginxLoad.md)   
+&emsp; &emsp; &emsp; [Nginx日志](/docs/system/loadBalance/Nginx/nginxLog.md)   
+&emsp; &emsp; [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
+&emsp; &emsp; [Nginx执行原理](/docs/system/loadBalance/Nginx/nginxPrinciple.md)  
+&emsp; [Keepalived](/docs/system/loadBalance/Keepalived.md)  
+[IP负载均衡](/docs/system/loadBalance/IPLoad.md)  
+[数据链路负载均衡](/docs/system/loadBalance/LinkLoad.md)  
+[CDN](/docs/system/loadBalance/CDN.md)  
 
 
 ## 网络IO/分布式通信  
@@ -767,51 +811,6 @@ graph LR
 
 ### 其他  
 [请求合并](/docs/webSocket/RequestMerge.md)  
-
-
-
-## 计算机网络  
-[OSI七层网络模型](/docs/network/OSI.md)  
-[应用层](/docs/network/application.md)  
-&emsp; [DNS](docs/network/DNS.md)  
-&emsp; [HTTP](/docs/network/HTTP.md)  
-&emsp; [HTTPS](/docs/network/HTTPS.md)  
-[传输层](/docs/network/transfer.md)  
-&emsp; [TCP](/docs/network/TCP.md)  
-&emsp; &emsp; [TCP传输阶段](/docs/network/TCPTransfer.md)  
-&emsp; &emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
-&emsp; &emsp; [TCP粘包](/docs/network/TCPSticking.md)   
-&emsp; &emsp; [长短连接](/docs/network/connection.md)  
-&emsp; [UDP](/docs/network/UDP.md)  
-[网络的性能指标](/docs/network/standard.md)  
-[网络工具](/docs/network/NetTools.md)  
-&emsp; [网络抓包](/docs/network/wireshark.md)  
-&emsp; [网络监控](/docs/network/NetMonitor.md)  
-
-<!-- 
-出口ip
-https://help.aliyun.com/document_detail/122217.html
--->
-
-
-### 负载均衡  
-[负载均衡](/docs/system/loadBalance/loadBalance.md)  
-[DNS轮询](/docs/system/loadBalance/DNS.md)  
-[Http重定向](/docs/system/loadBalance/redirect.md)  
-[反向代理负载均衡](/docs/system/loadBalance/AgentLoad.md)  
-&emsp; [LVS](/docs/system/loadBalance/LVS.md)  
-&emsp; [Nginx](/docs/system/loadBalance/Nginx/nginx.md)  
-&emsp; &emsp; [Nginx介绍](/docs/system/loadBalance/Nginx/nginxIntroduce.md)  
-&emsp; &emsp; [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
-&emsp; &emsp; &emsp; [Nginx配置参数中文说明](/docs/system/loadBalance/Nginx/nginxConfig.md)   
-&emsp; &emsp; &emsp; [Nginx负载](/docs/system/loadBalance/Nginx/nginxLoad.md)   
-&emsp; &emsp; &emsp; [Nginx日志](/docs/system/loadBalance/Nginx/nginxLog.md)   
-&emsp; &emsp; [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
-&emsp; &emsp; [Nginx执行原理](/docs/system/loadBalance/Nginx/nginxPrinciple.md)  
-&emsp; [Keepalived](/docs/system/loadBalance/Keepalived.md)  
-[IP负载均衡](/docs/system/loadBalance/IPLoad.md)  
-[数据链路负载均衡](/docs/system/loadBalance/LinkLoad.md)  
-[CDN](/docs/system/loadBalance/CDN.md)  
 
 
 --------------------
