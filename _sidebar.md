@@ -815,7 +815,6 @@
         * [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
         * [jira](/docs/devAndOps/build/jira.md)  
         * [Jmeter](/docs/devAndOps/test/Jmeter.md)  
-        * [allure](/docs/devAndOps/test/allure.md)  
         * [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
     * 监控和统计  
         * [监控](/docs/devAndOps/monitor/indicators.md)  
@@ -851,5 +850,6 @@
     * [跨平台uni-app](/docs/front/uniapp.md)    
     * [nodejs](/docs/front/nodejs.md)   
 * [测试](/docs/test/test.md)  
+    * [allure](/docs/devAndOps/test/allure.md)  
 * [python](/docs/python/python.md)   
 

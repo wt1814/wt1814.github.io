@@ -1107,7 +1107,6 @@ prometheus
 [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
 [jira](/docs/devAndOps/build/jira.md)  
 [Jmeter](/docs/devAndOps/test/Jmeter.md)  
-[allure](/docs/devAndOps/test/allure.md)  
 [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
 
 
@@ -1153,6 +1152,8 @@ prometheus
 
 ## 测试  
 [测试](/docs/test/test.md)  
+[allure](/docs/devAndOps/test/allure.md)  
+
 
 ## python
 [python](/docs/python/python.md)  
