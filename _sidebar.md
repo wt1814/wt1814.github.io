@@ -562,7 +562,6 @@
         * [SpringTest](/docs/web/test.md)  
         * [乱码](/docs/web/garbled.md)  
         * [工具类hutool](/docs/web/hutool.md)  
-        * [跨域](/docs/web/Cross.md)  
     * [★★★API接口设计](/docs/web/API.md)    
         * [RESTful风格](/docs/web/interface/RESTful.md)  
         * [★★★接口幂等](/docs/web/interface/idempotent.md)  

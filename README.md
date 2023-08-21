@@ -752,7 +752,6 @@ graph LR
 &emsp; [SpringTest](/docs/web/test.md)  
 &emsp; [乱码](/docs/web/garbled.md)  
 &emsp; [工具类hutool](/docs/web/hutool.md)  
-&emsp; [跨域](/docs/web/Cross.md)  
 [JavaBean](/docs/web/JavaBean.md)  
 &emsp; [POJO](/docs/web/POJO.md)  
 &emsp; [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
