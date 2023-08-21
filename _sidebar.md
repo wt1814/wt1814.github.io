@@ -790,9 +790,9 @@
         * [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
     * [6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)    
     * 研发  
+        * [Linux定时执行脚本](/docs/devAndOps/build/TimingScript.md)    
         * [Git安装](/docs/devAndOps/git/GitBuild.md)  
         * [Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
-        * [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
         * [3. JDK安装](/docs/devAndOps/build/JDKBuild.md)  
         * [tomcat安装](/docs/devAndOps/build/tomcatBuild.md)  
         * [arthas](/docs/devAndOps/build/arthas.md)  

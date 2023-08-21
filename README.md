@@ -1041,7 +1041,6 @@ prometheus
 [4. Git安装](/docs/devAndOps/git/GitBuild.md)  
 [5. GitLab搭建](/docs/devAndOps/git/GitLab.md)  
 [Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
-[Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  
 [tomcat安装](/docs/devAndOps/build/tomcatBuild.md)  
 [arthas](/docs/devAndOps/build/arthas.md)  
 
