@@ -2,13 +2,13 @@
 <!-- TOC -->
 
 - [1. Docker](#1-docker)
-    - [***操作系统直接安装和docker安装的区别](#操作系统直接安装和docker安装的区别)
-    - [1.1. 虚拟化技术](#11-虚拟化技术)
-        - [1.1.1. 虚拟机结构介绍](#111-虚拟机结构介绍)
-        - [1.1.2. 容器化技术Docker](#112-容器化技术docker)
-        - [1.1.3. 虚拟机和容器对比](#113-虚拟机和容器对比)
-    - [1.2. Docker简介](#12-docker简介)
-    - [1.3. Docker的使用场景](#13-docker的使用场景)
+    - [1.1. ***操作系统直接安装和docker安装的区别](#11-操作系统直接安装和docker安装的区别)
+    - [1.2. 虚拟化技术](#12-虚拟化技术)
+        - [1.2.1. 虚拟机结构介绍](#121-虚拟机结构介绍)
+        - [1.2.2. 容器化技术Docker](#122-容器化技术docker)
+        - [1.2.3. 虚拟机和容器对比](#123-虚拟机和容器对比)
+    - [1.3. Docker简介](#13-docker简介)
+    - [1.4. Docker的使用场景](#14-docker的使用场景)
 
 <!-- /TOC -->
 
@@ -27,7 +27,7 @@ https://mp.weixin.qq.com/s/oeKTX-E6W40IjLy5TJewLg
 &emsp; **<font color = "clime">Docker中文社区：</font>** https://www.docker.org.cn/dockershuji.html  
 
 
-## ***操作系统直接安装和docker安装的区别  
+## 1.1. ***操作系统直接安装和docker安装的区别  
 <!-- 
 https://blog.csdn.net/wangxueying5172/article/details/122249993
 
@@ -37,14 +37,14 @@ https://www.zhihu.com/question/388328735/answer/1158442899
 -->
 
 
-## 1.1. 虚拟化技术  
+## 1.2. 虚拟化技术  
 <!-- 
 https://kubernetes.io/zh/docs/concepts/overview/what-is-kubernetes/
 -->
 &emsp; 应用部署化的演变：  
 ![image](http://182.92.69.8:8081/img/devops/docker/docker-40.png)  
 
-### 1.1.1. 虚拟机结构介绍    
+### 1.2.1. 虚拟机结构介绍    
 ![image](http://182.92.69.8:8081/img/devops/docker/docker-31.png)  
 
 * 基础设施(Infrastructure)。它可以是个人电脑，数据中心的服务器，或者是云主机。
@@ -58,7 +58,7 @@ https://kubernetes.io/zh/docs/concepts/overview/what-is-kubernetes/
 
 &emsp; 在虚拟机模型中，首先要启动物理机和 Hypervisor 引导程序(这边略过了BIOS和Bootloader等阶段)。**一旦 Hypervisor 启动之后，就会占用机器上的全部物理资源，如 CPU、RAM、存储和 NIC。Hypervisor 接下来就会将这些物理资源划分为虚拟资源，并且看起来与真实物理资源完全一致。然后 Hypervison 将这些资源打包进一个叫做虚拟机(VM)的软件结构中。之后在 VM 中安装操作系统，并在操作系统上安装应用。假如要运行 4 个应用，那么一般来说需要创建 4 个虚拟机并安装 4 个操作系统，然后分别安装应用。**  
 
-### 1.1.2. 容器化技术Docker  
+### 1.2.2. 容器化技术Docker  
 &emsp; Docker可以说是容器化技术的代名词。
 ![image](http://182.92.69.8:8081/img/devops/docker/docker-32.png)  
 
@@ -71,7 +71,7 @@ https://kubernetes.io/zh/docs/concepts/overview/what-is-kubernetes/
 &emsp; **Docker容器是在操作系统层面实现虚拟化**，是一个标准的软件单元 ，直接复用本地主机操作系统。容器是在本机运行，与其他容器共享主机的内核，它运行的一个独立的进程，不占用其他任何可执行文件的内存，更加轻量级。  
 &emsp; 在容器模型中。服务器启动之后，所选择的操作系统会启动。那么启动的操作系统会占用了全部硬件资源。在 OS 层之上，需要安装容器引擎，比如 docker。<font color = "clime">容器引擎会获取系统资源，然后将这些资源分割成安全的互相隔离的资源结构，称之为容器。此时，每个容器在其内部运行应用。</font>  
 
-### 1.1.3. 虚拟机和容器对比  
+### 1.2.3. 虚拟机和容器对比  
 ![image](http://182.92.69.8:8081/img/devops/docker/docker-12.png)![image](http://182.92.69.8:8081/img/devops/docker/docker-13.png)  
 
 ![image](http://182.92.69.8:8081/img/devops/docker/docker-11.png)  
@@ -101,7 +101,7 @@ https://kubernetes.io/zh/docs/concepts/overview/what-is-kubernetes/
 |集群规模|上百|上万|
 |高可用策略	|备份、容灾、迁移|弹性、负载、动态|
 
-## 1.2. Docker简介  
+## 1.3. Docker简介  
 &emsp; Docker是提供应用打包部署与运行应用的容器化平台。Docker本身并不是容器，它是创建容器的工具，是应用容器引擎。 
 
 ![image](http://182.92.69.8:8081/img/devops/docker/docker-1.png)  
@@ -123,7 +123,7 @@ https://kubernetes.io/zh/docs/concepts/overview/what-is-kubernetes/
 &emsp; 高资源利用率：容器提供进程级的隔离，因此可以更加精细地设置 CPU 和内存的使用率，进而更好地利用服务器的计算资源。  
 &emsp; 快速扩展：每个容器都可作为单独的进程予以运行，并且可以共享底层操作系统的系统资源，这样一来可以加快容器的启动和停止效率。
 -->
-## 1.3. Docker的使用场景  
+## 1.4. Docker的使用场景  
 &emsp; Docker作为一种轻量级的虚拟化方案，应用场景十分丰富，下面收集了一些常见的场景：
 
 * 作为轻量级虚拟机使用  

@@ -699,7 +699,7 @@
                 * [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)   
     * [请求合并](/docs/webSocket/RequestMerge.md)  
 ---------------------------
-* 源码环境搭建
+* [源码搭建汇总](/docs/java/basis/SourceBuild.md)  
     * [JDK源码](/docs/java/basis/JDKSource.md)  
     * SSM
         * [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
@@ -789,9 +789,6 @@
             * [k8s监控](/docs/devAndOps/k8s/Monitor.md)  
         * [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
     * [6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)    
-    * [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
-    * [jira](/docs/devAndOps/build/jira.md)  
-    * [Jmeter](/docs/devAndOps/test/Jmeter.md)  
     * 研发  
         * [Git安装](/docs/devAndOps/git/GitBuild.md)  
         * [Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
@@ -819,6 +816,7 @@
         * [jira](/docs/devAndOps/build/jira.md)  
         * [Jmeter](/docs/devAndOps/test/Jmeter.md)  
         * [allure](/docs/devAndOps/test/allure.md)  
+        * [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
     * 监控和统计  
         * [监控](/docs/devAndOps/monitor/indicators.md)  
             * [监控系统](/docs/devAndOps/monitor/monitor.md)  
