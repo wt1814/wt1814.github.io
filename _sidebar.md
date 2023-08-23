@@ -134,7 +134,7 @@
             * [获取多线程执行结果](/docs/java/concurrent/execResult.md)  
     * [并发编程](/docs/java/concurrent/MultiThread.md)  
         * [线程安全问题](/docs/java/concurrent/ConcurrentPrinciple.md)  
-            * [CPU多核缓存及并发安全](/docs/java/concurrent/ConcurrencyProblem.md)  
+            * [CPU多级缓存及并发安全](/docs/java/concurrent/ConcurrencyProblem.md)  
             * [硬件层解决并发安全](/docs/java/concurrent/HardwareConcurrencySolve.md)  
             * [Java解决并发安全](/docs/java/concurrent/ConcurrencySolve.md)  
             * [伪共享问题](/docs/java/concurrent/PseudoSharing.md)  
