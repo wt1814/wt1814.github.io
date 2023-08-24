@@ -344,7 +344,7 @@ graph LR
 &emsp; &emsp; [ShardingSphere](/docs/SQL/shardingsphere.md)  
 &emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md)  
 [★★★分库分表和ES](/docs/SQL/shardingAndEs.md)  
-[★★★MySql架构原理](/docs/SQL/MySqlPrinciple.md)   
+[MySql架构原理](/docs/SQL/MySqlPrinciple.md)   
 &emsp; [MySql运行流程](/docs/SQL/Framework.md)   
 &emsp; [InnoDB插入更新流程](/docs/SQL/insert.md)  
 &emsp; [【Server层】之binLog日志](/docs/SQL/BinLog.md)  

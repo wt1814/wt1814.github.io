@@ -227,7 +227,7 @@
             * [ShardingSphere](/docs/SQL/shardingsphere.md)  
             * [MyCat中间件](/docs/SQL/MyCat.md)  
     * [★★★分库分表和ES](/docs/SQL/shardingAndEs.md)  
-    * [★★★MySql架构原理](/docs/SQL/MySqlPrinciple.md)    
+    * [MySql架构原理](/docs/SQL/MySqlPrinciple.md)    
         * [MySql运行流程](/docs/SQL/Framework.md)  
         * [InnoDB插入更新流程](/docs/SQL/insert.md)  
         * [Server层之binLog日志](/docs/SQL/BinLog.md)  
