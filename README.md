@@ -289,6 +289,7 @@ graph LR
 
 
 ## 数据库  
+
 ### MySql
 [数据建模](/docs/SQL/modeling.md)  
 &emsp; [字段](/docs/SQL/Field.md)  
@@ -351,9 +352,9 @@ graph LR
 &emsp; &emsp; [读写分离实现](/docs/SQL/ReadWrite.md)  
 &emsp; &emsp; [多数据源](/docs/SQL/MultipleSources.md)  
 &emsp; [分区](/docs/SQL/partition.md)  
-&emsp; [分库分表](/docs/SQL/sub.md)  
+&emsp; [★★★分库分表](/docs/SQL/sub.md)  
 &emsp; &emsp; [分库分表带来的问题](/docs/SQL/subProblem.md)  
-&emsp; &emsp; [分库分表查询](/docs/SQL/subSelect.md)  
+&emsp; &emsp; [★★★分库分表查询](/docs/SQL/subSelect.md)  
 &emsp; &emsp; [分库分表后分页查询](/docs/SQL/subSelectLimit.md)  
 &emsp; &emsp; [分库分表后聚合查询](/docs/SQL/aggregate.md)  
 &emsp; [★★★数据迁移](/docs/projectImplement/implementation.md)  
