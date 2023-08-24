@@ -22,7 +22,7 @@
     1. **<font color = "red">ThreadLocal#set()#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** 即，当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
     &emsp; ~~Thread ---> ThreadLocal.ThreadLocalMap~~
     2. **<font color = "clime">ThreadLocal.ThreadLocalMap：</font>**  
-    &emsp; 1).Map结构中Entry继承WeakReference，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。  
+    &emsp; 1).Map结构中`Entry继承WeakReference`，所以Entry对应key的引用(ThreadLocal实例)是一个弱引用，Entry对Value的引用是强引用。  
     &emsp; 2).<font color = "clime">Key是一个ThreadLocal实例，Value是设置的值。</font>    
     &emsp; Entry的作用即是：为其属主线程建立一个ThreadLocal实例与一个线程持有对象之间的对应关系。 
     ![image](http://182.92.69.8:8081/img/java/concurrent/multi-24.png)   

@@ -21,7 +21,7 @@
 2. 锁升级  
     &emsp; 锁主要存在四种状态，依次是：无锁状态（普通对象）、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。    
     ![image](http://182.92.69.8:8081/img/java/concurrent/multi-88.png)   
-    &emsp; `锁状态保存在MarkWord中。`  
+    &emsp; `★★★锁状态保存在MarkWord中。`  
     ![image](http://182.92.69.8:8081/img/java/concurrent/multi-79.png)   
     ![image](http://182.92.69.8:8081/img/java/concurrent/multi-80.png)   
     &emsp; ~~锁升级流程如下：~~ 
