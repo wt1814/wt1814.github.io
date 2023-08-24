@@ -9,6 +9,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
+1. ***CAS定义（特点） --- 函数方程 --- 缺点。    
 1. **<font color = "clime">CAS，Compare And Swap，即比较并交换。一种无锁原子算法，CAS是一种乐观锁。</font>**  
 2. CAS函数  
 &emsp; **<font color = "clime">在函数CAS(V,E,N)中有3个参数：从内存中读取的值E，计算的结果值V，内存中的当前值N（可能已经被其他线程改变）。</font>**  
