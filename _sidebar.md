@@ -432,7 +432,7 @@
     * [★★★消息模式](/docs/microService/thinking/news.md)   
     * [分布式事务的选型和使用](/docs/microService/thinking/DistributedTransactionSelection.md)  
     * [分布式事务框架](/docs/microService/thinking/framework.md)    
-        * [阿里Seata](/docs/microService/thinking/Seata.md)  
+        * [★★★阿里Seata](/docs/microService/thinking/Seata.md)  
 * [分布式锁](/docs/microService/thinking/Lock.md)  
     * [RedisLock](/docs/microService/thinking/redisLock.md)  
     * [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  

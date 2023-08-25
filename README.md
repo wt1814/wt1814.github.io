@@ -588,7 +588,7 @@ graph LR
 &emsp; [★★★消息模式](/docs/microService/thinking/news.md)   
 &emsp; [分布式事务的选型和使用](/docs/microService/thinking/DistributedTransactionSelection.md)  
 &emsp; [分布式事务框架](/docs/microService/thinking/framework.md)   
-&emsp; &emsp; [阿里Seata](/docs/microService/thinking/Seata.md)  
+&emsp; &emsp; [★★★阿里Seata](/docs/microService/thinking/Seata.md)  
 
 ### 分布式锁
 [分布式锁](/docs/microService/thinking/Lock.md)  
