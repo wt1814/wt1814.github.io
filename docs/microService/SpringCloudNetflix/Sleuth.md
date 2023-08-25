@@ -38,7 +38,7 @@
     **<font color = "red">(1) 如何快速定位请求异常；</font>**    
     **<font color = "red">(2) 如何快速定位性能瓶颈；</font>**  
     **<font color = "red">(3) 如何快速定位不合理调用；</font>**  
-2. **<font color = "red">埋点日志通常包含：traceId、spanId、调用的开始时间，协议类型、调用方ip和端口，请求的服务名、调用耗时，调用结果，异常信息等，同时预留可扩展字段，为下一步扩展做准备；</font>**  
+2. **<font color = "red">埋点日志通常包含：traceId、spanId、调用的开始时间，协议类型、调用方ip和端口，请求的服务名、`调用耗时`，调用结果，`异常信息`等，同时预留可扩展字段，为下一步扩展做准备；</font>**  
 3. spring-cloud-starter-sleuth功能点：
     1. 有关traceId：获取当前traceId、日志获取traceId、传递traceId到异步线程池、子线程或线程池中获取Zipkin traceId并打印。  
     2. sleuth自定义信息。增加自定义属性、添加自定义Tag标签。  

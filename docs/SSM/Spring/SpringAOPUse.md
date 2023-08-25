@@ -26,7 +26,7 @@
     * 慢请求记录  
     * 使用aop + redis + Lua接口限流
 2. **SpringAOP失效：**  
-&emsp; <font color = "red">同一对象内部方法嵌套调用，慎用this来调用被@Async、@Transactional、@Cacheable等注解标注的方法，this下注解可能不生效。</font>async方法中的this不是动态代理的子类对象，而是原始的对象，故this调用无法通过动态代理来增强。 
+&emsp; <font color = "red">同一对象内部方法嵌套调用，慎用this来调用被@Async、@Transactional、@Cacheable等注解标注的方法，this下注解可能不生效。</font>async方法中的this不是动态代理的子类对象，而`是原始的对象，故this调用无法通过动态代理来增强`。 
 3. **<font color = "red">过滤器，拦截器和aop的区别：</font>** 过滤器拦截的是URL；拦截器拦截的是URL；Spring AOP只能拦截Spring管理Bean的访问（业务层Service）。  
 
 # 1. SpringAOP  
