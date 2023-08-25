@@ -30,9 +30,7 @@
     * 熟练使用数据库MySql；
     * 掌握分库分表技术；
 * 分布式  
-    * 熟练使用SSM框架、SpringBoot框架；
-    * 掌握SpringCloud、Dubbo框架；  
-    * 掌握es、zookeeper等中间件；
+    * 熟练使用SSM、SpringBoot、SpringCloud；
     * 掌握分布式事务、分布式锁、分布式缓存等分布式问题的解决；
 * 高并发  
     * 掌握负载均衡技术；
