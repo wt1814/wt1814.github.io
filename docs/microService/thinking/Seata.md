@@ -91,9 +91,9 @@ update product set name = 'GTS' where name = 'TXC';
     ```
     &emsp; 得到前镜像：  
     
-        |id|name|
-        |---|---|
-        |1|TXC|
+    |id|name|
+    |---|---|
+    |1|TXC|
 
     3. 执行业务 SQL  
     &emsp; 执行自己的业务逻辑：  
@@ -109,9 +109,9 @@ update product set name = 'GTS' where name = 'TXC';
     ```
     &emsp; 得到后镜像：
 
-        |id|name|
-        |---|---|
-        |1|GTS|
+    |id|name|
+    |---|---|
+    |1|GTS|
 
     5. 插入回滚日志  
     &emsp; 把前后镜像数据以及业务 SQL 相关的信息组成一条回滚日志记录，插入到 UNDO_LOG 表中。  
