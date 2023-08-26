@@ -621,7 +621,8 @@ graph LR
 [二级缓存](/docs/microService/Redis/doubleCache.md)   
 &emsp; [j2Cache框架集成Caffeine+Redis二级缓存](/docs/microService/Redis/Caffeine.md)  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
-[缓存更新](/docs/cache/CacheUpdate.md)  
+&emsp; [查询缓存](/docs/cache/SelectCache.md)  
+&emsp; [更新缓存](/docs/cache/CacheUpdate.md)  
 [Redis热点key](/docs/cache/hotspotKey.md)  
 
 #### Redis
