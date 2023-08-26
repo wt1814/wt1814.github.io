@@ -18,7 +18,17 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占用！！！  
-2. redis底层8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。  
+2. <font color = "red">目前有8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。</font>  
+&emsp; **<font color = "clime">Redis数据类型的底层实现如下：</font>**  
+
+|Redis数据结构|底层数据结构|
+|---|---|
+|String	|int、embstr(即SDS)、raw|
+|Hash	|ziplist(压缩列表)或者dictht(字典)|
+|List	|quicklist(快速列表，是ziplist压缩列表和linkedlist双端链表的组合)|
+|Set	|intset(整数集合)或者dictht(字典)|
+|ZSet	|skiplist(跳跃表)或者ziplist(压缩列表)|
+  
 3. 3种链表：  
     * 双端链表LinkedList  
         &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
