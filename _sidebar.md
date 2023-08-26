@@ -458,7 +458,7 @@
             * [更新缓存](/docs/cache/CacheUpdate.md)  
         * [Redis热点key](/docs/cache/hotspotKey.md)  
     * [Redis](/docs/microService/Redis/RedisSummary.md)   
-        [Redis使用](/docs/microService/Redis/RedisUse.md)  
+        * [Redis使用](/docs/microService/Redis/RedisUse.md)  
             * [Redis安装](/docs/microService/Redis/RedisInstall.md)  
                 * [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
             * [SpringBoot整合Redis](/docs/microService/Redis/SpringBootRedis.md)  
