@@ -627,11 +627,12 @@ graph LR
 
 #### Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
-[Redis安装](/docs/microService/Redis/RedisInstall.md)  
-&emsp; [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
-[SpringBoot整合Redis](/docs/microService/Redis/SpringBootRedis.md)  
-[Redis客户端使用及开发规范](/docs/microService/Redis/RedisStandard.md)  
-&emsp; [BigKey](/docs/microService/Redis/BigKey.md)  
+[Redis使用](/docs/microService/Redis/RedisUse.md)  
+&emsp; [Redis安装](/docs/microService/Redis/RedisInstall.md)  
+&emsp; &emsp; [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
+&emsp; [SpringBoot整合Redis](/docs/microService/Redis/SpringBootRedis.md)  
+&emsp; [Redis客户端使用及开发规范](/docs/microService/Redis/RedisStandard.md)  
+&emsp; &emsp; [BigKey](/docs/microService/Redis/BigKey.md)  
 [Redis数据类型](/docs/microService/Redis/RedisStructure.md)  
 &emsp; [Redis基本数据类型](/docs/microService/Redis/RedisBasicStructure.md)  
 &emsp; &emsp;  [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
