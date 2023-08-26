@@ -21,8 +21,13 @@
 
 
 
-
 # 1. Seata分布式事务框架
+<!-- 
+https://seata.io/zh-cn/docs/overview/what-is-seata.html
+两天，我把分布式事务搞完了 
+https://mp.weixin.qq.com/s/amuBimPo7lnfsfo5Pyzc-w
+-->
+
 &emsp; Seata 是一款开源的分布式事务解决方案，致力于提供高性能和简单易用的分布式事务服务。Seata 将为用户提供了 AT、TCC、SAGA 和 XA 事务模式，为用户打造一站式的分布式解决方案。  
 
 ## 1.1. AT模式

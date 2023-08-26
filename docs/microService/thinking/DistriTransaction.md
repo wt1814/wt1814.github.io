@@ -5,10 +5,6 @@
     - [1.1. 分布式事务产生的原因](#11-分布式事务产生的原因)
     - [1.2. 分布式事务解决方案](#12-分布式事务解决方案)
     - [1.3. 分布式事务具体实现](#13-分布式事务具体实现)
-        - [1.3.1. JTA](#131-jta)
-        - [1.3.2. TCC框架](#132-tcc框架)
-        - [1.3.3. LCN分布式事务框架](#133-lcn分布式事务框架)
-        - [1.3.4. Seata](#134-seata)
 
 <!-- /TOC -->
 
@@ -79,21 +75,15 @@ https://blog.csdn.net/qq_36700462/article/details/125789325
     * 最大努力通知 --- 最终一致性
 
 ## 1.3. 分布式事务具体实现  
-### 1.3.1. JTA  
+1. JTA  
 
-### 1.3.2. TCC框架  
+2. TCC框架  
 &emsp; ByteTCC、TCC-transaction、EasyTransaction  
 
-### 1.3.3. LCN分布式事务框架  
+3. LCN分布式事务框架  
 <!-- 
 https://mp.weixin.qq.com/s/xe0M5GsmtNWbWEygIFFfig
 -->
-&emsp; ......
 
-### 1.3.4. Seata  
-<!-- 
-https://seata.io/zh-cn/docs/overview/what-is-seata.html
-两天，我把分布式事务搞完了 
-https://mp.weixin.qq.com/s/amuBimPo7lnfsfo5Pyzc-w
--->
+4. Seata  
 &emsp; Seata一个框架集成了AT、TCC、Saga、XA四种模式。  
