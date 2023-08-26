@@ -619,8 +619,7 @@ graph LR
 #### 缓存介绍
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
 [二级缓存](/docs/microService/Redis/doubleCache.md)   
-&emsp; [Caffeine+Redis二级缓存](/docs/microService/Redis/Caffeine.md)  
-&emsp; [集成两级缓存j2Cache](/docs/microService/Redis/j2Cache.md)  
+&emsp; [j2Cache框架集成Caffeine+Redis二级缓存](/docs/microService/Redis/Caffeine.md)  
 [分布式缓存问题](/docs/cache/DistributedCache.md)  
 [缓存更新](/docs/cache/CacheUpdate.md)  
 [Redis热点key](/docs/cache/hotspotKey.md)  
