@@ -437,7 +437,7 @@
     * [RedisLock](/docs/microService/thinking/redisLock.md)  
     * [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
     * [Redisson](/docs/microService/thinking/Redisson.md)  
-        * [Boot整合Redisson](/docs/microService/thinking/BootRedisson.md)  
+        * [SpringBoot整合Redisson](/docs/microService/thinking/BootRedisson.md)  
     * [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
     * [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
 ------------------------------------------------------------------------------------------------------------------------------
