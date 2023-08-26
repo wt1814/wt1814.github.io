@@ -12,8 +12,8 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. **<font color = "red">TCC是一种`业务层面或者是应用层`的`两阶段、补偿型`的事务。</font>**  
-2. TCC是`Try（检测及资源锁定或者预留）`、Commit（确认）、Cancel（取消）的缩写，业务层面需要写对应的三个方法。  
+1. 介绍：**<font color = "red">TCC是一种`业务层面或者是应用层`的`两阶段、补偿型`的事务。</font>**  
+2. 流程：TCC是`Try（检测及资源锁定或者预留）`、Commit（确认）、Cancel（取消）的缩写，业务层面需要写对应的三个方法。  
 3. TCC与二阶段比较  
 &emsp; 使用2PC机制时，以提交为例，一个完整的事务生命周期是：begin -> 业务逻辑 -> prepare -> commit。  
 &emsp; 使用TCC机制时，以提交为例，一个完整的事务生命周期是：begin -> 业务逻辑(try业务) -> commit(comfirm业务)。  
