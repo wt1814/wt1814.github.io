@@ -940,7 +940,6 @@ https://help.aliyun.com/document_detail/122217.html
 ### 分布式文件存储  
 [分布式文件存储](/docs/File/FileStore.md)  
 
-----------
 
 ## 源码搭建汇总  
 [源码搭建汇总](/docs/java/basis/SourceBuild.md)  
@@ -951,6 +950,7 @@ https://help.aliyun.com/document_detail/122217.html
 [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
 [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 
+----------
 
 ## Linux操作系统  
 <!-- 
