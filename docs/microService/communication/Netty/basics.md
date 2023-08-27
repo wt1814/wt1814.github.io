@@ -1,4 +1,8 @@
 
+
+![image](http://182.92.69.8:8081/img/draw/NetIO.png)  
+
+
 &emsp; [序列化](/docs/microService/communication/serializbale.md)  
 &emsp; [网络IO](/docs/microService/communication/NetworkIO.md)  
 &emsp; &emsp; [服务器处理连接的架构演变](/docs/microService/communication/ProcessingLinks.md)  
