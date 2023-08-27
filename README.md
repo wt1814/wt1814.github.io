@@ -42,7 +42,6 @@
         - [webSocket协议](#websocket协议)
         - [NIO](#nio)
         - [Netty通信框架](#netty通信框架)
-        - [其他](#其他)
     - [Error](#error)
     - [架构设计](#架构设计)
     - [项目构建基础](#项目构建基础)
@@ -772,6 +771,7 @@ https://help.aliyun.com/document_detail/122217.html
 &emsp; &emsp; [多路复用之Reactor模式](/docs/microService/communication/Netty/Reactor.md)  
 &emsp; &emsp; [IO性能优化之零拷贝](/docs/microService/communication/Netty/zeroCopy.md)  
 &emsp; &emsp; [IO性能优化之零拷贝重制](/docs/microService/communication/Netty/zeroCopyRemake.md)  
+&emsp; [请求合并](/docs/webSocket/RequestMerge.md)  
 
 
 ### webSocket协议  
@@ -819,8 +819,6 @@ https://help.aliyun.com/document_detail/122217.html
 &emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
 &emsp; &emsp; [池化内存分配](/docs/microService/communication/Netty/byteBufTwo.md)    
 
-### 其他  
-[请求合并](/docs/webSocket/RequestMerge.md)  
 
 --------------------
 

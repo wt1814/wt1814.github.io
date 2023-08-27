@@ -573,6 +573,7 @@
             * [多路复用之Reactor模式](/docs/microService/communication/Netty/Reactor.md)  
             * [IO性能优化之零拷贝](/docs/microService/communication/Netty/zeroCopy.md)  
             * [IO性能优化之零拷贝重制](/docs/microService/communication/Netty/zeroCopyRemake.md)  
+        * [请求合并](/docs/webSocket/RequestMerge.md)  
     * [webSocket协议](/docs/webSocket/Summary.md)    
         * [Socket编程](/docs/microService/communication/Socket.md)  
         * [4种Web端即时通信](/docs/webSocket/LongPolling.md)  
@@ -610,7 +611,6 @@
                 * [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
                 * [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
                 * [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)   
-    * [请求合并](/docs/webSocket/RequestMerge.md)  
 ------------------------------------------------------------------------------------------------------------------------------
 * Error  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
