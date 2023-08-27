@@ -90,11 +90,14 @@ graph LR
 
 ![image](http://182.92.69.8:8081/img/draw/SchemaProperties.png)  
 
+------------------------------------------------------------------------------------------------------------------------------
+
 ## 总结
 [知识点概况](/docs/survey.md)  
 [大总结1](/docs/summary.md)  
 [大总结2](/docs/summaryTwo.md)  
 
+------------------------------------------------------------------------------------------------------------------------------
 
 ## Java  
 ### Java基础
@@ -174,6 +177,8 @@ graph LR
 &emsp; [8种Mybatis的设计模式](/docs/java/Design/MybatisDesign.md)  
 &emsp; [【常用的设计模式】](/docs/java/Design/UsedDesign.md)  
 
+------------------------------------------------------------------------------------------------------------------------------
+
 ### JVM  
 [JVM总结](/docs/java/JVM/summary.md)  
 [JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM.md)   
@@ -213,7 +218,6 @@ graph LR
 &emsp; [Arthas工具](/docs/java/JVM/Arthas.md)  
 &emsp; [Arthas常用命令](/docs/java/JVM/ArthasCommand.md)  
 &emsp; [线上Debug](/docs/java/JVM/OnlineDebug.md)  
-
 
 <!-- 
 &emsp; [JVM排查案例](/docs/java/JVM/case.md)  
@@ -282,11 +286,10 @@ graph LR
 &emsp; &emsp; [Semaphore](/docs/java/concurrent/Semaphore.md)  
 &emsp; &emsp; [Exchanger](/docs/java/concurrent/Exchanger.md)  
 
-
 <!-- 
 [并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
 -->
-
+------------------------------------------------------------------------------------------------------------------------------
 
 ## 数据库  
 
@@ -363,6 +366,8 @@ graph LR
 &emsp; &emsp; [DoubleWrite](/docs/SQL/DoubleWrite.md)  
 &emsp; [【server层和存储引擎层】两阶段提交和崩溃恢复](/docs/SQL/CrashRecovery.md)  
 
+------------------------------------------------------------------------------------------------------------------------------
+
 ### 搜索引擎ES  
 [ES基本概念](/docs/ES/basicConcepts.md)  
 &emsp; [★★★~~ES底层数据结构~~](/docs/ES/BottomStructure.md)  
@@ -423,7 +428,7 @@ graph LR
 
 [ES重制](/docs/ESRemake/ESRemake.md)    
 
--------
+------------------------------------------------------------------------------------------------------------------------------
 
 ## SSM  
 ### Spring  
@@ -458,6 +463,8 @@ graph LR
 &emsp; [SpringMVC解析](/docs/SSM/Spring/SpringMVCAnalysis.md)    
 &emsp; [过滤器、拦截器、监听器](docs/web/subassembly.md)  
 
+------------------------------------------------------------------------------------------------------------------------------
+
 ### MyBatis  
 [MyBatis](/docs/SSM/MyBatis/MybatisSummary.md)  
 [MyBatis使用](/docs/SSM/MyBatis/MybatisUse.md)  
@@ -476,7 +483,7 @@ graph LR
 &emsp; &emsp; [MyBatis分页](/docs/SSM/MyBatis/MybatisPage.md)  
 &emsp; [MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)   
 
-------------
+------------------------------------------------------------------------------------------------------------------------------
 
 ## 分布式框架  
 
@@ -498,6 +505,8 @@ graph LR
 &emsp; &emsp; [内置Tomcat](/docs/microService/SpringBoot/Tomcat.md)  
 [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
+------------------------------------------------------------------------------------------------------------------------------
+
 ### SpringCloud    
 [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
 [注册中心和配置中心](/docs/microService/SpringCloudNetflix/register.md)  
@@ -514,6 +523,7 @@ graph LR
 &emsp; [链路SkyWalking](/docs/microService/SpringCloudNetflix/SkyWalking.md)  
 [Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
 
+------------------------------------------------------------------------------------------------------------------------------
 
 ### Dubbo  
 [Dubbo总结](/docs/microService/dubbo/DubboSummary.md)  
@@ -554,6 +564,8 @@ graph LR
 &emsp; [负载均衡源码解析](/docs/microService/dubbo/LoadBalance.md)  
 -->
 
+------------------------------------------------------------------------------------------------------------------------------
+
 ### Zookeeper
 [Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
 &emsp; [ZAB](/docs/microService/dubbo/ZAB.md)  
@@ -561,11 +573,14 @@ graph LR
 [Zookeeper使用](/docs/microService/dubbo/ZookeeperUse.md)  
 [Zookeeper问题](/docs/microService/dubbo/ZookeeperProblem.md)  
 
+------------------------------------------------------------------------------------------------------------------------------
 
 ### ServiceMesh
 
-## 分布式
 
+------------------------------------------------------------------------------------------------------------------------------
+
+## 分布式
 
 ### 分布式理论  
 [分布式理论](/docs/microService/thinking/DistributedThink.md)  
@@ -601,7 +616,7 @@ graph LR
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
 &emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
 
-------------
+------------------------------------------------------------------------------------------------------------------------------
 
 ## 高并发
 ### 高并发相关概念
@@ -668,7 +683,6 @@ graph LR
 &emsp; [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 
 
-
 ### 限流降级
 [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
 &emsp; [如何计算服务限流的配额？](/docs/microService/thinking/limitingQuota.md)  
@@ -714,7 +728,7 @@ graph LR
 [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
 -->
 
--------------
+------------------------------------------------------------------------------------------------------------------------------
 
 ## 计算机网络  
 [OSI七层网络模型](/docs/network/OSI.md)  
@@ -820,7 +834,7 @@ https://help.aliyun.com/document_detail/122217.html
 &emsp; &emsp; [池化内存分配](/docs/microService/communication/Netty/byteBufTwo.md)    
 
 
---------------------
+------------------------------------------------------------------------------------------------------------------------------
 
 ## Error  
 [多线程串线了](/docs/Error/ThreadCrossed.md)  
@@ -950,7 +964,7 @@ https://help.aliyun.com/document_detail/122217.html
 [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
 [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 
-----------
+------------------------------------------------------------------------------------------------------------------------------
 
 ## Linux操作系统  
 <!-- 
@@ -1138,7 +1152,7 @@ prometheus
 [Json](/docs/software/Json.md)  
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
 
---------
+------------------------------------------------------------------------------------------------------------------------------
 
 ## 1.1. 面试
 [面试](/docs/recruit/interview.md)  
@@ -1159,7 +1173,7 @@ prometheus
 [支付项目](/docs/recruit/project/payment.md)  
 [二清项目](/docs/recruit/project/erqing.md)  
 
----------------
+------------------------------------------------------------------------------------------------------------------------------
 
 
 ## 算法  
