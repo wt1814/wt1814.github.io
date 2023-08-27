@@ -1,7 +1,7 @@
 
 
 
-# 1.2.2. Kubernetes集群的网络配置
+# Kubernetes集群的网络配置
 <!--
  Kubernetes中容器到容器通信 
  https://mp.weixin.qq.com/s/P-xKd6HeOGxyt-YXCnZjmQ
