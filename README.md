@@ -65,9 +65,9 @@
         - [搭建-需求、测试](#搭建-需求测试)
         - [监控和统计](#监控和统计)
     - [常用研发工具](#常用研发工具)
-    - [1.1. 面试](#11-面试)
-        - [1.1.1. 面试技巧](#111-面试技巧)
-        - [1.1.2. 项目总结](#112-项目总结)
+    - [面试](#面试)
+        - [面试技巧](#面试技巧)
+        - [项目总结](#项目总结)
     - [算法](#算法)
     - [前端知识](#前端知识)
     - [测试](#测试)
@@ -1154,10 +1154,10 @@ prometheus
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.1. 面试
+## 面试
 [面试](/docs/recruit/interview.md)  
 
-### 1.1.1. 面试技巧  
+### 面试技巧  
 [总体流程](/docs/recruit/1resumeCreate.md)  
 [力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
 [难点](/docs/recruit/4difficultProblem.md)  
@@ -1168,7 +1168,7 @@ prometheus
 [简历](/docs/recruit/Resume.md)  
 [全部经历](/docs/recruit/AllExperiences.md)  
 
-### 1.1.2. 项目总结  
+### 项目总结  
 [监控插件](/docs/recruit/project/monitor.md)   
 [支付项目](/docs/recruit/project/payment.md)  
 [二清项目](/docs/recruit/project/erqing.md)  
