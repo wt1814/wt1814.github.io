@@ -703,13 +703,11 @@
 ------------------------------------------------------------------------------------------------------------------------------
 * [源码搭建汇总](/docs/java/basis/SourceBuild.md)  
     * [JDK源码](/docs/java/basis/JDKSource.md)  
-    * SSM
-        * [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
-        * [MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
-    * 微服务
-        * [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
-        * [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
-        * [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
+    * [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
+    * [MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
+    * [SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
+    * [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
+    * [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 * Linux操作系统  
     * [操作系统](/docs/Linux/operating.md)  
     * [Linux系统性能](/docs/Linux/systemPerformance.md)  
