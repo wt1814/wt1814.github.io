@@ -35,6 +35,14 @@
         - [MQ](#mq)
             - [RocketMQ](#rocketmq)
             - [Kafka](#kafka)
+    - [计算机网络](#计算机网络)
+        - [负载均衡](#负载均衡)
+    - [网络IO/分布式通信](#网络io分布式通信)
+        - [通信基础](#通信基础)
+        - [webSocket协议](#websocket协议)
+        - [NIO](#nio)
+        - [Netty通信框架](#netty通信框架)
+        - [其他](#其他)
     - [Error](#error)
     - [架构设计](#架构设计)
     - [项目构建基础](#项目构建基础)
@@ -47,14 +55,6 @@
         - [工作流](#工作流)
         - [规则引擎](#规则引擎)
         - [分布式文件存储](#分布式文件存储)
-    - [计算机网络](#计算机网络)
-        - [负载均衡](#负载均衡)
-    - [网络IO/分布式通信](#网络io分布式通信)
-        - [通信基础](#通信基础)
-        - [webSocket协议](#websocket协议)
-        - [NIO](#nio)
-        - [Netty通信框架](#netty通信框架)
-        - [其他](#其他)
     - [源码搭建汇总](#源码搭建汇总)
     - [Linux操作系统](#linux操作系统)
     - [Linux服务器搭建](#linux服务器搭建)
@@ -89,6 +89,7 @@ graph LR
     1[架构] --> 6[系统优化]
 ```
 
+![image](http://182.92.69.8:8081/img/draw/SchemaProperties.png)  
 
 ## 总结
 [知识点概况](/docs/survey.md)  
@@ -714,6 +715,113 @@ graph LR
 [kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
 -->
 
+-------------
+
+## 计算机网络  
+[OSI七层网络模型](/docs/network/OSI.md)  
+[应用层](/docs/network/application.md)  
+&emsp; [DNS](docs/network/DNS.md)  
+&emsp; [HTTP](/docs/network/HTTP.md)  
+&emsp; [HTTPS](/docs/network/HTTPS.md)  
+[传输层](/docs/network/transfer.md)  
+&emsp; [TCP](/docs/network/TCP.md)  
+&emsp; &emsp; [TCP传输阶段](/docs/network/TCPTransfer.md)  
+&emsp; &emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
+&emsp; &emsp; [TCP粘包](/docs/network/TCPSticking.md)   
+&emsp; &emsp; [长短连接](/docs/network/connection.md)  
+&emsp; [UDP](/docs/network/UDP.md)  
+[网络的性能指标](/docs/network/standard.md)  
+[网络工具](/docs/network/NetTools.md)  
+&emsp; [网络抓包](/docs/network/wireshark.md)  
+&emsp; [网络监控](/docs/network/NetMonitor.md)  
+
+<!-- 
+出口ip
+https://help.aliyun.com/document_detail/122217.html
+-->
+
+
+### 负载均衡  
+[负载均衡](/docs/system/loadBalance/loadBalance.md)  
+[DNS轮询](/docs/system/loadBalance/DNS.md)  
+[Http重定向](/docs/system/loadBalance/redirect.md)  
+[反向代理负载均衡](/docs/system/loadBalance/AgentLoad.md)  
+&emsp; [LVS](/docs/system/loadBalance/LVS.md)  
+&emsp; [Nginx](/docs/system/loadBalance/Nginx/nginx.md)  
+&emsp; &emsp; [Nginx介绍](/docs/system/loadBalance/Nginx/nginxIntroduce.md)  
+&emsp; &emsp; [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
+&emsp; &emsp; &emsp; [Nginx配置参数中文说明](/docs/system/loadBalance/Nginx/nginxConfig.md)   
+&emsp; &emsp; &emsp; [Nginx负载](/docs/system/loadBalance/Nginx/nginxLoad.md)   
+&emsp; &emsp; &emsp; [Nginx日志](/docs/system/loadBalance/Nginx/nginxLog.md)   
+&emsp; &emsp; [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
+&emsp; &emsp; [Nginx执行原理](/docs/system/loadBalance/Nginx/nginxPrinciple.md)  
+&emsp; [Keepalived](/docs/system/loadBalance/Keepalived.md)  
+[IP负载均衡](/docs/system/loadBalance/IPLoad.md)  
+[数据链路负载均衡](/docs/system/loadBalance/LinkLoad.md)  
+[CDN](/docs/system/loadBalance/CDN.md)  
+
+
+## 网络IO/分布式通信  
+### 通信基础
+[通信基础](/docs/microService/communication/Netty/basics.md)   
+&emsp; [序列化](/docs/microService/communication/serializbale.md)  
+&emsp; [【网络IO】](/docs/microService/communication/NetworkIO.md)  
+&emsp; &emsp; [服务器处理连接的架构演变](/docs/microService/communication/ProcessingLinks.md)  
+&emsp; &emsp; [五种I/O模型](/docs/microService/communication/IO.md)  
+&emsp; &emsp; [I/O多路复用epoll](/docs/microService/communication/Netty/epoll.md)  
+&emsp; &emsp; [多路复用之Reactor模式](/docs/microService/communication/Netty/Reactor.md)  
+&emsp; &emsp; [IO性能优化之零拷贝](/docs/microService/communication/Netty/zeroCopy.md)  
+&emsp; &emsp; [IO性能优化之零拷贝重制](/docs/microService/communication/Netty/zeroCopyRemake.md)  
+
+
+### webSocket协议  
+[webSocket协议](/docs/webSocket/Summary.md)  
+&emsp; [Socket编程](/docs/microService/communication/Socket.md)  
+&emsp; [4种Web端即时通信](/docs/webSocket/LongPolling.md)  
+&emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
+&emsp; [WebSocket协议](/docs/webSocket/WebSocket.md)  
+&emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
+&emsp; [IM系统](/docs/webSocket/IM.md)  
+
+
+### NIO 
+[NIO](/docs/microService/communication/NIO.md)  
+&emsp; [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
+&emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
+&emsp; [Java中的零拷贝](/docs/microService/communication/NIO/JavaZeroCopy.md)  
+&emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
+
+### Netty通信框架
+[Netty总结](/docs/microService/communication/Netty/netty.md)   
+[Netty介绍](/docs/microService/communication/Netty/concepts.md)  
+[Netty运行流程介绍](/docs/microService/communication/Netty/operation.md)   
+[Netty核心组件](/docs/microService/communication/Netty/components.md)   
+&emsp; [Channel相关](/docs/microService/communication/Netty/channel.md)   
+[Netty逻辑架构](/docs/microService/communication/Netty/Architecture.md)   
+[Netty高性能](/docs/microService/communication/Netty/performance.md)  
+&emsp; [Reactor与EventLoop](/docs/microService/communication/Netty/NettyReactor.md)  
+&emsp; [~~Netty中的零拷贝~~](/docs/microService/communication/Netty/nettyZeroCopy.md)  
+[Netty开发](/docs/microService/communication/Netty/Development.md)  
+&emsp; [TCP粘拆包与Netty编解码](/docs/microService/communication/Netty/Decoder.md)  
+&emsp; [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
+&emsp; [Netty多协议开发](/docs/microService/communication/Netty/MultiProtocol.md)  
+[Netty源码](/docs/microService/communication/Netty/source.md)    
+&emsp; [Netty源码搭建](/docs/microService/communication/Netty/build.md)  
+&emsp; [Netty服务端创建](/docs/microService/communication/Netty/principle.md)  
+&emsp; [Netty客户端创建](/docs/microService/communication/Netty/customer.md)  
+&emsp; [NioEventLoop](/docs/microService/communication/Netty/NioEventLoop.md)  
+&emsp; &emsp; [NioEventLoop的启动](/docs/microService/communication/Netty/NioEventLoopStart.md)  
+&emsp; &emsp; [NioEventLoop的执行](/docs/microService/communication/Netty/NioEventLoopRun.md)  
+&emsp; [内存分配-ByteBuf](/docs/microService/communication/Netty/byteBuf.md)    
+&emsp; &emsp; [内存分配-ByteBuf](/docs/microService/communication/Netty/byteBufIntro.md)    
+&emsp; &emsp; [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)    
+&emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
+&emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
+&emsp; &emsp; [池化内存分配](/docs/microService/communication/Netty/byteBufTwo.md)    
+
+### 其他  
+[请求合并](/docs/webSocket/RequestMerge.md)  
+
 --------------------
 
 ## Error  
@@ -833,113 +941,6 @@ graph LR
 
 ### 分布式文件存储  
 [分布式文件存储](/docs/File/FileStore.md)  
-
--------------
-
-## 计算机网络  
-[OSI七层网络模型](/docs/network/OSI.md)  
-[应用层](/docs/network/application.md)  
-&emsp; [DNS](docs/network/DNS.md)  
-&emsp; [HTTP](/docs/network/HTTP.md)  
-&emsp; [HTTPS](/docs/network/HTTPS.md)  
-[传输层](/docs/network/transfer.md)  
-&emsp; [TCP](/docs/network/TCP.md)  
-&emsp; &emsp; [TCP传输阶段](/docs/network/TCPTransfer.md)  
-&emsp; &emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
-&emsp; &emsp; [TCP粘包](/docs/network/TCPSticking.md)   
-&emsp; &emsp; [长短连接](/docs/network/connection.md)  
-&emsp; [UDP](/docs/network/UDP.md)  
-[网络的性能指标](/docs/network/standard.md)  
-[网络工具](/docs/network/NetTools.md)  
-&emsp; [网络抓包](/docs/network/wireshark.md)  
-&emsp; [网络监控](/docs/network/NetMonitor.md)  
-
-<!-- 
-出口ip
-https://help.aliyun.com/document_detail/122217.html
--->
-
-
-### 负载均衡  
-[负载均衡](/docs/system/loadBalance/loadBalance.md)  
-[DNS轮询](/docs/system/loadBalance/DNS.md)  
-[Http重定向](/docs/system/loadBalance/redirect.md)  
-[反向代理负载均衡](/docs/system/loadBalance/AgentLoad.md)  
-&emsp; [LVS](/docs/system/loadBalance/LVS.md)  
-&emsp; [Nginx](/docs/system/loadBalance/Nginx/nginx.md)  
-&emsp; &emsp; [Nginx介绍](/docs/system/loadBalance/Nginx/nginxIntroduce.md)  
-&emsp; &emsp; [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
-&emsp; &emsp; &emsp; [Nginx配置参数中文说明](/docs/system/loadBalance/Nginx/nginxConfig.md)   
-&emsp; &emsp; &emsp; [Nginx负载](/docs/system/loadBalance/Nginx/nginxLoad.md)   
-&emsp; &emsp; &emsp; [Nginx日志](/docs/system/loadBalance/Nginx/nginxLog.md)   
-&emsp; &emsp; [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
-&emsp; &emsp; [Nginx执行原理](/docs/system/loadBalance/Nginx/nginxPrinciple.md)  
-&emsp; [Keepalived](/docs/system/loadBalance/Keepalived.md)  
-[IP负载均衡](/docs/system/loadBalance/IPLoad.md)  
-[数据链路负载均衡](/docs/system/loadBalance/LinkLoad.md)  
-[CDN](/docs/system/loadBalance/CDN.md)  
-
-
-## 网络IO/分布式通信  
-### 通信基础
-[通信基础](/docs/microService/communication/Netty/basics.md)   
-&emsp; [序列化](/docs/microService/communication/serializbale.md)  
-&emsp; [【网络IO】](/docs/microService/communication/NetworkIO.md)  
-&emsp; &emsp; [服务器处理连接的架构演变](/docs/microService/communication/ProcessingLinks.md)  
-&emsp; &emsp; [五种I/O模型](/docs/microService/communication/IO.md)  
-&emsp; &emsp; [I/O多路复用epoll](/docs/microService/communication/Netty/epoll.md)  
-&emsp; &emsp; [多路复用之Reactor模式](/docs/microService/communication/Netty/Reactor.md)  
-&emsp; &emsp; [IO性能优化之零拷贝](/docs/microService/communication/Netty/zeroCopy.md)  
-&emsp; &emsp; [IO性能优化之零拷贝重制](/docs/microService/communication/Netty/zeroCopyRemake.md)  
-
-
-### webSocket协议  
-[webSocket协议](/docs/webSocket/Summary.md)  
-&emsp; [Socket编程](/docs/microService/communication/Socket.md)  
-&emsp; [4种Web端即时通信](/docs/webSocket/LongPolling.md)  
-&emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
-&emsp; [WebSocket协议](/docs/webSocket/WebSocket.md)  
-&emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
-&emsp; [IM系统](/docs/webSocket/IM.md)  
-
-
-### NIO 
-[NIO](/docs/microService/communication/NIO.md)  
-&emsp; [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
-&emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
-&emsp; [Java中的零拷贝](/docs/microService/communication/NIO/JavaZeroCopy.md)  
-&emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
-
-### Netty通信框架
-[Netty总结](/docs/microService/communication/Netty/netty.md)   
-[Netty介绍](/docs/microService/communication/Netty/concepts.md)  
-[Netty运行流程介绍](/docs/microService/communication/Netty/operation.md)   
-[Netty核心组件](/docs/microService/communication/Netty/components.md)   
-&emsp; [Channel相关](/docs/microService/communication/Netty/channel.md)   
-[Netty逻辑架构](/docs/microService/communication/Netty/Architecture.md)   
-[Netty高性能](/docs/microService/communication/Netty/performance.md)  
-&emsp; [Reactor与EventLoop](/docs/microService/communication/Netty/NettyReactor.md)  
-&emsp; [~~Netty中的零拷贝~~](/docs/microService/communication/Netty/nettyZeroCopy.md)  
-[Netty开发](/docs/microService/communication/Netty/Development.md)  
-&emsp; [TCP粘拆包与Netty编解码](/docs/microService/communication/Netty/Decoder.md)  
-&emsp; [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
-&emsp; [Netty多协议开发](/docs/microService/communication/Netty/MultiProtocol.md)  
-[Netty源码](/docs/microService/communication/Netty/source.md)    
-&emsp; [Netty源码搭建](/docs/microService/communication/Netty/build.md)  
-&emsp; [Netty服务端创建](/docs/microService/communication/Netty/principle.md)  
-&emsp; [Netty客户端创建](/docs/microService/communication/Netty/customer.md)  
-&emsp; [NioEventLoop](/docs/microService/communication/Netty/NioEventLoop.md)  
-&emsp; &emsp; [NioEventLoop的启动](/docs/microService/communication/Netty/NioEventLoopStart.md)  
-&emsp; &emsp; [NioEventLoop的执行](/docs/microService/communication/Netty/NioEventLoopRun.md)  
-&emsp; [内存分配-ByteBuf](/docs/microService/communication/Netty/byteBuf.md)    
-&emsp; &emsp; [内存分配-ByteBuf](/docs/microService/communication/Netty/byteBufIntro.md)    
-&emsp; &emsp; [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)    
-&emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
-&emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
-&emsp; &emsp; [池化内存分配](/docs/microService/communication/Netty/byteBufTwo.md)    
-
-### 其他  
-[请求合并](/docs/webSocket/RequestMerge.md)  
 
 
 ----------
