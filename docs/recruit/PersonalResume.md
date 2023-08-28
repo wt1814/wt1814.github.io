@@ -65,14 +65,14 @@
 
 # 项目经历  
 * 2022.04---至今 &emsp; &emsp; 六合熙诚信息科技有限公司 &emsp; &emsp; 答题系统、咨询系统、大屏系统的开发维护    
-    * 核心技术：SpringCloud+MySql+MyBatis+ShardingSphere+ES+Seata+kafka+redis  
+    * 核心技术：SpringCloud+MySql+MyBatis+ES+kafka+redis  
     * 项目概述：心理咨询平台，答题、预警、咨询、大屏展示    
     * 个人职责：
         1. 答题流程及答题结果的处理。答题结果采用库内水平分表处理。    
         2. 用户咨询预约、咨询结果记录。  
         3. 大屏使用ES展示各机构的完成情况。    
 * 2022.04---至今 &emsp; &emsp; 六合熙诚信息科技有限公司 &emsp; &emsp; 用户系统、支付系统、工具类的开发维护    
-    * 核心技术：SpringCloud+MySql+MyBatis+Seata+kafka+redis  
+    * 核心技术：SpringCloud+MySql+MyBatis+ES+kafka+redis  
     * 个人职责：
         1. 手机验证码、短信验证码登录，后台功能权限、数据权限验证。  
         2. 支付系统的搭建，集成阿里App、微信JSAPI方式。  
