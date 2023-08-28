@@ -16,6 +16,10 @@
 &emsp; 制作模版 https://mp.weixin.qq.com/s/z0k922U6jwXe5VYlz33gaA
 
 ## 1.2. 投简历  
+<!-- 
+boss最全话术攻略
+https://www.douyin.com/note/7184359647057382712
+-->
 &emsp; 招呼语：  
 &emsp; 自我介绍 + 数据呈现 + 个人优势   
 &emsp; 态度+匹配点+邀请看简历深度了解。    
