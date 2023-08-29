@@ -29,6 +29,7 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
+1. ClassLoader3个主要方法 ---> loadClass()双亲委派模型 ---> 继承关系（默认提供三个类加载器）
 1. java.lang.ClassLoader3个主要方法  
     * loadClass() 就是主要进行类加载的方法，默认的双亲委派机制就实现在这个方法中。
     * findClass() 根据名称或位置加载.class字节码
@@ -49,8 +50,8 @@
     1. JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。    
     2. ~~`自定义类加载器`：需要继承自ClassLoader，`重写方法findClass()`。~~   
 5. 小结：     
-    1. `自定义类加载器`：需要继承自ClassLoader，`重写方法findClass()`。   
-    2. `破坏双亲委派模型`：继承ClassLoader，`重写loadClass()方法`；或`使用线程上下文类加载器(Thread Context ClassLoader)`。    
+    1. `破坏双亲委派模型`：继承ClassLoader，`重写loadClass()方法`；或`使用线程上下文类加载器(Thread Context ClassLoader)`。    
+    2. `自定义类加载器`：需要继承自ClassLoader，`重写方法findClass()`。   
 
 # 1. 类加载的方式：类加载器（需要重写） 
 <!-- 
