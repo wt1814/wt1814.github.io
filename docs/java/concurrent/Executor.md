@@ -24,9 +24,9 @@
 
 ## 1.2. 线程池框架Executor
 
-&emsp; **<font color = "color">Executor框架由三个部分组成：</font>**  
+&emsp; **<font color = "color">★★★Executor框架由三个部分组成：</font>**  
 
-* 工作任务：Runnable/Callable 接口
+* 工作任务：Runnable/Callable接口
     * 工作任务就是Runnable/Callable接口的实现，可以被线程池执行
 * 执行机制：Executor接口、ExecutorService接口、ScheduledExecutorService接口
     * ThreadPoolExecutor 是最核心的线程池实现，用来执行被提交的任务
