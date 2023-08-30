@@ -1,1 +1,121 @@
-<mxfile host="Electron" modified="2023-08-29T15:54:54.346Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/20.8.16 Chrome/106.0.5249.199 Electron/21.4.0 Safari/537.36" etag="3p-xHDh0Sbsps4adTnb6" version="20.8.16" type="device"><diagram name="第 1 页" id="gWJMXR-vAwB4V3QzzNZM">7Vtbr+I2EP41fmwV27nYjwmE04dutep5aPdplXPwQqqA2RAW6K/v2HHIFZpKu3WOTiSExuNLxt/nzNhjQHSxuzzlyWH7Qa5FhoizviC6RISwwIdvpbgaBWGlYpOn61KFa8Vz+rcwSsdoT+laHFsNCymzIj20la9yvxevRUuX5Lk8t5t9kVn7qYdkI3qK59ck62v/SNfFtppFUOt/EelmWz0Z+7ys2SVVYzOT4zZZy3NDRWNEF7mURSntLguRKewqXMp+qzu1N8NysS/GdOCfuffx4+ff2NX9GiyfVr+n2fEnY+yxuFYTFmuYvynKvNjKjdwnWVxro1ye9muhRnWgVLf5VcoDKDEo/xJFcTVkJqdCgmpb7DJTCwbn1z9Nf134pAo/e1VxeWlWLq+mVNqqDLwLgVEd5Sl/FQ/mXS2lJN+I4kE770YULHAhdwLsgX65yJIi/da2IzFLbXNrV7MBgiHkP5BTvQMzO3faUavs4Jmdh+wQq+yQmZ2H7PhW2SnH/ZZkJ/OkJxjIz8Dg6CUHaVNoVErNqat4uSliD/EYMaqFBYpiLURKGfuIuyjytYajkFW9weKX7oigO7UGXTQ69Fqn9y2EviEYxJXAPDVIHCBGUMQHH1XremO2zIw5YoH6wGgwKzVsf56BejQPlCaiiHvDWIQrZUzMUIRRiFFMEXOUhd3Xpf0ynLdpIZ4PiV57Z9jqtRe+4VPkhbg8XsL9JWc6uCbamY0i4aZ8rrdduNpLbRtbLt/5QYuUkN4qfac+hYz1+HcY/n+cCnFneh7TY3W/RPyZnsf0WD1sDDi7MSEGnqlkCHZY1zLEIuuhpBtLPOZZjiV0EN27O4XVUC0IsMMJNS0r9ZkazJTZDtnYnUN2I3Exwulgu2fo9xoTRtNjNSZ4o2JC70gxNb+E7R8l2OyXGmmHMZuhwObCpzM9/0IPt0oPnel5nBh3rNLzXg/io+mxmifxR0Z1kzSdWDBn1oM5nkYw/47rFtOx21GrUZm82/vQ0fxYDct4OMsxcF5wEAMBigyFywmeINzuCQJbdzrjzmIg+BrJxhWQyRoBwgvEdJYJQI7Kay6iakEAIuBjbplWVeMyE3VrHyAeIubqMZe6PfRaqg905MwYEMYqHTg1BklgncFggEFXAcscLXDNTv+Cjqn7TQUyvCwEhdEQ75qvCaQE/Q7svnXU+QDqvr7yjFuovxVEsWcb0moOfUj5UgtU+R4DYJmudrTbCFAYKM8xcIswMW/hWs9kk+FYCmvVRM4IhXQ4AnQuY+4T8bS4RYVPSi5/CYBXJ21eXavDCXxDJ+WDsI4Zk7v06XJo/9KHDMVscOsasSaHih+v9dMOAJaVaAMF/eO0bWx9++/HUDSd7im2C2BgfTtChgLj2wGQWQ+D1HnTAHJqHcChfcTbARA7P/BQCMX6nwG6rvH3Chr/Aw==</diagram></mxfile>
+<mxfile host="Electron" modified="2023-08-30T02:51:16.018Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.5 Chrome/114.0.5735.243 Electron/25.3.1 Safari/537.36" etag="UUKYfsFlvdQqUNdU9dPd" version="21.6.5" type="device">
+  <diagram name="第 1 页" id="gWJMXR-vAwB4V3QzzNZM">
+    <mxGraphModel dx="1101" dy="744" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="9_95PP_N8y4q7DGFRils-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-1" target="9_95PP_N8y4q7DGFRils-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-1" target="9_95PP_N8y4q7DGFRils-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-1" target="9_95PP_N8y4q7DGFRils-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-1" target="9_95PP_N8y4q7DGFRils-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-1" value="GC&lt;br&gt;&lt;u&gt;&lt;b style=&quot;background-color: rgb(255, 255, 102);&quot;&gt;垃圾回收器&lt;/b&gt;&lt;/u&gt;在&lt;b&gt;&lt;i&gt;&lt;u style=&quot;background-color: rgb(255, 255, 102);&quot;&gt;安全点&lt;/u&gt;&lt;/i&gt;&lt;/b&gt;采用&lt;u&gt;&lt;i&gt;&lt;b style=&quot;background-color: rgb(255, 255, 102);&quot;&gt;回收算法&lt;/b&gt;&lt;/i&gt;&lt;/u&gt;回收&lt;u&gt;&lt;i&gt;&lt;b style=&quot;background-color: rgb(255, 255, 51);&quot;&gt;对象&lt;/b&gt;&lt;/i&gt;&lt;/u&gt;。" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="290" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-2" target="9_95PP_N8y4q7DGFRils-21" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-2" target="9_95PP_N8y4q7DGFRils-23" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-2" target="9_95PP_N8y4q7DGFRils-25" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-2" value="回收算法/流程" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="240" y="585" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-3" value="安全点/安全区域" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="240" y="380" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-5" target="9_95PP_N8y4q7DGFRils-13" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-5" target="9_95PP_N8y4q7DGFRils-15" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-5" value="回收对象" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="240" y="190" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-28" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-6" target="9_95PP_N8y4q7DGFRils-27" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-6" target="9_95PP_N8y4q7DGFRils-29" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-6" target="9_95PP_N8y4q7DGFRils-30" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-6" target="9_95PP_N8y4q7DGFRils-31" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-6" value="回收器" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="240" y="890" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="9_95PP_N8y4q7DGFRils-13" target="9_95PP_N8y4q7DGFRils-17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9_95PP_N8y4q7DGFRils-13" target="9_95PP_N8y4q7DGFRils-19" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-13" value="回收堆中对象" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="110" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-15" value="回收方法区（类和常量）/类的卸载阶段" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="270" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-17" value="什么对象能被回收？" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="640" y="60" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-19" value="怎么回收？" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="640" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-21" value="思想：各种算法" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="480" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-23" value="分代回收流程：各种GC（YGC、Full GC）执行流程" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="585" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-25" value="跨代引用假说" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="680" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-27" value="回收器两种分类方式" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="770" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="WcTXmu8g8UymIIM5B-4_-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9_95PP_N8y4q7DGFRils-29" target="WcTXmu8g8UymIIM5B-4_-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-29" value="CMS回收器" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="850" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="WcTXmu8g8UymIIM5B-4_-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9_95PP_N8y4q7DGFRils-30" target="WcTXmu8g8UymIIM5B-4_-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-30" value="G1回收器" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="930" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="WcTXmu8g8UymIIM5B-4_-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9_95PP_N8y4q7DGFRils-31" target="WcTXmu8g8UymIIM5B-4_-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9_95PP_N8y4q7DGFRils-31" value="三色标记" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="1010" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="WcTXmu8g8UymIIM5B-4_-1" value="1.简介&lt;br&gt;2.流程（3次标记2次清除）&lt;br&gt;3.优缺点" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="850" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="WcTXmu8g8UymIIM5B-4_-3" value="&lt;div&gt;1. 简介&amp;nbsp;&amp;nbsp;&lt;/div&gt;&lt;div&gt;2. 特点&amp;nbsp;&amp;nbsp;&lt;/div&gt;&lt;div&gt;3. 流程&amp;nbsp; &amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="930" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="WcTXmu8g8UymIIM5B-4_-5" value="&lt;div&gt;1. 三色&lt;/div&gt;&lt;div&gt;2. 三色标记流程&amp;nbsp;&lt;/div&gt;&lt;div&gt;3. 多标/错标&amp;nbsp;&amp;nbsp;&lt;/div&gt;&lt;div&gt;4. 漏标（CMS多出来的预清理处理新增的引用）&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="1010" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
