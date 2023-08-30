@@ -127,7 +127,7 @@
         * [线程池创建](/docs/java/concurrent/ExecutorCreate.md)    
             * [ThreadPoolExecutor详解](/docs/java/concurrent/ThreadPoolExecutor.md)  
             * [ForkJoinPool详解](/docs/java/concurrent/ForkJoinPool.md)  
-            * [Executors](/docs/java/concurrent/PoolUse.md)  
+            * [Executors](/docs/java/concurrent/Executors.md)  
         * [线程池执行](/docs/java/concurrent/PoolRun.md)  
             * [ExecutorService](/docs/java/concurrent/ExecutorService.md)  
             * [线程池的正确使用](/docs/java/concurrent/ThreadPoolUse.md)  
