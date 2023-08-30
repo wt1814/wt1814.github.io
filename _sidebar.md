@@ -122,7 +122,7 @@
             * [线程状态](/docs/java/concurrent/threadState.md)  
             * [线程停止与中断](/docs/java/concurrent/interrupt.md)  
         * [线程基本操作](/docs/java/concurrent/threadOperation.md)  
-    * [线程池-多线程](/docs/java/concurrent/ThreadPool.md)  
+    * [~~线程池-多线程~~](/docs/java/concurrent/ThreadPool.md)  
         * [线程池框架](/docs/java/concurrent/Executor.md)  
         * [线程池创建](/docs/java/concurrent/ExecutorCreate.md)    
             * [ThreadPoolExecutor详解](/docs/java/concurrent/ThreadPoolExecutor.md)  
