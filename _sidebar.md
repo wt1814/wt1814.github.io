@@ -129,7 +129,7 @@
         * [线程池的正确使用](/docs/java/concurrent/ThreadPoolUse.md)  
             * [线程池的异常](/docs/java/concurrent/ThreadPoolException.md)  
         * [ForkJoinPool详解](/docs/java/concurrent/ForkJoinPool.md)  
-        * [任务执行Future](/docs/java/concurrent/Future.md)  
+        * [任务执行结果Future](/docs/java/concurrent/Future.md)  
             * [CompletionService](/docs/java/concurrent/CompletionService.md)  
             * [CompletableFuture](/docs/java/concurrent/CompletableFuture.md)  
             * [获取多线程执行结果](/docs/java/concurrent/execResult.md)  
