@@ -22,7 +22,7 @@
 &emsp; 每一个对象都会和一个监视器monitor关联。监视器被占用时会被锁住，其他线程无法来获取该monitor。   
 &emsp; 线程执行monitorenter指令时尝试获取对象的monitor的所有权，当monitor被占用时就会处于锁定状态。  
 2. **<font color = "clime">Java对象头的MarkWord中除了`存储锁状态标记`外，还存有ptr_to_heavyweight_monitor（也称为管程或监视器锁）的起始地址，每个对象都`存在着一个monitor与之关联`。</font>**  
-3. **<font color = "clime">在Java虚拟机（HotSpot）中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。</font><font color = "blue">monitor运行的机制过程如下：(\_EntryList队列、_Owner区域、_WaitSet队列)</font>**  
+3. **<font color = "clime">在Java虚拟机（HotSpot）中，Monitor是基于C++实现的，在虚拟机的ObjectMonitor.hpp文件中。</font><font color = "blue">monitor运行的机制过程如下：(\_EntryList队列、\_Owner区域、_WaitSet队列)</font>**  
 ![image](http://182.92.69.8:8081/img/java/concurrent/multi-55.png)  
     * `想要获取monitor的线程，首先会进入_EntryList队列。`  
     * `当某个线程获取到对象的monitor后，进入Owner区域，设置为当前线程，`同时计数器count加1。  
