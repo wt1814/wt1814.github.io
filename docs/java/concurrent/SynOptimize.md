@@ -19,9 +19,8 @@
 1. **<font color = "clime">锁降级：</font>** <font color = "red">  
 &emsp; Hotspot在1.8开始有了锁降级。在STW期间JVM进入安全点时，如果发现有闲置的monitor（重量级锁对象），会进行锁降级。</font>   
 2. 锁升级  
-    &emsp; 锁主要存在四种状态，依次是：无锁状态（普通对象）、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。    
+    &emsp; `★★★在对象头MarkWord中`，锁主要存在四种状态，依次是：无锁状态（普通对象）、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。    
     ![image](http://182.92.69.8:8081/img/java/concurrent/multi-88.png)   
-    &emsp; `★★★锁状态保存在MarkWord中。`  
     ![image](http://182.92.69.8:8081/img/java/concurrent/multi-79.png)   
     ![image](http://182.92.69.8:8081/img/java/concurrent/multi-80.png)   
     &emsp; ~~锁升级流程如下：~~ 
@@ -44,7 +43,7 @@
             1. **<font color = "clime">如果不允许重偏向，则撤销偏向锁，将Mark Word设置为无锁状态（未锁定不可偏向状态），然后升级为轻量级锁，进行CAS竞争锁；</font><font color = "blue">(偏向锁被重置为无锁状态，这种策略是为了提高获得锁和释放锁的效率。)</font>**     
             2. 如果允许重偏向，设置为匿名偏向锁状态，CAS将偏向锁重新指向线程A（在对象头和线程栈帧的锁记录中存储当前线程ID）； 
         3. 唤醒暂停的线程，从安全点继续执行代码。 
-    4. 偏向锁的取消：  
+    4. `★★★偏向锁的取消：`  
     &emsp; 偏向锁是默认开启的，而且开始时间一般是比应用程序启动慢几秒，如果不想有这个延迟，那么可以使用-XX:BiasedLockingStartUpDelay=0；  
     &emsp; 如果不想要偏向锁，那么可以通过-XX:-UseBiasedLocking = false来设置；  
     &emsp; 在启动代码的时候，要设置一个JVM参数， -XX:BiasedLockingStartupDelay=0，这个参数可以关闭JVM的偏向延迟，JVM默认会设置一个4秒钟的偏向延迟，也就是说JVM启动4秒钟内创建出的所有对象都是不可偏向的（也就是上图中的无锁不可偏向状态），如果对这些对象去加锁，加的会是轻量锁而不是偏向锁。  
