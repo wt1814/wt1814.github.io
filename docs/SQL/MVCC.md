@@ -19,9 +19,10 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
+1. ★★★小结：简介 --- 两个非常重要的模块 --- 在读取已提交、可重复读两种隔离级别下会使用MVCC --- 可重复读解决了幻读吗？    
 1. **<font color = "clime">多版本并发控制（MVCC）是一种用来解决读-写冲突的无锁并发控制。</font>**  
 &emsp; <font color = "clime">MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
-2. **<font color = "clime">InnoDB有两个非常重要的模块来实现MVCC。一个是undo log，用于记录数据的变化轨迹（版本链），用于数据回滚；另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。</font>**   
+2. **<font color = "clime">InnoDB有`两个非常重要的模块`来实现MVCC。一个是undo log，用于记录数据的变化轨迹（版本链），用于数据回滚；另外一个是Read View，用于判断一个session对哪些数据可见，哪些不可见。</font>**   
     * 版本链的生成：在数据库中的每一条记录实际都会存在三个隐藏列：事务ID、行ID、回滚指针，指向undo log记录。  
     *  **<font color = "red">Read View是用来判断每一个读语句有资格读取版本链中的哪个记录。所以在读之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
 3. ~~Read View判断：~~  
@@ -30,7 +31,7 @@
 4. 在读取已提交、可重复读两种隔离级别下会使用MVCC。  
     * 读取已提交READ COMMITTED是在`每次执行select操作时`都会生成一次Read View。所以解决不了幻读问题。 
     * 可重复读REPEATABLE READ只有在第一次执行select操作时才会生成Read View，后续的select操作都将使用第一次生成的Read View。
-5. MVCC解决了幻读没有？  
+5. 可重复读解决了幻读没有？  
         当前读：select...lock in share mode; select...for update;
         当前读：update、insert、delete
 &emsp; 对于当前读的幻读，MVCC是无法解决的。需要使用 Gap Lock 或 Next-Key Lock（Gap Lock + Record Lock）来解决。</font>其实原理也很简单，用上面的例子稍微修改下以触发当前读：select * from user where id < 10 for update。`若只有MVCC，当事务1执行第二次查询时，操作的数据集已经发生变化，所以结果也会错误；`当使用了Gap Lock时，Gap锁会锁住id < 10的整个范围，因此其他事务无法插入id < 10的数据，从而防止了幻读。  
