@@ -72,4 +72,5 @@ https://mp.weixin.qq.com/s/o80xD9oQJgJGDrgOtf3Sig
 
 
 ## 图图图
-![image](http://182.92.69.8:8081/img/java/concurrent/multi-48.png)  
+![image](http://182.92.69.8:8081/img/draw/Concurrent.png)  
+
