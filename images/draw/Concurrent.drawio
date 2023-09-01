@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2023-09-01T02:39:14.754Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.5 Chrome/114.0.5735.243 Electron/25.3.1 Safari/537.36" etag="RsOkAUtjXQ-bSyIa31zq" version="21.6.5" type="device">
+<mxfile host="Electron" modified="2023-09-01T02:48:17.461Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.5 Chrome/114.0.5735.243 Electron/25.3.1 Safari/537.36" etag="PfBd4LJS4_MamOukDnuN" version="21.6.5" type="device">
   <diagram name="第 1 页" id="PH7zY7GD9xR7PyJJDMaR">
     <mxGraphModel dx="1101" dy="744" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -127,8 +127,17 @@
         <mxCell id="GE9L2oN_wP7Hbji7ABV1-35" value="Volatile" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="440" y="1640" width="120" height="60" as="geometry" />
         </mxCell>
+        <mxCell id="O9UZZhdtjTqaT8H57aKd-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="GE9L2oN_wP7Hbji7ABV1-36" target="O9UZZhdtjTqaT8H57aKd-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O9UZZhdtjTqaT8H57aKd-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="GE9L2oN_wP7Hbji7ABV1-36" target="O9UZZhdtjTqaT8H57aKd-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O9UZZhdtjTqaT8H57aKd-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="GE9L2oN_wP7Hbji7ABV1-36" target="O9UZZhdtjTqaT8H57aKd-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="GE9L2oN_wP7Hbji7ABV1-36" value="ThreadLocal" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="440" y="1890" width="120" height="60" as="geometry" />
+          <mxGeometry x="440" y="1900" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="GE9L2oN_wP7Hbji7ABV1-41" value="介绍" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="640" y="880" width="120" height="60" as="geometry" />
@@ -186,6 +195,15 @@
         </mxCell>
         <mxCell id="O9UZZhdtjTqaT8H57aKd-4" value="使用场景" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="640" y="1720" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="O9UZZhdtjTqaT8H57aKd-7" value="底层原理" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="1820" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="O9UZZhdtjTqaT8H57aKd-9" value="使用场景" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="1900" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="O9UZZhdtjTqaT8H57aKd-11" value="三大坑" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="1980" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
