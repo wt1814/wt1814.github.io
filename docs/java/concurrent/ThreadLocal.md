@@ -17,7 +17,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-0. `ThreadLocal ---> ThreadLocalMap ---> N个Entry节点 ---> key和value --->`    
+0. `小结：ThreadLocal ---> ThreadLocalMap ---> N个Entry节点 ---> key和value --->`    
 1. ThreadLocal源码/内存模型：  
     1. **<font color = "red">ThreadLocal#set()#getMap()方法：线程调用threadLocal对象的set(Object value)方法时，数据并不是存储在ThreadLocal对象中，</font><font color = "clime">而是将值存储在每个Thread实例的threadLocals属性中。</font>** 即，当前线程调用ThreadLocal类的set或get方法时，实际上调用的是ThreadLocalMap类对应的 get()、set()方法。  
     &emsp; ~~Thread ---> ThreadLocal.ThreadLocalMap~~
