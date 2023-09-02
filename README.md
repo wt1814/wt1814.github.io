@@ -506,7 +506,7 @@ graph LR
 &emsp; [SpringBoot自动配置](/docs/microService/SpringBoot/AutomaticAssembly.md)  
 &emsp; &emsp; [注解@SpringBootApplication(启动对象)](/docs/microService/SpringBoot/SpringBootApplication.md)  
 &emsp; &emsp; [加载自动配置流程](/docs/microService/SpringBoot/ApplicationProcess.md)  
-&emsp; &emsp; [内置Tomcat](/docs/microService/SpringBoot/Tomcat.md)  
+&emsp; &emsp; [示例：内置Tomcatmcat](/docs/microService/SpringBoot/Tomcat.md)  
 [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 
 ------------------------------------------------------------------------------------------------------------------------------

@@ -18,11 +18,11 @@
 	2. 项目pom文件
 2. `第二步，写自动配置逻辑`
 	1. 编写业务逻辑  
-	2. 定义配置文件对应类  
+	2. 定义配置文件`对应类`  
     	* @ConfigurationProperties 配置属性文件，需要指定前缀 prefix。
     	* @EnableConfigurationProperties 启用配置，需要指定启用的配置类。
     	* @NestedConfigurationProperty 当一个类中引用了外部类，需要在该属性上加该注解。
-	3. 定义自动配置类，自动暴露功能接口。  
+	3. `定义自动配置类`，自动暴露功能接口。  
 3. 第三步，应用加载starter的配置，有两种方式：主动加载、被动加载。  
 
 
@@ -93,7 +93,6 @@ https://www.cnblogs.com/hello-shf/p/10864977.html
     &emsp; matchIfMissing：在matchIfMissing为false时，如果name值为空，则返回false；如果name不为空，则将该值与havingValue指定的值进行比较，如果一样则返回true，否则返回false。返回false也就意味着自动配置不会生效。  
 
     &emsp; ~~各种condition注解：~~  
-
     
     |类型|注解|说明|
     |---|---|---|
