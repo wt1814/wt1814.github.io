@@ -24,6 +24,9 @@
 <!-- /TOC -->
 
 
+![image](http://182.92.69.8:8081/img/draw/SQLOptimize.png)  
+
+
 # 1. SQL优化  
 <!--
 你知道这 8 种 SQL 错误用法吗？ 
@@ -37,7 +40,6 @@ https://mp.weixin.qq.com/s/rfKgNDc7r6JlZY1ZGS1nvQ
 
 ## 1.1. MySql性能和瓶颈
 &emsp; 查看[数据库分布式](/docs/SQL/DistributedDatabase.md)  
-
 
 ## 1.2. ★★★多方面优化 
 &emsp; <font color = "red">MySql性能由综合因素决定，抛开业务复杂度，影响程度依次是硬件配置、MySQL配置、数据表设计、索引优化。</font>  
