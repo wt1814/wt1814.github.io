@@ -439,7 +439,7 @@
         * [★★★阿里Seata](/docs/microService/thinking/Seata.md)  
 * [分布式锁](/docs/microService/thinking/Lock.md)  
     * [Redis分布式锁](/docs/microService/thinking/redisLock.md)  
-    * [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
+    * [使用Redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
     * [Redisson框架](/docs/microService/thinking/Redisson.md)  
         * [SpringBoot整合Redisson](/docs/microService/thinking/BootRedisson.md)  
     * [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
