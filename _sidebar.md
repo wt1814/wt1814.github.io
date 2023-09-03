@@ -507,9 +507,8 @@
     * [如何计算服务限流的配额？](/docs/microService/thinking/limitingQuota.md)  
     * [限流Sentinel](/docs/microService/thinking/Sentinel.md) 
 * [服务降级](/docs/microService/thinking/Demotion.md)  
-* MQ  
-    * [MQ](/docs/microService/mq/mq.md)  
-        * [消息推拉机制](/docs/microService/mq/PushPull.md)  
+* [MQ](/docs/microService/mq/mq.md)    
+    * [消息推拉机制](/docs/microService/mq/PushPull.md)  
     * [kafka](/docs/microService/mq/kafka/kafka.md)   
     * [kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  
         * [生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
