@@ -1,5 +1,6 @@
 
-# Redis总结  
+![image](http://182.92.69.8:8081/img/draw/Redis.png)  
+ 
 <!-- 
 
 Redis变慢了，如何快速排查？ 
