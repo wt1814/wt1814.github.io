@@ -697,7 +697,6 @@ graph LR
 
 ### 1.6.4. MQ    
 [MQ](/docs/microService/mq/mq.md)  
-&emsp; [消息积压](/docs/microService/mq/MessageBacklog.md)  
 &emsp; [消息推拉机制](/docs/microService/mq/PushPull.md)  
 [RocketMQ和Kafka](/docs/microService/mq/RocketMQAndKafka.md)  
 
@@ -718,9 +717,10 @@ graph LR
 &emsp; [【高性能】-持久化/磁盘IO-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
 &emsp; [【高性能】-零拷贝的使用](/docs/microService/mq/kafka/networkIO.md)  
 &emsp; [【高可用】-副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
-&emsp; [【高一致】-如何保证消息队列不丢失?](/docs/microService/mq/kafka/kafkaReliability.md)  
-&emsp; [【高一致】-分区保持顺序](/docs/microService/mq/kafka/order.md)  
-&emsp; [【高一致】-kafka幂等性](/docs/microService/mq/kafka/kafkaIdempotent.md)  
+&emsp; [【高一致】-消息丢失（可靠性传输）?](/docs/microService/mq/kafka/kafkaReliability.md)  
+&emsp; [【高一致】-分区保持顺序（顺序消费）](/docs/microService/mq/kafka/order.md)  
+&emsp; [【高一致】-kafka幂等性（重复消费）](/docs/microService/mq/kafka/kafkaIdempotent.md)  
+&emsp; [消息积压](/docs/microService/mq/MessageBacklog.md)  
 &emsp; [【高一致】-kafka事务](/docs/microService/mq/kafka/kafkaTraction.md)  
 [kafka应用](/docs/microService/mq/kafka/kafkaUse.md)  
 &emsp; [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
