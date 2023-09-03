@@ -613,9 +613,9 @@ graph LR
 
 ### 1.5.4. 分布式锁
 [分布式锁](/docs/microService/thinking/Lock.md)  
-&emsp; [RedisLock](/docs/microService/thinking/redisLock.md)  
+&emsp; [Redis分布式锁](/docs/microService/thinking/redisLock.md)  
 &emsp; [使用redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
-&emsp; [Redisson](/docs/microService/thinking/Redisson.md)  
+&emsp; [Redisson框架](/docs/microService/thinking/Redisson.md)  
 &emsp; &emsp; [SpringBoot整合Redisson](/docs/microService/thinking/BootRedisson.md)  
 &emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
 &emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  

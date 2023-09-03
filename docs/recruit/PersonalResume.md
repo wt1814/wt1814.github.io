@@ -78,14 +78,14 @@
         2. 支付系统的搭建，集成阿里App、微信JSAPI方式。  
         3. 建立数据字典表，用于输入框级联展示、集成阿里OSS上传下载。
 * 2020.09---2022.04 &emsp; &emsp; 车易拍（北京）汽车技术服务有限公司 &emsp; &emsp; 买家端多个系统的开发维护    
-    * 核心技术：springboot+dubbo+MySql+MyBatis+rocketmq+redis  
+    * 核心技术：SpringCloud+MySql+MyBatis+rocketmq+redis  
     * 项目概述：车辆大列表开发、用户系统维护、营销系统维护
     * 个人职责：
         1. 车辆大列表开发，聚合各个业务模块的数据。  
         2. 用户系统开发维护，包含用户信息、账户信息、认证信息、登录等功能。  
         3. 营销系统开发维护，商户端首页改版，金刚位和运营位重构。  
 * 2020.09---2022.04 &emsp; &emsp; 车易拍（北京）汽车技术服务有限公司 &emsp; &emsp; 金融及财务后端开发维护
-    * 核心技术：springboot+dubbo+MySql+MyBatis+rocketmq+redis
+    * 核心技术：SpringCloud+MySql+MyBatis+rocketmq+redis
     * 项目概述：收银台系统、支付系统
     * 个人职责：
       1. 维护收银台系统、支付系统：1).微信小程序支付、支付宝App支付开发；2). 系统优化，例如绑卡接口优化、民生银行前置机宕机问题解决等；
