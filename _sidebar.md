@@ -518,7 +518,7 @@
     * [【kafka特性】](/docs/microService/mq/kafka/kafkaCharacteristic.md)  
         * [【高性能】-内存](/docs/microService/mq/kafka/Memory.md)    
         * [【高性能】-持久化/磁盘IO-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
-        * [【高性能】-零拷贝的使用](/docs/microService/mq/kafka/networkIO.md)  
+        * [【高性能】-网络IO零拷贝](/docs/microService/mq/kafka/networkIO.md)  
         * [【高可用】-副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
         * [【高一致】-消息丢失（可靠性传输）](/docs/microService/mq/kafka/kafkaReliability.md)  
         * [【高一致】-分区保持顺序（顺序消费）](/docs/microService/mq/kafka/order.md)  
