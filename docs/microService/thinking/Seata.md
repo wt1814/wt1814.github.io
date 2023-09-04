@@ -14,8 +14,17 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. Seata AT流程：  
-
+1. Seata AT模式是二阶段提交协议的演变。  
+    1. 一阶段：执行用户SQL。业务数据和回滚日志记录在同一个本地事务中提交，释放本地锁和连接资源。  
+        1. 解析SQL  
+        2. 查询前镜像  
+        3. 执行业务SQL  
+        4. 查询后镜像  
+        5. 插入回滚日志  
+        6. 提交前，向 TC 注册分支：申请 product 表中，主键值等于 1 的记录的 全局锁 。  
+        7. 本地事务提交：业务数据的更新和前面步骤中生成的 UNDO LOG 一并提交。  
+        8. 将本地事务提交的结果上报给 TC。  
+    2. 二阶段：Seata框架自动生成。commit异步化快速完成；rollback通过一阶段的回滚日志进行反向补偿。    
 
 2. AT全局锁与读写分离  
 
@@ -31,18 +40,13 @@ https://mp.weixin.qq.com/s/amuBimPo7lnfsfo5Pyzc-w
 &emsp; Seata 是一款开源的分布式事务解决方案，致力于提供高性能和简单易用的分布式事务服务。Seata 将为用户提供了 AT、TCC、SAGA 和 XA 事务模式，为用户打造一站式的分布式解决方案。  
 
 ## 1.1. AT模式
-&emsp; AT模式的前提是基于支持本地 ACID 事务的关系型数据库和Java应用基于JDBC访问数据库。AT模式是二阶段提交协议的演变：  
-
-* 一阶段：业务数据和回滚日志记录在同一个本地事务中提交，释放本地锁和连接资源。  
-* 二阶段：commit异步化快速完成；rollback通过一阶段的回滚日志进行反向补偿。  
+&emsp; AT模式的前提是基于支持本地 ACID 事务的关系型数据库和Java应用基于JDBC访问数据库。AT模式是二阶段提交协议的演变。  
 
 
 ### 1.1.1. ※※※架构及模块组成
 <!-- 
-
 *** Seata AT模式
 https://blog.csdn.net/a315157973/article/details/103113483
-
 
 https://baijiahao.baidu.com/s?id=1751062475741532450&wfr=spider&for=pc&searchword=seata%20at%20%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB
 -->
@@ -72,7 +76,7 @@ https://baijiahao.baidu.com/s?id=1751062475741532450&wfr=spider&for=pc&searchwor
 
 
 ### 1.1.2. 工作流程示例
-&emsp; AT 模式分为两个阶段：
+&emsp; AT模式两个阶段：
 
 1. 一阶段：执行用户SQL。业务数据和回滚日志记录在同一个本地事务中提交，释放本地锁和连接资源。    
 2. 二阶段：Seata框架自动生成。commit异步化快速完成；rollback通过一阶段的回滚日志进行反向补偿。    
@@ -86,10 +90,8 @@ update product set name = 'GTS' where name = 'TXC';
 ```
 
 1. 一阶段  
-    1. 解析 SQL  
-    &emsp; 得到 SQL 的类型（UPDATE），表（product），条件（where name = 'TXC'）等相关的信息。  
-    2. 查询前镜像  
-    &emsp; 根据解析得到的条件信息，生成查询语句，定位数据。  
+    1. 解析SQL：得到 SQL 的类型（UPDATE），表（product），条件（where name = 'TXC'）等相关的信息。  
+    2. 查询前镜像：根据解析得到的条件信息，生成查询语句，定位数据。  
 
     ```sql
     select id, name from product where name = 'TXC';  
@@ -100,26 +102,23 @@ update product set name = 'GTS' where name = 'TXC';
     |---|---|
     |1|TXC|
 
-    3. 执行业务 SQL  
-    &emsp; 执行自己的业务逻辑：  
+    3. 执行业务SQL：执行自己的业务逻辑。  
     ```sql  
     update product set name = 'GTS' where name = 'TXC';  
     ```
     &emsp; 把 name 改为了 GTS。  
-    4. 查询后镜像  
-    &emsp; 根据前镜像的结果，通过 主键 定位数据。  
+    4. 查询后镜像：根据前镜像的结果，通过 主键 定位数据。  
 
     ```sql
     select id, name from product where id = 1;
     ```
     &emsp; 得到后镜像：
-
     |id|name|
     |---|---|
     |1|GTS|
 
-    5. 插入回滚日志  
-    &emsp; 把前后镜像数据以及业务 SQL 相关的信息组成一条回滚日志记录，插入到 UNDO_LOG 表中。  
+    --------------
+    5. 插入回滚日志：把前后镜像数据以及业务 SQL 相关的信息组成一条回滚日志记录，插入到 UNDO_LOG 表中。  
     6. 提交前，向 TC 注册分支：申请 product 表中，主键值等于 1 的记录的 全局锁 。  
     7. 本地事务提交：业务数据的更新和前面步骤中生成的 UNDO LOG 一并提交。  
     8. 将本地事务提交的结果上报给 TC。  
@@ -226,7 +225,7 @@ https://blog.csdn.net/weixin_42420663/article/details/126276049
 
 -->
 #### 1.1.3.1. 读写隔离和全局锁
-&emsp; Seata AT模式的事务隔离是建立在支事务的本地隔离级别基础之上的，在数据库本地隔离级别读已提交或以上的前提下，Seata 设计了由事务协调器维护的全局写排他锁，来保证事务间的写隔离，同时，将全局事务默认定义在读未提交的隔离级别上。  
+&emsp; Seata AT模式的事务隔离是建立在分支事务的本地隔离级别基础之上的，在数据库本地隔离级别读已提交或以上的前提下，Seata 设计了由事务协调器维护的全局写排他锁，来保证事务间的写隔离，同时，将全局事务默认定义在读未提交的隔离级别上。  
 
 &emsp; 脏读脏写： Seata 的事务是一个全局事务，它包含了若干个分支本地事务，在全局事务执行过程中（全局事务还没执行完），某个本地事务提交了，如果 Seata 没有采取任务措施，则会导致已提交的本地事务被读取，造成脏读，如果数据在全局事务提交前已提交的本地事务被修改，则会造成脏写。  
 

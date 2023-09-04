@@ -1,7 +1,7 @@
 
 <!-- TOC -->
 
-- [1. MySql锁造成的问题](#1-mysql锁造成的问题)
+- [1. ~~MySql锁造成的问题~~](#1-mysql锁造成的问题)
     - [1.1. ~~死锁~~](#11-死锁)
         - [1.1.1. 死锁产生](#111-死锁产生)
         - [1.1.2. 死锁检测](#112-死锁检测)
@@ -27,11 +27,12 @@
 3. **<font color = "clime">如果出现死锁</font>** ，<font color = "clime">可以用`show engine innodb status;`命令来确定最后一个死锁产生的原因。</font>  
 
 
-# 1. MySql锁造成的问题
+# 1. ~~MySql锁造成的问题~~
 
 ## 1.1. ~~死锁~~  
 <!-- 
 
+http://www.taodudu.cc/news/show-3646271.html?action=onClick
 
 mysql死锁的情况问题分析 gap间隙锁
 https://blog.csdn.net/u010325193/article/details/88366707

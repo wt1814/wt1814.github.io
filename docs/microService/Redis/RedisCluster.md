@@ -111,6 +111,7 @@
 ### 1.2.1. 架构  
 &emsp; 服务器节点：3主3从，最少6个节点。其Redis Cluster架构图如下：  
 ![image](http://182.92.69.8:8081/img/microService/Redis/redis-30.png)  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-122.png)  
 
 <!-- 
 看看你了解不了解你们公司的 redis 生产集群的部署架构，如果你不了解，那么确实你就很失职了，你的redis 是主从架构？集群架构？用了哪种集群方案？有没有做高可用保证？有没有开启持久化机制确保可以进行数据恢复？线上 redis 给几个 G 的内存？设置了哪些参数？压测后你们 redis 集群承载多少QPS？
