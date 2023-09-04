@@ -15,15 +15,15 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. **幂等又称为exactly once（精确传递一次。消息被处理且只会被处理一次。不丢失不重复就一次）。**  
-2. `Kafka幂等是针对生产者角度的特性。`kafka只保证producer单个会话中的单个分区幂等。  
-3. **<font color = "red">Kafka幂等性实现机制：（`producer_id和序列号，进行比较`）</font>**  
+&emsp; `Kafka幂等是针对生产者角度的特性。`kafka只保证producer单个会话中的单个分区幂等。  
+2. **<font color = "red">Kafka`生产者幂等性`实现机制：（`producer_id和序列号，进行比较`）</font>**  
     1. `每一个producer在初始化时会生成一个producer_id，并为每个目标partition维护一个"序列号"；`
     2. producer每发送一条消息，会将 \<producer_id,分区\> 对应的“序列号”加1；  
     3. broker端会为每一对 \<producer_id,分区\> 维护一个序列号，对于每收到的一条消息，会判断服务端的SN_old和接收到的消息中的SN_new进行对比：  
 
         * 如果SN_old < SN_new+1，说明是重复写入的数据，直接丢弃。    
         * 如果SN_old > SN_new+1，说明中间有数据尚未写入，或者是发生了乱序，或者是数据丢失，将抛出严重异常：OutOfOrderSeqenceException。 
-4. Kafka消费者的幂等性（kafka怎样保证消息仅被消费一次？）  
+3. Kafka`消费者幂等性`（kafka怎样保证消息仅被消费一次？）  
     &emsp; 在使用kafka时，大多数场景对于数据少量的不一致(重复或者丢失)并不关注，比如日志，因为不会影响最终的使用或者分析，但是在某些应用场景(比如业务数据)，需要对任何一条消息都要做到精确一次的消费，才能保证系统的正确性，`kafka并不提供准确一致的消费API，需要在实际使用时借用外部的一些手段来保证消费的精确性。`    
     &emsp; 当消费者消费到了重复的数据的时候，消费者需要去过滤这部分的数据。主要有以下两种思路：  
     1. 将消息的offset存在消费者应用中或者第三方存储的地方  
