@@ -742,8 +742,7 @@
         * [1. yum](/docs/devAndOps/centOS/yum.md)  
         * [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
         * [nohup xxx &后台进程关闭](/docs/devAndOps/centOS/nohup.md)  
-        * [Python3](/docs/devAndOps/centOS/Python3.md)  
-    * Linux服务器  
+    * [Linux服务器](/docs/Linux/build/LinuxServer.md)    
         * [防火墙](/docs/Linux/build/firewall.md)  
         * [堡垒机](/docs/Linux/build/FortressMachine.md)  
         * [DNS服务器](/docs/Linux/build/DNS.md)  

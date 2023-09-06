@@ -1,7 +1,18 @@
 
-# Linux
+<!-- TOC -->
 
-## Linux系统目录结构  
+- [1. Linux](#1-linux)
+    - [1.1. Linux系统目录结构](#11-linux系统目录结构)
+    - [1.2. Linux版本](#12-linux版本)
+        - [1.2.1. 发行版本](#121-发行版本)
+        - [1.2.2. 版本比较](#122-版本比较)
+
+<!-- /TOC -->
+
+
+# 1. Linux
+
+## 1.1. Linux系统目录结构  
 <!-- 
 
 https://www.runoob.com/linux/linux-system-contents.html
@@ -16,14 +27,14 @@ https://www.runoob.com/linux/linux-system-contents.html
 
 
 
-## Linux版本  
+## 1.2. Linux版本  
 <!-- 
 https://baike.baidu.com/item/Linux%E7%89%88%E6%9C%AC/3345274?fr=aladdin
 
 -->
 
 
-### 发行版本
+### 1.2.1. 发行版本
 &emsp; 简介  
 &emsp; 发行版为许多不同的目的而制作, 包括对不同计算机结构的支持, 对一个具体区域或语言的本地化，实时应用，和嵌入式系统，甚至许多版本故意地只加入免费软件。已经有超过三百个发行版被积极的开发，最普遍被使用的发行版有大约十二个。  
 
@@ -69,7 +80,7 @@ Red Hat Linux的安装过程也十分简单明了。它的图形安装过程提�
 &emsp; RHEL 在发行的时候，有两种方式。一种是二进制的发行方式，另外一种是源代码的发行方式。  
 
 
-### 版本比较  
+### 1.2.2. 版本比较  
 &emsp; Linux的发行版本可以大体分为两类，一类是商业公司维护的发行版本，一类是社区组织维护的发行版本，前者以著名的Redhat（RHEL）为代表，后者以Debian为代表。  
 &emsp; 下面介绍一下各个发行版本的特点：  
 &emsp; Redhat，应该称为Redhat系列，包括RHEL(Redhat Enterprise Linux，也就是所谓的Redhat Advance Server收费版本)、FedoraCore(由原来的Redhat桌面版本发展而来，免费版本)、CentOS(RHEL的社区克隆版本，免费)。Redhat应该说是在国内使用人群最多的Linux版本，甚至有人将Redhat等同于Linux，而有些老鸟更是只用这一个版本的Linux。所以这个版本的特点就是使用人群数量大，资料非常多，言下之意就是如果你有什么不明白的地方，很容易找到人来问，而且网上的一般Linux教程都是以Redhat为例来讲解的。Redhat系列的包管理方式采用的是基于RPM包的YUM包管理方式，包分发方式是编译好的二进制文件。稳定性方面RHEL和CentOS的稳定性非常好，适合于服务器使用，但是Fedora Core的稳定性较差，最好只用于桌面应用。  

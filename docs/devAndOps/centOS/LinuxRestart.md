@@ -59,7 +59,7 @@ https://blog.51cto.com/u_10473224/4286697
 Linux服务器，服务管理--systemctl命令详解，设置开机自启动 
 https://blog.51cto.com/u_10473224/4286697
 -->
->>>>>>> 8a17eac3969e73a8d533ecb8015b47d0971f796f
+
 &emsp; 过去Linux采用的是init.d的服务启动管理方式，新版的Linux采用systemd服务启动管理方式。  
 
 &emsp; 设置开机自启动  
