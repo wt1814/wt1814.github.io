@@ -117,7 +117,7 @@ https://jingyan.baidu.com/article/5bbb5a1b08c76113eba17988.html
 &emsp; 2）能快速上手，减少公司人才培训成本。  
 &emsp; 3）你可以很自信的回答：根据我目前所掌握XX领域的系统化和体系化的知识，我在工作之余可以为公司人才培训做一些事情，可以降低企业在人才培训上的开支。  
 
-![image](http://www.wt1814.com/static/view/images/interview/inter-1.png)  
+![image](http://182.92.69.8:8081/img/interview/inter-1.png)  
 
 
 

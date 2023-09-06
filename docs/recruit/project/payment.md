@@ -57,14 +57,14 @@ https://mp.weixin.qq.com/s?__biz=MzA4MTk3MjI0Mw==&mid=2247487121&idx=1&sn=f9a2a7
 ### 1.1.1. 支付流程  
 
 #### 1.1.1.1. 获取支付方式
-![image](http://www.wt1814.com/static/view/images/project/pay-3.png)  
+![image](http://182.92.69.8:8081/img/project/pay-3.png)  
 
 #### 1.1.1.2. 预支付
 &emsp; 先生成支付单（初始状态） ---> 调用三方 ---> 调用成功，修改支付单状态。    
-![image](http://www.wt1814.com/static/view/images/project/pay-1.png)  
+![image](http://182.92.69.8:8081/img/project/pay-1.png)  
 
 #### 1.1.1.3. 支付回调/支付查询
-![image](http://www.wt1814.com/static/view/images/project/pay-2.png)  
+![image](http://182.92.69.8:8081/img/project/pay-2.png)  
 
 
 ### 1.1.2. 对账
@@ -108,7 +108,7 @@ https://blog.csdn.net/a568418299/article/details/88820324
 &emsp; 第三种情况为金额不一致。  
 
 &emsp; 三者如图所示。  
-![image](http://www.wt1814.com/static/view/images/project/pay-4.png)  
+![image](http://182.92.69.8:8081/img/project/pay-4.png)  
 
 #### 1.1.2.6. 差异数据处理模块  
 &emsp; 这个模块主要用来处理上个模块产生的差异数据。  
