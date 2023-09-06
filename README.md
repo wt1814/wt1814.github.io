@@ -55,6 +55,9 @@
         - [1.13.5. 规则引擎](#1135-规则引擎)
         - [1.13.6. 分布式文件存储](#1136-分布式文件存储)
     - [1.14. 源码搭建汇总](#114-源码搭建汇总)
+    - [1.19. 面试](#119-面试)
+        - [1.19.1. 面试流程及技巧](#1191-面试流程及技巧)
+        - [1.19.2. 项目总结](#1192-项目总结)
     - [1.15. Linux操作系统](#115-linux操作系统)
     - [1.16. Linux服务器搭建](#116-linux服务器搭建)
         - [1.16.1. Linux基础](#1161-linux基础)
@@ -65,9 +68,6 @@
         - [1.17.1. 搭建-需求、测试](#1171-搭建-需求测试)
         - [1.17.2. 监控和统计](#1172-监控和统计)
     - [1.18. 常用研发工具](#118-常用研发工具)
-    - [1.19. 面试](#119-面试)
-        - [1.19.1. 面试技巧](#1191-面试技巧)
-        - [1.19.2. 项目总结](#1192-项目总结)
     - [1.20. 算法](#120-算法)
     - [1.21. 前端知识](#121-前端知识)
     - [1.22. 测试](#122-测试)
@@ -975,6 +975,27 @@ https://help.aliyun.com/document_detail/122217.html
 
 ------------------------------------------------------------------------------------------------------------------------------
 
+## 1.19. 面试
+[面试](/docs/recruit/interview.md)  
+
+### 1.19.1. 面试流程及技巧  
+[1.总体流程](/docs/recruit/1resumeCreate.md)  
+[2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
+[3.难点](/docs/recruit/4difficultProblem.md)  
+[3.HR/总监面](/docs/recruit/HrInterview.md)  
+[3.职业规划](/docs/recruit/CareerPlanning.md)  
+[4.问面试官](/docs/recruit/3askProblem.md)  
+[个人简历](/docs/recruit/PersonalResume.md)  
+[简历](/docs/recruit/Resume.md)  
+[全部经历](/docs/recruit/AllExperiences.md)  
+
+### 1.19.2. 项目总结  
+[监控插件](/docs/recruit/project/monitor.md)   
+[支付项目](/docs/recruit/project/payment.md)  
+[二清项目](/docs/recruit/project/erqing.md)  
+
+------------------------------------------------------------------------------------------------------------------------------
+
 ## 1.15. Linux操作系统  
 <!-- 
 xshell 工具Tabby 
@@ -1161,26 +1182,6 @@ prometheus
 [Json](/docs/software/Json.md)  
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
 
-------------------------------------------------------------------------------------------------------------------------------
-
-## 1.19. 面试
-[面试](/docs/recruit/interview.md)  
-
-### 1.19.1. 面试技巧  
-[1.总体流程](/docs/recruit/1resumeCreate.md)  
-[2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
-[3.难点](/docs/recruit/4difficultProblem.md)  
-[3.HR/总监面](/docs/recruit/HrInterview.md)  
-[3.职业规划](/docs/recruit/CareerPlanning.md)  
-[4.问面试官](/docs/recruit/3askProblem.md)  
-[个人简历](/docs/recruit/PersonalResume.md)  
-[简历](/docs/recruit/Resume.md)  
-[全部经历](/docs/recruit/AllExperiences.md)  
-
-### 1.19.2. 项目总结  
-[监控插件](/docs/recruit/project/monitor.md)   
-[支付项目](/docs/recruit/project/payment.md)  
-[二清项目](/docs/recruit/project/erqing.md)  
 
 ------------------------------------------------------------------------------------------------------------------------------
 

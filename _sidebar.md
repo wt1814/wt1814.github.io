@@ -713,6 +713,21 @@
     * [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
     * [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 ------------------------------------------------------------------------------------------------------------------------------
+* [面试](/docs/recruit/interview.md)  
+    * 面试流程及技巧
+        * [1.总体流程](/docs/recruit/1resumeCreate.md)
+        * [2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)
+        * [3.难点](/docs/recruit/4difficultProblem.md)
+        * [3.HR/总监面](/docs/recruit/HrInterview.md)
+        * [3.职业规划](/docs/recruit/CareerPlanning.md)  
+        * [4.问面试官](/docs/recruit/3askProblem.md)  
+        * [个人简历](/docs/recruit/PersonalResume.md)  
+        * [简历](/docs/recruit/Resume.md)  
+    * 项目总结
+        * [监控插件](/docs/recruit/project/monitor.md)  
+        * [支付项目](/docs/recruit/project/payment.md)  
+        * [二清项目](/docs/recruit/project/erqing.md)  
+------------------------------------------------------------------------------------------------------------------------------
 * Linux操作系统  
     * [操作系统](/docs/Linux/operating.md)  
     * [Linux系统性能](/docs/Linux/systemPerformance.md)  
@@ -837,21 +852,6 @@
     * [Json](/docs/software/Json.md)  
     * [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
     * [MAC系统](/docs/software/MAC.md)  
-------------------------------------------------------------------------------------------------------------------------------
-* [面试](/docs/recruit/interview.md)  
-    * 面试技巧
-        * [1.总体流程](/docs/recruit/1resumeCreate.md)
-        * [2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)
-        * [3.难点](/docs/recruit/4difficultProblem.md)
-        * [3.HR/总监面](/docs/recruit/HrInterview.md)
-        * [3.职业规划](/docs/recruit/CareerPlanning.md)  
-        * [4.问面试官](/docs/recruit/3askProblem.md)  
-        * [个人简历](/docs/recruit/PersonalResume.md)  
-        * [简历](/docs/recruit/Resume.md)  
-    * 项目总结
-        * [监控插件](/docs/recruit/project/monitor.md)  
-        * [支付项目](/docs/recruit/project/payment.md)  
-        * [二清项目](/docs/recruit/project/erqing.md)  
 ------------------------------------------------------------------------------------------------------------------------------
 * 算法
     * [红黑树](/docs/function/redBlack.md)  

@@ -1,6 +1,6 @@
 
 
-* 面试技巧  
+* 面试流程及技巧  
 [总体流程](/docs/recruit/1resumeCreate.md)  
 [力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
 [难点](/docs/recruit/4difficultProblem.md)  

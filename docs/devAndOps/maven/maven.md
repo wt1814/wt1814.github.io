@@ -4,11 +4,11 @@
 - [1. Maven](#1-maven)
     - [1.1. 私服Nexus搭建](#11-私服nexus搭建)
     - [1.2. 统一依赖管理](#12-统一依赖管理)
-    - [maven-resource插件](#maven-resource插件)
-    - [1.3. Maven冲突](#13-maven冲突)
-        - [1.3.1. 背景](#131-背景)
-    - [Maven仓库](#maven仓库)
-    - [IDEA强制清除Maven缓存](#idea强制清除maven缓存)
+    - [1.3. maven-resource插件](#13-maven-resource插件)
+    - [1.4. Maven冲突](#14-maven冲突)
+        - [1.4.1. 背景](#141-背景)
+    - [1.5. Maven仓库](#15-maven仓库)
+    - [1.6. IDEA强制清除Maven缓存](#16-idea强制清除maven缓存)
 
 <!-- /TOC -->
 
@@ -42,7 +42,7 @@ Spring Cloud 统一的依赖管理（dependencies）
 https://zhuanlan.zhihu.com/p/484975073
 -->
 
-## maven-resource插件  
+## 1.3. maven-resource插件  
 <!-- 
 
 https://www.jianshu.com/p/c7f81095397c#comments
@@ -51,7 +51,7 @@ https://blog.csdn.net/weixin_30896763/article/details/98988315
 
 
 
-## 1.3. Maven冲突
+## 1.4. Maven冲突
 
 <!-- 
 
@@ -89,7 +89,7 @@ https://blog.csdn.net/yy193728/article/details/72847122
 
 -->
 
-### 1.3.1. 背景
+### 1.4.1. 背景
 &emsp; Jar包冲突在软件开发过程中是不可避免的，因此，如何快速定位冲突源，理解冲突导致的过程及底层原理，是每个程序员的必修课。也是提升工作效率、应对面试、在团队中脱颖而出的机会。  
 &emsp; 实践中能够直观感受到的Jar包冲突表现往往有这几种：  
 
@@ -101,7 +101,7 @@ https://blog.csdn.net/yy193728/article/details/72847122
 &emsp; 这是能够直观呈现的，当然还有隐性的异常，比如程序执行结果与预期不符等。下面，我们就分析一下Maven项目中Jar包的处理机制及引起冲突的原因。  
 
 
-## Maven仓库
+## 1.5. Maven仓库
 <!-- 
 
 ****maven配置多仓库的方法
@@ -110,7 +110,7 @@ https://www.cnblogs.com/hepengju/p/11610451.html
 -->
 
 
-## IDEA强制清除Maven缓存  
+## 1.6. IDEA强制清除Maven缓存  
 IDEA强制清除Maven缓存
 https://www.cnblogs.com/-beyond/p/11557196.html
 
