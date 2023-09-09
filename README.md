@@ -209,6 +209,7 @@ graph LR
 &emsp; &emsp; [直接内存](/docs/java/JVM/DirectMemory.md)  
 &emsp; &emsp; [类存储内存小结](/docs/java/JVM/MemorySummary.md)  
 &emsp; [内存中的对象](/docs/java/JVM/MemoryObject.md)  
+&emsp; &emsp; [对象的创建](/docs/java/JVM/ObjectCreat.md)  
 &emsp; &emsp; [对象的生命周期](/docs/java/JVM/ObjectPeriod.md)  
 &emsp; &emsp; [Java对象大小](/docs/java/basis/ObjectSize.md)  
 &emsp; [内存泄露/溢出](/docs/java/JVM/MemoryLeak.md)  

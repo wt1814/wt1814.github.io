@@ -91,6 +91,7 @@
             * [直接内存](/docs/java/JVM/DirectMemory.md)  
             * [类存储内存小结](/docs/java/JVM/MemorySummary.md)  
         * [内存中的对象](/docs/java/JVM/MemoryObject.md)  
+            * [对象的创建](/docs/java/JVM/ObjectCreat.md)  
             * [对象的生命周期](/docs/java/JVM/ObjectPeriod.md)  
             * [Java对象大小](/docs/java/basis/ObjectSize.md)  
         * [内存泄露/溢出](/docs/java/JVM/MemoryLeak.md)  
