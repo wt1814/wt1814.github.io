@@ -16,6 +16,9 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 
+
+![image](http://182.92.69.8:8081/img/draw/1.Design.png)  
+
 &emsp; 7个设计原则（封装继承多态）：  
 * 针对单个类的设计原则：  
     * 单一职责原则。   

@@ -21,7 +21,7 @@
         - [1.4.3. Dubbo](#143-dubbo)
         - [1.4.4. Zookeeper](#144-zookeeper)
         - [1.4.5. ServiceMesh](#145-servicemesh)
-    - [1.5. 分布式](#15-分布式)
+    - [1.5. 分布式原理](#15-分布式原理)
         - [1.5.1. 分布式理论](#151-分布式理论)
         - [1.5.2. 分布式ID](#152-分布式id)
         - [1.5.3. 分布式事务](#153-分布式事务)
@@ -35,43 +35,44 @@
         - [1.6.4. MQ](#164-mq)
             - [1.6.4.1. RocketMQ](#1641-rocketmq)
             - [1.6.4.2. Kafka](#1642-kafka)
-    - [计算机网络](#计算机网络)
+    - [1.7. 计算机网络](#17-计算机网络)
         - [1.7.1. 负载均衡](#171-负载均衡)
-    - [1.8. 网络IO/分布式通信](#18-网络io分布式通信)
-        - [1.8.1. 通信基础](#181-通信基础)
-        - [1.8.2. webSocket协议](#182-websocket协议)
-        - [1.8.3. NIO](#183-nio)
-        - [1.8.4. Netty通信框架](#184-netty通信框架)
-    - [1.9. Error](#19-error)
-    - [1.10. 架构设计](#110-架构设计)
-    - [1.11. 项目构建基础](#111-项目构建基础)
-    - [1.12. 系统设计](#112-系统设计)
-    - [1.13. Web服务器与中间件](#113-web服务器与中间件)
-        - [1.13.1. Web服务器](#1131-web服务器)
-            - [1.13.1.1. tomcat](#11311-tomcat)
-        - [1.13.2. 任务调度](#1132-任务调度)
-        - [1.13.3. 安全框架shiro](#1133-安全框架shiro)
-        - [1.13.4. 工作流](#1134-工作流)
-        - [1.13.5. 规则引擎](#1135-规则引擎)
-        - [1.13.6. 分布式文件存储](#1136-分布式文件存储)
-    - [1.14. 源码搭建汇总](#114-源码搭建汇总)
-    - [1.19. 面试](#119-面试)
-        - [1.19.1. 面试流程及技巧](#1191-面试流程及技巧)
-        - [1.19.2. 项目总结](#1192-项目总结)
-    - [1.15. Linux操作系统](#115-linux操作系统)
-    - [1.16. Linux服务器搭建](#116-linux服务器搭建)
-        - [1.16.1. Linux基础](#1161-linux基础)
-        - [1.16.2. Linux服务器](#1162-linux服务器)
-        - [1.16.3. DevOps介绍](#1163-devops介绍)
-        - [1.16.4. 搭建-研发](#1164-搭建-研发)
-    - [1.17. Docker和k8s](#117-docker和k8s)
-        - [1.17.1. 搭建-需求、测试](#1171-搭建-需求测试)
-        - [1.17.2. 监控和统计](#1172-监控和统计)
-    - [1.18. 常用研发工具](#118-常用研发工具)
-    - [1.20. 算法](#120-算法)
-    - [1.21. 前端知识](#121-前端知识)
-    - [1.22. 测试](#122-测试)
-    - [1.23. python](#123-python)
+        - [1.7.2. 网络IO/分布式通信](#172-网络io分布式通信)
+            - [1.7.2.1. 通信基础](#1721-通信基础)
+            - [1.7.2.2. webSocket协议](#1722-websocket协议)
+            - [1.7.2.3. NIO](#1723-nio)
+            - [1.7.2.4. Netty通信框架](#1724-netty通信框架)
+    - [1.8. Error](#18-error)
+    - [1.9. 架构设计](#19-架构设计)
+        - [1.9.1. 架构设计](#191-架构设计)
+        - [1.9.2. 项目构建基础](#192-项目构建基础)
+        - [1.9.3. 系统设计](#193-系统设计)
+    - [1.10. Web服务器与中间件](#110-web服务器与中间件)
+        - [1.10.1. Web服务器](#1101-web服务器)
+            - [1.10.1.1. tomcat](#11011-tomcat)
+        - [1.10.2. 任务调度](#1102-任务调度)
+        - [1.10.3. 安全框架shiro](#1103-安全框架shiro)
+        - [1.10.4. 工作流](#1104-工作流)
+        - [1.10.5. 规则引擎](#1105-规则引擎)
+        - [1.10.6. 分布式文件存储](#1106-分布式文件存储)
+    - [1.11. 源码搭建汇总](#111-源码搭建汇总)
+    - [1.12. 面试](#112-面试)
+        - [1.12.1. 面试流程及技巧](#1121-面试流程及技巧)
+        - [1.12.2. 项目总结](#1122-项目总结)
+    - [1.13. Linux操作系统](#113-linux操作系统)
+    - [1.14. Linux服务器搭建](#114-linux服务器搭建)
+        - [1.14.1. Linux基础](#1141-linux基础)
+        - [1.14.2. Linux服务器](#1142-linux服务器)
+        - [1.14.3. DevOps介绍](#1143-devops介绍)
+        - [1.14.4. 搭建-研发](#1144-搭建-研发)
+    - [1.15. Docker和k8s](#115-docker和k8s)
+        - [1.15.1. 搭建-需求、测试](#1151-搭建-需求测试)
+        - [1.15.2. 监控和统计](#1152-监控和统计)
+    - [1.16. 常用研发工具](#116-常用研发工具)
+    - [1.17. 算法](#117-算法)
+    - [1.18. 前端知识](#118-前端知识)
+    - [1.19. 测试](#119-测试)
+    - [1.20. python](#120-python)
 
 <!-- /TOC -->
 
@@ -91,10 +92,12 @@ graph LR
 ![image](http://182.92.69.8:8081/img/draw/SchemaProperties.png)  
 
 ------------------------------------------------------------------------------------------------------------------------------
+
 ## 总结
 [知识点概况](/docs/survey.md)  
 [大总结1](/docs/summary.md)  
 [大总结2](/docs/summaryTwo.md)  
+
 
 ------------------------------------------------------------------------------------------------------------------------------
 
@@ -584,7 +587,7 @@ graph LR
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.5. 分布式
+## 1.5. 分布式原理
 
 ### 1.5.1. 分布式理论  
 [分布式理论](/docs/microService/thinking/DistributedThink.md)  
@@ -736,7 +739,7 @@ graph LR
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 计算机网络  
+## 1.7. 计算机网络  
 [计算机网络](/docs/network/Network.md)  
 [OSI七层网络模型](/docs/network/OSI.md)  
 [应用层](/docs/network/application.md)  
@@ -781,10 +784,10 @@ https://help.aliyun.com/document_detail/122217.html
 [CDN](/docs/system/loadBalance/CDN.md)  
 
 
-## 1.8. 网络IO/分布式通信  
+### 1.7.2. 网络IO/分布式通信  
 [网络IO/分布式通信](/docs/network/NetworkCommunication.md)  
 
-### 1.8.1. 通信基础
+#### 1.7.2.1. 通信基础
 [通信基础](/docs/microService/communication/Netty/basics.md)   
 &emsp; [序列化](/docs/microService/communication/serializbale.md)  
 &emsp; [【网络IO】](/docs/microService/communication/NetworkIO.md)  
@@ -797,7 +800,7 @@ https://help.aliyun.com/document_detail/122217.html
 &emsp; [请求合并](/docs/webSocket/RequestMerge.md)  
 
 
-### 1.8.2. webSocket协议  
+#### 1.7.2.2. webSocket协议  
 [webSocket协议](/docs/webSocket/Summary.md)  
 &emsp; [Socket编程](/docs/microService/communication/Socket.md)  
 &emsp; [4种Web端即时通信](/docs/webSocket/LongPolling.md)  
@@ -807,14 +810,14 @@ https://help.aliyun.com/document_detail/122217.html
 &emsp; [IM系统](/docs/webSocket/IM.md)  
 
 
-### 1.8.3. NIO 
+#### 1.7.2.3. NIO 
 [NIO](/docs/microService/communication/NIO.md)  
 &emsp; [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
 &emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
 &emsp; [Java中的零拷贝](/docs/microService/communication/NIO/JavaZeroCopy.md)  
 &emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
 
-### 1.8.4. Netty通信框架
+#### 1.7.2.4. Netty通信框架
 [Netty总结](/docs/microService/communication/Netty/netty.md)   
 [Netty介绍](/docs/microService/communication/Netty/concepts.md)  
 [Netty运行流程介绍](/docs/microService/communication/Netty/operation.md)   
@@ -845,7 +848,7 @@ https://help.aliyun.com/document_detail/122217.html
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.9. Error  
+## 1.8. Error  
 [多线程串线了](/docs/Error/ThreadCrossed.md)  
 [熔断降级处理](/docs/Error/hystrix.md)  
 [Redis高并发](/docs/Error/redisConcurrent.md)  
@@ -854,7 +857,8 @@ https://help.aliyun.com/document_detail/122217.html
 <!-- [雪花利用ZK生成workId]()   -->
 
 
-## 1.10. 架构设计  
+## 1.9. 架构设计
+### 1.9.1. 架构设计  
 [IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
 [软件架构设计模式](/docs/system/designPattern.md)  
 &emsp; [DDD](/docs/system/DDD.md)  
@@ -871,7 +875,7 @@ https://help.aliyun.com/document_detail/122217.html
 [前后端分离-跨域和内外网隔离](/docs/web/Cross.md)  
 
 
-## 1.11. 项目构建基础
+### 1.9.2. 项目构建基础
 [版本号](/docs/web/Version.md)  
 [编码规范](/docs/java/Design/CodingSpecification.md)  
 [MVC三层架构上再加一层Manager层](/docs/web/Manager.md)  
@@ -917,7 +921,7 @@ https://help.aliyun.com/document_detail/122217.html
 [其他](/docs/web/other.md)  
 
 
-## 1.12. 系统设计  
+### 1.9.3. 系统设计  
 [工具类](/docs/SystemDesign/tools.md)  
 [登录](/docs/SystemDesign/Login.md)  
 [单点登录SSO](/docs/SystemDesign/SSO.md)  
@@ -927,44 +931,44 @@ https://help.aliyun.com/document_detail/122217.html
 [权限系统](/docs/SystemDesign/power.md)  
 
 
-## 1.13. Web服务器与中间件  
+## 1.10. Web服务器与中间件  
 [Web服务器与中间件](/docs/frame/OtherMiddleware.md)  
 
-### 1.13.1. Web服务器  
+### 1.10.1. Web服务器  
 [Java应用服务器](/docs/webContainer/tomcat/applicationServer.md)  
 [***Undertow替换Tomcat](/docs/webContainer/tomcat/Undertow.md)  
 
-#### 1.13.1.1. tomcat
+#### 1.10.1.1. tomcat
 [tomcat](/docs/webContainer/tomcat/tomcat.md)  
 [tomcat类加载器](/docs/webContainer/tomcat/tomcatClassLoader.md)  
 [tomcat日志](/docs/webContainer/tomcat/tomcatLog.md)  
 [tomcat调优](/docs/webContainer/tomcat/TomcatTuning.md)  
 
 
-### 1.13.2. 任务调度
+### 1.10.2. 任务调度
 [任务调度目录](/docs/frame/dispatch.md)  
 [延时队列/延时任务](/docs/frame/delayQueue.md)  
 [分布式调度](/docs/frame/taskSheduling.md)  
 &emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
 [时间轮算法](/docs/microService/dubbo/timeWheel.md)  
 
-### 1.13.3. 安全框架shiro  
+### 1.10.3. 安全框架shiro  
 [shiro](/docs/system/shiro.md)  
 [Spring Security](/docs/system/SpringSecurity.md)  
 [数据权限](/docs/system/DataPermissions.md)  
 [CAS集成](/docs/system/CAS.md)  
 
-### 1.13.4. 工作流
+### 1.10.4. 工作流
 [工作流](docs/middleware/workflow.md)  
 
-### 1.13.5. 规则引擎
+### 1.10.5. 规则引擎
 [规则引擎](docs/middleware/RulesEngine.md)  
 
-### 1.13.6. 分布式文件存储  
+### 1.10.6. 分布式文件存储  
 [分布式文件存储](/docs/File/FileStore.md)  
 
 
-## 1.14. 源码搭建汇总  
+## 1.11. 源码搭建汇总  
 [源码搭建汇总](/docs/java/basis/SourceBuild.md)  
 [JDK源码](/docs/java/basis/JDKSource.md)  
 [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
@@ -975,10 +979,10 @@ https://help.aliyun.com/document_detail/122217.html
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.19. 面试
+## 1.12. 面试
 [面试](/docs/recruit/interview.md)  
 
-### 1.19.1. 面试流程及技巧  
+### 1.12.1. 面试流程及技巧  
 [1.总体流程](/docs/recruit/1resumeCreate.md)  
 [2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
 [3.1.难点](/docs/recruit/4difficultProblem.md)  
@@ -989,14 +993,14 @@ https://help.aliyun.com/document_detail/122217.html
 [简历](/docs/recruit/Resume.md)  
 [全部经历](/docs/recruit/AllExperiences.md)  
 
-### 1.19.2. 项目总结  
+### 1.12.2. 项目总结  
 [支付项目](/docs/recruit/project/payment.md)  
 [二清项目](/docs/recruit/project/erqing.md)  
 [监控插件](/docs/recruit/project/monitor.md)   
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.15. Linux操作系统  
+## 1.13. Linux操作系统  
 <!-- 
 xshell 工具Tabby 
 https://mp.weixin.qq.com/s/Cs-WzMm-8VZbLoq9CA-qWw
@@ -1026,7 +1030,7 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 
 [页缓存](/docs/system/PageCache.md)  
 
-## 1.16. Linux服务器搭建
+## 1.14. Linux服务器搭建
 <!-- 
 ideaserver jdk   tomcat
 
@@ -1044,7 +1048,7 @@ prometheus
 -->
 
 
-### 1.16.1. Linux基础  
+### 1.14.1. Linux基础  
 [CentOS](/docs/devAndOps/centOS/centOS.md)  
 [Linux目录和版本](/docs/Linux/catalogue.md)  
 [Linux命令](/docs/Linux/Command.md)  
@@ -1060,14 +1064,14 @@ prometheus
 [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
 [nohup xxx &后台进程关闭](/docs/devAndOps/centOS/nohup.md)  
 
-### 1.16.2. Linux服务器  
+### 1.14.2. Linux服务器  
 [Linux服务器](/docs/Linux/build/LinuxServer.md)   
 [防火墙](/docs/Linux/build/firewall.md)  
 [堡垒机](/docs/Linux/build/FortressMachine.md)  
 [DNS服务器](/docs/Linux/build/DNS.md)  
 [扩容](/docs/devAndOps/centOS/dilatation.md)  
 
-### 1.16.3. DevOps介绍    
+### 1.14.3. DevOps介绍    
 [CI/CD](/docs/devAndOps/build/CICD.md)  
 [Devops](/docs/devAndOps/build/devOps.md)  
 [GIT](/docs/devAndOps/git/command.md)  
@@ -1086,7 +1090,7 @@ prometheus
 &emsp; [Jenkins构建Java项目](/docs/devAndOps/jenkins/JenkinsJava.md)  
 
 
-### 1.16.4. 搭建-研发
+### 1.14.4. 搭建-研发
 [Linux定时执行脚本](/docs/devAndOps/build/TimingScript.md)  
 [3. JDK安装](/docs/devAndOps/build/JDKBuild.md)  
 [4. Git安装](/docs/devAndOps/git/GitBuild.md)  
@@ -1115,7 +1119,7 @@ prometheus
 [docsify](/docs/devAndOps/build/docsify.md)  
 [3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
 
-## 1.17. Docker和k8s
+## 1.15. Docker和k8s
 [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
 &emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
 &emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
@@ -1153,7 +1157,7 @@ prometheus
 [6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)  
 
 
-### 1.17.1. 搭建-需求、测试
+### 1.15.1. 搭建-需求、测试
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
 [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
 [jira](/docs/devAndOps/build/jira.md)  
@@ -1161,7 +1165,7 @@ prometheus
 [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
 
 
-### 1.17.2. 监控和统计
+### 1.15.2. 监控和统计
 [监控](/docs/devAndOps/monitor/indicators.md)  
 &emsp; [监控系统](/docs/devAndOps/monitor/monitor.md)  
 [prometheus](/docs/devAndOps/monitor/prometheus.md)  
@@ -1172,7 +1176,7 @@ prometheus
 
 
 
-## 1.18. 常用研发工具  
+## 1.16. 常用研发工具  
 [Idea](/docs/software/idea/idea.md)  
 [postman](/docs/software/postman.md)  
 [抓包Charles](/docs/software/charles.md)  
@@ -1186,7 +1190,7 @@ prometheus
 ------------------------------------------------------------------------------------------------------------------------------
 
 
-## 1.20. 算法  
+## 1.17. 算法  
 [红黑树](/docs/function/redBlack.md)  
 [复杂数据结构](/docs/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/function/SkipList.md)  
@@ -1199,16 +1203,16 @@ prometheus
 [大数据和空间限制](/docs/function/bigdata.md)  
 &emsp; [内存只有 2G，如何对 100 亿数据进行排序？](/docs/function/SmallMemory.md)  
 
-## 1.21. 前端知识  
+## 1.18. 前端知识  
 [跨平台uni-app](/docs/front/uniapp.md)  
 [nodejs](/docs/front/nodejs.md)  
 
-## 1.22. 测试  
+## 1.19. 测试  
 [测试](/docs/test/test.md)  
 [allure](/docs/devAndOps/test/allure.md)  
 
 
-## 1.23. python
+## 1.20. python
 [python](/docs/python/python.md)  
 
 
