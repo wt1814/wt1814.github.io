@@ -29,12 +29,12 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. ClassLoader3个主要方法 ---> loadClass()双亲委派模型 ---> 继承关系（默认提供三个类加载器）
-1. java.lang.ClassLoader3个主要方法  
+1. <font color = "red">小结：</font>ClassLoader3个主要方法 ---> loadClass()双亲委派模型 ---> 继承关系（默认提供三个类加载器）
+1. java.lang.ClassLoader中`3个主要方法`  
     * loadClass() 就是主要进行类加载的方法，默认的双亲委派机制就实现在这个方法中。
     * findClass() 根据名称或位置加载.class字节码
     * definclass() 把字节码转化为Class
-2. 双亲委派模型，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。  
+2. `双亲委派模型`，一个类加载器首先将类加载请求转发到父类加载器，只有当父类加载器无法完成时才尝试自己加载。  
 &emsp; 双亲委派模型中，类加载器之间的父子关系一般不会以继承（Inheritance）的关系来实现，而是使用组合（Composition）关系来复用父加载器的代码的。  
 &emsp; 好处：避免类的重复加载；防止核心API被随意篡改。   
 3. ~~破坏双亲委派模型：（重新研究）~~  
@@ -46,10 +46,10 @@
             * **<font color = "clime">JDBC是启动类加载器加载，但 mysql 驱动是应用类加载器，而 JDBC 运行时又需要去访问子类加载器加载的驱动，就破坏了该模型。所以加入了`线程上下文类加载器(Thread Context ClassLoader)`，</font>** 可以通过Thread.setContextClassLoaser()设置该类加载器，然后顶层ClassLoader再使用Thread.getContextClassLoader()获得底层的ClassLoader进行加载。  
         2. Tomcat中使用了自定义ClassLoader，使得一个Tomcat中可以加载多个应用。一个Tomcat可以部署N个web应用，但是每个web应用都有自己的classloader，互不干扰。比如web1里面有com.test.A.class，web2里面也有com.test.A.class，`如果没打破双亲委派模型的话，那么web1加载完后，web2再加载的话会冲突。`    
         3. Spring破坏类加载器  
-4. 继承树：
+4. `继承树`：
     1. JVM默认提供三个类加载器：启动类加载器、扩展类加载器、应用类加载器。    
     2. ~~`自定义类加载器`：需要继承自ClassLoader，`重写方法findClass()`。~~   
-5. 小结：     
+5. `小结`：     
     1. `破坏双亲委派模型`：继承ClassLoader，`重写loadClass()方法`；或`使用线程上下文类加载器(Thread Context ClassLoader)`。    
     2. `自定义类加载器`：需要继承自ClassLoader，`重写方法findClass()`。   
 
