@@ -105,7 +105,7 @@
         * [GC-垃圾回收器](/docs/java/JVM/GCReclaimer.md)  
             * [CMS回收器](/docs/java/JVM/CMS.md)  
             * [G1回收器](/docs/java/JVM/G1.md)  
-            * [三色标记](/docs/java/JVM/TriMark.md)  
+            * [三色标记算法](/docs/java/JVM/TriMark.md)  
     * [JVM调优](/docs/java/JVM/tuning.md)  
         * [JVM调优-基础](/docs/java/JVM/TuningBasic.md)  
         * [JVM调优](/docs/java/JVM/tuningProblem.md)  
