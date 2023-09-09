@@ -28,7 +28,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 小结：属性  ---  成员方法  
-![image](http://182.92.69.8:8081/img/draw/HashMap.png)  
+![image](http://182.92.69.8:8081/img/draw/1.HashMap.png)  
 1. HashMap属性：  
     1. Hash表数据结构：  
         1. Hash数据结构  
