@@ -10,6 +10,12 @@
 <!-- /TOC -->
 
 
+&emsp; **<font color = "red">总结：</font>**  
+1. Synchronized是解决线程安全的阻塞同步方案。Synchronized具有原子性、可见性、有序性、可重入性。  
+2. Synchronized底层和优化。
+3. Synchronized的使用：类锁和对象锁、和ReentrantLock比较、Object#wait()方法。 
+
+
 # 1. Synchronized介绍  
 
 ## 1.1. Synchronized简介
