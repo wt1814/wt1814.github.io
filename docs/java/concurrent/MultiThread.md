@@ -12,9 +12,12 @@
         - [1.3.4. ThreadLocal](#134-threadlocal)
     - [1.4. 线程通信](#14-线程通信)
     - [1.5. 线程活跃性](#15-线程活跃性)
-    - [图图图](#图图图)
 
 <!-- /TOC -->
+
+
+![image](http://182.92.69.8:8081/img/draw/Concurrent.png)  
+
 
 # 1. 并发编程  
 <!-- 
@@ -70,7 +73,4 @@ https://mp.weixin.qq.com/s/o80xD9oQJgJGDrgOtf3Sig
 ## 1.5. 线程活跃性  
 &emsp; [线程活跃性](/docs/java/concurrent/Activity.md)  
 
-
-## 图图图
-![image](http://182.92.69.8:8081/img/draw/Concurrent.png)  
 
