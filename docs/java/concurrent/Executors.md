@@ -19,7 +19,7 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. 根据返回的对象类型，创建线程池可以分为几类：ThreadPoolExecutor、ScheduleThreadPoolExecutor（任务调度线程池）、ForkJoinPool。  
-2. **<font color = "clime">Executors返回线程池对象的弊端如下：</font>**  
+2. **<font color = "clime">Executors返回线程池对象的`弊端`如下：</font>**  
 	* SingleThreadExecutor（单线程）和FixedThreadPool（定长线程池，可控制线程最大并发数）：允许请求的队列长度为Integer.MAX_VALUE，可能堆积大量的请求，从而导致OOM。
 	* CachedThreadPool和ScheduledThreadPool：允许创建的线程数量为Integer.MAX_VALUE，可能会创建大量线程，从而导致OOM。
 

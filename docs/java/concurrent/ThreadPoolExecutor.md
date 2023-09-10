@@ -17,7 +17,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-0. <font color = "red">总结：</font>构造函数 ---> execute() ---> 复用机制 ---> 保证核心线程不被销毁。  
+0. <font color = "red">小结：</font>构造函数 ---> execute() ---> 复用机制 ---> 保证核心线程不被销毁。  
 1. 理解`构造函数`中参数（3线程1队列1拒绝策略）：核心线程数大小、最大线程数大小、空闲线程（超出corePoolSize的线程）的生存时间、参数keepAliveTime的单位、任务阻塞队列、创建线程的工厂（可以通过这个工厂来创建有业务意义的线程名字）。  
     * [阻塞队列](/docs/java/concurrent/BlockingQueue.md)，线程池所使用的缓冲队列，常用的是：SynchronousQueue、ArrayBlockingQueue、LinkedBlockingQueue。参考[BlockingQueue](/docs/java/concurrent/BlockingQueue.md)。     
     * 拒绝策略，默认AbortPolicy（拒绝任务，抛异常）， **<font color = "clime">可以选用CallerRunsPolicy（任务队列满时，不进入线程池，由主线程执行）。</font>**  
