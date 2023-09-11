@@ -1,4 +1,6 @@
 
+![image](http://182.92.69.8:8081/img/draw/121.MySqlFramework.png)  
+
 &emsp; [MySql运行流程](/docs/SQL/Framework.md)   
 &emsp; [InnoDB插入更新流程](/docs/SQL/insert.md)  
 &emsp; [Server层之binLog日志](/docs/SQL/BinLog.md)  

@@ -6,7 +6,7 @@ https://blog.csdn.net/csdn_kenneth/article/details/83584580?spm=1001.2101.3001.6
 
 -->
 
-![image](http://182.92.69.8:8081/img/draw/SQLDistributed.png)  
+![image](http://182.92.69.8:8081/img/draw/121.SQLDistributed.png)  
 
 &emsp; [大数据量操作](/docs/SQL/largeData.md)  
 &emsp; [MySql瓶颈](/docs/SQL/Bottleneck.md)  

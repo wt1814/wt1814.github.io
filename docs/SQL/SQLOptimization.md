@@ -24,7 +24,7 @@
 <!-- /TOC -->
 
 
-![image](http://182.92.69.8:8081/img/draw/SQLOptimize.png)  
+![image](http://182.92.69.8:8081/img/draw/121.SQLOptimize.png)  
 
 
 # 1. SQL优化  
