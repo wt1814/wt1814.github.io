@@ -309,7 +309,7 @@ graph LR
 ------------------------------------------------------------------------------------------------------------------------------
 
 ## 1.2. 数据库  
-[数据建模](/docs/SQL/DataBase.md)  
+[数据库](/docs/SQL/DataBase.md)  
 
 ### 1.2.1. MySql
 [数据建模](/docs/SQL/modeling.md)  
@@ -343,7 +343,7 @@ graph LR
 &emsp; [~~SQL语句优化~~](/docs/SQL/SQLStatement.md)  
 &emsp; [系统优化](/docs/SQL/Fragment.md)  
 &emsp; [优化案例](/docs/SQL/case.md)  
-[数据库分布式](/docs/SQL/DistributedDatabase.md)  
+[★★★数据库分布式](/docs/SQL/DistributedDatabase.md)  
 &emsp; [大数据量操作](/docs/SQL/largeData.md)  
 &emsp; [MySql瓶颈](/docs/SQL/Bottleneck.md)  
 &emsp; [数据库分布式](/docs/SQL/Distributed.md)  

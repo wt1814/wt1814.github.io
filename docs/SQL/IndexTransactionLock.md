@@ -1,6 +1,6 @@
 
 
-![image](http://182.92.69.8:8081/img/draw/SQLIndex.png)  
+![image](http://182.92.69.8:8081/img/draw/121.SQLIndex.png)  
 
 &emsp; [索引底层原理](/docs/SQL/IndexPrinciple.md)  
 &emsp; [各种索引](/docs/SQL/IndexKnowledge.md)  

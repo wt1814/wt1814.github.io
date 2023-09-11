@@ -1,6 +1,12 @@
 
+<!-- TOC -->
 
-# 数据库连接池
+- [1. 数据库连接池](#1-数据库连接池)
+    - [1.1. 大小设置](#11-大小设置)
+
+<!-- /TOC -->
+
+# 1. 数据库连接池
 <!-- 
 池化技术(一)Druid是如何管理数据库连接的？
 https://www.cnblogs.com/hama1993/p/11421576.html
@@ -10,8 +16,7 @@ https://mp.weixin.qq.com/s/7eSyr0b1UvqLrGMI691ngw
 -->
 
 
-
-## 大小设置  
+## 1.1. 大小设置  
 
 <!-- 
 https://www.cnblogs.com/rickiyang/p/12239907.html
