@@ -5,17 +5,20 @@
     - [1.1. 存储引擎操作](#11-存储引擎操作)
     - [1.2. InnoDB存储引擎](#12-innodb存储引擎)
     - [1.3. MyISAM存储引擎](#13-myisam存储引擎)
-    - [1.4. ~~InnoDB与MyISAM的区别总结~~](#14-innodb与myisam的区别总结)
+    - [1.4. ~~★★★InnoDB与MyISAM的区别总结~~](#14-★★★innodb与myisam的区别总结)
     - [1.5. 选择合适的存储引擎](#15-选择合适的存储引擎)
 
 <!-- /TOC -->
 
+**<font color = "red">总结：</font>**  
+1. InnoDB与MyISAM的区别总结
+
+
+# 1. MySql存储引擎
 <!-- 
 MySQL
 https://www.cnblogs.com/geaozhang/category/1326927.html
 -->
-
-# 1. MySql存储引擎
 1. MySQL常见的存储引擎有InnoDB、MyISAM、Memory、NDB。<font color = "red">InnoDB现在是MySQL默认的存储引擎，支持事务、行级锁定和外键。</font>  
 2. MySQL的存储引擎是针对表的，不是针对库的。也就是说在一个数据库中可以使用不同的存储引擎。但是不建议这样做。 
 3. MySQL是插件式的存储引擎，其中存储引擎分很多种。只要实现符合mysql存储引擎的接口，可以开发自己的存储引擎。 
@@ -91,7 +94,7 @@ InnoDB引擎有几个重点特性，为其带来了更好的性能和可靠性�
 
 &emsp; InnoDB中count(*) 语句是在执行的时候，全表扫描统计总数量，所以当数据越来越大时，语句就越来越耗时了，为什么 InnoDB 引擎不像 MyISAM 引擎一样，将总行数存储到磁盘上？这跟 InnoDB 的事务特性有关，由于多版本并发控制(MVCC)的原因，InnoDB 表“应该返回多少行”也是不确定的。  
 
-## 1.4. ~~InnoDB与MyISAM的区别总结~~  
+## 1.4. ~~★★★InnoDB与MyISAM的区别总结~~  
 <!-- 
 https://mp.weixin.qq.com/s/StjX9bi-YDANrMX21Pn_Uw
 -->
