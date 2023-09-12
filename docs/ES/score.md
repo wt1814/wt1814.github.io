@@ -35,8 +35,8 @@ https://blog.csdn.net/wwd0501/article/details/78622204
 -->
 
 ### 1.1.1. 排序
-&emsp; 为了按照相关性来排序，需要将相关性表示为一个数值。在 Elasticsearch 中， 相关性得分 由一个浮点数进行表示，并在搜索结果中通过 _score 参数返回， 默认排序是 _score 降序。  
-&emsp; 有时，相关性评分并没有意义。例如，下面的查询返回所有 user_id 字段包含 1 的结果：  
+&emsp; 为了按照相关性来排序，需要将相关性表示为一个数值。在 Elasticsearch 中， 相关性得分 由一个浮点数进行表示，并在搜索结果中通过 _score 参数返回， 默认排序是 \_score 降序。  
+&emsp; 有时，相关性评分并没有意义。例如，下面的查询返回所有 user\_id 字段包含 1 的结果：  
 
 ```text
 GET /_search
@@ -90,13 +90,13 @@ GET /_search
 }
 ```
 
-&emsp; _score 不被计算, 因为它并没有用于排序。  
+&emsp; \_score 不被计算, 因为它并没有用于排序。  
 &emsp; date 字段的值表示为自 epoch (January 1, 1970 00 :00 :00 UTC)以来的毫秒数，通过 sort 字段的值进行返回。  
 &emsp; 首先在每个结果中有一个新的名为 sort 的元素，它包含了用于排序的值。 在这个案例中，按照 date 进行排序，在内部被索引为 自 epoch 以来的毫秒数。long 类型数 1411516800000 等价于日期字符串 2014-09-24 00 :00 :00 UTC 。  
-&emsp; 其次 _score 和 max_score 字段都是 null 。 计算 _score 的花销巨大，通常仅用于排序；并不根据相关性排序，所以记录 _score 是没有意义的。如果无论如何都要计算_score，可以将track_scores参数设置为true 。  
+&emsp; 其次 \_score 和 max\_score 字段都是 null 。 计算 \_score 的花销巨大，通常仅用于排序；并不根据相关性排序，所以记录 _score 是没有意义的。如果无论如何都要计算\_score，可以将track\_scores参数设置为true 。  
 
 #### 1.1.1.2. 多级排序
-&emsp; 假定想要结合使用 date 和 _score 进行查询，并且匹配的结果首先按照日期排序，然后按照相关性排序：  
+&emsp; 假定想要结合使用 date 和 \_score 进行查询，并且匹配的结果首先按照日期排序，然后按照相关性排序：  
 
 ```text
 GET /_search
@@ -149,7 +149,7 @@ GET /_search
 &emsp; 你可以使用 min 和 max 排序模式（默认是 min ），但是这会导致排序以 art 或是 old ，任何一个都不是所希望的。  
 &emsp; 为了以字符串字段进行排序，这个字段应仅包含一项： 整个 not_analyzed 字符串。 但是仍需要 analyzed 字段，这样才能以全文进行查询  
 &emsp; 一个简单的方法是用两种方式对同一个字符串进行索引，这将在文档中包括两个字段：analyzed用于搜索，not_analyzed用于排序  
-&emsp; 但是保存相同的字符串两次在 _source字段是浪费空间的。真正想要做的是传递一个单字段但是却用两种方式索引它。所有的_core_field 类型 (strings, numbers, Booleans, dates) 接收一个fields参数  
+&emsp; 但是保存相同的字符串两次在 \_source字段是浪费空间的。真正想要做的是传递一个单字段但是却用两种方式索引它。所有的_core_field 类型 (strings, numbers, Booleans, dates) 接收一个fields参数  
 &emsp; 该参数允许你转化一个简单的映射如：  
 
 ```text
