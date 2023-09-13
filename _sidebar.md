@@ -453,7 +453,7 @@
         * [秒杀系统设计](/docs/system/seckill.md)  
             * [Redis实现库存扣减](/docs/system/stock.md)  
     * [资源限制](/docs/system/ResourceConstraints.md)  
-* [缓存和Redis](/docs/cache/Cache.md)    
+* 缓存和Redis  
     * [缓存介绍](/docs/cache/Cache.md)  
         * [缓存算法](/docs/cache/CacheAlgorithm.md)  
         * [二级缓存](/docs/microService/Redis/doubleCache.md)   
@@ -489,7 +489,7 @@
             * [Redis主从复制](/docs/microService/Redis/RedisMasterSlave.md)  
             * [Redis哨兵模式](/docs/microService/Redis/RedisSentry.md)  
             * [Redis读写分离](/docs/microService/Redis/RedisWriteRead.md)  
-            * [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
+            * [Redis集群模式](/docs/microService/Redis/RedisCluster.md)   
         * [Redis原理](/docs/microService/Redis/RedisPrinciple.md)  
             * [内存](/docs/microService/Redis/Memory.md)  
                 * [Redis虚拟内存机制](/docs/microService/Redis/RedisVM.md)    
