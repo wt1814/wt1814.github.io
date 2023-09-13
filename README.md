@@ -28,7 +28,7 @@
         - [1.5.4. 分布式锁](#154-分布式锁)
     - [1.6. 高并发](#16-高并发)
         - [1.6.1. 高并发相关概念](#161-高并发相关概念)
-        - [1.6.2. 缓存](#162-缓存)
+        - [1.6.2. 缓存和Redis](#162-缓存和redis)
             - [1.6.2.1. 缓存介绍](#1621-缓存介绍)
             - [1.6.2.2. Redis](#1622-redis)
         - [1.6.3. 限流降级](#163-限流降级)
@@ -648,8 +648,8 @@ graph LR
 &emsp; &emsp; [Redis实现库存扣减](/docs/system/stock.md)  
 [资源限制](/docs/system/ResourceConstraints.md)  
 
-### 1.6.2. 缓存  
-[缓存](/docs/cache/Cache.md)  
+### 1.6.2. 缓存和Redis  
+[缓存和Redis](/docs/cache/Cache.md)  
 
 #### 1.6.2.1. 缓存介绍
 [缓存算法](/docs/cache/CacheAlgorithm.md)  

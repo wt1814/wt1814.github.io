@@ -453,7 +453,7 @@
         * [秒杀系统设计](/docs/system/seckill.md)  
             * [Redis实现库存扣减](/docs/system/stock.md)  
     * [资源限制](/docs/system/ResourceConstraints.md)  
-* 缓存  
+* [缓存和Redis](/docs/cache/Cache.md)    
     * [缓存介绍](/docs/cache/Cache.md)  
         * [缓存算法](/docs/cache/CacheAlgorithm.md)  
         * [二级缓存](/docs/microService/Redis/doubleCache.md)   
