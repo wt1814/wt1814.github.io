@@ -28,7 +28,7 @@
     * <font color = "clime">LFU，Least Frequently Used，最不常用（访问频率），4.0版本新增。</font>  
 2. **~~内存淘汰策略选择：~~**  
 &emsp; **<font color = "clime">volatile和allkeys规定了是对已设置过期时间的key淘汰数据还是从全部key淘汰数据。volatile-xxx策略只会针对带过期时间的key进行淘汰，allkeys-xxx策略会对所有的key进行淘汰。</font>**  
-    * noeviction（默认策略）： 不会删除任何数据，拒绝所有写入操作并返回客户端错误消息（error）OOM command not allowed when used memory，此时 Redis 只响应删和读操作。  
+    * `noeviction（默认策略）`： 不会删除任何数据，拒绝所有写入操作并返回客户端错误消息（error）OOM command not allowed when used memory，此时 Redis 只响应删和读操作。  
     * 如果只是拿Redis做缓存，那应该使用allkeys-xxx，客户端写缓存时不必携带过期时间。  
     * 如果还想同时使用Redis的`持久化`功能，那就使用`volatile-xxx`策略，这样可以保留没有设置过期时间的key，它们是永久的key不会被LRU算法淘汰。`  
 
