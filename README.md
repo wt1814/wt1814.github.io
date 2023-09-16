@@ -55,7 +55,7 @@
         - [1.9.5. 规则引擎](#195-规则引擎)
         - [1.9.6. 分布式文件存储](#196-分布式文件存储)
     - [1.10. 源码搭建汇总](#110-源码搭建汇总)
-    - [1.11. Error](#111-error)
+    - [1.11. Error和性能](#111-error和性能)
     - [1.12. 面试](#112-面试)
         - [1.12.1. 面试流程及技巧](#1121-面试流程及技巧)
         - [1.12.2. 项目总结](#1122-项目总结)
@@ -983,7 +983,7 @@ https://help.aliyun.com/document_detail/122217.html
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.11. Error  
+## 1.11. Error和性能  
 [错误排查流程](/docs/Error/ErrorTrouble.md)  
 [多线程串线了](/docs/Error/ThreadCrossed.md)  
 [数据库连接池泄露](/docs/Error/DataPoolLeak.md)  
@@ -991,6 +991,7 @@ https://help.aliyun.com/document_detail/122217.html
 &emsp; [Redis高并发](/docs/Error/redisConcurrent.md)  
 &emsp; [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 &emsp; [redis scan命令](/docs/Error/redisScan.md)  
+[压测和性能](/docs/Error/PressureAndPerformance.md)  
 
 
 ## 1.12. 面试
