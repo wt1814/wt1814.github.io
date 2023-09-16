@@ -618,9 +618,6 @@
                 * [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
                 * [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)   
 ------------------------------------------------------------------------------------------------------------------------------
-* Error  
-    * [多线程串线了](/docs/Error/ThreadCrossed.md)  
-    * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 * 架构设计  
     * [IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
     * [技术选型](/docs/system/TechnicalSelection.md)  
@@ -714,6 +711,13 @@
     * [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
     * [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 ------------------------------------------------------------------------------------------------------------------------------
+* Error  
+    * [多线程串线了](/docs/Error/ThreadCrossed.md)  
+    * [数据库连接池泄露](/docs/Error/DataPoolLeak.md)  
+    * [Redis](/docs/Error/RedisError.md)  
+        * [Redis高并发](/docs/Error/redisConcurrent.md)  
+        * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
+        * [redis scan命令](/docs/Error/redisScan.md)  
 * [面试](/docs/recruit/interview.md)  
     * 面试流程及技巧
         * [1.总体流程](/docs/recruit/1resumeCreate.md)

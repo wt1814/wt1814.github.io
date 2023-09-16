@@ -42,20 +42,20 @@
             - [1.7.2.2. webSocket协议](#1722-websocket协议)
             - [1.7.2.3. NIO](#1723-nio)
             - [1.7.2.4. Netty通信框架](#1724-netty通信框架)
-    - [1.8. Error](#18-error)
-    - [1.9. 架构设计](#19-架构设计)
-        - [1.9.1. 架构设计](#191-架构设计)
-        - [1.9.2. 项目构建基础](#192-项目构建基础)
-        - [1.9.3. 系统设计](#193-系统设计)
-    - [1.10. Web服务器与中间件](#110-web服务器与中间件)
-        - [1.10.1. Web服务器](#1101-web服务器)
-            - [1.10.1.1. tomcat](#11011-tomcat)
-        - [1.10.2. 任务调度](#1102-任务调度)
-        - [1.10.3. 安全框架shiro](#1103-安全框架shiro)
-        - [1.10.4. 工作流](#1104-工作流)
-        - [1.10.5. 规则引擎](#1105-规则引擎)
-        - [1.10.6. 分布式文件存储](#1106-分布式文件存储)
-    - [1.11. 源码搭建汇总](#111-源码搭建汇总)
+    - [1.8. 架构设计](#18-架构设计)
+        - [1.8.1. 架构设计](#181-架构设计)
+        - [1.8.2. 项目构建基础](#182-项目构建基础)
+        - [1.8.3. 系统设计](#183-系统设计)
+    - [1.9. Web服务器与中间件](#19-web服务器与中间件)
+        - [1.9.1. Web服务器](#191-web服务器)
+            - [1.9.1.1. tomcat](#1911-tomcat)
+        - [1.9.2. 任务调度](#192-任务调度)
+        - [1.9.3. 安全框架shiro](#193-安全框架shiro)
+        - [1.9.4. 工作流](#194-工作流)
+        - [1.9.5. 规则引擎](#195-规则引擎)
+        - [1.9.6. 分布式文件存储](#196-分布式文件存储)
+    - [1.10. 源码搭建汇总](#110-源码搭建汇总)
+    - [1.11. Error](#111-error)
     - [1.12. 面试](#112-面试)
         - [1.12.1. 面试流程及技巧](#1121-面试流程及技巧)
         - [1.12.2. 项目总结](#1122-项目总结)
@@ -108,7 +108,6 @@ graph LR
 [知识点概况](/docs/survey.md)  
 [大总结1](/docs/summary.md)  
 [大总结2](/docs/summaryTwo.md)  
-
 
 ------------------------------------------------------------------------------------------------------------------------------
 
@@ -861,17 +860,9 @@ https://help.aliyun.com/document_detail/122217.html
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.8. Error  
-[多线程串线了](/docs/Error/ThreadCrossed.md)  
-[熔断降级处理](/docs/Error/hystrix.md)  
-[Redis高并发](/docs/Error/redisConcurrent.md)  
-[Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-[redis scan命令](/docs/Error/redisScan.md)  
-<!-- [雪花利用ZK生成workId]()   -->
 
-
-## 1.9. 架构设计
-### 1.9.1. 架构设计  
+## 1.8. 架构设计
+### 1.8.1. 架构设计  
 [IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
 [软件架构设计模式](/docs/system/designPattern.md)  
 &emsp; [DDD](/docs/system/DDD.md)  
@@ -888,7 +879,7 @@ https://help.aliyun.com/document_detail/122217.html
 [前后端分离-跨域和内外网隔离](/docs/web/Cross.md)  
 
 
-### 1.9.2. 项目构建基础
+### 1.8.2. 项目构建基础
 [版本号](/docs/web/Version.md)  
 [编码规范](/docs/java/Design/CodingSpecification.md)  
 [MVC三层架构上再加一层Manager层](/docs/web/Manager.md)  
@@ -934,7 +925,7 @@ https://help.aliyun.com/document_detail/122217.html
 [其他](/docs/web/other.md)  
 
 
-### 1.9.3. 系统设计  
+### 1.8.3. 系统设计  
 [工具类](/docs/SystemDesign/tools.md)  
 [登录](/docs/SystemDesign/Login.md)  
 [单点登录SSO](/docs/SystemDesign/SSO.md)  
@@ -944,44 +935,44 @@ https://help.aliyun.com/document_detail/122217.html
 [权限系统](/docs/SystemDesign/power.md)  
 
 
-## 1.10. Web服务器与中间件  
+## 1.9. Web服务器与中间件  
 [Web服务器与中间件](/docs/frame/OtherMiddleware.md)  
 
-### 1.10.1. Web服务器  
+### 1.9.1. Web服务器  
 [Java应用服务器](/docs/webContainer/tomcat/applicationServer.md)  
 [***Undertow替换Tomcat](/docs/webContainer/tomcat/Undertow.md)  
 
-#### 1.10.1.1. tomcat
+#### 1.9.1.1. tomcat
 [tomcat](/docs/webContainer/tomcat/tomcat.md)  
 [tomcat类加载器](/docs/webContainer/tomcat/tomcatClassLoader.md)  
 [tomcat日志](/docs/webContainer/tomcat/tomcatLog.md)  
 [tomcat调优](/docs/webContainer/tomcat/TomcatTuning.md)  
 
 
-### 1.10.2. 任务调度
+### 1.9.2. 任务调度
 [任务调度目录](/docs/frame/dispatch.md)  
 [延时队列/延时任务](/docs/frame/delayQueue.md)  
 [分布式调度](/docs/frame/taskSheduling.md)  
 &emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
 [时间轮算法](/docs/microService/dubbo/timeWheel.md)  
 
-### 1.10.3. 安全框架shiro  
+### 1.9.3. 安全框架shiro  
 [shiro](/docs/system/shiro.md)  
 [Spring Security](/docs/system/SpringSecurity.md)  
 [数据权限](/docs/system/DataPermissions.md)  
 [CAS集成](/docs/system/CAS.md)  
 
-### 1.10.4. 工作流
+### 1.9.4. 工作流
 [工作流](docs/middleware/workflow.md)  
 
-### 1.10.5. 规则引擎
+### 1.9.5. 规则引擎
 [规则引擎](docs/middleware/RulesEngine.md)  
 
-### 1.10.6. 分布式文件存储  
+### 1.9.6. 分布式文件存储  
 [分布式文件存储](/docs/File/FileStore.md)  
 
 
-## 1.11. 源码搭建汇总  
+## 1.10. 源码搭建汇总  
 [源码搭建汇总](/docs/java/basis/SourceBuild.md)  
 [JDK源码](/docs/java/basis/JDKSource.md)  
 [Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
@@ -991,6 +982,15 @@ https://help.aliyun.com/document_detail/122217.html
 [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 
 ------------------------------------------------------------------------------------------------------------------------------
+
+## 1.11. Error  
+[多线程串线了](/docs/Error/ThreadCrossed.md)  
+[数据库连接池泄露](/docs/Error/DataPoolLeak.md)  
+[Redis](/docs/Error/RedisError.md)  
+&emsp; [Redis高并发](/docs/Error/redisConcurrent.md)  
+&emsp; [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
+&emsp; [redis scan命令](/docs/Error/redisScan.md)  
+
 
 ## 1.12. 面试
 [面试](/docs/recruit/interview.md)  
