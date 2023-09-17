@@ -1,5 +1,5 @@
 
-![image](http://182.92.69.8:8081/img/draw/DataArea.png)  
+![image](http://182.92.69.8:8081/img/draw/113.DataArea.png)  
 
 &emsp; [JVM内存结构](/docs/java/JVM/JVMMemory.md)  
 &emsp; &emsp; [JVM栈](/docs/java/JVM/JVMStack.md)  
