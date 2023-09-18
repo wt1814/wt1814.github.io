@@ -5,7 +5,7 @@
 
 
 # 个人信息  
-<font size = "4.5">&emsp; 性别：男    &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;   出生年月：1992.06.29 &emsp; &emsp; &emsp;  &emsp;籍贯：山西省运城市</font>  
+<font size = "4.5">&emsp; 性别：男    &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;   出生年月：1992.06.29 &emsp; &emsp; &emsp;  &emsp;工作年限：7年</font>  
 <font size = "4.5">&emsp; 联系电话：17813261813  &emsp; &emsp;E-mail: wangtao1814@163.com</font>
 <br/>
 
