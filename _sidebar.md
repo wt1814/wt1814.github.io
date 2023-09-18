@@ -716,7 +716,6 @@
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [数据库连接池泄露](/docs/Error/DataPoolLeak.md)  
     * [Redis](/docs/Error/RedisError.md)  
-        * [Redis高并发](/docs/Error/redisConcurrent.md)  
         * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
         * [redis scan命令](/docs/Error/redisScan.md)  
     * [压测和性能](/docs/Error/PressureAndPerformance.md)  
