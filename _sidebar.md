@@ -729,7 +729,8 @@
         * [4.问面试官](/docs/recruit/3askProblem.md)  
         * [个人简历](/docs/recruit/PersonalResume.md)  
         * [简历](/docs/recruit/Resume.md)  
-    * 项目总结
+    * [项目总结](/docs/recruit/project/ProjectSummary.md)  
+        * [项目经验](/docs/recruit/project/ProjectExperience.md)    
         * [支付项目](/docs/recruit/project/payment.md)  
         * [二清项目](/docs/recruit/project/erqing.md)  
         * [监控插件](/docs/recruit/project/monitor.md)  
