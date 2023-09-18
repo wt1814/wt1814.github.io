@@ -998,7 +998,7 @@ https://help.aliyun.com/document_detail/122217.html
 [面试](/docs/recruit/interview.md)  
 
 ### 1.12.1. 面试流程及技巧  
-[1.总体流程](/docs/recruit/1resumeCreate.md)  
+[1.★★★总体流程](/docs/recruit/1resumeCreate.md)  
 [2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
 [3.1.难点](/docs/recruit/4difficultProblem.md)  
 [3.2.HR/总监面](/docs/recruit/HrInterview.md)  
