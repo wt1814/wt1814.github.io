@@ -711,7 +711,7 @@
     * [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
     * [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 ------------------------------------------------------------------------------------------------------------------------------
-* Error  
+* [Error和性能](/docs/Error/ErrorAndPerformance.md)     
     * [错误排查流程](/docs/Error/ErrorTrouble.md)  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [数据库连接池泄露](/docs/Error/DataPoolLeak.md)  
@@ -719,6 +719,7 @@
         * [Redis高并发](/docs/Error/redisConcurrent.md)  
         * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
         * [redis scan命令](/docs/Error/redisScan.md)  
+    * [压测和性能](/docs/Error/PressureAndPerformance.md)  
 * [面试](/docs/recruit/interview.md)  
     * 面试流程及技巧
         * [1.总体流程](/docs/recruit/1resumeCreate.md)
