@@ -9,6 +9,13 @@
 <!-- /TOC -->
 
 
+&emsp; **<font color = "red">总结：</font>**  
+1. J2Cache是一个两级缓存框架，第1级为JVM堆内缓存（通常选用caffeine），第2级为堆外缓存（Redis）。   
+2. 缓存更新：  
+&emsp; active:主动清除，二级缓存过期主动通知各节点清除，优点在于所有节点可以同时收到缓存清除  
+&emsp; passive:被动清除，一级缓存过期进行通知各节点清除一二级缓存  
+
+
 # 1. Caffeine+Redis二级缓存    
 <!-- 
 本地缓存组件 Guava cache 详解 
@@ -18,7 +25,6 @@ https://mp.weixin.qq.com/s/aLN5pxs2MuHd5EFHkiBmBQ
 -->
 
 <!-- 
-
 https://blog.csdn.net/Trunks2009/article/details/123982910
 https://blog.csdn.net/Trunks2009/article/details/123786175
 -->
@@ -156,6 +162,6 @@ j2cache.L2.provider_class=net.oschina.j2cache.cache.support.redis.SpringRedisPro
 
 
 ### 1.1.2. ★★★缓存更新  
-active:主动清除，二级缓存过期主动通知各节点清除，优点在于所有节点可以同时收到缓存清除  
-passive:被动清除，一级缓存过期进行通知各节点清除一二级缓存  
+&emsp; active:主动清除，二级缓存过期主动通知各节点清除，优点在于所有节点可以同时收到缓存清除  
+&emsp; passive:被动清除，一级缓存过期进行通知各节点清除一二级缓存  
 
