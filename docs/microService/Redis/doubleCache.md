@@ -1,6 +1,4 @@
 
-
-
 <!-- 
 多级缓存
 https://mp.weixin.qq.com/s/02PsTTJl-90K888DEjReeQ
@@ -18,3 +16,5 @@ https://mp.weixin.qq.com/s/nhNht6La8rfPHTut2wMcew
 
 2. 双缓存架构：  
 &emsp; [j2Cache框架集成Caffeine+Redis二级缓存](/docs/microService/Redis/Caffeine.md)  
+
+
