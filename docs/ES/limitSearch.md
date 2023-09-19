@@ -11,6 +11,11 @@
 # 1. 分页查询(避免深度分页)  
 
 <!--
+springboot整合elasticsearch实现like模糊查询
+**** https://blog.csdn.net/chaitao100/article/details/125889713
+http://www.hzhcontrols.com/new-1449872.html
+
+
 https://mp.weixin.qq.com/s/BmgvAHJBoLVPlRDbDPppdg
 https://www.cnblogs.com/jpfss/p/10815206.html
 

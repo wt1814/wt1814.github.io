@@ -35,6 +35,11 @@
 
 
 # 1. 性能指标  
+<!-- 
+如何测试一个门户网站是否可以支持10万用户同时在线？
+https://www.cnblogs.com/clongge/articles/1242650.html
+-->
+
 <!--
 
 Java 程序员必须清楚的 7 个性能指标
