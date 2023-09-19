@@ -225,6 +225,7 @@
         * [分库分表](/docs/SQL/sub.md)  
             * [分库分表带来的问题](/docs/SQL/subProblem.md)  
             * [分库分表查询](/docs/SQL/subSelect.md)  
+            * [分表id-基因法](/docs/SQL/candidate.md)     
             * [分库分表后分页查询](/docs/SQL/subSelectLimit.md)  
             * [分库分表后聚合查询](/docs/SQL/aggregate.md)  
         * [数据库分布式实现](/docs/SQL/subRealize.md)  
