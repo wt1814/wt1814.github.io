@@ -644,8 +644,8 @@ graph LR
 ### 1.6.1. 高并发及系统性能
 [高并发相关概念](/docs/system/DistributedHighConcurrency.md)   
 [系统性能指标](/docs/system/performance.md)  
-[★★★服务器数量计算](/docs/system/NumberOfServers.md)  
 [性能压测](/docs/system/PerformancePressureTest.md)  
+[★★★服务器数量计算](/docs/system/NumberOfServers.md)  
 
 
 ### 高并发系统
