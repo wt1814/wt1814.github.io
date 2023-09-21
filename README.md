@@ -57,8 +57,8 @@
     - [1.10. 源码搭建汇总](#110-源码搭建汇总)
     - [1.11. Error和性能](#111-error和性能)
     - [1.12. 面试](#112-面试)
-        - [1.12.1. 面试流程及技巧](#1121-面试流程及技巧)
-        - [1.12.2. 项目总结](#1122-项目总结)
+        - [1.12.1. 总流程、自我介绍以及项目](#1121-总流程自我介绍以及项目)
+        - [1.12.2. 其他](#1122-其他)
     - [1.13. Linux操作系统](#113-linux操作系统)
     - [1.14. Linux服务器搭建](#114-linux服务器搭建)
         - [1.14.1. Linux基础](#1141-linux基础)
@@ -108,6 +108,7 @@ graph LR
 [知识点概况](/docs/survey.md)  
 [大总结1](/docs/summary.md)  
 [大总结2](/docs/summaryTwo.md)  
+
 
 ------------------------------------------------------------------------------------------------------------------------------
 
@@ -1000,8 +1001,16 @@ https://help.aliyun.com/document_detail/122217.html
 ## 1.12. 面试
 [面试](/docs/recruit/interview.md)  
 
-### 1.12.1. 面试流程及技巧  
+### 1.12.1. 总流程、自我介绍以及项目
 [1.★★★总体流程](/docs/recruit/1resumeCreate.md)  
+[项目总结](/docs/recruit/project/ProjectSummary.md)  
+[项目经验](/docs/recruit/project/ProjectExperience.md)  
+[最近的项目](/docs/recruit/project/RecentProjects.md)   
+[支付项目](/docs/recruit/project/payment.md)  
+[二清项目](/docs/recruit/project/erqing.md)  
+[监控插件](/docs/recruit/project/monitor.md)   
+
+### 1.12.2. 其他  
 [2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
 [3.1.难点](/docs/recruit/4difficultProblem.md)  
 [3.2.HR/总监面](/docs/recruit/HrInterview.md)  
@@ -1011,13 +1020,7 @@ https://help.aliyun.com/document_detail/122217.html
 [简历](/docs/recruit/Resume.md)  
 [全部经历](/docs/recruit/AllExperiences.md)  
 
-### 1.12.2. 项目总结  
-[项目总结](/docs/recruit/project/ProjectSummary.md)  
-[项目经验](/docs/recruit/project/ProjectExperience.md)  
-[最近的项目](/docs/recruit/project/RecentProjects.md)   
-[支付项目](/docs/recruit/project/payment.md)  
-[二清项目](/docs/recruit/project/erqing.md)  
-[监控插件](/docs/recruit/project/monitor.md)   
+
 
 ------------------------------------------------------------------------------------------------------------------------------
 
