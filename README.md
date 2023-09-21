@@ -644,12 +644,13 @@ graph LR
 [高并发相关概念](/docs/system/DistributedHighConcurrency.md)   
 [系统性能指标](/docs/system/performance.md)  
 [★★★服务器数量计算](/docs/system/NumberOfServers.md)  
+[性能压测](/docs/system/PerformancePressureTest.md)  
 [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; [高可用建设](/docs/system/highAvailability.md)  
 &emsp; [秒杀系统设计](/docs/system/seckill.md)  
 &emsp; &emsp; [Redis实现库存扣减](/docs/system/stock.md)  
 [资源限制](/docs/system/ResourceConstraints.md)  
-[性能压测](/docs/system/PerformancePressureTest.md)  
+
 
 ### 1.6.2. 缓存和Redis  
 [缓存和Redis](/docs/cache/Cache.md)  
