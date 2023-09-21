@@ -649,6 +649,7 @@ graph LR
 &emsp; [秒杀系统设计](/docs/system/seckill.md)  
 &emsp; &emsp; [Redis实现库存扣减](/docs/system/stock.md)  
 [资源限制](/docs/system/ResourceConstraints.md)  
+[性能压测](/docs/system/PerformancePressureTest.md)  
 
 ### 1.6.2. 缓存和Redis  
 [缓存和Redis](/docs/cache/Cache.md)  
