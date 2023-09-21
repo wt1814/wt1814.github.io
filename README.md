@@ -642,6 +642,7 @@ graph LR
 ### 1.6.1. 高并发相关概念
 [高并发相关概念](/docs/system/DistributedHighConcurrency.md)   
 [系统性能指标](/docs/system/performance.md)  
+[★★★服务器数量计算](/docs/system/NumberOfServers.md)  
 [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; [高可用建设](/docs/system/highAvailability.md)  
 &emsp; [秒杀系统设计](/docs/system/seckill.md)  
