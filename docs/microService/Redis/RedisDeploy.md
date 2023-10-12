@@ -49,7 +49,7 @@ https://mp.weixin.qq.com/s/4d-zeaVbQFn7qT4DWagjOg
 
 ## 1.2. Redis高可用建设考虑因素
 1. **<font color = "clime">考虑资源：</font>**    
-&emsp; Redis集群最少6个节点，每个节点20G，总共120G。因此Redis集群比较耗资源。小型公司可以采用哨兵模式。    
+&emsp; Redis集群最少6个节点，**<font color = "clime">【每个节点20G】</font>**，总共120G。因此Redis集群比较耗资源。小型公司可以采用哨兵模式。    
 2. **<font color = "clime">考虑QPS：</font>**  
 &emsp; **单机的redis一般是支持上万甚至几万，具体的性能取决于数据操作的复杂性，如果仅仅是简单的kv操作的话，可以达到数万，如果是运行复杂的lua脚本的话，就可能只能到一万左右。**  
 &emsp; 缓存一般是用来支撑读的高并发，一般比较少用来支撑读的操作，一般读的操作是比较频繁的，甚至达到几万几十万，但是写的操作每秒才几千，这就需要读写分离了。  
