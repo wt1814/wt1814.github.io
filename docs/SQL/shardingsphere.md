@@ -5,7 +5,7 @@
     - [1.1. 读写分离](#11-读写分离)
     - [1.2. 分库分表](#12-分库分表)
     - [1.3. shardingsphere分布式事务](#13-shardingsphere分布式事务)
-    - [sharding-proxy+sharding-ui安装使用](#sharding-proxysharding-ui安装使用)
+    - [1.4. sharding-proxy+sharding-ui安装使用](#14-sharding-proxysharding-ui安装使用)
 
 <!-- /TOC -->
 
@@ -70,7 +70,7 @@ https://shardingsphere.apache.org/document/legacy/4.x/document/cn/manual/shardin
 -->
 
 
-## sharding-proxy+sharding-ui安装使用  
+## 1.4. sharding-proxy+sharding-ui安装使用  
 <!-- 
 https://www.cnblogs.com/pypua/p/16546793.html
 
