@@ -887,6 +887,7 @@
     * [跨平台uni-app](/docs/front/uniapp.md)    
     * [nodejs](/docs/front/nodejs.md)   
 * [测试](/docs/test/test.md)  
+    * [压测指标](/docs/test/PressureMeasurementIndicators.md)  
     * [allure](/docs/devAndOps/test/allure.md)  
 * [python](/docs/python/python.md)   
 

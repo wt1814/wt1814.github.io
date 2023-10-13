@@ -1241,6 +1241,7 @@ prometheus
 
 ## 1.19. 测试  
 [测试](/docs/test/test.md)  
+[压测指标](/docs/test/PressureMeasurementIndicators.md)  
 [allure](/docs/devAndOps/test/allure.md)  
 
 
