@@ -718,7 +718,7 @@
     * [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
     * [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 ------------------------------------------------------------------------------------------------------------------------------
-* [Error和性能](/docs/Error/ErrorAndPerformance.md)     
+* [Error和性能（项目难点）](/docs/Error/ErrorAndPerformance.md)     
     * [错误排查流程](/docs/Error/ErrorTrouble.md)  
     * [多线程串线了](/docs/Error/ThreadCrossed.md)  
     * [数据库连接池泄露](/docs/Error/DataPoolLeak.md)  
@@ -726,6 +726,7 @@
         * [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
         * [redis scan命令](/docs/Error/redisScan.md)  
     * [压测和性能](/docs/Error/PressureAndPerformance.md)  
+    * [3.1.难点](/docs/recruit/4difficultProblem.md)  
 * [面试](/docs/recruit/interview.md)  
     * 总流程、自我介绍以及项目
         * [1.★★★总体流程](/docs/recruit/1resumeCreate.md)  
@@ -735,7 +736,6 @@
         * [支付项目](/docs/recruit/project/payment.md)  
         * [二清项目](/docs/recruit/project/erqing.md)  
         * [监控插件](/docs/recruit/project/monitor.md)   
-        * [3.1.难点](/docs/recruit/4difficultProblem.md)  
     * 其他  
         * [2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
         * [3.2.HR/总监面](/docs/recruit/HrInterview.md)  
@@ -744,7 +744,6 @@
         * [个人简历](/docs/recruit/PersonalResume.md)  
         * [简历](/docs/recruit/Resume.md)  
         * [全部经历](/docs/recruit/AllExperiences.md)  
-
 ------------------------------------------------------------------------------------------------------------------------------
 * Linux操作系统  
     * [操作系统](/docs/Linux/operating.md)  

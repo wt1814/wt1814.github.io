@@ -56,7 +56,7 @@
         - [1.9.5. 规则引擎](#195-规则引擎)
         - [1.9.6. 分布式文件存储](#196-分布式文件存储)
     - [1.10. 源码搭建汇总](#110-源码搭建汇总)
-    - [1.11. Error和性能](#111-error和性能)
+    - [1.11. Error和性能（项目难点）](#111-error和性能项目难点)
     - [1.12. 面试](#112-面试)
         - [1.12.1. 总流程、自我介绍以及项目](#1121-总流程自我介绍以及项目)
         - [1.12.2. 其他](#1122-其他)
@@ -995,7 +995,7 @@ https://help.aliyun.com/document_detail/122217.html
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.11. Error和性能  
+## 1.11. Error和性能（项目难点）  
 [Error和性能](/docs/Error/ErrorAndPerformance.md)   
 [错误排查流程](/docs/Error/ErrorTrouble.md)  
 [多线程串线了](/docs/Error/ThreadCrossed.md)  
@@ -1004,7 +1004,7 @@ https://help.aliyun.com/document_detail/122217.html
 &emsp; [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
 &emsp; [redis scan命令](/docs/Error/redisScan.md)  
 [压测和性能](/docs/Error/PressureAndPerformance.md)  
-
+[3.1.难点](/docs/recruit/4difficultProblem.md)  
 
 ## 1.12. 面试
 [面试](/docs/recruit/interview.md)  
@@ -1017,7 +1017,6 @@ https://help.aliyun.com/document_detail/122217.html
 [支付项目](/docs/recruit/project/payment.md)  
 [二清项目](/docs/recruit/project/erqing.md)  
 [监控插件](/docs/recruit/project/monitor.md)   
-[3.1.难点](/docs/recruit/4difficultProblem.md)  
 
 ### 1.12.2. 其他  
 [2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
