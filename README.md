@@ -28,14 +28,14 @@
         - [1.5.4. 分布式锁](#154-分布式锁)
     - [1.6. 高并发](#16-高并发)
         - [1.6.1. 高并发及系统性能](#161-高并发及系统性能)
-        - [高并发系统](#高并发系统)
-        - [1.6.2. 缓存和Redis](#162-缓存和redis)
-            - [1.6.2.1. 缓存介绍](#1621-缓存介绍)
-            - [1.6.2.2. Redis](#1622-redis)
-        - [1.6.3. 限流降级](#163-限流降级)
-        - [1.6.4. MQ](#164-mq)
-            - [1.6.4.1. RocketMQ](#1641-rocketmq)
-            - [1.6.4.2. Kafka](#1642-kafka)
+        - [1.6.2. 高并发系统](#162-高并发系统)
+        - [1.6.3. 缓存和Redis](#163-缓存和redis)
+            - [1.6.3.1. 缓存介绍](#1631-缓存介绍)
+            - [1.6.3.2. Redis](#1632-redis)
+        - [1.6.4. 限流降级](#164-限流降级)
+        - [1.6.5. MQ](#165-mq)
+            - [1.6.5.1. RocketMQ](#1651-rocketmq)
+            - [1.6.5.2. Kafka](#1652-kafka)
     - [1.7. 计算机网络](#17-计算机网络)
         - [1.7.1. 负载均衡](#171-负载均衡)
         - [1.7.2. 网络IO/分布式通信](#172-网络io分布式通信)
@@ -58,19 +58,19 @@
     - [1.10. 源码搭建汇总](#110-源码搭建汇总)
     - [1.11. Error和性能（项目难点）](#111-error和性能项目难点)
     - [1.12. 面试](#112-面试)
-        - [1.12.1. 总流程、自我介绍以及项目](#1121-总流程自我介绍以及项目)
-        - [1.12.2. 其他](#1122-其他)
-    - [1.17. 算法](#117-算法)
-    - [1.13. Linux操作系统](#113-linux操作系统)
-    - [1.14. Linux服务器搭建](#114-linux服务器搭建)
-        - [1.14.1. Linux基础](#1141-linux基础)
-        - [1.14.2. Linux服务器](#1142-linux服务器)
-        - [1.14.3. DevOps介绍](#1143-devops介绍)
-        - [1.14.4. 搭建-研发](#1144-搭建-研发)
-    - [1.15. Docker和k8s](#115-docker和k8s)
-        - [1.15.1. 搭建-需求、测试](#1151-搭建-需求测试)
-        - [1.15.2. 监控和统计](#1152-监控和统计)
-    - [1.16. 常用研发工具](#116-常用研发工具)
+        - [1.12.1. 做过的项目](#1121-做过的项目)
+        - [1.12.2. 面试流程](#1122-面试流程)
+    - [1.13. 算法](#113-算法)
+    - [1.14. Linux操作系统](#114-linux操作系统)
+    - [1.15. Linux服务器搭建](#115-linux服务器搭建)
+        - [1.15.1. Linux基础](#1151-linux基础)
+        - [1.15.2. Linux服务器](#1152-linux服务器)
+        - [1.15.3. DevOps介绍](#1153-devops介绍)
+        - [1.15.4. 搭建-研发](#1154-搭建-研发)
+    - [1.16. Docker和k8s](#116-docker和k8s)
+        - [1.16.1. 搭建-需求、测试](#1161-搭建-需求测试)
+        - [1.16.2. 监控和统计](#1162-监控和统计)
+    - [1.17. 常用研发工具](#117-常用研发工具)
     - [1.18. 前端知识](#118-前端知识)
     - [1.19. 测试](#119-测试)
     - [1.20. python](#120-python)
@@ -652,7 +652,7 @@ graph LR
 [★★★服务器数量计算](/docs/system/NumberOfServers.md)  
 
 
-### 高并发系统
+### 1.6.2. 高并发系统
 [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; [高可用建设](/docs/system/highAvailability.md)  
 &emsp; [秒杀系统设计](/docs/system/seckill.md)  
@@ -660,10 +660,10 @@ graph LR
 [资源限制](/docs/system/ResourceConstraints.md)  
 
 
-### 1.6.2. 缓存和Redis  
+### 1.6.3. 缓存和Redis  
 [缓存和Redis](/docs/cache/Cache.md)  
 
-#### 1.6.2.1. 缓存介绍
+#### 1.6.3.1. 缓存介绍
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
 [二级缓存](/docs/microService/Redis/doubleCache.md)   
 &emsp; [j2Cache框架集成Caffeine+Redis二级缓存](/docs/microService/Redis/Caffeine.md)  
@@ -672,7 +672,7 @@ graph LR
 &emsp; [更新缓存](/docs/cache/CacheUpdate.md)  
 [Redis热点key](/docs/cache/hotspotKey.md)  
 
-#### 1.6.2.2. Redis
+#### 1.6.3.2. Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
 [Redis使用](/docs/microService/Redis/RedisUse.md)  
 &emsp; [Redis安装](/docs/microService/Redis/RedisInstall.md)  
@@ -717,23 +717,23 @@ graph LR
 &emsp; [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 
 
-### 1.6.3. 限流降级
+### 1.6.4. 限流降级
 [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
 &emsp; [如何计算服务限流的配额？](/docs/microService/thinking/limitingQuota.md)  
 &emsp; [限流Sentinel](/docs/microService/thinking/Sentinel.md)  
 [服务降级](/docs/microService/thinking/Demotion.md)  
 
-### 1.6.4. MQ    
+### 1.6.5. MQ    
 [MQ](/docs/microService/mq/mq.md)  
 &emsp; [消息推拉机制](/docs/microService/mq/PushPull.md)  
 [RocketMQ和Kafka](/docs/microService/mq/RocketMQAndKafka.md)  
 
-#### 1.6.4.1. RocketMQ  
+#### 1.6.5.1. RocketMQ  
 [RocketMQ搭建](/docs/devAndOps/build/RocketBuild.md)  
 [SpringBoot整合RocketMQ](/docs/microService/mq/Rocket/BootRocket.md)  
 
 
-#### 1.6.4.2. Kafka  
+#### 1.6.5.2. Kafka  
 [kafka](/docs/microService/mq/kafka/kafka.md)   
 [kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  
 &emsp; [生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
@@ -1011,8 +1011,8 @@ https://help.aliyun.com/document_detail/122217.html
 ## 1.12. 面试
 [面试](/docs/recruit/interview.md)  
 
-### 1.12.1. 总流程、自我介绍以及项目
-[1.★★★总体流程](/docs/recruit/1resumeCreate.md)  
+### 1.12.1. 做过的项目  
+[做过的项目](/docs/recruit/project/ProjectsDone.md)  
 [项目总结](/docs/recruit/project/ProjectSummary.md)  
 [项目经验](/docs/recruit/project/ProjectExperience.md)  
 [最近的项目](/docs/recruit/project/RecentProjects.md)   
@@ -1020,7 +1020,8 @@ https://help.aliyun.com/document_detail/122217.html
 [二清项目](/docs/recruit/project/erqing.md)  
 [监控插件](/docs/recruit/project/monitor.md)   
 
-### 1.12.2. 其他  
+### 1.12.2. 面试流程
+[1.★★★总体流程](/docs/recruit/1resumeCreate.md)   
 [2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
 [3.2.HR/总监面](/docs/recruit/HrInterview.md)  
 [3.3.职业规划](/docs/recruit/CareerPlanning.md)  
@@ -1031,7 +1032,7 @@ https://help.aliyun.com/document_detail/122217.html
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.17. 算法  
+## 1.13. 算法  
 [红黑树](/docs/function/redBlack.md)  
 [复杂数据结构](/docs/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/function/SkipList.md)  
@@ -1047,7 +1048,7 @@ https://help.aliyun.com/document_detail/122217.html
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.13. Linux操作系统  
+## 1.14. Linux操作系统  
 <!-- 
 xshell 工具Tabby 
 https://mp.weixin.qq.com/s/Cs-WzMm-8VZbLoq9CA-qWw
@@ -1077,7 +1078,7 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 
 [页缓存](/docs/system/PageCache.md)  
 
-## 1.14. Linux服务器搭建
+## 1.15. Linux服务器搭建
 <!-- 
 ideaserver jdk   tomcat
 
@@ -1095,7 +1096,7 @@ prometheus
 -->
 
 
-### 1.14.1. Linux基础  
+### 1.15.1. Linux基础  
 [CentOS](/docs/devAndOps/centOS/centOS.md)  
 [Linux目录和版本](/docs/Linux/catalogue.md)  
 [Linux命令](/docs/Linux/Command.md)  
@@ -1111,14 +1112,14 @@ prometheus
 [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
 [nohup xxx &后台进程关闭](/docs/devAndOps/centOS/nohup.md)  
 
-### 1.14.2. Linux服务器  
+### 1.15.2. Linux服务器  
 [Linux服务器](/docs/Linux/build/LinuxServer.md)   
 [防火墙](/docs/Linux/build/firewall.md)  
 [堡垒机](/docs/Linux/build/FortressMachine.md)  
 [DNS服务器](/docs/Linux/build/DNS.md)  
 [扩容](/docs/devAndOps/centOS/dilatation.md)  
 
-### 1.14.3. DevOps介绍    
+### 1.15.3. DevOps介绍    
 [CI/CD](/docs/devAndOps/build/CICD.md)  
 [Devops](/docs/devAndOps/build/devOps.md)  
 [GIT](/docs/devAndOps/git/command.md)  
@@ -1137,7 +1138,7 @@ prometheus
 &emsp; [Jenkins构建Java项目](/docs/devAndOps/jenkins/JenkinsJava.md)  
 
 
-### 1.14.4. 搭建-研发
+### 1.15.4. 搭建-研发
 [Linux定时执行脚本](/docs/devAndOps/build/TimingScript.md)  
 [3. JDK安装](/docs/devAndOps/build/JDKBuild.md)  
 [4. Git安装](/docs/devAndOps/git/GitBuild.md)  
@@ -1166,7 +1167,7 @@ prometheus
 [docsify](/docs/devAndOps/build/docsify.md)  
 [3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
 
-## 1.15. Docker和k8s
+## 1.16. Docker和k8s
 [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
 &emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
 &emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
@@ -1204,7 +1205,7 @@ prometheus
 [6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)  
 
 
-### 1.15.1. 搭建-需求、测试
+### 1.16.1. 搭建-需求、测试
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
 [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
 [jira](/docs/devAndOps/build/jira.md)  
@@ -1212,7 +1213,7 @@ prometheus
 [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
 
 
-### 1.15.2. 监控和统计
+### 1.16.2. 监控和统计
 [监控](/docs/devAndOps/monitor/indicators.md)  
 &emsp; [监控系统](/docs/devAndOps/monitor/monitor.md)  
 [prometheus](/docs/devAndOps/monitor/prometheus.md)  
@@ -1223,7 +1224,7 @@ prometheus
 
 
 
-## 1.16. 常用研发工具  
+## 1.17. 常用研发工具  
 [Idea](/docs/software/idea/idea.md)  
 [postman](/docs/software/postman.md)  
 [抓包Charles](/docs/software/charles.md)  
