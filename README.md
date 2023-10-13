@@ -60,6 +60,7 @@
     - [1.12. 面试](#112-面试)
         - [1.12.1. 总流程、自我介绍以及项目](#1121-总流程自我介绍以及项目)
         - [1.12.2. 其他](#1122-其他)
+    - [1.17. 算法](#117-算法)
     - [1.13. Linux操作系统](#113-linux操作系统)
     - [1.14. Linux服务器搭建](#114-linux服务器搭建)
         - [1.14.1. Linux基础](#1141-linux基础)
@@ -70,7 +71,6 @@
         - [1.15.1. 搭建-需求、测试](#1151-搭建-需求测试)
         - [1.15.2. 监控和统计](#1152-监控和统计)
     - [1.16. 常用研发工具](#116-常用研发工具)
-    - [1.17. 算法](#117-算法)
     - [1.18. 前端知识](#118-前端知识)
     - [1.19. 测试](#119-测试)
     - [1.20. python](#120-python)
@@ -1029,7 +1029,21 @@ https://help.aliyun.com/document_detail/122217.html
 [简历](/docs/recruit/Resume.md)  
 [全部经历](/docs/recruit/AllExperiences.md)  
 
+------------------------------------------------------------------------------------------------------------------------------
 
+## 1.17. 算法  
+[红黑树](/docs/function/redBlack.md)  
+[复杂数据结构](/docs/function/otherStructure.md)  
+&emsp; [跳跃表](/docs/function/SkipList.md)  
+&emsp; [位图BitMap](/docs/function/BitMap.md)  
+&emsp; [BloomFilter](/docs/function/BloomFilter.md)  
+&emsp; &emsp; [计数式布隆过滤器](/docs/function/countingBloomFilter.md)  
+&emsp; &emsp; [布谷鸟过滤器](/docs/function/CuckooFilter.md)  
+&emsp; [HyperLogLog](/docs/function/HyperLogLog.md)  
+&emsp; [Trie](/docs/function/Trie.md)  
+[大数据的操作](/docs/function/bigOperate.md)  
+&emsp; [大数据小内存排序](/docs/function/SmallMemory.md)  
+&emsp; [大数据和空间限制](/docs/function/bigdata.md)  
 
 ------------------------------------------------------------------------------------------------------------------------------
 
@@ -1221,22 +1235,6 @@ prometheus
 
 
 ------------------------------------------------------------------------------------------------------------------------------
-
-
-## 1.17. 算法  
-[红黑树](/docs/function/redBlack.md)  
-[复杂数据结构](/docs/function/otherStructure.md)  
-&emsp; [跳跃表](/docs/function/SkipList.md)  
-&emsp; [位图BitMap](/docs/function/BitMap.md)  
-&emsp; [BloomFilter](/docs/function/BloomFilter.md)  
-&emsp; &emsp; [计数式布隆过滤器](/docs/function/countingBloomFilter.md)  
-&emsp; &emsp; [布谷鸟过滤器](/docs/function/CuckooFilter.md)  
-&emsp; [HyperLogLog](/docs/function/HyperLogLog.md)  
-&emsp; [Trie](/docs/function/Trie.md)  
-[大数据的操作](/docs/function/bigOperate.md)  
-&emsp; [大数据小内存排序](/docs/function/SmallMemory.md)  
-&emsp; [大数据和空间限制](/docs/function/bigdata.md)  
-
 
 ## 1.18. 前端知识  
 [跨平台uni-app](/docs/front/uniapp.md)  

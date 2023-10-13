@@ -745,6 +745,20 @@
         * [简历](/docs/recruit/Resume.md)  
         * [全部经历](/docs/recruit/AllExperiences.md)  
 ------------------------------------------------------------------------------------------------------------------------------
+* 算法
+    * [红黑树](/docs/function/redBlack.md)  
+    * [复杂数据结构](/docs/function/otherStructure.md)  
+        * [跳跃表](/docs/function/SkipList.md)  
+        * [位图BitMap](/docs/function/BitMap.md)  
+        * [BloomFilter](/docs/function/BloomFilter.md)  
+            * [计数式布隆过滤器](/docs/function/countingBloomFilter.md)  
+            * [布谷鸟过滤器](/docs/function/CuckooFilter.md)  
+        * [HyperLogLog](/docs/function/HyperLogLog.md)  
+        * [Trie](/docs/function/Trie.md)  
+    * [大数据的操作](/docs/function/bigOperate.md)  
+        * [大数据小内存排序](/docs/function/SmallMemory.md)  
+        * [大数据和空间限制](/docs/function/bigdata.md)  
+------------------------------------------------------------------------------------------------------------------------------
 * Linux操作系统  
     * [操作系统](/docs/Linux/operating.md)  
     * [Linux系统性能](/docs/Linux/systemPerformance.md)  
@@ -870,19 +884,6 @@
     * [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
     * [MAC系统](/docs/software/MAC.md)  
 ------------------------------------------------------------------------------------------------------------------------------
-* 算法
-    * [红黑树](/docs/function/redBlack.md)  
-    * [复杂数据结构](/docs/function/otherStructure.md)  
-        * [跳跃表](/docs/function/SkipList.md)  
-        * [位图BitMap](/docs/function/BitMap.md)  
-        * [BloomFilter](/docs/function/BloomFilter.md)  
-            * [计数式布隆过滤器](/docs/function/countingBloomFilter.md)  
-            * [布谷鸟过滤器](/docs/function/CuckooFilter.md)  
-        * [HyperLogLog](/docs/function/HyperLogLog.md)  
-        * [Trie](/docs/function/Trie.md)  
-    * [大数据的操作](/docs/function/bigOperate.md)  
-        * [大数据小内存排序](/docs/function/SmallMemory.md)  
-        * [大数据和空间限制](/docs/function/bigdata.md)  
 * 前端  
     * [跨平台uni-app](/docs/front/uniapp.md)    
     * [nodejs](/docs/front/nodejs.md)   
