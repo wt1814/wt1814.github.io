@@ -1,6 +1,6 @@
 
 
-* 总流程、自我介绍以及项目
+* 总流程、自我介绍以及项目  
 [1.★★★总体流程](/docs/recruit/1resumeCreate.md)  
 [项目总结](/docs/recruit/project/ProjectSummary.md)  
 [项目经验](/docs/recruit/project/ProjectExperience.md)  

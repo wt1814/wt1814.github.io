@@ -15,7 +15,10 @@
 
 2. ES使用：  
     1. 采用定时同步到ES。  
-    2. ES分页模糊：https://blog.csdn.net/chaitao100/article/details/125889713   https://developer.aliyun.com/article/1234768     
+    2. ES分页模糊：
+        https://blog.csdn.net/chaitao100/article/details/125889713  
+        searchSourceBulider https://blog.csdn.net/qq_39601612/article/details/104680399  
+        https://developer.aliyun.com/article/1234768     
 
 
 3. 并发高  

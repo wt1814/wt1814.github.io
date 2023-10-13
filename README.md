@@ -1017,10 +1017,10 @@ https://help.aliyun.com/document_detail/122217.html
 [支付项目](/docs/recruit/project/payment.md)  
 [二清项目](/docs/recruit/project/erqing.md)  
 [监控插件](/docs/recruit/project/monitor.md)   
+[3.1.难点](/docs/recruit/4difficultProblem.md)  
 
 ### 1.12.2. 其他  
 [2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
-[3.1.难点](/docs/recruit/4difficultProblem.md)  
 [3.2.HR/总监面](/docs/recruit/HrInterview.md)  
 [3.3.职业规划](/docs/recruit/CareerPlanning.md)  
 [4.问面试官](/docs/recruit/3askProblem.md)  
