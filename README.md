@@ -1013,7 +1013,6 @@ https://help.aliyun.com/document_detail/122217.html
 
 ### 1.12.1. 做过的项目  
 [做过的项目](/docs/recruit/project/ProjectsDone.md)  
-[项目总结](/docs/recruit/project/ProjectSummary.md)  
 [项目经验](/docs/recruit/project/ProjectExperience.md)  
 [最近的项目](/docs/recruit/project/RecentProjects.md)   
 [支付项目](/docs/recruit/project/payment.md)  
