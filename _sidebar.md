@@ -881,7 +881,7 @@
         * [HyperLogLog](/docs/function/HyperLogLog.md)  
         * [Trie](/docs/function/Trie.md)  
     * [大数据和空间限制](/docs/function/bigdata.md)  
-        * [内存只有 2G，如何对 100 亿数据进行排序？](/docs/function/SmallMemory.md)  
+        * [大数据小内存排序](/docs/function/SmallMemory.md)  
 * 前端  
     * [跨平台uni-app](/docs/front/uniapp.md)    
     * [nodejs](/docs/front/nodejs.md)   

@@ -1234,7 +1234,7 @@ prometheus
 &emsp; [HyperLogLog](/docs/function/HyperLogLog.md)  
 &emsp; [Trie](/docs/function/Trie.md)  
 [大数据和空间限制](/docs/function/bigdata.md)  
-&emsp; [内存只有 2G，如何对 100 亿数据进行排序？](/docs/function/SmallMemory.md)  
+&emsp; [大数据小内存排序](/docs/function/SmallMemory.md)  
 
 ## 1.18. 前端知识  
 [跨平台uni-app](/docs/front/uniapp.md)  
