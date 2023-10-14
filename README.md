@@ -74,6 +74,7 @@
     - [1.18. 前端知识](#118-前端知识)
     - [1.19. 测试](#119-测试)
     - [1.20. python](#120-python)
+    - [微信开发](#微信开发)
 
 <!-- /TOC -->
 
@@ -1249,4 +1250,7 @@ prometheus
 ## 1.20. python
 [python](/docs/python/python.md)  
 
+
+## 微信开发
+[小程序](/docs/WeChat/applet.md)  
 

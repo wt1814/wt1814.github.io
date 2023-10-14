@@ -889,4 +889,5 @@
     * [压测指标](/docs/test/PressureMeasurementIndicators.md)  
     * [allure](/docs/devAndOps/test/allure.md)  
 * [python](/docs/python/python.md)   
-
+* 微信开发  
+    * [小程序](/docs/WeChat/applet.md)    
