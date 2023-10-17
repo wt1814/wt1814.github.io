@@ -86,5 +86,11 @@ https://www.cnblogs.com/capacity-yang/p/13064775.html
 
 
 ### 1.3.3. 二级缓存  
+&emsp; J2Cache [1] 是开源的两级缓存框架（要求至少 Java 8）。第一级缓存使用内存(同时支持 Ehcache 2.x、Ehcache 3.x 和 Caffeine)，第二级缓存使用 Redis(推荐)/Memcached 。 由于大量的缓存读取会导致 L2 的网络成为整个系统的瓶颈，因此 L1 的目标是降低对 L2 的读取次数。  
+
+1. J2Cache是一个两级缓存框架，第1级为JVM堆内缓存（通常选用caffeine），第2级为堆外缓存（Redis）。   
+2. 缓存更新：  
+&emsp; active:主动清除，二级缓存过期主动通知各节点清除，优点在于所有节点可以同时收到缓存清除  
+&emsp; passive:被动清除，一级缓存过期进行通知各节点清除一二级缓存  
 
 
