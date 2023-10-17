@@ -83,6 +83,8 @@ https://www.cnblogs.com/capacity-yang/p/13064775.html
 2C4G机器单机一般1000QPS。
 8C8G机器单机可承受7000QPS。
 
+
+
 ### 1.3.3. 二级缓存  
 
 
