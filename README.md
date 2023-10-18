@@ -371,7 +371,7 @@ graph LR
 &emsp; &emsp; [ShardingSphere](/docs/SQL/shardingsphere.md)  
 &emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md)  
 &emsp; [★★★数据迁移](/docs/projectImplement/implementation.md)  
-[★★★分库分表和ES](/docs/SQL/shardingAndEs.md)  
+&emsp; [★★★分库分表和ES](/docs/SQL/shardingAndEs.md)  
 [MySql架构原理](/docs/SQL/MySqlPrinciple.md)   
 &emsp; [MySql运行(查询)流程](/docs/SQL/Framework.md)   
 &emsp; [InnoDB插入更新流程](/docs/SQL/insert.md)  
