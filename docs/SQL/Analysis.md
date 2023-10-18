@@ -19,7 +19,7 @@
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结</font>**  
-1. **<font color = "clime">6个关键字从各个维度分析SQL语句：profiling、trace、EXPLAIN与explain extended、show warnings、proceduer analyse。</font>**  
+1. **<font color = "clime">6个关键字从各个维度分析SQL语句：profiling（消耗资源）、trace（优化器如何选择执行计划）、EXPLAIN与explain extended、show warnings、proceduer analyse。</font>**  
 2. profiling（资料搜集）  
 &emsp; 使用profiling命令可以了解SQL语句`消耗资源`的详细信息，每个执行步骤的开销。可以清楚了解到SQL到底慢在哪个环节。   
 3. trace  
