@@ -24,6 +24,7 @@
         1. @Import({AutoConfigurationImportSelector.class})，开启自动配置，导入AutoConfigurationImportSelector类。  
         2. AutoConfigurationImportSelector#getCandidateConfigurations()方法获取配置文件spring.factories所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
 
+3. **<font color = "red">小结：</font>** 3种类型的注解：1).@SpringBootConfiguration、@Configuration；2).@ComponentScan、@AutoConfigurationPackage；3).@Import   
 
 
 # 1. SpringBoot自动配置

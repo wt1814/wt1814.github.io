@@ -370,8 +370,8 @@
             * [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/SpringBootEvent.md)  
             * [SpringBoot事件回调机制](/docs/microService/SpringBoot/eventCallback.md)
         * [SpringBoot自动配置](/docs/microService/SpringBoot/AutomaticAssembly.md)  
-            * [注解@SpringBootApplication(启动对象)](/docs/microService/SpringBoot/SpringBootApplication.md)  
-            * [加载自动配置流程](/docs/microService/SpringBoot/ApplicationProcess.md)  
+            * [步骤一：注解@SpringBootApplication(启动对象)](/docs/microService/SpringBoot/SpringBootApplication.md)  
+            * [步骤二：加载自动配置流程](/docs/microService/SpringBoot/ApplicationProcess.md)  
             * [示例：内置Tomcat](/docs/microService/SpringBoot/Tomcat.md)  
     * [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
 * Spring Cloud  
