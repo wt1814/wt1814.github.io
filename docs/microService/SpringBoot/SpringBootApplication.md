@@ -15,12 +15,14 @@
 
 &emsp; **<font color = "red">总结：</font>**  
 1. @SpringBootApplication  
-    * @ComponentScan  
-    * @SpringBootConfiguration  
-    * @EnableAutoConfiguration  
-2. @EnableAutoConfiguration：1).@AutoConfigurationPackage自动配置包；2).使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。   
-    1. @Import({AutoConfigurationImportSelector.class})，开启自动配置，导入AutoConfigurationImportSelector类。  
-    2. AutoConfigurationImportSelector#getCandidateConfigurations()方法获取配置文件spring.factories所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
+    * @ComponentScan，其仅仅是指定包，而并没有扫描这些包，更没有装配其中的类，这个真正扫描并装配这些类是@EnableAutoConfiguration完成的。    
+    * @SpringBootConfiguration，其实就携带了一个@Configuration注解，代表类是一个Spring的配置类。  
+    * `@EnableAutoConfiguration`  
+2. `@EnableAutoConfiguration`：
+    1. @AutoConfigurationPackage，~~将添加该注解的类所在的package 作为 自动配置package 进行管理。~~ 
+    2. 使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。   
+        1. @Import({AutoConfigurationImportSelector.class})，开启自动配置，导入AutoConfigurationImportSelector类。  
+        2. AutoConfigurationImportSelector#getCandidateConfigurations()方法获取配置文件spring.factories所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
 
 
 
@@ -78,7 +80,7 @@ public @interface ComponentScan {
 public @interface SpringBootConfiguration {
 }
 ```
-&emsp; <font color = "red">SpringBootConfiguration其实就携带了一个@Configuration注解，代表类是一个Spring的配置类。</font>  
+&emsp; <font color = "red">@SpringBootConfiguration其实就携带了一个@Configuration注解，代表类是一个Spring的配置类。</font>  
 
 ## 1.4. @EnableAutoConfiguration  
 &emsp; <font color = "red">@EnableAutoConfiguration使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。</font>  
@@ -95,7 +97,7 @@ public @interface EnableAutoConfiguration {
     //...
 }
 ```
-&emsp; <font color = "red">@AutoConfigurationPackage注解将主配置类（@SpringBootConfiguration标注的类）的所在包及下面所有子包里面的所有组件扫描到Spring容器中。</font>  
+&emsp; <font color = "red">@AutoConfigurationPackage注解将主配置类（@SpringBootConfiguration标注的类）的所在包及下面所有子包里面的所有组件扫描到Spring容器中。</font> ~~将添加该注解的类所在的package 作为 自动配置package 进行管理。~~ 
 &emsp; <font color = "clime">@Import({AutoConfigurationImportSelector.class})，开启自动配置，导入了AutoConfigurationImportSelector类。AutoConfigurationImportSelector类中存在getCandidateConfigurations()方法可以获取所有的配置。</font>源码如下：  
 
 ```java
