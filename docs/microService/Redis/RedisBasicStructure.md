@@ -29,6 +29,7 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
+1. **<font color = "red">小结：</font>** 5大基本数据类型：String、Hash、List（列表）、Set（无序集合，可以用作标签、点赞、签到）、Zset（有序集合，排行榜）。   
 1. Key操作命令：expire，为给定key设置生存时间；TTL key，以秒为单位，返回给定key的剩余生存时间（TTL, time to live）。  
 2.  **<font color = "clime">Redis各个数据类型的使用场景：分析存储类型和可用的操作。</font>**  
     * 有序列表list：`列表不但是有序的，同时支持按照索引范围获取元素。`  

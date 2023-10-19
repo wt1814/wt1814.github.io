@@ -30,7 +30,7 @@
 1. <font color = "clime">Bitmap、HyperLogLog都是作为Redis的Value值。`用于统计信息。`</font>  
 2. <font color = "clime">Bitmap：二值状态统计。Redis中的Bitmap，key可以为某一天或某一ID，Bitmap中bit可以存储用户的任意信息。所以Redis Bitmap可以用作统计信息。`常用场景：用户签到、统计活跃用户、用户在线状态`。</font>  
 3. <font color = "clime">HyperLogLog用于基数统计，例如UV（独立访客数）。</font>  
-    * 基数统计是指找出集合中不重复元素，用于去重。  
+    * 基数统计是指找出集合中不重复元素，用于去重。例如： 统计每个网页的UV(独立访客，每个用户每天只记录一次，需要对每天对浏览去重) 。  
     * 使用Redis统计集合的基数一般有三种方法，分别是使用Redis的Hash，BitMap和HyperLogLog。  
     * HyperLogLog内存空间消耗少，但存在误差0.81%。  
 4. Streams消息队列：支持多播的可持久化的消息队列，用于实现发布订阅功能，借鉴了kafka的设计。 
