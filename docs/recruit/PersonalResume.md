@@ -5,7 +5,7 @@
 
 
 # 个人信息  
-<font size = "4.5">&emsp; 性别：男    &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;   出生年月：1992.06.29 &emsp; &emsp; &emsp;  &emsp;工作年限：8年</font>  
+<font size = "4.5">&emsp; 性别：男    &emsp;  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;   出生年月：1992.06.29 &emsp; &emsp; &emsp;  &emsp;工作年限：7年</font>  
 <font size = "4.5">&emsp; 联系电话：17813261813  &emsp; &emsp;E-mail: wangtao1814@163.com</font>
 <br/>
 
@@ -109,7 +109,7 @@
         1. 车辆大列表开发，聚合各个业务模块的数据。  
         3. 营销系统开发维护，商户端首页改版，金刚位和运营位重构。  
 
-* 2018.09---2020.09 &emsp; &emsp; 中科软科技股份有限公司 &emsp; &emsp; 对外合作统一对接平台    
+* 2018.03---2020.09 &emsp; &emsp; 中科软科技股份有限公司 &emsp; &emsp; 对外合作统一对接平台    
     * 核心技术：腾讯云TSF（SpringCloud的封装）+MySql+MyBatis+CMQ+redis+COS+velocity  
     * 项目描述：采用腾讯云把对外合作项目组老系统进行中台项目改造。  
     * 项目职责：
@@ -117,7 +117,7 @@
         2. 参与保险系统投保接口开发，并对其响应时间优化；自定义SpringBootStarter封装短信、邮件功能。 
         3. 搭建财务对接微服务，重构财务对接业务逻辑。参与银保通农行项目开发。
 
-* 2017.07---2018.02 &emsp; &emsp; 北京天源迪科信息技术有限公司 &emsp; &emsp; CMS内容管理系统
+* 2016.04---2018.02 &emsp; &emsp; 北京天源迪科信息技术有限公司 &emsp; &emsp; CMS内容管理系统
     * 核心技术：SpringMVC+Spring+MyBatis+Lucene+Shiro  
     * 项目职责：采用开源项目jspxcms内容管理系统，将cms集成到城项目中。帮助中心、公告以及首页展示由jspxcms系统完成。 
 
