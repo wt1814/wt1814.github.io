@@ -128,7 +128,7 @@ graph LR
 &emsp; [Object](/docs/java/basis/Object.md)  
 &emsp; [String](/docs/java/basis/String.md)  
 &emsp; [Java基本数据类型](/docs/java/basis/BasicsDataType.md)  
-[Java集合框架](/docs/java/Collection/CollectionFramework.md)  
+[★★★Java集合框架](/docs/java/Collection/CollectionFramework.md)  
 &emsp; [HashMap使用](/docs/java/Collection/HashMapUse.md)  
 &emsp; [★★★HashMap源码](/docs/java/Collection/HashMapSource.md)  
 &emsp; [★★★HashMap安全](/docs/java/Collection/HashMapSecurity.md)  
