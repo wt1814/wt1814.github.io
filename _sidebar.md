@@ -75,7 +75,7 @@
     * [设计模式使用](/docs/java/Design/CommonlyUsed.md)  
         * [Spring中经典的9种设计模式](/docs/java/Design/SpringDesign.md)  
         * [8种Mybatis的设计模式](/docs/java/Design/MybatisDesign.md)  
-        * [★★★常用的设计模式](/docs/java/Design/UsedDesign.md)  
+    * [★★★【设计模式面试题】](/docs/java/Design/UsedDesign.md)  
 ------------------------------------------------------------------------------------------------------------------------------
 * [JVM](/docs/java/JVM/summary.md)  
     * [JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM.md)  
