@@ -318,7 +318,7 @@
     * [手写Spring](/docs/SSM/Spring/HandwrittenSpring.md)  
     * [Spring容器刷新（IOC）](/docs/SSM/Spring/SpringIOC.md)  
         * [容器初始化详解](/docs/SSM/Spring/ContainerInit.md)  
-    * [Spring依赖注入（DI）](/docs/SSM/Spring/SpringDISummary.md)    
+    * [Spring依赖注入](/docs/SSM/Spring/SpringDISummary.md)    
         * [Spring依赖注入（DI）](/docs/SSM/Spring/SpringDI.md)  
         * [循环依赖](/docs/SSM/Spring/feature/CircularDepend.md)  
         * [SpringBean生命周期](/docs/SSM/Spring/SpringBean.md)  
