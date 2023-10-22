@@ -22,12 +22,13 @@
 1. ★★★小结：简介 --- 两个非常重要的模块 --- 在读取已提交、可重复读两种隔离级别下会使用MVCC --- 可重复读解决了幻读吗？    
 1. **<font color = "clime">多版本并发控制（MVCC）是一种用来解决读-写冲突的无锁并发控制。</font>**  
 &emsp; <font color = "clime">MVCC与锁：MVCC主要解决读写问题，锁解决写写问题。两者结合才能更好的控制数据库隔离性，保证事务正确提交。</font>  
-2. **<font color = "clime">InnoDB有`两个非常重要的模块（版本链，Read View）`来实现MVCC。一个是`undo log`，用于记录数据的变化轨迹（`版本链`），用于数据回滚；另外一个是`Read View`，用于判断一个session对哪些数据可见，哪些不可见。</font>**   
-    * 版本链的生成：在数据库中的每一条记录实际都会存在三个隐藏列：事务ID、行ID、回滚指针，指向undo log记录。  
-    *  **<font color = "red">Read View是用来判断每一个读语句有资格读取版本链中的哪个记录。所以在读之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
-3. ~~Read View判断：~~  
-&emsp; 如果被访问版本的trx_id小于ReadView中的up_limit_id（最大事务ID）值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  
-&emsp; <font color = "red">如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。</font>如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；<font color = "clime">如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。</font>  
+2. **<font color = "clime">InnoDB有`【两个非常重要的模块（版本链，Read View）】`来实现MVCC。一个是`undo log`，用于记录数据的变化轨迹（`版本链`），用于数据回滚；另外一个是`Read View`，用于判断一个session对哪些数据可见，哪些不可见。</font>**   
+    1. 版本链的生成：在数据库中的每一条记录实际都会存在三个隐藏列：事务ID、行ID、回滚指针，指向undo log记录。  
+    2. **<font color = "red">Read View是用来判断每一个读语句有资格读取版本链中的哪个记录。所以在读之前，都会生成一个Read View。然后根据生成的Read View再去读取记录。</font>**  
+    3. ~~Read View判断：~~  
+    &emsp; ![image](http://182.92.69.8:8081/img/SQL/sql-154.png)  
+    &emsp; 如果被访问版本的trx_id小于ReadView中的up_limit_id（最大事务ID）值，表明生成该版本的事务在当前事务生成ReadView前已经提交，所以该版本可以被当前事务访问。  
+    &emsp; <font color = "red">如果被访问版本的trx_id属性值在ReadView的up_limit_id和low_limit_id之间，那就需要判断一下trx_id属性值是不是在trx_ids列表中。</font>如果在，说明创建ReadView时生成该版本的事务还是活跃的，该版本不可以被访问；<font color = "clime">如果不在，说明创建ReadView时生成该版本的事务已经被提交，该版本可以被访问。</font>  
 4. 在读取已提交、可重复读两种隔离级别下会使用MVCC。  
     * 读取已提交READ COMMITTED是在`每次执行select操作时`都会生成一次Read View。所以解决不了幻读问题。 
     * 可重复读REPEATABLE READ只有在第一次执行select操作时才会生成Read View，后续的select操作都将使用第一次生成的Read View。

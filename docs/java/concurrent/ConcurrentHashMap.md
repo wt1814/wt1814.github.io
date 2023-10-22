@@ -23,7 +23,7 @@
 &emsp; **<font color = "clime">jdk1.8中的ConcurrentHashMap中synchronized只锁定当前链表或红黑树的首节点，只要节点hash不冲突，就不会产生并发，相比JDK1.7的ConcurrentHashMap效率又提升了许多。</font>**  
 2. **<font color = "clime">put()流程：</font>**
     1. 根据 key 计算出 hashcode 。  
-    2. 整个过程`自旋添加节点`。  
+    2. 整个过程`【自旋添加节点】`。  
     2. 判断是否需要进行初始化数组。  
     3. <font color = "red">为当前key定位出Node。</font>  
         1. 如果为空表示此数组下无节点，当前位置可以直接写入数据，利用CAS尝试写入，失败则进入下一次循环。  
