@@ -17,7 +17,7 @@
 1. @SpringBootApplication  
     * @SpringBootConfiguration，其实就携带了一个@Configuration注解，代表类是一个Spring的配置类。  
     * @ComponentScan，其仅仅是指定包，而并没有扫描这些包，更没有装配其中的类，这个真正扫描并装配这些类是@EnableAutoConfiguration完成的。    
-    * `@EnableAutoConfiguration`  
+    * `@EnableAutoConfiguration`，自动装配    
 2. `@EnableAutoConfiguration`：
     1. @AutoConfigurationPackage，~~将添加该注解的类所在的package 作为 自动配置package 进行管理。~~ 
     2. 使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。   
