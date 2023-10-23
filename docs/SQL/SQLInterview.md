@@ -23,6 +23,7 @@ https://zhuanlan.zhihu.com/p/359621510
 
 查询两门以上不及格课程的同学的学号，以及不及格课程的平均成绩
 
+```
 select 学号, avg(case when 成绩<60 then 成绩 else null end)
 
 from score
@@ -30,17 +31,19 @@ from score
 group by 学号
 
 having sum(case when 成绩<60 then 1 else 0 end)>=2;
+```
 
 ## 1.2. SQL面试题 
 1. 用一条SQL语句查询出每门课都大于80分的学生姓名 name kecheng fenshu   
-```
 
+```
 A: select distinct name from score where name not in (select distinct name from score where score<=80)  
 
 B:select distince name t1 from score where 80< all (select score from score where name=t1);  
 ```
 
 2. 查询“001”课程比“002”课程成绩高的所有学生的学号；  
+
 ```
 select a.S#
 from (select s#,score from SC where C#=’001′) a,
