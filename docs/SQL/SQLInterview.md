@@ -1,8 +1,8 @@
 <!-- TOC -->
 
 - [1. SQL面试题](#1-sql面试题)
-    - [1.1. SQL面试题](#11-sql面试题)
-    - [1.2. case when](#12-case-when)
+    - [1.1. case when](#11-case-when)
+    - [1.2. SQL面试题](#12-sql面试题)
     - [1.3. 行列转换](#13-行列转换)
         - [1.3.1. 行列转换](#131-行列转换)
         - [1.3.2. 列转行](#132-列转行)
@@ -19,38 +19,7 @@ https://zhuanlan.zhihu.com/p/359621510
 
 -->
 
-## 1.1. SQL面试题 
-1. 用一条SQL语句查询出每门课都大于80分的学生姓名 name kecheng fenshu   
-A: select distinct name from score where name not in (select distinct name from score where score<=80)  
-
-B:select distince name t1 from score where 80< all (select score from score where name=t1);  
-
-
-1、查询“001”课程比“002”课程成绩高的所有学生的学号；  
-select a.S#
-from (select s#,score from SC where C#=’001′) a,
-(select s#,score from SC where C#=’002′) b
-where a.score>b.score and a.s#=b.s#;   
-
-
-14、查询各科成绩前三名的记录:(不考虑成绩并列情况)
-SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数
-FROM SC t1
-WHERE score IN (SELECT TOP 3 score
-FROM SC
-WHERE t1.C#= C#
-ORDER BY score DESC)
-ORDER BY t1.C#; 
-
-15、查询每门功成绩最好的前两名
-SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数
-FROM SC t1
-WHERE score IN (SELECT TOP 2 score
-FROM SC
-WHERE t1.C#= C#
-ORDER BY score DESC )
-ORDER BY t1.C#;
-
+## 1.1. case when  
 
 查询两门以上不及格课程的同学的学号，以及不及格课程的平均成绩
 
@@ -61,8 +30,55 @@ from score
 group by 学号
 
 having sum(case when 成绩<60 then 1 else 0 end)>=2;
-另一种写法：
 
+## 1.2. SQL面试题 
+1. 用一条SQL语句查询出每门课都大于80分的学生姓名 name kecheng fenshu   
+```
+
+A: select distinct name from score where name not in (select distinct name from score where score<=80)  
+
+B:select distince name t1 from score where 80< all (select score from score where name=t1);  
+```
+
+2. 查询“001”课程比“002”课程成绩高的所有学生的学号；  
+```
+select a.S#
+from (select s#,score from SC where C#=’001′) a,
+(select s#,score from SC where C#=’002′) b
+where a.score>b.score and a.s#=b.s#;   
+```
+
+3. 查询各科成绩前三名的记录:(不考虑成绩并列情况)
+```
+SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数
+FROM SC t1
+WHERE score IN (SELECT TOP 3 score
+FROM SC
+WHERE t1.C#= C#
+ORDER BY score DESC)
+ORDER BY t1.C#; 
+```
+
+4. 查询每门功成绩最好的前两名
+```
+SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数
+FROM SC t1
+WHERE score IN (SELECT TOP 2 score
+FROM SC
+WHERE t1.C#= C#
+ORDER BY score DESC )
+ORDER BY t1.C#;
+```
+
+5. 查询两门以上不及格课程的同学的学号，以及不及格课程的平均成绩
+```
+select 学号, avg(case when 成绩<60 then 成绩 else null end)
+from score  group by 学号
+
+having sum(case when 成绩<60 then 1 else 0 end)>=2;
+```
+另一种写法：
+```
 select 学号, avg(成绩)
 
 from score
@@ -72,9 +88,10 @@ where 成绩<60
 group by 学号
 
 having count(课程号)>=2;
+```
 
-
-查询没有学全所有课的学生的学号、姓名
+6. 查询没有学全所有课的学生的学号、姓名
+```
 select 学号, 姓名
 
 from student
@@ -90,10 +107,10 @@ group by 学号
 having count(课程号) < 3
 
 );
+```
 
-
-查询只选修了两门课的全部学生的学号和姓名
-
+7. 查询只选修了两门课的全部学生的学号和姓名
+```
 select 学号, 姓名
 
 from student
@@ -109,12 +126,12 @@ group by 学号
 having count(课程号) = 2
 
 );
+```
 
 
 
-
-查询各科成绩前2名的记录
-
+8. 查询各科成绩前2名的记录
+```
 (select 课程号,学号, 成绩
 
 from score
@@ -148,10 +165,10 @@ where 课程号 = '0003'
 order by 成绩 DESC
 
 limit 2);
+```
 
-
-查询出每门课程的80分及以上和没到80分的人数
-
+9. 查询出每门课程的80分及以上和没到80分的人数
+```
 select
 
 课程号,
@@ -163,20 +180,10 @@ sum(case when 成绩 <= 80 then 1 else 0 end) as 没到80分人数
 from score
 
 group by 课程号;
+```
 
 
 
-## 1.2. case when  
-
-查询两门以上不及格课程的同学的学号，以及不及格课程的平均成绩
-
-select 学号, avg(case when 成绩<60 then 成绩 else null end)
-
-from score
-
-group by 学号
-
-having sum(case when 成绩<60 then 1 else 0 end)>=2;
 
 
 
