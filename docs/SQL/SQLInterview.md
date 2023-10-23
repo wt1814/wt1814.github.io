@@ -52,6 +52,7 @@ where a.score>b.score and a.s#=b.s#;
 ```
 
 3. 查询各科成绩前三名的记录:(不考虑成绩并列情况)
+
 ```
 SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数
 FROM SC t1
@@ -63,6 +64,7 @@ ORDER BY t1.C#;
 ```
 
 4. 查询每门功成绩最好的前两名
+
 ```
 SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数
 FROM SC t1
@@ -74,12 +76,13 @@ ORDER BY t1.C#;
 ```
 
 5. 查询两门以上不及格课程的同学的学号，以及不及格课程的平均成绩
+
 ```
 select 学号, avg(case when 成绩<60 then 成绩 else null end)
 from score  group by 学号
-
 having sum(case when 成绩<60 then 1 else 0 end)>=2;
 ```
+
 另一种写法：
 ```
 select 学号, avg(成绩)
@@ -94,6 +97,7 @@ having count(课程号)>=2;
 ```
 
 6. 查询没有学全所有课的学生的学号、姓名
+
 ```
 select 学号, 姓名
 
@@ -113,6 +117,7 @@ having count(课程号) < 3
 ```
 
 7. 查询只选修了两门课的全部学生的学号和姓名
+
 ```
 select 学号, 姓名
 
@@ -134,6 +139,7 @@ having count(课程号) = 2
 
 
 8. 查询各科成绩前2名的记录
+
 ```
 (select 课程号,学号, 成绩
 
@@ -171,6 +177,7 @@ limit 2);
 ```
 
 9. 查询出每门课程的80分及以上和没到80分的人数
+
 ```
 select
 
@@ -184,9 +191,6 @@ from score
 
 group by 课程号;
 ```
-
-
-
 
 
 
