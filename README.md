@@ -745,7 +745,7 @@ graph LR
 &emsp; [消息分区](/docs/microService/mq/kafka/topic.md)  
 &emsp; [消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
 &emsp; [服务端](/docs/microService/mq/kafka/kafkaServer.md)  
-[【kafka特性】](/docs/microService/mq/kafka/kafkaCharacteristic.md)  
+[★★★kafka特性](/docs/microService/mq/kafka/kafkaCharacteristic.md)  
 &emsp; [【高性能】-内存](/docs/microService/mq/kafka/Memory.md)  
 &emsp; [【高性能】-持久化/磁盘IO-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
 &emsp; [【高性能】-网络IO零拷贝](/docs/microService/mq/kafka/networkIO.md)  
