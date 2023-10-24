@@ -27,6 +27,7 @@
         4. 继承自 MessageSource 接口，解析消息支持国际化。  
 2. **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
 3. Spring容器刷新：  
+    ![image](http://182.92.69.8:8081/img/draw/SpringIOC.png)  
     **<font color = "blue">（⚠★★★`利用工厂和反射创建Bean。主要包含3部分：1).（1---3步）容器本身--创建容器、2).（4---6步）容器扩展--后置处理器、3).事件，子容器，实例化Bean。`）</font>**     
     **<font color = "red">Spring bean容器刷新的核心 12个步骤完成IoC容器的创建及初始化工作：</font>**  
     1. `刷新前`的准备工作。  
