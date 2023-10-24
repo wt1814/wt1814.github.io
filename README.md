@@ -58,8 +58,8 @@
     - [1.10. 源码搭建汇总](#110-源码搭建汇总)
     - [1.11. Error和性能（项目难点）](#111-error和性能项目难点)
     - [1.12. 面试](#112-面试)
-        - [1.12.1. 做过的项目](#1121-做过的项目)
-        - [1.12.2. 面试流程](#1122-面试流程)
+        - [1.12.1. ★★★做过的项目](#1121-★★★做过的项目)
+        - [1.12.2. ★★★面试流程](#1122-★★★面试流程)
     - [1.13. 算法](#113-算法)
     - [1.14. Linux操作系统](#114-linux操作系统)
     - [1.15. Linux服务器搭建](#115-linux服务器搭建)
@@ -465,9 +465,9 @@ graph LR
 [Spring使用](/docs/SSM/Spring/SpringUse.md)  
 [学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
 [手写Spring](/docs/SSM/Spring/HandwrittenSpring.md)  
-[Spring容器刷新（IOC）](/docs/SSM/Spring/SpringIOC.md)  
+[★★★Spring容器刷新（IOC）](/docs/SSM/Spring/SpringIOC.md)  
 &emsp; [容器初始化详解](/docs/SSM/Spring/ContainerInit.md)  
-[Spring依赖注入](/docs/SSM/Spring/SpringDISummary.md)  
+[★★★Spring依赖注入](/docs/SSM/Spring/SpringDISummary.md)  
 &emsp; [Spring依赖注入（DI）](/docs/SSM/Spring/SpringDI.md)  
 &emsp; [循环依赖](/docs/SSM/Spring/feature/CircularDepend.md)  
 &emsp; [SpringBean生命周期](/docs/SSM/Spring/SpringBean.md)  
@@ -484,7 +484,7 @@ graph LR
 &emsp; [AOP基本概念](/docs/SSM/Spring/AOP.md)  
 &emsp; [SpringAOP教程](/docs/SSM/Spring/SpringAOPUse.md)  
 &emsp; [SpringAOP解析](/docs/SSM/Spring/SpringAOPAnalysis.md)  
-[Spring事务](/docs/SSM/Spring/transaction.md)  
+[★★★Spring事务](/docs/SSM/Spring/transaction.md)  
 &emsp; [Spring事务](/docs/SSM/Spring/SpringTransaction.md)  
 &emsp; [Spring事务问题](/docs/SSM/Spring/SpringTransactionInvalid.md)  
 [SpringMVC](/docs/SSM/Spring/SpringMVC.md)  
@@ -1016,7 +1016,7 @@ https://help.aliyun.com/document_detail/122217.html
 ## 1.12. 面试
 [面试](/docs/recruit/interview.md)  
 
-### 1.12.1. 做过的项目  
+### 1.12.1. ★★★做过的项目  
 [做过的项目](/docs/recruit/project/ProjectsDone.md)  
 [项目经验](/docs/recruit/project/ProjectExperience.md)  
 [六合数字化心理平台](/docs/recruit/project/SixNoble.md)   
@@ -1025,7 +1025,7 @@ https://help.aliyun.com/document_detail/122217.html
 [二清项目](/docs/recruit/project/erqing.md)  
 [监控插件](/docs/recruit/project/monitor.md)   
 
-### 1.12.2. 面试流程
+### 1.12.2. ★★★面试流程
 [1.★★★总体流程](/docs/recruit/1resumeCreate.md)   
 [2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
 [3.2.HR/总监面](/docs/recruit/HrInterview.md)  
