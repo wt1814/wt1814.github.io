@@ -361,7 +361,7 @@
         * [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
             * [MyBatis分页](/docs/SSM/MyBatis/MybatisPage.md)  
         * [MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)   
-* [SpringBoot](/docs/microService/SpringBoot/SpringBootSummary.md)   
+* [★★★SpringBoot](/docs/microService/SpringBoot/SpringBootSummary.md)   
     * [★★★SpringBoot常见面试题](/docs/microService/SpringBoot/BootInterview.md) 
     * [SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
         * [SpringBoot高级](/docs/microService/SpringBoot/BootHeigh.md)  

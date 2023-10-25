@@ -521,7 +521,7 @@ graph LR
 ### 1.4.1. SpringBoot  
 [SpringBoot总结](/docs/microService/SpringBoot/SpringBootSummary.md)  
 [★★★SpringBoot常见面试题](/docs/microService/SpringBoot/BootInterview.md)  
-[SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
+[★★★SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
 &emsp; [SpringBoot高级](/docs/microService/SpringBoot/BootHeigh.md)  
 [★★★SpringBoot源码](/docs/microService/SpringBoot/SpringBootSource.md)  
 &emsp; [SpringBoot启动过程](/docs/microService/SpringBoot/SpringBootRun.md)  
