@@ -34,9 +34,6 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkwMzE3MDY0Ng==&action=getalbum&a
 5. 服务网关
 
 
-&emsp; Spring Cloud是一个微服务框架，相比Dubbo等RPC框架，Spring Cloud提供全套的分布式系统解决方案。Spring Cloud为微服务架构开发涉及的配置管理，服务治理，熔断机制，智能路由，微代理，控制总线，一次性token，全局一致性锁，leader选举，分布式session，集群状态管理等操作提供了一种简单的开发方式。   
-&emsp; Spring Cloud对微服务基础框架Netflix的多个开源组件进行了封装，同时又实现了和云端平台以及和Spring Boot开发框架的集成。   
-
 &emsp; **SpringCloud子项目：**  
 ![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-27.png)  
 &emsp; **<font color = "clime">Spring Cloud各组件运行流程：</font>**  
@@ -46,3 +43,8 @@ https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkwMzE3MDY0Ng==&action=getalbum&a
 4. 微服务之间也可通过Feign进行通信处理业务；  
 5. Hystrix负责处理服务超时熔断；Hystrix dashboard，Turbine负责监控Hystrix的熔断情况，并给予图形化的展示；  
 6. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
+
+
+
+&emsp; Spring Cloud是一个微服务框架，相比Dubbo等RPC框架，Spring Cloud提供全套的分布式系统解决方案。Spring Cloud为微服务架构开发涉及的配置管理，服务治理，熔断机制，智能路由，微代理，控制总线，一次性token，全局一致性锁，leader选举，分布式session，集群状态管理等操作提供了一种简单的开发方式。   
+&emsp; Spring Cloud对微服务基础框架Netflix的多个开源组件进行了封装，同时又实现了和云端平台以及和Spring Boot开发框架的集成。   
