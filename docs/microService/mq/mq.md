@@ -1,4 +1,6 @@
 
+![image](http://182.92.69.8:8081/img/draw/164.MQ.png)  
+
 
 [★★★MQ常见面试题](/docs/microService/mq/mqInterview.md)   
 &emsp; [消息推拉机制](/docs/microService/mq/PushPull.md)  

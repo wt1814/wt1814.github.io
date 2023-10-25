@@ -21,9 +21,6 @@
 
 <!-- /TOC -->
 
-![image](http://182.92.69.8:8081/img/draw/164.MQ.png)  
-
-
 &emsp; **<font color = "red">总结：</font>**  
 1. 为什么使用mq？  
     * 优点：解耦（调用多个系统，非同步调用）、异步、削锋（削qps）  
