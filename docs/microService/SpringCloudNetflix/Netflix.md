@@ -6,7 +6,7 @@
 &emsp; Spring Cloud是一个微服务框架，相比Dubbo等RPC框架，Spring Cloud提供全套的分布式系统解决方案。Spring Cloud为微服务架构开发涉及的配置管理，服务治理，熔断机制，智能路由，微代理，控制总线，一次性token，全局一致性锁，leader选举，分布式session，集群状态管理等操作提供了一种简单的开发方式。   
 &emsp; Spring Cloud对微服务基础框架Netflix的多个开源组件进行了封装，同时又实现了和云端平台以及和Spring Boot开发框架的集成。   
 
-2. 各组件作用  
+2. ★★★各组件作用  
     1. 服务注册发现，注册中心(Eureka)  
     2. 服务分发(Ribbon)：客户端负载均衡，Ribbon中提供了多种负载均衡策略：轮询、随机、重试、权重等。  
     3. 声明式调用(OpenFeign)
@@ -14,7 +14,7 @@
     4. 链路监控(Sleuth)：如何快速定位请求异常；如何快速定位性能瓶颈；如何快速定位不合理调用。  
     5. 服务网关
 
-3. **<font color = "clime">Spring Cloud各组件运行流程：</font>**  
+3. ★★★**<font color = "clime">Spring Cloud各组件运行流程：</font>**  
     1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关(Zuul)来访问内部服务。客户端的请求首先经过负载均衡(Ngnix)，再到达服务网关(Zuul集群)；  
     2. 网关接收到请求后，从注册中心(Eureka)获取可用服务；  
     3. 由Ribbon进行负载均衡后，分发到后端的具体实例；  

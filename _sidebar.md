@@ -378,8 +378,7 @@
             * [步骤二：加载自动配置流程](/docs/microService/SpringBoot/ApplicationProcess.md)  
             * [示例：内置Tomcat](/docs/microService/SpringBoot/Tomcat.md)  
     * [自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
-* Spring Cloud  
-    * [Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
+* [★★★Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
     * [注册中心和配置中心](/docs/microService/SpringCloudNetflix/register.md)  
         * [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
         * [XXXnacos](/docs/microService/SpringCloudNetflix/nacos.md)  

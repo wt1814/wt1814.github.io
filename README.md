@@ -540,7 +540,7 @@ graph LR
 ------------------------------------------------------------------------------------------------------------------------------
 
 ### 1.4.2. SpringCloud    
-[Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
+[★★★Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
 [注册中心和配置中心](/docs/microService/SpringCloudNetflix/register.md)  
 &emsp; [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
 &emsp; [XXXnacos](/docs/microService/SpringCloudNetflix/nacos.md)  
