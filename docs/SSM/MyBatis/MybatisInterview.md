@@ -61,8 +61,6 @@ Mybatis提供了9种动态sql标签：trim|where|set|foreach|if|choose|when|othe
 
 
 
-
-
 ## 1.4. 插件
 ### 1.4.1. Mybatis实现分页功能  
 <!-- 
