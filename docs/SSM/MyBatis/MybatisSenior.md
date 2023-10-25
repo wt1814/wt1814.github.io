@@ -96,7 +96,21 @@ https://www.cnblogs.com/grasp/p/11268049.html
 <!-- 
 【368期】阿里巴巴为什么禁止MyBatis批量插入几千条数据使用foreach？
 https://mp.weixin.qq.com/s/BW7YE8OPVe3IS03EOCm_fA
+
+Mybatis批量插入数据的两种方式
+https://blog.csdn.net/ylforever/article/details/126592028
 -->
+
+&emsp; 两种方式：  
+1. foreach，
+    ```java
+    VALUES
+        <foreach>
+    ```
+2. 使用Batch Insert技术  
+    ```java
+    BatchInsertMapper insertMapper = session.getMapper(BatchInsertMapper.class);
+    ```
 
 
 ## 1.9. 整合MyBatis  

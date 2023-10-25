@@ -8,6 +8,7 @@
         - [1.2.1. Mybatis是如何将sql执行结果封装为目标对象并返回的？都有哪些映射形式？](#121-mybatis是如何将sql执行结果封装为目标对象并返回的都有哪些映射形式)
     - [1.3. 高级查询](#13-高级查询)
         - [1.3.1. Mybatis动态sql](#131-mybatis动态sql)
+        - [大数据、批量操作](#大数据批量操作)
     - [1.4. 插件](#14-插件)
         - [1.4.1. Mybatis实现分页功能](#141-mybatis实现分页功能)
             - [1.4.1.1. RowBounds（逻辑分页）](#1411-rowbounds逻辑分页)
@@ -59,6 +60,19 @@ Mybatis动态sql可以让我们在Xml映射文件内，以标签的形式编写�
 Mybatis提供了9种动态sql标签：trim|where|set|foreach|if|choose|when|otherwise|bind。  
 其执行原理为，使用OGNL从sql参数对象中计算表达式的值，根据表达式的值动态拼接sql，以此来完成动态sql的功能。  
 
+### 大数据、批量操作 
+1. 批量插入
+    &emsp; 两种方式：  
+    1. foreach，
+        ```java
+        VALUES
+            <foreach>
+        ```
+    2. 使用Batch Insert技术  
+        ```java
+        BatchInsertMapper insertMapper = session.getMapper(BatchInsertMapper.class);
+        ```
+2. Cursor的接口类用于流式查询
 
 
 ## 1.4. 插件
