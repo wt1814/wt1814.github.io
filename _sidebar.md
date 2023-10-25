@@ -14,7 +14,7 @@
     * [★★★Java基础数据类型](/docs/java/basis/DataType.md)  
         * [Object](/docs/java/basis/Object.md)  
         * [★★★String](/docs/java/basis/String.md)  
-        * [Java基本数据类型](/docs/java/basis/BasicsDataType.md)  
+        * [★★★Java基本数据类型](/docs/java/basis/BasicsDataType.md)  
     * [★★★Java集合框架](/docs/java/Collection/CollectionFramework.md)  
         * [HashMap使用](/docs/java/Collection/HashMapUse.md)  
         * [★★★HashMap源码](/docs/java/Collection/HashMapSource.md)  
