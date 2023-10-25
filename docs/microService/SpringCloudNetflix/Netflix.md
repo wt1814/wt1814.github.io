@@ -23,8 +23,6 @@
     6. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
 
 
-
-
 [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
 [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
 [Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/Hytrix.md)  
