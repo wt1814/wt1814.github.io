@@ -65,7 +65,12 @@
     &emsp; 分表id基因法： userId --> 换算二进制---> 抽取3位  --->  生成分表id前60+刚刚的30  
 
 2. ES使用：  
-    1. 采用定时同步到ES。  
+    1. 采用定时同步到ES。[★★★同步数据到ES](/docs/ES/synES.md)    
+        1. 多种同步方案  
+            1. 定时任务：可以避免主库的写入延迟，但是可能会存在备库中数据的滞后问题。
+            2. 数据订阅：使用cancel等中间件。会增加主库的读取压力，并且可能存在网络延迟等问题。
+        2. 数据一致性保证
+        &emsp;  1. 根据更新时间，增量更新 2. 隔天全量更新 
     2. ES分页模糊：
         https://blog.csdn.net/chaitao100/article/details/125889713  
         searchSourceBulider https://blog.csdn.net/qq_39601612/article/details/104680399  
