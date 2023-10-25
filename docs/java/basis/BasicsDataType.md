@@ -10,6 +10,7 @@
         - [1.1.3. 自动装箱和拆箱](#113-自动装箱和拆箱)
         - [1.1.4. 装箱和拆箱是如何实现的](#114-装箱和拆箱是如何实现的)
     - [1.2. ★★★常量池](#12-★★★常量池)
+    - [==和equals()](#和equals)
     - [1.3. Long类型返回精度丢失](#13-long类型返回精度丢失)
 
 <!-- /TOC -->
@@ -17,9 +18,52 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
-1. 基本数据类型和其包装类
-
+1. 基本数据类型和其包装类  
+    1. 基本数据类型
+    2. 包装类
+    3. 自动装箱和拆箱 
 2. 常量池
+    ```java
+    public static void main(String[] args) {
+
+        Integer i1 = 33; // 在缓存
+        Integer i2 = 33;// 在缓存
+        System.out.println(i1 == i2);// 输出 true
+        Integer i11 = 333;// 不在缓存
+        Integer i22 = 333;// 不在缓存
+        System.out.println(i11 == i22);// todo 输出 false
+
+        Integer i3 = new Integer(33);
+        System.out.println(i1 == i3); // todo 输出 false，i3新建了对象
+        System.out.println(i1.equals(i3));
+    }
+    ```
+
+    &emsp; 包装类的对象池(也有称常量池)和JVM的静态/运行时常量池没有任何关系。静态/运行时常量池有点类似于符号表的概念，与对象池相差甚远。  
+    &emsp; 包装类的对象池是池化技术的应用，并非是虚拟机层面的东西，而是 Java 在类封装里实现的。
+
+3. ==和equals()
+    ```java
+    static  Integer c = 3;
+    public static void main(String[] args) {
+
+        Integer a = 3;
+        Integer b = 3;
+
+        System.out.println(a == 3);
+        System.out.println(a ==b);       // todo 结果true
+        System.out.println(a.equals(b)); // todo 结果true
+
+        System.out.println(c==3);  // todo 结果true
+        System.out.println(a==c);  // todo 结果true
+        System.out.println(a.equals(c));  // todo 结果true
+    }
+    ```
+    1. 基本型和基本型封装型进行“==”运算符的比较，基本型封装型将会自动拆箱变为基本型后再进行比较。  
+    2. 两个Integer类型进行“==”比较，如果其值在-128至127，那么返回true，否则返回false, 这跟Integer.valueOf()的缓冲对象有关。  
+    3. 两个基本型的封装型进行equals()比较，首先equals()会比较类型，如果类型相同，则继续比较值，如果值也相同，返回true。  
+    4. 基本型封装类型调用equals(),但是参数是基本类型，这时候，先会进行自动装箱，基本型转换为其封装类型，再进行比较。 
+
 
 # 1. Java基本数据类型  
 &emsp; Java数据类型分为基本数据类型和引用数据类型。除了8种基本类型外，全是引用类型。引用数据类型分3种：类（包含集合类、8种基本数据类型的封装类），接口，数组（数组一旦实例化，它的长度就固定了）。  
@@ -131,6 +175,23 @@ public class Main {
 基本数据类型对常量池的使用
 https://blog.csdn.net/jitianyu123/article/details/73555198
 -->
+
+```java
+public static void main(String[] args) {
+
+    Integer i1 = 33; // 在缓存
+    Integer i2 = 33;// 在缓存
+    System.out.println(i1 == i2);// 输出 true
+    Integer i11 = 333;// 不在缓存
+    Integer i22 = 333;// 不在缓存
+    System.out.println(i11 == i22);// todo 输出 false
+
+    Integer i3 = new Integer(33);
+    System.out.println(i1 == i3); // todo 输出 false，i3新建了对象
+    System.out.println(i1.equals(i3));
+}
+```
+
 &emsp; <font color = "clime">Java基本类型的包装类的大部分都实现了常量池技术，</font><font color = "red">即Byte、Short、Integer、Long、Character、Boolean，前面4种包装类默认创建了数值[-128,127]的相应类型的缓存数据，Character创建了数值在[0,127]范围的缓存数据，Boolean直接返回True Or False。如果超出对应范围仍然会去创建新的对象。为什么把缓存设置为[-128,127]区间？是性能和资源之间的权衡。</font>  
 &emsp; 两种浮点数类型的包装类Float、Double并没有实现常量池技术。  
 
@@ -227,6 +288,17 @@ System.out.println(i1 == i5); // true
 
 &emsp; 注意到注释中的一句话 “The cache is initialized on first usage”，缓存池的初始化在第一次使用的时候已经全部完成，这涉及到设计模式的一些应用。这和常量池中字面量的保存有很大区别，Integer 不需要显示地出现在代码中才添加到池中，初始化时它已经包含了所有需要缓存的对象。  
 
+
+## ==和equals()
+<!-- 
+
+https://blog.csdn.net/tc_1337/article/details/79836825
+-->
+
+1. 基本型和基本型封装型进行“==”运算符的比较，基本型封装型将会自动拆箱变为基本型后再进行比较。  
+2. 两个Integer类型进行“==”比较，如果其值在-128至127，那么返回true，否则返回false, 这跟Integer.valueOf()的缓冲对象有关。  
+3. 两个基本型的封装型进行equals()比较，首先equals()会比较类型，如果类型相同，则继续比较值，如果值也相同，返回true。  
+4. 基本型封装类型调用equals(),但是参数是基本类型，这时候，先会进行自动装箱，基本型转换为其封装类型，再进行比较。  
 
 
 
