@@ -4,7 +4,7 @@
 * [大总结2](/docs/summaryTwo.md)  
 * [总结-图](/docs/summaryThree.md)  
 ------------------------------------------------------------------------------------------------------------------------------
-* Java基础  
+* ★★★Java基础  
     * [Java基础](/docs/java/basis/JavaBasic.md)  
         * [关键字](/docs/java/basis/keyword.md)  
         * [内部类](/docs/java/basis/InnerClass.md)  
