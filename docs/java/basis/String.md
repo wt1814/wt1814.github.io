@@ -4,35 +4,54 @@
 
 - [1. ~~String~~](#1-string)
     - [1.1. java.lang.String类](#11-javalangstring类)
-        - [1.1.1. String类的定义](#111-string类的定义)
+        - [1.1.1. ★★★String常见面试题](#111-★★★string常见面试题)
             - [1.1.1.1. ★★★为什么Java字符串是不可变的？](#1111-★★★为什么java字符串是不可变的)
-        - [1.1.2. 字段属性](#112-字段属性)
-        - [1.1.3. 构造方法](#113-构造方法)
-            - [1.1.3.1. 字符串编码格式](#1131-字符串编码格式)
-        - [1.1.4. 成员方法](#114-成员方法)
-            - [1.1.4.1. equals()方法](#1141-equals方法)
-            - [1.1.4.2. hashCode()方法](#1142-hashcode方法)
-        - [1.1.5. ★★★String常见面试题](#115-★★★string常见面试题)
-            - [1.1.5.1. String创建了几个对象？](#1151-string创建了几个对象)
-            - [1.1.5.2. String是常量，为什么给字符串重新赋值，值却改变了呢？](#1152-string是常量为什么给字符串重新赋值值却改变了呢)
-        - [1.1.6. String真的不可变吗?](#116-string真的不可变吗)
+            - [1.1.1.2. 字符串常量池](#1112-字符串常量池)
+            - [1.1.1.3. String创建了几个对象？](#1113-string创建了几个对象)
+            - [1.1.1.4. String是常量，为什么给字符串重新赋值，值却改变了呢？](#1114-string是常量为什么给字符串重新赋值值却改变了呢)
+            - [1.1.1.5. String真的不可变吗?](#1115-string真的不可变吗)
+        - [1.1.2. 源码](#112-源码)
+            - [1.1.2.1. String类的定义](#1121-string类的定义)
+            - [1.1.2.2. 字段属性](#1122-字段属性)
+            - [1.1.2.3. 构造方法](#1123-构造方法)
+                - [1.1.2.3.1. 字符串编码格式](#11231-字符串编码格式)
+            - [1.1.2.4. 成员方法](#1124-成员方法)
+                - [1.1.2.4.1. equals()方法](#11241-equals方法)
+                - [1.1.2.4.2. hashCode()方法](#11242-hashcode方法)
     - [1.2. StringBuilder与StringBuffer](#12-stringbuilder与stringbuffer)
     - [1.3. StringJoiner，字符串拼接](#13-stringjoiner字符串拼接)
 
 <!-- /TOC -->
 
 &emsp; **<font color = "red">总结：</font>**  
-1. String 类是用final关键字修饰的，所以认为其是不可变对象。反射可以改变String对象。  
+1. String类是用final关键字修饰的，所以认为其是不可变对象。反射可以改变String对象。  
 &emsp; **<font color = "clime">为什么Java字符串是不可变的？</font>** 原因大致有以下三个：  
     * 为了实现字符串常量池。字符串常量池可以节省大量的内存空间。  
     * 为了线程安全。  
     * 为了 HashCode 的不可变性。String类经常被用作HashMap的key。  
-2. String创建了几个对象？  
+2. 字符串常量池 
+    ```java
+    public static void main(String[] args) {
+        String a = "abc";
+        String b = "abc";
+        String c = new String("abc");
+        System.out.println(a == b);  // todo 结果ture
+        System.out.println(a == c);  // todo 结果false
+        System.out.println(a.equals(b));
+        System.out.println(a.equals(c));
+    }
+    ```
+    1. 是什么？  
+    &emsp; 存储编译期类中产生的字符串类型数据，准确来说存储的是字符串实例对象的引用。JDK7.0版本，字符串常量池被移到了堆中，被整个JVM共享。  
+    2. 示例：  
+    &emsp; String s =“abc”；在编译期间，会将等号右边的“abc”常量放在常量池中，在程序运行时，会将s变量压栈，栈中s变量直接指向元空间的字符串常量池abc项，没有经过堆内存。  
+    &emsp; String s = new String(“abc”);在编译期间，会将等号右边的“abc”常量放在常量池中，在程序运行时，先在堆中创建一个String对象，该对象的内容指向常量池的“abc”项。然后将s变量压栈，栈中s变量指向堆中的String对象。  
+3. String创建了几个对象？  
 &emsp; `String str1 = "java";`创建一个对象放在常量池中。  
 &emsp; `String str2 = new String("java");`创建两个对象，字面量"java"创建一个对象放在常量池中，new String()又创建一个对象放在堆中。如果常量池中已经存在，则是创建了一个对象。  
 &emsp; `String str3 = "hello "+"java";`创建了一个对象。  
-&emsp; `String str5 = str3 + "java";`创建了三个对象。
-3. String不可变，安全；StringBuilder可变，线程不安全；StringBuffer可变，线程安全。  
+&emsp; `String str5 = str3 + "java";`创建了三个对象。  
+4. String不可变，安全；StringBuilder可变，线程不安全；StringBuffer可变，线程安全。  
 
 
 # 1. ~~String~~
@@ -58,16 +77,7 @@ https://mp.weixin.qq.com/s/Iix9FHKPhOu3ck7ysc6TJw
 ## 1.1. java.lang.String类  
 &emsp; **<font color = "clime">String对象一旦被创建就是固定不变的了，对String对象的任何改变都不影响到原对象，相关的任何change操作都会生成新的对象。</font>**  
 
-### 1.1.1. String类的定义  
-
-```java
-public final class String
-   implements java.io.Serializable, Comparable<String>, CharSequence {}
-```
-&emsp; String是一个用final声明的常量类，不能被任何类所继承，而且一旦<font color = "red">一个String对象被创建，包含在这个对象中的字符序列是不可改变的，包括该类后续的所有方法都是不能修改该对象的</font>，直至该对象被销毁，这是需要特别注意的(该类的一些方法看似改变了字符串，其实内部都是创建一个新的字符串)。  
-&emsp; 接着实现了Serializable接口，这是一个序列化标志接口，还实现了Comparable接口，用于比较两个字符串的大小(按顺序比较单个字符的ASCII码)；最后实现了CharSequence接口，表示是一个有序字符的集合。  
-
-
+### 1.1.1. ★★★String常见面试题  
 #### 1.1.1.1. ★★★为什么Java字符串是不可变的？
 &emsp; **<font color = "clime">为什么Java字符串是不可变的？</font>** 原因大致有以下三个：  
 
@@ -91,96 +101,30 @@ https://mp.weixin.qq.com/s/xx-aTQFqJHFPMtoXzBx8Fw
 &emsp; 当字符串是不可变时，字符串常量池才有意义。字符串常量池的出现，可以减少创建相同字面量的字符串，让不同的引用指向池中同一个字符串，为运行时节约很多的堆内存。若字符串可变，字符串常量池失去意义，基于常量池的String.intern()方法也失效，每次创建新的 String 将在堆内开辟出新的空间，占据更多的内存。 
 -->
 
-### 1.1.2. 字段属性  
-
+#### 1.1.1.2. 字符串常量池  
+<!-- 
+https://zhuanlan.zhihu.com/p/149055800?utm_id=0
+-->
 ```java
-private final char value[];//存储字符串
-private int hash; //字符串的hash code 默认是0
-private static final long serialVersionUID = -6849794470754667710L;//序列化id
-```
-&emsp; String对象的字符串实际是维护在一个字符数组中的。操作字符串实际上就是操作这个字符数组，而且这个数组也是final修饰的不能够被改变。  
-
-### 1.1.3. 构造方法
-&emsp; String类的构造方法很多。可以通过初始化一个字符串，或者字符数组，或者字节数组等来创建一个String对象。  
-
-```java
-public String(byte bytes[], String charsetName) throws UnsupportedEncodingException {
-    this(bytes, 0, bytes.length, charsetName);
-}
-public String(byte bytes[], Charset charset) {
-    this(bytes, 0, bytes.length, charset);
+public static void main(String[] args) {
+    String a = "abc";
+    String b = "abc";
+    String c = new String("abc");
+    System.out.println(a == b);  // todo 结果ture
+    System.out.println(a == c);  // todo 结果false
+    System.out.println(a.equals(b));
+    System.out.println(a.equals(c));
 }
 ```
-&emsp; 通过byte数组，指定字符集构造String对象。byte是网络传输或存储的序列化形式，所以在很多传输和存储的过程中需要将byte[] 数组和String进行相互转化，byte是字节，char是字符，字节流和字符流需要指定编码，不然可能会乱码，bytes字节流是使用charset进行编码的，想要将它转换成unicode的char[]数组，而又保证不出现乱码，那就要指定其解码方法。  
 
-#### 1.1.3.1. 字符串编码格式  
-&emsp; 改变String的编码格式：String的的构造方法String (btye [], String )。  
+1. 是什么？  
+&emsp; 存储编译期类中产生的字符串类型数据，准确来说存储的是字符串实例对象的引用。JDK7.0版本，字符串常量池被移到了堆中，被整个JVM共享。  
+2. 示例：  
+&emsp; String s =“abc”；在编译期间，会将等号右边的“abc”常量放在常量池中，在程序运行时，会将s变量压栈，栈中s变量直接指向元空间的字符串常量池abc项，没有经过堆内存。  
+&emsp; String s = new String(“abc”);在编译期间，会将等号右边的“abc”常量放在常量池中，在程序运行时，先在堆中创建一个String对象，该对象的内容指向常量池的“abc”项。然后将s变量压栈，栈中s变量指向堆中的String对象。  
 
-```java
-String str = "任意字符串";
-str = new String(str.getBytes("gbk"),"utf-8");
-```  
-&emsp; 注：str.getBytes("UTF-8");以UTF-8的编码取得字节；  
-&emsp; new String(XXX,"UTF-8"); 以UTF-8的编码生成字符串。  
 
-### 1.1.4. 成员方法  
-#### 1.1.4.1. equals()方法  
-
-```java
-public boolean equals(Object anObject) {
-    if (this == anObject) {
-        return true;
-    }
-    if (anObject instanceof String) {
-        String anotherString = (String)anObject;
-        int n = value.length;
-        if (n == anotherString.value.length) {
-            char v1[] = value;
-            char v2[] = anotherString.value;
-            int i = 0;
-            while (n-- != 0) {
-                if (v1[i] != v2[i])
-                    return false;
-                i++;
-            }
-            return true;
-        }
-    }
-    return false;
-}
-```
-&emsp; String类重写了equals方法，比较的是组成字符串的每一个字符是否相同，如果都相同则返回true，否则返回false。  
-1. 首先会判断要比较的两个字符串它们的引用是否相等。如果引用相等的话，直接返回 true ，不相等的话继续下面的判断。  
-2. 然后再判断被比较的对象是否是 String 的实例，如果不是的话直接返回 false，如果是的话，再比较两个字符串的长度是否相等，如果长度不想等的话也就没有比较的必要了；长度如果相同，会比较字符串中的每个 字符 是否相等，一旦有一个字符不相等，就会直接返回 false。  
-![image](http://182.92.69.8:8081/img/java/JDK/basics/java-4.png)  
-
-#### 1.1.4.2. hashCode()方法  
-
-```java
-public int hashCode() {
-    int h = hash;
-    if (h == 0 && value.length > 0) {
-        char val[] = value;
-
-        for (int i = 0; i < value.length; i++) {
-            h = 31 * h + val[i];
-        }
-        hash = h;
-    }
-    return h;
-}
-```  
-&emsp; String的hashCode()计算公式为：
-
-    s\[0]*31^(n-1) + s\[1]*31^(n-2) + ... + s\[n-1]  
-&emsp; **<font color = "clime">String的hashCode()计算过程中，为什么使用了数字31，主要有以下原因：</font>**   
-1. <font color = "red">使用质数计算哈希码，</font>由于质数的特性，它与其他数字相乘之后，计算结果唯一的概率更大，<font color = "red">哈希冲突的概率更小。</font>  
-2. <font color = "red">使用的质数越大，哈希冲突的概率越小，但是计算的速度也越慢；31是哈希冲突和性能的折中，实际上是实验观测的结果。</font>  
-3. <font color = "red">JVM会自动对31进行优化：31 * i == (i << 5) - i</font>  
-
-### 1.1.5. ★★★String常见面试题  
-
-#### 1.1.5.1. String创建了几个对象？
+#### 1.1.1.3. String创建了几个对象？
 ```java
 String str1 = "java";
 String str2 = new String("java");
@@ -198,12 +142,11 @@ System.out.println(str2 == str6); //false
 &emsp; String str3 = "hello "+"java"; 创建了一个对象。  
 &emsp; String str5 = str3 + "java";创建了三个对象。
 
-#### 1.1.5.2. String是常量，为什么给字符串重新赋值，值却改变了呢？  
+#### 1.1.1.4. String是常量，为什么给字符串重新赋值，值却改变了呢？  
 <!-- https://baijiahao.baidu.com/s?id=1692401311615162256&wfr=spider&for=pc -->
 &emsp; 字符串s只是一个 String 对象的引用，并不是对象本身，当执行 s = “123”; 创建了一个新的对象 “123”，而原来的 “abc” 还存在于内存中，所以只是s的引用地址发生了变化。  
 
-
-### 1.1.6. String真的不可变吗?   
+#### 1.1.1.5. String真的不可变吗?   
 &emsp; String 类是用 final 关键字修饰的，所以认为其是不可变对象。但是真的不可变吗？  
 &emsp; 每个字符串都是由许多单个字符组成的，其源码是由 char[] value字符数组构成。  
 
@@ -234,6 +177,104 @@ value[0] = 'V';
 System.out.println(str);//Vae
 ```
 &emsp; 通过前后两次打印的结果，可以看到String被改变了，但是在代码里，几乎不会使用反射的机制去操作String字符串，所以认为String类型是不可变的。  
+
+
+### 1.1.2. 源码
+#### 1.1.2.1. String类的定义  
+
+```java
+public final class String
+   implements java.io.Serializable, Comparable<String>, CharSequence {}
+```
+&emsp; String是一个用final声明的常量类，不能被任何类所继承，而且一旦<font color = "red">一个String对象被创建，包含在这个对象中的字符序列是不可改变的，包括该类后续的所有方法都是不能修改该对象的</font>，直至该对象被销毁，这是需要特别注意的(该类的一些方法看似改变了字符串，其实内部都是创建一个新的字符串)。  
+&emsp; 接着实现了Serializable接口，这是一个序列化标志接口，还实现了Comparable接口，用于比较两个字符串的大小(按顺序比较单个字符的ASCII码)；最后实现了CharSequence接口，表示是一个有序字符的集合。  
+
+#### 1.1.2.2. 字段属性  
+
+```java
+private final char value[];//存储字符串
+private int hash; //字符串的hash code 默认是0
+private static final long serialVersionUID = -6849794470754667710L;//序列化id
+```
+&emsp; String对象的字符串实际是维护在一个字符数组中的。操作字符串实际上就是操作这个字符数组，而且这个数组也是final修饰的不能够被改变。  
+
+#### 1.1.2.3. 构造方法
+&emsp; String类的构造方法很多。可以通过初始化一个字符串，或者字符数组，或者字节数组等来创建一个String对象。  
+
+```java
+public String(byte bytes[], String charsetName) throws UnsupportedEncodingException {
+    this(bytes, 0, bytes.length, charsetName);
+}
+public String(byte bytes[], Charset charset) {
+    this(bytes, 0, bytes.length, charset);
+}
+```
+&emsp; 通过byte数组，指定字符集构造String对象。byte是网络传输或存储的序列化形式，所以在很多传输和存储的过程中需要将byte[] 数组和String进行相互转化，byte是字节，char是字符，字节流和字符流需要指定编码，不然可能会乱码，bytes字节流是使用charset进行编码的，想要将它转换成unicode的char[]数组，而又保证不出现乱码，那就要指定其解码方法。  
+
+##### 1.1.2.3.1. 字符串编码格式  
+&emsp; 改变String的编码格式：String的的构造方法String (btye [], String )。  
+
+```java
+String str = "任意字符串";
+str = new String(str.getBytes("gbk"),"utf-8");
+```  
+&emsp; 注：str.getBytes("UTF-8");以UTF-8的编码取得字节；  
+&emsp; new String(XXX,"UTF-8"); 以UTF-8的编码生成字符串。  
+
+#### 1.1.2.4. 成员方法  
+##### 1.1.2.4.1. equals()方法  
+
+```java
+public boolean equals(Object anObject) {
+    if (this == anObject) {
+        return true;
+    }
+    if (anObject instanceof String) {
+        String anotherString = (String)anObject;
+        int n = value.length;
+        if (n == anotherString.value.length) {
+            char v1[] = value;
+            char v2[] = anotherString.value;
+            int i = 0;
+            while (n-- != 0) {
+                if (v1[i] != v2[i])
+                    return false;
+                i++;
+            }
+            return true;
+        }
+    }
+    return false;
+}
+```
+&emsp; String类重写了equals方法，比较的是组成字符串的每一个字符是否相同，如果都相同则返回true，否则返回false。  
+1. 首先会判断要比较的两个字符串它们的引用是否相等。如果引用相等的话，直接返回 true ，不相等的话继续下面的判断。  
+2. 然后再判断被比较的对象是否是 String 的实例，如果不是的话直接返回 false，如果是的话，再比较两个字符串的长度是否相等，如果长度不想等的话也就没有比较的必要了；长度如果相同，会比较字符串中的每个 字符 是否相等，一旦有一个字符不相等，就会直接返回 false。  
+![image](http://182.92.69.8:8081/img/java/JDK/basics/java-4.png)  
+
+##### 1.1.2.4.2. hashCode()方法  
+
+```java
+public int hashCode() {
+    int h = hash;
+    if (h == 0 && value.length > 0) {
+        char val[] = value;
+
+        for (int i = 0; i < value.length; i++) {
+            h = 31 * h + val[i];
+        }
+        hash = h;
+    }
+    return h;
+}
+```  
+&emsp; String的hashCode()计算公式为：
+
+    s\[0]*31^(n-1) + s\[1]*31^(n-2) + ... + s\[n-1]  
+&emsp; **<font color = "clime">String的hashCode()计算过程中，为什么使用了数字31，主要有以下原因：</font>**   
+1. <font color = "red">使用质数计算哈希码，</font>由于质数的特性，它与其他数字相乘之后，计算结果唯一的概率更大，<font color = "red">哈希冲突的概率更小。</font>  
+2. <font color = "red">使用的质数越大，哈希冲突的概率越小，但是计算的速度也越慢；31是哈希冲突和性能的折中，实际上是实验观测的结果。</font>  
+3. <font color = "red">JVM会自动对31进行优化：31 * i == (i << 5) - i</font>  
 
 ## 1.2. StringBuilder与StringBuffer  
 
