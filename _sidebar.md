@@ -521,6 +521,7 @@
     * [限流Sentinel](/docs/microService/thinking/Sentinel.md) 
 * [服务降级](/docs/microService/thinking/Demotion.md)  
 * [★★★MQ](/docs/microService/mq/mq.md)    
+    * [★★★MQ](/docs/microService/mq/mqInterview.md)   
     * [消息推拉机制](/docs/microService/mq/PushPull.md)  
     * [kafka](/docs/microService/mq/kafka/kafka.md)   
     * [kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  
