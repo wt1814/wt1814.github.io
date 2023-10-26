@@ -11,11 +11,6 @@
 # 1. 分页查询(避免深度分页)  
 
 <!--
-springboot整合elasticsearch实现like模糊查询
-**** https://blog.csdn.net/chaitao100/article/details/125889713
-http://www.hzhcontrols.com/new-1449872.html
-
-
 https://mp.weixin.qq.com/s/BmgvAHJBoLVPlRDbDPppdg
 https://www.cnblogs.com/jpfss/p/10815206.html
 
@@ -25,7 +20,7 @@ https://mp.weixin.qq.com/s/RhkLwO1X28gIbrXGH_Cl5g
 
 三种分页方式
 https://mp.weixin.qq.com/s/3sJajydXPmfLP3KXMs0Gmw
-https://mp.weixin.qq.com/s/YDewi8XUjff7knzkBRjnrg
+*****https://mp.weixin.qq.com/s/YDewi8XUjff7knzkBRjnrg
 
 -->
 
