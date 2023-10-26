@@ -13,6 +13,7 @@
         - [1.1.5. 数据统计——数据图表](#115-数据统计数据图表)
     - [1.2. 设计](#12-设计)
         - [1.2.1. 数据定义](#121-数据定义)
+        - [1.2.2. 对接金蝶财务软件](#122-对接金蝶财务软件)
 
 <!-- /TOC -->
 
@@ -93,10 +94,8 @@ java实现电子发票中的发票税号等信息识别的几种可用方案
 https://blog.csdn.net/Alex_81D/article/details/128923743
 
 -->
-
 诺诺发票官网
 https://blog.csdn.net/weixin_48081887/article/details/132025914?spm=1001.2101.3001.6650.3&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-3-132025914-blog-129012900.235%5Ev38%5Epc_relevant_sort&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-3-132025914-blog-129012900.235%5Ev38%5Epc_relevant_sort&utm_relevant_index=4
-
 
 
 
@@ -115,4 +114,10 @@ https://blog.csdn.net/weixin_48081887/article/details/132025914?spm=1001.2101.30
 
 &emsp; 当一笔支付业务发生时，首先会生成分录流水，然后驱动对应账户余额改变，在账户余额改变后，再生成明细账。  
 &emsp; 日终时账务系统根据分录流水生成总账，根据业务需要，也可以先修改账户余额，然后异步生成分录流水，但无论是先生成会计分录，还是异步生成会计分录，都要保证分录流水与分户账余额的一致性，通过对日终账务系统的检查来保证账目的准确性。  
+
+### 1.2.2. 对接金蝶财务软件  
+&emsp; 公司的业务主要是对接财务系统做单据传输或者凭证处理的，难免少不了和各大财务软件做数据对接，其中当然是必须通过接口来传递数据了。  
+&emsp; erp系统流转的数据，把部分跟财务有关数据对接金蝶云。  
+&emsp; 使用金蝶KIS建账向导。   
+
 

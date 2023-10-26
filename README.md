@@ -60,7 +60,6 @@
     - [1.12. 面试](#112-面试)
         - [1.12.1. ★★★做过的项目](#1121-★★★做过的项目)
         - [1.12.2. ★★★面试流程](#1122-★★★面试流程)
-    - [1.14. Linux操作系统](#114-linux操作系统)
     - [1.15. Linux服务器搭建](#115-linux服务器搭建)
         - [1.15.1. Linux基础](#1151-linux基础)
         - [1.15.2. Linux服务器](#1152-linux服务器)
@@ -70,6 +69,7 @@
         - [1.16.1. 搭建-需求、测试](#1161-搭建-需求测试)
         - [1.16.2. 监控和统计](#1162-监控和统计)
     - [1.17. 常用研发工具](#117-常用研发工具)
+    - [1.14. Linux操作系统](#114-linux操作系统)
     - [1.13. 算法](#113-算法)
     - [1.18. 前端知识](#118-前端知识)
     - [1.19. 测试](#119-测试)
@@ -1042,35 +1042,7 @@ https://help.aliyun.com/document_detail/122217.html
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.14. Linux操作系统  
-<!-- 
-xshell 工具Tabby 
-https://mp.weixin.qq.com/s/Cs-WzMm-8VZbLoq9CA-qWw
-https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
--->
-[操作系统](/docs/Linux/operating.md)  
-[Linux系统性能](/docs/Linux/systemPerformance.md)  
-&emsp; [Linux性能优化常用命令汇总](/docs/Linux/PerformanceCommand.md)  
-&emsp; [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
-&emsp; [cpu](/docs/Linux/cpu.md)  
-&emsp; [内存](/docs/Linux/memory.md)  
-&emsp; [硬盘](/docs/Linux/HardDisk.md)  
-&emsp; [网络](/docs/Linux/NetWork.md)  
-&emsp; [Linux性能优化实战-倪朋飞](/docs/Linux/Actual/Actual.md)  
-&emsp; &emsp; [如何学习Linux性能优化？](/docs/Linux/Actual/how.md)  
-&emsp; &emsp; [CPU性能篇](/docs/Linux/Actual/cpu.md)  
-&emsp; &emsp; &emsp; [基础篇：到底应该怎么理解“平均负载”？](/docs/Linux/Actual/AverageLoad.md)  
-&emsp; &emsp; &emsp; [基础篇：经常说的 CPU 上下文切换是什么意思？（上）](/docs/Linux/Actual/ContextSwitching-upper.md)  
-&emsp; &emsp; &emsp; [基础篇：经常说的 CPU 上下文切换是什么意思？（下）](/docs/Linux/Actual/ContextSwitching-down.md)  
-&emsp; &emsp; &emsp; [基础篇：某个应用的CPU使用率居然达到100%，我该怎么办？](/docs/Linux/Actual/Cpu100.md)  
-&emsp; &emsp; &emsp; [案例篇：系统的 CPU 使用率很高，但为啥却找不到高 CPU 的应用？](/docs/Linux/Actual/CpuTop.md)  
-[Linux系统内核](/docs/Linux/Linux.md)  
 
-[堆外内存](/docs/system/OutHeapMemory.md)  
-[centos增加内存](/docs/system/centosMemory.md)  
-
-
-[页缓存](/docs/system/PageCache.md)  
 
 ## 1.15. Linux服务器搭建
 <!-- 
@@ -1227,6 +1199,38 @@ prometheus
 [MAC系统](/docs/software/MAC.md)  
 [Json](/docs/software/Json.md)  
 [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
+
+------------------------------------------------------------------------------------------------------------------------------
+
+## 1.14. Linux操作系统  
+<!-- 
+xshell 工具Tabby 
+https://mp.weixin.qq.com/s/Cs-WzMm-8VZbLoq9CA-qWw
+https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
+-->
+[操作系统](/docs/Linux/operating.md)  
+[Linux系统性能](/docs/Linux/systemPerformance.md)  
+&emsp; [Linux性能优化常用命令汇总](/docs/Linux/PerformanceCommand.md)  
+&emsp; [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
+&emsp; [cpu](/docs/Linux/cpu.md)  
+&emsp; [内存](/docs/Linux/memory.md)  
+&emsp; [硬盘](/docs/Linux/HardDisk.md)  
+&emsp; [网络](/docs/Linux/NetWork.md)  
+&emsp; [Linux性能优化实战-倪朋飞](/docs/Linux/Actual/Actual.md)  
+&emsp; &emsp; [如何学习Linux性能优化？](/docs/Linux/Actual/how.md)  
+&emsp; &emsp; [CPU性能篇](/docs/Linux/Actual/cpu.md)  
+&emsp; &emsp; &emsp; [基础篇：到底应该怎么理解“平均负载”？](/docs/Linux/Actual/AverageLoad.md)  
+&emsp; &emsp; &emsp; [基础篇：经常说的 CPU 上下文切换是什么意思？（上）](/docs/Linux/Actual/ContextSwitching-upper.md)  
+&emsp; &emsp; &emsp; [基础篇：经常说的 CPU 上下文切换是什么意思？（下）](/docs/Linux/Actual/ContextSwitching-down.md)  
+&emsp; &emsp; &emsp; [基础篇：某个应用的CPU使用率居然达到100%，我该怎么办？](/docs/Linux/Actual/Cpu100.md)  
+&emsp; &emsp; &emsp; [案例篇：系统的 CPU 使用率很高，但为啥却找不到高 CPU 的应用？](/docs/Linux/Actual/CpuTop.md)  
+[Linux系统内核](/docs/Linux/Linux.md)  
+
+[堆外内存](/docs/system/OutHeapMemory.md)  
+[centos增加内存](/docs/system/centosMemory.md)  
+
+
+[页缓存](/docs/system/PageCache.md)  
 
 ------------------------------------------------------------------------------------------------------------------------------
 

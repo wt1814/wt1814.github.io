@@ -752,19 +752,6 @@
     * [简历](/docs/recruit/Resume.md)  
     * [全部经历](/docs/recruit/AllExperiences.md)  
 ------------------------------------------------------------------------------------------------------------------------------
-* Linux操作系统  
-    * [操作系统](/docs/Linux/operating.md)  
-    * [Linux系统性能](/docs/Linux/systemPerformance.md)  
-        * [Linux性能优化常用命令汇总](/docs/Linux/PerformanceCommand.md)  
-        * [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
-        * [cpu](/docs/Linux/cpu.md)  
-        * [内存](/docs/Linux/memory.md)  
-        * [硬盘](/docs/Linux/HardDisk.md)  
-        * [网络](/docs/Linux/NetWork.md)  
-    * [Linux系统内核](/docs/Linux/Linux.md)  
-    * [堆外内存](/docs/system/OutHeapMemory.md)  
-    * [centos增加内存](/docs/system/centosMemory.md)  
-    * [页缓存](/docs/system/PageCache.md)  
 * ★★★Linux服务器搭建  
     * ★★★Linux基础
         * [CentOS](/docs/devAndOps/centOS/centOS.md)  
@@ -876,6 +863,20 @@
     * [Json](/docs/software/Json.md)  
     * [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
     * [MAC系统](/docs/software/MAC.md)  
+------------------------------------------------------------------------------------------------------------------------------
+* Linux操作系统  
+    * [操作系统](/docs/Linux/operating.md)  
+    * [Linux系统性能](/docs/Linux/systemPerformance.md)  
+        * [Linux性能优化常用命令汇总](/docs/Linux/PerformanceCommand.md)  
+        * [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
+        * [cpu](/docs/Linux/cpu.md)  
+        * [内存](/docs/Linux/memory.md)  
+        * [硬盘](/docs/Linux/HardDisk.md)  
+        * [网络](/docs/Linux/NetWork.md)  
+    * [Linux系统内核](/docs/Linux/Linux.md)  
+    * [堆外内存](/docs/system/OutHeapMemory.md)  
+    * [centos增加内存](/docs/system/centosMemory.md)  
+    * [页缓存](/docs/system/PageCache.md)  
 ------------------------------------------------------------------------------------------------------------------------------
 * 算法
     * [红黑树](/docs/function/redBlack.md)  
