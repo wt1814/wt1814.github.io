@@ -765,11 +765,11 @@
     * [堆外内存](/docs/system/OutHeapMemory.md)  
     * [centos增加内存](/docs/system/centosMemory.md)  
     * [页缓存](/docs/system/PageCache.md)  
-* Linux服务器搭建  
-    * Linux基础
+* ★★★Linux服务器搭建  
+    * ★★★Linux基础
         * [CentOS](/docs/devAndOps/centOS/centOS.md)  
         * [Linux目录和版本](/docs/Linux/catalogue.md)  
-        * [Linux命令](/docs/Linux/Command.md)
+        * [★★★Linux命令](/docs/Linux/Command.md)
             * [Linux命令-实操](/docs/Linux/operation.md)  
             * [Linux命令](/docs/Linux/LinuxCommand.md)  
                 * [文本处理](/docs/Linux/textProcessing.md)  
