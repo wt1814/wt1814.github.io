@@ -41,13 +41,19 @@
             &emsp; 请求报文包含3部分：（1）请求行，包含请求方法、URI、HTTP版本信息。（2）请求首部字段。（3）请求内容实体。 
             &emsp; 响应报文包含3部分：（1）状态行，包含HTTP版本、状态码、状态码的原因短语。（2）响应首部字段。（3）响应内容实体。  
             2. `HTTP请求头包含信息`：  
+            &emsp; Accept：浏览器可接受的MIME类型。  
+            &emsp; Accept-Charset：浏览器可接受的字符集。  
+            &emsp; Accept-Encoding：浏览器能够进行解码的数据编码方式，比如gzip。Servlet能够向支持gzip的浏览器返回经gzip编码的HTML页面。许多情形下这可以减少5到10倍的下载时间。  
+            &emsp; Accept-Language：浏览器所希望的语言种类，当服务器能够提供一种以上的语言版本时要用到。  
+            &emsp; Authorization：授权信息，通常出现在对服务器发送的WWW-Authenticate头的应答中  
+            &emsp; Connection：表示是否需要持久连接。  
+            &emsp; Cookie：这是最重要的请求头信息之一  
+            &emsp; Allow 服务器支持哪些请求方法（如GET、POST等）。  
         2. HTTP中GET与POST
         3. HTTP返回状态码
 2. HTTP应用层协议：  
     4. 在浏览器地址栏键入URL，按下回车之后经历的流程：URL解析 ---> DNS解析 ---> TCP连接 ---> 发送HTTP请求 ---> 服务器处理请求并返回HTTP报文 ---> 浏览器解析渲染页面 ---> 连接结束。  
     5. Http与TCP  
-
-
 
 
 # 1. HTTP  
