@@ -4,6 +4,7 @@
 * [大总结2](/docs/summaryTwo.md)  
 * [总结-图](/docs/summaryThree.md)  
 ------------------------------------------------------------------------------------------------------------------------------
+* 待准备：sharding和nginx  
 * ★★★Java基础  
     * [Java基础](/docs/java/basis/JavaBasic.md)  
         * [关键字](/docs/java/basis/keyword.md)  
