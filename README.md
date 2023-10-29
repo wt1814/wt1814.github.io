@@ -120,8 +120,8 @@ graph LR
 [ES](/docs/a-summary/ES.md)  
 [SSM](/docs/a-summary/SSM.md)  
 [SpringCloud](/docs/a-summary/SpringCloud.md)  
-
-
+[高并发](/docs/a-summary/HighConcurrency.md)  
+[缓存、Redis、Mq](/docs/a-summary/RedisAndMq.md)  
 
 ------------------------------------------------------------------------------------------------------------------------------
 
