@@ -1,8 +1,11 @@
 ------------------------------------------------------------------------------------------------------------------------------
-* [知识点概况](/docs/survey.md)  
-* [大总结1](/docs/summary.md)  
-* [大总结2](/docs/summaryTwo.md)  
-* [总结-图](/docs/summaryThree.md)  
+* [知识点概况](/docs/a-summary/catalog.md)  
+* [大总结1](/docs/a-summary/summary.md)  
+* [大总结2](/docs/a-summary/summaryTwo.md)  
+* [总结-图](/docs/a-summary/summaryThree.md)  
+* [Java基础](/docs/a-summary/JavaBasic.md)  
+
+
 ------------------------------------------------------------------------------------------------------------------------------
 * ★★★Java基础  
     * [Java基础](/docs/java/basis/JavaBasic.md)  
