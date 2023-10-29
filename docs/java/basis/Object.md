@@ -15,6 +15,13 @@
 
 <!-- /TOC -->
 
+&emsp; **<font color = "red">总结：</font>**  
+1. 1. ==和equals()    
+2. 为什么equals方法重写，建议也一起重写hashcode方法？   
+&emsp; **<font color = "blue">在某些业务场景下，需要使用自定义类作为哈希表的键。用HashMap存入自定义的类时，如果不重写这个自定义类的equals和hashCode方法，得到的结果会和预期的不一样。</font>**  
+3. notify()/notifyAll()/wait()   
+
+
 # 1. java.lang.Object类  
 
 <!--

@@ -206,41 +206,99 @@
 
 ### 1.1.2. Java基础数据类型
 #### Object  
-1. 为什么equals方法重写，建议也一起重写hashcode方法？   
+1. 1. ==和equals()    
+2. 为什么equals方法重写，建议也一起重写hashcode方法？   
 &emsp; **<font color = "blue">在某些业务场景下，需要使用自定义类作为哈希表的键。用HashMap存入自定义的类时，如果不重写这个自定义类的equals和hashCode方法，得到的结果会和预期的不一样。</font>**  
-2. notify()/notifyAll()/wait()-1  
-
+3. notify()/notifyAll()/wait()   
 
 
 #### 1.1.2.1. String
-1. String 类是用final关键字修饰的，所以认为其是不可变对象。反射可以改变String对象。  
+1. String类是用final关键字修饰的，所以认为其是不可变对象。反射可以改变String对象。  
 &emsp; **<font color = "clime">为什么Java字符串是不可变的？</font>** 原因大致有以下三个：  
     * 为了实现字符串常量池。字符串常量池可以节省大量的内存空间。  
     * 为了线程安全。  
     * 为了 HashCode 的不可变性。String类经常被用作HashMap的key。  
-2. String创建了几个对象？  
+2. 字符串常量池 
+    ```java
+    public static void main(String[] args) {
+        String a = "abc";
+        String b = "abc";
+        String c = new String("abc");
+        System.out.println(a == b);  // todo 结果ture
+        System.out.println(a == c);  // todo 结果false
+        System.out.println(a.equals(b));
+        System.out.println(a.equals(c));
+    }
+    ```
+    1. 是什么？  
+    &emsp; 存储编译期类中产生的字符串类型数据，准确来说存储的是字符串实例对象的引用。JDK7.0版本，字符串常量池被移到了堆中，被整个JVM共享。  
+    2. 示例：  
+    &emsp; String s =“abc”；在编译期间，会将等号右边的“abc”常量放在常量池中，在程序运行时，会将s变量压栈，栈中s变量直接指向元空间的字符串常量池abc项，没有经过堆内存。  
+    &emsp; String s = new String(“abc”);在编译期间，会将等号右边的“abc”常量放在常量池中，在程序运行时，先在堆中创建一个String对象，该对象的内容指向常量池的“abc”项。然后将s变量压栈，栈中s变量指向堆中的String对象。  
+3. String创建了几个对象？  
 &emsp; `String str1 = "java";`创建一个对象放在常量池中。  
-&emsp; `String str2 = new String("java");`创建两个对象，`字面量"java"创建一个对象放在常量池中`，new String()又创建一个对象放在堆中。`如果常量池中已经存在，则是创建了一个对象。`  
+&emsp; `String str2 = new String("java");`创建两个对象，字面量"java"创建一个对象放在常量池中，new String()又创建一个对象放在堆中。如果常量池中已经存在，则是创建了一个对象。  
 &emsp; `String str3 = "hello "+"java";`创建了一个对象。  
-&emsp; `String str5 = str3 + "java";`创建了三个对象。
-3. String不可变，安全；StringBuilder可变，线程不安全；StringBuffer可变，线程安全。  
+&emsp; `String str5 = str3 + "java";`创建了三个对象。  
+4. String不可变，安全；StringBuilder可变，线程不安全；StringBuffer可变，线程安全。  
+
 
 #### 1.1.2.2. Java基本数据类型
+1. 基本数据类型和其包装类  
+    1. 基本数据类型  
+    |数据类型|字节|位数|默认值|取值范围|
+    |---|---|---|---|---|
+    |byte	|1	|8|0	|-128-127|
+    |short	|2	|16|0	|-32768-32767|
+    |int	|4	|32|0	| -2^31 ~ 2^31-1 (-2147483648-2147483647)|
+    |long	|8	|64|0| |	
+    |float	|4	|32|0.0f| |	
+    |double	|8	|64|0.0d| |	
+    |char	|2	|16|'\u0000'| |	
+    |boolean	|4|32	|false	| |
+    2. 包装类  
+    &emsp; char的包装类型是Character。  
+    3. 自动装箱和拆箱 
+2. 常量池
+    ```java
+    public static void main(String[] args) {
 
-|数据类型|字节|位数|默认值|取值范围|
-|---|---|---|---|---|
-|byte	|1	|8|0	|-128-127|
-|short	|2	|16|0	|-32768-32767|
-|int	|4	|32|0	| -2^31 ~ 2^31-1 (-2147483648-2147483647)|
-|long	|8	|64|0| |	
-|float	|4	|32|0.0f| |	
-|double	|8	|64|0.0d| |	
-|char	|2	|16|'\u0000'| |	
-|boolean	|4|32	|false	| |
+        Integer i1 = 33; // 在缓存
+        Integer i2 = 33;// 在缓存
+        System.out.println(i1 == i2);// 输出 true
+        Integer i11 = 333;// 不在缓存
+        Integer i22 = 333;// 不在缓存
+        System.out.println(i11 == i22);// todo 输出 false
 
-&emsp; char的包装类型是Character。  
+        Integer i3 = new Integer(33);
+        System.out.println(i1 == i3); // todo 输出 false，i3新建了对象
+        System.out.println(i1.equals(i3));
+    }
+    ```
+    &emsp; 包装类的对象池(也有称常量池)和JVM的静态/运行时常量池没有任何关系。静态/运行时常量池有点类似于符号表的概念，与对象池相差甚远。  
+    &emsp; 包装类的对象池是池化技术的应用，并非是虚拟机层面的东西，而是 Java 在类封装里实现的。
 
-&emsp; java对象大小查看【JVM内存】章节。  
+3. ==和equals()
+    ```java
+    static  Integer c = 3;
+    public static void main(String[] args) {
+
+        Integer a = 3;
+        Integer b = 3;
+
+        System.out.println(a == 3);
+        System.out.println(a ==b);       // todo 结果true
+        System.out.println(a.equals(b)); // todo 结果true
+
+        System.out.println(c==3);  // todo 结果true
+        System.out.println(a==c);  // todo 结果true
+        System.out.println(a.equals(c));  // todo 结果true
+    }
+    ```
+    1. 基本型和基本型封装型进行“==”运算符的比较，基本型封装型将会自动拆箱变为基本型后再进行比较。  
+    2. 两个Integer类型进行“==”比较，如果其值在-128至127，那么返回true，否则返回false, 这跟Integer.valueOf()的缓冲对象有关。  
+    3. `两个基本型的【封装型】进行equals()比较，首先equals()会比较类型，如果类型相同，则继续比较值，如果值也相同，返回true。` 代码中，a.equals(b)
+    4. 基本型封装类型调用equals(),但是参数是基本类型，这时候，先会进行自动装箱，基本型转换为其封装类型，再进行比较。 
 
 ### 1.1.3. Java集合框架
 #### 1.1.3.1. Java集合框架
