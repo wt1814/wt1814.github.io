@@ -4,7 +4,7 @@
 * [大总结2](/docs/a-summary/summaryTwo.md)  
 * [总结-图](/docs/a-summary/summaryThree.md)  
 * [Java基础](/docs/a-summary/JavaBasic.md)  
-* [设计模式](/docs/a-summary/DesignPatterns.md)  
+* [设计模式](/docs/a-summary/designPatterns.md)  
 
 ------------------------------------------------------------------------------------------------------------------------------
 * ★★★Java基础  
