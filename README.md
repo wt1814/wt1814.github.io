@@ -21,21 +21,21 @@
         - [1.4.3. Dubbo](#143-dubbo)
         - [1.4.4. Zookeeper](#144-zookeeper)
         - [1.4.5. ServiceMesh](#145-servicemesh)
-    - [1.5. 分布式原理](#15-分布式原理)
-        - [1.5.1. 分布式理论](#151-分布式理论)
-        - [1.5.2. 分布式ID](#152-分布式id)
-        - [1.5.3. 分布式事务](#153-分布式事务)
-        - [1.5.4. 分布式锁](#154-分布式锁)
-    - [1.6. 高并发](#16-高并发)
-        - [1.6.1. 高并发及系统性能](#161-高并发及系统性能)
-        - [1.6.2. 高并发系统](#162-高并发系统)
-        - [1.6.3. 缓存和Redis](#163-缓存和redis)
-            - [1.6.3.1. 缓存介绍](#1631-缓存介绍)
-            - [1.6.3.2. Redis](#1632-redis)
-        - [1.6.4. 限流降级](#164-限流降级)
-        - [1.6.5. MQ](#165-mq)
-            - [1.6.5.1. RocketMQ](#1651-rocketmq)
-            - [1.6.5.2. Kafka](#1652-kafka)
+    - [1.5. 高并发](#15-高并发)
+        - [1.5.1. 高并发及系统性能](#151-高并发及系统性能)
+        - [1.5.2. 高并发系统](#152-高并发系统)
+        - [1.5.3. 缓存和Redis](#153-缓存和redis)
+            - [1.5.3.1. 缓存介绍](#1531-缓存介绍)
+            - [1.5.3.2. Redis](#1532-redis)
+        - [1.5.4. 限流降级](#154-限流降级)
+        - [1.5.5. MQ](#155-mq)
+            - [1.5.5.1. RocketMQ](#1551-rocketmq)
+            - [1.5.5.2. Kafka](#1552-kafka)
+    - [1.6. 分布式原理](#16-分布式原理)
+        - [1.6.1. 分布式理论](#161-分布式理论)
+        - [1.6.2. 分布式ID](#162-分布式id)
+        - [1.6.3. 分布式事务](#163-分布式事务)
+        - [1.6.4. 分布式锁](#164-分布式锁)
     - [1.7. 计算机网络](#17-计算机网络)
         - [1.7.1. 负载均衡](#171-负载均衡)
         - [1.7.2. 网络IO/分布式通信](#172-网络io分布式通信)
@@ -60,21 +60,21 @@
     - [1.12. 面试](#112-面试)
         - [1.12.1. ★★★做过的项目](#1121-★★★做过的项目)
         - [1.12.2. ★★★面试流程](#1122-★★★面试流程)
-    - [1.15. Linux服务器搭建](#115-linux服务器搭建)
-        - [1.15.1. Linux基础](#1151-linux基础)
-        - [1.15.2. Linux服务器](#1152-linux服务器)
-        - [1.15.3. DevOps介绍](#1153-devops介绍)
-        - [1.15.4. 搭建-研发](#1154-搭建-研发)
-    - [1.16. Docker和k8s](#116-docker和k8s)
-        - [1.16.1. 搭建-需求、测试](#1161-搭建-需求测试)
-        - [1.16.2. 监控和统计](#1162-监控和统计)
-    - [1.17. 常用研发工具](#117-常用研发工具)
-    - [1.14. Linux操作系统](#114-linux操作系统)
-    - [1.13. 算法](#113-算法)
+    - [1.13. Linux服务器搭建](#113-linux服务器搭建)
+        - [1.13.1. Linux基础](#1131-linux基础)
+        - [1.13.2. Linux服务器](#1132-linux服务器)
+        - [1.13.3. DevOps介绍](#1133-devops介绍)
+        - [1.13.4. 搭建-研发](#1134-搭建-研发)
+    - [1.14. Docker和k8s](#114-docker和k8s)
+        - [1.14.1. 搭建-需求、测试](#1141-搭建-需求测试)
+        - [1.14.2. 监控和统计](#1142-监控和统计)
+    - [1.15. 常用研发工具](#115-常用研发工具)
+    - [1.16. Linux操作系统](#116-linux操作系统)
+    - [1.17. 算法](#117-算法)
     - [1.18. 前端知识](#118-前端知识)
     - [1.19. 测试](#119-测试)
     - [1.20. python](#120-python)
-    - [微信开发](#微信开发)
+    - [1.21. 微信开发](#121-微信开发)
 
 <!-- /TOC -->
 
@@ -615,53 +615,15 @@ graph LR
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.5. 分布式原理
-
-### 1.5.1. 分布式理论  
-[分布式理论](/docs/microService/thinking/DistributedThink.md)  
-[分布式和集群](/docs/system/distributed.md)   
-[分布式理论CAP](/docs/microService/thinking/DistributedTheory.md)  
-[分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
-&emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
-
-### 1.5.2. 分布式ID
-[分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
-
-### 1.5.3. 分布式事务
-[分布式事务](/docs/microService/thinking/DistriTransaction.md)  
-&emsp; [单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/SingleServiceMultipleSources.md)  
-&emsp; [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
-&emsp; &emsp; [JTA+Atomic/单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/JTA.md)  
-&emsp; [TCC汇总](/docs/microService/thinking/TCCSummary.md)  
-&emsp; &emsp; [TCC](/docs/microService/thinking/TCC.md)   
-&emsp; &emsp; [TCC问题](/docs/microService/thinking/TCCProblem.md)   
-&emsp; &emsp; [TCC问题1](/docs/microService/thinking/TCCProblemOne.md)   
-&emsp; [Saga](/docs/microService/thinking/Event.md)  
-&emsp; [★★★消息模式](/docs/microService/thinking/news.md)   
-&emsp; [分布式事务的选型和使用](/docs/microService/thinking/DistributedTransactionSelection.md)  
-&emsp; [分布式事务框架](/docs/microService/thinking/framework.md)   
-&emsp; &emsp; [★★★阿里Seata](/docs/microService/thinking/Seata.md)  
-
-### 1.5.4. 分布式锁
-[分布式锁](/docs/microService/thinking/Lock.md)  
-&emsp; [Redis分布式锁](/docs/microService/thinking/redisLock.md)  
-&emsp; [使用Redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
-&emsp; [Redisson框架](/docs/microService/thinking/Redisson.md)  
-&emsp; &emsp; [SpringBoot整合Redisson](/docs/microService/thinking/BootRedisson.md)  
-&emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
-&emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
-
-------------------------------------------------------------------------------------------------------------------------------
-
-## 1.6. 高并发
-### 1.6.1. 高并发及系统性能
+## 1.5. 高并发
+### 1.5.1. 高并发及系统性能
 [高并发相关概念](/docs/system/DistributedHighConcurrency.md)   
 [系统性能指标](/docs/system/performance.md)  
 [性能压测](/docs/system/PerformancePressureTest.md)  
 [★★★服务器数量计算](/docs/system/NumberOfServers.md)  
 
 
-### 1.6.2. 高并发系统
+### 1.5.2. 高并发系统
 [并发系统三高](/docs/system/threeHigh.md)  
 &emsp; [高可用建设](/docs/system/highAvailability.md)  
 &emsp; [秒杀系统设计](/docs/system/seckill.md)  
@@ -669,10 +631,10 @@ graph LR
 [资源限制](/docs/system/ResourceConstraints.md)  
 
 
-### 1.6.3. 缓存和Redis  
+### 1.5.3. 缓存和Redis  
 [缓存和Redis](/docs/cache/Cache.md)  
 
-#### 1.6.3.1. 缓存介绍
+#### 1.5.3.1. 缓存介绍
 [缓存算法](/docs/cache/CacheAlgorithm.md)  
 [二级缓存](/docs/microService/Redis/doubleCache.md)   
 &emsp; [j2Cache框架集成Caffeine+Redis二级缓存](/docs/microService/Redis/Caffeine.md)  
@@ -681,7 +643,7 @@ graph LR
 &emsp; [更新缓存](/docs/cache/CacheUpdate.md)  
 [Redis热点key](/docs/cache/hotspotKey.md)  
 
-#### 1.6.3.2. Redis
+#### 1.5.3.2. Redis
 [学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
 [Redis使用](/docs/microService/Redis/RedisUse.md)  
 &emsp; [Redis安装](/docs/microService/Redis/RedisInstall.md)  
@@ -726,24 +688,24 @@ graph LR
 &emsp; [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
 
 
-### 1.6.4. 限流降级
+### 1.5.4. 限流降级
 [分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
 &emsp; [如何计算服务限流的配额？](/docs/microService/thinking/limitingQuota.md)  
 &emsp; [限流Sentinel](/docs/microService/thinking/Sentinel.md)  
 [服务降级](/docs/microService/thinking/Demotion.md)  
 
-### 1.6.5. MQ    
+### 1.5.5. MQ    
 [MQ](/docs/microService/mq/mq.md)  
 [★★★MQ常见面试题](/docs/microService/mq/mqInterview.md)   
 &emsp; [消息推拉机制](/docs/microService/mq/PushPull.md)  
 [RocketMQ和Kafka](/docs/microService/mq/RocketMQAndKafka.md)  
 
-#### 1.6.5.1. RocketMQ  
+#### 1.5.5.1. RocketMQ  
 [RocketMQ搭建](/docs/devAndOps/build/RocketBuild.md)  
 [SpringBoot整合RocketMQ](/docs/microService/mq/Rocket/BootRocket.md)  
 
 
-#### 1.6.5.2. Kafka  
+#### 1.5.5.2. Kafka  
 [kafka](/docs/microService/mq/kafka/kafka.md)   
 [kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  
 &emsp; [生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
@@ -773,6 +735,45 @@ graph LR
 -->
 
 ------------------------------------------------------------------------------------------------------------------------------
+
+## 1.6. 分布式原理
+
+### 1.6.1. 分布式理论  
+[分布式理论](/docs/microService/thinking/DistributedThink.md)  
+[分布式和集群](/docs/system/distributed.md)   
+[分布式理论CAP](/docs/microService/thinking/DistributedTheory.md)  
+[分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
+&emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
+
+### 1.6.2. 分布式ID
+[分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
+
+### 1.6.3. 分布式事务
+[分布式事务](/docs/microService/thinking/DistriTransaction.md)  
+&emsp; [单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/SingleServiceMultipleSources.md)  
+&emsp; [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
+&emsp; &emsp; [JTA+Atomic/单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/JTA.md)  
+&emsp; [TCC汇总](/docs/microService/thinking/TCCSummary.md)  
+&emsp; &emsp; [TCC](/docs/microService/thinking/TCC.md)   
+&emsp; &emsp; [TCC问题](/docs/microService/thinking/TCCProblem.md)   
+&emsp; &emsp; [TCC问题1](/docs/microService/thinking/TCCProblemOne.md)   
+&emsp; [Saga](/docs/microService/thinking/Event.md)  
+&emsp; [★★★消息模式](/docs/microService/thinking/news.md)   
+&emsp; [分布式事务的选型和使用](/docs/microService/thinking/DistributedTransactionSelection.md)  
+&emsp; [分布式事务框架](/docs/microService/thinking/framework.md)   
+&emsp; &emsp; [★★★阿里Seata](/docs/microService/thinking/Seata.md)  
+
+### 1.6.4. 分布式锁
+[分布式锁](/docs/microService/thinking/Lock.md)  
+&emsp; [Redis分布式锁](/docs/microService/thinking/redisLock.md)  
+&emsp; [使用Redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
+&emsp; [Redisson框架](/docs/microService/thinking/Redisson.md)  
+&emsp; &emsp; [SpringBoot整合Redisson](/docs/microService/thinking/BootRedisson.md)  
+&emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
+&emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
+
+------------------------------------------------------------------------------------------------------------------------------
+
 
 ## 1.7. 计算机网络  
 [计算机网络](/docs/network/Network.md)  
@@ -1046,7 +1047,7 @@ https://help.aliyun.com/document_detail/122217.html
 
 
 
-## 1.15. Linux服务器搭建
+## 1.13. Linux服务器搭建
 <!-- 
 ideaserver jdk   tomcat
 
@@ -1064,7 +1065,7 @@ prometheus
 -->
 
 
-### 1.15.1. Linux基础  
+### 1.13.1. Linux基础  
 [CentOS](/docs/devAndOps/centOS/centOS.md)  
 [Linux目录和版本](/docs/Linux/catalogue.md)  
 [★★★Linux命令](/docs/Linux/Command.md)  
@@ -1080,14 +1081,14 @@ prometheus
 [Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
 [nohup xxx &后台进程关闭](/docs/devAndOps/centOS/nohup.md)  
 
-### 1.15.2. Linux服务器  
+### 1.13.2. Linux服务器  
 [Linux服务器](/docs/Linux/build/LinuxServer.md)   
 [防火墙](/docs/Linux/build/firewall.md)  
 [堡垒机](/docs/Linux/build/FortressMachine.md)  
 [DNS服务器](/docs/Linux/build/DNS.md)  
 [扩容](/docs/devAndOps/centOS/dilatation.md)  
 
-### 1.15.3. DevOps介绍    
+### 1.13.3. DevOps介绍    
 [CI/CD](/docs/devAndOps/build/CICD.md)  
 [Devops](/docs/devAndOps/build/devOps.md)  
 [GIT](/docs/devAndOps/git/command.md)  
@@ -1106,7 +1107,7 @@ prometheus
 &emsp; [Jenkins构建Java项目](/docs/devAndOps/jenkins/JenkinsJava.md)  
 
 
-### 1.15.4. 搭建-研发
+### 1.13.4. 搭建-研发
 [Linux定时执行脚本](/docs/devAndOps/build/TimingScript.md)  
 [3. JDK安装](/docs/devAndOps/build/JDKBuild.md)  
 [4. Git安装](/docs/devAndOps/git/GitBuild.md)  
@@ -1135,7 +1136,7 @@ prometheus
 [docsify](/docs/devAndOps/build/docsify.md)  
 [3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
 
-## 1.16. Docker和k8s
+## 1.14. Docker和k8s
 [从上往下学Docker](/docs/devAndOps/docker/summary.md)  
 &emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
 &emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
@@ -1173,7 +1174,7 @@ prometheus
 [6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)  
 
 
-### 1.16.1. 搭建-需求、测试
+### 1.14.1. 搭建-需求、测试
 [连接内网vpn](/docs/Linux/enterprise/vpn.md)  
 [多人协作confluence](/docs/Linux/enterprise/confluence.md)  
 [jira](/docs/devAndOps/build/jira.md)  
@@ -1181,7 +1182,7 @@ prometheus
 [LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
 
 
-### 1.16.2. 监控和统计
+### 1.14.2. 监控和统计
 [监控](/docs/devAndOps/monitor/indicators.md)  
 &emsp; [监控系统](/docs/devAndOps/monitor/monitor.md)  
 [prometheus](/docs/devAndOps/monitor/prometheus.md)  
@@ -1192,7 +1193,7 @@ prometheus
 
 
 
-## 1.17. 常用研发工具  
+## 1.15. 常用研发工具  
 [Idea](/docs/software/idea/idea.md)  
 [postman](/docs/software/postman.md)  
 [抓包Charles](/docs/software/charles.md)  
@@ -1204,7 +1205,7 @@ prometheus
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.14. Linux操作系统  
+## 1.16. Linux操作系统  
 <!-- 
 xshell 工具Tabby 
 https://mp.weixin.qq.com/s/Cs-WzMm-8VZbLoq9CA-qWw
@@ -1236,7 +1237,7 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 
 ------------------------------------------------------------------------------------------------------------------------------
 
-## 1.13. 算法  
+## 1.17. 算法  
 [红黑树](/docs/function/redBlack.md)  
 [复杂数据结构](/docs/function/otherStructure.md)  
 &emsp; [跳跃表](/docs/function/SkipList.md)  
@@ -1266,6 +1267,6 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 [python](/docs/python/python.md)  
 
 
-## 微信开发
+## 1.21. 微信开发
 [小程序](/docs/WeChat/applet.md)  
 
