@@ -9,6 +9,7 @@
 
 
 &emsp; **<font color = "red">总结：</font>**  
+![image](http://182.92.69.8:8081/img/java/JVM/JVM-4.png)  
 1. JVM由4大部分组成：类`加载`器ClassLoader，运行时`数据区`Runtime Data Area，`执行`引擎Execution Engine，本地方法调用Native Interface。  
 2. **<font color = "clime">JVM各组件的作用（JVM执行程序的过程）：</font>**   
     1. 首先通过类加载器（ClassLoader）把Java代码转换成字节码；  
