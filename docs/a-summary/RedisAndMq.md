@@ -22,31 +22,31 @@
                 - [1.2.1.4.2. SDS详解](#12142-sds详解)
                 - [1.2.1.4.3. Dictht](#12143-dictht)
                 - [1.2.1.4.4. 数据类型](#12144-数据类型)
-        - [1.2.2. Redis原理](#122-redis原理)
-            - [1.2.2.1. Redis为什么那么快？](#1221-redis为什么那么快)
-            - [1.2.2.2. Redis【虚拟内存】机制](#1222-redis虚拟内存机制)
-            - [1.2.2.3. Redis事件/Reactor](#1223-redis事件reactor)
-            - [1.2.2.4. Redis多线程模型](#1224-redis多线程模型)
-            - [1.2.2.5. Redis协议](#1225-redis协议)
-            - [1.2.2.6. Redis内存操作](#1226-redis内存操作)
-                - [1.2.2.6.1. Redis过期键删除](#12261-redis过期键删除)
-                - [1.2.2.6.2. Redis内存淘汰](#12262-redis内存淘汰)
-            - [1.2.2.7. Redis持久化，磁盘操作](#1227-redis持久化磁盘操作)
-                - [1.2.2.7.1. ~~AOF重写阻塞~~](#12271-aof重写阻塞)
-        - [1.2.3. Redis内置功能](#123-redis内置功能)
-            - [1.2.3.1. RedisPipeline/批处理](#1231-redispipeline批处理)
-            - [1.2.3.2. Redis事务](#1232-redis事务)
-            - [1.2.3.3. Redis和Lua](#1233-redis和lua)
-            - [1.2.3.4. Redis实现消息队列](#1234-redis实现消息队列)
-        - [1.2.4. Redis高可用](#124-redis高可用)
-            - [1.2.4.1. Redis高可用方案](#1241-redis高可用方案)
-            - [1.2.4.2. Redis主从复制](#1242-redis主从复制)
-            - [1.2.4.3. Redis读写分离](#1243-redis读写分离)
-            - [1.2.4.4. Redis哨兵模式](#1244-redis哨兵模式)
-            - [1.2.4.5. Redis集群模式](#1245-redis集群模式)
+        - [1.2.2. Redis内置功能](#122-redis内置功能)
+            - [1.2.2.1. RedisPipeline/批处理](#1221-redispipeline批处理)
+            - [1.2.2.2. Redis事务](#1222-redis事务)
+            - [1.2.2.3. Redis和Lua](#1223-redis和lua)
+            - [1.2.2.4. Redis实现消息队列](#1224-redis实现消息队列)
+            - [1.2.2.5. Redis发布订阅](#1225-redis发布订阅)
+        - [1.2.3. Redis高可用](#123-redis高可用)
+            - [1.2.3.1. Redis高可用方案](#1231-redis高可用方案)
+            - [1.2.3.2. Redis主从复制](#1232-redis主从复制)
+            - [1.2.3.3. Redis哨兵模式](#1233-redis哨兵模式)
+            - [1.2.3.4. Redis读写分离](#1234-redis读写分离)
+            - [1.2.3.5. Redis集群模式](#1235-redis集群模式)
+        - [1.2.4. Redis原理](#124-redis原理)
+            - [1.2.4.1. 内存](#1241-内存)
+                - [1.2.4.1.1. Redis过期键删除](#12411-redis过期键删除)
+                - [1.2.4.1.2. Redis内存淘汰](#12412-redis内存淘汰)
+                - [1.2.4.1.3. Redis【虚拟内存】机制](#12413-redis虚拟内存机制)
+            - [1.2.4.2. 磁盘](#1242-磁盘)
+                - [1.2.4.2.1. Redis持久化，磁盘操作](#12421-redis持久化磁盘操作)
+                - [1.2.4.2.2. ~~AOF重写阻塞~~](#12422-aof重写阻塞)
+            - [1.2.4.3. 网络](#1243-网络)
+                - [1.2.4.3.1. Redis事件/Reactor（IO多路复用）](#12431-redis事件reactorio多路复用)
+                - [1.2.4.3.2. Redis多线程模型](#12432-redis多线程模型)
+                - [1.2.4.3.3. Redis协议](#12433-redis协议)
         - [1.2.5. Redis常见问题与优化](#125-redis常见问题与优化)
-        - [1.2.6. 分布式限流](#126-分布式限流)
-        - [1.2.7. 服务降级](#127-服务降级)
     - [1.3. 分布式消息队列](#13-分布式消息队列)
         - [1.3.1. mq](#131-mq)
         - [1.3.2. Kafka](#132-kafka)
@@ -199,57 +199,67 @@ public String getCacheData(){
 	1. 基本结构  
 	&emsp; 哈希表由一个桶数组组成，其中一个桶可以有多个条目（比如上述图c中有四个条目）。而每个桶中有四个指纹位置，意味着一次哈希计算后布谷鸟有四个“巢“可用，而且四个巢是连续位置，可以更好的利用cpu高速缓存。也就是说每个桶的大小是4*8bits。  
 
-
 #### 1.1.3.4. Redis热点key
 
 
 ## 1.2. Redis
 ### 1.2.1. Redis数据类型
 #### 1.2.1.1. Redis基本数据类型
+1. **<font color = "red">小结：</font>** 5大基本数据类型：String、Hash、List（列表）、Set（无序集合，可以用作标签、点赞、签到）、Zset（有序集合，排行榜）。   
 1. Key操作命令：expire，为给定key设置生存时间；TTL key，以秒为单位，返回给定key的剩余生存时间（TTL, time to live）。  
 2.  **<font color = "clime">Redis各个数据类型的使用场景：分析存储类型和可用的操作。</font>**  
-    * 有序列表list：  
-    &emsp; `列表不但是有序的，同时支持按照索引范围获取元素。` 可以用作栈、文章列表。  
-    * 无序集合set：
-        * 集合内操作，可以用作标签、点赞、签到；
-        * 集合间操作，可以用作社交需求； 
-        * spop/srandmember命令生成随机数。   
-    * 有序集合ZSet：  
-    &emsp; 有序的集合，每个元素有个 score。  
+    * 有序列表list：`列表不但是有序的，同时支持按照索引范围获取元素。`  
+    &emsp; 可以用作栈、文章列表。  
+    * 无序集合set：集合内操作，可以用作标签、点赞、签到；集合间操作，可以用作社交需求； spop/srandmember命令生成随机数。  
+    * 有序集合ZSet：有序的集合，每个元素有个 score。  
     &emsp; 可以用作排行榜、延迟队列。  
 3. **ZSet实现多维排序：**  
 &emsp; <font color = "red">将涉及排序的多个维度的列通过一定的方式转换成一个特殊的列</font>，即result = function(x, y, z)，即x，y，z是三个排序因子，例如下载量、时间等，通过自定义函数function()计算得到result，将result作为ZSet中的score的值，就能实现任意维度的排序需求了。 
 
+
+
 #### 1.2.1.2. Redis扩展数据类型
-1. <font color = "clime">Bitmap、HyperLogLog都是作为Redis的Value值。</font>  
-2. <font color = "clime">`Bitmap：二值状态统计。`Redis中的Bitmap，`key可以为某一天或某一ID，Bitmap中bit可以存储用户的任意信息，所以Redis Bitmap可以用作统计信息。`常用场景：用户签到、统计活跃用户、用户在线状态。</font>  
-    1. 基于Redis BitMap实现用户签到功能： **<font color = "clime">考虑到每月初需要重置连续签到次数，最简单的方式是按用户每月存一条签到数据（也可以每年存一条数据）。`Key的格式为u :sign :uid :yyyyMM`，`Value则采用长度为4个字节（32位）的位图（最大月份只有31天）。位图的每一位代表一天的签到，1表示已签，0表示未签。`</font>**  
-3. <font color = "clime">`HyperLogLog用于基数统计，例如UV（独立访客数）。`</font>  
-    * `基数统计是指找出集合中不重复元素，用于去重。`  
-    * **<font color = "clime">使用Redis统计集合的基数一般有三种方法，分别是使用Redis的Hash，BitMap和HyperLogLog。</font>**  
+1. <font color = "clime">Bitmap、HyperLogLog都是作为Redis的Value值。`用于统计信息。`</font>  
+2. <font color = "clime">Bitmap：二值状态统计。Redis中的Bitmap，key可以为某一天或某一ID，Bitmap中bit可以存储用户的任意信息。所以Redis Bitmap可以用作统计信息。`常用场景：用户签到、统计活跃用户、用户在线状态`。</font>  
+&emsp; `BitMap实现签到`：**<font color = "clime">考虑到每月初需要重置连续签到次数，最简单的方式是按用户每月存一条签到数据（也可以每年存一条数据）。`Key的格式为u :sign :uid :yyyyMM`，`Value则采用长度为4个字节（32位）的【位图】（最大月份只有31天）。位图的每一位代表一天的签到，1表示已签，0表示未签。`</font>**  
+3. <font color = "clime">HyperLogLog用于基数统计，例如UV（独立访客数）。</font>  
+    * 基数统计是指找出集合中不重复元素，用于去重。例如： 统计每个网页的UV(独立访客，每个用户每天只记录一次，需要对每天对浏览去重) 。  
+    * 使用Redis统计集合的基数一般有三种方法，分别是使用Redis的Hash，BitMap和HyperLogLog。  
     * HyperLogLog内存空间消耗少，但存在误差0.81%。  
 4. Streams消息队列：支持多播的可持久化的消息队列，用于实现发布订阅功能，借鉴了kafka的设计。 
 5. [布隆过滤器](/docs/function/otherStructure.md)作为一个插件加载到Redis Server中，就会给Redis提供了强大的布隆去重功能。  
 
+
 #### 1.2.1.3. redis使用：bigKey
+
 
 #### 1.2.1.4. ~~Redis底层实现~~
 1. 很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！  
 
 ##### 1.2.1.4.1. 数据结构
-1. 很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占有！！！  
-2. ~~redis底层8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。~~  
+1. 很重要的思想：redis设计比较复杂的对象系统，都是为了缩减内存占用！！！  
+2. <font color = "red">目前有8种数据结构：int、raw、embstr(SDS)、ziplist、hashtable、quicklist、intset、skiplist。</font>  
+&emsp; **<font color = "clime">Redis数据类型的底层实现如下：</font>**  
+
+|Redis数据结构|底层数据结构|
+|---|---|
+|String	|int、embstr(即SDS)、raw|
+|Hash	|ziplist(压缩列表)或者dictht(字典)|
+|List	|quicklist(快速列表，是ziplist压缩列表和linkedlist双端链表的组合)|
+|Set	|intset(整数集合)或者dictht(字典)|
+|ZSet	|skiplist(跳跃表)或者ziplist(压缩列表)|
+  
 3. 3种链表：  
     * 双端链表LinkedList  
         &emsp; Redis的链表在双向链表上扩展了头、尾节点、元素数等属性。Redis的链表结构如下：
         ![image](http://182.92.69.8:8081/img/microService/Redis/redis-62.png)  
     * 压缩列表Ziplist  
         &emsp; 在双端链表中，如果在一个链表节点中存储一个小数据，比如一个字节。那么对应的就要保存头节点，前后指针等额外的数据。这样就浪费了空间，同时由于反复申请与释放也容易导致内存碎片化。这样内存的使用效率就太低了。  
-        &emsp; Redis设计了压缩列表：  
+        &emsp; Redis设计了压缩列表  
         ![image](http://182.92.69.8:8081/img/microService/Redis/redis-110.png)  
         &emsp; ziplist是一组连续内存块组成的顺序的数据结构， **<font color = "red">是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，节省空间，是一种时间换空间的思想。</font>** 只用在字段个数少，字段值小的场景里。  
     * 快速列表Quicklist  
-        &emsp; QuickList其实就是结合了LinkedList和ZipList的优点设计出来的。quicklist存储了一个双向链表，每个节点都是一个ziplist。  
+        &emsp; QuickList其实就是结合了ZipList和LinkedList的优点设计出来的。quicklist存储了一个双向链表，每个节点都是一个ziplist。  
         ![image](http://182.92.69.8:8081/img/microService/Redis/redis-63.png)  
 4. 整数集合inset  
 &emsp; inset的数据结构：  
@@ -260,9 +270,6 @@ public String getCacheData(){
 &emsp; skiplist也叫做「跳跃表」，跳跃表是一种有序的数据结构，它通过每一个节点维持多个指向其它节点的指针，从而达到快速访问的目的。  
 ![image](http://182.92.69.8:8081/img/microService/Redis/redis-85.png)  
 &emsp; SkipList分为两部分，dict部分是由字典实现，Zset部分使用跳跃表实现，从图中可以看出，dict和跳跃表都存储了数据，实际上dict和跳跃表最终使用指针都指向了同一份数据，即数据是被两部分共享的，为了方便表达将同一份数据展示在两个地方。  
-
-&emsp; 二叉搜索算法能够高效的查询数据，但是需要一块连续的内存，而且增删改效率很低。  
-&emsp; 跳表，是基于链表实现的一种类似“二分”的算法。它可以快速的实现增，删，改，查操作。    
 
 ##### 1.2.1.4.2. SDS详解
 1. **<font color = "clime">对于SDS中的定义在Redis的源码中有的三个属性int len、int free、char buf[]。</font>**  
@@ -277,7 +284,7 @@ public String getCacheData(){
 3. **Redis字符串的性能优势：**  
     * 动态扩展：拼接字符串时，计算出大小是否足够，开辟空间至满足所需大小。  
     * 避免缓冲区溢出。「c语言」中两个字符串拼接，若是没有分配足够长度的内存空间就「会出现缓冲区溢出的情况」。  
-    * （`内存分配优化`）降低空间分配次数，提升内存使用效率。 **<font color = "blue">`空间预分配和惰性空间回收`。</font>** 
+    * （内存分配优化）降低空间分配次数，提升内存使用效率。 **<font color = "blue">空间预分配和惰性空间回收。</font>** 
         * 空间预分配：对于追加操作来说，Redis不仅会开辟空间至够用，<font color = "red">而且还会预分配未使用的空间(free)来用于下一次操作。</font>  
         * 惰性空间回收：与上面情况相反，<font color = "red">惰性空间回收适用于字符串缩减操作。</font>比如有个字符串s1="hello world"，对s1进行sdstrim(s1," world")操作，<font color = "red">执行完该操作之后Redis不会立即回收减少的部分，而是会分配给下一个需要内存的程序。</font>  
     * 快速获取字符串长度。
@@ -289,81 +296,157 @@ public String getCacheData(){
 &emsp; 扩展操作：ht[1]扩展的大小是比当前 ht[0].used 值的二倍大的第一个2的整数幂；收缩操作：ht[0].used 的第一个大于等于的 2 的整数幂。  
 &emsp; **<font color = "clime">当ht[0]上的所有的键值对都rehash到ht[1]中，会重新计算所有的数组下标值，当数据迁移完后，ht[0]就会被释放，然后将ht[1]改为ht[0]，并新创建ht[1]，为下一次的扩展和收缩做准备。</font>**  
 2. **<font color = "red">渐进式rehash：</font>**  
-&emsp; **<font color = "clime">Redis将所有的`rehash操作分成多步进行`，直到都rehash完成。</font>**  
+&emsp; **<font color = "clime">Redis将所有的rehash的操作分成多步进行，直到都rehash完成。</font>**  
 &emsp; **<font color = "red">在渐进式rehash的过程「更新、删除、查询会在ht[0]和ht[1]中都进行」，比如更新一个值先更新ht[0]，然后再更新ht[1]。</font>**   
-&emsp; **<font color = "clime">而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，</font><font color = "red">这样保证`「ht[0]只减不增`，直到最后的某一个时刻变成空表」，这样rehash操作完成。</font>**  
+&emsp; **<font color = "clime">而新增操作直接就新增到ht[1]表中，ht[0]不会新增任何的数据，</font><font color = "red">这样保证「ht[0]只减不增，直到最后的某一个时刻变成空表」，这样rehash操作完成。</font>**  
 
 
 ##### 1.2.1.4.4. 数据类型  
-&emsp; **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
+&emsp; Redis会根据当前值的类型和长度决定使用哪种内部编码实现。 **<font color = "clime">Redis根据不同的使用场景和内容大小来判断对象使用哪种数据结构，从而优化对象在不同场景下的使用效率和内存占用。</font>**   
 ![image](http://182.92.69.8:8081/img/microService/Redis/redis-106.png)  
 
 * String字符串类型的内部编码有三种：
-    1. int，存储8个字节的长整型（long，2^63-1）。当int数据不再是整数，或大小超过了long的范围（2^63-1 = 9223372036854775807）时，自动转化为embstr。  
-    2. embstr，代表 embstr 格式的 SDS（Simple Dynamic String简单动态字符串），存储小于44个字节的字符串。  
-    3. raw，存储大于44个字节的字符串（3.2 版本之前是 39 字节）。  
-* Hash由ziplist（压缩列表）或者dictht（字典）组成；  
-* List，「有序」「可重复」集合，由ziplist压缩列表和linkedlist双端链表的组成，在 3.2 之后采用QuickList；  
-* Set，「无序」「不可重复」集合， **<font color = "clime">是特殊的Hash结构（value为null），</font>** 由intset（整数集合）或者dictht（字典）组成；
-* ZSet，「有序」「不可重复」集合，由skiplist（跳跃表）或者ziplist（压缩列表）组成。  
-    &emsp; ZSet为什么不使用红黑树？  
-    1. zset有个核心操作：范围查找，跳表效率比红黑树高。  
-    2. 跳表的实现比红黑树简单。可以有效的控制跳表层级，来控制内存的消耗。    
+    1. int，存储8个字节的长整型(long，2^63-1)。当int数据不再是整数，或大小超过了long的范围(2^63-1=9223372036854775807)时，自动转化为embstr。  
+    2. embstr，代表 embstr 格式的 SDS(Simple Dynamic String 简单动态字符串)，存储小于44个字节的字符串。  
+    3. raw，存储大于 44 个字节的字符串(3.2 版本之前是 39 字节)。  
+* Hash由ziplist(压缩列表)或者dictht(字典)组成；  
+* List，「有序」「可重复」集合，由ziplist压缩列表或linkedlist双端链表组成，在 3.2 之后采用QuickList；  
+* Set，「无序」「不可重复」集合， **<font color = "clime">是特殊的Hash结构(value为null)，</font>** 由intset(整数集合)或者dictht(字典)组成；
+* ZSet，「有序」「不可重复」集合，由skiplist(跳跃表)或者ziplist(压缩列表)组成。  
 
-### 1.2.2. Redis原理
-&emsp; 从`CPU、内存、磁盘、网络IO`分析。  
+### 1.2.2. Redis内置功能
+#### 1.2.2.1. RedisPipeline/批处理
+1. Redis主要提供了以下几种批量操作方式：  
+    * 批量get/set(multi get/set)。⚠️注意：Redis中有删除单个Key的指令DEL，但没有批量删除 Key 的指令。  
+    * 管道(pipelining)
+    * 事务(transaction)
+    * 基于事务的管道(transaction in pipelining)
+2. 批量get/set(multi get/set)与管道：  
+    1. 原生批命令（mset, mget）是原子性，pipeline是非原子性。  
+    2. 原生批命令一命令多个key，但pipeline支持多命令（存在事务），非原子性。  
+    3. 原生批命令是服务端实现，而pipeline需要服务端与客户端共同完成。  
+3. Pipeline指的是管道技术，指的是客户端允许将多个请求依次发给服务器，过程中而不需要等待请求的回复，在最后再一并读取结果即可。  
 
-#### 1.2.2.1. Redis为什么那么快？
+
+#### 1.2.2.2. Redis事务
+1. **<font color = "clime">Redis事务的三个阶段：</font>**  
+    * 开始事务：以MULTI开启一个事务。   
+    * **<font color = "clime">命令入队：将多个命令入队到事务中，接到这些命令不会立即执行，而是放到等待执行的事务队列里。</font>**    
+    * 执行事务(exec)或取消事务(discard)：由EXEC/DISCARD命令触发事务。  
+2. **使用Redis事务的时候，可能会遇上以下两种错误：**  
+    1. **<font color = "red">（类似于Java中的编译错误）事务在执行EXEC之前，入队的命令可能会出错。</font>** 比如说，命令可能会产生语法错误(参数数量错误，参数名错误等等)，或者其他更严重的错误，比如内存不足(如果服务器使用maxmemory设置了最大内存限制的话)。  
+    2. **<font color = "red">（类似于Java中的运行错误）命令可能在 EXEC 调用之后失败。</font>** 举个例子，事务中的命令可能处理了错误类型的键，比如将列表命令用在了字符串键上面，诸如此类。  
+
+    &emsp; Redis 针对如上两种错误采用了不同的处理策略，对于发生在 EXEC 执行之前的错误，服务器会对命令入队失败的情况进行记录，并在客户端调用 EXEC 命令时，拒绝执行并自动放弃这个事务（Redis 2.6.5 之前的做法是检查命令入队所得的返回值：如果命令入队时返回 QUEUED ，那么入队成功；否则，就是入队失败）  
+    &emsp; 对于那些在 EXEC 命令执行之后所产生的错误，并没有对它们进行特别处理：即使事务中有某个/某些命令在执行时产生了错误，事务中的其他命令仍然会继续执行。 
+3. **带Watch的事务：**  
+&emsp; Redis Watch 命令给事务提供check-and-set (CAS) 机制。被Watch的Key被持续监控，如果key在Exec命令执行前有改变，那么整个事务被取消。   
+&emsp; WATCH命令用于在事务开始之前监视任意数量的键：当调用EXEC命令执行事务时，如果任意一个被监视的键已经被其他客户端修改了，那么整个事务将被打断，不再执行，直接返回失败。 
+
+#### 1.2.2.3. Redis和Lua
+
+
+#### 1.2.2.4. Redis实现消息队列
+&emsp; redis中实现消息队列的几种方案：  
+
+* 基于List的 LPUSH+BRPOP 的实现
+* PUB/SUB，订阅/发布模式
+* 基于Sorted-Set的实现
+* 基于Stream类型的实现
+
+#### 1.2.2.5. Redis发布订阅
+
+### 1.2.3. Redis高可用
+#### 1.2.3.1. Redis高可用方案
+1. **<font color = "clime">考虑资源：</font>**    
+&emsp; Redis集群最少6个节点，每个节点20G，总共120G。因此Redis集群比较耗资源。小型公司可以采用哨兵模式。    
+2. **<font color = "clime">考虑QPS：</font>**  
+&emsp; **单机的redis一般是支持上万甚至几万，具体的性能取决于数据操作的复杂性，如果仅仅是简单的kv操作的话，可以达到数万，如果是运行复杂的lua脚本的话，就可能只能到一万左右。**  
+&emsp; 缓存一般是用来支撑读的高并发，一般比较少用来支撑读的操作，一般读的操作是比较频繁的，甚至达到几万几十万，但是写的操作每秒才几千，这就需要读写分离了。  
+
+&emsp; `小型公司，可以采用哨兵，主从复制-单副本模式。`  
+
+
+#### 1.2.3.2. Redis主从复制
+1. **<font color = "red">Redis主从复制架构常见的是`单副本`、双副本模式。</font>**  
+2. <font color = "red">主从复制`过程`大体可以分为3个阶段：连接建立阶段（即准备阶段）、数据同步阶段、命令传播阶段。</font>  
+    1. 连接建立阶段：1. 保存主节点(master)信息。2. 从节点(slave)内部通过每秒运行的定时任务维护复制相关逻辑，当定时任务发现存在新的主节点后，会尝试与该节点建立网络连接。</font>3. 发送ping命令。  
+    2. 数据同步阶段：5. 同步数据集。有两种复制方式：全量复制和部分复制。  
+    &emsp; redis 2.8之前使用sync [runId] [offset]同步命令，redis2.8之后使用psync [runId] [offset]命令。两者不同在于，sync命令仅支持全量复制过程，psync支持全量和部分复制。    
+    3. 命令传播阶段：6. 命令持续复制。  
+4. **主从复制`问题`：**
+    * **<font color = "red">传输延迟，提供了repl-disable-tcp-nodelay参数用于控制是否关闭TCP_NODELAY，默认关闭。</font>**    
+        * `当关闭时，主节点产生的命令数据无论大小都会及时地发送给从节点，这样主从之间延迟会变小，但增加了网络带宽的消耗。` **<font color = "blue">适用于主从之间的网络环境良好的场景，如同机架或同机房部署。</font>** 
+        * **<font color = "blue">当开启时，主节点会合并较小的TCP数据包从而节省带宽。</font>** 默认发送时间间隔取决于Linux的内核，一般默认为40毫秒。这种配置节省了带宽但增大主从之间的延迟。 **<font color = "blue">适用于主从网络环境复杂或带宽紧张的场景，如跨机房部署。</font>**  
+    * 规避全量复制
+        * 节点运行ID不匹配。提供故障转移的功能；如果修改了主节点的配置，需要重启才能够生效，可以选择安全重启的方式(debug reload)。  
+        * 复制偏移量offset不在复制积压缓冲区中。需要根据中断时长来调整复制积压缓冲区的大小。  
+
+#### 1.2.3.3. Redis哨兵模式
+1. <font color="clime">【监控和自动故障转移】使得Sentinel能够完成主节点【故障发现和自动转移】，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
+2. <font color = "clime">Redis哨兵架构中主要包括两个部分：Redis Sentinel集群和Redis数据集群。</font>  
+3. **<font color = "clime">哨兵原理：</font>**  
+    * **<font color = "red">心跳检查：Sentinel通过三个定时任务来完成对各个节点的发现和监控，这是保证Redis高可用的重要机制。</font>**  
+        * 每隔10秒，每个Sentinel节点会向主节点和从节点发送`info命令` **<font color = "clime">获取最新的拓扑结构。</font>**   
+        * 每隔2秒，每个Sentinel节点会向Redis数据节点的`__sentinel__：hello频道`上发送该Sentinel节点对于主节点的判断以及当前Sentinel节点的信息，同时每个Sentinel节点也会订阅该频道， **<font color = "clime">了解其他Sentinel节点以及它们对主节点的判断。</font>**  
+        * 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点发送一条`ping命令` **<font color = "clime">做一次心跳检测。</font>**  
+    * **<font color = "red">主观下线和客观下线：</font>** 首先单个Sentinel节点认为数据节点主观下线，询问其他Sentinel节点，Sentinel多数节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。
+    * **<font color = "red">故障转移/主节点选举：</font>** Sentinel节点的领导者根据策略在从节点中选择主节点。    
+    * **<font color = "red">Sentinel选举：</font>** Sentinel集群是集中式架构，基于raft算法。  
+
+#### 1.2.3.4. Redis读写分离
+&emsp; 读写分离是一种使用方式，可以基于主从复制、哨兵模式实现。  
+
+#### 1.2.3.5. Redis集群模式
+1. **<font color = "red">根据执行分片的位置，可以分为三种分片方式：</font>** 客户端分片、代理分片、服务器分片：官方Redis Cluster。  
+2. **<font color = "clime">Redis集群的服务端：</font>**  
+    * 数据分布
+        * Redis数据分区
+        * 集群限制
+            1. <font color = "red">key批量操作支持有限。</font>如mset、mget，目前只支持具有相同slot值的key执行批量操作。对于映射为不同slot值的key由于执行mset、mget等操作可能存在于多个节点上因此不被支持。   
+            2. key事务操作支持有限。同理只支持多key在同一节点上的事务操作，当多个key分布在不同的节点上时无法使用事务功能。     
+            5. 复制结构只支持一层，从节点只能复制主节点，不支持嵌套树状复制结构。  
+    * 故障转移：
+        * 故障发现：主观下线(pfail)和客观下线(fail)。  
+        * 故障恢复：当从节点通过内部定时任务发现自身复制的主节点进入客观下线；从节点发起选举；其余主节点选举投票。  
+3. **<font color = "clime">Redis集群的客户端：</font>**  
+&emsp; Redis集群对客户端通信协议做了比较大的修改，为了追求性能最大化，并没有采用代理的方式，而是采用客户端直连节点的方式。    
+    * 请求重定向：在集群模式下，Redis接收任何键相关命令时首先计算键对应的槽，再根据槽找出所对应的节点，如果节点是自身，则处理键命令；否则回复MOVED重定向错误，通知客户端请求正确的节点。这个过程称为MOVED重定向。  
+    * ASK重定向：Redis集群支持在线迁移槽(slot)和数据来完成水平伸缩，当slot对应的数据从源节点到目标节点迁移过程中，客户端需要做到智能识别，保证键命令可正常执行。例如当一个slot数据从源节点迁移到目标节点时，期间可能出现一部分数据在源节点，而另一部分在目标节点。  
+        1. 客户端根据本地slots缓存发送命令到源节点，如果存在键对象则直接执行并返回结果给客户端。  
+        2. **<font color = "clime">如果键对象不存在，则可能存在于目标节点，这时源节点会回复ASK重定向异常。格式如下：(error)ASK{slot}{targetIP}：{targetPort}。</font>**   
+        3. 客户端从ASK重定向异常提取出目标节点信息，发送asking命令到目标节点打开客户端连接标识，再执行键命令。如果存在则执行，不存在则返回不存在信息。   
+
+    &emsp; **<font color = "clime">ASK与MOVED虽然都是对客户端的重定向控制，但是有着本质区别。ASK重定向说明集群正在进行slot数据迁移，客户端无法知道什么时候迁移完成，因此只能是临时性的重定向，客户端不会更新slots缓存。但是MOVED重定向说明键对应的槽已经明确指定到新的节点，因此需要更新slots缓存。</font>**  
+
+
+### 1.2.4. Redis原理
+&emsp; 从`内存、磁盘、网络IO、CPU`分析。  
 &emsp; Redis的性能非常之高，每秒可以承受10W+的QPS，它如此优秀的性能主要取决于以下几个方面：  
-
-1. 磁盘I/O：
-    * 纯内存操作
-    * [虚拟内存机制](/docs/microService/Redis/RedisVM.md)  
-    * 合理的数据编码
-2. ~~网络I/O：~~  
-    * [使用IO多路复用技术](/docs/microService/Redis/RedisEvent.md)  
-    * [合理的线程模型](/docs/microService/Redis/RedisMultiThread.md)   
+1. 内存  
+    * [Redis虚拟内存机制](/docs/microService/Redis/RedisVM.md)  
+    * [Redis内存淘汰](/docs/microService/Redis/RedisEliminate.md)    
+    * [Redis过期键删除](/docs/microService/Redis/Keydel.md)  
+2. 磁盘I/O：  
+    * 合理的数据编码  
+    * [Redis持久化](/docs/microService/Redis/RedisPersistence.md)  
+        * [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
+3. 网络I/O：  
+    * [使用IO多路复用技术](/docs/microService/Redis/RedisEvent.md) 
+    * [Redis事件/Reactor](/docs/microService/Redis/RedisEvent.md)   
+    * [Redis多线程模型](/docs/microService/Redis/RedisMultiThread.md)   
     * [简单快速的Redis协议](/docs/microService/Redis/RESP.md)  
-3. ......
+4. ......
 
-#### 1.2.2.2. Redis【虚拟内存】机制
-&emsp; **<font color = "clime">通过VM功能可以实现冷热数据分离，使热数据仍在内存中、冷数据保存到磁盘。这样就可以避免因为内存不足而造成访问速度下降的问题。</font>**  
-&emsp; 使用虚拟内存把那些不经常访问的数据交换到磁盘上。需要特别注意的是Redis并没有使用OS提供的Swap，而是自己实现。  
-&emsp; **<font color = "clime">Redis为了保证查找的速度，只会将value交换出去，而在内存中保留所有的Key。</font>**  
-
-#### 1.2.2.3. Redis事件/Reactor
-&emsp; 参考[Redis事件/Reactor](/docs/microService/Redis/RedisEvent.md)  
-&emsp; Redis基于Reactor模式开发了自己的网络事件处理器：这个处理器被称为文件事件处理器（file event handler）：文件事件处理器使用I/O多路复用（multiplexing）程序来同时监听多个套接字，并根据套接字目前执行的任务来为套接字关联不同的事件处理器。  
-&emsp; 下图展示了文件事件处理器的四个组成部分，它们分别是套接字、I/O多路复用程序、文件事件分派器（dispatcher），以及事件处理器。  
-![image](http://182.92.69.8:8081/img/microService/Redis/redis-56.png)    
-
-#### 1.2.2.4. Redis多线程模型
-1. 为什么Redis一开始使用单线程？  
-&emsp; 基于内存而且使用多路复用技术，单线程速度很快，又保证了多线程的特点。因此没有必要使用多线程。  
-2. 为什么引入多线程？  
-&emsp; **<font color = "clime">因为读写网络的read/write系统调用（网络I/O）在Redis执行期间占用了大部分CPU时间，如果把网络读写做成多线程的方式对性能会有很大提升。</font>**  
-&emsp; **<font color = "clime">Redis的多线程部分只是用来处理网络数据的读写和协议解析，执行命令仍然是单线程。</font>** 
-3. 官方建议：4核的机器建议设置为2或3个线程，8核的建议设置为6个线程， **<font color = "clime">`线程数一定要小于机器核数，尽量不超过8个。`</font>**   
-
-#### 1.2.2.5. Redis协议
-&emsp; RESP是Redis Serialization Protocol的简称，也就是专门为redis设计的一套序列化协议。这个协议其实在redis的1.2版本时就已经出现了，但是到了redis2.0才最终成为redis通讯协议的标准。  
-&emsp; 这个序列化协议听起来很高大上， 但实际上就是一个文本协议。根据官方的说法，这个协议是基于以下几点(而妥协)设计的：  
-1. 实现简单。可以减低客户端出现bug的机率。  
-2. `解析速度快。`由于RESP能知道返回数据的固定长度，所以不用像json那样扫描整个payload去解析，所以它的性能是能跟解析二进制数据的性能相媲美的。  
-3. 可读性好。  
-
-
----------------
-
-#### 1.2.2.6. Redis内存操作
-##### 1.2.2.6.1. Redis过期键删除
+#### 1.2.4.1. 内存 
+##### 1.2.4.1.1. Redis过期键删除
 1. 过期键常见的删除策略有3种：定时删除(主动)、惰性删除(被动)、定期删除(主动)。<font color = "red">Redis服务器使用的是惰性删除策略和定期删除策略。</font>  
     * 定时删除策略，在设置键的过期时间的同时，创建一个定时器，让定时器在键的过期时间来临时，立即执行对键的删除操作。  
     * <font color = "clime">惰性删除策略，只有当访问一个key时，才会判断该key是否已过期，过期则清除。</font>  
     * <font color = "red">`定期删除策略，每隔一段时间执行一次删除过期键操作`</font>，并通过<font color = "clime">`限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响`</font>，同时，通过定期删除过期键，也有效地减少了因为过期键而带来的内存浪费。  
 
 
-##### 1.2.2.6.2. Redis内存淘汰
+##### 1.2.4.1.2. Redis内存淘汰
 1. **Redis内存淘汰使用的算法有4种：**  
     * random，随机删除。  
     * TTL，删除过期时间最少的键。  
@@ -382,7 +465,15 @@ public String getCacheData(){
     4. `如果希望一些数据能长期被保存，而一些数据可以被淘汰掉，选择volatile-lru/volatile-lfu或volatile-random都是比较不错的。`
     5. 由于设置expire会消耗额外的内存，如果计划避免Redis内存在此项上的浪费，可以选用allkeys-lru/volatile-lfu策略，这样就可以不再设置过期时间，高效利用内存了。 
 
-#### 1.2.2.7. Redis持久化，磁盘操作
+
+##### 1.2.4.1.3. Redis【虚拟内存】机制
+&emsp; **<font color = "clime">通过VM功能可以实现冷热数据分离，使热数据仍在内存中、冷数据保存到磁盘。这样就可以避免因为内存不足而造成访问速度下降的问题。</font>**  
+&emsp; 使用虚拟内存把那些不经常访问的数据交换到磁盘上。需要特别注意的是Redis并没有使用OS提供的Swap，而是自己实现。  
+&emsp; **<font color = "clime">Redis为了保证查找的速度，只会将value交换出去，而在内存中保留所有的Key。</font>**  
+
+
+#### 1.2.4.2. 磁盘
+##### 1.2.4.2.1. Redis持久化，磁盘操作
 1. RDB，快照；保存某一时刻的全部数据；缺点是间隔长（配置文件中默认最少60s）。  
 &emsp; Redis 提供了两个命令来生成 RDB 快照文件，分别是 save 和 bgsave。save 命令在主线程中执行，会导致阻塞。而 bgsave 命令则会创建一个子进程，用于写入 RDB 文件的操作，避免了对主线程的阻塞，这也是 Redis RDB 的默认配置。fork子进程也会造成阻塞。    
 2. AOF，文件追加；记录所有操作命令；优点是默认间隔1s，丢失数据少；缺点是文件比较大，通过重写机制来压缩文件体积。  
@@ -405,9 +496,8 @@ public String getCacheData(){
     3. 在写入AOF日志文件时，如果Redis服务器宕机，则AOF日志文件文件会出格式错误。在重启Redis服务器时，Redis服务器会拒绝载入这个AOF文件，可以修复AOF 并恢复数据。 
 3. Redis4.0混合持久化，先RDB，后AOF。  
 4. ~~**<font color = "clime">RDB方式bgsave指令中fork子进程、AOF方式重写bgrewriteaof都会造成阻塞。</font>**~~  
-  
 
-##### 1.2.2.7.1. ~~AOF重写阻塞~~
+##### 1.2.4.2.2. ~~AOF重写阻塞~~
 1. AOF重写阻塞：
     1. **<font color = "clime">当Redis执行完一个写命令之后，它会`同时将这个写命令发送给AOF缓冲区和AOF重写缓冲区`。</font>**  
 	2. **<font color = "clime">当子进程完成AOF重写工作之后，它会向父进程发送一个信号，父进程在接收到该信号之后，`会调用一个信号处理函数，并执行相应工作：将AOF重写缓冲区中的所有内容写入到新的AOF文件中。`</font>**  
@@ -422,136 +512,31 @@ public String getCacheData(){
 4. 虽然在everysec配置下aof的fsync是由子线程进行操作的，但是主线程会监控fsync的执行进度。  
 &emsp; **<font color = "clime">主线程在执行时候如果发现上一次的fsync操作还没有返回，那么主线程就会阻塞。</font>**  
 
+#### 1.2.4.3. 网络
+##### 1.2.4.3.1. Redis事件/Reactor（IO多路复用）
+&emsp; 参考[Redis事件/Reactor](/docs/microService/Redis/RedisEvent.md)  
+&emsp; Redis基于Reactor模式开发了自己的网络事件处理器：这个处理器被称为文件事件处理器（file event handler）：文件事件处理器使用I/O多路复用（multiplexing）程序来同时监听多个套接字，并根据套接字目前执行的任务来为套接字关联不同的事件处理器。  
+&emsp; 下图展示了文件事件处理器的四个组成部分，它们分别是套接字、I/O多路复用程序、文件事件分派器（dispatcher），以及事件处理器。  
+![image](http://182.92.69.8:8081/img/microService/Redis/redis-56.png)    
 
-### 1.2.3. Redis内置功能
-#### 1.2.3.1. RedisPipeline/批处理
-1. Redis主要提供了以下几种批量操作方式：  
-    * 批量get/set(multi get/set)。⚠️注意：Redis中有删除单个Key的指令DEL，但没有批量删除 Key 的指令。  
-    * 管道(pipelining)
-    * 事务(transaction)
-    * 基于事务的管道(transaction in pipelining)
-2. 批量get/set(multi get/set)与管道：  
-    1. 原生批命令（mset, mget）是原子性，pipeline是非原子性。  
-    2. 原生批命令一命令多个key，但pipeline支持多命令（存在事务），非原子性。  
-    3. 原生批命令是服务端实现，而pipeline需要服务端与客户端共同完成。  
-3. Pipeline指的是管道技术，指的是客户端允许将多个请求依次发给服务器，过程中而不需要等待请求的回复，在最后再一并读取结果即可。  
+##### 1.2.4.3.2. Redis多线程模型
+1. 为什么Redis一开始使用单线程？  
+&emsp; 基于内存而且使用多路复用技术，单线程速度很快，又保证了多线程的特点。因此没有必要使用多线程。  
+2. 为什么引入多线程？  
+&emsp; **<font color = "clime">因为读写网络的read/write系统调用（网络I/O）在Redis执行期间占用了大部分CPU时间，如果把网络读写做成多线程的方式对性能会有很大提升。</font>**  
+&emsp; **<font color = "clime">Redis的多线程部分只是用来处理网络数据的读写和协议解析，执行命令仍然是单线程。</font>** 
+3. 官方建议：4核的机器建议设置为2或3个线程，8核的建议设置为6个线程， **<font color = "clime">`线程数一定要小于机器核数，尽量不超过8个。`</font>**   
 
+##### 1.2.4.3.3. Redis协议
+&emsp; RESP是Redis Serialization Protocol的简称，也就是专门为redis设计的一套序列化协议。这个协议其实在redis的1.2版本时就已经出现了，但是到了redis2.0才最终成为redis通讯协议的标准。  
+&emsp; 这个序列化协议听起来很高大上， 但实际上就是一个文本协议。根据官方的说法，这个协议是基于以下几点(而妥协)设计的：  
+1. 实现简单。可以减低客户端出现bug的机率。  
+2. `解析速度快。`由于RESP能知道返回数据的固定长度，所以不用像json那样扫描整个payload去解析，所以它的性能是能跟解析二进制数据的性能相媲美的。  
+3. 可读性好。  
 
-#### 1.2.3.2. Redis事务
-1. **<font color = "clime">Redis事务的三个阶段：</font>**  
-    * 开始事务：以MULTI开启一个事务。   
-    * **<font color = "clime">命令入队：将多个命令入队到事务中，接到这些命令不会立即执行，而是放到等待执行的事务队列里。</font>**    
-    * 执行事务(exec)或取消事务(discard)：由EXEC/DISCARD命令触发事务。  
-2. **使用Redis事务的时候，可能会遇上以下两种错误：**  
-    * **<font color = "red">（类似于Java中的编译错误）事务在执行EXEC之前，入队的命令可能会出错。</font>** 比如说，命令可能会产生语法错误（参数数量错误，参数名错误等等），或者其他更严重的错误，比如内存不足（如果服务器使用maxmemory设置了最大内存限制的话）。  
-    * **<font color = "red">（类似于Java中的运行错误）命令可能在 EXEC 调用之后失败。</font>** 举个例子，事务中的命令可能处理了错误类型的键，比如将列表命令用在了字符串键上面，诸如此类。  
-
-    1. Redis 针对如上两种错误采用了不同的处理策略，对于发生在 EXEC 执行之前的错误，服务器会对命令入队失败的情况进行记录，并在客户端调用 EXEC 命令时，拒绝执行并自动放弃这个事务（Redis 2.6.5 之前的做法是检查命令入队所得的返回值：如果命令入队时返回 QUEUED ，那么入队成功；否则，就是入队失败）  
-    2. 对于那些在 EXEC 命令执行之后所产生的错误，并没有对它们进行特别处理：即使事务中有某个/某些命令在执行时产生了错误，事务中的其他命令仍然会继续执行。 
-3. **带Watch的事务（CAS）：**  
-&emsp; Redis Watch 命令给事务提供check-and-set (CAS) 机制。被Watch的Key被持续监控，如果key在Exec命令执行前有改变，那么整个事务被取消。   
-&emsp; WATCH命令用于在事务开始之前监视任意数量的键：当调用EXEC命令执行事务时，如果任意一个被监视的键已经被其他客户端修改了，那么整个事务将被打断，不再执行，直接返回失败。 
-
-#### 1.2.3.3. Redis和Lua
-
-
-
-#### 1.2.3.4. Redis实现消息队列
-&emsp; redis中实现消息队列的几种方案：  
-
-* 基于List的 LPUSH+BRPOP 的实现
-* PUB/SUB，订阅/发布模式
-* 基于Sorted-Set的实现
-* 基于Stream类型的实现
-
-
-### 1.2.4. Redis高可用
-#### 1.2.4.1. Redis高可用方案
-1. **<font color = "clime">考虑资源：</font>**    
-&emsp; Redis集群最少6个节点，每个节点20G，总共120G。因此Redis集群比较耗资源。小型公司可以采用哨兵模式。    
-2. **<font color = "clime">考虑QPS：</font>**  
-&emsp; **单机的redis一般是支持上万甚至几万，具体的性能取决于数据操作的复杂性，如果仅仅是简单的kv操作的话，可以达到数万，如果是运行复杂的lua脚本的话，就可能只能到一万左右。**  
-&emsp; 缓存一般是用来支撑读的高并发，一般比较少用来支撑读的操作，一般读的操作是比较频繁的，甚至达到几万几十万，但是写的操作每秒才几千，这就需要读写分离了。  
-
-&emsp; `小型公司，可以采用哨兵，主从复制-单副本模式。`  
-
-
-#### 1.2.4.2. Redis主从复制
-1. **<font color = "red">Redis主从复制架构常见的是`单副本`、双副本模式。</font>**  
-2. <font color = "red">主从复制过程大体可以分为3个阶段：连接建立阶段（即准备阶段）、数据同步阶段、命令传播阶段。</font>  
-&emsp; 一、连接建立阶段：1. 保存主节点（master）信息。2. 从节点（slave）内部通过每秒运行的定时任务维护复制相关逻辑，当定时任务发现存在新的主节点后，会尝试与该节点建立网络连接。</font>3. 发送ping命令。  
-&emsp; 二、数据同步阶段：5. 同步数据集。有两种复制方式：全量复制和部分复制。  
-&emsp; 三、命令传播阶段：6. 命令持续复制。  
-3. redis 2.8之前使用sync [runId] [offset]同步命令，redis2.8之后使用psync [runId] [offset]命令。两者不同在于，sync命令仅支持全量复制过程，psync支持全量和部分复制。    
-4. **主从复制应用与问题：**
-    * **<font color = "red">传输延迟，提供了repl-disable-tcp-nodelay参数用于控制是否关闭TCP_NODELAY，默认关闭。</font>**    
-        * `当关闭时，主节点产生的命令数据无论大小都会及时地发送给从节点，这样主从之间延迟会变小，但增加了网络带宽的消耗。` **<font color = "blue">适用于主从之间的网络环境良好的场景，如同机架或同机房部署。</font>** 
-        * **<font color = "blue">当开启时，主节点会合并较小的TCP数据包从而节省带宽。</font>** 默认发送时间间隔取决于Linux的内核，一般默认为40毫秒。这种配置节省了带宽但增大主从之间的延迟。 **<font color = "blue">适用于主从网络环境复杂或带宽紧张的场景，如跨机房部署。</font>**  
-    * 规避全量复制
-        * 节点运行ID不匹配。提供故障转移的功能；如果修改了主节点的配置，需要重启才能够生效，可以选择安全重启的方式（debug reload）。  
-        * 复制偏移量offset不在复制积压缓冲区中。需要根据中断时长来调整复制积压缓冲区的大小。  
-
-#### 1.2.4.3. Redis读写分离
-
-
-#### 1.2.4.4. Redis哨兵模式
-1. <font color="clime">监控和自动故障转移使得Sentinel能够完成主节点故障发现和自动转移，配置提供者和通知则是实现通知客户端主节点变更的关键。</font>  
-2. <font color = "clime">Redis哨兵架构中主要包括两个部分：Redis Sentinel集群和Redis数据集群。</font>  
-3. **<font color = "clime">哨兵原理：</font>**  
-    * **<font color = "red">心跳检查：Sentinel通过三个定时任务来完成对各个节点的发现和监控，这是保证Redis高可用的重要机制。</font>**  
-        * 每隔10秒，每个Sentinel节点会向主节点和从节点发送`info命令` **<font color = "clime">获取最新的拓扑结构。</font>**   
-        * 每隔2秒，每个Sentinel节点会向Redis数据节点的`__sentinel__：hello频道`上发送该Sentinel节点对于主节点的判断以及当前Sentinel节点的信息，同时每个Sentinel节点也会订阅该频道， **<font color = "clime">了解其他Sentinel节点以及它们对主节点的判断。</font>**  
-        * 每隔1秒，每个Sentinel节点会向主节点、从节点、其余Sentinel节点发送一条`ping命令` **<font color = "clime">做一次心跳检测。</font>**  
-    * **<font color = "red">主观下线和客观下线：</font>** 首先单个Sentinel节点认为数据节点主观下线，询问其他Sentinel节点，Sentinel多数节点认为主节点存在问题，这时该 Sentinel节点会对主节点做客观下线的决定。
-    * **<font color = "red">故障转移/主节点选举：</font>** Sentinel节点的领导者根据策略在从节点中选择主节点。    
-    * **<font color = "red">Sentinel选举：</font>** Sentinel集群是集中式架构，基于raft算法。  
-
-
-#### 1.2.4.5. Redis集群模式
-1. **<font color = "red">根据执行分片的位置，可以分为三种分片方式：</font>** 客户端分片、代理分片、服务器分片：官方Redis Cluster。  
-2. **<font color = "clime">Redis集群的服务端：</font>**  
-    * 数据分布
-        * Redis数据分区
-        * 集群限制
-            1. <font color = "red">key批量操作支持有限。</font>如mset、mget，目前只支持具有相同slot值的key执行批量操作。对于映射为不同slot值的key由于执行mset、mget等操作可能存在于多个节点上因此不被支持。   
-            2. key事务操作支持有限。同理只支持多key在同一节点上的事务操作，当多个key分布在不同的节点上时无法使用事务功能。     
-            5. 复制结构只支持一层，从节点只能复制主节点，不支持嵌套树状复制结构。  
-    * 故障转移：
-        * 故障发现：主观下线(pfail)和客观下线(fail)。  
-        * 故障恢复：当从节点通过内部定时任务发现自身复制的主节点进入客观下线； **<font color = "red">从节点发起选举；其余主节点选举投票。</font>**  
-3. **<font color = "clime">Redis集群的客户端：</font>**  
-&emsp; Redis集群对客户端通信协议做了比较大的修改，为了追求性能最大化，并没有采用代理的方式，而是采用客户端直连节点的方式。    
-    * 请求重定向：在集群模式下，Redis接收任何键相关命令时首先计算键对应的槽，再根据槽找出所对应的节点，如果节点是自身，则处理键命令；否则回复MOVED重定向错误，通知客户端请求正确的节点。这个过程称为MOVED重定向。  
-    * ASK重定向：Redis集群支持在线迁移槽(slot)和数据来完成水平伸缩，当slot对应的数据从源节点到目标节点迁移过程中，客户端需要做到智能识别，保证键命令可正常执行。例如当一个slot数据从源节点迁移到目标节点时，期间可能出现一部分数据在源节点，而另一部分在目标节点。  
-        1. 客户端根据本地slots缓存发送命令到源节点，如果存在键对象则直接执行并返回结果给客户端。  
-        2. **<font color = "clime">`如果键对象不存在，则可能存在于目标节点，这时源节点会回复ASK重定向异常。格式如下：(error)ASK{slot}{targetIP}：{targetPort}。`</font>**   
-        3. `客户端从ASK重定向异常提取出目标节点信息，`发送asking命令到目标节点打开客户端连接标识，再执行键命令。如果存在则执行，不存在则返回不存在信息。   
-
-    &emsp; **<font color = "clime">ASK与MOVED虽然都是对客户端的重定向控制，但是有着本质区别。ASK重定向说明集群正在进行slot数据迁移，客户端无法知道什么时候迁移完成，因此只能是临时性的重定向，客户端不会更新slots缓存。但是MOVED重定向说明键对应的槽已经明确指定到新的节点，因此需要更新slots缓存。</font>**  
 
 ### 1.2.5. Redis常见问题与优化
 
-
-### 1.2.6. 分布式限流
-&emsp; 限流的地方、怎么限流？  
-1. **<font color = "clime">一个限流系统的设计要考虑限流对象、限流算法、限流方式、限流设计的要点。</font>**  
-2. 限流的位置：网关、系统还是接口？  
-3. `限流对象分类：基于请求限流、基于资源限流。` 阿里Sentinel是针对`qps和线程数`进行限流。   
-4. 限流算法：  
-    * 固定窗口算法，有时会让通过请求量允许为限制的两倍。  
-    ![image](http://182.92.69.8:8081/img/microService/problems/problem-24.png)  
-    * 滑动窗口算法， **<font color = "clime">`避免了固定窗口计数器带来的双倍突发请求。`</font>** 但时间区间的精度越高，算法所需的空间容量就越大。  
-    * 漏桶算法，实现流量整形和流量控制。漏洞底部的设计大小固定，水流速度固定。漏桶算法的缺陷也很明显，当短时间内有大量的突发请求时，即便此时服务器没有任何负载，每个请求也都得在队列中等待一段时间才能被响应。  
-    * 令牌桶算法，
-        1. 漏桶算法和令牌桶算法在设计上的区别：`漏桶算法中“水滴”代表请求，令牌桶中“水滴”代表请求令牌。`   
-        2. **<font color = "blue">`只要令牌桶中存在令牌，那么就允许突发地传输数据直到达到用户配置的门限，`所以它适合于具有突发特性的流量。</font>** 
-5. 限流方式有服务降级、服务拒绝。 
-5. 限流解决方案：    
-    * Java单机限流可以使用AtomicInteger、Semaphore或Guava的RateLimiter来实现，但是上述方案都不支持集群限流。  
-    * 集群限流的应用场景有两个，一个是网关，常用的方案有Nginx限流和Spring Cloud Gateway，另一个场景是与外部或者下游服务接口的交互，可以使用redis+lua实现。阿里巴巴的开源限流系统Sentinel也可以针对接口限流。  
-
-### 1.2.7. 服务降级
-![image](http://182.92.69.8:8081/img/microService/problems/problem-36.png)  
 
 
 ## 1.3. 分布式消息队列
