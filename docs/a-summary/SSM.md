@@ -5,9 +5,10 @@
     - [1.1. Spring](#11-spring)
         - [1.1.1. Spring基础](#111-spring基础)
         - [1.1.2. Spring IOC](#112-spring-ioc)
-        - [1.1.3. Spring DI](#113-spring-di)
-            - [1.1.3.1. Bean的生命周期](#1131-bean的生命周期)
-            - [1.1.3.2. Spring DI中循环依赖](#1132-spring-di中循环依赖)
+        - [1.1.3. Spring依赖注入](#113-spring依赖注入)
+            - [1.1.3.1. Spring DI](#1131-spring-di)
+                - [1.1.3.1.1. Spring DI中循环依赖](#11311-spring-di中循环依赖)
+                - [1.1.3.1.2. Bean的生命周期](#11312-bean的生命周期)
         - [1.1.4. IOC容器扩展](#114-ioc容器扩展)
             - [1.1.4.1. Spring可二次开发常用接口（扩展性）](#1141-spring可二次开发常用接口扩展性)
                 - [1.1.4.1.1. FactoryBean](#11411-factorybean)
@@ -23,6 +24,27 @@
         - [1.1.8. SpringMVC解析](#118-springmvc解析)
         - [1.1.9. 过滤器、拦截器、监听器](#119-过滤器拦截器监听器)
     - [1.2. Mybatis](#12-mybatis)
+        - [Mybatis面试题](#mybatis面试题)
+    - [1.1. 解析和运行原理](#11-解析和运行原理)
+        - [1.1.1. Mapper 接口的工作原理是什么？Mapper 接口里的方法，参数不同时，方法能重载吗？](#111-mapper-接口的工作原理是什么mapper-接口里的方法参数不同时方法能重载吗)
+    - [1.2. 映射器](#12-映射器)
+        - [1.2.1. Mybatis是如何将sql执行结果封装为目标对象并返回的？都有哪些映射形式？](#121-mybatis是如何将sql执行结果封装为目标对象并返回的都有哪些映射形式)
+    - [1.3. 高级查询](#13-高级查询)
+        - [1.3.1. Mybatis动态sql](#131-mybatis动态sql)
+        - [1.3.2. 大数据、批量操作](#132-大数据批量操作)
+    - [1.4. 插件](#14-插件)
+        - [1.4.1. 简述Mybatis的插件运行原理，以及如何编写一个插件。](#141-简述mybatis的插件运行原理以及如何编写一个插件)
+        - [1.4.2. Mybatis分页](#142-mybatis分页)
+            - [1.4.2.1. Mybatis 是如何进行分页的？分页插件的原理是什么？](#1421-mybatis-是如何进行分页的分页插件的原理是什么)
+            - [1.4.2.2. Mybatis实现分页功能](#1422-mybatis实现分页功能)
+                - [1.4.2.2.1. RowBounds（逻辑分页）](#14221-rowbounds逻辑分页)
+                - [1.4.2.2.2. MybatisPlus实现分页功能](#14222-mybatisplus实现分页功能)
+            - [1.4.2.3. PageHelper踩坑：不安全分页导致的问题](#1423-pagehelper踩坑不安全分页导致的问题)
+            - [1.4.2.4. 分页错误](#1424-分页错误)
+                - [1.4.2.4.1. 分页结果错误](#14241-分页结果错误)
+                - [1.4.2.4.2. order by和limit一起使用时的BUG](#14242-order-by和limit一起使用时的bug)
+            - [1.4.2.5. 数据量过大时 limit分页效率，物理分页](#1425-数据量过大时-limit分页效率物理分页)
+    - [1.5. 一级、二级缓存](#15-一级二级缓存)
         - [1.2.1. MyBatis大数据量查询](#121-mybatis大数据量查询)
         - [1.2.2. MyBatis架构](#122-mybatis架构)
         - [1.2.3. MyBatis SQL执行解析](#123-mybatis-sql执行解析)
@@ -36,15 +58,12 @@
 
 # 1. SSM  
 ## 1.1. Spring
-
 ### 1.1.1. Spring基础
 1. **@Autowired和@Resource之间的区别：**  
     1. @Autowired默认是按照类型装配注入的，默认情况下它要求依赖对象必须存在（可以设置它的required属性为false）。
     2. @Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入。  
 
 ### 1.1.2. Spring IOC
-1. Spring容器就是个Map映射, IOC底层就是反射机制，AOP底层是动态代理。  
-&emsp; Spring中的IoC的实现原理就是工厂模式加反射机制。  
 1. BeanFactory与ApplicationContext
     * BeanFactory作为最顶层的一个接口类，定义了IOC容器的基本功能规范。
     * <font color = "clime">ApplicationContext接口是BeanFactory的扩展，它除了具备BeanFactory接口所拥有的全部功能外，还有应用程序上下文的一层含义</font>，主要包括：  
@@ -52,67 +71,56 @@
         2. 继承自ResourceLoader接口，以通用的方式加载文件资源；  
         3. 继承自ApplicationContextPublisher接口，<font color = "clime">拥有发布事件注册监听的能力；</font>  
         4. 继承自 MessageSource 接口，解析消息支持国际化。  
-2. BeanDefinition： **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
-3. Spring bean容器刷新的核心，12个步骤完成IoC容器的创建及初始化工作：  
-    
-    **<font color = "blue">（⚠`利用工厂和反射创建Bean。主要包含3部分：1).容器本身--创建容器、2).容器扩展--预处理、后置处理器、3).事件，子容器，★★★实例化Bean。`）</font>**     
-    1. 刷新前的准备工作。  
-    2. **<font color = "red">创建IoC容器(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>** <font color = "blue">`个人理解：此处仅仅相当于创建Spring Bean的类，实例化是在Spring DI里。`</font>   
+2. **<font color = "red">BeanDefinition中保存了Bean信息，比如这个Bean指向的是哪个类、是否是单例的、是否懒加载、这个Bean依赖了哪些Bean等。</font>**  
+3. Spring容器刷新：  
+    ![image](http://182.92.69.8:8081/img/draw/SpringIOC.png)  
+    **<font color = "blue">（⚠★★★`利用工厂和反射创建Bean。主要包含3部分：1).（1---3步）容器本身--创建容器、2).（4---6步）容器扩展--后置处理器、3).事件，子容器，实例化Bean。`）</font>**     
+    **<font color = "red">Spring bean容器刷新的核心 12个步骤完成IoC容器的创建及初始化工作：</font>**  
+    1. `刷新前`的准备工作。  
+    2. **<font color = "red">`创建IoC容器`(DefaultListableBeanFactory)，加载和注册BeanDefinition对象。</font>** <font color = "blue">`个人理解：此处仅仅相当于创建Spring Bean的类，实例化是在Spring DI里。`</font>   
         &emsp; **<font color = "clime">DefaultListableBeanFactory中使用一个HashMap的集合对象存放IOC容器中注册解析的BeanDefinition。</font>**  
         ```java
         private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
         ```
+    3. 对IoC容器进行一些`预处理`。  
+    &emsp; 为BeanFactory配置容器特性，例如设置BeanFactory的类加载器，配置了BeanPostProcessor，注册了三个默认bean实例，分别是“environment”、“systemProperties”、“systemEnvironment”。  
     -----------
-    3. **<font color = "red">对IoC容器进行一些预处理。</font>** 为BeanFactory配置容器特性，`例如设置BeanFactory的类加载器，`配置了BeanPostProcessor，注册了三个默认bean实例，分别是“environment”、“systemProperties”、“systemEnvironment”。  
-    4. 允许在上下文子类中对bean工厂进行后处理。 本方法没有具体实现，是一个扩展点，开发人员可以根据自己的情况做具体的实现。  
-    5. **<font color = "red">调用BeanFactoryPostProcessor后置处理器对BeanDefinition处理（修改BeanDefinition对象）。</font>**  
+    4. 允许在上下文子类中对bean工厂进行后处理。（开发者定义自己的后置处理器。）    
+    5. **<font color = "red">调用BeanFactoryPostProcessor`后置处理器`对BeanDefinition处理（修改BeanDefinition对象）。</font>**  
     6. **<font color = "red">注册BeanPostProcessor后置处理器。</font>**  
-    7. 初始化一些消息源（比如处理国际化的i18n等消息源）。 
     ------------ 
+    7. 初始化一些消息源（比如处理国际化的i18n等消息源）。 
     8. **<font color = "red">初始化应用[事件多播器](/docs/SSM/Spring/feature/EventMulticaster.md)。</font>**     
     9. **<font color = "red">`onRefresh()，典型的模板方法(钩子方法)。不同的Spring容器做不同的事情。`比如web程序的容器ServletWebServerApplicationContext中会调用createWebServer方法去创建内置的Servlet容器。</font>**  
     10. **<font color = "red">注册一些监听器到事件多播器上。</font>**  
     11. **<font color = "red">`实例化剩余的单例bean(非懒加载方式)。`</font><font color = "blue">`注意事项：Bean的IoC、DI和AOP都是发生在此步骤。`</font>**  
     12. **<font color = "red">完成刷新时，发布对应的事件。</font>**  
+    13. 重置公共的一些缓存数据。  
 
-
-### 1.1.3. Spring DI
-1. 加载时机：SpringBean默认单例，非懒加载，即容器启动时就加载。  
+### 1.1.3. Spring依赖注入
+#### 1.1.3.1. Spring DI
+1. 加载时机：  
+    1. 非懒加载，即容器启动时就加载。SpringBean默认单例。  
+    &emsp; 查看AbstractApplicationContext.`refresh()`方法中实例化所有非懒加载的bean过程即方法`finishBeanFactoryInitialization`，查看此方法最后一行beanFactory.preInstantiateSingletons()实际调用此方法。  
 2. 加载流程：  
-    1. doCreateBean()创建Bean有三个关键步骤：2.createBeanInstance()实例化、5.populateBean()属性填充、6.initializeBean()初始化。  
+    1. doGetBean()，获取Bean。  
+    2. doCreateBean()创建Bean有三个关键步骤：  
+    &emsp; 2.createBeanInstance()实例化、  
+    &emsp; 5.populateBean()属性填充、  
+    &emsp; 6.initializeBean()初始化。  
 
-#### 1.1.3.1. Bean的生命周期
-![image](http://182.92.69.8:8081/img/SSM/Spring/spring-10.png)  
-&emsp; SpringBean的生命周期主要有4个阶段：  
-1. 实例化（Instantiation），可以理解为new一个对象；
-2. 属性赋值（Populate），可以理解为调用setter方法完成属性注入；
-3. 初始化（Initialization），包含：  
-    * 激活Aware方法  
-    * 【前置处理】  
-    * 激活自定义的init方法 
-    * 【后置处理】 
-4. 销毁（Destruction）---注册Destruction回调函数。  
-
-------
-&emsp; Spring Bean的生命周期管理的基本思路是：在Bean出现之前，先准备操作Bean的BeanFactory，然后操作完Bean，所有的Bean也还会交给BeanFactory进行管理。再所有Bean操作准备BeanPostProcessor作为回调。  
-![image](http://182.92.69.8:8081/img/SSM/Spring/spring-23.png)  
-
-#### 1.1.3.2. Spring DI中循环依赖
+##### 1.1.3.1.1. Spring DI中循环依赖
 1. Spring循环依赖的场景：均采用setter方法（属性注入）注入方式，可被解决；采用构造器和setter方法（属性注入）混合注入方式可能被解决。
-2. **<font color = "red">Spring通过3级缓存解决：</font>**  
+2. **<font color = "red">Spring通过`三级缓存`解决：</font>**  
     ![image](http://182.92.69.8:8081/img/SSM/Spring/spring-20.png)  
-    * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，早期曝光对象工厂，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
-    * 二级缓存: Map<String,Object> earlySingletonObjects， **<font color = "blue">早期曝光对象</font>** ，`二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。`尚未经历了完整的Spring Bean初始化生命周期。
-    * 一级缓存: Map<String,Object> singletonObjects，单例对象池，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。  
-3. 未发生依赖  
-    ![image](http://182.92.69.8:8081/img/SSM/Spring/spring-21.png)  
-4. **<font color = "clime">单例模式下Spring解决循环依赖的流程：</font>**  
+    * 三级缓存: Map<String,ObjectFactory<?>> singletonFactories，`早期曝光对象工厂`，用于保存bean创建工厂，以便于后面扩展有机会创建代理对象。  
+    * 二级缓存: Map<String,Object> earlySingletonObjects， **<font color = "blue">`早期曝光对象`</font>** ，`二级缓存，用于存放已经被创建，但是尚未初始化完成的Bean。`尚未经历了完整的Spring Bean初始化生命周期。
+    * 一级缓存: Map<String,Object> singletonObjects，`单例对象池`，用于保存实例化、注入、初始化完成的bean实例。经历了完整的Spring Bean初始化生命周期。
+3. **<font color = "clime">单例模式下Spring解决循环依赖的流程：</font>**  
     ![image](http://182.92.69.8:8081/img/SSM/Spring/spring-22.png)  
-    ![image](http://182.92.69.8:8081/img/SSM/Spring/spring-17.png)  
-    ![image](http://182.92.69.8:8081/img/SSM/Spring/spring-16.png)  
-    1. Spring创建bean主要分为两个步骤，`创建原始bean对象`，`接着去填充对象属性和初始化`。  
+    1. Spring创建bean主要分为两个步骤，创建原始bean对象，接着去填充对象属性和初始化。  
     2. 每次创建bean之前，都会从缓存中查下有没有该bean，因为是单例，只能有一个。  
-    3. `当创建beanA的原始对象后，并把它放到三级缓存中，`接下来就该填充对象属性了，这时候发现依赖了beanB，接着就又去创建 beanB，同样的流程，创建完beanB填充属性时又发现它依赖了beanA，又是同样的流程，不同的是，这时候可以在三级缓存中查到刚放进去的原始对象beanA，所以不需要继续创建，用它注入beanB，完成beanB的创建。`★★★此时会将beanA从三级缓存删除，放到二级缓存。`   
+    3. 当创建beanA的原始对象后，并把它`放到三级缓存`中，接下来就该填充对象属性了，这时候发现依赖了beanB，接着就又去创建 beanB，同样的流程，创建完beanB填充属性时又发现它依赖了beanA，又是同样的流程，不同的是，这时候可以在三级缓存中查到刚放进去的原始对象beanA，所以不需要继续创建，用它注入beanB，完成beanB的创建。此时会`将beanA从三级缓存删除，放到二级缓存`。   
     4. 既然 beanB 创建好了，所以 beanA 就可以完成填充属性的步骤了，接着执行剩下的逻辑，闭环完成。  
     ---
     &emsp; 当A、B两个类发生循环引用时，在A完成实例化后，就使用实例化后的对象去创建一个对象工厂，并添加到三级缓存中。 **<font color = "blue">`如果A被AOP代理，那么通过这个工厂获取到的就是A代理后的对象，如果A没有被AOP代理，那么这个工厂获取到的就是A实例化的对象。`</font>** 当A进行属性注入时，会去创建B，同时B又依赖了A，所以创建B的同时又会去调用getBean(a)来获取需要的依赖，此时的getBean(a)会从缓存中获取：  
@@ -121,17 +129,32 @@
     * 第二步，调用对象工厂的getObject方法来获取到对应的对象，得到这个对象后将其注入到B中。紧接着B会走完它的生命周期流程，包括初始化、后置处理器等。  
 
     当B创建完后，会将B再注入到A中，此时A再完成它的整个生命周期。  
-5. 常见问题
+4. 常见问题
     1. 二级缓存能解决循环依赖嘛？  
-    &emsp; 二级缓存可以解决循环依赖。如果创建的Bean有对应的代理，那其他对象注入时，注入的应该是对应的代理对象。  
-    &emsp; 但是Spring无法提前知道这个对象是不是有循环依赖的情况，而正常情况下（没有循环依赖情况），Spring都是在创建好完成品Bean之后才创建对应的代理。这时候Spring有两个选择：
+    &emsp; 二级缓存可以解决循环依赖。  
+    &emsp; 如果创建的Bean有对应的代理，那其他对象注入时，注入的应该是对应的代理对象；但是Spring无法提前知道这个对象是不是有循环依赖的情况，而正常情况下（没有循环依赖情况），Spring都是在创建好完成品Bean之后才创建对应的代理。这时候Spring有两个选择：
 
         * 方案一：不管有没有循环依赖，都提前创建好代理对象，并将代理对象放入缓存，出现循环依赖时，其他对象直接就可以取到代理对象并注入。
         * 方案二：不提前创建好代理对象，在出现循环依赖被其他对象注入时，才实时生成代理对象。这样在没有循环依赖的情况下，Bean就可以按着Spring设计原则的步骤来创建。  
 
-    &emsp; `如果使用二级缓存解决循环依赖，即采用方案一，意味着所有Bean在实例化后就要完成AOP代理，这样违背了Spring设计的原则，`Spring在设计之初就是通过AnnotationAwareAspectJAutoProxyCreator这个后置处理器来在Bean生命周期的最后一步来完成AOP代理，而不是在实例化后就立马进行AOP代理。   
+    &emsp; `如果使用二级缓存解决循环依赖，即采用方案一，意味着所有Bean在实例化后就要完成AOP代理，`这样违背了Spring设计的原则，Spring在设计之初就是通过AnnotationAwareAspectJAutoProxyCreator这个后置处理器来在Bean生命周期的最后一步来完成AOP代理，而不是在实例化后就立马进行AOP代理。   
     &emsp; **怎么做到提前曝光对象而又不生成代理呢？**   
     &emsp; Spring就是在对象外面包一层ObjectFactory（三级缓存存放），提前曝光的是ObjectFactory对象，在被注入时才在ObjectFactory.getObject方式内实时生成代理对象，并将生成好的代理对象放入到第二级缓存Map\<String, Object> earlySingletonObjects。  
+
+##### 1.1.3.1.2. Bean的生命周期
+&emsp; **<font color = "red">SpringIOC阶段初始化容器，为SpringBean的生命周期提供环境准备。SpringDI阶段讲述了SpringBean生命周期的前半部分。</font>**  
+![image](http://182.92.69.8:8081/img/SSM/Spring/spring-10.png)  
+&emsp; SpringBean的生命周期主要有4个阶段：  
+1. 实例化（Instantiation），可以理解为new一个对象；
+2. 属性赋值（Populate），可以理解为调用setter方法完成属性注入；
+3. 初始化（Initialization），包含：  
+    * 激活Aware方法  
+    * 前置处理  
+    * 激活自定义的init方法 
+    * 后置处理 
+4. 销毁（Destruction）---注册Destruction回调函数。  
+
+&emsp; Spring Bean的生命周期管理的基本思路是：在Bean出现之前，先准备操作Bean的BeanFactory，然后操作完Bean，所有的Bean也还会交给BeanFactory进行管理。再所有Bean操作准备BeanPostProcessor作为回调。 
 
 ### 1.1.4. IOC容器扩展 
 &emsp; Spring的扩展点有IOC容器扩展、AOP扩展...  
@@ -240,17 +263,19 @@
         &emsp; **其他情况：**  
         &emsp; 7. PROPAGATION_NESTED：如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；如果当前没有事务，则该取值等价于PROPAGATION_REQUIRED。  
         &emsp; 嵌套事务是外部事务的一部分，只有外部事务结束后它才会被提交。由此可见，PROPAGATION_REQUIRES_NEW和PROPAGATION_NESTED的最大区别在于：PROPAGATION_REQUIRES_NEW完全是一个新的事务，而PROPAGATION_NESTED则是外部事务的子事务，如果外部事务commit，嵌套事务也会被commit， 这个规则同样适用于roll back。  
-    * 事务的隔离级别，包含数据库的4种隔离级别，默认使用底层数据库的默认隔离级别。  
+    * 事务的隔离级别，默认使用底层数据库的默认隔离级别，其他四个隔离级别和数据库的隔离级别一致。  
     * 事务只读，相当于将数据库设置成只读数据库，此时若要进行写的操作，会出现错误。  
 
 #### 1.1.7.2. Spring事务问题
-1. 事务失效
-    1. <font color = "red">同一个类中方法调用。</font>  
-    &emsp; 因为spring声明式事务是基于AOP实现的，是使用动态代理来达到事务管理的目的，当前类调用的方法上面加@Transactional 这个是没有任何作用的，因为 **<font color = "clime">调用这个方法的是this，没有经过 Spring 的代理类。</font>**  
-    2. 方法不是public的。    
-    &emsp; @Transactional 只能用于 public 的方法上，否则事务不会失效，如果要用在非 public 方法上，可以开启 AspectJ 代理模式。  
-    3. 抛出的异常不支持回滚。捕获了异常，未再抛出。  
-2. 大事务问题：将修改库的代码聚合在一起。  
+1. Spring事务失效：  
+    * 捕获了异常，未再抛出。
+    * 同一个类中方法调用。
+    * 使用在了非public方法上。
+    * @Transactional的类注入失败。
+    * 多数据源（静态配置）
+    * 原始SSM项目，重复扫描导致事务失效  
+2. `大事务问题：将修改库的代码聚合在一起。`   
+
 
 ### 1.1.8. SpringMVC解析
 1. **SpringMVC的工作流程：**  
@@ -272,6 +297,135 @@
 &emsp; 过滤前-拦截前-action执行-拦截后-过滤后  
 
 ## 1.2. Mybatis  
+
+### Mybatis面试题
+
+## 1.1. 解析和运行原理
+### 1.1.1. Mapper 接口的工作原理是什么？Mapper 接口里的方法，参数不同时，方法能重载吗？
+&emsp; Dao 接口即 Mapper 接口。接口的全限名，就是映射文件中的 namespace 的值；接口的方法名，就是映射文件中 Mapper 的 Statement 的 id 值；接口方法内的参数，就是传递给 sql 的参数。  
+&emsp; Mapper 接口是没有实现类的，当调用接口方法时，接口全限名+方法名拼接字符串作为 key 值，可唯一定位一个 MapperStatement。在 Mybatis 中，每一个 <select>、<insert>、<update>、<delete>标签，都会被解析为一个MapperStatement 对象。  
+
+&emsp; 举例：com.mybatis3.mappers.StudentDao.findStudentById，可以唯一找到 namespace 为com.mybatis3.mappers.StudentDao 下面 id 为findStudentById 的 MapperStatement。  
+&emsp; Mapper 接口里的方法，是不能重载的，因为是使用 全限名+方法名 的保存和寻找策略。Mapper 接口的工作原理是 JDK 动态代理，Mybatis 运行时会使用 JDK动态代理为 Mapper 接口生成代理对象 proxy，代理对象会拦截接口方法，转而执行 MapperStatement 所代表的 sql，然后将 sql 执行结果返回。  
+
+## 1.2. 映射器
+### 1.2.1. Mybatis是如何将sql执行结果封装为目标对象并返回的？都有哪些映射形式？
+&emsp; 第一种是使用标签，逐一定义数据库列名和对象属性名之间的映射关系。   
+&emsp; 第二种是使用 sql 列的别名功能，将列的别名书写为对象属性名。  
+&emsp; 有了列名与属性名的映射关系后，Mybatis 通过反射创建对象，同时使用反射给对象的属性逐一赋值并返回，那些找不到映射关系的属性，是无法完成赋值的。  
+
+
+## 1.3. 高级查询
+### 1.3.1. Mybatis动态sql
+&emsp; Mybatis动态sql是做什么的？都有哪些动态sql？能简述一下动态sql的执行原理不？   
+&emsp; Mybatis动态sql可以让我们在Xml映射文件内，以标签的形式编写动态sql，完成逻辑判断和动态拼接sql的功能。   
+&emsp; Mybatis提供了9种动态sql标签：trim|where|set|foreach|if|choose|when|otherwise|bind。  
+&emsp; 其执行原理为，使用OGNL从sql参数对象中计算表达式的值，根据表达式的值动态拼接sql，以此来完成动态sql的功能。  
+
+### 1.3.2. 大数据、批量操作 
+1. 批量插入
+    &emsp; 两种方式：  
+    1. foreach，
+        ```java
+        VALUES
+            <foreach>
+        ```
+    2. 使用Batch Insert技术  
+        ```java
+        BatchInsertMapper insertMapper = session.getMapper(BatchInsertMapper.class);
+        ```
+2. Cursor的接口类用于流式查询
+
+
+## 1.4. 插件
+### 1.4.1. 简述Mybatis的插件运行原理，以及如何编写一个插件。
+&emsp; Mybatis仅可以编写针对ParameterHandler、ResultSetHandler、StatementHandler、Executor这4种接口的插件，Mybatis使用JDK的动态代理，为需要拦截的接口生成代理对象以实现接口方法拦截功能，每当执行这4种接口对象的方法时，就会进入拦截方法，具体就是InvocationHandler的invoke()方法，当然，只会拦截那些你指定需要拦截的方法。  
+&emsp; 实现Mybatis的Interceptor接口并复写intercept()方法，然后在给插件编写注解，指定要拦截哪一个接口的哪些方法即可，记住，别忘了在配置文件中配置你编写的插件。
+
+### 1.4.2. Mybatis分页
+#### 1.4.2.1. Mybatis 是如何进行分页的？分页插件的原理是什么？  
+&emsp; Mybatis 使用 RowBounds 对象进行分页，它是针对 ResultSet 结果集执行的内存分页，而非物理分页。可以在 sql 内直接书写带有物理分页的参数来完成物理分页功能，也可以使用分页插件来完成物理分页。  
+&emsp; 分页插件的基本原理是使用 Mybatis 提供的插件接口，实现自定义插件，在插件的拦截方法内拦截待执行的 sql，然后重写 sql，根据 dialect 方言，添加对应的物理分页语句和物理分页参数。   
+
+#### 1.4.2.2. Mybatis实现分页功能  
+<!-- 
+https://blog.csdn.net/weixin_51262054/article/details/131368161
+-->
+&emsp; mybatis实现分页有：  
+* 直接使用SQL语句，利用limit关键字分页（物理分页）  
+* RowBounds（逻辑分页）  
+* 第三方插件PageHelper（物理分页）  
+* MybatisPlus实现分页功能  
+
+##### 1.4.2.2.1. RowBounds（逻辑分页）   
+在mapper接口中  
+
+```java
+@Select("select count(*) from role")
+int allRoleCount();
+
+@Select("select * from role")
+List<Role>  pageRowBoundsRole(RowBounds rowBounds);
+```
+
+##### 1.4.2.2.2. MybatisPlus实现分页功能
+
+ 
+
+#### 1.4.2.3. PageHelper踩坑：不安全分页导致的问题
+<!-- 
+https://www.jianshu.com/p/88d1eca40271
+https://blog.51cto.com/u_15127625/3892010
+mybatis使用PageHelper的bug之第一次缓存后会自己分页
+https://blog.csdn.net/qq_36635569/article/details/112674497
+-->
+
+#### 1.4.2.4. 分页错误
+##### 1.4.2.4.1. 分页结果错误  
+&emsp; 示例一：  
+```java
+page 
+page 
+mapper1.select()
+mapper2.select();
+```
+
+示例二:  
+```java
+PageHelper.setPage(1,10);
+if(param!=null){
+    list=userMapper.selectIf(param)
+}eles{
+    list=new ArrayList<User>();
+}
+```
+&emsp; 主要原因：PageHelper 使用了静态的 ThreadLocal 参数，让线程绑定了分页参数， 这个参数如果没被使用就会一直留在那儿，当这个线程再次被使用时，就可能导致不该分页的方法去消费这个分页参数，这就产生了莫名其妙的分页。  
+&emsp; 如果你对此不放心，你可以手动清理 ThreadLocal 存储的分页参数：PageHelper.clearPage();
+
+
+##### 1.4.2.4.2. order by和limit一起使用时的BUG
+<!-- 
+https://www.jianshu.com/p/88d1eca40271
+https://www.cnblogs.com/goloving/p/15203934.html
+-->
+&emsp; error2：sql语句中已经写了limit，pagehelper又拼接了一次，出现 'limit 1 limit 10’的情况；  
+&emsp; 通过百度，了解到PageHelper使用了静态的ThreadLocal参数，分页参数和线程是绑定的；当分页参数没有被消费时，会一直存在threadlocal中，在下一次执行的sql中会拼接这些参数。  
+&emsp; 那么怎么避免这种情况：分页参数紧跟 list 查询。如果先写分页，又写了别的判断逻辑，没有执行 list 查询时，那么分页参数就会在threadlocal中，下次执行sql会消费这些参数，就会导致“不安全分页”。  
+
+#### 1.4.2.5. 数据量过大时 limit分页效率，物理分页
+<!-- 
+
+https://www.jianshu.com/p/88d1eca40271
+-->
+
+
+
+## 1.5. 一级、二级缓存  
+&emsp; 一级缓存: 基于 PerpetualCache 的 HashMap 本地缓存，其存储作用域为 Session，当 Session flush 或 close 之后，该 Session 中的所有 Cache 就 将清空，默认打开一级缓存。  
+&emsp; 二级缓存与一级缓存其机制相同，默认也是采用 PerpetualCache，HashMap存储，不同在于其存储作用域为 Mapper(Namespace)，并且可自定义存储源，如 Ehcache。默认不打开二级缓存，要开启二级缓存，使用二级缓存属性类需要实现 Serializable 序列化接口(可用来保存对象的状态),可在它的映射文件中配置；  
+&emsp; 对于缓存数据更新机制，当某一个作用域(一级缓存 Session/二级缓存Namespaces)的进行了 C/U/D 操作后，默认该作用域下所有 select 中的缓存将被 clear。  
+
+
 
 ### 1.2.1. MyBatis大数据量查询
 1. `流式查询（针对查询结果集比较大）`  
