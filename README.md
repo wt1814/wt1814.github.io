@@ -3,6 +3,10 @@
 
 - [1. wt1814-note](#1-wt1814-note)
     - [总结](#总结)
+    - [1.12. 面试](#112-面试)
+        - [1.11. Error和性能（项目难点）](#111-error和性能项目难点)
+        - [1.12.1. ★★★做过的项目](#1121-★★★做过的项目)
+        - [1.12.2. ★★★面试流程](#1122-★★★面试流程)
     - [1.1. Java](#11-java)
         - [1.1.1. Java基础](#111-java基础)
         - [1.1.2. 设计模式](#112-设计模式)
@@ -56,10 +60,6 @@
         - [1.9.5. 规则引擎](#195-规则引擎)
         - [1.9.6. 分布式文件存储](#196-分布式文件存储)
     - [1.10. 源码搭建汇总](#110-源码搭建汇总)
-    - [1.11. Error和性能（项目难点）](#111-error和性能项目难点)
-    - [1.12. 面试](#112-面试)
-        - [1.12.1. ★★★做过的项目](#1121-★★★做过的项目)
-        - [1.12.2. ★★★面试流程](#1122-★★★面试流程)
     - [1.13. Linux服务器搭建](#113-linux服务器搭建)
         - [1.13.1. Linux基础](#1131-linux基础)
         - [1.13.2. Linux服务器](#1132-linux服务器)
@@ -126,6 +126,43 @@ graph LR
 [13.计算机网络和负载均衡](/docs/a-summary/Net.md)  
 [14.Linux和DevOps](/docs/a-summary/DevOps.md)  
 [大总结2](/docs/a-summary/summaryTwo.md)  
+
+------------------------------------------------------------------------------------------------------------------------------
+
+## 1.12. 面试
+[面试](/docs/recruit/interview.md)  
+
+### 1.11. Error和性能（项目难点）  
+[Error和性能](/docs/Error/ErrorAndPerformance.md)   
+[错误排查流程](/docs/Error/ErrorTrouble.md)  
+[多线程串线了](/docs/Error/ThreadCrossed.md)  
+[数据库连接池泄露](/docs/Error/DataPoolLeak.md)  
+[Mybatis](/docs/Error/Mybatis.md)    
+[Redis](/docs/Error/RedisError.md)  
+&emsp; [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
+&emsp; [redis scan命令](/docs/Error/redisScan.md)  
+[压测和性能](/docs/Error/PressureAndPerformance.md)  
+[3.1.难点](/docs/recruit/4difficultProblem.md)  
+
+### 1.12.1. ★★★做过的项目  
+[做过的项目](/docs/recruit/project/ProjectsDone.md)  
+[项目经验](/docs/recruit/project/ProjectExperience.md)  
+[六合数字化心理平台](/docs/recruit/project/SixNoble.md)   
+[支付系统](/docs/recruit/project/payment.md)  
+[财务系统](/docs/recruit/project/Financial.md)  
+[二清项目](/docs/recruit/project/erqing.md)  
+[监控插件](/docs/recruit/project/monitor.md)   
+
+### 1.12.2. ★★★面试流程
+[1.★★★总体流程](/docs/recruit/1resumeCreate.md)   
+[2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
+[3.2.HR/总监面](/docs/recruit/HrInterview.md)  
+[3.3.职业规划](/docs/recruit/CareerPlanning.md)  
+[4.问面试官](/docs/recruit/3askProblem.md)  
+[个人简历](/docs/recruit/PersonalResume.md)  
+[个人简历2](/docs/recruit/PersonalResumeTwo.md)  
+[简历](/docs/recruit/Resume.md)  
+[全部经历](/docs/recruit/AllExperiences.md)  
 
 ------------------------------------------------------------------------------------------------------------------------------
 
@@ -1019,42 +1056,6 @@ https://help.aliyun.com/document_detail/122217.html
 [Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
 [Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
 
-------------------------------------------------------------------------------------------------------------------------------
-
-## 1.11. Error和性能（项目难点）  
-[Error和性能](/docs/Error/ErrorAndPerformance.md)   
-[错误排查流程](/docs/Error/ErrorTrouble.md)  
-[多线程串线了](/docs/Error/ThreadCrossed.md)  
-[数据库连接池泄露](/docs/Error/DataPoolLeak.md)  
-[Mybatis](/docs/Error/Mybatis.md)    
-[Redis](/docs/Error/RedisError.md)  
-&emsp; [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-&emsp; [redis scan命令](/docs/Error/redisScan.md)  
-[压测和性能](/docs/Error/PressureAndPerformance.md)  
-[3.1.难点](/docs/recruit/4difficultProblem.md)  
-
-## 1.12. 面试
-[面试](/docs/recruit/interview.md)  
-
-### 1.12.1. ★★★做过的项目  
-[做过的项目](/docs/recruit/project/ProjectsDone.md)  
-[项目经验](/docs/recruit/project/ProjectExperience.md)  
-[六合数字化心理平台](/docs/recruit/project/SixNoble.md)   
-[支付系统](/docs/recruit/project/payment.md)  
-[财务系统](/docs/recruit/project/Financial.md)  
-[二清项目](/docs/recruit/project/erqing.md)  
-[监控插件](/docs/recruit/project/monitor.md)   
-
-### 1.12.2. ★★★面试流程
-[1.★★★总体流程](/docs/recruit/1resumeCreate.md)   
-[2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
-[3.2.HR/总监面](/docs/recruit/HrInterview.md)  
-[3.3.职业规划](/docs/recruit/CareerPlanning.md)  
-[4.问面试官](/docs/recruit/3askProblem.md)  
-[个人简历](/docs/recruit/PersonalResume.md)  
-[个人简历2](/docs/recruit/PersonalResumeTwo.md)  
-[简历](/docs/recruit/Resume.md)  
-[全部经历](/docs/recruit/AllExperiences.md)  
 
 ------------------------------------------------------------------------------------------------------------------------------
 

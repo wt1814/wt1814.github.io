@@ -36,7 +36,33 @@
 2. DNS将域名解析成ip，网络通信也即 ip:端口 间的通信。  
 
 #### 1.1.2.2. HTTP
-&emsp; 在浏览器地址栏键入URL，按下回车之后经历的流程：URL解析 ---> DNS解析 ---> TCP连接 ---> 发送HTTP请求 ---> 服务器处理请求并返回HTTP报文 ---> 浏览器解析渲染页面 ---> 连接结束。  
+1. HTTP介绍  
+    1. HTTP是无连接的、无状态的应用层协议。  
+    2. `HTTP3个版本`。HTTP1.1新改动：持久连接；HTTP2新改动：多路复用...  
+    &emsp; HTTP协议中1.0版本规范与1.1版本规范的区别是什么？  
+    &emsp; 在HTTP1.0中，当建立连接后，客户端发送一个请求，服务器端返回一个信息后就关闭连接，当浏览器下次请求的时候又要建立连接。显然，这种不断建立连接的方式会造成很多问题。  
+    &emsp; 在HTTP1.1中，引入了持续连接的概念。通过这种连接，浏览器可以在建立一个连接之后，发送请求并得到返回信息，然后继续发送请求再次等到返回信息。也就是说，客户端可以连续发送多个请求，而不用等待每一个响应的到来。  
+    3. HTTP消息内容：  
+        1. HTTP消息结构  
+            1. HTTP的请求信息由四部分组成，分别是请求行、请求头、空行和请求数据。  
+            &emsp; `HTTP的请求报文和响应报文包含哪些部分？`    
+            &emsp; 请求报文包含3部分：（1）请求行，包含请求方法、URI、HTTP版本信息。（2）请求首部字段。（3）请求内容实体。   
+            &emsp; 响应报文包含3部分：（1）状态行，包含HTTP版本、状态码、状态码的原因短语。（2）响应首部字段。（3）响应内容实体。    
+            2. `HTTP请求头包含信息`：   
+            &emsp; Accept：浏览器可接受的MIME类型。  
+            &emsp; Accept-Charset：浏览器可接受的字符集。  
+            &emsp; Accept-Encoding：浏览器能够进行解码的数据编码方式，比如gzip。Servlet能够向支持gzip的浏览器返回经gzip编码的HTML页面。许多情形下这可以减少5到10倍的下载时间。  
+            &emsp; Accept-Language：浏览器所希望的语言种类，当服务器能够提供一种以上的语言版本时要用到。  
+            &emsp; Authorization：授权信息，通常出现在对服务器发送的WWW-Authenticate头的应答中  
+            &emsp; Connection：表示是否需要持久连接。  
+            &emsp; Cookie：这是最重要的请求头信息之一  
+            &emsp; Allow 服务器支持哪些请求方法（如GET、POST等）。  
+        2. HTTP中GET与POST
+        3. HTTP返回状态码
+2. HTTP应用层协议：  
+    1. 在浏览器地址栏键入URL，按下回车之后经历的流程：URL解析 ---> DNS解析 ---> TCP连接 ---> 发送HTTP请求 ---> 服务器处理请求并返回HTTP报文 ---> 浏览器解析渲染页面 ---> 连接结束。  
+    2. Http与TCP  
+
 
 #### 1.1.2.3. HTTPS
 1. **<font color = "clime">HTTPS的整体过程分为证书验证、协商密钥、数据传输阶段。</font>**  
@@ -142,12 +168,11 @@
 2. <font color = "red">Nginx使用场景：反向代理、虚拟主机、静态资源WEB服务、缓存、限流、黑白名单、防盗链、流量复制...</font>  
 3. 负载均衡：  
     1. **<font color = "red">Nginx反向代理通过proxy_pass来配置；负载均衡使用Upstream模块实现。</font>**  
+    &emsp; sever设置各个服务器，upstream 设置服务组，sever proxy_pass设置代理服务组  
     2. **<font color = "red">Nginx支持的负载均衡调度算法方式如下：</font>**  
         * **<font color = "red">轮询（默认）</font>** 
         * **<font color = "red">weight：</font>** 指定权重。  
         * **<font color = "red">ip_hash</font>**  
         * **<font color = "red">url_hash（第三方）</font>**  
         * **<font color = "red">fair（第三方）：</font>** 智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配。  
-
-
 

@@ -85,6 +85,9 @@ https://blog.csdn.net/yihuliunian/article/details/108534708
 
 https://www.runoob.com/w3cnote/nginx-proxy-balancing.html
 
+** sever设置各个服务器，upstream 设置服务组，sever proxy_pass设置代理服务组  
+** https://blog.csdn.net/AlbenXie/article/details/131842942
+
 -->
 
 &emsp; 负载均衡功能即是反向代理的应用，只不过负载均衡是代理多台服务器，更注重其均衡转发功能。    
@@ -99,6 +102,7 @@ https://www.runoob.com/w3cnote/nginx-proxy-balancing.html
 
 &emsp; **Nginx负载均衡配置：**    
 &emsp; **<font color = "red">Nginx反向代理通过proxy_pass来配置。负载均衡使用Upstream模块实现。</font>**  
+&emsp; ~~sever设置各个服务器，upstream 设置服务组，sever proxy_pass设置代理服务组~~  
 &emsp; 假设这样一个应用场景：将应用部署在192.168.1.11:80、192.168.1.12:80、192.168.1.13:80三台linux环境的服务器上。网站域名叫 www.helloworld.com ，公网IP为192.168.1.11。在公网IP所在的服务器上部署nginx，对所有请求做负载均衡处理。  
 &emsp; nginx.conf 配置如下：  
 

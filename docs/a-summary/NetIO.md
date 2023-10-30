@@ -2,32 +2,31 @@
 <!-- TOC -->
 
 - [1. 网络IO、Netty、WebSocket](#1-网络ionettywebsocket)
-    - [1.1. ~~服务器处理连接~~](#11-服务器处理连接)
-    - [1.2. 通信基础](#12-通信基础)
-    - [1.3. 网络IO](#13-网络io)
-        - [1.3.1. 五种I/O模型](#131-五种io模型)
-        - [1.3.2. I/O多路复用详解](#132-io多路复用详解)
-        - [1.3.3. 多路复用之Reactor模式](#133-多路复用之reactor模式)
-        - [1.3.4. IO性能优化之零拷贝](#134-io性能优化之零拷贝)
-    - [1.4. Socket编程](#14-socket编程)
-    - [1.5. NIO](#15-nio)
-    - [1.6. Netty](#16-netty)
-        - [1.6.1. Netty简介](#161-netty简介)
-        - [1.6.2. Netty运行流程](#162-netty运行流程)
-        - [1.6.3. Netty核心组件](#163-netty核心组件)
-        - [1.6.4. Netty逻辑架构](#164-netty逻辑架构)
-        - [1.6.5. Netty高性能](#165-netty高性能)
-            - [1.6.5.1. Netty的Reactor线程模型](#1651-netty的reactor线程模型)
-        - [1.6.6. Netty开发](#166-netty开发)
-            - [1.6.6.1. Netty应用场景，](#1661-netty应用场景)
-            - [1.6.6.2. TCP粘拆包与Netty编解码](#1662-tcp粘拆包与netty编解码)
-            - [1.6.6.3. Netty实战](#1663-netty实战)
-            - [1.6.6.4. Netty多协议开发](#1664-netty多协议开发)
-        - [1.6.7. Netty源码](#167-netty源码)
-    - [1.7. WebSocket](#17-websocket)
-        - [1.7.1. 4种Web端即时通信](#171-4种web端即时通信)
-        - [1.7.2. 配置中心使用长轮询推送](#172-配置中心使用长轮询推送)
-        - [1.7.3. WebSocket](#173-websocket)
+    - [1.1. 网络](#11-网络)
+    - [1.2. 网络IO](#12-网络io)
+        - [1.2.1. 五种I/O模型](#121-五种io模型)
+        - [1.2.2. I/O多路复用详解](#122-io多路复用详解)
+        - [1.2.3. 多路复用之Reactor模式](#123-多路复用之reactor模式)
+        - [1.2.4. IO性能优化之零拷贝](#124-io性能优化之零拷贝)
+    - [1.3. Socket编程](#13-socket编程)
+    - [1.4. NIO](#14-nio)
+    - [1.5. Netty](#15-netty)
+        - [1.5.1. Netty简介](#151-netty简介)
+        - [1.5.2. Netty运行流程](#152-netty运行流程)
+        - [1.5.3. Netty核心组件](#153-netty核心组件)
+        - [1.5.4. Netty逻辑架构](#154-netty逻辑架构)
+        - [1.5.5. Netty高性能](#155-netty高性能)
+            - [1.5.5.1. Netty的Reactor线程模型](#1551-netty的reactor线程模型)
+        - [1.5.6. Netty开发](#156-netty开发)
+            - [1.5.6.1. Netty应用场景，](#1561-netty应用场景)
+            - [1.5.6.2. TCP粘拆包与Netty编解码](#1562-tcp粘拆包与netty编解码)
+            - [1.5.6.3. Netty实战](#1563-netty实战)
+            - [1.5.6.4. Netty多协议开发](#1564-netty多协议开发)
+        - [1.5.7. Netty源码](#157-netty源码)
+    - [1.6. WebSocket](#16-websocket)
+        - [1.6.1. 4种Web端即时通信](#161-4种web端即时通信)
+        - [1.6.2. 配置中心使用长轮询推送](#162-配置中心使用长轮询推送)
+        - [1.6.3. WebSocket](#163-websocket)
 
 <!-- /TOC -->
 
@@ -35,22 +34,21 @@
 
 # 1. 网络IO、Netty、WebSocket
 
+## 1.1. 网络
+1. ~~服务器处理连接~~
+    &emsp; 多线程模式和多进程模式是类似的，也是分为下面几种：  
 
-## 1.1. ~~服务器处理连接~~
-&emsp; 多线程模式和多进程模式是类似的，也是分为下面几种：  
+    1. 主进程accept，创建子线程处理
+    2. 子线程accept
+    3. 线程池
 
-1. 主进程accept，创建子线程处理
-2. 子线程accept
-3. 线程池
-
-
-## 1.2. 通信基础
+2. 通信基础
 &emsp; 1. 序列化。  
 
-## 1.3. 网络IO
+## 1.2. 网络IO
 &emsp; 前言：`一次网络I/O事件，包含网络连接（IO多路复用） -> 读写数据（零拷贝） -> 处理事件。`  
 
-### 1.3.1. 五种I/O模型
+### 1.2.1. 五种I/O模型
 1. **<font color = "red">网络IO的本质就是socket流的读取，通常一次IO读操作会涉及到两个对象和两个阶段。**</font>  
     * **<font color = "clime">两个对象：用户进程（线程）、内核对象（内核态和用户态）。</font><font color = "blue">用户进程请求内核。</font>**   
     * **<font color = "clime">`内核中涉及两个阶段：1. 等待数据准备；2. 数据从内核空间拷贝到用户空间。`</font>**  
@@ -91,7 +89,7 @@
 6. 信号驱动IO  
 7. 异步IO
 
-### 1.3.2. I/O多路复用详解
+### 1.2.2. I/O多路复用详解
 1. **<font color = "clime">`~~select,poll,epoll只是I/O多路复用模型中第一阶段，即获取网络数据、用户态和内核态之间的拷贝。~~`</font>** 此阶段会阻塞线程。  
 2. **select()：**  
     1. **select运行流程：**  
@@ -131,7 +129,7 @@
         * epoll()函数返回后，调用函数以O(1)复杂度遍历。  
 5. 两种IO多路复用模式：[Reactor和Proactor](/docs/microService/communication/Netty/Reactor.md)  
 
-### 1.3.3. 多路复用之Reactor模式
+### 1.2.3. 多路复用之Reactor模式
 1. `Reactor，是网络编程中基于IO多路复用的一种设计模式，是【event-driven architecture】的一种实现方式，处理多个客户端并发的向服务端请求服务的场景。`    
 2. **<font color = "red">Reactor模式核心组成部分包括Reactor线程和worker线程池，</font> <font color = "clime">而根据Reactor的数量和线程池的数量，又将Reactor分为三种模型。</font>**  
     * `Reactor负责监听（建立连接）和处理请求（分发事件、读写）。`  
@@ -156,7 +154,7 @@
 &emsp; 主从Reactor线程模型的特点是：服务端用于接收客户端连接的不再是1个单独的NIO线程，而是一个独立的NIO线程池。Acceptor接收到客户端TCP连接请求处理完成后（可能包含接入认证等），将新创建的SocketChannel注册到IO线程池（sub reactor线程池）的某个IO线程上，由它负责SocketChannel的读写和编解码工作。Acceptor线程池仅仅只用于客户端的登陆、握手和安全认证，一旦链路建立成功，就将链路注册到后端subReactor线程池的IO线程上，由IO线程负责后续的IO操作。  
 &emsp; 利用主从NIO线程模型，可以解决1个服务端监听线程无法有效处理所有客户端连接的性能不足问题。  
 
-### 1.3.4. IO性能优化之零拷贝
+### 1.2.4. IO性能优化之零拷贝
 1. 比较常见的I/O流程是读取磁盘文件传输到网络中。  
 2. **<font color = "clime">I/O传输中的一些基本概念：</font>**  
     * 状态切换：内核态和用户态之间的切换。  
@@ -214,10 +212,10 @@
 &emsp; **<font color = "clime">splice也有一些局限，它的两个文件描述符参数中有一个必须是管道设备。</font>**  
 ![image](http://182.92.69.8:8081/img/microService/netty/netty-35.png)  
 
-## 1.4. Socket编程
+## 1.3. Socket编程
 &emsp; `Socket是对TCP/IP协议的封装。`Socket只是个接口不是协议，通过Socket才能使用TCP/IP协议，除了TCP，也可以使用UDP协议来传递数据。  
 
-## 1.5. NIO
+## 1.4. NIO
 &emsp; **BIO即Block I/O，同步并阻塞的IO。**  
 &emsp; **<font color = "red">NIO，同步非阻塞I/O，基于io多路复用模型，即select，poll，epoll。</font>**  
 &emsp; **<font color = "red">AIO，异步非阻塞的IO。</font>**  
@@ -226,8 +224,8 @@
 &emsp; NIO方式适用于连接数目多且连接比较短（轻操作）的架构，比如聊天服务器，并发局限于应用中，编程比较复杂，JDK1.4开始支持。  
 &emsp; AIO方式适用于连接数目多且连接比较长（重操作）的架构，比如相册服务器，充分调用OS参与并发操作，编程比较复杂，JDK7开始支持。  
 
-## 1.6. Netty
-### 1.6.1. Netty简介
+## 1.5. Netty
+### 1.5.1. Netty简介
 1. Netty是一个`非阻塞I/O` <font color = "red">客户端-服务器框架</font>，主要用于开发Java网络应用程序，如协议服务器和客户端。`异步事件驱动`的网络应用程序框架和工具用于简化网络编程，例如TCP和UDP套接字服务器。Netty包括了`反应器编程模式`的实现。  
 &emsp; 除了作为异步网络应用程序框架，Netty还包括了对HTTP、HTTP2、DNS及其他协议的支持，涵盖了在Servlet容器内运行的能力、`对WebSockets的支持`、与Google Protocol Buffers的集成、对SSL/TLS的支持以及对用于SPDY协议和消息压缩的支持。  
 2. **<font color = "clime">为什么要用Netty？</font>**  
@@ -240,7 +238,7 @@
         * http://bugs.java.com/bugdatabase/viewbug.do?bug_id=6403933  
         * http://bugs.java.com/bugdalabase/viewbug.do?bug_id=21477l9  
 
-### 1.6.2. Netty运行流程
+### 1.5.2. Netty运行流程
 &emsp; [Netty运行流程](/docs/microService/communication/Netty/operation.md)   
 
 &emsp; **<font color = "clime">一般来说，使用Bootstrap创建启动器的步骤可分为以下几步：</font>**  
@@ -263,7 +261,7 @@
 2. 当一个连接到达时，Netty就会创建一个Channel，然后`从EventLoopGroup中分配一个EventLoop来给这个Channel绑定上`，在该Channel的整个生命周期中都是由这个绑定的EventLoop来服务的。  
 3. 职责链ChannelPipeline，负责事件在职责链中的有序传播，同时负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。 ChannelHandlerContext代表了ChannelHandler和ChannelPipeline之间的绑定。  
 
-### 1.6.3. Netty核心组件
+### 1.5.3. Netty核心组件
 1. `由netty运行流程可以看出Netty核心组件有Bootstrap、channel相关、EventLoop、byteBuf...`  
 2. Bootstrap和ServerBootstrap是针对于Client和Server端定义的引导类，主要用于配置各种参数，并启动整个Netty服务。  
 3. `EventLoop线程模型`  
@@ -287,7 +285,7 @@
     3. 职责链ChannelPipeline，负责事件在职责链中的有序传播，同时负责动态地编排职责链。职责链可以选择监听和处理自己关心的事件，它可以拦截处理和向后/向前传播事件。 ChannelHandlerContext代表了ChannelHandler和ChannelPipeline之间的绑定。  
 
 
-### 1.6.4. Netty逻辑架构
+### 1.5.4. Netty逻辑架构
 &emsp; **<font color = "red">Netty采用了典型的三层网络架构进行设计和开发，逻辑架构如下图所示：</font>**  
 ![image](http://182.92.69.8:8081/img/microService/netty/netty-134.png)  
 1. 业务逻辑编排层 Service ChannelHandler：  
@@ -299,7 +297,7 @@
 
 &emsp; 架构的不同层面，需要关心和处理的对象都不同，通常情况下，对于业务开发者，只需要关心职责链的拦截和业务Handler的编排。因为应用层协议栈往往是开发一次，到处运行，所以实际上对于业务开发者来说，只需要关心服务层的业务逻辑开发即可。各种应用协议以插件的形式提供，只有协议开发人员需要关注协议插件，对于其他业务开发人员来说，只需关心业务逻辑定制。这种分层的架构设计理念实现了NIO框架各层之间的解耦，便于上层业务协议栈的开发和业务逻辑的定制。  
 
-### 1.6.5. Netty高性能
+### 1.5.5. Netty高性能
 &emsp; Netty高性能：    
 1. 内存池设计：申请的内存可以重用，主要指直接内存。内部实现是用一颗二叉查找树管理内存分配情况。  
 1. 网络I/O  
@@ -309,12 +307,12 @@
     * 支持 protobuf 等高性能序列化协议。
 3. 串形化处理读写：避免使用锁带来的性能开销。以及高效的并发编程。  
 
-#### 1.6.5.1. Netty的Reactor线程模型
+#### 1.5.5.1. Netty的Reactor线程模型
 1. Netty的线程模型并不是一成不变的，它实际取决于用户的启动参数配置。<font color = "red">通过设置不同的启动参数，Netty可以同时支持Reactor单线程模型、多线程模型和主从Reactor多线层模型。</font><font color = "clime">Netty主要靠NioEventLoopGroup线程池来实现具体的线程模型。</font>  
 2. Netty主从Reactor多线程模型，内部实现了两个线程池，boss线程池和work线程池，其中boss线程池的线程负责处理请求的accept事件，当接收到accept事件的请求时，把对应的socket封装到一个NioSocketChannel中，并交给work线程池，其中work线程池负责请求的read和write事件，由对应的Handler处理。
 
-### 1.6.6. Netty开发
-#### 1.6.6.1. Netty应用场景，  
+### 1.5.6. Netty开发
+#### 1.5.6.1. Netty应用场景，  
 &emsp; Netty主要用来做网络通信：   
 
 * 作为 RPC 框架的网络通信工具：在分布式系统中，不同服务节点之间经常需要相互调用，这个时候就需要 RPC 框架了。不同服务节点之间的通信是如何做的呢？可以使用 Netty 来做。  
@@ -323,7 +321,7 @@
 * 实现消息推送系统：市面上有很多消息推送系统都是基于 Netty 来做的。  
 * ...  
 
-#### 1.6.6.2. TCP粘拆包与Netty编解码  
+#### 1.5.6.2. TCP粘拆包与Netty编解码  
 1. [TCP的粘包和拆包问题描述](/docs/network/TCPSticking.md)  
 2. **<font color = "clime">Netty对半包或者粘包的处理：</font>** **每个Handler都是和Channel唯一绑定的，一个Handler只对应一个Channel，<font color = "red">所以Channel中的数据读取的时候经过解析，如果不是一个完整的数据包，则解析失败，将这个数据包进行保存，等下次解析时再和这个数据包进行组装解析，直到解析到完整的数据包，才会将数据包向下传递。</font>** 
 3. Netty默认提供了多种解码器来解决，可以进行分包操作。  
@@ -332,21 +330,21 @@
     * 分隔符拆包器 DelimiterBasedFrameDecoder
     * 基于数据包长度的拆包器 LengthFieldBasedFrameDecoder  
 
-#### 1.6.6.3. Netty实战
+#### 1.5.6.3. Netty实战
 &emsp; ...  
 
-#### 1.6.6.4. Netty多协议开发
+#### 1.5.6.4. Netty多协议开发
 
 * Http协议开发应用
 * WebSocket协议开发  
 &emsp; WebSocket是基于TCP的应用层协议，用于在C/S架构的应用中实现双向通信，关于WebSocket协议的详细规范和定义参见rfc6455。  
 * 私有协议栈开发  
 
-### 1.6.7. Netty源码
+### 1.5.7. Netty源码
 
 
-## 1.7. WebSocket
-### 1.7.1. 4种Web端即时通信
+## 1.6. WebSocket
+### 1.6.1. 4种Web端即时通信
 1. `Web端即时通讯技术：服务器端可以即时地将数据的更新或变化反应到客户端，例如消息即时推送等功能都是通过这种技术实现的。`但是在Web中，由于浏览器的限制，实现即时通讯需要借助一些方法。这种限制出现的主要原因是，一般的Web通信都是浏览器先发送请求到服务器，服务器再进行响应完成数据的显示更新。  
 &emsp; 实现Web端即时通讯的方法：`实现即时通讯主要有四种方式，它们分别是轮询、长轮询(comet)、长连接(SSE)、WebSocket。` **<font color = "blue">它们大体可以分为两类，一种是在HTTP基础上实现的，包括短轮询、comet和SSE；另一种不是在HTTP基础上实现，即WebSocket。</font>**    
 2. 短轮询：平时写的忙轮询/无差别轮询。  
@@ -361,7 +359,7 @@
 &emsp; WebSocket是Html5定义的一个新协议，与传统的http协议不同，该协议可以实现服务器与客户端之间全双工通信。简单来说，首先需要在客户端和服务器端建立起一个连接，这部分需要http。连接一旦建立，客户端和服务器端就处于平等的地位，可以相互发送数据，不存在请求和响应的区别。  
 &emsp; WebSocket的优点是实现了双向通信，缺点是服务器端的逻辑非常复杂。现在针对不同的后台语言有不同的插件可以使用。  
 
-### 1.7.2. 配置中心使用长轮询推送
+### 1.6.2. 配置中心使用长轮询推送
 1. push、pull、长轮询  
     &emsp; push模型的好处是实时写新的数据到客户端。pull模型的好处是请求/响应模式，完成之后就断开，而不是像push模型一样，一直长连接不断开，如果每个连接都不断开，那么服务器连接数量很快会被耗尽。  
     &emsp; **<font color = "red">长轮询（Long Polling）和轮询（Polling）的区别，两者都是拉模式的实现。</font>**  
@@ -370,7 +368,7 @@
     * 推送延迟。服务端数据发生变更后，长轮询结束，立刻返回响应给客户端。
     * 服务端压力。长轮询的间隔期一般很长，例如 30s、60s，并且服务端 hold 住连接不会消耗太多服务端资源。
 
-### 1.7.3. WebSocket
+### 1.6.3. WebSocket
 1. WebSocket是应用层协议  
 &emsp; WebSocket是基于TCP的应用层协议，用于在C/S架构的应用中实现双向通信。虽然WebSocket协议在建立连接时会使用HTTP协议，但这并不意味着WebSocket协议是基于HTTP协议实现的。  
 2. WebSocket与Http的区别  
