@@ -4,13 +4,19 @@
 - [1. Linux和DevOps](#1-linux和devops)
     - [1.1. Linux](#11-linux)
     - [1.2. Devops](#12-devops)
-        - [1.2.3. 从上往下学Docker](#123-从上往下学docker)
-            - [1.2.3.1. Docker使用教程](#1231-docker使用教程)
-            - [1.2.3.2. 镜像详解](#1232-镜像详解)
-            - [1.2.3.3. 容器详解](#1233-容器详解)
-        - [1.2.4. Kubernetes](#124-kubernetes)
-            - [1.2.4.1. k8s架构](#1241-k8s架构)
-            - [k8s常用命令](#k8s常用命令)
+        - [1.2.1. 从上往下学Docker](#121-从上往下学docker)
+            - [1.2.1.1. Docker使用教程](#1211-docker使用教程)
+            - [1.2.1.2. 镜像详解](#1212-镜像详解)
+            - [1.2.1.3. 容器详解](#1213-容器详解)
+        - [1.2.2. Kubernetes](#122-kubernetes)
+            - [1.2.2.1. k8s架构](#1221-k8s架构)
+            - [1.2.2.2. k8s常用命令](#1222-k8s常用命令)
+            - [1.2.2.3. k8s功能](#1223-k8s功能)
+                - [1.2.2.3.1. Pod](#12231-pod)
+                    - [1.2.2.3.1.1. 资源限制](#122311-资源限制)
+                    - [1.2.2.3.1.2. 零停机滚动更新](#122312-零停机滚动更新)
+                    - [1.2.2.3.1.3. 自动扩缩容](#122313-自动扩缩容)
+                - [1.2.2.3.2. Service与kube-proxy](#12232-service与kube-proxy)
 
 <!-- /TOC -->
 
@@ -18,10 +24,6 @@
 # 1. Linux和DevOps
 
 ## 1.1. Linux  
-
-
-
-## 1.2. Devops
 1. 文件夹：
 2. 文件操作：cp、mv、find，查找文件  
 3. 文件传输：
@@ -58,9 +60,11 @@
 &emsp; 默认情况下仅显示比较重要的 PID、USER、PR、NI、VIRT、RES、SHR、S、%CPU、%MEM、TIME+、COMMAND 列，还有一些参数  
 
 
-### 1.2.3. 从上往下学Docker
+## 1.2. Devops
 
-#### 1.2.3.1. Docker使用教程
+### 1.2.1. 从上往下学Docker
+
+#### 1.2.1.1. Docker使用教程
 1. **<font color = "clime">镜像操作常用命令：pull(获取)、images(查看本地镜像)、inspect(查看镜像详细信息)、rmi(删除镜像)、commit(构建镜像)。</font>**  
 2. **<font color = "clime">容器操作常用命令：run(创建并启动)、start(启动已有)、stop、exec(进入运行的容器)。</font>**  
 3. **<font color = "clime">Dockerfile中包含：</font>** （# 为 Dockerfile中的注释）  
@@ -73,16 +77,17 @@
     ![image](http://182.92.69.8:8081/img/devops/docker/docker-9.png)  
 
 
-#### 1.2.3.2. 镜像详解
+#### 1.2.1.2. 镜像详解
 1. Docker中镜像是分层的，最顶层是读写层（镜像与容器的区别），其底部依赖于Linux的UnionFS文件系统。  
 2. **<font color = "red">利用联合文件系统UnionFS写时复制的特点，在启动一个容器时，Docker引擎实际上只是增加了一个可写层和构造了一个Linux容器。</font>**  
 
-#### 1.2.3.3. 容器详解
+#### 1.2.1.3. 容器详解
 1. 单个宿主机的多个容器是隔离的，其依赖于Linux的Namespaces、CGroups。  
 2. 隔离的容器需要通信、文件共享（数据持久化）。  
 
-### 1.2.4. Kubernetes
-#### 1.2.4.1. k8s架构
+
+### 1.2.2. Kubernetes
+#### 1.2.2.1. k8s架构
 1. 1). 一个容器或多个容器可以同属于一个Pod之中。 2). Pod是由Pod控制器进行管理控制，其代表性的Pod控制器有Deployment、StatefulSet等。 3). Pod组成的应用是通过Service或Ingress提供外部访问。  
 2. **<font color = "red">每一个Kubernetes集群都由一组Master节点和一系列的Worker节点组成。</font>**  
     1. **<font color = "clime">Master的组件包括：API Server、controller-manager、scheduler和etcd等几个组件。</font>**  
@@ -91,7 +96,7 @@
         * **<font color = "red">scheduler：资源调度，负责决定将Pod放到哪个Node上运行。</font>** 
     2. **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
 
-#### k8s常用命令
+#### 1.2.2.2. k8s常用命令
 1. k8s常用资源  
 &emsp; Namespace、Pod、Label、Deployment、Service...  
 
@@ -128,3 +133,27 @@
     7. 获取容器日志  
     &emsp; 查看 Pod 内容器的日志：kubectl logs <pod-name>  
 
+#### 1.2.2.3. k8s功能  
+##### 1.2.2.3.1. Pod
+###### 1.2.2.3.1.1. 资源限制
+
+
+###### 1.2.2.3.1.2. 零停机滚动更新
+
+###### 1.2.2.3.1.3. 自动扩缩容 
+<!-- 
+https://blog.csdn.net/qq_33521184/article/details/131881164
+-->
+
+##### 1.2.2.3.2. Service与kube-proxy
+
+
+问题：详述kube-proxy原理，一个请求是如何经过层层转发落到某个pod上的整个过程。请求可能来自pod也可能来自外部。
+
+kube-proxy部署在每个Node节点上，通过监听集群状态变更，并对本机iptables做修改，从而实现网络路由。 而其中的负载均衡，也是通过iptables的特性实现的。
+
+另外我们需要了解k8s中的网络配置类型，有如下几种：
+
+hostNetwork Pod使用宿主机上的网络，此时可能端口冲突。
+hostPort 宿主机上的端口与Pod的目标端口映射。
+NodePort 通过Service访问Pod，并给Service分配一个ClusterIP。
