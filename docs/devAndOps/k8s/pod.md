@@ -4,14 +4,18 @@
 
 - [1. Pod详解](#1-pod详解)
     - [1.1. 创建与管理pod/ReplicaSet](#11-创建与管理podreplicaset)
-    - [1.2. pod容器共享Volume](#12-pod容器共享volume)
-    - [1.3. Pod的升级和回滚](#13-pod的升级和回滚)
+    - [1.2. ★★★资源限制](#12-★★★资源限制)
+    - [1.3. 零停机滚动更新](#13-零停机滚动更新)
         - [1.3.1. kubernetes多种发布方式](#131-kubernetes多种发布方式)
-    - [1.4. Pod的扩容和缩容](#14-pod的扩容和缩容)
+        - [1.3.2. 滚动发布升级时，延迟销毁容器（更优雅的升级）](#132-滚动发布升级时延迟销毁容器更优雅的升级)
+    - [1.4. 自动扩缩容](#14-自动扩缩容)
+    - [1.5. pod容器共享Volume（持久化）](#15-pod容器共享volume持久化)
+    - [1.6. Pod污点与容忍](#16-pod污点与容忍)
 
 <!-- /TOC -->
 
 # 1. Pod详解  
+
 ## 1.1. 创建与管理pod/ReplicaSet
 &emsp; ......
 <!-- 
@@ -26,10 +30,9 @@ K8S：创建pod资源两种方式： kubectl命令 && yaml文件
 https://blog.csdn.net/weixin_45691464/article/details/106006125
 -->
 
-## 1.2. pod容器共享Volume
-&emsp; ......
+## 1.2. ★★★资源限制  
 
-## 1.3. Pod的升级和回滚  
+## 1.3. 零停机滚动更新  
 &emsp; 当集群中的某个服务需要升级时，需要停止目前与该服务相关的所有Pod，然后下载新版本镜像并创建新的Pod。如果集群规模比较大，则这个工作就变成了一个挑战， **<font color = "red">而且先全部停止，然后逐步升级的方式会导致较长时间的服务不可用。</font>** **<font color = "clime">Kubemetes提供了滚动升级功能来解决上述问题。</font>**   
 &emsp; 如果Pod是通过Deployment创建的，则用户可以在运行时修改Deployment的Pod定义 (spec.template)或镜像名称，并应用到Deployment对象上，系统即可完成Deployment的自动更新操作。如果在更新过程中发生了错误，则还可以通过回滚(Rollback)操作恢复Pod的版本。  
 
@@ -52,6 +55,29 @@ https://mp.weixin.qq.com/s?__biz=MzU0NjEwMTg4Mg==&mid=2247484195&idx=1&sn=b841f2
 &emsp; <font color = "clime">一些应用程序只需要部署一个新版本，并需要立即切到这个版本。因此，需要执行蓝/绿部署。</font><font color = "red">在进行蓝/绿部署时，应用程序的一个新副本(绿)将与现有版本(蓝)一起部署。然后更新应用程序的入口/路由器以切换到新版本(绿)。然后，需要等待旧(蓝)版本来完成所有发送给它的请求，但是大多数情况下，应用程序的流量将一次更改为新版本</font>   
 
 
-## 1.4. Pod的扩容和缩容  
+### 1.3.2. 滚动发布升级时，延迟销毁容器（更优雅的升级）
+<!-- 
+https://blog.csdn.net/catoop/article/details/110425538
+-->
+
+
+## 1.4. 自动扩缩容  
+<!-- 
+https://blog.csdn.net/lvjianzhaoa/article/details/103278045
+https://blog.csdn.net/u014034049/article/details/110387604
+https://blog.csdn.net/weixin_45826416/article/details/124282577
+-->
 &emsp; 在实际生产系统中，经常会遇到某个服务需要扩容的场景，也可能会遇到由于资源紧张或者工作负载降低而需要减少服务实例数量的场景。此时可以利用Deployment/RC的Scale机制来完成这些工作。  
 &emsp; **<font color = "clime">Kubernetes对Pod的扩容和缩容操作提供了手动和自动两种模式。</font>** 手动模式通过执行kubectl scale命令对一个Deployment/RC进行Pod副本数量的设置，即可一键完成。[自动模式](/docs/devAndOps/k8s/Stretch.md)`则需要用户根据某个性能指标或者自定义业务指标，`并指定Pod副本数量的范围，系统将自动在这个范围内根据性能指标的变化进行调整。  
+
+
+
+## 1.5. pod容器共享Volume（持久化）
+<!-- 
+容器间进行数据共享的三种方式
+https://blog.csdn.net/hanxiaotongtong/article/details/125039578
+-->
+
+
+## 1.6. Pod污点与容忍  
+

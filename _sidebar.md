@@ -831,7 +831,8 @@
         * [k8s运维](/docs/devAndOps/k8s/tools.md)  
             * [k8s监控](/docs/devAndOps/k8s/Monitor.md)  
         * [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
-    * [6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)    
+    * [6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)   
+    * [7.Jenkins+Kubernetes一键部署](/docs/devAndOps/jenkins/JenkinsKubernetes.md)   
     * 研发  
         * [Linux定时执行脚本](/docs/devAndOps/build/TimingScript.md)    
         * [Git安装](/docs/devAndOps/git/GitBuild.md)  

@@ -1186,6 +1186,8 @@ prometheus
 &emsp; [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
 [Docker部署springBoot](/docs/devAndOps/docker/springBootDocker.md)  
 [6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)  
+[7.Jenkins+Kubernetes一键部署](/docs/devAndOps/jenkins/JenkinsKubernetes.md)  
+
 
 
 ### 1.14.1. 搭建-需求、测试

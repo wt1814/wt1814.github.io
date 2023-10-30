@@ -11,12 +11,15 @@
         - [1.2.2. Kubernetes](#122-kubernetes)
             - [1.2.2.1. k8s架构](#1221-k8s架构)
             - [1.2.2.2. k8s常用命令](#1222-k8s常用命令)
-            - [1.2.2.3. k8s功能](#1223-k8s功能)
+            - [1.2.2.3. 组件详解](#1223-组件详解)
                 - [1.2.2.3.1. Pod](#12231-pod)
                     - [1.2.2.3.1.1. 资源限制](#122311-资源限制)
                     - [1.2.2.3.1.2. 零停机滚动更新](#122312-零停机滚动更新)
                     - [1.2.2.3.1.3. 自动扩缩容](#122313-自动扩缩容)
+                    - [1.2.2.3.1.4. pod容器共享Volume（持久化）](#122314-pod容器共享volume持久化)
                 - [1.2.2.3.2. Service与kube-proxy](#12232-service与kube-proxy)
+    - [1.3. jenkins + Docker](#13-jenkins--docker)
+    - [1.4. jenkins + Kubernetes](#14-jenkins--kubernetes)
 
 <!-- /TOC -->
 
@@ -133,7 +136,7 @@
     7. 获取容器日志  
     &emsp; 查看 Pod 内容器的日志：kubectl logs <pod-name>  
 
-#### 1.2.2.3. k8s功能  
+#### 1.2.2.3. 组件详解  
 ##### 1.2.2.3.1. Pod
 ###### 1.2.2.3.1.1. 资源限制
 
@@ -142,8 +145,13 @@
 
 ###### 1.2.2.3.1.3. 自动扩缩容 
 <!-- 
-https://blog.csdn.net/qq_33521184/article/details/131881164
+https://blog.csdn.net/lvjianzhaoa/article/details/103278045
+https://blog.csdn.net/u014034049/article/details/110387604
 -->
+
+
+###### 1.2.2.3.1.4. pod容器共享Volume（持久化）
+
 
 ##### 1.2.2.3.2. Service与kube-proxy
 
@@ -157,3 +165,11 @@ kube-proxy部署在每个Node节点上，通过监听集群状态变更，并对
 hostNetwork Pod使用宿主机上的网络，此时可能端口冲突。
 hostPort 宿主机上的端口与Pod的目标端口映射。
 NodePort 通过Service访问Pod，并给Service分配一个ClusterIP。
+
+
+## 1.3. jenkins + Docker  
+&emsp; jenkins推送jar包到docker服务器，docker容器启动。  
+
+## 1.4. jenkins + Kubernetes    
+&emsp; jenkins推送镜像到Harbor镜像服务器，Kubernetes容器启动。
+
