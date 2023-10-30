@@ -4,8 +4,6 @@
 - [1. Linux和DevOps](#1-linux和devops)
     - [1.1. Linux](#11-linux)
     - [1.2. Devops](#12-devops)
-        - [1.2.1. CI/CD](#121-cicd)
-        - [1.2.2. DevOps](#122-devops)
         - [1.2.3. 从上往下学Docker](#123-从上往下学docker)
             - [1.2.3.1. Docker使用教程](#1231-docker使用教程)
             - [1.2.3.2. 镜像详解](#1232-镜像详解)
@@ -23,28 +21,41 @@
 
 
 ## 1.2. Devops
-### 1.2.1. CI/CD
-&emsp; `CI/CD是两个独立过程的组合：持续集成和持续部署。`  
-1. Continuous Integration（持续集成）  
-&emsp; 持续集成（CI）是构建软件和完成初始测试的过程。  
-2. Continuous Delivery（持续交付）  
-3. Continuous Deployment（持续部署）  
-&emsp; 持续部署（CD）是将代码与基础设施相结合的过程，确保完成所有测试并遵循策略，然后将代码部署到预期环境中。  
+1. 文件夹：
+2. 文件操作：cp、mv、find，查找文件  
+3. 文件传输：
+    1. ftp，在本地主机和远程主机之间或者在两个远程主机之间进行文件传输；  
+    2. scp，在网络上的主机之间拷贝文件；
+    3. curl，
+4. 文件内容操作：
+    1. 查看：cat、more、tail  
+    2. 编辑：vim、grep、sed  
+5. 进程管理：  
+    1. ps，查找出进程的信息
+    2. free，查看内存使用状况
+    3. top，查看实时刷新的系统进程信息
+6. 网络：  
+    1. ping，检测网络连通性
+    2. lsof，查看指定IP 和/或 端口的进程的当前运行情况  
 
-### 1.2.2. DevOps
-1. DevOps框架  
-&emsp; 以下是一个DevOps框架。这个框架只指出那些被认可的概念和它们在某种程度上的关系。
-![image](http://182.92.69.8:8081/img/devops/devops/devops-8.png)  
-&emsp; **<font color = "clime">敏捷开发指的是在 DevOps 中采用敏捷思想进行软件开发，敏捷宣言无疑是很重要的一项。有多种敏捷方法可以采用，比如Scrum、看板和极限编程。</font>**  
-&emsp; **<font color = "clime">持续集成提供了让多个程序员可以同时运行应用程序的最佳实践，可以频繁合并源代码、验证代码（静态测试用例）、编译和测试代码（动态测试用例）。</font>**  
-&emsp; **<font color = "clime">持续交忖关注从开发、测试、验收到生产环境的高频生产能力。基于高度的自动化，极端的发布上线时间可以达到分钟级。</font>**  
-2. DevOps流程  
-&emsp; 下图显示了一个DevOps流程。它不是DevOps流程的正式定义，而是表述了在大多数组织机构中，为了实现一个服务而会被循环执行的合乎逻辑顺序的一系列阶段。  
-&emsp; 深色部分表示开发流程，浅色部分表示运维流程。这两个流程构成了DevOps方法的核心。  
-![image](http://182.92.69.8:8081/img/devops/devops/devops-1.png)  
-3. 工具集  
-&emsp; **<font color = "clime">DevOps一般包括版本控制&协作开发工具、自动化构建和测试工具、持续集成&交付工具、部署工具、维护工具、监控，警告&分析工具等。</font>**  
-![image](http://182.92.69.8:8081/img/devops/devops/devops-3.png)  
+
+---------------
+&emsp; top命令：它包含了很多方面的数据，例如CPU，内存，系统的任务等等数据。  
+
+&emsp; 运行结果可以分为两部分：   
+&emsp; 第一部分是前5行，是系统整体的统计信息；   
+&emsp; 第二部分是第8行开始的进程信息，我们从上往下逐行依次进行说明。   
+
+1. 整体统计信息  
+&emsp; 第二行：Tasks：当前有多少进程。running：正在运行的进程数。sleeping：正在休眠的进程数。stopped：停止的进程数。zombie：僵尸进程数。  
+&emsp; 第三行：us：用户空间占CPU的百分比。sy：内核空间占CPU的百分比。sy：内核空间占CPU的百分比   
+&emsp; 第四行：total：物理内存总量。free：空闲内存量。used：使用的内存量。buffer/cache：用作内核缓存的内存量。  
+&emsp; 第五行：total：交换区内存总量。free：空闲交换区总量。used：使用的交换区总量。buffer/cache：缓冲的交换区总量。  
+&emsp; 第四第五行分别是内存信息和swap信息，所有程序的运行都是在内存中进行的，所以内存的性能对与服务器来说非常重要。  
+
+2. 进程信息  
+&emsp; 默认情况下仅显示比较重要的 PID、USER、PR、NI、VIRT、RES、SHR、S、%CPU、%MEM、TIME+、COMMAND 列，还有一些参数  
+
 
 ### 1.2.3. 从上往下学Docker
 
