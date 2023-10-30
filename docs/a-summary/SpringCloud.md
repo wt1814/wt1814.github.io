@@ -3,7 +3,9 @@
 
 - [1. SpringCloud](#1-springcloud)
     - [1.1. SpringBoot](#11-springboot)
-        - [1.1.1. SpringBoot基础知识](#111-springboot基础知识)
+        - [1.1.1. SpringBoot常见面试题](#111-springboot常见面试题)
+            - [1.1.1.1. SpringBoot有哪些优点?](#1111-springboot有哪些优点)
+            - [1.1.1.2. SpringBoot常用注解](#1112-springboot常用注解)
         - [1.1.2. SpringBoot启动过程](#112-springboot启动过程)
             - [1.1.2.1. SpringApplication初始化](#1121-springapplication初始化)
             - [1.1.2.2. run()方法运行过程](#1122-run方法运行过程)
@@ -17,13 +19,14 @@
             - [1.1.3.3. 内置Tomcat](#1133-内置tomcat)
         - [1.1.4. 自定义strater](#114-自定义strater)
     - [1.2. SpringCloud](#12-springcloud)
-        - [1.2.1. Eureka](#121-eureka)
-        - [1.2.2. Ribbon](#122-ribbon)
-        - [1.2.3. Feign](#123-feign)
-        - [1.2.4. Zuul](#124-zuul)
-        - [1.2.5. Hytrix](#125-hytrix)
-        - [1.2.6. Sleuth](#126-sleuth)
-        - [1.2.7. Admin](#127-admin)
+        - [1.2.1. SpringCloud组件](#121-springcloud组件)
+        - [1.2.2. Eureka](#122-eureka)
+        - [1.2.3. Ribbon](#123-ribbon)
+        - [1.2.4. Feign](#124-feign)
+        - [1.2.5. Zuul](#125-zuul)
+        - [1.2.6. Hytrix](#126-hytrix)
+        - [1.2.7. Sleuth](#127-sleuth)
+        - [1.2.8. Admin](#128-admin)
 
 <!-- /TOC -->
 
@@ -31,13 +34,39 @@
 # 1. SpringCloud
 
 ## 1.1. SpringBoot
-### 1.1.1. SpringBoot基础知识
-&emsp; SpringBoot基本上是Spring框架的扩展，它消除了设置Spring应用程序所需的XML配置，为更快，更高效的开发生态系统铺平了道路。  
+### 1.1.1. SpringBoot常见面试题
+#### 1.1.1.1. SpringBoot有哪些优点?  
+&emsp; 减少开发，减少测试时间。  
+&emsp; 使用JavaConfig有助于避免使用XML。  
+&emsp; 避免大量的Maven导入和各种版本冲突。  
+&emsp; 提供意见发展方法。   
+&emsp; 通过提供默认值快速开始开发。    
+&emsp; 没有单独的Web服务器需要。这意味着你不再需要启动Tomcat，Glassfish或其他任何东西。  
+&emsp; 需要更少的配置 因为没有web.xml文件。只需添加用@ Configuration注释的类，然后添加用@Bean注释的方法，Spring将自动加载对象并像以前一样对其进行管理。您甚至可以将@Autowired添加到bean方法中，以使Spring自动装入需要的依赖关系中。   
 
-* SpringBoot简化了Spring的配置；
-* SpringBoot提供了起步依赖、自动配置；
-* SpringBoot内嵌了Tomcat、 Jetty、 Undertow容器（无需部署war文件）；
-* 提供生产指标，例如指标、健壮检查和外部化配置。  
+
+#### 1.1.1.2. SpringBoot常用注解  
+<!-- 
+
+https://baijiahao.baidu.com/s?id=1713045744318175557&wfr=spider&for=pc
+-->
+1. Spring Boot注解
+    1. @SpringBootApplication 是 @Configuration、@EnableAutoConfiguration、@ComponentScan 注解的集合。  
+    &emsp; 根据 SpringBoot 官网，这三个注解的作用分别是：    
+    &emsp; @EnableAutoConfiguration：启用 SpringBoot 的自动配置机制    
+    &emsp; @ComponentScan： 扫描被@Component (@Service,@Controller)注解的 bean，注解默认会扫描该类所在的包下所有的类。  
+    &emsp; @Configuration：允许在 Spring 上下文中注册额外的 bean 或导入其他配置类   
+
+    2. @EnableAutoConfiguration  
+    &emsp; @EnableAutoConfiguration注解用于通知Spring，根据当前类路径下引入的依赖包，自动配置与这些依赖包相关的配置项。   
+
+    3. @ConditionalOnClass与@ConditionalOnMissingClass
+
+2. Spring Web MVC注解
+    2. @CrossOrigin  
+
+3. Spring Bean注解  
+
 
 ### 1.1.2. SpringBoot启动过程
 &emsp; SpringApplication.run()中首先new SpringApplication对象，然后调用该对象的run方法。<font color = "red">`即run()方法主要包括两大步骤：`</font>  
@@ -45,26 +74,30 @@
 2. 运行run()方法。  
 
 #### 1.1.2.1. SpringApplication初始化
+0. SpringBoot的启动过程`(new SpringApplication(primarySources)).run(args)`包含两个流程：1，SpringApplication的初始化；2，run()方法执行。  
 1. **<font color = "blue">构造过程一般是对构造函数的一些成员属性赋值，做一些初始化工作。</font><font color = "blue">SpringApplication有6个属性：`资源加载器`、资源类集合、应用类型、`初始化器`、`监听器`、`包含main函数的主类`。</font>**  
 	1. 给resourceLoader属性赋值，resourceLoader属性，资源加载器，此时传入的resourceLoader参数为null；  
 	2. **<font color = "clime">初始化资源类集合并去重。</font>** 给primarySources属性赋值，primarySources属性即`SpringApplication.run(MainApplication.class,args);`中传入的MainApplication.class，该类为SpringBoot项目的启动类，主要通过该类来扫描Configuration类加载bean；
 	3. **<font color = "clime">判断当前是否是一个 Web 应用。</font>** 给webApplicationType属性赋值，webApplicationType属性，代表应用类型，根据classpath存在的相应Application类来判断。因为后面要根据webApplicationType来确定创建哪种Environment对象和创建哪种ApplicationContext；
-	4. **<font color = "blue">设置应用上下文初始化器。</font>** 给initializers属性赋值，initializers属性为List<ApplicationContextInitializer<?\>>集合，利用SpringBoot的SPI机制从spring.factories配置文件中加载，后面`在初始化容器的时候会应用这些初始化器来执行一些初始化工作`。`因为SpringBoot自己实现的SPI机制比较重要；`    
-    &emsp; loadSpringFactories方法主要做的事情就是利用之前获取的线程上下文类加载器将classpath中的所有spring.factories配置文件中所有SPI接口的所有扩展实现类给加载出来，然后放入缓存中。注意，这里是一次性加载所有的SPI扩展实现类，所以之后根据SPI接口就直接从缓存中获取SPI扩展类了，就不用再次去spring.factories配置文件中获取SPI接口对应的扩展实现类了。`比如之后的获取ApplicationListener,FailureAnalyzer和EnableAutoConfiguration接口的扩展实现类都直接从缓存中获取即可。`  
+	4. **<font color = "blue">设置应用上下文初始化器。</font>** 给initializers属性赋值，initializers属性为List<ApplicationContextInitializer<?\>>集合，利用SpringBoot的SPI机制从spring.factories配置文件中加载，后面在初始化容器的时候会应用这些初始化器来执行一些初始化工作。因为SpringBoot自己实现的SPI机制比较重要；  
 	5. **<font color = "blue">设置监听器。</font>** 给listeners属性赋值，listeners属性为List<ApplicationListener<?\>>集合，同样利用SpringBoot的SPI机制从spring.factories配置文件中加载。因为SpringBoot启动过程中会在不同的阶段发射一些事件，所以这些加载的监听器们就是来监听SpringBoot启动过程中的一些生命周期事件的；
 	6. **<font color = "clime">推断主入口应用类。</font>** 给mainApplicationClass属性赋值，mainApplicationClass属性表示包含main函数的类，即这里要推断哪个类调用了main函数，然后把这个类的全限定名赋值给mainApplicationClass属性，用于后面启动流程中打印一些日志。
 
-2. **<font color = "clime">SpringApplication初始化中第4步和第5步都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。`SpringBoot通过以下步骤实现自己的SPI机制：`</font>**  
+2. **<font color = "clime">SpringApplication初始化中第4步（设置应用上下文初始化器）和第5步（设置监听器）都是利用SpringBoot的[SPI机制](/docs/java/basis/SPI.md)来加载扩展实现类。SpringBoot通过以下步骤实现自己的SPI机制：</font>**  
 	1. 首先获取线程上下文类加载器;  
-    ![image](http://182.92.69.8:8081/img/sourceCode/springBoot/boot-10.png) 
 	2. 然后利用上下文类加载器从spring.factories配置文件中加载所有的SPI扩展实现类并放入缓存中；  
 	3. 根据SPI接口从缓存中取出相应的SPI扩展实现类；  
 	4. 实例化从缓存中取出的SPI扩展实现类并返回。  
-    ![image](http://182.92.69.8:8081/img/microService/boot/boot-11.png)  
 
 #### 1.1.2.2. run()方法运行过程
 1. **<font color = "clime">运行流程，分3步：</font>**  
-    ![image](http://182.92.69.8:8081/img/microService/boot/boot-9.png)  
+    1. **<font color = "clime">运行流程，分3步，具体有11步：</font>**  
+        1. 创建所有Spring运行监听器并发布应用启动事件、准备环境变量、创建容器。 
+        2. 容器准备（为刚创建的容器对象做一些初始化工作，准备一些容器属性值等）、刷新容器。 
+        3. 执行刷新容器后的后置处理逻辑、调用ApplicationRunner和CommandLineRunner的run方法。  
+    2. **<font color = "clime">`内置生命周期事件：`</font>** <font color = "red">在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件。</font>  
+    3. **<font color = "clime">`事件回调机制：`</font>** <font color = "red">run()阶段涉及了比较重要的[事件回调机制](/docs/microService/SpringBoot/eventCallback.md)，回调4个监听器（ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener）中的方法与加载项目中组件到IOC容器中。</font>
+
 
     ```java
     // SpringApplication.java
@@ -168,8 +201,6 @@
         return context;
     }
     ```
-2. **<font color = "clime">`内置生命周期事件：`</font>** <font color = "red">在SpringBoot启动过程中，每个不同的启动阶段会分别发布不同的内置生命周期事件。</font>  
-3. **<font color = "clime">`事件回调机制：`</font>** <font color = "red">run()阶段涉及了比较重要的[事件回调机制](/docs/microService/SpringBoot/eventCallback.md)，回调4个监听器（ApplicationContextInitializer、ApplicationRunner、CommandLineRunner、SpringApplicationRunListener）中的方法与加载项目中组件到IOC容器中。</font>  
 
 #### 1.1.2.3. SpringBoot事件监听机制
 ##### 1.1.2.3.1. 事件监听步骤
@@ -209,12 +240,16 @@
 
 #### 1.1.3.1. 获取自动配置，注解@SpringBootApplication
 1. @SpringBootApplication  
-    * @ComponentScan  
-    * @SpringBootConfiguration  
-    * @EnableAutoConfiguration  
-2. `@EnableAutoConfiguration`使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。   
-    1. `@Import({AutoConfigurationImportSelector.class})`，开启自动配置，导入了AutoConfigurationImportSelector类。  
-    2. `AutoConfigurationImportSelector#getCandidateConfigurations()`方法获取配置文件spring.factories所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
+    * @SpringBootConfiguration，其实就携带了一个@Configuration注解，代表类是一个Spring的配置类。  
+    * @ComponentScan，其仅仅是指定包，而并没有扫描这些包，更没有装配其中的类，这个真正扫描并装配这些类是@EnableAutoConfiguration完成的。    
+    * `@EnableAutoConfiguration`，自动装配    
+2. `@EnableAutoConfiguration`：
+    1. @AutoConfigurationPackage，~~将添加该注解的类所在的package 作为 自动配置package 进行管理。~~ 
+    2. 使用@Import将所有符合自动配置条件的bean定义加载到IOC容器。   
+        1. @Import({AutoConfigurationImportSelector.class})，开启自动配置，导入AutoConfigurationImportSelector类。  
+        2. AutoConfigurationImportSelector#getCandidateConfigurations()方法获取配置文件spring.factories所有候选的配置，剔除重复部分，再剔除@SpringbootApplication注解里exclude的配置，才得到最终的配置类名集合。  
+
+3. **<font color = "red">小结：</font>** 3种类型的注解：1).@SpringBootConfiguration、@Configuration；2).@ComponentScan、@AutoConfigurationPackage；3).@Import   
 
 
 #### 1.1.3.2. 加载自动配置流程
@@ -245,15 +280,32 @@
 
 
 ## 1.2. SpringCloud
-&emsp; **<font color = "clime">Spring Cloud各组件运行流程：</font>**  
-1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关（Zuul）来访问内部服务。客户端的请求首先经过负载均衡（Ngnix），再到达服务网关（Zuul集群）；  
-2. 网关接收到请求后，从注册中心（Eureka）获取可用服务；  
-3. 由Ribbon进行负载均衡后，分发到后端的具体实例；  
-4. 微服务之间也可通过Feign进行通信处理业务；  
-5. Hystrix负责处理服务超时熔断；Hystrix dashboard，Turbine负责监控Hystrix的熔断情况，并给予图形化的展示；  
-6. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
+### 1.2.1. SpringCloud组件
+1. **SpringCloud子项目：**  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-27.png)  
+&emsp; Spring Cloud是一个微服务框架，相比Dubbo等RPC框架，Spring Cloud提供全套的分布式系统解决方案。Spring Cloud为微服务架构开发涉及的配置管理，服务治理，熔断机制，智能路由，微代理，控制总线，一次性token，全局一致性锁，leader选举，分布式session，集群状态管理等操作提供了一种简单的开发方式。   
+&emsp; Spring Cloud对微服务基础框架Netflix的多个开源组件进行了封装，同时又实现了和云端平台以及和Spring Boot开发框架的集成。   
 
-### 1.2.1. Eureka
+2. ★★★各组件作用  
+    1. 注册中心，解决了服务之间的自动发现。  
+    &emsp; 在没有注册中心时候，服务间调用需要知道被调方的地址或者代理地址。当服务更换部署地址，就不得不修改调用当中指定的地址或者修改代理配置。  
+    &emsp; 而有了注册中心之后，每个服务在调用别人的时候只需要知道服务名称就好，继续地址都会通过注册中心同步过来。    
+    2. 配置中心，每个服务都需要必要的配置信息才能运行，所以一套集中式的、动态的配置管理设施是必不可少的。  
+    2. 服务分发(Ribbon)：客户端负载均衡，Ribbon中提供了多种负载均衡策略：轮询、随机、重试、权重等。  
+    3. 声明式调用(OpenFeign)
+    3. 服务熔断(Hystrix)，解决服务雪崩问题。    
+    4. 链路监控(Sleuth)：如何快速定位请求异常；如何快速定位性能瓶颈；如何快速定位不合理调用。  
+    5. 服务网关
+
+3. ★★★**<font color = "clime">Spring Cloud各组件运行流程：</font>**  
+    1. 外部或者内部的非Spring Cloud项目都统一通过微服务网关(Zuul)来访问内部服务。客户端的请求首先经过负载均衡(Ngnix)，再到达服务网关(Zuul集群)；  
+    2. 网关接收到请求后，从注册中心(Eureka)获取可用服务；  
+    3. 由Ribbon进行负载均衡后，分发到后端的具体实例；  
+    4. 微服务之间也可通过Feign进行通信处理业务；  
+    5. Hystrix负责处理服务超时熔断；Hystrix dashboard，Turbine负责监控Hystrix的熔断情况，并给予图形化的展示；  
+    6. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
+
+### 1.2.2. Eureka
 1. 服务治理框架和产品都围绕着服务注册与服务发现机制来完成对微服务应用实例的自动化管理。  
 2. Spring Cloud Eureka，使用Netflix Eureka来实现服务注册与发现，它既包含了服务端组件，也包含了客户端组件。  
 3. Eureka服务治理体系包含三个核心角色：服务注册中心、服务提供者以及服务消费者。  
@@ -270,49 +322,47 @@
 4. <font color = "red">高可用注册中心/AP模型：EurekaServer的高可用实际上就是将自己作为服务向其他服务注册中心注册自己，这样就可以形成一组互相注册的服务注册中心，以实现服务清单的互相同步，达到高可用的效果。</font>  
 
 
-### 1.2.2. Ribbon
+### 1.2.3. Ribbon
 &emsp; 负载均衡大体可以分为两类：集中式、进程内。前者也被称为服务端负载均衡，其一般位于服务集群的前端，统一接收、处理、转发客户端的请求。典型的包括F5硬件、LVS、Nginx等技术方案；而后者也被称为客户端负载均衡，其是在客户端侧根据某种策略选择合适的服务实例直接进行请求，其典型代表有Ribbon。  
 
-### 1.2.3. Feign
+### 1.2.4. Feign
 
 
-### 1.2.4. Zuul
+### 1.2.5. Zuul
 1. Spring Cloud Zuul，微服务网关，包含hystrix、ribbon、actuator。主要有路由转发、请求过滤功能。  
 2. **<font color = "red">Zuul提供了四种过滤器的API，分别为前置（Pre）、路由（Route）、后置（Post）和错误（Error）四种处理方式。</font>**  
 3. 动态加载：  
 &emsp; 作为最外部的网关，它必须具备动态更新内部逻辑的能力，比如动态修改路由规则、动态添加／删除过滤器等。  
 &emsp; 通过Zuul实现的API网关服务具备了动态路由和动态过滤器能力，可以在不重启API网关服务的前提下为其动态修改路由规则和添加或删除过滤器。   
 
-### 1.2.5. Hytrix
-1. 服务雪崩：在微服务架构中，存在着那么多的服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统的瘫痪。  
-2. Hystrix工作流程：1. 包装请求 ---> 2. 发起请求 ---> 3. 缓存处理 ---> 4. 判断断路器是否打开（熔断） ---> 5. 判断是否进行业务请求（请求是否需要隔离或降级） ---> 6. 执行业务请求 ---> 7. 健康监测 ---> 8. fallback处理或返回成功的响应。  
-3. 熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。
-    1. <font color = "clime">熔断的对象是服务之间的请求；`1).熔断策略会根据请求的数量（资源）分为信号量和线程池，2).还有请求的时间（即超时熔断），3).请求错误率（即熔断触发降级）。`</font>  
-    &emsp; ~~Hystrix中的降级方案：熔断触发降级、请求超时触发降级、【资源】（信号量、线程池）隔离触发降级 / 依赖隔离。~~  
-    2. 线程池隔离与信号量隔离  
-        1. 线程池隔离：  
-            1. `请求线程和【每个服务】单独用线程池。`比如现在有3个业务调用分别是查询订单、查询商品、查询用户，且这三个业务请求都是依赖第三方服务-订单服务、商品服务、用户服务。`为每一个服务接口单独开辟一个线程池，`保持与其他服务接口线程的隔离，提高该服务接口的独立性和高可用。    
-            2. 优点：  
-                1. 使用线程池隔离可以完全隔离依赖的服务，请求线程可以快速放回。  
-                2. 当线程池出现问题时，线程池隔离是独立的，不会影响其他服务和接口。  
-                3. 当失败的服务再次变得可用时，线程池将清理并可立即恢复，而不需要一个长时间的恢复。  
-                4. 独立的线程池提高了并发性。    
-            3. 缺点：  
-                1.  **<font color = "clime">线程池隔离的主要缺点是它们增加计算开销（CPU）。每个命令的执行涉及到排队、调度和上下文切换都是在一个单独的线程上运行的。</font>**    
-            1. ~~线程池隔离：~~  
-                1. 调用线程和hystrixCommand线程不是同一个线程，并发请求数受到线程池（不是容器tomcat的线程池，而是hystrixCommand所属于线程组的线程池）中的线程数限制，默认是10。  
-                2. 这个是默认的隔离机制。
-                3. hystrixCommand线程无法获取到调用线程中的ThreadLocal中的值。
-        2. 信号量隔离：
-            1. 调用线程和hystrixCommand线程是同一个线程，默认最大并发请求数是10。  
-            2. 调用速度快，开销小，由于和调用线程是处于同一个线程，所以必须确保调用的微服务可用性足够高并且返回快才用。  
-        3. 什么情况下使用线程池隔离/信号量隔离？  
-            * 请求并发量大，并且耗时长（请求耗时长一般是计算量大，或读数据库）：采用线程池隔离策略，这样的话，可以保证大量的容器（tomcat）线程可用，不会由于服务原因，一直处于阻塞或等待状态，快速失败返回。  
-            * 请求并发量大，并且耗时短（请求耗时长一般是计算量大，或读缓存）：采用信号量隔离策略，因为这类服务的返回通常会非常的快，不会占用容器线程太长时间，而且也减少了线程切换的一些开销，提高了缓存服务的效率。  
-4. <font color = "clime">微服务集群中，Hystrix的度量信息通过`Turbine`来汇集监控信息，并将聚合后的信息提供给Hystrix Dashboard来集中展示和监控。</font> 
+### 1.2.6. Hytrix
+1. <font color = "red">小结：</font>服务雪崩（为什么要有熔断？） ---> Hystrix工作流程 ---> fallback处理（数量、时间、错误率） ---> 线程池隔离与信号量隔离触发降级。   
+1. `服务雪崩（为什么要有熔断？）`：在微服务架构中，存在着那么多的服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统的瘫痪。  
+2. `Hystrix工作流程`：1. 包装请求 ---> 2. 发起请求 ---> 3. 缓存处理 ---> 4. 判断断路器是否打开（熔断） ---> 5. 判断是否进行业务请求（请求是否需要隔离或降级） ---> 6. 执行业务请求 ---> 7. 健康监测 ---> 8. `fallback处理`或返回成功的响应。  
+3. `fallback处理（数量、时间、错误率）`：熔断是一种[降级](/docs/microService/thinking/Demotion.md)策略。Hystrix中的降级方案：熔断触发降级、请求超时触发降级、`资源（信号量、线程池）`隔离触发降级 / 依赖隔离。（<font color = "clime">熔断的对象是服务之间的请求；`熔断策略有根据请求的【数量】分为信号量和线程池，还有请求的【时间】（即超时熔断），【请求错误率】（即熔断触发降级）。`</font>）  
+4. `线程池隔离与信号量隔离触发降级`：  
+  1. 线程池隔离：请求线程和每个服务单独用线程池。  
+  &emsp; 比如现在有3个业务调用分别是查询订单、查询商品、查询用户，且这三个业务请求都是依赖第三方服务-订单服务、商品服务、用户服务。`为每一个服务接口单独开辟一个线程池，`保持与其他服务接口线程的隔离，提高该服务接口的独立性和高可用。   
+    1. 优点：  
+      &emsp; 使用线程池隔离可以完全隔离依赖的服务，请求线程可以快速放回。  
+      &emsp; 当线程池出现问题时，线程池隔离是独立的，不会影响其他服务和接口。  
+      &emsp; 当失败的服务再次变得可用时，线程池将清理并可立即恢复，而不需要一个长时间的恢复。  
+      &emsp; 独立的线程池提高了并发性。   
+    2. 缺点：  
+      &emsp; 线程池隔离的主要缺点是它们增加计算开销（CPU）。每个命令的执行涉及到排队、调度和上下文切换都是在一个单独的线程上运行的。    
+  2. ~~线程池隔离：~~  
+    1. 调用线程和hystrixCommand线程不是同一个线程，并发请求数受到线程池（不是容器tomcat的线程池，而是hystrixCommand所属于线程组的线程池）中的线程数限制，默认是10。
+    2. 这个是默认的隔离机制
+    3. hystrixCommand线程无法获取到调用线程中的ThreadLocal中的值
+  3. 信号量隔离：
+    1. 调用线程和hystrixCommand线程是同一个线程，默认最大并发请求数是10  
+    2. 调用数度快，开销小，由于和调用线程是处于同一个线程，所以必须确保调用的微服务可用性足够高并且返回快才用  
+  4. 什么情况下使用线程池隔离/信号量隔离？  
+    * 请求并发量大，并且耗时长（请求耗时长一般是计算量大，或读数据库）：采用线程池隔离策略，这样的话，可以保证大量的容器（tomcat）线程可用，不会由于服务原因，一直处于阻塞或等待状态，快速失败返回。  
+    * 请求并发量大，并且耗时短（请求耗时长一般是计算量大，或读缓存）：采用信号量隔离策略，因为这类服务的返回通常会非常的快，不会占用容器线程太长时间，而且也减少了线程切换的一些开销，提高了缓存服务的效率。  
+5. <font color = "clime">微服务集群中，Hystrix的度量信息通过`Turbine`来汇集监控信息，并将聚合后的信息提供给Hystrix Dashboard来集中展示和监控。</font>  
 
-
-### 1.2.6. Sleuth
+### 1.2.7. Sleuth
 1. 分布式调用链追踪系统，可以解决的问题：  
     **<font color = "red">(1) `如何快速定位请求异常；`</font>**    
     **<font color = "red">(2) `如何快速定位性能瓶颈；`</font>**  
@@ -324,7 +374,7 @@
     3. 监控本地方法：异步执行和远程调用都会新开启一个Span，如果想监控本地的方法耗时时间，可以采用埋点的方式监控本地方法，也就是开启一个新的Span。  
     4. ...  
 
-### 1.2.7. Admin
+### 1.2.8. Admin
 1. spring-boot-starter-actuator依赖中已经实现的一些原生端点。根据端点的作用，<font color = "clime">可以将原生端点分为以下三大类：</font>  
     * 应用配置类：获取应用程序中加载的应用配置、环境变量、自动化配置报告等与Spring Boot应用密切相关的配置类信息。  
     * 度量指标类：获取应用程序运行过程中用于监控的度量指标，比如内存信息、线程池信息、HTTP请求统计等。  
