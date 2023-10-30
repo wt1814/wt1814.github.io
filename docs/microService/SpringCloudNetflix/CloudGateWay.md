@@ -4,15 +4,15 @@
 - [1. Spring Cloud Gateway](#1-spring-cloud-gateway)
     - [1.1. Gateway简介（Gateway的特性/Gateway VS zuul）](#11-gateway简介gateway的特性gateway-vs-zuul)
     - [1.2. 路由](#12-路由)
+        - [1.2.1. 集成注册中心实现负载](#121-集成注册中心实现负载)
+        - [1.2.2. 实现动态路由？](#122-实现动态路由)
     - [1.3. 断言](#13-断言)
     - [1.4. 过滤器](#14-过滤器)
         - [1.4.1. 过滤器](#141-过滤器)
         - [1.4.2. GatewayFilter（局部过滤器）](#142-gatewayfilter局部过滤器)
         - [1.4.3. GlobalFilter（全局过滤器）](#143-globalfilter全局过滤器)
         - [1.4.4. 自定义局部过滤器](#144-自定义局部过滤器)
-    - [1.5. 集成注册中心](#15-集成注册中心)
-        - [1.5.1. 实现动态路由？](#151-实现动态路由)
-    - [1.6. 自定义全局异常处理](#16-自定义全局异常处理)
+    - [1.5. 自定义全局异常处理](#15-自定义全局异常处理)
 
 <!-- /TOC -->
 
@@ -45,18 +45,18 @@ Spring Cloud Gateway 逐渐崭露头角，它基于 Spring 5.0、Spring Boot 2.0
 &emsp; Spring Cloud Gateway 具有如下特性：
 
 * 基于Spring Framework 5、Project Reactor 和 Spring Boot 2.0 进行构建；
-* 动态路由：能够匹配任何请求属性；
-* 可以对路由指定 Predicate（断言）和 Filter（过滤器）；
-* 集成Hystrix的断路器功能；
+* 动态路由：能够匹配任何请求属性；  
 * 集成 Spring Cloud 服务发现功能；
+* 可以对路由指定 Predicate（断言）和 Filter（过滤器）；
 * 易于编写的 Predicate（断言）和 Filter（过滤器）；
+* 集成Hystrix的断路器功能；
 * 请求限流功能；
 * 支持路径重写。  
 
 
 
 ------------
-1. Spring Cloud Gateway几个必知的术语？  
+1. Spring Cloud Gateway重要概念？  
 &emsp; 路由（route）：gateway的基本构建模块。它由ID、目标URI、断言集合和过滤器集合组成。如果聚合断言结果为真，则匹配到该路由。  
 &emsp; 断言（Predicate ）：参照Java8的新特性Predicate，允许开发人员匹配HTTP请求中的任何内容，比如头或参数。  
 &emsp; 过滤器（filter）：可以在返回请求之前或之后修改请求和响应的内容。  
@@ -64,6 +64,17 @@ Spring Cloud Gateway 逐渐崭露头角，它基于 Spring 5.0、Spring Boot 2.0
 
 ## 1.2. 路由  
 
+
+### 1.2.1. 集成注册中心实现负载  
+
+
+
+### 1.2.2. 实现动态路由？  
+<!-- 
+
+https://mp.weixin.qq.com/s/bFEIYPZOhisg8skjMDvdJw
+-->
+&emsp; 动态路由：是与静态路由相对的一个概念，指路由器能够根据路由器之间的交换的特定路由信息自动地建立自己的路由表，并且能够根据链路和节点的变化适时地进行自动调整。当网络中节点或节点间的链路发生故障，或存在其它可用路由时，动态路由可以自行选择最佳的可用路由并继续转发报文  
 
 
 ## 1.3. 断言  
@@ -100,15 +111,7 @@ https://mp.weixin.qq.com/s/1QQYCM4dTjzbkF9FJjB5qw
 
 -->
 
-## 1.5. 集成注册中心  
+
+## 1.5. 自定义全局异常处理
 
 
-
-### 1.5.1. 实现动态路由？  
-<!-- 
-
-https://mp.weixin.qq.com/s/bFEIYPZOhisg8skjMDvdJw
--->
-
-
-## 1.6. 自定义全局异常处理

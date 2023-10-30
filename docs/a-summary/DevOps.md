@@ -10,6 +10,7 @@
             - [1.2.3.3. 容器详解](#1233-容器详解)
         - [1.2.4. Kubernetes](#124-kubernetes)
             - [1.2.4.1. k8s架构](#1241-k8s架构)
+            - [k8s常用命令](#k8s常用命令)
 
 <!-- /TOC -->
 
@@ -90,4 +91,40 @@
         * **<font color = "red">scheduler：资源调度，负责决定将Pod放到哪个Node上运行。</font>** 
     2. **<font color = "clime">Node节点主要由kubelet、kube-proxy、docker引擎等组件组成。</font>**  
 
+#### k8s常用命令
+1. k8s常用资源  
+&emsp; Namespace、Pod、Label、Deployment、Service...  
+
+2. kubectl命令摘要  
+&emsp; `get`      #显示一个或多个资源  
+&emsp; `describe`  #显示资源详情  
+&emsp; create    #从文件或标准输入创建资源  
+&emsp; edit   #从文件或标准输入更新资源  
+&emsp; `delete`   #通过文件名、标准输入、资源名或者 label 删除资源  
+&emsp; `log`       #输出 pod 中一个容器的日志  
+&emsp; exec  #在容器内部执行命令  
+&emsp; run     #在集群中使用指定镜像启动容器  
+&emsp; help         #显示各个命令的帮助信息  
+
+3. 常用命令  
+    1. 获取资源信息  
+    &emsp; 获取所有 Pod：kubectl get pods  
+    &emsp; 获取所有 Service：kubectl get services  
+    &emsp; 获取特定 Namespace 中的 Deployment：kubectl get deployment -n <namespace>  
+    2. 查看资源详细信息  
+    &emsp; 查看 Pod 的详细信息：kubectl describe pod <pod-name>  
+    &emsp; 查看 Service 的详细信息：kubectl describe service <service-name>  
+    3. 创建资源  
+    &emsp; 创建一个 Pod：kubectl create -f pod.yaml  
+    &emsp; 创建一个 Service：kubectl create -f service.yaml  
+    4. 应用或更新资源配置  
+    &emsp; 应用或更新一个 Deployment：kubectl apply -f deployment.yaml  
+    &emsp; 应用或更新一个 ConfigMap：kubectl apply -f configmap.yaml  
+    5. 删除资源  
+    &emsp; 删除一个 Pod：kubectl delete pod <pod-name>  
+    &emsp; 删除一个 Service：kubectl delete service <service-name>  
+    6. 在容器内执行命令  
+    &emsp; 在 Pod 内的一个容器中执行命令：kubectl exec -it <pod-name> --container <container-name> -- /bin/sh  
+    7. 获取容器日志  
+    &emsp; 查看 Pod 内容器的日志：kubectl logs <pod-name>  
 
