@@ -8,6 +8,7 @@
             - [1.2.1.1. Docker使用教程](#1211-docker使用教程)
             - [1.2.1.2. 镜像详解](#1212-镜像详解)
             - [1.2.1.3. 容器详解](#1213-容器详解)
+            - [1.2.1.4. Docker的网络实现：Docker四种网络模式](#1214-docker的网络实现docker四种网络模式)
         - [1.2.2. Kubernetes](#122-kubernetes)
             - [1.2.2.1. k8s架构](#1221-k8s架构)
             - [1.2.2.2. k8s常用命令](#1222-k8s常用命令)
@@ -18,8 +19,12 @@
                     - [1.2.2.3.1.3. 自动扩缩容](#122313-自动扩缩容)
                     - [1.2.2.3.1.4. pod容器共享Volume（持久化）](#122314-pod容器共享volume持久化)
                 - [1.2.2.3.2. Service](#12232-service)
-                - [1.2.2.3.3. 网络](#12233-网络)
-                - [共享存储原理](#共享存储原理)
+                - [1.2.2.3.3. k8s网络原理](#12233-k8s网络原理)
+                    - [1.2.2.3.3.1. Kubemetes网络模型](#122331-kubemetes网络模型)
+                    - [1.2.2.3.3.2. # 网络模型](#122332--网络模型)
+                    - [1.2.2.3.3.3. # 网络模Container-to-Container的网络型](#122333--网络模container-to-container的网络型)
+                    - [1.2.2.3.3.4. kube-proxy](#122334-kube-proxy)
+                - [1.2.2.3.4. 共享存储原理](#12234-共享存储原理)
     - [1.3. jenkins + Docker](#13-jenkins--docker)
     - [1.4. jenkins + Kubernetes](#14-jenkins--kubernetes)
 
@@ -90,6 +95,14 @@
 1. 单个宿主机的多个容器是隔离的，其依赖于Linux的Namespaces、CGroups。  
 2. 隔离的容器需要通信、文件共享（数据持久化）。  
 
+#### 1.2.1.4. Docker的网络实现：Docker四种网络模式
+&emsp; docker run创建Docker容器时，可以用 --net 选项指定容器的网络模式，Docker有以下4种网络模式：  
+
+* host模式，使用 --net=host 指定。  
+* container模式，使用 --net=container:NAMEorID 指定。  
+* none模式，使用 --net=none 指定。  
+* bridge模式，使用 --net=bridge 指定，默认设置。  
+
 
 ### 1.2.2. Kubernetes
 #### 1.2.2.1. k8s架构
@@ -159,8 +172,30 @@ https://blog.csdn.net/u014034049/article/details/110387604
 
 
 
-##### 1.2.2.3.3. 网络  
+##### 1.2.2.3.3. k8s网络原理  
 
+###### 1.2.2.3.3.1. Kubemetes网络模型
+###### 1.2.2.3.3.2. # 网络模型  
+&emsp; 关于 Pod 如何接入网络这件事情，Kubernetes 做出了明确的选择。具体来说，Kubernetes要求所有的网络插件实现必须满足如下要求：  
+
+&emsp; 所有的 Pod 可以与任何其他 Pod 直接通信，无需使用 NAT 映射（network address translation）  
+&emsp; 所有节点可以与所有 Pod 直接通信，无需使用 NAT 映射  
+&emsp; Pod 内部获取到的 IP 地址与其他 Pod 或节点与其通信时的 IP 地址是同一个  
+
+&emsp; 在这些限制条件下，需要解决如下四种完全不同的网络使用场景的问题：  
+
+* Container-to-Container的网络
+* Pod与Pod之间的网络  
+* Pod与Service之间的网络  
+* Internet-to-Service 的网络（集群外部与内部组件之间的通信）
+
+
+
+###### 1.2.2.3.3.3. # 网络模Container-to-Container的网络型 
+
+
+
+###### 1.2.2.3.3.4. kube-proxy
 问题：详述kube-proxy原理，一个请求是如何经过层层转发落到某个pod上的整个过程。请求可能来自pod也可能来自外部。
 
 kube-proxy部署在每个Node节点上，通过监听集群状态变更，并对本机iptables做修改，从而实现网络路由。 而其中的负载均衡，也是通过iptables的特性实现的。
@@ -173,7 +208,7 @@ NodePort 通过Service访问Pod，并给Service分配一个ClusterIP。
 
 
 
-##### 共享存储原理
+##### 1.2.2.3.4. 共享存储原理
 
 ## 1.3. jenkins + Docker  
 &emsp; jenkins推送jar包到docker服务器，docker容器启动。  

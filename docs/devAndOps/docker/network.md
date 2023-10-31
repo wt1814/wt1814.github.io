@@ -2,14 +2,15 @@
 <!-- TOC -->
 
 - [1. 容器间通信](#1-容器间通信)
-    - [问题](#问题)
-    - [1.1. Docker四种网络模式](#11-docker四种网络模式)
-    - [1.2. 容器间单向通信(Link)](#12-容器间单向通信link)
-    - [1.3. 容器间双向通信(bridge)](#13-容器间双向通信bridge)
-        - [1.3.1. Docker中的虚拟网桥](#131-docker中的虚拟网桥)
-        - [1.3.2. 借助网桥进行容器间通信](#132-借助网桥进行容器间通信)
-        - [1.3.3. 网桥通信原理](#133-网桥通信原理)
-    - [1.4. 不同主机间容器通信](#14-不同主机间容器通信)
+    - [1.1. 问题](#11-问题)
+    - [1.2. Docker的网络基础](#12-docker的网络基础)
+    - [1.3. Docker的网络实现：Docker四种网络模式](#13-docker的网络实现docker四种网络模式)
+    - [1.4. 容器间单向通信(Link)](#14-容器间单向通信link)
+    - [1.5. 容器间双向通信(bridge)](#15-容器间双向通信bridge)
+        - [1.5.1. Docker中的虚拟网桥](#151-docker中的虚拟网桥)
+        - [1.5.2. 借助网桥进行容器间通信](#152-借助网桥进行容器间通信)
+        - [1.5.3. 网桥通信原理](#153-网桥通信原理)
+    - [1.6. 不同主机间容器通信](#16-不同主机间容器通信)
 
 <!-- /TOC -->
 
@@ -45,16 +46,20 @@ http://www.itmuch.com/docker/18-docker-user-network-embeded-dns/
 -->
 
 
-## 问题  
+## 1.1. 问题  
 <!-- 
 
 Docker使用Link与newwork在容器之间建立连接
 https://www.bbsmax.com/A/RnJWwE8YJq/
 -->
 
+## 1.2. Docker的网络基础
+<!-- 
+k8s权威指南  3.7.2章节  
+-->
 
 
-## 1.1. Docker四种网络模式  
+## 1.3. Docker的网络实现：Docker四种网络模式  
 <!-- 
 初探Docker的网络模式 
 https://www.docker.org.cn/docker/187.html
@@ -79,7 +84,7 @@ https://www.docker.org.cn/docker/187.html
 * bridge模式  
 &emsp; bridge 模式是 Docker 默认的网络设置，此模式会为每一个容器分配 Network Namespace、设置 IP 等，并将一个主机上的 Docker 容器连接到一个虚拟网桥上。当 Docker server 启动时，会在主机上创建一个名为 docker0 的虚拟网桥，此主机上启动的 Docker 容器会连接到这个虚拟网桥上。虚拟网桥的工作方式和物理交换机类似，这样主机上的所有容器就通过交换机连在了一个二层网络中。接下来就要为容器分配 IP 了，Docker 会从 RFC1918 所定义的私有 IP 网段中，选择一个和宿主机不同的IP地址和子网分配给 docker0，连接到 docker0 的容器就从这个子网中选择一个未占用的 IP 使用。如一般 Docker 会使用 172.17.0.0/16 这个网段，并将 172.17.42.1/16 分配给 docker0 网桥(在主机上使用 ifconfig 命令是可以看到 docker0 的，可以认为它是网桥的管理接口，在宿主机上作为一块虚拟网卡使用)。   
 
-## 1.2. 容器间单向通信(Link)  
+## 1.4. 容器间单向通信(Link)  
 &emsp; 在docker环境下，容器创建后，都会默认分配一个虚拟ip，该ip无法从外界直接访问，但是在docker环境下各个ip直接是互通互联的。下图假设Tomcat分配的虚拟ip为107.1.31.22，Mysql分配的虚拟ip为107.1.31.24。  
 &emsp; 虽然在Docker环境下可以通过虚拟ip互相访问，但是局限性很大，原因是容器是随时可能宕机，重启的，宕机重启后会为容器重新分配ip，这样原来直接通信的ip就消失了。所以容器间通信不建议通过ip进行通信。  
 ![image](http://182.92.69.8:8081/img/devops/docker/docker-42.png)  
@@ -95,15 +100,15 @@ https://www.docker.org.cn/docker/187.html
 * 把之前的myweb容器。运用docker rm myweb移除掉，保留mydatabases容器。通过docker run -d --name myweb --link mydatabases tomcat来运行容器。其中--link是指定该容器需要和名称为databases的容器通信。  
 * 进入myweb容器docker exec -it myweb sh,运行命令ping mydatabases，即可通信。配置mysql连接的时候，把ip换成mydatabases即可，docker会自动维护mydatabases和该容器ip的映射，即使该容器的ip改变也不会影响访问。  
 
-## 1.3. 容器间双向通信(bridge)  
+## 1.5. 容器间双向通信(bridge)  
 &emsp; 通过上文，配置容器间互相link，也是可以实现双向通信的，但是有点麻烦。Docker提供了网桥，用来快速实现容器间双向通信。  
 
-### 1.3.1. Docker中的虚拟网桥  
+### 1.5.1. Docker中的虚拟网桥  
 &emsp; docker网桥组件概览图：  
 ![image](http://182.92.69.8:8081/img/devops/docker/docker-41.png)  
 &emsp; Docker中的网桥也是虚拟出来的，网桥的主要用途是用来实现docker环境和外部的通信。在某个容器内部ping外部的ip例如百度。是可以ping通的。实际上是容器发出的数据包，通过虚拟网桥，发送给宿主机的物理网卡，实际上是借助物理网卡与外界通信的，反之物理网卡也会通过虚拟网桥把相应的数据包送回给相应的容器。  
 
-### 1.3.2. 借助网桥进行容器间通信
+### 1.5.2. 借助网桥进行容器间通信
 &emsp; 可以借助网桥实现容器间的双向通信。docker虚拟网桥的另一个作用是为容器在网络层面上进行分组，把不同容器都绑定到网桥上，这样容器间就可以天然互联互通。  
 
 * docker run -d --name myweb tomcat运行myweb容器；docker run -d -it --name mydatabases centos sh交互模式挂起一个databases容器(这里用一个linux容器模拟数据库服务器)。由于没配置网桥，此时容器间无法通过名称互相通信  
@@ -143,11 +148,11 @@ rtt min/avg/max/mdev = 0.196/0.297/0.417/0.091 ms
 # exit
 ```
 
-### 1.3.3. 网桥通信原理  
+### 1.5.3. 网桥通信原理  
 &emsp; 网桥为什么可以实现容器间的互联互通？实际上，每当创建一个网桥，docker都会在宿主机上安装一个虚拟网卡，该虚拟网卡也充当了一个网关的作用。与该网桥(虚拟网关)绑定的容器，相当于处在一个局域网，所以可以通信。虚拟网卡毕竟是虚拟的，如果容器想要和外部通信，仍然需要借助外部(宿主机)的物理网卡。虚拟网卡的数据包进行地址转换，转换为物理网卡的数据包发送出去，反之外部和内部容器通信，也需要进行数据包地址转换。  
 ![image](http://182.92.69.8:8081/img/devops/docker/docker-44.png)  
 
-## 1.4. 不同主机间容器通信  
+## 1.6. 不同主机间容器通信  
 <!-- 
 docker同宿主机容器和不同宿主机容器之间怎么通信？
 https://blog.51cto.com/2367685/2349762
