@@ -91,15 +91,16 @@ from (select s#,score from SC where C#=’001′) a,
 where a.score>b.score and a.s#=b.s#;   
 ```
 
-3. 查询各科成绩前三名的记录:(不考虑成绩并列情况)  
+3. `子查询`：查询各科成绩前三名的记录:(不考虑成绩并列情况)  
 
 ```
 SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数
 FROM SC t1
-WHERE score IN (SELECT TOP 3 score
-FROM SC
-WHERE t1.C#= C#
-ORDER BY score DESC)
+WHERE score IN (
+    SELECT TOP 3 score
+    FROM SC
+    WHERE t1.C#= C#
+    ORDER BY score DESC)
 ORDER BY t1.C#; 
 ```
 
@@ -108,14 +109,15 @@ ORDER BY t1.C#;
 ```
 SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数
 FROM SC t1
-WHERE score IN (SELECT TOP 2 score
-FROM SC
-WHERE t1.C#= C#
-ORDER BY score DESC )
+WHERE score IN (
+    SELECT TOP 2 score
+    FROM SC
+    WHERE t1.C#= C#
+    ORDER BY score DESC )
 ORDER BY t1.C#;
 ```
 
-5. 查询两门以上不及格课程的同学的学号，以及不及格课程的平均成绩  
+5. 查询`两门以上不及格课程的同学`的学号，以及不及格课程的平均成绩  
 
 ```
 select 学号, avg(case when 成绩<60 then 成绩 else null end)
@@ -126,13 +128,9 @@ having sum(case when 成绩<60 then 1 else 0 end)>=2;
 &emsp; 另一种写法：  
 ```
 select 学号, avg(成绩)
-
 from score
-
 where 成绩<60
-
 group by 学号
-
 having count(课程号)>=2;
 ```
 
