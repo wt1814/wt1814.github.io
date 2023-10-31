@@ -9,7 +9,7 @@
         - [1.2.3. 插件](#123-插件)
     - [1.3. Kubernetes的常用概念和术语](#13-kubernetes的常用概念和术语)
     - [1.4. Kubernetes运行流程](#14-kubernetes运行流程)
-    - [k8s网络](#k8s网络)
+    - [1.5. k8s网络](#15-k8s网络)
 
 <!-- /TOC -->
 
@@ -227,5 +227,5 @@ https://www.cnblogs.com/justmine/p/8684564.html
 6. 选择主机：选择打分最高的主机，进行binding操作，结果存储到etcd中。  
 7. kubelet根据调度结果执行Pod创建操作：绑定成功后，scheduler会调用APIServer的API在etcd中创建一个boundpod对象，描述在一个工作节点上绑定运行的所有pod信息。运行在每个工作节点上的kubelet也会定期与etcd同步boundpod信息，一旦发现应该在该工作节点上运行的boundpod对象没有更新，则调用Docker API创建并启动pod内的容器。
 
-## k8s网络  
+## 1.5. k8s网络  
 &emsp; [k8s网络](/docs/devAndOps/k8s/network.md)   
