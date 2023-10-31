@@ -35,7 +35,7 @@ having sum(case when 成绩<60 then 1 else 0 end)>=2;
 
 &emsp; 在实际情况中，CASE WHEN语句还可以使用一些高级用法。下面是一些例子：  
 
-1. CASE WHEN语句与聚合函数一起使用
+1. CASE WHEN语句与`聚合函数`一起使用  
 &emsp; 有时，需要使用一条查询语句来计算多个不同条件的聚合函数。在这种情况下，可以使用CASE WHEN语句与聚合函数一起使用。例如，以下查询返回了people表中年龄在18到25岁之间和在25到35岁之间的人数，以及这些人的平均收入：  
 
 ```
@@ -51,8 +51,8 @@ FROM people;
 ```
 &emsp; 这条查询使用了3个聚合函数，分别是COUNT和AVG函数。在COUNT函数中，使用了CASE WHEN语句来统计年龄在18到25岁之间和在25到35岁之间的人数，而在AVG函数中，使用了CASE WHEN语句来计算年龄在这些范围内的人的平均收入。  
 
-2. CASE WHEN语句处理多个字段
-有时，我们需要计算出多个字段在不同条件下的平均值、最大值或最小值。这时，CASE WHEN语句可以非常方便。例如，以下查询计算了一个表中每个人的总分、平均分和最高分：  
+2. CASE WHEN语句`处理多个字段`  
+&emsp; 有时，我们需要计算出多个字段在不同条件下的平均值、最大值或最小值。这时，CASE WHEN语句可以非常方便。例如，以下查询计算了一个表中每个人的总分、平均分和最高分：  
 
 ```
 SELECT
@@ -91,7 +91,7 @@ from (select s#,score from SC where C#=’001′) a,
 where a.score>b.score and a.s#=b.s#;   
 ```
 
-3. 查询各科成绩前三名的记录:(不考虑成绩并列情况)
+3. 查询各科成绩前三名的记录:(不考虑成绩并列情况)  
 
 ```
 SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数
@@ -103,7 +103,7 @@ ORDER BY score DESC)
 ORDER BY t1.C#; 
 ```
 
-4. 查询每门功成绩最好的前两名
+4. 查询每门功成绩最好的前两名  
 
 ```
 SELECT t1.S# as 学生ID,t1.C# as 课程ID,Score as 分数
@@ -115,7 +115,7 @@ ORDER BY score DESC )
 ORDER BY t1.C#;
 ```
 
-5. 查询两门以上不及格课程的同学的学号，以及不及格课程的平均成绩
+5. 查询两门以上不及格课程的同学的学号，以及不及格课程的平均成绩  
 
 ```
 select 学号, avg(case when 成绩<60 then 成绩 else null end)
@@ -123,7 +123,7 @@ from score  group by 学号
 having sum(case when 成绩<60 then 1 else 0 end)>=2;
 ```
 
-&emsp; 另一种写法：
+&emsp; 另一种写法：  
 ```
 select 学号, avg(成绩)
 
@@ -136,7 +136,7 @@ group by 学号
 having count(课程号)>=2;
 ```
 
-6. 查询没有学全所有课的学生的学号、姓名
+6. 查询没有学全所有课的学生的学号、姓名  
 
 ```
 select 学号, 姓名
@@ -149,7 +149,7 @@ where exists (
 );
 ```
 
-7. 查询只选修了两门课的全部学生的学号和姓名
+7. 查询只选修了两门课的全部学生的学号和姓名  
 
 ```
 select 学号, 姓名
@@ -162,7 +162,8 @@ where exists (
 );
 ```
 
-8. 查询各科成绩前2名的记录
+8. 查询各科成绩前2名的记录  
+
 ```
 (select 课程号,学号, 成绩
 from score
@@ -185,7 +186,7 @@ order by 成绩 DESC
 limit 2);
 ```
 
-9. 查询出每门课程的80分及以上和没到80分的人数
+9. 查询出每门课程的80分及以上和没到80分的人数  
 
 ```
 select
