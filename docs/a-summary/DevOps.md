@@ -17,7 +17,9 @@
                     - [1.2.2.3.1.2. 零停机滚动更新](#122312-零停机滚动更新)
                     - [1.2.2.3.1.3. 自动扩缩容](#122313-自动扩缩容)
                     - [1.2.2.3.1.4. pod容器共享Volume（持久化）](#122314-pod容器共享volume持久化)
-                - [1.2.2.3.2. Service与kube-proxy](#12232-service与kube-proxy)
+                - [1.2.2.3.2. Service](#12232-service)
+                - [1.2.2.3.3. 网络](#12233-网络)
+                - [共享存储原理](#共享存储原理)
     - [1.3. jenkins + Docker](#13-jenkins--docker)
     - [1.4. jenkins + Kubernetes](#14-jenkins--kubernetes)
 
@@ -153,8 +155,11 @@ https://blog.csdn.net/u014034049/article/details/110387604
 ###### 1.2.2.3.1.4. pod容器共享Volume（持久化）
 
 
-##### 1.2.2.3.2. Service与kube-proxy
+##### 1.2.2.3.2. Service
 
+
+
+##### 1.2.2.3.3. 网络  
 
 问题：详述kube-proxy原理，一个请求是如何经过层层转发落到某个pod上的整个过程。请求可能来自pod也可能来自外部。
 
@@ -166,6 +171,9 @@ hostNetwork Pod使用宿主机上的网络，此时可能端口冲突。
 hostPort 宿主机上的端口与Pod的目标端口映射。
 NodePort 通过Service访问Pod，并给Service分配一个ClusterIP。
 
+
+
+##### 共享存储原理
 
 ## 1.3. jenkins + Docker  
 &emsp; jenkins推送jar包到docker服务器，docker容器启动。  
