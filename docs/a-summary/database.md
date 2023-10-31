@@ -3,6 +3,7 @@
 <!-- TOC -->
 
 - [1. 数据库](#1-数据库)
+    - [SQL](#sql)
     - [1.1. SQL面试题](#11-sql面试题)
     - [1.5. 索引事物锁](#15-索引事物锁)
         - [1.5.1. 索引底层原理](#151-索引底层原理)
@@ -60,6 +61,14 @@
 <!-- /TOC -->
 
 # 1. 数据库
+
+## SQL  
+1. Goup by分组  
+&emsp; 查询结果集中有统计数据时，就需要使用分组函数。  
+&emsp; <font color = "red">Group By分组函数中，查询只能得到组相关的信息。组相关的信息(统计信息)：count,sum,max,min,avg。</font> `在select指定的字段要么包含在Group By语句的后面，作为分组的依据；要么被包含在聚合函数中`。group by是`对结果集分组，而不是查询字段分组`。  
+&emsp; **<font color = "red">Group By含有去重效果。</font>**  
+
+
 ## 1.1. SQL面试题
 [★★★SQL面试题](/docs/SQL/SQLInterview.md)  
 case when 高级语法
