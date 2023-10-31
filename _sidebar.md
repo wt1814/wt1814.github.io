@@ -674,12 +674,12 @@
                 * [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)   
 ------------------------------------------------------------------------------------------------------------------------------
 * 架构设计  
+    * [★★★架构图](/docs/system/diagram.md)   
     * [IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
     * [技术选型](/docs/system/TechnicalSelection.md)  
     * [软件架构设计模式](/docs/system/designPattern.md)  
         * [DDD](/docs/system/DDD.md)  
         * [响应式编程](/docs/SystemDesign/reactor.md)  
-    * [架构图](/docs/system/diagram.md)   
     * [架构的方方面面](/docs/system/AllAspects.md)  
     * [架构质量属性](/docs/system/QualityAttribute.md)  
         * [容灾和备份](/docs/system/backups.md)  

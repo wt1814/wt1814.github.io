@@ -939,11 +939,11 @@ https://help.aliyun.com/document_detail/122217.html
 
 ## 1.8. 架构设计
 ### 1.8.1. 架构设计  
+[★★★架构图](/docs/system/diagram.md)  
 [IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
 [软件架构设计模式](/docs/system/designPattern.md)  
 &emsp; [DDD](/docs/system/DDD.md)  
 &emsp; [响应式编程](/docs/SystemDesign/reactor.md)  
-[架构图](/docs/system/diagram.md)  
 [技术选型](/docs/system/TechnicalSelection.md)  
 [架构的方方面面](/docs/system/AllAspects.md)  
 [架构质量属性](/docs/system/QualityAttribute.md)  

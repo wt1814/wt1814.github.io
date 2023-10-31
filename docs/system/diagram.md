@@ -2,9 +2,9 @@
 <!-- TOC -->
 
 - [1. 架构图](#1-架构图)
-    - [架构图](#架构图)
-    - [1.1. 时序图](#11-时序图)
-    - [1.2. UML类图](#12-uml类图)
+    - [1.1. 架构图](#11-架构图)
+    - [1.2. 时序图](#12-时序图)
+    - [1.3. UML类图](#13-uml类图)
 
 <!-- /TOC -->
 
@@ -96,11 +96,11 @@ https://mp.weixin.qq.com/s?__biz=Mzg2MDYzODI5Nw==&mid=2247493910&idx=2&sn=923e99
     * 带宽规划
 -->
 
-## 架构图  
+## 1.1. 架构图  
 ![image](http://182.92.69.8:8081/img/system/architecture-1.jpg)  
 
 
-## 1.1. 时序图  
+## 1.2. 时序图  
 <!-- 
 
 时序图元素Combined Fragments
@@ -108,7 +108,7 @@ https://www.cnblogs.com/ywqu/archive/2009/12/22/1629426.html
 -->
 
 
-## 1.2. UML类图  
+## 1.3. UML类图  
 <!-- 
  五分钟带你读懂UML类图 
  https://mp.weixin.qq.com/s/2OlQ-efyG1fi2V4KSWyGSA
