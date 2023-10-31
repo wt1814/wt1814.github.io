@@ -98,6 +98,7 @@ https://mp.weixin.qq.com/s?__biz=Mzg2MDYzODI5Nw==&mid=2247493910&idx=2&sn=923e99
 
 ## 1.1. 架构图  
 ![image](http://182.92.69.8:8081/img/system/architecture-1.jpg)  
+&emsp; pc请求包含：内部系统，外部系统（右下角，sass平台，AI平台）  
 
 
 ## 1.2. 时序图  
