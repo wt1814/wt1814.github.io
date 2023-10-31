@@ -37,3 +37,4 @@ https://blog.csdn.net/PpikachuP/article/details/89674578
 ## 1.5. Ingress：HTTP 7层路由机制  
 &emsp; Service的表现形式为IP:Port，即工作在TCP/IP层。而对于基于HTTP的服务来说，不同的URL地址经常对应到不同的后端服务或者虚拟服务器(Virtual Host)，这些应用层的转发机制仅通过Kubernetes的Service机制是无法实现的。 **<font color = "clime">从Kubernetes vl.l版本开始新增Ingress资源对象，用于将不同URL的访问请求转发到后端不同的Service，以实现HTTP层的业务路由机制。Kubernetes使用一个Ingress策略定义和一个具体的Ingress Controller，两者结合并实现了一个完整的Ingress负载均衡器。</font>**  
 &emsp; **<font color = "clime">使用Ingress进行负载分发时，Ingress Controller将基于Ingress规则将客户端请求直接转发到Service对应的后端Endpoint(即Pod)上，这样会跳过kube-proxy的转发功能，kube-proxy不再起作用。</font>** 如果Ingress Controller提供的是对外服务，则实际上实现的是边缘路由器的功能。  
+

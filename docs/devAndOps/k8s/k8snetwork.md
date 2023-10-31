@@ -2,49 +2,33 @@
 <!-- TOC -->
 
 - [1. Kubernetes集群的网络配置](#1-kubernetes集群的网络配置)
-    - [1.1. 网络](#11-网络)
-        - [1.1.1. 集群外部访问Pod或Service](#111-集群外部访问pod或service)
-            - [1.1.1.1. 利用Rinetd实现Service负载均衡](#1111-利用rinetd实现service负载均衡)
-        - [1.1.2. 负载kube-proxy](#112-负载kube-proxy)
-    - [1.2. Kubernetes的网络模型](#12-kubernetes的网络模型)
-    - [1.3. kube-proxy负载](#13-kube-proxy负载)
+    - [1.1. Kubemetes网络模型](#11-kubemetes网络模型)
+    - [1.2. Docker的网络基础](#12-docker的网络基础)
+    - [1.3. Docker的网络实现](#13-docker的网络实现)
+    - [1.4. Kubemetes 的网络实现](#14-kubemetes-的网络实现)
+    - [1.5. kube-proxy负载](#15-kube-proxy负载)
+    - [1.6. 网络](#16-网络)
+        - [1.6.1. 集群外部访问Pod或Service](#161-集群外部访问pod或service)
+            - [1.6.1.1. 利用Rinetd实现Service负载均衡](#1611-利用rinetd实现service负载均衡)
 
 <!-- /TOC -->
 
 # 1. Kubernetes集群的网络配置
-
-
 <!--
- Kubernetes中容器到容器通信 
- https://mp.weixin.qq.com/s/P-xKd6HeOGxyt-YXCnZjmQ
+
+权威指南  第3.7章  
+
+Kubernetes中容器到容器通信 
+https://mp.weixin.qq.com/s/P-xKd6HeOGxyt-YXCnZjmQ
 
 kubernetes集群网络
 https://www.cnblogs.com/yuezhimi/p/13042037.html
-
 -->
-权威指南  第7章  
 
 &emsp; 在多个Node组成的Kubernetes集群内，跨主机的容器间网络互通是Kubernetes集群能够正常工作的前提条件。Kubernetes本身并不会对跨主机的容器网络进行设置，这需要额外的工具来实现。除了谷歌公有云GCE平台提供的网络设置，一些开源的工具包括Flannel, Open vSwitch. Weave> Calico等都能够实现跨主机的容器间网络互通。  
 
-## 1.1. 网络
-### 1.1.1. 集群外部访问Pod或Service  
-<!-- 
-从外部访问K8s中Pod的五种方式
-https://blog.csdn.net/qq_23348071/article/details/87185025
--->
-&emsp; <font color = "red">由于Pod和Service是Kubernetes集群范围内的虚拟概念，所以集群外的客户端系统无法通过Pod的IP地址或者Service的虚拟IP地址和虚拟端口号访问到它们。</font><font color = "clime">为了让外部客户端可以访问这些服务，可以将Pod或Service的端口号映射到宿主机，以使得客户端应用能够通过物理机访问容器应用。</font>  
 
-1. 将容器应用的端口号映射到物理机。  
-2. **将Service的端口号映射到物理机。**  
-
-#### 1.1.1.1. 利用Rinetd实现Service负载均衡  
-&emsp; 端口转发工具Rineted：Rineted是Linux操作系统中为重定向传输控制协议工具。可将源IP端口数据转发至目标IP端口。在Kubernetes中用于将service服务对外暴露。  
-
-
-### 1.1.2. 负载kube-proxy
-
-
-## 1.2. Kubernetes的网络模型  
+## 1.1. Kubemetes网络模型
 &emsp; K8S为Pod和Service资源对象分别使用了各自的专有网络，Pod网络由K8S的网络插件配置实现，而Service网络则由K8S集群进行指定。如下图：  
 ![image](http://182.92.69.8:8081/img/devops/k8s/k8s-14.png)  
 &emsp; K8S使用的网络插件需要为每个Pod配置至少一个特定的地址，即Pod IP。Pod IP地址实际存在于某个网卡(可以是虚拟机设备)上。  
@@ -65,8 +49,31 @@ https://blog.csdn.net/qq_23348071/article/details/87185025
 * ④集群外部流量和Service之间的通信  
 -->
 
-## 1.3. kube-proxy负载 
+## 1.2. Docker的网络基础
 
+
+## 1.3. Docker的网络实现
+
+## 1.4. Kubemetes 的网络实现
+
+
+
+## 1.5. kube-proxy负载 
+
+
+## 1.6. 网络
+### 1.6.1. 集群外部访问Pod或Service  
+<!-- 
+从外部访问K8s中Pod的五种方式
+https://blog.csdn.net/qq_23348071/article/details/87185025
+-->
+&emsp; <font color = "red">由于Pod和Service是Kubernetes集群范围内的虚拟概念，所以集群外的客户端系统无法通过Pod的IP地址或者Service的虚拟IP地址和虚拟端口号访问到它们。</font><font color = "clime">为了让外部客户端可以访问这些服务，可以将Pod或Service的端口号映射到宿主机，以使得客户端应用能够通过物理机访问容器应用。</font>  
+
+1. 将容器应用的端口号映射到物理机。  
+2. **将Service的端口号映射到物理机。**  
+
+#### 1.6.1.1. 利用Rinetd实现Service负载均衡  
+&emsp; 端口转发工具Rineted：Rineted是Linux操作系统中为重定向传输控制协议工具。可将源IP端口数据转发至目标IP端口。在Kubernetes中用于将service服务对外暴露。  
 
 
 
