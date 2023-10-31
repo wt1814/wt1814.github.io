@@ -152,6 +152,7 @@ graph LR
 [支付系统](/docs/recruit/project/payment.md)  
 [财务系统](/docs/recruit/project/Financial.md)  
 [二清项目](/docs/recruit/project/erqing.md)  
+[用户系统](/docs/recruit/project/user.md)    
 [监控插件](/docs/recruit/project/monitor.md)   
 
 ### 1.12.2. ★★★面试流程
@@ -1170,7 +1171,9 @@ prometheus
 &emsp; [Docker工具](/docs/devAndOps/docker/tools.md)  
 [docker-compose](/docs/devAndOps/docker/docker-compose.md)  
 [Kubernetes](/docs/devAndOps/k8s/Kubernetes.md)      
-&emsp; [k8s整体架构](/docs/devAndOps/k8s/principle.md)  
+&emsp; [★★★k8s介绍](/docs/devAndOps/k8s/introduce.md)    
+&emsp; &emsp; [k8s架构](/docs/devAndOps/k8s/principle.md)   
+&emsp; &emsp; [k8s网络](/docs/devAndOps/k8s/network.md)   
 &emsp; [k8s使用教程](/docs/devAndOps/k8s/use.md)  
 &emsp; &emsp; [★★★k8s常用命令](/docs/devAndOps/k8s/k8scommand.md)  
 &emsp; &emsp; [k8s master节点安装](/docs/devAndOps/k8s/master.md)  
