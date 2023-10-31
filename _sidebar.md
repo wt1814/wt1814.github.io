@@ -5,7 +5,7 @@
 * [2.设计模式](/docs/a-summary/designPatterns.md)  
 * [3.JVM](/docs/a-summary/JVM.md)   
 * [4.并发编程](/docs/a-summary/concurrent.md)  
-* [★★★SQL面试题1](/docs/SQL/SQLInterview1.md)  
+* [5.SQL面试题1](/docs/SQL/SQLInterview1.md)  
 * [5.数据库](/docs/a-summary/database.md)   
 * [6.ES](/docs/a-summary/ES.md)  
 * [7.SSM](/docs/a-summary/SSM.md)  
@@ -16,7 +16,7 @@
 * [12.网络IO、Netty、WebSocket](/docs/a-summary/NetIO.md)  
 * [13.计算机网络和负载均衡](/docs/a-summary/Net.md)  
 * [14.Linux和DevOps](/docs/a-summary/DevOps.md)  
-* [大总结2](/docs/a-summary/summaryTwo.md)  
+* [15.系统架构](/docs/a-summary/architecture.md)  
 ------------------------------------------------------------------------------------------------------------------------------
 * [Error和性能（项目难点）](/docs/Error/ErrorAndPerformance.md)     
     * [错误排查流程](/docs/Error/ErrorTrouble.md)  
