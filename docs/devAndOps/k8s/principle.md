@@ -228,4 +228,4 @@ https://www.cnblogs.com/justmine/p/8684564.html
 7. kubelet根据调度结果执行Pod创建操作：绑定成功后，scheduler会调用APIServer的API在etcd中创建一个boundpod对象，描述在一个工作节点上绑定运行的所有pod信息。运行在每个工作节点上的kubelet也会定期与etcd同步boundpod信息，一旦发现应该在该工作节点上运行的boundpod对象没有更新，则调用Docker API创建并启动pod内的容器。
 
 ## 1.5. k8s网络  
-&emsp; [k8s网络](/docs/devAndOps/k8s/network.md)   
+&emsp; [k8s网络](/docs/devAndOps/k8s/k8snetwork.md)  

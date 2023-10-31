@@ -1,14 +1,14 @@
 
 <!-- TOC -->
 
-- [1. kubemetes安装](#1-kubemetes安装)
+- [1. k8s卸载和dashboard安装](#1-k8s卸载和dashboard安装)
     - [1.1. 卸载k8s](#11-卸载k8s)
     - [1.2. kubemetes-dashboard仪表盘安装](#12-kubemetes-dashboard仪表盘安装)
 
 <!-- /TOC -->
 
 
-# 1. kubemetes安装  
+# 1. k8s卸载和dashboard安装  
 
 ## 1.1. 卸载k8s
 
