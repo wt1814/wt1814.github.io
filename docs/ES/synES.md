@@ -27,6 +27,7 @@ https://www.zhihu.com/question/482345425/answer/2168849961
 
 <!-- 
 
+
 canal
 https://www.jianshu.com/p/9677ca6ca34e
 使用canal增量同步mysql数据库信息到ElasticSearch
@@ -40,8 +41,7 @@ https://mp.weixin.qq.com/s/apPGngRQx6bJEmR82XlXhQ
 -->
 
 <!-- 
-
-MySQL数据同步到ES的4种解决方案
+***MySQL数据同步到ES的4种解决方案
 https://baijiahao.baidu.com/s?id=1761412728761809761&wfr=spider&for=pc
 
 https://blog.csdn.net/weixin_43735348/article/details/127580815

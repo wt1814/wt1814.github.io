@@ -31,6 +31,9 @@ https://mp.weixin.qq.com/s/FusUyy-JbjDLTclm5OmPqQ
 我花了10个小时，写出了这篇 K8S 架构解析 
 https://mp.weixin.qq.com/s/nRqywApFqiXIKjamjMlqKA
 
+k8s常用资源介绍
+*** https://blog.csdn.net/chengyinwu/article/details/103484252
+
 ~~
 k8s中文文档
 https://www.kubernetes.org.cn/k8s
