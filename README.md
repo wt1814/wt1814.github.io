@@ -127,6 +127,7 @@ graph LR
 [13.计算机网络和负载均衡](/docs/a-summary/Net.md)  
 [14.Linux和DevOps](/docs/a-summary/DevOps.md)  
 [15.系统架构](/docs/a-summary/architecture.md)  
+[逻辑题](/docs/a-summary/problem.md)  
 
 ------------------------------------------------------------------------------------------------------------------------------
 
