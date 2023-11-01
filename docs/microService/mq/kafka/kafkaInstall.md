@@ -16,6 +16,8 @@ https://mp.weixin.qq.com/s?__biz=MzIzNTIzNzYyNw==&mid=2247483777&idx=1&sn=5ab919
 Kafka SSL安装与配置
 https://www.cnblogs.com/smartloli/p/12950761.html
 
+两种集群：Zookeeper模式集群、KRaft模式集群
+https://developer.aliyun.com/article/1247585
 -->
 
 ## 1.1. kafka安装  

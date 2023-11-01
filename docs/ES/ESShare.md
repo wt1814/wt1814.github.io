@@ -20,7 +20,10 @@
 
 
 # 1. ES分片  
-<!-- 
+<!--
+
+https://www.kancloud.cn/king_om/es001/3107317
+
 https://blog.csdn.net/wlei0618/article/details/127434907
 
 Elasticsearch索引分片的数量及大小分配策略

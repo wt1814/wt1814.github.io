@@ -99,6 +99,12 @@ https://mp.weixin.qq.com/s/3ZCwKVLthoBZX4tkgfcuzA
 
 
 ## 分库数量计算 
+<!-- 
+
+每物理分库物理分表数
+https://blog.csdn.net/oQiuQian/article/details/116297205
+-->
+
 计算前提  
 一个实例建议最多8个物理分库数   
 单个物理分表的容量不超过500万行  

@@ -19,6 +19,9 @@
 
 kubernetes集群网络
 https://www.cnblogs.com/yuezhimi/p/13042037.html
+深入解析k8s网络
+https://blog.csdn.net/weixin_36755535/article/details/130389839
+https://zhuanlan.zhihu.com/p/61677445?utm_id=0
 -->
 
 

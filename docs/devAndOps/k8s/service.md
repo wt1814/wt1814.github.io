@@ -15,7 +15,13 @@
 
 <!-- /TOC -->
 
+<!-- 
 
+Service与kube-proxy
+https://juejin.cn/post/7050761977718636557
+kube-proxy详解
+https://blog.csdn.net/weixin_40579389/article/details/131186473
+-->
 
 # 1. Service详解  
 <!-- 
