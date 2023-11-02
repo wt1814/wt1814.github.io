@@ -127,8 +127,6 @@ https://www.cnblogs.com/ppku/p/17023127.html
 @Transactional(rollbackFor = Exception.class)
 ```
 
-
 ### 1.3.4. 实现柔性事务  
 &emsp; 这种模式，是由Seata作为事务协调者，来进行协调。使用方式需要先部署seata服务。官方建议是使用seata配合nacos作为配置中心来使用。实际上是使用的seata的AT模式进行两阶段提交。  
-
 
