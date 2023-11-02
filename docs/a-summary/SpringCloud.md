@@ -23,6 +23,8 @@
         - [1.2.2. 网关](#122-网关)
             - [1.2.2.1. 网关介绍](#1221-网关介绍)
             - [1.2.2.2. Spring Cloud Gateway](#1222-spring-cloud-gateway)
+                - [介绍](#介绍)
+                - [路由](#路由)
             - [1.2.2.3. Zuul](#1223-zuul)
         - [1.2.3. 注册中心和配置中心](#123-注册中心和配置中心)
             - [1.2.3.1. 注册中心和配置中心介绍](#1231-注册中心和配置中心介绍)
@@ -325,6 +327,7 @@ https://baijiahao.baidu.com/s?id=1713045744318175557&wfr=spider&for=pc
 
 
 #### 1.2.2.2. Spring Cloud Gateway
+##### 介绍
 1. Spring Cloud Gateway 具有如下特性：
     * 基于Spring Framework 5、Project Reactor 和 Spring Boot 2.0 进行构建；
     * 动态路由：能够匹配任何请求属性；  
@@ -341,6 +344,19 @@ https://baijiahao.baidu.com/s?id=1713045744318175557&wfr=spider&for=pc
 &emsp; &emsp; 实现动态路由。动态路由是与静态路由相对的一个概念，指路由器能够根据路由器之间的交换的特定路由信息自动地建立自己的路由表，并且能够根据链路和节点的变化适时地进行自动调整。当网络中节点或节点间的链路发生故障，或存在其它可用路由时，动态路由可以自行选择最佳的可用路由并继续转发报文  
 &emsp; 断言（Predicate ）：参照Java8的新特性Predicate，允许开发人员匹配HTTP请求中的任何内容，比如头或参数。  
 &emsp; 过滤器（filter）：可以在返回请求之前或之后修改请求和响应的内容。  
+
+##### 路由
+1. 配置  
+&emsp; 1）id：我们自定义的路由 ID，保持唯一  
+&emsp; 2）uri：目标服务地址  
+&emsp; 3）predicates：路由条件，Predicate 接受一个输入参数，返回一个布尔值结果。该接口包含多种默认方法来将 Predicate 组合成其他复杂的逻辑（比如：与，或，非）。  
+&emsp; 4）filters：过滤规则，暂时没用。  
+&emsp; 上面这段配置的意思是，配置了一个id为product-service的路由规则，当访问网关请求地址以product开头时，会自动转发到地址：http://127.0.0.1:9002/。  
+
+2. 路由规则介绍：  
+&emsp; SpringCloudGateway的功能很强大，前面我们只是使用了predicates进行了简单的条件匹配，其实SpringCloudGataway帮我们内置了很多Predicates功能。在SpringCloudGateway中Spring利用Predicate的特性实现了各种路由匹配规则，有通过Header、请求参数等不同的条件来进行作为条件匹配到对应的路由。  
+
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-46.png)  
 
 
 #### 1.2.2.3. Zuul

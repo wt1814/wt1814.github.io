@@ -4,8 +4,10 @@
 - [1. Spring Cloud Gateway](#1-spring-cloud-gateway)
     - [1.1. Gateway简介（Gateway的特性/Gateway VS zuul）](#11-gateway简介gateway的特性gateway-vs-zuul)
     - [1.2. 路由](#12-路由)
-        - [1.2.1. 集成注册中心实现负载](#121-集成注册中心实现负载)
-        - [1.2.2. 实现动态路由？](#122-实现动态路由)
+        - [1.2.1. ★★★路由实现](#121-★★★路由实现)
+            - [1.2.1.1. 配置实践](#1211-配置实践)
+            - [1.2.1.2. 路由规则](#1212-路由规则)
+        - [1.2.2. 集成注册中心实现动态路由](#122-集成注册中心实现动态路由)
     - [1.3. 断言](#13-断言)
     - [1.4. 过滤器](#14-过滤器)
         - [1.4.1. 过滤器](#141-过滤器)
@@ -23,14 +25,14 @@
 
 # 1. Spring Cloud Gateway
 <!-- 
-
 *** Spring Cloud Gateway夺命连环10问？
 https://mp.weixin.qq.com/s/YdMQTVH8vqKnWXyRXxTmag
 网关Spring Cloud Gateway科普 
 https://mp.weixin.qq.com/s/NIc6bredbMF2jpabagv2lg
 
--->
 
+https://baijiahao.baidu.com/s?id=1698546896997623218&wfr=spider&for=pc
+-->
 
 
 ## 1.1. Gateway简介（Gateway的特性/Gateway VS zuul）  
@@ -64,14 +66,43 @@ Spring Cloud Gateway 逐渐崭露头角，它基于 Spring 5.0、Spring Boot 2.0
 
 ## 1.2. 路由  
 
+### 1.2.1. ★★★路由实现  
+#### 1.2.1.1. 配置实践  
+1. pom配置依赖
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-gateway</artifactId>
+</dependency>
+```
 
-### 1.2.1. 集成注册中心实现负载  
+2. 配置路由  
+```text
+spring:
+ cloud:
+  gateway:
+   routes:
+   - id: product-service
+     uri:http://127.0.0.1:9002
+     predicates:
+     - Path=/product/**
+```
+
+&emsp; 1）id：我们自定义的路由 ID，保持唯一  
+&emsp; 2）uri：目标服务地址  
+&emsp; 3）predicates：路由条件，Predicate 接受一个输入参数，返回一个布尔值结果。该接口包含多种默认方法来将 Predicate 组合成其他复杂的逻辑（比如：与，或，非）。  
+&emsp; 4）filters：过滤规则，暂时没用。  
+&emsp; 上面这段配置的意思是，配置了一个id为product-service的路由规则，当访问网关请求地址以product开头时，会自动转发到地址：http://127.0.0.1:9002/。  
 
 
+#### 1.2.1.2. 路由规则  
+&emsp; SpringCloudGateway的功能很强大，前面我们只是使用了predicates进行了简单的条件匹配，其实SpringCloudGataway帮我们内置了很多Predicates功能。在SpringCloudGateway中Spring利用Predicate的特性实现了各种路由匹配规则，有通过Header、请求参数等不同的条件来进行作为条件匹配到对应的路由。  
 
-### 1.2.2. 实现动态路由？  
+![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-46.png)  
+
+### 1.2.2. 集成注册中心实现动态路由  
 <!-- 
-
+https://baijiahao.baidu.com/s?id=1698546896997623218&wfr=spider&for=pc
 https://mp.weixin.qq.com/s/bFEIYPZOhisg8skjMDvdJw
 -->
 &emsp; 动态路由：是与静态路由相对的一个概念，指路由器能够根据路由器之间的交换的特定路由信息自动地建立自己的路由表，并且能够根据链路和节点的变化适时地进行自动调整。当网络中节点或节点间的链路发生故障，或存在其它可用路由时，动态路由可以自行选择最佳的可用路由并继续转发报文  

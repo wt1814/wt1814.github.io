@@ -425,7 +425,7 @@
         * [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
         * [XXXnacos](/docs/microService/SpringCloudNetflix/nacos.md)  
     * [GateWay](/docs/microService/SpringCloudNetflix/GateWay.md)  
-        * [XXXSpring Cloud GateWay](/docs/microService/SpringCloudNetflix/CloudGateWay.md)  
+        * [Spring Cloud GateWay](/docs/microService/SpringCloudNetflix/CloudGateWay.md)  
         * [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
     * [Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
     * [Spring Cloud Feign](/docs/microService/SpringCloudNetflix/Feign.md)  
