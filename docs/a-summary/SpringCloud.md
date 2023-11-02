@@ -23,13 +23,13 @@
         - [1.2.2. 网关](#122-网关)
             - [1.2.2.1. 网关介绍](#1221-网关介绍)
             - [1.2.2.2. Spring Cloud Gateway](#1222-spring-cloud-gateway)
-                - [介绍](#介绍)
-                - [路由](#路由)
+                - [1.2.2.2.1. 介绍](#12221-介绍)
+                - [1.2.2.2.2. 路由](#12222-路由)
             - [1.2.2.3. Zuul](#1223-zuul)
         - [1.2.3. 注册中心和配置中心](#123-注册中心和配置中心)
             - [1.2.3.1. 注册中心和配置中心介绍](#1231-注册中心和配置中心介绍)
-            - [注册中心宕机](#注册中心宕机)
-            - [1.2.3.2. Eureka](#1232-eureka)
+            - [1.2.3.2. 注册中心宕机](#1232-注册中心宕机)
+            - [1.2.3.3. Eureka](#1233-eureka)
         - [1.2.4. Ribbon](#124-ribbon)
         - [1.2.5. Feign](#125-feign)
         - [1.2.6. Hytrix](#126-hytrix)
@@ -42,7 +42,9 @@
 # 1. SpringCloud
 
 ## 1.1. SpringBoot
+
 ### 1.1.1. SpringBoot常见面试题
+
 #### 1.1.1.1. SpringBoot有哪些优点?  
 &emsp; 减少开发，减少测试时间。  
 &emsp; 使用JavaConfig有助于避免使用XML。  
@@ -211,6 +213,7 @@ https://baijiahao.baidu.com/s?id=1713045744318175557&wfr=spider&for=pc
     ```
 
 #### 1.1.2.3. SpringBoot事件监听机制
+
 ##### 1.1.2.3.1. 事件监听步骤
 &emsp; **<font color = "clime">SpringBoot启动时广播生命周期事件步骤：</font>**    
 1. 为广播SpringBoot内置生命周期事件做前期准备：    
@@ -288,6 +291,7 @@ https://baijiahao.baidu.com/s?id=1713045744318175557&wfr=spider&for=pc
 
 
 ## 1.2. SpringCloud
+
 ### 1.2.1. SpringCloud组件
 1. **SpringCloud子项目：**  
 ![image](http://182.92.69.8:8081/img/microService/SpringCloudNetflix/cloud-27.png)  
@@ -314,6 +318,7 @@ https://baijiahao.baidu.com/s?id=1713045744318175557&wfr=spider&for=pc
     6. 服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随时改配置。  
 
 ### 1.2.2. 网关
+
 #### 1.2.2.1. 网关介绍    
 1. 为什么需要网关？  
 &emsp; 传统的单体架构中只有一个服务开放给客户端调用，但是微服务架构中是将一个系统拆分成多个微服务，那么作为客户端如何去调用这些微服务呢？如果没有网关的存在，只能在本地记录每个微服务的调用地址。  
@@ -327,7 +332,8 @@ https://baijiahao.baidu.com/s?id=1713045744318175557&wfr=spider&for=pc
 
 
 #### 1.2.2.2. Spring Cloud Gateway
-##### 介绍
+
+##### 1.2.2.2.1. 介绍
 1. Spring Cloud Gateway 具有如下特性：
     * 基于Spring Framework 5、Project Reactor 和 Spring Boot 2.0 进行构建；
     * 动态路由：能够匹配任何请求属性；  
@@ -345,7 +351,7 @@ https://baijiahao.baidu.com/s?id=1713045744318175557&wfr=spider&for=pc
 &emsp; 断言（Predicate ）：参照Java8的新特性Predicate，允许开发人员匹配HTTP请求中的任何内容，比如头或参数。  
 &emsp; 过滤器（filter）：可以在返回请求之前或之后修改请求和响应的内容。  
 
-##### 路由
+##### 1.2.2.2.2. 路由
 1. 配置  
 &emsp; 1）id：我们自定义的路由 ID，保持唯一  
 &emsp; 2）uri：目标服务地址  
@@ -367,6 +373,7 @@ https://baijiahao.baidu.com/s?id=1713045744318175557&wfr=spider&for=pc
 &emsp; 通过Zuul实现的API网关服务具备了动态路由和动态过滤器能力，可以在不重启API网关服务的前提下为其动态修改路由规则和添加或删除过滤器。   
 
 ### 1.2.3. 注册中心和配置中心
+
 #### 1.2.3.1. 注册中心和配置中心介绍
 1. 注册中心：  
     1. 为了解决微服务架构中的服务实例维护问题。  
@@ -377,7 +384,7 @@ https://baijiahao.baidu.com/s?id=1713045744318175557&wfr=spider&for=pc
 2. 配置中心： 
 &emsp; 由于每个服务都需要必要的配置信息才能运行，所以一套集中式的、动态的配置管理设施是必不可少的。  
 
-#### 注册中心宕机 
+#### 1.2.3.2. 注册中心宕机 
 
 &emsp; 分3种场景来阐述注册中心宕机下服务的异常情况：    
 
@@ -387,7 +394,7 @@ https://baijiahao.baidu.com/s?id=1713045744318175557&wfr=spider&for=pc
 
 &emsp; 解决方案：修改内存中本地缓存保存到文件中。  
 
-#### 1.2.3.2. Eureka
+#### 1.2.3.3. Eureka
 1. 服务治理框架和产品都围绕着服务注册与服务发现机制来完成对微服务应用实例的自动化管理。  
 2. Spring Cloud Eureka，使用Netflix Eureka来实现服务注册与发现，它既包含了服务端组件，也包含了客户端组件。  
 3. Eureka服务治理体系包含三个核心角色：服务注册中心、服务提供者以及服务消费者。  
