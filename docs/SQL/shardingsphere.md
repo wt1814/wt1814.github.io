@@ -25,6 +25,8 @@ https://mp.weixin.qq.com/s/hPJHCKcptRYvKQPZRz6Tdg
 
 https://www.jianshu.com/p/0238ff53c6bb
 
+官网：https://shardingsphere.apache.org/document/current/cn/overview/  
+
 ## 1.1. ★★★ShardingSphere
 &emsp; 官网：https://shardingsphere.apache.org/document/current/cn/features/   
 &emsp; ShardingSphere是一套开源的分布式数据库中间件解决方案组成的生态圈。   

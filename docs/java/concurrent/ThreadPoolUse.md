@@ -7,6 +7,7 @@
     - [1.3. 确定线程池的大小](#13-确定线程池的大小)
         - [1.3.1. 线程数设置](#131-线程数设置)
         - [1.3.2. 阻塞队列设置](#132-阻塞队列设置)
+        - [核心线程数为0](#核心线程数为0)
     - [1.4. 线程池关闭](#14-线程池关闭)
         - [1.4.1. ThreadPoolExecutor的shutdown()与shutdownNow()源码](#141-threadpoolexecutor的shutdown与shutdownnow源码)
         - [1.4.2. ThreadPoolExecutor#awaitTermination](#142-threadpoolexecutorawaittermination)
@@ -33,6 +34,11 @@
         2. 阻塞队列设置  
         &emsp; `线程池的任务队列本来起缓冲作用，`但是如果设置的不合理会导致线程池无法扩容至max，这样无法发挥多线程的能力，导致一些服务响应变慢。队列长度要看具体使用场景，取决服务端处理能力以及客户端能容忍的超时时间等。队列长度要根据使用场景设置一个上限值，如果响应时间要求较高的系统可以设置为0。  
         &emsp; `队列大小200或500-1000`。`队列很大或创建大量线程都会导致OOM`。   
+        3. 核心线程数为0  
+        &emsp; 1、当核心线程数为0的时候，会创建一个非核心线程进行执行  
+        &emsp; 2、核心线程数不为0的时候，如果核心线程数在执行，会有一个非核心线程数从队列中取对象执行线程  
+        &emsp; 3、核心线程数执行的是队列的take，非核心线程数执行队列的offer和poll  
+        &emsp; 4、核心线程数不为0且队列为SynchronousQueue时，就成了单线程运行了  
     3. `线程池的优雅关闭：`处于SHUTDOWN的状态下的线程池依旧可以调用shutdownNow。所以可以结合shutdown，shutdownNow，awaitTermination，更加优雅关闭线程池。  
 2. **<font color = "clime">线程池使用：</font>**   
     1. **<font color = "clime">线程池异常处理：</font>**  
@@ -188,10 +194,20 @@ public class DaoInterceptor implements MethodInterceptor {
 &emsp; 队列长度要看具体使用场景，取决服务端处理能力以及客户端能容忍的超时时间等。  
 &emsp; 建议采用tomcat的处理方式，core与max一致，先扩容到max再放队列，不过队列长度要根据使用场景设置一个上限值，如果响应时间要求较高的系统可以设置为0。  
 
+### 核心线程数为0  
+<!-- 
+Java线程池为什么核心线程数为0依然能执行？
+https://blog.csdn.net/qq_33333654/article/details/122260945?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-122260945-blog-115139590.235%5Ev38%5Epc_relevant_sort&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-122260945-blog-115139590.235%5Ev38%5Epc_relevant_sort
+-->
+&emsp; 1、当核心线程数为0的时候，会创建一个非核心线程进行执行  
+&emsp; 2、核心线程数不为0的时候，如果核心线程数在执行，会有一个非核心线程数从队列中取对象执行线程  
+&emsp; 3、核心线程数执行的是队列的take，非核心线程数执行队列的offer和poll  
+&emsp; 4、核心线程数不为0且队列为SynchronousQueue时，就成了单线程运行了  
+
 
 ## 1.4. 线程池关闭  
 &emsp; 线程池总共存在5种状态，分别为：RUNNING、SHUTDOWN、STOP、TIDYING、TERMINATED。    
-&emsp; 当执行ThreadPoolExecutor#shutdown方法将会使线程池状态从 RUNNING 转变为 SHUTDOWN。而调用 ThreadPoolExecutor#shutdownNow 之后线程池状态将会从 RUNNING 转变为 STOP。从上面的图上还可以看到，当线程池处于 SHUTDOWN，还是可以继续调用 ThreadPoolExecutor#shutdownNow 方法，将其状态转变为 STOP 。    
+&emsp; 当执行ThreadPoolExecutor#shutdown方法将会使线程池状态从 RUNNING 转变为 SHUTDOWN。而调用ThreadPoolExecutor#shutdownNow之后线程池状态将会从 RUNNING 转变为STOP。从上面的图上还可以看到，当线程池处于 SHUTDOWN，还是可以继续调用 ThreadPoolExecutor#shutdownNow 方法，将其状态转变为 STOP 。    
 
 ### 1.4.1. ThreadPoolExecutor的shutdown()与shutdownNow()源码
 &emsp; ThreadPoolExecutor#shutdown()方法源码：  
