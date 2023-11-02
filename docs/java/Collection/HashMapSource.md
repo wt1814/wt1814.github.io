@@ -499,6 +499,12 @@ final TreeNode<K,V> putTreeVal(HashMap<K,V> map, Node<K,V>[] tab,
 ### 1.4.3. resize()，扩容机制  
 <!-- 
 https://www.jianshu.com/p/87d2ef48e645
+
+
+****
+https://blog.csdn.net/qq_49217297/article/details/126304736
+https://blog.csdn.net/Gangangan_/article/details/130462623
+https://blog.csdn.net/upstream480/article/details/120251036
 -->
 
 &emsp; **<font color = "red">~~JDK1.8 优化成直接把链表拆成高位和低位两部分，通过位运算来决定放在原索引处或者原索引加原数组长度的偏移量处。~~</font>**  

@@ -182,7 +182,10 @@
         3. 如果碰撞了，如果key是相同的，则替掉到原来的值；
         4. 如果key不同，需要判断目前数据结构是链表还是红黑树，根据不同的情况来进行插入。
         5. 最后判断哈希表是否满了(当前哈希表大小*负载因子)，如果满了，则【扩容】。  
-    3. put()中，最后流程`扩容`机制：JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。  
+    3. ~~put()中，最后流程`扩容`机制：JDK 1.8扩容条件是数组长度大于阈值或链表转为红黑树且数组元素小于64时。~~（重新总结）  
+        https://blog.csdn.net/qq_49217297/article/details/126304736  
+        https://blog.csdn.net/Gangangan_/article/details/130462623  
+        https://blog.csdn.net/upstream480/article/details/120251036  
         ![image](http://182.92.69.8:8081/img/java/JDK/Collection/collection-15.png)
         1. 遍历节点 ---> 计算节点位置(e.hash & oldCap)  
         2. 节点迁移  
