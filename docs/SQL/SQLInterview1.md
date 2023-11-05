@@ -18,6 +18,8 @@ https://www.cnblogs.com/smileberry/p/7411855.html
 https://zhuanlan.zhihu.com/p/359621510
 
 -->
+&emsp; group by，case when，子查询，行列转换    
+
 ## 1.1. Goup by分组  
 &emsp; 查询结果集中有统计数据时，就需要使用分组函数。  
 &emsp; <font color = "red">Group By分组函数中，查询只能得到组相关的信息。组相关的信息(统计信息)：count,sum,max,min,avg。</font> `在select指定的字段要么包含在Group By语句的后面，作为分组的依据；要么被包含在聚合函数中`。group by是`对结果集分组，而不是查询字段分组`。  
