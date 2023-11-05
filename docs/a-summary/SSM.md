@@ -44,13 +44,13 @@
                     - [1.2.4.2.4.2. order by和limit一起使用时的BUG](#124242-order-by和limit一起使用时的bug)
                 - [1.2.4.2.5. 数据量过大时 limit分页效率，物理分页](#12425-数据量过大时-limit分页效率物理分页)
         - [1.2.5. 一级、二级缓存](#125-一级二级缓存)
-            - [1.2.5.1. MyBatis大数据量查询](#1251-mybatis大数据量查询)
-            - [1.2.5.2. MyBatis架构](#1252-mybatis架构)
-            - [1.2.5.3. MyBatis SQL执行解析](#1253-mybatis-sql执行解析)
-            - [1.2.5.4. SqlSession详解](#1254-sqlsession详解)
-            - [1.2.5.5. Spring集成Mybatis](#1255-spring集成mybatis)
-            - [1.2.5.6. MyBatis缓存](#1256-mybatis缓存)
-            - [1.2.5.7. MyBatis插件解析](#1257-mybatis插件解析)
+        - [1.2.5.1. MyBatis大数据量查询](#1251-mybatis大数据量查询)
+        - [1.2.5.2. MyBatis架构](#1252-mybatis架构)
+        - [1.2.5.3. MyBatis SQL执行解析](#1253-mybatis-sql执行解析)
+        - [1.2.5.4. SqlSession详解](#1254-sqlsession详解)
+        - [1.2.5.5. Spring集成Mybatis](#1255-spring集成mybatis)
+        - [1.2.5.6. MyBatis缓存](#1256-mybatis缓存)
+        - [1.2.5.7. MyBatis插件解析](#1257-mybatis插件解析)
 
 <!-- /TOC -->
 
@@ -425,20 +425,20 @@ https://www.jianshu.com/p/88d1eca40271
 
 
 
-#### 1.2.5.1. MyBatis大数据量查询
+### 1.2.5.1. MyBatis大数据量查询
 1. `流式查询（针对查询结果集比较大）`  
 &emsp; 流式查询指的是查询成功后不是返回一个集合而是返回一个迭代器，应用每次从迭代器取一条查询结果。流式查询的好处是能够降低内存使用。  
 &emsp; **<font color = "clime">如果没有流式查询，想要从数据库取 1000 万条记录而又没有足够的内存时，就不得不分页查询，而分页查询效率取决于表设计，如果设计的不好，就无法执行高效的分页查询。因此流式查询是一个数据库访问框架必须具备的功能。</font>**  
 &emsp; 流式查询的过程当中，数据库连接是保持打开状态的，因此要注意的是： **<font color = "clime">执行一个流式查询后，数据库访问框架就不负责关闭数据库连接了，需要应用在取完数据后自己关闭。</font>**  
 
-#### 1.2.5.2. MyBatis架构
+### 1.2.5.2. MyBatis架构
 &emsp; **<font color = "red">Mybatis的功能架构分为三层：</font>**  
 
 * API接口层：提供给外部使用的接口API，开发人员通过这些本地API来操纵数据库。接口层一接收到调用请求就会调用核心处理层来完成具体的数据处理。  
 * 核心处理层：负责具体的SQL查找、SQL解析、SQL执行和执行结果映射处理等。它主要的目的是根据调用的请求完成一次数据库操作。  
 * 基础支持层：负责最基础的功能支撑，包括连接管理、事务管理、配置加载和缓存处理，这些都是共用的东西，将它们抽取出来作为最基础的组件。为上层的数据处理层提供最基础的支撑。  
 
-#### 1.2.5.3. MyBatis SQL执行解析
+### 1.2.5.3. MyBatis SQL执行解析
 1. Mybatis Sql执行流程：   
     1. 读取核心配置文件并返回InputStream流对象。
     2. 根据InputStream流对象解析出Configuration对象，然后创建SqlSessionFactory工厂对象。
@@ -471,10 +471,10 @@ https://www.jianshu.com/p/88d1eca40271
     }
     ```
 
-#### 1.2.5.4. SqlSession详解  
+### 1.2.5.4. SqlSession详解  
 
 
-#### 1.2.5.5. Spring集成Mybatis  
+### 1.2.5.5. Spring集成Mybatis  
 0. MyBatis运行原理：1.创建SqlSessionFacory；2.从SqlSessionFactory对象中获取SqlSession对象；3.获取Mapper；4.执行操作；    
 1. 创建SqlSessionFacory  
 &emsp; MyBatis-Spring中创建SqlSessionFacory是由SqlSessionFactoryBean完成的。实现了InitializingBean接口、FactoryBean接口、ApplicationListener接口。  
@@ -486,10 +486,10 @@ https://www.jianshu.com/p/88d1eca40271
 &emsp; MapperFactoryBean，因为实现了 FactoryBean 接口，同样是调用getObject()方法。  
 
 
-#### 1.2.5.6. MyBatis缓存
+### 1.2.5.6. MyBatis缓存
 &emsp; ......  
 
-#### 1.2.5.7. MyBatis插件解析
+### 1.2.5.7. MyBatis插件解析
 1. **<font color="clime">Mybaits插件的实现主要用了拦截器、责任链和动态代理。</font>** `动态代理可以对SQL语句执行过程中的某一点进行拦截`，`当配置多个插件时，责任链模式可以进行多次拦截`。  
 2. **<font color = "clime">mybatis扩展性很强，基于插件机制，基本上可以控制SQL执行的各个阶段，如执行器阶段，参数处理阶段，语法构建阶段，结果集处理阶段，具体可以根据项目业务来实现对应业务逻辑。</font>**   
     * 执行器Executor（update、query、commit、rollback等方法）；  
