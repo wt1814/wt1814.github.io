@@ -1214,14 +1214,16 @@ prometheus
 
 
 ## 1.15. 常用研发工具  
+[开发软件汇总](/docs/software/DevelopmentSoftware.md)  
 [Idea](/docs/software/idea/idea.md)  
+[数据库](/docs/software/database.md)  
 [postman](/docs/software/postman.md)  
+[visual studio code](/docs/software/visualStudioCode.md)  
 [抓包Charles](/docs/software/charles.md)  
 [markdown和博客](/docs/software/markdown.md)  
-[visual studio code](/docs/software/visualStudioCode.md)  
 [MAC系统](/docs/software/MAC.md)  
 [Json](/docs/software/Json.md)  
-[开发软件汇总](/docs/software/DevelopmentSoftware.md)  
+
 
 ------------------------------------------------------------------------------------------------------------------------------
 

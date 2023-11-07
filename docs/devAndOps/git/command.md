@@ -19,7 +19,7 @@
                 - [1.5.3.3.1. ★★★情况二：删除最后一次远程提交](#15331-★★★情况二删除最后一次远程提交)
                 - [1.5.3.3.2. ★★★情况三：回滚某次提交](#15332-★★★情况三回滚某次提交)
             - [1.5.3.4. 删除某次提交](#1534-删除某次提交)
-    - [1.6. gitignore规则不生效](#16-gitignore规则不生效)
+    - [1.6. ★★★.gitignore规则不生效](#16-★★★gitignore规则不生效)
     - [1.7. octotree，树形展示Github项目代码](#17-octotree树形展示github项目代码)
     - [1.8. git迁移仓库](#18-git迁移仓库)
     - [1.9. sourceTree](#19-sourcetree)
@@ -179,7 +179,7 @@ $ git revert commitID
 
 
 
-## 1.6. gitignore规则不生效  
+## 1.6. ★★★.gitignore规则不生效  
 <!-- 
 idea忽略隐藏文件、文件夹的设置操作
 https://www.cnblogs.com/sxdcgaq8080/p/9007883.html
@@ -187,6 +187,11 @@ https://www.cnblogs.com/sxdcgaq8080/p/9007883.html
 https://blog.csdn.net/chao2016/article/details/81699358
 
 -->
+<!-- 
+git添加.gitignore后不生效问题
+https://blog.csdn.net/xuxu_123_/article/details/131710549
+-->
+
 
 git忽略idea生成的不必要文件，如.iml文件，.idea文件夹，target文件夹
 https://blog.csdn.net/gaotanpan3666/article/details/83047856

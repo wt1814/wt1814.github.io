@@ -872,13 +872,14 @@
             * [prometheus+SpringBoot](/docs/devAndOps/monitor/prometheusSpringBoot.md)    
         * [统计PV](/docs/devAndOps/monitor/StatisticsPV.md)  
 * 常用工具  
+    * [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
+    * [数据库](/docs/software/database.md)  
     * [idea](/docs/software/idea/idea.md)  
     * [postman](/docs/software/postman.md)  
+    * [visual studio code](/docs/software/visualStudioCode.md)  
     * [抓包Charles](/docs/software/charles.md)  
     * [markdown和博客](/docs/software/markdown.md)  
-    * [visual studio code](/docs/software/visualStudioCode.md)  
     * [Json](/docs/software/Json.md)  
-    * [开发软件汇总](/docs/software/DevelopmentSoftware.md)  
     * [MAC系统](/docs/software/MAC.md)  
 ------------------------------------------------------------------------------------------------------------------------------
 * Linux操作系统  
