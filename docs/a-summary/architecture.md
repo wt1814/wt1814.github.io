@@ -60,6 +60,7 @@
 * 高并发系统的三高：  
 
 ### 1.2.1. 系统架构图  
+[★★★架构图](/docs/system/diagram.md)   
 ![image](http://182.92.69.8:8081/img/system/architecture-1.jpg)  
 &emsp; pc请求包含：内部系统，外部系统（右下角，sass平台，AI平台）  
 
