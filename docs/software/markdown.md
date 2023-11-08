@@ -3,6 +3,16 @@
 
 # Markdown
 
+<!-- 
+
+VSCode为Markdown自动生成目录，解决目录不整齐问题
+https://blog.csdn.net/u014171091/article/details/89629634
+
+生成完美中文编码目录列表[TOC]的终极解决方案 - 用 VSCode 写 Markdown 文档经验总结系列
+https://blog.csdn.net/leozhangit/article/details/109432552
+
+-->
+
 <!--
 draw.io图像的保存与导出
 https://blog.csdn.net/weixin_52308622/article/details/130946099
