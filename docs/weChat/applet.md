@@ -6,6 +6,7 @@
     - [1.2. 配置，前后端交互](#12-配置前后端交互)
     - [1.3. 前端开发](#13-前端开发)
     - [1.4. 后端开发](#14-后端开发)
+    - [开源项目](#开源项目)
 
 <!-- /TOC -->
 
@@ -61,4 +62,18 @@ https://sapp.yimenapp.com/info@-wei-xin-xiao-cheng-xu-qian-ru--h5-wang-xie-2444.
 
 &emsp; 通过以上步骤，小程序后端开发人员就可以完成自己的开发工作。  
 
+
+## 开源项目  
+&emsp; https://gitee.com/gz-yami/mall4j
+
+&emsp; 开发环境搭建视频（推荐先看下文档再看视频）：https://www.bilibili.com/video/BV1eW4y1V7c1  
+
+&emsp; 项目链接  
+&emsp; java后台：https://gitee.com/gz-yami/mall4j  
+
+&emsp; vue后台前端：https://gitee.com/gz-yami/mall4v  
+
+&emsp; 小程序：https://gitee.com/gz-yami/mall4m 
+
+&emsp; uni-app：https://gitee.com/gz-yami/mall4uni  
 
