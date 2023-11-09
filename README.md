@@ -1280,7 +1280,7 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 ------------------------------------------------------------------------------------------------------------------------------
 ## 
 ## 1.20. 微信开发
-[小程序](/docs/WeChat/applet.md)  
+[小程序](/docs/weChat/applet.md)  
 
 ## 1.21. 前端知识  
 [跨平台uni-app](/docs/front/uniapp.md)  

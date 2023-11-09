@@ -911,7 +911,7 @@
         * [大数据和空间限制](/docs/function/bigdata.md)  
 ------------------------------------------------------------------------------------------------------------------------------
 * 微信开发  
-    * [小程序](/docs/WeChat/applet.md)    
+    * [小程序](/docs/weChat/applet.md)    
 * 前端  
     * [跨平台uni-app](/docs/front/uniapp.md)    
     * [nodejs](/docs/front/nodejs.md)   
