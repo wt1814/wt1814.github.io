@@ -2,7 +2,7 @@
 <!-- TOC -->
 
 - [1. git](#1-git)
-    - [1.1. git访问慢](#11-git访问慢)
+    - [1.1. ★★★git访问慢](#11-★★★git访问慢)
     - [1.2. git多用户](#12-git多用户)
     - [1.3. Git分支命名](#13-git分支命名)
     - [1.4. GIT本地库操作基本原理](#14-git本地库操作基本原理)
@@ -11,7 +11,7 @@
         - [1.5.2. git克隆指定分支的代码](#152-git克隆指定分支的代码)
         - [1.5.3. 基于Gitlab Issues为导向的分支管理](#153-基于gitlab-issues为导向的分支管理)
     - [1.6. 命令](#16-命令)
-        - [1.6.1. git clone 文件大](#161-git-clone-文件大)
+        - [1.6.1. ★★★git clone 文件大](#161-★★★git-clone-文件大)
         - [1.6.2. git tag](#162-git-tag)
         - [1.6.3. ★★★git回滚](#163-★★★git回滚)
             - [1.6.3.1. 场景](#1631-场景)
@@ -55,7 +55,7 @@ https://mp.weixin.qq.com/s/bT7VXffqHuzUZUY5c4ce7A
 <!-- 本地仓库的位置 -->
 本地仓库的位置可设置为：\<localRepository\>${user.home}/.m2/repository\</localRepository\>
 
-## 1.1. git访问慢
+## 1.1. ★★★git访问慢
 <!-- 
 
 
@@ -122,8 +122,8 @@ https://blog.csdn.net/u011423145/article/details/107860812
 
 ## 1.6. 命令
 
-### 1.6.1. git clone 文件大
-&emsp; git clone giturl --depth=1  
+### 1.6.1. ★★★git clone 文件大
+&emsp; git clone 【giturl】 --depth=1  
 
 
 ### 1.6.2. git tag  

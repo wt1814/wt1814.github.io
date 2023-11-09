@@ -75,6 +75,7 @@
     - [1.19. 测试](#119-测试)
     - [1.20. python](#120-python)
     - [1.21. 微信开发](#121-微信开发)
+    - [AI了解](#ai了解)
 
 <!-- /TOC -->
 
@@ -1291,4 +1292,8 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 
 ## 1.21. 微信开发
 [小程序](/docs/WeChat/applet.md)  
+
+
+## AI了解  
+[AI](/docs/AI/AI.md)  
 

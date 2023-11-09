@@ -919,3 +919,4 @@
 * [python](/docs/python/python.md)   
 * 微信开发  
     * [小程序](/docs/WeChat/applet.md)    
+* [AI](/docs/AI/AI.md)  
