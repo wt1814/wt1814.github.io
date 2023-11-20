@@ -2,8 +2,9 @@
 <!-- TOC -->
 
 - [1. Jenkins](#1-jenkins)
-    - [1.1. 部署springboot](#11-部署springboot)
-    - [1.2. 集成Ansible，实现发布多台Web服务器](#12-集成ansible实现发布多台web服务器)
+    - [1.1. 两种流水线](#11-两种流水线)
+    - [1.2. 部署springboot](#12-部署springboot)
+    - [1.3. 集成Ansible，实现发布多台Web服务器](#13-集成ansible实现发布多台web服务器)
 
 <!-- /TOC -->
 
@@ -36,10 +37,19 @@ https://yq.aliyun.com/articles/500949?utm_content=m_42976
 4. Jenkins多环境配置，权限管理及插件使用
 
 
-## 1.1. 部署springboot
+## 1.1. 两种流水线  
+<!-- 
+https://zhuanlan.zhihu.com/p/583812704?utm_id=0
+-->
+
+&emsp; 脚本化流水线和声明式流水线  
+
+
+
+## 1.2. 部署springboot
 三十二张图告诉你，Jenkins构建SpringBoot有多简单~ 
 https://mp.weixin.qq.com/s/1H4E-gTyYmoueFIpK0AFlw
 
-## 1.2. 集成Ansible，实现发布多台Web服务器  
+## 1.3. 集成Ansible，实现发布多台Web服务器  
 https://www.jianshu.com/p/e2bc52db9605?utm_campaign=haruki&utm_content=note&utm_medium=reader_share&utm_source=weixin  
 
