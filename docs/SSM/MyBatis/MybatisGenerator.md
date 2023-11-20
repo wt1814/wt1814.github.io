@@ -23,7 +23,7 @@ https://blog.csdn.net/bandaotixiruiqiang/article/details/72478361
 https://blog.csdn.net/a403633318a/article/details/76122696
 -->
 
-## 1.1. 去除classPathEntry属性 
+## 1.1. ★★★去除classPathEntry属性 
 <!-- 
 
 去除classPathEntry属性  

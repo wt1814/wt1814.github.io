@@ -40,6 +40,9 @@ https://yq.aliyun.com/articles/500949?utm_content=m_42976
 ## 1.1. 两种流水线  
 <!-- 
 https://zhuanlan.zhihu.com/p/583812704?utm_id=0
+
+pipeline流水线
+https://blog.csdn.net/weixin_44823875/article/details/132805271
 -->
 
 &emsp; 脚本化流水线和声明式流水线  
