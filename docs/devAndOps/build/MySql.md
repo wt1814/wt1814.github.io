@@ -12,7 +12,7 @@
             - [1.3.1.2. MySQL8.0设置远程访问权限的方法](#1312-mysql80设置远程访问权限的方法)
             - [1.3.1.3. 修改密码](#1313-修改密码)
         - [1.3.2. 安装5.7](#132-安装57)
-    - [mysql如何创建只读用户](#mysql如何创建只读用户)
+    - [1.4. mysql如何创建只读用户](#14-mysql如何创建只读用户)
 
 <!-- /TOC -->
 
@@ -92,7 +92,7 @@ linux离线安装mysql5.7
 https://blog.csdn.net/weixin_43837034/article/details/121761316
 -->
 
-## mysql如何创建只读用户  
+## 1.4. mysql如何创建只读用户  
 <!-- 
 
 http://www.muzhuangnet.com/show/44198.html
