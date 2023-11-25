@@ -78,6 +78,7 @@
     - [1.21. 前端知识](#121-前端知识)
     - [1.22. 测试](#122-测试)
     - [1.23. python](#123-python)
+    - [大数据](#大数据)
     - [1.24. AI了解](#124-ai了解)
 
 <!-- /TOC -->
@@ -1297,6 +1298,8 @@ https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
 ## 1.23. python
 [python](/docs/python/python.md)  
 
+## 大数据  
+[bigData](/docs/bigData/bigData.md)  
 
 ## 1.24. AI了解  
 [AI](/docs/AI/AI.md)  
