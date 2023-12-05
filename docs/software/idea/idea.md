@@ -23,6 +23,7 @@
     - [模板](#模板)
         - [注释模板](#注释模板)
         - [代码模板](#代码模板)
+    - [自动换行](#自动换行)
 
 <!-- /TOC -->
 
@@ -269,4 +270,10 @@ https://mp.weixin.qq.com/s?__biz=Mzg2MjEwMjI1Mg==&mid=2247491131&idx=3&sn=d072a6
 https://blog.csdn.net/xiaoliulang0324/article/details/79030752
 
 ### 代码模板
+
+## 自动换行  
+<!-- 
+idea markdown 自动换行
+https://juejin.cn/s/idea%20markdown%20%E8%87%AA%E5%8A%A8%E6%8D%A2%E8%A1%8C
+-->
 
