@@ -494,7 +494,7 @@ graph LR
 &emsp; [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
 &emsp; [ES增删改原理](/docs/ES/write.md)  
 &emsp; [ES缓存](/docs/ES/ESCache.md)  
-&emsp; [分词](/docs/ES/participle.md)  
+&emsp; [★★★分词](/docs/ES/participle.md)  
 &emsp; [相关性和打分（排序）](/docs/ES/correlation.md)  
 [★★★ES优化](/docs/ES/ESoptimization.md)  
 &emsp; [ES优化](/docs/ES/optimization.md)  
