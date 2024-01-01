@@ -2,6 +2,7 @@
 <!-- TOC -->
 
 - [1. JVM调优基础](#1-jvm调优基础)
+    - [★★★每天100w次登陆请求, 8G 内存该如何设置JVM参数？](#★★★每天100w次登陆请求-8g-内存该如何设置jvm参数)
     - [1.1. 性能指标](#11-性能指标)
     - [1.2. JVM参数](#12-jvm参数)
         - [1.2.1. JVM参数分类](#121-jvm参数分类)
@@ -68,6 +69,11 @@ https://blog.csdn.net/qq_19922839/article/details/115379649
  https://mp.weixin.qq.com/s/xo6Cp37u3xl7mlzBNYKa5A
 
 -->
+
+## ★★★每天100w次登陆请求, 8G 内存该如何设置JVM参数？  
+https://mp.weixin.qq.com/s/vOwsUnpoZcznkwP_jvhpww  
+
+
 
 ## 1.1. 性能指标  
 &emsp; 参考[性能指标](/docs/system/performance.md)  
