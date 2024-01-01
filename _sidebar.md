@@ -792,7 +792,10 @@
 * ★★★DevOps  
     * [CI/CD](/docs/devAndOps/build/CICD.md)  
     * [Devops](/docs/devAndOps/build/devOps.md)  
-    * [GIT](/docs/devAndOps/git/command.md)  
+    * [GIT](/docs/devAndOps/git/Git.md)  
+        * [GIT](/docs/devAndOps/git/command.md)  
+        * [GitLab](/docs/devAndOps/git/GitLab.md)  
+        * [Github和Gitee](/docs/devAndOps/git/GithubAndGitee.md)  
     * [Maven](/docs/devAndOps/maven/maven.md)  
         * [Maven作用域](/docs/devAndOps/maven/MavenScope.md)  
         * [Maven私服搭建](/docs/devAndOps/maven/Nexus.md)  

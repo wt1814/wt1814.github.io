@@ -1115,8 +1115,10 @@ prometheus
 ### 1.15.3. DevOps介绍    
 [CI/CD](/docs/devAndOps/build/CICD.md)  
 [Devops](/docs/devAndOps/build/devOps.md)  
-[GIT](/docs/devAndOps/git/command.md)  
-[GitLab](/docs/devAndOps/git/GitLab.md)  
+[GIT](/docs/devAndOps/git/Git.md)  
+&emsp; [GIT](/docs/devAndOps/git/command.md)  
+&emsp; [GitLab](/docs/devAndOps/git/GitLab.md)  
+&emsp; [Github和Gitee](/docs/devAndOps/git/GithubAndGitee.md)  
 [Gradle](/docs/devAndOps/git/Gradle.md)  
 [Maven](/docs/devAndOps/maven/maven.md)  
 &emsp; [Maven作用域](/docs/devAndOps/maven/MavenScope.md)  
@@ -1157,7 +1159,6 @@ prometheus
 [Nginx搭建](/docs/devAndOps/build/nginx.md)   
 
 [6.ELK搭建](/docs/devAndOps/build/elk.md)   
-
 
 [docsify](/docs/devAndOps/build/docsify.md)  
 [3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
