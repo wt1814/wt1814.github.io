@@ -313,6 +313,7 @@
         * [文档操作](/docs/ES/document.md)  
             * [文档评分](/docs/ES/documentScore.md)  
         * [★★★检索操作](/docs/ES/search.md)  
+            * [返回数据结构](/docs/ES/result.md)  
             * [结构化检索](/docs/ES/Structured.md)  
             * [全文检索](/docs/ES/fullText.md)  
             * [排序/相关度/评分机制](/docs/ES/score.md)  

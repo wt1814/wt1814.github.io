@@ -472,6 +472,7 @@ graph LR
 &emsp; [文档操作](/docs/ES/document.md)  
 &emsp; &emsp; [***文档评分](/docs/ES/documentScore.md)  
 &emsp; [★★★检索操作](/docs/ES/search.md)  
+&emsp; &emsp; [返回数据结构](/docs/ES/result.md)  
 &emsp; &emsp; [结构化检索](/docs/ES/Structured.md)  
 &emsp; &emsp; [全文检索](/docs/ES/fullText.md)  
 &emsp; &emsp; [排序/相关度/评分机制](/docs/ES/score.md)  
