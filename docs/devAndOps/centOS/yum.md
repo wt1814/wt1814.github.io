@@ -8,6 +8,13 @@ https://blog.csdn.net/weixin_43885975/article/details/124767737
 -->
 
 
+yum安装
+<!-- 
+
+https://blog.csdn.net/zcouy/article/details/80335572
+-->
+
+
 更换yum源  
 <!--
 
