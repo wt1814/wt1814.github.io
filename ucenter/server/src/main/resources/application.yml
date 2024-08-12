@@ -1,0 +1,30 @@
+
+spring:
+  cache:
+    type: simple
+    cache-names: user
+mybatis:
+  mapper-locations: classpath:/idmapper/*.xml,classpath:/mapper/*.xml
+  type-aliases-package: com.wuw.ucenter.api.model.DO
+  configuration.map-underscore-to-camel-case: true
+logging:
+  config: classpath:log4j2.xml
+  filePath: 'G:/logs'  # SpringBoot+log4j2.xml使用application.yml属性值 https://www.cnblogs.com/extjava/p/7553642.html
+  logLevel: info
+uid:
+    epochStr: 2020-05-08
+    timeBits: 41
+    workerBits: 10
+    seqBits: 12
+    enableBackward: true
+    CachedUidGenerator:
+        boostPower: 3
+        paddingFactor: 50
+doublecache:
+  allowNull: true
+  init: 128
+  max: 1024
+  expireAfterWrite: 120  #Caffeine过期时间
+  redisExpire: 180      #Redis缓存过期时间
+
+

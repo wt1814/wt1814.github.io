@@ -1,0 +1,18 @@
+
+mybatis:
+  mapper-locations: classpath:/idmapper/*.xml,classpath:/mapper/*.xml
+  type-aliases-package: com.wuw.cloudscaffoldingdemo.api.model.DO
+  configuration.map-underscore-to-camel-case: true
+logging:
+  config: classpath:log4j2.xml
+  filePath: 'G:/'  # SpringBoot+log4j2.xml使用application.yml属性值 https://www.cnblogs.com/extjava/p/7553642.html
+  logLevel: info
+uid:
+    epochStr: 2020-05-08
+    timeBits: 41
+    workerBits: 10
+    seqBits: 12
+    enableBackward: true
+    CachedUidGenerator:
+        boostPower: 3
+        paddingFactor: 50

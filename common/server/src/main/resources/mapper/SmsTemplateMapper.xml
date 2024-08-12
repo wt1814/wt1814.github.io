@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wuw.common.server.dao.SmsTemplateMapper">
+  <resultMap id="BaseResultMap" type="com.wuw.common.server.model.DO.SmsTemplate">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="project" jdbcType="VARCHAR" property="project" />
+    <result column="business" jdbcType="VARCHAR" property="business" />
+    <result column="third_type" jdbcType="VARCHAR" property="thirdType" />
+    <result column="sms_template_code" jdbcType="VARCHAR" property="smsTemplateCode" />
+    <result column="sms_template_name" jdbcType="VARCHAR" property="smsTemplateName" />
+    <result column="validate_expire_interval" jdbcType="INTEGER" property="validateExpireInterval" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.wuw.common.server.model.DO.SmsTemplate">
+    <result column="sms_template_content" jdbcType="LONGVARCHAR" property="smsTemplateContent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, project, business, third_type, sms_template_code, sms_template_name, validate_expire_interval,
+    create_time, create_by, update_time, update_by
+  </sql>
+  <sql id="Blob_Column_List">
+    sms_template_content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sms_template
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sms_template
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.wuw.common.server.model.DO.SmsTemplate">
+    insert into sms_template (id, project, business,
+    third_type, sms_template_code, sms_template_name,
+    validate_expire_interval, create_time, create_by,
+    update_time, update_by, sms_template_content
+    )
+    values (#{id,jdbcType=INTEGER}, #{project,jdbcType=VARCHAR}, #{business,jdbcType=VARCHAR},
+    #{thirdType,jdbcType=VARCHAR}, #{smsTemplateCode,jdbcType=VARCHAR}, #{smsTemplateName,jdbcType=VARCHAR},
+    #{validateExpireInterval,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR},
+    #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{smsTemplateContent,jdbcType=LONGVARCHAR}
+    )
+  </insert>
+  <insert id="insertSelective" parameterType="com.wuw.common.server.model.DO.SmsTemplate">
+    insert into sms_template
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="project != null">
+        project,
+      </if>
+      <if test="business != null">
+        business,
+      </if>
+      <if test="thirdType != null">
+        third_type,
+      </if>
+      <if test="smsTemplateCode != null">
+        sms_template_code,
+      </if>
+      <if test="smsTemplateName != null">
+        sms_template_name,
+      </if>
+      <if test="validateExpireInterval != null">
+        validate_expire_interval,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="smsTemplateContent != null">
+        sms_template_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="project != null">
+        #{project,jdbcType=VARCHAR},
+      </if>
+      <if test="business != null">
+        #{business,jdbcType=VARCHAR},
+      </if>
+      <if test="thirdType != null">
+        #{thirdType,jdbcType=VARCHAR},
+      </if>
+      <if test="smsTemplateCode != null">
+        #{smsTemplateCode,jdbcType=VARCHAR},
+      </if>
+      <if test="smsTemplateName != null">
+        #{smsTemplateName,jdbcType=VARCHAR},
+      </if>
+      <if test="validateExpireInterval != null">
+        #{validateExpireInterval,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="smsTemplateContent != null">
+        #{smsTemplateContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wuw.common.server.model.DO.SmsTemplate">
+    update sms_template
+    <set>
+      <if test="project != null">
+        project = #{project,jdbcType=VARCHAR},
+      </if>
+      <if test="business != null">
+        business = #{business,jdbcType=VARCHAR},
+      </if>
+      <if test="thirdType != null">
+        third_type = #{thirdType,jdbcType=VARCHAR},
+      </if>
+      <if test="smsTemplateCode != null">
+        sms_template_code = #{smsTemplateCode,jdbcType=VARCHAR},
+      </if>
+      <if test="smsTemplateName != null">
+        sms_template_name = #{smsTemplateName,jdbcType=VARCHAR},
+      </if>
+      <if test="validateExpireInterval != null">
+        validate_expire_interval = #{validateExpireInterval,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="smsTemplateContent != null">
+        sms_template_content = #{smsTemplateContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.wuw.common.server.model.DO.SmsTemplate">
+    update sms_template
+    set project = #{project,jdbcType=VARCHAR},
+    business = #{business,jdbcType=VARCHAR},
+    third_type = #{thirdType,jdbcType=VARCHAR},
+    sms_template_code = #{smsTemplateCode,jdbcType=VARCHAR},
+    sms_template_name = #{smsTemplateName,jdbcType=VARCHAR},
+    validate_expire_interval = #{validateExpireInterval,jdbcType=INTEGER},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    create_by = #{createBy,jdbcType=VARCHAR},
+    update_time = #{updateTime,jdbcType=TIMESTAMP},
+    update_by = #{updateBy,jdbcType=VARCHAR},
+    sms_template_content = #{smsTemplateContent,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wuw.common.server.model.DO.SmsTemplate">
+    update sms_template
+    set project = #{project,jdbcType=VARCHAR},
+    business = #{business,jdbcType=VARCHAR},
+    third_type = #{thirdType,jdbcType=VARCHAR},
+    sms_template_code = #{smsTemplateCode,jdbcType=VARCHAR},
+    sms_template_name = #{smsTemplateName,jdbcType=VARCHAR},
+    validate_expire_interval = #{validateExpireInterval,jdbcType=INTEGER},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    create_by = #{createBy,jdbcType=VARCHAR},
+    update_time = #{updateTime,jdbcType=TIMESTAMP},
+    update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wuw.pay.server.dao.PayInThirdNotifyMapper">
+  <resultMap id="BaseResultMap" type="com.wuw.pay.api.DO.PayInThirdNotify">
+    <id column="in_third_notiry_id" jdbcType="VARCHAR" property="inThirdNotiryId" />
+    <result column="pay_in_no" jdbcType="VARCHAR" property="payInNo" />
+    <result column="third_trade_no" jdbcType="VARCHAR" property="thirdTradeNo" />
+    <result column="pay_in_type" jdbcType="VARCHAR" property="payInType" />
+    <result column="pay_in_type_detail" jdbcType="VARCHAR" property="payInTypeDetail" />
+    <result column="pay_in_time" jdbcType="TIMESTAMP" property="payInTime" />
+    <result column="pay_in_amount" jdbcType="INTEGER" property="payInAmount" />
+    <result column="pay_in_result" jdbcType="VARCHAR" property="payInResult" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.wuw.pay.api.DO.PayInThirdNotify">
+    <result column="notify_content" jdbcType="LONGVARCHAR" property="notifyContent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    in_third_notiry_id, pay_in_no, third_trade_no, pay_in_type, pay_in_type_detail, pay_in_time, 
+    pay_in_amount, pay_in_result, create_time
+  </sql>
+  <sql id="Blob_Column_List">
+    notify_content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pay_in_third_notify
+    where in_third_notiry_id = #{inThirdNotiryId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from pay_in_third_notify
+    where in_third_notiry_id = #{inThirdNotiryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.wuw.pay.api.DO.PayInThirdNotify">
+    insert into pay_in_third_notify (in_third_notiry_id, pay_in_no, third_trade_no, 
+      pay_in_type, pay_in_type_detail, pay_in_time, 
+      pay_in_amount, pay_in_result, create_time, 
+      notify_content)
+    values (#{inThirdNotiryId,jdbcType=VARCHAR}, #{payInNo,jdbcType=VARCHAR}, #{thirdTradeNo,jdbcType=VARCHAR}, 
+      #{payInType,jdbcType=VARCHAR}, #{payInTypeDetail,jdbcType=VARCHAR}, #{payInTime,jdbcType=TIMESTAMP}, 
+      #{payInAmount,jdbcType=INTEGER}, #{payInResult,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{notifyContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.wuw.pay.api.DO.PayInThirdNotify">
+    insert into pay_in_third_notify
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="inThirdNotiryId != null">
+        in_third_notiry_id,
+      </if>
+      <if test="payInNo != null">
+        pay_in_no,
+      </if>
+      <if test="thirdTradeNo != null">
+        third_trade_no,
+      </if>
+      <if test="payInType != null">
+        pay_in_type,
+      </if>
+      <if test="payInTypeDetail != null">
+        pay_in_type_detail,
+      </if>
+      <if test="payInTime != null">
+        pay_in_time,
+      </if>
+      <if test="payInAmount != null">
+        pay_in_amount,
+      </if>
+      <if test="payInResult != null">
+        pay_in_result,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="notifyContent != null">
+        notify_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="inThirdNotiryId != null">
+        #{inThirdNotiryId,jdbcType=VARCHAR},
+      </if>
+      <if test="payInNo != null">
+        #{payInNo,jdbcType=VARCHAR},
+      </if>
+      <if test="thirdTradeNo != null">
+        #{thirdTradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="payInType != null">
+        #{payInType,jdbcType=VARCHAR},
+      </if>
+      <if test="payInTypeDetail != null">
+        #{payInTypeDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="payInTime != null">
+        #{payInTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payInAmount != null">
+        #{payInAmount,jdbcType=INTEGER},
+      </if>
+      <if test="payInResult != null">
+        #{payInResult,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="notifyContent != null">
+        #{notifyContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wuw.pay.api.DO.PayInThirdNotify">
+    update pay_in_third_notify
+    <set>
+      <if test="payInNo != null">
+        pay_in_no = #{payInNo,jdbcType=VARCHAR},
+      </if>
+      <if test="thirdTradeNo != null">
+        third_trade_no = #{thirdTradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="payInType != null">
+        pay_in_type = #{payInType,jdbcType=VARCHAR},
+      </if>
+      <if test="payInTypeDetail != null">
+        pay_in_type_detail = #{payInTypeDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="payInTime != null">
+        pay_in_time = #{payInTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payInAmount != null">
+        pay_in_amount = #{payInAmount,jdbcType=INTEGER},
+      </if>
+      <if test="payInResult != null">
+        pay_in_result = #{payInResult,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="notifyContent != null">
+        notify_content = #{notifyContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where in_third_notiry_id = #{inThirdNotiryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.wuw.pay.api.DO.PayInThirdNotify">
+    update pay_in_third_notify
+    set pay_in_no = #{payInNo,jdbcType=VARCHAR},
+      third_trade_no = #{thirdTradeNo,jdbcType=VARCHAR},
+      pay_in_type = #{payInType,jdbcType=VARCHAR},
+      pay_in_type_detail = #{payInTypeDetail,jdbcType=VARCHAR},
+      pay_in_time = #{payInTime,jdbcType=TIMESTAMP},
+      pay_in_amount = #{payInAmount,jdbcType=INTEGER},
+      pay_in_result = #{payInResult,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      notify_content = #{notifyContent,jdbcType=LONGVARCHAR}
+    where in_third_notiry_id = #{inThirdNotiryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wuw.pay.api.DO.PayInThirdNotify">
+    update pay_in_third_notify
+    set pay_in_no = #{payInNo,jdbcType=VARCHAR},
+      third_trade_no = #{thirdTradeNo,jdbcType=VARCHAR},
+      pay_in_type = #{payInType,jdbcType=VARCHAR},
+      pay_in_type_detail = #{payInTypeDetail,jdbcType=VARCHAR},
+      pay_in_time = #{payInTime,jdbcType=TIMESTAMP},
+      pay_in_amount = #{payInAmount,jdbcType=INTEGER},
+      pay_in_result = #{payInResult,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where in_third_notiry_id = #{inThirdNotiryId,jdbcType=VARCHAR}
+  </update>
+</mapper>

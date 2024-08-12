@@ -1,0 +1,17 @@
+
+
+# 阿里云oss
+aliyun:
+  oss:
+   file:
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    keyid: 主账号
+    keysecret: 主账号
+    bucketname: wtprivate
+   sts:
+    endpoint: sts.cn-hangzhou.aliyuncs.com
+    keyid: ram用户账号
+    keysecret: ram用户账号
+    roleArn: acs:ram::1005192412964127:role/ramosstest
+    bucketname: wtprivate
+

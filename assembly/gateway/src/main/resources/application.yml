@@ -1,0 +1,7 @@
+
+
+logging:
+  config: classpath:log4j2.xml
+  filePath: 'G:/'  # SpringBoot+log4j2.xml使用application.yml属性值 https://www.cnblogs.com/extjava/p/7553642.html
+  logLevel: info
+

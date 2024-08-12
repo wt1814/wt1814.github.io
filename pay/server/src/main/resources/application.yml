@@ -1,0 +1,11 @@
+
+mybatis:
+  mapper-locations: classpath:/idmapper/*.xml,classpath:/mapper/*.xml
+  type-aliases-package: com.wuw.cloudscaffoldingdemo.api.model.DO
+  configuration.map-underscore-to-camel-case: true
+
+wx:
+  mchid:
+  mchSerialNo:
+  apiV3Key:
+  notifyUrl:

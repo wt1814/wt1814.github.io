@@ -1,1309 +1,726 @@
 
 <!-- TOC -->
 
-- [1. wt1814-note](#1-wt1814-note)
-    - [1.1. ★★★待学](#11-★★★待学)
-    - [1.2. 总结](#12-总结)
-    - [1.3. 面试](#13-面试)
-        - [1.3.1. Error和性能（项目难点）](#131-error和性能项目难点)
-        - [1.3.2. ★★★做过的项目](#132-★★★做过的项目)
-        - [1.3.3. ★★★面试流程](#133-★★★面试流程)
-    - [1.4. 系统学习](#14-系统学习)
-    - [1.5. Java](#15-java)
+- [1. 项目搭建](#1-项目搭建)
+    - [1.1. 待解决](#11-待解决)
+    - [1.2. 环境基础](#12-环境基础)
+    - [1.3. Maven](#13-maven)
+    - [1.4. 项目组织](#14-项目组织)
+        - [1.4.1. 项目介绍](#141-项目介绍)
+        - [1.4.2. MVC三层架构上再加一层Manager层](#142-mvc三层架构上再加一层manager层)
+        - [1.4.3. ~~项目Demo脚手架制作~~](#143-项目demo脚手架制作)
+    - [1.5. 项目基础](#15-项目基础)
         - [1.5.1. Java基础](#151-java基础)
-        - [1.5.2. 设计模式](#152-设计模式)
-        - [1.5.3. JVM](#153-jvm)
-        - [1.5.4. HotSpot](#154-hotspot)
-        - [1.5.5. 并发编程](#155-并发编程)
-    - [1.6. 数据库](#16-数据库)
-        - [1.6.1. MySql](#161-mysql)
-        - [1.6.2. 搜索引擎ES](#162-搜索引擎es)
-    - [1.7. SSM](#17-ssm)
-        - [1.7.1. Spring](#171-spring)
-        - [1.7.2. MyBatis](#172-mybatis)
-    - [1.8. 分布式框架](#18-分布式框架)
-        - [1.8.1. SpringBoot](#181-springboot)
-        - [1.8.2. SpringCloud](#182-springcloud)
-        - [1.8.3. Dubbo](#183-dubbo)
-        - [1.8.4. Zookeeper](#184-zookeeper)
-        - [1.8.5. ServiceMesh](#185-servicemesh)
-    - [1.9. 高并发](#19-高并发)
-        - [1.9.1. 高并发及系统性能](#191-高并发及系统性能)
-        - [1.9.2. 高并发系统](#192-高并发系统)
-        - [1.9.3. 缓存和Redis](#193-缓存和redis)
-            - [1.9.3.1. 缓存介绍](#1931-缓存介绍)
-            - [1.9.3.2. Redis](#1932-redis)
-        - [1.9.4. 限流降级](#194-限流降级)
-        - [1.9.5. MQ](#195-mq)
-            - [1.9.5.1. RocketMQ](#1951-rocketmq)
-            - [1.9.5.2. Kafka](#1952-kafka)
-    - [1.10. 分布式原理](#110-分布式原理)
-        - [1.10.1. 分布式理论](#1101-分布式理论)
-        - [1.10.2. 分布式ID](#1102-分布式id)
-        - [1.10.3. 分布式事务](#1103-分布式事务)
-        - [1.10.4. 分布式锁](#1104-分布式锁)
-    - [1.11. 计算机网络](#111-计算机网络)
-        - [1.11.1. 负载均衡](#1111-负载均衡)
-        - [1.11.2. 网络IO/分布式通信](#1112-网络io分布式通信)
-            - [1.11.2.1. 通信基础](#11121-通信基础)
-            - [1.11.2.2. webSocket协议](#11122-websocket协议)
-            - [1.11.2.3. NIO](#11123-nio)
-            - [1.11.2.4. Netty通信框架](#11124-netty通信框架)
-    - [1.12. 架构设计](#112-架构设计)
-        - [1.12.1. 架构设计](#1121-架构设计)
-        - [1.12.2. 项目构建基础](#1122-项目构建基础)
-        - [1.12.3. 系统设计](#1123-系统设计)
-    - [1.13. Web服务器与中间件](#113-web服务器与中间件)
-        - [1.13.1. Web服务器](#1131-web服务器)
-            - [1.13.1.1. tomcat](#11311-tomcat)
-        - [1.13.2. 任务调度](#1132-任务调度)
-        - [1.13.3. 安全框架shiro](#1133-安全框架shiro)
-        - [1.13.4. 工作流](#1134-工作流)
-        - [1.13.5. 规则引擎](#1135-规则引擎)
-        - [1.13.6. 分布式文件存储](#1136-分布式文件存储)
-    - [1.14. 源码搭建汇总](#114-源码搭建汇总)
-    - [1.15. Linux服务器搭建](#115-linux服务器搭建)
-        - [1.15.1. Linux基础](#1151-linux基础)
-        - [1.15.2. Linux服务器](#1152-linux服务器)
-        - [1.15.3. DevOps介绍](#1153-devops介绍)
-        - [1.15.4. 搭建-研发](#1154-搭建-研发)
-    - [1.16. Docker和k8s](#116-docker和k8s)
-        - [1.16.1. 搭建-需求、测试](#1161-搭建-需求测试)
-        - [1.16.2. 监控和统计](#1162-监控和统计)
-    - [1.17. 常用研发工具](#117-常用研发工具)
-    - [1.18. Linux操作系统](#118-linux操作系统)
-    - [1.19. 算法](#119-算法)
-    - [1.20. 微信开发](#120-微信开发)
-    - [1.21. 前端知识](#121-前端知识)
-    - [1.22. 测试](#122-测试)
-    - [1.23. python](#123-python)
-    - [大数据](#大数据)
-    - [1.24. AI了解](#124-ai了解)
+        - [1.5.2. 格式化](#152-格式化)
+        - [1.5.3. 工具](#153-工具)
+        - [1.5.4. 异常](#154-异常)
+        - [1.5.5. 日志](#155-日志)
+        - [1.5.6. 接口](#156-接口)
+        - [1.5.7. ⁕⁕⁕使用Gzip压缩请求响应数据](#157-⁕⁕⁕使用gzip压缩请求响应数据)
+        - [1.5.8. 集成JSch，文件传输，操作Linux命令](#158-集成jsch文件传输操作linux命令)
+    - [1.6. 集成Mybatis](#16-集成mybatis)
+    - [1.7. 集成ShardingSphere](#17-集成shardingsphere)
+    - [1.8. 集成Redis](#18-集成redis)
+        - [1.8.1. Redis搭建](#181-redis搭建)
+        - [1.8.2. 集成Redis](#182-集成redis)
+        - [1.8.3. 集成redisson](#183-集成redisson)
+        - [1.8.4. 集成Redis+Caffeine两级缓存](#184-集成rediscaffeine两级缓存)
+        - [1.8.5. XXX使用两级缓存框架j2Cache](#185-xxx使用两级缓存框架j2cache)
+    - [1.9. 集成RocketMq](#19-集成rocketmq)
+    - [1.10. SpringBoot](#110-springboot)
+    - [1.11. SpringCloud](#111-springcloud)
+        - [1.11.1. 集成nacos](#1111-集成nacos)
+        - [1.11.2. 集成网关gateWay、认证授权security](#1112-集成网关gateway认证授权security)
+        - [1.11.3. 集成Sentinel](#1113-集成sentinel)
+        - [1.11.4. 集成链路SkyWalking](#1114-集成链路skywalking)
+    - [1.12. 分布式](#112-分布式)
+        - [1.12.1. 分布式id](#1121-分布式id)
+        - [1.12.2. 分布式事务](#1122-分布式事务)
+        - [1.12.3. 分布式锁](#1123-分布式锁)
+    - [1.13. 并发，大数据量](#113-并发大数据量)
+    - [1.14. 工具](#114-工具)
+        - [1.14.1. 接口管理](#1141-接口管理)
+            - [1.14.1.1. 步骤一：集成Swagger3](#11411-步骤一集成swagger3)
+            - [1.14.1.2. 步骤二：Mock平台](#11412-步骤二mock平台)
+        - [1.14.2. 定时任务](#1142-定时任务)
+        - [1.14.3. IO流](#1143-io流)
+            - [1.14.3.1. 读取Resources目录下文件](#11431-读取resources目录下文件)
+            - [1.14.3.2. 上传/下载](#11432-上传下载)
+                - [1.14.3.2.1. 上传服务器](#114321-上传服务器)
+                - [1.14.3.2.2. 阿里OSS](#114322-阿里oss)
+                - [1.14.3.2.3. ~~分片上传和断点续传~~](#114323-分片上传和断点续传)
+            - [1.14.3.3. 导入导出](#11433-导入导出)
+                - [1.14.3.3.1. easyExcel使用](#114331-easyexcel使用)
+        - [1.14.4. 字典表（树状图/级联关系）](#1144-字典表树状图级联关系)
+        - [1.14.5. 发送短信邮件](#1145-发送短信邮件)
+        - [1.14.6. 获取Ip](#1146-获取ip)
+    - [1.15. Elasticsearch](#115-elasticsearch)
+        - [1.15.1. EFK](#1151-efk)
+        - [1.15.2. Elasticsearch使用](#1152-elasticsearch使用)
+    - [1.16. 替换web服务器](#116-替换web服务器)
+    - [1.17. XXXIM通信](#117-xxxim通信)
+        - [1.17.1. 单方面消息推送](#1171-单方面消息推送)
+        - [1.17.2. 聊天](#1172-聊天)
+    - [1.18. XXX响应式编程](#118-xxx响应式编程)
+    - [1.19. Nginx](#119-nginx)
+    - [1.20. 监控](#120-监控)
+    - [1.21. 服务重启脚本制作](#121-服务重启脚本制作)
+    - [1.22. 接口对接](#122-接口对接)
+        - [1.22.1. 从Json自动生成JavaBean](#1221-从json自动生成javabean)
+    - [1.23. 用户系统](#123-用户系统)
+        - [1.23.1. 注册登录](#1231-注册登录)
+            - [1.23.1.1. 注册](#12311-注册)
+            - [1.23.1.2. jwt生成token](#12312-jwt生成token)
+            - [1.23.1.3. 微信授权登录](#12313-微信授权登录)
+            - [1.23.1.4. 微信扫码登录](#12314-微信扫码登录)
+        - [1.23.2. 权限](#1232-权限)
+            - [1.23.2.1. 功能权限](#12321-功能权限)
+            - [1.23.2.2. 面向B端的数据权限](#12322-面向b端的数据权限)
+    - [1.24. 订单](#124-订单)
+    - [1.25. 支付](#125-支付)
+    - [1.26. 微信开发](#126-微信开发)
+    - [1.27. 运维](#127-运维)
+        - [1.27.1. Kubernetes](#1271-kubernetes)
+        - [1.27.2. Jenkins](#1272-jenkins)
 
 <!-- /TOC -->
 
+# 1. 项目搭建  
+&emsp; 记录日常所学，项目所接触到的。  
 
-# 1. wt1814-note  
+&emsp; 目前暴露的ip是真实ip，1核2G服务器，仅用来学习，误攻击。  
+&emsp; 努力更新中，敬请期待...  
 
-## 1.1. ★★★待学  
-&emsp; 小程序、vue、python、ES   英语  
+## 1.1. 待解决  
+1. redis哨兵搭建：  
+    1. 问题：出口ip问题  
+    2. 代码解决：1).@SpringBootApplication干掉自动配置，2).RedisTemplate自动装配@Autowired(required = false)  
+2. MHA搭建mysql一主一从切换。MyBatisGenerator的使用  
+3. Gateway集成单点登录spring-security-cas。全网无案例，待研发。  
+4. 待集成  
+    1. 集成elk  
+    3. 监控  
+
+## 1.2. 环境基础  
+1. JDK1.8  
+2. ip地址一般在服务器hosts中配置。（本项目中暂无使用）  
+
+    ```xml
+    <consul.host>wuw</consul.host>
+    ```
+
+## 1.3. Maven  
+1. maven repository地址：https://mvnrepository.com/  
+2. mapper-generator小工具：https://zhuanlan.zhihu.com/p/636727703/ 、 https://github.com/alansun2/mapper-generator-javafx/releases  
+1. maven项目循环依赖，采用api与服务server分离接口形式搭建微服务。  
+2. maven多模块项目。依赖的版本号一般在父项目parent中统一管理。  
+
+    ```xml
+        <dependencyManagement>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-dependencies</artifactId>
+                    <version>${spring-cloud.version}</version>
+                    <type>pom</type>
+                    <scope>import</scope>
+                </dependency>
+            </dependencies>
+        </dependencyManagement>
+    ```
+3. Maven设置多环境：https://www.likecs.com/show-204897168.html    
+&emsp; 已经集成，如果environment下有同名文件，会覆盖。目前只用到nacos地址多环境。  
+
+    ```xml
+    <profile>
+        <!-- 开发 -->
+        <id>dev</id>
+        <activation>
+            <!--默认开发环境-->
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <properties>
+            <profile.active>dev</profile.active>
+            <!--  本地hosts配置 -->
+            <nacos.addr>182.92.69.8:8848</nacos.addr>
+        </properties>
+    </profile>
+    ```
+4. 暂无maven私服，个人维护...  
+5. 在聚合项目中可以添加maven-compiler-plugin插件。即每个项目中都要定义java编译版本。    
+6. 远程仓库和镜像  
+
+## 1.4. 项目组织  
+### 1.4.1. 项目介绍
+1. 项目介绍  
+    1. parent，父项目；  
+    2. assembly，组件项目，包含网关、百度uid-generator、链路...；  
+    &emsp; 脚手架工程：cloud-scaffolding-demo。~~待制作：maven archetype。~~   
+    3. common，基础项目。  
+        &emsp; common-api基础工具类，需要@ComponentScan("com.wuw")扫描，xxx-api依赖common-api。  
+        &emsp; common-server，基础服务。  
+    4. ucenter，用户系统  
+    5. cms，内容管理
+2. 项目配置介绍：  
+    1. bootstrap.yml，项目启动配置  
+    &emsp; application.yml配置文件引入其他的yml配置文件：https://blog.csdn.net/Zack_tzh/article/details/103728869?utm_term=yml%E5%8C%85%E5%90%AB%E5%8F%A6%E4%B8%80%E4%B8%AAyml&utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~all~sobaiduweb~default-0-103728869-null-null&spm=3001.4430  
+    2. application.yml，系统级配置  
+    3. application-dataSource，中间件配置  
+    4. application-buiness.yml，业务配置  
+
+### 1.4.2. MVC三层架构上再加一层Manager层
+&emsp; http://www.cppcns.com/ruanjian/java/433037.html  
 
 
-------------------------------------------------------------------------------------------------------------------------------
+### 1.4.3. ~~项目Demo脚手架制作~~  
+&emsp; 脚手架工程：cloud-scaffolding-demo。~~待制作：maven archetype。~~   
 
-## 1.2. 总结
-★★★★★★★★★★★★★★★★★★★★★★★★★7天复习计划
-1. 第一天：Java基础、设计模式、JVM    
-2. 第二天：多线程  
-3. 第三天：数据库、ES    
-4. 第四天：分布式框架、分布式原理    
-5. 第五天：高并发  
-6. 第六天：网络...  
-7. 第七天：  
+## 1.5. 项目基础  
+### 1.5.1. Java基础
+1. java声明静态Map常量：StaticMap.java  
 
-[目录](/docs/a-summary/catalog.md)  
-[总结-图](/docs/a-summary/summaryThree.md)  
-[1.Java基础](/docs/a-summary/JavaBasic.md)  
-[2.设计模式](/docs/a-summary/designPatterns.md)  
-[3.JVM](/docs/a-summary/JVM.md)   
-[4.并发编程](/docs/a-summary/concurrent.md)  
-[5.SQL面试题1](/docs/SQL/SQLInterview1.md)  
-[5.数据库](/docs/a-summary/database.md)   
-[6.ES](/docs/a-summary/ES.md)  
-[7.SSM](/docs/a-summary/SSM.md)  
-[8.SpringCloud](/docs/a-summary/SpringCloud.md)    
-[9.高并发](/docs/a-summary/HighConcurrency.md)  
-[10.缓存、Redis、Mq](/docs/a-summary/RedisAndMq.md)  
-[11.分布式](/docs/a-summary/Distributed.md)  
-[12.网络IO、Netty、WebSocket](/docs/a-summary/NetIO.md)  
-[13.计算机网络和负载均衡](/docs/a-summary/Net.md)  
-[14.Linux和DevOps](/docs/a-summary/DevOps.md)  
-[15.系统架构](/docs/a-summary/architecture.md)  
-[逻辑题](/docs/a-summary/problem.md)  
 
-------------------------------------------------------------------------------------------------------------------------------
+### 1.5.2. 格式化
+1. 统一格式返回ApiResult  
+2. 统一响应处理：https://mp.weixin.qq.com/s/1ncfvS1XN_xLIM_8vHskBw  
+2. JSON不返回Null，两种方案：  
+    &emsp; 1).https://blog.csdn.net/javaee520/article/details/117900370  
+    &emsp; 2).@JsonInclude(JsonInclude.Include.NON_NULL)  
+2. 日期格式化：fastJson的@JSONField （~~非jackson的@JsonFormat~~） 和 Spring的@DateTimeFormat    
+3. ~~数据相关~~  
+    &emsp; 1).~~格式化~~  
+    &emsp; 2).~~数据脱敏~~  
+    &emsp; &emsp; 1. 数据库脱敏  
+    &emsp; &emsp; &emsp; https://mp.weixin.qq.com/s/sBzWHygMffD2i8po4HQetA  
+    &emsp; &emsp; &emsp; https://mp.weixin.qq.com/s/4xi0K9s_H4phMI-mAGurIw  
+    &emsp; &emsp; 2. 日志脱敏  
+    &emsp; &emsp; &emsp; https://mp.weixin.qq.com/s/cBiH6Jxf2N0eoTgLRe4p-g  
+    &emsp; &emsp; 3. 接口返回数据脱敏  
+    &emsp; &emsp; &emsp; https://mp.weixin.qq.com/s/gL3bKtZB-DNGWK8NgGEiVQ  
+    &emsp; 3).~~加密算法~~  
 
-## 1.3. 面试
-[面试](/docs/recruit/interview.md)  
+### 1.5.3. 工具
+1. JavaBean  
+    &emsp; 1. BeanUtils：MapStuct：https://baijiahao.baidu.com/s?id=1710072420980854506&wfr=spider&for=pc    
+    &emsp; &emsp; BeanUtils.copyProperties()复制时，去null值方法：https://blog.csdn.net/2301_76585121/article/details/133980244  
+    &emsp; 2. 参数校验：  
+    &emsp; &emsp; 1).https://blog.csdn.net/xnn_fjj/article/details/100603270  
+    &emsp; &emsp; 2).结合统一异常处理  
+    &emsp; &emsp; 3).~~普通Java项目使用Hibernate Validator手动校验Bean：https://www.icode9.com/content-1-1305959.html~~  
+    &emsp; 3. lombok使用： 
+    ```java
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    ```
 
-### 1.3.1. Error和性能（项目难点）  
-[Error和性能](/docs/Error/ErrorAndPerformance.md)   
-[错误排查流程](/docs/Error/ErrorTrouble.md)  
-[JVM](/docs/Error/JVM.md)  
-[多线程串线了](/docs/Error/ThreadCrossed.md)  
-[数据库连接池泄露](/docs/Error/DataPoolLeak.md)  
-[Mybatis](/docs/Error/Mybatis.md)    
-[Redis](/docs/Error/RedisError.md)  
-&emsp; [Redis内存增长异常排查](/docs/Error/RedisMemoryGrowth.md)  
-&emsp; [redis scan命令](/docs/Error/redisScan.md)  
-[压测和性能](/docs/Error/PressureAndPerformance.md)  
-[3.1.难点](/docs/recruit/4difficultProblem.md)  
+2. http  
+    &emsp; 1. restTemplate（个人喜好）  
+    &emsp; &emsp; 1). 注意：@ComponentScan("com.wuw")扫描RestTemplateConfig类  
+    &emsp; &emsp; 2). 使用：https://blog.csdn.net/jinjiniao1/article/details/100849237  
+    &emsp; &emsp; *** https://blog.csdn.net/lllhhhv/article/details/123129228  
+    &emsp; &emsp; 3). RestTemplate中文乱码问题：https://www.cnblogs.com/qianxiaoPro/p/15419528.html    
+    &emsp; 2. http重试spring-retry：https://www.hangge.com/blog/com.wuw.doubleCache.cache/detail_2522.html  
 
-### 1.3.2. ★★★做过的项目  
-[做过的项目](/docs/recruit/project/ProjectsDone.md)  
-[项目经验](/docs/recruit/project/ProjectExperience.md)  
-[六合数字化心理平台](/docs/recruit/project/SixNoble.md)   
-[支付系统](/docs/recruit/project/payment.md)  
-[财务系统](/docs/recruit/project/Financial.md)  
-[二清项目](/docs/recruit/project/erqing.md)  
-[用户系统](/docs/recruit/project/user.md)    
-[监控插件](/docs/recruit/project/monitor.md)   
+### 1.5.4. 异常
+1. 自定义业务异常：（两种方案，看个人喜好）    
+    &emsp; 1).若service层以javaBean返回，则需在service逻辑代码里抛出业务异常BusinessException；  
+    &emsp; 2).异常处理消耗性能，service可以直接以ApiResult返回。   
+2. 统一异常处理：https://blog.csdn.net/qq_49281137/article/details/121101543  
+3. 获取异常堆栈字符串：https://blog.csdn.net/wsdhla/article/details/130356769  
 
-### 1.3.3. ★★★面试流程
-[1.★★★总体流程](/docs/recruit/1resumeCreate.md)   
-[2.力挽狂澜不会回答的问题](/docs/recruit/NoAnswer.md)  
-[3.2.HR/总监面](/docs/recruit/HrInterview.md)  
-[3.3.职业规划](/docs/recruit/CareerPlanning.md)  
-[4.问面试官](/docs/recruit/3askProblem.md)  
-[个人简历](/docs/recruit/PersonalResume.md)  
-[个人简历2](/docs/recruit/PersonalResumeTwo.md)  
-[简历](/docs/recruit/Resume.md)  
-[全部经历](/docs/recruit/AllExperiences.md)  
+### 1.5.5. 日志
+&emsp; 本项目整合了log4j2  
+1. 日志整合log4j2  
+    &emsp; 1.https://blog.csdn.net/qq_43842093/article/details/123027783  
+    &emsp; 2.日志文件json输出  
+                ```text
+                <!--<PatternLayout pattern="${LOG_PATTERN}"/>-->
+                <JsonLayout compact="true" eventEol="true" objectMessageAsJsonObject="true"/>
+                ```
+    &emsp; 3.依赖冲突  
+    &emsp; 4.日志性能：异步输出，https://blog.csdn.net/qq_26323323/article/details/124741008    
+    &emsp; 5.多环境设置：  
+        &emsp; &emsp; 1).SpringBoot+log4j2.xml使用application.yml属性值 https://www.cnblogs.com/extjava/p/7553642.html  
+        &emsp; &emsp; 2).~~maven-resources插件~~   
+    &emsp; 6.main ERROR Unable to create file ${sys:log.path.prefix}/log.log java.io.IOException
+        &emsp; &emsp; https://blog.csdn.net/linmengmeng_1314/article/details/100016303
+2. ~~logbcak异步输出：https://blog.csdn.net/qq_38536878/article/details/123821072~~   
+3. ~~日志切面记录请求~~   
 
-------------------------------------------------------------------------------------------------------------------------------
-## 1.4. 系统学习  
-```mermaid
-graph LR
-    1[架构] --> 2[基础]
-    1[架构] --> 3[架构]
-    1[架构] --> 4[分布式]
-    1[架构] --> 5[高并发]
-    1[架构] --> 6[系统优化]
+### 1.5.6. 接口 
+1. RESTful风格  
+2. ~~接口幂等~~  
+3. ~~接口防刷/反爬虫~~  
+4. ~~接口安全~~
+5. ~~日志预警：1).日志框架预警；2). Filebeat+Logstash发送Email告警日志~~  
+
+
+### 1.5.7. ⁕⁕⁕使用Gzip压缩请求响应数据  
+
+
+### 1.5.8. 集成JSch，文件传输，操作Linux命令  
+JSch 是SSH2的一个纯Java实现。它允许你连接到一个sshd 服务器，使用端口转发，X11转发，文件传输等等。  
+
+```java
+// channel类型有ftp，exec，shell
+channel = (ChannelExec) session.openChannel("exec"); 
 ```
 
-![image](http://182.92.69.8:8081/img/draw/000.SchemaProperties.png)  
-
-------------------------------------------------------------------------------------------------------------------------------
-
-## 1.5. Java  
-### 1.5.1. Java基础
-[Java基础](/docs/java/basis/JavaBasic.md)  
-&emsp; [关键字](/docs/java/basis/keyword.md)  
-&emsp; [内部类](/docs/java/basis/InnerClass.md)  
-&emsp; [代码块](/docs/java/basis/CodeBlock.md)  
-&emsp; [枚举和数据字典](/docs/java/basis/Enum.md)  
-&emsp; [命名规范](/docs/java/basis/standard.md)  
-[★★★Java基础数据类型](/docs/java/basis/DataType.md)  
-&emsp; [Object](/docs/java/basis/Object.md)  
-&emsp; [★★★String](/docs/java/basis/String.md)  
-&emsp; [★★★Java基本数据类型](/docs/java/basis/BasicsDataType.md)  
-[★★★Java集合框架](/docs/java/Collection/CollectionFramework.md)  
-&emsp; [HashMap使用](/docs/java/Collection/HashMapUse.md)  
-&emsp; [★★★HashMap源码](/docs/java/Collection/HashMapSource.md)  
-&emsp; [★★★HashMap安全](/docs/java/Collection/HashMapSecurity.md)  
-&emsp; [List和Set](/docs/java/Collection/Collection.md)  
-[JDK1.8](/docs/java/JDK8/JDK8.md)  
-&emsp; [Lambda](/docs/java/JDK8/Lambda.md)  
-&emsp; [Stream](/docs/java/JDK8/Stream.md)  
-&emsp; [Optional](/docs/java/JDK8/Optional.md)  
-&emsp; [DateTime](/docs/java/JDK8/DateTime.md)  
-[Java异常](/docs/java/basis/JavaException.md)  
-[IO](/docs/java/IO/JavaIO.md)  
-&emsp; [读取项目Resources下文件](/docs/java/IO/readResources.md)  
-&emsp; [上传下载](/docs/java/IO/Upload.md)  
-&emsp; [导入导出](/docs/java/IO/Import.md)  
-&emsp; [阿里云OSS](/docs/java/IO/OSS.md)  
-&emsp; [文件预览](/docs/java/IO/preview.md)  
-[Java范型](/docs/java/basis/JavaParadigm.md)  
-&emsp; [范型使用](/docs/java/basis/ParadigmUse.md)  
-&emsp; [范型擦除](/docs/java/basis/ParadigmErase.md)  
-[Java反射](/docs/java/basis/JavaReflex.md)  
-&emsp; [Java反射运用](/docs/java/basis/JavaReflexUse.md)  
-&emsp; [Java反射原理](/docs/java/basis/JavaReflexPrinciple.md)  
-[自定义注解](/docs/java/basis/annotation.md)  
-&emsp; [自定义注解+反射实现AOP](/docs/java/basis/annotationAndReflex.md)  
-[SPI与线程上下文类加载器](/docs/java/basis/SPI.md)  
-[SDK](/docs/java/basis/SDK.md)  
-[Java探针](/docs/java/basis/probe.md)  
-[对象池](/docs/java/basis/ObjectPool.md)  
-
-
-### 1.5.2. 设计模式  
-[七大设计原则](/docs/java/Design/principles.md)  
-&emsp; [面向抽象和面向接口](/docs/java/Design/abstract.md)  
-&emsp; [UML](/docs/java/Design/UML.md)  
-&emsp; [继承和组合/复用规则](/docs/java/Design/compose.md)  
-[设计模式介绍](/docs/java/Design/design.md)  
-&emsp; [★★★创建型设计模式](/docs/java/Design/establish.md)  
-&emsp; &emsp; [★★★单例模式](/docs/java/Design/singleton.md)  
-&emsp; &emsp; [单例与多例](/docs/java/Design/singletonMultiple.md)  
-&emsp; &emsp; [简单工厂模式](/docs/java/Design/factory.md)  
-&emsp; &emsp; [抽象工厂模式](/docs/java/Design/AbstractFactory.md)  
-&emsp; &emsp; [建造者模式](/docs/java/Design/build.md)  
-&emsp; &emsp; [原型模式](/docs/java/Design/prototype.md)  
-&emsp; [结构型设计模式](/docs/java/Design/structure.md)  
-&emsp; &emsp; [适配器模式](/docs/java/Design/adapter.md)   
-&emsp; &emsp; [代理模式](/docs/java/Design/proxy.md)   
-&emsp; &emsp; &emsp; [动态编程](/docs/java/Design/DynamicProgramming.md)  
-&emsp; &emsp; &emsp; [JDK动态代理](/docs/java/Design/DynamicProxy.md)   
-&emsp; &emsp; &emsp; [CGLIB代理](/docs/java/Design/CGLIB.md)   
-&emsp; &emsp; [装饰器模式](/docs/java/Design/decorator.md)  
-&emsp; &emsp; [桥接模式(if/else)](/docs/java/Design/Bridge.md)  
-&emsp; &emsp; [外观模式/门面模式](/docs/java/Design/facade.md)   
-&emsp; &emsp; [享元模式(池化技术)](/docs/java/Design/Enjoy.md)  
-&emsp; [行为型设计模式](/docs/java/Design/behavior.md)  
-&emsp; &emsp; [模板方法模式](/docs/java/Design/template.md)   
-&emsp; &emsp; [策略模式(if/else)](/docs/java/Design/strategy.md)   
-&emsp; &emsp; [责任链模式(if/else)](/docs/java/Design/chain.md)   
-&emsp; &emsp; [观察者模式](/docs/java/Design/observer.md)   
-[设计模式大讨论](/docs/java/Design/discuss.md)  
-[设计模式混编](/docs/java/Design/zlc.md)  
-[设计模式使用](/docs/java/Design/CommonlyUsed.md)  
-&emsp; [Spring中经典的9种设计模式](/docs/java/Design/SpringDesign.md)  
-&emsp; [8种Mybatis的设计模式](/docs/java/Design/MybatisDesign.md)  
-[★★★【设计模式面试题】](/docs/java/Design/UsedDesign.md)  
-
-------------------------------------------------------------------------------------------------------------------------------
-
-### 1.5.3. JVM  
-[JVM总结](/docs/java/JVM/summary.md)  
-[★★★JDK、JRE、JVM](/docs/java/JVM/JDK、JRE、JVM.md)   
-[编译成Class字节码文件](/docs/java/JVM/Class.md)  
-&emsp; [字节码和汇编代码](/docs/java/JVM/Bytecode.md)  
-[★★★类加载](/docs/java/JVM/classLoading.md)  
-&emsp; [JVM类的加载流程](/docs/java/JVM/classLoad.md)  
-&emsp; [JVM类加载器详解（需要重写）](/docs/java/JVM/classLoader.md)  
-[★★★运行时数据区/内存结构](/docs/java/JVM/Memory.md)  
-&emsp; [JVM内存结构](/docs/java/JVM/JVMMemory.md)  
-&emsp; &emsp; [JVM栈](/docs/java/JVM/JVMStack.md)  
-&emsp; &emsp; [逃逸分析](/docs/java/JVM/escape.md)  
-&emsp; &emsp; [常量池详解](/docs/java/JVM/ConstantPool.md)  
-&emsp; &emsp; [直接内存](/docs/java/JVM/DirectMemory.md)  
-&emsp; &emsp; [类存储内存小结](/docs/java/JVM/MemorySummary.md)  
-&emsp; [内存中的对象](/docs/java/JVM/MemoryObject.md)  
-&emsp; &emsp; [对象的创建](/docs/java/JVM/ObjectCreat.md)  
-&emsp; &emsp; [对象完整生命周期](/docs/java/JVM/ObjectPeriod.md)  
-&emsp; &emsp; [Java对象大小](/docs/java/basis/ObjectSize.md)  
-&emsp; [内存泄露/溢出](/docs/java/JVM/MemoryLeak.md)  
-&emsp; [JVM参数配置](/docs/java/JVM/ParameterConfiguration.md)  
-[JVM执行](/docs/java/JVM/run.md)  
-[★★★GC](/docs/java/JVM/GC.md)  
-&emsp; [GC-回收对象](/docs/java/JVM/GCProject.md)   
-&emsp; [GC-回收位置/安全点](/docs/java/JVM/safePoint.md)  
-&emsp; [回收算法与分代回收](/docs/java/JVM/generationRecovery.md)  
-&emsp; [跨代引用假说和卡表](/docs/java/JVM/RSet.md)  
-&emsp; [GC-垃圾回收器](/docs/java/JVM/GCReclaimer.md)  
-&emsp; &emsp; [CMS回收器](/docs/java/JVM/CMS.md)  
-&emsp; &emsp; [G1回收器](/docs/java/JVM/G1.md)  
-&emsp; &emsp; [三色标记算法](/docs/java/JVM/TriMark.md)  
-[★★★JVM调优](/docs/java/JVM/tuning.md)  
-&emsp; [JVM调优-基础](/docs/java/JVM/TuningBasic.md)  
-&emsp; [JVM调优](/docs/java/JVM/tuningProblem.md)  
-&emsp; [JVM问题排查](/docs/java/JVM/TroubleShooting.md)  
-&emsp; &emsp; [工具MAT使用](/docs/java/JVM/mat.md)  
-[Arthas](/docs/java/JVM/ArthasSummary.md)  
-&emsp; [Arthas工具](/docs/java/JVM/Arthas.md)  
-&emsp; [Arthas常用命令](/docs/java/JVM/ArthasCommand.md)  
-&emsp; [线上Debug](/docs/java/JVM/OnlineDebug.md)  
-
-<!-- 
-&emsp; [JVM排查案例](/docs/java/JVM/case.md)  
--->
-
-### 1.5.4. HotSpot  
-[HotSpot](/docs/java/HotSpot/HotSpot.md)  
-
-------------------------------------------------------------------------------------------------------------------------------
-
-### 1.5.5. 并发编程  
-[并发编程总结](/docs/java/concurrent/summary.md)  
-[多线程和并发](/docs/java/concurrent/MultithreadingAndConcurrency.md)  
-&emsp; [Thread.java](/docs/java/concurrent/thread.md)  
-&emsp; &emsp; [Thread类详解](/docs/java/concurrent/threadClass.md)  
-&emsp; &emsp; &emsp; [线程状态](/docs/java/concurrent/threadState.md)  
-&emsp; &emsp; &emsp; [线程停止与中断](/docs/java/concurrent/interrupt.md)  
-&emsp; &emsp; [线程基本操作](/docs/java/concurrent/threadOperation.md)  
-[★★★~~线程池-多线程~~](/docs/java/concurrent/ThreadPool.md)  
-&emsp; [线程池框架](/docs/java/concurrent/Executor.md)  
-&emsp; [★★★线程池的创建](/docs/java/concurrent/ExecutorCreate.md)  
-&emsp; &emsp; [★★★ThreadPoolExecutor详解](/docs/java/concurrent/ThreadPoolExecutor.md)  
-&emsp; &emsp; [ForkJoinPool详解](/docs/java/concurrent/ForkJoinPool.md)  
-&emsp; &emsp; [Executors](/docs/java/concurrent/Executors.md)  
-&emsp; [★★★线程池的执行](/docs/java/concurrent/PoolRun.md)  
-&emsp; &emsp; [ExecutorService](/docs/java/concurrent/ExecutorService.md)   
-&emsp; &emsp; [★★★线程池的正确使用](/docs/java/concurrent/ThreadPoolUse.md)  
-&emsp; &emsp; [★★★【CompletionService】](/docs/java/concurrent/CompletionService.md)  
-&emsp; &emsp; &emsp; [线程池的异常](/docs/java/concurrent/ThreadPoolException.md)  
-&emsp; [★★★任务执行结果Future](/docs/java/concurrent/Future.md)  
-&emsp; &emsp; [★★★【~~CompletableFuture~~】](/docs/java/concurrent/CompletableFuture.md)  
-&emsp; &emsp; [获取多线程执行结果的几种方式](/docs/java/concurrent/execResult.md)  
-[★★★并发编程](/docs/java/concurrent/MultiThread.md)  
-&emsp; [★★★线程安全问题](/docs/java/concurrent/ConcurrentPrinciple.md)  
-&emsp; &emsp; [CPU多级缓存及并发安全](/docs/java/concurrent/ConcurrencyProblem.md)  
-&emsp; &emsp; [硬件层解决并发安全](/docs/java/concurrent/HardwareConcurrencySolve.md)  
-&emsp; &emsp; [Java解决并发安全](/docs/java/concurrent/ConcurrencySolve.md)  
-&emsp; &emsp; [伪共享问题](/docs/java/concurrent/PseudoSharing.md)  
-&emsp; [★★★线程安全解决方案](/docs/java/concurrent/ThreadSafety.md)  
-&emsp; &emsp; [Synchronized介绍](/docs/java/concurrent/SynApply.md)  
-&emsp; &emsp; [Synchronized使用](/docs/java/concurrent/SysUse.md)  
-&emsp; &emsp; [Synchronized使用是否安全](/docs/java/concurrent/SynUse.md)  
-&emsp; &emsp; [~~Synchronized底层原理~~](/docs/java/concurrent/SynBottom.md)  
-&emsp; &emsp; [Synchronized优化](/docs/java/concurrent/SynOptimize.md)  
-&emsp; &emsp; [Volatile](/docs/java/concurrent/Volatile.md)  
-&emsp; &emsp; [ThreadLocal原理](/docs/java/concurrent/ThreadLocal.md)  
-&emsp; &emsp; [ThreadLocal应用](/docs/java/concurrent/ThreadLocalUse.md)  
-&emsp; &emsp; [FastThreadLocal](/docs/java/concurrent/FastThreadLocal.md)  
-&emsp; [线程通信(生产者消费者问题)](/docs/java/concurrent/ThreadCommunication.md)  
-&emsp; [线程活跃性](/docs/java/concurrent/Activity.md)  
-[★★★J.U.C包](/docs/java/concurrent/ConcurrentPackage.md)  
-&emsp; [CAS](/docs/java/concurrent/CAS.md)  
-&emsp; [AQS](/docs/java/concurrent/AQS.md)  
-&emsp; &emsp; [LockSupport](/docs/java/concurrent/LockSupport.md)  
-&emsp; [Lock](/docs/java/concurrent/Lock.md)  
-&emsp; &emsp; [ReentrantLock使用](/docs/java/concurrent/ReentrantLockUse.md)  
-&emsp; &emsp; [ReentrantLock解析](/docs/java/concurrent/ReentrantLock.md)  
-&emsp; &emsp; [Condition](/docs/java/concurrent/Condition.md)  
-&emsp; &emsp; [读写锁](/docs/java/concurrent/ReadWriteLock.md)  
-&emsp; [Atmoic](/docs/java/concurrent/Atmoic.md)  
-&emsp; &emsp; [AtomicStampedReference与AtomicMarkableReference](/docs/java/concurrent/AtomicStampedReference.md)  
-&emsp; &emsp; [LongAdder](/docs/java/concurrent/LongAdder.md)  
-&emsp; [Collections](/docs/java/concurrent/jihe.md)  
-&emsp; &emsp; [CopyOnWriteArrayList](/docs/java/concurrent/CopyOnWriteArrayList.md)  
-&emsp; &emsp; [ConcurrentHashMap，JDK1.8](/docs/java/concurrent/ConcurrentHashMap.md)  
-&emsp; &emsp; [ConcurrentHashMap，JDK1.7](/docs/java/concurrent/ConcurrentHashMap7.md)  
-&emsp; &emsp; [BlockingQueue](/docs/java/concurrent/BlockingQueue.md)  
-&emsp; [tools](/docs/java/concurrent/tools.md)  
-&emsp; &emsp; [CountDownLatch](/docs/java/concurrent/CountDownLatch.md)  
-&emsp; &emsp; [CyclicBarrier](/docs/java/concurrent/CyclicBarrier.md)  
-&emsp; &emsp; [Semaphore](/docs/java/concurrent/Semaphore.md)  
-&emsp; &emsp; [Exchanger](/docs/java/concurrent/Exchanger.md)  
-
-<!-- 
-[并发框架Disruptor](/docs/java/concurrent/disruptor.md)  
--->
-------------------------------------------------------------------------------------------------------------------------------
-
-## 1.6. 数据库  
-[数据库](/docs/SQL/DataBase.md)  
-
-### 1.6.1. MySql
-[数据建模](/docs/SQL/modeling.md)  
-&emsp; [字段](/docs/SQL/Field.md)  
-&emsp; [工具](/docs/SQL/modelingTools.md)  
-[SQL语句](/docs/SQL/SQLSentence.md)  
-&emsp; [基本查询语句](/docs/SQL/basicSelect.md)  
-&emsp; &emsp; [limit](/docs/SQL/limit.md)  
-&emsp; [连接查询](/docs/SQL/joinSelect.md)  
-&emsp; [高级查询](/docs/SQL/trans.md)  
-&emsp; [联合主键与复合主键](/docs/SQL/CompositeKey.md)  
-[★★★SQL面试题](/docs/SQL/SQLInterview.md)  
-[SQL其他](/docs/SQL/SQLOther.md)  
-&emsp; [MySql函数](/docs/SQL/MySQLFunction.md)  
-&emsp; [数据库对象](/docs/SQL/DatabaseObject.md)  
-&emsp; [数据库连接池](/docs/SQL/connectionPool.md)  
-[MySQL运维](/docs/SQL/MySqlMonitor.md)  
-&emsp; [MySql审核平台](/docs/SQL/examine.md)  
-[★★★索引事务锁](/docs/SQL/IndexTransactionLock.md)   
-&emsp; [索引底层原理](/docs/SQL/IndexPrinciple.md)  
-&emsp; &emsp; [联合索引](/docs/SQL/JointIndex.md)  
-&emsp; [各种索引](/docs/SQL/IndexKnowledge.md)  
-&emsp; [MySql事务](/docs/SQL/transaction.md)  
-&emsp; [MySql-MVCC（读写问题）](/docs/SQL/MVCC.md)  
-&emsp; [MySql锁（写写问题）](/docs/SQL/lock.md)  
-&emsp; [MySql死锁和锁表](/docs/SQL/LockProblem.md)  
-[★★★SQL优化](/docs/SQL/SQLOptimization.md)  
-&emsp; [慢查询（监控）](/docs/SQL/Slowlog.md)  
-&emsp; [SQL分析](/docs/SQL/Analysis.md)  
-&emsp; &emsp; [explain](/docs/SQL/explain.md)  
-&emsp; [索引优化](/docs/SQL/index.md)  
-&emsp; [~~SQL语句优化~~](/docs/SQL/SQLStatement.md)  
-&emsp; [系统优化](/docs/SQL/Fragment.md)  
-&emsp; [优化案例](/docs/SQL/case.md)  
-[★★★数据库分布式](/docs/SQL/DistributedDatabase.md)  
-&emsp; [大数据量操作](/docs/SQL/largeData.md)  
-&emsp; [MySql瓶颈](/docs/SQL/Bottleneck.md)  
-&emsp; [数据库分布式](/docs/SQL/Distributed.md)  
-&emsp; [主从复制](/docs/SQL/replication.md)  
-&emsp; &emsp; [主从复制原理](/docs/SQL/ReplicationPrinciple.md)  
-&emsp; &emsp; [主从复制实现](/docs/SQL/ReplicationRealize.md)  
-&emsp; &emsp; [主从复制的问题](/docs/SQL/replicationProblem.md)  
-&emsp; &emsp; [高可用实现方案](/docs/SQL/Available.md)  
-&emsp; &emsp; [读写分离实现](/docs/SQL/ReadWrite.md)  
-&emsp; &emsp; [多数据源](/docs/SQL/MultipleSources.md)  
-&emsp; [分区](/docs/SQL/partition.md)  
-&emsp; [★★★分库分表](/docs/SQL/sub.md)  
-&emsp; &emsp; [分库分表带来的问题](/docs/SQL/subProblem.md)  
-&emsp; &emsp; [★★★分库分表查询](/docs/SQL/subSelect.md)  
-&emsp; &emsp; [分表id-基因法](/docs/SQL/candidate.md)  
-&emsp; &emsp; [分库分表后分页查询](/docs/SQL/subSelectLimit.md)  
-&emsp; &emsp; [分库分表后聚合查询](/docs/SQL/aggregate.md)  
-&emsp; [★★★数据库分布式实现](/docs/SQL/subRealize.md)  
-&emsp; &emsp; [★★★ShardingSphere](/docs/SQL/shardingsphere.md)  
-&emsp; &emsp; [Sharding-Proxy](/docs/SQL/ShardingProxy.md)  
-&emsp; &emsp; [Sharding-JDBC](/docs/SQL/ShardingJDBC.md)  
-&emsp; &emsp; [MyCat中间件](/docs/SQL/MyCat.md)  
-&emsp; [★★★数据迁移](/docs/projectImplement/implementation.md)  
-&emsp; [★★★分库分表和ES](/docs/SQL/shardingAndEs.md)  
-[MySql架构原理](/docs/SQL/MySqlPrinciple.md)   
-&emsp; [MySql运行(查询)流程](/docs/SQL/Framework.md)   
-&emsp; [InnoDB插入更新流程](/docs/SQL/insert.md)  
-&emsp; [【Server层】之binLog日志](/docs/SQL/BinLog.md)  
-&emsp; &emsp; [binLog日志介绍](/docs/SQL/BinLogIntro.md)  
-&emsp; &emsp; [binLog日志使用](/docs/SQL/binLogUse.md)  
-&emsp; [【存储引擎层】](/docs/SQL/MySqlStorage.md)  
-&emsp; [存储引擎InnoDB体系结构](/docs/SQL/InnoDB.md)  
-&emsp; [InnoDB内存结构-性能](/docs/SQL/memory.md)  
-&emsp; &emsp; [BufferPool](/docs/SQL/bufferPoolNew.md)  
-&emsp; &emsp; [ChangeBuffer](/docs/SQL/ChangeBuffer.md)  
-&emsp; &emsp; [AdaptiveHashIndex](/docs/SQL/AdaptiveHashIndex.md)  
-&emsp; [InnoDB磁盘结构-可靠性](/docs/SQL/disk.md)  
-&emsp; &emsp; [redoLog日志](/docs/SQL/redoLog.md)  
-&emsp; &emsp; [undoLog日志](/docs/SQL/undoLog.md)  
-&emsp; &emsp; [数据落盘到表空间](/docs/SQL/TableSpace.md)  
-&emsp; &emsp; [DoubleWrite](/docs/SQL/DoubleWrite.md)  
-&emsp; [【server层和存储引擎层】两阶段提交和崩溃恢复](/docs/SQL/CrashRecovery.md)  
-
-------------------------------------------------------------------------------------------------------------------------------
-
-### 1.6.2. 搜索引擎ES  
-[搜索引擎ES](/docs/ES/ES.md)  
-[ES基本概念](/docs/ES/basicConcepts.md)  
-&emsp; [★★★~~ES底层数据结构~~](/docs/ES/BottomStructure.md)  
-[ES使用](/docs/ES/useTutorials.md)  
-&emsp; [★★★ES建模](/docs/ES/modeling.md)  
-&emsp; [★★★ES分片设置](/docs/ES/ESShare.md)  
-&emsp; [★★★同步数据到ES](/docs/ES/synES.md)  
-&emsp; [Elasticsearch操作客户端](/docs/ES/ElasticsearchREST.md)  
-&emsp; &emsp; [ES可视化客户端](/docs/ES/visualization.md)  
-&emsp; [索引基本操作](/docs/ES/index.md)  
-&emsp; &emsp; [PB级别的大索引如何设计？](/docs/ES/IndexDesign.md)  
-&emsp; &emsp; [索引管理](/docs/ES/indexMaintain.md)  
-&emsp; [映射详解](/docs/ES/mapping.md)  
-&emsp; [文档操作](/docs/ES/document.md)  
-&emsp; &emsp; [***文档评分](/docs/ES/documentScore.md)  
-&emsp; [★★★检索操作](/docs/ES/search.md)  
-&emsp; &emsp; [返回数据结构](/docs/ES/result.md)  
-&emsp; &emsp; [结构化检索](/docs/ES/Structured.md)  
-&emsp; &emsp; [全文检索](/docs/ES/fullText.md)  
-&emsp; &emsp; [排序/相关度/评分机制](/docs/ES/score.md)  
-&emsp; &emsp; [多字段搜索](/docs/ES/MultiField.md)  
-&emsp; &emsp; [★★★分页查询](/docs/ES/limitSearch.md)  
-&emsp; &emsp; [★★★聚合查询](/docs/ES/togetherSearch.md)  
-&emsp; &emsp; [多表关联](/docs/ES/multiTable.md)  
-&emsp; &emsp; [高亮显示](/docs/ES/highLight.md)  
-&emsp; [高级操作](/docs/ES/AdvancedOperations.md)  
-&emsp; &emsp; [检索模版](/docs/ES/searchTemplate.md)  
-&emsp; &emsp; [脚本查询](/docs/ES/ScriptQuery.md)  
-&emsp; &emsp; [预匹配器](/docs/ES/PreMatching.md)  
-&emsp; [ES自定义扩展词库](/docs/ES/thesaurus.md)  
-&emsp; [★★★Java客户端](/docs/ES/JavaRestClient.md)  
-&emsp; &emsp; [【Java API】](/docs/ES/JavaSearch.md)  
-&emsp; &emsp; [★★★分页和聚合](/docs/ES/javaPage.md)  
-&emsp; &emsp; [ES异步搜索](/docs/ES/AsyncSearch.md)  
-[★★★ES原理](/docs/ES/principle.md)  
-&emsp; [Elasticsearch搜索为什么那么快？](/docs/ES/SearchFast.md)  
-&emsp; [ES集群运行原理](/docs/ES/ClusterPrinciple.md)  
-&emsp; [ES增删改原理](/docs/ES/write.md)  
-&emsp; [ES缓存](/docs/ES/ESCache.md)  
-&emsp; [★★★分词](/docs/ES/participle.md)  
-&emsp; [相关性和打分（排序）](/docs/ES/correlation.md)  
-[★★★ES优化](/docs/ES/ESoptimization.md)  
-&emsp; [ES优化](/docs/ES/optimization.md)  
-&emsp; [搜索速度优化](/docs/ES/SearchSpeed.md)  
-&emsp; [写入速度和磁盘使用量优化](/docs/ES/WriteSpeed.md)  
-&emsp; [故障判断](/docs/ES/FaultJudgment.md)  
-&emsp; [★★★使用ES中的一些问题](/docs/ES/problem.md)  
-[ES运维](/docs/ES/Operation.md)  
-&emsp; [ES搭建](/docs/ES/build.md)  
-&emsp; &emsp; [ES配置文件](/docs/ES/configure.md)  
-&emsp; &emsp; [内存设置](/docs/ES/heap.md)  
-&emsp; [ES集群操作](/docs/ES/ClusterOperation.md)  
-&emsp; [ES监控](/docs/ES/monitor.md)  
-&emsp; [使用ES中的一些问题](/docs/ES/problem.md)  
-[ELK/EFK](/docs/ES/EFK.md)    
-&emsp; [EFK介绍](/docs/ES/EFKIntroduce.md)  
-&emsp; [Elk搭建](/docs/devAndOps/build/elk.md)   
-&emsp; [EFK使用](/docs/ES/EFKUse.md)  
-&emsp; &emsp; [FileBeat和Logstash详解](/docs/ES/Logstash.md)  
-&emsp; &emsp; [Kibana使用](/docs/ES/Kibana.md)  
-
-[ES重制](/docs/ESRemake/ESRemake.md)    
-
-------------------------------------------------------------------------------------------------------------------------------
-
-## 1.7. SSM  
-### 1.7.1. Spring  
-[Spring汇总](/docs/SSM/Spring/SpringSummary.md)  
-[★★★Spring常见面试题](/docs/SSM/Spring/SpringInterview.md)  
-[Spring介绍](/docs/SSM/Spring/Spring.md)  
-[Spring使用](/docs/SSM/Spring/SpringUse.md)  
-[学习Spring源码的感悟](/docs/SSM/Spring/thinking.md)  
-[手写Spring](/docs/SSM/Spring/HandwrittenSpring.md)  
-[★★★Spring容器刷新（IOC）](/docs/SSM/Spring/SpringIOC.md)  
-&emsp; [容器初始化详解](/docs/SSM/Spring/ContainerInit.md)  
-[★★★Spring依赖注入](/docs/SSM/Spring/SpringDISummary.md)  
-&emsp; [Spring依赖注入（DI）](/docs/SSM/Spring/SpringDI.md)  
-&emsp; [循环依赖](/docs/SSM/Spring/feature/CircularDepend.md)  
-&emsp; [SpringBean生命周期](/docs/SSM/Spring/SpringBean.md)  
-[Spring容器扩展](/docs/SSM/Spring/feature/ContainerFeature.md)  
-&emsp; [可二次开发常用接口(扩展性)](/docs/SSM/Spring/feature/SecendDeve.md)  
-&emsp; &emsp; [FactoryBean](/docs/SSM/Spring/feature/FactoryBean.md)  
-&emsp; &emsp; [事件多播器](/docs/SSM/Spring/feature/EventMulticaster.md)  
-&emsp; &emsp; [事件](/docs/SSM/Spring/feature/Event.md)  
-&emsp; &emsp; [Aware接口](/docs/SSM/Spring/feature/Aware.md)  
-&emsp; &emsp; [后置处理器](/docs/SSM/Spring/feature/BeanFactoryPostProcessor.md)  
-&emsp; &emsp; [InitializingBean](/docs/SSM/Spring/feature/InitializingBean.md)  
-&emsp; [自定义XML schema扩展](/docs/SSM/Spring/feature/XMLSchema.md)  
-[SpringAOP](/docs/SSM/Spring/SpringAOP.md)  
-&emsp; [AOP基本概念](/docs/SSM/Spring/AOP.md)  
-&emsp; [SpringAOP教程](/docs/SSM/Spring/SpringAOPUse.md)  
-&emsp; [SpringAOP解析](/docs/SSM/Spring/SpringAOPAnalysis.md)  
-[★★★Spring事务](/docs/SSM/Spring/transaction.md)  
-&emsp; [Spring事务](/docs/SSM/Spring/SpringTransaction.md)  
-&emsp; [Spring事务问题](/docs/SSM/Spring/SpringTransactionInvalid.md)  
-[SpringMVC](/docs/SSM/Spring/SpringMVC.md)  
-&emsp; [SpringMVC使用教程](/docs/SSM/Spring/SpringMVCUse.md)  
-&emsp; [SpringMVC解析](/docs/SSM/Spring/SpringMVCAnalysis.md)    
-&emsp; [过滤器、拦截器、监听器](docs/web/subassembly.md)  
-
-------------------------------------------------------------------------------------------------------------------------------
-
-### 1.7.2. MyBatis  
-[★★★MyBatis面试题](/docs/SSM/MyBatis/MybatisInterview.md)   
-[MyBatis](/docs/SSM/MyBatis/MybatisSummary.md)  
-[MyBatis使用](/docs/SSM/MyBatis/MybatisUse.md)  
-&emsp; [MyBatis使用教程](/docs/SSM/MyBatis/Mybatis.md)  
-&emsp; [MyBatis高级使用](/docs/SSM/MyBatis/MybatisSenior.md)  
-&emsp; &emsp; [mybatis-generator](/docs/SSM/MyBatis/MybatisGenerator.md)  
-&emsp; &emsp; [MyBatis大数据量查询](/docs/SSM/MyBatis/BigData.md)  
-&emsp; &emsp; [PageHelper](/docs/SSM/MyBatis/PageHelper.md)  
-[MyBatis解析](/docs/SSM/MyBatis/MybatisAnalysis.md)  
-&emsp; [MyBatis架构](/docs/SSM/MyBatis/MybatisFramework.md)  
-&emsp; [MyBatis SQL执行解析](/docs/SSM/MyBatis/MybatisExecutor.md)  
-&emsp; &emsp; [sqlSession详解](/docs/SSM/MyBatis/selSession.md)  
-&emsp; [Spring整合MyBatis原理](/docs/SSM/MyBatis/SpringMybatisPrinciple.md)  
-&emsp; [MyBatis缓存](/docs/SSM/MyBatis/MybatisCache.md)  
-&emsp; [MyBatis插件解析](/docs/SSM/MyBatis/MybatisPlugins.md)  
-&emsp; &emsp; [MyBatis分页](/docs/SSM/MyBatis/MybatisPage.md)  
-&emsp; [MyBatis日志体系](/docs/SSM/MyBatis/MybatisLog.md)   
-
-------------------------------------------------------------------------------------------------------------------------------
-
-## 1.8. 分布式框架  
-
-### 1.8.1. SpringBoot  
-[SpringBoot总结](/docs/microService/SpringBoot/SpringBootSummary.md)  
-[★★★SpringBoot常见面试题](/docs/microService/SpringBoot/BootInterview.md)  
-[★★★SpringBoot](/docs/microService/SpringBoot/SpringBoot.md)  
-&emsp; [SpringBoot高级](/docs/microService/SpringBoot/BootHeigh.md)  
-[★★★SpringBoot源码](/docs/microService/SpringBoot/SpringBootSource.md)  
-&emsp; [SpringBoot启动过程](/docs/microService/SpringBoot/SpringBootRun.md)  
-&emsp; &emsp; [★★★SpringApplication初始化](/docs/microService/SpringBoot/SpringApplicationInit.md)  
-&emsp; &emsp; &emsp; [SPI及SpringFactoriesLoader](/docs/microService/SpringBoot/SpringFactoriesLoader.md)  
-&emsp; &emsp; [★★★run()方法运行过程](/docs/microService/SpringBoot/runProcess.md)  
-&emsp; &emsp; [SpringBoot事件监听](/docs/microService/SpringBoot/EventListeners.md)  
-&emsp; &emsp; [SpringBoot内置生命周期事件详解](/docs/microService/SpringBoot/SpringBootEvent.md)  
-&emsp; &emsp; [SpringBoot事件回调机制](/docs/microService/SpringBoot/eventCallback.md)  
-&emsp; [★★★SpringBoot自动配置](/docs/microService/SpringBoot/AutomaticAssembly.md)  
-&emsp; &emsp; [步骤一：注解@SpringBootApplication(启动对象)](/docs/microService/SpringBoot/SpringBootApplication.md)  
-&emsp; &emsp; [步骤二：加载自动配置流程](/docs/microService/SpringBoot/ApplicationProcess.md)  
-&emsp; &emsp; [示例：内置Tomcatmcat](/docs/microService/SpringBoot/Tomcat.md)  
-[自定义strater](/docs/microService/SpringBoot/SpringBootStarter.md)  
-
-------------------------------------------------------------------------------------------------------------------------------
-
-### 1.8.2. SpringCloud    
-[★★★Spring Cloud Netflix](/docs/microService/SpringCloudNetflix/Netflix.md)  
-[注册中心和配置中心](/docs/microService/SpringCloudNetflix/register.md)  
-&emsp; [Spring Cloud Eureka](/docs/microService/SpringCloudNetflix/Eureka.md)  
-&emsp; [XXXnacos](/docs/microService/SpringCloudNetflix/nacos.md)  
-[GateWay](/docs/microService/SpringCloudNetflix/GateWay.md)  
-&emsp; [Spring Cloud GateWay](/docs/microService/SpringCloudNetflix/CloudGateWay.md)  
-&emsp; [Spring Cloud Zuul](/docs/microService/SpringCloudNetflix/Zuul.md)  
-[Spring Cloud Ribbon](/docs/microService/SpringCloudNetflix/Ribbon.md)  
-[Spring Cloud Feign](/docs/microService/SpringCloudNetflix/Feign.md)  
-[Spring Cloud Hytrix](/docs/microService/SpringCloudNetflix/Hytrix.md)  
-[链路](/docs/microService/SpringCloudNetflix/link.md)   
-&emsp; [Spring Cloud Sleuth](/docs/microService/SpringCloudNetflix/Sleuth.md)  
-&emsp; [链路SkyWalking](/docs/microService/SpringCloudNetflix/SkyWalking.md)  
-[Spring Cloud Admin](/docs/microService/SpringCloudNetflix/SpringBootAdmin.md)  
-
-------------------------------------------------------------------------------------------------------------------------------
-
-### 1.8.3. Dubbo  
-[Dubbo总结](/docs/microService/dubbo/DubboSummary.md)  
-[分布式服务治理](/docs/microService/dubbo/CloudAlibaba.md)  
-[Spring Cloud Alibaba](/docs/microService/dubbo/SpringCloudAlibaba.md)  
-[RPC介绍](/docs/microService/RPC.md)  
-[Dubbo介绍](/docs/microService/dubbo/Dubbo.md)   
-[Dubbo使用教程](/docs/microService/dubbo/DubboUse.md)  
-&emsp; [Dubbo高级特性](/docs/microService/dubbo/DubboActualCombat.md)  
-&emsp; [Dubbo-admin](/docs/microService/dubbo/DubboAdmin.md)  
-&emsp; [Dubbo使用常见问题](/docs/microService/dubbo/problem.md)  
-[Dubbo详解](/docs/microService/dubbo/DubboExplanate.md)  
-&emsp; [Dubbo框架设计](/docs/microService/dubbo/design.md)  
-&emsp; [暴露和引用服务](/docs/microService/dubbo/realization.md)  
-&emsp; &emsp; [Dubbo和ZK](/docs/microService/dubbo/design.md)  
-&emsp; &emsp; [Dubbo心跳机制](/docs/microService/dubbo/heartbeat.md)  
-&emsp; &emsp; [Dubbo序列化和协议](/docs/microService/dubbo/Agreement.md)  
-&emsp; &emsp; [Dubbo协议长连接](/docs/microService/dubbo/LongConnection.md)  
-&emsp; [远程调用](/docs/microService/dubbo/remote.md)  
-&emsp; &emsp; [Dubbo调用介绍](/docs/microService/dubbo/RemoteIntroduce.md)  
-&emsp; &emsp; [Dubbo降级、容错、负载](/docs/microService/dubbo/Load.md)  
-&emsp; [扩展点加载(SPI)](/docs/microService/dubbo/SPI.md)  
-&emsp; &emsp; [获得指定拓展对象](/docs/microService/dubbo/getExtension.md)  
-&emsp; &emsp; [获得自适应的拓展对象](/docs/microService/dubbo/getAdaptiveExtension.md)  
-[Dubbo运行流程源码解析](/docs/microService/dubbo/DubboSource.md)  
-&emsp; [初始化源码解析](/docs/microService/dubbo/dubboSpring.md)  
-&emsp; [服务暴露源码解析](/docs/microService/dubbo/export.md)  
-&emsp; [服务引用源码解析](/docs/microService/dubbo/introduce.md)  
-&emsp; [服务调用源码解析](/docs/microService/dubbo/call.md)  
-&emsp; [再次理解dubbo-rpc包](/docs/microService/dubbo/dubboRPC.md)  
-&emsp; [netty在dubbo中的使用](/docs/microService/dubbo/dubboNetty.md)  
-
-<!-- 
-[Dubbo集群容错源码解析](/docs/microService/dubbo/DubboColonySource.md)  
-&emsp; [服务目录源码解析](/docs/microService/dubbo/Directory.md)  
-&emsp; [服务路由源码解析](/docs/microService/dubbo/Router.md)  
-&emsp; [集群源码解析](/docs/microService/dubbo/Cluster.md)  
-&emsp; [负载均衡源码解析](/docs/microService/dubbo/LoadBalance.md)  
--->
-
-------------------------------------------------------------------------------------------------------------------------------
-
-### 1.8.4. Zookeeper
-[Zookeeper](/docs/microService/dubbo/ZookeeperSummary.md)  
-[Zookeeper原理](/docs/microService/dubbo/Zookeeper.md)  
-&emsp; [ZAB](/docs/microService/dubbo/ZAB.md)  
-&emsp; [Watcher](/docs/microService/dubbo/Watcher.md)  
-[Zookeeper使用](/docs/microService/dubbo/ZookeeperUse.md)  
-[Zookeeper问题](/docs/microService/dubbo/ZookeeperProblem.md)  
-
-------------------------------------------------------------------------------------------------------------------------------
-
-### 1.8.5. ServiceMesh
-
-
-------------------------------------------------------------------------------------------------------------------------------
-
-## 1.9. 高并发
-### 1.9.1. 高并发及系统性能
-[高并发相关概念](/docs/system/DistributedHighConcurrency.md)   
-[系统性能指标](/docs/system/performance.md)  
-[性能压测](/docs/system/PerformancePressureTest.md)  
-[★★★服务器数量计算](/docs/system/NumberOfServers.md)  
-
-
-### 1.9.2. 高并发系统
-[并发系统三高](/docs/system/threeHigh.md)  
-&emsp; [高可用建设](/docs/system/highAvailability.md)  
-&emsp; [秒杀系统设计](/docs/system/seckill.md)  
-&emsp; &emsp; [Redis实现库存扣减](/docs/system/stock.md)  
-[资源限制](/docs/system/ResourceConstraints.md)  
-
-
-### 1.9.3. 缓存和Redis  
-[缓存和Redis](/docs/cache/Cache.md)  
-
-#### 1.9.3.1. 缓存介绍
-[缓存算法](/docs/cache/CacheAlgorithm.md)  
-[二级缓存](/docs/microService/Redis/doubleCache.md)   
-&emsp; [j2Cache框架集成Caffeine+Redis二级缓存](/docs/microService/Redis/Caffeine.md)  
-[★★★分布式缓存问题](/docs/cache/DistributedCache.md)  
-&emsp; [查询缓存](/docs/cache/SelectCache.md)  
-&emsp; [更新缓存](/docs/cache/CacheUpdate.md)  
-[Redis热点key](/docs/cache/hotspotKey.md)  
-
-#### 1.9.3.2. Redis
-[学习Redis的总结](/docs/microService/Redis/RedisSummary.md)  
-[Redis使用](/docs/microService/Redis/RedisUse.md)  
-&emsp; [Redis安装](/docs/microService/Redis/RedisInstall.md)  
-&emsp; &emsp; [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
-&emsp; [SpringBoot整合Redis](/docs/microService/Redis/SpringBootRedis.md)  
-&emsp; [Redis客户端使用及开发规范](/docs/microService/Redis/RedisStandard.md)  
-&emsp; &emsp; [BigKey](/docs/microService/Redis/BigKey.md)  
-[★★★Redis数据类型](/docs/microService/Redis/RedisStructure.md)  
-&emsp; [Redis基本数据类型](/docs/microService/Redis/RedisBasicStructure.md)  
-&emsp; &emsp;  [Redis配置文件介绍](/docs/microService/Redis/RedisConf.md)  
-&emsp; [Redis扩展数据类型](/docs/microService/Redis/ExtendedDataType.md)  
-&emsp; &emsp; [BitMap实现签到](/docs/microService/Redis/BitMap.md)  
-&emsp; [Redis底层实现](/docs/microService/Redis/RedisBottom.md)  
-&emsp; &emsp; [数据结构](/docs/microService/Redis/dataStructure.md)  
-&emsp; &emsp; [SDS](/docs/microService/Redis/SDS.md)  
-&emsp; &emsp; [Dictht](/docs/microService/Redis/Dictht.md)  
-&emsp; &emsp; [数据类型](/docs/microService/Redis/dataType.md)  
-[Redis内置功能](/docs/microService/Redis/BuiltIn.md)    
-&emsp; [RedisPipeline/批处理](/docs/microService/Redis/RedisPipeline.md)  
-&emsp; [Redis事务](/docs/microService/Redis/RedisTransaction.md)  
-&emsp; [Redis和Lua](/docs/microService/Redis/lua.md)  
-&emsp; [Redis实现队列](/docs/microService/Redis/Message.md)  
-&emsp; [发布订阅](/docs/microService/Redis/Subscribe.md)  
-[★★★Redis高可用](/docs/microService/Redis/RedisDeploy.md)  
-&emsp; [Redis主从复制](/docs/microService/Redis/RedisMasterSlave.md)  
-&emsp; [Redis哨兵模式](/docs/microService/Redis/RedisSentry.md)  
-&emsp; [Redis读写分离](/docs/microService/Redis/RedisWriteRead.md)  
-&emsp; [Redis集群模式](/docs/microService/Redis/RedisCluster.md)  
-[★★★Redis原理](/docs/microService/Redis/RedisPrinciple.md)  
-&emsp; [内存](/docs/microService/Redis/Memory.md)  
-&emsp; &emsp; [Redis内存淘汰（删除哪些数据）](/docs/microService/Redis/RedisEliminate.md)   
-&emsp; &emsp; [Redis过期键删除（删除时机）](/docs/microService/Redis/Keydel.md)  
-&emsp; &emsp; [Redis虚拟内存机制](/docs/microService/Redis/RedisVM.md)  
-&emsp; [磁盘](/docs/microService/Redis/Disk.md)  
-&emsp; &emsp; [Redis持久化](/docs/microService/Redis/RedisPersistence.md)  
-&emsp; &emsp; &emsp; [AOF重写阻塞](/docs/microService/Redis/Rewrite.md)  
-&emsp; [网络](/docs/microService/Redis/Network.md)  
-&emsp; &emsp; [Redis事件/Reactor（IO多路复用）](/docs/microService/Redis/RedisEvent.md)  
-&emsp; &emsp; [Redis多线程模型](/docs/microService/Redis/RedisMultiThread.md)  
-&emsp; &emsp; [Redis协议](/docs/microService/Redis/RESP.md)  
-[Redis运维](/docs/microService/Redis/RedisOperation.md)  
-&emsp; [Redis常见问题与优化](/docs/microService/Redis/problem.md)  
-
-
-### 1.9.4. 限流降级
-[分布式限流](/docs/microService/thinking/CurrentLimiting.md)   
-&emsp; [如何计算服务限流的配额？](/docs/microService/thinking/limitingQuota.md)  
-&emsp; [限流Sentinel](/docs/microService/thinking/Sentinel.md)  
-[服务降级](/docs/microService/thinking/Demotion.md)  
-
-### 1.9.5. MQ    
-[MQ](/docs/microService/mq/mq.md)  
-[★★★MQ常见面试题](/docs/microService/mq/mqInterview.md)   
-&emsp; [消息推拉机制](/docs/microService/mq/PushPull.md)  
-[RocketMQ和Kafka](/docs/microService/mq/RocketMQAndKafka.md)  
-
-#### 1.9.5.1. RocketMQ  
-[RocketMQ搭建](/docs/devAndOps/build/RocketBuild.md)  
-[SpringBoot整合RocketMQ](/docs/microService/mq/Rocket/BootRocket.md)  
-
-
-#### 1.9.5.2. Kafka  
-[kafka](/docs/microService/mq/kafka/kafka.md)   
-[kafka基本概念](/docs/microService/mq/kafka/kafkaConcepts.md)  
-&emsp; [生产者](/docs/microService/mq/kafka/kafkaProducerUse.md)  
-&emsp; [消息分区](/docs/microService/mq/kafka/topic.md)  
-&emsp; [消费者](/docs/microService/mq/kafka/kafkaConsumerUse.md)  
-&emsp; [服务端](/docs/microService/mq/kafka/kafkaServer.md)  
-[★★★kafka特性](/docs/microService/mq/kafka/kafkaCharacteristic.md)  
-&emsp; [【高性能】-内存](/docs/microService/mq/kafka/Memory.md)  
-&emsp; [【高性能】-持久化/磁盘IO-顺序读写](/docs/microService/mq/kafka/kafkaPersistence.md)  
-&emsp; [【高性能】-网络IO零拷贝](/docs/microService/mq/kafka/networkIO.md)  
-&emsp; [【高可用】-副本机制](/docs/microService/mq/kafka/kafkaReplica.md)  
-&emsp; [【高一致】-消息丢失（可靠性传输）?](/docs/microService/mq/kafka/kafkaReliability.md)  
-&emsp; [【高一致】-分区保持顺序（顺序消费）](/docs/microService/mq/kafka/order.md)  
-&emsp; [【高一致】-kafka幂等性（重复消费）](/docs/microService/mq/kafka/kafkaIdempotent.md)  
-&emsp; [【高一致】-kafka事务](/docs/microService/mq/kafka/kafkaTraction.md)  
-&emsp; [消息积压](/docs/microService/mq/MessageBacklog.md)  
-[kafka应用](/docs/microService/mq/kafka/kafkaUse.md)  
-&emsp; [kafka安装](/docs/microService/mq/kafka/kafkaInstall.md)  
-&emsp; [kafka-SpringBoot](/docs/microService/mq/kafka/kafkaSpringBoot.md)  
-&emsp; [kafka高级应用](/docs/microService/mq/kafka/advanced.md)  
-&emsp; [kafka集群管理](/docs/microService/mq/kafka/colony.md)  
-[kafka源码](/docs/microService/mq/kafka/kafkaSource.md)  
-&emsp; [kafka生产者](/docs/microService/mq/kafka/kafkaProducer.md)  
-&emsp; [kafka消费者](/docs/microService/mq/kafka/kafkaConsumer.md)  
-<!-- 
-[kafkaStreams](/docs/microService/mq/kafka/kafkaStreams.md)  
--->
-
-------------------------------------------------------------------------------------------------------------------------------
-
-## 1.10. 分布式原理
-
-### 1.10.1. 分布式理论  
-[分布式理论](/docs/microService/thinking/DistributedThink.md)  
-[分布式和集群](/docs/system/distributed.md)   
-[分布式理论CAP](/docs/microService/thinking/DistributedTheory.md)  
-[分布式算法](/docs/microService/thinking/DistributedAlgorithm.md)  
-&emsp; [一致性哈希](/docs/microService/thinking/consistent.md)  
-
-### 1.10.2. 分布式ID
-[分布式ID常见解决方案](/docs/microService/thinking/DistributedID.md)  
-
-### 1.10.3. 分布式事务
-[分布式事务](/docs/microService/thinking/DistriTransaction.md)  
-&emsp; [单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/SingleServiceMultipleSources.md)  
-&emsp; [DTP及XA](/docs/microService/thinking/DTPAndXA.md)  
-&emsp; &emsp; [JTA+Atomic/单体服务多数据源(Spring分布式事务)](/docs/microService/thinking/JTA.md)  
-&emsp; [TCC汇总](/docs/microService/thinking/TCCSummary.md)  
-&emsp; &emsp; [TCC](/docs/microService/thinking/TCC.md)   
-&emsp; &emsp; [TCC问题](/docs/microService/thinking/TCCProblem.md)   
-&emsp; &emsp; [TCC问题1](/docs/microService/thinking/TCCProblemOne.md)   
-&emsp; [Saga](/docs/microService/thinking/Event.md)  
-&emsp; [★★★消息模式](/docs/microService/thinking/news.md)   
-&emsp; [分布式事务的选型和使用](/docs/microService/thinking/DistributedTransactionSelection.md)  
-&emsp; [分布式事务框架](/docs/microService/thinking/framework.md)   
-&emsp; &emsp; [★★★阿里Seata](/docs/microService/thinking/Seata.md)  
-
-### 1.10.4. 分布式锁
-[分布式锁](/docs/microService/thinking/Lock.md)  
-&emsp; [Redis分布式锁](/docs/microService/thinking/redisLock.md)  
-&emsp; [使用Redis分布式锁的注意点](/docs/microService/thinking/redisLockProblems.md)  
-&emsp; [Redisson框架](/docs/microService/thinking/Redisson.md)  
-&emsp; &emsp; [SpringBoot整合Redisson](/docs/microService/thinking/BootRedisson.md)  
-&emsp; [ZK分布式锁](/docs/microService/thinking/ZKLock.md)  
-&emsp; [MySql分布式锁](/docs/microService/thinking/MySqlLock.md)  
-
-------------------------------------------------------------------------------------------------------------------------------
-
-
-## 1.11. 计算机网络  
-[计算机网络](/docs/network/Network.md)  
-[OSI七层网络模型](/docs/network/OSI.md)  
-[★★★应用层](/docs/network/application.md)  
-&emsp; [DNS](docs/network/DNS.md)  
-&emsp; [★★★HTTP](/docs/network/HTTP.md)  
-&emsp; [★★★HTTPS](/docs/network/HTTPS.md)  
-[★★★传输层](/docs/network/transfer.md)  
-&emsp; [★★★TCP](/docs/network/TCP.md)  
-&emsp; &emsp; [TCP传输阶段](/docs/network/TCPTransfer.md)  
-&emsp; &emsp; [TIME_WAIT问题](/docs/network/timewait.md)  
-&emsp; &emsp; [TCP粘包](/docs/network/TCPSticking.md)   
-&emsp; &emsp; [长短连接](/docs/network/connection.md)  
-&emsp; [UDP](/docs/network/UDP.md)  
-[网络的性能指标](/docs/network/standard.md)  
-[★★★网络带宽](/docs/network/NetworkBandwidth.md)  
-[网络工具](/docs/network/NetTools.md)  
-&emsp; [网络抓包](/docs/network/wireshark.md)  
-&emsp; [网络监控](/docs/network/NetMonitor.md)  
-
-<!-- 
-出口ip
-https://help.aliyun.com/document_detail/122217.html
--->
-
-
-### 1.11.1. 负载均衡  
-[负载均衡](/docs/system/loadBalance/loadBalance.md)  
-[DNS轮询](/docs/system/loadBalance/DNS.md)  
-[Http重定向](/docs/system/loadBalance/redirect.md)  
-[反向代理负载均衡](/docs/system/loadBalance/AgentLoad.md)  
-&emsp; [LVS](/docs/system/loadBalance/LVS.md)  
-&emsp; [Nginx](/docs/system/loadBalance/Nginx/nginx.md)  
-&emsp; &emsp; [Nginx介绍](/docs/system/loadBalance/Nginx/nginxIntroduce.md)  
-&emsp; &emsp; [Nginx使用](/docs/system/loadBalance/Nginx/nginxUser.md)   
-&emsp; &emsp; &emsp; [Nginx负载](/docs/system/loadBalance/Nginx/nginxLoad.md)   
-&emsp; &emsp; &emsp; [Nginx配置参数中文说明](/docs/system/loadBalance/Nginx/nginxConfig.md)   
-&emsp; &emsp; [Nginx运维](/docs/system/loadBalance/Nginx/nginxOperation.md)  
-&emsp; &emsp; &emsp; [Nginx日志](/docs/system/loadBalance/Nginx/nginxLog.md)   
-&emsp; &emsp; [Nginx执行原理](/docs/system/loadBalance/Nginx/nginxPrinciple.md)  
-&emsp; [Keepalived](/docs/system/loadBalance/Keepalived.md)  
-[IP负载均衡](/docs/system/loadBalance/IPLoad.md)  
-[数据链路负载均衡](/docs/system/loadBalance/LinkLoad.md)  
-[CDN](/docs/system/loadBalance/CDN.md)  
-
-
-### 1.11.2. 网络IO/分布式通信  
-[网络IO/分布式通信](/docs/network/NetworkCommunication.md)  
-
-#### 1.11.2.1. 通信基础
-[通信基础](/docs/microService/communication/Netty/basics.md)   
-&emsp; [序列化](/docs/microService/communication/serializbale.md)  
-&emsp; [【网络IO】](/docs/microService/communication/NetworkIO.md)  
-&emsp; &emsp; [服务器处理连接的架构演变](/docs/microService/communication/ProcessingLinks.md)  
-&emsp; &emsp; [五种I/O模型](/docs/microService/communication/IO.md)  
-&emsp; &emsp; [I/O模型之I/O多路复用](/docs/microService/communication/Netty/epoll.md)  
-&emsp; &emsp; [多路复用之Reactor模式](/docs/microService/communication/Netty/Reactor.md)  
-&emsp; &emsp; [~~IO性能优化之零拷贝~~](/docs/microService/communication/Netty/zeroCopy.md)  
-&emsp; &emsp; [IO性能优化之零拷贝重制](/docs/microService/communication/Netty/zeroCopyRemake.md)  
-&emsp; [请求合并](/docs/webSocket/RequestMerge.md)  
-
-
-#### 1.11.2.2. webSocket协议  
-[webSocket协议](/docs/webSocket/Summary.md)  
-&emsp; [Socket编程](/docs/microService/communication/Socket.md)  
-&emsp; [4种Web端即时通信](/docs/webSocket/LongPolling.md)  
-&emsp; &emsp; [配置中心使用长轮询推送](/docs/webSocket/Configuration.md)  
-&emsp; [WebSocket协议](/docs/webSocket/WebSocket.md)  
-&emsp; [WebSocket编码](/docs/webSocket/WebSocketCode.md)  
-&emsp; [IM系统](/docs/webSocket/IM.md)  
-
-
-#### 1.11.2.3. NIO 
-[NIO](/docs/microService/communication/NIO.md)  
-&emsp; [NIO Channel](/docs/microService/communication/NIO/Channel.md)  
-&emsp; [NIO Buffer](/docs/microService/communication/NIO/Buffer.md)  
-&emsp; [Java中的零拷贝](/docs/microService/communication/NIO/JavaZeroCopy.md)  
-&emsp; [NIO Selector](/docs/microService/communication/NIO/Selector.md)  
-
-#### 1.11.2.4. Netty通信框架
-[Netty总结](/docs/microService/communication/Netty/netty.md)   
-[Netty介绍](/docs/microService/communication/Netty/concepts.md)  
-[Netty运行流程介绍](/docs/microService/communication/Netty/operation.md)   
-[Netty核心组件](/docs/microService/communication/Netty/components.md)   
-&emsp; [Channel相关](/docs/microService/communication/Netty/channel.md)   
-[Netty逻辑架构](/docs/microService/communication/Netty/Architecture.md)   
-[Netty高性能](/docs/microService/communication/Netty/performance.md)  
-&emsp; [Reactor与EventLoop](/docs/microService/communication/Netty/NettyReactor.md)  
-&emsp; [~~Netty中的零拷贝~~](/docs/microService/communication/Netty/nettyZeroCopy.md)  
-[Netty开发](/docs/microService/communication/Netty/Development.md)  
-&emsp; [TCP粘拆包与Netty编解码](/docs/microService/communication/Netty/Decoder.md)  
-&emsp; [Netty实战](/docs/microService/communication/Netty/actualCombat.md)  
-&emsp; [Netty多协议开发](/docs/microService/communication/Netty/MultiProtocol.md)  
-[Netty源码](/docs/microService/communication/Netty/source.md)    
-&emsp; [Netty源码搭建](/docs/microService/communication/Netty/build.md)  
-&emsp; [Netty服务端创建](/docs/microService/communication/Netty/principle.md)  
-&emsp; [Netty客户端创建](/docs/microService/communication/Netty/customer.md)  
-&emsp; [NioEventLoop](/docs/microService/communication/Netty/NioEventLoop.md)  
-&emsp; &emsp; [NioEventLoop的启动](/docs/microService/communication/Netty/NioEventLoopStart.md)  
-&emsp; &emsp; [NioEventLoop的执行](/docs/microService/communication/Netty/NioEventLoopRun.md)  
-&emsp; [内存分配-ByteBuf](/docs/microService/communication/Netty/byteBuf.md)    
-&emsp; &emsp; [内存分配-ByteBuf](/docs/microService/communication/Netty/byteBufIntro.md)    
-&emsp; &emsp; [内存分配-分配器ByteBufAllocator](/docs/microService/communication/Netty/ByteBufAllocator.md)    
-&emsp; &emsp; [内存分配-非池化内存分配](/docs/microService/communication/Netty/Unpooled.md)    
-&emsp; &emsp; [~~内存分配-池化内存分配~~](/docs/microService/communication/Netty/Pooled.md)    
-&emsp; &emsp; [池化内存分配](/docs/microService/communication/Netty/byteBufTwo.md)    
-
-
-------------------------------------------------------------------------------------------------------------------------------
-
-
-## 1.12. 架构设计
-### 1.12.1. 架构设计  
-[★★★架构图](/docs/system/diagram.md)  
-[IaaS、PaaS、SaaS](/docs/system/SaaS.md)  
-[软件架构设计模式](/docs/system/designPattern.md)  
-&emsp; [DDD](/docs/system/DDD.md)  
-&emsp; [响应式编程](/docs/SystemDesign/reactor.md)  
-[技术选型](/docs/system/TechnicalSelection.md)  
-[架构的方方面面](/docs/system/AllAspects.md)  
-[架构质量属性](/docs/system/QualityAttribute.md)  
-&emsp; [容灾和备份](/docs/system/backups.md)  
-&emsp; [系统瓶颈](/docs/system/Bottleneck.md)  
-&emsp; [JAVA线上故障排查](/docs/Linux/problem.md)  
-[脚手架介绍](/docs/system/Scaffolding.md)  
-[事件和驱动](/docs/system/EventsAndMessages.md)  
-[前后端分离-跨域和内外网隔离](/docs/web/Cross.md)  
-
-
-### 1.12.2. 项目构建基础
-[版本号](/docs/web/Version.md)  
-[编码规范](/docs/java/Design/CodingSpecification.md)  
-[MVC三层架构上再加一层Manager层](/docs/web/Manager.md)  
-[项目构建基础](/docs/web/BuildFoundation.md)  
-&emsp; [接口管理](/docs/web/InterfaceManagement.md)  
-&emsp; &emsp; [Swagger](/docs/web/Swagger.md)  
-&emsp; &emsp; [接口管理平台](/docs/web/Mock.md)  
-&emsp; [Controller层简洁又优雅](/docs/web/Controller.md)  
-&emsp; [统一格式返回](/docs/web/UnifiedFormat.md)  
-&emsp; [统一响应处理](/docs/web/ResponseProcessing.md)  
-&emsp; [统一异常处理](/docs/web/ExceptionHandler.md)  
-&emsp; [统一日志记录](/docs/web/unifiedLog.md)  
-&emsp; [日志系统](/docs/web/log.md)  
-&emsp; &emsp; [log4j2](/docs/web/log4j2.md)  
-&emsp; [代码分层](/docs/web/CodeLayering.md)  
-&emsp; [SpringTest](/docs/web/test.md)  
-&emsp; [乱码](/docs/web/garbled.md)  
-&emsp; [工具类hutool](/docs/web/hutool.md)  
-[JavaBean](/docs/web/JavaBean.md)  
-&emsp; [POJO](/docs/web/POJO.md)  
-&emsp; [@DateTimeFormat和@jsonFormat](/docs/web/DateTimeFormat.md)  
-&emsp; [BeanUtils](/docs/web/BeanUtils.md)  
-&emsp; [参数校验](/docs/web/Validation.md)  
-&emsp; &emsp; [普通项目参数校验](/docs/web/GeneralValidation.md)  
-&emsp; [Lombok](/docs/web/Lombok.md)  
-[★★★API接口设计](/docs/web/API.md)    
-&emsp; [RESTful风格](/docs/web/interface/RESTful.md)  
-&emsp; [★★★接口幂等](/docs/web/interface/idempotent.md)  
-&emsp; [接口防刷/反爬虫](/docs/web/interface/brush.md)  
-&emsp; [接口安全](/docs/web/interface/security.md)  
-&emsp; [★★★接口响应时间问题](/docs/web/interface/timeout.md)  
-&emsp; [接口预警](/docs/web/interface/EarlyWarn.md)  
-[Http](/docs/web/http.md)   
-&emsp; [RestTemplate](/docs/web/Resttemplate.md)  
-&emsp; [Http重试](/docs/web/httpRetry.md)   
-[数据相关](/docs/web/Data.md)  
-&emsp; [格式化](/docs/web/Format.md)  
-&emsp; [数据脱敏](/docs/web/sensitive.md)  
-&emsp; [加密算法](/docs/web/encryption.md)  
-[安全检查](/docs/web/safe.md)  
-&emsp; [源码安全](/docs/web/codeSecurity.md)   
-&emsp; [安全架构](/docs/system/safe/safe.md)  
-[其他](/docs/web/other.md)  
-
-
-### 1.12.3. 系统设计  
-[工具类](/docs/SystemDesign/tools.md)  
-[登录](/docs/SystemDesign/Login.md)  
-[单点登录SSO](/docs/SystemDesign/SSO.md)  
-[OAuth2](/docs/SystemDesign/OAuth2.md)  
-[登录-JWT和session](/docs/SystemDesign/JWT.md)  
-[Token、Cookie、Session、跨域](/docs/SystemDesign/Token.md)  
-[权限系统](/docs/SystemDesign/power.md)  
-
-
-## 1.13. Web服务器与中间件  
-[Web服务器与中间件](/docs/frame/OtherMiddleware.md)  
-
-### 1.13.1. Web服务器  
-[Java应用服务器](/docs/webContainer/tomcat/applicationServer.md)  
-[***Undertow替换Tomcat](/docs/webContainer/tomcat/Undertow.md)  
-
-#### 1.13.1.1. tomcat
-[tomcat](/docs/webContainer/tomcat/tomcat.md)  
-[tomcat类加载器](/docs/webContainer/tomcat/tomcatClassLoader.md)  
-[tomcat日志](/docs/webContainer/tomcat/tomcatLog.md)  
-[tomcat调优](/docs/webContainer/tomcat/TomcatTuning.md)  
-
-
-### 1.13.2. 任务调度
-[任务调度目录](/docs/frame/dispatch.md)  
-[延时队列/延时任务](/docs/frame/delayQueue.md)  
-[分布式调度](/docs/frame/taskSheduling.md)  
-&emsp; [XXL-JOB](/docs/frame/XXL-JOB.md)  
-[时间轮算法](/docs/microService/dubbo/timeWheel.md)  
-
-### 1.13.3. 安全框架shiro  
-[shiro](/docs/system/shiro.md)  
-[Spring Security](/docs/system/SpringSecurity.md)  
-[数据权限](/docs/system/DataPermissions.md)  
-[CAS集成](/docs/system/CAS.md)  
-
-### 1.13.4. 工作流
-[工作流](docs/middleware/workflow.md)  
-
-### 1.13.5. 规则引擎
-[规则引擎](docs/middleware/RulesEngine.md)  
-
-### 1.13.6. 分布式文件存储  
-[分布式文件存储](/docs/File/FileStore.md)  
-
-
-## 1.14. 源码搭建汇总  
-[源码搭建汇总](/docs/java/basis/SourceBuild.md)  
-[JDK源码](/docs/java/basis/JDKSource.md)  
-[Spring源码搭建](/docs/SSM/Spring/SpringBuild.md)  
-[MyBatis源码搭建](/docs/SSM/MyBatis/MyBatisBuild.md)  
-[SpringBoot源码搭建](/docs/microService/SpringBoot/SpringBootBuild.md)  
-[Dubbo源码搭建](/docs/microService/dubbo/sourceBuild.md)  
-[Netty源码搭建](/docs/microService/communication/Netty/NettyBuild.md)  
-
-
-------------------------------------------------------------------------------------------------------------------------------
-
-
-
-## 1.15. Linux服务器搭建
-<!-- 
-ideaserver jdk   tomcat
-
-mysql  redis   rocketmq
-
-nacos  xxl-job  sentinel  skywalking
-
-es   esHD   kibana  logstash   filebeat
-
-nginx  
-
-maven   git  jenkins docker  Kubernetes
-
-prometheus
--->
-
-
-### 1.15.1. Linux基础  
-[CentOS](/docs/devAndOps/centOS/centOS.md)  
-[Linux目录和版本](/docs/Linux/catalogue.md)  
-[★★★Linux命令](/docs/Linux/Command.md)  
-&emsp; [Linux命令-实操](/docs/Linux/operation.md)  
-&emsp; [★★★Linux命令](/docs/Linux/LinuxCommand.md)  
-&emsp; &emsp; [文本处理](/docs/Linux/textProcessing.md)  
-&emsp; &emsp; [网络通讯](/docs/Linux/NetworkCommunication.md)  
-&emsp; &emsp; [进程管理](/docs/Linux/ProcessManagement.md)  
-&emsp; &emsp; [***日志操作命令](/docs/Linux/LogOperation.md)  
-&emsp; [shell编程](/docs/Linux/shell.md)  
-[Linux多种安装软件方式](/docs/Linux/build/InstallMethod.md) 
-[1. yum](/docs/devAndOps/centOS/yum.md)  
-[Linux启动脚本](/docs/devAndOps/centOS/LinuxRestart.md)  
-[nohup xxx &后台进程关闭](/docs/devAndOps/centOS/nohup.md)  
-
-### 1.15.2. Linux服务器  
-[Linux服务器](/docs/Linux/build/LinuxServer.md)   
-[防火墙](/docs/Linux/build/firewall.md)  
-[堡垒机](/docs/Linux/build/FortressMachine.md)  
-[DNS服务器](/docs/Linux/build/DNS.md)  
-[扩容](/docs/devAndOps/centOS/dilatation.md)  
-
-### 1.15.3. DevOps介绍    
-[CI/CD](/docs/devAndOps/build/CICD.md)  
-[Devops](/docs/devAndOps/build/devOps.md)  
-[GIT](/docs/devAndOps/git/Git.md)  
-&emsp; [GIT](/docs/devAndOps/git/command.md)  
-&emsp; [GitLab](/docs/devAndOps/git/GitLab.md)  
-&emsp; [Github和Gitee](/docs/devAndOps/git/GithubAndGitee.md)  
-[Gradle](/docs/devAndOps/git/Gradle.md)  
-[Maven](/docs/devAndOps/maven/maven.md)  
-&emsp; [Maven作用域](/docs/devAndOps/maven/MavenScope.md)  
-&emsp; [Maven配置](/docs/devAndOps/maven/MavenConfig.md)  
-&emsp; [Maven私服](/docs/devAndOps/maven/Nexus.md)  
-&emsp; [项目循环依赖-分离接口](/docs/web/SeparationInterface.md)  
-[JMH](/docs/java/JVM/JMH.md)  
-[多种发布方式](/docs/system/publishe.md)  
-&emsp; [灰度发布](/docs/system/grayscalePublishe.md)  
-[Jenkins](/docs/devAndOps/jenkins/Jenkins.md)  
-&emsp; [6.Docker搭建Jenkins](/docs/devAndOps/jenkins/DockerJenkins.md)  
-&emsp; [Jenkins构建Java项目](/docs/devAndOps/jenkins/JenkinsJava.md)  
-
-
-### 1.15.4. 搭建-研发
-[Linux定时执行脚本](/docs/devAndOps/build/TimingScript.md)  
-[3. JDK安装](/docs/devAndOps/build/JDKBuild.md)  
-[4. Git安装](/docs/devAndOps/git/GitBuild.md)  
-[5. GitLab搭建](/docs/devAndOps/git/GitLab.md)  
-[Maven安装](/docs/devAndOps/maven/mavenLinux.md)  
-[tomcat安装](/docs/devAndOps/build/tomcatBuild.md)  
-[arthas](/docs/devAndOps/build/arthas.md)  
-
-[MySql](/docs/devAndOps/build/MySql.md)   
-[MHA搭建MySql主从](/docs/devAndOps/build/MySqlAvailability.md)   
-[MySql审核平台archery](/docs/devAndOps/build/SqlArchery.md)  
-[容器搭建MySql](/docs/devAndOps/build/DockerMySql.md)     
-[Redis](/docs/devAndOps/build/Redis.md)  
-[RocketMQ搭建](/docs/devAndOps/build/RocketBuild.md)  
-
-[xxl-job搭建](/docs/devAndOps/build/xxljob.md)  
-[nacos搭建](/docs/devAndOps/build/nacosBuild.md)  
-[sentinel](/docs/devAndOps/build/sentinel.md)  
-[skywalking](/docs/devAndOps/build/skywalking.md)  
-
-[VMWare esxi创建虚拟机](/docs/devAndOps/centOS/VMWareEsxi.md)  
-[网络](/docs/devAndOps/build/network.md)  
-[Nginx搭建](/docs/devAndOps/build/nginx.md)   
-
-[6.ELK搭建](/docs/devAndOps/build/elk.md)   
-
-[docsify](/docs/devAndOps/build/docsify.md)  
-[3. ideaServer](/docs/devAndOps/build/ideaServer.md)  
-
-## 1.16. Docker和k8s
-[从上往下学Docker](/docs/devAndOps/docker/summary.md)  
-&emsp; [容器化Docker](/docs/devAndOps/docker/introduce.md)  
-&emsp; [Docker架构](/docs/devAndOps/docker/principle.md)  
-&emsp; [Docker使用教程](/docs/devAndOps/docker/use.md)  
-&emsp; &emsp; [2.1.Docker安装](/docs/devAndOps/docker/install.md)  
-&emsp; &emsp; [★★★Docker常用命令](/docs/devAndOps/docker/command.md)  
-&emsp; &emsp; [Docker实用命令](/docs/devAndOps/docker/UtilityCommand.md)  
-&emsp; &emsp; [对象标签使用](/docs/devAndOps/docker/objectLabel.md)  
-&emsp; &emsp; [DockerFile](/docs/devAndOps/docker/file.md)  
-&emsp; &emsp; [ENTRYPOINT和CMD](/docs/devAndOps/docker/ENTRYPOINT.md)  
-&emsp; [2.2.Docker私服](/docs/devAndOps/docker/registry.md)  
-&emsp; [镜像详解](/docs/devAndOps/docker/image.md)  
-&emsp; [容器详解](/docs/devAndOps/docker/container.md)  
-&emsp; &emsp; [文件：挂载/修改内部文件/数据卷](/docs/devAndOps/docker/mount.md)  
-&emsp; &emsp; [网络：容器间通信](/docs/devAndOps/docker/network.md)  
-&emsp; [Docker工具](/docs/devAndOps/docker/tools.md)  
-[docker-compose](/docs/devAndOps/docker/docker-compose.md)  
-[Kubernetes](/docs/devAndOps/k8s/Kubernetes.md)      
-&emsp; [k8s架构](/docs/devAndOps/k8s/principle.md)   
-&emsp; [k8s使用教程](/docs/devAndOps/k8s/use.md)  
-&emsp; &emsp; [★★★k8s常用命令](/docs/devAndOps/k8s/k8scommand.md)  
-&emsp; &emsp; [k8s master节点安装](/docs/devAndOps/k8s/master.md)  
-&emsp; &emsp; [k8s node节点安装](/docs/devAndOps/k8s/node.md)  
-&emsp; &emsp; [k8s卸载和dashboard安装](/docs/devAndOps/k8s/dashboard.md)  
-&emsp; &emsp; [k8s安装应用](/docs/devAndOps/k8s/application.md)  
-&emsp; [组件详解](/docs/devAndOps/k8s/assembly.md)  
-&emsp; &emsp; [Pod详解](/docs/devAndOps/k8s/pod.md)  
-&emsp; &emsp; &emsp; [k8s自动伸缩](/docs/devAndOps/k8s/Stretch.md)  
-&emsp; &emsp; [Service详解](/docs/devAndOps/k8s/service.md)  
-&emsp; &emsp; [k8s网络原理](/docs/devAndOps/k8s/k8snetwork.md)  
-&emsp; &emsp; [k8s共享存储原理](/docs/devAndOps/k8s/k8sSharedStorage.md)   
-&emsp; [k8s运维](/docs/devAndOps/k8s/tools.md)  
-&emsp; &emsp; [k8s监控](/docs/devAndOps/k8s/Monitor.md)  
-&emsp; [Kuboard介绍](/docs/devAndOps/k8s/kuboard.md)  
-[Docker部署springBoot](/docs/devAndOps/docker/springBootDocker.md)  
-[6.Jenkins+Docker一键部署](/docs/devAndOps/jenkins/JenkinsDocker.md)  
-[7.Jenkins+Kubernetes一键部署](/docs/devAndOps/jenkins/JenkinsKubernetes.md)  
-
-
-### 1.16.1. 搭建-需求、测试
-[连接内网vpn](/docs/Linux/enterprise/vpn.md)  
-[多人协作confluence](/docs/Linux/enterprise/confluence.md)  
-[jira](/docs/devAndOps/build/jira.md)  
-[Jmeter](/docs/devAndOps/test/Jmeter.md)  
-[LDAP自助修改密码服务](/docs/devAndOps/build/LDAP.md)  
-
-
-### 1.16.2. 监控和统计
-[监控](/docs/devAndOps/monitor/indicators.md)  
-&emsp; [监控系统](/docs/devAndOps/monitor/monitor.md)  
-[prometheus](/docs/devAndOps/monitor/prometheus.md)  
-&emsp; [prometheus介绍](/docs/devAndOps/monitor/prometheusDesc.md)  
-&emsp; [prometheus使用](/docs/devAndOps/monitor/prometheusUse.md)  
-&emsp; [prometheus+SpringBoot](/docs/devAndOps/monitor/prometheusSpringBoot.md)  
-[统计PV](/docs/devAndOps/monitor/StatisticsPV.md)  
-
-
-
-## 1.17. 常用研发工具  
-[开发软件汇总](/docs/software/DevelopmentSoftware.md)  
-[Idea](/docs/software/idea/idea.md)  
-[数据库](/docs/software/database.md)  
-[postman](/docs/software/postman.md)  
-[visual studio code](/docs/software/visualStudioCode.md)  
-[抓包Charles](/docs/software/charles.md)  
-[markdown和博客](/docs/software/markdown.md)  
-[MAC系统](/docs/software/MAC.md)  
-[Json](/docs/software/Json.md)  
-
-
-------------------------------------------------------------------------------------------------------------------------------
-
-## 1.18. Linux操作系统  
-<!-- 
-xshell 工具Tabby 
-https://mp.weixin.qq.com/s/Cs-WzMm-8VZbLoq9CA-qWw
-https://mp.weixin.qq.com/s/V5Mg7CRDsOS_NPm6J6PLtA
--->
-[操作系统](/docs/Linux/operating.md)  
-[Linux系统性能](/docs/Linux/systemPerformance.md)  
-&emsp; [Linux性能优化常用命令汇总](/docs/Linux/PerformanceCommand.md)  
-&emsp; [Linux性能优化](/docs/Linux/LinuxPerformanceOptimization.md)  
-&emsp; [cpu](/docs/Linux/cpu.md)  
-&emsp; [内存](/docs/Linux/memory.md)  
-&emsp; [硬盘](/docs/Linux/HardDisk.md)  
-&emsp; [网络](/docs/Linux/NetWork.md)  
-&emsp; [Linux性能优化实战-倪朋飞](/docs/Linux/Actual/Actual.md)  
-&emsp; &emsp; [如何学习Linux性能优化？](/docs/Linux/Actual/how.md)  
-&emsp; &emsp; [CPU性能篇](/docs/Linux/Actual/cpu.md)  
-&emsp; &emsp; &emsp; [基础篇：到底应该怎么理解“平均负载”？](/docs/Linux/Actual/AverageLoad.md)  
-&emsp; &emsp; &emsp; [基础篇：经常说的 CPU 上下文切换是什么意思？（上）](/docs/Linux/Actual/ContextSwitching-upper.md)  
-&emsp; &emsp; &emsp; [基础篇：经常说的 CPU 上下文切换是什么意思？（下）](/docs/Linux/Actual/ContextSwitching-down.md)  
-&emsp; &emsp; &emsp; [基础篇：某个应用的CPU使用率居然达到100%，我该怎么办？](/docs/Linux/Actual/Cpu100.md)  
-&emsp; &emsp; &emsp; [案例篇：系统的 CPU 使用率很高，但为啥却找不到高 CPU 的应用？](/docs/Linux/Actual/CpuTop.md)  
-[Linux系统内核](/docs/Linux/Linux.md)  
-
-[堆外内存](/docs/system/OutHeapMemory.md)  
-[centos增加内存](/docs/system/centosMemory.md)  
-
-
-[页缓存](/docs/system/PageCache.md)  
-
-------------------------------------------------------------------------------------------------------------------------------
-
-## 1.19. 算法  
-[红黑树](/docs/function/redBlack.md)  
-[复杂数据结构](/docs/function/otherStructure.md)  
-&emsp; [跳跃表](/docs/function/SkipList.md)  
-&emsp; [位图BitMap](/docs/function/BitMap.md)  
-&emsp; [BloomFilter](/docs/function/BloomFilter.md)  
-&emsp; &emsp; [计数式布隆过滤器](/docs/function/countingBloomFilter.md)  
-&emsp; &emsp; [布谷鸟过滤器](/docs/function/CuckooFilter.md)  
-&emsp; [HyperLogLog](/docs/function/HyperLogLog.md)  
-&emsp; [Trie](/docs/function/Trie.md)  
-[大数据的操作](/docs/function/bigOperate.md)  
-&emsp; [大数据小内存排序](/docs/function/SmallMemory.md)  
-&emsp; [大数据和空间限制](/docs/function/bigdata.md)  
-
-------------------------------------------------------------------------------------------------------------------------------
-
-## 1.20. 微信开发
-[小程序](/docs/weChat/applet.md)  
-
-## 1.21. 前端知识  
-[跨平台uni-app](/docs/front/uniapp.md)  
-[nodejs](/docs/front/nodejs.md)  
-
-## 1.22. 测试  
-[测试](/docs/test/test.md)  
-[压测指标](/docs/test/PressureMeasurementIndicators.md)  
-[allure](/docs/devAndOps/test/allure.md)  
-
-
-## 1.23. python
-[python](/docs/python/python.md)  
-
-## 大数据  
-[bigData](/docs/bigData/bigData.md)  
-
-## 1.24. AI了解  
-[AI](/docs/AI/AI.md)  
+
+## 1.6. 集成Mybatis  
+1. ~~整合druid：（集成ShardingSphere时废弃了）~~ 
+    * https://www.cnblogs.com/carry-huang/p/15260422.html  
+    * https://blog.csdn.net/kobe_IT/article/details/123531088
+    * logback配置Druid Filter：https://blog.csdn.net/qq_42145871/article/details/90704632
+2. 集成mybatis：  
+    * https://blog.csdn.net/jzman/article/details/111027453  
+3. common-server集成mybatis-generator-core插件。（个人喜好。一直用的maven插件，不怎么喜欢idea或其他外置插件）  
+    1. 
+    2. 避免用blob生成模型类：https://www.5axxw.com/questions/content/dkqfvh 、 https://blog.csdn.net/lenny_wants/article/details/123649547    
+4. mybatis-generator小工具：https://zhuanlan.zhihu.com/p/636727703/      
+4. 增删改查  
+    1. 批量插入或者更新(on duplicate key update)：https://blog.csdn.net/a1275302036/article/details/120923406  
+
+## 1.7. 集成ShardingSphere
+1. 集成ShardingSphere，实现读写分离    
+    1. ShardingSphere-JDBC5.1.0读写分离配置示例：https://blog.csdn.net/qq_31226223/article/details/123815551    
+    2. 强制走主库  
+    &emsp; https://www.csdn.net/tags/MtTaEgzsNzExMDcyLWJsb2cO0O0O.html  
+    &emsp; 强制走主库正确使用：https://blog.csdn.net/seanxwq/article/details/122810902  
+
+
+## 1.8. 集成Redis  
+1. 目前使用redis单机模式。redis哨兵模式，哨兵之间注册的是内网地址，需解决出口ip问题。  
+
+### 1.8.1. Redis搭建  
+1. linux 下安装redis并设置开机自启动  https://blog.csdn.net/linhui258/article/details/124524729  
+
+    
+### 1.8.2. 集成Redis  
+&emsp; SpringBoot集成Redis：https://blog.csdn.net/wl_honest/article/details/124171062  
+
+### 1.8.3. 集成redisson
+1. 哨兵模式redisson：https://blog.csdn.net/weixin_45973130/article/details/122383689  
+2. 单机模式：  
+3. 报错：READONLY You can‘t write against a read only replica  
+&emsp; https://blog.csdn.net/qq_42818496/article/details/107838154  
+4. Redisson看门狗失效：https://blog.csdn.net/nlcexiyue/article/details/120783519  
+
+### 1.8.4. 集成Redis+Caffeine两级缓存  
+1. caffeine：咖啡因，本地缓存之王。  
+1. 集成：  
+    1. https://blog.csdn.net/Trunks2009/article/details/123982910  
+    &emsp; 1).集成了V3版本，可以设置过期时间；2).集成了分布式环境改造，解决了缓存一致性问题。  
+    2. 项目com.wuw.double-cache  
+    3. 两个不同项目集成：报错NoClassDefFoundError，maven依赖冲突。  
+ 2. 使用  
+
+### 1.8.5. XXX使用两级缓存框架j2Cache  
+
+
+## 1.9. 集成RocketMq  
+1. 集成RocketMq（~~两主两从~~）。  
+    1. 先搭建成功，创建一个topic，最后再在程序中集成。  
+    2. 搭建：  
+        &emsp; https://blog.csdn.net/qq_39280536/article/details/105020434
+        &emsp; https://blog.csdn.net/moyuanbomo/article/details/115375785  
+        &emsp; RocketMQ Web控制台监控界面介绍+部署 https://blog.csdn.net/abu935009066/article/details/120828337
+    3. 部分问题：  
+        &emsp; 1). /bin/runserver.sh和runbroker.sh设置堆大小  
+        &emsp; 2). RocketMQ集群启动报错：java.lang.RuntimeException: Lock failed,MQ already started
+        &emsp; 3). https://blog.csdn.net/TaylorSwiftiiln/article/details/121077705
+    4. SpringBoot整合RocketMq：  
+        &emsp; https://blog.csdn.net/qq_26154077/article/details/111013842  
+        &emsp; https://blog.csdn.net/qq_43631716/article/details/119902582  
+
+## 1.10. SpringBoot  
+1. 自动装配  
+    1. 前期redis未搭建成功，去掉redis相关自动装配。  
+    &emsp; 方式一：  
+    
+    ```java
+    @SpringBootApplication(exclude= {DataSourceAutoConfiguration.class,
+                    RedisAutoConfiguration.class, // todo redis
+                    RedissonAutoConfiguration.class
+               })
+    ```
+    &emsp; 方式二：  
+    
+    ```java
+    @ConditionalOnProperty(name = "spring.redis.sentinel.enable", havingValue = "true")
+    ```
+        
+
+## 1.11. SpringCloud
+### 1.11.1. 集成nacos 
+1. springCloud集成nacos：https://blog.csdn.net/footless_bird/article/details/125362050  
+2. maven多环境参考https://blog.csdn.net/DU87680258/article/details/111879755  
+3. JavaWeb获取系统环境变量[/doc/system/EnvironmentVariable.md]  
+
+### 1.11.2. 集成网关gateWay、认证授权security  
+1. 网关，spring cloud gateway集成spring cloud security统一认证、授权  
+    * https://www.jianshu.com/p/fbabb8684dfd  
+2. gateway集成feign   
+    &emsp; openFeign 调用服务报错:No qualifying bean of type ‘org.springframework.boot.autoconfigure.http.HttpMessage   
+    * https://blog.csdn.net/shehuinibingge/article/details/108470373   
+    * https://www.pudn.com/news/628f8328bf399b7f351e7130.html  
+
+
+### 1.11.3. 集成Sentinel
+1. 搭建  
+&emsp; https://sentinelguard.io/zh-cn/docs/dashboard.html    
+2. 集成  
+    1. 官方使用文档：https://sentinelguard.io/zh-cn/docs/basic-api-resource-rule.html  
+    2. gateway集成Sentinel https://blog.51cto.com/u_15284359/4874743  
+    3. 普通接口和feign集成Sentinel  
+    &emsp; https://www.jb51.net/article/226839.htm  
+    &emsp; https://www.jianshu.com/p/f5cabdef0de1  
+    &emsp; ~~https://blog.csdn.net/MenBad/article/details/125118367~~  
+    4. ~~dubbo之使用sentinel限流~~  
+    &emsp; https://blog.csdn.net/wang0907/article/details/121356872  
+    
+### 1.11.4. 集成链路SkyWalking
+1. 集成SkyWalking  
+&emsp; https://blog.csdn.net/weixin_35574537/article/details/112952419   
+
+&emsp; Skywalking8：https://blog.csdn.net/Cy_LightBule/article/details/123855647  
+&emsp; https://zhuanlan.zhihu.com/p/268913908  
+&emsp; http://t.zoukankan.com/duanxz-p-15602842.html  
+
+&emsp; 注意：  
+&emsp; &emsp; 1. 要注意版本。  
+&emsp; &emsp; 2. 要启动两个服务：startup.*:组合脚本，同时启动oapService.*，webappService.*脚本  
+&emsp; &emsp; 3. 启动服务时VM参数：
+  
+    -javaagent:G:\software\apache-skywalking-java-agent-8.9.0\skywalking-agent\skywalking-agent.jar -Dskywalking.agent.service_name=consumer -Dskywalking.collector.backend_service=ip:11800    
+
+2. ~~如何使用 SkyWalking 给 Dubbo 服务做链路追踪？~~  
+&emsp; https://blog.csdn.net/XiaoHanZuoFengZhou/article/details/103287858?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-103287858-blog-120191083.pc_relevant_multi_platform_whitelistv2_ad_hc&spm=1001.2101.3001.4242.1&utm_relevant_index=3
+  
+
+## 1.12. 分布式
+### 1.12.1. 分布式id
+&emsp; 集成百度uid-generator  
+1. 百度uid-generator：https://blog.csdn.net/qq_43690938/article/details/116712041  
+2. 步骤：1. 集成uid-generator原有项目， 2. 基础项目common-api配置， 3. 业务项目使用。  
+3. 编码：  
+    1. common-api中配置UidGeneratorConfiguration，使用@MapperScan(value = "com.baidu.fsg.uid.worker.dao")扫描。否则每个项目需要做一样的配置。    
+    2. 业务项目的配置文件里mybatis.mapper-locations = classpath:/idmapper/*.xml,classpath:/mapper/*.xml扫描。  
+    3. 业务代码里具体使用：    
+        
+        ````java
+        @Resource
+        private IdGenerator idGenerator;
+        
+        long l = idGenerator.nextId();
+        ````
+
+### 1.12.2. 分布式事务  
+1. shardingsphere分布式事务：https://shardingsphere.apache.org/document/legacy/4.x/document/cn/manual/sharding-jdbc/usage/transaction/#%E9%85%8D%E7%BD%AEspring-boot%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86%E5%99%A8   
+
+
+### 1.12.3. 分布式锁  
+&emsp; 参考Redission章节  
+
+
+## 1.13. 并发，大数据量
+&emsp; CollectionUtils，一组数据固定分组  
+
+
+## 1.14. 工具  
+### 1.14.1. 接口管理  
+#### 1.14.1.1. 步骤一：集成Swagger3  
+1. ~~springboot与swagger3的集成~~  
+2. 网关聚合Swagger  
+    1. gateway网关中聚合swagger： https://blog.csdn.net/w1014074794/article/details/109100433  
+    2. Spring Security+Swagger3：https://blog.csdn.net/sunxiaoju/article/details/110751151  
+3. swagger3访问： http://localhost:8081/swagger-ui/index.html#/  
+
+
+#### 1.14.1.2. 步骤二：Mock平台  
+&emsp; 使用接口管理平台Apifox、eolinker等导入swagger数据。    
+
+### 1.14.2. 定时任务  
+1. SpringMvc+quartz整合：  
+&emsp; https://blog.csdn.net/inspurs06/article/details/100355629  
+&emsp; https://blog.csdn.net/qq_24953751/article/details/134027973  
+2. xxl-job
+&emsp; https://blog.csdn.net/Fristm/article/details/125351356  
+&emsp; https://blog.csdn.net/yunhaoyoung/article/details/120508147  
+&emsp; docker安装  https://www.bbsmax.com/A/ZOJPNR6xdv/  
+&emsp; https://www.cnblogs.com/ysocean/p/10541151.html#_label4_0  
+&emsp; https://mp.weixin.qq.com/s/G6yGtDGyf3gASvUBTo6AEg  
+
+### 1.14.3. IO流  
+#### 1.14.3.1. 读取Resources目录下文件  
+1. 报错：cannot be resolved to absolute file path because it does not reside in the file system  
+&emsp; https://blog.csdn.net/m0_59092234/article/details/125402107  
+2. 编码：FileOfReadJar.java  
+
+#### 1.14.3.2. 上传/下载
+##### 1.14.3.2.1. 上传服务器  
+1. 代码：UploadFileController.java  
+2. 上传：  
+    1. 即上传文件又传输参数使用MultipartHttpServletRequest或者@RequestPart(https://blog.csdn.net/weixin_50158735/article/details/115768430)  
+    2. 使用NIO-FileChannel优化  
+3. 下载  
+    1. 使用mount命令将多个应用服务器的资源挂载到一块共享磁盘上。    
+    2. nginx配置图片服务器。  
+
+##### 1.14.3.2.2. 阿里OSS  
+1. 编码：参考ALiOSS.java  
+2. 文档：  
+    1. 公有桶   
+    2. 私有桶   
+        &emsp; 1. 上传  
+            &emsp; &emsp; 使用STS临时访问凭证上传  
+            &emsp; &emsp; https://help.aliyun.com/document_detail/100624.html?spm=5176.8466032.help.dexternal.739f1450FwuC0e  
+            &emsp; &emsp; https://help.aliyun.com/document_detail/100624.html?spm=5176.8466032.policy.1.17ea1450MYk2w4  
+        &emsp; 2. 下载  
+            &emsp; &emsp; https://help.aliyun.com/document_detail/39607.htm?spm=a2c4g.11186623.0.0.72075d60lbnzq4#concept-39607-zh  
+            &emsp; &emsp; 使用签名URL进行临时授权  
+            &emsp; &emsp; https://help.aliyun.com/document_detail/32016.htm?spm=a2c4g.11186623.0.0.c8861c91aMITas#concept-32016-zh  
+            &emsp; &emsp; STS临时授权OSS操作权限报“Access denied by authorizer's policy”错误  
+            &emsp; &emsp; https://help.aliyun.com/document_detail/161911.html  
+        &emsp; 3. ~~回源（CDN加速）：私有桶的cdn加速在cdn处做访问限制。~~    
+        &emsp; 4. 跨域：  
+            &emsp; &emsp; https://help.aliyun.com/document_detail/31870.html?spm=5176.8466032.cors.1.527a1450z1AZq0  
+            &emsp; &emsp; https://help.aliyun.com/document_detail/40183.html?spm=a2c4g.11186623.0.0.52af68bath8RRd  
+    3. JAVA实现服务端获取签名后前端直传文件到oss服务器：  
+    &emsp; https://blog.csdn.net/qq_44682266/article/details/108258326  
+    &emsp; 文件上传成功后则返回204状态码：https://help.aliyun.com/document_detail/31925.html?spm=a2c4g.11186623.6.1568.759b6e28YhoGnX  
+    &emsp; 私有bucket：https://blog.csdn.net/weixin_44179010/article/details/121657880  
+    &emsp; 注意：前端分片上传需要id和key。  
+
+##### 1.14.3.2.3. ~~分片上传和断点续传~~ 
+
+
+#### SFTP使用  
+SFTPUtils.java
+
+
+#### 1.14.3.3. 导入导出  
+##### 1.14.3.3.1. easyExcel使用  
+1. 官网：https://easyexcel.opensource.alibaba.com/   
+2. 使用：  
+    1. 读Excel、写Excel、填充Excel。  
+    2. web上传、下载：https://www.yuque.com/easyexcel/doc/easyexcel#9cd151de  
+        1. web下载前端直接http请求接口地址获取文件。  
+2. 注意：  
+    1. 时间、数字格式化(https://www.yuque.com/easyexcel/doc/write#c2bc0689)，引入的是excel包的com.alibaba.excel.annotation.format.DateTimeFormat。  
+    &emsp; 也可以实现Converter<T>接口自定义类型转换，本人开发中未使用。  
+    2. 项目组多人开发，留意poi的依赖    
+    
+### 1.14.4. 字典表（树状图/级联关系）  
+1. 级联结构，即树状图展示。项目中采用mybatis树状图sql。
+2. 树形结构【向下查询】（采用Mybatis构造树）： 
+    1. 缓存中放入全量树。  
+    2. 增删改，删除缓存中的全量树。  
+    3. 查询：首先查询全量树，然后按照parentCode查询子树。  
+    4. 编码：DictServiceImpl#findChildsByParentCode()    
+3. 树形结构【向上查询】（采用Mybatis构造树）：  
+    1. 后台筛选时使用  
+    2. 编码：DictServiceImpl#conditionalFilter()  
+4. 待优化：采用java构造树。   
+5. 拥有数据权限的数据结构：参考面向B端的数据权限一节。  
+
+### 1.14.5. 发送短信邮件  
+1. 需求点：
+    1. 内容为验证码：  
+        1. 随机数不固定位  
+        2. 过期时间    
+    2. 内容非验证码  
+2. 库表设计：发送模板sms_template、发送记录：sms_record（短信记录）、email_record（邮件记录）。     
+3. 编码：SMSService.java，使用模板设计模式  
+    1. 阿里云发送短信  
+    2. 发送邮件：  
+        1. 采用授权码方式。  
+        &emsp; SpringBoot：https://blog.csdn.net/weixin_46822367/article/details/123893527  
+        &emsp; Spring：https://blog.csdn.net/q_qwp_p/article/details/131621962  
+        2. ~~在阿里云服务器上实现邮件发送功能，提示25端口无法使用~~ 
+        &emsp; https://blog.csdn.net/muyingmiao/article/details/100027729?spm=1001.2101.3001.6650.11&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EOPENSEARCH%7ERate-11-100027729-blog-105774436.pc_relevant_multi_platform_featuressortv2dupreplace&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EOPENSEARCH%7ERate-11-100027729-blog-105774436.pc_relevant_multi_platform_featuressortv2dupreplace&utm_relevant_index=12  
+        &emsp; https://blog.csdn.net/qq_36493719/article/details/105774436
+        
+
+
+### 1.14.6. 获取Ip
+&emsp; https://mp.weixin.qq.com/s?__biz=MzA4NjgxMjQ5Mg==&mid=2665762376&idx=1&sn=967b663047006d9b994b9c6df10baab0&chksm=84d21c6bb3a5957de6ae2f50f265a8d51641e1771cab645e658b19abe2d5354644ba887fd583&mpshare=1&scene=1&srcid=&sharer_sharetime=1564100760999&sharer_shareid=b256218ead787d58e0b58614a973d00d&key=36a99a852770fa03efd2a584477dd8f6ac3dbbaffc265a85be537eb1c84044e0d27a9829fcc9dc48fbdb5a26f8c1f0dfd9fcedfdfa556701a2f2046f2a586b0fd0b112d53ca231f501b813f6a00e6cf2&ascene=1&uin=MTE1MTYxNzY2MQ%3D%3D&devicetype=Windows+10&version=62060834&lang=zh_CN&pass_ticket=s18sClyfZbM76kH9b%2BDm2ZIiUkdunIxTxxrp3gvbhsi2bpqzDx36yk0a37PqzHNS  
+1. 编码：com.wuw.common.server.util.network.IpUtils
+2. nginx配置    
+
+
+### 解析xml 
+dom4jToXml.xml  
+
+## 1.15. Elasticsearch
+### 1.15.1. EFK  
+1. 多种方案：  
+    1. 方案一：FileBeat采集Spring日志  
+    2. 方案二：Spring日志直接输出到logstash  
+2. FileBeat采集Spring日志  
+    1. 日志文件采用json格式。  
+    2. FileBeat是直接发送到ELS还是通过LogStash? https://www.it1352.com/1529867.html    
+    
+### 1.15.2. Elasticsearch使用  
+1. Elasticsearch使用场景：https://blog.csdn.net/laoyang360/article/details/52227541    
+&emsp; 使用Elasticsearch做一些统计分析。将数据异步（定时job、logStash）同步到ES中。  
+2. Elasticsearch建模  
+&emsp; 与关系型数据库（如 MySQL）不同的是，ES中尽量考虑非范式化设计，即通过冗余字段，尽可能地消除 join 查询，以提高查询性能，本质上是一种以空间换时间的思想。  
+3. SpringBoot集成Elasticsearch  
+
+
+## 1.16. 替换web服务器  
+&emsp; 用Undertow替换Tomcat：https://mp.weixin.qq.com/s/5I9zmCNJB4KXHhSyxOnFDg  
+&emsp; spring-cloud-gateway集成了security。未能集成Undertow  
+
+
+## 1.17. XXXIM通信  
+### 1.17.1. 单方面消息推送  
+1. https://mp.weixin.qq.com/s/_3uGLngOab7NDtUmNCVXgw  
+2. SSE实现方式：SseEmitterUtils.java   
+
+
+### 1.17.2. 聊天 
+1. https://mp.weixin.qq.com/s/2z26QzBHhxBre8yeCPD0iQ  
+
+
+## 1.18. XXX响应式编程
+
+## 1.19. Nginx
+1. Nginx搭建、启动、重启  
+    
+2. Nginx日志位置：.../nginx/logs    
+3. Nginx五大应用场景：https://blog.csdn.net/vbirdbest/article/details/80913319    
+    1. 建立conf.d文件夹：https://blog.csdn.net/weixin_43652507/article/details/124123540    
+    2. 静态服务器，存储图片、视频、音频。    
+    3. 负载  
+    4. HTTP服务器  
+
+
+## 1.20. 监控  
+1. 一个监控项目（待调试）：项目，server-monitor；说明，README.md  
+
+
+## 1.21. 服务重启脚本制作   
+1. 使用system  
+    1. docker    
+2. rc.local中添加sh脚本：  
+    1. 脚本文件位置：/usr/work/sh
+    2. rc.local添加脚本文件绝对路径  
+    3. IdeaServer  
+
+
+## 1.22. 接口对接  
+### 1.22.1. 从Json自动生成JavaBean  
+&emsp; GsonFormat的使用：https://www.likecs.com/show-306937306.html  
+
+## 1.23. 用户系统  
+
+### 1.23.1. 注册登录  
+#### 1.23.1.1. 注册
+1. 注意：多个注册入口，防止一个人注册多次。  
+2. 注意：CB端都能注册时，注意顺序影响。C端先注册，B端报错；B端先注册，C端能正常登录。  
+
+#### 1.23.1.2. jwt生成token  
+&emsp; 编码JWTUtil.java  
+
+#### 1.23.1.3. 微信授权登录  
+1. 微信公众平台的静默授权和网页授权区别详解：http://t.zoukankan.com/jiangzhaowei-p-9792648.html    
+
+
+#### 1.23.1.4. 微信扫码登录  
+1. https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html  
+2. 前期准备
+    1. 登录微信开放平台：https://open.weixin.qq.com/    
+    2. 账号中心 -> 开发者资质认证  
+    3. 网站应用 -> 创建网站应用  
+    4. 获取appId和appSecret
+3. 编码：  
+    1. 第一步：获取二维码参数  
+    2. 第二步：微信回调，返回的是前端微信扫码后的跳转地址。首次登录不返回token，强制绑定手机号。  
+    3. 代码：com.wuw.ucenter.server.service.WXService  
+
+
+### 1.23.2. 权限  
+#### 1.23.2.1. 功能权限  
+
+
+#### 1.23.2.2. 面向B端的数据权限  
+0. 数据权限：可以查看哪些机构的数据。  
+1. 用户登录将当前用户信息放入请求头中：  
+    1. 用户基本信息、功能权限、数据权限放置在http请求头中。  
+    2. ServletRequestAttributes的使用（https://blog.csdn.net/m0_37635053/article/details/103969075）   
+2. 数据权限两种方案：  
+    1. 方案一：(细粒度)将数据权限绑定在用户上。  
+    2. 方案二：(粗粒度)将数据权限绑定在角色上。  
+3. 项目采用粗粒度，将数据权限绑定在角色上。【需要数据权限的列表页】获取【当前用户拥有权限的机构】：  
+    
+```java
+public class RolePermiResponseVo {
+   // 用户id
+    private String userBaseId;       
+    // 所属机构
+    private List<UserManageOffice> userManageOffices;
+    // 当前角色
+    private Role role;
+    // 拥有权限的机构
+    private List<String> officeCodes;
+
+}
+```
+
+&emsp; 拥有数据权限的查询操作步骤：  
+&emsp; 1. 获取用户角色  
+&emsp; 2. 获取角色的数据权限  
+&emsp; 3. 获取拥有权限的机构编码  
+&emsp; 4. 进入正常查询逻辑  
+    
+4. 机构树的展示：  
+    1. 基础：字典表（树状图/级联关系）  
+    2. 提供两个接口。接口一返回拥有权限的机构树，从下往上只返回用户拥有的机构树；接口二返回有权限的机构编码；最后由前端进行比对展示。  
+
+## 1.24. 订单  
+1. 商品，两级类目：SPU与SKU。    
+   1. 概念：https://www.bainiu.com/show/655.html   https://www.xiaohongshu.com/discovery/item/62a555eb000000002103c1a2    
+   2. 库表设计：https://q.cnblogs.com/q/137774/ https://blog.csdn.net/lianghecai52171314/article/details/121756100?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_ecpm_v1~rank_v31_ecpm-2-121756100-null-null.pc_agg_new_rank&utm_term=%E7%94%B5%E5%95%86sku%E6%95%B0%E6%8D%AE%E5%BA%93&spm=1000.2123.3001.4430  
+
+
+## 1.25. 支付  
+1. 支付系统数据库设计思考：https://blog.csdn.net/luckyzhoustar/article/details/97389504    
+2. 第三方支付文档：  
+    1. 支付宝支付
+        支付宝支付：https://open.alipay.com/  
+    2. 微信支付v3  
+        1. 目前使用v0.4.7版本，编码WXPayService.java  
+        2. 接入前准备：https://pay.weixin.qq.com/wiki/doc/apiv3/open/pay/chapter2_8_1.shtml    
+        &emsp; 公众号绑定微信支付简要攻略：https://developers.weixin.qq.com/community/develop/article/doc/0004449a560590f759ed0cbf75d013  
+        &emsp; APPID授权管理功能介绍：https://pay.weixin.qq.com/static/pay_setting/appid_protocol.shtml  
+        3. 微信开发指引：https://pay.weixin.qq.com/wiki/doc/apiv3/open/pay/chapter2_8_2.shtml 微信java给出的示例：https://github.com/wechatpay-apiv3/wechatpay-apache-httpclient   
+        &emsp; 参考文档：https://zhuanlan.zhihu.com/p/464745934  
+        4. 问题：  
+            1. 解密出现Illegal key size错误：https://developers.weixin.qq.com/community/develop/article/doc/000eae9daa4a8057bd8c3a0a35d813  
+            2. 使用官方客户端WechatPayHttpClientBuilder，内部已经封装好了验签信息，即请求头已经添加Authorization参数。  
+            &emsp; 签名生成文档：https://pay.weixin.qq.com/wiki/doc/apiv3/wechatpay/wechatpay4_0.shtml  
+            3. 定时轮询查单：https://pay.weixin.qq.com/wiki/doc/apiv3/Practices/chapter1_1_1.shtml  
+            4. 回调通知注意事项：https://pay.weixin.qq.com/wiki/doc/apiv3/Practices/chapter1_1_5.shtml    
+        5. 前端返回商家  
+        ![image](/doc/pay/weiXinCall.png)  
+3. 分笔支付：一个订单拆分成多个支付单。  
+
+
+## 1.26. 微信开发  
+&emsp; 3个平台：微信开放平台、微信公众平台、服务商平台。    
+1. 微信官方文档：https://developers.weixin.qq.com/doc/offiaccount/Getting_Started/Overview.html左上脚下拉选公众号、小程序、开放平台(服务商)、微信支付...    
+2. 微信公众号开发之微信服务器配置：http://t.zoukankan.com/shenhaha520-p-10132873.html    
+
+## 1.27. 运维    
+
+### 1.27.1. Kubernetes    
+kubeadm 搭建 K8s  
+
+### 1.27.2. Jenkins    
+1. Docker安装jdk；查看安装目录：echo $JAVA_HOME  
+2. jenkins访问：ip1:8888。账号密码admin。  
 

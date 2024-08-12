@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <name>server-monitor</name>
+    <groupId>com.wuw</groupId>
+    <artifactId>server-monitor</artifactId>
+    <packaging>pom</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+    <description>服务监控插件</description>
+
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>com.wuw</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../parent/pom.xml</relativePath>
+    </parent>
+
+
+    <properties>
+        <app.name>server-monitor</app.name>
+        <maven.test.failure.ignore>false</maven.test.failure.ignore>
+        <maven.test.skip>false</maven.test.skip>
+        <java.version>1.8</java.version>
+        <java.encoding>UTF-8</java.encoding>
+        <project.build.sourceEncoding>${java.encoding}</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyy-MM-dd_HH_mm</maven.build.timestamp.format>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.compilerVersion>${java.version}</maven.compiler.compilerVersion>
+        <project.version>1.0.0-SNAPSHOT</project.version>
+    </properties>
+    <modules>
+        <module>api</module>
+        <module>server</module>
+    </modules>
+    <dependencyManagement>
+        <dependencies>
+<!--            <dependency>
+                <groupId>com.wuw</groupId>
+                <artifactId>server-monitor-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wuw</groupId>
+                <artifactId>server-monitor-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>-->
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+
+    </repositories>
+
+    <pluginRepositories>
+
+    </pluginRepositories>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                        <target>${java.version}</target>
+                        <source>${java.version}</source>
+                        <encoding>${java.encoding}</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.6</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <arguments>-Prelease</arguments>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.1</version>
+                    <configuration>
+                        <attach>true</attach>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <distributionManagement>
+
+
+    </distributionManagement>
+</project>
